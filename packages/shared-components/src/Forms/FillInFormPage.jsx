@@ -1,6 +1,6 @@
-import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
-import { useEffect, useRef } from "react";
-import { useHistory, useLocation } from "react-router-dom";
+import { navFormUtils, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
+import { useEffect, useRef, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import NavForm from "../components/NavForm.jsx";
 import { useAppConfig } from "../configContext";
 import { useAmplitude } from "../context/amplitude";
@@ -9,9 +9,11 @@ import { useSendInn } from "../context/sendInn/sendInnContext";
 import { LoadingComponent } from "../index";
 import { scrollToAndSetFocus } from "../util/focus-management.js";
 import { getPanelSlug } from "../util/form";
+import ConfirmationModal from "./components/navigation/ConfirmationModal";
+import urlUtils from "../util/url";
 
 export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const {
     loggSkjemaApnet,
     loggSkjemaSporsmalBesvart,
@@ -21,10 +23,24 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
     loggNavigering,
   } = useAmplitude();
   const { featureToggles, submissionMethod } = useAppConfig();
-  const { startMellomlagring, updateMellomlagring, isMellomlagringEnabled, isMellomlagringReady } = useSendInn();
+  const [formForRendering, setFormForRendering] = useState();
+  const {
+    startMellomlagring,
+    updateMellomlagring,
+    isMellomlagringEnabled,
+    isMellomlagringReady,
+    isMellomlagringActive,
+  } = useSendInn();
   const { currentLanguage, translationsForNavForm, translate } = useLanguages();
   const { hash } = useLocation();
   const mutationObserverRef = useRef(undefined);
+  const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
+
+  const exitUrl = urlUtils.getExitUrl(window.location.href);
+
+  useEffect(() => {
+    setFormForRendering(submissionMethod === "digital" ? navFormUtils.removeVedleggspanel(form) : form);
+  }, [form, submissionMethod]);
 
   useEffect(() => {
     loggSkjemaApnet(submissionMethod);
@@ -74,7 +90,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
 
   function updatePanelUrl(panelPath) {
     // We need to get location data from window, since this function runs inside formio
-    history.push({ pathname: `${formUrl}/${panelPath}`, search: window.location.search });
+    navigate({ pathname: `${formUrl}/${panelPath}`, search: window.location.search });
   }
 
   function goToPanelFromUrlParam(formioInstance) {
@@ -114,11 +130,9 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
     onNextOrPreviousPage(page, currentPanels);
   }
 
-  function onCancel({ url }) {
-    loggNavigering({
-      lenkeTekst: translate(TEXTS.grensesnitt.navigation.cancel),
-      destinasjon: url,
-    });
+  function onCancel({ submission }) {
+    setSubmission(submission);
+    setIsCancelModalOpen(true);
   }
 
   function onNextOrPreviousPage(page, currentPanels) {
@@ -151,19 +165,31 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
       skjemastegNokkel,
     });
     // We need to get location data from window, since this function runs inside formio
-    history.push({ pathname: `${formUrl}/oppsummering`, search: window.location.search });
+    navigate({ pathname: `${formUrl}/oppsummering`, search: window.location.search });
   };
 
   const onError = () => {
     loggSkjemaValideringFeilet();
-    // Commenting out as temporary fix for issue where we scroll to errorsList when onChange is triggered
-    //scrollToAndSetFocus("div[id^='error-list-'] li:first-of-type");
   };
+
+  const onConfirmCancel = async () => {
+    if (submission && isMellomlagringActive) {
+      await updateMellomlagring(submission);
+    }
+    loggNavigering({
+      lenkeTekst: translate(TEXTS.grensesnitt.navigation.cancel),
+      destinasjon: exitUrl,
+    });
+  };
+
+  if (!formForRendering) {
+    return null;
+  }
 
   return (
     <div>
       <NavForm
-        form={form}
+        form={formForRendering}
         language={featureToggles.enableTranslations ? currentLanguage : undefined}
         i18n={featureToggles.enableTranslations ? translationsForNavForm : undefined}
         submission={submission}
@@ -178,6 +204,17 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
         submissionReady={goToPanelFromUrlParam}
         onWizardPageSelected={onWizardPageSelected}
         className="nav-form"
+      />
+      <ConfirmationModal
+        open={isCancelModalOpen}
+        onClose={() => setIsCancelModalOpen(false)}
+        onConfirm={onConfirmCancel}
+        onError={(err) => {
+          console.error(err);
+        }}
+        confirmType={isMellomlagringActive ? "primary" : "danger"}
+        texts={isMellomlagringActive ? TEXTS.grensesnitt.confirmSavePrompt : TEXTS.grensesnitt.confirmDiscardPrompt}
+        exitUrl={exitUrl}
       />
     </div>
   );

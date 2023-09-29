@@ -11,14 +11,7 @@ Wizard.prototype.emitPrevPage = function () {
 };
 
 WebForm.prototype.cancel = function () {
-  const url = window.location.href.indexOf(".dev.nav.") > 0 ? "https://www.dev.nav.no" : "https://www.nav.no";
-  this.emit("cancel", { page: this.page, submission: this.submission, currentPanels: this.currentPanels, url });
-  const shouldReset = this.hook("beforeCancel", true);
-  if (shouldReset) {
-    window.location.href = url;
-  } else {
-    return false;
-  }
+  this.emit("cancel", { page: this.page, submission: this.submission, currentPanels: this.currentPanels });
 };
 
 Wizard.prototype.attach = function (element) {

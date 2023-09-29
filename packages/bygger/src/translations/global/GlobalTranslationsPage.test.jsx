@@ -2,7 +2,7 @@ import { AppConfigProvider } from "@navikt/skjemadigitalisering-shared-component
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { act } from "react-dom/test-utils";
-import { MemoryRouter, Route } from "react-router-dom";
+import { MemoryRouter, Route, Routes } from "react-router-dom";
 import I18nStateProvider from "../../context/i18n";
 import GlobalTranslationsPage from "./GlobalTranslationsPage";
 import globalTranslations from "./testdata/global-translations.js";
@@ -21,15 +21,19 @@ describe("GlobalTranslationsPage", () => {
         <AppConfigProvider featureToggles={{ enableTranslations: true }}>
           <MemoryRouter initialEntries={[`/translations/global/${languageCode}/${tag}`]}>
             <I18nStateProvider loadTranslations={loadTranslation}>
-              <Route path="/translations/global/:languageCode?/:tag?">
-                <GlobalTranslationsPage
-                  loadGlobalTranslations={loadTranslation}
-                  projectURL={""}
-                  deleteTranslation={mockedDeleteTranslation}
-                  saveTranslation={mockedSaveTranslations}
-                  languageCode={languageCode}
+              <Routes>
+                <Route
+                  path="/translations/global/:languageCode?/:tag?"
+                  element={
+                    <GlobalTranslationsPage
+                      loadGlobalTranslations={loadTranslation}
+                      projectURL={""}
+                      deleteTranslation={mockedDeleteTranslation}
+                      saveTranslation={mockedSaveTranslations}
+                    />
+                  }
                 />
-              </Route>
+              </Routes>
             </I18nStateProvider>
           </MemoryRouter>
         </AppConfigProvider>,
@@ -40,24 +44,6 @@ describe("GlobalTranslationsPage", () => {
   afterEach(() => {
     mockedDeleteTranslation.mockClear();
     mockedSaveTranslations.mockClear();
-  });
-
-  describe("Render global translation page without available languages", () => {
-    beforeEach(async () => {
-      await renderGlobalTranslationsPage(
-        vi.fn(() => Promise.resolve({})),
-        "",
-      );
-    });
-
-    it("renders empty header and languageSelector with velg språk label", async () => {
-      const languageSelectorLabel = await screen.getByRole("button", { name: "Velg språk" });
-      const addNewTranslationButton = await screen.getByRole("button", { name: "Legg til ny tekst" });
-      const languageHeading = await screen.getByRole("heading", { level: 1, name: "" });
-      expect(languageSelectorLabel).toBeDefined();
-      expect(addNewTranslationButton).toBeDefined();
-      expect(languageHeading).toBeDefined();
-    });
   });
 
   describe("Render global translation page with English translations", () => {

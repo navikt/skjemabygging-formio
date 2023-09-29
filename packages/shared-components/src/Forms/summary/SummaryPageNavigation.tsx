@@ -1,12 +1,13 @@
-import { Alert, Heading, Link as NavLink } from "@navikt/ds-react";
+import { Alert, Button, Heading } from "@navikt/ds-react";
 import { InnsendingType, NavFormType, Submission, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import { useState } from "react";
-import { Link, useLocation, useRouteMatch } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useAppConfig } from "../../configContext";
 import { useAmplitude } from "../../context/amplitude";
 import { useLanguages } from "../../context/languages";
 import { useSendInn } from "../../context/sendInn/sendInnContext";
 import { getPanels } from "../../util/form";
+import urlUtils from "../../util/url";
 import { PanelValidation } from "../../util/panelValidation";
 import DigitalSubmissionButton from "../components/DigitalSubmissionButton";
 import DigitalSubmissionWithPrompt from "../components/DigitalSubmissionWithPrompt";
@@ -14,6 +15,7 @@ import { hasRelevantAttachments } from "../components/attachmentsUtil";
 import EditAnswersButton from "../components/navigation/EditAnswersButton";
 import SaveAndDeleteButtons from "../components/navigation/SaveAndDeleteButtons";
 import makeStyles from "../../util/jss";
+import ConfirmationModal from "../components/navigation/ConfirmationModal";
 
 export interface Props {
   form: NavFormType;
@@ -32,20 +34,19 @@ const useStyles = makeStyles({
 
 const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList, isValid }: Props) => {
   const { submissionMethod, app } = useAppConfig();
-  const { url } = useRouteMatch();
   const { search } = useLocation();
   const { loggSkjemaStegFullfort, loggSkjemaFullfort, loggSkjemaInnsendingFeilet, loggNavigering } = useAmplitude();
   const { translate } = useLanguages();
   const { mellomlagringError, isMellomlagringActive } = useSendInn();
   const [error, setError] = useState<Error>();
+  const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
 
   const innsending: InnsendingType = form.properties.innsending || "PAPIR_OG_DIGITAL";
-  const linkBtStyle = {
-    textDecoration: "none",
-  };
   const styles = useStyles();
   const hasAttachments = hasRelevantAttachments(form, submission?.data ?? {});
   const canSubmit = (panelValidationList ?? []).every((panelValidation) => !panelValidation.hasValidationErrors);
+
+  const exitUrl = urlUtils.getExitUrl(window.location.href);
 
   const onClickPapirOrIngenInnsending = (e, path) => {
     if (!isValid(e)) {
@@ -91,7 +92,7 @@ const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList,
             <Link
               className="navds-button navds-button--primary"
               onClick={(e) => onClickPapirOrIngenInnsending(e, "send-i-posten")}
-              to={{ pathname: `${formUrl}/send-i-posten`, search, state: { previousPage: url } }}
+              to={{ pathname: `${formUrl}/send-i-posten`, search }}
             >
               <span aria-live="polite" className="navds-body-short font-bold">
                 {translate(TEXTS.grensesnitt.moveForward)}
@@ -130,7 +131,7 @@ const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList,
             <Link
               className="navds-button navds-button--primary"
               onClick={(e) => onClickPapirOrIngenInnsending(e, "ingen-innsending")}
-              to={{ pathname: `${formUrl}/ingen-innsending`, search, state: { previousPage: url } }}
+              to={{ pathname: `${formUrl}/ingen-innsending`, search }}
             >
               <span aria-live="polite" className="navds-body-short font-bold">
                 {translate(TEXTS.grensesnitt.moveForward)}
@@ -142,24 +143,25 @@ const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList,
         {isMellomlagringActive && <SaveAndDeleteButtons submission={submission} onError={(error) => setError(error)} />}
         {!isMellomlagringActive && (
           <div className="button-row button-row__center">
-            <NavLink
-              className={"navds-button navds-button--tertiary"}
-              onClick={() =>
-                loggNavigering({
-                  lenkeTekst: translate(TEXTS.grensesnitt.navigation.cancel),
-                  destinasjon: "https://www.nav.no",
-                })
-              }
-              href="https://www.nav.no"
-              style={linkBtStyle}
-            >
-              <span aria-live="polite" className="navds-body-short font-bold">
-                {translate(TEXTS.grensesnitt.navigation.cancel)}
-              </span>
-            </NavLink>
+            <Button variant="tertiary" onClick={() => setIsCancelModalOpen(true)}>
+              {translate(TEXTS.grensesnitt.navigation.cancelAndDiscard)}
+            </Button>
           </div>
         )}
       </nav>
+      <ConfirmationModal
+        open={isCancelModalOpen}
+        onClose={() => setIsCancelModalOpen(false)}
+        onConfirm={() => {
+          loggNavigering({
+            lenkeTekst: translate(TEXTS.grensesnitt.navigation.cancelAndDiscard),
+            destinasjon: exitUrl,
+          });
+        }}
+        confirmType={"danger"}
+        texts={TEXTS.grensesnitt.confirmDiscardPrompt}
+        exitUrl={exitUrl}
+      />
     </>
   );
 };

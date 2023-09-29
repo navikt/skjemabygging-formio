@@ -2,7 +2,7 @@ import { Button, Heading } from "@navikt/ds-react";
 import { LoadingComponent, makeStyles } from "@navikt/skjemadigitalisering-shared-components";
 import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import { useEffect, useMemo, useReducer, useState } from "react";
-import { useHistory, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { AppLayout } from "../../components/AppLayout";
 import PrimaryButtonWithSpinner from "../../components/PrimaryButtonWithSpinner";
 import UserFeedback from "../../components/UserFeedback";
@@ -64,19 +64,18 @@ const useGlobalTranslationsPageStyles = makeStyles({
 
 const GlobalTranslationsPage = ({
   deleteTranslation,
-  languageCode,
   loadGlobalTranslations,
   publishGlobalTranslations,
   saveTranslation,
 }) => {
-  const params = useParams();
-  const selectedTag = params.tag || tags.SKJEMATEKSTER;
+  const { tag, languageCode } = useParams();
+  const selectedTag = tag || tags.SKJEMATEKSTER;
   const [isDeleteLanguageModalOpen, setIsDeleteLanguageModalOpen] = useModal();
 
   const classes = useGlobalTranslationsPageStyles();
   const [allGlobalTranslations, setAllGlobalTranslations] = useState({});
   const [globalTranslationsWithLanguagecodeAndTag, setGlobalTranslationsWithLanguagecodeAndTag] = useState({});
-  const history = useHistory();
+  const navigate = useNavigate();
   const [currentTranslation, dispatch] = useReducer(
     (state, action) => getCurrenttranslationsReducer(state, action),
     [],
@@ -289,7 +288,7 @@ const GlobalTranslationsPage = ({
         onConfirm={() => {
           if (allGlobalTranslations[languageCode]) {
             getTranslationIdsForLanguage().forEach((translationId) => deleteTranslation(translationId));
-            history.push("/translations");
+            navigate("/translations");
           }
         }}
         language={languagesInNorwegian[languageCode]}

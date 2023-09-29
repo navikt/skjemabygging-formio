@@ -33,7 +33,7 @@ const useStyles = makeStyles({
 });
 
 const TranslationsByFormPage = ({ loadForm, saveTranslation }: TranslationsByFormPageProps) => {
-  const { formPath, languageCode } = useParams();
+  const { formPath, languageCode = "" } = useParams();
   const [form, setForm] = useState<NavFormType>();
   const [status, setStatus] = useState("LOADING");
   const { translations } = useI18nState();

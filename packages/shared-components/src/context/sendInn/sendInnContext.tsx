@@ -7,13 +7,13 @@ import {
   FyllutState,
 } from "@navikt/skjemadigitalisering-shared-domain";
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { useHistory, useLocation } from "react-router-dom";
+import { useLocation, useSearchParams } from "react-router-dom";
 import {
-  SendInnSoknadResponse,
   createSoknad,
   createSoknadWithoutInnsendingsId,
   deleteSoknad,
   getSoknad,
+  SendInnSoknadResponse,
   updateSoknad,
   updateUtfyltSoknad,
 } from "../../api/sendInnSoknad";
@@ -64,22 +64,21 @@ const SendInnProvider = ({
   const isMellomlagringEnabled =
     app === "fyllut" && submissionMethod === "digital" && !!featureToggles?.enableMellomlagring;
   const [isMellomlagringReady, setIsMellomlagringReady] = useState(!isMellomlagringEnabled);
-  const history = useHistory();
-  const { search } = useLocation();
+  const { pathname, search } = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const isMellomlagringActive = useMemo(
-    () => isMellomlagringEnabled && !!new URLSearchParams(search).get("innsendingsId"),
+    () => isMellomlagringEnabled && !!searchParams.get("innsendingsId"),
     [isMellomlagringEnabled, search],
   );
   const addQueryParamToUrl = useCallback(
     (key, value) => {
       if (key && value) {
-        const searchParams = new URLSearchParams(history.location.search);
         searchParams.set(key, value);
-        history.push({ search: searchParams.toString() });
+        setSearchParams(searchParams);
       }
     },
-    [history],
+    [pathname],
   );
 
   useEffect(() => {

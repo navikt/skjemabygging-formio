@@ -27,9 +27,9 @@ const ComponentSummary = ({ components, formUrl = "", panelValidationList = [] }
             );
           case "fieldset":
           case "navSkjemagruppe":
-            return <FieldsetSummary key={key} component={comp} />;
+            return <FieldsetSummary key={key} component={comp} formUrl={formUrl} />;
           case "datagrid":
-            return <DataGridSummary key={key} component={comp} />;
+            return <DataGridSummary key={key} component={comp} formUrl={formUrl} />;
           case "selectboxes":
             return <SelectBoxesSummary key={key} component={comp} />;
           case "image":

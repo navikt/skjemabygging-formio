@@ -36,6 +36,7 @@ const PanelSummary = ({ component, formUrl, hasValidationErrors }: Props) => {
   const { link, headerIcon, accordionHeader } = panelStyles();
   const { key, label, components } = component;
   const panelLinkText = `${translate(TEXTS.grensesnitt.summaryPage.edit)} ${label.toLowerCase()}`;
+
   return (
     <section>
       <Accordion>
@@ -58,7 +59,7 @@ const PanelSummary = ({ component, formUrl, hasValidationErrors }: Props) => {
             <Link
               to={{ pathname: `${formUrl}/${key}`, search }}
               className={link}
-              onClick={(e) => loggNavigering({ lenkeTekst: panelLinkText, destinasjon: e.view.location.href })}
+              onClick={(e) => loggNavigering({ lenkeTekst: panelLinkText, destinasjon: e.view.document.location.href })}
             >
               <span>{panelLinkText}</span>
             </Link>

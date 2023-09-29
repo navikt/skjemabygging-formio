@@ -1,4 +1,4 @@
-import apiConfig from "./routers/api/config.js";
+import apiConfig from "./routers/api/config";
 import countries from "./routers/api/countries.js";
 import form from "./routers/api/form.js";
 import forms from "./routers/api/forms.js";

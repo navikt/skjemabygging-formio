@@ -1,24 +1,24 @@
 import { Back, Close } from "@navikt/ds-icons";
 import { Button, Stepper } from "@navikt/ds-react";
-import { NavFormType, Submission, TEXTS, navFormUtils } from "@navikt/skjemadigitalisering-shared-domain";
+import { NavFormType, navFormUtils, Submission, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import { useMemo, useRef, useState } from "react";
-import { Link, useLocation, useRouteMatch } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useAmplitude } from "../../context/amplitude";
 import { useLanguages } from "../../context/languages";
+import { useAppConfig } from "../../configContext";
 
 type FormStepperProps = {
   form: NavFormType;
   formUrl: string;
-  submissionMethod?: string;
   submission?: Submission;
 };
 
-const FormStepper = ({ form, formUrl, submissionMethod, submission }: FormStepperProps) => {
+const FormStepper = ({ form, submission, formUrl }: FormStepperProps) => {
+  const { submissionMethod } = useAppConfig();
   const openButton = useRef<HTMLButtonElement>(null);
-  const { url } = useRouteMatch();
+  const { search, pathname } = useLocation();
   const { translate } = useLanguages();
   const [isOpen, setIsOpen] = useState(false);
-  const { search } = useLocation();
   const { loggNavigering } = useAmplitude();
   const formSteps = useMemo(() => {
     return navFormUtils
@@ -85,7 +85,7 @@ const FormStepper = ({ form, formUrl, submissionMethod, submission }: FormSteppe
                 {translate(step.label)}
               </Stepper.Step>
             ))}
-            <Stepper.Step to={url} as={Link}>
+            <Stepper.Step to={pathname} as={Link}>
               {translate(TEXTS.statiske.summaryPage.title)}
             </Stepper.Step>
           </Stepper>

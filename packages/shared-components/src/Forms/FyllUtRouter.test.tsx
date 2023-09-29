@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { MemoryRouter } from "react-router-dom";
+import { createMemoryRouter, RouterProvider } from "react-router-dom";
 import { setupNavFormio } from "../../test/navform-render";
 import { languagesInOriginalLanguage } from "../components/FyllUtLanguageSelector";
 import { AppConfigProvider } from "../configContext";
@@ -11,12 +11,11 @@ import { form, translationsForNavForm } from "./testdata/skjema-med-oversettelse
 const mockFormPath = `/${form.path}`;
 const firstPanelSlug = getPanelSlug(form, 0);
 vi.mock("react-router-dom", async () => {
-  const actual = await vi.importActual("react-router-dom");
+  const actual = await vi.importActual<object>("react-router-dom");
   return {
     ...actual,
-    useRouteMatch: () => ({
-      url: mockFormPath,
-      path: mockFormPath,
+    useResolvedPath: () => ({
+      pathname: mockFormPath,
     }),
   };
 });
@@ -31,11 +30,22 @@ describe("FyllUtRouter", () => {
       featureToggles: { enableTranslations: true },
       ...appConfigProps,
     };
+
+    const router = createMemoryRouter(
+      [
+        {
+          path: `${mockFormPath}/*`,
+          element: <FyllUtRouter form={form} translations={translationsForNavForm} />,
+        },
+      ],
+      {
+        initialEntries: [`${mockFormPath}/${firstPanelSlug}`],
+      },
+    );
+
     render(
       <AppConfigProvider {...config}>
-        <MemoryRouter initialEntries={[{ pathname: `${mockFormPath}/${firstPanelSlug}` }]}>
-          <FyllUtRouter form={form} translations={translationsForNavForm} />
-        </MemoryRouter>
+        <RouterProvider router={router} />
       </AppConfigProvider>,
     );
   };
