@@ -16,6 +16,7 @@ import EditAnswersButton from "../components/navigation/EditAnswersButton";
 import SaveAndDeleteButtons from "../components/navigation/SaveAndDeleteButtons";
 import makeStyles from "../../util/jss";
 import ConfirmationModal from "../components/navigation/ConfirmationModal";
+import { ArrowRightIcon } from "@navikt/aksel-icons";
 
 export interface Props {
   form: NavFormType;
@@ -98,12 +99,16 @@ const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList,
               <span aria-live="polite" className="navds-body-short font-bold">
                 {translate(TEXTS.grensesnitt.moveForward)}
               </span>
+              <span className="navds-button__icon">
+                <ArrowRightIcon aria-hidden />
+              </span>
             </Link>
           )}
           {canSubmit &&
             (submissionMethod === "digital" || innsending === "KUN_DIGITAL") &&
             (hasAttachments ? (
               <DigitalSubmissionButton
+                withIcon
                 submission={submission}
                 isValid={isValid}
                 onError={(err) => {
@@ -136,6 +141,9 @@ const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList,
             >
               <span aria-live="polite" className="navds-body-short font-bold">
                 {translate(TEXTS.grensesnitt.moveForward)}
+              </span>
+              <span className="navds-button__icon">
+                <ArrowRightIcon aria-hidden />
               </span>
             </Link>
           )}

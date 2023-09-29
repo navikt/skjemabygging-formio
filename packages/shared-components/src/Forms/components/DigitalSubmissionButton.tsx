@@ -1,10 +1,11 @@
-import { Button } from "@navikt/ds-react";
+import { Button, ButtonProps } from "@navikt/ds-react";
 import { Submission, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import { useState } from "react";
 import { useAppConfig } from "../../configContext";
 import { useAmplitude } from "../../context/amplitude";
 import { useLanguages } from "../../context/languages";
 import { useSendInn } from "../../context/sendInn/sendInnContext";
+import { ArrowRightIcon } from "@navikt/aksel-icons";
 
 export interface Props {
   submission?: Submission;
@@ -12,11 +13,19 @@ export interface Props {
   onError: Function;
   onSuccess?: Function;
   children: string;
+  withIcon?: boolean;
 }
 
 const noop = () => {};
 
-const DigitalSubmissionButton = ({ submission, isValid, onError, onSuccess = noop, children }: Props) => {
+const DigitalSubmissionButton = ({
+  submission,
+  isValid,
+  onError,
+  onSuccess = noop,
+  children,
+  withIcon = false,
+}: Props) => {
   const { loggNavigering } = useAmplitude();
   const { app } = useAppConfig();
   const { translate } = useLanguages();
@@ -49,8 +58,15 @@ const DigitalSubmissionButton = ({ submission, isValid, onError, onSuccess = noo
     }
   };
 
+  const iconProps: Partial<ButtonProps> = withIcon
+    ? {
+        icon: <ArrowRightIcon aria-hidden />,
+        iconPosition: "right",
+      }
+    : {};
+
   return (
-    <Button onClick={sendInn} loading={loading}>
+    <Button onClick={sendInn} loading={loading} {...iconProps}>
       {children}
     </Button>
   );

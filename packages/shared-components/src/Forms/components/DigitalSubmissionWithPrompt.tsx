@@ -5,6 +5,7 @@ import Modal from "../../components/modal/Modal";
 import { useLanguages } from "../../context/languages";
 import makeStyles from "../../util/jss";
 import DigitalSubmissionButton from "./DigitalSubmissionButton";
+import { ArrowRightIcon } from "@navikt/aksel-icons";
 
 const useStyles = makeStyles({
   body: {
@@ -36,7 +37,9 @@ const DigitalSubmissionWithPrompt = ({ submission, isValid, onError, onSuccess }
 
   return (
     <>
-      <Button onClick={handleClick}>{translate(TEXTS.grensesnitt.submitToNavPrompt.open)}</Button>
+      <Button onClick={handleClick} icon={<ArrowRightIcon />} iconPosition={"right"}>
+        {translate(TEXTS.grensesnitt.submitToNavPrompt.open)}
+      </Button>
       <Modal
         open={isOpen}
         ariaLabel={translate(TEXTS.grensesnitt.submitToNavPrompt.ariaLabel)}
