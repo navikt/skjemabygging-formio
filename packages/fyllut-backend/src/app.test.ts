@@ -29,11 +29,11 @@ describe("app", () => {
       await request(createApp()).get("/fyllut/").expect(200);
     });
 
-    it("Renders index.html even if form is not found", async () => {
+    it("Returns 404 if form is not found", async () => {
       nock(formioProjectUrl!).get("/form?type=form&tags=nav-skjema&path=testform001").reply(200, []);
 
       const res = await request(createApp()).get("/fyllut/testform001");
-      expect(res.status).toEqual(200);
+      expect(res.status).toEqual(404);
     });
 
     afterEach(() => {

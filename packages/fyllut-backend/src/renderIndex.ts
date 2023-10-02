@@ -94,6 +94,7 @@ const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
         pageMeta = getFormMeta(form);
       } else {
         logFormNotFound(formPath);
+        return res.sendStatus(404);
       }
     }
     if (!config.isProduction && qbDisableDecorator === "true") {
