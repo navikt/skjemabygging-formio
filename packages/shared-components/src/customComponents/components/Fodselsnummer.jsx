@@ -20,8 +20,8 @@ export default class Fodselsnummer extends TextFieldComponent {
     }
 
     const fnrTekst = fnrTekstWithMiddleSpace.replace(" ", "");
-    const { status } = fnrvalidator.idnr(fnrTekst);
-    return status === "valid";
+    const { status, type } = fnrvalidator.idnr(fnrTekst);
+    return status === "valid" && type !== "hnr";
   }
 
   validateFnrNew(fnrTekstWithMiddleSpace) {
@@ -32,8 +32,8 @@ export default class Fodselsnummer extends TextFieldComponent {
 
     const fnrTekst = fnrTekstWithMiddleSpace.replace(" ", "");
 
-    const { status } = fnrvalidator.idnr(fnrTekst);
-    if (status !== "valid") {
+    const { status, type } = fnrvalidator.idnr(fnrTekst);
+    if (status !== "valid" || type === "hnr") {
       //translate based on key in validering file.
       return this.t("fodselsnummerDNummer") === "fodselsnummerDNummer"
         ? TEXTS.validering.fodselsnummerDNummer

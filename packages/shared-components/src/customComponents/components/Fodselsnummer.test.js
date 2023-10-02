@@ -1,6 +1,8 @@
 import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import Fodselsnummer from "./Fodselsnummer";
 
+const VALID_HNR = "13527248013";
+
 describe("Fodselsnummer", () => {
   describe("validering", () => {
     let fnrComp;
@@ -43,6 +45,11 @@ describe("Fodselsnummer", () => {
     it("fails validation for 00000000000", () => {
       expect(fnrComp.validateFnr("00000000000")).toBe(false);
       expect(fnrComp.validateFnrNew("00000000000")).toEqual(TEXTS.validering.fodselsnummerDNummer);
+    });
+
+    it("fails validation for hnr", () => {
+      expect(fnrComp.validateFnr(VALID_HNR)).toBe(false);
+      expect(fnrComp.validateFnrNew(VALID_HNR)).toEqual(TEXTS.validering.fodselsnummerDNummer);
     });
   });
 });
