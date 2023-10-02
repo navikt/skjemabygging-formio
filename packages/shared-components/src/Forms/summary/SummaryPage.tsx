@@ -75,14 +75,14 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
       });
 
       const instance = await formio.ready;
-      await instance.setSubmission(submission ?? { data: {} });
-      instance.checkData(submission?.data, [], undefined);
+      await instance.setSubmission(submission);
+      instance.checkData(submission.data, [], undefined);
 
       const panelValidations = validateWizardPanels(instance, form, submission);
       setPanelValidationList(panelValidations);
       instance.destroy(true);
     };
-    if (isMellomlagringEnabled) {
+    if (isMellomlagringEnabled && submission) {
       initializePanelValidation();
     }
   }, [isMellomlagringEnabled, form, submission]);
