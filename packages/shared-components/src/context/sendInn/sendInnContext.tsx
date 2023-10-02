@@ -87,20 +87,24 @@ const SendInnProvider = ({
     }
   }, [fyllutMellomlagringState]);
 
+  const retrieveMellomlagring = async (innsendingsId: string) => {
+    setMellomlagringStarted(true);
+    const response = await getSoknad(innsendingsId, appConfig);
+    if (response?.hoveddokumentVariant.document) {
+      addQueryParamToUrl("lang", response.hoveddokumentVariant.document.language);
+      updateSubmission(getSubmissionWithFyllutState(response));
+      setFyllutMellomlagringState(getFyllutMellomlagringState(response));
+    }
+  };
+
   useEffect(() => {
-    const retrievePreviousSubmission = async () => {
+    const initializeMellomlagring = async () => {
       try {
         const searchParams = new URLSearchParams(search);
         const innsendingsId = searchParams.get("innsendingsId");
         if (!mellomlagringStarted && innsendingsId) {
           setInnsendingsId(innsendingsId);
-          setMellomlagringStarted(true);
-          const response = await getSoknad(innsendingsId, appConfig);
-          if (response?.hoveddokumentVariant.document) {
-            addQueryParamToUrl("lang", response.hoveddokumentVariant.document.language);
-            updateSubmission(getSubmissionWithFyllutState(response));
-            setFyllutMellomlagringState(getFyllutMellomlagringState(response));
-          }
+          await retrieveMellomlagring(innsendingsId);
         }
       } catch (error: any) {
         const getError: MellomlagringError =
@@ -121,9 +125,9 @@ const SendInnProvider = ({
       }
     };
     if (isMellomlagringActive) {
-      retrievePreviousSubmission();
+      initializeMellomlagring();
     }
-  }, [addQueryParamToUrl, appConfig, isMellomlagringActive, mellomlagringStarted, search, translate, updateSubmission]);
+  }, [isMellomlagringActive, mellomlagringStarted, search, translate, retrieveMellomlagring]);
 
   const nbNO: Language = "nb-NO";
 
@@ -139,7 +143,7 @@ const SendInnProvider = ({
   };
 
   const startMellomlagring = async (submission: Submission) => {
-    if (isMellomlagringEnabled && !mellomlagringStarted) {
+    if (isMellomlagringReady && !mellomlagringStarted) {
       try {
         setMellomlagringStarted(true);
         const currentLanguage = getLanguageFromSearchParams();
@@ -153,11 +157,9 @@ const SendInnProvider = ({
         );
         setInnsendingsId(response?.innsendingsId);
         addQueryParamToUrl("innsendingsId", response?.innsendingsId);
-        setIsMellomlagringReady(true);
         return response;
       } catch (error: any) {
         logger?.info("Oppretting av mellomlagring feilet", error);
-        setIsMellomlagringReady(true);
       }
     }
   };
