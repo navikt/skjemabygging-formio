@@ -4,6 +4,8 @@ import TextFieldComponent from "formiojs/components/textfield/TextField";
 import baseEditForm from "formiojs/components/_classes/component/Component.form";
 import FormBuilderOptions from "../../Forms/form-builder-options";
 
+const ALLOWED_TYPES = ["fnr", "dnr"];
+
 export default class Fodselsnummer extends TextFieldComponent {
   static schema(...extend) {
     return TextFieldComponent.schema({
@@ -12,28 +14,16 @@ export default class Fodselsnummer extends TextFieldComponent {
     });
   }
 
-  //Beholdes for å sikre bakoverkompatibilitet for eldre skjemaer
-  validateFnr(fnrTekstWithMiddleSpace) {
-    if (fnrTekstWithMiddleSpace === "") {
+  validateFnrNew(inputValue) {
+    if (inputValue === "") {
       // Vi lar default required-validering ta hånd om tomt felt feilmelding
       return true;
     }
 
-    const fnrTekst = fnrTekstWithMiddleSpace.replace(" ", "");
-    const { status, type } = fnrvalidator.idnr(fnrTekst);
-    return status === "valid" && type !== "hnr";
-  }
+    const inputValueNoSpace = inputValue.replace(" ", "");
 
-  validateFnrNew(fnrTekstWithMiddleSpace) {
-    if (fnrTekstWithMiddleSpace === "") {
-      // Vi lar default required-validering ta hånd om tomt felt feilmelding
-      return true;
-    }
-
-    const fnrTekst = fnrTekstWithMiddleSpace.replace(" ", "");
-
-    const { status, type } = fnrvalidator.idnr(fnrTekst);
-    if (status !== "valid" || type === "hnr") {
+    const { status, type } = fnrvalidator.idnr(inputValueNoSpace);
+    if (!ALLOWED_TYPES.includes(type) || status !== "valid") {
       //translate based on key in validering file.
       return this.t("fodselsnummerDNummer") === "fodselsnummerDNummer"
         ? TEXTS.validering.fodselsnummerDNummer

@@ -1590,7 +1590,7 @@
                 "validateOn": "blur",
                 "validate": {
                   "required": true,
-                  "custom": "valid = instance.validateFnr(input) ? true : 'Dette er ikke et gyldig fødselsnummer';",
+                  "custom": "valid = instance.validateFnrNew(input)",
                   "customPrivate": false,
                   "strictDateValidation": false,
                   "multiple": false,
@@ -2410,7 +2410,7 @@
                 "validateOn": "blur",
                 "validate": {
                   "required": true,
-                  "custom": "valid = instance.validateFnr(input) ? true : 'Dette er ikke et gyldig fødselsnummer';",
+                  "custom": "valid = instance.validateFnrNew(input)",
                   "customPrivate": false,
                   "strictDateValidation": false,
                   "multiple": false,
@@ -5809,7 +5809,7 @@
                 "validateOn": "blur",
                 "validate": {
                   "required": true,
-                  "custom": "valid = instance.validateFnr(input) ? true : 'Dette er ikke et gyldig fødselsnummer';",
+                  "custom": "valid = instance.validateFnrNew(input)",
                   "customPrivate": false,
                   "strictDateValidation": false,
                   "multiple": false,
@@ -6758,7 +6758,7 @@
                 "validateOn": "blur",
                 "validate": {
                   "required": true,
-                  "custom": "valid = instance.validateFnr(input) ? true : 'Dette er ikke et gyldig fødselsnummer';",
+                  "custom": "valid = instance.validateFnrNew(input)",
                   "customPrivate": false,
                   "strictDateValidation": false,
                   "multiple": false,
