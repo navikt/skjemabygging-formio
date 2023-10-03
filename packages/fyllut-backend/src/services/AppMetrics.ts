@@ -31,7 +31,7 @@ class AppMetrics {
     name: "fyllut_outgoing_request_duration_seconds",
     help: "Request duration for outgoing requests made by FyllUt",
     labelNames: ["service", "method", "error"],
-    buckets: [1.0, 2.0, 5.0, 10.0, 15.0, 30.0, 60.0],
+    buckets: [0.7, 0.8, 0.9, 1.0, 1.2, 1.5, 2.0, 5.0, 15.0],
     registers: [this._register],
   });
 }
