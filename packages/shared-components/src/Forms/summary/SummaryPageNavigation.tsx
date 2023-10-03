@@ -68,9 +68,9 @@ const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList,
       {mellomlagringError && (
         <Alert variant="error" className="mb">
           <Heading size="small" level="4">
-            {mellomlagringError.title}
+            {translate(mellomlagringError.title)}
           </Heading>
-          {mellomlagringError.message}
+          {translate(mellomlagringError.message)}
         </Alert>
       )}
       {error && !mellomlagringError && (

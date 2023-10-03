@@ -1,4 +1,19 @@
 <div>
+{% if (ctx.submission?.fyllutState?.mellomlagring?.error) { %}
+  <div class="navds-alert navds-alert--error mb">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true" class="navds-alert__icon">
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M7.74175 2.47065C7.8824 2.32999 8.07317 2.25098 8.27208 2.25098L15.7279 2.25098C15.9268 2.25098 16.1176 2.32999 16.2583 2.47065L21.5303 7.74272C21.671 7.88338 21.75 8.07414 21.75 8.27305V15.7289C21.75 15.9278 21.671 16.1186 21.5303 16.2592L16.2583 21.5313C16.1176 21.672 15.9268 21.751 15.7279 21.751H8.27208C8.07316 21.751 7.8824 21.672 7.74175 21.5313L2.46967 16.2592C2.32902 16.1186 2.25 15.9278 2.25 15.7289L2.25 8.27305C2.25 8.07414 2.32902 7.88338 2.46967 7.74272L7.74175 2.47065ZM9.03033 7.97065C8.73744 7.67775 8.26256 7.67775 7.96967 7.97065C7.67678 8.26354 7.67678 8.73841 7.96967 9.03131L10.9393 12.001L7.96967 14.9706C7.67678 15.2635 7.67678 15.7384 7.96967 16.0313C8.26256 16.3242 8.73744 16.3242 9.03033 16.0313L12 13.0616L14.9697 16.0313C15.2626 16.3242 15.7374 16.3242 16.0303 16.0313C16.3232 15.7384 16.3232 15.2635 16.0303 14.9706L13.0607 12.001L16.0303 9.03131C16.3232 8.73841 16.3232 8.26354 16.0303 7.97065C15.7374 7.67775 15.2626 7.67775 14.9697 7.97065L12 10.9403L9.03033 7.97065Z" fill="#C30000"/>
+      </svg>
+        <div class="navds-alert__wrapper">
+      {% if (ctx.submission?.fyllutState?.mellomlagring?.error?.title) { %}
+        <h4 class="navds-heading navds-heading--small">{{ctx.t(ctx.submission?.fyllutState?.mellomlagring?.error?.title)}}</h4>
+      {% } %}
+        <div class="navds-alert__wrapper">
+          {{ctx.t(ctx.submission?.fyllutState?.mellomlagring?.error?.message)}}
+        </div>
+      </div>
+  </div>
+{% } %}
 {% if (ctx.submission?.fyllutState?.mellomlagring?.savedDate) { %}
   <p class="navigation-detail">{{ctx.t('Sist lagret') + ' ' + ctx.submission.fyllutState.mellomlagring.savedDate}}</p>
 {% } %}
