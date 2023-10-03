@@ -41,8 +41,8 @@ export const statiske = {
     },
     submit: {
       title: "Beklager, vi har midlertidige tekniske problemer.",
-      savedDraftMessage: "Skjemaet er lagret som et utkast på Min Side - Utkast.",
-      tryLaterMessage: "Vennligst prøv igjen senere.",
+      draftSaved: "Skjemaet er lagret som et utkast på Min Side - Utkast. Vennligst prøv igjen senere.",
+      draftNotSaved: "Vennligst prøv igjen senere.",
     },
   },
   summaryPage: {

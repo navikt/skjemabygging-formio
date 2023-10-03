@@ -13,6 +13,7 @@ import {
   Submission,
   SubmissionData,
   FyllutState,
+  MellomlagringError,
   UsageContext,
 } from "./form";
 import { ForstesideRequestBody, KjentBruker, UkjentBruker } from "./forsteside";
@@ -89,6 +90,7 @@ export type {
   SubmissionData,
   Submission,
   FyllutState,
+  MellomlagringError,
   Component,
   Panel,
   Enhet,

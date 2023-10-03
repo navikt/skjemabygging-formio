@@ -3,10 +3,10 @@ import {
   Language,
   NavFormType,
   Submission,
-  TEXTS,
   FyllutState,
+  MellomlagringError,
 } from "@navikt/skjemadigitalisering-shared-domain";
-import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useReducer, useState } from "react";
 import { useLocation, useSearchParams } from "react-router-dom";
 import {
   createSoknad,
@@ -19,7 +19,8 @@ import {
 } from "../../api/sendInnSoknad";
 import { useAppConfig } from "../../configContext";
 import { useLanguages } from "../languages";
-import { getFyllutMellomlagringState, getSubmissionWithFyllutState, removeFyllutState } from "./utils";
+import { getSubmissionWithFyllutState, removeFyllutState } from "./utils";
+import { mellomlagringReducer } from "./mellomlagringReducer";
 
 interface SendInnContextType {
   startMellomlagring: (submission: Submission) => Promise<SendInnSoknadResponse | undefined>;
@@ -41,9 +42,6 @@ interface SendInnProviderProps {
   onFyllutStateChange: (fyllutState: Partial<FyllutState>) => void;
 }
 
-type MellomlagringErrorType = "START" | "GET" | "NOT FOUND" | "UPDATE" | "SUBMIT" | "DELETE";
-type MellomlagringError = { title: string; message: string; type: MellomlagringErrorType };
-
 const SendInnContext = createContext<SendInnContextType>({} as SendInnContextType);
 
 const SendInnProvider = ({
@@ -55,8 +53,7 @@ const SendInnProvider = ({
 }: SendInnProviderProps) => {
   const [mellomlagringStarted, setMellomlagringStarted] = useState(false);
   const [innsendingsId, setInnsendingsId] = useState<string>();
-  const [mellomlagringError, setMellomlagringError] = useState<MellomlagringError>();
-  const [fyllutMellomlagringState, setFyllutMellomlagringState] = useState<FyllutState["mellomlagring"]>();
+  const [fyllutMellomlagringState, dispatchFyllutMellomlagring] = useReducer(mellomlagringReducer, {});
 
   const { translate } = useLanguages();
   const appConfig = useAppConfig();
@@ -93,7 +90,7 @@ const SendInnProvider = ({
     if (response?.hoveddokumentVariant.document) {
       addQueryParamToUrl("lang", response.hoveddokumentVariant.document.language);
       updateSubmission(getSubmissionWithFyllutState(response));
-      setFyllutMellomlagringState(getFyllutMellomlagringState(response));
+      dispatchFyllutMellomlagring({ type: "init", response });
     }
   };
 
@@ -107,19 +104,7 @@ const SendInnProvider = ({
           await retrieveMellomlagring(innsendingsId);
         }
       } catch (error: any) {
-        const getError: MellomlagringError =
-          error.status === 404
-            ? {
-                type: "NOT FOUND",
-                message: translate(TEXTS.statiske.mellomlagringError.get.notFoundMessage),
-                title: "",
-              }
-            : {
-                type: "GET",
-                title: translate(TEXTS.statiske.mellomlagringError.get.title),
-                message: translate(TEXTS.statiske.mellomlagringError.get.message),
-              };
-        setMellomlagringError(getError);
+        dispatchFyllutMellomlagring({ type: "error", error: error.status === 404 ? "NOT FOUND" : "GET FAILED" });
       } finally {
         setIsMellomlagringReady(true);
       }
@@ -177,14 +162,10 @@ const SendInnProvider = ({
           translation,
           innsendingsId,
         );
-        setFyllutMellomlagringState(getFyllutMellomlagringState(response));
+        dispatchFyllutMellomlagring({ type: "update", response });
         return response;
       } catch (error: any) {
-        setMellomlagringError({
-          type: "UPDATE",
-          title: translate(TEXTS.statiske.mellomlagringError.update.title),
-          message: translate(TEXTS.statiske.mellomlagringError.update.message),
-        });
+        dispatchFyllutMellomlagring({ type: "error", error: "UPDATE FAILED" });
         logger?.info("Oppdatering av mellomlagring feilet", error);
       }
     }
@@ -195,11 +176,7 @@ const SendInnProvider = ({
       try {
         return await deleteSoknad(appConfig, innsendingsId);
       } catch (error: any) {
-        setMellomlagringError({
-          type: "DELETE",
-          title: translate(TEXTS.statiske.mellomlagringError.delete.title),
-          message: translate(TEXTS.statiske.mellomlagringError.delete.message),
-        });
+        dispatchFyllutMellomlagring({ type: "error", error: "DELETE FAILED" });
         logger?.info("Sletting av mellomlagring feilet", error);
       }
     }
@@ -215,19 +192,9 @@ const SendInnProvider = ({
       } catch (error: any) {
         try {
           await updateSoknad(appConfig, form, submission, currentLanguage, translation, innsendingsId);
-          setMellomlagringError({
-            type: "SUBMIT",
-            title: translate(TEXTS.statiske.mellomlagringError.submit.title),
-            message: `${translate(TEXTS.statiske.mellomlagringError.submit.savedDraftMessage)} ${translate(
-              TEXTS.statiske.mellomlagringError.submit.tryLaterMessage,
-            )}`,
-          });
+          dispatchFyllutMellomlagring({ type: "error", error: "SUBMIT FAILED" });
         } catch (error) {
-          setMellomlagringError({
-            type: "SUBMIT",
-            title: translate(TEXTS.statiske.mellomlagringError.submit.title),
-            message: translate(TEXTS.statiske.mellomlagringError.submit.tryLaterMessage),
-          });
+          dispatchFyllutMellomlagring({ type: "error", error: "SUBMIT AND UPDATE FAILED" });
         }
       }
     } else {
@@ -244,7 +211,7 @@ const SendInnProvider = ({
     isMellomlagringActive,
     isMellomlagringEnabled,
     isMellomlagringReady,
-    mellomlagringError,
+    mellomlagringError: fyllutMellomlagringState?.error,
   };
 
   return <SendInnContext.Provider value={value}>{children}</SendInnContext.Provider>;
