@@ -43,6 +43,7 @@ const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
     const formPath = res.locals.formId;
     let pageMeta = getDefaultPageMeta();
 
+    let httpStatusCode = 200;
     if (formPath && !config.noFormValidation) {
       logger.debug("Loading form...", { formPath });
       const form = await formService.loadForm(formPath);
@@ -94,6 +95,7 @@ const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
         pageMeta = getFormMeta(form);
       } else {
         logFormNotFound(formPath);
+        httpStatusCode = 404;
       }
     }
     if (!config.isProduction && qbDisableDecorator === "true") {
@@ -101,7 +103,7 @@ const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
     }
 
     const decoratorFragments = await getDecorator(createRedirectUrl(req, res));
-    res.render("index.html", {
+    res.status(httpStatusCode).render("index.html", {
       ...decoratorFragments,
       ...pageMeta,
     });

@@ -5,6 +5,8 @@ import { Mock } from "vitest";
 vi.mock("../logger", () => ({
   logger: {
     error: vi.fn(),
+    warn: vi.fn(),
+    info: vi.fn(),
   },
 }));
 
@@ -29,21 +31,30 @@ describe("containsIgnoredString", () => {
 describe("logFormNotFound", () => {
   beforeEach(() => {
     (logger.error as Mock).mockClear();
+    (logger.warn as Mock).mockClear();
+    (logger.info as Mock).mockClear();
   });
 
-  it("calls logger.error when path doesn't contain ignored string", () => {
+  it("calls logger.warn when path is similar to a NAV form number", () => {
+    logFormNotFound("nav123456.asdfaw3asdf");
+    expect(logger.warn).toHaveBeenCalled();
+  });
+
+  it("calls logger.info when path doesn't contain ignored string", () => {
     logFormNotFound("nonExistentPath");
-    expect(logger.error).toHaveBeenCalled();
+    expect(logger.info).toHaveBeenCalled();
   });
 
   it("does not call logger.error when path contains ignored string", () => {
     logFormNotFound("index.php");
     expect(logger.error).not.toHaveBeenCalled();
+    expect(logger.warn).not.toHaveBeenCalled();
+    expect(logger.info).not.toHaveBeenCalled();
   });
 
-  it("logger.error is called with correct arguments", () => {
+  it("logger.info is called with correct arguments", () => {
     const path = "nonExistentPath";
     logFormNotFound(path);
-    expect(logger.error).toHaveBeenCalledWith("Form not found", { formPath: path });
+    expect(logger.info).toHaveBeenCalledWith("Form not found", { formPath: path });
   });
 });
