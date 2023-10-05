@@ -28,7 +28,8 @@ describe("Mellomlagring", () => {
       });
       cy.clickNextStep();
       cy.get("@updateMellomlagringSpy").should("not.have.been.called");
-      cy.findByLabelText("Hvordan ønsker du å motta pakken?").click().type("På døra{enter}");
+      cy.findByLabelText("Hvordan ønsker du å motta pakken?").click();
+      cy.findByLabelText("Hvordan ønsker du å motta pakken?").type("På døra{enter}");
       cy.clickNextStep();
       cy.get("@createMellomlagringSpy").should("not.have.been.called");
       cy.clickNextStep();
@@ -78,7 +79,8 @@ describe("Mellomlagring", () => {
       });
       cy.clickNextStep();
       cy.wait("@updateMellomlagring");
-      cy.findByLabelText("Hvordan ønsker du å motta pakken?").click().type("På døra{enter}");
+      cy.findByLabelText("Hvordan ønsker du å motta pakken?").click();
+      cy.findByLabelText("Hvordan ønsker du å motta pakken?").type("På døra{enter}");
       cy.clickNextStep();
       cy.wait("@updateMellomlagring");
       cy.clickNextStep();

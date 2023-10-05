@@ -27,7 +27,9 @@ describe("Components", () => {
       cy.findByRole("textbox", { name: "Kontonummer" }).should("exist").type("01234567892");
       cy.findByRole("textbox", { name: "IBAN" }).should("exist").type("NL04RABO8424598490");
       cy.findByRole("textbox", { name: "Beløp" }).should("exist").type("450");
-      cy.findByRole("combobox", { name: "Velg valuta" }).should("exist").click().type("Nor{enter}");
+      cy.findByRole("combobox", { name: "Velg valuta" }).should("exist").click();
+      cy.findByRole("combobox", { name: "Velg valuta" }).type("Nor{enter}");
+
       cy.clickNextStep();
 
       cy.get("dl")

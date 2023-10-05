@@ -43,10 +43,13 @@ describe("Amplitude", () => {
     cy.checkLogToAmplitude("skjemaspørsmål besvart", { spørsmål: "Tittel" });
 
     cy.findByRole("textbox", { name: "Fornavn" }).should("exist");
-    cy.findByRole("textbox", { name: "Fornavn" }).type("Kari").blur();
+    cy.findByRole("textbox", { name: "Fornavn" }).type("Kari");
+    cy.findByRole("textbox", { name: "Fornavn" }).blur();
     cy.checkLogToAmplitude("skjemaspørsmål besvart", { spørsmål: "Fornavn" });
 
-    cy.findByRole("textbox", { name: "Etternavn" }).type("Norman").blur();
+    cy.findByRole("textbox", { name: "Etternavn" }).type("Norman");
+    cy.findByRole("textbox", { name: "Etternavn" }).blur();
+
     cy.checkLogToAmplitude("skjemaspørsmål besvart", { spørsmål: "Etternavn" });
 
     cy.get(".navds-radio-group")
@@ -55,7 +58,9 @@ describe("Amplitude", () => {
       .within(($radio) => cy.findByLabelText("Nei").should("exist").check());
     cy.checkLogToAmplitude("skjemaspørsmål besvart", { spørsmål: "Har du norsk fødselsnummer eller D-nummer?" });
 
-    cy.findByRole("textbox", { name: "Din fødselsdato (dd.mm.åååå)" }).should("be.visible").type("10.05.1995").blur();
+    cy.findByRole("textbox", { name: "Din fødselsdato (dd.mm.åååå)" }).should("be.visible").type("10.05.1995");
+    cy.findByRole("textbox", { name: "Din fødselsdato (dd.mm.åååå)" }).blur();
+
     cy.checkLogToAmplitude("skjemaspørsmål besvart", { spørsmål: "Din fødselsdato (dd.mm.åååå)" });
 
     cy.get(".navds-radio-group")
@@ -72,19 +77,26 @@ describe("Amplitude", () => {
       spørsmål: "Er kontaktadressen din en vegadresse eller postboksadresse?",
     });
 
-    cy.findByRole("textbox", { name: "Vegadresse" }).should("exist").type("Kirkegata 1").blur();
+    cy.findByRole("textbox", { name: "Vegadresse" }).should("exist").type("Kirkegata 1");
+    cy.findByRole("textbox", { name: "Vegadresse" }).blur();
+
     cy.checkLogToAmplitude("skjemaspørsmål besvart", { spørsmål: "Vegadresse" });
 
-    cy.findByRole("textbox", { name: "Postnummer" }).should("exist").type("1234").blur();
+    cy.findByRole("textbox", { name: "Postnummer" }).should("exist").type("1234");
+    cy.findByRole("textbox", { name: "Postnummer" }).blur();
+
     cy.checkLogToAmplitude("skjemaspørsmål besvart", { spørsmål: "Postnummer" });
 
-    cy.findByRole("textbox", { name: "Poststed" }).should("exist").type("Nesvik").blur();
+    cy.findByRole("textbox", { name: "Poststed" }).should("exist").type("Nesvik");
+    cy.findByRole("textbox", { name: "Poststed" }).blur();
+
     cy.checkLogToAmplitude("skjemaspørsmål besvart", { spørsmål: "Poststed" });
 
     cy.findByRole("textbox", { name: "Fra hvilken dato skal denne adressen brukes (dd.mm.åååå)?" })
       .should("exist")
-      .type("01.01.2020")
-      .blur();
+      .type("01.01.2020");
+    cy.findByRole("textbox", { name: "Fra hvilken dato skal denne adressen brukes (dd.mm.åååå)?" }).blur();
+
     cy.checkLogToAmplitude("skjemaspørsmål besvart", {
       spørsmål: "Fra hvilken dato skal denne adressen brukes (dd.mm.åååå)?",
     });

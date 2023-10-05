@@ -39,7 +39,6 @@
     "vitest/valid-expect": "off",
     "vitest/valid-title": "off",
     "vitest/expect-expect": "off",
-    "cypress/unsafe-to-chain-command": "off",
     "react/jsx-key": ["error", { "checkFragmentShorthand": true }],
     "import/no-internal-modules": [
       "error",

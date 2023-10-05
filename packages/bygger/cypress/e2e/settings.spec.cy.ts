@@ -37,23 +37,30 @@ describe("FormSettingsPage", () => {
       req.reply(req.body);
     }).as("compareRequestData");
 
-    cy.findByRole("textbox", { name: "Tittel" }).focus().clear().type(_submitData.title);
+    cy.findByRole("textbox", { name: "Tittel" }).focus();
+    cy.findByRole("textbox", { name: "Tittel" }).clear();
+    cy.findByRole("textbox", { name: "Tittel" }).type(_submitData.title);
+
     cy.findByRole("combobox", { name: "Tema" }).select(_submitData.tema);
-    cy.findByRole("textbox", { name: "Tekst på knapp for nedlasting av pdf" })
-      .focus()
-      .clear()
-      .type(_submitData.downloadPdfButtonText);
+
+    cy.findByRole("textbox", { name: "Tekst på knapp for nedlasting av pdf" }).focus();
+    cy.findByRole("textbox", { name: "Tekst på knapp for nedlasting av pdf" }).clear();
+    cy.findByRole("textbox", { name: "Tekst på knapp for nedlasting av pdf" }).type(_submitData.downloadPdfButtonText);
+
     cy.findByRole("combobox", { name: "Innsending" }).select(_submitData.innsending);
     cy.findByRole("combobox", { name: "Ettersending" }).select(_submitData.ettersending);
-    cy.findByRole("textbox", { name: "Generelle instruksjoner (valgfritt)" })
-      .focus()
-      .clear()
-      .type(_submitData.descriptionOfSignatures);
-    cy.findByRole("textbox", { name: "Hvem skal signere?" }).focus().clear().type(_submitData.signatureLabel);
-    cy.findByRole("textbox", { name: "Instruksjoner til den som signerer" })
-      .focus()
-      .clear()
-      .type(_submitData.signatureDescription);
+
+    cy.findByRole("textbox", { name: "Generelle instruksjoner (valgfritt)" }).focus();
+    cy.findByRole("textbox", { name: "Generelle instruksjoner (valgfritt)" }).clear();
+    cy.findByRole("textbox", { name: "Generelle instruksjoner (valgfritt)" }).type(_submitData.descriptionOfSignatures);
+
+    cy.findByRole("textbox", { name: "Hvem skal signere?" }).focus();
+    cy.findByRole("textbox", { name: "Hvem skal signere?" }).clear();
+    cy.findByRole("textbox", { name: "Hvem skal signere?" }).type(_submitData.signatureLabel);
+
+    cy.findByRole("textbox", { name: "Instruksjoner til den som signerer" }).focus();
+    cy.findByRole("textbox", { name: "Instruksjoner til den som signerer" }).clear();
+    cy.findByRole("textbox", { name: "Instruksjoner til den som signerer" }).type(_submitData.signatureDescription);
 
     cy.contains("Lagre").click();
     cy.get('[aria-live="polite"]').should("contain.text", `Lagret skjema ${_submitData.title}`);

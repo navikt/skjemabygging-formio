@@ -29,10 +29,11 @@ describe("Custom react components", () => {
     it("reflects changes on summary page when editing data", () => {
       cy.findByRole("heading", { name: "Dine opplysninger" });
       cy.findByRole("textbox", { name: "Fornavn" }).should("exist").type("Storm");
-      cy.findByRole("combobox", { name: "I hvilket land bor du?" })
-        .should("exist")
-        .click()
-        .type("Nor{downArrow}{downArrow}{downArrow}{downArrow}{enter}");
+      cy.findByRole("combobox", { name: "I hvilket land bor du?" }).should("exist").click();
+
+      cy.findByRole("combobox", { name: "I hvilket land bor du?" }).type(
+        "Nor{downArrow}{downArrow}{downArrow}{downArrow}{enter}",
+      );
       cy.findByRole("combobox", { name: "Velg instrument (valgfritt)" }).should("exist").type("Gitar{enter}");
       cy.findByRole("textbox", { name: "Gyldig fra dato" }).should("exist").type("01.01.2023");
       cy.clickNextStep();
@@ -75,13 +76,14 @@ describe("Custom react components", () => {
       cy.findByRole("heading", { name: "Dine opplysninger" }).should("exist");
 
       cy.findByRole("textbox", { name: "Fornavn" }).should("exist").type("zy");
-      cy.findByRole("combobox", { name: "Velg valuta" }).click().should("have.focus").type("Norske{enter}");
+      cy.findByRole("combobox", { name: "Velg valuta" }).click();
+      cy.findByRole("combobox", { name: "Velg valuta" }).should("have.focus").type("Norske{enter}");
       cy.findByRole("combobox", { name: "Velg instrument (valgfritt)" }).should("exist").type("{backspace}");
       cy.findByRole("textbox", { name: "Gyldig fra dato" })
         .should("exist")
         .should("contain.value", "01.01.2023")
-        .focus()
-        .type("{selectall}02.01.2023");
+        .focus();
+      cy.findByRole("textbox", { name: "Gyldig fra dato" }).type("{selectall}02.01.2023");
       cy.findByRole("navigation", { name: "Søknadssteg" })
         .should("exist")
         .within(() => {
