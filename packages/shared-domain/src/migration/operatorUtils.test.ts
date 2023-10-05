@@ -4,19 +4,19 @@ import { combinePropAndOperator, getPropAndOperatorFromKey } from "./operatorUti
 describe("operatorUtils", () => {
   describe("combinePropAndOperator", () => {
     it("concatenates a prop and a valid operator, separated by '__'", () => {
-      expect(combinePropAndOperator("prop", "n_eq")).toEqual("prop__n_eq");
+      expect(combinePropAndOperator("prop", "n_eq")).toBe("prop__n_eq");
     });
 
     it("returns the prop if operator is invalid", () => {
-      expect(combinePropAndOperator("prop", "invalid_operator" as Operator)).toEqual("prop");
+      expect(combinePropAndOperator("prop", "invalid_operator" as Operator)).toBe("prop");
     });
 
     it("returns the prop if operator is 'eq'", () => {
-      expect(combinePropAndOperator("prop", "eq")).toEqual("prop");
+      expect(combinePropAndOperator("prop", "eq")).toBe("prop");
     });
 
     it("returns the prop if operator is undefined", () => {
-      expect(combinePropAndOperator("prop", undefined)).toEqual("prop");
+      expect(combinePropAndOperator("prop", undefined)).toBe("prop");
     });
   });
 

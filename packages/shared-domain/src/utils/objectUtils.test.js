@@ -44,7 +44,7 @@ describe("objectUtils", () => {
 
   describe("concatKeys", () => {
     it("concatinates keys with . as separator", () => {
-      expect(objectUtils.concatKeys("key", "parentKey")).toEqual("parentKey.key");
+      expect(objectUtils.concatKeys("key", "parentKey")).toBe("parentKey.key");
     });
   });
 

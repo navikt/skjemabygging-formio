@@ -49,8 +49,8 @@ describe("getGlobalTranslationsWithLanguageAndTag", () => {
       "nb-NO",
       "skjematekster",
     );
-    expect(actual.id).toEqual(1);
-    expect(actual.tag).toEqual("skjematekster");
+    expect(actual.id).toBe(1);
+    expect(actual.tag).toBe("skjematekster");
   });
 
   it("adds missing original texts that have been added in other languages", () => {

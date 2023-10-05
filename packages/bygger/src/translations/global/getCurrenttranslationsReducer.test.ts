@@ -35,8 +35,8 @@ describe("Test getCurrenttranslationsReducer", () => {
   describe("Test initial language action", () => {
     it("return empty original text and translation", () => {
       const updatedState = getCurrenttranslationsReducer(mockedEmptyState, { type: "initializeLanguage", payload: {} });
-      expect(updatedState[0].originalText).toEqual("");
-      expect(updatedState[0].translatedText).toEqual("");
+      expect(updatedState[0].originalText).toBe("");
+      expect(updatedState[0].translatedText).toBe("");
     });
   });
 
@@ -46,10 +46,10 @@ describe("Test getCurrenttranslationsReducer", () => {
         type: "loadNewLanguage",
         payload: mockedPayload,
       });
-      expect(updatedState[0].originalText).toEqual("Bor du i Danmark?");
-      expect(updatedState[0].translatedText).toEqual("Do you live in Denmark?");
-      expect(updatedState[1].originalText).toEqual("Har du noen tilleggsdokumentasjon?");
-      expect(updatedState[1].translatedText).toEqual("Do you have any additional documentation?");
+      expect(updatedState[0].originalText).toBe("Bor du i Danmark?");
+      expect(updatedState[0].translatedText).toBe("Do you live in Denmark?");
+      expect(updatedState[1].originalText).toBe("Har du noen tilleggsdokumentasjon?");
+      expect(updatedState[1].translatedText).toBe("Do you have any additional documentation?");
     });
 
     it("without mock payload, return empty original text and translation", () => {
@@ -57,26 +57,26 @@ describe("Test getCurrenttranslationsReducer", () => {
         type: "loadNewLanguage",
         payload: { translations: {} },
       });
-      expect(updatedState[0].originalText).toEqual("");
-      expect(updatedState[0].translatedText).toEqual("");
+      expect(updatedState[0].originalText).toBe("");
+      expect(updatedState[0].translatedText).toBe("");
     });
   });
 
   describe("Test add new translation action", () => {
     it("without existing original text and translation, return new empty original text and translation", () => {
       const updatedState = getCurrenttranslationsReducer(mockedEmptyState, { type: "addNewTranslation", payload: {} });
-      expect(updatedState[0].originalText).toEqual("");
-      expect(updatedState[0].translatedText).toEqual("");
+      expect(updatedState[0].originalText).toBe("");
+      expect(updatedState[0].translatedText).toBe("");
     });
 
     it("with mocked original text and translation,  return existing original text and translation and new empty original text and translation", () => {
       const updatedState = getCurrenttranslationsReducer(mockedState, { type: "addNewTranslation", payload: {} });
-      expect(updatedState[0].originalText).toEqual("Bor du i Norge?");
-      expect(updatedState[0].translatedText).toEqual("Do you live in Norway?");
-      expect(updatedState[1].originalText).toEqual("Har du noen tilleggsdokumentasjon?");
-      expect(updatedState[1].translatedText).toEqual("Do you have any additional documentation?");
-      expect(updatedState[2].originalText).toEqual("");
-      expect(updatedState[2].translatedText).toEqual("");
+      expect(updatedState[0].originalText).toBe("Bor du i Norge?");
+      expect(updatedState[0].translatedText).toBe("Do you live in Norway?");
+      expect(updatedState[1].originalText).toBe("Har du noen tilleggsdokumentasjon?");
+      expect(updatedState[1].translatedText).toBe("Do you have any additional documentation?");
+      expect(updatedState[2].originalText).toBe("");
+      expect(updatedState[2].translatedText).toBe("");
     });
   });
 
@@ -86,8 +86,8 @@ describe("Test getCurrenttranslationsReducer", () => {
         type: "updateTranslation",
         payload: { id: "000", originalText: "", translatedText: "Yes" },
       });
-      expect(updatedState[0].originalText).toEqual("");
-      expect(updatedState[0].translatedText).toEqual("Yes");
+      expect(updatedState[0].originalText).toBe("");
+      expect(updatedState[0].translatedText).toBe("Yes");
     });
 
     it("update existing translation,  return existing original text and new translation", () => {
@@ -95,10 +95,10 @@ describe("Test getCurrenttranslationsReducer", () => {
         type: "updateTranslation",
         payload: { id: "123", originalText: "Bor du i Norge?", translatedText: "Do you live in Norway" },
       });
-      expect(updatedState[0].originalText).toEqual("Bor du i Norge?");
-      expect(updatedState[0].translatedText).toEqual("Do you live in Norway");
-      expect(updatedState[1].originalText).toEqual("Har du noen tilleggsdokumentasjon?");
-      expect(updatedState[1].translatedText).toEqual("Do you have any additional documentation?");
+      expect(updatedState[0].originalText).toBe("Bor du i Norge?");
+      expect(updatedState[0].translatedText).toBe("Do you live in Norway");
+      expect(updatedState[1].originalText).toBe("Har du noen tilleggsdokumentasjon?");
+      expect(updatedState[1].translatedText).toBe("Do you have any additional documentation?");
     });
   });
 
@@ -108,8 +108,8 @@ describe("Test getCurrenttranslationsReducer", () => {
         type: "updateOriginalText",
         payload: { id: "000", newOriginalText: "Forrige", oldOriginalText: "" },
       });
-      expect(updatedState[0].originalText).toEqual("Forrige");
-      expect(updatedState[0].translatedText).toEqual("");
+      expect(updatedState[0].originalText).toBe("Forrige");
+      expect(updatedState[0].translatedText).toBe("");
     });
 
     it("update mocked original text,  return new original text and existing translation", () => {
@@ -117,10 +117,10 @@ describe("Test getCurrenttranslationsReducer", () => {
         type: "updateOriginalText",
         payload: { id: "123", newOriginalText: "Bor du ikke i Norge?", oldOriginalText: "Bor du i Norge?" },
       });
-      expect(updatedState[0].originalText).toEqual("Bor du ikke i Norge?");
-      expect(updatedState[0].translatedText).toEqual("Do you live in Norway?");
-      expect(updatedState[1].originalText).toEqual("Har du noen tilleggsdokumentasjon?");
-      expect(updatedState[1].translatedText).toEqual("Do you have any additional documentation?");
+      expect(updatedState[0].originalText).toBe("Bor du ikke i Norge?");
+      expect(updatedState[0].translatedText).toBe("Do you live in Norway?");
+      expect(updatedState[1].originalText).toBe("Har du noen tilleggsdokumentasjon?");
+      expect(updatedState[1].translatedText).toBe("Do you have any additional documentation?");
     });
 
     it("update non-existing original text,  return existing original text and translation", () => {
@@ -128,10 +128,10 @@ describe("Test getCurrenttranslationsReducer", () => {
         type: "updateOriginalText",
         payload: { id: "789", newOriginalText: "Bor du ikke i Norge?", oldOriginalText: "Bor du i Norge?" },
       });
-      expect(updatedState[0].originalText).toEqual("Bor du i Norge?");
-      expect(updatedState[0].translatedText).toEqual("Do you live in Norway?");
-      expect(updatedState[1].originalText).toEqual("Har du noen tilleggsdokumentasjon?");
-      expect(updatedState[1].translatedText).toEqual("Do you have any additional documentation?");
+      expect(updatedState[0].originalText).toBe("Bor du i Norge?");
+      expect(updatedState[0].translatedText).toBe("Do you live in Norway?");
+      expect(updatedState[1].originalText).toBe("Har du noen tilleggsdokumentasjon?");
+      expect(updatedState[1].translatedText).toBe("Do you have any additional documentation?");
     });
   });
 
@@ -141,8 +141,8 @@ describe("Test getCurrenttranslationsReducer", () => {
         type: "deleteOneRow",
         payload: { id: "123", originalText: "", translatedText: "" },
       });
-      expect(updatedState[0].originalText).toEqual("");
-      expect(updatedState[0].translatedText).toEqual("");
+      expect(updatedState[0].originalText).toBe("");
+      expect(updatedState[0].translatedText).toBe("");
     });
 
     it("delete existing row with id, return original text and translation", () => {
@@ -151,8 +151,8 @@ describe("Test getCurrenttranslationsReducer", () => {
         payload: { id: "123" },
       });
 
-      expect(updatedState[0].originalText).toEqual("Har du noen tilleggsdokumentasjon?");
-      expect(updatedState[0].translatedText).toEqual("Do you have any additional documentation?");
+      expect(updatedState[0].originalText).toBe("Har du noen tilleggsdokumentasjon?");
+      expect(updatedState[0].translatedText).toBe("Do you have any additional documentation?");
     });
 
     it("delete with wrong id, return same rows", () => {
@@ -161,10 +161,10 @@ describe("Test getCurrenttranslationsReducer", () => {
         payload: { id: "000" },
       });
 
-      expect(updatedState[0].originalText).toEqual("Bor du i Norge?");
-      expect(updatedState[0].translatedText).toEqual("Do you live in Norway?");
-      expect(updatedState[1].originalText).toEqual("Har du noen tilleggsdokumentasjon?");
-      expect(updatedState[1].translatedText).toEqual("Do you have any additional documentation?");
+      expect(updatedState[0].originalText).toBe("Bor du i Norge?");
+      expect(updatedState[0].translatedText).toBe("Do you live in Norway?");
+      expect(updatedState[1].originalText).toBe("Har du noen tilleggsdokumentasjon?");
+      expect(updatedState[1].translatedText).toBe("Do you have any additional documentation?");
     });
   });
 
@@ -174,8 +174,8 @@ describe("Test getCurrenttranslationsReducer", () => {
         type: "deleteLanguage",
         payload: {},
       });
-      expect(updatedState[0].originalText).toEqual("");
-      expect(updatedState[0].translatedText).toEqual("");
+      expect(updatedState[0].originalText).toBe("");
+      expect(updatedState[0].translatedText).toBe("");
     });
 
     it("with empty state and translation payload,  return empty original text and new translation", () => {
@@ -183,8 +183,8 @@ describe("Test getCurrenttranslationsReducer", () => {
         type: "deleteLanguage",
         payload: { id: "345", originalText: "Ja", translatedText: "Yes" },
       });
-      expect(updatedState[0].originalText).toEqual("");
-      expect(updatedState[0].translatedText).toEqual("");
+      expect(updatedState[0].originalText).toBe("");
+      expect(updatedState[0].translatedText).toBe("");
     });
 
     it("with mocked state and empty payload,  return mocked original text and new translation", () => {
@@ -192,10 +192,10 @@ describe("Test getCurrenttranslationsReducer", () => {
         type: "deleteLanguage",
         payload: {},
       });
-      expect(updatedState[0].originalText).toEqual("Bor du i Norge?");
-      expect(updatedState[0].translatedText).toEqual("Do you live in Norway?");
-      expect(updatedState[1].originalText).toEqual("Har du noen tilleggsdokumentasjon?");
-      expect(updatedState[1].translatedText).toEqual("Do you have any additional documentation?");
+      expect(updatedState[0].originalText).toBe("Bor du i Norge?");
+      expect(updatedState[0].translatedText).toBe("Do you live in Norway?");
+      expect(updatedState[1].originalText).toBe("Har du noen tilleggsdokumentasjon?");
+      expect(updatedState[1].translatedText).toBe("Do you have any additional documentation?");
     });
 
     it("with mocked state and payload,  return mocked original text and new translation", () => {
@@ -203,10 +203,10 @@ describe("Test getCurrenttranslationsReducer", () => {
         type: "deleteLanguage",
         payload: { id: "345", originalText: "Ja", translatedText: "Yes" },
       });
-      expect(updatedState[0].originalText).toEqual("Bor du i Norge?");
-      expect(updatedState[0].translatedText).toEqual("Do you live in Norway?");
-      expect(updatedState[1].originalText).toEqual("Har du noen tilleggsdokumentasjon?");
-      expect(updatedState[1].translatedText).toEqual("Do you have any additional documentation?");
+      expect(updatedState[0].originalText).toBe("Bor du i Norge?");
+      expect(updatedState[0].translatedText).toBe("Do you live in Norway?");
+      expect(updatedState[1].originalText).toBe("Har du noen tilleggsdokumentasjon?");
+      expect(updatedState[1].translatedText).toBe("Do you have any additional documentation?");
     });
   });
 });

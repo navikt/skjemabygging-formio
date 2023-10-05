@@ -108,7 +108,7 @@ describe("DigitalSubmissionButton", () => {
       expect(button).toBeInTheDocument();
       await userEvent.click(button);
       await waitFor(() => expect(onError).toHaveBeenCalledTimes(1));
-      expect(onError.mock.calls[0][0].message).toEqual(
+      expect(onError.mock.calls[0][0].message).toBe(
         "Digital innsending er ikke støttet ved forhåndsvisning i byggeren.",
       );
       expect(windowLocation.href).toEqual(baseUrl);

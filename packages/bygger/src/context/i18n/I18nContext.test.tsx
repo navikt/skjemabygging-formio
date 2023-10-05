@@ -76,8 +76,8 @@ describe("I18nStateProvider", () => {
 
   it("injects nb-NO default texts in translationsForNavForm", async () => {
     const { translationsForNavForm } = onStateUpdated.mock.calls[onStateUpdated.mock.calls.length - 1][0];
-    expect(translationsForNavForm["nb-NO"].Testskjema).toEqual("Testskjema");
-    expect(translationsForNavForm["nb-NO"].Fornavn).toEqual("Fornavn");
+    expect(translationsForNavForm["nb-NO"].Testskjema).toBe("Testskjema");
+    expect(translationsForNavForm["nb-NO"].Fornavn).toBe("Fornavn");
   });
 
   it("adds translations to localTranslationsForNavForm in i18n format", () => {

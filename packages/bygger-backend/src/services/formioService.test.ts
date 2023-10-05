@@ -27,7 +27,7 @@ describe("FormioService", () => {
       it("are updated with new values", async () => {
         const savedForm = await formioService.saveForm(form, "formio-token", "tore");
         expect(savedForm.properties.modified).not.toEqual(form.properties.modified);
-        expect(savedForm.properties.modifiedBy).toEqual("tore");
+        expect(savedForm.properties.modifiedBy).toBe("tore");
       });
 
       it("are updated with values specified in formProps parameter", async () => {
@@ -38,7 +38,7 @@ describe("FormioService", () => {
         const savedForm = await formioService.saveForm(form, "formio-token", "tore", props);
         expect(savedForm.properties.modified).not.toEqual(form.properties.modified);
         expect(savedForm.properties.modified).toEqual(props.modified);
-        expect(savedForm.properties.modifiedBy).toEqual("pia");
+        expect(savedForm.properties.modifiedBy).toBe("pia");
       });
     });
 
@@ -67,7 +67,7 @@ describe("FormioService", () => {
           error = e;
         }
         expect(error).toBeDefined();
-        expect(error?.response?.status).toEqual(500);
+        expect(error?.response?.status).toBe(500);
       });
     });
   });

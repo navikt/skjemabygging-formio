@@ -20,7 +20,7 @@ import formWithSkjemagruppe from "./testdata/conditional-skjemagruppe";
 describe("navFormUtils", () => {
   describe("toFormPath", () => {
     it("should create path from skjemanummer", () => {
-      expect(toFormPath("NAV 10-13.76")).toEqual("nav101376");
+      expect(toFormPath("NAV 10-13.76")).toBe("nav101376");
     });
 
     it("should create path from title (legacy)", () => {
@@ -28,14 +28,12 @@ describe("navFormUtils", () => {
         toFormPath(
           "Erklæring fra ergo- eller fysioterapeut i forbindelse med søknad om motorkjøretøy og / eller spesialutstyr og tilpassing",
         ),
-      ).toEqual(
-        "erklaeringfraergoellerfysioterapeutiforbindelsemedsoknadommotorkjoretoyogellerspesialutstyrogtilpassing",
-      );
-      expect(toFormPath("Søknad om forlenget barnepensjon etter fylte 18 år")).toEqual(
+      ).toBe("erklaeringfraergoellerfysioterapeutiforbindelsemedsoknadommotorkjoretoyogellerspesialutstyrogtilpassing");
+      expect(toFormPath("Søknad om forlenget barnepensjon etter fylte 18 år")).toBe(
         "soknadomforlengetbarnepensjonetterfylte18ar",
       );
-      expect(toFormPath("Søknad om utstedelse av attest PD U2")).toEqual("soknadomutstedelseavattestpdu2");
-      expect(toFormPath("Underveis- og sluttevaluering av AMO-KURS")).toEqual("underveisogsluttevalueringavamokurs");
+      expect(toFormPath("Søknad om utstedelse av attest PD U2")).toBe("soknadomutstedelseavattestpdu2");
+      expect(toFormPath("Underveis- og sluttevaluering av AMO-KURS")).toBe("underveisogsluttevalueringavamokurs");
     });
   });
 
@@ -429,7 +427,7 @@ describe("navFormUtils", () => {
         (component) => component.type === "panel" && regex.test(component.title),
       );
       expect(actualForm.components).toHaveLength(1);
-      expect(actualForm.components[0].title).toEqual("Veiledning");
+      expect(actualForm.components[0].title).toBe("Veiledning");
       expect(actualForm.components[0].components).toHaveLength(1);
     });
 

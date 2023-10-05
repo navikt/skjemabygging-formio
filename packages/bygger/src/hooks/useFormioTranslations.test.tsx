@@ -275,7 +275,7 @@ describe("useFormioTranslations", () => {
         expect(mockFeedbackEmit.success).toHaveBeenCalled();
         const messages = mockFeedbackEmit.success.mock.calls;
         expect(messages).toHaveLength(1);
-        expect(messages[0][0]).toEqual("Publisering av Engelsk startet");
+        expect(messages[0][0]).toBe("Publisering av Engelsk startet");
       });
 
       it("Feiler dersom det mangler oversettelser for noen av de predefinerte tekstene", async () => {
@@ -303,7 +303,7 @@ describe("useFormioTranslations", () => {
         expect(mockFeedbackEmit.error).toHaveBeenCalled();
         const errorMessages = mockFeedbackEmit.error.mock.calls;
         expect(errorMessages).toHaveLength(1);
-        expect(errorMessages[0][0]).toEqual("Det mangler oversettelser for følgende tekster: Forrige, Neste");
+        expect(errorMessages[0][0]).toBe("Det mangler oversettelser for følgende tekster: Forrige, Neste");
       });
 
       it("Viser feilmelding dersom kall til backend feiler", async () => {
@@ -327,7 +327,7 @@ describe("useFormioTranslations", () => {
         expect(mockFeedbackEmit.error).toHaveBeenCalled();
         const errorMessages = mockFeedbackEmit.error.mock.calls;
         expect(errorMessages).toHaveLength(1);
-        expect(errorMessages[0][0]).toEqual("Publisering feilet");
+        expect(errorMessages[0][0]).toBe("Publisering feilet");
       });
     });
   });

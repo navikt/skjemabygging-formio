@@ -19,7 +19,7 @@ describe("GlobalCsvLink", () => {
     const link = await screen.findByRole("link", { name: "Eksporter" });
     expect(link).toBeInTheDocument();
     expect(link).toHaveAttribute("download");
-    expect(link.getAttribute("download")).toEqual("globale-oversettelser-en.csv");
+    expect(link.getAttribute("download")).toBe("globale-oversettelser-en.csv");
     expect(link).toHaveAttribute("href");
   });
 

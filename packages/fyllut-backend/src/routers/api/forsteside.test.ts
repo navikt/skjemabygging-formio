@@ -65,7 +65,7 @@ describe("[endpoint] forsteside", () => {
       } as ForstesideRequestBody);
 
       expect(body.netsPostboks).toBeUndefined();
-      expect(body.adresse).not.toBeUndefined();
+      expect(body.adresse).toBeDefined();
     });
 
     it("If theme is set not on existing address, use default netsPostboks", async () => {
@@ -73,7 +73,7 @@ describe("[endpoint] forsteside", () => {
         tema: "HJR",
       } as ForstesideRequestBody);
 
-      expect(body.netsPostboks).not.toBeUndefined();
+      expect(body.netsPostboks).toBeDefined();
       expect(body.adresse).toBeUndefined();
     });
 

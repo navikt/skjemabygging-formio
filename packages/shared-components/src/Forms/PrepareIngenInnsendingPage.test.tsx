@@ -67,11 +67,11 @@ describe("PrepareIngenInnsendingPage", () => {
 
     // @ts-ignore
     const submissionInput = submitCalls[0].target.children[0] as HTMLInputElement;
-    expect(submissionInput.name).toEqual("submission");
+    expect(submissionInput.name).toBe("submission");
 
     // @ts-ignore
     const formInput = submitCalls[0].target.children[1] as HTMLInputElement;
-    expect(formInput.name).toEqual("form");
+    expect(formInput.name).toBe("form");
     const formInputValueJson = JSON.parse(formInput.value);
     expect(formInputValueJson.title).toEqual(testForm.title);
   });

@@ -34,13 +34,13 @@ describe("languagesUtil", () => {
       const i18n = flattenGlobalI18nGroupedByTag(i18nGroupedByTag);
       expect(Object.keys(i18n)).toEqual(["en", "nn-NO"]);
 
-      expect(i18n["en"]["Oppsummering"]).toEqual("Summary");
-      expect(i18n["en"]["Forrige"]).toEqual("Previous");
-      expect(i18n["en"]["Dette er ikke et gyldig {{field}}."]).toEqual("This is not a valid {{field}}.");
+      expect(i18n["en"]["Oppsummering"]).toBe("Summary");
+      expect(i18n["en"]["Forrige"]).toBe("Previous");
+      expect(i18n["en"]["Dette er ikke et gyldig {{field}}."]).toBe("This is not a valid {{field}}.");
 
-      expect(i18n["nn-NO"]["Oppsummering"]).toEqual("Oppsummering");
-      expect(i18n["nn-NO"]["Forrige"]).toEqual("Førre");
-      expect(i18n["nn-NO"]["Dette er ikke et gyldig {{field}}."]).toEqual("Dette er ikkje eit gyldig {{field}}.");
+      expect(i18n["nn-NO"]["Oppsummering"]).toBe("Oppsummering");
+      expect(i18n["nn-NO"]["Forrige"]).toBe("Førre");
+      expect(i18n["nn-NO"]["Dette er ikke et gyldig {{field}}."]).toBe("Dette er ikkje eit gyldig {{field}}.");
     });
   });
 });

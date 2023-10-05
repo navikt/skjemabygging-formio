@@ -32,9 +32,9 @@ describe("idportenAuthHandler", () => {
       idportenAuthHandler(req, res, next);
       expect(res.sendStatus).toHaveBeenCalledTimes(1);
       // @ts-expect-error
-      expect(res.sendStatus.mock.calls[0][0]).toEqual(401);
+      expect(res.sendStatus.mock.calls[0][0]).toBe(401);
       expect(next).not.toHaveBeenCalled();
-      expect(typeof req.getIdportenPid).toEqual("undefined");
+      expect(typeof req.getIdportenPid).toBe("undefined");
     });
 
     it("Calls next when token is successfully validated", async () => {
@@ -45,7 +45,7 @@ describe("idportenAuthHandler", () => {
       await idportenAuthHandler(req, res, next);
       expect(res.sendStatus).not.toHaveBeenCalled();
       expect(next).toHaveBeenCalledTimes(1);
-      expect(typeof req.getIdportenPid).toEqual("function");
+      expect(typeof req.getIdportenPid).toBe("function");
     });
 
     it("Returns 401 when token acr is not Level4", async () => {
@@ -56,7 +56,7 @@ describe("idportenAuthHandler", () => {
       await idportenAuthHandler(req, res, next);
       expect(res.sendStatus).toHaveBeenCalledTimes(1);
       // @ts-expect-error
-      expect(res.sendStatus.mock.calls[0][0]).toEqual(401);
+      expect(res.sendStatus.mock.calls[0][0]).toBe(401);
       expect(next).not.toHaveBeenCalled();
     });
 
@@ -68,7 +68,7 @@ describe("idportenAuthHandler", () => {
       await idportenAuthHandler(req, res, next);
       expect(res.sendStatus).toHaveBeenCalledTimes(1);
       // @ts-expect-error
-      expect(res.sendStatus.mock.calls[0][0]).toEqual(401);
+      expect(res.sendStatus.mock.calls[0][0]).toBe(401);
       expect(next).not.toHaveBeenCalled();
     });
 
@@ -80,7 +80,7 @@ describe("idportenAuthHandler", () => {
       await idportenAuthHandler(req, res, next);
       expect(res.sendStatus).toHaveBeenCalledTimes(1);
       // @ts-expect-error
-      expect(res.sendStatus.mock.calls[0][0]).toEqual(401);
+      expect(res.sendStatus.mock.calls[0][0]).toBe(401);
       expect(next).not.toHaveBeenCalled();
     });
 
@@ -92,7 +92,7 @@ describe("idportenAuthHandler", () => {
       await idportenAuthHandler(req, res, next);
       expect(res.sendStatus).toHaveBeenCalledTimes(1);
       // @ts-expect-error
-      expect(res.sendStatus.mock.calls[0][0]).toEqual(401);
+      expect(res.sendStatus.mock.calls[0][0]).toBe(401);
       expect(next).not.toHaveBeenCalled();
     });
   });

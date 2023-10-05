@@ -97,23 +97,23 @@ describe("useFormioForms", () => {
       render(<TestComponent formio={new NavFormioJs.Formio("http://myproject.example.org")} />);
       const formDivs = await screen.findAllByTestId("form");
       expect(formDivs).toHaveLength(3);
-      expect(getNodeText(formDivs[0])).toEqual("skjema1");
-      expect(getNodeText(formDivs[1])).toEqual("skjema2");
-      expect(getNodeText(formDivs[2])).toEqual("skjema3");
+      expect(getNodeText(formDivs[0])).toBe("skjema1");
+      expect(getNodeText(formDivs[1])).toBe("skjema2");
+      expect(getNodeText(formDivs[2])).toBe("skjema3");
     });
 
     it("loads one specific form in the hook", async () => {
       render(<TestComponent formio={new NavFormioJs.Formio("http://myproject.example.org")} formPath="skjema3" />);
       const formDivs = await screen.findAllByTestId("form");
       expect(formDivs).toHaveLength(1);
-      expect(getNodeText(formDivs[0])).toEqual("skjema3");
+      expect(getNodeText(formDivs[0])).toBe("skjema3");
     });
 
     it("date update", async () => {
       render(<TestComponent formio={new NavFormioJs.Formio("http://myproject.example.org")} formPath="skjema3" />);
       const formDivs = await screen.findAllByTestId("form");
       expect(formDivs).toHaveLength(1);
-      expect(getNodeText(formDivs[0])).toEqual("skjema3");
+      expect(getNodeText(formDivs[0])).toBe("skjema3");
     });
   });
 
@@ -154,7 +154,7 @@ describe("useFormioForms", () => {
       const savedComponents = formioMock.saveForm.mock.calls[0][0]["components"];
       expect(savedComponents).toHaveLength(2);
       expect(savedComponents[0].navId).toBeDefined();
-      expect(savedComponents[1].navId).toEqual("123");
+      expect(savedComponents[1].navId).toBe("123");
       expect(savedComponents[1].components).toHaveLength(1);
       expect(savedComponents[1].components[0].navId).toBeDefined();
     });

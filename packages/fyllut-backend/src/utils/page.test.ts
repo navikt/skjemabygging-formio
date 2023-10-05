@@ -9,7 +9,7 @@ describe("page (util)", () => {
         components: [{ key: "randomkey", content: "Dette er en beskrivelse av skjemaet" }] as Component[],
       } as NavFormType;
       const meta = getFormMeta(form);
-      expect(meta.PAGE_TITLE).toEqual("Søknad om servicehund");
+      expect(meta.PAGE_TITLE).toBe("Søknad om servicehund");
       expect(meta.PAGE_DESCRIPTION).toEqual(getDefaultPageMeta().PAGE_DESCRIPTION);
     });
   });
@@ -22,7 +22,7 @@ describe("page (util)", () => {
         },
       } as NavFormType;
       const sub = getQueryParamSub(form);
-      expect(sub).toEqual("paper");
+      expect(sub).toBe("paper");
     });
 
     it("returns sub=digital", () => {
@@ -32,7 +32,7 @@ describe("page (util)", () => {
         },
       } as NavFormType;
       const sub = getQueryParamSub(form);
-      expect(sub).toEqual("digital");
+      expect(sub).toBe("digital");
     });
 
     it("returns undefined when both digital and paper are allowed", () => {

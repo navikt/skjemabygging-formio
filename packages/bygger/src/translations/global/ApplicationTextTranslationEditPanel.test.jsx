@@ -46,11 +46,11 @@ describe("ApplicationTextTranslationEditPanel", () => {
     });
 
     it("renders originalText with translatedText as value", () => {
-      expect(screen.getByLabelText("Juli").getAttribute("value")).toEqual("July");
+      expect(screen.getByLabelText("Juli").getAttribute("value")).toBe("July");
     });
 
     it("renders originalText without a value", () => {
-      expect(screen.getByLabelText("Juni").getAttribute("value")).toEqual("");
+      expect(screen.getByLabelText("Juni").getAttribute("value")).toBe("");
     });
 
     describe("onChange", () => {

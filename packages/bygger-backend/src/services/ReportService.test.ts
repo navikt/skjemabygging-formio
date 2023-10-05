@@ -21,15 +21,15 @@ describe("ReportService", () => {
     const allReports = reportService.getAllReports();
     const report = allReports.find((report) => report.id === "forms-published-languages");
     expect(report).toBeDefined();
-    expect(report?.title).toEqual("Publiserte språk per skjema");
-    expect(report?.contentType).toEqual("text/csv");
+    expect(report?.title).toBe("Publiserte språk per skjema");
+    expect(report?.contentType).toBe("text/csv");
   });
 
   describe("getReportDefinition", () => {
     it("returns report definition for given id", () => {
       const reportDefinition = reportService.getReportDefinition("forms-published-languages");
       expect(reportDefinition).toBeDefined();
-      expect(reportDefinition?.title).toEqual("Publiserte språk per skjema");
+      expect(reportDefinition?.title).toBe("Publiserte språk per skjema");
     });
 
     it("returns undefined when id is unknown", () => {
@@ -87,9 +87,9 @@ describe("ReportService", () => {
           const writableStream = createWritableStream();
           await reportService.generate("all-forms-summary", writableStream);
           const report = parseReport(writableStream.toString());
-          expect(report.numberOfForms).toEqual(1);
+          expect(report.numberOfForms).toBe(1);
           const formFields = report.forms[0];
-          expect(formFields[report.getHeaderIndex(HEADER_SIGNATURES)]).toEqual("1");
+          expect(formFields[report.getHeaderIndex(HEADER_SIGNATURES)]).toBe("1");
         });
 
         it("signature array with default signature", async () => {
@@ -106,9 +106,9 @@ describe("ReportService", () => {
           const writableStream = createWritableStream();
           await reportService.generate("all-forms-summary", writableStream);
           const report = parseReport(writableStream.toString());
-          expect(report.numberOfForms).toEqual(1);
+          expect(report.numberOfForms).toBe(1);
           const formFields = report.forms[0];
-          expect(formFields[report.getHeaderIndex(HEADER_SIGNATURES)]).toEqual("1");
+          expect(formFields[report.getHeaderIndex(HEADER_SIGNATURES)]).toBe("1");
         });
 
         it("has 3 signatures", async () => {
@@ -125,9 +125,9 @@ describe("ReportService", () => {
           const writableStream = createWritableStream();
           await reportService.generate("all-forms-summary", writableStream);
           const report = parseReport(writableStream.toString());
-          expect(report.numberOfForms).toEqual(1);
+          expect(report.numberOfForms).toBe(1);
           const formFields = report.forms[0];
-          expect(formFields[report.getHeaderIndex(HEADER_SIGNATURES)]).toEqual("3");
+          expect(formFields[report.getHeaderIndex(HEADER_SIGNATURES)]).toBe("3");
         });
       });
 
@@ -149,9 +149,9 @@ describe("ReportService", () => {
           const writableStream = createWritableStream();
           await reportService.generate("all-forms-summary", writableStream);
           const report = parseReport(writableStream.toString());
-          expect(report.numberOfForms).toEqual(1);
+          expect(report.numberOfForms).toBe(1);
           const formFields = report.forms[0];
-          expect(formFields[report.getHeaderIndex(HEADER_UNPUBLISHED_CHANGES)]).toEqual("nei");
+          expect(formFields[report.getHeaderIndex(HEADER_UNPUBLISHED_CHANGES)]).toBe("nei");
         });
 
         it("has unpublished changes", async () => {
@@ -169,9 +169,9 @@ describe("ReportService", () => {
           const writableStream = createWritableStream();
           await reportService.generate("all-forms-summary", writableStream);
           const report = parseReport(writableStream.toString());
-          expect(report.numberOfForms).toEqual(1);
+          expect(report.numberOfForms).toBe(1);
           const formFields = report.forms[0];
-          expect(formFields[report.getHeaderIndex(HEADER_UNPUBLISHED_CHANGES)]).toEqual("ja");
+          expect(formFields[report.getHeaderIndex(HEADER_UNPUBLISHED_CHANGES)]).toBe("ja");
         });
 
         it("shows no information about unpublished changes for unpublished forms", async () => {
@@ -188,9 +188,9 @@ describe("ReportService", () => {
           const writableStream = createWritableStream();
           await reportService.generate("all-forms-summary", writableStream);
           const report = parseReport(writableStream.toString());
-          expect(report.numberOfForms).toEqual(1);
+          expect(report.numberOfForms).toBe(1);
           const formFields = report.forms[0];
-          expect(formFields[report.getHeaderIndex(HEADER_UNPUBLISHED_CHANGES)]).toEqual("");
+          expect(formFields[report.getHeaderIndex(HEADER_UNPUBLISHED_CHANGES)]).toBe("");
         });
       });
     });

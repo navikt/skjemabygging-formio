@@ -345,12 +345,12 @@ describe("NavDatePicker", () => {
               component.latestAllowedDate,
               row,
             );
-            expect(validationResultV1).toEqual("Datoen kan ikke være senere enn 01.05.2030");
+            expect(validationResultV1).toBe("Datoen kan ikke være senere enn 01.05.2030");
           });
 
           it("validateDatePickerV2", () => {
             const validationResultV2 = datePicker.validateDatePickerV2("2030-05-02", submissionData, component, row);
-            expect(validationResultV2).toEqual("Datoen kan ikke være senere enn 01.05.2030");
+            expect(validationResultV2).toBe("Datoen kan ikke være senere enn 01.05.2030");
           });
         });
 
@@ -390,7 +390,7 @@ describe("NavDatePicker", () => {
           const submissionData = { oppgiDatoKey: "2030-05-02" };
           const row = submissionData;
           const validationResultV2 = datePicker.validateDatePickerV2("2030-05-02", submissionData, component, row);
-          expect(validationResultV2).toEqual("Datoen kan ikke være tidligere enn 03.05.2030");
+          expect(validationResultV2).toBe("Datoen kan ikke være tidligere enn 03.05.2030");
         });
 
         it("Validering ok når valgt dato er samme som specificEarliestAllowedDate", () => {
@@ -411,7 +411,7 @@ describe("NavDatePicker", () => {
           const submissionData = { oppgiDatoKey: "2030-05-03" };
           const row = submissionData;
           const validationResultV2 = datePicker.validateDatePickerV2("2030-05-03", submissionData, component, row);
-          expect(validationResultV2).toEqual("Datoen kan ikke være senere enn 02.05.2030");
+          expect(validationResultV2).toBe("Datoen kan ikke være senere enn 02.05.2030");
         });
 
         it("Validering ok når valgt dato er samme som specificLatestAllowedDate", () => {
@@ -433,18 +433,14 @@ describe("NavDatePicker", () => {
           const submissionData = { oppgiDatoKey: "2030-05-04" };
           const row = submissionData;
           const validationResultV2 = datePicker.validateDatePickerV2("2030-05-04", submissionData, component, row);
-          expect(validationResultV2).toEqual(
-            "Datoen kan ikke være tidligere enn 02.05.2030 eller senere enn 03.05.2030",
-          );
+          expect(validationResultV2).toBe("Datoen kan ikke være tidligere enn 02.05.2030 eller senere enn 03.05.2030");
         });
 
         it("Validering feiler når valgt dato er tidligere enn specificEarliestAllowedDate", () => {
           const submissionData = { oppgiDatoKey: "2030-05-01" };
           const row = submissionData;
           const validationResultV2 = datePicker.validateDatePickerV2("2030-05-01", submissionData, component, row);
-          expect(validationResultV2).toEqual(
-            "Datoen kan ikke være tidligere enn 02.05.2030 eller senere enn 03.05.2030",
-          );
+          expect(validationResultV2).toBe("Datoen kan ikke være tidligere enn 02.05.2030 eller senere enn 03.05.2030");
         });
 
         it("Validering ok når valgt dato er samme som specificEarliestAllowedDate", () => {
@@ -475,7 +471,7 @@ describe("NavDatePicker", () => {
           const submissionData = { oppgiDatoKey: "2030-05-01" };
           const row = submissionData;
           const validationResultV2 = datePicker.validateDatePickerV2("2030-05-01", submissionData, component, row);
-          expect(validationResultV2).toEqual("Datoen kan ikke være tidligere enn 02.05.2030");
+          expect(validationResultV2).toBe("Datoen kan ikke være tidligere enn 02.05.2030");
         });
 
         it("Validering ok når valgt dato er samme dag som specificEarliestAllowedDate", () => {
@@ -489,7 +485,7 @@ describe("NavDatePicker", () => {
           const submissionData = { oppgiDatoKey: "2030-05-16" };
           const row = submissionData;
           const validationResultV2 = datePicker.validateDatePickerV2("2030-05-16", submissionData, component, row);
-          expect(validationResultV2).toEqual("Datoen kan ikke være senere enn 15.05.2030");
+          expect(validationResultV2).toBe("Datoen kan ikke være senere enn 15.05.2030");
         });
 
         it("Validering ok når valgt dato er samme dag som latestAllowedDate", () => {

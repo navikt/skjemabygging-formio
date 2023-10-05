@@ -14,7 +14,7 @@ describe("filterUtils", () => {
   describe("getPropertyFromComponent", () => {
     it("gets the value of a property in the object as a string", () => {
       const actual = getPropertyFromComponent({ value: "the value" }, ["value"]);
-      expect(actual).toEqual("the value");
+      expect(actual).toBe("the value");
     });
 
     it("gets properties from nested objects", () => {
@@ -24,7 +24,7 @@ describe("filterUtils", () => {
         "thirdLevel",
         "value",
       ]);
-      expect(actual).toEqual("the value");
+      expect(actual).toBe("the value");
     });
   });
 

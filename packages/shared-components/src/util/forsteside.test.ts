@@ -65,7 +65,7 @@ describe("genererPersonalia", () => {
 describe("genererSkjemaTittel", () => {
   it("generates correct skjemaTittel", () => {
     const actual = genererSkjemaTittel("Registreringsskjema for tilskudd til utdanning", "NAV 76-07.10");
-    expect(actual).toEqual("NAV 76-07.10 Registreringsskjema for tilskudd til utdanning");
+    expect(actual).toBe("NAV 76-07.10 Registreringsskjema for tilskudd til utdanning");
   });
 });
 
@@ -349,27 +349,27 @@ describe("genererFoerstesideData", () => {
 
     it("Bokmål brukes dersom språk ikke er valgt", () => {
       const forstesideRequest = genererFoerstesideData(defaultForm, defaultSubmission, undefined);
-      expect(forstesideRequest.spraakkode).toEqual("NB");
+      expect(forstesideRequest.spraakkode).toBe("NB");
     });
 
     it("Bokmål brukes dersom 'nb-NO' er valgt", () => {
       const forstesideRequest = genererFoerstesideData(defaultForm, defaultSubmission, "nb-NO");
-      expect(forstesideRequest.spraakkode).toEqual("NB");
+      expect(forstesideRequest.spraakkode).toBe("NB");
     });
 
     it("Nynorsk brukes dersom 'nn-NO' er valgt", () => {
       const forstesideRequest = genererFoerstesideData(defaultForm, defaultSubmission, "nn-NO");
-      expect(forstesideRequest.spraakkode).toEqual("NN");
+      expect(forstesideRequest.spraakkode).toBe("NN");
     });
 
     it("Engelsk brukes dersom 'en' er valgt", () => {
       const forstesideRequest = genererFoerstesideData(defaultForm, defaultSubmission, "en");
-      expect(forstesideRequest.spraakkode).toEqual("EN");
+      expect(forstesideRequest.spraakkode).toBe("EN");
     });
 
     it("Engelsk brukes dersom et annet språk er valgt", () => {
       const forstesideRequest = genererFoerstesideData(defaultForm, defaultSubmission, "pl");
-      expect(forstesideRequest.spraakkode).toEqual("EN");
+      expect(forstesideRequest.spraakkode).toBe("EN");
     });
   });
 
@@ -390,7 +390,7 @@ describe("genererFoerstesideData", () => {
           gateadresseSoker: "Flåklypatoppen 1",
         };
         const forsteside: ForstesideRequestBody = genererFoerstesideData(defaultForm, submission);
-        expect(forsteside.ukjentBrukerPersoninfo).toEqual("Solan Gundersen, Flåklypatoppen 1, 3520 Jevnaker, Norge.");
+        expect(forsteside.ukjentBrukerPersoninfo).toBe("Solan Gundersen, Flåklypatoppen 1, 3520 Jevnaker, Norge.");
       });
 
       it("henter gate og husnummer fra vegadresseSoker", () => {
@@ -402,7 +402,7 @@ describe("genererFoerstesideData", () => {
           },
         };
         const forsteside: ForstesideRequestBody = genererFoerstesideData(defaultForm, submission);
-        expect(forsteside.ukjentBrukerPersoninfo).toEqual("Solan Gundersen, Flåklypatoppen 1, 3520 Jevnaker, Norge.");
+        expect(forsteside.ukjentBrukerPersoninfo).toBe("Solan Gundersen, Flåklypatoppen 1, 3520 Jevnaker, Norge.");
       });
 
       it("legger til c/o-adressering", () => {
@@ -415,7 +415,7 @@ describe("genererFoerstesideData", () => {
           },
         };
         const forsteside: ForstesideRequestBody = genererFoerstesideData(defaultForm, submission);
-        expect(forsteside.ukjentBrukerPersoninfo).toEqual(
+        expect(forsteside.ukjentBrukerPersoninfo).toBe(
           "Solan Gundersen, c/o Reodor Felgen, Flåklypatoppen 1, 3520 Jevnaker, Norge.",
         );
       });
@@ -434,7 +434,7 @@ describe("genererFoerstesideData", () => {
           },
         };
         const forsteside: ForstesideRequestBody = genererFoerstesideData(defaultForm, submission);
-        expect(forsteside.ukjentBrukerPersoninfo).toEqual(
+        expect(forsteside.ukjentBrukerPersoninfo).toBe(
           "Solan Gundersen, c/o Reodor Felgen, Postboks 55 Toppen, 3520 Jevnaker, Norge.",
         );
       });
@@ -451,7 +451,7 @@ describe("genererFoerstesideData", () => {
           },
         };
         const forsteside: ForstesideRequestBody = genererFoerstesideData(defaultForm, submission);
-        expect(forsteside.ukjentBrukerPersoninfo).toEqual("Solan Gundersen, Postboks 55 Toppen, 3520 Jevnaker, Norge.");
+        expect(forsteside.ukjentBrukerPersoninfo).toBe("Solan Gundersen, Postboks 55 Toppen, 3520 Jevnaker, Norge.");
       });
     });
 
@@ -471,7 +471,7 @@ describe("genererFoerstesideData", () => {
           },
         };
         const forsteside: ForstesideRequestBody = genererFoerstesideData(defaultForm, submission);
-        expect(forsteside.ukjentBrukerPersoninfo).toEqual(
+        expect(forsteside.ukjentBrukerPersoninfo).toBe(
           "Solan Gundersen, 12603 Denmark Drive, Apt.556, VA 22071-9945 Herndon, USA.",
         );
       });
@@ -491,7 +491,7 @@ describe("genererFoerstesideData", () => {
           },
         };
         const forsteside: ForstesideRequestBody = genererFoerstesideData(defaultForm, submission);
-        expect(forsteside.ukjentBrukerPersoninfo).toEqual(
+        expect(forsteside.ukjentBrukerPersoninfo).toBe(
           "Solan Gundersen, c/o Bart Simpson, 12603 Denmark Drive, Apt.556, VA 22071-9945 Herndon, USA.",
         );
       });
@@ -511,7 +511,7 @@ describe("genererFoerstesideData", () => {
           },
         };
         const forsteside: ForstesideRequestBody = genererFoerstesideData(defaultForm, submission);
-        expect(forsteside.ukjentBrukerPersoninfo).toEqual(
+        expect(forsteside.ukjentBrukerPersoninfo).toBe(
           "Solan Gundersen, 12603 Denmark Drive, Apt.556, VA 22071-9945 Herndon, Dulles, USA.",
         );
       });

@@ -45,7 +45,7 @@ describe("useTemaKoder", () => {
       fetchSpy.mockImplementation(() => Promise.resolve(new Response(null, { status: 503 })));
       const { result } = renderHook(() => useTemaKoder(), { wrapper: appConfig });
       await waitFor(() => {
-        expect(result.current.errorMessage).toEqual("Feil ved henting av temakoder. Vennligst prøv igjen senere.");
+        expect(result.current.errorMessage).toBe("Feil ved henting av temakoder. Vennligst prøv igjen senere.");
       });
     });
   });

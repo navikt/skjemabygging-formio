@@ -149,14 +149,14 @@ describe("http requests", () => {
           {},
           { redirectToLocation: true },
         );
-        expect(windowLocation.href).toEqual("https://www.nav.no/sendInn/123");
-        expect(response).toEqual("CREATED");
+        expect(windowLocation.href).toBe("https://www.nav.no/sendInn/123");
+        expect(response).toBe("CREATED");
       });
 
       it("does not redirect to location", async () => {
         const response = await http.post("https://www.unittest.nav.no/fyllut/api/send-inn", {}, {});
-        expect(windowLocation.href).toEqual("");
-        expect(response).toEqual("CREATED");
+        expect(windowLocation.href).toBe("");
+        expect(response).toBe("CREATED");
       });
     });
   });

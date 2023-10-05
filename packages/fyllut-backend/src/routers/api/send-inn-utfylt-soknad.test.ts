@@ -62,7 +62,7 @@ describe("[endpoint] send-inn/utfyltsoknad", () => {
     expect(next).toHaveBeenCalledTimes(1);
     const error: any = next.mock.calls[0][0];
     expect(error.functional).toBe(true);
-    expect(error.message).toEqual("Feil ved kall til SendInn");
+    expect(error.message).toBe("Feil ved kall til SendInn");
     expect(res.sendStatus).not.toHaveBeenCalled();
     expect(res.header).not.toHaveBeenCalled();
     expect(skjemabyggingproxyScope.isDone()).toBe(true);
@@ -81,7 +81,7 @@ describe("[endpoint] send-inn/utfyltsoknad", () => {
     expect(next).toHaveBeenCalledTimes(1);
     const error: any = next.mock.calls[0][0];
     expect(error.functional).toBe(true);
-    expect(error.message).toEqual("Feil ved generering av PDF hos Exstream");
+    expect(error.message).toBe("Feil ved generering av PDF hos Exstream");
     expect(res.sendStatus).not.toHaveBeenCalled();
     expect(res.header).not.toHaveBeenCalled();
     expect(skjemabyggingproxyScope.isDone()).toBe(true);
@@ -100,7 +100,7 @@ describe("[endpoint] send-inn/utfyltsoknad", () => {
     expect(next).toHaveBeenCalledTimes(1);
     const error: any = next.mock.calls[0][0];
     expect(error.functional).toBeFalsy();
-    expect(error.message).toEqual("Missing idporten pid");
+    expect(error.message).toBe("Missing idporten pid");
     expect(res.sendStatus).not.toHaveBeenCalled();
     expect(res.header).not.toHaveBeenCalled();
     expect(sendInnNockScope.isDone()).toBe(false);
@@ -119,7 +119,7 @@ describe("[endpoint] send-inn/utfyltsoknad", () => {
     expect(next).toHaveBeenCalledTimes(1);
     const error: any = next.mock.calls[0][0];
     expect(error.functional).toBeFalsy();
-    expect(error.message).toEqual("Missing TokenX access token");
+    expect(error.message).toBe("Missing TokenX access token");
     expect(res.sendStatus).not.toHaveBeenCalled();
     expect(res.header).not.toHaveBeenCalled();
     expect(sendInnNockScope.isDone()).toBe(false);

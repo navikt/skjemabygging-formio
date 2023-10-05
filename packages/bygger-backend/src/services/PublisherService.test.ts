@@ -40,9 +40,9 @@ describe("PublisherService", () => {
         const { changed, form } = await publisherService.publishForm(testForm, translations, opts);
         expect(changed).toBe(true);
         expect(form.properties.modified).toBeDefined();
-        expect(form.properties.modifiedBy).toEqual("todd");
+        expect(form.properties.modifiedBy).toBe("todd");
         expect(form.properties.published).toBeDefined();
-        expect(form.properties.publishedBy).toEqual("todd");
+        expect(form.properties.publishedBy).toBe("todd");
       });
 
       describe("property: publishedLanguages", () => {
@@ -125,7 +125,7 @@ describe("PublisherService", () => {
           await publisherService.publishForm(form, translations, opts);
         } catch (error: any) {
           errorThrown = true;
-          expect(error.message).toEqual("Publisering feilet");
+          expect(error.message).toBe("Publisering feilet");
         }
         expect(errorThrown).toBe(true);
         expect(formioServiceSpy).toHaveBeenCalledTimes(2);
@@ -225,7 +225,7 @@ describe("PublisherService", () => {
           await publisherService.unpublishForm(testForm, opts);
         } catch (error: any) {
           errorThrown = true;
-          expect(error.message).toEqual("Avpublisering feilet");
+          expect(error.message).toBe("Avpublisering feilet");
         }
 
         expect(errorThrown).toBe(true);
@@ -359,7 +359,7 @@ describe("PublisherService", () => {
           await publisherService.publishForms(testForms, opts);
         } catch (error: any) {
           errorThrown = true;
-          expect(error.message).toEqual("Bulk-publisering feilet");
+          expect(error.message).toBe("Bulk-publisering feilet");
         }
         expect(errorThrown).toBe(true);
         expect(formioApiRequestBodies).toHaveLength(6);

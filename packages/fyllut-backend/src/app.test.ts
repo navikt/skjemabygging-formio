@@ -33,7 +33,7 @@ describe("app", () => {
       nock(formioProjectUrl!).get("/form?type=form&tags=nav-skjema&path=testform001").reply(200, []);
 
       const res = await request(createApp()).get("/fyllut/testform001");
-      expect(res.status).toEqual(404);
+      expect(res.status).toBe(404);
     });
 
     afterEach(() => {
@@ -43,31 +43,31 @@ describe("app", () => {
     describe("Query param 'form'", () => {
       it("redirects with value of query param form in path", async () => {
         const res = await request(createApp()).get("/fyllut/?form=testform001").expect(302);
-        expect(res.get("location")).toEqual("/fyllut/testform001");
+        expect(res.get("location")).toBe("/fyllut/testform001");
       });
 
       it("redirects and includes other query params", async () => {
         const res = await request(createApp()).get("/fyllut/?form=testform001&lang=en&sub=digital").expect(302);
-        expect(res.get("location")).toEqual("/fyllut/testform001?lang=en&sub=digital");
+        expect(res.get("location")).toBe("/fyllut/testform001?lang=en&sub=digital");
       });
     });
 
     describe("Query param 'innsendingsId'", () => {
       it("redirects with sub=digital if it was not present", async () => {
         const res = await request(createApp()).get("/fyllut/testform001?innsendingsId=12345678").expect(302);
-        expect(res.get("location")).toEqual("/fyllut/testform001?innsendingsId=12345678&sub=digital");
+        expect(res.get("location")).toBe("/fyllut/testform001?innsendingsId=12345678&sub=digital");
       });
 
       it("redirects and changes sub to 'digital' if it was something else", async () => {
         const res = await request(createApp()).get("/fyllut/testform001?innsendingsId=12345678&sub=paper").expect(302);
-        expect(res.get("location")).toEqual("/fyllut/testform001?innsendingsId=12345678&sub=digital");
+        expect(res.get("location")).toBe("/fyllut/testform001?innsendingsId=12345678&sub=digital");
       });
 
       it("preserves other query params and moves query param form to the path", async () => {
         const res = await request(createApp())
           .get("/fyllut/?form=testform001&innsendingsId=12345678&lang=en")
           .expect(302);
-        expect(res.get("location")).toEqual("/fyllut/testform001?innsendingsId=12345678&lang=en&sub=digital");
+        expect(res.get("location")).toBe("/fyllut/testform001?innsendingsId=12345678&lang=en&sub=digital");
       });
     });
 
@@ -96,7 +96,7 @@ describe("app", () => {
           nock(formioProjectUrl!).get("/form?type=form&tags=nav-skjema&path=testform001").reply(200, [testform001]);
 
           const res = await request(createApp()).get("/fyllut/testform001?lang=en").expect(302);
-          expect(res.get("location")).toEqual("/fyllut/testform001?lang=en&sub=digital");
+          expect(res.get("location")).toBe("/fyllut/testform001?lang=en&sub=digital");
         });
 
         it("renders index.html when query param sub is digital", async () => {
@@ -114,7 +114,7 @@ describe("app", () => {
           nock(formioProjectUrl!).get("/form?type=form&tags=nav-skjema&path=testform001").reply(200, [testform001]);
 
           const res = await request(createApp()).get("/fyllut/testform001?lang=en&sub=paper").expect(302);
-          expect(res.get("location")).toEqual("/fyllut/testform001?lang=en");
+          expect(res.get("location")).toBe("/fyllut/testform001?lang=en");
         });
       });
 
@@ -124,7 +124,7 @@ describe("app", () => {
           nock(formioProjectUrl!).get("/form?type=form&tags=nav-skjema&path=testform001").reply(200, [testform001]);
 
           const res = await request(createApp()).get("/fyllut/testform001?lang=en&sub=blabla").expect(302);
-          expect(res.get("location")).toEqual("/fyllut/testform001?lang=en");
+          expect(res.get("location")).toBe("/fyllut/testform001?lang=en");
         });
       });
 
@@ -135,7 +135,7 @@ describe("app", () => {
             nock(formioProjectUrl!).get("/form?type=form&tags=nav-skjema&path=testform001").reply(200, [testform001]);
 
             const res = await request(createApp()).get("/fyllut/testform001/panel1?lang=en").expect(302);
-            expect(res.get("location")).toEqual("/fyllut/testform001?lang=en");
+            expect(res.get("location")).toBe("/fyllut/testform001?lang=en");
           });
 
           it("does not redirect when intropage is requested (avoiding circular redirects)", async () => {
@@ -195,7 +195,7 @@ describe("app", () => {
 
     const res = await request(createApp()).post("/fyllut/api/foersteside").expect("Content-Type", /json/).expect(500);
 
-    expect(res.body.message).toEqual("Feil ved generering av førsteside");
+    expect(res.body.message).toBe("Feil ved generering av førsteside");
     expect(res.body.correlation_id).not.toBeNull();
 
     azureOpenidScope.done();
@@ -240,7 +240,7 @@ describe("app", () => {
       .send(applicationData)
       .set("Fyllut-Submission-Method", "digital")
       .set("Authorization", `Bearer ${createMockIdportenJwt({ pid: "12345678911" }, undefined, key)}`); // <-- injected by idporten sidecar
-    expect(res.status).toEqual(201);
+    expect(res.status).toBe(201);
     expect(res.headers["location"]).toMatch(sendInnLocation);
 
     azureOpenidScope.done();

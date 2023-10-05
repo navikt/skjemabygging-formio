@@ -57,7 +57,7 @@ describe("authorizedPublisher", () => {
     expect(next).toHaveBeenCalledTimes(1);
     const nextArg = next.mock.calls[0][0];
     expect(nextArg).toBeDefined();
-    expect(nextArg.message).toEqual("Missing formio token");
+    expect(nextArg.message).toBe("Missing formio token");
   });
 
   it("Rejects request when formio token is invalid", async () => {
@@ -73,6 +73,6 @@ describe("authorizedPublisher", () => {
     expect(next).toHaveBeenCalledTimes(1);
     const nextArg = next.mock.calls[0][0];
     expect(nextArg).toBeDefined();
-    expect(nextArg.message).toEqual("Invalid formio token");
+    expect(nextArg.message).toBe("Invalid formio token");
   });
 });

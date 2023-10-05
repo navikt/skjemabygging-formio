@@ -136,8 +136,8 @@ describe("PrepareLetterPage", () => {
       await userEvent.click(screen.getByRole("button", { name: "Last ned førsteside" }));
       await waitFor(() => expect(pdf.lastNedFilBase64).toHaveBeenCalledTimes(1));
       expect(pdfDownloads).toHaveLength(1);
-      expect(pdfDownloads[0].tittel).toEqual("Førstesideark");
-      expect(pdfDownloads[0].filtype).toEqual("pdf");
+      expect(pdfDownloads[0].tittel).toBe("Førstesideark");
+      expect(pdfDownloads[0].filtype).toBe("pdf");
     });
 
     it("Laster ikke ned pdf dersom enhet ikke er valgt, og viser feilmelding i stedet", async () => {
@@ -209,7 +209,7 @@ describe("PrepareLetterPage", () => {
       });
 
       it("defaults to rendering complete enhetsliste", () => {
-        expect(fetchMock.mock.calls[0][0]).toEqual("/api/enhetsliste");
+        expect(fetchMock.mock.calls[0][0]).toBe("/api/enhetsliste");
 
         const enhetSelector = screen.getByText(TEXTS.statiske.prepareLetterPage.selectEntityDefault);
         fireEvent.keyDown(enhetSelector, DOWN_ARROW);
@@ -225,14 +225,14 @@ describe("PrepareLetterPage", () => {
 
       it("reports error to backend", async () => {
         await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(2));
-        expect(fetchMock.mock.calls[1][0]).toEqual("/api/log/error");
+        expect(fetchMock.mock.calls[1][0]).toBe("/api/log/error");
         const request = {
           path: fetchMock.mock.calls[1][0],
           // @ts-ignore
           body: JSON.parse(fetchMock.mock.calls[1][1].body),
         };
-        expect(request.path).toEqual("/api/log/error");
-        expect(request.body.message).toEqual("Ingen relevante enheter funnet");
+        expect(request.path).toBe("/api/log/error");
+        expect(request.body.message).toBe("Ingen relevante enheter funnet");
         expect(request.body.metadata.skjemanummer).toEqual(SKJEMANUMMER);
       });
     });

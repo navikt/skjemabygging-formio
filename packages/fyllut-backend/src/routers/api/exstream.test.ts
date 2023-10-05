@@ -36,7 +36,7 @@ describe("exstream", () => {
 
     expect(next).toHaveBeenCalledTimes(1);
     const error = next.mock.calls[0][0] as Error;
-    expect(error?.message).toEqual("Feil ved generering av PDF hos Exstream");
+    expect(error?.message).toBe("Feil ved generering av PDF hos Exstream");
     expect(res.send).not.toHaveBeenCalled();
     skjemabyggingproxyScope.done();
   });

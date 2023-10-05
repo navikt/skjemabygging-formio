@@ -117,7 +117,7 @@ describe("FormMetadataEditor", () => {
 
         expect(mockOnChange).toHaveBeenCalled();
         const updatedForm = mockOnChange.mock.calls[0][0] as NavFormType;
-        expect(updatedForm.properties.innsending).toEqual("INGEN");
+        expect(updatedForm.properties.innsending).toBe("INGEN");
 
         rerender(<FormMetadataEditor form={updatedForm} onChange={mockOnChange} />);
         expect(screen.queryByLabelText("Forklaring til innsending")).not.toBeNull();
@@ -137,7 +137,7 @@ describe("FormMetadataEditor", () => {
 
         expect(mockOnChange).toHaveBeenCalled();
         const updatedForm = mockOnChange.mock.calls[0][0] as NavFormType;
-        expect(updatedForm.properties.innsending).toEqual("KUN_PAPIR");
+        expect(updatedForm.properties.innsending).toBe("KUN_PAPIR");
 
         rerender(<FormMetadataEditor form={updatedForm} onChange={mockOnChange} />);
         expect(screen.queryByLabelText("Forklaring til innsending")).toBeNull();
@@ -158,7 +158,7 @@ describe("FormMetadataEditor", () => {
 
       expect(mockOnChange).toHaveBeenCalled();
       const updatedForm = mockOnChange.mock.calls[0][0] as NavFormType;
-      expect(updatedForm.properties.innsending).toEqual("KUN_PAPIR");
+      expect(updatedForm.properties.innsending).toBe("KUN_PAPIR");
 
       rerender(<FormMetadataEditor form={updatedForm} onChange={mockOnChange} />);
       expect(screen.queryByLabelText("Forklaring til innsending")).toBeNull();
@@ -182,7 +182,7 @@ describe("FormMetadataEditor", () => {
 
         expect(mockOnChange).toHaveBeenCalledTimes(1);
         const updatedForm = mockOnChange.mock.calls[0][0] as NavFormType;
-        expect(updatedForm.properties.downloadPdfButtonText).toEqual("Last ned pdf");
+        expect(updatedForm.properties.downloadPdfButtonText).toBe("Last ned pdf");
       });
 
       it("nullstilles i properties", async () => {
@@ -193,7 +193,7 @@ describe("FormMetadataEditor", () => {
 
         expect(mockOnChange).toHaveBeenCalledTimes(1);
         const updatedForm = mockOnChange.mock.calls[0][0] as NavFormType;
-        expect(updatedForm.properties.downloadPdfButtonText).toEqual("");
+        expect(updatedForm.properties.downloadPdfButtonText).toBe("");
       });
     });
     describe("Ettersendelsesfrist", () => {
@@ -207,7 +207,7 @@ describe("FormMetadataEditor", () => {
 
         expect(mockOnChange).toHaveBeenCalledTimes(1);
         const updatedForm = mockOnChange.mock.calls[0][0] as NavFormType;
-        expect(updatedForm.properties.ettersendelsesfrist).toEqual("42");
+        expect(updatedForm.properties.ettersendelsesfrist).toBe("42");
       });
 
       it("nullstilles i properties", async () => {
@@ -218,7 +218,7 @@ describe("FormMetadataEditor", () => {
 
         expect(mockOnChange).toHaveBeenCalledTimes(1);
         const updatedForm = mockOnChange.mock.calls[0][0] as NavFormType;
-        expect(updatedForm.properties.ettersendelsesfrist).toEqual("");
+        expect(updatedForm.properties.ettersendelsesfrist).toBe("");
       });
     });
 
@@ -269,7 +269,7 @@ describe("FormMetadataEditor", () => {
 
           expect(mockOnChange).toHaveBeenCalledTimes(1);
           const updatedForm = mockOnChange.mock.calls[0][0] as NavFormType;
-          expect(updatedForm.properties.mottaksadresseId).toEqual("1");
+          expect(updatedForm.properties.mottaksadresseId).toBe("1");
         });
 
         it("Fjerner valgt mottaksadresse", async () => {
@@ -415,7 +415,7 @@ describe("FormMetadataEditor", () => {
 
         expect(mockOnChange).toHaveBeenCalledTimes(1);
         const updatedForm = mockOnChange.mock.calls[0][0] as NavFormType;
-        expect(updatedForm.properties.mottaksadresseId).toEqual("1");
+        expect(updatedForm.properties.mottaksadresseId).toBe("1");
         expect(updatedForm.properties.enhetMaVelgesVedPapirInnsending).toBe(false);
 
         rerender(editFormMetadataEditor(updatedForm, mockOnChange));
@@ -448,7 +448,7 @@ describe("FormMetadataEditor", () => {
         expect(mockOnChange).toHaveBeenCalled();
         const updatedForm = mockOnChange.mock.calls[0][0] as NavFormType;
 
-        expect(updatedForm.properties.signatures?.[0].label).toEqual("Lege");
+        expect(updatedForm.properties.signatures?.[0].label).toBe("Lege");
       });
 
       it("legger til ny signatur ved klikk på 'legg til signatur' knapp", async () => {
@@ -459,8 +459,8 @@ describe("FormMetadataEditor", () => {
 
         expect(mockOnChange).toHaveBeenCalledTimes(1);
         const updatedForm = mockOnChange.mock.calls[0][0] as NavFormType;
-        expect(updatedForm.properties.signatures?.[0].label).toEqual("");
-        expect(updatedForm.properties.signatures?.[0].description).toEqual("");
+        expect(updatedForm.properties.signatures?.[0].label).toBe("");
+        expect(updatedForm.properties.signatures?.[0].description).toBe("");
       });
 
       it("Slett en signatur", async () => {
@@ -493,10 +493,10 @@ describe("FormMetadataEditor", () => {
         expect(mockOnChange).toHaveBeenCalled();
         const updatedForm = mockOnChange.mock.calls[0][0] as NavFormType;
 
-        expect(updatedForm.properties.signatures?.[0].label).toEqual("Doctor");
-        expect(updatedForm.properties.signatures?.[0].description).toEqual("Doctor Description");
-        expect(updatedForm.properties.signatures?.[1].label).toEqual("Applicant");
-        expect(updatedForm.properties.signatures?.[1].description).toEqual("Applicant Description");
+        expect(updatedForm.properties.signatures?.[0].label).toBe("Doctor");
+        expect(updatedForm.properties.signatures?.[0].description).toBe("Doctor Description");
+        expect(updatedForm.properties.signatures?.[1].label).toBe("Applicant");
+        expect(updatedForm.properties.signatures?.[1].description).toBe("Applicant Description");
       });
 
       it("Legger til beskrivelse for en signatur", async () => {
@@ -509,8 +509,8 @@ describe("FormMetadataEditor", () => {
 
         expect(mockOnChange).toHaveBeenCalled();
         const updatedForm = mockOnChange.mock.calls[0][0] as NavFormType;
-        expect(updatedForm.properties.signatures?.[0].description).toEqual("Jeg bekrefter at personen er syk");
-        expect(updatedForm.properties.signatures?.[0].label).toEqual("Lege");
+        expect(updatedForm.properties.signatures?.[0].description).toBe("Jeg bekrefter at personen er syk");
+        expect(updatedForm.properties.signatures?.[0].label).toBe("Lege");
       });
     });
 
@@ -525,7 +525,7 @@ describe("FormMetadataEditor", () => {
 
         expect(mockOnChange).toHaveBeenCalled();
         const updatedForm = mockOnChange.mock.calls[0][0] as NavFormType;
-        expect(updatedForm.properties.descriptionOfSignatures).toEqual("Lang beskrivelse av hvorfor man signerer");
+        expect(updatedForm.properties.descriptionOfSignatures).toBe("Lang beskrivelse av hvorfor man signerer");
       });
     });
   });
@@ -561,7 +561,7 @@ describe("FormMetadataEditor", () => {
 
         expect(mockOnChange).toHaveBeenCalledTimes(1);
         const updatedForm = mockOnChange.mock.calls[0][0] as NavFormType;
-        expect(updatedForm.properties.tema).toEqual("XYZ");
+        expect(updatedForm.properties.tema).toBe("XYZ");
       });
     });
   });

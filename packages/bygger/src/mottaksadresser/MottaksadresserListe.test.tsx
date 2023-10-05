@@ -89,10 +89,10 @@ describe("MottaksadresseListe", () => {
     );
 
     const data = JSON.parse(formioSpy.mock.calls[1][1].body).data;
-    expect(data.adresselinje1).toEqual("TEST skanning");
-    expect(data.adresselinje2).toEqual("Postboks 3");
-    expect(data.postnummer).toEqual("1500");
-    expect(data.poststed).toEqual("Dalen");
+    expect(data.adresselinje1).toBe("TEST skanning");
+    expect(data.adresselinje2).toBe("Postboks 3");
+    expect(data.postnummer).toBe("1500");
+    expect(data.poststed).toBe("Dalen");
   });
 
   it("Lagrer ikke ny mottaksadresse når poststed ikke er oppgitt", async () => {

@@ -40,7 +40,7 @@ describe("[endpoint] enhetsliste", () => {
       expect(enhetsliste.length).toBeGreaterThan(0);
       enhetsliste.forEach((enhet: Enhet) => {
         expect(supportedEnhetstyper.includes(enhet.type)).toBe(true);
-        expect(enhet.enhetNr).not.toEqual("0000");
+        expect(enhet.enhetNr).not.toBe("0000");
       });
     });
 
@@ -82,7 +82,7 @@ describe("[endpoint] enhetsliste", () => {
       expect(next).toHaveBeenCalledTimes(1);
       // @ts-ignore
       const error = next.mock.calls[0][0];
-      expect(error.message).toEqual("Feil ved henting av enhetsliste");
+      expect(error.message).toBe("Feil ved henting av enhetsliste");
       expect(error.functional).toBe(true);
     });
   });

@@ -70,7 +70,7 @@ describe("[endpoint] send-inn/soknad", () => {
       expect(next).toHaveBeenCalledTimes(1);
       const error: any = next.mock.calls[0][0];
       expect(error.functional).toBe(true);
-      expect(error.message).toEqual("Feil ved kall til SendInn. Kan ikke hente mellomlagret søknad.");
+      expect(error.message).toBe("Feil ved kall til SendInn. Kan ikke hente mellomlagret søknad.");
       expect(res.json).not.toHaveBeenCalled();
       expect(sendInnNockScope.isDone()).toBe(true);
     });
@@ -103,7 +103,7 @@ describe("[endpoint] send-inn/soknad", () => {
       expect(next).toHaveBeenCalledTimes(1);
       const error: any = next.mock.calls[0][0];
       expect(error.functional).toBeFalsy();
-      expect(error.message).toEqual("Missing TokenX access token");
+      expect(error.message).toBe("Missing TokenX access token");
       expect(res.sendStatus).not.toHaveBeenCalled();
       expect(res.header).not.toHaveBeenCalled();
     });
@@ -137,7 +137,7 @@ describe("[endpoint] send-inn/soknad", () => {
       expect(next).toHaveBeenCalledTimes(1);
       const error: any = next.mock.calls[0][0];
       expect(error.functional).toBe(true);
-      expect(error.message).toEqual("Feil ved kall til SendInn. Kan ikke starte mellomlagring av søknaden.");
+      expect(error.message).toBe("Feil ved kall til SendInn. Kan ikke starte mellomlagring av søknaden.");
       expect(res.json).not.toHaveBeenCalled();
       expect(sendInnNockScope.isDone()).toBe(true);
     });
@@ -152,7 +152,7 @@ describe("[endpoint] send-inn/soknad", () => {
       expect(next).toHaveBeenCalledTimes(1);
       const error: any = next.mock.calls[0][0];
       expect(error.functional).toBeFalsy();
-      expect(error.message).toEqual("Missing idporten pid");
+      expect(error.message).toBe("Missing idporten pid");
       expect(res.sendStatus).not.toHaveBeenCalled();
       expect(res.header).not.toHaveBeenCalled();
     });
@@ -167,7 +167,7 @@ describe("[endpoint] send-inn/soknad", () => {
       expect(next).toHaveBeenCalledTimes(1);
       const error: any = next.mock.calls[0][0];
       expect(error.functional).toBeFalsy();
-      expect(error.message).toEqual("Missing TokenX access token");
+      expect(error.message).toBe("Missing TokenX access token");
       expect(res.sendStatus).not.toHaveBeenCalled();
       expect(res.header).not.toHaveBeenCalled();
     });
@@ -203,7 +203,7 @@ describe("[endpoint] send-inn/soknad", () => {
       expect(next).toHaveBeenCalledTimes(1);
       const error: any = next.mock.calls[0][0];
       expect(error.functional).toBe(true);
-      expect(error.message).toEqual("Feil ved kall til SendInn. Kan ikke oppdatere mellomlagret søknad.");
+      expect(error.message).toBe("Feil ved kall til SendInn. Kan ikke oppdatere mellomlagret søknad.");
       expect(res.json).not.toHaveBeenCalled();
       expect(sendInnNockScope.isDone()).toBe(true);
     });
@@ -218,7 +218,7 @@ describe("[endpoint] send-inn/soknad", () => {
       expect(next).toHaveBeenCalledTimes(1);
       const error: any = next.mock.calls[0][0];
       expect(error.functional).toBeFalsy();
-      expect(error.message).toEqual("Missing idporten pid");
+      expect(error.message).toBe("Missing idporten pid");
       expect(res.sendStatus).not.toHaveBeenCalled();
       expect(res.header).not.toHaveBeenCalled();
     });
@@ -233,7 +233,7 @@ describe("[endpoint] send-inn/soknad", () => {
       expect(next).toHaveBeenCalledTimes(1);
       const error: any = next.mock.calls[0][0];
       expect(error.functional).toBeFalsy();
-      expect(error.message).toEqual("Missing TokenX access token");
+      expect(error.message).toBe("Missing TokenX access token");
       expect(res.sendStatus).not.toHaveBeenCalled();
       expect(res.header).not.toHaveBeenCalled();
     });
@@ -290,7 +290,7 @@ describe("[endpoint] send-inn/soknad", () => {
       expect(next).toHaveBeenCalledTimes(1);
       const error: any = next.mock.calls[0][0];
       expect(error.functional).toBe(true);
-      expect(error.message).toEqual("Feil ved kall til SendInn. Kan ikke slette mellomlagret søknad.");
+      expect(error.message).toBe("Feil ved kall til SendInn. Kan ikke slette mellomlagret søknad.");
       expect(res.json).not.toHaveBeenCalled();
       expect(sendInnNockScope.isDone()).toBe(true);
     });
@@ -305,7 +305,7 @@ describe("[endpoint] send-inn/soknad", () => {
       expect(next).toHaveBeenCalledTimes(1);
       const error: any = next.mock.calls[0][0];
       expect(error.functional).toBeFalsy();
-      expect(error.message).toEqual("Missing TokenX access token");
+      expect(error.message).toBe("Missing TokenX access token");
       expect(res.sendStatus).not.toHaveBeenCalled();
       expect(res.header).not.toHaveBeenCalled();
     });

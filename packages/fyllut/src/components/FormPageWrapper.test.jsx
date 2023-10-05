@@ -42,7 +42,7 @@ describe("FormPageWrapper", () => {
       }),
     ).toBeInTheDocument();
     expect(await screen.findByRole("heading", { name: "Fant ikke siden" })).toBeInTheDocument();
-    await waitFor(() => expect(document.title).toEqual(""));
+    await waitFor(() => expect(document.title).toBe(""));
   });
 
   it("Show target form when there is one", async () => {
@@ -71,7 +71,7 @@ describe("FormPageWrapper", () => {
         </AppConfigProvider>
       </MemoryRouter>,
     );
-    await waitFor(() => expect(document.title).toEqual("New form | www.nav.no"));
+    await waitFor(() => expect(document.title).toBe("New form | www.nav.no"));
   });
 
   describe("Submission method", () => {

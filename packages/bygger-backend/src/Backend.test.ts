@@ -135,9 +135,9 @@ describe("Backend", () => {
 
       it("updates monorepo ref", () => {
         expect(mockRepoCreateOrUpdateFileContents).toHaveBeenCalledTimes(3);
-        expect(mockRepoCreateOrUpdateFileContents.mock.calls[0][1]).toEqual("forms/skjema.json");
-        expect(mockRepoCreateOrUpdateFileContents.mock.calls[1][1]).toEqual("translations/skjema.json");
-        expect(mockRepoCreateOrUpdateFileContents.mock.calls[2][1]).toEqual("MONOREPO");
+        expect(mockRepoCreateOrUpdateFileContents.mock.calls[0][1]).toBe("forms/skjema.json");
+        expect(mockRepoCreateOrUpdateFileContents.mock.calls[1][1]).toBe("translations/skjema.json");
+        expect(mockRepoCreateOrUpdateFileContents.mock.calls[2][1]).toBe("MONOREPO");
       });
 
       it("creates a pull request", () => {
@@ -165,8 +165,8 @@ describe("Backend", () => {
 
       it("does not update monorepo ref", () => {
         expect(mockRepoCreateOrUpdateFileContents).toHaveBeenCalledTimes(2);
-        expect(mockRepoCreateOrUpdateFileContents.mock.calls[0][1]).toEqual("forms/skjema.json");
-        expect(mockRepoCreateOrUpdateFileContents.mock.calls[1][1]).toEqual("translations/skjema.json");
+        expect(mockRepoCreateOrUpdateFileContents.mock.calls[0][1]).toBe("forms/skjema.json");
+        expect(mockRepoCreateOrUpdateFileContents.mock.calls[1][1]).toBe("translations/skjema.json");
       });
 
       it("does not merge the pull request", () => {
@@ -222,8 +222,8 @@ describe("Backend", () => {
 
       it("updates monorepo ref", () => {
         expect(mockRepoCreateOrUpdateFileContents).toHaveBeenCalledTimes(2);
-        expect(mockRepoCreateOrUpdateFileContents.mock.calls[0][1]).toEqual("resources/settings.json");
-        expect(mockRepoCreateOrUpdateFileContents.mock.calls[1][1]).toEqual("MONOREPO");
+        expect(mockRepoCreateOrUpdateFileContents.mock.calls[0][1]).toBe("resources/settings.json");
+        expect(mockRepoCreateOrUpdateFileContents.mock.calls[1][1]).toBe("MONOREPO");
       });
 
       it("deletes the branch", () => {

@@ -552,17 +552,17 @@ describe("Skjema med globale oversettelser som inneholder linjeskift", () => {
     const eksport = getTextsAndTranslationsForForm(form, translations);
     expect(eksport).toHaveLength(2);
 
-    expect(eksport[0].text).toEqual("Veiledning");
-    expect(eksport[0].en).toEqual("Guidance (Global Tekst)");
-    expect(eksport[0]["nn-NO"]).toEqual("Rettleiing (Global Tekst)");
+    expect(eksport[0].text).toBe("Veiledning");
+    expect(eksport[0].en).toBe("Guidance (Global Tekst)");
+    expect(eksport[0]["nn-NO"]).toBe("Rettleiing (Global Tekst)");
 
-    expect(eksport[1].text).toEqual(
+    expect(eksport[1].text).toBe(
       'NAV sender svar. <br> Se <a href=""https://www.nav.no/person/"" target=""_blank"">link</a>.',
     );
-    expect(eksport[1].en).toEqual(
+    expect(eksport[1].en).toBe(
       'NAV sends answers. <br> See <a href=""https://www.nav.no/person/"" target=""_blank"">link</a>. (Global Tekst)',
     );
-    expect(eksport[1]["nn-NO"]).toEqual(
+    expect(eksport[1]["nn-NO"]).toBe(
       'NAV sender svar. <br> Sjå <a href=""https://www.nav.no/person/"" target=""_blank"">lenke</a>. (Global Tekst)',
     );
   });

@@ -23,7 +23,7 @@ describe("NavCheckbox", () => {
       const inputs = Harness.testElements(component, 'input[type="checkbox"]', 1);
       for (let i = 0; i < inputs.length; i++) {
         expect(inputs[i].getAttribute("class").indexOf("navds-checkbox__input") !== -1).toBeTruthy();
-        expect(inputs[i].name).toEqual(`data[${compDef.key}]`);
+        expect(inputs[i].name).toBe(`data[${compDef.key}]`);
       }
       Harness.testElements(component, "label", 1);
     });

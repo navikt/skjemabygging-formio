@@ -37,8 +37,8 @@ describe("TokenX client", () => {
     }
     tokenxNockScope.done();
     expect(recorder.bodies).toHaveLength(1);
-    expect(recorder.bodies[0].subject_token).toEqual("idporten-jwt");
-    expect(recorder.bodies[0].audience).toEqual("unittest-gcp:namespace:app-a");
+    expect(recorder.bodies[0].subject_token).toBe("idporten-jwt");
+    expect(recorder.bodies[0].audience).toBe("unittest-gcp:namespace:app-a");
   });
 
   it("throws error when response from TokenX is not ok", async () => {
@@ -50,15 +50,15 @@ describe("TokenX client", () => {
       await client.exchangeToken("idporten-jwt", "unittest-gcp:namespace:app-a");
     } catch (err) {
       errorOccured = true;
-      expect(err.message).toEqual("Failed to exchange token");
+      expect(err.message).toBe("Failed to exchange token");
       expect(err.http_response_body).toEqual({ message: "Error occurred" });
     }
     expect(errorOccured).toBe(true);
 
     tokenxNockScope.done();
     expect(recorder.bodies).toHaveLength(1);
-    expect(recorder.bodies[0].subject_token).toEqual("idporten-jwt");
-    expect(recorder.bodies[0].audience).toEqual("unittest-gcp:namespace:app-a");
+    expect(recorder.bodies[0].subject_token).toBe("idporten-jwt");
+    expect(recorder.bodies[0].audience).toBe("unittest-gcp:namespace:app-a");
   });
 
   class Recorder {

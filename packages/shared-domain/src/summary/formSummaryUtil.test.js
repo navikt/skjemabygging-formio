@@ -356,7 +356,7 @@ describe("form summary", () => {
         );
         const actualNavSkjemagruppe = actual.find((component) => component.type === "navSkjemagruppe");
         expect(actualNavSkjemagruppe).toBeDefined();
-        expect(actualNavSkjemagruppe.label).toEqual("NavSkjemagruppe-legend");
+        expect(actualNavSkjemagruppe.label).toBe("NavSkjemagruppe-legend");
       });
     });
 
@@ -503,7 +503,7 @@ describe("form summary", () => {
           "",
           mockedTranslate,
         );
-        expect(actual[0].value).toEqual("MVA: 25 %");
+        expect(actual[0].value).toBe("MVA: 25 %");
       });
     });
 
@@ -554,7 +554,7 @@ describe("form summary", () => {
         "",
         mockedTranslate,
       );
-      expect(actual[0].value).toEqual("1234 56 78911");
+      expect(actual[0].value).toBe("1234 56 78911");
     });
   });
 
@@ -567,7 +567,7 @@ describe("form summary", () => {
         "",
         mockedTranslate,
       );
-      expect(actual[0].value).toEqual("111 111 111");
+      expect(actual[0].value).toBe("111 111 111");
     });
   });
 
@@ -863,7 +863,7 @@ describe("form summary", () => {
           mockedTranslate,
         );
         expect(actual).toBeInstanceOf(Array);
-        expect(actual.length).toEqual(2);
+        expect(actual.length).toBe(2);
       });
     });
 
@@ -967,7 +967,7 @@ describe("form summary", () => {
         );
         const alertstripes = flattenComponents(actual).filter(onlyAlertstripes);
         expect(alertstripes).toHaveLength(1);
-        expect(alertstripes[0].value).toEqual("Må signeres av både eier og bruker");
+        expect(alertstripes[0].value).toBe("Må signeres av både eier og bruker");
       });
     });
 
@@ -990,7 +990,7 @@ describe("form summary", () => {
         );
         const alertstripes = flattenComponents(actual).filter(onlyAlertstripes);
         expect(alertstripes).toHaveLength(1);
-        expect(alertstripes[0].value).toEqual("Må signeres av både eier og bruker (bad)");
+        expect(alertstripes[0].value).toBe("Må signeres av både eier og bruker (bad)");
       });
 
       it("should be visible when show=true for containerStue", () => {
@@ -1001,7 +1001,7 @@ describe("form summary", () => {
         );
         const alertstripes = flattenComponents(actual).filter(onlyAlertstripes);
         expect(alertstripes).toHaveLength(1);
-        expect(alertstripes[0].value).toEqual("Må signeres av både eier og bruker (stue)");
+        expect(alertstripes[0].value).toBe("Må signeres av både eier og bruker (stue)");
       });
     });
 
@@ -1015,41 +1015,41 @@ describe("form summary", () => {
       expect(actual[0].components).toHaveLength(3);
 
       const datoUtenfor = actual[0].components[0];
-      expect(datoUtenfor.type).toEqual("navDatepicker");
-      expect(datoUtenfor.label).toEqual("Dato utenfor");
-      expect(datoUtenfor.value).toEqual("1.10.2021");
+      expect(datoUtenfor.type).toBe("navDatepicker");
+      expect(datoUtenfor.label).toBe("Dato utenfor");
+      expect(datoUtenfor.value).toBe("1.10.2021");
 
       const dataGrid = actual[0].components[1];
-      expect(dataGrid.type).toEqual("datagrid");
-      expect(dataGrid.label).toEqual("Data Grid");
+      expect(dataGrid.type).toBe("datagrid");
+      expect(dataGrid.label).toBe("Data Grid");
       expect(dataGrid.components).toHaveLength(1);
 
       const dataGridRow1 = dataGrid.components[0];
-      expect(dataGridRow1.type).toEqual("datagrid-row");
+      expect(dataGridRow1.type).toBe("datagrid-row");
       expect(dataGridRow1.components).toHaveLength(2);
 
       const datoIDataGrid = dataGridRow1.components[0];
-      expect(datoIDataGrid.type).toEqual("navDatepicker");
-      expect(datoIDataGrid.label).toEqual("Dato i data grid");
-      expect(datoIDataGrid.value).toEqual("2.10.2021");
+      expect(datoIDataGrid.type).toBe("navDatepicker");
+      expect(datoIDataGrid.label).toBe("Dato i data grid");
+      expect(datoIDataGrid.value).toBe("2.10.2021");
 
       const skjemagruppe = dataGridRow1.components[1];
-      expect(skjemagruppe.type).toEqual("navSkjemagruppe");
+      expect(skjemagruppe.type).toBe("navSkjemagruppe");
       expect(skjemagruppe.components).toHaveLength(1);
 
       const datoISkjemagruppeInneIDataGrid = skjemagruppe.components[0];
-      expect(datoISkjemagruppeInneIDataGrid.type).toEqual("navDatepicker");
-      expect(datoISkjemagruppeInneIDataGrid.label).toEqual("Dato i skjemagruppe i data grid");
-      expect(datoISkjemagruppeInneIDataGrid.value).toEqual("3.10.2021");
+      expect(datoISkjemagruppeInneIDataGrid.type).toBe("navDatepicker");
+      expect(datoISkjemagruppeInneIDataGrid.label).toBe("Dato i skjemagruppe i data grid");
+      expect(datoISkjemagruppeInneIDataGrid.value).toBe("3.10.2021");
 
       const skjemagruppeUtenforDataGrid = actual[0].components[2];
-      expect(skjemagruppeUtenforDataGrid.type).toEqual("navSkjemagruppe");
+      expect(skjemagruppeUtenforDataGrid.type).toBe("navSkjemagruppe");
       expect(skjemagruppeUtenforDataGrid.components).toHaveLength(1);
 
       const datoISkjemagruppeUtenforDataGrid = skjemagruppeUtenforDataGrid.components[0];
-      expect(datoISkjemagruppeUtenforDataGrid.type).toEqual("navDatepicker");
-      expect(datoISkjemagruppeUtenforDataGrid.label).toEqual("Dato i skjemagruppe utenfor Data Grid");
-      expect(datoISkjemagruppeUtenforDataGrid.value).toEqual("4.10.2021");
+      expect(datoISkjemagruppeUtenforDataGrid.type).toBe("navDatepicker");
+      expect(datoISkjemagruppeUtenforDataGrid.label).toBe("Dato i skjemagruppe utenfor Data Grid");
+      expect(datoISkjemagruppeUtenforDataGrid.value).toBe("4.10.2021");
     });
   });
 });

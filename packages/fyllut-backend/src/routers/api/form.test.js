@@ -52,7 +52,7 @@ describe("[endpoint] form", () => {
           }),
         );
         const attachment = response.json.mock.calls[0][0].attachments[0];
-        expect(attachment.label).toEqual("Nynorsk vedleggsnavn");
+        expect(attachment.label).toBe("Nynorsk vedleggsnavn");
       });
 
       it("is not translated when requested lang='en'", async () => {

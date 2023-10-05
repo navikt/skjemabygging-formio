@@ -32,17 +32,17 @@ describe("signatureUtils.ts", () => {
 
   it("return new signature as object array when old formatted single signature is passed", () => {
     const newSignature = signatureUtils.mapBackwardCompatibleSignatures(oldSingleSignature);
-    expect(newSignature?.[0].label).toEqual("Doctor");
-    expect(newSignature?.[0].description).toEqual("Doctor Description");
+    expect(newSignature?.[0].label).toBe("Doctor");
+    expect(newSignature?.[0].description).toBe("Doctor Description");
   });
 
   it("return new signatures as object array when old formatted multiple signatures are passed", () => {
     const newSignature = signatureUtils.mapBackwardCompatibleSignatures(oldMultipleSignatures);
     expect(newSignature).toHaveLength(2);
-    expect(newSignature?.[0].label).toEqual("Doctor");
-    expect(newSignature?.[0].description).toEqual("Doctor Description");
-    expect(newSignature?.[1].label).toEqual("Applicant");
-    expect(newSignature?.[1].description).toEqual("Applicant Description");
+    expect(newSignature?.[0].label).toBe("Doctor");
+    expect(newSignature?.[0].description).toBe("Doctor Description");
+    expect(newSignature?.[1].label).toBe("Applicant");
+    expect(newSignature?.[1].description).toBe("Applicant Description");
   });
 
   it("return new signatures when new signatures are passed as params", () => {
@@ -51,7 +51,7 @@ describe("signatureUtils.ts", () => {
 
   it("returns default signature when undefined is passed as param", () => {
     const newSignature = signatureUtils.mapBackwardCompatibleSignatures(undefined);
-    expect(newSignature?.[0].label).toEqual("");
-    expect(newSignature?.[0].description).toEqual("");
+    expect(newSignature?.[0].label).toBe("");
+    expect(newSignature?.[0].description).toBe("");
   });
 });

@@ -141,12 +141,12 @@ describe("sendInn API helper", () => {
       });
 
       it("adds ettersendelsesfrist as number", () => {
-        expect(body.fristForEttersendelse).toEqual(14);
+        expect(body.fristForEttersendelse).toBe(14);
       });
 
       it("does not add vedleggsListe or kanLasteOppAnnet", () => {
-        expect(body.vedleggsListe).not.toBeDefined();
-        expect(body.kanLasteOppAnnet).not.toBeDefined();
+        expect(body.vedleggsListe).toBeUndefined();
+        expect(body.kanLasteOppAnnet).toBeUndefined();
       });
     });
 
