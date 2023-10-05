@@ -18,7 +18,6 @@ import {
   updateUtfyltSoknad,
 } from "../../api/sendInnSoknad";
 import { useAppConfig } from "../../configContext";
-import { useLanguages } from "../languages";
 import { getSubmissionWithFyllutState, removeFyllutState } from "./utils";
 import { mellomlagringReducer } from "./mellomlagringReducer";
 
@@ -51,18 +50,19 @@ const SendInnProvider = ({
   updateSubmission,
   onFyllutStateChange,
 }: SendInnProviderProps) => {
-  const { translate } = useLanguages();
   const appConfig = useAppConfig();
   const { app, submissionMethod, featureToggles, logger } = appConfig;
-  const { pathname, search } = useLocation();
+  const { pathname } = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
 
   const isMellomlagringEnabled =
     app === "fyllut" && submissionMethod === "digital" && !!featureToggles?.enableMellomlagring;
-  // Is initialized if it has attempted to fetch mellomlagring or if mellomlagring is not enabled
-  const [isInitialized, setIsInitialized] = useState(!isMellomlagringEnabled);
-  // Make sure that we only fetch or create mellomlagring once
-  const [isFetchOrCreateStarted, setIsFetchOrCreateStarted] = useState(false);
+  // isMellomlagringReady is true if we either have successfully fetched or created mellomlagring, or if mellomlagring is not enabled
+  const [isMellomlagringReady, setIsMellomlagringReady] = useState(!isMellomlagringEnabled);
+  // isInitialized is true if it has attempted to fetch mellomlagring
+  const [isInitialized, setIsInitialized] = useState(false);
+  // Make sure that we only create once
+  const [isCreateStarted, setIsCreateStarted] = useState(false);
   const [innsendingsId, setInnsendingsId] = useState<string>();
   const [fyllutMellomlagringState, dispatchFyllutMellomlagring] = useReducer(mellomlagringReducer, undefined);
 
@@ -83,7 +83,6 @@ const SendInnProvider = ({
   }, [fyllutMellomlagringState]);
 
   const retrieveMellomlagring = async (innsendingsId: string) => {
-    setIsFetchOrCreateStarted(true);
     const response = await getSoknad(innsendingsId, appConfig);
     if (response?.hoveddokumentVariant.document) {
       addQueryParamToUrl("lang", response.hoveddokumentVariant.document.language);
@@ -96,9 +95,10 @@ const SendInnProvider = ({
     const initializeMellomlagring = async () => {
       try {
         const innsendingsId = searchParams.get("innsendingsId");
-        if (!isFetchOrCreateStarted && innsendingsId) {
+        if (innsendingsId) {
           setInnsendingsId(innsendingsId);
           await retrieveMellomlagring(innsendingsId);
+          setIsMellomlagringReady(true);
         }
       } catch (error: any) {
         dispatchFyllutMellomlagring({ type: "error", error: error.status === 404 ? "NOT FOUND" : "GET FAILED" });
@@ -109,7 +109,7 @@ const SendInnProvider = ({
     if (!isInitialized) {
       initializeMellomlagring();
     }
-  }, [isMellomlagringEnabled, isFetchOrCreateStarted, search, translate, retrieveMellomlagring]);
+  }, [searchParams, retrieveMellomlagring]);
 
   const nbNO: Language = "nb-NO";
 
@@ -125,12 +125,12 @@ const SendInnProvider = ({
   };
 
   const startMellomlagring = async (submission: Submission) => {
-    if (!isMellomlagringEnabled || !isInitialized || isFetchOrCreateStarted) {
+    if (isMellomlagringReady || !isInitialized || isCreateStarted) {
       return;
     }
 
     try {
-      setIsFetchOrCreateStarted(true);
+      setIsCreateStarted(true);
       const currentLanguage = getLanguageFromSearchParams();
       const translation = translationForLanguage(currentLanguage);
       const response = await createSoknad(appConfig, form, removeFyllutState(submission), currentLanguage, translation);
@@ -138,6 +138,7 @@ const SendInnProvider = ({
       dispatchFyllutMellomlagring({ type: "init", response });
       setInnsendingsId(response?.innsendingsId);
       addQueryParamToUrl("innsendingsId", response?.innsendingsId);
+      setIsMellomlagringReady(true);
       return response;
     } catch (error: any) {
       logger?.info("Oppretting av mellomlagring feilet", error);
@@ -145,7 +146,7 @@ const SendInnProvider = ({
   };
 
   const updateMellomlagring = async (submission: Submission): Promise<SendInnSoknadResponse | undefined> => {
-    if (!(isMellomlagringEnabled && isInitialized)) {
+    if (!isMellomlagringEnabled || !isMellomlagringReady) {
       return;
     }
 
@@ -169,7 +170,7 @@ const SendInnProvider = ({
   };
 
   const deleteMellomlagring = async (): Promise<{ status: string; info: string } | undefined> => {
-    if (!(isMellomlagringEnabled && isInitialized && innsendingsId)) {
+    if (!isMellomlagringEnabled || !innsendingsId) {
       return;
     }
 
@@ -182,7 +183,7 @@ const SendInnProvider = ({
   };
 
   const submitSoknad = async (appSubmission: Submission) => {
-    if (!isInitialized) {
+    if (!isMellomlagringReady) {
       return;
     }
 
@@ -213,7 +214,7 @@ const SendInnProvider = ({
     innsendingsId,
     isMellomlagringEnabled,
     isMellomlagringActive: !!fyllutMellomlagringState?.isActive,
-    isMellomlagringReady: isInitialized,
+    isMellomlagringReady,
     mellomlagringError: fyllutMellomlagringState?.error,
   };
 
