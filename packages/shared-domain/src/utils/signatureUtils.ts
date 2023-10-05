@@ -1,7 +1,7 @@
 import { FormSignaturesType, NewFormSignatureType } from "../form";
+import { v4 as uuidv4 } from "uuid";
 
-// TODO: Remove ${Date.now()}-${Math.random()} when we use node 20.
-const defaultSignature = [{ label: "", description: "", key: `${Date.now()}-${Math.random()}` }];
+const defaultSignature = [{ label: "", description: "", key: uuidv4() }];
 
 export const hasOnlyDefaultSignaturesValues = (signature?: NewFormSignatureType[] | FormSignaturesType) => {
   if (signature) {
@@ -28,8 +28,7 @@ export const mapBackwardCompatibleSignatures = (
       return signatureKeys.map((key) => ({
         label: signatures[key],
         description: signatures[`${key}Description`],
-        // TODO: Remove ${Date.now()}-${Math.random()} when we use node 20.
-        key: `${Date.now()}-${Math.random()}`,
+        key: uuidv4(),
       }));
     } else {
       return defaultSignature;
