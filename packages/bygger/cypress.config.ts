@@ -7,6 +7,5 @@ export default defineConfig({
     viewportWidth: 1280,
     viewportHeight: 1000,
     testIsolation: false,
-    setupNodeEvents(on, config) {},
   },
 });

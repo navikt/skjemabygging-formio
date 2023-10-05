@@ -3,7 +3,7 @@ import { HttpError as OldHttpError } from "../../../fetchUtils";
 import { logger } from "../../../logging/logger";
 import { ApiError, HttpError } from "./errors";
 
-const apiErrorHandler = (error: Error, req: Request, res: Response, next: NextFunction) => {
+const apiErrorHandler = (error: Error, req: Request, res: Response, _next: NextFunction) => {
   if (error instanceof HttpError) {
     logger.error(`HttpError: ${error.message} (${error.status})`);
     res.sendStatus(error.status);

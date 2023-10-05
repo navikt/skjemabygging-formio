@@ -129,7 +129,7 @@ const multipleAnswers = (component: Summary.Selectboxes) => `
 <div class="spm">${component.label}</div>
 ${component.value.map((val) => `<div class="svar">: ${val}</div>`).join("")}`;
 
-const signature = ({ label, description, key }: NewFormSignatureType, translate: TranslateFunction) => `
+const signature = ({ label, description, _key }: NewFormSignatureType, translate: TranslateFunction) => `
 <h3>${translate(label)}</h3>
 <div class="underskrift">${description ? translate(description) : ""}</div>
 <div class="underskrift">${translate(TEXTS.pdfStatiske.placeAndDate)} _________________________________________</div>

@@ -75,7 +75,7 @@ const FormStepper = ({ form, submission, formUrl }: FormStepperProps) => {
                 as={Link}
                 key={step.url}
                 completed
-                onClick={(e) => {
+                onClick={() => {
                   loggNavigering({
                     lenkeTekst: translate(step.label),
                     destinasjon: step.url,

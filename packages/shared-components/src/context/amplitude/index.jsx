@@ -13,13 +13,13 @@ import useSkjemaSporsmalEvent from "./skjemaEventHook";
 import useSkjemaStegFullfort from "./skjemaStegFullfortHook";
 
 const defaultValues = {
-  loggSkjemaApnet: (innsendingsKanal) => {},
-  loggSkjemaSporsmalBesvart: (event) => {},
-  loggSkjemaSporsmalBesvartForSpesialTyper: (event) => {},
-  loggSkjemaStegFullfort: (data) => {},
-  loggSpraakValg: (spraak) => {},
-  loggNavigering: (data) => {},
-  loggDokumentLastetNed: (tittel) => {},
+  loggSkjemaApnet: (_innsendingsKanal) => {},
+  loggSkjemaSporsmalBesvart: (_event) => {},
+  loggSkjemaSporsmalBesvartForSpesialTyper: (_event) => {},
+  loggSkjemaStegFullfort: (_data) => {},
+  loggSpraakValg: (_spraak) => {},
+  loggNavigering: (_data) => {},
+  loggDokumentLastetNed: (_tittel) => {},
   loggSkjemaValideringFeilet: () => {},
   loggSkjemaInnsendingFeilet: () => {},
   loggSkjemaFullfort: () => {},

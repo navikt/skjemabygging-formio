@@ -5,7 +5,7 @@ interface Props {
   formUrl: string;
 }
 
-const PanelSummary = ({ component, formUrl }: Props) => {
+const PanelSummary = (_props: Props) => {
   return <div></div>;
 };
 

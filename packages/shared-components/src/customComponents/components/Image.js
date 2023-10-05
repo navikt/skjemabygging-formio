@@ -15,7 +15,7 @@ export default class Image extends Component {
     });
   }
 
-  static editForm(...extend) {
+  static editForm(..._extend) {
     return ComponentEditForm([
       {
         label: "Display",

@@ -21,17 +21,11 @@
   },
   "rules": {
     "no-unused-labels": "error",
-    "no-unused-vars": "off",
-    "import/no-duplicates": "error",
-    "@typescript-eslint/no-unused-vars": ["error", { "args": "none" }],
-    "@typescript-eslint/ban-types": "off",
-    "@typescript-eslint/no-explicit-any": "off",
-    "@typescript-eslint/ban-ts-comment": "off",
-    "@typescript-eslint/no-non-null-assertion": "off",
-    "@typescript-eslint/no-empty-function": "off",
-    "@typescript-eslint/no-non-null-asserted-optional-chain": "off",
-    "@typescript-eslint/no-inferrable-types": "off",
-    "@typescript-eslint/no-namespace": "off",
+    "@typescript-eslint/no-unused-vars": ["warn", { "ignoreRestSiblings": true, "argsIgnorePattern": "^[_$].*"}], // ignore unused variables starting with _ or $
+    "@typescript-eslint/ban-types": "off", // TODO: remove 'Function' as a type mostly
+    "@typescript-eslint/no-explicit-any": "off", // explicit any's
+    "@typescript-eslint/ban-ts-comment": "off", // @ts-ignore and @ts-nocheck comments
+    "@typescript-eslint/no-namespace": "off", // TODO: FormSummaryType.ts has a Summary namespace
     "no-extra-boolean-cast": "off",
     "no-case-declarations": "off",
     "vitest/prefer-to-be": "off",

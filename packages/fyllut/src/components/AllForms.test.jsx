@@ -14,7 +14,7 @@ describe("AllForms", () => {
   });
 
   it("Show loading when fetching forms from backend and show find no forms when there is no form fetched", async () => {
-    fetchMock.mockImplementation((url) => {
+    fetchMock.mockImplementation((_url) => {
       return Promise.resolve(new Response(JSON.stringify([]), RESPONSE_HEADERS));
     });
 
@@ -39,7 +39,7 @@ describe("AllForms", () => {
         properties: { innsending: "KUN_DIGITAL" },
       },
     ];
-    fetchMock.mockImplementation((url) => {
+    fetchMock.mockImplementation((_url) => {
       return Promise.resolve(new Response(JSON.stringify(mockedForm), RESPONSE_HEADERS));
     });
 

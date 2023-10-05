@@ -28,7 +28,7 @@ const useStyles = makeStyles({
   },
 });
 
-export function FormTitle({ form, className }: Props) {
+export function FormTitle({ form }: Props) {
   const { translate } = useLanguages();
   const styles = useStyles();
 

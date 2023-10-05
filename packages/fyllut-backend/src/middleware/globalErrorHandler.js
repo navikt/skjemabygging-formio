@@ -3,7 +3,7 @@ import { config } from "../config/config";
 
 const { isTest } = config;
 
-const globalErrorHandler = (err, req, res, next) => {
+const globalErrorHandler = (err, req, res, _next) => {
   if (!err.correlation_id) {
     err.correlation_id = correlator.getId();
   }

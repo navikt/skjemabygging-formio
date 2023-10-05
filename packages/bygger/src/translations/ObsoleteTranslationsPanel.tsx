@@ -12,7 +12,7 @@ interface Props {
   onDelete: (t: ObsoleteTranslation) => {};
 }
 
-const ObsoleteTranslationsPanel = ({ translations, className, onDelete }: Props) => {
+const ObsoleteTranslationsPanel = ({ translations, onDelete }: Props) => {
   return (
     <Accordion className="mb">
       <Accordion.Item>

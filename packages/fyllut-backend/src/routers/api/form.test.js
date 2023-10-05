@@ -5,7 +5,7 @@ import form from "./form";
 
 describe("[endpoint] form", () => {
   it("returns 404 when form is not found", async () => {
-    vi.spyOn(FormService.prototype, "loadForm").mockImplementationOnce(async (formPath) => undefined);
+    vi.spyOn(FormService.prototype, "loadForm").mockImplementationOnce(async (_formPath) => undefined);
     const request = mockRequest({ params: { formPath: "nav123456" } });
     const response = mockResponse();
     await form.get(request, response);

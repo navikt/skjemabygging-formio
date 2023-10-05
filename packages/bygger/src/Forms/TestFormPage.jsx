@@ -2,7 +2,7 @@ import { FyllUtRouter, useAppConfig } from "@navikt/skjemadigitalisering-shared-
 import { AppLayout } from "../components/AppLayout";
 import { useI18nState } from "../context/i18n/I18nContext";
 
-export function TestFormPage({ form, visSkjemaMeny }) {
+export function TestFormPage({ form }) {
   const { featureToggles } = useAppConfig();
   const { translationsForNavForm } = useI18nState();
 

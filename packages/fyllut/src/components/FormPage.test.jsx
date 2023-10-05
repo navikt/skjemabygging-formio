@@ -40,7 +40,7 @@ describe("FormPage", () => {
 
   describe("FeatureToggle enableTranslations=false", () => {
     it("renders form when translations are not enabled", async () => {
-      fetchMock.mockImplementation((url, options) => {
+      fetchMock.mockImplementation((url, _options) => {
         return Promise.reject(new Error(`Ingen kall til backend forventes: ${url}`));
       });
 
@@ -53,7 +53,7 @@ describe("FormPage", () => {
 
   describe("Language selector", () => {
     it("is not rendered if no translations are available", async () => {
-      fetchMock.mockImplementation((url, options) => {
+      fetchMock.mockImplementation((url, _options) => {
         if (url === "/fyllut/api/translations/testskjema") {
           return Promise.resolve(new Response(JSON.stringify({}), RESPONSE_HEADERS));
         }
@@ -73,7 +73,7 @@ describe("FormPage", () => {
     });
 
     it("allows selection of other language for the form", async () => {
-      fetchMock.mockImplementation((url, options) => {
+      fetchMock.mockImplementation((url, _options) => {
         if (url === "/fyllut/api/translations/testskjema") {
           return Promise.resolve(new Response(JSON.stringify(translations), RESPONSE_HEADERS));
         }

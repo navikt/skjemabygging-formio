@@ -225,8 +225,8 @@ describe("app", () => {
     const skjemabyggingproxyScope = nock(process.env.SKJEMABYGGING_PROXY_URL as string)
       .post("/exstream")
       .reply(200, { data: { result: [{ content: { data: "" } }] } });
-    const tokenxWellKnownScope = nock(extractHost(tokenxConfig?.wellKnownUrl!))
-      .get(extractPath(tokenxConfig?.wellKnownUrl!))
+    const tokenxWellKnownScope = nock(extractHost(tokenxConfig?.wellKnownUrl))
+      .get(extractPath(tokenxConfig?.wellKnownUrl))
       .reply(200, { token_endpoint: tokenxEndpoint });
     const tokenEndpointNockScope = nock(extractHost(tokenxEndpoint))
       .post(extractPath(tokenxEndpoint))

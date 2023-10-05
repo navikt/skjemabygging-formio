@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect } from "react";
 import useMessageQueue, { Message } from "../../hooks/useMessageQueue";
 
-const defaultEmit = (message: string) => {};
+const defaultEmit = (_message: string) => {};
 
 export const FeedbackEmitContext = createContext({
   success: defaultEmit,
