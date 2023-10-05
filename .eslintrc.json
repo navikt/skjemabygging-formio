@@ -2,10 +2,13 @@
   "extends": [
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
     "plugin:vitest/recommended",
     "plugin:vitest-globals/recommended",
-    "plugin:cypress/recommended"
+    "plugin:cypress/recommended",
+    "prettier"
   ],
+  "parser": "@typescript-eslint/parser",
   "plugins": ["react", "react-hooks", "import", "@typescript-eslint", "vitest", "cypress"],
   "globals": {
     "fetchMock": true,
