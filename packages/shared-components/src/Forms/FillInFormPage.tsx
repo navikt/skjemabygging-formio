@@ -246,9 +246,6 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
         open={!!showModal}
         onClose={() => setShowModal(undefined)}
         onConfirm={onConfirmCancel}
-        onError={(err) => {
-          console.error(err);
-        }}
         confirmType={showModal === "save" ? "primary" : "danger"}
         texts={getModalTexts(showModal)}
         exitUrl={exitUrl}

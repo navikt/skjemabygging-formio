@@ -73,7 +73,7 @@ const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList,
           {translate(mellomlagringError.message)}
         </Alert>
       )}
-      {error && !mellomlagringError && (
+      {error && (
         <Alert variant="error" className="mb" data-testid="error-message">
           {error.message}
         </Alert>
@@ -148,7 +148,7 @@ const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList,
           )}
           <EditAnswersButton form={form} formUrl={formUrl} panelValidationList={panelValidationList} />
         </div>
-        {isMellomlagringActive && <SaveAndDeleteButtons submission={submission} onError={(error) => setError(error)} />}
+        {isMellomlagringActive && <SaveAndDeleteButtons submission={submission} />}
         {!isMellomlagringActive && (
           <div className="button-row button-row__center">
             <Button variant="tertiary" onClick={() => setIsCancelModalOpen(true)}>
