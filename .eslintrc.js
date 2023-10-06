@@ -20,6 +20,8 @@ module.exports = {
     "cypress/globals": true,
   },
   rules: {
+    "no-unused-labels": "error", // Should not have any unused labels
+    "import/no-duplicates": "error", // Should not import the same module twice (should be handled automatically by prettier-plugin-organize-imports)
     "@typescript-eslint/no-unused-vars": ["warn", { ignoreRestSiblings: true, argsIgnorePattern: "^[_$].*" }], // ignores unused variables starting with _ or $
     "@typescript-eslint/ban-types": "off", // TODO: Remove 'Function' as a type mostly
     "@typescript-eslint/no-explicit-any": "off", // Explicit any's
