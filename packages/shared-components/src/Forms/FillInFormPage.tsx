@@ -92,7 +92,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
     return <ErrorPage errorMessage={mellomlagringError.message} />;
   }
 
-  if (isMellomlagringEnabled && !isMellomlagringReady) {
+  if (isMellomlagringEnabled && !isMellomlagringReady && !mellomlagringError) {
     return <LoadingComponent heightOffsetRem={18} />;
   }
 
