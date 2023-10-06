@@ -59,7 +59,7 @@ const SendInnProvider = ({
     app === "fyllut" && submissionMethod === "digital" && !!featureToggles?.enableMellomlagring;
   // isMellomlagringReady is true if we either have successfully fetched or created mellomlagring, or if mellomlagring is not enabled
   const [isMellomlagringReady, setIsMellomlagringReady] = useState(!isMellomlagringEnabled);
-  const [initStatus, setInitStatus] = useState<"pending" | "started" | "done">("pending");
+  const [initStatus, setInitStatus] = useState<"pending" | "started" | "done" | "error">("pending");
   // Make sure that we only create once
   const [isCreateStarted, setIsCreateStarted] = useState(false);
   const [innsendingsId, setInnsendingsId] = useState<string>();
@@ -93,17 +93,19 @@ const SendInnProvider = ({
   useEffect(() => {
     const initializeMellomlagring = async () => {
       try {
-        const innsendingsId = searchParams.get("innsendingsId");
-        if (innsendingsId && initStatus === "pending") {
-          setInitStatus("started");
-          setInnsendingsId(innsendingsId);
-          await retrieveMellomlagring(innsendingsId);
-          setIsMellomlagringReady(true);
+        if (initStatus === "pending") {
+          const innsendingsId = searchParams.get("innsendingsId");
+          if (innsendingsId) {
+            setInitStatus("started");
+            setInnsendingsId(innsendingsId);
+            await retrieveMellomlagring(innsendingsId);
+            setIsMellomlagringReady(true);
+          }
           setInitStatus("done");
         }
       } catch (error: any) {
         dispatchFyllutMellomlagring({ type: "error", error: error.status === 404 ? "NOT FOUND" : "GET FAILED" });
-        setInitStatus("done");
+        setInitStatus("error");
       }
     };
     initializeMellomlagring();
