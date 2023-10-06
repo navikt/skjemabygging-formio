@@ -12,6 +12,7 @@ import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import "@testing-library/cypress/add-commands";
 import "cypress-wait-until";
 import { parse } from "querystring";
+import { expect } from "chai";
 
 // -- This is a parent command --
 // Cypress.Commands.add('login', (email, password) => { ... })

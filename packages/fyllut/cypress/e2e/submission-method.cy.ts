@@ -1,3 +1,5 @@
+import { expect } from "chai";
+
 describe("Submission method", () => {
   beforeEach(() => {
     cy.defaultIntercepts();

@@ -63,7 +63,7 @@ describe("FormsRouter", () => {
     renderApp("/forms");
     const link = await screen.findByRole("link", { name: "debug skjema" });
     await userEvent.click(link);
-    expect(await screen.findByRole("heading", { name: "debug skjema" }));
+    expect(await screen.findByRole("heading", { name: "debug skjema" })).toBeInTheDocument();
     expect(await screen.findByLabelText("Text Area", { exact: false })).toBeInTheDocument();
   });
 

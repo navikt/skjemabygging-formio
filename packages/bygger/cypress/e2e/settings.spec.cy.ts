@@ -1,3 +1,5 @@
+import { expect } from "chai";
+
 const _submitData = {
   title: "Cypress test for settings page",
   skjemanummer: "cypress-innstillinger",

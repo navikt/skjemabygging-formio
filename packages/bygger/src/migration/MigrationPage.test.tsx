@@ -79,8 +79,8 @@ describe("MigrationPage", () => {
   });
 
   it("renders options form for search filters and edit options", () => {
-    expect(screen.getByRole("heading", { level: 2, name: "Komponenten må oppfylle følgende" }));
-    expect(screen.getByRole("heading", { level: 2, name: "Nye verdier for felter i komponenten" }));
+    expect(screen.getByRole("heading", { level: 2, name: "Komponenten må oppfylle følgende" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 2, name: "Nye verdier for felter i komponenten" })).toBeInTheDocument();
   });
 
   describe("Migration dry run", () => {

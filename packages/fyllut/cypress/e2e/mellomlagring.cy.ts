@@ -1,4 +1,5 @@
 import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
+import { expect } from "chai";
 
 describe("Mellomlagring", () => {
   beforeEach(() => {

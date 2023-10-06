@@ -20,14 +20,13 @@ module.exports = {
     "cypress/globals": true,
   },
   rules: {
-    "@typescript-eslint/no-unused-vars": ["warn", { ignoreRestSiblings: true, argsIgnorePattern: "^[_$].*" }], // ignore unused variables starting with _ or $
+    "@typescript-eslint/no-unused-vars": ["warn", { ignoreRestSiblings: true, argsIgnorePattern: "^[_$].*" }], // ignores unused variables starting with _ or $
     "@typescript-eslint/ban-types": "off", // TODO: Remove 'Function' as a type mostly
     "@typescript-eslint/no-explicit-any": "off", // Explicit any's
     "@typescript-eslint/ban-ts-comment": "off", // @ts-ignore and @ts-nocheck comments
     "@typescript-eslint/no-namespace": "off", // TODO: FormSummaryType.ts has a Summary namespace
     "no-extra-boolean-cast": "off", // TODO: Remove redudant "!!"
     "no-case-declarations": "off", // TODO: Remove "let/const" in switch cases
-    "vitest/valid-expect": "off",
     "vitest/valid-title": "off",
     "vitest/expect-expect": "off",
     "react/jsx-key": ["error", { checkFragmentShorthand: true }],

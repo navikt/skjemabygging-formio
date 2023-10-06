@@ -147,7 +147,7 @@ describe("PrepareLetterPage", () => {
       renderPrepareLetterPage(form);
 
       await userEvent.click(await screen.findByRole("button", { name: "Last ned førsteside" }));
-      expect(await screen.findByText(TEXTS.statiske.prepareLetterPage.entityNotSelectedError));
+      expect(await screen.findByText(TEXTS.statiske.prepareLetterPage.entityNotSelectedError)).toBeInTheDocument();
       expect(pdfDownloads).toHaveLength(0);
     });
   });
