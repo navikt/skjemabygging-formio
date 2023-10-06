@@ -267,7 +267,7 @@ describe("formDiffingTool", () => {
       });
       expect(changes.diff.id).toBeUndefined();
     });
-    it("marks ", () => {
+    it("marks label as changed", () => {
       const comp = {
         ...getComp("fornavn"),
         defaultValue: "Kasper",

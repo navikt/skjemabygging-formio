@@ -48,7 +48,7 @@ describe("GlobalTranslationRow", () => {
     expect(screen.getByTestId("translation")).toHaveValue("Norway");
   });
 
-  it("renders disabled translation input when original text exists in predefined original text list ", async () => {
+  it("renders disabled translation input when original text exists in predefined original text list", async () => {
     renderGlobalTranslationRow("forrige", "", []);
     const originalTextInput = screen.getByTestId("originalText");
     const translationInput = screen.getByTestId("translation");

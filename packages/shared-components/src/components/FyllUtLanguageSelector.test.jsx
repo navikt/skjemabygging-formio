@@ -23,7 +23,7 @@ describe("Test FyllUtLanguageSelector in FyllUtRouter", () => {
     expect(screen.queryByText("Norsk bokmål")).toBeNull();
   });
 
-  it("render languageSelector with default label and nynorsk as option when there is no language selected and only with nynorsk translations ", async () => {
+  it("render languageSelector with default label and nynorsk as option when there is no language selected and only with nynorsk translations", async () => {
     renderFyllUtLanguageSelector({ "nn-NO": { Etternavn: "Etternamn", Fornavn: "Fornamn" } });
     const languageSelector = screen.getByRole("button", { name: "Norsk bokmål" });
     expect(languageSelector).toBeDefined();
@@ -31,7 +31,7 @@ describe("Test FyllUtLanguageSelector in FyllUtRouter", () => {
     expect(screen.getByText("Norsk nynorsk")).toBeTruthy();
   });
 
-  it("render languageSelector with Nynorsk as label and Bokmål as option when the selected language is nynorsk and there is only nynorsk translations ", async () => {
+  it("render languageSelector with Nynorsk as label and Bokmål as option when the selected language is nynorsk and there is only nynorsk translations", async () => {
     renderFyllUtLanguageSelector(
       { "nn-NO": { Etternavn: "Etternamn", Fornavn: "Fornamn" } },
       "/testForm/view?lang=nn-NO",
@@ -42,7 +42,7 @@ describe("Test FyllUtLanguageSelector in FyllUtRouter", () => {
     expect(screen.getByText("Norsk bokmål")).toBeTruthy();
   });
 
-  it("render languageSelector with Nynorsk as label and Bokmål as option when there are bokmål translations and nynorsk translations ", async () => {
+  it("render languageSelector with Nynorsk as label and Bokmål as option when there are bokmål translations and nynorsk translations", async () => {
     renderFyllUtLanguageSelector(
       { "nn-NO": { Etternavn: "Etternamn", Fornavn: "Fornamn" } },
       "/testForm/view?lang=nn-NO",

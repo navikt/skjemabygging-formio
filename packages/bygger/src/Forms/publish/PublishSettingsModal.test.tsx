@@ -108,7 +108,7 @@ describe("PublishSettingsModal", () => {
     ).toBeInTheDocument();
   });
 
-  it("publish will send en-languageCode if the English checkbox is checked ", async () => {
+  it("publish will send en-languageCode if the English checkbox is checked", async () => {
     const form = createFormObject(
       [createPanelObject("Personinformasjon", [createDummyRadioPanel("Bor du i Norge?")])],
       "Veiledning",

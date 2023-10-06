@@ -572,7 +572,7 @@ describe("form summary", () => {
   });
 
   describe("When creating form summary object", () => {
-    it("it is created as it should", () => {
+    it("is created as it should", () => {
       const actual = createFormSummaryObject(
         createFormObject([
           createPanelObject("Panel that should not be included", [

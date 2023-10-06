@@ -25,7 +25,7 @@ describe("ConfirmDeleteLanguageModal", () => {
   });
 
   describe("When 'Slett språk' is clicked", () => {
-    it("calls onConfirm ", () => {
+    it("calls onConfirm", () => {
       screen.getByRole("button", { name: "Slett språk" }).click();
       expect(mockedOnConfirm).toHaveBeenCalledTimes(1);
     });
