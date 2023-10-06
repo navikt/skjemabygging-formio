@@ -122,6 +122,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
 
   function onNextPage({ page, currentPanels, submission }) {
     updateMellomlagring(submission);
+    setSubmission(submission);
     loggNavigering({
       lenkeTekst: translate(TEXTS.grensesnitt.navigation.next),
       destinasjon: `${formUrl}/${currentPanels?.[page]}`,
