@@ -27,12 +27,12 @@ module.exports = {
     "@typescript-eslint/no-namespace": "off", // TODO: FormSummaryType.ts has a Summary namespace
     "no-extra-boolean-cast": "off", // TODO: Remove redudant "!!"
     "no-case-declarations": "off", // TODO: Remove "let/const" in switch cases
-    "vitest/expect-expect": "off",
-    "react/jsx-key": ["error", { checkFragmentShorthand: true }],
+    "vitest/expect-expect": "off", // Cypress tests don't necessarily use expect
+    "react/jsx-key": ["error", { checkFragmentShorthand: true }], // There was an error with a missing key that crashed the app
     "import/no-internal-modules": [
       "error",
       { forbid: ["@navikt/skjemadigitalisering-shared-@(components|domain)/**"] },
-    ],
+    ], // Should not import from shared components or domain
   },
   root: true,
 };
