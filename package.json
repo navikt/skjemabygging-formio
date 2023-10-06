@@ -34,7 +34,8 @@
     "check-types": "yarn workspaces run check-types",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx,.mjs",
     "lint:staged": "lint-staged",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "prettier": "prettier --write ."
   },
   "devDependencies": {
     "@testing-library/cypress": "^9.0.0",
