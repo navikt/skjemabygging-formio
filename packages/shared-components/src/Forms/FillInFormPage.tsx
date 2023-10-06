@@ -199,24 +199,23 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
   };
 
   const onConfirmCancel = async () => {
-    let buttonText: string;
+    const log = (lenkeTekst) =>
+      loggNavigering({
+        lenkeTekst,
+        destinasjon: exitUrl,
+      });
+
     switch (showModal) {
       case "save":
-        buttonText = TEXTS.grensesnitt.navigation.saveDraft;
-        await updateMellomlagring(submission);
-        break;
+        log(translate(TEXTS.grensesnitt.navigation.saveDraft));
+        return await updateMellomlagring(submission);
       case "delete":
-        buttonText = TEXTS.grensesnitt.navigation.saveDraft;
-        await deleteMellomlagring();
-        break;
+        log(translate(TEXTS.grensesnitt.navigation.saveDraft));
+        return await deleteMellomlagring();
       case "discard":
       default:
-        buttonText = TEXTS.grensesnitt.navigation.cancel;
+        log(translate(TEXTS.grensesnitt.navigation.cancel));
     }
-    loggNavigering({
-      lenkeTekst: translate(buttonText),
-      destinasjon: exitUrl,
-    });
   };
 
   if (!formForRendering) {

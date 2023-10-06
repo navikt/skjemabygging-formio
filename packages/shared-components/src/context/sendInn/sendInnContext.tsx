@@ -23,8 +23,8 @@ import { mellomlagringReducer } from "./mellomlagringReducer";
 
 interface SendInnContextType {
   startMellomlagring: (submission: Submission) => Promise<SendInnSoknadResponse | undefined>;
-  updateMellomlagring: (submission: Submission) => Promise<SendInnSoknadResponse | undefined>;
-  submitSoknad: (submission: Submission) => Promise<SendInnSoknadResponse | undefined>;
+  updateMellomlagring: (submission: Submission) => Promise<SendInnSoknadResponse | Error | undefined>;
+  submitSoknad: (submission: Submission) => Promise<SendInnSoknadResponse | Error | undefined>;
   deleteMellomlagring: () => Promise<{ status: string; info: string } | undefined>;
   isMellomlagringActive: boolean;
   isMellomlagringEnabled: boolean;
@@ -145,7 +145,7 @@ const SendInnProvider = ({
     }
   };
 
-  const updateMellomlagring = async (submission: Submission): Promise<SendInnSoknadResponse | undefined> => {
+  const updateMellomlagring = async (submission: Submission): Promise<SendInnSoknadResponse | Error | undefined> => {
     if (!isMellomlagringEnabled || !isMellomlagringReady) {
       return;
     }
@@ -163,22 +163,24 @@ const SendInnProvider = ({
       );
       dispatchFyllutMellomlagring({ type: "update", response });
       return response;
-    } catch (error: any) {
+    } catch (error) {
       dispatchFyllutMellomlagring({ type: "error", error: "UPDATE FAILED" });
-      logger?.info("Oppdatering av mellomlagring feilet", error);
+      logger?.info("Oppdatering av mellomlagring feilet", error as Error);
+      return error as Error;
     }
   };
 
-  const deleteMellomlagring = async (): Promise<{ status: string; info: string } | undefined> => {
+  const deleteMellomlagring = async (): Promise<{ status: string; info: string } | Error | undefined> => {
     if (!isMellomlagringEnabled || !innsendingsId) {
       return;
     }
 
     try {
       return await deleteSoknad(appConfig, innsendingsId);
-    } catch (error: any) {
+    } catch (error) {
       dispatchFyllutMellomlagring({ type: "error", error: "DELETE FAILED" });
-      logger?.info("Sletting av mellomlagring feilet", error);
+      logger?.info("Sletting av mellomlagring feilet", error as Error);
+      return error as Error;
     }
   };
 
