@@ -144,6 +144,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
   }
 
   function onSave({ submission }) {
+    setSubmission(submission);
     setShowModal("save");
   }
 
