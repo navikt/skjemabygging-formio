@@ -1,17 +1,17 @@
-import { BodyShort, Button } from "@navikt/ds-react";
-import { Modal, useLanguages } from "../../../index";
-import { useState } from "react";
+import { BodyShort, Button } from '@navikt/ds-react';
+import { useState } from 'react';
+import { Modal, useLanguages } from '../../../index';
 
-import makeStyles from "../../../util/jss";
+import makeStyles from '../../../util/jss';
 
 const useStyles = makeStyles({
   modalBody: {
-    paddingTop: "1.1rem",
-    paddingBottom: "4rem",
-    fontSize: "1.25rem",
+    paddingTop: '1.1rem',
+    paddingBottom: '4rem',
+    fontSize: '1.25rem',
   },
   modal: {
-    maxWidth: "40rem",
+    maxWidth: '40rem',
   },
 });
 
@@ -21,7 +21,7 @@ interface Props {
   onConfirm: () => Promise<any> | void;
   onError?: Function;
   exitUrl?: string;
-  confirmType: "primary" | "danger";
+  confirmType: 'primary' | 'danger';
   texts: {
     title: string;
     body: string;

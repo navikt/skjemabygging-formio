@@ -1,17 +1,17 @@
-import { BodyShort, Heading, Table } from "@navikt/ds-react";
-import { makeStyles } from "@navikt/skjemadigitalisering-shared-components";
-import { NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
-import { FormMigrationLogData } from "../../../types/migration";
-import FormStatus, { determineStatus } from "../../Forms/status/FormStatus";
+import { BodyShort, Heading, Table } from '@navikt/ds-react';
+import { makeStyles } from '@navikt/skjemadigitalisering-shared-components';
+import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
+import { FormMigrationLogData } from '../../../types/migration';
+import FormStatus, { determineStatus } from '../../Forms/status/FormStatus';
 
 const useStyles = makeStyles({
   container: {
-    marginBottom: "2rem",
+    marginBottom: '2rem',
   },
 });
 
 const isNavForm = (element: FormMigrationLogData | NavFormType): element is NavFormType => {
-  return !!element["properties"];
+  return !!element['properties'];
 };
 
 export const FormList = ({
@@ -48,7 +48,7 @@ export const FormList = ({
                   <Table.DataCell>
                     <FormStatus
                       status={determineStatus(isNavForm(element) ? element.properties : element)}
-                      size={"small"}
+                      size={'small'}
                     />
                   </Table.DataCell>
                 </Table.Row>

@@ -1,21 +1,21 @@
-import { AppConfigProvider, Modal, url } from "@navikt/skjemadigitalisering-shared-components";
-import React from "react";
-import { BrowserRouter } from "react-router-dom";
-import App from "./App";
-import ConfirmDelingslenkeModal from "./components/ConfirmDelingslenkeModal";
-import getDokumentinnsendingBaseURL from "./getDokumentinnsendingBaseURL";
-import httpFyllut from "./util/httpFyllut";
-import { ConfigType } from "@navikt/skjemadigitalisering-shared-domain";
-import ReactDOM from "react-dom";
+import { AppConfigProvider, Modal, url } from '@navikt/skjemadigitalisering-shared-components';
+import { ConfigType } from '@navikt/skjemadigitalisering-shared-domain';
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { BrowserRouter } from 'react-router-dom';
+import App from './App';
+import ConfirmDelingslenkeModal from './components/ConfirmDelingslenkeModal';
+import getDokumentinnsendingBaseURL from './getDokumentinnsendingBaseURL';
+import httpFyllut from './util/httpFyllut';
 
-if (process.env.NODE_ENV !== "test") Modal.setAppElement("#root");
+if (process.env.NODE_ENV !== 'test') Modal.setAppElement('#root');
 
 let featureToggles = {};
 
-const subissionMethod = url.getUrlParam(window.location.search, "sub");
+const subissionMethod = url.getUrlParam(window.location.search, 'sub');
 
 httpFyllut
-  .get<ConfigType>("/fyllut/api/config")
+  .get<ConfigType>('/fyllut/api/config')
   .then((json) => {
     if (json.FEATURE_TOGGLES) {
       featureToggles = json.FEATURE_TOGGLES;
@@ -33,8 +33,8 @@ const renderReact = (dokumentInnsendingBaseURL, config) => {
         <AppConfigProvider
           dokumentinnsendingBaseURL={dokumentInnsendingBaseURL}
           featureToggles={featureToggles}
-          baseUrl={"/fyllut"}
-          fyllutBaseURL={"/fyllut"}
+          baseUrl={'/fyllut'}
+          fyllutBaseURL={'/fyllut'}
           submissionMethod={subissionMethod}
           app="fyllut"
           config={config}
@@ -46,6 +46,6 @@ const renderReact = (dokumentInnsendingBaseURL, config) => {
         </AppConfigProvider>
       </BrowserRouter>
     </React.StrictMode>,
-    document.getElementById("root"),
+    document.getElementById('root'),
   );
 };

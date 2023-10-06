@@ -1,14 +1,14 @@
-import moment from "moment";
+import moment from 'moment';
 
 const dateFormat: Intl.DateTimeFormatOptions = {
-  day: "numeric",
-  month: "2-digit",
-  year: "numeric",
-  hour: "numeric",
-  minute: "numeric",
+  day: 'numeric',
+  month: '2-digit',
+  year: 'numeric',
+  hour: 'numeric',
+  minute: 'numeric',
 };
 
-const toLocaleDateAndTime = (date: string, locale = "no") => new Date(date).toLocaleString(locale, dateFormat);
+const toLocaleDateAndTime = (date: string, locale = 'no') => new Date(date).toLocaleString(locale, dateFormat);
 
 export const getIso8601String = () => {
   return moment().toISOString();

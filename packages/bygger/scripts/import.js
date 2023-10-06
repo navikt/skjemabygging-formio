@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import fetch from "node-fetch";
+import fetch from 'node-fetch';
 
 const [fromUrl, toApplication, jwtToken] = process.argv.slice(2);
 
@@ -8,9 +8,9 @@ async function main() {
   const response = await fetch(fromUrl);
   const data = await response.json();
   console.log(data);
-  const headers = { "x-jwt-token": jwtToken, "content-type": "application/json" };
-  const postResponse = await fetch(toApplication + "/form", {
-    method: "POST",
+  const headers = { 'x-jwt-token': jwtToken, 'content-type': 'application/json' };
+  const postResponse = await fetch(toApplication + '/form', {
+    method: 'POST',
     headers: headers,
     body: JSON.stringify(data),
   });
@@ -19,4 +19,4 @@ async function main() {
 }
 
 const promise = main();
-promise.then(() => console.log("done"));
+promise.then(() => console.log('done'));

@@ -1,6 +1,6 @@
-import { createContext, useContext, useEffect, useState } from "react";
-import useCurrentLanguage from "./useCurrentLanguage";
-import useLanguageCodeFromURL from "./useLanguageCodeFromURL";
+import { createContext, useContext, useEffect, useState } from 'react';
+import useCurrentLanguage from './useCurrentLanguage';
+import useLanguageCodeFromURL from './useLanguageCodeFromURL';
 
 interface LanguageContextType {
   availableLanguages: string[];
@@ -21,7 +21,7 @@ export const LanguagesProvider = ({ children, translations }) => {
   const [availableLanguages, setAvailableLanguages] = useState<string[]>([]);
   const [translationsForNavForm, setTranslationsForNavForm] = useState<object>({});
 
-  const languageCodeFromUrl: string = useLanguageCodeFromURL() ?? "nb-NO";
+  const languageCodeFromUrl: string = useLanguageCodeFromURL() ?? 'nb-NO';
   const { currentLanguage, initialLanguage } = useCurrentLanguage(
     languageCodeFromUrl,
     translations,
@@ -35,7 +35,7 @@ export const LanguagesProvider = ({ children, translations }) => {
     setTranslationsForNavForm(translations);
   }, [translations]);
 
-  function translate(originalText: string = "", params?: Record<string | number, any>): string {
+  function translate(originalText: string = '', params?: Record<string | number, any>): string {
     const currentTranslation = translations[currentLanguage];
     return currentTranslation && currentTranslation[originalText]
       ? injectParams(currentTranslation[originalText], params)

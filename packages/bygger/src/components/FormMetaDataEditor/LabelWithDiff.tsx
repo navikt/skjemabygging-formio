@@ -1,5 +1,5 @@
-import { Tag } from "@navikt/ds-react";
-import React from "react";
+import { Tag } from '@navikt/ds-react';
+import React from 'react';
 
 export interface LabelWithDiffProps {
   label: React.ReactNode;
@@ -12,7 +12,7 @@ const LabelWithDiff = ({ label, diff = false }: LabelWithDiffProps) => {
       <span>{label}</span>
       {diff && (
         <Tag variant="warning-filled" size="xsmall">
-          {typeof diff === "string" ? `${diff}` : "Endring"}
+          {typeof diff === 'string' ? `${diff}` : 'Endring'}
         </Tag>
       )}
     </div>

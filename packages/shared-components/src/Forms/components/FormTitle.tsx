@@ -1,7 +1,7 @@
-import { BodyShort, Heading } from "@navikt/ds-react";
-import { NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
-import { useLanguages } from "../../context/languages";
-import makeStyles from "../../util/jss";
+import { BodyShort, Heading } from '@navikt/ds-react';
+import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
+import { useLanguages } from '../../context/languages';
+import makeStyles from '../../util/jss';
 
 export interface Props {
   form: NavFormType;
@@ -9,21 +9,21 @@ export interface Props {
 }
 const useStyles = makeStyles({
   maxContentWidth: {
-    maxWidth: "960px",
-    margin: "0 auto",
+    maxWidth: '960px',
+    margin: '0 auto',
   },
   titleHeader: {
-    padding: "1.5rem 0",
-    borderBottom: "4px solid #99c4dd",
+    padding: '1.5rem 0',
+    borderBottom: '4px solid #99c4dd',
   },
   formNumber: {
-    color: "#4F4F4F",
-    margin: "0.5rem 0 0 0",
-    fontSize: "0.875rem",
+    color: '#4F4F4F',
+    margin: '0.5rem 0 0 0',
+    fontSize: '0.875rem',
   },
-  "@media screen and (max-width: 992px)": {
+  '@media screen and (max-width: 992px)': {
     titleHeader: {
-      padding: "1rem",
+      padding: '1rem',
     },
   },
 });

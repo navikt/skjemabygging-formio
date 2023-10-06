@@ -1,8 +1,8 @@
-const postboksSchema = (keyPostfix = "") => ({
-  label: "Postboks",
-  type: "textfield",
+const postboksSchema = (keyPostfix = '') => ({
+  label: 'Postboks',
+  type: 'textfield',
   key: `postboksNr${keyPostfix}`,
-  fieldSize: "input--s",
+  fieldSize: 'input--s',
   validate: {
     required: true,
   },
@@ -10,7 +10,7 @@ const postboksSchema = (keyPostfix = "") => ({
   clearOnHide: true,
   dataGridLabel: true,
   tableView: true,
-  validateOn: "blur",
+  validateOn: 'blur',
 });
 
 export default postboksSchema;

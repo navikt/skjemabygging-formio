@@ -1,9 +1,9 @@
-import { Heading } from "@navikt/ds-react";
-import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
-import { useEffect, useState } from "react";
-import ObsoleteTranslationsPanel from "../ObsoleteTranslationsPanel";
-import TranslationTextInput from "../TranslationTextInput";
-import { flattenTextsForEditPanel, tags } from "./utils";
+import { Heading } from '@navikt/ds-react';
+import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { useEffect, useState } from 'react';
+import ObsoleteTranslationsPanel from '../ObsoleteTranslationsPanel';
+import TranslationTextInput from '../TranslationTextInput';
+import { flattenTextsForEditPanel, tags } from './utils';
 
 export const getTranslationByOriginalText = (originalText, translations) =>
   translations.find((translation) => translation.originalText === originalText);
@@ -11,8 +11,8 @@ export const getTranslationByOriginalText = (originalText, translations) =>
 const TranslationEditPanelComponent = ({ components, languageCode, updateTranslation, translations }) => {
   return components.map(({ key, type, text }) => {
     const translationByOriginalText = getTranslationByOriginalText(text, translations);
-    const id = translationByOriginalText?.id || "";
-    const value = translationByOriginalText?.translatedText || "";
+    const id = translationByOriginalText?.id || '';
+    const value = translationByOriginalText?.translatedText || '';
     return (
       <TranslationTextInput
         text={text}

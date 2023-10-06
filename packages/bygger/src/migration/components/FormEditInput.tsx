@@ -1,14 +1,14 @@
-import { TextField } from "@navikt/ds-react";
-import { makeStyles } from "@navikt/skjemadigitalisering-shared-components";
-import { Dispatch } from "react";
-import { MigrationOption } from "../../../types/migration";
-import { isJSON } from "../utils";
-import DeleteButton from "./DeleteButton";
-import { Action } from "./MigrationOptionsForm.reducer";
+import { TextField } from '@navikt/ds-react';
+import { makeStyles } from '@navikt/skjemadigitalisering-shared-components';
+import { Dispatch } from 'react';
+import { MigrationOption } from '../../../types/migration';
+import { isJSON } from '../utils';
+import DeleteButton from './DeleteButton';
+import { Action } from './MigrationOptionsForm.reducer';
 
 const useStyles = makeStyles({
   input: {
-    marginBottom: "1rem",
+    marginBottom: '1rem',
   },
 });
 
@@ -30,7 +30,7 @@ const FormEditInput = ({ id, formEdit, dispatch }: FormEditInputProps) => {
         value={formEdit.key}
         onChange={(event) =>
           dispatch({
-            type: "edit",
+            type: 'edit',
             payload: {
               id,
               key: event.target.value,
@@ -42,11 +42,11 @@ const FormEditInput = ({ id, formEdit, dispatch }: FormEditInputProps) => {
         className={styles.input}
         label="Verdi"
         type="text"
-        value={typeof value === "object" ? JSON.stringify(value) : `${value}`}
+        value={typeof value === 'object' ? JSON.stringify(value) : `${value}`}
         disabled={!key}
         onChange={(event) =>
           dispatch({
-            type: "edit",
+            type: 'edit',
             payload: {
               id,
               value: isJSON(event.target.value) ? JSON.parse(event.target.value) : event.target.value,
@@ -54,7 +54,7 @@ const FormEditInput = ({ id, formEdit, dispatch }: FormEditInputProps) => {
           })
         }
       />
-      <DeleteButton className={styles.input} onClick={() => dispatch({ type: "remove", payload: { id } })} />
+      <DeleteButton className={styles.input} onClick={() => dispatch({ type: 'remove', payload: { id } })} />
     </>
   );
 };

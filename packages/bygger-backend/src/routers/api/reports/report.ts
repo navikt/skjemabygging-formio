@@ -1,6 +1,6 @@
-import { RequestHandler } from "express";
-import { reportService } from "../../../services";
-import { ApiError } from "../helpers/errors";
+import { RequestHandler } from 'express';
+import { reportService } from '../../../services';
+import { ApiError } from '../helpers/errors';
 
 const report: RequestHandler = async (req, res, next) => {
   const { reportId } = req.params;
@@ -13,7 +13,7 @@ const report: RequestHandler = async (req, res, next) => {
     res.attachment(`${reportId}.${report.fileEnding}`);
     await reportService.generate(reportId, res);
   } catch (err) {
-    next(new ApiError("Kunne ikke generere rapport", true, err as Error));
+    next(new ApiError('Kunne ikke generere rapport', true, err as Error));
   }
 };
 

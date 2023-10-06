@@ -1,55 +1,55 @@
-import { ForstesideRequestBody } from "@navikt/skjemadigitalisering-shared-domain";
-import nock from "nock";
-import { config } from "../../config/config";
-import { mockNext, mockRequest, mockResponse } from "../../test/requestTestHelpers";
-import forsteside, { validateForstesideRequest } from "./forsteside";
-import * as mottaksadresser from "./mottaksadresser";
+import { ForstesideRequestBody } from '@navikt/skjemadigitalisering-shared-domain';
+import nock from 'nock';
+import { config } from '../../config/config';
+import { mockNext, mockRequest, mockResponse } from '../../test/requestTestHelpers';
+import forsteside, { validateForstesideRequest } from './forsteside';
+import * as mottaksadresser from './mottaksadresser';
 
 const { skjemabyggingProxyUrl } = config;
 
 const addresses = [
   {
-    _id: "6246de1afd03d2caeeda2825",
+    _id: '6246de1afd03d2caeeda2825',
     data: {
-      adresselinje1: "NAV Arbeid og ytelser lønnsgaranti",
-      adresselinje2: "Postboks 6683 St. Olavs Plass",
-      adresselinje3: "",
-      postnummer: "0129",
-      poststed: "Oslo",
-      temakoder: "FOS,HJE",
+      adresselinje1: 'NAV Arbeid og ytelser lønnsgaranti',
+      adresselinje2: 'Postboks 6683 St. Olavs Plass',
+      adresselinje3: '',
+      postnummer: '0129',
+      poststed: 'Oslo',
+      temakoder: 'FOS,HJE',
     },
   },
   {
-    _id: "61c09f91ec962a0003c65014",
+    _id: '61c09f91ec962a0003c65014',
     data: {
-      adresselinje1: "NAV Skanning bidrag",
-      adresselinje2: "PB 6215 Etterstad",
-      adresselinje3: "",
-      postnummer: "0603",
-      poststed: "Oslo",
+      adresselinje1: 'NAV Skanning bidrag',
+      adresselinje2: 'PB 6215 Etterstad',
+      adresselinje3: '',
+      postnummer: '0603',
+      poststed: 'Oslo',
     },
   },
 ];
 
-describe("[endpoint] forsteside", () => {
+describe('[endpoint] forsteside', () => {
   beforeAll(() => {
-    vi.spyOn(mottaksadresser, "loadMottaksadresser").mockImplementation(async () => addresses);
+    vi.spyOn(mottaksadresser, 'loadMottaksadresser').mockImplementation(async () => addresses);
   });
 
-  it("Create front page", async () => {
-    const generateFileMock = nock(skjemabyggingProxyUrl!).post("/foersteside").reply(200, "{}");
+  it('Create front page', async () => {
+    const generateFileMock = nock(skjemabyggingProxyUrl!).post('/foersteside').reply(200, '{}');
 
     const req = mockRequest({
       headers: {
-        AzureAccessToken: "",
+        AzureAccessToken: '',
       },
       body: {
-        foerstesidetype: "ETTERSENDELSE",
-        navSkjemaId: "NAV 10.10.10",
-        spraakkode: "NB",
-        overskriftstittel: "Tittel",
-        arkivtittel: "Tittel",
-        tema: "HJE",
+        foerstesidetype: 'ETTERSENDELSE',
+        navSkjemaId: 'NAV 10.10.10',
+        spraakkode: 'NB',
+        overskriftstittel: 'Tittel',
+        arkivtittel: 'Tittel',
+        tema: 'HJE',
       },
     });
 
@@ -58,61 +58,61 @@ describe("[endpoint] forsteside", () => {
     expect(generateFileMock.isDone()).toBe(true);
   });
 
-  describe("validateForstesideRequest", () => {
-    it("Find address if no address and theme is set on existing address", async () => {
+  describe('validateForstesideRequest', () => {
+    it('Find address if no address and theme is set on existing address', async () => {
       const body = await validateForstesideRequest({
-        tema: "HJE",
+        tema: 'HJE',
       } as ForstesideRequestBody);
 
       expect(body.netsPostboks).toBeUndefined();
       expect(body.adresse).toBeDefined();
     });
 
-    it("If theme is set not on existing address, use default netsPostboks", async () => {
+    it('If theme is set not on existing address, use default netsPostboks', async () => {
       const body = await validateForstesideRequest({
-        tema: "HJR",
+        tema: 'HJR',
       } as ForstesideRequestBody);
 
       expect(body.netsPostboks).toBeDefined();
       expect(body.adresse).toBeUndefined();
     });
 
-    it("Set default netsPostboks if not set", async () => {
+    it('Set default netsPostboks if not set', async () => {
       const body = await validateForstesideRequest({} as ForstesideRequestBody);
 
-      expect(body.netsPostboks).toBe("1400");
+      expect(body.netsPostboks).toBe('1400');
     });
 
-    it("Do not overide netsPostboks if set", async () => {
+    it('Do not overide netsPostboks if set', async () => {
       const body = await validateForstesideRequest({
-        netsPostboks: "1300",
+        netsPostboks: '1300',
       } as ForstesideRequestBody);
 
-      expect(body.netsPostboks).toBe("1300");
+      expect(body.netsPostboks).toBe('1300');
     });
 
-    it("Change nb-NO", async () => {
+    it('Change nb-NO', async () => {
       const body = await validateForstesideRequest({
-        spraakkode: "nb-NO",
+        spraakkode: 'nb-NO',
       } as ForstesideRequestBody);
 
-      expect(body.spraakkode).toBe("NB");
+      expect(body.spraakkode).toBe('NB');
     });
 
-    it("Change nb-NN", async () => {
+    it('Change nb-NN', async () => {
       const body = await validateForstesideRequest({
-        spraakkode: "nn-NO",
+        spraakkode: 'nn-NO',
       } as ForstesideRequestBody);
 
-      expect(body.spraakkode).toBe("NN");
+      expect(body.spraakkode).toBe('NN');
     });
 
-    it("Change nn to uppercase", async () => {
+    it('Change nn to uppercase', async () => {
       const body = await validateForstesideRequest({
-        spraakkode: "nn",
+        spraakkode: 'nn',
       } as ForstesideRequestBody);
 
-      expect(body.spraakkode).toBe("NN");
+      expect(body.spraakkode).toBe('NN');
     });
   });
 });

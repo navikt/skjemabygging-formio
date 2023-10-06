@@ -1,6 +1,6 @@
-import Pusher, { Options } from "pusher";
-import config from "../config";
-import { logger } from "../logging/logger";
+import Pusher, { Options } from 'pusher';
+import config from '../config';
+import { logger } from '../logging/logger';
 
 const getPusherConfig = () => {
   const pusherConfig = { ...config.pusher };
@@ -32,12 +32,12 @@ class PusherService {
 
       this.pusher = new Pusher(pusherOptions);
     } else if (config.isProduction) {
-      logger.warn("Pusher service not configured");
+      logger.warn('Pusher service not configured');
     }
   }
 
   trigger(pusherEvent: PusherEvent) {
-    return this.pusher?.trigger("fyllut-deployment", pusherEvent.type, {
+    return this.pusher?.trigger('fyllut-deployment', pusherEvent.type, {
       title: pusherEvent.title,
       message: pusherEvent.message,
     });

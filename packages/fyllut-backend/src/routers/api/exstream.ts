@@ -4,10 +4,10 @@ import {
   localizationUtils,
   NavFormType,
   Submission,
-} from "@navikt/skjemadigitalisering-shared-domain";
-import { NextFunction, Request, Response } from "express";
-import { base64Decode } from "../../utils/base64";
-import { createPdf } from "./helpers/pdfService";
+} from '@navikt/skjemadigitalisering-shared-domain';
+import { NextFunction, Request, Response } from 'express';
+import { base64Decode } from '../../utils/base64';
+import { createPdf } from './helpers/pdfService';
 
 const parseBody = (
   req: Request,

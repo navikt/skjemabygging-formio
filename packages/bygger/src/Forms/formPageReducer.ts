@@ -1,8 +1,8 @@
-import { NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
-import cloneDeep from "lodash.clonedeep";
+import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
+import cloneDeep from 'lodash.clonedeep';
 
-type ReducerAction = "form-loaded" | "form-not-found" | "form-changed" | "form-saved";
-type Status = "LOADING" | "FINISHED LOADING" | "FORM NOT FOUND";
+type ReducerAction = 'form-loaded' | 'form-not-found' | 'form-changed' | 'form-saved';
+type Status = 'LOADING' | 'FINISHED LOADING' | 'FORM NOT FOUND';
 type ReducerActionType = { type: ReducerAction; form?: NavFormType; publishedForm?: NavFormType };
 
 interface ReducerState {
@@ -36,25 +36,25 @@ const removeIds = (object) => {
 const formPageReducer = (state: ReducerState, action: ReducerActionType) => {
   const formClone = cloneDeep(action.form);
   switch (action.type) {
-    case "form-loaded":
-    case "form-saved":
+    case 'form-loaded':
+    case 'form-saved':
       return {
-        status: "FINISHED LOADING",
+        status: 'FINISHED LOADING',
         dbForm: formClone,
         form: formClone,
         publishedForm: action.publishedForm || state.publishedForm,
         hasUnsavedChanges: false,
       };
-    case "form-changed":
+    case 'form-changed':
       return {
         ...state,
         dbForm: state.dbForm,
         form: formClone,
         hasUnsavedChanges: isDifferent(state.dbForm, formClone),
       };
-    case "form-not-found":
+    case 'form-not-found':
       return {
-        status: "FORM NOT FOUND",
+        status: 'FORM NOT FOUND',
         hasUnsavedChanges: false,
       };
     default: {

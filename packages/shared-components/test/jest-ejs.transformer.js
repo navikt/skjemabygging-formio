@@ -1,8 +1,8 @@
-import loader from "ejs-loader";
+import loader from 'ejs-loader';
 const ejs = {
   process: loader,
   query: {
-    variable: "ctx",
+    variable: 'ctx',
     evaluate: /\{%([\s\S]+?)%\}/g,
     interpolate: /\{\{([\s\S]+?)\}\}/g,
     escape: /\{\{\{([\s\S]+?)\}\}\}/g,

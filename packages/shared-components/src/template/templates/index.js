@@ -1,4 +1,4 @@
-import navdesign from "./navdesign";
+import navdesign from './navdesign';
 
 export default {
   navdesign,

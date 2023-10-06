@@ -1,16 +1,16 @@
-import nock from "nock";
-import http from "./http";
+import nock from 'nock';
+import http from './http';
 
 interface TestBody {
   body: string;
 }
-const defaultBodyText = "This is the body";
+const defaultBodyText = 'This is the body';
 const setupDefaultGetMock = () => {
-  nock("https://www.nav.no")
+  nock('https://www.nav.no')
     .defaultReplyHeaders({
-      "Content-Type": http.MimeType.JSON,
+      'Content-Type': http.MimeType.JSON,
     })
-    .get("/ok")
+    .get('/ok')
     .reply(200, {
       body: defaultBodyText,
     });
@@ -18,55 +18,55 @@ const setupDefaultGetMock = () => {
 
 const originalWindowLocation = window.location;
 
-describe("http requests", () => {
-  describe("get", () => {
-    it("with custom headers", async () => {
+describe('http requests', () => {
+  describe('get', () => {
+    it('with custom headers', async () => {
       setupDefaultGetMock();
       const headers = {
-        "Content-Type": http.MimeType.TEXT,
+        'Content-Type': http.MimeType.TEXT,
       };
 
-      const response = await http.get<TestBody>("https://www.nav.no/ok", headers);
-      expect(typeof response).toBe("object");
+      const response = await http.get<TestBody>('https://www.nav.no/ok', headers);
+      expect(typeof response).toBe('object');
       expect(response.body).toBe(defaultBodyText);
       nock.isDone();
     });
 
-    it("without custom headers", async () => {
+    it('without custom headers', async () => {
       setupDefaultGetMock();
-      const response = await http.get<TestBody>("https://www.nav.no/ok");
+      const response = await http.get<TestBody>('https://www.nav.no/ok');
       expect(response.body).toBe(defaultBodyText);
       nock.isDone();
     });
 
-    it("with text response", async () => {
-      nock("https://www.nav.no")
+    it('with text response', async () => {
+      nock('https://www.nav.no')
         .defaultReplyHeaders({
-          "Content-Type": http.MimeType.TEXT,
+          'Content-Type': http.MimeType.TEXT,
         })
-        .get("/ok")
+        .get('/ok')
         .reply(200, {
-          body: "This is the body",
+          body: 'This is the body',
         });
 
-      const response = await http.get("https://www.nav.no/ok");
-      expect(typeof response).toBe("string");
+      const response = await http.get('https://www.nav.no/ok');
+      expect(typeof response).toBe('string');
       nock.isDone();
     });
 
-    it("error with json", async () => {
-      const errorMessage = "Error message";
-      nock("https://www.nav.no")
+    it('error with json', async () => {
+      const errorMessage = 'Error message';
+      nock('https://www.nav.no')
         .defaultReplyHeaders({
-          "Content-Type": http.MimeType.JSON,
+          'Content-Type': http.MimeType.JSON,
         })
-        .get("/error")
+        .get('/error')
         .reply(404, { message: errorMessage });
 
       expect.assertions(1);
 
       try {
-        await http.get("https://www.nav.no/error");
+        await http.get('https://www.nav.no/error');
       } catch (e) {
         if (e instanceof http.HttpError) {
           expect(e.message).toBe(errorMessage);
@@ -76,19 +76,19 @@ describe("http requests", () => {
       nock.isDone();
     });
 
-    it("error", async () => {
-      const errorMessage = "Error message";
-      nock("https://www.nav.no")
+    it('error', async () => {
+      const errorMessage = 'Error message';
+      nock('https://www.nav.no')
         .defaultReplyHeaders({
-          "Content-Type": http.MimeType.TEXT,
+          'Content-Type': http.MimeType.TEXT,
         })
-        .get("/error")
+        .get('/error')
         .reply(404, errorMessage);
 
       expect.assertions(1);
 
       try {
-        await http.get("https://www.nav.no/error");
+        await http.get('https://www.nav.no/error');
       } catch (e) {
         if (e instanceof http.HttpError) {
           expect(e.message).toBe(errorMessage);
@@ -98,22 +98,22 @@ describe("http requests", () => {
       nock.isDone();
     });
 
-    it("error with unsupported mimetype", async () => {
+    it('error with unsupported mimetype', async () => {
       // Should use default statusText as message
-      nock("https://www.nav.no")
+      nock('https://www.nav.no')
         .defaultReplyHeaders({
-          "Content-Type": "whatever",
+          'Content-Type': 'whatever',
         })
-        .get("/error")
+        .get('/error')
         .reply(404);
 
       expect.assertions(1);
 
       try {
-        await http.get("https://www.nav.no/error");
+        await http.get('https://www.nav.no/error');
       } catch (e) {
         if (e instanceof http.HttpError) {
-          expect(e.message).toBe("Not Found");
+          expect(e.message).toBe('Not Found');
         }
       }
 
@@ -121,19 +121,19 @@ describe("http requests", () => {
     });
   });
 
-  describe("opts", () => {
-    describe("redirectToLocation", () => {
+  describe('opts', () => {
+    describe('redirectToLocation', () => {
       let windowLocation;
 
       beforeEach(() => {
-        windowLocation = { href: "" };
-        Object.defineProperty(window, "location", {
+        windowLocation = { href: '' };
+        Object.defineProperty(window, 'location', {
           value: windowLocation,
           writable: true,
         });
-        nock("https://www.unittest.nav.no").post("/fyllut/api/send-inn").reply(201, "CREATED", {
-          "Content-Type": http.MimeType.TEXT,
-          Location: "https://www.nav.no/sendInn/123",
+        nock('https://www.unittest.nav.no').post('/fyllut/api/send-inn').reply(201, 'CREATED', {
+          'Content-Type': http.MimeType.TEXT,
+          Location: 'https://www.nav.no/sendInn/123',
         });
       });
 
@@ -142,21 +142,21 @@ describe("http requests", () => {
         window.location = originalWindowLocation;
       });
 
-      it("redirects to location", async () => {
+      it('redirects to location', async () => {
         const response = await http.post(
-          "https://www.unittest.nav.no/fyllut/api/send-inn",
+          'https://www.unittest.nav.no/fyllut/api/send-inn',
           {},
           {},
           { redirectToLocation: true },
         );
-        expect(windowLocation.href).toBe("https://www.nav.no/sendInn/123");
-        expect(response).toBe("CREATED");
+        expect(windowLocation.href).toBe('https://www.nav.no/sendInn/123');
+        expect(response).toBe('CREATED');
       });
 
-      it("does not redirect to location", async () => {
-        const response = await http.post("https://www.unittest.nav.no/fyllut/api/send-inn", {}, {});
-        expect(windowLocation.href).toBe("");
-        expect(response).toBe("CREATED");
+      it('does not redirect to location', async () => {
+        const response = await http.post('https://www.unittest.nav.no/fyllut/api/send-inn', {}, {});
+        expect(windowLocation.href).toBe('');
+        expect(response).toBe('CREATED');
       });
     });
   });

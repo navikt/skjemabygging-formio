@@ -8,7 +8,7 @@
 // commands please read more here:
 // https://on.cypress.io/custom-commands
 // ***********************************************
-import "@testing-library/cypress/add-commands";
+import '@testing-library/cypress/add-commands';
 
 //
 // -- This is a parent command --

@@ -1,16 +1,16 @@
-import { NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
-import nock from "nock";
-import config from "../config";
-import { formioService } from "./index";
+import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
+import nock from 'nock';
+import config from '../config';
+import { formioService } from './index';
 
-describe("FormioService", () => {
-  describe("saveForm", () => {
-    describe("props modified and modifiedBy", () => {
+describe('FormioService', () => {
+  describe('saveForm', () => {
+    describe('props modified and modifiedBy', () => {
       const form: NavFormType = {
-        _id: "1",
+        _id: '1',
         properties: {
-          modified: "2022-06-28T10:02:15.634Z",
-          modifiedBy: "dennis",
+          modified: '2022-06-28T10:02:15.634Z',
+          modifiedBy: 'dennis',
         },
       } as NavFormType;
 
@@ -24,30 +24,30 @@ describe("FormioService", () => {
         nock.cleanAll();
       });
 
-      it("are updated with new values", async () => {
-        const savedForm = await formioService.saveForm(form, "formio-token", "tore");
+      it('are updated with new values', async () => {
+        const savedForm = await formioService.saveForm(form, 'formio-token', 'tore');
         expect(savedForm.properties.modified).not.toEqual(form.properties.modified);
-        expect(savedForm.properties.modifiedBy).toBe("tore");
+        expect(savedForm.properties.modifiedBy).toBe('tore');
       });
 
-      it("are updated with values specified in formProps parameter", async () => {
+      it('are updated with values specified in formProps parameter', async () => {
         const props = {
-          modified: "2022-06-28T10:03:15.634Z",
-          modifiedBy: "pia",
+          modified: '2022-06-28T10:03:15.634Z',
+          modifiedBy: 'pia',
         };
-        const savedForm = await formioService.saveForm(form, "formio-token", "tore", props);
+        const savedForm = await formioService.saveForm(form, 'formio-token', 'tore', props);
         expect(savedForm.properties.modified).not.toEqual(form.properties.modified);
         expect(savedForm.properties.modified).toEqual(props.modified);
-        expect(savedForm.properties.modifiedBy).toBe("pia");
+        expect(savedForm.properties.modifiedBy).toBe('pia');
       });
     });
 
-    describe("http error from formio api", () => {
+    describe('http error from formio api', () => {
       beforeEach(() => {
         nock(config.formio.projectUrl)
           .put(/\/form\/(\d*)$/)
           .reply(500);
-        vi.spyOn(console, "error").mockImplementation(() => {});
+        vi.spyOn(console, 'error').mockImplementation(() => {});
       });
 
       afterEach(() => {
@@ -55,14 +55,14 @@ describe("FormioService", () => {
         vi.restoreAllMocks();
       });
 
-      it("is thrown as an error", async () => {
+      it('is thrown as an error', async () => {
         const form: NavFormType = {
-          _id: "1",
+          _id: '1',
           properties: {},
         } as NavFormType;
         let error;
         try {
-          await formioService.saveForm(form, "formio-token", "tore");
+          await formioService.saveForm(form, 'formio-token', 'tore');
         } catch (e) {
           error = e;
         }
@@ -72,7 +72,7 @@ describe("FormioService", () => {
     });
   });
 
-  describe("saveForms", () => {
+  describe('saveForms', () => {
     beforeEach(() => {
       nock(config.formio.projectUrl)
         .put(/\/form\/(\d*)$/)
@@ -84,12 +84,12 @@ describe("FormioService", () => {
       nock.cleanAll();
     });
 
-    it("uses same modified and modifiedBy on all forms", async () => {
+    it('uses same modified and modifiedBy on all forms', async () => {
       const forms = [
-        { _id: "1", properties: { modified: "2022-06-28T10:03:15.634Z" } } as NavFormType,
-        { _id: "2", properties: { modified: "2022-06-06T12:55:05.000Z" } } as NavFormType,
+        { _id: '1', properties: { modified: '2022-06-28T10:03:15.634Z' } } as NavFormType,
+        { _id: '2', properties: { modified: '2022-06-06T12:55:05.000Z' } } as NavFormType,
       ];
-      const savedForms = await formioService.saveForms(forms, "formio-token", "jenny");
+      const savedForms = await formioService.saveForms(forms, 'formio-token', 'jenny');
       expect(savedForms).toHaveLength(2);
       expect(savedForms[0].properties.modified).toEqual(savedForms[1].properties.modified);
     });

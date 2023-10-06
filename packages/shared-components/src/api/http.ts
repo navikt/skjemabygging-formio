@@ -1,18 +1,18 @@
 enum MimeType {
-  JSON = "application/json",
-  TEXT = "text/plain",
-  PDF = "application/pdf",
+  JSON = 'application/json',
+  TEXT = 'text/plain',
+  PDF = 'application/pdf',
 }
 
 enum SubmissionMethodType {
-  DIGITAL = "digital",
-  PAPER = "paper",
+  DIGITAL = 'digital',
+  PAPER = 'paper',
 }
 
 interface FetchHeader {
-  "Content-Type"?: MimeType;
+  'Content-Type'?: MimeType;
   Accept?: MimeType;
-  "Fyllut-Submission-Method"?: SubmissionMethodType;
+  'Fyllut-Submission-Method'?: SubmissionMethodType;
 }
 
 interface FetchOptions {
@@ -32,7 +32,7 @@ class UnauthenticatedError extends Error {}
 
 const defaultHeaders = (headers?: FetchHeader) => {
   return {
-    "Content-Type": MimeType.JSON,
+    'Content-Type': MimeType.JSON,
     Accept: MimeType.JSON,
     ...headers,
   };
@@ -40,7 +40,7 @@ const defaultHeaders = (headers?: FetchHeader) => {
 
 const get = async <T>(url: string, headers?: FetchHeader, opts?: FetchOptions): Promise<T> => {
   const response = await fetch(url, {
-    method: "GET",
+    method: 'GET',
     headers: defaultHeaders(headers),
   });
 
@@ -49,7 +49,7 @@ const get = async <T>(url: string, headers?: FetchHeader, opts?: FetchOptions): 
 
 const post = async <T>(url: string, body: object, headers?: FetchHeader, opts?: FetchOptions): Promise<T> => {
   const response = await fetch(url, {
-    method: "POST",
+    method: 'POST',
     headers: defaultHeaders(headers),
     body: JSON.stringify(body),
   });
@@ -59,7 +59,7 @@ const post = async <T>(url: string, body: object, headers?: FetchHeader, opts?: 
 
 const httpDelete = async <T>(url: string, body?: object, headers?: FetchHeader, opts?: FetchOptions): Promise<T> => {
   const response = await fetch(url, {
-    method: "DELETE",
+    method: 'DELETE',
     headers: defaultHeaders(headers),
     body: JSON.stringify(body),
   });
@@ -69,7 +69,7 @@ const httpDelete = async <T>(url: string, body?: object, headers?: FetchHeader, 
 
 const put = async <T>(url: string, body: object, headers?: FetchHeader, opts?: FetchOptions): Promise<T> => {
   const response = await fetch(url, {
-    method: "PUT",
+    method: 'PUT',
     headers: defaultHeaders(headers),
     body: JSON.stringify(body),
   });
@@ -97,7 +97,7 @@ const handleResponse = async (response: Response, opts?: FetchOptions) => {
   }
 
   if (opts && opts.redirectToLocation) {
-    const location = response.headers.get("Location");
+    const location = response.headers.get('Location');
     const { status } = response;
     if (location && (status === 201 || (status >= 300 && status <= 399))) {
       window.location.href = location;
@@ -116,7 +116,7 @@ const handleResponse = async (response: Response, opts?: FetchOptions) => {
 };
 
 const isResponseType = (response: Response, mimeType: MimeType) => {
-  const contentType = response.headers.get("Content-Type");
+  const contentType = response.headers.get('Content-Type');
   return contentType && contentType.includes(mimeType);
 };
 

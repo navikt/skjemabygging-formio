@@ -38,6 +38,6 @@ export class ApiError extends Error {
     super(message);
     this.functional = functional;
     this.cause = cause;
-    this.name = "ApiError";
+    this.name = 'ApiError';
   }
 }

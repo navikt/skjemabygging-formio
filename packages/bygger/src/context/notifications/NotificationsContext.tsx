@@ -1,10 +1,10 @@
-import { useAppConfig } from "@navikt/skjemadigitalisering-shared-components";
-import Pusher from "pusher-js";
-import React, { createContext, useContext, useEffect } from "react";
-import useMessageQueue, { Message } from "../../hooks/useMessageQueue";
+import { useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
+import Pusher from 'pusher-js';
+import React, { createContext, useContext, useEffect } from 'react';
+import useMessageQueue, { Message } from '../../hooks/useMessageQueue';
 
-export const CHANNEL = "fyllut-deployment";
-export const EVENT = { success: "success", failure: "failure" };
+export const CHANNEL = 'fyllut-deployment';
+export const EVENT = { success: 'success', failure: 'failure' };
 
 interface ContextValue {
   messages: Message[];
@@ -29,10 +29,10 @@ const PusherNotificationsProvider = ({ children }: { children: React.ReactElemen
   useEffect(() => {
     const fyllutDeploymentChannel = pusher.subscribe(CHANNEL);
     fyllutDeploymentChannel.bind(EVENT.success, ({ title, message }) =>
-      messageQueue.push({ title, message, type: "success" }),
+      messageQueue.push({ title, message, type: 'success' }),
     );
     fyllutDeploymentChannel.bind(EVENT.failure, ({ title, message }) =>
-      messageQueue.push({ title, message, type: "error" }),
+      messageQueue.push({ title, message, type: 'error' }),
     );
     return () => {
       fyllutDeploymentChannel.unbind(EVENT.success);

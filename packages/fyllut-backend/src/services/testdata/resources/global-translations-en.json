@@ -1,18 +1,22 @@
 {
   "en": [
     {
-      "id": "1", "name": "global", "scope": "global", "tag": "skjematekster", "translations": {
-        "Bor du i Norge?": {"value": "Do you live in Norway?", "scope": "global"},
-        "E-post": {"value": "E-mail", "scope": "global"},
-        "Organisasjonsnummer": {"value": "Organisation number", "scope": "global"},
-        "Personopplysninger": {"value": "Personal information", "scope": "global"},
-        "Postboks": {"value": "PO box", "scope": "global"},
-        "Postboksadresse": {"value": "PO box address", "scope": "global"},
-        "Postkode": {"value": "Zip code", "scope": "global"},
-        "Postnummer": {"value": "Zip code", "scope": "global"},
-        "Poststed": {"value": "City", "scope": "global"},
-        "Region": {"value": "Region", "scope": "global"},
-        "Telefonnummer": {"value": "Telephone number", "scope": "global"}
+      "id": "1",
+      "name": "global",
+      "scope": "global",
+      "tag": "skjematekster",
+      "translations": {
+        "Bor du i Norge?": { "value": "Do you live in Norway?", "scope": "global" },
+        "E-post": { "value": "E-mail", "scope": "global" },
+        "Organisasjonsnummer": { "value": "Organisation number", "scope": "global" },
+        "Personopplysninger": { "value": "Personal information", "scope": "global" },
+        "Postboks": { "value": "PO box", "scope": "global" },
+        "Postboksadresse": { "value": "PO box address", "scope": "global" },
+        "Postkode": { "value": "Zip code", "scope": "global" },
+        "Postnummer": { "value": "Zip code", "scope": "global" },
+        "Poststed": { "value": "City", "scope": "global" },
+        "Region": { "value": "Region", "scope": "global" },
+        "Telefonnummer": { "value": "Telephone number", "scope": "global" }
       }
     },
     {
@@ -21,18 +25,22 @@
       "scope": "global",
       "tag": "statiske-tekster",
       "translations": {
-        "Laster...": {"value": "Loading...", "scope": "global"},
-        "Legg ved": {"value": "Attach", "scope": "global"},
-        "Oppsummering": {"value": "Summary", "scope": "global"}
+        "Laster...": { "value": "Loading...", "scope": "global" },
+        "Legg ved": { "value": "Attach", "scope": "global" },
+        "Oppsummering": { "value": "Summary", "scope": "global" }
       }
     },
     {
-      "id": "3", "name": "global", "scope": "global", "tag": "grensesnitt", "translations": {
-        "{{count}} valg tilgjengelig": {"value": "{{count}} options available", "scope": "global"},
-        "April": {"value": "April", "scope": "global"},
-        "August": {"value": "August", "scope": "global"},
-        "Avbryt": {"value": "Cancel", "scope": "global"},
-        "Avslutt": {"value": "Exit", "scope": "global"}
+      "id": "3",
+      "name": "global",
+      "scope": "global",
+      "tag": "grensesnitt",
+      "translations": {
+        "{{count}} valg tilgjengelig": { "value": "{{count}} options available", "scope": "global" },
+        "April": { "value": "April", "scope": "global" },
+        "August": { "value": "August", "scope": "global" },
+        "Avbryt": { "value": "Cancel", "scope": "global" },
+        "Avslutt": { "value": "Exit", "scope": "global" }
       }
     }
   ]

@@ -22,7 +22,7 @@
  * SOFTWARE.
  * */
 
-import Field from "formiojs/components/_classes/field/Field";
+import Field from 'formiojs/components/_classes/field/Field';
 
 export default class FormioReactComponent extends Field {
   input = null;
@@ -97,7 +97,7 @@ export default class FormioReactComponent extends Field {
     // The loadRefs function will find all dom elements that have the "ref" setting that match the object property.
     // It can load a single element or multiple elements with the same ref.
     this.loadRefs(element, {
-      [`react-${this.id}`]: "single",
+      [`react-${this.id}`]: 'single',
     });
 
     if (this.refs[`react-${this.id}`]) {

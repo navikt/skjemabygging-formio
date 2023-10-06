@@ -1,18 +1,18 @@
-import { Request, Response } from "express";
-import { logger } from "../../logger";
+import { Request, Response } from 'express';
+import { logger } from '../../logger';
 
 const log = {
   post: async (req: Request, res: Response) => {
     const { level } = req.params;
     const logEntry = {
       ...req.body,
-      source: "frontend",
+      source: 'frontend',
     };
     switch (level) {
-      case "info":
+      case 'info':
         logger.info(logEntry);
         break;
-      case "error":
+      case 'error':
         logger.error(logEntry);
         break;
       default:

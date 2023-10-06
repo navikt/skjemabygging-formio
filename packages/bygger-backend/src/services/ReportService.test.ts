@@ -1,11 +1,11 @@
-import { FormPropertiesType, NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
-import MemoryStream from "memorystream";
-import nock from "nock";
-import config from "../config";
-import ReportService from "./ReportService";
-import { formioService } from "./index";
+import { FormPropertiesType, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
+import MemoryStream from 'memorystream';
+import nock from 'nock';
+import config from '../config';
+import ReportService from './ReportService';
+import { formioService } from './index';
 
-describe("ReportService", () => {
+describe('ReportService', () => {
   let reportService: ReportService;
 
   beforeEach(() => {
@@ -17,29 +17,29 @@ describe("ReportService", () => {
     nock.cleanAll();
   });
 
-  it("returns list containing report metadata", () => {
+  it('returns list containing report metadata', () => {
     const allReports = reportService.getAllReports();
-    const report = allReports.find((report) => report.id === "forms-published-languages");
+    const report = allReports.find((report) => report.id === 'forms-published-languages');
     expect(report).toBeDefined();
-    expect(report?.title).toBe("Publiserte språk per skjema");
-    expect(report?.contentType).toBe("text/csv");
+    expect(report?.title).toBe('Publiserte språk per skjema');
+    expect(report?.contentType).toBe('text/csv');
   });
 
-  describe("getReportDefinition", () => {
-    it("returns report definition for given id", () => {
-      const reportDefinition = reportService.getReportDefinition("forms-published-languages");
+  describe('getReportDefinition', () => {
+    it('returns report definition for given id', () => {
+      const reportDefinition = reportService.getReportDefinition('forms-published-languages');
       expect(reportDefinition).toBeDefined();
-      expect(reportDefinition?.title).toBe("Publiserte språk per skjema");
+      expect(reportDefinition?.title).toBe('Publiserte språk per skjema');
     });
 
-    it("returns undefined when id is unknown", () => {
-      const reportDefinition = reportService.getReportDefinition("unknown-report-id");
+    it('returns undefined when id is unknown', () => {
+      const reportDefinition = reportService.getReportDefinition('unknown-report-id');
       expect(reportDefinition).toBeUndefined();
     });
   });
 
-  describe("Reports", () => {
-    const CSV_HEADER_LINE = "skjemanummer;skjematittel;språk\n";
+  describe('Reports', () => {
+    const CSV_HEADER_LINE = 'skjemanummer;skjematittel;språk\n';
 
     let nockScope: nock.Scope;
 
@@ -58,9 +58,9 @@ describe("ReportService", () => {
     };
 
     function parseReport(content: string) {
-      const allLines = content.split("\n").filter((line) => !!line);
-      const forms = allLines.slice(1).map((formLine) => formLine.split(";"));
-      const headers = allLines[0].split(";");
+      const allLines = content.split('\n').filter((line) => !!line);
+      const forms = allLines.slice(1).map((formLine) => formLine.split(';'));
+      const headers = allLines[0].split(';');
       return {
         headers,
         forms,
@@ -69,156 +69,156 @@ describe("ReportService", () => {
       };
     }
 
-    describe("generateFormsPublishedLanguage", () => {
-      describe("number of signatures", () => {
-        const HEADER_SIGNATURES = "signaturfelt";
+    describe('generateFormsPublishedLanguage', () => {
+      describe('number of signatures', () => {
+        const HEADER_SIGNATURES = 'signaturfelt';
 
-        it("defaults to 1 signature", async () => {
+        it('defaults to 1 signature', async () => {
           const publishedForms = [
             {
-              title: "Testskjema1",
+              title: 'Testskjema1',
               properties: {
-                skjemanummer: "TEST1",
+                skjemanummer: 'TEST1',
                 signatures: undefined,
               } as FormPropertiesType,
             },
           ];
           setupNock(publishedForms);
           const writableStream = createWritableStream();
-          await reportService.generate("all-forms-summary", writableStream);
+          await reportService.generate('all-forms-summary', writableStream);
           const report = parseReport(writableStream.toString());
           expect(report.numberOfForms).toBe(1);
           const formFields = report.forms[0];
-          expect(formFields[report.getHeaderIndex(HEADER_SIGNATURES)]).toBe("1");
+          expect(formFields[report.getHeaderIndex(HEADER_SIGNATURES)]).toBe('1');
         });
 
-        it("signature array with default signature", async () => {
+        it('signature array with default signature', async () => {
           const publishedForms = [
             {
-              title: "Testskjema1",
+              title: 'Testskjema1',
               properties: {
-                skjemanummer: "TEST1",
-                signatures: [{ label: "" }],
+                skjemanummer: 'TEST1',
+                signatures: [{ label: '' }],
               } as FormPropertiesType,
             },
           ];
           setupNock(publishedForms);
           const writableStream = createWritableStream();
-          await reportService.generate("all-forms-summary", writableStream);
+          await reportService.generate('all-forms-summary', writableStream);
           const report = parseReport(writableStream.toString());
           expect(report.numberOfForms).toBe(1);
           const formFields = report.forms[0];
-          expect(formFields[report.getHeaderIndex(HEADER_SIGNATURES)]).toBe("1");
+          expect(formFields[report.getHeaderIndex(HEADER_SIGNATURES)]).toBe('1');
         });
 
-        it("has 3 signatures", async () => {
+        it('has 3 signatures', async () => {
           const publishedForms = [
             {
-              title: "Testskjema1",
+              title: 'Testskjema1',
               properties: {
-                skjemanummer: "TEST1",
-                signatures: [{ label: "Lege" }, { label: "Verge" }, { label: "Søker" }],
+                skjemanummer: 'TEST1',
+                signatures: [{ label: 'Lege' }, { label: 'Verge' }, { label: 'Søker' }],
               } as FormPropertiesType,
             },
           ];
           setupNock(publishedForms);
           const writableStream = createWritableStream();
-          await reportService.generate("all-forms-summary", writableStream);
+          await reportService.generate('all-forms-summary', writableStream);
           const report = parseReport(writableStream.toString());
           expect(report.numberOfForms).toBe(1);
           const formFields = report.forms[0];
-          expect(formFields[report.getHeaderIndex(HEADER_SIGNATURES)]).toBe("3");
+          expect(formFields[report.getHeaderIndex(HEADER_SIGNATURES)]).toBe('3');
         });
       });
 
-      describe("unpublished changes", () => {
-        const HEADER_UNPUBLISHED_CHANGES = "upubliserte endringer";
+      describe('unpublished changes', () => {
+        const HEADER_UNPUBLISHED_CHANGES = 'upubliserte endringer';
 
-        it("has no unpublished changes", async () => {
+        it('has no unpublished changes', async () => {
           const publishedForms = [
             {
-              title: "Testskjema1",
+              title: 'Testskjema1',
               properties: {
-                skjemanummer: "TEST1",
-                published: "2022-07-28T10:00:10.325Z",
-                modified: "2022-07-28T10:00:10.325Z",
+                skjemanummer: 'TEST1',
+                published: '2022-07-28T10:00:10.325Z',
+                modified: '2022-07-28T10:00:10.325Z',
               } as FormPropertiesType,
             },
           ];
           setupNock(publishedForms);
           const writableStream = createWritableStream();
-          await reportService.generate("all-forms-summary", writableStream);
+          await reportService.generate('all-forms-summary', writableStream);
           const report = parseReport(writableStream.toString());
           expect(report.numberOfForms).toBe(1);
           const formFields = report.forms[0];
-          expect(formFields[report.getHeaderIndex(HEADER_UNPUBLISHED_CHANGES)]).toBe("nei");
+          expect(formFields[report.getHeaderIndex(HEADER_UNPUBLISHED_CHANGES)]).toBe('nei');
         });
 
-        it("has unpublished changes", async () => {
+        it('has unpublished changes', async () => {
           const publishedForms = [
             {
-              title: "Testskjema1",
+              title: 'Testskjema1',
               properties: {
-                skjemanummer: "TEST1",
-                published: "2022-07-28T10:00:10.325Z",
-                modified: "2022-07-28T11:00:05.254Z",
+                skjemanummer: 'TEST1',
+                published: '2022-07-28T10:00:10.325Z',
+                modified: '2022-07-28T11:00:05.254Z',
               } as FormPropertiesType,
             },
           ];
           setupNock(publishedForms);
           const writableStream = createWritableStream();
-          await reportService.generate("all-forms-summary", writableStream);
+          await reportService.generate('all-forms-summary', writableStream);
           const report = parseReport(writableStream.toString());
           expect(report.numberOfForms).toBe(1);
           const formFields = report.forms[0];
-          expect(formFields[report.getHeaderIndex(HEADER_UNPUBLISHED_CHANGES)]).toBe("ja");
+          expect(formFields[report.getHeaderIndex(HEADER_UNPUBLISHED_CHANGES)]).toBe('ja');
         });
 
-        it("shows no information about unpublished changes for unpublished forms", async () => {
+        it('shows no information about unpublished changes for unpublished forms', async () => {
           const publishedForms = [
             {
-              title: "Testskjema1",
+              title: 'Testskjema1',
               properties: {
-                skjemanummer: "TEST1",
-                modified: "2022-07-28T11:00:05.254Z",
+                skjemanummer: 'TEST1',
+                modified: '2022-07-28T11:00:05.254Z',
               } as FormPropertiesType,
             },
           ];
           setupNock(publishedForms);
           const writableStream = createWritableStream();
-          await reportService.generate("all-forms-summary", writableStream);
+          await reportService.generate('all-forms-summary', writableStream);
           const report = parseReport(writableStream.toString());
           expect(report.numberOfForms).toBe(1);
           const formFields = report.forms[0];
-          expect(formFields[report.getHeaderIndex(HEADER_UNPUBLISHED_CHANGES)]).toBe("");
+          expect(formFields[report.getHeaderIndex(HEADER_UNPUBLISHED_CHANGES)]).toBe('');
         });
       });
     });
 
-    describe("generateAllFormsSummary", () => {
-      it("includes published forms with its respective languages", async () => {
+    describe('generateAllFormsSummary', () => {
+      it('includes published forms with its respective languages', async () => {
         const publishedForms = [
           {
-            title: "Testskjema1",
+            title: 'Testskjema1',
             properties: {
-              skjemanummer: "TEST1",
-              published: "2022-07-28T10:00:10.325Z",
-              publishedLanguages: ["en", "nn-NO"],
+              skjemanummer: 'TEST1',
+              published: '2022-07-28T10:00:10.325Z',
+              publishedLanguages: ['en', 'nn-NO'],
             } as FormPropertiesType,
           },
           {
-            title: "Testskjema2",
+            title: 'Testskjema2',
             properties: {
-              skjemanummer: "TEST2",
-              published: "2022-07-28T10:00:10.325Z",
-              publishedLanguages: ["en"],
+              skjemanummer: 'TEST2',
+              published: '2022-07-28T10:00:10.325Z',
+              publishedLanguages: ['en'],
             } as FormPropertiesType,
           },
           {
-            title: "Testskjema3",
+            title: 'Testskjema3',
             properties: {
-              skjemanummer: "TEST3",
-              published: "2022-07-28T10:00:10.325Z",
+              skjemanummer: 'TEST3',
+              published: '2022-07-28T10:00:10.325Z',
               publishedLanguages: undefined,
             } as FormPropertiesType,
           },
@@ -226,28 +226,28 @@ describe("ReportService", () => {
         setupNock(publishedForms);
 
         const writableStream = createWritableStream();
-        await reportService.generate("forms-published-languages", writableStream);
+        await reportService.generate('forms-published-languages', writableStream);
         expect(writableStream.toString()).toEqual(
-          CSV_HEADER_LINE + "TEST1;Testskjema1;en,nn-NO\nTEST2;Testskjema2;en\nTEST3;Testskjema3;\n",
+          CSV_HEADER_LINE + 'TEST1;Testskjema1;en,nn-NO\nTEST2;Testskjema2;en\nTEST3;Testskjema3;\n',
         );
       });
 
-      it("does not include testform", async () => {
+      it('does not include testform', async () => {
         const publishedForms = [
           {
-            title: "Testskjema1",
+            title: 'Testskjema1',
             properties: {
-              skjemanummer: "TEST1",
-              published: "2022-07-28T10:00:10.325Z",
-              publishedLanguages: ["en", "nn-NO"],
+              skjemanummer: 'TEST1',
+              published: '2022-07-28T10:00:10.325Z',
+              publishedLanguages: ['en', 'nn-NO'],
             } as FormPropertiesType,
           },
           {
-            title: "Testskjema2",
+            title: 'Testskjema2',
             properties: {
-              skjemanummer: "TEST2",
-              published: "2022-07-28T10:00:10.325Z",
-              publishedLanguages: ["en"],
+              skjemanummer: 'TEST2',
+              published: '2022-07-28T10:00:10.325Z',
+              publishedLanguages: ['en'],
               isTestForm: true, // <- testform
             } as FormPropertiesType,
           },
@@ -255,15 +255,15 @@ describe("ReportService", () => {
         setupNock(publishedForms);
 
         const writableStream = createWritableStream();
-        await reportService.generate("forms-published-languages", writableStream);
-        expect(writableStream.toString()).toEqual(CSV_HEADER_LINE + "TEST1;Testskjema1;en,nn-NO\n");
+        await reportService.generate('forms-published-languages', writableStream);
+        expect(writableStream.toString()).toEqual(CSV_HEADER_LINE + 'TEST1;Testskjema1;en,nn-NO\n');
       });
 
-      it("fails if unknown report", async () => {
+      it('fails if unknown report', async () => {
         let errorCatched = false;
         const writableStream = createWritableStream();
         try {
-          await reportService.generate("unknown-report-id", writableStream);
+          await reportService.generate('unknown-report-id', writableStream);
         } catch (err) {
           errorCatched = true;
         }

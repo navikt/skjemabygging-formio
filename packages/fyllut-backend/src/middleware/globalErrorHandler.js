@@ -1,5 +1,5 @@
-import correlator from "express-correlation-id";
-import { config } from "../config/config";
+import correlator from 'express-correlation-id';
+import { config } from '../config/config';
 
 const { isTest } = config;
 
@@ -13,8 +13,8 @@ const globalErrorHandler = (err, req, res, _next) => {
   }
 
   res.status(500);
-  res.contentType("application/json");
-  res.send({ message: err.functional ? err.message : "Det oppstod en feil", correlation_id: err.correlation_id });
+  res.contentType('application/json');
+  res.send({ message: err.functional ? err.message : 'Det oppstod en feil', correlation_id: err.correlation_id });
 };
 
 export default globalErrorHandler;

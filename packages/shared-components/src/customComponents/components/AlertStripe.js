@@ -1,9 +1,9 @@
-import HTMLElement from "formiojs/components/html/HTML";
-import HTMLElementEditForm from "formiojs/components/html/HTML.form";
-import HTMLElementDisplayEditForm from "formiojs/components/html/editForm/HTML.edit.display";
-import FormBuilderOptions from "../../Forms/form-builder-options";
-import FormioReactComponent from "../FormioReactComponent";
-import { contentToIncludeInPdf } from "./fields/contentToIncludeInPdf";
+import HTMLElement from 'formiojs/components/html/HTML';
+import HTMLElementEditForm from 'formiojs/components/html/HTML.form';
+import HTMLElementDisplayEditForm from 'formiojs/components/html/editForm/HTML.edit.display';
+import FormBuilderOptions from '../../Forms/form-builder-options';
+import FormioReactComponent from '../FormioReactComponent';
+import { contentToIncludeInPdf } from './fields/contentToIncludeInPdf';
 
 class AlertStripe extends HTMLElement {
   static get builderInfo() {
@@ -13,96 +13,96 @@ class AlertStripe extends HTMLElement {
   static editForm(...extend) {
     return HTMLElementEditForm([
       {
-        label: "Display",
-        key: "display",
+        label: 'Display',
+        key: 'display',
         components: [
           ...HTMLElementDisplayEditForm,
           contentToIncludeInPdf,
           {
-            label: "Type",
-            type: "radiopanel",
-            key: "alerttype",
+            label: 'Type',
+            type: 'radiopanel',
+            key: 'alerttype',
             input: true,
             weight: 81,
             values: [
               {
-                value: "info",
-                label: "Info",
+                value: 'info',
+                label: 'Info',
               },
               {
-                value: "success",
-                label: "Suksess",
+                value: 'success',
+                label: 'Suksess',
               },
               {
-                value: "warning",
-                label: "Advarsel",
+                value: 'warning',
+                label: 'Advarsel',
               },
               {
-                value: "error",
-                label: "Feil",
+                value: 'error',
+                label: 'Feil',
               },
             ],
           },
           {
-            label: "Inline",
-            type: "navCheckbox",
-            key: "isInline",
+            label: 'Inline',
+            type: 'navCheckbox',
+            key: 'isInline',
             input: true,
             weight: 82,
           },
           {
-            key: "label",
+            key: 'label',
             ignore: true,
           },
           {
-            key: "className",
+            key: 'className',
             ignore: true,
           },
           {
-            key: "attrs",
+            key: 'attrs',
             ignore: true,
           },
           {
-            key: "tag",
+            key: 'tag',
             ignore: true,
           },
           {
-            key: "refreshOnChange",
+            key: 'refreshOnChange',
             ignore: true,
           },
           {
-            key: "customClass",
+            key: 'customClass',
             ignore: true,
           },
           {
-            key: "hidden",
+            key: 'hidden',
             ignore: true,
           },
           {
-            key: "modalEdit",
+            key: 'modalEdit',
             ignore: true,
           },
         ],
       },
       {
-        key: "api",
+        key: 'api',
         components: [
           {
-            key: "properties",
+            key: 'properties',
             ignore: true,
           },
           {
-            key: "tags",
+            key: 'tags',
             ignore: true,
           },
         ],
       },
       {
-        key: "layout",
+        key: 'layout',
         ignore: true,
       },
       {
-        key: "logic",
+        key: 'logic',
         ignore: true,
       },
       ...extend,

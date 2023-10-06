@@ -1,29 +1,29 @@
-import { AppConfigProvider } from "@navikt/skjemadigitalisering-shared-components";
-import { render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
-import { MemoryRouter } from "react-router-dom";
-import FormPage from "./FormPage";
+import { AppConfigProvider } from '@navikt/skjemadigitalisering-shared-components';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { MemoryRouter } from 'react-router-dom';
+import FormPage from './FormPage';
 
 const RESPONSE_HEADERS = {
   headers: {
-    "content-type": "application/json",
+    'content-type': 'application/json',
   },
 };
 
 const form = {
-  title: "Testskjema",
-  path: "testskjema",
-  components: [{ type: "panel", key: "veiledning" }],
+  title: 'Testskjema',
+  path: 'testskjema',
+  components: [{ type: 'panel', key: 'veiledning' }],
   properties: {},
 };
 
 const translations = {
   en: {
-    Testskjema: "Test form",
+    Testskjema: 'Test form',
   },
 };
 
-describe("FormPage", () => {
+describe('FormPage', () => {
   beforeEach(() => {
     fetchMock.doMock();
   });
@@ -38,29 +38,29 @@ describe("FormPage", () => {
     );
   };
 
-  describe("FeatureToggle enableTranslations=false", () => {
-    it("renders form when translations are not enabled", async () => {
+  describe('FeatureToggle enableTranslations=false', () => {
+    it('renders form when translations are not enabled', async () => {
       fetchMock.mockImplementation((url, _options) => {
         return Promise.reject(new Error(`Ingen kall til backend forventes: ${url}`));
       });
 
       renderFormPage(form, { enableTranslations: false });
 
-      expect(await screen.findByRole("heading", { name: "Testskjema" })).toBeInTheDocument();
-      expect(await screen.queryByRole("button", { name: "Norsk bokmål" })).not.toBeInTheDocument();
+      expect(await screen.findByRole('heading', { name: 'Testskjema' })).toBeInTheDocument();
+      expect(await screen.queryByRole('button', { name: 'Norsk bokmål' })).not.toBeInTheDocument();
     });
   });
 
-  describe("Language selector", () => {
-    it("is not rendered if no translations are available", async () => {
+  describe('Language selector', () => {
+    it('is not rendered if no translations are available', async () => {
       fetchMock.mockImplementation((url, _options) => {
-        if (url === "/fyllut/api/translations/testskjema") {
+        if (url === '/fyllut/api/translations/testskjema') {
           return Promise.resolve(new Response(JSON.stringify({}), RESPONSE_HEADERS));
         }
-        if (url.startsWith("/fyllut/api/countries")) {
+        if (url.startsWith('/fyllut/api/countries')) {
           return Promise.resolve(new Response(JSON.stringify([]), RESPONSE_HEADERS));
         }
-        if (url.startsWith("/fyllut/api/global-translations")) {
+        if (url.startsWith('/fyllut/api/global-translations')) {
           return Promise.resolve(new Response(JSON.stringify({}), RESPONSE_HEADERS));
         }
         return Promise.reject(new Error(`Ukjent url: ${url}`));
@@ -68,19 +68,19 @@ describe("FormPage", () => {
 
       renderFormPage(form);
 
-      expect(await screen.findByRole("heading", { name: "Testskjema" })).toBeInTheDocument();
-      expect(await screen.queryByRole("button", { name: "Norsk bokmål" })).not.toBeInTheDocument();
+      expect(await screen.findByRole('heading', { name: 'Testskjema' })).toBeInTheDocument();
+      expect(await screen.queryByRole('button', { name: 'Norsk bokmål' })).not.toBeInTheDocument();
     });
 
-    it("allows selection of other language for the form", async () => {
+    it('allows selection of other language for the form', async () => {
       fetchMock.mockImplementation((url, _options) => {
-        if (url === "/fyllut/api/translations/testskjema") {
+        if (url === '/fyllut/api/translations/testskjema') {
           return Promise.resolve(new Response(JSON.stringify(translations), RESPONSE_HEADERS));
         }
-        if (url.startsWith("/fyllut/api/countries")) {
+        if (url.startsWith('/fyllut/api/countries')) {
           return Promise.resolve(new Response(JSON.stringify([]), RESPONSE_HEADERS));
         }
-        if (url.startsWith("/fyllut/api/global-translations")) {
+        if (url.startsWith('/fyllut/api/global-translations')) {
           return Promise.resolve(new Response(JSON.stringify({}), RESPONSE_HEADERS));
         }
         return Promise.reject(new Error(`Ukjent url: ${url}`));
@@ -88,12 +88,12 @@ describe("FormPage", () => {
 
       renderFormPage(form);
 
-      expect(await screen.findByRole("heading", { name: "Testskjema" })).toBeInTheDocument();
-      const languageSelector = screen.queryByRole("button", { name: "Norsk bokmål" });
+      expect(await screen.findByRole('heading', { name: 'Testskjema' })).toBeInTheDocument();
+      const languageSelector = screen.queryByRole('button', { name: 'Norsk bokmål' });
       expect(languageSelector).toBeInTheDocument();
       await userEvent.click(languageSelector);
-      await userEvent.click(await screen.findByRole("link", { name: "English" }));
-      expect(await screen.findByRole("heading", { name: "Test form" })).toBeInTheDocument();
+      await userEvent.click(await screen.findByRole('link', { name: 'English' }));
+      expect(await screen.findByRole('heading', { name: 'Test form' })).toBeInTheDocument();
     });
   });
 });

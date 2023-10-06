@@ -1,212 +1,212 @@
-import getCurrenttranslationsReducer from "./getCurrenttranslationsReducer";
+import getCurrenttranslationsReducer from './getCurrenttranslationsReducer';
 
 const mockedPayload = {
   translations: {
-    "Bor du i Danmark?": { value: "Do you live in Denmark?", scope: "global" },
-    "Har du noen tilleggsdokumentasjon?": {
-      value: "Do you have any additional documentation?",
-      scope: "global",
+    'Bor du i Danmark?': { value: 'Do you live in Denmark?', scope: 'global' },
+    'Har du noen tilleggsdokumentasjon?': {
+      value: 'Do you have any additional documentation?',
+      scope: 'global',
     },
   },
 };
 
 const mockedEmptyState = [
   {
-    id: "000",
-    originalText: "",
-    translatedText: "",
+    id: '000',
+    originalText: '',
+    translatedText: '',
   },
 ];
 
 const mockedState = [
   {
-    id: "123",
-    originalText: "Bor du i Norge?",
-    translatedText: "Do you live in Norway?",
+    id: '123',
+    originalText: 'Bor du i Norge?',
+    translatedText: 'Do you live in Norway?',
   },
   {
-    id: "321",
-    originalText: "Har du noen tilleggsdokumentasjon?",
-    translatedText: "Do you have any additional documentation?",
+    id: '321',
+    originalText: 'Har du noen tilleggsdokumentasjon?',
+    translatedText: 'Do you have any additional documentation?',
   },
 ];
 
-describe("Test getCurrenttranslationsReducer", () => {
-  describe("Test initial language action", () => {
-    it("return empty original text and translation", () => {
-      const updatedState = getCurrenttranslationsReducer(mockedEmptyState, { type: "initializeLanguage", payload: {} });
-      expect(updatedState[0].originalText).toBe("");
-      expect(updatedState[0].translatedText).toBe("");
+describe('Test getCurrenttranslationsReducer', () => {
+  describe('Test initial language action', () => {
+    it('return empty original text and translation', () => {
+      const updatedState = getCurrenttranslationsReducer(mockedEmptyState, { type: 'initializeLanguage', payload: {} });
+      expect(updatedState[0].originalText).toBe('');
+      expect(updatedState[0].translatedText).toBe('');
     });
   });
 
-  describe("Test load new language action", () => {
-    it("with mock payload, return original text and translation", () => {
+  describe('Test load new language action', () => {
+    it('with mock payload, return original text and translation', () => {
       const updatedState = getCurrenttranslationsReducer(mockedEmptyState, {
-        type: "loadNewLanguage",
+        type: 'loadNewLanguage',
         payload: mockedPayload,
       });
-      expect(updatedState[0].originalText).toBe("Bor du i Danmark?");
-      expect(updatedState[0].translatedText).toBe("Do you live in Denmark?");
-      expect(updatedState[1].originalText).toBe("Har du noen tilleggsdokumentasjon?");
-      expect(updatedState[1].translatedText).toBe("Do you have any additional documentation?");
+      expect(updatedState[0].originalText).toBe('Bor du i Danmark?');
+      expect(updatedState[0].translatedText).toBe('Do you live in Denmark?');
+      expect(updatedState[1].originalText).toBe('Har du noen tilleggsdokumentasjon?');
+      expect(updatedState[1].translatedText).toBe('Do you have any additional documentation?');
     });
 
-    it("without mock payload, return empty original text and translation", () => {
+    it('without mock payload, return empty original text and translation', () => {
       const updatedState = getCurrenttranslationsReducer(mockedEmptyState, {
-        type: "loadNewLanguage",
+        type: 'loadNewLanguage',
         payload: { translations: {} },
       });
-      expect(updatedState[0].originalText).toBe("");
-      expect(updatedState[0].translatedText).toBe("");
+      expect(updatedState[0].originalText).toBe('');
+      expect(updatedState[0].translatedText).toBe('');
     });
   });
 
-  describe("Test add new translation action", () => {
-    it("without existing original text and translation, return new empty original text and translation", () => {
-      const updatedState = getCurrenttranslationsReducer(mockedEmptyState, { type: "addNewTranslation", payload: {} });
-      expect(updatedState[0].originalText).toBe("");
-      expect(updatedState[0].translatedText).toBe("");
+  describe('Test add new translation action', () => {
+    it('without existing original text and translation, return new empty original text and translation', () => {
+      const updatedState = getCurrenttranslationsReducer(mockedEmptyState, { type: 'addNewTranslation', payload: {} });
+      expect(updatedState[0].originalText).toBe('');
+      expect(updatedState[0].translatedText).toBe('');
     });
 
-    it("with mocked original text and translation,  return existing original text and translation and new empty original text and translation", () => {
-      const updatedState = getCurrenttranslationsReducer(mockedState, { type: "addNewTranslation", payload: {} });
-      expect(updatedState[0].originalText).toBe("Bor du i Norge?");
-      expect(updatedState[0].translatedText).toBe("Do you live in Norway?");
-      expect(updatedState[1].originalText).toBe("Har du noen tilleggsdokumentasjon?");
-      expect(updatedState[1].translatedText).toBe("Do you have any additional documentation?");
-      expect(updatedState[2].originalText).toBe("");
-      expect(updatedState[2].translatedText).toBe("");
+    it('with mocked original text and translation,  return existing original text and translation and new empty original text and translation', () => {
+      const updatedState = getCurrenttranslationsReducer(mockedState, { type: 'addNewTranslation', payload: {} });
+      expect(updatedState[0].originalText).toBe('Bor du i Norge?');
+      expect(updatedState[0].translatedText).toBe('Do you live in Norway?');
+      expect(updatedState[1].originalText).toBe('Har du noen tilleggsdokumentasjon?');
+      expect(updatedState[1].translatedText).toBe('Do you have any additional documentation?');
+      expect(updatedState[2].originalText).toBe('');
+      expect(updatedState[2].translatedText).toBe('');
     });
   });
 
-  describe("Test update translation action", () => {
-    it("update only an empty translation,  return empty original text and new translation", () => {
+  describe('Test update translation action', () => {
+    it('update only an empty translation,  return empty original text and new translation', () => {
       const updatedState = getCurrenttranslationsReducer(mockedEmptyState, {
-        type: "updateTranslation",
-        payload: { id: "000", originalText: "", translatedText: "Yes" },
+        type: 'updateTranslation',
+        payload: { id: '000', originalText: '', translatedText: 'Yes' },
       });
-      expect(updatedState[0].originalText).toBe("");
-      expect(updatedState[0].translatedText).toBe("Yes");
+      expect(updatedState[0].originalText).toBe('');
+      expect(updatedState[0].translatedText).toBe('Yes');
     });
 
-    it("update existing translation,  return existing original text and new translation", () => {
+    it('update existing translation,  return existing original text and new translation', () => {
       const updatedState = getCurrenttranslationsReducer(mockedState, {
-        type: "updateTranslation",
-        payload: { id: "123", originalText: "Bor du i Norge?", translatedText: "Do you live in Norway" },
+        type: 'updateTranslation',
+        payload: { id: '123', originalText: 'Bor du i Norge?', translatedText: 'Do you live in Norway' },
       });
-      expect(updatedState[0].originalText).toBe("Bor du i Norge?");
-      expect(updatedState[0].translatedText).toBe("Do you live in Norway");
-      expect(updatedState[1].originalText).toBe("Har du noen tilleggsdokumentasjon?");
-      expect(updatedState[1].translatedText).toBe("Do you have any additional documentation?");
+      expect(updatedState[0].originalText).toBe('Bor du i Norge?');
+      expect(updatedState[0].translatedText).toBe('Do you live in Norway');
+      expect(updatedState[1].originalText).toBe('Har du noen tilleggsdokumentasjon?');
+      expect(updatedState[1].translatedText).toBe('Do you have any additional documentation?');
     });
   });
 
-  describe("Test update original text action", () => {
-    it("update an empty original text,  return new original text and empty translation", () => {
+  describe('Test update original text action', () => {
+    it('update an empty original text,  return new original text and empty translation', () => {
       const updatedState = getCurrenttranslationsReducer(mockedEmptyState, {
-        type: "updateOriginalText",
-        payload: { id: "000", newOriginalText: "Forrige", oldOriginalText: "" },
+        type: 'updateOriginalText',
+        payload: { id: '000', newOriginalText: 'Forrige', oldOriginalText: '' },
       });
-      expect(updatedState[0].originalText).toBe("Forrige");
-      expect(updatedState[0].translatedText).toBe("");
+      expect(updatedState[0].originalText).toBe('Forrige');
+      expect(updatedState[0].translatedText).toBe('');
     });
 
-    it("update mocked original text,  return new original text and existing translation", () => {
+    it('update mocked original text,  return new original text and existing translation', () => {
       const updatedState = getCurrenttranslationsReducer(mockedState, {
-        type: "updateOriginalText",
-        payload: { id: "123", newOriginalText: "Bor du ikke i Norge?", oldOriginalText: "Bor du i Norge?" },
+        type: 'updateOriginalText',
+        payload: { id: '123', newOriginalText: 'Bor du ikke i Norge?', oldOriginalText: 'Bor du i Norge?' },
       });
-      expect(updatedState[0].originalText).toBe("Bor du ikke i Norge?");
-      expect(updatedState[0].translatedText).toBe("Do you live in Norway?");
-      expect(updatedState[1].originalText).toBe("Har du noen tilleggsdokumentasjon?");
-      expect(updatedState[1].translatedText).toBe("Do you have any additional documentation?");
+      expect(updatedState[0].originalText).toBe('Bor du ikke i Norge?');
+      expect(updatedState[0].translatedText).toBe('Do you live in Norway?');
+      expect(updatedState[1].originalText).toBe('Har du noen tilleggsdokumentasjon?');
+      expect(updatedState[1].translatedText).toBe('Do you have any additional documentation?');
     });
 
-    it("update non-existing original text,  return existing original text and translation", () => {
+    it('update non-existing original text,  return existing original text and translation', () => {
       const updatedState = getCurrenttranslationsReducer(mockedState, {
-        type: "updateOriginalText",
-        payload: { id: "789", newOriginalText: "Bor du ikke i Norge?", oldOriginalText: "Bor du i Norge?" },
+        type: 'updateOriginalText',
+        payload: { id: '789', newOriginalText: 'Bor du ikke i Norge?', oldOriginalText: 'Bor du i Norge?' },
       });
-      expect(updatedState[0].originalText).toBe("Bor du i Norge?");
-      expect(updatedState[0].translatedText).toBe("Do you live in Norway?");
-      expect(updatedState[1].originalText).toBe("Har du noen tilleggsdokumentasjon?");
-      expect(updatedState[1].translatedText).toBe("Do you have any additional documentation?");
+      expect(updatedState[0].originalText).toBe('Bor du i Norge?');
+      expect(updatedState[0].translatedText).toBe('Do you live in Norway?');
+      expect(updatedState[1].originalText).toBe('Har du noen tilleggsdokumentasjon?');
+      expect(updatedState[1].translatedText).toBe('Do you have any additional documentation?');
     });
   });
 
-  describe("Test delete one row action", () => {
-    it("delete empty row with id,  return empty original text and translation", () => {
+  describe('Test delete one row action', () => {
+    it('delete empty row with id,  return empty original text and translation', () => {
       const updatedState = getCurrenttranslationsReducer(mockedEmptyState, {
-        type: "deleteOneRow",
-        payload: { id: "123", originalText: "", translatedText: "" },
+        type: 'deleteOneRow',
+        payload: { id: '123', originalText: '', translatedText: '' },
       });
-      expect(updatedState[0].originalText).toBe("");
-      expect(updatedState[0].translatedText).toBe("");
+      expect(updatedState[0].originalText).toBe('');
+      expect(updatedState[0].translatedText).toBe('');
     });
 
-    it("delete existing row with id, return original text and translation", () => {
+    it('delete existing row with id, return original text and translation', () => {
       const updatedState = getCurrenttranslationsReducer(mockedState, {
-        type: "deleteOneRow",
-        payload: { id: "123" },
+        type: 'deleteOneRow',
+        payload: { id: '123' },
       });
 
-      expect(updatedState[0].originalText).toBe("Har du noen tilleggsdokumentasjon?");
-      expect(updatedState[0].translatedText).toBe("Do you have any additional documentation?");
+      expect(updatedState[0].originalText).toBe('Har du noen tilleggsdokumentasjon?');
+      expect(updatedState[0].translatedText).toBe('Do you have any additional documentation?');
     });
 
-    it("delete with wrong id, return same rows", () => {
+    it('delete with wrong id, return same rows', () => {
       const updatedState = getCurrenttranslationsReducer(mockedState, {
-        type: "deleteOneRow",
-        payload: { id: "000" },
+        type: 'deleteOneRow',
+        payload: { id: '000' },
       });
 
-      expect(updatedState[0].originalText).toBe("Bor du i Norge?");
-      expect(updatedState[0].translatedText).toBe("Do you live in Norway?");
-      expect(updatedState[1].originalText).toBe("Har du noen tilleggsdokumentasjon?");
-      expect(updatedState[1].translatedText).toBe("Do you have any additional documentation?");
+      expect(updatedState[0].originalText).toBe('Bor du i Norge?');
+      expect(updatedState[0].translatedText).toBe('Do you live in Norway?');
+      expect(updatedState[1].originalText).toBe('Har du noen tilleggsdokumentasjon?');
+      expect(updatedState[1].translatedText).toBe('Do you have any additional documentation?');
     });
   });
 
-  describe("Test default action", () => {
-    it("with empty state and empty payload,  return empty original text and new translation", () => {
+  describe('Test default action', () => {
+    it('with empty state and empty payload,  return empty original text and new translation', () => {
       const updatedState = getCurrenttranslationsReducer(mockedEmptyState, {
-        type: "deleteLanguage",
+        type: 'deleteLanguage',
         payload: {},
       });
-      expect(updatedState[0].originalText).toBe("");
-      expect(updatedState[0].translatedText).toBe("");
+      expect(updatedState[0].originalText).toBe('');
+      expect(updatedState[0].translatedText).toBe('');
     });
 
-    it("with empty state and translation payload,  return empty original text and new translation", () => {
+    it('with empty state and translation payload,  return empty original text and new translation', () => {
       const updatedState = getCurrenttranslationsReducer(mockedEmptyState, {
-        type: "deleteLanguage",
-        payload: { id: "345", originalText: "Ja", translatedText: "Yes" },
+        type: 'deleteLanguage',
+        payload: { id: '345', originalText: 'Ja', translatedText: 'Yes' },
       });
-      expect(updatedState[0].originalText).toBe("");
-      expect(updatedState[0].translatedText).toBe("");
+      expect(updatedState[0].originalText).toBe('');
+      expect(updatedState[0].translatedText).toBe('');
     });
 
-    it("with mocked state and empty payload,  return mocked original text and new translation", () => {
+    it('with mocked state and empty payload,  return mocked original text and new translation', () => {
       const updatedState = getCurrenttranslationsReducer(mockedState, {
-        type: "deleteLanguage",
+        type: 'deleteLanguage',
         payload: {},
       });
-      expect(updatedState[0].originalText).toBe("Bor du i Norge?");
-      expect(updatedState[0].translatedText).toBe("Do you live in Norway?");
-      expect(updatedState[1].originalText).toBe("Har du noen tilleggsdokumentasjon?");
-      expect(updatedState[1].translatedText).toBe("Do you have any additional documentation?");
+      expect(updatedState[0].originalText).toBe('Bor du i Norge?');
+      expect(updatedState[0].translatedText).toBe('Do you live in Norway?');
+      expect(updatedState[1].originalText).toBe('Har du noen tilleggsdokumentasjon?');
+      expect(updatedState[1].translatedText).toBe('Do you have any additional documentation?');
     });
 
-    it("with mocked state and payload,  return mocked original text and new translation", () => {
+    it('with mocked state and payload,  return mocked original text and new translation', () => {
       const updatedState = getCurrenttranslationsReducer(mockedState, {
-        type: "deleteLanguage",
-        payload: { id: "345", originalText: "Ja", translatedText: "Yes" },
+        type: 'deleteLanguage',
+        payload: { id: '345', originalText: 'Ja', translatedText: 'Yes' },
       });
-      expect(updatedState[0].originalText).toBe("Bor du i Norge?");
-      expect(updatedState[0].translatedText).toBe("Do you live in Norway?");
-      expect(updatedState[1].originalText).toBe("Har du noen tilleggsdokumentasjon?");
-      expect(updatedState[1].translatedText).toBe("Do you have any additional documentation?");
+      expect(updatedState[0].originalText).toBe('Bor du i Norge?');
+      expect(updatedState[0].translatedText).toBe('Do you live in Norway?');
+      expect(updatedState[1].originalText).toBe('Har du noen tilleggsdokumentasjon?');
+      expect(updatedState[1].translatedText).toBe('Do you have any additional documentation?');
     });
   });
 });

@@ -1,6 +1,6 @@
-import { FyllUtRouter, useAppConfig } from "@navikt/skjemadigitalisering-shared-components";
-import { AppLayout } from "../components/AppLayout";
-import { useI18nState } from "../context/i18n/I18nContext";
+import { FyllUtRouter, useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
+import { AppLayout } from '../components/AppLayout';
+import { useI18nState } from '../context/i18n/I18nContext';
 
 export function TestFormPage({ form }) {
   const { featureToggles } = useAppConfig();
@@ -9,7 +9,7 @@ export function TestFormPage({ form }) {
   return (
     <AppLayout
       navBarProps={{
-        title: "Forhåndsvisning",
+        title: 'Forhåndsvisning',
         visSkjemaMeny: true,
         formPath: form.path,
       }}

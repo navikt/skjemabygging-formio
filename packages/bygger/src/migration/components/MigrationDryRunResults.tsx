@@ -1,33 +1,33 @@
-import { Checkbox, Heading } from "@navikt/ds-react";
-import { makeStyles } from "@navikt/skjemadigitalisering-shared-components";
-import { Link } from "react-router-dom";
-import { FormMigrationLogData } from "../../../types/migration";
-import FormStatusPanel from "../../Forms/status/FormStatusPanel";
-import BreakingChangesWarning from "./BreakingChangesWarning";
-import ComponentDependencies from "./ComponentDependencies";
+import { Checkbox, Heading } from '@navikt/ds-react';
+import { makeStyles } from '@navikt/skjemadigitalisering-shared-components';
+import { Link } from 'react-router-dom';
+import { FormMigrationLogData } from '../../../types/migration';
+import FormStatusPanel from '../../Forms/status/FormStatusPanel';
+import BreakingChangesWarning from './BreakingChangesWarning';
+import ComponentDependencies from './ComponentDependencies';
 
 const useStyles = makeStyles({
   row: {
-    display: "flex",
-    flexDirection: "row",
-    marginTop: "3rem",
+    display: 'flex',
+    flexDirection: 'row',
+    marginTop: '3rem',
   },
   mainColumn: {
     flex: 3,
   },
   sideColumn: {
     flex: 1,
-    width: "14rem",
-    marginLeft: "3rem",
+    width: '14rem',
+    marginLeft: '3rem',
   },
   resultContainer: {
-    marginBottom: "1.5rem",
+    marginBottom: '1.5rem',
   },
   data: {
-    whiteSpace: "break-spaces",
-    overflowWrap: "anywhere",
-    maxWidth: "100%",
-    marginBottom: "0",
+    whiteSpace: 'break-spaces',
+    overflowWrap: 'anywhere',
+    maxWidth: '100%',
+    marginBottom: '0',
   },
 });
 
@@ -63,7 +63,7 @@ const MigrationDryRunResults = ({
               </p>
               {hasBreakingChanges && <BreakingChangesWarning breakingChanges={breakingChanges} />}
               {result.diff.map((componentDiff) => {
-                const componentKey = componentDiff.key || (componentDiff["key_ORIGINAL"] as string);
+                const componentKey = componentDiff.key || (componentDiff['key_ORIGINAL'] as string);
                 return (
                   <div className={styles.resultContainer} key={`${componentKey}-${componentDiff.id}-diff`}>
                     <pre className={styles.data}>{JSON.stringify(componentDiff, null, 2)}</pre>
@@ -90,7 +90,7 @@ const MigrationDryRunResults = ({
                   Inkluder i migrering
                 </Checkbox>
               )}
-              <FormStatusPanel publishProperties={result} spacing={"small"} hideToggleDiffButton />
+              <FormStatusPanel publishProperties={result} spacing={'small'} hideToggleDiffButton />
             </div>
           </li>
         );

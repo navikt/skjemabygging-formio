@@ -1,11 +1,11 @@
-import fs from "fs";
-import { glob } from "glob";
-import fetch from "node-fetch";
-import { logger } from "../logger.js";
+import fs from 'fs';
+import { glob } from 'glob';
+import fetch from 'node-fetch';
+import { logger } from '../logger.js';
 
 const readFile = async (filepath) => {
-  const filehandle = await fs.promises.open(filepath, "r");
-  let fileContents = await filehandle.readFile({ encoding: "utf-8" });
+  const filehandle = await fs.promises.open(filepath, 'r');
+  let fileContents = await filehandle.readFile({ encoding: 'utf-8' });
   await filehandle.close();
   return fileContents;
 };
@@ -13,7 +13,7 @@ const readFile = async (filepath) => {
 const loadFileFromDirectory = async (dir, filename, defaultReturn = {}) => {
   const existingFileNames = fs.readdirSync(dir);
   const existingFileName = existingFileNames.find(
-    (approvedFileName) => approvedFileName.replace(".json", "") === filename.replace(".json", ""),
+    (approvedFileName) => approvedFileName.replace('.json', '') === filename.replace('.json', ''),
   );
   if (existingFileName) {
     const file = await readFile(`${dir}/${existingFileName}`);
@@ -36,7 +36,7 @@ const loadAllJsonFilesFromDirectory = async (dir) => {
 
 const fetchFromFormioApi = async (url) => {
   if (url) {
-    const response = await fetch(url, { method: "GET" });
+    const response = await fetch(url, { method: 'GET' });
     if (response.ok) {
       return await response.json();
     }
@@ -45,4 +45,4 @@ const fetchFromFormioApi = async (url) => {
   return [];
 };
 
-export { loadAllJsonFilesFromDirectory, loadFileFromDirectory, fetchFromFormioApi };
+export { fetchFromFormioApi, loadAllJsonFilesFromDirectory, loadFileFromDirectory };

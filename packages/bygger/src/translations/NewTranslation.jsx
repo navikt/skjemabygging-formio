@@ -1,11 +1,11 @@
-import { makeStyles, NavForm } from "@navikt/skjemadigitalisering-shared-components";
-import { AppLayout } from "../components/AppLayout";
-import PageWrapper from "../Forms/PageWrapper";
+import { makeStyles, NavForm } from '@navikt/skjemadigitalisering-shared-components';
+import { AppLayout } from '../components/AppLayout';
+import PageWrapper from '../Forms/PageWrapper';
 
 const useStyles = makeStyles({
   form: {
-    margin: "0 auto",
-    maxWidth: "26.25rem",
+    margin: '0 auto',
+    maxWidth: '26.25rem',
   },
 });
 
@@ -15,7 +15,7 @@ const NewTranslation = ({ projectURL }) => {
   return (
     <AppLayout
       navBarProps={{
-        title: "Oversettelser",
+        title: 'Oversettelser',
         visOversettelseliste: true,
         visLagNyttSkjema: false,
       }}

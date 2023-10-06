@@ -25,7 +25,7 @@ const mod11 = (value: string, weights: Array<number>) => {
 };
 
 const removeSpaces = (input: string) => {
-  return input.replace(/\s+/g, "");
+  return input.replace(/\s+/g, '');
 };
 
 const validatorUtils = {

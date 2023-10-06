@@ -1,18 +1,18 @@
-import { AppConfigProvider } from "@navikt/skjemadigitalisering-shared-components";
-import { waitFor } from "@testing-library/react";
-import { renderHook } from "@testing-library/react-hooks";
-import createMockImplementation from "../../test/backendMockImplementation";
-import useTemaKoder from "./useTemaKoder";
+import { AppConfigProvider } from '@navikt/skjemadigitalisering-shared-components';
+import { waitFor } from '@testing-library/react';
+import { renderHook } from '@testing-library/react-hooks';
+import createMockImplementation from '../../test/backendMockImplementation';
+import useTemaKoder from './useTemaKoder';
 
-describe("useTemaKoder", () => {
+describe('useTemaKoder', () => {
   // @ts-ignore
   let fetchSpy: vi.SpyInstance;
   let appConfig: any;
-  const projectUrl = "http://test.example.org";
+  const projectUrl = 'http://test.example.org';
 
   beforeEach(() => {
     appConfig = ({ children }) => <AppConfigProvider baseUrl={projectUrl}>{children}</AppConfigProvider>;
-    fetchSpy = vi.spyOn(global, "fetch");
+    fetchSpy = vi.spyOn(global, 'fetch');
     fetchSpy.mockImplementation(createMockImplementation({ projectUrl }));
   });
 
@@ -20,32 +20,32 @@ describe("useTemaKoder", () => {
     fetchSpy.mockClear();
   });
 
-  it("returns ready: false and empty temakoder initially", async () => {
+  it('returns ready: false and empty temakoder initially', async () => {
     const { result } = renderHook(() => useTemaKoder(), { wrapper: appConfig });
     expect(result.current.ready).toBe(false);
     expect(result.current.temaKoder).toEqual([]);
   });
 
-  it("fetches temakoder and returns them when ready", async () => {
+  it('fetches temakoder and returns them when ready', async () => {
     const { result } = renderHook(() => useTemaKoder(), { wrapper: appConfig });
     await waitFor(() => {
       expect(fetchSpy).toHaveBeenCalledWith(`${projectUrl}/api/temakoder`);
       expect(result.current.ready).toBe(true);
-      expect(result.current.temaKoder).toEqual([{ key: "TEST", value: "test" }]);
+      expect(result.current.temaKoder).toEqual([{ key: 'TEST', value: 'test' }]);
     });
   });
 
-  describe("When fetch returns with not ok", () => {
+  describe('When fetch returns with not ok', () => {
     let errorSpy;
     // @ts-ignore
-    beforeEach(() => (errorSpy = vi.spyOn(console, "error").mockImplementation(vi.fn())));
+    beforeEach(() => (errorSpy = vi.spyOn(console, 'error').mockImplementation(vi.fn())));
     afterEach(() => errorSpy.mockClear());
 
-    it("returns an error message", async () => {
+    it('returns an error message', async () => {
       fetchSpy.mockImplementation(() => Promise.resolve(new Response(null, { status: 503 })));
       const { result } = renderHook(() => useTemaKoder(), { wrapper: appConfig });
       await waitFor(() => {
-        expect(result.current.errorMessage).toBe("Feil ved henting av temakoder. Vennligst prøv igjen senere.");
+        expect(result.current.errorMessage).toBe('Feil ved henting av temakoder. Vennligst prøv igjen senere.');
       });
     });
   });

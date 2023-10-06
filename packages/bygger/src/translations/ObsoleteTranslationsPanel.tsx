@@ -1,4 +1,4 @@
-import { Accordion, Button, TextField } from "@navikt/ds-react";
+import { Accordion, Button, TextField } from '@navikt/ds-react';
 
 interface ObsoleteTranslation {
   id: string;

@@ -1,12 +1,12 @@
-import { makeStyles, NavForm, useAppConfig } from "@navikt/skjemadigitalisering-shared-components";
-import { NavBar } from "./components/Navbar/NavBar";
-import { useAuth } from "./context/auth-context";
-import PageWrapper from "./Forms/PageWrapper";
+import { makeStyles, NavForm, useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
+import { NavBar } from './components/Navbar/NavBar';
+import { useAuth } from './context/auth-context';
+import PageWrapper from './Forms/PageWrapper';
 
 const useStyles = makeStyles({
   navForm: {
-    margin: "0 auto",
-    maxWidth: "26.25rem",
+    margin: '0 auto',
+    maxWidth: '26.25rem',
   },
 });
 
@@ -16,7 +16,7 @@ const UnauthenticatedApp = ({ projectURL }) => {
   const styles = useStyles();
   return (
     <>
-      <NavBar title={"Skjemabygger"} />
+      <NavBar title={'Skjemabygger'} />
       <PageWrapper>
         {config?.isDevelopment ? (
           <NavForm className={styles.navForm} src={`${projectURL}/user/login`} onSubmitDone={(user) => login(user)} />

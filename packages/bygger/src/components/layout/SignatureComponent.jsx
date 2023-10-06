@@ -1,11 +1,11 @@
-import { Close } from "@navikt/ds-icons";
-import { Button, Fieldset, Heading, Panel, TextField } from "@navikt/ds-react";
-import { makeStyles } from "@navikt/skjemadigitalisering-shared-components";
-import LabelWithDiff from "../FormMetaDataEditor/LabelWithDiff";
+import { Close } from '@navikt/ds-icons';
+import { Button, Fieldset, Heading, Panel, TextField } from '@navikt/ds-react';
+import { makeStyles } from '@navikt/skjemadigitalisering-shared-components';
+import LabelWithDiff from '../FormMetaDataEditor/LabelWithDiff';
 
 const useStyles = makeStyles({
   closeBtn: {
-    float: "right",
+    float: 'right',
   },
 });
 
@@ -18,14 +18,14 @@ const SignatureComponent = ({ signature, index, onChange, onDelete, diff = undef
         icon={<Close aria-hidden />}
         onClick={onDelete}
         className={styles.closeBtn}
-        aria-label={"Slett signatur " + (index + 1)}
+        aria-label={'Slett signatur ' + (index + 1)}
       />
       <Fieldset data-testid="signatures">
         <legend>
           <LabelWithDiff
             label={
               <Heading level="2" size="small">
-                {"Signatur " + (index + 1)}
+                {'Signatur ' + (index + 1)}
               </Heading>
             }
             diff={diff?.status}

@@ -1,7 +1,7 @@
-import { FormSignaturesType, NewFormSignatureType } from "../form";
-import { v4 as uuidv4 } from "uuid";
+import { v4 as uuidv4 } from 'uuid';
+import { FormSignaturesType, NewFormSignatureType } from '../form';
 
-const defaultSignature = [{ label: "", description: "", key: uuidv4() }];
+const defaultSignature = [{ label: '', description: '', key: uuidv4() }];
 
 export const hasOnlyDefaultSignaturesValues = (signature?: NewFormSignatureType[] | FormSignaturesType) => {
   if (signature) {

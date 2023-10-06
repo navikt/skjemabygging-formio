@@ -1,4 +1,4 @@
-import correlator from "express-correlation-id";
+import correlator from 'express-correlation-id';
 
 /**
  *
@@ -8,10 +8,10 @@ import correlator from "express-correlation-id";
  * @returns {Promise<Error>}
  */
 async function responseToError(response, errorMessage, functional = false) {
-  const contentType = response.headers.get("content-type");
+  const contentType = response.headers.get('content-type');
   const error = new Error(errorMessage);
   error.functional = functional;
-  error.http_response_body = contentType?.includes("application/json") ? await response.json() : await response.text();
+  error.http_response_body = contentType?.includes('application/json') ? await response.json() : await response.text();
   error.http_url = response.url;
   error.http_status = response.status;
   error.correlation_id = correlator.getId();

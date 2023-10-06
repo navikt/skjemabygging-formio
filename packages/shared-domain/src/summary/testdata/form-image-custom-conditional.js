@@ -1,27 +1,27 @@
 const submissionDoNotShowConditionalInput = {
   data: {
-    inputCondition: "doNotShowImg",
+    inputCondition: 'doNotShowImg',
   },
 };
 
 const submissionEmptyInput = {
   data: {
-    inputCondition: "",
+    inputCondition: '',
   },
 };
 
 const submissionOtherInput = {
   data: {
-    inputCondition: "",
+    inputCondition: '',
   },
 };
 
 const imgForm = {
-  title: "Veiledning",
+  title: 'Veiledning',
   collapsible: false,
-  key: "veiledning",
-  type: "panel",
-  label: "Veiledning",
+  key: 'veiledning',
+  type: 'panel',
+  label: 'Veiledning',
   buttonSettings: {
     previous: true,
     cancel: true,
@@ -34,13 +34,13 @@ const imgForm = {
   input: false,
   components: [
     {
-      label: "Input Condition",
-      type: "textfield",
-      key: "inputCondition",
-      fieldSize: "input--xxl",
+      label: 'Input Condition',
+      type: 'textfield',
+      key: 'inputCondition',
+      fieldSize: 'input--xxl',
       input: true,
       dataGridLabel: true,
-      validateOn: "blur",
+      validateOn: 'blur',
       validate: {
         required: true,
       },
@@ -49,26 +49,26 @@ const imgForm = {
     {
       image: [
         {
-          storage: "base64",
-          name: "testImage.jpeg",
-          url: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEBLAEsAAD",
+          storage: 'base64',
+          name: 'testImage.jpeg',
+          url: 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEBLAEsAAD',
           size: 12416,
-          type: "image/jpeg",
-          originalName: "testImage.jpeg",
+          type: 'image/jpeg',
+          originalName: 'testImage.jpeg',
         },
       ],
-      altText: "img alt text",
-      description: "img description",
+      altText: 'img alt text',
+      description: 'img description',
       showInPdf: true,
       widthPercent: 100,
-      key: "image1",
+      key: 'image1',
       conditional: {
         show: false,
-        when: "inputCondition",
-        eq: "doNotShowImg",
+        when: 'inputCondition',
+        eq: 'doNotShowImg',
       },
-      type: "image",
-      label: "Bilde",
+      type: 'image',
+      label: 'Bilde',
       input: false,
       tableView: false,
     },

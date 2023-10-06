@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect } from "react";
+import { createContext, useContext, useEffect } from 'react';
 import {
   initAmplitude,
   loggEventDokumentLastetNed,
@@ -7,10 +7,10 @@ import {
   loggEventSkjemaFullfort,
   loggEventSkjemaInnsendingFeilet,
   loggEventSkjemaValideringFeilet,
-} from "../../util/amplitude";
-import useHarApnetSkjema from "./harApnetSkjemaHook";
-import useSkjemaSporsmalEvent from "./skjemaEventHook";
-import useSkjemaStegFullfort from "./skjemaStegFullfortHook";
+} from '../../util/amplitude';
+import useHarApnetSkjema from './harApnetSkjemaHook';
+import useSkjemaSporsmalEvent from './skjemaEventHook';
+import useSkjemaStegFullfort from './skjemaStegFullfortHook';
 
 const defaultValues = {
   loggSkjemaApnet: (_innsendingsKanal) => {},
@@ -43,7 +43,7 @@ function AmplitudeProvider({ children, form, shouldUseAmplitude }) {
         loggSkjemaSporsmalBesvart,
         loggSkjemaSporsmalBesvartForSpesialTyper,
         loggSkjemaStegFullfort,
-        loggSpraakValg: (spraak) => loggEventFilterValg(form, { kategori: "språk", filternavn: spraak }),
+        loggSpraakValg: (spraak) => loggEventFilterValg(form, { kategori: 'språk', filternavn: spraak }),
         loggNavigering: (data) => loggEventNavigere(form, data),
         loggDokumentLastetNed: (tittel) => loggEventDokumentLastetNed(form, tittel),
         loggSkjemaValideringFeilet: () => loggEventSkjemaValideringFeilet(form),

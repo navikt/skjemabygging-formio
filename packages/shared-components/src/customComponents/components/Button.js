@@ -1,7 +1,7 @@
-import Button from "formiojs/components/button/Button";
-import ButtonEditForm from "formiojs/components/button/Button.form";
-import ButtonDisplayEditForm from "formiojs/components/button/editForm/Button.edit.display";
-import FormBuilderOptions from "../../Forms/form-builder-options";
+import Button from 'formiojs/components/button/Button';
+import ButtonEditForm from 'formiojs/components/button/Button.form';
+import ButtonDisplayEditForm from 'formiojs/components/button/editForm/Button.edit.display';
+import FormBuilderOptions from '../../Forms/form-builder-options';
 
 export default class NavButton extends Button {
   static get builderInfo() {
@@ -18,13 +18,13 @@ export default class NavButton extends Button {
   static editForm(...extend) {
     return ButtonEditForm([
       {
-        label: "Display",
-        key: "display",
+        label: 'Display',
+        key: 'display',
         components: [
           {
-            type: "textfield",
-            label: "Text",
-            key: "buttonText",
+            type: 'textfield',
+            label: 'Text',
+            key: 'buttonText',
             weight: 1,
             input: true,
             validate: {
@@ -32,101 +32,101 @@ export default class NavButton extends Button {
             },
           },
           {
-            key: "theme",
+            key: 'theme',
             ignore: true,
           },
           {
-            key: "size",
+            key: 'size',
             ignore: true,
           },
           {
-            key: "rightIcon",
+            key: 'rightIcon',
             ignore: true,
           },
           {
-            key: "leftIcon",
+            key: 'leftIcon',
             ignore: true,
           },
           {
-            key: "shortcut",
+            key: 'shortcut',
             ignore: true,
           },
           {
-            key: "label",
+            key: 'label',
             ignore: true,
           },
           {
-            key: "labelPosition",
+            key: 'labelPosition',
             ignore: true,
           },
           {
-            key: "placeholder",
+            key: 'placeholder',
             ignore: true,
           },
           {
-            key: "tooltip",
+            key: 'tooltip',
             ignore: true,
           },
           {
-            key: "tabindex",
+            key: 'tabindex',
             ignore: true,
           },
           {
-            key: "customClass",
+            key: 'customClass',
             ignore: true,
           },
           {
-            key: "hideLabel",
+            key: 'hideLabel',
             ignore: true,
           },
           {
-            key: "hidden",
+            key: 'hidden',
             ignore: true,
           },
           {
-            key: "autofocus",
+            key: 'autofocus',
             ignore: true,
           },
           {
-            key: "disabled",
+            key: 'disabled',
             ignore: true,
           },
           {
-            key: "tableView",
+            key: 'tableView',
             ignore: true,
           },
           {
-            key: "modalEdit",
+            key: 'modalEdit',
             ignore: true,
           },
           ...ButtonDisplayEditForm,
         ],
       },
       {
-        key: "api",
+        key: 'api',
         components: [
-          { key: "tags", ignore: true },
-          { key: "properties", ignore: true },
+          { key: 'tags', ignore: true },
+          { key: 'properties', ignore: true },
         ],
       },
       {
-        key: "addons",
+        key: 'addons',
         ignore: true,
       },
       {
-        key: "logic",
+        key: 'logic',
         ignore: true,
       },
       {
-        key: "layout",
+        key: 'layout',
         ignore: true,
       },
       {
-        key: "validation",
+        key: 'validation',
         ignore: true,
       },
       {
-        key: "data",
+        key: 'data',
         ignore: true,
       },
       ...extend,

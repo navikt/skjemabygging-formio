@@ -1,160 +1,160 @@
 /* eslint-disable no-undef */
-import FormioDay from "formiojs/components/day/Day";
-import FormioDayEditForm from "formiojs/components/day/Day.form";
+import FormioDay from 'formiojs/components/day/Day';
+import FormioDayEditForm from 'formiojs/components/day/Day.form';
 
 class Day extends FormioDay {
   static editForm(...extend) {
     const dayEditForm = FormioDayEditForm([
       {
-        label: "Day",
-        key: "day",
+        label: 'Day',
+        key: 'day',
         ignore: true,
       },
       {
-        key: "logic",
+        key: 'logic',
         ignore: true,
       },
       {
-        key: "layout",
+        key: 'layout',
         ignore: true,
       },
       {
-        key: "addons",
+        key: 'addons',
         ignore: true,
       },
       {
-        key: "display",
+        key: 'display',
         components: [
           {
-            key: "hidden",
+            key: 'hidden',
             ignore: true,
           },
           {
-            key: "tooltip",
+            key: 'tooltip',
             ignore: true,
           },
           {
-            key: "focus",
+            key: 'focus',
             ignore: true,
           },
           {
-            key: "tableView",
+            key: 'tableView',
             ignore: true,
           },
           {
-            key: "modalEdit",
+            key: 'modalEdit',
             ignore: true,
           },
           {
-            key: "autofocus",
+            key: 'autofocus',
             ignore: true,
           },
           {
-            key: "tabindex",
+            key: 'tabindex',
             ignore: true,
           },
           {
-            key: "customClass",
+            key: 'customClass',
             ignore: true,
           },
           {
-            key: "useLocaleSettings",
+            key: 'useLocaleSettings',
             ignore: true,
           },
-          { key: "disabled", ignore: true },
-          { key: "inputsLabelPosition", ignore: true },
-          { key: "hideInputLabels", ignore: true },
+          { key: 'disabled', ignore: true },
+          { key: 'inputsLabelPosition', ignore: true },
+          { key: 'hideInputLabels', ignore: true },
         ],
       },
       {
-        key: "data",
+        key: 'data',
         components: [
           {
-            key: "protected",
+            key: 'protected',
             ignore: true,
           },
           {
-            key: "persistent",
+            key: 'persistent',
             ignore: true,
           },
           {
-            key: "protected",
+            key: 'protected',
             ignore: true,
           },
           {
-            key: "dbIndex",
+            key: 'dbIndex',
             ignore: true,
           },
           {
-            key: "encrypted",
+            key: 'encrypted',
             ignore: true,
           },
           {
-            key: "redrawOn",
+            key: 'redrawOn',
             ignore: true,
           },
           {
-            key: "calculateServer",
+            key: 'calculateServer',
             ignore: true,
           },
           {
-            key: "allowCalculateOverride",
+            key: 'allowCalculateOverride',
             ignore: true,
           },
           {
-            key: "customDefaultValuePanel",
+            key: 'customDefaultValuePanel',
             ignore: true,
           },
           {
-            key: "calculateValuePanel",
+            key: 'calculateValuePanel',
             ignore: true,
           },
           {
-            key: "clearOnHide",
+            key: 'clearOnHide',
             ignore: true,
           },
           {
-            key: "propertiesPanel",
+            key: 'propertiesPanel',
             ignore: true,
           },
         ],
       },
       {
-        key: "api",
+        key: 'api',
         components: [
-          { key: "tags", ignore: true },
-          { key: "properties", ignore: true },
+          { key: 'tags', ignore: true },
+          { key: 'properties', ignore: true },
         ],
       },
       {
-        key: "validation",
-        components: [{ key: "unique", ignore: true }],
+        key: 'validation',
+        components: [{ key: 'unique', ignore: true }],
       },
       ...extend,
     ]);
 
-    const tabComponents = dayEditForm.components.find((i) => i.key === "tabs").components;
-    const yearComponents = tabComponents.find((item) => item.key === "year").components;
+    const tabComponents = dayEditForm.components.find((i) => i.key === 'tabs').components;
+    const yearComponents = tabComponents.find((item) => item.key === 'year').components;
     return {
       ...dayEditForm,
       components: [
-        ...dayEditForm.components.filter((i) => i.key !== "tabs"),
+        ...dayEditForm.components.filter((i) => i.key !== 'tabs'),
         {
-          key: "tabs",
-          type: "tabs",
+          key: 'tabs',
+          type: 'tabs',
           components: [
             ...tabComponents.map((tab) => {
-              if (tab.key === "year")
+              if (tab.key === 'year')
                 return {
-                  key: "year",
-                  label: "Year",
-                  fieldSize: "input--s",
+                  key: 'year',
+                  label: 'Year',
+                  fieldSize: 'input--s',
                   components: [
                     ...yearComponents.map((component) => {
-                      if (component.key === "fields.year.minYear" || component.key === "fields.year.maxYear") {
+                      if (component.key === 'fields.year.minYear' || component.key === 'fields.year.maxYear') {
                         return {
                           ...component,
-                          placeholder: "",
+                          placeholder: '',
                         };
                       } else {
                         return component;
@@ -173,25 +173,25 @@ class Day extends FormioDay {
   //Override default minYear and maxYear value
   inputDefinition(name) {
     let min, max;
-    if (name === "day") {
+    if (name === 'day') {
       min = 1;
       max = 31;
     }
-    if (name === "month") {
+    if (name === 'month') {
       min = 1;
       max = 12;
     }
-    if (name === "year") {
+    if (name === 'year') {
       min = this.component.fields?.year?.minYear ?? 1990;
       max = this.component.fields?.year?.maxYear ?? 2050;
     }
     return {
-      type: "input",
+      type: 'input',
       ref: name,
       attr: {
         id: `${this.component.key}-${name}`,
-        class: `form-control ${this.transform("class", `formio-day-component-${name}`)}`,
-        type: this.component.fields[name].type === "select" ? "select" : "number",
+        class: `form-control ${this.transform('class', `formio-day-component-${name}`)}`,
+        type: this.component.fields[name].type === 'select' ? 'select' : 'number',
         placeholder: this.t(this.component.fields[name].placeholder),
         step: 1,
         min,
@@ -206,21 +206,21 @@ class Day extends FormioDay {
     }
     this._months = [
       {
-        value: "",
-        label: this.component.fields?.month?.placeholder ?? this.hideInputLabels ? this.t("Måned") : "",
+        value: '',
+        label: this.component.fields?.month?.placeholder ?? this.hideInputLabels ? this.t('Måned') : '',
       },
-      { value: 1, label: this.t("Januar") },
-      { value: 2, label: this.t("Februar") },
-      { value: 3, label: this.t("Mars") },
-      { value: 4, label: this.t("April") },
-      { value: 5, label: this.t("Mai") },
-      { value: 6, label: this.t("Juni") },
-      { value: 7, label: this.t("Juli") },
-      { value: 8, label: this.t("August") },
-      { value: 9, label: this.t("September") },
-      { value: 10, label: this.t("Oktober") },
-      { value: 11, label: this.t("November") },
-      { value: 12, label: this.t("Desember") },
+      { value: 1, label: this.t('Januar') },
+      { value: 2, label: this.t('Februar') },
+      { value: 3, label: this.t('Mars') },
+      { value: 4, label: this.t('April') },
+      { value: 5, label: this.t('Mai') },
+      { value: 6, label: this.t('Juni') },
+      { value: 7, label: this.t('Juli') },
+      { value: 8, label: this.t('August') },
+      { value: 9, label: this.t('September') },
+      { value: 10, label: this.t('Oktober') },
+      { value: 11, label: this.t('November') },
+      { value: 12, label: this.t('Desember') },
     ];
     return this._months;
   }

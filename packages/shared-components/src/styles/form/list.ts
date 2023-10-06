@@ -1,15 +1,15 @@
 const list = {
-  "& dl": {
+  '& dl': {
     marginTop: 0,
-    "& > dt": {
+    '& > dt': {
       fontWeight: 700,
     },
-    "& > dd": {
-      marginBottom: ".5rem",
+    '& > dd': {
+      marginBottom: '.5rem',
       marginLeft: 0,
     },
   },
-  "& ol, & ul": {
+  '& ol, & ul': {
     marginTop: 0,
   },
 };

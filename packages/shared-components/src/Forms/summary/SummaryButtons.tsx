@@ -1,4 +1,4 @@
-import { Summary } from "@navikt/skjemadigitalisering-shared-domain";
+import { Summary } from '@navikt/skjemadigitalisering-shared-domain';
 
 interface Props {
   component: Summary.Panel;

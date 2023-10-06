@@ -1,12 +1,12 @@
-import { Delete } from "@navikt/ds-icons";
-import { Button } from "@navikt/ds-react";
-import { makeStyles } from "@navikt/skjemadigitalisering-shared-components";
+import { Delete } from '@navikt/ds-icons';
+import { Button } from '@navikt/ds-react';
+import { makeStyles } from '@navikt/skjemadigitalisering-shared-components';
 
 const useStyles = makeStyles({
   button: {
-    height: "fit-content",
-    minWidth: "fit-content",
-    alignSelf: "end",
+    height: 'fit-content',
+    minWidth: 'fit-content',
+    alignSelf: 'end',
   },
 });
 

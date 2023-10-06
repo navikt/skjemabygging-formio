@@ -172,4 +172,4 @@ As such, we prefer not to create these types of components at this time, althoug
 To render React-based components, we have FormioReactComponent. This is a custom renderer that wraps React-components.
 The React component will need a wrapper that extends FormioReactComponent, and then render the actual React component, e.g. a NAV Design System component.
 
-Changes to FormioReactComponent should normally be limited to bugfixes making sure these custom components are rendered/updated as they should, but changes to all such components can also be added here. 
+Changes to FormioReactComponent should normally be limited to bugfixes making sure these custom components are rendered/updated as they should, but changes to all such components can also be added here.

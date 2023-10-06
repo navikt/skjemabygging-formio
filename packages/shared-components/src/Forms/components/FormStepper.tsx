@@ -1,11 +1,11 @@
-import { Back, Close } from "@navikt/ds-icons";
-import { Button, Stepper } from "@navikt/ds-react";
-import { NavFormType, navFormUtils, Submission, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
-import { useMemo, useRef, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
-import { useAmplitude } from "../../context/amplitude";
-import { useLanguages } from "../../context/languages";
-import { useAppConfig } from "../../configContext";
+import { Back, Close } from '@navikt/ds-icons';
+import { Button, Stepper } from '@navikt/ds-react';
+import { NavFormType, Submission, TEXTS, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { useMemo, useRef, useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { useAppConfig } from '../../configContext';
+import { useAmplitude } from '../../context/amplitude';
+import { useLanguages } from '../../context/languages';
 
 type FormStepperProps = {
   form: NavFormType;
@@ -54,7 +54,7 @@ const FormStepper = ({ form, submission, formUrl }: FormStepperProps) => {
       <nav
         aria-label="Søknadssteg"
         id="{{ ctx.wizardKey }}-header"
-        className={`stegindikator stepper${isOpen ? " stepper--open" : ""}`}
+        className={`stegindikator stepper${isOpen ? ' stepper--open' : ''}`}
       >
         <div className="stepper-container">
           {isOpen && (

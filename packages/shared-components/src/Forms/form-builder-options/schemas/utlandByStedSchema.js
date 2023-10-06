@@ -1,9 +1,9 @@
-const utlandByStedSchema = (keyPostfix = "") => ({
-  label: "By / stedsnavn",
-  type: "textfield",
+const utlandByStedSchema = (keyPostfix = '') => ({
+  label: 'By / stedsnavn',
+  type: 'textfield',
   key: `poststed${keyPostfix}`,
-  autocomplete: "address-level2",
-  fieldSize: "input--xxl",
+  autocomplete: 'address-level2',
+  fieldSize: 'input--xxl',
   validate: {
     required: false,
   },
@@ -11,7 +11,7 @@ const utlandByStedSchema = (keyPostfix = "") => ({
   clearOnHide: true,
   dataGridLabel: true,
   tableView: true,
-  validateOn: "blur",
+  validateOn: 'blur',
 });
 
 export default utlandByStedSchema;

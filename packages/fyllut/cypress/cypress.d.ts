@@ -1,5 +1,5 @@
-import { ByRoleOptions } from "@testing-library/cypress";
-import { ByRoleMatcher } from "@testing-library/dom";
+import { ByRoleOptions } from '@testing-library/cypress';
+import { ByRoleMatcher } from '@testing-library/dom';
 
 declare global {
   namespace Cypress {

@@ -1,14 +1,14 @@
-import { HomeFilled } from "@navikt/ds-icons";
-import { useAppConfig } from "@navikt/skjemadigitalisering-shared-components";
-import { Link } from "react-router-dom";
-import { useAuth } from "../../context/auth-context";
-import AdminMenu from "./components/AdminMenu";
-import { FormMenu } from "./components/FormMenu";
-import NotificationDropdown from "./components/NotificationDropdown";
-import { TranslationsMenu } from "./components/TranslationsMenu";
-import UserMenu from "./components/UserMenu";
-import { useNavBarStyles } from "./styles";
-import { InternalHeader } from "@navikt/ds-react";
+import { HomeFilled } from '@navikt/ds-icons';
+import { InternalHeader } from '@navikt/ds-react';
+import { useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
+import { Link } from 'react-router-dom';
+import { useAuth } from '../../context/auth-context';
+import AdminMenu from './components/AdminMenu';
+import { FormMenu } from './components/FormMenu';
+import NotificationDropdown from './components/NotificationDropdown';
+import { TranslationsMenu } from './components/TranslationsMenu';
+import UserMenu from './components/UserMenu';
+import { useNavBarStyles } from './styles';
 
 interface Props {
   formPath: string;

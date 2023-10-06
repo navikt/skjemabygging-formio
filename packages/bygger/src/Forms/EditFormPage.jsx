@@ -1,23 +1,23 @@
-import { BodyShort, Button, Heading } from "@navikt/ds-react";
-import { FormBuilderOptions, makeStyles } from "@navikt/skjemadigitalisering-shared-components";
-import { AppLayout } from "../components/AppLayout";
-import NavFormBuilder from "../components/NavFormBuilder";
-import PrimaryButtonWithSpinner from "../components/PrimaryButtonWithSpinner";
-import SkjemaVisningSelect from "../components/SkjemaVisningSelect";
-import UserFeedback from "../components/UserFeedback";
-import Column from "../components/layout/Column";
-import Row from "../components/layout/Row";
-import { useModal } from "../util/useModal";
-import PublishModalComponents from "./publish/PublishModalComponents";
-import FormStatusPanel from "./status/FormStatusPanel";
-import UnpublishButton from "./unpublish/UnpublishButton";
+import { BodyShort, Button, Heading } from '@navikt/ds-react';
+import { FormBuilderOptions, makeStyles } from '@navikt/skjemadigitalisering-shared-components';
+import { AppLayout } from '../components/AppLayout';
+import NavFormBuilder from '../components/NavFormBuilder';
+import PrimaryButtonWithSpinner from '../components/PrimaryButtonWithSpinner';
+import SkjemaVisningSelect from '../components/SkjemaVisningSelect';
+import UserFeedback from '../components/UserFeedback';
+import Column from '../components/layout/Column';
+import Row from '../components/layout/Row';
+import { useModal } from '../util/useModal';
+import PublishModalComponents from './publish/PublishModalComponents';
+import FormStatusPanel from './status/FormStatusPanel';
+import UnpublishButton from './unpublish/UnpublishButton';
 
 const useStyles = makeStyles({
   formBuilder: {
-    gridColumn: "1 / 3",
+    gridColumn: '1 / 3',
   },
   centerColumn: {
-    gridColumn: "2 / 3",
+    gridColumn: '2 / 3',
   },
 });
 

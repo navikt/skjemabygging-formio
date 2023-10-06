@@ -1,15 +1,15 @@
-import coAdresseSchema from "./coAdresseSchema";
-import utlandVegadressePostboksSchema from "./utlandVegadressePostboksSchema";
-import utlandBygningSchema from "./utlandBygningSchema";
-import utlandPostkodeSchema from "./utlandPostkodeSchema";
-import utlandByStedSchema from "./utlandByStedSchema";
-import utlandRegionSchema from "./utlandRegionSchema";
-import utlandLandSchema from "./utlandLandSchema";
+import coAdresseSchema from './coAdresseSchema';
+import utlandByStedSchema from './utlandByStedSchema';
+import utlandBygningSchema from './utlandBygningSchema';
+import utlandLandSchema from './utlandLandSchema';
+import utlandPostkodeSchema from './utlandPostkodeSchema';
+import utlandRegionSchema from './utlandRegionSchema';
+import utlandVegadressePostboksSchema from './utlandVegadressePostboksSchema';
 
-const utenlandskAdresseSchema = (keyPostfix = "") => ({
+const utenlandskAdresseSchema = (keyPostfix = '') => ({
   key: `utenlandskAdresse`,
-  type: "container",
-  label: "Utenlandsk kontaktadresse",
+  type: 'container',
+  label: 'Utenlandsk kontaktadresse',
   hideLabel: true,
   input: false,
   tableView: false,

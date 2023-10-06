@@ -1,7 +1,7 @@
 const typography = {
-  "& .description": {
-    marginBottom: "var(--a-spacing-2)",
-    color: "var(--a-gray-700)",
+  '& .description': {
+    marginBottom: 'var(--a-spacing-2)',
+    color: 'var(--a-gray-700)',
   },
 };
 

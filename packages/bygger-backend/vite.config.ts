@@ -1,17 +1,17 @@
 /// <reference types="vitest" />
-import { defineConfig, PluginOption } from "vite";
-import { VitePluginNode } from "vite-plugin-node";
-import tsconfigPaths from "vite-tsconfig-paths";
+import { defineConfig, PluginOption } from 'vite';
+import { VitePluginNode } from 'vite-plugin-node';
+import tsconfigPaths from 'vite-tsconfig-paths';
 
 export default defineConfig(({ mode }) => {
   const plugins: PluginOption = [
     ...VitePluginNode({
-      adapter: "express",
-      appPath: "./src/server.js",
+      adapter: 'express',
+      appPath: './src/server.js',
     }),
   ];
 
-  if (mode !== "production") {
+  if (mode !== 'production') {
     plugins.push(tsconfigPaths());
   }
 
@@ -26,17 +26,17 @@ export default defineConfig(({ mode }) => {
     },
     build: {
       rollupOptions: {
-        input: "./src/server.js",
+        input: './src/server.js',
         output: {
-          entryFileNames: "[name].mjs",
+          entryFileNames: '[name].mjs',
         },
       },
     },
     plugins,
     test: {
       globals: true,
-      setupFiles: "./src/setupTests.ts",
-      include: ["src/(**/)?*.test.[jt]s(x)?"],
+      setupFiles: './src/setupTests.ts',
+      include: ['src/(**/)?*.test.[jt]s(x)?'],
     },
   };
 });

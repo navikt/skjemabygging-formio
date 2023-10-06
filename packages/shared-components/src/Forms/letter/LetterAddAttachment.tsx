@@ -1,5 +1,5 @@
-import { Heading } from "@navikt/ds-react";
-import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
+import { Heading } from '@navikt/ds-react';
+import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 
 interface Props {
   index: number;
@@ -10,7 +10,7 @@ interface Props {
 const LetterAddAttachment = ({ index, vedleggSomSkalSendes, translate }: Props) => {
   const skalSendeFlereVedlegg = vedleggSomSkalSendes.length > 1;
   const attachmentSectionTitle = translate(TEXTS.statiske.prepareLetterPage.attachmentSectionTitleAttachTo)
-    .concat(" ")
+    .concat(' ')
     .concat(
       skalSendeFlereVedlegg
         ? translate(TEXTS.statiske.prepareLetterPage.attachmentSectionTitleTheseAttachments)

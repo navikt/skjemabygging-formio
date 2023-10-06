@@ -1,6 +1,6 @@
-import { BodyShort, Button } from "@navikt/ds-react";
-import { Modal } from "@navikt/skjemadigitalisering-shared-components";
-import { useState } from "react";
+import { BodyShort, Button } from '@navikt/ds-react';
+import { Modal } from '@navikt/skjemadigitalisering-shared-components';
+import { useState } from 'react';
 
 const ConfirmDelingslenkeModal = () => {
   const [open, setOpen] = useState(true);

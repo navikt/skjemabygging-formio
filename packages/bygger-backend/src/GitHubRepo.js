@@ -1,12 +1,12 @@
-import { createAppAuth } from "@octokit/auth-app";
-import { Octokit } from "@octokit/rest";
-import { logger } from "./logging/logger";
+import { createAppAuth } from '@octokit/auth-app';
+import { Octokit } from '@octokit/rest';
+import { logger } from './logging/logger';
 
 // Not exhaustive
 export const gitTreeMode = {
-  BLOB: "100644",
-  EXECUTABLE: "100755",
-  DIRECTORY: "040000",
+  BLOB: '100644',
+  EXECUTABLE: '100755',
+  DIRECTORY: '040000',
 };
 
 export class GitHubRepo {
@@ -31,22 +31,22 @@ export class GitHubRepo {
         clientSecret: this.credentials.clientSecret,
       });
       this.authentication = await auth({
-        type: "installation",
+        type: 'installation',
         installationId: this.credentials.installationId,
       });
-      logger.debug("Authenticate on Github as app installation");
+      logger.debug('Authenticate on Github as app installation');
     }
 
     const auth = this.authentication?.token ?? this.credentials.token;
     if (auth === undefined) {
       logger.error(
-        "Github authentication token is missing. Make sure that either GITHUB_ACCESS_TOKEN or github app credentials are present as environment variables",
+        'Github authentication token is missing. Make sure that either GITHUB_ACCESS_TOKEN or github app credentials are present as environment variables',
       );
     }
     this.octokit = new Octokit({
       auth,
-      userAgent: "navikt/skjemabygging",
-      baseUrl: "https://api.github.com",
+      userAgent: 'navikt/skjemabygging',
+      baseUrl: 'https://api.github.com',
       log: {
         debug: () => {},
         info: () => {},
@@ -127,7 +127,7 @@ export class GitHubRepo {
       repo: this.repo,
       pull_number,
       commit_title,
-      commit_message: "",
+      commit_message: '',
     });
   }
 

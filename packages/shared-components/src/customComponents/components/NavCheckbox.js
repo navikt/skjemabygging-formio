@@ -1,130 +1,130 @@
-import FormioCheckbox from "formiojs/components/checkbox/Checkbox";
-import CheckboxEditForm from "formiojs/components/checkbox/Checkbox.form";
-import { advancedDescription } from "./fields/advancedDescription.js";
+import FormioCheckbox from 'formiojs/components/checkbox/Checkbox';
+import CheckboxEditForm from 'formiojs/components/checkbox/Checkbox.form';
+import { advancedDescription } from './fields/advancedDescription.js';
 
 export default class NavCheckbox extends FormioCheckbox {
   static editForm(...extend) {
     return CheckboxEditForm([
       ...extend,
       {
-        label: "Display",
-        key: "display",
+        label: 'Display',
+        key: 'display',
         components: [
           ...advancedDescription,
           {
-            key: "tooltip",
+            key: 'tooltip',
             ignore: true,
           },
           {
-            key: "shortcut",
+            key: 'shortcut',
             ignore: true,
           },
           {
-            key: "inputType",
+            key: 'inputType',
             ignore: true,
           },
           {
-            key: "customClass",
+            key: 'customClass',
             ignore: true,
           },
           {
-            key: "tabindex",
+            key: 'tabindex',
             ignore: true,
           },
           {
-            key: "hidden",
+            key: 'hidden',
             ignore: true,
           },
           {
-            key: "autofocus",
+            key: 'autofocus',
             ignore: true,
           },
           {
-            key: "disabled",
+            key: 'disabled',
             ignore: true,
           },
           {
-            key: "tableView",
+            key: 'tableView',
             ignore: true,
           },
           {
-            key: "modalEdit",
+            key: 'modalEdit',
             ignore: true,
           },
-          { key: "labelWidth", ignore: true },
-          { key: "labelMargin", ignore: true },
-          { key: "hideLabel", ignore: true },
+          { key: 'labelWidth', ignore: true },
+          { key: 'labelMargin', ignore: true },
+          { key: 'hideLabel', ignore: true },
         ],
       },
       {
-        key: "data",
+        key: 'data',
         ignore: true,
         components: [
           {
-            key: "multiple",
+            key: 'multiple',
             ignore: true,
           },
           {
-            key: "persistent",
+            key: 'persistent',
             ignore: true,
           },
           {
-            key: "inputFormat",
+            key: 'inputFormat',
             ignore: true,
           },
           {
-            key: "protected",
+            key: 'protected',
             ignore: true,
           },
           {
-            key: "dbIndex",
+            key: 'dbIndex',
             ignore: true,
           },
           {
-            key: "case",
+            key: 'case',
             ignore: true,
           },
           {
-            key: "encrypted",
+            key: 'encrypted',
             ignore: true,
           },
           {
-            key: "redrawOn",
+            key: 'redrawOn',
             ignore: true,
           },
           {
-            key: "calculateServer",
+            key: 'calculateServer',
             ignore: true,
           },
           {
-            key: "allowCalculateOverride",
+            key: 'allowCalculateOverride',
             ignore: true,
           },
         ],
       },
       {
-        key: "validation",
+        key: 'validation',
         components: [
-          { key: "validate.customMessage", ignore: true },
-          { key: "errorLabel", ignore: true },
-          { key: "unique", ignore: true },
-          { key: "validateOn", ignore: true },
+          { key: 'validate.customMessage', ignore: true },
+          { key: 'errorLabel', ignore: true },
+          { key: 'unique', ignore: true },
+          { key: 'validateOn', ignore: true },
         ],
       },
       {
-        key: "api",
+        key: 'api',
         components: [
-          { key: "tags", ignore: true },
-          { key: "properties", ignore: true },
+          { key: 'tags', ignore: true },
+          { key: 'properties', ignore: true },
         ],
       },
       {
-        key: "logic",
+        key: 'logic',
         ignore: true,
         components: false,
       },
       {
-        key: "layout",
+        key: 'layout',
         ignore: true,
         components: false,
       },
@@ -137,9 +137,9 @@ export default class NavCheckbox extends FormioCheckbox {
     // Update attributes of the input element
     if (changed && this.input) {
       if (this.input.checked) {
-        this.input.setAttribute("checked", "true");
+        this.input.setAttribute('checked', 'true');
       } else {
-        this.input.removeAttribute("checked");
+        this.input.removeAttribute('checked');
       }
     }
 

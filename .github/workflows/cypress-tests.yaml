@@ -8,26 +8,26 @@ jobs:
   cypress-run-fyllut:
     runs-on: ubuntu-latest-8-cores
     permissions:
-      contents: "read"
+      contents: 'read'
       packages: read
     steps:
-      - name: "Checkout"
+      - name: 'Checkout'
         uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: "20.8.0"
+          node-version: '20.8.0'
           registry-url: https://npm.pkg.github.com/
-          scope: "@navikt"
-      - name: "Install dependencies"
+          scope: '@navikt'
+      - name: 'Install dependencies'
         run: yarn --frozen-lockfile
-      - name: "Build application"
+      - name: 'Build application'
         run: yarn build
-      - name: "Cypress tests (fyllut)"
+      - name: 'Cypress tests (fyllut)'
         uses: cypress-io/github-action@v5
         with:
           install: false
           start: yarn preview:fyllut
-          wait-on: "http://localhost:3001/fyllut/internal/isready"
+          wait-on: 'http://localhost:3001/fyllut/internal/isready'
           wait-on-timeout: 120
           command: yarn cypress:fyllut
           config: video=false
@@ -35,26 +35,26 @@ jobs:
   cypress-run-bygger:
     runs-on: ubuntu-latest-8-cores
     permissions:
-      contents: "read"
+      contents: 'read'
       packages: read
     steps:
-      - name: "Checkout"
+      - name: 'Checkout'
         uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: "20.8.0"
+          node-version: '20.8.0'
           registry-url: https://npm.pkg.github.com/
-          scope: "@navikt"
-      - name: "Install dependencies"
+          scope: '@navikt'
+      - name: 'Install dependencies'
         run: yarn --frozen-lockfile
-      - name: "Build application"
+      - name: 'Build application'
         run: yarn build
-      - name: "Cypress tests (bygger)"
+      - name: 'Cypress tests (bygger)'
         uses: cypress-io/github-action@v5
         with:
           install: false
           start: yarn preview:bygger
-          wait-on: "http://localhost:3000/internal/isready"
+          wait-on: 'http://localhost:3000/internal/isready'
           wait-on-timeout: 120
           command: yarn cypress:bygger
           config: video=false

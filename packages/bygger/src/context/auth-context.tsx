@@ -1,6 +1,6 @@
-import { NavFormioJs } from "@navikt/skjemadigitalisering-shared-components";
-import React, { MouseEventHandler, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { NavFormioJs } from '@navikt/skjemadigitalisering-shared-components';
+import React, { MouseEventHandler, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 interface UserData {
   name?: string;
@@ -36,7 +36,7 @@ function AuthProvider(props) {
 
   const login = (user) => {
     setUserData(enforceUserName(user));
-    navigate("/forms");
+    navigate('/forms');
   };
   const logout = async () => {
     try {

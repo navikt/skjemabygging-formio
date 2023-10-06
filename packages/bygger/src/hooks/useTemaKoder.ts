@@ -1,5 +1,5 @@
-import { useAppConfig } from "@navikt/skjemadigitalisering-shared-components";
-import { useEffect, useState } from "react";
+import { useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
+import { useEffect, useState } from 'react';
 
 type Temakoder = Array<{ key: string; value: string }>;
 
@@ -16,7 +16,7 @@ const useTemaKoder = () => {
           setErrorMessage(undefined);
           return res.json();
         }
-        setErrorMessage("Feil ved henting av temakoder. Vennligst prøv igjen senere.");
+        setErrorMessage('Feil ved henting av temakoder. Vennligst prøv igjen senere.');
         throw new Error(`Feil ved henting av temakoder: ${res.status}`);
       })
       .then((koder: Record<string, string>) => {
