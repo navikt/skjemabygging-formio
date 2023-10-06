@@ -6,7 +6,7 @@ import { useAppConfig } from "../configContext";
 import { useAmplitude } from "../context/amplitude";
 import { useLanguages } from "../context/languages";
 import { useSendInn } from "../context/sendInn/sendInnContext";
-import { LoadingComponent } from "../index";
+import { ErrorPage, LoadingComponent } from "../index";
 import { scrollToAndSetFocus } from "../util/focus-management.js";
 import { getPanelSlug } from "../util/form";
 import ConfirmationModal from "./components/navigation/ConfirmationModal";
@@ -29,6 +29,8 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
   const {
     startMellomlagring,
     updateMellomlagring,
+    deleteMellomlagring,
+    mellomlagringError,
     isMellomlagringEnabled,
     isMellomlagringReady,
     isMellomlagringActive,
@@ -49,7 +51,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
   }, [loggSkjemaApnet, submissionMethod]);
 
   useEffect(() => {
-    if (isMellomlagringEnabled) {
+    if (isMellomlagringEnabled && mellomlagringError?.type !== "NOT FOUND") {
       startMellomlagring(submission);
     }
   }, [submission, startMellomlagring, isMellomlagringEnabled]);
@@ -84,6 +86,10 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
 
   if (featureToggles?.enableTranslations && !translationsForNavForm) {
     return null;
+  }
+
+  if (mellomlagringError?.type === "NOT FOUND") {
+    return <ErrorPage errorMessage={mellomlagringError.message} />;
   }
 
   if (isMellomlagringEnabled && !isMellomlagringReady) {
@@ -191,11 +197,22 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
   };
 
   const onConfirmCancel = async () => {
-    if (submission && isMellomlagringActive) {
-      await updateMellomlagring(submission);
+    let buttonText: string;
+    switch (showModal) {
+      case "save":
+        buttonText = TEXTS.grensesnitt.navigation.saveDraft;
+        await updateMellomlagring(submission);
+        break;
+      case "delete":
+        buttonText = TEXTS.grensesnitt.navigation.saveDraft;
+        await deleteMellomlagring();
+        break;
+      case "discard":
+      default:
+        buttonText = TEXTS.grensesnitt.navigation.cancel;
     }
     loggNavigering({
-      lenkeTekst: translate(TEXTS.grensesnitt.navigation.cancel),
+      lenkeTekst: translate(buttonText),
       destinasjon: exitUrl,
     });
   };
