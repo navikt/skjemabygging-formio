@@ -166,7 +166,7 @@ describe("attachmentUtil", () => {
       expect(attachments).toBe(false);
     });
 
-    it("does not return attachment which is not relevant", () => {
+    it("does return attachment which is relevant", () => {
       const submissionData = { [borDuINorgeRadiopanel.key]: "nei" };
       const attachments = hasOtherDocumentation(form, submissionData);
       expect(attachments).toBe(true);

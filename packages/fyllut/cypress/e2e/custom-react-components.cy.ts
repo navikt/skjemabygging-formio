@@ -262,7 +262,7 @@ describe("Custom react components", () => {
         cy.findAllByText(VALIDATION_TEXT).should("have.length", 0);
       });
 
-      it("fails when date is before 'earliest date'", () => {
+      it("fails when date is after 'latest date'", () => {
         cy.findByRole("textbox", { name: LABEL }).should("exist").type("01.09.2023");
         cy.clickNextStep();
 

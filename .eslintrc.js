@@ -27,7 +27,6 @@ module.exports = {
     "@typescript-eslint/no-namespace": "off", // TODO: FormSummaryType.ts has a Summary namespace
     "no-extra-boolean-cast": "off", // TODO: Remove redudant "!!"
     "no-case-declarations": "off", // TODO: Remove "let/const" in switch cases
-    "vitest/no-identical-title": "off",
     "vitest/valid-expect": "off",
     "vitest/valid-title": "off",
     "vitest/expect-expect": "off",

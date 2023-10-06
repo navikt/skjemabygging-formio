@@ -275,18 +275,6 @@ describe("filterUtils", () => {
           ).toBe(false);
         });
 
-        it("the operator 'n_contains' (not contains) evaluates to false when the value is a substring", () => {
-          expect(
-            componentMatchesFilters(customComponent, [
-              {
-                key: "customLongText",
-                value: "substring-in-custom-long-text",
-                operator: "n_contains",
-              },
-            ]),
-          ).toBe(false);
-        });
-
         it("the operator 'n_contains' (not contains) evaluates to true when the value is not a substring", () => {
           expect(
             componentMatchesFilters(customComponent, [
