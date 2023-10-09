@@ -44,7 +44,7 @@
     "@types/node": "^20.8.0",
     "@types/node-fetch": "^2.6.6",
     "@types/node-jose": "^1.1.11",
-    "@types/uuid": "^9.0.4",
+    "@types/uuid": "^9.0.5",
     "memorystream": "^0.3.1",
     "nock": "^13.3.3",
     "vite-plugin-node": "^3.0.2"
