@@ -1,10 +1,10 @@
-import { useEffect } from "react";
-import makeStyles from "../../util/jss";
+import { useEffect } from 'react';
+import makeStyles from '../../util/jss';
 
 const useStyles = makeStyles({
   uxsignals: {
-    maxWidth: "640px",
-    margin: "-20px",
+    maxWidth: '640px',
+    margin: '-20px',
   },
 });
 
@@ -15,9 +15,9 @@ interface Props {
 const LetterUXSignals = ({ code }: Props) => {
   const classes = useStyles();
   useEffect(() => {
-    const script = document.createElement("script");
-    script.src = "https://uxsignals-frontend.uxsignals.app.iterate.no/embed.js";
-    script.type = "module";
+    const script = document.createElement('script');
+    script.src = 'https://uxsignals-frontend.uxsignals.app.iterate.no/embed.js';
+    script.type = 'module';
     document.body.appendChild(script);
 
     return () => {

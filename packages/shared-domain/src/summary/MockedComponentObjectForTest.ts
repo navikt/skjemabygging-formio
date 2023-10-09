@@ -1,45 +1,45 @@
-import type { Component, ComponentProperties, FormPropertiesType, NavFormType } from "../form";
+import type { Component, ComponentProperties, FormPropertiesType, NavFormType } from '../form';
 
-const keyFromLabel = (label = "") => label.toLowerCase().replace(/\s/gi, "");
+const keyFromLabel = (label = '') => label.toLowerCase().replace(/\s/gi, '');
 
-const createDummyCheckbox = (label = "NavCheckbox"): Component => ({
+const createDummyCheckbox = (label = 'NavCheckbox'): Component => ({
   label,
   key: keyFromLabel(label),
-  type: "navCheckbox",
+  type: 'navCheckbox',
 });
 
-const createDummyTextfield = (label = "Tekstfelt"): Component => ({
+const createDummyTextfield = (label = 'Tekstfelt'): Component => ({
   label,
   key: keyFromLabel(label),
-  type: "textfield",
+  type: 'textfield',
 });
 
-const createDummyImage = (label = "Bilde"): Component =>
+const createDummyImage = (label = 'Bilde'): Component =>
   ({
     image: [
       {
-        url: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEBLAEsAAD/4QBGRXhpZ...",
+        url: 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEBLAEsAAD/4QBGRXhpZ...',
       },
     ],
     label,
     key: keyFromLabel(label),
-    altText: "Bilde beskrivelse",
-    type: "image",
+    altText: 'Bilde beskrivelse',
+    type: 'image',
     widthPercent: 100,
   }) as Component;
 
-const createDummyEmail = (label = "Email"): Component =>
+const createDummyEmail = (label = 'Email'): Component =>
   ({
     label,
     key: keyFromLabel(label),
-    type: "email",
+    type: 'email',
   }) as Component;
 
-const createDummyLandvelger = (label = "Land"): Component =>
+const createDummyLandvelger = (label = 'Land'): Component =>
   ({
     label,
     key: keyFromLabel(label),
-    type: "landvelger",
+    type: 'landvelger',
   }) as Component;
 
 type RadioPanelOption = {
@@ -48,176 +48,176 @@ type RadioPanelOption = {
 };
 
 const createDummyRadioPanel = (
-  label = "RadioPanel",
+  label = 'RadioPanel',
   values: RadioPanelOption[] = [
-    { label: "NO-label", value: "no" },
-    { label: "YES-label", value: "yes" },
+    { label: 'NO-label', value: 'no' },
+    { label: 'YES-label', value: 'yes' },
   ],
 ): Component =>
   ({
     label,
     key: keyFromLabel(label),
-    type: "radiopanel",
+    type: 'radiopanel',
     values,
   }) as Component;
 
 const defaultAttachmentValues: RadioPanelOption[] = [
   {
-    value: "leggerVedNaa",
-    label: "Jeg legger det ved denne søknaden (anbefalt)",
+    value: 'leggerVedNaa',
+    label: 'Jeg legger det ved denne søknaden (anbefalt)',
   },
   {
-    value: "ettersender",
+    value: 'ettersender',
     label:
-      "Jeg ettersender dokumentasjonen senere (jeg er klar over at NAV ikke kan behandle søknaden før jeg har levert dokumentasjonen)",
+      'Jeg ettersender dokumentasjonen senere (jeg er klar over at NAV ikke kan behandle søknaden før jeg har levert dokumentasjonen)',
   },
   {
-    value: "levertTidligere",
-    label: "Jeg har levert denne dokumentasjonen tidligere",
+    value: 'levertTidligere',
+    label: 'Jeg har levert denne dokumentasjonen tidligere',
   },
 ];
 
 const defaultAttachmentProperties: ComponentProperties = {
-  vedleggstittel: "Bekreftelse fra skole",
-  vedleggskode: "S1",
-  vedleggErValgfritt: "ja",
+  vedleggstittel: 'Bekreftelse fra skole',
+  vedleggskode: 'S1',
+  vedleggErValgfritt: 'ja',
 };
 
 const createDummyAttachment = (
-  label = "Vedlegg1",
+  label = 'Vedlegg1',
   properties: ComponentProperties = defaultAttachmentProperties,
   values: RadioPanelOption[] = defaultAttachmentValues,
 ): Component =>
   ({
     label,
     key: keyFromLabel(label),
-    type: "radiopanel",
+    type: 'radiopanel',
     values,
     properties,
   }) as Component;
 
 const createDummyRadioPanelWithNumberValues = (
-  label = "RadioPanelWithNumberValues",
+  label = 'RadioPanelWithNumberValues',
   values: RadioPanelOption[] = [
-    { label: "30-label", value: "30" },
-    { label: "40-label", value: "40" },
+    { label: '30-label', value: '30' },
+    { label: '40-label', value: '40' },
   ],
 ): Component =>
   ({
     label,
     key: keyFromLabel(label),
-    type: "radiopanel",
+    type: 'radiopanel',
     values,
   }) as Component;
 
 const createDummySelectboxes = (
-  label = "Selectboxes",
+  label = 'Selectboxes',
   values: RadioPanelOption[] = [
-    { label: "Milk", value: "milk" },
-    { label: "Bread", value: "bread" },
-    { label: "Juice", value: "juice" },
+    { label: 'Milk', value: 'milk' },
+    { label: 'Bread', value: 'bread' },
+    { label: 'Juice', value: 'juice' },
   ],
 ): Component =>
   ({
     label,
     key: keyFromLabel(label),
-    type: "selectboxes",
+    type: 'selectboxes',
     values,
   }) as Component;
 
-const createDummyContentElement = (label = "Content", html?: string): Component =>
+const createDummyContentElement = (label = 'Content', html?: string): Component =>
   ({
     label,
     key: keyFromLabel(label),
-    type: "content",
+    type: 'content',
     html,
   }) as Component;
 
-const createDummyHTMLElement = (label = "HTMLelement", content = "", contentForPdf = ""): Component =>
+const createDummyHTMLElement = (label = 'HTMLelement', content = '', contentForPdf = ''): Component =>
   ({
     label,
     key: keyFromLabel(label),
-    type: "htmlelement",
+    type: 'htmlelement',
     contentForPdf,
     content,
   }) as Component;
 
 const createDummyAlertstripe = (
-  label = "Alertstripe",
+  label = 'Alertstripe',
   content?: string,
-  contentForPdf = "",
+  contentForPdf = '',
   conditional = {},
 ): Component =>
   ({
     label,
     key: keyFromLabel(label),
-    type: "alertstripe",
+    type: 'alertstripe',
     contentForPdf,
     conditional,
     content,
   }) as Component;
 
-const createDummyContainerElement = (label = "Container", components?: Component[], hideLabel?: boolean): Component =>
+const createDummyContainerElement = (label = 'Container', components?: Component[], hideLabel?: boolean): Component =>
   ({
     label,
     key: keyFromLabel(label),
-    type: "container",
+    type: 'container',
     components,
     hideLabel,
   }) as Component;
 
-const createDummyNavSkjemagruppe = (label = "NavSkjemagruppe", components?: Component[]): Component =>
+const createDummyNavSkjemagruppe = (label = 'NavSkjemagruppe', components?: Component[]): Component =>
   ({
     label: `${label}-label`,
     legend: `${label}-legend`,
     key: keyFromLabel(label),
-    type: "navSkjemagruppe",
+    type: 'navSkjemagruppe',
     components,
   }) as Component;
 
-const createDummyNavDatepicker = (label = "NavSkjemagruppe"): Component =>
+const createDummyNavDatepicker = (label = 'NavSkjemagruppe'): Component =>
   ({
     label: `${label}-label`,
     legend: `${label}-legend`,
     key: keyFromLabel(label),
-    type: "navDatepicker",
+    type: 'navDatepicker',
   }) as Component;
 
-const createDummyDataGrid = (label = "DataGrid", components?: Component[], hideLabel?: boolean): Component =>
+const createDummyDataGrid = (label = 'DataGrid', components?: Component[], hideLabel?: boolean): Component =>
   ({
     label,
     key: keyFromLabel(label),
-    type: "datagrid",
-    rowTitle: "datagrid-row-title",
+    type: 'datagrid',
+    rowTitle: 'datagrid-row-title',
     components,
     hideLabel,
   }) as Component;
 
-const createDummyDayComponent = (label = "Mnd/år"): Component => ({
+const createDummyDayComponent = (label = 'Mnd/år'): Component => ({
   label,
   key: keyFromLabel(label),
-  type: "day",
+  type: 'day',
 });
 
 const createDummySelectComponent = (
-  label = "Select",
+  label = 'Select',
   values = [
-    { label: "Milk", value: "milk" },
-    { label: "Bread", value: "bread" },
-    { label: "Juice", value: "juice" },
+    { label: 'Milk', value: 'milk' },
+    { label: 'Bread', value: 'bread' },
+    { label: 'Juice', value: 'juice' },
   ],
 ) => ({
   label,
   key: keyFromLabel(label),
-  type: "select",
+  type: 'select',
   data: { values },
 });
 
-const createDummyButtonComponent = (buttonText = "Submit", label = "Knapp") => ({
+const createDummyButtonComponent = (buttonText = 'Submit', label = 'Knapp') => ({
   label,
   buttonText,
   key: keyFromLabel(label),
-  type: "button",
+  type: 'button',
 });
 
 const createPanelObject = (title?: string, components?: Component[], label?: string): Component =>
@@ -225,13 +225,13 @@ const createPanelObject = (title?: string, components?: Component[], label?: str
     title,
     label,
     key: keyFromLabel(title),
-    type: "panel",
+    type: 'panel',
     components,
   }) as Component;
 
 const dummyFormProperties: FormPropertiesType = {
-  skjemanummer: "",
-  tema: "",
+  skjemanummer: '',
+  tema: '',
 };
 
 const createFormPropertiesObject = (partialFormProperties: Partial<FormPropertiesType> = {}) => ({
@@ -241,65 +241,65 @@ const createFormPropertiesObject = (partialFormProperties: Partial<FormPropertie
 
 const createFormObject = (
   panels: Component[] = [],
-  title: string = "Test form",
+  title: string = 'Test form',
   properties: Partial<FormPropertiesType> = {},
 ): NavFormType =>
   ({
     components: panels,
-    type: "form",
+    type: 'form',
     title,
     properties,
   }) as unknown as NavFormType;
 
-const createDummyCurrencyField = (currency = "NOK", label = "Penger"): Component =>
+const createDummyCurrencyField = (currency = 'NOK', label = 'Penger'): Component =>
   ({
     label,
     key: keyFromLabel(label),
-    type: "currency",
+    type: 'currency',
     currency,
   }) as Component;
 
-const createDummyNumberField = (prefix = "", suffix = "", label = "Number"): Component =>
+const createDummyNumberField = (prefix = '', suffix = '', label = 'Number'): Component =>
   ({
     label,
     key: keyFromLabel(label),
-    type: "number",
+    type: 'number',
     prefix,
     suffix,
   }) as Component;
 
-const createDummyAmountWithCurrency = (label = "AmountWithCurrency"): Component =>
+const createDummyAmountWithCurrency = (label = 'AmountWithCurrency'): Component =>
   ({
     label,
     key: keyFromLabel(label),
-    type: "row",
+    type: 'row',
     components: [
       {
-        label: "Velg valuta",
-        key: "valutavelger",
-        type: "valutavelger",
+        label: 'Velg valuta',
+        key: 'valutavelger',
+        type: 'valutavelger',
       },
       {
-        label: "Beløp",
-        key: "belop",
-        type: "number",
+        label: 'Beløp',
+        key: 'belop',
+        type: 'number',
       },
     ],
     isAmountWithCurrencySelector: true,
   }) as Component;
 
-const createDummyBankAccountField = (label = "bankAccount"): Component =>
+const createDummyBankAccountField = (label = 'bankAccount'): Component =>
   ({
     label,
     key: keyFromLabel(label),
-    type: "bankAccount",
+    type: 'bankAccount',
   }) as Component;
 
-const createDummyOrgNrField = (label = "orgNr"): Component =>
+const createDummyOrgNrField = (label = 'orgNr'): Component =>
   ({
     label,
     key: keyFromLabel(label),
-    type: "orgNr",
+    type: 'orgNr',
   }) as Component;
 
 const mockedComponentObjectForTest = {

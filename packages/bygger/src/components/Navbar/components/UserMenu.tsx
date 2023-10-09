@@ -1,14 +1,14 @@
-import { makeStyles } from "@navikt/skjemadigitalisering-shared-components";
-import { Link } from "react-router-dom";
-import { useAuth } from "../../../context/auth-context";
-import { useDropdownStyles } from "../styles";
-import { Dropdown, InternalHeader } from "@navikt/ds-react";
+import { Dropdown, InternalHeader } from '@navikt/ds-react';
+import { makeStyles } from '@navikt/skjemadigitalisering-shared-components';
+import { Link } from 'react-router-dom';
+import { useAuth } from '../../../context/auth-context';
+import { useDropdownStyles } from '../styles';
 
 const useStyles = makeStyles({
   logOutBtn: {
-    width: "auto",
-    padding: "0",
-    margin: "4px auto",
+    width: 'auto',
+    padding: '0',
+    margin: '4px auto',
   },
 });
 
@@ -21,11 +21,11 @@ const UserMenu = () => {
 
   return (
     <Dropdown>
-      <InternalHeader.UserButton as={Dropdown.Toggle} name={userData.name ? userData.name : ""} />
+      <InternalHeader.UserButton as={Dropdown.Toggle} name={userData.name ? userData.name : ''} />
       <Dropdown.Menu className={dropdownStyles.dropdownMenu}>
         <Dropdown.Menu.List>
           <Dropdown.Menu.List.Item className={styles.logOutBtn}>
-            {" "}
+            {' '}
             <Link className="navds-button navds-button--secondary navds-button--small" to="/" onClick={logout}>
               Logg ut
             </Link>

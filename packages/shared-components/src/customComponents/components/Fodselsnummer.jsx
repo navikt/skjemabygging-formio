@@ -1,10 +1,10 @@
-import fnrvalidator from "@navikt/fnrvalidator";
-import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
-import TextFieldComponent from "formiojs/components/textfield/TextField";
-import baseEditForm from "formiojs/components/_classes/component/Component.form";
-import FormBuilderOptions from "../../Forms/form-builder-options";
+import fnrvalidator from '@navikt/fnrvalidator';
+import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import baseEditForm from 'formiojs/components/_classes/component/Component.form';
+import TextFieldComponent from 'formiojs/components/textfield/TextField';
+import FormBuilderOptions from '../../Forms/form-builder-options';
 
-const ALLOWED_TYPES = ["fnr", "dnr"];
+const ALLOWED_TYPES = ['fnr', 'dnr'];
 
 export default class Fodselsnummer extends TextFieldComponent {
   static schema(...extend) {
@@ -15,19 +15,19 @@ export default class Fodselsnummer extends TextFieldComponent {
   }
 
   validateFnrNew(inputValue) {
-    if (inputValue === "") {
+    if (inputValue === '') {
       // Vi lar default required-validering ta hånd om tomt felt feilmelding
       return true;
     }
 
-    const inputValueNoSpace = inputValue.replace(" ", "");
+    const inputValueNoSpace = inputValue.replace(' ', '');
 
     const { status, type } = fnrvalidator.idnr(inputValueNoSpace);
-    if (!ALLOWED_TYPES.includes(type) || status !== "valid") {
+    if (!ALLOWED_TYPES.includes(type) || status !== 'valid') {
       //translate based on key in validering file.
-      return this.t("fodselsnummerDNummer") === "fodselsnummerDNummer"
+      return this.t('fodselsnummerDNummer') === 'fodselsnummerDNummer'
         ? TEXTS.validering.fodselsnummerDNummer
-        : this.t("fodselsnummerDNummer");
+        : this.t('fodselsnummerDNummer');
     }
     return true;
   }
@@ -44,80 +44,80 @@ export default class Fodselsnummer extends TextFieldComponent {
     return baseEditForm(
       [
         {
-          key: "display",
+          key: 'display',
           components: [
             {
               // You can ignore existing fields.
-              key: "placeholder",
+              key: 'placeholder',
               ignore: true,
             },
             {
-              key: "tabindex",
+              key: 'tabindex',
               ignore: true,
             },
             {
-              key: "tooltip",
+              key: 'tooltip',
               ignore: true,
             },
             {
-              key: "customClass",
+              key: 'customClass',
               ignore: true,
             },
             {
-              key: "hidden",
+              key: 'hidden',
               ignore: true,
             },
             {
-              key: "hideLabel",
+              key: 'hideLabel',
               ignore: true,
             },
             {
-              key: "autofocus",
+              key: 'autofocus',
               ignore: true,
             },
             {
-              key: "disabled",
+              key: 'disabled',
               ignore: true,
             },
             {
-              key: "tableView",
+              key: 'tableView',
               ignore: true,
             },
             {
-              key: "modalEdit",
+              key: 'modalEdit',
               ignore: true,
             },
           ],
         },
         {
-          key: "data",
+          key: 'data',
           ignore: true,
           components: false,
         },
         {
-          key: "validation",
+          key: 'validation',
           ignore: true,
           components: false,
         },
         {
-          key: "api",
+          key: 'api',
           components: [
-            { key: "tags", ignore: true },
-            { key: "properties", ignore: true },
+            { key: 'tags', ignore: true },
+            { key: 'properties', ignore: true },
           ],
         },
         {
-          key: "logic",
+          key: 'logic',
           ignore: true,
           components: false,
         },
         {
-          key: "layout",
+          key: 'layout',
           ignore: true,
           components: false,
         },
         {
-          key: "addons",
+          key: 'addons',
           ignore: true,
           components: false,
         },

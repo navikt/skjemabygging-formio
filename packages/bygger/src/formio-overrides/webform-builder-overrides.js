@@ -1,5 +1,5 @@
-import { NavFormioJs } from "@navikt/skjemadigitalisering-shared-components";
-import { formDiffingTool, navFormUtils } from "@navikt/skjemadigitalisering-shared-domain";
+import { NavFormioJs } from '@navikt/skjemadigitalisering-shared-components';
+import { formDiffingTool, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
 
 const WebformBuilder = NavFormioJs.Builders.builders.webform;
 const originalRemoveComponent = WebformBuilder.prototype.removeComponent;
@@ -14,7 +14,7 @@ WebformBuilder.prototype.removeComponent = function (component, parent, original
     let confirmationMessage;
     const dependentComponents = navFormUtils.findDependentComponents(original.id, this.form);
     if (dependentComponents.length > 0) {
-      confirmationMessage = "En eller flere andre komponenter har avhengighet til denne. Vil du fremdeles slette den?";
+      confirmationMessage = 'En eller flere andre komponenter har avhengighet til denne. Vil du fremdeles slette den?';
     }
 
     if (confirmationMessage && !window.confirm(this.t(confirmationMessage))) {
@@ -33,7 +33,7 @@ WebformBuilder.prototype.editComponent = function (component, parent, isNew, isJ
     const dependentComponents = navFormUtils.findDependentComponents(original.id, this.form);
     if (dependentComponents.length > 0) {
       this.conditionalAlert = {
-        message: "Følgende komponenter har avhengighet til denne:",
+        message: 'Følgende komponenter har avhengighet til denne:',
         components: dependentComponents,
       };
     }

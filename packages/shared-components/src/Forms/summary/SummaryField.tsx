@@ -1,4 +1,4 @@
-import { Summary } from "@navikt/skjemadigitalisering-shared-domain";
+import { Summary } from '@navikt/skjemadigitalisering-shared-domain';
 
 export interface Props {
   component: Summary.Field;

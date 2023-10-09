@@ -1,7 +1,7 @@
-import React, { useMemo, useState } from "react";
-import { v4 as uuidv4 } from "uuid";
+import React, { useMemo, useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
-type MessageType = "success" | "warning" | "error";
+type MessageType = 'success' | 'warning' | 'error';
 type MessageIn = { title?: string; message: string; type: MessageType };
 export type Message = MessageIn & { id: string; created: string; clear: () => void };
 

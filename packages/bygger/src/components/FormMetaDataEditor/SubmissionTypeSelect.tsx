@@ -1,4 +1,4 @@
-import { Select } from "@navikt/ds-react";
+import { Select } from '@navikt/ds-react';
 
 interface Props {
   name: string;

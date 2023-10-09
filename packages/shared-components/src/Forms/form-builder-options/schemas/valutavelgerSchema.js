@@ -1,15 +1,15 @@
 const valutavelgerSchema = () => ({
-  label: "Velg valuta",
-  type: "valutavelger",
-  key: "valutavelger",
-  fieldSize: "input--m",
+  label: 'Velg valuta',
+  type: 'valutavelger',
+  key: 'valutavelger',
+  fieldSize: 'input--m',
   input: true,
   clearOnHide: true,
-  validateOn: "blur",
+  validateOn: 'blur',
   data: {
-    url: "https://www.nav.no/fyllut/api/common-codes/currencies?lang=nb",
+    url: 'https://www.nav.no/fyllut/api/common-codes/currencies?lang=nb',
   },
-  dataSrc: "url",
+  dataSrc: 'url',
   disableLimit: true,
   validate: {
     required: true,

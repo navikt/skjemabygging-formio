@@ -1,17 +1,17 @@
-import { localizationUtils } from "@navikt/skjemadigitalisering-shared-domain";
-import { NextFunction, Request, Response } from "express";
-import fetch from "node-fetch";
-import { config } from "../../config/config";
-import { logger } from "../../logger";
-import { getIdportenPid, getTokenxAccessToken } from "../../security/tokenHelper";
-import { responseToError } from "../../utils/errorHandling";
-import { createPdfAsByteArray } from "./helpers/pdfService";
+import { localizationUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { NextFunction, Request, Response } from 'express';
+import fetch from 'node-fetch';
+import { config } from '../../config/config';
+import { logger } from '../../logger';
+import { getIdportenPid, getTokenxAccessToken } from '../../security/tokenHelper';
+import { responseToError } from '../../utils/errorHandling';
+import { createPdfAsByteArray } from './helpers/pdfService';
 import {
   assembleSendInnSoknadBody,
   isMellomLagringEnabled,
   sanitizeInnsendingsId,
   validateInnsendingsId,
-} from "./helpers/sendInn";
+} from './helpers/sendInn';
 
 const { featureToggles, sendInnConfig } = config;
 
@@ -23,13 +23,13 @@ const sendInnUtfyltSoknad = {
 
       const { form, submission, submissionMethod, translation, language, innsendingsId } = req.body;
       if (!req.headers.AzureAccessToken) {
-        logger.error("Azure access token is missing. Unable to generate pdf");
+        logger.error('Azure access token is missing. Unable to generate pdf');
       }
 
       const sanitizedInnsendingsId = sanitizeInnsendingsId(innsendingsId);
       const errorMessage = validateInnsendingsId(
         sanitizedInnsendingsId,
-        "Kan ikke oppdatere mellomlagret søknad med ferdig utfylt versjon",
+        'Kan ikke oppdatere mellomlagret søknad med ferdig utfylt versjon',
       );
       if (errorMessage) {
         next(new Error(errorMessage));
@@ -55,10 +55,10 @@ const sendInnUtfyltSoknad = {
       const sendInnResponse = await fetch(
         `${sendInnConfig.host}${sendInnConfig.paths.utfyltSoknad}/${sanitizedInnsendingsId}`,
         {
-          method: "PUT",
-          redirect: "manual",
+          method: 'PUT',
+          redirect: 'manual',
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
             Authorization: `Bearer ${tokenxAccessToken}`,
           },
           body: JSON.stringify(body),
@@ -66,16 +66,16 @@ const sendInnUtfyltSoknad = {
       );
 
       if (sendInnResponse.ok || sendInnResponse.status === 302) {
-        const location = sendInnResponse.headers.get("location");
+        const location = sendInnResponse.headers.get('location');
         logger.debug(`Successfylly posted data to SendInn (location: ${location})`);
         res.header({
-          "Access-Control-Expose-Headers": "Location",
+          'Access-Control-Expose-Headers': 'Location',
           Location: location,
         });
         res.sendStatus(201);
       } else {
-        logger.debug("Failed to post data to SendInn");
-        next(await responseToError(sendInnResponse, "Feil ved kall til SendInn", true));
+        logger.debug('Failed to post data to SendInn');
+        next(await responseToError(sendInnResponse, 'Feil ved kall til SendInn', true));
       }
     } catch (err) {
       next(err);

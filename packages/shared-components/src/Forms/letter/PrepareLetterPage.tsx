@@ -1,22 +1,22 @@
-import { Heading } from "@navikt/ds-react";
-import { Enhet, NavFormType, Submission, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
-import PropTypes from "prop-types";
-import { useEffect, useState } from "react";
-import { fetchEnhetsliste, isEnhetSupported } from "../../api/fetchEnhetsliste";
-import ErrorPage from "../../components/ErrorPage";
-import LoadingComponent from "../../components/LoadingComponent";
-import { useAppConfig } from "../../configContext";
-import { useLanguages } from "../../context/languages";
-import { scrollToAndSetFocus } from "../../util/focus-management";
-import { getVedleggsFelterSomSkalSendes } from "../../util/forsteside";
-import makeStyles from "../../util/jss";
-import NavigateButtonComponent from "../NavigateButtonComponent";
-import LetterAddAttachment from "./LetterAddAttachment";
-import LetterDownload from "./LetterDownload";
-import LetterInTheMail from "./LetterInTheMail";
-import LetterUXSignals from "./LetterUXSignals";
+import { Heading } from '@navikt/ds-react';
+import { Enhet, NavFormType, Submission, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import PropTypes from 'prop-types';
+import { useEffect, useState } from 'react';
+import { fetchEnhetsliste, isEnhetSupported } from '../../api/fetchEnhetsliste';
+import ErrorPage from '../../components/ErrorPage';
+import LoadingComponent from '../../components/LoadingComponent';
+import { useAppConfig } from '../../configContext';
+import { useLanguages } from '../../context/languages';
+import { scrollToAndSetFocus } from '../../util/focus-management';
+import { getVedleggsFelterSomSkalSendes } from '../../util/forsteside';
+import makeStyles from '../../util/jss';
+import NavigateButtonComponent from '../NavigateButtonComponent';
+import LetterAddAttachment from './LetterAddAttachment';
+import LetterDownload from './LetterDownload';
+import LetterInTheMail from './LetterInTheMail';
+import LetterUXSignals from './LetterUXSignals';
 
-const compareEnheter = (enhetA, enhetB) => enhetA.navn.localeCompare(enhetB.navn, "nb");
+const compareEnheter = (enhetA, enhetB) => enhetA.navn.localeCompare(enhetB.navn, 'nb');
 
 interface Props {
   form: NavFormType;
@@ -27,17 +27,17 @@ interface Props {
 
 const useStyles = makeStyles({
   content: {
-    width: "100%",
-    display: "flex",
-    flexDirection: "column",
-    "& section.wizard-page": {
-      paddingBottom: "3.5rem",
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    '& section.wizard-page': {
+      paddingBottom: '3.5rem',
     },
   },
 });
 
 export function PrepareLetterPage({ form, submission, translations, formUrl }: Props) {
-  useEffect(() => scrollToAndSetFocus("main", "start"), []);
+  useEffect(() => scrollToAndSetFocus('main', 'start'), []);
   const { fyllutBaseURL, baseUrl, logger } = useAppConfig();
   const { translate } = useLanguages();
   const [enhetsListe, setEnhetsListe] = useState<Enhet[]>([]);
@@ -66,7 +66,7 @@ export function PrepareLetterPage({ form, submission, translations, formUrl }: P
 
   useEffect(() => {
     if (logger && enhetslisteFilteringError) {
-      logger.error("Ingen relevante enheter funnet", { skjemanummer, enhetstyper });
+      logger.error('Ingen relevante enheter funnet', { skjemanummer, enhetstyper });
     }
   }, [enhetslisteFilteringError, enhetstyper, logger, skjemanummer]);
 
@@ -102,7 +102,7 @@ export function PrepareLetterPage({ form, submission, translations, formUrl }: P
           <NavigateButtonComponent translate={translate} goBackUrl={`${formUrl}/oppsummering`} />
           {
             // TODO: If the UXSignal pilot is successful, the study code should be a new setting on the form.
-            skjemanummer === "NAV 08-09.06" && <LetterUXSignals code="study-dont9j6txe" />
+            skjemanummer === 'NAV 08-09.06' && <LetterUXSignals code="study-dont9j6txe" />
           }
         </section>
       </section>

@@ -1,53 +1,53 @@
-import NestedComponentForm from "formiojs/components/_classes/nested/NestedComponent.form";
-import Fieldset from "formiojs/components/fieldset/Fieldset";
-import FieldsetDisplayForm from "formiojs/components/fieldset/editForm/Fieldset.edit.display";
-import FormBuilderOptions from "../../Forms/form-builder-options";
-import { description } from "./fields/description.js";
+import NestedComponentForm from 'formiojs/components/_classes/nested/NestedComponent.form';
+import Fieldset from 'formiojs/components/fieldset/Fieldset';
+import FieldsetDisplayForm from 'formiojs/components/fieldset/editForm/Fieldset.edit.display';
+import FormBuilderOptions from '../../Forms/form-builder-options';
+import { description } from './fields/description.js';
 
 class Skjemagruppe extends Fieldset {
   static editForm(...extend) {
     return NestedComponentForm([
       {
-        key: "display",
+        key: 'display',
         components: [
-          ...FieldsetDisplayForm.filter((field) => field.key !== "description"),
+          ...FieldsetDisplayForm.filter((field) => field.key !== 'description'),
           ...description,
           {
-            key: "tooltip",
+            key: 'tooltip',
             ignore: true,
           },
           {
-            key: "tabindex",
+            key: 'tabindex',
             ignore: true,
           },
           {
-            key: "modalEdit",
+            key: 'modalEdit',
             ignore: true,
           },
           {
-            key: "customClass",
+            key: 'customClass',
             ignore: true,
           },
           {
-            key: "hidden",
+            key: 'hidden',
             ignore: true,
           },
           {
-            key: "disabled",
+            key: 'disabled',
             ignore: true,
           },
         ],
       },
       {
-        key: "api",
+        key: 'api',
         components: [
-          { key: "tags", ignore: true },
-          { key: "properties", ignore: true },
+          { key: 'tags', ignore: true },
+          { key: 'properties', ignore: true },
         ],
       },
-      { key: "addons", ignore: true },
-      { key: "logic", ignore: true },
-      { key: "layout", ignore: true },
+      { key: 'addons', ignore: true },
+      { key: 'logic', ignore: true },
+      { key: 'layout', ignore: true },
       ...extend,
     ]);
   }

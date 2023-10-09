@@ -1,11 +1,11 @@
-import React, { useContext, useState } from "react";
-import FrontendLogger from "./api/FrontendLogger";
-import baseHttp from "./api/http";
+import React, { useContext, useState } from 'react';
+import FrontendLogger from './api/FrontendLogger';
+import baseHttp from './api/http';
 
 type FeatureTogglesMap = {
   [key: string]: boolean;
 };
-type ApplicationName = "bygger" | "fyllut";
+type ApplicationName = 'bygger' | 'fyllut';
 interface AppConfigContextType {
   dokumentinnsendingBaseURL?: string;
   baseUrl?: string;
@@ -30,7 +30,7 @@ const AppConfigContext = React.createContext<AppConfigContextType>({});
 function AppConfigProvider({
   children,
   dokumentinnsendingBaseURL,
-  baseUrl = "",
+  baseUrl = '',
   fyllutBaseURL,
   featureToggles,
   submissionMethod,

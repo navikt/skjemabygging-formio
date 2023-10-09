@@ -4,11 +4,11 @@ import {
   navFormUtils,
   Submission,
   Summary,
-} from "@navikt/skjemadigitalisering-shared-domain";
-import { useLanguages } from "../../context/languages";
-import { useAppConfig } from "../../index";
-import { PanelValidation } from "../../util/panelValidation";
-import ComponentSummary from "./ComponentSummary";
+} from '@navikt/skjemadigitalisering-shared-domain';
+import { useLanguages } from '../../context/languages';
+import { useAppConfig } from '../../index';
+import { PanelValidation } from '../../util/panelValidation';
+import ComponentSummary from './ComponentSummary';
 
 interface Props {
   form: NavFormType;

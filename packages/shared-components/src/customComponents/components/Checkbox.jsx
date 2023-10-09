@@ -1,10 +1,10 @@
-import { Checkbox } from "@navikt/ds-react";
-import CheckboxEditForm from "formiojs/components/checkbox/Checkbox.form";
-import { useEffect, useState } from "react";
-import ReactDOM from "react-dom";
-import FormBuilderOptions from "../../Forms/form-builder-options";
-import FormioReactComponent from "../FormioReactComponent";
-import { advancedDescription } from "./fields/advancedDescription.js";
+import { Checkbox } from '@navikt/ds-react';
+import CheckboxEditForm from 'formiojs/components/checkbox/Checkbox.form';
+import { useEffect, useState } from 'react';
+import ReactDOM from 'react-dom';
+import FormBuilderOptions from '../../Forms/form-builder-options';
+import FormioReactComponent from '../FormioReactComponent';
+import { advancedDescription } from './fields/advancedDescription.js';
 
 /**
  * The wrapper for our custom React component
@@ -27,11 +27,11 @@ const CheckboxWrapper = ({ component, checkboxRef, translate, onChange, value })
       aria-describedby={`${component.key}-error`}
       label={translate(component.label)}
       onChange={() => {
-        setIsChecked(!!isChecked ? null : "ja");
-        onChange(!!isChecked ? null : "ja");
+        setIsChecked(!!isChecked ? null : 'ja');
+        onChange(!!isChecked ? null : 'ja');
       }}
       required={component.validate.required}
-      checked={isChecked === "ja"}
+      checked={isChecked === 'ja'}
     />
   );
 };
@@ -69,121 +69,121 @@ export default class CheckboxComponent extends FormioReactComponent {
     return CheckboxEditForm([
       ...extend,
       {
-        label: "Display",
-        key: "display",
+        label: 'Display',
+        key: 'display',
         components: [
           ...advancedDescription,
           {
-            key: "tooltip",
+            key: 'tooltip',
             ignore: true,
           },
           {
-            key: "shortcut",
+            key: 'shortcut',
             ignore: true,
           },
           {
-            key: "inputType",
+            key: 'inputType',
             ignore: true,
           },
           {
-            key: "customClass",
+            key: 'customClass',
             ignore: true,
           },
           {
-            key: "tabindex",
+            key: 'tabindex',
             ignore: true,
           },
           {
-            key: "hidden",
+            key: 'hidden',
             ignore: true,
           },
           {
-            key: "autofocus",
+            key: 'autofocus',
             ignore: true,
           },
           {
-            key: "disabled",
+            key: 'disabled',
             ignore: true,
           },
           {
-            key: "tableView",
+            key: 'tableView',
             ignore: true,
           },
           {
-            key: "modalEdit",
+            key: 'modalEdit',
             ignore: true,
           },
-          { key: "hideLabel", ignore: true },
+          { key: 'hideLabel', ignore: true },
         ],
       },
       {
-        key: "data",
+        key: 'data',
         components: [
           {
-            key: "multiple",
+            key: 'multiple',
             ignore: true,
           },
           {
-            key: "persistent",
+            key: 'persistent',
             ignore: true,
           },
           {
-            key: "inputFormat",
+            key: 'inputFormat',
             ignore: true,
           },
           {
-            key: "protected",
+            key: 'protected',
             ignore: true,
           },
           {
-            key: "dbIndex",
+            key: 'dbIndex',
             ignore: true,
           },
           {
-            key: "case",
+            key: 'case',
             ignore: true,
           },
           {
-            key: "encrypted",
+            key: 'encrypted',
             ignore: true,
           },
           {
-            key: "redrawOn",
+            key: 'redrawOn',
             ignore: true,
           },
           {
-            key: "calculateServer",
+            key: 'calculateServer',
             ignore: true,
           },
           {
-            key: "allowCalculateOverride",
+            key: 'allowCalculateOverride',
             ignore: true,
           },
         ],
       },
       {
-        key: "validation",
+        key: 'validation',
         components: [
           {
-            key: "unique",
+            key: 'unique',
             ignore: true,
           },
         ],
       },
       {
-        key: "api",
+        key: 'api',
         components: [
-          { key: "tags", ignore: true },
-          { key: "properties", ignore: true },
+          { key: 'tags', ignore: true },
+          { key: 'properties', ignore: true },
         ],
       },
       {
-        key: "logic",
+        key: 'logic',
         ignore: true,
         components: false,
       },
       {
-        key: "layout",
+        key: 'layout',
         ignore: true,
         components: false,
       },

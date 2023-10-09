@@ -1,13 +1,13 @@
 /// <reference types="vitest" />
-import react from "@vitejs/plugin-react";
-import { readFileSync } from "fs";
-import lodashTemplate from "lodash/template";
-import { defineConfig, loadEnv, PluginOption } from "vite";
-import { createHtmlPlugin } from "vite-plugin-html";
-import tsconfigPaths from "vite-tsconfig-paths";
+import react from '@vitejs/plugin-react';
+import { readFileSync } from 'fs';
+import lodashTemplate from 'lodash/template';
+import { defineConfig, loadEnv, PluginOption } from 'vite';
+import { createHtmlPlugin } from 'vite-plugin-html';
+import tsconfigPaths from 'vite-tsconfig-paths';
 
 export default defineConfig(({ mode }) => {
-  const env = loadEnv(mode, "env");
+  const env = loadEnv(mode, 'env');
 
   const plugins: PluginOption = [
     react(),
@@ -16,24 +16,24 @@ export default defineConfig(({ mode }) => {
       inject: {
         data: {
           ...env,
-          VITE_GIT_VERSION: env.VITE_GIT_VERSION ?? "",
-          VITE_GIT_BRANCH: env.VITE_GIT_BRANCH ?? "",
+          VITE_GIT_VERSION: env.VITE_GIT_VERSION ?? '',
+          VITE_GIT_BRANCH: env.VITE_GIT_BRANCH ?? '',
         },
       },
     }),
     {
-      name: "formio-template-handler",
-      enforce: "pre",
+      name: 'formio-template-handler',
+      enforce: 'pre',
       config() {},
       load(id: string) {
-        if (!id.endsWith(".ejs")) {
+        if (!id.endsWith('.ejs')) {
           return null;
         }
 
-        const code = readFileSync(id).toString("utf-8");
+        const code = readFileSync(id).toString('utf-8');
         // Use same values in Formio.Utils.Evaluator.templateSettings
         const template = lodashTemplate(code, {
-          variable: "ctx",
+          variable: 'ctx',
           evaluate: /\{%([\s\S]+?)%}/g,
           interpolate: /\{\{([\s\S]+?)}}/g,
           escape: /\{\{\{([\s\S]+?)}}}/g,
@@ -44,19 +44,19 @@ export default defineConfig(({ mode }) => {
     },
   ];
 
-  if (mode !== "production") {
+  if (mode !== 'production') {
     plugins.push(tsconfigPaths());
   }
 
   return {
-    base: "/fyllut",
+    base: '/fyllut',
     server: {
       open: false,
       port: 3001,
       strictPort: true,
       proxy: {
-        "/fyllut/api": {
-          target: "http://localhost:8081",
+        '/fyllut/api': {
+          target: 'http://localhost:8081',
           changeOrigin: true,
         },
       },
@@ -66,14 +66,14 @@ export default defineConfig(({ mode }) => {
       strictPort: true,
     },
     resolve: {
-      dedupe: ["react-router-dom", "@navikt/ds-react", "@navikt/ds-icons"],
+      dedupe: ['react-router-dom', '@navikt/ds-react', '@navikt/ds-icons'],
     },
     plugins,
     test: {
       globals: true,
-      environment: "jsdom",
-      setupFiles: "./src/setupTests.ts",
-      include: ["src/(**/)?*.test.[jt]s(x)?"],
+      environment: 'jsdom',
+      setupFiles: './src/setupTests.ts',
+      include: ['src/(**/)?*.test.[jt]s(x)?'],
     },
   };
 });

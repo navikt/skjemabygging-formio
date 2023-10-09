@@ -1,13 +1,13 @@
-import "@navikt/ds-css";
-import { makeStyles, Styles } from "@navikt/skjemadigitalisering-shared-components";
-import { Route, Routes } from "react-router-dom";
-import { AllForms } from "./components/AllForms";
-import { FormPageWrapper } from "./components/FormPageWrapper";
+import '@navikt/ds-css';
+import { makeStyles, Styles } from '@navikt/skjemadigitalisering-shared-components';
+import { Route, Routes } from 'react-router-dom';
+import { AllForms } from './components/AllForms';
+import { FormPageWrapper } from './components/FormPageWrapper';
 
 const useStyles = makeStyles({
-  "@global": Styles.global,
+  '@global': Styles.global,
   app: {
-    margin: "0 auto",
+    margin: '0 auto',
   },
 });
 

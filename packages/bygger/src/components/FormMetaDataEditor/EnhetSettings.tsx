@@ -1,7 +1,7 @@
-import { Checkbox, Label, Panel } from "@navikt/ds-react";
-import { makeStyles } from "@navikt/skjemadigitalisering-shared-components";
-import { Enhetstype, supportedEnhetstyper } from "@navikt/skjemadigitalisering-shared-domain";
-import { useEffect } from "react";
+import { Checkbox, Label, Panel } from '@navikt/ds-react';
+import { makeStyles } from '@navikt/skjemadigitalisering-shared-components';
+import { Enhetstype, supportedEnhetstyper } from '@navikt/skjemadigitalisering-shared-domain';
+import { useEffect } from 'react';
 
 interface EnhetSettingsProps {
   enhetMaVelges: boolean;
@@ -12,19 +12,19 @@ interface EnhetSettingsProps {
 
 const useStyles = makeStyles({
   list: {
-    maxWidth: "100%",
-    maxHeight: "200px",
-    display: "flex",
-    gap: "0 1rem",
-    flexDirection: "column",
-    flexWrap: "wrap",
-    listStyle: "none",
+    maxWidth: '100%',
+    maxHeight: '200px',
+    display: 'flex',
+    gap: '0 1rem',
+    flexDirection: 'column',
+    flexWrap: 'wrap',
+    listStyle: 'none',
 
-    "@media screen and (max-width: 1080px)": {
-      maxHeight: "400px",
+    '@media screen and (max-width: 1080px)': {
+      maxHeight: '400px',
     },
-    "@media screen and (max-width: 600px)": {
-      maxHeight: "1000px",
+    '@media screen and (max-width: 600px)': {
+      maxHeight: '1000px',
     },
   },
 });
@@ -46,7 +46,7 @@ const EnhetSettings = ({
   return (
     <>
       <Checkbox checked={enhetMaVelges} onChange={(event) => onChangeEnhetMaVelges(event.target.checked)}>
-        {"Bruker må velge enhet ved innsending på papir"}
+        {'Bruker må velge enhet ved innsending på papir'}
       </Checkbox>
       {enhetMaVelges && selectedEnhetstyper && (
         <Panel className="mb-4">

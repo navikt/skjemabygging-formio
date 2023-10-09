@@ -1,12 +1,12 @@
-import coAdresseSchema from "./coAdresseSchema";
-import vegadresseSchema from "./vegadresseSchema";
-import postnummerSchema from "./postnummerSchema";
-import poststedSchema from "./poststedSchema";
+import coAdresseSchema from './coAdresseSchema';
+import postnummerSchema from './postnummerSchema';
+import poststedSchema from './poststedSchema';
+import vegadresseSchema from './vegadresseSchema';
 
-const norskVegadresseSchema = (keyPostfix = "") => ({
-  key: "norskVegadresse",
-  type: "container",
-  label: "Kontaktadresse",
+const norskVegadresseSchema = (keyPostfix = '') => ({
+  key: 'norskVegadresse',
+  type: 'container',
+  label: 'Kontaktadresse',
   hideLabel: true,
   input: false,
   tableView: false,

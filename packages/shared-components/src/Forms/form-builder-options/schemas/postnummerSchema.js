@@ -1,10 +1,10 @@
-const postnummerSchema = (keyPostfix = "") => ({
-  label: "Postnummer",
-  type: "textfield",
+const postnummerSchema = (keyPostfix = '') => ({
+  label: 'Postnummer',
+  type: 'textfield',
   key: `postnr${keyPostfix}`,
-  autocomplete: "postal-code",
+  autocomplete: 'postal-code',
   spellcheck: false,
-  fieldSize: "input--xs",
+  fieldSize: 'input--xs',
   validate: {
     required: true,
     minLength: 4,
@@ -14,7 +14,7 @@ const postnummerSchema = (keyPostfix = "") => ({
   clearOnHide: true,
   dataGridLabel: true,
   tableView: true,
-  validateOn: "blur",
+  validateOn: 'blur',
 });
 
 export default postnummerSchema;

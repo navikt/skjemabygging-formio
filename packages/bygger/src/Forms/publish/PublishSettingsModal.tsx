@@ -1,18 +1,18 @@
-import { Alert, Button, Checkbox, CheckboxGroup, Heading, Panel } from "@navikt/ds-react";
-import { Modal, makeStyles } from "@navikt/skjemadigitalisering-shared-components";
-import { FormPropertiesType, I18nTranslations, NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
-import { useEffect, useState } from "react";
-import { languagesInNorwegian, useI18nState } from "../../context/i18n";
-import { getFormTexts } from "../../translations/utils";
-import FormStatus, { determineStatus } from "../status/FormStatus";
-import { allLanguagesInNorwegian } from "../status/PublishedLanguages";
-import Timestamp from "../status/Timestamp";
-import { useStatusStyles } from "../status/styles";
+import { Alert, Button, Checkbox, CheckboxGroup, Heading, Panel } from '@navikt/ds-react';
+import { Modal, makeStyles } from '@navikt/skjemadigitalisering-shared-components';
+import { FormPropertiesType, I18nTranslations, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
+import { useEffect, useState } from 'react';
+import { languagesInNorwegian, useI18nState } from '../../context/i18n';
+import { getFormTexts } from '../../translations/utils';
+import FormStatus, { determineStatus } from '../status/FormStatus';
+import { allLanguagesInNorwegian } from '../status/PublishedLanguages';
+import Timestamp from '../status/Timestamp';
+import { useStatusStyles } from '../status/styles';
 
 const useModalStyles = makeStyles({
   modal_button: {
-    float: "right",
-    margin: "1rem",
+    float: 'right',
+    margin: '1rem',
   },
   languageList: {
     margin: 0,
@@ -21,13 +21,13 @@ const useModalStyles = makeStyles({
 
 const useStatusPanelStyles = makeStyles({
   panel: {
-    display: "flex",
-    padding: "0 0.5rem",
-    margin: "2rem 0",
-    backgroundColor: "var(--navds-semantic-color-canvas-background)",
+    display: 'flex',
+    padding: '0 0.5rem',
+    margin: '2rem 0',
+    backgroundColor: 'var(--navds-semantic-color-canvas-background)',
   },
   table: {
-    width: "100%",
+    width: '100%',
   },
 });
 
@@ -45,7 +45,7 @@ export const getCompleteTranslationLanguageCodeList = (
   const completeTranslationList: string[] = [];
   if (allFormOriginalTexts.length !== 0) {
     Object.keys(translationsForNavForm)
-      .filter((lang) => lang !== "nb-NO")
+      .filter((lang) => lang !== 'nb-NO')
       .forEach((languageCode) => {
         const incompleteTranslationList: string[] = allFormOriginalTexts.filter(
           (formText) => Object.keys(translationsForNavForm[languageCode]).indexOf(formText) < 0,
@@ -78,7 +78,7 @@ const PublishSettingsModal = ({ openModal, closeModal, onPublish, form }: Props)
   useEffect(() => {
     const completeTranslations = getCompleteTranslationLanguageCodeList(allFormOriginalTexts, translationsForNavForm);
     setCompleteTranslationLanguageCodeList(completeTranslations);
-    setCheckedLanguages([...completeTranslations, "nb-NO"]);
+    setCheckedLanguages([...completeTranslations, 'nb-NO']);
   }, [allFormOriginalTexts, translationsForNavForm]);
 
   const PublishStatusPanel = ({ formProperties }: { formProperties: FormPropertiesType }) => {
@@ -103,7 +103,7 @@ const PublishSettingsModal = ({ openModal, closeModal, onPublish, form }: Props)
               <td>
                 {formProperties.published && (
                   <ul className={styles.languageList}>
-                    <li>{allLanguagesInNorwegian["nb-NO"]}</li>
+                    <li>{allLanguagesInNorwegian['nb-NO']}</li>
                     {formProperties.publishedLanguages?.map((languageCode) => (
                       <li key={languageCode}>{languagesInNorwegian[languageCode]}</li>
                     ))}
@@ -151,7 +151,7 @@ const PublishSettingsModal = ({ openModal, closeModal, onPublish, form }: Props)
           setCheckedLanguages(checked);
         }}
       >
-        <Checkbox disabled value={"nb-NO"}>{`${allLanguagesInNorwegian["nb-NO"]} (NB-NO)`}</Checkbox>
+        <Checkbox disabled value={'nb-NO'}>{`${allLanguagesInNorwegian['nb-NO']} (NB-NO)`}</Checkbox>
         {checkedLanguages.length > 0 &&
           Object.keys(languagesInNorwegian).map((languageCode) => {
             if (isTranslationComplete(languageCode)) {

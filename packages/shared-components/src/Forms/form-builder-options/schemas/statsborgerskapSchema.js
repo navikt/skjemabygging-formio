@@ -1,11 +1,11 @@
-const statsborgerskapSchema = (keyPostfix = "") => ({
-  label: "Statsborgerskap",
-  type: "textfield",
+const statsborgerskapSchema = (keyPostfix = '') => ({
+  label: 'Statsborgerskap',
+  type: 'textfield',
   key: `statsborgerskap${keyPostfix}`,
-  fieldSize: "input--xxl",
+  fieldSize: 'input--xxl',
   input: true,
   dataGridLabel: true,
-  validateOn: "blur",
+  validateOn: 'blur',
   clearOnHide: true,
   validate: {
     required: true,

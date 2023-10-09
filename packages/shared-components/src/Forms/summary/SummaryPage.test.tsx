@@ -1,21 +1,21 @@
-import { DeclarationType, NavFormType, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
-import { render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
-import { createMemoryRouter, RouterProvider } from "react-router-dom";
-import { AppConfigContextType, AppConfigProvider } from "../../configContext";
-import { SendInnProvider } from "../../context/sendInn/sendInnContext";
-import { Props, SummaryPage } from "./SummaryPage";
-import { Buttons, formWithProperties, getButtons } from "./test/helpers";
+import { DeclarationType, NavFormType, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { RouterProvider, createMemoryRouter } from 'react-router-dom';
+import { AppConfigContextType, AppConfigProvider } from '../../configContext';
+import { SendInnProvider } from '../../context/sendInn/sendInnContext';
+import { Props, SummaryPage } from './SummaryPage';
+import { Buttons, formWithProperties, getButtons } from './test/helpers';
 
-vi.mock("react-router-dom", async () => {
-  const actual = await vi.importActual<object>("react-router-dom");
+vi.mock('react-router-dom', async () => {
+  const actual = await vi.importActual<object>('react-router-dom');
   return {
     ...actual,
-    useRouteMatch: () => ({ url: "/forms/previous" }),
+    useRouteMatch: () => ({ url: '/forms/previous' }),
   };
 });
 
-vi.mock("../../context/languages", () => ({
+vi.mock('../../context/languages', () => ({
   useLanguages: () => ({ translate: (text) => text }),
 }));
 
@@ -24,7 +24,7 @@ const renderSummaryPage = async (
   appConfigProps: AppConfigContextType = {} as AppConfigContextType,
 ): Promise<{ router: any; buttons: Buttons }> => {
   const summaryPageProps: Props = {
-    formUrl: "/testform",
+    formUrl: '/testform',
     submission: {},
     form: {} as NavFormType,
     translations: {},
@@ -34,7 +34,7 @@ const renderSummaryPage = async (
   const router = createMemoryRouter(
     [
       {
-        path: "/testform/*",
+        path: '/testform/*',
         element: (
           <SendInnProvider
             form={(props.form ?? {}) as NavFormType}
@@ -49,7 +49,7 @@ const renderSummaryPage = async (
       },
     ],
     {
-      initialEntries: ["/testform"],
+      initialEntries: ['/testform'],
     },
   );
 
@@ -59,41 +59,41 @@ const renderSummaryPage = async (
     </AppConfigProvider>,
   );
   // verifiser render ved å sjekke at overskrift finnes
-  await screen.getByRole("heading", { level: 2, name: TEXTS.grensesnitt.title });
+  await screen.getByRole('heading', { level: 2, name: TEXTS.grensesnitt.title });
   return { router, buttons: getButtons(screen) };
 };
 
-describe("SummaryPage", () => {
-  describe("ConfirmationPanel", () => {
-    it("Ikke vis bekreftelse", async () => {
-      const form = formWithProperties({ innsending: "PAPIR_OG_DIGITAL", declarationType: DeclarationType.none });
-      const { buttons, router } = await renderSummaryPage({ form }, { submissionMethod: "paper" });
-      const confirmCheckbox = screen.queryByRole("checkbox", { name: TEXTS.statiske.declaration.defaultText });
+describe('SummaryPage', () => {
+  describe('ConfirmationPanel', () => {
+    it('Ikke vis bekreftelse', async () => {
+      const form = formWithProperties({ innsending: 'PAPIR_OG_DIGITAL', declarationType: DeclarationType.none });
+      const { buttons, router } = await renderSummaryPage({ form }, { submissionMethod: 'paper' });
+      const confirmCheckbox = screen.queryByRole('checkbox', { name: TEXTS.statiske.declaration.defaultText });
       expect(confirmCheckbox).not.toBeInTheDocument();
       await userEvent.click(buttons.gaVidereKnapp);
-      expect(router.state.location.pathname).toBe("/testform/send-i-posten");
+      expect(router.state.location.pathname).toBe('/testform/send-i-posten');
     });
 
-    it("Bekreft dataene dine", async () => {
-      const form = formWithProperties({ innsending: "KUN_PAPIR", declarationType: DeclarationType.default });
-      const { buttons, router } = await renderSummaryPage({ form }, { submissionMethod: "paper" });
-      const confirmCheckbox = screen.queryByRole("checkbox", { name: TEXTS.statiske.declaration.defaultText });
+    it('Bekreft dataene dine', async () => {
+      const form = formWithProperties({ innsending: 'KUN_PAPIR', declarationType: DeclarationType.default });
+      const { buttons, router } = await renderSummaryPage({ form }, { submissionMethod: 'paper' });
+      const confirmCheckbox = screen.queryByRole('checkbox', { name: TEXTS.statiske.declaration.defaultText });
       expect(confirmCheckbox).toBeInTheDocument();
       await userEvent.click(confirmCheckbox!);
       expect(confirmCheckbox).toBeChecked();
       await userEvent.click(buttons.gaVidereKnapp);
-      expect(router.state.location.pathname).toBe("/testform/send-i-posten");
+      expect(router.state.location.pathname).toBe('/testform/send-i-posten');
     });
 
-    it("Ikke gå videre, uten å bekrefte dataene", async () => {
-      const form = formWithProperties({ innsending: "PAPIR_OG_DIGITAL", declarationType: DeclarationType.default });
-      const { buttons, router } = await renderSummaryPage({ form }, { submissionMethod: "paper" });
-      const confirmCheckbox = screen.queryByRole("checkbox", { name: TEXTS.statiske.declaration.defaultText });
+    it('Ikke gå videre, uten å bekrefte dataene', async () => {
+      const form = formWithProperties({ innsending: 'PAPIR_OG_DIGITAL', declarationType: DeclarationType.default });
+      const { buttons, router } = await renderSummaryPage({ form }, { submissionMethod: 'paper' });
+      const confirmCheckbox = screen.queryByRole('checkbox', { name: TEXTS.statiske.declaration.defaultText });
       expect(confirmCheckbox).toBeInTheDocument();
       await userEvent.click(buttons.gaVidereKnapp);
-      expect(confirmCheckbox).toHaveAttribute("aria-invalid", "true");
-      expect(confirmCheckbox).toHaveAttribute("aria-checked", "false");
-      expect(router.state.location.pathname).not.toBe("/testform/send-i-posten");
+      expect(confirmCheckbox).toHaveAttribute('aria-invalid', 'true');
+      expect(confirmCheckbox).toHaveAttribute('aria-checked', 'false');
+      expect(router.state.location.pathname).not.toBe('/testform/send-i-posten');
     });
   });
 });

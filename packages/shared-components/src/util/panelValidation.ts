@@ -1,4 +1,4 @@
-import { Component, formSummaryUtil, NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
+import { Component, formSummaryUtil, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 
 export type PanelValidation = {
   key: string;
@@ -27,7 +27,7 @@ export const validateWizardPanels = (formioInstance, form, submission): PanelVal
   return formSummaryPanels
     .map((panel) => formioInstance.components.find((wizardComponent) => wizardComponent.key === panel.key))
     .filter(
-      (wizardComponent) => wizardComponent.component.type === "panel" && !wizardComponent.component.isAttachmentPanel,
+      (wizardComponent) => wizardComponent.component.type === 'panel' && !wizardComponent.component.isAttachmentPanel,
     )
     .map((panel): PanelValidation => {
       const firstInputWithValidationError = findFirstInputWithValidationError(panel, submission?.data ?? {});
@@ -77,6 +77,6 @@ export const findFormStartingPoint = (
   const firstInputInPanel: Component | undefined = formSummaryUtil.findFirstInput(
     form.components?.[firstEmptyPanelIndex],
   );
-  const component = firstInputInPanel?.key ?? "";
+  const component = firstInputInPanel?.key ?? '';
   return { panel, component };
 };

@@ -1,44 +1,44 @@
-import Harness from "../../../test/harness";
-import { setupNavFormio } from "../../../test/navform-render";
-import NavCheckbox from "./NavCheckbox";
+import Harness from '../../../test/harness';
+import { setupNavFormio } from '../../../test/navform-render';
+import NavCheckbox from './NavCheckbox';
 
 const compDef = {
-  label: "Avkryssingsboks",
-  type: "navCheckbox",
-  key: "Avkryssingsboks",
+  label: 'Avkryssingsboks',
+  type: 'navCheckbox',
+  key: 'Avkryssingsboks',
   input: true,
   hideLabel: false,
   clearOnHide: true,
-  validateOn: "blur",
+  validateOn: 'blur',
   validate: {
     required: true,
   },
 };
 
-describe("NavCheckbox", () => {
+describe('NavCheckbox', () => {
   beforeAll(setupNavFormio);
 
-  it("Should build a checkbox component", () => {
+  it('Should build a checkbox component', () => {
     return Harness.testCreate(NavCheckbox, compDef).then((component) => {
       const inputs = Harness.testElements(component, 'input[type="checkbox"]', 1);
       for (let i = 0; i < inputs.length; i++) {
-        expect(inputs[i].getAttribute("class").indexOf("navds-checkbox__input") !== -1).toBeTruthy();
-        expect(inputs[i].name).toEqual(`data[${compDef.key}]`);
+        expect(inputs[i].getAttribute('class').indexOf('navds-checkbox__input') !== -1).toBeTruthy();
+        expect(inputs[i].name).toBe(`data[${compDef.key}]`);
       }
-      Harness.testElements(component, "label", 1);
+      Harness.testElements(component, 'label', 1);
     });
   });
 
-  it("Label is rendered", () => {
+  it('Label is rendered', () => {
     return Harness.testCreate(NavCheckbox, compDef).then((component) => {
-      const labels = component.element.querySelectorAll("label");
+      const labels = component.element.querySelectorAll('label');
       expect(labels).toHaveLength(1);
     });
   });
 
-  it("Should be able to unselect a checkbox component with the radio input type", () => {
+  it('Should be able to unselect a checkbox component with the radio input type', () => {
     return Harness.testCreate(NavCheckbox, compDef).then((component) => {
-      const input = Harness.testElement(component, "input", 1);
+      const input = Harness.testElement(component, 'input', 1);
       Harness.clickElement(component, input);
       expect(input.checked).toBe(true);
       Harness.clickElement(component, input);

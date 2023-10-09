@@ -1,4 +1,4 @@
-import fetch, { RequestInfo, RequestInit, Response } from "node-fetch";
+import fetch, { RequestInfo, RequestInit, Response } from 'node-fetch';
 
 export class HttpError extends Error {
   readonly response: Response;
@@ -13,26 +13,26 @@ export class HttpError extends Error {
 export async function fetchWithErrorHandling(url: RequestInfo, options: RequestInit) {
   const res = await fetch(url, options);
   if (!res.ok) {
-    console.error(`Fetch ${options.method || "GET"} ${url} failed with status: ${res.status}`);
+    console.error(`Fetch ${options.method || 'GET'} ${url} failed with status: ${res.status}`);
     console.error(`${options.method} body: ${options.body}`);
     throw new HttpError(res);
   }
   if (res.status === 204) {
     return {
-      status: "OK",
+      status: 'OK',
       data: null,
     };
   }
   return {
-    status: "OK",
+    status: 'OK',
     data: await res.json(),
   };
 }
 
 export function stringTobase64(str: string) {
-  return Buffer.from(str).toString("base64");
+  return Buffer.from(str).toString('base64');
 }
 
 export function base64ToString(str: string) {
-  return Buffer.from(str, "base64").toString();
+  return Buffer.from(str, 'base64').toString();
 }

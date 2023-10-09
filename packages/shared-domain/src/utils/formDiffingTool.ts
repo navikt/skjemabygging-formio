@@ -1,10 +1,10 @@
-import { Component, FormPropertiesType, NavFormType, NewFormSignatureType } from "../form";
-import { navFormUtils } from "../index";
+import { Component, FormPropertiesType, NavFormType, NewFormSignatureType } from '../form';
+import { navFormUtils } from '../index';
 
 enum DiffStatus {
-  NEW = "Ny",
-  DELETED = "Slettet",
-  CHANGED = "Endring",
+  NEW = 'Ny',
+  DELETED = 'Slettet',
+  CHANGED = 'Endring',
 }
 
 const generateNavFormDiff = (originalForm: NavFormType, newForm: NavFormType) => {
@@ -95,7 +95,7 @@ const generateNavFormSettingsDiff = (
     };
   } catch (err: any) {
     console.error(`Failed to generate form settings diff: ${err.message}`, err);
-    return { errorMessage: "Feil oppstod ved forsøk på å vise endringer siden forrige publisering." };
+    return { errorMessage: 'Feil oppstod ved forsøk på å vise endringer siden forrige publisering.' };
   }
 };
 
@@ -145,12 +145,12 @@ const createDiffSummary = (changes: any) => {
     });
   }
   if (components) {
-    const allDeleted = components.status === "Slettet";
+    const allDeleted = components.status === 'Slettet';
     if (allDeleted) {
       diffSummary.deletedComponents.push(...components.value);
     } else {
       diffSummary.deletedComponents.push(
-        ...components.filter((c: any) => c.status === "Slettet").map((c: any) => c.originalValue),
+        ...components.filter((c: any) => c.status === 'Slettet').map((c: any) => c.originalValue),
       );
     }
   }
@@ -216,12 +216,12 @@ const generateObjectDiff = (originalObject: any, newObject: any, originalIndex?:
 
   return Object.keys({ ...originalObject, ...newObject }).reduce(
     (acc: any, key) => {
-      if (key === "components") {
+      if (key === 'components') {
         return {
           ...acc,
           [key]: generateFormDiff(originalObject[key], newObject[key], true),
         };
-      } else if (key !== "id" && key !== "navId") {
+      } else if (key !== 'id' && key !== 'navId') {
         const diff = generateFormDiff(originalObject[key], newObject[key]);
         if (diff) {
           return {
@@ -232,7 +232,7 @@ const generateObjectDiff = (originalObject: any, newObject: any, originalIndex?:
               [key]: diff,
             },
           };
-        } else if (key === "title" || key === "key" || key === "type" || key === "label") {
+        } else if (key === 'title' || key === 'key' || key === 'type' || key === 'label') {
           return {
             ...acc,
             [key]: newObject[key],
@@ -310,7 +310,7 @@ const generateArrayDiff = (originalArray: Array<any>, newArray: Array<any>, allo
 };
 
 const isNullOrUndefined = (element: any) => {
-  return element === null || typeof element === "undefined";
+  return element === null || typeof element === 'undefined';
 };
 
 const isEmptyObject = (obj: any) => {
@@ -327,7 +327,7 @@ const isArray = (element: any) => {
 
 const isObject = (element: any) => {
   // Array is also element in js, but we only want actual objects.
-  return typeof element === "object" && !Array.isArray(element);
+  return typeof element === 'object' && !Array.isArray(element);
 };
 
 const tools = {
@@ -339,6 +339,6 @@ const tools = {
   generateObjectDiff,
 };
 
-export { generateNavFormDiff, DiffStatus };
+export { DiffStatus, generateNavFormDiff };
 
 export default tools;

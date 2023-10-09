@@ -1,5 +1,5 @@
-import { navFormUtils } from "@navikt/skjemadigitalisering-shared-domain";
-import { formService, translationsService } from "../../services";
+import { navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { formService, translationsService } from '../../services';
 
 const form = {
   get: async (req, res) => {
@@ -8,9 +8,9 @@ const form = {
     if (!form || !form.properties) {
       return res.sendStatus(404);
     }
-    if (type === "limited") {
+    if (type === 'limited') {
       let t = (text) => text;
-      if (lang && lang !== "nb") {
+      if (lang && lang !== 'nb') {
         const translations = await translationsService.getTranslationsForLanguage(form.path, lang);
         t = (text) => translations[text] ?? text;
       }

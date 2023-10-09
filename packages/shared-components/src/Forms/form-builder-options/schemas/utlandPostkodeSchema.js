@@ -1,9 +1,9 @@
-const utlandPostkodeSchema = (keyPostfix = "") => ({
-  label: "Postkode",
-  type: "textfield",
+const utlandPostkodeSchema = (keyPostfix = '') => ({
+  label: 'Postkode',
+  type: 'textfield',
   key: `postnr${keyPostfix}`,
-  autocomplete: "postal-code",
-  fieldSize: "input--s",
+  autocomplete: 'postal-code',
+  fieldSize: 'input--s',
   validate: {
     required: false,
   },
@@ -11,7 +11,7 @@ const utlandPostkodeSchema = (keyPostfix = "") => ({
   clearOnHide: true,
   dataGridLabel: true,
   tableView: true,
-  validateOn: "blur",
+  validateOn: 'blur',
 });
 
 export default utlandPostkodeSchema;

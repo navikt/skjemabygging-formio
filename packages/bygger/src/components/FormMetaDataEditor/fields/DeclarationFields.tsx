@@ -1,7 +1,7 @@
-import { Textarea, ToggleGroup } from "@navikt/ds-react";
-import { DeclarationType, NavFormSettingsDiff, NavFormType, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
-import LabelWithDiff from "../LabelWithDiff";
-import { FormMetadataError, UpdateFormFunction } from "../utils";
+import { Textarea, ToggleGroup } from '@navikt/ds-react';
+import { DeclarationType, NavFormSettingsDiff, NavFormType, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import LabelWithDiff from '../LabelWithDiff';
+import { FormMetadataError, UpdateFormFunction } from '../utils';
 
 export interface DeclarationFieldsProps {
   onChange: UpdateFormFunction;
@@ -44,7 +44,7 @@ const DeclarationFields = ({ onChange, diff, form, errors }: DeclarationFieldsPr
         {form.properties.declarationType === DeclarationType.custom && (
           <Textarea
             label={<LabelWithDiff label="Tilpasset erklæringstekst" diff={!!diff.declarationText} />}
-            value={declarationText || ""}
+            value={declarationText || ''}
             onChange={(event) =>
               onChange({
                 ...form,

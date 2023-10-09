@@ -1,9 +1,9 @@
-import { Alert, Select } from "@navikt/ds-react";
-import { MottaksadresseData, NavFormSettingsDiff, NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
-import { Link } from "react-router-dom";
-import useMottaksadresser from "../../../hooks/useMottaksadresser";
-import LabelWithDiff from "../LabelWithDiff";
-import { UpdateFormFunction } from "../utils";
+import { Alert, Select } from '@navikt/ds-react';
+import { MottaksadresseData, NavFormSettingsDiff, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
+import { Link } from 'react-router-dom';
+import useMottaksadresser from '../../../hooks/useMottaksadresser';
+import LabelWithDiff from '../LabelWithDiff';
+import { UpdateFormFunction } from '../utils';
 
 export interface AddressFieldsProps {
   onChange: UpdateFormFunction;
@@ -12,7 +12,7 @@ export interface AddressFieldsProps {
 }
 
 const AddressFields = ({ onChange, diff, form }: AddressFieldsProps) => {
-  const innsending = form.properties.innsending || "PAPIR_OG_DIGITAL";
+  const innsending = form.properties.innsending || 'PAPIR_OG_DIGITAL';
   const mottaksadresseId = form.properties.mottaksadresseId;
   const { mottaksadresser, ready: isMottaksAdresserReady, errorMessage: mottaksadresseError } = useMottaksadresser();
 
@@ -24,12 +24,12 @@ const AddressFields = ({ onChange, diff, form }: AddressFieldsProps) => {
     if (address.adresselinje3) {
       linjer.push(address.adresselinje3);
     }
-    return `${linjer.join(", ")}, ${address.postnummer} ${address.poststed}`;
+    return `${linjer.join(', ')}, ${address.postnummer} ${address.poststed}`;
   };
 
   return (
     <>
-      {(innsending === "KUN_PAPIR" || innsending === "PAPIR_OG_DIGITAL") && (
+      {(innsending === 'KUN_PAPIR' || innsending === 'PAPIR_OG_DIGITAL') && (
         <div>
           <Select
             className="mb-4"
@@ -50,7 +50,7 @@ const AddressFields = ({ onChange, diff, form }: AddressFieldsProps) => {
             }
           >
             <option value="">
-              {mottaksadresseId && !isMottaksAdresserReady ? `Mottaksadresse-id: ${mottaksadresseId}` : "Standard"}
+              {mottaksadresseId && !isMottaksAdresserReady ? `Mottaksadresse-id: ${mottaksadresseId}` : 'Standard'}
             </option>
             {mottaksadresser.map((adresse) => (
               <option value={adresse._id} key={adresse._id}>

@@ -1,6 +1,6 @@
-import { navFormUtils, objectUtils } from "@navikt/skjemadigitalisering-shared-domain";
-import FormMigrationLogger from "./FormMigrationLogger";
-import { componentHasDependencyMatchingFilters, componentMatchesFilters, parseFiltersFromParam } from "./filterUtils";
+import { navFormUtils, objectUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import FormMigrationLogger from './FormMigrationLogger';
+import { componentHasDependencyMatchingFilters, componentMatchesFilters, parseFiltersFromParam } from './filterUtils';
 
 function recursivelyMigrateComponentAndSubcomponents(
   form,
@@ -55,7 +55,7 @@ function migrateForm(form, searchFiltersFromParam, dependencyFiltersFromParam, e
 
 function getEditScript(editOptions) {
   const editOptionObjects = Object.entries(editOptions).map(([editOptionKey, editOptionValue]) =>
-    editOptionKey.split(".").reduceRight((acc, currentValue) => {
+    editOptionKey.split('.').reduceRight((acc, currentValue) => {
       return { [currentValue]: acc };
     }, editOptionValue),
   );
@@ -97,4 +97,4 @@ async function previewForm(searchFilters, dependencyFilters, editOptions, form) 
   return migratedForm;
 }
 
-export { migrateForm, migrateForms, getEditScript, previewForm };
+export { getEditScript, migrateForm, migrateForms, previewForm };

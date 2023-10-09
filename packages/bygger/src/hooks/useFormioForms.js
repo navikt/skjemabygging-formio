@@ -1,8 +1,8 @@
-import { NavFormioJs } from "@navikt/skjemadigitalisering-shared-components";
-import { dateUtils, navFormUtils } from "@navikt/skjemadigitalisering-shared-domain";
-import { useCallback } from "react";
-import { useAuth } from "../context/auth-context";
-import { useFeedbackEmit } from "../context/notifications/FeedbackContext";
+import { NavFormioJs } from '@navikt/skjemadigitalisering-shared-components';
+import { dateUtils, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { useCallback } from 'react';
+import { useAuth } from '../context/auth-context';
+import { useFeedbackEmit } from '../context/notifications/FeedbackContext';
 
 const { getIso8601String } = dateUtils;
 
@@ -13,10 +13,10 @@ export const useFormioForms = (formio) => {
   const loadFormsList = useCallback(() => {
     return formio.loadForms({
       params: {
-        type: "form",
-        tags: "nav-skjema",
+        type: 'form',
+        tags: 'nav-skjema',
         limit: 1000,
-        select: "title, path, tags, properties, modified, _id",
+        select: 'title, path, tags, properties, modified, _id',
       },
     });
   }, [formio]);
@@ -26,8 +26,8 @@ export const useFormioForms = (formio) => {
       return formio
         .loadForms({
           params: {
-            type: "form",
-            tags: "nav-skjema",
+            type: 'form',
+            tags: 'nav-skjema',
             path: formPath,
             limit: 1,
           },
@@ -42,7 +42,7 @@ export const useFormioForms = (formio) => {
       return formio
         .saveForm({
           ...callbackForm,
-          display: "wizard",
+          display: 'wizard',
           components: navFormUtils.enrichComponentsWithNavIds(callbackForm.components),
           properties: {
             ...callbackForm.properties,
@@ -56,8 +56,8 @@ export const useFormioForms = (formio) => {
         })
         .catch(() => {
           feedbackEmit.error(
-            "Lagring feilet. Skjemaet kan ha blitt lagret fra en annen nettleser. " +
-              "Last siden på nytt for å få siste versjon.",
+            'Lagring feilet. Skjemaet kan ha blitt lagret fra en annen nettleser. ' +
+              'Last siden på nytt for å få siste versjon.',
           );
           return { error: true };
         });
@@ -67,8 +67,8 @@ export const useFormioForms = (formio) => {
 
   const deleteForm = useCallback(
     async (formId, tags, title) => {
-      formio.saveForm({ _id: formId, tags: tags.filter((each) => each !== "nav-skjema") }).then(() => {
-        feedbackEmit.success("Slettet skjemaet " + title);
+      formio.saveForm({ _id: formId, tags: tags.filter((each) => each !== 'nav-skjema') }).then(() => {
+        feedbackEmit.success('Slettet skjemaet ' + title);
       });
     },
     [formio, feedbackEmit],
@@ -78,18 +78,18 @@ export const useFormioForms = (formio) => {
     async (form, translations) => {
       const payload = JSON.stringify({ form, translations });
       const response = await fetch(`/api/published-forms/${form.path}`, {
-        method: "PUT",
+        method: 'PUT',
         headers: {
-          "content-type": "application/json",
-          "Bygger-Formio-Token": NavFormioJs.Formio.getToken(),
+          'content-type': 'application/json',
+          'Bygger-Formio-Token': NavFormioJs.Formio.getToken(),
         },
         body: payload,
       });
 
       if (response?.ok) {
-        const success = "Satt i gang publisering, dette kan ta noen minutter.";
+        const success = 'Satt i gang publisering, dette kan ta noen minutter.';
         const warning =
-          "Publiseringen inneholdt ingen endringer og ble avsluttet (nytt bygg av Fyllut ble ikke trigget)";
+          'Publiseringen inneholdt ingen endringer og ble avsluttet (nytt bygg av Fyllut ble ikke trigget)';
 
         const { changed, form } = await response.json();
         changed ? feedbackEmit.success(success) : feedbackEmit.warning(warning);
@@ -106,12 +106,12 @@ export const useFormioForms = (formio) => {
   const onUnpublish = useCallback(
     async (form) => {
       const response = await fetch(`/api/published-forms/${form.path}`, {
-        method: "DELETE",
-        headers: { "Bygger-Formio-Token": NavFormioJs.Formio.getToken() },
+        method: 'DELETE',
+        headers: { 'Bygger-Formio-Token': NavFormioJs.Formio.getToken() },
       });
       if (response.ok) {
         const { form } = await response.json();
-        feedbackEmit.success("Satt i gang avpublisering, dette kan ta noen minutter.");
+        feedbackEmit.success('Satt i gang avpublisering, dette kan ta noen minutter.');
         return form;
       } else {
         const { message } = await response.json();

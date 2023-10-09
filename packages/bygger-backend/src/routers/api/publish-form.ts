@@ -1,7 +1,7 @@
-import { NextFunction, Request, Response } from "express";
-import { logger } from "../../logging/logger";
-import { publisherService } from "../../services";
-import { BadRequest } from "./helpers/errors";
+import { NextFunction, Request, Response } from 'express';
+import { logger } from '../../logging/logger';
+import { publisherService } from '../../services';
+import { BadRequest } from './helpers/errors';
 
 const publishForm = async (req: Request, res: Response, next: NextFunction) => {
   const formioToken = req.getFormioToken();
@@ -10,19 +10,19 @@ const publishForm = async (req: Request, res: Response, next: NextFunction) => {
   const { form, translations } = req.body;
 
   if (formPath !== form.path) {
-    next(new BadRequest("Path mismatch attempting to publish form"));
+    next(new BadRequest('Path mismatch attempting to publish form'));
     return;
   }
 
   const logMeta = { formPath, userName };
-  logger.info("Attempting to publish form", logMeta);
+  logger.info('Attempting to publish form', logMeta);
 
   try {
     const result = await publisherService.publishForm(form, translations, { formioToken, userName });
-    logger.info("Form is published", logMeta);
+    logger.info('Form is published', logMeta);
     res.json(result);
   } catch (error) {
-    logger.error("Failed to publish form", logMeta);
+    logger.error('Failed to publish form', logMeta);
     next(error);
   }
 };

@@ -1,16 +1,16 @@
-import { navFormUtils, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
-import { useEffect, useRef, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import NavForm from "../components/NavForm.jsx";
-import { useAppConfig } from "../configContext";
-import { useAmplitude } from "../context/amplitude";
-import { useLanguages } from "../context/languages";
-import { useSendInn } from "../context/sendInn/sendInnContext";
-import { LoadingComponent } from "../index";
-import { scrollToAndSetFocus } from "../util/focus-management.js";
-import { getPanelSlug } from "../util/form";
-import ConfirmationModal from "./components/navigation/ConfirmationModal";
-import urlUtils from "../util/url";
+import { navFormUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { useEffect, useRef, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import NavForm from '../components/NavForm.jsx';
+import { useAppConfig } from '../configContext';
+import { useAmplitude } from '../context/amplitude';
+import { useLanguages } from '../context/languages';
+import { useSendInn } from '../context/sendInn/sendInnContext';
+import { LoadingComponent } from '../index';
+import { scrollToAndSetFocus } from '../util/focus-management.js';
+import { getPanelSlug } from '../util/form';
+import urlUtils from '../util/url';
+import ConfirmationModal from './components/navigation/ConfirmationModal';
 
 export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => {
   const navigate = useNavigate();
@@ -39,7 +39,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
   const exitUrl = urlUtils.getExitUrl(window.location.href);
 
   useEffect(() => {
-    setFormForRendering(submissionMethod === "digital" ? navFormUtils.removeVedleggspanel(form) : form);
+    setFormForRendering(submissionMethod === 'digital' ? navFormUtils.removeVedleggspanel(form) : form);
   }, [form, submissionMethod]);
 
   useEffect(() => {
@@ -69,7 +69,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
         const fragment = hash.substring(1);
         // Look for elements that may match the provided hash and pick the first that is an input element
         const hashElementList = document.querySelectorAll(`[id$=${fragment}],[name*=${fragment}]`);
-        const hashInputElement = Array.from(hashElementList).find((element) => element.tagName === "INPUT");
+        const hashInputElement = Array.from(hashElementList).find((element) => element.tagName === 'INPUT');
         if (hashInputElement) {
           removeMutationObserver();
           scrollToAndSetFocus(`[id=${hashInputElement.id}]`);
@@ -96,12 +96,12 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
   function goToPanelFromUrlParam(formioInstance) {
     // We need to get location data from window, since this function runs inside formio
     // www.nav.no/fyllut/:form/:panel
-    const panelFromUrl = window.location.pathname.split("/")[3];
+    const panelFromUrl = window.location.pathname.split('/')[3];
     if (!panelFromUrl) {
       const pathOfPanel = getPanelSlug(form, 0);
       updatePanelUrl(pathOfPanel);
     } else {
-      if (typeof formioInstance?.setPage === "function") {
+      if (typeof formioInstance?.setPage === 'function') {
         const panelIndex = formioInstance.currentPanels.indexOf(panelFromUrl);
         if (panelIndex >= 0) {
           formioInstance.setPage(panelIndex);
@@ -118,7 +118,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
       lenkeTekst: translate(TEXTS.grensesnitt.navigation.next),
       destinasjon: `${formUrl}/${currentPanels?.[page]}`,
     });
-    loggSkjemaStegFullfort({ steg: page, skjemastegNokkel: currentPanels?.[page - 1] || "" });
+    loggSkjemaStegFullfort({ steg: page, skjemastegNokkel: currentPanels?.[page - 1] || '' });
     onNextOrPreviousPage(page, currentPanels);
   }
 
@@ -139,7 +139,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
     if (page <= currentPanels.length - 1) {
       updatePanelUrl(currentPanels[page]);
     }
-    scrollToAndSetFocus("#maincontent", "start");
+    scrollToAndSetFocus('#maincontent', 'start');
   }
 
   function onWizardPageSelected(panel) {
@@ -212,7 +212,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
         onError={(err) => {
           console.error(err);
         }}
-        confirmType={isMellomlagringActive ? "primary" : "danger"}
+        confirmType={isMellomlagringActive ? 'primary' : 'danger'}
         texts={isMellomlagringActive ? TEXTS.grensesnitt.confirmSavePrompt : TEXTS.grensesnitt.confirmDiscardPrompt}
         exitUrl={exitUrl}
       />

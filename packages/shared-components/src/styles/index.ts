@@ -1,5 +1,5 @@
-import form from "./form";
-import global from "./global";
+import form from './form';
+import global from './global';
 
 const Styles = {
   form,

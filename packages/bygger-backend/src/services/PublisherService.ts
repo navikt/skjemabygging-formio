@@ -3,11 +3,11 @@ import {
   FormPropertiesPublishing,
   I18nTranslations,
   NavFormType,
-} from "@navikt/skjemadigitalisering-shared-domain";
-import { Backend } from "../Backend";
-import { logger } from "../logging/logger";
-import { ApiError } from "../routers/api/helpers/errors";
-import { FormioService } from "./formioService";
+} from '@navikt/skjemadigitalisering-shared-domain';
+import { Backend } from '../Backend';
+import { logger } from '../logging/logger';
+import { ApiError } from '../routers/api/helpers/errors';
+import { FormioService } from './formioService';
 
 interface Opts {
   userName: string;
@@ -30,25 +30,25 @@ class PublisherService {
       const publishedLanguages = translations ? Object.keys(translations) : undefined;
       const now = dateUtils.getIso8601String();
       const formProps = createPublishProps(now, userName, publishedLanguages);
-      logger.debug("Save form before publishing", { formPath: form.path, ...formProps });
+      logger.debug('Save form before publishing', { formPath: form.path, ...formProps });
       formWithPublishProps = await this.formioService.saveForm(form, formioToken, userName, formProps);
       const publishResult = await this.backend.publishForm(formWithPublishProps, translations, form.path);
       return { changed: !!publishResult, form: formWithPublishProps };
     } catch (error) {
       logger.error(`Failed to publish form`, error);
       if (formWithPublishProps) {
-        logger.debug("Rolling back props since publishing failed", { formPath: form.path });
+        logger.debug('Rolling back props since publishing failed', { formPath: form.path });
         const rollbackFormProps = createRollbackProps(form);
         try {
           await this.formioService.saveForm(formWithPublishProps, formioToken, userName, rollbackFormProps);
         } catch (innerError: any) {
-          logger.warn("Failed rollback attempt while publishing form", {
+          logger.warn('Failed rollback attempt while publishing form', {
             formPath: form.path,
             errorMessage: innerError.message,
           });
         }
       }
-      throw new ApiError("Publisering feilet", true, error as Error);
+      throw new ApiError('Publisering feilet', true, error as Error);
     }
   }
 
@@ -64,11 +64,11 @@ class PublisherService {
       return { changed: !!gitSha, form: formWithUnpublishProps };
     } catch (error) {
       if (formWithUnpublishProps) {
-        logger.debug("Rolling back props since unpublishing failed", { formPath: form.path });
+        logger.debug('Rolling back props since unpublishing failed', { formPath: form.path });
         const rollbackFormProps = createRollbackProps(form);
         await this.formioService.saveForm(formWithUnpublishProps, formioToken, userName, rollbackFormProps);
       }
-      throw new ApiError("Avpublisering feilet", true, error as Error);
+      throw new ApiError('Avpublisering feilet', true, error as Error);
     }
   }
 
@@ -106,7 +106,7 @@ class PublisherService {
           }),
         );
       }
-      throw new ApiError("Bulk-publisering feilet", true, error as Error);
+      throw new ApiError('Bulk-publisering feilet', true, error as Error);
     }
     return gitSha;
   }

@@ -1,7 +1,7 @@
-import { FetchHeader, FetchOptions, http, url } from "@navikt/skjemadigitalisering-shared-components";
+import { FetchHeader, FetchOptions, http, url } from '@navikt/skjemadigitalisering-shared-components';
 
 const getDefaultHeaders = () => {
-  let submissionMethod = url.getUrlParam(window.location.search, "sub");
+  let submissionMethod = url.getUrlParam(window.location.search, 'sub');
 
   if (submissionMethod) {
     submissionMethod = submissionMethod.toUpperCase();
@@ -9,7 +9,7 @@ const getDefaultHeaders = () => {
 
   if (submissionMethod in http.SubmissionMethodType) {
     return {
-      "Fyllut-Submission-Method": http.SubmissionMethodType[submissionMethod],
+      'Fyllut-Submission-Method': http.SubmissionMethodType[submissionMethod],
     };
   }
   return {};
@@ -75,7 +75,7 @@ const post = async <T>(url: string, body: object, headers?: FetchHeader, opts?: 
 };
 
 const redirectUnauthenticated = () => {
-  if (process.env.NODE_ENV !== "development") {
+  if (process.env.NODE_ENV !== 'development') {
     const { pathname, search, origin } = window.location;
 
     const loginUrl = `${origin}/fyllut/oauth2/login?redirect=${pathname}${search}`;

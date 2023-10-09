@@ -1,12 +1,12 @@
-import { makeStyles, navCssVariables } from "@navikt/skjemadigitalisering-shared-components";
-import PageWrapper from "../Forms/PageWrapper";
-import { NavBar } from "./Navbar/NavBar";
+import { makeStyles, navCssVariables } from '@navikt/skjemadigitalisering-shared-components';
+import PageWrapper from '../Forms/PageWrapper';
+import { NavBar } from './Navbar/NavBar';
 
 const useStyles = makeStyles({
   noScroll: {
     backgroundColor: navCssVariables.navGraBakgrunn,
-    position: "sticky",
-    top: "0",
+    position: 'sticky',
+    top: '0',
     zIndex: 900,
   },
 });

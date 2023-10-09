@@ -1,13 +1,13 @@
-import { Heading } from "@navikt/ds-react";
-import { makeStyles } from "@navikt/skjemadigitalisering-shared-components";
-import { AppLayout } from "../components/AppLayout";
-import Column from "../components/layout/Column";
-import Row from "../components/layout/Row";
-import MottaksadresserListe from "./MottaksadresserListe";
+import { Heading } from '@navikt/ds-react';
+import { makeStyles } from '@navikt/skjemadigitalisering-shared-components';
+import { AppLayout } from '../components/AppLayout';
+import Column from '../components/layout/Column';
+import Row from '../components/layout/Row';
+import MottaksadresserListe from './MottaksadresserListe';
 
 const useStyles = makeStyles({
   centerColumn: {
-    gridColumn: "2 / 3",
+    gridColumn: '2 / 3',
   },
 });
 

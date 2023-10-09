@@ -1,16 +1,16 @@
-const reservedWords = ["instance", "util", "utils", "_"];
+const reservedWords = ['instance', 'util', 'utils', '_'];
 
 function addNullChecksToChainedLookup(chainedLookup, originalString) {
-  const chainedLookupParts = chainedLookup.split(".");
+  const chainedLookupParts = chainedLookup.split('.');
   if (reservedWords.includes(chainedLookupParts[0])) {
     return originalString;
   }
 
   let safeChainedLookup = chainedLookupParts[0];
   for (let j = 1; j < chainedLookupParts.length; j++) {
-    safeChainedLookup = safeChainedLookup + " && " + chainedLookupParts.slice(0, j + 1).join(".");
+    safeChainedLookup = safeChainedLookup + ' && ' + chainedLookupParts.slice(0, j + 1).join('.');
   }
-  return originalString.replace(new RegExp(`\\b${chainedLookup}\\b`, "g"), `(${safeChainedLookup})`);
+  return originalString.replace(new RegExp(`\\b${chainedLookup}\\b`, 'g'), `(${safeChainedLookup})`);
 }
 
 function mapChainedLookups(text) {
@@ -45,7 +45,7 @@ function mapChainedLookups(text) {
 }
 
 function sanitizeJavaScriptCode(text) {
-  if (typeof text !== "string") {
+  if (typeof text !== 'string') {
     return text;
   }
   return mapChainedLookups(text);

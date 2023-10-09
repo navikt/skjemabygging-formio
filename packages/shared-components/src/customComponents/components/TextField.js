@@ -1,152 +1,152 @@
-import TextFieldDisplayEditForm from "formiojs/components/textfield/editForm/TextField.edit.display";
-import TextField from "formiojs/components/textfield/TextField";
-import TextFieldEditForm from "formiojs/components/textfield/TextField.form";
-import { advancedDescription } from "./fields/advancedDescription.js";
-import { fieldSizeField } from "./fields/fieldSize";
+import TextField from 'formiojs/components/textfield/TextField';
+import TextFieldEditForm from 'formiojs/components/textfield/TextField.form';
+import TextFieldDisplayEditForm from 'formiojs/components/textfield/editForm/TextField.edit.display';
+import { advancedDescription } from './fields/advancedDescription.js';
+import { fieldSizeField } from './fields/fieldSize';
 
 TextField.editForm = () => {
   return TextFieldEditForm([
     {
-      label: "Display",
-      key: "display",
+      label: 'Display',
+      key: 'display',
       components: [
         ...TextFieldDisplayEditForm,
         fieldSizeField,
         ...advancedDescription,
         {
-          key: "placeholder",
+          key: 'placeholder',
           ignore: true,
         },
         {
-          key: "labelPosition",
+          key: 'labelPosition',
           ignore: true,
         },
         {
-          key: "tabindex",
+          key: 'tabindex',
           ignore: true,
         },
         {
-          key: "tooltip",
+          key: 'tooltip',
           ignore: true,
         },
         {
-          key: "customClass",
+          key: 'customClass',
           ignore: true,
         },
         {
-          key: "hidden",
+          key: 'hidden',
           ignore: true,
         },
         {
-          key: "hideLabel",
+          key: 'hideLabel',
           ignore: true,
         },
         {
-          key: "autofocus",
+          key: 'autofocus',
           ignore: true,
         },
         {
-          key: "tableView",
+          key: 'tableView',
           ignore: true,
         },
         {
-          key: "modalEdit",
+          key: 'modalEdit',
           ignore: true,
         },
         {
-          key: "widget.type",
+          key: 'widget.type',
           ignore: true,
         },
         {
-          key: "inputMask",
+          key: 'inputMask',
           ignore: true,
         },
         {
-          key: "allowMultipleMasks",
+          key: 'allowMultipleMasks',
           ignore: true,
         },
-        { key: "showWordCount", ignore: true },
-        { key: "showCharCount", ignore: true },
-        { key: "hideInput", ignore: true },
-        { key: "disabled", ignore: true },
-        { key: "displayMask", ignore: true },
-        { key: "mask", ignore: true },
+        { key: 'showWordCount', ignore: true },
+        { key: 'showCharCount', ignore: true },
+        { key: 'hideInput', ignore: true },
+        { key: 'disabled', ignore: true },
+        { key: 'displayMask', ignore: true },
+        { key: 'mask', ignore: true },
       ],
     },
     {
-      key: "data",
+      key: 'data',
       components: [
         {
-          key: "multiple",
+          key: 'multiple',
           ignore: true,
         },
         {
-          key: "persistent",
+          key: 'persistent',
           ignore: true,
         },
         {
-          key: "inputFormat",
+          key: 'inputFormat',
           ignore: true,
         },
         {
-          key: "protected",
+          key: 'protected',
           ignore: true,
         },
         {
-          key: "dbIndex",
+          key: 'dbIndex',
           ignore: true,
         },
         {
-          key: "case",
+          key: 'case',
           ignore: true,
         },
         {
-          key: "encrypted",
+          key: 'encrypted',
           ignore: true,
         },
         {
-          key: "redrawOn",
+          key: 'redrawOn',
           ignore: true,
         },
         {
-          key: "calculateServer",
+          key: 'calculateServer',
           ignore: true,
         },
         {
-          key: "allowCalculateOverride",
+          key: 'allowCalculateOverride',
           ignore: true,
         },
-        { key: "truncateMultipleSpaces", ignore: true },
+        { key: 'truncateMultipleSpaces', ignore: true },
       ],
     },
     {
-      key: "validation",
+      key: 'validation',
       components: [
         {
-          key: "unique",
+          key: 'unique',
           ignore: true,
         },
-        { key: "validateOn", ignore: true },
-        { key: "validate.minWords", ignore: true },
-        { key: "validate.maxWords", ignore: true },
-        { key: "validate.pattern", ignore: true },
-        { key: "minWordLength", ignore: true },
+        { key: 'validateOn', ignore: true },
+        { key: 'validate.minWords', ignore: true },
+        { key: 'validate.maxWords', ignore: true },
+        { key: 'validate.pattern', ignore: true },
+        { key: 'minWordLength', ignore: true },
       ],
     },
     {
-      key: "api",
+      key: 'api',
       components: [
-        { key: "tags", ignore: true },
-        { key: "properties", ignore: true },
+        { key: 'tags', ignore: true },
+        { key: 'properties', ignore: true },
       ],
     },
     {
-      key: "logic",
+      key: 'logic',
       ignore: true,
       components: false,
     },
     {
-      key: "layout",
+      key: 'layout',
       ignore: true,
       components: false,
     },

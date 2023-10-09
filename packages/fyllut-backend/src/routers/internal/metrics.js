@@ -1,10 +1,10 @@
-import { appMetrics } from "../../services";
+import { appMetrics } from '../../services';
 
 const metrics = {
   get: async (req, res, next) => {
     try {
       const { register } = appMetrics;
-      res.set("Content-Type", register.contentType);
+      res.set('Content-Type', register.contentType);
       const metrics = await register.metrics();
       res.end(metrics);
     } catch (err) {

@@ -1,16 +1,16 @@
-import { NavFormType, SubmissionData } from "@navikt/skjemadigitalisering-shared-domain";
-import { getRelevantAttachments, hasOtherDocumentation } from "./attachmentsUtil";
+import { NavFormType, SubmissionData } from '@navikt/skjemadigitalisering-shared-domain';
+import { getRelevantAttachments, hasOtherDocumentation } from './attachmentsUtil';
 import {
   borDuINorgeRadiopanel,
   panelForsteSide,
   panelVedleggsliste,
   vedleggBekreftelseBostedsadresse,
-} from "./testdata/defaultFormElements";
-import vedleggConditional from "./testdata/vedlegg-conditional";
+} from './testdata/defaultFormElements';
+import vedleggConditional from './testdata/vedlegg-conditional';
 
-describe("attachmentUtil", () => {
-  describe("getRelevantAttachments", () => {
-    describe("form containing attachment triggered by radiopanel submission value", () => {
+describe('attachmentUtil', () => {
+  describe('getRelevantAttachments', () => {
+    describe('form containing attachment triggered by radiopanel submission value', () => {
       const form = {
         components: [
           {
@@ -25,7 +25,7 @@ describe("attachmentUtil", () => {
                 conditional: {
                   show: true,
                   when: borDuINorgeRadiopanel.key,
-                  eq: "nei",
+                  eq: 'nei',
                 },
               },
             ],
@@ -33,14 +33,14 @@ describe("attachmentUtil", () => {
         ],
       } as unknown as NavFormType;
 
-      it("return attachment which is relevant", () => {
-        const submissionData = { [borDuINorgeRadiopanel.key]: "nei" };
+      it('return attachment which is relevant', () => {
+        const submissionData = { [borDuINorgeRadiopanel.key]: 'nei' };
         const attachments = getRelevantAttachments(form, submissionData);
         expect(attachments).toHaveLength(1);
       });
 
-      it("attachment contains correct data", () => {
-        const submissionData = { [borDuINorgeRadiopanel.key]: "nei" };
+      it('attachment contains correct data', () => {
+        const submissionData = { [borDuINorgeRadiopanel.key]: 'nei' };
         const attachments = getRelevantAttachments(form, submissionData);
         expect(attachments).toHaveLength(1);
         expect(attachments[0].vedleggsnr).toEqual(vedleggBekreftelseBostedsadresse.properties.vedleggskode);
@@ -48,13 +48,13 @@ describe("attachmentUtil", () => {
         expect(attachments[0].label).toEqual(vedleggBekreftelseBostedsadresse.label);
       });
 
-      it("does not return attachment which is not relevant", () => {
-        const submissionData = { [borDuINorgeRadiopanel.key]: "ja" };
+      it('does not return attachment which is not relevant', () => {
+        const submissionData = { [borDuINorgeRadiopanel.key]: 'ja' };
         const attachments = getRelevantAttachments(form, submissionData);
         expect(attachments).toHaveLength(0);
       });
     });
-    describe("form containing attachment with custom conditional", () => {
+    describe('form containing attachment with custom conditional', () => {
       const form = {
         components: [
           {
@@ -73,19 +73,19 @@ describe("attachmentUtil", () => {
         ],
       } as unknown as NavFormType;
 
-      it("return attachment which is relevant", () => {
-        const submissionData = { [borDuINorgeRadiopanel.key]: "nei" };
+      it('return attachment which is relevant', () => {
+        const submissionData = { [borDuINorgeRadiopanel.key]: 'nei' };
         const attachments = getRelevantAttachments(form, submissionData);
         expect(attachments).toHaveLength(1);
       });
 
-      it("does not return attachment which is not relevant", () => {
-        const submissionData = { [borDuINorgeRadiopanel.key]: "ja" };
+      it('does not return attachment which is not relevant', () => {
+        const submissionData = { [borDuINorgeRadiopanel.key]: 'ja' };
         const attachments = getRelevantAttachments(form, submissionData);
         expect(attachments).toHaveLength(0);
       });
     });
-    describe("form containing attachment with custom conditional which has expression possibly resulting in undefined error", () => {
+    describe('form containing attachment with custom conditional which has expression possibly resulting in undefined error', () => {
       const form = {
         components: [
           {
@@ -104,27 +104,27 @@ describe("attachmentUtil", () => {
         ],
       } as unknown as NavFormType;
 
-      it("return attachment which is relevant", () => {
-        const submissionData = { [borDuINorgeRadiopanel.key]: "nei" };
+      it('return attachment which is relevant', () => {
+        const submissionData = { [borDuINorgeRadiopanel.key]: 'nei' };
         const attachments = getRelevantAttachments(form, submissionData);
         expect(attachments).toHaveLength(1);
       });
 
-      it("does not return attachment which is not relevant", () => {
-        const submissionData = { [borDuINorgeRadiopanel.key]: "ja" };
+      it('does not return attachment which is not relevant', () => {
+        const submissionData = { [borDuINorgeRadiopanel.key]: 'ja' };
         const attachments = getRelevantAttachments(form, submissionData);
         expect(attachments).toHaveLength(0);
       });
     });
 
-    describe("Attachment panel has conditional", () => {
-      it("All attachments are triggered", () => {
+    describe('Attachment panel has conditional', () => {
+      it('All attachments are triggered', () => {
         const attachments = getRelevantAttachments(vedleggConditional.form, vedleggConditional.submission.data);
         expect(attachments).toHaveLength(3);
       });
-      it("Some attachments are triggered", () => {
+      it('Some attachments are triggered', () => {
         const submissionDataCopy: SubmissionData = JSON.parse(JSON.stringify(vedleggConditional.submission.data));
-        submissionDataCopy.harDuDokumentasjonDuOnskerALeggeVedSoknaden = "ja";
+        submissionDataCopy.harDuDokumentasjonDuOnskerALeggeVedSoknaden = 'ja';
         submissionDataCopy.hvaOnskerDuALeggeVed = {
           personinntektsskjema: false,
           resultatregnskap: true,
@@ -134,9 +134,9 @@ describe("attachmentUtil", () => {
         const attachments = getRelevantAttachments(vedleggConditional.form, submissionDataCopy);
         expect(attachments).toHaveLength(2);
       });
-      it("No attachments are triggered", () => {
+      it('No attachments are triggered', () => {
         const submissionDataCopy = JSON.parse(JSON.stringify(vedleggConditional.submission.data));
-        submissionDataCopy.harDuDokumentasjonDuOnskerALeggeVedSoknaden = "nei";
+        submissionDataCopy.harDuDokumentasjonDuOnskerALeggeVedSoknaden = 'nei';
         submissionDataCopy.hvaOnskerDuALeggeVed = undefined;
         const attachments = getRelevantAttachments(vedleggConditional.form, submissionDataCopy);
         expect(attachments).toHaveLength(0);
@@ -144,7 +144,7 @@ describe("attachmentUtil", () => {
     });
   });
 
-  describe("Test if attachments have the property otherDocumentation set and take into account conditions", () => {
+  describe('Test if attachments have the property otherDocumentation set and take into account conditions', () => {
     const form = {
       components: [
         {
@@ -160,14 +160,14 @@ describe("attachmentUtil", () => {
       ],
     };
 
-    it("does not return attachment which is not relevant", () => {
-      const submissionData = { [borDuINorgeRadiopanel.key]: "ja" };
+    it('does not return attachment which is not relevant', () => {
+      const submissionData = { [borDuINorgeRadiopanel.key]: 'ja' };
       const attachments = hasOtherDocumentation(form, submissionData);
       expect(attachments).toBe(false);
     });
 
-    it("does not return attachment which is not relevant", () => {
-      const submissionData = { [borDuINorgeRadiopanel.key]: "nei" };
+    it('does return attachment which is relevant', () => {
+      const submissionData = { [borDuINorgeRadiopanel.key]: 'nei' };
       const attachments = hasOtherDocumentation(form, submissionData);
       expect(attachments).toBe(true);
     });

@@ -1,8 +1,8 @@
-import { Alert, Select } from "@navikt/ds-react";
-import { NavFormSettingsDiff, NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
-import useTemaKoder from "../../../hooks/useTemaKoder";
-import LabelWithDiff from "../LabelWithDiff";
-import { FormMetadataError, UpdateFormFunction } from "../utils";
+import { Alert, Select } from '@navikt/ds-react';
+import { NavFormSettingsDiff, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
+import useTemaKoder from '../../../hooks/useTemaKoder';
+import LabelWithDiff from '../LabelWithDiff';
+import { FormMetadataError, UpdateFormFunction } from '../utils';
 
 export interface TemaKodeFieldsProps {
   onChange: UpdateFormFunction;
@@ -22,11 +22,11 @@ const TemaKodeFields = ({ onChange, diff, form, errors }: TemaKodeFieldsProps) =
         label={<LabelWithDiff label="Tema" diff={!!diff.tema} />}
         id="tema"
         disabled={!isTemaKoderReady}
-        value={temaKoder?.find((temaKode) => temaKode.key === tema)?.key || ""}
+        value={temaKoder?.find((temaKode) => temaKode.key === tema)?.key || ''}
         onChange={(event) => onChange({ ...form, properties: { ...form.properties, tema: event.target.value } })}
         error={errors?.tema}
       >
-        <option value="">{"Velg tema"}</option>
+        <option value="">{'Velg tema'}</option>
         {temaKoder?.map(({ key, value }) => (
           <option key={key} value={key}>
             {`${value} (${key})`}

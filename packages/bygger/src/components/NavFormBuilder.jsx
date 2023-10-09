@@ -22,13 +22,13 @@
  * SOFTWARE.
  * */
 
-import { NavFormioJs, makeStyles } from "@navikt/skjemadigitalisering-shared-components";
-import cloneDeep from "lodash.clonedeep";
-import isEqual from "lodash.isequal";
-import PropTypes from "prop-types";
-import React, { Component } from "react";
-import "../formio-overrides/webform-builder-overrides";
-import { builderStyles } from "./styles";
+import { NavFormioJs, makeStyles } from '@navikt/skjemadigitalisering-shared-components';
+import cloneDeep from 'lodash.clonedeep';
+import isEqual from 'lodash.isequal';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import '../formio-overrides/webform-builder-overrides';
+import { builderStyles } from './styles';
 
 const useBuilderMountElementStyles = makeStyles(builderStyles);
 
@@ -42,7 +42,7 @@ const BuilderMountElement = ({ children, className, setRef, ...rest }) => {
 };
 
 class NavFormBuilder extends Component {
-  builderState = "preparing";
+  builderState = 'preparing';
   element = React.createRef();
   static propTypes = {
     form: PropTypes.object.isRequired,
@@ -66,8 +66,8 @@ class NavFormBuilder extends Component {
     }
     this.builderReady = this.builder.ready;
     this.builderReady.then(() => {
-      this.builder.instance?.on("change", this.handleChange);
-      this.builderState = "ready";
+      this.builder.instance?.on('change', this.handleChange);
+      this.builderState = 'ready';
       if (this.props.onReady) {
         this.props.onReady();
       }
@@ -75,11 +75,11 @@ class NavFormBuilder extends Component {
   };
 
   destroyBuilder = () => {
-    this.builder.instance.off("change", this.handleChange);
+    this.builder.instance.off('change', this.handleChange);
     this.builder.instance.destroy(true);
     this.builder.destroy();
     this.builder = null;
-    this.builderState = "destroyed";
+    this.builderState = 'destroyed';
   };
 
   updateFormBuilder() {

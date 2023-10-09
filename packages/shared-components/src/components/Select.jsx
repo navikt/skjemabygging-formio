@@ -1,27 +1,27 @@
-import { Collapse, Expand } from "@navikt/ds-icons";
-import { useRef, useState } from "react";
-import { Link } from "react-router-dom";
-import makeStyles from "../util/jss";
+import { Collapse, Expand } from '@navikt/ds-icons';
+import { useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
+import makeStyles from '../util/jss';
 
 const useSelectStyle = makeStyles({
   overlay: {
-    position: "fixed",
+    position: 'fixed',
     top: 0,
     bottom: 0,
     right: 0,
     left: 0,
   },
   nav: {
-    position: "relative",
+    position: 'relative',
 
-    "& .navds-select__input": {
-      textAlign: "start",
+    '& .navds-select__input': {
+      textAlign: 'start',
     },
   },
 });
 
 const handleTabKeyPressed = (event, firstItem, lastItem, index, numberOfItemsInList) => {
-  if (event.key !== "Tab") {
+  if (event.key !== 'Tab') {
     return;
   }
   if (event.shiftKey && index === 0) {
@@ -46,7 +46,7 @@ const Select = ({ label, className, options, ariaLabel }) => {
   };
 
   const closeOnEscape = (event) => {
-    if (event.key === "Escape") {
+    if (event.key === 'Escape') {
       closeListAndResetFocus();
     }
   };

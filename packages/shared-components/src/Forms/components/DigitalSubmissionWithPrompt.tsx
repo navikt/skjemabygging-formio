@@ -1,16 +1,16 @@
-import { BodyShort, Button } from "@navikt/ds-react";
-import { Submission, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
-import { useState } from "react";
-import Modal from "../../components/modal/Modal";
-import { useLanguages } from "../../context/languages";
-import makeStyles from "../../util/jss";
-import DigitalSubmissionButton from "./DigitalSubmissionButton";
+import { BodyShort, Button } from '@navikt/ds-react';
+import { Submission, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { useState } from 'react';
+import Modal from '../../components/modal/Modal';
+import { useLanguages } from '../../context/languages';
+import makeStyles from '../../util/jss';
+import DigitalSubmissionButton from './DigitalSubmissionButton';
 
 const useStyles = makeStyles({
   body: {
-    paddingTop: "1.1rem",
-    paddingBottom: "4rem",
-    fontSize: "1.25rem",
+    paddingTop: '1.1rem',
+    paddingBottom: '4rem',
+    fontSize: '1.25rem',
   },
 });
 

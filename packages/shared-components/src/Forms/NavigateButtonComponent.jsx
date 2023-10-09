@@ -1,11 +1,11 @@
-import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
-import { Link, useLocation } from "react-router-dom";
-import { useAmplitude } from "../context/amplitude/index.jsx";
+import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { Link, useLocation } from 'react-router-dom';
+import { useAmplitude } from '../context/amplitude/index.jsx';
 
 const NavigateButtonComponent = ({ goBackUrl, translate }) => {
   const { search } = useLocation();
   const { loggNavigering } = useAmplitude();
-  const exitUrl = "https://www.nav.no";
+  const exitUrl = 'https://www.nav.no';
   return (
     <nav>
       <div className="button-row">

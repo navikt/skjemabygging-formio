@@ -1,12 +1,12 @@
-import { Button } from "@navikt/ds-react";
-import { makeStyles, Modal } from "@navikt/skjemadigitalisering-shared-components";
-import { useState } from "react";
-import { FormMigrationLogData } from "../../../types/migration";
-import FormList from "./FormList";
+import { Button } from '@navikt/ds-react';
+import { makeStyles, Modal } from '@navikt/skjemadigitalisering-shared-components';
+import { useState } from 'react';
+import { FormMigrationLogData } from '../../../types/migration';
+import FormList from './FormList';
 
 const useStyles = makeStyles({
   button: {
-    width: "max-content",
+    width: 'max-content',
   },
 });
 
@@ -30,10 +30,10 @@ const ConfirmMigration = ({ selectedFormPaths, dryRunResults, onConfirm }: Confi
   return (
     <>
       <Modal open={modalIsOpen} onClose={() => setModalIsOpen(false)} ariaLabel="Bekreft migrering">
-        <FormList heading={"Skjemaer som vil bli migrert"} listElements={willBeMigrated} />
-        <FormList heading={"Skjemaer som ikke vil bli migrert"} listElements={willNotBeMigrated} />
+        <FormList heading={'Skjemaer som vil bli migrert'} listElements={willBeMigrated} />
+        <FormList heading={'Skjemaer som ikke vil bli migrert'} listElements={willNotBeMigrated} />
         <FormList
-          heading={"Skjemaer som matcher søkekriteriene, men ikke er aktuelle for migrering"}
+          heading={'Skjemaer som matcher søkekriteriene, men ikke er aktuelle for migrering'}
           listElements={ineligibleForMigration}
         />
         <ul className="list-inline">

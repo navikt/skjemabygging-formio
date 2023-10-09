@@ -1,8 +1,8 @@
-const utlandBygningSchema = (keyPostfix = "") => ({
-  label: "Bygning",
-  type: "textfield",
+const utlandBygningSchema = (keyPostfix = '') => ({
+  label: 'Bygning',
+  type: 'textfield',
   key: `bygning${keyPostfix}`,
-  fieldSize: "input--xxl",
+  fieldSize: 'input--xxl',
   validate: {
     required: false,
   },
@@ -10,7 +10,7 @@ const utlandBygningSchema = (keyPostfix = "") => ({
   clearOnHide: true,
   dataGridLabel: true,
   tableView: true,
-  validateOn: "blur",
+  validateOn: 'blur',
 });
 
 export default utlandBygningSchema;

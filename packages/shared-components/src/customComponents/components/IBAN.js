@@ -1,8 +1,8 @@
-import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
-import TextField from "formiojs/components/textfield/TextField";
-import TextFieldEditForm from "formiojs/components/textfield/TextField.form";
-import * as ibantools from "ibantools";
-import FormBuilderOptions from "../../Forms/form-builder-options";
+import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import TextField from 'formiojs/components/textfield/TextField';
+import TextFieldEditForm from 'formiojs/components/textfield/TextField.form';
+import * as ibantools from 'ibantools';
+import FormBuilderOptions from '../../Forms/form-builder-options';
 
 export default class IBAN extends TextField {
   static schema(...extend) {
@@ -23,10 +23,10 @@ export default class IBAN extends TextField {
       return true;
     }
 
-    if (errorCodes.includes(ValidationErrorsIBAN.WrongBBANLength)) return this.getErrorMessage("wrongBBANLength");
-    if (errorCodes.includes(ValidationErrorsIBAN.NoIBANCountry)) return this.getErrorMessage("noIBANCountry");
+    if (errorCodes.includes(ValidationErrorsIBAN.WrongBBANLength)) return this.getErrorMessage('wrongBBANLength');
+    if (errorCodes.includes(ValidationErrorsIBAN.NoIBANCountry)) return this.getErrorMessage('noIBANCountry');
 
-    return this.getErrorMessage("invalidIBAN");
+    return this.getErrorMessage('invalidIBAN');
   }
 
   get defaultSchema() {
@@ -40,135 +40,135 @@ export default class IBAN extends TextField {
   static editForm(...extend) {
     return TextFieldEditForm([
       {
-        key: "display",
+        key: 'display',
         components: [
           {
-            key: "prefix",
+            key: 'prefix',
             ignore: true,
           },
           {
-            key: "suffix",
+            key: 'suffix',
             ignore: true,
           },
           {
-            key: "customClass",
+            key: 'customClass',
             ignore: true,
           },
           {
-            key: "hidden",
+            key: 'hidden',
             ignore: true,
           },
           {
-            key: "hideLabel",
+            key: 'hideLabel',
             ignore: true,
           },
           {
-            key: "showWordCount",
+            key: 'showWordCount',
             ignore: true,
           },
           {
-            key: "tableView",
+            key: 'tableView',
             ignore: true,
           },
           {
-            key: "modalEdit",
+            key: 'modalEdit',
             ignore: true,
           },
           {
-            key: "widget.type",
+            key: 'widget.type',
             ignore: true,
           },
-          { key: "tooltip", ignore: true },
-          { key: "tabindex", ignore: true },
-          { key: "showCharCount", ignore: true },
-          { key: "mask", ignore: true },
-          { key: "autofocus", ignore: true },
-          { key: "spellcheck", ignore: true },
-          { key: "inputMask", ignore: true },
-          { key: "displayMask", ignore: true },
-          { key: "allowMultipleMasks", ignore: true },
-          { key: "disabled", ignore: true },
-          { key: "placeholder", ignore: true },
-          { key: "labelPosition", ignore: true },
-          { key: "autocomplete", ignore: true },
+          { key: 'tooltip', ignore: true },
+          { key: 'tabindex', ignore: true },
+          { key: 'showCharCount', ignore: true },
+          { key: 'mask', ignore: true },
+          { key: 'autofocus', ignore: true },
+          { key: 'spellcheck', ignore: true },
+          { key: 'inputMask', ignore: true },
+          { key: 'displayMask', ignore: true },
+          { key: 'allowMultipleMasks', ignore: true },
+          { key: 'disabled', ignore: true },
+          { key: 'placeholder', ignore: true },
+          { key: 'labelPosition', ignore: true },
+          { key: 'autocomplete', ignore: true },
         ],
       },
       {
-        key: "data",
+        key: 'data',
         components: [
           {
-            key: "multiple",
+            key: 'multiple',
             ignore: true,
           },
           {
-            key: "persistent",
+            key: 'persistent',
             ignore: true,
           },
           {
-            key: "inputFormat",
+            key: 'inputFormat',
             ignore: true,
           },
           {
-            key: "protected",
+            key: 'protected',
             ignore: true,
           },
           {
-            key: "dbIndex",
+            key: 'dbIndex',
             ignore: true,
           },
           {
-            key: "case",
+            key: 'case',
             ignore: true,
           },
           {
-            key: "encrypted",
+            key: 'encrypted',
             ignore: true,
           },
           {
-            key: "redrawOn",
+            key: 'redrawOn',
             ignore: true,
           },
           {
-            key: "calculateServer",
+            key: 'calculateServer',
             ignore: true,
           },
           {
-            key: "allowCalculateOverride",
+            key: 'allowCalculateOverride',
             ignore: true,
           },
-          { key: "truncateMultipleSpaces", ignore: true },
-          { key: "clearOnHide", ignore: true },
-          { key: "unique", ignore: true },
+          { key: 'truncateMultipleSpaces', ignore: true },
+          { key: 'clearOnHide', ignore: true },
+          { key: 'unique', ignore: true },
         ],
       },
       {
-        key: "api",
+        key: 'api',
         components: [
-          { key: "tags", ignore: true },
-          { key: "properties", ignore: true },
+          { key: 'tags', ignore: true },
+          { key: 'properties', ignore: true },
         ],
       },
       {
-        key: "validation",
+        key: 'validation',
         components: [
-          { key: "validate.minLength", ignore: true },
-          { key: "validate.maxLength", ignore: true },
-          { key: "validate.minWords", ignore: true },
-          { key: "validate.maxWords", ignore: true },
-          { key: "validate.pattern", ignore: true },
-          { key: "validate.customMessage", ignore: true },
-          { key: "errorLabel", ignore: true },
-          { key: "unique", ignore: true },
-          { key: "validateOn", ignore: true },
+          { key: 'validate.minLength', ignore: true },
+          { key: 'validate.maxLength', ignore: true },
+          { key: 'validate.minWords', ignore: true },
+          { key: 'validate.maxWords', ignore: true },
+          { key: 'validate.pattern', ignore: true },
+          { key: 'validate.customMessage', ignore: true },
+          { key: 'errorLabel', ignore: true },
+          { key: 'unique', ignore: true },
+          { key: 'validateOn', ignore: true },
         ],
       },
       {
-        key: "logic",
+        key: 'logic',
         ignore: true,
         components: false,
       },
       {
-        key: "layout",
+        key: 'layout',
         ignore: true,
         components: false,
       },

@@ -1,55 +1,55 @@
-import buttonRow from "./buttonRow";
-import errorSummary from "./errorSummary";
-import labelTrackChanges from "./labelTrackChanges";
-import margin from "./margin";
-import stepper from "./stepper";
-import vars from "./vars";
+import buttonRow from './buttonRow';
+import errorSummary from './errorSummary';
+import labelTrackChanges from './labelTrackChanges';
+import margin from './margin';
+import stepper from './stepper';
+import vars from './vars';
 
 const global = {
   html: {
-    height: "100%",
-    fontFamily: "Source Sans Pro, Arial, sans-serif",
+    height: '100%',
+    fontFamily: 'Source Sans Pro, Arial, sans-serif',
   },
   body: {
     margin: 0,
-    backgroundColor: "#ffffff",
-    height: "100%",
-    display: "flex",
-    flexDirection: "column",
-    lineHeight: "1.5",
-    fontSize: "1.125rem",
+    backgroundColor: '#ffffff',
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    lineHeight: '1.5',
+    fontSize: '1.125rem',
     fontWeight: 400,
-    fontFamily: "Source Sans Pro, Arial, sans-serif",
-    textAlign: "left",
-    color: "#262626",
+    fontFamily: 'Source Sans Pro, Arial, sans-serif',
+    textAlign: 'left',
+    color: '#262626',
   },
   a: {
-    color: "#0067c5",
+    color: '#0067c5',
   },
   fieldset: {
     border: 0,
     padding: 0,
   },
-  ".pagewrapper": {
-    flex: "1 0 auto",
+  '.pagewrapper': {
+    flex: '1 0 auto',
   },
-  "#decorator-footer": {
+  '#decorator-footer': {
     flexShrink: 0,
   },
-  "main:focus": {
-    outline: "none",
+  'main:focus': {
+    outline: 'none',
   },
-  ".fyllut-layout": {
-    "@media screen and (min-width: 40rem)": {
-      display: "grid",
-      gap: "3rem",
-      gridTemplateColumns: "minmax(20rem, 2fr) minmax(15rem, 1fr)",
-      margin: "0 auto",
+  '.fyllut-layout': {
+    '@media screen and (min-width: 40rem)': {
+      display: 'grid',
+      gap: '3rem',
+      gridTemplateColumns: 'minmax(20rem, 2fr) minmax(15rem, 1fr)',
+      margin: '0 auto',
     },
   },
-  ".nav-form > .alert.alert-danger": {
-    "@media screen and (min-width: 40rem)": {
-      maxWidth: "608px",
+  '.nav-form > .alert.alert-danger': {
+    '@media screen and (min-width: 40rem)': {
+      maxWidth: '608px',
     },
   },
   ...labelTrackChanges,
