@@ -194,12 +194,12 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
     navigate({ pathname: `${formUrl}/oppsummering`, search: window.location.search });
   };
 
-  const onError = () => {
+  const onValidationError = () => {
     loggSkjemaValideringFeilet();
   };
 
   const onConfirmCancel = async () => {
-    const log = (lenkeTekst) =>
+    const logNavigation = (lenkeTekst) =>
       loggNavigering({
         lenkeTekst,
         destinasjon: exitUrl,
@@ -207,14 +207,14 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
 
     switch (showModal) {
       case "save":
-        log(translate(TEXTS.grensesnitt.navigation.saveDraft));
+        logNavigation(translate(TEXTS.grensesnitt.navigation.saveDraft));
         return await updateMellomlagring(submission);
       case "delete":
-        log(translate(TEXTS.grensesnitt.navigation.saveDraft));
+        logNavigation(translate(TEXTS.grensesnitt.navigation.saveDraft));
         return await deleteMellomlagring();
       case "discard":
       default:
-        log(translate(TEXTS.grensesnitt.navigation.cancel));
+        logNavigation(translate(TEXTS.grensesnitt.navigation.cancel));
     }
   };
 
@@ -231,7 +231,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
         submission={submission}
         onBlur={loggSkjemaSporsmalBesvart}
         onChange={loggSkjemaSporsmalBesvartForSpesialTyper}
-        onError={onError}
+        onError={onValidationError}
         onSubmit={onSubmit}
         onNextPage={onNextPage}
         onPrevPage={onPreviousPage}

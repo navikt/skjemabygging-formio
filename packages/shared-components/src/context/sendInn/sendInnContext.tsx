@@ -25,7 +25,7 @@ interface SendInnContextType {
   startMellomlagring: (submission: Submission) => Promise<SendInnSoknadResponse | undefined>;
   updateMellomlagring: (submission: Submission) => Promise<SendInnSoknadResponse | Error | undefined>;
   submitSoknad: (submission: Submission) => Promise<SendInnSoknadResponse | Error | undefined>;
-  deleteMellomlagring: () => Promise<{ status: string; info: string } | undefined>;
+  deleteMellomlagring: () => Promise<{ status: string; info: string } | Error | undefined>;
   isMellomlagringActive: boolean;
   isMellomlagringEnabled: boolean;
   isMellomlagringReady: boolean;
@@ -141,6 +141,7 @@ const SendInnProvider = ({
       setIsMellomlagringReady(true);
       return response;
     } catch (error: any) {
+      dispatchFyllutMellomlagring({ type: "error", error: "CREATE FAILED" });
       logger?.info("Oppretting av mellomlagring feilet", error);
     }
   };
