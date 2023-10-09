@@ -30,6 +30,11 @@ export const statiske = {
       message: "Prøv igjen senere, eller fyll ut en ny søknad.",
       notFoundMessage: "Vi kunne ikke finne denne søknaden.",
     },
+    create: {
+      title: "Beklager, vi har midlertidige tekniske problemer.",
+      message:
+        "Vi klarer ikke å lagre søknaden. Vær oppmerksom på at du kan miste endringene dine hvis du forlater nettstedet.",
+    },
     update: {
       title: "Beklager, vi har midlertidige tekniske problemer.",
       message:

@@ -38,6 +38,12 @@ const getError = (type: ErrorType): MellomlagringError => {
         title: TEXTS.statiske.mellomlagringError.get.title,
         message: TEXTS.statiske.mellomlagringError.get.message,
       };
+    case "CREATE FAILED":
+      return {
+        type,
+        title: TEXTS.statiske.mellomlagringError.create.title,
+        message: TEXTS.statiske.mellomlagringError.create.message,
+      };
     case "UPDATE FAILED":
       return {
         type,

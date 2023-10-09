@@ -150,6 +150,7 @@ export type SubmissionData = Record<string, string | number | boolean | any[] | 
 type ErrorType =
   | "NOT FOUND"
   | "GET FAILED"
+  | "CREATE FAILED"
   | "UPDATE FAILED"
   | "DELETE FAILED"
   | "SUBMIT FAILED"
