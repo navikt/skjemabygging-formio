@@ -1,9 +1,9 @@
-const utlandVegadressePostboksSchema = (keyPostfix = "") => ({
-  label: "Vegnavn og husnummer, evt. postboks",
-  type: "textfield",
+const utlandVegadressePostboksSchema = (keyPostfix = '') => ({
+  label: 'Vegnavn og husnummer, evt. postboks',
+  type: 'textfield',
   key: `postboksNr${keyPostfix}`,
-  autocomplete: "street-address",
-  fieldSize: "input--xxl",
+  autocomplete: 'street-address',
+  fieldSize: 'input--xxl',
   validate: {
     required: true,
   },
@@ -11,7 +11,7 @@ const utlandVegadressePostboksSchema = (keyPostfix = "") => ({
   clearOnHide: true,
   dataGridLabel: true,
   tableView: true,
-  validateOn: "blur",
+  validateOn: 'blur',
 });
 
 export default utlandVegadressePostboksSchema;

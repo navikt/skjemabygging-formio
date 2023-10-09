@@ -1,8 +1,8 @@
-import { BodyShort, Button } from "@navikt/ds-react";
-import { Modal } from "@navikt/skjemadigitalisering-shared-components";
-import { I18nTranslations, NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
-import { useEffect, useState } from "react";
-import { useI18nState } from "../../context/i18n";
+import { BodyShort, Button } from '@navikt/ds-react';
+import { Modal } from '@navikt/skjemadigitalisering-shared-components';
+import { I18nTranslations, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
+import { useEffect, useState } from 'react';
+import { useI18nState } from '../../context/i18n';
 
 interface Props {
   form: NavFormType;

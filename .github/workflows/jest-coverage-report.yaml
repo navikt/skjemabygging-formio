@@ -1,4 +1,4 @@
-name: "Test coverage"
+name: 'Test coverage'
 on:
   pull_request:
     branches: [master]
@@ -7,19 +7,19 @@ env:
 jobs:
   test-coverage:
     permissions:
-      contents: "read"
+      contents: 'read'
       packages: read
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: "18.16.1"
-          cache: "yarn"
-          cache-dependency-path: "**/yarn.lock"
+          node-version: '20.8.0'
+          cache: 'yarn'
+          cache-dependency-path: '**/yarn.lock'
           registry-url: https://npm.pkg.github.com/
-          scope: "@navikt"
-      - name: "Install dependencies"
+          scope: '@navikt'
+      - name: 'Install dependencies'
         run: yarn
-      - name: "Test with coverage report"
+      - name: 'Test with coverage report'
         run: yarn test:coverage

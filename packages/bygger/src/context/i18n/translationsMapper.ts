@@ -2,7 +2,7 @@ import {
   FormioTranslationData,
   FormioTranslationMap,
   ScopedTranslationMap,
-} from "@navikt/skjemadigitalisering-shared-domain";
+} from '@navikt/skjemadigitalisering-shared-domain';
 
 export interface FormioTranslationDataWithId extends FormioTranslationData {
   id: string;
@@ -42,7 +42,7 @@ const combineTranslationResources = (
   const getTranslatedText = (originalText) => newTranslationsMap[originalText];
   const id =
     accumulatedTranslationForLanguage?.id ||
-    (translationResource.scope === "local" && translationResource.id) ||
+    (translationResource.scope === 'local' && translationResource.id) ||
     undefined;
   return {
     ...translationsByLanguage,

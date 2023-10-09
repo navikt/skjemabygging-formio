@@ -1,29 +1,29 @@
-import { makeStyles } from "@navikt/skjemadigitalisering-shared-components";
+import { makeStyles } from '@navikt/skjemadigitalisering-shared-components';
 
 interface Props {
-  submissionMethod: "paper" | "digital";
+  submissionMethod: 'paper' | 'digital';
 }
 
 const useStyles = makeStyles({
   content: {
-    display: "flex",
-    flexDirection: "column",
-    maxWidth: "50rem",
-    margin: "0 auto",
-    padding: "1.5rem",
-    background: "#fff",
-    borderRadius: "0.25rem",
+    display: 'flex',
+    flexDirection: 'column',
+    maxWidth: '50rem',
+    margin: '0 auto',
+    padding: '1.5rem',
+    background: '#fff',
+    borderRadius: '0.25rem',
   },
 });
 
 const getDescription = (submissionMethod) => {
-  if (submissionMethod === "digital") {
-    return "digtalt";
+  if (submissionMethod === 'digital') {
+    return 'digtalt';
   }
-  if (submissionMethod === "paper") {
-    return "på papir";
+  if (submissionMethod === 'paper') {
+    return 'på papir';
   }
-  return "på valgt måte";
+  return 'på valgt måte';
 };
 
 const SubmissionMethodNotAllowed = ({ submissionMethod }: Props) => {

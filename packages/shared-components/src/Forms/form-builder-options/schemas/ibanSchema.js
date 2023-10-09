@@ -1,15 +1,15 @@
 const ibanSchema = () => ({
-  label: "IBAN",
-  type: "iban",
+  label: 'IBAN',
+  type: 'iban',
   key: `iban`,
-  fieldSize: "input--l",
+  fieldSize: 'input--l',
   input: true,
   spellcheck: false,
   dataGridLabel: true,
-  validateOn: "blur",
+  validateOn: 'blur',
   clearOnHide: true,
   validate: {
-    custom: "valid = instance.validateIban(input);",
+    custom: 'valid = instance.validateIban(input);',
     required: true,
   },
 });

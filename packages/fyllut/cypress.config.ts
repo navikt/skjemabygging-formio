@@ -1,12 +1,11 @@
-import { defineConfig } from "cypress";
+import { defineConfig } from 'cypress';
 
 export default defineConfig({
   video: false,
   e2e: {
-    baseUrl: "http://localhost:3001",
+    baseUrl: 'http://localhost:3001',
     viewportWidth: 1280,
     viewportHeight: 1000,
     testIsolation: false,
-    setupNodeEvents(on, config) {},
   },
 });

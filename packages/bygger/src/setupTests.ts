@@ -1,8 +1,8 @@
-import "@testing-library/jest-dom";
-import { vi } from "vitest";
-import createFetchMock from "vitest-fetch-mock";
-import { URL } from "node:url";
-import { Blob } from "node:buffer";
+import '@testing-library/jest-dom';
+import { Blob } from 'node:buffer';
+import { URL } from 'node:url';
+import { vi } from 'vitest';
+import createFetchMock from 'vitest-fetch-mock';
 
 const fetchMock = createFetchMock(vi);
 

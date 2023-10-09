@@ -1,29 +1,29 @@
 version: 2
 updates:
-  - package-ecosystem: "npm"
-    directory: "/"
+  - package-ecosystem: 'npm'
+    directory: '/'
     schedule:
-      interval: "monthly"
+      interval: 'monthly'
     versioning-strategy: increase
     open-pull-requests-limit: 20
     groups:
       navikt:
         patterns:
-          - "@navikt/*"
+          - '@navikt/*'
       all-minor-patch:
         patterns:
-          - "*"
+          - '*'
         update-types:
-          - "minor"
-          - "patch"
+          - 'minor'
+          - 'patch'
     ignore:
-      - dependency-name: "formiojs"
+      - dependency-name: 'formiojs'
 
-  - package-ecosystem: "github-actions"
-    directory: "/"
+  - package-ecosystem: 'github-actions'
+    directory: '/'
     schedule:
-      interval: "monthly"
+      interval: 'monthly'
     groups:
       all:
         patterns:
-          - "*"
+          - '*'

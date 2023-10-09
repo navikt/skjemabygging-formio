@@ -1,21 +1,21 @@
-import { LoadingComponent, makeStyles, useAppConfig } from "@navikt/skjemadigitalisering-shared-components";
-import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
-import httpFyllut from "../util/httpFyllut";
-import FormRow from "./FormRow";
+import { LoadingComponent, makeStyles, useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
+import { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import httpFyllut from '../util/httpFyllut';
+import FormRow from './FormRow';
 
 const useStyles = makeStyles({
   maxContentWidth: {
-    maxWidth: "960px",
-    margin: "0 auto",
+    maxWidth: '960px',
+    margin: '0 auto',
   },
   skjemaliste: {
-    borderCollapse: "collapse",
+    borderCollapse: 'collapse',
   },
 });
 
 export const AllForms = () => {
-  const [status, setStatus] = useState("LOADING");
+  const [status, setStatus] = useState('LOADING');
   const [forms, setForms] = useState([]);
   const [searchParams] = useSearchParams();
   const styles = useStyles();
@@ -24,7 +24,7 @@ export const AllForms = () => {
   const isDevelopment = config && config.isDevelopment;
 
   useEffect(() => {
-    const formId = searchParams.get("form");
+    const formId = searchParams.get('form');
     if (formId) {
       history.replace(`/${formId}`);
     } else {
@@ -32,19 +32,19 @@ export const AllForms = () => {
         .get(`/fyllut/api/forms`)
         .then((forms) => {
           setForms(forms);
-          setStatus("FINISHED LOADING");
+          setStatus('FINISHED LOADING');
         })
         .catch(() => {
-          setStatus("FORMS NOT FOUND");
+          setStatus('FORMS NOT FOUND');
         });
     }
   }, [history]);
 
-  if (status === "LOADING") {
+  if (status === 'LOADING') {
     return <LoadingComponent />;
   }
 
-  if (status === "FORMS NOT FOUND" || forms.length === 0) {
+  if (status === 'FORMS NOT FOUND' || forms.length === 0) {
     return <h1>Finner ingen skjemaer</h1>;
   }
 

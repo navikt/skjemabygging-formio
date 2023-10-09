@@ -1,10 +1,10 @@
-import { localizationUtils } from "@navikt/skjemadigitalisering-shared-domain";
-import fetch from "node-fetch";
-import { config } from "../../config/config";
-import { logger } from "../../logger.js";
-import { getIdportenPid, getTokenxAccessToken } from "../../security/tokenHelper";
-import { responseToError } from "../../utils/errorHandling.js";
-import { createPdfAsByteArray } from "./helpers/pdfService";
+import { localizationUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import fetch from 'node-fetch';
+import { config } from '../../config/config';
+import { logger } from '../../logger.js';
+import { getIdportenPid, getTokenxAccessToken } from '../../security/tokenHelper';
+import { responseToError } from '../../utils/errorHandling.js';
+import { createPdfAsByteArray } from './helpers/pdfService';
 
 const { featureToggles, sendInnConfig } = config;
 
@@ -13,7 +13,7 @@ const objectToByteArray = (obj) => Array.from(new TextEncoder().encode(JSON.stri
 const sendInn = {
   post: async (req, res, next) => {
     try {
-      const defaultLanguage = "nb-NO";
+      const defaultLanguage = 'nb-NO';
       const idportenPid = getIdportenPid(req);
       const tokenxAccessToken = getTokenxAccessToken(req);
       const {
@@ -52,7 +52,7 @@ const sendInn = {
           vedleggsnr: form.properties.skjemanummer,
           label: translate(form.title),
           tittel: translate(form.title),
-          mimetype: "application/pdf",
+          mimetype: 'application/pdf',
           pakrevd: true,
           document: pdfByteArray,
         },
@@ -60,7 +60,7 @@ const sendInn = {
           vedleggsnr: form.properties.skjemanummer,
           label: translate(form.title),
           tittel: translate(form.title),
-          mimetype: "application/json",
+          mimetype: 'application/json',
           pakrevd: false,
           document: objectToByteArray({
             language: language || defaultLanguage,
@@ -75,31 +75,31 @@ const sendInn = {
         body.fristForEttersendelse = parseInt(form.properties.ettersendelsesfrist);
       }
       if (!featureToggles.enableSendInnIntegration) {
-        logger.debug("SendInn integration not enabled, returning data in body");
+        logger.debug('SendInn integration not enabled, returning data in body');
         res.json(body);
         return;
       }
-      logger.debug("Posting data to SendInn");
+      logger.debug('Posting data to SendInn');
       const sendInnResponse = await fetch(`${sendInnConfig.host}${sendInnConfig.paths.leggTilVedlegg}`, {
-        method: "POST",
-        redirect: "manual",
+        method: 'POST',
+        redirect: 'manual',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
           Authorization: `Bearer ${tokenxAccessToken}`,
         },
         body: JSON.stringify(body),
       });
       if (sendInnResponse.ok || sendInnResponse.status === 302) {
-        const location = sendInnResponse.headers.get("location");
+        const location = sendInnResponse.headers.get('location');
         logger.debug(`Successfylly posted data to SendInn (location: ${location})`);
         res.header({
-          "Access-Control-Expose-Headers": "Location",
+          'Access-Control-Expose-Headers': 'Location',
           Location: location,
         });
         res.sendStatus(201);
       } else {
-        logger.debug("Failed to post data to SendInn");
-        next(await responseToError(sendInnResponse, "Feil ved kall til SendInn", true));
+        logger.debug('Failed to post data to SendInn');
+        next(await responseToError(sendInnResponse, 'Feil ved kall til SendInn', true));
       }
     } catch (err) {
       next(err);

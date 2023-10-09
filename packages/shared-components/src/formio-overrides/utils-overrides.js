@@ -1,8 +1,8 @@
-import { formDiffingTool, navFormioUtils } from "@navikt/skjemadigitalisering-shared-domain";
-import { Utils } from "formiojs";
+import { formDiffingTool, navFormioUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { Utils } from 'formiojs';
 
 const additionalDescription = (ctx) => {
-  if (!ctx.component.additionalDescription) return "";
+  if (!ctx.component.additionalDescription) return '';
 
   const descriptionId = `${ctx.component.id}-${ctx.component.key}-additional-description`;
   const descriptionButtonId = `${ctx.component.id}-${ctx.component.key}-additional-button-content`;
@@ -39,7 +39,7 @@ const navFormDiffToHtml = (diffSummary) => {
     const { changesToCurrentComponent, deletedComponents } = diffSummary;
     const html = [];
     if (changesToCurrentComponent.length) {
-      const labelId = "nav-form-diff-changed-elements";
+      const labelId = 'nav-form-diff-changed-elements';
       html.push(`<span id="${labelId}" class="navds-body-short font-bold">Endringer</span>`);
       html.push(`<ul aria-labelledby="${labelId}">`);
       html.push(
@@ -47,34 +47,34 @@ const navFormDiffToHtml = (diffSummary) => {
           (change) => `<li>${change.key}: Fra '${change.oldValue}' til '${change.newValue}'</li>`,
         ),
       );
-      html.push("</ul>");
+      html.push('</ul>');
     }
     if (deletedComponents.length) {
-      const labelId = "nav-form-diff-deleted-elements";
+      const labelId = 'nav-form-diff-deleted-elements';
       html.push(`<span id="${labelId}" class="navds-body-short font-bold">Slettede elementer</span>`);
       html.push(createList(deletedComponents, labelId));
     }
-    return html.join("");
+    return html.join('');
   } catch (err) {
     console.error(`Failed to render form diff: ${err.message} diffSummery="${JSON.stringify(diffSummary)}"`, err);
-    return "<span>Det oppstod dessverre en feil under behandling av endringene i dette skjemaet.</span>";
+    return '<span>Det oppstod dessverre en feil under behandling av endringene i dette skjemaet.</span>';
   }
 };
 
 const createList = (components, labelId) => {
   if (components && components.length > 0) {
-    const labelledBy = labelId ? ` aria-labelledby="${labelId}"` : "";
+    const labelledBy = labelId ? ` aria-labelledby="${labelId}"` : '';
     return `<ul${labelledBy}>`
       .concat(
         components
           .map((component) => {
             return `<li>${component.type}: ${component.label}${createList(component.components)}</li>`;
           })
-          .join(""),
+          .join(''),
       )
-      .concat("</ul>");
+      .concat('</ul>');
   }
-  return "";
+  return '';
 };
 
 const TAG = (text) =>
@@ -87,17 +87,17 @@ const getDiffTag = (ctx) => {
     const diff = formDiffingTool.getComponentDiff(component, publishedForm);
     const tags = [];
     if (diff.isNew) {
-      tags.push(`${TAG("Ny")}`);
+      tags.push(`${TAG('Ny')}`);
     }
     if (diff.changesToCurrentComponent?.length) {
-      tags.push(`${TAG("Endring")}`);
+      tags.push(`${TAG('Endring')}`);
     }
     if (diff.deletedComponents?.length) {
-      tags.push(`${TAG("Slettede elementer")}`);
+      tags.push(`${TAG('Slettede elementer')}`);
     }
-    return tags.join(" ");
+    return tags.join(' ');
   }
-  return "";
+  return '';
 };
 
 /*
@@ -133,7 +133,7 @@ const UtilsOverrides = {
   getDiffTag,
 };
 
-if (typeof global === "object" && global.FormioUtils) {
+if (typeof global === 'object' && global.FormioUtils) {
   Object.entries(UtilsOverrides).forEach(([key, value]) => {
     Utils[key] = value;
     // FormioUtils is set on global scope by Formio if global is object

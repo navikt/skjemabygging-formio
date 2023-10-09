@@ -5,7 +5,7 @@ const getUrlParam = (queryStr, name) => {
 };
 
 const getExitUrl = (url) => {
-  return url.indexOf(".dev.nav.") > 0 ? "https://www.dev.nav.no" : "https://www.nav.no";
+  return url.indexOf('.dev.nav.') > 0 ? 'https://www.dev.nav.no' : 'https://www.nav.no';
 };
 
 const url = {

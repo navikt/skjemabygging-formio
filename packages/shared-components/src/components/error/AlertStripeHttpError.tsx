@@ -1,5 +1,5 @@
-import { Alert } from "@navikt/ds-react";
-import { HttpError } from "./index";
+import { Alert } from '@navikt/ds-react';
+import { HttpError } from './index';
 
 interface Props {
   error: HttpError;

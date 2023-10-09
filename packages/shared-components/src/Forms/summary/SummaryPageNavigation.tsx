@@ -1,22 +1,22 @@
-import { Alert, Button, Heading } from "@navikt/ds-react";
-import { InnsendingType, NavFormType, Submission, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
-import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
-import { useAppConfig } from "../../configContext";
-import { useAmplitude } from "../../context/amplitude";
-import { useLanguages } from "../../context/languages";
-import { useSendInn } from "../../context/sendInn/sendInnContext";
-import { getPanels } from "../../util/form";
-import urlUtils from "../../util/url";
-import { PanelValidation } from "../../util/panelValidation";
-import DigitalSubmissionButton from "../components/DigitalSubmissionButton";
-import DigitalSubmissionWithPrompt from "../components/DigitalSubmissionWithPrompt";
-import { hasRelevantAttachments } from "../components/attachmentsUtil";
-import EditAnswersButton from "../components/navigation/EditAnswersButton";
-import SaveAndDeleteButtons from "../components/navigation/SaveAndDeleteButtons";
-import makeStyles from "../../util/jss";
-import ConfirmationModal from "../components/navigation/ConfirmationModal";
-import { ArrowRightIcon } from "@navikt/aksel-icons";
+import { ArrowRightIcon } from '@navikt/aksel-icons';
+import { Alert, Button, Heading } from '@navikt/ds-react';
+import { InnsendingType, NavFormType, Submission, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { useAppConfig } from '../../configContext';
+import { useAmplitude } from '../../context/amplitude';
+import { useLanguages } from '../../context/languages';
+import { useSendInn } from '../../context/sendInn/sendInnContext';
+import { getPanels } from '../../util/form';
+import makeStyles from '../../util/jss';
+import { PanelValidation } from '../../util/panelValidation';
+import urlUtils from '../../util/url';
+import DigitalSubmissionButton from '../components/DigitalSubmissionButton';
+import DigitalSubmissionWithPrompt from '../components/DigitalSubmissionWithPrompt';
+import { hasRelevantAttachments } from '../components/attachmentsUtil';
+import ConfirmationModal from '../components/navigation/ConfirmationModal';
+import EditAnswersButton from '../components/navigation/EditAnswersButton';
+import SaveAndDeleteButtons from '../components/navigation/SaveAndDeleteButtons';
 
 export interface Props {
   form: NavFormType;
@@ -28,8 +28,8 @@ export interface Props {
 
 const useStyles = makeStyles({
   navigationDetail: {
-    display: "flex",
-    justifyContent: "center",
+    display: 'flex',
+    justifyContent: 'center',
   },
 });
 
@@ -42,7 +42,7 @@ const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList,
   const [error, setError] = useState<Error>();
   const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
 
-  const innsending: InnsendingType = form.properties.innsending || "PAPIR_OG_DIGITAL";
+  const innsending: InnsendingType = form.properties.innsending || 'PAPIR_OG_DIGITAL';
   const styles = useStyles();
   const hasAttachments = hasRelevantAttachments(form, submission?.data ?? {});
   const canSubmit = (panelValidationList ?? []).every((panelValidation) => !panelValidation.hasValidationErrors);
@@ -59,7 +59,7 @@ const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList,
     });
     loggSkjemaStegFullfort({
       steg: getPanels(form.components).length + 1,
-      skjemastegNokkel: "oppsummering",
+      skjemastegNokkel: 'oppsummering',
     });
   };
 
@@ -87,12 +87,12 @@ const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList,
 
       <nav>
         <div className="button-row">
-          {(submissionMethod === "paper" ||
-            innsending === "KUN_PAPIR" ||
-            (app === "bygger" && innsending === "PAPIR_OG_DIGITAL")) && (
+          {(submissionMethod === 'paper' ||
+            innsending === 'KUN_PAPIR' ||
+            (app === 'bygger' && innsending === 'PAPIR_OG_DIGITAL')) && (
             <Link
               className="navds-button navds-button--primary"
-              onClick={(e) => onClickPapirOrIngenInnsending(e, "send-i-posten")}
+              onClick={(e) => onClickPapirOrIngenInnsending(e, 'send-i-posten')}
               to={{ pathname: `${formUrl}/send-i-posten`, search }}
             >
               <span aria-live="polite" className="navds-body-short font-bold">
@@ -104,7 +104,7 @@ const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList,
             </Link>
           )}
           {canSubmit &&
-            (submissionMethod === "digital" || innsending === "KUN_DIGITAL") &&
+            (submissionMethod === 'digital' || innsending === 'KUN_DIGITAL') &&
             (hasAttachments ? (
               <DigitalSubmissionButton
                 withIcon
@@ -132,10 +132,10 @@ const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList,
               />
             ))}
 
-          {innsending === "INGEN" && (
+          {innsending === 'INGEN' && (
             <Link
               className="navds-button navds-button--primary"
-              onClick={(e) => onClickPapirOrIngenInnsending(e, "ingen-innsending")}
+              onClick={(e) => onClickPapirOrIngenInnsending(e, 'ingen-innsending')}
               to={{ pathname: `${formUrl}/ingen-innsending`, search }}
             >
               <span aria-live="polite" className="navds-body-short font-bold">
@@ -166,7 +166,7 @@ const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList,
             destinasjon: exitUrl,
           });
         }}
-        confirmType={"danger"}
+        confirmType={'danger'}
         texts={TEXTS.grensesnitt.confirmDiscardPrompt}
         exitUrl={exitUrl}
       />

@@ -1,18 +1,18 @@
-import { AppConfigProvider } from "@navikt/skjemadigitalisering-shared-components";
-import { render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
-import { act } from "react-dom/test-utils";
-import { MemoryRouter, Route, Routes } from "react-router-dom";
-import I18nStateProvider from "../../context/i18n";
-import GlobalTranslationsPage from "./GlobalTranslationsPage";
-import globalTranslations from "./testdata/global-translations.js";
-import { tags } from "./utils";
+import { AppConfigProvider } from '@navikt/skjemadigitalisering-shared-components';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { act } from 'react-dom/test-utils';
+import { MemoryRouter, Route, Routes } from 'react-router-dom';
+import I18nStateProvider from '../../context/i18n';
+import GlobalTranslationsPage from './GlobalTranslationsPage';
+import globalTranslations from './testdata/global-translations.js';
+import { tags } from './utils';
 
-describe("GlobalTranslationsPage", () => {
+describe('GlobalTranslationsPage', () => {
   let mockedDeleteTranslation;
   let mockedSaveTranslations;
 
-  const renderGlobalTranslationsPage = async (loadTranslation, languageCode = "", tag = "skjematekster") => {
+  const renderGlobalTranslationsPage = async (loadTranslation, languageCode = '', tag = 'skjematekster') => {
     mockedDeleteTranslation = vi.fn();
     mockedSaveTranslations = vi.fn();
 
@@ -27,7 +27,7 @@ describe("GlobalTranslationsPage", () => {
                   element={
                     <GlobalTranslationsPage
                       loadGlobalTranslations={loadTranslation}
-                      projectURL={""}
+                      projectURL={''}
                       deleteTranslation={mockedDeleteTranslation}
                       saveTranslation={mockedSaveTranslations}
                     />
@@ -46,20 +46,20 @@ describe("GlobalTranslationsPage", () => {
     mockedSaveTranslations.mockClear();
   });
 
-  describe("Render global translation page with English translations", () => {
+  describe('Render global translation page with English translations', () => {
     let mockedLoadTranslation;
     beforeEach(async () => {
       mockedLoadTranslation = vi.fn(() => Promise.resolve(globalTranslations));
-      await renderGlobalTranslationsPage(mockedLoadTranslation, "en");
+      await renderGlobalTranslationsPage(mockedLoadTranslation, 'en');
     });
     afterEach(() => {
       mockedLoadTranslation.mockClear();
     });
-    it("renders header with English label", async () => {
-      const addNewTranslationButton = screen.getByRole("button", { name: "Legg til ny tekst" });
-      const languageHeading = screen.getByRole("heading", { level: 1, name: "Engelsk" });
-      const originalTextField = await screen.findByDisplayValue("Fornavn");
-      const translationField = screen.getByDisplayValue("First name");
+    it('renders header with English label', async () => {
+      const addNewTranslationButton = screen.getByRole('button', { name: 'Legg til ny tekst' });
+      const languageHeading = screen.getByRole('heading', { level: 1, name: 'Engelsk' });
+      const originalTextField = await screen.findByDisplayValue('Fornavn');
+      const translationField = screen.getByDisplayValue('First name');
 
       expect(addNewTranslationButton).toBeDefined();
       expect(languageHeading).toBeInTheDocument();
@@ -68,41 +68,41 @@ describe("GlobalTranslationsPage", () => {
     });
   });
 
-  describe("Navigation between tags", () => {
+  describe('Navigation between tags', () => {
     beforeEach(async () => {
       const loadGlobalTranslations = vi.fn(() => Promise.resolve(globalTranslations));
-      await renderGlobalTranslationsPage(loadGlobalTranslations, "en", tags.SKJEMATEKSTER);
+      await renderGlobalTranslationsPage(loadGlobalTranslations, 'en', tags.SKJEMATEKSTER);
     });
 
     it("renders tag 'skjematekster' default", async () => {
-      const inputFieldWithSkjematekster = await screen.findByDisplayValue("First name");
+      const inputFieldWithSkjematekster = await screen.findByDisplayValue('First name');
       expect(inputFieldWithSkjematekster).toBeInTheDocument();
 
-      const inputFieldWithValidering = screen.queryByDisplayValue("No IBAN was provided");
+      const inputFieldWithValidering = screen.queryByDisplayValue('No IBAN was provided');
       expect(inputFieldWithValidering).not.toBeInTheDocument();
     });
 
     it("navigates to tag 'validering'", async () => {
-      const valideringLink = await screen.findByRole("link", { name: "Validering" });
+      const valideringLink = await screen.findByRole('link', { name: 'Validering' });
       expect(valideringLink).toBeInTheDocument();
       await userEvent.click(valideringLink);
 
-      const inputFieldWithValidering = await screen.findByDisplayValue("No IBAN was provided");
+      const inputFieldWithValidering = await screen.findByDisplayValue('No IBAN was provided');
       expect(inputFieldWithValidering).toBeInTheDocument();
 
-      const inputFieldWithSkjematekster = screen.queryByDisplayValue("First name");
+      const inputFieldWithSkjematekster = screen.queryByDisplayValue('First name');
       expect(inputFieldWithSkjematekster).not.toBeInTheDocument();
     });
   });
 
-  describe("Obsolete translations", () => {
-    describe("tag: validering", () => {
+  describe('Obsolete translations', () => {
+    describe('tag: validering', () => {
       beforeEach(async () => {
         const loadGlobalTranslations = vi.fn(() => Promise.resolve(globalTranslations));
-        await renderGlobalTranslationsPage(loadGlobalTranslations, "en", tags.VALIDERING);
+        await renderGlobalTranslationsPage(loadGlobalTranslations, 'en', tags.VALIDERING);
       });
 
-      it("Shows number of obsolete translations", async () => {
+      it('Shows number of obsolete translations', async () => {
         const obsoleteTranslationsTitle = await screen.findByText(/Antall ubrukte oversettelser: \d{1,2}/);
         expect(obsoleteTranslationsTitle).toBeInTheDocument();
       });

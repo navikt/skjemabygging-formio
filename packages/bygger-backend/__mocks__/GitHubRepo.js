@@ -1,12 +1,12 @@
-export const mockRepoGetRef = vi.fn().mockReturnValue({ data: { object: { sha: "sha" } } });
+export const mockRepoGetRef = vi.fn().mockReturnValue({ data: { object: { sha: 'sha' } } });
 export const mockRepoCreateRef = vi.fn();
 export const mockRepoDeleteRef = vi.fn();
 export const mockRepoGetFileIfItExists = vi
   .fn()
-  .mockReturnValue({ data: { sha: "existing-file-sha", content: "content" } });
+  .mockReturnValue({ data: { sha: 'existing-file-sha', content: 'content' } });
 export const mockRepoCreateOrUpdateFileContents = vi
   .fn()
-  .mockReturnValue({ data: { commit: { sha: "new-commit-sha" } } });
+  .mockReturnValue({ data: { commit: { sha: 'new-commit-sha' } } });
 export const mockRepoCreatePullRequest = vi.fn().mockReturnValue({ data: { number: 14 } });
 export const mockRepoMergePullRequest = vi.fn();
 export const mockRepoHasBranchChanged = vi

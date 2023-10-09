@@ -1,4 +1,4 @@
-import { Accordion, Button, TextField } from "@navikt/ds-react";
+import { Accordion, Button, TextField } from '@navikt/ds-react';
 
 interface ObsoleteTranslation {
   id: string;
@@ -12,7 +12,7 @@ interface Props {
   onDelete: (t: ObsoleteTranslation) => {};
 }
 
-const ObsoleteTranslationsPanel = ({ translations, className, onDelete }: Props) => {
+const ObsoleteTranslationsPanel = ({ translations, onDelete }: Props) => {
   return (
     <Accordion className="mb">
       <Accordion.Item>

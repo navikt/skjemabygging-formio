@@ -1,4 +1,4 @@
-import { formService } from "../../services";
+import { formService } from '../../services';
 
 const mapForm = (form) => ({
   _id: form._id,
@@ -8,6 +8,7 @@ const mapForm = (form) => ({
   properties: {
     skjemanummer: form.properties.skjemanummer,
     innsending: form.properties.innsending,
+    ettersending: form.properties.ettersending,
   },
 });
 

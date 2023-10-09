@@ -1,6 +1,6 @@
-import { BodyShort, Button } from "@navikt/ds-react";
-import { Modal, makeStyles } from "@navikt/skjemadigitalisering-shared-components";
-import { useState } from "react";
+import { BodyShort, Button } from '@navikt/ds-react';
+import { Modal, makeStyles } from '@navikt/skjemadigitalisering-shared-components';
+import { useState } from 'react';
 
 interface UserMessageModalProps {
   userMessage: string;
@@ -11,15 +11,15 @@ interface UserMessageModalProps {
 
 const useModalStyles = makeStyles({
   modal_button: {
-    float: "right",
+    float: 'right',
   },
 });
 
 const UserMessageModal = ({
   userMessage,
   closeModal,
-  buttonText = "Ok",
-  ariaLabel = "Brukermelding",
+  buttonText = 'Ok',
+  ariaLabel = 'Brukermelding',
 }: UserMessageModalProps) => {
   const styles = useModalStyles();
   return (
@@ -33,9 +33,9 @@ const UserMessageModal = ({
 };
 
 export const useUserMessage = (): [string, (string) => void, () => void] => {
-  const [userMessage, setUserMessage] = useState<string>("");
+  const [userMessage, setUserMessage] = useState<string>('');
   const showUserMessage = (message: string) => setUserMessage(message);
-  const closeModal = () => setUserMessage("");
+  const closeModal = () => setUserMessage('');
   return [userMessage, showUserMessage, closeModal];
 };
 

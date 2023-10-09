@@ -1,5 +1,5 @@
-import { NextFunction, Request, Response } from "express";
-import { backendInstance } from "../../services";
+import { NextFunction, Request, Response } from 'express';
+import { backendInstance } from '../../services';
 
 const deprecatedPublishForm = async (req: Request, res: Response, next: NextFunction) => {
   try {

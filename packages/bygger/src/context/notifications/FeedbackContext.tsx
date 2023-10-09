@@ -1,7 +1,7 @@
-import React, { createContext, useContext, useEffect } from "react";
-import useMessageQueue, { Message } from "../../hooks/useMessageQueue";
+import React, { createContext, useContext, useEffect } from 'react';
+import useMessageQueue, { Message } from '../../hooks/useMessageQueue';
 
-const defaultEmit = (message: string) => {};
+const defaultEmit = (_message: string) => {};
 
 export const FeedbackEmitContext = createContext({
   success: defaultEmit,
@@ -16,17 +16,17 @@ const FeedbackProvider = ({ children }: { children: React.ReactElement }) => {
   useEffect(() => {
     const callback = (error: PromiseRejectionEvent) => {
       if (error?.reason?.message) {
-        messageQueue.push({ message: error.reason.message, type: "error" });
+        messageQueue.push({ message: error.reason.message, type: 'error' });
       }
     };
-    window.addEventListener("unhandledrejection", callback);
-    return () => window.removeEventListener("unhandledrejection", callback);
+    window.addEventListener('unhandledrejection', callback);
+    return () => window.removeEventListener('unhandledrejection', callback);
   }, [messageQueue]);
 
   const emit = {
-    success: (message: string) => messageQueue.push({ message, type: "success" }),
-    warning: (message: string) => messageQueue.push({ message, type: "error" }),
-    error: (message: string) => messageQueue.push({ message, type: "warning" }),
+    success: (message: string) => messageQueue.push({ message, type: 'success' }),
+    warning: (message: string) => messageQueue.push({ message, type: 'error' }),
+    error: (message: string) => messageQueue.push({ message, type: 'warning' }),
   };
 
   return (

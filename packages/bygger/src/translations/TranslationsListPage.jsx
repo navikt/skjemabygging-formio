@@ -1,35 +1,35 @@
-import { Heading } from "@navikt/ds-react";
-import { LoadingComponent, makeStyles } from "@navikt/skjemadigitalisering-shared-components";
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { FormsList } from "../Forms/FormsListPage";
-import { asFormMetadata } from "../Forms/formsListUtils";
-import FormStatus from "../Forms/status/FormStatus";
-import { AppLayout } from "../components/AppLayout";
+import { Heading } from '@navikt/ds-react';
+import { LoadingComponent, makeStyles } from '@navikt/skjemadigitalisering-shared-components';
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { FormsList } from '../Forms/FormsListPage';
+import { asFormMetadata } from '../Forms/formsListUtils';
+import FormStatus from '../Forms/status/FormStatus';
+import { AppLayout } from '../components/AppLayout';
 
 const useTranslationsListStyles = makeStyles({
   root: {
-    maxWidth: "50rem",
-    margin: "0 auto 2rem",
+    maxWidth: '50rem',
+    margin: '0 auto 2rem',
   },
   list: {
-    listStyle: "none",
-    padding: "0",
+    listStyle: 'none',
+    padding: '0',
   },
   listItem: {
-    padding: "0.3rem 0.5rem",
-    display: "grid",
-    gridTemplateColumns: "minmax(5rem,10rem) auto 8rem",
-    width: "auto",
-    "&:nth-child(odd)": {
-      backgroundColor: "#ddd",
+    padding: '0.3rem 0.5rem',
+    display: 'grid',
+    gridTemplateColumns: 'minmax(5rem,10rem) auto 8rem',
+    width: 'auto',
+    '&:nth-child(odd)': {
+      backgroundColor: '#ddd',
     },
   },
   globalListItem: {
-    padding: "0.3rem 0.5rem",
-    width: "auto",
-    "&:nth-child(odd)": {
-      backgroundColor: "#ddd",
+    padding: '0.3rem 0.5rem',
+    width: 'auto',
+    '&:nth-child(odd)': {
+      backgroundColor: '#ddd',
     },
   },
 });
@@ -37,22 +37,22 @@ const useTranslationsListStyles = makeStyles({
 export function TranslationsListPage({ loadFormsList }) {
   const classes = useTranslationsListStyles();
   const [forms, setForms] = useState();
-  const [status, setStatus] = useState("LOADING");
+  const [status, setStatus] = useState('LOADING');
   useEffect(() => {
     loadFormsList().then((forms) => {
       setForms(forms);
-      setStatus("FINISHED LOADING");
+      setStatus('FINISHED LOADING');
     });
   }, [loadFormsList]);
 
-  if (status === "LOADING") {
+  if (status === 'LOADING') {
     return <LoadingComponent />;
   }
 
   return (
     <AppLayout
       navBarProps={{
-        title: "Oversettelser",
+        title: 'Oversettelser',
         visSkjemaliste: true,
         visLagNyttSkjema: false,
       }}
@@ -84,7 +84,7 @@ export function TranslationsListPage({ loadFormsList }) {
                   <Link className="lenke" data-testid="editLink" to={`${formMetadata.path}`}>
                     {formMetadata.title}
                   </Link>
-                  <FormStatus status={formMetadata.status} size={"small"} />
+                  <FormStatus status={formMetadata.status} size={'small'} />
                 </li>
               )}
             </FormsList>

@@ -1,9 +1,9 @@
-import { MockedFunction } from "vitest";
-import { checkConfigConsistency } from "./config";
-import { NaisCluster } from "./nais-cluster.js";
-import { ConfigType } from "./types";
+import { MockedFunction } from 'vitest';
+import { checkConfigConsistency } from './config';
+import { NaisCluster } from './nais-cluster.js';
+import { ConfigType } from './types';
 
-describe("config", () => {
+describe('config', () => {
   let logError: MockedFunction<any>;
   let exit: MockedFunction<any>;
 
@@ -12,33 +12,33 @@ describe("config", () => {
     exit = vi.fn();
   });
 
-  test("FormioApi er ikke tillatt i prod", () => {
+  test('FormioApi er ikke tillatt i prod', () => {
     const config = {
       useFormioApi: true,
       naisClusterName: NaisCluster.PROD,
     } as ConfigType;
     // @ts-ignore
     checkConfigConsistency(config, logError, exit);
-    expect(logError).toBeCalledWith("FormioApi is not allowed in prod-gcp");
+    expect(logError).toBeCalledWith('FormioApi is not allowed in prod-gcp');
     expect(exit).toBeCalledWith(1);
   });
 
-  test("SkjemaUrl er påkrevd når FormioApi skal brukes i dev", () => {
+  test('SkjemaUrl er påkrevd når FormioApi skal brukes i dev', () => {
     const config = {
       useFormioApi: true,
       naisClusterName: NaisCluster.DEV,
     } as ConfigType;
     // @ts-ignore
     checkConfigConsistency(config, logError, exit);
-    expect(logError).toBeCalledWith("FORMIO_PROJECT_URL is required when using FormioApi");
+    expect(logError).toBeCalledWith('FORMIO_PROJECT_URL is required when using FormioApi');
     expect(exit).toBeCalledWith(1);
   });
 
-  test("FormioApi er tillatt i dev", () => {
+  test('FormioApi er tillatt i dev', () => {
     const config = {
       useFormioApi: true,
       naisClusterName: NaisCluster.DEV,
-      formioProjectUrl: "https://form.io",
+      formioProjectUrl: 'https://form.io',
     } as ConfigType;
     // @ts-ignore
     checkConfigConsistency(config, logError, exit);

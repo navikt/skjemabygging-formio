@@ -1,11 +1,11 @@
-import { Button, ButtonProps } from "@navikt/ds-react";
-import { Submission, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
-import { useState } from "react";
-import { useAppConfig } from "../../configContext";
-import { useAmplitude } from "../../context/amplitude";
-import { useLanguages } from "../../context/languages";
-import { useSendInn } from "../../context/sendInn/sendInnContext";
-import { ArrowRightIcon } from "@navikt/aksel-icons";
+import { ArrowRightIcon } from '@navikt/aksel-icons';
+import { Button, ButtonProps } from '@navikt/ds-react';
+import { Submission, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { useState } from 'react';
+import { useAppConfig } from '../../configContext';
+import { useAmplitude } from '../../context/amplitude';
+import { useLanguages } from '../../context/languages';
+import { useSendInn } from '../../context/sendInn/sendInnContext';
 
 export interface Props {
   submission?: Submission;
@@ -36,8 +36,8 @@ const DigitalSubmissionButton = ({
       return;
     }
 
-    if (app === "bygger") {
-      onError(new Error("Digital innsending er ikke støttet ved forhåndsvisning i byggeren."));
+    if (app === 'bygger') {
+      onError(new Error('Digital innsending er ikke støttet ved forhåndsvisning i byggeren.'));
       return;
     }
 
@@ -48,7 +48,7 @@ const DigitalSubmissionButton = ({
 
     try {
       setLoading(true);
-      loggNavigering({ lenkeTekst: children, destinasjon: "/sendinn" });
+      loggNavigering({ lenkeTekst: children, destinasjon: '/sendinn' });
       const response = await submitSoknad(submission);
       onSuccess(response);
     } catch (err: any) {
@@ -61,7 +61,7 @@ const DigitalSubmissionButton = ({
   const iconProps: Partial<ButtonProps> = withIcon
     ? {
         icon: <ArrowRightIcon aria-hidden />,
-        iconPosition: "right",
+        iconPosition: 'right',
       }
     : {};
 

@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from 'react';
 
-const defaultLanguage = "nb-NO";
+const defaultLanguage = 'nb-NO';
 
 const useCurrentLanguage = (languageCodeFromUrl, translations) => {
   const initialLanguage = useRef(

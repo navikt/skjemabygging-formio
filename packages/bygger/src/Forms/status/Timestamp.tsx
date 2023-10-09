@@ -1,5 +1,5 @@
-import moment from "moment";
-import { useStatusStyles } from "./styles";
+import moment from 'moment';
+import { useStatusStyles } from './styles';
 
 const Timestamp = ({ timestamp }: { timestamp?: string }) => {
   const styles = useStatusStyles({});
@@ -8,7 +8,7 @@ const Timestamp = ({ timestamp }: { timestamp?: string }) => {
   }
 
   const timestampAsMoment = moment(timestamp);
-  const dateAndTime = `${timestampAsMoment.format("DD.MM.YY")}, kl. ${timestampAsMoment.format("HH.mm")}`;
+  const dateAndTime = `${timestampAsMoment.format('DD.MM.YY')}, kl. ${timestampAsMoment.format('HH.mm')}`;
   return <p className={styles.rowText}>{dateAndTime}</p>;
 };
 

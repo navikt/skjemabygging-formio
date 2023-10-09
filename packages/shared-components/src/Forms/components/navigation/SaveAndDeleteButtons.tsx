@@ -1,11 +1,11 @@
-import { Button } from "@navikt/ds-react";
-import { Submission, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
-import { useState } from "react";
-import { useAmplitude } from "../../../context/amplitude";
-import { useLanguages } from "../../../context/languages";
-import { useSendInn } from "../../../context/sendInn/sendInnContext";
-import ConfirmationModal from "./ConfirmationModal";
-import urlUtils from "../../../util/url";
+import { Button } from '@navikt/ds-react';
+import { Submission, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { useState } from 'react';
+import { useAmplitude } from '../../../context/amplitude';
+import { useLanguages } from '../../../context/languages';
+import { useSendInn } from '../../../context/sendInn/sendInnContext';
+import urlUtils from '../../../util/url';
+import ConfirmationModal from './ConfirmationModal';
 
 interface Props {
   submission?: Submission;
@@ -23,7 +23,7 @@ const SaveAndDeleteButtons = ({ submission }: Props) => {
   const saveSubmission = async () => {
     if (!submission) {
       setIsSaveModalOpen(false);
-      throw new Error("Kunne ikke lagre. Innsendingen er tom.");
+      throw new Error('Kunne ikke lagre. Innsendingen er tom.');
     }
     await updateMellomlagring(submission);
     loggNavigering({
@@ -45,7 +45,7 @@ const SaveAndDeleteButtons = ({ submission }: Props) => {
     <>
       <div className="button-row">
         <Button
-          className={"navds-button navds-button--tertiary"}
+          className={'navds-button navds-button--tertiary'}
           onClick={() => {
             setIsDeleteModalOpen(true);
           }}
@@ -54,7 +54,7 @@ const SaveAndDeleteButtons = ({ submission }: Props) => {
             {translate(TEXTS.grensesnitt.navigation.cancelAndDelete)}
           </span>
         </Button>
-        <Button className={"navds-button navds-button--tertiary"} onClick={() => setIsSaveModalOpen(true)}>
+        <Button className={'navds-button navds-button--tertiary'} onClick={() => setIsSaveModalOpen(true)}>
           <span aria-live="polite" className="navds-body-short font-bold">
             {translate(TEXTS.grensesnitt.navigation.saveDraft)}
           </span>
@@ -64,7 +64,7 @@ const SaveAndDeleteButtons = ({ submission }: Props) => {
         open={isSaveModalOpen}
         onClose={() => setIsSaveModalOpen(false)}
         onConfirm={saveSubmission}
-        confirmType={"primary"}
+        confirmType={'primary'}
         texts={TEXTS.grensesnitt.confirmSavePrompt}
         exitUrl={exitUrl}
       />
@@ -72,7 +72,7 @@ const SaveAndDeleteButtons = ({ submission }: Props) => {
         open={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
         onConfirm={deleteSubmission}
-        confirmType={"danger"}
+        confirmType={'danger'}
         texts={TEXTS.grensesnitt.confirmDeletePrompt}
         exitUrl={exitUrl}
       />

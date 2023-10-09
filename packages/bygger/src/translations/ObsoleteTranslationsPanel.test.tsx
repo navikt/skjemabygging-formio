@@ -1,12 +1,12 @@
-import { render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
-import ObsoleteTranslationsPanel from "./ObsoleteTranslationsPanel";
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import ObsoleteTranslationsPanel from './ObsoleteTranslationsPanel';
 
-describe("ObsoleteTranslationsPanel", () => {
+describe('ObsoleteTranslationsPanel', () => {
   const obsoleteTranslations = [
-    { id: "1", originalText: "Ja", translatedText: "Nei" },
-    { id: "2", originalText: "Nei", translatedText: "No" },
-    { id: "3", originalText: "Gul", translatedText: "Yellow" },
+    { id: '1', originalText: 'Ja', translatedText: 'Nei' },
+    { id: '2', originalText: 'Nei', translatedText: 'No' },
+    { id: '3', originalText: 'Gul', translatedText: 'Yellow' },
   ];
 
   let onDelete;
@@ -23,31 +23,31 @@ describe("ObsoleteTranslationsPanel", () => {
     });
   });
 
-  it("Panelets tittel inneholder antall ubrukte oversettelser", () => {
-    const panelTitle = screen.getByRole("button", { name: "Antall ubrukte oversettelser: 3" });
+  it('Panelets tittel inneholder antall ubrukte oversettelser', () => {
+    const panelTitle = screen.getByRole('button', { name: 'Antall ubrukte oversettelser: 3' });
     expect(panelTitle).toBeInTheDocument();
   });
 
-  it("Viser ikke detaljer før panelet er åpnet", () => {
-    const inputFields = screen.queryAllByRole("textbox");
+  it('Viser ikke detaljer før panelet er åpnet', () => {
+    const inputFields = screen.queryAllByRole('textbox');
     expect(inputFields[0]).toBeDisabled();
     expect(inputFields[1]).toBeDisabled();
     expect(inputFields[2]).toBeDisabled();
   });
 
-  describe("Åpent panel", () => {
+  describe('Åpent panel', () => {
     beforeEach(async () => {
-      const panelTitle = screen.getByRole("button", { name: "Antall ubrukte oversettelser: 3" });
+      const panelTitle = screen.getByRole('button', { name: 'Antall ubrukte oversettelser: 3' });
       await userEvent.click(panelTitle);
     });
 
-    it("Viser detaljer om ubrukte oversettelser", () => {
-      const inputFields = screen.queryAllByRole("textbox");
+    it('Viser detaljer om ubrukte oversettelser', () => {
+      const inputFields = screen.queryAllByRole('textbox');
       expect(inputFields).toHaveLength(3);
     });
 
-    it("Sletter oversettelse når slett-knappen trykkes", async () => {
-      const deleteButton = screen.getAllByRole("button", { name: "Slett" })[1];
+    it('Sletter oversettelse når slett-knappen trykkes', async () => {
+      const deleteButton = screen.getAllByRole('button', { name: 'Slett' })[1];
       expect(deleteButton).toBeInTheDocument();
 
       await userEvent.click(deleteButton);

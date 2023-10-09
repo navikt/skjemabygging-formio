@@ -1,20 +1,20 @@
-import { Close } from "@navikt/ds-icons";
-import { Button } from "@navikt/ds-react";
+import { Close } from '@navikt/ds-icons';
+import { Button } from '@navikt/ds-react';
 import {
   ErrorPage,
   FyllUtRouter,
   LoadingComponent,
   makeStyles,
   Styles,
-} from "@navikt/skjemadigitalisering-shared-components";
-import { useEffect, useState } from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+} from '@navikt/skjemadigitalisering-shared-components';
+import { useEffect, useState } from 'react';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 const useStyles = makeStyles({
-  "@global": Styles.global,
+  '@global': Styles.global,
   backContainer: {
-    maxWidth: "800px",
-    margin: "0 auto 1rem auto",
+    maxWidth: '800px',
+    margin: '0 auto 1rem auto',
   },
 });
 
@@ -29,13 +29,13 @@ const MigrationFormPreview = () => {
   useEffect(() => {
     try {
       fetch(`/api/migrate/preview/${formPath}${search}`, {
-        method: "GET",
+        method: 'GET',
         headers: {
-          "content-type": "application/json",
+          'content-type': 'application/json',
         },
       }).then((response) => response.json().then(setForm));
     } catch (err: any) {
-      setError(err instanceof Error ? (err as Error).message : "Noe galt skjedde da vi prøvde å laste skjemaet");
+      setError(err instanceof Error ? (err as Error).message : 'Noe galt skjedde da vi prøvde å laste skjemaet');
     }
   }, [formPath, search]);
 

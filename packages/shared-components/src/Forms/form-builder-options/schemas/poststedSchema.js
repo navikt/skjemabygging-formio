@@ -1,9 +1,9 @@
-const poststedSchema = (keyPostfix = "") => ({
-  label: "Poststed",
-  type: "textfield",
+const poststedSchema = (keyPostfix = '') => ({
+  label: 'Poststed',
+  type: 'textfield',
   key: `poststed${keyPostfix}`,
-  autocomplete: "address-level2",
-  fieldSize: "input--xxl",
+  autocomplete: 'address-level2',
+  fieldSize: 'input--xxl',
   validate: {
     required: true,
   },
@@ -11,7 +11,7 @@ const poststedSchema = (keyPostfix = "") => ({
   clearOnHide: true,
   dataGridLabel: true,
   tableView: true,
-  validateOn: "blur",
+  validateOn: 'blur',
 });
 
 export default poststedSchema;

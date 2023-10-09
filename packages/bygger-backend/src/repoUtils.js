@@ -1,8 +1,8 @@
-import { stringTobase64 } from "./fetchUtils";
-import { logger } from "./logging/logger";
+import { stringTobase64 } from './fetchUtils';
+import { logger } from './logging/logger';
 
 function areEqualWithoutWhiteSpaces(string1, string2) {
-  return string1.replace(/\s/g, "") === string2.replace(/\s/g, "");
+  return string1.replace(/\s/g, '') === string2.replace(/\s/g, '');
 }
 
 async function pushFileToRepo(repo, branch, path, message, fileContentAsBase64) {
@@ -33,7 +33,7 @@ export function pushFilesAndUpdateMonorepoRefCallback(files, newMonorepoGitSha) 
     const initialRef = await repo.getRef(branch);
     logger.info(`Perform ${files.length} change(s) on ${branch}, ref: ${initialRef}`);
     for (const file of files) {
-      logger.debug("Push file to repo", { branch, path: file.path, type: file.type, name: file.name });
+      logger.debug('Push file to repo', { branch, path: file.path, type: file.type, name: file.name });
       await pushFileToRepo(
         repo,
         branch,
@@ -44,11 +44,11 @@ export function pushFilesAndUpdateMonorepoRefCallback(files, newMonorepoGitSha) 
     }
 
     if (await repo.hasBranchChanged(initialRef, branch)) {
-      logger.info("Update monorepo ref", { newGitSha: newMonorepoGitSha, original: initialRef, branch });
+      logger.info('Update monorepo ref', { newGitSha: newMonorepoGitSha, original: initialRef, branch });
       await pushFileToRepo(
         repo,
         branch,
-        "MONOREPO",
+        'MONOREPO',
         `oppdater monorepo ref: ${newMonorepoGitSha}`,
         stringTobase64(newMonorepoGitSha),
       );
@@ -83,8 +83,8 @@ export async function performChangesOnSeparateBranch(repo, base, branch, perform
   let updatedBaseSha;
   if (await repo.hasBranchChanged(baseRef, branch)) {
     // Only create and merge pull request if the branch contains changes, compared to the base branch
-    const pullRequest = await repo.createPullRequest("Automatic publishing job", branch, base);
-    logger.info("Created pull-request", {
+    const pullRequest = await repo.createPullRequest('Automatic publishing job', branch, base);
+    logger.info('Created pull-request', {
       pullRequest: pullRequest.data.number,
       baseRef,
       branch,
@@ -93,7 +93,7 @@ export async function performChangesOnSeparateBranch(repo, base, branch, perform
     await repo.mergePullRequest(pullRequest.data.number, mergeCommitMessage);
     const updatedBase = await repo.getRef(base);
     updatedBaseSha = updatedBase.data.object.sha;
-    logger.info("Merged pull-request", {
+    logger.info('Merged pull-request', {
       updatedBaseSha,
       pullRequest: pullRequest.data.number,
       baseRef,

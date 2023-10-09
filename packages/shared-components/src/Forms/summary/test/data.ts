@@ -1,15 +1,15 @@
-import { NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
+import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 
 export const defaultFormProperties = {
-  skjemanummer: "NAV 10-11.13",
-  tema: "BIL",
+  skjemanummer: 'NAV 10-11.13',
+  tema: 'BIL',
   innsending: undefined,
   hasLabeledSignatures: false,
   signatures: undefined,
 };
 
 export const defaultForm = {
-  title: "Mitt testskjema",
+  title: 'Mitt testskjema',
   properties: {
     ...defaultFormProperties,
   },
@@ -20,17 +20,17 @@ export const defaultFormWithAttachment = {
   ...defaultForm,
   components: [
     {
-      title: "Vedlegg",
-      key: "vedlegg",
-      type: "panel",
+      title: 'Vedlegg',
+      key: 'vedlegg',
+      type: 'panel',
       components: [
         {
-          label: "Annen dokumentasjon",
-          description: "Har du noen annen dokumentasjon du ønsker å legge ved?",
-          key: "annenDokumentasjon",
+          label: 'Annen dokumentasjon',
+          description: 'Har du noen annen dokumentasjon du ønsker å legge ved?',
+          key: 'annenDokumentasjon',
           properties: {
-            vedleggstittel: "Annet",
-            vedleggskode: "N6",
+            vedleggstittel: 'Annet',
+            vedleggskode: 'N6',
           },
           otherDocumentation: true,
         },

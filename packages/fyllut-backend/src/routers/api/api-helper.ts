@@ -1,6 +1,6 @@
-import { config as appConfig } from "../../config/config";
-import azureAccessTokenHandler from "../../security/azureAccessTokenHandler";
-import tokenxHandler from "../../security/tokenxHandler";
+import { config as appConfig } from '../../config/config';
+import azureAccessTokenHandler from '../../security/azureAccessTokenHandler';
+import tokenxHandler from '../../security/tokenxHandler';
 
 const { sendInnConfig, skjemabyggingProxyClientId, pdlTokenScopeCluster } = appConfig;
 

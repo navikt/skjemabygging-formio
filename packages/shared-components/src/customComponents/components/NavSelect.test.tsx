@@ -1,61 +1,61 @@
-import { NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
-import { screen, waitFor } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
-import { renderNavForm, setupNavFormio } from "../../../test/navform-render";
+import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
+import { screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { renderNavForm, setupNavFormio } from '../../../test/navform-render';
 
-describe("NavSelect", () => {
+describe('NavSelect', () => {
   beforeAll(setupNavFormio);
 
   const testForm: NavFormType = {
-    title: "Testskjema",
-    type: "form",
-    display: "wizard",
+    title: 'Testskjema',
+    type: 'form',
+    display: 'wizard',
     components: [
       {
-        title: "Første panel",
-        type: "panel",
+        title: 'Første panel',
+        type: 'panel',
         components: [
           {
-            label: "Velg frukt",
+            label: 'Velg frukt',
             uniqueOptions: false,
             tableView: true,
-            dataSrc: "values",
+            dataSrc: 'values',
             data: {
               values: [
                 {
-                  label: "Eple",
-                  value: "eple",
+                  label: 'Eple',
+                  value: 'eple',
                 },
                 {
-                  label: "Banan",
-                  value: "banan",
+                  label: 'Banan',
+                  value: 'banan',
                 },
                 {
-                  label: "Persimon",
-                  value: "persimon",
+                  label: 'Persimon',
+                  value: 'persimon',
                 },
               ],
-              resource: "",
-              json: "",
-              url: "",
-              custom: "",
+              resource: '',
+              json: '',
+              url: '',
+              custom: '',
             },
-            idPath: "id",
+            idPath: 'id',
             limit: 100,
-            template: "<span>{{ item.label }}</span>",
+            template: '<span>{{ item.label }}</span>',
             clearOnRefresh: false,
             searchEnabled: true,
             selectThreshold: 0.3,
             readOnlyValue: false,
             customOptions: {},
             useExactSearch: false,
-            validateOn: "blur",
+            validateOn: 'blur',
             validate: {
               onlyAvailableItems: false,
               required: true,
             },
-            key: "velgFrukt",
-            type: "navSelect",
+            key: 'velgFrukt',
+            type: 'navSelect',
             indexeddb: {
               filter: {},
             },
@@ -65,7 +65,7 @@ describe("NavSelect", () => {
             authenticate: false,
             ignoreCache: false,
             fuseOptions: {
-              include: "score",
+              include: 'score',
               threshold: 0.3,
             },
             input: true,
@@ -74,14 +74,14 @@ describe("NavSelect", () => {
         ],
       },
       {
-        title: "Andre panel",
-        type: "panel",
+        title: 'Andre panel',
+        type: 'panel',
         components: [
           {
-            label: "Fornavn",
-            type: "textfield",
-            key: "textfield",
-            inputType: "text",
+            label: 'Fornavn',
+            type: 'textfield',
+            key: 'textfield',
+            inputType: 'text',
             input: true,
             validate: {
               required: true,
@@ -92,49 +92,49 @@ describe("NavSelect", () => {
     ],
   } as unknown as NavFormType;
 
-  it("selects item in dropdown", async () => {
+  it('selects item in dropdown', async () => {
     await renderNavForm({
       form: testForm,
     });
     const nedtrekksliste = screen.getByLabelText(/Velg frukt.*/) as HTMLInputElement;
     expect(nedtrekksliste).toBeInTheDocument();
-    expect(nedtrekksliste.value).toBe("");
+    expect(nedtrekksliste.value).toBe('');
 
     await userEvent.click(nedtrekksliste);
-    const optionPersimon = await screen.findByText("Persimon");
+    const optionPersimon = await screen.findByText('Persimon');
     await userEvent.click(optionPersimon);
 
     await waitFor(() => {
-      const valgtFrukt = screen.getByText("Persimon");
+      const valgtFrukt = screen.getByText('Persimon');
       expect(valgtFrukt).toBeInTheDocument();
     });
   });
 
-  it("shows error message when validation fails", async () => {
+  it('shows error message when validation fails', async () => {
     await renderNavForm({
       form: testForm,
     });
     const nedtrekksliste = screen.getByLabelText(/Velg frukt.*/) as HTMLInputElement;
     expect(nedtrekksliste).toBeInTheDocument();
 
-    const nextButton = screen.getByRole("button", { name: "Neste steg" });
+    const nextButton = screen.getByRole('button', { name: 'Neste steg' });
     expect(nextButton).toBeInTheDocument();
     nextButton.click();
 
-    const errorMessages = await screen.findAllByText("Du må fylle ut: Velg frukt");
+    const errorMessages = await screen.findAllByText('Du må fylle ut: Velg frukt');
     expect(errorMessages).toHaveLength(2); // på toppen av siden, og nedenfor input-feltet
   });
 
-  it("changes language", async () => {
+  it('changes language', async () => {
     const i18n = {
       en: {
-        "Velg frukt": "Choose fruit",
-        Eple: "Apple",
-        Banan: "Banana",
-        Persimon: "Persimon",
-        "Neste steg": "Next step",
-        Avbryt: "Cancel",
-        "Første panel": "First panel",
+        'Velg frukt': 'Choose fruit',
+        Eple: 'Apple',
+        Banan: 'Banana',
+        Persimon: 'Persimon',
+        'Neste steg': 'Next step',
+        Avbryt: 'Cancel',
+        'Første panel': 'First panel',
       },
     };
     const { rerender, NavFormForTest } = await renderNavForm({
@@ -149,11 +149,11 @@ describe("NavSelect", () => {
     expect(dropdownEnglish).toBeInTheDocument();
 
     await userEvent.click(dropdownEnglish);
-    const optionApple = await screen.findByText("Apple");
+    const optionApple = await screen.findByText('Apple');
     await userEvent.click(optionApple);
 
     await waitFor(() => {
-      const valgtFrukt = screen.getByText("Apple");
+      const valgtFrukt = screen.getByText('Apple');
       expect(valgtFrukt).toBeInTheDocument();
     });
   });

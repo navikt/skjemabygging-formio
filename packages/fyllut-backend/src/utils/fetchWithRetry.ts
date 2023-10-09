@@ -1,5 +1,5 @@
-import fetch, { HeadersInit, Response, RequestInfo, RequestInit } from "node-fetch";
-import { logger } from "../logger";
+import fetch, { HeadersInit, RequestInfo, RequestInit, Response } from 'node-fetch';
+import { logger } from '../logger';
 
 interface RetryInit {
   retry?: number;

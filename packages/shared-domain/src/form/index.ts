@@ -1,12 +1,12 @@
-import { Enhetstype } from "../enhet";
+import { Enhetstype } from '../enhet';
 
-export type DisplayType = "wizard" | "form";
-export type InnsendingType = "PAPIR_OG_DIGITAL" | "KUN_PAPIR" | "KUN_DIGITAL" | "INGEN";
+export type DisplayType = 'wizard' | 'form';
+export type InnsendingType = 'PAPIR_OG_DIGITAL' | 'KUN_PAPIR' | 'KUN_DIGITAL' | 'INGEN';
 
 export enum DeclarationType {
-  none = "none",
-  default = "default",
-  custom = "custom",
+  none = 'none',
+  default = 'default',
+  custom = 'custom',
 }
 
 export interface FormSignaturesType {
@@ -65,10 +65,10 @@ export interface FormPropertiesType {
 
 export type FormPropertiesPublishing = Pick<
   FormPropertiesType,
-  "modified" | "modifiedBy" | "published" | "publishedBy" | "publishedLanguages" | "unpublished" | "unpublishedBy"
+  'modified' | 'modifiedBy' | 'published' | 'publishedBy' | 'publishedLanguages' | 'unpublished' | 'unpublishedBy'
 >;
 
-type ComponentDataSrc = "values" | "url" | "json" | "custom" | "resource";
+type ComponentDataSrc = 'values' | 'url' | 'json' | 'custom' | 'resource';
 
 interface ComponentValue {
   value: string;
@@ -115,7 +115,7 @@ export interface Component {
 export interface ComponentProperties {
   vedleggstittel?: string;
   vedleggskode?: string;
-  vedleggErValgfritt?: "ja" | "nei";
+  vedleggErValgfritt?: 'ja' | 'nei';
 }
 
 export interface Panel extends Component {
@@ -148,13 +148,13 @@ export interface NavFormType {
 export type SubmissionData = Record<string, string | number | boolean | any[] | object>;
 
 type ErrorType =
-  | "NOT FOUND"
-  | "GET FAILED"
-  | "CREATE FAILED"
-  | "UPDATE FAILED"
-  | "DELETE FAILED"
-  | "SUBMIT FAILED"
-  | "SUBMIT AND UPDATE FAILED";
+  | 'NOT FOUND'
+  | 'GET FAILED'
+  | 'CREATE FAILED'
+  | 'UPDATE FAILED'
+  | 'DELETE FAILED'
+  | 'SUBMIT FAILED'
+  | 'SUBMIT AND UPDATE FAILED';
 export type MellomlagringError = { title?: string; message: string; type: ErrorType };
 
 export interface FyllutState {
@@ -182,4 +182,4 @@ export interface Submission {
   fyllutState?: FyllutState;
 }
 
-export type UsageContext = "create" | "edit";
+export type UsageContext = 'create' | 'edit';

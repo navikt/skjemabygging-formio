@@ -1,12 +1,12 @@
-import { MigrationOptions } from "../../types/migration";
-import { createUrlParams } from "./utils";
+import { MigrationOptions } from '../../types/migration';
+import { createUrlParams } from './utils';
 
 async function postJson(url, bodyAsJSON, token) {
   const result = await fetch(url, {
-    method: "POST",
+    method: 'POST',
     headers: {
-      "content-type": "application/json",
-      "Bygger-Formio-Token": token,
+      'content-type': 'application/json',
+      'Bygger-Formio-Token': token,
     },
     body: JSON.stringify(bodyAsJSON),
   });
@@ -24,9 +24,9 @@ export async function runMigrationDryRun(
 ) {
   try {
     const response = await fetch(`/api/migrate${createUrlParams(searchFilters, dependencyFilters, editOptions)}`, {
-      method: "GET",
+      method: 'GET',
       headers: {
-        "content-type": "application/json",
+        'content-type': 'application/json',
       },
     });
     if (!response.ok) {
@@ -42,7 +42,7 @@ export async function runMigrationDryRun(
 
 export async function runMigrationWithUpdate(token, payload) {
   try {
-    return postJson("/api/migrate/update", { payload }, token);
+    return postJson('/api/migrate/update', { payload }, token);
   } catch (error) {
     console.error(error);
     return [];
@@ -51,7 +51,7 @@ export async function runMigrationWithUpdate(token, payload) {
 
 export async function bulkPublish(token, payload) {
   try {
-    return postJson("/api/published-forms", { payload }, token);
+    return postJson('/api/published-forms', { payload }, token);
   } catch (error) {
     console.error(error);
     throw error;

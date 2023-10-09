@@ -1,4 +1,5 @@
-import { Enhet, Enhetstype, supportedEnhetstyper } from "./enhet";
+import type { ConfigType } from './config';
+import { Enhet, Enhetstype, supportedEnhetstyper } from './enhet';
 import {
   Component,
   DeclarationType,
@@ -6,18 +7,18 @@ import {
   FormPropertiesPublishing,
   FormPropertiesType,
   FormSignaturesType,
+  FyllutState,
   InnsendingType,
+  MellomlagringError,
   NavFormType,
   NewFormSignatureType,
   Panel,
   Submission,
   SubmissionData,
-  FyllutState,
-  MellomlagringError,
   UsageContext,
-} from "./form";
-import { ForstesideRequestBody, KjentBruker, UkjentBruker } from "./forsteside";
-import languagesUtil from "./languages/languagesUtil";
+} from './form';
+import { ForstesideRequestBody, KjentBruker, UkjentBruker } from './forsteside';
+import languagesUtil from './languages/languagesUtil';
 import type {
   FormioTranslation,
   FormioTranslationData,
@@ -31,93 +32,104 @@ import type {
   TranslationResource,
   TranslationScope,
   TranslationTag,
-} from "./languages/types";
-import type { ConfigType } from "./config";
-import migrationUtils from "./migration";
-import { Operator } from "./migration/operator";
-import type { Mottaksadresse, MottaksadresseData } from "./mottaksadresse";
-import type { ReportDefinition } from "./reports";
-import type { GlobalTranslationsResourceContent, MottaksadresserResourceContent, ResourceContent } from "./resource";
-import type { Summary } from "./summary/FormSummaryType";
-import formSummaryUtil from "./summary/formSummaryUtil";
-import MockedComponentObjectForTest from "./summary/MockedComponentObjectForTest";
-import TEXTS from "./texts";
-import dateUtils from "./utils/date";
-import featureUtils, { FeatureTogglesMap } from "./utils/featureUtils";
-import formDiffingTool, { NavFormSettingsDiff } from "./utils/formDiffingTool";
-import navFormioUtils from "./utils/formio";
-import { guid } from "./utils/guid";
-import localizationUtils from "./utils/localization";
-import navFormUtils, { DependencyType } from "./utils/navFormUtils";
-import objectUtils from "./utils/objectUtils";
-import paginationUtils from "./utils/pagination";
-import signatureUtils from "./utils/signatureUtils";
-import stringUtils from "./utils/stringUtils";
-import validatorUtils from "./utils/validatorUtils";
+} from './languages/types';
+import migrationUtils from './migration';
+import { Operator } from './migration/operator';
+import type { Mottaksadresse, MottaksadresseData } from './mottaksadresse';
+import type { ReportDefinition } from './reports';
+import type { GlobalTranslationsResourceContent, MottaksadresserResourceContent, ResourceContent } from './resource';
+import type { Summary } from './summary/FormSummaryType';
+import MockedComponentObjectForTest from './summary/MockedComponentObjectForTest';
+import formSummaryUtil from './summary/formSummaryUtil';
+import TEXTS from './texts';
+import dateUtils from './utils/date';
+import featureUtils, { FeatureTogglesMap } from './utils/featureUtils';
+import formDiffingTool, { NavFormSettingsDiff } from './utils/formDiffingTool';
+import navFormioUtils from './utils/formio';
+import { guid } from './utils/guid';
+import localizationUtils from './utils/localization';
+import navFormUtils, { DependencyType } from './utils/navFormUtils';
+import objectUtils from './utils/objectUtils';
+import paginationUtils from './utils/pagination';
+import signatureUtils from './utils/signatureUtils';
+import stringUtils from './utils/stringUtils';
+import validatorUtils from './utils/validatorUtils';
 
 export {
-  TEXTS,
-  MockedComponentObjectForTest,
-  formSummaryUtil,
-  navFormioUtils,
-  navFormUtils,
-  stringUtils,
-  objectUtils,
-  signatureUtils,
-  localizationUtils,
-  featureUtils,
-  languagesUtil,
-  guid,
-  validatorUtils,
-  dateUtils,
-  migrationUtils,
-  paginationUtils,
-  supportedEnhetstyper,
-  formDiffingTool,
   DeclarationType,
+  MockedComponentObjectForTest,
+  TEXTS,
+  dateUtils,
+  featureUtils,
+  formDiffingTool,
+  formSummaryUtil,
+  guid,
+  languagesUtil,
+  localizationUtils,
+  migrationUtils,
+  navFormUtils,
+  navFormioUtils,
+  objectUtils,
+  paginationUtils,
+  signatureUtils,
+  stringUtils,
+  supportedEnhetstyper,
+  validatorUtils,
 };
 export type {
-  DependencyType,
-  FeatureTogglesMap,
-  DisplayType,
-  InnsendingType,
-  FormSignaturesType,
-  NewFormSignatureType,
-  FormPropertiesType,
-  FormPropertiesPublishing,
-  Summary,
-  NavFormType,
-  SubmissionData,
-  Submission,
-  FyllutState,
-  MellomlagringError,
   Component,
-  Panel,
+  Component,
+  ConfigType,
+  DependencyType,
+  DisplayType,
   Enhet,
   Enhetstype,
-  FormioTranslationPayload,
-  TranslationResource,
-  FormioTranslationMap,
-  I18nTranslations,
-  ScopedTranslationMap,
+  FeatureTogglesMap,
+  FormPropertiesPublishing,
+  FormPropertiesPublishing,
+  FormPropertiesType,
+  FormPropertiesType,
+  FormSignaturesType,
+  FormSignaturesType,
   FormioTranslation,
   FormioTranslationData,
+  FormioTranslationMap,
+  FormioTranslationPayload,
+  ForstesideRequestBody,
+  FyllutState,
+  FyllutState,
   GlobalTranslationMap,
+  GlobalTranslationsResourceContent,
   I18nTranslationMap,
+  I18nTranslations,
+  InnsendingType,
+  InnsendingType,
+  KjentBruker,
   Language,
+  MellomlagringError,
+  Mottaksadresse,
+  MottaksadresseData,
+  MottaksadresserResourceContent,
+  NavFormSettingsDiff,
+  NavFormType,
+  NavFormType,
+  NewFormSignatureType,
+  NewFormSignatureType,
+  Operator,
+  Panel,
+  Panel,
+  ReportDefinition,
+  ResourceContent,
+  ScopedTranslationMap,
+  Submission,
+  Submission,
+  SubmissionData,
+  SubmissionData,
+  Summary,
+  Summary,
+  TranslationResource,
   TranslationScope,
   TranslationTag,
-  MottaksadresseData,
-  Mottaksadresse,
-  ResourceContent,
-  MottaksadresserResourceContent,
-  GlobalTranslationsResourceContent,
-  ForstesideRequestBody,
-  KjentBruker,
   UkjentBruker,
-  ReportDefinition,
-  Operator,
-  NavFormSettingsDiff,
   UsageContext,
-  ConfigType,
 };

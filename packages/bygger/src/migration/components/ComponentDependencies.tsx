@@ -1,26 +1,26 @@
-import { makeStyles, navCssVariables } from "@navikt/skjemadigitalisering-shared-components";
-import { DependeeComponent } from "../../../types/migration";
+import { makeStyles, navCssVariables } from '@navikt/skjemadigitalisering-shared-components';
+import { DependeeComponent } from '../../../types/migration';
 
 const useStyles = makeStyles({
   row: {
-    lineHeight: "1.3",
+    lineHeight: '1.3',
     margin: 0,
   },
   heading: {
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
   label: {
-    paddingRight: "1rem",
+    paddingRight: '1rem',
   },
   gridContainer: {
-    display: "grid",
-    gridTemplateColumns: "1fr 10fr",
-    gridTemplateRows: "repeat(3, 1.3rem)",
+    display: 'grid',
+    gridTemplateColumns: '1fr 10fr',
+    gridTemplateRows: 'repeat(3, 1.3rem)',
   },
   separator: {
-    width: "12rem",
-    height: "0.5rem",
-    marginBottom: "0.5rem",
+    width: '12rem',
+    height: '0.5rem',
+    marginBottom: '0.5rem',
     borderBottom: `1px solid ${navCssVariables.navGra60}`,
   },
 });

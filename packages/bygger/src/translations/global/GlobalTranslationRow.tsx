@@ -1,24 +1,24 @@
-import { Delete } from "@navikt/ds-icons";
-import { Textarea } from "@navikt/ds-react";
-import { makeStyles } from "@navikt/skjemadigitalisering-shared-components";
-import { useState } from "react";
+import { Delete } from '@navikt/ds-icons';
+import { Textarea } from '@navikt/ds-react';
+import { makeStyles } from '@navikt/skjemadigitalisering-shared-components';
+import { useState } from 'react';
 
 const useTranslationRowStyles = makeStyles({
   root: {
-    display: "flex",
-    flexDirection: "column",
-    marginBottom: "2rem",
+    display: 'flex',
+    flexDirection: 'column',
+    marginBottom: '2rem',
   },
   warning: {
-    color: "#ba3a26",
+    color: '#ba3a26',
     fontWeight: 600,
-    lineHeight: "1.375rem",
+    lineHeight: '1.375rem',
   },
   row: {
-    display: "grid",
-    gridTemplateColumns: "1fr 1fr auto",
-    gap: "2rem",
-    alignItems: "flex-start",
+    display: 'grid',
+    gridTemplateColumns: '1fr 1fr auto',
+    gap: '2rem',
+    alignItems: 'flex-start',
   },
 });
 

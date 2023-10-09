@@ -1,29 +1,29 @@
-import { guid } from "@navikt/skjemadigitalisering-shared-domain";
-import { MigrationOption, MigrationOptions } from "../../../types/migration";
+import { guid } from '@navikt/skjemadigitalisering-shared-domain';
+import { MigrationOption, MigrationOptions } from '../../../types/migration';
 
-const createMigrationOption = (migrationOption: MigrationOption = { key: "", value: "" }): MigrationOptions => ({
+const createMigrationOption = (migrationOption: MigrationOption = { key: '', value: '' }): MigrationOptions => ({
   [guid()]: migrationOption,
 });
 
 export type Action =
-  | { type: "add" }
+  | { type: 'add' }
   | {
-      type: "edit";
+      type: 'edit';
       payload: { id: string } & Partial<MigrationOption>;
     }
   | {
-      type: "remove";
+      type: 'remove';
       payload: { id: string };
     };
 
 export const reducer = (state: MigrationOptions = {}, action: Action) => {
   switch (action.type) {
-    case "add":
+    case 'add':
       return {
         ...state,
         ...createMigrationOption(),
       };
-    case "edit": {
+    case 'edit': {
       const { id, ...rest } = action.payload;
       return {
         ...state,
@@ -33,7 +33,7 @@ export const reducer = (state: MigrationOptions = {}, action: Action) => {
         },
       };
     }
-    case "remove": {
+    case 'remove': {
       const { id } = action.payload;
       const copyOfState = { ...state };
       delete copyOfState[id];

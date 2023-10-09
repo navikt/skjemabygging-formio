@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
-import useSkjemaSporsmalBesvart from "./skjemaSporsmalBesvartHook";
-import useSkjemaStartet from "./skjemaStartetHook";
+import { useEffect, useState } from 'react';
+import useSkjemaSporsmalBesvart from './skjemaSporsmalBesvartHook';
+import useSkjemaStartet from './skjemaStartetHook';
 
 export default function useSkjemaSporsmalEvent(form) {
   const [lastSporsmalEvent, setLastSporsmalEvent] = useState(null);
@@ -9,7 +9,7 @@ export default function useSkjemaSporsmalEvent(form) {
   const loggSkjemaSporsmalBesvartForSpesialTyper = (event) => {
     if (
       event.changed &&
-      ["radio", "checkbox", "navDatepicker", "day", "radiopanel", "navCheckbox", "navSelect"].includes(
+      ['radio', 'checkbox', 'navDatepicker', 'day', 'radiopanel', 'navCheckbox', 'navSelect'].includes(
         event.changed.component.type,
       )
     ) {

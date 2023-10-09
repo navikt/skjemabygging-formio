@@ -4,8 +4,8 @@ import {
   NavFormType,
   navFormUtils,
   Operator,
-} from "@navikt/skjemadigitalisering-shared-domain";
-import { ParsedInput } from "../types/migration";
+} from '@navikt/skjemadigitalisering-shared-domain';
+import { ParsedInput } from '../types/migration';
 
 interface Filter {
   key: string;
@@ -30,19 +30,19 @@ function getPropertyFromComponent(comp: any, properties: string[]): string | und
 function componentMatchesFilters(component: Component, filters: Filter[]) {
   return filters.every(({ key, value, operator }) => {
     switch (operator) {
-      case "exists":
-        return !!getPropertyFromComponent(component, key.split("."));
-      case "n_exists":
-        return !getPropertyFromComponent(component, key.split("."));
-      case "contains":
-        return getPropertyFromComponent(component, key.split("."))?.includes(value);
-      case "n_contains":
-        return !getPropertyFromComponent(component, key.split("."))?.includes(value);
-      case "n_eq":
-        return getPropertyFromComponent(component, key.split(".")) !== value;
-      case "eq":
+      case 'exists':
+        return !!getPropertyFromComponent(component, key.split('.'));
+      case 'n_exists':
+        return !getPropertyFromComponent(component, key.split('.'));
+      case 'contains':
+        return getPropertyFromComponent(component, key.split('.'))?.includes(value);
+      case 'n_contains':
+        return !getPropertyFromComponent(component, key.split('.'))?.includes(value);
+      case 'n_eq':
+        return getPropertyFromComponent(component, key.split('.')) !== value;
+      case 'eq':
       default:
-        return getPropertyFromComponent(component, key.split(".")) === value;
+        return getPropertyFromComponent(component, key.split('.')) === value;
     }
   });
 }
@@ -60,8 +60,8 @@ function componentHasDependencyMatchingFilters(
 }
 
 export {
-  parseFiltersFromParam,
-  getPropertyFromComponent,
-  componentMatchesFilters,
   componentHasDependencyMatchingFilters,
+  componentMatchesFilters,
+  getPropertyFromComponent,
+  parseFiltersFromParam,
 };

@@ -8,7 +8,7 @@ import {
   Submission,
   Summary,
   TEXTS,
-} from "@navikt/skjemadigitalisering-shared-domain";
+} from '@navikt/skjemadigitalisering-shared-domain';
 
 type TranslateFunction = (text: string) => string;
 const calcImageWidth = (widthInPercentage: number) => {
@@ -21,7 +21,7 @@ const createHtmlFromSubmission = (
   submission: Submission,
   submissionMethod: string,
   translate: (text: string) => string,
-  lang: string = "nb",
+  lang: string = 'nb',
 ) => {
   const symmaryPanels: Summary.Panel[] = formSummaryUtil.createFormSummaryPanels(form, submission, translate);
   const confirmation = createConfirmationSection(form, translate);
@@ -61,9 +61,9 @@ p {margin: 0}
 
 const body = (formSummaryObject: Summary.Panel[], confirmation?: string, signatures?: string) => `
 <body>
-${formSummaryObject.map(section).join("")}
-${confirmation || ""}
-${signatures || ""}
+${formSummaryObject.map(section).join('')}
+${confirmation || ''}
+${signatures || ''}
 </body>`;
 
 const section = (formSection: Summary.Panel) => `
@@ -74,30 +74,30 @@ const sectionContent = (components: Summary.Component[], level: number): string 
   return components
     .map((component) => {
       switch (component.type) {
-        case "fieldset":
+        case 'fieldset':
           return sectionContent(component.components, level);
-        case "panel":
-        case "navSkjemagruppe":
-        case "datagrid":
+        case 'panel':
+        case 'navSkjemagruppe':
+        case 'datagrid':
           return subsection(component, level);
-        case "datagrid-row":
+        case 'datagrid-row':
           return datagridRow(component, level);
-        case "selectboxes":
+        case 'selectboxes':
           return multipleAnswers(component);
-        case "image":
+        case 'image':
           return img(component);
-        case "alertstripe":
+        case 'alertstripe':
           return alert(component);
         default:
           return field(component);
       }
     })
-    .join("");
+    .join('');
 };
 
 const h3 = (label: string) => `<h3>${label}</h3>`;
 const h4 = (label: string) => `<h4>${label}</h4>`;
-const addInnrykkClass = (level: number) => (level <= 2 ? 'class="innrykk"' : "");
+const addInnrykkClass = (level: number) => (level <= 2 ? 'class="innrykk"' : '');
 
 const subsection = (component: Summary.Fieldset | Summary.Panel | Summary.DataGrid, level: number) => `
 ${level <= 1 ? h3(component.label) : h4(component.label)}
@@ -107,7 +107,7 @@ ${sectionContent(component.components, level + 1)}
 
 const datagridRow = (component: Summary.DataGridRow, level: number) => `
 <div class="row">
-${component.label ? `<div class="row-label">${component.label}</div>` : ""}
+${component.label ? `<div class="row-label">${component.label}</div>` : ''}
 ${sectionContent(component.components, level)}
 </div>`;
 
@@ -127,11 +127,11 @@ const img = (component: Summary.Image) => `
 
 const multipleAnswers = (component: Summary.Selectboxes) => `
 <div class="spm">${component.label}</div>
-${component.value.map((val) => `<div class="svar">: ${val}</div>`).join("")}`;
+${component.value.map((val) => `<div class="svar">: ${val}</div>`).join('')}`;
 
-const signature = ({ label, description, key }: NewFormSignatureType, translate: TranslateFunction) => `
+const signature = ({ label, description, _key }: NewFormSignatureType, translate: TranslateFunction) => `
 <h3>${translate(label)}</h3>
-<div class="underskrift">${description ? translate(description) : ""}</div>
+<div class="underskrift">${description ? translate(description) : ''}</div>
 <div class="underskrift">${translate(TEXTS.pdfStatiske.placeAndDate)} _________________________________________</div>
 <div class="underskrift">${translate(TEXTS.pdfStatiske.signature)} _________________________________________</div>`;
 
@@ -140,8 +140,8 @@ const signatureSection = (
   submissionMethod: string,
   translate: TranslateFunction,
 ) => {
-  if (submissionMethod === "digital") {
-    return "";
+  if (submissionMethod === 'digital') {
+    return '';
   }
   const { signatures, descriptionOfSignatures, descriptionOfSignaturesPositionUnder } = formProperties;
   const signatureList = signatureUtils.mapBackwardCompatibleSignatures(signatures);
@@ -149,9 +149,9 @@ const signatureSection = (
   return signatureList.length > 0
     ? `
 <h2>${translate(TEXTS.pdfStatiske.signature)}</h2>
-${!descriptionOfSignaturesPositionUnder ? `<p class="underskrift">${translate(descriptionOfSignatures || "")}</p>` : ""}
-${signatureList.map((signatureObject) => signature(signatureObject, translate)).join("")}
-${descriptionOfSignaturesPositionUnder ? `<p class="underskrift">${translate(descriptionOfSignatures || "")}</p>` : ""}`
+${!descriptionOfSignaturesPositionUnder ? `<p class="underskrift">${translate(descriptionOfSignatures || '')}</p>` : ''}
+${signatureList.map((signatureObject) => signature(signatureObject, translate)).join('')}
+${descriptionOfSignaturesPositionUnder ? `<p class="underskrift">${translate(descriptionOfSignatures || '')}</p>` : ''}`
     : undefined;
 };
 
@@ -165,11 +165,11 @@ const createConfirmationSection = (form: NavFormType, translate: (text: string) 
         form.properties.declarationType === DeclarationType.custom && form.properties.declarationText
           ? translate(form.properties.declarationText)
           : translate(TEXTS.statiske.declaration.defaultText),
-      type: "textfield",
-      key: "",
+      type: 'textfield',
+      key: '',
       value: translate(TEXTS.common.yes),
     })}`;
   }
 };
 
-export { createHtmlFromSubmission, body, signatureSection };
+export { body, createHtmlFromSubmission, signatureSection };

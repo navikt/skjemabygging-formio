@@ -4,14 +4,14 @@ import {
   ScopedTranslationMap,
   TEXTS,
   TranslationResource,
-} from "@navikt/skjemadigitalisering-shared-domain";
-import { getInputType, sanitizeForCsv, withoutDuplicatedComponents } from "../utils";
+} from '@navikt/skjemadigitalisering-shared-domain';
+import { getInputType, sanitizeForCsv, withoutDuplicatedComponents } from '../utils';
 
 const tags = {
-  SKJEMATEKSTER: "skjematekster",
-  GRENSESNITT: "grensesnitt",
-  STATISKE_TEKSTER: "statiske-tekster",
-  VALIDERING: "validering",
+  SKJEMATEKSTER: 'skjematekster',
+  GRENSESNITT: 'grensesnitt',
+  STATISKE_TEKSTER: 'statiske-tekster',
+  VALIDERING: 'validering',
 };
 
 const flattenTextsForEditPanel = (texts: any): Array<any> => {
@@ -43,7 +43,7 @@ const getTranslationKeysForAllPredefinedTexts = (): string[] => {
 const getCurrentOriginalTextList = (currentTranslation: Array<any>): string[] => {
   return currentTranslation.reduce((originalTextList, translations) => {
     const { originalText } = translations;
-    if (originalText !== "") return [...originalTextList, originalText.toUpperCase()];
+    if (originalText !== '') return [...originalTextList, originalText.toUpperCase()];
     else return originalTextList;
   }, []);
 };
@@ -62,7 +62,7 @@ const getGlobalTranslationsWithLanguageAndTag = (
   const translationsResourceWithSelectedLanguageAndTag = globalTranslationsResourcesForSelectedLanguage?.find(
     isTranslationResourceForSelectedTag(selectedTag),
   ) || { translations: {} };
-  if (selectedTag === "skjematekster") {
+  if (selectedTag === 'skjematekster') {
     Object.keys(allGlobalTranslations)
       .filter((language) => language !== languageCode)
       .map((language) => allGlobalTranslations[language])
@@ -84,7 +84,7 @@ const getGlobalTranslationsWithLanguageAndTag = (
       .forEach(
         (missingKey) =>
           (translationsResourceWithSelectedLanguageAndTag.translations[missingKey] = {
-            scope: "global",
+            scope: 'global',
             value: undefined,
           }),
       );
@@ -102,7 +102,7 @@ const transformGlobalTranslationsToCsvData = (
     .reduce((previous, current) => ({ ...previous, ...current.translations }), {} as ScopedTranslationMap);
   allPredefinedOriginalTexts.forEach((predefinedText) => {
     if (!translations[predefinedText]) {
-      translations[predefinedText] = { value: undefined, scope: "global" };
+      translations[predefinedText] = { value: undefined, scope: 'global' };
     }
   });
 
@@ -111,18 +111,18 @@ const transformGlobalTranslationsToCsvData = (
     [languageCode]: sanitizeForCsv(translations[text].value),
   }));
   const headers = [
-    { label: "Globale tekster", key: "text" },
+    { label: 'Globale tekster', key: 'text' },
     { label: languageCode?.toUpperCase(), key: languageCode },
   ];
   return { data, headers };
 };
 
 export {
-  tags,
   flattenTextsForEditPanel,
-  getGlobalTranslationsWithLanguageAndTag,
   getAllPredefinedOriginalTexts,
-  getTranslationKeysForAllPredefinedTexts,
   getCurrentOriginalTextList,
+  getGlobalTranslationsWithLanguageAndTag,
+  getTranslationKeysForAllPredefinedTexts,
+  tags,
   transformGlobalTranslationsToCsvData,
 };

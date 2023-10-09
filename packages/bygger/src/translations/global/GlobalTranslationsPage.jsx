@@ -1,64 +1,64 @@
-import { Button, Heading } from "@navikt/ds-react";
-import { LoadingComponent, makeStyles } from "@navikt/skjemadigitalisering-shared-components";
-import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
-import { useEffect, useMemo, useReducer, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { AppLayout } from "../../components/AppLayout";
-import PrimaryButtonWithSpinner from "../../components/PrimaryButtonWithSpinner";
-import UserFeedback from "../../components/UserFeedback";
-import Column from "../../components/layout/Column";
-import Row from "../../components/layout/Row";
-import { getAvailableLanguages, languagesInNorwegian } from "../../context/i18n";
-import FormBuilderLanguageSelector from "../../context/i18n/FormBuilderLanguageSelector";
-import useRedirectIfNoLanguageCode from "../../hooks/useRedirectIfNoLanguageCode";
-import { useModal } from "../../util/useModal";
-import ConfirmDeleteLanguageModal from "../ConfirmDeleteLanguageModal";
-import ApplicationTextTranslationEditPanel from "./ApplicationTextTranslationEditPanel";
-import GlobalCsvLink from "./GlobalCsvLink";
-import GlobalTranslationsPanel from "./GlobalTranslationsPanel";
-import PublishGlobalTranslationsButton from "./PublishGlobalTranslationsButton";
-import getCurrenttranslationsReducer from "./getCurrenttranslationsReducer";
+import { Button, Heading } from '@navikt/ds-react';
+import { LoadingComponent, makeStyles } from '@navikt/skjemadigitalisering-shared-components';
+import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { useEffect, useMemo, useReducer, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { AppLayout } from '../../components/AppLayout';
+import PrimaryButtonWithSpinner from '../../components/PrimaryButtonWithSpinner';
+import UserFeedback from '../../components/UserFeedback';
+import Column from '../../components/layout/Column';
+import Row from '../../components/layout/Row';
+import { getAvailableLanguages, languagesInNorwegian } from '../../context/i18n';
+import FormBuilderLanguageSelector from '../../context/i18n/FormBuilderLanguageSelector';
+import useRedirectIfNoLanguageCode from '../../hooks/useRedirectIfNoLanguageCode';
+import { useModal } from '../../util/useModal';
+import ConfirmDeleteLanguageModal from '../ConfirmDeleteLanguageModal';
+import ApplicationTextTranslationEditPanel from './ApplicationTextTranslationEditPanel';
+import GlobalCsvLink from './GlobalCsvLink';
+import GlobalTranslationsPanel from './GlobalTranslationsPanel';
+import PublishGlobalTranslationsButton from './PublishGlobalTranslationsButton';
+import getCurrenttranslationsReducer from './getCurrenttranslationsReducer';
 import {
   getAllPredefinedOriginalTexts,
   getCurrentOriginalTextList,
   getGlobalTranslationsWithLanguageAndTag,
   tags,
-} from "./utils";
+} from './utils';
 
 const useGlobalTranslationsPageStyles = makeStyles({
   root: {
-    maxWidth: "80%",
-    margin: "0 auto 2rem",
+    maxWidth: '80%',
+    margin: '0 auto 2rem',
   },
   toggleGruppe: {
-    margin: "0 auto 2rem auto",
-    width: "fit-content",
+    margin: '0 auto 2rem auto',
+    width: 'fit-content',
   },
   label: {
-    display: "grid",
-    gridTemplateColumns: "1fr 1fr auto",
-    gap: "2rem",
-    marginBottom: "1rem",
-    alignItems: "center",
+    display: 'grid',
+    gridTemplateColumns: '1fr 1fr auto',
+    gap: '2rem',
+    marginBottom: '1rem',
+    alignItems: 'center',
   },
   titleRow: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom: "3rem",
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: '3rem',
   },
   addButton: {
-    maxWidth: "15rem",
+    maxWidth: '15rem',
   },
   mainCol: {
-    gridColumn: "2 / 3",
+    gridColumn: '2 / 3',
   },
   sideBarContainer: {
-    height: "100%",
+    height: '100%',
   },
   stickySideBar: {
-    position: "sticky",
-    top: "7rem",
+    position: 'sticky',
+    top: '7rem',
   },
 });
 
@@ -101,14 +101,14 @@ const GlobalTranslationsPage = ({
       globalTranslationsWithLanguagecodeAndTag && globalTranslationsWithLanguagecodeAndTag.translations;
     if (translationsForLoadedLanguage) {
       dispatch({
-        type: "loadNewLanguage",
+        type: 'loadNewLanguage',
         payload: {
           translations: translationsForLoadedLanguage,
         },
       });
     } else {
       dispatch({
-        type: "initializeLanguage",
+        type: 'initializeLanguage',
       });
     }
   }, [globalTranslationsWithLanguagecodeAndTag]);
@@ -121,7 +121,7 @@ const GlobalTranslationsPage = ({
 
   const updateOriginalText = (id, newOriginalText, oldOriginalText) => {
     dispatch({
-      type: "updateOriginalText",
+      type: 'updateOriginalText',
       payload: {
         id,
         newOriginalText,
@@ -132,7 +132,7 @@ const GlobalTranslationsPage = ({
 
   const updateTranslation = (id, originalText, translatedText) => {
     dispatch({
-      type: "updateTranslation",
+      type: 'updateTranslation',
       payload: {
         id,
         originalText,
@@ -143,7 +143,7 @@ const GlobalTranslationsPage = ({
 
   const deleteOneRow = (id) => {
     dispatch({
-      type: "deleteOneRow",
+      type: 'deleteOneRow',
       payload: {
         id,
       },
@@ -152,7 +152,7 @@ const GlobalTranslationsPage = ({
 
   const addNewTranslation = () => {
     dispatch({
-      type: "addNewTranslation",
+      type: 'addNewTranslation',
     });
   };
 
@@ -165,7 +165,7 @@ const GlobalTranslationsPage = ({
 
   const globalTranslationsToSave = (selectedTag) => {
     return currentTranslation.reduce((allCurrentTranslationAsObject, translation) => {
-      if (translation.originalText !== "" && translation.translatedText !== "") {
+      if (translation.originalText !== '' && translation.translatedText !== '') {
         let originalTextOrKey = translation.originalText;
         if (selectedTag === tags.VALIDERING) {
           Object.entries(TEXTS.validering).forEach(([key, value]) => {
@@ -178,7 +178,7 @@ const GlobalTranslationsPage = ({
         return {
           ...allCurrentTranslationAsObject,
           [originalTextOrKey]: {
-            scope: "global",
+            scope: 'global',
             value: translation.translatedText,
           },
         };
@@ -199,7 +199,7 @@ const GlobalTranslationsPage = ({
       const duplicatedOriginalText = hasDuplicatedOriginalText();
       alert(
         `Du har fortsatt ${
-          duplicatedOriginalText.length > 1 ? "flere dupliserte original tekster" : "en duplisert original tekst"
+          duplicatedOriginalText.length > 1 ? 'flere dupliserte original tekster' : 'en duplisert original tekst'
         } (${duplicatedOriginalText})`,
       );
     } else {
@@ -221,7 +221,7 @@ const GlobalTranslationsPage = ({
     <>
       <AppLayout
         navBarProps={{
-          title: "Globale oversettelser",
+          title: 'Globale oversettelser',
           visOversettelseliste: true,
           visLagNyttSkjema: false,
           visOversettelsesMeny: true,
@@ -229,7 +229,7 @@ const GlobalTranslationsPage = ({
       >
         <Row className={classes.titleRow}>
           <Heading level="1" size="large">
-            {languageCode && languageCode !== "undefined" ? languagesInNorwegian[languageCode] : ""}
+            {languageCode && languageCode !== 'undefined' ? languagesInNorwegian[languageCode] : ''}
           </Heading>
         </Row>
         <Row>
@@ -288,7 +288,7 @@ const GlobalTranslationsPage = ({
         onConfirm={() => {
           if (allGlobalTranslations[languageCode]) {
             getTranslationIdsForLanguage().forEach((translationId) => deleteTranslation(translationId));
-            navigate("/translations");
+            navigate('/translations');
           }
         }}
         language={languagesInNorwegian[languageCode]}

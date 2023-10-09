@@ -1,10 +1,10 @@
-import { Button, Checkbox } from "@navikt/ds-react";
-import { NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
-import { UpdateFormFunction } from "../utils";
+import { Button, Checkbox } from '@navikt/ds-react';
+import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
+import { UpdateFormFunction } from '../utils';
 
-import { Copy } from "@navikt/ds-icons";
-import { makeStyles, useAppConfig } from "@navikt/skjemadigitalisering-shared-components";
-import copy from "../../../util/copy";
+import { Copy } from '@navikt/ds-icons';
+import { makeStyles, useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
+import copy from '../../../util/copy';
 
 export interface TestSkjemaFieldsProps {
   onChange: UpdateFormFunction;
@@ -13,8 +13,8 @@ export interface TestSkjemaFieldsProps {
 
 const useStyles = makeStyles({
   row: {
-    display: "flex",
-    justifyContent: "space-between",
+    display: 'flex',
+    justifyContent: 'space-between',
   },
 });
 

@@ -4,8 +4,8 @@ import {
   FormPropertiesType,
   NavFormType,
   navFormUtils,
-} from "@navikt/skjemadigitalisering-shared-domain";
-import { fetchWithErrorHandling } from "../fetchUtils";
+} from '@navikt/skjemadigitalisering-shared-domain';
+import { fetchWithErrorHandling } from '../fetchUtils';
 
 export class FormioService {
   private readonly projectUrl: string;
@@ -16,7 +16,7 @@ export class FormioService {
 
   async fetchFromProjectApi(path: string): Promise<any> {
     const response = await fetchWithErrorHandling(`${this.projectUrl}${path}`, {
-      headers: { "Content-Type": "application/json" },
+      headers: { 'Content-Type': 'application/json' },
     });
     return response.data;
   }
@@ -30,21 +30,21 @@ export class FormioService {
     return this.fetchFromProjectApi(`/form?type=form&path__in=${formPaths.toString()}&limit=${limit}`);
   }
 
-  async getPublishedForms(select = "", limit = 1000): Promise<NavFormType[]> {
+  async getPublishedForms(select = '', limit = 1000): Promise<NavFormType[]> {
     return this.fetchFromProjectApi(
       `/form?type=form&tags=nav-skjema&properties.published__exists=true&select=${select}&limit=${limit}`,
     );
   }
 
-  async getUnpublishedForms(select = "", limit = 1000): Promise<NavFormType[]> {
+  async getUnpublishedForms(select = '', limit = 1000): Promise<NavFormType[]> {
     return this.fetchFromProjectApi(
       `/form?type=form&tags=nav-skjema&properties.unpublished__exists=true&select=${select}&limit=${limit}`,
     );
   }
 
-  async getAllForms(limit = 1000, excludeDeleted = true, select = ""): Promise<NavFormType[]> {
+  async getAllForms(limit = 1000, excludeDeleted = true, select = ''): Promise<NavFormType[]> {
     return this.fetchFromProjectApi(
-      `/form?type=form${excludeDeleted ? "&tags=nav-skjema" : ""}&select=${select}&limit=${limit}`,
+      `/form?type=form${excludeDeleted ? '&tags=nav-skjema' : ''}&select=${select}&limit=${limit}`,
     );
   }
 
@@ -52,8 +52,8 @@ export class FormioService {
     const currentUserUrl = `${this.projectUrl}/current`;
     const response = await fetchWithErrorHandling(currentUserUrl, {
       headers: {
-        "Content-Type": "application/json",
-        "x-jwt-token": userToken,
+        'Content-Type': 'application/json',
+        'x-jwt-token': userToken,
       },
     });
     return response.data;
@@ -77,10 +77,10 @@ export class FormioService {
     const enrichedForm = enrichComponents ? addNavIdToComponents(form) : form;
     const formWithProps = updateProps(enrichedForm, props);
     const response: any = await fetchWithErrorHandling(`${updateFormUrl}/${form._id}`, {
-      method: "PUT",
+      method: 'PUT',
       headers: {
-        "Content-Type": "application/json",
-        "x-jwt-token": formioToken,
+        'Content-Type': 'application/json',
+        'x-jwt-token': formioToken,
       },
       body: JSON.stringify(formWithProps),
     });

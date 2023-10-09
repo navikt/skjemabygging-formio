@@ -1,6 +1,6 @@
-import { MottaksadresseData } from "../mottaksadresse";
+import { MottaksadresseData } from '../mottaksadresse';
 
-type ForstesideType = "SKJEMA" | "ETTERSENDELSE";
+type ForstesideType = 'SKJEMA' | 'ETTERSENDELSE';
 
 interface Bruker {
   brukerId: string;

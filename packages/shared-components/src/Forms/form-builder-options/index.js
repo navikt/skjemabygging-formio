@@ -1,11 +1,11 @@
-import { SANITIZE_CONFIG } from "../../template/sanitizeConfig";
-import builderEditForm from "./builderEditForm";
-import builderPalett from "./builder-palett";
+import { SANITIZE_CONFIG } from '../../template/sanitizeConfig';
+import builderPalett from './builder-palett';
+import builderEditForm from './builderEditForm';
 
 const FormBuilderOptions = {
   builder: builderPalett,
   editForm: builderEditForm,
-  language: "nb-NO",
+  language: 'nb-NO',
   sanitizeConfig: SANITIZE_CONFIG,
 };
 

@@ -1,9 +1,9 @@
 const label = {
-  "& label.navds-label": {
-    "&:after": {
+  '& label.navds-label': {
+    '&:after': {
       content: "''",
-      height: "var(--a-spacing-2)",
-      display: "block",
+      height: 'var(--a-spacing-2)',
+      display: 'block',
     },
   },
 };

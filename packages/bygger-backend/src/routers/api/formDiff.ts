@@ -1,7 +1,7 @@
-import { formDiffingTool } from "@navikt/skjemadigitalisering-shared-domain";
-import { NextFunction, Request, Response } from "express";
-import { backendInstance, formioService } from "../../services";
-import { NotFoundError } from "./helpers/errors";
+import { formDiffingTool } from '@navikt/skjemadigitalisering-shared-domain';
+import { NextFunction, Request, Response } from 'express';
+import { backendInstance, formioService } from '../../services';
+import { NotFoundError } from './helpers/errors';
 
 const formDiff = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -26,7 +26,7 @@ const formDiff = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 const notFound = (next: NextFunction) => {
-  return next(new NotFoundError("Published form not found"));
+  return next(new NotFoundError('Published form not found'));
 };
 
 export default formDiff;

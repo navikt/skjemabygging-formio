@@ -1,9 +1,9 @@
-import { TextField } from "@navikt/ds-react";
-import { NavFormSettingsDiff, NavFormType, UsageContext } from "@navikt/skjemadigitalisering-shared-domain";
-import LabelWithDiff from "../LabelWithDiff";
-import { FormMetadataError, UpdateFormFunction } from "../utils";
-import TemaKodeFields from "./TemaKodeFields";
-import TestSkjemaFields from "./TestSkjemaFields";
+import { TextField } from '@navikt/ds-react';
+import { NavFormSettingsDiff, NavFormType, UsageContext } from '@navikt/skjemadigitalisering-shared-domain';
+import LabelWithDiff from '../LabelWithDiff';
+import { FormMetadataError, UpdateFormFunction } from '../utils';
+import TemaKodeFields from './TemaKodeFields';
+import TestSkjemaFields from './TestSkjemaFields';
 
 export interface BasicFieldsProps {
   onChange: UpdateFormFunction;
@@ -33,7 +33,7 @@ const BasicFields = ({ onChange, diff, form, errors, usageContext }: BasicFields
         id="skjemanummer"
         placeholder="Skriv inn skjemanummer"
         value={skjemanummer}
-        readOnly={usageContext === "edit"}
+        readOnly={usageContext === 'edit'}
         onChange={(event) =>
           onChange({ ...form, properties: { ...form.properties, skjemanummer: event.target.value } })
         }

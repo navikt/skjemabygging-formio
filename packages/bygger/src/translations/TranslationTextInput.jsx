@@ -1,40 +1,40 @@
-import { Locked, Unlocked } from "@navikt/ds-icons";
-import { TextField, Textarea } from "@navikt/ds-react";
-import { makeStyles } from "@navikt/skjemadigitalisering-shared-components";
-import { DebounceInput } from "react-debounce-input";
+import { Locked, Unlocked } from '@navikt/ds-icons';
+import { TextField, Textarea } from '@navikt/ds-react';
+import { makeStyles } from '@navikt/skjemadigitalisering-shared-components';
+import { DebounceInput } from 'react-debounce-input';
 
 const padLockIconStyle = {
-  marginLeft: "-20px",
-  zIndex: "1",
-  cursor: "pointer",
+  marginLeft: '-20px',
+  zIndex: '1',
+  cursor: 'pointer',
 };
 const useStyles = makeStyles({
   list: {
-    display: "flex",
-    alignItems: "center",
-    "& .textarea--medMeta__teller": {
-      display: "none",
+    display: 'flex',
+    alignItems: 'center',
+    '& .textarea--medMeta__teller': {
+      display: 'none',
     },
-    "& textarea": {
-      width: "inherit",
+    '& textarea': {
+      width: 'inherit',
     },
-    "& textarea:read-only": {
-      borderColor: "#78706a",
-      backgroundColor: "#e9e7e7",
-      cursor: "not-allowed",
+    '& textarea:read-only': {
+      borderColor: '#78706a',
+      backgroundColor: '#e9e7e7',
+      cursor: 'not-allowed',
     },
   },
   element: {
-    width: "100%",
-    marginBottom: "1rem",
+    width: '100%',
+    marginBottom: '1rem',
   },
   lockedIcon: {
     ...padLockIconStyle,
-    marginTop: "2.5rem",
+    marginTop: '2.5rem',
   },
   unlockedIcon: {
     ...padLockIconStyle,
-    marginTop: "1rem",
+    marginTop: '1rem',
   },
 });
 
@@ -52,14 +52,14 @@ const TranslationTextInput = ({
   const classes = useStyles();
   return (
     <div className={classes.list}>
-      {type === "textarea" ? (
+      {type === 'textarea' ? (
         <DebounceInput
           element={Textarea}
           debounceTimeout={500}
           className={classes.element}
           label={text}
           value={value}
-          description={hasGlobalTranslation ? "Denne teksten er globalt oversatt" : undefined}
+          description={hasGlobalTranslation ? 'Denne teksten er globalt oversatt' : undefined}
           onChange={(event) => {
             onChange(event.target.value);
           }}
@@ -73,7 +73,7 @@ const TranslationTextInput = ({
           label={text}
           type={type}
           value={value}
-          description={hasGlobalTranslation ? "Denne teksten er globalt oversatt" : undefined}
+          description={hasGlobalTranslation ? 'Denne teksten er globalt oversatt' : undefined}
           onChange={(event) => {
             onChange(event.target.value);
           }}
@@ -87,7 +87,7 @@ const TranslationTextInput = ({
             className={classes.lockedIcon}
             onClick={() => {
               setHasGlobalTranslation(!hasGlobalTranslation);
-              setGlobalTranslation("");
+              setGlobalTranslation('');
             }}
           />
         ) : (
@@ -101,7 +101,7 @@ const TranslationTextInput = ({
           />
         )
       ) : (
-        ""
+        ''
       )}
     </div>
   );

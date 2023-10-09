@@ -1,0 +1,5 @@
+package-lock.json
+
+# Ignore yaml files because it contains handlebars logic 
+**/.nais/*.yaml
+**/.nais/*.yml

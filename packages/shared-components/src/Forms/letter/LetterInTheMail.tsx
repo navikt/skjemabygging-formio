@@ -1,5 +1,5 @@
-import { BodyShort, Heading } from "@navikt/ds-react";
-import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
+import { BodyShort, Heading } from '@navikt/ds-react';
+import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 
 interface Props {
   index: number;
@@ -18,15 +18,15 @@ const LetterInTheMail = ({ index, vedleggSomSkalSendes, translate }: Props) => (
     <BodyShort className="mb-4">
       {translate(TEXTS.statiske.prepareLetterPage.SendInPapirSectionInstruction)}
       {vedleggSomSkalSendes.length > 0 &&
-        " ".concat(
+        ' '.concat(
           translate(TEXTS.statiske.prepareLetterPage.sendInPapirSectionAttachTo)
-            .concat(" ")
+            .concat(' ')
             .concat(
               vedleggSomSkalSendes.length > 1
                 ? translate(TEXTS.statiske.prepareLetterPage.sendInPapirSectionAttachments)
                 : translate(TEXTS.statiske.prepareLetterPage.sendInPapirSectionAttachment),
             )
-            .concat(" ")
+            .concat(' ')
             .concat(translate(TEXTS.statiske.prepareLetterPage.sendInPapirSection)),
         )}
     </BodyShort>

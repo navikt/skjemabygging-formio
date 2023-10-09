@@ -1,9 +1,9 @@
-import { SendInnSoknadResponse } from "../../api/sendInnSoknad";
-import { dateUtils, FyllutState, Submission } from "@navikt/skjemadigitalisering-shared-domain";
+import { dateUtils, FyllutState, Submission } from '@navikt/skjemadigitalisering-shared-domain';
+import { SendInnSoknadResponse } from '../../api/sendInnSoknad';
 
 export const getFyllutMellomlagringState = (
   response?: SendInnSoknadResponse,
-): FyllutState["mellomlagring"] | undefined => {
+): FyllutState['mellomlagring'] | undefined => {
   if (response?.hoveddokumentVariant?.document?.data) {
     const submission = response.hoveddokumentVariant.document.data;
     return {

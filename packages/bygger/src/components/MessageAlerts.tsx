@@ -1,7 +1,7 @@
-import { Close } from "@navikt/ds-icons";
-import { Alert, BodyShort, Button } from "@navikt/ds-react";
-import { makeStyles, navCssVariables } from "@navikt/skjemadigitalisering-shared-components";
-import { Message } from "../hooks/useMessageQueue";
+import { Close } from '@navikt/ds-icons';
+import { Alert, BodyShort, Button } from '@navikt/ds-react';
+import { makeStyles, navCssVariables } from '@navikt/skjemadigitalisering-shared-components';
+import { Message } from '../hooks/useMessageQueue';
 
 interface AlertProps {
   message: Message;
@@ -9,18 +9,18 @@ interface AlertProps {
 
 const useStyles = makeStyles({
   alert: {
-    marginBottom: "1rem",
+    marginBottom: '1rem',
   },
   body: {
-    overflowWrap: "anywhere",
+    overflowWrap: 'anywhere',
   },
   alertContent: {
-    display: "flex",
-    alignItems: "flex-start",
-    "& .knapp": {
+    display: 'flex',
+    alignItems: 'flex-start',
+    '& .knapp': {
       color: navCssVariables.navMorkGra,
-      backgroundColor: "transparent",
-      "& svg": {
+      backgroundColor: 'transparent',
+      '& svg': {
         fill: navCssVariables.navMorkGra,
       },
     },

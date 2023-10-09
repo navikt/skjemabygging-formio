@@ -1,21 +1,21 @@
-import { BodyShort, Button, Heading } from "@navikt/ds-react";
-import { Enhet, NavFormType, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
-import { useEffect, useState } from "react";
-import { fetchMottaksadresser } from "../../api/fetchMottaksadresser";
-import AlertStripeHttpError from "../../components/error/AlertStripeHttpError";
-import { useAmplitude } from "../../context/amplitude";
-import { useLanguages } from "../../context/languages";
-import { genererFoerstesideData } from "../../util/forsteside";
-import { lastNedFilBase64 } from "../../util/pdf";
-import DownloadPdfButton from "../components/DownloadPdfButton";
-import EnhetSelector from "../components/EnhetSelector";
+import { BodyShort, Button, Heading } from '@navikt/ds-react';
+import { Enhet, NavFormType, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { useEffect, useState } from 'react';
+import { fetchMottaksadresser } from '../../api/fetchMottaksadresser';
+import AlertStripeHttpError from '../../components/error/AlertStripeHttpError';
+import { useAmplitude } from '../../context/amplitude';
+import { useLanguages } from '../../context/languages';
+import { genererFoerstesideData } from '../../util/forsteside';
+import { lastNedFilBase64 } from '../../util/pdf';
+import DownloadPdfButton from '../components/DownloadPdfButton';
+import EnhetSelector from '../components/EnhetSelector';
 
 async function lastNedFoersteside(form, submission, fyllutBaseURL, language, enhetNummer) {
   const mottaksadresser = enhetNummer ? [] : await fetchMottaksadresser(fyllutBaseURL);
   const body = genererFoerstesideData(form, submission.data, language, mottaksadresser, enhetNummer);
   return fetch(`${fyllutBaseURL}/api/foersteside`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
   })
     .then(async (response) => {
@@ -32,7 +32,7 @@ async function lastNedFoersteside(form, submission, fyllutBaseURL, language, enh
     .then((response) => response.json())
     .then((json) => json.foersteside)
     .then((base64EncodedPdf) => {
-      lastNedFilBase64(base64EncodedPdf, "Førstesideark", "pdf");
+      lastNedFilBase64(base64EncodedPdf, 'Førstesideark', 'pdf');
     });
 }
 

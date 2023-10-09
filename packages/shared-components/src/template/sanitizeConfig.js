@@ -1,14 +1,14 @@
-const allowedTags = ["svg", "g", "path"];
+const allowedTags = ['svg', 'g', 'path'];
 const allowedAttributes = [
-  "d",
-  "fill",
-  "viewbox",
-  "stroke",
-  "transform",
-  "stroke-width",
-  "fill-rule",
-  "xmlns",
-  "onclick",
+  'd',
+  'fill',
+  'viewbox',
+  'stroke',
+  'transform',
+  'stroke-width',
+  'fill-rule',
+  'xmlns',
+  'onclick',
 ];
 
 const SANITIZE_CONFIG = {

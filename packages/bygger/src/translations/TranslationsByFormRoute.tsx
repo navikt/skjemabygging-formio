@@ -1,8 +1,8 @@
-import { FormioTranslationMap } from "@navikt/skjemadigitalisering-shared-domain";
-import React, { useCallback } from "react";
-import I18nStateProvider from "../context/i18n";
-import TranslationsByFormPage from "./TranslationsByFormPage";
-import { useParams } from "react-router-dom";
+import { FormioTranslationMap } from '@navikt/skjemadigitalisering-shared-domain';
+import { useCallback } from 'react';
+import { useParams } from 'react-router-dom';
+import I18nStateProvider from '../context/i18n';
+import TranslationsByFormPage from './TranslationsByFormPage';
 
 interface TranslationRouteProps {
   loadTranslationsForEditPage: (formPath: string) => Promise<FormioTranslationMap>;

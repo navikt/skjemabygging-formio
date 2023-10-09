@@ -1,12 +1,12 @@
-import { Request } from "express";
-import { formioService } from "../services";
-import { User } from "../types/custom";
-import { getFormioToken } from "./requestTool";
+import { Request } from 'express';
+import { formioService } from '../services';
+import { User } from '../types/custom';
+import { getFormioToken } from './requestTool';
 
 const devUser = {
-  name: "dev-user",
-  preferredUsername: "dev-user-preferred",
-  NAVident: "dev-navident",
+  name: 'dev-user',
+  preferredUsername: 'dev-user-preferred',
+  NAVident: 'dev-navident',
   isAdmin: true,
 };
 
@@ -18,12 +18,12 @@ export const getDevUser = async (req: Request): Promise<User> => {
       return {
         name: formioUser.data.email,
         preferredUsername: formioUser.data.email,
-        NAVident: "N/A",
+        NAVident: 'N/A',
         isAdmin: true,
       };
     } catch (e) {
       // @ts-ignore
-      console.error("Error while fetching dev user:", e.message);
+      console.error('Error while fetching dev user:', e.message);
     }
   }
   return devUser;

@@ -1,13 +1,13 @@
-import { Alert, Fieldset, Textarea, TextField } from "@navikt/ds-react";
-import { formDiffingTool, NavFormType, TEXTS, UsageContext } from "@navikt/skjemadigitalisering-shared-domain";
-import AddressFields from "./fields/AddressFields";
-import BasicFields from "./fields/BasicFields";
-import DeclarationFields from "./fields/DeclarationFields";
-import EnhetFields from "./fields/EnhetFields";
-import SignatureFields from "./fields/SignatureFields";
-import SubmissionFields from "./fields/SubmissionFields";
-import LabelWithDiff from "./LabelWithDiff";
-import { FormMetadataError, UpdateFormFunction } from "./utils";
+import { Alert, Fieldset, Textarea, TextField } from '@navikt/ds-react';
+import { formDiffingTool, NavFormType, TEXTS, UsageContext } from '@navikt/skjemadigitalisering-shared-domain';
+import AddressFields from './fields/AddressFields';
+import BasicFields from './fields/BasicFields';
+import DeclarationFields from './fields/DeclarationFields';
+import EnhetFields from './fields/EnhetFields';
+import SignatureFields from './fields/SignatureFields';
+import SubmissionFields from './fields/SubmissionFields';
+import LabelWithDiff from './LabelWithDiff';
+import { FormMetadataError, UpdateFormFunction } from './utils';
 
 interface Props {
   form: NavFormType;
@@ -38,7 +38,7 @@ const BasicFormMetadataEditor = ({ form, publishedForm, onChange, usageContext, 
       label={<LabelWithDiff label="Tekst på knapp for nedlasting av pdf" diff={!!diff.downloadPdfButtonText} />}
       type="text"
       id="downloadPdfButtonText"
-      value={downloadPdfButtonText || ""}
+      value={downloadPdfButtonText || ''}
       onChange={(event) =>
         onChange({
           ...form,
@@ -61,7 +61,7 @@ const BasicFormMetadataEditor = ({ form, publishedForm, onChange, usageContext, 
     <>
       <Textarea
         label={<LabelWithDiff label="Generelle instruksjoner (valgfritt)" diff={!!diff.descriptionOfSignatures} />}
-        value={descriptionOfSignatures || ""}
+        value={descriptionOfSignatures || ''}
         maxLength={0}
         onChange={(event) =>
           onChange({
@@ -79,7 +79,7 @@ const BasicFormMetadataEditor = ({ form, publishedForm, onChange, usageContext, 
     <Fieldset hideLegend legend="">
       {diff.errorMessage && <Alert variant="warning">{diff.errorMessage}</Alert>}
       <div className="mb">{basicFields()}</div>
-      {usageContext === "edit" && (
+      {usageContext === 'edit' && (
         <>
           {declarationFields()}
           {downloadPdfButtonTextFields()}

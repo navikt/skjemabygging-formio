@@ -1,7 +1,7 @@
-import { BodyShort, Button } from "@navikt/ds-react";
-import { Modal } from "@navikt/skjemadigitalisering-shared-components";
-import { NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
-import { useState } from "react";
+import { BodyShort, Button } from '@navikt/ds-react';
+import { Modal } from '@navikt/skjemadigitalisering-shared-components';
+import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
+import { useState } from 'react';
 
 interface Props {
   openModal: boolean;

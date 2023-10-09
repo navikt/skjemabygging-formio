@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { loggEventSkjemaSporsmalBesvart } from "../../util/amplitude";
+import { useEffect, useState } from 'react';
+import { loggEventSkjemaSporsmalBesvart } from '../../util/amplitude';
 
 const hasFieldValueChanged = (previousValue, newValue) => previousValue !== newValue;
 

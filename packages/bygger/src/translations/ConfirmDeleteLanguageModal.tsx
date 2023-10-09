@@ -1,5 +1,5 @@
-import { BodyShort, Button } from "@navikt/ds-react";
-import { Modal, makeStyles } from "@navikt/skjemadigitalisering-shared-components";
+import { BodyShort, Button } from '@navikt/ds-react';
+import { Modal, makeStyles } from '@navikt/skjemadigitalisering-shared-components';
 
 type ConfirmDeleteLanguageModalProps = {
   isOpen: boolean;
@@ -11,11 +11,11 @@ type ConfirmDeleteLanguageModalProps = {
 
 const useStyles = makeStyles({
   buttonRow: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "flex-end",
-    gap: "1.5rem",
-    margin: "0 auto",
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    gap: '1.5rem',
+    margin: '0 auto',
   },
   modal_button: {},
 });

@@ -1,6 +1,6 @@
-import baseHttp from "../api/http";
+import baseHttp from '../api/http';
 
-type LogLevel = "info" | "error";
+type LogLevel = 'info' | 'error';
 type BaseHttp = typeof baseHttp;
 
 const noop = () => {};
@@ -10,7 +10,7 @@ class FrontendLogger {
   private readonly baseUrl: string;
   private readonly enabled: boolean;
 
-  constructor(http: BaseHttp, baseUrl: string = "", enabled: boolean = false) {
+  constructor(http: BaseHttp, baseUrl: string = '', enabled: boolean = false) {
     this.http = http;
     this.baseUrl = baseUrl;
     this.enabled = enabled;
@@ -25,11 +25,11 @@ class FrontendLogger {
   }
 
   async _info(message: string, metadata?: object) {
-    return this.log("info", message, metadata);
+    return this.log('info', message, metadata);
   }
 
   async _error(message: string, metadata?: object) {
-    return this.log("error", message, metadata);
+    return this.log('error', message, metadata);
   }
 
   private async log(level: LogLevel, message: string, metadata?: object) {

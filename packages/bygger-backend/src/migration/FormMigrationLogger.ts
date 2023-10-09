@@ -1,12 +1,12 @@
-import { Component, NavFormType, navFormUtils } from "@navikt/skjemadigitalisering-shared-domain";
+import { Component, NavFormType, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import {
   BreakingChanges,
   DependeeComponent,
   Dependencies,
   FormMigrationDiff,
   FormMigrationLogData,
-} from "../types/migration";
-import { generateDiff } from "./diffingTool";
+} from '../types/migration';
+import { generateDiff } from './diffingTool';
 
 interface AffectedComponent {
   key: string;

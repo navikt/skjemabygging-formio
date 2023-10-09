@@ -1,6 +1,6 @@
 const htmlElement = {
-  "& .formio-component-htmlelement": {
-    marginBottom: "2.5rem",
+  '& .formio-component-htmlelement': {
+    marginBottom: '2.5rem',
   },
 };
 

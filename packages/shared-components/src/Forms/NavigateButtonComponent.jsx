@@ -1,8 +1,8 @@
-import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
-import { Link, useLocation } from "react-router-dom";
-import { useAmplitude } from "../context/amplitude/index.jsx";
-import { ArrowLeftIcon } from "@navikt/aksel-icons";
-import url from "../util/url";
+import { ArrowLeftIcon } from '@navikt/aksel-icons';
+import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { Link, useLocation } from 'react-router-dom';
+import { useAmplitude } from '../context/amplitude/index.jsx';
+import url from '../util/url';
 
 const NavigateButtonComponent = ({ goBackUrl, translate }) => {
   const { search } = useLocation();

@@ -1,6 +1,6 @@
-import templates from "./templates";
+import templates from './templates';
 
 export default {
-  framework: "navdesign",
+  framework: 'navdesign',
   templates,
 };

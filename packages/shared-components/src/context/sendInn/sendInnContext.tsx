@@ -1,25 +1,25 @@
 import {
+  FyllutState,
   I18nTranslations,
   Language,
+  MellomlagringError,
   NavFormType,
   Submission,
-  FyllutState,
-  MellomlagringError,
-} from "@navikt/skjemadigitalisering-shared-domain";
-import React, { createContext, useCallback, useContext, useEffect, useReducer, useState } from "react";
-import { useLocation, useSearchParams } from "react-router-dom";
+} from '@navikt/skjemadigitalisering-shared-domain';
+import React, { createContext, useCallback, useContext, useEffect, useReducer, useState } from 'react';
+import { useLocation, useSearchParams } from 'react-router-dom';
 import {
+  SendInnSoknadResponse,
   createSoknad,
   createSoknadWithoutInnsendingsId,
   deleteSoknad,
   getSoknad,
-  SendInnSoknadResponse,
   updateSoknad,
   updateUtfyltSoknad,
-} from "../../api/sendInnSoknad";
-import { useAppConfig } from "../../configContext";
-import { getSubmissionWithFyllutState, removeFyllutState } from "./utils";
-import { mellomlagringReducer } from "./mellomlagringReducer";
+} from '../../api/sendInnSoknad';
+import { useAppConfig } from '../../configContext';
+import { mellomlagringReducer } from './mellomlagringReducer';
+import { getSubmissionWithFyllutState, removeFyllutState } from './utils';
 
 interface SendInnContextType {
   startMellomlagring: (submission: Submission) => Promise<SendInnSoknadResponse | undefined>;
@@ -56,10 +56,10 @@ const SendInnProvider = ({
   const [searchParams, setSearchParams] = useSearchParams();
 
   const isMellomlagringEnabled =
-    app === "fyllut" && submissionMethod === "digital" && !!featureToggles?.enableMellomlagring;
+    app === 'fyllut' && submissionMethod === 'digital' && !!featureToggles?.enableMellomlagring;
   // isMellomlagringReady is true if we either have successfully fetched or created mellomlagring, or if mellomlagring is not enabled
   const [isMellomlagringReady, setIsMellomlagringReady] = useState(!isMellomlagringEnabled);
-  const [initStatus, setInitStatus] = useState<"pending" | "started" | "done" | "error">("pending");
+  const [initStatus, setInitStatus] = useState<'pending' | 'started' | 'done' | 'error'>('pending');
   // Make sure that we only create once
   const [isCreateStarted, setIsCreateStarted] = useState(false);
   const [innsendingsId, setInnsendingsId] = useState<string>();
@@ -84,34 +84,34 @@ const SendInnProvider = ({
   const retrieveMellomlagring = async (innsendingsId: string) => {
     const response = await getSoknad(innsendingsId, appConfig);
     if (response?.hoveddokumentVariant.document) {
-      addQueryParamToUrl("lang", response.hoveddokumentVariant.document.language);
+      addQueryParamToUrl('lang', response.hoveddokumentVariant.document.language);
       updateSubmission(getSubmissionWithFyllutState(response));
-      dispatchFyllutMellomlagring({ type: "init", response });
+      dispatchFyllutMellomlagring({ type: 'init', response });
     }
   };
 
   useEffect(() => {
     const initializeMellomlagring = async () => {
       try {
-        if (initStatus === "pending") {
-          const innsendingsId = searchParams.get("innsendingsId");
+        if (initStatus === 'pending') {
+          const innsendingsId = searchParams.get('innsendingsId');
           if (innsendingsId) {
-            setInitStatus("started");
+            setInitStatus('started');
             setInnsendingsId(innsendingsId);
             await retrieveMellomlagring(innsendingsId);
             setIsMellomlagringReady(true);
           }
-          setInitStatus("done");
+          setInitStatus('done');
         }
       } catch (error: any) {
-        dispatchFyllutMellomlagring({ type: "error", error: error.status === 404 ? "NOT FOUND" : "GET FAILED" });
-        setInitStatus("error");
+        dispatchFyllutMellomlagring({ type: 'error', error: error.status === 404 ? 'NOT FOUND' : 'GET FAILED' });
+        setInitStatus('error');
       }
     };
     initializeMellomlagring();
   }, [searchParams, retrieveMellomlagring]);
 
-  const nbNO: Language = "nb-NO";
+  const nbNO: Language = 'nb-NO';
 
   const translationForLanguage = (language: Language = nbNO) => {
     if (language !== nbNO && Object.keys(translations).length > 0) {
@@ -121,11 +121,11 @@ const SendInnProvider = ({
   };
 
   const getLanguageFromSearchParams = (): Language => {
-    return (new URL(window.location.href).searchParams.get("lang") as Language) || nbNO;
+    return (new URL(window.location.href).searchParams.get('lang') as Language) || nbNO;
   };
 
   const startMellomlagring = async (submission: Submission) => {
-    if (isMellomlagringReady || initStatus !== "done" || isCreateStarted) {
+    if (isMellomlagringReady || initStatus !== 'done' || isCreateStarted) {
       return;
     }
 
@@ -135,14 +135,14 @@ const SendInnProvider = ({
       const translation = translationForLanguage(currentLanguage);
       const response = await createSoknad(appConfig, form, removeFyllutState(submission), currentLanguage, translation);
       updateSubmission(getSubmissionWithFyllutState(response));
-      dispatchFyllutMellomlagring({ type: "init", response });
+      dispatchFyllutMellomlagring({ type: 'init', response });
       setInnsendingsId(response?.innsendingsId);
-      addQueryParamToUrl("innsendingsId", response?.innsendingsId);
+      addQueryParamToUrl('innsendingsId', response?.innsendingsId);
       setIsMellomlagringReady(true);
       return response;
     } catch (error: any) {
-      dispatchFyllutMellomlagring({ type: "error", error: "CREATE FAILED" });
-      logger?.info("Oppretting av mellomlagring feilet", error);
+      dispatchFyllutMellomlagring({ type: 'error', error: 'CREATE FAILED' });
+      logger?.info('Oppretting av mellomlagring feilet', error);
     }
   };
 
@@ -162,11 +162,11 @@ const SendInnProvider = ({
         translation,
         innsendingsId,
       );
-      dispatchFyllutMellomlagring({ type: "update", response });
+      dispatchFyllutMellomlagring({ type: 'update', response });
       return response;
     } catch (error) {
-      dispatchFyllutMellomlagring({ type: "error", error: "UPDATE FAILED" });
-      logger?.info("Oppdatering av mellomlagring feilet", error as Error);
+      dispatchFyllutMellomlagring({ type: 'error', error: 'UPDATE FAILED' });
+      logger?.info('Oppdatering av mellomlagring feilet', error as Error);
       return error as Error;
     }
   };
@@ -179,8 +179,8 @@ const SendInnProvider = ({
     try {
       return await deleteSoknad(appConfig, innsendingsId);
     } catch (error) {
-      dispatchFyllutMellomlagring({ type: "error", error: "DELETE FAILED" });
-      logger?.info("Sletting av mellomlagring feilet", error as Error);
+      dispatchFyllutMellomlagring({ type: 'error', error: 'DELETE FAILED' });
+      logger?.info('Sletting av mellomlagring feilet', error as Error);
       return error as Error;
     }
   };
@@ -199,9 +199,9 @@ const SendInnProvider = ({
       } catch (error: any) {
         try {
           await updateSoknad(appConfig, form, submission, currentLanguage, translation, innsendingsId);
-          dispatchFyllutMellomlagring({ type: "error", error: "SUBMIT FAILED" });
+          dispatchFyllutMellomlagring({ type: 'error', error: 'SUBMIT FAILED' });
         } catch (error) {
-          dispatchFyllutMellomlagring({ type: "error", error: "SUBMIT AND UPDATE FAILED" });
+          dispatchFyllutMellomlagring({ type: 'error', error: 'SUBMIT AND UPDATE FAILED' });
         }
       }
     } else {

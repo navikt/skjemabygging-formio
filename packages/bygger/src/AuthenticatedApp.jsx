@@ -1,12 +1,11 @@
-import PropTypes from "prop-types";
-import React from "react";
-import { Navigate, Route, Routes } from "react-router-dom";
-import { FormsRouter } from "./Forms";
-import MigrationRouter from "./migration/MigrationRouter";
-import MottaksadresserPage from "./mottaksadresser/MottaksadresserPage";
-import ReportsPage from "./reports/ReportsPage";
-import TranslationsRouter from "./translations/TranslationsRouter";
-import BulkPublishPage from "./migration/BulkPublishPage";
+import PropTypes from 'prop-types';
+import { Navigate, Route, Routes } from 'react-router-dom';
+import { FormsRouter } from './Forms';
+import BulkPublishPage from './migration/BulkPublishPage';
+import MigrationRouter from './migration/MigrationRouter';
+import MottaksadresserPage from './mottaksadresser/MottaksadresserPage';
+import ReportsPage from './reports/ReportsPage';
+import TranslationsRouter from './translations/TranslationsRouter';
 
 function AuthenticatedApp({ serverURL, formio }) {
   return (

@@ -3,15 +3,15 @@ import {
   I18nTranslationMap,
   NavFormType,
   Submission,
-} from "@navikt/skjemadigitalisering-shared-domain";
-import { logger } from "../../../logger";
-import { base64Encode } from "../../../utils/base64";
+} from '@navikt/skjemadigitalisering-shared-domain';
+import { logger } from '../../../logger';
+import { base64Encode } from '../../../utils/base64';
 
 interface HovedDokument {
   vedleggsnr: string;
   label: string;
   tittel: string;
-  mimetype: "application/json" | "application/pdf";
+  mimetype: 'application/json' | 'application/pdf';
   pakrevd: boolean;
   document: string | null;
 }
@@ -44,17 +44,17 @@ const isValidUuid = (innsendingsId: string): boolean => {
   return validUuidExpr.test(innsendingsId);
 };
 
-const DEFAULT_LANGUAGE = "nb-NO";
+const DEFAULT_LANGUAGE = 'nb-NO';
 export const objectToByteArray = (obj: object) => Array.from(new TextEncoder().encode(JSON.stringify(obj)));
 
 export const byteArrayToObject = (byteArray?: Buffer) => JSON.parse(new TextDecoder().decode(byteArray));
 
-export const sanitizeInnsendingsId = (innsendingsId: string) => innsendingsId.replace(/[./]/g, "");
+export const sanitizeInnsendingsId = (innsendingsId: string) => innsendingsId.replace(/[./]/g, '');
 
 export const validateInnsendingsId = (innsendingsId: string | undefined, supplementaryMessage?: string) => {
   let errorMessage;
   if (!innsendingsId) {
-    errorMessage = "InnsendingsId mangler.";
+    errorMessage = 'InnsendingsId mangler.';
   } else if (!isValidUuid(innsendingsId)) {
     errorMessage = `${innsendingsId} er ikke en gyldig innsendingsId.`;
   }
@@ -69,12 +69,12 @@ export const validateInnsendingsId = (innsendingsId: string | undefined, supplem
 
 export const isMellomLagringEnabled = (featureToggles: FeatureTogglesMap) => {
   if (!featureToggles?.enableMellomlagring) {
-    logger.debug("Mellomlagring not enabled, returning data in body");
+    logger.debug('Mellomlagring not enabled, returning data in body');
     return false;
   }
 
   if (!featureToggles?.enableSendInnIntegration) {
-    logger.debug("SendInn integration not enabled, returning data in body");
+    logger.debug('SendInn integration not enabled, returning data in body');
     return false;
   }
   return true;
@@ -103,14 +103,14 @@ export const assembleSendInnSoknadBody = (
 
   const hoveddokument: HovedDokument = {
     ...dokumentMetaData,
-    mimetype: "application/pdf",
+    mimetype: 'application/pdf',
     pakrevd: true,
     document: submissionPdfAsByteArray ? base64Encode(submissionPdfAsByteArray) : null,
   };
 
   const hoveddokumentVariant: HovedDokument = {
     ...dokumentMetaData,
-    mimetype: "application/json",
+    mimetype: 'application/json',
     pakrevd: false,
     document: base64Encode(
       objectToByteArray({

@@ -2,27 +2,27 @@ const BuilderEditForm = {
   // placeholder, just defines defaults. Modifiy this later
   textfield: [
     {
-      key: "display",
+      key: 'display',
       components: [],
     },
     {
-      key: "data",
+      key: 'data',
       components: [],
     },
     {
-      key: "validation",
+      key: 'validation',
       components: [],
     },
     {
-      key: "api",
+      key: 'api',
       components: [],
     },
     {
-      key: "conditional",
+      key: 'conditional',
       components: [],
     },
     {
-      key: "logic",
+      key: 'logic',
       components: [],
     },
   ],
