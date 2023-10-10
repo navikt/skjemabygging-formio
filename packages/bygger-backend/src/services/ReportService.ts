@@ -79,11 +79,19 @@ class ReportService {
       'innsending',
       'signaturfelt',
       'path',
+      'har vedlegg',
+      'antall vedlegg',
+      'vedleggsnavn',
     ];
-    const allForms = await this.formioService.getAllForms(undefined, true, 'title,path,properties');
+    const allForms = await this.formioService.getAllForms(undefined, true, 'title,path,properties,components');
     const stringifier = stringify({ header: true, columns, delimiter: ';' });
     stringifier.pipe(writableStream);
     allForms.filter(notTestForm).forEach((form) => {
+      const hasAttachment = this.hasAttachment(form);
+      const attachmentTitles = this.getAttachmentTitles(form);
+      const numberOfAttachments = attachmentTitles.length;
+      const joinedAttachmentNames = attachmentTitles.join(',');
+
       const { title, properties, path } = form;
       const { published, publishedBy, modified, modifiedBy, innsending, tema, signatures } = properties;
       let unpublishedChanges: string = '';
@@ -105,9 +113,29 @@ class ReportService {
         innsending,
         numberOfSignatures,
         path,
+        hasAttachment ? 'ja' : 'nei',
+        numberOfAttachments,
+        joinedAttachmentNames,
       ]);
     });
     stringifier.end();
+  }
+
+  private getAttachmentPanel(form: NavFormType) {
+    return form.components.find((component) => component.isAttachmentPanel);
+  }
+
+  private hasAttachment(form: NavFormType) {
+    const attachmentPanel = this.getAttachmentPanel(form);
+    return !!attachmentPanel?.components?.length;
+  }
+
+  private getAttachmentTitles(form: NavFormType): string[] {
+    const attachmentPanel = this.getAttachmentPanel(form);
+    if (!attachmentPanel || !attachmentPanel.components) return [];
+
+    const attachmentTitles = attachmentPanel.components.map((component) => component.properties?.vedleggstittel);
+    return attachmentTitles.filter((x): x is string => x !== undefined);
   }
 
   private async generateUnpublishedForms(writableStream: Writable) {
