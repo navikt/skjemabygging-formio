@@ -73,18 +73,18 @@ describe('Mellomlagring', () => {
       cy.clickStart();
       cy.wait('@createMellomlagring');
       cy.findByRole('heading', { name: 'Valgfrie opplysninger' }).should('exist');
-      cy.clickNextStep();
+      cy.clickSaveAndContinue();
       cy.wait('@updateMellomlagring');
       cy.findByRole('group', { name: 'Ønsker du å få gaven innpakket' }).within(() => {
         cy.findByLabelText('Nei').check({ force: true });
       });
-      cy.clickNextStep();
+      cy.clickSaveAndContinue();
       cy.wait('@updateMellomlagring');
       cy.findByLabelText('Hvordan ønsker du å motta pakken?').click();
-      cy.findByLabelText('Hvordan ønsker du å motta pakken?').type('På døra{enter}');
-      cy.clickNextStep();
+      cy.findByLabelText('Hvordan ønsker du å motta pakken?').type('P{enter}');
+      cy.clickSaveAndContinue();
       cy.wait('@updateMellomlagring');
-      cy.clickNextStep();
+      cy.clickSaveAndContinue();
       cy.wait('@updateMellomlagring');
       cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.saveDraft }).should('exist');
       cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.cancelAndDelete }).should('exist');
