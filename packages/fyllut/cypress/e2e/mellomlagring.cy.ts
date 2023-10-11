@@ -60,15 +60,15 @@ describe('Mellomlagring', () => {
         fixture: 'mellomlagring/responseWithInnsendingsId.json',
       }).as('createMellomlagring');
       cy.intercept('PUT', '/fyllut/api/send-inn/soknad*', (req) => {
-        return {
+        req.reply({
           innsendingsId: '75eedb4c-1253-44d8-9fde-3648f4bb1878',
-          endretDato: '2023-10-10T10:05:00.328667+02:00',
+          endretDato: `2023-10-10T10:02:00.328667+02:00`,
           hoveddokumentVariant: {
             document: {
               data: req.body.submission,
             },
           },
-        };
+        });
       }).as('updateMellomlagring');
       cy.intercept('GET', '/fyllut/api/send-inn/soknad/8e3c3621-76d7-4ebd-90d4-34448ebcccc3', {
         fixture: 'mellomlagring/getTestMellomlagring-valid.json',
