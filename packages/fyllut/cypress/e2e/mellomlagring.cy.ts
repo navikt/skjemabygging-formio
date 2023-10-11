@@ -88,8 +88,10 @@ describe('Mellomlagring', () => {
       });
       cy.clickSaveAndContinue();
       cy.wait('@updateMellomlagring');
-      cy.findByLabelText('Hvordan ønsker du å motta pakken?').click();
-      cy.findByLabelText('Hvordan ønsker du å motta pakken?').type('P{enter}');
+      // eslint-disable-next-line cypress/no-unnecessary-waiting
+      cy.wait(200); // has to wait on form.io to redraw page after updating mellomlagring
+      cy.findByRole('combobox', { name: 'Hvordan ønsker du å motta pakken?' }).click();
+      cy.findByRole('combobox', { name: 'Hvordan ønsker du å motta pakken?' }).type('P{enter}');
       cy.clickSaveAndContinue();
       cy.wait('@updateMellomlagring');
       cy.clickSaveAndContinue();
