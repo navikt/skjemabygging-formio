@@ -24,11 +24,11 @@ export const mellomlagringReducer = (
     case 'update':
       return { ...state, ...(getFyllutMellomlagringState(action.response) ?? {}), error: undefined };
     case 'error':
-      return { ...state, error: getError(action.error) };
+      return { ...state, error: getError(action.error, state?.savedDate) };
   }
 };
 
-const getError = (type: ErrorType): MellomlagringError => {
+const getError = (type: ErrorType, savedDate?: string): MellomlagringError => {
   switch (type) {
     case 'NOT FOUND':
       return { type, message: TEXTS.statiske.mellomlagringError.get.notFoundMessage };
@@ -61,12 +61,21 @@ const getError = (type: ErrorType): MellomlagringError => {
         type,
         title: TEXTS.statiske.mellomlagringError.submit.title,
         message: TEXTS.statiske.mellomlagringError.submit.draftSaved,
+        messageParams: { date: savedDate },
       };
     case 'SUBMIT AND UPDATE FAILED':
+      const draftSavedMessage = savedDate
+        ? {
+            message: TEXTS.statiske.mellomlagringError.submit.draftSaved,
+            messageParams: { date: savedDate },
+          }
+        : {};
+
       return {
         type,
         title: TEXTS.statiske.mellomlagringError.submit.title,
         message: TEXTS.statiske.mellomlagringError.submit.draftNotSaved,
+        ...draftSavedMessage,
       };
   }
 };

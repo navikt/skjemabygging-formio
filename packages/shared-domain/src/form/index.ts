@@ -155,7 +155,12 @@ type ErrorType =
   | 'DELETE FAILED'
   | 'SUBMIT FAILED'
   | 'SUBMIT AND UPDATE FAILED';
-export type MellomlagringError = { title?: string; message: string; type: ErrorType };
+export type MellomlagringError = {
+  title?: string;
+  message: string;
+  type: ErrorType;
+  messageParams?: Record<string, any>;
+};
 
 export interface FyllutState {
   mellomlagring?: {

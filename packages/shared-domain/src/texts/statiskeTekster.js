@@ -46,8 +46,9 @@ export const statiske = {
     },
     submit: {
       title: 'Beklager, vi har midlertidige tekniske problemer.',
-      draftSaved: 'Skjemaet er lagret som et utkast på Min Side - Utkast. Vennligst prøv igjen senere.',
-      draftNotSaved: 'Vennligst prøv igjen senere.',
+      draftSaved: 'Skjemaet ble sist lagret {{date}}. Du finner utkastet på Min Side. Vennligst prøv igjen senere.',
+      draftNotSaved:
+        'Vennligst prøv igjen senere. Vær oppmerksom på at du kan miste endringene dine hvis du forlater nettstedet.',
     },
   },
   summaryPage: {
