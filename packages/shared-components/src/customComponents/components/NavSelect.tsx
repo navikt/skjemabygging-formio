@@ -48,6 +48,7 @@ const ReactSelectWrapper = ({
   useEffect(() => {
     setSelectedOption(value);
   }, [value, options]);
+
   return (
     <ReactSelect
       id={`selectContainer-${component.id}-${component.key}`}
@@ -227,12 +228,9 @@ class NavSelect extends FormioReactComponent {
         .finally(() => {
           this.isLoading = false;
           this.loadFinished = true;
-          console.log("redraw", element);
           super.redraw();
         });
     }
-
-    console.log("renderReact", element);
 
     return element.render(
       <ReactSelectWrapper
