@@ -156,7 +156,9 @@ export const removeComponents = (form: NavFormType, isTarget: ComponentFilterFun
   return formCopy;
 };
 
-export const isVedleggspanel = (component: Component) => !!(component.type === 'panel' && component.isAttachmentPanel);
+export const isVedleggspanel = (component: Component) => {
+  return !!(component.type === 'panel' && component.isAttachmentPanel);
+};
 
 export const removeVedleggspanel = (form: NavFormType) => {
   return removeComponents(form, isVedleggspanel);
@@ -204,6 +206,23 @@ const getActivePanelsFromForm = (form: NavFormType, submission?: Submission, sub
     .filter((panel) => !(submissionMethod === 'digital' && isVedleggspanel(panel)));
 };
 
+const getAttachmentPanel = (form: NavFormType) => {
+  return form.components.find((component) => isVedleggspanel(component));
+};
+
+const hasAttachment = (form: NavFormType) => {
+  const attachmentPanel = getAttachmentPanel(form);
+  return !!attachmentPanel?.components?.length;
+};
+
+const getAttachmentTitles = (form: NavFormType): string[] => {
+  const attachmentPanel = getAttachmentPanel(form);
+  if (!attachmentPanel || !attachmentPanel.components) return [];
+
+  const attachmentTitles = attachmentPanel.components.map((component) => component.properties?.vedleggstittel);
+  return attachmentTitles.filter((x): x is string => x !== undefined);
+};
+
 const navFormUtils = {
   formMatcherPredicate,
   toFormPath,
@@ -218,5 +237,8 @@ const navFormUtils = {
   findByNavIdOrKey,
   enrichComponentsWithNavIds,
   getActivePanelsFromForm,
+  getAttachmentPanel,
+  hasAttachment,
+  getAttachmentTitles,
 };
 export default navFormUtils;

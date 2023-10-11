@@ -1,6 +1,7 @@
-import { FormPropertiesType, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
+import { Component, FormPropertiesType, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import MemoryStream from 'memorystream';
 import nock from 'nock';
+import { ComponentProperties } from '../../../shared-domain/src/form';
 import config from '../config';
 import ReportService from './ReportService';
 import { formioService } from './index';
@@ -77,6 +78,7 @@ describe('ReportService', () => {
           const publishedForms = [
             {
               title: 'Testskjema1',
+              components: [],
               properties: {
                 skjemanummer: 'TEST1',
                 signatures: undefined,
@@ -96,6 +98,7 @@ describe('ReportService', () => {
           const publishedForms = [
             {
               title: 'Testskjema1',
+              components: [],
               properties: {
                 skjemanummer: 'TEST1',
                 signatures: [{ label: '' }],
@@ -115,6 +118,7 @@ describe('ReportService', () => {
           const publishedForms = [
             {
               title: 'Testskjema1',
+              components: [],
               properties: {
                 skjemanummer: 'TEST1',
                 signatures: [{ label: 'Lege' }, { label: 'Verge' }, { label: 'Søker' }],
@@ -138,6 +142,7 @@ describe('ReportService', () => {
           const publishedForms = [
             {
               title: 'Testskjema1',
+              components: [],
               properties: {
                 skjemanummer: 'TEST1',
                 published: '2022-07-28T10:00:10.325Z',
@@ -158,6 +163,7 @@ describe('ReportService', () => {
           const publishedForms = [
             {
               title: 'Testskjema1',
+              components: [],
               properties: {
                 skjemanummer: 'TEST1',
                 published: '2022-07-28T10:00:10.325Z',
@@ -178,6 +184,7 @@ describe('ReportService', () => {
           const publishedForms = [
             {
               title: 'Testskjema1',
+              components: [],
               properties: {
                 skjemanummer: 'TEST1',
                 modified: '2022-07-28T11:00:05.254Z',
@@ -200,6 +207,7 @@ describe('ReportService', () => {
         const publishedForms = [
           {
             title: 'Testskjema1',
+            components: [],
             properties: {
               skjemanummer: 'TEST1',
               published: '2022-07-28T10:00:10.325Z',
@@ -208,6 +216,7 @@ describe('ReportService', () => {
           },
           {
             title: 'Testskjema2',
+            components: [],
             properties: {
               skjemanummer: 'TEST2',
               published: '2022-07-28T10:00:10.325Z',
@@ -216,6 +225,7 @@ describe('ReportService', () => {
           },
           {
             title: 'Testskjema3',
+            components: [],
             properties: {
               skjemanummer: 'TEST3',
               published: '2022-07-28T10:00:10.325Z',
@@ -232,10 +242,35 @@ describe('ReportService', () => {
         );
       });
 
-      it('does not include testform', async () => {
+      it('has correct attachment fields', async () => {
+        const HEADER_HAS_ATTACHMENTS = 'har vedlegg';
+        const HEADER_NUMBER_OF_ATTACHMENTS = 'antall vedlegg';
+        const HEADER_ATTACHMENT_NAMES = 'vedleggsnavn';
+
         const publishedForms = [
           {
             title: 'Testskjema1',
+            components: [
+              {
+                type: 'panel',
+                isAttachmentPanel: true,
+                title: 'Vedlegg',
+                components: [
+                  {
+                    properties: {
+                      vedleggstittel: 'Annet',
+                      vedleggskode: 'N6',
+                    } as ComponentProperties,
+                  },
+                  {
+                    properties: {
+                      vedleggstittel: 'Uttalelse fra fagpersonell',
+                      vedleggskode: 'L8',
+                    } as ComponentProperties,
+                  },
+                ] as Component[],
+              },
+            ] as Component[],
             properties: {
               skjemanummer: 'TEST1',
               published: '2022-07-28T10:00:10.325Z',
@@ -244,6 +279,68 @@ describe('ReportService', () => {
           },
           {
             title: 'Testskjema2',
+            components: [],
+            properties: {
+              skjemanummer: 'TEST2',
+              published: '2022-07-28T10:00:10.325Z',
+              publishedLanguages: ['en'],
+            } as FormPropertiesType,
+          },
+          {
+            title: 'Testskjema3',
+            components: [
+              {
+                type: 'panel',
+                isAttachmentPanel: true,
+                title: 'Vedlegg',
+                components: [] as Component[],
+              },
+            ] as Component[],
+            properties: {
+              skjemanummer: 'TEST3',
+              published: '2022-07-28T10:00:10.325Z',
+              publishedLanguages: undefined,
+            } as FormPropertiesType,
+          },
+        ];
+        setupNock(publishedForms);
+
+        const writableStream = createWritableStream();
+        await reportService.generate('all-forms-summary', writableStream);
+        const report = parseReport(writableStream.toString());
+        expect(report.numberOfForms).toBe(3);
+
+        const formFields1 = report.forms[0];
+        const formFields2 = report.forms[1];
+        const formFields3 = report.forms[2];
+
+        expect(formFields1[report.getHeaderIndex(HEADER_HAS_ATTACHMENTS)]).toBe('ja'); // has attachments
+        expect(formFields2[report.getHeaderIndex(HEADER_HAS_ATTACHMENTS)]).toBe('nei'); // no components
+        expect(formFields3[report.getHeaderIndex(HEADER_HAS_ATTACHMENTS)]).toBe('nei'); // empty components array
+
+        expect(formFields1[report.getHeaderIndex(HEADER_NUMBER_OF_ATTACHMENTS)]).toBe('2'); // has attachments
+        expect(formFields2[report.getHeaderIndex(HEADER_NUMBER_OF_ATTACHMENTS)]).toBe('0'); // no components
+        expect(formFields3[report.getHeaderIndex(HEADER_NUMBER_OF_ATTACHMENTS)]).toBe('0'); // empty components array
+
+        expect(formFields1[report.getHeaderIndex(HEADER_ATTACHMENT_NAMES)]).toBe('Annet,Uttalelse fra fagpersonell'); // has attachments
+        expect(formFields2[report.getHeaderIndex(HEADER_ATTACHMENT_NAMES)]).toBe(''); // no components
+        expect(formFields3[report.getHeaderIndex(HEADER_ATTACHMENT_NAMES)]).toBe(''); // empty components array
+      });
+
+      it('does not include testform', async () => {
+        const publishedForms = [
+          {
+            title: 'Testskjema1',
+            components: [],
+            properties: {
+              skjemanummer: 'TEST1',
+              published: '2022-07-28T10:00:10.325Z',
+              publishedLanguages: ['en', 'nn-NO'],
+            } as FormPropertiesType,
+          },
+          {
+            title: 'Testskjema2',
+            components: [],
             properties: {
               skjemanummer: 'TEST2',
               published: '2022-07-28T10:00:10.325Z',

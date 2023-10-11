@@ -1,4 +1,4 @@
-import { NavFormType, ReportDefinition } from '@navikt/skjemadigitalisering-shared-domain';
+import { NavFormType, ReportDefinition, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { stringify } from 'csv-stringify';
 import { DateTime } from 'luxon';
 import { Writable } from 'stream';
@@ -79,11 +79,19 @@ class ReportService {
       'innsending',
       'signaturfelt',
       'path',
+      'har vedlegg',
+      'antall vedlegg',
+      'vedleggsnavn',
     ];
-    const allForms = await this.formioService.getAllForms(undefined, true, 'title,path,properties');
+    const allForms = await this.formioService.getAllForms(undefined, true, 'title,path,properties,components');
     const stringifier = stringify({ header: true, columns, delimiter: ';' });
     stringifier.pipe(writableStream);
     allForms.filter(notTestForm).forEach((form) => {
+      const hasAttachment = navFormUtils.hasAttachment(form);
+      const attachmentTitles = navFormUtils.getAttachmentTitles(form);
+      const numberOfAttachments = attachmentTitles.length;
+      const joinedAttachmentNames = attachmentTitles.join(',');
+
       const { title, properties, path } = form;
       const { published, publishedBy, modified, modifiedBy, innsending, tema, signatures } = properties;
       let unpublishedChanges: string = '';
@@ -105,6 +113,9 @@ class ReportService {
         innsending,
         numberOfSignatures,
         path,
+        hasAttachment ? 'ja' : 'nei',
+        numberOfAttachments,
+        joinedAttachmentNames,
       ]);
     });
     stringifier.end();
