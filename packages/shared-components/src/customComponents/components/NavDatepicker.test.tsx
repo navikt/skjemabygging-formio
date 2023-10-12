@@ -22,7 +22,7 @@ describe("NavDatePicker", () => {
   };
 
   beforeEach(() => {
-    datePicker = new NavDatePicker();
+    datePicker = new NavDatePicker(undefined, {}, {});
     vi.spyOn(NavDatePicker.prototype, "showNorwegianOrTranslation").mockImplementation((text, params) =>
       mockedShowNorwegianOrTranslation(text, params),
     );

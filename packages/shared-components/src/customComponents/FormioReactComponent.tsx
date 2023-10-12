@@ -31,6 +31,8 @@ const FormioReactComponent = class extends ReactComponent {
     if (!this.shouldSetValue) {
       super.setValue(value, flags);
       super.redraw();
+    } else {
+      super.setValue(value, flags);
     }
   }
 

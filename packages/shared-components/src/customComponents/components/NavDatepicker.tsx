@@ -98,6 +98,7 @@ export default class NavDatepicker extends FormioReactComponent {
   validateEarliestAndLatest(earliestAllowedDate, latestAllowedDate, inputDate) {
     const earliestAllowedDateAsString = earliestAllowedDate ? earliestAllowedDate.format("DD.MM.YYYY") : "";
     const latestAllowedDateAsString = latestAllowedDate ? latestAllowedDate.format("DD.MM.YYYY") : "";
+
     if (earliestAllowedDate && latestAllowedDate) {
       if (!isCorrectOrder(earliestAllowedDate, latestAllowedDate, true)) {
         return true;
@@ -352,7 +353,6 @@ export default class NavDatepicker extends FormioReactComponent {
   componentIsValid = (isValid) => {
     if (isValid !== this.isValid) {
       this.isValid = !this.isValid;
-      this.renderReact(this.reactInstance);
     }
   };
 }
