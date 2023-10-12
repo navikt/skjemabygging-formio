@@ -23,9 +23,9 @@ import { getSubmissionWithFyllutState, removeFyllutState } from './utils';
 
 interface SendInnContextType {
   startMellomlagring: (submission: Submission) => Promise<SendInnSoknadResponse | undefined>;
-  updateMellomlagring: (submission: Submission) => Promise<SendInnSoknadResponse | Error | undefined>;
-  submitSoknad: (submission: Submission) => Promise<SendInnSoknadResponse | Error | undefined>;
-  deleteMellomlagring: () => Promise<{ status: string; info: string } | Error | undefined>;
+  updateMellomlagring: (submission: Submission) => Promise<SendInnSoknadResponse | undefined>;
+  submitSoknad: (submission: Submission) => Promise<SendInnSoknadResponse | undefined>;
+  deleteMellomlagring: () => Promise<{ status: string; info: string } | undefined>;
   isMellomlagringActive: boolean;
   isMellomlagringEnabled: boolean;
   isMellomlagringReady: boolean;
@@ -146,7 +146,7 @@ const SendInnProvider = ({
     }
   };
 
-  const updateMellomlagring = async (submission: Submission): Promise<SendInnSoknadResponse | Error | undefined> => {
+  const updateMellomlagring = async (submission: Submission): Promise<SendInnSoknadResponse | undefined> => {
     if (!isMellomlagringEnabled || !isMellomlagringReady) {
       return;
     }
@@ -167,11 +167,10 @@ const SendInnProvider = ({
     } catch (error) {
       dispatchFyllutMellomlagring({ type: 'error', error: 'UPDATE FAILED' });
       logger?.info('Oppdatering av mellomlagring feilet', error as Error);
-      return error as Error;
     }
   };
 
-  const deleteMellomlagring = async (): Promise<{ status: string; info: string } | Error | undefined> => {
+  const deleteMellomlagring = async (): Promise<{ status: string; info: string } | undefined> => {
     if (!isMellomlagringEnabled || !innsendingsId) {
       return;
     }
@@ -181,7 +180,6 @@ const SendInnProvider = ({
     } catch (error) {
       dispatchFyllutMellomlagring({ type: 'error', error: 'DELETE FAILED' });
       logger?.info('Sletting av mellomlagring feilet', error as Error);
-      return error as Error;
     }
   };
 
