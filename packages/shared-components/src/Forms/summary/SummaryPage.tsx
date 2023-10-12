@@ -122,13 +122,13 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
             <>
               <Alert variant="info" className={styles.validationAlert}>
                 <span>
-                  {translate(TEXTS.statiske.summaryPage.validationMessage.start)}
+                  {`${translate(TEXTS.statiske.summaryPage.validationMessage)} `}
                   <ExclamationmarkTriangleFillIcon
                     className={styles.exclamationmarkIcon}
-                    title="Opplysninger mangler"
+                    title={translate(TEXTS.statiske.summaryPage.validationErrorIcon)}
                     fontSize="1.5rem"
                   />
-                  {translate(TEXTS.statiske.summaryPage.validationMessage.end)}
+                  {'.'}
                 </span>
               </Alert>
               <div className="button-row">
