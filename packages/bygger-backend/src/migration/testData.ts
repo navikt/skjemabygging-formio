@@ -1,7 +1,7 @@
-import { Component, NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
+import { Component, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 
 const originalPanelComponent = {
-  title: "Veiledning",
+  title: 'Veiledning',
   breadcrumbClickable: true,
   buttonSettings: {
     previous: true,
@@ -12,174 +12,174 @@ const originalPanelComponent = {
   saveOnEnter: false,
   scrollToTop: false,
   collapsible: false,
-  key: "veiledning",
-  type: "panel",
-  label: "Veiledning",
+  key: 'veiledning',
+  type: 'panel',
+  label: 'Veiledning',
   input: false,
   components: [],
   tableView: false,
 };
 
 const originalSkjemaGruppeComponent = {
-  legend: "Skjemagruppe",
-  key: "navSkjemagruppe",
-  type: "navSkjemagruppe",
-  label: "Skjemagruppe",
+  legend: 'Skjemagruppe',
+  key: 'navSkjemagruppe',
+  type: 'navSkjemagruppe',
+  label: 'Skjemagruppe',
   input: false,
   tableView: false,
   components: [],
 };
 
 const originalTextFieldComponent = {
-  label: "Fornavn",
-  fieldSize: "input--xxl",
-  autocomplete: "given-name",
-  validateOn: "blur",
+  label: 'Fornavn',
+  fieldSize: 'input--xxl',
+  autocomplete: 'given-name',
+  validateOn: 'blur',
   validate: {
     required: true,
   },
-  key: "nyttFornavn",
-  type: "textfield",
+  key: 'nyttFornavn',
+  type: 'textfield',
   input: true,
   dataGridLabel: true,
   tableView: true,
 } as unknown as Component;
 
 const originalFodselsnummerComponent = {
-  label: "Fødselsnummer / D-nummer",
-  key: "fodselsnummerDNummer",
-  type: "fnrfield",
-  fieldSize: "input--s",
+  label: 'Fødselsnummer / D-nummer',
+  key: 'fodselsnummerDNummer',
+  type: 'fnrfield',
+  fieldSize: 'input--s',
   input: true,
   spellcheck: false,
   dataGridLabel: true,
-  validateOn: "blur",
+  validateOn: 'blur',
   validate: {
-    custom: "valid = instance.originalValidateFnr(input)",
+    custom: 'valid = instance.originalValidateFnr(input)',
     required: true,
   },
   tableView: true,
 };
 
 const originalForm = {
-  path: "test-form",
+  path: 'test-form',
   components: [originalFodselsnummerComponent, originalTextFieldComponent],
 };
 
 const radioComponent = {
-  key: "radioComponent",
-  id: "radioComponent",
-  label: "Radio",
-  type: "radio",
+  key: 'radioComponent',
+  id: 'radioComponent',
+  label: 'Radio',
+  type: 'radio',
   values: [
     {
-      value: "ja",
-      label: "Ja",
+      value: 'ja',
+      label: 'Ja',
     },
     {
-      value: "nei",
-      label: "Nei",
+      value: 'nei',
+      label: 'Nei',
     },
   ],
 } as unknown as Component;
 
 const checkboxComponent = {
-  key: "checkboxComponent",
-  id: "checkboxComponent",
-  type: "checkbox",
-  label: "Checkbox",
+  key: 'checkboxComponent',
+  id: 'checkboxComponent',
+  type: 'checkbox',
+  label: 'Checkbox',
 };
 
 const componentWithSimpleConditionalToRadio = {
-  key: "componentWithSimpleConditionalToRadio",
-  id: "componentWithSimpleConditionalToRadio",
-  label: "Component with simple conditional to radio",
+  key: 'componentWithSimpleConditionalToRadio',
+  id: 'componentWithSimpleConditionalToRadio',
+  label: 'Component with simple conditional to radio',
   conditional: {
     show: true,
-    when: "radioComponent",
-    eq: "ja",
+    when: 'radioComponent',
+    eq: 'ja',
   },
 } as unknown as Component;
 
 const componentWithAdvancedConditionalToRadio = {
-  key: "componentWithAdvancedConditionalToRadio",
-  id: "componentWithAdvancedConditionalToRadio",
-  label: "Component with advanced conditional to radio",
+  key: 'componentWithAdvancedConditionalToRadio',
+  id: 'componentWithAdvancedConditionalToRadio',
+  label: 'Component with advanced conditional to radio',
   customConditional: 'show = data.radioComponent === "ja"',
   conditional: {
     show: true,
-    when: "radioComponent",
-    eq: "ja",
+    when: 'radioComponent',
+    eq: 'ja',
   },
 } as unknown as Component;
 
 const componentWithSimpleConditionalToCheckbox = {
-  key: "componentWithSimpleConditionalToCheckbox",
-  id: "componentWithSimpleConditionalToCheckbox",
-  label: "Component with simple conditional to checkbox",
+  key: 'componentWithSimpleConditionalToCheckbox',
+  id: 'componentWithSimpleConditionalToCheckbox',
+  label: 'Component with simple conditional to checkbox',
   conditional: {
     show: true,
-    when: "checkboxComponent",
+    when: 'checkboxComponent',
     eq: true,
   },
 };
 
 const generalProperties = {
-  modified: "2022-11-17T13:12:38.825Z",
-  modifiedBy: "user@company.com",
-  published: "2022-11-17T13:12:38.825Z",
-  publishedBy: "publisher@company.com",
-  unpublished: "2022-12-24T17:00:00.825Z",
-  unpublishedBy: "user@company.com",
+  modified: '2022-11-17T13:12:38.825Z',
+  modifiedBy: 'user@company.com',
+  published: '2022-11-17T13:12:38.825Z',
+  publishedBy: 'publisher@company.com',
+  unpublished: '2022-12-24T17:00:00.825Z',
+  unpublishedBy: 'user@company.com',
   isTestForm: false,
-  publishedLanguages: ["en"],
+  publishedLanguages: ['en'],
 };
 
 const formWithSimpleConditionalToRadio = {
-  name: "formWithSimpleConditionalToRadio",
-  path: "formWithSimpleConditionalToRadio",
-  title: "Form with simple conditional to radio",
+  name: 'formWithSimpleConditionalToRadio',
+  path: 'formWithSimpleConditionalToRadio',
+  title: 'Form with simple conditional to radio',
   properties: {
-    skjemanummer: "formWithSimpleConditionalToRadio",
+    skjemanummer: 'formWithSimpleConditionalToRadio',
     ...generalProperties,
   },
   components: [radioComponent, componentWithSimpleConditionalToRadio],
 } as NavFormType;
 
 const formWithAdvancedConditionalToRadio = {
-  name: "formWithAdvancedConditionalToRadio",
-  path: "formWithAdvancedConditionalToRadio",
-  title: "Form with advanced conditional to radio",
+  name: 'formWithAdvancedConditionalToRadio',
+  path: 'formWithAdvancedConditionalToRadio',
+  title: 'Form with advanced conditional to radio',
   properties: {
-    skjemanummer: "formWithAdvancedConditionalToRadio",
+    skjemanummer: 'formWithAdvancedConditionalToRadio',
     ...generalProperties,
   },
   components: [radioComponent, componentWithAdvancedConditionalToRadio],
 } as NavFormType;
 
 const formWithSimpleConditionalToCheckbox = {
-  name: "formWithSimpleConditionalToCheckbox",
-  path: "formWithSimpleConditionalToCheckbox",
-  title: "Form with simple conditional to checkbox",
+  name: 'formWithSimpleConditionalToCheckbox',
+  path: 'formWithSimpleConditionalToCheckbox',
+  title: 'Form with simple conditional to checkbox',
   properties: {
-    skjemanummer: "formWithSimpleConditionalToCheckbox",
+    skjemanummer: 'formWithSimpleConditionalToCheckbox',
     ...generalProperties,
   },
   components: [checkboxComponent, componentWithSimpleConditionalToCheckbox],
 } as NavFormType;
 
 export {
-  originalTextFieldComponent,
-  originalSkjemaGruppeComponent,
-  originalFodselsnummerComponent,
-  originalPanelComponent,
-  originalForm,
-  radioComponent,
   checkboxComponent,
-  componentWithSimpleConditionalToRadio,
   componentWithAdvancedConditionalToRadio,
   componentWithSimpleConditionalToCheckbox,
-  formWithSimpleConditionalToRadio,
+  componentWithSimpleConditionalToRadio,
   formWithAdvancedConditionalToRadio,
   formWithSimpleConditionalToCheckbox,
+  formWithSimpleConditionalToRadio,
+  originalFodselsnummerComponent,
+  originalForm,
+  originalPanelComponent,
+  originalSkjemaGruppeComponent,
+  originalTextFieldComponent,
+  radioComponent,
 };

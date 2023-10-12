@@ -1,16 +1,16 @@
 const landvelgerSchema = () => ({
-  label: "Velg land",
-  type: "landvelger",
-  key: "landvelger",
+  label: 'Velg land',
+  type: 'landvelger',
+  key: 'landvelger',
   input: true,
   clearOnHide: true,
-  validateOn: "blur",
+  validateOn: 'blur',
   dataGridLabel: true,
-  fieldSize: "input--xxl",
+  fieldSize: 'input--xxl',
   data: {
-    url: "https://www.nav.no/fyllut/countries?lang=nb",
+    url: 'https://www.nav.no/fyllut/countries?lang=nb',
   },
-  dataSrc: "url",
+  dataSrc: 'url',
   disableLimit: true,
   validate: {
     required: true,

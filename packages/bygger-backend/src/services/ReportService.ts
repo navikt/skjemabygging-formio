@@ -1,27 +1,27 @@
-import { NavFormType, ReportDefinition } from "@navikt/skjemadigitalisering-shared-domain";
-import { stringify } from "csv-stringify";
-import { DateTime } from "luxon";
-import { Writable } from "stream";
-import { FormioService } from "./formioService";
+import { NavFormType, ReportDefinition, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { stringify } from 'csv-stringify';
+import { DateTime } from 'luxon';
+import { Writable } from 'stream';
+import { FormioService } from './formioService';
 
 const ReportMap: Record<string, ReportDefinition> = {
   FORMS_PUBLISHED_LANGUAGES: {
-    id: "forms-published-languages",
-    title: "Publiserte språk per skjema",
-    contentType: "text/csv",
-    fileEnding: "csv",
+    id: 'forms-published-languages',
+    title: 'Publiserte språk per skjema',
+    contentType: 'text/csv',
+    fileEnding: 'csv',
   },
   ALL_FORMS_SUMMARY: {
-    id: "all-forms-summary",
-    title: "Alle skjema med nøkkelinformasjon",
-    contentType: "text/csv",
-    fileEnding: "csv",
+    id: 'all-forms-summary',
+    title: 'Alle skjema med nøkkelinformasjon',
+    contentType: 'text/csv',
+    fileEnding: 'csv',
   },
   UNPUBLISHED_FORMS: {
-    id: "unpublished-forms",
-    title: "Avpubliserte skjema",
-    contentType: "text/csv",
-    fileEnding: "csv",
+    id: 'unpublished-forms',
+    title: 'Avpubliserte skjema',
+    contentType: 'text/csv',
+    fileEnding: 'csv',
   },
 };
 
@@ -54,13 +54,13 @@ class ReportService {
   }
 
   private async generateFormsPublishedLanguage(writableStream: Writable) {
-    const columns = ["skjemanummer", "skjematittel", "språk"];
-    const publishedForms = await this.formioService.getPublishedForms("title,properties");
-    const stringifier = stringify({ header: true, columns, delimiter: ";" });
+    const columns = ['skjemanummer', 'skjematittel', 'språk'];
+    const publishedForms = await this.formioService.getPublishedForms('title,properties');
+    const stringifier = stringify({ header: true, columns, delimiter: ';' });
     stringifier.pipe(writableStream);
     publishedForms.filter(notTestForm).forEach((form) => {
       const { title, properties } = form;
-      const publishedLanguages = properties.publishedLanguages?.join(",") || "";
+      const publishedLanguages = properties.publishedLanguages?.join(',') || '';
       stringifier.write([properties.skjemanummer, title, publishedLanguages]);
     });
     stringifier.end();
@@ -68,29 +68,37 @@ class ReportService {
 
   private async generateAllFormsSummary(writableStream: Writable) {
     const columns = [
-      "skjemanummer",
-      "skjematittel",
-      "tema",
-      "sist publisert",
-      "publisert av",
-      "upubliserte endringer",
-      "sist endret",
-      "endret av",
-      "innsending",
-      "signaturfelt",
-      "path",
+      'skjemanummer',
+      'skjematittel',
+      'tema',
+      'sist publisert',
+      'publisert av',
+      'upubliserte endringer',
+      'sist endret',
+      'endret av',
+      'innsending',
+      'signaturfelt',
+      'path',
+      'har vedlegg',
+      'antall vedlegg',
+      'vedleggsnavn',
     ];
-    const allForms = await this.formioService.getAllForms(undefined, true, "title,path,properties");
-    const stringifier = stringify({ header: true, columns, delimiter: ";" });
+    const allForms = await this.formioService.getAllForms(undefined, true, 'title,path,properties,components');
+    const stringifier = stringify({ header: true, columns, delimiter: ';' });
     stringifier.pipe(writableStream);
     allForms.filter(notTestForm).forEach((form) => {
+      const hasAttachment = navFormUtils.hasAttachment(form);
+      const attachmentTitles = navFormUtils.getAttachmentTitles(form);
+      const numberOfAttachments = attachmentTitles.length;
+      const joinedAttachmentNames = attachmentTitles.join(',');
+
       const { title, properties, path } = form;
       const { published, publishedBy, modified, modifiedBy, innsending, tema, signatures } = properties;
-      let unpublishedChanges: string = "";
+      let unpublishedChanges: string = '';
       if (modified && published) {
         const modifiedDate = DateTime.fromISO(modified);
         const publishedDate = DateTime.fromISO(published);
-        unpublishedChanges = publishedDate.until(modifiedDate).isEmpty() ? "nei" : "ja";
+        unpublishedChanges = publishedDate.until(modifiedDate).isEmpty() ? 'nei' : 'ja';
       }
       const numberOfSignatures = signatures?.length || 1;
       stringifier.write([
@@ -105,15 +113,18 @@ class ReportService {
         innsending,
         numberOfSignatures,
         path,
+        hasAttachment ? 'ja' : 'nei',
+        numberOfAttachments,
+        joinedAttachmentNames,
       ]);
     });
     stringifier.end();
   }
 
   private async generateUnpublishedForms(writableStream: Writable) {
-    const columns = ["skjemanummer", "skjematittel", "avpublisert", "avpublisert av"];
-    const publishedForms = await this.formioService.getUnpublishedForms("title,properties");
-    const stringifier = stringify({ header: true, columns, delimiter: ";" });
+    const columns = ['skjemanummer', 'skjematittel', 'avpublisert', 'avpublisert av'];
+    const publishedForms = await this.formioService.getUnpublishedForms('title,properties');
+    const stringifier = stringify({ header: true, columns, delimiter: ';' });
     stringifier.pipe(writableStream);
     publishedForms.filter(notTestForm).forEach((form) => {
       const { title, properties } = form;

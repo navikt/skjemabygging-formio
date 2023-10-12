@@ -1,4 +1,4 @@
-import { JWTPayload } from "jose";
+import { JWTPayload } from 'jose';
 
 export type User = {
   name: string;

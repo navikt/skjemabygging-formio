@@ -1,9 +1,9 @@
 const getLanguageCodeAsIso639_1 = (locale) => {
   switch (locale) {
-    case "nn-NO":
-      return "nn";
-    case "nb-NO":
-      return "nb";
+    case 'nn-NO':
+      return 'nn';
+    case 'nb-NO':
+      return 'nb';
     default:
       return locale;
   }
@@ -13,8 +13,8 @@ const zipCountryNames = (keyNames, valueNames, mapToValue = (value) => value) =>
   if (keyNames.length !== valueNames.length) {
     return {};
   }
-  keyNames.sort((first, second) => first.value.localeCompare(second.value, "nb"));
-  valueNames.sort((first, second) => first.value.localeCompare(second.value, "nb"));
+  keyNames.sort((first, second) => first.value.localeCompare(second.value, 'nb'));
+  valueNames.sort((first, second) => first.value.localeCompare(second.value, 'nb'));
   return keyNames.reduce(
     (acc, { label }, index) => ({
       ...acc,

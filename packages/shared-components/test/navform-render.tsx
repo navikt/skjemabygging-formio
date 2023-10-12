@@ -1,14 +1,14 @@
-import { render, waitFor } from "@testing-library/react";
-import { Formio } from "formiojs";
-import Components from "formiojs/components/Components";
-import { AppConfigProvider, NavForm } from "../src";
-import CustomComponents from "../src/customComponents";
-import Template from "../src/template";
+import { render, waitFor } from '@testing-library/react';
+import { Formio } from 'formiojs';
+import Components from 'formiojs/components/Components';
+import { AppConfigProvider, NavForm } from '../src';
+import CustomComponents from '../src/customComponents';
+import Template from '../src/template';
 
 const setupNavFormio = () => {
   Formio.use(Template);
   Components.setComponents(CustomComponents);
-  new Formio("http://unittest.nav-formio-api.no");
+  new Formio('http://unittest.nav-formio-api.no');
 };
 
 const NavFormForTest = (props) => {
@@ -27,11 +27,11 @@ const renderNavForm = async (props) => {
 };
 
 const defaultPanelProps = (label) => ({
-  type: "panel",
+  type: 'panel',
   label,
   title: label,
-  key: label.replace(" ", "").toLowerCase(),
+  key: label.replace(' ', '').toLowerCase(),
   input: false,
 });
 
-export { setupNavFormio, renderNavForm, defaultPanelProps };
+export { defaultPanelProps, renderNavForm, setupNavFormio };

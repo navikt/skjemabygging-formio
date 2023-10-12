@@ -1,8 +1,8 @@
 // @ts-ignore
-import FormioUtils from "formiojs/utils";
-import { Component, NavFormType, Panel, Submission } from "../form";
-import { formSummaryUtil } from "../index";
-import { camelCase } from "./stringUtils";
+import FormioUtils from 'formiojs/utils';
+import { Component, NavFormType, Panel, Submission } from '../form';
+import { formSummaryUtil } from '../index';
+import { camelCase } from './stringUtils';
 
 export const toFormPath = (text: string) => camelCase(text).toLowerCase();
 
@@ -30,7 +30,7 @@ function isKeyInText(key: string, text: string) {
 }
 
 function areAnyPathsInText(paths: string[], text?: string) {
-  return text && text !== "" && paths.some((key) => isKeyInText(key, text));
+  return text && text !== '' && paths.some((key) => isKeyInText(key, text));
 }
 
 function calculatesValueBasedOn(paths: string[], component: Component) {
@@ -96,7 +96,7 @@ const findByKey = (key: string, components: Component[]): Component | undefined 
   findComponent((c) => c.key === key, components);
 const findByNavId = (navId: string, components: Component[]): Component | undefined =>
   findComponent((c) => c.navId === navId, components);
-type ComponentIdType = Pick<Component, "navId" | "key">;
+type ComponentIdType = Pick<Component, 'navId' | 'key'>;
 const findByNavIdOrKey = (ids: ComponentIdType, components: Component[]): Component | undefined => {
   let comp;
   if (ids.navId) {
@@ -108,16 +108,16 @@ const findByNavIdOrKey = (ids: ComponentIdType, components: Component[]): Compon
   return comp;
 };
 
-export type DependencyType = "conditional" | "validation" | "calculateValue";
+export type DependencyType = 'conditional' | 'validation' | 'calculateValue';
 type Dependee = { component: Component; types: DependencyType[] };
 export const findDependeeComponents = (componentWithDependencies: Component, form: NavFormType) => {
   const dependees: Dependee[] = [];
   FormioUtils.eachComponent(form.components, (potentialDependee: Component, path: string) => {
     if (potentialDependee.id !== componentWithDependencies.id) {
       const types: DependencyType[] = [];
-      if (hasConditionalOn([path], componentWithDependencies)) types.push("conditional");
-      if (validatesBasedOn([path], componentWithDependencies)) types.push("validation");
-      if (calculatesValueBasedOn([path], componentWithDependencies)) types.push("calculateValue");
+      if (hasConditionalOn([path], componentWithDependencies)) types.push('conditional');
+      if (validatesBasedOn([path], componentWithDependencies)) types.push('validation');
+      if (calculatesValueBasedOn([path], componentWithDependencies)) types.push('calculateValue');
       if (types.length > 0) {
         dependees.push({ component: potentialDependee, types });
       }
@@ -156,7 +156,9 @@ export const removeComponents = (form: NavFormType, isTarget: ComponentFilterFun
   return formCopy;
 };
 
-export const isVedleggspanel = (component: Component) => !!(component.type === "panel" && component.isAttachmentPanel);
+export const isVedleggspanel = (component: Component) => {
+  return !!(component.type === 'panel' && component.isAttachmentPanel);
+};
 
 export const removeVedleggspanel = (form: NavFormType) => {
   return removeComponents(form, isVedleggspanel);
@@ -165,10 +167,10 @@ export const removeVedleggspanel = (form: NavFormType) => {
 export const isSubmissionMethodAllowed = (submissionMethod: string, form: NavFormType): boolean => {
   const { innsending } = form.properties;
   switch (submissionMethod) {
-    case "digital":
-      return !innsending || innsending === "PAPIR_OG_DIGITAL" || innsending === "KUN_DIGITAL";
-    case "paper":
-      return !innsending || innsending === "PAPIR_OG_DIGITAL" || innsending === "KUN_PAPIR";
+    case 'digital':
+      return !innsending || innsending === 'PAPIR_OG_DIGITAL' || innsending === 'KUN_DIGITAL';
+    case 'paper':
+      return !innsending || innsending === 'PAPIR_OG_DIGITAL' || innsending === 'KUN_PAPIR';
   }
   return false;
 };
@@ -199,9 +201,26 @@ export const enrichComponentsWithNavIds = (
 const getActivePanelsFromForm = (form: NavFormType, submission?: Submission, submissionMethod?: string): Panel[] => {
   const conditionals = formSummaryUtil.mapAndEvaluateConditionals(form, submission?.data ?? {});
   return form.components
-    .filter((component: Component) => component.type === "panel")
+    .filter((component: Component) => component.type === 'panel')
     .filter((panel): panel is Panel => conditionals[panel.key] !== false)
-    .filter((panel) => !(submissionMethod === "digital" && isVedleggspanel(panel)));
+    .filter((panel) => !(submissionMethod === 'digital' && isVedleggspanel(panel)));
+};
+
+const getAttachmentPanel = (form: NavFormType) => {
+  return form.components.find((component) => isVedleggspanel(component));
+};
+
+const hasAttachment = (form: NavFormType) => {
+  const attachmentPanel = getAttachmentPanel(form);
+  return !!attachmentPanel?.components?.length;
+};
+
+const getAttachmentTitles = (form: NavFormType): string[] => {
+  const attachmentPanel = getAttachmentPanel(form);
+  if (!attachmentPanel || !attachmentPanel.components) return [];
+
+  const attachmentTitles = attachmentPanel.components.map((component) => component.properties?.vedleggstittel);
+  return attachmentTitles.filter((x): x is string => x !== undefined);
 };
 
 const navFormUtils = {
@@ -218,5 +237,8 @@ const navFormUtils = {
   findByNavIdOrKey,
   enrichComponentsWithNavIds,
   getActivePanelsFromForm,
+  getAttachmentPanel,
+  hasAttachment,
+  getAttachmentTitles,
 };
 export default navFormUtils;

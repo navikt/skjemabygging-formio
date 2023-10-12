@@ -1,14 +1,14 @@
-import { Label, Panel } from "@navikt/ds-react";
-import FormStatus, { determineStatus } from "./FormStatus";
-import PublishedLanguages from "./PublishedLanguages";
-import Timestamp from "./Timestamp";
-import ToggleDiffButton from "./ToggleDiffButton";
-import { useStatusStyles } from "./styles";
-import { PublishProperties } from "./types";
+import { Label, Panel } from '@navikt/ds-react';
+import FormStatus, { determineStatus } from './FormStatus';
+import PublishedLanguages from './PublishedLanguages';
+import Timestamp from './Timestamp';
+import ToggleDiffButton from './ToggleDiffButton';
+import { useStatusStyles } from './styles';
+import { PublishProperties } from './types';
 
 interface Props {
   publishProperties: PublishProperties;
-  spacing?: "default" | "small";
+  spacing?: 'default' | 'small';
   hideToggleDiffButton?: boolean;
 }
 

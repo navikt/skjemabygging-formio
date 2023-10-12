@@ -1,8 +1,8 @@
-import { grensesnitt } from "./grensesnitt";
-import { statiske } from "./statiskeTekster";
-import { validering } from "./validering";
-import common from "./common";
-import { pdfStatiske } from "./pdfStatiskeTekster";
+import common from './common';
+import { grensesnitt } from './grensesnitt';
+import { pdfStatiske } from './pdfStatiskeTekster';
+import { statiske } from './statiskeTekster';
+import { validering } from './validering';
 
 const TEXTS = {
   common,

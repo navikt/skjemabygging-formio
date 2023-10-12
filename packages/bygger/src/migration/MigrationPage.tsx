@@ -1,18 +1,19 @@
-import { Button, Heading, Pagination } from "@navikt/ds-react";
-import { makeStyles, NavFormioJs } from "@navikt/skjemadigitalisering-shared-components";
-import { NavFormType, paginationUtils } from "@navikt/skjemadigitalisering-shared-domain";
-import { useEffect, useMemo, useReducer, useState } from "react";
-import { FormMigrationLogData } from "../../types/migration";
-import UserFeedback from "../components/UserFeedback";
-import Column from "../components/layout/Column";
-import { runMigrationDryRun, runMigrationWithUpdate } from "./api";
-import BulkPublishPanel from "./components/BulkPublishPanel";
-import ConfirmMigration from "./components/ConfirmMigration";
-import FormEditInput from "./components/FormEditInput";
-import MigrationDryRunResults from "./components/MigrationDryRunResults";
-import MigrationOptionsForm from "./components/MigrationOptionsForm";
-import { reducer } from "./components/MigrationOptionsForm.reducer";
-import SearchFilterInput from "./components/SearchFilterInput";
+import { Button, Heading, Pagination } from '@navikt/ds-react';
+import { NavFormioJs, makeStyles } from '@navikt/skjemadigitalisering-shared-components';
+import { NavFormType, paginationUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { useEffect, useMemo, useReducer, useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { FormMigrationLogData } from '../../types/migration';
+import UserFeedback from '../components/UserFeedback';
+import Column from '../components/layout/Column';
+import { runMigrationDryRun, runMigrationWithUpdate } from './api';
+import BulkPublishPanel from './components/BulkPublishPanel';
+import ConfirmMigration from './components/ConfirmMigration';
+import FormEditInput from './components/FormEditInput';
+import MigrationDryRunResults from './components/MigrationDryRunResults';
+import MigrationOptionsForm from './components/MigrationOptionsForm';
+import { reducer } from './components/MigrationOptionsForm.reducer';
+import SearchFilterInput from './components/SearchFilterInput';
 import {
   createEditOptions,
   createSearchFiltersFromParams,
@@ -21,44 +22,43 @@ import {
   migrationOptionsAsMap,
   searchFiltersAsParams,
   sortAndFilterResults,
-} from "./utils";
-import { useNavigate, useSearchParams } from "react-router-dom";
+} from './utils';
 
 const useStyles = makeStyles({
   root: {
-    display: "flex",
-    maxWidth: "80rem",
-    margin: "0 auto 4rem auto",
+    display: 'flex',
+    maxWidth: '80rem',
+    margin: '0 auto 4rem auto',
   },
   mainContent: {
-    flexDirection: "column",
-    flex: "5",
+    flexDirection: 'column',
+    flex: '5',
   },
   sideColumn: {
-    flexDirection: "column",
-    flex: "1",
-    marginLeft: "2rem",
+    flexDirection: 'column',
+    flex: '1',
+    marginLeft: '2rem',
   },
   hasMarginBottom: {
-    marginBottom: "2rem",
+    marginBottom: '2rem',
   },
   hasMarginLeft: {
-    marginLeft: "1rem",
+    marginLeft: '1rem',
   },
   searchFilterInputs: {
-    display: "grid",
-    gridTemplateColumns: "3fr 1fr 3fr 0.2fr",
-    gap: "0.25rem 1rem",
+    display: 'grid',
+    gridTemplateColumns: '3fr 1fr 3fr 0.2fr',
+    gap: '0.25rem 1rem',
   },
   formEditInputs: {
-    display: "grid",
-    gridTemplateColumns: "3fr 3fr 0.2fr",
-    gap: "0.25rem 1rem",
+    display: 'grid',
+    gridTemplateColumns: '3fr 3fr 0.2fr',
+    gap: '0.25rem 1rem',
   },
   pagination: {
-    display: "flex",
-    marginTop: "2rem",
-    justifyContent: "center",
+    display: 'flex',
+    marginTop: '2rem',
+    justifyContent: 'center',
   },
 });
 
@@ -86,13 +86,13 @@ const MigrationPage = () => {
   const [searchParams] = useSearchParams();
 
   const [searchFilters, dispatchSearchFilters] = useReducer(reducer, {}, () =>
-    createSearchFiltersFromParams(getUrlParamMap(searchParams, "searchFilters")),
+    createSearchFiltersFromParams(getUrlParamMap(searchParams, 'searchFilters')),
   );
   const [dependencyFilters, dispatchDependencyFilters] = useReducer(reducer, {}, () =>
-    createSearchFiltersFromParams(getUrlParamMap(searchParams, "dependencyFilters")),
+    createSearchFiltersFromParams(getUrlParamMap(searchParams, 'dependencyFilters')),
   );
   const [editInputs, dispatchEditInputs] = useReducer(reducer, {}, () =>
-    createEditOptions(getUrlParamMap(searchParams, "editOptions")),
+    createEditOptions(getUrlParamMap(searchParams, 'editOptions')),
   );
 
   const onSearch = async () => {
@@ -140,7 +140,7 @@ const MigrationPage = () => {
 
   useEffect(() => {
     (async () => {
-      if (searchParams.get("searchFilters") || searchParams.get("editOptions")) {
+      if (searchParams.get('searchFilters') || searchParams.get('editOptions')) {
         await onSearch();
       }
     })();

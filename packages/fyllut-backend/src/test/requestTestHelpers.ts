@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from "express";
+import { NextFunction, Request, Response } from 'express';
 
 interface mockRequestType {
   headers?: object;
@@ -9,7 +9,7 @@ const mockRequest = ({ headers = {}, body = {} }: mockRequestType) => {
   return {
     body,
     headers,
-    get: () => "",
+    get: () => '',
   } as any as Request;
 };
 
@@ -27,4 +27,4 @@ const mockNext = () => {
   return vi.fn() as any as NextFunction;
 };
 
-export { mockRequest, mockResponse, mockNext };
+export { mockNext, mockRequest, mockResponse };

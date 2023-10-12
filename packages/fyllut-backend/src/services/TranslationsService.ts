@@ -1,21 +1,21 @@
-import { I18nTranslations, languagesUtil } from "@navikt/skjemadigitalisering-shared-domain";
-import fetch from "node-fetch";
-import { loadFileFromDirectory } from "../utils/forms";
-import { ConfigType } from "../config/types";
+import { I18nTranslations, languagesUtil } from '@navikt/skjemadigitalisering-shared-domain';
+import fetch from 'node-fetch';
+import { ConfigType } from '../config/types';
+import { loadFileFromDirectory } from '../utils/forms';
 
 const toFyllutLang = (lang: string) => {
   switch (lang) {
-    case "nb":
-    case "no":
-    case "nb-NO":
-      return "nb-NO";
-    case "nn":
-    case "nn-NO":
-      return "nn-NO";
-    case "en":
-      return "en";
+    case 'nb':
+    case 'no':
+    case 'nb-NO':
+      return 'nb-NO';
+    case 'nn':
+    case 'nn-NO':
+      return 'nn-NO';
+    case 'en':
+      return 'en';
     default:
-      return "nb-NO";
+      return 'nb-NO';
   }
 };
 
@@ -29,7 +29,7 @@ class TranslationsService {
   async fetchTranslationsFromFormioApi(formPath: string) {
     const { formioProjectUrl } = this._config;
     const response = await fetch(`${formioProjectUrl}/language/submission?data.form=${formPath}&limit=1000`, {
-      method: "GET",
+      method: 'GET',
     });
     if (response.ok) {
       const translationsForForm = await response.json();
@@ -43,7 +43,7 @@ class TranslationsService {
     const { formioProjectUrl } = this._config;
     const response = await fetch(
       `${formioProjectUrl}/language/submission?data.name=global&data.language=${lang}&limit=1000`,
-      { method: "GET" },
+      { method: 'GET' },
     );
     if (response.ok) {
       const responseJson = await response.json();

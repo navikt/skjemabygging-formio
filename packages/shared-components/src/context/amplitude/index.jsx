@@ -1,4 +1,5 @@
-import { createContext, useContext, useEffect } from "react";
+import { createContext, useContext, useEffect } from 'react';
+import { useAppConfig } from '../../configContext';
 import {
   initAmplitude,
   loggEventDokumentLastetNed,
@@ -7,20 +8,19 @@ import {
   loggEventSkjemaFullfort,
   loggEventSkjemaInnsendingFeilet,
   loggEventSkjemaValideringFeilet,
-} from "../../util/amplitude";
-import useHarApnetSkjema from "./harApnetSkjemaHook";
-import useSkjemaSporsmalEvent from "./skjemaEventHook";
-import useSkjemaStegFullfort from "./skjemaStegFullfortHook";
-import { useAppConfig } from "../../configContext";
+} from '../../util/amplitude';
+import useHarApnetSkjema from './harApnetSkjemaHook';
+import useSkjemaSporsmalEvent from './skjemaEventHook';
+import useSkjemaStegFullfort from './skjemaStegFullfortHook';
 
 const defaultValues = {
-  loggSkjemaApnet: (innsendingsKanal) => {},
-  loggSkjemaSporsmalBesvart: (event) => {},
-  loggSkjemaSporsmalBesvartForSpesialTyper: (event) => {},
-  loggSkjemaStegFullfort: (data) => {},
-  loggSpraakValg: (spraak) => {},
-  loggNavigering: (data) => {},
-  loggDokumentLastetNed: (tittel) => {},
+  loggSkjemaApnet: (_innsendingsKanal) => {},
+  loggSkjemaSporsmalBesvart: (_event) => {},
+  loggSkjemaSporsmalBesvartForSpesialTyper: (_event) => {},
+  loggSkjemaStegFullfort: (_data) => {},
+  loggSpraakValg: (_spraak) => {},
+  loggNavigering: (_data) => {},
+  loggDokumentLastetNed: (_tittel) => {},
   loggSkjemaValideringFeilet: () => {},
   loggSkjemaInnsendingFeilet: () => {},
   loggSkjemaFullfort: () => {},
@@ -47,7 +47,7 @@ function AmplitudeProvider({ children, form }) {
         loggSkjemaSporsmalBesvart,
         loggSkjemaSporsmalBesvartForSpesialTyper,
         loggSkjemaStegFullfort,
-        loggSpraakValg: (spraak) => loggEventFilterValg(form, { kategori: "språk", filternavn: spraak }),
+        loggSpraakValg: (spraak) => loggEventFilterValg(form, { kategori: 'språk', filternavn: spraak }),
         loggNavigering: (data) => loggEventNavigere(form, data),
         loggDokumentLastetNed: (tittel) => loggEventDokumentLastetNed(form, tittel),
         loggSkjemaValideringFeilet: () => loggEventSkjemaValideringFeilet(form),

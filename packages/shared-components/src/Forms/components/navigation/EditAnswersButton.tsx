@@ -1,8 +1,8 @@
-import { NavFormType, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
-import { Link, useLocation } from "react-router-dom";
-import { useAmplitude } from "../../../context/amplitude";
-import { useLanguages } from "../../../context/languages";
-import { PanelValidation, findFormStartingPoint } from "../../../util/panelValidation";
+import { NavFormType, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { Link, useLocation } from 'react-router-dom';
+import { useAmplitude } from '../../../context/amplitude';
+import { useLanguages } from '../../../context/languages';
+import { PanelValidation, findFormStartingPoint } from '../../../util/panelValidation';
 
 interface Props {
   form: NavFormType;
@@ -21,7 +21,7 @@ const EditAnswersButton = ({ form, formUrl, panelValidationList }: Props) => {
 
   return (
     <Link
-      className={`navds-button navds-button--${hasValidationErrors ? "primary" : "secondary"}`}
+      className={`navds-button navds-button--${hasValidationErrors ? 'primary' : 'secondary'}`}
       onClick={() =>
         loggNavigering({
           lenkeTekst: translate(TEXTS.grensesnitt.summaryPage.editAnswers),

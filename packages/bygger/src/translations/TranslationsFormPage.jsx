@@ -1,35 +1,35 @@
-import { BodyShort, Heading } from "@navikt/ds-react";
-import { makeStyles } from "@navikt/skjemadigitalisering-shared-components";
-import { useEffect, useState } from "react";
-import { languagesInNorwegian, useI18nDispatch } from "../context/i18n";
-import ObsoleteTranslationsPanel from "./ObsoleteTranslationsPanel";
-import TranslationTextInput from "./TranslationTextInput";
+import { BodyShort, Heading } from '@navikt/ds-react';
+import { makeStyles } from '@navikt/skjemadigitalisering-shared-components';
+import { useEffect, useState } from 'react';
+import { languagesInNorwegian, useI18nDispatch } from '../context/i18n';
+import ObsoleteTranslationsPanel from './ObsoleteTranslationsPanel';
+import TranslationTextInput from './TranslationTextInput';
 
 const useTranslationsListStyles = makeStyles({
   root: {
-    width: "80ch",
-    margin: "0 auto",
+    width: '80ch',
+    margin: '0 auto',
   },
 });
 
 const FormItem = ({ currentTranslation, text, type, languageCode }) => {
   const [showGlobalTranslation, setShowGlobalTranslation] = useState(false);
   const [hasGlobalTranslation, setHasGlobalTranslation] = useState(false);
-  const [globalTranslation, setGlobalTranslation] = useState("");
-  const [tempGlobalTranslation, setTempGlobalTranslation] = useState("");
+  const [globalTranslation, setGlobalTranslation] = useState('');
+  const [tempGlobalTranslation, setTempGlobalTranslation] = useState('');
 
   const dispatch = useI18nDispatch();
 
   useEffect(() => {
     if (currentTranslation && currentTranslation[text]) {
-      if (currentTranslation[text].scope === "global") {
+      if (currentTranslation[text].scope === 'global') {
         setHasGlobalTranslation(true);
         setShowGlobalTranslation(true);
         setTempGlobalTranslation(currentTranslation[text].value);
       }
       setGlobalTranslation(currentTranslation[text].value);
     } else {
-      setGlobalTranslation("");
+      setGlobalTranslation('');
       setHasGlobalTranslation(false);
       setShowGlobalTranslation(false);
     }
@@ -37,8 +37,8 @@ const FormItem = ({ currentTranslation, text, type, languageCode }) => {
 
   const updateTranslations = (targetValue) => {
     dispatch({
-      type: "update",
-      payload: { lang: languageCode, translation: { [text]: { value: targetValue, scope: "local" } } },
+      type: 'update',
+      payload: { lang: languageCode, translation: { [text]: { value: targetValue, scope: 'local' } } },
     });
     setGlobalTranslation(targetValue);
   };
@@ -62,7 +62,7 @@ const FormItem = ({ currentTranslation, text, type, languageCode }) => {
 const TranslationsToRemove = ({ translations, languageCode }) => {
   const dispatch = useI18nDispatch();
   const onDelete = (key) => {
-    dispatch({ type: "remove", payload: { lang: languageCode, key } });
+    dispatch({ type: 'remove', payload: { lang: languageCode, key } });
   };
   const obsoleteTranslations = translations.map(([originalText, translated]) => ({
     id: originalText,
@@ -92,7 +92,7 @@ const TranslationsFormPage = ({ skjemanummer, translations, title, flattenedComp
     const unusedTranslationsAsEntries = Object.entries(
       (translations[languageCode] && translations[languageCode].translations) || {},
     )
-      .filter(([_, value]) => value.scope === "local")
+      .filter(([_, value]) => value.scope === 'local')
       .filter(([key, _]) => !flattenedComponents.some(({ text }) => text === key));
     setUnusedTranslations(unusedTranslationsAsEntries);
   }, [translations, flattenedComponents, languageCode]);
@@ -107,7 +107,7 @@ const TranslationsFormPage = ({ skjemanummer, translations, title, flattenedComp
         <TranslationsToRemove translations={unusedTranslations} languageCode={languageCode} />
       )}
       <Heading level="2" size="large">
-        {`Oversettelser${languageCode ? " på " + languagesInNorwegian[languageCode] : ""}`}
+        {`Oversettelser${languageCode ? ' på ' + languagesInNorwegian[languageCode] : ''}`}
       </Heading>
       <form>
         {flattenedComponents.map(({ text, type }) => {

@@ -4,9 +4,9 @@ on:
   workflow_dispatch:
     inputs:
       environment:
-        description: "Target environment"
+        description: 'Target environment'
         required: true
-        default: "preprod"
+        default: 'preprod'
         type: choice
         options:
           - preprod
@@ -16,28 +16,28 @@ env:
 
 jobs:
   package-and-push-bygger:
-    name: "Package bygger"
+    name: 'Package bygger'
     runs-on: ubuntu-latest-8-cores
     permissions:
-      contents: "read"
-      id-token: "write"
-      packages: "read"
+      contents: 'read'
+      id-token: 'write'
+      packages: 'read'
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: "18.16.1"
-          cache: "yarn"
-          cache-dependency-path: "**/yarn.lock"
+          node-version: '20.8.0'
+          cache: 'yarn'
+          cache-dependency-path: '**/yarn.lock'
           registry-url: https://npm.pkg.github.com/
-          scope: "@navikt"
-      - name: "Build application: Bygger"
+          scope: '@navikt'
+      - name: 'Build application: Bygger'
         env:
           VITE_GIT_VERSION: ${{ github.sha }}
           VITE_GIT_BRANCH: ${{ github.ref_name }}
         run: yarn --frozen-lockfile && yarn build
 
-      - name: "Build and push Docker image for bygger"
+      - name: 'Build and push Docker image for bygger'
         uses: nais/docker-build-push@v0
         id: docker-build-push-bygger
         with:
@@ -54,44 +54,44 @@ jobs:
       image: ${{ steps.docker-build-push-bygger.outputs.image }}
 
   deploy-bygger-to-preprod:
-    name: "Deploy bygger to preprod"
+    name: 'Deploy bygger to preprod'
     needs: [package-and-push-bygger]
     if: ${{ !failure() && !cancelled() }}
     runs-on: ubuntu-latest
     steps:
-      - uses: "actions/checkout@v3"
-      - name: "Deploy to preprod"
-        uses: "nais/deploy/actions/deploy@v1"
+      - uses: 'actions/checkout@v3'
+      - name: 'Deploy to preprod'
+        uses: 'nais/deploy/actions/deploy@v1'
         env:
-          APIKEY: "${{ secrets.NAIS_DEPLOY_APIKEY }}"
-          CLUSTER: "dev-gcp"
-          RESOURCE: "./packages/bygger/.nais/nais.yaml"
-          VARS: "./packages/bygger/.nais/${{ github.event.inputs.environment }}.yaml"
+          APIKEY: '${{ secrets.NAIS_DEPLOY_APIKEY }}'
+          CLUSTER: 'dev-gcp'
+          RESOURCE: './packages/bygger/.nais/nais.yaml'
+          VARS: './packages/bygger/.nais/${{ github.event.inputs.environment }}.yaml'
           VAR: image=${{ needs.package-and-push-bygger.outputs.image }}
 
   package-and-push-fyllut:
-    name: "Package fyllut"
+    name: 'Package fyllut'
     runs-on: ubuntu-latest-8-cores
     permissions:
-      contents: "read"
-      id-token: "write"
-      packages: "read"
+      contents: 'read'
+      id-token: 'write'
+      packages: 'read'
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: "18.16.1"
-          cache: "yarn"
-          cache-dependency-path: "**/yarn.lock"
+          node-version: '20.8.0'
+          cache: 'yarn'
+          cache-dependency-path: '**/yarn.lock'
           registry-url: https://npm.pkg.github.com/
-          scope: "@navikt"
-      - name: "Build application: Fyllut"
+          scope: '@navikt'
+      - name: 'Build application: Fyllut'
         env:
           VITE_GIT_VERSION: ${{ github.sha }}
           VITE_GIT_BRANCH: ${{ github.ref_name }}
         run: yarn --frozen-lockfile && yarn build
 
-      - name: "Build and push Docker image for fyllut"
+      - name: 'Build and push Docker image for fyllut'
         uses: nais/docker-build-push@v0
         id: docker-build-push-fyllut
         with:
@@ -108,17 +108,17 @@ jobs:
       image: ${{ steps.docker-build-push-fyllut.outputs.image }}
 
   deploy-fyllut-to-preprod:
-    name: "Deploy fyllut to preprod"
+    name: 'Deploy fyllut to preprod'
     needs: [package-and-push-fyllut]
     if: ${{ !failure() && !cancelled() }}
     runs-on: ubuntu-latest
     steps:
-      - uses: "actions/checkout@v3"
-      - name: "Deploy to preprod"
-        uses: "nais/deploy/actions/deploy@v1"
+      - uses: 'actions/checkout@v3'
+      - name: 'Deploy to preprod'
+        uses: 'nais/deploy/actions/deploy@v1'
         env:
-          APIKEY: "${{ secrets.NAIS_DEPLOY_APIKEY }}"
-          CLUSTER: "dev-gcp"
-          RESOURCE: "./packages/fyllut/.nais/config.yaml"
-          VARS: "./packages/fyllut/.nais/${{ github.event.inputs.environment }}.yaml"
+          APIKEY: '${{ secrets.NAIS_DEPLOY_APIKEY }}'
+          CLUSTER: 'dev-gcp'
+          RESOURCE: './packages/fyllut/.nais/config.yaml'
+          VARS: './packages/fyllut/.nais/${{ github.event.inputs.environment }}.yaml'
           VAR: image=${{ needs.package-and-push-fyllut.outputs.image }}

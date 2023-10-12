@@ -1,4 +1,4 @@
-import { FeatureTogglesMap } from "@navikt/skjemadigitalisering-shared-domain";
+import { FeatureTogglesMap } from '@navikt/skjemadigitalisering-shared-domain';
 
 export type TokenxConfig = {
   privateJwk: string;

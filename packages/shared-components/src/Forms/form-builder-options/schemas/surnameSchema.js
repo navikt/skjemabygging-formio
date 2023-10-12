@@ -1,13 +1,13 @@
-const surnameSchema = (keyPostfix = "") => ({
-  label: "Etternavn",
-  type: "textfield",
+const surnameSchema = (keyPostfix = '') => ({
+  label: 'Etternavn',
+  type: 'textfield',
   key: `etternavn${keyPostfix}`,
-  fieldSize: "input--xxl",
+  fieldSize: 'input--xxl',
   input: true,
   dataGridLabel: true,
   clearOnHide: true,
-  autocomplete: "family-name",
-  validateOn: "blur",
+  autocomplete: 'family-name',
+  validateOn: 'blur',
   validate: {
     required: true,
   },

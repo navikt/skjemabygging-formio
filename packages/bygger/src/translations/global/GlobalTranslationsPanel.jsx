@@ -1,7 +1,7 @@
-import { Heading } from "@navikt/ds-react";
-import { useEffect, useState } from "react";
-import GlobalTranslationRow from "./GlobalTranslationRow";
-import { getCurrentOriginalTextList } from "./utils";
+import { Heading } from '@navikt/ds-react';
+import { useEffect, useState } from 'react';
+import GlobalTranslationRow from './GlobalTranslationRow';
+import { getCurrentOriginalTextList } from './utils';
 
 const GlobalTranslationsPanel = ({
   classes,

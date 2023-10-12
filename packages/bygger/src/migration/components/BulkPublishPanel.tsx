@@ -1,13 +1,13 @@
-import { Alert, BodyShort, Button, Checkbox, Heading, Panel, Table } from "@navikt/ds-react";
-import { Modal, NavFormioJs, makeStyles } from "@navikt/skjemadigitalisering-shared-components";
-import { NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
-import { useEffect, useReducer, useState } from "react";
-import FormStatus, { determineStatus } from "../../Forms/status/FormStatus";
-import { bulkPublish } from "../api";
-import FormList from "./FormList";
+import { Alert, BodyShort, Button, Checkbox, Heading, Panel, Table } from '@navikt/ds-react';
+import { Modal, NavFormioJs, makeStyles } from '@navikt/skjemadigitalisering-shared-components';
+import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
+import { useEffect, useReducer, useState } from 'react';
+import FormStatus, { determineStatus } from '../../Forms/status/FormStatus';
+import { bulkPublish } from '../api';
+import FormList from './FormList';
 
 type State = Record<string, boolean>;
-type Action = { type: "check" | "uncheck"; payload: string } | { type: "init"; payload: NavFormType[] };
+type Action = { type: 'check' | 'uncheck'; payload: string } | { type: 'init'; payload: NavFormType[] };
 
 function init(forms: NavFormType[]): State {
   return forms.reduce((acc, form) => ({ ...acc, [form.path]: true }), {});
@@ -15,11 +15,11 @@ function init(forms: NavFormType[]): State {
 
 function reducer(state: State, action: Action) {
   switch (action.type) {
-    case "init":
+    case 'init':
       return init(action.payload);
-    case "check":
+    case 'check':
       return { ...state, [action.payload]: true };
-    case "uncheck":
+    case 'uncheck':
       return { ...state, [action.payload]: false };
     default:
       throw new Error();
@@ -28,11 +28,11 @@ function reducer(state: State, action: Action) {
 
 const useStyles = makeStyles({
   table: {
-    marginTop: "2rem",
-    marginBottom: "2rem",
+    marginTop: '2rem',
+    marginBottom: '2rem',
   },
   checkBoxCell: {
-    maxWidth: "4rem",
+    maxWidth: '4rem',
   },
 });
 
@@ -48,10 +48,10 @@ const BulkPublishPanel = ({ forms }: Props) => {
 
   useEffect(() => {
     dispatch({
-      type: "init",
+      type: 'init',
       payload: forms.filter((form) => {
         const status = determineStatus(form.properties);
-        return status === "PENDING" || status === "PUBLISHED";
+        return status === 'PENDING' || status === 'PUBLISHED';
       }),
     });
   }, [forms]);
@@ -102,7 +102,7 @@ const BulkPublishPanel = ({ forms }: Props) => {
                     <Table.HeaderCell scope="row">{form.properties.skjemanummer}</Table.HeaderCell>
                     <Table.DataCell>{form.name ?? form.title}</Table.DataCell>
                     <Table.DataCell>
-                      {<FormStatus status={determineStatus(form.properties)} size={"small"} />}
+                      {<FormStatus status={determineStatus(form.properties)} size={'small'} />}
                     </Table.DataCell>
                     <Table.DataCell className={styles.checkBoxCell}>
                       {
@@ -111,9 +111,9 @@ const BulkPublishPanel = ({ forms }: Props) => {
                           checked={state[form.path] || false}
                           onChange={(event) => {
                             if (event.target.checked) {
-                              dispatch({ type: "check", payload: form.path });
+                              dispatch({ type: 'check', payload: form.path });
                             } else {
-                              dispatch({ type: "uncheck", payload: form.path });
+                              dispatch({ type: 'uncheck', payload: form.path });
                             }
                           }}
                         >
@@ -130,8 +130,8 @@ const BulkPublishPanel = ({ forms }: Props) => {
         </form>
       </Panel>
       <Modal open={isModalOpen} onClose={() => setIsModalOpen(false)} ariaLabel="Bekreft publisering">
-        <FormList heading={"Skjemaer som vil bli publisert"} listElements={willBePublished} />
-        <FormList heading={"Skjemaer som ikke vil bli publisert"} listElements={willNotBePublished} />
+        <FormList heading={'Skjemaer som vil bli publisert'} listElements={willBePublished} />
+        <FormList heading={'Skjemaer som ikke vil bli publisert'} listElements={willNotBePublished} />
         <ul className="list-inline">
           <li className="list-inline-item">
             <Button

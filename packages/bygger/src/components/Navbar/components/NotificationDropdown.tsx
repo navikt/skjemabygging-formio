@@ -1,16 +1,16 @@
-import { InformationFilled } from "@navikt/ds-icons";
-import { Alert, BodyShort, Detail, Dropdown, Heading, InternalHeader } from "@navikt/ds-react";
-import { makeStyles, navCssVariables } from "@navikt/skjemadigitalisering-shared-components";
-import { usePusherNotifications } from "../../../context/notifications/NotificationsContext";
-import { useDropdownStyles } from "../styles";
+import { InformationFilled } from '@navikt/ds-icons';
+import { Alert, BodyShort, Detail, Dropdown, Heading, InternalHeader } from '@navikt/ds-react';
+import { makeStyles, navCssVariables } from '@navikt/skjemadigitalisering-shared-components';
+import { usePusherNotifications } from '../../../context/notifications/NotificationsContext';
+import { useDropdownStyles } from '../styles';
 
 const useStyles = makeStyles({
   notificationsMenu: {
     padding: 0,
-    width: "28rem",
+    width: '28rem',
   },
   messagePanel: {
-    margin: "4px",
+    margin: '4px',
   },
 });
 

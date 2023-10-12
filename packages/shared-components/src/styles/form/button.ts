@@ -1,7 +1,7 @@
 const button = {
-  "& .navds-button": {
-    "&--secondary": {
-      backgroundColor: "var(--a-white)",
+  '& .navds-button': {
+    '&--secondary': {
+      backgroundColor: 'var(--a-white)',
     },
   },
 };

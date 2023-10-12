@@ -1,26 +1,26 @@
-import { Select, TextField } from "@navikt/ds-react";
-import { makeStyles } from "@navikt/skjemadigitalisering-shared-components";
-import { migrationUtils, Operator } from "@navikt/skjemadigitalisering-shared-domain";
-import { Dispatch } from "react";
-import { MigrationOption } from "../../../types/migration";
-import { isJSON } from "../utils";
-import DeleteButton from "./DeleteButton";
-import { Action } from "./MigrationOptionsForm.reducer";
+import { Select, TextField } from '@navikt/ds-react';
+import { makeStyles } from '@navikt/skjemadigitalisering-shared-components';
+import { Operator, migrationUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { Dispatch } from 'react';
+import { MigrationOption } from '../../../types/migration';
+import { isJSON } from '../utils';
+import DeleteButton from './DeleteButton';
+import { Action } from './MigrationOptionsForm.reducer';
 
 const useStyles = makeStyles({
   input: {
-    marginBottom: "1rem",
+    marginBottom: '1rem',
   },
 });
 
 type OperatorOptions = Record<Operator, string>;
 const operators: OperatorOptions = {
-  eq: "Er lik",
-  n_eq: "Ikke lik",
-  contains: "Inneholder",
-  n_contains: "Ikke inneholder",
-  exists: "Eksisterer",
-  n_exists: "Ikke eksisterer",
+  eq: 'Er lik',
+  n_eq: 'Ikke lik',
+  contains: 'Inneholder',
+  n_contains: 'Ikke inneholder',
+  exists: 'Eksisterer',
+  n_exists: 'Ikke eksisterer',
 };
 
 interface SearchFilterInputProps {
@@ -44,7 +44,7 @@ const SearchFilterInput = ({ id, searchFilter, dispatch }: SearchFilterInputProp
         value={key}
         onChange={(event) =>
           dispatch({
-            type: "edit",
+            type: 'edit',
             payload: {
               id,
               key: event.target.value,
@@ -55,14 +55,14 @@ const SearchFilterInput = ({ id, searchFilter, dispatch }: SearchFilterInputProp
       <Select
         className={styles.input}
         label="Operator"
-        value={operator || "eq"}
+        value={operator || 'eq'}
         onChange={(event) =>
           dispatch({
-            type: "edit",
+            type: 'edit',
             payload: {
               id,
               operator: event.target.value as Operator,
-              value: migrationUtils.isUnaryOperator(event.target.value as Operator) ? "" : value,
+              value: migrationUtils.isUnaryOperator(event.target.value as Operator) ? '' : value,
             },
           })
         }
@@ -77,11 +77,11 @@ const SearchFilterInput = ({ id, searchFilter, dispatch }: SearchFilterInputProp
         className={styles.input}
         label="Verdi"
         type="text"
-        value={typeof value === "object" ? JSON.stringify(value) : `${value}`}
+        value={typeof value === 'object' ? JSON.stringify(value) : `${value}`}
         disabled={isValueInputDisabled}
         onChange={(event) =>
           dispatch({
-            type: "edit",
+            type: 'edit',
             payload: {
               id,
               value: isJSON(event.target.value) ? JSON.parse(event.target.value) : event.target.value,
@@ -89,7 +89,7 @@ const SearchFilterInput = ({ id, searchFilter, dispatch }: SearchFilterInputProp
           })
         }
       />
-      <DeleteButton className={styles.input} onClick={() => dispatch({ type: "remove", payload: { id } })} />
+      <DeleteButton className={styles.input} onClick={() => dispatch({ type: 'remove', payload: { id } })} />
     </>
   );
 };

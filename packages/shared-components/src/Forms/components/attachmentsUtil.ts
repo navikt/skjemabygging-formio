@@ -1,6 +1,6 @@
-import { NavFormType, SubmissionData, navFormUtils } from "@navikt/skjemadigitalisering-shared-domain";
-import FormioUtils from "formiojs/utils";
-import UtilsOverrides from "../../formio-overrides/utils-overrides";
+import { NavFormType, SubmissionData, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import FormioUtils from 'formiojs/utils';
+import UtilsOverrides from '../../formio-overrides/utils-overrides';
 
 interface Attachment {
   vedleggsnr: string;
@@ -23,7 +23,7 @@ const getRelevantAttachments = (form: NavFormType, submissionData: SubmissionDat
       tittel: comp.properties.vedleggstittel,
       label: comp.label,
       beskrivelse: comp.description,
-      pakrevd: comp.properties.vedleggErValgfritt !== "ja",
+      pakrevd: comp.properties.vedleggErValgfritt !== 'ja',
       propertyNavn: comp.key,
       /* TODO: We should not use the native 'id' to identify the attachment, because it may change when the component changes.
        **   Note that a 'navId' is created when the component changes, but older forms doesn't have it yet.
@@ -52,5 +52,5 @@ const hasRelevantAttachments = (form, submissionData) => {
   return !!getRelevantAttachments(form, submissionData).length || hasOtherDocumentation(form, submissionData);
 };
 
-export type { Attachment };
 export { getRelevantAttachments, hasOtherDocumentation, hasRelevantAttachments };
+export type { Attachment };

@@ -1,15 +1,15 @@
-import { guid, migrationUtils, Operator } from "@navikt/skjemadigitalisering-shared-domain";
-import { DryRunResults, MigrationMap, MigrationOption, MigrationOptions, ParsedInput } from "../../types/migration";
+import { guid, migrationUtils, Operator } from '@navikt/skjemadigitalisering-shared-domain';
+import { DryRunResults, MigrationMap, MigrationOption, MigrationOptions, ParsedInput } from '../../types/migration';
 
 const assembleUrlParams = (params: string[]) => {
   const filteredParams = params.filter((param) => param);
-  if (filteredParams.length === 0) return "";
+  if (filteredParams.length === 0) return '';
   const [first, ...rest] = filteredParams;
-  return `?${first}${rest.map((param) => (param ? `&${param}` : "")).join("")}`;
+  return `?${first}${rest.map((param) => (param ? `&${param}` : '')).join('')}`;
 };
 
 const isEmpty = (obj) => {
-  if (typeof obj === "object") return Object.keys(obj).length === 0;
+  if (typeof obj === 'object') return Object.keys(obj).length === 0;
   if (Array.isArray(obj)) return obj.length === 0;
   return false;
 };
@@ -44,7 +44,7 @@ export const searchFiltersAsParams = (searchFilters: MigrationOptions): Record<s
     return {};
   }
   return Object.values(searchFilters).reduce((acc, { key, value, operator }) => {
-    if (key !== "") {
+    if (key !== '') {
       return {
         ...acc,
         [migrationUtils.combinePropAndOperator(key, operator)]: value,
@@ -59,7 +59,7 @@ export const migrationOptionsAsMap = (migrationOptions: MigrationOptions): Recor
     return {};
   }
   return Object.values(migrationOptions).reduce((acc, curr) => {
-    if (curr.key !== "") {
+    if (curr.key !== '') {
       return {
         ...acc,
         [curr.key]: curr.value,
@@ -94,7 +94,7 @@ export const isJSON = (value: string): boolean => {
   }
 };
 
-const createMigrationOption = (option: MigrationOption = { key: "", value: "" }): MigrationOptions => ({
+const createMigrationOption = (option: MigrationOption = { key: '', value: '' }): MigrationOptions => ({
   [guid()]: option,
 });
 

@@ -2,7 +2,7 @@ import {
   FormioTranslationMap,
   I18nTranslations,
   ScopedTranslationMap,
-} from "@navikt/skjemadigitalisering-shared-domain";
+} from '@navikt/skjemadigitalisering-shared-domain';
 
 export interface I18nState {
   translations: FormioTranslationMap;
@@ -11,31 +11,31 @@ export interface I18nState {
 }
 
 export type I18nAction =
-  | { type: "init"; payload: FormioTranslationMap }
-  | { type: "updateTranslationsForNavForm"; payload: I18nTranslations }
-  | { type: "updateLocalTranslationsForNavForm"; payload: I18nTranslations }
-  | { type: "update"; payload: { lang: string; translation: ScopedTranslationMap } }
-  | { type: "remove"; payload: { lang: string; key: string } }
-  | { type: "updateLanguageId"; payload: { lang: string; id: string } };
+  | { type: 'init'; payload: FormioTranslationMap }
+  | { type: 'updateTranslationsForNavForm'; payload: I18nTranslations }
+  | { type: 'updateLocalTranslationsForNavForm'; payload: I18nTranslations }
+  | { type: 'update'; payload: { lang: string; translation: ScopedTranslationMap } }
+  | { type: 'remove'; payload: { lang: string; key: string } }
+  | { type: 'updateLanguageId'; payload: { lang: string; id: string } };
 
 function reducer(state: I18nState, action: I18nAction) {
   switch (action.type) {
-    case "init":
+    case 'init':
       return {
         ...state,
         translations: action.payload,
       };
-    case "updateTranslationsForNavForm":
+    case 'updateTranslationsForNavForm':
       return {
         ...state,
         translationsForNavForm: action.payload,
       };
-    case "updateLocalTranslationsForNavForm":
+    case 'updateLocalTranslationsForNavForm':
       return {
         ...state,
         localTranslationsForNavForm: action.payload,
       };
-    case "update":
+    case 'update':
       return {
         ...state,
         translations: {
@@ -49,7 +49,7 @@ function reducer(state: I18nState, action: I18nAction) {
           },
         },
       };
-    case "remove":
+    case 'remove':
       return {
         ...state,
         translations: {
@@ -64,7 +64,7 @@ function reducer(state: I18nState, action: I18nAction) {
           },
         },
       };
-    case "updateLanguageId":
+    case 'updateLanguageId':
       return {
         ...state,
         translations: {

@@ -1,5 +1,5 @@
-import FileSaver from "file-saver";
-import { b64toBlob } from "./blob";
+import FileSaver from 'file-saver';
+import { b64toBlob } from './blob';
 
 export const lastNedFilBase64 = (base64, tittel, filtype) => {
   try {

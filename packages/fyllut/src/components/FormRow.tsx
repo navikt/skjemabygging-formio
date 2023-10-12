@@ -1,12 +1,12 @@
-import { useAppConfig } from "@navikt/skjemadigitalisering-shared-components";
-import { navFormUtils } from "@navikt/skjemadigitalisering-shared-domain";
+import { useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
+import { navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
 
 const FormRow = ({ form }) => {
   // @ts-ignore
   const { config } = useAppConfig();
-  const paper = navFormUtils.isSubmissionMethodAllowed("paper", form);
-  const digital = navFormUtils.isSubmissionMethodAllowed("digital", form);
-  const ingen = form.properties.innsending === "INGEN";
+  const paper = navFormUtils.isSubmissionMethodAllowed('paper', form);
+  const digital = navFormUtils.isSubmissionMethodAllowed('digital', form);
+  const ingen = form.properties.innsending === 'INGEN';
   const isDevelopment = config?.isDevelopment;
 
   return (
@@ -19,7 +19,7 @@ const FormRow = ({ form }) => {
           <td>
             {paper && (
               <span>
-                [<a href={`/fyllut/${form.path}${digital ? "?sub=paper" : ""}`}>papir</a>]
+                [<a href={`/fyllut/${form.path}${digital ? '?sub=paper' : ''}`}>papir</a>]
               </span>
             )}
           </td>

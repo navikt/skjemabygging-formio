@@ -1,9 +1,9 @@
-const utlandRegionSchema = (keyPostfix = "") => ({
-  label: "Region",
-  type: "textfield",
+const utlandRegionSchema = (keyPostfix = '') => ({
+  label: 'Region',
+  type: 'textfield',
   key: `region${keyPostfix}`,
-  autocomplete: "address-level1",
-  fieldSize: "input--xxl",
+  autocomplete: 'address-level1',
+  fieldSize: 'input--xxl',
   validate: {
     required: false,
   },
@@ -11,7 +11,7 @@ const utlandRegionSchema = (keyPostfix = "") => ({
   clearOnHide: true,
   dataGridLabel: true,
   tableView: true,
-  validateOn: "blur",
+  validateOn: 'blur',
 });
 
 export default utlandRegionSchema;

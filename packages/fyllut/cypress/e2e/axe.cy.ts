@@ -1,54 +1,54 @@
-describe("Axe: Accessibility testing", () => {
-  describe("Simple test for all tabs in one run", () => {
+describe('Axe: Accessibility testing', () => {
+  describe('Simple test for all tabs in one run', () => {
     before(() => {
       cy.defaultIntercepts();
-      cy.intercept("GET", "/fyllut/api/forms/cypressaxe").as("getCypressAxe");
-      cy.intercept("GET", "/fyllut/api/translations/cypressaxe").as("getTranslation");
-      cy.visit("/fyllut/cypressaxe");
-      cy.wait("@getConfig");
-      cy.wait("@getCypressAxe");
-      cy.wait("@getTranslation");
+      cy.intercept('GET', '/fyllut/api/forms/cypressaxe').as('getCypressAxe');
+      cy.intercept('GET', '/fyllut/api/translations/cypressaxe').as('getTranslation');
+      cy.visit('/fyllut/cypressaxe');
+      cy.wait('@getConfig');
+      cy.wait('@getCypressAxe');
+      cy.wait('@getTranslation');
       cy.injectAxe();
     });
 
-    it("Start page", () => {
+    it('Start page', () => {
       // Sometimes checkA11y fails if you do it to early, so this is instead of doing cy.wait(1000) or similar.
-      cy.findByRole("main").should("exist");
+      cy.findByRole('main').should('exist');
       cy.checkA11y();
     });
 
-    it("Person", () => {
-      cy.contains("Start").click();
+    it('Person', () => {
+      cy.contains('Start').click();
       cy.checkA11y();
     });
 
-    it("Penger og konto", () => {
-      cy.contains("Penger og konto").click();
+    it('Penger og konto', () => {
+      cy.contains('Penger og konto').click();
       cy.checkA11y();
     });
 
-    it("Bedrift / organisasjon", () => {
-      cy.contains("Bedrift / organisasjon").click();
+    it('Bedrift / organisasjon', () => {
+      cy.contains('Bedrift / organisasjon').click();
       cy.checkA11y();
     });
 
-    it("Dato og tid", () => {
-      cy.contains("Dato og tid").click();
+    it('Dato og tid', () => {
+      cy.contains('Dato og tid').click();
       cy.checkA11y();
     });
 
-    it("Standard felter", () => {
-      cy.contains("Standard felter").click();
+    it('Standard felter', () => {
+      cy.contains('Standard felter').click();
       cy.checkA11y();
     });
 
-    it("Layout", () => {
-      cy.contains("Layout").click();
+    it('Layout', () => {
+      cy.contains('Layout').click();
       cy.checkA11y();
     });
 
-    it("Data", () => {
-      cy.contains("Data").click();
+    it('Data', () => {
+      cy.contains('Data').click();
       cy.checkA11y();
     });
   });

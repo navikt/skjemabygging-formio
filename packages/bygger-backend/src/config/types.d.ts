@@ -45,7 +45,7 @@ export type GithubAppConfig = {
   installationId: string;
 };
 
-export type NodeEnv = "production" | "development" | "test";
+export type NodeEnv = 'production' | 'development' | 'test';
 
 export type ConfigType = {
   azure: AzureConfig;

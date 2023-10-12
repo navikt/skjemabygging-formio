@@ -4,9 +4,9 @@ import {
   i18nData,
   LoadingComponent,
   useAppConfig,
-} from "@navikt/skjemadigitalisering-shared-components";
-import React, { useEffect, useState } from "react";
-import { loadCountryNamesForLanguages, loadFormTranslations, loadGlobalTranslationsForLanguages } from "../api";
+} from '@navikt/skjemadigitalisering-shared-components';
+import { useEffect, useState } from 'react';
+import { loadCountryNamesForLanguages, loadFormTranslations, loadGlobalTranslationsForLanguages } from '../api';
 
 function FormPage({ form }) {
   const [translation, setTranslation] = useState({});
@@ -30,7 +30,7 @@ function FormPage({ form }) {
               ...localTranslationsForForm[lang],
             },
           }),
-          { "nb-NO": i18nData["nb-NO"] },
+          { 'nb-NO': i18nData['nb-NO'] },
         );
       } else {
         return {};

@@ -1,12 +1,12 @@
-import { Label } from "@navikt/ds-react";
-import { languagesInNorwegian } from "../../context/i18n";
-import { useStatusStyles } from "./styles";
-import { PublishProperties } from "./types";
+import { Label } from '@navikt/ds-react';
+import { languagesInNorwegian } from '../../context/i18n';
+import { useStatusStyles } from './styles';
+import { PublishProperties } from './types';
 
-const langCodeBokmal = "nb-NO";
+const langCodeBokmal = 'nb-NO';
 export const allLanguagesInNorwegian = {
   ...languagesInNorwegian,
-  [langCodeBokmal]: "Norsk bokmål",
+  [langCodeBokmal]: 'Norsk bokmål',
 };
 
 interface Props {

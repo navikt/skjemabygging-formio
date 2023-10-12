@@ -1,8 +1,8 @@
-import { i18nData, mapTranslationsToFormioI18nObject } from "@navikt/skjemadigitalisering-shared-components";
-import { FormioTranslationMap, Language, NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
-import React, { createContext, useContext, useEffect, useReducer } from "react";
-import { getFormTexts } from "../../translations/utils";
-import i18nReducer, { I18nAction, I18nState } from "./i18nReducer";
+import { i18nData, mapTranslationsToFormioI18nObject } from '@navikt/skjemadigitalisering-shared-components';
+import { FormioTranslationMap, Language, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
+import React, { createContext, useContext, useEffect, useReducer } from 'react';
+import { getFormTexts } from '../../translations/utils';
+import i18nReducer, { I18nAction, I18nState } from './i18nReducer';
 
 export const getAvailableLanguages = (translations: FormioTranslationMap) => Object.keys(translations) as Language[];
 
@@ -23,7 +23,7 @@ const loadTranslationsAndInitState = async (
   dispatch: React.Dispatch<I18nAction>,
 ): Promise<void> => {
   const translations = await loadTranslations();
-  dispatch({ type: "init", payload: translations });
+  dispatch({ type: 'init', payload: translations });
 };
 
 const I18nDispatchContext = createContext<React.Dispatch<I18nAction>>(() => {});
@@ -46,21 +46,21 @@ function I18nStateProvider({ children, loadTranslations, form }: I18nStateProvid
     const formTextsForNbNOAsI18n = extractDefaultI18nNbNoFormTexts(form);
     const translationsForNavForm = {
       ...translationsAsI18n,
-      "nb-NO": {
-        ...translationsAsI18n["nb-NO"],
-        ...i18nData["nb-NO"],
+      'nb-NO': {
+        ...translationsAsI18n['nb-NO'],
+        ...i18nData['nb-NO'],
         ...formTextsForNbNOAsI18n,
       },
     };
-    dispatch({ type: "updateTranslationsForNavForm", payload: translationsForNavForm });
+    dispatch({ type: 'updateTranslationsForNavForm', payload: translationsForNavForm });
   }, [state.translations, form, dispatch]);
 
   useEffect(() => {
     const localTranslationsForNavForm = mapTranslationsToFormioI18nObject(
       state.translations,
-      (translation) => translation.scope !== "component-countryName" && translation.scope !== "global",
+      (translation) => translation.scope !== 'component-countryName' && translation.scope !== 'global',
     );
-    dispatch({ type: "updateLocalTranslationsForNavForm", payload: localTranslationsForNavForm });
+    dispatch({ type: 'updateLocalTranslationsForNavForm', payload: localTranslationsForNavForm });
   }, [state.translations, dispatch]);
 
   return (

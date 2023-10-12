@@ -1,12 +1,12 @@
 const epostSchema = () => ({
-  label: "E-post",
-  type: "email",
+  label: 'E-post',
+  type: 'email',
   key: `epost`,
-  fieldSize: "input--xxl",
+  fieldSize: 'input--xxl',
   input: true,
   dataGridLabel: true,
-  validateOn: "blur",
-  autocomplete: "email",
+  validateOn: 'blur',
+  autocomplete: 'email',
   clearOnHide: true,
   spellcheck: false,
   validate: {

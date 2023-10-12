@@ -1,5 +1,5 @@
-import { config as configObject } from "../../config/config";
-import { ConfigType } from "@navikt/skjemadigitalisering-shared-domain";
+import { ConfigType } from '@navikt/skjemadigitalisering-shared-domain';
+import { config as configObject } from '../../config/config';
 
 const { naisClusterName, featureToggles, isDelingslenke, isDevelopment, amplitude } = configObject;
 

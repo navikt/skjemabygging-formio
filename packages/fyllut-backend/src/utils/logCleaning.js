@@ -4,7 +4,7 @@ const recursivelyClean = (maybeObject) => {
   if (maybeObject instanceof Object) {
     Object.keys(maybeObject).forEach((key) => {
       if (KEYS_TO_CLEAR.test(key)) {
-        maybeObject[key] = "<removed>";
+        maybeObject[key] = '<removed>';
       } else {
         recursivelyClean(maybeObject[key]);
       }

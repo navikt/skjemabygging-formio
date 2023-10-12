@@ -1,24 +1,24 @@
-import { render, screen, waitFor } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
-import { setupNavFormio } from "../../test/navform-render";
-import { AppConfigProvider } from "../configContext";
-import NavForm from "./NavForm";
+import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { setupNavFormio } from '../../test/navform-render';
+import { AppConfigProvider } from '../configContext';
+import NavForm from './NavForm';
 
 const testFormWithStandardAndReactComponents = {
-  title: "Testskjema med vanilla og React componenter",
-  display: "wizard",
-  type: "form",
+  title: 'Testskjema med vanilla og React componenter',
+  display: 'wizard',
+  type: 'form',
   components: [
     {
-      type: "panel",
-      key: "panel1",
-      label: "Panel 1",
+      type: 'panel',
+      key: 'panel1',
+      label: 'Panel 1',
       components: [
         {
-          label: "Fornavn",
-          type: "textfield",
-          key: "textfield",
-          inputType: "text",
+          label: 'Fornavn',
+          type: 'textfield',
+          key: 'textfield',
+          inputType: 'text',
           input: true,
           validate: {
             required: true,
@@ -37,17 +37,17 @@ const testFormWithStandardAndReactComponents = {
           },
         },*/
         {
-          label: "IBAN",
-          type: "iban",
+          label: 'IBAN',
+          type: 'iban',
           key: `iban`,
-          fieldSize: "input--l",
+          fieldSize: 'input--l',
           input: true,
           spellcheck: false,
           dataGridLabel: true,
-          validateOn: "blur",
+          validateOn: 'blur',
           clearOnHide: true,
           validate: {
-            custom: "valid = instance.validateIban(input);",
+            custom: 'valid = instance.validateIban(input);',
             required: true,
           },
         },
@@ -57,13 +57,13 @@ const testFormWithStandardAndReactComponents = {
 };
 
 const testskjemaForOversettelser = {
-  title: "Testskjema",
+  title: 'Testskjema',
   components: [
     {
-      label: "Fornavn",
-      type: "textfield",
-      key: "textfield",
-      inputType: "text",
+      label: 'Fornavn',
+      type: 'textfield',
+      key: 'textfield',
+      inputType: 'text',
       input: true,
       validate: {
         required: true,
@@ -72,7 +72,7 @@ const testskjemaForOversettelser = {
   ],
 };
 
-describe("NavForm", () => {
+describe('NavForm', () => {
   beforeAll(setupNavFormio);
 
   const renderNavForm = async (props) => {
@@ -86,65 +86,65 @@ describe("NavForm", () => {
     return renderReturn;
   };
 
-  describe("i18n", () => {
-    it("should render norwegian label as specified in i18n", async () => {
-      const i18n = { en: { Fornavn: "First name" }, "nb-NO": { Fornavn: "Fornavn", submit: "Lagre" } };
+  describe('i18n', () => {
+    it('should render norwegian label as specified in i18n', async () => {
+      const i18n = { en: { Fornavn: 'First name' }, 'nb-NO': { Fornavn: 'Fornavn', submit: 'Lagre' } };
       await renderNavForm({
         form: testskjemaForOversettelser,
-        language: "nb-NO",
+        language: 'nb-NO',
         i18n,
       });
-      const fornavnInput = await screen.findByLabelText("Fornavn");
+      const fornavnInput = await screen.findByLabelText('Fornavn');
       expect(fornavnInput).toBeInTheDocument();
     });
 
-    it("should render the english label as specified in i18n", async () => {
-      const i18n = { en: { Fornavn: "First name" }, "nb-NO": { Fornavn: "Fornavn", submit: "Lagre" } };
+    it('should render the english label as specified in i18n', async () => {
+      const i18n = { en: { Fornavn: 'First name' }, 'nb-NO': { Fornavn: 'Fornavn', submit: 'Lagre' } };
       await renderNavForm({
         form: testskjemaForOversettelser,
-        language: "en",
+        language: 'en',
         i18n,
       });
-      const fornavnInput = await screen.findByLabelText("First name");
+      const fornavnInput = await screen.findByLabelText('First name');
       expect(fornavnInput).toBeInTheDocument();
     });
 
-    it("should change language from norwegian to english", async () => {
-      const i18n = { en: { Fornavn: "First name" }, "nb-NO": { Fornavn: "Fornavn", submit: "Lagre" } };
+    it('should change language from norwegian to english', async () => {
+      const i18n = { en: { Fornavn: 'First name' }, 'nb-NO': { Fornavn: 'Fornavn', submit: 'Lagre' } };
       const { rerender } = await renderNavForm({
         form: testskjemaForOversettelser,
-        language: "nb-NO",
+        language: 'nb-NO',
         i18n,
       });
-      expect(await screen.findByLabelText("Fornavn")).toBeInTheDocument();
+      expect(await screen.findByLabelText('Fornavn')).toBeInTheDocument();
 
       rerender(
         <AppConfigProvider>
           <NavForm form={testskjemaForOversettelser} language="en" i18n={i18n} />
         </AppConfigProvider>,
       );
-      expect(await screen.findByLabelText("First name")).toBeInTheDocument();
+      expect(await screen.findByLabelText('First name')).toBeInTheDocument();
     });
   });
 
-  describe("re-initializing with submission", () => {
-    it("should load all values", async () => {
+  describe('re-initializing with submission', () => {
+    it('should load all values', async () => {
       const mockedOnSubmit = vi.fn();
       await renderNavForm({
         form: testFormWithStandardAndReactComponents,
-        language: "nb-NO",
+        language: 'nb-NO',
         submission: {
           data: {
-            textfield: "Donald",
-            datepicker: "2000-01-01",
-            iban: "GB33BUKB20201555555555",
+            textfield: 'Donald',
+            datepicker: '2000-01-01',
+            iban: 'GB33BUKB20201555555555',
           },
         },
         onSubmit: mockedOnSubmit,
       });
-      const textField = await screen.findByLabelText("Fornavn");
+      const textField = await screen.findByLabelText('Fornavn');
       expect(textField).toBeInTheDocument();
-      expect(textField).toHaveValue("Donald");
+      expect(textField).toHaveValue('Donald');
 
       /*
       TODO: Add back when datepicker works
@@ -153,11 +153,11 @@ describe("NavForm", () => {
       expect(datepicker).toHaveValue("01.01.2000");
        */
 
-      const ibanField = await screen.findByLabelText("IBAN");
+      const ibanField = await screen.findByLabelText('IBAN');
       expect(ibanField).toBeInTheDocument();
-      expect(ibanField).toHaveValue("GB33BUKB20201555555555");
+      expect(ibanField).toHaveValue('GB33BUKB20201555555555');
 
-      const nextLink = await screen.findByRole("button", { name: "Neste steg" });
+      const nextLink = await screen.findByRole('button', { name: 'Neste steg' });
       await userEvent.click(nextLink);
       await waitFor(() => expect(mockedOnSubmit).toHaveBeenCalled());
     });

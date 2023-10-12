@@ -1,5 +1,5 @@
-import FormBuilderOptions from "../../Forms/form-builder-options";
-import Container from "./Container";
+import FormBuilderOptions from '../../Forms/form-builder-options';
+import Container from './Container';
 
 class Row extends Container {
   static get builderInfo() {
@@ -8,7 +8,7 @@ class Row extends Container {
       title,
       icon,
       key,
-      documentation: "",
+      documentation: '',
       weight: 0,
       schema: Row.schema(),
     };
@@ -22,7 +22,7 @@ class Row extends Container {
   }
 
   get templateName() {
-    return "row";
+    return 'row';
   }
 }
 

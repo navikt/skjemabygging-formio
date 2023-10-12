@@ -7,50 +7,50 @@ concurrency: deploy-${{ github.ref }}
 
 jobs:
   build-and-test:
-    name: "Build and test packages"
+    name: 'Build and test packages'
     runs-on: ubuntu-latest-8-cores
     permissions:
-      contents: "read"
-      packages: "read"
+      contents: 'read'
+      packages: 'read'
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: "18.16.1"
-          cache: "yarn"
-          cache-dependency-path: "**/yarn.lock"
+          node-version: '20.8.0'
+          cache: 'yarn'
+          cache-dependency-path: '**/yarn.lock'
           registry-url: https://npm.pkg.github.com/
-          scope: "@navikt"
-      - name: "Install dependencies"
+          scope: '@navikt'
+      - name: 'Install dependencies'
         run: yarn --frozen-lockfile
-      - name: "No unstaged changes allowed (changes in yarn.lock?)"
+      - name: 'No unstaged changes allowed (changes in yarn.lock?)'
         run: git diff --quiet
-      - name: "Check types"
+      - name: 'Check types'
         run: yarn check-types
-      - name: "Build"
+      - name: 'Build'
         run: yarn build
-      - name: "Test"
+      - name: 'Test'
         run: yarn test
 
   package-and-push-bygger:
     if: github.ref == 'refs/heads/master'
-    name: "Package bygger"
+    name: 'Package bygger'
     runs-on: ubuntu-latest-8-cores
     permissions:
-      contents: "read"
-      id-token: "write"
-      packages: "read"
+      contents: 'read'
+      id-token: 'write'
+      packages: 'read'
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: "18.16.1"
-          cache: "yarn"
-          cache-dependency-path: "**/yarn.lock"
+          node-version: '20.8.0'
+          cache: 'yarn'
+          cache-dependency-path: '**/yarn.lock'
           registry-url: https://npm.pkg.github.com/
-          scope: "@navikt"
+          scope: '@navikt'
 
-      - name: "Build application: Bygger"
+      - name: 'Build application: Bygger'
         env:
           VITE_GIT_VERSION: ${{ github.sha }}
         run: yarn --frozen-lockfile && yarn build
@@ -72,28 +72,28 @@ jobs:
 
   package-and-push-fyllut-base:
     if: github.ref == 'refs/heads/master'
-    name: "Package fyllut"
+    name: 'Package fyllut'
     runs-on: ubuntu-latest-8-cores
     permissions:
-      contents: "read"
-      id-token: "write"
-      packages: "read"
+      contents: 'read'
+      id-token: 'write'
+      packages: 'read'
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: "18.16.1"
-          cache: "yarn"
-          cache-dependency-path: "**/yarn.lock"
+          node-version: '20.8.0'
+          cache: 'yarn'
+          cache-dependency-path: '**/yarn.lock'
           registry-url: https://npm.pkg.github.com/
-          scope: "@navikt"
+          scope: '@navikt'
 
-      - name: "Build application: Fyllut"
+      - name: 'Build application: Fyllut'
         env:
           VITE_GIT_VERSION: ${{ github.sha }}
         run: yarn --frozen-lockfile && yarn build
 
-      - name: "Build and push Docker image: fyllut-base-dev"
+      - name: 'Build and push Docker image: fyllut-base-dev'
         uses: nais/docker-build-push@v0
         id: docker-build-push-dev
         with:
@@ -108,7 +108,7 @@ jobs:
           pull: true
           tag: ${{ github.sha }}
 
-      - name: "Build and push Docker image: fyllut-base"
+      - name: 'Build and push Docker image: fyllut-base'
         if: github.ref == 'refs/heads/master'
         uses: nais/docker-build-push@v0
         id: docker-build-push
@@ -125,27 +125,27 @@ jobs:
           tag: ${{ github.sha }}
 
   deploy-bygger-to-prod:
-    name: "Deploy bygger to prod"
+    name: 'Deploy bygger to prod'
     if: github.ref == 'refs/heads/master'
     needs: [build-and-test, package-and-push-bygger, package-and-push-fyllut-base]
     runs-on: ubuntu-latest
     steps:
-      - uses: "actions/checkout@v3"
-      - name: "Deploy to PROD"
-        uses: "nais/deploy/actions/deploy@v1"
+      - uses: 'actions/checkout@v3'
+      - name: 'Deploy to PROD'
+        uses: 'nais/deploy/actions/deploy@v1'
         env:
-          APIKEY: "${{ secrets.NAIS_DEPLOY_APIKEY }}"
-          CLUSTER: "prod-gcp"
-          RESOURCE: "./packages/bygger/.nais/nais.yaml"
-          VARS: "./packages/bygger/.nais/prod.yaml"
-          VAR: "image=${{ needs.package-and-push-bygger.outputs.image }}"
+          APIKEY: '${{ secrets.NAIS_DEPLOY_APIKEY }}'
+          CLUSTER: 'prod-gcp'
+          RESOURCE: './packages/bygger/.nais/nais.yaml'
+          VARS: './packages/bygger/.nais/prod.yaml'
+          VAR: 'image=${{ needs.package-and-push-bygger.outputs.image }}'
 
   trigger-deploy-fyllut-to-dev:
-    name: "Trigger deploy fyllut to dev"
+    name: 'Trigger deploy fyllut to dev'
     needs: [build-and-test, package-and-push-bygger, package-and-push-fyllut-base]
     runs-on: ubuntu-latest
     steps:
-      - name: "Generate app installation access token"
+      - name: 'Generate app installation access token'
         uses: navikt/github-app-token-generator@v1
         id: generate-token
         with:
@@ -153,11 +153,11 @@ jobs:
           app-id: ${{ secrets.PUBLISHING_APP_ID }}
           repo: navikt/skjemautfylling-formio
 
-      - name: "Trigger deploy fyllut to dev"
+      - name: 'Trigger deploy fyllut to dev'
         uses: benc-uk/workflow-dispatch@v1
         with:
-          workflow: "Trigger dev deploy"
+          workflow: 'Trigger dev deploy'
           repo: navikt/skjemautfylling-formio
-          ref: "dev-deploy"
+          ref: 'dev-deploy'
           token: ${{ steps.generate-token.outputs.token }}
           inputs: '{ "monorepoGitHash": "${{ github.sha }}" }'
