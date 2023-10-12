@@ -2,8 +2,8 @@ describe("Axe: Accessibility testing", () => {
   describe("Simple test for all tabs in one run", () => {
     before(() => {
       cy.defaultIntercepts();
-      cy.intercept("GET", "/fyllut/api/forms/cypressaxe", { fixture: "cypressaxe.json" }).as("getCypressAxe");
-      cy.intercept("GET", "/fyllut/api/translations/cypressaxe", { body: {} }).as("getTranslation");
+      cy.intercept("GET", "/fyllut/api/forms/cypressaxe").as("getCypressAxe");
+      cy.intercept("GET", "/fyllut/api/translations/cypressaxe").as("getTranslation");
       cy.visit("/fyllut/cypressaxe");
       cy.wait("@getConfig");
       cy.wait("@getCypressAxe");

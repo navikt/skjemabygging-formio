@@ -43,7 +43,8 @@
       {
         "forbid": ["@navikt/skjemadigitalisering-shared-@(components|domain)/**"]
       }
-    ]
+    ],
+    "@typescript-eslint/no-var-requires": "off"
   },
   "root": true
 }

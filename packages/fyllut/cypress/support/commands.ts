@@ -70,9 +70,9 @@ Cypress.Commands.add("checkLogToAmplitude", (eventType: string, properties) => {
 });
 
 Cypress.Commands.add("defaultIntercepts", () => {
-  cy.intercept("POST", "/collect-auto", { body: "success" }).as("amplitudeLogging");
+  cy.intercept("POST", "/amplitude/collect-auto").as("amplitudeLogging");
   cy.intercept("POST", /\/fyllut\/api\/log.*/, { body: "ok" }).as("logger");
-  cy.intercept("GET", "/fyllut/api/config", { fixture: "config.json" }).as("getConfig");
+  cy.intercept("GET", "/fyllut/api/config").as("getConfig");
   cy.intercept("GET", /\/fyllut\/api\/global-translations\.*/, { fixture: "global-translation.json" }).as(
     "getGlobalTranslation",
   );

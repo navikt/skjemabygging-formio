@@ -1,7 +1,7 @@
 import { featureUtils } from "@navikt/skjemadigitalisering-shared-domain";
 import dotenv from "dotenv";
 import { NaisCluster } from "./nais-cluster.js";
-import { ConfigType, DefaultConfig, IdportenConfig, SendInnConfig, TokenxConfig } from "./types";
+import { AmplitudeConfig, ConfigType, DefaultConfig, IdportenConfig, SendInnConfig, TokenxConfig } from "./types";
 
 if (process.env.NODE_ENV !== "test") {
   dotenv.config();
@@ -13,6 +13,10 @@ const tokenx: TokenxConfig = {
   privateJwk: process.env.TOKEN_X_PRIVATE_JWK!,
   fyllutClientId: process.env.TOKEN_X_CLIENT_ID!,
   wellKnownUrl: process.env.TOKEN_X_WELL_KNOWN_URL!,
+};
+
+const amplitude: AmplitudeConfig = {
+  apiEndpoint: process.env.AMPLITUDE_API_ENDPOINT ?? "",
 };
 
 const idporten: IdportenConfig = {
@@ -60,6 +64,7 @@ const localDevelopmentConfig: DefaultConfig = {
     ...idporten,
     idportenJwksUri: idporten.idportenJwksUri || "https://test.idporten.no/jwks.json",
   },
+  amplitude,
 };
 
 const defaultConfig: DefaultConfig = {
@@ -81,6 +86,7 @@ const defaultConfig: DefaultConfig = {
   tokenx,
   sendInnConfig,
   idporten,
+  amplitude,
 };
 
 const config: ConfigType = {

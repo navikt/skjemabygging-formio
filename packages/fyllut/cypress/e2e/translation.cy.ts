@@ -1,10 +1,6 @@
 describe("Translations", () => {
   beforeEach(() => {
     cy.defaultIntercepts();
-    cy.intercept("GET", "/fyllut/api/forms/cypress101", { fixture: "cypress101.json" }).as("getForm");
-    cy.intercept("GET", "/fyllut/api/translations/cypress101", { fixture: "cypress101-translation.json" }).as(
-      "getTranslation",
-    );
   });
 
   describe("Change translations based on url params", () => {

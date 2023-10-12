@@ -3,15 +3,7 @@ import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 describe("When form has panels that are hidden unless a condition is true", () => {
   beforeEach(() => {
     cy.defaultIntercepts();
-    cy.intercept("GET", "/fyllut/api/forms/conditionalxmas", {
-      fixture: "conditionalxmas.json",
-    }).as("getForm");
-    cy.intercept("GET", "/fyllut/api/translations/conditionalxmas", {
-      fixture: "conditionalxmas-translation.json",
-    }).as("getTranslation");
-    cy.intercept("GET", "/fyllut/api/global-translations/en", { fixture: "global-translation.json" }).as(
-      "getGlobalTranslation",
-    );
+    cy.intercept("GET", "/fyllut/api/forms/conditionalxmas").as("getForm");
     cy.visit("/fyllut/conditionalxmas");
     cy.wait("@getForm");
     cy.clickStart(); // <-- navigate from information page to the form

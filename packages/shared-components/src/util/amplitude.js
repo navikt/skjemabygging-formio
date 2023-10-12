@@ -1,10 +1,11 @@
 import amplitude from "amplitude-js";
 
-export const initAmplitude = () => {
+export const initAmplitude = (apiEndpoint, isGcp) => {
   amplitude.getInstance().init("default", "", {
-    apiEndpoint: "amplitude.nav.no/collect-auto",
+    apiEndpoint,
     saveEvents: false,
     includeUtm: true,
+    forceHttps: isGcp,
     includeReferrer: true,
     platform: window.location.toString(),
   });

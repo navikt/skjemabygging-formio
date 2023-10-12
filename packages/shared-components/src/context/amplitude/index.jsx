@@ -11,6 +11,7 @@ import {
 import useHarApnetSkjema from "./harApnetSkjemaHook";
 import useSkjemaSporsmalEvent from "./skjemaEventHook";
 import useSkjemaStegFullfort from "./skjemaStegFullfortHook";
+import { useAppConfig } from "../../configContext";
 
 const defaultValues = {
   loggSkjemaApnet: (innsendingsKanal) => {},
@@ -25,19 +26,22 @@ const defaultValues = {
   loggSkjemaFullfort: () => {},
 };
 
+const isGcp = (config) => !!config.NAIS_CLUSTER_NAME;
+
 const AmplitudeContext = createContext(defaultValues);
 
-function AmplitudeProvider({ children, form, shouldUseAmplitude }) {
+function AmplitudeProvider({ children, form }) {
+  const { config } = useAppConfig();
   useEffect(() => {
-    if (shouldUseAmplitude) {
-      initAmplitude();
+    if (config.amplitudeApiEndpoint) {
+      initAmplitude(config.amplitudeApiEndpoint, isGcp(config));
     }
-  }, [shouldUseAmplitude]);
+  }, [config]);
   const loggSkjemaStegFullfort = useSkjemaStegFullfort(form);
   const loggSkjemaApnet = useHarApnetSkjema(form);
   const { loggSkjemaSporsmalBesvart, loggSkjemaSporsmalBesvartForSpesialTyper } = useSkjemaSporsmalEvent(form);
 
-  const amplitude = shouldUseAmplitude
+  const amplitude = config.amplitudeApiEndpoint
     ? {
         loggSkjemaApnet,
         loggSkjemaSporsmalBesvart,

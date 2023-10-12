@@ -9,21 +9,12 @@
 describe("Amplitude", () => {
   beforeEach(() => {
     cy.defaultIntercepts();
-    // TODO: Remove this when mellomlagring is default
-    cy.intercept("GET", "/fyllut/api/config", {
-      body: { FEATURE_TOGGLES: { enableTranslations: true, enableMellomlagring: false } },
-    }).as("getConfig");
-    cy.intercept("GET", "/fyllut/api/forms/cypress101", { fixture: "cypress101.json" }).as("getCypress101");
-    cy.intercept("GET", "/fyllut/api/translations/cypress101", { body: {} }).as("getTranslation");
+    cy.intercept("GET", "/fyllut/api/forms/cypress101").as("getCypress101");
   });
 
   it("logs for all relevant events", () => {
     // Disabler dekoratør, siden den også gjør kall til "/collect-auto". Det fører til at checkLogToAmplitude feiler, siden den er avhengig av at kall gjørers i riktig rekkefølge
-    cy.visit("/fyllut/cypress101", {
-      qs: {
-        disableDecorator: "true",
-      },
-    });
+    cy.visit("/fyllut/cypress101");
     cy.wait("@getCypress101");
 
     // Select digital submission and go to the form

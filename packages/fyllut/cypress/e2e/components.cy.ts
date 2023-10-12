@@ -2,10 +2,7 @@ describe("Components", () => {
   describe("Penger og konto", () => {
     beforeEach(() => {
       cy.defaultIntercepts();
-      cy.intercept("GET", "/fyllut/api/forms/pengerogkonto", { fixture: "pengerOgKonto.json" }).as(
-        "getPengerOgKontoForm",
-      );
-      cy.intercept("GET", "/fyllut/api/translations/pengerogkonto", { body: {} }).as("getTranslation");
+      cy.intercept("GET", "/fyllut/api/forms/pengerogkonto").as("getPengerOgKontoForm");
       cy.visit("/fyllut/pengerogkonto/skjema");
       cy.wait("@getCurrencies");
       cy.wait("@getPengerOgKontoForm");

@@ -1,14 +1,7 @@
 describe("Basic form", () => {
   beforeEach(() => {
     cy.defaultIntercepts();
-    // TODO: Remove this when mellomlagring is default
-    cy.intercept("GET", "/fyllut/api/config", {
-      body: { FEATURE_TOGGLES: { enableTranslations: true, enableMellomlagring: false } },
-    }).as("getConfig");
-    cy.intercept("GET", "/fyllut/api/forms/cypress101", { fixture: "cypress101.json" }).as("getCypress101");
-    cy.intercept("GET", "/fyllut/api/translations/cypress101", { fixture: "cypress101-translation.json" }).as(
-      "getTranslation",
-    );
+    cy.intercept("GET", "/fyllut/api/forms/cypress101").as("getCypress101");
   });
 
   const fillInForm = (expectVedleggspanel: boolean) => {

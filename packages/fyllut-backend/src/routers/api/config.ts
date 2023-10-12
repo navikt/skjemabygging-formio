@@ -1,7 +1,7 @@
 import { config as configObject } from "../../config/config";
 import { ConfigType } from "@navikt/skjemadigitalisering-shared-domain";
 
-const { naisClusterName, featureToggles, isDelingslenke, isDevelopment } = configObject;
+const { naisClusterName, featureToggles, isDelingslenke, isDevelopment, amplitude } = configObject;
 
 const config = {
   get: async (req, res): Promise<ConfigType> => {
@@ -10,6 +10,7 @@ const config = {
       FEATURE_TOGGLES: featureToggles,
       isDelingslenke,
       isDevelopment,
+      amplitudeApiEndpoint: amplitude.apiEndpoint,
     });
   },
 };

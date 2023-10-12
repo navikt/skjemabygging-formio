@@ -6,6 +6,10 @@ export type TokenxConfig = {
   wellKnownUrl: string;
 };
 
+export type AmplitudeConfig = {
+  apiEndpoint: string;
+};
+
 export type SendInnConfig = {
   host: string;
   tokenxClientId: string;
@@ -43,6 +47,7 @@ export type DefaultConfig = {
   mockIdportenJwt?: string;
   noFormValidation?: boolean;
   noDecorator?: boolean;
+  amplitude: AmplitudeConfig;
 };
 
 export type ConfigType = DefaultConfig & {
