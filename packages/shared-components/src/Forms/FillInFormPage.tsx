@@ -208,10 +208,12 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
     switch (showModal) {
       case 'save':
         logNavigation(translate(TEXTS.grensesnitt.navigation.saveDraft));
-        return await updateMellomlagring(submission);
+        await updateMellomlagring(submission);
+        break;
       case 'delete':
         logNavigation(translate(TEXTS.grensesnitt.navigation.saveDraft));
-        return await deleteMellomlagring();
+        await deleteMellomlagring();
+        break;
       case 'discard':
       default:
         logNavigation(translate(TEXTS.grensesnitt.navigation.cancel));

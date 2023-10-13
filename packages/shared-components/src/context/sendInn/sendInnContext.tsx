@@ -167,6 +167,7 @@ const SendInnProvider = ({
     } catch (error) {
       dispatchFyllutMellomlagring({ type: 'error', error: 'UPDATE FAILED' });
       logger?.info('Oppdatering av mellomlagring feilet', error as Error);
+      throw error;
     }
   };
 
@@ -180,6 +181,7 @@ const SendInnProvider = ({
     } catch (error) {
       dispatchFyllutMellomlagring({ type: 'error', error: 'DELETE FAILED' });
       logger?.info('Sletting av mellomlagring feilet', error as Error);
+      throw error;
     }
   };
 
@@ -194,7 +196,7 @@ const SendInnProvider = ({
     if (isMellomlagringEnabled && innsendingsId) {
       try {
         return await updateUtfyltSoknad(appConfig, form, submission, currentLanguage, translation, innsendingsId);
-      } catch (error: any) {
+      } catch (error) {
         try {
           await updateSoknad(appConfig, form, submission, currentLanguage, translation, innsendingsId);
           dispatchFyllutMellomlagring({ type: 'error', error: 'SUBMIT FAILED' });

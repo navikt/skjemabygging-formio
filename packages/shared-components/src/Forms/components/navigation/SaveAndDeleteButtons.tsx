@@ -25,23 +25,21 @@ const SaveAndDeleteButtons = ({ submission }: Props) => {
       setIsSaveModalOpen(false);
       throw new Error('Kunne ikke lagre. Innsendingen er tom.');
     }
-    const result = await updateMellomlagring(submission);
+    await updateMellomlagring(submission);
     loggNavigering({
       lenkeTekst: translate(TEXTS.grensesnitt.navigation.saveDraft),
       destinasjon: exitUrl,
     });
     setIsSaveModalOpen(false);
-    return result;
   };
 
   const deleteSubmission = async () => {
-    const result = await deleteMellomlagring();
+    await deleteMellomlagring();
     loggNavigering({
       lenkeTekst: translate(TEXTS.grensesnitt.navigation.cancelAndDelete),
       destinasjon: exitUrl,
     });
     setIsDeleteModalOpen(false);
-    return result;
   };
 
   return (

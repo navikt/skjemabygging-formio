@@ -18,7 +18,7 @@ const useStyles = makeStyles({
 interface Props {
   open: boolean;
   onClose: () => void;
-  onConfirm: () => Promise<object | undefined>;
+  onConfirm: () => Promise<void> | void;
   exitUrl?: string;
   confirmType: 'primary' | 'danger';
   texts: {
@@ -37,15 +37,16 @@ const ConfirmationModal = (props: Props) => {
   const { onConfirm, exitUrl, confirmType, texts, ...modalProps } = props;
 
   const onClickConfirm = async () => {
-    setIsLoading(true);
-    const result = await onConfirm();
-    setIsLoading(false);
-    if (!result) {
+    try {
+      setIsLoading(true);
+      await onConfirm();
+      setIsLoading(false);
+      if (exitUrl) {
+        window.location.assign(exitUrl);
+      }
+    } catch (_error) {
+      setIsLoading(false);
       modalProps.onClose();
-      return;
-    }
-    if (exitUrl) {
-      window.location.assign(exitUrl);
     }
   };
 
