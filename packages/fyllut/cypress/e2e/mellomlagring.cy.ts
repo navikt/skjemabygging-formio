@@ -73,6 +73,9 @@ describe('Mellomlagring', () => {
       cy.intercept('GET', '/fyllut/api/send-inn/soknad/8e3c3621-76d7-4ebd-90d4-34448ebcccc3', {
         fixture: 'mellomlagring/getTestMellomlagring-valid.json',
       }).as('getMellomlagringValid');
+      cy.intercept('DELETE', '/fyllut/api/send-inn/soknad/8e3c3621-76d7-4ebd-90d4-34448ebcccc3').as(
+        'deleteMellomlagring',
+      );
     });
 
     it('creates and updates mellomlagring', () => {
@@ -113,6 +116,39 @@ describe('Mellomlagring', () => {
       cy.findByRole('heading', { name: TEXTS.statiske.introPage.title }).should('exist');
       cy.clickStart();
       cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
+    });
+
+    it('lets you delete mellomlagring', () => {
+      cy.visit(
+        '/fyllut/testmellomlagring/gave?sub=digital&innsendingsId=8e3c3621-76d7-4ebd-90d4-34448ebcccc3&lang=nb-NO',
+      );
+      cy.wait('@getMellomlagringValid');
+      cy.findByRole('heading', { name: 'Gave', level: 2 }).should('be.visible');
+      cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.cancelAndDelete }).should('be.visible');
+      cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.cancelAndDelete }).click();
+      cy.findByText(TEXTS.grensesnitt.confirmDeletePrompt.body).should('be.visible');
+      cy.findByRole('button', { name: TEXTS.grensesnitt.confirmDeletePrompt.cancel }).click();
+      cy.findByText(TEXTS.grensesnitt.confirmDeletePrompt.body).should('not.exist');
+      cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.cancelAndDelete }).click();
+      cy.findByRole('button', { name: TEXTS.grensesnitt.confirmDeletePrompt.confirm }).click();
+      cy.wait('@deleteMellomlagring');
+      cy.findByText(TEXTS.statiske.mellomlagringError.delete.message).should('be.visible');
+    });
+
+    it('lets you save mellomlagring before cancelling', () => {
+      cy.visit(
+        '/fyllut/testmellomlagring/gave?sub=digital&innsendingsId=8e3c3621-76d7-4ebd-90d4-34448ebcccc3&lang=nb-NO',
+      );
+      cy.wait('@getMellomlagringValid');
+      cy.findByRole('heading', { name: 'Gave', level: 2 }).should('be.visible');
+      cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.saveDraft }).should('be.visible');
+      cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.saveDraft }).click();
+      cy.findByText(TEXTS.grensesnitt.confirmSavePrompt.body).should('be.visible');
+      cy.findByRole('button', { name: TEXTS.grensesnitt.confirmSavePrompt.cancel }).click();
+      cy.findByText(TEXTS.grensesnitt.confirmSavePrompt.body).should('not.exist');
+      cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.saveDraft }).click();
+      cy.findByRole('button', { name: TEXTS.grensesnitt.confirmSavePrompt.confirm }).click();
+      cy.wait('@updateMellomlagring');
     });
 
     describe('When starting on the summary page', () => {

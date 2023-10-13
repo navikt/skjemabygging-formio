@@ -82,7 +82,7 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
       setPanelValidationList(panelValidations);
       instance.destroy(true);
     };
-    if (isMellomlagringEnabled && submission) {
+    if (isMellomlagringEnabled && submission.data) {
       initializePanelValidation();
     }
   }, [isMellomlagringEnabled, form, submission]);
