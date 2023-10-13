@@ -23,7 +23,7 @@ jobs:
       - name: 'Build application'
         run: yarn build
       - name: 'Run mock server'
-        run: yarn mocks:no-cli &
+        run: yarn mocks:fyllut:no-cli &
       - name: 'Cypress tests (fyllut)'
         uses: cypress-io/github-action@v5
         with:

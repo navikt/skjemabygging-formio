@@ -18,7 +18,7 @@ module.exports = {
   mock: {
     routes: {},
     collections: {
-      selected: "base",
+      selected: 'fyllut-base',
     },
   },
   server: {
