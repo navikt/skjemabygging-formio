@@ -77,19 +77,26 @@ describe('Mellomlagring', () => {
         fixture: 'mellomlagring/responseWithInnsendingsId.json',
       }).as('createMellomlagring');
       cy.intercept('PUT', '/fyllut/api/send-inn/soknad*', (req) => {
-        req.reply({
-          innsendingsId: '75eedb4c-1253-44d8-9fde-3648f4bb1878',
-          endretDato: `2023-10-10T10:02:00.328667+02:00`,
-          hoveddokumentVariant: {
-            document: {
-              data: req.body.submission,
+        if (req.body.innsendingsId === 'innsendingsIdForUpdateWithError') {
+          req.reply(500);
+        } else {
+          req.reply({
+            innsendingsId: '75eedb4c-1253-44d8-9fde-3648f4bb1878',
+            endretDato: `2023-10-10T10:02:00.328667+02:00`,
+            hoveddokumentVariant: {
+              document: {
+                data: req.body.submission,
+              },
             },
-          },
-        });
+          });
+        }
       }).as('updateMellomlagring');
       cy.intercept('GET', '/fyllut/api/send-inn/soknad/8e3c3621-76d7-4ebd-90d4-34448ebcccc3', {
         fixture: 'mellomlagring/getTestMellomlagring-valid.json',
       }).as('getMellomlagringValid');
+      cy.intercept('GET', '/fyllut/api/send-inn/soknad/innsendingsIdForUpdateWithError', {
+        fixture: 'mellomlagring/getTestMellomlagring-valid.json',
+      }).as('getMellomlagringForInnsendingWithUpdateError');
       cy.intercept('DELETE', '/fyllut/api/send-inn/soknad/8e3c3621-76d7-4ebd-90d4-34448ebcccc3').as(
         'deleteMellomlagring',
       );
@@ -150,13 +157,12 @@ describe('Mellomlagring', () => {
     });
 
     it('lets you save mellomlagring before cancelling', () => {
-      cy.visit(
-        '/fyllut/testmellomlagring/gave?sub=digital&innsendingsId=8e3c3621-76d7-4ebd-90d4-34448ebcccc3&lang=nb-NO',
-      );
-      cy.wait('@getMellomlagringValid');
+      cy.visit('/fyllut/testmellomlagring/gave?sub=digital&innsendingsId=innsendingsIdForUpdateWithError&lang=nb-NO');
+      cy.wait('@getMellomlagringForInnsendingWithUpdateError');
       cy.findByRole('heading', { name: 'Gave', level: 2 }).should('be.visible');
       testMellomlagringConfirmationModal(TEXTS.grensesnitt.navigation.saveDraft, TEXTS.grensesnitt.confirmSavePrompt);
       cy.wait('@updateMellomlagring');
+      cy.findByText(TEXTS.statiske.mellomlagringError.update.message).should('be.visible');
     });
 
     describe('When starting on the summary page', () => {
@@ -218,15 +224,16 @@ describe('Mellomlagring', () => {
 
         it('lets you save mellomlagring before cancelling', () => {
           cy.visit(
-            '/fyllut/testmellomlagring/oppsummering?sub=digital&innsendingsId=8e3c3621-76d7-4ebd-90d4-34448ebcccc3&lang=nb-NO',
+            '/fyllut/testmellomlagring/oppsummering?sub=digital&innsendingsId=innsendingsIdForUpdateWithError&lang=nb-NO',
           );
-          cy.wait('@getMellomlagringValid');
+          cy.wait('@getMellomlagringForInnsendingWithUpdateError');
           cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
           testMellomlagringConfirmationModal(
             TEXTS.grensesnitt.navigation.saveDraft,
             TEXTS.grensesnitt.confirmSavePrompt,
           );
           cy.wait('@updateMellomlagring');
+          cy.findByText(TEXTS.statiske.mellomlagringError.update.message).should('be.visible');
         });
       });
     });
