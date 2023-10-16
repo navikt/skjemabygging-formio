@@ -35,14 +35,20 @@ module.exports = [
         options: {
           middleware: (req, res) => {
             const formPath = req.query.path;
-            const testdata = findTestdata(formPath);
-            if (testdata) {
+            if (formPath) {
+              const testdata = findTestdata(formPath);
+              if (testdata) {
+                res.status(200);
+                res.contentType('application/json; charset=UTF-8');
+                res.send([testdata.form]);
+              } else {
+                res.status(404);
+                res.send();
+              }
+            } else {
               res.status(200);
               res.contentType('application/json; charset=UTF-8');
-              res.send([testdata.form]);
-            } else {
-              res.status(404);
-              res.send();
+              res.send(allForms.map((obj) => obj.form));
             }
           },
         },
