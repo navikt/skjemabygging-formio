@@ -1,10 +1,10 @@
-import { Route, Routes } from "react-router-dom";
-import { useFormioForms } from "../hooks/useFormioForms";
-import { useFormioTranslations } from "../hooks/useFormioTranslations";
-import NewTranslation from "./NewTranslation";
-import { TranslationsByFormRoute } from "./TranslationsByFormRoute.tsx";
-import { TranslationsListPage } from "./TranslationsListPage";
-import GlobalTranslationsPage from "./global/GlobalTranslationsPage";
+import { Route, Routes } from 'react-router-dom';
+import { useFormioForms } from '../hooks/useFormioForms';
+import { useFormioTranslations } from '../hooks/useFormioTranslations';
+import NewTranslation from './NewTranslation';
+import { TranslationsByFormRoute } from './TranslationsByFormRoute.tsx';
+import { TranslationsListPage } from './TranslationsListPage';
+import GlobalTranslationsPage from './global/GlobalTranslationsPage';
 
 const TranslationsRouter = ({ formio, serverURL }) => {
   const { loadForm, loadFormsList } = useFormioForms(formio);
@@ -19,10 +19,10 @@ const TranslationsRouter = ({ formio, serverURL }) => {
 
   return (
     <Routes>
-      <Route path={"/"} element={<TranslationsListPage loadFormsList={loadFormsList} />} />
-      <Route path={"/new"} element={<NewTranslation projectURL={formio.projectURL} />} />
+      <Route path={'/'} element={<TranslationsListPage loadFormsList={loadFormsList} />} />
+      <Route path={'/new'} element={<NewTranslation projectURL={formio.projectURL} />} />
       <Route
-        path={"/global/:languageCode?/:tag?"}
+        path={'/global/:languageCode?/:tag?'}
         element={
           <GlobalTranslationsPage
             loadGlobalTranslations={loadGlobalTranslationsForTranslationsPage}
@@ -33,7 +33,7 @@ const TranslationsRouter = ({ formio, serverURL }) => {
         }
       />
       <Route
-        path={"/:formPath/:languageCode?"}
+        path={'/:formPath/:languageCode?'}
         element={
           <TranslationsByFormRoute
             loadTranslationsForEditPage={loadTranslationsForEditPage}

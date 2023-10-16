@@ -1,77 +1,52 @@
-import { BodyShort, Button } from "@navikt/ds-react";
-import { Submission, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
-import { useState } from "react";
-import { useAmplitude } from "../../../context/amplitude";
-import { useLanguages } from "../../../context/languages";
-import { useSendInn } from "../../../context/sendInn/sendInnContext";
-import { Modal } from "../../../index";
-import makeStyles from "../../../util/jss";
-
-const useStyles = makeStyles({
-  modalBody: {
-    paddingTop: "1.1rem",
-    paddingBottom: "4rem",
-    fontSize: "1.25rem",
-  },
-});
+import { Button } from '@navikt/ds-react';
+import { Submission, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { useState } from 'react';
+import { useAmplitude } from '../../../context/amplitude';
+import { useLanguages } from '../../../context/languages';
+import { useSendInn } from '../../../context/sendInn/sendInnContext';
+import urlUtils from '../../../util/url';
+import ConfirmationModal from './ConfirmationModal';
 
 interface Props {
   submission?: Submission;
-  onError: Function;
 }
 
-const SaveAndDeleteButtons = ({ submission, onError }: Props) => {
+const SaveAndDeleteButtons = ({ submission }: Props) => {
   const { translate } = useLanguages();
   const { loggNavigering } = useAmplitude();
   const { updateMellomlagring, deleteMellomlagring } = useSendInn();
-  const [isSaving, setIsSaving] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
   const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const styles = useStyles();
 
-  const onClickSave = async () => {
-    try {
-      if (!submission) {
-        onError(new Error("Kunne ikke lagre. Innsendingen er tom."));
-        setIsSaveModalOpen(false);
-        return;
-      }
-      setIsSaving(true);
-      await updateMellomlagring(submission);
-      loggNavigering({
-        lenkeTekst: translate(TEXTS.grensesnitt.navigation.saveDraft),
-        destinasjon: "https://www.nav.no",
-      });
-      setIsSaving(false);
+  const exitUrl = urlUtils.getExitUrl(window.location.href);
+
+  const saveSubmission = async () => {
+    if (!submission) {
       setIsSaveModalOpen(false);
-      window.location.assign("https://www.nav.no");
-    } catch (error: any) {
-      onError(error);
+      throw new Error('Kunne ikke lagre. Innsendingen er tom.');
     }
+    await updateMellomlagring(submission);
+    loggNavigering({
+      lenkeTekst: translate(TEXTS.grensesnitt.navigation.saveDraft),
+      destinasjon: exitUrl,
+    });
+    setIsSaveModalOpen(false);
   };
 
-  const onClickDelete = async () => {
-    try {
-      setIsDeleting(true);
-      await deleteMellomlagring();
-      loggNavigering({
-        lenkeTekst: translate(TEXTS.grensesnitt.navigation.cancelAndDelete),
-        destinasjon: "https://www.nav.no",
-      });
-      setIsDeleteModalOpen(false);
-      setIsDeleting(false);
-      window.location.assign("https://www.nav.no");
-    } catch (error: any) {
-      onError(error);
-    }
+  const deleteSubmission = async () => {
+    await deleteMellomlagring();
+    loggNavigering({
+      lenkeTekst: translate(TEXTS.grensesnitt.navigation.cancelAndDelete),
+      destinasjon: exitUrl,
+    });
+    setIsDeleteModalOpen(false);
   };
 
   return (
     <>
       <div className="button-row">
         <Button
-          className={"navds-button navds-button--tertiary"}
+          className={'navds-button navds-button--tertiary'}
           onClick={() => {
             setIsDeleteModalOpen(true);
           }}
@@ -80,42 +55,28 @@ const SaveAndDeleteButtons = ({ submission, onError }: Props) => {
             {translate(TEXTS.grensesnitt.navigation.cancelAndDelete)}
           </span>
         </Button>
-        <Button className={"navds-button navds-button--tertiary"} onClick={() => setIsSaveModalOpen(true)}>
+        <Button className={'navds-button navds-button--tertiary'} onClick={() => setIsSaveModalOpen(true)}>
           <span aria-live="polite" className="navds-body-short font-bold">
             {translate(TEXTS.grensesnitt.navigation.saveDraft)}
           </span>
         </Button>
       </div>
-      <Modal
-        title={translate(TEXTS.grensesnitt.confirmSavePrompt.title)}
+      <ConfirmationModal
         open={isSaveModalOpen}
         onClose={() => setIsSaveModalOpen(false)}
-      >
-        <BodyShort className={styles.modalBody}>{translate(TEXTS.grensesnitt.confirmSavePrompt.body)}</BodyShort>
-        <div className="button-row">
-          <Button variant="primary" onClick={onClickSave} loading={isSaving}>
-            {translate(TEXTS.grensesnitt.confirmSavePrompt.confirm)}
-          </Button>
-          <Button variant="tertiary" onClick={() => setIsSaveModalOpen(false)}>
-            {translate(TEXTS.grensesnitt.confirmSavePrompt.cancel)}
-          </Button>
-        </div>
-      </Modal>
-      <Modal
-        title={translate(TEXTS.grensesnitt.confirmDeletePrompt.title)}
+        onConfirm={saveSubmission}
+        confirmType={'primary'}
+        texts={TEXTS.grensesnitt.confirmSavePrompt}
+        exitUrl={exitUrl}
+      />
+      <ConfirmationModal
         open={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
-      >
-        <BodyShort className={styles.modalBody}>{translate(TEXTS.grensesnitt.confirmDeletePrompt.body)}</BodyShort>
-        <div className="button-row">
-          <Button variant="danger" onClick={onClickDelete} loading={isDeleting}>
-            {translate(TEXTS.grensesnitt.confirmDeletePrompt.confirm)}
-          </Button>
-          <Button variant="tertiary" onClick={() => setIsDeleteModalOpen(false)}>
-            {translate(TEXTS.grensesnitt.confirmDeletePrompt.cancel)}
-          </Button>
-        </div>
-      </Modal>
+        onConfirm={deleteSubmission}
+        confirmType={'danger'}
+        texts={TEXTS.grensesnitt.confirmDeletePrompt}
+        exitUrl={exitUrl}
+      />
     </>
   );
 };

@@ -1,6 +1,6 @@
-import veiledningSchema from "./veiledningSchema";
-import dineOpplysningerSchema from "./dineOpplysningerSchema";
-import vedleggPanelSchema from "./vedleggPanelSchema";
+import dineOpplysningerSchema from './dineOpplysningerSchema';
+import vedleggPanelSchema from './vedleggPanelSchema';
+import veiledningSchema from './veiledningSchema';
 
 const panelSchemas = {
   veiledningSchema,

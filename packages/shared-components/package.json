@@ -34,14 +34,14 @@
     "eventemitter2": "^6.4.9",
     "file-saver": "2.0.5",
     "formiojs": "4.14.6",
-    "ibantools": "^4.3.3",
+    "ibantools": "^4.3.4",
     "lodash.clonedeep": "^4.5.0",
     "lodash.set": "^4.3.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-jss": "^10.10.0",
-    "react-router-dom": "^6.15.0",
-    "react-select": "^5.7.4"
+    "react-router-dom": "^6.16.0",
+    "react-select": "^5.7.7"
   },
   "devDependencies": {
     "@testing-library/react": "^14.0.0",

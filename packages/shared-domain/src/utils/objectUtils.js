@@ -2,9 +2,9 @@ export const concatKeys = (key, parentKey) => (parentKey.length > 0 ? `${parentK
 
 export const addToMap = (map, obj) => ({ ...map, [obj.key]: obj.value });
 
-export const flattenToArray = (nestedObject, callback, parentKey = "") => {
+export const flattenToArray = (nestedObject, callback, parentKey = '') => {
   return Object.entries(nestedObject).flatMap(([key, value]) =>
-    typeof value === "object"
+    typeof value === 'object'
       ? flattenToArray(value, callback, concatKeys(key, parentKey))
       : callback([key, value], parentKey),
   );
@@ -17,7 +17,7 @@ export const flatten = (nestedObject, withValueAsKey = false) =>
   ).reduce(addToMap, {});
 
 function isObject(item) {
-  return !!(item && typeof item === "object" && !Array.isArray(item));
+  return !!(item && typeof item === 'object' && !Array.isArray(item));
 }
 
 function deepMerge(objectA = {}, objectB = {}) {

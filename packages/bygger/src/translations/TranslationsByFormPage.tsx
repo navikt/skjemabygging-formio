@@ -1,18 +1,18 @@
-import { LoadingComponent, makeStyles } from "@navikt/skjemadigitalisering-shared-components";
-import { NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
-import { useEffect, useMemo, useState } from "react";
-import { CSVLink } from "react-csv";
-import { useParams } from "react-router-dom";
-import { AppLayout } from "../components/AppLayout";
-import PrimaryButtonWithSpinner from "../components/PrimaryButtonWithSpinner";
-import UserFeedback from "../components/UserFeedback";
-import Column from "../components/layout/Column";
-import Row from "../components/layout/Row";
-import { getAvailableLanguages, useI18nDispatch, useI18nState } from "../context/i18n";
-import FormBuilderLanguageSelector from "../context/i18n/FormBuilderLanguageSelector";
-import useRedirectIfNoLanguageCode from "../hooks/useRedirectIfNoLanguageCode";
-import TranslationsFormPage from "./TranslationsFormPage";
-import { getFormTexts, getTextsAndTranslationsForForm, getTextsAndTranslationsHeaders } from "./utils";
+import { LoadingComponent, makeStyles } from '@navikt/skjemadigitalisering-shared-components';
+import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
+import { useEffect, useMemo, useState } from 'react';
+import { CSVLink } from 'react-csv';
+import { useParams } from 'react-router-dom';
+import { AppLayout } from '../components/AppLayout';
+import PrimaryButtonWithSpinner from '../components/PrimaryButtonWithSpinner';
+import UserFeedback from '../components/UserFeedback';
+import Column from '../components/layout/Column';
+import Row from '../components/layout/Row';
+import { getAvailableLanguages, useI18nDispatch, useI18nState } from '../context/i18n';
+import FormBuilderLanguageSelector from '../context/i18n/FormBuilderLanguageSelector';
+import useRedirectIfNoLanguageCode from '../hooks/useRedirectIfNoLanguageCode';
+import TranslationsFormPage from './TranslationsFormPage';
+import { getFormTexts, getTextsAndTranslationsForForm, getTextsAndTranslationsHeaders } from './utils';
 
 interface TranslationsByFormPageProps {
   loadForm: any;
@@ -21,21 +21,21 @@ interface TranslationsByFormPageProps {
 
 const useStyles = makeStyles({
   mainCol: {
-    gridColumn: "2 / 3",
+    gridColumn: '2 / 3',
   },
   sideBarContainer: {
-    height: "100%",
+    height: '100%',
   },
   stickySideBar: {
-    position: "sticky",
-    top: "7rem",
+    position: 'sticky',
+    top: '7rem',
   },
 });
 
 const TranslationsByFormPage = ({ loadForm, saveTranslation }: TranslationsByFormPageProps) => {
-  const { formPath, languageCode = "" } = useParams();
+  const { formPath, languageCode = '' } = useParams();
   const [form, setForm] = useState<NavFormType>();
-  const [status, setStatus] = useState("LOADING");
+  const [status, setStatus] = useState('LOADING');
   const { translations } = useI18nState();
   const languages = useMemo(() => getAvailableLanguages(translations), [translations]);
   const dispatch = useI18nDispatch();
@@ -46,11 +46,11 @@ const TranslationsByFormPage = ({ loadForm, saveTranslation }: TranslationsByFor
     loadForm(formPath)
       .then((form) => {
         setForm(form);
-        setStatus("FINISHED LOADING");
+        setStatus('FINISHED LOADING');
       })
       .catch((e) => {
         console.log(e);
-        setStatus("FORM NOT FOUND");
+        setStatus('FORM NOT FOUND');
       });
   }, [loadForm, formPath]);
 
@@ -69,7 +69,7 @@ const TranslationsByFormPage = ({ loadForm, saveTranslation }: TranslationsByFor
 
     if (!translationId && savedTranslation._id) {
       dispatch({
-        type: "updateLanguageId",
+        type: 'updateLanguageId',
         payload: {
           id: savedTranslation._id,
           lang: languageCode,
@@ -78,11 +78,11 @@ const TranslationsByFormPage = ({ loadForm, saveTranslation }: TranslationsByFor
     }
   };
 
-  if (status === "LOADING") {
+  if (status === 'LOADING') {
     return <LoadingComponent />;
   }
 
-  if (status === "FORM NOT FOUND" || !form) {
+  if (status === 'FORM NOT FOUND' || !form) {
     return <h1>Vi fant ikke dette skjemaet...</h1>;
   }
 
@@ -96,7 +96,7 @@ const TranslationsByFormPage = ({ loadForm, saveTranslation }: TranslationsByFor
     <>
       <AppLayout
         navBarProps={{
-          title: "Rediger oversettelse",
+          title: 'Rediger oversettelse',
           visSkjemaliste: false,
           visLagNyttSkjema: false,
           visOversettelseliste: true,
@@ -123,7 +123,7 @@ const TranslationsByFormPage = ({ loadForm, saveTranslation }: TranslationsByFor
                 data={getTextsAndTranslationsForForm(form, translations)}
                 filename={`${title}(${path})_Oversettelser.csv`}
                 className="navds-button navds-button--secondary navds-label"
-                separator={";"}
+                separator={';'}
                 headers={getTextsAndTranslationsHeaders(translations)}
                 enclosingCharacter={'"'}
               >

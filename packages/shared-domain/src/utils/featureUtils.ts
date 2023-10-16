@@ -7,11 +7,11 @@ export type FeatureTogglesMap = {
 const toFeatureToggles = (commaSeparatedFeatureNames: string | undefined | null): FeatureTogglesMap => {
   const featureToggles: FeatureTogglesMap = {};
   if (commaSeparatedFeatureNames) {
-    const features = commaSeparatedFeatureNames.split(",");
+    const features = commaSeparatedFeatureNames.split(',');
     features.forEach((feature) => {
-      const splits = feature.split("=");
+      const splits = feature.split('=');
       const featureName = splits[0].trim();
-      const enabled = splits.length === 1 || splits[1].trim() === "true";
+      const enabled = splits.length === 1 || splits[1].trim() === 'true';
       featureToggles[`enable${capitalize(featureName)}`] = enabled;
     });
   }

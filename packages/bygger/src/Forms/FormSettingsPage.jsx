@@ -1,21 +1,21 @@
-import { Button, Heading } from "@navikt/ds-react";
-import { makeStyles } from "@navikt/skjemadigitalisering-shared-components";
-import { useState } from "react";
-import { AppLayout } from "../components/AppLayout";
-import { FormMetadataEditor } from "../components/FormMetaDataEditor/FormMetadataEditor";
-import { isFormMetadataValid, validateFormMetadata } from "../components/FormMetaDataEditor/utils";
-import PrimaryButtonWithSpinner from "../components/PrimaryButtonWithSpinner";
-import UserFeedback from "../components/UserFeedback";
-import Column from "../components/layout/Column";
-import Row from "../components/layout/Row";
-import { useModal } from "../util/useModal";
-import PublishModalComponents from "./publish/PublishModalComponents";
-import FormStatusPanel from "./status/FormStatusPanel";
-import UnpublishButton from "./unpublish/UnpublishButton";
+import { Button, Heading } from '@navikt/ds-react';
+import { makeStyles } from '@navikt/skjemadigitalisering-shared-components';
+import { useState } from 'react';
+import { AppLayout } from '../components/AppLayout';
+import { FormMetadataEditor } from '../components/FormMetaDataEditor/FormMetadataEditor';
+import { isFormMetadataValid, validateFormMetadata } from '../components/FormMetaDataEditor/utils';
+import PrimaryButtonWithSpinner from '../components/PrimaryButtonWithSpinner';
+import UserFeedback from '../components/UserFeedback';
+import Column from '../components/layout/Column';
+import Row from '../components/layout/Row';
+import { useModal } from '../util/useModal';
+import PublishModalComponents from './publish/PublishModalComponents';
+import FormStatusPanel from './status/FormStatusPanel';
+import UnpublishButton from './unpublish/UnpublishButton';
 
 const useStyles = makeStyles({
   mainCol: {
-    gridColumn: "2 / 3",
+    gridColumn: '2 / 3',
   },
 });
 
@@ -26,7 +26,7 @@ export function FormSettingsPage({ form, publishedForm, onSave, onChange, onPubl
   const [errors, setErrors] = useState({});
 
   validateAndSave = async (form) => {
-    const updatedErrors = validateFormMetadata(form, "edit");
+    const updatedErrors = validateFormMetadata(form, 'edit');
     if (isFormMetadataValid(updatedErrors)) {
       setErrors({});
       return await onSave(form);
@@ -38,7 +38,7 @@ export function FormSettingsPage({ form, publishedForm, onSave, onChange, onPubl
   return (
     <AppLayout
       navBarProps={{
-        title: "Skjemainnstillinger",
+        title: 'Skjemainnstillinger',
         visSkjemaMeny: true,
         formPath: form.path,
       }}

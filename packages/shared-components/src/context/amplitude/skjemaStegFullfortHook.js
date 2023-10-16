@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { loggEventSkjemaStegFullfort } from "../../util/amplitude";
+import { useEffect, useState } from 'react';
+import { loggEventSkjemaStegFullfort } from '../../util/amplitude';
 
 export default function useSkjemaStegFullfort(form) {
   const [completedSteps, setCompletedSteps] = useState({});

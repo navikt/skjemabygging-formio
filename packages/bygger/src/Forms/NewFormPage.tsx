@@ -1,22 +1,22 @@
-import { Button, Heading } from "@navikt/ds-react";
-import { makeStyles } from "@navikt/skjemadigitalisering-shared-components";
-import { Component, NavFormType, navFormUtils, stringUtils } from "@navikt/skjemadigitalisering-shared-domain";
-import cloneDeep from "lodash.clonedeep";
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { v4 as uuidv4 } from "uuid";
-import { AppLayout } from "../components/AppLayout";
-import { CreationFormMetadataEditor } from "../components/FormMetaDataEditor/FormMetadataEditor";
-import { isFormMetadataValid, validateFormMetadata } from "../components/FormMetaDataEditor/utils";
-import UserFeedback from "../components/UserFeedback";
-import Column from "../components/layout/Column";
-import Row from "../components/layout/Row";
-import { useFeedbackEmit } from "../context/notifications/FeedbackContext";
-import { defaultFormFields } from "./DefaultForm";
+import { Button, Heading } from '@navikt/ds-react';
+import { makeStyles } from '@navikt/skjemadigitalisering-shared-components';
+import { Component, NavFormType, navFormUtils, stringUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import cloneDeep from 'lodash.clonedeep';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { v4 as uuidv4 } from 'uuid';
+import { AppLayout } from '../components/AppLayout';
+import { CreationFormMetadataEditor } from '../components/FormMetaDataEditor/FormMetadataEditor';
+import { isFormMetadataValid, validateFormMetadata } from '../components/FormMetaDataEditor/utils';
+import UserFeedback from '../components/UserFeedback';
+import Column from '../components/layout/Column';
+import Row from '../components/layout/Row';
+import { useFeedbackEmit } from '../context/notifications/FeedbackContext';
+import { defaultFormFields } from './DefaultForm';
 
 const useStyles = makeStyles({
   centerColumn: {
-    gridColumn: "2 / 3",
+    gridColumn: '2 / 3',
   },
 });
 
@@ -34,18 +34,18 @@ const NewFormPage: React.FC<Props> = ({ formio }): React.ReactElement => {
   const styles = useStyles();
   const [state, setState] = useState<State>({
     form: {
-      tags: ["nav-skjema", ""],
-      type: "form",
-      display: "wizard",
-      name: "",
-      title: "",
-      path: "",
+      tags: ['nav-skjema', ''],
+      type: 'form',
+      display: 'wizard',
+      name: '',
+      title: '',
+      path: '',
       properties: {
-        skjemanummer: "",
-        tema: "",
-        innsending: "PAPIR_OG_DIGITAL",
-        ettersending: "PAPIR_OG_DIGITAL",
-        signatures: [{ label: "", description: "", key: uuidv4() }],
+        skjemanummer: '',
+        tema: '',
+        innsending: 'PAPIR_OG_DIGITAL',
+        ettersending: 'PAPIR_OG_DIGITAL',
+        signatures: [{ label: '', description: '', key: uuidv4() }],
       },
       components: defaultFormFields() as unknown as Component[],
     },
@@ -64,7 +64,7 @@ const NewFormPage: React.FC<Props> = ({ formio }): React.ReactElement => {
     });
   };
   const validateAndSave = async (form) => {
-    const updatedErrors = validateFormMetadata(form, "create");
+    const updatedErrors = validateFormMetadata(form, 'create');
     const trimmedFormNumber = state.form.properties.skjemanummer.trim();
     if (isFormMetadataValid(updatedErrors)) {
       setErrors({});
@@ -75,7 +75,7 @@ const NewFormPage: React.FC<Props> = ({ formio }): React.ReactElement => {
           navigate(`/forms/${form.path}/edit`);
         })
         .catch((e) => {
-          feedbackEmit.error("Det valgte skjema-nummeret er allerede i bruk.");
+          feedbackEmit.error('Det valgte skjema-nummeret er allerede i bruk.');
           console.error(e);
         });
     } else {
@@ -88,7 +88,7 @@ const NewFormPage: React.FC<Props> = ({ formio }): React.ReactElement => {
   };
 
   return (
-    <AppLayout navBarProps={{ title: "Opprett nytt skjema" }}>
+    <AppLayout navBarProps={{ title: 'Opprett nytt skjema' }}>
       <Row>
         <Column className={styles.centerColumn}>
           <Heading level="1" size="xlarge">

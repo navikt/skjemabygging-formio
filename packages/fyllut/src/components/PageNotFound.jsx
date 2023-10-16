@@ -1,114 +1,114 @@
-import { makeStyles } from "@navikt/skjemadigitalisering-shared-components";
+import { makeStyles } from '@navikt/skjemadigitalisering-shared-components';
 
 const useStyles = makeStyles({
   errorPage: {
-    display: "flex",
-    flexDirection: "column",
-    maxWidth: "50rem",
-    margin: "0 auto",
-    padding: "1.5rem",
-    background: "#fff",
-    borderRadius: "0.25rem",
+    display: 'flex',
+    flexDirection: 'column',
+    maxWidth: '50rem',
+    margin: '0 auto',
+    padding: '1.5rem',
+    background: '#fff',
+    borderRadius: '0.25rem',
   },
   errorPageHeader: {
-    display: "flex",
-    alignItems: "center",
+    display: 'flex',
+    alignItems: 'center',
   },
   heading: {
-    borderRight: "1px solid rgba(0,0,0,.3)",
-    marginRight: "1.5rem",
-    paddingRight: "1.5rem",
-    verticalAlign: "top",
+    borderRight: '1px solid rgba(0,0,0,.3)',
+    marginRight: '1.5rem',
+    paddingRight: '1.5rem',
+    verticalAlign: 'top',
   },
   statusCode: {
-    fontSize: "1.25rem",
+    fontSize: '1.25rem',
     fontWeight: 400,
-    letterSpacing: "-.001em",
-    lineHeight: "1.75rem",
-    margin: "0",
+    letterSpacing: '-.001em',
+    lineHeight: '1.75rem',
+    margin: '0',
   },
   bodyText: {
-    fontSize: "1.125rem",
+    fontSize: '1.125rem',
     fontWeight: 400,
     letterSpacing: 0,
-    lineHeight: "1.75rem",
+    lineHeight: '1.75rem',
     margin: 0,
 
-    "&:not(:last-child)": {
-      marginBottom: "1rem",
+    '&:not(:last-child)': {
+      marginBottom: '1rem',
     },
   },
   link: {
-    borderBottom: "1px solid #0067c5",
-    textDecoration: "none",
-    transition: "border-bottom-color .12s ease-out",
+    borderBottom: '1px solid #0067c5',
+    textDecoration: 'none',
+    transition: 'border-bottom-color .12s ease-out',
   },
   search: {
-    marginTop: "2rem",
+    marginTop: '2rem',
   },
   searchHeader: {
-    fontSize: "1.75rem",
-    letterSpacing: "-.004em",
-    lineHeight: "2.25rem",
+    fontSize: '1.75rem',
+    letterSpacing: '-.004em',
+    lineHeight: '2.25rem',
     fontWeight: 600,
     margin: 0,
-    wordBreak: "break-word",
-    marginBottom: "0.5rem",
+    wordBreak: 'break-word',
+    marginBottom: '0.5rem',
   },
   searchField: {
-    webkitAppearance: "none",
-    appearance: "none",
-    backgroundColor: "#fff",
-    border: "1px solid #6a6a6a",
-    borderWidth: "2px",
-    borderColor: "#0067c5",
-    borderRadius: "4px",
-    fontSize: "150%",
-    padding: "0.5rem",
-    paddingRight: "13rem",
-    minHeight: "48px",
-    width: "100%",
-    "&:focus": {
-      outline: "none",
-      boxShadow: "0 0 0 3px #00347d",
+    webkitAppearance: 'none',
+    appearance: 'none',
+    backgroundColor: '#fff',
+    border: '1px solid #6a6a6a',
+    borderWidth: '2px',
+    borderColor: '#0067c5',
+    borderRadius: '4px',
+    fontSize: '150%',
+    padding: '0.5rem',
+    paddingRight: '13rem',
+    minHeight: '48px',
+    width: '100%',
+    '&:focus': {
+      outline: 'none',
+      boxShadow: '0 0 0 3px #00347d',
     },
   },
   searchFieldContainer: {
     flexGrow: 1,
   },
   searchButton: {
-    alignItems: "center",
-    alignSelf: "center",
-    background: "none",
-    backgroundColor: "#0067c5",
-    border: "none",
-    borderRadius: "0 4px 4px 0",
-    boxShadow: "none",
-    color: "#fff",
-    cursor: "pointer",
-    display: "inline-flex",
-    fontSize: "125%",
-    gap: "0.5rem",
-    gridGap: "0.5rem",
-    height: "100%",
+    alignItems: 'center',
+    alignSelf: 'center',
+    background: 'none',
+    backgroundColor: '#0067c5',
+    border: 'none',
+    borderRadius: '0 4px 4px 0',
+    boxShadow: 'none',
+    color: '#fff',
+    cursor: 'pointer',
+    display: 'inline-flex',
+    fontSize: '125%',
+    gap: '0.5rem',
+    gridGap: '0.5rem',
+    height: '100%',
     margin: 0,
-    minWidth: "48px",
-    padding: "0.75rem",
-    position: "absolute",
+    minWidth: '48px',
+    padding: '0.75rem',
+    position: 'absolute',
     right: 0,
-    textAlign: "center",
-    textDecoration: "none",
-    textTransform: "none",
-    transform: "none",
-    webkitTransform: "none",
-    "&:focus": {
-      boxShadow: "inset 0 0 0 1px #fff, 0 0 0 3px #00347d",
-      outline: "none",
+    textAlign: 'center',
+    textDecoration: 'none',
+    textTransform: 'none',
+    transform: 'none',
+    webkitTransform: 'none',
+    '&:focus': {
+      boxShadow: 'inset 0 0 0 1px #fff, 0 0 0 3px #00347d',
+      outline: 'none',
     },
   },
   searchForm: {
-    display: "flex",
-    position: "relative",
+    display: 'flex',
+    position: 'relative',
   },
 });
 
@@ -128,7 +128,7 @@ const PageNotFound = () => {
                 Beklager, siden kan være slettet eller flyttet, eller det var en feil i lenken som førte deg hit.
               </p>
               <p className={styles.bodyText}>
-                Bruk gjerne søket, menyen eller{" "}
+                Bruk gjerne søket, menyen eller{' '}
                 <a href="https://nav.no" className={styles.link}>
                   gå til forsiden
                 </a>
@@ -179,7 +179,7 @@ const PageNotFound = () => {
               <h2 className="error404__en-header navds-heading navds-heading--large">In English</h2>
               <p className={styles.bodyText}>The page you requested cannot be found.</p>
               <p className={styles.bodyText}>
-                Go to the{" "}
+                Go to the{' '}
                 <a href="https://nav.no" className={styles.link}>
                   front page
                 </a>

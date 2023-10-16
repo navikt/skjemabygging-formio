@@ -6,7 +6,7 @@ const processObject = (prefix: string, obj: object | undefined | null): { [k: st
         .map((key: string) => {
           // @ts-ignore
           const value = obj[key];
-          if (typeof value === "object") {
+          if (typeof value === 'object') {
             return processObject(`${prefix}_${key}`, value);
           }
           return { [`${prefix}_${key}`]: value };

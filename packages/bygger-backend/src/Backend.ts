@@ -1,10 +1,10 @@
-import { I18nTranslations, NavFormType, ResourceContent } from "@navikt/skjemadigitalisering-shared-domain";
-import { PushEvent } from "@octokit/webhooks-types";
-import { v4 as uuidv4 } from "uuid";
-import { GitHubRepo } from "./GitHubRepo.js";
-import { ConfigType } from "./config/types";
-import { base64ToString, fetchWithErrorHandling } from "./fetchUtils";
-import { logger } from "./logging/logger";
+import { I18nTranslations, NavFormType, ResourceContent } from '@navikt/skjemadigitalisering-shared-domain';
+import { PushEvent } from '@octokit/webhooks-types';
+import { v4 as uuidv4 } from 'uuid';
+import { GitHubRepo } from './GitHubRepo.js';
+import { ConfigType } from './config/types';
+import { base64ToString, fetchWithErrorHandling } from './fetchUtils';
+import { logger } from './logging/logger';
 import {
   createFileForPushingToRepo,
   deleteFilesAndUpdateMonorepoRefCallback,
@@ -12,8 +12,8 @@ import {
   getTranslationFilePath,
   performChangesOnSeparateBranch,
   pushFilesAndUpdateMonorepoRefCallback,
-} from "./repoUtils.js";
-import { FormioService } from "./services/formioService";
+} from './repoUtils.js';
+import { FormioService } from './services/formioService';
 
 const BULK_PUBLISH_REGEXP = /^\[bulk-publisering\] (\d+) skjemaer publisert, monorepo ref: (.*)$/;
 const PUBLISH_REGEXP = /^\[publisering\] skjema "(.*)", monorepo ref: (.*)$/;
@@ -39,7 +39,7 @@ export class Backend {
 
   async publishForm(formContent: NavFormType, translationsContent: I18nTranslations | undefined, formPath: string) {
     const skjemautfyllingRepo = await this.createGitHubRepo();
-    const formFile = createFileForPushingToRepo(formContent.title, getFormFilePath(formPath), "skjema", formContent);
+    const formFile = createFileForPushingToRepo(formContent.title, getFormFilePath(formPath), 'skjema', formContent);
     const files = [formFile];
     const branchName = `publish-${formPath}--${uuidv4()}`;
 
@@ -47,7 +47,7 @@ export class Backend {
       const translationsFile = createFileForPushingToRepo(
         formContent.title,
         getTranslationFilePath(formPath),
-        "oversettelse",
+        'oversettelse',
         translationsContent,
       );
       files.push(translationsFile);
@@ -102,7 +102,7 @@ export class Backend {
     const resourceFile = createFileForPushingToRepo(
       resourceName,
       `resources/${resourceName}.json`,
-      "ressurs",
+      'ressurs',
       resourceContent,
     );
 
@@ -136,7 +136,7 @@ export class Backend {
     const skjemautfyllingRepo = await this.createGitHubRepo();
     const branchName = `bulkpublish--${uuidv4()}`;
     const formFiles = forms.map((formContent: NavFormType) =>
-      createFileForPushingToRepo(formContent.title, `forms/${formContent.path}.json`, "skjema", formContent),
+      createFileForPushingToRepo(formContent.title, `forms/${formContent.path}.json`, 'skjema', formContent),
     );
 
     logger.info(
@@ -158,21 +158,21 @@ export class Backend {
   }
 
   interpretGithubPushEvent(pushEvent: PushEvent, type: string) {
-    const success = type === "success";
+    const success = type === 'success';
     const thisCommit = pushEvent.head_commit;
-    const commitMessage = thisCommit?.message || "";
+    const commitMessage = thisCommit?.message || '';
 
-    const titleRegexp = new RegExp(PUBLISH_REGEXP, "g");
+    const titleRegexp = new RegExp(PUBLISH_REGEXP, 'g');
     const publishFormTitleMatch = titleRegexp.exec(commitMessage);
-    const unpublishRegexp = new RegExp(UNPUBLISH_REGEXP, "g");
+    const unpublishRegexp = new RegExp(UNPUBLISH_REGEXP, 'g');
     const unpublishFormPathMatch = unpublishRegexp.exec(commitMessage);
-    const amountRegexp = new RegExp(BULK_PUBLISH_REGEXP, "g");
+    const amountRegexp = new RegExp(BULK_PUBLISH_REGEXP, 'g');
     const bulkPublishCountMatch = amountRegexp.exec(commitMessage);
 
     if (publishFormTitleMatch) {
       return {
         type,
-        title: success ? "Publisering fullført" : "Publisering feilet",
+        title: success ? 'Publisering fullført' : 'Publisering feilet',
         message: success
           ? `Skjema ${publishFormTitleMatch[1]} er nå publisert`
           : `Feilet for skjema ${publishFormTitleMatch[1]}`,
@@ -181,7 +181,7 @@ export class Backend {
     if (unpublishFormPathMatch) {
       return {
         type,
-        title: success ? "Avpublisering fullført" : "Avpublisering feilet",
+        title: success ? 'Avpublisering fullført' : 'Avpublisering feilet',
         message: success
           ? `Skjema ${unpublishFormPathMatch[1]} er nå avpublisert`
           : `Feilet for skjema ${unpublishFormPathMatch[1]}`,
@@ -190,7 +190,7 @@ export class Backend {
     if (bulkPublishCountMatch) {
       return {
         type,
-        title: success ? "Bulk-publisering fullført" : "Bulk-publisering feilet",
+        title: success ? 'Bulk-publisering fullført' : 'Bulk-publisering feilet',
         message: success
           ? `${bulkPublishCountMatch[1]} skjemaer ble bulk-publisert`
           : `${bulkPublishCountMatch[1]} skjemaer feilet`,
@@ -198,20 +198,20 @@ export class Backend {
     }
     return {
       type,
-      title: success ? "Ny versjon av FyllUt" : "Deploy av FyllUt feilet",
+      title: success ? 'Ny versjon av FyllUt' : 'Deploy av FyllUt feilet',
       message: commitMessage,
     };
   }
 
   async fetchEnhetsliste() {
     return fetchWithErrorHandling(`${this.config.fyllut.baseUrl}/api/enhetsliste`, {
-      method: "GET",
+      method: 'GET',
     }).then((response) => response.data);
   }
 
   async fetchTemakoder() {
     return fetchWithErrorHandling(`${this.config.fyllut.baseUrl}/api/common-codes/archive-subjects`, {
-      method: "GET",
+      method: 'GET',
     }).then((response) => response.data);
   }
 
@@ -219,11 +219,11 @@ export class Backend {
     const skjemautfyllingRepo = await this.createGitHubRepo();
     const filePath = getFormFilePath(formPath);
     logger.debug(`Fetch published form ${filePath} from ${this.config.publishRepo.base}`);
-    const response = await skjemautfyllingRepo.getFileIfItExists(this.config.publishRepo.base || "master", filePath);
-    if (response && "content" in response.data) {
+    const response = await skjemautfyllingRepo.getFileIfItExists(this.config.publishRepo.base || 'master', filePath);
+    if (response && 'content' in response.data) {
       const logData = { ...response?.data };
       logData.content = `${logData.content.substring(0, 20)}...`;
-      logger.debug("Retrieved published form", logData);
+      logger.debug('Retrieved published form', logData);
 
       const content = base64ToString(response.data.content);
       return JSON.parse(content);

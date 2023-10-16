@@ -1,6 +1,6 @@
 const margin = {
-  ":root": {
-    "--input-min-height": "48px",
+  ':root': {
+    '--input-min-height': '48px',
   },
 };
 

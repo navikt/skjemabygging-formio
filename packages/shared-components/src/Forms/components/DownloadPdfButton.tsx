@@ -1,5 +1,5 @@
-import { MouseEventHandler } from "react";
-import { useLanguages } from "../../context/languages";
+import { MouseEventHandler } from 'react';
+import { useLanguages } from '../../context/languages';
 
 interface Props {
   form: any;
@@ -18,10 +18,10 @@ const DownloadPdfButton = ({
   label,
   onClick,
   translations,
-  submissionMethod = "paper",
+  submissionMethod = 'paper',
 }: Props) => {
   const { currentLanguage } = useLanguages();
-  const translationsForPDF = currentLanguage !== "nb-NO" ? translations[currentLanguage] : {};
+  const translationsForPDF = currentLanguage !== 'nb-NO' ? translations[currentLanguage] : {};
   return (
     <>
       <form id={form.path} action={actionUrl} method="post" acceptCharset="utf-8" target="_blank" hidden>

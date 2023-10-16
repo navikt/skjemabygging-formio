@@ -1,9 +1,9 @@
-import { render, waitFor } from "@testing-library/react";
-import { Formio } from "formiojs";
-import { AppConfigProvider, NavForm } from "../src";
+import { render, waitFor } from '@testing-library/react';
+import { Formio } from 'formiojs';
+import { AppConfigProvider, NavForm } from '../src';
 
 const setupNavFormio = () => {
-  new Formio("http://unittest.nav-formio-api.no");
+  new Formio('http://unittest.nav-formio-api.no');
 };
 
 const NavFormForTest = (props) => {
@@ -22,11 +22,11 @@ const renderNavForm = async (props) => {
 };
 
 const defaultPanelProps = (label) => ({
-  type: "panel",
+  type: 'panel',
   label,
   title: label,
-  key: label.replace(" ", "").toLowerCase(),
+  key: label.replace(' ', '').toLowerCase(),
   input: false,
 });
 
-export { setupNavFormio, renderNavForm, defaultPanelProps };
+export { defaultPanelProps, renderNavForm, setupNavFormio };

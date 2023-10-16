@@ -5,7 +5,7 @@ import {
   MottaksadresseData,
   navFormUtils,
   UkjentBruker,
-} from "@navikt/skjemadigitalisering-shared-domain";
+} from '@navikt/skjemadigitalisering-shared-domain';
 
 type BrukerInfo = KjentBruker | UkjentBruker;
 
@@ -13,7 +13,7 @@ const adressLine = (text, prefix?) => {
   if (text) {
     return prefix ? `${prefix} ${text}, ` : `${text}, `;
   }
-  return "";
+  return '';
 };
 
 export function genererPersonalia(fnrEllerDnr?: string, adresse?: Adresse): BrukerInfo {
@@ -21,24 +21,24 @@ export function genererPersonalia(fnrEllerDnr?: string, adresse?: Adresse): Bruk
     return {
       bruker: {
         brukerId: fnrEllerDnr,
-        brukerType: "PERSON",
+        brukerType: 'PERSON',
       },
     };
   } else if (adresse) {
     return {
       ukjentBrukerPersoninfo:
         adressLine(adresse.navn) +
-        adressLine(adresse.co, "c/o") +
-        adressLine(adresse.postboksEier, "c/o") +
+        adressLine(adresse.co, 'c/o') +
+        adressLine(adresse.postboksEier, 'c/o') +
         adressLine(adresse.adresse) +
         adressLine(adresse.bygning) +
-        `${adresse.postnr || ""} ` +
+        `${adresse.postnr || ''} ` +
         adressLine(adresse.sted) +
         adressLine(adresse.region) +
-        `${adresse.land || ""}.`,
+        `${adresse.land || ''}.`,
     };
   } else {
-    throw Error("User needs to submit either fodselsNummer or address");
+    throw Error('User needs to submit either fodselsNummer or address');
   }
 }
 
@@ -53,7 +53,7 @@ export function genererVedleggKeysSomSkalSendes(form, submissionData) {
   return navFormUtils
     .flattenComponents(form.components)
     .filter((component) => component.properties && !!component.properties.vedleggskode)
-    .filter((vedlegg) => submissionData[vedlegg.key] === "leggerVedNaa")
+    .filter((vedlegg) => submissionData[vedlegg.key] === 'leggerVedNaa')
     .map((vedlegg) => vedlegg.properties?.vedleggskode);
 }
 
@@ -61,7 +61,7 @@ export function getVedleggsFelterSomSkalSendes(submissionData, form) {
   return navFormUtils
     .flattenComponents(form.components)
     .filter((component) => component.properties && !!component.properties.vedleggskode)
-    .filter((vedlegg) => submissionData[vedlegg.key] === "leggerVedNaa");
+    .filter((vedlegg) => submissionData[vedlegg.key] === 'leggerVedNaa');
 }
 
 export function genererVedleggsListe(form, submissionData): string[] {
@@ -142,7 +142,7 @@ export function genererAdresse(submission: Submission): Adresse {
     utenlandskAdresse,
   } = submission;
   return {
-    navn: fornavnSoker || etternavnSoker ? `${fornavnSoker} ${etternavnSoker}` : "",
+    navn: fornavnSoker || etternavnSoker ? `${fornavnSoker} ${etternavnSoker}` : '',
     co: (norskVegadresse && norskVegadresse.coSoker) || (utenlandskAdresse && utenlandskAdresse.coSoker) || coSoker,
     postboksEier: norskPostboksadresse && norskPostboksadresse.coSoker,
     adresse:
@@ -166,19 +166,19 @@ export function genererAdresse(submission: Submission): Adresse {
       (utenlandskAdresse && utenlandskAdresse.poststedSoker) ||
       poststedSoker,
     region: utenlandskAdresse && utenlandskAdresse.regionSoker,
-    land: landSoker || (utenlandskAdresse && utenlandskAdresse.landSoker) || "Norge",
+    land: landSoker || (utenlandskAdresse && utenlandskAdresse.landSoker) || 'Norge',
   };
 }
 
 const parseLanguage = (language) => {
   switch (language) {
-    case "nn-NO":
-      return "NN";
-    case "nb-NO":
-      return "NB";
-    case "en":
+    case 'nn-NO':
+      return 'NN';
+    case 'nb-NO':
+      return 'NB';
+    case 'en':
     default:
-      return "EN";
+      return 'EN';
   }
 };
 
@@ -196,16 +196,16 @@ export function genererMottaksadresse(
   if (enhetNummer) {
     return {
       enhetsnummer: enhetNummer,
-      netsPostboks: "1400",
+      netsPostboks: '1400',
     };
   }
-  return { netsPostboks: "1400" };
+  return { netsPostboks: '1400' };
 }
 
 export function genererFoerstesideData(
   form,
   submission,
-  language = "nb-NO",
+  language = 'nb-NO',
   mottaksadresser: Mottaksadresse[] = [],
   enhetNummer?: string,
 ): ForstesideRequestBody {
@@ -217,7 +217,7 @@ export function genererFoerstesideData(
   const adresse = genererAdresse(submission);
   return {
     ...genererPersonalia(fodselsnummerDNummerSoker, adresse),
-    foerstesidetype: "SKJEMA",
+    foerstesidetype: 'SKJEMA',
     navSkjemaId: skjemanummer,
     spraakkode: parseLanguage(language),
     overskriftstittel: genererSkjemaTittel(title, skjemanummer),

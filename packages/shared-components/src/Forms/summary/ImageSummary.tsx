@@ -1,9 +1,9 @@
-import { Summary } from "@navikt/skjemadigitalisering-shared-domain";
-import makeStyles from "../../util/jss";
+import { Summary } from '@navikt/skjemadigitalisering-shared-domain';
+import makeStyles from '../../util/jss';
 
 const useImgSummaryStyles = (widthPercent) => {
   return makeStyles({
-    description: { minWidth: 100, maxWidth: widthPercent + "%" },
+    description: { minWidth: 100, maxWidth: widthPercent + '%' },
   })();
 };
 

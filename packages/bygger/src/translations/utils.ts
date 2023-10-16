@@ -1,4 +1,4 @@
-import { NavFormioJs } from "@navikt/skjemadigitalisering-shared-components";
+import { NavFormioJs } from '@navikt/skjemadigitalisering-shared-components';
 import {
   Component,
   FormioTranslationMap,
@@ -6,7 +6,7 @@ import {
   NavFormType,
   navFormUtils,
   signatureUtils,
-} from "@navikt/skjemadigitalisering-shared-domain";
+} from '@navikt/skjemadigitalisering-shared-domain';
 
 type TextObjectType = ReturnType<typeof textObject>;
 type InputType = ReturnType<typeof getInputType>;
@@ -17,17 +17,17 @@ type CsvRow = {
 };
 
 const getInputType = (value: string) => {
-  return value?.length < 80 ? "text" : "textarea";
+  return value?.length < 80 ? 'text' : 'textarea';
 };
 
 const filterSpecialSuffix = (suffix: string) => {
-  const specialSuffixList = ["%", "km", "cm", "kg", "kr", "m"];
-  return specialSuffixList.indexOf(suffix) >= 0 ? "" : suffix;
+  const specialSuffixList = ['%', 'km', 'cm', 'kg', 'kr', 'm'];
+  return specialSuffixList.indexOf(suffix) >= 0 ? '' : suffix;
 };
 
-const getTextFromComponentProperty = (property: string | undefined) => (property !== "" ? property : undefined);
+const getTextFromComponentProperty = (property: string | undefined) => (property !== '' ? property : undefined);
 
-const extractTextsFromProperties = (props: NavFormType["properties"]) => {
+const extractTextsFromProperties = (props: NavFormType['properties']) => {
   const array: { text: string; type: InputType }[] = [];
   if (props?.innsendingOverskrift) {
     array.push({
@@ -91,13 +91,13 @@ const getContent = (content: string | undefined) => {
 
 const getLabel = (label: string, type: string, hideLabel: boolean) => {
   const excludeLabelForType = [
-    "panel",
-    "htmlelement",
-    "content",
-    "fieldset",
-    "navSkjemagruppe",
-    "alertstripe",
-    "image",
+    'panel',
+    'htmlelement',
+    'content',
+    'fieldset',
+    'navSkjemagruppe',
+    'alertstripe',
+    'image',
   ].includes(type);
   if (hideLabel || excludeLabelForType) return undefined;
   return label;
@@ -106,7 +106,7 @@ const getLabel = (label: string, type: string, hideLabel: boolean) => {
 const getTranslatablePropertiesFromForm = (form: NavFormType) =>
   navFormUtils
     .flattenComponents(form.components)
-    .filter((component) => component.type !== "hidden")
+    .filter((component) => component.type !== 'hidden')
     .map(
       ({
         content,
@@ -138,7 +138,7 @@ const getTranslatablePropertiesFromForm = (form: NavFormType) =>
         description: getTextFromComponentProperty(description),
         additionalDescriptionLabel: getTextFromComponentProperty(additionalDescriptionLabel),
         additionalDescriptionText: getTextFromComponentProperty(additionalDescriptionText),
-        suffix: getTextFromComponentProperty(filterSpecialSuffix(suffix || "")),
+        suffix: getTextFromComponentProperty(filterSpecialSuffix(suffix || '')),
         prefix: getTextFromComponentProperty(prefix),
         data: data?.values ? data.values.map((value) => value.label) : undefined,
         contentForPdf: getTextFromComponentProperty(contentForPdf),
@@ -181,9 +181,9 @@ const getFormTexts = (form?: NavFormType, withInputType = false) => {
       Object.keys(component)
         .filter((key) => component[key] !== undefined)
         .flatMap((key) => {
-          if (key === "values" || key === "data") {
+          if (key === 'values' || key === 'data') {
             return component[key]
-              .filter((value) => value !== "")
+              .filter((value) => value !== '')
               .map((value) => textObject(withInputType, value)) as TextObjectType;
           }
           return textObject(withInputType, component[key]);
@@ -193,10 +193,10 @@ const getFormTexts = (form?: NavFormType, withInputType = false) => {
     .filter((component, index, currentComponents) => withoutDuplicatedComponents(component, index, currentComponents));
 };
 
-const removeLineBreaks = (text?: string) => (text ? text.replace(/(\r\n|\n|\r)/gm, " ") : text);
+const removeLineBreaks = (text?: string) => (text ? text.replace(/(\r\n|\n|\r)/gm, ' ') : text);
 
 const escapeQuote = (text?: string) => {
-  if (typeof text === "string" && text.includes('"')) {
+  if (typeof text === 'string' && text.includes('"')) {
     return text.replace(/"/g, '""');
   }
   return text;
@@ -215,7 +215,7 @@ const getTextsAndTranslationsForForm = (form: NavFormType, translations: FormioT
         }
         const sanitizedTranslation = sanitizeForCsv(translationObject.value)!;
         const translation =
-          translationObject.scope === "global" ? sanitizedTranslation.concat(" (Global Tekst)") : sanitizedTranslation;
+          translationObject.scope === 'global' ? sanitizedTranslation.concat(' (Global Tekst)') : sanitizedTranslation;
         return {
           ...prevFormRowObject,
           [languageCode]: translation,
@@ -237,15 +237,15 @@ const getTextsAndTranslationsHeaders = (translations: FormioTranslationMap) => {
         },
       ];
     },
-    [{ label: "Skjematekster", key: "text" }],
+    [{ label: 'Skjematekster', key: 'text' }],
   );
 };
 
 export {
+  getFormTexts,
+  getInputType,
   getTextsAndTranslationsForForm,
   getTextsAndTranslationsHeaders,
-  getInputType,
-  withoutDuplicatedComponents,
-  getFormTexts,
   sanitizeForCsv,
+  withoutDuplicatedComponents,
 };

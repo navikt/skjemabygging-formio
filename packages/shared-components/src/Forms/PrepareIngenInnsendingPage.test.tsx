@@ -1,15 +1,15 @@
-import { Submission, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
-import { render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
-import React from "react";
-import { MemoryRouter } from "react-router-dom";
-import { PrepareIngenInnsendingPage } from "./PrepareIngenInnsendingPage";
+import { Submission, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import React from 'react';
+import { MemoryRouter } from 'react-router-dom';
+import { PrepareIngenInnsendingPage } from './PrepareIngenInnsendingPage';
 
-vi.mock("../context/languages", () => ({
+vi.mock('../context/languages', () => ({
   useLanguages: () => ({ translate: (text) => text }),
 }));
 
-describe("PrepareIngenInnsendingPage", () => {
+describe('PrepareIngenInnsendingPage', () => {
   let submitCalls: React.SyntheticEvent<HTMLFormElement>[] = [];
 
   const submitEventListener = (event) => {
@@ -18,25 +18,25 @@ describe("PrepareIngenInnsendingPage", () => {
   };
 
   beforeAll(() => {
-    window.addEventListener("submit", submitEventListener);
+    window.addEventListener('submit', submitEventListener);
   });
 
   afterAll(() => {
-    window.removeEventListener("submit", submitEventListener);
+    window.removeEventListener('submit', submitEventListener);
   });
 
   const testForm = {
-    title: "Mitt testskjema",
-    path: "testskjema",
-    tags: ["nav-skjema"],
-    name: "testskjema",
-    type: "OPP",
-    display: "wizard",
+    title: 'Mitt testskjema',
+    path: 'testskjema',
+    tags: ['nav-skjema'],
+    name: 'testskjema',
+    type: 'OPP',
+    display: 'wizard',
     properties: {
-      skjemanummer: "",
-      innsending: "INGEN",
-      innsendingOverskrift: "Skriv ut skjemaet",
-      innsendingForklaring: "Gi det til pasienten",
+      skjemanummer: '',
+      innsending: 'INGEN',
+      innsendingOverskrift: 'Skriv ut skjemaet',
+      innsendingForklaring: 'Gi det til pasienten',
     },
     components: [],
   };
@@ -55,23 +55,23 @@ describe("PrepareIngenInnsendingPage", () => {
     );
   });
 
-  test("Rendring av oppgitt overskrift og forklaring ved ingen innsending", () => {
-    expect(screen.queryByRole("heading", { name: testForm.properties.innsendingOverskrift })).toBeTruthy();
+  test('Rendring av oppgitt overskrift og forklaring ved ingen innsending', () => {
+    expect(screen.queryByRole('heading', { name: testForm.properties.innsendingOverskrift })).toBeTruthy();
     expect(screen.queryByText(testForm.properties.innsendingForklaring)).toBeTruthy();
   });
 
-  test("Nedlasting av pdf", async () => {
-    const lastNedSoknadKnapp = screen.getByRole("button", { name: TEXTS.grensesnitt.downloadApplication });
+  test('Nedlasting av pdf', async () => {
+    const lastNedSoknadKnapp = screen.getByRole('button', { name: TEXTS.grensesnitt.downloadApplication });
     await userEvent.click(lastNedSoknadKnapp);
     expect(submitCalls).toHaveLength(1);
 
     // @ts-ignore
     const submissionInput = submitCalls[0].target.children[0] as HTMLInputElement;
-    expect(submissionInput.name).toEqual("submission");
+    expect(submissionInput.name).toBe('submission');
 
     // @ts-ignore
     const formInput = submitCalls[0].target.children[1] as HTMLInputElement;
-    expect(formInput.name).toEqual("form");
+    expect(formInput.name).toBe('form');
     const formInputValueJson = JSON.parse(formInput.value);
     expect(formInputValueJson.title).toEqual(testForm.title);
   });

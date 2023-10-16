@@ -1,15 +1,15 @@
-import { Alert, Heading } from "@navikt/ds-react";
-import { makeStyles, useAppConfig } from "@navikt/skjemadigitalisering-shared-components";
-import { ReportDefinition } from "@navikt/skjemadigitalisering-shared-domain";
-import { useEffect, useState } from "react";
-import { AppLayout } from "../components/AppLayout";
-import Column from "../components/layout/Column";
-import Row from "../components/layout/Row";
-import { useAuth } from "../context/auth-context";
+import { Alert, Heading } from '@navikt/ds-react';
+import { makeStyles, useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
+import { ReportDefinition } from '@navikt/skjemadigitalisering-shared-domain';
+import { useEffect, useState } from 'react';
+import { AppLayout } from '../components/AppLayout';
+import Column from '../components/layout/Column';
+import Row from '../components/layout/Row';
+import { useAuth } from '../context/auth-context';
 
 const useStyles = makeStyles({
   reports: {
-    gridColumn: "2 / 3",
+    gridColumn: '2 / 3',
   },
 });
 
@@ -19,14 +19,14 @@ const ReportsPage = () => {
   const { config, http } = useAppConfig();
   const [reports, setReports] = useState<ReportDefinition[] | undefined>(undefined);
   const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
-  const reportUrlPrefix = config?.isDevelopment ? "http://localhost:8080" : "";
+  const reportUrlPrefix = config?.isDevelopment ? 'http://localhost:8080' : '';
 
   useEffect(() => {
     if (userData?.isAdmin) {
       http
-        ?.get<ReportDefinition[]>("/api/reports")
+        ?.get<ReportDefinition[]>('/api/reports')
         .then((list) => setReports(list))
-        .catch(() => setErrorMessage("Henting av rapportoversikt feilet"));
+        .catch(() => setErrorMessage('Henting av rapportoversikt feilet'));
     }
   }, [http, userData]);
 

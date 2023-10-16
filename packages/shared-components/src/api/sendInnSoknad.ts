@@ -1,12 +1,13 @@
-import { I18nTranslationMap, Language, NavFormType, Submission } from "@navikt/skjemadigitalisering-shared-domain";
-import { getRelevantAttachments, hasOtherDocumentation } from "../Forms/components/attachmentsUtil";
-import { AppConfigContextType } from "../configContext";
+import { I18nTranslationMap, Language, NavFormType, Submission } from '@navikt/skjemadigitalisering-shared-domain';
+import { getRelevantAttachments, hasOtherDocumentation } from '../Forms/components/attachmentsUtil';
+import { AppConfigContextType } from '../configContext';
 
 export interface SendInnSoknadResponse {
   innsendingsId: string;
   hoveddokumentVariant: {
     document: { data: Submission; language: Language };
   };
+  endretDato: string;
 }
 
 export const getSoknad = async (
@@ -63,7 +64,7 @@ export const updateSoknad = async (
       { redirectToLocation: false },
     );
   } else {
-    logger?.info("Kunne ikke mellomlagre søknaden fordi innsendingsId mangler");
+    logger?.info('Kunne ikke mellomlagre søknaden fordi innsendingsId mangler');
   }
 };
 
@@ -96,7 +97,7 @@ export const updateUtfyltSoknad = async (
       { redirectToLocation: true },
     );
   } else {
-    logger?.info("Kunne ikke sende inn søknaden fordi innsendingsId mangler");
+    logger?.info('Kunne ikke sende inn søknaden fordi innsendingsId mangler');
   }
 };
 
@@ -108,7 +109,7 @@ export const deleteSoknad = async (
   if (innsendingsId) {
     return http?.delete(`${baseUrl}/api/send-inn/soknad/${innsendingsId}`);
   } else {
-    logger?.info("Kunne ikke slette søknaden fordi innsendingsId mangler");
+    logger?.info('Kunne ikke slette søknaden fordi innsendingsId mangler');
   }
 };
 

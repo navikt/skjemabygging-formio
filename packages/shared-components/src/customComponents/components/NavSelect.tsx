@@ -1,32 +1,32 @@
-import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
-import selectEditForm from "formiojs/components/select/Select.form";
-import React, { useEffect, useState } from "react";
-import ReactSelect, { components } from "react-select";
-import FormBuilderOptions from "../../Forms/form-builder-options";
-import http from "../../api/http";
-import FormioReactComponent from "../FormioReactComponent";
-import { fieldSizeField } from "./fields/fieldSize";
-import { ariaLiveMessages } from "./navSelect/ariaLiveMessages";
+import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import selectEditForm from 'formiojs/components/select/Select.form';
+import { useEffect, useState } from 'react';
+import ReactSelect, { components } from 'react-select';
+import FormBuilderOptions from '../../Forms/form-builder-options';
+import http from '../../api/http';
+import FormioReactComponent from '../FormioReactComponent';
+import { fieldSizeField } from './fields/fieldSize';
+import { ariaLiveMessages } from './navSelect/ariaLiveMessages';
 
 const { navSelect: SELECT_TEXTS } = TEXTS.grensesnitt;
 
 const reactSelectStyles = {
   control: (baseStyles, state) => ({
     ...baseStyles,
-    fontSize: "var(--a-font-size-large)",
-    minHeight: "var(--input-min-height)",
-    border: "1px solid #78706a",
-    boxShadow: state.isFocused ? "0 0 0 3px #254b6d" : undefined,
+    fontSize: 'var(--a-font-size-large)',
+    minHeight: 'var(--input-min-height)',
+    border: '1px solid #78706a',
+    boxShadow: state.isFocused ? '0 0 0 3px #254b6d' : undefined,
   }),
   menu: (baseStyles) => ({
     ...baseStyles,
-    zIndex: "3",
+    zIndex: '3',
   }),
 };
 
 const Input = (props) => {
   const ariaProps = {
-    "aria-describedby": props.selectProps["aria-describedby"],
+    'aria-describedby': props.selectProps['aria-describedby'],
   };
 
   return <components.Input {...props} {...ariaProps} />;
@@ -54,7 +54,7 @@ const ReactSelectWrapper = ({
       id={`selectContainer-${component.id}-${component.key}`}
       instanceId={`${component.id}-${component.key}`}
       aria-labelledby={`l-${component.id}-${component.key}`}
-      aria-describedby={component.description ? `d-${component.id}-${component.key}` : ""}
+      aria-describedby={component.description ? `d-${component.id}-${component.key}` : ''}
       aria-label={label}
       options={options}
       value={selectedOption}
@@ -64,7 +64,7 @@ const ReactSelectWrapper = ({
       placeholder={component.placeholder}
       isLoading={isLoading}
       ref={inputRef}
-      className={component.fieldSize || "input--xxl"}
+      className={component.fieldSize || 'input--xxl'}
       styles={reactSelectStyles}
       isClearable={true}
       backspaceRemovesValue={true}
@@ -74,15 +74,15 @@ const ReactSelectWrapper = ({
       loadingMessage={loadingMessage}
       onChange={(event, actionType) => {
         switch (actionType.action) {
-          case "select-option":
+          case 'select-option':
             const newValue = event.value;
             const selectedOption = options.find((o) => o.value === newValue);
             setSelectedOption(selectedOption);
             onChange(selectedOption);
             break;
-          case "clear":
-            setSelectedOption("");
-            onChange("");
+          case 'clear':
+            setSelectedOption('');
+            onChange('');
         }
       }}
     />
@@ -113,77 +113,77 @@ class NavSelect extends FormioReactComponent {
     return selectEditForm(
       [
         {
-          key: "display",
+          key: 'display',
           components: [
-            { key: "widget", ignore: true },
-            { key: "labelPosition", ignore: true },
-            { key: "placeholder", ignore: true },
-            { key: "tooltip", ignore: true },
-            { key: "customClass", ignore: true },
-            { key: "tabindex", ignore: true },
-            { key: "hidden", ignore: true },
-            { key: "hideLabel", ignore: true },
-            { key: "uniqueOptions", ignore: true },
-            { key: "autofocus", ignore: true },
-            { key: "disabled", ignore: true },
-            { key: "tableView", ignore: true },
-            { key: "modalEdit", ignore: true },
+            { key: 'widget', ignore: true },
+            { key: 'labelPosition', ignore: true },
+            { key: 'placeholder', ignore: true },
+            { key: 'tooltip', ignore: true },
+            { key: 'customClass', ignore: true },
+            { key: 'tabindex', ignore: true },
+            { key: 'hidden', ignore: true },
+            { key: 'hideLabel', ignore: true },
+            { key: 'uniqueOptions', ignore: true },
+            { key: 'autofocus', ignore: true },
+            { key: 'disabled', ignore: true },
+            { key: 'tableView', ignore: true },
+            { key: 'modalEdit', ignore: true },
             fieldSizeField,
           ],
         },
         {
-          key: "data",
+          key: 'data',
           components: [
-            { key: "multiple", ignore: true },
-            { key: "dataType", ignore: true },
-            { key: "idPath", ignore: true },
-            { key: "template", ignore: true },
-            { key: "indexeddb.database", ignore: true },
-            { key: "indexeddb.table", ignore: true },
-            { key: "indexeddb.filter", ignore: true },
-            { key: "refreshOn", ignore: true },
-            { key: "refreshOnBlur", ignore: true },
-            { key: "clearOnRefresh", ignore: true },
-            { key: "searchEnabled", ignore: true },
-            { key: "selectThreshold", ignore: true },
-            { key: "readOnlyValue", ignore: true },
-            { key: "customOptions", ignore: true },
-            { key: "useExactSearch", ignore: true },
-            { key: "persistent", ignore: true },
-            { key: "protected", ignore: true },
-            { key: "dbIndex", ignore: true },
-            { key: "encrypted", ignore: true },
-            { key: "redrawOn", ignore: true },
-            { key: "calculateServer", ignore: true },
-            { key: "allowCalculateOverride", ignore: true },
-            { key: "searchField", ignore: true },
-            { key: "searchDebounce", ignore: true },
-            { key: "minSearch", ignore: true },
-            { key: "filter", ignore: true },
-            { key: "sort", ignore: true },
-            { key: "limit", ignore: true },
-            { key: "authenticate", ignore: true },
-            { key: "ignoreCache", ignore: true },
+            { key: 'multiple', ignore: true },
+            { key: 'dataType', ignore: true },
+            { key: 'idPath', ignore: true },
+            { key: 'template', ignore: true },
+            { key: 'indexeddb.database', ignore: true },
+            { key: 'indexeddb.table', ignore: true },
+            { key: 'indexeddb.filter', ignore: true },
+            { key: 'refreshOn', ignore: true },
+            { key: 'refreshOnBlur', ignore: true },
+            { key: 'clearOnRefresh', ignore: true },
+            { key: 'searchEnabled', ignore: true },
+            { key: 'selectThreshold', ignore: true },
+            { key: 'readOnlyValue', ignore: true },
+            { key: 'customOptions', ignore: true },
+            { key: 'useExactSearch', ignore: true },
+            { key: 'persistent', ignore: true },
+            { key: 'protected', ignore: true },
+            { key: 'dbIndex', ignore: true },
+            { key: 'encrypted', ignore: true },
+            { key: 'redrawOn', ignore: true },
+            { key: 'calculateServer', ignore: true },
+            { key: 'allowCalculateOverride', ignore: true },
+            { key: 'searchField', ignore: true },
+            { key: 'searchDebounce', ignore: true },
+            { key: 'minSearch', ignore: true },
+            { key: 'filter', ignore: true },
+            { key: 'sort', ignore: true },
+            { key: 'limit', ignore: true },
+            { key: 'authenticate', ignore: true },
+            { key: 'ignoreCache', ignore: true },
           ],
         },
         {
-          key: "validation",
+          key: 'validation',
           components: [
-            { key: "validateOn", ignore: true },
-            { key: "errorLabel", ignore: true },
-            { key: "validate.customMessage", ignore: true },
-            { key: "unique", ignore: true },
+            { key: 'validateOn', ignore: true },
+            { key: 'errorLabel', ignore: true },
+            { key: 'validate.customMessage', ignore: true },
+            { key: 'unique', ignore: true },
           ],
         },
         {
-          key: "api",
+          key: 'api',
           components: [
-            { key: "tags", ignore: true },
-            { key: "properties", ignore: true },
+            { key: 'tags', ignore: true },
+            { key: 'properties', ignore: true },
           ],
         },
-        { key: "logic", ignore: true },
-        { key: "layout", ignore: true },
+        { key: 'logic', ignore: true },
+        { key: 'layout', ignore: true },
       ],
       ...extend,
     );
@@ -203,9 +203,9 @@ class NavSelect extends FormioReactComponent {
 
   renderReact(element) {
     const component = this.component!;
-    if (component.dataSrc === "values") {
+    if (component.dataSrc === 'values') {
       this.selectOptions = component.data.values;
-    } else if (component.dataSrc === "url" && !this.isLoading && !this.loadFinished) {
+    } else if (component.dataSrc === 'url' && !this.isLoading && !this.loadFinished) {
       const dataUrl = component.data.url;
       this.isLoading = true;
       http
@@ -213,12 +213,12 @@ class NavSelect extends FormioReactComponent {
         .then((data) => {
           const { valueProperty, labelProperty } = component;
           this.selectOptions = data.map((obj) => ({
-            label: obj[labelProperty || "label"],
-            value: obj[valueProperty || "value"],
+            label: obj[labelProperty || 'label'],
+            value: obj[valueProperty || 'value'],
           }));
         })
         .catch((err) => {
-          this.emit("componentError", {
+          this.emit('componentError', {
             component,
             message: err.toString(),
           });

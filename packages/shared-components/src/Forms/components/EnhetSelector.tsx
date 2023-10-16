@@ -1,12 +1,12 @@
-import { Enhet, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
-import ReactSelect from "react-select";
-import { useLanguages } from "../../context/languages";
-import makeStyles from "../../util/jss";
-import { navCssVariables } from "../../util/navCssVariables";
+import { Enhet, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import ReactSelect from 'react-select';
+import { useLanguages } from '../../context/languages';
+import makeStyles from '../../util/jss';
+import { navCssVariables } from '../../util/navCssVariables';
 
 const useStyles = makeStyles({
   enhetsliste: {
-    maxWidth: "20rem",
+    maxWidth: '20rem',
   },
 });
 

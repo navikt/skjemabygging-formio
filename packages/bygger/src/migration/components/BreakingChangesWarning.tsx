@@ -1,5 +1,5 @@
-import { Alert } from "@navikt/ds-react";
-import { BreakingChanges } from "../../../types/migration";
+import { Alert } from '@navikt/ds-react';
+import { BreakingChanges } from '../../../types/migration';
 
 type BreakingChangesWarningProps = {
   breakingChanges: BreakingChanges[];

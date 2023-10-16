@@ -1,12 +1,12 @@
-import { Heading, Modal as NavModal } from "@navikt/ds-react";
-import React from "react";
-import makeStyles from "../../util/jss";
+import { Heading, Modal as NavModal } from '@navikt/ds-react';
+import React from 'react';
+import makeStyles from '../../util/jss';
 
 const useModalStyles = makeStyles({
   modal: {
-    width: "50rem",
-    maxWidth: "90%",
-    padding: "1rem",
+    width: '50rem',
+    maxWidth: '90%',
+    padding: '1rem',
   },
 });
 

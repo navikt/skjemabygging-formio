@@ -1,8 +1,8 @@
-import { TextField, Textarea } from "@navikt/ds-react";
-import { InnsendingType, NavFormSettingsDiff, NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
-import LabelWithDiff from "../LabelWithDiff";
-import SubmissionTypeSelect from "../SubmissionTypeSelect";
-import { FormMetadataError, UpdateFormFunction } from "../utils";
+import { TextField, Textarea } from '@navikt/ds-react';
+import { InnsendingType, NavFormSettingsDiff, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
+import LabelWithDiff from '../LabelWithDiff';
+import SubmissionTypeSelect from '../SubmissionTypeSelect';
+import { FormMetadataError, UpdateFormFunction } from '../utils';
 
 export interface SubmissionFieldsProps {
   onChange: UpdateFormFunction;
@@ -12,8 +12,8 @@ export interface SubmissionFieldsProps {
 }
 
 const SubmissionFields = ({ onChange, diff, form, errors }: SubmissionFieldsProps) => {
-  const innsending = form.properties.innsending || "PAPIR_OG_DIGITAL";
-  const ettersending = form.properties.ettersending || "PAPIR_OG_DIGITAL";
+  const innsending = form.properties.innsending || 'PAPIR_OG_DIGITAL';
+  const ettersending = form.properties.ettersending || 'PAPIR_OG_DIGITAL';
   const ettersendelsesfrist = form.properties.ettersendelsesfrist;
 
   return (
@@ -44,29 +44,29 @@ const SubmissionFields = ({ onChange, diff, form, errors }: SubmissionFieldsProp
         }
       />
 
-      {!!ettersending && ettersending !== "INGEN" && (
+      {!!ettersending && ettersending !== 'INGEN' && (
         <TextField
           className="mb"
           label={<LabelWithDiff label="Ettersendelsesfrist (dager)" diff={!!diff.ettersendelsesfrist} />}
           type="number"
           id="ettersendelsesfrist"
-          value={ettersendelsesfrist || ""}
+          value={ettersendelsesfrist || ''}
           onChange={(event) =>
             onChange({
               ...form,
               properties: { ...form.properties, ettersendelsesfrist: event.target.value },
             })
           }
-          placeholder={"Standard (14 dager)"}
+          placeholder={'Standard (14 dager)'}
         />
       )}
 
-      {innsending === "INGEN" && (
+      {innsending === 'INGEN' && (
         <>
           <TextField
             className="mb"
             label={<LabelWithDiff label="Overskrift til innsending" diff={!!diff.innsendingOverskrift} />}
-            value={form.properties.innsendingOverskrift || ""}
+            value={form.properties.innsendingOverskrift || ''}
             onChange={(event) =>
               onChange({
                 ...form,
@@ -77,7 +77,7 @@ const SubmissionFields = ({ onChange, diff, form, errors }: SubmissionFieldsProp
           <Textarea
             className="mb"
             label={<LabelWithDiff label="Forklaring til innsending" diff={!!diff.innsendingForklaring} />}
-            value={form.properties.innsendingForklaring || ""}
+            value={form.properties.innsendingForklaring || ''}
             onChange={(event) =>
               onChange({
                 ...form,

@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { loggEventSkjemaStartet } from "../../util/amplitude";
+import { useEffect, useState } from 'react';
+import { loggEventSkjemaStartet } from '../../util/amplitude';
 
 export default function useSkjemaStartet(form) {
   const [lastEvent, setLastEvent] = useState(null);

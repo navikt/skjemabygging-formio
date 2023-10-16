@@ -1,13 +1,13 @@
-import "@testing-library/jest-dom";
-import { vi } from "vitest";
-import createFetchMock from "vitest-fetch-mock";
+import '@testing-library/jest-dom';
+import { vi } from 'vitest';
+import createFetchMock from 'vitest-fetch-mock';
 
 const fetchMock = createFetchMock(vi);
 
 fetchMock.enableMocks();
 fetchMock.dontMock();
 
-Object.defineProperty(window, "matchMedia", {
+Object.defineProperty(window, 'matchMedia', {
   writable: true,
   value: vi.fn().mockImplementation((query) => ({
     matches: false,

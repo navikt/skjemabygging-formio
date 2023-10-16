@@ -1,8 +1,8 @@
-import { generateDiff } from "../diffingTool";
+import { generateDiff } from '../diffingTool';
 
 function createNewSignatures(form) {
   const { hasLabeledSignatures, signatures } = form.properties;
-  if (hasLabeledSignatures && signatures && signatures.signature1 !== "") {
+  if (hasLabeledSignatures && signatures && signatures.signature1 !== '') {
     return Object.keys(signatures)
       .filter((key) => key.match(/^signature\d$/))
       .sort()
@@ -23,8 +23,8 @@ function createNewSignatures(form) {
   } else {
     return [
       {
-        label: "",
-        description: "",
+        label: '',
+        description: '',
       },
     ];
   }
@@ -34,7 +34,7 @@ const migrateSignatures =
   (editOptions, affectedComponentsLogger = []) =>
   (comp) => {
     const propertiesWithoutHasLabeledSignatures = Object.keys(comp.properties)
-      .filter((key) => key !== "hasLabeledSignatures")
+      .filter((key) => key !== 'hasLabeledSignatures')
       .flatMap((key) => ({ [key]: comp.properties[key] }));
     const editedComp = {
       ...comp,

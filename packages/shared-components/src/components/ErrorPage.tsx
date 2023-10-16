@@ -1,9 +1,9 @@
-import makeStyles from "../util/jss";
+import makeStyles from '../util/jss';
 
 const useLoadingStyles = makeStyles({
   root: {
-    display: "flex",
-    height: "100vh",
+    display: 'flex',
+    height: '100vh',
   },
 });
 

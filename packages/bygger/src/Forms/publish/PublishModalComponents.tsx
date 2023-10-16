@@ -1,11 +1,11 @@
-import { Component, navFormUtils } from "@navikt/skjemadigitalisering-shared-domain";
-import { useEffect, useState } from "react";
-import UserMessageModal, { useUserMessage } from "../../components/UserMessageModal";
-import { useModal } from "../../util/useModal";
-import ConfirmPublishModal from "./ConfirmPublishModal";
-import PublishSettingsModal from "./PublishSettingsModal";
+import { Component, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { useEffect, useState } from 'react';
+import UserMessageModal, { useUserMessage } from '../../components/UserMessageModal';
+import { useModal } from '../../util/useModal';
+import ConfirmPublishModal from './ConfirmPublishModal';
+import PublishSettingsModal from './PublishSettingsModal';
 
-const isAttachment = (comp: Component) => comp.values?.some((v) => v.value === "leggerVedNaa");
+const isAttachment = (comp: Component) => comp.values?.some((v) => v.value === 'leggerVedNaa');
 
 const validateAttachments = (form) =>
   navFormUtils
@@ -26,7 +26,7 @@ const PublishModalComponents = ({ form, onPublish, openPublishSettingModal, setO
         setOpenPublishSettingModalValidated(true);
       } else {
         setOpenPublishSettingModal(false);
-        showUserMessage("Du må fylle ut vedleggskode og vedleggstittel for alle vedlegg før skjemaet kan publiseres.");
+        showUserMessage('Du må fylle ut vedleggskode og vedleggstittel for alle vedlegg før skjemaet kan publiseres.');
       }
     } else {
       setOpenPublishSettingModalValidated(false);

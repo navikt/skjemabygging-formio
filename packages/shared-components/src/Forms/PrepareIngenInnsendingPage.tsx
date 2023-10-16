@@ -1,13 +1,13 @@
-import { BodyShort, Heading } from "@navikt/ds-react";
-import { Submission, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
-import { useEffect } from "react";
-import { useAppConfig } from "../configContext";
-import { useAmplitude } from "../context/amplitude";
-import { useLanguages } from "../context/languages";
-import { scrollToAndSetFocus } from "../util/focus-management";
-import makeStyles from "../util/jss";
-import NavigateButtonComponent from "./NavigateButtonComponent";
-import DownloadPdfButton from "./components/DownloadPdfButton";
+import { BodyShort, Heading } from '@navikt/ds-react';
+import { Submission, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { useEffect } from 'react';
+import { useAppConfig } from '../configContext';
+import { useAmplitude } from '../context/amplitude';
+import { useLanguages } from '../context/languages';
+import { scrollToAndSetFocus } from '../util/focus-management';
+import makeStyles from '../util/jss';
+import NavigateButtonComponent from './NavigateButtonComponent';
+import DownloadPdfButton from './components/DownloadPdfButton';
 
 export interface Props {
   form: any;
@@ -18,14 +18,14 @@ export interface Props {
 
 const useStyles = makeStyles({
   content: {
-    width: "100%",
-    display: "flex",
-    flexDirection: "column",
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'column',
   },
 });
 
 export function PrepareIngenInnsendingPage({ form, submission, translations, formUrl }: Props) {
-  useEffect(() => scrollToAndSetFocus("main", "start"), []);
+  useEffect(() => scrollToAndSetFocus('main', 'start'), []);
   const { fyllutBaseURL } = useAppConfig();
   const { translate } = useLanguages();
   const { loggSkjemaFullfort } = useAmplitude();
@@ -47,7 +47,7 @@ export function PrepareIngenInnsendingPage({ form, submission, translations, for
               label={translate(form.properties.downloadPdfButtonText || TEXTS.grensesnitt.downloadApplication)}
               onClick={() => loggSkjemaFullfort()}
               translations={translations}
-              submissionMethod={"ingen"}
+              submissionMethod={'ingen'}
             />
           </div>
           <NavigateButtonComponent translate={translate} goBackUrl={`${formUrl}/oppsummering`} />

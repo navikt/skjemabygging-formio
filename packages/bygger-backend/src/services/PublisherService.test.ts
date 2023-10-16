@@ -1,13 +1,13 @@
-import { FormPropertiesType, NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
-import nock from "nock";
-import { Backend } from "../Backend";
-import config from "../config";
-import PublisherService from "./PublisherService";
-import { formioService } from "./index";
+import { FormPropertiesType, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
+import nock from 'nock';
+import { Backend } from '../Backend';
+import config from '../config';
+import PublisherService from './PublisherService';
+import { formioService } from './index';
 
-const opts = { userName: "todd", formioToken: "valid-formio-token" };
+const opts = { userName: 'todd', formioToken: 'valid-formio-token' };
 
-describe("PublisherService", () => {
+describe('PublisherService', () => {
   let publisherService: PublisherService;
 
   let backendMock: Backend;
@@ -17,13 +17,13 @@ describe("PublisherService", () => {
     nock.cleanAll();
   });
 
-  describe("publishForm", () => {
-    describe("when publishing succeeds", () => {
-      const testForm = { _id: "1", properties: {} } as NavFormType;
+  describe('publishForm', () => {
+    describe('when publishing succeeds', () => {
+      const testForm = { _id: '1', properties: {} } as NavFormType;
       let nockScope: nock.Scope;
 
       beforeEach(() => {
-        backendMock = { publishForm: () => "git-commit-hash" } as unknown as Backend;
+        backendMock = { publishForm: () => 'git-commit-hash' } as unknown as Backend;
         publisherService = new PublisherService(formioService, backendMock);
         nockScope = nock(config.formio.projectUrl)
           .put(/\/form\/(\d*)$/)
@@ -35,19 +35,19 @@ describe("PublisherService", () => {
         expect(nockScope.isDone()).toBe(true);
       });
 
-      it("adds properties modified and published", async () => {
+      it('adds properties modified and published', async () => {
         const translations = {};
         const { changed, form } = await publisherService.publishForm(testForm, translations, opts);
         expect(changed).toBe(true);
         expect(form.properties.modified).toBeDefined();
-        expect(form.properties.modifiedBy).toEqual("todd");
+        expect(form.properties.modifiedBy).toBe('todd');
         expect(form.properties.published).toBeDefined();
-        expect(form.properties.publishedBy).toEqual("todd");
+        expect(form.properties.publishedBy).toBe('todd');
       });
 
-      describe("property: publishedLanguages", () => {
-        it("adds publishedLanguages to properties", async () => {
-          const translations = { en: {}, "nn-NO": {} };
+      describe('property: publishedLanguages', () => {
+        it('adds publishedLanguages to properties', async () => {
+          const translations = { en: {}, 'nn-NO': {} };
           const testFormWithNoPublishedLanguages: NavFormType = {
             ...testForm,
             properties: {
@@ -55,14 +55,14 @@ describe("PublisherService", () => {
             },
           } as NavFormType;
           const { form } = await publisherService.publishForm(testFormWithNoPublishedLanguages, translations, opts);
-          expect(form.properties.publishedLanguages).toEqual(["en", "nn-NO"]);
+          expect(form.properties.publishedLanguages).toEqual(['en', 'nn-NO']);
         });
 
-        it("resets publishedLanguages when empty translations object is published", async () => {
+        it('resets publishedLanguages when empty translations object is published', async () => {
           const testFormWithPublishedLanguages: NavFormType = {
             ...testForm,
             properties: {
-              publishedLanguages: ["en"],
+              publishedLanguages: ['en'],
             },
           } as NavFormType;
           const translations = {};
@@ -70,21 +70,21 @@ describe("PublisherService", () => {
           expect(form.properties.publishedLanguages).toEqual([]);
         });
 
-        it("does not reset publishedLanguages when translations object is undefined", async () => {
+        it('does not reset publishedLanguages when translations object is undefined', async () => {
           const testFormWithPublishedLanguages: NavFormType = {
             ...testForm,
             properties: {
-              publishedLanguages: ["en"],
+              publishedLanguages: ['en'],
             },
           } as NavFormType;
           const translations = undefined;
           const { form } = await publisherService.publishForm(testFormWithPublishedLanguages, translations, opts);
-          expect(form.properties.publishedLanguages).toEqual(["en"]);
+          expect(form.properties.publishedLanguages).toEqual(['en']);
         });
       });
     });
 
-    describe("when publishing fails", () => {
+    describe('when publishing fails', () => {
       // @ts-ignore
       let formioServiceSpy: vi.SpyInstance<
         Promise<NavFormType>,
@@ -98,11 +98,11 @@ describe("PublisherService", () => {
         formioApiRequestBodies = [];
         backendMock = {
           publishForm: () => {
-            throw new Error("Commit failed");
+            throw new Error('Commit failed');
           },
         } as unknown as Backend;
         publisherService = new PublisherService(formioService, backendMock);
-        formioServiceSpy = vi.spyOn(formioService, "saveForm");
+        formioServiceSpy = vi.spyOn(formioService, 'saveForm');
         nockScope = nock(config.formio.projectUrl)
           .put(/\/form\/(\d*)$/)
           .times(2)
@@ -117,15 +117,15 @@ describe("PublisherService", () => {
         expect(nockScope.isDone()).toBe(true);
       });
 
-      it("form properties are reverted when publish fails", async () => {
+      it('form properties are reverted when publish fails', async () => {
         const translations = { en: {} };
-        const form: NavFormType = { _id: "2", properties: {} } as NavFormType;
+        const form: NavFormType = { _id: '2', properties: {} } as NavFormType;
         let errorThrown = false;
         try {
           await publisherService.publishForm(form, translations, opts);
         } catch (error: any) {
           errorThrown = true;
-          expect(error.message).toEqual("Publisering feilet");
+          expect(error.message).toBe('Publisering feilet');
         }
         expect(errorThrown).toBe(true);
         expect(formioServiceSpy).toHaveBeenCalledTimes(2);
@@ -140,7 +140,7 @@ describe("PublisherService", () => {
         expect(formPropsBeforePublish.publishedBy).toEqual(opts.userName);
         expect(modifiedAtPublish).toBeDefined();
         expect(modifiedByAtPublish).toEqual(opts.userName);
-        expect(formPropsBeforePublish.publishedLanguages).toEqual(["en"]);
+        expect(formPropsBeforePublish.publishedLanguages).toEqual(['en']);
 
         const formPropsRollback = formioApiRequestBodies[1].properties;
         const modifiedAtRollback = formPropsRollback.modified;
@@ -156,9 +156,9 @@ describe("PublisherService", () => {
     });
   });
 
-  describe("unpublishForm", () => {
-    describe("when unpublish succeeds", () => {
-      const testGitSha = "123456789A987654321";
+  describe('unpublishForm', () => {
+    describe('when unpublish succeeds', () => {
+      const testGitSha = '123456789A987654321';
       let nockScope: nock.Scope;
 
       beforeEach(() => {
@@ -174,10 +174,10 @@ describe("PublisherService", () => {
         expect(nockScope.isDone()).toBe(true);
       });
 
-      it("sets unpublish props and unsets published props", async () => {
+      it('sets unpublish props and unsets published props', async () => {
         const testForm = {
-          _id: "1",
-          properties: { published: "2022-07-28T10:00:10.325Z", publishedBy: "ernie" },
+          _id: '1',
+          properties: { published: '2022-07-28T10:00:10.325Z', publishedBy: 'ernie' },
         } as NavFormType;
         const { changed, form } = await publisherService.unpublishForm(testForm, opts);
         expect(changed).toBe(true);
@@ -189,7 +189,7 @@ describe("PublisherService", () => {
       });
     });
 
-    describe("when unpublish fails", () => {
+    describe('when unpublish fails', () => {
       let nockScope: nock.Scope;
       let formioApiRequestBodies: NavFormType[];
 
@@ -197,7 +197,7 @@ describe("PublisherService", () => {
         formioApiRequestBodies = [];
         backendMock = {
           unpublishForm: () => {
-            throw new Error("Commit failed");
+            throw new Error('Commit failed');
           },
         } as unknown as Backend;
         publisherService = new PublisherService(formioService, backendMock);
@@ -214,10 +214,10 @@ describe("PublisherService", () => {
         expect(nockScope.isDone()).toBe(true);
       });
 
-      it("properties are rolled back", async () => {
+      it('properties are rolled back', async () => {
         const testForm = {
-          _id: "1",
-          properties: { published: "2022-07-28T10:00:10.325Z", publishedBy: "ernie" },
+          _id: '1',
+          properties: { published: '2022-07-28T10:00:10.325Z', publishedBy: 'ernie' },
         } as NavFormType;
         let errorThrown;
 
@@ -225,7 +225,7 @@ describe("PublisherService", () => {
           await publisherService.unpublishForm(testForm, opts);
         } catch (error: any) {
           errorThrown = true;
-          expect(error.message).toEqual("Avpublisering feilet");
+          expect(error.message).toBe('Avpublisering feilet');
         }
 
         expect(errorThrown).toBe(true);
@@ -240,27 +240,27 @@ describe("PublisherService", () => {
     });
   });
 
-  describe("publishForms (bulk)", () => {
+  describe('publishForms (bulk)', () => {
     const testForms: NavFormType[] = [
-      { _id: "1", properties: { publishedLanguages: ["en"] } } as unknown as NavFormType,
+      { _id: '1', properties: { publishedLanguages: ['en'] } } as unknown as NavFormType,
       {
-        _id: "2",
-        properties: { publishedLanguages: [], published: "2022-07-28T10:00:10.325Z", publishedBy: "ernie" },
+        _id: '2',
+        properties: { publishedLanguages: [], published: '2022-07-28T10:00:10.325Z', publishedBy: 'ernie' },
       } as unknown as NavFormType,
       {
-        _id: "3",
+        _id: '3',
         properties: {
           publishedLanguages: undefined,
-          modified: "2022-06-28T10:02:15.634Z",
-          modifiedBy: "bert",
-          unpublished: "2022-06-28T10:02:15.634Z",
-          unpublishedBy: "bert",
+          modified: '2022-06-28T10:02:15.634Z',
+          modifiedBy: 'bert',
+          unpublished: '2022-06-28T10:02:15.634Z',
+          unpublishedBy: 'bert',
         },
       } as unknown as NavFormType,
     ];
 
-    describe("when bulk publishing succeeds", () => {
-      const testGitSha = "123456789A987654321";
+    describe('when bulk publishing succeeds', () => {
+      const testGitSha = '123456789A987654321';
       let nockScope: nock.Scope;
       let formioApiRequestBodies: NavFormType[];
 
@@ -281,12 +281,12 @@ describe("PublisherService", () => {
         expect(nockScope.isDone()).toBe(true);
       });
 
-      it("returns git sha for bulk publish commit", async () => {
+      it('returns git sha for bulk publish commit', async () => {
         const gitSha = await publisherService.publishForms(testForms, opts);
         expect(gitSha).toEqual(testGitSha);
       });
 
-      it("adds properties modified and published with same value", async () => {
+      it('adds properties modified and published with same value', async () => {
         await publisherService.publishForms(testForms, opts);
 
         expect(formioApiRequestBodies).toHaveLength(3);
@@ -313,12 +313,12 @@ describe("PublisherService", () => {
         expect(form1Published).toEqual(form3Published);
       });
 
-      it("does not modify publishedLanguages property", async () => {
+      it('does not modify publishedLanguages property', async () => {
         await publisherService.publishForms(testForms, opts);
         expect(formioApiRequestBodies).toHaveLength(3);
 
         const form1Props = formioApiRequestBodies[0].properties;
-        expect(form1Props.publishedLanguages).toEqual(["en"]);
+        expect(form1Props.publishedLanguages).toEqual(['en']);
 
         const form2Props = formioApiRequestBodies[1].properties;
         expect(form2Props.publishedLanguages).toEqual([]);
@@ -328,7 +328,7 @@ describe("PublisherService", () => {
       });
     });
 
-    describe("when publishing fails", () => {
+    describe('when publishing fails', () => {
       let nockScope: nock.Scope;
       let formioApiRequestBodies: NavFormType[];
 
@@ -336,7 +336,7 @@ describe("PublisherService", () => {
         formioApiRequestBodies = [];
         backendMock = {
           publishForms: () => {
-            throw new Error("Commit failed");
+            throw new Error('Commit failed');
           },
         } as unknown as Backend;
         publisherService = new PublisherService(formioService, backendMock);
@@ -353,13 +353,13 @@ describe("PublisherService", () => {
         expect(nockScope.isDone()).toBe(true);
       });
 
-      it("properties are rolled back", async () => {
+      it('properties are rolled back', async () => {
         let errorThrown = false;
         try {
           await publisherService.publishForms(testForms, opts);
         } catch (error: any) {
           errorThrown = true;
-          expect(error.message).toEqual("Bulk-publisering feilet");
+          expect(error.message).toBe('Bulk-publisering feilet');
         }
         expect(errorThrown).toBe(true);
         expect(formioApiRequestBodies).toHaveLength(6);

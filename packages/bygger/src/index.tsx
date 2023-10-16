@@ -1,30 +1,30 @@
-import { AppConfigProvider, Modal } from "@navikt/skjemadigitalisering-shared-components";
-import Pusher from "pusher-js";
-import React, { StrictMode } from "react";
-import { BrowserRouter } from "react-router-dom";
-import App from "./App";
-import { AuthProvider } from "./context/auth-context";
-import { createRoot } from "react-dom/client";
+import { AppConfigProvider, Modal } from '@navikt/skjemadigitalisering-shared-components';
+import Pusher from 'pusher-js';
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+import { BrowserRouter } from 'react-router-dom';
+import App from './App';
+import { AuthProvider } from './context/auth-context';
 
-const dokumentinnsendingDevURL = "https://tjenester-q0.nav.no/dokumentinnsending";
+const dokumentinnsendingDevURL = 'https://tjenester-q0.nav.no/dokumentinnsending';
 
 Pusher.logToConsole = true;
 
 // @ts-ignore
-if (process.env.NODE_ENV !== "test") Modal.setAppElement("#root");
+if (process.env.NODE_ENV !== 'test') Modal.setAppElement('#root');
 
-fetch("/api/config")
+fetch('/api/config')
   .then((res) => {
-    const token = res.headers.get("Bygger-Formio-Token");
+    const token = res.headers.get('Bygger-Formio-Token');
     if (token) {
-      localStorage.setItem("formioToken", token);
+      localStorage.setItem('formioToken', token);
     }
     return res.json();
   })
   .then((config) => renderReact(config));
 
 const renderReact = (config) => {
-  const root = createRoot(document.getElementById("root")!);
+  const root = createRoot(document.getElementById('root')!);
   root.render(
     <StrictMode>
       <BrowserRouter>

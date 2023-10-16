@@ -1,52 +1,52 @@
-import { ExclamationmarkTriangleFillIcon } from "@navikt/aksel-icons";
-import { Alert, BodyShort, ConfirmationPanel, Heading } from "@navikt/ds-react";
-import { DeclarationType, NavFormType, Submission, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
-import { Form as FormioForm } from "formiojs";
-import { useEffect, useRef, useState } from "react";
-import NavForm from "../../components/NavForm";
-import { useLanguages } from "../../context/languages";
-import { useSendInn } from "../../context/sendInn/sendInnContext";
-import Styles from "../../styles";
-import { SANITIZE_CONFIG } from "../../template/sanitizeConfig";
-import { scrollToAndSetFocus } from "../../util/focus-management";
-import makeStyles from "../../util/jss";
-import { PanelValidation, validateWizardPanels } from "../../util/panelValidation";
-import FormStepper from "../components/FormStepper";
-import EditAnswersButton from "../components/navigation/EditAnswersButton";
-import FormSummary from "./FormSummary";
-import SummaryPageNavigation from "./SummaryPageNavigation";
+import { ExclamationmarkTriangleFillIcon } from '@navikt/aksel-icons';
+import { Alert, BodyShort, ConfirmationPanel, Heading } from '@navikt/ds-react';
+import { DeclarationType, NavFormType, Submission, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form as FormioForm } from 'formiojs';
+import { useEffect, useRef, useState } from 'react';
+import NavForm from '../../components/NavForm';
+import { useLanguages } from '../../context/languages';
+import { useSendInn } from '../../context/sendInn/sendInnContext';
+import Styles from '../../styles';
+import { SANITIZE_CONFIG } from '../../template/sanitizeConfig';
+import { scrollToAndSetFocus } from '../../util/focus-management';
+import makeStyles from '../../util/jss';
+import { PanelValidation, validateWizardPanels } from '../../util/panelValidation';
+import FormStepper from '../components/FormStepper';
+import EditAnswersButton from '../components/navigation/EditAnswersButton';
+import FormSummary from './FormSummary';
+import SummaryPageNavigation from './SummaryPageNavigation';
 
 const useStyles = makeStyles({
-  "@global": {
+  '@global': {
     ...Styles.form,
     ...Styles.global,
   },
   content: {
-    width: "100%",
-    display: "flex",
-    flexDirection: "column",
-    "& .data-grid__row": {},
-    "& dt:not(.component-collection  dt):not(.data-grid__row  dt)": {
-      fontSize: "1.2rem",
-      marginTop: "2rem",
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    '& .data-grid__row': {},
+    '& dt:not(.component-collection  dt):not(.data-grid__row  dt)': {
+      fontSize: '1.2rem',
+      marginTop: '2rem',
     },
-    "& .component-collection, & .data-grid__row": {
-      borderLeft: "4px solid #368da8",
-      backgroundColor: "#e6f1f8",
-      padding: "0.75rem 1rem",
-      margin: "0.375rem 0",
+    '& .component-collection, & .data-grid__row': {
+      borderLeft: '4px solid #368da8',
+      backgroundColor: '#e6f1f8',
+      padding: '0.75rem 1rem',
+      margin: '0.375rem 0',
     },
-    "& .form-summary": {
-      paddingTop: "2rem",
-      paddingBottom: "2.5rem",
+    '& .form-summary': {
+      paddingTop: '2rem',
+      paddingBottom: '2.5rem',
     },
   },
   validationAlert: {
-    marginBottom: "1rem",
+    marginBottom: '1rem',
   },
   exclamationmarkIcon: {
-    verticalAlign: "sub",
-    color: "var(--a-orange-600)",
+    verticalAlign: 'sub',
+    color: 'var(--a-orange-600)',
   },
 });
 
@@ -67,27 +67,27 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
 
   useEffect(() => {
     const initializePanelValidation = async () => {
-      const formio = new FormioForm(document.getElementById("formio-summary-hidden"), form, {
-        language: "nb-NO",
+      const formio = new FormioForm(document.getElementById('formio-summary-hidden'), form, {
+        language: 'nb-NO',
         i18n: {},
         sanitizeConfig: SANITIZE_CONFIG,
         events: NavForm.getDefaultEmitter(),
       });
 
       const instance = await formio.ready;
-      await instance.setSubmission(submission ?? { data: {} });
-      instance.checkData(submission?.data, [], undefined);
+      await instance.setSubmission(submission);
+      instance.checkData(submission.data, [], undefined);
 
       const panelValidations = validateWizardPanels(instance, form, submission);
       setPanelValidationList(panelValidations);
       instance.destroy(true);
     };
-    if (isMellomlagringEnabled) {
+    if (isMellomlagringEnabled && submission.data) {
       initializePanelValidation();
     }
   }, [isMellomlagringEnabled, form, submission]);
 
-  useEffect(() => scrollToAndSetFocus("main", "start"), []);
+  useEffect(() => scrollToAndSetFocus('main', 'start'), []);
   const declarationRef = useRef<HTMLInputElement>(null);
 
   const hasDeclaration = declarationType === DeclarationType.custom || declarationType === DeclarationType.default;
@@ -122,13 +122,13 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
             <>
               <Alert variant="info" className={styles.validationAlert}>
                 <span>
-                  {translate(TEXTS.statiske.summaryPage.validationMessage.start)}
+                  {`${translate(TEXTS.statiske.summaryPage.validationMessage)} `}
                   <ExclamationmarkTriangleFillIcon
                     className={styles.exclamationmarkIcon}
-                    title="Opplysninger mangler"
+                    title={translate(TEXTS.statiske.summaryPage.validationErrorIcon)}
                     fontSize="1.5rem"
                   />
-                  {translate(TEXTS.statiske.summaryPage.validationMessage.end)}
+                  {'.'}
                 </span>
               </Alert>
               <div className="button-row">

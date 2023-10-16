@@ -1,13 +1,13 @@
-import { useAmplitude } from "../context/amplitude/index.jsx";
-import { useLanguages } from "../context/languages";
-import LanguageSelector from "./LanguageSelector";
-import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
+import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { useAmplitude } from '../context/amplitude/index.jsx';
+import { useLanguages } from '../context/languages';
+import LanguageSelector from './LanguageSelector';
 
 export const languagesInOriginalLanguage = {
-  "nb-NO": "Norsk bokmål",
-  "nn-NO": "Norsk nynorsk",
-  en: "English",
-  pl: "Polskie",
+  'nb-NO': 'Norsk bokmål',
+  'nn-NO': 'Norsk nynorsk',
+  en: 'English',
+  pl: 'Polskie',
 };
 
 const FyllUtLanguageSelector = () => {
@@ -17,15 +17,15 @@ const FyllUtLanguageSelector = () => {
     return null;
   }
 
-  if (currentLanguage !== "nb-NO" && availableLanguages.indexOf("nb-NO") < 0) {
-    availableLanguages.push("nb-NO");
+  if (currentLanguage !== 'nb-NO' && availableLanguages.indexOf('nb-NO') < 0) {
+    availableLanguages.push('nb-NO');
   }
 
   const options = availableLanguages
     .filter((languageCode) => languageCode !== currentLanguage)
     .map((languageCode) => {
       const params = new URLSearchParams(window.location.search);
-      params.set("lang", languageCode);
+      params.set('lang', languageCode);
       return {
         languageCode,
         optionLabel: languagesInOriginalLanguage[languageCode],
@@ -36,7 +36,7 @@ const FyllUtLanguageSelector = () => {
 
   const label = languagesInOriginalLanguage[currentLanguage]
     ? languagesInOriginalLanguage[currentLanguage]
-    : "Norsk bokmål";
+    : 'Norsk bokmål';
 
   return options.length > 0 ? (
     <LanguageSelector

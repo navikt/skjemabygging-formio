@@ -1,17 +1,17 @@
-import { Alert, Button } from "@navikt/ds-react";
-import { makeStyles } from "@navikt/skjemadigitalisering-shared-components";
-import { useState } from "react";
-import UserFeedback from "../components/UserFeedback";
-import Column from "../components/layout/Column";
-import useMottaksadresser from "../hooks/useMottaksadresser";
-import MottaksadresseEditor from "./MottaksadresseEditor";
+import { Alert, Button } from '@navikt/ds-react';
+import { makeStyles } from '@navikt/skjemadigitalisering-shared-components';
+import { useState } from 'react';
+import UserFeedback from '../components/UserFeedback';
+import Column from '../components/layout/Column';
+import useMottaksadresser from '../hooks/useMottaksadresser';
+import MottaksadresseEditor from './MottaksadresseEditor';
 
 const useStyles = makeStyles({
   mottaksadresser: {
-    gridColumn: "2 / 3",
+    gridColumn: '2 / 3',
   },
   publishButton: {
-    whiteSpace: "inherit",
+    whiteSpace: 'inherit',
   },
 });
 
@@ -45,9 +45,9 @@ const MottaksadresserListe = () => {
   return (
     <>
       <Column className={styles.mottaksadresser}>
-        {!ready && "Laster mottaksadresser..."}
+        {!ready && 'Laster mottaksadresser...'}
         {errorMessage && <Alert variant="error">{errorMessage}</Alert>}
-        {editAddressId === "new" && (
+        {editAddressId === 'new' && (
           <MottaksadresseEditor
             onSubmitDone={onSubmitDone}
             onCancel={clearEditAddressId}
@@ -74,7 +74,7 @@ const MottaksadresserListe = () => {
         <Button onClick={onPublish} loading={publishing} className={styles.publishButton}>
           Publiser mottaksadresser
         </Button>
-        <Button variant="secondary" onClick={() => editMottaksadresse("new")} type="button">
+        <Button variant="secondary" onClick={() => editMottaksadresse('new')} type="button">
           Legg til ny
         </Button>
         <UserFeedback />

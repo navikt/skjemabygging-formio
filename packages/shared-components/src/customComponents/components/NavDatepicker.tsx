@@ -1,24 +1,24 @@
-import { DatePicker, DatePickerProps, useDatepicker } from "@navikt/ds-react";
-import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
-import apiEditForm from "formiojs/components/_classes/component/editForm/Component.edit.api";
-import conditionalEditForm from "formiojs/components/_classes/component/editForm/Component.edit.conditional";
-import displayEditForm from "formiojs/components/_classes/component/editForm/Component.edit.display";
-import validationEditForm from "formiojs/components/_classes/component/editForm/Component.edit.validation";
-import { getContextComponents } from "formiojs/utils/utils";
-import moment from "moment";
-import React, { useEffect } from "react";
-import FormBuilderOptions from "../../Forms/form-builder-options";
-import FormioReactComponent from "../FormioReactComponent";
-import { UseDatepickerOptions } from "@navikt/ds-react/esm/date/hooks/useDatepicker";
+import { DatePicker, DatePickerProps, useDatepicker } from '@navikt/ds-react';
+import { UseDatepickerOptions } from '@navikt/ds-react/esm/date/hooks/useDatepicker';
+import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import apiEditForm from 'formiojs/components/_classes/component/editForm/Component.edit.api';
+import conditionalEditForm from 'formiojs/components/_classes/component/editForm/Component.edit.conditional';
+import displayEditForm from 'formiojs/components/_classes/component/editForm/Component.edit.display';
+import validationEditForm from 'formiojs/components/_classes/component/editForm/Component.edit.validation';
+import { getContextComponents } from 'formiojs/utils/utils';
+import moment from 'moment';
+import { useEffect } from 'react';
+import FormBuilderOptions from '../../Forms/form-builder-options';
+import FormioReactComponent from '../FormioReactComponent';
 
-const SUBMISSION_DATE_FORMAT = "YYYY-MM-DD";
+const SUBMISSION_DATE_FORMAT = 'YYYY-MM-DD';
 
 const DatovelgerWrapper = ({ component, onChange, value, locale, readOnly, inputRef }) => {
   // @ts-ignore
   const { datepickerProps, inputProps, setSelected, reset }: DatePickerProps = useDatepicker({
     required: component.validate.required,
     onDateChange: (val) => {
-      onChange(val ? moment(val).format(SUBMISSION_DATE_FORMAT) : "");
+      onChange(val ? moment(val).format(SUBMISSION_DATE_FORMAT) : '');
     },
   } as UseDatepickerOptions);
 
@@ -49,7 +49,7 @@ const DatovelgerWrapper = ({ component, onChange, value, locale, readOnly, input
 };
 
 function isCorrectOrder(beforeDate, afterDate, mayBeEqual = false) {
-  return mayBeEqual ? beforeDate.isSameOrBefore(afterDate, "d") : beforeDate.isBefore(afterDate, "d");
+  return mayBeEqual ? beforeDate.isSameOrBefore(afterDate, 'd') : beforeDate.isBefore(afterDate, 'd');
 }
 
 export default class NavDatepicker extends FormioReactComponent {
@@ -66,7 +66,7 @@ export default class NavDatepicker extends FormioReactComponent {
       title,
       icon,
       key,
-      documentation: "",
+      documentation: '',
       weight: 0,
       schema: NavDatepicker.schema(),
     };
@@ -83,40 +83,39 @@ export default class NavDatepicker extends FormioReactComponent {
     if (isCorrectOrder(beforeDate, inputDate, mayBeEqual)) {
       return true;
     }
-    const beforeDateAsString = beforeDate.format("DD.MM.YYYY");
+    const beforeDateAsString = beforeDate.format('DD.MM.YYYY');
     return mayBeEqual
-      ? this.showNorwegianOrTranslation("dateNotBeforeFromDate", { fromDate: beforeDateAsString })
-      : this.showNorwegianOrTranslation("dateAfterFromDate", { fromDate: beforeDateAsString });
+      ? this.showNorwegianOrTranslation('dateNotBeforeFromDate', { fromDate: beforeDateAsString })
+      : this.showNorwegianOrTranslation('dateAfterFromDate', { fromDate: beforeDateAsString });
   }
 
-  validateEarliestAndLatestDate(earliestFromToday = "", latestFromToday = "", inputDate) {
-    const earliestAllowedDate = !!String(earliestFromToday) ? moment().add(String(earliestFromToday), "d") : undefined;
-    const latestAllowedDate = !!String(latestFromToday) ? moment().add(String(latestFromToday), "d") : undefined;
+  validateEarliestAndLatestDate(earliestFromToday = '', latestFromToday = '', inputDate) {
+    const earliestAllowedDate = !!String(earliestFromToday) ? moment().add(String(earliestFromToday), 'd') : undefined;
+    const latestAllowedDate = !!String(latestFromToday) ? moment().add(String(latestFromToday), 'd') : undefined;
     return this.validateEarliestAndLatest(earliestAllowedDate, latestAllowedDate, inputDate);
   }
 
   validateEarliestAndLatest(earliestAllowedDate, latestAllowedDate, inputDate) {
-    const earliestAllowedDateAsString = earliestAllowedDate ? earliestAllowedDate.format("DD.MM.YYYY") : "";
-    const latestAllowedDateAsString = latestAllowedDate ? latestAllowedDate.format("DD.MM.YYYY") : "";
-
+    const earliestAllowedDateAsString = earliestAllowedDate ? earliestAllowedDate.format('DD.MM.YYYY') : '';
+    const latestAllowedDateAsString = latestAllowedDate ? latestAllowedDate.format('DD.MM.YYYY') : '';
     if (earliestAllowedDate && latestAllowedDate) {
       if (!isCorrectOrder(earliestAllowedDate, latestAllowedDate, true)) {
         return true;
       }
-      return inputDate.isBefore(earliestAllowedDate, "d") || inputDate.isAfter(latestAllowedDate, "d")
-        ? `${this.showNorwegianOrTranslation("dateInBetween", {
+      return inputDate.isBefore(earliestAllowedDate, 'd') || inputDate.isAfter(latestAllowedDate, 'd')
+        ? `${this.showNorwegianOrTranslation('dateInBetween', {
             minDate: earliestAllowedDateAsString,
             maxDate: latestAllowedDateAsString,
           })}`
         : true;
     }
 
-    if (earliestAllowedDate && inputDate.isBefore(earliestAllowedDate, "d")) {
-      return `${this.showNorwegianOrTranslation("dateNotBeforeAllowedDate")} ${earliestAllowedDateAsString}`;
+    if (earliestAllowedDate && inputDate.isBefore(earliestAllowedDate, 'd')) {
+      return `${this.showNorwegianOrTranslation('dateNotBeforeAllowedDate')} ${earliestAllowedDateAsString}`;
     }
 
-    if (latestAllowedDate && inputDate.isAfter(latestAllowedDate, "d")) {
-      return `${this.showNorwegianOrTranslation("dateNotLaterThanAllowedDate")} ${latestAllowedDateAsString}`;
+    if (latestAllowedDate && inputDate.isAfter(latestAllowedDate, 'd')) {
+      return `${this.showNorwegianOrTranslation('dateNotLaterThanAllowedDate')} ${latestAllowedDateAsString}`;
     }
 
     return true;
@@ -127,8 +126,8 @@ export default class NavDatepicker extends FormioReactComponent {
     submissionData,
     beforeDateInputKey,
     mayBeEqual,
-    relativeEarliestAllowedDate = "",
-    relativeLatestAllowedDate = "",
+    relativeEarliestAllowedDate = '',
+    relativeLatestAllowedDate = '',
     row,
   ) {
     if (!input) {
@@ -139,7 +138,7 @@ export default class NavDatepicker extends FormioReactComponent {
     if (beforeDateInputKey) {
       const beforeDateValue =
         submissionData[beforeDateInputKey] ||
-        (beforeDateInputKey.includes(".") && row && row[beforeDateInputKey.replace(/.*\./i, "")]);
+        (beforeDateInputKey.includes('.') && row && row[beforeDateInputKey.replace(/.*\./i, '')]);
       if (beforeDateValue) {
         toAndFromDateValidation = this.validateToAndFromDate(moment(beforeDateValue), moment(input), mayBeEqual);
       }
@@ -153,10 +152,10 @@ export default class NavDatepicker extends FormioReactComponent {
         ? this.validateEarliestAndLatestDate(earliestFromToday, latestFromToday, moment(input))
         : true;
 
-    if (typeof toAndFromDateValidation === "string") {
+    if (typeof toAndFromDateValidation === 'string') {
       return toAndFromDateValidation;
     }
-    if (typeof earliestAndLatestDateValidation === "string") {
+    if (typeof earliestAndLatestDateValidation === 'string') {
       return earliestAndLatestDateValidation;
     }
     return true;
@@ -195,37 +194,37 @@ export default class NavDatepicker extends FormioReactComponent {
    */
   static editForm() {
     const excludeFromDisplay = [
-      "placeholder",
-      "hidden",
-      "disabled",
-      "tooltip",
-      "customClass",
-      "labelPosition",
-      "tabindex",
-      "hideLabel",
-      "autofocus",
-      "tableView",
-      "modalEdit",
-      "unique",
+      'placeholder',
+      'hidden',
+      'disabled',
+      'tooltip',
+      'customClass',
+      'labelPosition',
+      'tabindex',
+      'hideLabel',
+      'autofocus',
+      'tableView',
+      'modalEdit',
+      'unique',
     ];
 
     return {
-      type: "hidden",
-      key: "type",
+      type: 'hidden',
+      key: 'type',
       components: [
         {
-          type: "tabs",
-          key: "tabs",
+          type: 'tabs',
+          key: 'tabs',
           components: [
             {
-              label: "Visning",
-              key: "display",
+              label: 'Visning',
+              key: 'display',
               weight: 0,
               components: [
                 {
-                  type: "checkbox",
-                  label: "Vis årvelger i kalender",
-                  key: "visArvelger",
+                  type: 'checkbox',
+                  label: 'Vis årvelger i kalender',
+                  key: 'visArvelger',
                   defaultValue: true,
                   input: true,
                 },
@@ -233,21 +232,21 @@ export default class NavDatepicker extends FormioReactComponent {
               ],
             },
             {
-              label: "Validering",
-              key: "validation",
+              label: 'Validering',
+              key: 'validation',
               weight: 20,
               components: [
                 {
-                  type: "panel",
-                  title: "Fra-til-dato",
+                  type: 'panel',
+                  title: 'Fra-til-dato',
                   components: [
                     {
-                      type: "select",
+                      type: 'select',
                       input: true,
-                      label: "Datofelt for fra-dato",
-                      key: "beforeDateInputKey",
-                      dataSrc: "custom",
-                      valueProperty: "value",
+                      label: 'Datofelt for fra-dato',
+                      key: 'beforeDateInputKey',
+                      dataSrc: 'custom',
+                      valueProperty: 'value',
                       data: {
                         custom(context) {
                           return getContextComponents(context);
@@ -255,53 +254,53 @@ export default class NavDatepicker extends FormioReactComponent {
                       },
                     },
                     {
-                      type: "checkbox",
-                      label: "Kan være lik",
-                      key: "mayBeEqual",
+                      type: 'checkbox',
+                      label: 'Kan være lik',
+                      key: 'mayBeEqual',
                       defaultValue: false,
                       input: true,
                     },
                   ],
                 },
                 {
-                  type: "panel",
-                  title: "Begrens periode relativt til dagens dato",
+                  type: 'panel',
+                  title: 'Begrens periode relativt til dagens dato',
                   components: [
                     {
-                      type: "number",
-                      label: "Tidligst tillatt dato (antall dager fram/bak i tid)",
-                      key: "earliestAllowedDate",
+                      type: 'number',
+                      label: 'Tidligst tillatt dato (antall dager fram/bak i tid)',
+                      key: 'earliestAllowedDate',
                       input: true,
                     },
                     {
-                      type: "number",
-                      label: "Senest tillatt dato (antall dager fram/bak i tid)",
-                      key: "latestAllowedDate",
+                      type: 'number',
+                      label: 'Senest tillatt dato (antall dager fram/bak i tid)',
+                      key: 'latestAllowedDate',
                       input: true,
                     },
                     {
-                      type: "alertstripe",
-                      key: "begrensTillattDatoInfo",
+                      type: 'alertstripe',
+                      key: 'begrensTillattDatoInfo',
                       content:
-                        "<div><p>Oppgi antall dager for å sette tidligste og seneste tillatte dato. Begrensningen er relativ til datoen skjemaet fylles ut. Bruk positive tall for å oppgi dager fram i tid, negative tall for å sette tillatt dato bakover i tid, og 0 for å sette dagens dato som tidligst/senest tillatt.</p><p>Eksempel: hvis tidligst tillatt er satt til -5, vil datoer før 10. august 2022 gi feilmelding når skjemaet fylles ut 15. august 2022</p></div>",
-                      alerttype: "info",
+                        '<div><p>Oppgi antall dager for å sette tidligste og seneste tillatte dato. Begrensningen er relativ til datoen skjemaet fylles ut. Bruk positive tall for å oppgi dager fram i tid, negative tall for å sette tillatt dato bakover i tid, og 0 for å sette dagens dato som tidligst/senest tillatt.</p><p>Eksempel: hvis tidligst tillatt er satt til -5, vil datoer før 10. august 2022 gi feilmelding når skjemaet fylles ut 15. august 2022</p></div>',
+                      alerttype: 'info',
                     },
                   ],
                 },
                 {
-                  type: "panel",
-                  title: "Begrens dato til tidligst/senest en spesifikk dato",
+                  type: 'panel',
+                  title: 'Begrens dato til tidligst/senest en spesifikk dato',
                   components: [
                     {
-                      type: "navDatepicker",
-                      label: "Tidligst tillatt dato",
-                      key: "specificEarliestAllowedDate",
+                      type: 'navDatepicker',
+                      label: 'Tidligst tillatt dato',
+                      key: 'specificEarliestAllowedDate',
                       input: true,
                     },
                     {
-                      type: "navDatepicker",
-                      label: "Senest tillatt dato",
-                      key: "specificLatestAllowedDate",
+                      type: 'navDatepicker',
+                      label: 'Senest tillatt dato',
+                      key: 'specificLatestAllowedDate',
                       input: true,
                     },
                   ],
@@ -310,14 +309,14 @@ export default class NavDatepicker extends FormioReactComponent {
               ],
             },
             {
-              label: "Conditional",
-              key: "conditional",
+              label: 'Conditional',
+              key: 'conditional',
               weight: 40,
               components: conditionalEditForm,
             },
             {
-              label: "API",
-              key: "api",
+              label: 'API',
+              key: 'api',
               weight: 60,
               components: apiEditForm,
             },

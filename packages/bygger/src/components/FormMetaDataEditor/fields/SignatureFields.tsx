@@ -1,13 +1,13 @@
-import { Button, Checkbox } from "@navikt/ds-react";
+import { Button, Checkbox } from '@navikt/ds-react';
 import {
   NavFormSettingsDiff,
   NavFormType,
   NewFormSignatureType,
   signatureUtils,
-} from "@navikt/skjemadigitalisering-shared-domain";
-import { v4 as uuidv4 } from "uuid";
-import SignatureComponent from "../../layout/SignatureComponent";
-import { UpdateFormFunction } from "../utils";
+} from '@navikt/skjemadigitalisering-shared-domain';
+import { v4 as uuidv4 } from 'uuid';
+import SignatureComponent from '../../layout/SignatureComponent';
+import { UpdateFormFunction } from '../utils';
 
 export interface SignatureFieldsProps {
   onChange: UpdateFormFunction;
@@ -42,8 +42,8 @@ const SignatureFields = ({ onChange, diff, form }: SignatureFieldsProps) => {
         signatures: [
           ...signatureUtils.mapBackwardCompatibleSignatures(signatures),
           {
-            label: "",
-            description: "",
+            label: '',
+            description: '',
             key: uuidv4(),
           },
         ],

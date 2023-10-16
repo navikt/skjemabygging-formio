@@ -1,9 +1,9 @@
-import { RequestHandler } from "express";
-import { UnauthorizedError } from "../routers/api/helpers/errors";
+import { RequestHandler } from 'express';
+import { UnauthorizedError } from '../routers/api/helpers/errors';
 
 const adGroups = {
-  USER: "1d12af59-d953-4f85-9f65-d8cbf6672deb",
-  ADMINISTRATOR: "0c0e4023-5fd3-4cfe-8b40-3b98645bb08f",
+  USER: '1d12af59-d953-4f85-9f65-d8cbf6672deb',
+  ADMINISTRATOR: '0c0e4023-5fd3-4cfe-8b40-3b98645bb08f',
 };
 
 const adHandlers: RequestHandlers = {
@@ -11,7 +11,7 @@ const adHandlers: RequestHandlers = {
     if (req.getUser().isAdmin) {
       next();
     } else {
-      next(new UnauthorizedError("User is not administrator"));
+      next(new UnauthorizedError('User is not administrator'));
     }
   },
 };

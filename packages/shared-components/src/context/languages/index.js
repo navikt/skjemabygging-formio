@@ -1,4 +1,4 @@
-import { LanguagesProvider, useLanguages } from "./languages-context";
-import LanguageSelector from "../../components/FyllUtLanguageSelector";
+import LanguageSelector from '../../components/FyllUtLanguageSelector';
+import { LanguagesProvider, useLanguages } from './languages-context';
 
-export { LanguagesProvider, LanguageSelector, useLanguages };
+export { LanguageSelector, LanguagesProvider, useLanguages };

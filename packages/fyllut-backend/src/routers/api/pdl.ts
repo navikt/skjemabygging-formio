@@ -1,9 +1,9 @@
-import { NextFunction, Request, Response } from "express";
-import fetch from "node-fetch";
-import { config as appConfig } from "../../config/config";
-import { logger } from "../../logger";
-import { getIdportenPid, getTokenxAccessToken } from "../../security/tokenHelper";
-import { Person } from "../../types/person";
+import { NextFunction, Request, Response } from 'express';
+import fetch from 'node-fetch';
+import { config as appConfig } from '../../config/config';
+import { logger } from '../../logger';
+import { getIdportenPid, getTokenxAccessToken } from '../../security/tokenHelper';
+import { Person } from '../../types/person';
 
 const { pdlTokenScopeCluster } = appConfig;
 
@@ -29,7 +29,7 @@ const pdl = {
         req.headers.AzureAccessToken as string,
         req.query.theme as string,
         req.params.id,
-        "BARN",
+        'BARN',
       );
       res.send(data);
     } catch (e) {
@@ -119,7 +119,7 @@ const toDeath = (person: any) => {
 
 const toAddress = (person: any) => {
   const addressProtection = person.adressebeskyttelse[0];
-  if (addressProtection && addressProtection.gradering !== "UGRADERT") {
+  if (addressProtection && addressProtection.gradering !== 'UGRADERT') {
     return {};
   }
 
@@ -129,7 +129,7 @@ const toAddress = (person: any) => {
     return {
       streetAddress: address.vegadresse.adressenavn,
       postcode: address.vegadresse.postnummer,
-      countryCode: "no",
+      countryCode: 'no',
     };
   } else if (address?.utenlandskAdresse) {
     return {
@@ -147,7 +147,7 @@ const getPersonWithRelations = async (
   accessToken: string,
   theme: string,
   personId: string,
-  role?: "BARN" | "MOR" | "FAR", // More roles probably exist.
+  role?: 'BARN' | 'MOR' | 'FAR', // More roles probably exist.
 ): Promise<Person[]> => {
   logger.debug(`Fetch person with children from pdl.`);
 
@@ -194,9 +194,9 @@ const pdlRequest = async (accessToken: string, theme: string, query: string) => 
   const url = `https://pdl-api.${pdlTokenScopeCluster}-pub.nais.io/graphql`;
 
   const response = await fetch(url, {
-    method: "POST",
+    method: 'POST',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
       Authorization: `Bearer ${accessToken}`,
       tema: theme,
     },
@@ -207,7 +207,7 @@ const pdlRequest = async (accessToken: string, theme: string, query: string) => 
 
   if (body.errors?.length > 0) {
     const message = body.errors[0].message;
-    if (body.errors[0].extensions?.code === "unauthorized") {
+    if (body.errors[0].extensions?.code === 'unauthorized') {
       logger.warn(`User is not authorized to do this pdl request`);
     }
 

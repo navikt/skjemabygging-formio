@@ -27,8 +27,8 @@
  * Consider using this directly from @formio/react instead
  */
 
-import Field from "formiojs/components/_classes/field/Field";
-import { Component } from "@navikt/skjemadigitalisering-shared-domain";
+import { Component } from '@navikt/skjemadigitalisering-shared-domain';
+import Field from 'formiojs/components/_classes/field/Field';
 
 interface IField {
   new (component, options, data): FieldType;
@@ -157,7 +157,7 @@ const ReactComponent = class extends (Field as IField) {
     // The loadRefs function will find all dom elements that have the "ref" setting that match the object property.
     // It can load a single element or multiple elements with the same ref.
     this.loadRefs(element, {
-      [`react-${this.id}`]: "single",
+      [`react-${this.id}`]: 'single',
     });
 
     if (this.refs[`react-${this.id}`]) {

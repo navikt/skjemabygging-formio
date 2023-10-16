@@ -1,26 +1,24 @@
-import { Navigate, useSearchParams } from "react-router-dom";
-import { useAppConfig } from "../configContext";
-import { useSendInn } from "../context/sendInn/sendInnContext";
-import { ErrorPage, LoadingComponent } from "../index";
+import { Navigate, useSearchParams } from 'react-router-dom';
+import { useSendInn } from '../context/sendInn/sendInnContext';
+import { ErrorPage, LoadingComponent } from '../index';
 
 export const SubmissionWrapper = ({ submission, url, children }) => {
-  const { featureToggles } = useAppConfig();
-  const { isMellomlagringReady, mellomlagringError } = useSendInn();
+  const { isMellomlagringEnabled, mellomlagringError } = useSendInn();
   const [searchParams] = useSearchParams();
-  const innsendingsId = searchParams.get("innsendingsId");
+  const innsendingsId = searchParams.get('innsendingsId');
 
-  const expectsSavedSubmissionFromMellomlagring = featureToggles.enableMellomlagring && !!innsendingsId;
+  const expectsSavedSubmissionFromMellomlagring = isMellomlagringEnabled && !!innsendingsId;
 
-  if (mellomlagringError && mellomlagringError.type === "NOT FOUND") {
+  if (mellomlagringError && mellomlagringError.type === 'NOT FOUND') {
     return <ErrorPage errorMessage={mellomlagringError.message} />;
   }
 
-  if (expectsSavedSubmissionFromMellomlagring && !isMellomlagringReady) {
+  if (!submission && expectsSavedSubmissionFromMellomlagring) {
     return <LoadingComponent />;
   }
 
-  if (!expectsSavedSubmissionFromMellomlagring && !submission) {
-    searchParams.delete("innsendingsId");
+  if (!submission && !expectsSavedSubmissionFromMellomlagring) {
+    searchParams.delete('innsendingsId');
     return <Navigate to={`${url}?${searchParams.toString()}`} />;
   }
   return (

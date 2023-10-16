@@ -1,8 +1,8 @@
 const errorSummary = {
-  ".navds-error-summary": {
-    marginBottom: "var(--a-spacing-10)",
-    "& .navds-link": {
-      cursor: "pointer",
+  '.navds-error-summary': {
+    marginBottom: 'var(--a-spacing-10)',
+    '& .navds-link': {
+      cursor: 'pointer',
     },
   },
 };

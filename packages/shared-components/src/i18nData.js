@@ -1,11 +1,11 @@
-import { objectUtils, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
+import { objectUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 
 const { validering } = TEXTS;
 const i18nData = {
-  "nb-NO": {
+  'nb-NO': {
     ...objectUtils.flatten(validering),
   },
-  "nn-NO": {},
+  'nn-NO': {},
   en: {},
   pl: {},
 };

@@ -1,20 +1,20 @@
-const borDuINorgeSchema = (keyPostfix = "") => ({
-  label: "Bor du i Norge?",
-  type: "radiopanel",
+const borDuINorgeSchema = (keyPostfix = '') => ({
+  label: 'Bor du i Norge?',
+  type: 'radiopanel',
   key: `borDuINorge${keyPostfix}`,
   input: true,
-  validateOn: "blur",
+  validateOn: 'blur',
   validate: {
     required: true,
   },
   values: [
     {
-      value: "ja",
-      label: "Ja",
+      value: 'ja',
+      label: 'Ja',
     },
     {
-      value: "nei",
-      label: "Nei",
+      value: 'nei',
+      label: 'Nei',
     },
   ],
 });

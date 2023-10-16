@@ -1,6 +1,6 @@
-import { FormPropertiesType, NavFormType, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
-import { Screen } from "@testing-library/react";
-import { defaultForm } from "./data";
+import { FormPropertiesType, NavFormType, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { Screen } from '@testing-library/react';
+import { defaultForm } from './data';
 
 export const formWithProperties = (
   props: Partial<FormPropertiesType>,
@@ -21,8 +21,8 @@ export type Buttons = {
 };
 
 export const getButton = (screen: Screen, label: string): HTMLButtonElement =>
-  (screen.queryByRole("link", { name: label }) as HTMLButtonElement) ||
-  (screen.queryByRole("button", { name: label }) as HTMLButtonElement);
+  (screen.queryByRole('link', { name: label }) as HTMLButtonElement) ||
+  (screen.queryByRole('button', { name: label }) as HTMLButtonElement);
 
 export const getButtons = (screen: Screen): Buttons => {
   const redigerSvarKnapp = getButton(screen, TEXTS.grensesnitt.summaryPage.editAnswers) as HTMLButtonElement;

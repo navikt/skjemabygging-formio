@@ -1,37 +1,37 @@
-import { Modal } from "@navikt/skjemadigitalisering-shared-components";
-import { Operator } from "@navikt/skjemadigitalisering-shared-domain";
-import { fireEvent, getAllByLabelText, render, screen, waitFor, within } from "@testing-library/react";
-import { MemoryRouter } from "react-router-dom";
-import { DryRunResults, FormMigrationLogData } from "../../types/migration";
-import FeedbackProvider from "../context/notifications/FeedbackContext";
-import MigrationPage from "./MigrationPage";
-import { TestId } from "./components/MigrationOptionsForm";
-import { migrationOptionsAsMap } from "./utils";
+import { Modal } from '@navikt/skjemadigitalisering-shared-components';
+import { Operator } from '@navikt/skjemadigitalisering-shared-domain';
+import { fireEvent, getAllByLabelText, render, screen, waitFor, within } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
+import { DryRunResults, FormMigrationLogData } from '../../types/migration';
+import FeedbackProvider from '../context/notifications/FeedbackContext';
+import MigrationPage from './MigrationPage';
+import { TestId } from './components/MigrationOptionsForm';
+import { migrationOptionsAsMap } from './utils';
 
-Modal.setAppElement(document.createElement("div"));
+Modal.setAppElement(document.createElement('div'));
 
-describe("MigrationPage", () => {
+describe('MigrationPage', () => {
   let fetchSpy;
 
   const expectedGetOptions = {
-    headers: { "content-type": "application/json" },
-    method: "GET",
+    headers: { 'content-type': 'application/json' },
+    method: 'GET',
   };
 
   const defaultdryRunResponse: FormMigrationLogData = {
-    skjemanummer: "form",
-    name: "Skjema",
-    title: "title",
-    path: "form",
+    skjemanummer: 'form',
+    name: 'Skjema',
+    title: 'title',
+    path: 'form',
     found: 0,
     changed: 0,
     dependencies: {},
-    diff: [{ key: "1", label: "label", id: "123", property: { _ORIGINAL: "original value", _NEW: "new value" } }],
+    diff: [{ key: '1', label: 'label', id: '123', property: { _ORIGINAL: 'original value', _NEW: 'new value' } }],
   };
   const dryRunResponse: DryRunResults = {
-    form1: { ...defaultdryRunResponse, skjemanummer: "form1", path: "form1", name: "Skjema 1", found: 2, changed: 1 },
-    form2: { ...defaultdryRunResponse, skjemanummer: "form2", path: "form2", name: "Skjema 2", found: 1, changed: 0 },
-    form3: { ...defaultdryRunResponse, skjemanummer: "form3", path: "form3", name: "Skjema 3", found: 3, changed: 2 },
+    form1: { ...defaultdryRunResponse, skjemanummer: 'form1', path: 'form1', name: 'Skjema 1', found: 2, changed: 1 },
+    form2: { ...defaultdryRunResponse, skjemanummer: 'form2', path: 'form2', name: 'Skjema 2', found: 1, changed: 0 },
+    form3: { ...defaultdryRunResponse, skjemanummer: 'form3', path: 'form3', name: 'Skjema 3', found: 3, changed: 2 },
   };
 
   const wrapper = ({ children }) => (
@@ -41,11 +41,11 @@ describe("MigrationPage", () => {
   );
 
   beforeEach(() => {
-    fetchSpy = vi.spyOn(global, "fetch").mockImplementation(() =>
+    fetchSpy = vi.spyOn(global, 'fetch').mockImplementation(() =>
       Promise.resolve(
         new Response(JSON.stringify(dryRunResponse), {
           headers: {
-            "content-type": "application/json",
+            'content-type': 'application/json',
           },
         }),
       ),
@@ -60,45 +60,45 @@ describe("MigrationPage", () => {
 
   const setMigrateOptionInput = (optionType: TestId, index, prop, value, operator?: Operator) => {
     const migrationOptions = screen.getByTestId(optionType);
-    const propertyField = getAllByLabelText(migrationOptions, "Feltnavn")[index];
+    const propertyField = getAllByLabelText(migrationOptions, 'Feltnavn')[index];
     if (propertyField) fireEvent.change(propertyField, { target: { value: prop } });
-    const valueField = getAllByLabelText(migrationOptions, "Verdi")[index];
+    const valueField = getAllByLabelText(migrationOptions, 'Verdi')[index];
     if (valueField) fireEvent.change(valueField, { target: { value } });
     if (operator) {
-      const operatorField = getAllByLabelText(migrationOptions, "Operator")[index];
+      const operatorField = getAllByLabelText(migrationOptions, 'Operator')[index];
       if (operatorField) fireEvent.change(operatorField, { target: { value: operator } });
     }
   };
 
   const clickAddButton = (optionType: TestId) => {
-    fireEvent.click(within(screen.getByTestId(optionType)).getByTestId("add-button"));
+    fireEvent.click(within(screen.getByTestId(optionType)).getByTestId('add-button'));
   };
 
-  it("renders the main heading", () => {
-    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Søk og migrer");
+  it('renders the main heading', () => {
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Søk og migrer');
   });
 
-  it("renders options form for search filters and edit options", () => {
-    expect(screen.getByRole("heading", { level: 2, name: "Komponenten må oppfylle følgende" }));
-    expect(screen.getByRole("heading", { level: 2, name: "Nye verdier for felter i komponenten" }));
+  it('renders options form for search filters and edit options', () => {
+    expect(screen.getByRole('heading', { level: 2, name: 'Komponenten må oppfylle følgende' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 2, name: 'Nye verdier for felter i komponenten' })).toBeInTheDocument();
   });
 
-  describe("Migration dry run", () => {
-    it("performs a search with the provided search filters", async () => {
-      setMigrateOptionInput("search-filters", 0, "searchFilter1", true);
-      fireEvent.click(screen.getByRole("button", { name: "Simuler og kontroller migrering" }));
+  describe('Migration dry run', () => {
+    it('performs a search with the provided search filters', async () => {
+      setMigrateOptionInput('search-filters', 0, 'searchFilter1', true);
+      fireEvent.click(screen.getByRole('button', { name: 'Simuler og kontroller migrering' }));
       await waitFor(() => expect(fetchSpy).toHaveBeenCalled());
       expect(fetchSpy).toHaveBeenCalledTimes(1);
       expect(fetchSpy).toHaveBeenCalledWith('/api/migrate?searchFilters={"searchFilter1":true}', expectedGetOptions);
     });
 
-    it("performs a search with several search filters", async () => {
-      setMigrateOptionInput("search-filters", 0, "prop1", true);
-      clickAddButton("search-filters");
-      setMigrateOptionInput("search-filters", 1, "prop2", 99);
-      clickAddButton("search-filters");
-      setMigrateOptionInput("search-filters", 2, "prop3", false);
-      fireEvent.click(screen.getByRole("button", { name: "Simuler og kontroller migrering" }));
+    it('performs a search with several search filters', async () => {
+      setMigrateOptionInput('search-filters', 0, 'prop1', true);
+      clickAddButton('search-filters');
+      setMigrateOptionInput('search-filters', 1, 'prop2', 99);
+      clickAddButton('search-filters');
+      setMigrateOptionInput('search-filters', 2, 'prop3', false);
+      fireEvent.click(screen.getByRole('button', { name: 'Simuler og kontroller migrering' }));
       await waitFor(() => expect(fetchSpy).toHaveBeenCalled());
       expect(fetchSpy).toHaveBeenCalledTimes(1);
       expect(fetchSpy).toHaveBeenCalledWith(
@@ -107,13 +107,13 @@ describe("MigrationPage", () => {
       );
     });
 
-    it("performs a search with operators", async () => {
-      setMigrateOptionInput("search-filters", 0, "prop1", "hello", "n_eq");
-      clickAddButton("search-filters");
-      setMigrateOptionInput("search-filters", 1, "prop2", "world!", "eq");
-      clickAddButton("search-filters");
-      setMigrateOptionInput("search-filters", 2, "prop3", true);
-      fireEvent.click(screen.getByRole("button", { name: "Simuler og kontroller migrering" }));
+    it('performs a search with operators', async () => {
+      setMigrateOptionInput('search-filters', 0, 'prop1', 'hello', 'n_eq');
+      clickAddButton('search-filters');
+      setMigrateOptionInput('search-filters', 1, 'prop2', 'world!', 'eq');
+      clickAddButton('search-filters');
+      setMigrateOptionInput('search-filters', 2, 'prop3', true);
+      fireEvent.click(screen.getByRole('button', { name: 'Simuler og kontroller migrering' }));
       await waitFor(() => expect(fetchSpy).toHaveBeenCalled());
       expect(fetchSpy).toHaveBeenCalledTimes(1);
       expect(fetchSpy).toHaveBeenCalledWith(
@@ -122,14 +122,14 @@ describe("MigrationPage", () => {
       );
     });
 
-    it("performs a migration dryrun with several edit options", async () => {
-      setMigrateOptionInput("search-filters", 0, "prop1", false);
-      setMigrateOptionInput("edit-options", 0, "prop1", true);
-      clickAddButton("edit-options");
-      setMigrateOptionInput("edit-options", 1, "prop2", 99);
-      clickAddButton("edit-options");
-      setMigrateOptionInput("edit-options", 2, "prop3", false);
-      fireEvent.click(screen.getByRole("button", { name: "Simuler og kontroller migrering" }));
+    it('performs a migration dryrun with several edit options', async () => {
+      setMigrateOptionInput('search-filters', 0, 'prop1', false);
+      setMigrateOptionInput('edit-options', 0, 'prop1', true);
+      clickAddButton('edit-options');
+      setMigrateOptionInput('edit-options', 1, 'prop2', 99);
+      clickAddButton('edit-options');
+      setMigrateOptionInput('edit-options', 2, 'prop3', false);
+      fireEvent.click(screen.getByRole('button', { name: 'Simuler og kontroller migrering' }));
       await waitFor(() => expect(fetchSpy).toHaveBeenCalled());
       expect(fetchSpy).toHaveBeenCalledTimes(1);
       expect(fetchSpy).toHaveBeenCalledWith(
@@ -138,12 +138,12 @@ describe("MigrationPage", () => {
       );
     });
 
-    it("performs a migration dryrun with search filters and edit options", async () => {
-      setMigrateOptionInput("search-filters", 0, "prop1", true);
-      setMigrateOptionInput("edit-options", 0, "prop1", false);
-      clickAddButton("edit-options");
-      setMigrateOptionInput("edit-options", 1, "prop2", "new value");
-      fireEvent.click(screen.getByRole("button", { name: "Simuler og kontroller migrering" }));
+    it('performs a migration dryrun with search filters and edit options', async () => {
+      setMigrateOptionInput('search-filters', 0, 'prop1', true);
+      setMigrateOptionInput('edit-options', 0, 'prop1', false);
+      clickAddButton('edit-options');
+      setMigrateOptionInput('edit-options', 1, 'prop2', 'new value');
+      fireEvent.click(screen.getByRole('button', { name: 'Simuler og kontroller migrering' }));
       await waitFor(() => expect(fetchSpy).toHaveBeenCalled());
       expect(fetchSpy).toHaveBeenCalledTimes(1);
       expect(fetchSpy).toHaveBeenCalledWith(
@@ -153,105 +153,105 @@ describe("MigrationPage", () => {
     });
   });
 
-  describe("Migration dry run results", () => {
+  describe('Migration dry run results', () => {
     beforeEach(async () => {
-      setMigrateOptionInput("search-filters", 0, "prop1", true);
-      setMigrateOptionInput("edit-options", 0, "prop1", false);
-      fireEvent.click(screen.getByRole("button", { name: "Simuler og kontroller migrering" }));
+      setMigrateOptionInput('search-filters', 0, 'prop1', true);
+      setMigrateOptionInput('edit-options', 0, 'prop1', false);
+      fireEvent.click(screen.getByRole('button', { name: 'Simuler og kontroller migrering' }));
       await waitFor(() => expect(fetchSpy).toHaveBeenCalled());
     });
 
-    it("displays the number of components that will be affected by migration", async () => {
-      expect(screen.getByText("Fant 3 skjemaer som matcher søkekriteriene.")).toBeTruthy();
-      expect(screen.getByText("Totalt vil 3 av 6 komponenter bli påvirket av endringene.")).toBeTruthy();
+    it('displays the number of components that will be affected by migration', async () => {
+      expect(screen.getByText('Fant 3 skjemaer som matcher søkekriteriene.')).toBeTruthy();
+      expect(screen.getByText('Totalt vil 3 av 6 komponenter bli påvirket av endringene.')).toBeTruthy();
     });
 
-    describe("Preview button", () => {
-      it("is rendered for each form", () => {
-        const previewLinks = screen.getAllByRole("link", { name: "Forhåndsvis" });
+    describe('Preview button', () => {
+      it('is rendered for each form', () => {
+        const previewLinks = screen.getAllByRole('link', { name: 'Forhåndsvis' });
         const actualSearchParams = '?searchFilters={"prop1":true}&editOptions={"prop1":false}';
         expect(previewLinks).toHaveLength(3);
-        expect(previewLinks[0]).toHaveAttribute("href", `/migrering/forhandsvis/form3${actualSearchParams}`);
-        expect(previewLinks[1]).toHaveAttribute("href", `/migrering/forhandsvis/form1${actualSearchParams}`);
-        expect(previewLinks[2]).toHaveAttribute("href", `/migrering/forhandsvis/form2${actualSearchParams}`);
+        expect(previewLinks[0]).toHaveAttribute('href', `/migrering/forhandsvis/form3${actualSearchParams}`);
+        expect(previewLinks[1]).toHaveAttribute('href', `/migrering/forhandsvis/form1${actualSearchParams}`);
+        expect(previewLinks[2]).toHaveAttribute('href', `/migrering/forhandsvis/form2${actualSearchParams}`);
       });
     });
   });
 
-  describe("Migration button", () => {
-    it("is not displayed until a dry run has been performed", () => {
-      expect(screen.queryByRole("Button", { name: "Migrer" })).toBeNull();
+  describe('Migration button', () => {
+    it('is not displayed until a dry run has been performed', () => {
+      expect(screen.queryByRole('Button', { name: 'Migrer' })).toBeNull();
     });
 
-    describe("onClick", () => {
+    describe('onClick', () => {
       beforeEach(async () => {
-        setMigrateOptionInput("search-filters", 0, "prop1", true);
-        setMigrateOptionInput("edit-options", 0, "prop1", false);
-        fireEvent.click(screen.getByRole("button", { name: "Simuler og kontroller migrering" }));
+        setMigrateOptionInput('search-filters', 0, 'prop1', true);
+        setMigrateOptionInput('edit-options', 0, 'prop1', false);
+        fireEvent.click(screen.getByRole('button', { name: 'Simuler og kontroller migrering' }));
         await waitFor(() => expect(fetchSpy).toHaveBeenCalled());
-        fireEvent.click(screen.getAllByLabelText("Inkluder i migrering")[1]);
-        fireEvent.click(screen.getByRole("button", { name: "Migrer" }));
+        fireEvent.click(screen.getAllByLabelText('Inkluder i migrering')[1]);
+        fireEvent.click(screen.getByRole('button', { name: 'Migrer' }));
       });
 
-      it("opens a modal with info on which forms have been selected for migration", () => {
-        const modal = screen.getByRole("dialog");
-        const tables = within(modal).getAllByRole("table");
-        expect(screen.getByText("Skjemaer som vil bli migrert")).toBeTruthy();
-        expect(within(tables[0]).getAllByRole("row")[1]).toHaveTextContent("Skjema 3");
-        expect(screen.getByText("Skjemaer som ikke vil bli migrert")).toBeTruthy();
-        expect(within(tables[1]).getAllByRole("row")[1]).toHaveTextContent("Skjema 1");
+      it('opens a modal with info on which forms have been selected for migration', () => {
+        const modal = screen.getByRole('dialog');
+        const tables = within(modal).getAllByRole('table');
+        expect(screen.getByText('Skjemaer som vil bli migrert')).toBeTruthy();
+        expect(within(tables[0]).getAllByRole('row')[1]).toHaveTextContent('Skjema 3');
+        expect(screen.getByText('Skjemaer som ikke vil bli migrert')).toBeTruthy();
+        expect(within(tables[1]).getAllByRole('row')[1]).toHaveTextContent('Skjema 1');
         expect(
-          screen.getByText("Skjemaer som matcher søkekriteriene, men ikke er aktuelle for migrering"),
+          screen.getByText('Skjemaer som matcher søkekriteriene, men ikke er aktuelle for migrering'),
         ).toBeTruthy();
-        expect(within(tables[2]).getAllByRole("row")[1]).toHaveTextContent("Skjema 2");
+        expect(within(tables[2]).getAllByRole('row')[1]).toHaveTextContent('Skjema 2');
       });
 
-      it("sends a POST request with instructions for the migration", async () => {
-        const modal = screen.getByRole("dialog");
-        const confirmMigrationButton = within(modal).getByRole("button", { name: "Bekreft migrering" });
+      it('sends a POST request with instructions for the migration', async () => {
+        const modal = screen.getByRole('dialog');
+        const confirmMigrationButton = within(modal).getByRole('button', { name: 'Bekreft migrering' });
         fireEvent.click(confirmMigrationButton);
-        await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
+        await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
         expect(fetchSpy).toHaveBeenCalledTimes(2);
-        expect(fetchSpy).toHaveBeenCalledWith("/api/migrate/update", {
+        expect(fetchSpy).toHaveBeenCalledWith('/api/migrate/update', {
           body: JSON.stringify({
             payload: {
               searchFilters: { prop1: true },
               dependencyFilters: {},
               editOptions: { prop1: false },
-              include: ["form3"],
+              include: ['form3'],
             },
           }),
-          headers: { "Bygger-Formio-Token": "", "content-type": "application/json" },
-          method: "POST",
+          headers: { 'Bygger-Formio-Token': '', 'content-type': 'application/json' },
+          method: 'POST',
         });
       });
     });
   });
 
-  describe("migrationOptionsAsMap", () => {
-    it("standard mapping", () => {
+  describe('migrationOptionsAsMap', () => {
+    it('standard mapping', () => {
       const map = migrationOptionsAsMap({
-        "1": {
-          key: "k1",
-          value: "v1",
+        '1': {
+          key: 'k1',
+          value: 'v1',
         },
-        "2": {
-          key: "k2",
-          value: "v2",
+        '2': {
+          key: 'k2',
+          value: 'v2',
         },
       });
       expect(Object.keys(map).length).toBe(2);
     });
 
-    it("duplicate key ignored", () => {
+    it('duplicate key ignored', () => {
       const map = migrationOptionsAsMap({
-        "1": {
-          key: "k1",
-          value: "v1",
+        '1': {
+          key: 'k1',
+          value: 'v1',
         },
-        "2": {
-          key: "k1",
-          value: "v1",
+        '2': {
+          key: 'k1',
+          value: 'v1',
         },
       });
       expect(Object.keys(map).length).toBe(1);

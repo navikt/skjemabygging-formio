@@ -1,9 +1,9 @@
-const vegadresseSchema = (keyPostfix = "") => ({
-  label: "Vegadresse",
-  type: "textfield",
+const vegadresseSchema = (keyPostfix = '') => ({
+  label: 'Vegadresse',
+  type: 'textfield',
   key: `vegadresse${keyPostfix}`,
-  fieldSize: "input--xxl",
-  autocomplete: "street-address",
+  fieldSize: 'input--xxl',
+  autocomplete: 'street-address',
   validate: {
     required: true,
   },
@@ -11,7 +11,7 @@ const vegadresseSchema = (keyPostfix = "") => ({
   clearOnHide: true,
   dataGridLabel: true,
   tableView: true,
-  validateOn: "blur",
+  validateOn: 'blur',
 });
 
 export default vegadresseSchema;

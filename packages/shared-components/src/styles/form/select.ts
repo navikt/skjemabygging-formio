@@ -1,9 +1,9 @@
 const select = {
-  "& .navds-select__input": {
-    appearance: "auto",
+  '& .navds-select__input': {
+    appearance: 'auto',
   },
-  "& .selectContainer": {
-    display: "inline-block",
+  '& .selectContainer': {
+    display: 'inline-block',
   },
 };
 

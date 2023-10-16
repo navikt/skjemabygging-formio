@@ -1,5 +1,5 @@
-import { localizationUtils } from "@navikt/skjemadigitalisering-shared-domain";
-import httpFyllut from "./util/httpFyllut";
+import { localizationUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import httpFyllut from './util/httpFyllut';
 
 const { getLanguageCodeAsIso639_1, zipCountryNames } = localizationUtils;
 
@@ -19,7 +19,7 @@ export const loadCountryNamesForLanguages = async (languages) => {
   if (languages.length === 0) {
     return Promise.resolve({});
   }
-  const countryNamesInBokmaal = await loadCountryNames("nb-NO");
+  const countryNamesInBokmaal = await loadCountryNames('nb-NO');
   return Promise.all(languages.map(loadCountryNames)).then((loadedCountryNames) =>
     loadedCountryNames.reduce(
       (acc, countryNamesPerLocale, index) => ({

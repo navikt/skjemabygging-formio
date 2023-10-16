@@ -1,24 +1,24 @@
-import { NextFunction, Request, Response } from "express";
-import fetch from "node-fetch";
-import { config } from "../../config/config";
-import { logger } from "../../logger";
-import { getIdportenPid, getTokenxAccessToken } from "../../security/tokenHelper";
-import { base64Decode } from "../../utils/base64";
-import { responseToError } from "../../utils/errorHandling";
+import { NextFunction, Request, Response } from 'express';
+import fetch from 'node-fetch';
+import { config } from '../../config/config';
+import { logger } from '../../logger';
+import { getIdportenPid, getTokenxAccessToken } from '../../security/tokenHelper';
+import { base64Decode } from '../../utils/base64';
+import { responseToError } from '../../utils/errorHandling';
 import {
+  SendInnSoknadBody,
   assembleSendInnSoknadBody,
   byteArrayToObject,
   isMellomLagringEnabled,
   sanitizeInnsendingsId,
-  SendInnSoknadBody,
   validateInnsendingsId,
-} from "./helpers/sendInn";
+} from './helpers/sendInn';
 
 const { featureToggles, sendInnConfig } = config;
-const getErrorMessage = "Kan ikke hente mellomlagret søknad.";
-const postErrorMessage = "Kan ikke starte mellomlagring av søknaden.";
-const putErrorMessage = "Kan ikke oppdatere mellomlagret søknad.";
-const deleteErrorMessage = "Kan ikke slette mellomlagret søknad.";
+const getErrorMessage = 'Kan ikke hente mellomlagret søknad.';
+const postErrorMessage = 'Kan ikke starte mellomlagring av søknaden.';
+const putErrorMessage = 'Kan ikke oppdatere mellomlagret søknad.';
+const deleteErrorMessage = 'Kan ikke slette mellomlagret søknad.';
 
 const sendInnSoknad = {
   get: async (req: Request, res: Response, next: NextFunction) => {
@@ -40,9 +40,9 @@ const sendInnSoknad = {
       const sendInnResponse = await fetch(
         `${sendInnConfig.host}${sendInnConfig.paths.soknad}/${sanitizedInnsendingsId}`,
         {
-          method: "GET",
+          method: 'GET',
           headers: {
-            Accept: "application/json",
+            Accept: 'application/json',
             Authorization: `Bearer ${tokenxAccessToken}`,
           },
         },
@@ -52,11 +52,11 @@ const sendInnSoknad = {
         if (sendInnResponse.status === 404) {
           return res.sendStatus(404);
         }
-        logger.debug("Failed to fetch data from SendInn");
+        logger.debug('Failed to fetch data from SendInn');
         return next(await responseToError(sendInnResponse, `Feil ved kall til SendInn. ${getErrorMessage}`, true));
       }
 
-      logger.debug("Successfylly fetched data from SendInn");
+      logger.debug('Successfylly fetched data from SendInn');
       const json = (await sendInnResponse.json()) as SendInnSoknadBody;
       const response = {
         ...json,
@@ -75,27 +75,27 @@ const sendInnSoknad = {
       const idportenPid = getIdportenPid(req);
       const tokenxAccessToken = getTokenxAccessToken(req);
       const body = assembleSendInnSoknadBody(req.body, idportenPid, null);
-      const forceCreateParam = !!req.query?.opprettNySoknad ? "?opprettNySoknad=true" : "";
+      const forceCreateParam = !!req.query?.opprettNySoknad ? '?opprettNySoknad=true' : '';
       if (!isMellomLagringEnabled(featureToggles)) {
         res.json(body);
         return;
       }
 
       const sendInnResponse = await fetch(`${sendInnConfig.host}${sendInnConfig.paths.soknad}${forceCreateParam}`, {
-        method: "POST",
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
           Authorization: `Bearer ${tokenxAccessToken}`,
         },
         body: JSON.stringify(body),
       });
 
       if (sendInnResponse.ok) {
-        logger.debug("Successfylly posted data to SendInn");
+        logger.debug('Successfylly posted data to SendInn');
         res.status(201);
         res.json(await sendInnResponse.json());
       } else {
-        logger.debug("Failed to post data to SendInn");
+        logger.debug('Failed to post data to SendInn');
         next(await responseToError(sendInnResponse, `Feil ved kall til SendInn. ${postErrorMessage}`, true));
       }
     } catch (err) {
@@ -125,9 +125,9 @@ const sendInnSoknad = {
       const sendInnResponse = await fetch(
         `${sendInnConfig.host}${sendInnConfig.paths.soknad}/${sanitizedInnsendingsId}`,
         {
-          method: "PUT",
+          method: 'PUT',
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
             Authorization: `Bearer ${tokenxAccessToken}`,
           },
           body: JSON.stringify(body),
@@ -135,10 +135,10 @@ const sendInnSoknad = {
       );
 
       if (sendInnResponse.ok) {
-        logger.debug("Successfylly updated data in SendInn");
+        logger.debug('Successfylly updated data in SendInn');
         res.json(await sendInnResponse.json());
       } else {
-        logger.debug("Failed to update data in SendInn");
+        logger.debug('Failed to update data in SendInn');
         next(await responseToError(sendInnResponse, `Feil ved kall til SendInn. ${putErrorMessage}`, true));
       }
     } catch (err) {
@@ -164,9 +164,9 @@ const sendInnSoknad = {
       const sendInnResponse = await fetch(
         `${sendInnConfig.host}${sendInnConfig.paths.soknad}/${sanitizedInnsendingsId}`,
         {
-          method: "DELETE",
+          method: 'DELETE',
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
             Authorization: `Bearer ${tokenxAccessToken}`,
           },
         },

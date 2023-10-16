@@ -1,7 +1,7 @@
-import moment from "moment";
-import FormStatusIndicator from "./FormStatusIndicator";
-import { useStatusStyles } from "./styles";
-import { PublishStatusProperties, Status, StreetLightSize } from "./types";
+import moment from 'moment';
+import FormStatusIndicator from './FormStatusIndicator';
+import { useStatusStyles } from './styles';
+import { PublishStatusProperties, Status, StreetLightSize } from './types';
 
 export function determineStatus(publishProperties: PublishStatusProperties): Status {
   const { modified, published, isTestForm, unpublished } = publishProperties;
@@ -9,23 +9,23 @@ export function determineStatus(publishProperties: PublishStatusProperties): Sta
   const unpublishedDate = unpublished !== undefined ? moment(unpublished) : undefined;
 
   if (isTestForm) {
-    return "TESTFORM";
+    return 'TESTFORM';
   }
 
   if (modified && published) {
     if (moment(modified).isAfter(moment(published))) {
-      return "PENDING";
+      return 'PENDING';
     }
-    return "PUBLISHED";
+    return 'PUBLISHED';
   }
 
   if (unpublishedDate?.isSameOrAfter(modifiedDate)) {
-    return "UNPUBLISHED";
+    return 'UNPUBLISHED';
   } else if (modified) {
-    return "DRAFT";
+    return 'DRAFT';
   }
 
-  return "UNKNOWN";
+  return 'UNKNOWN';
 }
 
 type FormStatusProps = { status: Status; size: StreetLightSize };
@@ -33,12 +33,12 @@ type FormStatusProps = { status: Status; size: StreetLightSize };
 const FormStatus = ({ status, size }: FormStatusProps) => {
   const styles = useStatusStyles({});
   const statusTexts: Record<Status, string> = {
-    PUBLISHED: "Publisert",
-    UNPUBLISHED: "Avpublisert",
-    PENDING: "Upubliserte endringer",
-    DRAFT: "Utkast",
-    UNKNOWN: "Ukjent status",
-    TESTFORM: "Testskjema",
+    PUBLISHED: 'Publisert',
+    UNPUBLISHED: 'Avpublisert',
+    PENDING: 'Upubliserte endringer',
+    DRAFT: 'Utkast',
+    UNKNOWN: 'Ukjent status',
+    TESTFORM: 'Testskjema',
   };
   return (
     <div className={styles.statusRow}>

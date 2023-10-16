@@ -1,4 +1,4 @@
-import sanitizeJavaScriptCode from "./sanitize-javascript-code";
+import sanitizeJavaScriptCode from './sanitize-javascript-code';
 
 const navFormioUtils = {
   sanitizeJavaScriptCode,

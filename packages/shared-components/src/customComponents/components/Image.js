@@ -1,7 +1,7 @@
-import Component from "formiojs/components/_classes/component/Component";
-import ComponentEditForm from "formiojs/components/_classes/component/Component.form";
-import ComponentDisplayEditForm from "formiojs/components/_classes/component/editForm/Component.edit.display";
-import FormBuilderOptions from "../../Forms/form-builder-options";
+import Component from 'formiojs/components/_classes/component/Component';
+import ComponentEditForm from 'formiojs/components/_classes/component/Component.form';
+import ComponentDisplayEditForm from 'formiojs/components/_classes/component/editForm/Component.edit.display';
+import FormBuilderOptions from '../../Forms/form-builder-options';
 
 export default class Image extends Component {
   static get builderInfo() {
@@ -15,20 +15,20 @@ export default class Image extends Component {
     });
   }
 
-  static editForm(...extend) {
+  static editForm(..._extend) {
     return ComponentEditForm([
       {
-        label: "Display",
-        key: "display",
+        label: 'Display',
+        key: 'display',
         components: [
           {
-            type: "file",
-            fileMaxSize: "1MB",
-            label: "Last opp fil",
-            key: "image",
-            storage: "base64",
+            type: 'file',
+            fileMaxSize: '1MB',
+            label: 'Last opp fil',
+            key: 'image',
+            storage: 'base64',
             image: true,
-            filePattern: ".png, .jpg, .jpeg",
+            filePattern: '.png, .jpg, .jpeg',
             webcam: false,
             input: true,
             multiple: false,
@@ -38,9 +38,9 @@ export default class Image extends Component {
             weight: 0,
           },
           {
-            type: "textfield",
-            label: "Alt Text",
-            key: "altText",
+            type: 'textfield',
+            label: 'Alt Text',
+            key: 'altText',
             weight: 1,
             input: true,
             validate: {
@@ -48,106 +48,106 @@ export default class Image extends Component {
             },
           },
           {
-            ...ComponentDisplayEditForm.find((component) => component.key === "description"),
-            label: "Beskrivelse",
+            ...ComponentDisplayEditForm.find((component) => component.key === 'description'),
+            label: 'Beskrivelse',
             weight: 2,
           },
           {
-            type: "navCheckbox",
-            label: "Inkludér bilde i pdf",
-            key: "showInPdf",
-            customDefaultValue: "value=true",
+            type: 'navCheckbox',
+            label: 'Inkludér bilde i pdf',
+            key: 'showInPdf',
+            customDefaultValue: 'value=true',
             input: true,
           },
           {
-            label: "Størrelse",
-            fieldSize: "input--xs",
-            suffix: "%",
+            label: 'Størrelse',
+            fieldSize: 'input--xs',
+            suffix: '%',
             delimiter: false,
             requireDecimal: false,
             truncateMultipleSpaces: false,
-            validateOn: "blur",
+            validateOn: 'blur',
             validate: {
               required: true,
               min: 20,
               max: 100,
             },
             defaultValue: 100,
-            key: "widthPercent",
-            type: "number",
+            key: 'widthPercent',
+            type: 'number',
             input: true,
             spellcheck: false,
             tableView: false,
           },
           {
-            key: "label",
+            key: 'label',
             ignore: true,
           },
           {
-            key: "labelPosition",
+            key: 'labelPosition',
             ignore: true,
           },
           {
-            key: "placeholder",
+            key: 'placeholder',
             ignore: true,
           },
           {
-            key: "tooltip",
+            key: 'tooltip',
             ignore: true,
           },
           {
-            key: "tabindex",
+            key: 'tabindex',
             ignore: true,
           },
           {
-            key: "customClass",
+            key: 'customClass',
             ignore: true,
           },
           {
-            key: "hideLabel",
+            key: 'hideLabel',
             ignore: true,
           },
           {
-            key: "hidden",
+            key: 'hidden',
             ignore: true,
           },
           {
-            key: "autofocus",
+            key: 'autofocus',
             ignore: true,
           },
           {
-            key: "disabled",
+            key: 'disabled',
             ignore: true,
           },
           {
-            key: "tableView",
+            key: 'tableView',
             ignore: true,
           },
           {
-            key: "modalEdit",
+            key: 'modalEdit',
             ignore: true,
           },
           ...ComponentDisplayEditForm,
         ],
       },
       {
-        key: "addons",
+        key: 'addons',
         ignore: true,
       },
       {
-        key: "logic",
+        key: 'logic',
         ignore: true,
       },
       {
-        key: "layout",
+        key: 'layout',
         ignore: true,
       },
       {
-        key: "validation",
+        key: 'validation',
         ignore: true,
       },
       {
-        key: "data",
+        key: 'data',
         ignore: true,
       },
     ]);
@@ -155,14 +155,14 @@ export default class Image extends Component {
 
   handleWidth = (imgSize) => {
     if (imgSize > 100) {
-      return "100%";
+      return '100%';
     }
-    return imgSize + "%";
+    return imgSize + '%';
   };
 
   render() {
     return super.render(
-      this.renderTemplate("image", {
+      this.renderTemplate('image', {
         component: this.component,
       }),
     );

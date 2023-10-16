@@ -1,7 +1,7 @@
-import { Button } from "@navikt/ds-react";
-import { NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
-import { useModal } from "../../util/useModal";
-import ConfirmUnpublishModal from "./ConfirmUnpublishModal";
+import { Button } from '@navikt/ds-react';
+import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
+import { useModal } from '../../util/useModal';
+import ConfirmUnpublishModal from './ConfirmUnpublishModal';
 
 interface UnpublishButtonProps {
   onUnpublish: (form) => void;

@@ -1,11 +1,11 @@
-import { ExclamationmarkTriangleFillIcon } from "@navikt/aksel-icons";
-import { Accordion, Heading } from "@navikt/ds-react";
-import { Summary, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
-import { Link, useLocation } from "react-router-dom";
-import { useAmplitude } from "../../context/amplitude";
-import { useLanguages } from "../../context/languages";
-import makeStyles from "../../util/jss";
-import ComponentSummary from "./ComponentSummary";
+import { ExclamationmarkTriangleFillIcon } from '@navikt/aksel-icons';
+import { Accordion, Heading } from '@navikt/ds-react';
+import { Summary, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { Link, useLocation } from 'react-router-dom';
+import { useAmplitude } from '../../context/amplitude';
+import { useLanguages } from '../../context/languages';
+import makeStyles from '../../util/jss';
+import ComponentSummary from './ComponentSummary';
 
 interface Props {
   component: Summary.Panel;
@@ -15,17 +15,17 @@ interface Props {
 
 const panelStyles = makeStyles({
   link: {
-    display: "block",
-    marginBottom: "2rem",
+    display: 'block',
+    marginBottom: '2rem',
   },
   headerIcon: {
-    alignSelf: "center",
-    marginLeft: "0.5rem",
-    color: "var(--a-orange-600)",
+    alignSelf: 'center',
+    marginLeft: '0.5rem',
+    color: 'var(--a-orange-600)',
   },
   accordionHeader: {
-    display: "flex",
-    flexDirection: "row",
+    display: 'flex',
+    flexDirection: 'row',
   },
 });
 
@@ -49,7 +49,7 @@ const PanelSummary = ({ component, formUrl, hasValidationErrors }: Props) => {
               {hasValidationErrors && (
                 <ExclamationmarkTriangleFillIcon
                   className={headerIcon}
-                  title="Opplysninger mangler"
+                  title={translate(TEXTS.statiske.summaryPage.validationIcon)}
                   fontSize="1.5rem"
                 />
               )}

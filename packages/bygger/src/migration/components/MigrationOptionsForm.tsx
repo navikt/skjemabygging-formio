@@ -1,15 +1,15 @@
-import { Button, Heading } from "@navikt/ds-react";
-import { makeStyles } from "@navikt/skjemadigitalisering-shared-components";
-import { Dispatch } from "react";
-import { Action } from "./MigrationOptionsForm.reducer";
+import { Button, Heading } from '@navikt/ds-react';
+import { makeStyles } from '@navikt/skjemadigitalisering-shared-components';
+import { Dispatch } from 'react';
+import { Action } from './MigrationOptionsForm.reducer';
 
 const getStyles = makeStyles({
   form: {
-    marginBottom: "3rem",
+    marginBottom: '3rem',
   },
 });
 
-export type TestId = "search-filters" | "dependency-filters" | "edit-options";
+export type TestId = 'search-filters' | 'dependency-filters' | 'edit-options';
 interface MigrationOptionsFormProps {
   title: string;
   addRowText: string;
@@ -32,9 +32,9 @@ const MigrationOptionsForm = ({ addRowText, title, dispatch, testId, children }:
             type="button"
             variant="secondary"
             onClick={() => {
-              dispatch({ type: "add" });
+              dispatch({ type: 'add' });
             }}
-            data-testid={"add-button"}
+            data-testid={'add-button'}
           >
             {addRowText}
           </Button>

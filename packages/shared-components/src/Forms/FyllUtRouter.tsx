@@ -1,34 +1,43 @@
-import { useState } from "react";
-import { Route, Routes, useResolvedPath } from "react-router-dom";
-import { useAppConfig } from "../configContext";
-import { LanguageSelector, LanguagesProvider } from "../context/languages";
-import { SendInnProvider } from "../context/sendInn/sendInnContext";
-import makeStyles from "../util/jss";
-import { FillInFormPage } from "./FillInFormPage.jsx";
-import { IntroPage } from "./IntroPage";
-import { PrepareIngenInnsendingPage } from "./PrepareIngenInnsendingPage";
-import { FormTitle } from "./components/FormTitle";
-import { PrepareLetterPage } from "./letter/PrepareLetterPage";
-import { SummaryPage } from "./summary/SummaryPage";
-import { Submission } from "@navikt/skjemadigitalisering-shared-domain";
-import { SubmissionWrapper } from "./SubmissionWrapper";
+import { FyllutState, Submission } from '@navikt/skjemadigitalisering-shared-domain';
+import { useState } from 'react';
+import { Route, Routes, useResolvedPath } from 'react-router-dom';
+import { useAppConfig } from '../configContext';
+import { LanguageSelector, LanguagesProvider } from '../context/languages';
+import { SendInnProvider } from '../context/sendInn/sendInnContext';
+import makeStyles from '../util/jss';
+import { FillInFormPage } from './FillInFormPage';
+import { IntroPage } from './IntroPage';
+import { PrepareIngenInnsendingPage } from './PrepareIngenInnsendingPage';
+import { SubmissionWrapper } from './SubmissionWrapper';
+import { FormTitle } from './components/FormTitle';
+import { PrepareLetterPage } from './letter/PrepareLetterPage';
+import { SummaryPage } from './summary/SummaryPage';
 
 const useStyles = makeStyles({
   container: {
-    margin: "0 auto",
-    maxWidth: "960px",
-    padding: "2rem 0",
-    "@media screen and (max-width: 992px)": {
-      padding: "1rem",
+    margin: '0 auto',
+    maxWidth: '960px',
+    padding: '2rem 0',
+    '@media screen and (max-width: 992px)': {
+      padding: '1rem',
     },
   },
 });
 
 const FyllUtRouter = ({ form, translations }) => {
   const { featureToggles } = useAppConfig();
-  const [submission, setSubmission] = useState<Submission>();
-  const formBaseUrl = useResolvedPath("").pathname;
+  const [submission, setSubmission] = useState<Submission | { fyllutState: FyllutState }>();
+  const formBaseUrl = useResolvedPath('').pathname;
   const styles = useStyles();
+
+  const onFyllutStateChange = (fyllutState: FyllutState) => {
+    setSubmission((prevSubmission) => {
+      return {
+        ...prevSubmission,
+        fyllutState,
+      };
+    });
+  };
 
   return (
     <LanguagesProvider translations={translations}>
@@ -38,6 +47,7 @@ const FyllUtRouter = ({ form, translations }) => {
         updateSubmission={(submission) => {
           setSubmission(submission);
         }}
+        onFyllutStateChange={onFyllutStateChange}
       >
         <FormTitle form={form} />
         <div className={styles.container}>
@@ -48,7 +58,7 @@ const FyllUtRouter = ({ form, translations }) => {
           <Routes>
             <Route path="/" element={<IntroPage form={form} formUrl={formBaseUrl} />} />
             <Route
-              path={"/oppsummering"}
+              path={'/oppsummering'}
               element={
                 <SubmissionWrapper submission={submission} url={formBaseUrl}>
                   {(submissionObject) => (
@@ -58,7 +68,7 @@ const FyllUtRouter = ({ form, translations }) => {
               }
             />
             <Route
-              path={"/send-i-posten"}
+              path={'/send-i-posten'}
               element={
                 <SubmissionWrapper submission={submission} url={formBaseUrl}>
                   {(submissionObject) => (
@@ -73,7 +83,7 @@ const FyllUtRouter = ({ form, translations }) => {
               }
             />
             <Route
-              path={"/ingen-innsending"}
+              path={'/ingen-innsending'}
               element={
                 <SubmissionWrapper submission={submission} url={formBaseUrl}>
                   {(submissionObject) => (
@@ -88,7 +98,7 @@ const FyllUtRouter = ({ form, translations }) => {
               }
             />
             <Route
-              path={"/:panelSlug"}
+              path={'/:panelSlug'}
               element={
                 <FillInFormPage
                   form={form}
