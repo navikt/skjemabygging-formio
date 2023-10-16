@@ -23,7 +23,7 @@ describe('Amplitude', () => {
     cy.checkLogToAmplitude('skjema åpnet', { innsendingskanal: 'digital' });
 
     // Veiledning step
-    cy.clickNextStep();
+    cy.clickSaveAndContinue();
     cy.checkLogToAmplitude('navigere', { lenkeTekst: 'Neste steg', destinasjon: '/cypress101/personopplysninger' });
     cy.checkLogToAmplitude('skjemasteg fullført', { steg: 1, skjemastegNokkel: 'veiledning' });
 
@@ -93,7 +93,7 @@ describe('Amplitude', () => {
     });
 
     // Step 2 -> Oppsummering
-    cy.clickNextStep();
+    cy.clickSaveAndContinue();
     cy.checkLogToAmplitude('navigere', { lenkeTekst: 'Neste steg', destinasjon: '/cypress101/oppsummering' });
     cy.checkLogToAmplitude('skjemasteg fullført', { steg: 2, skjemastegNokkel: 'personopplysninger' });
     cy.findByRole('heading', { level: 2, name: 'Oppsummering' }).should('exist');
@@ -112,9 +112,9 @@ describe('Amplitude', () => {
       destinasjon: '/cypress101/veiledning',
     });
     cy.findByRole('heading', { level: 2, name: 'Oppsummering' }).should('not.exist');
-    cy.clickNextStep();
+    cy.clickSaveAndContinue();
     cy.checkLogToAmplitude('navigere', { lenkeTekst: 'Neste steg', destinasjon: '/cypress101/personopplysninger' });
-    cy.clickNextStep();
+    cy.clickSaveAndContinue();
     cy.checkLogToAmplitude('navigere', { lenkeTekst: 'Neste steg', destinasjon: '/cypress101/oppsummering' });
 
     // Oppsummering
@@ -139,8 +139,8 @@ describe('Amplitude', () => {
     );
 
     // First attempt is intercepted and fails, so we can test "innsending feilet"
-    cy.findByRole('button', { name: 'Gå videre' }).click();
-    cy.checkLogToAmplitude('navigere', { lenkeTekst: 'Gå videre', destinasjon: '/sendinn' });
+    cy.findByRole('button', { name: 'Lagre og fortsett' }).click();
+    cy.checkLogToAmplitude('navigere', { lenkeTekst: 'Lagre og fortsett', destinasjon: '/sendinn' });
     cy.wait('@submitToSendinnFailed');
     cy.checkLogToAmplitude('skjemainnsending feilet');
 
@@ -149,8 +149,8 @@ describe('Amplitude', () => {
     );
 
     // The second attempt is successful, causing "skjema fullført"
-    cy.findByRole('button', { name: 'Gå videre' }).click();
-    cy.checkLogToAmplitude('navigere', { lenkeTekst: 'Gå videre', destinasjon: '/sendinn' });
+    cy.findByRole('button', { name: 'Lagre og fortsett' }).click();
+    cy.checkLogToAmplitude('navigere', { lenkeTekst: 'Lagre og fortsett', destinasjon: '/sendinn' });
     cy.wait('@submitToSendinnSuccess');
     cy.checkLogToAmplitude('skjema fullført', {
       skjemaId: 'cypress-101',
