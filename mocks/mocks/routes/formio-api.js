@@ -9,6 +9,7 @@ const translationsCypress101 = require('../data/formio-api/cypress101-translatio
 const translationsConditionalXmas = require('../data/formio-api/conditionalxmas-translation.json');
 const translationsCustomComps = require('../data/formio-api/custom-components-translations.json');
 const translationsSubmissionMethod = require('../data/formio-api/submission-method-translations.json');
+const globalTranslationsEn = require('../data/formio-api/global-translation.json');
 
 const allForms = [
   { form: formCypress101, translations: translationsCypress101 },
@@ -59,11 +60,18 @@ module.exports = [
         options: {
           middleware: (req, res) => {
             const formPath = req.query['data.form'];
-            const testdata = findTestdata(formPath);
-            if (testdata?.translations) {
+            const dataName = req.query['data.name'];
+            if (dataName === 'global') {
               res.status(200);
               res.contentType('application/json; charset=UTF-8');
-              res.send([testdata.translations]);
+              res.send([globalTranslationsEn]);
+            } else if (formPath) {
+              const testdata = findTestdata(formPath);
+              if (testdata?.translations) {
+                res.status(200);
+                res.contentType('application/json; charset=UTF-8');
+                res.send([testdata.translations]);
+              }
             } else {
               res.status(404);
               res.send();

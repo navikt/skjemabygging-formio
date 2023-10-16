@@ -1,0 +1,18 @@
+{
+  "_id": "global-en",
+  "data": {
+    "name": "global",
+    "scope": "global",
+    "tag": "grensesnitt",
+    "language": "en",
+    "i18n": {
+      "Ja": "Yes",
+      "Nei": "No",
+      "Neste": "Next",
+      "Avbryt": "Cancel",
+      "Vedlegg": "Attachment",
+      "valgfritt": "optional",
+      "Rediger": "Edit"
+    }
+  }
+}

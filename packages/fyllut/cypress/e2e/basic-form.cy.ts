@@ -1,9 +1,9 @@
 describe('Basic form', () => {
   beforeEach(() => {
     cy.defaultIntercepts();
-    cy.intercept('GET', '/fyllut/api/config', { body: { FEATURE_TOGGLES: { enableMellomlagring: false } } }).as(
-      'getConfig',
-    );
+    cy.intercept('GET', '/fyllut/api/config', {
+      body: { FEATURE_TOGGLES: { enableTranslations: true, enableMellomlagring: false } },
+    }).as('getConfig');
     cy.intercept('GET', '/fyllut/api/forms/cypress101').as('getCypress101');
   });
 
