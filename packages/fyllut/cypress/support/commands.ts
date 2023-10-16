@@ -80,7 +80,7 @@ Cypress.Commands.add('defaultIntercepts', () => {
   cy.intercept('GET', '/fyllut/api/config').as('getConfig');
   cy.intercept('GET', /fyllut\/api\/countries.*/).as('getCountries');
   cy.intercept('GET', /\/fyllut\/api\/global-translations\.*/).as('getGlobalTranslation');
-  cy.intercept('GET', /fyllut\/api\/common-codes\/currencies.*/, { fixture: 'currencies.json' }).as('getCurrencies');
+  cy.intercept('GET', /fyllut\/api\/common-codes\/currencies.*/).as('getCurrencies');
 
   return cy;
 });

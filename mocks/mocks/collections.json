@@ -4,7 +4,9 @@
     "routes": [
       "amplitude:success",
       "get-form:success",
-      "get-translations:success"
+      "get-translations:success",
+      "post-azure-openid-token:success",
+      "get-kodeverk-currencies:success"
     ]
   }
 ]

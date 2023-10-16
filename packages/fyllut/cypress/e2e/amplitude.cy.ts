@@ -10,12 +10,15 @@ describe('Amplitude', () => {
   beforeEach(() => {
     cy.defaultIntercepts();
     cy.intercept('GET', '/fyllut/api/forms/cypress101').as('getCypress101');
+    cy.intercept('GET', '/fyllut/api/translations/cypress101').as('getTranslation');
   });
 
   it('logs for all relevant events', () => {
     // Disabler dekoratør, siden den også gjør kall til "/collect-auto". Det fører til at checkLogToAmplitude feiler, siden den er avhengig av at kall gjørers i riktig rekkefølge
     cy.visit('/fyllut/cypress101');
     cy.wait('@getCypress101');
+    cy.wait('@getTranslation');
+    cy.wait('@getGlobalTranslation');
 
     // Select digital submission and go to the form
     cy.get('[type="radio"]').check('digital');
@@ -28,7 +31,7 @@ describe('Amplitude', () => {
     cy.checkLogToAmplitude('skjemasteg fullført', { steg: 1, skjemastegNokkel: 'veiledning' });
 
     // Dine opplysninger step
-    cy.findByRole('combobox', { name: 'Tittel' }).should('exist').click();
+    cy.findByRoleWhenAttached('combobox', { name: 'Tittel' }).click();
     cy.findByText('Fru').should('exist').click();
     cy.checkLogToAmplitude('skjema startet');
     cy.checkLogToAmplitude('skjemaspørsmål besvart', { spørsmål: 'Tittel' });

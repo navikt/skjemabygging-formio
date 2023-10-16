@@ -160,7 +160,9 @@ describe('Custom react components', () => {
         cy.clickNextStep();
 
         cy.findAllByText('Du må fylle ut: Tilfeldig dato').should('have.length', 1);
-        cy.findByRole('link', { name: 'Tilfeldig dato: Du må fylle ut: Tilfeldig dato' }).should('exist').click();
+        cy.findByRoleWhenAttached('link', { name: 'Tilfeldig dato: Du må fylle ut: Tilfeldig dato' })
+          .should('exist')
+          .click();
 
         cy.findByRole('textbox', { name: 'Tilfeldig dato' }).should('have.focus').type('02.02.2023');
         cy.clickNextStep();

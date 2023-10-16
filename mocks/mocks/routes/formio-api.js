@@ -77,6 +77,9 @@ module.exports = [
                 res.status(200);
                 res.contentType('application/json; charset=UTF-8');
                 res.send([testdata.translations]);
+              } else {
+                res.status(404);
+                res.send();
               }
             } else {
               res.status(404);
