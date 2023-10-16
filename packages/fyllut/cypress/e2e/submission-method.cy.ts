@@ -4,10 +4,8 @@ describe('Submission method', () => {
   beforeEach(() => {
     cy.defaultIntercepts();
     cy.defaultInterceptsMellomlagring();
-    cy.intercept('GET', '/fyllut/api/forms/bug101010', { fixture: 'submission-method.json' }).as('getForm');
-    cy.intercept('GET', '/fyllut/api/translations/bug101010', { fixture: 'submission-method-translations.json' }).as(
-      'getFormTranslations',
-    );
+    cy.intercept('GET', '/fyllut/api/forms/bug101010').as('getForm');
+    cy.intercept('GET', '/fyllut/api/translations/bug101010').as('getFormTranslations');
   });
 
   describe("Subscription method 'digital'", () => {

@@ -4,9 +4,11 @@ const formPengerOgKonto = require('../data/formio-api/pengerOgKonto.json');
 const formConditionalXmas = require('../data/formio-api/conditionalxmas.json');
 const formCustomComps = require('../data/formio-api/custom-components.json');
 const formNavdatepicker = require('../data/formio-api/navdatepicker.json');
+const formSubmissionMethod = require('../data/formio-api/submission-method.json');
 const translationsCypress101 = require('../data/formio-api/cypress101-translation.json');
 const translationsConditionalXmas = require('../data/formio-api/conditionalxmas-translation.json');
 const translationsCustomComps = require('../data/formio-api/custom-components-translations.json');
+const translationsSubmissionMethod = require('../data/formio-api/submission-method-translations.json');
 
 const allForms = [
   { form: formCypress101, translations: translationsCypress101 },
@@ -15,6 +17,7 @@ const allForms = [
   { form: formConditionalXmas, translations: translationsConditionalXmas },
   { form: formCustomComps, translations: translationsCustomComps },
   { form: formNavdatepicker, translations: undefined },
+  { form: formSubmissionMethod, translations: translationsSubmissionMethod },
 ];
 
 const findTestdata = (formPath) => allForms.find((testdata) => testdata.form.path === formPath);
