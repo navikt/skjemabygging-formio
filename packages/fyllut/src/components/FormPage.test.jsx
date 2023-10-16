@@ -31,7 +31,7 @@ describe('FormPage', () => {
   const renderFormPage = (form, featureToggles = { enableTranslations: true }) => {
     render(
       <MemoryRouter>
-        <AppConfigProvider featureToggles={featureToggles}>
+        <AppConfigProvider featureToggles={featureToggles} config={{}}>
           <FormPage form={form} />
         </AppConfigProvider>
       </MemoryRouter>,
