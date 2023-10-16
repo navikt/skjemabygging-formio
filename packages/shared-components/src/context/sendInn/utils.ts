@@ -5,7 +5,7 @@ export const getFyllutMellomlagringState = (
   response?: SendInnSoknadResponse,
 ): FyllutState['mellomlagring'] | undefined => {
   if (response) {
-    const submission = response.hoveddokumentVariant.document?.data;
+    const submission = response?.hoveddokumentVariant?.document?.data;
     return {
       ...submission?.fyllutState?.mellomlagring,
       isActive: true,
@@ -16,7 +16,7 @@ export const getFyllutMellomlagringState = (
 
 export const getSubmissionWithFyllutState = (response?: SendInnSoknadResponse) => {
   if (response) {
-    const submission = response.hoveddokumentVariant.document?.data;
+    const submission = response?.hoveddokumentVariant?.document?.data;
     return {
       ...submission,
       fyllutState: {

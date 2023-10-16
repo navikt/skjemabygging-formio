@@ -1,3 +1,4 @@
+import { ArrowRightIcon } from '@navikt/aksel-icons';
 import { BodyShort, Button } from '@navikt/ds-react';
 import { Submission, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useState } from 'react';
@@ -36,7 +37,9 @@ const DigitalSubmissionWithPrompt = ({ submission, isValid, onError, onSuccess }
 
   return (
     <>
-      <Button onClick={handleClick}>{translate(TEXTS.grensesnitt.submitToNavPrompt.open)}</Button>
+      <Button onClick={handleClick} icon={<ArrowRightIcon />} iconPosition={'right'}>
+        {translate(TEXTS.grensesnitt.submitToNavPrompt.open)}
+      </Button>
       <Modal
         open={isOpen}
         ariaLabel={translate(TEXTS.grensesnitt.submitToNavPrompt.ariaLabel)}

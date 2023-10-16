@@ -1,11 +1,13 @@
+import { ArrowLeftIcon } from '@navikt/aksel-icons';
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { Link, useLocation } from 'react-router-dom';
 import { useAmplitude } from '../context/amplitude/index.jsx';
+import url from '../util/url';
 
 const NavigateButtonComponent = ({ goBackUrl, translate }) => {
   const { search } = useLocation();
   const { loggNavigering } = useAmplitude();
-  const exitUrl = 'https://www.nav.no';
+  const exitUrl = url.getExitUrl(window.location.href);
   return (
     <nav>
       <div className="button-row">
@@ -19,6 +21,9 @@ const NavigateButtonComponent = ({ goBackUrl, translate }) => {
           }}
           to={{ pathname: goBackUrl, search }}
         >
+          <span className="navds-button__icon">
+            <ArrowLeftIcon aria-hidden />
+          </span>
           <span aria-live="polite" className="navds-body-short font-bold">
             {translate(TEXTS.grensesnitt.goBack)}
           </span>
@@ -33,7 +38,7 @@ const NavigateButtonComponent = ({ goBackUrl, translate }) => {
               destinasjon: exitUrl,
             });
           }}
-          href="https://www.nav.no"
+          href={exitUrl}
         >
           <span aria-live="polite" className="navds-body-short font-bold">
             {translate(TEXTS.grensesnitt.navigation.exit)}
