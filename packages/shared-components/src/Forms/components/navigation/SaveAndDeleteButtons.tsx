@@ -9,10 +9,9 @@ import ConfirmationModal from './ConfirmationModal';
 
 interface Props {
   submission?: Submission;
-  onError: Function;
 }
 
-const SaveAndDeleteButtons = ({ submission, onError }: Props) => {
+const SaveAndDeleteButtons = ({ submission }: Props) => {
   const { translate } = useLanguages();
   const { loggNavigering } = useAmplitude();
   const { updateMellomlagring, deleteMellomlagring } = useSendInn();
@@ -31,6 +30,7 @@ const SaveAndDeleteButtons = ({ submission, onError }: Props) => {
       lenkeTekst: translate(TEXTS.grensesnitt.navigation.saveDraft),
       destinasjon: exitUrl,
     });
+    setIsSaveModalOpen(false);
   };
 
   const deleteSubmission = async () => {
@@ -65,7 +65,6 @@ const SaveAndDeleteButtons = ({ submission, onError }: Props) => {
         open={isSaveModalOpen}
         onClose={() => setIsSaveModalOpen(false)}
         onConfirm={saveSubmission}
-        onError={onError}
         confirmType={'primary'}
         texts={TEXTS.grensesnitt.confirmSavePrompt}
         exitUrl={exitUrl}
@@ -74,7 +73,6 @@ const SaveAndDeleteButtons = ({ submission, onError }: Props) => {
         open={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
         onConfirm={deleteSubmission}
-        onError={onError}
         confirmType={'danger'}
         texts={TEXTS.grensesnitt.confirmDeletePrompt}
         exitUrl={exitUrl}

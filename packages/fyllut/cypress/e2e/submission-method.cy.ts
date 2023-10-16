@@ -33,15 +33,19 @@ describe('Submission method', () => {
     describe('Summary page', () => {
       beforeEach(() => {
         // fills out form and navigates to summary page
-        cy.clickNextStep();
-        cy.findByRole('textbox', { name: 'Fornavn' }).should('exist').type('Test');
-        cy.findByRole('textbox', { name: 'Etternavn' }).should('exist').type('Testesen');
+        cy.clickSaveAndContinue();
+        cy.wait('@updateMellomlagring');
+        cy.findByRole('textbox', { name: 'Fornavn' }).should('exist');
+        cy.findByRole('textbox', { name: 'Fornavn' }).type('Test');
+        cy.findByRole('textbox', { name: 'Etternavn' }).should('exist');
+        cy.findByRole('textbox', { name: 'Etternavn' }).type('Testesen');
         cy.get('.navds-radio-group')
           .first()
           .should('exist')
           .within(() => cy.findByLabelText('Ja').should('exist').check({ force: true }));
-        cy.findByRole('combobox', { name: 'Hva søker du støtte til?' }).should('exist').type('Sykk{downArrow}{enter}');
-        cy.clickNextStep();
+        cy.findByRole('combobox', { name: 'Hva søker du støtte til?' }).should('exist');
+        cy.findByRole('combobox', { name: 'Hva søker du støtte til?' }).type('Sykk{downArrow}{enter}');
+        cy.clickSaveAndContinue();
         cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
       });
 
@@ -78,9 +82,10 @@ describe('Submission method', () => {
 
         // edit data so that conditional attachment is triggered
         cy.findByRole('link', { name: 'Rediger dine opplysninger' }).should('exist').click();
-        cy.findByRole('combobox', { name: 'Hva søker du støtte til?' })
-          .should('be.visible')
-          .type('Brill{downArrow}{enter}');
+        // eslint-disable-next-line cypress/no-unnecessary-waiting
+        cy.wait(200); // has to wait on form.io to redraw page a couple of times after navigating back from summary page
+        cy.findByRole('combobox', { name: 'Hva søker du støtte til?' }).should('be.visible');
+        cy.findByRole('combobox', { name: 'Hva søker du støtte til?' }).type('Brill{downArrow}{enter}');
         cy.findByRole('link', { name: 'Oppsummering' }).click();
 
         // submit application

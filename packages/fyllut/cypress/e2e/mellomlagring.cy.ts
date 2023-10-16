@@ -1,6 +1,23 @@
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { expect } from 'chai';
 
+const testMellomlagringConfirmationModal = (
+  buttonText: string,
+  modalTexts: {
+    body: string;
+    cancel: string;
+    confirm: string;
+  },
+) => {
+  cy.findByRole('button', { name: buttonText }).should('be.visible');
+  cy.findByRole('button', { name: buttonText }).click();
+  cy.findByText(modalTexts.body).should('be.visible');
+  cy.findByRole('button', { name: modalTexts.cancel }).click();
+  cy.findByText(modalTexts.body).should('not.exist');
+  cy.findByRole('button', { name: buttonText }).click();
+  cy.findByRole('button', { name: modalTexts.confirm }).click();
+};
+
 describe('Mellomlagring', () => {
   beforeEach(() => {
     cy.defaultIntercepts();
@@ -59,12 +76,30 @@ describe('Mellomlagring', () => {
       cy.intercept('POST', '/fyllut/api/send-inn/soknad*', {
         fixture: 'mellomlagring/responseWithInnsendingsId.json',
       }).as('createMellomlagring');
-      cy.intercept('PUT', '/fyllut/api/send-inn/soknad*', {
-        fixture: 'mellomlagring/responseWithInnsendingsId.json',
+      cy.intercept('PUT', '/fyllut/api/send-inn/soknad*', (req) => {
+        if (req.body.innsendingsId === 'innsendingsIdForUpdateWithError') {
+          req.reply(500);
+        } else {
+          req.reply({
+            innsendingsId: '75eedb4c-1253-44d8-9fde-3648f4bb1878',
+            endretDato: `2023-10-10T10:02:00.328667+02:00`,
+            hoveddokumentVariant: {
+              document: {
+                data: req.body.submission,
+              },
+            },
+          });
+        }
       }).as('updateMellomlagring');
       cy.intercept('GET', '/fyllut/api/send-inn/soknad/8e3c3621-76d7-4ebd-90d4-34448ebcccc3', {
         fixture: 'mellomlagring/getTestMellomlagring-valid.json',
       }).as('getMellomlagringValid');
+      cy.intercept('GET', '/fyllut/api/send-inn/soknad/innsendingsIdForUpdateWithError', {
+        fixture: 'mellomlagring/getTestMellomlagring-valid.json',
+      }).as('getMellomlagringForInnsendingWithUpdateError');
+      cy.intercept('DELETE', '/fyllut/api/send-inn/soknad/8e3c3621-76d7-4ebd-90d4-34448ebcccc3').as(
+        'deleteMellomlagring',
+      );
     });
 
     it('creates and updates mellomlagring', () => {
@@ -73,18 +108,20 @@ describe('Mellomlagring', () => {
       cy.clickStart();
       cy.wait('@createMellomlagring');
       cy.findByRole('heading', { name: 'Valgfrie opplysninger' }).should('exist');
-      cy.clickNextStep();
+      cy.clickSaveAndContinue();
       cy.wait('@updateMellomlagring');
       cy.findByRole('group', { name: 'Ønsker du å få gaven innpakket' }).within(() => {
         cy.findByLabelText('Nei').check({ force: true });
       });
-      cy.clickNextStep();
+      cy.clickSaveAndContinue();
       cy.wait('@updateMellomlagring');
-      cy.findByLabelText('Hvordan ønsker du å motta pakken?').click();
-      cy.findByLabelText('Hvordan ønsker du å motta pakken?').type('På døra{enter}');
-      cy.clickNextStep();
+      // eslint-disable-next-line cypress/no-unnecessary-waiting
+      cy.wait(200); // has to wait on form.io to redraw page after updating mellomlagring
+      cy.findByRole('combobox', { name: 'Hvordan ønsker du å motta pakken?' }).click();
+      cy.findByRole('combobox', { name: 'Hvordan ønsker du å motta pakken?' }).type('P{enter}');
+      cy.clickSaveAndContinue();
       cy.wait('@updateMellomlagring');
-      cy.clickNextStep();
+      cy.clickSaveAndContinue();
       cy.wait('@updateMellomlagring');
       cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.saveDraft }).should('exist');
       cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.cancelAndDelete }).should('exist');
@@ -103,6 +140,29 @@ describe('Mellomlagring', () => {
       cy.findByRole('heading', { name: TEXTS.statiske.introPage.title }).should('exist');
       cy.clickStart();
       cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
+    });
+
+    it('lets you delete mellomlagring', () => {
+      cy.visit(
+        '/fyllut/testmellomlagring/gave?sub=digital&innsendingsId=8e3c3621-76d7-4ebd-90d4-34448ebcccc3&lang=nb-NO',
+      );
+      cy.wait('@getMellomlagringValid');
+      cy.findByRole('heading', { name: 'Gave', level: 2 }).should('be.visible');
+      testMellomlagringConfirmationModal(
+        TEXTS.grensesnitt.navigation.cancelAndDelete,
+        TEXTS.grensesnitt.confirmDeletePrompt,
+      );
+      cy.wait('@deleteMellomlagring');
+      cy.findByText(TEXTS.statiske.mellomlagringError.delete.message).should('be.visible');
+    });
+
+    it('lets you save mellomlagring before cancelling', () => {
+      cy.visit('/fyllut/testmellomlagring/gave?sub=digital&innsendingsId=innsendingsIdForUpdateWithError&lang=nb-NO');
+      cy.wait('@getMellomlagringForInnsendingWithUpdateError');
+      cy.findByRole('heading', { name: 'Gave', level: 2 }).should('be.visible');
+      testMellomlagringConfirmationModal(TEXTS.grensesnitt.navigation.saveDraft, TEXTS.grensesnitt.confirmSavePrompt);
+      cy.wait('@updateMellomlagring');
+      cy.findByText(TEXTS.statiske.mellomlagringError.update.message).should('be.visible');
     });
 
     describe('When starting on the summary page', () => {
@@ -146,6 +206,34 @@ describe('Mellomlagring', () => {
           cy.findByRole('link', { name: TEXTS.grensesnitt.summaryPage.editAnswers }).should('exist').click();
           cy.url().should('include', '/valgfrieOpplysninger');
           cy.findByRole('textbox', { name: 'Hva drakk du til frokost (valgfritt)' }).should('have.focus');
+        });
+
+        it('lets you delete mellomlagring', () => {
+          cy.visit(
+            '/fyllut/testmellomlagring/oppsummering?sub=digital&innsendingsId=8e3c3621-76d7-4ebd-90d4-34448ebcccc3&lang=nb-NO',
+          );
+          cy.wait('@getMellomlagringValid');
+          cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
+          testMellomlagringConfirmationModal(
+            TEXTS.grensesnitt.navigation.cancelAndDelete,
+            TEXTS.grensesnitt.confirmDeletePrompt,
+          );
+          cy.wait('@deleteMellomlagring');
+          cy.findByText(TEXTS.statiske.mellomlagringError.delete.message).should('be.visible');
+        });
+
+        it('lets you save mellomlagring before cancelling', () => {
+          cy.visit(
+            '/fyllut/testmellomlagring/oppsummering?sub=digital&innsendingsId=innsendingsIdForUpdateWithError&lang=nb-NO',
+          );
+          cy.wait('@getMellomlagringForInnsendingWithUpdateError');
+          cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
+          testMellomlagringConfirmationModal(
+            TEXTS.grensesnitt.navigation.saveDraft,
+            TEXTS.grensesnitt.confirmSavePrompt,
+          );
+          cy.wait('@updateMellomlagring');
+          cy.findByText(TEXTS.statiske.mellomlagringError.update.message).should('be.visible');
         });
       });
     });

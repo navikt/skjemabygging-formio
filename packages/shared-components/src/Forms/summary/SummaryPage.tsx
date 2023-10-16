@@ -75,14 +75,14 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
       });
 
       const instance = await formio.ready;
-      await instance.setSubmission(submission ?? { data: {} });
-      instance.checkData(submission?.data, [], undefined);
+      await instance.setSubmission(submission);
+      instance.checkData(submission.data, [], undefined);
 
       const panelValidations = validateWizardPanels(instance, form, submission);
       setPanelValidationList(panelValidations);
       instance.destroy(true);
     };
-    if (isMellomlagringEnabled) {
+    if (isMellomlagringEnabled && submission.data) {
       initializePanelValidation();
     }
   }, [isMellomlagringEnabled, form, submission]);
@@ -122,13 +122,13 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
             <>
               <Alert variant="info" className={styles.validationAlert}>
                 <span>
-                  {translate(TEXTS.statiske.summaryPage.validationMessage.start)}
+                  {`${translate(TEXTS.statiske.summaryPage.validationMessage)} `}
                   <ExclamationmarkTriangleFillIcon
                     className={styles.exclamationmarkIcon}
-                    title="Opplysninger mangler"
+                    title={translate(TEXTS.statiske.summaryPage.validationErrorIcon)}
                     fontSize="1.5rem"
                   />
-                  {translate(TEXTS.statiske.summaryPage.validationMessage.end)}
+                  {'.'}
                 </span>
               </Alert>
               <div className="button-row">

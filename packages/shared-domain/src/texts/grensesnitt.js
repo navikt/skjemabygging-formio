@@ -26,7 +26,7 @@ export const grensesnitt = {
   moveForward: 'Gå videre',
   confirmSavePrompt: {
     title: 'Lagre utkast og fortsett senere?',
-    body: 'Skjemaet lagres som et utkast på Min Side i 14 dager, slik at du kan fullføre senere.',
+    body: 'Skjemaet lagres som et utkast på Min Side i 8 uker, slik at du kan fullføre senere.',
     confirm: 'Ja, lagre og fortsett senere',
     cancel: 'Nei, fortsett utfylling',
   },

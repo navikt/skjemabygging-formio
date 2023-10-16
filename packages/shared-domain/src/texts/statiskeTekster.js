@@ -30,6 +30,11 @@ export const statiske = {
       message: 'Prøv igjen senere, eller fyll ut en ny søknad.',
       notFoundMessage: 'Vi kunne ikke finne denne søknaden.',
     },
+    create: {
+      title: 'Beklager, vi har midlertidige tekniske problemer.',
+      message:
+        'Vi klarer ikke å lagre søknaden. Vær oppmerksom på at du kan miste endringene dine hvis du forlater nettstedet.',
+    },
     update: {
       title: 'Beklager, vi har midlertidige tekniske problemer.',
       message:
@@ -41,8 +46,9 @@ export const statiske = {
     },
     submit: {
       title: 'Beklager, vi har midlertidige tekniske problemer.',
-      savedDraftMessage: 'Skjemaet er lagret som et utkast på Min Side - Utkast.',
-      tryLaterMessage: 'Vennligst prøv igjen senere.',
+      draftSaved: 'Skjemaet ble sist lagret {{date}}. Du finner utkastet på Min Side. Vennligst prøv igjen senere.',
+      draftNotSaved:
+        'Vennligst prøv igjen senere. Vær oppmerksom på at du kan miste endringene dine hvis du forlater nettstedet.',
     },
   },
   summaryPage: {
@@ -50,11 +56,9 @@ export const statiske = {
     description:
       'Vennligst sjekk at alle opplysningene dine er riktige. Hvis alle opplysningene er riktige går du videre til neste steg.',
     confirmationError: 'Du må samtykke før du kan fortsette',
-    validationMessage: {
-      start:
-        'Nedenfor finner du all informasjonen du allerede har fylt inn i skjemaet, fordelt på de forskjellige stegene i skjemaet. Alle steg som mangler informasjon er markert med ',
-      end: '. Klikk på Fortsett utfylling for å gå til det første feltet i skjemaet som mangler informasjon. Klikk på Rediger...-lenken under hver stegoverskrift for å fortsette utfylling på det steget.',
-    },
+    validationIcon: 'Opplysninger mangler',
+    validationMessage:
+      'Nedenfor finner du all informasjonen du allerede har fylt inn i skjemaet, fordelt på de forskjellige stegene i skjemaet. Alle steg som mangler informasjon er markert med',
   },
   warningAboutDifficultSubmission: {
     modal: {

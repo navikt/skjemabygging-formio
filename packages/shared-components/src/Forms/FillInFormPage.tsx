@@ -6,11 +6,13 @@ import { useAppConfig } from '../configContext';
 import { useAmplitude } from '../context/amplitude';
 import { useLanguages } from '../context/languages';
 import { useSendInn } from '../context/sendInn/sendInnContext';
-import { LoadingComponent } from '../index';
+import { ErrorPage, LoadingComponent } from '../index';
 import { scrollToAndSetFocus } from '../util/focus-management.js';
 import { getPanelSlug } from '../util/form';
 import urlUtils from '../util/url';
 import ConfirmationModal from './components/navigation/ConfirmationModal';
+
+type ModalType = 'save' | 'delete' | 'discard';
 
 export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => {
   const navigate = useNavigate();
@@ -27,14 +29,16 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
   const {
     startMellomlagring,
     updateMellomlagring,
+    deleteMellomlagring,
+    mellomlagringError,
     isMellomlagringEnabled,
     isMellomlagringReady,
     isMellomlagringActive,
   } = useSendInn();
   const { currentLanguage, translationsForNavForm, translate } = useLanguages();
   const { hash } = useLocation();
-  const mutationObserverRef = useRef(undefined);
-  const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
+  const mutationObserverRef = useRef<MutationObserver | undefined>(undefined);
+  const [showModal, setShowModal] = useState<ModalType>();
 
   const exitUrl = urlUtils.getExitUrl(window.location.href);
 
@@ -47,7 +51,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
   }, [loggSkjemaApnet, submissionMethod]);
 
   useEffect(() => {
-    if (isMellomlagringEnabled) {
+    if (isMellomlagringEnabled && mellomlagringError?.type !== 'NOT FOUND') {
       startMellomlagring(submission);
     }
   }, [submission, startMellomlagring, isMellomlagringEnabled]);
@@ -56,7 +60,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
   const removeMutationObserver = () => {
     if (mutationObserverRef.current) {
       mutationObserverRef.current.disconnect();
-      mutationObserverRef.current = null;
+      mutationObserverRef.current = undefined;
     }
   };
 
@@ -80,11 +84,15 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
     }
   }, [hash]);
 
-  if (featureToggles.enableTranslations && !translationsForNavForm) {
+  if (featureToggles?.enableTranslations && !translationsForNavForm) {
     return null;
   }
 
-  if (isMellomlagringEnabled && !isMellomlagringReady) {
+  if (mellomlagringError?.type === 'NOT FOUND') {
+    return <ErrorPage errorMessage={mellomlagringError.message} />;
+  }
+
+  if (isMellomlagringEnabled && !isMellomlagringReady && !mellomlagringError) {
     return <LoadingComponent heightOffsetRem={18} />;
   }
 
@@ -114,6 +122,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
 
   function onNextPage({ page, currentPanels, submission }) {
     updateMellomlagring(submission);
+    setSubmission(submission);
     loggNavigering({
       lenkeTekst: translate(TEXTS.grensesnitt.navigation.next),
       destinasjon: `${formUrl}/${currentPanels?.[page]}`,
@@ -132,7 +141,12 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
 
   function onCancel({ submission }) {
     setSubmission(submission);
-    setIsCancelModalOpen(true);
+    setShowModal(isMellomlagringActive ? 'delete' : 'discard');
+  }
+
+  function onSave({ submission }) {
+    setSubmission(submission);
+    setShowModal('save');
   }
 
   function onNextOrPreviousPage(page, currentPanels) {
@@ -151,6 +165,18 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
     goToPanelFromUrlParam(formioInstance);
   }
 
+  const getModalTexts = (modalType?: ModalType) => {
+    switch (modalType) {
+      case 'save':
+        return TEXTS.grensesnitt.confirmSavePrompt;
+      case 'delete':
+        return TEXTS.grensesnitt.confirmDeletePrompt;
+      case 'discard':
+      default:
+        return TEXTS.grensesnitt.confirmDiscardPrompt;
+    }
+  };
+
   const onSubmit = (submission) => {
     updateMellomlagring(submission);
     setSubmission(submission);
@@ -168,18 +194,30 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
     navigate({ pathname: `${formUrl}/oppsummering`, search: window.location.search });
   };
 
-  const onError = () => {
+  const onValidationError = () => {
     loggSkjemaValideringFeilet();
   };
 
   const onConfirmCancel = async () => {
-    if (submission && isMellomlagringActive) {
-      await updateMellomlagring(submission);
+    const logNavigation = (lenkeTekst) =>
+      loggNavigering({
+        lenkeTekst,
+        destinasjon: exitUrl,
+      });
+
+    switch (showModal) {
+      case 'save':
+        logNavigation(translate(TEXTS.grensesnitt.navigation.saveDraft));
+        await updateMellomlagring(submission);
+        break;
+      case 'delete':
+        logNavigation(translate(TEXTS.grensesnitt.navigation.saveDraft));
+        await deleteMellomlagring();
+        break;
+      case 'discard':
+      default:
+        logNavigation(translate(TEXTS.grensesnitt.navigation.cancel));
     }
-    loggNavigering({
-      lenkeTekst: translate(TEXTS.grensesnitt.navigation.cancel),
-      destinasjon: exitUrl,
-    });
   };
 
   if (!formForRendering) {
@@ -190,30 +228,28 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
     <div>
       <NavForm
         form={formForRendering}
-        language={featureToggles.enableTranslations ? currentLanguage : undefined}
-        i18n={featureToggles.enableTranslations ? translationsForNavForm : undefined}
+        language={featureToggles?.enableTranslations ? currentLanguage : undefined}
+        i18n={featureToggles?.enableTranslations ? translationsForNavForm : undefined}
         submission={submission}
         onBlur={loggSkjemaSporsmalBesvart}
         onChange={loggSkjemaSporsmalBesvartForSpesialTyper}
-        onError={onError}
+        onError={onValidationError}
         onSubmit={onSubmit}
         onNextPage={onNextPage}
         onPrevPage={onPreviousPage}
         onCancel={onCancel}
+        onSave={onSave}
         formReady={onFormReady}
         submissionReady={goToPanelFromUrlParam}
         onWizardPageSelected={onWizardPageSelected}
         className="nav-form"
       />
       <ConfirmationModal
-        open={isCancelModalOpen}
-        onClose={() => setIsCancelModalOpen(false)}
+        open={!!showModal}
+        onClose={() => setShowModal(undefined)}
         onConfirm={onConfirmCancel}
-        onError={(err) => {
-          console.error(err);
-        }}
-        confirmType={isMellomlagringActive ? 'primary' : 'danger'}
-        texts={isMellomlagringActive ? TEXTS.grensesnitt.confirmSavePrompt : TEXTS.grensesnitt.confirmDiscardPrompt}
+        confirmType={showModal === 'save' ? 'primary' : 'danger'}
+        texts={getModalTexts(showModal)}
         exitUrl={exitUrl}
       />
     </div>

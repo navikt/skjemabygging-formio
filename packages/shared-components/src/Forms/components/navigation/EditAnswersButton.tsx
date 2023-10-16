@@ -1,3 +1,4 @@
+import { ArrowLeftIcon } from '@navikt/aksel-icons';
 import { NavFormType, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { Link, useLocation } from 'react-router-dom';
 import { useAmplitude } from '../../../context/amplitude';
@@ -30,6 +31,9 @@ const EditAnswersButton = ({ form, formUrl, panelValidationList }: Props) => {
       }
       to={formStartingPoint.component ? { pathname, hash: formStartingPoint.component, search } : { pathname, search }}
     >
+      <span className="navds-button__icon">
+        <ArrowLeftIcon aria-hidden />
+      </span>
       <span aria-live="polite" className="navds-body-short font-bold">
         {translate(TEXTS.grensesnitt.summaryPage.editAnswers)}
       </span>

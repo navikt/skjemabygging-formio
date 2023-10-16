@@ -49,7 +49,7 @@ const PanelSummary = ({ component, formUrl, hasValidationErrors }: Props) => {
               {hasValidationErrors && (
                 <ExclamationmarkTriangleFillIcon
                   className={headerIcon}
-                  title="Opplysninger mangler"
+                  title={translate(TEXTS.statiske.summaryPage.validationIcon)}
                   fontSize="1.5rem"
                 />
               )}

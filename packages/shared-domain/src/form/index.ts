@@ -147,10 +147,26 @@ export interface NavFormType {
 
 export type SubmissionData = Record<string, string | number | boolean | any[] | object>;
 
+type ErrorType =
+  | 'NOT FOUND'
+  | 'GET FAILED'
+  | 'CREATE FAILED'
+  | 'UPDATE FAILED'
+  | 'DELETE FAILED'
+  | 'SUBMIT FAILED'
+  | 'SUBMIT AND UPDATE FAILED';
+export type MellomlagringError = {
+  title?: string;
+  message: string;
+  type: ErrorType;
+  messageParams?: Record<string, any>;
+};
+
 export interface FyllutState {
   mellomlagring?: {
     isActive?: boolean;
     savedDate?: string;
+    error?: MellomlagringError;
   };
 }
 

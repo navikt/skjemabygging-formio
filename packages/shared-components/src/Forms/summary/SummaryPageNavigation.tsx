@@ -1,3 +1,4 @@
+import { ArrowRightIcon } from '@navikt/aksel-icons';
 import { Alert, Button, Heading } from '@navikt/ds-react';
 import { InnsendingType, NavFormType, Submission, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useState } from 'react';
@@ -67,12 +68,12 @@ const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList,
       {mellomlagringError && (
         <Alert variant="error" className="mb">
           <Heading size="small" level="4">
-            {mellomlagringError.title}
+            {translate(mellomlagringError.title)}
           </Heading>
-          {mellomlagringError.message}
+          {translate(mellomlagringError.message, mellomlagringError?.messageParams)}
         </Alert>
       )}
-      {error && !mellomlagringError && (
+      {error && (
         <Alert variant="error" className="mb" data-testid="error-message">
           {error.message}
         </Alert>
@@ -97,12 +98,16 @@ const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList,
               <span aria-live="polite" className="navds-body-short font-bold">
                 {translate(TEXTS.grensesnitt.moveForward)}
               </span>
+              <span className="navds-button__icon">
+                <ArrowRightIcon aria-hidden />
+              </span>
             </Link>
           )}
           {canSubmit &&
             (submissionMethod === 'digital' || innsending === 'KUN_DIGITAL') &&
             (hasAttachments ? (
               <DigitalSubmissionButton
+                withIcon
                 submission={submission}
                 isValid={isValid}
                 onError={(err) => {
@@ -136,11 +141,14 @@ const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList,
               <span aria-live="polite" className="navds-body-short font-bold">
                 {translate(TEXTS.grensesnitt.moveForward)}
               </span>
+              <span className="navds-button__icon">
+                <ArrowRightIcon aria-hidden />
+              </span>
             </Link>
           )}
           <EditAnswersButton form={form} formUrl={formUrl} panelValidationList={panelValidationList} />
         </div>
-        {isMellomlagringActive && <SaveAndDeleteButtons submission={submission} onError={(error) => setError(error)} />}
+        {isMellomlagringActive && <SaveAndDeleteButtons submission={submission} />}
         {!isMellomlagringActive && (
           <div className="button-row button-row__center">
             <Button variant="tertiary" onClick={() => setIsCancelModalOpen(true)}>
