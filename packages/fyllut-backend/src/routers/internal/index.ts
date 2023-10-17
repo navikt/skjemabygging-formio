@@ -1,6 +1,6 @@
 import express from 'express';
-import metrics from './metrics.js';
-import status from './status.js';
+import metrics from './metrics';
+import status from './status';
 
 const internalRouter = express.Router();
 
