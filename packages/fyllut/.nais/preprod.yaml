@@ -15,6 +15,10 @@ azure:
   application:
     tenant: trygdeetaten.no
 accessPolicy:
+  inbound:
+    rules:
+      - application: statuspoll
+        namespace: navdig
   outbound:
     rules:
       - application: skjemabygging-proxy
