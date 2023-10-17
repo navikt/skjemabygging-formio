@@ -729,6 +729,27 @@
   resolved "https://registry.yarnpkg.com/@jspm/core/-/core-2.0.1.tgz#3f08c59c60a5f5e994523ed6b0b665ec80adc94e"
   integrity sha512-Lg3PnLp0QXpxwLIAuuJboLeRaIhrgJjeuh797QADg3xz8wGLugQOS5DpsE8A6i6Adgzf+bacllkKZG3J0tGfDw==
 
+"@mocks-server/admin-api-client@7.0.0":
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/@mocks-server/admin-api-client/-/admin-api-client-7.0.0.tgz#81b7d0a7e422f7d71062945e0ced2622b539b154"
+  integrity sha512-upJnRkSCntDrXmlGB4w0xsoVtHLo8Rz5+hqqn/r3C/UWT1qVBooW8bCNPjKLaXh7TAkzynXKCQROVsYdaOholQ==
+  dependencies:
+    "@mocks-server/admin-api-paths" "5.0.0"
+    cross-fetch "3.1.5"
+
+"@mocks-server/admin-api-paths@5.0.0":
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/@mocks-server/admin-api-paths/-/admin-api-paths-5.0.0.tgz#b085f05701e52687000a240ef49d8378b0af7480"
+  integrity sha512-HlFhNnHtvY9ZZGthaatAFvGFofTCs1Yj3kxeb5EmvdHBgNC+dZxfMjXWCvuIhp7qFNaTFarPgGJ3Zsm7+o/siw==
+
+"@mocks-server/cypress-commands@^6.1.1":
+  version "6.1.1"
+  resolved "https://registry.yarnpkg.com/@mocks-server/cypress-commands/-/cypress-commands-6.1.1.tgz#6e8504526e416bdf739db29b39787bed1c76e4f0"
+  integrity sha512-nO3N43c1e+jxeXtO2RiNxFBuF/G9coAiD6lEPh52J/h/KZhw75eMiae67nmsY+WntJaq5s3/gIRxg1fyCTYhlw==
+  dependencies:
+    "@mocks-server/admin-api-client" "7.0.0"
+    "@mocks-server/admin-api-paths" "5.0.0"
+
 "@navikt/aksel-icons@^4.12.1":
   version "4.12.1"
   resolved "https://npm.pkg.github.com/download/@navikt/aksel-icons/4.12.1/1055d322e956e073b83dca8e8b3a6be62879e1f1#1055d322e956e073b83dca8e8b3a6be62879e1f1"
@@ -2709,6 +2730,13 @@ cross-env@^7.0.3:
   integrity sha512-+/HKd6EgcQCJGh2PSjZuUitQBQynKor4wrFbRg4DtAgS1aWO+gU52xpH7M9ScGgXSYmAVS9bIJ8EzuaGw0oNAw==
   dependencies:
     cross-spawn "^7.0.1"
+
+cross-fetch@3.1.5:
+  version "3.1.5"
+  resolved "https://registry.yarnpkg.com/cross-fetch/-/cross-fetch-3.1.5.tgz#e1389f44d9e7ba767907f7af8454787952ab534f"
+  integrity sha512-lvb1SBsI0Z7GDwmuid+mU3kWVBwTVUbe7S0H52yaaAdQOXq2YktTCZdlAcNKFzE6QtRz0snpw9bNiPeOIkkQvw==
+  dependencies:
+    node-fetch "2.6.7"
 
 cross-fetch@^3.0.6:
   version "3.1.8"
@@ -5738,6 +5766,13 @@ node-domexception@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/node-domexception/-/node-domexception-1.0.0.tgz#6888db46a1f71c0b76b3f7555016b63fe64766e5"
   integrity sha512-/jKZoMpw0F8GRwl4/eLROPA3cfcXtLApP0QzLmUT/HuPCZWyB7IY9ZrMeKw2O/nFIqPQB3PVM9aYm0F312AXDQ==
+
+node-fetch@2.6.7:
+  version "2.6.7"
+  resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.6.7.tgz#24de9fba827e3b4ae44dc8b20256a379160052ad"
+  integrity sha512-ZjMPFEfVx5j+y2yF35Kzx5sF7kDzxuDj6ziH4FFbOp87zKDZNx8yExJIb05OGF4Nlt9IHFIMBkRl41VdvcNdbQ==
+  dependencies:
+    whatwg-url "^5.0.0"
 
 node-fetch@^2.6.1, node-fetch@^2.6.12:
   version "2.7.0"

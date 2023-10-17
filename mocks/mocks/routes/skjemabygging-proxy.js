@@ -16,4 +16,27 @@ module.exports = [
       },
     ],
   },
+  {
+    id: 'post-exstream-pdf',
+    url: '/skjemabygging-proxy/exstream',
+    method: 'POST',
+    variants: [
+      {
+        id: 'success',
+        type: 'json',
+        options: {
+          status: 200,
+          body: {
+            data: {
+              result: [
+                {
+                  content: 'pdf',
+                },
+              ],
+            },
+          },
+        },
+      },
+    ],
+  },
 ];

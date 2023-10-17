@@ -86,13 +86,8 @@ Cypress.Commands.add('defaultIntercepts', () => {
 });
 
 Cypress.Commands.add('defaultInterceptsMellomlagring', () => {
-  cy.intercept('POST', '/fyllut/api/send-inn/soknad*', {
-    fixture: 'mellomlagring/responseWithInnsendingsId.json',
-  }).as('createMellomlagring');
-  cy.intercept('PUT', '/fyllut/api/send-inn/soknad*', {
-    fixture: 'mellomlagring/responseWithInnsendingsId.json',
-  }).as('updateMellomlagring');
-  cy.intercept('PUT', '/fyllut/api/send-inn/utfyltsoknad*', { statusCode: 201 }).as('completeMellomlagring');
+  cy.intercept('POST', '/fyllut/api/send-inn/soknad*').as('createMellomlagring');
+  cy.intercept('PUT', '/fyllut/api/send-inn/soknad*').as('updateMellomlagring');
 
   return cy;
 });

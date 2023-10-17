@@ -136,28 +136,8 @@ describe('Amplitude', () => {
         cy.get('dt').eq(4).should('contain.text', 'Din fødselsdato (dd.mm.åååå)');
         cy.get('dd').eq(4).should('contain.text', '10.5.1995');
       });
-
-    cy.intercept({ method: 'POST', pathname: '/fyllut/api/send-inn', times: 1 }, { statusCode: 500 }).as(
-      'submitToSendinnFailed',
-    );
-
-    // First attempt is intercepted and fails, so we can test "innsending feilet"
     cy.findByRole('button', { name: 'Lagre og fortsett' }).click();
     cy.checkLogToAmplitude('navigere', { lenkeTekst: 'Lagre og fortsett', destinasjon: '/sendinn' });
-    cy.wait('@submitToSendinnFailed');
-    cy.checkLogToAmplitude('skjemainnsending feilet');
-
-    cy.intercept({ method: 'POST', pathname: '/fyllut/api/send-inn', times: 1 }, { statusCode: 200 }).as(
-      'submitToSendinnSuccess',
-    );
-
-    // The second attempt is successful, causing "skjema fullført"
-    cy.findByRole('button', { name: 'Lagre og fortsett' }).click();
-    cy.checkLogToAmplitude('navigere', { lenkeTekst: 'Lagre og fortsett', destinasjon: '/sendinn' });
-    cy.wait('@submitToSendinnSuccess');
-    cy.checkLogToAmplitude('skjema fullført', {
-      skjemaId: 'cypress-101',
-      skjemanavn: 'Skjema for Cypress-testing',
-    });
+    cy.url().should('include', '/send-inn-frontend');
   });
 });
