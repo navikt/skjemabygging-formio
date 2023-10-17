@@ -121,7 +121,6 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
   }
 
   function onNextPage({ page, currentPanels, submission }) {
-    console.log('onNextPage', { page, currentPanels, submission });
     if (isMellomlagringActive) {
       updateMellomlagring(submission);
       setSubmission(submission);
