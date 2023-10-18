@@ -9,7 +9,7 @@ interface ApplicationStatus {
 const status = {
   get: async (req: Request, res: Response, _next: NextFunction) => {
     const response: ApplicationStatus = { status: 'OK', description: 'OK' };
-    res.json(response);
+    res.status(200).json(response);
   },
 };
 
