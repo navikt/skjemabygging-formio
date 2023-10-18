@@ -1,0 +1,21 @@
+[
+  {
+    "id": "fyllut-base",
+    "routes": [
+      "amplitude:success",
+      "get-form:success",
+      "get-translations:success",
+      "post-azure-openid-token:success",
+      "get-kodeverk-currencies:success",
+      "post-exstream-pdf:success",
+      "get-tokenx-endpoint:success",
+      "post-tokenx:success",
+      "post-soknad:success",
+      "put-soknad:success",
+      "get-soknad:success",
+      "delete-soknad:success",
+      "put-utfylt-soknad:success",
+      "send-inn-frontend:available"
+    ]
+  }
+]

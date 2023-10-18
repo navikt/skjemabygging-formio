@@ -19,12 +19,19 @@ const testMellomlagringConfirmationModal = (
 };
 
 describe('Mellomlagring', () => {
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
     cy.defaultIntercepts();
-    cy.intercept('GET', '/fyllut/api/forms/testmellomlagring', { fixture: 'test-mellomlagring.json' }).as(
-      'getTestMellomlagringForm',
-    );
-    cy.intercept('GET', '/fyllut/api/translations/testmellomlagring', { body: {} }).as('getTranslation');
+    cy.intercept('GET', '/fyllut/api/forms/testmellomlagring').as('getTestMellomlagringForm');
+    cy.intercept('GET', '/fyllut/api/translations/testmellomlagring').as('getTranslation');
+    cy.mocksRestoreRouteVariants();
+  });
+
+  after(() => {
+    cy.mocksRestoreRouteVariants();
   });
 
   describe('When submission method is "paper"', () => {
@@ -36,6 +43,7 @@ describe('Mellomlagring', () => {
     it('does not fetch or update mellomlagring', () => {
       cy.visit('/fyllut/testmellomlagring?sub=paper');
       cy.wait('@getTestMellomlagringForm');
+      cy.wait('@getTranslation');
       cy.clickStart();
       cy.get('@createMellomlagringSpy').should('not.have.been.called');
       cy.findByRole('heading', { name: 'Valgfrie opplysninger' }).should('exist');
@@ -73,30 +81,14 @@ describe('Mellomlagring', () => {
 
   describe('When submission method is "digital"', () => {
     beforeEach(() => {
-      cy.intercept('POST', '/fyllut/api/send-inn/soknad*', {
-        fixture: 'mellomlagring/responseWithInnsendingsId.json',
-      }).as('createMellomlagring');
-      cy.intercept('PUT', '/fyllut/api/send-inn/soknad*', (req) => {
-        if (req.body.innsendingsId === 'innsendingsIdForUpdateWithError') {
-          req.reply(500);
-        } else {
-          req.reply({
-            innsendingsId: '75eedb4c-1253-44d8-9fde-3648f4bb1878',
-            endretDato: `2023-10-10T10:02:00.328667+02:00`,
-            hoveddokumentVariant: {
-              document: {
-                data: req.body.submission,
-              },
-            },
-          });
-        }
-      }).as('updateMellomlagring');
-      cy.intercept('GET', '/fyllut/api/send-inn/soknad/8e3c3621-76d7-4ebd-90d4-34448ebcccc3', {
-        fixture: 'mellomlagring/getTestMellomlagring-valid.json',
-      }).as('getMellomlagringValid');
-      cy.intercept('GET', '/fyllut/api/send-inn/soknad/innsendingsIdForUpdateWithError', {
-        fixture: 'mellomlagring/getTestMellomlagring-valid.json',
-      }).as('getMellomlagringForInnsendingWithUpdateError');
+      cy.intercept('POST', '/fyllut/api/send-inn/soknad*').as('createMellomlagring');
+      cy.intercept('PUT', '/fyllut/api/send-inn/soknad*').as('updateMellomlagring');
+      cy.intercept('GET', '/fyllut/api/send-inn/soknad/8e3c3621-76d7-4ebd-90d4-34448ebcccc3').as(
+        'getMellomlagringValid',
+      );
+      cy.intercept('GET', `/fyllut/api/send-inn/soknad/f99dc639-add1-468f-b4bb-961cdfd1e599`).as(
+        'getMellomlagringForInnsendingWithUpdateError',
+      );
       cy.intercept('DELETE', '/fyllut/api/send-inn/soknad/8e3c3621-76d7-4ebd-90d4-34448ebcccc3').as(
         'deleteMellomlagring',
       );
@@ -143,6 +135,8 @@ describe('Mellomlagring', () => {
     });
 
     it('lets you delete mellomlagring', () => {
+      cy.mocksUseRouteVariant('delete-soknad:failure');
+
       cy.visit(
         '/fyllut/testmellomlagring/gave?sub=digital&innsendingsId=8e3c3621-76d7-4ebd-90d4-34448ebcccc3&lang=nb-NO',
       );
@@ -157,7 +151,11 @@ describe('Mellomlagring', () => {
     });
 
     it('lets you save mellomlagring before cancelling', () => {
-      cy.visit('/fyllut/testmellomlagring/gave?sub=digital&innsendingsId=innsendingsIdForUpdateWithError&lang=nb-NO');
+      cy.mocksUseRouteVariant('put-soknad:failure');
+
+      cy.visit(
+        `/fyllut/testmellomlagring/gave?sub=digital&innsendingsId=f99dc639-add1-468f-b4bb-961cdfd1e599&lang=nb-NO`,
+      );
       cy.wait('@getMellomlagringForInnsendingWithUpdateError');
       cy.findByRole('heading', { name: 'Gave', level: 2 }).should('be.visible');
       testMellomlagringConfirmationModal(TEXTS.grensesnitt.navigation.saveDraft, TEXTS.grensesnitt.confirmSavePrompt);
@@ -180,7 +178,6 @@ describe('Mellomlagring', () => {
               const { submission: fixtureSubmission, ...fixtureRest } = fixture;
               expect(bodySubmission.data).to.deep.contain(fixtureSubmission.data);
               expect(bodyRest).to.deep.eq(fixtureRest);
-              req.redirect('/fyllut', 201);
             }).as('submitMellomlagring');
           });
         });
@@ -209,6 +206,8 @@ describe('Mellomlagring', () => {
         });
 
         it('lets you delete mellomlagring', () => {
+          cy.mocksUseRouteVariant('delete-soknad:failure');
+
           cy.visit(
             '/fyllut/testmellomlagring/oppsummering?sub=digital&innsendingsId=8e3c3621-76d7-4ebd-90d4-34448ebcccc3&lang=nb-NO',
           );
@@ -223,8 +222,10 @@ describe('Mellomlagring', () => {
         });
 
         it('lets you save mellomlagring before cancelling', () => {
+          cy.mocksUseRouteVariant('put-soknad:failure');
+
           cy.visit(
-            '/fyllut/testmellomlagring/oppsummering?sub=digital&innsendingsId=innsendingsIdForUpdateWithError&lang=nb-NO',
+            `/fyllut/testmellomlagring/oppsummering?sub=digital&innsendingsId=f99dc639-add1-468f-b4bb-961cdfd1e599&lang=nb-NO`,
           );
           cy.wait('@getMellomlagringForInnsendingWithUpdateError');
           cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');

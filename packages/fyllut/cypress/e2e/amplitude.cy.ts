@@ -9,22 +9,16 @@
 describe('Amplitude', () => {
   beforeEach(() => {
     cy.defaultIntercepts();
-    // TODO: Remove this when mellomlagring is default
-    cy.intercept('GET', '/fyllut/api/config', {
-      body: { FEATURE_TOGGLES: { enableTranslations: true, enableMellomlagring: false } },
-    }).as('getConfig');
-    cy.intercept('GET', '/fyllut/api/forms/cypress101', { fixture: 'cypress101.json' }).as('getCypress101');
-    cy.intercept('GET', '/fyllut/api/translations/cypress101', { body: {} }).as('getTranslation');
+    cy.intercept('GET', '/fyllut/api/forms/cypress101').as('getCypress101');
+    cy.intercept('GET', '/fyllut/api/translations/cypress101').as('getTranslation');
   });
 
   it('logs for all relevant events', () => {
     // Disabler dekoratør, siden den også gjør kall til "/collect-auto". Det fører til at checkLogToAmplitude feiler, siden den er avhengig av at kall gjørers i riktig rekkefølge
-    cy.visit('/fyllut/cypress101', {
-      qs: {
-        disableDecorator: 'true',
-      },
-    });
+    cy.visit('/fyllut/cypress101');
     cy.wait('@getCypress101');
+    cy.wait('@getTranslation');
+    cy.wait('@getGlobalTranslation');
 
     // Select digital submission and go to the form
     cy.get('[type="radio"]').check('digital');
@@ -32,12 +26,12 @@ describe('Amplitude', () => {
     cy.checkLogToAmplitude('skjema åpnet', { innsendingskanal: 'digital' });
 
     // Veiledning step
-    cy.clickNextStep();
+    cy.clickSaveAndContinue();
     cy.checkLogToAmplitude('navigere', { lenkeTekst: 'Neste steg', destinasjon: '/cypress101/personopplysninger' });
     cy.checkLogToAmplitude('skjemasteg fullført', { steg: 1, skjemastegNokkel: 'veiledning' });
 
     // Dine opplysninger step
-    cy.findByRole('combobox', { name: 'Tittel' }).should('exist').click();
+    cy.findByRoleWhenAttached('combobox', { name: 'Tittel' }).click();
     cy.findByText('Fru').should('exist').click();
     cy.checkLogToAmplitude('skjema startet');
     cy.checkLogToAmplitude('skjemaspørsmål besvart', { spørsmål: 'Tittel' });
@@ -102,7 +96,7 @@ describe('Amplitude', () => {
     });
 
     // Step 2 -> Oppsummering
-    cy.clickNextStep();
+    cy.clickSaveAndContinue();
     cy.checkLogToAmplitude('navigere', { lenkeTekst: 'Neste steg', destinasjon: '/cypress101/oppsummering' });
     cy.checkLogToAmplitude('skjemasteg fullført', { steg: 2, skjemastegNokkel: 'personopplysninger' });
     cy.findByRole('heading', { level: 2, name: 'Oppsummering' }).should('exist');
@@ -121,9 +115,9 @@ describe('Amplitude', () => {
       destinasjon: '/cypress101/veiledning',
     });
     cy.findByRole('heading', { level: 2, name: 'Oppsummering' }).should('not.exist');
-    cy.clickNextStep();
+    cy.clickSaveAndContinue();
     cy.checkLogToAmplitude('navigere', { lenkeTekst: 'Neste steg', destinasjon: '/cypress101/personopplysninger' });
-    cy.clickNextStep();
+    cy.clickSaveAndContinue();
     cy.checkLogToAmplitude('navigere', { lenkeTekst: 'Neste steg', destinasjon: '/cypress101/oppsummering' });
 
     // Oppsummering
@@ -142,28 +136,8 @@ describe('Amplitude', () => {
         cy.get('dt').eq(4).should('contain.text', 'Din fødselsdato (dd.mm.åååå)');
         cy.get('dd').eq(4).should('contain.text', '10.5.1995');
       });
-
-    cy.intercept({ method: 'POST', pathname: '/fyllut/api/send-inn', times: 1 }, { statusCode: 500 }).as(
-      'submitToSendinnFailed',
-    );
-
-    // First attempt is intercepted and fails, so we can test "innsending feilet"
-    cy.findByRole('button', { name: 'Gå videre' }).click();
-    cy.checkLogToAmplitude('navigere', { lenkeTekst: 'Gå videre', destinasjon: '/sendinn' });
-    cy.wait('@submitToSendinnFailed');
-    cy.checkLogToAmplitude('skjemainnsending feilet');
-
-    cy.intercept({ method: 'POST', pathname: '/fyllut/api/send-inn', times: 1 }, { statusCode: 200 }).as(
-      'submitToSendinnSuccess',
-    );
-
-    // The second attempt is successful, causing "skjema fullført"
-    cy.findByRole('button', { name: 'Gå videre' }).click();
-    cy.checkLogToAmplitude('navigere', { lenkeTekst: 'Gå videre', destinasjon: '/sendinn' });
-    cy.wait('@submitToSendinnSuccess');
-    cy.checkLogToAmplitude('skjema fullført', {
-      skjemaId: 'cypress-101',
-      skjemanavn: 'Skjema for Cypress-testing',
-    });
+    cy.findByRole('button', { name: 'Lagre og fortsett' }).click();
+    cy.checkLogToAmplitude('navigere', { lenkeTekst: 'Lagre og fortsett', destinasjon: '/sendinn' });
+    cy.url().should('include', '/send-inn-frontend');
   });
 });

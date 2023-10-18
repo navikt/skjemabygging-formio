@@ -75,26 +75,26 @@ Cypress.Commands.add('checkLogToAmplitude', (eventType: string, properties) => {
 });
 
 Cypress.Commands.add('defaultIntercepts', () => {
-  cy.intercept('POST', '/collect-auto', { body: 'success' }).as('amplitudeLogging');
+  cy.intercept('POST', '/amplitude/collect-auto').as('amplitudeLogging');
   cy.intercept('POST', /\/fyllut\/api\/log.*/, { body: 'ok' }).as('logger');
-  cy.intercept('GET', '/fyllut/api/config', { fixture: 'config.json' }).as('getConfig');
-  cy.intercept('GET', /\/fyllut\/api\/global-translations\.*/, { fixture: 'global-translation.json' }).as(
-    'getGlobalTranslation',
-  );
-  cy.intercept('GET', /fyllut\/api\/countries.*/, { fixture: 'countries.json' }).as('getCountries');
-  cy.intercept('GET', /fyllut\/api\/common-codes\/currencies.*/, { fixture: 'currencies.json' }).as('getCurrencies');
+  cy.intercept('GET', '/fyllut/api/config').as('getConfig');
+  cy.intercept('GET', /fyllut\/api\/countries.*/).as('getCountries');
+  cy.intercept('GET', /\/fyllut\/api\/global-translations\.*/).as('getGlobalTranslation');
+  cy.intercept('GET', /fyllut\/api\/common-codes\/currencies.*/).as('getCurrencies');
 
   return cy;
 });
 
 Cypress.Commands.add('defaultInterceptsMellomlagring', () => {
-  cy.intercept('POST', '/fyllut/api/send-inn/soknad*', {
-    fixture: 'mellomlagring/responseWithInnsendingsId.json',
-  }).as('createMellomlagring');
-  cy.intercept('PUT', '/fyllut/api/send-inn/soknad*', {
-    fixture: 'mellomlagring/responseWithInnsendingsId.json',
-  }).as('updateMellomlagring');
-  cy.intercept('PUT', '/fyllut/api/send-inn/utfyltsoknad*', { statusCode: 201 }).as('completeMellomlagring');
+  cy.intercept('POST', '/fyllut/api/send-inn/soknad*').as('createMellomlagring');
+  cy.intercept('PUT', '/fyllut/api/send-inn/soknad*').as('updateMellomlagring');
 
+  return cy;
+});
+
+Cypress.Commands.add('configMocksServer', () => {
+  cy.mocksConfigClient({
+    port: 3310,
+  });
   return cy;
 });

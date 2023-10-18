@@ -22,6 +22,8 @@ jobs:
         run: yarn --frozen-lockfile
       - name: 'Build application'
         run: yarn build
+      - name: 'Run mock server'
+        run: yarn mocks:fyllut:no-cli &
       - name: 'Cypress tests (fyllut)'
         uses: cypress-io/github-action@v6
         with:

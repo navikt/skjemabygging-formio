@@ -32,6 +32,8 @@
     "cypress:bygger": "yarn workspace @navikt/bygger-frontend cypress",
     "cypress:fyllut": "yarn workspace @navikt/fyllut-frontend cypress",
     "check-types": "yarn workspaces run check-types",
+    "mocks:fyllut": "cd mocks && yarn mocks:fyllut",
+    "mocks:fyllut:no-cli": "cd mocks && yarn mocks:fyllut:no-cli",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx,.mjs",
     "lint:staged": "lint-staged",
     "prepare": "husky install",

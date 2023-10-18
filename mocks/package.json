@@ -1,0 +1,15 @@
+{
+  "name": "mocks",
+  "version": "1.0.0",
+  "description": "Mocks Server for bygger and fyllut",
+  "main": "index.js",
+  "license": "MIT",
+  "private": true,
+  "devDependencies": {
+    "@mocks-server/main": "^4.1.0"
+  },
+  "scripts": {
+    "mocks:fyllut": "yarn && mocks-server",
+    "mocks:fyllut:no-cli": "yarn && mocks-server --no-plugins.inquirerCli.enabled"
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "betydninger": {
+    "EUR": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "Euro"
+          }
+        }
+      }
+    ],
+    "NOK": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "Norske kroner"
+          }
+        }
+      }
+    ],
+    "SEK": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "Svenske kroner"
+          }
+        }
+      }
+    ],
+    "USD": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "Amerikanske dollar"
+          }
+        }
+      }
+    ],
+    "AUD": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "Australske dollar"
+          }
+        }
+      }
+    ]
+  }
+}

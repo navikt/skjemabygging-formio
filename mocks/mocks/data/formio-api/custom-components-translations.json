@@ -1,0 +1,25 @@
+{
+  "_id": "125",
+  "data": {
+    "scope": "local",
+    "form": "customcomps",
+    "language": "en",
+    "i18n": {
+      "Cypress sjekker egne komponenter": "Cypress tests custom components",
+      "Dine opplysninger": "Your information",
+      "Fornavn": "First name",
+      "I hvilket land bor du?": "In which country do you live?",
+      "Velg valuta": "Choose currency",
+      "Velg instrument": "Choose instrument",
+      "Piano": "Piano",
+      "Gitar": "Guitar",
+      "Trekkspill": "Accordion",
+      "Trommer": "Drums",
+      "Gyldig fra dato": "Valid from date",
+      "Vedlegg": "Attachments",
+      "Annen dokumentasjon": "Other documentation",
+      "Oppsummering": "Summary",
+      "Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved.": "No, I have no other documentation."
+    }
+  }
+}

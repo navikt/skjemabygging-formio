@@ -1,0 +1,29 @@
+{
+  "_id": "123",
+  "data": {
+    "scope": "local",
+    "form": "cypress101",
+    "language": "en",
+    "i18n": {
+      "Skjema for Cypress-testing": "Form for Cypress testing",
+      "Veiledning": "Guidance",
+      "Dine opplysninger": "Your information",
+      "Her skal det stå litt informasjon om søknaden": "Info about the application",
+      "Fornavn": "First name",
+      "Etternavn": "Last name",
+      "Tittel": "Title",
+      "Herr": "Mr",
+      "Fru": "Mrs",
+      "Frøken": "Ms",
+      "Har du norsk fødselsnummer eller D-nummer?": "Do you have norwegian national identification number or D number?",
+      "Fødselsnummer / D-nummer": "Norwegian national identification / D number",
+      "Oppsummering": "Summary",
+      "Annen dokumentasjon": "Other documentation",
+      "Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved.": "No, I have no other documentation.",
+      "<span>Eksempel</span> Oversettelse": "Example correct translation",
+      "<span>Eksempel</span> <span>Oversettelse</span>": "Example correct translation",
+      "Eksempel": "Example",
+      "Oversettelse": "Translation"
+    }
+  }
+}

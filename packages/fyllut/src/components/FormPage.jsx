@@ -49,7 +49,7 @@ function FormPage({ form }) {
   }
 
   return (
-    <AmplitudeProvider form={form} shouldUseAmplitude={true}>
+    <AmplitudeProvider form={form}>
       <FyllUtRouter form={form} translations={translation} />
     </AmplitudeProvider>
   );
