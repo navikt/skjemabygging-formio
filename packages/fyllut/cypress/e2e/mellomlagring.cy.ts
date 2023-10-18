@@ -18,16 +18,15 @@ const testMellomlagringConfirmationModal = (
   cy.findByRole('button', { name: modalTexts.confirm }).click();
 };
 
-const INNSENDINGS_ID_UPDATE_ERROR = 'f99dc639-add1-468f-b4bb-961cdfd1e599';
-
 describe('Mellomlagring', () => {
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
     cy.defaultIntercepts();
     cy.intercept('GET', '/fyllut/api/forms/testmellomlagring').as('getTestMellomlagringForm');
     cy.intercept('GET', '/fyllut/api/translations/testmellomlagring').as('getTranslation');
-    cy.mocksConfigClient({
-      port: 3310,
-    });
     cy.mocksRestoreRouteVariants();
   });
 
@@ -87,7 +86,7 @@ describe('Mellomlagring', () => {
       cy.intercept('GET', '/fyllut/api/send-inn/soknad/8e3c3621-76d7-4ebd-90d4-34448ebcccc3').as(
         'getMellomlagringValid',
       );
-      cy.intercept('GET', `/fyllut/api/send-inn/soknad/${INNSENDINGS_ID_UPDATE_ERROR}`).as(
+      cy.intercept('GET', `/fyllut/api/send-inn/soknad/f99dc639-add1-468f-b4bb-961cdfd1e599`).as(
         'getMellomlagringForInnsendingWithUpdateError',
       );
       cy.intercept('DELETE', '/fyllut/api/send-inn/soknad/8e3c3621-76d7-4ebd-90d4-34448ebcccc3').as(
@@ -152,7 +151,11 @@ describe('Mellomlagring', () => {
     });
 
     it('lets you save mellomlagring before cancelling', () => {
-      cy.visit(`/fyllut/testmellomlagring/gave?sub=digital&innsendingsId=${INNSENDINGS_ID_UPDATE_ERROR}&lang=nb-NO`);
+      cy.mocksUseRouteVariant('put-soknad:failure');
+
+      cy.visit(
+        `/fyllut/testmellomlagring/gave?sub=digital&innsendingsId=f99dc639-add1-468f-b4bb-961cdfd1e599&lang=nb-NO`,
+      );
       cy.wait('@getMellomlagringForInnsendingWithUpdateError');
       cy.findByRole('heading', { name: 'Gave', level: 2 }).should('be.visible');
       testMellomlagringConfirmationModal(TEXTS.grensesnitt.navigation.saveDraft, TEXTS.grensesnitt.confirmSavePrompt);
@@ -219,8 +222,10 @@ describe('Mellomlagring', () => {
         });
 
         it('lets you save mellomlagring before cancelling', () => {
+          cy.mocksUseRouteVariant('put-soknad:failure');
+
           cy.visit(
-            `/fyllut/testmellomlagring/oppsummering?sub=digital&innsendingsId=${INNSENDINGS_ID_UPDATE_ERROR}&lang=nb-NO`,
+            `/fyllut/testmellomlagring/oppsummering?sub=digital&innsendingsId=f99dc639-add1-468f-b4bb-961cdfd1e599&lang=nb-NO`,
           );
           cy.wait('@getMellomlagringForInnsendingWithUpdateError');
           cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');

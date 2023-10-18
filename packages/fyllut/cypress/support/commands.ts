@@ -91,3 +91,10 @@ Cypress.Commands.add('defaultInterceptsMellomlagring', () => {
 
   return cy;
 });
+
+Cypress.Commands.add('configMocksServer', () => {
+  cy.mocksConfigClient({
+    port: 3310,
+  });
+  return cy;
+});
