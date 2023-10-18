@@ -13,7 +13,7 @@ jobs:
       contents: 'read'
       packages: 'read'
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: actions/setup-node@v3
         with:
           node-version: '20.8.0'
@@ -41,7 +41,7 @@ jobs:
       id-token: 'write'
       packages: 'read'
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: actions/setup-node@v3
         with:
           node-version: '20.8.0'
@@ -79,7 +79,7 @@ jobs:
       id-token: 'write'
       packages: 'read'
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: actions/setup-node@v3
         with:
           node-version: '20.8.0'
@@ -130,7 +130,7 @@ jobs:
     needs: [build-and-test, package-and-push-bygger, package-and-push-fyllut-base]
     runs-on: ubuntu-latest
     steps:
-      - uses: 'actions/checkout@v3'
+      - uses: 'actions/checkout@v4'
       - name: 'Deploy to PROD'
         uses: 'nais/deploy/actions/deploy@v1'
         env:
@@ -154,7 +154,7 @@ jobs:
           repo: navikt/skjemautfylling-formio
 
       - name: 'Trigger deploy fyllut to dev'
-        uses: benc-uk/workflow-dispatch@v1
+        uses: benc-uk/workflow-dispatch@v121
         with:
           workflow: 'Trigger dev deploy'
           repo: navikt/skjemautfylling-formio
