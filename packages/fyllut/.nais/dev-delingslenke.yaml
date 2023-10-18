@@ -16,10 +16,6 @@ azure:
 secrets:
   - formio-server-access-prod
 accessPolicy:
-  inbound:
-    rules:
-      - application: statuspoll
-        namespace: navdig
   outbound:
     rules:
       - application: skjemabygging-proxy

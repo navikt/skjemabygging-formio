@@ -54,6 +54,8 @@ spec:
     inbound:
       rules:
         - application: fyllut-ettersending
+        - application: statuspoll
+          namespace: navdig
     outbound:
       rules:
       {{#each accessPolicy.outbound.rules}}
