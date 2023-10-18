@@ -35,6 +35,18 @@ module.exports = [
         },
       },
       {
+        id: 'success-with-delay',
+        type: 'json',
+        delay: 1000,
+        options: {
+          status: 302,
+          body: {},
+          headers: {
+            Location: 'http://localhost:3300/send-inn-frontend',
+          },
+        },
+      },
+      {
         id: 'failure',
         type: 'text',
         options: {

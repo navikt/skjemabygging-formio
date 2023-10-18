@@ -149,22 +149,26 @@ describe('Amplitude', () => {
       });
 
     // First attempt is intercepted and fails, so we can test "innsending feilet"
+    cy.intercept('POST', '/fyllut/api/send-inn').as('submitToSendinnFailure');
     cy.mocksUseRouteVariant('post-send-inn:failure');
     cy.findByRole('button', { name: 'Gå videre' }).click();
     cy.checkLogToAmplitude('navigere', { lenkeTekst: 'Gå videre', destinasjon: '/sendinn' });
     cy.findByText('Feil ved kall til SendInn').should('be.visible');
+    cy.wait('@submitToSendinnFailure');
     cy.checkLogToAmplitude('skjemainnsending feilet');
 
     // The second attempt is successful, causing "skjema fullført"
-    cy.mocksUseRouteVariant('post-send-inn:success');
+    cy.intercept('POST', '/fyllut/api/send-inn').as('submitToSendinnSuccess');
+    cy.mocksUseRouteVariant('post-send-inn:success-with-delay');
     cy.findByRole('button', { name: 'Gå videre' }).click();
+    cy.wait('@submitToSendinnSuccess');
     cy.checkLogToAmplitude('navigere', { lenkeTekst: 'Gå videre', destinasjon: '/sendinn' });
 
     // FIXME https://trello.com/c/yAEGm8z4/1532-amplitude-cypress-test-feilet-pga-manglende-skjema-fullf%C3%B8rt
-    // cy.checkLogToAmplitude('skjema fullført', {
-    //   skjemaId: 'cypress-101',
-    //   skjemanavn: 'Skjema for Cypress-testing',
-    // });
+    cy.checkLogToAmplitude('skjema fullført', {
+      skjemaId: 'cypress-101',
+      skjemanavn: 'Skjema for Cypress-testing',
+    });
 
     cy.url().should('include', '/send-inn-frontend');
   });
