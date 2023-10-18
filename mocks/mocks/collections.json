@@ -15,6 +15,7 @@
       "get-soknad:success",
       "delete-soknad:success",
       "put-utfylt-soknad:success",
+      "post-send-inn:success",
       "send-inn-frontend:available"
     ]
   }

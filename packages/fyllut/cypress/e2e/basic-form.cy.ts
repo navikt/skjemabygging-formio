@@ -1,18 +1,7 @@
 describe('Basic form', () => {
   beforeEach(() => {
-    cy.defaultIntercepts();
-    // TODO: Remove this when mellomlagring is default
-    cy.intercept('GET', '/fyllut/api/config', (req) => {
-      req.continue((res) => {
-        res.send({
-          ...res.body,
-          FEATURE_TOGGLES: {
-            ...res.body.FEATURE_TOGGLES,
-            enableMellomlagring: false,
-          },
-        });
-      });
-    }).as('getConfig');
+    // TODO: Remove featureToggles when mellomlagring is default
+    cy.defaultIntercepts({ featureToggles: { enableMellomlagring: false } });
     cy.intercept('GET', '/fyllut/api/forms/cypress101').as('getCypress101');
   });
 
