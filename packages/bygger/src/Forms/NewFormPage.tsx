@@ -28,6 +28,27 @@ interface State {
   form: NavFormType;
 }
 
+interface FormioRole {
+  _id: string;
+  title: RoleName;
+}
+
+type RoleName = 'Administrator' | 'Authenticated' | 'Everyone';
+
+type RolesCreator = (...titles: RoleName[]) => string[];
+
+const ROLE_ID_EVERYONE = '000000000000000000000000';
+export const getRoleMapper =
+  (formioRoles: FormioRole[]): RolesCreator =>
+  (...roleTitles: RoleName[]): string[] => {
+    return roleTitles.map((title) => {
+      if (title === 'Everyone') {
+        return ROLE_ID_EVERYONE;
+      }
+      return formioRoles.find((role) => role.title === title)!._id;
+    });
+  };
+
 const NewFormPage: React.FC<Props> = ({ formio }): React.ReactElement => {
   const feedbackEmit = useFeedbackEmit();
   const navigate = useNavigate();
@@ -53,7 +74,7 @@ const NewFormPage: React.FC<Props> = ({ formio }): React.ReactElement => {
 
   const [errors, setErrors] = useState({});
 
-  const setForm = (form) => {
+  const setForm = (form: NavFormType) => {
     const newForm = cloneDeep(form);
     setState((oldState) => {
       if (oldState.form.properties.skjemanummer !== newForm.properties.skjemanummer) {
@@ -63,14 +84,32 @@ const NewFormPage: React.FC<Props> = ({ formio }): React.ReactElement => {
       return { form: newForm };
     });
   };
-  const validateAndSave = async (form) => {
+  const validateAndSave = async (form: NavFormType) => {
     const updatedErrors = validateFormMetadata(form, 'create');
     const trimmedFormNumber = state.form.properties.skjemanummer.trim();
     if (isFormMetadataValid(updatedErrors)) {
       setErrors({});
+      const formioRoles = await formio.loadRoles();
+      const toRoleIds = getRoleMapper(formioRoles as FormioRole[]);
       return await formio
-        .saveForm({ ...state.form, properties: { ...state.form.properties, skjemanummer: trimmedFormNumber } })
-        .then((form) => {
+        .saveForm({
+          ...state.form,
+          properties: {
+            ...state.form.properties,
+            skjemanummer: trimmedFormNumber,
+          },
+          access: [
+            {
+              type: 'read_all',
+              roles: toRoleIds('Everyone'),
+            },
+            {
+              type: 'update_all',
+              roles: toRoleIds('Administrator', 'Authenticated'),
+            },
+          ],
+        })
+        .then((form: NavFormType) => {
           feedbackEmit.success(`Opprettet skjemaet ${form.title}`);
           navigate(`/forms/${form.path}/edit`);
         })
