@@ -1,7 +1,7 @@
 import { featureUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import dotenv from 'dotenv';
 import { NaisCluster } from './nais-cluster.js';
-import { ConfigType, DefaultConfig, IdportenConfig, SendInnConfig, TokenxConfig } from './types';
+import { AmplitudeConfig, ConfigType, DefaultConfig, IdportenConfig, SendInnConfig, TokenxConfig } from './types';
 
 if (process.env.NODE_ENV !== 'test') {
   dotenv.config();
@@ -13,6 +13,10 @@ const tokenx: TokenxConfig = {
   privateJwk: process.env.TOKEN_X_PRIVATE_JWK!,
   fyllutClientId: process.env.TOKEN_X_CLIENT_ID!,
   wellKnownUrl: process.env.TOKEN_X_WELL_KNOWN_URL!,
+};
+
+const amplitude: AmplitudeConfig = {
+  apiEndpoint: process.env.AMPLITUDE_API_ENDPOINT ?? '',
 };
 
 const idporten: IdportenConfig = {
@@ -39,7 +43,9 @@ const localDevelopmentConfig: DefaultConfig = {
   decoratorUrl: 'https://www.nav.no/dekoratoren?simple=true',
   skjemabyggingProxyUrl: process.env.SKJEMABYGGING_PROXY_URL || 'https://skjemabygging-proxy.dev-fss-pub.nais.io',
   skjemabyggingProxyClientId: '95170319-b4d7-4190-8271-118ed19bafbf',
-  azureOpenidTokenEndpoint: 'https://login.microsoftonline.com/966ac572-f5b7-4bbe-aa88-c76419c0f851/oauth2/v2.0/token',
+  azureOpenidTokenEndpoint:
+    process.env.AZURE_OPENID_CONFIG_TOKEN_ENDPOINT ||
+    'https://login.microsoftonline.com/966ac572-f5b7-4bbe-aa88-c76419c0f851/oauth2/v2.0/token',
   clientId: process.env.AZURE_APP_CLIENT_ID || 'a1eddc14-0e91-40bc-b910-a0cf39ac3223', // <-- fyllut i dev-gcp
   mockIdportenPid: process.env.MOCK_IDPORTEN_PID || '12345678911',
   mockIdportenJwt: process.env.MOCK_IDPORTEN_JWT || 'IDPORTEN_JWT',
@@ -60,6 +66,7 @@ const localDevelopmentConfig: DefaultConfig = {
     ...idporten,
     idportenJwksUri: idporten.idportenJwksUri || 'https://test.idporten.no/jwks.json',
   },
+  amplitude,
 };
 
 const defaultConfig: DefaultConfig = {
@@ -81,6 +88,7 @@ const defaultConfig: DefaultConfig = {
   tokenx,
   sendInnConfig,
   idporten,
+  amplitude,
 };
 
 const config: ConfigType = {

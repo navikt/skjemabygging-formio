@@ -3,16 +3,10 @@ import * as moment from 'moment';
 describe('Custom react components', () => {
   beforeEach(() => {
     cy.defaultIntercepts();
-    cy.intercept('GET', '/fyllut/api/forms/customcomps', { fixture: 'custom-components.json' }).as('getForm');
-    cy.intercept('GET', '/fyllut/api/translations/customcomps', { fixture: 'custom-components-translations.json' }).as(
-      'getTranslations',
-    );
-    cy.intercept('GET', '/fyllut/api/forms/navdatepicker', { fixture: 'navdatepicker.json' }).as(
-      'getNavDatepickerForm',
-    );
-    cy.intercept('GET', '/fyllut/api/translations/navdatepicker', { fixture: 'empty-translations.json' }).as(
-      'getNavDatepickerTranslations',
-    );
+    cy.intercept('GET', '/fyllut/api/forms/customcomps').as('getForm');
+    cy.intercept('GET', '/fyllut/api/translations/customcomps').as('getTranslations');
+    cy.intercept('GET', '/fyllut/api/forms/navdatepicker').as('getNavDatepickerForm');
+    cy.intercept('GET', '/fyllut/api/translations/navdatepicker').as('getNavDatepickerTranslations');
   });
 
   describe('Fill in form and view summary', () => {
@@ -166,7 +160,9 @@ describe('Custom react components', () => {
         cy.clickNextStep();
 
         cy.findAllByText('Du må fylle ut: Tilfeldig dato').should('have.length', 1);
-        cy.findByRole('link', { name: 'Tilfeldig dato: Du må fylle ut: Tilfeldig dato' }).click();
+        cy.findByRoleWhenAttached('link', { name: 'Tilfeldig dato: Du må fylle ut: Tilfeldig dato' })
+          .should('exist')
+          .click();
 
         cy.findByRole('textbox', { name: 'Tilfeldig dato' }).should('have.focus').type('02.02.2023');
         cy.clickNextStep();

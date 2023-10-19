@@ -29,6 +29,7 @@
     "react-router-dom": "^6.16.0"
   },
   "devDependencies": {
+    "@mocks-server/cypress-commands": "^6.1.1",
     "@testing-library/react": "^14.0.0",
     "cypress-axe": "^1.5.0",
     "cypress-wait-until": "^2.0.1",

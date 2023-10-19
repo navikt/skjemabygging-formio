@@ -54,6 +54,8 @@ spec:
     inbound:
       rules:
         - application: fyllut-ettersending
+        - application: statuspoll
+          namespace: navdig
     outbound:
       rules:
       {{#each accessPolicy.outbound.rules}}
@@ -84,6 +86,8 @@ spec:
       value: {{send-inn-host}}
     - name: PDL_TOKEN_SCOPE_CLUSTER
       value: {{pdl-token-scope-cluster}}
+    - name: AMPLITUDE_API_ENDPOINT
+      value: "amplitude.nav.no/collect-auto"
   envFrom:
   {{#each secrets as |secret|}}
     - secret: {{secret}}

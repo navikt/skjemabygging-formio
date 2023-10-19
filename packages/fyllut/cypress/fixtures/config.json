@@ -1,6 +1,0 @@
-{
-  "FEATURE_TOGGLES": {
-    "enableTranslations": true,
-    "enableMellomlagring": true
-  }
-}

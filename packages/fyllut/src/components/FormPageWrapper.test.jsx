@@ -64,7 +64,7 @@ describe('FormPageWrapper', () => {
 
     render(
       <MemoryRouter initialEntries={['/fyllut/knownForm']}>
-        <AppConfigProvider featureToggles={{}}>
+        <AppConfigProvider featureToggles={{}} config={{}}>
           <Routes>
             <Route path="/fyllut/:formPath/*" element={<FormPageWrapper />} />
           </Routes>
@@ -98,7 +98,7 @@ describe('FormPageWrapper', () => {
     it('Show error message when submission method is invalid', async () => {
       render(
         <MemoryRouter initialEntries={['/fyllut/nav123456']}>
-          <AppConfigProvider featureToggles={{}} submissionMethod="digital">
+          <AppConfigProvider featureToggles={{}} config={{}} submissionMethod="digital">
             <Routes>
               <Route path="/fyllut/:formPath/*" element={<FormPageWrapper />} />
             </Routes>
@@ -114,7 +114,7 @@ describe('FormPageWrapper', () => {
     it('Show form title when submission method is valid', async () => {
       render(
         <MemoryRouter initialEntries={['/fyllut/nav123456']}>
-          <AppConfigProvider featureToggles={{}} submissionMethod="paper">
+          <AppConfigProvider featureToggles={{}} config={{}} submissionMethod="paper">
             <Routes>
               <Route path="/fyllut/:formPath/*" element={<FormPageWrapper />} />
             </Routes>

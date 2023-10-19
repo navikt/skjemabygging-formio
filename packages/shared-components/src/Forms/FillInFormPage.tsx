@@ -121,8 +121,10 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
   }
 
   function onNextPage({ page, currentPanels, submission }) {
-    updateMellomlagring(submission);
-    setSubmission(submission);
+    if (isMellomlagringActive) {
+      updateMellomlagring(submission);
+      setSubmission(submission);
+    }
     loggNavigering({
       lenkeTekst: translate(TEXTS.grensesnitt.navigation.next),
       destinasjon: `${formUrl}/${currentPanels?.[page]}`,
@@ -178,7 +180,9 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
   };
 
   const onSubmit = (submission) => {
-    updateMellomlagring(submission);
+    if (isMellomlagringActive) {
+      updateMellomlagring(submission);
+    }
     setSubmission(submission);
     loggNavigering({
       lenkeTekst: translate(TEXTS.grensesnitt.navigation.submit),
