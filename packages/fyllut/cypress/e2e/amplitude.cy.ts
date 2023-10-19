@@ -149,8 +149,8 @@ describe('Amplitude', () => {
       });
 
     // First attempt is intercepted and fails, so we can test "innsending feilet"
-    cy.intercept('POST', '/fyllut/api/send-inn').as('submitToSendinnFailure');
     cy.mocksUseRouteVariant('post-send-inn:failure');
+    cy.intercept('POST', '/fyllut/api/send-inn').as('submitToSendinnFailure');
     cy.findByRole('button', { name: 'Gå videre' }).click();
     cy.checkLogToAmplitude('navigere', { lenkeTekst: 'Gå videre', destinasjon: '/sendinn' });
     cy.findByText('Feil ved kall til SendInn').should('be.visible');
@@ -158,8 +158,9 @@ describe('Amplitude', () => {
     cy.checkLogToAmplitude('skjemainnsending feilet');
 
     // The second attempt is successful, causing "skjema fullført"
-    cy.intercept('POST', '/fyllut/api/send-inn').as('submitToSendinnSuccess');
     cy.mocksUseRouteVariant('post-send-inn:success-with-delay');
+    cy.mocksUseRouteVariant('send-inn-frontend:available-with-delay');
+    cy.intercept('POST', '/fyllut/api/send-inn').as('submitToSendinnSuccess');
     cy.findByRole('button', { name: 'Gå videre' }).click();
     cy.wait('@submitToSendinnSuccess');
     cy.checkLogToAmplitude('navigere', { lenkeTekst: 'Gå videre', destinasjon: '/sendinn' });
