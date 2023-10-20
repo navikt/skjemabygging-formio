@@ -7,15 +7,26 @@
  */
 
 describe('Amplitude', () => {
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
-    cy.defaultIntercepts();
+    // TODO: Remove featureToggles when mellomlagring is default
+    cy.defaultIntercepts({ featureToggles: { enableMellomlagring: false } });
     cy.intercept('GET', '/fyllut/api/forms/cypress101').as('getCypress101');
     cy.intercept('GET', '/fyllut/api/translations/cypress101').as('getTranslation');
+    cy.mocksRestoreRouteVariants();
+  });
+
+  after(() => {
+    cy.mocksRestoreRouteVariants();
   });
 
   it('logs for all relevant events', () => {
     // Disabler dekoratør, siden den også gjør kall til "/collect-auto". Det fører til at checkLogToAmplitude feiler, siden den er avhengig av at kall gjørers i riktig rekkefølge
     cy.visit('/fyllut/cypress101');
+    cy.wait('@getConfig');
     cy.wait('@getCypress101');
     cy.wait('@getTranslation');
     cy.wait('@getGlobalTranslation');
@@ -26,7 +37,7 @@ describe('Amplitude', () => {
     cy.checkLogToAmplitude('skjema åpnet', { innsendingskanal: 'digital' });
 
     // Veiledning step
-    cy.clickSaveAndContinue();
+    cy.clickNextStep();
     cy.checkLogToAmplitude('navigere', { lenkeTekst: 'Neste steg', destinasjon: '/cypress101/personopplysninger' });
     cy.checkLogToAmplitude('skjemasteg fullført', { steg: 1, skjemastegNokkel: 'veiledning' });
 
@@ -96,7 +107,7 @@ describe('Amplitude', () => {
     });
 
     // Step 2 -> Oppsummering
-    cy.clickSaveAndContinue();
+    cy.clickNextStep();
     cy.checkLogToAmplitude('navigere', { lenkeTekst: 'Neste steg', destinasjon: '/cypress101/oppsummering' });
     cy.checkLogToAmplitude('skjemasteg fullført', { steg: 2, skjemastegNokkel: 'personopplysninger' });
     cy.findByRole('heading', { level: 2, name: 'Oppsummering' }).should('exist');
@@ -115,9 +126,9 @@ describe('Amplitude', () => {
       destinasjon: '/cypress101/veiledning',
     });
     cy.findByRole('heading', { level: 2, name: 'Oppsummering' }).should('not.exist');
-    cy.clickSaveAndContinue();
+    cy.clickNextStep();
     cy.checkLogToAmplitude('navigere', { lenkeTekst: 'Neste steg', destinasjon: '/cypress101/personopplysninger' });
-    cy.clickSaveAndContinue();
+    cy.clickNextStep();
     cy.checkLogToAmplitude('navigere', { lenkeTekst: 'Neste steg', destinasjon: '/cypress101/oppsummering' });
 
     // Oppsummering
@@ -136,8 +147,30 @@ describe('Amplitude', () => {
         cy.get('dt').eq(4).should('contain.text', 'Din fødselsdato (dd.mm.åååå)');
         cy.get('dd').eq(4).should('contain.text', '10.5.1995');
       });
-    cy.findByRole('button', { name: 'Lagre og fortsett' }).click();
-    cy.checkLogToAmplitude('navigere', { lenkeTekst: 'Lagre og fortsett', destinasjon: '/sendinn' });
+
+    // First attempt is intercepted and fails, so we can test "innsending feilet"
+    cy.mocksUseRouteVariant('post-send-inn:failure');
+    cy.intercept('POST', '/fyllut/api/send-inn').as('submitToSendinnFailure');
+    cy.findByRole('button', { name: 'Gå videre' }).click();
+    cy.checkLogToAmplitude('navigere', { lenkeTekst: 'Gå videre', destinasjon: '/sendinn' });
+    cy.findByText('Feil ved kall til SendInn').should('be.visible');
+    cy.wait('@submitToSendinnFailure');
+    cy.checkLogToAmplitude('skjemainnsending feilet');
+
+    // The second attempt is successful, causing "skjema fullført"
+    cy.mocksUseRouteVariant('post-send-inn:success-with-delay');
+    cy.mocksUseRouteVariant('send-inn-frontend:available-with-delay');
+    cy.intercept('POST', '/fyllut/api/send-inn').as('submitToSendinnSuccess');
+    cy.findByRole('button', { name: 'Gå videre' }).click();
+    cy.wait('@submitToSendinnSuccess');
+    cy.checkLogToAmplitude('navigere', { lenkeTekst: 'Gå videre', destinasjon: '/sendinn' });
+
+    // FIXME https://trello.com/c/yAEGm8z4/1532-amplitude-cypress-test-feilet-pga-manglende-skjema-fullf%C3%B8rt
+    cy.checkLogToAmplitude('skjema fullført', {
+      skjemaId: 'cypress-101',
+      skjemanavn: 'Skjema for Cypress-testing',
+    });
+
     cy.url().should('include', '/send-inn-frontend');
   });
 });

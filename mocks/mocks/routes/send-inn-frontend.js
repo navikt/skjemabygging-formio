@@ -9,7 +9,17 @@ module.exports = [
         options: {
           path: 'mocks/data/send-inn-frontend',
           options: {
-            // options for the express.static method
+            maxAge: 500,
+          },
+        },
+      },
+      {
+        id: 'available-with-delay',
+        type: 'static',
+        delay: 1000,
+        options: {
+          path: 'mocks/data/send-inn-frontend',
+          options: {
             maxAge: 500,
           },
         },
