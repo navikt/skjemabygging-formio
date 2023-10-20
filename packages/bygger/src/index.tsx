@@ -25,7 +25,9 @@ fetch('/api/config')
 
 const renderReact = (config) => {
   const root = createRoot(document.getElementById('root')!);
+
   root.render(
+    // @ts-ignore
     <StrictMode>
       <BrowserRouter>
         <AppConfigProvider
