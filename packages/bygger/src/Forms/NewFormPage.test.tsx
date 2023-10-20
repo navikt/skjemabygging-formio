@@ -109,6 +109,23 @@ describe('NewFormPage', () => {
     const updateAllRoles = findAccessObject(savedForm.access!, 'update_all');
     expect(updateAllRoles).toEqual(['1', '3']);
   });
+
+  it('should throw exception if role is unknown', async () => {
+    console.error = vi.fn();
+    const saveForm = vi.fn(() => Promise.resolve(new Response(JSON.stringify({}))));
+    const loadRoles = () => MOCK_FORMIO_ROLES.filter((role) => role.title !== 'Administrator');
+    renderNewFormPage({ saveForm, loadRoles });
+
+    await waitFor(() => screen.getByText('Opprett nytt skjema'));
+    await userEvent.type(screen.getByLabelText('Skjemanummer'), 'NAV 12-34.56');
+    await userEvent.type(screen.getByLabelText('Tittel'), 'Tester access array');
+    await userEvent.selectOptions(screen.getByLabelText('Tema'), 'DEF');
+    await userEvent.click(screen.getByRole('button', { name: 'Opprett' }));
+
+    expect(await screen.findByText('Opprettelse av skjema feilet')).toBeInTheDocument();
+    await waitFor(() => expect(console.error).toHaveBeenCalledTimes(1));
+    expect(saveForm).toHaveBeenCalledTimes(0);
+  });
 });
 
 const MOCK_FORMIO_ROLES = [

@@ -30,24 +30,43 @@ interface State {
 
 interface FormioRole {
   _id: string;
-  title: RoleName;
+  title: RoleTitle;
 }
 
-type RoleName = 'Administrator' | 'Authenticated' | 'Everyone';
+type RoleTitle = 'Administrator' | 'Authenticated' | 'Everyone';
 
-type RolesCreator = (...titles: RoleName[]) => string[];
+type RolesCreator = (...titles: RoleTitle[]) => string[];
+
+class FormioRoleError extends Error {
+  constructor(message: string) {
+    super(message);
+  }
+}
 
 const ROLE_ID_EVERYONE = '000000000000000000000000';
 export const getRoleMapper =
   (formioRoles: FormioRole[]): RolesCreator =>
-  (...roleTitles: RoleName[]): string[] => {
+  (...roleTitles: RoleTitle[]): string[] => {
     return roleTitles.map((title) => {
       if (title === 'Everyone') {
         return ROLE_ID_EVERYONE;
       }
-      return formioRoles.find((role) => role.title === title)!._id;
+      const formioRole = formioRoles.find((role) => role.title === title);
+      if (!formioRole) {
+        throw new FormioRoleError(`Unknown role with title '${title}'`);
+      }
+      return formioRole._id;
     });
   };
+
+const fetchFormioRoles = async (formio): Promise<FormioRole[]> => {
+  try {
+    return await formio.loadRoles();
+  } catch (err: any) {
+    console.error(err);
+    throw new FormioRoleError('Unable to fetch formio roles');
+  }
+};
 
 const NewFormPage: React.FC<Props> = ({ formio }): React.ReactElement => {
   const feedbackEmit = useFeedbackEmit();
@@ -89,34 +108,43 @@ const NewFormPage: React.FC<Props> = ({ formio }): React.ReactElement => {
     const trimmedFormNumber = state.form.properties.skjemanummer.trim();
     if (isFormMetadataValid(updatedErrors)) {
       setErrors({});
-      const formioRoles = await formio.loadRoles();
-      const toRoleIds = getRoleMapper(formioRoles as FormioRole[]);
-      return await formio
-        .saveForm({
-          ...state.form,
-          properties: {
-            ...state.form.properties,
-            skjemanummer: trimmedFormNumber,
-          },
-          access: [
-            {
-              type: 'read_all',
-              roles: toRoleIds('Everyone'),
+      try {
+        const formioRoles = await fetchFormioRoles(formio);
+        const toRoleIds = getRoleMapper(formioRoles);
+        return await formio
+          .saveForm({
+            ...state.form,
+            properties: {
+              ...state.form.properties,
+              skjemanummer: trimmedFormNumber,
             },
-            {
-              type: 'update_all',
-              roles: toRoleIds('Administrator', 'Authenticated'),
-            },
-          ],
-        })
-        .then((form: NavFormType) => {
-          feedbackEmit.success(`Opprettet skjemaet ${form.title}`);
-          navigate(`/forms/${form.path}/edit`);
-        })
-        .catch((e) => {
-          feedbackEmit.error('Det valgte skjema-nummeret er allerede i bruk.');
-          console.error(e);
-        });
+            access: [
+              {
+                type: 'read_all',
+                roles: toRoleIds('Everyone'),
+              },
+              {
+                type: 'update_all',
+                roles: toRoleIds('Administrator', 'Authenticated'),
+              },
+            ],
+          })
+          .then((form: NavFormType) => {
+            feedbackEmit.success(`Opprettet skjemaet ${form.title}`);
+            navigate(`/forms/${form.path}/edit`);
+          })
+          .catch((e) => {
+            feedbackEmit.error('Det valgte skjema-nummeret er allerede i bruk.');
+            console.error(e);
+          });
+      } catch (e: any) {
+        console.error(e);
+        if (e instanceof FormioRoleError) {
+          feedbackEmit.error('Opprettelse av skjema feilet');
+          return;
+        }
+        throw e;
+      }
     } else {
       setErrors(updatedErrors);
     }
