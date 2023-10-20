@@ -111,39 +111,33 @@ const NewFormPage: React.FC<Props> = ({ formio }): React.ReactElement => {
       try {
         const formioRoles = await fetchFormioRoles(formio);
         const toRoleIds = getRoleMapper(formioRoles);
-        return await formio
-          .saveForm({
-            ...state.form,
-            properties: {
-              ...state.form.properties,
-              skjemanummer: trimmedFormNumber,
+        const createdForm = await formio.saveForm({
+          ...state.form,
+          properties: {
+            ...state.form.properties,
+            skjemanummer: trimmedFormNumber,
+          },
+          access: [
+            {
+              type: 'read_all',
+              roles: toRoleIds('Everyone'),
             },
-            access: [
-              {
-                type: 'read_all',
-                roles: toRoleIds('Everyone'),
-              },
-              {
-                type: 'update_all',
-                roles: toRoleIds('Administrator', 'Authenticated'),
-              },
-            ],
-          })
-          .then((form: NavFormType) => {
-            feedbackEmit.success(`Opprettet skjemaet ${form.title}`);
-            navigate(`/forms/${form.path}/edit`);
-          })
-          .catch((e) => {
-            feedbackEmit.error('Det valgte skjema-nummeret er allerede i bruk.');
-            console.error(e);
-          });
+            {
+              type: 'update_all',
+              roles: toRoleIds('Administrator', 'Authenticated'),
+            },
+          ],
+        });
+        feedbackEmit.success(`Opprettet skjemaet ${form.title}`);
+        navigate(`/forms/${form.path}/edit`);
+        return createdForm;
       } catch (e: any) {
         console.error(e);
         if (e instanceof FormioRoleError) {
           feedbackEmit.error('Opprettelse av skjema feilet');
           return;
         }
-        throw e;
+        feedbackEmit.error('Det valgte skjema-nummeret er allerede i bruk.');
       }
     } else {
       setErrors(updatedErrors);
