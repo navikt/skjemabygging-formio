@@ -19,6 +19,44 @@ const convertToInnsendingApiResponse = (json) => {
 
 module.exports = [
   {
+    id: 'post-send-inn',
+    url: '/send-inn/fyllUt/v1/leggTilVedlegg',
+    method: 'POST',
+    variants: [
+      {
+        id: 'success',
+        type: 'json',
+        options: {
+          status: 302,
+          body: {},
+          headers: {
+            Location: 'http://localhost:3300/send-inn-frontend',
+          },
+        },
+      },
+      {
+        id: 'success-with-delay',
+        type: 'json',
+        delay: 1000,
+        options: {
+          status: 302,
+          body: {},
+          headers: {
+            Location: 'http://localhost:3300/send-inn-frontend',
+          },
+        },
+      },
+      {
+        id: 'failure',
+        type: 'text',
+        options: {
+          status: 500,
+          body: 'Internal Server Error',
+        },
+      },
+    ],
+  },
+  {
     id: 'post-soknad',
     url: '/send-inn/fyllUt/v1/soknad*',
     method: 'POST',
