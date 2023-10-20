@@ -12,8 +12,14 @@ describe('Amplitude', () => {
   });
 
   beforeEach(() => {
-    // TODO: Remove featureToggles when mellomlagring is default
-    cy.defaultIntercepts({ featureToggles: { enableMellomlagring: false } });
+    cy.defaultIntercepts();
+    // TODO: Remove getConfig intercept (use default intercept) when mellomlagring is enabled
+    cy.intercept('GET', '/fyllut/api/config', {
+      body: {
+        FEATURE_TOGGLES: { enableTranslations: true, enableMellomlagring: false },
+        amplitudeApiEndpoint: '127.0.0.1:3300/amplitude/collect-auto',
+      },
+    }).as('getConfig');
     cy.intercept('GET', '/fyllut/api/forms/cypress101').as('getCypress101');
     cy.intercept('GET', '/fyllut/api/translations/cypress101').as('getTranslation');
     cy.mocksRestoreRouteVariants();
