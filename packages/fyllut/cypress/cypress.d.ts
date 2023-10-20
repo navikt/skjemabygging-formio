@@ -22,7 +22,7 @@ declare global {
 
       checkLogToAmplitude(eventType: string, properties?: object): Chainable<JQuery<HTMLElement>>;
 
-      defaultIntercepts(p?: { featureToggles: {} }): Cypress.Chainable<JQuery<HTMLElement>>;
+      defaultIntercepts(): Cypress.Chainable<JQuery<HTMLElement>>;
 
       defaultInterceptsMellomlagring(): Chainable<JQuery<HTMLElement>>;
 
