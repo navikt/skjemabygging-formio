@@ -2,6 +2,9 @@ import * as moment from 'moment';
 
 describe('Custom react components', () => {
   beforeEach(() => {
+    Cypress.automation('remote:debugger:protocol', {
+      command: 'Network.clearBrowserCache',
+    });
     cy.defaultIntercepts();
     cy.intercept('GET', '/fyllut/api/forms/customcomps').as('getForm');
     cy.intercept('GET', '/fyllut/api/translations/customcomps').as('getTranslations');
@@ -239,21 +242,21 @@ describe('Custom react components', () => {
       const VALIDATION_TEXT = `Datoen kan ikke være tidligere enn ${EARLIEST_DATE} eller senere enn ${LATEST_DATE}`;
 
       it("fails when date is before 'earliest date'", () => {
-        cy.findByRole('textbox', { name: LABEL }).type('15.07.2023');
+        cy.findByRole('textbox', { name: LABEL }).type('15.07.2023{esc}');
         cy.clickNextStep();
 
         cy.findAllByText(VALIDATION_TEXT).should('have.length', 1);
       });
 
       it("is ok when date is equal to 'earliest date'", () => {
-        cy.findByRole('textbox', { name: LABEL }).type(EARLIEST_DATE);
+        cy.findByRole('textbox', { name: LABEL }).type(`${EARLIEST_DATE}{esc}`);
         cy.clickNextStep();
 
         cy.findAllByText(VALIDATION_TEXT).should('have.length', 0);
       });
 
       it("is ok when date is equal to 'latest date'", () => {
-        cy.findByRole('textbox', { name: LABEL }).type(LATEST_DATE);
+        cy.findByRole('textbox', { name: LABEL }).type(`${LATEST_DATE}{esc}`);
         cy.clickNextStep();
 
         cy.findAllByText(VALIDATION_TEXT).should('have.length', 0);
