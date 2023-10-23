@@ -16,13 +16,11 @@ const RESPONSE_HEADERS = {
 
 const mockTemaKoder = { ABC: 'Tema 1', XYZ: 'Tema 3', DEF: 'Tema 2' };
 
-const loadRoles = () => Promise.resolve(MOCK_FORMIO_ROLES);
-
-const renderNewFormPage = (formio: { saveForm: Function; loadRoles: Function }) => {
+const renderNewFormPage = (formio: { saveForm: Function }, config = DEFAULT_CONFIG) => {
   render(
     <FeedbackProvider>
       <MemoryRouter>
-        <AppConfigProvider featureToggles={featureToggles}>
+        <AppConfigProvider featureToggles={featureToggles} config={config}>
           <NewFormPage formio={formio} />
         </AppConfigProvider>
       </MemoryRouter>
@@ -46,7 +44,7 @@ describe('NewFormPage', () => {
 
   it('should create a new form with correct path, title and name', async () => {
     const saveForm = vi.fn(() => Promise.resolve(new Response(JSON.stringify({}))));
-    renderNewFormPage({ saveForm, loadRoles });
+    renderNewFormPage({ saveForm });
 
     await waitFor(() => screen.getByText('Opprett nytt skjema'));
     await userEvent.type(screen.getByLabelText('Skjemanummer'), 'NAV 10-20.30 ');
@@ -74,7 +72,7 @@ describe('NewFormPage', () => {
   it('should handle exception from saveForm, with message to user', async () => {
     const saveForm = vi.fn(() => Promise.reject(new Error('Form.io feil')));
     console.error = vi.fn();
-    renderNewFormPage({ saveForm, loadRoles });
+    renderNewFormPage({ saveForm });
 
     await screen.findByText('Opprett nytt skjema');
     await userEvent.type(screen.getByLabelText('Skjemanummer'), 'NAV 10-20.30 ');
@@ -91,7 +89,7 @@ describe('NewFormPage', () => {
 
   it('should set correct access roles', async () => {
     const saveForm = vi.fn(() => Promise.resolve(new Response(JSON.stringify({}))));
-    renderNewFormPage({ saveForm, loadRoles });
+    renderNewFormPage({ saveForm });
 
     await waitFor(() => screen.getByText('Opprett nytt skjema'));
     await userEvent.type(screen.getByLabelText('Skjemanummer'), 'NAV 12-34.56');
@@ -105,16 +103,42 @@ describe('NewFormPage', () => {
     expect(savedForm.access).toHaveLength(2);
     const findAccessObject = (access: ResourceAccess[], type: string) => access.find((a) => a.type === type)!.roles;
     const readAllRoles = findAccessObject(savedForm.access!, 'read_all');
-    expect(readAllRoles).toEqual(['000000000000000000000000']);
+    expect(readAllRoles).toEqual(['3']);
     const updateAllRoles = findAccessObject(savedForm.access!, 'update_all');
-    expect(updateAllRoles).toEqual(['1', '3']);
+    expect(updateAllRoles).toEqual(['1', '2']);
   });
 
   it('should throw exception if role is unknown', async () => {
     console.error = vi.fn();
     const saveForm = vi.fn(() => Promise.resolve(new Response(JSON.stringify({}))));
-    const loadRoles = () => MOCK_FORMIO_ROLES.filter((role) => role.title !== 'Administrator');
-    renderNewFormPage({ saveForm, loadRoles });
+    const config = {
+      formioRoleIds: {
+        authenticated: DEFAULT_CONFIG.formioRoleIds.authenticated,
+        everyone: DEFAULT_CONFIG.formioRoleIds.everyone,
+      },
+    };
+    // @ts-ignore role id removed for test
+    renderNewFormPage({ saveForm }, config);
+
+    await waitFor(() => screen.getByText('Opprett nytt skjema'));
+    await userEvent.type(screen.getByLabelText('Skjemanummer'), 'NAV 12-34.56');
+    await userEvent.type(screen.getByLabelText('Tittel'), 'Tester access array');
+    await userEvent.selectOptions(screen.getByLabelText('Tema'), 'DEF');
+    await userEvent.click(screen.getByRole('button', { name: 'Opprett' }));
+
+    expect(await screen.findByText('Opprettelse av skjema feilet')).toBeInTheDocument();
+    await waitFor(() => expect(console.error).toHaveBeenCalledTimes(1));
+    expect(saveForm).toHaveBeenCalledTimes(0);
+  });
+
+  it('should throw exception if formioRoleIds are missing', async () => {
+    console.error = vi.fn();
+    const saveForm = vi.fn(() => Promise.resolve(new Response(JSON.stringify({}))));
+    const config = {
+      formioRoleIds: undefined,
+    };
+    // @ts-ignore role id removed for test
+    renderNewFormPage({ saveForm }, config);
 
     await waitFor(() => screen.getByText('Opprett nytt skjema'));
     await userEvent.type(screen.getByLabelText('Skjemanummer'), 'NAV 12-34.56');
@@ -128,23 +152,12 @@ describe('NewFormPage', () => {
   });
 });
 
-const MOCK_FORMIO_ROLES = [
-  {
-    _id: '1',
-    title: 'Administrator',
-    description: 'A role for Administrative Users.',
-    machineName: 'abc:administrator',
-  },
-  {
-    _id: '2',
-    title: 'Anonymous',
-    description: 'A role for Anonymous Users.',
-    machineName: 'abc:anonymous',
-  },
-  {
-    _id: '3',
-    title: 'Authenticated',
-    description: 'A role for Authenticated Users.',
-    machineName: 'abc:authenticated',
-  },
-];
+const MOCK_FORMIO_ROLE_IDS = {
+  administrator: '1',
+  authenticated: '2',
+  everyone: '3',
+};
+
+const DEFAULT_CONFIG = {
+  formioRoleIds: MOCK_FORMIO_ROLE_IDS,
+};
