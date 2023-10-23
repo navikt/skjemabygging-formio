@@ -66,6 +66,7 @@ const config: ConfigType = {
     roleIds: {
       administrator: env('FORMIO_ROLE_ID_ADMINISTRATOR'),
       authenticated: env('FORMIO_ROLE_ID_AUTHENTICATED'),
+      everyone: env('FORMIO_ROLE_ID_EVERYONE'),
     },
     formIds: {
       userResource: env('FORMIO_FORM_ID_USER'),

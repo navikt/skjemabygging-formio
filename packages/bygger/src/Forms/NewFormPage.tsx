@@ -1,5 +1,5 @@
 import { Button, Heading } from '@navikt/ds-react';
-import { makeStyles } from '@navikt/skjemadigitalisering-shared-components';
+import { makeStyles, useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
 import { Component, NavFormType, navFormUtils, stringUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import cloneDeep from 'lodash.clonedeep';
 import React, { useState } from 'react';
@@ -28,12 +28,13 @@ interface State {
   form: NavFormType;
 }
 
-interface FormioRole {
-  _id: string;
-  title: RoleTitle;
+interface FormioRoleIds {
+  administrator: string;
+  authenticated: string;
+  everyone: string;
 }
 
-type RoleTitle = 'Administrator' | 'Authenticated' | 'Everyone';
+type RoleTitle = keyof FormioRoleIds;
 
 type RolesCreator = (...titles: RoleTitle[]) => string[];
 
@@ -43,32 +44,23 @@ class FormioRoleError extends Error {
   }
 }
 
-const ROLE_ID_EVERYONE = '000000000000000000000000';
 export const getRoleMapper =
-  (formioRoles: FormioRole[]): RolesCreator =>
+  (formioRoleIds: FormioRoleIds): RolesCreator =>
   (...roleTitles: RoleTitle[]): string[] => {
     return roleTitles.map((title) => {
-      if (title === 'Everyone') {
-        return ROLE_ID_EVERYONE;
+      if (!formioRoleIds) {
+        throw new FormioRoleError('Formio role ids are not present in config');
       }
-      const formioRole = formioRoles.find((role) => role.title === title);
-      if (!formioRole) {
+      const roleId = formioRoleIds[title];
+      if (!roleId) {
         throw new FormioRoleError(`Unknown role with title '${title}'`);
       }
-      return formioRole._id;
+      return roleId;
     });
   };
 
-const fetchFormioRoles = async (formio): Promise<FormioRole[]> => {
-  try {
-    return await formio.loadRoles();
-  } catch (err: any) {
-    console.error(err);
-    throw new FormioRoleError('Unable to fetch formio roles');
-  }
-};
-
 const NewFormPage: React.FC<Props> = ({ formio }): React.ReactElement => {
+  const { config } = useAppConfig();
   const feedbackEmit = useFeedbackEmit();
   const navigate = useNavigate();
   const styles = useStyles();
@@ -109,8 +101,7 @@ const NewFormPage: React.FC<Props> = ({ formio }): React.ReactElement => {
     if (isFormMetadataValid(updatedErrors)) {
       setErrors({});
       try {
-        const formioRoles = await fetchFormioRoles(formio);
-        const toRoleIds = getRoleMapper(formioRoles);
+        const toRoleIds = getRoleMapper(config?.formioRoleIds as FormioRoleIds);
         const createdForm = await formio.saveForm({
           ...state.form,
           properties: {
@@ -120,11 +111,11 @@ const NewFormPage: React.FC<Props> = ({ formio }): React.ReactElement => {
           access: [
             {
               type: 'read_all',
-              roles: toRoleIds('Everyone'),
+              roles: toRoleIds('everyone'),
             },
             {
               type: 'update_all',
-              roles: toRoleIds('Administrator', 'Authenticated'),
+              roles: toRoleIds('administrator', 'authenticated'),
             },
           ],
         });
