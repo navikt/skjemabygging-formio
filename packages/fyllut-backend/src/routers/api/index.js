@@ -19,6 +19,7 @@ import pdl from './pdl';
 import sendInn from './send-inn';
 import sendInnSoknad from './send-inn-soknad';
 import sendInnUtfyltSoknad from './send-inn-utfylt-soknad';
+import status from './status';
 import translations from './translations.js';
 
 const apiRouter = express.Router();
@@ -47,6 +48,7 @@ apiRouter.get('/common-codes/archive-subjects', azureSkjemabyggingProxy, commonC
 apiRouter.post('/pdf/convert', azureSkjemabyggingProxy, exstream.post);
 apiRouter.get('/common-codes/currencies', azureSkjemabyggingProxy, commonCodes.getCurrencies);
 apiRouter.post('/log/:level', rateLimiter(60000, 60), log.post);
+apiRouter.get('/health/status', status.get);
 
 if (featureToggles.enablePdl) {
   apiRouter.get('/pdl/person/:id', tokenxPdl, pdl.person);
