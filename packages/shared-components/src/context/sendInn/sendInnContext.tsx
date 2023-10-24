@@ -7,7 +7,7 @@ import {
   Submission,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import React, { createContext, useCallback, useContext, useEffect, useReducer, useState } from 'react';
-import { useHref, useLocation, useSearchParams } from 'react-router-dom';
+import { useLocation, useSearchParams } from 'react-router-dom';
 import {
   SendInnSoknadResponse,
   createSoknad,
@@ -51,10 +51,9 @@ const SendInnProvider = ({
   onFyllutStateChange,
 }: SendInnProviderProps) => {
   const appConfig = useAppConfig();
-  const { app, submissionMethod, featureToggles, logger } = appConfig;
+  const { app, submissionMethod, featureToggles, logger, baseUrl } = appConfig;
   const { pathname } = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
-  const basePath = useHref('/');
 
   const isMellomlagringEnabled =
     app === 'fyllut' && submissionMethod === 'digital' && !!featureToggles?.enableMellomlagring;
@@ -108,7 +107,7 @@ const SendInnProvider = ({
         // Redirect to start of schema if the application is not found. Want a full refresh here to not have to clear the existing state
         if (error.status == 404) {
           const formPath = pathname.split('/')[1];
-          window.location.assign(formPath ? `${basePath}/${formPath}` : basePath);
+          window.location.assign(formPath ? `${baseUrl}/${formPath}` : `${baseUrl}`);
           return;
         }
 
