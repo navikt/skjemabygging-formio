@@ -86,6 +86,7 @@ describe('Mellomlagring', () => {
       cy.intercept('GET', '/fyllut/api/send-inn/soknad/8e3c3621-76d7-4ebd-90d4-34448ebcccc3').as(
         'getMellomlagringValid',
       );
+      cy.intercept('GET', '/fyllut/api/send-inn/soknad/not-found').as('getMellomlagringNotFound');
       cy.intercept('GET', `/fyllut/api/send-inn/soknad/f99dc639-add1-468f-b4bb-961cdfd1e599`).as(
         'getMellomlagringForInnsendingWithUpdateError',
       );
@@ -132,6 +133,16 @@ describe('Mellomlagring', () => {
       cy.findByRole('heading', { name: TEXTS.statiske.introPage.title }).should('exist');
       cy.clickStart();
       cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
+    });
+
+    it('redirects to start of application if an application with the "innsendingsId" from the url is not found', () => {
+      cy.visit('/fyllut/testmellomlagring/oppsummering?sub=digital&innsendingsId=not-found&lang=nb-NO');
+      cy.wait('@getTestMellomlagringForm');
+      cy.wait('@getMellomlagringNotFound');
+      cy.url().should('not.include', 'not-found');
+      cy.url().should('not.include', 'sub=digital');
+      cy.url().should('not.include', 'oppsummering');
+      cy.url().should('equal', `${Cypress.env('BASE_URL')}/fyllut/testmellomlagring`);
     });
 
     it('lets you delete mellomlagring', () => {

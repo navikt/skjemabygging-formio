@@ -30,8 +30,6 @@ export const mellomlagringReducer = (
 
 const getError = (type: ErrorType, savedDate?: string): MellomlagringError => {
   switch (type) {
-    case 'NOT FOUND':
-      return { type, message: TEXTS.statiske.mellomlagringError.get.notFoundMessage };
     case 'GET FAILED':
       return {
         type,

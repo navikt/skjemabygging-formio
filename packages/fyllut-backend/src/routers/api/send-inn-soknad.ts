@@ -33,8 +33,7 @@ const sendInnSoknad = {
       const sanitizedInnsendingsId = sanitizeInnsendingsId(req.params.innsendingsId);
       const errorMessage = validateInnsendingsId(sanitizedInnsendingsId, getErrorMessage);
       if (errorMessage) {
-        next(new Error(errorMessage));
-        return;
+        return res.sendStatus(404);
       }
 
       const sendInnResponse = await fetch(
