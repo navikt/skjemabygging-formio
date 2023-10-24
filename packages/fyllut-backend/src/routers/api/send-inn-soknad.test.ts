@@ -38,7 +38,7 @@ describe('[endpoint] send-inn/soknad', () => {
       expect(sendInnNockScope.isDone()).toBe(true);
     });
 
-    it('returns with error if innsendingsId is invalid', async () => {
+    it('returns with 404 if innsendingsId is invalid', async () => {
       const req = mockRequestWithPidAndTokenX({
         headers: { AzureAccessToken: 'azure-access-token' },
         body: requestBody,
@@ -47,12 +47,7 @@ describe('[endpoint] send-inn/soknad', () => {
       const res = mockResponse();
       const next = vi.fn();
       await sendInnSoknad.get(req, res, next);
-      expect(next).toHaveBeenCalledTimes(1);
-      const error: any = next.mock.calls[0][0];
-      expect(error.message).toBe(
-        '1234-fake-innsendingsId er ikke en gyldig innsendingsId. Kan ikke hente mellomlagret søknad.',
-      );
-      expect(res.json).not.toHaveBeenCalled();
+      expect(res.sendStatus).toHaveBeenCalledWith(404);
     });
 
     it('calls next if SendInn returns error', async () => {
