@@ -21,20 +21,23 @@ _(Les mer om bruk av Github npm registry i NAV her: https://github.com/navikt/fr
 
 ## Kommandoer
 
-| Kommando            | Beskrivelse                                                                     |
-| ------------------- | ------------------------------------------------------------------------------- |
-| yarn install        | laster ned avhengigheter                                                        |
-| yarn start          | starter både bygger og fyllut, inkludert backend (husk yarn:watch om nødvendig) |
-| yarn start:bygger   | starter bygger, inkludert backend                                               |
-| yarn start:fyllut   | starter fyllut, inkludert backend                                               |
-| yarn build          | bygger react-applikasjonene, ikke nødvendig for lokal utvikling (bruk start)    |
-| yarn test           | kjører alle tester                                                              |
-| yarn test:coverage  | kjører alle tester med rapportering av dekningsgrad                             |
-| yarn cypress:bygger | kjører Cypress-tester for bygger                                                |
-| yarn cypress:fyllut | kjører Cypress-tester for fyllut                                                |
-| yarn check-types    | sjekker at typene er korrekte                                                   |
-| yarn clean          | sletter node_modules / dist / build / coverage for alle pakker i monorepoet     |
-| yarn lint           | se etter problemer i koden                                                      |
+| Kommando            | Beskrivelse                                                                  |
+| ------------------- | ---------------------------------------------------------------------------- |
+| yarn install        | laster ned avhengigheter                                                     |
+| yarn start          | starter både bygger og fyllut, inkludert backend                             |
+| yarn start:bygger   | starter bygger, inkludert backend                                            |
+| yarn start:fyllut   | starter fyllut, inkludert backend                                            |
+| yarn build          | bygger react-applikasjonene, ikke nødvendig for lokal utvikling (bruk start) |
+| yarn preview:bygger | starter bygger fra dist-mappen                                               |
+| yarn preview:fyllut | starter fyllut fra dist-mappen                                               |
+| yarn test           | kjører alle tester                                                           |
+| yarn test:coverage  | kjører alle tester med rapportering av dekningsgrad                          |
+| yarn cypress:bygger | kjører Cypress-tester for bygger                                             |
+| yarn cypress:fyllut | kjører Cypress-tester for fyllut                                             |
+| yarn mocks:fyllut   | starter Mocks Server for fyllut, brukes ved kjøring av Cypress-tester        |
+| yarn check-types    | sjekker at typene er korrekte                                                |
+| yarn clean          | sletter node_modules / dist / build / coverage for alle pakker i monorepoet  |
+| yarn lint           | se etter problemer i koden                                                   |
 
 ## Lokal konfigurasjon med dotenv
 
@@ -112,6 +115,25 @@ Se [GitHub docs](https://docs.github.com/en/authentication/keeping-your-account-
 .
 
 Velg `repo` under `scopes`, og _authorize_ dette token for organisasjon `navikt` etter opprettelsen (_Configure SSO_).
+
+## Cypress-tester
+
+### Kjøre mot bygd kode
+
+På GitHub går cypress-testene mot fyllut og bygger kjørende med bygd kode. Lokalt kjører man da først `yarn build`,
+og så `yarn preview:bygger` eller `yarn preview:fyllut` (starter app fra dist-mappen). For 'fyllut må man i tillegg
+kjøre opp Mocks Server med `yarn mocks:fyllut`. Deretter starter man cypress-testene med `yarn cypress:bygger`
+eller `yarn cypress:fyllut`.
+
+### Kjøre mot utviklingsmiljø
+
+Man kan også kjøre cypress-testene mot vanlig utviklingsmiljø, dvs. `yarn start:bygger` eller `yarn start:fyllut`, men
+for fyllut må man da bruke verdiene fra `fyllut-backend/.env.test` i `fyllut-backend/.env` og kjøre opp
+`yarn mocks:fyllut` pga. at cypress-testene basererer seg på responsdata fra Mocks Server.
+
+Ved kjøring mot lokalt utviklingsmiljø får man ikke testet eventuell logikk som skjer ved lasting av index.html siden
+det ikke er den faktiske backenden som håndterer det under lokal utvikling, så hvis noen av testene har sjekker på
+koden som kjøres da vil de feile ved kjøring på denne måten.
 
 ## Fagsystemsonen
 
