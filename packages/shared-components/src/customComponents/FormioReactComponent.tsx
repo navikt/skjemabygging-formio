@@ -1,5 +1,5 @@
-import ReactComponent from "./ReactComponent";
-import { createRoot } from "react-dom/client";
+import { createRoot } from 'react-dom/client';
+import ReactComponent from './ReactComponent';
 
 const FormioReactComponent = class extends ReactComponent {
   input = null;
@@ -28,12 +28,13 @@ const FormioReactComponent = class extends ReactComponent {
   renderReact(element) {}
 
   setValue(value, flags = {}) {
-    if (!this.shouldSetValue) {
-      super.setValue(value, flags);
+    const redraw = JSON.stringify(value) !== JSON.stringify(this.dataForSetting);
+    super.setValue(value, flags);
+    if (redraw) {
       super.redraw();
-    } else {
-      super.setValue(value, flags);
     }
+
+    this.updateValue(value, flags);
   }
 
   focus() {
