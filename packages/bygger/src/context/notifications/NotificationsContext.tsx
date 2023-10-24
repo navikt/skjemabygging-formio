@@ -1,7 +1,7 @@
 import { useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
+import Pusher from 'pusher-js';
 import React, { createContext, useContext, useEffect, useMemo } from 'react';
 import useMessageQueue, { Message } from '../../hooks/useMessageQueue';
-import { createPusher } from '../../util/pusher';
 
 export const CHANNEL = 'fyllut-deployment';
 export const EVENT = { success: 'success', failure: 'failure' };
@@ -11,6 +11,15 @@ interface ContextValue {
   clearAll: () => void;
 }
 const PusherNotificationContext = createContext<ContextValue>({ messages: [], clearAll: () => {} });
+
+const createPusher = (config) => {
+  if (config && config.pusherKey) {
+    return new Pusher(config.pusherKey as string, {
+      cluster: config.pusherCluster as string,
+    });
+  }
+  return { subscribe: () => ({ bind: () => {}, unbind: () => {} }), unsubscribe: () => {}, disconnect: () => {} };
+};
 
 const PusherNotificationsProvider = ({ children }: { children: React.ReactElement }) => {
   const [messages, messageQueue] = useMessageQueue();
