@@ -105,10 +105,10 @@ const SendInnProvider = ({
           setInitStatus('done');
         }
       } catch (error: any) {
-        // Redirect to start of schema if the application is not found
+        // Redirect to start of schema if the application is not found. Want a full refresh here to not have to clear the existing state
         if (error.status == 404) {
-          const schemaName = pathname.split('/')[1];
-          window.location.href = schemaName ? `${basePath}/${schemaName}` : basePath;
+          const formPath = pathname.split('/')[1];
+          window.location.assign(formPath ? `${basePath}/${formPath}` : basePath);
           return;
         }
 

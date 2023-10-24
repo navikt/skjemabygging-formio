@@ -28,7 +28,6 @@ export const statiske = {
     get: {
       title: 'Beklager, vi kunne ikke hente den lagrede søknaden akkurat nå.',
       message: 'Prøv igjen senere, eller fyll ut en ny søknad.',
-      notFoundMessage: 'Vi kunne ikke finne denne søknaden.',
     },
     create: {
       title: 'Beklager, vi har midlertidige tekniske problemer.',
