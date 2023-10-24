@@ -7,7 +7,7 @@ import {
   Submission,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import React, { createContext, useCallback, useContext, useEffect, useReducer, useState } from 'react';
-import { useLocation, useSearchParams } from 'react-router-dom';
+import { useHref, useLocation, useSearchParams } from 'react-router-dom';
 import {
   SendInnSoknadResponse,
   createSoknad,
@@ -54,6 +54,7 @@ const SendInnProvider = ({
   const { app, submissionMethod, featureToggles, logger } = appConfig;
   const { pathname } = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
+  const basePath = useHref('/');
 
   const isMellomlagringEnabled =
     app === 'fyllut' && submissionMethod === 'digital' && !!featureToggles?.enableMellomlagring;
@@ -104,7 +105,13 @@ const SendInnProvider = ({
           setInitStatus('done');
         }
       } catch (error: any) {
-        dispatchFyllutMellomlagring({ type: 'error', error: error.status === 404 ? 'NOT FOUND' : 'GET FAILED' });
+        if (error.status == 404) {
+          const schemaName = pathname.split('/')[1];
+          window.location.href = schemaName ? `${basePath}/${schemaName}` : basePath;
+          return;
+        }
+
+        dispatchFyllutMellomlagring({ type: 'error', error: 'GET FAILED' });
         setInitStatus('error');
       }
     };
