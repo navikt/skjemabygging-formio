@@ -105,6 +105,7 @@ const SendInnProvider = ({
           setInitStatus('done');
         }
       } catch (error: any) {
+        // Redirect to start of schema if the application is not found
         if (error.status == 404) {
           const schemaName = pathname.split('/')[1];
           window.location.href = schemaName ? `${basePath}/${schemaName}` : basePath;
