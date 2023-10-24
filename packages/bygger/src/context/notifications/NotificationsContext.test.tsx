@@ -1,22 +1,9 @@
 import { AppConfigProvider } from '@navikt/skjemadigitalisering-shared-components';
 import { act } from '@testing-library/react';
-import { renderHook } from '@testing-library/react-hooks';
+import { cleanup, renderHook } from '@testing-library/react-hooks';
 import Pusher, { Channel } from 'pusher-js';
+import { Mock } from 'vitest';
 import PusherNotificationsProvider, { CHANNEL, EVENT, usePusherNotifications } from './NotificationsContext';
-
-const channelSubscriptions = {};
-
-vi.spyOn(Pusher.prototype, 'subscribe').mockImplementation((channel) => {
-  return {
-    bind: (eventName, callback) => {
-      if (!channelSubscriptions[channel]) channelSubscriptions[channel] = {};
-      channelSubscriptions[channel][eventName] = callback;
-    },
-    unbind: (eventName) => {
-      channelSubscriptions[channel][eventName] = undefined;
-    },
-  } as Channel;
-});
 
 const wrapper = ({ children }) => (
   <AppConfigProvider config={{ pusherKey: 'pusher', pusherCluster: 'eu' }}>
@@ -25,6 +12,30 @@ const wrapper = ({ children }) => (
 );
 
 describe('NotificationsContext', () => {
+  let channelSubscriptions = {};
+  let mockUnsubscribe: Mock;
+  let mockDisconnect: Mock;
+
+  beforeEach(() => {
+    mockUnsubscribe = vi.fn();
+    mockDisconnect = vi.fn();
+    vi.spyOn(Pusher.prototype, 'unsubscribe').mockImplementation(mockUnsubscribe);
+    vi.spyOn(Pusher.prototype, 'disconnect').mockImplementation(mockDisconnect);
+    vi.spyOn(Pusher.prototype, 'subscribe').mockImplementation((channel) => {
+      return {
+        bind: (eventName, callback) => {
+          if (!channelSubscriptions[channel]) channelSubscriptions[channel] = {};
+          channelSubscriptions[channel][eventName] = callback;
+        },
+        unbind: (eventName) => {
+          channelSubscriptions[channel][eventName] = undefined;
+        },
+      } as Channel;
+    });
+  });
+  afterEach(() => {
+    channelSubscriptions = {};
+  });
   describe('usePusherNotifications', () => {
     it('initially returns no messages', () => {
       const { result } = renderHook(() => usePusherNotifications(), { wrapper });
@@ -45,6 +56,13 @@ describe('NotificationsContext', () => {
       const { messages } = result.current;
       expect(messages).toHaveLength(1);
       expect(messages[0].type).toBe('error');
+    });
+
+    it('unsubscribes and disconnects on unmount', () => {
+      renderHook(() => usePusherNotifications(), { wrapper });
+      cleanup();
+      expect(mockUnsubscribe).toHaveBeenCalledWith('fyllut-deployment');
+      expect(mockDisconnect).toHaveBeenCalledTimes(1);
     });
 
     describe('When several messages are emitted', () => {
