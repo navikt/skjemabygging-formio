@@ -14,6 +14,7 @@ export type SendInnConfig = {
   host: string;
   tokenxClientId: string;
   paths: {
+    aktiveOpprettedeSoknader: string;
     leggTilVedlegg: string;
     soknad: string;
     utfyltSoknad: string;

@@ -29,6 +29,7 @@ const sendInnConfig: SendInnConfig = {
   host: process.env.SEND_INN_HOST!,
   tokenxClientId: process.env.SEND_INN_TOKEN_X_CLIENT_ID!,
   paths: {
+    aktiveOpprettedeSoknader: '/frontend/v1/soknad',
     leggTilVedlegg: '/fyllUt/v1/leggTilVedlegg', //Deprecated
     soknad: '/fyllUt/v1/soknad',
     utfyltSoknad: '/fyllUt/v1/utfyltSoknad',
