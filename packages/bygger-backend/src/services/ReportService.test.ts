@@ -448,7 +448,7 @@ describe('ReportService', () => {
         // innsending: KUN_PAPIR, ettersending: KUN_PAPIR, 1 attachments
         expect(formFields3[report.getHeaderIndex(HEADER_INNSENDING_DIGITAL)]).toBe(``);
         expect(formFields3[report.getHeaderIndex(HEADER_INNSENDING_PAPER)]).toBe(`${fyllutBaseUrl}/test3?sub=paper`);
-        expect(formFields3[report.getHeaderIndex(HEADER_ETTERSENDING_DIGITAL)]).toBe(``); // no attachments
+        expect(formFields3[report.getHeaderIndex(HEADER_ETTERSENDING_DIGITAL)]).toBe(``);
         expect(formFields3[report.getHeaderIndex(HEADER_ETTERSENDING_PAPER)]).toBe(
           `${ettersendingBaseUrl}/test3?sub=paper`,
         );
