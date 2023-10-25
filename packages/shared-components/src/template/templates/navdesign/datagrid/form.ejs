@@ -133,18 +133,6 @@
         {% }) %}
         {% if (ctx.hasExtraColumn) { %}
           <div>
-          {% if (!ctx.builder && ctx.hasAddButton && ctx.hasBottomSubmit && index === ctx.rows.length - 1) { %}
-            <button
-              class="navds-button navds-button--secondary navds-button--small"
-              ref="{{ctx.datagridKey}}-addRow"
-              type="button"
-            >
-            <span class="navds-button__icon">
-              <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M11 13v8h2v-8h8v-2h-8V3h-2v8H3v2h8Z" fill="currentColor"></path></svg>
-            </span>
-              <span class="navds-label" aria-live="polite">{{ctx.t(ctx.component.addAnother) || ctx.t('Legg til')}}</span>
-            </button>
-          {% } %}
           {% if (!ctx.builder && ctx.hasRemoveButtons && (index > 0 || ctx.component.initEmpty || ctx.rows.length > 1)) { %}
               <button
                 type="button"
@@ -165,6 +153,18 @@
           {% } %}
         {% } %}
       </div>
+      {% if (!ctx.builder && ctx.hasAddButton && ctx.hasBottomSubmit && index === ctx.rows.length - 1) { %}
+        <button
+          class="navds-button navds-button--secondary navds-button--small"
+          ref="{{ctx.datagridKey}}-addRow"
+          type="button"
+        >
+        <span class="navds-button__icon">
+          <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M11 13v8h2v-8h8v-2h-8V3h-2v8H3v2h8Z" fill="currentColor"></path></svg>
+        </span>
+          <span class="navds-label" aria-live="polite">{{ctx.t(ctx.component.addAnother) || ctx.t('Legg til')}}</span>
+        </button>
+      {% } %}
     {% }) %}
   </fieldset>
 {% } %}
