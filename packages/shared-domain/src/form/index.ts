@@ -132,6 +132,11 @@ export interface ComponentConditional {
   json?: string;
 }
 
+export interface ResourceAccess {
+  type: string;
+  roles: string[];
+}
+
 export interface NavFormType {
   _id?: string;
   tags: string[];
@@ -143,12 +148,12 @@ export interface NavFormType {
   modified?: string;
   properties: FormPropertiesType;
   components: Component[];
+  access?: ResourceAccess[];
 }
 
 export type SubmissionData = Record<string, string | number | boolean | any[] | object>;
 
 type ErrorType =
-  | 'NOT FOUND'
   | 'GET FAILED'
   | 'CREATE FAILED'
   | 'UPDATE FAILED'

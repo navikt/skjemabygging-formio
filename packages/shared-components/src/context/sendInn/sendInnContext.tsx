@@ -51,7 +51,7 @@ const SendInnProvider = ({
   onFyllutStateChange,
 }: SendInnProviderProps) => {
   const appConfig = useAppConfig();
-  const { app, submissionMethod, featureToggles, logger } = appConfig;
+  const { app, submissionMethod, featureToggles, logger, baseUrl } = appConfig;
   const { pathname } = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -104,7 +104,14 @@ const SendInnProvider = ({
           setInitStatus('done');
         }
       } catch (error: any) {
-        dispatchFyllutMellomlagring({ type: 'error', error: error.status === 404 ? 'NOT FOUND' : 'GET FAILED' });
+        // Redirect to start of schema if the application is not found. Want a full refresh here to not have to clear the existing state
+        if (error.status == 404) {
+          const formPath = pathname.split('/')[1];
+          window.location.assign(formPath ? `${baseUrl}/${formPath}` : `${baseUrl}`);
+          return;
+        }
+
+        dispatchFyllutMellomlagring({ type: 'error', error: 'GET FAILED' });
         setInitStatus('error');
       }
     };

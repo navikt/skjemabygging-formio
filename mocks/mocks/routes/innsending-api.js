@@ -122,6 +122,17 @@ module.exports = [
         },
       },
       {
+        id: 'not-found',
+        type: 'json',
+        options: {
+          status: 404,
+          body: {
+            message: 'Fant ikke søknad med innsendingsid not-found',
+            errorCode: 'resourceNotFound',
+          },
+        },
+      },
+      {
         id: 'failure',
         type: 'text',
         options: {

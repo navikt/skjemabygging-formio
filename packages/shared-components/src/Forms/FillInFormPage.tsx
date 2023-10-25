@@ -6,7 +6,7 @@ import { useAppConfig } from '../configContext';
 import { useAmplitude } from '../context/amplitude';
 import { useLanguages } from '../context/languages';
 import { useSendInn } from '../context/sendInn/sendInnContext';
-import { ErrorPage, LoadingComponent } from '../index';
+import { LoadingComponent } from '../index';
 import { scrollToAndSetFocus } from '../util/focus-management.js';
 import { getPanelSlug } from '../util/form';
 import urlUtils from '../util/url';
@@ -51,7 +51,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
   }, [loggSkjemaApnet, submissionMethod]);
 
   useEffect(() => {
-    if (isMellomlagringEnabled && mellomlagringError?.type !== 'NOT FOUND') {
+    if (isMellomlagringEnabled) {
       startMellomlagring(submission);
     }
   }, [submission, startMellomlagring, isMellomlagringEnabled]);
@@ -86,10 +86,6 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
 
   if (featureToggles?.enableTranslations && !translationsForNavForm) {
     return null;
-  }
-
-  if (mellomlagringError?.type === 'NOT FOUND') {
-    return <ErrorPage errorMessage={mellomlagringError.message} />;
   }
 
   if (isMellomlagringEnabled && !isMellomlagringReady && !mellomlagringError) {
