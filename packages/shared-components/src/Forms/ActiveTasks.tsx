@@ -18,10 +18,19 @@ interface Props {
 }
 
 const useStyles = makeStyles({
+  section: {
+    maxWidth: '38rem',
+    marginBottom: '3.75rem',
+  },
+  linkPanel: {
+    paddingBottom: '0.75rem',
+  },
   separator: {
-    border: 'solid',
+    border: `1px solid var(--a-grayalpha-300)`,
+    marginBottom: `1.75rem`,
   },
 });
+
 const ActiveTasks = ({ form, formUrl }: Props) => {
   const appConfig = useAppConfig();
   const { http, baseUrl } = appConfig;
@@ -53,12 +62,13 @@ const ActiveTasks = ({ form, formUrl }: Props) => {
 
   return (
     <div>
-      <section>
+      <section className={styles.section}>
         <Heading size={'medium'}>{`Du har ${(activeTasks ?? []).length} påbegynte utkast til denne søknaden`}</Heading>
         <BodyShort>Vil du fortsette eller starte på en ny?</BodyShort>
         {activeTasks.map((task) => (
           <LinkPanel
             key={task.innsendingsId}
+            className={styles.linkPanel}
             title={'Fortsett på utkast'}
             href={`${baseUrl}${formUrl}?innsendingsId=${task.innsendingsId}${
               searchParams.toString() && `&${searchParams.toString()}`
@@ -67,26 +77,30 @@ const ActiveTasks = ({ form, formUrl }: Props) => {
           />
         ))}
         <LinkPanel
+          className={styles.linkPanel}
+          variant="secondary"
           href={`${baseUrl}${formUrl}${searchParams.toString() && `?${searchParams.toString()}`}`}
           title={'Start på ny'}
         />
       </section>
       {hasSubmitted && (
-        <section>
+        <section className={styles.section}>
           <Heading size={'medium'}>{`Du har en eller flere innsendte søknader som mangler vedlegg`}</Heading>
           <BodyShort>Vil du ettersende vedlegg?</BodyShort>
-          <LinkPanel href={`/minside`} title={'Ettersend vedlegg'} />
+          <LinkPanel className={styles.linkPanel} href={`/minside`} title={'Ettersend vedlegg'} />
         </section>
       )}
       <div className={styles.separator} />
-      <Button
-        variant="secondary"
-        onClick={() => {
-          window.location.assign('www.nav.no');
-        }}
-      >
-        Avbryt
-      </Button>
+      <div className="button-row">
+        <Button
+          variant="secondary"
+          onClick={() => {
+            window.location.assign('www.nav.no');
+          }}
+        >
+          Avbryt
+        </Button>
+      </div>
     </div>
   );
 };
