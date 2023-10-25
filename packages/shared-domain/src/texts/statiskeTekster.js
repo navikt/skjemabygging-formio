@@ -24,6 +24,16 @@ export const statiske = {
       digital: 'Send digitalt (krever innlogging)',
     },
   },
+  paabegynt: {
+    activeTasksHeading: 'Du har {{amount}} påbegynte utkast til denne søknaden',
+    oneActiveTaskHeading: 'Du har ett påbegynt utkast til denne søknaden',
+    activeTasksBody: 'Vil du fortsette eller starte på en ny?',
+    continueTask: 'Fortsett på utkast',
+    startNewTask: 'Start på ny',
+    sendAttachmentsHeading: 'Du har en eller flere innsendte søknader som mangler vedlegg',
+    sendAttachmentsBody: 'Vil du ettersende vedlegg?',
+    sendAttachment: 'Ettersend vedlegg',
+  },
   mellomlagringError: {
     get: {
       title: 'Beklager, vi kunne ikke hente den lagrede søknaden akkurat nå.',

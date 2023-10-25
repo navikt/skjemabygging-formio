@@ -1,11 +1,12 @@
 import { DocPencilIcon, FileExportIcon, PencilIcon } from '@navikt/aksel-icons';
 import { BodyShort, Button, Heading } from '@navikt/ds-react';
-import { NavFormType, dateUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { NavFormType, TEXTS, dateUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import LoadingComponent from '../components/LoadingComponent';
 import LinkPanel from '../components/linkPanel/LinkPanel';
 import { useAppConfig } from '../configContext';
+import { useLanguages } from '../context/languages';
 import makeStyles from '../util/jss';
 
 type Task = {
@@ -30,7 +31,7 @@ const useStyles = makeStyles({
     marginBottom: '1.25rem',
   },
   linkPanel: {
-    paddingBottom: '0.75rem',
+    marginBottom: '0.75rem',
   },
   separator: {
     border: `1px solid var(--a-grayalpha-300)`,
@@ -45,6 +46,7 @@ const ActiveTasks = ({ form, formUrl }: Props) => {
   const appConfig = useAppConfig();
   const { http, baseUrl } = appConfig;
   const [searchParams] = useSearchParams();
+  const { translate } = useLanguages();
   const [activeTasks, setActiveTasks] = useState<Task[]>();
   const [hasSubmitted, setHasSubmitted] = useState(false);
 
@@ -73,19 +75,21 @@ const ActiveTasks = ({ form, formUrl }: Props) => {
   return (
     <div>
       <section className={styles.section}>
-        <Heading className={styles.sectionHeading} level="2" size={'medium'}>{`Du har ${
-          (activeTasks ?? []).length
-        } påbegynte utkast til denne søknaden`}</Heading>
-        <BodyShort className={styles.sectionBody}>Vil du fortsette eller starte på en ny?</BodyShort>
+        <Heading className={styles.sectionHeading} level="2" size={'medium'}>
+          {activeTasks.length === 1
+            ? translate(TEXTS.statiske.paabegynt.oneActiveTaskHeading)
+            : translate(TEXTS.statiske.paabegynt.activeTasksHeading, { amount: activeTasks.length })}
+        </Heading>
+        <BodyShort className={styles.sectionBody}>{translate(TEXTS.statiske.paabegynt.activeTasksBody)}</BodyShort>
         {activeTasks.map((task) => (
           <LinkPanel
             key={task.innsendingsId}
             className={styles.linkPanel}
-            title={'Fortsett på utkast'}
+            title={translate(TEXTS.statiske.paabegynt.continueTask)}
             href={`${baseUrl}${formUrl}?innsendingsId=${task.innsendingsId}${
               searchParams.toString() && `&${searchParams.toString()}`
             }`}
-            body={`Sist lagret ${dateUtils.toLocaleDateAndTime(task.endretDato)}`}
+            body={`${translate(TEXTS.grensesnitt.mostRecentSave)} ${dateUtils.toLocaleDateAndTime(task.endretDato)}.`}
             icon={<DocPencilIcon className={styles.icon} fontSize="1.5rem" aria-hidden />}
           />
         ))}
@@ -93,22 +97,22 @@ const ActiveTasks = ({ form, formUrl }: Props) => {
           className={styles.linkPanel}
           variant="secondary"
           href={`${baseUrl}${formUrl}${searchParams.toString() && `?${searchParams.toString()}`}`}
-          title={'Start på ny'}
+          title={translate(TEXTS.statiske.paabegynt.startNewTask)}
           icon={<PencilIcon className={styles.icon} fontSize="1.5rem" aria-hidden />}
         />
       </section>
       {hasSubmitted && (
         <section className={styles.section}>
-          <Heading
-            className={styles.sectionHeading}
-            level="2"
-            size={'medium'}
-          >{`Du har en eller flere innsendte søknader som mangler vedlegg`}</Heading>
-          <BodyShort className={styles.sectionBody}>Vil du ettersende vedlegg?</BodyShort>
+          <Heading className={styles.sectionHeading} level="2" size={'medium'}>
+            {translate(TEXTS.statiske.paabegynt.sendAttachmentsHeading)}
+          </Heading>
+          <BodyShort className={styles.sectionBody}>
+            {translate(TEXTS.statiske.paabegynt.sendAttachmentsBody)}
+          </BodyShort>
           <LinkPanel
             className={styles.linkPanel}
             href={`/minside`}
-            title={'Ettersend vedlegg'}
+            title={translate(TEXTS.statiske.paabegynt.sendAttachment)}
             icon={<FileExportIcon className={styles.icon} fontSize="1.5rem" aria-hidden />}
           />
         </section>
