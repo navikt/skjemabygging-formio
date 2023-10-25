@@ -2,6 +2,7 @@ import { NavFormType, ReportDefinition, navFormUtils } from '@navikt/skjemadigit
 import { stringify } from 'csv-stringify';
 import { DateTime } from 'luxon';
 import { Writable } from 'stream';
+import config from '../config';
 import { FormioService } from './formioService';
 
 const ReportMap: Record<string, ReportDefinition> = {
@@ -77,13 +78,22 @@ class ReportService {
       'sist endret',
       'endret av',
       'innsending',
+      'ettersending',
       'signaturfelt',
       'path',
       'har vedlegg',
       'antall vedlegg',
       'vedleggsnavn',
+      'innsending (digital)',
+      'innsending (papir)',
+      'ettersending (digital)',
+      'ettersending (papir)',
     ];
-    const allForms = await this.formioService.getAllForms(undefined, true, 'title,path,properties,components');
+    const allForms = await this.formioService.getAllForms(
+      undefined,
+      true,
+      'title,path,properties,components.type,components.isAttachmentPanel,components.components.properties',
+    );
     const stringifier = stringify({ header: true, columns, delimiter: ';' });
     stringifier.pipe(writableStream);
     allForms.filter(notTestForm).forEach((form) => {
@@ -93,7 +103,25 @@ class ReportService {
       const joinedAttachmentNames = attachmentTitles.join(',');
 
       const { title, properties, path } = form;
-      const { published, publishedBy, modified, modifiedBy, innsending, tema, signatures } = properties;
+      const { published, publishedBy, modified, modifiedBy, innsending, tema, signatures, ettersending } = properties;
+
+      const innsendingUrl = config.isProduction
+        ? `https://www.nav.no/fyllut/${form.path}`
+        : `https://fyllut-preprod.intern.dev.nav.no/fyllut/${form.path}`;
+      const ettersendingUrl = config.isProduction
+        ? `https://www.nav.no/fyllut-ettersending/detaljer/${form.path}`
+        : `https://fyllut-ettersending.intern.dev.nav.no/fyllut-ettersending/detaljer/${form.path}`;
+
+      const digitalInnsendingUrl = navFormUtils.isDigital('innsending', form)
+        ? `${innsendingUrl}?sub=digital`
+        : undefined;
+      const paperInnsendingUrl = navFormUtils.isPaper('innsending', form) ? `${innsendingUrl}?sub=paper` : undefined;
+
+      const digitalEttersendingUrl =
+        navFormUtils.isDigital('ettersending', form) && hasAttachment ? `${ettersendingUrl}?sub=digital` : undefined;
+      const paperEttersendingUrl =
+        navFormUtils.isPaper('ettersending', form) && hasAttachment ? `${ettersendingUrl}?sub=paper` : undefined;
+
       let unpublishedChanges: string = '';
       if (modified && published) {
         const modifiedDate = DateTime.fromISO(modified);
@@ -111,11 +139,16 @@ class ReportService {
         modified,
         modifiedBy,
         innsending,
+        ettersending,
         numberOfSignatures,
         path,
         hasAttachment ? 'ja' : 'nei',
         numberOfAttachments,
         joinedAttachmentNames,
+        digitalInnsendingUrl || '',
+        paperInnsendingUrl || '',
+        digitalEttersendingUrl || '',
+        paperEttersendingUrl || '',
       ]);
     });
     stringifier.end();
