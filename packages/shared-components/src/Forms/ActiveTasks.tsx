@@ -1,3 +1,4 @@
+import { DocPencilIcon, FileExportIcon, PencilIcon } from '@navikt/aksel-icons';
 import { BodyShort, Button, Heading } from '@navikt/ds-react';
 import { NavFormType, dateUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useState } from 'react';
@@ -28,6 +29,9 @@ const useStyles = makeStyles({
   separator: {
     border: `1px solid var(--a-grayalpha-300)`,
     marginBottom: `1.75rem`,
+  },
+  icon: {
+    color: 'var(--a-deepblue-500)',
   },
 });
 
@@ -74,6 +78,7 @@ const ActiveTasks = ({ form, formUrl }: Props) => {
               searchParams.toString() && `&${searchParams.toString()}`
             }`}
             body={`Sist lagret ${dateUtils.toLocaleDateAndTime(task.endretDato)}`}
+            icon={<DocPencilIcon className={styles.icon} fontSize="1.5rem" aria-hidden />}
           />
         ))}
         <LinkPanel
@@ -81,13 +86,19 @@ const ActiveTasks = ({ form, formUrl }: Props) => {
           variant="secondary"
           href={`${baseUrl}${formUrl}${searchParams.toString() && `?${searchParams.toString()}`}`}
           title={'Start på ny'}
+          icon={<PencilIcon className={styles.icon} fontSize="1.5rem" aria-hidden />}
         />
       </section>
       {hasSubmitted && (
         <section className={styles.section}>
           <Heading size={'medium'}>{`Du har en eller flere innsendte søknader som mangler vedlegg`}</Heading>
           <BodyShort>Vil du ettersende vedlegg?</BodyShort>
-          <LinkPanel className={styles.linkPanel} href={`/minside`} title={'Ettersend vedlegg'} />
+          <LinkPanel
+            className={styles.linkPanel}
+            href={`/minside`}
+            title={'Ettersend vedlegg'}
+            icon={<FileExportIcon className={styles.icon} fontSize="1.5rem" aria-hidden />}
+          />
         </section>
       )}
       <div className={styles.separator} />
