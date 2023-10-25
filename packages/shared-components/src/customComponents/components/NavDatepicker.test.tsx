@@ -1,5 +1,5 @@
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { render, screen, waitFor } from '@testing-library/react';
+import { act, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import moment from 'moment';
 import { setupNavFormio } from '../../../test/navform-render';
@@ -565,8 +565,8 @@ describe('NavDatePicker', () => {
       expect(form).toBeInTheDocument();
       const datepickerInput: HTMLInputElement = screen.getByLabelText('Dato (dd.mm.åååå)');
       expect(datepickerInput).toBeInTheDocument();
+      await act(async () => datepickerInput.focus());
 
-      datepickerInput.focus();
       await userEvent.type(datepickerInput, '01.01.2020');
       expect(datepickerInput.value).toBe('01.01.2020');
 
