@@ -23,6 +23,12 @@ const useStyles = makeStyles({
     maxWidth: '38rem',
     marginBottom: '3.75rem',
   },
+  sectionHeading: {
+    marginBottom: '0.5rem',
+  },
+  sectionBody: {
+    marginBottom: '1.25rem',
+  },
   linkPanel: {
     paddingBottom: '0.75rem',
   },
@@ -67,8 +73,10 @@ const ActiveTasks = ({ form, formUrl }: Props) => {
   return (
     <div>
       <section className={styles.section}>
-        <Heading size={'medium'}>{`Du har ${(activeTasks ?? []).length} påbegynte utkast til denne søknaden`}</Heading>
-        <BodyShort>Vil du fortsette eller starte på en ny?</BodyShort>
+        <Heading className={styles.sectionHeading} level="2" size={'medium'}>{`Du har ${
+          (activeTasks ?? []).length
+        } påbegynte utkast til denne søknaden`}</Heading>
+        <BodyShort className={styles.sectionBody}>Vil du fortsette eller starte på en ny?</BodyShort>
         {activeTasks.map((task) => (
           <LinkPanel
             key={task.innsendingsId}
@@ -91,8 +99,12 @@ const ActiveTasks = ({ form, formUrl }: Props) => {
       </section>
       {hasSubmitted && (
         <section className={styles.section}>
-          <Heading size={'medium'}>{`Du har en eller flere innsendte søknader som mangler vedlegg`}</Heading>
-          <BodyShort>Vil du ettersende vedlegg?</BodyShort>
+          <Heading
+            className={styles.sectionHeading}
+            level="2"
+            size={'medium'}
+          >{`Du har en eller flere innsendte søknader som mangler vedlegg`}</Heading>
+          <BodyShort className={styles.sectionBody}>Vil du ettersende vedlegg?</BodyShort>
           <LinkPanel
             className={styles.linkPanel}
             href={`/minside`}
