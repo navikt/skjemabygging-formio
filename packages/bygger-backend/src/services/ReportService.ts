@@ -67,7 +67,7 @@ class ReportService {
     const allForms = await this.formioService.getAllForms(
       undefined,
       true,
-      'title,path,properties,components.type,components.isAttachmentPanel,components.components.properties,components.components.label',
+      'title,path,properties,components.type,components.isAttachmentPanel,components.components.properties,components.components.label,components.components.values',
     );
     const stringifier = stringify({ header: true, columns, delimiter: ';' });
     stringifier.pipe(writableStream);
@@ -127,7 +127,7 @@ class ReportService {
     const allForms = await this.formioService.getAllForms(
       undefined,
       true,
-      'title,path,properties,components.type,components.isAttachmentPanel,components.components.properties',
+      'title,path,properties,components.type,components.isAttachmentPanel,components.components.properties,components.components.values',
     );
     const stringifier = stringify({ header: true, columns, delimiter: ';' });
     stringifier.pipe(writableStream);
