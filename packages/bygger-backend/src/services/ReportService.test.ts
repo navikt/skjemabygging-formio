@@ -327,6 +327,133 @@ describe('ReportService', () => {
         expect(formFields3[report.getHeaderIndex(HEADER_ATTACHMENT_NAMES)]).toBe(''); // empty components array
       });
 
+      it('has correct url fields', async () => {
+        const HEADER_INNSENDING_DIGITAL = 'innsending (digital)';
+        const HEADER_INNSENDING_PAPER = 'innsending (papir)';
+        const HEADER_ETTERSENDING_DIGITAL = 'ettersending (digital)';
+        const HEADER_ETTERSENDING_PAPER = 'ettersending (papir)';
+
+        const publishedForms = [
+          {
+            title: 'Testskjema1',
+            path: 'test1',
+            components: [
+              {
+                type: 'panel',
+                isAttachmentPanel: true,
+                title: 'Vedlegg',
+                components: [
+                  {
+                    properties: {
+                      vedleggstittel: 'Annet',
+                      vedleggskode: 'N6',
+                    } as ComponentProperties,
+                  },
+                  {
+                    properties: {
+                      vedleggstittel: 'Uttalelse fra fagpersonell',
+                      vedleggskode: 'L8',
+                    } as ComponentProperties,
+                  },
+                ] as Component[],
+              },
+            ] as Component[],
+            properties: {
+              skjemanummer: 'TEST1',
+              published: '2022-07-28T10:00:10.325Z',
+              publishedLanguages: ['en', 'nn-NO'],
+              innsending: 'PAPIR_OG_DIGITAL',
+              ettersending: 'PAPIR_OG_DIGITAL',
+            } as FormPropertiesType,
+          },
+          {
+            title: 'Testskjema2',
+            path: 'test2',
+            components: [],
+            properties: {
+              skjemanummer: 'TEST2',
+              published: '2022-07-28T10:00:10.325Z',
+              publishedLanguages: ['en'],
+              innsending: 'KUN_DIGITAL',
+              ettersending: 'KUN_PAPIR',
+            } as FormPropertiesType,
+          },
+          {
+            title: 'Testskjema3',
+            path: 'test3',
+            components: [
+              {
+                type: 'panel',
+                isAttachmentPanel: true,
+                title: 'Vedlegg',
+                components: [
+                  {
+                    properties: {
+                      vedleggstittel: 'Annet',
+                      vedleggskode: 'N6',
+                    } as ComponentProperties,
+                  },
+                  {
+                    properties: {
+                      vedleggstittel: 'Uttalelse fra fagpersonell',
+                      vedleggskode: 'L8',
+                    } as ComponentProperties,
+                  },
+                ] as Component[],
+              },
+            ] as Component[],
+            properties: {
+              skjemanummer: 'TEST3',
+              published: '2022-07-28T10:00:10.325Z',
+              publishedLanguages: undefined,
+              innsending: 'KUN_PAPIR',
+              ettersending: 'KUN_PAPIR',
+            } as FormPropertiesType,
+          },
+        ];
+        setupNock(publishedForms);
+
+        const writableStream = createWritableStream();
+        await reportService.generate('all-forms-summary', writableStream);
+        const report = parseReport(writableStream.toString());
+        expect(report.numberOfForms).toBe(3);
+
+        const formFields1 = report.forms[0];
+        const formFields2 = report.forms[1];
+        const formFields3 = report.forms[2];
+
+        const fyllutBaseUrl = 'https://fyllut-preprod.intern.dev.nav.no/fyllut';
+        const ettersendingBaseUrl = 'https://fyllut-ettersending.intern.dev.nav.no/fyllut-ettersending/detaljer';
+
+        // innsending: PAPIR_OG_DIGITAL, ettersending: PAPIR_OG_DIGITAL, 1 attachment
+        expect(formFields1[report.getHeaderIndex(HEADER_INNSENDING_DIGITAL)]).toBe(
+          `${fyllutBaseUrl}/test1?sub=digital`,
+        );
+        expect(formFields1[report.getHeaderIndex(HEADER_INNSENDING_PAPER)]).toBe(`${fyllutBaseUrl}/test1?sub=paper`);
+        expect(formFields1[report.getHeaderIndex(HEADER_ETTERSENDING_DIGITAL)]).toBe(
+          `${ettersendingBaseUrl}/test1?sub=digital`,
+        );
+        expect(formFields1[report.getHeaderIndex(HEADER_ETTERSENDING_PAPER)]).toBe(
+          `${ettersendingBaseUrl}/test1?sub=paper`,
+        );
+
+        // innsending: KUN_DIGITAL, ettersending: KUN_PAPIR, 0 attachments
+        expect(formFields2[report.getHeaderIndex(HEADER_INNSENDING_DIGITAL)]).toBe(
+          `${fyllutBaseUrl}/test2?sub=digital`,
+        );
+        expect(formFields2[report.getHeaderIndex(HEADER_INNSENDING_PAPER)]).toBe(``);
+        expect(formFields2[report.getHeaderIndex(HEADER_ETTERSENDING_DIGITAL)]).toBe(``); // no attachments
+        expect(formFields2[report.getHeaderIndex(HEADER_ETTERSENDING_PAPER)]).toBe(``);
+
+        // innsending: KUN_PAPIR, ettersending: KUN_PAPIR, 1 attachments
+        expect(formFields3[report.getHeaderIndex(HEADER_INNSENDING_DIGITAL)]).toBe(``);
+        expect(formFields3[report.getHeaderIndex(HEADER_INNSENDING_PAPER)]).toBe(`${fyllutBaseUrl}/test3?sub=paper`);
+        expect(formFields3[report.getHeaderIndex(HEADER_ETTERSENDING_DIGITAL)]).toBe(``);
+        expect(formFields3[report.getHeaderIndex(HEADER_ETTERSENDING_PAPER)]).toBe(
+          `${ettersendingBaseUrl}/test3?sub=paper`,
+        );
+      });
+
       it('does not include testform', async () => {
         const publishedForms = [
           {
@@ -365,6 +492,78 @@ describe('ReportService', () => {
           errorCatched = true;
         }
         expect(errorCatched).toBe(true);
+      });
+    });
+
+    describe('generateAllFormsAndAttachments', () => {
+      it('has correct fields', async () => {
+        const HEADER_FORM_NUMBER = 'skjemanummer';
+        const HEADER_FORM_TITLE = 'skjematittel';
+        const HEADER_ATTACHMENT_TITLE = 'vedleggstittel';
+        const HEADER_ATTACHMENT_CODE = 'vedleggskode';
+        const HEADER_LABEL = 'label';
+
+        const publishedForms = [
+          {
+            title: 'Testskjema1',
+            path: 'test1',
+            components: [
+              {
+                type: 'panel',
+                isAttachmentPanel: true,
+                title: 'Vedlegg',
+                components: [
+                  {
+                    label: 'Annen dokumentasjon',
+                    properties: {
+                      vedleggstittel: 'Annet',
+                      vedleggskode: 'N6',
+                    } as ComponentProperties,
+                  },
+                  {
+                    label: 'Uttalelse fra fagpersonell',
+                    properties: {
+                      vedleggstittel: 'Uttalelse fra fagpersonell',
+                      vedleggskode: 'L8',
+                    } as ComponentProperties,
+                  },
+                ] as Component[],
+              },
+            ] as Component[],
+            properties: {
+              skjemanummer: 'TEST1',
+            } as FormPropertiesType,
+          },
+          {
+            title: 'Testskjema2',
+            path: 'test2',
+            components: [],
+            properties: {
+              skjemanummer: 'TEST2',
+            } as FormPropertiesType,
+          },
+        ];
+        setupNock(publishedForms);
+
+        const writableStream = createWritableStream();
+        await reportService.generate('all-forms-and-attachments', writableStream);
+        const report = parseReport(writableStream.toString());
+        expect(report.numberOfForms).toBe(2);
+
+        const formFields1 = report.forms[0];
+        const formFields2 = report.forms[1];
+
+        expect(formFields1[report.getHeaderIndex(HEADER_FORM_NUMBER)]).toBe('TEST1');
+        expect(formFields1[report.getHeaderIndex(HEADER_FORM_TITLE)]).toBe('Testskjema1');
+        expect(formFields1[report.getHeaderIndex(HEADER_ATTACHMENT_TITLE)]).toBe('Annet');
+        expect(formFields1[report.getHeaderIndex(HEADER_ATTACHMENT_CODE)]).toBe('N6');
+        expect(formFields1[report.getHeaderIndex(HEADER_LABEL)]).toBe('Annen dokumentasjon');
+
+        expect(formFields2[report.getHeaderIndex(HEADER_FORM_NUMBER)]).toBe('TEST1');
+        expect(formFields2[report.getHeaderIndex(HEADER_FORM_TITLE)]).toBe('Testskjema1');
+        expect(formFields2[report.getHeaderIndex(HEADER_ATTACHMENT_TITLE)]).toBe('Uttalelse fra fagpersonell');
+        expect(formFields2[report.getHeaderIndex(HEADER_ATTACHMENT_CODE)]).toBe('L8');
+        expect(formFields2[report.getHeaderIndex(HEADER_LABEL)]).toBe('Uttalelse fra fagpersonell');
       });
     });
   });

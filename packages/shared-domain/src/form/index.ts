@@ -118,6 +118,12 @@ export interface ComponentProperties {
   vedleggErValgfritt?: 'ja' | 'nei';
 }
 
+export interface Attachment {
+  vedleggstittel?: string;
+  vedleggskode?: string;
+  label?: string;
+}
+
 export interface Panel extends Component {
   title: string;
 }
