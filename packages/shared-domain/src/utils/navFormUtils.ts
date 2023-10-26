@@ -1,6 +1,6 @@
 // @ts-ignore
 import FormioUtils from 'formiojs/utils';
-import { Component, NavFormType, Panel, Submission } from '../form';
+import { Attachment, Component, NavFormType, Panel, Submission } from '../form';
 import { formSummaryUtil } from '../index';
 import { camelCase } from './stringUtils';
 
@@ -215,12 +215,20 @@ const hasAttachment = (form: NavFormType) => {
   return !!attachmentPanel?.components?.length;
 };
 
-const getAttachmentTitles = (form: NavFormType): string[] => {
+const getAttachmentProperties = (form: NavFormType): Attachment[] => {
   const attachmentPanel = getAttachmentPanel(form);
   if (!attachmentPanel || !attachmentPanel.components) return [];
 
-  const attachmentTitles = attachmentPanel.components.map((component) => component.properties?.vedleggstittel);
-  return attachmentTitles.filter((x): x is string => x !== undefined);
+  const attachments = attachmentPanel.components.map((component) => {
+    console.log(component);
+    return {
+      vedleggstittel: component.properties?.vedleggstittel,
+      vedleggskode: component.properties?.vedleggskode,
+      label: component.label,
+    };
+  });
+
+  return attachments;
 };
 
 const isDigital = (type: 'innsending' | 'ettersending', form: NavFormType) => {
@@ -255,7 +263,7 @@ const navFormUtils = {
   getActivePanelsFromForm,
   getAttachmentPanel,
   hasAttachment,
-  getAttachmentTitles,
+  getAttachmentProperties,
   isDigital,
   isPaper,
 };

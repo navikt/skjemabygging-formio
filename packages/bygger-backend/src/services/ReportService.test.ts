@@ -494,5 +494,77 @@ describe('ReportService', () => {
         expect(errorCatched).toBe(true);
       });
     });
+
+    describe('generateAllFormsAndAttachments', () => {
+      it('has correct fields', async () => {
+        const HEADER_FORM_NUMBER = 'skjemanummer';
+        const HEADER_FORM_TITLE = 'skjematittel';
+        const HEADER_ATTACHMENT_TITLE = 'vedleggstittel';
+        const HEADER_ATTACHMENT_CODE = 'vedleggskode';
+        const HEADER_LABEL = 'label';
+
+        const publishedForms = [
+          {
+            title: 'Testskjema1',
+            path: 'test1',
+            components: [
+              {
+                type: 'panel',
+                isAttachmentPanel: true,
+                title: 'Vedlegg',
+                components: [
+                  {
+                    label: 'Annen dokumentasjon',
+                    properties: {
+                      vedleggstittel: 'Annet',
+                      vedleggskode: 'N6',
+                    } as ComponentProperties,
+                  },
+                  {
+                    label: 'Uttalelse fra fagpersonell',
+                    properties: {
+                      vedleggstittel: 'Uttalelse fra fagpersonell',
+                      vedleggskode: 'L8',
+                    } as ComponentProperties,
+                  },
+                ] as Component[],
+              },
+            ] as Component[],
+            properties: {
+              skjemanummer: 'TEST1',
+            } as FormPropertiesType,
+          },
+          {
+            title: 'Testskjema2',
+            path: 'test2',
+            components: [],
+            properties: {
+              skjemanummer: 'TEST2',
+            } as FormPropertiesType,
+          },
+        ];
+        setupNock(publishedForms);
+
+        const writableStream = createWritableStream();
+        await reportService.generate('all-forms-and-attachments', writableStream);
+        const report = parseReport(writableStream.toString());
+        expect(report.numberOfForms).toBe(2);
+
+        const formFields1 = report.forms[0];
+        const formFields2 = report.forms[1];
+
+        expect(formFields1[report.getHeaderIndex(HEADER_FORM_NUMBER)]).toBe('TEST1');
+        expect(formFields1[report.getHeaderIndex(HEADER_FORM_TITLE)]).toBe('Testskjema1');
+        expect(formFields1[report.getHeaderIndex(HEADER_ATTACHMENT_TITLE)]).toBe('Annet');
+        expect(formFields1[report.getHeaderIndex(HEADER_ATTACHMENT_CODE)]).toBe('N6');
+        expect(formFields1[report.getHeaderIndex(HEADER_LABEL)]).toBe('Annen dokumentasjon');
+
+        expect(formFields2[report.getHeaderIndex(HEADER_FORM_NUMBER)]).toBe('TEST1');
+        expect(formFields2[report.getHeaderIndex(HEADER_FORM_TITLE)]).toBe('Testskjema1');
+        expect(formFields2[report.getHeaderIndex(HEADER_ATTACHMENT_TITLE)]).toBe('Uttalelse fra fagpersonell');
+        expect(formFields2[report.getHeaderIndex(HEADER_ATTACHMENT_CODE)]).toBe('L8');
+        expect(formFields2[report.getHeaderIndex(HEADER_LABEL)]).toBe('Uttalelse fra fagpersonell');
+      });
+    });
   });
 });
