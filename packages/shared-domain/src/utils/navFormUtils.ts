@@ -229,19 +229,11 @@ const getAttachmentProperties = (form: NavFormType): Attachment[] => {
 };
 
 const isDigital = (type: 'innsending' | 'ettersending', form: NavFormType) => {
-  if (type === 'innsending') {
-    return form.properties.innsending === 'KUN_DIGITAL' || form.properties.innsending === 'PAPIR_OG_DIGITAL';
-  } else if (type === 'ettersending') {
-    return form.properties.ettersending === 'KUN_DIGITAL' || form.properties.ettersending === 'PAPIR_OG_DIGITAL';
-  }
+  return form.properties[type] === 'KUN_DIGITAL' || form.properties[type] === 'PAPIR_OG_DIGITAL';
 };
 
 const isPaper = (type: 'innsending' | 'ettersending', form: NavFormType) => {
-  if (type === 'innsending') {
-    return form.properties.innsending === 'KUN_PAPIR' || form.properties.innsending === 'PAPIR_OG_DIGITAL';
-  } else if (type === 'ettersending') {
-    return form.properties.ettersending === 'KUN_PAPIR' || form.properties.ettersending === 'PAPIR_OG_DIGITAL';
-  }
+  return form.properties[type] === 'KUN_PAPIR' || form.properties[type] === 'PAPIR_OG_DIGITAL';
 };
 
 const navFormUtils = {
