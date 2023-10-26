@@ -24,10 +24,14 @@ export const createSoknad = async (
   submission: Submission,
   language: string,
   translation: I18nTranslationMap = {},
+  opprettNySoknad?: boolean,
 ): Promise<SendInnSoknadResponse | undefined> => {
   const { http, baseUrl, submissionMethod } = appConfig;
+  const url = opprettNySoknad
+    ? `${baseUrl}/api/send-inn/soknad?opprettNySoknad=true`
+    : `${baseUrl}/api/send-inn/soknad`;
   return http?.post<SendInnSoknadResponse>(
-    `${baseUrl}/api/send-inn/soknad?opprettNySoknad=true`,
+    url,
     {
       form,
       submission,

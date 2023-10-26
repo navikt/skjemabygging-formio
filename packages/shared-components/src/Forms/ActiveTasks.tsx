@@ -96,7 +96,7 @@ const ActiveTasks = ({ form, formUrl }: Props) => {
         <LinkPanel
           className={styles.linkPanel}
           variant="secondary"
-          href={`${baseUrl}${formUrl}${searchParams.toString() && `?${searchParams.toString()}`}`}
+          href={`${baseUrl}${formUrl}?opprettNySoknad=true${searchParams.toString() && `&${searchParams.toString()}`}`}
           title={translate(TEXTS.statiske.paabegynt.startNewTask)}
           icon={<PencilIcon className={styles.icon} fontSize="1.5rem" aria-hidden />}
         />

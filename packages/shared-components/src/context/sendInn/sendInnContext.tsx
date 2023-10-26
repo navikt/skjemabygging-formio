@@ -65,11 +65,25 @@ const SendInnProvider = ({
   const [innsendingsId, setInnsendingsId] = useState<string>();
   const [fyllutMellomlagringState, dispatchFyllutMellomlagring] = useReducer(mellomlagringReducer, undefined);
 
-  const addQueryParamToUrl = useCallback(
+  const addSearchParamToUrl = useCallback(
     (key, value) => {
       if (key && value) {
-        searchParams.set(key, value);
-        setSearchParams(searchParams);
+        setSearchParams((prev) => {
+          prev.set(key, value);
+          return prev;
+        });
+      }
+    },
+    [pathname],
+  );
+
+  const removeSearchParamFromUrl = useCallback(
+    (key) => {
+      if (key) {
+        setSearchParams((prev) => {
+          prev.delete(key);
+          return searchParams;
+        });
       }
     },
     [pathname],
@@ -84,7 +98,7 @@ const SendInnProvider = ({
   const retrieveMellomlagring = async (innsendingsId: string) => {
     const response = await getSoknad(innsendingsId, appConfig);
     if (response?.hoveddokumentVariant.document) {
-      addQueryParamToUrl('lang', response.hoveddokumentVariant.document.language);
+      addSearchParamToUrl('lang', response.hoveddokumentVariant.document.language);
       updateSubmission(getSubmissionWithFyllutState(response));
       dispatchFyllutMellomlagring({ type: 'init', response });
     }
@@ -140,11 +154,20 @@ const SendInnProvider = ({
       setIsCreateStarted(true);
       const currentLanguage = getLanguageFromSearchParams();
       const translation = translationForLanguage(currentLanguage);
-      const response = await createSoknad(appConfig, form, removeFyllutState(submission), currentLanguage, translation);
+      const opprettNySoknad = !!searchParams.get('opprettNySoknad');
+      const response = await createSoknad(
+        appConfig,
+        form,
+        removeFyllutState(submission),
+        currentLanguage,
+        translation,
+        opprettNySoknad,
+      );
       updateSubmission(getSubmissionWithFyllutState(response));
       dispatchFyllutMellomlagring({ type: 'init', response });
       setInnsendingsId(response?.innsendingsId);
-      addQueryParamToUrl('innsendingsId', response?.innsendingsId);
+      removeSearchParamFromUrl('opprettNySoknad');
+      addSearchParamToUrl('innsendingsId', response?.innsendingsId);
       setIsMellomlagringReady(true);
       return response;
     } catch (error: any) {
