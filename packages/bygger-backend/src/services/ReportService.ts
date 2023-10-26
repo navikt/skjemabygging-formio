@@ -140,12 +140,14 @@ class ReportService {
       const { title, properties, path } = form;
       const { published, publishedBy, modified, modifiedBy, innsending, tema, signatures, ettersending } = properties;
 
-      const innsendingUrl = config.isProduction
-        ? `https://www.nav.no/fyllut/${form.path}`
-        : `https://fyllut-preprod.intern.dev.nav.no/fyllut/${form.path}`;
-      const ettersendingUrl = config.isProduction
-        ? `https://www.nav.no/fyllut-ettersending/detaljer/${form.path}`
-        : `https://fyllut-ettersending.intern.dev.nav.no/fyllut-ettersending/detaljer/${form.path}`;
+      const innsendingUrl =
+        config.naisClusterName === 'prod-gcp'
+          ? `https://www.nav.no/fyllut/${form.path}`
+          : `https://fyllut-preprod.intern.dev.nav.no/fyllut/${form.path}`;
+      const ettersendingUrl =
+        config.naisClusterName === 'prod-gcp'
+          ? `https://www.nav.no/fyllut-ettersending/detaljer/${form.path}`
+          : `https://fyllut-ettersending.intern.dev.nav.no/fyllut-ettersending/detaljer/${form.path}`;
 
       const digitalInnsendingUrl = navFormUtils.isDigital('innsending', form)
         ? `${innsendingUrl}?sub=digital`

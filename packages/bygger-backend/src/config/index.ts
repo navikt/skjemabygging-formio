@@ -87,6 +87,7 @@ const config: ConfigType = {
   isProduction: nodeEnv === 'production',
   isDevelopment: nodeEnv === 'development',
   featureToggles: featureUtils.toFeatureToggles(env('ENABLED_FEATURES', devEnabledFeatures)),
+  naisClusterName: env('NAIS_CLUSTER_NAME'),
 };
 
 export default config;
