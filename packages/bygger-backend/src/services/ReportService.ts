@@ -176,7 +176,7 @@ class ReportService {
         modified,
         modifiedBy,
         innsending,
-        ettersending,
+        ettersending || 'PAPIR_OG_DIGITAL',
         numberOfSignatures,
         path,
         hasAttachment ? 'ja' : 'nei',
