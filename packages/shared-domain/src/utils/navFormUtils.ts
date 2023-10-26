@@ -219,14 +219,11 @@ const getAttachmentProperties = (form: NavFormType): Attachment[] => {
   const attachmentPanel = getAttachmentPanel(form);
   if (!attachmentPanel || !attachmentPanel.components) return [];
 
-  const attachments = attachmentPanel.components.map((component) => {
-    console.log(component);
-    return {
-      vedleggstittel: component.properties?.vedleggstittel,
-      vedleggskode: component.properties?.vedleggskode,
-      label: component.label,
-    };
-  });
+  const attachments = attachmentPanel.components.map((component) => ({
+    vedleggstittel: component.properties?.vedleggstittel,
+    vedleggskode: component.properties?.vedleggskode,
+    label: component.label,
+  }));
 
   return attachments;
 };
