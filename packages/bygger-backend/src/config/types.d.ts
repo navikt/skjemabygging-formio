@@ -61,5 +61,5 @@ export type ConfigType = {
   isProduction: boolean;
   isDevelopment: boolean;
   featureToggles: { [key: string]: boolean };
-  naisClusterName: 'dev-gcp' | 'prod-gcp';
+  naisClusterName?: 'dev-gcp' | 'prod-gcp';
 };
