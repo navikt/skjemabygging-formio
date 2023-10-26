@@ -7,6 +7,7 @@ import LoadingComponent from '../components/LoadingComponent';
 import LinkPanel from '../components/linkPanel/LinkPanel';
 import { useAppConfig } from '../configContext';
 import { useLanguages } from '../context/languages';
+import { formUtils } from '../index';
 import makeStyles from '../util/jss';
 
 type Task = {
@@ -51,9 +52,7 @@ const ActiveTasks = ({ form, formUrl }: Props) => {
   const [hasSubmitted, setHasSubmitted] = useState(false);
 
   const styles = useStyles();
-
-  console.log('formBaseUrl', formUrl);
-  console.log('form', form.properties.skjemanummer);
+  const firstPanelSlug = formUtils.getPanelSlug(form, 0);
 
   useEffect(() => {
     const initialize = async () => {
@@ -66,11 +65,19 @@ const ActiveTasks = ({ form, formUrl }: Props) => {
     initialize();
   }, []);
 
+  const getUrl = (path: string = '', additionalSearchParams: Record<string, string> | undefined = {}) => {
+    const existingAndAdditionalSearchParams = new URLSearchParams({
+      ...Object.fromEntries(searchParams),
+      ...additionalSearchParams,
+    });
+    const searchParamsAsString =
+      existingAndAdditionalSearchParams.toString() && `?${existingAndAdditionalSearchParams.toString()}`;
+    return `${baseUrl}${formUrl}${path}${searchParamsAsString}`;
+  };
+
   if (!activeTasks) {
     return <LoadingComponent />;
   }
-
-  console.log('activeTasks', activeTasks);
 
   return (
     <div>
@@ -86,9 +93,7 @@ const ActiveTasks = ({ form, formUrl }: Props) => {
             key={task.innsendingsId}
             className={styles.linkPanel}
             title={translate(TEXTS.statiske.paabegynt.continueTask)}
-            href={`${baseUrl}${formUrl}?innsendingsId=${task.innsendingsId}${
-              searchParams.toString() && `&${searchParams.toString()}`
-            }`}
+            href={getUrl('/oppsummering', { innsendingsId: task.innsendingsId, sub: 'digital' })}
             body={`${translate(TEXTS.grensesnitt.mostRecentSave)} ${dateUtils.toLocaleDateAndTime(task.endretDato)}.`}
             icon={<DocPencilIcon className={styles.icon} fontSize="1.5rem" aria-hidden />}
           />
@@ -96,7 +101,7 @@ const ActiveTasks = ({ form, formUrl }: Props) => {
         <LinkPanel
           className={styles.linkPanel}
           variant="secondary"
-          href={`${baseUrl}${formUrl}?opprettNySoknad=true${searchParams.toString() && `&${searchParams.toString()}`}`}
+          href={getUrl(`/${firstPanelSlug}`, { opprettNySoknad: 'true', sub: 'digital' })}
           title={translate(TEXTS.statiske.paabegynt.startNewTask)}
           icon={<PencilIcon className={styles.icon} fontSize="1.5rem" aria-hidden />}
         />
