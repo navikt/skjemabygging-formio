@@ -175,7 +175,7 @@ class ReportService {
         unpublishedChanges,
         modified,
         modifiedBy,
-        innsending,
+        innsending || 'PAPIR_OG_DIGITAL',
         ettersending || 'PAPIR_OG_DIGITAL',
         numberOfSignatures,
         path,

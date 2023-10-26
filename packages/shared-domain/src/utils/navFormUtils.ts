@@ -218,7 +218,6 @@ const hasAttachment = (form: NavFormType) => {
 const getAttachmentProperties = (form: NavFormType): Attachment[] => {
   const attachmentPanel = getAttachmentPanel(form);
   if (!attachmentPanel || !attachmentPanel.components) return [];
-  console.log(attachmentPanel.components);
 
   const attachments = attachmentPanel.components
     .filter((component) => isAttachment(component))
