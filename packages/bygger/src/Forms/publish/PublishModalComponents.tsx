@@ -1,16 +1,14 @@
-import { Component, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useState } from 'react';
 import UserMessageModal, { useUserMessage } from '../../components/UserMessageModal';
 import { useModal } from '../../util/useModal';
 import ConfirmPublishModal from './ConfirmPublishModal';
 import PublishSettingsModal from './PublishSettingsModal';
 
-const isAttachment = (comp: Component) => comp.values?.some((v) => v.value === 'leggerVedNaa');
-
 const validateAttachments = (form) =>
   navFormUtils
     .flattenComponents(form.components)
-    .filter(isAttachment)
+    .filter(navFormUtils.isAttachment)
     .every((comp) => comp.properties?.vedleggskode && comp.properties?.vedleggstittel);
 
 const PublishModalComponents = ({ form, onPublish, openPublishSettingModal, setOpenPublishSettingModal }) => {

@@ -220,7 +220,7 @@ const getAttachmentProperties = (form: NavFormType): Attachment[] => {
   if (!attachmentPanel || !attachmentPanel.components) return [];
 
   const attachments = attachmentPanel.components
-    .filter((component) => !!component.properties?.vedleggstittel)
+    .filter((component) => isAttachment(component))
     .map((component) => ({
       vedleggstittel: component.properties?.vedleggstittel,
       vedleggskode: component.properties?.vedleggskode,
@@ -229,6 +229,8 @@ const getAttachmentProperties = (form: NavFormType): Attachment[] => {
 
   return attachments;
 };
+
+const isAttachment = (comp: Component) => comp.values?.some((v) => v.value === 'leggerVedNaa');
 
 const isDigital = (type: 'innsending' | 'ettersending', form: NavFormType) => {
   // If field is empty, it defaults to PAPIR_OG_DIGITAL
@@ -263,5 +265,6 @@ const navFormUtils = {
   getAttachmentProperties,
   isDigital,
   isPaper,
+  isAttachment,
 };
 export default navFormUtils;
