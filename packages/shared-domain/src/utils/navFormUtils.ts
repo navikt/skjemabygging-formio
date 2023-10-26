@@ -219,20 +219,30 @@ const getAttachmentProperties = (form: NavFormType): Attachment[] => {
   const attachmentPanel = getAttachmentPanel(form);
   if (!attachmentPanel || !attachmentPanel.components) return [];
 
-  const attachments = attachmentPanel.components.map((component) => ({
-    vedleggstittel: component.properties?.vedleggstittel,
-    vedleggskode: component.properties?.vedleggskode,
-    label: component.label,
-  }));
+  const attachments = attachmentPanel.components
+    .filter((component) => isAttachment(component))
+    .map((component) => ({
+      vedleggstittel: component.properties?.vedleggstittel,
+      vedleggskode: component.properties?.vedleggskode,
+      label: component.label,
+    }));
 
   return attachments;
 };
 
+const isAttachment = (comp: Component) => comp.values?.some((v) => v.value === 'leggerVedNaa');
+
 const isDigital = (type: 'innsending' | 'ettersending', form: NavFormType) => {
+  // If field is empty, it defaults to PAPIR_OG_DIGITAL
+  if (!form.properties[type]) return true;
+
   return form.properties[type] === 'KUN_DIGITAL' || form.properties[type] === 'PAPIR_OG_DIGITAL';
 };
 
 const isPaper = (type: 'innsending' | 'ettersending', form: NavFormType) => {
+  // If field is empty, it defaults to PAPIR_OG_DIGITAL
+  if (!form.properties[type]) return true;
+
   return form.properties[type] === 'KUN_PAPIR' || form.properties[type] === 'PAPIR_OG_DIGITAL';
 };
 
@@ -255,5 +265,6 @@ const navFormUtils = {
   getAttachmentProperties,
   isDigital,
   isPaper,
+  isAttachment,
 };
 export default navFormUtils;
