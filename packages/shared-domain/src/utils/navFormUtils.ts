@@ -243,10 +243,11 @@ const isPaper = (type: 'innsending' | 'ettersending', form: NavFormType) => {
   // If field is empty, it defaults to PAPIR_OG_DIGITAL
   if (!form.properties[type]) return true;
 
-  // If field is INGEN for innsending, it defaults to paper
-  if (type === 'innsending' && form.properties[type] === 'INGEN') return true;
-
   return form.properties[type] === 'KUN_PAPIR' || form.properties[type] === 'PAPIR_OG_DIGITAL';
+};
+
+const isNone = (type: 'innsending' | 'ettersending', form: NavFormType) => {
+  return form.properties[type] === 'INGEN';
 };
 
 const navFormUtils = {
@@ -269,5 +270,6 @@ const navFormUtils = {
   isDigital,
   isPaper,
   isAttachment,
+  isNone,
 };
 export default navFormUtils;

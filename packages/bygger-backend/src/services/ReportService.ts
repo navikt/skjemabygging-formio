@@ -152,7 +152,11 @@ class ReportService {
       const digitalInnsendingUrl = navFormUtils.isDigital('innsending', form)
         ? `${innsendingUrl}?sub=digital`
         : undefined;
-      const paperInnsendingUrl = navFormUtils.isPaper('innsending', form) ? `${innsendingUrl}?sub=paper` : undefined;
+      const paperInnsendingUrl = navFormUtils.isNone('innsending', form)
+        ? `${innsendingUrl}`
+        : navFormUtils.isPaper('innsending', form)
+        ? `${innsendingUrl}?sub=paper`
+        : undefined;
 
       const digitalEttersendingUrl =
         navFormUtils.isDigital('ettersending', form) && hasAttachment ? `${ettersendingUrl}?sub=digital` : undefined;
