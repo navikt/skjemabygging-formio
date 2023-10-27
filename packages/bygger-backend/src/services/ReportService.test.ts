@@ -377,7 +377,7 @@ describe('ReportService', () => {
               skjemanummer: 'TEST2',
               published: '2022-07-28T10:00:10.325Z',
               publishedLanguages: ['en'],
-              innsending: 'KUN_DIGITAL',
+              innsending: 'INGEN',
               ettersending: 'KUN_PAPIR',
             } as FormPropertiesType,
           },
@@ -442,11 +442,9 @@ describe('ReportService', () => {
           `${ettersendingBaseUrl}/test1?sub=paper`,
         );
 
-        // innsending: KUN_DIGITAL, ettersending: KUN_PAPIR, 0 attachments
-        expect(formFields2[report.getHeaderIndex(HEADER_INNSENDING_DIGITAL)]).toBe(
-          `${fyllutBaseUrl}/test2?sub=digital`,
-        );
-        expect(formFields2[report.getHeaderIndex(HEADER_INNSENDING_PAPER)]).toBe(``);
+        // innsending: INGEN, ettersending: KUN_PAPIR, 0 attachments
+        expect(formFields2[report.getHeaderIndex(HEADER_INNSENDING_DIGITAL)]).toBe(``);
+        expect(formFields2[report.getHeaderIndex(HEADER_INNSENDING_PAPER)]).toBe(`${fyllutBaseUrl}/test2`);
         expect(formFields2[report.getHeaderIndex(HEADER_ETTERSENDING_DIGITAL)]).toBe(``); // no attachments
         expect(formFields2[report.getHeaderIndex(HEADER_ETTERSENDING_PAPER)]).toBe(``);
 

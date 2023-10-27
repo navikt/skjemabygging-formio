@@ -246,6 +246,10 @@ const isPaper = (type: 'innsending' | 'ettersending', form: NavFormType) => {
   return form.properties[type] === 'KUN_PAPIR' || form.properties[type] === 'PAPIR_OG_DIGITAL';
 };
 
+const isNone = (type: 'innsending' | 'ettersending', form: NavFormType) => {
+  return form.properties[type] === 'INGEN';
+};
+
 const navFormUtils = {
   formMatcherPredicate,
   toFormPath,
@@ -266,5 +270,6 @@ const navFormUtils = {
   isDigital,
   isPaper,
   isAttachment,
+  isNone,
 };
 export default navFormUtils;
