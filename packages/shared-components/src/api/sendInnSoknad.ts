@@ -40,7 +40,7 @@ export const createSoknad = async (
       submissionMethod,
     },
     {},
-    { redirectToLocation: false },
+    { redirectToLocation: true },
   );
 };
 

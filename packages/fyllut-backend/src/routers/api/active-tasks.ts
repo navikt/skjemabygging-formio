@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import { config } from '../../config/config';
 import { getTokenxAccessToken } from '../../security/tokenHelper';
 
@@ -6,10 +6,10 @@ type Task = {
   skjemanr: string;
 };
 
-const { featureToggles, sendInnConfig } = config;
+const { sendInnConfig } = config;
 
 const activeTasks = {
-  get: async (req: Request, res: Response, next: NextFunction) => {
+  get: async (req: Request, res: Response) => {
     const tokenxAccessToken = getTokenxAccessToken(req);
     const response = await fetch(`${sendInnConfig.host}${sendInnConfig.paths.aktiveOpprettedeSoknader}`, {
       method: 'GET',

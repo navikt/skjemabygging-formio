@@ -15,6 +15,7 @@ type Task = {
   innsendingsId: string;
   endretDato: string;
 };
+
 interface Props {
   form: NavFormType;
   formUrl: string;

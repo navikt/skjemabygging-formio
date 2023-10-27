@@ -82,6 +82,7 @@ const sendInnSoknad = {
 
       const sendInnResponse = await fetch(`${sendInnConfig.host}${sendInnConfig.paths.soknad}${forceCreateParam}`, {
         method: 'POST',
+        redirect: 'manual',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${tokenxAccessToken}`,
@@ -93,6 +94,14 @@ const sendInnSoknad = {
         logger.debug('Successfylly posted data to SendInn');
         res.status(201);
         res.json(await sendInnResponse.json());
+      } else if (sendInnResponse.status === 302) {
+        const location = sendInnResponse.headers.get('location');
+        logger.debug(`User has active tasks, redirecting to ${location}`);
+        res.header({
+          'Access-Control-Expose-Headers': 'Location',
+          Location: location,
+        });
+        res.sendStatus(201);
       } else {
         logger.debug('Failed to post data to SendInn');
         next(await responseToError(sendInnResponse, `Feil ved kall til SendInn. ${postErrorMessage}`, true));
