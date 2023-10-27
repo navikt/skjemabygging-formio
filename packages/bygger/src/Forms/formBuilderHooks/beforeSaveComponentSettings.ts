@@ -1,13 +1,15 @@
-const propsToTrim = ['vedleggskode', 'vedleggstittel'];
+import { SubmissionData } from '@navikt/skjemadigitalisering-shared-domain';
 
-const beforeSaveComponentSettings = (submissionData) => {
+const beforeSaveComponentSettings = (submissionData: SubmissionData) => {
   const { properties } = submissionData;
-  propsToTrim.forEach((propToTrim) => {
-    const value = properties[propToTrim];
-    if (value && typeof value === 'string') {
-      properties[propToTrim] = value.trim();
-    }
-  });
+  if (properties) {
+    Object.keys(properties).forEach((key) => {
+      const value = properties[key];
+      if (value && typeof value === 'string') {
+        properties[key] = value.trim();
+      }
+    });
+  }
 };
 
 export default beforeSaveComponentSettings;
