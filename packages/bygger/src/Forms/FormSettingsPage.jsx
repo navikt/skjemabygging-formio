@@ -19,13 +19,13 @@ const useStyles = makeStyles({
   },
 });
 
-export function FormSettingsPage({ form, publishedForm, onSave, onChange, onPublish, onUnpublish, validateAndSave }) {
+export function FormSettingsPage({ form, publishedForm, onSave, onChange, onPublish, onUnpublish }) {
   const title = form.title;
   const [openPublishSettingModal, setOpenPublishSettingModal] = useModal(false);
   const styles = useStyles();
   const [errors, setErrors] = useState({});
 
-  validateAndSave = async (form) => {
+  const validateAndSave = async (form) => {
     const updatedErrors = validateFormMetadata(form, 'edit');
     if (isFormMetadataValid(updatedErrors)) {
       setErrors({});

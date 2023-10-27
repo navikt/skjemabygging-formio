@@ -12,8 +12,8 @@ export interface SubmissionFieldsProps {
 }
 
 const SubmissionFields = ({ onChange, diff, form, errors }: SubmissionFieldsProps) => {
-  const innsending = form.properties.innsending || 'PAPIR_OG_DIGITAL';
-  const ettersending = form.properties.ettersending || 'PAPIR_OG_DIGITAL';
+  const innsending = form.properties.innsending;
+  const ettersending = form.properties.ettersending;
   const ettersendelsesfrist = form.properties.ettersendelsesfrist;
 
   return (
@@ -22,6 +22,7 @@ const SubmissionFields = ({ onChange, diff, form, errors }: SubmissionFieldsProp
         name="form-innsending"
         label={<LabelWithDiff label="Innsending" diff={!!diff.innsending} />}
         value={innsending}
+        error={errors?.innsending}
         onChange={(event) =>
           onChange({
             ...form,
@@ -34,7 +35,6 @@ const SubmissionFields = ({ onChange, diff, form, errors }: SubmissionFieldsProp
         name="form-ettersending"
         label={<LabelWithDiff label="Ettersending" diff={!!diff.ettersending} />}
         value={ettersending}
-        allowEmpty={true}
         error={errors?.ettersending}
         onChange={(event) =>
           onChange({
