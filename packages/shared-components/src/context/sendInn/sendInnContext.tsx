@@ -18,6 +18,7 @@ import {
   updateUtfyltSoknad,
 } from '../../api/sendInnSoknad';
 import { useAppConfig } from '../../configContext';
+import { useAmplitude } from '../amplitude';
 import { mellomlagringReducer } from './mellomlagringReducer';
 import { getSubmissionWithFyllutState, removeFyllutState } from './utils';
 
@@ -54,6 +55,9 @@ const SendInnProvider = ({
   const { app, submissionMethod, featureToggles, logger, baseUrl } = appConfig;
   const { pathname } = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
+  const [redirectLocation, setRedirectLocation] = useState<string | undefined>(undefined);
+  const [redirectClearance, setRedirectClearance] = useState<boolean>(false);
+  const { loggSkjemaFullfort } = useAmplitude();
 
   const isMellomlagringEnabled =
     app === 'fyllut' && submissionMethod === 'digital' && !!featureToggles?.enableMellomlagring;
@@ -74,6 +78,12 @@ const SendInnProvider = ({
     },
     [pathname],
   );
+
+  useEffect(() => {
+    if (redirectLocation && redirectClearance) {
+      window.location.href = redirectLocation;
+    }
+  }, [redirectLocation, redirectClearance]);
 
   useEffect(() => {
     if (fyllutMellomlagringState) {
@@ -202,7 +212,18 @@ const SendInnProvider = ({
     const submission = removeFyllutState(appSubmission);
     if (isMellomlagringEnabled && innsendingsId) {
       try {
-        return await updateUtfyltSoknad(appConfig, form, submission, currentLanguage, translation, innsendingsId);
+        const response = await updateUtfyltSoknad(
+          appConfig,
+          form,
+          submission,
+          currentLanguage,
+          translation,
+          innsendingsId,
+          (loc: string) => setRedirectLocation(loc),
+        );
+        await loggSkjemaFullfort();
+        setRedirectClearance(true);
+        return response;
       } catch (error) {
         try {
           await updateSoknad(appConfig, form, submission, currentLanguage, translation, innsendingsId);
@@ -212,7 +233,17 @@ const SendInnProvider = ({
         }
       }
     } else {
-      return await createSoknadWithoutInnsendingsId(appConfig, form, submission, currentLanguage, translation);
+      const response = await createSoknadWithoutInnsendingsId(
+        appConfig,
+        form,
+        submission,
+        currentLanguage,
+        translation,
+        (loc: string) => setRedirectLocation(loc),
+      );
+      await loggSkjemaFullfort();
+      setRedirectClearance(true);
+      return response;
     }
   };
 

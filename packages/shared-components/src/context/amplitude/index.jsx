@@ -23,7 +23,7 @@ const defaultValues = {
   loggDokumentLastetNed: (_tittel) => {},
   loggSkjemaValideringFeilet: () => {},
   loggSkjemaInnsendingFeilet: () => {},
-  loggSkjemaFullfort: () => {},
+  loggSkjemaFullfort: () => Promise.resolve(),
 };
 
 const isGcp = (config) => !!config.NAIS_CLUSTER_NAME;

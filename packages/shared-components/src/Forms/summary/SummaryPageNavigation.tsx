@@ -36,7 +36,7 @@ const useStyles = makeStyles({
 const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList, isValid }: Props) => {
   const { submissionMethod, app } = useAppConfig();
   const { search } = useLocation();
-  const { loggSkjemaStegFullfort, loggSkjemaFullfort, loggSkjemaInnsendingFeilet, loggNavigering } = useAmplitude();
+  const { loggSkjemaStegFullfort, loggSkjemaInnsendingFeilet, loggNavigering } = useAmplitude();
   const { translate } = useLanguages();
   const { mellomlagringError, isMellomlagringActive } = useSendInn();
   const [error, setError] = useState<Error>();
@@ -114,7 +114,6 @@ const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList,
                   setError(err);
                   loggSkjemaInnsendingFeilet();
                 }}
-                onSuccess={() => loggSkjemaFullfort()}
               >
                 {translate(
                   isMellomlagringActive ? TEXTS.grensesnitt.navigation.saveAndContinue : TEXTS.grensesnitt.moveForward,
@@ -128,7 +127,6 @@ const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList,
                   setError(err);
                   loggSkjemaInnsendingFeilet();
                 }}
-                onSuccess={() => loggSkjemaFullfort()}
               />
             ))}
 
