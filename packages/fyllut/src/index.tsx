@@ -29,7 +29,6 @@ httpFyllut
 const renderReact = (dokumentInnsendingBaseURL, config) => {
   const root = createRoot(document.getElementById('root')!);
   root.render(
-    // @ts-ignore
     <StrictMode>
       <BrowserRouter basename="/fyllut">
         <AppConfigProvider
