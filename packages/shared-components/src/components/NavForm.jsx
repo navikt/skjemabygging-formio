@@ -52,24 +52,22 @@ const NavForm = (props) => {
 
   const createWebformInstance = (srcOrForm) => {
     const { formioform, formReady, language, i18n } = props;
-    if (!createPromise) {
-      instance = new (formioform || FormioForm)(element, srcOrForm, {
-        language,
-        i18n,
-        sanitizeConfig: SANITIZE_CONFIG,
-        events: NavForm.getDefaultEmitter(),
-      });
+    instance = new (formioform || FormioForm)(element, srcOrForm, {
+      language,
+      i18n,
+      sanitizeConfig: SANITIZE_CONFIG,
+      events: NavForm.getDefaultEmitter(),
+    });
 
-      createPromise = instance.ready.then((formioInstance) => {
-        if (formio) {
-          formio.destroy(true);
-        }
-        setFormio(formioInstance);
-        if (formReady) {
-          formReady(formioInstance);
-        }
-      });
-    }
+    createPromise = instance.ready.then((formioInstance) => {
+      if (formio) {
+        formio.destroy(true);
+      }
+      setFormio(formioInstance);
+      if (formReady) {
+        formReady(formioInstance);
+      }
+    });
 
     return createPromise;
   };
