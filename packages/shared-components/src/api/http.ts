@@ -101,6 +101,9 @@ const handleResponse = async (response: Response, opts?: FetchOptions) => {
     const { status } = response;
     if (location && (status === 201 || (status >= 300 && status <= 399))) {
       window.location.href = location;
+    } else if (response.url && status === 200) {
+      window.location.href = response.url;
+      return;
     }
   }
 

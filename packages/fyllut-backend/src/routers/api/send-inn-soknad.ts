@@ -101,7 +101,7 @@ const sendInnSoknad = {
           'Access-Control-Expose-Headers': 'Location',
           Location: location,
         });
-        res.sendStatus(201);
+        res.sendStatus(302);
       } else {
         logger.debug('Failed to post data to SendInn');
         next(await responseToError(sendInnResponse, `Feil ved kall til SendInn. ${postErrorMessage}`, true));

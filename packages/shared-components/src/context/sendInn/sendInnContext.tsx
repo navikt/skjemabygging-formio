@@ -168,7 +168,9 @@ const SendInnProvider = ({
       setInnsendingsId(response?.innsendingsId);
       removeSearchParamFromUrl('opprettNySoknad');
       addSearchParamToUrl('innsendingsId', response?.innsendingsId);
-      setIsMellomlagringReady(true);
+      if (response) {
+        setIsMellomlagringReady(true);
+      }
       return response;
     } catch (error: any) {
       dispatchFyllutMellomlagring({ type: 'error', error: 'CREATE FAILED' });
