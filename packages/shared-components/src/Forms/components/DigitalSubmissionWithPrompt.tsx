@@ -19,10 +19,9 @@ export interface Props {
   submission?: Submission;
   isValid?: (e: React.MouseEvent<HTMLElement>) => boolean;
   onError: (err: Error) => void;
-  onSuccess?: () => void;
 }
 
-const DigitalSubmissionWithPrompt = ({ submission, isValid, onError, onSuccess }: Props) => {
+const DigitalSubmissionWithPrompt = ({ submission, isValid, onError }: Props) => {
   const { translate } = useLanguages();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -53,7 +52,6 @@ const DigitalSubmissionWithPrompt = ({ submission, isValid, onError, onSuccess }
               onError(err.message);
               setIsOpen(false);
             }}
-            onSuccess={onSuccess}
           >
             {translate(TEXTS.grensesnitt.submitToNavPrompt.confirm)}
           </DigitalSubmissionButton>

@@ -164,8 +164,8 @@ describe('Amplitude', () => {
     cy.checkLogToAmplitude('skjemainnsending feilet');
 
     // The second attempt is successful, causing "skjema fullført"
-    cy.mocksUseRouteVariant('post-send-inn:success-with-delay');
-    cy.mocksUseRouteVariant('send-inn-frontend:available-with-delay');
+    cy.mocksUseRouteVariant('post-send-inn:success');
+    cy.mocksUseRouteVariant('send-inn-frontend:available');
     cy.intercept('POST', '/fyllut/api/send-inn').as('submitToSendinnSuccess');
     cy.findByRole('button', { name: 'Gå videre' }).click();
     cy.wait('@submitToSendinnSuccess');

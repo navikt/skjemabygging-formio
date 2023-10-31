@@ -19,10 +19,19 @@ function createEventData(form, customProperties = {}) {
   };
 }
 
-export function logAmplitudeEvent(eventName, eventData) {
+export function logAmplitudeEvent(eventName, eventData, done) {
+  let callbackSuccess = undefined;
+  let callbackFailure = undefined;
+  if (done) {
+    callbackSuccess = () => done();
+    callbackFailure = () => {
+      console.error(`failed to log amplitude event ${eventName}`);
+      done();
+    };
+  }
   setTimeout(() => {
     try {
-      amplitude.getInstance().logEvent(eventName, eventData);
+      amplitude.getInstance().logEvent(eventName, eventData, callbackSuccess, callbackFailure);
     } catch (error) {
       console.error(error);
     }
@@ -67,7 +76,9 @@ export function loggEventDokumentLastetNed(form, tittel) {
 }
 
 export function loggEventSkjemaFullfort(form) {
-  logAmplitudeEvent('skjema fullført', createEventData(form));
+  return new Promise((resolve) => {
+    logAmplitudeEvent('skjema fullført', createEventData(form), resolve);
+  });
 }
 
 export function loggEventSkjemaValideringFeilet(form) {

@@ -74,7 +74,8 @@ export const updateUtfyltSoknad = async (
   submission: Submission,
   language: string,
   translation: I18nTranslationMap = {},
-  innsendingsId?: string,
+  innsendingsId: string | undefined,
+  setRedirectLocation: (location: string) => void,
 ): Promise<SendInnSoknadResponse | undefined> => {
   const { http, baseUrl, submissionMethod, logger } = appConfig;
   const attachments = getRelevantAttachments(form, submission.data);
@@ -94,7 +95,7 @@ export const updateUtfyltSoknad = async (
         otherDocumentation,
       },
       {},
-      { redirectToLocation: true },
+      { setRedirectLocation },
     );
   } else {
     logger?.info('Kunne ikke sende inn søknaden fordi innsendingsId mangler');
@@ -120,6 +121,7 @@ export const createSoknadWithoutInnsendingsId = async (
   submission: Submission,
   language: string,
   translations: I18nTranslationMap = {},
+  setRedirectLocation: (location: string) => void,
 ): Promise<SendInnSoknadResponse | undefined> => {
   const { http, baseUrl, submissionMethod } = appConfig;
   const attachments = getRelevantAttachments(form, submission.data);
@@ -136,6 +138,6 @@ export const createSoknadWithoutInnsendingsId = async (
       submissionMethod,
     },
     {},
-    { redirectToLocation: true },
+    { setRedirectLocation },
   );
 };

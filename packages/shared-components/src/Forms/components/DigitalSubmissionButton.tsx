@@ -11,21 +11,11 @@ export interface Props {
   submission?: Submission;
   isValid?: (e: React.MouseEvent<HTMLElement>) => boolean;
   onError: Function;
-  onSuccess?: Function;
   children: string;
   withIcon?: boolean;
 }
 
-const noop = () => {};
-
-const DigitalSubmissionButton = ({
-  submission,
-  isValid,
-  onError,
-  onSuccess = noop,
-  children,
-  withIcon = false,
-}: Props) => {
+const DigitalSubmissionButton = ({ submission, isValid, onError, children, withIcon = false }: Props) => {
   const { loggNavigering } = useAmplitude();
   const { app } = useAppConfig();
   const { translate } = useLanguages();
@@ -49,8 +39,7 @@ const DigitalSubmissionButton = ({
     try {
       setLoading(true);
       loggNavigering({ lenkeTekst: children, destinasjon: '/sendinn' });
-      const response = await submitSoknad(submission);
-      onSuccess(response);
+      await submitSoknad(submission);
     } catch (err: any) {
       onError(err);
     } finally {
