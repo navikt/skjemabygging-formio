@@ -37,6 +37,10 @@ const FormioReactComponent = class extends ReactComponent {
     this.updateValue(value, flags);
   }
 
+  getValue() {
+    return this.dataValue;
+  }
+
   focus() {
     if (this.input) {
       // @ts-ignore
