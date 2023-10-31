@@ -24,6 +24,8 @@ const defaultAppConfigProps: Partial<AppConfigContextType> = {
   app: 'fyllut',
 } as AppConfigContextType;
 
+const BUTTON_TEXT = 'Digital submission';
+
 describe('DigitalSubmissionButton', () => {
   const defaultSubmission = {};
   const defaultTranslations = {};
@@ -32,8 +34,6 @@ describe('DigitalSubmissionButton', () => {
     const defaultProps: Props = {
       submission: defaultSubmission,
       onError: vi.fn(),
-      onSuccess: vi.fn(),
-      children: 'Digital submission',
       ...props,
     } as Props;
     render(
@@ -46,7 +46,7 @@ describe('DigitalSubmissionButton', () => {
             onFyllutStateChange={vi.fn()}
           >
             <LanguagesProvider translations={defaultTranslations}>
-              <DigitalSubmissionButton {...defaultProps} />
+              <DigitalSubmissionButton {...defaultProps}>{BUTTON_TEXT}</DigitalSubmissionButton>
             </LanguagesProvider>
           </SendInnProvider>
         </MemoryRouter>
@@ -56,12 +56,11 @@ describe('DigitalSubmissionButton', () => {
 
   it('renders button', () => {
     renderButton();
-    expect(screen.getByRole('button', { name: 'Digital submission' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: BUTTON_TEXT })).toBeInTheDocument();
   });
 
   describe('backend endpoint', () => {
     let onError;
-    let onSuccess;
     let windowLocation;
     const baseUrl = 'http://baseUrl.fyllut.no';
 
@@ -72,7 +71,6 @@ describe('DigitalSubmissionButton', () => {
         writable: true,
       });
       onError = vi.fn();
-      onSuccess = vi.fn();
     });
 
     afterEach(() => {
@@ -82,8 +80,8 @@ describe('DigitalSubmissionButton', () => {
 
     it('calls onError when backend returns 500', async () => {
       nock(BASE_URL).post('/api/send-inn').reply(500, { message: 'Feil ved kall til SendInn' });
-      renderButton({ onError, onSuccess });
-      const button = screen.getByRole('button', { name: 'Digital submission' });
+      renderButton({ onError });
+      const button = screen.getByRole('button', { name: BUTTON_TEXT });
       expect(button).toBeInTheDocument();
       await userEvent.click(button);
       await waitFor(() => expect(onError).toHaveBeenCalledTimes(1));
@@ -92,19 +90,18 @@ describe('DigitalSubmissionButton', () => {
 
     it('redirects when backend returns 201 and Location header', async () => {
       nock(BASE_URL).post('/api/send-inn').reply(201, 'CREATED', { Location: SEND_INN_URL });
-      renderButton({ onError, onSuccess });
-      const button = screen.getByRole('button', { name: 'Digital submission' });
+      renderButton({ onError });
+      const button = screen.getByRole('button', { name: BUTTON_TEXT });
       expect(button).toBeInTheDocument();
       await userEvent.click(button);
-      await waitFor(() => expect(onSuccess).toHaveBeenCalledTimes(1));
       expect(onError).toHaveBeenCalledTimes(0);
-      expect(windowLocation.href).toEqual(SEND_INN_URL);
+      await waitFor(() => expect(windowLocation.href).toEqual(SEND_INN_URL));
     });
 
     it("responds with error when clicked in application 'bygger'", async () => {
       nock(BASE_URL).post('/api/send-inn').reply(201, 'CREATED', { Location: SEND_INN_URL });
-      renderButton({ onError, onSuccess }, { app: 'bygger' });
-      const button = screen.getByRole('button', { name: 'Digital submission' });
+      renderButton({ onError }, { app: 'bygger' });
+      const button = screen.getByRole('button', { name: BUTTON_TEXT });
       expect(button).toBeInTheDocument();
       await userEvent.click(button);
       await waitFor(() => expect(onError).toHaveBeenCalledTimes(1));

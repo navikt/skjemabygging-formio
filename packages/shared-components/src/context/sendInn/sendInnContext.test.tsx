@@ -127,7 +127,9 @@ describe('sendInnContext', () => {
             innsendingsId,
           }),
           headers,
-          { redirectToLocation: true },
+          expect.objectContaining({
+            setRedirectLocation: expect.any(Function),
+          }),
         );
       });
     });
@@ -184,7 +186,9 @@ describe('sendInnContext', () => {
             submissionMethod,
           }),
           headers,
-          { redirectToLocation: true },
+          expect.objectContaining({
+            setRedirectLocation: expect.any(Function),
+          }),
         );
       });
     });

@@ -15,14 +15,13 @@ Modal.setAppElement(document.createElement('div'));
 
 describe('DigitalSubmissionWithPrompt', () => {
   const onError = vi.fn();
-  const onSuccess = vi.fn();
   const BASE_URL = 'http://www.unittest.nav.no/fyllut';
 
   beforeEach(() => {
     render(
       <AppConfigProvider baseUrl={BASE_URL} app="fyllut">
         <LanguagesProvider translations={{}}>
-          <DigitalSubmissionWithPrompt submission={{} as Submission} onError={onError} onSuccess={onSuccess} />
+          <DigitalSubmissionWithPrompt submission={{} as Submission} onError={onError} />
         </LanguagesProvider>
       </AppConfigProvider>,
     );
