@@ -31,7 +31,9 @@ describe('NotificationsContext', () => {
           channelSubscriptions[channel][eventName] = callback;
         },
         unbind: (eventName) => {
-          channelSubscriptions[channel][eventName] = undefined;
+          if (channelSubscriptions[channel]) {
+            channelSubscriptions[channel][eventName] = undefined;
+          }
         },
       } as Channel;
     });
