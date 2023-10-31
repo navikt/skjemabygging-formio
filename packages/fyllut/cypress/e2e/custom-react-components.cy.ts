@@ -8,7 +8,7 @@ describe('Custom react components', () => {
     cy.defaultIntercepts();
   });
 
-  describe.skip('Fill in form and view summary', () => {
+  describe('Fill in form and view summary', () => {
     beforeEach(() => {
       cy.intercept('GET', '/fyllut/api/forms/customcomps').as('getForm');
       cy.intercept('GET', '/fyllut/api/translations/customcomps').as('getTranslations');
@@ -101,7 +101,7 @@ describe('Custom react components', () => {
     });
   });
 
-  describe.skip('NavDatepicker', () => {
+  describe('NavDatepicker', () => {
     beforeEach(() => {
       cy.intercept('GET', '/fyllut/api/forms/navdatepicker').as('getNavDatepickerForm');
       cy.intercept('GET', '/fyllut/api/translations/navdatepicker').as('getNavDatepickerTranslations');
