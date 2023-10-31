@@ -55,8 +55,6 @@ const SendInnProvider = ({
   const { app, submissionMethod, featureToggles, logger, baseUrl } = appConfig;
   const { pathname } = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
-  const [redirectLocation, setRedirectLocation] = useState<string | undefined>(undefined);
-  const [redirectClearance, setRedirectClearance] = useState<boolean>(false);
   const { loggSkjemaFullfort } = useAmplitude();
 
   const isMellomlagringEnabled =
@@ -78,12 +76,6 @@ const SendInnProvider = ({
     },
     [pathname],
   );
-
-  useEffect(() => {
-    if (redirectLocation && redirectClearance) {
-      window.location.href = redirectLocation;
-    }
-  }, [redirectLocation, redirectClearance]);
 
   useEffect(() => {
     if (fyllutMellomlagringState) {
@@ -210,6 +202,8 @@ const SendInnProvider = ({
     const currentLanguage = getLanguageFromSearchParams();
     const translation = translationForLanguage(currentLanguage);
     const submission = removeFyllutState(appSubmission);
+    let redirectLocation: string | undefined = undefined;
+    const setRedirectLocation = (loc: string) => (redirectLocation = loc);
     if (isMellomlagringEnabled && innsendingsId) {
       try {
         const response = await updateUtfyltSoknad(
@@ -219,10 +213,12 @@ const SendInnProvider = ({
           currentLanguage,
           translation,
           innsendingsId,
-          (loc: string) => setRedirectLocation(loc),
+          setRedirectLocation,
         );
         await loggSkjemaFullfort();
-        setRedirectClearance(true);
+        if (redirectLocation) {
+          window.location.href = redirectLocation;
+        }
         return response;
       } catch (error) {
         try {
@@ -239,10 +235,12 @@ const SendInnProvider = ({
         submission,
         currentLanguage,
         translation,
-        (loc: string) => setRedirectLocation(loc),
+        setRedirectLocation,
       );
       await loggSkjemaFullfort();
-      setRedirectClearance(true);
+      if (redirectLocation) {
+        window.location.href = redirectLocation;
+      }
       return response;
     }
   };
