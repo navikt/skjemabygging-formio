@@ -13,7 +13,6 @@
       "post-soknad:success",
       "put-soknad:success",
       "get-soknad:success",
-      "get-soknad:not-found",
       "delete-soknad:success",
       "put-utfylt-soknad:success",
       "post-send-inn:success",
