@@ -158,12 +158,6 @@ class NavDataGrid extends DataGrid {
     });
   }
 
-  addRow() {
-    originalAddRow.call(this);
-    const lastRowSelector = `[ref='${this.datagridKey}-row']:last-of-type`;
-    scrollToAndSetFocus(`${lastRowSelector} input, ${lastRowSelector} select, ${lastRowSelector} textarea`);
-  }
-
   removeRow(index) {
     originalRemoveRow.call(this, index);
     scrollToAndSetFocus(`[ref='${this.datagridKey}-addRow']:last-of-type`);
