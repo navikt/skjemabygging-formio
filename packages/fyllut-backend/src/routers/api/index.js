@@ -27,7 +27,7 @@ const apiRouter = express.Router();
 const { featureToggles } = appConfig;
 const { azureSkjemabyggingProxy, azurePdl, tokenxPdl, tokenxSendInn } = initApiConfig();
 
-apiRouter.all('*', idportenAuthHandler, rateLimiter(60000, 1000));
+apiRouter.all('*', idportenAuthHandler);
 apiRouter.get('/config', config.get);
 apiRouter.get('/countries', countries.get);
 apiRouter.get('/enhetsliste', azureSkjemabyggingProxy, enhetsliste.get);
