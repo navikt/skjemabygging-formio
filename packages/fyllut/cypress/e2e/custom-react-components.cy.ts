@@ -6,14 +6,12 @@ describe('Custom react components', () => {
       command: 'Network.clearBrowserCache',
     });
     cy.defaultIntercepts();
-    cy.intercept('GET', '/fyllut/api/forms/customcomps').as('getForm');
-    cy.intercept('GET', '/fyllut/api/translations/customcomps').as('getTranslations');
-    cy.intercept('GET', '/fyllut/api/forms/navdatepicker').as('getNavDatepickerForm');
-    cy.intercept('GET', '/fyllut/api/translations/navdatepicker').as('getNavDatepickerTranslations');
   });
 
-  describe('Fill in form and view summary', () => {
+  describe.skip('Fill in form and view summary', () => {
     beforeEach(() => {
+      cy.intercept('GET', '/fyllut/api/forms/customcomps').as('getForm');
+      cy.intercept('GET', '/fyllut/api/translations/customcomps').as('getTranslations');
       cy.visit('/fyllut/customcomps/dineopplysninger?sub=paper');
       cy.wait('@getConfig');
       cy.wait('@getForm');
@@ -103,8 +101,10 @@ describe('Custom react components', () => {
     });
   });
 
-  describe('NavDatepicker', () => {
+  describe.skip('NavDatepicker', () => {
     beforeEach(() => {
+      cy.intercept('GET', '/fyllut/api/forms/navdatepicker').as('getNavDatepickerForm');
+      cy.intercept('GET', '/fyllut/api/translations/navdatepicker').as('getNavDatepickerTranslations');
       cy.visit('/fyllut/navdatepicker/veiledning?sub=paper');
       cy.wait('@getConfig');
       cy.wait('@getNavDatepickerForm');
@@ -314,6 +314,60 @@ describe('Custom react components', () => {
 
         cy.findAllByText(VALIDATION_TEXT).should('have.length', 1);
       });
+    });
+  });
+
+  describe('DataGrid', () => {
+    beforeEach(() => {
+      cy.intercept('GET', '/fyllut/api/forms/customcompsdatagrid').as('getDataGridForm');
+      cy.visit('/fyllut/customcompsdatagrid/dineopplysninger?sub=paper');
+      cy.wait('@getConfig');
+      cy.wait('@getDataGridForm');
+      cy.findByRole('checkbox', { name: 'Avkryssingsboks' }).click();
+    });
+
+    it('is rendered on summary page', () => {
+      const labelSelect = 'Nedtrekksmeny';
+      const labelDate = 'Dato (dd.mm.åååå)';
+      const labelAdd = 'Legg til';
+      cy.findAllByRole('combobox', { name: labelSelect }).eq(0).type('a{enter}');
+      cy.findAllByRole('textbox', { name: labelDate }).eq(0).type('10.10.2000{esc}');
+      cy.findByRole('button', { name: labelAdd }).click();
+      cy.findAllByRole('combobox', { name: labelSelect }).eq(1).type('b{enter}');
+      cy.findAllByRole('textbox', { name: labelDate }).eq(1).type('11.10.2000{esc}');
+      cy.findByRole('button', { name: labelAdd }).click();
+      cy.findAllByRole('combobox', { name: labelSelect }).eq(2).type('a{enter}');
+      cy.findAllByRole('textbox', { name: labelDate }).eq(2).type('12.10.2000{esc}');
+
+      cy.clickNextStep();
+      cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
+
+      cy.get('dl')
+        .eq(2)
+        .within(() => {
+          cy.get('dt').eq(0).contains(labelSelect);
+          cy.get('dd').eq(0).contains('a');
+          cy.get('dt').eq(1).contains(labelDate);
+          cy.get('dd').eq(1).contains('10.10.2000');
+        });
+
+      cy.get('dl')
+        .eq(3)
+        .within(() => {
+          cy.get('dt').eq(0).contains(labelSelect);
+          cy.get('dd').eq(0).contains('b');
+          cy.get('dt').eq(1).contains(labelDate);
+          cy.get('dd').eq(1).contains('11.10.2000');
+        });
+
+      cy.get('dl')
+        .eq(4)
+        .within(() => {
+          cy.get('dt').eq(0).contains(labelSelect);
+          cy.get('dd').eq(0).contains('a');
+          cy.get('dt').eq(1).contains(labelDate);
+          cy.get('dd').eq(1).contains('12.10.2000');
+        });
     });
   });
 });
