@@ -1,4 +1,4 @@
-/*
+/**
  * The MIT License (MIT)
  *
  * Copyright (c) 2015 Form.io
@@ -20,12 +20,83 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
- * */
+ */
 
+/**
+ * This file is a copy of https://github.com/formio/react/blob/master/src/components/ReactComponent.jsx
+ * Consider using this directly from @formio/react instead
+ */
+
+import { Component } from '@navikt/skjemadigitalisering-shared-domain';
 import Field from 'formiojs/components/_classes/field/Field';
 
-export default class FormioReactComponent extends Field {
-  input = null;
+interface IField {
+  new (component, options, data): FieldType;
+  prototype: FieldType;
+  schema(sources: any): any;
+}
+
+interface FieldType {
+  shouldSetValue?: any;
+  dataForSetting?: any;
+  reactInstance?: any;
+  attachReact(element, ref): any;
+  detachReact(element): any;
+  validate(data, dirty, rowData): boolean;
+  updateValue: (value, flags?: {}) => any;
+  setReactInstance(element): void;
+
+  // Field
+  render(element: any): any;
+
+  // Component
+  component?: Component;
+  defaultValue?: any;
+  dataValue?: any;
+  refs?: any;
+  errors: any[];
+  root: any;
+  options: any;
+  visible: any | boolean;
+  init(): any;
+  redraw(): any;
+  attach(element: any): any;
+  detach(): void;
+  destroy(): void;
+  beforeSubmit(): any;
+  updateOnChange(flags: any, changed: boolean | any): boolean;
+  t(text: string, params?: any): any;
+  loadRefs(element: any, refs: any): any;
+  checkValidity(data: any, dirty: any | boolean, rowData: any): boolean;
+  getValue(): any;
+  setValue(value: any, flags: any): void;
+  hasChanged(before: any, after: any): boolean;
+  clearOnHide(): void;
+  deleteValue(): void;
+  hasValue(): boolean;
+
+  // Element
+  id?: any;
+  emit(event: string, data: Object): void;
+}
+
+const ReactComponent = class extends (Field as IField) {
+  reactInstance;
+  shouldSetValue;
+  dataForSetting;
+
+  /**
+   * This is the first phase of component building where the component is instantiated.
+   *
+   * @param component - The component definition created from the settings form.
+   * @param options - Any options passed into the renderer.
+   * @param data - The submission data where this component's data exists.
+   */
+  constructor(component, options, data) {
+    super(component, options, data);
+    this.reactInstance = null;
+  }
+
   /**
    * This method is called any time the component needs to be rebuilt. It is most frequently used to listen to other
    * components using the this.on() function.
@@ -43,34 +114,14 @@ export default class FormioReactComponent extends Field {
     return super.destroy();
   }
 
-  redraw() {
-    return super.redraw();
-  }
+  /**
+   * This method is called before a form is submitted.
+   * It is used to perform any necessary actions or checks before the form data is sent.
+   *
+   */
 
-  t(text, ...args) {
-    return super.t(text, ...args);
-  }
-
-  get component() {
-    return super.component;
-  }
-
-  set component(component) {
-    super.component = component;
-  }
-
-  // eslint-disable-next-line no-dupe-class-members
-  get input() {
-    return this.input;
-  }
-
-  // eslint-disable-next-line no-dupe-class-members
-  set input(input) {
-    this.input = input;
-  }
-
-  emit(event, ...data) {
-    super.emit(event, ...data);
+  beforeSubmit() {
+    return super.beforeSubmit();
   }
 
   /**
@@ -82,6 +133,15 @@ export default class FormioReactComponent extends Field {
     // For react components, we simply render as a div which will become the react instance.
     // By calling super.render(string) it will wrap the component with the needed wrappers to make it a full component.
     return super.render(`<div ref="react-${this.id}"></div>`);
+  }
+
+  /**
+   * Callback ref to store a reference to the node.
+   *
+   * @param element - the node
+   */
+  setReactInstance(element) {
+    this.reactInstance = element;
   }
 
   /**
@@ -101,7 +161,7 @@ export default class FormioReactComponent extends Field {
     });
 
     if (this.refs[`react-${this.id}`]) {
-      this.reactInstance = this.attachReact(this.refs[`react-${this.id}`]);
+      this.attachReact(this.refs[`react-${this.id}`], this.setReactInstance.bind(this));
       if (this.shouldSetValue) {
         this.setValue(this.dataForSetting);
         this.updateValue(this.dataForSetting);
@@ -125,15 +185,16 @@ export default class FormioReactComponent extends Field {
    * Override this function to insert your custom component.
    *
    * @param element
+   * @param ref - callback ref
    */
-  attachReact(_element) {
+  attachReact(element, ref) {
     return;
   }
 
   /**
    * Override this function.
    */
-  detachReact(_element) {
+  detachReact(element) {
     return;
   }
 
@@ -141,17 +202,27 @@ export default class FormioReactComponent extends Field {
    * Something external has set a value and our component needs to be updated to reflect that. For example, loading a submission.
    *
    * @param value
+   * @param flags
    */
   setValue(value, flags = {}) {
-    return this.updateValue(value, flags);
+    if (this.reactInstance) {
+      this.reactInstance.setState({
+        value: value,
+      });
+      this.shouldSetValue = false;
+    } else {
+      this.shouldSetValue = true;
+      this.dataForSetting = value;
+    }
   }
 
   /**
    * The user has changed the value in the component and the value needs to be updated on the main submission object and other components notified of a change event.
    *
    * @param value
+   * @param flags
    */
-  updateValue = (value, flags) => {
+  updateValue = (value, flags = {}) => {
     flags = flags || {};
     const newValue = value === undefined || value === null ? this.getValue() : value;
     const changed = newValue !== undefined ? this.hasChanged(newValue, this.dataValue) : false;
@@ -171,23 +242,6 @@ export default class FormioReactComponent extends Field {
       return this.reactInstance.state.value;
     }
     return this.defaultValue;
-  }
-
-  /**
-   * Component should be cleared when hidden if clearOnHide is set to true. Copied function from formio.js/component.js.
-   */
-  clearOnHide() {
-    // clearOnHide defaults to true for old forms (without the value set) so only trigger if the value is false.
-    if (this.component.clearOnHide !== false && !this.options.readOnly && !this.options.showHiddenFields) {
-      if (!this.visible) {
-        this.deleteValue();
-      } else if (!this.hasValue() && this.shouldAddDefaultValue) {
-        // If shown, ensure the default is set.
-        this.setValue(this.defaultValue, {
-          noUpdateEvent: true,
-        });
-      }
-    }
   }
 
   /**
@@ -214,13 +268,10 @@ export default class FormioReactComponent extends Field {
    * @param rowData
    * @returns {boolean}
    */
-  validate(_data, _dirty, _rowData) {
+  validate(data, dirty, rowData) {
     return true;
   }
+};
 
-  focus() {
-    if (this.input) {
-      this.input.focus();
-    }
-  }
-}
+//export default ReactComponent as unknown as IReactComponent;
+export default ReactComponent;
