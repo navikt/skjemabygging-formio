@@ -112,9 +112,9 @@ describe('Migration scripts', () => {
 
   describe('migrateForms', () => {
     const allForms: NavFormType[] = [
-      { ...mockedForm, path: 'form1', properties: { skjemanummer: 'form1', tema: 'BIL' } },
-      { ...mockedForm, path: 'form2', properties: { skjemanummer: 'form2', tema: 'BIL' } },
-      { ...mockedForm, path: 'form3', properties: { skjemanummer: 'form3', tema: 'BIL' } },
+      { ...mockedForm, path: 'form1', properties: { ...mockedForm.properties, skjemanummer: 'form1' } },
+      { ...mockedForm, path: 'form2', properties: { ...mockedForm.properties, skjemanummer: 'form2' } },
+      { ...mockedForm, path: 'form3', properties: { ...mockedForm.properties, skjemanummer: 'form3' } },
     ];
 
     it('generates log only for included form paths', async () => {
