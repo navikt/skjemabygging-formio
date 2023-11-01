@@ -19,7 +19,7 @@ describe('config', () => {
     } as ConfigType;
     // @ts-ignore
     checkConfigConsistency(config, logError, exit);
-    expect(logError).toBeCalledWith('FormioApi is not allowed in prod-gcp');
+    expect(logError).toBeCalledWith('Invalid configuration: FormioApi is not allowed in prod-gcp');
     expect(exit).toBeCalledWith(1);
   });
 
@@ -30,7 +30,7 @@ describe('config', () => {
     } as ConfigType;
     // @ts-ignore
     checkConfigConsistency(config, logError, exit);
-    expect(logError).toBeCalledWith('FORMIO_PROJECT_URL is required when using FormioApi');
+    expect(logError).toBeCalledWith('Invalid configuration: FORMIO_PROJECT_URL is required when using FormioApi');
     expect(exit).toBeCalledWith(1);
   });
 
