@@ -1,0 +1,196 @@
+{
+  "_id": "61e7be0045916800030aee6a",
+  "type": "form",
+  "tags": ["nav-skjema", ""],
+  "owner": "606ea4ab852cf50003ac20d3",
+  "components": [
+    {
+      "title": "Dine opplysninger",
+      "label": "Dine opplysninger",
+      "type": "panel",
+      "key": "dineopplysninger",
+      "components": [
+        {
+          "title": "Dine opplysninger",
+          "type": "panel",
+          "input": false,
+          "key": "personopplysninger",
+          "components": [
+            {
+              "label": "Avkryssingsboks",
+              "additionalDescription": false,
+              "validate": {
+                "required": true
+              },
+              "key": "avkryssingsboks",
+              "type": "navCheckbox",
+              "input": true,
+              "validateOn": "blur",
+              "tableView": false,
+              "navId": "eplj6i"
+            },
+            {
+              "label": "Data Grid",
+              "key": "datagrid",
+              "conditional": {
+                "show": true,
+                "when": "avkryssingsboks",
+                "eq": "true"
+              },
+              "type": "datagrid",
+              "rowGroups": [
+                {}
+              ],
+              "input": true,
+              "isNavDataGrid": true,
+              "components": [
+                {
+                  "label": "Nedtrekksmeny",
+                  "fieldSize": "input--xxl",
+                  "dataSrc": "values",
+                  "data": {
+                    "values": [
+                      {
+                        "label": "a",
+                        "value": "a"
+                      },
+                      {
+                        "label": "b",
+                        "value": "b"
+                      }
+                    ],
+                    "resource": ""
+                  },
+                  "validate": {
+                    "required": true,
+                    "onlyAvailableItems": false
+                  },
+                  "key": "nedtrekksmeny",
+                  "type": "navSelect",
+                  "input": true,
+                  "dataGridLabel": true,
+                  "validateOn": "blur",
+                  "tableView": false,
+                  "navId": "e9842zi"
+                },
+                {
+                  "visArvelger": true,
+                  "label": "Dato (dd.mm.åååå)",
+                  "dataGridLabel": true,
+                  "mayBeEqual": false,
+                  "validate": {
+                    "required": true,
+                    "custom": "valid = instance.validateDatePickerV2(input, data, component, row);"
+                  },
+                  "validateOn": "blur",
+                  "key": "datoDdMmAaaa",
+                  "type": "navDatepicker",
+                  "input": true,
+                  "tableView": false,
+                  "navId": "ep9ghtd"
+                }
+              ],
+              "tableView": false,
+              "navId": "esf8bo"
+            }
+          ],
+          "tableView": false,
+          "label": "Panel",
+          "navId": "e7t0lfe"
+        }
+      ],
+      "tableView": false,
+      "placeholder": "",
+      "prefix": "",
+      "customClass": "",
+      "suffix": "",
+      "multiple": false,
+      "defaultValue": null,
+      "protected": false,
+      "unique": false,
+      "persistent": false,
+      "hidden": false,
+      "clearOnHide": false,
+      "refreshOn": "",
+      "redrawOn": "",
+      "modalEdit": false,
+      "dataGridLabel": false,
+      "labelPosition": "top",
+      "description": "",
+      "errorLabel": "",
+      "tooltip": "",
+      "hideLabel": false,
+      "tabindex": "",
+      "disabled": false,
+      "autofocus": false,
+      "dbIndex": false,
+      "customDefaultValue": "",
+      "calculateValue": "",
+      "calculateServer": false,
+      "widget": null,
+      "attributes": {},
+      "validateOn": "change",
+      "validate": {
+        "required": false,
+        "custom": "",
+        "customPrivate": false,
+        "strictDateValidation": false,
+        "multiple": false,
+        "unique": false
+      },
+      "conditional": {
+        "show": null,
+        "when": null,
+        "eq": ""
+      },
+      "overlay": {
+        "style": "",
+        "left": "",
+        "top": "",
+        "width": "",
+        "height": ""
+      },
+      "allowCalculateOverride": false,
+      "encrypted": false,
+      "showCharCount": false,
+      "showWordCount": false,
+      "properties": {},
+      "allowMultipleMasks": false,
+      "addons": [],
+      "tree": false,
+      "lazyLoad": false,
+      "theme": "default",
+      "breadcrumb": "default",
+      "id": "eun8oti"
+    }
+  ],
+  "display": "wizard",
+  "name": "customcompsdatagrid",
+  "title": "Egne komponenter i datagrid",
+  "path": "customcompsdatagrid",
+  "properties": {
+    "skjemanummer": "CYP-103",
+    "tema": "CYP",
+    "innsending": "PAPIR_OG_DIGITAL",
+    "hasLabeledSignatures": false,
+    "modified": "2022-12-08T12:09:17.108Z",
+    "enhetMaVelgesVedPapirInnsending": false,
+    "publishedLanguages": [],
+    "modifiedBy": "fornavn.etternavn@nav.no",
+    "published": "2022-11-22T10:00:47.211Z",
+    "publishedBy": "fornavn.etternavn@nav.no"
+  },
+  "access": [
+    {
+      "type": "read_all",
+      "roles": ["628ca77305690db58c974d04", "628ca77305690db58c974d09", "628ca77305690db58c974d0e"]
+    }
+  ],
+  "submissionAccess": [],
+  "created": "2022-01-19T07:30:08.345Z",
+  "modified": "2022-12-08T11:46:32.068Z",
+  "machineName": "customComponents",
+  "project": "628ca77305690db58c974cfd",
+  "_vid": 0,
+  "revisions": ""
+}
