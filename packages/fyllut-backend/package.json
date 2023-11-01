@@ -27,7 +27,7 @@
     "express-rate-limit": "^7.1.1",
     "glob": "^10.3.4",
     "i18n-iso-countries": "^7.7.0",
-    "jose": "^4.15.4",
+    "jose": "^5.0.1",
     "jsonwebtoken": "^9.0.2",
     "luxon": "^3.4.2",
     "morgan": "^1.10.0",
