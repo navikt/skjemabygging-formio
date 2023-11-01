@@ -36,7 +36,7 @@ export const createPdf = async (
     throw Error('Missing HTML for generating PDF.');
   }
   const { fodselsnummerDNummerSoker } = submission.data;
-  appMetrics.exstreamPdfRequestsCounter.inc({ formPath: form.path, submissionMethod });
+  appMetrics.exstreamPdfRequestsCounter.inc();
   let errorOccurred = false;
   const stopMetricRequestDuration = appMetrics.outgoingRequestDuration.startTimer({
     service: 'exstream',
@@ -53,7 +53,7 @@ export const createPdf = async (
     );
   } catch (e) {
     errorOccurred = true;
-    appMetrics.exstreamPdfFailuresCounter.inc({ formPath: form.path, submissionMethod });
+    appMetrics.exstreamPdfFailuresCounter.inc();
     throw e;
   } finally {
     const durationSeconds = stopMetricRequestDuration({ error: String(errorOccurred) });
