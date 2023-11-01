@@ -1,3 +1,4 @@
+import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import { getEditScript, migrateForm, migrateForms } from './migrationScripts';
 import {
   formWithAdvancedConditionalToRadio,
@@ -42,7 +43,7 @@ describe('Migration scripts', () => {
               components: [originalFodselsnummerComponent],
             },
           ],
-        },
+        } as unknown as NavFormType,
         { type: 'fnrfield' },
         {},
         fnrEditOptions,
@@ -83,7 +84,7 @@ describe('Migration scripts', () => {
               ],
             },
           ],
-        },
+        } as unknown as NavFormType,
         { type: 'navSkjemagruppe' },
         {},
         { modifiedByTest: true },

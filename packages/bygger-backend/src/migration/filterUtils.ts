@@ -7,13 +7,13 @@ import {
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { ParsedInput } from '../types/migration';
 
-interface Filter {
+export interface Filter {
   key: string;
   value: ParsedInput;
   operator?: Operator;
 }
 
-function parseFiltersFromParam(filtersFromParam: string): Filter[] {
+function parseFiltersFromParam(filtersFromParam: object): Filter[] {
   return Object.entries(filtersFromParam).map(([key, value]) => {
     const [prop, operator] = migrationUtils.getPropAndOperatorFromKey(key);
     return { key: prop, value, operator };

@@ -64,7 +64,7 @@ const originalFodselsnummerComponent = {
 const originalForm = {
   path: 'test-form',
   components: [originalFodselsnummerComponent, originalTextFieldComponent],
-};
+} as NavFormType;
 
 const radioComponent = {
   key: 'radioComponent',
