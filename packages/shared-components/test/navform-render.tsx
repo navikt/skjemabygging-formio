@@ -2,8 +2,8 @@ import { render, waitFor } from '@testing-library/react';
 import { Formio } from 'formiojs';
 import Components from 'formiojs/components/Components';
 import { AppConfigProvider, NavForm } from '../src';
-import CustomComponents from '../src/customComponents';
-import Template from '../src/template';
+import CustomComponents from '../src/formio/components';
+import Template from '../src/formio/template';
 
 const setupNavFormio = () => {
   Formio.use(Template);

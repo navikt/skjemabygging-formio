@@ -16,11 +16,11 @@ import {
   getSoknad,
   updateSoknad,
   updateUtfyltSoknad,
-} from '../../api/sendInnSoknad';
-import { useAppConfig } from '../../configContext';
+} from '../../api/sendinn/sendInnSoknad';
 import { useAmplitude } from '../amplitude';
-import { mellomlagringReducer } from './mellomlagringReducer';
-import { getSubmissionWithFyllutState, removeFyllutState } from './utils';
+import { useAppConfig } from '../config/configContext';
+import { mellomlagringReducer } from './reducer/mellomlagringReducer';
+import { getSubmissionWithFyllutState, removeFyllutState } from './utils/utils';
 
 interface SendInnContextType {
   startMellomlagring: (submission: Submission) => Promise<SendInnSoknadResponse | undefined>;
