@@ -10,7 +10,7 @@ import {
   originalSkjemaGruppeComponent,
   originalTextFieldComponent,
 } from './testData';
-import mockedForm from './testdata/Form';
+import mockedForm from './testdata/form';
 
 describe('Migration scripts', () => {
   describe('migrateForm', () => {
@@ -111,10 +111,10 @@ describe('Migration scripts', () => {
   });
 
   describe('migrateForms', () => {
-    const allForms = [
-      { ...mockedForm, path: 'form1', properties: { skjemanummer: 'form1' } },
-      { ...mockedForm, path: 'form2', properties: { skjemanummer: 'form2' } },
-      { ...mockedForm, path: 'form3', properties: { skjemanummer: 'form3' } },
+    const allForms: NavFormType[] = [
+      { ...mockedForm, path: 'form1', properties: { skjemanummer: 'form1', tema: 'BIL' } },
+      { ...mockedForm, path: 'form2', properties: { skjemanummer: 'form2', tema: 'BIL' } },
+      { ...mockedForm, path: 'form3', properties: { skjemanummer: 'form3', tema: 'BIL' } },
     ];
 
     it('generates log only for included form paths', async () => {
