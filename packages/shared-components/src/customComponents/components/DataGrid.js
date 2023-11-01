@@ -1,10 +1,10 @@
+import Field from 'formiojs/components/_classes/field/Field';
 import DataGrid from 'formiojs/components/datagrid/DataGrid';
 import DataGridEditForm from 'formiojs/components/datagrid/DataGrid.form';
 import DataGridDataEditForm from 'formiojs/components/datagrid/editForm/DataGrid.edit.data';
 import DataGridDisplayEditForm from 'formiojs/components/datagrid/editForm/DataGrid.edit.display';
 import FormBuilderOptions from '../../Forms/form-builder-options';
 import { scrollToAndSetFocus } from '../../util/focus-management';
-import FormioReactComponent from '../FormioReactComponent';
 import { description } from './fields/description.js';
 
 const originalAddRow = DataGrid.prototype.addRow;
@@ -152,16 +152,10 @@ class NavDataGrid extends DataGrid {
   }
 
   static schema(...extend) {
-    return FormioReactComponent.schema({
+    return Field.schema({
       ...FormBuilderOptions.builder.data.components.navDataGrid.schema,
       ...extend,
     });
-  }
-
-  addRow() {
-    originalAddRow.call(this);
-    const lastRowSelector = `[ref='${this.datagridKey}-row']:last-of-type`;
-    scrollToAndSetFocus(`${lastRowSelector} input, ${lastRowSelector} select, ${lastRowSelector} textarea`);
   }
 
   removeRow(index) {

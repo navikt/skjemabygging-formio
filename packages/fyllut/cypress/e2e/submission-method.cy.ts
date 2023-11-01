@@ -47,7 +47,7 @@ describe('Submission method', () => {
         cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
       });
 
-      it("renders stepper without 'Vedlegg' on summary page", () => {
+      it('renders stepper without "Vedlegg" on summary page', () => {
         cy.findByRole('navigation', { name: 'Søknadssteg' })
           .should('exist')
           .within(() => {
@@ -67,7 +67,7 @@ describe('Submission method', () => {
         }).as('sendInn');
 
         // submit application
-        cy.findByRole('button', { name: 'Lagre og fortsett' }).click();
+        cy.clickSaveAndContinue();
         cy.wait('@sendInn');
       });
 
