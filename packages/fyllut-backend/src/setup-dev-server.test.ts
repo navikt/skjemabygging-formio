@@ -66,12 +66,21 @@ describe('Setup dev server', () => {
         expect(res.headers['set-cookie'][0]).toContain('fyllut-dev-access=true');
       });
 
-      it('returns 400 bad request when formPath is invalid', async () => {
+      it('returns 400 bad request when formPath contains irregular characters', async () => {
         const res = await request(createApp(SETUP_DEV))
-          .get('/fyllut/test/login?formPath=suspektskjema')
+          .get('/fyllut/test/login?formPath=suspekt$%skjema%')
           .set('X-Forwarded-For', IP_EXTERNAL)
           .expect(400);
         expect(res.headers['set-cookie']).toBeUndefined();
+      });
+
+      it('redirects to form even if formPath is not a valid form number', async () => {
+        const res = await request(createApp(SETUP_DEV))
+          .get('/fyllut/test/login?formPath=testskjema001')
+          .set('X-Forwarded-For', IP_EXTERNAL)
+          .expect(302);
+        expect(res.headers['location']).toContain('/fyllut/testskjema001');
+        expect(res.headers['set-cookie'][0]).toContain('fyllut-dev-access=true');
       });
     });
   });
