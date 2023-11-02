@@ -1,6 +1,6 @@
 import { LinkPanel as AkselLinkPanel, LinkPanelProps } from '@navikt/ds-react';
 import { ReactElement } from 'react';
-import makeStyles from '../../util/jss';
+import makeStyles from '../../util/styles/jss/jss';
 
 interface Props extends LinkPanelProps {
   variant?: 'primary' | 'secondary';

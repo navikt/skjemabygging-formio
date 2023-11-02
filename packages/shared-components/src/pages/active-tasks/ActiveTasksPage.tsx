@@ -45,7 +45,7 @@ const useStyles = makeStyles({
   },
 });
 
-const ActiveTasks = ({ form, formUrl }: Props) => {
+const ActiveTasksPage = ({ form, formUrl }: Props) => {
   const appConfig = useAppConfig();
   const { http, baseUrl } = appConfig;
   const [searchParams] = useSearchParams();
@@ -152,4 +152,4 @@ const ActiveTasks = ({ form, formUrl }: Props) => {
   );
 };
 
-export default ActiveTasks;
+export default ActiveTasksPage;
