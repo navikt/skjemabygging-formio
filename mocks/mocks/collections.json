@@ -11,6 +11,7 @@
       "get-tokenx-endpoint:success",
       "post-tokenx:success",
       "post-soknad:success",
+      "get-active-tasks:success",
       "put-soknad:success",
       "get-soknad:success",
       "get-soknad:not-found",

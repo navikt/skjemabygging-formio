@@ -96,12 +96,8 @@ const sendInnSoknad = {
         res.json(await sendInnResponse.json());
       } else if (sendInnResponse.status === 302) {
         const location = sendInnResponse.headers.get('location');
-        logger.debug(`User has active tasks, redirecting to ${location}`);
-        res.header({
-          'Access-Control-Expose-Headers': 'Location',
-          Location: location,
-        });
-        res.sendStatus(302);
+        logger.debug(`User has active tasks, returns redirect url ${location}`);
+        res.json({ redirectUrl: location });
       } else {
         logger.debug('Failed to post data to SendInn');
         next(await responseToError(sendInnResponse, `Feil ved kall til SendInn. ${postErrorMessage}`, true));

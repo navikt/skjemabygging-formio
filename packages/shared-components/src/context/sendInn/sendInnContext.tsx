@@ -14,6 +14,7 @@ import {
   createSoknadWithoutInnsendingsId,
   deleteSoknad,
   getSoknad,
+  isRedirectResponse,
   updateSoknad,
   updateUtfyltSoknad,
 } from '../../api/sendInnSoknad';
@@ -163,6 +164,12 @@ const SendInnProvider = ({
         translation,
         opprettNySoknad,
       );
+
+      if (isRedirectResponse(response)) {
+        window.location.href = response?.redirectUrl;
+        return;
+      }
+
       updateSubmission(getSubmissionWithFyllutState(response));
       dispatchFyllutMellomlagring({ type: 'init', response });
       setInnsendingsId(response?.innsendingsId);

@@ -18,8 +18,23 @@ describe('Active tasks', () => {
     cy.intercept('GET', '/fyllut/api/send-inn/aktive-opprettede-soknader/test-mellomlagring').as('getActiveTasks');
   });
 
-  after(() => {
+  afterEach(() => {
     cy.mocksRestoreRouteVariants();
+  });
+
+  describe('When creating mellomlagring returns with location header', () => {
+    beforeEach(() => {
+      cy.mocksUseRouteVariant('post-soknad:redirect');
+      cy.intercept('GET', '/fyllut/api/send-inn/aktive-opprettede-soknader*').as('getActiveTasks');
+    });
+
+    it('redirects to /fyllut/:skjemapath:/paabegynt', () => {
+      cy.visit('/fyllut/testmellomlagring?sub=digital');
+      cy.wait('@getTestMellomlagringForm');
+      cy.clickStart();
+      cy.wait('@getActiveTasks');
+      cy.findByRole('heading', { name: TEXTS.statiske.paabegynt.oneActiveTaskHeading });
+    });
   });
 
   describe('When user has mellomlagring and ettersending in progress for the form', () => {

@@ -10,6 +10,12 @@ export interface SendInnSoknadResponse {
   endretDato: string;
 }
 
+export interface RedirectResponse {
+  redirectUrl: string;
+}
+
+export const isRedirectResponse = (response: any): response is RedirectResponse => 'redirectUrl' in response;
+
 export const getSoknad = async (
   innsendingsId: string,
   appConfig: AppConfigContextType,
@@ -25,23 +31,18 @@ export const createSoknad = async (
   language: string,
   translation: I18nTranslationMap = {},
   opprettNySoknad?: boolean,
-): Promise<SendInnSoknadResponse | undefined> => {
+): Promise<SendInnSoknadResponse | RedirectResponse | undefined> => {
   const { http, baseUrl, submissionMethod } = appConfig;
   const url = opprettNySoknad
     ? `${baseUrl}/api/send-inn/soknad?opprettNySoknad=true`
     : `${baseUrl}/api/send-inn/soknad`;
-  return http?.post<SendInnSoknadResponse>(
-    url,
-    {
-      form,
-      submission,
-      language,
-      translation,
-      submissionMethod,
-    },
-    {},
-    { redirectToLocation: true },
-  );
+  return http?.post<SendInnSoknadResponse>(url, {
+    form,
+    submission,
+    language,
+    translation,
+    submissionMethod,
+  });
 };
 
 export const updateSoknad = async (
