@@ -52,7 +52,7 @@ const ActiveTasksPage = ({ form, formUrl }: Props) => {
 
   useEffect(() => {
     const initialize = async () => {
-      const response = await getActiveTasks(form);
+      const response = await getActiveTasks(form, appConfig);
       setActiveTasks(response.filter((task: Task) => task.status === 'Opprettet'));
       setHasSubmittedTasks(response.some((task: Task) => task.status === 'Utfylt'));
     };
