@@ -3,12 +3,12 @@ import { BodyShort, Button, Heading } from '@navikt/ds-react';
 import { NavFormType, TEXTS, dateUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import LoadingComponent from '../components/LoadingComponent';
-import LinkPanel from '../components/linkPanel/LinkPanel';
-import { useAppConfig } from '../configContext';
-import { useLanguages } from '../context/languages';
-import { formUtils } from '../index';
-import makeStyles from '../util/jss';
+import LinkPanel from '../../components/linkPanel/LinkPanel';
+import LoadingComponent from '../../components/loading/LoadingComponent';
+import { useAppConfig } from '../../context/config/configContext';
+import { useLanguages } from '../../context/languages';
+import { formUtils } from '../../index';
+import makeStyles from '../../util/styles/jss/jss';
 
 type Task = {
   skjemanr: string;
