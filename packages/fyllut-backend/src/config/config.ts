@@ -1,5 +1,6 @@
 import { featureUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import dotenv from 'dotenv';
+import { logger } from '../logger';
 import { NaisCluster } from './nais-cluster.js';
 import { AmplitudeConfig, ConfigType, DefaultConfig, IdportenConfig, SendInnConfig, TokenxConfig } from './types';
 
@@ -105,15 +106,15 @@ const config: ConfigType = {
   pdlTokenScopeCluster: process.env.PDL_TOKEN_SCOPE_CLUSTER!,
 };
 
-const checkConfigConsistency = (config: ConfigType, logError = console.error, exit = process.exit) => {
+const checkConfigConsistency = (config: ConfigType, logError = logger.error, exit = process.exit) => {
   const { useFormioApi, naisClusterName, formioProjectUrl } = config;
   if (useFormioApi) {
     if (naisClusterName === NaisCluster.PROD) {
-      logError(`FormioApi is not allowed in ${naisClusterName}`);
+      logError(`Invalid configuration: FormioApi is not allowed in ${naisClusterName}`);
       exit(1);
     }
     if (!formioProjectUrl) {
-      logError('FORMIO_PROJECT_URL is required when using FormioApi');
+      logError('Invalid configuration: FORMIO_PROJECT_URL is required when using FormioApi');
       exit(1);
     }
   }

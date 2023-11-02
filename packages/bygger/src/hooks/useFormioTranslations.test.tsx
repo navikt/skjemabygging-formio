@@ -1,6 +1,5 @@
 import { NavFormioJs } from '@navikt/skjemadigitalisering-shared-components';
-import { waitFor } from '@testing-library/react';
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook, waitFor } from '@testing-library/react';
 import createMockImplementation, { DEFAULT_PROJECT_URL } from '../../test/backendMockImplementation';
 import { FeedbackEmitContext } from '../context/notifications/FeedbackContext';
 import { useFormioTranslations } from './useFormioTranslations';

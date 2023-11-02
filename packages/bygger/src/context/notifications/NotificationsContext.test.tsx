@@ -1,6 +1,5 @@
 import { AppConfigProvider } from '@navikt/skjemadigitalisering-shared-components';
-import { act } from '@testing-library/react';
-import { cleanup, renderHook } from '@testing-library/react-hooks';
+import { act, cleanup, renderHook } from '@testing-library/react';
 import Pusher, { Channel } from 'pusher-js';
 import { Mock } from 'vitest';
 import PusherNotificationsProvider, { CHANNEL, EVENT, usePusherNotifications } from './NotificationsContext';
@@ -32,7 +31,9 @@ describe('NotificationsContext', () => {
           channelSubscriptions[channel][eventName] = callback;
         },
         unbind: (eventName) => {
-          channelSubscriptions[channel][eventName] = undefined;
+          if (channelSubscriptions[channel]) {
+            channelSubscriptions[channel][eventName] = undefined;
+          }
         },
       } as Channel;
     });

@@ -8,6 +8,7 @@ import UserFeedback from '../components/UserFeedback';
 import Column from '../components/layout/Column';
 import Row from '../components/layout/Row';
 import { useModal } from '../util/useModal';
+import beforeSaveComponentSettings from './formBuilderHooks/beforeSaveComponentSettings';
 import PublishModalComponents from './publish/PublishModalComponents';
 import FormStatusPanel from './status/FormStatusPanel';
 import UnpublishButton from './unpublish/UnpublishButton';
@@ -28,7 +29,11 @@ export function EditFormPage({ form, publishedForm, onSave, onChange, onPublish,
   } = form;
   const [openPublishSettingModal, setOpenPublishSettingModal] = useModal(false);
   const styles = useStyles();
-  const formBuilderOptions = { ...FormBuilderOptions, formConfig: { publishedForm } };
+  const formBuilderOptions = {
+    ...FormBuilderOptions,
+    formConfig: { publishedForm },
+    hooks: { beforeSaveComponentSettings },
+  };
   return (
     <>
       <AppLayout

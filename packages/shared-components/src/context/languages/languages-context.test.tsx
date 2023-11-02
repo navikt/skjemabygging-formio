@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { LanguagesProvider, useLanguages } from './languages-context';
 
-vi.mock('./useCurrentLanguage', () => {
+vi.mock('./hooks/useCurrentLanguage', () => {
   return {
     default: () => ({
       currentLanguage: 'en',

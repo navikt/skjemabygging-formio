@@ -1,6 +1,6 @@
 // @ts-ignore
 import FormioUtils from 'formiojs/utils';
-import { Component, NavFormType, Panel, Submission } from '../form';
+import { Attachment, Component, NavFormType, Panel, Submission } from '../form';
 import { formSummaryUtil } from '../index';
 import { camelCase } from './stringUtils';
 
@@ -215,12 +215,39 @@ const hasAttachment = (form: NavFormType) => {
   return !!attachmentPanel?.components?.length;
 };
 
-const getAttachmentTitles = (form: NavFormType): string[] => {
+const getAttachmentProperties = (form: NavFormType): Attachment[] => {
   const attachmentPanel = getAttachmentPanel(form);
   if (!attachmentPanel || !attachmentPanel.components) return [];
 
-  const attachmentTitles = attachmentPanel.components.map((component) => component.properties?.vedleggstittel);
-  return attachmentTitles.filter((x): x is string => x !== undefined);
+  const attachments = attachmentPanel.components
+    .filter((component) => isAttachment(component))
+    .map((component) => ({
+      vedleggstittel: component.properties?.vedleggstittel,
+      vedleggskode: component.properties?.vedleggskode,
+      label: component.label,
+    }));
+
+  return attachments;
+};
+
+const isAttachment = (comp: Component) => comp.values?.some((v) => v.value === 'leggerVedNaa');
+
+const isDigital = (type: 'innsending' | 'ettersending', form: NavFormType) => {
+  // If field is empty, it defaults to PAPIR_OG_DIGITAL
+  if (!form.properties[type]) return true;
+
+  return form.properties[type] === 'KUN_DIGITAL' || form.properties[type] === 'PAPIR_OG_DIGITAL';
+};
+
+const isPaper = (type: 'innsending' | 'ettersending', form: NavFormType) => {
+  // If field is empty, it defaults to PAPIR_OG_DIGITAL
+  if (!form.properties[type]) return true;
+
+  return form.properties[type] === 'KUN_PAPIR' || form.properties[type] === 'PAPIR_OG_DIGITAL';
+};
+
+const isNone = (type: 'innsending' | 'ettersending', form: NavFormType) => {
+  return form.properties[type] === 'INGEN';
 };
 
 const navFormUtils = {
@@ -239,6 +266,10 @@ const navFormUtils = {
   getActivePanelsFromForm,
   getAttachmentPanel,
   hasAttachment,
-  getAttachmentTitles,
+  getAttachmentProperties,
+  isDigital,
+  isPaper,
+  isAttachment,
+  isNone,
 };
 export default navFormUtils;

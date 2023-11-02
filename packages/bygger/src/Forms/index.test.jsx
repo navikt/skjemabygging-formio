@@ -56,7 +56,7 @@ describe('FormsRouter', () => {
   it('can edit a form', async () => {
     renderApp('/forms/debugskjema/edit');
     expect(await screen.findByRole('heading', { name: 'debug skjema' })).toBeInTheDocument();
-    expect(await screen.findByLabelText('Text Area', { exact: false })).toBeInTheDocument();
+    expect(screen.getByLabelText('Text Area', { exact: false })).toBeInTheDocument();
   });
 
   it('navigates from the list to the editor', async () => {

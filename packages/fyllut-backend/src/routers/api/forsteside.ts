@@ -40,7 +40,7 @@ const validateForstesideRequest = async (forsteside: ForstesideRequestBody) => {
       };
 
       if (addresses.length > 1) {
-        console.warn(`Multiple addresses setup with theme: ${forsteside.tema}`);
+        logger.warn(`Multiple addresses setup with theme: ${forsteside.tema}`);
       }
     }
   }

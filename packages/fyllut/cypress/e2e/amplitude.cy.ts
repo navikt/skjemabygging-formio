@@ -69,7 +69,7 @@ describe('Amplitude', () => {
       .within(($radio) => cy.findByLabelText('Nei').should('exist').check());
     cy.checkLogToAmplitude('skjemaspørsmål besvart', { spørsmål: 'Har du norsk fødselsnummer eller D-nummer?' });
 
-    cy.findByRole('textbox', { name: 'Din fødselsdato (dd.mm.åååå)' }).should('be.visible').type('10.05.1995');
+    cy.findByRole('textbox', { name: 'Din fødselsdato (dd.mm.åååå)' }).should('be.visible').type('10.05.1995{esc}');
     cy.findByRole('textbox', { name: 'Din fødselsdato (dd.mm.åååå)' }).blur();
 
     cy.checkLogToAmplitude('skjemaspørsmål besvart', { spørsmål: 'Din fødselsdato (dd.mm.åååå)' });
@@ -164,8 +164,8 @@ describe('Amplitude', () => {
     cy.checkLogToAmplitude('skjemainnsending feilet');
 
     // The second attempt is successful, causing "skjema fullført"
-    cy.mocksUseRouteVariant('post-send-inn:success-with-delay');
-    cy.mocksUseRouteVariant('send-inn-frontend:available-with-delay');
+    cy.mocksUseRouteVariant('post-send-inn:success');
+    cy.mocksUseRouteVariant('send-inn-frontend:available');
     cy.intercept('POST', '/fyllut/api/send-inn').as('submitToSendinnSuccess');
     cy.findByRole('button', { name: 'Gå videre' }).click();
     cy.wait('@submitToSendinnSuccess');

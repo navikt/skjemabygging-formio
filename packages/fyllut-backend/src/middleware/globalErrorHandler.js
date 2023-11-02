@@ -1,5 +1,6 @@
 import correlator from 'express-correlation-id';
 import { config } from '../config/config';
+import { logger } from '../logger.js';
 
 const { isTest } = config;
 
@@ -9,7 +10,8 @@ const globalErrorHandler = (err, req, res, _next) => {
   }
 
   if (!isTest) {
-    console.error(JSON.stringify(err));
+    const { message, stack, ...errDetails } = err;
+    logger.error(message, { stack, ...errDetails });
   }
 
   res.status(500);

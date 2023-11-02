@@ -1,6 +1,7 @@
 import alert from './alert';
 import button from './button';
 import choices from './choices';
+import datagrid from './datagrid';
 import datepicker from './datepicker';
 import day from './day';
 import error from './error';
@@ -43,6 +44,7 @@ const form = {
     ...table,
     ...tabs,
     ...typography,
+    ...datagrid,
     '& [hidden]': {
       display: 'none !important',
     },
