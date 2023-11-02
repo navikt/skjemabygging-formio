@@ -1,8 +1,8 @@
 const responseWithInnsendingsId = require('../data/innsending-api/mellomlagring/responseWithInnsendingsId.json');
 const innsendingValid = require('../data/innsending-api/mellomlagring/getTestMellomlagring-valid.json');
-const paabegyntMellomlagringOgInnsendt = require('../data/innsending-api/mellomlagring/paabegyntOpprettetOgUtfylt.json');
-const paabegyntMellomlagring = require('../data/innsending-api/mellomlagring/paabegyntMellomlagring.json');
-const paabegyntInnsendt = require('../data/innsending-api/mellomlagring/paabegyntUtfylt.json');
+const paabegyntMellomlagringOgInnsendt = require('../data/innsending-api/active-tasks/paabegyntOpprettetOgUtfylt.json');
+const paabegyntMellomlagring = require('../data/innsending-api/active-tasks/paabegyntMellomlagring.json');
+const paabegyntInnsendt = require('../data/innsending-api/active-tasks/paabegyntUtfylt.json');
 
 const objectToByteArray = (obj) => Array.from(new TextEncoder().encode(JSON.stringify(obj)));
 
@@ -99,7 +99,6 @@ module.exports = [
             console.log(req.body);
             const formPath = req.body.skjemapath;
             const location = `http://localhost:3001/fyllut/${formPath}/paabegynt?sub=digital`;
-            console.log('mocks location', location);
             res.header({ Location: location });
             res.sendStatus(302);
           },
