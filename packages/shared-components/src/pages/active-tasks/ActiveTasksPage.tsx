@@ -3,19 +3,13 @@ import { BodyShort, Button, Heading } from '@navikt/ds-react';
 import { NavFormType, TEXTS, dateUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { Task, getActiveTasks } from '../../api/active-tasks/activeTasks';
 import LinkPanel from '../../components/linkPanel/LinkPanel';
 import LoadingComponent from '../../components/loading/LoadingComponent';
 import { useAppConfig } from '../../context/config/configContext';
 import { useLanguages } from '../../context/languages';
 import { formUtils } from '../../index';
 import makeStyles from '../../util/styles/jss/jss';
-
-type Task = {
-  skjemanr: string;
-  innsendingsId: string;
-  endretDato: string;
-  status: 'Opprettet' | 'Utfylt';
-};
 
 interface Props {
   form: NavFormType;
@@ -47,7 +41,7 @@ const useStyles = makeStyles({
 
 const ActiveTasksPage = ({ form, formUrl }: Props) => {
   const appConfig = useAppConfig();
-  const { http, baseUrl } = appConfig;
+  const { baseUrl } = appConfig;
   const [searchParams] = useSearchParams();
   const { translate } = useLanguages();
   const [activeTasks, setActiveTasks] = useState<Task[]>([]);
@@ -58,9 +52,7 @@ const ActiveTasksPage = ({ form, formUrl }: Props) => {
 
   useEffect(() => {
     const initialize = async () => {
-      const response = await http?.get<any>(
-        `${baseUrl}/api/send-inn/aktive-opprettede-soknader/${form.properties.skjemanummer}`,
-      );
+      const response = await getActiveTasks(form);
       setActiveTasks(response.filter((task: Task) => task.status === 'Opprettet'));
       setHasSubmittedTasks(response.some((task: Task) => task.status === 'Utfylt'));
     };
