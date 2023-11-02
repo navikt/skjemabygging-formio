@@ -66,7 +66,7 @@ class NavFormBuilder extends Component {
     }
     this.builderReady = this.builder.ready;
     this.builderReady.then(() => {
-      this.builder.instance?.on('change', this.handleChange);
+      this.builder?.instance?.on('change', this.handleChange);
       this.builderState = 'ready';
       if (this.props.onReady) {
         this.props.onReady();

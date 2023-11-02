@@ -1,7 +1,6 @@
-import { Component, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import selectEditForm from 'formiojs/components/select/Select.form';
 import { useEffect, useState } from 'react';
-import ReactDOM from 'react-dom';
 import ReactSelect, { components } from 'react-select';
 import http from '../../../api/util/http/http';
 import FormBuilderOptions from '../../form-builder-options';
@@ -49,6 +48,7 @@ const ReactSelectWrapper = ({
   useEffect(() => {
     setSelectedOption(value);
   }, [value, options]);
+
   return (
     <ReactSelect
       id={`selectContainer-${component.id}-${component.key}`}
@@ -90,12 +90,9 @@ const ReactSelectWrapper = ({
 };
 
 class NavSelect extends FormioReactComponent {
-  reactElement = null;
-  dataForSetting = null;
-  shouldSetValue = false;
   isLoading = false;
   loadFinished = false;
-  selectOptions: any[] = [];
+  selectOptions: any = [];
 
   static schema(...extend) {
     // @ts-ignore
@@ -205,38 +202,37 @@ class NavSelect extends FormioReactComponent {
   }
 
   renderReact(element) {
-    const component: Component = this.component as Component;
+    const component = this.component!;
     if (component.dataSrc === 'values') {
       this.selectOptions = component.data.values;
-    } else if (component.dataSrc === 'url') {
-      if (!this.isLoading && !this.loadFinished) {
-        const dataUrl = component.data.url;
-        this.isLoading = true;
-        http
-          .get<any[]>(dataUrl)
-          .then((data) => {
-            const { valueProperty, labelProperty } = component;
-            this.selectOptions = data.map((obj) => ({
-              label: obj[labelProperty || 'label'],
-              value: obj[valueProperty || 'value'],
-            }));
-          })
-          .catch((err) => {
-            this.emit('componentError', {
-              component,
-              message: err.toString(),
-            });
-            // @ts-ignore
-            console.warn(`Unable to load resources for ${this.key} (dataUrl=${dataUrl})`);
-          })
-          .finally(() => {
-            this.isLoading = false;
-            this.loadFinished = true;
-            super.redraw();
+    } else if (component.dataSrc === 'url' && !this.isLoading && !this.loadFinished) {
+      const dataUrl = component.data.url;
+      this.isLoading = true;
+      http
+        .get<any[]>(dataUrl)
+        .then((data) => {
+          const { valueProperty, labelProperty } = component;
+          this.selectOptions = data.map((obj) => ({
+            label: obj[labelProperty || 'label'],
+            value: obj[valueProperty || 'value'],
+          }));
+        })
+        .catch((err) => {
+          this.emit('componentError', {
+            component,
+            message: err.toString(),
           });
-      }
+          // @ts-ignore
+          console.warn(`Unable to load resources for ${this.key} (dataUrl=${dataUrl})`);
+        })
+        .finally(() => {
+          this.isLoading = false;
+          this.loadFinished = true;
+          super.redraw();
+        });
     }
-    return ReactDOM.render(
+
+    return element.render(
       <ReactSelectWrapper
         component={component}
         options={this.translateOptionLabels(this.selectOptions)}
@@ -249,35 +245,7 @@ class NavSelect extends FormioReactComponent {
         inputRef={(ref) => (this.input = ref)}
         isLoading={this.isLoading}
       />,
-      element,
     );
-  }
-
-  attachReact(element) {
-    this.reactElement = element;
-    this.renderReact(element);
-    return this.reactElement;
-  }
-
-  detachReact(element) {
-    if (element) {
-      ReactDOM.unmountComponentAtNode(element);
-    }
-  }
-
-  getValue() {
-    return this.dataValue;
-  }
-
-  setValue(value, flag) {
-    this.dataForSetting = value;
-    if (this.reactElement) {
-      this.renderReact(this.reactElement);
-      this.shouldSetValue = false;
-    } else {
-      this.shouldSetValue = true;
-    }
-    return super.setValue(value, flag);
   }
 }
 

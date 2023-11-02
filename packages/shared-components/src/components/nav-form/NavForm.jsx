@@ -58,6 +58,7 @@ const NavForm = (props) => {
       sanitizeConfig: SANITIZE_CONFIG,
       events: NavForm.getDefaultEmitter(),
     });
+
     createPromise = instance.ready.then((formioInstance) => {
       if (formio) {
         formio.destroy(true);
