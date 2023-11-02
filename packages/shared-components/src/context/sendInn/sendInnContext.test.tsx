@@ -2,8 +2,8 @@ import { NavFormType, Submission } from '@navikt/skjemadigitalisering-shared-dom
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
-import { AppConfigProvider } from '../../configContext';
 import { http } from '../../index';
+import { AppConfigProvider } from '../config/configContext';
 import { SendInnProvider, useSendInn } from './sendInnContext';
 
 describe('sendInnContext', () => {

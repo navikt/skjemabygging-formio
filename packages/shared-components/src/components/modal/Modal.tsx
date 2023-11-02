@@ -1,6 +1,6 @@
 import { Heading, Modal as NavModal } from '@navikt/ds-react';
 import React from 'react';
-import makeStyles from '../../util/jss';
+import makeStyles from '../../util/styles/jss/jss';
 
 const useModalStyles = makeStyles({
   modal: {

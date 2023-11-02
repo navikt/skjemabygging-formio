@@ -1,7 +1,6 @@
 import { createContext, useContext, useEffect, useState } from 'react';
-import useCurrentLanguage from './useCurrentLanguage';
-import useLanguageCodeFromURL from './useLanguageCodeFromURL';
-
+import useCurrentLanguage from './hooks/useCurrentLanguage';
+import useLanguageCodeFromURL from './hooks/useLanguageCodeFromURL';
 interface LanguageContextType {
   availableLanguages: string[];
   currentLanguage: string;
