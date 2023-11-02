@@ -55,19 +55,14 @@ export const updateSoknad = async (
 ): Promise<SendInnSoknadResponse | undefined> => {
   const { http, baseUrl, submissionMethod, logger } = appConfig;
   if (innsendingsId) {
-    return http?.put<SendInnSoknadResponse>(
-      `${baseUrl}/api/send-inn/soknad`,
-      {
-        innsendingsId,
-        form,
-        submission,
-        language,
-        translation,
-        submissionMethod,
-      },
-      {},
-      { redirectToLocation: false },
-    );
+    return http?.put<SendInnSoknadResponse>(`${baseUrl}/api/send-inn/soknad`, {
+      innsendingsId,
+      form,
+      submission,
+      language,
+      translation,
+      submissionMethod,
+    });
   } else {
     logger?.info('Kunne ikke mellomlagre søknaden fordi innsendingsId mangler');
   }
