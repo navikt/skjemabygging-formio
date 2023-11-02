@@ -1,5 +1,8 @@
 const responseWithInnsendingsId = require('../data/innsending-api/mellomlagring/responseWithInnsendingsId.json');
 const innsendingValid = require('../data/innsending-api/mellomlagring/getTestMellomlagring-valid.json');
+const paabegyntMellomlagringOgInnsendt = require('../data/innsending-api/mellomlagring/paabegyntOpprettetOgUtfylt.json');
+const paabegyntMellomlagring = require('../data/innsending-api/mellomlagring/paabegyntMellomlagring.json');
+const paabegyntInnsendt = require('../data/innsending-api/mellomlagring/paabegyntUtfylt.json');
 
 const objectToByteArray = (obj) => Array.from(new TextEncoder().encode(JSON.stringify(obj)));
 
@@ -18,6 +21,37 @@ const convertToInnsendingApiResponse = (json) => {
 };
 
 module.exports = [
+  {
+    id: 'get-active-tasks',
+    url: '/send-inn/frontend/v1/soknad',
+    method: 'GET',
+    variants: [
+      {
+        id: 'success',
+        type: 'json',
+        options: {
+          status: 200,
+          body: paabegyntMellomlagringOgInnsendt,
+        },
+      },
+      {
+        id: 'success-mellomlagring',
+        type: 'json',
+        options: {
+          status: 200,
+          body: paabegyntMellomlagring,
+        },
+      },
+      {
+        id: 'success-ettersending',
+        type: 'json',
+        options: {
+          status: 200,
+          body: paabegyntInnsendt,
+        },
+      },
+    ],
+  },
   {
     id: 'post-send-inn',
     url: '/send-inn/fyllUt/v1/leggTilVedlegg',
@@ -67,6 +101,20 @@ module.exports = [
         options: {
           status: 200,
           body: responseWithInnsendingsId,
+        },
+      },
+      {
+        id: 'redirect',
+        type: 'middleware',
+        options: {
+          middleware: (req, res) => {
+            console.log(req.body);
+            const formPath = req.body.skjemapath;
+            const location = `http://localhost:3001/fyllut/${formPath}/paabegynt?sub=digital`;
+            console.log('mocks location', location);
+            res.header({ Location: location });
+            res.sendStatus(302);
+          },
         },
       },
     ],

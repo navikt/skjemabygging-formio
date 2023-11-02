@@ -14,6 +14,7 @@ type Task = {
   skjemanr: string;
   innsendingsId: string;
   endretDato: string;
+  status: 'Opprettet' | 'Utfylt';
 };
 
 interface Props {
@@ -60,8 +61,8 @@ const ActiveTasks = ({ form, formUrl }: Props) => {
       const response = await http?.get<any>(
         `${baseUrl}/api/send-inn/aktive-opprettede-soknader/${form.properties.skjemanummer}`,
       );
-      setActiveTasks(response.filter((task) => task.status === 'Opprettet'));
-      setHasSubmitted(response.some((task) => task.status === 'Innsendt')); //TODO: sjekk om vedlegg mangler
+      setActiveTasks(response.filter((task: Task) => task.status === 'Opprettet'));
+      setHasSubmitted(response.some((task: Task) => task.status === 'Utfylt')); //TODO: sjekk om vedlegg mangler
     };
     initialize();
   }, []);
