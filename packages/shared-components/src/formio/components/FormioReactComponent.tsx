@@ -4,7 +4,7 @@ import ReactComponent from './ReactComponent';
 const FormioReactComponent = class extends ReactComponent {
   input = null;
 
-  attachReact(element, setReactInstance) {
+  attachReact(element, _setReactInstance) {
     const root = createRoot(element);
     this.renderReact(root);
 
@@ -25,7 +25,7 @@ const FormioReactComponent = class extends ReactComponent {
    *
    * @param element
    */
-  renderReact(element) {}
+  renderReact(_element) {}
 
   setValue(value, flags = {}) {
     const redraw = JSON.stringify(value) !== JSON.stringify(this.dataForSetting);

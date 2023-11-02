@@ -1,8 +1,8 @@
+import Field from 'formiojs/components/_classes/field/Field';
 import HTMLElement from 'formiojs/components/html/HTML';
 import HTMLElementEditForm from 'formiojs/components/html/HTML.form';
 import HTMLElementDisplayEditForm from 'formiojs/components/html/editForm/HTML.edit.display';
 import FormBuilderOptions from '../../form-builder-options';
-import FormioReactComponent from '../FormioReactComponent';
 import { contentToIncludeInPdf } from '../fields/contentToIncludeInPdf';
 
 class AlertStripe extends HTMLElement {
@@ -110,7 +110,7 @@ class AlertStripe extends HTMLElement {
   }
 
   static schema(...extend) {
-    return FormioReactComponent.schema({
+    return Field.schema({
       ...FormBuilderOptions.builder.layout.components.alertstripe.schema,
       ...extend,
     });
