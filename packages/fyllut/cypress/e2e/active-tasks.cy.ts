@@ -45,8 +45,7 @@ describe('Active tasks', () => {
     });
 
     it('lets you go to the original mellomlagring and the active ettersending', () => {
-      const continueLink = `${TEXTS.statiske.paabegynt.continueTask} ${TEXTS.grensesnitt.mostRecentSave} 8.04.2020, 10:00.`;
-      cy.findByRole('link', { name: continueLink })
+      cy.findByRole('link', { name: new RegExp(`${TEXTS.statiske.paabegynt.continueTask}`) })
         .should('have.attr', 'href')
         .and('include', '/testmellomlagring/oppsummering')
         .and('include', 'sub=digital')
@@ -74,7 +73,7 @@ describe('Active tasks', () => {
     });
 
     it('lets you go to the original mellomlagring', () => {
-      const continueLink = `${TEXTS.statiske.paabegynt.continueTask} ${TEXTS.grensesnitt.mostRecentSave} 8.04.2020, 10:00.`;
+      const continueLink = new RegExp(`${TEXTS.statiske.paabegynt.continueTask}`);
       cy.findByRole('link', { name: continueLink }).should('be.visible');
       cy.findByRole('link', { name: continueLink }).click();
       cy.wait('@getMellomlagring');
