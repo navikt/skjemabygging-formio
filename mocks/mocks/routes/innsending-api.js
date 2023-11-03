@@ -23,7 +23,7 @@ const convertToInnsendingApiResponse = (json) => {
 module.exports = [
   {
     id: 'get-active-tasks',
-    url: '/send-inn/frontend/v1/soknad',
+    url: '/send-inn/frontend/v1/skjema/*',
     method: 'GET',
     variants: [
       {

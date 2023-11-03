@@ -14,7 +14,7 @@ export type SendInnConfig = {
   host: string;
   tokenxClientId: string;
   paths: {
-    aktiveOpprettedeSoknader: string;
+    opprettedeSoknaderForSkjema: (skjemanummer: string, soknadsTyper?: Array<'soknad' | 'ettersendelse'>) => string;
     leggTilVedlegg: string;
     soknad: string;
     utfyltSoknad: string;

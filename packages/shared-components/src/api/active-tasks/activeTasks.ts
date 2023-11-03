@@ -1,14 +1,16 @@
 import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import { AppConfigContextType } from '../../context/config/configContext';
 
-export type Task = {
+export type Soknad = {
   skjemanr: string;
   innsendingsId: string;
   endretDato: string;
-  status: 'Opprettet' | 'Utfylt';
+  soknadstype: 'soknad' | 'ettersendelse';
 };
 
-export const getActiveTasks = (form: NavFormType, config: AppConfigContextType): Promise<Task[]> | Task[] => {
+export const getActiveTasks = (form: NavFormType, config: AppConfigContextType): Promise<Soknad[]> | Soknad[] => {
   const { http, baseUrl } = config;
-  return http?.get<Task[]>(`${baseUrl}/api/send-inn/aktive-opprettede-soknader/${form.properties.skjemanummer}`) ?? [];
+  return (
+    http?.get<Soknad[]>(`${baseUrl}/api/send-inn/aktive-opprettede-soknader/${form.properties.skjemanummer}`) ?? []
+  );
 };

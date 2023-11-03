@@ -2,11 +2,11 @@ import { Request, Response } from 'express';
 import { config } from '../../config/config';
 import { getTokenxAccessToken } from '../../security/tokenHelper';
 
-type Task = {
+type Soknad = {
   skjemanr: string;
   innsendingsId: string;
   endretDato: string;
-  status: 'Opprettet' | 'Utfylt';
+  soknadstype: 'soknad' | 'ettersendelse';
 };
 
 const { sendInnConfig } = config;
@@ -14,24 +14,25 @@ const { sendInnConfig } = config;
 const activeTasks = {
   get: async (req: Request, res: Response) => {
     const tokenxAccessToken = getTokenxAccessToken(req);
-    const response = await fetch(`${sendInnConfig.host}${sendInnConfig.paths.aktiveOpprettedeSoknader}`, {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        Authorization: `Bearer ${tokenxAccessToken}`,
+    const response = await fetch(
+      `${sendInnConfig.host}${sendInnConfig.paths.opprettedeSoknaderForSkjema(req.params.skjemanummer)}`,
+      {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          Authorization: `Bearer ${tokenxAccessToken}`,
+        },
       },
-    });
+    );
 
-    const responseJson: Task[] = await response.json();
+    const responseJson: Soknad[] = await response.json();
     res.json(
-      responseJson
-        .filter((task) => task.skjemanr === req.params.skjemanummer)
-        .map(({ skjemanr, innsendingsId, endretDato, status }: Task) => ({
-          skjemanr,
-          innsendingsId,
-          endretDato,
-          status,
-        })),
+      responseJson.map(({ skjemanr, innsendingsId, endretDato, soknadstype }: Soknad) => ({
+        skjemanr,
+        innsendingsId,
+        endretDato,
+        soknadstype,
+      })),
     );
   },
 };

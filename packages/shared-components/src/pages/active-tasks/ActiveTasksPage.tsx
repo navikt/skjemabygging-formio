@@ -1,9 +1,10 @@
 import { DocPencilIcon, FileExportIcon, PencilIcon } from '@navikt/aksel-icons';
 import { BodyShort, Button, Heading } from '@navikt/ds-react';
-import { NavFormType, TEXTS, dateUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { dateUtils, NavFormType, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Task, getActiveTasks } from '../../api/active-tasks/activeTasks';
+
+import { getActiveTasks, Soknad } from '../../api/active-tasks/activeTasks';
 import LinkPanel from '../../components/linkPanel/LinkPanel';
 import LoadingComponent from '../../components/loading/LoadingComponent';
 import { useAppConfig } from '../../context/config/configContext';
@@ -44,7 +45,7 @@ const ActiveTasksPage = ({ form, formUrl }: Props) => {
   const { baseUrl } = appConfig;
   const [searchParams] = useSearchParams();
   const { translate } = useLanguages();
-  const [activeTasks, setActiveTasks] = useState<Task[]>([]);
+  const [activeTasks, setActiveTasks] = useState<Soknad[]>([]);
   const [hasSubmittedTasks, setHasSubmittedTasks] = useState(false);
   const hasActiveTasks = activeTasks.length > 0;
 
@@ -53,8 +54,8 @@ const ActiveTasksPage = ({ form, formUrl }: Props) => {
   useEffect(() => {
     const initialize = async () => {
       const response = await getActiveTasks(form, appConfig);
-      setActiveTasks(response.filter((task: Task) => task.status === 'Opprettet'));
-      setHasSubmittedTasks(response.some((task: Task) => task.status === 'Utfylt'));
+      setActiveTasks(response.filter((task) => task.soknadstype === 'soknad'));
+      setHasSubmittedTasks(response.some((task) => task.soknadstype === 'ettersendelse'));
     };
     initialize();
   }, []);
@@ -71,7 +72,7 @@ const ActiveTasksPage = ({ form, formUrl }: Props) => {
 
   const urlToFirstPanel = getUrl(`/${formUtils.getPanelSlug(form, 0)}`, { opprettNySoknad: 'true', sub: 'digital' });
 
-  if (!activeTasks) {
+  if (!(hasActiveTasks || hasSubmittedTasks)) {
     return <LoadingComponent />;
   }
 
