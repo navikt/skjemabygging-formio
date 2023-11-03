@@ -1,8 +1,4 @@
-import {
-  componentHasDependencyMatchingFilters,
-  componentMatchesFilters,
-  getPropertyFromComponent,
-} from './filterUtils';
+import { componentHasDependencyMatchingFilters, getPropertyFromTarget, targetMatchesFilters } from './filterUtils';
 import {
   componentWithAdvancedConditionalToRadio,
   componentWithSimpleConditionalToRadio,
@@ -13,12 +9,12 @@ import {
 describe('filterUtils', () => {
   describe('getPropertyFromComponent', () => {
     it('gets the value of a property in the object as a string', () => {
-      const actual = getPropertyFromComponent({ value: 'the value' }, ['value']);
+      const actual = getPropertyFromTarget({ value: 'the value' }, ['value']);
       expect(actual).toBe('the value');
     });
 
     it('gets properties from nested objects', () => {
-      const actual = getPropertyFromComponent({ firstLevel: { secondLevel: { thirdLevel: { value: 'the value' } } } }, [
+      const actual = getPropertyFromTarget({ firstLevel: { secondLevel: { thirdLevel: { value: 'the value' } } } }, [
         'firstLevel',
         'secondLevel',
         'thirdLevel',
@@ -31,7 +27,7 @@ describe('filterUtils', () => {
   describe('componentMatchesSearchFilters', () => {
     it('returns true if all searchFilters matches the related properties in the component', () => {
       expect(
-        componentMatchesFilters(originalTextFieldComponent, [
+        targetMatchesFilters(originalTextFieldComponent, [
           {
             key: 'fieldSize',
             value: 'input--xxl',
@@ -43,7 +39,7 @@ describe('filterUtils', () => {
 
     it('returns false if one searchFilter does not match the related property in the component', () => {
       expect(
-        componentMatchesFilters(originalTextFieldComponent, [
+        targetMatchesFilters(originalTextFieldComponent, [
           {
             key: 'fieldSize',
             value: 'input--s',
@@ -55,7 +51,7 @@ describe('filterUtils', () => {
 
     it('matches on nested properties', () => {
       expect(
-        componentMatchesFilters(originalTextFieldComponent, [
+        targetMatchesFilters(originalTextFieldComponent, [
           {
             key: 'validate.required',
             value: true,
@@ -64,7 +60,7 @@ describe('filterUtils', () => {
         ]),
       ).toBe(true);
       expect(
-        componentMatchesFilters(originalTextFieldComponent, [
+        targetMatchesFilters(originalTextFieldComponent, [
           {
             key: 'validate.required',
             value: false,
@@ -81,9 +77,9 @@ describe('filterUtils', () => {
 
       describe('equals and not equal', () => {
         it("the operator 'eq' (equals) is the same as default", () => {
-          expect(componentMatchesFilters(originalTextFieldComponent, [typeEqTextfield])).toBe(true);
+          expect(targetMatchesFilters(originalTextFieldComponent, [typeEqTextfield])).toBe(true);
           expect(
-            componentMatchesFilters(originalTextFieldComponent, [
+            targetMatchesFilters(originalTextFieldComponent, [
               {
                 ...typeEqTextfield,
                 operator: 'eq',
@@ -91,9 +87,9 @@ describe('filterUtils', () => {
             ]),
           ).toBe(true);
 
-          expect(componentMatchesFilters(originalTextFieldComponent, [typeEqRadio])).toBe(false);
+          expect(targetMatchesFilters(originalTextFieldComponent, [typeEqRadio])).toBe(false);
           expect(
-            componentMatchesFilters(originalTextFieldComponent, [
+            targetMatchesFilters(originalTextFieldComponent, [
               {
                 ...typeEqRadio,
                 operator: 'eq',
@@ -101,9 +97,9 @@ describe('filterUtils', () => {
             ]),
           ).toBe(false);
 
-          expect(componentMatchesFilters(originalTextFieldComponent, [nonExistingProp])).toBe(false);
+          expect(targetMatchesFilters(originalTextFieldComponent, [nonExistingProp])).toBe(false);
           expect(
-            componentMatchesFilters(originalTextFieldComponent, [
+            targetMatchesFilters(originalTextFieldComponent, [
               {
                 ...nonExistingProp,
                 operator: 'eq',
@@ -114,7 +110,7 @@ describe('filterUtils', () => {
 
         it("the operator 'n_eq' (not equals) evaluates to false when the value is equal", () => {
           expect(
-            componentMatchesFilters(originalTextFieldComponent, [
+            targetMatchesFilters(originalTextFieldComponent, [
               {
                 ...typeEqTextfield,
                 operator: 'n_eq',
@@ -125,7 +121,7 @@ describe('filterUtils', () => {
 
         it("the operator 'n_eq' (not equals) evaluates to true when the value is not equal", () => {
           expect(
-            componentMatchesFilters(originalTextFieldComponent, [
+            targetMatchesFilters(originalTextFieldComponent, [
               {
                 ...typeEqRadio,
                 operator: 'n_eq',
@@ -136,7 +132,7 @@ describe('filterUtils', () => {
 
         it("the operator 'n_eq' (not equals) evaluates to true when prop does not exist", () => {
           expect(
-            componentMatchesFilters(originalTextFieldComponent, [
+            targetMatchesFilters(originalTextFieldComponent, [
               {
                 ...nonExistingProp,
                 operator: 'n_eq',
@@ -149,7 +145,7 @@ describe('filterUtils', () => {
       describe('exists and not exist', () => {
         it("the operator 'exists' evaluates to false when the property exists", () => {
           expect(
-            componentMatchesFilters(originalTextFieldComponent, [
+            targetMatchesFilters(originalTextFieldComponent, [
               {
                 key: 'type',
                 value: '',
@@ -161,7 +157,7 @@ describe('filterUtils', () => {
 
         it("the operator 'exists' evaluates to false when the property does not exist", () => {
           expect(
-            componentMatchesFilters(originalTextFieldComponent, [
+            targetMatchesFilters(originalTextFieldComponent, [
               {
                 key: 'non-existing-prop',
                 value: '',
@@ -173,7 +169,7 @@ describe('filterUtils', () => {
 
         it("the operator 'n_exists' (does not exist) evaluates to false when the property exists", () => {
           expect(
-            componentMatchesFilters(originalTextFieldComponent, [
+            targetMatchesFilters(originalTextFieldComponent, [
               {
                 key: 'type',
                 value: '',
@@ -185,7 +181,7 @@ describe('filterUtils', () => {
 
         it("the operator 'n_exists' (does not exist) evaluates to true when the property does not exist", () => {
           expect(
-            componentMatchesFilters(originalTextFieldComponent, [
+            targetMatchesFilters(originalTextFieldComponent, [
               {
                 key: 'non-existing-prop',
                 value: '',
@@ -205,7 +201,7 @@ describe('filterUtils', () => {
 
         it("the operator 'contains' evaluates to true when the value is a substring", () => {
           expect(
-            componentMatchesFilters(customComponent, [
+            targetMatchesFilters(customComponent, [
               {
                 key: 'customLongText',
                 value: 'substring-in-custom-long-text',
@@ -217,7 +213,7 @@ describe('filterUtils', () => {
 
         it("the operator 'contains' evaluates to false when the value is not a substring", () => {
           expect(
-            componentMatchesFilters(customComponent, [
+            targetMatchesFilters(customComponent, [
               {
                 key: 'customLongText',
                 value: 'substring-NOT-in-custom-long-text',
@@ -229,7 +225,7 @@ describe('filterUtils', () => {
 
         it("the operator 'n_contains' (not contains) evaluates to false when the value is a substring", () => {
           expect(
-            componentMatchesFilters(customComponent, [
+            targetMatchesFilters(customComponent, [
               {
                 key: 'customLongText',
                 value: 'substring-in-custom-long-text',
@@ -241,7 +237,7 @@ describe('filterUtils', () => {
 
         it("the operator 'n_contains' (not contains) evaluates to false when the value is not a substring", () => {
           expect(
-            componentMatchesFilters(customComponent, [
+            targetMatchesFilters(customComponent, [
               {
                 key: 'customLongText',
                 value: 'substring-NOT-in-custom-long-text',
@@ -253,7 +249,7 @@ describe('filterUtils', () => {
 
         it("the operator 'contains' evaluates to true when the value is a member of an array", () => {
           expect(
-            componentMatchesFilters(customComponent, [
+            targetMatchesFilters(customComponent, [
               {
                 key: 'customArray',
                 value: 'member-of-array',
@@ -265,7 +261,7 @@ describe('filterUtils', () => {
 
         it("the operator 'contains' evaluates to false when the value is not a member of an array", () => {
           expect(
-            componentMatchesFilters(customComponent, [
+            targetMatchesFilters(customComponent, [
               {
                 key: 'customArray',
                 value: 'not-a-member-of-array',
@@ -277,7 +273,7 @@ describe('filterUtils', () => {
 
         it("the operator 'n_contains' (not contains) evaluates to true when the value is not a substring", () => {
           expect(
-            componentMatchesFilters(customComponent, [
+            targetMatchesFilters(customComponent, [
               {
                 key: 'customLongText',
                 value: 'substring-NOT-in-custom-long-text',
@@ -289,7 +285,7 @@ describe('filterUtils', () => {
 
         it("the operator 'contains' evaluates to false when the property does not exist", () => {
           expect(
-            componentMatchesFilters(originalTextFieldComponent, [
+            targetMatchesFilters(originalTextFieldComponent, [
               {
                 key: 'customLongText',
                 value: 'substring-NOT-in-custom-long-text',
@@ -301,7 +297,7 @@ describe('filterUtils', () => {
 
         it("the operator 'n_contains' (not contains) evaluates to true when the property does not exist", () => {
           expect(
-            componentMatchesFilters(originalTextFieldComponent, [
+            targetMatchesFilters(originalTextFieldComponent, [
               {
                 key: 'customLongText',
                 value: 'substring-NOT-in-custom-long-text',

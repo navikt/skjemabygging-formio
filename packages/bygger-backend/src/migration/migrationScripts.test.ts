@@ -108,6 +108,60 @@ describe('Migration scripts', () => {
         ],
       });
     });
+
+    describe('can migrate form properties', () => {
+      it('sets prop when not exists', () => {
+        const searchFiltersFromParam = {
+          'properties.ettersending__n_exists': true,
+        };
+        const propsEditOptions = {
+          'properties.ettersending': 'PAPIR_OG_DIGITAL',
+        };
+
+        const testForm: NavFormType = {
+          ...originalForm,
+          properties: {
+            ...originalForm.properties,
+            innsending: 'KUN_DIGITAL',
+            ettersending: undefined,
+          },
+        };
+        const { migratedForm: actual } = migrateForm(testForm, searchFiltersFromParam, {}, propsEditOptions, 'form');
+        expect(actual).toEqual({
+          ...testForm,
+          properties: {
+            ...testForm.properties,
+            ettersending: 'PAPIR_OG_DIGITAL',
+          },
+        });
+      });
+
+      it('does not change prop which exists', () => {
+        const searchFiltersFromParam = {
+          'properties.ettersending__n_exists': true,
+        };
+        const propsEditOptions = {
+          'properties.ettersending': 'PAPIR_OG_DIGITAL',
+        };
+
+        const testForm: NavFormType = {
+          ...originalForm,
+          properties: {
+            ...originalForm.properties,
+            innsending: 'KUN_DIGITAL',
+            ettersending: 'KUN_DIGITAL',
+          },
+        };
+        const { migratedForm: actual } = migrateForm(testForm, searchFiltersFromParam, {}, propsEditOptions, 'form');
+        expect(actual).toEqual({
+          ...testForm,
+          properties: {
+            ...testForm.properties,
+            ettersending: 'KUN_DIGITAL',
+          },
+        });
+      });
+    });
   });
 
   describe('migrateForms', () => {
@@ -128,8 +182,8 @@ describe('Migration scripts', () => {
         'form3',
       ]);
       expect(migratedForms).toHaveLength(2);
-      expect(migratedForms[0].path).toBe('form2');
-      expect(migratedForms[1].path).toBe('form3');
+      expect(migratedForms[0]?.path).toBe('form2');
+      expect(migratedForms[1]?.path).toBe('form3');
     });
 
     describe('When searchFilters are provided', () => {
@@ -244,6 +298,60 @@ describe('Migration scripts', () => {
           expect.objectContaining({ path: 'formWithAdvancedConditionalToRadio' }),
           expect.objectContaining({ path: 'formWithSimpleConditionalToCheckbox' }),
         ]);
+      });
+    });
+
+    describe('When migration level is form', () => {
+      it('only generates log with forms where props were migrated', async () => {
+        const searchFiltersFromParam = {
+          'properties.ettersending__n_exists': true,
+        };
+        const propsEditOptions = {
+          'properties.ettersending': 'PAPIR_OG_DIGITAL',
+        };
+
+        const testForm1: NavFormType = {
+          ...originalForm,
+          properties: {
+            ...originalForm.properties,
+            innsending: 'KUN_DIGITAL',
+            ettersending: undefined,
+          },
+        };
+
+        const testForm2: NavFormType = {
+          ...originalForm,
+          properties: {
+            ...originalForm.properties,
+            innsending: 'KUN_DIGITAL',
+            ettersending: 'KUN_DIGITAL',
+          },
+        };
+        const { migratedForms, log } = await migrateForms(
+          searchFiltersFromParam,
+          {},
+          propsEditOptions,
+          [testForm1, testForm2],
+          [],
+          'form',
+        );
+        expect(migratedForms).toHaveLength(1);
+        const logElement1 = log[testForm1.properties.skjemanummer];
+        expect(logElement1).toEqual(
+          expect.objectContaining({
+            found: 1,
+            changed: 1,
+            skjemanummer: 'Test Form',
+            diff: [
+              {
+                properties: {
+                  ettersending_NEW: 'PAPIR_OG_DIGITAL',
+                  ettersending_ORIGINAL: undefined,
+                },
+              },
+            ],
+          }),
+        );
       });
     });
   });

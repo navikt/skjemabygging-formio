@@ -34,7 +34,7 @@ import type {
   TranslationScope,
   TranslationTag,
 } from './languages/types';
-import migrationUtils from './migration';
+import migrationUtils, { MigrationLevel } from './migration';
 import { Operator } from './migration/operator';
 import type { Mottaksadresse, MottaksadresseData } from './mottaksadresse';
 import type { ReportDefinition } from './reports';
@@ -102,6 +102,7 @@ export type {
   KjentBruker,
   Language,
   MellomlagringError,
+  MigrationLevel,
   Mottaksadresse,
   MottaksadresseData,
   MottaksadresserResourceContent,

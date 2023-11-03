@@ -1,3 +1,4 @@
+import { MigrationLevel } from '@navikt/skjemadigitalisering-shared-domain';
 import { MigrationOptions } from '../../types/migration';
 import { createUrlParams } from './utils';
 
@@ -21,14 +22,18 @@ export async function runMigrationDryRun(
   searchFilters: MigrationOptions,
   dependencyFilters: MigrationOptions,
   editOptions: MigrationOptions,
+  migrationLevel: MigrationLevel,
 ) {
   try {
-    const response = await fetch(`/api/migrate${createUrlParams(searchFilters, dependencyFilters, editOptions)}`, {
-      method: 'GET',
-      headers: {
-        'content-type': 'application/json',
+    const response = await fetch(
+      `/api/migrate${createUrlParams(searchFilters, dependencyFilters, editOptions, migrationLevel)}`,
+      {
+        method: 'GET',
+        headers: {
+          'content-type': 'application/json',
+        },
       },
-    });
+    );
     if (!response.ok) {
       const error = await response.text();
       throw new Error(error);

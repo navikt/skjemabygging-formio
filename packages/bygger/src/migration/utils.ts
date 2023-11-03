@@ -1,4 +1,4 @@
-import { guid, migrationUtils, Operator } from '@navikt/skjemadigitalisering-shared-domain';
+import { guid, MigrationLevel, migrationUtils, Operator } from '@navikt/skjemadigitalisering-shared-domain';
 import { DryRunResults, MigrationMap, MigrationOption, MigrationOptions, ParsedInput } from '../../types/migration';
 
 const assembleUrlParams = (params: string[]) => {
@@ -18,6 +18,7 @@ export const createUrlParams = (
   searchFilters: MigrationOptions,
   dependencyFilters: MigrationOptions,
   editOptions: MigrationOptions,
+  migrationLevel: MigrationLevel,
 ) => {
   let editOptionsParameters;
 
@@ -36,7 +37,14 @@ export const createUrlParams = (
     editOptionsParameters = isEmpty(encodedEditOption) ? null : `editOptions=${JSON.stringify(encodedEditOption)}`;
   }
 
-  return assembleUrlParams([searchFilterParameters, dependencyFilterParameters, editOptionsParameters]);
+  const migrationLevelParameter = `migrationLevel=${migrationLevel}`;
+
+  return assembleUrlParams([
+    searchFilterParameters,
+    dependencyFilterParameters,
+    editOptionsParameters,
+    migrationLevelParameter,
+  ]);
 };
 
 export const searchFiltersAsParams = (searchFilters: MigrationOptions): Record<string, ParsedInput> => {
@@ -130,4 +138,8 @@ export const createEditOptions = (options: MigrationMap = {}): MigrationOptions 
   }
 
   return editOptions;
+};
+
+export const getMigrationLevelFromParams = (searchParams: URLSearchParams): MigrationLevel => {
+  return (searchParams.get('migrationLevel') as MigrationLevel) || 'component';
 };
