@@ -1,10 +1,11 @@
 import { DocPencilIcon, FileExportIcon, PencilIcon } from '@navikt/aksel-icons';
-import { BodyShort, Button, Heading } from '@navikt/ds-react';
+import { BodyShort, Heading } from '@navikt/ds-react';
 import { dateUtils, NavFormType, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 import { getActiveTasks, Soknad } from '../../api/active-tasks/activeTasks';
+import CancelButton from '../../components/button/navigation/cancel/CancelButton';
 import LinkPanel from '../../components/linkPanel/LinkPanel';
 import LoadingComponent from '../../components/loading/LoadingComponent';
 import { useAppConfig } from '../../context/config/configContext';
@@ -132,14 +133,7 @@ const ActiveTasksPage = ({ form, formUrl }: Props) => {
       )}
       <div className={styles.separator} />
       <div className="button-row">
-        <Button
-          variant="secondary"
-          onClick={() => {
-            window.location.assign('www.nav.no');
-          }}
-        >
-          Avbryt
-        </Button>
+        <CancelButton variant="secondary" />
       </div>
     </div>
   );
