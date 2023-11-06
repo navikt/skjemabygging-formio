@@ -1,8 +1,8 @@
 const responseWithInnsendingsId = require('../data/innsending-api/mellomlagring/responseWithInnsendingsId.json');
 const innsendingValid = require('../data/innsending-api/mellomlagring/getTestMellomlagring-valid.json');
-const paabegyntMellomlagringOgInnsendt = require('../data/innsending-api/active-tasks/paabegyntOpprettetOgUtfylt.json');
-const paabegyntMellomlagring = require('../data/innsending-api/active-tasks/paabegyntMellomlagring.json');
-const paabegyntInnsendt = require('../data/innsending-api/active-tasks/paabegyntUtfylt.json');
+const paabegyntMellomlagringOgInnsendt = require('../data/innsending-api/active-tasks/mellomlagringOgEttersending.json');
+const paabegyntMellomlagring = require('../data/innsending-api/active-tasks/mellomlagring.json');
+const paabegyntInnsendt = require('../data/innsending-api/active-tasks/ettersending.json');
 
 const objectToByteArray = (obj) => Array.from(new TextEncoder().encode(JSON.stringify(obj)));
 
