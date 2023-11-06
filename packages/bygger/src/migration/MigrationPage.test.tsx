@@ -154,6 +154,23 @@ describe('MigrationPage', () => {
         expectedGetOptions,
       );
     });
+
+    it('performs a migration dryrun with form search filters and edit options', async () => {
+      fireEvent.click(
+        within(screen.getByRole('radiogroup', { name: 'Migreringsnivå' })).getByRole('radio', { name: 'Skjema' }),
+      );
+      setMigrateOptionInput('form-search-filters', 0, 'properties.tema', 'BIL');
+      setMigrateOptionInput('edit-options', 0, 'properties.innsending', 'PAPIR_OG_DIGITAL');
+      clickAddButton('edit-options');
+      setMigrateOptionInput('edit-options', 1, 'prop2', 'new value');
+      fireEvent.click(screen.getByRole('button', { name: 'Simuler og kontroller migrering' }));
+      await waitFor(() => expect(fetchSpy).toHaveBeenCalled());
+      expect(fetchSpy).toHaveBeenCalledTimes(1);
+      expect(fetchSpy).toHaveBeenCalledWith(
+        '/api/migrate?formSearchFilters={"properties.tema":"BIL"}&editOptions={"properties.innsending":"PAPIR_OG_DIGITAL","prop2":"new value"}&migrationLevel=form',
+        expectedGetOptions,
+      );
+    });
   });
 
   describe('Migration dry run results', () => {
@@ -218,6 +235,7 @@ describe('MigrationPage', () => {
         expect(fetchSpy).toHaveBeenCalledWith('/api/migrate/update', {
           body: JSON.stringify({
             payload: {
+              formSearchFilters: {},
               searchFilters: { prop1: true },
               dependencyFilters: {},
               editOptions: { prop1: false },

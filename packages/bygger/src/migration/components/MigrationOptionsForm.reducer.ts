@@ -14,7 +14,8 @@ export type Action =
   | {
       type: 'remove';
       payload: { id: string };
-    };
+    }
+  | { type: 'clear' };
 
 export const reducer = (state: MigrationOptions = {}, action: Action) => {
   switch (action.type) {
@@ -38,6 +39,9 @@ export const reducer = (state: MigrationOptions = {}, action: Action) => {
       const copyOfState = { ...state };
       delete copyOfState[id];
       return copyOfState;
+    }
+    case 'clear': {
+      return { ...createMigrationOption() };
     }
     default:
       return state;

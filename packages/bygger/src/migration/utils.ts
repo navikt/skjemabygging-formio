@@ -15,12 +15,18 @@ const isEmpty = (obj) => {
 };
 
 export const createUrlParams = (
+  formSearchFilters: MigrationOptions,
   searchFilters: MigrationOptions,
   dependencyFilters: MigrationOptions,
   editOptions: MigrationOptions,
   migrationLevel: MigrationLevel,
 ) => {
   let editOptionsParameters;
+
+  const encodedFormSearchFilters = searchFiltersAsParams(formSearchFilters);
+  const formSearchFilterParameters = isEmpty(encodedFormSearchFilters)
+    ? null
+    : `formSearchFilters=${JSON.stringify(encodedFormSearchFilters)}`;
 
   const encodedSearchFilters = searchFiltersAsParams(searchFilters);
   const searchFilterParameters = isEmpty(encodedSearchFilters)
@@ -32,7 +38,7 @@ export const createUrlParams = (
     ? null
     : `dependencyFilters=${JSON.stringify(encodedDependencyFilters)}`;
 
-  if (searchFilterParameters || dependencyFilterParameters) {
+  if (formSearchFilterParameters || searchFilterParameters || dependencyFilterParameters) {
     const encodedEditOption = migrationOptionsAsMap(editOptions);
     editOptionsParameters = isEmpty(encodedEditOption) ? null : `editOptions=${JSON.stringify(encodedEditOption)}`;
   }
@@ -40,6 +46,7 @@ export const createUrlParams = (
   const migrationLevelParameter = `migrationLevel=${migrationLevel}`;
 
   return assembleUrlParams([
+    formSearchFilterParameters,
     searchFilterParameters,
     dependencyFilterParameters,
     editOptionsParameters,

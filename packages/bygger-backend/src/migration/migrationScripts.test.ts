@@ -17,7 +17,7 @@ describe('Migration scripts', () => {
     const fnrEditOptions = { 'validate.custom': 'valid = instance.newValidateFnr(input)' };
 
     it('can update component based on type', () => {
-      const { migratedForm: actual } = migrateForm(originalForm, { type: 'fnrfield' }, {}, fnrEditOptions);
+      const { migratedForm: actual } = migrateForm(originalForm, {}, { type: 'fnrfield' }, {}, fnrEditOptions);
       expect(actual).toEqual({
         ...originalForm,
         components: [
@@ -33,6 +33,18 @@ describe('Migration scripts', () => {
       });
     });
 
+    it('does not update component based on type when form search filters do not match', () => {
+      const formSearchFiltersFromParam = { 'properties.tema': 'LOS' };
+      const { migratedForm: actual } = migrateForm(
+        originalForm,
+        formSearchFiltersFromParam,
+        { type: 'fnrfield' },
+        {},
+        fnrEditOptions,
+      );
+      expect(actual).toEqual(originalForm);
+    });
+
     it('can migrate subcomponents', () => {
       const { migratedForm: actual } = migrateForm(
         {
@@ -44,6 +56,7 @@ describe('Migration scripts', () => {
             },
           ],
         } as unknown as NavFormType,
+        {},
         { type: 'fnrfield' },
         {},
         fnrEditOptions,
@@ -85,6 +98,7 @@ describe('Migration scripts', () => {
             },
           ],
         } as unknown as NavFormType,
+        {},
         { type: 'navSkjemagruppe' },
         {},
         { modifiedByTest: true },
@@ -111,7 +125,7 @@ describe('Migration scripts', () => {
 
     describe('can migrate form properties', () => {
       it('sets prop when not exists', () => {
-        const searchFiltersFromParam = {
+        const formSearchFiltersFromParam = {
           'properties.ettersending__n_exists': true,
         };
         const propsEditOptions = {
@@ -126,7 +140,14 @@ describe('Migration scripts', () => {
             ettersending: undefined,
           },
         };
-        const { migratedForm: actual } = migrateForm(testForm, searchFiltersFromParam, {}, propsEditOptions, 'form');
+        const { migratedForm: actual } = migrateForm(
+          testForm,
+          formSearchFiltersFromParam,
+          {},
+          {},
+          propsEditOptions,
+          'form',
+        );
         expect(actual).toEqual({
           ...testForm,
           properties: {
@@ -137,7 +158,7 @@ describe('Migration scripts', () => {
       });
 
       it('does not change prop which exists', () => {
-        const searchFiltersFromParam = {
+        const formSearchFiltersFromParam = {
           'properties.ettersending__n_exists': true,
         };
         const propsEditOptions = {
@@ -152,7 +173,14 @@ describe('Migration scripts', () => {
             ettersending: 'KUN_DIGITAL',
           },
         };
-        const { migratedForm: actual } = migrateForm(testForm, searchFiltersFromParam, {}, propsEditOptions, 'form');
+        const { migratedForm: actual } = migrateForm(
+          testForm,
+          formSearchFiltersFromParam,
+          {},
+          {},
+          propsEditOptions,
+          'form',
+        );
         expect(actual).toEqual({
           ...testForm,
           properties: {
@@ -172,12 +200,12 @@ describe('Migration scripts', () => {
     ];
 
     it('generates log only for included form paths', async () => {
-      const { log } = await migrateForms({ disabled: false }, {}, { disabled: true }, allForms, ['form1', 'form3']);
+      const { log } = await migrateForms({}, { disabled: false }, {}, { disabled: true }, allForms, ['form1', 'form3']);
       expect(Object.keys(log)).toEqual(['form1', 'form3']);
     });
 
     it('only migrates forms included by the provided formPaths', async () => {
-      const { migratedForms } = await migrateForms({ disabled: false }, {}, { disabled: true }, allForms, [
+      const { migratedForms } = await migrateForms({}, { disabled: false }, {}, { disabled: true }, allForms, [
         'form2',
         'form3',
       ]);
@@ -192,6 +220,7 @@ describe('Migration scripts', () => {
 
       beforeEach(async () => {
         const migrated = await migrateForms(
+          {},
           { key__contains: 'componentWithSimpleConditional' },
           {},
           { disabled: true },
@@ -221,7 +250,7 @@ describe('Migration scripts', () => {
       let log;
       let migratedForms;
       beforeEach(async () => {
-        const migrated = await migrateForms({}, { type: 'radio' }, { disabled: true }, [
+        const migrated = await migrateForms({}, {}, { type: 'radio' }, { disabled: true }, [
           formWithSimpleConditionalToRadio, // match on dependencyFilters
           formWithAdvancedConditionalToRadio, // match on dependencyFilters
           formWithSimpleConditionalToCheckbox, // no match
@@ -248,6 +277,7 @@ describe('Migration scripts', () => {
 
       beforeEach(async () => {
         const migrated = await migrateForms(
+          {},
           { key__contains: 'componentWithSimpleConditional' },
           { type: 'radio' },
           { disabled: true },
@@ -275,7 +305,7 @@ describe('Migration scripts', () => {
       let migratedForms;
 
       beforeEach(async () => {
-        const migrated = await migrateForms({}, {}, { disabled: true }, [
+        const migrated = await migrateForms({}, {}, {}, { disabled: true }, [
           formWithSimpleConditionalToRadio,
           formWithAdvancedConditionalToRadio,
           formWithSimpleConditionalToCheckbox,
@@ -303,7 +333,7 @@ describe('Migration scripts', () => {
 
     describe('When migration level is form', () => {
       it('only generates log with forms where props were migrated', async () => {
-        const searchFiltersFromParam = {
+        const formSearchFiltersFromParam = {
           'properties.ettersending__n_exists': true,
         };
         const propsEditOptions = {
@@ -328,7 +358,8 @@ describe('Migration scripts', () => {
           },
         };
         const { migratedForms, log } = await migrateForms(
-          searchFiltersFromParam,
+          formSearchFiltersFromParam,
+          {},
           {},
           propsEditOptions,
           [testForm1, testForm2],

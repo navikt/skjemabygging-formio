@@ -4,15 +4,17 @@ import { migrateForms } from '../../migration/migrationScripts';
 import { formioService } from '../../services';
 
 const migrate = async (req: Request, res: Response, next: NextFunction) => {
+  const formSearchFilters: object = JSON.parse((req.query['formSearchFilters'] as string) || '{}');
   const searchFilters: object = JSON.parse((req.query['searchFilters'] as string) || '{}');
   const dependencyFilters: object = JSON.parse((req.query['dependencyFilters'] as string) || '{}');
   const editOptions: object = JSON.parse((req.query['editOptions'] as string) || '{}');
   const migrationLevel: MigrationLevel = req.query['migrationLevel'] as MigrationLevel;
   try {
-    if (Object.keys({ ...searchFilters, ...dependencyFilters }).length === 0)
+    if (Object.keys({ ...formSearchFilters, ...searchFilters, ...dependencyFilters }).length === 0)
       throw new Error('Migreringen mangler søkefiltre');
     const allForms = await formioService.getAllForms();
     const { log } = await migrateForms(
+      formSearchFilters,
       searchFilters,
       dependencyFilters,
       editOptions,

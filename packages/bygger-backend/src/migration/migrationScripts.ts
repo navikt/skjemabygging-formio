@@ -49,44 +49,39 @@ function recursivelyMigrateComponentAndSubcomponents(
   return modifiedComponent;
 }
 
-function migrateOnFormLevel(
-  form: NavFormType,
-  searchFilters: Filter[],
-  editOptions: object,
-  logger: FormMigrationLogger,
-) {
-  if (targetMatchesFilters(form, searchFilters)) {
-    const migratedForm = getEditScript(editOptions)(form);
-    logger.add(form as unknown as Component, migratedForm as unknown as Component);
-    return migratedForm;
-  } else {
-    return form;
-  }
+function migrateOnFormLevel(form: NavFormType, editOptions: object, logger: FormMigrationLogger) {
+  const migratedForm = getEditScript(editOptions)(form);
+  logger.add(form as unknown as Component, migratedForm as unknown as Component);
+  return migratedForm;
 }
 
 function migrateForm(
   form: NavFormType,
+  formSearchFiltersFromParam: object,
   searchFiltersFromParam: object,
   dependencyFiltersFromParam: object,
   editOptions: object,
   migrationLevel: MigrationLevel = 'component',
 ) {
   const logger = new FormMigrationLogger(form);
+  const formSearchFilters = parseFiltersFromParam(formSearchFiltersFromParam);
   const searchFilters = parseFiltersFromParam(searchFiltersFromParam);
   const dependencyFilters = parseFiltersFromParam(dependencyFiltersFromParam);
 
-  let migratedForm: NavFormType;
-  if (migrationLevel === 'form') {
-    migratedForm = migrateOnFormLevel(form, searchFilters, editOptions, logger);
-  } else {
-    migratedForm = recursivelyMigrateComponentAndSubcomponents(
-      form,
-      form as unknown as Component,
-      searchFilters,
-      dependencyFilters,
-      getEditScript(editOptions),
-      logger,
-    );
+  let migratedForm: NavFormType = form;
+  if (targetMatchesFilters(form, formSearchFilters)) {
+    if (migrationLevel === 'form') {
+      migratedForm = migrateOnFormLevel(form, editOptions, logger);
+    } else {
+      migratedForm = recursivelyMigrateComponentAndSubcomponents(
+        form,
+        form as unknown as Component,
+        searchFilters,
+        dependencyFilters,
+        getEditScript(editOptions),
+        logger,
+      );
+    }
   }
   return { migratedForm, logger };
 }
@@ -121,6 +116,7 @@ interface MigrateFormsOutput {
 }
 
 async function migrateForms(
+  formSearchFilters: object,
   searchFilters: object,
   dependencyFilters: object,
   editOptions: object,
@@ -132,7 +128,14 @@ async function migrateForms(
   const migratedForms = allForms
     .filter((form) => formPaths.length === 0 || formPaths.includes(form.path))
     .map((form) => {
-      const { migratedForm, logger } = migrateForm(form, searchFilters, dependencyFilters, editOptions, migrationLevel);
+      const { migratedForm, logger } = migrateForm(
+        form,
+        formSearchFilters,
+        searchFilters,
+        dependencyFilters,
+        editOptions,
+        migrationLevel,
+      );
 
       if (logger.isEmpty()) {
         return null;
@@ -147,13 +150,21 @@ async function migrateForms(
 }
 
 async function previewForm(
+  formSearchFilters: object,
   searchFilters: object,
   dependencyFilters: object,
   editOptions: object,
   form: NavFormType,
   migrationLevel: MigrationLevel = 'component',
 ) {
-  const { migratedForm } = migrateForm(form, searchFilters, dependencyFilters, editOptions, migrationLevel);
+  const { migratedForm } = migrateForm(
+    form,
+    formSearchFilters,
+    searchFilters,
+    dependencyFilters,
+    editOptions,
+    migrationLevel,
+  );
   return migratedForm;
 }
 
