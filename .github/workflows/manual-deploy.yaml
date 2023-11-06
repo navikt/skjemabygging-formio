@@ -65,8 +65,8 @@ jobs:
         env:
           APIKEY: '${{ secrets.NAIS_DEPLOY_APIKEY }}'
           CLUSTER: 'dev-gcp'
-          RESOURCE: './packages/bygger/.nais/nais.yaml'
-          VARS: './packages/bygger/.nais/${{ github.event.inputs.environment }}.yaml'
+          RESOURCE: './.nais/bygger/nais.yaml'
+          VARS: './.nais/bygger/${{ github.event.inputs.environment }}.yaml'
           VAR: image=${{ needs.package-and-push-bygger.outputs.image }}
 
   package-and-push-fyllut:
