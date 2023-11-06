@@ -1,3 +1,4 @@
+import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import { getEditScript, migrateForm, migrateForms } from './migrationScripts';
 import {
   formWithAdvancedConditionalToRadio,
@@ -9,7 +10,7 @@ import {
   originalSkjemaGruppeComponent,
   originalTextFieldComponent,
 } from './testData';
-import mockedForm from './testdata/Form';
+import mockedForm from './testdata/form';
 
 describe('Migration scripts', () => {
   describe('migrateForm', () => {
@@ -42,7 +43,7 @@ describe('Migration scripts', () => {
               components: [originalFodselsnummerComponent],
             },
           ],
-        },
+        } as unknown as NavFormType,
         { type: 'fnrfield' },
         {},
         fnrEditOptions,
@@ -83,7 +84,7 @@ describe('Migration scripts', () => {
               ],
             },
           ],
-        },
+        } as unknown as NavFormType,
         { type: 'navSkjemagruppe' },
         {},
         { modifiedByTest: true },
@@ -110,10 +111,10 @@ describe('Migration scripts', () => {
   });
 
   describe('migrateForms', () => {
-    const allForms = [
-      { ...mockedForm, path: 'form1', properties: { skjemanummer: 'form1' } },
-      { ...mockedForm, path: 'form2', properties: { skjemanummer: 'form2' } },
-      { ...mockedForm, path: 'form3', properties: { skjemanummer: 'form3' } },
+    const allForms: NavFormType[] = [
+      { ...mockedForm, path: 'form1', properties: { ...mockedForm.properties, skjemanummer: 'form1' } },
+      { ...mockedForm, path: 'form2', properties: { ...mockedForm.properties, skjemanummer: 'form2' } },
+      { ...mockedForm, path: 'form3', properties: { ...mockedForm.properties, skjemanummer: 'form3' } },
     ];
 
     it('generates log only for included form paths', async () => {
