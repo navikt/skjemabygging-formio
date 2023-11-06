@@ -45,17 +45,17 @@ const ActiveTasksPage = ({ form, formUrl }: Props) => {
   const { baseUrl } = appConfig;
   const [searchParams] = useSearchParams();
   const { translate } = useLanguages();
-  const [activeTasks, setActiveTasks] = useState<Soknad[]>([]);
-  const [hasSubmittedTasks, setHasSubmittedTasks] = useState(false);
-  const hasActiveTasks = activeTasks.length > 0;
+  const [mellomlagringer, setMellomlagringer] = useState<Soknad[]>([]);
+  const [hasEttersendelse, setHasEttersendelse] = useState(false);
+  const hasMellomlagring = mellomlagringer.length > 0;
 
   const styles = useStyles();
 
   useEffect(() => {
     const initialize = async () => {
       const response = await getActiveTasks(form, appConfig);
-      setActiveTasks(response.filter((task) => task.soknadstype === 'soknad'));
-      setHasSubmittedTasks(response.some((task) => task.soknadstype === 'ettersendelse'));
+      setMellomlagringer(response.filter((task) => task.soknadstype === 'soknad'));
+      setHasEttersendelse(response.some((task) => task.soknadstype === 'ettersendelse'));
     };
     initialize();
   }, []);
@@ -72,21 +72,21 @@ const ActiveTasksPage = ({ form, formUrl }: Props) => {
 
   const urlToFirstPanel = getUrl(`/${formUtils.getPanelSlug(form, 0)}`, { forceMellomlagring: 'true', sub: 'digital' });
 
-  if (!(hasActiveTasks || hasSubmittedTasks)) {
+  if (!(hasMellomlagring || hasEttersendelse)) {
     return <LoadingComponent />;
   }
 
   return (
     <div>
-      {hasActiveTasks && (
+      {hasMellomlagring && (
         <section className={styles.section}>
           <Heading className={styles.sectionHeading} level="2" size={'medium'}>
-            {activeTasks.length === 1
+            {mellomlagringer.length === 1
               ? translate(TEXTS.statiske.paabegynt.oneActiveTaskHeading)
-              : translate(TEXTS.statiske.paabegynt.activeTasksHeading, { amount: activeTasks.length })}
+              : translate(TEXTS.statiske.paabegynt.activeTasksHeading, { amount: mellomlagringer.length })}
           </Heading>
           <BodyShort className={styles.sectionBody}>{translate(TEXTS.statiske.paabegynt.activeTasksBody)}</BodyShort>
-          {activeTasks.map((task) => (
+          {mellomlagringer.map((task) => (
             <LinkPanel
               key={task.innsendingsId}
               className={styles.linkPanel}
@@ -105,7 +105,7 @@ const ActiveTasksPage = ({ form, formUrl }: Props) => {
           />
         </section>
       )}
-      {hasSubmittedTasks && (
+      {hasEttersendelse && (
         <section className={styles.section}>
           <Heading className={styles.sectionHeading} level="2" size={'medium'}>
             {translate(TEXTS.statiske.paabegynt.sendAttachmentsHeading)}
@@ -119,7 +119,7 @@ const ActiveTasksPage = ({ form, formUrl }: Props) => {
             title={translate(TEXTS.statiske.paabegynt.sendAttachment)}
             icon={<FileExportIcon className={styles.icon} fontSize="1.5rem" aria-hidden />}
           />
-          {!hasActiveTasks && (
+          {!hasMellomlagring && (
             <LinkPanel
               className={styles.linkPanel}
               variant="secondary"
