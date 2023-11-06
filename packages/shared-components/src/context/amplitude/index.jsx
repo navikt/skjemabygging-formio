@@ -1,5 +1,4 @@
 import { createContext, useContext, useEffect } from 'react';
-import { useAppConfig } from '../../configContext';
 import {
   initAmplitude,
   loggEventDokumentLastetNed,
@@ -8,10 +7,11 @@ import {
   loggEventSkjemaFullfort,
   loggEventSkjemaInnsendingFeilet,
   loggEventSkjemaValideringFeilet,
-} from '../../util/amplitude';
-import useHarApnetSkjema from './harApnetSkjemaHook';
-import useSkjemaSporsmalEvent from './skjemaEventHook';
-import useSkjemaStegFullfort from './skjemaStegFullfortHook';
+} from '../../util/amplitude/amplitude';
+import { useAppConfig } from '../config/configContext';
+import useHarApnetSkjema from './hooks/harApnetSkjemaHook';
+import useSkjemaSporsmalEvent from './hooks/skjemaEventHook';
+import useSkjemaStegFullfort from './hooks/skjemaStegFullfortHook';
 
 const defaultValues = {
   loggSkjemaApnet: (_innsendingsKanal) => {},
