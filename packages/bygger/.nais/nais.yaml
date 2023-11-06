@@ -66,6 +66,8 @@ spec:
     sidecar:
       enabled: true
       autoLogin: true
+      autoLoginIgnorePaths:
+        - /notifications
   accessPolicy:
     outbound:
       rules:
