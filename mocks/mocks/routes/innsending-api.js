@@ -96,7 +96,6 @@ module.exports = [
         type: 'middleware',
         options: {
           middleware: (req, res) => {
-            console.log(req.body);
             const formPath = req.body.skjemapath;
             const location = `http://localhost:3001/fyllut/${formPath}/paabegynt?sub=digital`;
             res.header({ Location: location });

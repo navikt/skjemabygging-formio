@@ -157,14 +157,14 @@ const SendInnProvider = ({
       setIsCreateStarted(true);
       const currentLanguage = getLanguageFromSearchParams();
       const translation = translationForLanguage(currentLanguage);
-      const opprettNySoknad = !!searchParams.get('opprettNySoknad');
+      const forceMellomlagring = !!searchParams.get('forceMellomlagring');
       const response = await createSoknad(
         appConfig,
         form,
         removeFyllutState(submission),
         currentLanguage,
         translation,
-        opprettNySoknad,
+        forceMellomlagring,
       );
 
       if (isRedirectResponse(response)) {
@@ -175,7 +175,7 @@ const SendInnProvider = ({
       updateSubmission(getSubmissionWithFyllutState(response));
       dispatchFyllutMellomlagring({ type: 'init', response });
       setInnsendingsId(response?.innsendingsId);
-      removeSearchParamFromUrl('opprettNySoknad');
+      removeSearchParamFromUrl('forceMellomlagring');
       addSearchParamToUrl('innsendingsId', response?.innsendingsId);
       if (response) {
         setIsMellomlagringReady(true);

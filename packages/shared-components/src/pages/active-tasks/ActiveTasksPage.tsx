@@ -70,7 +70,7 @@ const ActiveTasksPage = ({ form, formUrl }: Props) => {
     return `${baseUrl}${formUrl}${path}${searchParamsAsString}`;
   };
 
-  const urlToFirstPanel = getUrl(`/${formUtils.getPanelSlug(form, 0)}`, { opprettNySoknad: 'true', sub: 'digital' });
+  const urlToFirstPanel = getUrl(`/${formUtils.getPanelSlug(form, 0)}`, { forceMellomlagring: 'true', sub: 'digital' });
 
   if (!(hasActiveTasks || hasSubmittedTasks)) {
     return <LoadingComponent />;

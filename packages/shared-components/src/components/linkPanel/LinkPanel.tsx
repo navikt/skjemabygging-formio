@@ -49,7 +49,6 @@ const useStyles = makeStyles({
 });
 
 const LinkPanel = ({ title, variant = 'primary', body, icon, className, ...linkPanelProps }: Props) => {
-  console.log('props', { title, variant, className });
   const styles = useStyles();
   return (
     <div className={className}>

@@ -74,7 +74,7 @@ const sendInnSoknad = {
       const idportenPid = getIdportenPid(req);
       const tokenxAccessToken = getTokenxAccessToken(req);
       const body = assembleSendInnSoknadBody(req.body, idportenPid, null);
-      const forceCreateParam = !!req.query?.opprettNySoknad ? '?opprettNySoknad=true' : '';
+      const forceCreateParam = !!req.query?.forceMellomlagring ? '?opprettNySoknad=true' : '';
       if (!isMellomLagringEnabled(featureToggles)) {
         res.json(body);
         return;

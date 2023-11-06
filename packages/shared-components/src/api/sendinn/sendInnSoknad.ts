@@ -30,11 +30,11 @@ export const createSoknad = async (
   submission: Submission,
   language: string,
   translation: I18nTranslationMap = {},
-  opprettNySoknad?: boolean,
+  forceMellomlagring?: boolean,
 ): Promise<SendInnSoknadResponse | RedirectResponse | undefined> => {
   const { http, baseUrl, submissionMethod } = appConfig;
-  const url = opprettNySoknad
-    ? `${baseUrl}/api/send-inn/soknad?opprettNySoknad=true`
+  const url = forceMellomlagring
+    ? `${baseUrl}/api/send-inn/soknad?forceMellomlagring=true`
     : `${baseUrl}/api/send-inn/soknad`;
   return http?.post<SendInnSoknadResponse>(url, {
     form,
