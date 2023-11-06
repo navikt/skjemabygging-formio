@@ -59,13 +59,15 @@ const LinkPanel = ({ title, variant = 'primary', body, icon, className, ...linkP
         }`}
       >
         <div className={styles.linkPanelContent}>
-          <div
-            className={`${styles.iconWrapper} ${
-              variant === 'secondary' ? styles.iconWrapperSecondary : styles.iconWrapperPrimary
-            }`}
-          >
-            {icon}
-          </div>
+          {icon && (
+            <div
+              className={`${styles.iconWrapper} ${
+                variant === 'secondary' ? styles.iconWrapperSecondary : styles.iconWrapperPrimary
+              }`}
+            >
+              {icon}
+            </div>
+          )}
           <div className={styles.mainContent}>
             <AkselLinkPanel.Title>{title}</AkselLinkPanel.Title>
             {body && <AkselLinkPanel.Description>{body}</AkselLinkPanel.Description>}
