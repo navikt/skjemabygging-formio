@@ -119,6 +119,6 @@ jobs:
         env:
           APIKEY: '${{ secrets.NAIS_DEPLOY_APIKEY }}'
           CLUSTER: 'dev-gcp'
-          RESOURCE: './packages/fyllut/.nais/config.yaml'
-          VARS: './packages/fyllut/.nais/${{ github.event.inputs.environment }}.yaml'
+          RESOURCE: './.nais/fyllut/config.yaml'
+          VARS: './.nais/fyllut/${{ github.event.inputs.environment }}.yaml'
           VAR: image=${{ needs.package-and-push-fyllut.outputs.image }}
