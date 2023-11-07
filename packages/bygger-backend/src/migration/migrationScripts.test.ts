@@ -132,7 +132,7 @@ describe('Migration scripts', () => {
           'properties.ettersending': 'PAPIR_OG_DIGITAL',
         };
 
-        const testForm: NavFormType = {
+        const original: NavFormType = {
           ...originalForm,
           properties: {
             ...originalForm.properties,
@@ -141,7 +141,7 @@ describe('Migration scripts', () => {
           },
         };
         const { migratedForm: actual } = migrateForm(
-          testForm,
+          original,
           formSearchFiltersFromParam,
           {},
           {},
@@ -149,9 +149,9 @@ describe('Migration scripts', () => {
           'form',
         );
         expect(actual).toEqual({
-          ...testForm,
+          ...original,
           properties: {
-            ...testForm.properties,
+            ...original.properties,
             ettersending: 'PAPIR_OG_DIGITAL',
           },
         });
@@ -165,7 +165,7 @@ describe('Migration scripts', () => {
           'properties.ettersending': 'PAPIR_OG_DIGITAL',
         };
 
-        const testForm: NavFormType = {
+        const original: NavFormType = {
           ...originalForm,
           properties: {
             ...originalForm.properties,
@@ -174,20 +174,14 @@ describe('Migration scripts', () => {
           },
         };
         const { migratedForm: actual } = migrateForm(
-          testForm,
+          original,
           formSearchFiltersFromParam,
           {},
           {},
           propsEditOptions,
           'form',
         );
-        expect(actual).toEqual({
-          ...testForm,
-          properties: {
-            ...testForm.properties,
-            ettersending: 'KUN_DIGITAL',
-          },
-        });
+        expect(actual).toEqual(original);
       });
     });
   });
@@ -340,19 +334,21 @@ describe('Migration scripts', () => {
           'properties.ettersending': 'PAPIR_OG_DIGITAL',
         };
 
-        const testForm1: NavFormType = {
+        const originalForm1: NavFormType = {
           ...originalForm,
           properties: {
             ...originalForm.properties,
+            skjemanummer: 'Form1',
             innsending: 'KUN_DIGITAL',
             ettersending: undefined,
           },
         };
 
-        const testForm2: NavFormType = {
+        const originalForm2: NavFormType = {
           ...originalForm,
           properties: {
             ...originalForm.properties,
+            skjemanummer: 'Form2',
             innsending: 'KUN_DIGITAL',
             ettersending: 'KUN_DIGITAL',
           },
@@ -362,17 +358,17 @@ describe('Migration scripts', () => {
           {},
           {},
           propsEditOptions,
-          [testForm1, testForm2],
+          [originalForm1, originalForm2],
           [],
           'form',
         );
         expect(migratedForms).toHaveLength(1);
-        const logElement1 = log[testForm1.properties.skjemanummer];
+        const logElement1 = log[originalForm1.properties.skjemanummer];
         expect(logElement1).toEqual(
           expect.objectContaining({
             found: 1,
             changed: 1,
-            skjemanummer: 'Test Form',
+            skjemanummer: 'Form1',
             diff: [
               {
                 properties: {
