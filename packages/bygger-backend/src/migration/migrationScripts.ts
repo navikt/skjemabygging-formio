@@ -144,8 +144,7 @@ async function migrateForms(
       log[logger.getSkjemanummer()] = logger.getLog();
       return migratedForm;
     })
-    .filter((form) => !!form);
-  // @ts-ignore
+    .filter((form) => !!form) as NavFormType[];
   return { log, migratedForms };
 }
 
