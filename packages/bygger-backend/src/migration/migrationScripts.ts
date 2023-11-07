@@ -1,11 +1,17 @@
-import { Component, NavFormType, navFormUtils, objectUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  Component,
+  MigrationLevel,
+  NavFormType,
+  navFormUtils,
+  objectUtils,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import { FormMigrationLogData } from '../types/migration';
 import FormMigrationLogger from './FormMigrationLogger';
 import {
   Filter,
   componentHasDependencyMatchingFilters,
-  componentMatchesFilters,
   parseFiltersFromParam,
+  targetMatchesFilters,
 } from './filterUtils';
 
 function recursivelyMigrateComponentAndSubcomponents(
@@ -18,7 +24,7 @@ function recursivelyMigrateComponentAndSubcomponents(
 ) {
   let modifiedComponent = component;
   if (
-    componentMatchesFilters(component, searchFilters) &&
+    targetMatchesFilters(component, searchFilters) &&
     componentHasDependencyMatchingFilters(form, component, dependencyFilters)
   ) {
     modifiedComponent = script(component);
@@ -43,28 +49,45 @@ function recursivelyMigrateComponentAndSubcomponents(
   return modifiedComponent;
 }
 
+function migrateOnFormLevel(form: NavFormType, editOptions: object, logger: FormMigrationLogger) {
+  const migratedForm = getEditScript(editOptions)(form);
+  logger.add(form as unknown as Component, migratedForm as unknown as Component);
+  return migratedForm;
+}
+
 function migrateForm(
   form: NavFormType,
+  formSearchFiltersFromParam: object,
   searchFiltersFromParam: object,
   dependencyFiltersFromParam: object,
   editOptions: object,
+  migrationLevel: MigrationLevel = 'component',
 ) {
   const logger = new FormMigrationLogger(form);
+  const formSearchFilters = parseFiltersFromParam(formSearchFiltersFromParam);
   const searchFilters = parseFiltersFromParam(searchFiltersFromParam);
   const dependencyFilters = parseFiltersFromParam(dependencyFiltersFromParam);
 
-  const migratedForm = recursivelyMigrateComponentAndSubcomponents(
-    form,
-    form as unknown as Component,
-    searchFilters,
-    dependencyFilters,
-    getEditScript(editOptions),
-    logger,
-  );
+  let migratedForm: NavFormType = form;
+  if (targetMatchesFilters(form, formSearchFilters)) {
+    if (migrationLevel === 'form') {
+      migratedForm = migrateOnFormLevel(form, editOptions, logger);
+    } else {
+      migratedForm = recursivelyMigrateComponentAndSubcomponents(
+        form,
+        form as unknown as Component,
+        searchFilters,
+        dependencyFilters,
+        getEditScript(editOptions),
+        logger,
+      );
+    }
+  }
   return { migratedForm, logger };
 }
 
-type EditScript = (comp: Component) => Component;
+type EditScript = <T extends object>(comp: T) => T;
+
 function getEditScript(editOptions: object): EditScript {
   const editOptionObjects = Object.entries(editOptions).map(([editOptionKey, editOptionValue]) =>
     editOptionKey.split('.').reduceRight((acc, currentValue) => {
@@ -81,25 +104,38 @@ function getEditScript(editOptions: object): EditScript {
 function getDependeeComponentsForComponent(form: NavFormType, dependentComponent: Component, filters: Filter[]) {
   return navFormUtils.findDependeeComponents(dependentComponent, form).map(({ component, types }) => {
     const { key, label } = component;
-    const matchesFilters = Object.keys(filters).length > 0 && componentMatchesFilters(component, filters);
+    const matchesFilters = Object.keys(filters).length > 0 && targetMatchesFilters(component, filters);
     return { key, label, types, matchesFilters };
   });
 }
 
 type MigrationLog = Record<string, FormMigrationLogData>;
+interface MigrateFormsOutput {
+  log: MigrationLog;
+  migratedForms: NavFormType[];
+}
 
 async function migrateForms(
+  formSearchFilters: object,
   searchFilters: object,
   dependencyFilters: object,
   editOptions: object,
   allForms: NavFormType[],
   formPaths: string[] = [],
-) {
+  migrationLevel: MigrationLevel = 'component',
+): Promise<MigrateFormsOutput> {
   const log: MigrationLog = {};
   const migratedForms = allForms
     .filter((form) => formPaths.length === 0 || formPaths.includes(form.path))
     .map((form) => {
-      const { migratedForm, logger } = migrateForm(form, searchFilters, dependencyFilters, editOptions);
+      const { migratedForm, logger } = migrateForm(
+        form,
+        formSearchFilters,
+        searchFilters,
+        dependencyFilters,
+        editOptions,
+        migrationLevel,
+      );
 
       if (logger.isEmpty()) {
         return null;
@@ -108,12 +144,26 @@ async function migrateForms(
       log[logger.getSkjemanummer()] = logger.getLog();
       return migratedForm;
     })
-    .filter((form) => !!form);
+    .filter((form) => !!form) as NavFormType[];
   return { log, migratedForms };
 }
 
-async function previewForm(searchFilters: object, dependencyFilters: object, editOptions: object, form: NavFormType) {
-  const { migratedForm } = migrateForm(form, searchFilters, dependencyFilters, editOptions);
+async function previewForm(
+  formSearchFilters: object,
+  searchFilters: object,
+  dependencyFilters: object,
+  editOptions: object,
+  form: NavFormType,
+  migrationLevel: MigrationLevel = 'component',
+) {
+  const { migratedForm } = migrateForm(
+    form,
+    formSearchFilters,
+    searchFilters,
+    dependencyFilters,
+    editOptions,
+    migrationLevel,
+  );
   return migratedForm;
 }
 

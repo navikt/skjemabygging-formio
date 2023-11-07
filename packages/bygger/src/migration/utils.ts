@@ -1,4 +1,4 @@
-import { guid, migrationUtils, Operator } from '@navikt/skjemadigitalisering-shared-domain';
+import { guid, MigrationLevel, migrationUtils, Operator } from '@navikt/skjemadigitalisering-shared-domain';
 import { DryRunResults, MigrationMap, MigrationOption, MigrationOptions, ParsedInput } from '../../types/migration';
 
 const assembleUrlParams = (params: string[]) => {
@@ -15,11 +15,18 @@ const isEmpty = (obj) => {
 };
 
 export const createUrlParams = (
+  formSearchFilters: MigrationOptions,
   searchFilters: MigrationOptions,
   dependencyFilters: MigrationOptions,
   editOptions: MigrationOptions,
+  migrationLevel: MigrationLevel,
 ) => {
   let editOptionsParameters;
+
+  const encodedFormSearchFilters = searchFiltersAsParams(formSearchFilters);
+  const formSearchFilterParameters = isEmpty(encodedFormSearchFilters)
+    ? null
+    : `formSearchFilters=${JSON.stringify(encodedFormSearchFilters)}`;
 
   const encodedSearchFilters = searchFiltersAsParams(searchFilters);
   const searchFilterParameters = isEmpty(encodedSearchFilters)
@@ -31,12 +38,20 @@ export const createUrlParams = (
     ? null
     : `dependencyFilters=${JSON.stringify(encodedDependencyFilters)}`;
 
-  if (searchFilterParameters || dependencyFilterParameters) {
+  if (formSearchFilterParameters || searchFilterParameters || dependencyFilterParameters) {
     const encodedEditOption = migrationOptionsAsMap(editOptions);
     editOptionsParameters = isEmpty(encodedEditOption) ? null : `editOptions=${JSON.stringify(encodedEditOption)}`;
   }
 
-  return assembleUrlParams([searchFilterParameters, dependencyFilterParameters, editOptionsParameters]);
+  const migrationLevelParameter = `migrationLevel=${migrationLevel}`;
+
+  return assembleUrlParams([
+    formSearchFilterParameters,
+    searchFilterParameters,
+    dependencyFilterParameters,
+    editOptionsParameters,
+    migrationLevelParameter,
+  ]);
 };
 
 export const searchFiltersAsParams = (searchFilters: MigrationOptions): Record<string, ParsedInput> => {
@@ -130,4 +145,8 @@ export const createEditOptions = (options: MigrationMap = {}): MigrationOptions 
   }
 
   return editOptions;
+};
+
+export const getMigrationLevelFromParams = (searchParams: URLSearchParams): MigrationLevel => {
+  return (searchParams.get('migrationLevel') as MigrationLevel) || 'component';
 };

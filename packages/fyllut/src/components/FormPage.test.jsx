@@ -47,7 +47,7 @@ describe('FormPage', () => {
       renderFormPage(form, { enableTranslations: false });
 
       expect(await screen.findByRole('heading', { name: 'Testskjema' })).toBeInTheDocument();
-      expect(await screen.queryByRole('button', { name: 'Norsk bokmål' })).not.toBeInTheDocument();
+      expect(screen.queryByRole('button', { name: 'Norsk bokmål' })).not.toBeInTheDocument();
     });
   });
 
@@ -69,7 +69,7 @@ describe('FormPage', () => {
       renderFormPage(form);
 
       expect(await screen.findByRole('heading', { name: 'Testskjema' })).toBeInTheDocument();
-      expect(await screen.queryByRole('button', { name: 'Norsk bokmål' })).not.toBeInTheDocument();
+      expect(screen.queryByRole('button', { name: 'Norsk bokmål' })).not.toBeInTheDocument();
     });
 
     it('allows selection of other language for the form', async () => {
@@ -89,7 +89,7 @@ describe('FormPage', () => {
       renderFormPage(form);
 
       expect(await screen.findByRole('heading', { name: 'Testskjema' })).toBeInTheDocument();
-      const languageSelector = screen.queryByRole('button', { name: 'Norsk bokmål' });
+      const languageSelector = await screen.findByRole('button', { name: 'Norsk bokmål' });
       expect(languageSelector).toBeInTheDocument();
       await userEvent.click(languageSelector);
       await userEvent.click(await screen.findByRole('link', { name: 'English' }));

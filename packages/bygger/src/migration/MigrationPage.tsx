@@ -1,6 +1,6 @@
-import { Button, Heading, Pagination } from '@navikt/ds-react';
+import { Button, Heading, Pagination, ToggleGroup } from '@navikt/ds-react';
 import { NavFormioJs, makeStyles } from '@navikt/skjemadigitalisering-shared-components';
-import { NavFormType, paginationUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { MigrationLevel, NavFormType, paginationUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useMemo, useReducer, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { FormMigrationLogData } from '../../types/migration';
@@ -18,6 +18,7 @@ import {
   createEditOptions,
   createSearchFiltersFromParams,
   createUrlParams,
+  getMigrationLevelFromParams,
   getUrlParamMap,
   migrationOptionsAsMap,
   searchFiltersAsParams,
@@ -85,6 +86,9 @@ const MigrationPage = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
+  const [formSearchFilters, dispatchFormSearchFilters] = useReducer(reducer, {}, () =>
+    createSearchFiltersFromParams(getUrlParamMap(searchParams, 'formSearchFilters')),
+  );
   const [searchFilters, dispatchSearchFilters] = useReducer(reducer, {}, () =>
     createSearchFiltersFromParams(getUrlParamMap(searchParams, 'searchFilters')),
   );
@@ -95,9 +99,17 @@ const MigrationPage = () => {
     createEditOptions(getUrlParamMap(searchParams, 'editOptions')),
   );
 
+  const [migrationLevel, setMigrationLevel] = useState(getMigrationLevelFromParams(searchParams));
+
   const onSearch = async () => {
     setIsLoading(true);
-    const results = await runMigrationDryRun(searchFilters, dependencyFilters, editInputs);
+    const results = await runMigrationDryRun(
+      formSearchFilters,
+      searchFilters,
+      dependencyFilters,
+      editInputs,
+      migrationLevel,
+    );
     const dryRunSearchResults = sortAndFilterResults(results);
     setDryRunSearchResults({
       dryRunSearchResults,
@@ -124,14 +136,18 @@ const MigrationPage = () => {
     );
 
     setIsLoading(false);
-    navigate({ search: createUrlParams(searchFilters, dependencyFilters, editInputs) });
+    navigate({
+      search: createUrlParams(formSearchFilters, searchFilters, dependencyFilters, editInputs, migrationLevel),
+    });
   };
 
   const onConfirm = async () => {
     const updatedForms = await runMigrationWithUpdate(NavFormioJs.Formio.getToken(), {
+      formSearchFilters: searchFiltersAsParams(formSearchFilters),
       searchFilters: searchFiltersAsParams(searchFilters),
       dependencyFilters: searchFiltersAsParams(dependencyFilters),
       editOptions: migrationOptionsAsMap(editInputs),
+      migrationLevel,
       include: selectedToMigrate,
     });
     setMigratedForms(updatedForms);
@@ -140,7 +156,11 @@ const MigrationPage = () => {
 
   useEffect(() => {
     (async () => {
-      if (searchParams.get('searchFilters') || searchParams.get('editOptions')) {
+      if (
+        searchParams.get('formSearchFilters') ||
+        searchParams.get('searchFilters') ||
+        searchParams.get('editOptions')
+      ) {
         await onSearch();
       }
     })();
@@ -153,6 +173,22 @@ const MigrationPage = () => {
         <Heading level="1" size="xlarge">
           Søk og migrer
         </Heading>
+        <ToggleGroup
+          title="Migreringsnivå"
+          defaultValue={migrationLevel}
+          onChange={(value) => {
+            setMigrationLevel(value as MigrationLevel);
+            setDryRunSearchResults({});
+            dispatchFormSearchFilters({ type: 'clear' });
+            dispatchSearchFilters({ type: 'clear' });
+            dispatchDependencyFilters({ type: 'clear' });
+            dispatchEditInputs({ type: 'clear' });
+          }}
+          className={styles.hasMarginBottom}
+        >
+          <ToggleGroup.Item value="component">Komponent</ToggleGroup.Item>
+          <ToggleGroup.Item value="form">Skjema</ToggleGroup.Item>
+        </ToggleGroup>
         <form
           onSubmit={async (event) => {
             event.preventDefault();
@@ -160,41 +196,62 @@ const MigrationPage = () => {
           }}
         >
           <MigrationOptionsForm
-            title="Komponenten må oppfylle følgende"
+            title="Skjemaet må oppfylle følgende"
             addRowText="Legg til filter"
-            dispatch={dispatchSearchFilters}
-            testId="search-filters"
+            dispatch={dispatchFormSearchFilters}
+            testId="form-search-filters"
           >
             <div className={styles.searchFilterInputs}>
-              {Object.keys(searchFilters).map((id) => (
+              {Object.keys(formSearchFilters).map((id) => (
                 <SearchFilterInput
                   key={id}
                   id={id}
-                  searchFilter={searchFilters[id]}
-                  dispatch={dispatchSearchFilters}
+                  searchFilter={formSearchFilters[id]}
+                  dispatch={dispatchFormSearchFilters}
                 ></SearchFilterInput>
               ))}
             </div>
           </MigrationOptionsForm>
+          {migrationLevel === 'component' && (
+            <>
+              <MigrationOptionsForm
+                title="Komponenten må oppfylle følgende"
+                addRowText="Legg til filter"
+                dispatch={dispatchSearchFilters}
+                testId="search-filters"
+              >
+                <div className={styles.searchFilterInputs}>
+                  {Object.keys(searchFilters).map((id) => (
+                    <SearchFilterInput
+                      key={id}
+                      id={id}
+                      searchFilter={searchFilters[id]}
+                      dispatch={dispatchSearchFilters}
+                    ></SearchFilterInput>
+                  ))}
+                </div>
+              </MigrationOptionsForm>
+              <MigrationOptionsForm
+                title="... og er avhengig av komponenter som oppfyller følgende"
+                addRowText="Legg til filter"
+                dispatch={dispatchDependencyFilters}
+                testId="dependency-filters"
+              >
+                <div className={styles.searchFilterInputs}>
+                  {Object.keys(dependencyFilters).map((id) => (
+                    <SearchFilterInput
+                      key={id}
+                      id={id}
+                      searchFilter={dependencyFilters[id]}
+                      dispatch={dispatchDependencyFilters}
+                    />
+                  ))}
+                </div>
+              </MigrationOptionsForm>
+            </>
+          )}
           <MigrationOptionsForm
-            title="... og er avhengig av komponenter som oppfyller følgende"
-            addRowText="Legg til filter"
-            dispatch={dispatchDependencyFilters}
-            testId="dependency-filters"
-          >
-            <div className={styles.searchFilterInputs}>
-              {Object.keys(dependencyFilters).map((id) => (
-                <SearchFilterInput
-                  key={id}
-                  id={id}
-                  searchFilter={dependencyFilters[id]}
-                  dispatch={dispatchDependencyFilters}
-                />
-              ))}
-            </div>
-          </MigrationOptionsForm>
-          <MigrationOptionsForm
-            title="Nye verdier for felter i komponenten"
+            title={`Nye verdier for felter i ${migrationLevel === 'component' ? 'komponenten' : 'skjemaet'}`}
             addRowText="Legg til felt som skal endres"
             dispatch={dispatchEditInputs}
             testId="edit-options"
@@ -215,7 +272,11 @@ const MigrationPage = () => {
               variant="tertiary"
               type="button"
               onClick={() => {
-                navigate(0);
+                setDryRunSearchResults({});
+                dispatchFormSearchFilters({ type: 'clear' });
+                dispatchSearchFilters({ type: 'clear' });
+                dispatchDependencyFilters({ type: 'clear' });
+                dispatchEditInputs({ type: 'clear' });
               }}
               className={styles.hasMarginLeft}
             >
@@ -235,8 +296,8 @@ const MigrationPage = () => {
               Fant {dryRunSearchResults.length} skjemaer som matcher søkekriteriene.&nbsp;
               {numberOfComponentsFound !== undefined && (
                 <span>
-                  Totalt vil {numberOfComponentsChanged} av {numberOfComponentsFound} komponenter bli påvirket av
-                  endringene.
+                  Totalt vil {numberOfComponentsChanged} av {numberOfComponentsFound}{' '}
+                  {migrationLevel === 'component' ? 'komponenter' : 'skjemaer'} bli påvirket av endringene.
                 </span>
               )}
             </p>
@@ -257,7 +318,13 @@ const MigrationPage = () => {
                   dryRunResults={resultsForCurrentPage}
                   selectedPaths={selectedToMigrate}
                   getPreviewUrl={(formPath) =>
-                    `/migrering/forhandsvis/${formPath}${createUrlParams(searchFilters, dependencyFilters, editInputs)}`
+                    `/migrering/forhandsvis/${formPath}${createUrlParams(
+                      formSearchFilters,
+                      searchFilters,
+                      dependencyFilters,
+                      editInputs,
+                      migrationLevel,
+                    )}`
                   }
                 />
                 {totalNumberOfPages > 1 && (

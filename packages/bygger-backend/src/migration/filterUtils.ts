@@ -20,29 +20,29 @@ function parseFiltersFromParam(filtersFromParam: object): Filter[] {
   });
 }
 
-function getPropertyFromComponent(comp: any, properties: string[]): string | undefined {
+function getPropertyFromTarget(comp: any, properties: string[]): string | undefined {
   if (properties.length > 1) {
-    return getPropertyFromComponent(comp[properties[0]], properties.slice(1));
+    return getPropertyFromTarget(comp[properties[0]], properties.slice(1));
   }
   return comp && comp[properties[0]];
 }
 
-function componentMatchesFilters(component: Component, filters: Filter[]) {
+function targetMatchesFilters(target: Component | NavFormType, filters: Filter[]) {
   return filters.every(({ key, value, operator }) => {
     switch (operator) {
       case 'exists':
-        return !!getPropertyFromComponent(component, key.split('.'));
+        return !!getPropertyFromTarget(target, key.split('.'));
       case 'n_exists':
-        return !getPropertyFromComponent(component, key.split('.'));
+        return !getPropertyFromTarget(target, key.split('.'));
       case 'contains':
-        return getPropertyFromComponent(component, key.split('.'))?.includes(value);
+        return getPropertyFromTarget(target, key.split('.'))?.includes(value);
       case 'n_contains':
-        return !getPropertyFromComponent(component, key.split('.'))?.includes(value);
+        return !getPropertyFromTarget(target, key.split('.'))?.includes(value);
       case 'n_eq':
-        return getPropertyFromComponent(component, key.split('.')) !== value;
+        return getPropertyFromTarget(target, key.split('.')) !== value;
       case 'eq':
       default:
-        return getPropertyFromComponent(component, key.split('.')) === value;
+        return getPropertyFromTarget(target, key.split('.')) === value;
     }
   });
 }
@@ -54,14 +54,9 @@ function componentHasDependencyMatchingFilters(
 ) {
   if (Object.keys(dependencyFilters).length > 0) {
     const dependees = navFormUtils.findDependeeComponents(dependentComponent, form);
-    return dependees.some(({ component }) => componentMatchesFilters(component, dependencyFilters));
+    return dependees.some(({ component }) => targetMatchesFilters(component, dependencyFilters));
   }
   return true;
 }
 
-export {
-  componentHasDependencyMatchingFilters,
-  componentMatchesFilters,
-  getPropertyFromComponent,
-  parseFiltersFromParam,
-};
+export { componentHasDependencyMatchingFilters, getPropertyFromTarget, parseFiltersFromParam, targetMatchesFilters };
