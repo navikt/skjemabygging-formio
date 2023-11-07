@@ -1,0 +1,66 @@
+[
+  {
+    "brukerId": "19876898104",
+    "skjemanr": "test-mellomlagring",
+    "tittel": "Test mellomlagring",
+    "tema": "BAR",
+    "status": "Opprettet",
+    "opprettetDato": "2020-04-08T10:00:00.625417+02:00",
+    "vedleggsListe": [
+      {
+        "tittel": "Test mellomlagring",
+        "label": "Test mellomlagring",
+        "erHoveddokument": true,
+        "erVariant": false,
+        "erPdfa": true,
+        "erPakrevd": true,
+        "opplastingsStatus": "IkkeValgt",
+        "opprettetdato": "2020-04-08T10:00:00.625417+02:00",
+        "id": 1,
+        "vedleggsnr": "test-mellomlagring",
+        "beskrivelse": null,
+        "uuid": "503edf5d-0ab7-4644-adb2-457aaa11252b",
+        "mimetype": "application/pdf",
+        "document": null,
+        "skjemaurl": null,
+        "innsendtdato": null,
+        "formioId": null
+      },
+      {
+        "tittel": "Test mellomlagring",
+        "label": "Test mellomlagring",
+        "erHoveddokument": true,
+        "erVariant": true,
+        "erPdfa": false,
+        "erPakrevd": false,
+        "opplastingsStatus": "LastetOpp",
+        "opprettetdato": "2023-10-25T06:55:29.625451+02:00",
+        "id": 2,
+        "vedleggsnr": "test-mellomlagring",
+        "beskrivelse": null,
+        "uuid": "8465b257-0ccb-4be8-92b4-144291e587bb",
+        "mimetype": "application/json",
+        "document": null,
+        "skjemaurl": null,
+        "innsendtdato": null,
+        "formioId": null
+      }
+    ],
+    "id": 1,
+    "innsendingsId": "f99dc639-add1-468f-b4bb-961cdfd1e599",
+    "ettersendingsId": null,
+    "spraak": "nb",
+    "endretDato": "2020-04-08T10:00:00.625417+02:00",
+    "innsendtDato": null,
+    "visningsSteg": 0,
+    "visningsType": "fyllUt",
+    "kanLasteOppAnnet": true,
+    "innsendingsFristDato": "2020-12-20T06:55:29.625358+02:00",
+    "forsteInnsendingsDato": null,
+    "fristForEttersendelse": 14,
+    "arkiveringsStatus": "IkkeSatt",
+    "erSystemGenerert": false,
+    "soknadstype": "soknad"
+  }
+]
+

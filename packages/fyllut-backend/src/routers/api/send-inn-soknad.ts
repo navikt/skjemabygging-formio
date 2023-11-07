@@ -74,7 +74,7 @@ const sendInnSoknad = {
       const idportenPid = getIdportenPid(req);
       const tokenxAccessToken = getTokenxAccessToken(req);
       const body = assembleSendInnSoknadBody(req.body, idportenPid, null);
-      const forceCreateParam = !!req.query?.opprettNySoknad ? '?opprettNySoknad=true' : '';
+      const forceCreateParam = !!req.query?.forceMellomlagring ? '?opprettNySoknad=true' : '';
       if (!isMellomLagringEnabled(featureToggles)) {
         res.json(body);
         return;
@@ -82,6 +82,7 @@ const sendInnSoknad = {
 
       const sendInnResponse = await fetch(`${sendInnConfig.host}${sendInnConfig.paths.soknad}${forceCreateParam}`, {
         method: 'POST',
+        redirect: 'manual',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${tokenxAccessToken}`,
@@ -93,6 +94,10 @@ const sendInnSoknad = {
         logger.debug('Successfylly posted data to SendInn');
         res.status(201);
         res.json(await sendInnResponse.json());
+      } else if (sendInnResponse.status === 302) {
+        const location = sendInnResponse.headers.get('location');
+        logger.debug(`User has active tasks, returns redirect url ${location}`);
+        res.json({ redirectUrl: location });
       } else {
         logger.debug('Failed to post data to SendInn');
         next(await responseToError(sendInnResponse, `Feil ved kall til SendInn. ${postErrorMessage}`, true));

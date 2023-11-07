@@ -32,7 +32,6 @@ describe('sendInnContext', () => {
   const submission = { data: { question: 'answer' } } as unknown as Submission;
   const submissionMethod = 'digital';
   const headers = {};
-  const opts = { redirectToLocation: false };
 
   afterEach(() => {
     vi.clearAllMocks();
@@ -70,14 +69,12 @@ describe('sendInnContext', () => {
         await screen.findByTestId('innsendings-id');
         expect(mockHttp.post).toHaveBeenCalledTimes(1);
         expect(mockHttp.post).toHaveBeenCalledWith(
-          'http://test.example.no/api/send-inn/soknad?opprettNySoknad=true',
+          'http://test.example.no/api/send-inn/soknad',
           expect.objectContaining({
             form,
             submission,
             submissionMethod,
           }),
-          headers,
-          opts,
         );
       });
     });
@@ -96,8 +93,6 @@ describe('sendInnContext', () => {
             submissionMethod,
             innsendingsId,
           }),
-          headers,
-          opts,
         );
       });
     });

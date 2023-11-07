@@ -7,6 +7,7 @@ import { useAppConfig } from '../context/config/configContext';
 import { LanguageSelector, LanguagesProvider } from '../context/languages';
 import { SendInnProvider } from '../context/sendInn/sendInnContext';
 import makeStyles from '../util/styles/jss/jss';
+import ActiveTasksPage from './active-tasks/ActiveTasksPage';
 import { FillInFormPage } from './fill-in-form/FillInFormPage';
 import { IntroPage } from './intro/IntroPage';
 import { PrepareIngenInnsendingPage } from './prepare-innsending/PrepareIngenInnsendingPage';
@@ -97,6 +98,7 @@ const FyllUtRouter = ({ form, translations }) => {
                 </SubmissionWrapper>
               }
             />
+            <Route path={'/paabegynt'} element={<ActiveTasksPage form={form} formUrl={formBaseUrl} />} />
             <Route
               path={'/:panelSlug'}
               element={
