@@ -13,10 +13,16 @@ class CountrySelect extends NavSelect {
   }
 
   static schema(...extend) {
-    return NavSelect.schema({
-      ...FormBuilderOptions.builder.person.components.landvelger.schema,
+    return NavSelect.schema(
+      {
+        ...FormBuilderOptions.builder.person.components.landvelger.schema,
+      },
       ...extend,
-    });
+    );
+  }
+
+  get defaultSchema() {
+    return CountrySelect.schema();
   }
 
   static editForm(...extend) {

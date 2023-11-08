@@ -81,10 +81,10 @@ const TAG = (text) =>
   `<span class="navds-tag navds-tag--warning-filled navds-tag--xsmall navds-detail navds-detail--small">${text}</span>`;
 
 const getDiffTag = (ctx) => {
-  const { component, config } = ctx;
+  const { component, config, self } = ctx;
   const { publishedForm } = config;
   if (ctx.builder && publishedForm) {
-    const diff = formDiffingTool.getComponentDiff(component, publishedForm);
+    const diff = formDiffingTool.getComponentDiff(component, publishedForm, self.mergeSchema.bind(self));
     const tags = [];
     if (diff.isNew) {
       tags.push(`${TAG('Ny')}`);

@@ -9,10 +9,16 @@ export default class NavButton extends Button {
   }
 
   static schema(...extend) {
-    return Button.schema({
-      ...FormBuilderOptions.builder.basic.components.button.schema,
+    return Button.schema(
+      {
+        ...FormBuilderOptions.builder.basic.components.button.schema,
+      },
       ...extend,
-    });
+    );
+  }
+
+  get defaultSchema() {
+    return NavButton.schema();
   }
 
   static editForm(...extend) {

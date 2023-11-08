@@ -196,6 +196,9 @@ describe('utils-overrides', () => {
         config: {
           publishedForm,
         },
+        self: {
+          mergeSchema: (comp) => comp,
+        },
       };
       const html = UtilsOverrides.getDiffTag(ctx);
       expect(html).toMatchSnapshot();
@@ -208,6 +211,9 @@ describe('utils-overrides', () => {
         component: navSelect,
         config: {
           publishedForm,
+        },
+        self: {
+          mergeSchema: (comp) => comp,
         },
       };
       const html = UtilsOverrides.getDiffTag(ctx);
@@ -222,6 +228,9 @@ describe('utils-overrides', () => {
         config: {
           publishedForm,
         },
+        self: {
+          mergeSchema: (comp) => comp,
+        },
       };
       const html = UtilsOverrides.getDiffTag(ctx);
       expect(html).toMatchSnapshot();
@@ -235,9 +244,57 @@ describe('utils-overrides', () => {
         config: {
           publishedForm,
         },
+        self: {
+          mergeSchema: (comp) => comp,
+        },
       };
       const html = UtilsOverrides.getDiffTag(ctx);
       expect(html).toMatchSnapshot();
+    });
+
+    /**
+     * Formio.js invokes mergeSchema on component which is put on ctx object. Therefore we must do the same
+     * prior to comparing with published version to avoid misleading diff tags due to changes in a component's schema.
+     */
+    describe('component has new default prop in schema', () => {
+      const MERGE_SCHEMA_NEW_PROP = (comp) => ({ ...comp, newValue2: true });
+
+      it('returns no tag if component has not changed, only default schema', () => {
+        const navSelect = MERGE_SCHEMA_NEW_PROP(navFormUtils.findByNavId('e0a8kbj', publishedForm.components));
+        const ctx = {
+          builder: true,
+          component: navSelect,
+          config: {
+            publishedForm,
+          },
+          self: {
+            mergeSchema: MERGE_SCHEMA_NEW_PROP,
+          },
+        };
+        const html = UtilsOverrides.getDiffTag(ctx);
+        expect(html).toMatchSnapshot();
+      });
+
+      it('returns tag "NY" if component does not exist in published form', () => {
+        const newComponent = MERGE_SCHEMA_NEW_PROP({
+          navId: '123457',
+          key: 'bbbb',
+          type: 'textfield',
+          label: 'Nytt tekstfelt',
+        });
+        const ctx = {
+          builder: true,
+          component: newComponent,
+          config: {
+            publishedForm,
+          },
+          self: {
+            mergeSchema: MERGE_SCHEMA_NEW_PROP,
+          },
+        };
+        const html = UtilsOverrides.getDiffTag(ctx);
+        expect(html).toMatchSnapshot();
+      });
     });
   });
 });

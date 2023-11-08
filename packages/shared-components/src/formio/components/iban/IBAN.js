@@ -6,10 +6,16 @@ import FormBuilderOptions from '../../form-builder-options';
 
 export default class IBAN extends TextField {
   static schema(...extend) {
-    return TextField.schema({
-      ...FormBuilderOptions.builder.pengerOgKonto.components.iban.schema,
+    return TextField.schema(
+      {
+        ...FormBuilderOptions.builder.pengerOgKonto.components.iban.schema,
+      },
       ...extend,
-    });
+    );
+  }
+
+  get defaultSchema() {
+    return IBAN.schema();
   }
 
   getErrorMessage(key) {
@@ -27,10 +33,6 @@ export default class IBAN extends TextField {
     if (errorCodes.includes(ValidationErrorsIBAN.NoIBANCountry)) return this.getErrorMessage('noIBANCountry');
 
     return this.getErrorMessage('invalidIBAN');
-  }
-
-  get defaultSchema() {
-    return IBAN.schema();
   }
 
   static get builderInfo() {

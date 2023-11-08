@@ -99,16 +99,26 @@ const generateNavFormSettingsDiff = (
   }
 };
 
-const checkComponentDiff = (currentComponent: Component, publishedForm?: NavFormType) => {
+const defaultPrepComponent = (comp: Component) => comp;
+const checkComponentDiff = (
+  currentComponent: Component,
+  publishedForm?: NavFormType,
+  prepComponent = defaultPrepComponent,
+) => {
   if (publishedForm) {
     const publishedComponent = navFormUtils.findByNavIdOrKey(currentComponent, publishedForm.components);
-    return generateObjectDiff(publishedComponent, currentComponent);
+    const publishedComponentPrepped = publishedComponent ? prepComponent(publishedComponent) : publishedComponent;
+    return generateObjectDiff(publishedComponentPrepped, currentComponent);
   }
   return null;
 };
 
-const getComponentDiff = (currentComponent: Component, publishedForm?: NavFormType) => {
-  const changes = checkComponentDiff(currentComponent, publishedForm) || {};
+const getComponentDiff = (
+  currentComponent: Component,
+  publishedForm?: NavFormType,
+  prepComponent = defaultPrepComponent,
+) => {
+  const changes = checkComponentDiff(currentComponent, publishedForm, prepComponent) || {};
   return createDiffSummary(changes);
 };
 

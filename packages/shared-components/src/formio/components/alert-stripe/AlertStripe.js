@@ -110,10 +110,16 @@ class AlertStripe extends HTMLElement {
   }
 
   static schema(...extend) {
-    return Field.schema({
-      ...FormBuilderOptions.builder.layout.components.alertstripe.schema,
+    return Field.schema(
+      {
+        ...FormBuilderOptions.builder.layout.components.alertstripe.schema,
+      },
       ...extend,
-    });
+    );
+  }
+
+  get defaultSchema() {
+    return AlertStripe.schema();
   }
 }
 

@@ -9,10 +9,16 @@ export default class Image extends Component {
   }
 
   static schema(...extend) {
-    return Component.schema({
-      ...FormBuilderOptions.builder.basic.components.image.schema,
+    return Component.schema(
+      {
+        ...FormBuilderOptions.builder.basic.components.image.schema,
+      },
       ...extend,
-    });
+    );
+  }
+
+  get defaultSchema() {
+    return Image.schema();
   }
 
   static editForm(..._extend) {

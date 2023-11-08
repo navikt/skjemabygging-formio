@@ -189,6 +189,10 @@ export default class NavDatepicker extends FormioReactComponent {
     return FormioReactComponent.schema(FormBuilderOptions.builder.datoOgTid.components.datoVelger.schema);
   }
 
+  get defaultSchema() {
+    return NavDatepicker.schema();
+  }
+
   /*
    * Defines the settingsForm when editing a component in the builder.
    */

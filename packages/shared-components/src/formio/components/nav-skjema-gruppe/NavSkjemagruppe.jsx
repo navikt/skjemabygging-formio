@@ -53,10 +53,16 @@ class Skjemagruppe extends Fieldset {
   }
 
   static schema(...extend) {
-    return Fieldset.schema({
-      ...FormBuilderOptions.builder.layout.components.navSkjemagruppe.schema,
+    return Fieldset.schema(
+      {
+        ...FormBuilderOptions.builder.layout.components.navSkjemagruppe.schema,
+      },
       ...extend,
-    });
+    );
+  }
+
+  get defaultSchema() {
+    return Skjemagruppe.schema();
   }
 }
 
