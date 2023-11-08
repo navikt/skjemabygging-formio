@@ -47,7 +47,7 @@ export const grensesnitt = {
     body: 'Er du sikker på at du vil sende søknaden nå?',
     confirm: 'Ja, send søknaden',
     cancel: 'Avbryt',
-    ariaLabel: 'Bekreft innsending',
+    title: 'Bekreft innsending',
   },
 
   ok: 'OK',

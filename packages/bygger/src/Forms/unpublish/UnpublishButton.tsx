@@ -1,15 +1,14 @@
 import { Button } from '@navikt/ds-react';
+import { ConfirmationModal, useModal } from '@navikt/skjemadigitalisering-shared-components';
 import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
-import { useModal } from '../../util/useModal';
-import ConfirmUnpublishModal from './ConfirmUnpublishModal';
 
 interface UnpublishButtonProps {
-  onUnpublish: (form) => void;
+  onUnpublish: () => void;
   form: NavFormType;
 }
 
 const UnpublishButton = ({ onUnpublish, form }: UnpublishButtonProps) => {
-  const [openConfirmModal, setOpenConfirmModal] = useModal(false);
+  const [openConfirmModal, setOpenConfirmModal] = useModal();
 
   return (
     <>
@@ -19,12 +18,19 @@ const UnpublishButton = ({ onUnpublish, form }: UnpublishButtonProps) => {
             Avpubliser
           </Button>
 
-          <ConfirmUnpublishModal
-            openModal={openConfirmModal}
-            closeModal={() => setOpenConfirmModal(false)}
-            onUnpublish={onUnpublish}
-            form={form}
-          />
+          <div>
+            <ConfirmationModal
+              open={openConfirmModal}
+              onClose={() => setOpenConfirmModal(false)}
+              onConfirm={onUnpublish}
+              texts={{
+                title: 'Avpubliseringsadvarsel',
+                body: 'Er du sikker på at dette skjemaet skal avpubliseres?',
+                confirm: 'Ja, avpubliser skjemaet',
+                cancel: 'Nei',
+              }}
+            />
+          </div>
         </>
       )}
     </>

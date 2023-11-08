@@ -1,46 +1,42 @@
 import { BodyShort, Button } from '@navikt/ds-react';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Modal, useLanguages } from '../../../index';
-
-import makeStyles from '../../../util/styles/jss/jss';
-
-const useStyles = makeStyles({
-  modalBody: {
-    paddingTop: '1.1rem',
-    paddingBottom: '4rem',
-    fontSize: '1.25rem',
-  },
-  modal: {
-    maxWidth: '40rem',
-  },
-});
 
 interface Props {
   open: boolean;
   onClose: () => void;
   onConfirm: () => Promise<void> | void;
   exitUrl?: string;
-  confirmType: 'primary' | 'danger';
+  confirmType?: 'primary' | 'danger';
   texts: {
     title: string;
-    body: string;
+    body?: string;
     confirm: string;
-    cancel: string;
+    cancel?: string;
   };
+  children?: React.ReactNode;
 }
 
 const ConfirmationModal = (props: Props) => {
   const { translate } = useLanguages();
   const [isLoading, setIsLoading] = useState(false);
-  const styles = useStyles();
 
-  const { onConfirm, exitUrl, confirmType, texts, ...modalProps } = props;
+  const { onConfirm, exitUrl, confirmType, texts, children, ...modalProps } = props;
+
+  const translateIfAvailable = (text: string) => {
+    if (translate && text) {
+      return translate(text);
+    }
+
+    return text;
+  };
 
   const onClickConfirm = async () => {
     try {
       setIsLoading(true);
       await onConfirm();
       setIsLoading(false);
+      modalProps.onClose();
       if (exitUrl) {
         window.location.assign(exitUrl);
       }
@@ -51,16 +47,20 @@ const ConfirmationModal = (props: Props) => {
   };
 
   return (
-    <Modal className={styles.modal} {...modalProps} title={translate(texts.title)}>
-      <BodyShort className={styles.modalBody}>{translate(texts.body)}</BodyShort>
-      <div className="button-row">
-        <Button variant={confirmType} onClick={onClickConfirm} loading={isLoading}>
-          {translate(texts.confirm)}
+    <Modal {...modalProps} title={translateIfAvailable(texts.title)}>
+      <Modal.Body>
+        {children ? children : texts.body && <BodyShort>{translateIfAvailable(texts.body)}</BodyShort>}
+      </Modal.Body>
+      <Modal.Footer>
+        <Button variant={confirmType ?? 'primary'} onClick={onClickConfirm} loading={isLoading}>
+          {translateIfAvailable(texts.confirm)}
         </Button>
-        <Button variant="tertiary" onClick={props.onClose}>
-          {translate(texts.cancel)}
-        </Button>
-      </div>
+        {texts.cancel && (
+          <Button variant="tertiary" onClick={props.onClose}>
+            {translateIfAvailable(texts.cancel)}
+          </Button>
+        )}
+      </Modal.Footer>
     </Modal>
   );
 };

@@ -1,5 +1,5 @@
 import { Button, Heading } from '@navikt/ds-react';
-import { LoadingComponent, makeStyles } from '@navikt/skjemadigitalisering-shared-components';
+import { LoadingComponent, makeStyles, useModal } from '@navikt/skjemadigitalisering-shared-components';
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useMemo, useReducer, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -11,7 +11,6 @@ import Row from '../../components/layout/Row';
 import { getAvailableLanguages, languagesInNorwegian } from '../../context/i18n';
 import FormBuilderLanguageSelector from '../../context/i18n/FormBuilderLanguageSelector';
 import useRedirectIfNoLanguageCode from '../../hooks/useRedirectIfNoLanguageCode';
-import { useModal } from '../../util/useModal';
 import ConfirmDeleteLanguageModal from '../ConfirmDeleteLanguageModal';
 import ApplicationTextTranslationEditPanel from './ApplicationTextTranslationEditPanel';
 import GlobalCsvLink from './GlobalCsvLink';

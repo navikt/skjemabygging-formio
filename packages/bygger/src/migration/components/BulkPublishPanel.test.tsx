@@ -1,10 +1,7 @@
-import { Modal } from '@navikt/skjemadigitalisering-shared-components';
 import { FormPropertiesType, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import * as api from '../api';
 import BulkPublishPanel from './BulkPublishPanel';
-
-Modal.setAppElement(document.createElement('div'));
 
 const published = {
   modified: '2022-11-17T13:12:38.825Z',

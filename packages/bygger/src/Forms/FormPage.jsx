@@ -64,8 +64,8 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish, onUnpu
       });
   };
 
-  const unpublishForm = async (form) => {
-    const savedForm = await onUnpublish(form);
+  const unpublishForm = async () => {
+    const savedForm = await onUnpublish(state.form);
     await loadPublishedForm(formPath)
       .then((publishedForm) => dispatch({ type: 'form-saved', form: savedForm, publishedForm }))
       .catch(() => {

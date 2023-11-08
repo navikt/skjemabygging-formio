@@ -3,17 +3,8 @@ import { BodyShort, Button } from '@navikt/ds-react';
 import { Submission, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useState } from 'react';
 import { useLanguages } from '../../context/languages';
-import makeStyles from '../../util/styles/jss/jss';
 import DigitalSubmissionButton from '../button/navigation/digital-submission/DigitalSubmissionButton';
 import Modal from '../modal/Modal';
-
-const useStyles = makeStyles({
-  body: {
-    paddingTop: '1.1rem',
-    paddingBottom: '4rem',
-    fontSize: '1.25rem',
-  },
-});
 
 export interface Props {
   submission?: Submission;
@@ -24,8 +15,6 @@ export interface Props {
 const DigitalSubmissionWithPrompt = ({ submission, isValid, onError }: Props) => {
   const { translate } = useLanguages();
   const [isOpen, setIsOpen] = useState(false);
-
-  const styles = useStyles();
 
   const handleClick = (e) => {
     if (isValid && !isValid(e)) {
@@ -41,11 +30,14 @@ const DigitalSubmissionWithPrompt = ({ submission, isValid, onError }: Props) =>
       </Button>
       <Modal
         open={isOpen}
-        ariaLabel={translate(TEXTS.grensesnitt.submitToNavPrompt.ariaLabel)}
+        title={translate(TEXTS.grensesnitt.submitToNavPrompt.ariaLabel)}
         onClose={() => setIsOpen(false)}
       >
-        <BodyShort className={styles.body}>{translate(TEXTS.grensesnitt.submitToNavPrompt.body)}</BodyShort>
-        <div className="button-row">
+        <Modal.Body>
+          <BodyShort>{translate(TEXTS.grensesnitt.submitToNavPrompt.body)}</BodyShort>
+        </Modal.Body>
+
+        <Modal.Footer>
           <DigitalSubmissionButton
             submission={submission}
             onError={(err) => {
@@ -63,7 +55,7 @@ const DigitalSubmissionWithPrompt = ({ submission, isValid, onError }: Props) =>
           >
             {translate(TEXTS.grensesnitt.submitToNavPrompt.cancel)}
           </Button>
-        </div>
+        </Modal.Footer>
       </Modal>
     </>
   );

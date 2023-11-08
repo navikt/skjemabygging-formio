@@ -1,60 +1,38 @@
-import { Heading, Modal as NavModal } from '@navikt/ds-react';
+import { Modal as NavModal } from '@navikt/ds-react';
 import React from 'react';
 import makeStyles from '../../util/styles/jss/jss';
 
 const useModalStyles = makeStyles({
   modal: {
-    width: '50rem',
-    maxWidth: '90%',
-    padding: '1rem',
+    maxWidth: '50rem',
   },
 });
 
 interface Props {
   onClose: () => void;
-  appElement?: string | HTMLElement;
-  title?: string;
+  title: string;
   open?: boolean;
-  shouldCloseOnOverlayClick?: boolean;
-  ariaLabel?: string;
   className?: string;
   children: React.ReactNode;
 }
 
-const Modal = ({
-  onClose,
-  open = false,
-  shouldCloseOnOverlayClick = true,
-  title,
-  ariaLabel,
-  className,
-  children,
-}: Props) => {
+const Modal = ({ onClose, open = false, title, className, children }: Props) => {
   const styles = useModalStyles();
 
   return (
     <NavModal
       open={open}
-      aria-label={ariaLabel ?? title}
+      aria-label={title}
       onClose={onClose}
       className={className ?? styles.modal}
-      closeButton={true}
-      shouldCloseOnOverlayClick={shouldCloseOnOverlayClick}
+      header={{ heading: title }}
     >
-      <NavModal.Content>
-        {title && (
-          <Heading spacing level="1" size="small">
-            {title}
-          </Heading>
-        )}
-        {children}
-      </NavModal.Content>
+      {children}
     </NavModal>
   );
 };
 
-Modal.setAppElement = (appElement?: string | HTMLElement) => {
-  NavModal.setAppElement?.(appElement);
-};
+Modal.Body = NavModal.Body;
+Modal.Footer = NavModal.Footer;
 
 export default Modal;
