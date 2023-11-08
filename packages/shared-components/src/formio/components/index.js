@@ -20,7 +20,8 @@ import Radio from './radio/Radio';
 import Row from './row/Row';
 import SelectBoxes from './select-boxes/SelectBoxes';
 import Textarea from './textarea/TextArea';
-import TextField from './textfield/TextField';
+// import TextField from './textfield/deprecated/TextField.js';
+import TextField from './textfield/NavTextField';
 
 const customComponents = {
   container: Container,
