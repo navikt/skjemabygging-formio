@@ -30,7 +30,7 @@ const DigitalSubmissionWithPrompt = ({ submission, isValid, onError }: Props) =>
       </Button>
       <Modal
         open={isOpen}
-        title={translate(TEXTS.grensesnitt.submitToNavPrompt.ariaLabel)}
+        title={translate(TEXTS.grensesnitt.submitToNavPrompt.title)}
         onClose={() => setIsOpen(false)}
       >
         <Modal.Body>

@@ -4,6 +4,7 @@ import makeStyles from '../../util/styles/jss/jss';
 
 const useModalStyles = makeStyles({
   modal: {
+    minWidth: '30rem',
     maxWidth: '50rem',
   },
 });
