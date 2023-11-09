@@ -8,6 +8,9 @@ describe('Form Builder', () => {
     cy.intercept('GET', '/api/published-forms/dif123456', { statusCode: 404 }).as('getPublishedForm');
     cy.intercept('GET', /language\/submission?.*/, { fixture: 'globalTranslations.json' }).as('getTranslations');
     cy.intercept('GET', '/api/countries*', { fixture: 'getCountriesLangNb.json' }).as('getCountriesLangNb');
+
+    cy.visit('forms/dif123456');
+    cy.wait('@getForm');
   });
 
   it('Trims properties "vedleggskode" and "vedleggstittel" before save', () => {
@@ -20,8 +23,6 @@ describe('Form Builder', () => {
       req.reply(200, req.body);
     }).as('putForm');
 
-    cy.visit('forms/dif123456');
-    cy.wait('@getForm');
     cy.findByRole('link', { name: 'Vedlegg' }).click();
     cy.get('[title="Rediger"]').spread((_editPanelButton, editAnnenDokumentasjonButton) =>
       editAnnenDokumentasjonButton.click({ force: true }),
@@ -32,5 +33,41 @@ describe('Form Builder', () => {
     cy.findByRole('button', { name: 'Save' }).click();
     cy.findByRole('button', { name: 'Lagre' }).click();
     cy.wait('@putForm');
+  });
+
+  describe('Textfield', () => {
+    it('should save changes made in edit modal', () => {
+      cy.intercept('PUT', '/form/63c7abd51578ad48a6dc00cc', (req) => {
+        const fodselsdato = navFormUtils
+          .flattenComponents(req.body.components)
+          .find((comp) => comp.key === 'fornavnSoker');
+        expect(fodselsdato.label).to.equal('Fornavn');
+        req.reply(200, req.body);
+      }).as('putForm');
+
+      cy.openEditComponentModal(cy.findByRole('textbox', { name: 'Fornavn2' }));
+      cy.findByDisplayValue('Fornavn2').type('{selectall}Fornavn');
+      cy.findByRole('button', { name: 'Save' }).click();
+      cy.findByRole('button', { name: 'Lagre' }).click();
+      cy.wait('@putForm');
+    });
+  });
+
+  describe('Nav datepicker', () => {
+    it('should save changes made in edit modal', () => {
+      cy.intercept('PUT', '/form/63c7abd51578ad48a6dc00cc', (req) => {
+        const fodselsdato = navFormUtils
+          .flattenComponents(req.body.components)
+          .find((comp) => comp.key === 'fodselsdatoDdMmAaaaSoker');
+        expect(fodselsdato.label).to.equal('Din fødselsdato');
+        req.reply(200, req.body);
+      }).as('putForm');
+
+      cy.openEditComponentModal(cy.findByRole('textbox', { name: 'Din fødselsdato (dd.mm.åååå)' }));
+      cy.findByDisplayValue('Din fødselsdato (dd.mm.åååå)').type('{selectall}Din fødselsdato');
+      cy.findByRole('button', { name: 'Save' }).click();
+      cy.findByRole('button', { name: 'Lagre' }).click();
+      cy.wait('@putForm');
+    });
   });
 });
