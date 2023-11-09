@@ -28,10 +28,11 @@ export default class TextField extends FormioReactComponent {
     return element.render(
       <NavTextField
         htmlSize={43}
-        id={this.component?.id}
+        id={`${this.component?.id}-${this.component?.key}`}
         value={this.dataForSetting || this.dataValue}
         onChange={(event) => this.updateValue(event.currentTarget.value, {})}
         ref={(r) => (this.input = r)}
+        aria-describedby={`d-${this.component?.id}-${this.component?.key} e-${this.component?.id}-${this.component?.key}`}
         label=""
         hideLabel
       />,
