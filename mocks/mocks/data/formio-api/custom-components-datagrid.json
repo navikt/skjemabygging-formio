@@ -11,92 +11,81 @@
       "key": "dineopplysninger",
       "components": [
         {
-          "title": "Dine opplysninger",
-          "type": "panel",
-          "input": false,
-          "key": "personopplysninger",
+          "label": "Avkryssingsboks",
+          "additionalDescription": false,
+          "validate": {
+            "required": true
+          },
+          "key": "avkryssingsboks",
+          "type": "navCheckbox",
+          "input": true,
+          "validateOn": "blur",
+          "tableView": false,
+          "navId": "eplj6i"
+        },
+        {
+          "label": "Data Grid",
+          "key": "datagrid",
+          "conditional": {
+            "show": true,
+            "when": "avkryssingsboks",
+            "eq": "true"
+          },
+          "type": "datagrid",
+          "rowGroups": [
+            {}
+          ],
+          "input": true,
+          "isNavDataGrid": true,
           "components": [
             {
-              "label": "Avkryssingsboks",
-              "additionalDescription": false,
-              "validate": {
-                "required": true
+              "label": "Nedtrekksmeny",
+              "fieldSize": "input--xxl",
+              "dataSrc": "values",
+              "data": {
+                "values": [
+                  {
+                    "label": "a",
+                    "value": "a"
+                  },
+                  {
+                    "label": "b",
+                    "value": "b"
+                  }
+                ],
+                "resource": ""
               },
-              "key": "avkryssingsboks",
-              "type": "navCheckbox",
+              "validate": {
+                "required": true,
+                "onlyAvailableItems": false
+              },
+              "key": "nedtrekksmeny",
+              "type": "navSelect",
               "input": true,
+              "dataGridLabel": true,
               "validateOn": "blur",
               "tableView": false,
-              "navId": "eplj6i"
+              "navId": "e9842zi"
             },
             {
-              "label": "Data Grid",
-              "key": "datagrid",
-              "conditional": {
-                "show": true,
-                "when": "avkryssingsboks",
-                "eq": "true"
+              "visArvelger": true,
+              "label": "Dato (dd.mm.åååå)",
+              "dataGridLabel": true,
+              "mayBeEqual": false,
+              "validate": {
+                "required": true,
+                "custom": "valid = instance.validateDatePickerV2(input, data, component, row);"
               },
-              "type": "datagrid",
-              "rowGroups": [
-                {}
-              ],
+              "validateOn": "blur",
+              "key": "datoDdMmAaaa",
+              "type": "navDatepicker",
               "input": true,
-              "isNavDataGrid": true,
-              "components": [
-                {
-                  "label": "Nedtrekksmeny",
-                  "fieldSize": "input--xxl",
-                  "dataSrc": "values",
-                  "data": {
-                    "values": [
-                      {
-                        "label": "a",
-                        "value": "a"
-                      },
-                      {
-                        "label": "b",
-                        "value": "b"
-                      }
-                    ],
-                    "resource": ""
-                  },
-                  "validate": {
-                    "required": true,
-                    "onlyAvailableItems": false
-                  },
-                  "key": "nedtrekksmeny",
-                  "type": "navSelect",
-                  "input": true,
-                  "dataGridLabel": true,
-                  "validateOn": "blur",
-                  "tableView": false,
-                  "navId": "e9842zi"
-                },
-                {
-                  "visArvelger": true,
-                  "label": "Dato (dd.mm.åååå)",
-                  "dataGridLabel": true,
-                  "mayBeEqual": false,
-                  "validate": {
-                    "required": true,
-                    "custom": "valid = instance.validateDatePickerV2(input, data, component, row);"
-                  },
-                  "validateOn": "blur",
-                  "key": "datoDdMmAaaa",
-                  "type": "navDatepicker",
-                  "input": true,
-                  "tableView": false,
-                  "navId": "ep9ghtd"
-                }
-              ],
               "tableView": false,
-              "navId": "esf8bo"
+              "navId": "ep9ghtd"
             }
           ],
           "tableView": false,
-          "label": "Panel",
-          "navId": "e7t0lfe"
+          "navId": "esf8bo"
         }
       ],
       "tableView": false,

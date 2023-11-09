@@ -1,3 +1,4 @@
+import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import * as moment from 'moment';
 
 describe('Custom react components', () => {
@@ -8,96 +9,212 @@ describe('Custom react components', () => {
     cy.defaultIntercepts();
   });
 
-  describe('Fill in form and view summary', () => {
-    beforeEach(() => {
-      cy.intercept('GET', '/fyllut/api/forms/customcomps').as('getForm');
-      cy.intercept('GET', '/fyllut/api/translations/customcomps').as('getTranslations');
-      cy.visit('/fyllut/customcomps/dineopplysninger?sub=paper');
-      cy.wait('@getConfig');
-      cy.wait('@getForm');
-      cy.wait('@getGlobalTranslation');
-      cy.wait('@getTranslations');
-      cy.wait('@getCountries');
-      cy.wait('@getCurrencies');
+  describe('General', () => {
+    describe('Fill in form and view summary, paper', () => {
+      beforeEach(() => {
+        cy.intercept('GET', '/fyllut/api/forms/customcomps').as('getForm');
+        cy.intercept('GET', '/fyllut/api/translations/customcomps').as('getTranslations');
+        cy.visit('/fyllut/customcomps/dineopplysninger?sub=paper');
+        cy.wait('@getConfig');
+        cy.wait('@getForm');
+        cy.wait('@getGlobalTranslation');
+        cy.wait('@getTranslations');
+        cy.wait('@getCountries');
+        cy.wait('@getCurrencies');
+      });
+
+      it('reflects changes on summary page when editing data', () => {
+        cy.findByRole('heading', { name: 'Dine opplysninger' });
+        cy.findByRole('textbox', { name: 'Fornavn' }).type('Storm');
+        cy.findByRole('combobox', { name: 'I hvilket land bor du?' }).click();
+
+        cy.findByRole('combobox', { name: 'I hvilket land bor du?' }).type(
+          'Nor{downArrow}{downArrow}{downArrow}{downArrow}{enter}',
+        );
+        cy.findByRole('combobox', { name: 'Velg instrument (valgfritt)' }).type('Gitar{enter}');
+        cy.findByRole('textbox', { name: 'Gyldig fra dato' }).type('01.01.2023{esc}');
+        cy.clickNextStep();
+
+        cy.findAllByText('Du må fylle ut: Velg valuta').should('have.length', 2).first().click();
+        cy.findByRole('combobox', { name: 'Velg valuta' }).should('have.focus').type('{upArrow}{enter}');
+        cy.clickNextStep();
+
+        cy.findByRole('heading', { name: 'Vedlegg' }).should('exist');
+        cy.findByLabelText('Annen dokumentasjon')
+          .should('exist')
+          .within(() =>
+            cy.findByLabelText('Ja, jeg legger det ved denne søknaden.').should('exist').check({ force: true }),
+          );
+        cy.findByLabelText('Bekreftelse på skoleplass')
+          .should('exist')
+          .within(() =>
+            cy.findByLabelText('Jeg har levert denne dokumentasjonen tidligere').should('exist').check({ force: true }),
+          );
+        cy.clickNextStep();
+
+        cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
+        cy.findByRole('heading', { name: 'Dine opplysninger' }).should('exist');
+        cy.get('dl')
+          .first()
+          .within(() => {
+            cy.get('dt').eq(0).should('contain.text', 'Fornavn');
+            cy.get('dd').eq(0).should('contain.text', 'Storm');
+            cy.get('dt').eq(1).should('contain.text', 'I hvilket land bor du?');
+            cy.get('dd').eq(1).should('contain.text', 'Norge');
+            cy.get('dt').eq(2).should('contain.text', 'Velg valuta');
+            cy.get('dd').eq(2).should('contain.text', 'Australske dollar (AUD)');
+            cy.get('dt').eq(3).should('contain.text', 'Velg instrument');
+            cy.get('dd').eq(3).should('contain.text', 'Gitar');
+            cy.get('dt').eq(4).should('contain.text', 'Gyldig fra dato');
+            cy.get('dd').eq(4).should('contain.text', '1.1.2023');
+          });
+
+        cy.findByRole('link', { name: TEXTS.grensesnitt.moveForward }).click();
+
+        cy.findByRole('heading', { name: 'Innsending/Send til NAV' }).should('exist');
+
+        cy.findByRole('link', { name: TEXTS.grensesnitt.goBack }).click();
+
+        cy.findByRole('link', { name: 'Rediger dine opplysninger' }).click();
+        cy.findByRole('heading', { name: 'Dine opplysninger' }).should('exist');
+
+        cy.findByRole('textbox', { name: 'Fornavn' }).type('zy');
+        cy.findByRole('combobox', { name: 'Velg valuta' }).click();
+        cy.findByRole('combobox', { name: 'Velg valuta' }).should('have.focus').type('Norske{enter}');
+        cy.findByRole('combobox', { name: 'Velg instrument (valgfritt)' }).type('{backspace}');
+        cy.findByRole('textbox', { name: 'Gyldig fra dato' })
+          .should('exist')
+          .should('contain.value', '01.01.2023')
+          .focus();
+        cy.findByRole('textbox', { name: 'Gyldig fra dato' }).type('{selectall}02.01.2023');
+        cy.findByRole('navigation', { name: 'Søknadssteg' })
+          .should('exist')
+          .within(() => {
+            cy.findByRole('link', { name: 'Oppsummering' }).click();
+          });
+
+        cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
+        cy.get('dl')
+          .first()
+          .within(() => {
+            cy.get('dt').eq(0).should('contain.text', 'Fornavn');
+            cy.get('dd').eq(0).should('contain.text', 'Stormzy');
+            cy.get('dt').eq(1).should('contain.text', 'I hvilket land bor du?');
+            cy.get('dd').eq(1).should('contain.text', 'Norge');
+            cy.get('dt').eq(2).should('contain.text', 'Velg valuta');
+            cy.get('dd').eq(2).should('contain.text', 'Norske kroner (NOK)');
+            cy.get('dt').eq(3).should('contain.text', 'Gyldig fra dato');
+            cy.get('dd').eq(3).should('contain.text', '2.1.2023');
+          });
+      });
     });
 
-    it('reflects changes on summary page when editing data', () => {
-      cy.findByRole('heading', { name: 'Dine opplysninger' });
-      cy.findByRole('textbox', { name: 'Fornavn' }).type('Storm');
-      cy.findByRole('combobox', { name: 'I hvilket land bor du?' }).click();
+    describe('Fill in form and view summary, digital', () => {
+      beforeEach(() => {
+        cy.intercept('GET', '/fyllut/api/forms/customcomps').as('getForm');
+        cy.intercept('GET', '/fyllut/api/translations/customcomps').as('getTranslations');
+        cy.visit('/fyllut/customcomps/dineopplysninger?sub=digital');
+        cy.wait('@getConfig');
+        cy.wait('@getForm');
+        cy.wait('@getGlobalTranslation');
+        cy.wait('@getTranslations');
+        cy.wait('@getCountries');
+        cy.wait('@getCurrencies');
+      });
 
-      cy.findByRole('combobox', { name: 'I hvilket land bor du?' }).type(
-        'Nor{downArrow}{downArrow}{downArrow}{downArrow}{enter}',
-      );
-      cy.findByRole('combobox', { name: 'Velg instrument (valgfritt)' }).type('Gitar{enter}');
-      cy.findByRole('textbox', { name: 'Gyldig fra dato' }).type('01.01.2023');
-      cy.clickNextStep();
+      it('make sure components keep their values after going to summary page', () => {
+        cy.findByRole('heading', { name: 'Dine opplysninger' });
+        cy.findByRole('textbox', { name: 'Fornavn' }).type('Storm');
+        cy.findByRole('combobox', { name: 'I hvilket land bor du?' })
+          .should('be.visible')
+          .type('Nor{downArrow}{downArrow}{downArrow}{downArrow}{enter}');
+        cy.findByRole('combobox', { name: 'Velg valuta' }).should('be.visible').type('{upArrow}{enter}');
+        cy.findByRole('combobox', { name: 'Velg instrument (valgfritt)' }).type('Gitar{enter}');
+        cy.findByRole('textbox', { name: 'Gyldig fra dato' }).type('01.01.2023{esc}');
+        cy.clickSaveAndContinue();
 
-      cy.findAllByText('Du må fylle ut: Velg valuta').should('have.length', 2).first().click();
-      cy.findByRole('combobox', { name: 'Velg valuta' }).should('have.focus').type('{upArrow}{enter}');
-      cy.clickNextStep();
+        cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
+        cy.findByRole('heading', { name: 'Dine opplysninger' }).should('exist');
+        cy.get('dl')
+          .first()
+          .within(() => {
+            cy.get('dt').eq(0).should('contain.text', 'Fornavn');
+            cy.get('dd').eq(0).should('contain.text', 'Storm');
+            cy.get('dt').eq(1).should('contain.text', 'I hvilket land bor du?');
+            cy.get('dd').eq(1).should('contain.text', 'Norge');
+            cy.get('dt').eq(2).should('contain.text', 'Velg valuta');
+            cy.get('dd').eq(2).should('contain.text', 'Australske dollar (AUD)');
+            cy.get('dt').eq(3).should('contain.text', 'Velg instrument');
+            cy.get('dd').eq(3).should('contain.text', 'Gitar');
+            cy.get('dt').eq(4).should('contain.text', 'Gyldig fra dato');
+            cy.get('dd').eq(4).should('contain.text', '1.1.2023');
+          });
 
-      cy.findByRole('heading', { name: 'Vedlegg' }).should('exist');
-      cy.findByLabelText('Annen dokumentasjon')
-        .should('exist')
-        .within(() =>
-          cy.findByLabelText('Ja, jeg legger det ved denne søknaden.').should('exist').check({ force: true }),
-        );
-      cy.findByLabelText('Bekreftelse på skoleplass')
-        .should('exist')
-        .within(() =>
-          cy.findByLabelText('Jeg har levert denne dokumentasjonen tidligere').should('exist').check({ force: true }),
-        );
-      cy.clickNextStep();
+        cy.findByRole('link', { name: 'Rediger dine opplysninger' }).click();
+        cy.findByRole('heading', { name: 'Dine opplysninger' }).should('exist');
+        //cy.wait(500);
 
-      cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
-      cy.findByRole('heading', { name: 'Dine opplysninger' }).should('exist');
-      cy.get('dl')
-        .first()
-        .within(() => {
-          cy.get('dt').eq(0).should('contain.text', 'Fornavn');
-          cy.get('dd').eq(0).should('contain.text', 'Storm');
-          cy.get('dt').eq(1).should('contain.text', 'I hvilket land bor du?');
-          cy.get('dd').eq(1).should('contain.text', 'Norge');
-          cy.get('dt').eq(2).should('contain.text', 'Velg valuta');
-          cy.get('dd').eq(2).should('contain.text', 'Australske dollar (AUD)');
-          cy.get('dt').eq(3).should('contain.text', 'Velg instrument');
-          cy.get('dd').eq(3).should('contain.text', 'Gitar');
-          cy.get('dt').eq(4).should('contain.text', 'Gyldig fra dato');
-          cy.get('dd').eq(4).should('contain.text', '1.1.2023');
-        });
+        cy.findByRole('textbox', { name: 'Fornavn' }).should('have.value', 'Storm');
+        // TODO: Not the nicest way to check values from react-select. But not worth the time to debug since it will be replaced by Aksel select.
+        cy.get('.formio-component-landvelger').contains('Norge');
+        cy.get('.formio-component-valutavelger').contains('Australske dollar (AUD)');
+        cy.get('.formio-component-velgInstrument').contains('Gitar');
+        cy.findByRole('textbox', { name: 'Gyldig fra dato' }).should('have.value', '01.01.2023');
+      });
+    });
 
-      cy.findByRole('link', { name: 'Rediger dine opplysninger' }).click();
-      cy.findByRole('heading', { name: 'Dine opplysninger' }).should('exist');
+    describe('Components within conditional DataGrid', () => {
+      beforeEach(() => {
+        cy.intercept('GET', '/fyllut/api/forms/customcompsdatagrid').as('getDataGridForm');
+        cy.visit('/fyllut/customcompsdatagrid/dineopplysninger?sub=paper');
+        cy.wait('@getConfig');
+        cy.wait('@getDataGridForm');
+        cy.findByRole('checkbox', { name: 'Avkryssingsboks' }).click();
+      });
 
-      cy.findByRole('textbox', { name: 'Fornavn' }).type('zy');
-      cy.findByRole('combobox', { name: 'Velg valuta' }).click();
-      cy.findByRole('combobox', { name: 'Velg valuta' }).should('have.focus').type('Norske{enter}');
-      cy.findByRole('combobox', { name: 'Velg instrument (valgfritt)' }).type('{backspace}');
-      cy.findByRole('textbox', { name: 'Gyldig fra dato' })
-        .should('exist')
-        .should('contain.value', '01.01.2023')
-        .focus();
-      cy.findByRole('textbox', { name: 'Gyldig fra dato' }).type('{selectall}02.01.2023');
-      cy.findByRole('navigation', { name: 'Søknadssteg' })
-        .should('exist')
-        .within(() => {
-          cy.findByRole('link', { name: 'Oppsummering' }).click();
-        });
+      it('make sure you can add multiple select boxes in a DataGrid and edit them', () => {
+        const labelSelect = 'Nedtrekksmeny';
+        const labelDate = 'Dato (dd.mm.åååå)';
+        const labelAdd = 'Legg til';
+        cy.findAllByRole('combobox', { name: labelSelect }).eq(0).type('a{enter}');
+        cy.findAllByRole('textbox', { name: labelDate }).eq(0).type('10.10.2000{esc}');
+        cy.findByRole('button', { name: labelAdd }).click();
+        cy.findAllByRole('combobox', { name: labelSelect }).eq(1).type('b{enter}');
+        cy.findAllByRole('textbox', { name: labelDate }).eq(1).type('11.10.2000{esc}');
+        cy.findByRole('button', { name: labelAdd }).click();
+        cy.findAllByRole('combobox', { name: labelSelect }).eq(2).type('a{enter}');
+        cy.findAllByRole('textbox', { name: labelDate }).eq(2).type('12.10.2000{esc}');
 
-      cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
-      cy.get('dl')
-        .first()
-        .within(() => {
-          cy.get('dt').eq(0).should('contain.text', 'Fornavn');
-          cy.get('dd').eq(0).should('contain.text', 'Stormzy');
-          cy.get('dt').eq(1).should('contain.text', 'I hvilket land bor du?');
-          cy.get('dd').eq(1).should('contain.text', 'Norge');
-          cy.get('dt').eq(2).should('contain.text', 'Velg valuta');
-          cy.get('dd').eq(2).should('contain.text', 'Norske kroner (NOK)');
-          cy.get('dt').eq(3).should('contain.text', 'Gyldig fra dato');
-          cy.get('dd').eq(3).should('contain.text', '2.1.2023');
-        });
+        cy.clickNextStep();
+        cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
+
+        cy.get('dl')
+          .eq(1)
+          .within(() => {
+            cy.get('dt').eq(0).contains(labelSelect);
+            cy.get('dd').eq(0).contains('a');
+            cy.get('dt').eq(1).contains(labelDate);
+            cy.get('dd').eq(1).contains('10.10.2000');
+          });
+
+        cy.get('dl')
+          .eq(2)
+          .within(() => {
+            cy.get('dt').eq(0).contains(labelSelect);
+            cy.get('dd').eq(0).contains('b');
+            cy.get('dt').eq(1).contains(labelDate);
+            cy.get('dd').eq(1).contains('11.10.2000');
+          });
+
+        cy.get('dl')
+          .eq(3)
+          .within(() => {
+            cy.get('dt').eq(0).contains(labelSelect);
+            cy.get('dd').eq(0).contains('a');
+            cy.get('dt').eq(1).contains(labelDate);
+            cy.get('dd').eq(1).contains('12.10.2000');
+          });
+      });
     });
   });
 
@@ -314,60 +431,6 @@ describe('Custom react components', () => {
 
         cy.findAllByText(VALIDATION_TEXT).should('have.length', 1);
       });
-    });
-  });
-
-  describe('DataGrid', () => {
-    beforeEach(() => {
-      cy.intercept('GET', '/fyllut/api/forms/customcompsdatagrid').as('getDataGridForm');
-      cy.visit('/fyllut/customcompsdatagrid/dineopplysninger?sub=paper');
-      cy.wait('@getConfig');
-      cy.wait('@getDataGridForm');
-      cy.findByRole('checkbox', { name: 'Avkryssingsboks' }).click();
-    });
-
-    it('is rendered on summary page', () => {
-      const labelSelect = 'Nedtrekksmeny';
-      const labelDate = 'Dato (dd.mm.åååå)';
-      const labelAdd = 'Legg til';
-      cy.findAllByRole('combobox', { name: labelSelect }).eq(0).type('a{enter}');
-      cy.findAllByRole('textbox', { name: labelDate }).eq(0).type('10.10.2000{esc}');
-      cy.findByRole('button', { name: labelAdd }).click();
-      cy.findAllByRole('combobox', { name: labelSelect }).eq(1).type('b{enter}');
-      cy.findAllByRole('textbox', { name: labelDate }).eq(1).type('11.10.2000{esc}');
-      cy.findByRole('button', { name: labelAdd }).click();
-      cy.findAllByRole('combobox', { name: labelSelect }).eq(2).type('a{enter}');
-      cy.findAllByRole('textbox', { name: labelDate }).eq(2).type('12.10.2000{esc}');
-
-      cy.clickNextStep();
-      cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
-
-      cy.get('dl')
-        .eq(2)
-        .within(() => {
-          cy.get('dt').eq(0).contains(labelSelect);
-          cy.get('dd').eq(0).contains('a');
-          cy.get('dt').eq(1).contains(labelDate);
-          cy.get('dd').eq(1).contains('10.10.2000');
-        });
-
-      cy.get('dl')
-        .eq(3)
-        .within(() => {
-          cy.get('dt').eq(0).contains(labelSelect);
-          cy.get('dd').eq(0).contains('b');
-          cy.get('dt').eq(1).contains(labelDate);
-          cy.get('dd').eq(1).contains('11.10.2000');
-        });
-
-      cy.get('dl')
-        .eq(4)
-        .within(() => {
-          cy.get('dt').eq(0).contains(labelSelect);
-          cy.get('dd').eq(0).contains('a');
-          cy.get('dt').eq(1).contains(labelDate);
-          cy.get('dd').eq(1).contains('12.10.2000');
-        });
     });
   });
 });
