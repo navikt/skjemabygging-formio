@@ -78,7 +78,6 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
 
   attachReact(element: any) {
     const root = createRoot(element);
-    console.log('attach ref', this.ref);
     this.renderReact(root, this.ref);
     this.setReactInstance(this.ref.current);
   }
@@ -86,7 +85,7 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
   detachReact(element) {
     if (element && this.reactInstance) {
       setTimeout(() => {
-        this.reactInstance.unmount();
+        // this.reactInstance.unmount();
         this.reactInstance = null;
       });
     }
@@ -110,7 +109,7 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
    *
    * @param element
    */
-  renderReact(_element, ref) {}
+  renderReact(_element, _ref) {}
 }
 
 export default FormioReactComponent;
