@@ -152,7 +152,6 @@ describe('Custom react components', () => {
 
         cy.findByRole('link', { name: 'Rediger dine opplysninger' }).click();
         cy.findByRole('heading', { name: 'Dine opplysninger' }).should('exist');
-        //cy.wait(500);
 
         cy.findByRole('textbox', { name: 'Fornavn' }).should('have.value', 'Storm');
         // TODO: Not the nicest way to check values from react-select. But not worth the time to debug since it will be replaced by Aksel select.
