@@ -99,16 +99,18 @@ const generateNavFormSettingsDiff = (
   }
 };
 
-const defaultPrepComponent = (comp: Component) => comp;
+const defaultMergeSchema = (comp: Component) => comp;
 const checkComponentDiff = (
   currentComponent: Component,
   publishedForm?: NavFormType,
-  prepComponent = defaultPrepComponent,
+  mergeSchema = defaultMergeSchema,
 ) => {
   if (publishedForm) {
     const publishedComponent = navFormUtils.findByNavIdOrKey(currentComponent, publishedForm.components);
-    const publishedComponentPrepped = publishedComponent ? prepComponent(publishedComponent) : publishedComponent;
-    return generateObjectDiff(publishedComponentPrepped, currentComponent);
+    const publishedComponentWithDefaultSchema = publishedComponent
+      ? mergeSchema(publishedComponent)
+      : publishedComponent;
+    return generateObjectDiff(publishedComponentWithDefaultSchema, currentComponent);
   }
   return null;
 };
@@ -116,9 +118,9 @@ const checkComponentDiff = (
 const getComponentDiff = (
   currentComponent: Component,
   publishedForm?: NavFormType,
-  prepComponent = defaultPrepComponent,
+  mergeSchema = defaultMergeSchema,
 ) => {
-  const changes = checkComponentDiff(currentComponent, publishedForm, prepComponent) || {};
+  const changes = checkComponentDiff(currentComponent, publishedForm, mergeSchema) || {};
   return createDiffSummary(changes);
 };
 
