@@ -7,31 +7,6 @@ import FormioReactComponent from '../FormioReactComponent2';
 import React from 'react';
 import getEditForm from './editForm';
 
-type TextFieldClassComponentProps = {
-  id: string;
-  defaultValue?: string;
-  refCallback?: any;
-  onChange: (event: any) => void;
-  describedBy: string;
-};
-class TextFieldClassComponent extends React.Component<TextFieldClassComponentProps> {
-  render() {
-    return (
-      <NavTextField
-        htmlSize={43}
-        id={this.props.id}
-        defaultValue={this.props.defaultValue}
-        onChange={this.props.onChange}
-        // ref={(r) => (this.input = r)}
-        ref={(r) => this.props.refCallback(r)}
-        aria-describedby={this.props.describedBy}
-        label=""
-        hideLabel
-      />
-    );
-  }
-}
-
 export default class TextField extends FormioReactComponent {
   static editForm() {
     return getEditForm();
@@ -54,12 +29,15 @@ export default class TextField extends FormioReactComponent {
 
   renderReact(element) {
     const instance: React.ReactNode = (
-      <TextFieldClassComponent
+      <NavTextField
+        htmlSize={43}
         id={`${this.component?.id}-${this.component?.key}`}
         defaultValue={this.dataForSetting || this.dataValue}
-        refCallback={(r) => this.setReactInstance(r)}
+        ref={(ref) => this.setReactInstance(ref)}
         onChange={(event) => this.updateValue(event.currentTarget.value, {})}
-        describedBy={`d-${this.component?.id}-${this.component?.key} e-${this.component?.id}-${this.component?.key}`}
+        aria-describedby={`d-${this.component?.id}-${this.component?.key} e-${this.component?.id}-${this.component?.key}`}
+        label=""
+        hideLabel
       />
     );
     // this.setReactInstance(instance);
