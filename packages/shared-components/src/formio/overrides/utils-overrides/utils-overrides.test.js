@@ -290,10 +290,6 @@ describe('utils-overrides', () => {
       expect(html).toMatchSnapshot();
     });
 
-    /**
-     * Formio.js invokes mergeSchema on component which is put on ctx object. Therefore we must do the same
-     * prior to comparing with published version to avoid misleading diff tags due to changes in a component's schema.
-     */
     describe('component has new default prop in schema', () => {
       const MERGE_SCHEMA_NEW_PROP = (comp) => ({ ...comp, newValue2: true });
 
