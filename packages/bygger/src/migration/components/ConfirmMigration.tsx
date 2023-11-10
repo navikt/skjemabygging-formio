@@ -1,5 +1,5 @@
 import { Button } from '@navikt/ds-react';
-import { makeStyles, Modal } from '@navikt/skjemadigitalisering-shared-components';
+import { ConfirmationModal, makeStyles } from '@navikt/skjemadigitalisering-shared-components';
 import { useState } from 'react';
 import { FormMigrationLogData } from '../../../types/migration';
 import FormList from './FormList';
@@ -13,11 +13,10 @@ const useStyles = makeStyles({
 interface ConfirmMigrationProps {
   selectedFormPaths: string[];
   dryRunResults: FormMigrationLogData[];
-  onConfirm: () => Promise<unknown>;
+  onConfirm: () => Promise<void> | void;
 }
 
 const ConfirmMigration = ({ selectedFormPaths, dryRunResults, onConfirm }: ConfirmMigrationProps) => {
-  const [isMigrationInProgress, setIsMigrationInProgress] = useState(false);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const styles = useStyles();
 
@@ -29,39 +28,23 @@ const ConfirmMigration = ({ selectedFormPaths, dryRunResults, onConfirm }: Confi
 
   return (
     <>
-      <Modal open={modalIsOpen} onClose={() => setModalIsOpen(false)} ariaLabel="Bekreft migrering">
+      <ConfirmationModal
+        open={modalIsOpen}
+        onClose={() => setModalIsOpen(false)}
+        onConfirm={onConfirm}
+        texts={{
+          title: 'Bekreft publisering',
+          confirm: 'Bekreft migrering',
+          cancel: 'Avbryt migrering',
+        }}
+      >
         <FormList heading={'Skjemaer som vil bli migrert'} listElements={willBeMigrated} />
         <FormList heading={'Skjemaer som ikke vil bli migrert'} listElements={willNotBeMigrated} />
         <FormList
           heading={'Skjemaer som matcher søkekriteriene, men ikke er aktuelle for migrering'}
           listElements={ineligibleForMigration}
         />
-        <ul className="list-inline">
-          <li className="list-inline-item">
-            <Button
-              variant="primary"
-              loading={isMigrationInProgress}
-              onClick={async () => {
-                setIsMigrationInProgress(true);
-                await onConfirm();
-              }}
-            >
-              Bekreft migrering
-            </Button>
-          </li>
-          <li className="list-inline-item">
-            <Button
-              variant="secondary"
-              type="button"
-              onClick={() => {
-                setModalIsOpen(false);
-              }}
-            >
-              Avbryt migrering
-            </Button>
-          </li>
-        </ul>
-      </Modal>
+      </ConfirmationModal>
       <Button variant="secondary" className={styles.button} onClick={() => setModalIsOpen(true)} type="button">
         Migrer
       </Button>

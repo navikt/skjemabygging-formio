@@ -4,9 +4,8 @@ import Modal from './Modal';
 describe('Modal', () => {
   const onClose = vi.fn();
   beforeAll(() => {
-    Modal.setAppElement(document.createElement('div'));
     render(
-      <Modal onClose={onClose} open={true} appElement={document.createElement('div')}>
+      <Modal onClose={onClose} open={true} title="Test">
         Test
       </Modal>,
     );

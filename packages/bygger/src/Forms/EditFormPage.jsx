@@ -1,5 +1,5 @@
 import { BodyShort, Button, Heading } from '@navikt/ds-react';
-import { FormBuilderOptions, makeStyles } from '@navikt/skjemadigitalisering-shared-components';
+import { FormBuilderOptions, makeStyles, useModal } from '@navikt/skjemadigitalisering-shared-components';
 import { AppLayout } from '../components/AppLayout';
 import NavFormBuilder from '../components/NavFormBuilder';
 import PrimaryButtonWithSpinner from '../components/PrimaryButtonWithSpinner';
@@ -7,7 +7,6 @@ import SkjemaVisningSelect from '../components/SkjemaVisningSelect';
 import UserFeedback from '../components/UserFeedback';
 import Column from '../components/layout/Column';
 import Row from '../components/layout/Row';
-import { useModal } from '../util/useModal';
 import beforeSaveComponentSettings from './formBuilderHooks/beforeSaveComponentSettings';
 import PublishModalComponents from './publish/PublishModalComponents';
 import FormStatusPanel from './status/FormStatusPanel';
@@ -27,7 +26,7 @@ export function EditFormPage({ form, publishedForm, onSave, onChange, onPublish,
     title,
     properties: { skjemanummer },
   } = form;
-  const [openPublishSettingModal, setOpenPublishSettingModal] = useModal(false);
+  const [openPublishSettingModal, setOpenPublishSettingModal] = useModal();
   const styles = useStyles();
   const formBuilderOptions = {
     ...FormBuilderOptions,

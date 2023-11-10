@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import ObsoleteTranslationsPanel from './ObsoleteTranslationsPanel';
 
@@ -28,8 +28,10 @@ describe('ObsoleteTranslationsPanel', () => {
     expect(panelTitle).toBeInTheDocument();
   });
 
-  it('Viser ikke detaljer før panelet er åpnet', () => {
-    const inputFields = screen.queryAllByRole('textbox');
+  it('Viser ikke detaljer før panelet er åpnet', async () => {
+    const panelTitle = screen.getByRole('button', { name: 'Antall ubrukte oversettelser: 3' });
+    await waitFor(() => panelTitle.click());
+    const inputFields = screen.getAllByRole('textbox');
     expect(inputFields[0]).toBeDisabled();
     expect(inputFields[1]).toBeDisabled();
     expect(inputFields[2]).toBeDisabled();

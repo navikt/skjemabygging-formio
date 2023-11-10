@@ -1,12 +1,9 @@
-import { Modal } from '@navikt/skjemadigitalisering-shared-components';
 import { MockedComponentObjectForTest } from '@navikt/skjemadigitalisering-shared-domain';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import PublishModalComponents from './PublishModalComponents';
 
 const { createDummyAttachment, createFormObject, createPanelObject } = MockedComponentObjectForTest;
-
-Modal.setAppElement(document.createElement('div'));
 
 const ERROR_MESSAGE_MISSING_KODE_OR_TITTEL =
   'Du må fylle ut vedleggskode og vedleggstittel for alle vedlegg før skjemaet kan publiseres.';
@@ -60,7 +57,7 @@ describe('PublishModalComponents', () => {
 
     it('no error message is rendered', () => {
       const feilmelding = screen.queryByText(ERROR_MESSAGE_MISSING_KODE_OR_TITTEL);
-      expect(feilmelding).not.toBeInTheDocument();
+      expect(feilmelding).not.toBeVisible();
     });
   });
 

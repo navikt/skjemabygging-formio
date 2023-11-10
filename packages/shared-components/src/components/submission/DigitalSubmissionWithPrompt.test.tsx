@@ -2,7 +2,6 @@ import { Submission, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { AppConfigProvider } from '../../context/config/configContext';
 import { LanguagesProvider } from '../../context/languages';
-import { Modal } from '../../index';
 import DigitalSubmissionWithPrompt from './DigitalSubmissionWithPrompt';
 
 vi.mock('../../context/languages/hooks/useLanguageCodeFromURL', () => {
@@ -10,8 +9,6 @@ vi.mock('../../context/languages/hooks/useLanguageCodeFromURL', () => {
     default: () => 'nb-NO',
   };
 });
-
-Modal.setAppElement(document.createElement('div'));
 
 describe('DigitalSubmissionWithPrompt', () => {
   const onError = vi.fn();
