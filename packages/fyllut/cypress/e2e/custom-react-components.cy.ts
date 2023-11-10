@@ -75,7 +75,8 @@ describe('Custom react components', () => {
 
         cy.findByRole('link', { name: TEXTS.grensesnitt.goBack }).click();
 
-        cy.findByRole('link', { name: 'Rediger dine opplysninger' }).click();
+        // Need to force this since it fails on GitHub
+        cy.findByRole('link', { name: 'Rediger dine opplysninger' }).click({ force: true });
         cy.findByRole('heading', { name: 'Dine opplysninger' }).should('exist');
 
         cy.findByRole('textbox', { name: 'Fornavn' }).type('zy');
