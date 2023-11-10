@@ -10,7 +10,7 @@ import getEditForm from './editForm';
 type TextFieldClassComponentProps = {
   id: string;
   defaultValue?: string;
-  customRef: any;
+  refCallback?: any;
   onChange: (event: any) => void;
   describedBy: string;
 };
@@ -23,7 +23,7 @@ class TextFieldClassComponent extends React.Component<TextFieldClassComponentPro
         defaultValue={this.props.defaultValue}
         onChange={this.props.onChange}
         // ref={(r) => (this.input = r)}
-        ref={this.props.customRef}
+        ref={(r) => this.props.refCallback(r)}
         aria-describedby={this.props.describedBy}
         label=""
         hideLabel
@@ -52,17 +52,19 @@ export default class TextField extends FormioReactComponent {
     };
   }
 
-  renderReact(element, ref) {
+  renderReact(element) {
     const instance: React.ReactNode = (
       <TextFieldClassComponent
         id={`${this.component?.id}-${this.component?.key}`}
         defaultValue={this.dataForSetting || this.dataValue}
-        customRef={ref}
+        refCallback={(r) => this.setReactInstance(r)}
         onChange={(event) => this.updateValue(event.currentTarget.value, {})}
         describedBy={`d-${this.component?.id}-${this.component?.key} e-${this.component?.id}-${this.component?.key}`}
       />
     );
+    // this.setReactInstance(instance);
     element.render(instance);
+    // this.setReactInstance(ref.current);
     return instance;
   }
 }

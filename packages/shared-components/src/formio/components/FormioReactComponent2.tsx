@@ -1,5 +1,4 @@
 import { ReactComponent } from '@formio/react';
-import { createRef } from 'react';
 import { createRoot } from 'react-dom/client';
 
 interface IReactComponent {
@@ -30,7 +29,7 @@ interface IReactComponent {
 interface ReactComponentType {
   shouldSetValue?: any;
   dataForSetting?: any;
-  reactInstance?: any;
+  reactInstance?: HTMLInputElement;
   attachReact(element, ref): any;
   detachReact(element): any;
   validate(data, dirty, rowData): boolean;
@@ -74,12 +73,11 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
     super.schema(sources);
   }
 
-  ref = createRef<HTMLInputElement>();
+  // ref = createRef<HTMLInputElement>();
 
   attachReact(element: any) {
     const root = createRoot(element);
-    this.renderReact(root, this.ref);
-    this.setReactInstance(this.ref.current);
+    this.renderReact(root);
   }
 
   detachReact(element) {
@@ -97,7 +95,18 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
   }
 
   setValue(value: any) {
-    super.setValue(value);
+    console.log('setValue', this.component?.key, value);
+    console.log('setVal reactInstance', this.reactInstance);
+    console.log('setVal shouldSetValue', this.shouldSetValue);
+    console.log('setVal dataValue', this.dataValue);
+    console.log('setVal valueForSetting', this.dataForSetting);
+    if (this.reactInstance) {
+      this.reactInstance.defaultValue = value;
+      this.shouldSetValue = false;
+    } else {
+      this.shouldSetValue = true;
+      this.dataForSetting = value;
+    }
   }
 
   getValue() {
@@ -109,7 +118,7 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
    *
    * @param element
    */
-  renderReact(_element, _ref) {}
+  renderReact(_element) {}
 }
 
 export default FormioReactComponent;
