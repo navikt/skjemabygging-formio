@@ -17,7 +17,7 @@ describe('Migration scripts', () => {
     const fnrEditOptions = { 'validate.custom': 'valid = instance.newValidateFnr(input)' };
 
     it('can update component based on type', () => {
-      const { migratedForm: actual } = migrateForm(originalForm, { type: 'fnrfield' }, {}, fnrEditOptions);
+      const { migratedForm: actual } = migrateForm(originalForm, {}, { type: 'fnrfield' }, {}, fnrEditOptions);
       expect(actual).toEqual({
         ...originalForm,
         components: [
@@ -33,6 +33,18 @@ describe('Migration scripts', () => {
       });
     });
 
+    it('does not update component based on type when form search filters do not match', () => {
+      const formSearchFiltersFromParam = { 'properties.tema': 'LOS' };
+      const { migratedForm: actual } = migrateForm(
+        originalForm,
+        formSearchFiltersFromParam,
+        { type: 'fnrfield' },
+        {},
+        fnrEditOptions,
+      );
+      expect(actual).toEqual(originalForm);
+    });
+
     it('can migrate subcomponents', () => {
       const { migratedForm: actual } = migrateForm(
         {
@@ -44,6 +56,7 @@ describe('Migration scripts', () => {
             },
           ],
         } as unknown as NavFormType,
+        {},
         { type: 'fnrfield' },
         {},
         fnrEditOptions,
@@ -85,6 +98,7 @@ describe('Migration scripts', () => {
             },
           ],
         } as unknown as NavFormType,
+        {},
         { type: 'navSkjemagruppe' },
         {},
         { modifiedByTest: true },
@@ -108,6 +122,68 @@ describe('Migration scripts', () => {
         ],
       });
     });
+
+    describe('can migrate form properties', () => {
+      it('sets prop when not exists', () => {
+        const formSearchFiltersFromParam = {
+          'properties.ettersending__n_exists': true,
+        };
+        const propsEditOptions = {
+          'properties.ettersending': 'PAPIR_OG_DIGITAL',
+        };
+
+        const original: NavFormType = {
+          ...originalForm,
+          properties: {
+            ...originalForm.properties,
+            innsending: 'KUN_DIGITAL',
+            ettersending: undefined,
+          },
+        };
+        const { migratedForm: actual } = migrateForm(
+          original,
+          formSearchFiltersFromParam,
+          {},
+          {},
+          propsEditOptions,
+          'form',
+        );
+        expect(actual).toEqual({
+          ...original,
+          properties: {
+            ...original.properties,
+            ettersending: 'PAPIR_OG_DIGITAL',
+          },
+        });
+      });
+
+      it('does not change prop which exists', () => {
+        const formSearchFiltersFromParam = {
+          'properties.ettersending__n_exists': true,
+        };
+        const propsEditOptions = {
+          'properties.ettersending': 'PAPIR_OG_DIGITAL',
+        };
+
+        const original: NavFormType = {
+          ...originalForm,
+          properties: {
+            ...originalForm.properties,
+            innsending: 'KUN_DIGITAL',
+            ettersending: 'KUN_DIGITAL',
+          },
+        };
+        const { migratedForm: actual } = migrateForm(
+          original,
+          formSearchFiltersFromParam,
+          {},
+          {},
+          propsEditOptions,
+          'form',
+        );
+        expect(actual).toEqual(original);
+      });
+    });
   });
 
   describe('migrateForms', () => {
@@ -118,18 +194,18 @@ describe('Migration scripts', () => {
     ];
 
     it('generates log only for included form paths', async () => {
-      const { log } = await migrateForms({ disabled: false }, {}, { disabled: true }, allForms, ['form1', 'form3']);
+      const { log } = await migrateForms({}, { disabled: false }, {}, { disabled: true }, allForms, ['form1', 'form3']);
       expect(Object.keys(log)).toEqual(['form1', 'form3']);
     });
 
     it('only migrates forms included by the provided formPaths', async () => {
-      const { migratedForms } = await migrateForms({ disabled: false }, {}, { disabled: true }, allForms, [
+      const { migratedForms } = await migrateForms({}, { disabled: false }, {}, { disabled: true }, allForms, [
         'form2',
         'form3',
       ]);
       expect(migratedForms).toHaveLength(2);
-      expect(migratedForms[0].path).toBe('form2');
-      expect(migratedForms[1].path).toBe('form3');
+      expect(migratedForms[0]?.path).toBe('form2');
+      expect(migratedForms[1]?.path).toBe('form3');
     });
 
     describe('When searchFilters are provided', () => {
@@ -138,6 +214,7 @@ describe('Migration scripts', () => {
 
       beforeEach(async () => {
         const migrated = await migrateForms(
+          {},
           { key__contains: 'componentWithSimpleConditional' },
           {},
           { disabled: true },
@@ -167,7 +244,7 @@ describe('Migration scripts', () => {
       let log;
       let migratedForms;
       beforeEach(async () => {
-        const migrated = await migrateForms({}, { type: 'radio' }, { disabled: true }, [
+        const migrated = await migrateForms({}, {}, { type: 'radio' }, { disabled: true }, [
           formWithSimpleConditionalToRadio, // match on dependencyFilters
           formWithAdvancedConditionalToRadio, // match on dependencyFilters
           formWithSimpleConditionalToCheckbox, // no match
@@ -194,6 +271,7 @@ describe('Migration scripts', () => {
 
       beforeEach(async () => {
         const migrated = await migrateForms(
+          {},
           { key__contains: 'componentWithSimpleConditional' },
           { type: 'radio' },
           { disabled: true },
@@ -221,7 +299,7 @@ describe('Migration scripts', () => {
       let migratedForms;
 
       beforeEach(async () => {
-        const migrated = await migrateForms({}, {}, { disabled: true }, [
+        const migrated = await migrateForms({}, {}, {}, { disabled: true }, [
           formWithSimpleConditionalToRadio,
           formWithAdvancedConditionalToRadio,
           formWithSimpleConditionalToCheckbox,
@@ -244,6 +322,63 @@ describe('Migration scripts', () => {
           expect.objectContaining({ path: 'formWithAdvancedConditionalToRadio' }),
           expect.objectContaining({ path: 'formWithSimpleConditionalToCheckbox' }),
         ]);
+      });
+    });
+
+    describe('When migration level is form', () => {
+      it('only generates log with forms where props were migrated', async () => {
+        const formSearchFiltersFromParam = {
+          'properties.ettersending__n_exists': true,
+        };
+        const propsEditOptions = {
+          'properties.ettersending': 'PAPIR_OG_DIGITAL',
+        };
+
+        const originalForm1: NavFormType = {
+          ...originalForm,
+          properties: {
+            ...originalForm.properties,
+            skjemanummer: 'Form1',
+            innsending: 'KUN_DIGITAL',
+            ettersending: undefined,
+          },
+        };
+
+        const originalForm2: NavFormType = {
+          ...originalForm,
+          properties: {
+            ...originalForm.properties,
+            skjemanummer: 'Form2',
+            innsending: 'KUN_DIGITAL',
+            ettersending: 'KUN_DIGITAL',
+          },
+        };
+        const { migratedForms, log } = await migrateForms(
+          formSearchFiltersFromParam,
+          {},
+          {},
+          propsEditOptions,
+          [originalForm1, originalForm2],
+          [],
+          'form',
+        );
+        expect(migratedForms).toHaveLength(1);
+        const logElement1 = log[originalForm1.properties.skjemanummer];
+        expect(logElement1).toEqual(
+          expect.objectContaining({
+            found: 1,
+            changed: 1,
+            skjemanummer: 'Form1',
+            diff: [
+              {
+                properties: {
+                  ettersending_NEW: 'PAPIR_OG_DIGITAL',
+                  ettersending_ORIGINAL: undefined,
+                },
+              },
+            ],
+          }),
+        );
       });
     });
   });

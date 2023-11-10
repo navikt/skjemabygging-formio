@@ -6,9 +6,9 @@ on:
     branches:
       - master
     paths:
-      - 'packages/bygger/.nais/alerts.yaml'
-      - 'packages/bygger/.nais/preprod.yaml'
-      - 'packages/bygger/.nais/prod.yaml'
+      - '.nais/bygger/alerts.yaml'
+      - '.nais/bygger/preprod.yaml'
+      - '.nais/bygger/prod.yaml'
       - '.github/workflows/alert-deploy.yaml'
 jobs:
   preprod-deploy:
@@ -22,8 +22,8 @@ jobs:
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: dev-gcp
-          RESOURCE: './packages/bygger/.nais/alerts.yaml'
-          VARS: './packages/bygger/.nais/preprod.yaml'
+          RESOURCE: './.nais/bygger/alerts.yaml'
+          VARS: './.nais/bygger/preprod.yaml'
 
   prod-deploy:
     name: Deploy to prod
@@ -36,5 +36,5 @@ jobs:
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: prod-gcp
-          RESOURCE: './packages/bygger/.nais/alerts.yaml'
-          VARS: './packages/bygger/.nais/prod.yaml'
+          RESOURCE: './.nais/bygger/alerts.yaml'
+          VARS: './.nais/bygger/prod.yaml'

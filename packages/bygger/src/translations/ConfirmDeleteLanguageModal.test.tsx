@@ -1,8 +1,5 @@
-import { Modal } from '@navikt/skjemadigitalisering-shared-components';
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import ConfirmDeleteLanguageModal from './ConfirmDeleteLanguageModal';
-
-Modal.setAppElement(document.createElement('div'));
 
 describe('ConfirmDeleteLanguageModal', () => {
   const mockedCloseModal = vi.fn();
@@ -22,11 +19,12 @@ describe('ConfirmDeleteLanguageModal', () => {
 
   beforeEach(() => {
     renderModal();
+    vi.clearAllMocks();
   });
 
   describe("When 'Slett språk' is clicked", () => {
-    it('calls onConfirm', () => {
-      screen.getByRole('button', { name: 'Slett språk' }).click();
+    it('calls onConfirm', async () => {
+      await waitFor(() => screen.getByRole('button', { name: 'Slett språk' }).click());
       expect(mockedOnConfirm).toHaveBeenCalledTimes(1);
     });
   });

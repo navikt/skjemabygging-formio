@@ -61,9 +61,14 @@ const originalFodselsnummerComponent = {
   tableView: true,
 };
 
-const originalForm = {
-  path: 'test-form',
+const originalForm: NavFormType = {
+  path: 'testform',
   components: [originalFodselsnummerComponent, originalTextFieldComponent],
+  properties: {
+    skjemanummer: 'Test Form',
+    tema: 'BIL',
+    innsending: 'KUN_DIGITAL',
+  },
 } as NavFormType;
 
 const radioComponent = {

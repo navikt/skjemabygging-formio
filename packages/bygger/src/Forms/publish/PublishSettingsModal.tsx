@@ -1,5 +1,5 @@
-import { Alert, Button, Checkbox, CheckboxGroup, Heading, Panel } from '@navikt/ds-react';
-import { Modal, makeStyles } from '@navikt/skjemadigitalisering-shared-components';
+import { Alert, Checkbox, CheckboxGroup, Heading } from '@navikt/ds-react';
+import { ConfirmationModal, makeStyles } from '@navikt/skjemadigitalisering-shared-components';
 import { FormPropertiesType, I18nTranslations, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useState } from 'react';
 import { languagesInNorwegian, useI18nState } from '../../context/i18n';
@@ -9,33 +9,25 @@ import { allLanguagesInNorwegian } from '../status/PublishedLanguages';
 import Timestamp from '../status/Timestamp';
 import { useStatusStyles } from '../status/styles';
 
-const useModalStyles = makeStyles({
-  modal_button: {
-    float: 'right',
-    margin: '1rem',
+const useStatusPanelStyles = makeStyles({
+  table: {
+    width: '100%',
+    marginBottom: '2rem',
+    '& td': {
+      paddingRight: 'var(--a-spacing-3)',
+    },
   },
   languageList: {
     margin: 0,
-  },
-});
-
-const useStatusPanelStyles = makeStyles({
-  panel: {
-    display: 'flex',
-    padding: '0 0.5rem',
-    margin: '2rem 0',
-    backgroundColor: 'var(--navds-semantic-color-canvas-background)',
-  },
-  table: {
-    width: '100%',
+    paddingLeft: 'var(--a-spacing-5)',
   },
 });
 
 interface Props {
   form: NavFormType;
-  openModal: boolean;
-  closeModal: () => void;
-  onPublish: (languageCodes: string[]) => void;
+  open: boolean;
+  onClose: () => void;
+  onConfirm: (languageCodes: string[]) => void;
 }
 
 export const getCompleteTranslationLanguageCodeList = (
@@ -59,8 +51,7 @@ export const getCompleteTranslationLanguageCodeList = (
   return completeTranslationList;
 };
 
-const PublishSettingsModal = ({ openModal, closeModal, onPublish, form }: Props) => {
-  const styles = useModalStyles();
+const PublishSettingsModal = ({ open, onClose, onConfirm, form }: Props) => {
   const { translationsForNavForm } = useI18nState();
   const [allFormOriginalTexts, setAllFormOriginalTexts] = useState<string[]>([]);
   const [completeTranslationLanguageCodeList, setCompleteTranslationLanguageCodeList] = useState<string[]>([]);
@@ -85,43 +76,41 @@ const PublishSettingsModal = ({ openModal, closeModal, onPublish, form }: Props)
     const statusPanelStyles = useStatusPanelStyles();
     const statusStyles = useStatusStyles({});
     return (
-      <Panel className={statusPanelStyles.panel}>
-        <table className={statusPanelStyles.table}>
-          <thead>
-            <tr>
-              <th>Status</th>
-              <th>Publiserte språk</th>
-              <th>Sist lagret</th>
-              <th>Sist publisert</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>
-                <FormStatus status={determineStatus(formProperties)} size="large" />
-              </td>
-              <td>
-                {formProperties.published && (
-                  <ul className={styles.languageList}>
-                    <li>{allLanguagesInNorwegian['nb-NO']}</li>
-                    {formProperties.publishedLanguages?.map((languageCode) => (
-                      <li key={languageCode}>{languagesInNorwegian[languageCode]}</li>
-                    ))}
-                  </ul>
-                )}
-              </td>
-              <td>
-                <Timestamp timestamp={formProperties.modified} />
-                <p className={statusStyles.rowText}>{formProperties.modifiedBy}</p>
-              </td>
-              <td>
-                <Timestamp timestamp={formProperties.published} />
-                <p className={statusStyles.rowText}>{formProperties.publishedBy}</p>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </Panel>
+      <table className={statusPanelStyles.table}>
+        <thead>
+          <tr>
+            <th>Status</th>
+            <th>Publiserte språk</th>
+            <th>Sist lagret</th>
+            <th>Sist publisert</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <FormStatus status={determineStatus(formProperties)} size="large" />
+            </td>
+            <td>
+              {formProperties.published && (
+                <ul className={statusPanelStyles.languageList}>
+                  <li>{allLanguagesInNorwegian['nb-NO']}</li>
+                  {formProperties.publishedLanguages?.map((languageCode) => (
+                    <li key={languageCode}>{languagesInNorwegian[languageCode]}</li>
+                  ))}
+                </ul>
+              )}
+            </td>
+            <td>
+              <Timestamp timestamp={formProperties.modified} />
+              <p className={statusStyles.rowText}>{formProperties.modifiedBy}</p>
+            </td>
+            <td>
+              <Timestamp timestamp={formProperties.published} />
+              <p className={statusStyles.rowText}>{formProperties.publishedBy}</p>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     );
   };
 
@@ -139,7 +128,17 @@ const PublishSettingsModal = ({ openModal, closeModal, onPublish, form }: Props)
   const isPreviouslyPublished = (languageCode: string) => form.properties.publishedLanguages?.includes(languageCode);
 
   return (
-    <Modal open={openModal} onClose={closeModal} title="Publiseringsinnstillinger">
+    <ConfirmationModal
+      open={open}
+      onClose={onClose}
+      onConfirm={() =>
+        onConfirm(completeTranslationLanguageCodeList.filter((languageCode) => checkedLanguages.includes(languageCode)))
+      }
+      texts={{
+        title: 'Publiseringsinnstillinger',
+        confirm: 'Publiser',
+      }}
+    >
       <PublishStatusPanel formProperties={form.properties} />
       <Heading level="2" size="medium">
         Hvilke språkversjoner skal publiseres?
@@ -173,18 +172,7 @@ const PublishSettingsModal = ({ openModal, closeModal, onPublish, form }: Props)
             </Alert>
           ),
       )}
-
-      <Button
-        className={styles.modal_button}
-        onClick={() =>
-          onPublish(
-            completeTranslationLanguageCodeList.filter((languageCode) => checkedLanguages.includes(languageCode)),
-          )
-        }
-      >
-        Publiser
-      </Button>
-    </Modal>
+    </ConfirmationModal>
   );
 };
 

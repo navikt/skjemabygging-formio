@@ -10,6 +10,12 @@ export interface SendInnSoknadResponse {
   endretDato: string;
 }
 
+export interface RedirectResponse {
+  redirectUrl: string;
+}
+
+export const isRedirectResponse = (response: any): response is RedirectResponse => 'redirectUrl' in response;
+
 export const getSoknad = async (
   innsendingsId: string,
   appConfig: AppConfigContextType,
@@ -24,20 +30,19 @@ export const createSoknad = async (
   submission: Submission,
   language: string,
   translation: I18nTranslationMap = {},
-): Promise<SendInnSoknadResponse | undefined> => {
+  forceMellomlagring?: boolean,
+): Promise<SendInnSoknadResponse | RedirectResponse | undefined> => {
   const { http, baseUrl, submissionMethod } = appConfig;
-  return http?.post<SendInnSoknadResponse>(
-    `${baseUrl}/api/send-inn/soknad?opprettNySoknad=true`,
-    {
-      form,
-      submission,
-      language,
-      translation,
-      submissionMethod,
-    },
-    {},
-    { redirectToLocation: false },
-  );
+  const url = forceMellomlagring
+    ? `${baseUrl}/api/send-inn/soknad?forceMellomlagring=true`
+    : `${baseUrl}/api/send-inn/soknad`;
+  return http?.post<SendInnSoknadResponse>(url, {
+    form,
+    submission,
+    language,
+    translation,
+    submissionMethod,
+  });
 };
 
 export const updateSoknad = async (
@@ -50,19 +55,14 @@ export const updateSoknad = async (
 ): Promise<SendInnSoknadResponse | undefined> => {
   const { http, baseUrl, submissionMethod, logger } = appConfig;
   if (innsendingsId) {
-    return http?.put<SendInnSoknadResponse>(
-      `${baseUrl}/api/send-inn/soknad`,
-      {
-        innsendingsId,
-        form,
-        submission,
-        language,
-        translation,
-        submissionMethod,
-      },
-      {},
-      { redirectToLocation: false },
-    );
+    return http?.put<SendInnSoknadResponse>(`${baseUrl}/api/send-inn/soknad`, {
+      innsendingsId,
+      form,
+      submission,
+      language,
+      translation,
+      submissionMethod,
+    });
   } else {
     logger?.info('Kunne ikke mellomlagre søknaden fordi innsendingsId mangler');
   }

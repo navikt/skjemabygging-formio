@@ -1,7 +1,6 @@
+import { ConfirmationModal, useModal } from '@navikt/skjemadigitalisering-shared-components';
 import { navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useState } from 'react';
-import UserMessageModal, { useUserMessage } from '../../components/UserMessageModal';
-import { useModal } from '../../util/useModal';
 import ConfirmPublishModal from './ConfirmPublishModal';
 import PublishSettingsModal from './PublishSettingsModal';
 
@@ -12,9 +11,9 @@ const validateAttachments = (form) =>
     .every((comp) => comp.properties?.vedleggskode && comp.properties?.vedleggstittel);
 
 const PublishModalComponents = ({ form, onPublish, openPublishSettingModal, setOpenPublishSettingModal }) => {
-  const [openPublishSettingModalValidated, setOpenPublishSettingModalValidated] = useModal(false);
-  const [openConfirmPublishModal, setOpenConfirmPublishModal] = useModal(false);
-  const [userMessage, showUserMessage, closeUserMessageModal] = useUserMessage();
+  const [openPublishSettingModalValidated, setOpenPublishSettingModalValidated] = useModal();
+  const [openConfirmPublishModal, setOpenConfirmPublishModal] = useModal();
+  const [userMessageModal, setUserMessageModal] = useModal();
   const [selectedLanguageCodeList, setSelectedLanguageCodeList] = useState<string[]>([]);
 
   useEffect(() => {
@@ -24,33 +23,47 @@ const PublishModalComponents = ({ form, onPublish, openPublishSettingModal, setO
         setOpenPublishSettingModalValidated(true);
       } else {
         setOpenPublishSettingModal(false);
-        showUserMessage('Du må fylle ut vedleggskode og vedleggstittel for alle vedlegg før skjemaet kan publiseres.');
+        setUserMessageModal(true);
       }
     } else {
       setOpenPublishSettingModalValidated(false);
     }
-  }, [openPublishSettingModal, form, setOpenPublishSettingModalValidated, setOpenPublishSettingModal, showUserMessage]);
+  }, [
+    openPublishSettingModal,
+    form,
+    setOpenPublishSettingModalValidated,
+    setOpenPublishSettingModal,
+    setUserMessageModal,
+  ]);
 
   return (
     <>
       <PublishSettingsModal
-        openModal={openPublishSettingModalValidated}
-        closeModal={() => setOpenPublishSettingModal(false)}
-        onPublish={(languageCodes) => {
-          setOpenPublishSettingModal(false);
+        open={openPublishSettingModalValidated}
+        onClose={() => setOpenPublishSettingModal(false)}
+        onConfirm={(languageCodes) => {
           setOpenConfirmPublishModal(true);
           setSelectedLanguageCodeList(languageCodes);
         }}
         form={form}
       />
       <ConfirmPublishModal
-        openModal={openConfirmPublishModal}
-        closeModal={() => setOpenConfirmPublishModal(false)}
+        open={openConfirmPublishModal}
+        onClose={() => setOpenConfirmPublishModal(false)}
         form={form}
         onPublish={onPublish}
         publishLanguageCodeList={selectedLanguageCodeList}
       />
-      <UserMessageModal userMessage={userMessage} closeModal={closeUserMessageModal} />
+      <ConfirmationModal
+        open={userMessageModal}
+        onClose={() => setUserMessageModal(false)}
+        onConfirm={() => setUserMessageModal(false)}
+        texts={{
+          title: 'Brukermelding',
+          confirm: 'Ok',
+          body: 'Du må fylle ut vedleggskode og vedleggstittel for alle vedlegg før skjemaet kan publiseres.',
+        }}
+      />
     </>
   );
 };

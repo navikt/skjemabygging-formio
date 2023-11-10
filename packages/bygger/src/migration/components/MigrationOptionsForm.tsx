@@ -9,7 +9,7 @@ const getStyles = makeStyles({
   },
 });
 
-export type TestId = 'search-filters' | 'dependency-filters' | 'edit-options';
+export type TestId = 'form-search-filters' | 'search-filters' | 'dependency-filters' | 'edit-options';
 interface MigrationOptionsFormProps {
   title: string;
   addRowText: string;

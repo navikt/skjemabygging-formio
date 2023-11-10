@@ -30,6 +30,8 @@ const sendInnConfig: SendInnConfig = {
   host: process.env.SEND_INN_HOST!,
   tokenxClientId: process.env.SEND_INN_TOKEN_X_CLIENT_ID!,
   paths: {
+    opprettedeSoknaderForSkjema: (skjemanummer, soknadstyper = ['soknad', 'ettersendelse']) =>
+      `/frontend/v1/skjema/${skjemanummer}/soknader?soknadstyper=${soknadstyper.toString()}`,
     leggTilVedlegg: '/fyllUt/v1/leggTilVedlegg', //Deprecated
     soknad: '/fyllUt/v1/soknad',
     utfyltSoknad: '/fyllUt/v1/utfyltSoknad',

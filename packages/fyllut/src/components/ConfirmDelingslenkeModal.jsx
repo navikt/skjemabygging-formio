@@ -1,5 +1,4 @@
-import { BodyShort, Button } from '@navikt/ds-react';
-import { Modal } from '@navikt/skjemadigitalisering-shared-components';
+import { ConfirmationModal } from '@navikt/skjemadigitalisering-shared-components';
 import { useState } from 'react';
 
 const ConfirmDelingslenkeModal = () => {
@@ -8,18 +7,16 @@ const ConfirmDelingslenkeModal = () => {
   const onClose = () => setOpen(false);
 
   return (
-    <Modal
+    <ConfirmationModal
       open={open}
       onClose={onClose}
-      shouldCloseOnOverlayClick={false}
-      ariaLabel="Forhåndsvisningsadvarsel"
-      title="Forhåndsvisning"
-    >
-      <BodyShort className="mb">
-        Dette er kun en forhåndsvisning av skjemaet og skal IKKE brukes til å sende søknader til NAV.
-      </BodyShort>
-      <Button onClick={onClose}>OK</Button>
-    </Modal>
+      onConfirm={onClose}
+      texts={{
+        title: 'Forhåndsvisning',
+        body: 'Dette er kun en forhåndsvisning av skjemaet og skal IKKE brukes til å sende søknader til NAV.',
+        confirm: 'Ok',
+      }}
+    />
   );
 };
 

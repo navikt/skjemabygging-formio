@@ -7,6 +7,8 @@ import ErrorPage from './components/error/page/ErrorPage';
 import LanguageSelector from './components/language-selector/LanguageSelector';
 import LoadingComponent from './components/loading/LoadingComponent';
 import Modal from './components/modal/Modal';
+import ConfirmationModal from './components/modal/confirmation/ConfirmationModal';
+import useModal from './components/modal/useModal';
 import NavForm from './components/nav-form/NavForm';
 import AmplitudeProvider from './context/amplitude';
 import { AppConfigProvider, useAppConfig } from './context/config/configContext';
@@ -31,6 +33,7 @@ jss.setup(preset());
 export {
   AmplitudeProvider,
   AppConfigProvider,
+  ConfirmationModal,
   ErrorPage,
   FormBuilderOptions,
   FormBuilderSchemas,
@@ -54,5 +57,6 @@ export {
   useCurrentLanguage,
   useLanguageCodeFromURL,
   useLanguages,
+  useModal,
 };
 export type { FetchHeader, FetchOptions };

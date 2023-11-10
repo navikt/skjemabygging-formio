@@ -7,7 +7,6 @@ import { defaultFormWithAttachment } from '../../../../test/test-data/form/data'
 import { Buttons, formWithProperties, getButtons } from '../../../../test/util/helpers';
 import { AppConfigContextType, AppConfigProvider } from '../../../context/config/configContext';
 import { SendInnProvider } from '../../../context/sendInn/sendInnContext';
-import { Modal } from '../../../index';
 import SummaryPageNavigation, { Props } from './SummaryPageNavigation';
 
 vi.mock('react-router-dom', async () => {
@@ -21,8 +20,6 @@ vi.mock('react-router-dom', async () => {
 vi.mock('../../../context/languages', () => ({
   useLanguages: () => ({ translate: (text) => text }),
 }));
-
-Modal.setAppElement(document.createElement('div'));
 
 const originalWindowLocation = window.location;
 const isValid = vi.fn().mockReturnValue(true);

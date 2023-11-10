@@ -1,4 +1,3 @@
-import { Modal } from '@navikt/skjemadigitalisering-shared-components';
 import { Operator } from '@navikt/skjemadigitalisering-shared-domain';
 import { fireEvent, getAllByLabelText, render, screen, waitFor, within } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
@@ -7,8 +6,6 @@ import FeedbackProvider from '../context/notifications/FeedbackContext';
 import MigrationPage from './MigrationPage';
 import { TestId } from './components/MigrationOptionsForm';
 import { migrationOptionsAsMap } from './utils';
-
-Modal.setAppElement(document.createElement('div'));
 
 describe('MigrationPage', () => {
   let fetchSpy;
@@ -89,7 +86,10 @@ describe('MigrationPage', () => {
       fireEvent.click(screen.getByRole('button', { name: 'Simuler og kontroller migrering' }));
       await waitFor(() => expect(fetchSpy).toHaveBeenCalled());
       expect(fetchSpy).toHaveBeenCalledTimes(1);
-      expect(fetchSpy).toHaveBeenCalledWith('/api/migrate?searchFilters={"searchFilter1":true}', expectedGetOptions);
+      expect(fetchSpy).toHaveBeenCalledWith(
+        '/api/migrate?searchFilters={"searchFilter1":true}&migrationLevel=component',
+        expectedGetOptions,
+      );
     });
 
     it('performs a search with several search filters', async () => {
@@ -102,7 +102,7 @@ describe('MigrationPage', () => {
       await waitFor(() => expect(fetchSpy).toHaveBeenCalled());
       expect(fetchSpy).toHaveBeenCalledTimes(1);
       expect(fetchSpy).toHaveBeenCalledWith(
-        '/api/migrate?searchFilters={"prop1":true,"prop2":99,"prop3":false}',
+        '/api/migrate?searchFilters={"prop1":true,"prop2":99,"prop3":false}&migrationLevel=component',
         expectedGetOptions,
       );
     });
@@ -117,7 +117,7 @@ describe('MigrationPage', () => {
       await waitFor(() => expect(fetchSpy).toHaveBeenCalled());
       expect(fetchSpy).toHaveBeenCalledTimes(1);
       expect(fetchSpy).toHaveBeenCalledWith(
-        '/api/migrate?searchFilters={"prop1__n_eq":"hello","prop2":"world!","prop3":true}',
+        '/api/migrate?searchFilters={"prop1__n_eq":"hello","prop2":"world!","prop3":true}&migrationLevel=component',
         expectedGetOptions,
       );
     });
@@ -133,7 +133,7 @@ describe('MigrationPage', () => {
       await waitFor(() => expect(fetchSpy).toHaveBeenCalled());
       expect(fetchSpy).toHaveBeenCalledTimes(1);
       expect(fetchSpy).toHaveBeenCalledWith(
-        '/api/migrate?searchFilters={"prop1":false}&editOptions={"prop1":true,"prop2":99,"prop3":false}',
+        '/api/migrate?searchFilters={"prop1":false}&editOptions={"prop1":true,"prop2":99,"prop3":false}&migrationLevel=component',
         expectedGetOptions,
       );
     });
@@ -147,7 +147,24 @@ describe('MigrationPage', () => {
       await waitFor(() => expect(fetchSpy).toHaveBeenCalled());
       expect(fetchSpy).toHaveBeenCalledTimes(1);
       expect(fetchSpy).toHaveBeenCalledWith(
-        '/api/migrate?searchFilters={"prop1":true}&editOptions={"prop1":false,"prop2":"new value"}',
+        '/api/migrate?searchFilters={"prop1":true}&editOptions={"prop1":false,"prop2":"new value"}&migrationLevel=component',
+        expectedGetOptions,
+      );
+    });
+
+    it('performs a migration dryrun with form search filters and edit options', async () => {
+      fireEvent.click(
+        within(screen.getByRole('radiogroup', { name: 'Migreringsnivå' })).getByRole('radio', { name: 'Skjema' }),
+      );
+      setMigrateOptionInput('form-search-filters', 0, 'properties.tema', 'BIL');
+      setMigrateOptionInput('edit-options', 0, 'properties.innsending', 'PAPIR_OG_DIGITAL');
+      clickAddButton('edit-options');
+      setMigrateOptionInput('edit-options', 1, 'prop2', 'new value');
+      fireEvent.click(screen.getByRole('button', { name: 'Simuler og kontroller migrering' }));
+      await waitFor(() => expect(fetchSpy).toHaveBeenCalled());
+      expect(fetchSpy).toHaveBeenCalledTimes(1);
+      expect(fetchSpy).toHaveBeenCalledWith(
+        '/api/migrate?formSearchFilters={"properties.tema":"BIL"}&editOptions={"properties.innsending":"PAPIR_OG_DIGITAL","prop2":"new value"}&migrationLevel=form',
         expectedGetOptions,
       );
     });
@@ -169,7 +186,7 @@ describe('MigrationPage', () => {
     describe('Preview button', () => {
       it('is rendered for each form', () => {
         const previewLinks = screen.getAllByRole('link', { name: 'Forhåndsvis' });
-        const actualSearchParams = '?searchFilters={"prop1":true}&editOptions={"prop1":false}';
+        const actualSearchParams = '?searchFilters={"prop1":true}&editOptions={"prop1":false}&migrationLevel=component';
         expect(previewLinks).toHaveLength(3);
         expect(previewLinks[0]).toHaveAttribute('href', `/migrering/forhandsvis/form3${actualSearchParams}`);
         expect(previewLinks[1]).toHaveAttribute('href', `/migrering/forhandsvis/form1${actualSearchParams}`);
@@ -215,9 +232,11 @@ describe('MigrationPage', () => {
         expect(fetchSpy).toHaveBeenCalledWith('/api/migrate/update', {
           body: JSON.stringify({
             payload: {
+              formSearchFilters: {},
               searchFilters: { prop1: true },
               dependencyFilters: {},
               editOptions: { prop1: false },
+              migrationLevel: 'component',
               include: ['form3'],
             },
           }),

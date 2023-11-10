@@ -3,6 +3,7 @@ import { config as appConfig } from '../../config/config';
 import { rateLimiter } from '../../middleware/ratelimit';
 import tryCatch from '../../middleware/tryCatch';
 import idportenAuthHandler from '../../security/idportenAuthHandler';
+import activeTasks from './active-tasks';
 import { initApiConfig } from './api-helper';
 import commonCodes from './common-codes';
 import config from './config';
@@ -37,6 +38,7 @@ apiRouter.post('/foersteside', azureSkjemabyggingProxy, forsteside.post);
 apiRouter.get('/global-translations/:languageCode', tryCatch(globalTranslations.get));
 apiRouter.get('/translations/:form', tryCatch(translations.get));
 apiRouter.get('/mottaksadresser', tryCatch(mottaksadresser.get));
+apiRouter.get('/send-inn/aktive-opprettede-soknader/:skjemanummer', tokenxSendInn, tryCatch(activeTasks.get));
 // endpoint /send-inn is deprecated and will be replaced by /send-inn/soknad and /send-inn/utfyltsoknad when mellomlagring is turned on
 apiRouter.post('/send-inn', azureSkjemabyggingProxy, tokenxSendInn, sendInn.post);
 apiRouter.get('/send-inn/soknad/:innsendingsId', tokenxSendInn, sendInnSoknad.get);
