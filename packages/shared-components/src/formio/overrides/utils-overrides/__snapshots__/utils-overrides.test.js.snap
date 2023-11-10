@@ -27,3 +27,5 @@ exports[`utils-overrides > navFormDiffToHtml > generates html list with deleted 
 exports[`utils-overrides > navFormDiffToHtml > generates nested html list with deleted datagrid and its components 1`] = `"<span id=\\"nav-form-diff-deleted-elements\\" class=\\"navds-body-short font-bold\\">Slettede elementer</span><ul aria-labelledby=\\"nav-form-diff-deleted-elements\\"><li>datagrid: Dine hunder<ul><li>textfield: Navn</li><li>textfield: Rase</li></ul></li></ul>"`;
 
 exports[`utils-overrides > navFormDiffToHtml > handles failure when diffSummary is of unexpected type 1`] = `"<span>Det oppstod dessverre en feil under behandling av endringene i dette skjemaet.</span>"`;
+
+exports[`utils-overrides > navFormDiffToHtml > ignores props whos value changes from undefined to falsy 1`] = `"<span id=\\"nav-form-diff-changed-elements\\" class=\\"navds-body-short font-bold\\">Endringer</span><ul aria-labelledby=\\"nav-form-diff-changed-elements\\"><li>label: Fra 'WIP' til 'Svar ja eller nei?'</li></ul>"`;

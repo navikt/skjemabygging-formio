@@ -131,6 +131,44 @@ describe('utils-overrides', () => {
       const html = UtilsOverrides.navFormDiffToHtml(diffSummary);
       expect(html).toMatchSnapshot();
     });
+    it('ignores props whos value changes from undefined to falsy', () => {
+      const changes = {
+        status: 'Endring',
+        diff: {
+          label: {
+            status: 'Endring',
+            originalValue: 'WIP',
+            value: 'Svar ja eller nei?',
+          },
+          validate: {
+            status: 'Endring',
+            diff: {
+              customMessage: {
+                status: 'Ny',
+                value: '',
+              },
+              json: {
+                status: 'Ny',
+                value: '',
+              },
+            },
+          },
+          defaultValue: {
+            status: 'Ny',
+            value: '',
+          },
+          additionalDescription: {
+            status: 'Ny',
+            value: false,
+          },
+        },
+        key: 'svarJaEllerNei',
+        type: 'radiopanel',
+      };
+      const diffSummary = formDiffingTool.createDiffSummary(changes);
+      const html = UtilsOverrides.navFormDiffToHtml(diffSummary);
+      expect(html).toMatchSnapshot();
+    });
 
     it('generates html list with deleted radiopanel from panel', () => {
       const diffSummary = formDiffingTool.createDiffSummary(panelDiffDeletedRadiopanel);
