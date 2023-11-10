@@ -1,8 +1,34 @@
 // import { ReactComponent } from '@formio/react';
 import { TextField as NavTextField } from '@navikt/ds-react';
 import FormBuilderOptions from '../../form-builder-options';
-import FormioReactComponent from '../FormioReactComponent';
+// import FormioReactComponent from '../FormioReactComponent';
+import FormioReactComponent from '../FormioReactComponent2';
+
+import React from 'react';
 import getEditForm from './editForm';
+
+type TextFieldClassComponentProps = {
+  id: string;
+  defaultValue?: string;
+  onChange: (event: any) => void;
+  describedBy: string;
+};
+class TextFieldClassComponent extends React.Component<TextFieldClassComponentProps> {
+  render() {
+    return (
+      <NavTextField
+        htmlSize={43}
+        id={this.props.id}
+        defaultValue={this.props.defaultValue}
+        onChange={this.props.onChange}
+        // ref={(r) => (this.input = r)}
+        aria-describedby={this.props.describedBy}
+        label=""
+        hideLabel
+      />
+    );
+  }
+}
 
 export default class TextField extends FormioReactComponent {
   static editForm() {
@@ -25,17 +51,15 @@ export default class TextField extends FormioReactComponent {
   }
 
   renderReact(element) {
-    return element.render(
-      <NavTextField
-        htmlSize={43}
+    const instance: React.ReactNode = (
+      <TextFieldClassComponent
         id={`${this.component?.id}-${this.component?.key}`}
         defaultValue={this.dataForSetting || this.dataValue}
         onChange={(event) => this.updateValue(event.currentTarget.value, {})}
-        ref={(r) => (this.input = r)}
-        aria-describedby={`d-${this.component?.id}-${this.component?.key} e-${this.component?.id}-${this.component?.key}`}
-        label=""
-        hideLabel
-      />,
+        describedBy={`d-${this.component?.id}-${this.component?.key} e-${this.component?.id}-${this.component?.key}`}
+      />
     );
+    this.setReactInstance(instance);
+    element.render(instance);
   }
 }
