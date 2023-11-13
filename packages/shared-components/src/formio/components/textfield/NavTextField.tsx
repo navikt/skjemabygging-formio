@@ -27,6 +27,10 @@ export default class TextField extends FormioReactComponent {
     };
   }
 
+  setValue(value: any) {
+    super.setValue(value ?? '');
+  }
+
   renderReact(element) {
     const instance: React.ReactNode = (
       <NavTextField
