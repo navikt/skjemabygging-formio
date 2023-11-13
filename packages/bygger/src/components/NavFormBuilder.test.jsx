@@ -17,6 +17,10 @@ const findClosestWithAttribute = (element, { name, value }) => {
 
 const BUILDER_COMP_TESTID_ATTR = { name: 'data-testid', value: 'builder-component' };
 
+const DEFAULT_FORM_BUILDER_OPTIONS = {
+  formConfig: {},
+};
+
 describe('NavFormBuilder', () => {
   beforeAll(() => {
     new NavFormioJs.Formio(DEFAULT_PROJECT_URL);
@@ -31,11 +35,20 @@ describe('NavFormBuilder', () => {
   describe('A form with conditional dependencies', () => {
     let onChangeMock;
     let onReadyMock;
+    let rerender;
 
     beforeEach(async () => {
       onChangeMock = vi.fn();
       onReadyMock = vi.fn();
-      render(<NavFormBuilder form={testform} onChange={onChangeMock} onReady={onReadyMock} />);
+      const { rerender: outRerender } = render(
+        <NavFormBuilder
+          form={testform}
+          onChange={onChangeMock}
+          onReady={onReadyMock}
+          formBuilderOptions={DEFAULT_FORM_BUILDER_OPTIONS}
+        />,
+      );
+      rerender = outRerender;
       await waitFor(() => expect(onReadyMock.mock.calls).toHaveLength(1));
       onChangeMock.mockReset();
     });
@@ -47,7 +60,7 @@ describe('NavFormBuilder', () => {
     it('adds another page', async () => {
       const leggTilNyttStegKnapp = await screen.findByRole('button', { name: 'Legg til nytt steg' });
       await userEvent.click(leggTilNyttStegKnapp);
-      expect(await screen.findByRole('link', { name: 'Page 2' })).toBeTruthy();
+      expect(await screen.findByRole('link', { name: 'Page 3' })).toBeTruthy();
       await waitFor(() => expect(onChangeMock.mock.calls).toHaveLength(1));
     }, 10000);
 
@@ -114,13 +127,70 @@ describe('NavFormBuilder', () => {
         expect(screen.queryByRole('group', { name: /Your favorite time of the year/ })).not.toBeInTheDocument();
         await waitFor(() => expect(onChangeMock.mock.calls).toHaveLength(1));
 
-        expect(window.confirm.mock.calls).toHaveLength(2);
+        expect(window.confirm.mock.calls).toHaveLength(1);
         expect(window.confirm.mock.calls[0][0]).toBe(
           'En eller flere andre komponenter har avhengighet til denne. Vil du fremdeles slette den?',
         );
-        expect(window.confirm.mock.calls[1][0]).toBe(
-          'Removing this component will also remove all of its children. Are you sure you want to do this?',
+      });
+
+      it('prompts user when removing attachment panel', async () => {
+        window.confirm = vi.fn().mockImplementation(() => true);
+        rerender(
+          <NavFormBuilder
+            form={{ ...testform, display: 'skjema' }}
+            onChange={onChangeMock}
+            onReady={onReadyMock}
+            formBuilderOptions={DEFAULT_FORM_BUILDER_OPTIONS}
+          />,
         );
+
+        const attachmentPanelLink = screen.queryByRole('link', { name: 'Vedlegg' });
+        expect(attachmentPanelLink).toBeInTheDocument();
+        await userEvent.click(attachmentPanelLink);
+
+        const attachmentPanel = screen.queryByRole('button', { name: 'Vedlegg' });
+        expect(attachmentPanel).toBeInTheDocument();
+        const builderComponent = findClosestWithAttribute(attachmentPanel, BUILDER_COMP_TESTID_ATTR);
+        const removeComponentButtons = await within(builderComponent).findAllByTitle('Slett');
+        await userEvent.click(removeComponentButtons[0]);
+
+        expect(window.confirm.mock.calls).toHaveLength(1);
+        expect(window.confirm.mock.calls[0][0]).toBe(
+          'Du forsøker nå å slette vedleggspanelet. For å gjenopprette må et predefinert vedleggspanel trekkes inn. Vil du fremdeles slette panelet?',
+        );
+
+        const attachmentPanelAfterNoDelete = screen.queryByRole('button', { name: 'Vedlegg' });
+        expect(attachmentPanelAfterNoDelete).not.toBeInTheDocument();
+      });
+
+      it('does not remove attachment panel if user declines prompt', async () => {
+        window.confirm = vi.fn().mockImplementation(() => false);
+        rerender(
+          <NavFormBuilder
+            form={{ ...testform, display: 'skjema' }}
+            onChange={onChangeMock}
+            onReady={onReadyMock}
+            formBuilderOptions={DEFAULT_FORM_BUILDER_OPTIONS}
+          />,
+        );
+
+        const attachmentPanelLink = screen.queryByRole('link', { name: 'Vedlegg' });
+        expect(attachmentPanelLink).toBeInTheDocument();
+        await userEvent.click(attachmentPanelLink);
+
+        const attachmentPanel = screen.queryByRole('button', { name: 'Vedlegg' });
+        expect(attachmentPanel).toBeInTheDocument();
+        const builderComponent = findClosestWithAttribute(attachmentPanel, BUILDER_COMP_TESTID_ATTR);
+        const removeComponentButtons = await within(builderComponent).findAllByTitle('Slett');
+        await userEvent.click(removeComponentButtons[0]);
+
+        expect(window.confirm.mock.calls).toHaveLength(1);
+        expect(window.confirm.mock.calls[0][0]).toBe(
+          'Du forsøker nå å slette vedleggspanelet. For å gjenopprette må et predefinert vedleggspanel trekkes inn. Vil du fremdeles slette panelet?',
+        );
+
+        const attachmentPanelAfterNoDelete = screen.queryByRole('button', { name: 'Vedlegg' });
+        expect(attachmentPanelAfterNoDelete).toBeInTheDocument();
       });
     });
 
