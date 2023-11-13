@@ -6,7 +6,7 @@
     id="l-{{ctx.instance.id}}-{{ctx.component.key}}"
   >
     {{ ctx.t(ctx.component.label, { _userInput: true }) }}
-    {% if(ctx.component.validate.required === false) { %}
+    {% if (ctx.component.validate.required === false) { %}
       ({{ctx.t("valgfritt")}})
     {% } %}
     {% if (ctx.component.tooltip) { %}

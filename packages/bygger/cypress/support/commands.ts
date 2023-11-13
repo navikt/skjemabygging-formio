@@ -1,4 +1,3 @@
-/// <reference types="cypress" />
 // ***********************************************
 // This example commands.ts shows you how to
 // create various custom commands and overwrite
@@ -25,14 +24,22 @@ import '@testing-library/cypress/add-commands';
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
-//
-// declare global {
-//   namespace Cypress {
-//     interface Chainable {
-//       login(email: string, password: string): Chainable<void>
-//       drag(subject: string, options?: Partial<TypeOptions>): Chainable<Element>
-//       dismiss(subject: string, options?: Partial<TypeOptions>): Chainable<Element>
-//       visit(originalFn: CommandOriginalFn, url: string, options: Partial<VisitOptions>): Chainable<Element>
-//     }
-//   }
-// }
+Cypress.Commands.add('clickBuilderComponentButton', (title: string) => {
+  cy.findAllByTitle(title).first().should('exist').click({ force: true }); // force because these buttons are only visible on hover
+});
+
+Cypress.Commands.add('openEditComponentModal', (query) => {
+  query
+    .should('exist')
+    .closest("[data-testid='builder-component']")
+    .within(() => {
+      cy.clickBuilderComponentButton('Rediger');
+    });
+});
+
+Cypress.on('uncaught:exception', (err, _runnable, _promise) => {
+  if (err.message?.includes('cdn.form.io')) {
+    return false;
+  }
+  return true;
+});

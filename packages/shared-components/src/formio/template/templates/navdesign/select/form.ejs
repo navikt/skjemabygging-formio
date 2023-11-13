@@ -11,7 +11,7 @@
   aria-describedby="d-{{ctx.instance.id}}-{{ctx.component.key}}"
   {% } %}
   aria-required="{{ctx.input.ref === 'selectContainer' || !ctx.input.ref ? ctx.input.component.validate.required : ctx.component.fields[ctx.input.ref].required}}"
-  >{{ctx.selectOptions}}</select>
+>{{ctx.selectOptions}}</select>
 <input type="text"
   class="formio-select-autocomplete-input"
   ref="autocompleteInput"

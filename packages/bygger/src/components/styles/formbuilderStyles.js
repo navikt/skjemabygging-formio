@@ -17,6 +17,11 @@ const formBuilderStyles = {
     '& .form-builder-panel .btn': {
       textAlign: 'left',
     },
+
+    '& .builder-sidebar_search': {
+      width: '100%',
+      marginBottom: '0.5em',
+    },
   },
 };
 

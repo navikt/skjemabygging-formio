@@ -15,10 +15,16 @@ class Row extends Container {
   }
 
   static schema(...extend) {
-    return Container.schema({
-      ...FormBuilderOptions.builder.layout.components.row.schema,
+    return Container.schema(
+      {
+        ...FormBuilderOptions.builder.layout.components.row.schema,
+      },
       ...extend,
-    });
+    );
+  }
+
+  get defaultSchema() {
+    return Row.schema();
   }
 
   get templateName() {

@@ -8,10 +8,16 @@ const ALLOWED_TYPES = ['fnr', 'dnr'];
 
 export default class Fodselsnummer extends TextFieldComponent {
   static schema(...extend) {
-    return TextFieldComponent.schema({
-      ...FormBuilderOptions.builder.person.components.fnrfield.schema,
+    return TextFieldComponent.schema(
+      {
+        ...FormBuilderOptions.builder.person.components.fnrfield.schema,
+      },
       ...extend,
-    });
+    );
+  }
+
+  get defaultSchema() {
+    return Fodselsnummer.schema();
   }
 
   validateFnrNew(inputValue) {
@@ -30,10 +36,6 @@ export default class Fodselsnummer extends TextFieldComponent {
         : this.t('fodselsnummerDNummer');
     }
     return true;
-  }
-
-  get defaultSchema() {
-    return Fodselsnummer.schema();
   }
 
   static get builderInfo() {

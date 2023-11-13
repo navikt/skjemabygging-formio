@@ -9,10 +9,16 @@ class Radio extends FormioRadio {
   }
 
   static schema(...extend) {
-    return FormioRadio.schema({
-      ...FormBuilderOptions.builder.basic.components.radiopanel.schema,
+    return FormioRadio.schema(
+      {
+        ...FormBuilderOptions.builder.basic.components.radiopanel.schema,
+      },
       ...extend,
-    });
+    );
+  }
+
+  get defaultSchema() {
+    return Radio.schema();
   }
 
   static editForm(...extend) {

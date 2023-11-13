@@ -497,7 +497,7 @@
   "properties": {
     "skjemanummer": "cy-penger",
     "tema": "FOS",
-    "innsending": "PAPIR",
+    "innsending": "KUN_PAPIR",
     "signatures": [
       {
         "label": "",
