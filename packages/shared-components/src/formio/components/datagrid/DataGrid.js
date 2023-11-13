@@ -151,10 +151,16 @@ class NavDataGrid extends DataGrid {
   }
 
   static schema(...extend) {
-    return Field.schema({
-      ...FormBuilderOptions.builder.data.components.navDataGrid.schema,
+    return Field.schema(
+      {
+        ...FormBuilderOptions.builder.data.components.navDataGrid.schema,
+      },
       ...extend,
-    });
+    );
+  }
+
+  get defaultSchema() {
+    return DataGrid.schema();
   }
 
   removeRow(index) {

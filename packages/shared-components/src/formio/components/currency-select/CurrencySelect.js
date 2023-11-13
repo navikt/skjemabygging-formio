@@ -13,10 +13,16 @@ class CurrencySelect extends NavSelect {
   }
 
   static schema(...extend) {
-    return NavSelect.schema({
-      ...FormBuilderOptions.builder.pengerOgKonto.components.valutavelger.schema,
+    return NavSelect.schema(
+      {
+        ...FormBuilderOptions.builder.pengerOgKonto.components.valutavelger.schema,
+      },
       ...extend,
-    });
+    );
+  }
+
+  get defaultSchema() {
+    return CurrencySelect.schema();
   }
 
   static editForm(...extend) {

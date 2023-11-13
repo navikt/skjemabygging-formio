@@ -1,5 +1,5 @@
 import { Button, Heading } from '@navikt/ds-react';
-import { makeStyles } from '@navikt/skjemadigitalisering-shared-components';
+import { makeStyles, useModal } from '@navikt/skjemadigitalisering-shared-components';
 import { useState } from 'react';
 import { AppLayout } from '../components/AppLayout';
 import { FormMetadataEditor } from '../components/FormMetaDataEditor/FormMetadataEditor';
@@ -8,7 +8,6 @@ import PrimaryButtonWithSpinner from '../components/PrimaryButtonWithSpinner';
 import UserFeedback from '../components/UserFeedback';
 import Column from '../components/layout/Column';
 import Row from '../components/layout/Row';
-import { useModal } from '../util/useModal';
 import PublishModalComponents from './publish/PublishModalComponents';
 import FormStatusPanel from './status/FormStatusPanel';
 import UnpublishButton from './unpublish/UnpublishButton';
@@ -21,7 +20,7 @@ const useStyles = makeStyles({
 
 export function FormSettingsPage({ form, publishedForm, onSave, onChange, onPublish, onUnpublish }) {
   const title = form.title;
-  const [openPublishSettingModal, setOpenPublishSettingModal] = useModal(false);
+  const [openPublishSettingModal, setOpenPublishSettingModal] = useModal();
   const styles = useStyles();
   const [errors, setErrors] = useState({});
 

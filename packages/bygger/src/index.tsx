@@ -1,4 +1,4 @@
-import { AppConfigProvider, Modal } from '@navikt/skjemadigitalisering-shared-components';
+import { AppConfigProvider } from '@navikt/skjemadigitalisering-shared-components';
 import Pusher from 'pusher-js';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
@@ -9,9 +9,6 @@ import { AuthProvider } from './context/auth-context';
 const dokumentinnsendingDevURL = 'https://tjenester-q0.nav.no/dokumentinnsending';
 
 Pusher.logToConsole = true;
-
-// @ts-ignore
-if (process.env.NODE_ENV !== 'test') Modal.setAppElement('#root');
 
 fetch('/api/config')
   .then((res) => {

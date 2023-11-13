@@ -1,7 +1,3 @@
-const clickBuilderComponentButton = (title) => () => {
-  cy.findAllByTitle(title).first().should('exist').click({ force: true }); // force because these buttons are only visible on hover
-};
-
 describe('Diff', () => {
   beforeEach(() => {
     cy.intercept('GET', '/api/config', { fixture: 'config.json' }).as('getConfig');
@@ -77,7 +73,9 @@ describe('Diff', () => {
         cy.findByLabelText('Etternavn')
           .should('exist')
           .closest("[data-testid='builder-component']")
-          .within(clickBuilderComponentButton('Slett'));
+          .within(() => {
+            cy.clickBuilderComponentButton('Slett');
+          });
 
         cy.findAllByText('Endring').should('have.length', diffSincePublishedVersion.changes);
         cy.findAllByText('Slettede elementer').should('have.length', diffSincePublishedVersion.deletions + 1);
@@ -95,10 +93,7 @@ describe('Diff', () => {
 
     describe('Edit component modal', () => {
       it("Shows changes for text component :: label 'Fornavn' -> 'Fornavn2'", () => {
-        cy.findByLabelText('Fornavn2')
-          .should('exist')
-          .closest("[data-testid='builder-component']")
-          .within(clickBuilderComponentButton('Rediger'));
+        cy.openEditComponentModal(cy.findByLabelText('Fornavn2'));
 
         cy.findByLabelText('Endringer')
           .should('exist')
@@ -109,10 +104,7 @@ describe('Diff', () => {
       });
 
       it('Shows changes for skjemagruppe :: legend changed and component deleted', () => {
-        cy.findByText('Kontaktadresse2')
-          .should('exist')
-          .closest("[data-testid='builder-component']")
-          .within(clickBuilderComponentButton('Rediger'));
+        cy.openEditComponentModal(cy.findByText('Kontaktadresse2'));
 
         cy.findByLabelText('Endringer')
           .should('exist')
@@ -131,11 +123,7 @@ describe('Diff', () => {
       });
 
       it('Shows no changes for skjemagruppe', () => {
-        cy.findAllByText('Utenlandsk kontaktadresse')
-          .first()
-          .should('exist')
-          .closest("[data-testid='builder-component']")
-          .within(clickBuilderComponentButton('Rediger'));
+        cy.openEditComponentModal(cy.findAllByText('Utenlandsk kontaktadresse').first());
 
         cy.findByLabelText('Endringer').should('not.exist');
         cy.findByLabelText('Slettede elementer').should('not.exist');

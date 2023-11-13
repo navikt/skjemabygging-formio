@@ -102,6 +102,10 @@ class NavSelect extends FormioReactComponent {
     });
   }
 
+  get defaultSchema() {
+    return NavSelect.schema();
+  }
+
   static get builderInfo() {
     return {
       ...FormBuilderOptions.builder.basic.components.navSelect,

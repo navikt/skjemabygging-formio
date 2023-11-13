@@ -1,9 +1,6 @@
-import { Modal } from '@navikt/skjemadigitalisering-shared-components';
 import { dateUtils, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import { fireEvent, render, screen } from '@testing-library/react';
 import UnpublishButton from './UnpublishButton';
-
-Modal.setAppElement(document.createElement('div'));
 
 describe('UnpublishButton', () => {
   const onUnpublish = vi.fn();

@@ -2,15 +2,12 @@
   <table class="table datagrid-table table-bordered
       {{ ctx.component.striped ? 'table-striped' : ''}}
       {{ ctx.component.hover ? 'table-hover' : ''}}
-      {{ ctx.component.condensed ? 'table-sm' : ''}}"
-      {% if (ctx.layoutFixed) { %}style="table-layout: fixed;"{% } %}
-  >
+      {{ ctx.component.condensed ? 'table-sm' : ''}}
+      " {% if (ctx.component.layoutFixed) { %}style="table-layout: fixed;"{% } %}>
     {% if (ctx.hasHeader) { %}
       <thead>
         <tr>
-          {% if (ctx.component.reorder) { %}
-            <th></th>
-          {% } %}
+          {% if (ctx.component.reorder) { %}<th></th>{% } %}
           {% ctx.columns.forEach(function(col) { %}
             <th class="{{col.validate && col.validate.required ? 'field-required' : ''}}">
               {{ col.hideLabel ? '' : ctx.t(col.label || col.title, { _userInput: true }) }}
@@ -23,6 +20,7 @@
                 <button
                   class="navds-button navds-button--secondary navds-button--small"
                   ref="{{ctx.datagridKey}}-addRow"
+                  tabindex="{{ctx.tabIndex}}"
                   type="button"
                 >
                   <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -58,7 +56,7 @@
             </td>
           {% } %}
           {% ctx.columns.forEach(function(col) { %}
-            <td ref="{{ctx.datagridKey}}">
+            <td ref="{{ctx.datagridKey}}" {% if (col.key && col.overlay && col.overlay.width) { %} style="width: {{col.overlay.width + 'px'}}"{% } %} >
               {{row[col.key]}}
             </td>
           {% }) %}
@@ -69,6 +67,7 @@
                   type="button"
                   class="navds-button navds-button--tertiary navds-button--icon-only"
                   ref="{{ctx.datagridKey}}-removeRow"
+                  tabindex="{{ctx.tabIndex}}"
                 >
                   <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                     <path fill-rule="evenodd" clip-rule="evenodd" d="M21 4.385L13.385 12 21 19.615 19.615 21 12 13.385 4.385 21 3 19.615 10.615 12 3 4.385 4.385 3 12 10.615 19.615 3 21 4.385z" fill="currentColor"></path>
@@ -89,10 +88,11 @@
     {% if (!ctx.builder && ctx.hasAddButton && ctx.hasBottomSubmit) { %}
       <tfoot>
         <tr>
-          <td colspan="{{ctx.numColumns + 1}}">
+          <td colspan="{{ctx.component.layoutFixed ? ctx.numColumns :  ctx.numColumns + 1}}">
             <button
               class="navds-button navds-button--secondary navds-button--small"
               ref="{{ctx.datagridKey}}-addRow"
+              tabindex="{{ctx.tabIndex}}"
               type="button"
             >
 

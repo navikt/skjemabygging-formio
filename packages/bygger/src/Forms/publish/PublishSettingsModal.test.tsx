@@ -1,4 +1,3 @@
-import { Modal } from '@navikt/skjemadigitalisering-shared-components';
 import { MockedComponentObjectForTest } from '@navikt/skjemadigitalisering-shared-domain';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
@@ -36,17 +35,13 @@ vi.mock('../../context/i18n/index', () => {
   };
 });
 
-Modal.setAppElement(document.createElement('div'));
-
 describe('PublishSettingsModal', () => {
   let mockedCloseModal;
   let mockedOnPublish;
   const renderPublishSettingsModal = (form) => {
     mockedCloseModal = vi.fn();
     mockedOnPublish = vi.fn();
-    render(
-      <PublishSettingsModal openModal={true} closeModal={mockedCloseModal} onPublish={mockedOnPublish} form={form} />,
-    );
+    render(<PublishSettingsModal open={true} onClose={mockedCloseModal} onConfirm={mockedOnPublish} form={form} />);
   };
 
   it('renders disabled checkbox for Norsk bokmål', () => {

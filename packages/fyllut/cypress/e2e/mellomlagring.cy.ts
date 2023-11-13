@@ -5,6 +5,7 @@ const testMellomlagringConfirmationModal = (
   buttonText: string,
   modalTexts: {
     body: string;
+    title: string;
     cancel: string;
     confirm: string;
   },
@@ -13,7 +14,6 @@ const testMellomlagringConfirmationModal = (
   cy.findByRole('button', { name: buttonText }).click();
   cy.findByText(modalTexts.body).should('be.visible');
   cy.findByRole('button', { name: modalTexts.cancel }).click();
-  cy.findByText(modalTexts.body).should('not.exist');
   cy.findByRole('button', { name: buttonText }).click();
   cy.findByRole('button', { name: modalTexts.confirm }).click();
 };

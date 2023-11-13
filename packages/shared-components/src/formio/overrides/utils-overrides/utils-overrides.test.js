@@ -131,6 +131,44 @@ describe('utils-overrides', () => {
       const html = UtilsOverrides.navFormDiffToHtml(diffSummary);
       expect(html).toMatchSnapshot();
     });
+    it('ignores props whos value changes from undefined to falsy', () => {
+      const changes = {
+        status: 'Endring',
+        diff: {
+          label: {
+            status: 'Endring',
+            originalValue: 'WIP',
+            value: 'Svar ja eller nei?',
+          },
+          validate: {
+            status: 'Endring',
+            diff: {
+              customMessage: {
+                status: 'Ny',
+                value: '',
+              },
+              json: {
+                status: 'Ny',
+                value: '',
+              },
+            },
+          },
+          defaultValue: {
+            status: 'Ny',
+            value: '',
+          },
+          additionalDescription: {
+            status: 'Ny',
+            value: false,
+          },
+        },
+        key: 'svarJaEllerNei',
+        type: 'radiopanel',
+      };
+      const diffSummary = formDiffingTool.createDiffSummary(changes);
+      const html = UtilsOverrides.navFormDiffToHtml(diffSummary);
+      expect(html).toMatchSnapshot();
+    });
 
     it('generates html list with deleted radiopanel from panel', () => {
       const diffSummary = formDiffingTool.createDiffSummary(panelDiffDeletedRadiopanel);
@@ -196,6 +234,9 @@ describe('utils-overrides', () => {
         config: {
           publishedForm,
         },
+        self: {
+          mergeSchema: (comp) => comp,
+        },
       };
       const html = UtilsOverrides.getDiffTag(ctx);
       expect(html).toMatchSnapshot();
@@ -208,6 +249,9 @@ describe('utils-overrides', () => {
         component: navSelect,
         config: {
           publishedForm,
+        },
+        self: {
+          mergeSchema: (comp) => comp,
         },
       };
       const html = UtilsOverrides.getDiffTag(ctx);
@@ -222,6 +266,9 @@ describe('utils-overrides', () => {
         config: {
           publishedForm,
         },
+        self: {
+          mergeSchema: (comp) => comp,
+        },
       };
       const html = UtilsOverrides.getDiffTag(ctx);
       expect(html).toMatchSnapshot();
@@ -235,9 +282,53 @@ describe('utils-overrides', () => {
         config: {
           publishedForm,
         },
+        self: {
+          mergeSchema: (comp) => comp,
+        },
       };
       const html = UtilsOverrides.getDiffTag(ctx);
       expect(html).toMatchSnapshot();
+    });
+
+    describe('component has new default prop in schema', () => {
+      const MERGE_SCHEMA_NEW_PROP = (comp) => ({ ...comp, newValue2: true });
+
+      it('returns no tag if component has not changed, only default schema', () => {
+        const navSelect = MERGE_SCHEMA_NEW_PROP(navFormUtils.findByNavId('e0a8kbj', publishedForm.components));
+        const ctx = {
+          builder: true,
+          component: navSelect,
+          config: {
+            publishedForm,
+          },
+          self: {
+            mergeSchema: MERGE_SCHEMA_NEW_PROP,
+          },
+        };
+        const html = UtilsOverrides.getDiffTag(ctx);
+        expect(html).toMatchSnapshot();
+      });
+
+      it('returns tag "NY" if component does not exist in published form', () => {
+        const newComponent = MERGE_SCHEMA_NEW_PROP({
+          navId: '123457',
+          key: 'bbbb',
+          type: 'textfield',
+          label: 'Nytt tekstfelt',
+        });
+        const ctx = {
+          builder: true,
+          component: newComponent,
+          config: {
+            publishedForm,
+          },
+          self: {
+            mergeSchema: MERGE_SCHEMA_NEW_PROP,
+          },
+        };
+        const html = UtilsOverrides.getDiffTag(ctx);
+        expect(html).toMatchSnapshot();
+      });
     });
   });
 });

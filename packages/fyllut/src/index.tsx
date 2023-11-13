@@ -1,4 +1,4 @@
-import { AppConfigProvider, Modal, url } from '@navikt/skjemadigitalisering-shared-components';
+import { AppConfigProvider, url } from '@navikt/skjemadigitalisering-shared-components';
 import { ConfigType } from '@navikt/skjemadigitalisering-shared-domain';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
@@ -7,8 +7,6 @@ import App from './App';
 import ConfirmDelingslenkeModal from './components/ConfirmDelingslenkeModal';
 import getDokumentinnsendingBaseURL from './getDokumentinnsendingBaseURL';
 import httpFyllut from './util/httpFyllut';
-
-if (process.env.NODE_ENV !== 'test') Modal.setAppElement('#root');
 
 let featureToggles = {};
 

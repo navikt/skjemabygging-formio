@@ -16,7 +16,7 @@
 <div
   role="tabpanel"
   class="navds-tabs__tabpanel card-body panel panel--border{{ ctx.currentTab === index ? ' active' : ''}}"
-  style="{{ ctx.currentTab !== index ? ' display: none;' : ''}}"
+  style="display: {{ctx.currentTab === index ? 'block' : 'none'}}"
   ref="{{ctx.tabKey}}"
 >
   {{ctx.tabComponents[index]}}

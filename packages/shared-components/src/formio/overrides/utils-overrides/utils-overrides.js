@@ -81,10 +81,13 @@ const TAG = (text) =>
   `<span class="navds-tag navds-tag--warning-filled navds-tag--xsmall navds-detail navds-detail--small">${text}</span>`;
 
 const getDiffTag = (ctx) => {
-  const { component, config } = ctx;
+  const { component, config, self } = ctx;
   const { publishedForm } = config;
   if (ctx.builder && publishedForm) {
-    const diff = formDiffingTool.getComponentDiff(component, publishedForm);
+    // Formio.js invokes mergeSchema on component which is put on ctx object. Therefore we must do the same
+    // prior to comparing with published version to avoid misleading diff tags due to changes in a component's schema.
+    const mergeSchema = self.mergeSchema.bind(self);
+    const diff = formDiffingTool.getComponentDiff(component, publishedForm, mergeSchema);
     const tags = [];
     if (diff.isNew) {
       tags.push(`${TAG('Ny')}`);

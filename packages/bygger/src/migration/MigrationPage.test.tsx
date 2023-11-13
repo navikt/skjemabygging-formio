@@ -1,4 +1,3 @@
-import { Modal } from '@navikt/skjemadigitalisering-shared-components';
 import { Operator } from '@navikt/skjemadigitalisering-shared-domain';
 import { fireEvent, getAllByLabelText, render, screen, waitFor, within } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
@@ -7,8 +6,6 @@ import FeedbackProvider from '../context/notifications/FeedbackContext';
 import MigrationPage from './MigrationPage';
 import { TestId } from './components/MigrationOptionsForm';
 import { migrationOptionsAsMap } from './utils';
-
-Modal.setAppElement(document.createElement('div'));
 
 describe('MigrationPage', () => {
   let fetchSpy;
