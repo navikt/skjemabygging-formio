@@ -10,18 +10,27 @@ WebformBuilder.prototype.removeComponent = function (component, parent, original
   if (!parent) {
     return;
   }
+  let skipRemoveConfirm = component.skipRemoveConfirm ?? false;
   if (original && original.id) {
     let confirmationMessage;
-    const dependentComponents = navFormUtils.findDependentComponents(original.id, this.form);
-    if (dependentComponents.length > 0) {
-      confirmationMessage = 'En eller flere andre komponenter har avhengighet til denne. Vil du fremdeles slette den?';
+    if (original.isAttachmentPanel) {
+      confirmationMessage =
+        'Du forsøker nå å slette vedleggspanelet. For å gjenopprette må et predefinert vedleggspanel trekkes inn. Vil du fremdeles slette panelet?';
+      skipRemoveConfirm = true;
+    } else {
+      const dependentComponents = navFormUtils.findDependentComponents(original.id, this.form);
+      if (dependentComponents.length > 0) {
+        confirmationMessage =
+          'En eller flere andre komponenter har avhengighet til denne. Vil du fremdeles slette den?';
+        skipRemoveConfirm = true;
+      }
     }
 
     if (confirmationMessage && !window.confirm(this.t(confirmationMessage))) {
       return false;
     }
   }
-  return originalRemoveComponent.call(this, component, parent, original);
+  return originalRemoveComponent.call(this, { ...component, skipRemoveConfirm }, parent, original);
 };
 
 WebformBuilder.prototype.editComponent = function (component, parent, isNew, isJsonEdit, original, flags = {}) {
