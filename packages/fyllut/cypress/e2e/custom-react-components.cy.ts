@@ -268,10 +268,11 @@ describe('Custom react components', () => {
         cy.findByRole('heading', { name: 'Veiledning' }).should('exist');
 
         cy.findByRole('textbox', { name: 'Tilfeldig dato' }).should('be.visible').and('be.enabled');
+        cy.findByRole('textbox', { name: 'Tilfeldig dato' }).should('have.value', '06.06.2022');
         cy.findByRole('textbox', { name: 'Tilfeldig dato' }).type('{selectall}{backspace}');
         cy.clickNextStep();
 
-        cy.findByRole('heading', { name: 'Vedlegg' }).should('not.exist');
+        cy.findByRole('heading', { name: 'Oppsummering' }).should('not.exist');
         cy.findAllByText('Du må fylle ut: Tilfeldig dato').should('have.length', 1);
         cy.findAllByText('Tilfeldig dato: Du må fylle ut: Tilfeldig dato').should('have.length', 1);
       });
