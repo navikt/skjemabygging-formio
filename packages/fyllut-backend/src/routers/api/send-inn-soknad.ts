@@ -91,8 +91,8 @@ const sendInnSoknad = {
       });
 
       if (sendInnResponse.ok) {
-        logger.debug('Successfylly posted data to SendInn');
-        res.status(201);
+        logger.debug(sendInnResponse.status === 200 ? 'User has active tasks' : 'Successfylly posted data to SendInn');
+        res.status(sendInnResponse.status);
         res.json(await sendInnResponse.json());
       } else if (sendInnResponse.status === 302) {
         const location = sendInnResponse.headers.get('location');

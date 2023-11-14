@@ -24,7 +24,7 @@ describe('Active tasks', () => {
 
   describe('When creating mellomlagring returns with location header', () => {
     beforeEach(() => {
-      cy.mocksUseRouteVariant('post-soknad:redirect');
+      cy.mocksUseRouteVariant('post-soknad:already-exists');
       cy.intercept('GET', '/fyllut/api/send-inn/aktive-opprettede-soknader*').as('getActiveTasks');
     });
 
