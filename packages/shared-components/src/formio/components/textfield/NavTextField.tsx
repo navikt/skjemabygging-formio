@@ -38,7 +38,7 @@ export default class TextField extends FormioReactComponent {
         id={`${this.component?.id}-${this.component?.key}`}
         defaultValue={this.dataForSetting || this.dataValue}
         ref={(ref) => this.setReactInstance(ref)}
-        onChange={(event) => this.updateValue(event.currentTarget.value, {})}
+        onChange={(event) => this.updateValue(event.currentTarget.value, { modified: true })}
         aria-describedby={`d-${this.component?.id}-${this.component?.key} e-${this.component?.id}-${this.component?.key}`}
         label={this.component?.label}
       />
