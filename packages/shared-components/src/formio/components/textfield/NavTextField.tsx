@@ -40,10 +40,10 @@ export default class TextField extends FormioReactComponent {
         ref={(ref) => this.setReactInstance(ref)}
         onChange={(event) => this.updateValue(event.currentTarget.value, {})}
         aria-describedby={`d-${this.component?.id}-${this.component?.key} e-${this.component?.id}-${this.component?.key}`}
-        label=""
-        hideLabel
+        label={this.component?.label}
       />
     );
+
     // this.setReactInstance(instance);
     element.render(instance);
     // this.setReactInstance(ref.current);
