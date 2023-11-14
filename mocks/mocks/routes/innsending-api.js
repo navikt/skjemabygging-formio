@@ -1,5 +1,6 @@
 const responseWithInnsendingsId = require('../data/innsending-api/mellomlagring/responseWithInnsendingsId.json');
-const innsendingValid = require('../data/innsending-api/mellomlagring/getTestMellomlagring-valid.json');
+const mellomlagringValid1 = require('../data/innsending-api/mellomlagring/getTestMellomlagring-valid-1.json');
+const mellomlagringValid2 = require('../data/innsending-api/mellomlagring/getTestMellomlagring-valid-2.json');
 const paabegyntMellomlagringOgInnsendt = require('../data/innsending-api/active-tasks/mellomlagringOgEttersending.json');
 const paabegyntMellomlagring = require('../data/innsending-api/active-tasks/mellomlagring.json');
 const paabegyntInnsendt = require('../data/innsending-api/active-tasks/ettersending.json');
@@ -148,11 +149,19 @@ module.exports = [
     method: 'GET',
     variants: [
       {
-        id: 'success',
+        id: 'success-1',
         type: 'json',
         options: {
           status: 200,
-          body: convertToInnsendingApiResponse(innsendingValid),
+          body: convertToInnsendingApiResponse(mellomlagringValid1),
+        },
+      },
+      {
+        id: 'success-2',
+        type: 'json',
+        options: {
+          status: 200,
+          body: convertToInnsendingApiResponse(mellomlagringValid2),
         },
       },
       {
