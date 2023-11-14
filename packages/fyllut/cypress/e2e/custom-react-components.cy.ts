@@ -247,7 +247,7 @@ describe('Custom react components', () => {
         cy.findByRole('link', { name: 'Rediger veiledning' }).click();
         cy.findByRole('heading', { name: 'Veiledning' }).should('exist');
         cy.findByRole('textbox', { name: 'Tilfeldig dato' }).should('be.visible').and('be.enabled');
-        cy.findByRole('textbox', { name: 'Tilfeldig dato' }).type('{selectall}18.06.2020');
+        cy.findByRoleWhenAttached('textbox', { name: 'Tilfeldig dato' }).type('{selectall}18.06.2020');
         cy.clickNextStep();
 
         cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
