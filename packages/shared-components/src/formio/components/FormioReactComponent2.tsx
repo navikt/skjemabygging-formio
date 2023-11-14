@@ -84,7 +84,8 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
     if (element && this.reactInstance) {
       setTimeout(() => {
         // this.reactInstance.unmount();
-        this.reactInstance = null;
+        // this.reactRoot.unmount();
+        this.reactInstance = undefined;
       });
     }
   }
