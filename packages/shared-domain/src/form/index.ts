@@ -177,6 +177,7 @@ export interface FyllutState {
   mellomlagring?: {
     isActive?: boolean;
     savedDate?: string;
+    willDeleteDate?: string;
     error?: MellomlagringError;
   };
 }

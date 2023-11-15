@@ -41,6 +41,9 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
   const [showModal, setShowModal] = useState<ModalType>();
 
   const exitUrl = urlUtils.getExitUrl(window.location.href);
+  const willDateDate = submission?.fyllutState?.mellomlagring?.willDeleteDate
+    ? submission?.fyllutState?.mellomlagring?.willDeleteDate
+    : '';
 
   useEffect(() => {
     setFormForRendering(submissionMethod === 'digital' ? navFormUtils.removeVedleggspanel(form) : form);
@@ -166,7 +169,10 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
   const getModalTexts = (modalType?: ModalType) => {
     switch (modalType) {
       case 'save':
-        return TEXTS.grensesnitt.confirmSavePrompt;
+        return {
+          ...TEXTS.grensesnitt.confirmSavePrompt,
+          body: translate(TEXTS.grensesnitt.confirmSavePrompt.body, { date: willDateDate }),
+        };
       case 'delete':
         return TEXTS.grensesnitt.confirmDeletePrompt;
       case 'discard':

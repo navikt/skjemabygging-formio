@@ -42,6 +42,10 @@ const SaveAndDeleteButtons = ({ submission }: Props) => {
     setIsDeleteModalOpen(false);
   };
 
+  const willDateDate = submission?.fyllutState?.mellomlagring?.willDeleteDate
+    ? submission?.fyllutState?.mellomlagring?.willDeleteDate
+    : '';
+
   return (
     <>
       <div className="button-row">
@@ -66,7 +70,10 @@ const SaveAndDeleteButtons = ({ submission }: Props) => {
         onClose={() => setIsSaveModalOpen(false)}
         onConfirm={saveSubmission}
         confirmType={'primary'}
-        texts={TEXTS.grensesnitt.confirmSavePrompt}
+        texts={{
+          ...TEXTS.grensesnitt.confirmSavePrompt,
+          body: translate(TEXTS.grensesnitt.confirmSavePrompt.body, { date: willDateDate }),
+        }}
         exitUrl={exitUrl}
       />
       <ConfirmationModal

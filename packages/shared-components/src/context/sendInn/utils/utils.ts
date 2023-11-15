@@ -10,6 +10,7 @@ export const getFyllutMellomlagringState = (
       ...submission?.fyllutState?.mellomlagring,
       isActive: true,
       savedDate: dateUtils.toLocaleDateAndTime(response.endretDato),
+      willDeleteDate: dateUtils.toLocaleDate(response.skalSlettesDato),
     };
   }
 };
