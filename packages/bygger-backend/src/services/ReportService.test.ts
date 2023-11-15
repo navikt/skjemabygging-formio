@@ -431,13 +431,9 @@ describe('ReportService', () => {
         const ettersendingBaseUrl = 'https://fyllut-ettersending.intern.dev.nav.no/fyllut-ettersending/detaljer';
 
         // innsending: PAPIR_OG_DIGITAL, ettersending: PAPIR_OG_DIGITAL, 1 attachment
-        expect(formFields1[report.getHeaderIndex(HEADER_INNSENDING_DIGITAL)]).toBe(
-          `${fyllutBaseUrl}/test1?sub=digital`,
-        );
+        expect(formFields1[report.getHeaderIndex(HEADER_INNSENDING_DIGITAL)]).toBe(`${fyllutBaseUrl}/test1`);
         expect(formFields1[report.getHeaderIndex(HEADER_INNSENDING_PAPER)]).toBe(`${fyllutBaseUrl}/test1?sub=paper`);
-        expect(formFields1[report.getHeaderIndex(HEADER_ETTERSENDING_DIGITAL)]).toBe(
-          `${ettersendingBaseUrl}/test1?sub=digital`,
-        );
+        expect(formFields1[report.getHeaderIndex(HEADER_ETTERSENDING_DIGITAL)]).toBe(`${ettersendingBaseUrl}/test1`);
         expect(formFields1[report.getHeaderIndex(HEADER_ETTERSENDING_PAPER)]).toBe(
           `${ettersendingBaseUrl}/test1?sub=paper`,
         );

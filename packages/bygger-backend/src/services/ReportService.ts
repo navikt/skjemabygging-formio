@@ -149,9 +149,7 @@ class ReportService {
           ? `https://www.nav.no/fyllut-ettersending/detaljer/${form.path}`
           : `https://fyllut-ettersending.intern.dev.nav.no/fyllut-ettersending/detaljer/${form.path}`;
 
-      const digitalInnsendingUrl = navFormUtils.isDigital('innsending', form)
-        ? `${innsendingUrl}?sub=digital`
-        : undefined;
+      const digitalInnsendingUrl = navFormUtils.isDigital('innsending', form) ? `${innsendingUrl}` : undefined;
       const paperInnsendingUrl = navFormUtils.isNone('innsending', form)
         ? `${innsendingUrl}`
         : navFormUtils.isPaper('innsending', form)
@@ -159,7 +157,7 @@ class ReportService {
         : undefined;
 
       const digitalEttersendingUrl =
-        navFormUtils.isDigital('ettersending', form) && hasAttachment ? `${ettersendingUrl}?sub=digital` : undefined;
+        navFormUtils.isDigital('ettersending', form) && hasAttachment ? `${ettersendingUrl}` : undefined;
       const paperEttersendingUrl =
         navFormUtils.isPaper('ettersending', form) && hasAttachment ? `${ettersendingUrl}?sub=paper` : undefined;
 
