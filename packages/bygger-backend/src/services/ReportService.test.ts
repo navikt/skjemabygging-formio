@@ -330,9 +330,9 @@ describe('ReportService', () => {
       });
 
       it('has correct url fields', async () => {
-        const HEADER_INNSENDING_DIGITAL = 'innsendingsurl';
+        const HEADER_INNSENDING = 'innsendingsurl';
         const HEADER_INNSENDING_PAPER = 'innsendingsurl (papir)';
-        const HEADER_ETTERSENDING_DIGITAL = 'ettersendingsurl';
+        const HEADER_ETTERSENDING = 'ettersendingsurl';
         const HEADER_ETTERSENDING_PAPER = 'ettersendingsurl (papir)';
 
         const publishedForms = [
@@ -431,23 +431,23 @@ describe('ReportService', () => {
         const ettersendingBaseUrl = 'https://fyllut-ettersending.intern.dev.nav.no/fyllut-ettersending/detaljer';
 
         // innsending: PAPIR_OG_DIGITAL, ettersending: PAPIR_OG_DIGITAL, 1 attachment
-        expect(formFields1[report.getHeaderIndex(HEADER_INNSENDING_DIGITAL)]).toBe(`${fyllutBaseUrl}/test1`);
+        expect(formFields1[report.getHeaderIndex(HEADER_INNSENDING)]).toBe(`${fyllutBaseUrl}/test1`);
         expect(formFields1[report.getHeaderIndex(HEADER_INNSENDING_PAPER)]).toBe(`${fyllutBaseUrl}/test1?sub=paper`);
-        expect(formFields1[report.getHeaderIndex(HEADER_ETTERSENDING_DIGITAL)]).toBe(`${ettersendingBaseUrl}/test1`);
+        expect(formFields1[report.getHeaderIndex(HEADER_ETTERSENDING)]).toBe(`${ettersendingBaseUrl}/test1`);
         expect(formFields1[report.getHeaderIndex(HEADER_ETTERSENDING_PAPER)]).toBe(
           `${ettersendingBaseUrl}/test1?sub=paper`,
         );
 
         // innsending: INGEN, ettersending: KUN_PAPIR, 0 attachments
-        expect(formFields2[report.getHeaderIndex(HEADER_INNSENDING_DIGITAL)]).toBe(``);
+        expect(formFields2[report.getHeaderIndex(HEADER_INNSENDING)]).toBe(``);
         expect(formFields2[report.getHeaderIndex(HEADER_INNSENDING_PAPER)]).toBe(`${fyllutBaseUrl}/test2`);
-        expect(formFields2[report.getHeaderIndex(HEADER_ETTERSENDING_DIGITAL)]).toBe(``); // no attachments
+        expect(formFields2[report.getHeaderIndex(HEADER_ETTERSENDING)]).toBe(``); // no attachments
         expect(formFields2[report.getHeaderIndex(HEADER_ETTERSENDING_PAPER)]).toBe(``);
 
         // innsending: KUN_PAPIR, ettersending: KUN_PAPIR, 1 attachments
-        expect(formFields3[report.getHeaderIndex(HEADER_INNSENDING_DIGITAL)]).toBe(``);
+        expect(formFields3[report.getHeaderIndex(HEADER_INNSENDING)]).toBe(``);
         expect(formFields3[report.getHeaderIndex(HEADER_INNSENDING_PAPER)]).toBe(`${fyllutBaseUrl}/test3?sub=paper`);
-        expect(formFields3[report.getHeaderIndex(HEADER_ETTERSENDING_DIGITAL)]).toBe(``);
+        expect(formFields3[report.getHeaderIndex(HEADER_ETTERSENDING)]).toBe(``);
         expect(formFields3[report.getHeaderIndex(HEADER_ETTERSENDING_PAPER)]).toBe(
           `${ettersendingBaseUrl}/test3?sub=paper`,
         );
