@@ -32,6 +32,13 @@ export interface NewFormSignatureType {
   key: string;
 }
 
+export enum PrefillType {
+  sokerFornavn = 'Søkers fornavn',
+  sokerEtternavn = 'Søkers etternavn',
+}
+
+type PrefillKey = keyof typeof PrefillType;
+
 export interface FormPropertiesType {
   skjemanummer: string;
   tema: string;
@@ -61,6 +68,7 @@ export interface FormPropertiesType {
   signatures?: NewFormSignatureType[] | FormSignaturesType;
   descriptionOfSignatures?: string;
   descriptionOfSignaturesPositionUnder?: boolean;
+  prefill?: PrefillKey[];
 }
 
 export type FormPropertiesPublishing = Pick<
@@ -94,6 +102,7 @@ export interface Component {
   components?: Component[];
   otherDocumentation?: boolean;
   isAttachmentPanel?: boolean;
+  prefill?: PrefillKey;
   values?: ComponentValue[];
   hideLabel?: boolean;
   description?: string;

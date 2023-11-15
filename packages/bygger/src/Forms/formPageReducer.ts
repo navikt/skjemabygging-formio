@@ -1,36 +1,27 @@
-import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
+import { NavFormType, navFormUtils, PrefillType } from '@navikt/skjemadigitalisering-shared-domain';
 import cloneDeep from 'lodash.clonedeep';
 
 type ReducerAction = 'form-loaded' | 'form-not-found' | 'form-changed' | 'form-saved';
 type Status = 'LOADING' | 'FINISHED LOADING' | 'FORM NOT FOUND';
-type ReducerActionType = { type: ReducerAction; form?: NavFormType; publishedForm?: NavFormType };
+export type ReducerActionType = { type: ReducerAction; form?: NavFormType; publishedForm?: NavFormType };
 
-interface ReducerState {
+export interface ReducerState {
   status: Status;
   dbForm?: NavFormType;
   form?: NavFormType;
   publishedForm?: NavFormType | null;
-  hasUnsavedChanges: boolean;
 }
 
-const isDifferent = (form, changedForm) => {
-  return JSON.stringify(removeIds(cloneDeep(form))) !== JSON.stringify(removeIds(cloneDeep(changedForm)));
-};
+const unique = <T extends Array<any>>(arr: T) => [...new Set(arr)];
 
-const removeIds = (object) => {
-  const clonedObject = {
-    ...object,
-  };
-
-  if (clonedObject.id) {
-    delete clonedObject.id;
-  }
-
-  if (clonedObject.components && clonedObject.components.length > 0) {
-    clonedObject.components = clonedObject.components.map((component) => removeIds(component));
-  }
-
-  return clonedObject;
+const hoistPrefill = (form: NavFormType): NavFormType => {
+  form.properties.prefill = unique(
+    navFormUtils
+      .flattenComponents(form.components)
+      .map((comp) => comp.prefill)
+      .filter((value) => !!value) as PrefillType[],
+  );
+  return form;
 };
 
 const formPageReducer = (state: ReducerState, action: ReducerActionType) => {
@@ -43,19 +34,16 @@ const formPageReducer = (state: ReducerState, action: ReducerActionType) => {
         dbForm: formClone,
         form: formClone,
         publishedForm: action.publishedForm || state.publishedForm,
-        hasUnsavedChanges: false,
       };
     case 'form-changed':
       return {
         ...state,
         dbForm: state.dbForm,
-        form: formClone,
-        hasUnsavedChanges: isDifferent(state.dbForm, formClone),
+        form: hoistPrefill(formClone),
       };
     case 'form-not-found':
       return {
         status: 'FORM NOT FOUND',
-        hasUnsavedChanges: false,
       };
     default: {
       return state;

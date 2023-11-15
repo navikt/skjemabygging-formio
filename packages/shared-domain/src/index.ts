@@ -13,6 +13,7 @@ import {
   NavFormType,
   NewFormSignatureType,
   Panel,
+  PrefillType,
   ResourceAccess,
   Submission,
   SubmissionData,
@@ -59,6 +60,7 @@ import validatorUtils from './utils/validatorUtils';
 export {
   DeclarationType,
   MockedComponentObjectForTest,
+  PrefillType,
   TEXTS,
   dateUtils,
   featureUtils,
