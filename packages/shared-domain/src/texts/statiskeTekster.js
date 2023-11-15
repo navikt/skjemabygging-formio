@@ -63,7 +63,7 @@ export const statiske = {
   summaryPage: {
     title: 'Oppsummering',
     description:
-      'Vennligst sjekk at alle opplysningene dine er riktige. Hvis alle opplysningene er riktige går du videre til neste steg. Hvis du ikke fullfører søknaden innen {{date}} vil den bli slettet.',
+      'Vennligst sjekk at alle opplysningene dine er riktige. Hvis alle opplysningene er riktige går du videre til neste steg. Dette utkastet vil bli slettet {{date}} hvis søknaden ikke sendes inn.',
     confirmationError: 'Du må samtykke før du kan fortsette',
     validationIcon: 'Opplysninger mangler',
     validationMessage:
