@@ -37,7 +37,7 @@ export enum PrefillType {
   sokerEtternavn = 'Søkers etternavn',
 }
 
-type PrefillKey = keyof typeof PrefillType;
+export type PrefillKey = keyof typeof PrefillType;
 
 export interface FormPropertiesType {
   skjemanummer: string;

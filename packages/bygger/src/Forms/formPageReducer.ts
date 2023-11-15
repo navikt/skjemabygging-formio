@@ -1,4 +1,4 @@
-import { NavFormType, navFormUtils, PrefillType } from '@navikt/skjemadigitalisering-shared-domain';
+import { NavFormType, navFormUtils, PrefillKey } from '@navikt/skjemadigitalisering-shared-domain';
 import cloneDeep from 'lodash.clonedeep';
 
 type ReducerAction = 'form-loaded' | 'form-not-found' | 'form-changed' | 'form-saved';
@@ -19,7 +19,7 @@ const hoistPrefill = (form: NavFormType): NavFormType => {
     navFormUtils
       .flattenComponents(form.components)
       .map((comp) => comp.prefill)
-      .filter((value) => !!value) as PrefillType[],
+      .filter((value) => !!value) as PrefillKey[],
   );
   return form;
 };

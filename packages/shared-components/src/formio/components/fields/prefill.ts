@@ -8,7 +8,7 @@ export const prefill = {
   dataSrc: 'values',
   required: false,
   data: {
-    values: Object.keys(PrefillType).map((value) => ({ value, label: PrefillType[value] })),
+    values: Object.keys(PrefillType).map((key) => ({ value: key, label: PrefillType[key] })),
   },
   weight: 1,
 };
