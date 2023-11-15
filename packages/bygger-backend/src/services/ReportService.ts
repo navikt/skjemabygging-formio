@@ -119,10 +119,10 @@ class ReportService {
       'har vedlegg',
       'antall vedlegg',
       'vedleggsnavn',
-      'innsending (digital)',
-      'innsending (papir)',
-      'ettersending (digital)',
-      'ettersending (papir)',
+      'innsendingsurl',
+      'innsendingsurl (papir)',
+      'ettersendingsurl',
+      'ettersendingsurl (papir)',
     ];
     const allForms = await this.formioService.getAllForms(
       undefined,

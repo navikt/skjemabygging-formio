@@ -330,10 +330,10 @@ describe('ReportService', () => {
       });
 
       it('has correct url fields', async () => {
-        const HEADER_INNSENDING_DIGITAL = 'innsending (digital)';
-        const HEADER_INNSENDING_PAPER = 'innsending (papir)';
-        const HEADER_ETTERSENDING_DIGITAL = 'ettersending (digital)';
-        const HEADER_ETTERSENDING_PAPER = 'ettersending (papir)';
+        const HEADER_INNSENDING_DIGITAL = 'innsendingsurl';
+        const HEADER_INNSENDING_PAPER = 'innsendingsurl (papir)';
+        const HEADER_ETTERSENDING_DIGITAL = 'ettersendingsurl';
+        const HEADER_ETTERSENDING_PAPER = 'ettersendingsurl (papir)';
 
         const publishedForms = [
           {
