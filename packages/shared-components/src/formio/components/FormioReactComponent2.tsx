@@ -91,16 +91,10 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
   }
 
   setReactInstance(element) {
-    console.log('setReactInstance', element);
     super.setReactInstance(element);
   }
 
   setValue(value: any) {
-    console.log('setValue', this.component?.key, value);
-    console.log('setVal reactInstance', this.reactInstance);
-    console.log('setVal shouldSetValue', this.shouldSetValue);
-    console.log('setVal dataValue', this.dataValue);
-    console.log('setVal valueForSetting', this.dataForSetting);
     if (this.reactInstance) {
       this.reactInstance.defaultValue = value;
       this.shouldSetValue = false;
@@ -108,6 +102,7 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
       this.shouldSetValue = true;
       this.dataForSetting = value;
     }
+    this.updateValue(value);
   }
 
   getValue() {
