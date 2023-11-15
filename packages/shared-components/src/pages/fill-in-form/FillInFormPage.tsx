@@ -41,8 +41,8 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
   const [showModal, setShowModal] = useState<ModalType>();
 
   const exitUrl = urlUtils.getExitUrl(window.location.href);
-  const willDateDate = submission?.fyllutState?.mellomlagring?.willDeleteDate
-    ? submission?.fyllutState?.mellomlagring?.willDeleteDate
+  const deletionDate = submission?.fyllutState?.mellomlagring?.deletionDate
+    ? submission?.fyllutState?.mellomlagring?.deletionDate
     : '';
 
   useEffect(() => {
@@ -171,7 +171,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
       case 'save':
         return {
           ...TEXTS.grensesnitt.confirmSavePrompt,
-          body: translate(TEXTS.grensesnitt.confirmSavePrompt.body, { date: willDateDate }),
+          body: translate(TEXTS.grensesnitt.confirmSavePrompt.body, { date: deletionDate }),
         };
       case 'delete':
         return TEXTS.grensesnitt.confirmDeletePrompt;
