@@ -44,6 +44,7 @@ const FyllUtRouter = ({ form, translations }) => {
     <LanguagesProvider translations={translations}>
       <SendInnProvider
         form={form}
+        formUrl={formBaseUrl}
         translations={translations}
         updateSubmission={(submission) => {
           setSubmission(submission);

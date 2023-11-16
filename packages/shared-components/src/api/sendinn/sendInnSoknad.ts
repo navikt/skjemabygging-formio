@@ -11,11 +11,13 @@ export interface SendInnSoknadResponse {
   skalSlettesDato: string;
 }
 
-export interface RedirectResponse {
-  redirectUrl: string;
+export interface InnsendingApiStatusResponse {
+  status: string;
+  info: string;
 }
 
-export const isRedirectResponse = (response: any): response is RedirectResponse => 'redirectUrl' in response;
+export const soknadAlreadyExists = (response: any): response is InnsendingApiStatusResponse =>
+  response.status === 'soknadAlreadyExists';
 
 export const getSoknad = async (
   innsendingsId: string,
@@ -32,7 +34,7 @@ export const createSoknad = async (
   language: string,
   translation: I18nTranslationMap = {},
   forceMellomlagring?: boolean,
-): Promise<SendInnSoknadResponse | RedirectResponse | undefined> => {
+): Promise<SendInnSoknadResponse | InnsendingApiStatusResponse | undefined> => {
   const { http, baseUrl, submissionMethod } = appConfig;
   const url = forceMellomlagring
     ? `${baseUrl}/api/send-inn/soknad?forceMellomlagring=true`
