@@ -32,8 +32,8 @@ export function genererPersonalia(fnrEllerDnr?: string, adresse?: Adresse): Bruk
         adressLine(adresse.postboksEier, 'c/o') +
         adressLine(adresse.adresse) +
         adressLine(adresse.bygning) +
-        `${adresse.postnr || ''}${adresse.sted ? ' ' : ''}` +
-        adressLine(adresse.sted) +
+        (adresse.postnr || '') +
+        (adresse.sted ? ` ${adressLine(adresse.sted)}` : '') +
         adressLine(adresse.region) +
         (adresse.land ? `${adresse.land}.` : ''),
     };
