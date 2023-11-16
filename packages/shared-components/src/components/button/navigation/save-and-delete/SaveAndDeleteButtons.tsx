@@ -42,9 +42,7 @@ const SaveAndDeleteButtons = ({ submission }: Props) => {
     setIsDeleteModalOpen(false);
   };
 
-  const deletionDate = submission?.fyllutState?.mellomlagring?.deletionDate
-    ? submission?.fyllutState?.mellomlagring?.deletionDate
-    : '';
+  const deletionDate = submission?.fyllutState?.mellomlagring?.deletionDate ?? '';
 
   return (
     <>

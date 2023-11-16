@@ -92,9 +92,7 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
 
   const hasDeclaration = declarationType === DeclarationType.custom || declarationType === DeclarationType.default;
 
-  const deletionDate = submission?.fyllutState?.mellomlagring?.deletionDate
-    ? submission?.fyllutState?.mellomlagring?.deletionDate
-    : '';
+  const deletionDate = submission?.fyllutState?.mellomlagring?.deletionDate ?? '';
 
   const isValid = (e: React.MouseEvent<HTMLElement>) => {
     if (hasDeclaration && !declaration) {

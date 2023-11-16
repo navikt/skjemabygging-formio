@@ -41,9 +41,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
   const [showModal, setShowModal] = useState<ModalType>();
 
   const exitUrl = urlUtils.getExitUrl(window.location.href);
-  const deletionDate = submission?.fyllutState?.mellomlagring?.deletionDate
-    ? submission?.fyllutState?.mellomlagring?.deletionDate
-    : '';
+  const deletionDate = submission?.fyllutState?.mellomlagring?.deletionDate ?? '';
 
   useEffect(() => {
     setFormForRendering(submissionMethod === 'digital' ? navFormUtils.removeVedleggspanel(form) : form);
