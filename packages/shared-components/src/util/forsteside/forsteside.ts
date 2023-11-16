@@ -32,10 +32,10 @@ export function genererPersonalia(fnrEllerDnr?: string, adresse?: Adresse): Bruk
         adressLine(adresse.postboksEier, 'c/o') +
         adressLine(adresse.adresse) +
         adressLine(adresse.bygning) +
-        `${adresse.postnr || ''} ` +
-        adressLine(adresse.sted) +
+        (adresse.postnr || '') +
+        (adresse.sted ? ` ${adressLine(adresse.sted)}` : '') +
         adressLine(adresse.region) +
-        `${adresse.land || ''}.`,
+        (adresse.land ? `${adresse.land}.` : ''),
     };
   } else {
     throw Error('User needs to submit either fodselsNummer or address');
@@ -123,7 +123,7 @@ type Adresse = {
   postnr?: string;
   sted: string;
   region?: string;
-  land: string;
+  land?: string;
 };
 
 export function genererAdresse(submission: Submission): Adresse {
@@ -166,7 +166,10 @@ export function genererAdresse(submission: Submission): Adresse {
       (utenlandskAdresse && utenlandskAdresse.poststedSoker) ||
       poststedSoker,
     region: utenlandskAdresse && utenlandskAdresse.regionSoker,
-    land: landSoker || (utenlandskAdresse && utenlandskAdresse.landSoker) || 'Norge',
+    land:
+      landSoker ||
+      (utenlandskAdresse && utenlandskAdresse.landSoker) ||
+      ((norskVegadresse || norskPostboksadresse) && 'Norge'),
   };
 }
 
