@@ -92,8 +92,6 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
 
   const hasDeclaration = declarationType === DeclarationType.custom || declarationType === DeclarationType.default;
 
-  const deletionDate = submission?.fyllutState?.mellomlagring?.deletionDate ?? '';
-
   const isValid = (e: React.MouseEvent<HTMLElement>) => {
     if (hasDeclaration && !declaration) {
       if (declaration === undefined) {
@@ -118,9 +116,7 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
             {translate(TEXTS.statiske.summaryPage.title)}
           </Heading>
           {!hasValidationErrors && (
-            <BodyShort className="mb-4">
-              {translate(TEXTS.statiske.summaryPage.description, { date: deletionDate })}
-            </BodyShort>
+            <BodyShort className="mb-4">{translate(TEXTS.statiske.summaryPage.description)}</BodyShort>
           )}
           {hasValidationErrors && (
             <>
