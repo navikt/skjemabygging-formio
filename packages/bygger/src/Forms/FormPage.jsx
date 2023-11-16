@@ -11,11 +11,7 @@ import formPageReducer from './formPageReducer';
 export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish, onUnpublish }) => {
   const { featureToggles, diffOn } = useAppConfig();
   const { formPath } = useParams();
-  const [state, dispatch] = useReducer(
-    formPageReducer,
-    { status: 'LOADING', hasUnsavedChanges: false },
-    (state) => state,
-  );
+  const [state, dispatch] = useReducer(formPageReducer, { status: 'LOADING' }, (state) => state);
   const loadTranslationsForFormPath = useCallback(
     () => loadTranslations(state.form?.path),
     [loadTranslations, state.form?.path],
@@ -45,7 +41,7 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish, onUnpu
     dispatch({ type: 'form-changed', form: changedForm });
   };
 
-  const saveFormAndResetIsUnsavedChanges = async (form) => {
+  const saveForm = async (form) => {
     const savedForm = await onSave(form);
     if (!savedForm.error) {
       dispatch({ type: 'form-saved', form: savedForm });
@@ -91,7 +87,7 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish, onUnpu
             <EditFormPage
               form={state.form}
               publishedForm={diffOn ? state.publishedForm : undefined}
-              onSave={saveFormAndResetIsUnsavedChanges}
+              onSave={saveForm}
               onChange={onChange}
               onPublish={publishForm}
               onUnpublish={unpublishForm}
@@ -105,7 +101,7 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish, onUnpu
             <FormSettingsPage
               form={state.form}
               publishedForm={diffOn ? state.publishedForm : undefined}
-              onSave={saveFormAndResetIsUnsavedChanges}
+              onSave={saveForm}
               onChange={onChange}
               onPublish={publishForm}
               onUnpublish={unpublishForm}

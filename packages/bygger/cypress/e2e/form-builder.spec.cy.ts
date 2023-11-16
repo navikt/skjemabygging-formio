@@ -46,6 +46,7 @@ describe('Form Builder', () => {
       }).as('putForm');
 
       cy.openEditComponentModal(cy.findByRole('textbox', { name: 'Fornavn2' }));
+      cy.findByDisplayValue('Fornavn2').should('be.visible').and('be.enabled');
       cy.findByDisplayValue('Fornavn2').type('{selectall}Fornavn');
       cy.findByRole('button', { name: 'Save' }).click();
       cy.findByRole('button', { name: 'Lagre' }).click();
@@ -64,6 +65,7 @@ describe('Form Builder', () => {
       }).as('putForm');
 
       cy.openEditComponentModal(cy.findByRole('textbox', { name: 'Din fødselsdato (dd.mm.åååå)' }));
+      cy.findByDisplayValue('Din fødselsdato (dd.mm.åååå)').should('be.visible').and('be.enabled');
       cy.findByDisplayValue('Din fødselsdato (dd.mm.åååå)').type('{selectall}Din fødselsdato');
       cy.findByRole('button', { name: 'Save' }).click();
       cy.findByRole('button', { name: 'Lagre' }).click();

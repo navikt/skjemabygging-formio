@@ -209,7 +209,6 @@ describe('genererAdresse', () => {
       adresse: 'Testveien 1',
       postnr: '1234',
       sted: 'Oslo',
-      land: 'Norge',
     });
   });
 
@@ -391,6 +390,16 @@ describe('genererFoerstesideData', () => {
         };
         const forsteside: ForstesideRequestBody = genererFoerstesideData(defaultForm, submission);
         expect(forsteside.ukjentBrukerPersoninfo).toBe('Solan Gundersen, Flåklypatoppen 1, 3520 Jevnaker, Norge.');
+      });
+
+      it('genererer ikke ukjentBrukerPersoninfo når søkers personinformasjon mangler i submission', () => {
+        const submission = {
+          fornavnArbeidstaker: 'Test',
+          etternavnArbeidstaker: 'Testesen',
+          fodselsnummerDNummerArbeidstaker: '12345678911',
+        };
+        const forsteside: ForstesideRequestBody = genererFoerstesideData(defaultForm, submission);
+        expect(forsteside.ukjentBrukerPersoninfo).toBe('');
       });
 
       it('henter gate og husnummer fra vegadresseSoker', () => {

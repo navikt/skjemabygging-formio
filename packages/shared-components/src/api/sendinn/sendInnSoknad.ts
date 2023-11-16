@@ -8,6 +8,7 @@ export interface SendInnSoknadResponse {
     document: { data: Submission; language: Language };
   };
   endretDato: string;
+  skalSlettesDato: string;
 }
 
 export interface InnsendingApiStatusResponse {
