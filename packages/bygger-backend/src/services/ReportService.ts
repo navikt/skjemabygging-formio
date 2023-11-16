@@ -119,10 +119,10 @@ class ReportService {
       'har vedlegg',
       'antall vedlegg',
       'vedleggsnavn',
-      'innsending (digital)',
-      'innsending (papir)',
-      'ettersending (digital)',
-      'ettersending (papir)',
+      'innsendingsurl',
+      'innsendingsurl (papir)',
+      'ettersendingsurl',
+      'ettersendingsurl (papir)',
     ];
     const allForms = await this.formioService.getAllForms(
       undefined,
@@ -140,28 +140,26 @@ class ReportService {
       const { title, properties, path } = form;
       const { published, publishedBy, modified, modifiedBy, innsending, tema, signatures, ettersending } = properties;
 
-      const innsendingUrl =
+      const baseInnsendingUrl =
         config.naisClusterName === 'prod-gcp'
           ? `https://www.nav.no/fyllut/${form.path}`
           : `https://fyllut-preprod.intern.dev.nav.no/fyllut/${form.path}`;
-      const ettersendingUrl =
+      const baseEttersendingUrl =
         config.naisClusterName === 'prod-gcp'
           ? `https://www.nav.no/fyllut-ettersending/detaljer/${form.path}`
           : `https://fyllut-ettersending.intern.dev.nav.no/fyllut-ettersending/detaljer/${form.path}`;
 
-      const digitalInnsendingUrl = navFormUtils.isDigital('innsending', form)
-        ? `${innsendingUrl}?sub=digital`
-        : undefined;
+      const innsendingUrl = navFormUtils.isDigital('innsending', form) ? `${baseInnsendingUrl}` : undefined;
       const paperInnsendingUrl = navFormUtils.isNone('innsending', form)
-        ? `${innsendingUrl}`
+        ? `${baseInnsendingUrl}`
         : navFormUtils.isPaper('innsending', form)
-        ? `${innsendingUrl}?sub=paper`
+        ? `${baseInnsendingUrl}?sub=paper`
         : undefined;
 
-      const digitalEttersendingUrl =
-        navFormUtils.isDigital('ettersending', form) && hasAttachment ? `${ettersendingUrl}?sub=digital` : undefined;
+      const ettersendingUrl =
+        navFormUtils.isDigital('ettersending', form) && hasAttachment ? `${baseEttersendingUrl}` : undefined;
       const paperEttersendingUrl =
-        navFormUtils.isPaper('ettersending', form) && hasAttachment ? `${ettersendingUrl}?sub=paper` : undefined;
+        navFormUtils.isPaper('ettersending', form) && hasAttachment ? `${baseEttersendingUrl}?sub=paper` : undefined;
 
       let unpublishedChanges: string = '';
       if (modified && published) {
@@ -179,16 +177,16 @@ class ReportService {
         unpublishedChanges,
         modified,
         modifiedBy,
-        innsending || 'PAPIR_OG_DIGITAL',
-        ettersending || 'PAPIR_OG_DIGITAL',
+        innsending,
+        ettersending,
         numberOfSignatures,
         path,
         hasAttachment ? 'ja' : 'nei',
         numberOfAttachments,
         attachmentNames,
-        digitalInnsendingUrl || '',
+        innsendingUrl || '',
         paperInnsendingUrl || '',
-        digitalEttersendingUrl || '',
+        ettersendingUrl || '',
         paperEttersendingUrl || '',
       ]);
     });
