@@ -32,10 +32,10 @@ export interface NewFormSignatureType {
   key: string;
 }
 
-export enum PrefillType {
-  sokerFornavn = 'Søkers fornavn',
-  sokerEtternavn = 'Søkers etternavn',
-}
+export const PrefillType = {
+  sokerFornavn: 'Søkers fornavn',
+  sokerEtternavn: 'Søkers etternavn',
+} as const;
 
 export type PrefillKey = keyof typeof PrefillType;
 
