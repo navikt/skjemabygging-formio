@@ -10,11 +10,12 @@ export interface SendInnSoknadResponse {
   endretDato: string;
 }
 
-export interface CreateSoknadStatusResponse {
+export interface InnsendingApiStatusResponse {
   status: string;
+  info: string;
 }
 
-export const soknadAlreadyExists = (response: any): response is CreateSoknadStatusResponse =>
+export const soknadAlreadyExists = (response: any): response is InnsendingApiStatusResponse =>
   response.status === 'soknadAlreadyExists';
 
 export const getSoknad = async (
@@ -32,7 +33,7 @@ export const createSoknad = async (
   language: string,
   translation: I18nTranslationMap = {},
   forceMellomlagring?: boolean,
-): Promise<SendInnSoknadResponse | CreateSoknadStatusResponse | undefined> => {
+): Promise<SendInnSoknadResponse | InnsendingApiStatusResponse | undefined> => {
   const { http, baseUrl, submissionMethod } = appConfig;
   const url = forceMellomlagring
     ? `${baseUrl}/api/send-inn/soknad?forceMellomlagring=true`
