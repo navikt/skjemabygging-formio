@@ -5,7 +5,9 @@ const editFormLabel = (): Component => {
     type: 'textfield',
     input: true,
     key: 'autocomplete',
-    label: 'Autocomplete',
+    label: 'Autofullfør',
+    description:
+      'Hvis denne ikke er satt, vil autocomplete settes til <b>off</b>. Andre gyldige verdier er <b>on</b> og spesifikke verdier slik som <b>name</b> og <b>e-mail</b>. Fullstendig liste over gyldige verdier finner man her <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete" target="_blank">her</a>.',
   };
 };
 

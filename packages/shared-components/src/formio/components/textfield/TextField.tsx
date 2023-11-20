@@ -37,16 +37,15 @@ export default class TextField extends BaseComponent {
         onChange={(event) => this.updateValue(event.currentTarget.value, { modified: true })}
         aria-describedby={`d-${this.component?.id}-${this.component?.key} e-${this.component?.id}-${this.component?.key}`}
         label={this.getLabel()}
-        className={this.component?.fieldSize}
+        description={this.getDescription()}
+        className={this.getClassName()}
         readOnly={this.component?.readOnly}
         spellCheck={this.component?.spellCheck}
-        autoComplete={this.component?.autoComplete ?? 'off'}
+        autoComplete={this.getAutocomplete()}
       />
     );
 
-    // this.setReactInstance(instance);
     element.render(instance);
-    // this.setReactInstance(ref.current);
     return instance;
   }
 }
