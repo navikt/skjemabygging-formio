@@ -78,9 +78,9 @@ interface ComponentValue {
 export interface Component {
   id?: string;
   navId?: string;
-  key: string;
-  label: string;
-  type: string;
+  key?: string;
+  label?: string;
+  type?: string;
   content?: string;
   calculateValue?: string;
   data?: any;
@@ -110,6 +110,21 @@ export interface Component {
   addAnother?: string;
   removeAnother?: string;
   input?: boolean;
+  readOnly?: boolean;
+  weight?: number;
+  tag?: string;
+  collapsible?: boolean;
+  collapsed?: boolean;
+  fieldSize?: string;
+  autoComplete?: string;
+  spellCheck?: boolean;
+  rows?: number;
+  editor?: string;
+  wysiwyg?: object;
+  as?: string;
+  style?: object;
+  theme?: string;
+  defaultValue?: boolean;
 }
 
 export interface ComponentProperties {
@@ -131,6 +146,9 @@ export interface Panel extends Component {
 export interface ComponentValidate {
   custom?: string;
   json?: string;
+  required?: boolean;
+  pattern?: string;
+  patternMessage?: string;
 }
 
 export interface ComponentConditional {

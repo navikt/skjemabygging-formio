@@ -2,7 +2,7 @@ import { formDiffingTool, navFormioUtils } from '@navikt/skjemadigitalisering-sh
 import { Utils } from 'formiojs';
 
 const additionalDescription = (ctx) => {
-  if (!ctx.component.additionalDescription) return '';
+  if (!ctx.component.additionalDescriptionLabel && !ctx.component.additionalDescriptionText) return '';
 
   const descriptionId = `${ctx.component.id}-${ctx.component.key}-additional-description`;
   const descriptionButtonId = `${ctx.component.id}-${ctx.component.key}-additional-button-content`;

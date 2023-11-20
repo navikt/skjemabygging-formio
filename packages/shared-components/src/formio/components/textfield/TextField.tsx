@@ -1,19 +1,16 @@
-// import { ReactComponent } from '@formio/react';
 import { TextField as NavTextField } from '@navikt/ds-react';
-import FormBuilderOptions from '../../form-builder-options';
-// import FormioReactComponent from '../FormioReactComponent';
-import FormioReactComponent from '../FormioReactComponent2';
-
 import React from 'react';
-import getEditForm from './editForm';
+import FormBuilderOptions from '../../form-builder-options';
+import BaseComponent from '../base/BaseComponent';
+import textFieldForm from './TextField.form';
 
-export default class TextField extends FormioReactComponent {
+export default class TextField extends BaseComponent {
   static editForm() {
-    return getEditForm();
+    return textFieldForm();
   }
 
   static schema() {
-    return FormioReactComponent.schema(FormBuilderOptions.builder.basic.components.textfield.schema);
+    return BaseComponent.schema(FormBuilderOptions.builder.basic.components.textfield.schema);
   }
 
   static get builderInfo() {
@@ -34,13 +31,16 @@ export default class TextField extends FormioReactComponent {
   renderReact(element) {
     const instance: React.ReactNode = (
       <NavTextField
-        htmlSize={43}
-        id={`${this.component?.id}-${this.component?.key}`}
-        defaultValue={this.dataForSetting || this.dataValue}
+        id={this.getId()}
+        defaultValue={this.getDefaultValue()}
         ref={(ref) => this.setReactInstance(ref)}
         onChange={(event) => this.updateValue(event.currentTarget.value, { modified: true })}
         aria-describedby={`d-${this.component?.id}-${this.component?.key} e-${this.component?.id}-${this.component?.key}`}
-        label={this.component?.label}
+        label={this.getLabel()}
+        className={this.component?.fieldSize}
+        readOnly={this.component?.readOnly}
+        spellCheck={this.component?.spellCheck}
+        autoComplete={this.component?.autoComplete ?? 'off'}
       />
     );
 
