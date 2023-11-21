@@ -172,7 +172,14 @@ describe('Mellomlagring', () => {
       );
       cy.wait('@getMellomlagringForInnsendingWithUpdateError');
       cy.findByRole('heading', { name: 'Gave', level: 2 }).should('be.visible');
-      testMellomlagringConfirmationModal(TEXTS.grensesnitt.navigation.saveDraft, TEXTS.grensesnitt.confirmSavePrompt);
+
+      cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.saveDraft }).click();
+      const body = TEXTS.grensesnitt.confirmSavePrompt.body.replace('{{date}}', '10.01.2024').trim();
+      cy.findByText(body).should('be.visible');
+      cy.findByRole('button', { name: TEXTS.grensesnitt.confirmSavePrompt.cancel }).click();
+      cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.saveDraft }).click();
+      cy.findByRole('button', { name: TEXTS.grensesnitt.confirmSavePrompt.confirm }).click();
+
       cy.wait('@updateMellomlagring');
       cy.findByText(TEXTS.statiske.mellomlagringError.update.message).should('be.visible');
     });
@@ -243,10 +250,14 @@ describe('Mellomlagring', () => {
           );
           cy.wait('@getMellomlagringForInnsendingWithUpdateError');
           cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
-          testMellomlagringConfirmationModal(
-            TEXTS.grensesnitt.navigation.saveDraft,
-            TEXTS.grensesnitt.confirmSavePrompt,
-          );
+
+          cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.saveDraft }).click();
+          const body = TEXTS.grensesnitt.confirmSavePrompt.body.replace('{{date}}', '10.01.2024').trim();
+          cy.findByText(body).should('be.visible');
+          cy.findByRole('button', { name: TEXTS.grensesnitt.confirmSavePrompt.cancel }).click();
+          cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.saveDraft }).click();
+          cy.findByRole('button', { name: TEXTS.grensesnitt.confirmSavePrompt.confirm }).click();
+
           cy.wait('@updateMellomlagring');
           cy.findByText(TEXTS.statiske.mellomlagringError.update.message).should('be.visible');
         });

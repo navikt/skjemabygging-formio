@@ -52,6 +52,7 @@ describe('sendInnContext', () => {
           <MemoryRouter>
             <SendInnProvider
               form={form}
+              formUrl={`/fyllut/${form.path}`}
               translations={translations}
               updateSubmission={vi.fn()}
               onFyllutStateChange={vi.fn()}
@@ -144,6 +145,7 @@ describe('sendInnContext', () => {
           <MemoryRouter>
             <SendInnProvider
               form={form}
+              formUrl={`/fyllut/${form.path}`}
               translations={translations}
               updateSubmission={vi.fn()}
               onFyllutStateChange={vi.fn()}

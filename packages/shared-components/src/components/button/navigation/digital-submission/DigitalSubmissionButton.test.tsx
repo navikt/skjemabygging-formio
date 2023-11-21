@@ -41,6 +41,7 @@ describe('DigitalSubmissionButton', () => {
         <MemoryRouter>
           <SendInnProvider
             form={{ components: [] } as unknown as NavFormType}
+            formUrl="/fyllut/testform"
             translations={{}}
             updateSubmission={vi.fn()}
             onFyllutStateChange={vi.fn()}

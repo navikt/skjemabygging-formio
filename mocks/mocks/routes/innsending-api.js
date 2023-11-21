@@ -88,20 +88,16 @@ module.exports = [
         id: 'success',
         type: 'json',
         options: {
-          status: 200,
+          status: 201,
           body: responseWithInnsendingsId,
         },
       },
       {
-        id: 'redirect',
-        type: 'middleware',
+        id: 'already-exists',
+        type: 'json',
         options: {
-          middleware: (req, res) => {
-            const formPath = req.body.skjemapath;
-            const location = `http://localhost:3001/fyllut/${formPath}/paabegynt?sub=digital`;
-            res.header({ Location: location });
-            res.sendStatus(302);
-          },
+          status: 200,
+          body: { status: 'soknadAlreadyExists' },
         },
       },
     ],

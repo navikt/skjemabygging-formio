@@ -38,6 +38,7 @@ const renderSummaryPage = async (
         element: (
           <SendInnProvider
             form={(props.form ?? {}) as NavFormType}
+            formUrl="/fyllut/testform"
             translations={{}}
             updateSubmission={vi.fn()}
             onFyllutStateChange={vi.fn()}
