@@ -102,7 +102,7 @@ describe('Conditional rendering', () => {
     });
   });
 
-  describe.only('Custom components', () => {
+  describe('Custom components', () => {
     beforeEach(() => {
       cy.defaultIntercepts();
       cy.intercept('GET', '/fyllut/api/forms/testmellomlagring').as('getTestMellomlagringForm');
