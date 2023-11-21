@@ -7,14 +7,14 @@ import {
   Submission,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import React, { createContext, useCallback, useContext, useEffect, useReducer, useState } from 'react';
-import { useLocation, useSearchParams } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import {
   SendInnSoknadResponse,
   createSoknad,
   createSoknadWithoutInnsendingsId,
   deleteSoknad,
   getSoknad,
-  isRedirectResponse,
+  soknadAlreadyExists,
   updateSoknad,
   updateUtfyltSoknad,
 } from '../../api/sendinn/sendInnSoknad';
@@ -38,6 +38,7 @@ interface SendInnContextType {
 interface SendInnProviderProps {
   children: React.ReactNode;
   form: NavFormType;
+  formUrl: string;
   translations: I18nTranslations;
   updateSubmission: (submission?: Submission) => void;
   onFyllutStateChange: (fyllutState: Partial<FyllutState>) => void;
@@ -48,6 +49,7 @@ const SendInnContext = createContext<SendInnContextType>({} as SendInnContextTyp
 const SendInnProvider = ({
   children,
   form,
+  formUrl,
   translations,
   updateSubmission,
   onFyllutStateChange,
@@ -55,6 +57,7 @@ const SendInnProvider = ({
   const appConfig = useAppConfig();
   const { app, submissionMethod, featureToggles, logger, baseUrl } = appConfig;
   const { pathname } = useLocation();
+  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const { loggSkjemaFullfort } = useAmplitude();
 
@@ -167,8 +170,8 @@ const SendInnProvider = ({
         forceMellomlagring,
       );
 
-      if (isRedirectResponse(response)) {
-        window.location.href = response?.redirectUrl;
+      if (soknadAlreadyExists(response)) {
+        navigate(`${formUrl}/paabegynt?sub=digital`);
         return;
       }
 

@@ -13,7 +13,7 @@
       "post-soknad:success",
       "get-active-tasks:success",
       "put-soknad:success",
-      "get-soknad:success",
+      "get-soknad:success-1",
       "delete-soknad:success",
       "put-utfylt-soknad:success",
       "post-send-inn:success",

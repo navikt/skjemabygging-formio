@@ -23,6 +23,8 @@ describe('Form Builder', () => {
       req.reply(200, req.body);
     }).as('putForm');
 
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(200);
     cy.findByRole('link', { name: 'Vedlegg' }).click();
     cy.get('[title="Rediger"]').spread((_editPanelButton, editAnnenDokumentasjonButton) =>
       editAnnenDokumentasjonButton.click({ force: true }),
@@ -45,6 +47,8 @@ describe('Form Builder', () => {
         req.reply(200, req.body);
       }).as('putForm');
 
+      // eslint-disable-next-line cypress/no-unnecessary-waiting
+      cy.wait(200);
       cy.openEditComponentModal(cy.findByRole('textbox', { name: 'Fornavn2' }));
       cy.findByDisplayValue('Fornavn2').type('{selectall}Fornavn');
       cy.findByRole('button', { name: 'Save' }).click();
@@ -63,6 +67,8 @@ describe('Form Builder', () => {
         req.reply(200, req.body);
       }).as('putForm');
 
+      // eslint-disable-next-line cypress/no-unnecessary-waiting
+      cy.wait(200);
       cy.openEditComponentModal(cy.findByRole('textbox', { name: 'Din fødselsdato (dd.mm.åååå)' }));
       cy.findByDisplayValue('Din fødselsdato (dd.mm.åååå)').type('{selectall}Din fødselsdato');
       cy.findByRole('button', { name: 'Save' }).click();

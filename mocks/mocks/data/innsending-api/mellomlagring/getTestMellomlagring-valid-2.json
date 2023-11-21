@@ -26,8 +26,9 @@
       "language": "nb-NO",
       "data": {
         "data": {
-          "hvaDrakkDuTilFrokost": "",
+          "hvaDrakkDuTilFrokost": "Jus",
           "hvaSpisteDuTilFrokost": "",
+          "hvaSyntesDuOmFrokosten": "Helt ok",
           "onskerDuAFaGavenInnpakket": "nei",
           "hemmeligKode": "",
           "kryssAvHvisDuOnskerDagligReklamePaEPost": false,
@@ -41,7 +42,7 @@
     "propertyNavn": null,
     "formioId": null
   },
-  "innsendingsId": "8e3c3621-76d7-4ebd-90d4-34448ebcccc3",
+  "innsendingsId": "01234567-abcd-4ebd-90d4-34448ebaaaa2",
   "status": "Opprettet",
   "vedleggsListe": [],
   "kanLasteOppAnnet": true,
