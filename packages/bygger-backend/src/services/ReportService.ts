@@ -149,7 +149,6 @@ class ReportService {
           ? `https://www.nav.no/fyllut-ettersending/${form.path}`
           : `https://fyllut-ettersending.intern.dev.nav.no/fyllut-ettersending/${form.path}`;
 
-      const innsendingUrl = baseInnsendingUrl;
       const paperInnsendingUrl = navFormUtils.isNone('innsending', form)
         ? `${baseInnsendingUrl}`
         : navFormUtils.isPaper('innsending', form)
@@ -183,7 +182,7 @@ class ReportService {
         hasAttachment ? 'ja' : 'nei',
         numberOfAttachments,
         attachmentNames,
-        innsendingUrl || '',
+        baseInnsendingUrl || '',
         paperInnsendingUrl || '',
         ettersendingUrl || '',
         paperEttersendingUrl || '',
