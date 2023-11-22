@@ -6,6 +6,8 @@ const editFormCustomValidation = (): Component => {
   return {
     type: 'panel',
     title: 'Egendefinert validering',
+    key: 'customValidation',
+    label: '',
     collapsible: true,
     collapsed: true,
     components: [
@@ -16,6 +18,8 @@ const editFormCustomValidation = (): Component => {
       },
       {
         type: 'htmlelement',
+        key: 'description',
+        label: '',
         tag: 'div',
         content: `
           <small>
@@ -26,6 +30,8 @@ const editFormCustomValidation = (): Component => {
       },
       {
         type: 'panel',
+        key: 'help',
+        label: '',
         title: 'Hjelp',
         collapsible: true,
         collapsed: true,

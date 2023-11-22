@@ -3,7 +3,9 @@ import { Component } from '@navikt/skjemadigitalisering-shared-domain';
 const editFormVariablesTable = (additional?: string): Component => {
   return {
     type: 'htmlelement',
+    key: 'variablesTable',
     tag: 'div',
+    label: '',
     content:
       '<p>Følgende variabler er tilgjengelig.</p>' +
       '<table class="table table-bordered table-condensed table-striped">' +

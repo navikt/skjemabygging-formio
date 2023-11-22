@@ -7,6 +7,7 @@ const editFormSimpleConditional = (): Component => {
     type: 'panel',
     title: 'Enkel betinget visning',
     key: 'simple-conditional',
+    label: '',
     theme: 'default',
     components: [
       {

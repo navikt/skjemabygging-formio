@@ -6,6 +6,8 @@ const editFormAdvancedConditional = (): Component => {
   return {
     type: 'panel',
     title: 'Avansert betinget visning',
+    key: 'advancedConditional',
+    label: '',
     collapsible: true,
     collapsed: true,
     components: [
@@ -17,6 +19,8 @@ const editFormAdvancedConditional = (): Component => {
       {
         type: 'htmlelement',
         tag: 'div',
+        key: 'description',
+        label: '',
         content: `
           <p>Du må tildele <strong>show</strong> variablen en boolean verdi.</p>
           <p><strong>NB:</strong> Avansert betinget visning vil overstyre enkel betinget visning.</p>
@@ -28,6 +32,8 @@ const editFormAdvancedConditional = (): Component => {
       {
         type: 'panel',
         title: 'Hjelp',
+        key: 'help',
+        label: '',
         collapsible: true,
         collapsed: true,
         components: [

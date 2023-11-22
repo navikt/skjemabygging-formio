@@ -5,6 +5,7 @@ const editFormCustomError = (): Component => {
   return {
     type: 'panel',
     title: 'Egendefinerte feilmeldinger',
+    label: '',
     collapsible: true,
     collapsed: true,
     key: 'errors',
@@ -17,6 +18,7 @@ const editFormCustomError = (): Component => {
       {
         type: 'htmlelement',
         key: 'errorDescription',
+        label: '',
         tag: 'div',
         content: `
           <p>Du kan sette forskjellige feilmeldinger på forskjellige feil</p>

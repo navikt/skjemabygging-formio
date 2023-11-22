@@ -8,6 +8,8 @@ const editFormCalculateValue = (): Component => {
   return {
     type: 'panel',
     title: 'Kalkulert verdi',
+    key: 'calculateValue',
+    label: '',
     collapsible: true,
     collapsed: true,
     components: [
@@ -18,6 +20,8 @@ const editFormCalculateValue = (): Component => {
       },
       {
         type: 'htmlelement',
+        key: 'description',
+        label: '',
         tag: 'div',
         content: `
           <small>
@@ -28,6 +32,8 @@ const editFormCalculateValue = (): Component => {
       {
         type: 'panel',
         title: 'Hjelp',
+        key: 'help',
+        label: '',
         collapsible: true,
         collapsed: true,
         components: [

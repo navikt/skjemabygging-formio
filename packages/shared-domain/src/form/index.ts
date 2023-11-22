@@ -86,9 +86,9 @@ interface ComponentValue {
 export interface Component {
   id?: string;
   navId?: string;
-  key?: string;
-  label?: string;
-  type?: string;
+  key: string;
+  label: string;
+  type: string;
   content?: string;
   calculateValue?: string;
   data?: any;
@@ -133,7 +133,7 @@ export interface Component {
   as?: string;
   style?: object;
   theme?: string;
-  defaultValue?: boolean;
+  defaultValue?: string | number | boolean | any[] | object;
 }
 
 export interface ComponentProperties {

@@ -5,6 +5,8 @@ const editFormAdditionalDescription = (): Component => {
   return {
     type: 'panel',
     title: 'Utvidet beskrivelse',
+    key: 'additionalDescription',
+    label: '',
     components: [
       {
         ...editFormAceEditor('html'),
