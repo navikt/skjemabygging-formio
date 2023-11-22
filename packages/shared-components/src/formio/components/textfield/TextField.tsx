@@ -42,6 +42,7 @@ export default class TextField extends BaseComponent {
         readOnly={this.component?.readOnly}
         spellCheck={this.component?.spellCheck}
         autoComplete={this.getAutocomplete()}
+        onBlur={() => this.onBlur()}
       />
     );
 

@@ -35,6 +35,10 @@ class BaseComponent extends FormioReactComponent2 {
       this.reactInstance.focus();
     }
   }
+
+  onBlur() {
+    this.emit('blur', this);
+  }
 }
 
 export default BaseComponent;
