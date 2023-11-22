@@ -1,4 +1,6 @@
 import { ReactComponent } from '@formio/react';
+
+import { Component } from '@navikt/skjemadigitalisering-shared-domain';
 import { createRoot } from 'react-dom/client';
 
 interface IReactComponent {
@@ -40,7 +42,7 @@ interface ReactComponentType {
   // Field
   render(element: any): any;
   // Component
-  component?: import('@navikt/skjemadigitalisering-shared-domain/src').Component;
+  component?: Component;
   defaultValue?: any;
   dataValue?: any;
   refs?: any;
