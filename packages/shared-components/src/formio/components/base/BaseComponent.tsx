@@ -8,7 +8,7 @@ class BaseComponent extends FormioReactComponent2 {
 
   getLabel() {
     return `${this.component?.label}${
-      this.component?.validate?.required && !this.component?.readOnly ? ` (${this.t('valgfritt')})` : ''
+      !this.component?.validate?.required && !this.component?.readOnly ? ` (${this.t('valgfritt')})` : ''
     }`;
   }
 
