@@ -29,6 +29,12 @@ class BaseComponent extends FormioReactComponent2 {
   getAutocomplete() {
     return this.component?.autoComplete ?? 'off';
   }
+
+  focus() {
+    if (this.reactInstance) {
+      this.reactInstance.focus();
+    }
+  }
 }
 
 export default BaseComponent;
