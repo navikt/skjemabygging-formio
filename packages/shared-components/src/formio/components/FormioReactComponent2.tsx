@@ -91,9 +91,7 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
 
   detachReact(element) {
     if (element && this.rootElement) {
-      setTimeout(() => {
-        this.rootElement.unmount();
-      });
+      this.rootElement.unmount();
     }
   }
 
