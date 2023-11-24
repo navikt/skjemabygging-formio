@@ -1,3 +1,5 @@
+import { Tag } from '@navikt/ds-react';
+import { formDiffingTool } from '@navikt/skjemadigitalisering-shared-domain';
 import Field from 'formiojs/components/_classes/field/Field';
 import { ReactNode } from 'react';
 import FormioReactComponent2 from '../FormioReactComponent2';
@@ -21,9 +23,44 @@ class BaseComponent extends FormioReactComponent2 {
   }
 
   getLabel() {
-    return `${this.t(this.component?.label ?? '')}${
-      this.component?.validate?.required && !this.component?.readOnly ? '' : ` (${this.t('valgfritt')})`
-    }`;
+    return (
+      <>
+        {this.t(this.component?.label ?? '')}
+        {this.component?.validate?.required && !this.component?.readOnly ? '' : ` (${this.t('valgfritt')})`}
+        {this.getDiffTag()}
+      </>
+    );
+  }
+
+  getDiffTag() {
+    const publishedForm = this.options?.formConfig?.publishedForm;
+    if (!this.builderMode || !publishedForm) {
+      return <></>;
+    }
+
+    // TODO: Fix mergeSchema
+    const mergeSchema = undefined; //self.mergeSchema.bind(self);
+    const diff = formDiffingTool.getComponentDiff(this.component!, publishedForm, mergeSchema);
+
+    return (
+      <>
+        {diff.isNew && (
+          <Tag size="xsmall" variant="warning">
+            Ny
+          </Tag>
+        )}
+        {diff.changesToCurrentComponent?.length > 0 && (
+          <Tag size="xsmall" variant="warning">
+            Endring
+          </Tag>
+        )}
+        {diff.deletedComponents?.length > 0 && (
+          <Tag size="xsmall" variant="warning">
+            Slettede elementer
+          </Tag>
+        )}
+      </>
+    );
   }
 
   getDefaultValue() {

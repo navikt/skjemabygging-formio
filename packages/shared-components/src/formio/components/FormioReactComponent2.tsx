@@ -52,6 +52,7 @@ interface ReactComponentType {
   error?: {
     message: string;
   } | null;
+  builderMode: boolean;
   init(): any;
   redraw(): any;
   attach(element: any): any;
