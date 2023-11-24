@@ -103,7 +103,7 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
       this.shouldSetValue = true;
       this.dataForSetting = value;
     }
-    this.updateValue(value);
+    this.dataValue = value;
   }
 
   /**
