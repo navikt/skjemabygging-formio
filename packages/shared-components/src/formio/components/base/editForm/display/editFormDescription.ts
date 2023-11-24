@@ -6,6 +6,9 @@ const editFormDescription = (): Component => {
     ...editFormAceEditor('html'),
     key: 'description',
     label: 'Beskrivelse',
+    validate: {
+      required: false,
+    },
   };
 };
 

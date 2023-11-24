@@ -15,6 +15,9 @@ const editFormCustomValidation = (): Component => {
         ...editFormAceEditor('javascript'),
         key: 'validate.custom',
         hideLabel: true,
+        validate: {
+          required: false,
+        },
       },
       {
         type: 'htmlelement',

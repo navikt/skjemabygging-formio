@@ -6,7 +6,6 @@ const defaultValue = (): Component => {
     label: 'Standard verdi',
     key: 'defaultValue',
     input: true,
-    fieldSize: 'input--xxl',
   };
 };
 

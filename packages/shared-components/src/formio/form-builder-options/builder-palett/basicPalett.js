@@ -1,3 +1,5 @@
+import TextField from '../../components/textfield/TextField';
+
 const basicPalett = {
   title: 'Standard felter',
   default: false,
@@ -5,24 +7,7 @@ const basicPalett = {
     checkbox: null,
     radio: null,
     textArea: null,
-    textfield: {
-      title: 'Tekstfelt',
-      key: 'textfield',
-      icon: 'terminal',
-      schema: {
-        label: 'Tekstfelt',
-        type: 'textfield',
-        key: 'tekstfelt',
-        input: true,
-        clearOnHide: true,
-        fieldSize: 'input--xxl',
-        dataGridLabel: true,
-        validateOn: 'blur',
-        validate: {
-          required: true,
-        },
-      },
-    },
+    textfield: TextField.builderInfo,
     textarea: {
       title: 'Tekstområde',
       key: 'textarea',

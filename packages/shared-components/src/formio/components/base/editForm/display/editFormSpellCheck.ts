@@ -7,6 +7,9 @@ const editFormSpellCheck = (): Component => {
     key: 'spellcheck',
     defaultValue: true,
     label: 'Tillat stavekontroll',
+    validate: {
+      required: false,
+    },
   };
 };
 

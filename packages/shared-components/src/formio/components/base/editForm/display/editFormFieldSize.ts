@@ -17,6 +17,9 @@ const editFormFieldSizeField = (): Component => {
       ],
     },
     input: true,
+    validate: {
+      required: false,
+    },
   };
 };
 

@@ -6,6 +6,9 @@ const editFormDisabled = (): Component => {
     label: 'Deaktivert',
     key: 'disabled',
     input: true,
+    validate: {
+      required: false,
+    },
   };
 };
 

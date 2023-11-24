@@ -1,14 +1,28 @@
+import Field from 'formiojs/components/_classes/field/Field';
 import { ReactNode } from 'react';
 import FormioReactComponent2 from '../FormioReactComponent2';
 
 class BaseComponent extends FormioReactComponent2 {
+  static schema(values) {
+    return Field.schema({
+      input: true,
+      clearOnHide: true,
+      fieldSize: 'input--xxl',
+      dataGridLabel: true,
+      validate: {
+        required: true,
+      },
+      ...values,
+    });
+  }
+
   getId() {
     return `${this.component?.id}-${this.component?.key}`;
   }
 
   getLabel() {
     return `${this.t(this.component?.label ?? '')}${
-      !this.component?.validate?.required && !this.component?.readOnly ? ` (${this.t('valgfritt')})` : ''
+      this.component?.validate?.required && !this.component?.readOnly ? '' : ` (${this.t('valgfritt')})`
     }`;
   }
 

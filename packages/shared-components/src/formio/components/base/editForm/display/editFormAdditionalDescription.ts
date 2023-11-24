@@ -4,7 +4,7 @@ import editFormAceEditor from '../shared/editFormAceEditor';
 const editFormAdditionalDescription = (): Component => {
   return {
     type: 'panel',
-    title: 'Utvidet beskrivelse',
+    title: 'Utvidet beskrivelse (valgfri)',
     key: 'additionalDescription',
     label: '',
     components: [
@@ -13,6 +13,7 @@ const editFormAdditionalDescription = (): Component => {
         key: 'additionalDescriptionText',
         hideLabel: true,
         validate: {
+          required: false,
           custom:
             'valid = (!input && data.additionalDescriptionLabel) ? "Utvidet beskrivelse er påkrevd, når man har lenketekst": true;',
         },
@@ -21,8 +22,8 @@ const editFormAdditionalDescription = (): Component => {
         type: 'textfield',
         key: 'additionalDescriptionLabel',
         label: 'Lenketekst for utvidet beskrivelse',
-        fieldSize: 'input--xxl',
         validate: {
+          required: false,
           custom:
             'valid = (!input && data.additionalDescriptionText) ? "Lenketekst er påkrevd, når man har utvidet beskrivelse" : true;',
         },

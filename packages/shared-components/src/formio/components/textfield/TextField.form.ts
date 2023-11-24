@@ -7,18 +7,26 @@ import editFormValidation from '../base/editForm/validation';
 
 const textFieldForm = () => {
   const { api, conditional, createTabs, data, display, validation } = editFormTabs;
-  const { additionalDescription, description, fieldSize, label, autoComplete, spellCheck } = editFormDisplay;
-  const { clearOnHide } = editFormData;
-  const { customError, customValidation, maxLength, minLength, required } = editFormValidation;
-  const { key } = editFormApi;
-  const { advancedConditional, simpleConditional } = editFormConditional;
 
   return createTabs(
-    display([label(), fieldSize(), description(), additionalDescription(), autoComplete(), spellCheck()]),
-    data([clearOnHide()]),
-    validation([required(), minLength(), maxLength(), customValidation(), customError()]),
-    api([key()]),
-    conditional([simpleConditional(), advancedConditional()]),
+    display([
+      editFormDisplay.label(),
+      editFormDisplay.fieldSize(),
+      editFormDisplay.description(),
+      editFormDisplay.additionalDescription(),
+      editFormDisplay.autoComplete(),
+      editFormDisplay.spellCheck(),
+    ]),
+    data([editFormData.clearOnHide()]),
+    validation([
+      editFormValidation.required(),
+      editFormValidation.minLength(),
+      editFormValidation.maxLength(),
+      editFormValidation.customValidation(),
+      editFormValidation.customError(),
+    ]),
+    api([editFormApi.key()]),
+    conditional([editFormConditional.simpleConditional(), editFormConditional.advancedConditional()]),
   );
 };
 

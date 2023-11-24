@@ -14,6 +14,9 @@ const editFormCustomError = (): Component => {
         ...editFormAceEditor('json'),
         key: 'errors',
         hideLabel: true,
+        validate: {
+          required: false,
+        },
       },
       {
         type: 'htmlelement',

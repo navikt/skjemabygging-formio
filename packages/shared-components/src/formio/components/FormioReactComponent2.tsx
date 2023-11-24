@@ -1,5 +1,4 @@
 import { ReactComponent } from '@formio/react';
-
 import { Component } from '@navikt/skjemadigitalisering-shared-domain';
 import { createRoot } from 'react-dom/client';
 
@@ -50,6 +49,9 @@ interface ReactComponentType {
   root: any;
   options: any;
   visible: any | boolean;
+  error?: {
+    message: string;
+  } | null;
   init(): any;
   redraw(): any;
   attach(element: any): any;
@@ -65,35 +67,34 @@ interface ReactComponentType {
   clearOnHide(): void;
   deleteValue(): void;
   hasValue(): boolean;
+  setComponentValidity(messages, dirty, silentCheck): boolean;
   // Element
   id?: any;
   emit(event: string, data: Object): void;
+  addEventListener(obj, type, func, persistent?);
 }
 
 class FormioReactComponent extends (ReactComponent as unknown as IReactComponent) {
-  static schema(sources) {
-    super.schema(sources);
+  hasErrorMessage: boolean;
+  rootElement: any;
+
+  constructor(component, options, data) {
+    super(component, options, data);
+    this.hasErrorMessage = false;
   }
 
-  // ref = createRef<HTMLInputElement>();
-
   attachReact(element: any) {
-    const root = createRoot(element);
-    this.renderReact(root);
+    this.rootElement = createRoot(element);
+
+    this.renderReact(this.rootElement);
   }
 
   detachReact(element) {
-    if (element && this.reactInstance) {
+    if (element && this.rootElement) {
       setTimeout(() => {
-        // this.reactInstance.unmount();
-        // this.reactRoot.unmount();
-        this.reactInstance = undefined;
+        this.rootElement.unmount();
       });
     }
-  }
-
-  setReactInstance(element) {
-    super.setReactInstance(element);
   }
 
   setValue(value: any) {
@@ -107,16 +108,31 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
     this.updateValue(value);
   }
 
-  getValue() {
-    return super.getValue();
-  }
-
   /**
    * To render a react component, override this function and pass the jsx element as a param to element's render function
    *
    * @param element
    */
   renderReact(_element) {}
+
+  rerender() {
+    if (this.rootElement) {
+      this.renderReact(this.rootElement);
+    }
+  }
+
+  addMessages(_messages) {
+    // This empty method makes sure Formio do not add messages since we want to handle all messages.
+  }
+
+  setComponentValidity(messages, dirty, silentCheck) {
+    const isValid = super.setComponentValidity(messages, dirty, silentCheck);
+    if (!!this.error?.message != this.hasErrorMessage) {
+      this.hasErrorMessage = !!this.error?.message;
+      this.rerender();
+    }
+    return isValid;
+  }
 }
 
 export default FormioReactComponent;
