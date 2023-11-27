@@ -14,7 +14,7 @@ class BaseComponent extends FormioReactComponent2 {
       fieldSize: 'input--xxl',
       dataGridLabel: true,
       validate: {
-        required: true,
+        required: false,
       },
       ...values,
     });

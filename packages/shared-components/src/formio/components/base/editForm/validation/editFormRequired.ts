@@ -6,9 +6,6 @@ const editFormRequired = (): Component => {
     label: 'Påkrevd',
     key: 'validate.required',
     input: true,
-    validate: {
-      required: false,
-    },
   };
 };
 

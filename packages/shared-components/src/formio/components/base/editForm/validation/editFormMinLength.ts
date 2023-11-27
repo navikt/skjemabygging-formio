@@ -6,9 +6,6 @@ const editFormMinLength = (): Component => {
     label: 'Minimumslengde',
     key: 'validate.minLength',
     input: true,
-    validate: {
-      required: false,
-    },
   };
 };
 

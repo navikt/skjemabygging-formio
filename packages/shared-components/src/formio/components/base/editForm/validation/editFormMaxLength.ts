@@ -6,9 +6,6 @@ const editFormMaxLength = (): Component => {
     label: 'Maksimumslengde',
     key: 'validate.maxLength',
     input: true,
-    validate: {
-      required: false,
-    },
   };
 };
 

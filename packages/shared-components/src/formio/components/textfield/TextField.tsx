@@ -27,7 +27,7 @@ export default class TextField extends BaseComponent {
     return {
       title: 'Tekstfelt',
       group: 'basic',
-      schema: TextField.schema(),
+      schema: { ...TextField.schema(), validate: { required: true } },
     };
   }
 

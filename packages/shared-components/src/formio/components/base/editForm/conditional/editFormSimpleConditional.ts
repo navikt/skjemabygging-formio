@@ -41,9 +41,6 @@ const editFormSimpleConditional = (): Component => {
         input: true,
         label: 'Har verdien:',
         key: 'conditional.eq',
-        validate: {
-          required: false,
-        },
       },
     ],
   };

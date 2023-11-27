@@ -6,9 +6,6 @@ const editFormDisabled = (): Component => {
     type: 'textfield',
     key: 'contentForPdf',
     input: true,
-    validate: {
-      required: false,
-    },
   };
 };
 
