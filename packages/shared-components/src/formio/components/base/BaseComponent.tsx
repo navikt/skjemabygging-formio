@@ -1,10 +1,12 @@
 import { Tag } from '@navikt/ds-react';
-import { formDiffingTool } from '@navikt/skjemadigitalisering-shared-domain';
+import { Component, formDiffingTool, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import Field from 'formiojs/components/_classes/field/Field';
 import { ReactNode } from 'react';
 import FormioReactComponent2 from '../FormioReactComponent2';
 
 class BaseComponent extends FormioReactComponent2 {
+  editFields;
+
   static schema(values) {
     return Field.schema({
       input: true,
@@ -32,15 +34,25 @@ class BaseComponent extends FormioReactComponent2 {
     );
   }
 
+  getEditFields() {
+    if (!this.editFields) {
+      // @ts-ignore
+      const editForm: Component = this.constructor.editForm();
+      this.editFields = navFormUtils
+        .flattenComponents(editForm.components?.[0].components as Component[])
+        .map((component) => component.key);
+    }
+
+    return this.editFields;
+  }
+
   getDiffTag() {
     const publishedForm = this.options?.formConfig?.publishedForm;
     if (!this.builderMode || !publishedForm) {
       return <></>;
     }
 
-    // TODO: Fix mergeSchema
-    const mergeSchema = undefined; //self.mergeSchema.bind(self);
-    const diff = formDiffingTool.getComponentDiff(this.component!, publishedForm, mergeSchema);
+    const diff = formDiffingTool.generateComponentDiff(this.component!, publishedForm, this.getEditFields());
 
     return (
       <>

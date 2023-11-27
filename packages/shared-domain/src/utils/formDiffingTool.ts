@@ -115,6 +115,11 @@ const checkComponentDiff = (
   return null;
 };
 
+const generateComponentDiff = (currentComponent: Component, publishedForm?: NavFormType, fields: string[] = []) => {
+  const changes = checkComponentDiff(currentComponent, publishedForm) || {};
+  return createDiffSummary(changes, fields);
+};
+
 const getComponentDiff = (
   currentComponent: Component,
   publishedForm?: NavFormType,
@@ -138,7 +143,7 @@ function toChange(diff: any, key: string) {
   return undefined;
 }
 
-const createDiffSummary = (changes: any) => {
+const createDiffSummary = (changes: any, fields?: string[]) => {
   const { diff, components } = changes;
   const diffSummary: any = {
     isNew: changes.status === DiffStatus.NEW,
@@ -147,18 +152,20 @@ const createDiffSummary = (changes: any) => {
   };
   if (diff) {
     Object.keys(diff).forEach((key) => {
-      const subDiff = diff[key].diff;
-      if (subDiff) {
-        Object.keys(subDiff).forEach((subKey) => {
-          const change = toChange(subDiff[subKey], `${key}.${subKey}`);
+      if (!fields || fields.includes(key)) {
+        const subDiff = diff[key].diff;
+        if (subDiff) {
+          Object.keys(subDiff).forEach((subKey) => {
+            const change = toChange(subDiff[subKey], `${key}.${subKey}`);
+            if (change) {
+              diffSummary.changesToCurrentComponent.push(change);
+            }
+          });
+        } else {
+          const change = toChange(diff[key], key);
           if (change) {
             diffSummary.changesToCurrentComponent.push(change);
           }
-        });
-      } else {
-        const change = toChange(diff[key], key);
-        if (change) {
-          diffSummary.changesToCurrentComponent.push(change);
         }
       }
     });
@@ -352,6 +359,7 @@ const isObject = (element: any) => {
 const tools = {
   generateNavFormDiff,
   generateNavFormSettingsDiff,
+  generateComponentDiff,
   checkComponentDiff,
   getComponentDiff,
   createDiffSummary,

@@ -13,6 +13,9 @@ export default class TextField extends BaseComponent {
       label: 'Tekstfelt',
       type: 'textfield',
       key: 'tekstfelt',
+      spellcheck: true,
+      inputType: 'text',
+      inputFormat: 'plain',
     });
   }
 
