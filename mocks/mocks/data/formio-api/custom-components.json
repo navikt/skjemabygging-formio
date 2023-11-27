@@ -205,7 +205,7 @@
           "modalEdit": false,
           "data": {
             "resource": "",
-            "url": "http://localhost:8081/fyllut/api/common-codes/currencies?lang=nb"
+            "url": "http://127.0.0.1:3001/fyllut/api/common-codes/currencies?lang=nb"
           },
           "valueProperty": "",
           "clearOnHide": true,
