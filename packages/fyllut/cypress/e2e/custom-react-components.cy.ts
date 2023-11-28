@@ -79,6 +79,7 @@ describe('Custom react components', () => {
         cy.findByRole('link', { name: 'Rediger dine opplysninger' }).click({ force: true });
         cy.findByRole('heading', { name: 'Dine opplysninger' }).should('exist');
 
+        cy.findByRole('textbox', { name: 'Fornavn' }).should('have.value', 'Storm');
         cy.findByRole('textbox', { name: 'Fornavn' }).type('zy');
         cy.findByRole('combobox', { name: 'Velg valuta' }).click();
         cy.findByRole('combobox', { name: 'Velg valuta' }).should('have.focus').type('Norske{enter}');
@@ -126,7 +127,7 @@ describe('Custom react components', () => {
       it('make sure components keep their values after going to summary page', () => {
         cy.findByRole('heading', { name: 'Dine opplysninger' }).should('be.visible');
         cy.findByRole('textbox', { name: 'Fornavn' }).should('be.visible');
-        cy.findByRole('textbox', { name: 'Fornavn' }).type('Storm');
+        cy.findByRoleWhenAttached('textbox', { name: 'Fornavn' }).type('Storm');
         cy.findByRole('combobox', { name: 'I hvilket land bor du?' })
           .should('be.visible')
           .type('Nor{downArrow}{downArrow}{downArrow}{downArrow}{enter}');
