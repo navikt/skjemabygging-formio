@@ -45,13 +45,13 @@
     {% } %}
     <div style="margin-top: 10px; margin-bottom: 20px;">
       <button class="navds-button navds-button--primary" style="margin-right: 10px;" type="button" ref="saveButton">
-        <span aria-live="polite" class="navds-label">{{ctx.t('Lagre')}}</span>
+        <span aria-live="polite" class="navds-label" data-testid="editorSaveButton">{{ctx.t('Lagre')}}</span>
       </button>
       <button class="navds-button navds-button--secondary" style="margin-right: 10px;" type="button" ref="cancelButton">
-        <span aria-live="polite" class="navds-label">{{ctx.t('Avbryt')}}</span>
+        <span aria-live="polite" class="navds-label" data-testid="editorCancelButton">{{ctx.t('Avbryt')}}</span>
       </button>
       <button class="navds-button navds-button--danger" type="button" ref="removeButton">
-        <span aria-live="polite" class="navds-label">{{ctx.t('Slett')}}</span>
+        <span aria-live="polite" class="navds-label" data-testid="editorRemoveButton">{{ctx.t('Slett')}}</span>
       </button>
     </div>
   </div>
