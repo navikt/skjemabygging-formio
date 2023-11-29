@@ -66,11 +66,11 @@ WebformBuilder.prototype.destroy = function (...args) {
   if (this.dialog) {
     this.dialog.close();
   }
-  const { webform } = this;
-  if (!webform.initialized) {
-    webform.ready.then(() => {
-      webform.destroy(...args);
+  if (!this.webform.initialized) {
+    this.webform.ready.then(() => {
+      originalDestroy.call(this, ...args);
     });
+  } else {
+    originalDestroy.call(this, ...args);
   }
-  originalDestroy.call(this, ...args);
 };
