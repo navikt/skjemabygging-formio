@@ -2,9 +2,9 @@ import { Tag } from '@navikt/ds-react';
 import { Component, formDiffingTool, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import Field from 'formiojs/components/_classes/field/Field';
 import { ReactNode } from 'react';
-import FormioReactComponent2 from '../FormioReactComponent2';
+import FormioReactComponent from './FormioReactComponent';
 
-class BaseComponent extends FormioReactComponent2 {
+class BaseComponent extends FormioReactComponent {
   editFields;
 
   static schema(values) {
@@ -100,6 +100,7 @@ class BaseComponent extends FormioReactComponent2 {
   }
 
   onBlur() {
+    console.log('emit blur');
     this.emit('blur', this);
   }
 }
