@@ -3,12 +3,12 @@ import { createRoot } from 'react-dom/client';
 import { IReactComponent } from './index';
 
 class FormioReactComponent extends (ReactComponent as unknown as IReactComponent) {
-  hasErrorMessage: boolean;
+  componentMessage?: string;
   rootElement: any;
 
   constructor(component, options, data) {
     super(component, options, data);
-    this.hasErrorMessage = false;
+    this.componentMessage = undefined;
   }
 
   attachReact(element: any) {
@@ -53,8 +53,8 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
 
   setComponentValidity(messages, dirty, silentCheck) {
     const isValid = super.setComponentValidity(messages, dirty, silentCheck);
-    if (!!this.error?.message != this.hasErrorMessage) {
-      this.hasErrorMessage = !!this.error?.message;
+    if (this.error?.message !== this.componentMessage) {
+      this.componentMessage = this.error?.message;
       this.rerender();
     }
     return isValid;

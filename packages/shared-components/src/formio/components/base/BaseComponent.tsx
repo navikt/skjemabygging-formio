@@ -13,6 +13,7 @@ class BaseComponent extends FormioReactComponent {
       clearOnHide: true,
       fieldSize: 'input--xxl',
       dataGridLabel: true,
+      validateOn: 'blur',
       validate: {
         required: false,
       },
@@ -100,7 +101,6 @@ class BaseComponent extends FormioReactComponent {
   }
 
   onBlur() {
-    console.log('emit blur');
     this.emit('blur', this);
   }
 }

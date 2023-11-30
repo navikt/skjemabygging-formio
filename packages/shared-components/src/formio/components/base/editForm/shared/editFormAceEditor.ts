@@ -10,6 +10,8 @@ const editFormAceEditor = (type: 'html' | 'javascript' | 'json'): Component => {
     wysiwyg: {
       minLines: 5,
       mode: `ace/mode/${type}`,
+      wrap: true,
+      indentedSoftWrap: false,
     },
     as: type,
     input: true,

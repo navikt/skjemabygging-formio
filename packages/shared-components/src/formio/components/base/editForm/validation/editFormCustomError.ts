@@ -49,7 +49,7 @@ const editFormCustomError = (): Component => {
             <li>c<span/>ustom</li>
           </ul>
 
-          <p>Avhengig av feilmeldingen av feilmeldingen kan følgende variabler benyttes:</p>
+          <p>Avhengig av feilmeldingen kan følgende variabler benyttes:</p>
           <ul>
            <li><code>{<span/>{ f<span/>ield }}</code> blir erstattet med ledeteksten til feltet.</li>
            <li><code>{<span/>{ m<span/>in }}</code></li>
