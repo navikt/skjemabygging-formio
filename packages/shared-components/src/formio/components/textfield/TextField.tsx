@@ -42,7 +42,7 @@ export default class TextField extends BaseComponent {
         defaultValue={this.getDefaultValue()}
         ref={(ref) => this.setReactInstance(ref)}
         onChange={(event) => this.updateValue(event.currentTarget.value, { modified: true })}
-        onBlur={this.onBlur}
+        onBlur={this.onBlur.bind(this)}
         label={this.getLabel()}
         description={this.getDescription()}
         className={this.getClassName()}
