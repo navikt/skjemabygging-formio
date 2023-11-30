@@ -146,18 +146,16 @@ class ReportService {
           : `https://fyllut-preprod.intern.dev.nav.no/fyllut/${form.path}`;
       const baseEttersendingUrl =
         config.naisClusterName === 'prod-gcp'
-          ? `https://www.nav.no/fyllut-ettersending/detaljer/${form.path}`
-          : `https://fyllut-ettersending.intern.dev.nav.no/fyllut-ettersending/detaljer/${form.path}`;
+          ? `https://www.nav.no/fyllut-ettersending/${form.path}`
+          : `https://fyllut-ettersending.intern.dev.nav.no/fyllut-ettersending/${form.path}`;
 
-      const innsendingUrl = navFormUtils.isDigital('innsending', form) ? `${baseInnsendingUrl}` : undefined;
       const paperInnsendingUrl = navFormUtils.isNone('innsending', form)
         ? `${baseInnsendingUrl}`
         : navFormUtils.isPaper('innsending', form)
         ? `${baseInnsendingUrl}?sub=paper`
         : undefined;
 
-      const ettersendingUrl =
-        navFormUtils.isDigital('ettersending', form) && hasAttachment ? `${baseEttersendingUrl}` : undefined;
+      const ettersendingUrl = hasAttachment ? baseEttersendingUrl : undefined;
       const paperEttersendingUrl =
         navFormUtils.isPaper('ettersending', form) && hasAttachment ? `${baseEttersendingUrl}?sub=paper` : undefined;
 
@@ -184,7 +182,7 @@ class ReportService {
         hasAttachment ? 'ja' : 'nei',
         numberOfAttachments,
         attachmentNames,
-        innsendingUrl || '',
+        baseInnsendingUrl || '',
         paperInnsendingUrl || '',
         ettersendingUrl || '',
         paperEttersendingUrl || '',

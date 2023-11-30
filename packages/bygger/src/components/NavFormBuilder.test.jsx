@@ -32,6 +32,18 @@ describe('NavFormBuilder', () => {
     window.confirm = undefined;
   });
 
+  describe('mounting', () => {
+    it('destroys webforms on unmount', async () => {
+      const onChangeMock = vi.fn();
+      const { unmount } = render(
+        <NavFormBuilder form={testform} onChange={onChangeMock} formBuilderOptions={DEFAULT_FORM_BUILDER_OPTIONS} />,
+      );
+      await waitFor(() => expect(Object.keys(NavFormioJs.Formio.forms).length).toBeGreaterThan(0));
+      unmount();
+      await waitFor(() => expect(Object.keys(NavFormioJs.Formio.forms).length).toBe(0));
+    });
+  });
+
   describe('A form with conditional dependencies', () => {
     let onChangeMock;
     let onReadyMock;
