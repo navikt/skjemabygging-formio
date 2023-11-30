@@ -13,7 +13,6 @@ class BaseComponent extends FormioReactComponent {
       clearOnHide: true,
       fieldSize: 'input--xxl',
       dataGridLabel: true,
-      validateOn: 'blur',
       validate: {
         required: false,
       },
