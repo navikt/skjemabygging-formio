@@ -26,12 +26,7 @@ const fetchTranslations = (url) => {
     headers: {
       'x-jwt-token': NavFormioJs.Formio.getToken(),
     },
-  })
-    .then((response) => response.json())
-    .then((response) => {
-      return response;
-    })
-    .catch((err) => (process.env.NODE_ENV !== 'production' ? [] : err));
+  }).then((response) => response.json());
 };
 
 const mapFormioKeyToLabel = (i18n: I18nTranslationMap) => {
@@ -70,7 +65,12 @@ export const useFormioTranslations = (serverURL, formio) => {
 
       return fetchTranslations(`${formio.projectUrl}/language/submission?data.name=global${filter}&limit=1000`)
         .then(mapper)
-        .then(languagesUtil.globalEntitiesToI18nGroupedByTag);
+        .then(languagesUtil.globalEntitiesToI18nGroupedByTag)
+        .catch((err) => {
+          console.error(err);
+          feedbackEmit.error('Henting av globale oversettelser feilet. Last siden på nytt.');
+          throw err;
+        });
     },
     [formio.projectUrl],
   );
@@ -129,18 +129,24 @@ export const useFormioTranslations = (serverURL, formio) => {
     async (formPath: string): Promise<FormioTranslationPayload[]> => {
       return fetchTranslations(
         `${formio.projectUrl}/language/submission?data.name__regex=/^global(.${formPath})*$/gi&limit=1000`,
-      ).then((translations: FormioTranslationPayload[]) => {
-        const languagesWithLocalTranslation = translations.reduce((localTranslations: Language[], translation) => {
-          if (localTranslations.indexOf(translation.data.language) === -1) {
-            return [...localTranslations, translation.data.language];
-          } else {
-            return localTranslations;
-          }
-        }, []);
-        return translations.filter(
-          (translation) => languagesWithLocalTranslation.indexOf(translation.data.language) !== -1,
-        );
-      });
+      )
+        .then((translations: FormioTranslationPayload[]) => {
+          const languagesWithLocalTranslation = translations.reduce((localTranslations: Language[], translation) => {
+            if (localTranslations.indexOf(translation.data.language) === -1) {
+              return [...localTranslations, translation.data.language];
+            } else {
+              return localTranslations;
+            }
+          }, []);
+          return translations.filter(
+            (translation) => languagesWithLocalTranslation.indexOf(translation.data.language) !== -1,
+          );
+        })
+        .catch((err) => {
+          console.error(err);
+          feedbackEmit.error('Henting av oversettelser for dette skjemaet feilet. Last siden på nytt.');
+          throw err;
+        });
     },
     [formio.projectUrl],
   );
