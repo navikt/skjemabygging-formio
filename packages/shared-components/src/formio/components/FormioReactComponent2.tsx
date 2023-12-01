@@ -73,6 +73,7 @@ interface ReactComponentType {
   id?: any;
   emit(event: string, data: Object): void;
   addEventListener(obj, type, func, persistent?);
+  addMessages(messages);
 }
 
 class FormioReactComponent extends (ReactComponent as unknown as IReactComponent) {
@@ -125,8 +126,14 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
     }
   }
 
-  addMessages(_messages) {
+  addMessages(messages) {
     // This empty method makes sure Formio do not add messages since we want to handle all messages.
+
+    // TODO: Fjern dette når navSelect bruker komponent fra aksel, og error kan håndteres direkte av komponenten.
+    //  Behold addMessages som en tom funksjon
+    if (['navSelect', 'landvelger', 'valutavelger'].includes(this.component?.type ?? '')) {
+      super.addMessages(messages);
+    }
   }
 
   setComponentValidity(messages, dirty, silentCheck) {
