@@ -96,6 +96,10 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
     }
   }
 
+  getValue() {
+    return this.dataValue;
+  }
+
   setValue(value: any) {
     if (this.reactInstance) {
       this.reactInstance.defaultValue = value;
@@ -104,7 +108,8 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
       this.shouldSetValue = true;
       this.dataForSetting = value;
     }
-    this.dataValue = value;
+    const newValue = value === undefined || value === null ? this.getValue() : value;
+    this.dataValue = Array.isArray(newValue) ? [...newValue] : newValue;
   }
 
   /**
