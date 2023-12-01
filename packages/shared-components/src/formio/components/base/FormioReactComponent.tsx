@@ -13,13 +13,13 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
 
   attachReact(element: any) {
     this.rootElement = createRoot(element);
-
     this.renderReact(this.rootElement);
   }
 
   detachReact(element) {
     if (element && this.rootElement) {
-      setTimeout(() => this.rootElement.unmount());
+      this.rootElement.unmount();
+      this.rootElement = undefined;
     }
   }
 
