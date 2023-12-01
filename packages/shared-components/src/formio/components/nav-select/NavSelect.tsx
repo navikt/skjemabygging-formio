@@ -5,6 +5,7 @@ import ReactSelect, { components } from 'react-select';
 import http from '../../../api/util/http/http';
 import FormBuilderOptions from '../../form-builder-options';
 import FormioReactComponent from '../FormioReactComponent';
+import BaseComponent from '../base/BaseComponent';
 import { fieldSizeField } from '../fields/fieldSize';
 import { ariaLiveMessages } from './utils/ariaLiveMessages';
 
@@ -89,7 +90,7 @@ const ReactSelectWrapper = ({
   );
 };
 
-class NavSelect extends FormioReactComponent {
+class NavSelect extends BaseComponent {
   isLoading = false;
   loadFinished = false;
   selectOptions: any = [];
@@ -241,12 +242,12 @@ class NavSelect extends FormioReactComponent {
         component={component}
         options={this.translateOptionLabels(this.selectOptions)}
         label={this.t(component.label)}
-        value={this.translateOptionLabel(this.dataForSetting || this.dataValue)}
+        value={this.translateOptionLabel(this.getDefaultValue())}
         ariaLiveMessages={this.translateAriaLiveMessages(ariaLiveMessages)}
         screenReaderStatus={({ count }: { count: number }) => this.t(SELECT_TEXTS.numberOfAvailableOptions, { count })}
         loadingMessage={() => this.t(TEXTS.statiske.loading)}
         onChange={(value) => this.updateValue(value, {})}
-        inputRef={(ref) => (this.input = ref)}
+        inputRef={(ref) => this.setReactInstance(ref)}
         isLoading={this.isLoading}
       />,
     );
