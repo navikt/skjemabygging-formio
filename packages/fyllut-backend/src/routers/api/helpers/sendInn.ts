@@ -38,6 +38,7 @@ export interface SendInnSoknadBody {
   fristForEttersendelse?: number;
   vedleggsListe?: Attachment[];
   kanLasteOppAnnet?: boolean;
+  innsendingsId?: string;
 }
 
 const isValidUuid = (innsendingsId: string): boolean => {
@@ -89,11 +90,12 @@ export const assembleSendInnSoknadBody = (
     translation?: I18nTranslationMap;
     attachments?: Attachment[];
     otherDocumentation?: boolean | undefined;
+    innsendingsId?: string;
   },
   idportenPid: string,
   submissionPdfAsByteArray: number[] | null = null,
 ): SendInnSoknadBody => {
-  const { form, submission, language, translation = {}, attachments, otherDocumentation } = requestBody;
+  const { form, submission, language, translation = {}, attachments, otherDocumentation, innsendingsId } = requestBody;
   const translate = (term: string) => translation[term] ?? term;
 
   const dokumentMetaData = {
@@ -130,6 +132,7 @@ export const assembleSendInnSoknadBody = (
     spraak: language || DEFAULT_LANGUAGE,
     hoveddokument,
     hoveddokumentVariant,
+    innsendingsId,
   };
 
   if (!!form.properties.ettersendelsesfrist) {
