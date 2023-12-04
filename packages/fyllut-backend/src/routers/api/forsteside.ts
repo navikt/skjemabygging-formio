@@ -69,6 +69,8 @@ const validateForstesideRequest = async (forsteside: ForstesideRequestBody) => {
 };
 
 const forstesideRequest = async (req: Request, body?: BodyInit) => {
+  logger.info(`Forsteside request body ${JSON.stringify(body)}`);
+
   const response = await fetch(`${skjemabyggingProxyUrl}/foersteside`, {
     method: 'POST',
     headers: {
