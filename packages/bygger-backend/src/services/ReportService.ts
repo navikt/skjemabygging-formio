@@ -152,8 +152,8 @@ class ReportService {
       const paperInnsendingUrl = navFormUtils.isNone('innsending', form)
         ? `${baseInnsendingUrl}`
         : navFormUtils.isPaper('innsending', form)
-        ? `${baseInnsendingUrl}?sub=paper`
-        : undefined;
+          ? `${baseInnsendingUrl}?sub=paper`
+          : undefined;
 
       const ettersendingUrl = hasAttachment ? baseEttersendingUrl : undefined;
       const paperEttersendingUrl =
@@ -163,7 +163,8 @@ class ReportService {
       if (modified && published) {
         const modifiedDate = DateTime.fromISO(modified);
         const publishedDate = DateTime.fromISO(published);
-        unpublishedChanges = publishedDate.until(modifiedDate).isEmpty() ? 'nei' : 'ja';
+        const interval = publishedDate.until(modifiedDate);
+        unpublishedChanges = interval.isValid && !interval.isEmpty() ? 'ja' : 'nei';
       }
       const numberOfSignatures = signatures?.length || 1;
       stringifier.write([
