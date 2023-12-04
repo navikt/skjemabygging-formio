@@ -164,7 +164,9 @@ class ReportService {
         const modifiedDate = DateTime.fromISO(modified);
         const publishedDate = DateTime.fromISO(published);
         const interval = publishedDate.until(modifiedDate);
-        unpublishedChanges = interval.isValid && !interval.isEmpty() ? 'ja' : 'nei';
+        if (interval.isValid) {
+          unpublishedChanges = interval.isEmpty() ? 'nei' : 'ja';
+        }
       }
       const numberOfSignatures = signatures?.length || 1;
       stringifier.write([
