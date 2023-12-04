@@ -27,7 +27,13 @@ export default class TextField extends BaseComponent {
     return {
       title: 'Tekstfelt',
       group: 'basic',
-      schema: { ...TextField.schema(), validate: { required: true } },
+      schema: {
+        ...TextField.schema(),
+        validateOn: 'blur',
+        validate: {
+          required: true,
+        },
+      },
     };
   }
 
@@ -42,13 +48,13 @@ export default class TextField extends BaseComponent {
         defaultValue={this.getDefaultValue()}
         ref={(ref) => this.setReactInstance(ref)}
         onChange={(event) => this.updateValue(event.currentTarget.value, { modified: true })}
-        onBlur={() => this.onBlur()}
+        onBlur={this.onBlur.bind(this)}
         label={this.getLabel()}
         description={this.getDescription()}
         className={this.getClassName()}
+        autoComplete={this.getAutocomplete()}
         readOnly={this.component?.readOnly}
         spellCheck={this.component?.spellCheck}
-        autoComplete={this.getAutocomplete()}
         error={this.error?.message}
       />
     );

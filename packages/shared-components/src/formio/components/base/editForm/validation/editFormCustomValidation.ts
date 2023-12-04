@@ -26,7 +26,6 @@ const editFormCustomValidation = (): Component => {
         tag: 'div',
         content: `
           <small>
-            <p>Du må tildele <strong>valid</strong> variablen, enten som <strong>true</strong> eller en feilmelding.</p>
             <h5>Eksempel:</h5>
             <pre>valid = (input === 'Joe') ? true : 'Navnet ditt må være "Joe"';</pre>
           </small>`,

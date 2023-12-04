@@ -1,4 +1,4 @@
-import { NavFormType, navFormUtils, PrefillKey } from '@navikt/skjemadigitalisering-shared-domain';
+import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import cloneDeep from 'lodash.clonedeep';
 
 type ReducerAction = 'form-loaded' | 'form-not-found' | 'form-changed' | 'form-saved';
@@ -11,18 +11,6 @@ export interface ReducerState {
   form?: NavFormType;
   publishedForm?: NavFormType | null;
 }
-
-const unique = <T extends Array<any>>(arr: T) => [...new Set(arr)];
-
-const hoistPrefill = (form: NavFormType): NavFormType => {
-  form.properties.prefill = unique(
-    navFormUtils
-      .flattenComponents(form.components)
-      .map((comp) => comp.prefill)
-      .filter((value) => !!value) as PrefillKey[],
-  );
-  return form;
-};
 
 const formPageReducer = (state: ReducerState, action: ReducerActionType) => {
   const formClone = cloneDeep(action.form);
@@ -39,7 +27,7 @@ const formPageReducer = (state: ReducerState, action: ReducerActionType) => {
       return {
         ...state,
         dbForm: state.dbForm,
-        form: hoistPrefill(formClone),
+        form: formClone,
       };
     case 'form-not-found':
       return {
