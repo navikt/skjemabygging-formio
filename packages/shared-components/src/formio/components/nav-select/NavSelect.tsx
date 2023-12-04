@@ -233,7 +233,7 @@ class NavSelect extends BaseComponent {
         .finally(() => {
           this.isLoading = false;
           this.loadFinished = true;
-          super.redraw();
+          this.rerender();
         });
     }
 
