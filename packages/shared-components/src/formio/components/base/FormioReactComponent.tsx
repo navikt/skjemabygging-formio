@@ -37,9 +37,8 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
   }
 
   /**
-   * To render a react component, override this function and pass the jsx element as a param to element's render function
-   *
-   * @param element
+   * To render a react component, override this function
+   * and pass the jsx element as a param to element's render function
    */
   renderReact(_element) {}
 
@@ -49,10 +48,16 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
     }
   }
 
-  addMessages(_messages) {
-    // This empty method makes sure Formio do not add messages since we want to handle all messages.
-  }
+  /**
+   * Add message render the error messages Form.io template.
+   *
+   * If the component have error message suppport, we would like to use that instead of the template in Form.io.
+   */
+  addMessages(_messages) {}
 
+  /**
+   * Set error
+   */
   setComponentValidity(messages, dirty, silentCheck) {
     const isValid = super.setComponentValidity(messages, dirty, silentCheck);
     if (this.error?.message !== this.componentMessage) {

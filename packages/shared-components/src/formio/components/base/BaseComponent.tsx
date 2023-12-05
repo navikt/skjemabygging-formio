@@ -4,9 +4,22 @@ import Field from 'formiojs/components/_classes/field/Field';
 import { ReactNode } from 'react';
 import FormioReactComponent from './FormioReactComponent';
 
+/**
+ * When creating a custom component that extends BaseComponent,
+ * minimum the following function should be overridden:
+ *
+ * static editForm(): Component
+ * static schema(): Component
+ * static get builderInfo(): Component
+ * renderReact(element): void
+ */
 class BaseComponent extends FormioReactComponent {
   editFields;
 
+  /**
+   * Override in custom component and call BaseComponent.schema()
+   * with the component schema values like label, type, key and more.
+   */
   static schema(values) {
     return Field.schema({
       input: true,
@@ -20,10 +33,12 @@ class BaseComponent extends FormioReactComponent {
     });
   }
 
-  get defaultSchema() {
-    return (this.constructor as typeof FormioReactComponent).schema();
-  }
-
+  /**
+   * This can be used in builderInfo() in the custom component,
+   * to get some default values used for components in the Bygger app.
+   *
+   * builderInfo() is used by Form.io and is required in the custom component.
+   */
   static defaultBuilderInfoSchema() {
     return {
       schema: {
@@ -35,10 +50,16 @@ class BaseComponent extends FormioReactComponent {
     };
   }
 
+  /**
+   * Get id for custom component renderReact()
+   */
   getId() {
     return `${this.component?.id}-${this.component?.key}`;
   }
 
+  /**
+   * Get label for custom component renderReact()
+   */
   getLabel() {
     return (
       <>
@@ -49,6 +70,85 @@ class BaseComponent extends FormioReactComponent {
     );
   }
 
+  /**
+   * Get default value for custom component renderReact()
+   */
+  getDefaultValue() {
+    return this.dataForSetting || this.dataValue;
+  }
+
+  /**
+   * Get description for custom component renderReact()
+   */
+  getDescription(): ReactNode {
+    return this.component?.description ? (
+      <div dangerouslySetInnerHTML={{ __html: this.component?.description }}></div>
+    ) : undefined;
+  }
+
+  /**
+   * Get class name for custom component renderReact()
+   */
+  getClassName() {
+    return this.component?.fieldSize;
+  }
+
+  /**
+   * Get auto complete for custom component renderReact()
+   */
+  getAutoComplete() {
+    return this.component?.autoComplete ?? 'off';
+  }
+
+  /**
+   * Get read only for custom component renderReact()
+   */
+  getReadOnly() {
+    return this.component?.readOnly;
+  }
+
+  /**
+   * Get spell check for custom component renderReact()
+   */
+  getSpellCheck() {
+    return this.component?.spellCheck;
+  }
+
+  /**
+   * Get error custom for component renderReact()
+   */
+  getError() {
+    return this.error?.message;
+  }
+
+  /**
+   * Get on blur for component renderReact()
+   */
+  onBlur() {
+    this.emit('blur', this);
+  }
+
+  /**
+   * Used to set focus when clicking error summary.
+   */
+  focus() {
+    if (this.reactInstance) {
+      this.reactInstance.focus();
+    }
+  }
+
+  /**
+   * Required and used by Form.io
+   */
+  get defaultSchema() {
+    return (this.constructor as typeof FormioReactComponent).schema();
+  }
+
+  /**
+   * Private function
+   *
+   * Get the key from all components that is configured in editForm() in the custom component.
+   */
   getEditFields() {
     if (!this.editFields) {
       const editForm: Component = (this.constructor as typeof FormioReactComponent).editForm();
@@ -60,6 +160,11 @@ class BaseComponent extends FormioReactComponent {
     return this.editFields;
   }
 
+  /**
+   * Private function
+   *
+   * Create a diff <Tag> that is used in the label for the custom component.
+   */
   getDiffTag() {
     const publishedForm = this.options?.formConfig?.publishedForm;
     if (!this.builderMode || !publishedForm) {
@@ -87,46 +192,6 @@ class BaseComponent extends FormioReactComponent {
         )}
       </>
     );
-  }
-
-  getDefaultValue() {
-    return this.dataForSetting || this.dataValue;
-  }
-
-  getDescription(): ReactNode {
-    return this.component?.description ? (
-      <div dangerouslySetInnerHTML={{ __html: this.component?.description }}></div>
-    ) : undefined;
-  }
-
-  getClassName() {
-    return this.component?.fieldSize;
-  }
-
-  getAutocomplete() {
-    return this.component?.autoComplete ?? 'off';
-  }
-
-  getReadOnly() {
-    return this.component?.readOnly;
-  }
-
-  getSpellCheck() {
-    return this.component?.spellCheck;
-  }
-
-  getError() {
-    return this.error?.message;
-  }
-
-  focus() {
-    if (this.reactInstance) {
-      this.reactInstance.focus();
-    }
-  }
-
-  onBlur() {
-    this.emit('blur', this);
   }
 }
 

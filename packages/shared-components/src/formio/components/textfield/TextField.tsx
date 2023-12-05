@@ -44,7 +44,7 @@ export default class TextField extends BaseComponent {
         label={this.getLabel()}
         description={this.getDescription()}
         className={this.getClassName()}
-        autoComplete={this.getAutocomplete()}
+        autoComplete={this.getAutoComplete()}
         readOnly={this.getReadOnly()}
         spellCheck={this.getSpellCheck()}
         error={this.getError()}
