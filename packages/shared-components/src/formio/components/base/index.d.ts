@@ -49,6 +49,7 @@ interface ReactComponentType {
   deleteValue(): void;
   hasValue(): boolean;
   setComponentValidity(messages, dirty, silentCheck): boolean;
+  addFocusBlurEvents(element): void;
   // Element
   id?: any;
   emit(event: string, data: Object): void;

@@ -122,13 +122,6 @@ class BaseComponent extends FormioReactComponent {
   }
 
   /**
-   * Get on blur for component renderReact()
-   */
-  onBlur() {
-    this.emit('blur', this);
-  }
-
-  /**
    * Used to set focus when clicking error summary.
    */
   focus() {
