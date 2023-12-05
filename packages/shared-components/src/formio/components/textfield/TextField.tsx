@@ -1,5 +1,4 @@
 import { TextField as NavTextField } from '@navikt/ds-react';
-import React from 'react';
 import BaseComponent from '../base/BaseComponent';
 import textFieldForm from './TextField.form';
 
@@ -42,7 +41,7 @@ export default class TextField extends BaseComponent {
   }
 
   renderReact(element) {
-    const instance: React.ReactNode = (
+    element.render(
       <NavTextField
         id={this.getId()}
         defaultValue={this.getDefaultValue()}
@@ -56,10 +55,7 @@ export default class TextField extends BaseComponent {
         readOnly={this.component?.readOnly}
         spellCheck={this.component?.spellCheck}
         error={this.error?.message}
-      />
+      />,
     );
-
-    element.render(instance);
-    return instance;
   }
 }
