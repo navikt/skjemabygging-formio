@@ -17,9 +17,11 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
   }
 
   detachReact(element) {
-    if (element && this.rootElement) {
+    // For now we prefer memory leak in development over spamming the console log...
+    // Wrapping in setTimeout causes problems when we do a redraw, so need to find a different solution.
+    // https://github.com/facebook/react/issues/25675#issuecomment-1518272581
+    if (element && this.rootElement && process.env.NODE_ENV !== 'development') {
       this.rootElement.unmount();
-      this.rootElement = undefined;
     }
   }
 
