@@ -142,7 +142,7 @@ const NavForm = (props) => {
     if (formio && submission) {
       formio.setSubmission(JSON.parse(JSON.stringify(submission))).then(() => {
         if (submission.fyllutState) {
-          formio.triggerRedraw();
+          formio.redrawNavigation();
         }
       });
     }
