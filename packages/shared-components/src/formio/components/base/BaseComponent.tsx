@@ -20,6 +20,21 @@ class BaseComponent extends FormioReactComponent {
     });
   }
 
+  get defaultSchema() {
+    return (this.constructor as typeof FormioReactComponent).schema();
+  }
+
+  static defaultBuilderInfoSchema() {
+    return {
+      schema: {
+        validateOn: 'blur',
+        validate: {
+          required: true,
+        },
+      },
+    };
+  }
+
   getId() {
     return `${this.component?.id}-${this.component?.key}`;
   }
@@ -36,8 +51,7 @@ class BaseComponent extends FormioReactComponent {
 
   getEditFields() {
     if (!this.editFields) {
-      // @ts-ignore
-      const editForm: Component = this.constructor.editForm();
+      const editForm: Component = (this.constructor as typeof FormioReactComponent).editForm();
       this.editFields = navFormUtils
         .flattenComponents(editForm.components?.[0].components as Component[])
         .map((component) => component.key);
@@ -91,6 +105,18 @@ class BaseComponent extends FormioReactComponent {
 
   getAutocomplete() {
     return this.component?.autoComplete ?? 'off';
+  }
+
+  getReadOnly() {
+    return this.component?.readOnly;
+  }
+
+  getSpellCheck() {
+    return this.component?.spellCheck;
+  }
+
+  getError() {
+    return this.error?.message;
   }
 
   focus() {

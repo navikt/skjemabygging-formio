@@ -18,20 +18,13 @@ export default class TextField extends BaseComponent {
     });
   }
 
-  get defaultSchema() {
-    return TextField.schema();
-  }
-
   static get builderInfo() {
     return {
       title: 'Tekstfelt',
       group: 'basic',
       schema: {
+        ...BaseComponent.defaultBuilderInfoSchema(),
         ...TextField.schema(),
-        validateOn: 'blur',
-        validate: {
-          required: true,
-        },
       },
     };
   }
@@ -52,9 +45,9 @@ export default class TextField extends BaseComponent {
         description={this.getDescription()}
         className={this.getClassName()}
         autoComplete={this.getAutocomplete()}
-        readOnly={this.component?.readOnly}
-        spellCheck={this.component?.spellCheck}
-        error={this.error?.message}
+        readOnly={this.getReadOnly()}
+        spellCheck={this.getSpellCheck()}
+        error={this.getError()}
       />,
     );
   }

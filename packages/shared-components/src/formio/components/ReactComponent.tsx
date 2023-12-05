@@ -28,9 +28,9 @@
  */
 
 import Field from 'formiojs/components/_classes/field/Field';
-import { IField } from '../types/Field';
+import { IReactComponent } from './base';
 
-const ReactComponent = class extends (Field as IField) {
+const ReactComponent = class extends (Field as IReactComponent) {
   reactInstance;
   shouldSetValue;
   dataForSetting;

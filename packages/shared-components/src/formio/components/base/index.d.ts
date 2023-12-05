@@ -3,7 +3,8 @@ import { Component } from '@navikt/skjemadigitalisering-shared-domain';
 interface IReactComponent {
   new (component, options, data): ReactComponentType;
   prototype: ReactComponentType;
-  schema(sources: any): any;
+  schema(sources?: any): any;
+  editForm(): any;
 }
 
 interface ReactComponentType {
