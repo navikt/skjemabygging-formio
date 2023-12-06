@@ -1,7 +1,8 @@
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import selectEditForm from 'formiojs/components/select/Select.form';
-import { useEffect, useState } from 'react';
-import ReactSelect, { components } from 'react-select';
+import { useEffect, useRef, useState } from 'react';
+import ReactSelect, { OnChangeValue, components } from 'react-select';
+import Select from 'react-select/base';
 import http from '../../../api/util/http/http';
 import FormBuilderOptions from '../../form-builder-options';
 import FormioReactComponent from '../FormioReactComponent';
@@ -49,6 +50,10 @@ const ReactSelectWrapper = ({
   useEffect(() => {
     setSelectedOption(value);
   }, [value, options]);
+  const ref = useRef<Select>(null);
+  useEffect(() => {
+    if (ref.current) inputRef(ref.current);
+  }, [ref.current]);
 
   return (
     <ReactSelect
@@ -64,7 +69,7 @@ const ReactSelectWrapper = ({
       required={component.validate.required}
       placeholder={component.placeholder}
       isLoading={isLoading}
-      ref={inputRef}
+      ref={ref}
       className={component.fieldSize || 'input--xxl'}
       styles={reactSelectStyles}
       isClearable={true}
@@ -73,7 +78,7 @@ const ReactSelectWrapper = ({
       ariaLiveMessages={ariaLiveMessages}
       screenReaderStatus={screenReaderStatus}
       loadingMessage={loadingMessage}
-      onChange={(event, actionType) => {
+      onChange={(event: OnChangeValue<any, any>, actionType) => {
         switch (actionType.action) {
           case 'select-option':
             const newValue = event.value;
@@ -204,6 +209,12 @@ class NavSelect extends BaseComponent {
 
   translateAriaLiveMessages(messages) {
     return messages(this.t.bind(this));
+  }
+
+  setValueOnReactInstance(value) {
+    if (this.reactInstance && value) {
+      (this.reactInstance as Select)?.selectOption(value);
+    }
   }
 
   renderReact(element) {

@@ -27,9 +27,13 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
     return this.dataValue;
   }
 
+  setValueOnReactInstance(value) {
+    if (this.reactInstance) (this.reactInstance as HTMLInputElement).defaultValue = value;
+  }
+
   setValue(value: any) {
     if (this.reactInstance) {
-      this.reactInstance.defaultValue = value;
+      this.setValueOnReactInstance(value);
       this.shouldSetValue = false;
     } else {
       this.shouldSetValue = true;
