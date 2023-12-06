@@ -14,6 +14,7 @@ import inputGroup from './inputGroup';
 import label from './label';
 import list from './list';
 import listGroup from './listGroup';
+import panel from './panel';
 import readMore from './readMore';
 import row from './row';
 import select from './select';
@@ -38,6 +39,7 @@ const form = {
     ...label,
     ...list,
     ...listGroup,
+    ...panel,
     ...readMore,
     ...row,
     ...select,

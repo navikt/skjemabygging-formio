@@ -24,7 +24,7 @@ describe('Custom react components', () => {
       });
 
       it('reflects changes on summary page when editing data', () => {
-        cy.findByRole('heading', { name: 'Dine opplysninger' });
+        cy.findByRole('heading', { name: 'Dine opplysninger' }).should('be.visible');
         cy.findByRole('textbox', { name: 'Fornavn' }).type('Storm');
         cy.findByRole('combobox', { name: 'I hvilket land bor du?' }).click();
 
@@ -79,6 +79,7 @@ describe('Custom react components', () => {
         cy.findByRole('link', { name: 'Rediger dine opplysninger' }).click({ force: true });
         cy.findByRole('heading', { name: 'Dine opplysninger' }).should('exist');
 
+        cy.findByRole('textbox', { name: 'Fornavn' }).should('have.value', 'Storm');
         cy.findByRole('textbox', { name: 'Fornavn' }).type('zy');
         cy.findByRole('combobox', { name: 'Velg valuta' }).click();
         cy.findByRole('combobox', { name: 'Velg valuta' }).should('have.focus').type('Norske{enter}');
@@ -124,8 +125,9 @@ describe('Custom react components', () => {
       });
 
       it('make sure components keep their values after going to summary page', () => {
-        cy.findByRole('heading', { name: 'Dine opplysninger' });
-        cy.findByRole('textbox', { name: 'Fornavn' }).type('Storm');
+        cy.findByRole('heading', { name: 'Dine opplysninger' }).should('be.visible');
+        cy.findByRole('textbox', { name: 'Fornavn' }).should('be.visible');
+        cy.findByRoleWhenAttached('textbox', { name: 'Fornavn' }).type('Storm');
         cy.findByRole('combobox', { name: 'I hvilket land bor du?' })
           .should('be.visible')
           .type('Nor{downArrow}{downArrow}{downArrow}{downArrow}{enter}');
@@ -245,8 +247,8 @@ describe('Custom react components', () => {
 
       it('is editable after returning from summary page', () => {
         cy.findByRole('link', { name: 'Rediger veiledning' }).click();
-        cy.findByRole('heading', { name: 'Veiledning' }).should('exist');
-        cy.findByRole('textbox', { name: 'Tilfeldig dato' }).should('be.visible').and('be.enabled');
+        cy.findByRole('heading', { name: 'Veiledning' }).should('be.visible');
+        cy.findByRoleWhenAttached('textbox', { name: 'Tilfeldig dato' }).should('be.visible').and('be.enabled');
         cy.findByRoleWhenAttached('textbox', { name: 'Tilfeldig dato' }).type('{selectall}18.06.2020');
         cy.clickNextStep();
 
