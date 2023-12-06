@@ -1,13 +1,10 @@
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import selectEditForm from 'formiojs/components/select/Select.form';
 import { useEffect, useRef, useState } from 'react';
 import ReactSelect, { OnChangeValue, components } from 'react-select';
 import Select from 'react-select/base';
 import http from '../../../api/util/http/http';
-import FormBuilderOptions from '../../form-builder-options';
-import FormioReactComponent from '../FormioReactComponent';
 import BaseComponent from '../base/BaseComponent';
-import { fieldSizeField } from '../fields/fieldSize';
+import navSelectForm from './NavSelect.form';
 import { ariaLiveMessages } from './utils/ariaLiveMessages';
 
 const { navSelect: SELECT_TEXTS } = TEXTS.grensesnitt;
@@ -100,11 +97,16 @@ class NavSelect extends BaseComponent {
   loadFinished = false;
   selectOptions: any = [];
 
-  static schema(...extend) {
-    // @ts-ignore
-    return FormioReactComponent.schema({
-      ...FormBuilderOptions.builder.basic.components.navSelect.schema,
-      ...extend,
+  static editForm() {
+    return navSelectForm();
+  }
+
+  static schema() {
+    return BaseComponent.schema({
+      label: 'Nedtrekksmeny',
+      type: 'navSelect',
+      key: 'navSelect',
+      dataSrc: 'values',
     });
   }
 
@@ -114,89 +116,16 @@ class NavSelect extends BaseComponent {
 
   static get builderInfo() {
     return {
-      ...FormBuilderOptions.builder.basic.components.navSelect,
-      schema: NavSelect.schema(),
+      title: 'Nedtrekksmeny',
+      icon: 'th-list',
+      group: 'basic',
+      schema: {
+        ...NavSelect.schema(),
+        validate: {
+          required: true,
+        },
+      },
     };
-  }
-
-  static editForm(...extend) {
-    return selectEditForm(
-      [
-        {
-          key: 'display',
-          components: [
-            { key: 'widget', ignore: true },
-            { key: 'labelPosition', ignore: true },
-            { key: 'placeholder', ignore: true },
-            { key: 'tooltip', ignore: true },
-            { key: 'customClass', ignore: true },
-            { key: 'tabindex', ignore: true },
-            { key: 'hidden', ignore: true },
-            { key: 'hideLabel', ignore: true },
-            { key: 'uniqueOptions', ignore: true },
-            { key: 'autofocus', ignore: true },
-            { key: 'disabled', ignore: true },
-            { key: 'tableView', ignore: true },
-            { key: 'modalEdit', ignore: true },
-            fieldSizeField,
-          ],
-        },
-        {
-          key: 'data',
-          components: [
-            { key: 'multiple', ignore: true },
-            { key: 'dataType', ignore: true },
-            { key: 'idPath', ignore: true },
-            { key: 'template', ignore: true },
-            { key: 'indexeddb.database', ignore: true },
-            { key: 'indexeddb.table', ignore: true },
-            { key: 'indexeddb.filter', ignore: true },
-            { key: 'refreshOn', ignore: true },
-            { key: 'refreshOnBlur', ignore: true },
-            { key: 'clearOnRefresh', ignore: true },
-            { key: 'searchEnabled', ignore: true },
-            { key: 'selectThreshold', ignore: true },
-            { key: 'readOnlyValue', ignore: true },
-            { key: 'customOptions', ignore: true },
-            { key: 'useExactSearch', ignore: true },
-            { key: 'persistent', ignore: true },
-            { key: 'protected', ignore: true },
-            { key: 'dbIndex', ignore: true },
-            { key: 'encrypted', ignore: true },
-            { key: 'redrawOn', ignore: true },
-            { key: 'calculateServer', ignore: true },
-            { key: 'allowCalculateOverride', ignore: true },
-            { key: 'searchField', ignore: true },
-            { key: 'searchDebounce', ignore: true },
-            { key: 'minSearch', ignore: true },
-            { key: 'filter', ignore: true },
-            { key: 'sort', ignore: true },
-            { key: 'limit', ignore: true },
-            { key: 'authenticate', ignore: true },
-            { key: 'ignoreCache', ignore: true },
-          ],
-        },
-        {
-          key: 'validation',
-          components: [
-            { key: 'validateOn', ignore: true },
-            { key: 'errorLabel', ignore: true },
-            { key: 'validate.customMessage', ignore: true },
-            { key: 'unique', ignore: true },
-          ],
-        },
-        {
-          key: 'api',
-          components: [
-            { key: 'tags', ignore: true },
-            { key: 'properties', ignore: true },
-          ],
-        },
-        { key: 'logic', ignore: true },
-        { key: 'layout', ignore: true },
-      ],
-      ...extend,
-    );
   }
 
   translateOptionLabels(options) {
@@ -220,7 +149,7 @@ class NavSelect extends BaseComponent {
   renderReact(element) {
     const component = this.component!;
     if (component.dataSrc === 'values') {
-      this.selectOptions = component.data.values;
+      this.selectOptions = component.data?.values ?? [];
     } else if (component.dataSrc === 'url' && !this.isLoading && !this.loadFinished) {
       const dataUrl = component.data.url;
       this.isLoading = true;
