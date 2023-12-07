@@ -117,6 +117,7 @@ class NavSelect extends BaseComponent {
   static get builderInfo() {
     return {
       title: 'Nedtrekksmeny',
+      key: 'navSelect',
       icon: 'th-list',
       group: 'basic',
       schema: {

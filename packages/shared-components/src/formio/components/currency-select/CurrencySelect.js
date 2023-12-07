@@ -1,4 +1,3 @@
-import FormBuilderOptions from '../../form-builder-options';
 import NavSelect from '../nav-select/NavSelect';
 
 class CurrencySelect extends NavSelect {
@@ -7,70 +6,33 @@ class CurrencySelect extends NavSelect {
       title: 'Valutavelger',
       key: 'valutavelger',
       group: 'pengerOgKonto',
-      icon: 'th-list',
-      schema: CurrencySelect.schema(),
+      icon: 'home',
+      schema: {
+        ...CurrencySelect.schema(),
+        validate: {
+          required: true,
+        },
+      },
     };
   }
 
-  static schema(...extend) {
-    return NavSelect.schema(
-      {
-        ...FormBuilderOptions.builder.pengerOgKonto.components.valutavelger.schema,
+  static schema() {
+    return {
+      ...super.schema(),
+      label: 'Velg valuta',
+      type: 'valutavelger',
+      key: 'valutavelger',
+      fieldSize: 'input--m',
+      data: {
+        url: 'https://www.nav.no/fyllut/api/common-codes/currencies?lang=nb',
       },
-      ...extend,
-    );
+      dataSrc: 'url',
+      disableLimit: true,
+    };
   }
 
   get defaultSchema() {
     return CurrencySelect.schema();
-  }
-
-  static editForm(...extend) {
-    return NavSelect.editForm([
-      {
-        key: 'display',
-        components: [
-          { key: 'placeholder', ignore: true },
-          { key: 'tabindex', ignore: true },
-          { key: 'tooltip', ignore: true },
-          { key: 'customClass', ignore: true },
-          { key: 'hidden', ignore: true },
-          { key: 'hideLabel', ignore: true },
-          { key: 'autofocus', ignore: true },
-          { key: 'disabled', ignore: true },
-          { key: 'tableView', ignore: true },
-          { key: 'modalEdit', ignore: true },
-          { key: 'uniqueOptions', ignore: true },
-        ],
-      },
-      {
-        key: 'data',
-        components: [
-          { key: 'dataSrc', ignore: true },
-          { key: 'data.url', ignore: true },
-          { key: 'data.headers', ignore: true },
-          { key: 'selectValues', ignore: true },
-          { key: 'dataType', ignore: true },
-          { key: 'valueProperty', ignore: true },
-          { key: 'disableLimit', ignore: true },
-          { key: 'lazyLoad', ignore: true },
-        ],
-      },
-      {
-        key: 'validation',
-        components: [{ key: 'unique', ignore: true }],
-      },
-      {
-        key: 'api',
-        components: [
-          { key: 'tags', ignore: true },
-          { key: 'properties', ignore: true },
-        ],
-      },
-      { key: 'logic', ignore: true },
-      { key: 'layout', ignore: true },
-      ...extend,
-    ]);
   }
 }
 

@@ -4,6 +4,7 @@ class CountrySelect extends NavSelect {
   static get builderInfo() {
     return {
       title: 'Landvelger',
+      key: 'landvelger',
       group: 'person',
       icon: 'home',
       schema: {

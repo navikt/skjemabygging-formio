@@ -13,7 +13,6 @@ import surnameSchema from './surnameSchema';
 import telefonSchema from './telefonSchema';
 import utenlandskAdresseSchema from './utenlandskAdresseSchema';
 import utlandLandSchema from './utlandLandSchema';
-import valutavelgerSchema from './valutavelgerSchema';
 import vegadresseSchema from './vegadresseSchema';
 
 export const FormBuilderSchemas = {
@@ -23,7 +22,6 @@ export const FormBuilderSchemas = {
   vegadresseSchema,
   postnummerSchema,
   poststedSchema,
-  valutavelgerSchema,
   utlandLandSchema,
   epostSchema,
   telefonSchema,

@@ -3,9 +3,7 @@ import Select from 'react-select/base';
 
 interface IReactComponent {
   new (component, options, data): ReactComponentType;
-
   prototype: ReactComponentType;
-
   schema(sources: any): any;
 }
 
