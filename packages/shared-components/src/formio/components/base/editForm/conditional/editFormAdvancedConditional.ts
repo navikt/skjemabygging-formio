@@ -26,7 +26,7 @@ const editFormAdvancedConditional = (): Component => {
           <p><strong>NB:</strong> Avansert betinget visning vil overstyre enkel betinget visning.</p>
           <small>
             <h5>Eksempel:</h5>
-            <pre>show = data.<nøkkel> === '<verdi>';</pre>
+            <pre>show = data.&lt;nøkkel&gt; === '&lt;verdi&gt;';</pre>
           </small>`,
       },
       {

@@ -4,7 +4,8 @@ import Select from 'react-select/base';
 interface IReactComponent {
   new (component, options, data): ReactComponentType;
   prototype: ReactComponentType;
-  schema(sources: any): any;
+  schema(sources?: any): any;
+  editForm(): any;
 }
 
 interface ReactComponentType {
@@ -49,6 +50,7 @@ interface ReactComponentType {
   hasValue(): boolean;
   setComponentValidity(messages, dirty, silentCheck): boolean;
   addMessages(messages): void;
+  addFocusBlurEvents(element): void;
   // Element
   id?: any;
   emit(event: string, data: Object): void;
