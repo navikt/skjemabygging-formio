@@ -9,7 +9,7 @@ class CountrySelect extends NavSelect {
       schema: {
         ...CountrySelect.schema(),
         validate: {
-          requred: true,
+          required: true,
         },
       },
     };
