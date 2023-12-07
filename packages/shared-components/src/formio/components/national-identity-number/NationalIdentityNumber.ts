@@ -6,7 +6,7 @@ import FormBuilderOptions from '../../form-builder-options';
 
 const ALLOWED_TYPES = ['fnr', 'dnr'];
 
-export default class Fodselsnummer extends TextFieldComponent {
+export default class NationalIdentityNumber extends TextFieldComponent {
   static schema(...extend) {
     return TextFieldComponent.schema(
       {
@@ -17,7 +17,7 @@ export default class Fodselsnummer extends TextFieldComponent {
   }
 
   get defaultSchema() {
-    return Fodselsnummer.schema();
+    return NationalIdenityNumber.schema();
   }
 
   validateFnrNew(inputValue) {

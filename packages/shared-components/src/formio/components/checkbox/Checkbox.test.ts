@@ -1,6 +1,6 @@
 import Harness from '../../../../test/harness';
 import { setupNavFormio } from '../../../../test/navform-render';
-import NavCheckbox from './NavCheckbox';
+import Checkbox from './Checkbox.js';
 
 const compDef = {
   label: 'Avkryssingsboks',
@@ -19,7 +19,7 @@ describe('NavCheckbox', () => {
   beforeAll(setupNavFormio);
 
   it('Should build a checkbox component', () => {
-    return Harness.testCreate(NavCheckbox, compDef).then((component) => {
+    return Harness.testCreate(Checkbox, compDef).then((component) => {
       const inputs = Harness.testElements(component, 'input[type="checkbox"]', 1);
       for (let i = 0; i < inputs.length; i++) {
         expect(inputs[i].getAttribute('class').indexOf('navds-checkbox__input') !== -1).toBeTruthy();
@@ -30,14 +30,14 @@ describe('NavCheckbox', () => {
   });
 
   it('Label is rendered', () => {
-    return Harness.testCreate(NavCheckbox, compDef).then((component) => {
+    return Harness.testCreate(Checkbox, compDef).then((component) => {
       const labels = component.element.querySelectorAll('label');
       expect(labels).toHaveLength(1);
     });
   });
 
   it('Should be able to unselect a checkbox component with the radio input type', () => {
-    return Harness.testCreate(NavCheckbox, compDef).then((component) => {
+    return Harness.testCreate(Checkbox, compDef).then((component) => {
       const input = Harness.testElement(component, 'input', 1);
       Harness.clickElement(component, input);
       expect(input.checked).toBe(true);

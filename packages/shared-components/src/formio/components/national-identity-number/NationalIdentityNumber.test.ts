@@ -1,5 +1,5 @@
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import Fodselsnummer from './Fodselsnummer';
+import NationalIdenityNumber from './NationalIdentityNumber.js';
 
 const VALID_HNR = '13527248013';
 const VALID_TNR = '10915596784';
@@ -9,8 +9,8 @@ describe('Fodselsnummer', () => {
     let fnrComp;
 
     beforeEach(() => {
-      fnrComp = new Fodselsnummer();
-      vi.spyOn(Fodselsnummer.prototype, 't').mockImplementation((text) => text);
+      fnrComp = new NationalIdenityNumber();
+      vi.spyOn(NationalIdenityNumber.prototype, 't').mockImplementation((text) => text);
     });
 
     it('successfully validates a fnr', () => {
