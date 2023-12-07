@@ -27,6 +27,7 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
     // https://github.com/facebook/react/issues/25675#issuecomment-1518272581
     if (element && this.rootElement && process.env.NODE_ENV === 'production') {
       this.rootElement.unmount();
+      this.rootElement = undefined;
     }
   }
 
