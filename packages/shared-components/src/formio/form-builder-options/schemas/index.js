@@ -3,7 +3,6 @@ import epostSchema from './epostSchema';
 import firstNameSchema from './firstNameSchema';
 import fodselsNummerDNummerSchema from './fodselsNummerDNummerSchema';
 import ibanSchema from './ibanSchema';
-import landvelgerSchema from './landvelgerSchema';
 import norskPostboksadresseSchema from './norskPostboksadresseSchema';
 import norskVegadresseSchema from './norskVegadresseSchema';
 import panelSchemas from './panels';
@@ -24,7 +23,6 @@ export const FormBuilderSchemas = {
   vegadresseSchema,
   postnummerSchema,
   poststedSchema,
-  landvelgerSchema,
   valutavelgerSchema,
   utlandLandSchema,
   epostSchema,

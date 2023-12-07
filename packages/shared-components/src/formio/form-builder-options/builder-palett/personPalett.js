@@ -1,7 +1,7 @@
+import CountrySelect from '../../components/country-select/CountrySelect.js';
 import epostSchema from '../schemas/epostSchema';
 import firstNameSchema from '../schemas/firstNameSchema';
 import fodselsNummerDNummerSchema from '../schemas/fodselsNummerDNummerSchema';
-import landvelgerSchema from '../schemas/landvelgerSchema';
 import norskPostboksadresseSchema from '../schemas/norskPostboksadresseSchema';
 import norskVegadresseSchema from '../schemas/norskVegadresseSchema';
 import postnummerSchema from '../schemas/postnummerSchema';
@@ -86,13 +86,7 @@ const personPalett = {
       weight: 70,
       schema: utlandLandSchema(),
     },
-    landvelger: {
-      title: 'Landvelger',
-      key: 'landvelger',
-      icon: 'home',
-      weight: 71,
-      schema: landvelgerSchema(),
-    },
+    landvelger: CountrySelect.builderInfo,
     email: {
       title: 'E-post',
       key: 'epost',
