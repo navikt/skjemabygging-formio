@@ -10,6 +10,7 @@ describe('Fodselsnummer', () => {
 
     beforeEach(() => {
       fnrComp = new NationalIdenityNumber();
+      // @ts-ignore
       vi.spyOn(NationalIdenityNumber.prototype, 't').mockImplementation((text) => text);
     });
 

@@ -1,8 +1,8 @@
 import { validatorUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import baseEditForm from 'formiojs/components/_classes/component/Component.form';
-import FormBuilderOptions from '../../form-builder-options';
-import { advancedDescription } from '../fields/advancedDescription.js';
-import TextField from '../textfield/deprecated/TextField.js';
+import FormBuilderOptions from '../../../form-builder-options';
+import TextField from '../../core/textfield/deprecated/TextField.js';
+import { advancedDescription } from '../../fields/advancedDescription.js';
 
 export default class AccountNumber extends TextField {
   validateAccountNumber(accountNumber) {

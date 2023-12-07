@@ -1,7 +1,7 @@
 import TextArea from 'formiojs/components/textarea/TextArea';
 import TextAreaEditForm from 'formiojs/components/textarea/TextArea.form';
 import TextAreaDisplayEditForm from 'formiojs/components/textarea/editForm/TextArea.edit.display';
-import { advancedDescription } from '../fields/advancedDescription.js';
+import { advancedDescription } from '../../fields/advancedDescription.js';
 
 TextArea.editForm = () => {
   return TextAreaEditForm([

@@ -1,8 +1,9 @@
+// @ts-nocheck
 import fnrvalidator from '@navikt/fnrvalidator';
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import baseEditForm from 'formiojs/components/_classes/component/Component.form';
 import TextFieldComponent from 'formiojs/components/textfield/TextField';
-import FormBuilderOptions from '../../form-builder-options';
+import FormBuilderOptions from '../../../form-builder-options';
 
 const ALLOWED_TYPES = ['fnr', 'dnr'];
 

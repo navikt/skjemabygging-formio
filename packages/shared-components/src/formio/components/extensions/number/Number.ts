@@ -1,8 +1,8 @@
 import Number from 'formiojs/components/number/Number';
 import NumberEditForm from 'formiojs/components/number/Number.form';
 import NumberDisplayEditForm from 'formiojs/components/number/editForm/Number.edit.display';
-import { advancedDescription } from '../fields/advancedDescription.js';
-import { fieldSizeField } from '../fields/fieldSize.js';
+import { advancedDescription } from '../../fields/advancedDescription.js';
+import { fieldSizeField } from '../../fields/fieldSize.js';
 
 Number.editForm = () => {
   return NumberEditForm([

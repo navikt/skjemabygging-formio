@@ -1,6 +1,7 @@
+// @ts-nocheck
 import FormioSelectBoxes from 'formiojs/components/selectboxes/SelectBoxes';
 import FormioSelectBoxesEditForm from 'formiojs/components/selectboxes/SelectBoxes.form';
-import { advancedDescription } from '../fields/advancedDescription.js';
+import { advancedDescription } from '../../fields/advancedDescription.js';
 
 class SelectBoxes extends FormioSelectBoxes {
   static editForm() {

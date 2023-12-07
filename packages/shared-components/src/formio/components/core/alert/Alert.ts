@@ -2,8 +2,8 @@ import Field from 'formiojs/components/_classes/field/Field';
 import HTMLElement from 'formiojs/components/html/HTML';
 import HTMLElementEditForm from 'formiojs/components/html/HTML.form';
 import HTMLElementDisplayEditForm from 'formiojs/components/html/editForm/HTML.edit.display';
-import FormBuilderOptions from '../../form-builder-options';
-import { contentToIncludeInPdf } from '../fields/contentToIncludeInPdf';
+import FormBuilderOptions from '../../../form-builder-options';
+import { contentToIncludeInPdf } from '../../fields/contentToIncludeInPdf';
 
 class AlertStripe extends HTMLElement {
   static get builderInfo() {

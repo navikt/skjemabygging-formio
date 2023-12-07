@@ -1,4 +1,4 @@
-import TextField from '../../components/textfield/TextField';
+import TextField from '../../components/core/textfield/TextField';
 
 const basicPalett = {
   title: 'Standard felter',

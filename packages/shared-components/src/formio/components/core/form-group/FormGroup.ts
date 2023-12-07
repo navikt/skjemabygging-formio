@@ -1,10 +1,10 @@
 import NestedComponentForm from 'formiojs/components/_classes/nested/NestedComponent.form';
 import Fieldset from 'formiojs/components/fieldset/Fieldset';
 import FieldsetDisplayForm from 'formiojs/components/fieldset/editForm/Fieldset.edit.display';
-import FormBuilderOptions from '../../form-builder-options';
-import { description } from '../fields/description.js';
+import FormBuilderOptions from '../../../form-builder-options';
+import { description } from '../../fields/description.js';
 
-class Skjemagruppe extends Fieldset {
+class FormGroup extends Fieldset {
   static editForm(...extend) {
     return NestedComponentForm([
       {
@@ -62,8 +62,8 @@ class Skjemagruppe extends Fieldset {
   }
 
   get defaultSchema() {
-    return Skjemagruppe.schema();
+    return FormGroup.schema();
   }
 }
 
-export default Skjemagruppe;
+export default FormGroup;

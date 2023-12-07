@@ -1,7 +1,8 @@
+// @ts-nocheck
 import Component from 'formiojs/components/_classes/component/Component';
 import ComponentEditForm from 'formiojs/components/_classes/component/Component.form';
 import ComponentDisplayEditForm from 'formiojs/components/_classes/component/editForm/Component.edit.display';
-import FormBuilderOptions from '../../form-builder-options';
+import FormBuilderOptions from '../../../form-builder-options';
 
 export default class Image extends Component {
   static get builderInfo() {

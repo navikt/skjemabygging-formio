@@ -3,9 +3,9 @@ import DataGrid from 'formiojs/components/datagrid/DataGrid';
 import DataGridEditForm from 'formiojs/components/datagrid/DataGrid.form';
 import DataGridDataEditForm from 'formiojs/components/datagrid/editForm/DataGrid.edit.data';
 import DataGridDisplayEditForm from 'formiojs/components/datagrid/editForm/DataGrid.edit.display';
-import { scrollToAndSetFocus } from '../../../util/focus-management/focus-management';
-import FormBuilderOptions from '../../form-builder-options';
-import { description } from '../fields/description.js';
+import { scrollToAndSetFocus } from '../../../../util/focus-management/focus-management';
+import FormBuilderOptions from '../../../form-builder-options';
+import { description } from '../../fields/description.js';
 
 const originalRemoveRow = DataGrid.prototype.removeRow;
 
@@ -165,6 +165,7 @@ class NavDataGrid extends DataGrid {
 
   removeRow(index) {
     originalRemoveRow.call(this, index);
+    // @ts-ignore
     scrollToAndSetFocus(`[ref='${this.datagridKey}-addRow']:last-of-type`);
   }
 }

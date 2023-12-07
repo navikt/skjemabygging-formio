@@ -1,3 +1,4 @@
+// @ts-nocheck
 /* eslint-disable no-undef */
 import FormioDay from 'formiojs/components/day/Day';
 import FormioDayEditForm from 'formiojs/components/day/Day.form';

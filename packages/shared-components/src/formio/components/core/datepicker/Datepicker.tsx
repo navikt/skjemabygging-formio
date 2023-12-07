@@ -8,8 +8,8 @@ import validationEditForm from 'formiojs/components/_classes/component/editForm/
 import { getContextComponents } from 'formiojs/utils/utils';
 import moment from 'moment';
 import { useEffect } from 'react';
-import FormBuilderOptions from '../../form-builder-options';
-import FormioReactComponent from '../FormioReactComponent';
+import FormBuilderOptions from '../../../form-builder-options';
+import FormioReactComponent from '../../FormioReactComponent';
 
 const SUBMISSION_DATE_FORMAT = 'YYYY-MM-DD';
 
@@ -52,7 +52,7 @@ function isCorrectOrder(beforeDate, afterDate, mayBeEqual = false) {
   return mayBeEqual ? beforeDate.isSameOrBefore(afterDate, 'd') : beforeDate.isBefore(afterDate, 'd');
 }
 
-export default class NavDatepicker extends FormioReactComponent {
+export default class Datepicker extends FormioReactComponent {
   isValid = this.errors.length === 0;
 
   /**
@@ -68,7 +68,7 @@ export default class NavDatepicker extends FormioReactComponent {
       key,
       documentation: '',
       weight: 0,
-      schema: NavDatepicker.schema(),
+      schema: Datepicker.schema(),
     };
   }
 

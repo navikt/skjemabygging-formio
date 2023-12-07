@@ -1,7 +1,7 @@
 import Button from 'formiojs/components/button/Button';
 import ButtonEditForm from 'formiojs/components/button/Button.form';
 import ButtonDisplayEditForm from 'formiojs/components/button/editForm/Button.edit.display';
-import FormBuilderOptions from '../../form-builder-options';
+import FormBuilderOptions from '../../../form-builder-options';
 
 export default class NavButton extends Button {
   static get builderInfo() {

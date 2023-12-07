@@ -1,5 +1,5 @@
-import Harness from '../../../../test/harness';
-import { setupNavFormio } from '../../../../test/navform-render';
+import Harness from '../../../../../test/harness';
+import { setupNavFormio } from '../../../../../test/navform-render';
 import Checkbox from './Checkbox.js';
 
 const compDef = {

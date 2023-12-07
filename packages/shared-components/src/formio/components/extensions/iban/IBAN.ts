@@ -2,7 +2,7 @@ import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import TextField from 'formiojs/components/textfield/TextField';
 import TextFieldEditForm from 'formiojs/components/textfield/TextField.form';
 import * as ibantools from 'ibantools';
-import FormBuilderOptions from '../../form-builder-options';
+import FormBuilderOptions from '../../../form-builder-options';
 
 export default class IBAN extends TextField {
   static schema(...extend) {
@@ -19,6 +19,7 @@ export default class IBAN extends TextField {
   }
 
   getErrorMessage(key) {
+    // @ts-ignore
     return this.t(key) === key ? TEXTS.validering[key] : this.t(key);
   }
 

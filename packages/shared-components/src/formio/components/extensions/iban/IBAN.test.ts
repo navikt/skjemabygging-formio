@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { validateIBAN, ValidationErrorsIBAN } from 'ibantools';
 import IBAN from './IBAN.js';

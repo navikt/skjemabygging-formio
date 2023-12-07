@@ -1,4 +1,4 @@
-import FormBuilderOptions from '../../form-builder-options';
+import FormBuilderOptions from '../../../form-builder-options';
 import Container from '../container/Container';
 
 class Row extends Container {

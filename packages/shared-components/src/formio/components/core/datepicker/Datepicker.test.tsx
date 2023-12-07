@@ -2,10 +2,10 @@ import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { act, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import moment from 'moment';
-import { setupNavFormio } from '../../../../test/navform-render';
-import NavForm from '../../../components/nav-form/NavForm';
-import { AppConfigProvider } from '../../../context/config/configContext';
-import NavDatePicker from './NavDatepicker';
+import { setupNavFormio } from '../../../../../test/navform-render';
+import NavForm from '../../../../components/nav-form/NavForm';
+import { AppConfigProvider } from '../../../../context/config/configContext';
+import NavDatePicker from './Datepicker';
 
 Date.now = vi.fn(() => new Date('2030-05-15T12:00:00.000Z').getTime());
 

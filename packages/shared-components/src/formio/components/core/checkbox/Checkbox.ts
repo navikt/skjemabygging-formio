@@ -1,6 +1,7 @@
+// @ts-nocheck
 import FormioCheckbox from 'formiojs/components/checkbox/Checkbox';
 import CheckboxEditForm from 'formiojs/components/checkbox/Checkbox.form';
-import { advancedDescription } from '../fields/advancedDescription.js';
+import { advancedDescription } from '../../fields/advancedDescription.js';
 
 export default class Checkbox extends FormioCheckbox {
   static editForm(...extend) {
