@@ -4,7 +4,7 @@ import Components from 'formiojs/components/Components';
 import i18next from 'i18next';
 import merge from 'lodash.merge';
 import assert from 'power-assert';
-import CustomComponents from '../src/formio/components/index';
+import CustomComponents from '../src/formio/components/index.js';
 import i18Defaults from '../src/util/translation/i18nData';
 
 Components.setComponents(CustomComponents);

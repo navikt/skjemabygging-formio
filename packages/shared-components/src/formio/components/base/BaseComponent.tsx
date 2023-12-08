@@ -8,10 +8,10 @@ import FormioReactComponent from './FormioReactComponent';
  * When creating a custom component that extends BaseComponent,
  * minimum the following function should be overridden:
  *
- * static editForm(): Component
  * static schema(): Component
+ * static editForm(): Component
  * static get builderInfo(): Component
- * renderReact(element): void
+ * renderReact(element): void (this is optional)
  */
 class BaseComponent extends FormioReactComponent {
   editFields;
@@ -31,23 +31,6 @@ class BaseComponent extends FormioReactComponent {
       },
       ...values,
     });
-  }
-
-  /**
-   * This can be used in builderInfo() in the custom component,
-   * to get some default values used for components in the Bygger app.
-   *
-   * builderInfo() is used by Form.io and is required in the custom component.
-   */
-  static defaultBuilderInfoSchema() {
-    return {
-      schema: {
-        validateOn: 'blur',
-        validate: {
-          required: true,
-        },
-      },
-    };
   }
 
   /**
