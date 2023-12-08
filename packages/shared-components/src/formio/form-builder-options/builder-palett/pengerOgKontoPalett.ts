@@ -1,5 +1,5 @@
+import CurrencySelect from '../../components/currency-select/CurrencySelect';
 import ibanSchema from '../schemas/ibanSchema';
-import valutavelgerSchema from '../schemas/valutavelgerSchema';
 
 const currency = {
   title: 'Beløp',
@@ -22,14 +22,6 @@ const currency = {
   },
 };
 
-const valutavelger = {
-  title: 'Valutavelger',
-  key: 'valutavelger',
-  icon: 'home',
-  weight: 71,
-  schema: valutavelgerSchema(),
-};
-
 const pengerOgKontoPalett = {
   title: 'Penger og konto',
   components: {
@@ -40,7 +32,7 @@ const pengerOgKontoPalett = {
       icon: 'dollar',
       schema: {
         label: 'Angi valuta og beløp',
-        components: [valutavelger.schema, { ...currency.schema, type: 'number' }],
+        components: [CurrencySelect.builderInfo, { ...currency.schema, type: 'number' }],
         type: 'row',
         isAmountWithCurrencySelector: true,
       },
@@ -74,7 +66,7 @@ const pengerOgKontoPalett = {
       icon: 'bank',
       schema: ibanSchema(),
     },
-    valutavelger,
+    valutavelger: CurrencySelect.builderInfo,
   },
 };
 

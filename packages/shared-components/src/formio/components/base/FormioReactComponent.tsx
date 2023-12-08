@@ -27,18 +27,28 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
     // https://github.com/facebook/react/issues/25675#issuecomment-1518272581
     if (element && this.rootElement && process.env.NODE_ENV === 'production') {
       this.rootElement.unmount();
+      this.rootElement = undefined;
     }
+  }
+
+  getValue() {
+    return this.dataValue;
+  }
+
+  setValueOnReactInstance(value) {
+    if (this.reactInstance) (this.reactInstance as HTMLInputElement).defaultValue = value;
   }
 
   setValue(value: any) {
     if (this.reactInstance) {
-      this.reactInstance.defaultValue = value;
+      this.setValueOnReactInstance(value);
       this.shouldSetValue = false;
     } else {
       this.shouldSetValue = true;
       this.dataForSetting = value;
     }
-    this.dataValue = value;
+    const newValue = value === undefined || value === null ? this.getValue() : value;
+    this.dataValue = Array.isArray(newValue) ? [...newValue] : newValue;
   }
 
   /**
@@ -58,7 +68,13 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
    *
    * If the component have error message suppport, we would like to use that instead of the template in Form.io.
    */
-  addMessages(_messages) {}
+  addMessages(messages) {
+    // TODO: Fjern dette når navSelect bruker komponent fra aksel, og error kan håndteres direkte av komponenten.
+    //  Behold addMessages som en tom funksjon
+    if (['navSelect', 'landvelger', 'valutavelger'].includes(this.component?.type ?? '')) {
+      super.addMessages(messages);
+    }
+  }
 
   /**
    * Set error
