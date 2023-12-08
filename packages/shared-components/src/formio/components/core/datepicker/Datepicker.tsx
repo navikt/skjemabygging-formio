@@ -4,8 +4,8 @@ import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 
 import moment from 'moment';
 import { useEffect } from 'react';
-import FormBuilderOptions from '../../../form-builder-options';
 import FormioReactComponent from '../../FormioReactComponent';
+import datepickerBuilder from './Datepicker.builder';
 import datepickerForm from './Datepicker.form';
 
 const SUBMISSION_DATE_FORMAT = 'YYYY-MM-DD';
@@ -53,29 +53,23 @@ export default class Datepicker extends FormioReactComponent {
   isValid = this.errors.length === 0;
 
   static schema() {
-    return FormioReactComponent.schema(FormBuilderOptions.builder.datoOgTid.components.datoVelger.schema);
+    return FormioReactComponent.schema({
+      type: 'navDatepicker',
+      label: 'Dato (dd.mm.åååå)',
+      dataGridLabel: true,
+      validate: {
+        custom: 'valid = instance.validateDatePickerV2(input, data, component, row);',
+        required: true,
+      },
+    });
   }
 
   static editForm() {
     return datepickerForm();
   }
 
-  /**
-   * This function tells the form builder about your component. It's name, icon and what group it should be in.
-   *
-   * @returns {{title: string, icon: string, group: string, documentation: string, weight: number, schema: *}}
-   */
   static get builderInfo() {
-    // @ts-ignore
-    const { title, key, icon } = FormBuilderOptions.builder.datoOgTid.components.datoVelger;
-    return {
-      title,
-      icon,
-      key,
-      documentation: '',
-      weight: 0,
-      schema: Datepicker.schema(),
-    };
+    return datepickerBuilder();
   }
 
   showNorwegianOrTranslation(key, params?) {

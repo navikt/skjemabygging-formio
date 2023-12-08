@@ -1,23 +1,10 @@
+import datepickerBuilder from '../../components/core/datepicker/Datepicker.builder';
+
 const datoOgTidPalett = {
   title: 'Dato og tid',
   components: {
     datetime: null,
-    datoVelger: {
-      title: 'Datovelger',
-      group: 'datoOgTid',
-      icon: 'calendar',
-      input: true,
-      schema: {
-        type: 'navDatepicker',
-        label: 'Dato (dd.mm.åååå)',
-        dataGridLabel: true,
-        validateOn: 'blur',
-        validate: {
-          custom: 'valid = instance.validateDatePickerV2(input, data, component, row);',
-          required: true,
-        },
-      },
-    },
+    datoVelger: datepickerBuilder(),
     time: {
       title: 'Klokke',
       key: 'klokke',
