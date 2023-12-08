@@ -1,6 +1,6 @@
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { defaultPanelProps, renderNavForm, setupNavFormio } from '../../../../test/navform-render';
+import { defaultPanelProps, renderNavForm, setupNavFormio } from '../../../../../test/navform-render';
 
 describe('NavDataGrid', () => {
   beforeAll(setupNavFormio);

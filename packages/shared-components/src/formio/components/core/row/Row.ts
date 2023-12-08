@@ -15,6 +15,7 @@ class Row extends Container {
   }
 
   static schema(...extend) {
+    // @ts-ignore
     return Container.schema(
       {
         ...FormBuilderOptions.builder.layout.components.row.schema,

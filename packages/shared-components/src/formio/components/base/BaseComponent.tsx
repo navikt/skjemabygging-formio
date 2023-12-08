@@ -8,10 +8,10 @@ import FormioReactComponent from './FormioReactComponent';
  * When creating a custom component that extends BaseComponent,
  * minimum the following function should be overridden:
  *
- * static editForm(): Component
  * static schema(): Component
+ * static editForm(): Component
  * static get builderInfo(): Component
- * renderReact(element): void
+ * renderReact(element): void (this is optional)
  */
 class BaseComponent extends FormioReactComponent {
   editFields;
