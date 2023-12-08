@@ -32,6 +32,10 @@ export interface NewFormSignatureType {
   key: string;
 }
 
+export type PrefillData = {
+  [key in PrefillKey]: string | object;
+};
+
 export const PrefillType = {
   sokerFornavn: 'Søkers fornavn',
   sokerEtternavn: 'Søkers etternavn',
@@ -102,7 +106,7 @@ export interface Component {
   components?: Component[];
   otherDocumentation?: boolean;
   isAttachmentPanel?: boolean;
-  prefill?: PrefillKey;
+  prefillKey?: PrefillKey;
   values?: ComponentValue[];
   hideLabel?: boolean;
   description?: string;

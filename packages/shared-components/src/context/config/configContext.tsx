@@ -11,7 +11,7 @@ interface AppConfigContextType {
   baseUrl?: string;
   fyllutBaseURL?: string;
   featureToggles?: FeatureTogglesMap;
-  submissionMethod?: string;
+  submissionMethod?: 'paper' | 'digital';
   app?: ApplicationName;
   config?: Record<string, string | boolean | object>;
   http?: typeof baseHttp;

@@ -1,5 +1,5 @@
-import { LoadingComponent, useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
-import { navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { LoadingComponent, http, useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
+import { NavFormType, PrefillData, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import httpFyllut from '../util/httpFyllut';
@@ -10,19 +10,40 @@ import SubmissionMethodNotAllowed from './SubmissionMethodNotAllowed';
 export const FormPageWrapper = () => {
   const { formPath } = useParams();
   const [status, setStatus] = useState('LOADING');
-  const [form, setForm] = useState();
+  const [form, setForm] = useState<NavFormType>();
   const { submissionMethod } = useAppConfig();
 
   useEffect(() => {
-    httpFyllut
-      .get(`/fyllut/api/forms/${formPath}`)
-      .then((form) => {
-        setForm(form);
+    const loadPrefillData = async (navForm: NavFormType) => {
+      const prefillComponents = navFormUtils.findComponentsByProperty('prefillKey', navForm);
+      if (prefillComponents.length === 0) return null;
+
+      const properties = prefillComponents.map((component) => component.prefillKey).join(',');
+
+      const fyllutPrefillData = (await http.get(
+        `/fyllut/api/send-inn/prefill-data?properties=${properties}`,
+      )) as PrefillData;
+      return fyllutPrefillData;
+    };
+
+    const loadForm = async () => {
+      try {
+        console.log('LOADING FORM');
+        const navForm = (await httpFyllut.get(`/fyllut/api/forms/${formPath}`)) as NavFormType;
+        const prefillData = await loadPrefillData(navForm);
+        if (prefillData) {
+          const prefilledNavForm = navFormUtils.prefillForm(navForm, prefillData);
+          setForm(prefilledNavForm);
+        } else {
+          setForm(navForm);
+        }
         setStatus('FINISHED LOADING');
-      })
-      .catch((err) => {
+      } catch (err) {
         setStatus(err instanceof httpFyllut.UnauthenticatedError ? 'UNAUTHENTICATED' : 'FORM NOT FOUND');
-      });
+      }
+    };
+
+    loadForm();
   }, [formPath]);
 
   useEffect(() => {
