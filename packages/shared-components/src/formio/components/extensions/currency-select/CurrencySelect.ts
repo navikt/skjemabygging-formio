@@ -1,20 +1,7 @@
-import { defaultBuilderInfoSchema } from '../../base/builderHelper';
 import NavSelect from '../../core/select/Select';
+import currencySelectBuilder from './CurrencySelect.builder';
 
 class CurrencySelect extends NavSelect {
-  static get builderInfo() {
-    return {
-      title: 'Valutavelger',
-      key: 'valutavelger',
-      group: 'pengerOgKonto',
-      icon: 'home',
-      schema: {
-        ...defaultBuilderInfoSchema(),
-        ...CurrencySelect.schema(),
-      },
-    };
-  }
-
   static schema() {
     return {
       ...super.schema(),
@@ -30,8 +17,8 @@ class CurrencySelect extends NavSelect {
     };
   }
 
-  get defaultSchema() {
-    return CurrencySelect.schema();
+  static get builderInfo() {
+    return currencySelectBuilder();
   }
 }
 

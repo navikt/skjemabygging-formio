@@ -1,4 +1,4 @@
-import CountrySelect from '../../components/country-select/CountrySelect';
+import CountrySelect from '../../components/extensions/country-select/CountrySelect';
 import epostSchema from '../schemas/epostSchema';
 import firstNameSchema from '../schemas/firstNameSchema';
 import fodselsNummerDNummerSchema from '../schemas/fodselsNummerDNummerSchema';

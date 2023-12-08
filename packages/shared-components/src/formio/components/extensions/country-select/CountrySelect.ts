@@ -1,20 +1,7 @@
-import { defaultBuilderInfoSchema } from '../../base/builderHelper';
 import NavSelect from '../../core/select/Select';
+import countrySelectBuilder from './CountrySelect.builder';
 
 class CountrySelect extends NavSelect {
-  static get builderInfo() {
-    return {
-      title: 'Landvelger',
-      key: 'landvelger',
-      group: 'person',
-      icon: 'home',
-      schema: {
-        ...defaultBuilderInfoSchema(),
-        ...CountrySelect.schema(),
-      },
-    };
-  }
-
   static schema() {
     return {
       ...super.schema(),
@@ -29,8 +16,8 @@ class CountrySelect extends NavSelect {
     };
   }
 
-  get defaultSchema() {
-    return CountrySelect.schema();
+  static get builderInfo() {
+    return countrySelectBuilder();
   }
 }
 

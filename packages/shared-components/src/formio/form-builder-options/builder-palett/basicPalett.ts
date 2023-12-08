@@ -1,5 +1,5 @@
+import selectBuilder from '../../components/core/select/Select.builder';
 import textFieldBuilder from '../../components/core/textfield/TextField.builder';
-import NavSelect from '../../components/nav-select/NavSelect';
 
 const basicPalett = {
   title: 'Standard felter',
@@ -109,7 +109,7 @@ const basicPalett = {
         },
       },
     },
-    navSelect: NavSelect.builderInfo,
+    navSelect: selectBuilder(),
     radiopanel: {
       title: 'Radiopanel',
       key: 'radiopanel',

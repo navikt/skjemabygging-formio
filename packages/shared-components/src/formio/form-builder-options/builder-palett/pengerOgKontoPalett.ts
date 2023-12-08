@@ -1,4 +1,4 @@
-import CurrencySelect from '../../components/currency-select/CurrencySelect';
+import currencySelectBuilder from '../../components/extensions/currency-select/CurrencySelect.builder';
 import ibanSchema from '../schemas/ibanSchema';
 
 const currency = {
@@ -32,7 +32,7 @@ const pengerOgKontoPalett = {
       icon: 'dollar',
       schema: {
         label: 'Angi valuta og beløp',
-        components: [CurrencySelect.builderInfo, { ...currency.schema, type: 'number' }],
+        components: [currencySelectBuilder(), { ...currency.schema, type: 'number' }],
         type: 'row',
         isAmountWithCurrencySelector: true,
       },
@@ -66,7 +66,7 @@ const pengerOgKontoPalett = {
       icon: 'bank',
       schema: ibanSchema(),
     },
-    valutavelger: CurrencySelect.builderInfo,
+    valutavelger: currencySelectBuilder(),
   },
 };
 
