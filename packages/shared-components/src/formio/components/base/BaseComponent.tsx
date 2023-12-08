@@ -34,23 +34,6 @@ class BaseComponent extends FormioReactComponent {
   }
 
   /**
-   * This can be used in builderInfo() in the custom component,
-   * to get some default values used for components in the Bygger app.
-   *
-   * builderInfo() is used by Form.io and is required in the custom component.
-   */
-  static defaultBuilderInfoSchema() {
-    return {
-      schema: {
-        validateOn: 'blur',
-        validate: {
-          required: true,
-        },
-      },
-    };
-  }
-
-  /**
    * Get id for custom component renderReact()
    */
   getId() {

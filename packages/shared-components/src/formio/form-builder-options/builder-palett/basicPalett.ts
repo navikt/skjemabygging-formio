@@ -1,4 +1,4 @@
-import TextField from '../../components/core/textfield/TextField';
+import textFieldBuilder from '../../components/core/textfield/TextField.builder';
 
 const basicPalett = {
   title: 'Standard felter',
@@ -7,7 +7,7 @@ const basicPalett = {
     checkbox: null,
     radio: null,
     textArea: null,
-    textfield: TextField.builderInfo,
+    textfield: textFieldBuilder(),
     textarea: {
       title: 'Tekstområde',
       key: 'textarea',
