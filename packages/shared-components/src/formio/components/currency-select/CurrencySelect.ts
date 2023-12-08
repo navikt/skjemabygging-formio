@@ -1,3 +1,4 @@
+import BaseComponent from '../base/BaseComponent';
 import NavSelect from '../nav-select/NavSelect';
 
 class CurrencySelect extends NavSelect {
@@ -8,10 +9,8 @@ class CurrencySelect extends NavSelect {
       group: 'pengerOgKonto',
       icon: 'home',
       schema: {
+        ...BaseComponent.defaultBuilderInfoSchema(),
         ...CurrencySelect.schema(),
-        validate: {
-          required: true,
-        },
       },
     };
   }

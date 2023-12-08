@@ -5,8 +5,6 @@ const editFormDataValues = (): Component => ({
   input: true,
   label: 'Dataverdier',
   key: 'data.values',
-  tooltip:
-    'Tilgjengelige valg i komponenten. Ledeteksten vises til brukeren i nedtrekksmenyen, mens dataverdien brukes av systemet',
   reorder: true,
   defaultValue: [{ label: '', value: '' }],
   components: [

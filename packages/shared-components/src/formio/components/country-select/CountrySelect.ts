@@ -1,3 +1,4 @@
+import BaseComponent from '../base/BaseComponent';
 import NavSelect from '../nav-select/NavSelect';
 
 class CountrySelect extends NavSelect {
@@ -8,10 +9,8 @@ class CountrySelect extends NavSelect {
       group: 'person',
       icon: 'home',
       schema: {
+        ...BaseComponent.defaultBuilderInfoSchema(),
         ...CountrySelect.schema(),
-        validate: {
-          required: true,
-        },
       },
     };
   }

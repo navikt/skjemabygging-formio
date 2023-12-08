@@ -121,10 +121,8 @@ class NavSelect extends BaseComponent {
       icon: 'th-list',
       group: 'basic',
       schema: {
+        ...BaseComponent.defaultBuilderInfoSchema(),
         ...NavSelect.schema(),
-        validate: {
-          required: true,
-        },
       },
     };
   }
