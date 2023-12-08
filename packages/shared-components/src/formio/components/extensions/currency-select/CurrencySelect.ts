@@ -1,5 +1,5 @@
-import BaseComponent from '../base/BaseComponent';
-import NavSelect from '../nav-select/NavSelect';
+import { defaultBuilderInfoSchema } from '../../base/builderHelper';
+import NavSelect from '../../core/select/Select';
 
 class CurrencySelect extends NavSelect {
   static get builderInfo() {
@@ -9,7 +9,7 @@ class CurrencySelect extends NavSelect {
       group: 'pengerOgKonto',
       icon: 'home',
       schema: {
-        ...BaseComponent.defaultBuilderInfoSchema(),
+        ...defaultBuilderInfoSchema(),
         ...CurrencySelect.schema(),
       },
     };

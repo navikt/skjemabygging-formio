@@ -1,7 +1,7 @@
 import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { renderNavForm, setupNavFormio } from '../../../../test/navform-render';
+import { renderNavForm, setupNavFormio } from '../../../../../test/navform-render';
 
 describe('NavSelect', () => {
   beforeAll(setupNavFormio);

@@ -2,9 +2,10 @@ import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useRef, useState } from 'react';
 import ReactSelect, { OnChangeValue, components } from 'react-select';
 import Select from 'react-select/base';
-import http from '../../../api/util/http/http';
-import BaseComponent from '../base/BaseComponent';
-import navSelectForm from './NavSelect.form';
+import http from '../../../../api/util/http/http';
+import BaseComponent from '../../base/BaseComponent';
+import selectBuilder from './Select.builder';
+import selectForm from './Select.form';
 import { ariaLiveMessages } from './utils/ariaLiveMessages';
 
 const { navSelect: SELECT_TEXTS } = TEXTS.grensesnitt;
@@ -92,14 +93,13 @@ const ReactSelectWrapper = ({
   );
 };
 
+/**
+ * TODO: Rename this to Select and dont use wrapper when we change to Aksel component.
+ */
 class NavSelect extends BaseComponent {
   isLoading = false;
   loadFinished = false;
   selectOptions: any = [];
-
-  static editForm() {
-    return navSelectForm();
-  }
 
   static schema() {
     return BaseComponent.schema({
@@ -110,21 +110,12 @@ class NavSelect extends BaseComponent {
     });
   }
 
-  get defaultSchema() {
-    return NavSelect.schema();
+  static editForm() {
+    return selectForm();
   }
 
   static get builderInfo() {
-    return {
-      title: 'Nedtrekksmeny',
-      key: 'navSelect',
-      icon: 'th-list',
-      group: 'basic',
-      schema: {
-        ...BaseComponent.defaultBuilderInfoSchema(),
-        ...NavSelect.schema(),
-      },
-    };
+    return selectBuilder();
   }
 
   translateOptionLabels(options) {
