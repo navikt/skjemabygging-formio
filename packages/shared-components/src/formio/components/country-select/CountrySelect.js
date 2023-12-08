@@ -1,4 +1,4 @@
-import FormBuilderOptions from '../../form-builder-options';
+import FormBuilderOptions from '../../form-builder-options/index';
 import NavSelect from '../nav-select/NavSelect';
 
 class CountrySelect extends NavSelect {

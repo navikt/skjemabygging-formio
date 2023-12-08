@@ -1,5 +1,5 @@
-import { SANITIZE_CONFIG } from '../../util/config/sanitizeConfig';
-import builderPalett from './builder-palett';
+import builderPalett from './builder-palett/index';
+import { SANITIZE_CONFIG } from './sanitizeConfig';
 
 const FormBuilderOptions = {
   builder: builderPalett,
