@@ -19,6 +19,7 @@ import {
   ResourceAccess,
   Submission,
   SubmissionData,
+  SubmissionMethod,
   UsageContext,
 } from './form';
 import { ForstesideRequestBody, KjentBruker, UkjentBruker } from './forsteside';
@@ -123,6 +124,7 @@ export type {
   ScopedTranslationMap,
   Submission,
   SubmissionData,
+  SubmissionMethod,
   Summary,
   TranslationResource,
   TranslationScope,

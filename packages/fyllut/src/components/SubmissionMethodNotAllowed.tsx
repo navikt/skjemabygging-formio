@@ -1,7 +1,7 @@
 import { makeStyles } from '@navikt/skjemadigitalisering-shared-components';
-
+import { SubmissionMethod } from '@navikt/skjemadigitalisering-shared-domain';
 interface Props {
-  submissionMethod: 'paper' | 'digital';
+  submissionMethod: SubmissionMethod;
 }
 
 const useStyles = makeStyles({

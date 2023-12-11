@@ -1,5 +1,5 @@
 import { AppConfigProvider, url } from '@navikt/skjemadigitalisering-shared-components';
-import { ConfigType } from '@navikt/skjemadigitalisering-shared-domain';
+import { ConfigType, SubmissionMethod } from '@navikt/skjemadigitalisering-shared-domain';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
@@ -10,7 +10,7 @@ import httpFyllut from './util/httpFyllut';
 
 let featureToggles = {};
 
-const subissionMethod = url.getUrlParam(window.location.search, 'sub');
+const subissionMethod = url.getUrlParam(window.location.search, 'sub') as SubmissionMethod;
 
 httpFyllut
   .get<ConfigType>('/fyllut/api/config')

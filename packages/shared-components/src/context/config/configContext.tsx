@@ -1,3 +1,4 @@
+import { SubmissionMethod } from '@navikt/skjemadigitalisering-shared-domain';
 import React, { useContext, useState } from 'react';
 import FrontendLogger from '../../api/frontend-logger/FrontendLogger';
 import baseHttp from '../../api/util/http/http';
@@ -5,13 +6,14 @@ import baseHttp from '../../api/util/http/http';
 type FeatureTogglesMap = {
   [key: string]: boolean;
 };
+
 type ApplicationName = 'bygger' | 'fyllut';
 interface AppConfigContextType {
   dokumentinnsendingBaseURL?: string;
   baseUrl?: string;
   fyllutBaseURL?: string;
   featureToggles?: FeatureTogglesMap;
-  submissionMethod?: 'paper' | 'digital';
+  submissionMethod?: SubmissionMethod;
   app?: ApplicationName;
   config?: Record<string, string | boolean | object>;
   http?: typeof baseHttp;
