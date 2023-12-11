@@ -1,6 +1,6 @@
 import { NavFormType, PrefillData, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, useContext, useEffect, useState } from 'react';
-import http from '../../api/util/http/http';
+import { useAppConfig } from '../config/configContext';
 
 interface PrefillDataContextType {
   prefillData: PrefillData | undefined;
@@ -15,6 +15,7 @@ const PrefillDataContext = createContext<PrefillDataContextType>({} as PrefillDa
 
 export const PrefillDataProvider = ({ children, form }: PrefillDataProviderProps) => {
   const [prefillData, setPrefillData] = useState<PrefillData>({});
+  const { http, baseUrl } = useAppConfig();
 
   useEffect(() => {
     const loadPrefillData = async (navForm: NavFormType) => {
@@ -24,10 +25,11 @@ export const PrefillDataProvider = ({ children, form }: PrefillDataProviderProps
 
       const properties = prefillComponents.map((component) => component.prefillKey).join(',');
 
-      const fyllutPrefillData = (await http.get(
-        `/fyllut/api/send-inn/prefill-data?properties=${properties}`,
-      )) as PrefillData;
-      setPrefillData(fyllutPrefillData);
+      const fyllutPrefillData = await http?.get<PrefillData>(
+        `${baseUrl}/api/send-inn/prefill-data?properties=${properties}`,
+      );
+
+      if (fyllutPrefillData) setPrefillData(fyllutPrefillData);
     };
     loadPrefillData(form);
   }, []);

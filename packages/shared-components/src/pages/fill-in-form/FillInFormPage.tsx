@@ -50,11 +50,11 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
     let formToRender = { ...form };
 
     if (submissionMethod === 'digital') {
-      formToRender = navFormUtils.removeVedleggspanel(form);
+      formToRender = navFormUtils.removeVedleggspanel(formToRender);
     }
 
     if (!submission?.data && prefillData) {
-      formToRender = navFormUtils.prefillForm(form, prefillData);
+      formToRender = navFormUtils.prefillForm(formToRender, prefillData);
     }
 
     setFormForRendering(formToRender);

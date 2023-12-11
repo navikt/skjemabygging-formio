@@ -34,7 +34,8 @@ export interface NewFormSignatureType {
 }
 
 export type PrefillData = {
-  [key in PrefillKey]?: string | object;
+  sokerFornavn?: string;
+  sokerEtternavn?: string;
 };
 
 export const PrefillType = {
