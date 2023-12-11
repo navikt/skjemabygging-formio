@@ -149,7 +149,7 @@ const NavForm = (props) => {
         }
       });
     }
-    if (formio && !submission.data && prefillData) {
+    if (formio && !submission?.data && prefillData) {
       formio.form = navFormUtils.prefillForm(formio.form, prefillData);
     }
   }, [props.submission, formio]);

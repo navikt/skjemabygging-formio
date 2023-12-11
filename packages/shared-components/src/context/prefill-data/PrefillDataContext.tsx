@@ -19,6 +19,7 @@ export const PrefillDataProvider = ({ children, form }: PrefillDataProviderProps
   useEffect(() => {
     const loadPrefillData = async (navForm: NavFormType) => {
       const prefillComponents = navFormUtils.findComponentsByProperty('prefillKey', navForm);
+      // No need to fetch prefill data if there are no components with prefillKey
       if (prefillComponents.length === 0) return null;
 
       const properties = prefillComponents.map((component) => component.prefillKey).join(',');
