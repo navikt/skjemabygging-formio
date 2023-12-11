@@ -6,6 +6,7 @@ import NavForm from '../../components/nav-form/NavForm';
 import { useAmplitude } from '../../context/amplitude/index';
 import { useAppConfig } from '../../context/config/configContext';
 import { useLanguages } from '../../context/languages/index.js';
+import { usePrefillData } from '../../context/prefill-data/PrefillDataContext';
 import { useSendInn } from '../../context/sendInn/sendInnContext';
 import { LoadingComponent } from '../../index';
 import { scrollToAndSetFocus } from '../../util/focus-management/focus-management';
@@ -35,6 +36,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
     isMellomlagringReady,
     isMellomlagringActive,
   } = useSendInn();
+  const { prefillData } = usePrefillData();
   const { currentLanguage, translationsForNavForm, translate } = useLanguages();
   const { hash } = useLocation();
   const mutationObserverRef = useRef<MutationObserver | undefined>(undefined);
@@ -43,8 +45,19 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
   const exitUrl = urlUtils.getExitUrl(window.location.href);
   const deletionDate = submission?.fyllutState?.mellomlagring?.deletionDate ?? '';
 
+  // Set up form for rendering
   useEffect(() => {
-    setFormForRendering(submissionMethod === 'digital' ? navFormUtils.removeVedleggspanel(form) : form);
+    let formToRender = { ...form };
+
+    if (submissionMethod === 'digital') {
+      formToRender = navFormUtils.removeVedleggspanel(form);
+    }
+
+    if (!submission?.data && prefillData) {
+      formToRender = navFormUtils.prefillForm(form, prefillData);
+    }
+
+    setFormForRendering(formToRender);
   }, [form, submissionMethod]);
 
   useEffect(() => {
