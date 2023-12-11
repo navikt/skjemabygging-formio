@@ -32,7 +32,7 @@ const pengerOgKontoPalett = {
       icon: 'dollar',
       schema: {
         label: 'Angi valuta og beløp',
-        components: [CurrencySelect.builderInfo, { ...currency.schema, type: 'number' }],
+        components: [CurrencySelect.schema(), { ...currency.schema, type: 'number' }],
         type: 'row',
         isAmountWithCurrencySelector: true,
       },
