@@ -1,52 +1,25 @@
 const input = {
-  // Old templates
-  '& .input--xxs': {
+  '& .input--xxs, & .nav-input--xxs input, & .nav-input--xxs select, & .nav-input--xxs textarea': {
     width: '35px',
   },
-  '& .input--xs': {
+  '& .input--xs, & .nav-input--xs input, & .nav-input--xs select, & .nav-input--xs textarea': {
     width: '70px',
   },
-  '& .input--s': {
+  '& .input--s, & .nav-input--s input, & .nav-input--s select, & .nav-input--s textarea': {
     width: '140px',
   },
-  '& .input--m': {
+  '& .input--m, & .nav-input--m input, & .nav-input--m select, & .nav-input--m textarea': {
     width: '210px',
   },
-  '& .input--l': {
+  '& .input--l, & .nav-input--l input, & .nav-input--l select, & .nav-input--l textarea': {
     width: '280px',
   },
-  '& .input--xl': {
+  '& .input--xl, & .nav-input--xl input, & .nav-input--xl select, & .nav-input--xl textarea': {
     width: '100%',
     minWidth: '300px',
     maxWidth: '350px',
   },
-  '& .input--xxl': {
-    width: '100%',
-    minWidth: '300px',
-    maxWidth: '420px',
-  },
-  // Aksel components
-  '& .input--xxs input': {
-    width: '35px',
-  },
-  '& .input--xs input': {
-    width: '70px',
-  },
-  '& .input--s input': {
-    width: '140px',
-  },
-  '& .input--m input': {
-    width: '210px',
-  },
-  '& .input--l input': {
-    width: '280px',
-  },
-  '& .input--xl input': {
-    width: '100%',
-    minWidth: '300px',
-    maxWidth: '350px',
-  },
-  '& .input--xxl input': {
+  '& .input--xxl, & .nav-input--xxl input, & .nav-input--xxl select, & .nav-input--xxl textarea': {
     width: '100%',
     minWidth: '300px',
     maxWidth: '420px',
