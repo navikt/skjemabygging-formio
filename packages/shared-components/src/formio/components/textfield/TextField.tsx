@@ -23,8 +23,8 @@ export default class TextField extends BaseComponent {
       title: 'Tekstfelt',
       group: 'basic',
       schema: {
-        ...BaseComponent.defaultBuilderInfoSchema(),
         ...TextField.schema(),
+        ...BaseComponent.defaultBuilderInfoSchema(),
       },
     };
   }
