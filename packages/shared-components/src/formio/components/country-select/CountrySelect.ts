@@ -9,8 +9,8 @@ class CountrySelect extends NavSelect {
       group: 'person',
       icon: 'home',
       schema: {
-        ...BaseComponent.defaultBuilderInfoSchema(),
         ...CountrySelect.schema(),
+        ...BaseComponent.defaultBuilderInfoSchema(),
       },
     };
   }

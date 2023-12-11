@@ -9,8 +9,8 @@ class CurrencySelect extends NavSelect {
       group: 'pengerOgKonto',
       icon: 'home',
       schema: {
-        ...BaseComponent.defaultBuilderInfoSchema(),
         ...CurrencySelect.schema(),
+        ...BaseComponent.defaultBuilderInfoSchema(),
       },
     };
   }
