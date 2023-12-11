@@ -41,11 +41,9 @@ class BaseComponent extends FormioReactComponent {
    */
   static defaultBuilderInfoSchema() {
     return {
-      schema: {
-        validateOn: 'blur',
-        validate: {
-          required: true,
-        },
+      validateOn: 'blur',
+      validate: {
+        required: true,
       },
     };
   }
