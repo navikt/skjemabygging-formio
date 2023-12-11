@@ -90,7 +90,7 @@ class BaseComponent extends FormioReactComponent {
    * Get class name for custom component renderReact()
    */
   getClassName() {
-    return this.component?.fieldSize;
+    return this.component?.fieldSize ? `nav-${this.component?.fieldSize}` : '';
   }
 
   /**
