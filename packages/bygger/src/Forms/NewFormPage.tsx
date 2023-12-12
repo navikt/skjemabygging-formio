@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 import { AppLayout } from '../components/AppLayout';
 import { CreationFormMetadataEditor } from '../components/FormMetaDataEditor/FormMetadataEditor';
-import { isFormMetadataValid, validateFormMetadata } from '../components/FormMetaDataEditor/utils';
+import { isFormMetadataValid, validateFormMetadata } from '../components/FormMetaDataEditor/utils/utils';
 import UserFeedback from '../components/UserFeedback';
 import Column from '../components/layout/Column';
 import Row from '../components/layout/Row';

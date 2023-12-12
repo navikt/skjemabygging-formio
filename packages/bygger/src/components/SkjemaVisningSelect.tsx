@@ -1,6 +1,6 @@
 import { Select } from '@navikt/ds-react';
 import { DisplayType, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
-import { UpdateFormFunction } from './FormMetaDataEditor/utils';
+import { UpdateFormFunction } from './FormMetaDataEditor/utils/utils';
 
 interface Props {
   form: NavFormType;

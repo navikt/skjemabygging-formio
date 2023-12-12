@@ -7,7 +7,7 @@ import EnhetFields from './fields/EnhetFields';
 import SignatureFields from './fields/SignatureFields';
 import SubmissionFields from './fields/SubmissionFields';
 import LabelWithDiff from './LabelWithDiff';
-import { FormMetadataError, UpdateFormFunction } from './utils';
+import { FormMetadataError, UpdateFormFunction } from './utils/utils';
 
 interface Props {
   form: NavFormType;
