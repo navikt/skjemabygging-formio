@@ -15,13 +15,16 @@ const PrefillDataContext = createContext<PrefillDataContextType>({} as PrefillDa
 
 export const PrefillDataProvider = ({ children, form }: PrefillDataProviderProps) => {
   const [prefillData, setPrefillData] = useState<PrefillData>({});
-  const { http, baseUrl } = useAppConfig();
+  const { http, baseUrl, submissionMethod } = useAppConfig();
 
   useEffect(() => {
     const loadPrefillData = async (navForm: NavFormType) => {
       const prefillComponents = navFormUtils.findComponentsByProperty('prefillKey', navForm);
       // No need to fetch prefill data if there are no components with prefillKey
       if (prefillComponents.length === 0) return null;
+
+      // No need to fetch prefill data if submission method is paper (currently not supported)
+      if (submissionMethod === 'paper') return null;
 
       const properties = prefillComponents.map((component) => component.prefillKey);
       const uniqueProperties = [...new Set(properties)].join(',');

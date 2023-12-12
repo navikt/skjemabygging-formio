@@ -14,7 +14,7 @@ describe('Prefill data', () => {
     cy.mocksRestoreRouteVariants();
   });
 
-  describe('new application', () => {
+  describe.only('new application', () => {
     it('should prefill data for new application on the first page (name)', () => {
       cy.visit('/fyllut/testprefilldata?sub=digital');
       cy.wait('@getTestFormPrefillData');
@@ -25,6 +25,21 @@ describe('Prefill data', () => {
       cy.findByRole('heading', { name: 'Side 1' }).should('exist');
       cy.findByRole('textbox', { name: 'Fornavn' }).should('have.value', 'Ola');
       cy.findByRole('textbox', { name: 'Etternavn' }).should('have.value', 'Nordmann');
+    });
+
+    it.only('should not prefill data for new application if submissionMethod is paper', () => {
+      cy.visit('/fyllut/testprefilldata?sub=paper');
+      cy.wait('@getTestFormPrefillData');
+      cy.clickStart();
+
+      // Should not make a request to get prefill data
+      cy.get('@getPrefillData').then((interception) => {
+        assert.isNull(interception);
+      });
+
+      cy.findByRole('heading', { name: 'Side 1' }).should('exist');
+      cy.findByRole('textbox', { name: 'Fornavn' }).should('not.have.value', 'Ola');
+      cy.findByRole('textbox', { name: 'Etternavn' }).should('not.have.value', 'Nordmann');
     });
   });
 
@@ -41,7 +56,7 @@ describe('Prefill data', () => {
     cy.findByRole('textbox', { name: 'Etternavn' }).should('have.value', 'Nordmann');
   });
 
-  describe.only('existing application', () => {
+  describe('existing application', () => {
     it('should not prefill data for existing application on the first page (name)', () => {
       cy.mocksUseRouteVariant('get-soknad:success-prefill-data');
 
