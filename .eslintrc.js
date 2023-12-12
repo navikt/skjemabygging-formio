@@ -7,6 +7,7 @@ module.exports = {
     'plugin:vitest-globals/recommended',
     'plugin:cypress/recommended',
     'prettier',
+    'plugin:react-hooks/recommended',
   ],
   parser: '@typescript-eslint/parser',
   plugins: ['react', 'react-hooks', 'import', '@typescript-eslint', 'vitest', 'cypress'],

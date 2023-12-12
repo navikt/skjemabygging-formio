@@ -53,7 +53,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
       formToRender = navFormUtils.removeVedleggspanel(formToRender);
     }
 
-    if (!submission?.data && prefillData) {
+    if (prefillData) {
       formToRender = navFormUtils.prefillForm(formToRender, prefillData);
     }
 

@@ -36,7 +36,7 @@ export const PrefillDataProvider = ({ children, form }: PrefillDataProviderProps
       if (fyllutPrefillData) setPrefillData(fyllutPrefillData);
     };
     loadPrefillData(form);
-  }, []);
+  }, [baseUrl, form, http, submissionMethod]);
 
   return <PrefillDataContext.Provider value={{ prefillData }}>{children}</PrefillDataContext.Provider>;
 };
