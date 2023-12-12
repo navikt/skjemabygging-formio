@@ -14,7 +14,7 @@ describe('Prefill data', () => {
     cy.mocksRestoreRouteVariants();
   });
 
-  describe.only('new application', () => {
+  describe('new application', () => {
     it('should prefill data for new application on the first page (name)', () => {
       cy.visit('/fyllut/testprefilldata?sub=digital');
       cy.wait('@getTestFormPrefillData');
@@ -27,7 +27,7 @@ describe('Prefill data', () => {
       cy.findByRole('textbox', { name: 'Etternavn' }).should('have.value', 'Nordmann');
     });
 
-    it.only('should not prefill data for new application if submissionMethod is paper', () => {
+    it('should not prefill data for new application if submissionMethod is paper', () => {
       cy.visit('/fyllut/testprefilldata?sub=paper');
       cy.wait('@getTestFormPrefillData');
       cy.clickStart();

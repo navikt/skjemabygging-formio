@@ -11,13 +11,13 @@ const { featureToggles, sendInnConfig } = config;
 const sendInnPrefillData = {
   get: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const tokenxAccessToken = getTokenxAccessToken(req);
-      const propertiesParam = !!req.query?.properties ? `properties=${req.query.properties}` : '';
-
       if (!isMellomLagringEnabled(featureToggles)) {
         res.json();
         return;
       }
+
+      const tokenxAccessToken = getTokenxAccessToken(req);
+      const propertiesParam = !!req.query?.properties ? `properties=${req.query.properties}` : '';
 
       const sendInnResponse = await fetch(
         `${sendInnConfig.host}${sendInnConfig.paths.prefillData}?${propertiesParam}`,
@@ -35,7 +35,6 @@ const sendInnPrefillData = {
         res.status(sendInnResponse.status);
         res.json(await sendInnResponse.json());
       } else {
-        console.log('======', sendInnResponse);
         logger.debug('Failed to get prefill data from SendInn');
         next(await responseToError(sendInnResponse, 'Feil ved kall til SendInn for preutfylling', true));
       }

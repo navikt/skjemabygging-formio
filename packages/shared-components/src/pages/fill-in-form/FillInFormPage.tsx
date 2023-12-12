@@ -58,7 +58,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
     }
 
     setFormForRendering(formToRender);
-  }, [form, submissionMethod]);
+  }, [form, submissionMethod, prefillData]);
 
   useEffect(() => {
     loggSkjemaApnet(submissionMethod);
