@@ -15,6 +15,10 @@ export const validateFormMetadata = (form: NavFormType, usageContext: UsageConte
     errors.tema = 'Du må velge ett tema';
   }
 
+  if (form.properties.skjemanummer.length > 20) {
+    errors.skjemanummer = 'Skjemanummeret kan ikke være lengre enn 20 tegn';
+  }
+
   // Some fields are only required in edit mode
   if (usageContext === 'edit') {
     if (!form.properties.innsending) {
