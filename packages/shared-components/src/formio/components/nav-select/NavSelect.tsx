@@ -42,10 +42,22 @@ const ReactSelectWrapper = ({
   ariaLiveMessages,
   screenReaderStatus,
   loadingMessage,
+  translate,
 }) => {
-  const [selectedOption, setSelectedOption] = useState(value);
+  const translateOptionLabel = (option) => {
+    return option && option.label ? { ...option, label: translate(option.label) } : option;
+  };
+
+  const findOptionByValue = (value) => {
+    if (typeof value === 'string') {
+      translateOptionLabel(options.find((option) => option.value === value));
+    }
+    return translateOptionLabel(value);
+  };
+
+  const [selectedOption, setSelectedOption] = useState(findOptionByValue(value));
   useEffect(() => {
-    setSelectedOption(value);
+    setSelectedOption(findOptionByValue(value));
   }, [value, options]);
   const ref = useRef<Select>(null);
   useEffect(() => {
@@ -61,7 +73,7 @@ const ReactSelectWrapper = ({
       aria-label={label}
       options={options}
       value={selectedOption}
-      defaultValue={component.defaultValue}
+      defaultValue={findOptionByValue(component.defaultValue)}
       inputId={`${component.id}-${component.key}`}
       required={component.validate.required}
       placeholder={component.placeholder}
@@ -81,7 +93,7 @@ const ReactSelectWrapper = ({
             const newValue = event.value;
             const selectedOption = options.find((o) => o.value === newValue);
             setSelectedOption(selectedOption);
-            onChange(selectedOption);
+            onChange(event.value);
             break;
           case 'clear':
             setSelectedOption('');
@@ -131,17 +143,15 @@ class NavSelect extends BaseComponent {
     return options.map((option) => ({ ...option, label: this.t(option.label) }));
   }
 
-  translateOptionLabel(option) {
-    return option && option.label ? { ...option, label: this.t(option.label) } : option;
-  }
-
   translateAriaLiveMessages(messages) {
     return messages(this.t.bind(this));
   }
 
   setValueOnReactInstance(value) {
-    if (this.reactInstance && value) {
-      (this.reactInstance as Select)?.selectOption(value);
+    if (this.reactInstance && value && this.component?.data?.values) {
+      const options = this.translateOptionLabels(this.component?.data?.values ?? []);
+      const newSelectedOption = options.find((option) => option.value === value);
+      (this.reactInstance as Select)?.selectOption(newSelectedOption);
     }
   }
 
@@ -181,13 +191,14 @@ class NavSelect extends BaseComponent {
         component={component}
         options={this.translateOptionLabels(this.selectOptions)}
         label={this.t(component.label)}
-        value={this.translateOptionLabel(this.getDefaultValue())}
+        value={this.getDefaultValue()}
         ariaLiveMessages={this.translateAriaLiveMessages(ariaLiveMessages)}
         screenReaderStatus={({ count }: { count: number }) => this.t(SELECT_TEXTS.numberOfAvailableOptions, { count })}
         loadingMessage={() => this.t(TEXTS.statiske.loading)}
         onChange={(value) => this.updateValue(value, {})}
         inputRef={(ref) => this.setReactInstance(ref)}
         isLoading={this.isLoading}
+        translate={this.t.bind(this)}
       />,
     );
   }
