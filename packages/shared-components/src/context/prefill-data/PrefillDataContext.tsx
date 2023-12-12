@@ -23,10 +23,11 @@ export const PrefillDataProvider = ({ children, form }: PrefillDataProviderProps
       // No need to fetch prefill data if there are no components with prefillKey
       if (prefillComponents.length === 0) return null;
 
-      const properties = prefillComponents.map((component) => component.prefillKey).join(',');
+      const properties = prefillComponents.map((component) => component.prefillKey);
+      const uniqueProperties = [...new Set(properties)].join(',');
 
       const fyllutPrefillData = await http?.get<PrefillData>(
-        `${baseUrl}/api/send-inn/prefill-data?properties=${properties}`,
+        `${baseUrl}/api/send-inn/prefill-data?properties=${uniqueProperties}`,
       );
 
       if (fyllutPrefillData) setPrefillData(fyllutPrefillData);

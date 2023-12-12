@@ -1,6 +1,8 @@
 const responseWithInnsendingsId = require('../data/innsending-api/mellomlagring/responseWithInnsendingsId.json');
 const mellomlagringValid1 = require('../data/innsending-api/mellomlagring/getTestMellomlagring-valid-1.json');
 const mellomlagringValid2 = require('../data/innsending-api/mellomlagring/getTestMellomlagring-valid-2.json');
+const prefillDataNames = require('../data/innsending-api/prefill-data/prefill-data-names.json');
+
 const paabegyntMellomlagringOgInnsendt = require('../data/innsending-api/active-tasks/mellomlagringOgEttersending.json');
 const paabegyntMellomlagring = require('../data/innsending-api/active-tasks/mellomlagring.json');
 const paabegyntInnsendt = require('../data/innsending-api/active-tasks/ettersending.json');
@@ -161,6 +163,14 @@ module.exports = [
         },
       },
       {
+        id: 'success-prefill-data',
+        type: 'json',
+        options: {
+          status: 200,
+          body: convertToInnsendingApiResponse(prefillDataNames),
+        },
+      },
+      {
         id: 'not-found',
         type: 'json',
         options: {
@@ -226,6 +236,24 @@ module.exports = [
         options: {
           status: 500,
           body: 'FAILURE',
+        },
+      },
+    ],
+  },
+  {
+    id: 'get-prefill-data',
+    url: '/send-inn/fyllUt/v1/prefill-data',
+    method: 'GET',
+    variants: [
+      {
+        id: 'success-name',
+        type: 'json',
+        options: {
+          status: 200,
+          body: {
+            sokerFornavn: 'Ola',
+            sokerEtternavn: 'Nordmann',
+          },
         },
       },
     ],

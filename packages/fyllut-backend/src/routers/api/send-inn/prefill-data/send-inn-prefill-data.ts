@@ -35,8 +35,9 @@ const sendInnPrefillData = {
         res.status(sendInnResponse.status);
         res.json(await sendInnResponse.json());
       } else {
+        console.log('======', sendInnResponse);
         logger.debug('Failed to get prefill data from SendInn');
-        next(await responseToError(sendInnResponse, 'Feil ved kall til SendInn', true));
+        next(await responseToError(sendInnResponse, 'Feil ved kall til SendInn for preutfylling', true));
       }
     } catch (err) {
       next(err);
