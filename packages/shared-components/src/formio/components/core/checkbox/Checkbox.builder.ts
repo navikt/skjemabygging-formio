@@ -9,6 +9,9 @@ const checkboxBuilder = () => {
     schema: {
       ...schema,
       ...defaultBuilderSchema(),
+      validate: {
+        required: false,
+      },
     },
   };
 };
