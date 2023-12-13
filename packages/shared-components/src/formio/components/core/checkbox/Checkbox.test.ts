@@ -1,4 +1,4 @@
-import Harness from '../../../../../test/harness';
+import Harness from '../../../../../test/harness.js';
 import { setupNavFormio } from '../../../../../test/navform-render';
 import Checkbox from './Checkbox.js';
 

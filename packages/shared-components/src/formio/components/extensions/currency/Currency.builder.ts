@@ -3,7 +3,6 @@ import { defaultBuilderSchema } from '../../base/builderHelper';
 const currencyBuilder = () => {
   return {
     title: 'Beløp',
-    key: 'belop',
     schema: {
       ...defaultBuilderSchema(),
       label: 'Beløp',

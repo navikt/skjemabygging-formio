@@ -4,7 +4,6 @@ import currencyBuilder from '../../extensions/currency/Currency.builder';
 const amountWithCurrencyBuilder = () => {
   return {
     title: 'Beløp med valuta',
-    key: 'belopMedValuta',
     schema: {
       label: 'Angi valuta og beløp',
       components: [

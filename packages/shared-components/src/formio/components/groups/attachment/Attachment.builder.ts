@@ -3,8 +3,6 @@ import { defaultBuilderSchema } from '../../base/builderHelper';
 const attachmentBuilder = () => {
   return {
     title: 'Vedlegg',
-    key: 'vedleggNr',
-    icon: 'file',
     schema: {
       ...defaultBuilderSchema(),
       label: '< Navn på vedlegg > + husk å legge inn Gosys vedleggstittel og vedleggskode under API-fanen',
