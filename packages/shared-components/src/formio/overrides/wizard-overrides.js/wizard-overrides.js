@@ -119,11 +119,11 @@ Wizard.prototype.detachNav = function () {
 
 Wizard.prototype.redrawNavigation = function () {
   if (this.element) {
-    let navElement = this.element.querySelector(`#${this.wizardKey}-nav`);
+    let navElement = this.element.querySelector(`#${this.wizardKey}-nav-container`);
     if (navElement) {
       this.detachNav();
       navElement.outerHTML = this.renderTemplate('wizardNav', this.renderContext);
-      navElement = this.element.querySelector(`#${this.wizardKey}-nav`);
+      navElement = this.element.querySelector(`#${this.wizardKey}-nav-container`);
       this.loadRefs(navElement, {
         [`${this.wizardKey}-cancel`]: 'single',
         [`${this.wizardKey}-save`]: 'single',
