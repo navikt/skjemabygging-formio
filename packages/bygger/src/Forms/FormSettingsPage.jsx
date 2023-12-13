@@ -3,7 +3,7 @@ import { makeStyles, useModal } from '@navikt/skjemadigitalisering-shared-compon
 import { useState } from 'react';
 import { AppLayout } from '../components/AppLayout';
 import { FormMetadataEditor } from '../components/FormMetaDataEditor/FormMetadataEditor';
-import { isFormMetadataValid, validateFormMetadata } from '../components/FormMetaDataEditor/utils';
+import { isFormMetadataValid, validateFormMetadata } from '../components/FormMetaDataEditor/utils/utils';
 import PrimaryButtonWithSpinner from '../components/PrimaryButtonWithSpinner';
 import UserFeedback from '../components/UserFeedback';
 import Column from '../components/layout/Column';
