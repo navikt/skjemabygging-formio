@@ -21,10 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  * */
+import { navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import EventEmitter from 'eventemitter2';
 import { Form as FormioForm } from 'formiojs';
 import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
+import { usePrefillData } from '../../context/prefill-data/PrefillDataContext';
 import Styles from '../../styles';
 import { SANITIZE_CONFIG } from '../../util/config/sanitizeConfig';
 import makeStyles from '../../util/styles/jss/jss';
@@ -40,6 +42,7 @@ const NavForm = (props) => {
   let element;
   const [formio, setFormio] = useState(undefined);
   useStyles();
+  const { prefillData } = usePrefillData();
 
   useEffect(
     () => () => {
@@ -138,15 +141,18 @@ const NavForm = (props) => {
   }, [props.language]);
 
   useEffect(() => {
-    const { submission } = props;
-    if (formio && submission) {
-      formio.setSubmission(JSON.parse(JSON.stringify(submission))).then(() => {
-        if (submission.fyllutState) {
+    if (formio && props.submission) {
+      formio.setSubmission(JSON.parse(JSON.stringify(props.submission))).then(() => {
+        if (props.submission.fyllutState) {
           formio.redrawNavigation();
         }
       });
     }
-  }, [props.submission, formio]);
+    console.log('submission data', props.submission?.data);
+    if (formio && !props.submission?.data && prefillData) {
+      formio.form = navFormUtils.prefillForm(formio.form, prefillData);
+    }
+  }, [props.submission, formio, prefillData]);
 
   return <div className={props.className} data-testid="formMountElement" ref={(el) => (element = el)} />;
 };
