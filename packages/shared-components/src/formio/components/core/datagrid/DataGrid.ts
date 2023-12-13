@@ -1,19 +1,23 @@
 import Field from 'formiojs/components/_classes/field/Field';
 import FormioDataGrid from 'formiojs/components/datagrid/DataGrid';
 import { scrollToAndSetFocus } from '../../../../util/focus-management/focus-management';
-import FormBuilderOptions from '../../../form-builder-options';
+import dataGridBuilder from './DataGrid.builder';
 import dataGridForm from './DataGrid.form';
 
 const originalRemoveRow = FormioDataGrid.prototype.removeRow;
 
 class DataGrid extends FormioDataGrid {
-  static schema(...extend) {
-    return Field.schema(
-      {
-        ...FormBuilderOptions.builder.data.components.navDataGrid.schema,
-      },
-      ...extend,
-    );
+  static schema() {
+    return Field.schema({
+      label: 'Data Grid',
+      key: 'datagrid',
+      type: 'datagrid',
+      clearOnHide: true,
+      input: true,
+      isNavDataGrid: true,
+      tree: true,
+      components: [],
+    });
   }
 
   static editForm() {
@@ -21,7 +25,7 @@ class DataGrid extends FormioDataGrid {
   }
 
   static get builderInfo() {
-    return FormBuilderOptions.builder.data.components.navDataGrid;
+    return dataGridBuilder();
   }
 
   get defaultSchema() {

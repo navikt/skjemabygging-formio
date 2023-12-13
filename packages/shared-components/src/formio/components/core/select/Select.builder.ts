@@ -1,15 +1,14 @@
-import { defaultBuilderInfoSchema } from '../../base/builderHelper';
+import { defaultBuilderSchema } from '../../base/builderHelper';
 import NavSelect from './Select';
 
 const selectBuilder = () => {
+  const schema = NavSelect.schema();
   return {
-    title: 'Nedtrekksmeny',
-    key: 'navSelect',
-    icon: 'th-list',
+    title: schema.label,
     group: 'basic',
     schema: {
-      ...defaultBuilderInfoSchema(),
-      ...NavSelect.schema(),
+      ...schema,
+      ...defaultBuilderSchema(),
     },
   };
 };

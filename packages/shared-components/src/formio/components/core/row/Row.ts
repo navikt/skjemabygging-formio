@@ -1,27 +1,18 @@
-import FormBuilderOptions from '../../../form-builder-options';
 import Container from '../container/Container';
+import rowBuilder from './Row.builder';
 
 class Row extends Container {
-  static get builderInfo() {
-    const { title, key, icon } = FormBuilderOptions.builder.layout.components.row;
-    return {
-      title,
-      icon,
-      key,
-      documentation: '',
-      weight: 0,
-      schema: Row.schema(),
-    };
+  static schema() {
+    return Container.schema({
+      title: 'Rad',
+      key: 'rad',
+      type: 'row',
+      components: [],
+    });
   }
 
-  static schema(...extend) {
-    // @ts-ignore
-    return Container.schema(
-      {
-        ...FormBuilderOptions.builder.layout.components.row.schema,
-      },
-      ...extend,
-    );
+  static get builderInfo() {
+    return rowBuilder();
   }
 
   get defaultSchema() {

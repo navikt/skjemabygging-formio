@@ -1,15 +1,14 @@
 import FormioButton from 'formiojs/components/button/Button';
-import FormBuilderOptions from '../../../form-builder-options';
+import buttonBuilder from './Button.builder';
 import buttonForm from './Button.form';
 
 class Button extends FormioButton {
-  static schema(...extend) {
-    return FormioButton.schema(
-      {
-        ...FormBuilderOptions.builder.basic.components.button.schema,
-      },
-      ...extend,
-    );
+  static schema() {
+    return FormioButton.schema({
+      label: 'Knapp',
+      type: 'button',
+      key: 'knapp',
+    });
   }
 
   static editForm() {
@@ -17,7 +16,7 @@ class Button extends FormioButton {
   }
 
   static get builderInfo() {
-    return FormBuilderOptions.builder.basic.components.button;
+    return buttonBuilder();
   }
 
   get defaultSchema() {

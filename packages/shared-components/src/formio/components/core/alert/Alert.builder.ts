@@ -1,7 +1,14 @@
-import FormBuilderOptions from '../../../form-builder-options';
+import Alert from './Alert';
 
 const alertBuilder = () => {
-  return FormBuilderOptions.builder.layout.components.alertstripe;
+  const schema = Alert.schema();
+  return {
+    title: 'Alertstripe',
+    group: 'layout',
+    schema: {
+      ...schema,
+    },
+  };
 };
 
 export default alertBuilder;

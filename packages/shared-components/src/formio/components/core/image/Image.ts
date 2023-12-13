@@ -1,17 +1,15 @@
-// @ts-nocheck
 import Component from 'formiojs/components/_classes/component/Component';
-
-import FormBuilderOptions from '../../../form-builder-options';
+import imageBuilder from './Image.builder';
 import imageForm from './Image.form';
 
 export default class Image extends Component {
-  static schema(...extend) {
-    return Component.schema(
-      {
-        ...FormBuilderOptions.builder.basic.components.image.schema,
-      },
-      ...extend,
-    );
+  static schema() {
+    return Component.schema({
+      label: 'Bilde',
+      type: 'image',
+      key: 'image',
+      input: false,
+    });
   }
 
   static editForm() {
@@ -19,7 +17,7 @@ export default class Image extends Component {
   }
 
   static get builderInfo() {
-    return FormBuilderOptions.builder.basic.components.image;
+    return imageBuilder();
   }
 
   get defaultSchema() {
@@ -35,7 +33,9 @@ export default class Image extends Component {
 
   render() {
     return super.render(
+      // @ts-ignore
       this.renderTemplate('image', {
+        // @ts-ignore
         component: this.component,
       }),
     );

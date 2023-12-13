@@ -1,9 +1,39 @@
 // @ts-nocheck
-/* eslint-disable no-undef */
 import FormioDay from 'formiojs/components/day/Day';
 import dayForm from './Day.form';
 
 class Day extends FormioDay {
+  static schema() {
+    return FormioDay.schema({
+      label: 'Mnd / år',
+      type: 'day',
+      key: 'manedAr',
+      input: true,
+      dataGridLabel: true,
+      fieldSize: 'input--s',
+      clearOnHide: true,
+      fields: {
+        day: {
+          fieldSize: 'input--s',
+          required: false,
+          hide: true,
+        },
+        month: {
+          fieldSize: 'input--s',
+          type: 'select',
+          placeholder: 'Måned',
+          required: true,
+        },
+        year: {
+          fieldSize: 'input--s',
+          type: 'number',
+          placeholder: 'År',
+          required: true,
+        },
+      },
+    });
+  }
+
   static editForm() {
     const dayEditForm = dayForm();
 

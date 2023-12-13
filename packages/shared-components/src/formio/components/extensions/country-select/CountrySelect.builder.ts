@@ -1,15 +1,14 @@
-import { defaultBuilderInfoSchema } from '../../base/builderHelper';
+import { defaultBuilderSchema } from '../../base/builderHelper';
 import CountrySelect from './CountrySelect';
 
 const countrySelectBuilder = () => {
+  const schema = CountrySelect.schema();
   return {
     title: 'Landvelger',
-    key: 'landvelger',
     group: 'person',
-    icon: 'home',
     schema: {
-      ...defaultBuilderInfoSchema(),
-      ...CountrySelect.schema(),
+      ...schema,
+      ...defaultBuilderSchema(),
     },
   };
 };

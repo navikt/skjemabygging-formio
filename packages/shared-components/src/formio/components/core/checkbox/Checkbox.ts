@@ -3,6 +3,18 @@ import FormioCheckbox from 'formiojs/components/checkbox/Checkbox';
 import checkboxForm from './Checkbox.form';
 
 class Checkbox extends FormioCheckbox {
+  static schema() {
+    return FormioCheckbox.schema({
+      label: 'Avkryssingsboks',
+      type: 'navCheckbox',
+      key: 'Avkryssingsboks',
+      input: true,
+      hideLabel: false,
+      clearOnHide: true,
+      dataGridLabel: true,
+    });
+  }
+
   static editForm() {
     return checkboxForm();
   }

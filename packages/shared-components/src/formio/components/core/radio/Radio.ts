@@ -1,15 +1,28 @@
 import FormioRadio from 'formiojs/components/radio/Radio';
-import FormBuilderOptions from '../../../form-builder-options';
+import radioBuilder from './Radio.builder';
 import radioForm from './Radio.form';
 
 class Radio extends FormioRadio {
-  static schema(...extend) {
-    return FormioRadio.schema(
-      {
-        ...FormBuilderOptions.builder.basic.components.radiopanel.schema,
-      },
-      ...extend,
-    );
+  static schema() {
+    return FormioRadio.schema({
+      label: 'Radiopanel',
+      type: 'radiopanel',
+      key: 'radiopanel',
+      input: true,
+      hideLabel: false,
+      clearOnHide: true,
+      dataGridLabel: true,
+      values: [
+        {
+          value: 'ja',
+          label: 'Ja',
+        },
+        {
+          value: 'nei',
+          label: 'Nei',
+        },
+      ],
+    });
   }
 
   static editForm() {
@@ -17,7 +30,7 @@ class Radio extends FormioRadio {
   }
 
   static get builderInfo() {
-    return FormBuilderOptions.builder.basic.components.radiopanel;
+    return radioBuilder();
   }
 
   get defaultSchema() {

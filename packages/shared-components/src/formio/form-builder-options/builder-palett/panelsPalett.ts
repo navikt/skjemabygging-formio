@@ -1,28 +1,13 @@
-import dineOpplysningerSchema from '../schemas/panels/dineOpplysningerSchema';
-import vedleggPanelSchema from '../schemas/panels/vedleggPanelSchema';
-import veiledningSchema from '../schemas/panels/veiledningSchema';
+import attachmentBuilder from '../../components/panels/attachment/Attachment.builder';
+import guidanceBuilder from '../../components/panels/guidance/Guidance.builder';
+import yourInformationBuilder from '../../components/panels/your-information/YourInformation.builder';
 
 const panelsPalett = {
   title: 'Paneler',
   components: {
-    veiledning: {
-      title: 'Veiledning',
-      key: 'veiledning',
-      weight: '10',
-      schema: veiledningSchema,
-    },
-    dineOpplysninger: {
-      title: 'Dine opplysninger',
-      key: 'dineopplysninger',
-      weight: '20',
-      schema: dineOpplysningerSchema,
-    },
-    vedleggpanel: {
-      title: 'Vedlegg',
-      key: 'vedleggpanel',
-      weight: '30',
-      schema: vedleggPanelSchema,
-    },
+    veiledning: guidanceBuilder(),
+    dineOpplysninger: yourInformationBuilder(),
+    vedleggpanel: attachmentBuilder(),
   },
 };
 

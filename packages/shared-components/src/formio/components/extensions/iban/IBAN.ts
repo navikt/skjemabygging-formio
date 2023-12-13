@@ -1,17 +1,21 @@
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import TextField from 'formiojs/components/textfield/TextField';
 import * as ibantools from 'ibantools';
-import FormBuilderOptions from '../../../form-builder-options';
+import IBANBuilder from './IBAN.builder';
 import ibanForm from './IBAN.form';
 
 class IBAN extends TextField {
-  static schema(...extend) {
-    return TextField.schema(
-      {
-        ...FormBuilderOptions.builder.pengerOgKonto.components.iban.schema,
-      },
-      ...extend,
-    );
+  static schema() {
+    return TextField.schema({
+      label: 'IBAN',
+      type: 'iban',
+      key: `iban`,
+      fieldSize: 'input--l',
+      input: true,
+      spellcheck: false,
+      dataGridLabel: true,
+      clearOnHide: true,
+    });
   }
 
   static editForm() {
@@ -19,7 +23,7 @@ class IBAN extends TextField {
   }
 
   static get builderInfo() {
-    return FormBuilderOptions.builder.pengerOgKonto.components.iban;
+    return IBANBuilder();
   }
 
   get defaultSchema() {

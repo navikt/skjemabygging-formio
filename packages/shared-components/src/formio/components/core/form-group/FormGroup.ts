@@ -1,15 +1,17 @@
 import Fieldset from 'formiojs/components/fieldset/Fieldset';
-import FormBuilderOptions from '../../../form-builder-options';
 import formGroupForm from './FormGroup.form';
 
 class FormGroup extends Fieldset {
-  static schema(...extend) {
-    return Fieldset.schema(
-      {
-        ...FormBuilderOptions.builder.layout.components.navSkjemagruppe.schema,
-      },
-      ...extend,
-    );
+  static schema() {
+    return Fieldset.schema({
+      label: 'Skjemagruppe',
+      key: 'navSkjemagruppe',
+      type: 'navSkjemagruppe',
+      legend: 'Skjemagruppe',
+      components: [],
+      input: false,
+      persistent: false,
+    });
   }
 
   static editForm() {

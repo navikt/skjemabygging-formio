@@ -1,15 +1,14 @@
-import { defaultBuilderInfoSchema } from '../../base/builderHelper';
+import { defaultBuilderSchema } from '../../base/builderHelper';
 import CurrencySelect from './CurrencySelect';
 
 const currencySelectBuilder = () => {
+  const schema = CurrencySelect.schema();
   return {
     title: 'Valutavelger',
-    key: 'valutavelger',
     group: 'pengerOgKonto',
-    icon: 'home',
     schema: {
-      ...defaultBuilderInfoSchema(),
-      ...CurrencySelect.schema(),
+      ...schema,
+      ...defaultBuilderSchema(),
     },
   };
 };

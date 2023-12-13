@@ -57,10 +57,6 @@ export default class Datepicker extends FormioReactComponent {
       type: 'navDatepicker',
       label: 'Dato (dd.mm.åååå)',
       dataGridLabel: true,
-      validate: {
-        custom: 'valid = instance.validateDatePickerV2(input, data, component, row);',
-        required: true,
-      },
     });
   }
 

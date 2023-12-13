@@ -1,14 +1,17 @@
 import Field from 'formiojs/components/_classes/field/Field';
 import HTMLElement from 'formiojs/components/html/HTML';
-import FormBuilderOptions from '../../../form-builder-options';
 import alertBuilder from './Alert.builder';
 import alertForm from './Alert.form';
 
 class Alert extends HTMLElement {
-  static schema(...extend) {
+  static schema() {
     return Field.schema({
-      ...FormBuilderOptions.builder.layout.components.alertstripe.schema,
-      ...extend,
+      label: 'Alertstripe',
+      type: 'alertstripe',
+      key: 'alertstripe',
+      alerttype: 'info',
+      input: true,
+      clearOnHide: true,
     });
   }
 

@@ -1,14 +1,14 @@
-import CountrySelect from '../../components/extensions/country-select/CountrySelect';
-import epostSchema from '../schemas/epostSchema';
-import firstNameSchema from '../schemas/firstNameSchema';
-import fodselsNummerDNummerSchema from '../schemas/fodselsNummerDNummerSchema';
+import citizenshipBuilder from '../../components/extensions/citizenship/Citizenship.builder';
+import countrySelectBuilder from '../../components/extensions/country-select/CountrySelect.builder';
+import emailBuilder from '../../components/extensions/email/Email.builder';
+import firstNameBuilder from '../../components/extensions/first-name/FirstName.builder';
+import nationalIdentityNumberBuilder from '../../components/extensions/national-identity-number/NationalIdentityNumber.builder';
+import phoneNumberBuilder from '../../components/extensions/phone-number/PhoneNumber.builder';
+import surnameBuilder from '../../components/extensions/surname/Surname.builder';
 import norskPostboksadresseSchema from '../schemas/norskPostboksadresseSchema';
 import norskVegadresseSchema from '../schemas/norskVegadresseSchema';
 import postnummerSchema from '../schemas/postnummerSchema';
 import poststedSchema from '../schemas/poststedSchema';
-import statsborgerskapSchema from '../schemas/statsborgerskapSchema';
-import surnameSchema from '../schemas/surnameSchema';
-import telefonSchema from '../schemas/telefonSchema';
 import utenlandskAdresseSchema from '../schemas/utenlandskAdresseSchema';
 import utlandLandSchema from '../schemas/utlandLandSchema';
 import vegadresseSchema from '../schemas/vegadresseSchema';
@@ -16,27 +16,9 @@ import vegadresseSchema from '../schemas/vegadresseSchema';
 const personPalett = {
   title: 'Person',
   components: {
-    fnrfield: {
-      title: 'Fødselsnummer',
-      group: 'person',
-      icon: 'user',
-      weight: 10,
-      schema: fodselsNummerDNummerSchema(),
-    },
-    firstName: {
-      title: 'Fornavn',
-      key: 'fornavn',
-      icon: 'user',
-      weight: 20,
-      schema: firstNameSchema(),
-    },
-    surname: {
-      title: 'Etternavn',
-      key: 'etternavn',
-      icon: 'user',
-      weight: 30,
-      schema: surnameSchema(),
-    },
+    fnrfield: nationalIdentityNumberBuilder(),
+    firstName: firstNameBuilder(),
+    surname: surnameBuilder(),
     norskVegadresse: {
       title: 'Norsk vegadresse',
       icon: 'home',
@@ -86,28 +68,10 @@ const personPalett = {
       weight: 70,
       schema: utlandLandSchema(),
     },
-    landvelger: CountrySelect.builderInfo,
-    email: {
-      title: 'E-post',
-      key: 'epost',
-      icon: 'at',
-      weight: 80,
-      schema: epostSchema(),
-    },
-    phoneNumber: {
-      title: 'Telefon',
-      key: 'telefonnummer',
-      icon: 'phone-square',
-      weight: 90,
-      schema: telefonSchema(),
-    },
-    citizenship: {
-      title: 'Statsborgerskap',
-      key: 'statsborgerskap',
-      icon: 'user',
-      weight: 100,
-      schema: statsborgerskapSchema(),
-    },
+    landvelger: countrySelectBuilder(),
+    email: emailBuilder(),
+    phoneNumber: phoneNumberBuilder(),
+    citizenship: citizenshipBuilder(),
   },
 };
 
