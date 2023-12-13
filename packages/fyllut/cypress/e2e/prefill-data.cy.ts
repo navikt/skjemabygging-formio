@@ -27,6 +27,19 @@ describe('Prefill data', () => {
       cy.findByRole('textbox', { name: 'Etternavn' }).should('have.value', 'Nordmann');
     });
 
+    it('should prefill data for new application on the second page (name)', () => {
+      cy.visit('/fyllut/testprefilldata?sub=digital');
+      cy.wait('@getTestFormPrefillData');
+      cy.clickStart();
+      cy.wait('@getPrefillData');
+      cy.wait('@createMellomlagring');
+      cy.clickSaveAndContinue();
+
+      cy.findByRole('heading', { name: 'Side 2' }).should('exist');
+      cy.findByRole('textbox', { name: 'Fornavn' }).should('have.value', 'Ola');
+      cy.findByRole('textbox', { name: 'Etternavn' }).should('have.value', 'Nordmann');
+    });
+
     it('should not prefill data for new application if submissionMethod is paper', () => {
       cy.visit('/fyllut/testprefilldata?sub=paper');
       cy.wait('@getTestFormPrefillData');
@@ -41,19 +54,6 @@ describe('Prefill data', () => {
       cy.findByRole('textbox', { name: 'Fornavn' }).should('not.have.value', 'Ola');
       cy.findByRole('textbox', { name: 'Etternavn' }).should('not.have.value', 'Nordmann');
     });
-  });
-
-  it('should prefill data for new application on the second page (name)', () => {
-    cy.visit('/fyllut/testprefilldata?sub=digital');
-    cy.wait('@getTestFormPrefillData');
-    cy.clickStart();
-    cy.wait('@getPrefillData');
-    cy.wait('@createMellomlagring');
-    cy.clickSaveAndContinue();
-
-    cy.findByRole('heading', { name: 'Side 2' }).should('exist');
-    cy.findByRole('textbox', { name: 'Fornavn' }).should('have.value', 'Ola');
-    cy.findByRole('textbox', { name: 'Etternavn' }).should('have.value', 'Nordmann');
   });
 
   describe('existing application', () => {

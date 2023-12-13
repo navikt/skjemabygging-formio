@@ -50,15 +50,8 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: Fil
   const exitUrl = urlUtils.getExitUrl(window.location.href);
   const deletionDate = submission?.fyllutState?.mellomlagring?.deletionDate ?? '';
 
-  // Set up form for rendering
   useEffect(() => {
-    let formToRender = { ...form };
-
-    if (submissionMethod === 'digital') {
-      formToRender = navFormUtils.removeVedleggspanel(formToRender);
-    }
-
-    setFormForRendering(formToRender);
+    setFormForRendering(submissionMethod === 'digital' ? navFormUtils.removeVedleggspanel(form) : form);
   }, [form, submissionMethod]);
 
   useEffect(() => {

@@ -148,7 +148,6 @@ const NavForm = (props) => {
         }
       });
     }
-    console.log('submission data', props.submission?.data);
     if (formio && !props.submission?.data && prefillData) {
       formio.form = navFormUtils.prefillForm(formio.form, prefillData);
     }
