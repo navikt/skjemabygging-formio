@@ -1,4 +1,3 @@
-import { defaultBuilderSchema } from '../../base/builderHelper';
 import DataGrid from './DataGrid';
 
 const dataGridBuilder = () => {
@@ -8,7 +7,10 @@ const dataGridBuilder = () => {
     group: 'data',
     schema: {
       ...schema,
-      ...defaultBuilderSchema(),
+      validateOn: 'blur',
+      validate: {
+        required: true,
+      },
     },
   };
 };

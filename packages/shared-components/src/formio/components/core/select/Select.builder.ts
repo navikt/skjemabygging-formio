@@ -1,4 +1,3 @@
-import { defaultBuilderSchema } from '../../base/builderHelper';
 import NavSelect from './Select';
 
 const selectBuilder = () => {
@@ -8,7 +7,9 @@ const selectBuilder = () => {
     group: 'basic',
     schema: {
       ...schema,
-      ...defaultBuilderSchema(),
+      validate: {
+        required: true,
+      },
     },
   };
 };

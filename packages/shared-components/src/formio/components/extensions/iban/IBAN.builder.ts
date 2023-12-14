@@ -1,4 +1,3 @@
-import { defaultBuilderSchema } from '../../base/builderHelper';
 import IBAN from './IBAN';
 
 const IBANBuilder = () => {
@@ -8,9 +7,9 @@ const IBANBuilder = () => {
     group: 'pengerOgKonto',
     schema: {
       ...schema,
-      ...defaultBuilderSchema(),
+      validateOn: 'blur',
       validate: {
-        ...defaultBuilderSchema().validate,
+        required: true,
         custom: 'valid = instance.validateIban(input);',
       },
     },

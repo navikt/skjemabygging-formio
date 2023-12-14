@@ -1,4 +1,3 @@
-import { defaultBuilderSchema } from '../../base/builderHelper';
 import SelectBoxes from './SelectBoxes';
 
 const selectBoxesBuilder = () => {
@@ -8,7 +7,10 @@ const selectBoxesBuilder = () => {
     group: 'basic',
     schema: {
       ...schema,
-      ...defaultBuilderSchema(),
+      validateOn: 'blur',
+      validate: {
+        required: true,
+      },
     },
   };
 };

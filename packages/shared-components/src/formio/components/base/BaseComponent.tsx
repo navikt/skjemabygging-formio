@@ -22,13 +22,9 @@ class BaseComponent extends FormioReactComponent {
    */
   static schema(values) {
     return Field.schema({
-      input: true,
-      clearOnHide: true,
       fieldSize: 'input--xxl',
       dataGridLabel: true,
-      validate: {
-        required: false,
-      },
+      validateOn: 'blur',
       ...values,
     });
   }

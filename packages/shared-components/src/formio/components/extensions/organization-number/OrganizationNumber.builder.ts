@@ -1,4 +1,3 @@
-import { defaultBuilderSchema } from '../../base/builderHelper';
 import OrganizationNumber from './OrganizationNumber';
 
 const organizationNumberBuilder = () => {
@@ -8,9 +7,9 @@ const organizationNumberBuilder = () => {
     group: 'organisasjon',
     schema: {
       ...schema,
-      ...defaultBuilderSchema(),
+      validateOn: 'blur',
       validate: {
-        ...defaultBuilderSchema().validate,
+        required: true,
         custom: 'valid = instance.validateOrganizationNumber(input)',
       },
     },

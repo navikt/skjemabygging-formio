@@ -1,4 +1,3 @@
-import { defaultBuilderSchema } from '../../base/builderHelper';
 import Datepicker from './Datepicker';
 
 const datepickerBuilder = () => {
@@ -8,9 +7,9 @@ const datepickerBuilder = () => {
     group: 'datoOgTid',
     schema: {
       ...schema,
-      ...defaultBuilderSchema(),
+      validateOn: 'blur',
       validate: {
-        ...defaultBuilderSchema().validate,
+        required: true,
         custom: 'valid = instance.validateDatePickerV2(input, data, component, row);',
       },
     },

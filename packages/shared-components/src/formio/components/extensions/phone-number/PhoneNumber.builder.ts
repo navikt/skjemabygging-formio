@@ -1,11 +1,8 @@
-import { defaultBuilderSchema } from '../../base/builderHelper';
-
 const phoneNumberBuilder = (keyPostfix = '') => {
   return {
     title: 'Telefon',
     group: 'person',
     schema: {
-      ...defaultBuilderSchema(),
       label: 'Telefonnummer',
       type: 'phoneNumber',
       key: `telefonnummer${keyPostfix}`,
@@ -16,6 +13,10 @@ const phoneNumberBuilder = (keyPostfix = '') => {
       spellcheck: false,
       autocomplete: 'tel',
       clearOnHide: true,
+      validateOn: 'blur',
+      validate: {
+        required: true,
+      },
     },
   };
 };

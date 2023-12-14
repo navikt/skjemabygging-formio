@@ -1,4 +1,3 @@
-import { defaultBuilderSchema } from '../../base/builderHelper';
 import Checkbox from './Checkbox';
 
 const checkboxBuilder = () => {
@@ -8,11 +7,8 @@ const checkboxBuilder = () => {
     group: 'basic',
     schema: {
       ...schema,
-      ...defaultBuilderSchema(),
-      validate: {
-        required: false,
-      },
     },
+    validateOn: 'blur',
   };
 };
 

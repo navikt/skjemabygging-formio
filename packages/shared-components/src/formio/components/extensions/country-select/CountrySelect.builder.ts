@@ -1,4 +1,3 @@
-import { defaultBuilderSchema } from '../../base/builderHelper';
 import CountrySelect from './CountrySelect';
 
 const countrySelectBuilder = () => {
@@ -8,7 +7,9 @@ const countrySelectBuilder = () => {
     group: 'person',
     schema: {
       ...schema,
-      ...defaultBuilderSchema(),
+      validate: {
+        required: true,
+      },
     },
   };
 };

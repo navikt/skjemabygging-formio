@@ -1,4 +1,3 @@
-import { defaultBuilderSchema } from '../../base/builderHelper';
 import Image from './Image';
 
 const imageBuilder = () => {
@@ -8,7 +7,10 @@ const imageBuilder = () => {
     group: 'basic',
     schema: {
       ...schema,
-      ...defaultBuilderSchema(),
+      validateOn: 'blur',
+      validate: {
+        required: true,
+      },
     },
   };
 };

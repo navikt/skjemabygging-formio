@@ -1,4 +1,3 @@
-import { defaultBuilderSchema } from '../../base/builderHelper';
 import TextField from './TextField';
 
 const textFieldBuilder = () => {
@@ -8,7 +7,9 @@ const textFieldBuilder = () => {
     group: 'basic',
     schema: {
       ...schema,
-      ...defaultBuilderSchema(),
+      validate: {
+        required: true,
+      },
     },
   };
 };

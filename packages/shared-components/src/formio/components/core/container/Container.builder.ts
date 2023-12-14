@@ -1,4 +1,3 @@
-import { defaultBuilderSchema } from '../../base/builderHelper';
 import Container from './Container';
 
 const ContainerBuilder = () => {
@@ -8,7 +7,10 @@ const ContainerBuilder = () => {
     group: 'data',
     schema: {
       ...schema,
-      ...defaultBuilderSchema(),
+      validateOn: 'blur',
+      validate: {
+        required: true,
+      },
     },
   };
 };

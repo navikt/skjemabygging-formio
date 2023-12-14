@@ -1,10 +1,7 @@
-import { defaultBuilderSchema } from '../../base/builderHelper';
-
 const attachmentBuilder = () => {
   return {
     title: 'Vedlegg',
     schema: {
-      ...defaultBuilderSchema(),
       label: '< Navn på vedlegg > + husk å legge inn Gosys vedleggstittel og vedleggskode under API-fanen',
       type: 'radiopanel',
       key: 'vedleggNr',
@@ -29,6 +26,10 @@ const attachmentBuilder = () => {
           label: 'Jeg har levert denne dokumentasjonen tidligere',
         },
       ],
+      validateOn: 'blur',
+      validate: {
+        required: true,
+      },
     },
   };
 };

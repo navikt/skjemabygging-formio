@@ -1,4 +1,3 @@
-import { defaultBuilderSchema } from '../../base/builderHelper';
 import Radio from './Radio';
 
 const radioBuilder = () => {
@@ -8,7 +7,10 @@ const radioBuilder = () => {
     group: 'basic',
     schema: {
       ...schema,
-      ...defaultBuilderSchema(),
+      validateOn: 'blur',
+      validate: {
+        required: true,
+      },
     },
   };
 };

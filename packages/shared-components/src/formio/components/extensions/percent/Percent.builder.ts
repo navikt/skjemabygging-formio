@@ -1,10 +1,7 @@
-import { defaultBuilderSchema } from '../../base/builderHelper';
-
 const selectBoxesBuilder = () => {
   return {
     title: 'Prosent',
     schema: {
-      ...defaultBuilderSchema(),
       label: 'Prosent',
       type: 'number',
       key: 'prosent',
@@ -14,8 +11,9 @@ const selectBoxesBuilder = () => {
       clearOnHide: true,
       suffix: '%',
       fieldSize: 'input--xs',
+      validateOn: 'blur',
       validate: {
-        ...defaultBuilderSchema().validate,
+        required: true,
         min: 0,
         max: 100,
       },

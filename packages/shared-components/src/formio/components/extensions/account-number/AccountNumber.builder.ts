@@ -1,4 +1,3 @@
-import { defaultBuilderSchema } from '../../base/builderHelper';
 import AccountNumber from './AccountNumber';
 
 const accountNumberBuilder = () => {
@@ -8,9 +7,9 @@ const accountNumberBuilder = () => {
     group: 'pengerOgKonto',
     schema: {
       ...schema,
-      ...defaultBuilderSchema(),
+      validateOn: 'blur',
       validate: {
-        ...defaultBuilderSchema().validate,
+        required: true,
         custom: 'valid = instance.validateAccountNumber(input)',
         customMessage: 'Dette er ikke et gyldig kontonummer',
       },

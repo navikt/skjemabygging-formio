@@ -1,11 +1,8 @@
-import { defaultBuilderSchema } from '../../base/builderHelper';
-
-const emailBuilder = (keyPostfix = '') => {
+const emailBuilder = () => {
   return {
     title: 'E-post',
     group: 'person',
     schema: {
-      ...defaultBuilderSchema(),
       label: 'E-post',
       type: 'email',
       key: 'epost',
@@ -15,6 +12,10 @@ const emailBuilder = (keyPostfix = '') => {
       autocomplete: 'email',
       clearOnHide: true,
       spellcheck: false,
+      validateOn: 'blur',
+      validate: {
+        required: true,
+      },
     },
   };
 };

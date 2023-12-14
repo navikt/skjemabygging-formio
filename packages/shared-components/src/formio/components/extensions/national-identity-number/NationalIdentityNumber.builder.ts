@@ -1,4 +1,3 @@
-import { defaultBuilderSchema } from '../../base/builderHelper';
 import NationalIdentityNumber from './NationalIdentityNumber';
 
 const nationalIdentityNumberBuilder = () => {
@@ -8,9 +7,9 @@ const nationalIdentityNumberBuilder = () => {
     group: 'person',
     schema: {
       ...schema,
-      ...defaultBuilderSchema(),
+      validateOn: 'blur',
       validate: {
-        ...defaultBuilderSchema().validate,
+        required: true,
         custom: 'valid = instance.validateFnrNew(input)',
       },
     },

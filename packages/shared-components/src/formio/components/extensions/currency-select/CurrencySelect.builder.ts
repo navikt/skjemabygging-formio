@@ -1,4 +1,3 @@
-import { defaultBuilderSchema } from '../../base/builderHelper';
 import CurrencySelect from './CurrencySelect';
 
 const currencySelectBuilder = () => {
@@ -8,7 +7,9 @@ const currencySelectBuilder = () => {
     group: 'pengerOgKonto',
     schema: {
       ...schema,
-      ...defaultBuilderSchema(),
+      validate: {
+        required: true,
+      },
     },
   };
 };

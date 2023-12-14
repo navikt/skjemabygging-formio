@@ -1,11 +1,8 @@
-import { defaultBuilderSchema } from '../../base/builderHelper';
-
 const firstNameBuilder = (keyPostfix = '') => {
   return {
     title: 'Fornavn',
     group: 'person',
     schema: {
-      ...defaultBuilderSchema(),
       label: 'Fornavn',
       type: 'textfield',
       key: `fornavn${keyPostfix}`,
@@ -14,6 +11,10 @@ const firstNameBuilder = (keyPostfix = '') => {
       dataGridLabel: true,
       clearOnHide: true,
       autocomplete: 'given-name',
+      validateOn: 'blur',
+      validate: {
+        required: true,
+      },
     },
   };
 };

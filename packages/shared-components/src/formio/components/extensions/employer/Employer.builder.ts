@@ -1,11 +1,8 @@
-import { defaultBuilderSchema } from '../../base/builderHelper';
-
 const employerBuilder = () => {
   return {
     title: 'Arbeidsgiver',
     group: 'organisasjon',
     schema: {
-      ...defaultBuilderSchema(),
       label: 'Arbeidsgiver',
       type: 'textfield',
       key: 'arbeidsgiver',
@@ -13,6 +10,10 @@ const employerBuilder = () => {
       input: true,
       dataGridLabel: true,
       clearOnHide: true,
+      validateOn: 'blur',
+      validate: {
+        required: true,
+      },
     },
   };
 };

@@ -1,4 +1,3 @@
-import { defaultBuilderSchema } from '../../base/builderHelper';
 import Day from './Day';
 
 const dayBuilder = () => {
@@ -8,7 +7,10 @@ const dayBuilder = () => {
     group: 'datoOgTid',
     schema: {
       ...schema,
-      ...defaultBuilderSchema(),
+      validateOn: 'blur',
+      validate: {
+        required: true,
+      },
     },
   };
 };

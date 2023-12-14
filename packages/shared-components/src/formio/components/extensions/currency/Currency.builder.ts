@@ -1,10 +1,7 @@
-import { defaultBuilderSchema } from '../../base/builderHelper';
-
 const currencyBuilder = () => {
   return {
     title: 'Beløp',
     schema: {
-      ...defaultBuilderSchema(),
       label: 'Beløp',
       type: 'currency',
       key: 'belop',
@@ -14,6 +11,10 @@ const currencyBuilder = () => {
       spellcheck: false,
       dataGridLabel: true,
       clearOnHide: true,
+      validateOn: 'blur',
+      validate: {
+        required: true,
+      },
     },
   };
 };

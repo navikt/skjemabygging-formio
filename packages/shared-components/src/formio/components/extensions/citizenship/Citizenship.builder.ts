@@ -1,11 +1,8 @@
-import { defaultBuilderSchema } from '../../base/builderHelper';
-
 const citizenshipBuilder = (keyPostfix = '') => {
   return {
     title: 'Statsborgerskap',
     group: 'person',
     schema: {
-      ...defaultBuilderSchema(),
       label: 'Statsborgerskap',
       type: 'textfield',
       key: `statsborgerskap${keyPostfix}`,
@@ -13,6 +10,10 @@ const citizenshipBuilder = (keyPostfix = '') => {
       input: true,
       dataGridLabel: true,
       clearOnHide: true,
+      validateOn: 'blur',
+      validate: {
+        required: true,
+      },
     },
   };
 };

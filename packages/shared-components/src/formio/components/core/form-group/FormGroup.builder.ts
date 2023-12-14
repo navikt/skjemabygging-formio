@@ -1,4 +1,3 @@
-import { defaultBuilderSchema } from '../../base/builderHelper';
 import FormGroup from './FormGroup';
 
 const FormGroupBuilder = () => {
@@ -8,7 +7,10 @@ const FormGroupBuilder = () => {
     group: 'layout',
     schema: {
       ...schema,
-      ...defaultBuilderSchema(),
+      validateOn: 'blur',
+      validate: {
+        required: true,
+      },
     },
   };
 };
