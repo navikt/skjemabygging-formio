@@ -57,6 +57,7 @@ export const AllForms = () => {
           {isDevelopment && (
             <thead>
               <tr>
+                <th>Skjemanummer</th>
                 <th>Skjematittel</th>
                 <th colSpan={3}>Innsending</th>
               </tr>
