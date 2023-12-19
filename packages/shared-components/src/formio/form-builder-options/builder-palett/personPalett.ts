@@ -32,7 +32,7 @@ const personPalett = {
       schema: utenlandskAdresseSchema(),
     },
     streetAddress: {
-      title: 'Vegdresse',
+      title: 'Vegadresse',
       schema: vegadresseSchema(),
     },
     postcode: {
