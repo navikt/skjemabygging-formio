@@ -11,6 +11,10 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
     this.componentMessage = undefined;
   }
 
+  build(element: any) {
+    return this.attach(element);
+  }
+
   attachReact(element: any) {
     this.rootElement = createRoot(element);
     this.renderReact(this.rootElement);
