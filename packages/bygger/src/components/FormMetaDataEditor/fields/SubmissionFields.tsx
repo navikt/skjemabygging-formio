@@ -2,7 +2,7 @@ import { TextField, Textarea } from '@navikt/ds-react';
 import { InnsendingType, NavFormSettingsDiff, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import LabelWithDiff from '../LabelWithDiff';
 import SubmissionTypeSelect from '../SubmissionTypeSelect';
-import { FormMetadataError, UpdateFormFunction } from '../utils';
+import { FormMetadataError, UpdateFormFunction } from '../utils/utils';
 
 export interface SubmissionFieldsProps {
   onChange: UpdateFormFunction;

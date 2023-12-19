@@ -7,7 +7,7 @@ import {
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { v4 as uuidv4 } from 'uuid';
 import SignatureComponent from '../../layout/SignatureComponent';
-import { UpdateFormFunction } from '../utils';
+import { UpdateFormFunction } from '../utils/utils';
 
 export interface SignatureFieldsProps {
   onChange: UpdateFormFunction;

@@ -2,8 +2,8 @@
   {
     "_id": "hg378gh38hgr833",
     "title": "Cypress test for settings page",
-    "name": "cypressInnstillinger",
-    "path": "cypressinnstillinger",
+    "name": "cypressSettings",
+    "path": "cypresssettings",
     "type": "form",
     "display": "wizard",
     "tags": ["nav-skjema", ""],
@@ -285,7 +285,7 @@
       }
     ],
     "properties": {
-      "skjemanummer": "cypress-innstillinger",
+      "skjemanummer": "cypress-settings",
       "tema": "CYPRESSTEST",
       "innsending": "PAPIR_OG_DIGITAL",
       "ettersending": "PAPIR_OG_DIGITAL",
@@ -310,6 +310,6 @@
     "submissionAccess": [],
     "created": "2022-09-19T08:26:26.936Z",
     "modified": "2022-09-22T10:39:44.218Z",
-    "machineName": "machine:cypressInnstillinger"
+    "machineName": "machine:cypressSettings"
   }
 ]
