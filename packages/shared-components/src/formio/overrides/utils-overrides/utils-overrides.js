@@ -2,7 +2,7 @@ import { formDiffingTool, navFormioUtils } from '@navikt/skjemadigitalisering-sh
 import { Utils } from 'formiojs';
 
 const additionalDescription = (ctx) => {
-  if (!ctx.component.additionalDescription) return '';
+  if (!ctx.component.additionalDescriptionLabel && !ctx.component.additionalDescriptionText) return '';
 
   const descriptionId = `${ctx.component.id}-${ctx.component.key}-additional-description`;
   const descriptionButtonId = `${ctx.component.id}-${ctx.component.key}-additional-button-content`;
@@ -78,7 +78,7 @@ const createList = (components, labelId) => {
 };
 
 const TAG = (text) =>
-  `<span class="navds-tag navds-tag--warning-filled navds-tag--xsmall navds-detail navds-detail--small">${text}</span>`;
+  `<span class="navds-tag navds-tag--warning navds-tag--xsmall navds-detail navds-detail--small">${text}</span>`;
 
 const getDiffTag = (ctx) => {
   const { component, config, self } = ctx;

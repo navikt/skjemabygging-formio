@@ -1,12 +1,12 @@
 <div class="row">
   <div class="col col-sm-6">
-    <p class="lead">{{ctx.t(ctx.componentInfo.title, { _userInput: true })}} {{ctx.t('Component')}}</p>
+    <p class="lead">{{ctx.t(ctx.componentInfo.title, { _userInput: true })}} {{ctx.t('komponent')}}</p>
   </div>
   {% if (ctx.helplinks) { %}
   <div class="col col-sm-6">
     <div class="float-right" style="margin-right: 20px; margin-top: 10px">
       <a href="{{ctx.t(ctx.helplinks + ctx.componentInfo.documentation)}}" target="_blank" rel="noopener noreferrer">
-        <i class="{{ctx.iconClass('new-window')}}"></i> {{ctx.t('Help')}}
+        <i class="{{ctx.iconClass('new-window')}}"></i> {{ctx.t('Hjelp')}}
       </a>
     </div>
   </div>
@@ -45,13 +45,13 @@
     {% } %}
     <div style="margin-top: 10px; margin-bottom: 20px;">
       <button class="navds-button navds-button--primary" style="margin-right: 10px;" type="button" ref="saveButton">
-        <span aria-live="polite" class="navds-label">{{ctx.t('Save')}}</span>
+        <span aria-live="polite" class="navds-label" data-testid="editorSaveButton">{{ctx.t('Lagre')}}</span>
       </button>
       <button class="navds-button navds-button--secondary" style="margin-right: 10px;" type="button" ref="cancelButton">
-        <span aria-live="polite" class="navds-label">{{ctx.t('Cancel')}}</span>
+        <span aria-live="polite" class="navds-label" data-testid="editorCancelButton">{{ctx.t('Avbryt')}}</span>
       </button>
       <button class="navds-button navds-button--danger" type="button" ref="removeButton">
-        <span aria-live="polite" class="navds-label">{{ctx.t('Remove')}}</span>
+        <span aria-live="polite" class="navds-label" data-testid="editorRemoveButton">{{ctx.t('Slett')}}</span>
       </button>
     </div>
   </div>
@@ -59,7 +59,7 @@
   <div class="col col-sm-12">
     <div class="card preview-panel">
       <div class="card-header">
-        <h4 class="card-title">{{ctx.t('Preview')}}</h4>
+        <h4 class="card-title">{{ctx.t('Forhåndsvisning')}}</h4>
       </div>
       <div class="card-body">
         <div class="component-preview" ref="preview">

@@ -66,11 +66,11 @@ WebformBuilder.prototype.destroy = function (...args) {
   if (this.dialog) {
     this.dialog.close();
   }
-  if (!this.webform.initialized) {
-    this.webform.ready.then(() => {
-      originalDestroy.call(this, ...args);
-    });
-  } else {
-    originalDestroy.call(this, ...args);
+
+  // This is a hack to get Formio to clean up.
+  // Especially in React.Strict mode we get multiple warnings and Formio.forms never get destroyed.
+  if (this.webform && !this.webform.initialized) {
+    this.webform.initialized = true;
   }
+  originalDestroy.call(this, ...args);
 };

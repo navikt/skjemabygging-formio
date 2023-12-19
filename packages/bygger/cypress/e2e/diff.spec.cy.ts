@@ -93,7 +93,8 @@ describe('Diff', () => {
 
     describe('Edit component modal', () => {
       it("Shows changes for text component :: label 'Fornavn' -> 'Fornavn2'", () => {
-        cy.openEditComponentModal(cy.findByLabelText('Fornavn2'));
+        cy.findByRole('textbox', { name: 'Fornavn2 Endring' }).should('be.visible');
+        cy.openEditComponentModal(cy.findByRole('textbox', { name: 'Fornavn2 Endring' }));
 
         cy.findByLabelText('Endringer')
           .should('exist')
