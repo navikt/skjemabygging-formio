@@ -29,7 +29,8 @@ class DataGrid extends FormioDataGrid {
   }
 
   get defaultSchema() {
-    return DataGrid.schema();
+    // Ved å bruke FormioDataGrid.schema() så får man formio sin datagrid i editoren.
+    return FormioDataGrid.schema();
   }
 
   removeRow(index) {
