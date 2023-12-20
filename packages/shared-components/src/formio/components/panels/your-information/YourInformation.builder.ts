@@ -17,8 +17,8 @@ const yourInformationBuilder = () => {
       input: false,
       theme: 'default',
       components: [
-        firstNameBuilder(keyPostfix),
-        surnameBuilder(keyPostfix),
+        firstNameBuilder(keyPostfix).schema,
+        surnameBuilder(keyPostfix).schema,
         {
           label: 'Har du norsk fødselsnummer eller d-nummer?',
           key: 'harDuNorskFodselsnummerEllerDNummer',
