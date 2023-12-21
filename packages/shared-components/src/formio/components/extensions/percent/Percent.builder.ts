@@ -1,4 +1,4 @@
-const selectBoxesBuilder = () => {
+const percentBuilder = () => {
   return {
     title: 'Prosent',
     schema: {
@@ -21,4 +21,4 @@ const selectBoxesBuilder = () => {
   };
 };
 
-export default selectBoxesBuilder;
+export default percentBuilder;

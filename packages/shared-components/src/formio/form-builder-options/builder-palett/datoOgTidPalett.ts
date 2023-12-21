@@ -5,8 +5,7 @@ import timeBuilder from '../../components/core/time/Time.builder';
 const datoOgTidPalett = {
   title: 'Dato og tid',
   components: {
-    datetime: null,
-    datoVelger: datepickerBuilder(),
+    navDatepicker: datepickerBuilder(),
     time: timeBuilder(),
     day: dayBuilder(),
   },

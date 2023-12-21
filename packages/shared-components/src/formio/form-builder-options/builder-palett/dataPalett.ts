@@ -1,3 +1,4 @@
+import containerBuilder from '../../components/core/container/Container.builder';
 import dataGridBuilder from '../../components/core/datagrid/DataGrid.builder';
 
 const dataPalett = {
@@ -14,6 +15,7 @@ const dataPalett = {
     },
     datamap: null,
     tree: null,
+    container: containerBuilder(),
     navDataGrid: dataGridBuilder(),
   },
 };

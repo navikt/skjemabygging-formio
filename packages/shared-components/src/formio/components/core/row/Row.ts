@@ -4,7 +4,7 @@ import rowBuilder from './Row.builder';
 class Row extends Container {
   static schema() {
     return Container.schema({
-      title: 'Rad',
+      label: 'Rad',
       key: 'rad',
       type: 'row',
       components: [],

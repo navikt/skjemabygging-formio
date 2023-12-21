@@ -49,7 +49,7 @@ function isCorrectOrder(beforeDate, afterDate, mayBeEqual = false) {
   return mayBeEqual ? beforeDate.isSameOrBefore(afterDate, 'd') : beforeDate.isBefore(afterDate, 'd');
 }
 
-export default class Datepicker extends FormioReactComponent {
+export default class NavDatepicker extends FormioReactComponent {
   isValid = this.errors.length === 0;
 
   static schema() {

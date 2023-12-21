@@ -16,6 +16,7 @@ const layoutPalett = {
     tabs: {
       ignore: true,
     },
+    container: null,
     alertstripe: alertBuilder(),
     fieldset: {
       ignore: true,
