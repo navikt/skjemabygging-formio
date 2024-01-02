@@ -29,6 +29,7 @@ interface ReactComponentType {
   root: any;
   options: any;
   visible: any | boolean;
+  pristine: boolean;
   error?: {
     message: string;
   } | null;

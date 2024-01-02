@@ -1,10 +1,10 @@
 import { Component } from '@navikt/skjemadigitalisering-shared-domain';
 
-const editFormDataValues = (): Component => ({
+const editFormValues = (): Component => ({
   type: 'datagrid',
   input: true,
   label: 'Dataverdier',
-  key: 'data.values',
+  key: 'values',
   reorder: false,
   defaultValue: [{ label: '', value: '' }],
   components: [
@@ -24,6 +24,9 @@ const editFormDataValues = (): Component => ({
       type: 'textfield',
       allowCalculateOverride: true,
       calculateValue: 'value = _.camelCase(row.label);',
+      validate: {
+        required: false,
+      },
     },
   ],
   conditional: {
@@ -31,4 +34,4 @@ const editFormDataValues = (): Component => ({
   },
 });
 
-export default editFormDataValues;
+export default editFormValues;

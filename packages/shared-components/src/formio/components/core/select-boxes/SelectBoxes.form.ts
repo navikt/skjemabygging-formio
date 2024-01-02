@@ -1,139 +1,24 @@
-import FormioSelectBoxesEditForm from 'formiojs/components/selectboxes/SelectBoxes.form';
-import { advancedDescription } from '../../fields/advancedDescription.js';
+import editFormApi from '../../base/editForm/api';
+import editFormConditional from '../../base/editForm/conditional';
+import editFormData from '../../base/editForm/data';
+import editFormDisplay from '../../base/editForm/display';
+import editFormTabs from '../../base/editForm/editFormTabs';
+import editFormValidation from '../../base/editForm/validation';
 
 const selectBoxesForm = () => {
-  return FormioSelectBoxesEditForm([
-    {
-      label: 'Display',
-      key: 'display',
-      components: [
-        ...advancedDescription,
-        {
-          key: 'labelPosition',
-          ignore: true,
-        },
-        {
-          key: 'optionsLabelPosition',
-          ignore: true,
-        },
-        {
-          key: 'tooltip',
-          ignore: true,
-        },
-        {
-          key: 'customClass',
-          ignore: true,
-        },
-        {
-          key: 'tabindex',
-          ignore: true,
-        },
-        {
-          key: 'inline',
-          ignore: true,
-        },
-        {
-          key: 'hidden',
-          ignore: true,
-        },
-        {
-          key: 'autofocus',
-          ignore: true,
-        },
-        {
-          key: 'disabled',
-          ignore: true,
-        },
-        {
-          key: 'tableView',
-          ignore: true,
-        },
-        {
-          key: 'modalEdit',
-          ignore: true,
-        },
-        {
-          key: 'hideLabel',
-          ignore: true,
-        },
-      ],
-    },
-    {
-      key: 'data',
-      components: [
-        {
-          key: 'multiple',
-          ignore: true,
-        },
-        {
-          key: 'persistent',
-          ignore: true,
-        },
-        {
-          key: 'inputFormat',
-          ignore: true,
-        },
-        {
-          key: 'protected',
-          ignore: true,
-        },
-        {
-          key: 'dbIndex',
-          ignore: true,
-        },
-        {
-          key: 'case',
-          ignore: true,
-        },
-        {
-          key: 'encrypted',
-          ignore: true,
-        },
-        {
-          key: 'redrawOn',
-          ignore: true,
-        },
-        {
-          key: 'calculateServer',
-          ignore: true,
-        },
-        {
-          key: 'allowCalculateOverride',
-          ignore: true,
-        },
-        {
-          key: 'dataType',
-          ignore: true,
-        },
-      ],
-    },
-    {
-      key: 'validation',
-      components: [
-        {
-          key: 'unique',
-          ignore: true,
-        },
-      ],
-    },
-    {
-      key: 'api',
-      components: [
-        { key: 'tags', ignore: true },
-        { key: 'properties', ignore: true },
-      ],
-    },
-    {
-      key: 'logic',
-      ignore: true,
-      components: false,
-    },
-    {
-      key: 'layout',
-      ignore: true,
-      components: false,
-    },
-  ]);
+  const { api, conditional, createTabs, data, display, validation } = editFormTabs;
+
+  return createTabs(
+    display([editFormDisplay.label(), editFormDisplay.description(), editFormDisplay.additionalDescription()]),
+    data([editFormData.values(), editFormData.defaultValue(), editFormData.clearOnHide()]),
+    validation([
+      editFormValidation.required(),
+      editFormValidation.customValidation(),
+      editFormValidation.customError(),
+    ]),
+    api([editFormApi.key()]),
+    conditional([editFormConditional.simpleConditional(), editFormConditional.advancedConditional()]),
+  );
 };
 
 export default selectBoxesForm;

@@ -10,7 +10,7 @@ const selectForm = () => {
 
   return createTabs(
     display([editFormDisplay.label(), editFormDisplay.fieldSize(), editFormDisplay.description()]),
-    data([editFormData.defaultValue(), editFormData.dataValues(), editFormData.clearOnHide()]),
+    data([editFormData.dataValues(), editFormData.defaultValue(), editFormData.clearOnHide()]),
     validation([
       editFormValidation.required(),
       editFormValidation.customValidation(),
