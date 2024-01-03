@@ -1,4 +1,5 @@
 import { LoadingComponent, makeStyles, useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
+import { FormsResponseForm } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import httpFyllut from '../util/httpFyllut';
@@ -16,20 +17,20 @@ const useStyles = makeStyles({
 
 export const AllForms = () => {
   const [status, setStatus] = useState('LOADING');
-  const [forms, setForms] = useState([]);
+  const [forms, setForms] = useState<FormsResponseForm[]>([]);
   const [searchParams] = useSearchParams();
   const styles = useStyles();
-  const { config } = useAppConfig();
+  const { config, baseUrl } = useAppConfig();
 
   const isDevelopment = config && config.isDevelopment;
 
   useEffect(() => {
     const formId = searchParams.get('form');
     if (formId) {
-      history.replace(`/${formId}`);
+      window.location.replace(`${baseUrl}/${formId}`);
     } else {
       httpFyllut
-        .get(`/fyllut/api/forms`)
+        .get<FormsResponseForm[]>(`/fyllut/api/forms`)
         .then((forms) => {
           setForms(forms);
           setStatus('FINISHED LOADING');
@@ -56,14 +57,15 @@ export const AllForms = () => {
           {isDevelopment && (
             <thead>
               <tr>
+                <th>Skjemanummer</th>
                 <th>Skjematittel</th>
-                <th colSpan="3">Innsending</th>
+                <th colSpan={3}>Innsending</th>
               </tr>
             </thead>
           )}
           <tbody>
             {forms
-              .sort((a, b) => (a.modified < b.modified ? 1 : -1))
+              .sort((a, b) => (a.modified! < b.modified! ? 1 : -1))
               .map((form) => (
                 <FormRow key={form._id} form={form} />
               ))}

@@ -11,7 +11,7 @@ import countries from './countries.js';
 import enhetsliste from './enhetsliste.js';
 import exstream from './exstream';
 import form from './form.js';
-import forms from './forms.js';
+import forms from './forms';
 import forsteside from './forsteside';
 import globalTranslations from './global-translations.js';
 import log from './log';

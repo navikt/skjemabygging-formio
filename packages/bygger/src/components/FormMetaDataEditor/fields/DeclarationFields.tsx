@@ -1,7 +1,7 @@
 import { Textarea, ToggleGroup } from '@navikt/ds-react';
 import { DeclarationType, NavFormSettingsDiff, NavFormType, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import LabelWithDiff from '../LabelWithDiff';
-import { FormMetadataError, UpdateFormFunction } from '../utils';
+import { FormMetadataError, UpdateFormFunction } from '../utils/utils';
 
 export interface DeclarationFieldsProps {
   onChange: UpdateFormFunction;

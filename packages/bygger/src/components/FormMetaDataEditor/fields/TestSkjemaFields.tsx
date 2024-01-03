@@ -1,6 +1,6 @@
 import { Button, Checkbox } from '@navikt/ds-react';
 import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
-import { UpdateFormFunction } from '../utils';
+import { UpdateFormFunction } from '../utils/utils';
 
 import { Copy } from '@navikt/ds-icons';
 import { makeStyles, useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
