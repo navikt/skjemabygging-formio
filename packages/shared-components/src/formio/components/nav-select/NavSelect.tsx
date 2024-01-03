@@ -1,11 +1,10 @@
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import selectEditForm from 'formiojs/components/select/Select.form';
-import { useEffect, useState } from 'react';
-import ReactSelect, { components } from 'react-select';
+import { useEffect, useRef, useState } from 'react';
+import ReactSelect, { OnChangeValue, components } from 'react-select';
+import Select from 'react-select/base';
 import http from '../../../api/util/http/http';
-import FormBuilderOptions from '../../form-builder-options';
-import FormioReactComponent from '../FormioReactComponent';
-import { fieldSizeField } from '../fields/fieldSize';
+import BaseComponent from '../base/BaseComponent';
+import navSelectForm from './NavSelect.form';
 import { ariaLiveMessages } from './utils/ariaLiveMessages';
 
 const { navSelect: SELECT_TEXTS } = TEXTS.grensesnitt;
@@ -48,6 +47,10 @@ const ReactSelectWrapper = ({
   useEffect(() => {
     setSelectedOption(value);
   }, [value, options]);
+  const ref = useRef<Select>(null);
+  useEffect(() => {
+    if (ref.current) inputRef(ref.current);
+  }, [ref.current]);
 
   return (
     <ReactSelect
@@ -63,7 +66,7 @@ const ReactSelectWrapper = ({
       required={component.validate.required}
       placeholder={component.placeholder}
       isLoading={isLoading}
-      ref={inputRef}
+      ref={ref}
       className={component.fieldSize || 'input--xxl'}
       styles={reactSelectStyles}
       isClearable={true}
@@ -72,7 +75,7 @@ const ReactSelectWrapper = ({
       ariaLiveMessages={ariaLiveMessages}
       screenReaderStatus={screenReaderStatus}
       loadingMessage={loadingMessage}
-      onChange={(event, actionType) => {
+      onChange={(event: OnChangeValue<any, any>, actionType) => {
         switch (actionType.action) {
           case 'select-option':
             const newValue = event.value;
@@ -89,16 +92,21 @@ const ReactSelectWrapper = ({
   );
 };
 
-class NavSelect extends FormioReactComponent {
+class NavSelect extends BaseComponent {
   isLoading = false;
   loadFinished = false;
   selectOptions: any = [];
 
-  static schema(...extend) {
-    // @ts-ignore
-    return FormioReactComponent.schema({
-      ...FormBuilderOptions.builder.basic.components.navSelect.schema,
-      ...extend,
+  static editForm() {
+    return navSelectForm();
+  }
+
+  static schema() {
+    return BaseComponent.schema({
+      label: 'Nedtrekksmeny',
+      type: 'navSelect',
+      key: 'navSelect',
+      dataSrc: 'values',
     });
   }
 
@@ -108,89 +116,15 @@ class NavSelect extends FormioReactComponent {
 
   static get builderInfo() {
     return {
-      ...FormBuilderOptions.builder.basic.components.navSelect,
-      schema: NavSelect.schema(),
+      title: 'Nedtrekksmeny',
+      key: 'navSelect',
+      icon: 'th-list',
+      group: 'basic',
+      schema: {
+        ...NavSelect.schema(),
+        ...BaseComponent.defaultBuilderInfoSchema(),
+      },
     };
-  }
-
-  static editForm(...extend) {
-    return selectEditForm(
-      [
-        {
-          key: 'display',
-          components: [
-            { key: 'widget', ignore: true },
-            { key: 'labelPosition', ignore: true },
-            { key: 'placeholder', ignore: true },
-            { key: 'tooltip', ignore: true },
-            { key: 'customClass', ignore: true },
-            { key: 'tabindex', ignore: true },
-            { key: 'hidden', ignore: true },
-            { key: 'hideLabel', ignore: true },
-            { key: 'uniqueOptions', ignore: true },
-            { key: 'autofocus', ignore: true },
-            { key: 'disabled', ignore: true },
-            { key: 'tableView', ignore: true },
-            { key: 'modalEdit', ignore: true },
-            fieldSizeField,
-          ],
-        },
-        {
-          key: 'data',
-          components: [
-            { key: 'multiple', ignore: true },
-            { key: 'dataType', ignore: true },
-            { key: 'idPath', ignore: true },
-            { key: 'template', ignore: true },
-            { key: 'indexeddb.database', ignore: true },
-            { key: 'indexeddb.table', ignore: true },
-            { key: 'indexeddb.filter', ignore: true },
-            { key: 'refreshOn', ignore: true },
-            { key: 'refreshOnBlur', ignore: true },
-            { key: 'clearOnRefresh', ignore: true },
-            { key: 'searchEnabled', ignore: true },
-            { key: 'selectThreshold', ignore: true },
-            { key: 'readOnlyValue', ignore: true },
-            { key: 'customOptions', ignore: true },
-            { key: 'useExactSearch', ignore: true },
-            { key: 'persistent', ignore: true },
-            { key: 'protected', ignore: true },
-            { key: 'dbIndex', ignore: true },
-            { key: 'encrypted', ignore: true },
-            { key: 'redrawOn', ignore: true },
-            { key: 'calculateServer', ignore: true },
-            { key: 'allowCalculateOverride', ignore: true },
-            { key: 'searchField', ignore: true },
-            { key: 'searchDebounce', ignore: true },
-            { key: 'minSearch', ignore: true },
-            { key: 'filter', ignore: true },
-            { key: 'sort', ignore: true },
-            { key: 'limit', ignore: true },
-            { key: 'authenticate', ignore: true },
-            { key: 'ignoreCache', ignore: true },
-          ],
-        },
-        {
-          key: 'validation',
-          components: [
-            { key: 'validateOn', ignore: true },
-            { key: 'errorLabel', ignore: true },
-            { key: 'validate.customMessage', ignore: true },
-            { key: 'unique', ignore: true },
-          ],
-        },
-        {
-          key: 'api',
-          components: [
-            { key: 'tags', ignore: true },
-            { key: 'properties', ignore: true },
-          ],
-        },
-        { key: 'logic', ignore: true },
-        { key: 'layout', ignore: true },
-      ],
-      ...extend,
-    );
   }
 
   translateOptionLabels(options) {
@@ -205,10 +139,16 @@ class NavSelect extends FormioReactComponent {
     return messages(this.t.bind(this));
   }
 
+  setValueOnReactInstance(value) {
+    if (this.reactInstance && value) {
+      (this.reactInstance as Select)?.selectOption(value);
+    }
+  }
+
   renderReact(element) {
     const component = this.component!;
     if (component.dataSrc === 'values') {
-      this.selectOptions = component.data.values;
+      this.selectOptions = component.data?.values ?? [];
     } else if (component.dataSrc === 'url' && !this.isLoading && !this.loadFinished) {
       const dataUrl = component.data.url;
       this.isLoading = true;
@@ -232,7 +172,7 @@ class NavSelect extends FormioReactComponent {
         .finally(() => {
           this.isLoading = false;
           this.loadFinished = true;
-          super.redraw();
+          this.rerender();
         });
     }
 
@@ -241,12 +181,12 @@ class NavSelect extends FormioReactComponent {
         component={component}
         options={this.translateOptionLabels(this.selectOptions)}
         label={this.t(component.label)}
-        value={this.translateOptionLabel(this.dataForSetting || this.dataValue)}
+        value={this.translateOptionLabel(this.getDefaultValue())}
         ariaLiveMessages={this.translateAriaLiveMessages(ariaLiveMessages)}
         screenReaderStatus={({ count }: { count: number }) => this.t(SELECT_TEXTS.numberOfAvailableOptions, { count })}
         loadingMessage={() => this.t(TEXTS.statiske.loading)}
         onChange={(value) => this.updateValue(value, {})}
-        inputRef={(ref) => (this.input = ref)}
+        inputRef={(ref) => this.setReactInstance(ref)}
         isLoading={this.isLoading}
       />,
     );

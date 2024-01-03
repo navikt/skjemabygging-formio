@@ -91,6 +91,7 @@ export interface Component {
   type: string;
   content?: string;
   calculateValue?: string;
+  allowCalculateOverride?: boolean;
   data?: any;
   dataSrc?: ComponentDataSrc;
   validate?: ComponentValidate;
@@ -134,6 +135,8 @@ export interface Component {
   style?: object;
   theme?: string;
   defaultValue?: string | number | boolean | any[] | object;
+  tooltip?: string;
+  reorder?: boolean;
 }
 
 export interface ComponentProperties {
@@ -162,7 +165,7 @@ export interface ComponentValidate {
 
 export interface ComponentConditional {
   when?: string;
-  json?: string;
+  json?: object;
 }
 
 export interface ResourceAccess {

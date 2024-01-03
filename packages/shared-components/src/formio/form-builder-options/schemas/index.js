@@ -3,7 +3,6 @@ import epostSchema from './epostSchema';
 import firstNameSchema from './firstNameSchema';
 import fodselsNummerDNummerSchema from './fodselsNummerDNummerSchema';
 import ibanSchema from './ibanSchema';
-import landvelgerSchema from './landvelgerSchema';
 import norskPostboksadresseSchema from './norskPostboksadresseSchema';
 import norskVegadresseSchema from './norskVegadresseSchema';
 import panelSchemas from './panels';
@@ -14,7 +13,6 @@ import surnameSchema from './surnameSchema';
 import telefonSchema from './telefonSchema';
 import utenlandskAdresseSchema from './utenlandskAdresseSchema';
 import utlandLandSchema from './utlandLandSchema';
-import valutavelgerSchema from './valutavelgerSchema';
 import vegadresseSchema from './vegadresseSchema';
 
 export const FormBuilderSchemas = {
@@ -24,8 +22,6 @@ export const FormBuilderSchemas = {
   vegadresseSchema,
   postnummerSchema,
   poststedSchema,
-  landvelgerSchema,
-  valutavelgerSchema,
   utlandLandSchema,
   epostSchema,
   telefonSchema,

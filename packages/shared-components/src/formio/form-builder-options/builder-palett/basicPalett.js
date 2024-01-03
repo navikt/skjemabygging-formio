@@ -1,3 +1,4 @@
+import NavSelect from '../../components/nav-select/NavSelect';
 import TextField from '../../components/textfield/TextField';
 
 const basicPalett = {
@@ -108,24 +109,7 @@ const basicPalett = {
         },
       },
     },
-    navSelect: {
-      title: 'Nedtrekksmeny',
-      key: 'navSelect',
-      icon: 'th-list',
-      schema: {
-        label: 'Nedtrekksmeny',
-        type: 'navSelect',
-        key: 'navSelect',
-        fieldSize: 'input--xxl',
-        input: true,
-        clearOnHide: true,
-        dataGridLabel: true,
-        validateOn: 'blur',
-        validate: {
-          required: true,
-        },
-      },
-    },
+    navSelect: NavSelect.builderInfo,
     radiopanel: {
       title: 'Radiopanel',
       key: 'radiopanel',
