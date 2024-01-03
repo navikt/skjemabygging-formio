@@ -8,6 +8,7 @@ import { buildDirectory } from './context.js';
 import { setupDeprecatedEndpoints } from './deprecatedEndpoints.js';
 import globalErrorHandler from './middleware/globalErrorHandler.js';
 import httpRequestLogger from './middleware/httpRequestLogger.js';
+import { stripTrailingSlash } from './middleware/stripTrailingSlash';
 import renderIndex from './renderIndex';
 import apiRouter from './routers/api/index.js';
 import internalRouter from './routers/internal/index.js';
@@ -39,6 +40,8 @@ export const createApp = (setupDev: boolean = false) => {
   fyllutRouter.use('/api', apiRouter);
   // path /internal is not publicly exposed, see https://doc.nais.io/clusters/gcp/#prod-gcp-ingresses
   fyllutRouter.use('/internal', internalRouter);
+
+  stripTrailingSlash(fyllutRouter);
 
   // Get the form id
   fyllutRouter.use('/:formId', (req: Request, res: Response, next: NextFunction) => {
