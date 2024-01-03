@@ -2,6 +2,7 @@ import buttonRow from './buttonRow';
 import errorSummary from './errorSummary';
 import labelTrackChanges from './labelTrackChanges';
 import margin from './margin';
+import preview from './preview';
 import stepper from './stepper';
 import vars from './vars';
 
@@ -62,6 +63,7 @@ const global = {
   ...errorSummary,
   ...buttonRow,
   ...margin,
+  ...preview,
   ...stepper,
   ...vars,
 };
