@@ -187,6 +187,10 @@ export interface NavFormType {
   access?: ResourceAccess[];
 }
 
+export interface FormsResponseForm extends Pick<NavFormType, '_id' | 'title' | 'path' | 'modified'> {
+  properties: Pick<FormPropertiesType, 'skjemanummer' | 'innsending' | 'ettersending'>;
+}
+
 export type SubmissionData = Record<string, string | number | boolean | any[] | object>;
 
 type ErrorType =
