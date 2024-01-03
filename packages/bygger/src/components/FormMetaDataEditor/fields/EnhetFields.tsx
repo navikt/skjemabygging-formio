@@ -1,7 +1,7 @@
 import { useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
 import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import EnhetSettings from '../EnhetSettings';
-import { UpdateFormFunction } from '../utils';
+import { UpdateFormFunction } from '../utils/utils';
 
 export interface EnhetFieldsProps {
   onChange: UpdateFormFunction;
