@@ -13,12 +13,12 @@ const selectBoxesForm = () => {
     display([
       editFormDisplay.label(),
       editFormDisplay.description(),
-      editFormDisplay.additionalDescription()
+      editFormDisplay.additionalDescription(),
     ]),
     data([
       editFormData.values(),
       editFormData.defaultValue(),
-      editFormData.clearOnHide()
+      editFormData.clearOnHide(),
     ]),
     validation([
       editFormValidation.required(),
@@ -26,11 +26,11 @@ const selectBoxesForm = () => {
       editFormValidation.customError(),
     ]),
     api([
-      editFormApi.key()
+      editFormApi.key(),
     ]),
     conditional([
       editFormConditional.simpleConditional(),
-      editFormConditional.advancedConditional()
+      editFormConditional.advancedConditional(),
     ]),
   );
 };
