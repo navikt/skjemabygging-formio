@@ -1,4 +1,4 @@
-import { NavFormioJs } from '@navikt/skjemadigitalisering-shared-components';
+import { AppConfigProvider, NavFormioJs } from '@navikt/skjemadigitalisering-shared-components';
 import { getNodeText, render, renderHook, screen, waitFor } from '@testing-library/react';
 import { useEffect, useState } from 'react';
 import { AuthProvider } from '../context/auth-context';
@@ -86,14 +86,29 @@ describe('useFormioForms', () => {
         }
         return Promise.reject(new Error(`ukjent url ${url}`));
       });
+      fetchMock.mockImplementation((url) => {
+        if (url.includes('/api/forms/skjema3')) {
+          return Promise.resolve(new Response(JSON.stringify(form[0]), RESPONSE_HEADERS_OK));
+        }
+        return Promise.reject(new Error(`ukjent url ${url}`));
+      });
     });
 
     afterEach(() => {
       formioFetch.mockClear();
+      fetchMock.mockClear();
     });
 
+    const renderTestComponent = (formPath) => {
+      render(
+        <AppConfigProvider>
+          <TestComponent formio={new NavFormioJs.Formio('http://myproject.example.org')} formPath={formPath} />
+        </AppConfigProvider>,
+      );
+    };
+
     it('loads form list in the hook', async () => {
-      render(<TestComponent formio={new NavFormioJs.Formio('http://myproject.example.org')} />);
+      renderTestComponent();
       const formDivs = await screen.findAllByTestId('form');
       expect(formDivs).toHaveLength(3);
       expect(getNodeText(formDivs[0])).toBe('skjema1');
@@ -102,14 +117,14 @@ describe('useFormioForms', () => {
     });
 
     it('loads one specific form in the hook', async () => {
-      render(<TestComponent formio={new NavFormioJs.Formio('http://myproject.example.org')} formPath="skjema3" />);
+      renderTestComponent('skjema3');
       const formDivs = await screen.findAllByTestId('form');
       expect(formDivs).toHaveLength(1);
       expect(getNodeText(formDivs[0])).toBe('skjema3');
     });
 
     it('date update', async () => {
-      render(<TestComponent formio={new NavFormioJs.Formio('http://myproject.example.org')} formPath="skjema3" />);
+      renderTestComponent('skjema3');
       const formDivs = await screen.findAllByTestId('form');
       expect(formDivs).toHaveLength(1);
       expect(getNodeText(formDivs[0])).toBe('skjema3');
@@ -169,9 +184,11 @@ describe('useFormioForms', () => {
     };
 
     const wrapper = ({ children }) => (
-      <AuthProvider user={{ name: USER_NAME }}>
-        <FeedbackEmitContext.Provider value={mockFeedbackEmit}>{children}</FeedbackEmitContext.Provider>
-      </AuthProvider>
+      <AppConfigProvider>
+        <AuthProvider user={{ name: USER_NAME }}>
+          <FeedbackEmitContext.Provider value={mockFeedbackEmit}>{children}</FeedbackEmitContext.Provider>
+        </AuthProvider>
+      </AppConfigProvider>
     );
 
     beforeEach(() => {
@@ -223,6 +240,8 @@ describe('useFormioForms', () => {
             return Promise.resolve(
               new Response(JSON.stringify({ message: 'Publisering feilet' }), RESPONSE_HEADERS_ERROR),
             );
+          } else if (url.includes('/api/forms/testform')) {
+            return Promise.resolve(new Response(JSON.stringify({ path: 'testform' }), RESPONSE_HEADERS_OK));
           }
           return Promise.reject(new Error(`ukjent url ${url}`));
         });
@@ -239,7 +258,7 @@ describe('useFormioForms', () => {
         const translations = { 'no-NN': {}, en: {} };
         renderHook(() => formioForms.onPublish(form, translations));
         await waitFor(() => expect(mockFeedbackEmit.error).toHaveBeenCalled());
-        await waitFor(() => expect(formioMock.loadForms).toHaveBeenCalledTimes(1));
+        await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(2));
       });
     });
 
@@ -248,6 +267,8 @@ describe('useFormioForms', () => {
         fetchMock.mockImplementation((url) => {
           if (url.endsWith('/api/published-forms/testform')) {
             return Promise.resolve(new Response(JSON.stringify({ changed: true, form: {} }), RESPONSE_HEADERS_OK));
+          } else if (url.includes('/api/forms/testform')) {
+            return Promise.resolve(new Response(JSON.stringify({ path: 'testform' }), RESPONSE_HEADERS_OK));
           }
           return Promise.reject(new Error(`ukjent url ${url}`));
         });
@@ -267,6 +288,8 @@ describe('useFormioForms', () => {
             return Promise.resolve(
               new Response(JSON.stringify({ message: 'Avpublisering feilet' }), RESPONSE_HEADERS_ERROR),
             );
+          } else if (url.includes('/api/forms/testform')) {
+            return Promise.resolve(new Response(JSON.stringify({ path: 'testform' }), RESPONSE_HEADERS_OK));
           }
           return Promise.reject(new Error(`ukjent url ${url}`));
         });
@@ -282,7 +305,7 @@ describe('useFormioForms', () => {
         };
         renderHook(() => formioForms.onUnpublish(form));
         await waitFor(() => expect(mockFeedbackEmit.error).toHaveBeenCalled());
-        await waitFor(() => expect(formioMock.loadForms).toHaveBeenCalledTimes(1));
+        await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(2));
       });
     });
   });

@@ -23,6 +23,7 @@ const countriesWithLocale = {
 
 const USER_LOGIN_REGEX = /http.*\/user\/login/;
 const FORM_REGEX = /http.*\/form\?type=form(&.*)?/;
+const BYGGER_BACKEND_FORM_REGEX = /\/api\/forms\/(.+)/;
 const RESOURCE_REGEX = /http.*\/form\?type=resource(&.*)?/;
 const LANGUAGES_REGEX = /http.*\/language\/submission(\?.*)?$/;
 const LANGUAGE_REGEX = /http.*\/language\/submission\/(.*)$/;
@@ -57,6 +58,9 @@ const createMockImplementation =
         return Promise.resolve(new Response(JSON.stringify([]), RESPONSE_HEADERS));
       }
       return Promise.resolve(new Response(JSON.stringify([testForm]), RESPONSE_HEADERS));
+    }
+    if (BYGGER_BACKEND_FORM_REGEX.test(url)) {
+      return Promise.resolve(new Response(JSON.stringify(testForm), RESPONSE_HEADERS));
     }
     if (RESOURCE_REGEX.test(url)) {
       return Promise.resolve(new Response(JSON.stringify([]), RESPONSE_HEADERS));

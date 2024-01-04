@@ -1,4 +1,4 @@
-import { NavFormioJs } from '@navikt/skjemadigitalisering-shared-components';
+import { NavFormioJs, useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
 import { dateUtils, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { useCallback } from 'react';
 import { useAuth } from '../context/auth-context';
@@ -9,6 +9,7 @@ const { getIso8601String } = dateUtils;
 export const useFormioForms = (formio) => {
   const feedbackEmit = useFeedbackEmit();
   const { userData } = useAuth();
+  const { http } = useAppConfig();
 
   const loadFormsList = useCallback(() => {
     return formio.loadForms({
@@ -21,21 +22,7 @@ export const useFormioForms = (formio) => {
     });
   }, [formio]);
 
-  const loadForm = useCallback(
-    (formPath) => {
-      return formio
-        .loadForms({
-          params: {
-            type: 'form',
-            tags: 'nav-skjema',
-            path: formPath,
-            limit: 1,
-          },
-        })
-        .then((forms) => forms[0]);
-    },
-    [formio],
-  );
+  const loadForm = useCallback(async (formPath) => http.get(`/api/forms/${formPath}`), []);
 
   const onSave = useCallback(
     (callbackForm) => {
