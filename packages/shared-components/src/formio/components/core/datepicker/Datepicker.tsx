@@ -33,12 +33,12 @@ const DatovelgerWrapper = ({ component, onChange, value, locale, readOnly, error
       id={component.id}
       selected={value ? moment(value, SUBMISSION_DATE_FORMAT).toDate() : undefined}
       locale={locale}
-      error={error}
       {...datepickerProps}
     >
       <DatePicker.Input
         id={`${component.id}-${component.key}`}
         readOnly={readOnly}
+        error={error}
         {...inputProps}
         ref={inputRef}
         hideLabel
