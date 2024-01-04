@@ -1,14 +1,9 @@
 import { NavFormioJs, useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
-import { dateUtils, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { useCallback } from 'react';
-import { useAuth } from '../context/auth-context';
 import { useFeedbackEmit } from '../context/notifications/FeedbackContext';
-
-const { getIso8601String } = dateUtils;
 
 export const useFormioForms = (formio) => {
   const feedbackEmit = useFeedbackEmit();
-  const { userData } = useAuth();
   const { http } = useAppConfig();
 
   const loadFormsList = useCallback(() => {
@@ -25,40 +20,32 @@ export const useFormioForms = (formio) => {
   const loadForm = useCallback(async (formPath) => http.get(`/api/forms/${formPath}`), []);
 
   const onSave = useCallback(
-    (callbackForm) => {
-      return formio
-        .saveForm({
-          ...callbackForm,
-          display: 'wizard',
-          components: navFormUtils.enrichComponentsWithNavIds(callbackForm.components),
-          properties: {
-            ...callbackForm.properties,
-            modified: getIso8601String(),
-            modifiedBy: userData.name,
+    async (callbackForm) => {
+      try {
+        const savedForm = await http.put(
+          `/api/forms/${callbackForm.path}`,
+          {
+            ...callbackForm,
+            display: 'wizard',
           },
-        })
-        .then((form) => {
-          feedbackEmit.success(`Lagret skjema ${form.title}`);
-          return form;
-        })
-        .catch(() => {
+          {
+            'Bygger-Formio-Token': NavFormioJs.Formio.getToken(),
+          },
+        );
+        feedbackEmit.success(`Lagret skjema ${savedForm.title}`);
+        return savedForm;
+      } catch (error) {
+        if (error instanceof http.UnauthenticatedError) {
+          feedbackEmit.error('Lagring feilet. Du har blitt logget ut.');
+        } else {
           feedbackEmit.error(
-            'Lagring feilet. Skjemaet kan ha blitt lagret fra en annen nettleser. ' +
-              'Last siden på nytt for å få siste versjon.',
+            'Lagring feilet. Skjemaet kan ha blitt lagret fra en annen nettleser. Last siden på nytt for å få siste versjon.',
           );
-          return { error: true };
-        });
+        }
+        return { error: true };
+      }
     },
-    [formio, userData, feedbackEmit],
-  );
-
-  const deleteForm = useCallback(
-    async (formId, tags, title) => {
-      formio.saveForm({ _id: formId, tags: tags.filter((each) => each !== 'nav-skjema') }).then(() => {
-        feedbackEmit.success('Slettet skjemaet ' + title);
-      });
-    },
-    [formio, feedbackEmit],
+    [feedbackEmit],
   );
 
   const onPublish = useCallback(
@@ -110,7 +97,6 @@ export const useFormioForms = (formio) => {
   );
 
   return {
-    deleteForm,
     loadForm,
     loadFormsList,
     onSave,

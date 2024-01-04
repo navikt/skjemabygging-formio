@@ -15,8 +15,21 @@ const get: RequestHandler = async (req, res, next) => {
   }
 };
 
+const put: RequestHandler = async (req, res, next) => {
+  try {
+    const form = req.body;
+    const formioToken = req.getFormioToken?.();
+    const userName = req.getUser?.().name;
+    const savedForm = await formioService.saveForm(form, formioToken, userName, {}, true);
+    res.json(savedForm);
+  } catch (error) {
+    next(error);
+  }
+};
+
 const form = {
   get,
+  put,
 };
 
 export default form;

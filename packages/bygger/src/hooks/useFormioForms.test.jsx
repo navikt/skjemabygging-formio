@@ -1,7 +1,6 @@
 import { AppConfigProvider, NavFormioJs } from '@navikt/skjemadigitalisering-shared-components';
 import { getNodeText, render, renderHook, screen, waitFor } from '@testing-library/react';
 import { useEffect, useState } from 'react';
-import { AuthProvider } from '../context/auth-context';
 import { FeedbackEmitContext } from '../context/notifications/FeedbackContext';
 import { useFormioForms } from './useFormioForms';
 
@@ -51,13 +50,13 @@ describe('useFormioForms', () => {
       }
     }, [formio, formPath, loadForm, loadFormsList]);
     return (
-      <AuthProvider user={{ name: USER_NAME }}>
+      <>
         {forms.map((form, index) => (
           <div key={index} data-testid="form">
             {form.title}
           </div>
         ))}
-      </AuthProvider>
+      </>
     );
   };
 
@@ -134,43 +133,27 @@ describe('useFormioForms', () => {
   describe('Test onSave', () => {
     let formioMock, formioForms;
 
-    const wrapper = ({ children }) => <AuthProvider user={{ name: USER_NAME }}>{children}</AuthProvider>;
+    const wrapper = ({ children }) => <AppConfigProvider>{children}</AppConfigProvider>;
 
     beforeEach(() => {
-      formioMock = {
-        saveForm: vi.fn().mockImplementation((form) => Promise.resolve(form)),
-      };
+      fetchMock.mockImplementation((url, options) => {
+        if (url === '/api/forms/testform' && options.method === 'PUT') {
+          return Promise.resolve(new Response(JSON.stringify({}), RESPONSE_HEADERS_OK));
+        }
+        return Promise.reject(new Error(`ukjent url ${url}`));
+      });
 
       ({
         result: { current: formioForms },
       } = renderHook(() => useFormioForms(formioMock), { wrapper }));
     });
 
-    it('add modified property onSave', async () => {
-      renderHook(() => formioForms.onSave({}));
+    it('resets display property to wizard', async () => {
+      renderHook(() => formioForms.onSave({ path: 'testform', display: 'form' }));
 
-      expect(formioMock.saveForm).toHaveBeenCalled();
-      expect(formioMock.saveForm.mock.calls[0][0]['properties']).toHaveProperty('modified');
-    });
-
-    it('update modified property onSave', async () => {
-      const modifiedDate = '2022-01-01T12:00:00.000Z';
-      renderHook(() => formioForms.onSave({ modified: modifiedDate }));
-
-      expect(formioMock.saveForm).toHaveBeenCalled();
-      expect(formioMock.saveForm.mock.calls[0][0]['properties']['modified']).not.toBe(modifiedDate);
-    });
-
-    it('adds navId to all components if missing', async () => {
-      renderHook(() => formioForms.onSave({ components: [{}, { navId: '123', components: [{}] }] }));
-
-      expect(formioMock.saveForm).toHaveBeenCalled();
-      const savedComponents = formioMock.saveForm.mock.calls[0][0]['components'];
-      expect(savedComponents).toHaveLength(2);
-      expect(savedComponents[0].navId).toBeDefined();
-      expect(savedComponents[1].navId).toBe('123');
-      expect(savedComponents[1].components).toHaveLength(1);
-      expect(savedComponents[1].components[0].navId).toBeDefined();
+      expect(fetchMock).toHaveBeenCalled();
+      const requestBody = JSON.parse(fetchMock.mock.calls[0][1].body || '{}');
+      expect(requestBody.display).toBe('wizard');
     });
   });
 
@@ -185,9 +168,7 @@ describe('useFormioForms', () => {
 
     const wrapper = ({ children }) => (
       <AppConfigProvider>
-        <AuthProvider user={{ name: USER_NAME }}>
-          <FeedbackEmitContext.Provider value={mockFeedbackEmit}>{children}</FeedbackEmitContext.Provider>
-        </AuthProvider>
+        <FeedbackEmitContext.Provider value={mockFeedbackEmit}>{children}</FeedbackEmitContext.Provider>
       </AppConfigProvider>
     );
 
