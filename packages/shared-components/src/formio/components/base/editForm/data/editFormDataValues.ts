@@ -5,7 +5,7 @@ const editFormDataValues = (): Component => ({
   input: true,
   label: 'Dataverdier',
   key: 'data.values',
-  reorder: true,
+  reorder: false,
   defaultValue: [{ label: '', value: '' }],
   components: [
     {
@@ -13,12 +13,14 @@ const editFormDataValues = (): Component => ({
       key: 'label',
       input: true,
       type: 'textfield',
+      dataGridLabel: false,
     },
     {
       label: 'Dataverdi',
       key: 'value',
       input: true,
       type: 'textfield',
+      dataGridLabel: false,
       allowCalculateOverride: true,
       calculateValue: 'value = _.camelCase(row.label);',
     },

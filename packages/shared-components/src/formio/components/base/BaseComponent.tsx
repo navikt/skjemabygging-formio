@@ -49,6 +49,10 @@ class BaseComponent extends FormioReactComponent {
     );
   }
 
+  hideLabel() {
+    return this.labelIsHidden();
+  }
+
   /**
    * Get default value for custom component renderReact()
    */
