@@ -29,7 +29,7 @@ interface ReactComponentType {
   root: any;
   options: any;
   visible: any | boolean;
-  pristine: boolean;
+  hideLabel: boolean;
   error?: {
     message: string;
   } | null;

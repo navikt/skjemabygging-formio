@@ -40,6 +40,10 @@ class BaseComponent extends FormioReactComponent {
    * Get label for custom component renderReact()
    */
   getLabel() {
+    if (this.component?.hideLabel) {
+      return;
+    }
+
     return (
       <>
         {this.t(this.component?.label ?? '')}
