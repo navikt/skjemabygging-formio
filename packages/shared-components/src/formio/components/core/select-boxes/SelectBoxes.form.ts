@@ -8,16 +8,30 @@ import editFormValidation from '../../base/editForm/validation';
 const selectBoxesForm = () => {
   const { api, conditional, createTabs, data, display, validation } = editFormTabs;
 
+  // prettier-ignore
   return createTabs(
-    display([editFormDisplay.label(), editFormDisplay.description(), editFormDisplay.additionalDescription()]),
-    data([editFormData.values(), editFormData.defaultValue(), editFormData.clearOnHide()]),
+    display([
+      editFormDisplay.label(),
+      editFormDisplay.description(),
+      editFormDisplay.additionalDescription()
+    ]),
+    data([
+      editFormData.values(),
+      editFormData.defaultValue(),
+      editFormData.clearOnHide()
+    ]),
     validation([
       editFormValidation.required(),
       editFormValidation.customValidation(),
       editFormValidation.customError(),
     ]),
-    api([editFormApi.key()]),
-    conditional([editFormConditional.simpleConditional(), editFormConditional.advancedConditional()]),
+    api([
+      editFormApi.key()
+    ]),
+    conditional([
+      editFormConditional.simpleConditional(),
+      editFormConditional.advancedConditional()
+    ]),
   );
 };
 
