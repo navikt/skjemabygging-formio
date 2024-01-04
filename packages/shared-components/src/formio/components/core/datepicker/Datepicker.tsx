@@ -5,12 +5,13 @@ import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import moment from 'moment';
 import { useEffect } from 'react';
 import FormioReactComponent from '../../FormioReactComponent';
+import BaseComponent from '../../base/BaseComponent';
 import datepickerBuilder from './Datepicker.builder';
 import datepickerForm from './Datepicker.form';
 
 const SUBMISSION_DATE_FORMAT = 'YYYY-MM-DD';
 
-const DatovelgerWrapper = ({ component, onChange, value, locale, readOnly, inputRef }) => {
+const DatovelgerWrapper = ({ component, onChange, value, locale, readOnly, error, inputRef }) => {
   // @ts-ignore
   const { datepickerProps, inputProps, setSelected, reset }: DatePickerProps = useDatepicker({
     required: component.validate.required,
@@ -32,6 +33,7 @@ const DatovelgerWrapper = ({ component, onChange, value, locale, readOnly, input
       id={component.id}
       selected={value ? moment(value, SUBMISSION_DATE_FORMAT).toDate() : undefined}
       locale={locale}
+      error={error}
       {...datepickerProps}
     >
       <DatePicker.Input
@@ -49,7 +51,7 @@ function isCorrectOrder(beforeDate, afterDate, mayBeEqual = false) {
   return mayBeEqual ? beforeDate.isSameOrBefore(afterDate, 'd') : beforeDate.isBefore(afterDate, 'd');
 }
 
-export default class NavDatepicker extends FormioReactComponent {
+export default class NavDatepicker extends BaseComponent {
   isValid = this.errors.length === 0;
 
   static schema() {
@@ -181,6 +183,8 @@ export default class NavDatepicker extends FormioReactComponent {
     return result;
   }
 
+  setValueOnReactInstance(_value) {}
+
   renderReact(element) {
     return element.render(
       <DatovelgerWrapper
@@ -189,7 +193,8 @@ export default class NavDatepicker extends FormioReactComponent {
         onChange={this.updateValue} // The onChange event to call when the value changes.
         locale={this.root.i18next.language}
         readOnly={this.options.readOnly}
-        inputRef={(r) => (this.input = r)}
+        error={this.getError()}
+        inputRef={(ref) => this.setReactInstance(ref)}
       />,
     );
   }
