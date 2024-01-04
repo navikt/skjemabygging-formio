@@ -137,7 +137,7 @@ export interface Component {
   defaultValue?: string | number | boolean | any[] | object;
   tooltip?: string;
   reorder?: boolean;
-  hasHeader?: boolean;
+  dataGridLabel?: boolean;
 }
 
 export interface ComponentProperties {
