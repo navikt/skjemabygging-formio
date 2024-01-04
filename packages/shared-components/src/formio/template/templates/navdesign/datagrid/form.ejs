@@ -4,13 +4,14 @@
       {{ ctx.component.hover ? 'table-hover' : ''}}
       {{ ctx.component.condensed ? 'table-sm' : ''}}
       " {% if (ctx.component.layoutFixed) { %}style="table-layout: fixed;"{% } %}>
-    {% if (ctx.hasHeader || ctx.component.hasHeader) { %}
+    {% if (ctx.hasHeader) { %}
       <thead>
         <tr>
           {% if (ctx.component.reorder) { %}<th></th>{% } %}
           {% ctx.columns.forEach(function(col) { %}
             <th class="{{col.validate && col.validate.required ? 'field-required' : ''}}">
-              {{ ctx.t(col.label || col.title, { _userInput: true }) }}
+              {{ col.hideLabel ? '' : ctx.t(col.label || col.title, { _userInput: true }) }}
+              {% if (col.tooltip) { %} <i ref="tooltip" data-title="{{col.tooltip}}" class="{{ctx.iconClass('question-sign')}} text-muted" data-tooltip="{{col.tooltip}}"></i>{% } %}
             </th>
           {% }) %}
           {% if (ctx.hasExtraColumn) { %}
