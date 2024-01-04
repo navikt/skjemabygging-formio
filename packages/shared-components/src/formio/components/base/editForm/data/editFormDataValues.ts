@@ -14,6 +14,9 @@ const editFormDataValues = (): Component => ({
       input: true,
       type: 'textfield',
       dataGridLabel: false,
+      validate: {
+        required: true,
+      },
     },
     {
       label: 'Dataverdi',
