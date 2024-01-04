@@ -1,4 +1,4 @@
-import { AppConfigProvider, NavFormioJs } from '@navikt/skjemadigitalisering-shared-components';
+import { AppConfigProvider } from '@navikt/skjemadigitalisering-shared-components';
 import { getNodeText, render, renderHook, screen, waitFor } from '@testing-library/react';
 import { useEffect, useState } from 'react';
 import { FeedbackEmitContext } from '../context/notifications/FeedbackContext';
@@ -17,8 +17,6 @@ const RESPONSE_HEADERS_ERROR = {
   },
   status: 500,
 };
-
-const USER_NAME = 'Bond, James';
 
 vi.mock('react-router-dom', async () => {
   const actual = await vi.importActual('react-router-dom');
@@ -39,8 +37,8 @@ describe('useFormioForms', () => {
     fetchMock.mockClear();
   });
 
-  const TestComponent = ({ formio, formPath }) => {
-    const { loadForm, loadFormsList } = useFormioForms(formio);
+  const TestComponent = ({ formPath }) => {
+    const { loadForm, loadFormsList } = useFormioForms();
     const [forms, setForms] = useState([]);
     useEffect(() => {
       if (formPath) {
@@ -48,7 +46,7 @@ describe('useFormioForms', () => {
       } else {
         loadFormsList().then((forms) => setForms(forms));
       }
-    }, [formio, formPath, loadForm, loadFormsList]);
+    }, [formPath, loadForm, loadFormsList]);
     return (
       <>
         {forms.map((form, index) => (
@@ -61,7 +59,6 @@ describe('useFormioForms', () => {
   };
 
   describe('Test form', () => {
-    let formioFetch;
     beforeEach(() => {
       const forms = [
         { title: 'skjema1', path: 'skjema1', tags: 'nav-skjema', properties: {}, modified: '', _id: '000' },
@@ -72,20 +69,10 @@ describe('useFormioForms', () => {
       const form = [
         { title: 'skjema3', path: 'skjema3', tags: 'nav-skjema', properties: {}, modified: '', _id: '023' },
       ];
-      formioFetch = vi.spyOn(NavFormioJs.Formio, 'fetch');
-      formioFetch.mockImplementation((url) => {
-        if (
-          url.includes(
-            '/form?type=form&tags=nav-skjema&limit=1000&select=title%2C%20path%2C%20tags%2C%20properties%2C%20modified%2C%20_id',
-          )
-        ) {
-          return Promise.resolve(new Response(JSON.stringify(forms), RESPONSE_HEADERS_OK));
-        } else if (url.includes('/form?type=form&tags=nav-skjema&path=skjema3&limit=1')) {
-          return Promise.resolve(new Response(JSON.stringify(form), RESPONSE_HEADERS_OK));
-        }
-        return Promise.reject(new Error(`ukjent url ${url}`));
-      });
       fetchMock.mockImplementation((url) => {
+        if (url.includes('/api/forms?')) {
+          return Promise.resolve(new Response(JSON.stringify(forms), RESPONSE_HEADERS_OK));
+        }
         if (url.includes('/api/forms/skjema3')) {
           return Promise.resolve(new Response(JSON.stringify(form[0]), RESPONSE_HEADERS_OK));
         }
@@ -94,14 +81,13 @@ describe('useFormioForms', () => {
     });
 
     afterEach(() => {
-      formioFetch.mockClear();
       fetchMock.mockClear();
     });
 
     const renderTestComponent = (formPath) => {
       render(
         <AppConfigProvider>
-          <TestComponent formio={new NavFormioJs.Formio('http://myproject.example.org')} formPath={formPath} />
+          <TestComponent formPath={formPath} />
         </AppConfigProvider>,
       );
     };
@@ -131,7 +117,7 @@ describe('useFormioForms', () => {
   });
 
   describe('Test onSave', () => {
-    let formioMock, formioForms;
+    let formioForms;
 
     const wrapper = ({ children }) => <AppConfigProvider>{children}</AppConfigProvider>;
 
@@ -145,7 +131,7 @@ describe('useFormioForms', () => {
 
       ({
         result: { current: formioForms },
-      } = renderHook(() => useFormioForms(formioMock), { wrapper }));
+      } = renderHook(() => useFormioForms(), { wrapper }));
     });
 
     it('resets display property to wizard', async () => {
@@ -158,7 +144,7 @@ describe('useFormioForms', () => {
   });
 
   describe('Test onPublish and onUnpublish', () => {
-    let formioMock, formioForms;
+    let formioForms;
 
     const createDate = (dateDiff = 0) => {
       const date = new Date();
@@ -173,14 +159,9 @@ describe('useFormioForms', () => {
     );
 
     beforeEach(() => {
-      formioMock = {
-        saveForm: vi.fn().mockImplementation((form) => Promise.resolve({ ...form, modified: createDate() })),
-        loadForms: vi.fn().mockImplementation((path) => Promise.resolve([{ path, modified: createDate() }])),
-      };
-
       ({
         result: { current: formioForms },
-      } = renderHook(() => useFormioForms(formioMock), { wrapper }));
+      } = renderHook(() => useFormioForms(), { wrapper }));
     });
 
     describe('when publishing succeeds', () => {

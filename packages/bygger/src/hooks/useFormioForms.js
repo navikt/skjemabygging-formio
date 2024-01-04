@@ -2,20 +2,13 @@ import { NavFormioJs, useAppConfig } from '@navikt/skjemadigitalisering-shared-c
 import { useCallback } from 'react';
 import { useFeedbackEmit } from '../context/notifications/FeedbackContext';
 
-export const useFormioForms = (formio) => {
+export const useFormioForms = () => {
   const feedbackEmit = useFeedbackEmit();
   const { http } = useAppConfig();
 
-  const loadFormsList = useCallback(() => {
-    return formio.loadForms({
-      params: {
-        type: 'form',
-        tags: 'nav-skjema',
-        limit: 1000,
-        select: 'title, path, tags, properties, modified, _id',
-      },
-    });
-  }, [formio]);
+  const loadFormsList = useCallback(async () => {
+    return await http.get('/api/forms?select=title,path,tags,properties,modified,_id');
+  }, []);
 
   const loadForm = useCallback(async (formPath) => http.get(`/api/forms/${formPath}`), []);
 
