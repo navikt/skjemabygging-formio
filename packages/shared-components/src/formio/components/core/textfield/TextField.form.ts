@@ -8,6 +8,7 @@ import editFormValidation from '../../base/editForm/validation';
 const textFieldForm = () => {
   const { api, conditional, createTabs, data, display, validation } = editFormTabs;
 
+  // prettier-ignore
   return createTabs(
     display([
       editFormDisplay.label(),
@@ -17,7 +18,9 @@ const textFieldForm = () => {
       editFormDisplay.autoComplete(),
       editFormDisplay.spellCheck(),
     ]),
-    data([editFormData.clearOnHide()]),
+    data([
+      editFormData.clearOnHide(),
+    ]),
     validation([
       editFormValidation.required(),
       editFormValidation.minLength(),
@@ -25,8 +28,13 @@ const textFieldForm = () => {
       editFormValidation.customValidation(),
       editFormValidation.customError(),
     ]),
-    api([editFormApi.key()]),
-    conditional([editFormConditional.simpleConditional(), editFormConditional.advancedConditional()]),
+    api([
+      editFormApi.key(),
+    ]),
+    conditional([
+      editFormConditional.simpleConditional(),
+      editFormConditional.advancedConditional(),
+    ]),
   );
 };
 
