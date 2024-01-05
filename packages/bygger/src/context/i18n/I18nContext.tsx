@@ -38,7 +38,7 @@ function I18nStateProvider({ children, loadTranslations, form }: I18nStateProvid
   const [state, dispatch] = useReducer(i18nReducer, initialState);
 
   useEffect(() => {
-    loadTranslationsAndInitState(loadTranslations, dispatch).then();
+    loadTranslationsAndInitState(loadTranslations, dispatch).catch(() => {});
   }, [loadTranslations, dispatch]);
 
   useEffect(() => {
