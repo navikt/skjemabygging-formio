@@ -137,6 +137,7 @@ export interface Component {
   defaultValue?: string | number | boolean | any[] | object;
   tooltip?: string;
   reorder?: boolean;
+  alerttype?: 'error' | 'warning' | 'info';
 }
 
 export interface ComponentProperties {
