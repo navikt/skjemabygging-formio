@@ -2,7 +2,7 @@
   "formioProjectUrl": "http://127.0.0.1",
   "fyllutBaseUrl": "http://127.0.0.1",
   "isDevelopment": true,
-  "user": { "name": "Test", "preferredUsername": "test@nav.no", "NAVident": "K100" },
+  "user": { "name": "Test", "preferredUsername": "test@nav.no", "NAVident": "K100", "isAdmin": true },
   "featureToggles": {
     "enableTranslations": true,
     "enableEnhetsListe": true,

@@ -27,8 +27,8 @@ import { Form as FormioForm } from 'formiojs';
 import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
 import { usePrefillData } from '../../context/prefill-data/PrefillDataContext';
+import { SANITIZE_CONFIG } from '../../formio/form-builder-options/sanitizeConfig';
 import Styles from '../../styles';
-import { SANITIZE_CONFIG } from '../../util/config/sanitizeConfig';
 import makeStyles from '../../util/styles/jss/jss';
 import i18nData from '../../util/translation/i18nData';
 

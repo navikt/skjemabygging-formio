@@ -3,7 +3,7 @@ import { MottaksadresseData, NavFormSettingsDiff, NavFormType } from '@navikt/sk
 import { Link } from 'react-router-dom';
 import useMottaksadresser from '../../../hooks/useMottaksadresser';
 import LabelWithDiff from '../LabelWithDiff';
-import { UpdateFormFunction } from '../utils';
+import { UpdateFormFunction } from '../utils/utils';
 
 export interface AddressFieldsProps {
   onChange: UpdateFormFunction;

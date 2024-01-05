@@ -101,6 +101,7 @@ export interface Component {
   type: string;
   content?: string;
   calculateValue?: string;
+  allowCalculateOverride?: boolean;
   data?: any;
   dataSrc?: ComponentDataSrc;
   validate?: ComponentValidate;
@@ -144,6 +145,9 @@ export interface Component {
   style?: object;
   theme?: string;
   defaultValue?: string | number | boolean | any[] | object;
+  tooltip?: string;
+  reorder?: boolean;
+  dataGridLabel?: boolean;
 }
 
 export interface ComponentProperties {
@@ -172,7 +176,7 @@ export interface ComponentValidate {
 
 export interface ComponentConditional {
   when?: string;
-  json?: string;
+  json?: object;
 }
 
 export interface ResourceAccess {
@@ -192,6 +196,10 @@ export interface NavFormType {
   properties: FormPropertiesType;
   components: Component[];
   access?: ResourceAccess[];
+}
+
+export interface FormsResponseForm extends Pick<NavFormType, '_id' | 'title' | 'path' | 'modified'> {
+  properties: Pick<FormPropertiesType, 'skjemanummer' | 'innsending' | 'ettersending'>;
 }
 
 export type SubmissionData = Record<string, string | number | boolean | any[] | object>;

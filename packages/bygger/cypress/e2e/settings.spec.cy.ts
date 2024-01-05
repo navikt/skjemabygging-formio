@@ -2,7 +2,7 @@ import { expect } from 'chai';
 
 const _submitData = {
   title: 'Cypress test for settings page',
-  skjemanummer: 'cypress-innstillinger',
+  skjemanummer: 'cypress-settings',
   tema: 'BIL',
   downloadPdfButtonText: 'DownloadPDFBtnTest',
   innsending: 'PAPIR_OG_DIGITAL',
@@ -23,7 +23,7 @@ describe('FormSettingsPage', () => {
     cy.intercept('GET', /language\/submission?.*/, { fixture: 'globalTranslations.json' }).as('getTranslations');
     cy.intercept('GET', '/api/temakoder', { fixture: 'temakoder.json' }).as('getTemaKoder');
     cy.intercept('GET', '/api/countries?*', { fixture: 'getCountriesLangNb.json' }).as('getCountriesLangNb');
-    cy.visit('forms/cypressinnstillinger/settings');
+    cy.visit('forms/cypresssettings/settings');
   });
 
   it('Fills all elements in settings page', () => {

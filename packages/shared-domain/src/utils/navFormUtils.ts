@@ -1,6 +1,6 @@
 // @ts-ignore
 import FormioUtils from 'formiojs/utils';
-import { Attachment, Component, NavFormType, Panel, PrefillData, Submission } from '../form';
+import { Attachment, Component, FormsResponseForm, NavFormType, Panel, PrefillData, Submission } from '../form';
 import { formSummaryUtil } from '../index';
 import { camelCase } from './stringUtils';
 
@@ -180,7 +180,7 @@ export const removeVedleggspanel = (form: NavFormType) => {
   return removeComponents(form, isVedleggspanel);
 };
 
-export const isSubmissionMethodAllowed = (submissionMethod: string, form: NavFormType): boolean => {
+export const isSubmissionMethodAllowed = (submissionMethod: string, form: NavFormType | FormsResponseForm): boolean => {
   const { innsending } = form.properties;
   switch (submissionMethod) {
     case 'digital':
