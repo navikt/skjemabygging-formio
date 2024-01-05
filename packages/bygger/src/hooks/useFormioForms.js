@@ -29,6 +29,7 @@ export const useFormioForms = () => {
         return savedForm;
       } catch (error) {
         if (error instanceof http.UnauthenticatedError) {
+          NavFormioJs.Formio.setToken('');
           feedbackEmit.error('Lagring feilet. Du har blitt logget ut.');
         } else {
           feedbackEmit.error(

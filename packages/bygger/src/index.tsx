@@ -1,4 +1,4 @@
-import { AppConfigProvider } from '@navikt/skjemadigitalisering-shared-components';
+import { AppConfigProvider, NavFormioJs } from '@navikt/skjemadigitalisering-shared-components';
 import Pusher from 'pusher-js';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
@@ -14,7 +14,7 @@ fetch('/api/config')
   .then((res) => {
     const token = res.headers.get('Bygger-Formio-Token');
     if (token) {
-      localStorage.setItem('formioToken', token);
+      NavFormioJs.Formio.setToken(token);
     }
     return res.json();
   })
