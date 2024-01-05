@@ -137,6 +137,7 @@ export interface Component {
   defaultValue?: string | number | boolean | any[] | object;
   tooltip?: string;
   reorder?: boolean;
+  dataGridLabel?: boolean;
   alerttype?: 'error' | 'warning' | 'info';
 }
 
