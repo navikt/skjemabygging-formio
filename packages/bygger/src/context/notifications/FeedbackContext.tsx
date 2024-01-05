@@ -25,8 +25,8 @@ const FeedbackProvider = ({ children }: { children: React.ReactElement }) => {
 
   const emit = {
     success: (message: string) => messageQueue.push({ message, type: 'success' }),
-    warning: (message: string) => messageQueue.push({ message, type: 'error' }),
-    error: (message: string) => messageQueue.push({ message, type: 'warning' }),
+    warning: (message: string) => messageQueue.push({ message, type: 'warning' }),
+    error: (message: string) => messageQueue.push({ message, type: 'error' }),
   };
 
   return (
