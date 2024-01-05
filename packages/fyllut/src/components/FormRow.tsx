@@ -1,18 +1,25 @@
 import { useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
-import { navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { FormsResponseForm, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
 
-const FormRow = ({ form }) => {
-  // @ts-ignore
-  const { config } = useAppConfig();
+interface FormRowProps {
+  form: FormsResponseForm;
+}
+
+const FormRow = ({ form }: FormRowProps) => {
+  const { config, baseUrl } = useAppConfig();
   const paper = navFormUtils.isSubmissionMethodAllowed('paper', form);
   const digital = navFormUtils.isSubmissionMethodAllowed('digital', form);
   const ingen = form.properties.innsending === 'INGEN';
   const isDevelopment = config?.isDevelopment;
+  const skjemaPath = `${baseUrl}/${form.path}`;
 
   return (
     <tr>
       <td>
-        <a href={`/fyllut/${form.path}`}>{form.title}</a>
+        <a href={skjemaPath}>{form.properties.skjemanummer}</a>
+      </td>
+      <td>
+        <a href={skjemaPath}>{form.title}</a>
       </td>
       {isDevelopment && (
         <>

@@ -299,8 +299,11 @@ function handleImage(component, formSummaryObject, parentContainerKey, translate
 }
 
 function handleAmountWithCurrencySelector(component, submission, formSummaryObject, parentContainerKey, translate) {
-  const { key, label, components } = component;
+  if (!submission.data) {
+    return formSummaryObject;
+  }
 
+  const { key, label, components } = component;
   const componentKey = createComponentKey(parentContainerKey, key);
 
   var componentWithType = (type) =>
@@ -313,7 +316,7 @@ function handleAmountWithCurrencySelector(component, submission, formSummaryObje
 
   const submissionValue = FormioUtils.getValue(submission, componentKey);
 
-  const number = submissionValue[numberKey];
+  const number = submissionValue?.[numberKey];
 
   if (!number) {
     return formSummaryObject;

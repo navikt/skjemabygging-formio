@@ -29,6 +29,11 @@ describe('app', () => {
       await request(createApp()).get('/fyllut/').expect(200);
     });
 
+    it('Removes trailing slash, except for root', async () => {
+      const res = await request(createApp()).get('/fyllut/testform001/').expect(308);
+      expect(res.get('location')).toBe('/fyllut/testform001');
+    });
+
     it('Returns 404 if form is not found', async () => {
       nock(formioProjectUrl!).get('/form?type=form&tags=nav-skjema&path=testform001').reply(200, []);
 
