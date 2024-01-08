@@ -38,7 +38,9 @@ describe('Translations', () => {
 
       it('shows error message', () => {
         cy.findByRole('link', { name: 'Språk' }).click();
-        cy.findByText('Henting av oversettelser for dette skjemaet feilet. Last siden på nytt.').should('be.visible');
+        cy.findAllByText('Henting av oversettelser for dette skjemaet feilet. Last siden på nytt.').should(
+          'be.visible',
+        );
       });
     });
   });
@@ -78,7 +80,7 @@ describe('Translations', () => {
         cy.findByRole('link', { name: 'Globale Oversettelser' }).click();
         cy.findByRole('heading', { name: 'Norsk nynorsk' }).should('exist');
         cy.wait('@getTranslationsFailure');
-        cy.findByText('Henting av globale oversettelser feilet. Last siden på nytt.').should('be.visible');
+        cy.findAllByText('Henting av globale oversettelser feilet. Last siden på nytt.').should('be.visible');
       });
     });
   });
