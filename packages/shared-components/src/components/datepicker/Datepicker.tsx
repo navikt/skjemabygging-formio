@@ -5,7 +5,7 @@ import { useEffect } from 'react';
 
 const SUBMISSION_DATE_FORMAT = 'YYYY-MM-DD';
 
-const Datepicker = ({ id, key, isRequired, onChange, value, locale, readOnly, error, inputRef }) => {
+const Datepicker = ({ id, inputId, isRequired, onChange, value, locale, readOnly, error, inputRef }) => {
   // @ts-ignore
   const { datepickerProps, inputProps, setSelected, reset }: DatePickerProps = useDatepicker({
     required: isRequired,
@@ -29,14 +29,7 @@ const Datepicker = ({ id, key, isRequired, onChange, value, locale, readOnly, er
       locale={locale}
       {...datepickerProps}
     >
-      <AkselDatePicker.Input
-        id={`${id}-${key}`}
-        readOnly={readOnly}
-        error={error}
-        {...inputProps}
-        ref={inputRef}
-        hideLabel
-      />
+      <AkselDatePicker.Input id={inputId} readOnly={readOnly} error={error} {...inputProps} ref={inputRef} hideLabel />
     </AkselDatePicker>
   );
 };
