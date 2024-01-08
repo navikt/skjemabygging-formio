@@ -1,77 +1,45 @@
-import { NavFormioJs } from '@navikt/skjemadigitalisering-shared-components';
-import { dateUtils, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { NavFormioJs, useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
 import { useCallback } from 'react';
-import { useAuth } from '../context/auth-context';
 import { useFeedbackEmit } from '../context/notifications/FeedbackContext';
 
-const { getIso8601String } = dateUtils;
-
-export const useFormioForms = (formio) => {
+export const useFormioForms = () => {
   const feedbackEmit = useFeedbackEmit();
-  const { userData } = useAuth();
+  const { http } = useAppConfig();
 
-  const loadFormsList = useCallback(() => {
-    return formio.loadForms({
-      params: {
-        type: 'form',
-        tags: 'nav-skjema',
-        limit: 1000,
-        select: 'title, path, tags, properties, modified, _id',
-      },
-    });
-  }, [formio]);
+  const loadFormsList = useCallback(async () => {
+    return await http.get('/api/forms?select=title,path,tags,properties,modified,_id');
+  }, []);
 
-  const loadForm = useCallback(
-    (formPath) => {
-      return formio
-        .loadForms({
-          params: {
-            type: 'form',
-            tags: 'nav-skjema',
-            path: formPath,
-            limit: 1,
-          },
-        })
-        .then((forms) => forms[0]);
-    },
-    [formio],
-  );
+  const loadForm = useCallback(async (formPath) => http.get(`/api/forms/${formPath}`), []);
 
   const onSave = useCallback(
-    (callbackForm) => {
-      return formio
-        .saveForm({
-          ...callbackForm,
-          display: 'wizard',
-          components: navFormUtils.enrichComponentsWithNavIds(callbackForm.components),
-          properties: {
-            ...callbackForm.properties,
-            modified: getIso8601String(),
-            modifiedBy: userData.name,
+    async (callbackForm) => {
+      try {
+        const savedForm = await http.put(
+          `/api/forms/${callbackForm.path}`,
+          {
+            ...callbackForm,
+            display: 'wizard',
           },
-        })
-        .then((form) => {
-          feedbackEmit.success(`Lagret skjema ${form.title}`);
-          return form;
-        })
-        .catch(() => {
+          {
+            'Bygger-Formio-Token': NavFormioJs.Formio.getToken(),
+          },
+        );
+        feedbackEmit.success(`Lagret skjema ${savedForm.title}`);
+        return savedForm;
+      } catch (error) {
+        if (error instanceof http.UnauthenticatedError) {
+          NavFormioJs.Formio.setToken('');
+          feedbackEmit.error('Lagring feilet. Du har blitt logget ut.');
+        } else {
           feedbackEmit.error(
-            'Lagring feilet. Skjemaet kan ha blitt lagret fra en annen nettleser. ' +
-              'Last siden på nytt for å få siste versjon.',
+            'Lagring feilet. Skjemaet kan ha blitt lagret fra en annen nettleser. Last siden på nytt for å få siste versjon.',
           );
-          return { error: true };
-        });
+        }
+        return { error: true };
+      }
     },
-    [formio, userData, feedbackEmit],
-  );
-
-  const deleteForm = useCallback(
-    async (formId, tags, title) => {
-      formio.saveForm({ _id: formId, tags: tags.filter((each) => each !== 'nav-skjema') }).then(() => {
-        feedbackEmit.success('Slettet skjemaet ' + title);
-      });
-    },
-    [formio, feedbackEmit],
+    [feedbackEmit],
   );
 
   const onPublish = useCallback(
@@ -123,7 +91,6 @@ export const useFormioForms = (formio) => {
   );
 
   return {
-    deleteForm,
     loadForm,
     loadFormsList,
     onSave,

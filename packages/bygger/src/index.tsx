@@ -32,6 +32,7 @@ const renderReact = (config) => {
           featureToggles={config.featureToggles}
           config={config}
           app="bygger"
+          enableFrontendLogger
         >
           <AuthProvider user={config.user}>
             <App projectURL={config.formioProjectUrl} serverURL={config.fyllutBaseUrl} />

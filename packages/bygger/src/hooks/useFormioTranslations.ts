@@ -1,37 +1,38 @@
-import { NavFormioJs } from '@navikt/skjemadigitalisering-shared-components';
+import { NavFormioJs, useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
 import {
   FormioTranslationMap,
   FormioTranslationPayload,
   I18nTranslationMap,
   Language,
-  languagesUtil,
-  localizationUtils,
   ScopedTranslationMap,
   TEXTS,
   TranslationScope,
   TranslationTag,
+  languagesUtil,
+  localizationUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { useCallback } from 'react';
 import { languagesInNorwegian } from '../context/i18n';
 import { combineTranslationResources } from '../context/i18n/translationsMapper';
 import { useFeedbackEmit } from '../context/notifications/FeedbackContext';
 import { getTranslationKeysForAllPredefinedTexts, tags } from '../translations/global/utils';
+import { responseAsError } from '../util/httpErrorHelpers';
 
 const { getLanguageCodeAsIso639_1, zipCountryNames } = localizationUtils;
 
 type Country = { label: string; value: string };
 
-const fetchTranslations = (url) => {
+const fetchTranslations = async (url: string) => {
   return fetch(url, {
     headers: {
       'x-jwt-token': NavFormioJs.Formio.getToken(),
     },
-  })
-    .then((response) => response.json())
-    .then((response) => {
-      return response;
-    })
-    .catch((err) => (process.env.NODE_ENV !== 'production' ? [] : err));
+  }).then(async (response) => {
+    if (response.ok) {
+      return response.json();
+    }
+    throw await responseAsError(response);
+  });
 };
 
 const mapFormioKeyToLabel = (i18n: I18nTranslationMap) => {
@@ -61,6 +62,8 @@ const mapFormioKeysToLabelsForValidering = (translationPayload) =>
 
 export const useFormioTranslations = (serverURL, formio) => {
   const feedbackEmit = useFeedbackEmit();
+  const { logger } = useAppConfig();
+
   const loadGlobalTranslations = useCallback(
     async (language?: Language, mapper = (response) => response): Promise<FormioTranslationMap> => {
       let filter = '';
@@ -68,9 +71,21 @@ export const useFormioTranslations = (serverURL, formio) => {
         filter += `&data.language=${language}`;
       }
 
-      return fetchTranslations(`${formio.projectUrl}/language/submission?data.name=global${filter}&limit=1000`)
+      const url = `${formio.projectUrl}/language/submission?data.name=global${filter}&limit=1000`;
+      return fetchTranslations(url)
         .then(mapper)
-        .then(languagesUtil.globalEntitiesToI18nGroupedByTag);
+        .then(languagesUtil.globalEntitiesToI18nGroupedByTag)
+        .catch((err) => {
+          const userMessage = 'Henting av globale oversettelser feilet. Last siden på nytt.';
+          logger?.error('Failed to fetch global translations', {
+            reason: err.message,
+            httpStatus: err.httpStatus,
+            userMessage,
+            url,
+          });
+          feedbackEmit.error(userMessage);
+          throw err;
+        });
     },
     [formio.projectUrl],
   );
@@ -127,20 +142,32 @@ export const useFormioTranslations = (serverURL, formio) => {
 
   const loadTranslationsForForm = useCallback(
     async (formPath: string): Promise<FormioTranslationPayload[]> => {
-      return fetchTranslations(
-        `${formio.projectUrl}/language/submission?data.name__regex=/^global(.${formPath})*$/gi&limit=1000`,
-      ).then((translations: FormioTranslationPayload[]) => {
-        const languagesWithLocalTranslation = translations.reduce((localTranslations: Language[], translation) => {
-          if (localTranslations.indexOf(translation.data.language) === -1) {
-            return [...localTranslations, translation.data.language];
-          } else {
-            return localTranslations;
-          }
-        }, []);
-        return translations.filter(
-          (translation) => languagesWithLocalTranslation.indexOf(translation.data.language) !== -1,
-        );
-      });
+      const url = `${formio.projectUrl}/language/submission?data.name__regex=/^global(.${formPath})*$/gi&limit=1000`;
+      return fetchTranslations(url)
+        .then((translations: FormioTranslationPayload[]) => {
+          const languagesWithLocalTranslation = translations.reduce((localTranslations: Language[], translation) => {
+            if (localTranslations.indexOf(translation.data.language) === -1) {
+              return [...localTranslations, translation.data.language];
+            } else {
+              return localTranslations;
+            }
+          }, []);
+          return translations.filter(
+            (translation) => languagesWithLocalTranslation.indexOf(translation.data.language) !== -1,
+          );
+        })
+        .catch((err) => {
+          const userMessage = 'Henting av oversettelser for dette skjemaet feilet. Last siden på nytt.';
+          logger?.error(`Failed to fetch form translations`, {
+            reason: err.message,
+            httpStatus: err.httpStatus,
+            userMessage,
+            formPath,
+            url,
+          });
+          feedbackEmit.error(userMessage);
+          throw err;
+        });
     },
     [formio.projectUrl],
   );
@@ -256,7 +283,7 @@ export const useFormioTranslations = (serverURL, formio) => {
 
   const saveTranslation = useCallback(
     async (
-      translationId,
+      translationId: string | undefined,
       language: Language,
       i18n: I18nTranslationMap,
       name: string,
@@ -272,10 +299,17 @@ export const useFormioTranslations = (serverURL, formio) => {
           const submission = await response.json();
           newOrExistingTranslationId = submission._id;
         } else {
-          const error = await response.json();
-          const errorMessage = 'Oversettelsen kunne ikke opprettes: '.concat(error?.message);
-          feedbackEmit.error(errorMessage);
-          return error;
+          const error = await responseAsError(response);
+          const userMessage = 'Oversettelsen kunne ikke opprettes: '.concat(error.message);
+          logger?.error('Failed to create translation object', {
+            reason: error.message,
+            httpStatus: error.httpStatus,
+            userMessage,
+            formPath: form,
+            translationScope: scope,
+          });
+          feedbackEmit.error(userMessage);
+          return error.message;
         }
       }
       if (newOrExistingTranslationId) {
@@ -295,10 +329,18 @@ export const useFormioTranslations = (serverURL, formio) => {
           );
           return response.json();
         } else {
-          const error = await response.json();
-          const errorMessage = 'Lagret oversettelser feilet: '.concat(error?.message);
-          feedbackEmit.error(errorMessage);
-          return error;
+          const error = await responseAsError(response);
+          const userMessage = 'Lagring av oversettelser feilet: '.concat(error.message);
+          logger?.error('Failed to update translation object', {
+            reason: error.message,
+            httpStatus: error.httpStatus,
+            userMessage,
+            formPath: form,
+            translationScope: scope,
+            newOrExistingTranslationId,
+          });
+          feedbackEmit.error(userMessage);
+          return error.message;
         }
       }
     },

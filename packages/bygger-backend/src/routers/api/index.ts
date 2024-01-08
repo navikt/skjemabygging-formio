@@ -1,12 +1,15 @@
 import express from 'express';
+import { rateLimiter } from '../../middleware/ratelimit';
 import config from './config';
 import deprecatedPublishBulk from './deprecated-publish-bulk';
 import deprecatedPublishForm from './deprecated-publish-form';
 import deprecatedUnpublishForm from './deprecated-unpublish-form';
 import enhetsliste from './enhetsliste';
 import formDiff from './formDiff';
+import formsRouter from './forms';
 import apiErrorHandler from './helpers/apiErrorHandler';
 import authorizedPublisher from './helpers/authorizedPublisher';
+import log from './log';
 import migrate from './migrate';
 import migratePreview from './migrate-preview';
 import migrateUpdate from './migrate-update';
@@ -36,6 +39,8 @@ apiRouter.get('/migrate', migrate);
 apiRouter.get('/migrate/preview/:formPath', migratePreview);
 apiRouter.post('/migrate/update', authorizedPublisher, migrateUpdate);
 apiRouter.get('/form/:formPath/diff', formDiff);
+apiRouter.use('/forms', formsRouter);
+apiRouter.post('/log/:level', rateLimiter(60000, 60), log);
 
 apiRouter.use(apiErrorHandler);
 

@@ -15,7 +15,7 @@ const _submitData = {
 describe('FormSettingsPage', () => {
   beforeEach(() => {
     cy.intercept('GET', '/api/config', { fixture: 'config.json' }).as('getConfig');
-    cy.intercept('GET', '/form?*', {
+    cy.intercept('GET', '/api/forms/cypresssettings', {
       fixture: 'getForm.json',
     }).as('getForm');
     cy.intercept('GET', '/api/published-forms/*', { statusCode: 404 }).as('getPublishedForm');
@@ -27,7 +27,7 @@ describe('FormSettingsPage', () => {
   });
 
   it('Fills all elements in settings page', () => {
-    cy.intercept('PUT', 'form/*', (req) => {
+    cy.intercept('PUT', '/api/forms/cypresssettings', (req) => {
       expect(req.body.properties.tema).to.include(_submitData.tema);
       expect(req.body.title).to.include(_submitData.title);
       expect(req.body.properties.skjemanummer).to.include(_submitData.skjemanummer);

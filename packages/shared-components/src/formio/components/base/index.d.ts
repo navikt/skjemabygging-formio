@@ -1,4 +1,5 @@
 import { Component } from '@navikt/skjemadigitalisering-shared-domain';
+import Select from 'react-select/base';
 
 interface IReactComponent {
   new (component, options, data): ReactComponentType;
@@ -10,14 +11,13 @@ interface IReactComponent {
 interface ReactComponentType {
   shouldSetValue?: any;
   dataForSetting?: any;
-  reactInstance?: HTMLInputElement;
+  reactInstance?: HTMLInputElement | Select;
   attachReact(element, ref): any;
   detachReact(element): any;
   validate(data, dirty, rowData): boolean;
-  updateValue: (value, flags?: {}) => any;
+  updateValue(value, flags?: {}): any;
   setReactInstance(element): void;
   setValue(value: any): void;
-
   // Field
   render(element: any): any;
   // Component
@@ -29,6 +29,7 @@ interface ReactComponentType {
   root: any;
   options: any;
   visible: any | boolean;
+  hideLabel: boolean;
   error?: {
     message: string;
   } | null;
@@ -49,7 +50,9 @@ interface ReactComponentType {
   deleteValue(): void;
   hasValue(): boolean;
   setComponentValidity(messages, dirty, silentCheck): boolean;
+  addMessages(messages): void;
   addFocusBlurEvents(element): void;
+  labelIsHidden(): boolean;
   // Element
   id?: any;
   emit(event: string, data: Object): void;
