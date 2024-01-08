@@ -1,9 +1,9 @@
 import { Component } from '@navikt/skjemadigitalisering-shared-domain';
 import editFormValuesGrid from '../shared/editFormValuesGrid';
 
-const editFormDataValues = (): Component => ({
+const editFormValues = (): Component => ({
   ...editFormValuesGrid(),
-  key: 'data.values',
+  key: 'values',
 });
 
-export default editFormDataValues;
+export default editFormValues;

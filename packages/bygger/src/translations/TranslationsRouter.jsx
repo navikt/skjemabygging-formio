@@ -7,7 +7,7 @@ import { TranslationsListPage } from './TranslationsListPage';
 import GlobalTranslationsPage from './global/GlobalTranslationsPage';
 
 const TranslationsRouter = ({ formio, serverURL }) => {
-  const { loadForm, loadFormsList } = useFormioForms(formio);
+  const { loadForm, loadFormsList } = useFormioForms();
   const {
     loadGlobalTranslationsForTranslationsPage,
     publishGlobalTranslations,

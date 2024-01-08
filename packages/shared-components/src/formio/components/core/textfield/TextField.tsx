@@ -35,7 +35,7 @@ class TextField extends BaseComponent {
         ref={(ref) => this.setReactInstance(ref)}
         onChange={(event) => this.updateValue(event.currentTarget.value, { modified: true })}
         label={this.getLabel()}
-        hideLabel={this.hideLabel()}
+        hideLabel={this.getHideLabel()}
         description={this.getDescription()}
         className={this.getClassName()}
         autoComplete={this.getAutoComplete()}

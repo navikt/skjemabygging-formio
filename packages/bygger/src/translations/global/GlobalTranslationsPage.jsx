@@ -82,7 +82,9 @@ const GlobalTranslationsPage = ({
   );
 
   useEffect(() => {
-    loadGlobalTranslations().then((translations) => setAllGlobalTranslations(translations));
+    loadGlobalTranslations()
+      .then((translations) => setAllGlobalTranslations(translations))
+      .catch(() => {});
   }, [loadGlobalTranslations]);
 
   useEffect(() => {
