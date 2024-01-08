@@ -8,7 +8,7 @@ const editFormValuesGrid = (): Component => ({
   reorder: false,
   components: [
     {
-      label: 'Ledetekst2',
+      label: 'Ledetekst',
       key: 'label',
       input: true,
       type: 'textfield',
@@ -18,7 +18,7 @@ const editFormValuesGrid = (): Component => ({
       },
     },
     {
-      label: 'Dataverdi2',
+      label: 'Dataverdi',
       key: 'value',
       input: true,
       type: 'textfield',
