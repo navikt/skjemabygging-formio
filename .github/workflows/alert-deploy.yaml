@@ -14,13 +14,14 @@ jobs:
   preprod-deploy:
     name: Deploy to preprod
     runs-on: ubuntu-latest
+    permissions:
+      id-token: 'write'
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
       - name: Deploy to preprod
         uses: nais/deploy/actions/deploy@v2
         env:
-          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: dev-gcp
           RESOURCE: './.nais/bygger/alerts.yaml'
           VARS: './.nais/bygger/preprod.yaml'
@@ -28,13 +29,14 @@ jobs:
   prod-deploy:
     name: Deploy to prod
     runs-on: ubuntu-latest
+    permissions:
+      id-token: 'write'
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
       - name: Deploy to prod
         uses: nais/deploy/actions/deploy@v2
         env:
-          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: prod-gcp
           RESOURCE: './.nais/bygger/alerts.yaml'
           VARS: './.nais/bygger/prod.yaml'
