@@ -1,53 +1,11 @@
-import { DatePicker, DatePickerProps, useDatepicker } from '@navikt/ds-react';
-import { UseDatepickerOptions } from '@navikt/ds-react/esm/date/hooks/useDatepicker';
-
-import moment from 'moment';
-import { useEffect } from 'react';
+import ReactDatepicker from '../../../../components/datepicker/Datepicker';
 import FormioReactComponent from '../../FormioReactComponent';
 import BaseComponent from '../../base/BaseComponent';
 import datepickerBuilder from './Datepicker.builder';
 import datepickerForm from './Datepicker.form';
 import { validate, validateBackwardsCompatible } from './utils/validation';
 
-const SUBMISSION_DATE_FORMAT = 'YYYY-MM-DD';
-
-const DatovelgerWrapper = ({ component, onChange, value, locale, readOnly, error, inputRef }) => {
-  // @ts-ignore
-  const { datepickerProps, inputProps, setSelected, reset }: DatePickerProps = useDatepicker({
-    required: component.validate.required,
-    onDateChange: (val) => {
-      onChange(val ? moment(val).format(SUBMISSION_DATE_FORMAT) : '');
-    },
-  } as UseDatepickerOptions);
-
-  useEffect(() => {
-    if (value) {
-      setSelected(moment(value, SUBMISSION_DATE_FORMAT).toDate());
-    } else {
-      reset();
-    }
-  }, [value]);
-
-  return (
-    <DatePicker
-      id={component.id}
-      selected={value ? moment(value, SUBMISSION_DATE_FORMAT).toDate() : undefined}
-      locale={locale}
-      {...datepickerProps}
-    >
-      <DatePicker.Input
-        id={`${component.id}-${component.key}`}
-        readOnly={readOnly}
-        error={error}
-        {...inputProps}
-        ref={inputRef}
-        hideLabel
-      />
-    </DatePicker>
-  );
-};
-
-export default class NavDatepicker extends BaseComponent {
+export default class Datepicker extends BaseComponent {
   isValid = this.errors.length === 0;
 
   static schema() {
@@ -95,8 +53,10 @@ export default class NavDatepicker extends BaseComponent {
 
   renderReact(element) {
     return element.render(
-      <DatovelgerWrapper
-        component={this.component} // These are the component settings if you want to use them to render the component.
+      <ReactDatepicker
+        id={this.component?.id}
+        key={this.component?.key}
+        isRequired={this.component?.validate?.required}
         value={this.dataForSetting || this.dataValue} // The starting value of the component.
         onChange={this.updateValue} // The onChange event to call when the value changes.
         locale={this.root.i18next.language}

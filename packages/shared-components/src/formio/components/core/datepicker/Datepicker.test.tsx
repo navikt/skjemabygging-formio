@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 import { setupNavFormio } from '../../../../../test/navform-render';
 import NavForm from '../../../../components/nav-form/NavForm';
 import { AppConfigProvider } from '../../../../context/config/configContext';
-import NavDatepicker from './Datepicker';
+import Datepicker from './Datepicker';
 
 Date.now = vi.fn(() => new Date('2030-05-15T12:00:00.000Z').getTime());
 
@@ -23,8 +23,8 @@ describe('NavDatePicker', () => {
   };
 
   beforeEach(() => {
-    datePicker = new NavDatepicker(undefined, {}, {});
-    vi.spyOn(NavDatepicker.prototype, 't').mockImplementation(mockedTranslate);
+    datePicker = new Datepicker(undefined, {}, {});
+    vi.spyOn(Datepicker.prototype, 't').mockImplementation(mockedTranslate);
   });
 
   describe('Valideringsfunksjonene', () => {
