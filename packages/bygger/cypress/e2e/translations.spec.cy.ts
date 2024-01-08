@@ -5,11 +5,11 @@ describe('Translations', () => {
 
   describe('Form translations', () => {
     beforeEach(() => {
-      cy.intercept('GET', '/form?*', { fixture: 'form123456.json' }).as('getForm');
-      cy.intercept('GET', '/api/published-forms/dif123456', { statusCode: 404 }).as('getPublishedForm');
+      cy.intercept('GET', '/api/forms/tst123456', { fixture: 'form123456.json' }).as('getForm');
+      cy.intercept('GET', '/api/published-forms/tst123456', { statusCode: 404 }).as('getPublishedForm');
       cy.intercept('GET', '/api/countries?*', { fixture: 'getCountriesLangNb.json' }).as('getCountriesLangNb');
 
-      cy.visit('/forms/dif123456');
+      cy.visit('/forms/tst123456');
       cy.wait('@getForm');
     });
 
@@ -45,7 +45,7 @@ describe('Translations', () => {
 
   describe('Global translations', () => {
     beforeEach(() => {
-      cy.intercept('GET', '/form?*', { body: [] }).as('getForms');
+      cy.intercept('GET', /\/api\/forms\\?.+/, { body: [] }).as('getForms');
       cy.visit('/');
     });
 

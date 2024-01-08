@@ -4,12 +4,12 @@ import { expect } from 'chai';
 describe('Form Builder', () => {
   beforeEach(() => {
     cy.intercept('GET', '/api/config', { fixture: 'config.json' }).as('getConfig');
-    cy.intercept('GET', '/form?*', { fixture: 'form123456.json' }).as('getForm');
-    cy.intercept('GET', '/api/published-forms/dif123456', { statusCode: 404 }).as('getPublishedForm');
+    cy.intercept('GET', '/api/forms/tst123456', { fixture: 'form123456.json' }).as('getForm');
+    cy.intercept('GET', '/api/published-forms/tst123456', { statusCode: 404 }).as('getPublishedForm');
     cy.intercept('GET', /language\/submission?.*/, { fixture: 'globalTranslations.json' }).as('getTranslations');
     cy.intercept('GET', '/api/countries*', { fixture: 'getCountriesLangNb.json' }).as('getCountriesLangNb');
 
-    cy.visit('forms/dif123456');
+    cy.visit('forms/tst123456');
     cy.wait('@getConfig');
     cy.wait('@getForm');
     cy.wait('@getPublishedForm');
@@ -17,7 +17,7 @@ describe('Form Builder', () => {
   });
 
   it('Trims properties "vedleggskode" and "vedleggstittel" before save', () => {
-    cy.intercept('PUT', '/form/63c7abd51578ad48a6dc00cc', (req) => {
+    cy.intercept('PUT', '/api/forms/tst123456', (req) => {
       const vedlegg = navFormUtils
         .flattenComponents(req.body.components)
         .find((comp) => comp.key === 'annenDokumentasjon');
@@ -40,7 +40,7 @@ describe('Form Builder', () => {
 
   describe('Textfield', () => {
     it('should save changes made in edit modal', () => {
-      cy.intercept('PUT', '/form/63c7abd51578ad48a6dc00cc', (req) => {
+      cy.intercept('PUT', '/api/forms/tst123456', (req) => {
         const fodselsdato = navFormUtils
           .flattenComponents(req.body.components)
           .find((comp) => comp.key === 'fornavnSoker');
@@ -58,7 +58,7 @@ describe('Form Builder', () => {
 
   describe('Nav datepicker', () => {
     it('should save changes made in edit modal', () => {
-      cy.intercept('PUT', '/form/63c7abd51578ad48a6dc00cc', (req) => {
+      cy.intercept('PUT', '/api/forms/tst123456', (req) => {
         const fodselsdato = navFormUtils
           .flattenComponents(req.body.components)
           .find((comp) => comp.key === 'fodselsdatoDdMmAaaaSoker');

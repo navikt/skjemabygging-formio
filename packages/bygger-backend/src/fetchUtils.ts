@@ -1,4 +1,5 @@
 import fetch, { RequestInfo, RequestInit, Response } from 'node-fetch';
+import { logger } from './logging/logger';
 
 export class HttpError extends Error {
   readonly response: Response;
@@ -10,11 +11,22 @@ export class HttpError extends Error {
   }
 }
 
+const parseBody = async (res: Response): Promise<unknown | string> => {
+  const contentType = res.headers.get('content-type');
+  return contentType?.includes('application/json') ? await res.json() : await res.text();
+};
+
 export async function fetchWithErrorHandling(url: RequestInfo, options: RequestInit) {
   const res = await fetch(url, options);
   if (!res.ok) {
-    console.error(`Fetch ${options.method || 'GET'} ${url} failed with status: ${res.status}`);
-    console.error(`${options.method} body: ${options.body}`);
+    const responseBody = await parseBody(res);
+    const method = options.method || 'GET';
+    const logMeta = {
+      responseBody,
+      status: res.status,
+      method,
+    };
+    logger.error(`Fetch ${method} ${url} failed`, logMeta);
     throw new HttpError(res);
   }
   if (res.status === 204) {
