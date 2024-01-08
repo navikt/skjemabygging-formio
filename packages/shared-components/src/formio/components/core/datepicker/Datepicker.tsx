@@ -41,12 +41,12 @@ export default class Datepicker extends BaseComponent {
       relativeEarliestAllowedDate,
       relativeLatestAllowedDate,
       row,
-      this.t,
+      this.t.bind(this),
     );
   }
 
   validateDatePickerV2(input, submissionData, component, row) {
-    return validate(input, submissionData, component, row, this.t);
+    return validate(input, submissionData, component, row, this.t.bind(this));
   }
 
   setValueOnReactInstance(_value) {}
