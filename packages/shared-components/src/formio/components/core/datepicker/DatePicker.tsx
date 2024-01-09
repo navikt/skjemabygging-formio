@@ -1,5 +1,4 @@
 import ReactDatePicker from '../../../../components/datepicker/DatePicker';
-import FormioReactComponent from '../../FormioReactComponent';
 import BaseComponent from '../../base/BaseComponent';
 import datePickerBuilder from './DatePicker.builder';
 import datePickerForm from './DatePicker.form';
@@ -9,7 +8,7 @@ export default class DatePicker extends BaseComponent {
   isValid = this.errors.length === 0;
 
   static schema() {
-    return FormioReactComponent.schema({
+    return BaseComponent.schema({
       type: 'navDatepicker',
       label: 'Dato (dd.mm.åååå)',
       dataGridLabel: true,
