@@ -3,6 +3,7 @@ import editFormAutoComplete from './editFormAutoComplete';
 import editFormDescription from './editFormDescription';
 import editFormDisabled from './editFormDisabled';
 import editFormFieldSizeField from './editFormFieldSize';
+import editFormHideLabel from './editFormHideLabel';
 import editFormLabel from './editFormLabel';
 import editFormSpellCheck from './editFormSpellCheck';
 
@@ -14,6 +15,7 @@ const editFormDisplay = {
   fieldSize: editFormFieldSizeField,
   label: editFormLabel,
   spellCheck: editFormSpellCheck,
+  hideLabel: editFormHideLabel,
 };
 
 export default editFormDisplay;
