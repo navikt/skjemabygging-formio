@@ -50,6 +50,7 @@ const getAttachments = (form, t) => {
         otherDocumentation: component.otherDocumentation,
         attachmentTitle: t(component.properties.vedleggstittel),
         attachmentCode: component.properties.vedleggskode,
+        attachmentForm: component.properties.vedleggskjema,
       };
     });
 };
