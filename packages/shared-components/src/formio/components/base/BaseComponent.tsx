@@ -77,6 +77,13 @@ class BaseComponent extends FormioReactComponent {
   }
 
   /**
+   * Get whether custom component is required renderReact()
+   */
+  getIsRequired() {
+    return this.component?.validate?.required;
+  }
+
+  /**
    * Get auto complete for custom component renderReact()
    */
   getAutoComplete() {
@@ -84,10 +91,17 @@ class BaseComponent extends FormioReactComponent {
   }
 
   /**
+   * Get language code for custom component renderReact()
+   */
+  getLocale() {
+    return this.root.i18next.language;
+  }
+
+  /**
    * Get read only for custom component renderReact()
    */
   getReadOnly() {
-    return this.component?.readOnly;
+    return this.component?.readOnly || this.options.readOnly;
   }
 
   /**

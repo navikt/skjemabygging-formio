@@ -54,13 +54,12 @@ export default class Datepicker extends BaseComponent {
   renderReact(element) {
     return element.render(
       <ReactDatepicker
-        id={this.component?.id}
-        inputId={`${this.component?.id}-${this.component?.key}`}
-        isRequired={this.component?.validate?.required}
-        value={this.dataForSetting || this.dataValue} // The starting value of the component.
+        id={this.getId()}
+        isRequired={this.getIsRequired()}
+        value={this.getDefaultValue()} // The starting value of the component.
         onChange={this.updateValue} // The onChange event to call when the value changes.
-        locale={this.root.i18next.language}
-        readOnly={this.options.readOnly}
+        locale={this.getLocale()}
+        readOnly={this.getReadOnly()}
         error={this.getError()}
         inputRef={(ref) => this.setReactInstance(ref)}
       />,
