@@ -1,6 +1,6 @@
 // @ts-ignore
 import FormioUtils from 'formiojs/utils';
-import { Attachment, Component, FormsResponseForm, NavFormType, Panel, Submission } from '../form';
+import { Attachment, Component, FormsResponseForm, NavFormType, Panel, PrefillData, Submission } from '../form';
 import { formSummaryUtil } from '../index';
 import { camelCase } from './stringUtils';
 
@@ -106,6 +106,22 @@ const findByNavIdOrKey = (ids: ComponentIdType, components: Component[]): Compon
     comp = findByKey(ids.key, components);
   }
   return comp;
+};
+
+const findComponentsByProperty = (property: string, form: NavFormType): Component[] => {
+  return flattenComponents(form.components).filter((component) => !!component[property]);
+};
+
+const prefillForm = (navForm: NavFormType, prefillData: PrefillData) => {
+  const formCopy = JSON.parse(JSON.stringify(navForm));
+
+  FormioUtils.eachComponent(formCopy.components, (component: Component) => {
+    if (component.prefillKey && !component.defaultValue && prefillData[component.prefillKey]) {
+      component.defaultValue = prefillData[component.prefillKey];
+    }
+  });
+
+  return formCopy;
 };
 
 export type DependencyType = 'conditional' | 'validation' | 'calculateValue';
@@ -262,6 +278,7 @@ const navFormUtils = {
   findByKey,
   findByNavId,
   findByNavIdOrKey,
+  findComponentsByProperty,
   enrichComponentsWithNavIds,
   getActivePanelsFromForm,
   getAttachmentPanel,
@@ -271,5 +288,6 @@ const navFormUtils = {
   isPaper,
   isAttachment,
   isNone,
+  prefillForm,
 };
 export default navFormUtils;

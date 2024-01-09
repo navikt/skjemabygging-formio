@@ -1,5 +1,5 @@
-import { navFormUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { useEffect, useRef, useState } from 'react';
+import { FyllutState, NavFormType, navFormUtils, Submission, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import ConfirmationModal from '../../components/modal/confirmation/ConfirmationModal';
 import NavForm from '../../components/nav-form/NavForm';
@@ -14,7 +14,14 @@ import urlUtils from '../../util/url/url';
 
 type ModalType = 'save' | 'delete' | 'discard';
 
-export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => {
+interface FillInFormPageProps {
+  form: NavFormType;
+  submission?: Submission | { fyllutState: FyllutState };
+  setSubmission: Dispatch<SetStateAction<Submission | { fyllutState: FyllutState } | undefined>>;
+  formUrl: string;
+}
+
+export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: FillInFormPageProps) => {
   const navigate = useNavigate();
   const {
     loggSkjemaApnet,
@@ -25,7 +32,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
     loggNavigering,
   } = useAmplitude();
   const { featureToggles, submissionMethod } = useAppConfig();
-  const [formForRendering, setFormForRendering] = useState();
+  const [formForRendering, setFormForRendering] = useState<NavFormType>();
   const {
     startMellomlagring,
     updateMellomlagring,
@@ -53,7 +60,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
 
   useEffect(() => {
     if (isMellomlagringEnabled) {
-      startMellomlagring(submission);
+      startMellomlagring(submission as Submission);
     }
   }, [submission, startMellomlagring, isMellomlagringEnabled]);
 
@@ -212,7 +219,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
     switch (showModal) {
       case 'save':
         logNavigation(translate(TEXTS.grensesnitt.navigation.saveDraft));
-        await updateMellomlagring(submission);
+        await updateMellomlagring(submission as Submission);
         break;
       case 'delete':
         logNavigation(translate(TEXTS.grensesnitt.navigation.saveDraft));

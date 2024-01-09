@@ -35,6 +35,7 @@ const sendInnConfig: SendInnConfig = {
     leggTilVedlegg: '/fyllUt/v1/leggTilVedlegg', //Deprecated
     soknad: '/fyllUt/v1/soknad',
     utfyltSoknad: '/fyllUt/v1/utfyltSoknad',
+    prefillData: '/fyllUt/v1/prefill-data',
   },
 };
 

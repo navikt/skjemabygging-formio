@@ -26,6 +26,8 @@ declare global {
 
       defaultInterceptsMellomlagring(): Chainable<JQuery<HTMLElement>>;
 
+      defaultInterceptsPrefillData(): Chainable<JQuery<HTMLElement>>;
+
       /**
        * Configures the Mocks Server administration API client
        */
