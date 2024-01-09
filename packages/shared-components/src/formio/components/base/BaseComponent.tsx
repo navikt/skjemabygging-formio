@@ -65,7 +65,7 @@ class BaseComponent extends FormioReactComponent {
    */
   getDescription(): ReactNode {
     return this.component?.description ? (
-      <div dangerouslySetInnerHTML={{ __html: this.component?.description }}></div>
+      <div dangerouslySetInnerHTML={{ __html: this.t(this.component?.description) }}></div>
     ) : undefined;
   }
 
