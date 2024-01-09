@@ -11,9 +11,9 @@ const datepickerForm = () => {
   //prettier-ignore
   return createTabs(
     display([
-      editFormDisplay.showYearPicker(),
       editFormDisplay.label(),
-      editFormDisplay.description()
+      editFormDisplay.description(),
+      editFormDisplay.showYearPicker(),
     ]),
     validation([
       editFormValidation.required(),
@@ -24,11 +24,11 @@ const datepickerForm = () => {
       editFormValidation.customError(),
     ]),
     api([
-      editFormApi.key()
+      editFormApi.key(),
     ]),
     conditional([
       editFormConditional.simpleConditional(),
-      editFormConditional.advancedConditional()
+      editFormConditional.advancedConditional(),
     ]),
   );
 };
