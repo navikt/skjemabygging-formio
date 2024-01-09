@@ -1,7 +1,7 @@
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import moment from 'moment/moment';
 
-export const validateBackwardsCompatible = (
+const validateBackwardsCompatible = (
   input,
   submissionData,
   beforeDateInputKey,
@@ -42,7 +42,7 @@ export const validateBackwardsCompatible = (
   return true;
 };
 
-export const validate = (input, submissionData, component, row, translate) => {
+const validate = (input, submissionData, component, row, translate) => {
   if (!input) {
     return true;
   }
@@ -67,7 +67,7 @@ export const validate = (input, submissionData, component, row, translate) => {
   return result;
 };
 
-export const validateEarliestAndLatestDate = (
+const validateEarliestAndLatestDate = (
   earliestFromToday: number | string = '',
   latestFromToday: number | string = '',
   inputDate,
@@ -79,7 +79,7 @@ export const validateEarliestAndLatestDate = (
 };
 
 const validateEarliestAndLatest = (earliestAllowedDate, latestAllowedDate, inputDate, translate) => {
-  const getText = useTexts(translate);
+  const getText = createTextGetter(translate);
   const earliestAllowedDateAsString = earliestAllowedDate ? earliestAllowedDate.format('DD.MM.YYYY') : '';
   const latestAllowedDateAsString = latestAllowedDate ? latestAllowedDate.format('DD.MM.YYYY') : '';
   if (earliestAllowedDate && latestAllowedDate) {
@@ -105,8 +105,8 @@ const validateEarliestAndLatest = (earliestAllowedDate, latestAllowedDate, input
   return true;
 };
 
-export const validateToAndFromDate = (beforeDate, inputDate, mayBeEqual, translate) => {
-  const getText = useTexts(translate);
+const validateToAndFromDate = (beforeDate, inputDate, mayBeEqual, translate) => {
+  const getText = createTextGetter(translate);
   if (isCorrectOrder(beforeDate, inputDate, mayBeEqual)) {
     return true;
   }
@@ -116,7 +116,7 @@ export const validateToAndFromDate = (beforeDate, inputDate, mayBeEqual, transla
     : getText('dateAfterFromDate', { fromDate: beforeDateAsString });
 };
 
-const useTexts =
+const createTextGetter =
   (translate = (text: string, _params?: Record<string, string | number>): string => text) =>
   (key: string, params?: Record<string, string | number>) => {
     if (params) {
@@ -128,3 +128,5 @@ const useTexts =
 const isCorrectOrder = (beforeDate, afterDate, mayBeEqual = false) => {
   return mayBeEqual ? beforeDate.isSameOrBefore(afterDate, 'd') : beforeDate.isBefore(afterDate, 'd');
 };
+
+export { validate, validateBackwardsCompatible, validateEarliestAndLatestDate, validateToAndFromDate };
