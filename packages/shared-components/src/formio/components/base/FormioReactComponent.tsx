@@ -44,7 +44,6 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
   }
 
   setValue(value: any) {
-    const rerender = JSON.stringify(value) !== JSON.stringify(this.dataForSetting);
     if (this.reactInstance) {
       this.setValueOnReactInstance(value);
       this.shouldSetValue = false;
@@ -55,6 +54,10 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
     const newValue = value === undefined || value === null ? this.getValue() : value;
     const changed = JSON.stringify(newValue) !== JSON.stringify(this.dataValue);
     this.dataValue = Array.isArray(newValue) ? [...newValue] : newValue;
+
+    if (changed) {
+      this.rerender();
+    }
   }
 
   /**
