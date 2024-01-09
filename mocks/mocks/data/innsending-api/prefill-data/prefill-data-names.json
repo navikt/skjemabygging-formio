@@ -1,0 +1,46 @@
+{
+  "brukerId": "19876898104",
+  "skjemanr": "testPrefillData",
+  "tittel": "Testing av preutfylling",
+  "tema": "ERS",
+  "spraak": "nb",
+  "hoveddokument": {
+    "vedleggsnr": "testPrefillData",
+    "tittel": "Testing av preutfylling",
+    "label": "Testing av preutfylling",
+    "pakrevd": true,
+    "beskrivelse": null,
+    "mimetype": "application/pdf",
+    "document": null,
+    "propertyNavn": null,
+    "formioId": null
+  },
+  "hoveddokumentVariant": {
+    "vedleggsnr": "testPrefillData",
+    "tittel": "Testing av preutfylling",
+    "label": "Testing av preutfylling",
+    "pakrevd": false,
+    "beskrivelse": null,
+    "mimetype": "application/json",
+    "document": {
+      "language": "nb-NO",
+      "data": {
+        "data": {
+          "fornavn": "John",
+          "etternavn": "Doe",
+          "fornavn1": "John",
+          "etternavn1": "Cena"
+        }
+      }
+    },
+    "propertyNavn": null,
+    "formioId": null
+  },
+  "innsendingsId": "d2f41ebc-ba98-4fc5-a195-29b098bf50a7",
+  "status": "Opprettet",
+  "vedleggsListe": [],
+  "kanLasteOppAnnet": true,
+  "fristForEttersendelse": 14,
+  "endretDato": "2023-08-30T12:33:30.399543+02:00",
+  "skalSlettesDato": "2024-01-10"
+}

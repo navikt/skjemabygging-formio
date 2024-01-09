@@ -6,6 +6,7 @@ import deprecatedPublishForm from './deprecated-publish-form';
 import deprecatedUnpublishForm from './deprecated-unpublish-form';
 import enhetsliste from './enhetsliste';
 import formDiff from './formDiff';
+import formsRouter from './forms';
 import apiErrorHandler from './helpers/apiErrorHandler';
 import authorizedPublisher from './helpers/authorizedPublisher';
 import log from './log';
@@ -38,6 +39,7 @@ apiRouter.get('/migrate', migrate);
 apiRouter.get('/migrate/preview/:formPath', migratePreview);
 apiRouter.post('/migrate/update', authorizedPublisher, migrateUpdate);
 apiRouter.get('/form/:formPath/diff', formDiff);
+apiRouter.use('/forms', formsRouter);
 apiRouter.post('/log/:level', rateLimiter(60000, 60), log);
 
 apiRouter.use(apiErrorHandler);

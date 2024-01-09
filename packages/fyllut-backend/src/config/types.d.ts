@@ -18,6 +18,7 @@ export type SendInnConfig = {
     leggTilVedlegg: string;
     soknad: string;
     utfyltSoknad: string;
+    prefillData: string;
   };
 };
 

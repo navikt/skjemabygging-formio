@@ -20,6 +20,7 @@ import pdl from './pdl';
 import sendInn from './send-inn';
 import sendInnSoknad from './send-inn-soknad';
 import sendInnUtfyltSoknad from './send-inn-utfylt-soknad';
+import prefillData from './send-inn/prefill-data/send-inn-prefill-data';
 import status from './status';
 import translations from './translations.js';
 
@@ -51,6 +52,7 @@ apiRouter.post('/pdf/convert', azureSkjemabyggingProxy, exstream.post);
 apiRouter.get('/common-codes/currencies', azureSkjemabyggingProxy, commonCodes.getCurrencies);
 apiRouter.post('/log/:level', rateLimiter(60000, 60), log.post);
 apiRouter.get('/health/status', status.get);
+apiRouter.get('/send-inn/prefill-data', tokenxSendInn, prefillData.get);
 
 if (featureToggles.enablePdl) {
   apiRouter.get('/pdl/person/:id', tokenxPdl, pdl.person);

@@ -1,7 +1,7 @@
 describe('Diff', () => {
   beforeEach(() => {
     cy.intercept('GET', '/api/config', { fixture: 'config.json' }).as('getConfig');
-    cy.intercept('GET', '/form?*', { fixture: 'form123456.json' }).as('getForm');
+    cy.intercept('GET', '/api/forms/dif123456', { fixture: 'form123456.json' }).as('getForm');
     cy.intercept('GET', '/api/published-forms/dif123456', { fixture: 'form123456-published.json' }).as(
       'getPublishedForm',
     );

@@ -5,17 +5,17 @@ describe('Translations', () => {
 
   describe('Form translations', () => {
     beforeEach(() => {
-      cy.intercept('GET', '/form?*', { fixture: 'form123456.json' }).as('getForm');
-      cy.intercept('GET', '/api/published-forms/dif123456', { statusCode: 404 }).as('getPublishedForm');
+      cy.intercept('GET', '/api/forms/tst123456', { fixture: 'form123456.json' }).as('getForm');
+      cy.intercept('GET', '/api/published-forms/tst123456', { statusCode: 404 }).as('getPublishedForm');
       cy.intercept('GET', '/api/countries?*', { fixture: 'getCountriesLangNb.json' }).as('getCountriesLangNb');
-
-      cy.visit('/forms/dif123456');
-      cy.wait('@getForm');
     });
 
     describe('when loading of translations succeeds', () => {
       beforeEach(() => {
         cy.intercept('GET', /language\/submission?.*/, { fixture: 'globalTranslations.json' }).as('getTranslations');
+
+        cy.visit('/forms/tst123456');
+        cy.wait('@getForm');
         cy.wait('@getTranslations', { timeout: 10000 });
       });
 
@@ -33,25 +33,30 @@ describe('Translations', () => {
         cy.intercept('GET', /language\/submission?.*/, { statusCode: 500, body: 'Failed to load translations' }).as(
           'getTranslationsFailure',
         );
+
+        cy.visit('/forms/tst123456');
+        cy.wait('@getForm');
         cy.wait('@getTranslationsFailure', { timeout: 10000 });
       });
 
       it('shows error message', () => {
         cy.findByRole('link', { name: 'Språk' }).click();
-        cy.findByText('Henting av oversettelser for dette skjemaet feilet. Last siden på nytt.').should('be.visible');
+        cy.findAllByText('Henting av oversettelser for dette skjemaet feilet. Last siden på nytt.').should(
+          'be.visible',
+        );
       });
     });
   });
 
   describe('Global translations', () => {
     beforeEach(() => {
-      cy.intercept('GET', '/form?*', { body: [] }).as('getForms');
-      cy.visit('/');
+      cy.intercept('GET', /\/api\/forms\\?.+/, { body: [] }).as('getForms');
     });
 
     describe('when loading of global translations succeeds', () => {
       beforeEach(() => {
         cy.intercept('GET', /language\/submission?.*/, { fixture: 'globalTranslations.json' }).as('getTranslations');
+        cy.visit('/');
       });
 
       it('shows translated texts for chosen language', () => {
@@ -71,6 +76,7 @@ describe('Translations', () => {
         cy.intercept('GET', /language\/submission?.*/, { statusCode: 500, body: 'Failed to load translations' }).as(
           'getTranslationsFailure',
         );
+        cy.visit('/');
       });
 
       it('shows error message', () => {
@@ -78,7 +84,7 @@ describe('Translations', () => {
         cy.findByRole('link', { name: 'Globale Oversettelser' }).click();
         cy.findByRole('heading', { name: 'Norsk nynorsk' }).should('exist');
         cy.wait('@getTranslationsFailure');
-        cy.findByText('Henting av globale oversettelser feilet. Last siden på nytt.').should('be.visible');
+        cy.findAllByText('Henting av globale oversettelser feilet. Last siden på nytt.').should('be.visible');
       });
     });
   });

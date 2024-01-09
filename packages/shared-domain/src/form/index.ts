@@ -2,6 +2,7 @@ import { Enhetstype } from '../enhet';
 
 export type DisplayType = 'wizard' | 'form';
 export type InnsendingType = 'PAPIR_OG_DIGITAL' | 'KUN_PAPIR' | 'KUN_DIGITAL' | 'INGEN';
+export type SubmissionMethod = 'paper' | 'digital';
 
 export enum DeclarationType {
   none = 'none',
@@ -32,9 +33,18 @@ export interface NewFormSignatureType {
   key: string;
 }
 
+export type PrefillData = {
+  sokerFornavn?: string;
+  sokerEtternavn?: string;
+  sokerTelefonnummer?: string;
+  sokerKjonn?: string;
+};
+
 export const PrefillType = {
   sokerFornavn: 'Søkers fornavn',
   sokerEtternavn: 'Søkers etternavn',
+  sokerTelefonnummer: 'Søkers telefonnummer',
+  sokerKjonn: 'Søkers kjønn',
 } as const;
 
 export type PrefillKey = keyof typeof PrefillType;
@@ -103,7 +113,7 @@ export interface Component {
   components?: Component[];
   otherDocumentation?: boolean;
   isAttachmentPanel?: boolean;
-  prefill?: PrefillKey;
+  prefillKey?: PrefillKey;
   values?: ComponentValue[];
   hideLabel?: boolean;
   description?: string;

@@ -7,6 +7,7 @@ const formCustomCompsDatagrid = require('../data/formio-api/custom-components-da
 const formNavdatepicker = require('../data/formio-api/navdatepicker.json');
 const formSubmissionMethod = require('../data/formio-api/submission-method.json');
 const formTestMellomlagring = require('../data/formio-api/test-mellomlagring.json');
+const formTestPrefillData = require('../data/formio-api/prefill-data.json');
 const translationsCypress101 = require('../data/formio-api/cypress101-translation.json');
 const translationsConditionalXmas = require('../data/formio-api/conditionalxmas-translation.json');
 const translationsCustomComps = require('../data/formio-api/custom-components-translations.json');
@@ -23,6 +24,7 @@ const allForms = [
   { form: formNavdatepicker, translations: undefined },
   { form: formSubmissionMethod, translations: translationsSubmissionMethod },
   { form: formTestMellomlagring, translations: undefined },
+  { form: formTestPrefillData, translations: undefined },
 ];
 
 const findTestdata = (formPath) => allForms.find((testdata) => testdata.form.path === formPath);

@@ -1,5 +1,5 @@
 import { LoadingComponent, useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
-import { navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { NavFormType, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import httpFyllut from '../util/httpFyllut';
@@ -10,14 +10,14 @@ import SubmissionMethodNotAllowed from './SubmissionMethodNotAllowed';
 export const FormPageWrapper = () => {
   const { formPath } = useParams();
   const [status, setStatus] = useState('LOADING');
-  const [form, setForm] = useState();
+  const [form, setForm] = useState<NavFormType>();
   const { submissionMethod } = useAppConfig();
 
   useEffect(() => {
     httpFyllut
       .get(`/fyllut/api/forms/${formPath}`)
       .then((form) => {
-        setForm(form);
+        setForm(form as NavFormType);
         setStatus('FINISHED LOADING');
       })
       .catch((err) => {

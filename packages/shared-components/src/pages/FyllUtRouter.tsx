@@ -5,6 +5,7 @@ import { FormTitle } from '../components/form/form-title/FormTitle';
 import { SubmissionWrapper } from '../components/summary/submission-wrapper/SubmissionWrapper';
 import { useAppConfig } from '../context/config/configContext';
 import { LanguageSelector, LanguagesProvider } from '../context/languages';
+import { PrefillDataProvider } from '../context/prefill-data/PrefillDataContext';
 import { SendInnProvider } from '../context/sendInn/sendInnContext';
 import makeStyles from '../util/styles/jss/jss';
 import ActiveTasksPage from './active-tasks/ActiveTasksPage';
@@ -42,78 +43,80 @@ const FyllUtRouter = ({ form, translations }) => {
 
   return (
     <LanguagesProvider translations={translations}>
-      <SendInnProvider
-        form={form}
-        formUrl={formBaseUrl}
-        translations={translations}
-        updateSubmission={(submission) => {
-          setSubmission(submission);
-        }}
-        onFyllutStateChange={onFyllutStateChange}
-      >
-        <FormTitle form={form} />
-        <div className={styles.container}>
-          <div className="fyllut-layout">
-            <div className="main-col"></div>
-            <div className="right-col">{featureToggles!.enableTranslations && <LanguageSelector />}</div>
+      <PrefillDataProvider form={form}>
+        <SendInnProvider
+          form={form}
+          formUrl={formBaseUrl}
+          translations={translations}
+          updateSubmission={(submission) => {
+            setSubmission(submission);
+          }}
+          onFyllutStateChange={onFyllutStateChange}
+        >
+          <FormTitle form={form} />
+          <div className={styles.container}>
+            <div className="fyllut-layout">
+              <div className="main-col"></div>
+              <div className="right-col">{featureToggles!.enableTranslations && <LanguageSelector />}</div>
+            </div>
+            <Routes>
+              <Route path="/" element={<IntroPage form={form} formUrl={formBaseUrl} />} />
+              <Route
+                path={'/oppsummering'}
+                element={
+                  <SubmissionWrapper submission={submission} url={formBaseUrl}>
+                    {(submissionObject) => (
+                      <SummaryPage form={form} submission={submissionObject} formUrl={formBaseUrl} />
+                    )}
+                  </SubmissionWrapper>
+                }
+              />
+              <Route
+                path={'/send-i-posten'}
+                element={
+                  <SubmissionWrapper submission={submission} url={formBaseUrl}>
+                    {(submissionObject) => (
+                      <PrepareLetterPage
+                        form={form}
+                        submission={submissionObject}
+                        translations={translations}
+                        formUrl={formBaseUrl}
+                      />
+                    )}
+                  </SubmissionWrapper>
+                }
+              />
+              <Route
+                path={'/ingen-innsending'}
+                element={
+                  <SubmissionWrapper submission={submission} url={formBaseUrl}>
+                    {(submissionObject) => (
+                      <PrepareIngenInnsendingPage
+                        form={form}
+                        submission={submissionObject}
+                        translations={translations}
+                        formUrl={formBaseUrl}
+                      />
+                    )}
+                  </SubmissionWrapper>
+                }
+              />
+              <Route path={'/paabegynt'} element={<ActiveTasksPage form={form} formUrl={formBaseUrl} />} />
+              <Route
+                path={'/:panelSlug'}
+                element={
+                  <FillInFormPage
+                    form={form}
+                    submission={submission}
+                    setSubmission={setSubmission}
+                    formUrl={formBaseUrl}
+                  />
+                }
+              />
+            </Routes>
           </div>
-          <Routes>
-            <Route path="/" element={<IntroPage form={form} formUrl={formBaseUrl} />} />
-            <Route
-              path={'/oppsummering'}
-              element={
-                <SubmissionWrapper submission={submission} url={formBaseUrl}>
-                  {(submissionObject) => (
-                    <SummaryPage form={form} submission={submissionObject} formUrl={formBaseUrl} />
-                  )}
-                </SubmissionWrapper>
-              }
-            />
-            <Route
-              path={'/send-i-posten'}
-              element={
-                <SubmissionWrapper submission={submission} url={formBaseUrl}>
-                  {(submissionObject) => (
-                    <PrepareLetterPage
-                      form={form}
-                      submission={submissionObject}
-                      translations={translations}
-                      formUrl={formBaseUrl}
-                    />
-                  )}
-                </SubmissionWrapper>
-              }
-            />
-            <Route
-              path={'/ingen-innsending'}
-              element={
-                <SubmissionWrapper submission={submission} url={formBaseUrl}>
-                  {(submissionObject) => (
-                    <PrepareIngenInnsendingPage
-                      form={form}
-                      submission={submissionObject}
-                      translations={translations}
-                      formUrl={formBaseUrl}
-                    />
-                  )}
-                </SubmissionWrapper>
-              }
-            />
-            <Route path={'/paabegynt'} element={<ActiveTasksPage form={form} formUrl={formBaseUrl} />} />
-            <Route
-              path={'/:panelSlug'}
-              element={
-                <FillInFormPage
-                  form={form}
-                  submission={submission}
-                  setSubmission={setSubmission}
-                  formUrl={formBaseUrl}
-                />
-              }
-            />
-          </Routes>
-        </div>
-      </SendInnProvider>
+        </SendInnProvider>
+      </PrefillDataProvider>
     </LanguagesProvider>
   );
 };
