@@ -79,7 +79,7 @@ const NewFormPage: React.FC<Props> = ({ formio }): React.ReactElement => {
         ettersending: 'PAPIR_OG_DIGITAL',
         signatures: [{ label: '', description: '', key: uuidv4() }],
       },
-      components: defaultFormFields() as unknown as Component[],
+      components: defaultFormFields() as Component[],
     },
   });
 
