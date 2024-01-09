@@ -47,12 +47,17 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
     if (this.reactInstance) {
       this.setValueOnReactInstance(value);
       this.shouldSetValue = false;
-    } else {
+    } else if (value) {
       this.shouldSetValue = true;
       this.dataForSetting = value;
     }
     const newValue = value === undefined || value === null ? this.getValue() : value;
+    const changed = JSON.stringify(newValue) !== JSON.stringify(this.dataValue);
     this.dataValue = Array.isArray(newValue) ? [...newValue] : newValue;
+
+    if (changed) {
+      this.rerender();
+    }
   }
 
   /**

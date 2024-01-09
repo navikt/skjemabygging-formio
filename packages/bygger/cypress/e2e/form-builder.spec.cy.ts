@@ -4,73 +4,141 @@ import { expect } from 'chai';
 describe('Form Builder', () => {
   beforeEach(() => {
     cy.intercept('GET', '/api/config', { fixture: 'config.json' }).as('getConfig');
-    cy.intercept('GET', '/api/forms/tst123456', { fixture: 'form123456.json' }).as('getForm');
-    cy.intercept('GET', '/api/published-forms/tst123456', { statusCode: 404 }).as('getPublishedForm');
     cy.intercept('GET', /language\/submission?.*/, { fixture: 'globalTranslations.json' }).as('getTranslations');
     cy.intercept('GET', '/api/countries*', { fixture: 'getCountriesLangNb.json' }).as('getCountriesLangNb');
-
-    cy.visit('forms/tst123456');
-    cy.wait('@getConfig');
-    cy.wait('@getForm');
-    cy.wait('@getPublishedForm');
-    cy.wait('@getCountriesLangNb');
   });
 
-  it('Trims properties "vedleggskode" and "vedleggstittel" before save', () => {
-    cy.intercept('PUT', '/api/forms/tst123456', (req) => {
-      const vedlegg = navFormUtils
-        .flattenComponents(req.body.components)
-        .find((comp) => comp.key === 'annenDokumentasjon');
-      expect(vedlegg.properties.vedleggskode).to.equal('T2');
-      expect(vedlegg.properties.vedleggstittel).to.equal('Last opp annen dokumentasjon');
-      req.reply(200, req.body);
-    }).as('putForm');
+  describe('Diff form', () => {
+    beforeEach(() => {
+      cy.intercept('GET', '/api/forms/tst123456', { fixture: 'form123456.json' }).as('getForm');
+      cy.intercept('GET', '/api/published-forms/tst123456', { statusCode: 404 }).as('getPublishedForm');
 
-    cy.findByRole('link', { name: 'Vedlegg' }).click();
-    cy.get('[title="Rediger"]').spread((_editPanelButton, editAnnenDokumentasjonButton) =>
-      editAnnenDokumentasjonButton.click({ force: true }),
-    );
-    cy.findByRole('tab', { name: 'API' }).click();
-    cy.findByDisplayValue('N6').type('{selectall} T2   ');
-    cy.findByDisplayValue('Annet').type('{selectall}  Last opp annen dokumentasjon  ');
-    cy.get('[data-testid="editorSaveButton"]').click();
-    cy.findByRole('button', { name: 'Lagre' }).click();
-    cy.wait('@putForm');
-  });
+      cy.visit('forms/tst123456');
+      cy.wait('@getConfig');
+      cy.wait('@getForm');
+      cy.wait('@getPublishedForm');
+      cy.wait('@getCountriesLangNb');
+    });
 
-  describe('Textfield', () => {
-    it('should save changes made in edit modal', () => {
+    it('Trims properties "vedleggskode" and "vedleggstittel" before save', () => {
       cy.intercept('PUT', '/api/forms/tst123456', (req) => {
-        const fodselsdato = navFormUtils
+        const vedlegg = navFormUtils
           .flattenComponents(req.body.components)
-          .find((comp) => comp.key === 'fornavnSoker');
-        expect(fodselsdato.label).to.equal('Fornavn');
+          .find((comp) => comp.key === 'annenDokumentasjon');
+        expect(vedlegg.properties.vedleggskode).to.equal('T2');
+        expect(vedlegg.properties.vedleggstittel).to.equal('Last opp annen dokumentasjon');
         req.reply(200, req.body);
       }).as('putForm');
 
-      cy.openEditComponentModal(cy.findByRole('textbox', { name: 'Fornavn2' }));
-      cy.findByDisplayValue('Fornavn2').type('{selectall}Fornavn');
+      cy.findByRole('link', { name: 'Vedlegg' }).click();
+      cy.get('[title="Rediger"]').spread((_editPanelButton, editAnnenDokumentasjonButton) =>
+        editAnnenDokumentasjonButton.click({ force: true }),
+      );
+      cy.findByRole('tab', { name: 'API' }).click();
+      cy.findByDisplayValue('N6').type('{selectall} T2   ');
+      cy.findByDisplayValue('Annet').type('{selectall}  Last opp annen dokumentasjon  ');
       cy.get('[data-testid="editorSaveButton"]').click();
       cy.findByRole('button', { name: 'Lagre' }).click();
       cy.wait('@putForm');
     });
+
+    describe('Textfield', () => {
+      it('should save changes made in edit modal', () => {
+        cy.intercept('PUT', '/api/forms/tst123456', (req) => {
+          const fodselsdato = navFormUtils
+            .flattenComponents(req.body.components)
+            .find((comp) => comp.key === 'fornavnSoker');
+          expect(fodselsdato.label).to.equal('Fornavn');
+          req.reply(200, req.body);
+        }).as('putForm');
+
+        cy.openEditComponentModal(cy.findByRole('textbox', { name: 'Fornavn2' }));
+        cy.findByDisplayValue('Fornavn2').type('{selectall}Fornavn');
+        cy.get('[data-testid="editorSaveButton"]').click();
+        cy.findByRole('button', { name: 'Lagre' }).click();
+        cy.wait('@putForm');
+      });
+    });
+
+    describe('Nav datepicker', () => {
+      it('should save changes made in edit modal', () => {
+        cy.intercept('PUT', '/api/forms/tst123456', (req) => {
+          const fodselsdato = navFormUtils
+            .flattenComponents(req.body.components)
+            .find((comp) => comp.key === 'fodselsdatoDdMmAaaaSoker');
+          expect(fodselsdato.label).to.equal('Din fødselsdato');
+          req.reply(200, req.body);
+        }).as('putForm');
+
+        cy.openEditComponentModal(cy.findByRole('textbox', { name: 'Din fødselsdato (dd.mm.åååå)' }));
+        cy.findByDisplayValue('Din fødselsdato (dd.mm.åååå)').type('{selectall}Din fødselsdato');
+        cy.get('[data-testid="editorSaveButton"]').click();
+        cy.findByRole('button', { name: 'Lagre' }).click();
+        cy.wait('@putForm');
+      });
+    });
   });
 
-  describe('Nav datepicker', () => {
-    it('should save changes made in edit modal', () => {
-      cy.intercept('PUT', '/api/forms/tst123456', (req) => {
-        const fodselsdato = navFormUtils
-          .flattenComponents(req.body.components)
-          .find((comp) => comp.key === 'fodselsdatoDdMmAaaaSoker');
-        expect(fodselsdato.label).to.equal('Din fødselsdato');
-        req.reply(200, req.body);
-      }).as('putForm');
+  describe('Multi values form', () => {
+    const val = 'first';
+    const valAlt = 'firstAlternative';
+    const val1 = 'second';
+    const val2 = 'third';
+    const labelName = 'Ledetekst';
+    const valueName = 'Dataverdi (valgfritt)';
+    const addAnotherName = 'Legg til';
 
-      cy.openEditComponentModal(cy.findByRole('textbox', { name: 'Din fødselsdato (dd.mm.åååå)' }));
-      cy.findByDisplayValue('Din fødselsdato (dd.mm.åååå)').type('{selectall}Din fødselsdato');
-      cy.get('[data-testid="editorSaveButton"]').click();
-      cy.findByRole('button', { name: 'Lagre' }).click();
-      cy.wait('@putForm');
+    beforeEach(() => {
+      cy.intercept('GET', '/api/forms/multi', { fixture: 'formMultiValues.json' }).as('getForm');
+      cy.intercept('GET', '/api/published-forms/multi', { statusCode: 404 }).as('getPublishedForm');
+
+      cy.visit('forms/multi');
+      cy.wait('@getConfig');
+      cy.wait('@getForm');
+      cy.wait('@getPublishedForm');
+      cy.wait('@getCountriesLangNb');
     });
+
+    it('Select box values', () => {
+      cy.openEditComponentModal(cy.findByRole('combobox', { name: 'Nedtrekksmeny' }));
+      cy.findByRole('tab', { name: 'Data' }).click();
+      cy.findByRole('textbox', { name: labelName }).type(val);
+      cy.findByRole('textbox', { name: valueName }).type(`{selectall}${valAlt}`);
+      cy.findByRole('button', { name: addAnotherName }).click();
+      cy.findAllByRole('textbox', { name: labelName }).eq(1).type(val1);
+      cy.findByRole('button', { name: addAnotherName }).click();
+      cy.findAllByRole('textbox', { name: labelName }).eq(2).type(val2);
+
+      cy.findAllByRole('textbox', { name: labelName }).eq(0).should('have.value', val);
+      cy.findAllByRole('textbox', { name: valueName }).eq(0).should('have.value', valAlt);
+      cy.findAllByRole('textbox', { name: labelName }).eq(1).should('have.value', val1);
+      cy.findAllByRole('textbox', { name: labelName }).eq(2).should('have.value', val2);
+
+      cy.get('[data-testid="editorSaveButton"]').click();
+    });
+
+    it('Checkbox group values', () => {
+      cy.openEditComponentModal(cy.findByRole('group', { name: 'Flervalg' }));
+      cy.findByRole('tab', { name: 'Data' }).click();
+      cy.findByRole('textbox', { name: labelName }).type(val);
+      cy.findByRole('textbox', { name: valueName }).type(`{selectall}${valAlt}`);
+      cy.findByRole('button', { name: addAnotherName }).click();
+      cy.findAllByRole('textbox', { name: labelName }).eq(1).type(val1);
+      cy.findByRole('button', { name: addAnotherName }).click();
+      cy.findAllByRole('textbox', { name: labelName }).eq(2).type(val2);
+
+      cy.findAllByRole('textbox', { name: labelName }).eq(0).should('have.value', val);
+      cy.findAllByRole('textbox', { name: valueName }).eq(0).should('have.value', valAlt);
+      cy.findAllByRole('textbox', { name: labelName }).eq(1).should('have.value', val1);
+      cy.findAllByRole('textbox', { name: labelName }).eq(2).should('have.value', val2);
+
+      cy.get('[data-testid="editorSaveButton"]').click();
+
+      cy.findByRole('checkbox', { name: val }).should('exist');
+      cy.findByRole('checkbox', { name: val1 }).should('exist');
+      cy.findByRole('checkbox', { name: val2 }).should('exist');
+    });
+
+    // TODO: Add test for radio group when it gets the new data values.
   });
 });
