@@ -1,46 +1,40 @@
-import baseEditForm from 'formiojs/components/_classes/component/Component.form';
-import { advancedDescription } from '../../fields/advancedDescription.js';
+import editFormApi from '../../base/editForm/api';
+import editFormConditional from '../../base/editForm/conditional';
+import editFormData from '../../base/editForm/data';
+import editFormDisplay from '../../base/editForm/display';
+import editFormTabs from '../../base/editForm/editFormTabs';
+import editFormValidation from '../../base/editForm/validation';
 
 const accountNumberForm = () => {
-  return baseEditForm([
-    {
-      key: 'display',
-      components: [
-        ...advancedDescription,
-        { key: 'placeholder', ignore: true },
-        { key: 'tabindex', ignore: true },
-        { key: 'tooltip', ignore: true },
-        { key: 'customClass', ignore: true },
-        { key: 'hidden', ignore: true },
-        { key: 'hideLabel', ignore: true },
-        { key: 'autofocus', ignore: true },
-        { key: 'disabled', ignore: true },
-        { key: 'tableView', ignore: true },
-        { key: 'modalEdit', ignore: true },
-        { key: 'labelPosition', ignore: true },
-      ],
-    },
-    {
-      key: 'api',
-      components: [
-        { key: 'tags', ignore: true },
-        { key: 'properties', ignore: true },
-      ],
-    },
-    {
-      key: 'validation',
-      components: [
-        { key: 'validateOn', ignore: true },
-        { key: 'unique', ignore: true },
-        { key: 'errorLabel', ignore: true },
-        { key: 'errors', ignore: true },
-      ],
-    },
-    { key: 'data', ignore: true },
-    { key: 'logic', ignore: true },
-    { key: 'layout', ignore: true },
-    { key: 'addons', ignore: true },
-  ]);
+  const { api, conditional, createTabs, data, display, validation } = editFormTabs;
+
+  // prettier-ignore
+  return createTabs(
+    display([
+      editFormDisplay.label(),
+      editFormDisplay.fieldSize(),
+      editFormDisplay.description(),
+      editFormDisplay.additionalDescription(),
+      editFormDisplay.autoComplete(),
+    ]),
+    data([
+      editFormData.clearOnHide(),
+    ]),
+    validation([
+      editFormValidation.required(),
+      editFormValidation.minLength(),
+      editFormValidation.maxLength(),
+      editFormValidation.customValidation(),
+      editFormValidation.customError(),
+    ]),
+    api([
+      editFormApi.key(),
+    ]),
+    conditional([
+      editFormConditional.simpleConditional(),
+      editFormConditional.advancedConditional(),
+    ]),
+  );
 };
 
 export default accountNumberForm;
