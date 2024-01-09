@@ -5,7 +5,7 @@ import editFormTabs from '../../base/editForm/editFormTabs';
 import editFormValidation from '../../base/editForm/validation';
 import editFormDateValidation from '../../base/editForm/validation/date';
 
-const datepickerForm = () => {
+const datePickerForm = () => {
   const { api, conditional, createTabs, display, validation } = editFormTabs;
 
   //prettier-ignore
@@ -33,4 +33,4 @@ const datepickerForm = () => {
   );
 };
 
-export default datepickerForm;
+export default datePickerForm;

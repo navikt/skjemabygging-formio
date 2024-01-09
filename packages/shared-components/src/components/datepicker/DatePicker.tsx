@@ -5,7 +5,7 @@ import { useEffect } from 'react';
 
 const SUBMISSION_DATE_FORMAT = 'YYYY-MM-DD';
 
-const Datepicker = ({ id, isRequired, onChange, value, locale, readOnly, error, inputRef }) => {
+const DatePicker = ({ id, isRequired, onChange, value, locale, readOnly, error, inputRef }) => {
   // @ts-ignore
   const { datepickerProps, inputProps, setSelected, reset }: DatePickerProps = useDatepicker({
     required: isRequired,
@@ -33,4 +33,4 @@ const Datepicker = ({ id, isRequired, onChange, value, locale, readOnly, error, 
   );
 };
 
-export default Datepicker;
+export default DatePicker;

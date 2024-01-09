@@ -1,11 +1,11 @@
-import ReactDatepicker from '../../../../components/datepicker/Datepicker';
+import ReactDatePicker from '../../../../components/datepicker/DatePicker';
 import FormioReactComponent from '../../FormioReactComponent';
 import BaseComponent from '../../base/BaseComponent';
-import datepickerBuilder from './Datepicker.builder';
-import datepickerForm from './Datepicker.form';
+import datePickerBuilder from './DatePicker.builder';
+import datePickerForm from './DatePicker.form';
 import { validate, validateBackwardsCompatible } from './utils/validation';
 
-export default class Datepicker extends BaseComponent {
+export default class DatePicker extends BaseComponent {
   isValid = this.errors.length === 0;
 
   static schema() {
@@ -17,11 +17,11 @@ export default class Datepicker extends BaseComponent {
   }
 
   static editForm() {
-    return datepickerForm();
+    return datePickerForm();
   }
 
   static get builderInfo() {
-    return datepickerBuilder();
+    return datePickerBuilder();
   }
 
   validateDatePicker(
@@ -53,7 +53,7 @@ export default class Datepicker extends BaseComponent {
 
   renderReact(element) {
     return element.render(
-      <ReactDatepicker
+      <ReactDatePicker
         id={this.getId()}
         isRequired={this.getIsRequired()}
         value={this.getDefaultValue()} // The starting value of the component.
