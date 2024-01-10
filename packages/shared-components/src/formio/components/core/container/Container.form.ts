@@ -1,45 +1,25 @@
-import ContainerEditForm from 'formiojs/components/container/Container.form';
-import ContainerDisplayEditForm from 'formiojs/components/container/editForm/Container.edit.display';
+import editFormApi from '../../base/editForm/api';
+import editFormConditional from '../../base/editForm/conditional';
+import editFormDisplay from '../../base/editForm/display';
+import editFormTabs from '../../base/editForm/editFormTabs';
 
 const containerForm = () => {
-  return ContainerEditForm([
-    {
-      label: 'Display',
-      key: 'display',
-      components: [
-        ...ContainerDisplayEditForm,
-        {
-          key: 'hidden',
-          ignore: true,
-        },
-        {
-          key: 'disabled',
-          ignore: true,
-        },
-        {
-          key: 'tableView',
-          ignore: true,
-        },
-        {
-          key: 'modalEdit',
-          ignore: true,
-        },
-        { key: 'tooltip', ignore: true },
-        { key: 'customClass', ignore: true },
-      ],
-    },
-    {
-      key: 'api',
-      components: [
-        { key: 'tags', ignore: true },
-        { key: 'properties', ignore: true },
-      ],
-    },
-    { key: 'data', ignore: true },
-    { key: 'logic', ignore: true },
-    { key: 'layout', ignore: true },
-    { key: 'validation', ignore: true },
-  ]);
+  const { api, conditional, createTabs, display } = editFormTabs;
+
+  // prettier-ignore
+  return createTabs(
+    display([
+      editFormDisplay.label(),
+      editFormDisplay.hideLabel(),
+    ]),
+    api([
+      editFormApi.key(),
+    ]),
+    conditional([
+      editFormConditional.simpleConditional(),
+      editFormConditional.advancedConditional(),
+    ]),
+  );
 };
 
 export default containerForm;
