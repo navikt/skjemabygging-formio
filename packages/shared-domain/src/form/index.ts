@@ -148,7 +148,7 @@ export interface Component {
   tooltip?: string;
   reorder?: boolean;
   dataGridLabel?: boolean;
-  alerttype?: 'error' | 'warning' | 'info';
+  alerttype?: string;
 }
 
 export interface ComponentProperties {
