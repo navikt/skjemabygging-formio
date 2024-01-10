@@ -3,7 +3,7 @@ import Button from './core/button/Button';
 import Checkbox from './core/checkbox/Checkbox';
 import Container from './core/container/Container';
 import DataGrid from './core/datagrid/DataGrid';
-import Datepicker from './core/datepicker/Datepicker';
+import DatePicker from './core/datepicker/DatePicker';
 import Day from './core/day/Day';
 import FormGroup from './core/form-group/FormGroup';
 import HTMLElement from './core/html-element/HTMLElement';
@@ -31,7 +31,7 @@ const customComponents = {
   htmlelement: HTMLElement,
   landvelger: CountrySelect,
   valutavelger: CurrencySelect,
-  navDatepicker: Datepicker,
+  navDatepicker: DatePicker,
   navSelect: NavSelect,
   radiopanel: Radio,
   navCheckbox: Checkbox,
