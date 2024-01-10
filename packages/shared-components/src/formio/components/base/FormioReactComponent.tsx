@@ -40,7 +40,7 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
   }
 
   setValueOnReactInstance(value) {
-    if (this.reactInstance) (this.reactInstance as HTMLInputElement).defaultValue = value;
+    if (this.reactInstance) (this.reactInstance as HTMLInputElement).value = value;
   }
 
   setValue(value: any) {
