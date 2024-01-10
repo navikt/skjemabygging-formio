@@ -125,7 +125,7 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
                   {`${translate(TEXTS.statiske.summaryPage.validationMessage)} `}
                   <ExclamationmarkTriangleFillIcon
                     className={styles.exclamationmarkIcon}
-                    title={translate(TEXTS.statiske.summaryPage.validationErrorIcon)}
+                    title={translate(TEXTS.statiske.summaryPage.validationIcon)}
                     fontSize="1.5rem"
                   />
                   {'.'}
