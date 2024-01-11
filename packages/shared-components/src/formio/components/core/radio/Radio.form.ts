@@ -26,6 +26,7 @@ const radioForm = () => {
     ]),
     api([
       editFormApi.key(),
+      editFormApi.properties(),
     ]),
     conditional([
       editFormConditional.simpleConditional(),

@@ -155,6 +155,8 @@ export interface Component {
   webcam?: boolean;
   multiple?: boolean;
   customDefaultValue?: string;
+  keyLabel?: string;
+  valueComponent?: Component;
 }
 
 export interface ComponentProperties {

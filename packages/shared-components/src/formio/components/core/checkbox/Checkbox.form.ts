@@ -21,6 +21,7 @@ const checkboxForm = () => {
     ]),
     api([
       editFormApi.key(),
+      editFormApi.properties(),
     ]),
     conditional([
       editFormConditional.simpleConditional(),
