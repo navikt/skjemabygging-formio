@@ -45,6 +45,7 @@ const localDevelopmentConfig: DefaultConfig = {
   formioProjectUrl: process.env.FORMIO_PROJECT_URL || 'https://formio-api.intern.dev.nav.no/jvcemxwcpghcqjn',
   forstesideUrl: 'https://www.nav.no/soknader/api/forsteside',
   decoratorUrl: 'https://www.nav.no/dekoratoren?simple=true',
+  fyllutFrontendUrl: process.env.FYLLUT_FRONTEND_URL || 'http://localhost:3001/fyllut',
   skjemabyggingProxyUrl: process.env.SKJEMABYGGING_PROXY_URL || 'https://skjemabygging-proxy.dev-fss-pub.nais.io',
   skjemabyggingProxyClientId: '95170319-b4d7-4190-8271-118ed19bafbf',
   azureOpenidTokenEndpoint:
