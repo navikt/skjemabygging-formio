@@ -148,6 +148,13 @@ export interface Component {
   tooltip?: string;
   reorder?: boolean;
   dataGridLabel?: boolean;
+  fileMaxSize?: string;
+  storage?: string;
+  image?: boolean;
+  filePattern?: string;
+  webcam?: boolean;
+  multiple?: boolean;
+  customDefaultValue?: string;
 }
 
 export interface ComponentProperties {
@@ -172,6 +179,8 @@ export interface ComponentValidate {
   required?: boolean;
   pattern?: string;
   patternMessage?: string;
+  min?: number;
+  max?: number;
 }
 
 export interface ComponentConditional {

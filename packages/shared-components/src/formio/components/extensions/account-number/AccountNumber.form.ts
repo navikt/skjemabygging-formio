@@ -1,12 +1,11 @@
 import editFormApi from '../../base/editForm/api';
 import editFormConditional from '../../base/editForm/conditional';
-import editFormData from '../../base/editForm/data';
 import editFormDisplay from '../../base/editForm/display';
 import editFormTabs from '../../base/editForm/editFormTabs';
 import editFormValidation from '../../base/editForm/validation';
 
 const accountNumberForm = () => {
-  const { api, conditional, createTabs, data, display, validation } = editFormTabs;
+  const { api, conditional, createTabs, display, validation } = editFormTabs;
 
   // prettier-ignore
   return createTabs(
@@ -16,9 +15,6 @@ const accountNumberForm = () => {
       editFormDisplay.description(),
       editFormDisplay.additionalDescription(),
       editFormDisplay.autoComplete(),
-    ]),
-    data([
-      editFormData.clearOnHide(),
     ]),
     validation([
       editFormValidation.required(),

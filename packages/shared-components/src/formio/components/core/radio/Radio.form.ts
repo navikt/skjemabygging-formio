@@ -18,7 +18,6 @@ const radioForm = () => {
     data([
       editFormData.values(),
       editFormData.defaultValue(),
-      editFormData.clearOnHide(),
     ]),
     validation([
       editFormValidation.required(),

@@ -18,7 +18,6 @@ const selectForm = () => {
     data([
       editFormData.dataValues(),
       editFormData.defaultValue(),
-      editFormData.clearOnHide(),
     ]),
     validation([
       editFormValidation.required(),

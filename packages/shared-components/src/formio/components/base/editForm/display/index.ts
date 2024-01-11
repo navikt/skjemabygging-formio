@@ -10,11 +10,16 @@ import editFormDescription from './editFormDescription';
 import editFormDisabled from './editFormDisabled';
 import editFormFieldSizeField from './editFormFieldSize';
 import editFormHideLabel from './editFormHideLabel';
+import editFormHtmlTag from './editFormHtmlTag';
 import editFormInline from './editFormIsInline';
 import editFormLabel from './editFormLabel';
 import editFormRemoveAnother from './editFormRemoveAnother';
 import editFormRows from './editFormRows';
 import editFormSpellCheck from './editFormSpellCheck';
+import editFormAltText from './image/editFormAltText';
+import editFormImage from './image/editFormImage';
+import editFormShowInPdf from './image/editFormShowInPdf';
+import editFormWidthPercent from './image/editFormWidthPercentt';
 
 const editFormDisplay = {
   additionalDescription: editFormAdditionalDescription,
@@ -34,6 +39,11 @@ const editFormDisplay = {
   inline: editFormInline,
   addAnother: editFormAddAnother,
   removeAnother: editFormRemoveAnother,
+  altText: editFormAltText,
+  image: editFormImage,
+  showInPdf: editFormShowInPdf,
+  widthPercent: editFormWidthPercent,
+  htmlTag: editFormHtmlTag,
 };
 
 export default editFormDisplay;

@@ -5,7 +5,7 @@ const editFormContent = (): Component => {
   return {
     ...editFormAceEditor('html'),
     key: 'content',
-    label: 'Content',
+    label: 'Innhold',
   };
 };
 
