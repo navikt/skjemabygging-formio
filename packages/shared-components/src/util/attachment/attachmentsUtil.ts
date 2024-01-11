@@ -10,6 +10,7 @@ interface Attachment {
   pakrevd: boolean;
   propertyNavn: string;
   formioId: string;
+  vedleggskjema?: string;
 }
 
 const getRelevantAttachments = (form: NavFormType, submissionData: SubmissionData): Attachment[] => {
@@ -25,6 +26,7 @@ const getRelevantAttachments = (form: NavFormType, submissionData: SubmissionDat
       beskrivelse: comp.description,
       pakrevd: comp.properties.vedleggErValgfritt !== 'ja',
       propertyNavn: comp.key,
+      vedleggskjema: comp.properties.vedleggskjema,
       /* TODO: We should not use the native 'id' to identify the attachment, because it may change when the component changes.
        **   Note that a 'navId' is created when the component changes, but older forms doesn't have it yet.
        **   We should trigger a change on all attachment components to generate a navId,

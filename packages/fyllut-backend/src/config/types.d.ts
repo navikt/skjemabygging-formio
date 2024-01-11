@@ -35,6 +35,7 @@ export type DefaultConfig = {
   formioProjectUrl: string;
   forstesideUrl: string;
   decoratorUrl: string;
+  fyllutFrontendUrl: string;
   skjemabyggingProxyUrl: string;
   skjemabyggingProxyClientId: string;
   azureOpenidTokenEndpoint: string;

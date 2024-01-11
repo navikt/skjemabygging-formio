@@ -1,6 +1,7 @@
 app-name: skjemautfylling-delingslenke
 ingresses:
   - "https://skjemadelingslenke.ekstern.dev.nav.no/fyllut"
+fyllut-frontend-url: "https://skjemadelingslenke.ekstern.dev.nav.no/fyllut"
 enabled-features: translations,autoComplete,sendInnIntegration,mellomlagring
 foersteside-url: https://www.nav.no/soknader/api/forsteside
 dekorator-url: https://www.nav.no/dekoratoren?simple=true

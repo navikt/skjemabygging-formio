@@ -4,6 +4,7 @@ import {
   NavFormType,
   Submission,
 } from '@navikt/skjemadigitalisering-shared-domain';
+import { config } from '../../../config/config';
 import { logger } from '../../../logger';
 import { base64Encode } from '../../../utils/base64';
 
@@ -24,6 +25,7 @@ export interface Attachment {
   pakrevd: boolean;
   propertyNavn: string;
   formioId: string;
+  vedleggskjema?: string;
 }
 
 export interface SendInnSoknadBody {
@@ -145,6 +147,7 @@ export const assembleSendInnSoknadBody = (
       label: translate(attachment.label),
       beskrivelse: translate(attachment.beskrivelse),
       tittel: translate(attachment.tittel),
+      vedleggsurl: `${config.fyllutFrontendUrl}/${attachment.vedleggskjema}`,
     }));
   }
 

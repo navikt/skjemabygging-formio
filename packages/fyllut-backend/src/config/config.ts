@@ -80,6 +80,7 @@ const defaultConfig: DefaultConfig = {
   formioProjectUrl: process.env.FORMIO_PROJECT_URL!,
   forstesideUrl: process.env.FOERSTESIDE_URL!,
   decoratorUrl: process.env.DECORATOR_URL!,
+  fyllutFrontendUrl: process.env.FYLLUT_FRONTEND_URL!,
   skjemabyggingProxyUrl: process.env.SKJEMABYGGING_PROXY_URL!,
   skjemabyggingProxyClientId: process.env.SKJEMABYGGING_PROXY_CLIENT_ID!,
   azureOpenidTokenEndpoint: process.env.AZURE_OPENID_CONFIG_TOKEN_ENDPOINT!,
