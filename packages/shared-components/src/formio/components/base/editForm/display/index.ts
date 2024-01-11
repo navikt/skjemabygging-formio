@@ -14,6 +14,7 @@ import editFormHtmlTag from './editFormHtmlTag';
 import editFormInline from './editFormIsInline';
 import editFormLabel from './editFormLabel';
 import editFormRemoveAnother from './editFormRemoveAnother';
+import editFormRowTitle from './editFormRowTitle';
 import editFormRows from './editFormRows';
 import editFormSpellCheck from './editFormSpellCheck';
 import editFormAltText from './image/editFormAltText';
@@ -44,6 +45,7 @@ const editFormDisplay = {
   showInPdf: editFormShowInPdf,
   widthPercent: editFormWidthPercent,
   htmlTag: editFormHtmlTag,
+  rowTitle: editFormRowTitle,
 };
 
 export default editFormDisplay;

@@ -10,6 +10,7 @@ const dataGridForm = () => {
   return createTabs(
     display([
       editFormDisplay.label(),
+      editFormDisplay.rowTitle(),
       editFormDisplay.description(),
       editFormDisplay.addAnother(),
       editFormDisplay.removeAnother(),

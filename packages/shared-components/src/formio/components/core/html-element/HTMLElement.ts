@@ -2,6 +2,7 @@ import FormioHTMLElement from 'formiojs/components/html/HTML';
 import htmlElementForm from './HTMLElement.form';
 
 class HTMLElement extends FormioHTMLElement {
+  // TODO: When rewriting HTMLElement change tag from p to div.
   static editForm() {
     return htmlElementForm();
   }
