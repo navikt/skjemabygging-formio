@@ -147,7 +147,7 @@ export const assembleSendInnSoknadBody = (
       label: translate(attachment.label),
       beskrivelse: translate(attachment.beskrivelse),
       tittel: translate(attachment.tittel),
-      vedleggsurl: `${config.fyllutFrontendUrl}/${attachment.vedleggskjema}`,
+      ...(attachment.vedleggskjema && { vedleggsurl: `${config.fyllutFrontendUrl}/${attachment.vedleggskjema}` }),
     }));
   }
 
