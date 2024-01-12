@@ -3,7 +3,7 @@ import { Component } from '@navikt/skjemadigitalisering-shared-domain';
 const editFormProperties = (): Component => {
   return {
     type: 'datamap',
-    label: 'Custom Properties',
+    label: 'Andre egenskaper',
     keyLabel: 'Nøkkel',
     key: 'properties',
     addAnother: 'Legg til',
