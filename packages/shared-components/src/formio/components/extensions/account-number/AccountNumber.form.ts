@@ -11,15 +11,12 @@ const accountNumberForm = () => {
   return createTabs(
     display([
       editFormDisplay.label(),
-      editFormDisplay.fieldSize(),
       editFormDisplay.description(),
       editFormDisplay.additionalDescription(),
-      editFormDisplay.autoComplete(),
     ]),
     validation([
       editFormValidation.required(),
-      editFormValidation.minLength(),
-      editFormValidation.maxLength(),
+      editFormValidation.customMessage(),
       editFormValidation.customValidation(),
       editFormValidation.customError(),
     ]),
