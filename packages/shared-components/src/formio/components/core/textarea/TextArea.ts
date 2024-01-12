@@ -1,4 +1,5 @@
 import FormioTextArea from 'formiojs/components/textarea/TextArea';
+import textAreaBuilder from './TextArea.builder';
 import textAreaForm from './TextArea.form';
 
 class TextArea extends FormioTextArea {
@@ -17,6 +18,10 @@ class TextArea extends FormioTextArea {
 
   static editForm() {
     return textAreaForm();
+  }
+
+  static get builderInfo() {
+    return textAreaBuilder();
   }
 }
 
