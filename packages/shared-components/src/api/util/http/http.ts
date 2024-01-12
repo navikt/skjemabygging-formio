@@ -13,6 +13,7 @@ interface FetchHeader {
   'Content-Type'?: MimeType;
   Accept?: MimeType;
   'Fyllut-Submission-Method'?: SubmissionMethodType;
+  'Bygger-Formio-Token'?: string;
 }
 
 interface FetchOptions {

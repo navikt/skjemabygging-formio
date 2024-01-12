@@ -5,6 +5,7 @@ import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import App from './App';
 import { AuthProvider } from './context/auth-context';
+import httpBygger from './util/httpBygger';
 
 const dokumentinnsendingDevURL = 'https://tjenester-q0.nav.no/dokumentinnsending';
 
@@ -32,6 +33,7 @@ const renderReact = (config) => {
           featureToggles={config.featureToggles}
           config={config}
           app="bygger"
+          http={httpBygger}
           enableFrontendLogger
         >
           <AuthProvider user={config.user}>

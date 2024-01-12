@@ -3,6 +3,7 @@ import { FlattenedJWSInput, JWSHeaderParameters, createRemoteJWKSet, jwtVerify }
 import { GetKeyFunction } from 'jose/dist/types/types';
 import jwt from 'jsonwebtoken';
 import config from '../config';
+import { logger } from '../logging/logger';
 import { AzureAdTokenPayload, User } from '../types/custom';
 import { getDevUser } from '../util/devUser';
 import { adGroups } from './azureAd';
@@ -38,30 +39,30 @@ const authHandler = async (req: Request, res: Response, next: NextFunction) => {
     const token = authHeader && authHeader.split(' ')[1];
 
     if (!token) {
-      console.error('Missing jwt token');
+      logger.warn('Missing jwt token');
       return res.sendStatus(401);
     }
 
-    console.log('Verifying jwt token signature...');
+    logger.debug('Verifying jwt token signature...');
     let tokenPayload: AzureAdTokenPayload;
     try {
       tokenPayload = await verifyToken(token);
     } catch (err) {
-      console.error('Failed to verify jwt token signature', err);
+      logger.error('Failed to verify jwt token signature', err);
       return res.sendStatus(401);
     }
     if (!tokenPayload) {
-      console.error('Error decoding jwt token');
+      logger.error('Error decoding jwt token');
       return res.sendStatus(401);
     }
     const currentTime = new Date().getTime() / 1000;
     const expired = tokenPayload.exp! - 10 < currentTime;
     if (expired) {
-      console.log(`JWT token expired (exp=${tokenPayload.exp})`);
+      logger.info(`JWT token expired (exp=${tokenPayload.exp})`);
       return res.sendStatus(401);
     }
 
-    console.log(`Validation of jwt token succeeded (expires ${toExpiredDateString(tokenPayload.exp)})`);
+    logger.info(`Validation of jwt token succeeded (expires ${toExpiredDateString(tokenPayload.exp)})`);
     req.getUser = () => ({
       name: tokenPayload.name,
       preferredUsername: tokenPayload.preferred_username,
