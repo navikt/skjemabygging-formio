@@ -1,11 +1,12 @@
 import { validatorUtils } from '@navikt/skjemadigitalisering-shared-domain';
-import TextField from '../../core/textfield/deprecated/TextField.js';
+import BaseComponent from '../../base/BaseComponent';
+import TextField from '../../core/textfield/TextField';
 import organizationNumberBuilder from './OrganizationNumber.builder';
 import organizationNumberForm from './OrganizationNumber.form';
 
 class OrganizationNumber extends TextField {
   static schema() {
-    return TextField.schema({
+    return BaseComponent.schema({
       label: 'Organisasjonsnummer',
       type: 'orgNr',
       key: 'orgNr',

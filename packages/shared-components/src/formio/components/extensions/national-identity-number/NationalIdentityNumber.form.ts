@@ -1,87 +1,25 @@
-import { Components } from 'formiojs';
-import baseEditForm = Components.baseEditForm;
+import editFormApi from '../../base/editForm/api';
+import editFormConditional from '../../base/editForm/conditional';
+import editFormDisplay from '../../base/editForm/display';
+import editFormTabs from '../../base/editForm/editFormTabs';
 
 const nationalIdentityNumberForm = () => {
-  return baseEditForm([
-    {
-      key: 'display',
-      components: [
-        {
-          // You can ignore existing fields.
-          key: 'placeholder',
-          ignore: true,
-        },
-        {
-          key: 'tabindex',
-          ignore: true,
-        },
-        {
-          key: 'tooltip',
-          ignore: true,
-        },
-        {
-          key: 'customClass',
-          ignore: true,
-        },
-        {
-          key: 'hidden',
-          ignore: true,
-        },
-        {
-          key: 'hideLabel',
-          ignore: true,
-        },
-        {
-          key: 'autofocus',
-          ignore: true,
-        },
-        {
-          key: 'disabled',
-          ignore: true,
-        },
-        {
-          key: 'tableView',
-          ignore: true,
-        },
-        {
-          key: 'modalEdit',
-          ignore: true,
-        },
-      ],
-    },
-    {
-      key: 'data',
-      ignore: true,
-      components: false,
-    },
-    {
-      key: 'validation',
-      ignore: true,
-      components: false,
-    },
-    {
-      key: 'api',
-      components: [
-        { key: 'tags', ignore: true },
-        { key: 'properties', ignore: true },
-      ],
-    },
-    {
-      key: 'logic',
-      ignore: true,
-      components: false,
-    },
-    {
-      key: 'layout',
-      ignore: true,
-      components: false,
-    },
-    {
-      key: 'addons',
-      ignore: true,
-      components: false,
-    },
-  ]);
+  const { api, conditional, createTabs, display } = editFormTabs;
+
+  // prettier-ignore
+  return createTabs(
+    display([
+      editFormDisplay.label(),
+      editFormDisplay.description(),
+    ]),
+    api([
+      editFormApi.key(),
+    ]),
+    conditional([
+      editFormConditional.simpleConditional(),
+      editFormConditional.advancedConditional(),
+    ]),
+  );
 };
 
 export default nationalIdentityNumberForm;
