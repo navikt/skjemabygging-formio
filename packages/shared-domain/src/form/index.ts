@@ -151,7 +151,7 @@ export interface Component {
   alerttype?: string;
   fileMaxSize?: string;
   storage?: string;
-  image?: boolean;
+  image?: any;
   filePattern?: string;
   webcam?: boolean;
   multiple?: boolean;
