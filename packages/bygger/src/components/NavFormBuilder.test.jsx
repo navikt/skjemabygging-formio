@@ -22,14 +22,17 @@ const DEFAULT_FORM_BUILDER_OPTIONS = {
 };
 
 describe('NavFormBuilder', () => {
+  let fetchSpy;
+
   beforeAll(() => {
     new NavFormioJs.Formio(DEFAULT_PROJECT_URL);
-    vi.spyOn(NavFormioJs.Formio, 'fetch').mockImplementation(createMockImplementation());
+    fetchSpy = vi.spyOn(NavFormioJs.Formio, 'fetch').mockImplementation(createMockImplementation());
   });
 
   afterEach(() => {
     fetchMock.resetMocks();
     window.confirm = undefined;
+    fetchSpy.mockClear();
   });
 
   describe('mounting', () => {
