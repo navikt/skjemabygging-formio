@@ -21,6 +21,7 @@ const textFieldForm = () => {
       editFormValidation.required(),
       editFormValidation.minLength(),
       editFormValidation.maxLength(),
+      editFormValidation.customMessage(),
       editFormValidation.customValidation(),
       editFormValidation.customError(),
     ]),
