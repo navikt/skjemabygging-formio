@@ -1,12 +1,21 @@
-import { useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
+import { makeStyles, useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
 import { FormsResponseForm, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
 
 interface FormRowProps {
   form: FormsResponseForm;
 }
 
+const useStyles = makeStyles({
+  skjemanummer: {
+    textWrap: 'nowrap',
+    paddingRight: '50px',
+    verticalAlign: 'top',
+  },
+});
+
 const FormRow = ({ form }: FormRowProps) => {
   const { config, baseUrl } = useAppConfig();
+  const styles = useStyles();
   const paper = navFormUtils.isSubmissionMethodAllowed('paper', form);
   const digital = navFormUtils.isSubmissionMethodAllowed('digital', form);
   const ingen = form.properties.innsending === 'INGEN';
@@ -15,7 +24,7 @@ const FormRow = ({ form }: FormRowProps) => {
 
   return (
     <tr>
-      <td>
+      <td className={styles.skjemanummer}>
         <a href={skjemaPath}>{form.properties.skjemanummer}</a>
       </td>
       <td>
