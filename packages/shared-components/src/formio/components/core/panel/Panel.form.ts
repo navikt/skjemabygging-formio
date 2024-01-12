@@ -3,14 +3,13 @@ import editFormConditional from '../../base/editForm/conditional';
 import editFormDisplay from '../../base/editForm/display';
 import editFormTabs from '../../base/editForm/editFormTabs';
 
-const containerForm = () => {
+const panelForm = () => {
   const { api, conditional, createTabs, display } = editFormTabs;
 
   // prettier-ignore
   return createTabs(
     display([
-      editFormDisplay.label(),
-      editFormDisplay.hideLabel(),
+      editFormDisplay.title(),
     ]),
     api([
       editFormApi.key(),
@@ -22,4 +21,4 @@ const containerForm = () => {
   );
 };
 
-export default containerForm;
+export default panelForm;

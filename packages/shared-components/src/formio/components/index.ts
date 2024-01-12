@@ -8,6 +8,7 @@ import Day from './core/day/Day';
 import FormGroup from './core/form-group/FormGroup';
 import HTMLElement from './core/html-element/HTMLElement';
 import Image from './core/image/Image';
+import Panel from './core/panel/Panel';
 import Radio from './core/radio/Radio';
 import Row from './core/row/Row';
 import SelectBoxes from './core/select-boxes/SelectBoxes';
@@ -46,5 +47,6 @@ const customComponents = {
   image: Image,
   row: Row,
   button: Button,
+  panel: Panel,
 };
 export default customComponents;

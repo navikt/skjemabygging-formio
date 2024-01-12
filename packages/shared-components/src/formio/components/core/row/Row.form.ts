@@ -3,7 +3,7 @@ import editFormConditional from '../../base/editForm/conditional';
 import editFormDisplay from '../../base/editForm/display';
 import editFormTabs from '../../base/editForm/editFormTabs';
 
-const containerForm = () => {
+const rowForm = () => {
   const { api, conditional, createTabs, display } = editFormTabs;
 
   // prettier-ignore
@@ -22,4 +22,4 @@ const containerForm = () => {
   );
 };
 
-export default containerForm;
+export default rowForm;

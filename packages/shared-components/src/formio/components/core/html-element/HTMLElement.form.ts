@@ -1,41 +1,27 @@
-import HTMLElementEditForm from 'formiojs/components/html/HTML.form';
-import HTMLElementDisplayEditForm from 'formiojs/components/html/editForm/HTML.edit.display';
-import { contentToIncludeInPdf } from '../../fields/contentToIncludeInPdf';
+import editFormApi from '../../base/editForm/api';
+import editFormConditional from '../../base/editForm/conditional';
+import editFormDisplay from '../../base/editForm/display';
+import editFormTabs from '../../base/editForm/editFormTabs';
 
 const htmlElementForm = () => {
-  return HTMLElementEditForm([
-    {
-      label: 'Display',
-      key: 'display',
-      components: [
-        ...HTMLElementDisplayEditForm,
-        contentToIncludeInPdf,
-        { key: 'attrs', ignore: true },
-        { key: 'refreshOnChange', ignore: true },
-        { key: 'customClass', ignore: true },
-        { key: 'className', ignore: true },
-        { key: 'hidden', ignore: true },
-        { key: 'modalEdit', ignore: true },
-      ],
-    },
-    {
-      key: 'api',
-      components: [
-        { key: 'tags', ignore: true },
-        { key: 'properties', ignore: true },
-      ],
-    },
-    {
-      key: 'logic',
-      ignore: true,
-      components: false,
-    },
-    {
-      key: 'layout',
-      ignore: true,
-      components: false,
-    },
-  ]);
+  const { api, conditional, createTabs, display } = editFormTabs;
+
+  // prettier-ignore
+  return createTabs(
+    display([
+      editFormDisplay.label(),
+      editFormDisplay.htmlTag(),
+      editFormDisplay.content(),
+      editFormDisplay.contentToIncludeInPdf(),
+    ]),
+    api([
+      editFormApi.key(),
+    ]),
+    conditional([
+      editFormConditional.simpleConditional(),
+      editFormConditional.advancedConditional(),
+    ]),
+  );
 };
 
 export default htmlElementForm;
