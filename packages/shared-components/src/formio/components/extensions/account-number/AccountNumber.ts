@@ -1,11 +1,12 @@
 import { validatorUtils } from '@navikt/skjemadigitalisering-shared-domain';
-import TextField from '../../core/textfield/deprecated/TextField.js';
+import BaseComponent from '../../base/BaseComponent';
+import TextField from '../../core/textfield/TextField';
 import accountNumberBuilder from './AccountNumber.builder';
 import accountNumberForm from './AccountNumber.form';
 
 class AccountNumber extends TextField {
   static schema() {
-    return TextField.schema({
+    return BaseComponent.schema({
       label: 'Kontonummer',
       type: 'bankAccount',
       key: 'kontoNummer',
