@@ -23,15 +23,15 @@ class TextField extends BaseComponent {
     return textFieldBuilder();
   }
 
-  setValue(value: any) {
-    super.setValue(value ?? '');
+  getValue() {
+    return super.getValue() ?? '';
   }
 
   renderReact(element) {
     element.render(
       <NavTextField
         id={this.getId()}
-        defaultValue={this.getDefaultValue()}
+        defaultValue={this.getValue()}
         ref={(ref) => this.setReactInstance(ref)}
         onChange={(event) => this.updateValue(event.currentTarget.value, { modified: true })}
         label={this.getLabel()}

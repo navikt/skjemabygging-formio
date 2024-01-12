@@ -148,6 +148,7 @@ export interface Component {
   tooltip?: string;
   reorder?: boolean;
   dataGridLabel?: boolean;
+  alerttype?: string;
   fileMaxSize?: string;
   storage?: string;
   image?: boolean;

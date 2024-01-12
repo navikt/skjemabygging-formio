@@ -35,7 +35,8 @@ describe('Custom react components', () => {
         cy.findByRole('textbox', { name: 'Gyldig fra dato' }).type('01.01.2023{esc}');
         cy.clickNextStep();
 
-        cy.findAllByText('Du må fylle ut: Velg valuta').should('have.length', 2).first().click();
+        cy.findAllByText('Du må fylle ut: Velg valuta').should('have.length', 2);
+        cy.findAllByText('Du må fylle ut: Velg valuta').first().click();
         cy.findByRole('combobox', { name: 'Velg valuta' }).should('have.focus').type('{upArrow}{enter}');
         cy.clickNextStep();
 

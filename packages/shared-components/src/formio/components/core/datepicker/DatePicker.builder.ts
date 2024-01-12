@@ -1,7 +1,7 @@
-import Datepicker from './Datepicker';
+import DatePicker from './DatePicker';
 
-const datepickerBuilder = () => {
-  const schema = Datepicker.schema();
+const datePickerBuilder = () => {
+  const schema = DatePicker.schema();
   return {
     title: 'Datovelger',
     group: 'datoOgTid',
@@ -16,4 +16,4 @@ const datepickerBuilder = () => {
   };
 };
 
-export default datepickerBuilder;
+export default datePickerBuilder;
