@@ -84,6 +84,13 @@ class BaseComponent extends FormioReactComponent {
   }
 
   /**
+   * Get content for custom component renderReact()
+   */
+  getContent() {
+    return this.component?.content;
+  }
+
+  /**
    * Get auto complete for custom component renderReact()
    */
   getAutoComplete() {
