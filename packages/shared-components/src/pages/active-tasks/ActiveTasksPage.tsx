@@ -55,7 +55,11 @@ const ActiveTasksPage = ({ form, formUrl }: Props) => {
   useEffect(() => {
     const initialize = async () => {
       const response = await getActiveTasks(form, appConfig);
-      setMellomlagringer(response.filter((task) => task.soknadstype === 'soknad'));
+      setMellomlagringer(
+        response
+          .filter((task) => task.soknadstype === 'soknad')
+          .sort((taskA, taskB) => (taskB.endretDato < taskA.endretDato ? -1 : 1)),
+      );
       setHasEttersendelse(response.some((task) => task.soknadstype === 'ettersendelse'));
     };
     initialize();
