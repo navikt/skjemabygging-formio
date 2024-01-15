@@ -4,7 +4,6 @@ const checkboxBuilder = () => {
   const schema = Checkbox.schema();
   return {
     title: schema.label,
-    group: 'basic',
     schema: {
       ...schema,
     },

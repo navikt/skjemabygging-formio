@@ -1,7 +1,6 @@
 const citizenshipBuilder = (keyPostfix = '') => {
   return {
     title: 'Statsborgerskap',
-    group: 'person',
     schema: {
       label: 'Statsborgerskap',
       type: 'textfield',

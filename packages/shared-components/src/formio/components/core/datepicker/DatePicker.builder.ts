@@ -4,7 +4,6 @@ const datePickerBuilder = () => {
   const schema = DatePicker.schema();
   return {
     title: 'Datovelger',
-    group: 'datoOgTid',
     schema: {
       ...schema,
       validateOn: 'blur',

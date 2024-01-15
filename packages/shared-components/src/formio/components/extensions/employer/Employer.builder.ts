@@ -1,7 +1,6 @@
 const employerBuilder = () => {
   return {
     title: 'Arbeidsgiver',
-    group: 'organisasjon',
     schema: {
       label: 'Arbeidsgiver',
       type: 'textfield',

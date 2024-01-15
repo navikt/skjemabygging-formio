@@ -4,7 +4,6 @@ const accountNumberBuilder = () => {
   const schema = AccountNumber.schema();
   return {
     title: schema.label,
-    group: 'pengerOgKonto',
     schema: {
       ...schema,
       validateOn: 'blur',
