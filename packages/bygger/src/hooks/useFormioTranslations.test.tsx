@@ -1,7 +1,8 @@
-import { NavFormioJs } from '@navikt/skjemadigitalisering-shared-components';
+import { AppConfigProvider, NavFormioJs } from '@navikt/skjemadigitalisering-shared-components';
 import { renderHook, waitFor } from '@testing-library/react';
 import createMockImplementation, { DEFAULT_PROJECT_URL } from '../../test/backendMockImplementation';
 import { FeedbackEmitContext } from '../context/notifications/FeedbackContext';
+import httpBygger from '../util/httpBygger';
 import { useFormioTranslations } from './useFormioTranslations';
 
 const MOCK_PREDEFINED_TEXTS_I18N_EN = {
@@ -36,19 +37,23 @@ const RESPONSE_HEADERS_ERROR = {
 };
 
 describe('useFormioTranslations', () => {
-  const expectedHeader = { headers: { 'x-jwt-token': '' } };
-  let fetchSpy, formioSpy;
+  const expectedHeaders = {
+    Accept: 'application/json',
+    'Content-Type': 'application/json',
+    'x-jwt-token': '',
+  };
+  let fetchSpy;
   let formioTranslations: ReturnType<typeof useFormioTranslations>;
   let mockFeedbackEmit;
 
   beforeEach(() => {
     fetchSpy = vi.spyOn(global, 'fetch');
     fetchSpy.mockImplementation(createMockImplementation());
-    formioSpy = vi.spyOn(NavFormioJs.Formio, 'fetch');
-    formioSpy.mockImplementation(createMockImplementation());
     mockFeedbackEmit = { success: vi.fn(), error: vi.fn() };
     const wrapper = ({ children }) => (
-      <FeedbackEmitContext.Provider value={mockFeedbackEmit}>{children}</FeedbackEmitContext.Provider>
+      <FeedbackEmitContext.Provider value={mockFeedbackEmit}>
+        <AppConfigProvider http={httpBygger}>{children}</AppConfigProvider>
+      </FeedbackEmitContext.Provider>
     );
 
     const { result } = renderHook(
@@ -62,7 +67,6 @@ describe('useFormioTranslations', () => {
 
   afterEach(() => {
     fetchSpy.mockClear();
-    formioSpy.mockClear();
   });
 
   describe('Global translations', () => {
@@ -98,7 +102,10 @@ describe('useFormioTranslations', () => {
         expect(fetchSpy).toHaveBeenCalledTimes(1);
         expect(fetchSpy).toHaveBeenCalledWith(
           `${DEFAULT_PROJECT_URL}/language/submission?data.name=global&limit=1000`,
-          expectedHeader,
+          {
+            method: 'GET',
+            headers: expectedHeaders,
+          },
         );
       });
 
@@ -108,14 +115,17 @@ describe('useFormioTranslations', () => {
         expect(fetchSpy).toHaveBeenCalledTimes(1);
         expect(fetchSpy).toHaveBeenCalledWith(
           `${DEFAULT_PROJECT_URL}/language/submission?data.name=global&data.language=en&limit=1000`,
-          expectedHeader,
+          {
+            method: 'GET',
+            headers: expectedHeaders,
+          },
         );
       });
 
       it('fetches English translations and does no mapping for text keys', async () => {
         const fetchMockImpl = (globalTranslations) => {
           return () => {
-            return Promise.resolve(new Response(JSON.stringify(globalTranslations['en'])));
+            return Promise.resolve(new Response(JSON.stringify(globalTranslations['en']), RESPONSE_HEADERS_OK));
           };
         };
 
@@ -172,14 +182,17 @@ describe('useFormioTranslations', () => {
         expect(fetchSpy).toHaveBeenCalledTimes(1);
         expect(fetchSpy).toHaveBeenCalledWith(
           `${DEFAULT_PROJECT_URL}/language/submission?data.name=global&limit=1000`,
-          expectedHeader,
+          {
+            method: 'GET',
+            headers: expectedHeaders,
+          },
         );
       });
 
       it('fetches English translations and maps original text value as key for texts with tag validering', async () => {
         const fetchMockImpl = (globalTranslations) => {
           return () => {
-            return Promise.resolve(new Response(JSON.stringify(globalTranslations['en'])));
+            return Promise.resolve(new Response(JSON.stringify(globalTranslations['en']), RESPONSE_HEADERS_OK));
           };
         };
 
@@ -343,18 +356,23 @@ describe('useFormioTranslations', () => {
       await waitFor(() => expect(translations).toBeDefined());
       expect(fetchSpy).toHaveBeenCalledWith(
         `${DEFAULT_PROJECT_URL}/language/submission?data.name__regex=/^global(.${formPath})*$/gi&limit=1000`,
-        expectedHeader,
+        {
+          method: 'GET',
+          headers: expectedHeaders,
+        },
       );
     });
 
     it('fetches country names for Norwegian Bokmål', async () => {
       await waitFor(() => expect(translations).toBeDefined());
-      expect(fetchSpy).toHaveBeenCalledWith(`${DEFAULT_PROJECT_URL}/api/countries?lang=nb`);
+      expect(fetchSpy).toHaveBeenCalledTimes(3);
+      expect(fetchSpy.mock.calls[1][0]).toEqual(`${DEFAULT_PROJECT_URL}/api/countries?lang=nb`);
     });
 
     it('fetches country names for all other languages in translations', async () => {
       await waitFor(() => expect(translations).toBeDefined());
-      expect(fetchSpy).toHaveBeenCalledWith(`${DEFAULT_PROJECT_URL}/api/countries?lang=en`);
+      expect(fetchSpy).toHaveBeenCalledTimes(3);
+      expect(fetchSpy.mock.calls[2][0]).toEqual(`${DEFAULT_PROJECT_URL}/api/countries?lang=en`);
     });
 
     it('makes no extra fetch calls', async () => {
@@ -397,14 +415,14 @@ describe('useFormioTranslations', () => {
 
       await waitFor(() => expect(mockFeedbackEmit.success).toHaveBeenCalled());
 
-      expect(formioSpy).toHaveBeenCalledWith(`${DEFAULT_PROJECT_URL}/language/submission/translationId`, {
+      expect(fetchSpy).toHaveBeenCalledWith(`${DEFAULT_PROJECT_URL}/language/submission/translationId`, {
         body: JSON.stringify({
           data: { language: 'en', i18n: { tekst: 'text' }, name: 'global.formPath', scope: 'local', form: 'formPath' },
         }),
-        headers: { 'content-type': 'application/json', 'x-jwt-token': '' },
+        headers: expectedHeaders,
         method: 'PUT',
       });
-      expect(formioSpy).toHaveBeenCalledTimes(1);
+      expect(fetchSpy).toHaveBeenCalledTimes(1);
     });
 
     it('creates a translationSubmission, before update, when translationId is not provided', async () => {
@@ -418,23 +436,23 @@ describe('useFormioTranslations', () => {
       );
       await waitFor(() => expect(mockFeedbackEmit.success).toHaveBeenCalled());
 
-      expect(formioSpy).toHaveBeenCalledWith(`${DEFAULT_PROJECT_URL}/language/submission`, {
+      expect(fetchSpy).toHaveBeenCalledWith(`${DEFAULT_PROJECT_URL}/language/submission`, {
         body: JSON.stringify({
           data: { language: 'en', name: 'global.formPath', scope: 'local', form: 'formPath' },
         }),
-        headers: { 'content-type': 'application/json', 'x-jwt-token': '' },
+        headers: expectedHeaders,
         method: 'POST',
       });
 
-      expect(formioSpy).toHaveBeenCalledWith(`${DEFAULT_PROJECT_URL}/language/submission/_translationId`, {
+      expect(fetchSpy).toHaveBeenCalledWith(`${DEFAULT_PROJECT_URL}/language/submission/_translationId`, {
         body: JSON.stringify({
           data: { language: 'en', i18n: { tekst: 'text' }, name: 'global.formPath', scope: 'local', form: 'formPath' },
         }),
-        headers: { 'content-type': 'application/json', 'x-jwt-token': '' },
+        headers: expectedHeaders,
         method: 'PUT',
       });
 
-      expect(formioSpy).toHaveBeenCalledTimes(2);
+      expect(fetchSpy).toHaveBeenCalledTimes(2);
     });
   });
 });

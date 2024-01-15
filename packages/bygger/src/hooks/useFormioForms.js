@@ -8,9 +8,9 @@ export const useFormioForms = () => {
 
   const loadFormsList = useCallback(async () => {
     return await http.get('/api/forms?select=title,path,tags,properties,modified,_id');
-  }, []);
+  }, [http]);
 
-  const loadForm = useCallback(async (formPath) => http.get(`/api/forms/${formPath}`), []);
+  const loadForm = useCallback(async (formPath) => http.get(`/api/forms/${formPath}`), [http]);
 
   const onSave = useCallback(
     async (callbackForm) => {
@@ -29,7 +29,6 @@ export const useFormioForms = () => {
         return savedForm;
       } catch (error) {
         if (error instanceof http.UnauthenticatedError) {
-          NavFormioJs.Formio.setToken('');
           feedbackEmit.error('Lagring feilet. Du har blitt logget ut.');
         } else {
           feedbackEmit.error(
@@ -39,7 +38,7 @@ export const useFormioForms = () => {
         return { error: true };
       }
     },
-    [feedbackEmit],
+    [feedbackEmit, http],
   );
 
   const onPublish = useCallback(
