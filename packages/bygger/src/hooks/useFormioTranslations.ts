@@ -61,16 +61,15 @@ export const useFormioTranslations = (serverURL, formio) => {
       try {
         const responseBody = await http!.get(url, { 'x-jwt-token': NavFormioJs.Formio.getToken() });
         return languagesUtil.globalEntitiesToI18nGroupedByTag(mapper(responseBody));
-      } catch (err) {
+      } catch (err: any) {
         const userMessage = 'Henting av globale oversettelser feilet. Last siden på nytt.';
-        if (err instanceof http!.HttpError) {
-          logger?.error('Failed to fetch global translations', {
-            reason: err.message,
-            httpStatus: err.status,
-            userMessage,
-            url,
-          });
-        }
+        const isHttpError = err instanceof http!.HttpError;
+        logger?.error('Failed to load global translations', {
+          reason: err.message || err,
+          userMessage,
+          url,
+          ...(isHttpError && { httpStatus: err.status }),
+        });
         feedbackEmit.error(userMessage);
         throw err;
       }
@@ -140,21 +139,14 @@ export const useFormioTranslations = (serverURL, formio) => {
         );
       } catch (err: any) {
         const userMessage = 'Henting av oversettelser for dette skjemaet feilet. Last siden på nytt.';
-        if (err instanceof http!.HttpError) {
-          logger?.error(`Failed to fetch form translations`, {
-            reason: err.message,
-            httpStatus: err.status,
-            userMessage,
-            formPath,
-            url,
-          });
-        } else {
-          logger?.error('Failed to process fetched form translations', {
-            reason: err.message || err,
-            formPath,
-            userMessage,
-          });
-        }
+        const isHttpError = err instanceof http!.HttpError;
+        logger?.error(`Failed to load form translations`, {
+          reason: err.message || err,
+          ...(isHttpError && { httpStatus: err.status }),
+          userMessage,
+          formPath,
+          url,
+        });
         feedbackEmit.error(userMessage);
         throw err;
       }
@@ -226,13 +218,13 @@ export const useFormioTranslations = (serverURL, formio) => {
         feedbackEmit.success('Slettet oversettelse ' + id);
         return { deleted: true };
       } catch (err: any) {
-        if (err instanceof http!.HttpError) {
-          logger?.error(`Failed to fetch form translations`, {
-            reason: err.message,
-            httpStatus: err.status,
-            url,
-          });
-        }
+        const isHttpError = err instanceof http!.HttpError;
+        logger?.error('Failed to delete translation', {
+          reason: err.message || err,
+          languageSubmissionId: id,
+          ...(isHttpError && { httpStatus: err.status }),
+          url,
+        });
         return { deleted: false, errorMessage: err.message };
       }
     },
@@ -291,15 +283,14 @@ export const useFormioTranslations = (serverURL, formio) => {
           newOrExistingTranslationId = submission._id;
         } catch (error: any) {
           const userMessage = 'Oversettelsen kunne ikke opprettes: '.concat(error.message);
-          if (error instanceof http!.HttpError) {
-            logger?.error('Failed to create translation object', {
-              reason: error.message,
-              httpStatus: error.status,
-              userMessage,
-              formPath: form,
-              translationScope: scope,
-            });
-          }
+          const isHttpError = error instanceof http!.HttpError;
+          logger?.error('Failed to create translation object', {
+            reason: error.message,
+            userMessage,
+            formPath: form,
+            translationScope: scope,
+            ...(isHttpError && { httpStatus: error.status }),
+          });
           feedbackEmit.error(userMessage);
           return error.message;
         }
@@ -322,16 +313,15 @@ export const useFormioTranslations = (serverURL, formio) => {
           return submission;
         } catch (error: any) {
           const userMessage = 'Lagring av oversettelser feilet: '.concat(error.message);
-          if (error instanceof http!.HttpError) {
-            logger?.error('Failed to update translation object', {
-              reason: error.message,
-              httpStatus: error.status,
-              userMessage,
-              formPath: form,
-              translationScope: scope,
-              newOrExistingTranslationId,
-            });
-          }
+          const isHttpError = error instanceof http!.HttpError;
+          logger?.error('Failed to update translation object', {
+            reason: error.message,
+            userMessage,
+            formPath: form,
+            translationScope: scope,
+            newOrExistingTranslationId,
+            ...(isHttpError && { httpStatus: error.status }),
+          });
           feedbackEmit.error(userMessage);
           return error.message;
         }
