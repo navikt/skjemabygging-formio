@@ -9,7 +9,7 @@ const originalRemoveRow = FormioDataGrid.prototype.removeRow;
 class DataGrid extends FormioDataGrid {
   static schema() {
     return Field.schema({
-      label: 'Datarutenett',
+      label: 'Repeterende data',
       key: 'datagrid',
       type: 'datagrid',
       clearOnHide: true,

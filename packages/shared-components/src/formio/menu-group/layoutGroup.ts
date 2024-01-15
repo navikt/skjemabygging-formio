@@ -3,7 +3,7 @@ import dataGridBuilder from '../components/core/datagrid/DataGrid.builder';
 import formGroupBuilder from '../components/core/form-group/FormGroup.builder';
 
 const layoutGroup = {
-  title: 'Layout',
+  title: 'Gruppering',
   components: {
     navSkjemagruppe: formGroupBuilder(),
     container: containerBuilder(),
