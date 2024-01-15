@@ -4,7 +4,6 @@ const currencySelectBuilder = () => {
   const schema = CurrencySelect.schema();
   return {
     title: 'Valutavelger',
-    group: 'pengerOgKonto',
     schema: {
       ...schema,
       validate: {

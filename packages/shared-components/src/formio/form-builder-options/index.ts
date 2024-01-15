@@ -1,8 +1,8 @@
-import builderPalett from './builder-palett/index';
+import menuGroup from '../menu-group';
 import { SANITIZE_CONFIG } from './sanitizeConfig';
 
 const FormBuilderOptions = {
-  builder: builderPalett,
+  builder: menuGroup,
   language: 'nb-NO',
   sanitizeConfig: SANITIZE_CONFIG,
 };

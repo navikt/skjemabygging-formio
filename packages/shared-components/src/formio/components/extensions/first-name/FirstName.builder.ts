@@ -1,7 +1,6 @@
 const firstNameBuilder = (keyPostfix = '') => {
   return {
     title: 'Fornavn',
-    group: 'person',
     schema: {
       label: 'Fornavn',
       type: 'textfield',

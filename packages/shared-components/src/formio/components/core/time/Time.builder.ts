@@ -1,7 +1,6 @@
 const timeBuilder = () => {
   return {
     title: 'Klokke',
-    group: 'datoOgTid',
     schema: {
       label: 'Klokkeslett (tt:mm)',
       type: 'textfield',

@@ -12,7 +12,6 @@ const phoneNumberForm = () => {
     display([
       editFormDisplay.label(),
       editFormDisplay.description(),
-      editFormDisplay.autoComplete(),
     ]),
     validation([
       editFormValidation.required(),

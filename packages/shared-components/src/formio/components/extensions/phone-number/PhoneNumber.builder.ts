@@ -1,7 +1,6 @@
 const phoneNumberBuilder = (keyPostfix = '') => {
   return {
     title: 'Telefon',
-    group: 'person',
     schema: {
       label: 'Telefonnummer',
       type: 'phoneNumber',

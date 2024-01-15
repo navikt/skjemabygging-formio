@@ -4,7 +4,6 @@ const organizationNumberBuilder = () => {
   const schema = OrganizationNumber.schema();
   return {
     title: schema.label,
-    group: 'organisasjon',
     schema: {
       ...schema,
       validateOn: 'blur',

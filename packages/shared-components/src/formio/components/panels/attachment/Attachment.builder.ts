@@ -1,7 +1,6 @@
 const attachmentBuilder = () => {
   return {
     title: 'Vedlegg',
-    group: 'panels',
     schema: {
       title: 'Vedlegg',
       type: 'panel',

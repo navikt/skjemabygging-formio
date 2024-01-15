@@ -4,7 +4,6 @@ const nationalIdentityNumberBuilder = () => {
   const schema = NationalIdentityNumber.schema();
   return {
     title: 'Fødselsnummer',
-    group: 'person',
     schema: {
       ...schema,
       validateOn: 'blur',

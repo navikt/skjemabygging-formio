@@ -4,7 +4,6 @@ const alertBuilder = () => {
   const schema = Alert.schema();
   return {
     title: 'Alertstripe',
-    group: 'layout',
     schema: {
       ...schema,
     },
