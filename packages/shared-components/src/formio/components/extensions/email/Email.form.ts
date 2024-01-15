@@ -12,7 +12,6 @@ const emailForm = () => {
     display([
       editFormDisplay.label(),
       editFormDisplay.description(),
-      editFormDisplay.autoComplete(),
     ]),
     validation([
       editFormValidation.required(),

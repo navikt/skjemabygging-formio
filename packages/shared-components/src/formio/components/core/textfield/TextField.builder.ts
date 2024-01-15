@@ -4,7 +4,6 @@ const textFieldBuilder = () => {
   const schema = TextField.schema();
   return {
     title: schema.label,
-    group: 'basic',
     schema: {
       ...schema,
       validate: {
