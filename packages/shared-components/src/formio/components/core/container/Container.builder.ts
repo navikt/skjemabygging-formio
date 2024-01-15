@@ -4,7 +4,6 @@ const ContainerBuilder = () => {
   const schema = Container.schema();
   return {
     title: schema.label,
-    group: 'data',
     schema: {
       ...schema,
       validateOn: 'blur',

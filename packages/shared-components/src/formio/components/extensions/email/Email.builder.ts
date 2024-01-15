@@ -1,7 +1,6 @@
 const emailBuilder = () => {
   return {
     title: 'E-post',
-    group: 'person',
     schema: {
       label: 'E-post',
       type: 'email',

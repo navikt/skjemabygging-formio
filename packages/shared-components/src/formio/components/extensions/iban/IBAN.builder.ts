@@ -4,7 +4,6 @@ const IBANBuilder = () => {
   const schema = IBAN.schema();
   return {
     title: 'IBAN',
-    group: 'pengerOgKonto',
     schema: {
       ...schema,
       validateOn: 'blur',

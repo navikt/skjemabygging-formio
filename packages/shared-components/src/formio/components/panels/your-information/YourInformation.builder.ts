@@ -9,7 +9,6 @@ const yourInformationBuilder = () => {
 
   return {
     title: 'Dine opplysninger',
-    group: 'panels',
     schema: {
       title: 'Dine opplysninger',
       type: 'panel',

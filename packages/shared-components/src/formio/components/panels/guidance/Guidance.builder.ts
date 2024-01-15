@@ -1,7 +1,6 @@
 const guidanceBuilder = () => {
   return {
     title: 'Veiledning',
-    group: 'panels',
     schema: {
       title: 'Veiledning',
       type: 'panel',
