@@ -37,14 +37,10 @@ const RESPONSE_HEADERS_ERROR = {
 };
 
 describe('useFormioTranslations', () => {
-  const headerFormioToken = {
-    'x-jwt-token': '',
-  };
-  const headerAcceptApplicationJson = {
+  const expectedHeaders = {
     Accept: 'application/json',
-  };
-  const headerContentTypeApplicationJson = {
     'Content-Type': 'application/json',
+    'x-jwt-token': '',
   };
   let fetchSpy;
   let formioTranslations: ReturnType<typeof useFormioTranslations>;
@@ -108,11 +104,7 @@ describe('useFormioTranslations', () => {
           `${DEFAULT_PROJECT_URL}/language/submission?data.name=global&limit=1000`,
           {
             method: 'GET',
-            headers: {
-              ...headerFormioToken,
-              ...headerAcceptApplicationJson,
-              ...headerContentTypeApplicationJson,
-            },
+            headers: expectedHeaders,
           },
         );
       });
@@ -125,11 +117,7 @@ describe('useFormioTranslations', () => {
           `${DEFAULT_PROJECT_URL}/language/submission?data.name=global&data.language=en&limit=1000`,
           {
             method: 'GET',
-            headers: {
-              ...headerFormioToken,
-              ...headerAcceptApplicationJson,
-              ...headerContentTypeApplicationJson,
-            },
+            headers: expectedHeaders,
           },
         );
       });
@@ -137,11 +125,7 @@ describe('useFormioTranslations', () => {
       it('fetches English translations and does no mapping for text keys', async () => {
         const fetchMockImpl = (globalTranslations) => {
           return () => {
-            return Promise.resolve(
-              new Response(JSON.stringify(globalTranslations['en']), {
-                headers: { ...headerContentTypeApplicationJson },
-              }),
-            );
+            return Promise.resolve(new Response(JSON.stringify(globalTranslations['en']), RESPONSE_HEADERS_OK));
           };
         };
 
@@ -200,11 +184,7 @@ describe('useFormioTranslations', () => {
           `${DEFAULT_PROJECT_URL}/language/submission?data.name=global&limit=1000`,
           {
             method: 'GET',
-            headers: {
-              ...headerFormioToken,
-              ...headerAcceptApplicationJson,
-              ...headerContentTypeApplicationJson,
-            },
+            headers: expectedHeaders,
           },
         );
       });
@@ -212,11 +192,7 @@ describe('useFormioTranslations', () => {
       it('fetches English translations and maps original text value as key for texts with tag validering', async () => {
         const fetchMockImpl = (globalTranslations) => {
           return () => {
-            return Promise.resolve(
-              new Response(JSON.stringify(globalTranslations['en']), {
-                headers: { ...headerContentTypeApplicationJson },
-              }),
-            );
+            return Promise.resolve(new Response(JSON.stringify(globalTranslations['en']), RESPONSE_HEADERS_OK));
           };
         };
 
@@ -382,11 +358,7 @@ describe('useFormioTranslations', () => {
         `${DEFAULT_PROJECT_URL}/language/submission?data.name__regex=/^global(.${formPath})*$/gi&limit=1000`,
         {
           method: 'GET',
-          headers: {
-            ...headerFormioToken,
-            ...headerAcceptApplicationJson,
-            ...headerContentTypeApplicationJson,
-          },
+          headers: expectedHeaders,
         },
       );
     });
@@ -447,11 +419,7 @@ describe('useFormioTranslations', () => {
         body: JSON.stringify({
           data: { language: 'en', i18n: { tekst: 'text' }, name: 'global.formPath', scope: 'local', form: 'formPath' },
         }),
-        headers: {
-          ...headerFormioToken,
-          ...headerAcceptApplicationJson,
-          ...headerContentTypeApplicationJson,
-        },
+        headers: expectedHeaders,
         method: 'PUT',
       });
       expect(fetchSpy).toHaveBeenCalledTimes(1);
@@ -472,11 +440,7 @@ describe('useFormioTranslations', () => {
         body: JSON.stringify({
           data: { language: 'en', name: 'global.formPath', scope: 'local', form: 'formPath' },
         }),
-        headers: {
-          ...headerFormioToken,
-          ...headerAcceptApplicationJson,
-          ...headerContentTypeApplicationJson,
-        },
+        headers: expectedHeaders,
         method: 'POST',
       });
 
@@ -484,11 +448,7 @@ describe('useFormioTranslations', () => {
         body: JSON.stringify({
           data: { language: 'en', i18n: { tekst: 'text' }, name: 'global.formPath', scope: 'local', form: 'formPath' },
         }),
-        headers: {
-          ...headerFormioToken,
-          ...headerAcceptApplicationJson,
-          ...headerContentTypeApplicationJson,
-        },
+        headers: expectedHeaders,
         method: 'PUT',
       });
 
