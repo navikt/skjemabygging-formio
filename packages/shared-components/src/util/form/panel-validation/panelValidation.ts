@@ -30,10 +30,12 @@ export const validateWizardPanels = (formioInstance, form, submission): PanelVal
       (wizardComponent) => wizardComponent.component.type === 'panel' && !wizardComponent.component.isAttachmentPanel,
     )
     .map((panel): PanelValidation => {
+      const firstInput = formSummaryUtil.findFirstInput(panel);
       const firstInputWithValidationError = findFirstInputWithValidationError(panel, submission?.data ?? {});
       return {
         key: panel.key as string,
         hasValidationErrors: firstInputWithValidationError !== undefined,
+        firstInputComponent: firstInput,
         firstInputWithValidationError: firstInputWithValidationError?.key,
         summaryComponents: formSummaryPanels.find((formSummaryPanel) => formSummaryPanel.key === panel.key).components,
       };
@@ -58,7 +60,11 @@ export const findFormStartingPoint = (
     if (validation.hasValidationErrors && firstPanelWithError === undefined) {
       firstPanelWithError = index;
     }
-    if ((validation.summaryComponents ?? []).length === 0 && firstEmptyPanelIndex === undefined) {
+    if (
+      (validation.summaryComponents ?? []).length === 0 &&
+      !!validation.firstInputComponent &&
+      firstEmptyPanelIndex === undefined
+    ) {
       firstEmptyPanelIndex = index;
     }
   });
