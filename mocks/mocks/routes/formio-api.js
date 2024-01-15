@@ -13,6 +13,7 @@ const translationsConditionalXmas = require('../data/formio-api/conditionalxmas-
 const translationsCustomComps = require('../data/formio-api/custom-components-translations.json');
 const translationsSubmissionMethod = require('../data/formio-api/submission-method-translations.json');
 const globalTranslationsEn = require('../data/formio-api/global-translation.json');
+const formCustomCompsAlerrt = require('../data/formio-api/custom-components-alert.json');
 
 const allForms = [
   { form: formCypress101, translations: translationsCypress101 },
@@ -21,6 +22,7 @@ const allForms = [
   { form: formConditionalXmas, translations: translationsConditionalXmas },
   { form: formCustomComps, translations: translationsCustomComps },
   { form: formCustomCompsDatagrid, translations: undefined },
+  { form: formCustomCompsAlerrt, translations: undefined },
   { form: formNavdatepicker, translations: undefined },
   { form: formSubmissionMethod, translations: translationsSubmissionMethod },
   { form: formTestMellomlagring, translations: undefined },
@@ -42,6 +44,7 @@ module.exports = [
           middleware: (req, res) => {
             const formPath = req.query.path;
             if (formPath) {
+              console.log('HALLAA', formPath);
               const testdata = findTestdata(formPath);
               if (testdata) {
                 res.status(200);

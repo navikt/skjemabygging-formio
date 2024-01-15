@@ -439,4 +439,21 @@ describe('Custom react components', () => {
       });
     });
   });
+
+  describe('NavAlert', () => {
+    beforeEach(() => {
+      cy.intercept('GET', '/fyllut/api/forms/testingalert').as('getAlertForm');
+      cy.visit('/fyllut/testingalert/page1?sub=paper');
+      cy.wait('@getConfig');
+      cy.wait('@getAlertForm');
+    });
+
+    it('should show default info with content', () => {
+      cy.get('.navds-alert').contains('Testing info alert');
+    });
+
+    it('should show success variant with conteent', () => {
+      cy.get('.navds-alert--success').contains('Testing success alert');
+    });
+  });
 });
