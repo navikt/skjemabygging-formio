@@ -91,14 +91,6 @@ class BaseComponent extends FormioReactComponent {
   }
 
   /**
-   * Get inline boolean for custom component renderReact()
-   * If true, it removes the background
-   */
-  getIsinline() {
-    return this.component?.isInline ?? false;
-  }
-
-  /**
    * Get auto complete for custom component renderReact()
    */
   getAutoComplete() {

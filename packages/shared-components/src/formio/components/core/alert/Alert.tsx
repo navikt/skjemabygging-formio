@@ -26,18 +26,25 @@ class Alert extends BaseComponent {
     return (this.component?.alerttype ?? 'info') as AlertProps['variant'];
   }
 
+  getIsinline() {
+    return this.component?.isInline ?? false;
+  }
+
   renderReact(element) {
     element.render(
-      <NavAlert
-        id={this.getId()}
-        ref={(ref) => this.setReactInstance(ref)}
-        variant={this.getAlertType()}
-        inline={this.getIsinline()}
-        fullWidth={false} // Removes border-radius if true
-        size="medium"
-      >
-        {this.t(this.getContent())}
-      </NavAlert>,
+      <>
+        {this.getDiffTag()}
+        <NavAlert
+          id={this.getId()}
+          variant={this.getAlertType()}
+          inline={this.getIsinline()} // Removes background if true
+          fullWidth={false} // Removes border-radius if true
+          size="medium"
+        >
+          {this.t(this.getContent())}
+        </NavAlert>
+        ,
+      </>,
     );
   }
 }
