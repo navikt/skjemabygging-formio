@@ -158,6 +158,7 @@ export interface Component {
   customDefaultValue?: string;
   keyLabel?: string;
   valueComponent?: Component;
+  isInline?: boolean;
 }
 
 export interface ComponentProperties {

@@ -32,6 +32,7 @@ class Alert extends BaseComponent {
         id={this.getId()}
         ref={(ref) => this.setReactInstance(ref)}
         variant={this.getAlertType()}
+        inline={this.getIsinline()}
         fullWidth={false} // Removes border-radius if true
         size="medium"
       >

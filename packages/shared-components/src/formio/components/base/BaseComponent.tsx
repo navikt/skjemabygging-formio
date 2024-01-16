@@ -87,7 +87,15 @@ class BaseComponent extends FormioReactComponent {
    * Get content for custom component renderReact()
    */
   getContent() {
-    return this.component?.content;
+    return this.component?.content ?? '';
+  }
+
+  /**
+   * Get inline boolean for custom component renderReact()
+   * If true, it removes the background
+   */
+  getIsinline() {
+    return this.component?.isInline ?? false;
   }
 
   /**
