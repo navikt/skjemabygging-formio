@@ -44,7 +44,6 @@ module.exports = [
           middleware: (req, res) => {
             const formPath = req.query.path;
             if (formPath) {
-              console.log('HALLAA', formPath);
               const testdata = findTestdata(formPath);
               if (testdata) {
                 res.status(200);
