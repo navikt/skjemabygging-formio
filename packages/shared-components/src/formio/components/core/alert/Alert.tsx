@@ -36,7 +36,7 @@ class Alert extends BaseComponent {
         fullWidth={false} // Removes border-radius if true
         size="medium"
       >
-        {this.getContent()}
+        {this.t(this.getContent())}
       </NavAlert>,
     );
   }
