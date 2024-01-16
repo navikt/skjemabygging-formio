@@ -1,6 +1,7 @@
 app-name: skjemautfylling
 ingresses:
   - "https://www.nav.no/fyllut"
+fyllut-frontend-url: "https://www.nav.no/fyllut"
 enabled-features: translations,autoComplete,sendInnIntegration
 foersteside-url: https://www.nav.no/soknader/api/forsteside
 dekorator-url: https://www.nav.no/dekoratoren?simple=true

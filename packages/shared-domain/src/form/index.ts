@@ -164,6 +164,7 @@ export interface ComponentProperties {
   vedleggstittel?: string;
   vedleggskode?: string;
   vedleggErValgfritt?: 'ja' | 'nei';
+  vedleggskjema?: string;
 }
 
 export interface Attachment {
