@@ -11,6 +11,7 @@ class Alert extends BaseComponent {
       key: 'alertstripe',
       alerttype: 'info',
       input: false,
+      hideLabel: true,
     });
   }
 
@@ -43,7 +44,6 @@ class Alert extends BaseComponent {
         >
           {this.t(this.getContent())}
         </NavAlert>
-        ,
       </>,
     );
   }
