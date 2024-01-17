@@ -45,6 +45,7 @@ const localDevelopmentConfig: DefaultConfig = {
   formioProjectUrl: process.env.FORMIO_PROJECT_URL || 'https://formio-api.intern.dev.nav.no/jvcemxwcpghcqjn',
   forstesideUrl: 'https://www.nav.no/soknader/api/forsteside',
   decoratorUrl: 'https://www.nav.no/dekoratoren?simple=true',
+  fyllutFrontendUrl: process.env.FYLLUT_FRONTEND_URL || 'http://localhost:3001/fyllut',
   skjemabyggingProxyUrl: process.env.SKJEMABYGGING_PROXY_URL || 'https://skjemabygging-proxy.dev-fss-pub.nais.io',
   skjemabyggingProxyClientId: '95170319-b4d7-4190-8271-118ed19bafbf',
   azureOpenidTokenEndpoint:
@@ -80,6 +81,7 @@ const defaultConfig: DefaultConfig = {
   formioProjectUrl: process.env.FORMIO_PROJECT_URL!,
   forstesideUrl: process.env.FOERSTESIDE_URL!,
   decoratorUrl: process.env.DECORATOR_URL!,
+  fyllutFrontendUrl: process.env.FYLLUT_FRONTEND_URL!,
   skjemabyggingProxyUrl: process.env.SKJEMABYGGING_PROXY_URL!,
   skjemabyggingProxyClientId: process.env.SKJEMABYGGING_PROXY_CLIENT_ID!,
   azureOpenidTokenEndpoint: process.env.AZURE_OPENID_CONFIG_TOKEN_ENDPOINT!,
