@@ -42,7 +42,7 @@ class Alert extends BaseComponent {
           fullWidth={false} // Removes border-radius if true
           size="medium"
         >
-          {this.t(this.getContent())}
+          <div dangerouslySetInnerHTML={{ __html: this.t(this.getContent()) }} />
         </NavAlert>
       </>,
     );
