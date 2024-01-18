@@ -5,6 +5,7 @@ class Container extends FormioContainer {
   static schema(...extend) {
     return {
       ...FormioContainer.schema(...extend),
+      input: false,
       label: 'Beholder',
     };
   }

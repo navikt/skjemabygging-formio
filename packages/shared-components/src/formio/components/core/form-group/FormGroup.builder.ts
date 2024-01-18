@@ -8,7 +8,7 @@ const FormGroupBuilder = () => {
       ...schema,
       validateOn: 'blur',
       validate: {
-        required: true,
+        required: false,
       },
     },
   };
