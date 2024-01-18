@@ -13,6 +13,8 @@ interface FetchHeader {
   'Content-Type'?: MimeType;
   Accept?: MimeType;
   'Fyllut-Submission-Method'?: SubmissionMethodType;
+  'Bygger-Formio-Token'?: string;
+  'x-jwt-token'?: string; // formio token when invoking formio api directly
 }
 
 interface FetchOptions {
@@ -84,7 +86,7 @@ const handleResponse = async (response: Response, opts?: FetchOptions) => {
       throw new UnauthenticatedError(response.statusText);
     }
 
-    let errorMessage;
+    let errorMessage: string = '';
     if (isResponseType(response, MimeType.JSON)) {
       const responseJson = await response.json();
       if (responseJson.message) {

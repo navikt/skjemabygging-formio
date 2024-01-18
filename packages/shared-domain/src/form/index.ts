@@ -158,12 +158,14 @@ export interface Component {
   customDefaultValue?: string;
   keyLabel?: string;
   valueComponent?: Component;
+  isInline?: boolean;
 }
 
 export interface ComponentProperties {
   vedleggstittel?: string;
   vedleggskode?: string;
   vedleggErValgfritt?: 'ja' | 'nei';
+  vedleggskjema?: string;
 }
 
 export interface Attachment {

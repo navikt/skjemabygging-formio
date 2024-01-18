@@ -1,6 +1,7 @@
 app-name: skjemautfylling-preprod-alt
 ingresses:
   - "https://fyllut-preprod-alt.intern.dev.nav.no/fyllut"
+fyllut-frontend-url: "https://fyllut-preprod-alt.intern.dev.nav.no/fyllut"
 enabled-features: translations,sendInnIntegration
 foersteside-url: https://www.nav.no/soknader/api/forsteside
 dekorator-url: https://www.nav.no/dekoratoren?simple=true
