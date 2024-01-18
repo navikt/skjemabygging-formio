@@ -71,8 +71,8 @@ export const findFormStartingPoint = (
   });
 
   const lastPanelIndex = panelValidations.length - 1;
-  // return first panel with error if it comes before the first panel with no submissions
-  if ((firstPanelWithError ?? lastPanelIndex) < (firstEmptyPanelIndex ?? lastPanelIndex)) {
+  // return first panel with error if it comes before (or is the same as) the first panel with no submissions
+  if (typeof firstPanelWithError === 'number' && firstPanelWithError <= (firstEmptyPanelIndex ?? lastPanelIndex)) {
     const component = panelValidations[firstPanelWithError!].firstInputWithValidationError;
     return { panel: panelValidations[firstPanelWithError!].key, component };
   }
