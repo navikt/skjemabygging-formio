@@ -8,7 +8,7 @@ const ContainerBuilder = () => {
       ...schema,
       validateOn: 'blur',
       validate: {
-        required: true,
+        required: false,
       },
     },
   };
