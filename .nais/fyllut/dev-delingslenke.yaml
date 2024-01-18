@@ -2,7 +2,7 @@ app-name: skjemautfylling-delingslenke
 ingresses:
   - "https://skjemadelingslenke.ekstern.dev.nav.no/fyllut"
 fyllut-frontend-url: "https://skjemadelingslenke.ekstern.dev.nav.no/fyllut"
-enabled-features: translations,autoComplete,sendInnIntegration,mellomlagring
+enabled-features: translations,autoComplete,sendInnIntegration,mellomlagring=true,createMellomlagring=true
 foersteside-url: https://www.nav.no/soknader/api/forsteside
 dekorator-url: https://www.nav.no/dekoratoren?simple=true
 skjemabygging-proxy-client-id: 95170319-b4d7-4190-8271-118ed19bafbf
