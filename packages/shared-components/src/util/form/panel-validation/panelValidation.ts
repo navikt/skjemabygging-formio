@@ -37,7 +37,8 @@ export const validateWizardPanels = (formioInstance, form: NavFormType, submissi
         key: panel.key as string,
         hasValidationErrors: firstInputWithValidationError !== undefined,
         firstInputComponent: firstInput,
-        firstInputWithValidationError: firstInputWithValidationError?.key,
+        firstInputWithValidationError:
+          firstInputWithValidationError && `${firstInputWithValidationError.id}-${firstInputWithValidationError.key}`,
         summaryComponents: formSummaryPanels.find((formSummaryPanel) => formSummaryPanel.key === panel.key).components,
       };
     });
