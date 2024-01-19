@@ -1,21 +1,26 @@
-import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
-import { findFormStartingPoint, PanelValidation } from './panelValidation';
+import { Component, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
+import { PanelValidation, findFormStartingPoint } from './panelValidation';
 
 describe('panelValidationUtils', () => {
   describe('findFormStartingPoint', () => {
-    const input = (key) => ({ key, input: true });
+    const input = (key) => ({ key, input: true }) as Component;
+
     const firstPanelWithOneInput = { key: 'firstPanelWithOneInput', components: [input('firstInput')] };
     const firstPanelWithOneInputValid: PanelValidation = {
       key: firstPanelWithOneInput.key,
       hasValidationErrors: false,
       summaryComponents: ['firstInput'],
+      firstInputComponent: input('firstInput'),
     };
+
     const panelWithOneInput = { key: 'panelWithOneInput', components: [input('singleInput')] };
     const panelWithOneInputValid: PanelValidation = {
       key: panelWithOneInput.key,
       hasValidationErrors: false,
       summaryComponents: ['singleInput'],
+      firstInputComponent: input('singleInput'),
     };
+
     const panelWithThreeInputs = {
       key: 'panelWithThreeInputs',
       components: [{ key: 'notAnInput' }, input('input1'), input('input2'), input('input3')],
@@ -24,13 +29,26 @@ describe('panelValidationUtils', () => {
       key: panelWithThreeInputs.key,
       hasValidationErrors: false,
       summaryComponents: ['input1', 'input2'],
+      firstInputComponent: input('input1'),
     };
+
+    const panelWithNoInputs = {
+      key: 'panelWithNoInputs',
+      components: [{ key: 'notAnInput' }, { key: 'alsoNotAnInput' }],
+    };
+    const panelWithNoInputsValid = {
+      key: panelWithNoInputs.key,
+      hasValidationErrors: false,
+      summaryComponents: [],
+    };
+
+    const nestedInput = input('nestedInput');
     const panelWithNestedInput = {
       key: 'panelWithNestedInput',
       components: [
         {
           key: 'level1',
-          components: [{ key: 'level2', components: [input('nestedInput')] }],
+          components: [{ key: 'level2', components: [nestedInput] }],
         },
         input('topLevelInput'),
       ],
@@ -39,6 +57,7 @@ describe('panelValidationUtils', () => {
       key: panelWithNestedInput.key,
       hasValidationErrors: false,
       summaryComponents: ['nestedInput', 'topLevelInput'],
+      firstInputComponent: nestedInput,
     };
 
     describe('When form has validation errors', () => {
@@ -93,6 +112,46 @@ describe('panelValidationUtils', () => {
         ];
         expect(findFormStartingPoint(form, panelValidation)).toEqual({
           panel: panelWithThreeInputs.key,
+          component: 'input1',
+        });
+      });
+    });
+
+    describe('When the first panel has no input components', () => {
+      const form = { components: [panelWithNoInputs, panelWithOneInput, panelWithThreeInputs] } as NavFormType;
+
+      it('returns key of first panel when there are no empty panels or validation errors', () => {
+        const panelValidation: PanelValidation[] = [
+          panelWithNoInputsValid,
+          panelWithOneInputValid,
+          panelWithThreeInputsValid,
+        ];
+        expect(findFormStartingPoint(form, panelValidation)).toEqual({
+          panel: panelWithNoInputs.key,
+          component: '',
+        });
+      });
+
+      it('does not return key of first panel if a panel has validation errors', () => {
+        const panelValidation: PanelValidation[] = [
+          panelWithNoInputsValid,
+          panelWithOneInputValid,
+          { ...panelWithThreeInputsValid, hasValidationErrors: true, firstInputWithValidationError: 'input2' },
+        ];
+        expect(findFormStartingPoint(form, panelValidation)).toEqual({
+          panel: panelWithThreeInputsValid.key,
+          component: 'input2',
+        });
+      });
+
+      it('does not return key of first panel if a panel has no submission', () => {
+        const panelValidation: PanelValidation[] = [
+          panelWithNoInputsValid,
+          panelWithOneInputValid,
+          { ...panelWithThreeInputsValid, summaryComponents: [] },
+        ];
+        expect(findFormStartingPoint(form, panelValidation)).toEqual({
+          panel: panelWithThreeInputsValid.key,
           component: 'input1',
         });
       });
