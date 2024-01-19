@@ -44,7 +44,7 @@ describe('sendInnContext', () => {
         <AppConfigProvider
           app={'fyllut'}
           submissionMethod={submissionMethod}
-          featureToggles={{ enableMellomlagring: true }}
+          featureToggles={{ enableMellomlagring: true, enableCreateMellomlagring: true }}
           http={mockHttp as unknown as typeof http}
           baseUrl={'http://test.example.no'}
           config={{ isTest: true }}
