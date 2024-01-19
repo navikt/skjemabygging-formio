@@ -35,10 +35,17 @@ describe('NavFormBuilder', () => {
   describe('mounting', () => {
     it('destroys webforms on unmount', async () => {
       const onChangeMock = vi.fn();
+      const onReadyMock = vi.fn();
       const { unmount } = render(
-        <NavFormBuilder form={testform} onChange={onChangeMock} formBuilderOptions={DEFAULT_FORM_BUILDER_OPTIONS} />,
+        <NavFormBuilder
+          form={testform}
+          onChange={onChangeMock}
+          formBuilderOptions={DEFAULT_FORM_BUILDER_OPTIONS}
+          onReady={onReadyMock}
+        />,
       );
       await waitFor(() => expect(Object.keys(NavFormioJs.Formio.forms).length).toBeGreaterThan(0));
+      await waitFor(() => expect(onReadyMock).toHaveBeenCalled());
       unmount();
       await waitFor(() => expect(Object.keys(NavFormioJs.Formio.forms).length).toBe(0));
     });
@@ -61,7 +68,7 @@ describe('NavFormBuilder', () => {
         />,
       );
       rerender = outRerender;
-      await waitFor(() => expect(onReadyMock.mock.calls).toHaveLength(1));
+      await waitFor(() => expect(onReadyMock).toHaveBeenCalled());
       onChangeMock.mockReset();
     });
 
