@@ -156,6 +156,13 @@ const SendInnProvider = ({
       return;
     }
 
+    // Complete the initialization before creating if createMellomlagring is not enabled
+    // Makes it possible to turn off NEW creations of mellomlagring, by setting createMellomlagring=false in ENABLED_FEATURES, without affecting existing ones
+    if (!featureToggles?.enableCreateMellomlagring) {
+      setIsMellomlagringReady(true);
+      return;
+    }
+
     try {
       setIsCreateStarted(true);
       const currentLanguage = getLanguageFromSearchParams();
