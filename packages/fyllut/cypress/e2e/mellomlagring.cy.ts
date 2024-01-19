@@ -262,6 +262,28 @@ describe('Mellomlagring', () => {
           cy.findByText(TEXTS.statiske.mellomlagringError.update.message).should('be.visible');
         });
       });
+
+      describe('When stored submission contains values for inputs that have been removed from the form', () => {
+        beforeEach(() => {
+          cy.mocksUseRouteVariant('get-soknad:success-extra-values');
+          cy.intercept('PUT', '/fyllut/api/send-inn/utfyltsoknad', (req) => {
+            const { submission } = req.body;
+            expect(submission.data['slettetTekstfelt']).to.be.undefined;
+            expect(submission.data['container.slettetTekstFelt']).to.be.undefined;
+          }).as('submitMellomlagring');
+        });
+
+        it('removes the unused values from submission before submitting', () => {
+          cy.visit(
+            '/fyllut/testmellomlagring/oppsummering?sub=digital&innsendingsId=8e3c3621-76d7-4ebd-90d4-34448ebcccc3&lang=nb-NO',
+          );
+          cy.wait('@getMellomlagringValid');
+          cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
+          cy.findByText('Ønsker du å få gaven innpakket').should('exist');
+          cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.saveAndContinue }).click();
+          cy.wait('@submitMellomlagring');
+        });
+      });
     });
   });
 });

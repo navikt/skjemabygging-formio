@@ -1,0 +1,53 @@
+{
+  "brukerId": "19876898104",
+  "skjemanr": "testMellomlagring",
+  "tittel": "Test mellomlagring",
+  "tema": "BAR",
+  "spraak": "nb",
+  "hoveddokument": {
+    "vedleggsnr": "testMellomlagring",
+    "tittel": "Test mellomlagring",
+    "label": "Test mellomlagring",
+    "pakrevd": true,
+    "beskrivelse": null,
+    "mimetype": "application/pdf",
+    "document": null,
+    "propertyNavn": null,
+    "formioId": null
+  },
+  "hoveddokumentVariant": {
+    "vedleggsnr": "testMellomlagring",
+    "tittel": "Test mellomlagring",
+    "label": "Test mellomlagring",
+    "pakrevd": false,
+    "beskrivelse": null,
+    "mimetype": "application/json",
+    "document": {
+      "language": "nb-NO",
+      "data": {
+        "data": {
+          "hvaDrakkDuTilFrokost": "Jus",
+          "hvaSpisteDuTilFrokost": "",
+          "hvaSyntesDuOmFrokosten": "Helt ok",
+          "slettetTekstfelt": "Verdi som skal fjernes",
+          "container.slettetTekstFelt": "Verdi fra container som skal fjernes",
+          "onskerDuAFaGavenInnpakket": "nei",
+          "hemmeligKode": "",
+          "kryssAvHvisDuOnskerDagligReklamePaEPost": false,
+          "hvordanOnskerDuAMottaPakken": {
+            "label": "På døra",
+            "value": "paDora"
+          }
+        }
+      }
+    },
+    "propertyNavn": null,
+    "formioId": null
+  },
+  "innsendingsId": "01234567-abcd-4ebd-90d4-34448ebaaaa2",
+  "status": "Opprettet",
+  "vedleggsListe": [],
+  "kanLasteOppAnnet": true,
+  "fristForEttersendelse": 14,
+  "endretDato": "2023-08-30T12:33:30.399543+02:00"
+}
