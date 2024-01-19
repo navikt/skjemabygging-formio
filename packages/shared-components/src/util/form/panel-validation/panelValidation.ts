@@ -1,8 +1,9 @@
-import { Component, formSummaryUtil, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
+import { Component, formSummaryUtil, NavFormType, Submission } from '@navikt/skjemadigitalisering-shared-domain';
 
 export type PanelValidation = {
   key: string;
   summaryComponents?: string[];
+  firstInputComponent?: Component;
   hasValidationErrors: boolean;
   firstInputWithValidationError?: string;
 };
@@ -22,19 +23,22 @@ const findFirstInputWithValidationError = (wizardComponent, data): Component | u
   return undefined;
 };
 
-export const validateWizardPanels = (formioInstance, form, submission): PanelValidation[] => {
-  const formSummaryPanels = formSummaryUtil.createFormSummaryPanels(form, submission, (txt) => txt, false);
+export const validateWizardPanels = (formioInstance, form: NavFormType, submission: Submission): PanelValidation[] => {
+  const formSummaryPanels = formSummaryUtil.createFormSummaryPanels(form, submission, (txt: string) => txt, false);
   return formSummaryPanels
     .map((panel) => formioInstance.components.find((wizardComponent) => wizardComponent.key === panel.key))
     .filter(
       (wizardComponent) => wizardComponent.component.type === 'panel' && !wizardComponent.component.isAttachmentPanel,
     )
     .map((panel): PanelValidation => {
+      const firstInput = formSummaryUtil.findFirstInput(panel);
       const firstInputWithValidationError = findFirstInputWithValidationError(panel, submission?.data ?? {});
       return {
         key: panel.key as string,
         hasValidationErrors: firstInputWithValidationError !== undefined,
-        firstInputWithValidationError: firstInputWithValidationError?.key,
+        firstInputComponent: firstInput,
+        firstInputWithValidationError:
+          firstInputWithValidationError && `${firstInputWithValidationError.id}-${firstInputWithValidationError.key}`,
         summaryComponents: formSummaryPanels.find((formSummaryPanel) => formSummaryPanel.key === panel.key).components,
       };
     });
@@ -50,24 +54,28 @@ export const findFormStartingPoint = (
     return { panel: form.components[0]?.key };
   }
 
-  let firstEmptyPanelIndex;
-  let firstPanelWithError;
+  let firstEmptyPanelIndex: number | undefined;
+  let firstPanelWithError: number | undefined;
 
   // find the first panel with error and the first panel with no submission values
   panelValidations.forEach((validation, index) => {
     if (validation.hasValidationErrors && firstPanelWithError === undefined) {
       firstPanelWithError = index;
     }
-    if ((validation.summaryComponents ?? []).length === 0 && firstEmptyPanelIndex === undefined) {
+    if (
+      (validation.summaryComponents ?? []).length === 0 &&
+      !!validation.firstInputComponent &&
+      firstEmptyPanelIndex === undefined
+    ) {
       firstEmptyPanelIndex = index;
     }
   });
 
   const lastPanelIndex = panelValidations.length - 1;
-  // return first panel with error if it comes before the first panel with no submissions
-  if ((firstPanelWithError ?? lastPanelIndex) < (firstEmptyPanelIndex ?? lastPanelIndex)) {
-    const component = panelValidations[firstPanelWithError].firstInputWithValidationError;
-    return { panel: panelValidations[firstPanelWithError].key, component };
+  // return first panel with error if it comes before (or is the same as) the first panel with no submissions
+  if (typeof firstPanelWithError === 'number' && firstPanelWithError <= (firstEmptyPanelIndex ?? lastPanelIndex)) {
+    const component = panelValidations[firstPanelWithError!].firstInputWithValidationError;
+    return { panel: panelValidations[firstPanelWithError!].key, component };
   }
 
   // if no panels were empty, default to the last panel
