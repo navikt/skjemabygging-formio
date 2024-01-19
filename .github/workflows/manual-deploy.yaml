@@ -58,12 +58,13 @@ jobs:
     needs: [package-and-push-bygger]
     if: ${{ !failure() && !cancelled() }}
     runs-on: ubuntu-latest
+    permissions:
+      id-token: 'write'
     steps:
       - uses: 'actions/checkout@v4'
       - name: 'Deploy to preprod'
         uses: 'nais/deploy/actions/deploy@v2'
         env:
-          APIKEY: '${{ secrets.NAIS_DEPLOY_APIKEY }}'
           CLUSTER: 'dev-gcp'
           RESOURCE: './.nais/bygger/nais.yaml'
           VARS: './.nais/bygger/${{ github.event.inputs.environment }}.yaml'
@@ -112,12 +113,13 @@ jobs:
     needs: [package-and-push-fyllut]
     if: ${{ !failure() && !cancelled() }}
     runs-on: ubuntu-latest
+    permissions:
+      id-token: 'write'
     steps:
       - uses: 'actions/checkout@v4'
       - name: 'Deploy to preprod'
         uses: 'nais/deploy/actions/deploy@v2'
         env:
-          APIKEY: '${{ secrets.NAIS_DEPLOY_APIKEY }}'
           CLUSTER: 'dev-gcp'
           RESOURCE: './.nais/fyllut/config.yaml'
           VARS: './.nais/fyllut/${{ github.event.inputs.environment }}.yaml'
