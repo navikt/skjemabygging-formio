@@ -29,7 +29,7 @@ class AccountNumber extends TextField {
   }
 
   validateAccountNumber(accountNumber) {
-    if (accountNumber === '') {
+    if (accountNumber === '' || accountNumber === null) {
       return true;
     }
     return validatorUtils.isAccountNumber(accountNumber + '');
