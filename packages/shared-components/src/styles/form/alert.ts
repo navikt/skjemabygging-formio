@@ -4,6 +4,12 @@ const alert = {
       marginTop: 0,
     },
   },
+  '& .formio-component-alertstripe': {
+    marginBottom: 'var(--a-spacing-10)',
+  },
+  '& .formio-component-alertstripe:last-child': {
+    marginBottom: '0',
+  },
 };
 
 export default alert;

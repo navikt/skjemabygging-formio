@@ -1,5 +1,4 @@
 import alert from './alert';
-import alertstripe from './alertstripe';
 import builderComponent from './builderComponent';
 import builderEditForm from './builderEditForm';
 import builderWizard from './builderWizard';
@@ -48,7 +47,6 @@ export default {
   iconClass,
   cssClasses,
   alert,
-  'html-alertstripe': alertstripe,
   builderComponent,
   builderEditForm,
   builderWizard,
