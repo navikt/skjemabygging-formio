@@ -243,7 +243,7 @@ export interface FyllutState {
 
 export interface Submission {
   data: SubmissionData;
-  metadata: {
+  metadata?: {
     selectedData: any;
     timezone: string;
     offset: number;
@@ -254,7 +254,7 @@ export interface Submission {
     pathName: string;
     onLine: boolean;
   };
-  state: string;
+  state?: string;
   fyllutState?: FyllutState;
 }
 
