@@ -1,10 +1,11 @@
 import {
-  dateUtils,
-  formSummaryUtil,
   FyllutState,
   NavFormType,
   Submission,
   SubmissionData,
+  dateUtils,
+  formSummaryUtil,
+  navFormUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { SendInnSoknadResponse } from '../../../api/sendinn/sendInnSoknad';
 
@@ -46,7 +47,7 @@ const getSubmissionFromResponse = (response?: SendInnSoknadResponse, form?: NavF
 
   const formSummaryKeys: string[][] = formSummaryUtil
     .createFormSummaryPanels(form, submissionFromResponse)
-    .flatMap((panel) => panel.components)
+    .flatMap((panel) => navFormUtils.flattenComponents(panel.components))
     .map((component) => component.key.split('.'));
   const submissionData = filterOutIfNotInSummary({ ...submissionFromResponse.data }, formSummaryKeys);
 
