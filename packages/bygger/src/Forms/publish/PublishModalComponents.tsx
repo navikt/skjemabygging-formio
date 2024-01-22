@@ -1,10 +1,10 @@
 import { ConfirmationModal, useModal } from '@navikt/skjemadigitalisering-shared-components';
-import { navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { NavFormType, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useState } from 'react';
 import ConfirmPublishModal from './ConfirmPublishModal';
 import PublishSettingsModal from './PublishSettingsModal';
 
-const validateAttachments = (form) =>
+const validateAttachments = (form: NavFormType) =>
   navFormUtils
     .flattenComponents(form.components)
     .filter(navFormUtils.isAttachment)
