@@ -1,23 +1,27 @@
 import {
-  Component,
   dateUtils,
+  formSummaryUtil,
   FyllutState,
   NavFormType,
-  navFormUtils,
   Submission,
   SubmissionData,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { SendInnSoknadResponse } from '../../../api/sendinn/sendInnSoknad';
 
-const findComponent = (components: Component[], key: string) => components.find((component) => component.key === key);
+const findComponentKeys = (formSummaryKeys: string[][], key): string[][] => {
+  return formSummaryKeys.filter((componentKeys) => componentKeys[0] === key);
+};
 
-const filterOutIfNoCorrespondingComponent = (originalData: SubmissionData, components: Component[]) => {
+const filterOutIfNotInSummary = (originalData: SubmissionData, formSummaryKeys: string[][]) => {
   const filteredSubmissionEntries = Object.entries(originalData)
     .map(([key, value]) => {
-      const component = findComponent(components, key);
-      if (!component) return undefined;
-      if (typeof value === 'object' && component.components) {
-        const nestedData = filterOutIfNoCorrespondingComponent(value as SubmissionData, component.components);
+      const componentKeys = findComponentKeys(formSummaryKeys, key);
+      if (componentKeys.length === 0) return undefined;
+      if (typeof value === 'object' && componentKeys[0].length > 1) {
+        const nestedData = filterOutIfNotInSummary(
+          value as SubmissionData,
+          componentKeys.map(([_first, ...rest]) => rest),
+        );
         if (nestedData) {
           return [key, nestedData];
         }
@@ -31,7 +35,7 @@ const filterOutIfNoCorrespondingComponent = (originalData: SubmissionData, compo
 };
 
 const getSubmissionFromResponse = (response?: SendInnSoknadResponse, form?: NavFormType): Submission => {
-  const submissionFromResponse = response?.hoveddokumentVariant?.document?.data;
+  const submissionFromResponse: Submission | undefined = response?.hoveddokumentVariant?.document?.data;
   if (!submissionFromResponse) {
     return { data: {} };
   }
@@ -40,11 +44,15 @@ const getSubmissionFromResponse = (response?: SendInnSoknadResponse, form?: NavF
     return submissionFromResponse;
   }
 
-  const components = navFormUtils.flattenComponents(form.components);
-  const submissionData = filterOutIfNoCorrespondingComponent(submissionFromResponse.data, components);
+  const formSummaryKeys: string[][] = formSummaryUtil
+    .createFormSummaryPanels(form, submissionFromResponse)
+    .flatMap((panel) => panel.components)
+    .map((component) => component.key.split('.'));
+  const submissionData = filterOutIfNotInSummary({ ...submissionFromResponse.data }, formSummaryKeys);
 
   return { ...submissionFromResponse, data: submissionData };
 };
+
 export const getFyllutMellomlagringState = (
   response?: SendInnSoknadResponse,
 ): FyllutState['mellomlagring'] | undefined => {

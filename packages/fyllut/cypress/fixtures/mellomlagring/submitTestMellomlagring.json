@@ -1862,11 +1862,7 @@
   },
   "submission": {
     "data": {
-      "hvaDrakkDuTilFrokost": "",
-      "hvaSpisteDuTilFrokost": "",
       "onskerDuAFaGavenInnpakket": "nei",
-      "hemmeligKode": "",
-      "kryssAvHvisDuOnskerDagligReklamePaEPost": false,
       "hvordanOnskerDuAMottaPakken": {
         "label": "På døra",
         "value": "paDora"
