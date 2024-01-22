@@ -75,6 +75,21 @@ describe('Translations', () => {
       cy.findByRole('button', { name: 'English' }).should('exist');
       cy.findByRole('heading', { name: 'Summary' }).should('exist');
     });
+
+    it('stays on current panel when changing language', () => {
+      cy.findByRole('link', { name: 'Dine opplysninger' }).click();
+      cy.findByRole('button', { name: 'Norsk bokmål' }).click();
+      cy.findByRole('link', { name: 'English' }).click();
+      cy.findByRole('heading', { name: 'Your information' }).should('exist');
+
+      cy.findByRole('link', { name: 'Attachment' }).click();
+      cy.findByRole('button', { name: 'English' }).click();
+      cy.findByRole('link', { name: 'Norsk bokmål' }).click();
+      cy.findByRole('heading', { name: 'Vedlegg' }).should('exist');
+
+      cy.findByRole('link', { name: 'Dine opplysninger' }).click();
+      cy.findByRole('heading', { name: 'Dine opplysninger' }).should('exist');
+    });
   });
 
   describe('Special cases', () => {
