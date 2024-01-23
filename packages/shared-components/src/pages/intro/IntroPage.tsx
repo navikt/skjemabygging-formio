@@ -106,8 +106,8 @@ export function IntroPage({ form, formUrl }: Props) {
                 {translate(TEXTS.statiske.introPage.requiredFields)}
               </li>
               <li className="mb-4">
-                <b>{translate(TEXTS.statiske.introPage.notSaveBold)} </b>
-                {translate(TEXTS.statiske.introPage.notSave)}
+                <b>{translate(TEXTS.statiske.introPage.autoSaveBold)} </b>
+                {translate(TEXTS.statiske.introPage.autoSave)}
               </li>
               <li className="mb-4">
                 <b>{translate(TEXTS.statiske.introPage.publicComputerBold)} </b>
