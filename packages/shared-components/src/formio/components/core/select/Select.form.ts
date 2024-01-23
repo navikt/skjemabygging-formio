@@ -17,7 +17,7 @@ const selectForm = () => {
     ]),
     data([
       editFormData.dataValues(),
-      editFormData.defaultValue(),
+      editFormData.defaultValue('navSelect'),
     ]),
     validation([
       editFormValidation.required(),

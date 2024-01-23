@@ -17,7 +17,7 @@ const radioForm = () => {
     ]),
     data([
       editFormData.values(),
-      editFormData.defaultValue(),
+      editFormData.defaultValue('radiopanel'),
     ]),
     validation([
       editFormValidation.required(),

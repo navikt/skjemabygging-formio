@@ -17,7 +17,7 @@ const selectBoxesForm = () => {
     ]),
     data([
       editFormData.values(),
-      editFormData.defaultValue(),
+      editFormData.defaultValue('selectboxes'),
     ]),
     validation([
       editFormValidation.required(),
