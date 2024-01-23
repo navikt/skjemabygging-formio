@@ -120,6 +120,7 @@ const SendInnProvider = ({
             setInnsendingsId(innsendingsId);
             await retrieveMellomlagring(innsendingsId);
             setIsMellomlagringReady(true);
+            logger?.info(`Mellomlagring was retrieved. InnsendingsId: ${innsendingsId}`);
           }
           setInitStatus('done');
         }
@@ -127,10 +128,15 @@ const SendInnProvider = ({
         // Redirect to start of schema if the application is not found. Want a full refresh here to not have to clear the existing state
         if (error.status == 404) {
           const formPath = pathname.split('/')[1];
-          window.location.assign(formPath ? `${baseUrl}/${formPath}` : `${baseUrl}`);
+          const url = formPath ? `${baseUrl}/${formPath}` : `${baseUrl}`;
+          logger?.info(
+            `Mellomlagring does not exist. Redirects to ${url}. InnsendingsId: ${innsendingsId}`,
+            error as Error,
+          );
+          window.location.assign(url);
           return;
         }
-
+        logger?.error(`Failed to retrieve mellomlagring. InnsendingsId: ${innsendingsId}`, error as Error);
         dispatchFyllutMellomlagring({ type: 'error', error: 'GET FAILED' });
         setInitStatus('error');
       }
@@ -178,9 +184,13 @@ const SendInnProvider = ({
       );
 
       if (soknadAlreadyExists(response)) {
-        navigate(`${formUrl}/paabegynt?sub=digital`);
+        const url = `${formUrl}/paabegynt?sub=digital`;
+        logger?.info(`User already has active tasks for the application. Redirects to ${url}`);
+        navigate(url);
         return;
       }
+
+      logger?.info(`A new mellomlagring was created with innsendingsId ${response?.innsendingsId}`);
 
       updateSubmission(getSubmissionWithFyllutState(response));
       dispatchFyllutMellomlagring({ type: 'init', response });
@@ -193,7 +203,7 @@ const SendInnProvider = ({
       return response;
     } catch (error: any) {
       dispatchFyllutMellomlagring({ type: 'error', error: 'CREATE FAILED' });
-      logger?.info('Oppretting av mellomlagring feilet', error);
+      logger?.error('Failed to create mellomlagring', error);
     }
   };
 
@@ -213,11 +223,12 @@ const SendInnProvider = ({
         translation,
         innsendingsId,
       );
+      logger?.info(`Mellomlagring was updated. InnsendingsId: ${innsendingsId}`);
       dispatchFyllutMellomlagring({ type: 'update', response });
       return response;
     } catch (error) {
       dispatchFyllutMellomlagring({ type: 'error', error: 'UPDATE FAILED' });
-      logger?.info('Oppdatering av mellomlagring feilet', error as Error);
+      logger?.error(`Failed to update mellomlagring. InnsendingsId: ${innsendingsId}`, error as Error);
       throw error;
     }
   };
@@ -228,10 +239,12 @@ const SendInnProvider = ({
     }
 
     try {
-      return await deleteSoknad(appConfig, innsendingsId);
+      const response = await deleteSoknad(appConfig, innsendingsId);
+      logger?.info(`Mellomlagring was deleted. InnsendingsId: ${innsendingsId}`);
+      return response;
     } catch (error) {
       dispatchFyllutMellomlagring({ type: 'error', error: 'DELETE FAILED' });
-      logger?.info('Sletting av mellomlagring feilet', error as Error);
+      logger?.error(`Failed to delete mellomlagring. InnsendingsId: ${innsendingsId}`, error as Error);
       throw error;
     }
   };
@@ -257,16 +270,25 @@ const SendInnProvider = ({
           innsendingsId,
           setRedirectLocation,
         );
+        logger?.info(`Mellomlagring was submitted. InnsendingsId: ${innsendingsId}`);
         await loggSkjemaFullfort();
         if (redirectLocation) {
           window.location.href = redirectLocation;
         }
         return response;
-      } catch (error) {
+      } catch (submitError) {
+        logger?.error(
+          `Failed to submit, will try to store changes. InnsendingsId: ${innsendingsId}`,
+          submitError as Error,
+        );
         try {
           await updateSoknad(appConfig, form, submission, currentLanguage, translation, innsendingsId);
           dispatchFyllutMellomlagring({ type: 'error', error: 'SUBMIT FAILED' });
-        } catch (error) {
+        } catch (updateError) {
+          logger?.error(
+            `Failed to update mellomlagring after a failed submit. InnsendingsId: ${innsendingsId}`,
+            updateError as Error,
+          );
           dispatchFyllutMellomlagring({ type: 'error', error: 'SUBMIT AND UPDATE FAILED' });
         }
       }
