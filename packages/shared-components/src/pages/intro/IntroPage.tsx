@@ -105,10 +105,12 @@ export function IntroPage({ form, formUrl }: Props) {
                 <b>{translate(TEXTS.statiske.introPage.requiredFieldsBold)} </b>
                 {translate(TEXTS.statiske.introPage.requiredFields)}
               </li>
-              <li className="mb-4">
-                <b>{translate(TEXTS.statiske.introPage.autoSaveBold)} </b>
-                {translate(TEXTS.statiske.introPage.autoSave)}
-              </li>
+              {(selectedSubmissionMethod === 'digital' || form.properties?.innsending === 'KUN_DIGITAL') && (
+                <li className="mb-4">
+                  <b>{translate(TEXTS.statiske.introPage.autoSaveBold)} </b>
+                  {translate(TEXTS.statiske.introPage.autoSave)}
+                </li>
+              )}
               <li className="mb-4">
                 <b>{translate(TEXTS.statiske.introPage.publicComputerBold)} </b>
                 {translate(TEXTS.statiske.introPage.publicComputer)}
