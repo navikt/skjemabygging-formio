@@ -26,6 +26,9 @@ const sendInnSoknad = {
       const tokenxAccessToken = getTokenxAccessToken(req);
 
       if (!isMellomLagringEnabled(featureToggles)) {
+        logger.warn(
+          `Mellomlagring er ikke skrudd på. Avbryter henting av mellomlagring med innsendingsId ${req.params.innsendingsId} for søknad ${sendInnConfig.paths.soknad}`,
+        );
         res.end();
         return;
       }
