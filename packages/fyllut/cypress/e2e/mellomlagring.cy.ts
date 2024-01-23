@@ -270,7 +270,7 @@ describe('Mellomlagring', () => {
             const { submission } = req.body;
             expect(submission.data['slettetTekstfelt']).to.be.undefined;
             expect(submission.data['container.slettetTekstFelt']).to.be.undefined;
-            // value should be removed if it's field is conditionally hidden
+            // value should be removed if the corresponding field is conditionally hidden
             expect(submission.data['hvaSyntesDuOmFrokosten']).to.be.undefined;
           }).as('submitMellomlagring');
         });
