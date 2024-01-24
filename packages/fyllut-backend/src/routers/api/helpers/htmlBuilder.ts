@@ -116,7 +116,12 @@ ${sectionContent(component.components, level)}
 const field = (component: Summary.Field) =>
   `<div class="spm">${component.label}</div><div class="svar">: ${component.value}</div>`;
 
-const htmlelement = (component: Summary.Field) => `<div>${component.value}</div>`;
+const htmlelement = (component: Summary.Field) => {
+  if (component.label) {
+    return field(component);
+  }
+  return `<div>${component.value}</div>`;
+};
 
 const alert = (component: Summary.Field) =>
   `<div class="label">${component.label}</div><div class="alert">${component.value}</div>`;

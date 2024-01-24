@@ -374,8 +374,6 @@ function handleComponent(
       return formSummaryObject;
     case 'htmlelement':
     case 'alertstripe':
-    case 'heading':
-    case 'paragraph':
       return handleHtmlElement(component, formSummaryObject, parentContainerKey, translate, evaluatedConditionals);
     case 'container':
       return handleContainer(component, submission, formSummaryObject, translate, evaluatedConditionals);
