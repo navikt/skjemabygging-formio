@@ -27,7 +27,7 @@ const defaultAppConfigProps: Partial<AppConfigContextType> = {
 const BUTTON_TEXT = 'Digital submission';
 
 describe('DigitalSubmissionButton', () => {
-  const defaultSubmission = {};
+  const defaultSubmission = { data: {} };
   const defaultTranslations = {};
 
   const renderButton = (props: Partial<Props> = {}, appConfigProps: Partial<AppConfigContextType> = {}) => {
