@@ -15,6 +15,9 @@ export const statiske = {
     autoSaveBold: 'Vi lagrer et utkast av skjemaet automatisk hver gang du går til neste steg.',
     autoSave:
       'Du finner utkastet på Min side. NAV kan ikke se informasjonen i utkastet. Du må trykke på “Send til NAV” for at NAV skal motta skjemaet/søknaden.',
+    notSaveBold: 'Du kan ikke lagre skjemaet underveis.',
+    notSave:
+      'Informasjonen du fyller ut i skjemaet sendes ikke til NAV før du har fullført hele skjemaet og sendt det inn. Hvis du lukker vinduet eller nettleseren vil all informasjon du har fylt ut forsvinne.',
     publicComputerBold: 'Bruk av offentlig PC:',
     publicComputer:
       'Hvis du fyller ut skjemaet på en offentlig PC, for eksempel på et bibliotek, er det viktig at du lukker nettleseren når du er ferdig. Dette vil forhindre at uvedkommende får tak i opplysningene du har fylt ut i skjemaet.',
