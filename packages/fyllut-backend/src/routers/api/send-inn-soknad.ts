@@ -46,6 +46,7 @@ const sendInnSoknad = {
           headers: {
             Accept: 'application/json',
             Authorization: `Bearer ${tokenxAccessToken}`,
+            'x-innsendingId': sanitizedInnsendingsId,
           },
         },
       );
@@ -131,6 +132,7 @@ const sendInnSoknad = {
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${tokenxAccessToken}`,
+            'x-innsendingId': sanitizedInnsendingsId,
           },
           body: JSON.stringify(body),
         },
@@ -170,6 +172,7 @@ const sendInnSoknad = {
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${tokenxAccessToken}`,
+            'x-innsendingId': sanitizedInnsendingsId,
           },
         },
       );
