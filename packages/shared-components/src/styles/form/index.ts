@@ -1,4 +1,5 @@
 import alert from './alert';
+import builderComponents from './builderComponents';
 import button from './button';
 import choices from './choices';
 import datagrid from './datagrid';
@@ -25,6 +26,7 @@ import typography from './typography';
 const form = {
   '.formio-form': {
     ...alert,
+    ...builderComponents,
     ...button,
     ...choices,
     ...datepicker,
