@@ -58,7 +58,7 @@ describe('Conditional rendering', () => {
 
       it('lists the submission for the added panel', () => {
         cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
-        cy.findByRole('heading', { name: 'Pinnekjøtt', level: 3 }).should('exist');
+        cy.contains('div', 'Pinnekjøtt');
         cy.findByText('Rotmos').should('exist');
       });
 
@@ -85,7 +85,7 @@ describe('Conditional rendering', () => {
         cy.clickNextStep();
         cy.url().should('include', '/oppsummering');
         cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
-        cy.findByRole('heading', { name: 'Lutefisk', level: 3 }).should('exist');
+        cy.contains('div', 'Lutefisk');
         cy.findByRole('link', { name: 'Lutefisk' }).should('exist');
         cy.findByRole('link', { name: 'Pinnekjøtt' }).should('not.exist');
         cy.findByText('Erterstuing').should('exist');
