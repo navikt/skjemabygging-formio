@@ -7,7 +7,7 @@ export interface Props {
 const SummaryField = ({ component }: Props) => (
   <>
     <dt>{component.label}</dt>
-    <dd>{component.value}</dd>
+    <dd dangerouslySetInnerHTML={{ __html: component.value }} />
   </>
 );
 

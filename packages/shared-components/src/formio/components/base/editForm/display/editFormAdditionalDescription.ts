@@ -1,5 +1,5 @@
 import { Component } from '@navikt/skjemadigitalisering-shared-domain';
-import editFormAceEditor from '../shared/editFormAceEditor';
+import editFormWysiwygEditor from '../shared/editFormWysiwygEditor';
 
 const editFormAdditionalDescription = (): Component => {
   return {
@@ -9,7 +9,7 @@ const editFormAdditionalDescription = (): Component => {
     label: '',
     components: [
       {
-        ...editFormAceEditor('html'),
+        ...editFormWysiwygEditor(false),
         key: 'additionalDescriptionText',
         hideLabel: true,
         validate: {

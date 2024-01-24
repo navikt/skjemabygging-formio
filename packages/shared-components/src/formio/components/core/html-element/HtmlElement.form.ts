@@ -9,10 +9,10 @@ const htmlElementForm = () => {
   // prettier-ignore
   return createTabs(
     display([
-      editFormDisplay.label(),
-      editFormDisplay.htmlTag(),
       editFormDisplay.content(),
-      editFormDisplay.contentToIncludeInPdf(),
+      editFormDisplay.textDisplay(),
+      editFormDisplay.hidden('value = data.textDisplay === "pdf"'),
+      editFormDisplay.contentForPdf(),
     ]),
     api([
       editFormApi.key(),

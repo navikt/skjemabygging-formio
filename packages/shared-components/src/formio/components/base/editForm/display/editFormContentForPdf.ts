@@ -1,12 +1,12 @@
 import { Component } from '@navikt/skjemadigitalisering-shared-domain';
 
-const editFormDisabled = (): Component => {
+const editFormContentForPdf = (): Component => {
   return {
-    label: 'Innhold som skal vises i pdf',
+    label: 'Innhold som skal vises i pdf (ikke bruk denne)',
     type: 'textfield',
     key: 'contentForPdf',
     input: true,
   };
 };
 
-export default editFormDisabled;
+export default editFormContentForPdf;

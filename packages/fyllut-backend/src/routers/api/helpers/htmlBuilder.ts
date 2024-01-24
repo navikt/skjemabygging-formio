@@ -88,6 +88,8 @@ const sectionContent = (components: Summary.Component[], level: number): string 
           return img(component);
         case 'alertstripe':
           return alert(component);
+        case 'htmlelement':
+          return htmlelement(component);
         default:
           return field(component);
       }
@@ -113,6 +115,8 @@ ${sectionContent(component.components, level)}
 
 const field = (component: Summary.Field) =>
   `<div class="spm">${component.label}</div><div class="svar">: ${component.value}</div>`;
+
+const htmlelement = (component: Summary.Field) => `<div>${component.value}</div>`;
 
 const alert = (component: Summary.Field) =>
   `<div class="label">${component.label}</div><div class="alert">${component.value}</div>`;

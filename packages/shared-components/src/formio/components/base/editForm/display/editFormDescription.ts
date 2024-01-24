@@ -1,9 +1,9 @@
 import { Component } from '@navikt/skjemadigitalisering-shared-domain';
-import editFormAceEditor from '../shared/editFormAceEditor';
+import editFormWysiwygEditor from '../shared/editFormWysiwygEditor';
 
 const editFormDescription = (): Component => {
   return {
-    ...editFormAceEditor('html'),
+    ...editFormWysiwygEditor(false),
     key: 'description',
     label: 'Beskrivelse',
   };

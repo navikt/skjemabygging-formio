@@ -1,5 +1,5 @@
 import { ExclamationmarkTriangleFillIcon } from '@navikt/aksel-icons';
-import { Accordion, Heading } from '@navikt/ds-react';
+import { Accordion } from '@navikt/ds-react';
 import { Summary, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { Link, useLocation } from 'react-router-dom';
 import { useAmplitude } from '../../../context/amplitude';
@@ -25,7 +25,6 @@ const panelStyles = makeStyles({
   },
   accordionHeader: {
     display: 'flex',
-    flexDirection: 'row',
   },
 });
 
@@ -39,13 +38,11 @@ const PanelSummary = ({ component, formUrl, hasValidationErrors }: Props) => {
 
   return (
     <section>
-      <Accordion>
+      <Accordion headingSize="medium">
         <Accordion.Item defaultOpen={true}>
           <Accordion.Header>
             <div className={accordionHeader}>
-              <Heading level="3" size="medium">
-                {label}
-              </Heading>
+              {label}
               {hasValidationErrors && (
                 <ExclamationmarkTriangleFillIcon
                   className={headerIcon}
