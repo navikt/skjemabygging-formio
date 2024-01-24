@@ -31,7 +31,7 @@ const renderSummaryPageNavigation = async (
 ): Promise<{ router: any; buttons: Buttons }> => {
   const summaryPageProps: Props = {
     formUrl: '/testform',
-    submission: {},
+    submission: { data: {} },
     form: {} as NavFormType,
     isValid,
     onError,
