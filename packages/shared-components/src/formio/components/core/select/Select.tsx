@@ -111,7 +111,7 @@ class NavSelect extends BaseComponent {
   }
 
   static editForm() {
-    return selectForm();
+    return selectForm(NavSelect.schema().type);
   }
 
   static get builderInfo() {
