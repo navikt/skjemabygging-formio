@@ -41,16 +41,18 @@ describe('Custom react components', () => {
         cy.clickNextStep();
 
         cy.findByRole('heading', { name: 'Vedlegg' }).should('exist');
-        cy.findByLabelText('Annen dokumentasjon')
+        cy.findByRole('group', { name: 'Annen dokumentasjon' })
           .should('exist')
-          .within(() =>
-            cy.findByLabelText('Ja, jeg legger det ved denne søknaden.').should('exist').check({ force: true }),
-          );
-        cy.findByLabelText('Bekreftelse på skoleplass')
+          .within(() => {
+            cy.findByLabelText('Ja, jeg legger det ved denne søknaden.').should('exist').check({ force: true });
+            cy.findByLabelText('Ja, jeg legger det ved denne søknaden.').should('be.checked');
+          });
+        cy.findByRole('group', { name: 'Bekreftelse på skoleplass' })
           .should('exist')
-          .within(() =>
-            cy.findByLabelText('Jeg har levert denne dokumentasjonen tidligere').should('exist').check({ force: true }),
-          );
+          .within(() => {
+            cy.findByLabelText('Jeg har levert denne dokumentasjonen tidligere').should('exist').check({ force: true });
+            cy.findByLabelText('Jeg har levert denne dokumentasjonen tidligere').should('be.checked');
+          });
         cy.clickNextStep();
 
         cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
@@ -152,6 +154,8 @@ describe('Custom react components', () => {
             cy.get('dd').eq(3).should('contain.text', 'Gitar');
             cy.get('dt').eq(4).should('contain.text', 'Gyldig fra dato');
             cy.get('dd').eq(4).should('contain.text', '1.1.2023');
+            cy.get('dt').eq(5).should('contain.text', 'Velg frukt');
+            cy.get('dd').eq(5).should('contain.text', 'Fersken');
           });
 
         cy.findByRole('link', { name: 'Rediger dine opplysninger' }).click();
@@ -163,6 +167,11 @@ describe('Custom react components', () => {
         cy.get('.formio-component-valutavelger').contains('Australske dollar (AUD)');
         cy.get('.formio-component-velgInstrument').contains('Gitar');
         cy.findByRole('textbox', { name: 'Gyldig fra dato' }).should('have.value', '01.01.2023');
+        cy.findByRole('group', { name: 'Velg frukt' })
+          .should('exist')
+          .within(() => {
+            cy.findByRole('radio', { name: 'Fersken' }).should('be.checked');
+          });
       });
     });
 
