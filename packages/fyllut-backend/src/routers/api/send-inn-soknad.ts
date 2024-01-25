@@ -52,11 +52,19 @@ const sendInnSoknad = {
       );
 
       if (!sendInnResponse.ok) {
-        if (sendInnResponse.status === 404) {
+        const responseError = await responseToError(
+          sendInnResponse,
+          `Feil ved kall til SendInn. ${getErrorMessage}`,
+          true,
+        );
+        if (
+          sendInnResponse.status === 404 ||
+          responseError?.['http_response_body']?.errorCode === 'illegalAction.applicationSentInOrDeleted'
+        ) {
           return res.sendStatus(404);
         }
         logger.debug('Failed to fetch data from SendInn');
-        return next(await responseToError(sendInnResponse, `Feil ved kall til SendInn. ${getErrorMessage}`, true));
+        return next(responseError);
       }
 
       logger.debug('Successfylly fetched data from SendInn');
