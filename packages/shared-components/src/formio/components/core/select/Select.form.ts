@@ -5,7 +5,7 @@ import editFormDisplay from '../../base/editForm/display';
 import editFormTabs from '../../base/editForm/editFormTabs';
 import editFormValidation from '../../base/editForm/validation';
 
-const selectForm = () => {
+const selectForm = (componentType: string) => {
   const { api, conditional, createTabs, data, display, validation } = editFormTabs;
 
   // prettier-ignore
@@ -17,7 +17,7 @@ const selectForm = () => {
     ]),
     data([
       editFormData.dataValues(),
-      editFormData.defaultValue(),
+      editFormData.defaultValue(componentType),
     ]),
     validation([
       editFormValidation.required(),
