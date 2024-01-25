@@ -303,3 +303,12 @@ Wizard.prototype.detachHeader = function () {
   this.removeEventListener(this.refs[`${this.wizardKey}-stepper-summary`], 'click');
   this.detachStepper();
 };
+
+const originalRebuild = Wizard.prototype.rebuild;
+Wizard.prototype.rebuild = function () {
+  const currentPage = this.page;
+  const setCurrentPage = function () {
+    this.setPage(currentPage);
+  };
+  return originalRebuild.call(this).then(setCurrentPage.bind(this));
+};

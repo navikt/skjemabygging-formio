@@ -1,8 +1,8 @@
 import { Component } from '@navikt/skjemadigitalisering-shared-domain';
 
-const defaultValue = (): Component => {
+const defaultValue = (type: string): Component => {
   return {
-    type: 'textfield',
+    type,
     label: 'Standard verdi',
     key: 'defaultValue',
     input: true,

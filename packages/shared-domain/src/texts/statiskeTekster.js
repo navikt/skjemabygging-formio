@@ -12,6 +12,9 @@ export const statiske = {
     noSubmissionDescription: 'Etter utfylling må du laste ned det ferdig utfylte skjemaet som en pdf-fil.',
     requiredFieldsBold: 'De fleste feltene i skjemaet er obligatoriske å fylle ut.',
     requiredFields: 'Felt som ikke er obligatoriske er merket med: (valgfritt).',
+    autoSaveBold: 'Vi lagrer et utkast av skjemaet automatisk hver gang du går til neste steg.',
+    autoSave:
+      'Du finner utkastet på Min side. NAV kan ikke se informasjonen i utkastet. Du må trykke på “Send til NAV” for at NAV skal motta skjemaet/søknaden.',
     notSaveBold: 'Du kan ikke lagre skjemaet underveis.',
     notSave:
       'Informasjonen du fyller ut i skjemaet sendes ikke til NAV før du har fullført hele skjemaet og sendt det inn. Hvis du lukker vinduet eller nettleseren vil all informasjon du har fylt ut forsvinne.',
