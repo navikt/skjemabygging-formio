@@ -1,4 +1,4 @@
-import { Component } from '@navikt/skjemadigitalisering-shared-domain';
+import { Component, SubmissionMethod } from '@navikt/skjemadigitalisering-shared-domain';
 import Select from 'react-select/base';
 
 interface IReactComponent {
@@ -27,7 +27,12 @@ interface ReactComponentType {
   refs?: any;
   errors: any[];
   root: any;
-  options: any;
+  options: {
+    submissionMethod: SubmissionMethod;
+    readOnly: boolean;
+    namespace: string;
+    formConfig: { publishedForm: any };
+  };
   visible: any | boolean;
   hideLabel: boolean;
   error?: {
