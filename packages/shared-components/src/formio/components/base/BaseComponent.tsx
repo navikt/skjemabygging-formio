@@ -126,6 +126,13 @@ class BaseComponent extends FormioReactComponent {
   }
 
   /**
+   * Get submissionMethod for custom component renderReact()
+   */
+  getSubmissionMethod() {
+    return this.options?.submissionMethod;
+  }
+
+  /**
    * Used to set focus when clicking error summary.
    */
   focus() {

@@ -28,7 +28,7 @@ interface ReactComponentType {
   errors: any[];
   root: any;
   options: {
-    submissionMethod: SubmissionMethod;
+    submissionMethod?: SubmissionMethod;
     readOnly: boolean;
     namespace: string;
     formConfig: { publishedForm: any };
