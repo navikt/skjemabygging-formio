@@ -792,15 +792,15 @@ describe('navFormUtils', () => {
       expect(result).toBe('paper');
     });
 
-    it('should return "paper" if form or form.properties is not provided', () => {
+    it('should return undefined if form or form.properties is not provided', () => {
       const result = getSubmissionMethod(undefined, undefined);
-      expect(result).toBe('paper');
+      expect(result).toBeUndefined();
     });
 
-    it('should return "paper" if innsending is DIGITAL_OG_PAPIR and searchParam is not defined', () => {
+    it('should return undefined if innsending is DIGITAL_OG_PAPIR and searchParam is not defined', () => {
       const form = { properties: { innsending: 'DIGITAL_OG_PAPIR' } };
       const result = getSubmissionMethod(form, undefined);
-      expect(result).toBe('paper');
+      expect(result).toBeUndefined();
     });
   });
 });

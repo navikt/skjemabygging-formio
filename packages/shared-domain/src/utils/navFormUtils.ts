@@ -275,15 +275,18 @@ const isNone = (type: 'innsending' | 'ettersending', form: NavFormType) => {
   return form.properties[type] === 'INGEN';
 };
 
-export const getSubmissionMethod = (form?: NavFormType, searchParam?: SubmissionMethod): SubmissionMethod => {
+export const getSubmissionMethod = (
+  form?: NavFormType,
+  searchParam?: SubmissionMethod,
+): SubmissionMethod | undefined => {
   if (searchParam) return searchParam;
 
-  if (!form || !form.properties) return 'paper';
+  if (!form || !form.properties) return undefined;
 
   if (form.properties.innsending == 'KUN_DIGITAL') return 'digital';
   if (form.properties.innsending == 'KUN_PAPIR') return 'paper';
 
-  return 'paper';
+  return undefined;
 };
 
 const navFormUtils = {
