@@ -3,6 +3,7 @@ import {
   findDependentComponents,
   flattenComponents,
   formMatcherPredicate,
+  getSubmissionMethod,
   isSubmissionMethodAllowed,
   removeComponents,
   removeVedleggspanel,
@@ -768,6 +769,38 @@ describe('navFormUtils', () => {
         expect(components).toHaveLength(1);
         expect(Object.keys(components[0])).toEqual(['navId']);
       });
+    });
+  });
+
+  describe.only('getSubmissionMethod', () => {
+    it('should return searchParam if provided', () => {
+      const form = { properties: { innsending: 'KUN_PAPIR' } };
+      const searchParam = 'digital';
+      const result = getSubmissionMethod(form, searchParam);
+      expect(result).toBe(searchParam);
+    });
+
+    it('should return "digital" if innsending is "KUN_DIGITAL" and searchParam is not defined', () => {
+      const form = { properties: { innsending: 'KUN_DIGITAL' } };
+      const result = getSubmissionMethod(form, undefined);
+      expect(result).toBe('digital');
+    });
+
+    it('should return "paper" if innsending is "KUN_PAPIR" and searchParam is not defined', () => {
+      const form = { properties: { innsending: 'KUN_PAPIR' } };
+      const result = getSubmissionMethod(form, undefined);
+      expect(result).toBe('paper');
+    });
+
+    it('should return "paper" if form or form.properties is not provided', () => {
+      const result = getSubmissionMethod(undefined, undefined);
+      expect(result).toBe('paper');
+    });
+
+    it('should return "paper" if innsending is DIGITAL_OG_PAPIR and searchParam is not defined', () => {
+      const form = { properties: { innsending: 'DIGITAL_OG_PAPIR' } };
+      const result = getSubmissionMethod(form, undefined);
+      expect(result).toBe('paper');
     });
   });
 });

@@ -26,6 +26,7 @@ import EventEmitter from 'eventemitter2';
 import { Form as FormioForm } from 'formiojs';
 import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
+import { useAppConfig } from '../../context/config/configContext';
 import { usePrefillData } from '../../context/prefill-data/PrefillDataContext';
 import { SANITIZE_CONFIG } from '../../formio/form-builder-options/sanitizeConfig';
 import Styles from '../../styles';
@@ -43,6 +44,7 @@ const NavForm = (props) => {
   const [formio, setFormio] = useState(undefined);
   useStyles();
   const { prefillData } = usePrefillData();
+  const { submissionMethod } = useAppConfig();
 
   useEffect(
     () => () => {
@@ -55,11 +57,13 @@ const NavForm = (props) => {
 
   const createWebformInstance = (srcOrForm) => {
     const { formioform, formReady, language, i18n } = props;
+
     instance = new (formioform || FormioForm)(element, srcOrForm, {
       language,
       i18n,
       sanitizeConfig: SANITIZE_CONFIG,
       events: NavForm.getDefaultEmitter(),
+      submissionMethod: navFormUtils.getSubmissionMethod(srcOrForm, submissionMethod),
     });
 
     createPromise = instance.ready.then((formioInstance) => {

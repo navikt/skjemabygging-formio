@@ -1,6 +1,15 @@
 // @ts-ignore
 import FormioUtils from 'formiojs/utils';
-import { Attachment, Component, FormsResponseForm, NavFormType, Panel, PrefillData, Submission } from '../form';
+import {
+  Attachment,
+  Component,
+  FormsResponseForm,
+  NavFormType,
+  Panel,
+  PrefillData,
+  Submission,
+  SubmissionMethod,
+} from '../form';
 import { formSummaryUtil } from '../index';
 import { camelCase } from './stringUtils';
 
@@ -266,6 +275,17 @@ const isNone = (type: 'innsending' | 'ettersending', form: NavFormType) => {
   return form.properties[type] === 'INGEN';
 };
 
+export const getSubmissionMethod = (form?: NavFormType, searchParam?: SubmissionMethod): SubmissionMethod => {
+  if (searchParam) return searchParam;
+
+  if (!form || !form.properties) return 'paper';
+
+  if (form.properties.innsending == 'KUN_DIGITAL') return 'digital';
+  if (form.properties.innsending == 'KUN_PAPIR') return 'paper';
+
+  return 'paper';
+};
+
 const navFormUtils = {
   formMatcherPredicate,
   toFormPath,
@@ -289,5 +309,6 @@ const navFormUtils = {
   isAttachment,
   isNone,
   prefillForm,
+  getSubmissionMethod,
 };
 export default navFormUtils;

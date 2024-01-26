@@ -10,7 +10,7 @@ import httpFyllut from './util/httpFyllut';
 
 let featureToggles = {};
 
-const subissionMethod = url.getUrlParam(window.location.search, 'sub') as SubmissionMethod;
+const submissionMethod = url.getUrlParam(window.location.search, 'sub') as SubmissionMethod;
 
 httpFyllut
   .get<ConfigType>('/fyllut/api/config')
@@ -34,7 +34,7 @@ const renderReact = (dokumentInnsendingBaseURL, config) => {
           featureToggles={featureToggles}
           baseUrl={'/fyllut'}
           fyllutBaseURL={'/fyllut'}
-          submissionMethod={subissionMethod}
+          submissionMethod={submissionMethod}
           app="fyllut"
           config={config}
           http={httpFyllut}
