@@ -1,15 +1,15 @@
-{% if (ctx.component.type === "textfield" || ctx.component.type === "orgNr" || ctx.component.type === "bankAccount") { %}
+{% if (ctx.component.type === "textfield" || ctx.component.type === "orgNr" || ctx.component.type === "bankAccount" || ctx.component.type === "radiopanel") { %}
     {{ctx.element}}
 {% } else { %}
     {% if (ctx.component.description && ctx.component.type !== "datagrid" && ctx.component.descriptionPosition === "above") { %}
       <div class="description" id="d-{{ctx.instance.id}}-{{ctx.component.key}}">{{ctx.t(ctx.component.description, { _userInput: true })}}</div>
     {% } %}
 
-    {% if (!ctx.label.hidden && ctx.component.type !== "radio" && ctx.component.type !== "container" && ctx.component.type !== "alertstripe" && ctx.component.type !== "radiopanel" && ctx.component.type !== "selectboxes" && ctx.component.type !== "navCheckbox" && ctx.component.type !== "datagrid" && ctx.component.type !== "navSkjemagruppe" && !ctx.component.isNavCheckboxPanel) { %}
+    {% if (!ctx.label.hidden && ctx.component.type !== "radio" && ctx.component.type !== "container" && ctx.component.type !== "alertstripe" && ctx.component.type !== "selectboxes" && ctx.component.type !== "navCheckbox" && ctx.component.type !== "datagrid" && ctx.component.type !== "navSkjemagruppe" && !ctx.component.isNavCheckboxPanel) { %}
       {{ ctx.labelMarkup }}
     {% } %}
 
-    {% if (ctx.component.description && ctx.component.type !== "radio" && ctx.component.type !== "radiopanel" && ctx.component.type !== "selectboxes" && ctx.component.type !== "datagrid" && !ctx.component.isNavCheckboxPanel && ctx.component.descriptionPosition !== "above" && (ctx.component.type !== "navCheckbox" || !ctx.component.descriptionPosition)) { %}
+    {% if (ctx.component.description && ctx.component.type !== "radio" && ctx.component.type !== "selectboxes" && ctx.component.type !== "datagrid" && !ctx.component.isNavCheckboxPanel && ctx.component.descriptionPosition !== "above" && (ctx.component.type !== "navCheckbox" || !ctx.component.descriptionPosition)) { %}
       <div class="description" id="d-{{ctx.instance.id}}-{{ctx.component.key}}">{{ctx.t(ctx.component.description, { _userInput: true })}}</div>
     {% } %}
 
