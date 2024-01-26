@@ -40,7 +40,7 @@ describe('Custom react components', () => {
         cy.findByRole('combobox', { name: 'Velg valuta' }).should('have.focus').type('{upArrow}{enter}');
         cy.clickNextStep();
 
-        cy.contains('div', 'Vedlegg');
+        cy.findByRole('button', { name: 'Vedlegg' });
         cy.findByLabelText('Annen dokumentasjon')
           .should('exist')
           .within(() =>
@@ -54,7 +54,7 @@ describe('Custom react components', () => {
         cy.clickNextStep();
 
         cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
-        cy.contains('div', 'Dine opplysninger');
+        cy.findByRole('button', { name: 'Dine opplysninger' });
         cy.get('dl')
           .first()
           .within(() => {
@@ -126,7 +126,7 @@ describe('Custom react components', () => {
       });
 
       it('make sure components keep their values after going to summary page', () => {
-        cy.contains('div', 'Dine opplysninger');
+        cy.findByRole('button', { name: 'Dine opplysninger' });
         cy.findByRole('textbox', { name: 'Fornavn' }).should('be.visible');
         cy.findByRoleWhenAttached('textbox', { name: 'Fornavn' }).type('Storm');
         cy.findByRole('combobox', { name: 'I hvilket land bor du?' })
@@ -138,7 +138,7 @@ describe('Custom react components', () => {
         cy.clickSaveAndContinue();
 
         cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
-        cy.contains('div', 'Dine opplysninger');
+        cy.findByRole('button', { name: 'Dine opplysninger' });
         cy.get('dl')
           .first()
           .within(() => {
@@ -155,7 +155,7 @@ describe('Custom react components', () => {
           });
 
         cy.findByRole('link', { name: 'Rediger dine opplysninger' }).click();
-        cy.contains('div', 'Dine opplysninger');
+        cy.findByRole('button', { name: 'Dine opplysninger' });
 
         cy.findByRole('textbox', { name: 'Fornavn' }).should('have.value', 'Storm');
         // TODO: Not the nicest way to check values from react-select. But not worth the time to debug since it will be replaced by Aksel select.
