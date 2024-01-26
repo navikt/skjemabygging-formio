@@ -772,7 +772,7 @@ describe('navFormUtils', () => {
     });
   });
 
-  describe.only('getSubmissionMethod', () => {
+  describe('getSubmissionMethod', () => {
     it('should return searchParam if provided', () => {
       const form = { properties: { innsending: 'KUN_PAPIR' } };
       const searchParam = 'digital';
