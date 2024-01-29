@@ -25,6 +25,8 @@ export function IntroPage({ form, formUrl }: Props) {
   const navigate = useNavigate();
   const [description, setDescription] = useState<string>();
   const [descriptionBold, setDescriptionBold] = useState<string>();
+  const [saveDataBullet, setSaveDataBullet] = useState<string>();
+  const [saveDataBulletBold, setSaveDataBulletBold] = useState<string>();
   const { submissionMethod } = useAppConfig();
   const [mustSelectSubmissionMethod, setMustSelectSubmissionMethod] = useState<boolean>(
     !submissionMethod && supportsPapirOgDigital(form),
@@ -38,23 +40,36 @@ export function IntroPage({ form, formUrl }: Props) {
       if (selectedSubmissionMethod === http.SubmissionMethodType.PAPER) {
         setDescriptionBold(TEXTS.statiske.introPage.paperDescriptionBold);
         setDescription(TEXTS.statiske.introPage.paperDescription);
+        setSaveDataBulletBold(TEXTS.statiske.introPage.notSaveBold);
+        setSaveDataBullet(TEXTS.statiske.introPage.notSave);
       } else {
         // No description when digital submission
         setDescriptionBold(undefined);
         setDescription(undefined);
+        setSaveDataBulletBold(TEXTS.statiske.introPage.autoSaveBold);
+        setSaveDataBullet(TEXTS.statiske.introPage.autoSave);
       }
     } else {
       if (form.properties?.innsending === 'KUN_PAPIR') {
         setDescriptionBold(TEXTS.statiske.introPage.paperDescriptionBold);
         setDescription(TEXTS.statiske.introPage.paperDescription);
+        setSaveDataBulletBold(TEXTS.statiske.introPage.notSaveBold);
+        setSaveDataBullet(TEXTS.statiske.introPage.notSave);
       } else if (form.properties?.innsending === 'PAPIR_OG_DIGITAL') {
         setDescriptionBold(TEXTS.statiske.introPage.paperAndDigitalDescriptionBold);
         setDescription(TEXTS.statiske.introPage.paperAndDigitalDescription);
+        setSaveDataBulletBold(undefined);
+        setSaveDataBullet(undefined);
       } else if (form.properties?.innsending === 'INGEN') {
         setDescriptionBold(TEXTS.statiske.introPage.noSubmissionDescriptionBold);
         setDescription(TEXTS.statiske.introPage.noSubmissionDescription);
+        setSaveDataBulletBold(TEXTS.statiske.introPage.notSaveBold);
+        setSaveDataBullet(TEXTS.statiske.introPage.notSave);
+      } else {
+        // No description when form.properties.innsending === "KUN_DIGITAL"
+        setSaveDataBulletBold(TEXTS.statiske.introPage.autoSaveBold);
+        setSaveDataBullet(TEXTS.statiske.introPage.autoSave);
       }
-      // No description when form.properties.innsending === "KUN_DIGITAL"
     }
   }, [form.properties?.innsending, search, selectedSubmissionMethod]);
 
@@ -105,10 +120,12 @@ export function IntroPage({ form, formUrl }: Props) {
                 <b>{translate(TEXTS.statiske.introPage.requiredFieldsBold)} </b>
                 {translate(TEXTS.statiske.introPage.requiredFields)}
               </li>
-              <li className="mb-4">
-                <b>{translate(TEXTS.statiske.introPage.notSaveBold)} </b>
-                {translate(TEXTS.statiske.introPage.notSave)}
-              </li>
+              {saveDataBullet && (
+                <li className="mb-4">
+                  <b>{translate(saveDataBulletBold)} </b>
+                  {translate(saveDataBullet)}
+                </li>
+              )}
               <li className="mb-4">
                 <b>{translate(TEXTS.statiske.introPage.publicComputerBold)} </b>
                 {translate(TEXTS.statiske.introPage.publicComputer)}

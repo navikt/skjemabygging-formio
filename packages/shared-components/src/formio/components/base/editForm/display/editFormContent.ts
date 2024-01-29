@@ -1,11 +1,14 @@
 import { Component } from '@navikt/skjemadigitalisering-shared-domain';
-import editFormAceEditor from '../shared/editFormAceEditor';
+import editFormWysiwygEditor from '../shared/editFormWysiwygEditor';
 
 const editFormContent = (): Component => {
   return {
-    ...editFormAceEditor('html'),
+    ...editFormWysiwygEditor(),
     key: 'content',
     label: 'Innhold',
+    validate: {
+      required: true,
+    },
   };
 };
 

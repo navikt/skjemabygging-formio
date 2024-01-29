@@ -5,18 +5,19 @@ import editFormAutoComplete from './editFormAutoComplete';
 import editFormAutoExpand from './editFormAutoExpand';
 import editFormButtonText from './editFormButtonText';
 import editFormContent from './editFormContent';
-import editFormContentToIncludeInPdf from './editFormContentToIncludeInPdf';
+import editFormContentForPdf from './editFormContentForPdf';
 import editFormDescription from './editFormDescription';
 import editFormDisabled from './editFormDisabled';
 import editFormFieldSizeField from './editFormFieldSize';
+import editFormHidden from './editFormHidden';
 import editFormHideLabel from './editFormHideLabel';
-import editFormHtmlTag from './editFormHtmlTag';
 import editFormInline from './editFormIsInline';
 import editFormLabel from './editFormLabel';
 import editFormRemoveAnother from './editFormRemoveAnother';
 import editFormRowTitle from './editFormRowTitle';
 import editFormRows from './editFormRows';
 import editFormSpellCheck from './editFormSpellCheck';
+import editFormTextDisplay from './editFormTextDisplay';
 import editFormTitle from './editFormTitle';
 import editShowYearPicker from './editShowYearPicker';
 import editFormAltText from './image/editFormAltText';
@@ -39,7 +40,7 @@ const editFormDisplay = {
   rows: editFormRows,
   buttonText: editFormButtonText,
   alertType: editFormAlertType,
-  contentToIncludeInPdf: editFormContentToIncludeInPdf,
+  contentForPdf: editFormContentForPdf,
   content: editFormContent,
   inline: editFormInline,
   addAnother: editFormAddAnother,
@@ -48,8 +49,9 @@ const editFormDisplay = {
   image: editFormImage,
   showInPdf: editFormShowInPdf,
   widthPercent: editFormWidthPercent,
-  htmlTag: editFormHtmlTag,
   rowTitle: editFormRowTitle,
+  textDisplay: editFormTextDisplay,
+  hidden: editFormHidden,
 };
 
 export default editFormDisplay;

@@ -11,6 +11,7 @@ export namespace Summary {
     | 'navSelect'
     | 'select'
     | 'email'
+    | 'htmlelement'
     | 'phoneNumber'
     | 'navDatepicker'
     | 'day'

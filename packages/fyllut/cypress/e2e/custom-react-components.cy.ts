@@ -56,7 +56,7 @@ describe('Custom react components', () => {
         cy.clickNextStep();
 
         cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
-        cy.findByRole('heading', { name: 'Dine opplysninger' }).should('exist');
+        cy.findByRole('button', { name: 'Dine opplysninger' });
         cy.get('dl')
           .first()
           .within(() => {
@@ -140,7 +140,7 @@ describe('Custom react components', () => {
         cy.clickSaveAndContinue();
 
         cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
-        cy.findByRole('heading', { name: 'Dine opplysninger' }).should('exist');
+        cy.findByRole('button', { name: 'Dine opplysninger' });
         cy.get('dl')
           .first()
           .within(() => {
