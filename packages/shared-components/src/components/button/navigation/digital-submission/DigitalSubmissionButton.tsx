@@ -31,7 +31,7 @@ const DigitalSubmissionButton = ({ submission, isValid, onError, children, withI
       return;
     }
 
-    if (!submission) {
+    if (!submission || !submission.data) {
       onError(new Error(translate(TEXTS.grensesnitt.emptySubmissionError)));
       return;
     }

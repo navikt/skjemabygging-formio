@@ -17,7 +17,7 @@ class SelectBoxes extends FormioSelectBoxes {
   }
 
   static editForm() {
-    return selectBoxesForm();
+    return selectBoxesForm(SelectBoxes.schema().type);
   }
 
   static get builderInfo() {

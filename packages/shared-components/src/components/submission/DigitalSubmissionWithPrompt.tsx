@@ -41,7 +41,7 @@ const DigitalSubmissionWithPrompt = ({ submission, isValid, onError }: Props) =>
           <DigitalSubmissionButton
             submission={submission}
             onError={(err) => {
-              onError(err.message);
+              onError(err);
               setIsOpen(false);
             }}
           >

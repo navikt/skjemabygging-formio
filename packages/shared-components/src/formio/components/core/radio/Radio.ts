@@ -26,7 +26,7 @@ class Radio extends FormioRadio {
   }
 
   static editForm() {
-    return radioForm();
+    return radioForm(Radio.schema().type);
   }
 
   static get builderInfo() {
