@@ -3,7 +3,7 @@ import HtmlElement from './HtmlElement';
 const HtmlElementBuilder = () => {
   const schema = HtmlElement.schema();
   return {
-    title: 'HTML element',
+    title: 'Tekstblokk',
     schema: {
       ...schema,
       validateOn: 'blur',

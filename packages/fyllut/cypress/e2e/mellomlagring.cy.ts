@@ -27,6 +27,8 @@ describe('Mellomlagring', () => {
     cy.defaultIntercepts();
     cy.intercept('GET', '/fyllut/api/forms/testmellomlagring').as('getTestMellomlagringForm');
     cy.intercept('GET', '/fyllut/api/translations/testmellomlagring').as('getTranslation');
+    cy.intercept('POST', '/fyllut/api/send-inn/soknad*', cy.spy().as('createMellomlagringSpy'));
+    cy.intercept('PUT', '/fyllut/api/send-inn/soknad*', cy.spy().as('updateMellomlagringSpy'));
     cy.mocksRestoreRouteVariants();
   });
 
@@ -35,11 +37,6 @@ describe('Mellomlagring', () => {
   });
 
   describe('When submission method is "paper"', () => {
-    beforeEach(() => {
-      cy.intercept('POST', '/fyllut/api/send-inn/soknad*', cy.spy().as('createMellomlagringSpy'));
-      cy.intercept('PUT', '/fyllut/api/send-inn/soknad*', cy.spy().as('updateMellomlagringSpy'));
-    });
-
     it('does not fetch or update mellomlagring', () => {
       cy.visit('/fyllut/testmellomlagring?sub=paper');
       cy.wait('@getTestMellomlagringForm');
@@ -224,6 +221,50 @@ describe('Mellomlagring', () => {
           cy.findByRole('link', { name: TEXTS.grensesnitt.summaryPage.editAnswers }).should('exist').click();
           cy.url().should('include', '/valgfrieOpplysninger');
           cy.findByRole('textbox', { name: 'Hva drakk du til frokost (valgfritt)' }).should('have.focus');
+        });
+
+        it('lets you edit and update submission data', () => {
+          cy.visit(
+            '/fyllut/testmellomlagring/oppsummering?sub=digital&innsendingsId=8e3c3621-76d7-4ebd-90d4-34448ebcccc3&lang=nb-NO',
+          );
+          cy.wait('@getMellomlagringValid');
+          cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
+          cy.findByText('Ønsker du å få gaven innpakket').should('exist').next('dd').should('contain.text', 'Nei');
+          cy.findByText('Farge').should('not.exist');
+          cy.findByText('Tekst på kortet').should('not.exist');
+
+          cy.findByRole('link', { name: 'Rediger gave' }).should('exist').click();
+          cy.findByRole('heading', { name: 'Gave' }).should('exist');
+          cy.findByRole('group', { name: 'Ønsker du å få gaven innpakket' })
+            .should('exist')
+            .within(() => {
+              cy.findByLabelText('Ja').click();
+              cy.findByLabelText('Ja').should('be.checked');
+            });
+          cy.clickSaveAndContinue();
+          cy.get('@updateMellomlagringSpy').should('not.have.been.called');
+
+          cy.findByRole('heading', { name: TEXTS.validering.error })
+            .should('exist')
+            .parent()
+            .within(() => {
+              cy.get('li').should('have.length', 2);
+            });
+
+          cy.findByRole('link', { name: 'Du må fylle ut: Farge' }).should('exist').click();
+          cy.findByRole('radio', { name: 'Grønn' }).should('have.focus');
+          cy.findByRole('radio', { name: 'Rød' }).should('exist').click();
+
+          cy.findByRole('link', { name: 'Du må fylle ut: Tekst på kortet' }).should('exist').click();
+          cy.findByLabelText('Tekst på kortet').should('have.focus').type('Takk for hjelpen!');
+
+          cy.findByRole('link', { name: 'Oppsummering' }).click();
+          cy.wait('@updateMellomlagring');
+          cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
+          cy.findByText('Ønsker du å få gaven innpakket').should('exist').next('dd').should('contain.text', 'Ja');
+          cy.findByText('Farge').should('exist').next('dd').should('contain.text', 'Rød');
+          cy.findByText('Tekst på kortet').should('exist').next('dd').should('contain.text', 'Takk for hjelpen!');
+          cy.get('@updateMellomlagringSpy').should('have.been.calledOnce');
         });
 
         it('lets you delete mellomlagring', () => {
