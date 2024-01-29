@@ -5,7 +5,7 @@ const editFormValuesGrid = (): Component => ({
   type: 'datagrid',
   input: true,
   label: 'Dataverdier',
-  reorder: false,
+  reorder: true,
   components: [
     {
       label: 'Ledetekst',
