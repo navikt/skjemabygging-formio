@@ -30,7 +30,7 @@ class HtmlElement extends BaseComponent {
     return this.component?.tag as string;
   }
 
-  getPdfTag() {
+  getTextDisplayTag() {
     if (this.component?.textDisplay === 'pdf') {
       return (
         <Tag variant="alt3" className="mb-4" size="xsmall">
@@ -49,7 +49,7 @@ class HtmlElement extends BaseComponent {
   renderReact(element) {
     element.render(
       <div>
-        {this.getPdfTag()}
+        {this.getTextDisplayTag()}
         {React.createElement(this.getTag(), {
           dangerouslySetInnerHTML: {
             __html: this.getContent(),

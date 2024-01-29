@@ -1,4 +1,3 @@
-import editFormTextDisplay from '../display/editFormTextDisplay';
 import editFormCalculateValue from './editFormCalculateValue';
 import editFormClearOnHide from './editFormClearOnHide';
 import editFormDataValues from './editFormDataValues';
@@ -15,7 +14,6 @@ const editFormData = {
   readOnly: editFormReadOnly,
   values: editFormValues,
   prefill: editFormPrefill,
-  listValues: editFormTextDisplay,
 };
 
 export default editFormData;
