@@ -12,7 +12,8 @@ const alertForm = () => {
       editFormDisplay.content(),
       editFormDisplay.alertType(),
       editFormDisplay.inline(),
-      editFormDisplay.contentToIncludeInPdf(),
+      editFormDisplay.textDisplay(),
+      editFormDisplay.contentForPdf(),
     ]),
     api([
       editFormApi.key(),

@@ -2,12 +2,13 @@ import { Summary } from '@navikt/skjemadigitalisering-shared-domain';
 
 export interface Props {
   component: Summary.Field;
+  html?: boolean;
 }
 
-const SummaryField = ({ component }: Props) => (
+const SummaryField = ({ component, html }: Props) => (
   <>
     <dt>{component.label}</dt>
-    <dd>{component.value}</dd>
+    {html ? <dd dangerouslySetInnerHTML={{ __html: component.value }} /> : <dd>{component.value}</dd>}
   </>
 );
 

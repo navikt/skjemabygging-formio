@@ -34,6 +34,8 @@ const ComponentSummary = ({ components, formUrl = '', panelValidationList = [] }
             return <SelectBoxesSummary key={key} component={comp} />;
           case 'image':
             return <ImageSummary key={key} component={comp} />;
+          case 'htmlelement':
+            return <SummaryField key={key} component={comp as Summary.Field} html={true} />;
           default:
             return <SummaryField key={key} component={comp as Summary.Field} />;
         }

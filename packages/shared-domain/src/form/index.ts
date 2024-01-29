@@ -140,7 +140,7 @@ export interface Component {
   spellCheck?: boolean;
   rows?: number;
   editor?: string;
-  wysiwyg?: object;
+  wysiwyg?: object | boolean;
   as?: string;
   style?: object;
   theme?: string;
@@ -159,6 +159,7 @@ export interface Component {
   keyLabel?: string;
   valueComponent?: Component;
   isInline?: boolean;
+  textDisplay?: 'form' | 'formPdf' | 'pdf';
 }
 
 export interface ComponentProperties {

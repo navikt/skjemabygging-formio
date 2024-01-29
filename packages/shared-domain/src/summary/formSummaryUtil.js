@@ -260,19 +260,30 @@ function handleCheckBox(component, submission, formSummaryObject, parentContaine
 }
 
 function handleHtmlElement(component, formSummaryObject, parentContainerKey, translate, evaluatedConditionals) {
-  const { key, contentForPdf, type } = component;
+  const { key, contentForPdf, type, textDisplay, content } = component;
 
-  if (shouldShowInSummary(key, evaluatedConditionals) && contentForPdf) {
+  if (shouldShowInSummary(key, evaluatedConditionals)) {
     const componentKey = createComponentKey(parentContainerKey, key);
-    return [
-      ...formSummaryObject,
-      {
-        label: translate(TEXTS.grensesnitt.formSummaryUtils.payAttentionTo),
-        key: componentKey,
-        type,
-        value: translate(contentForPdf),
-      },
-    ];
+    if (textDisplay === 'formPdf' || textDisplay === 'pdf') {
+      return [
+        ...formSummaryObject,
+        {
+          key: componentKey,
+          type,
+          value: translate(content),
+        },
+      ];
+    } else if (contentForPdf) {
+      return [
+        ...formSummaryObject,
+        {
+          label: translate(TEXTS.grensesnitt.formSummaryUtils.payAttentionTo),
+          key: componentKey,
+          type,
+          value: translate(contentForPdf),
+        },
+      ];
+    }
   }
   return formSummaryObject;
 }

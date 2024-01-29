@@ -1,4 +1,4 @@
-{% if (ctx.component.type === "textfield" || ctx.component.type === "orgNr" || ctx.component.type === "bankAccount") { %}
+{% if (ctx.component.type === "textfield" || ctx.component.type === "orgNr" || ctx.component.type === "bankAccount" || ctx.component.type === "htmlelement") { %}
     {{ctx.element}}
 {% } else { %}
     {% if (ctx.component.description && ctx.component.type !== "datagrid" && ctx.component.descriptionPosition === "above") { %}
