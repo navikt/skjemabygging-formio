@@ -40,7 +40,7 @@ describe('Custom react components', () => {
         cy.findByRole('combobox', { name: 'Velg valuta' }).should('have.focus').type('{upArrow}{enter}');
         cy.clickNextStep();
 
-        cy.findByRole('button', { name: 'Vedlegg' });
+        cy.findByRole('heading', { name: 'Vedlegg' }).should('exist');
         cy.findByLabelText('Annen dokumentasjon')
           .should('exist')
           .within(() =>
