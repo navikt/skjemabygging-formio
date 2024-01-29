@@ -126,7 +126,7 @@ describe('Custom react components', () => {
       });
 
       it('make sure components keep their values after going to summary page', () => {
-        cy.findByRole('button', { name: 'Dine opplysninger' });
+        cy.findByRole('heading', { name: 'Dine opplysninger' }).should('be.visible');
         cy.findByRole('textbox', { name: 'Fornavn' }).should('be.visible');
         cy.findByRoleWhenAttached('textbox', { name: 'Fornavn' }).type('Storm');
         cy.findByRole('combobox', { name: 'I hvilket land bor du?' })
