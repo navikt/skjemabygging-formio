@@ -32,7 +32,6 @@ const FyllUtRouter = ({ form, translations }) => {
   const formBaseUrl = useResolvedPath('').pathname;
   const styles = useStyles();
 
-  const updateSubmission = (submission: Submission = { data: {} }) => setSubmission({ ...submission });
   const onFyllutStateChange = (fyllutState: FyllutState) => {
     setSubmission((prevSubmission) => {
       return {
@@ -49,7 +48,9 @@ const FyllUtRouter = ({ form, translations }) => {
           form={form}
           formUrl={formBaseUrl}
           translations={translations}
-          updateSubmission={updateSubmission}
+          updateSubmission={(submission) => {
+            setSubmission(submission);
+          }}
           onFyllutStateChange={onFyllutStateChange}
         >
           <FormTitle form={form} />
@@ -107,7 +108,7 @@ const FyllUtRouter = ({ form, translations }) => {
                   <FillInFormPage
                     form={form}
                     submission={submission}
-                    updateSubmission={updateSubmission}
+                    setSubmission={setSubmission}
                     formUrl={formBaseUrl}
                   />
                 }

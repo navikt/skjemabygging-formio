@@ -1,5 +1,5 @@
 import { FyllutState, NavFormType, navFormUtils, Submission, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { useEffect, useRef, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import ConfirmationModal from '../../components/modal/confirmation/ConfirmationModal';
 import NavForm from '../../components/nav-form/NavForm';
@@ -17,11 +17,11 @@ type ModalType = 'save' | 'delete' | 'discard';
 interface FillInFormPageProps {
   form: NavFormType;
   submission?: Submission | { fyllutState: FyllutState };
-  updateSubmission: (submission?: Submission) => void;
+  setSubmission: Dispatch<SetStateAction<Submission | { fyllutState: FyllutState } | undefined>>;
   formUrl: string;
 }
 
-export const FillInFormPage = ({ form, submission, updateSubmission, formUrl }: FillInFormPageProps) => {
+export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: FillInFormPageProps) => {
   const navigate = useNavigate();
   const {
     loggSkjemaApnet,
@@ -127,7 +127,7 @@ export const FillInFormPage = ({ form, submission, updateSubmission, formUrl }: 
   function onNextPage({ page, currentPanels, submission }) {
     if (isMellomlagringActive) {
       updateMellomlagring(submission);
-      updateSubmission(submission);
+      setSubmission(submission);
     }
     loggNavigering({
       lenkeTekst: translate(TEXTS.grensesnitt.navigation.next),
@@ -146,12 +146,12 @@ export const FillInFormPage = ({ form, submission, updateSubmission, formUrl }: 
   }
 
   function onCancel({ submission }) {
-    updateSubmission(submission);
+    setSubmission(submission);
     setShowModal(isMellomlagringActive ? 'delete' : 'discard');
   }
 
   function onSave({ submission }) {
-    updateSubmission(submission);
+    setSubmission(submission);
     setShowModal('save');
   }
 
@@ -190,7 +190,7 @@ export const FillInFormPage = ({ form, submission, updateSubmission, formUrl }: 
     if (isMellomlagringActive) {
       updateMellomlagring(submission);
     }
-    updateSubmission(submission);
+    setSubmission(submission);
     loggNavigering({
       lenkeTekst: translate(TEXTS.grensesnitt.navigation.submit),
       destinasjon: `${formUrl}/oppsummering`,
