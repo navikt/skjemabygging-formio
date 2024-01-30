@@ -2,6 +2,7 @@ import { AppConfigProvider } from '@navikt/skjemadigitalisering-shared-component
 import { render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { vi } from 'vitest';
+import httpFyllut from '../util/httpFyllut';
 import { FormPageWrapper } from './FormPageWrapper';
 
 const RESPONSE_HEADERS = {
@@ -30,9 +31,11 @@ describe('FormPageWrapper', () => {
 
     render(
       <MemoryRouter initialEntries={['/fyllut/unknownForm']}>
-        <Routes>
-          <Route path="/fyllut/:formPath/*" element={<FormPageWrapper />} />
-        </Routes>
+        <AppConfigProvider featureToggles={{}} config={{}} http={httpFyllut}>
+          <Routes>
+            <Route path="/fyllut/:formPath/*" element={<FormPageWrapper />} />
+          </Routes>
+        </AppConfigProvider>
       </MemoryRouter>,
     );
 
@@ -64,7 +67,7 @@ describe('FormPageWrapper', () => {
 
     render(
       <MemoryRouter initialEntries={['/fyllut/knownForm']}>
-        <AppConfigProvider featureToggles={{}} config={{}}>
+        <AppConfigProvider featureToggles={{}} config={{}} http={httpFyllut}>
           <Routes>
             <Route path="/fyllut/:formPath/*" element={<FormPageWrapper />} />
           </Routes>
@@ -98,7 +101,7 @@ describe('FormPageWrapper', () => {
     it('Show error message when submission method is invalid', async () => {
       render(
         <MemoryRouter initialEntries={['/fyllut/nav123456']}>
-          <AppConfigProvider featureToggles={{}} config={{}} submissionMethod="digital">
+          <AppConfigProvider featureToggles={{}} config={{}} submissionMethod="digital" http={httpFyllut}>
             <Routes>
               <Route path="/fyllut/:formPath/*" element={<FormPageWrapper />} />
             </Routes>
@@ -114,7 +117,7 @@ describe('FormPageWrapper', () => {
     it('Show form title when submission method is valid', async () => {
       render(
         <MemoryRouter initialEntries={['/fyllut/nav123456']}>
-          <AppConfigProvider featureToggles={{}} config={{}} submissionMethod="paper">
+          <AppConfigProvider featureToggles={{}} config={{}} submissionMethod="paper" http={httpFyllut}>
             <Routes>
               <Route path="/fyllut/:formPath/*" element={<FormPageWrapper />} />
             </Routes>
