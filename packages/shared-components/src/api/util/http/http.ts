@@ -82,7 +82,7 @@ const put = async <T>(url: string, body: object, headers?: FetchHeader, opts?: F
 
 const handleResponse = async (response: Response, opts?: FetchOptions) => {
   if (!response.ok) {
-    if (response.status === 401) {
+    if (response.status === 401 || response.status === 440) {
       throw new UnauthenticatedError(response.statusText);
     }
 
