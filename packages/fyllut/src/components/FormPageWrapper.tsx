@@ -23,24 +23,26 @@ export const FormPageWrapper = () => {
       })
       .catch((err) => {
         // Temporary workaround. Remove in eight weeks :)
-        const innsendingsId = searchParams.get('innsendingsId');
-        if (innsendingsId) {
-          http
-            ?.get<{ visningsType }>(`/fyllut/api/send-inn/soknad/${innsendingsId}`)
-            .then((soknad) => {
-              if (soknad?.visningsType === 'dokumentinnsending') {
-                const isDevGcp = config?.NAIS_CLUSTER_NAME === 'dev-gcp';
-                const baseUrl = isDevGcp ? 'https://www.intern.dev.nav.no' : 'https://www.nav.no';
-                logger?.info('Redirigerer søknad med visningstype dokumentinnsending', { baseUrl, innsendingsId });
-                window.location.href = `${baseUrl}/sendinn/${innsendingsId}`;
-              }
-            })
-            .catch((err) => {
-              logger?.info('Redirigering av søknad med visningstype dokumentinnsending feilet', {
-                innsendingsId,
-                errorMessage: err?.message,
+        if (err instanceof http!.HttpError && err.status === 404) {
+          const innsendingsId = searchParams.get('innsendingsId');
+          if (innsendingsId) {
+            http!
+              .get<{ visningsType }>(`/fyllut/api/send-inn/soknad/${innsendingsId}`)
+              .then((soknad) => {
+                if (soknad?.visningsType === 'dokumentinnsending') {
+                  const isDevGcp = config?.NAIS_CLUSTER_NAME === 'dev-gcp';
+                  const baseUrl = isDevGcp ? 'https://www.intern.dev.nav.no' : 'https://www.nav.no';
+                  logger?.info('Redirigerer søknad med visningstype dokumentinnsending', { baseUrl, innsendingsId });
+                  window.location.href = `${baseUrl}/sendinn/${innsendingsId}`;
+                }
+              })
+              .catch((err) => {
+                logger?.info('Redirigering av søknad med visningstype dokumentinnsending feilet', {
+                  innsendingsId,
+                  errorMessage: err?.message,
+                });
               });
-            });
+          }
         }
         setStatus(err instanceof httpFyllut.UnauthenticatedError ? 'UNAUTHENTICATED' : 'FORM NOT FOUND');
       });
