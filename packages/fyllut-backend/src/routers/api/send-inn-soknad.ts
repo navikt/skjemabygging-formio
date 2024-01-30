@@ -73,7 +73,9 @@ const sendInnSoknad = {
         ...json,
         hoveddokumentVariant: {
           ...json.hoveddokumentVariant,
-          document: byteArrayToObject(base64Decode(json.hoveddokumentVariant.document)),
+          ...(json.hoveddokumentVariant.document && {
+            document: byteArrayToObject(base64Decode(json.hoveddokumentVariant.document)),
+          }),
         },
       };
       res.json(response);

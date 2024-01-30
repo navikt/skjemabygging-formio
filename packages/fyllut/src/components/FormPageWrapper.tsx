@@ -26,9 +26,9 @@ export const FormPageWrapper = () => {
         const innsendingsId = searchParams.get('innsendingsId');
         if (innsendingsId) {
           http
-            ?.get<{ visningstype }>(`/fyllut/api/send-inn/soknad/${innsendingsId}`)
+            ?.get<{ visningsType }>(`/fyllut/api/send-inn/soknad/${innsendingsId}`)
             .then((soknad) => {
-              if (soknad?.visningstype === 'dokumentinnsending') {
+              if (soknad?.visningsType === 'dokumentinnsending') {
                 const isDevGcp = config?.NAIS_CLUSTER_NAME === 'dev-gcp';
                 const baseUrl = isDevGcp ? 'https://www.intern.dev.nav.no' : 'https://www.nav.no';
                 logger?.info('Redirigerer søknad med visningstype dokumentinnsending', { baseUrl, innsendingsId });
