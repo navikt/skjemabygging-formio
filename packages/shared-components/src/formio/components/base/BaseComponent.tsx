@@ -87,7 +87,7 @@ class BaseComponent extends FormioReactComponent {
    * Get content for custom component renderReact()
    */
   getContent() {
-    return this.component?.content ?? '';
+    return this.component?.content ? this.t(this.component?.content) : '';
   }
 
   /**
