@@ -197,7 +197,7 @@ describe('Mellomlagring', () => {
             cy.intercept('PUT', '/fyllut/api/send-inn/utfyltsoknad', (req) => {
               const { submission: bodySubmission, ...bodyRest } = req.body;
               const { submission: fixtureSubmission, ...fixtureRest } = fixture;
-              expect(bodySubmission.data).to.deep.contain(fixtureSubmission.data);
+              expect(bodySubmission.data).to.deep.eq(fixtureSubmission.data);
               expect(bodyRest).to.deep.eq(fixtureRest);
             }).as('submitMellomlagring');
           });
@@ -269,7 +269,11 @@ describe('Mellomlagring', () => {
           cy.intercept('PUT', '/fyllut/api/send-inn/utfyltsoknad', (req) => {
             const { submission } = req.body;
             expect(submission.data['slettetTekstfelt']).to.be.undefined;
+            // Container
             expect(submission.data['container.slettetTekstFelt']).to.be.undefined;
+            // Datagrid
+            expect(submission.data['datagrid']).to.deep.eq([{ tekstfelt: 'Hoppeslott' }, { tekstfelt: 'Hund' }]);
+            expect(submission.data['datagrid1']).to.be.undefined;
             // value should be removed if the corresponding field is conditionally hidden
             expect(submission.data['hvaSyntesDuOmFrokosten']).to.be.undefined;
           }).as('submitMellomlagring');

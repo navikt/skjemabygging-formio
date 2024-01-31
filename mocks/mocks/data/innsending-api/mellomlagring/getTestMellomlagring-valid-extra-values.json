@@ -30,6 +30,8 @@
           "hvaSpisteDuTilFrokost": "",
           "hvaSyntesDuOmFrokosten": "Helt ok",
           "slettetTekstfelt": "Verdi som skal fjernes",
+          "datagrid": [{"tekstfelt": "Hoppeslott", "tekstfelt1": "Grønn"}, {"tekstfelt": "Hund", "tekstfelt1": "Svart"}],
+          "datagrid1": [{"tekstfelt": "Katt", "tekstfelt1": "Blå"}, {"tekstfelt": "Kanarifugl", "tekstfelt1": "Gul"}],
           "container.slettetTekstFelt": "Verdi fra container som skal fjernes",
           "onskerDuAFaGavenInnpakket": "nei",
           "hemmeligKode": "",
