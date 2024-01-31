@@ -19,6 +19,14 @@ const findComponent = (formSummaryComponents, key: string) => {
   });
   return result;
 };
+
+const isChainedKey = (key: string) => key.split('.').length > 1;
+
+const removeConainerPrefixFromKey = (component) => {
+  const [_containerKey, ...newKey] = component.key.split('.');
+  return { ...component, key: newKey.join('.') };
+};
+
 const filterOutIfNotInSummary = (originalData: SubmissionData, formSummaryComponents) => {
   const filteredSubmissionEntries = Object.entries(originalData)
     .map(([key, value]) => {
@@ -26,11 +34,8 @@ const filterOutIfNotInSummary = (originalData: SubmissionData, formSummaryCompon
       // Remove value from submission
       if (matchingComponents.length === 0) return undefined;
       // Container
-      if (matchingComponents[0].key.split('.').length > 1) {
-        const containerComponents = matchingComponents.map((component) => {
-          const [_containerKey, ...newKey] = component.key.split('.');
-          return { ...component, key: newKey.join('.') };
-        });
+      if (isChainedKey(matchingComponents[0].key)) {
+        const containerComponents = matchingComponents.map(removeConainerPrefixFromKey);
         const nestedData = filterOutIfNotInSummary(value as SubmissionData, containerComponents);
         return nestedData ? [key, nestedData] : undefined;
       }
