@@ -9,7 +9,7 @@ const formGroupForm = () => {
   // prettier-ignore
   return createTabs(
     display([
-      editFormDisplay.label(),
+      editFormDisplay.legend(),
       editFormDisplay.description(),
     ]),
     api([
