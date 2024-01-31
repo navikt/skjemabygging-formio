@@ -13,6 +13,7 @@ import editFormHidden from './editFormHidden';
 import editFormHideLabel from './editFormHideLabel';
 import editFormInline from './editFormIsInline';
 import editFormLabel from './editFormLabel';
+import editFormLegend from './editFormLegend';
 import editFormRemoveAnother from './editFormRemoveAnother';
 import editFormRowTitle from './editFormRowTitle';
 import editFormRows from './editFormRows';
@@ -32,6 +33,7 @@ const editFormDisplay = {
   disabled: editFormDisabled,
   fieldSize: editFormFieldSizeField,
   label: editFormLabel,
+  legend: editFormLegend,
   title: editFormTitle,
   spellCheck: editFormSpellCheck,
   showYearPicker: editShowYearPicker,
