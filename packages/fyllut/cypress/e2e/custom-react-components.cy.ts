@@ -483,6 +483,10 @@ describe('Custom react components', () => {
       cy.get('.formio-component-alertstripehtml').find('a').should('have.attr', 'href', 'https://www.nav.no/');
     });
 
+    it('should display alert with norwegian alerttype (suksess instead of success)', () => {
+      cy.get('.formio-component-alertstripenorwegian').find('.navds-alert--success').contains('Norwegian alertType');
+    });
+
     // Old alerts (components have input=true on component and label defined)
     it('should have marginBottom from input=true of var(--a-spacing-10) which is 2.5rem = 40px', () => {
       cy.contains('.formio-component-alertstripe', 'Old alert 1').should('have.css', 'marginBottom', '40px');

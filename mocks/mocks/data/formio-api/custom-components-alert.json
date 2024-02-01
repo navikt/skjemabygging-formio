@@ -160,7 +160,7 @@
               "allowMultipleMasks": false,
               "addons": [],
               "alerttype": "info",
-              "id": "eubi385"
+              "id": "egjh8ds"
             },
             {
               "content": "New alert 2",
@@ -230,10 +230,10 @@
               "properties": {},
               "allowMultipleMasks": false,
               "addons": [],
-              "id": "eqnggid"
+              "id": "e2l94q"
             }
           ],
-          "id": "e6986x8",
+          "id": "edyw9u",
           "navId": "eoxwudf6"
         },
         {
@@ -377,7 +377,7 @@
               "addons": [],
               "tag": "p",
               "attrs": [],
-              "id": "en8bkmr",
+              "id": "exek0h9",
               "navId": "ews0he"
             },
             {
@@ -450,10 +450,10 @@
               "properties": {},
               "allowMultipleMasks": false,
               "addons": [],
-              "id": "eq707rc"
+              "id": "ez8k1r"
             }
           ],
-          "id": "ef9f9yi",
+          "id": "ezzl3t2",
           "navId": "ek4trcc"
         },
         {
@@ -469,6 +469,10 @@
           "contentForPdf": "",
           "key": "alertstripehtml",
           "input": false,
+          "tableView": false,
+          "label": "",
+          "type": "alertstripe",
+          "navId": "ewfphrw",
           "placeholder": "",
           "prefix": "",
           "customClass": "",
@@ -482,9 +486,7 @@
           "clearOnHide": true,
           "refreshOn": "",
           "redrawOn": "",
-          "tableView": false,
           "modalEdit": false,
-          "label": "",
           "dataGridLabel": false,
           "labelPosition": "top",
           "description": "",
@@ -523,9 +525,77 @@
           "properties": {},
           "allowMultipleMasks": false,
           "addons": [],
+          "id": "euxgq6"
+        },
+        {
+          "content": "<p>Norwegian alertType</p>",
+          "isInline": false,
+          "textDisplay": "form",
+          "key": "alertstripenorwegian",
+          "alerttype": "suksess",
+          "input": false,
+          "tableView": false,
+          "label": "",
           "type": "alertstripe",
-          "id": "ew998zs",
-          "navId": "ewfphrw"
+          "navId": "ennccwmj",
+          "id": "e0ju1e3w",
+          "placeholder": "",
+          "prefix": "",
+          "customClass": "",
+          "suffix": "",
+          "multiple": false,
+          "defaultValue": null,
+          "protected": false,
+          "unique": false,
+          "persistent": true,
+          "hidden": false,
+          "clearOnHide": true,
+          "refreshOn": "",
+          "redrawOn": "",
+          "modalEdit": false,
+          "dataGridLabel": false,
+          "labelPosition": "top",
+          "description": "",
+          "errorLabel": "",
+          "tooltip": "",
+          "hideLabel": true,
+          "tabindex": "",
+          "disabled": false,
+          "autofocus": false,
+          "dbIndex": false,
+          "customDefaultValue": "",
+          "calculateValue": "",
+          "calculateServer": false,
+          "widget": null,
+          "attributes": {},
+          "validateOn": "change",
+          "validate": {
+            "required": false,
+            "custom": "",
+            "customPrivate": false,
+            "strictDateValidation": false,
+            "multiple": false,
+            "unique": false
+          },
+          "conditional": {
+            "show": null,
+            "when": null,
+            "eq": ""
+          },
+          "overlay": {
+            "style": "",
+            "left": "",
+            "top": "",
+            "width": "",
+            "height": ""
+          },
+          "allowCalculateOverride": false,
+          "encrypted": false,
+          "showCharCount": false,
+          "showWordCount": false,
+          "properties": {},
+          "allowMultipleMasks": false,
+          "addons": []
         }
       ],
       "input": false,
@@ -591,7 +661,7 @@
       "lazyLoad": false,
       "theme": "default",
       "breadcrumb": "default",
-      "id": "e5ufkb",
+      "id": "eb7tjff",
       "navId": "eccby0b"
     }
   ],
@@ -607,7 +677,7 @@
         "key": "9c9b610d-fe35-45e0-bc13-b57f3598d3ee"
       }
     ],
-    "modified": "2024-01-17T11:52:59.914Z",
+    "modified": "2024-02-01T12:24:27.728Z",
     "modifiedBy": "test@nav.no"
   },
   "project": "628ca77305690db58c974cfd",
@@ -616,6 +686,6 @@
   "_vid": 0,
   "submissionAccess": [],
   "created": "2024-01-15T14:22:34.405Z",
-  "modified": "2024-01-17T11:53:00.594Z",
+  "modified": "2024-02-01T12:24:28.223Z",
   "machineName": "jvcemxwcpghcqjn:testingalert"
 }
