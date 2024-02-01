@@ -57,7 +57,6 @@ class Radio extends BaseComponent {
         value={this.getValue()}
         onChange={(value) => this.changeHandler(value, { modified: true })}
         ref={(ref) => this.setReactInstance(ref)}
-        hideLegend={this.getHideLabel()}
         description={this.getDescription()}
         className={this.getClassName()}
         readOnly={this.getReadOnly()}
