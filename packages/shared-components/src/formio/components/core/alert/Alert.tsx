@@ -23,8 +23,17 @@ class Alert extends BaseComponent {
     return alertBuilder();
   }
 
-  getAlertType() {
-    return (this.component?.alerttype ?? 'info') as AlertProps['variant'];
+  getAlertType(): AlertProps['variant'] {
+    const alertTypeMap = {
+      info: 'info',
+      suksess: 'success',
+      advarsel: 'warning',
+      feil: 'error',
+    };
+
+    if (!this.component?.alerttype) return 'info';
+
+    return alertTypeMap[this.component?.alerttype] ?? this.component?.alerttype;
   }
 
   getIsinline() {

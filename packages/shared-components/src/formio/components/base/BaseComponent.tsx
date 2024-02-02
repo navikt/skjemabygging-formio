@@ -23,7 +23,6 @@ class BaseComponent extends FormioReactComponent {
   static schema(values) {
     return Field.schema({
       fieldSize: 'input--xxl',
-      dataGridLabel: true,
       validateOn: 'blur',
       ...values,
     });
@@ -50,7 +49,7 @@ class BaseComponent extends FormioReactComponent {
   }
 
   getHideLabel() {
-    return this.labelIsHidden();
+    return this.component?.hideLabel ?? false;
   }
 
   /**
@@ -87,7 +86,7 @@ class BaseComponent extends FormioReactComponent {
    * Get content for custom component renderReact()
    */
   getContent() {
-    return this.component?.content ?? '';
+    return this.component?.content ? this.t(this.component?.content) : '';
   }
 
   /**
