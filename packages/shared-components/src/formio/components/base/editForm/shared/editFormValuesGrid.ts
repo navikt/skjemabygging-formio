@@ -12,7 +12,7 @@ const editFormValuesGrid = (): Component => ({
       key: 'label',
       input: true,
       type: 'textfield',
-      dataGridLabel: false,
+      hideLabel: true,
       validate: {
         required: true,
       },
@@ -22,7 +22,7 @@ const editFormValuesGrid = (): Component => ({
       key: 'value',
       input: true,
       type: 'textfield',
-      dataGridLabel: false,
+      hideLabel: true,
       allowCalculateOverride: true,
       calculateValue: 'value = _.camelCase(row.label);',
     },
