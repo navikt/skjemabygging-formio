@@ -45,6 +45,10 @@ Cypress.Commands.add('findByRoleWhenAttached', (role, options) => {
     .get('@elementWhenAttached');
 });
 
+Cypress.Commands.add('shouldBeVisible', { prevSubject: true }, (subject) => {
+  return cy.wrap(subject).should('be.visible').should('not.have.class', 'navds-sr-only');
+});
+
 Cypress.Commands.add('clickNextStep', () => {
   return cy.findByRoleWhenAttached('button', { name: TEXTS.grensesnitt.navigation.next }).click();
 });
