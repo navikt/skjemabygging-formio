@@ -70,6 +70,13 @@ const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList,
           <Heading size="small" level="4">
             {translate(mellomlagringError.title)}
           </Heading>
+          {mellomlagringError.linkText && (
+            <p>
+              {translate(mellomlagringError.messageStart)}
+              <a href={mellomlagringError.url}>{mellomlagringError.linkText}</a>
+              {translate(mellomlagringError.messageEnd)}
+            </p>
+          )}
           {translate(mellomlagringError.message, mellomlagringError?.messageParams)}
         </Alert>
       )}
