@@ -9,6 +9,7 @@ import { createPdfAsByteArray } from './helpers/pdfService';
 import {
   assembleSendInnSoknadBody,
   isMellomLagringEnabled,
+  isNotFound,
   sanitizeInnsendingsId,
   validateInnsendingsId,
 } from './helpers/sendInn';
@@ -75,12 +76,10 @@ const sendInnUtfyltSoknad = {
         res.sendStatus(201);
       } else {
         const responseError = await responseToError(sendInnResponse, 'Feil ved kall til SendInn', true);
-        if (
-          sendInnResponse.status === 404 ||
-          responseError?.['http_response_body']?.errorCode === 'illegalAction.applicationSentInOrDeleted'
-        ) {
+        if (isNotFound(sendInnResponse, responseError)) {
           return res.sendStatus(404);
         }
+
         logger.debug('Failed to post data to SendInn');
         next(responseError);
       }

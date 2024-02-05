@@ -17,7 +17,7 @@ interface HovedDokument {
   document: string | null;
 }
 
-export interface Attachment {
+interface Attachment {
   vedleggsnr: string;
   tittel: string;
   label: string;
@@ -28,7 +28,7 @@ export interface Attachment {
   vedleggskjema?: string;
 }
 
-export interface SendInnSoknadBody {
+interface SendInnSoknadBody {
   brukerId: string;
   skjemanr: string;
   skjemapath: string;
@@ -49,13 +49,13 @@ const isValidUuid = (innsendingsId: string): boolean => {
 };
 
 const DEFAULT_LANGUAGE = 'nb-NO';
-export const objectToByteArray = (obj: object) => Array.from(new TextEncoder().encode(JSON.stringify(obj)));
+const objectToByteArray = (obj: object) => Array.from(new TextEncoder().encode(JSON.stringify(obj)));
 
-export const byteArrayToObject = (byteArray?: Buffer) => JSON.parse(new TextDecoder().decode(byteArray));
+const byteArrayToObject = (byteArray?: Buffer) => JSON.parse(new TextDecoder().decode(byteArray));
 
-export const sanitizeInnsendingsId = (innsendingsId: string) => innsendingsId.replace(/[./]/g, '');
+const sanitizeInnsendingsId = (innsendingsId: string) => innsendingsId.replace(/[./]/g, '');
 
-export const validateInnsendingsId = (innsendingsId: string | undefined, supplementaryMessage?: string) => {
+const validateInnsendingsId = (innsendingsId: string | undefined, supplementaryMessage?: string) => {
   let errorMessage;
   if (!innsendingsId) {
     errorMessage = 'InnsendingsId mangler.';
@@ -71,7 +71,7 @@ export const validateInnsendingsId = (innsendingsId: string | undefined, supplem
   return errorMessage;
 };
 
-export const isMellomLagringEnabled = (featureToggles: FeatureTogglesMap) => {
+const isMellomLagringEnabled = (featureToggles: FeatureTogglesMap) => {
   if (!featureToggles?.enableMellomlagring) {
     logger.debug('Mellomlagring not enabled, returning data in body');
     return false;
@@ -84,7 +84,7 @@ export const isMellomLagringEnabled = (featureToggles: FeatureTogglesMap) => {
   return true;
 };
 
-export const assembleSendInnSoknadBody = (
+const assembleSendInnSoknadBody = (
   requestBody: {
     form: NavFormType;
     submission: Submission;
@@ -159,3 +159,18 @@ export const assembleSendInnSoknadBody = (
 
   return body;
 };
+
+const isNotFound = (response: { status: number }, responseError: Error | undefined) =>
+  response.status === 404 ||
+  responseError?.['http_response_body']?.errorCode === 'illegalAction.applicationSentInOrDeleted';
+
+export {
+  assembleSendInnSoknadBody,
+  byteArrayToObject,
+  isMellomLagringEnabled,
+  isNotFound,
+  objectToByteArray,
+  sanitizeInnsendingsId,
+  validateInnsendingsId,
+};
+export type { Attachment, SendInnSoknadBody };

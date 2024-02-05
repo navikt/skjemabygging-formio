@@ -10,6 +10,7 @@ import {
   assembleSendInnSoknadBody,
   byteArrayToObject,
   isMellomLagringEnabled,
+  isNotFound,
   sanitizeInnsendingsId,
   validateInnsendingsId,
 } from './helpers/sendInn';
@@ -57,12 +58,10 @@ const sendInnSoknad = {
           `Feil ved kall til SendInn. ${getErrorMessage}`,
           true,
         );
-        if (
-          sendInnResponse.status === 404 ||
-          responseError?.['http_response_body']?.errorCode === 'illegalAction.applicationSentInOrDeleted'
-        ) {
+        if (isNotFound(sendInnResponse, responseError)) {
           return res.sendStatus(404);
         }
+
         logger.debug('Failed to fetch data from SendInn');
         return next(responseError);
       }
@@ -158,12 +157,10 @@ const sendInnSoknad = {
           `Feil ved kall til SendInn. ${putErrorMessage}`,
           true,
         );
-        if (
-          sendInnResponse.status === 404 ||
-          responseError?.['http_response_body']?.errorCode === 'illegalAction.applicationSentInOrDeleted'
-        ) {
+        if (isNotFound(sendInnResponse, responseError)) {
           return res.sendStatus(404);
         }
+
         logger.debug('Failed to update data in SendInn');
         next(responseError);
       }
@@ -209,10 +206,7 @@ const sendInnSoknad = {
           `Feil ved kall til SendInn. ${deleteErrorMessage}`,
           true,
         );
-        if (
-          sendInnResponse.status === 404 ||
-          responseError?.['http_response_body']?.errorCode === 'illegalAction.applicationSentInOrDeleted'
-        ) {
+        if (isNotFound(sendInnResponse, responseError)) {
           return res.sendStatus(404);
         }
 
