@@ -74,8 +74,15 @@ const sendInnUtfyltSoknad = {
         });
         res.sendStatus(201);
       } else {
+        const responseError = await responseToError(sendInnResponse, 'Feil ved kall til SendInn', true);
+        if (
+          sendInnResponse.status === 404 ||
+          responseError?.['http_response_body']?.errorCode === 'illegalAction.applicationSentInOrDeleted'
+        ) {
+          return res.sendStatus(404);
+        }
         logger.debug('Failed to post data to SendInn');
-        next(await responseToError(sendInnResponse, 'Feil ved kall til SendInn', true));
+        next(responseError);
       }
     } catch (err) {
       next(err);

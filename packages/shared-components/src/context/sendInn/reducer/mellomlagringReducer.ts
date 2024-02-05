@@ -30,38 +30,65 @@ export const mellomlagringReducer = (
 
 const getError = (type: ErrorType, savedDate?: string): MellomlagringError => {
   switch (type) {
-    case 'GET FAILED':
+    case 'GET_FAILED':
       return {
         type,
         title: TEXTS.statiske.mellomlagringError.get.title,
         message: TEXTS.statiske.mellomlagringError.get.message,
       };
-    case 'CREATE FAILED':
+    case 'CREATE_FAILED':
       return {
         type,
         title: TEXTS.statiske.mellomlagringError.create.title,
         message: TEXTS.statiske.mellomlagringError.create.message,
       };
-    case 'UPDATE FAILED':
+    case 'UPDATE_FAILED':
       return {
         type,
         title: TEXTS.statiske.mellomlagringError.update.title,
         message: TEXTS.statiske.mellomlagringError.update.message,
       };
-    case 'DELETE FAILED':
+    case 'UPDATE_FAILED_NOT_FOUND':
+      return {
+        type,
+        title: TEXTS.statiske.mellomlagringError.updateNotFound.title,
+        messageStart: TEXTS.statiske.mellomlagringError.updateNotFound.messageStart,
+        messageEnd: TEXTS.statiske.mellomlagringError.updateNotFound.messageEnd,
+        linkText: 'Min side',
+        url: 'https://www.nav.no/minside',
+      };
+    case 'DELETE_FAILED':
       return {
         type,
         title: TEXTS.statiske.mellomlagringError.delete.title,
         message: TEXTS.statiske.mellomlagringError.delete.message,
       };
-    case 'SUBMIT FAILED':
+    case 'DELETE_FAILED_NOT_FOUND':
+      return {
+        type,
+        title: TEXTS.statiske.mellomlagringError.deleteNotFound.title,
+        messageStart: TEXTS.statiske.mellomlagringError.deleteNotFound.messageStart,
+        messageEnd: TEXTS.statiske.mellomlagringError.deleteNotFound.messageEnd,
+        linkText: 'Min side',
+        url: 'https://www.nav.no/minside',
+      };
+    case 'SUBMIT_FAILED_NOT_FOUND':
+      return {
+        type,
+        title: TEXTS.statiske.mellomlagringError.submitNotFound.title,
+        messageStart: TEXTS.statiske.mellomlagringError.submitNotFound.messageStart,
+        messageEnd: TEXTS.statiske.mellomlagringError.submitNotFound.messageEnd,
+        linkText: 'Min side',
+        url: 'https://www.nav.no/minside',
+      };
+    case 'SUBMIT_FAILED':
       return {
         type,
         title: TEXTS.statiske.mellomlagringError.submit.title,
         message: TEXTS.statiske.mellomlagringError.submit.draftSaved,
         messageParams: { date: savedDate },
       };
-    case 'SUBMIT AND UPDATE FAILED':
+    case 'SUBMIT_AND_UPDATE_FAILED':
       const draftSavedMessage = savedDate
         ? {
             message: TEXTS.statiske.mellomlagringError.submit.draftSaved,

@@ -134,7 +134,7 @@ const SendInnProvider = ({
           return;
         }
         logger?.error(`${innsendingsIdFromParams}: Failed to retrieve mellomlagring`, error as Error);
-        dispatchFyllutMellomlagring({ type: 'error', error: 'GET FAILED' });
+        dispatchFyllutMellomlagring({ type: 'error', error: 'GET_FAILED' });
         setInitStatus('error');
       }
     };
@@ -199,7 +199,7 @@ const SendInnProvider = ({
       }
       return response;
     } catch (error: any) {
-      dispatchFyllutMellomlagring({ type: 'error', error: 'CREATE FAILED' });
+      dispatchFyllutMellomlagring({ type: 'error', error: 'CREATE_FAILED' });
       logger?.error('Failed to create mellomlagring', error);
     }
   };
@@ -223,10 +223,14 @@ const SendInnProvider = ({
       logger?.info(`${innsendingsId}: Mellomlagring was updated`);
       dispatchFyllutMellomlagring({ type: 'update', response });
       return response;
-    } catch (error) {
-      dispatchFyllutMellomlagring({ type: 'error', error: 'UPDATE FAILED' });
-      logger?.error(`${innsendingsId}: Failed to update mellomlagring`, error as Error);
-      throw error;
+    } catch (error: any) {
+      if (error.status === 404) {
+        dispatchFyllutMellomlagring({ type: 'error', error: 'UPDATE_FAILED_NOT_FOUND' });
+      } else {
+        dispatchFyllutMellomlagring({ type: 'error', error: 'UPDATE_FAILED' });
+        logger?.error(`${innsendingsId}: Failed to update mellomlagring`, error as Error);
+        throw error;
+      }
     }
   };
 
@@ -239,10 +243,14 @@ const SendInnProvider = ({
       const response = await deleteSoknad(appConfig, innsendingsId);
       logger?.info(`${innsendingsId}: Mellomlagring was deleted`);
       return response;
-    } catch (error) {
-      dispatchFyllutMellomlagring({ type: 'error', error: 'DELETE FAILED' });
-      logger?.error(`${innsendingsId}: Failed to delete mellomlagring`, error as Error);
-      throw error;
+    } catch (error: any) {
+      if (error.status === 404) {
+        dispatchFyllutMellomlagring({ type: 'error', error: 'DELETE_FAILED_NOT_FOUND' });
+      } else {
+        dispatchFyllutMellomlagring({ type: 'error', error: 'DELETE_FAILED' });
+        logger?.error(`${innsendingsId}: Failed to delete mellomlagring`, error as Error);
+        throw error;
+      }
     }
   };
 
@@ -273,14 +281,21 @@ const SendInnProvider = ({
           window.location.href = redirectLocation;
         }
         return response;
-      } catch (submitError) {
-        logger?.error(`${innsendingsId}: Failed to submit, will try to store changes`, submitError as Error);
-        try {
-          await updateSoknad(appConfig, form, submission, currentLanguage, translation, innsendingsId);
-          dispatchFyllutMellomlagring({ type: 'error', error: 'SUBMIT FAILED' });
-        } catch (updateError) {
-          logger?.error(`${innsendingsId}: Failed to update mellomlagring after a failed submit`, updateError as Error);
-          dispatchFyllutMellomlagring({ type: 'error', error: 'SUBMIT AND UPDATE FAILED' });
+      } catch (submitError: any) {
+        if (submitError.status === 404) {
+          dispatchFyllutMellomlagring({ type: 'error', error: 'SUBMIT_FAILED_NOT_FOUND' });
+        } else {
+          logger?.error(`${innsendingsId}: Failed to submit, will try to store changes`, submitError as Error);
+          try {
+            await updateSoknad(appConfig, form, submission, currentLanguage, translation, innsendingsId);
+            dispatchFyllutMellomlagring({ type: 'error', error: 'SUBMIT_FAILED' });
+          } catch (updateError) {
+            logger?.error(
+              `${innsendingsId}: Failed to update mellomlagring after a failed submit`,
+              updateError as Error,
+            );
+            dispatchFyllutMellomlagring({ type: 'error', error: 'SUBMIT_AND_UPDATE_FAILED' });
+          }
         }
       }
     } else {
