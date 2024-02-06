@@ -59,6 +59,7 @@ const sendInnSoknad = {
           true,
         );
         if (isNotFound(sendInnResponse, responseError)) {
+          logger.info(`${sanitizedInnsendingsId}: Not found. Failed to get`, responseError);
           return res.sendStatus(404);
         }
 
@@ -158,6 +159,7 @@ const sendInnSoknad = {
           true,
         );
         if (isNotFound(sendInnResponse, responseError)) {
+          logger.info(`${sanitizedInnsendingsId}: Not found. Failed to update`, responseError);
           return res.sendStatus(404);
         }
 
@@ -207,6 +209,7 @@ const sendInnSoknad = {
           true,
         );
         if (isNotFound(sendInnResponse, responseError)) {
+          logger.info(`${sanitizedInnsendingsId}: Not found. Failed to delete`, responseError);
           return res.sendStatus(404);
         }
 

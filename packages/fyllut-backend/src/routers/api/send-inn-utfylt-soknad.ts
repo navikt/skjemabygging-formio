@@ -77,6 +77,7 @@ const sendInnUtfyltSoknad = {
       } else {
         const responseError = await responseToError(sendInnResponse, 'Feil ved kall til SendInn', true);
         if (isNotFound(sendInnResponse, responseError)) {
+          logger.info(`${sanitizedInnsendingsId}: Not found. Failed to submit`, responseError);
           return res.sendStatus(404);
         }
 
