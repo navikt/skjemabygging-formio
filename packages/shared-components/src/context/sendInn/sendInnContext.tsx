@@ -105,7 +105,7 @@ const SendInnProvider = ({
     const response = await getSoknad(innsendingsId, appConfig);
     if (response?.hoveddokumentVariant.document) {
       addSearchParamToUrl('lang', response.hoveddokumentVariant.document.language);
-      updateSubmission(getSubmissionWithFyllutState(response));
+      updateSubmission(getSubmissionWithFyllutState(response, form));
       dispatchFyllutMellomlagring({ type: 'init', response });
     }
   };

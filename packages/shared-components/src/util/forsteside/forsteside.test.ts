@@ -1,4 +1,4 @@
-import { ForstesideRequestBody, Mottaksadresse } from '@navikt/skjemadigitalisering-shared-domain';
+import { ForstesideRequestBody, Mottaksadresse, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import {
   genererAdresse,
   genererDokumentlisteFoersteside,
@@ -103,7 +103,7 @@ describe('getVedleggsFelterSomSkalSendes', () => {
           genererVedleggComponent('vedlegg2', 'Label 2', 'O9', 'Vedleggstittel 2'),
           genererVedleggComponent('vedlegg3', 'Label 3', 'Q7', 'Vedleggstittel 3'),
         ],
-      },
+      } as unknown as NavFormType,
     );
     expect(actual.map((component) => component.key)).toEqual(['vedlegg1', 'vedlegg2', 'vedlegg3']);
   });
@@ -159,7 +159,7 @@ const formMedVedlegg = {
       ],
     },
   ],
-};
+} as unknown as NavFormType;
 
 describe('genererVedleggsListe', () => {
   it('generates correct vedleggsListe', () => {
@@ -305,10 +305,10 @@ describe('genererFoerstesideData', () => {
   it('correctly generates foersteside data', () => {
     const actual = genererFoerstesideData(
       {
+        ...formMedVedlegg,
         properties: { skjemanummer: 'NAV 76-07.10', tema: 'OPP' },
         title: 'Registreringsskjema for tilskudd til utdanning',
-        ...formMedVedlegg,
-      },
+      } as NavFormType,
       {
         gateadresseSoker: 'Testveien 1',
         landSoker: 'USA',

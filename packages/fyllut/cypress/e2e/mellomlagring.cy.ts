@@ -194,7 +194,7 @@ describe('Mellomlagring', () => {
             cy.intercept('PUT', '/fyllut/api/send-inn/utfyltsoknad', (req) => {
               const { submission: bodySubmission, ...bodyRest } = req.body;
               const { submission: fixtureSubmission, ...fixtureRest } = fixture;
-              expect(bodySubmission.data).to.deep.contain(fixtureSubmission.data);
+              expect(bodySubmission.data).to.deep.eq(fixtureSubmission.data);
               expect(bodyRest).to.deep.eq(fixtureRest);
             }).as('submitMellomlagring');
           });
@@ -301,6 +301,34 @@ describe('Mellomlagring', () => {
 
           cy.wait('@updateMellomlagring');
           cy.findByText(TEXTS.statiske.mellomlagringError.update.message).should('be.visible');
+        });
+      });
+
+      describe('When stored submission contains values for inputs that have been removed from the form', () => {
+        beforeEach(() => {
+          cy.mocksUseRouteVariant('get-soknad:success-extra-values');
+          cy.intercept('PUT', '/fyllut/api/send-inn/utfyltsoknad', (req) => {
+            const { submission } = req.body;
+            expect(submission.data['slettetTekstfelt']).to.be.undefined;
+            // Container
+            expect(submission.data['container.slettetTekstFelt']).to.be.undefined;
+            // Datagrid
+            expect(submission.data['datagrid']).to.deep.eq([{ tekstfelt: 'Hoppeslott' }, { tekstfelt: 'Hund' }]);
+            expect(submission.data['datagrid1']).to.be.undefined;
+            // value should be removed if the corresponding field is conditionally hidden
+            expect(submission.data['hvaSyntesDuOmFrokosten']).to.be.undefined;
+          }).as('submitMellomlagring');
+        });
+
+        it('removes the unused values from submission before submitting', () => {
+          cy.visit(
+            '/fyllut/testmellomlagring/oppsummering?sub=digital&innsendingsId=8e3c3621-76d7-4ebd-90d4-34448ebcccc3&lang=nb-NO',
+          );
+          cy.wait('@getMellomlagringValid');
+          cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
+          cy.findByText('Ønsker du å få gaven innpakket').should('exist');
+          cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.saveAndContinue }).click();
+          cy.wait('@submitMellomlagring');
         });
       });
     });
