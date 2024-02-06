@@ -44,6 +44,7 @@ const DigitalSubmissionWithPrompt = ({ submission, isValid, onError }: Props) =>
               onError(err);
               setIsOpen(false);
             }}
+            onDone={() => setIsOpen(false)}
           >
             {translate(TEXTS.grensesnitt.submitToNavPrompt.confirm)}
           </DigitalSubmissionButton>

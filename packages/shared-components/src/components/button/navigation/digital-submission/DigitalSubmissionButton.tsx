@@ -10,12 +10,20 @@ import { useSendInn } from '../../../../context/sendInn/sendInnContext';
 export interface Props {
   submission?: Submission;
   isValid?: (e: React.MouseEvent<HTMLElement>) => boolean;
-  onError: Function;
+  onError: (err: Error) => void;
+  onDone?: () => void;
   children: string;
   withIcon?: boolean;
 }
 
-const DigitalSubmissionButton = ({ submission, isValid, onError, children, withIcon = false }: Props) => {
+const DigitalSubmissionButton = ({
+  submission,
+  isValid,
+  onError,
+  onDone = () => {},
+  children,
+  withIcon = false,
+}: Props) => {
   const { loggNavigering } = useAmplitude();
   const { app } = useAppConfig();
   const { translate } = useLanguages();
@@ -44,6 +52,7 @@ const DigitalSubmissionButton = ({ submission, isValid, onError, children, withI
       onError(err);
     } finally {
       setLoading(false);
+      onDone();
     }
   };
 

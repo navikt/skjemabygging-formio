@@ -9,7 +9,13 @@
         <h4 class="navds-heading navds-heading--small">{{ctx.t(ctx.submission?.fyllutState?.mellomlagring?.error?.title)}}</h4>
       {% } %}
         <div class="navds-alert__wrapper">
-          {{ctx.t(ctx.submission?.fyllutState?.mellomlagring?.error?.message)}}
+          {% if (ctx.submission?.fyllutState?.mellomlagring?.error?.linkText) { %}
+            {{ctx.t(ctx.submission?.fyllutState?.mellomlagring?.error?.messageStart)}}
+            <a href={{ctx.t(ctx.submission?.fyllutState?.mellomlagring?.error?.url)}}>{{ctx.t(ctx.submission?.fyllutState?.mellomlagring?.error?.linkText)}}</a>
+            {{ctx.t(ctx.submission?.fyllutState?.mellomlagring?.error?.messageEnd)}}
+          {% } else { %}
+            {{ctx.t(ctx.submission?.fyllutState?.mellomlagring?.error?.message)}}
+          {% } %}
         </div>
       </div>
   </div>
