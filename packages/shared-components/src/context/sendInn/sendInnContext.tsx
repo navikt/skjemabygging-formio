@@ -226,6 +226,7 @@ const SendInnProvider = ({
     } catch (error: any) {
       if (error.status === 404) {
         dispatchFyllutMellomlagring({ type: 'error', error: 'UPDATE_FAILED_NOT_FOUND' });
+        throw error;
       } else {
         dispatchFyllutMellomlagring({ type: 'error', error: 'UPDATE_FAILED' });
         logger?.error(`${innsendingsId}: Failed to update mellomlagring`, error as Error);
@@ -246,6 +247,7 @@ const SendInnProvider = ({
     } catch (error: any) {
       if (error.status === 404) {
         dispatchFyllutMellomlagring({ type: 'error', error: 'DELETE_FAILED_NOT_FOUND' });
+        throw error;
       } else {
         dispatchFyllutMellomlagring({ type: 'error', error: 'DELETE_FAILED' });
         logger?.error(`${innsendingsId}: Failed to delete mellomlagring`, error as Error);
