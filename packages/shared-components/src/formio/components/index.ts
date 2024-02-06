@@ -1,3 +1,4 @@
+import Activities from './core/activities/Activities';
 import Alert from './core/alert/Alert';
 import Button from './core/button/Button';
 import Checkbox from './core/checkbox/Checkbox';
@@ -28,6 +29,7 @@ import PhoneNumber from './extensions/phone-number/PhoneNumber';
 
 const customComponents = {
   container: Container,
+  activities: Activities,
   alertstripe: Alert,
   fnrfield: NationalIdentityNumber,
   orgNr: OrganizationNumber,
