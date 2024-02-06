@@ -1,6 +1,7 @@
 const responseWithInnsendingsId = require('../data/innsending-api/mellomlagring/responseWithInnsendingsId.json');
 const mellomlagringValid1 = require('../data/innsending-api/mellomlagring/getTestMellomlagring-valid-1.json');
 const mellomlagringValid2 = require('../data/innsending-api/mellomlagring/getTestMellomlagring-valid-2.json');
+const mellomlagringValidExtraValues = require('../data/innsending-api/mellomlagring/getTestMellomlagring-valid-extra-values.json');
 const prefillDataNames = require('../data/innsending-api/prefill-data/prefill-data-names.json');
 
 const paabegyntMellomlagringOgInnsendt = require('../data/innsending-api/active-tasks/mellomlagringOgEttersending.json');
@@ -160,6 +161,14 @@ module.exports = [
         options: {
           status: 200,
           body: convertToInnsendingApiResponse(mellomlagringValid2),
+        },
+      },
+      {
+        id: 'success-extra-values',
+        type: 'json',
+        options: {
+          status: 200,
+          body: convertToInnsendingApiResponse(mellomlagringValidExtraValues),
         },
       },
       {

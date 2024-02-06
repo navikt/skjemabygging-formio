@@ -32,7 +32,7 @@ class OrganizationNumber extends TextField {
   }
 
   validateOrganizationNumber(organizationNumber) {
-    if (organizationNumber === '') {
+    if (organizationNumber === '' || organizationNumber === null) {
       return true;
     }
 

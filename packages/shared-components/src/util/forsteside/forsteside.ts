@@ -3,7 +3,9 @@ import {
   KjentBruker,
   Mottaksadresse,
   MottaksadresseData,
+  NavFormType,
   navFormUtils,
+  SubmissionData,
   UkjentBruker,
 } from '@navikt/skjemadigitalisering-shared-domain';
 
@@ -49,7 +51,7 @@ export function genererSkjemaTittel(skjemaTittel, skjemanummer) {
 /**
  * Basert på at custom property vedleggskode er satt og at verdien er leggerVedNaa.
  */
-export function genererVedleggKeysSomSkalSendes(form, submissionData) {
+export function genererVedleggKeysSomSkalSendes(form: NavFormType, submissionData: SubmissionData) {
   return navFormUtils
     .flattenComponents(form.components)
     .filter((component) => component.properties && !!component.properties.vedleggskode)
@@ -57,18 +59,23 @@ export function genererVedleggKeysSomSkalSendes(form, submissionData) {
     .map((vedlegg) => vedlegg.properties?.vedleggskode);
 }
 
-export function getVedleggsFelterSomSkalSendes(submissionData, form) {
+export function getVedleggsFelterSomSkalSendes(submissionData: SubmissionData, form: NavFormType) {
   return navFormUtils
     .flattenComponents(form.components)
     .filter((component) => component.properties && !!component.properties.vedleggskode)
     .filter((vedlegg) => submissionData[vedlegg.key] === 'leggerVedNaa');
 }
 
-export function genererVedleggsListe(form, submissionData): string[] {
+export function genererVedleggsListe(form: NavFormType, submissionData: SubmissionData): string[] {
   return getVedleggsFelterSomSkalSendes(submissionData, form).map((component) => component.properties!.vedleggstittel!);
 }
 
-export function genererDokumentlisteFoersteside(skjemaTittel, skjemanummer, form, submissionData) {
+export function genererDokumentlisteFoersteside(
+  skjemaTittel: string,
+  skjemanummer: string,
+  form: NavFormType,
+  submissionData: SubmissionData,
+) {
   return [
     genererSkjemaTittel(skjemaTittel, skjemanummer),
     ...getVedleggsFelterSomSkalSendes(submissionData, form).map((component) => component.label),
