@@ -1,5 +1,11 @@
 export const statiske = {
   loading: 'Laster...',
+  external: {
+    minSide: {
+      linkText: 'Min side',
+      url: 'https://www.nav.no/minside',
+    },
+  },
   introPage: {
     title: 'Vær oppmerksom på dette før du begynner å fylle ut skjemaet',
     paperDescriptionBold: 'Du må fylle ut skjemaet digitalt, og så sende det i posten.',

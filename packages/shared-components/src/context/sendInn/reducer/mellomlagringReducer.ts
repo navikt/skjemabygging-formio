@@ -54,8 +54,8 @@ const getError = (type: ErrorType, savedDate?: string): MellomlagringError => {
         title: TEXTS.statiske.mellomlagringError.updateNotFound.title,
         messageStart: TEXTS.statiske.mellomlagringError.updateNotFound.messageStart,
         messageEnd: TEXTS.statiske.mellomlagringError.updateNotFound.messageEnd,
-        linkText: 'Min side',
-        url: 'https://www.nav.no/minside',
+        linkText: TEXTS.statiske.external.minSide.linkText,
+        url: TEXTS.statiske.external.minSide.url,
       };
     case 'DELETE_FAILED':
       return {
@@ -69,8 +69,8 @@ const getError = (type: ErrorType, savedDate?: string): MellomlagringError => {
         title: TEXTS.statiske.mellomlagringError.deleteNotFound.title,
         messageStart: TEXTS.statiske.mellomlagringError.deleteNotFound.messageStart,
         messageEnd: TEXTS.statiske.mellomlagringError.deleteNotFound.messageEnd,
-        linkText: 'Min side',
-        url: 'https://www.nav.no/minside',
+        linkText: TEXTS.statiske.external.minSide.linkText,
+        url: TEXTS.statiske.external.minSide.url,
       };
     case 'SUBMIT_FAILED_NOT_FOUND':
       return {
@@ -78,8 +78,8 @@ const getError = (type: ErrorType, savedDate?: string): MellomlagringError => {
         title: TEXTS.statiske.mellomlagringError.submitNotFound.title,
         messageStart: TEXTS.statiske.mellomlagringError.submitNotFound.messageStart,
         messageEnd: TEXTS.statiske.mellomlagringError.submitNotFound.messageEnd,
-        linkText: 'Min side',
-        url: 'https://www.nav.no/minside',
+        linkText: TEXTS.statiske.external.minSide.linkText,
+        url: TEXTS.statiske.external.minSide.url,
       };
     case 'SUBMIT_FAILED':
       return {
