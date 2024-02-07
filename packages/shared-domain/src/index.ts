@@ -1,7 +1,9 @@
 import type { ConfigType } from './config';
 import { Enhet, Enhetstype, supportedEnhetstyper } from './enhet';
 import {
+  AttachmentValues,
   Component,
+  ComponentValue,
   DeclarationType,
   DisplayType,
   FormPropertiesPublishing,
@@ -84,7 +86,9 @@ export {
   validatorUtils,
 };
 export type {
+  AttachmentValues,
   Component,
+  ComponentValue,
   ConfigType,
   DependencyType,
   DisplayType,

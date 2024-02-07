@@ -88,7 +88,7 @@ export type FormPropertiesPublishing = Pick<
 
 type ComponentDataSrc = 'values' | 'url' | 'json' | 'custom' | 'resource';
 
-interface ComponentValue {
+export interface ComponentValue {
   value: string;
   label: string;
 }
@@ -115,6 +115,7 @@ export interface Component {
   isAttachmentPanel?: boolean;
   prefillKey?: PrefillKey;
   values?: ComponentValue[];
+  attachmentValues?: AttachmentValues;
   hideLabel?: boolean;
   description?: string;
   suffix?: string;
@@ -160,6 +161,7 @@ export interface Component {
   valueComponent?: Component;
   isInline?: boolean;
   textDisplay?: 'form' | 'formPdf' | 'pdf';
+  customClass?: string;
 }
 
 export interface ComponentProperties {
@@ -260,3 +262,23 @@ export interface Submission {
 }
 
 export type UsageContext = 'create' | 'edit';
+
+export interface AttachmentValues {
+  leggerVedNaa: AttachmentValue;
+  ettersender: AttachmentValue;
+  nei: AttachmentValue;
+  levertTidligere: AttachmentValue;
+  harIkke: AttachmentValue;
+  andre: AttachmentValue;
+  nav: AttachmentValue;
+}
+
+interface AttachmentValue {
+  enabled: boolean;
+  showDeadline: boolean;
+  additionalDocumentation: {
+    enabled: boolean;
+    label: string;
+    description: string;
+  };
+}
