@@ -3,13 +3,10 @@ import editFormConditional from '../../base/editForm/conditional';
 import editFormTabs from '../../base/editForm/editFormTabs';
 
 const alertForm = () => {
-  const { api, conditional, createTabs, display } = editFormTabs;
+  const { api, conditional, createTabs } = editFormTabs;
 
   // prettier-ignore
   return createTabs(
-    display([
-
-    ]),
     api([
       editFormApi.key(),
     ]),
