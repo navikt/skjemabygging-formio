@@ -7,6 +7,10 @@ const prefillDataNames = require('../data/innsending-api/prefill-data/prefill-da
 const paabegyntMellomlagringOgInnsendt = require('../data/innsending-api/active-tasks/mellomlagringOgEttersending.json');
 const paabegyntMellomlagring = require('../data/innsending-api/active-tasks/mellomlagring.json');
 const paabegyntInnsendt = require('../data/innsending-api/active-tasks/ettersending.json');
+const formSelectSoknadPartialV1 = require('../data/innsending-api/mellomlagring/form-select/saved-partial-v1.json');
+const formSelectSoknadCompleteV1 = require('../data/innsending-api/mellomlagring/form-select/saved-complete-v1.json');
+const formSelectSoknadInvalidCountryV1 = require('../data/innsending-api/mellomlagring/form-select/saved-invalid-country-v1.json');
+const formSelectSoknadInvalidInstrumentV1 = require('../data/innsending-api/mellomlagring/form-select/saved-invalid-instrument-v2.json');
 
 const objectToByteArray = (obj) => Array.from(new TextEncoder().encode(JSON.stringify(obj)));
 
@@ -177,6 +181,38 @@ module.exports = [
         options: {
           status: 200,
           body: convertToInnsendingApiResponse(prefillDataNames),
+        },
+      },
+      {
+        id: 'form-select-partial-v1',
+        type: 'json',
+        options: {
+          status: 200,
+          body: convertToInnsendingApiResponse(formSelectSoknadPartialV1),
+        },
+      },
+      {
+        id: 'form-select-complete-v1',
+        type: 'json',
+        options: {
+          status: 200,
+          body: convertToInnsendingApiResponse(formSelectSoknadCompleteV1),
+        },
+      },
+      {
+        id: 'form-select-invalid-country-v1',
+        type: 'json',
+        options: {
+          status: 200,
+          body: convertToInnsendingApiResponse(formSelectSoknadInvalidCountryV1),
+        },
+      },
+      {
+        id: 'form-select-invalid-instrument-v1',
+        type: 'json',
+        options: {
+          status: 200,
+          body: convertToInnsendingApiResponse(formSelectSoknadInvalidInstrumentV1),
         },
       },
       {

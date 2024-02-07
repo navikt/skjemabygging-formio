@@ -12,6 +12,7 @@ interface ReactComponentType {
   shouldSetValue?: any;
   dataForSetting?: any;
   reactInstance?: HTMLInputElement | Select;
+  dataReady: Promise<any>;
   attachReact(element, ref): any;
   detachReact(element): any;
   validate(data, dirty, rowData): boolean;
@@ -34,6 +35,7 @@ interface ReactComponentType {
     message: string;
   } | null;
   builderMode: boolean;
+  validators: any[];
   init(): any;
   redraw(): any;
   attach(element: any): any;

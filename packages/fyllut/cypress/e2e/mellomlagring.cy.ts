@@ -331,6 +331,134 @@ describe('Mellomlagring', () => {
           cy.wait('@submitMellomlagring');
         });
       });
+
+      describe('When stored submission contains value which no longer is available in select', () => {
+        it('hides save-and-continue button and renders info message on summary page', () => {
+          cy.mocksUseRouteVariant('get-form:success-v2');
+
+          cy.visit(
+            '/fyllut/testmellomlagring/oppsummering?sub=digital&innsendingsId=8e3c3621-76d7-4ebd-90d4-34448ebcccc3&lang=nb-NO',
+          );
+          cy.wait('@getMellomlagringValid');
+          cy.findByText(/Alle steg som mangler informasjon er markert med/).should('exist');
+          cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.saveAndContinue }).should('not.exist');
+          cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
+        });
+      });
+
+      describe('When form contains select components with dataSrc "values" and "url"', () => {
+        beforeEach(() => {
+          cy.intercept('GET', '/fyllut/api/send-inn/soknad/df6c8a69-9eb0-4878-b51f-38b3849ef9b6').as(
+            'getMellomlagring',
+          );
+        });
+
+        describe('it does not allow user to continue to sendinn application', () => {
+          it('when submission data is not complete', () => {
+            cy.mocksUseRouteVariant('get-soknad:form-select-partial-v1');
+
+            cy.visit(
+              '/fyllut/testselect/oppsummering?sub=digital&innsendingsId=df6c8a69-9eb0-4878-b51f-38b3849ef9b6&lang=nb-NO',
+            );
+            cy.wait('@getMellomlagring');
+            cy.get('dl')
+              .eq(0)
+              .within(() => {
+                cy.get('dt').should('have.length', 1);
+                cy.get('dt').eq(0).should('contain.text', 'Velg instrument');
+                cy.get('dd').eq(0).should('contain.text', 'Piano');
+              });
+            cy.findByText(/Alle steg som mangler informasjon er markert med/).should('exist');
+            cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.saveAndContinue }).should('not.exist');
+            cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
+          });
+
+          it('when submission data contains invalid country', () => {
+            cy.mocksUseRouteVariant('get-soknad:form-select-invalid-country-v1');
+
+            cy.visit(
+              '/fyllut/testselect/oppsummering?sub=digital&innsendingsId=df6c8a69-9eb0-4878-b51f-38b3849ef9b6&lang=nb-NO',
+            );
+            cy.wait('@getMellomlagring');
+            cy.get('dl')
+              .eq(0)
+              .within(() => {
+                cy.get('dt').should('have.length', 3);
+                cy.get('dt').eq(0).should('contain.text', 'Velg instrument');
+                cy.get('dd').eq(0).should('contain.text', 'Piano');
+                cy.get('dt').eq(1).should('contain.text', 'Velg land du vil reise til');
+                cy.get('dd').eq(1).should('contain.text', 'Invalid country'); // <- invalid (dataSrc=url)
+                cy.get('dt').eq(2).should('contain.text', 'Velg valuta du vil betale med');
+                cy.get('dd').eq(2).should('contain.text', 'Euro (EUR)');
+              });
+            cy.findByText(/Alle steg som mangler informasjon er markert med/).should('exist');
+            cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.saveAndContinue }).should('not.exist');
+            cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
+          });
+
+          it('when form-v2 does not allow value anymore', () => {
+            cy.mocksUseRouteVariant('get-form:success-v2');
+            cy.mocksUseRouteVariant('get-soknad:form-select-invalid-instrument-v1');
+
+            cy.visit(
+              '/fyllut/testselect/oppsummering?sub=digital&innsendingsId=df6c8a69-9eb0-4878-b51f-38b3849ef9b6&lang=nb-NO',
+            );
+            cy.wait('@getMellomlagring');
+            cy.get('dl')
+              .eq(0)
+              .within(() => {
+                cy.get('dt').should('have.length', 3);
+                cy.get('dt').eq(0).should('contain.text', 'Velg instrument');
+                cy.get('dd').eq(0).should('contain.text', 'Piano'); // <- invalid in form v2
+                cy.get('dt').eq(1).should('contain.text', 'Velg land du vil reise til');
+                cy.get('dd').eq(1).should('contain.text', 'Italia');
+                cy.get('dt').eq(2).should('contain.text', 'Velg valuta du vil betale med');
+                cy.get('dd').eq(2).should('contain.text', 'Euro (EUR)');
+              });
+            cy.findByText(/Alle steg som mangler informasjon er markert med/).should('exist');
+            cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.saveAndContinue }).should('not.exist');
+            cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
+          });
+        });
+
+        describe('allows user to continue to sendinn application', () => {
+          it('when submission data is complete and valid', () => {
+            cy.mocksUseRouteVariant('get-soknad:form-select-complete-v1');
+
+            cy.intercept('PUT', '/fyllut/api/send-inn/utfyltsoknad', (req) => {
+              const { submission, attachments, ...rest } = req.body;
+              expect(submission.data.velgInstrument).to.deep.eq({ label: 'Piano', value: 'piano' });
+              expect(submission.data.velgLand).to.deep.eq({ label: 'Italia', value: 'IT' });
+              expect(submission.data.velgValutaDuVilBetaleMed).to.deep.eq({ label: 'Euro (EUR)', value: 'EUR' });
+              expect(attachments).to.have.length(1);
+              expect(attachments[0].vedleggsnr).to.eq('P2');
+            }).as('submitMellomlagring');
+
+            cy.visit(
+              '/fyllut/testselect/oppsummering?sub=digital&innsendingsId=df6c8a69-9eb0-4878-b51f-38b3849ef9b6&lang=nb-NO',
+            );
+            cy.wait('@getMellomlagring');
+            cy.findByRole('button', { name: /Veiledning/ }).should('exist');
+            cy.get('dl')
+              .eq(0)
+              .within(() => {
+                cy.get('dt').should('have.length', 3);
+                cy.get('dt').eq(0).should('contain.text', 'Velg instrument');
+                cy.get('dd').eq(0).should('contain.text', 'Piano');
+                cy.get('dt').eq(1).should('contain.text', 'Velg land du vil reise til');
+                cy.get('dd').eq(1).should('contain.text', 'Italia');
+                cy.get('dt').eq(2).should('contain.text', 'Velg valuta du vil betale med');
+                cy.get('dd').eq(2).should('contain.text', 'Euro (EUR)');
+              });
+            cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.saveAndContinue }).should('exist');
+            cy.findByText(/Alle steg som mangler informasjon er markert med/).should('not.exist');
+            cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
+
+            cy.clickSaveAndContinue();
+            cy.wait('@submitMellomlagring');
+          });
+        });
+      });
     });
   });
 });

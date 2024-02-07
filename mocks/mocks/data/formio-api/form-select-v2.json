@@ -1,0 +1,549 @@
+{
+  "_id": "65c5fb2df4cdb19cc1e4ffa7",
+  "title": "Tester nedtrekksmeny",
+  "name": "testSelect",
+  "path": "testselect",
+  "type": "form",
+  "display": "wizard",
+  "tags": [
+    "nav-skjema",
+    ""
+  ],
+  "access": [
+    {
+      "type": "read_all",
+      "roles": [
+        "000000000000000000000000"
+      ]
+    },
+    {
+      "type": "update_all",
+      "roles": [
+        "628ca77305690db58c974d05",
+        "628ca77305690db58c974d06"
+      ]
+    }
+  ],
+  "owner": "G123456",
+  "components": [
+    {
+      "title": "Veiledning",
+      "type": "panel",
+      "input": false,
+      "key": "veiledning",
+      "theme": "default",
+      "components": [
+        {
+          "validate": {
+            "required": true,
+            "custom": "",
+            "customPrivate": false,
+            "strictDateValidation": false,
+            "multiple": false,
+            "unique": false
+          },
+          "label": "Velg instrument",
+          "key": "velgInstrument",
+          "input": true,
+          "tableView": false,
+          "type": "navSelect",
+          "data": {
+            "values": [
+              {
+                "value": "trekkspill",
+                "label": "Trekkspill"
+              },
+              {
+                "value": "gitar",
+                "label": "Gitar"
+              },
+              {
+                "value": "munnspill",
+                "label": "Munnspill"
+              },
+              {
+                "value": "klarinett",
+                "label": "Klarinett"
+              },
+              {
+                "value": "trommer",
+                "label": "Trommer"
+              },
+              {
+                "value": "cello",
+                "label": "Cello"
+              },
+              {
+                "value": "fiolin",
+                "label": "Fiolin"
+              },
+              {
+                "value": "harpe",
+                "label": "Harpe"
+              },
+              {
+                "value": "tuba",
+                "label": "Tuba"
+              },
+              {
+                "value": "blokkfloyte",
+                "label": "Blokkfløyte"
+              }
+            ]
+          },
+          "placeholder": "",
+          "prefix": "",
+          "customClass": "",
+          "suffix": "",
+          "multiple": false,
+          "defaultValue": null,
+          "protected": false,
+          "unique": false,
+          "persistent": true,
+          "hidden": false,
+          "clearOnHide": true,
+          "refreshOn": "",
+          "redrawOn": "",
+          "modalEdit": false,
+          "dataGridLabel": false,
+          "labelPosition": "top",
+          "description": "",
+          "errorLabel": "",
+          "tooltip": "",
+          "hideLabel": false,
+          "tabindex": "",
+          "disabled": false,
+          "autofocus": false,
+          "dbIndex": false,
+          "customDefaultValue": "",
+          "calculateValue": "",
+          "calculateServer": false,
+          "widget": null,
+          "attributes": {},
+          "validateOn": "blur",
+          "conditional": {
+            "show": null,
+            "when": null,
+            "eq": ""
+          },
+          "overlay": {
+            "style": "",
+            "left": "",
+            "top": "",
+            "width": "",
+            "height": ""
+          },
+          "allowCalculateOverride": false,
+          "encrypted": false,
+          "showCharCount": false,
+          "showWordCount": false,
+          "properties": {},
+          "allowMultipleMasks": false,
+          "addons": [],
+          "fieldSize": "input--xxl",
+          "dataSrc": "values",
+          "id": "ea6bvue",
+          "keyModified": true,
+          "navId": "edxtdnc"
+        },
+        {
+          "fieldSize": "input--xxl",
+          "description": "",
+          "validate": {
+            "required": true,
+            "custom": "",
+            "customPrivate": false,
+            "strictDateValidation": false,
+            "multiple": false,
+            "unique": false
+          },
+          "errors": "",
+          "conditional": {
+            "show": null,
+            "when": null,
+            "eq": ""
+          },
+          "customConditional": "",
+          "label": "Velg land du vil reise til",
+          "key": "velgLand",
+          "input": true,
+          "tableView": false,
+          "type": "landvelger",
+          "placeholder": "",
+          "prefix": "",
+          "customClass": "",
+          "suffix": "",
+          "multiple": false,
+          "protected": false,
+          "unique": false,
+          "persistent": true,
+          "hidden": false,
+          "clearOnHide": true,
+          "refreshOn": "",
+          "redrawOn": "",
+          "modalEdit": false,
+          "dataGridLabel": false,
+          "labelPosition": "top",
+          "errorLabel": "",
+          "tooltip": "",
+          "hideLabel": false,
+          "tabindex": "",
+          "disabled": false,
+          "autofocus": false,
+          "dbIndex": false,
+          "customDefaultValue": "",
+          "calculateValue": "",
+          "calculateServer": false,
+          "widget": null,
+          "attributes": {},
+          "validateOn": "blur",
+          "overlay": {
+            "style": "",
+            "left": "",
+            "top": "",
+            "width": "",
+            "height": ""
+          },
+          "allowCalculateOverride": false,
+          "encrypted": false,
+          "showCharCount": false,
+          "showWordCount": false,
+          "properties": {},
+          "allowMultipleMasks": false,
+          "addons": [],
+          "dataSrc": "url",
+          "data": {
+            "url": "http://localhost:3001/fyllut/api/countries?lang=nb"
+          },
+          "disableLimit": true,
+          "id": "eupbhut",
+          "defaultValue": null,
+          "navId": "e9ly9xe"
+        },
+        {
+          "fieldSize": "input--m",
+          "description": "",
+          "validate": {
+            "required": true,
+            "custom": "",
+            "customPrivate": false,
+            "strictDateValidation": false,
+            "multiple": false,
+            "unique": false
+          },
+          "errors": "",
+          "conditional": {
+            "show": null,
+            "when": null,
+            "eq": ""
+          },
+          "customConditional": "",
+          "label": "Velg valuta du vil betale med",
+          "key": "velgValutaDuVilBetaleMed",
+          "input": true,
+          "placeholder": "",
+          "prefix": "",
+          "customClass": "",
+          "suffix": "",
+          "multiple": false,
+          "protected": false,
+          "unique": false,
+          "persistent": true,
+          "hidden": false,
+          "clearOnHide": true,
+          "refreshOn": "",
+          "redrawOn": "",
+          "tableView": false,
+          "modalEdit": false,
+          "dataGridLabel": true,
+          "labelPosition": "top",
+          "errorLabel": "",
+          "tooltip": "",
+          "hideLabel": false,
+          "tabindex": "",
+          "disabled": false,
+          "autofocus": false,
+          "dbIndex": false,
+          "customDefaultValue": "",
+          "calculateValue": "",
+          "calculateServer": false,
+          "widget": null,
+          "attributes": {},
+          "validateOn": "blur",
+          "overlay": {
+            "style": "",
+            "left": "",
+            "top": "",
+            "width": "",
+            "height": ""
+          },
+          "allowCalculateOverride": false,
+          "encrypted": false,
+          "showCharCount": false,
+          "showWordCount": false,
+          "properties": {},
+          "allowMultipleMasks": false,
+          "addons": [],
+          "type": "valutavelger",
+          "dataSrc": "url",
+          "data": {
+            "url": "http://localhost:3001/fyllut/api/common-codes/currencies?lang=nb"
+          },
+          "disableLimit": true,
+          "id": "edyinrd",
+          "defaultValue": null,
+          "navId": "egnm2bi"
+        }
+      ],
+      "id": "egrw3k",
+      "placeholder": "",
+      "prefix": "",
+      "customClass": "",
+      "suffix": "",
+      "multiple": false,
+      "defaultValue": null,
+      "protected": false,
+      "unique": false,
+      "persistent": false,
+      "hidden": false,
+      "clearOnHide": false,
+      "refreshOn": "",
+      "redrawOn": "",
+      "tableView": false,
+      "modalEdit": false,
+      "label": "Panel",
+      "dataGridLabel": false,
+      "labelPosition": "top",
+      "description": "",
+      "errorLabel": "",
+      "tooltip": "",
+      "hideLabel": false,
+      "tabindex": "",
+      "disabled": false,
+      "autofocus": false,
+      "dbIndex": false,
+      "customDefaultValue": "",
+      "calculateValue": "",
+      "calculateServer": false,
+      "widget": null,
+      "attributes": {},
+      "validateOn": "change",
+      "validate": {
+        "required": false,
+        "custom": "",
+        "customPrivate": false,
+        "strictDateValidation": false,
+        "multiple": false,
+        "unique": false
+      },
+      "conditional": {
+        "show": null,
+        "when": null,
+        "eq": ""
+      },
+      "overlay": {
+        "style": "",
+        "left": "",
+        "top": "",
+        "width": "",
+        "height": ""
+      },
+      "allowCalculateOverride": false,
+      "encrypted": false,
+      "showCharCount": false,
+      "showWordCount": false,
+      "properties": {},
+      "allowMultipleMasks": false,
+      "addons": [],
+      "tree": false,
+      "lazyLoad": false,
+      "breadcrumb": "default",
+      "navId": "ep0geuq"
+    },
+    {
+      "conditional": {
+        "show": null,
+        "when": null,
+        "eq": ""
+      },
+      "customConditional": "",
+      "title": "Vedlegg",
+      "key": "vedlegg",
+      "type": "panel",
+      "input": false,
+      "theme": "default",
+      "isAttachmentPanel": true,
+      "components": [
+        {
+          "label": "Annen dokumentasjon",
+          "description": "Har du noen annen dokumentasjon du ønsker å legge ved?",
+          "type": "radiopanel",
+          "key": "annenDokumentasjon",
+          "otherDocumentation": true,
+          "input": true,
+          "clearOnHide": true,
+          "validate": {
+            "required": true,
+            "custom": "",
+            "customPrivate": false,
+            "strictDateValidation": false,
+            "multiple": false,
+            "unique": false
+          },
+          "properties": {
+            "vedleggstittel": "Annet",
+            "vedleggskode": "N6"
+          },
+          "values": [
+            {
+              "value": "nei",
+              "label": "Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved."
+            },
+            {
+              "value": "leggerVedNaa",
+              "label": "Ja, jeg legger det ved denne søknaden."
+            },
+            {
+              "value": "ettersender",
+              "label": "Jeg ettersender dokumentasjonen senere."
+            }
+          ],
+          "id": "eaox88w",
+          "placeholder": "",
+          "prefix": "",
+          "customClass": "",
+          "suffix": "",
+          "multiple": false,
+          "defaultValue": null,
+          "protected": false,
+          "unique": false,
+          "persistent": true,
+          "hidden": false,
+          "refreshOn": "",
+          "redrawOn": "",
+          "tableView": false,
+          "modalEdit": false,
+          "dataGridLabel": true,
+          "labelPosition": "top",
+          "errorLabel": "",
+          "tooltip": "",
+          "hideLabel": false,
+          "tabindex": "",
+          "disabled": false,
+          "autofocus": false,
+          "dbIndex": false,
+          "customDefaultValue": "",
+          "calculateValue": "",
+          "calculateServer": false,
+          "widget": null,
+          "attributes": {},
+          "validateOn": "blur",
+          "conditional": {
+            "show": null,
+            "when": null,
+            "eq": ""
+          },
+          "overlay": {
+            "style": "",
+            "left": "",
+            "top": "",
+            "width": "",
+            "height": ""
+          },
+          "allowCalculateOverride": false,
+          "encrypted": false,
+          "showCharCount": false,
+          "showWordCount": false,
+          "allowMultipleMasks": false,
+          "addons": [],
+          "fieldSize": "input--xxl",
+          "dataSrc": "values",
+          "navId": "e9er54e"
+        }
+      ],
+      "placeholder": "",
+      "prefix": "",
+      "customClass": "",
+      "suffix": "",
+      "multiple": false,
+      "defaultValue": null,
+      "protected": false,
+      "unique": false,
+      "persistent": false,
+      "hidden": false,
+      "clearOnHide": false,
+      "refreshOn": "",
+      "redrawOn": "",
+      "tableView": false,
+      "modalEdit": false,
+      "label": "Panel",
+      "dataGridLabel": false,
+      "labelPosition": "top",
+      "description": "",
+      "errorLabel": "",
+      "tooltip": "",
+      "hideLabel": false,
+      "tabindex": "",
+      "disabled": false,
+      "autofocus": false,
+      "dbIndex": false,
+      "customDefaultValue": "",
+      "calculateValue": "",
+      "calculateServer": false,
+      "widget": null,
+      "attributes": {},
+      "validateOn": "change",
+      "validate": {
+        "required": false,
+        "custom": "",
+        "customPrivate": false,
+        "strictDateValidation": false,
+        "multiple": false,
+        "unique": false
+      },
+      "overlay": {
+        "style": "",
+        "left": "",
+        "top": "",
+        "width": "",
+        "height": ""
+      },
+      "allowCalculateOverride": false,
+      "encrypted": false,
+      "showCharCount": false,
+      "showWordCount": false,
+      "properties": {},
+      "allowMultipleMasks": false,
+      "addons": [],
+      "tree": false,
+      "lazyLoad": false,
+      "breadcrumb": "default",
+      "id": "ergxd8",
+      "navId": "emsssqm"
+    }
+  ],
+  "properties": {
+    "skjemanummer": "Test-select",
+    "tema": "BIL",
+    "innsending": "PAPIR_OG_DIGITAL",
+    "ettersending": "PAPIR_OG_DIGITAL",
+    "signatures": [
+      {
+        "label": "",
+        "description": "",
+        "key": "f75c7daa-c496-438e-b39f-b9cf6dfe6312"
+      }
+    ],
+    "isTestForm": false,
+    "modified": "2024-02-09T10:39:19.651Z",
+    "modifiedBy": "Testesen, Test"
+  },
+  "project": "628ca77305690db58c974cfd",
+  "revisions": "",
+  "submissionRevisions": "",
+  "_vid": 0,
+  "submissionAccess": [],
+  "created": "2024-02-09T10:15:09.699Z",
+  "modified": "2024-02-09T10:39:20.000Z",
+  "machineName": "jvcemxwcpghcqjn:testSelect"
+}

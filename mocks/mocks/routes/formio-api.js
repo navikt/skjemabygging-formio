@@ -7,6 +7,9 @@ const formCustomCompsDatagrid = require('../data/formio-api/custom-components-da
 const formNavdatepicker = require('../data/formio-api/navdatepicker.json');
 const formSubmissionMethod = require('../data/formio-api/submission-method.json');
 const formTestMellomlagring = require('../data/formio-api/test-mellomlagring.json');
+const formTestMellomlagringV2 = require('../data/formio-api/test-mellomlagring-v2.json');
+const formSelectV1 = require('../data/formio-api/form-select-v1.json');
+const formSelectV2 = require('../data/formio-api/form-select-v2.json');
 const formTestPrefillData = require('../data/formio-api/prefill-data.json');
 const translationsCypress101 = require('../data/formio-api/cypress101-translation.json');
 const translationsConditionalXmas = require('../data/formio-api/conditionalxmas-translation.json');
@@ -25,8 +28,9 @@ const allForms = [
   { form: formCustomCompsAlert, translations: undefined },
   { form: formNavdatepicker, translations: undefined },
   { form: formSubmissionMethod, translations: translationsSubmissionMethod },
-  { form: formTestMellomlagring, translations: undefined },
+  { form: formTestMellomlagring, formV2: formTestMellomlagringV2, translations: undefined },
   { form: formTestPrefillData, translations: undefined },
+  { form: formSelectV1, formV2: formSelectV2, translations: undefined },
 ];
 
 const findTestdata = (formPath) => allForms.find((testdata) => testdata.form.path === formPath);
@@ -57,6 +61,31 @@ module.exports = [
               res.status(200);
               res.contentType('application/json; charset=UTF-8');
               res.send(allForms.map((obj) => obj.form));
+            }
+          },
+        },
+      },
+      {
+        id: 'success-v2',
+        type: 'middleware',
+        options: {
+          middleware: (req, res) => {
+            const formPath = req.query.path;
+            if (formPath) {
+              const testdata = findTestdata(formPath);
+              const form = testdata?.formV2 ?? testdata?.form;
+              if (form) {
+                res.status(200);
+                res.contentType('application/json; charset=UTF-8');
+                res.send([form]);
+              } else {
+                res.status(404);
+                res.send();
+              }
+            } else {
+              res.status(200);
+              res.contentType('application/json; charset=UTF-8');
+              res.send(allForms.map((obj) => obj.formV2 ?? obj.form).filter((form) => !!form));
             }
           },
         },
