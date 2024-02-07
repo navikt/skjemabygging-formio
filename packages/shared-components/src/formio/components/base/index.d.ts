@@ -1,6 +1,6 @@
 import { Component } from '@navikt/skjemadigitalisering-shared-domain';
 import Select from 'react-select/base';
-
+import { AppConfigContextType } from '../../../context/config/configContext';
 interface IReactComponent {
   new (component, options, data): ReactComponentType;
   prototype: ReactComponentType;
@@ -27,7 +27,12 @@ interface ReactComponentType {
   refs?: any;
   errors: any[];
   root: any;
-  options: any;
+  options: {
+    appConfig: AppConfigContextType;
+    readOnly: boolean;
+    namespace: string;
+    formConfig: { publishedForm: any };
+  };
   visible: any | boolean;
   hideLabel: boolean;
   error?: {
