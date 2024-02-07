@@ -6,6 +6,10 @@ const activitiesBuilder = () => {
     title: 'Aktiviteter',
     schema: {
       ...schema,
+      validateOn: 'blur',
+      validate: {
+        required: true,
+      },
     },
   };
 };
