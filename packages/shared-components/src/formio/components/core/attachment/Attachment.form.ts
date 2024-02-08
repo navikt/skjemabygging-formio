@@ -23,6 +23,8 @@ const attachmentForm = () => {
     ]),
     api([
       editFormApi.key(),
+      editFormApi.property('Vedleggstittel', 'vedleggstittel', true),
+      editFormApi.property('Vedleggskode', 'vedleggskode', true),
     ]),
     conditional([
       editFormConditional.simpleConditional(),

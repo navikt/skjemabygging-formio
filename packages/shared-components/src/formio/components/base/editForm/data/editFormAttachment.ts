@@ -36,6 +36,9 @@ const editFormAttachment = (): Component[] => {
             customClass: 'ml',
             label: 'Ledetekst for tilleggsinformasjon',
             customConditional: `show = data?.attachmentValues?.${key}?.additionalDocumentation?.enabled === true`,
+            validate: {
+              required: true,
+            },
           },
           {
             type: 'textfield',
