@@ -73,12 +73,12 @@ class Activities extends BaseComponent {
           this.rerender();
         });
     }
-
     // Shows checkbox when there is 1 element
     // Shows radio when there are more than 1 element
     element.render(
       <>
         {this.getDiffTag()}
+        {appConfig?.config?.isLoggedIn ? "You're logged in" : "You're not logged in"}
         {!this.activities && this.isLoading && <Skeleton variant="rectangle" width="100%" height={100} />}
         {!this.activities && !this.isLoading ? (
           <CheckboxGroup
@@ -113,7 +113,7 @@ class Activities extends BaseComponent {
                   value={activity.aktivitetId}
                   {...(index === arr.length - 1 && { ref: (ref) => (this.lastRef = ref) })}
                 >
-                  {`${activity.aktivitetsnavn}: ${activity.periode.fom}-${activity.periode.fom}`}
+                  {`${activity.aktivitetsnavn}: ${activity.periode.fom}-${activity.periode.tom}`}
                 </Radio>
               );
             })}
