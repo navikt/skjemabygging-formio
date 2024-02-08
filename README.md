@@ -9,7 +9,8 @@ og disse dataene vil så deployes sammen med fyllut.
 ## Installere pakker lokalt
 
 For å installere npm-pakker med @navikt-scope må man autentisere seg for registry `npm.pkg.github.com`,
-så hvis man får `401 Unauthorized` ved installering må man kjøre følgende kommando:
+så hvis man får `401 Unauthorized` eller `Couldn't find package "@navikt/<pkgname>" required by "<other-pkgname>"
+on the "npm" registry.` ved installering må man kjøre følgende kommando:
 
     npm login --scope=@navikt --registry=https://npm.pkg.github.com
 
