@@ -27,6 +27,11 @@ class Attachment extends BaseComponent {
         values={this.component?.values}
         attachmentValues={this.component?.attachmentValues}
         title={this.getLabel()}
+        description={this.getDescription()}
+        error={this.getError()}
+        onChange={(value) => {
+          this.updateValue(value, { modified: true });
+        }}
       />,
     );
   }

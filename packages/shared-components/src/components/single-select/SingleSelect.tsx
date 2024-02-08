@@ -4,13 +4,20 @@ import { ReactNode } from 'react';
 
 interface Props {
   title: ReactNode;
+  description: ReactNode;
+  error: ReactNode;
   values?: ComponentValue[];
+  onChange: (value: any) => void;
 }
 
-const SingleSelect = ({ values = [], title }: Props) => {
+const SingleSelect = ({ values = [], title, description, error, onChange }: Props) => {
+  const handleChange = (values) => {
+    onChange(Array.isArray(values) ? values[0] : values);
+  };
+
   if (values.length === 1) {
-    return !(
-      <CheckboxGroup legend={title} size="medium">
+    return (
+      <CheckboxGroup legend={title} description={description} error={error} onChange={handleChange}>
         {values.map((keyValue) => (
           <Checkbox key={keyValue.value} value={keyValue.value}>
             {keyValue.label}
@@ -20,7 +27,7 @@ const SingleSelect = ({ values = [], title }: Props) => {
     );
   } else if (values.length > 1) {
     return (
-      <RadioGroup legend={title} size="medium">
+      <RadioGroup legend={title} description={description} error={error} onChange={handleChange}>
         {values.map((keyValue) => (
           <Radio key={keyValue.value} value={keyValue.value}>
             {keyValue.label}
@@ -28,6 +35,8 @@ const SingleSelect = ({ values = [], title }: Props) => {
         ))}
       </RadioGroup>
     );
+  } else {
+    return <div className="navds-label">{title}</div>;
   }
 };
 

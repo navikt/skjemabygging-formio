@@ -2,7 +2,7 @@ import { AttachmentValues, ComponentValue } from '@navikt/skjemadigitalisering-s
 import { ReactNode } from 'react';
 import SingleSelect from '../single-select/SingleSelect';
 
-const AttachmentTexts = {
+export const AttachmentTexts = {
   leggerVedNaa: 'Jeg laster opp dette nå / Jeg legger det ved dette skjemaet',
   ettersender: 'Jeg laster opp dette senere / Jeg ettersender dokumentasjonen senere',
   nei: 'Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved',
@@ -14,11 +14,14 @@ const AttachmentTexts = {
 
 interface Props {
   title: ReactNode;
+  description: ReactNode;
+  error: ReactNode;
   values?: ComponentValue[];
   attachmentValues?: AttachmentValues;
+  onChange: (value: any) => void;
 }
 
-const Attachment = ({ attachmentValues, values = [], title }: Props) => {
+const Attachment = ({ attachmentValues, values = [], title, description, error, onChange }: Props) => {
   const getValues = () => {
     if (attachmentValues) {
       return Object.entries(attachmentValues)
@@ -40,7 +43,7 @@ const Attachment = ({ attachmentValues, values = [], title }: Props) => {
 
   return (
     <div>
-      <SingleSelect values={getValues()} title={title} />
+      <SingleSelect values={getValues()} title={title} description={description} error={error} onChange={onChange} />
     </div>
   );
 };

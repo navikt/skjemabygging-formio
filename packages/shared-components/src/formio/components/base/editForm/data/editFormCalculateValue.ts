@@ -1,8 +1,6 @@
 import { Component } from '@navikt/skjemadigitalisering-shared-domain';
-import { Components } from 'formiojs';
 import editFormAceEditor from '../shared/editFormAceEditor';
 import editFormVariablesTable from '../shared/editFormVariablesTable';
-import EditFormUtils = Components.EditFormUtils;
 
 const editFormCalculateValue = (): Component => {
   return {

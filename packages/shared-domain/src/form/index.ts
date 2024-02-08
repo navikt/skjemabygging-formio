@@ -116,6 +116,7 @@ export interface Component {
   prefillKey?: PrefillKey;
   values?: ComponentValue[];
   attachmentValues?: AttachmentValues;
+  attachmentType?: 'default' | 'other';
   hideLabel?: boolean;
   description?: string;
   suffix?: string;
@@ -265,18 +266,18 @@ export type UsageContext = 'create' | 'edit';
 
 export interface AttachmentValues {
   leggerVedNaa: AttachmentValue;
-  ettersender: AttachmentValue;
-  nei: AttachmentValue;
-  levertTidligere: AttachmentValue;
-  harIkke: AttachmentValue;
-  andre: AttachmentValue;
-  nav: AttachmentValue;
+  ettersender?: AttachmentValue;
+  nei?: AttachmentValue;
+  levertTidligere?: AttachmentValue;
+  harIkke?: AttachmentValue;
+  andre?: AttachmentValue;
+  nav?: AttachmentValue;
 }
 
 interface AttachmentValue {
   enabled: boolean;
-  showDeadline: boolean;
-  additionalDocumentation: {
+  showDeadline?: boolean;
+  additionalDocumentation?: {
     enabled: boolean;
     label: string;
     description: string;
