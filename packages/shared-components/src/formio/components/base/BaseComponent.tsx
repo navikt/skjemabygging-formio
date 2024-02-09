@@ -132,6 +132,13 @@ class BaseComponent extends FormioReactComponent {
   }
 
   /**
+   * Get whether user is logged in or not for custom component renderReact()
+   */
+  getIsLoggedIn() {
+    return this.options?.appConfig?.config?.isLoggedIn;
+  }
+
+  /**
    * Used to set focus when clicking error summary.
    */
   focus() {

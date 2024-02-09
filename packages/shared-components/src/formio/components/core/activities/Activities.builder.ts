@@ -3,7 +3,7 @@ import Activities from './Activities';
 const activitiesBuilder = () => {
   const schema = Activities.schema();
   return {
-    title: 'Aktiviteter',
+    title: schema.label,
     schema: {
       ...schema,
       validateOn: 'blur',

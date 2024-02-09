@@ -1,6 +1,5 @@
-import { Checkbox, CheckboxGroup, Radio, RadioGroup, Skeleton } from '@navikt/ds-react';
-import { SendInnAktivitet } from '@navikt/skjemadigitalisering-shared-domain';
-import Field from 'formiojs/components/_classes/field/Field';
+import { Alert, Checkbox, CheckboxGroup, Radio, RadioGroup, Skeleton } from '@navikt/ds-react';
+import { SendInnAktivitet, dateUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { getActivities } from '../../../../api/sendinn/sendInnActivities';
 import BaseComponent from '../../base/BaseComponent';
 import activitiesBuilder from './Activities.builder';
@@ -11,13 +10,14 @@ class Activities extends BaseComponent {
   isLoading = false;
   loadFinished = false;
   activities?: SendInnAktivitet[] = undefined;
+  activitiesError?: string;
   defaultActivity = {
-    value: '0',
+    value: 'ingenAktivitet',
     text: this.t('Jeg får ikke opp noen aktiviteter her som stemmer med det jeg vil søke om'),
   };
 
   static schema() {
-    return Field.schema({
+    return BaseComponent.schema({
       label: 'Aktiviteter',
       type: 'activities',
       key: 'activities',
@@ -45,27 +45,23 @@ class Activities extends BaseComponent {
     }
   }
 
-  renderReact(element) {
+  getActivities() {
     const appConfig = this.getAppConfig();
-    const legend = this.t('Velg hvilken aktivitet du vil søke om stønad for');
-    const description = this.t(
-      'Her viser vi deg de aktivitetene vi har registrert at du deltar på. Vi viser ikke aktiviteter som er avsluttet for mer enn seks måneder siden, eller som vil starte opp mer enn to måneder frem i tid.',
-    );
+    const isLoggedIn = this.getIsLoggedIn();
 
-    if (!this.loadFinished && appConfig?.app === 'fyllut') {
+    console.log('appConfig', appConfig);
+
+    if (!this.loadFinished && appConfig?.app === 'fyllut' && isLoggedIn === true) {
       this.isLoading = true;
       getActivities(appConfig)
         .then((data) => {
           this.activities = data;
         })
-        .catch((err) => {
-          console.warn(`Unable to load activities for ${this.getId()})`);
-
-          // FIXME: How does this work? And handle different errors
-          this.emit('componentError', {
-            component: this.component,
-            message: err.toString(),
-          });
+        .catch(() => {
+          this.activities = undefined;
+          this.activitiesError = this.t(
+            'Kunne ikke hente aktiviteter. Du kan fortsatt gå videre uten å velge aktivitet.',
+          );
         })
         .finally(() => {
           this.isLoading = false;
@@ -73,53 +69,79 @@ class Activities extends BaseComponent {
           this.rerender();
         });
     }
-    // Shows checkbox when there is 1 element
-    // Shows radio when there are more than 1 element
+  }
+
+  renderReact(element) {
+    this.getActivities();
+
+    const renderCheckbox = () => {
+      return (
+        <CheckboxGroup
+          id={this.getId()}
+          legend={this.getLabel()}
+          value={this.getValue()}
+          onChange={(values) => this.changeHandler(values[0], { modified: true })}
+          ref={(ref) => this.setReactInstance(ref)}
+          description={this.getDescription()}
+          className={this.getClassName()}
+          error={this.getError()}
+        >
+          <Checkbox value={this.defaultActivity.value} ref={(ref) => (this.lastRef = ref)}>
+            {this.defaultActivity.text}
+          </Checkbox>
+        </CheckboxGroup>
+      );
+    };
+
+    const renderRadioGroup = () => {
+      return (
+        <RadioGroup
+          id={this.getId()}
+          legend={this.getLabel()}
+          value={this.getValue()}
+          onChange={(value) => this.changeHandler(value, { modified: true })}
+          ref={(ref) => this.setReactInstance(ref)}
+          description={this.getDescription()}
+          className={this.getClassName()}
+          error={this.getError()}
+        >
+          {this.activities?.map((activity: SendInnAktivitet, index, arr) => {
+            return (
+              <Radio
+                key={activity.aktivitetId}
+                value={activity.aktivitetId}
+                {...(index === arr.length - 1 && { ref: (ref) => (this.lastRef = ref) })}
+              >
+                {`${activity.aktivitetsnavn}: ${dateUtils.toLocaleDate(
+                  activity.periode.fom,
+                )} - ${dateUtils.toLocaleDate(activity.periode.tom)}`}
+              </Radio>
+            );
+          })}
+          <Radio value={this.defaultActivity.value}>{this.defaultActivity.text}</Radio>
+        </RadioGroup>
+      );
+    };
+
+    const currentlyLoading = this.isLoading && !this.loadFinished;
+    const hasActivities = this.activities && this.activities.length > 0;
+
+    // Shows checkbox when there are no activities or it is displayed in byggeren
+    // Shows radio when there are 1 or more activities
+    const renderActivities = () => {
+      if (!this.activities && currentlyLoading) {
+        return <Skeleton variant="rounded" width="100%" height={150} />;
+      } else if (hasActivities && !currentlyLoading) {
+        return renderRadioGroup();
+      } else {
+        return renderCheckbox();
+      }
+    };
+
     element.render(
       <>
-        {this.getDiffTag()}
-        {appConfig?.config?.isLoggedIn ? "You're logged in" : "You're not logged in"}
-        {!this.activities && this.isLoading && <Skeleton variant="rectangle" width="100%" height={100} />}
-        {!this.activities && !this.isLoading ? (
-          <CheckboxGroup
-            id={this.getId()}
-            ref={(ref) => this.setReactInstance(ref)}
-            legend={legend}
-            onChange={(values: string[]) => this.changeHandler(values[0], { modified: true })}
-            description={description}
-            defaultValue={this.getValue()}
-            error={this.getError()}
-            className={this.getClassName()}
-          >
-            <Checkbox value={this.defaultActivity.value} ref={(ref) => (this.lastRef = ref)}>
-              {this.defaultActivity.text}
-            </Checkbox>
-          </CheckboxGroup>
-        ) : (
-          <RadioGroup
-            id={this.getId()}
-            ref={(ref) => this.setReactInstance(ref)}
-            legend={legend}
-            onChange={(value: string) => this.changeHandler(value, { modified: true })}
-            description={description}
-            defaultValue={this.getValue()}
-            error={this.getError()}
-            className={this.getClassName()}
-          >
-            {this.activities?.map((activity: SendInnAktivitet, index, arr) => {
-              return (
-                <Radio
-                  key={activity.aktivitetId}
-                  value={activity.aktivitetId}
-                  {...(index === arr.length - 1 && { ref: (ref) => (this.lastRef = ref) })}
-                >
-                  {`${activity.aktivitetsnavn}: ${activity.periode.fom}-${activity.periode.tom}`}
-                </Radio>
-              );
-            })}
-            <Radio value={this.defaultActivity.value}>{this.defaultActivity.text}</Radio>
-          </RadioGroup>
-        )}
+        {renderActivities()}
+        {this.activitiesError && <Alert variant="info">{this.activitiesError}</Alert>}
       </>,
     );
   }
