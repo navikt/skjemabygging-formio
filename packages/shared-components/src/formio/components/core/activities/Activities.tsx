@@ -12,7 +12,7 @@ class Activities extends BaseComponent {
   activities?: SendInnAktivitet[] = undefined;
   activitiesError?: string;
   defaultActivity = {
-    value: 'ingenAktivitet',
+    activity: { aktivitetId: 'ingenAktivitet', maalgruppe: '', periode: { fom: '', tom: '' } },
     text: this.t('Jeg får ikke opp noen aktiviteter her som stemmer med det jeg vil søke om'),
   };
 
@@ -34,8 +34,16 @@ class Activities extends BaseComponent {
     return activitiesBuilder();
   }
 
+  // The radio/checkbox values are simple strings, but the whole activity object is stored in the submission
   changeHandler(value: string, opts: { modified: boolean }) {
-    super.updateValue(value, opts);
+    if (value === 'ingenAktivitet') {
+      super.updateValue(this.defaultActivity.activity, opts);
+    } else {
+      const activity = this.activities?.find((x) => x.aktivitetId === value);
+      if (activity) {
+        super.updateValue(activity, opts);
+      }
+    }
     this.rerender();
   }
 
@@ -48,8 +56,6 @@ class Activities extends BaseComponent {
   getActivities() {
     const appConfig = this.getAppConfig();
     const isLoggedIn = this.getIsLoggedIn();
-
-    console.log('appConfig', appConfig);
 
     if (!this.loadFinished && appConfig?.app === 'fyllut' && isLoggedIn === true) {
       this.isLoading = true;
@@ -71,6 +77,14 @@ class Activities extends BaseComponent {
     }
   }
 
+  mapActivity(activity: SendInnAktivitet) {
+    return {
+      aktivitetId: activity.aktivitetId,
+      maalgruppe: activity.maalgruppe,
+      periode: activity.periode,
+    };
+  }
+
   renderReact(element) {
     this.getActivities();
 
@@ -79,14 +93,14 @@ class Activities extends BaseComponent {
         <CheckboxGroup
           id={this.getId()}
           legend={this.getLabel()}
-          value={this.getValue()}
+          value={this.getValue()?.aktivitetId ?? ''}
           onChange={(values) => this.changeHandler(values[0], { modified: true })}
           ref={(ref) => this.setReactInstance(ref)}
           description={this.getDescription()}
           className={this.getClassName()}
           error={this.getError()}
         >
-          <Checkbox value={this.defaultActivity.value} ref={(ref) => (this.lastRef = ref)}>
+          <Checkbox value={this.defaultActivity.activity.aktivitetId} ref={(ref) => (this.lastRef = ref)}>
             {this.defaultActivity.text}
           </Checkbox>
         </CheckboxGroup>
@@ -98,7 +112,7 @@ class Activities extends BaseComponent {
         <RadioGroup
           id={this.getId()}
           legend={this.getLabel()}
-          value={this.getValue()}
+          value={this.getValue()?.aktivitetId ?? ''}
           onChange={(value) => this.changeHandler(value, { modified: true })}
           ref={(ref) => this.setReactInstance(ref)}
           description={this.getDescription()}
@@ -118,7 +132,7 @@ class Activities extends BaseComponent {
               </Radio>
             );
           })}
-          <Radio value={this.defaultActivity.value}>{this.defaultActivity.text}</Radio>
+          <Radio value={this.defaultActivity.activity.aktivitetId}>{this.defaultActivity.text}</Radio>
         </RadioGroup>
       );
     };
