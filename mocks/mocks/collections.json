@@ -18,7 +18,8 @@
       "put-utfylt-soknad:success",
       "post-send-inn:success",
       "send-inn-frontend:available",
-      "get-prefill-data:success-name"
+      "get-prefill-data:success-name",
+      "get-activities:success"
     ]
   }
 ]

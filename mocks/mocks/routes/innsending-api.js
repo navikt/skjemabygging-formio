@@ -3,7 +3,7 @@ const mellomlagringValid1 = require('../data/innsending-api/mellomlagring/getTes
 const mellomlagringValid2 = require('../data/innsending-api/mellomlagring/getTestMellomlagring-valid-2.json');
 const mellomlagringValidExtraValues = require('../data/innsending-api/mellomlagring/getTestMellomlagring-valid-extra-values.json');
 const prefillDataNames = require('../data/innsending-api/prefill-data/prefill-data-names.json');
-
+const activities = require('../data/innsending-api/activities/activities.json');
 const paabegyntMellomlagringOgInnsendt = require('../data/innsending-api/active-tasks/mellomlagringOgEttersending.json');
 const paabegyntMellomlagring = require('../data/innsending-api/active-tasks/mellomlagring.json');
 const paabegyntInnsendt = require('../data/innsending-api/active-tasks/ettersending.json');
@@ -262,6 +262,40 @@ module.exports = [
           body: {
             sokerFornavn: 'Ola',
             sokerEtternavn: 'Nordmann',
+          },
+        },
+      },
+    ],
+  },
+  {
+    id: 'get-activities',
+    url: '/send-inn/fyllUt/v1/aktiviteter',
+    method: 'GET',
+    variants: [
+      {
+        id: 'success',
+        type: 'json',
+        options: {
+          status: 200,
+          body: activities,
+        },
+      },
+      {
+        id: 'success-empty',
+        type: 'json',
+        options: {
+          status: 200,
+          body: [],
+        },
+      },
+      {
+        id: 'failure',
+        type: 'json',
+        options: {
+          status: 500,
+          body: {
+            message: 'Serverfeil ved henting av aktiviteter',
+            errorCode: 'arenaError',
           },
         },
       },

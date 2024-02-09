@@ -97,6 +97,12 @@ Cypress.Commands.add('defaultInterceptsPrefillData', () => {
   return cy;
 });
 
+Cypress.Commands.add('defaultInterceptsActivities', () => {
+  cy.intercept('GET', '/fyllut/api/send-inn/activities*').as('getActivities');
+  cy.intercept('GET', '/fyllut/api/forms/*').as('getTestFormActivities');
+  return cy;
+});
+
 Cypress.Commands.add('configMocksServer', () => {
   cy.mocksConfigClient({
     port: 3310,

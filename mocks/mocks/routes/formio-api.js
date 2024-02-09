@@ -14,6 +14,7 @@ const translationsCustomComps = require('../data/formio-api/custom-components-tr
 const translationsSubmissionMethod = require('../data/formio-api/submission-method-translations.json');
 const globalTranslationsEn = require('../data/formio-api/global-translation.json');
 const formCustomCompsAlert = require('../data/formio-api/custom-components-alert.json');
+const formActivities = require('../data/formio-api/activities.json');
 
 const allForms = [
   { form: formCypress101, translations: translationsCypress101 },
@@ -27,6 +28,7 @@ const allForms = [
   { form: formSubmissionMethod, translations: translationsSubmissionMethod },
   { form: formTestMellomlagring, translations: undefined },
   { form: formTestPrefillData, translations: undefined },
+  { form: formActivities, translations: undefined },
 ];
 
 const findTestdata = (formPath) => allForms.find((testdata) => testdata.form.path === formPath);

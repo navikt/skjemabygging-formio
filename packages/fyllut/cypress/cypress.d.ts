@@ -28,6 +28,8 @@ declare global {
 
       defaultInterceptsPrefillData(): Chainable<JQuery<HTMLElement>>;
 
+      defaultInterceptsActivities(): Chainable<JQuery<HTMLElement>>;
+
       /**
        * Configures the Mocks Server administration API client
        */
