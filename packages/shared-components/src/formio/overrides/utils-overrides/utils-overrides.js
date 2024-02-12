@@ -138,6 +138,25 @@ const isBornBeforeYear = (year, fnrKey, submission = {}) => {
   return false;
 };
 
+const isAgeBetween = (ageInterval, fnrKey, submission = {}, pointInTime = moment()) => {
+  const age = getAge(fnrKey, submission, pointInTime);
+  if (age) {
+    const [min, max] = ageInterval;
+    return min <= age && age <= max;
+  }
+  return false;
+};
+
+const getAge = (fnrKey, submission = {}, pointInTime = moment()) => {
+  const value = Utils.getValue(submission, fnrKey);
+  if (value && fnrvalidator.fnr(value.trim()).status === 'valid') {
+    const birthDateStr = value.substring(0, 6);
+    const birthDate = moment(birthDateStr, 'DDMMYY');
+    return pointInTime.diff(birthDate, 'years', false);
+  }
+  return undefined;
+};
+
 const UtilsOverrides = {
   additionalDescription,
   translateHTMLTemplate,
@@ -147,6 +166,8 @@ const UtilsOverrides = {
   navFormDiffToHtml,
   getDiffTag,
   isBornBeforeYear,
+  isAgeBetween,
+  getAge,
 };
 
 if (typeof global === 'object' && global.FormioUtils) {
