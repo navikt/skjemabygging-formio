@@ -187,15 +187,34 @@ describe('Custom react components', () => {
       it('make sure you can add multiple select boxes in a DataGrid and edit them', () => {
         const labelSelect = 'Nedtrekksmeny';
         const labelDate = 'Dato (dd.mm.åååå)';
+        const legendRadiopanel = 'Bor du i Norge?';
         const labelAdd = 'Legg til';
         cy.findAllByRole('combobox', { name: labelSelect }).eq(0).type('a{enter}');
         cy.findAllByRole('textbox', { name: labelDate }).eq(0).type('10.10.2000{esc}');
+        cy.findAllByText(legendRadiopanel).should('have.length', 1).eq(0).shouldBeVisible();
+        cy.findAllByRole('group', { name: legendRadiopanel })
+          .eq(0)
+          .within(() => {
+            cy.findByLabelText('Ja').should('exist').click();
+          });
         cy.findByRole('button', { name: labelAdd }).click();
         cy.findAllByRole('combobox', { name: labelSelect }).eq(1).type('b{enter}');
         cy.findAllByRole('textbox', { name: labelDate }).eq(1).type('11.10.2000{esc}');
+        cy.findAllByText(legendRadiopanel).should('have.length', 2).eq(1).shouldBeVisible();
+        cy.findAllByRole('group', { name: legendRadiopanel })
+          .eq(1)
+          .within(() => {
+            cy.findByLabelText('Nei').should('exist').click();
+          });
         cy.findByRole('button', { name: labelAdd }).click();
         cy.findAllByRole('combobox', { name: labelSelect }).eq(2).type('a{enter}');
         cy.findAllByRole('textbox', { name: labelDate }).eq(2).type('12.10.2000{esc}');
+        cy.findAllByText(legendRadiopanel).should('have.length', 3).eq(2).shouldBeVisible();
+        cy.findAllByRole('group', { name: legendRadiopanel })
+          .eq(2)
+          .within(() => {
+            cy.findByLabelText('Nei').should('exist').click();
+          });
 
         cy.clickNextStep();
         cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
@@ -207,6 +226,8 @@ describe('Custom react components', () => {
             cy.get('dd').eq(0).contains('a');
             cy.get('dt').eq(1).contains(labelDate);
             cy.get('dd').eq(1).contains('10.10.2000');
+            cy.get('dt').eq(2).contains(legendRadiopanel);
+            cy.get('dd').eq(2).contains('Ja');
           });
 
         cy.get('dl')
@@ -216,6 +237,8 @@ describe('Custom react components', () => {
             cy.get('dd').eq(0).contains('b');
             cy.get('dt').eq(1).contains(labelDate);
             cy.get('dd').eq(1).contains('11.10.2000');
+            cy.get('dt').eq(2).contains(legendRadiopanel);
+            cy.get('dd').eq(2).contains('Nei');
           });
 
         cy.get('dl')
@@ -225,6 +248,8 @@ describe('Custom react components', () => {
             cy.get('dd').eq(0).contains('a');
             cy.get('dt').eq(1).contains(labelDate);
             cy.get('dd').eq(1).contains('12.10.2000');
+            cy.get('dt').eq(2).contains(legendRadiopanel);
+            cy.get('dd').eq(2).contains('Nei');
           });
       });
     });

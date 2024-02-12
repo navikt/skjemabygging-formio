@@ -30,6 +30,8 @@ declare global {
 
       defaultInterceptsActivities(): Chainable<JQuery<HTMLElement>>;
 
+      shouldBeVisible(): Chainable<JQuery>;
+
       /**
        * Configures the Mocks Server administration API client
        */
