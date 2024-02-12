@@ -130,12 +130,8 @@ const evaluate = (func, args, ret, tokenize) => {
 const { sanitizeJavaScriptCode } = navFormioUtils;
 
 const isBornBeforeYear = (year, fnrKey, submission = {}) => {
-  const value = Utils.getValue(submission, fnrKey);
-  if (value && fnrvalidator.fnr(value.trim()).status === 'valid') {
-    const birthDateStr = value.substring(0, 6);
-    return moment(birthDateStr, 'DDMMYY').year() < year;
-  }
-  return false;
+  const birthDate = getBirthDate(fnrKey, submission);
+  return birthDate ? birthDate.year() < year : false;
 };
 
 const isAgeBetween = (ageInterval, fnrKey, submission = {}, pointInTime = moment()) => {
@@ -148,11 +144,18 @@ const isAgeBetween = (ageInterval, fnrKey, submission = {}, pointInTime = moment
 };
 
 const getAge = (fnrKey, submission = {}, pointInTime = moment()) => {
+  const birthDate = getBirthDate(fnrKey, submission);
+  if (birthDate) {
+    return pointInTime.diff(birthDate, 'years', false);
+  }
+  return undefined;
+};
+
+const getBirthDate = (fnrKey, submission = {}) => {
   const value = Utils.getValue(submission, fnrKey);
   if (value && fnrvalidator.fnr(value.trim()).status === 'valid') {
     const birthDateStr = value.substring(0, 6);
-    const birthDate = moment(birthDateStr, 'DDMMYY');
-    return pointInTime.diff(birthDate, 'years', false);
+    return moment(birthDateStr, 'DDMMYY');
   }
   return undefined;
 };
