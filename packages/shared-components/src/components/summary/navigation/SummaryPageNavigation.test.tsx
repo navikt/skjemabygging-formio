@@ -32,6 +32,7 @@ const renderSummaryPageNavigation = async (
   const summaryPageProps: Props = {
     formUrl: '/testform',
     submission: { data: {} },
+    panelValidationList: [],
     form: {} as NavFormType,
     isValid,
     onError,
