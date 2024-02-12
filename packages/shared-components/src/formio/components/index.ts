@@ -22,6 +22,7 @@ import CurrencySelect from './extensions/currency-select/CurrencySelect';
 import Currency from './extensions/currency/Currency';
 import Email from './extensions/email/Email';
 import IBAN from './extensions/iban/IBAN';
+import Maalgruppe from './extensions/maalgruppe/Maalgruppe';
 import NationalIdentityNumber from './extensions/national-identity-number/NationalIdentityNumber';
 import Number from './extensions/number/Number';
 import OrganizationNumber from './extensions/organization-number/OrganizationNumber';
@@ -30,6 +31,7 @@ import PhoneNumber from './extensions/phone-number/PhoneNumber';
 const customComponents = {
   container: Container,
   activities: Activities,
+  maalgruppe: Maalgruppe,
   alertstripe: Alert,
   fnrfield: NationalIdentityNumber,
   orgNr: OrganizationNumber,

@@ -20,7 +20,7 @@ class Activities extends BaseComponent {
     return BaseComponent.schema({
       label: 'Aktiviteter',
       type: 'activities',
-      key: 'activities',
+      key: 'aktivitet',
       input: true,
       hideLabel: true,
     });
@@ -41,7 +41,7 @@ class Activities extends BaseComponent {
     } else {
       const activity = this.activities?.find((x) => x.aktivitetId === value);
       if (activity) {
-        super.updateValue(activity, opts);
+        super.updateValue(this.mapActivity(activity), opts);
       }
     }
     this.rerender();

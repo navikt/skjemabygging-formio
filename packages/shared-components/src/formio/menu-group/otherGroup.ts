@@ -1,9 +1,9 @@
-import activitiesBuilder from '../components/core/activities/Activities.builder';
+import activitiesWithMaalgruppeBuilder from '../components/groups/activitiesWithMaalgruppe/activitiesWithMaalgruppe.builder';
 
 const panelsGroup = {
   title: 'Andre',
   components: {
-    activities: activitiesBuilder(),
+    activitiesWithMaalgruppe: activitiesWithMaalgruppeBuilder(),
   },
 };
 
