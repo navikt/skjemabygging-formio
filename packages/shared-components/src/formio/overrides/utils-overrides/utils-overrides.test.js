@@ -114,6 +114,11 @@ describe('utils-overrides', () => {
         );
       });
     });
+
+    it('does not add null check to composite component key', () => {
+      const code = "show = util.isBornBeforeYear(1964, 'container.fnr', submission);";
+      expect(UtilsOverrides.sanitizeJavaScriptCode(code)).toBe(code);
+    });
   });
 
   describe('navFormDiffToHtml', () => {
@@ -329,6 +334,53 @@ describe('utils-overrides', () => {
         const html = UtilsOverrides.getDiffTag(ctx);
         expect(html).toMatchSnapshot();
       });
+    });
+  });
+
+  describe('isBornBeforeYear', () => {
+    it('handles undefined and empty input', () => {
+      expect(UtilsOverrides.isBornBeforeYear(1964, 'fnr', undefined)).toBe(false);
+      expect(UtilsOverrides.isBornBeforeYear(1964, 'fnr', { data: undefined })).toBe(false);
+      expect(UtilsOverrides.isBornBeforeYear(1964, 'fnr', { data: {} })).toBe(false);
+    });
+    it('handles invalid fnr', () => {
+      expect(UtilsOverrides.isBornBeforeYear(1964, 'fnr', { data: { fnr: '11013912345' } })).toBe(false);
+    });
+    it('parses birth year 55 as 2055', () => {
+      const FNR = '31105543487';
+      expect(UtilsOverrides.isBornBeforeYear(1954, 'fnr', { data: { fnr: FNR } })).toBe(false);
+      expect(UtilsOverrides.isBornBeforeYear(1955, 'fnr', { data: { fnr: FNR } })).toBe(false);
+      expect(UtilsOverrides.isBornBeforeYear(1956, 'fnr', { data: { fnr: FNR } })).toBe(false);
+      expect(UtilsOverrides.isBornBeforeYear(2054, 'fnr', { data: { fnr: FNR } })).toBe(false);
+      expect(UtilsOverrides.isBornBeforeYear(2055, 'fnr', { data: { fnr: FNR } })).toBe(false);
+      expect(UtilsOverrides.isBornBeforeYear(2056, 'fnr', { data: { fnr: FNR } })).toBe(true);
+    });
+    it('parses birth year 56 as 1956', () => {
+      const FNR = '01055631685';
+      expect(UtilsOverrides.isBornBeforeYear(1955, 'fnr', { data: { fnr: FNR } })).toBe(false);
+      expect(UtilsOverrides.isBornBeforeYear(1956, 'fnr', { data: { fnr: FNR } })).toBe(false);
+      expect(UtilsOverrides.isBornBeforeYear(1957, 'fnr', { data: { fnr: FNR } })).toBe(true);
+      expect(UtilsOverrides.isBornBeforeYear(2054, 'fnr', { data: { fnr: FNR } })).toBe(true);
+      expect(UtilsOverrides.isBornBeforeYear(2055, 'fnr', { data: { fnr: FNR } })).toBe(true);
+      expect(UtilsOverrides.isBornBeforeYear(2056, 'fnr', { data: { fnr: FNR } })).toBe(true);
+    });
+    it('parses birth year 39 as 2039', () => {
+      const FNR = '11013942015';
+      expect(UtilsOverrides.isBornBeforeYear(1938, 'fnr', { data: { fnr: FNR } })).toBe(false);
+      expect(UtilsOverrides.isBornBeforeYear(1939, 'fnr', { data: { fnr: FNR } })).toBe(false);
+      expect(UtilsOverrides.isBornBeforeYear(1940, 'fnr', { data: { fnr: FNR } })).toBe(false);
+      expect(UtilsOverrides.isBornBeforeYear(1941, 'fnr', { data: { fnr: FNR } })).toBe(false);
+      expect(UtilsOverrides.isBornBeforeYear(1964, 'fnr', { data: { fnr: FNR } })).toBe(false);
+      expect(UtilsOverrides.isBornBeforeYear(2038, 'fnr', { data: { fnr: FNR } })).toBe(false);
+      expect(UtilsOverrides.isBornBeforeYear(2039, 'fnr', { data: { fnr: FNR } })).toBe(false);
+      expect(UtilsOverrides.isBornBeforeYear(2040, 'fnr', { data: { fnr: FNR } })).toBe(true);
+    });
+    it('handles composite key', () => {
+      const FNR = '01055631685';
+      const submission = { data: { fornavn: '', container: { fodselsnummer: FNR } } };
+      expect(UtilsOverrides.isBornBeforeYear(1955, 'container.fodselsnummer', submission)).toBe(false);
+      expect(UtilsOverrides.isBornBeforeYear(1956, 'container.fodselsnummer', submission)).toBe(false);
+      expect(UtilsOverrides.isBornBeforeYear(1957, 'container.fodselsnummer', submission)).toBe(true);
     });
   });
 });

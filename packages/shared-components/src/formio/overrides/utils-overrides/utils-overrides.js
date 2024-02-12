@@ -1,5 +1,8 @@
+import fnrvalidator from '@navikt/fnrvalidator';
 import { formDiffingTool, navFormioUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { Utils } from 'formiojs';
+import moment from 'moment/moment';
+import '../moment-overrides';
 
 const additionalDescription = (ctx) => {
   if (!ctx.component.additionalDescriptionLabel && !ctx.component.additionalDescriptionText) return '';
@@ -126,6 +129,15 @@ const evaluate = (func, args, ret, tokenize) => {
 
 const { sanitizeJavaScriptCode } = navFormioUtils;
 
+const isBornBeforeYear = (year, fnrKey, submission = {}) => {
+  const value = Utils.getValue(submission, fnrKey);
+  if (value && fnrvalidator.fnr(value.trim()).status === 'valid') {
+    const birthDateStr = value.substring(0, 6);
+    return moment(birthDateStr, 'DDMMYY').year() < year;
+  }
+  return false;
+};
+
 const UtilsOverrides = {
   additionalDescription,
   translateHTMLTemplate,
@@ -134,6 +146,7 @@ const UtilsOverrides = {
   sanitizeJavaScriptCode,
   navFormDiffToHtml,
   getDiffTag,
+  isBornBeforeYear,
 };
 
 if (typeof global === 'object' && global.FormioUtils) {

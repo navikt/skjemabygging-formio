@@ -19,7 +19,11 @@ const editFormVariablesTable = (additional?: string): Component => {
       '<tr><th>value</th><td>Den nåværende verdien på komponenten.</td></tr>' +
       '<tr><th>moment</th><td>Moment.js biblioteket for datomanipulasjon.</td></tr>' +
       '<tr><th>_</th><td>En instans av <a href="https://lodash.com/docs/" target="_blank">Lodash</a>.</td></tr>' +
-      '<tr><th>utils</th><td>En instans av <a href="http://formio.github.io/formio.js/docs/identifiers.html#utils" target="_blank">FormioUtils</a>.</td></tr>' +
+      '<tr><th>utils</th><td>En instans av <a href="http://formio.github.io/formio.js/docs/identifiers.html#utils" target="_blank">FormioUtils</a>, inkludert et par egendefinerte hjelpefunksjoner (se nedenfor).</td></tr>' +
+      '</table><br/>' +
+      '<p>Egendefinerte hjelpefunksjoner på utils.</p>' +
+      '<table class="table table-bordered table-condensed table-striped">' +
+      "<tr><th>isBornBeforeYear</th><td>Gitt et fødselsnummer returnerer denne funksjonen om personen er født tidligere enn oppgitt årstall.<br/><small><pre>utils.isBornBeforeYear(1964, 'fnr', submission)</pre></small></td></tr>" +
       '</table><br/>',
   };
 };

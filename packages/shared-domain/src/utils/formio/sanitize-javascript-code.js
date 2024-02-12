@@ -38,9 +38,9 @@ function mapChainedLookups(text) {
    * - parentObj.childObj.myFunction()
    */
   const arrayOfChainedLookups = text.match(/((\w+\.)+\w+\b)(?![(.])/g) || [];
-  [...new Set(arrayOfChainedLookups)].forEach(
-    (chainedLookup) => (mappedString = addNullChecksToChainedLookup(chainedLookup, mappedString)),
-  );
+  [...new Set(arrayOfChainedLookups)]
+    .filter((exp) => !text.includes(`'${exp}'`))
+    .forEach((chainedLookup) => (mappedString = addNullChecksToChainedLookup(chainedLookup, mappedString)));
   return mappedString;
 }
 
