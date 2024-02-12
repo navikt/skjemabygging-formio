@@ -46,8 +46,7 @@ const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList,
   const styles = useStyles();
   const hasAttachments = hasRelevantAttachments(form, submission?.data ?? {});
   const canSubmit =
-    !!panelValidationList &&
-    (panelValidationList ?? []).every((panelValidation) => !panelValidation.hasValidationErrors);
+    !!panelValidationList && panelValidationList.every((panelValidation) => !panelValidation.hasValidationErrors);
 
   const exitUrl = urlUtils.getExitUrl(window.location.href);
 
