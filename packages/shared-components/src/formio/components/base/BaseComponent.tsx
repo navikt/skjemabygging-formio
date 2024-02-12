@@ -125,7 +125,7 @@ class BaseComponent extends FormioReactComponent {
   }
 
   /**
-   * Get submissionMethod for custom component renderReact()
+   * Get app config (same as useAppConfig hook) for custom component renderReact()
    */
   getAppConfig() {
     return this.options?.appConfig;

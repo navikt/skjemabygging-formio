@@ -1,4 +1,4 @@
-import { Component } from '@navikt/skjemadigitalisering-shared-domain';
+import { Component, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import Select from 'react-select/base';
 import { AppConfigContextType } from '../../../context/config/configContext';
 interface IReactComponent {
@@ -31,7 +31,7 @@ interface ReactComponentType {
     appConfig: AppConfigContextType;
     readOnly: boolean;
     namespace: string;
-    formConfig: { publishedForm: any };
+    formConfig: { publishedForm: NavFormType };
   };
   visible: any | boolean;
   hideLabel: boolean;
