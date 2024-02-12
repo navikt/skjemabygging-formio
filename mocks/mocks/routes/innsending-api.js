@@ -255,14 +255,23 @@ module.exports = [
     method: 'GET',
     variants: [
       {
-        id: 'success-name',
+        id: 'success',
         type: 'json',
         options: {
           status: 200,
           body: {
             sokerFornavn: 'Ola',
             sokerEtternavn: 'Nordmann',
+            sokerMaalgruppe: 'ARBSOKERE',
           },
+        },
+      },
+      {
+        id: 'success-empty',
+        type: 'json',
+        options: {
+          status: 200,
+          body: {},
         },
       },
     ],

@@ -29,6 +29,18 @@ describe('Activities', () => {
       cy.findByRole('radio', { name: activityText }).should('exist');
       cy.findByRole('radio', { name: defaultActivityText }).should('exist');
     });
+
+    it('should select maalgruppe attached to activity', () => {
+      cy.visit('/fyllut/testingactivities?sub=digital');
+      cy.wait('@getTestFormActivities');
+      cy.clickStart();
+      cy.wait('@getActivities');
+
+      // Select the activity from backend
+      cy.findByRole('radio', { name: activityText }).check('130892484');
+
+      cy.findByRole('textbox').should('have.value', 'NEDSARBEVN');
+    });
   });
 
   describe('no activities from backend', () => {
@@ -44,6 +56,35 @@ describe('Activities', () => {
       cy.findAllByRole('checkbox').should('have.length', 1);
       cy.findByRole('checkbox', { name: activityText }).should('not.exist');
       cy.findByRole('checkbox', { name: defaultActivityText }).should('exist');
+    });
+
+    it('should select maalgruppe from defaultValue', () => {
+      cy.mocksUseRouteVariant('get-activities:success-empty');
+
+      cy.visit('/fyllut/testingactivities?sub=digital');
+      cy.wait('@getTestFormActivities');
+      cy.clickStart();
+      cy.wait('@getActivities');
+
+      // Select the default activity
+      cy.findByRole('checkbox', { name: defaultActivityText }).check('ingenAktivitet');
+
+      cy.findByRole('textbox').should('have.value', 'ARBSOKERE');
+    });
+
+    it('should default to ANNET for maalgruppe', () => {
+      cy.mocksUseRouteVariant('get-activities:success-empty');
+      cy.mocksUseRouteVariant('get-prefill-data:success-empty');
+
+      cy.visit('/fyllut/testingactivities?sub=digital');
+      cy.wait('@getTestFormActivities');
+      cy.clickStart();
+      cy.wait('@getActivities');
+
+      // Select the default activity
+      cy.findByRole('checkbox', { name: defaultActivityText }).check('ingenAktivitet');
+
+      cy.findByRole('textbox').should('have.value', 'ANNET');
     });
   });
 
@@ -64,6 +105,21 @@ describe('Activities', () => {
       cy.get('.navds-alert--info').contains(
         'Kunne ikke hente aktiviteter. Du kan fortsatt gå videre uten å velge aktivitet.',
       );
+    });
+
+    it('should default to ANNET', () => {
+      cy.mocksUseRouteVariant('get-activities:failure');
+      cy.mocksUseRouteVariant('get-prefill-data:success-empty');
+
+      cy.visit('/fyllut/testingactivities?sub=digital');
+      cy.wait('@getTestFormActivities');
+      cy.clickStart();
+      cy.wait('@getActivities');
+
+      // Select the default activity
+      cy.findByRole('checkbox', { name: defaultActivityText }).check('ingenAktivitet');
+
+      cy.findByRole('textbox').should('have.value', 'ANNET');
     });
   });
 });
