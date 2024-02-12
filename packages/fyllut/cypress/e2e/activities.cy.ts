@@ -1,5 +1,5 @@
 const defaultActivityText = 'Jeg får ikke opp noen aktiviteter her som stemmer med det jeg vil søke om';
-const activityText = 'Arbeidstrening: 6.12.2023 - 6.04.2024';
+const activityText = 'Arbeidstrening: 06.12.2023 - 06.04.2024';
 
 describe('Activities', () => {
   before(() => {
