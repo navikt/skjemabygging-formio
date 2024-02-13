@@ -40,7 +40,8 @@
             "customPrivate": false,
             "strictDateValidation": false,
             "multiple": false,
-            "unique": false
+            "unique": false,
+            "onlyAvailableItems": true
           },
           "label": "Velg instrument",
           "key": "velgInstrument",

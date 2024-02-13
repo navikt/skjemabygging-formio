@@ -194,6 +194,12 @@ class NavSelect extends BaseComponent {
     return this.dataReady.then(() => this);
   }
 
+  /**
+   * Denne funksjonen kalles fra formio sin valideringskode når validator 'onlyAvailableItems' er aktivert.
+   *
+   * @param setting Komponent-egenskap 'validate.onlyAvailableItems'
+   * @param value Verdi som skal valideres
+   */
   validateValueAvailability(setting, value) {
     if (!Utils.boolValue(setting) || !value) {
       return true;
@@ -206,9 +212,7 @@ class NavSelect extends BaseComponent {
   }
 
   renderReact(element) {
-    this.loadItems();
     const component = this.component!;
-
     return element.render(
       <ReactSelectWrapper
         component={component}
