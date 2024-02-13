@@ -36,7 +36,9 @@ class Activities extends BaseComponent {
 
   // The radio/checkbox values are simple strings, but the whole activity object is stored in the submission
   changeHandler(value: string, opts: { modified: boolean }) {
-    if (value === 'ingenAktivitet') {
+    if (!value) {
+      super.resetValue();
+    } else if (value === 'ingenAktivitet') {
       super.updateValue(this.defaultActivity.activity, opts);
     } else {
       const activity = this.activities?.find((x) => x.aktivitetId === value);
@@ -91,8 +93,8 @@ class Activities extends BaseComponent {
         <CheckboxGroup
           id={this.getId()}
           legend={this.getLabel()}
-          value={this.getValue()?.aktivitetId ?? ''}
-          onChange={(values) => this.changeHandler(!!values.length ? values[0] : this.resetValue(), { modified: true })}
+          value={this.getValue()?.aktivitetId ? [this.getValue()?.aktivitetId] : []}
+          onChange={(values) => this.changeHandler(values[0], { modified: true })}
           ref={(ref) => this.setReactInstance(ref)}
           description={this.getDescription()}
           className={this.getClassName()}

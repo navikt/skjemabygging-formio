@@ -9,6 +9,7 @@ interface IReactComponent {
 }
 
 interface ReactComponentType {
+  data?: any;
   shouldSetValue?: any;
   dataForSetting?: any;
   reactInstance?: HTMLInputElement | Select;
