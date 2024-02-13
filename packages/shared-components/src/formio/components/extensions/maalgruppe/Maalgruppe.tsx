@@ -1,19 +1,16 @@
-import FormioTextfield from 'formiojs/components/textfield/TextField';
+import BaseComponent from '../../base/BaseComponent';
 import maalgruppeBuilder from './Maalgruppe.builder';
 import maalgruppeForm from './Maalgruppe.form';
 
-class Maalgruppe extends FormioTextfield {
-  data: any;
-  component: any;
-
+class Maalgruppe extends BaseComponent {
   static schema() {
-    return FormioTextfield.schema({
+    return BaseComponent.schema({
       label: 'Målgruppe',
       type: 'maalgruppe',
       key: 'maalgruppe',
       input: true,
       hideLabel: true,
-      customConditional: 'show = false',
+      hidden: true,
       clearOnHide: false,
     });
   }
@@ -27,14 +24,17 @@ class Maalgruppe extends FormioTextfield {
   }
 
   calculateMaalgruppeValue() {
-    if (!!this.data.aktivitet?.maalgruppe) {
-      return this.data.aktivitet?.maalgruppe;
-    } else if (!!this.component.defaultValue) {
+    if (!!this.data?.aktivitet?.maalgruppe) {
+      return this.data?.aktivitet.maalgruppe;
+    } else if (!!this.component?.defaultValue) {
       return this.component.defaultValue;
     } else {
-      // PR: Should this return empty string or ANNET?
       return 'ANNET';
     }
+  }
+
+  renderReact(element: any) {
+    element.render(<></>);
   }
 }
 
