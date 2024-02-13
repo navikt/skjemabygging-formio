@@ -15,7 +15,6 @@ const sendInnActivities = {
 
       const activitiesResponse = await fetch(`${sendInnConfig.host}${sendInnConfig.paths.activities}`, {
         method: 'GET',
-        redirect: 'manual', // Fixme: Needed?
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${tokenxAccessToken}`,

@@ -1,10 +1,10 @@
 import activitiesWithMaalgruppeBuilder from '../components/groups/activitiesWithMaalgruppe/activitiesWithMaalgruppe.builder';
 
-const panelsGroup = {
+const otherGroup = {
   title: 'Andre',
   components: {
     activitiesWithMaalgruppe: activitiesWithMaalgruppeBuilder(),
   },
 };
 
-export default panelsGroup;
+export default otherGroup;

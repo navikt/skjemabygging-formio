@@ -27,9 +27,9 @@ class Maalgruppe extends FormioTextfield {
   }
 
   calculateMaalgruppeValue() {
-    if (!!this.data.aktivitet?.maalgruppe && this.data.aktivitet.maalgruppe !== '') {
+    if (!!this.data.aktivitet?.maalgruppe) {
       return this.data.aktivitet?.maalgruppe;
-    } else if (!!this.component.defaultValue && this.component.defaultValue !== '') {
+    } else if (!!this.component.defaultValue) {
       return this.component.defaultValue;
     } else {
       // PR: Should this return empty string or ANNET?
