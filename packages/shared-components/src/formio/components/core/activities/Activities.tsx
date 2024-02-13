@@ -92,7 +92,7 @@ class Activities extends BaseComponent {
           id={this.getId()}
           legend={this.getLabel()}
           value={this.getValue()?.aktivitetId ?? ''}
-          onChange={(values) => this.changeHandler(values[0], { modified: true })}
+          onChange={(values) => this.changeHandler(!!values.length ? values[0] : this.resetValue(), { modified: true })}
           ref={(ref) => this.setReactInstance(ref)}
           description={this.getDescription()}
           className={this.getClassName()}
