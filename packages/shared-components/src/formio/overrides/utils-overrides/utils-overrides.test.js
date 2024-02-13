@@ -116,9 +116,16 @@ describe('utils-overrides', () => {
       });
     });
 
-    it('does not add null check to composite component key', () => {
-      const code = "show = util.isBornBeforeYear(1964, 'container.fnr', submission);";
-      expect(UtilsOverrides.sanitizeJavaScriptCode(code)).toBe(code);
+    describe('composite component key inside expression', () => {
+      it('is not null checked when wrapped in single qoutes', () => {
+        const code = "show = utils.isBornBeforeYear(1964, 'container.fnr', submission);";
+        expect(UtilsOverrides.sanitizeJavaScriptCode(code)).toBe(code);
+      });
+
+      it('is not null checked when wrapped in double qoutes', () => {
+        const code = 'show = utils.isBornBeforeYear(1964, "container.fnr", submission);';
+        expect(UtilsOverrides.sanitizeJavaScriptCode(code)).toBe(code);
+      });
     });
   });
 

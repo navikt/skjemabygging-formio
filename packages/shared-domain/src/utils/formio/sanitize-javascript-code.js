@@ -39,7 +39,7 @@ function mapChainedLookups(text) {
    */
   const arrayOfChainedLookups = text.match(/((\w+\.)+\w+\b)(?![(.])/g) || [];
   [...new Set(arrayOfChainedLookups)]
-    .filter((exp) => !text.includes(`'${exp}'`))
+    .filter((exp) => !text.includes(`'${exp}'`) && !text.includes(`"${exp}"`))
     .forEach((chainedLookup) => (mappedString = addNullChecksToChainedLookup(chainedLookup, mappedString)));
   return mappedString;
 }
