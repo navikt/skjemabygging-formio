@@ -1,5 +1,8 @@
+import fnrvalidator from '@navikt/fnrvalidator';
 import { formDiffingTool, navFormioUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { Utils } from 'formiojs';
+import moment from 'moment/moment';
+import '../moment-overrides';
 
 const additionalDescription = (ctx) => {
   if (!ctx.component.additionalDescriptionLabel && !ctx.component.additionalDescriptionText) return '';
@@ -126,6 +129,37 @@ const evaluate = (func, args, ret, tokenize) => {
 
 const { sanitizeJavaScriptCode } = navFormioUtils;
 
+const isBornBeforeYear = (year, fnrKey, submission = {}) => {
+  const birthDate = getBirthDate(fnrKey, submission);
+  return birthDate ? birthDate.year() < year : false;
+};
+
+const isAgeBetween = (ageInterval, fnrKey, submission = {}, pointInTime = moment()) => {
+  const age = getAge(fnrKey, submission, pointInTime);
+  if (age) {
+    const [min, max] = ageInterval;
+    return min <= age && age <= max;
+  }
+  return false;
+};
+
+const getAge = (fnrKey, submission = {}, pointInTime = moment()) => {
+  const birthDate = getBirthDate(fnrKey, submission);
+  if (birthDate) {
+    return pointInTime.diff(birthDate, 'years', false);
+  }
+  return undefined;
+};
+
+const getBirthDate = (fnrKey, submission = {}) => {
+  const value = Utils.getValue(submission, fnrKey);
+  if (value && fnrvalidator.fnr(value.trim()).status === 'valid') {
+    const birthDateStr = value.substring(0, 6);
+    return moment(birthDateStr, 'DDMMYY');
+  }
+  return undefined;
+};
+
 const UtilsOverrides = {
   additionalDescription,
   translateHTMLTemplate,
@@ -134,6 +168,9 @@ const UtilsOverrides = {
   sanitizeJavaScriptCode,
   navFormDiffToHtml,
   getDiffTag,
+  isBornBeforeYear,
+  isAgeBetween,
+  getAge,
 };
 
 if (typeof global === 'object' && global.FormioUtils) {

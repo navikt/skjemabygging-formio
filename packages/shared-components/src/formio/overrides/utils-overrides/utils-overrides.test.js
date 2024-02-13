@@ -1,4 +1,5 @@
 import { formDiffingTool, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import moment from 'moment/moment';
 import panelDiffDeletedDatagrid from '../../../../test/test-data/diff/diff-deleted-datagrid';
 import panelDiffDeletedRadiopanel from '../../../../test/test-data/diff/diff-deleted-radio';
 import formNavSelectChanges from '../../../../test/test-data/form/form-navSelect-changes';
@@ -112,6 +113,18 @@ describe('utils-overrides', () => {
         expect(UtilsOverrides.sanitizeJavaScriptCode(inputWithNestedObjectReferenceAndFunctionCall)).toBe(
           'valid = (obj && obj.someVar) || obj.someFunction()',
         );
+      });
+    });
+
+    describe('composite component key inside expression', () => {
+      it('is not null checked when wrapped in single qoutes', () => {
+        const code = "show = utils.isBornBeforeYear(1964, 'container.fnr', submission);";
+        expect(UtilsOverrides.sanitizeJavaScriptCode(code)).toBe(code);
+      });
+
+      it('is not null checked when wrapped in double qoutes', () => {
+        const code = 'show = utils.isBornBeforeYear(1964, "container.fnr", submission);';
+        expect(UtilsOverrides.sanitizeJavaScriptCode(code)).toBe(code);
       });
     });
   });
@@ -329,6 +342,112 @@ describe('utils-overrides', () => {
         const html = UtilsOverrides.getDiffTag(ctx);
         expect(html).toMatchSnapshot();
       });
+    });
+  });
+
+  describe('isBornBeforeYear', () => {
+    it('handles undefined and empty input', () => {
+      expect(UtilsOverrides.isBornBeforeYear(1964, 'fnr', undefined)).toBe(false);
+      expect(UtilsOverrides.isBornBeforeYear(1964, 'fnr', { data: undefined })).toBe(false);
+      expect(UtilsOverrides.isBornBeforeYear(1964, 'fnr', { data: {} })).toBe(false);
+    });
+
+    it('handles invalid fnr', () => {
+      expect(UtilsOverrides.isBornBeforeYear(1964, 'fnr', { data: { fnr: '11013912345' } })).toBe(false);
+    });
+
+    it('parses birth year 55 as 2055', () => {
+      const FNR = '31105543487';
+      expect(UtilsOverrides.isBornBeforeYear(1954, 'fnr', { data: { fnr: FNR } })).toBe(false);
+      expect(UtilsOverrides.isBornBeforeYear(1955, 'fnr', { data: { fnr: FNR } })).toBe(false);
+      expect(UtilsOverrides.isBornBeforeYear(1956, 'fnr', { data: { fnr: FNR } })).toBe(false);
+      expect(UtilsOverrides.isBornBeforeYear(2054, 'fnr', { data: { fnr: FNR } })).toBe(false);
+      expect(UtilsOverrides.isBornBeforeYear(2055, 'fnr', { data: { fnr: FNR } })).toBe(false);
+      expect(UtilsOverrides.isBornBeforeYear(2056, 'fnr', { data: { fnr: FNR } })).toBe(true);
+    });
+
+    it('parses birth year 56 as 1956', () => {
+      const FNR = '01055631685';
+      expect(UtilsOverrides.isBornBeforeYear(1955, 'fnr', { data: { fnr: FNR } })).toBe(false);
+      expect(UtilsOverrides.isBornBeforeYear(1956, 'fnr', { data: { fnr: FNR } })).toBe(false);
+      expect(UtilsOverrides.isBornBeforeYear(1957, 'fnr', { data: { fnr: FNR } })).toBe(true);
+      expect(UtilsOverrides.isBornBeforeYear(2054, 'fnr', { data: { fnr: FNR } })).toBe(true);
+      expect(UtilsOverrides.isBornBeforeYear(2055, 'fnr', { data: { fnr: FNR } })).toBe(true);
+      expect(UtilsOverrides.isBornBeforeYear(2056, 'fnr', { data: { fnr: FNR } })).toBe(true);
+    });
+
+    it('parses birth year 39 as 2039', () => {
+      const FNR = '11013942015';
+      expect(UtilsOverrides.isBornBeforeYear(1938, 'fnr', { data: { fnr: FNR } })).toBe(false);
+      expect(UtilsOverrides.isBornBeforeYear(1939, 'fnr', { data: { fnr: FNR } })).toBe(false);
+      expect(UtilsOverrides.isBornBeforeYear(1940, 'fnr', { data: { fnr: FNR } })).toBe(false);
+      expect(UtilsOverrides.isBornBeforeYear(1941, 'fnr', { data: { fnr: FNR } })).toBe(false);
+      expect(UtilsOverrides.isBornBeforeYear(1964, 'fnr', { data: { fnr: FNR } })).toBe(false);
+      expect(UtilsOverrides.isBornBeforeYear(2038, 'fnr', { data: { fnr: FNR } })).toBe(false);
+      expect(UtilsOverrides.isBornBeforeYear(2039, 'fnr', { data: { fnr: FNR } })).toBe(false);
+      expect(UtilsOverrides.isBornBeforeYear(2040, 'fnr', { data: { fnr: FNR } })).toBe(true);
+    });
+
+    it('handles composite key', () => {
+      const FNR = '01055631685';
+      const submission = { data: { fornavn: '', container: { fodselsnummer: FNR } } };
+      expect(UtilsOverrides.isBornBeforeYear(1955, 'container.fodselsnummer', submission)).toBe(false);
+      expect(UtilsOverrides.isBornBeforeYear(1956, 'container.fodselsnummer', submission)).toBe(false);
+      expect(UtilsOverrides.isBornBeforeYear(1957, 'container.fodselsnummer', submission)).toBe(true);
+    });
+  });
+
+  const pointInTime = (ddmmyyyy) => {
+    return moment(ddmmyyyy, 'DD.MM.YYYY');
+  };
+
+  describe('getAge', () => {
+    it('handles undefined and empty submission', () => {
+      expect(UtilsOverrides.getAge('fnr', undefined, pointInTime('15.10.2024'))).toBeUndefined();
+      expect(UtilsOverrides.getAge('fnr', {}, pointInTime('15.10.2024'))).toBeUndefined();
+      expect(UtilsOverrides.getAge('fnr', { data: undefined }, pointInTime('15.10.2024'))).toBeUndefined();
+      expect(UtilsOverrides.getAge('fnr', { data: {} }, pointInTime('15.10.2024'))).toBeUndefined();
+      expect(UtilsOverrides.getAge('fnr', { data: { fnr: undefined } }, pointInTime('15.10.2024'))).toBeUndefined();
+    });
+
+    it('handles invalid fnr', () => {
+      const FNR_INVALID = '01055612345';
+      expect(UtilsOverrides.getAge('fnr', { data: { fnr: FNR_INVALID } }, pointInTime('01.05.1957'))).toBeUndefined();
+    });
+
+    it('returns correct age', () => {
+      const FNR = '01055631685';
+      expect(UtilsOverrides.getAge('fnr', { data: { fnr: FNR } }, pointInTime('30.04.1957'))).toBe(0);
+      expect(UtilsOverrides.getAge('fnr', { data: { fnr: FNR } }, pointInTime('01.05.1957'))).toBe(1);
+      expect(UtilsOverrides.getAge('fnr', { data: { fnr: FNR } }, pointInTime('15.10.2024'))).toBe(68);
+    });
+
+    it('handles future fnr', () => {
+      const FNR = '06073333138';
+      expect(UtilsOverrides.getAge('fnr', { data: { fnr: FNR } }, pointInTime('15.10.2024'))).toBe(-8);
+      expect(UtilsOverrides.getAge('fnr', { data: { fnr: FNR } }, pointInTime('06.07.2033'))).toBe(0);
+    });
+  });
+
+  describe('isAgeBetween', () => {
+    it('handles undefined and empty input', () => {
+      expect(UtilsOverrides.isAgeBetween([18, 64], 'fnr', undefined)).toBe(false);
+      expect(UtilsOverrides.isAgeBetween([18, 64], 'fnr', {})).toBe(false);
+      expect(UtilsOverrides.isAgeBetween([18, 64], 'fnr', { data: undefined })).toBe(false);
+      expect(UtilsOverrides.isAgeBetween([18, 64], 'fnr', { data: {} })).toBe(false);
+    });
+
+    it('checks if age is inside interval', () => {
+      const FNR = '01055631685';
+      const submission = { data: { fnr: FNR } };
+
+      // lower boundary
+      expect(UtilsOverrides.isAgeBetween([18, 64], 'fnr', submission, pointInTime('30.04.1974'))).toBe(false);
+      expect(UtilsOverrides.isAgeBetween([18, 64], 'fnr', submission, pointInTime('01.05.1974'))).toBe(true);
+
+      // upper boundary
+      expect(UtilsOverrides.isAgeBetween([18, 58], 'fnr', submission, pointInTime('30.04.2015'))).toBe(true);
+      expect(UtilsOverrides.isAgeBetween([18, 58], 'fnr', submission, pointInTime('01.05.2015'))).toBe(false);
     });
   });
 });
