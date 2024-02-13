@@ -42,10 +42,10 @@ const json2HtmlString = (jsonElement: HtmlAsJsonElement, translate?: (texts: str
   return (toNode(jsonElement, translate) as HTMLElement).outerHTML.toString();
 };
 
-const toNode = (jsonElement: HtmlAsJsonElement | HtmlAsJsonTextElement, translate?: (texts: string) => string) => {
+const toNode = (jsonElement: HtmlAsJsonElement | HtmlAsJsonTextElement, translate?: (text: string) => string) => {
   switch (jsonElement?.type) {
     case 'Element':
-      return HtmlNode(jsonElement.tagName, jsonElement.attributes, jsonElement.children);
+      return HtmlNode(jsonElement.tagName, jsonElement.attributes, jsonElement.children, translate);
     case 'TextElement':
       return TextNode(jsonElement.textContent, translate);
     default:
@@ -61,10 +61,11 @@ const HtmlNode = (
   tagName: string,
   attributes: Array<[string, string]> = [],
   children: Array<HtmlAsJsonElement | HtmlAsJsonTextElement> = [],
+  translate?: (text: string) => string,
 ) => {
   const htmlElement = document.createElement(tagName);
   for (const [k, v] of attributes) htmlElement.setAttribute(k, v);
-  for (const child of children) htmlElement.appendChild(toNode(child));
+  for (const child of children) htmlElement.appendChild(toNode(child, translate));
   return htmlElement;
 };
 

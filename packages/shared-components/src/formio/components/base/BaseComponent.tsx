@@ -2,6 +2,7 @@ import { Tag } from '@navikt/ds-react';
 import { Component, formDiffingTool, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import Field from 'formiojs/components/_classes/field/Field';
 import { ReactNode } from 'react';
+import htmlUtils from '../../../util/html';
 import FormioReactComponent from './FormioReactComponent';
 
 /**
@@ -26,6 +27,13 @@ class BaseComponent extends FormioReactComponent {
       validateOn: 'blur',
       ...values,
     });
+  }
+
+  t(text, params = {}, ...args) {
+    if (htmlUtils.isHtmlString(text)) {
+      return htmlUtils.translateHtml(text, super.t.bind(this));
+    }
+    return super.t(text, params, ...args);
   }
 
   /**
