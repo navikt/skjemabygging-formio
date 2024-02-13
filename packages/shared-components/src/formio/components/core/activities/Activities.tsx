@@ -1,5 +1,5 @@
 import { Alert, Checkbox, CheckboxGroup, Radio, RadioGroup, Skeleton } from '@navikt/ds-react';
-import { SendInnAktivitet, dateUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { SendInnAktivitet, TEXTS, dateUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { getActivities } from '../../../../api/sendinn/sendInnActivities';
 import BaseComponent from '../../base/BaseComponent';
 import activitiesBuilder from './Activities.builder';
@@ -13,7 +13,7 @@ class Activities extends BaseComponent {
   activitiesError?: string;
   defaultActivity = {
     activity: { aktivitetId: 'ingenAktivitet', maalgruppe: '', periode: { fom: '', tom: '' } },
-    text: this.t('Jeg får ikke opp noen aktiviteter her som stemmer med det jeg vil søke om'),
+    text: this.t(TEXTS.statiske.activities.defaultActivity),
   };
 
   static schema() {
@@ -65,9 +65,7 @@ class Activities extends BaseComponent {
         })
         .catch(() => {
           this.activities = undefined;
-          this.activitiesError = this.t(
-            'Kunne ikke hente aktiviteter. Du kan fortsatt gå videre uten å velge aktivitet.',
-          );
+          this.activitiesError = this.t(TEXTS.statiske.activities.error);
         })
         .finally(() => {
           this.isLoading = false;

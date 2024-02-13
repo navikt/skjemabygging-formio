@@ -1,3 +1,5 @@
+import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+
 const defaultActivityText = 'Jeg får ikke opp noen aktiviteter her som stemmer med det jeg vil søke om';
 const activityText = 'Arbeidstrening: 06.12.2023 - 06.04.2024';
 
@@ -102,9 +104,7 @@ describe('Activities', () => {
       cy.findByRole('checkbox', { name: activityText }).should('not.exist');
       cy.findByRole('checkbox', { name: defaultActivityText }).should('exist');
 
-      cy.get('.navds-alert--info').contains(
-        'Kunne ikke hente aktiviteter. Du kan fortsatt gå videre uten å velge aktivitet.',
-      );
+      cy.get('.navds-alert--info').contains(TEXTS.statiske.activities.error);
     });
 
     it('should default to ANNET', () => {

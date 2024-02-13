@@ -17,6 +17,7 @@ interface ReactComponentType {
   validate(data, dirty, rowData): boolean;
   updateValue(value, flags?: {}): any;
   setReactInstance(element): void;
+  resetValue(): void;
   setValue(value: any): void;
   // Field
   render(element: any): any;
