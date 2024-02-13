@@ -22,6 +22,7 @@ const editFormVariablesTable = (additional?: string): Component => {
       '<tr><th>utils</th><td>En instans av <a href="http://formio.github.io/formio.js/docs/identifiers.html#utils" target="_blank">FormioUtils</a>, inkludert et par egendefinerte hjelpefunksjoner (se nedenfor).</td></tr>' +
       '</table><br/>' +
       '<p>Egendefinerte hjelpefunksjoner på utils.</p>' +
+      '<p><b>NB:</b> Funksjonene som basererer seg på fødselsnummer for å finne personens alder eller fødselsår vil ikke fungere dersom personen er født i 1955 eller tidligere.</p>' +
       '<table class="table table-bordered table-condensed table-striped">' +
       "<tr><th>isBornBeforeYear</th><td>Gitt api-key til et fødselsnummer returnerer denne funksjonen om personen er født tidligere enn oppgitt årstall.<br/><small><pre>utils.isBornBeforeYear(1964, 'fnr', submission)</pre></small></td></tr>" +
       "<tr><th>isAgeBetween</th><td>Gitt api-key til et fødselsnummer returnerer denne funksjonen om personens alder ligger innenfor et intervall.<br/><small><pre>utils.isAgeBetween([18, 67], 'fnr', submission)</pre></small></td></tr>" +
