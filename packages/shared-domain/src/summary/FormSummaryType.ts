@@ -18,7 +18,8 @@ export namespace Summary {
     | 'landvelger'
     | 'currency'
     | 'valutavelger'
-    | 'alertstripe';
+    | 'alertstripe'
+    | 'activities';
 
   export interface Field {
     label: string;
@@ -30,6 +31,16 @@ export namespace Summary {
   export interface Selectboxes extends Omit<Field, 'type' | 'value'> {
     type: 'selectboxes';
     value: string[];
+  }
+
+  export interface Activity extends Omit<Field, 'type' | 'value'> {
+    type: 'activities';
+    value: {
+      aktivitetId: string;
+      maalgruppe: string;
+      periode: { fom: string; tom: string };
+      text: string;
+    };
   }
 
   export interface Image extends Omit<Field, 'type'> {
@@ -59,5 +70,5 @@ export namespace Summary {
     components: DataGridRow[];
   }
 
-  export type Component = Field | Fieldset | Panel | DataGrid | DataGridRow | Selectboxes | Image;
+  export type Component = Field | Fieldset | Panel | DataGrid | DataGridRow | Selectboxes | Image | Activity;
 }
