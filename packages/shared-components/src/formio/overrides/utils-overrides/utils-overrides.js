@@ -168,7 +168,7 @@ const getBirthDate = (fnrKey, submission = {}) => {
       } else if (900 <= individnr && individnr < 1000 && 39 < year) {
         year += 1900;
       } else {
-        // unable to extract birth year
+        // unable to derive birth year
         return undefined;
       }
     }
