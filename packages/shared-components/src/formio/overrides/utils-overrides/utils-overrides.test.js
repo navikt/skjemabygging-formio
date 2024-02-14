@@ -356,18 +356,23 @@ describe('utils-overrides', () => {
       expect(UtilsOverrides.isBornBeforeYear(1964, 'fnr', { data: { fnr: '11013912345' } })).toBe(false);
     });
 
-    it('parses birth year 55 as 2055', () => {
-      const FNR = '31105543487';
-      expect(UtilsOverrides.isBornBeforeYear(1954, 'fnr', { data: { fnr: FNR } })).toBe(false);
-      expect(UtilsOverrides.isBornBeforeYear(1955, 'fnr', { data: { fnr: FNR } })).toBe(false);
-      expect(UtilsOverrides.isBornBeforeYear(1956, 'fnr', { data: { fnr: FNR } })).toBe(false);
-      expect(UtilsOverrides.isBornBeforeYear(2054, 'fnr', { data: { fnr: FNR } })).toBe(false);
-      expect(UtilsOverrides.isBornBeforeYear(2055, 'fnr', { data: { fnr: FNR } })).toBe(false);
-      expect(UtilsOverrides.isBornBeforeYear(2056, 'fnr', { data: { fnr: FNR } })).toBe(true);
+    describe('birth date 18.09.1922', () => {
+      const FNR = '18092200163';
+
+      it.each([`${FNR}`, ` ${FNR}`, `${FNR} `])('submission value "%s" is correctly evaluated', (FNR) => {
+        expect(UtilsOverrides.isBornBeforeYear(1921, 'fnr', { data: { fnr: FNR } })).toBe(false);
+        expect(UtilsOverrides.isBornBeforeYear(1922, 'fnr', { data: { fnr: FNR } })).toBe(false);
+        expect(UtilsOverrides.isBornBeforeYear(1923, 'fnr', { data: { fnr: FNR } })).toBe(true);
+        expect(UtilsOverrides.isBornBeforeYear(1924, 'fnr', { data: { fnr: FNR } })).toBe(true);
+        expect(UtilsOverrides.isBornBeforeYear(2021, 'fnr', { data: { fnr: FNR } })).toBe(true);
+        expect(UtilsOverrides.isBornBeforeYear(2022, 'fnr', { data: { fnr: FNR } })).toBe(true);
+        expect(UtilsOverrides.isBornBeforeYear(2023, 'fnr', { data: { fnr: FNR } })).toBe(true);
+        expect(UtilsOverrides.isBornBeforeYear(2024, 'fnr', { data: { fnr: FNR } })).toBe(true);
+      });
     });
 
-    it('parses birth year 56 as 1956', () => {
-      const FNR = '01055631685';
+    it('birth date 01.05.1956', () => {
+      const FNR = '01055600046';
       expect(UtilsOverrides.isBornBeforeYear(1955, 'fnr', { data: { fnr: FNR } })).toBe(false);
       expect(UtilsOverrides.isBornBeforeYear(1956, 'fnr', { data: { fnr: FNR } })).toBe(false);
       expect(UtilsOverrides.isBornBeforeYear(1957, 'fnr', { data: { fnr: FNR } })).toBe(true);
@@ -376,8 +381,8 @@ describe('utils-overrides', () => {
       expect(UtilsOverrides.isBornBeforeYear(2056, 'fnr', { data: { fnr: FNR } })).toBe(true);
     });
 
-    it('parses birth year 39 as 2039', () => {
-      const FNR = '11013942015';
+    it('birth date 13.04.2039', () => {
+      const FNR = '13043950287';
       expect(UtilsOverrides.isBornBeforeYear(1938, 'fnr', { data: { fnr: FNR } })).toBe(false);
       expect(UtilsOverrides.isBornBeforeYear(1939, 'fnr', { data: { fnr: FNR } })).toBe(false);
       expect(UtilsOverrides.isBornBeforeYear(1940, 'fnr', { data: { fnr: FNR } })).toBe(false);
@@ -389,7 +394,7 @@ describe('utils-overrides', () => {
     });
 
     it('handles composite key', () => {
-      const FNR = '01055631685';
+      const FNR = '01055600046';
       const submission = { data: { fornavn: '', container: { fodselsnummer: FNR } } };
       expect(UtilsOverrides.isBornBeforeYear(1955, 'container.fodselsnummer', submission)).toBe(false);
       expect(UtilsOverrides.isBornBeforeYear(1956, 'container.fodselsnummer', submission)).toBe(false);
@@ -423,7 +428,7 @@ describe('utils-overrides', () => {
     });
 
     it('handles future fnr', () => {
-      const FNR = '06073333138';
+      const FNR = '06073350288';
       expect(UtilsOverrides.getAge('fnr', { data: { fnr: FNR } }, pointInTime('15.10.2024'))).toBe(-8);
       expect(UtilsOverrides.getAge('fnr', { data: { fnr: FNR } }, pointInTime('06.07.2033'))).toBe(0);
     });
