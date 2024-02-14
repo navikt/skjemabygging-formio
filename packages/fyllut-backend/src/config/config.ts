@@ -55,7 +55,7 @@ const localDevelopmentConfig: DefaultConfig = {
   mockIdportenPid: process.env.MOCK_IDPORTEN_PID || '12345678911',
   mockIdportenJwt: process.env.MOCK_IDPORTEN_JWT || 'IDPORTEN_JWT',
   noFormValidation: process.env.NO_FORM_VALIDATION === 'true',
-  noDecorator: process.env.NO_DECORATOR === 'false',
+  noDecorator: process.env.NO_DECORATOR === 'true',
   tokenx: {
     ...tokenx,
     wellKnownUrl:
