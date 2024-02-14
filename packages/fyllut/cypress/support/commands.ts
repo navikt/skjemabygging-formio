@@ -107,3 +107,9 @@ Cypress.Commands.add('configMocksServer', () => {
   });
   return cy;
 });
+
+Cypress.on('uncaught:exception', (err, runnable) => {
+  console.error(`uncaught:exception :: ${err.message}`, err);
+  // Cypress fails the test when returning true (default behaviour)
+  return true;
+});
