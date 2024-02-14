@@ -5,6 +5,8 @@ metadata:
   namespace: "skjemadigitalisering"
   labels:
     "team": "skjemadigitalisering"
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: "50m"
 spec:
   image: {{image}}
   port: 8080
