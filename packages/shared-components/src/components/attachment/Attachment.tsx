@@ -1,6 +1,6 @@
 import { Alert, Textarea } from '@navikt/ds-react';
-import { AttachmentValues, ComponentValue } from '@navikt/skjemadigitalisering-shared-domain';
-import { ReactNode, useState } from 'react';
+import { AttachmentSettingValues, AttachmentValue, ComponentValue } from '@navikt/skjemadigitalisering-shared-domain';
+import { ReactNode, useEffect, useState } from 'react';
 import SingleSelect from '../single-select/SingleSelect';
 
 export const AttachmentTexts = {
@@ -17,14 +17,16 @@ interface Props {
   title: ReactNode;
   description: ReactNode;
   error: ReactNode;
+  value?: any;
   values?: ComponentValue[];
-  attachmentValues?: AttachmentValues;
-  onChange: (value: any) => void;
+  attachmentValues?: AttachmentSettingValues;
+  onChange: (value: AttachmentValue) => void;
 }
 
-const Attachment = ({ attachmentValues, values = [], title, description, error, onChange }: Props) => {
-  const [showDeadline, setShowDeadline] = useState<boolean>();
-  const [additionalDocumentation, setAdditionalDocumentation] = useState<any>();
+const Attachment = ({ attachmentValues, values = [], value, title, description, error, onChange }: Props) => {
+  const [showDeadline, setShowDeadline] = useState<boolean>(false);
+  const [additionalDocumentation, setAdditionalDocumentation] = useState<any>('');
+
   const getValues = () => {
     if (attachmentValues) {
       return Object.entries(attachmentValues)
@@ -44,36 +46,52 @@ const Attachment = ({ attachmentValues, values = [], title, description, error, 
     return values;
   };
 
-  const handleChange = (value) => {
-    if (attachmentValues && attachmentValues[value]) {
-      setShowDeadline(attachmentValues[value].showDeadline);
-
-      if (
-        attachmentValues[value].additionalDocumentation?.enabled &&
-        attachmentValues[value].additionalDocumentation?.label
-      ) {
-        setAdditionalDocumentation(attachmentValues[value].additionalDocumentation);
-      } else if (additionalDocumentation) {
-        setAdditionalDocumentation(undefined);
-      }
-    }
-    onChange(value);
+  const handleAttachmentChange = (key) => {
+    updateState(key);
+    onChange({
+      ...value,
+      key,
+      description: AttachmentTexts[key],
+    });
   };
+
+  const handleAdditionalDocumentationChange = (event) => {
+    onChange({
+      ...value,
+      additionalDocumentation: event.currentTarget.value,
+    });
+  };
+
+  const updateState = (key: string) => {
+    setShowDeadline(!!attachmentValues?.[key]?.showDeadline);
+    setAdditionalDocumentation(
+      attachmentValues?.[key]?.additionalDocumentation.enabled
+        ? attachmentValues?.[key]?.additionalDocumentation
+        : undefined,
+    );
+  };
+
+  useEffect(() => {
+    updateState(value?.key);
+  }, [value]);
 
   return (
     <div>
       <SingleSelect
         values={getValues()}
+        value={value?.key ?? ''}
         title={title}
         description={description}
         error={error}
-        onChange={handleChange}
+        onChange={handleAttachmentChange}
       />
       {additionalDocumentation && (
         <Textarea
           className="mb-4"
           label={additionalDocumentation.label}
+          value={value?.additionalDocumentation ?? ''}
           description={additionalDocumentation.description}
+          onChange={handleAdditionalDocumentationChange}
         />
       )}
       {showDeadline && (

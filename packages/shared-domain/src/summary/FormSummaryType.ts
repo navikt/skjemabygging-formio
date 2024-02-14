@@ -1,3 +1,5 @@
+import { AttachmentValue } from '../attachment';
+
 export namespace Summary {
   export type SubmissionValue = string | number;
 
@@ -18,7 +20,8 @@ export namespace Summary {
     | 'landvelger'
     | 'currency'
     | 'valutavelger'
-    | 'alertstripe';
+    | 'alertstripe'
+    | 'attachment';
 
   export interface Field {
     label: string;
@@ -46,6 +49,11 @@ export namespace Summary {
     components: Component[];
   }
 
+  export interface Attachment extends Omit<Field, 'type' | 'value'> {
+    type: 'attachment';
+    value: AttachmentValue;
+  }
+
   export interface Panel extends Omit<Fieldset, 'type'> {
     type: 'panel';
   }
@@ -59,5 +67,5 @@ export namespace Summary {
     components: DataGridRow[];
   }
 
-  export type Component = Field | Fieldset | Panel | DataGrid | DataGridRow | Selectboxes | Image;
+  export type Component = Field | Fieldset | Panel | DataGrid | DataGridRow | Selectboxes | Image | Attachment;
 }

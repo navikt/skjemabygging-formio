@@ -1,5 +1,6 @@
 import { Summary } from '@navikt/skjemadigitalisering-shared-domain';
 import { PanelValidation } from '../../../util/form/panel-validation/panelValidation';
+import AttachmentSummary from '../attachment/AttachmentSummary';
 import DataGridSummary from '../datagrid/DataGridSummary';
 import SummaryField from '../field/SummaryField';
 import FieldsetSummary from '../fieldset/FieldsetSummary';
@@ -36,6 +37,8 @@ const ComponentSummary = ({ components, formUrl = '', panelValidationList = [] }
             return <ImageSummary key={key} component={comp} />;
           case 'htmlelement':
             return <SummaryField key={key} component={comp as Summary.Field} html={true} />;
+          case 'attachment':
+            return <AttachmentSummary key={key} component={comp as Summary.Attachment} />;
           default:
             return <SummaryField key={key} component={comp as Summary.Field} />;
         }

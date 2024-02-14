@@ -25,6 +25,8 @@ const attachmentForm = () => {
       editFormApi.key(),
       editFormApi.property('Vedleggstittel', 'vedleggstittel', true),
       editFormApi.property('Vedleggskode', 'vedleggskode', true),
+      editFormApi.property('Vedleggskjema', 'vedleggskjema', false,
+        'Hvis vedleggskjema er oppgitt vises lenke til utfylling av skjemaet, på opplastningssiden for digital innsending. Eksempel på format "nav100750"'),
     ]),
     conditional([
       editFormConditional.simpleConditional(),

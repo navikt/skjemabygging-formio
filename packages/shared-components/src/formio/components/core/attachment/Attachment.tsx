@@ -21,16 +21,30 @@ class Attachment extends BaseComponent {
     return attachmentBuilder();
   }
 
+  getValues() {
+    return this.component?.values;
+  }
+
+  getAttachmentValues() {
+    return this.component?.attachmentValues;
+  }
+
+  handleChange(value, flags) {
+    super.updateValue(value, flags);
+    this.rerender();
+  }
+
   renderReact(element) {
     element.render(
       <NavAttachment
-        values={this.component?.values}
-        attachmentValues={this.component?.attachmentValues}
+        values={this.getValues()}
+        value={this.getValue()}
+        attachmentValues={this.getAttachmentValues()}
         title={this.getLabel()}
         description={this.getDescription()}
         error={this.getError()}
         onChange={(value) => {
-          this.updateValue(value, { modified: true });
+          this.handleChange(value, { modified: true });
         }}
       />,
     );

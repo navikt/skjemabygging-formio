@@ -88,6 +88,8 @@ const sectionContent = (components: Summary.Component[], level: number): string 
           return img(component);
         case 'alertstripe':
           return alert(component);
+        case 'attachment':
+          return attachment(component as Summary.Attachment);
         case 'htmlelement':
           return htmlelement(component);
         default:
@@ -115,6 +117,15 @@ ${sectionContent(component.components, level)}
 
 const field = (component: Summary.Field) =>
   `<div class="spm">${component.label}</div><div class="svar">: ${component.value}</div>`;
+
+const attachment = (component: Summary.Attachment) => {
+  let html = `<div class="spm">${component.label}</div><div class="svar">: ${component.value.description}</div>`;
+  if (component.value.additionalDocumentationLabel && component.value.additionalDocumentation) {
+    html += `<div class="spm">${component.value.additionalDocumentationLabel}</div><div class="svar">: ${component.value.additionalDocumentation}</div>`;
+  }
+
+  return html;
+};
 
 const htmlelement = (component: Summary.Field) => {
   if (component.label) {

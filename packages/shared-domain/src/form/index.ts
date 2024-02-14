@@ -1,3 +1,4 @@
+import { AttachmentSettingValues } from '../attachment';
 import { Enhetstype } from '../enhet';
 
 export type DisplayType = 'wizard' | 'form';
@@ -115,7 +116,7 @@ export interface Component {
   isAttachmentPanel?: boolean;
   prefillKey?: PrefillKey;
   values?: ComponentValue[];
-  attachmentValues?: AttachmentValues;
+  attachmentValues?: AttachmentSettingValues;
   attachmentType?: 'default' | 'other';
   hideLabel?: boolean;
   description?: string;
@@ -168,7 +169,6 @@ export interface Component {
 export interface ComponentProperties {
   vedleggstittel?: string;
   vedleggskode?: string;
-  vedleggErValgfritt?: 'ja' | 'nei';
   vedleggskjema?: string;
 }
 
@@ -263,23 +263,3 @@ export interface Submission {
 }
 
 export type UsageContext = 'create' | 'edit';
-
-export interface AttachmentValues {
-  leggerVedNaa: AttachmentValue;
-  ettersender?: AttachmentValue;
-  nei?: AttachmentValue;
-  levertTidligere?: AttachmentValue;
-  harIkke?: AttachmentValue;
-  andre?: AttachmentValue;
-  nav?: AttachmentValue;
-}
-
-interface AttachmentValue {
-  enabled: boolean;
-  showDeadline?: boolean;
-  additionalDocumentation?: {
-    enabled: boolean;
-    label: string;
-    description: string;
-  };
-}

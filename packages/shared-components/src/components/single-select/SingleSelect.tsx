@@ -7,17 +7,18 @@ interface Props {
   description: ReactNode;
   error: ReactNode;
   values?: ComponentValue[];
+  value?: any;
   onChange: (value: any) => void;
 }
 
-const SingleSelect = ({ values = [], title, description, error, onChange }: Props) => {
+const SingleSelect = ({ values = [], value, title, description, error, onChange }: Props) => {
   const handleChange = (values) => {
     onChange(Array.isArray(values) ? values[0] : values);
   };
 
   if (values.length === 1) {
     return (
-      <CheckboxGroup legend={title} description={description} error={error} onChange={handleChange}>
+      <CheckboxGroup legend={title} description={description} error={error} onChange={handleChange} value={value}>
         {values.map((keyValue) => (
           <Checkbox key={keyValue.value} value={keyValue.value}>
             {keyValue.label}
@@ -27,7 +28,7 @@ const SingleSelect = ({ values = [], title, description, error, onChange }: Prop
     );
   } else if (values.length > 1) {
     return (
-      <RadioGroup legend={title} description={description} error={error} onChange={handleChange}>
+      <RadioGroup legend={title} description={description} error={error} onChange={handleChange} value={value}>
         {values.map((keyValue) => (
           <Radio key={keyValue.value} value={keyValue.value}>
             {keyValue.label}
