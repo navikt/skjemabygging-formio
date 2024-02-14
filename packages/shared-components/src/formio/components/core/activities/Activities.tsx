@@ -12,7 +12,9 @@ class Activities extends BaseComponent {
   activities?: SendInnAktivitet[] = undefined;
   activitiesError?: string;
   defaultActivity = {
-    activity: { aktivitetId: 'ingenAktivitet', maalgruppe: '', periode: { fom: '', tom: '' } },
+    aktivitetId: 'ingenAktivitet',
+    maalgruppe: '',
+    periode: { fom: '', tom: '' },
     text: this.t(TEXTS.statiske.activities.defaultActivity),
   };
 
@@ -39,7 +41,7 @@ class Activities extends BaseComponent {
     if (!value) {
       super.resetValue();
     } else if (value === 'ingenAktivitet') {
-      super.updateValue(this.defaultActivity.activity, opts);
+      super.updateValue(this.defaultActivity, opts);
     } else {
       const activity = this.activities?.find((x) => x.aktivitetId === value);
       if (activity) {
@@ -77,11 +79,18 @@ class Activities extends BaseComponent {
     }
   }
 
+  mapActivityText(activity: SendInnAktivitet) {
+    return `${activity.aktivitetsnavn}: ${dateUtils.toLocaleDate(activity.periode.fom)} - ${dateUtils.toLocaleDate(
+      activity.periode.tom,
+    )}`;
+  }
+
   mapActivity(activity: SendInnAktivitet) {
     return {
       aktivitetId: activity.aktivitetId,
       maalgruppe: activity.maalgruppe,
       periode: activity.periode,
+      text: this.mapActivityText(activity),
     };
   }
 
@@ -100,7 +109,7 @@ class Activities extends BaseComponent {
           className={this.getClassName()}
           error={this.getError()}
         >
-          <Checkbox value={this.defaultActivity.activity.aktivitetId} ref={(ref) => (this.lastRef = ref)}>
+          <Checkbox value={this.defaultActivity.aktivitetId} ref={(ref) => (this.lastRef = ref)}>
             {this.defaultActivity.text}
           </Checkbox>
         </CheckboxGroup>
@@ -126,13 +135,11 @@ class Activities extends BaseComponent {
                 value={activity.aktivitetId}
                 {...(index === arr.length - 1 && { ref: (ref) => (this.lastRef = ref) })}
               >
-                {`${activity.aktivitetsnavn}: ${dateUtils.toLocaleDate(
-                  activity.periode.fom,
-                )} - ${dateUtils.toLocaleDate(activity.periode.tom)}`}
+                {this.mapActivityText(activity)}
               </Radio>
             );
           })}
-          <Radio value={this.defaultActivity.activity.aktivitetId}>{this.defaultActivity.text}</Radio>
+          <Radio value={this.defaultActivity.aktivitetId}>{this.defaultActivity.text}</Radio>
         </RadioGroup>
       );
     };
