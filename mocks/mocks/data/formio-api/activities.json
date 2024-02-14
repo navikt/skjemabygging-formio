@@ -26,24 +26,30 @@
       },
       "customConditional": "",
       "title": "Aktiviteter",
-      "key": "veiledning",
+      "key": "aktiviteter",
       "type": "panel",
       "input": false,
       "components": [
         {
-          "hideLabel": true,
-          "conditional": {
-            "show": null,
-            "when": null,
-            "eq": ""
-          },
-          "customConditional": "",
           "label": "Container",
           "key": "container",
           "components": [
             {
               "input": true,
               "key": "aktivitet",
+              "tableView": false,
+              "label": "Velg hvilken aktivitet du vil søke om stønad for",
+              "validate": {
+                "required": true,
+                "custom": "",
+                "customPrivate": false,
+                "strictDateValidation": false,
+                "multiple": false,
+                "unique": false
+              },
+              "type": "activities",
+              "navId": "efgotc0l",
+              "id": "e97ra1s",
               "placeholder": "",
               "prefix": "",
               "customClass": "",
@@ -57,9 +63,7 @@
               "clearOnHide": true,
               "refreshOn": "",
               "redrawOn": "",
-              "tableView": false,
               "modalEdit": false,
-              "label": "Velg hvilken aktivitet du vil søke om stønad for",
               "dataGridLabel": false,
               "labelPosition": "top",
               "description": "",
@@ -76,8 +80,68 @@
               "widget": null,
               "attributes": {},
               "validateOn": "blur",
+              "conditional": {
+                "show": null,
+                "when": null,
+                "eq": ""
+              },
+              "overlay": {
+                "style": "",
+                "left": "",
+                "top": "",
+                "width": "",
+                "height": ""
+              },
+              "allowCalculateOverride": false,
+              "encrypted": false,
+              "showCharCount": false,
+              "showWordCount": false,
+              "properties": {},
+              "allowMultipleMasks": false,
+              "addons": [],
+              "fieldSize": "input--xxl"
+            },
+            {
+              "input": true,
+              "key": "maalgruppe",
+              "tableView": false,
+              "label": "Målgruppe",
+              "calculateValue": "value = instance.calculateMaalgruppeValue()",
+              "type": "maalgruppe",
+              "prefillKey": "sokerMaalgruppe",
+              "navId": "e8imzvq",
+              "id": "e5v1jl",
+              "placeholder": "",
+              "prefix": "",
+              "customClass": "",
+              "suffix": "",
+              "multiple": false,
+              "defaultValue": null,
+              "protected": false,
+              "unique": false,
+              "persistent": true,
+              "hidden": true,
+              "clearOnHide": false,
+              "refreshOn": "",
+              "redrawOn": "",
+              "modalEdit": false,
+              "dataGridLabel": false,
+              "labelPosition": "top",
+              "description": "",
+              "errorLabel": "",
+              "tooltip": "",
+              "hideLabel": true,
+              "tabindex": "",
+              "disabled": false,
+              "autofocus": false,
+              "dbIndex": false,
+              "customDefaultValue": "",
+              "calculateServer": false,
+              "widget": null,
+              "attributes": {},
+              "validateOn": "blur",
               "validate": {
-                "required": true,
+                "required": false,
                 "custom": "",
                 "customPrivate": false,
                 "strictDateValidation": false,
@@ -103,93 +167,14 @@
               "properties": {},
               "allowMultipleMasks": false,
               "addons": [],
-              "fieldSize": "input--xxl",
-              "type": "activities",
-              "id": "eoo9h2n",
-              "navId": "ehwgd3g"
-            },
-            {
-              "input": true,
-              "key": "maalgruppe",
-              "placeholder": "",
-              "prefix": "",
-              "customClass": "",
-              "suffix": "",
-              "multiple": false,
-              "defaultValue": null,
-              "protected": false,
-              "unique": false,
-              "persistent": true,
-              "hidden": false,
-              "clearOnHide": false,
-              "refreshOn": "",
-              "redrawOn": "",
-              "tableView": true,
-              "modalEdit": false,
-              "label": "Målgruppe",
-              "dataGridLabel": false,
-              "labelPosition": "top",
-              "description": "",
-              "errorLabel": "",
-              "tooltip": "",
-              "hideLabel": true,
-              "tabindex": "",
-              "disabled": false,
-              "autofocus": false,
-              "dbIndex": false,
-              "customDefaultValue": "",
-              "calculateValue": "value = instance.calculateMaalgruppeValue()",
-              "calculateServer": false,
-              "widget": {
-                "type": "input"
-              },
-              "attributes": {},
-              "validateOn": "blur",
-              "validate": {
-                "required": false,
-                "custom": "",
-                "customPrivate": false,
-                "strictDateValidation": false,
-                "multiple": false,
-                "unique": false,
-                "minLength": "",
-                "maxLength": "",
-                "pattern": ""
-              },
-              "conditional": {
-                "show": null,
-                "when": null,
-                "eq": ""
-              },
-              "overlay": {
-                "style": "",
-                "left": "",
-                "top": "",
-                "width": "",
-                "height": ""
-              },
-              "allowCalculateOverride": false,
-              "encrypted": false,
-              "showCharCount": false,
-              "showWordCount": false,
-              "properties": {},
-              "allowMultipleMasks": false,
-              "addons": [],
-              "type": "maalgruppe",
-              "mask": false,
-              "inputType": "text",
-              "inputFormat": "plain",
-              "inputMask": "",
-              "displayMask": "",
-              "spellcheck": true,
-              "truncateMultipleSpaces": false,
-              "prefillKey": "sokerMaalgruppe",
-              "id": "euqfo2tp",
-              "navId": "eau8fst"
+              "fieldSize": "input--xxl"
             }
           ],
           "type": "container",
           "input": true,
+          "tableView": false,
+          "navId": "ec7o88k",
+          "id": "e3rwlq2d",
           "placeholder": "",
           "prefix": "",
           "customClass": "",
@@ -203,13 +188,13 @@
           "clearOnHide": true,
           "refreshOn": "",
           "redrawOn": "",
-          "tableView": false,
           "modalEdit": false,
           "dataGridLabel": false,
           "labelPosition": "top",
           "description": "",
           "errorLabel": "",
           "tooltip": "",
+          "hideLabel": true,
           "tabindex": "",
           "disabled": false,
           "autofocus": false,
@@ -228,6 +213,11 @@
             "multiple": false,
             "unique": false
           },
+          "conditional": {
+            "show": null,
+            "when": null,
+            "eq": ""
+          },
           "overlay": {
             "style": "",
             "left": "",
@@ -243,9 +233,7 @@
           "allowMultipleMasks": false,
           "addons": [],
           "tree": true,
-          "lazyLoad": false,
-          "id": "ey58ufa",
-          "navId": "em6c3jx"
+          "lazyLoad": false
         }
       ],
       "tableView": false,
@@ -307,40 +295,50 @@
       "lazyLoad": false,
       "theme": "default",
       "breadcrumb": "default",
-      "id": "ebihpri"
+      "id": "eb97zai"
     },
     {
-      "title": "Page 3",
-      "label": "Page 3",
+      "title": "Vedlegg",
+      "key": "vedlegg",
       "type": "panel",
-      "key": "page3",
+      "input": false,
+      "isAttachmentPanel": true,
       "components": [
         {
-          "fieldSize": "input--xxl",
-          "description": "",
-          "additionalDescriptionText": "",
-          "spellcheck": true,
+          "label": "Annen dokumentasjon",
+          "description": "Har du noen annen dokumentasjon du ønsker å legge ved?",
+          "type": "radiopanel",
+          "key": "annenDokumentasjon",
+          "otherDocumentation": true,
+          "input": true,
           "validate": {
             "required": true,
             "custom": "",
-            "customMessage": "",
             "customPrivate": false,
             "strictDateValidation": false,
             "multiple": false,
             "unique": false
           },
-          "errors": "",
-          "conditional": {
-            "show": null,
-            "when": null,
-            "eq": ""
+          "properties": {
+            "vedleggstittel": "Annet",
+            "vedleggskode": "N6"
           },
-          "customConditional": "",
-          "label": "Tekstfelt",
-          "additionalDescriptionLabel": "",
-          "autocomplete": "",
-          "key": "tekstfelt",
-          "input": true,
+          "values": [
+            {
+              "value": "nei",
+              "label": "Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved."
+            },
+            {
+              "value": "leggerVedNaa",
+              "label": "Ja, jeg legger det ved denne søknaden."
+            },
+            {
+              "value": "ettersender",
+              "label": "Jeg ettersender dokumentasjonen senere."
+            }
+          ],
+          "tableView": false,
+          "id": "ehcih08",
           "placeholder": "",
           "prefix": "",
           "customClass": "",
@@ -354,7 +352,6 @@
           "clearOnHide": true,
           "refreshOn": "",
           "redrawOn": "",
-          "tableView": false,
           "modalEdit": false,
           "dataGridLabel": false,
           "labelPosition": "top",
@@ -371,6 +368,11 @@
           "widget": null,
           "attributes": {},
           "validateOn": "blur",
+          "conditional": {
+            "show": null,
+            "when": null,
+            "eq": ""
+          },
           "overlay": {
             "style": "",
             "left": "",
@@ -382,18 +384,16 @@
           "encrypted": false,
           "showCharCount": false,
           "showWordCount": false,
-          "properties": {},
           "allowMultipleMasks": false,
           "addons": [],
-          "type": "textfield",
-          "inputType": "text",
-          "inputFormat": "plain",
-          "id": "e7pvyob",
-          "navId": "et52v2s"
+          "fieldSize": "input--xxl",
+          "dataSrc": "values",
+          "navId": "efcvrf"
         }
       ],
-      "id": "e6suy8s",
-      "input": false,
+      "tableView": false,
+      "label": "Panel",
+      "id": "eerud0h",
       "placeholder": "",
       "prefix": "",
       "customClass": "",
@@ -407,7 +407,6 @@
       "clearOnHide": false,
       "refreshOn": "",
       "redrawOn": "",
-      "tableView": false,
       "modalEdit": false,
       "dataGridLabel": false,
       "labelPosition": "top",
@@ -456,7 +455,7 @@
       "lazyLoad": false,
       "theme": "default",
       "breadcrumb": "default",
-      "navId": "efhnvbv"
+      "navId": "e53e0ct"
     }
   ],
   "properties": {
@@ -471,7 +470,7 @@
         "key": "30aed2b3-6495-468b-b33d-85919c986fd3"
       }
     ],
-    "modified": "2024-02-12T11:27:09.416Z",
+    "modified": "2024-02-13T14:16:44.888Z",
     "modifiedBy": "stulenmorten@gmail.com"
   },
   "project": "628ca77305690db58c974cfd",
@@ -480,6 +479,6 @@
   "_vid": 0,
   "submissionAccess": [],
   "created": "2024-02-09T07:17:04.845Z",
-  "modified": "2024-02-12T11:27:09.904Z",
+  "modified": "2024-02-13T14:16:45.497Z",
   "machineName": "jvcemxwcpghcqjn:testingActivities"
 }

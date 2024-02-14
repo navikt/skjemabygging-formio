@@ -4,7 +4,7 @@ describe('calculateMaalgruppeValue function', () => {
   let maalgruppe;
 
   beforeEach(() => {
-    maalgruppe = new Maalgruppe();
+    maalgruppe = new Maalgruppe(undefined, {}, {});
   });
 
   it('should return maalgruppe if it exists and is not empty', () => {

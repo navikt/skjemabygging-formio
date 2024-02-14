@@ -18,8 +18,7 @@ export namespace Summary {
     | 'landvelger'
     | 'currency'
     | 'valutavelger'
-    | 'alertstripe'
-    | 'activities';
+    | 'alertstripe';
 
   export interface Field {
     label: string;
