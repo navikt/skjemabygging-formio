@@ -72,7 +72,6 @@ describe('Activities', () => {
       cy.findByRole('radio', { name: activityText }).check(activityJson.aktivitetId);
 
       cy.clickSaveAndContinue();
-      cy.wait('@getTestFormActivities');
 
       // Should show activity and maalgruppe in summary
       cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
@@ -131,7 +130,6 @@ describe('Activities', () => {
       cy.findByRole('checkbox', { name: defaultActivity.text }).check('ingenAktivitet');
 
       cy.clickSaveAndContinue();
-      cy.wait('@getTestFormActivities');
 
       // Should show activity and maalgruppe in summary
       cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
@@ -172,7 +170,6 @@ describe('Activities', () => {
       cy.findByRole('checkbox', { name: defaultActivity.text }).check(defaultActivity.aktivitetId);
 
       cy.clickSaveAndContinue();
-      cy.wait('@getTestFormActivities');
 
       // Should show activity and maalgruppe in summary
       cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
