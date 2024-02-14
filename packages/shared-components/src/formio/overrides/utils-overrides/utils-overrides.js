@@ -155,6 +155,7 @@ const getBirthDate = (fnrKey, submission = {}) => {
   if (value && fnrvalidator.fnr(value).status === 'valid') {
     let year = parseInt(value.substring(4, 6));
     if (parseInt(value.substring(6)) < 10) {
+      // stillborn
       return undefined;
     } else {
       const individnr = parseInt(value.substring(6, 9));
