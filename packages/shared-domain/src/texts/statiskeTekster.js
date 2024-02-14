@@ -125,4 +125,8 @@ export const statiske = {
     header: 'Erklæring',
     defaultText: 'Jeg bekrefter at opplysningene er riktige.',
   },
+  activities: {
+    defaultActivity: 'Jeg får ikke opp noen aktiviteter her som stemmer med det jeg vil søke om',
+    error: 'Kunne ikke hente aktiviteter. Du kan fortsatt gå videre uten å velge aktivitet.',
+  },
 };

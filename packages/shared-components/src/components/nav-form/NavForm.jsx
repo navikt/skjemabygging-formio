@@ -26,6 +26,7 @@ import EventEmitter from 'eventemitter2';
 import { Form as FormioForm } from 'formiojs';
 import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
+import { useAppConfig } from '../../context/config/configContext';
 import { usePrefillData } from '../../context/prefill-data/PrefillDataContext';
 import { SANITIZE_CONFIG } from '../../formio/form-builder-options/sanitizeConfig';
 import Styles from '../../styles';
@@ -43,6 +44,7 @@ const NavForm = (props) => {
   const [formio, setFormio] = useState(undefined);
   useStyles();
   const { prefillData } = usePrefillData();
+  const appconfig = useAppConfig();
 
   useEffect(
     () => () => {
@@ -60,6 +62,7 @@ const NavForm = (props) => {
       i18n,
       sanitizeConfig: SANITIZE_CONFIG,
       events: NavForm.getDefaultEmitter(),
+      appConfig: appconfig,
     });
 
     createPromise = instance.ready.then((formioInstance) => {
@@ -148,7 +151,7 @@ const NavForm = (props) => {
         }
       });
     }
-    if (formio && !props.submission?.data && prefillData) {
+    if (formio && prefillData) {
       formio.form = navFormUtils.prefillForm(formio.form, prefillData);
     }
   }, [props.submission, formio, prefillData]);

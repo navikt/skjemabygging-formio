@@ -28,6 +28,8 @@ declare global {
 
       defaultInterceptsPrefillData(): Chainable<JQuery<HTMLElement>>;
 
+      defaultInterceptsActivities(): Chainable<JQuery<HTMLElement>>;
+
       shouldBeVisible(): Chainable<JQuery>;
 
       /**

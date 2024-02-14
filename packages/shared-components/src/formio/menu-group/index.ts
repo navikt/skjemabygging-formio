@@ -3,6 +3,7 @@ import currencyAndAccountGroup from './currencyAndAccountGroup';
 import dateAndTimeGroup from './dateAndTimeGroup';
 import layoutGroup from './layoutGroup';
 import organizationGroup from './organizationGroup';
+import otherGroup from './otherGroup';
 import panelsGroup from './panelsGroup';
 import personGroup from './personGroup';
 
@@ -19,6 +20,7 @@ const menuGroup = {
   dateAndTimeGroup,
   layoutGroup,
   panelsGroup,
+  otherGroup,
 };
 
 export default menuGroup;

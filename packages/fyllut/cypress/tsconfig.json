@@ -4,6 +4,8 @@
     "target": "ES2021",
     "lib": ["ES2021", "dom"],
     "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
     "types": ["cypress", "@testing-library/cypress", "cypress-wait-until"],
     "paths": {
       "@navikt/skjemadigitalisering-shared-components": ["../../shared-components/src"],
