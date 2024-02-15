@@ -86,6 +86,7 @@ Cypress.Commands.add('defaultIntercepts', () => {
   cy.intercept('GET', /\/fyllut\/api\/global-translations\.*/).as('getGlobalTranslation');
   cy.intercept('GET', /fyllut\/api\/common-codes\/currencies.*/).as('getCurrencies');
   cy.intercept('GET', '/fyllut/api/translations/*').as('getTranslation');
+  cy.intercept('GET', '/fyllut/api/forms/*').as('getForm');
   return cy;
 });
 
@@ -98,12 +99,6 @@ Cypress.Commands.add('defaultInterceptsMellomlagring', () => {
 Cypress.Commands.add('defaultInterceptsPrefillData', () => {
   cy.intercept('GET', '/fyllut/api/send-inn/prefill-data*').as('getPrefillData');
   cy.intercept('GET', '/fyllut/api/forms/*').as('getTestFormPrefillData');
-  return cy;
-});
-
-Cypress.Commands.add('defaultInterceptsActivities', () => {
-  cy.intercept('GET', '/fyllut/api/send-inn/activities*').as('getActivities');
-  cy.intercept('GET', '/fyllut/api/forms/*').as('getTestFormActivities');
   return cy;
 });
 
