@@ -3,7 +3,7 @@ const mellomlagringValid1 = require('../data/innsending-api/mellomlagring/getTes
 const mellomlagringValid2 = require('../data/innsending-api/mellomlagring/getTestMellomlagring-valid-2.json');
 const mellomlagringValidExtraValues = require('../data/innsending-api/mellomlagring/getTestMellomlagring-valid-extra-values.json');
 const prefillDataNames = require('../data/innsending-api/prefill-data/prefill-data-names.json');
-
+const activities = require('../data/innsending-api/activities/activities.json');
 const paabegyntMellomlagringOgInnsendt = require('../data/innsending-api/active-tasks/mellomlagringOgEttersending.json');
 const paabegyntMellomlagring = require('../data/innsending-api/active-tasks/mellomlagring.json');
 const paabegyntInnsendt = require('../data/innsending-api/active-tasks/ettersending.json');
@@ -11,7 +11,7 @@ const formSelectSoknadPartialV1 = require('../data/innsending-api/mellomlagring/
 const formSelectSoknadCompleteV1 = require('../data/innsending-api/mellomlagring/form-select/saved-complete-v1.json');
 const formSelectSoknadInvalidCountryV1 = require('../data/innsending-api/mellomlagring/form-select/saved-invalid-country-v1.json');
 const formSelectSoknadInvalidInstrumentV1 = require('../data/innsending-api/mellomlagring/form-select/saved-invalid-instrument-v2.json');
-
+const mellomlagringActivities = require('../data/innsending-api/activities/mellomlagring-activities.json');
 const objectToByteArray = (obj) => Array.from(new TextEncoder().encode(JSON.stringify(obj)));
 
 const base64Encode = (data) => {
@@ -184,6 +184,14 @@ module.exports = [
         },
       },
       {
+        id: 'success-activities-empty',
+        type: 'json',
+        options: {
+          status: 200,
+          body: convertToInnsendingApiResponse(mellomlagringActivities),
+        },
+      },
+      {
         id: 'form-select-partial-v1',
         type: 'json',
         options: {
@@ -291,13 +299,56 @@ module.exports = [
     method: 'GET',
     variants: [
       {
-        id: 'success-name',
+        id: 'success',
         type: 'json',
         options: {
           status: 200,
           body: {
             sokerFornavn: 'Ola',
             sokerEtternavn: 'Nordmann',
+            sokerMaalgruppe: 'ARBSOKERE',
+          },
+        },
+      },
+      {
+        id: 'success-empty',
+        type: 'json',
+        options: {
+          status: 200,
+          body: {},
+        },
+      },
+    ],
+  },
+  {
+    id: 'get-activities',
+    url: '/send-inn/fyllUt/v1/aktiviteter',
+    method: 'GET',
+    variants: [
+      {
+        id: 'success',
+        type: 'json',
+        options: {
+          status: 200,
+          body: activities,
+        },
+      },
+      {
+        id: 'success-empty',
+        type: 'json',
+        options: {
+          status: 200,
+          body: [],
+        },
+      },
+      {
+        id: 'failure',
+        type: 'json',
+        options: {
+          status: 500,
+          body: {
+            message: 'Serverfeil ved henting av aktiviteter',
+            errorCode: 'arenaError',
           },
         },
       },

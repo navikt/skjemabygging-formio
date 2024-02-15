@@ -8,7 +8,7 @@
 >
     {% if (ctx.component.legend) { %}
     <span class="label-track-changes">
-      <legend ref="header" class="navds-fieldset__legend" id="l-{{ctx.instance.id}}-{{ctx.component.key}}">
+      <legend ref="header" class="navds-fieldset__legend-formio-template" id="l-{{ctx.instance.id}}-{{ctx.component.key}}">
         {{ctx.t(ctx.component.legend)}}
       </legend>
       {{ctx.util.getDiffTag(ctx)}}

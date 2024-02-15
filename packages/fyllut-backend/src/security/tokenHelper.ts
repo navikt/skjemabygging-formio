@@ -16,4 +16,9 @@ const getIdportenPid = (req: Request) => {
   return idportenPid;
 };
 
-export { getIdportenPid, getTokenxAccessToken };
+const getIsLoggedIn = (req: Request) => {
+  const idportenPid = req.getIdportenPid ? req.getIdportenPid() : null;
+  return !!idportenPid;
+};
+
+export { getIdportenPid, getIsLoggedIn, getTokenxAccessToken };

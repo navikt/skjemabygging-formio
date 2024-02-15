@@ -90,6 +90,8 @@ const sectionContent = (components: Summary.Component[], level: number): string 
           return alert(component);
         case 'htmlelement':
           return htmlelement(component);
+        case 'activities':
+          return activity(component);
         default:
           return field(component);
       }
@@ -115,6 +117,9 @@ ${sectionContent(component.components, level)}
 
 const field = (component: Summary.Field) =>
   `<div class="spm">${component.label}</div><div class="svar">: ${component.value}</div>`;
+
+const activity = (component: Summary.Activity) =>
+  `<div class="spm">${component.label}</div><div class="svar">: ${component.value.text}</div>`;
 
 const htmlelement = (component: Summary.Field) => {
   if (component.label) {

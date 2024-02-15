@@ -45,6 +45,10 @@ Cypress.Commands.add('findByRoleWhenAttached', (role, options) => {
     .get('@elementWhenAttached');
 });
 
+Cypress.Commands.add('shouldBeVisible', { prevSubject: true }, (subject) => {
+  return cy.wrap(subject).should('be.visible').should('not.have.class', 'navds-sr-only');
+});
+
 Cypress.Commands.add('clickNextStep', () => {
   return cy.findByRoleWhenAttached('button', { name: TEXTS.grensesnitt.navigation.next }).click();
 });
@@ -94,6 +98,12 @@ Cypress.Commands.add('defaultInterceptsMellomlagring', () => {
 Cypress.Commands.add('defaultInterceptsPrefillData', () => {
   cy.intercept('GET', '/fyllut/api/send-inn/prefill-data*').as('getPrefillData');
   cy.intercept('GET', '/fyllut/api/forms/*').as('getTestFormPrefillData');
+  return cy;
+});
+
+Cypress.Commands.add('defaultInterceptsActivities', () => {
+  cy.intercept('GET', '/fyllut/api/send-inn/activities*').as('getActivities');
+  cy.intercept('GET', '/fyllut/api/forms/*').as('getTestFormActivities');
   return cy;
 });
 

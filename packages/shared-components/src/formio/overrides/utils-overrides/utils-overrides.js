@@ -1,5 +1,7 @@
+import fnrvalidator from '@navikt/fnrvalidator';
 import { formDiffingTool, navFormioUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { Utils } from 'formiojs';
+import moment from 'moment/moment';
 
 const additionalDescription = (ctx) => {
   if (!ctx.component.additionalDescriptionLabel && !ctx.component.additionalDescriptionText) return '';
@@ -126,6 +128,56 @@ const evaluate = (func, args, ret, tokenize) => {
 
 const { sanitizeJavaScriptCode } = navFormioUtils;
 
+const isBornBeforeYear = (year, fnrKey, submission = {}) => {
+  const birthDate = getBirthDate(fnrKey, submission);
+  return birthDate ? birthDate.year() < year : false;
+};
+
+const isAgeBetween = (ageInterval, fnrKey, submission = {}, pointInTime = moment()) => {
+  const age = getAge(fnrKey, submission, pointInTime);
+  if (age) {
+    const [min, max] = ageInterval;
+    return min <= age && age <= max;
+  }
+  return false;
+};
+
+const getAge = (fnrKey, submission = {}, pointInTime = moment()) => {
+  const birthDate = getBirthDate(fnrKey, submission);
+  if (birthDate) {
+    return pointInTime.diff(birthDate, 'years', false);
+  }
+  return undefined;
+};
+
+const getBirthDate = (fnrKey, submission = {}) => {
+  const value = Utils.getValue(submission, fnrKey)?.trim();
+  if (value && fnrvalidator.fnr(value).status === 'valid') {
+    let year = parseInt(value.substring(4, 6));
+    if (parseInt(value.substring(6)) < 10) {
+      // stillborn
+      return undefined;
+    } else {
+      const individnr = parseInt(value.substring(6, 9));
+      if (individnr < 500) {
+        year += 1900;
+      } else if (individnr < 750 && 54 < year) {
+        year += 1800;
+      } else if (individnr < 1000 && year < 40) {
+        year += 2000;
+      } else if (900 <= individnr && individnr < 1000 && 39 < year) {
+        year += 1900;
+      } else {
+        // unable to derive birth year
+        return undefined;
+      }
+    }
+    const birthDateStr = `${value.substring(0, 4)}${year}`;
+    return moment(birthDateStr, 'DDMMYYYY');
+  }
+  return undefined;
+};
+
 const UtilsOverrides = {
   additionalDescription,
   translateHTMLTemplate,
@@ -134,6 +186,9 @@ const UtilsOverrides = {
   sanitizeJavaScriptCode,
   navFormDiffToHtml,
   getDiffTag,
+  isBornBeforeYear,
+  isAgeBetween,
+  getAge,
 };
 
 if (typeof global === 'object' && global.FormioUtils) {
