@@ -7,7 +7,7 @@ describe('Components', () => {
     beforeEach(() => {
       cy.defaultIntercepts();
       cy.intercept('GET', '/fyllut/api/forms/pengerogkonto').as('getPengerOgKontoForm');
-      cy.visit('/fyllut/pengerogkonto/skjema?sub=paper');
+      cy.visit('/fyllut/pengerogkonto/skjema');
       cy.wait('@getCurrencies');
       cy.wait('@getPengerOgKontoForm');
     });
