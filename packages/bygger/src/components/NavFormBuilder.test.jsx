@@ -24,6 +24,9 @@ const DEFAULT_FORM_BUILDER_OPTIONS = {
 describe('NavFormBuilder', () => {
   beforeAll(() => {
     new NavFormioJs.Formio(DEFAULT_PROJECT_URL);
+  });
+
+  beforeEach(() => {
     vi.spyOn(NavFormioJs.Formio, 'fetch').mockImplementation(createMockImplementation());
   });
 
@@ -149,6 +152,7 @@ describe('NavFormBuilder', () => {
 
       it('prompts user when removing attachment panel', async () => {
         window.confirm = vi.fn().mockImplementation(() => true);
+        onReadyMock.mockReset();
         rerender(
           <NavFormBuilder
             form={{ ...testform, display: 'skjema' }}
@@ -158,11 +162,6 @@ describe('NavFormBuilder', () => {
           />,
         );
         await waitFor(() => expect(onReadyMock.mock.calls).toHaveLength(1));
-
-        // Bruker getByRole, siden findByRole finner element, men feiler på toBeInTheDocument()
-        const attachmentPanelLink = screen.getByRole('link', { name: 'Vedlegg' });
-        expect(attachmentPanelLink).toBeInTheDocument();
-        await userEvent.click(attachmentPanelLink);
 
         const attachmentPanel = await screen.findByRole('button', { name: 'Vedlegg' });
         expect(attachmentPanel).toBeInTheDocument();
@@ -181,6 +180,7 @@ describe('NavFormBuilder', () => {
 
       it('does not remove attachment panel if user declines prompt', async () => {
         window.confirm = vi.fn().mockImplementation(() => false);
+        onReadyMock.mockReset();
         rerender(
           <NavFormBuilder
             form={{ ...testform, display: 'skjema' }}
@@ -190,11 +190,6 @@ describe('NavFormBuilder', () => {
           />,
         );
         await waitFor(() => expect(onReadyMock.mock.calls).toHaveLength(1));
-
-        // Bruker getByRole, siden findByRole finner element, men feiler på toBeInTheDocument()
-        const attachmentPanelLink = screen.getByRole('link', { name: 'Vedlegg' });
-        expect(attachmentPanelLink).toBeInTheDocument();
-        await userEvent.click(attachmentPanelLink);
 
         const attachmentPanel = await screen.findByRole('button', { name: 'Vedlegg' });
         expect(attachmentPanel).toBeInTheDocument();
