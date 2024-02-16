@@ -64,7 +64,6 @@ describe('Active tasks', () => {
 
   describe('When user has a mellomlagring in progress for the form', () => {
     beforeEach(() => {
-      cy.intercept('GET', '/fyllut/api/send-inn/soknad/f99dc639-add1-468f-b4bb-961cdfd1e599').as('getMellomlagring');
       cy.mocksUseRouteVariant('get-active-tasks:success-mellomlagring');
       cy.visit('/fyllut/testmellomlagring/paabegynt?sub=digital');
       cy.wait('@getActiveTasks');
@@ -80,7 +79,7 @@ describe('Active tasks', () => {
       const continueLink = new RegExp(`${TEXTS.statiske.paabegynt.continueTask}`);
       cy.findByRole('link', { name: continueLink }).should('be.visible');
       cy.findByRole('link', { name: continueLink }).click();
-      cy.wait('@getMellomlagring');
+      cy.wait('@getForm');
       cy.findByRole('heading', { name: 'Oppsummering' });
     });
 

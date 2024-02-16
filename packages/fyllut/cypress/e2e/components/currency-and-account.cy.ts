@@ -6,10 +6,9 @@ describe('Components', () => {
   describe('Penger og konto', () => {
     beforeEach(() => {
       cy.defaultIntercepts();
-      cy.intercept('GET', '/fyllut/api/forms/pengerogkonto').as('getPengerOgKontoForm');
       cy.visit('/fyllut/pengerogkonto/skjema');
       cy.wait('@getCurrencies');
-      cy.wait('@getPengerOgKontoForm');
+      cy.wait('@getForm');
     });
 
     it('triggers errors', () => {
