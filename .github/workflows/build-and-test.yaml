@@ -29,8 +29,14 @@ jobs:
         run: yarn check-types
       - name: 'Build'
         run: yarn build
-      - name: 'Test'
-        run: yarn test
+      - name: 'Test bygger'
+        run: yarn test:bygger
+      - name: 'Test fyllut'
+        run: yarn test:fyllut
+      - name: 'Test shared-components'
+        run: yarn test:shared-components
+      - name: 'Test shared-domain'
+        run: yarn test:shared-domain
 
   package-and-push-bygger:
     if: github.ref == 'refs/heads/master'
