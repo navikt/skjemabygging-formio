@@ -94,7 +94,7 @@ Cypress.Commands.add('defaultIntercepts', () => {
 Cypress.Commands.add('defaultInterceptsMellomlagring', () => {
   cy.intercept('POST', '/fyllut/api/send-inn/soknad*').as('createMellomlagring');
   cy.intercept('PUT', '/fyllut/api/send-inn/soknad*').as('updateMellomlagring');
-  cy.intercept('GET', '/fyllut/api/send-inn/soknad*').as('getMellomlagring');
+  cy.intercept('GET', '/fyllut/api/send-inn/soknad/*').as('getMellomlagring');
 
   return cy;
 });

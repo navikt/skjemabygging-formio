@@ -13,6 +13,7 @@ describe('Amplitude', () => {
 
   beforeEach(() => {
     cy.defaultIntercepts();
+    cy.defaultInterceptsMellomlagring();
     cy.mocksRestoreRouteVariants();
   });
 
@@ -142,21 +143,21 @@ describe('Amplitude', () => {
       });
 
     // First attempt is intercepted and fails, so we can test "innsending feilet"
-    cy.mocksUseRouteVariant('post-send-inn:failure');
-    cy.intercept('POST', '/fyllut/api/send-inn').as('submitToSendinnFailure');
-    cy.findByRole('button', { name: 'Gå videre' }).click();
-    cy.checkLogToAmplitude('navigere', { lenkeTekst: 'Gå videre', destinasjon: '/sendinn' });
-    cy.findByText('Feil ved kall til SendInn').should('be.visible');
+    cy.mocksUseRouteVariant('put-utfylt-soknad:failure');
+    cy.intercept('PUT', '/fyllut/api/send-inn/utfyltsoknad').as('submitToSendinnFailure');
+    cy.clickSaveAndContinue();
+    cy.checkLogToAmplitude('navigere', { lenkeTekst: 'Lagre og fortsett', destinasjon: '/sendinn' });
     cy.wait('@submitToSendinnFailure');
     cy.checkLogToAmplitude('skjemainnsending feilet');
+    cy.findByText('Beklager, vi har midlertidige tekniske problemer.').should('be.visible');
 
     // The second attempt is successful, causing "skjema fullført"
-    cy.mocksUseRouteVariant('post-send-inn:success');
+    cy.mocksUseRouteVariant('put-utfylt-soknad:success');
     cy.mocksUseRouteVariant('send-inn-frontend:available');
-    cy.intercept('POST', '/fyllut/api/send-inn').as('submitToSendinnSuccess');
-    cy.findByRole('button', { name: 'Gå videre' }).click();
+    cy.intercept('PUT', '/fyllut/api/send-inn/utfyltsoknad').as('submitToSendinnSuccess');
+    cy.clickSaveAndContinue();
     cy.wait('@submitToSendinnSuccess');
-    cy.checkLogToAmplitude('navigere', { lenkeTekst: 'Gå videre', destinasjon: '/sendinn' });
+    cy.checkLogToAmplitude('navigere', { lenkeTekst: 'Lagre og fortsett', destinasjon: '/sendinn' });
 
     // FIXME https://trello.com/c/yAEGm8z4/1532-amplitude-cypress-test-feilet-pga-manglende-skjema-fullf%C3%B8rt
     cy.checkLogToAmplitude('skjema fullført', {

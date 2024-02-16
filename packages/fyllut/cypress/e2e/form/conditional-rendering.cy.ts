@@ -131,7 +131,7 @@ describe('Conditional rendering', () => {
 
     it('removes values of conditional fields when they are hidden', () => {
       cy.visit('/fyllut/testmellomlagring?sub=paper');
-      cy.wait('@getTestMellomlagringForm');
+      cy.wait('@getForm');
       cy.clickStart();
       cy.findByRole('textbox', { name: 'Hva drakk du til frokost (valgfritt)' }).should('be.visible');
       cy.findByRole('textbox', { name: 'Hva syntes du om frokosten?' }).should('not.exist');
