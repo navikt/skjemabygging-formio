@@ -43,7 +43,7 @@ interface ReactComponentType {
   } | null;
   builderMode: boolean;
   validators: any[];
-  init(): any;
+  init(options?: {}): any;
   redraw(): any;
   attach(element: any): any;
   detach(): void;

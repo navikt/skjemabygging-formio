@@ -94,6 +94,8 @@ const ReactSelectWrapper = ({
   );
 };
 
+type SelectInitOptions = { skipOnlyAvailableItems?: boolean };
+
 /**
  * TODO: Rename this to Select and dont use wrapper when we change to Aksel component.
  */
@@ -180,9 +182,10 @@ class NavSelect extends BaseComponent {
     }
   }
 
-  init() {
+  init(options: SelectInitOptions = {}) {
     super.init();
-    this.validators = this.validators.concat(['onlyAvailableItems']);
+    const { skipOnlyAvailableItems = false } = options;
+    this.validators = this.validators.concat(skipOnlyAvailableItems ? [] : ['onlyAvailableItems']);
     this.loadItems();
   }
 

@@ -373,29 +373,6 @@ describe('Mellomlagring', () => {
             cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
           });
 
-          it('when submission data contains invalid country', () => {
-            cy.mocksUseRouteVariant('get-soknad:form-select-invalid-country-v1');
-
-            cy.visit(
-              '/fyllut/testselect/oppsummering?sub=digital&innsendingsId=df6c8a69-9eb0-4878-b51f-38b3849ef9b6&lang=nb-NO',
-            );
-            cy.wait('@getMellomlagring');
-            cy.get('dl')
-              .eq(0)
-              .within(() => {
-                cy.get('dt').should('have.length', 3);
-                cy.get('dt').eq(0).should('contain.text', 'Velg instrument');
-                cy.get('dd').eq(0).should('contain.text', 'Piano');
-                cy.get('dt').eq(1).should('contain.text', 'Velg land du vil reise til');
-                cy.get('dd').eq(1).should('contain.text', 'Invalid country'); // <- invalid (dataSrc=url)
-                cy.get('dt').eq(2).should('contain.text', 'Velg valuta du vil betale med');
-                cy.get('dd').eq(2).should('contain.text', 'Euro (EUR)');
-              });
-            cy.findByText(/Alle steg som mangler informasjon er markert med/).should('exist');
-            cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.saveAndContinue }).should('not.exist');
-            cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
-          });
-
           it('when form-v2 does not allow value anymore', () => {
             cy.mocksUseRouteVariant('get-form:success-v2');
             cy.mocksUseRouteVariant('get-soknad:form-select-invalid-instrument-v1');
@@ -457,7 +434,64 @@ describe('Mellomlagring', () => {
             cy.clickSaveAndContinue();
             cy.wait('@submitMellomlagring');
           });
+
+          it('even if submission data contains an invalid country', () => {
+            cy.mocksUseRouteVariant('get-soknad:form-select-invalid-country-v1');
+
+            cy.intercept('PUT', '/fyllut/api/send-inn/utfyltsoknad', (req) => {
+              const { submission, attachments } = req.body;
+              expect(submission.data.velgInstrument).to.deep.eq({ label: 'Piano', value: 'piano' });
+              expect(submission.data.velgLand).to.deep.eq({ label: 'Invalid country', value: 'INVALID' });
+              expect(submission.data.velgValutaDuVilBetaleMed).to.deep.eq({ label: 'Euro (EUR)', value: 'EUR' });
+              expect(attachments).to.have.length(1);
+              expect(attachments[0].vedleggsnr).to.eq('P2');
+            }).as('submitMellomlagring');
+
+            cy.visit(
+              '/fyllut/testselect/oppsummering?sub=digital&innsendingsId=df6c8a69-9eb0-4878-b51f-38b3849ef9b6&lang=nb-NO',
+            );
+            cy.wait('@getMellomlagring');
+            cy.get('dl')
+              .eq(0)
+              .within(() => {
+                cy.get('dt').should('have.length', 3);
+                cy.get('dt').eq(0).should('contain.text', 'Velg instrument');
+                cy.get('dd').eq(0).should('contain.text', 'Piano');
+                cy.get('dt').eq(1).should('contain.text', 'Velg land du vil reise til');
+                cy.get('dd').eq(1).should('contain.text', 'Invalid country'); // <- invalid (dataSrc=url)
+                cy.get('dt').eq(2).should('contain.text', 'Velg valuta du vil betale med');
+                cy.get('dd').eq(2).should('contain.text', 'Euro (EUR)');
+              });
+            cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.saveAndContinue }).should('exist');
+            cy.findByText(/Alle steg som mangler informasjon er markert med/).should('not.exist');
+            cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
+
+            cy.clickSaveAndContinue();
+            cy.wait('@submitMellomlagring');
+          });
         });
+      });
+
+      it('Allows user to submit complete submission', () => {
+        cy.mocksUseRouteVariant('get-soknad:nav083501-complete-v1');
+        cy.intercept('PUT', '/fyllut/api/send-inn/utfyltsoknad', (req) => {
+          const { submission, attachments } = req.body;
+          expect(submission.data.landvelger).to.deep.eq({ label: 'Frankrike', value: 'FR' });
+          expect(attachments).to.have.length(2);
+          expect(attachments[0].label).to.eq('Personinntektsskjema');
+          expect(attachments[1].label).to.eq('Resultatregnskap');
+        }).as('submitMellomlagring');
+        cy.intercept('GET', '/fyllut/api/send-inn/soknad/2db25aab-3524-4426-a333-489542bf16bf').as('getMellomlagring');
+
+        cy.visit(
+          '/fyllut/nav083501/oppsummering?sub=digital&innsendingsId=2db25aab-3524-4426-a333-489542bf16bf&lang=nb-NO',
+        );
+        cy.wait('@getMellomlagring');
+        cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.saveAndContinue }).should('exist');
+        cy.findByText(/Alle steg som mangler informasjon er markert med/).should('not.exist');
+        cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
+        cy.clickSaveAndContinue();
+        cy.wait('@submitMellomlagring');
       });
     });
   });
