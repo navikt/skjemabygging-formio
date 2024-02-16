@@ -5,7 +5,7 @@
 
 import { SendInnAktivitet, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { expect } from 'chai';
-import activitiesJson from '../../../../mocks/mocks/data/innsending-api/activities/activities.json';
+import activitiesJson from '../../../../../mocks/mocks/data/innsending-api/activities/activities.json';
 
 const defaultActivity = {
   aktivitetId: 'ingenAktivitet',
@@ -19,7 +19,7 @@ const prefillMaalgruppe = 'ARBSOKERE';
 const activityJson = activitiesJson[0];
 
 const verifySubmissionValues = (maalgruppe: string, aktivitet: Partial<SendInnAktivitet>) => {
-  cy.intercept('PUT', '/fyllut/api/send-inn/utfyltsoknad', (req) => {
+  cy.submitMellomlagring((req) => {
     const {
       submission: {
         data: { container },
@@ -29,8 +29,7 @@ const verifySubmissionValues = (maalgruppe: string, aktivitet: Partial<SendInnAk
     expect(container.aktivitet.periode.fom).to.equal(aktivitet.periode.fom);
     expect(container.aktivitet.periode.tom).to.equal(aktivitet.periode.tom);
     expect(container.maalgruppe).to.equal(maalgruppe);
-    req.reply(201);
-  }).as('submit');
+  });
 };
 
 describe('Activities', () => {
@@ -39,10 +38,9 @@ describe('Activities', () => {
   });
 
   beforeEach(() => {
-    cy.intercept('GET', '/fyllut/api/send-inn/activities*').as('getActivities');
-
     cy.defaultIntercepts();
     cy.defaultInterceptsMellomlagring();
+    cy.defaultInterceptsExternal();
     cy.mocksRestoreRouteVariants();
   });
 
@@ -91,7 +89,7 @@ describe('Activities', () => {
 
       // Submit
       cy.clickSaveAndContinue();
-      cy.wait('@submit');
+      cy.wait('@submitMellomlagring');
     });
   });
 
@@ -142,7 +140,7 @@ describe('Activities', () => {
 
       // Submit
       cy.clickSaveAndContinue();
-      cy.wait('@submit');
+      cy.wait('@submitMellomlagring');
     });
 
     it('should default to ANNET for maalgruppe', () => {
@@ -173,7 +171,7 @@ describe('Activities', () => {
 
       // Submit
       cy.clickSaveAndContinue();
-      cy.wait('@submit');
+      cy.wait('@submitMellomlagring');
     });
   });
 

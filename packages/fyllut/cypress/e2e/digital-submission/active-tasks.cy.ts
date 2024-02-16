@@ -1,3 +1,7 @@
+/*
+ * Tests for when the user has ongoing mellomlagringer or ettersendinger for the form. It should display the active tasks and let the user continue or start a new task.
+ */
+
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 
 const itLetsYouStartANewMellomlagring = () => {
@@ -6,6 +10,7 @@ const itLetsYouStartANewMellomlagring = () => {
   cy.wait('@createMellomlagring');
   cy.findByRole('heading', { name: 'Valgfrie opplysninger' });
 };
+
 describe('Active tasks', () => {
   before(() => {
     cy.configMocksServer();
@@ -14,23 +19,22 @@ describe('Active tasks', () => {
   beforeEach(() => {
     cy.defaultIntercepts();
     cy.defaultInterceptsMellomlagring();
-    cy.intercept('GET', '/fyllut/api/forms/testmellomlagring').as('getTestMellomlagringForm');
-    cy.intercept('GET', '/fyllut/api/send-inn/aktive-opprettede-soknader/test-mellomlagring').as('getActiveTasks');
+    cy.intercept('GET', '/fyllut/api/send-inn/aktive-opprettede-soknader/*').as('getActiveTasks');
+    cy.mocksRestoreRouteVariants();
   });
 
-  afterEach(() => {
+  after(() => {
     cy.mocksRestoreRouteVariants();
   });
 
   describe('When creating mellomlagring returns with location header', () => {
     beforeEach(() => {
       cy.mocksUseRouteVariant('post-soknad:already-exists');
-      cy.intercept('GET', '/fyllut/api/send-inn/aktive-opprettede-soknader*').as('getActiveTasks');
     });
 
     it('redirects to /fyllut/:skjemapath:/paabegynt', () => {
       cy.visit('/fyllut/testmellomlagring?sub=digital');
-      cy.wait('@getTestMellomlagringForm');
+      cy.wait('@getForm');
       cy.clickStart();
       cy.wait('@getActiveTasks');
       cy.findByRole('heading', { name: TEXTS.statiske.paabegynt.oneActiveTaskHeading });

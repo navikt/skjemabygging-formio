@@ -1,3 +1,7 @@
+/*
+ * Tests the page listing out all forms
+ */
+
 describe('Skjemaliste', () => {
   beforeEach(() => {
     cy.defaultIntercepts();

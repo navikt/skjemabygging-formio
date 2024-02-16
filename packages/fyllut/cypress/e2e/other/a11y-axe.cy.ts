@@ -1,3 +1,7 @@
+/*
+ * Tests that accessibility is working as expected for various components using the axe library
+ */
+
 describe('Axe: Accessibility testing', () => {
   describe('Simple test for all tabs in one run', () => {
     before(() => {
@@ -7,7 +11,7 @@ describe('Axe: Accessibility testing', () => {
       cy.visit('/fyllut/cypressaxe');
       cy.wait('@getConfig');
       cy.wait('@getCypressAxe');
-      cy.wait('@getTranslation');
+      cy.wait('@getTranslations');
       cy.injectAxe();
     });
 

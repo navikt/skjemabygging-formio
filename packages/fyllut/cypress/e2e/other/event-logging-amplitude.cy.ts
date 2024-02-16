@@ -13,19 +13,6 @@ describe('Amplitude', () => {
 
   beforeEach(() => {
     cy.defaultIntercepts();
-    // TODO: Remove getConfig intercept (use default intercept) when mellomlagring is enabled
-    cy.intercept('GET', '/fyllut/api/config', {
-      body: {
-        FEATURE_TOGGLES: { enableTranslations: true, enableMellomlagring: false },
-        amplitudeApiEndpoint: '127.0.0.1:3300/amplitude/collect-auto',
-      },
-    }).as('getConfig');
-    cy.intercept('GET', '/fyllut/api/forms/cypress101').as('getCypress101');
-    cy.intercept('GET', '/fyllut/api/translations/cypress101').as('getTranslation');
-    cy.mocksRestoreRouteVariants();
-  });
-
-  after(() => {
     cy.mocksRestoreRouteVariants();
   });
 
@@ -33,9 +20,9 @@ describe('Amplitude', () => {
     // Disabler dekoratør, siden den også gjør kall til "/collect-auto". Det fører til at checkLogToAmplitude feiler, siden den er avhengig av at kall gjørers i riktig rekkefølge
     cy.visit('/fyllut/cypress101');
     cy.wait('@getConfig');
-    cy.wait('@getCypress101');
-    cy.wait('@getTranslation');
-    cy.wait('@getGlobalTranslation');
+    cy.wait('@getForm');
+    cy.wait('@getTranslations');
+    cy.wait('@getGlobalTranslations');
 
     // Select digital submission and go to the form
     cy.get('[type="radio"]').check('digital');
@@ -43,7 +30,7 @@ describe('Amplitude', () => {
     cy.checkLogToAmplitude('skjema åpnet', { innsendingskanal: 'digital' });
 
     // Veiledning step
-    cy.clickNextStep();
+    cy.clickSaveAndContinue();
     cy.checkLogToAmplitude('navigere', { lenkeTekst: 'Neste steg', destinasjon: '/cypress101/personopplysninger' });
     cy.checkLogToAmplitude('skjemasteg fullført', { steg: 1, skjemastegNokkel: 'veiledning' });
 
@@ -113,7 +100,7 @@ describe('Amplitude', () => {
     });
 
     // Step 2 -> Oppsummering
-    cy.clickNextStep();
+    cy.clickSaveAndContinue();
     cy.checkLogToAmplitude('navigere', { lenkeTekst: 'Neste steg', destinasjon: '/cypress101/oppsummering' });
     cy.checkLogToAmplitude('skjemasteg fullført', { steg: 2, skjemastegNokkel: 'personopplysninger' });
     cy.findByRole('heading', { level: 2, name: 'Oppsummering' }).should('exist');
@@ -132,9 +119,9 @@ describe('Amplitude', () => {
       destinasjon: '/cypress101/veiledning',
     });
     cy.findByRole('heading', { level: 2, name: 'Oppsummering' }).should('not.exist');
-    cy.clickNextStep();
+    cy.clickSaveAndContinue();
     cy.checkLogToAmplitude('navigere', { lenkeTekst: 'Neste steg', destinasjon: '/cypress101/personopplysninger' });
-    cy.clickNextStep();
+    cy.clickSaveAndContinue();
     cy.checkLogToAmplitude('navigere', { lenkeTekst: 'Neste steg', destinasjon: '/cypress101/oppsummering' });
 
     // Oppsummering

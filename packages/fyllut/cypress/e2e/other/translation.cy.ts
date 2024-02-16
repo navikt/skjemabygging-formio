@@ -1,3 +1,7 @@
+/*
+ * Tests translations of the form work from both url params and language switcher
+ */
+
 describe('Translations', () => {
   beforeEach(() => {
     cy.defaultIntercepts();

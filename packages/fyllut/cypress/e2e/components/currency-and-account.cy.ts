@@ -1,9 +1,13 @@
+/*
+ * Tests that various components behaves as expected
+ * - Penger og konto
+ */
 describe('Components', () => {
   describe('Penger og konto', () => {
     beforeEach(() => {
       cy.defaultIntercepts();
       cy.intercept('GET', '/fyllut/api/forms/pengerogkonto').as('getPengerOgKontoForm');
-      cy.visit('/fyllut/pengerogkonto/skjema');
+      cy.visit('/fyllut/pengerogkonto/skjema?sub=paper');
       cy.wait('@getCurrencies');
       cy.wait('@getPengerOgKontoForm');
     });

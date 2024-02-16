@@ -1,3 +1,6 @@
+/*
+ * Tests datagrid component
+ */
 describe('Datagrid', () => {
   before(() => {
     cy.configMocksServer();
@@ -6,7 +9,7 @@ describe('Datagrid', () => {
   beforeEach(() => {
     cy.defaultIntercepts();
     cy.defaultInterceptsMellomlagring();
-    cy.intercept('GET', '/fyllut/api/forms/datagrid123').as('getForm');
+    cy.mocksRestoreRouteVariants();
   });
 
   after(() => {

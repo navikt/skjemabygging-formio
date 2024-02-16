@@ -1,3 +1,8 @@
+/*
+ * Tests conditional rendering in the form and that it displays correctly in the summary page.
+ * Conditional rendering is showing/hiding form elements based on form definition or user input
+ */
+
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 
 describe('Conditional rendering', () => {
@@ -5,10 +10,13 @@ describe('Conditional rendering', () => {
     cy.configMocksServer();
   });
 
+  after(() => {
+    cy.mocksRestoreRouteVariants();
+  });
+
   describe('When form has panels that are hidden unless a condition is true', () => {
     beforeEach(() => {
       cy.defaultIntercepts();
-      cy.intercept('GET', '/fyllut/api/forms/conditionalxmas').as('getForm');
       cy.visit('/fyllut/conditionalxmas');
       cy.wait('@getForm');
       cy.clickStart(); // <-- navigate from information page to the form
@@ -105,15 +113,13 @@ describe('Conditional rendering', () => {
   describe('Custom components', () => {
     beforeEach(() => {
       cy.defaultIntercepts();
-      cy.intercept('GET', '/fyllut/api/forms/testmellomlagring').as('getTestMellomlagringForm');
       cy.defaultInterceptsMellomlagring();
       cy.mocksUseRouteVariant('get-soknad:success-2');
-      cy.intercept('GET', '/fyllut/api/send-inn/soknad/01234567-abcd-4ebd-90d4-34448ebaaaa2').as('getMellomlagring');
     });
 
     it('renders conditional fields when navigating from summary page', () => {
       cy.visit('/fyllut/testmellomlagring/oppsummering?sub=digital&innsendingsId=01234567-abcd-4ebd-90d4-34448ebaaaa2');
-      cy.wait('@getTestMellomlagringForm');
+      cy.wait('@getForm');
       cy.wait('@getMellomlagring');
       cy.findByRole('link', { name: 'Rediger valgfrie opplysninger' }).should('be.visible');
       cy.findByRole('link', { name: 'Rediger valgfrie opplysninger' }).click();

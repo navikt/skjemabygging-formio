@@ -1,5 +1,8 @@
+/*
+ * General tests for custom react components
+ */
+
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import * as moment from 'moment';
 
 describe('Custom react components', () => {
   beforeEach(() => {
@@ -12,12 +15,10 @@ describe('Custom react components', () => {
   describe('General', () => {
     describe('Fill in form and view summary, paper', () => {
       beforeEach(() => {
-        cy.intercept('GET', '/fyllut/api/forms/customcomps').as('getForm');
-        cy.intercept('GET', '/fyllut/api/translations/customcomps').as('getTranslations');
         cy.visit('/fyllut/customcomps/dineopplysninger?sub=paper');
         cy.wait('@getConfig');
         cy.wait('@getForm');
-        cy.wait('@getGlobalTranslation');
+        cy.wait('@getGlobalTranslations');
         cy.wait('@getTranslations');
         cy.wait('@getCountries');
         cy.wait('@getCurrencies');
@@ -116,12 +117,10 @@ describe('Custom react components', () => {
 
     describe('Fill in form and view summary, digital', () => {
       beforeEach(() => {
-        cy.intercept('GET', '/fyllut/api/forms/customcomps').as('getForm');
-        cy.intercept('GET', '/fyllut/api/translations/customcomps').as('getTranslations');
         cy.visit('/fyllut/customcomps/dineopplysninger?sub=digital');
         cy.wait('@getConfig');
         cy.wait('@getForm');
-        cy.wait('@getGlobalTranslation');
+        cy.wait('@getGlobalTranslations');
         cy.wait('@getTranslations');
         cy.wait('@getCountries');
         cy.wait('@getCurrencies');
@@ -177,10 +176,9 @@ describe('Custom react components', () => {
 
     describe('Components within conditional DataGrid', () => {
       beforeEach(() => {
-        cy.intercept('GET', '/fyllut/api/forms/customcompsdatagrid').as('getDataGridForm');
         cy.visit('/fyllut/customcompsdatagrid/dineopplysninger?sub=paper');
         cy.wait('@getConfig');
-        cy.wait('@getDataGridForm');
+        cy.wait('@getForm');
         cy.findByRole('checkbox', { name: 'Avkryssingsboks' }).click();
       });
 
@@ -252,273 +250,6 @@ describe('Custom react components', () => {
             cy.get('dd').eq(2).contains('Nei');
           });
       });
-    });
-  });
-
-  describe('NavDatepicker', () => {
-    beforeEach(() => {
-      cy.intercept('GET', '/fyllut/api/forms/navdatepicker').as('getNavDatepickerForm');
-      cy.intercept('GET', '/fyllut/api/translations/navdatepicker').as('getNavDatepickerTranslations');
-      cy.visit('/fyllut/navdatepicker/veiledning?sub=paper');
-      cy.wait('@getConfig');
-      cy.wait('@getNavDatepickerForm');
-    });
-
-    describe('Date input value', () => {
-      beforeEach(() => {
-        cy.findByRole('textbox', { name: 'Tilfeldig dato' }).type('06.06.2022');
-        cy.clickNextStep();
-        cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
-      });
-
-      it('is rendered on summary page', () => {
-        cy.get('dl')
-          .first()
-          .within(() => {
-            cy.get('dt').eq(0).should('contain.text', 'Tilfeldig dato');
-            cy.get('dd').eq(0).should('contain.text', '6.6.2022');
-          });
-      });
-
-      it('is editable after returning from summary page', () => {
-        cy.findByRole('link', { name: 'Rediger veiledning' }).click();
-        cy.findByRole('heading', { name: 'Veiledning' }).should('be.visible');
-        cy.findByRoleWhenAttached('textbox', { name: 'Tilfeldig dato' }).should('be.visible').and('be.enabled');
-        cy.findByRoleWhenAttached('textbox', { name: 'Tilfeldig dato' }).type('{selectall}18.06.2020');
-        cy.clickNextStep();
-
-        cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
-        cy.get('dl')
-          .first()
-          .within(() => {
-            cy.get('dt').eq(0).should('contain.text', 'Tilfeldig dato');
-            cy.get('dd').eq(0).should('contain.text', '18.6.2020');
-          });
-      });
-
-      it('is cleared when user removes textbox content', () => {
-        cy.findByRole('navigation', { name: 'Søknadssteg' })
-          .should('exist')
-          .within(() => {
-            cy.findByRole('link', { name: 'Veiledning' }).click();
-          });
-        cy.findByRole('heading', { name: 'Veiledning' }).should('exist');
-
-        cy.findByRole('textbox', { name: 'Tilfeldig dato' }).should('be.visible').and('be.enabled');
-        cy.findByRole('textbox', { name: 'Tilfeldig dato' }).should('have.value', '06.06.2022');
-        cy.findByRole('textbox', { name: 'Tilfeldig dato' }).type('{selectall}{backspace}');
-        cy.clickNextStep();
-
-        cy.findByRole('heading', { name: 'Oppsummering' }).should('not.exist');
-        cy.findAllByText('Du må fylle ut: Tilfeldig dato').should('have.length', 1);
-        cy.findAllByText('Tilfeldig dato: Du må fylle ut: Tilfeldig dato').should('have.length', 1);
-      });
-    });
-
-    describe('Date input field', () => {
-      it('has focus after clicking validation message link', () => {
-        cy.clickNextStep();
-
-        cy.findAllByText('Du må fylle ut: Tilfeldig dato').should('have.length', 1);
-        cy.findByRoleWhenAttached('link', { name: 'Tilfeldig dato: Du må fylle ut: Tilfeldig dato' })
-          .should('exist')
-          .click();
-
-        cy.findByRole('textbox', { name: 'Tilfeldig dato' }).should('have.focus').type('02.02.2023');
-        cy.clickNextStep();
-
-        cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
-      });
-    });
-
-    describe('Valdation against another date input field', () => {
-      const MY_TEST_DATE = '15.05.2023';
-
-      beforeEach(() => {
-        cy.findByRole('textbox', { name: 'Tilfeldig dato' }).should('be.visible');
-        cy.findByRole('textbox', { name: 'Tilfeldig dato' }).type(`${MY_TEST_DATE}{esc}`);
-      });
-
-      describe('mayBeEqual=false', () => {
-        const LABEL = 'Dato med validering mot annet datofelt (valgfritt)';
-        const VALIDATION_TEXT = `Datoen må være senere enn ${MY_TEST_DATE}`;
-
-        it('fails when date is before', () => {
-          cy.findByRole('textbox', { name: LABEL }).type('14.05.2023');
-          cy.clickNextStep();
-
-          cy.findAllByText(VALIDATION_TEXT).should('have.length', 1);
-        });
-
-        it('fails when date is equal', () => {
-          cy.findByRole('textbox', { name: LABEL }).type('15.05.2023');
-          cy.clickNextStep();
-
-          cy.findAllByText(VALIDATION_TEXT).should('have.length', 1);
-        });
-
-        it('ok when date is later', () => {
-          cy.findByRole('textbox', { name: LABEL }).type('16.05.2023');
-          cy.clickNextStep();
-
-          cy.findAllByText(VALIDATION_TEXT).should('have.length', 0);
-        });
-      });
-
-      describe('mayBeEqual=true', () => {
-        const LABEL = 'Dato med validering mot annet datofelt (kan være lik) (valgfritt)';
-        const VALIDATION_TEXT = `Datoen kan ikke være tidligere enn ${MY_TEST_DATE}`;
-
-        it('fails when date is before', () => {
-          cy.findByRole('textbox', { name: LABEL }).type(`14.05.2023{esc}`);
-          cy.clickNextStep();
-
-          cy.findAllByText(VALIDATION_TEXT).should('have.length', 1);
-        });
-
-        it('fails when date is equal', () => {
-          cy.findByRole('textbox', { name: LABEL }).type('15.05.2023{esc}');
-          cy.clickNextStep();
-
-          cy.findAllByText(VALIDATION_TEXT).should('have.length', 0);
-        });
-
-        it('ok when date is later', () => {
-          cy.findByRole('textbox', { name: LABEL }).type('16.05.2023{esc}');
-          cy.clickNextStep();
-
-          cy.findAllByText(VALIDATION_TEXT).should('have.length', 0);
-        });
-      });
-    });
-
-    describe('Validation of date with earliest / latest contraint', () => {
-      const LABEL = 'Dato med validering av tidligst og senest (valgfritt)';
-      const EARLIEST_DATE = '01.08.2023';
-      const LATEST_DATE = '31.08.2023';
-      const VALIDATION_TEXT = `Datoen kan ikke være tidligere enn ${EARLIEST_DATE} eller senere enn ${LATEST_DATE}`;
-
-      it("fails when date is before 'earliest date'", () => {
-        cy.findByRole('textbox', { name: LABEL }).type('15.07.2023{esc}');
-        cy.clickNextStep();
-
-        cy.findAllByText(VALIDATION_TEXT).should('have.length', 1);
-      });
-
-      it("is ok when date is equal to 'earliest date'", () => {
-        cy.findByRole('textbox', { name: LABEL }).type(`${EARLIEST_DATE}{esc}`);
-        cy.clickNextStep();
-
-        cy.findAllByText(VALIDATION_TEXT).should('have.length', 0);
-      });
-
-      it("is ok when date is equal to 'latest date'", () => {
-        cy.findByRole('textbox', { name: LABEL }).type(`${LATEST_DATE}{esc}`);
-        cy.clickNextStep();
-
-        cy.findAllByText(VALIDATION_TEXT).should('have.length', 0);
-      });
-
-      it("fails when date is after 'latest date'", () => {
-        cy.findByRole('textbox', { name: LABEL }).type('01.09.2023{esc}');
-        cy.clickNextStep();
-
-        cy.findAllByText(VALIDATION_TEXT).should('have.length', 1);
-      });
-    });
-
-    describe('Validation of date with earliest (-10) / latest (5) relative constraint', () => {
-      const EARLIEST_RELATIVE = -10;
-      const LATEST_RELATIVE = 5;
-
-      const LABEL = 'Dato med validering av antall dager tilbake eller framover (valgfritt)';
-      const NOW = moment();
-      const INPUT_FORMAT = 'DD.MM.YYYY';
-      const plusDays = (date, number) => date.clone().add(number, 'days').format(INPUT_FORMAT);
-      const VALIDATION_TEXT = `Datoen kan ikke være tidligere enn ${plusDays(
-        NOW,
-        EARLIEST_RELATIVE,
-      )} eller senere enn ${plusDays(NOW, LATEST_RELATIVE)}`;
-
-      it('fails when date is before the earliest limit', () => {
-        cy.findByRole('textbox', { name: LABEL }).type(plusDays(NOW, EARLIEST_RELATIVE - 1));
-        cy.clickNextStep();
-        console.log('VALIDATION_TEXT', VALIDATION_TEXT);
-
-        cy.findAllByText(VALIDATION_TEXT).should('have.length', 1);
-      });
-
-      it('is ok when date is exactly the earliest limit', () => {
-        cy.findByRole('textbox', { name: LABEL }).type(plusDays(NOW, EARLIEST_RELATIVE));
-        cy.clickNextStep();
-        console.log('VALIDATION_TEXT', VALIDATION_TEXT);
-
-        cy.findAllByText(VALIDATION_TEXT).should('have.length', 0);
-      });
-
-      it('is ok when date is exactly the latest limit', () => {
-        cy.findByRole('textbox', { name: LABEL }).type(plusDays(NOW, LATEST_RELATIVE));
-        cy.clickNextStep();
-        console.log('VALIDATION_TEXT', VALIDATION_TEXT);
-
-        cy.findAllByText(VALIDATION_TEXT).should('have.length', 0);
-      });
-
-      it('fails when date is after the earliest limit', () => {
-        cy.findByRole('textbox', { name: LABEL }).type(plusDays(NOW, LATEST_RELATIVE + 1));
-        cy.clickNextStep();
-        console.log('VALIDATION_TEXT', VALIDATION_TEXT);
-
-        cy.findAllByText(VALIDATION_TEXT).should('have.length', 1);
-      });
-    });
-  });
-
-  describe('NavAlert', () => {
-    beforeEach(() => {
-      cy.intercept('GET', '/fyllut/api/forms/testingalert').as('getAlertForm');
-      cy.visit('/fyllut/testingalert/page1?sub=paper');
-      cy.wait('@getConfig');
-      cy.wait('@getAlertForm');
-    });
-
-    // New alerts (using react)
-    it('should show default info with content', () => {
-      cy.get('.navds-alert').contains('New alert 1');
-    });
-
-    it('should show success variant with content', () => {
-      cy.get('.navds-alert--success').contains('New alert 2');
-    });
-
-    it('should have marginBottom of var(--a-spacing-10) which is 2.5rem = 40px', () => {
-      cy.contains('.formio-component-alertstripe', 'New alert 1').should('have.css', 'marginBottom', '40px');
-    });
-
-    it('should have marginBottom of 0px as the last element in the group', () => {
-      cy.contains('.formio-component-alertstripe', 'New alert 2').should('have.css', 'marginBottom', '0px');
-    });
-
-    it('should not show any labels', () => {
-      cy.get('.formio-form').should('not.have.descendants', 'label');
-    });
-
-    it('should display html content - h1 and a link to nav.no', () => {
-      cy.get('.formio-component-alertstripehtml').find('h1').should('have.text', 'Tittel');
-      cy.get('.formio-component-alertstripehtml').find('a').should('have.attr', 'href', 'https://www.nav.no/');
-    });
-
-    it('should display alert with norwegian alerttype (suksess instead of success)', () => {
-      cy.get('.formio-component-alertstripenorwegian').find('.navds-alert--success').contains('Norwegian alertType');
-    });
-
-    // Old alerts (components have input=true on component and label defined)
-    it('should have marginBottom from input=true of var(--a-spacing-10) which is 2.5rem = 40px', () => {
-      cy.contains('.formio-component-alertstripe', 'Old alert 1').should('have.css', 'marginBottom', '40px');
-    });
-
-    it('should have marginBottom from input=true of var(--a-spacing-10) which is 2.5rem = 40px for last element in group', () => {
-      cy.contains('.formio-component-alertstripe', 'Old alert 2').should('have.css', 'marginBottom', '40px');
     });
   });
 });

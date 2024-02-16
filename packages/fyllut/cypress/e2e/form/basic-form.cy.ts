@@ -1,9 +1,10 @@
-// Tests filling out a basic form with contact information and verifying that the information is displayed in the summary (for both digital/paper)
+/*
+ * Tests filling out a basic form with contact information and verifying that the information is displayed in the summary (for both digital/paper)
+ */
 describe('Basic form', () => {
   beforeEach(() => {
     cy.defaultIntercepts();
     cy.defaultInterceptsMellomlagring();
-    cy.intercept('GET', '/fyllut/api/forms/cypress101').as('getCypress101');
   });
 
   const fillInForm = (expectVedleggspanel: boolean, submissionMethod: 'paper' | 'digital') => {
@@ -91,7 +92,7 @@ describe('Basic form', () => {
   describe("submission method 'paper'", () => {
     beforeEach(() => {
       cy.visit('/fyllut/cypress101/skjema?sub=paper');
-      cy.wait('@getCypress101');
+      cy.wait('@getForm');
     });
 
     it('visits the correct form', () => {
@@ -129,7 +130,7 @@ describe('Basic form', () => {
   describe("submission method 'digital'", () => {
     beforeEach(() => {
       cy.visit('/fyllut/cypress101?sub=digital');
-      cy.wait('@getCypress101');
+      cy.wait('@getForm');
     });
 
     describe('Fill in form', () => {
@@ -144,7 +145,7 @@ describe('Basic form', () => {
   describe('submission method not specified in url', () => {
     beforeEach(() => {
       cy.visit('/fyllut/cypress101');
-      cy.wait('@getCypress101');
+      cy.wait('@getForm');
     });
 
     describe('Fill in form', () => {
