@@ -104,4 +104,15 @@ export const statiske = {
     header: 'Erklæring',
     defaultText: 'Jeg bekrefter at opplysningene er riktige.',
   },
+  attachment: {
+    leggerVedNaa: 'Jeg legger det ved dette skjemaet',
+    ettersender: 'Jeg ettersender dokumentasjonen senere',
+    nei: 'Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved',
+    levertTidligere: 'Jeg har levert denne dokumentasjonen tidligere',
+    harIkke: 'Jeg har ikke denne dokumentasjonen',
+    andre: 'Sendes inn av andre (for eksempel lege, arbeidsgiver)',
+    nav: 'Jeg ønsker at NAV innhenter denne dokumentasjonen',
+    deadline:
+      'Hvis vi ikke har mottatt dette vedlegget innen vedleggsfrist! blir saken behandlet med de opplysningene som foreligger. Det kan føre til at saken din blir avslått.',
+  },
 };

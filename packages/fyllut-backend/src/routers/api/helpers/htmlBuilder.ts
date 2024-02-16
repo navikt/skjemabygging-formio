@@ -123,6 +123,9 @@ const attachment = (component: Summary.Attachment) => {
   if (component.value.additionalDocumentationLabel && component.value.additionalDocumentation) {
     html += `<div class="spm">${component.value.additionalDocumentationLabel}</div><div class="svar">: ${component.value.additionalDocumentation}</div>`;
   }
+  if (component.value.deadlineWarning) {
+    html += `<div class="alert">${component.value.deadlineWarning}</div>`;
+  }
 
   return html;
 };

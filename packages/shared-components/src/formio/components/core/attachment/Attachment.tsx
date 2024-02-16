@@ -46,6 +46,7 @@ class Attachment extends BaseComponent {
         onChange={(value) => {
           this.handleChange(value, { modified: true });
         }}
+        translate={this.t.bind(this)}
       />,
     );
   }

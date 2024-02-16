@@ -23,6 +23,7 @@ interface AttachmentValue {
   description: string;
   additionalDocumentation: string;
   additionalDocumentationLabel: string;
+  deadlineWarning: string;
 }
 
 export type { AttachmentSettingValues, AttachmentValue };

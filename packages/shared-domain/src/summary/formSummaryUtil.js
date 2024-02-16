@@ -80,8 +80,12 @@ function formatValue(component, value, translate) {
       return prefix + Number(value).toLocaleString('no', { maximumFractionDigits: 2 }) + suffix;
     case 'attachment':
       return {
-        ...value,
-        additionalDocumentationLabel: component.attachmentValues?.[value.key]?.additionalDocumentation?.label,
+        additionalDocumentation: translate(value.additionalDocumentation),
+        description: translate(value.description),
+        additionalDocumentationLabel: translate(
+          component.attachmentValues?.[value.key]?.additionalDocumentation?.label,
+        ),
+        deadlineWarning: translate(value.deadlineWarning),
       };
     default:
       return value;

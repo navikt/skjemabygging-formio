@@ -246,7 +246,8 @@ const getAttachmentProperties = (form: NavFormType): Attachment[] => {
   return attachments;
 };
 
-const isAttachment = (comp: Component) => comp.values?.some((v) => v.value === 'leggerVedNaa');
+const isAttachment = (comp: Component) =>
+  comp.type === 'attachment' || comp.values?.some((v) => v.value === 'leggerVedNaa');
 
 const isDigital = (type: 'innsending' | 'ettersending', form: NavFormType) => {
   // If field is empty, it defaults to PAPIR_OG_DIGITAL

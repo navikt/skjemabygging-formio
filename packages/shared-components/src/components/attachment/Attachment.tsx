@@ -1,17 +1,12 @@
 import { Alert, Textarea } from '@navikt/ds-react';
-import { AttachmentSettingValues, AttachmentValue, ComponentValue } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  AttachmentSettingValues,
+  AttachmentValue,
+  ComponentValue,
+  TEXTS,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import { ReactNode, useEffect, useState } from 'react';
 import SingleSelect from '../single-select/SingleSelect';
-
-export const AttachmentTexts = {
-  leggerVedNaa: 'Jeg laster opp dette nå / Jeg legger det ved dette skjemaet',
-  ettersender: 'Jeg laster opp dette senere / Jeg ettersender dokumentasjonen senere',
-  nei: 'Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved',
-  levertTidligere: 'Jeg har levert denne dokumentasjonen tidligere',
-  harIkke: 'Jeg har ikke denne dokumentasjonen',
-  andre: 'Sendes inn av andre (for eksempel lege, arbeidsgiver)',
-  nav: 'Jeg ønsker at NAV innhenter denne dokumentasjonen',
-};
 
 interface Props {
   title: ReactNode;
@@ -21,9 +16,19 @@ interface Props {
   values?: ComponentValue[];
   attachmentValues?: AttachmentSettingValues;
   onChange: (value: AttachmentValue) => void;
+  translate: (text: string) => string;
 }
 
-const Attachment = ({ attachmentValues, values = [], value, title, description, error, onChange }: Props) => {
+const Attachment = ({
+  attachmentValues,
+  values = [],
+  value,
+  title,
+  description,
+  error,
+  onChange,
+  translate,
+}: Props) => {
   const [showDeadline, setShowDeadline] = useState<boolean>(false);
   const [additionalDocumentation, setAdditionalDocumentation] = useState<any>('');
 
@@ -36,7 +41,7 @@ const Attachment = ({ attachmentValues, values = [], value, title, description, 
           } else {
             return {
               value: key,
-              label: AttachmentTexts[key],
+              label: translate(TEXTS.statiske.attachment[key]),
             };
           }
         })
@@ -51,7 +56,8 @@ const Attachment = ({ attachmentValues, values = [], value, title, description, 
     onChange({
       ...value,
       key,
-      description: AttachmentTexts[key],
+      description: TEXTS.statiske.attachment[key],
+      deadlineWarning: TEXTS.statiske.attachment.deadline,
     });
   };
 
@@ -88,16 +94,15 @@ const Attachment = ({ attachmentValues, values = [], value, title, description, 
       {additionalDocumentation && (
         <Textarea
           className="mb-4"
-          label={additionalDocumentation.label}
+          label={translate(additionalDocumentation.label)}
           value={value?.additionalDocumentation ?? ''}
-          description={additionalDocumentation.description}
+          description={translate(additionalDocumentation.description)}
           onChange={handleAdditionalDocumentationChange}
         />
       )}
       {showDeadline && (
         <Alert variant="warning" inline>
-          Hvis vi ikke har mottatt dette vedlegget innen vedleggsfrist! blir saken behandlet med de opplysningene som
-          foreligger. Det kan føre til at saken din blir avslått.
+          {translate(TEXTS.statiske.attachment.deadline)}
         </Alert>
       )}
     </div>
