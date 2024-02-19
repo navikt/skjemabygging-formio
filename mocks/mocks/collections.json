@@ -16,7 +16,6 @@
       "get-soknad:success-1",
       "delete-soknad:success",
       "put-utfylt-soknad:success",
-      "post-send-inn:success",
       "send-inn-frontend:available",
       "get-prefill-data:success",
       "get-activities:success"

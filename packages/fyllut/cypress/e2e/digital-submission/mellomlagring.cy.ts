@@ -1,3 +1,7 @@
+/*
+ * Tests for mellomlagring behavior (creating, updating, deleting, navigation to/from summary etc)
+ */
+
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { expect } from 'chai';
 
@@ -25,8 +29,7 @@ describe('Mellomlagring', () => {
 
   beforeEach(() => {
     cy.defaultIntercepts();
-    cy.intercept('GET', '/fyllut/api/forms/testmellomlagring').as('getTestMellomlagringForm');
-    cy.intercept('GET', '/fyllut/api/translations/testmellomlagring').as('getTranslation');
+    cy.defaultInterceptsMellomlagring();
     cy.intercept('POST', '/fyllut/api/send-inn/soknad*', cy.spy().as('createMellomlagringSpy'));
     cy.intercept('PUT', '/fyllut/api/send-inn/soknad*', cy.spy().as('updateMellomlagringSpy'));
     cy.mocksRestoreRouteVariants();
@@ -39,8 +42,7 @@ describe('Mellomlagring', () => {
   describe('When submission method is "paper"', () => {
     it('does not fetch or update mellomlagring', () => {
       cy.visit('/fyllut/testmellomlagring?sub=paper');
-      cy.wait('@getTestMellomlagringForm');
-      cy.wait('@getTranslation');
+      cy.defaultWaits();
       cy.clickStart();
       cy.get('@createMellomlagringSpy').should('not.have.been.called');
       cy.findByRole('heading', { name: 'Valgfrie opplysninger' }).should('exist');
@@ -78,8 +80,6 @@ describe('Mellomlagring', () => {
 
   describe('When submission method is "digital"', () => {
     beforeEach(() => {
-      cy.intercept('POST', '/fyllut/api/send-inn/soknad*').as('createMellomlagring');
-      cy.intercept('PUT', '/fyllut/api/send-inn/soknad*').as('updateMellomlagring');
       cy.intercept('GET', '/fyllut/api/send-inn/soknad/8e3c3621-76d7-4ebd-90d4-34448ebcccc3').as(
         'getMellomlagringValid',
       );
@@ -93,7 +93,7 @@ describe('Mellomlagring', () => {
 
     it('creates and updates mellomlagring', () => {
       cy.visit('/fyllut/testmellomlagring?sub=digital');
-      cy.wait('@getTestMellomlagringForm');
+      cy.defaultWaits();
       cy.clickStart();
       cy.wait('@createMellomlagring');
       cy.findByRole('heading', { name: 'Valgfrie opplysninger' }).should('exist');
@@ -137,7 +137,7 @@ describe('Mellomlagring', () => {
       cy.visit(
         '/fyllut/testmellomlagring/oppsummering?sub=digital&innsendingsId=8e3c3621-76d7-4ebd-90d4-34448ebcccc3&lang=nb-NO',
       );
-      cy.wait('@getTestMellomlagringForm');
+      cy.defaultWaits();
       cy.wait('@getMellomlagringValid');
       cy.url().should('not.include', '8e3c3621-76d7-4ebd-90d4-34448ebcccc3');
       cy.url().should('not.include', 'sub=digital');
@@ -184,19 +184,20 @@ describe('Mellomlagring', () => {
     describe('When starting on the summary page', () => {
       it('redirects to start page if url does not contain "innsendingsId"', () => {
         cy.visit('/fyllut/testmellomlagring/oppsummering?sub=digital&lang=nb-NO');
-        cy.wait('@getTestMellomlagringForm');
+        cy.defaultWaits();
         cy.findByRole('heading', { name: TEXTS.statiske.introPage.title }).should('exist');
       });
 
       describe('When url contains query param "innsendingsId"', () => {
         beforeEach(() => {
           cy.fixture('mellomlagring/submitTestMellomlagring.json').then((fixture) => {
-            cy.intercept('PUT', '/fyllut/api/send-inn/utfyltsoknad', (req) => {
+            cy.submitMellomlagring((req) => {
               const { submission: bodySubmission, ...bodyRest } = req.body;
               const { submission: fixtureSubmission, ...fixtureRest } = fixture;
               expect(bodySubmission.data).to.deep.eq(fixtureSubmission.data);
               expect(bodyRest).to.deep.eq(fixtureRest);
-            }).as('submitMellomlagring');
+              req.reply(201);
+            });
           });
         });
 
@@ -307,7 +308,7 @@ describe('Mellomlagring', () => {
       describe('When stored submission contains values for inputs that have been removed from the form', () => {
         beforeEach(() => {
           cy.mocksUseRouteVariant('get-soknad:success-extra-values');
-          cy.intercept('PUT', '/fyllut/api/send-inn/utfyltsoknad', (req) => {
+          cy.submitMellomlagring((req) => {
             const { submission } = req.body;
             expect(submission.data['slettetTekstfelt']).to.be.undefined;
             // Container
@@ -317,7 +318,8 @@ describe('Mellomlagring', () => {
             expect(submission.data['datagrid1']).to.be.undefined;
             // value should be removed if the corresponding field is conditionally hidden
             expect(submission.data['hvaSyntesDuOmFrokosten']).to.be.undefined;
-          }).as('submitMellomlagring');
+            req.reply(201);
+          });
         });
 
         it('removes the unused values from submission before submitting', () => {

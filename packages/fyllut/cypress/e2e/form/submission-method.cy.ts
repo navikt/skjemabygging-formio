@@ -1,19 +1,20 @@
+/*
+ * Tests the stepper, form navigation, showing/hiding attachments etc for different submission methods
+ */
+
 import { expect } from 'chai';
 
 describe('Submission method', () => {
   beforeEach(() => {
     cy.defaultIntercepts();
     cy.defaultInterceptsMellomlagring();
-    cy.intercept('GET', '/fyllut/api/forms/bug101010').as('getForm');
-    cy.intercept('GET', '/fyllut/api/translations/bug101010').as('getFormTranslations');
   });
 
   describe("Subscription method 'digital'", () => {
     beforeEach(() => {
       cy.visit('/fyllut/bug101010/veiledning?sub=digital');
-      cy.wait('@getForm');
-      cy.wait('@getFormTranslations');
-      cy.wait('@getGlobalTranslation');
+      cy.defaultWaits();
+      cy.wait('@getGlobalTranslations');
     });
 
     it("Renders stepper without 'Vedlegg'", () => {
@@ -60,23 +61,21 @@ describe('Submission method', () => {
       });
 
       it('includes zero attachments, but has flag otherDocumentation', () => {
-        cy.intercept('PUT', '/fyllut/api/send-inn/utfyltsoknad', (req) => {
+        cy.submitMellomlagring((req) => {
           expect(req.body.attachments).to.have.length(0);
           expect(req.body.otherDocumentation).to.eq(true);
-          req.reply(201);
-        }).as('sendInn');
+        });
 
         // submit application
         cy.clickSaveAndContinue();
-        cy.wait('@sendInn');
+        cy.wait('@submitMellomlagring');
       });
 
       it('includes one attachment, and has flag otherDocumentation', () => {
-        cy.intercept('PUT', '/fyllut/api/send-inn/utfyltsoknad', (req) => {
+        cy.submitMellomlagring((req) => {
           expect(req.body.attachments).to.have.length(1);
           expect(req.body.otherDocumentation).to.eq(true);
-          req.reply(201);
-        }).as('sendInn');
+        });
 
         // edit data so that conditional attachment is triggered
         cy.findByRole('link', { name: 'Rediger dine opplysninger' }).should('exist').click();
@@ -86,7 +85,7 @@ describe('Submission method', () => {
 
         // submit application
         cy.findByRole('button', { name: 'Lagre og fortsett' }).click();
-        cy.wait('@sendInn');
+        cy.wait('@submitMellomlagring');
       });
     });
   });
@@ -94,9 +93,8 @@ describe('Submission method', () => {
   describe("Subscription method 'paper'", () => {
     beforeEach(() => {
       cy.visit('/fyllut/bug101010/veiledning?sub=paper');
-      cy.wait('@getForm');
-      cy.wait('@getFormTranslations');
-      cy.wait('@getGlobalTranslation');
+      cy.defaultWaits();
+      cy.wait('@getGlobalTranslations');
     });
 
     it("Renders stepper with 'Vedlegg'", () => {

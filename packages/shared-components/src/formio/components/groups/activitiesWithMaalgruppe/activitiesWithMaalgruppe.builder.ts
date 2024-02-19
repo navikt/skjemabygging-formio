@@ -1,5 +1,5 @@
 import activitiesBuilder from '../../core/activities/Activities.builder';
-import maalgruppeBuilder from '../../extensions/maalgruppe/Maalgruppe.builder';
+import maalgruppeBuilder from '../../core/maalgruppe/Maalgruppe.builder';
 
 const activitiesWithMaalgruppeBuilder = () => {
   return {

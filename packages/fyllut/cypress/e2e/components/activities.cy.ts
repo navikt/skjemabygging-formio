@@ -1,6 +1,11 @@
-import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+/*
+ * Tests filling out a form with the activities component information and verifying that the information is displayed in the summary
+ * Tests the rendering for different number of activities from backend and error from backend
+ */
+
+import { SendInnAktivitet, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { expect } from 'chai';
-import activitiesJson from '../../../../mocks/mocks/data/innsending-api/activities/activities.json';
+import activitiesJson from '../../../../../mocks/mocks/data/innsending-api/activities/activities.json';
 
 const defaultActivity = {
   aktivitetId: 'ingenAktivitet',
@@ -10,9 +15,22 @@ const defaultActivity = {
 };
 
 const activityText = 'Arbeidstrening: 06.12.2023 - 06.04.2024';
-const innsendingsId = 'fb47c474-66c1-46ba-8124-723447a79e8e';
 const prefillMaalgruppe = 'ARBSOKERE';
 const activityJson = activitiesJson[0];
+
+const verifySubmissionValues = (maalgruppe: string, aktivitet: Partial<SendInnAktivitet>) => {
+  cy.submitMellomlagring((req) => {
+    const {
+      submission: {
+        data: { container },
+      },
+    } = req.body;
+    expect(container.aktivitet.aktivitetId).to.equal(aktivitet.aktivitetId);
+    expect(container.aktivitet.periode.fom).to.equal(aktivitet.periode.fom);
+    expect(container.aktivitet.periode.tom).to.equal(aktivitet.periode.tom);
+    expect(container.maalgruppe).to.equal(maalgruppe);
+  });
+};
 
 describe('Activities', () => {
   before(() => {
@@ -22,7 +40,7 @@ describe('Activities', () => {
   beforeEach(() => {
     cy.defaultIntercepts();
     cy.defaultInterceptsMellomlagring();
-    cy.defaultInterceptsActivities();
+    cy.defaultInterceptsExternal();
     cy.mocksRestoreRouteVariants();
   });
 
@@ -34,8 +52,9 @@ describe('Activities', () => {
     it('should show radiogroup with activity from backend and default activity', () => {
       cy.mocksUseRouteVariant('get-soknad:success-activities-empty');
 
-      cy.visit(`/fyllut/testingactivities/aktiviteter?sub=digital&innsendingsId=${innsendingsId}`);
-      cy.wait('@getTestFormActivities');
+      cy.visit(`/fyllut/testingactivities?sub=digital`);
+      cy.defaultWaits();
+      cy.clickStart();
       cy.wait('@getActivities');
 
       cy.findByRole('group', { name: 'Velg hvilken aktivitet du vil søke om stønad for' })
@@ -51,21 +70,11 @@ describe('Activities', () => {
       cy.mocksUseRouteVariant('get-soknad:success-activities-empty');
 
       // Check the submission values
-      cy.intercept('PUT', '/fyllut/api/send-inn/utfyltsoknad', (req) => {
-        const {
-          submission: {
-            data: { container },
-          },
-        } = req.body;
-        expect(container.aktivitet.aktivitetId).to.equal(activityJson.aktivitetId);
-        expect(container.aktivitet.periode.fom).to.equal(activityJson.periode.fom);
-        expect(container.aktivitet.periode.tom).to.equal(activityJson.periode.tom);
-        expect(container.maalgruppe).to.equal(activityJson.maalgruppe);
-        req.reply(201);
-      }).as('submit');
+      verifySubmissionValues(activityJson.maalgruppe, activityJson);
 
-      cy.visit(`/fyllut/testingactivities/aktiviteter?sub=digital&innsendingsId=${innsendingsId}`);
-      cy.wait('@getTestFormActivities');
+      cy.visit(`/fyllut/testingactivities?sub=digital`);
+      cy.defaultWaits();
+      cy.clickStart();
       cy.wait('@getActivities');
 
       // Select the activity from backend
@@ -82,7 +91,7 @@ describe('Activities', () => {
 
       // Submit
       cy.clickSaveAndContinue();
-      cy.wait('@submit');
+      cy.wait('@submitMellomlagring');
     });
   });
 
@@ -91,8 +100,9 @@ describe('Activities', () => {
       cy.mocksUseRouteVariant('get-soknad:success-activities-empty');
       cy.mocksUseRouteVariant('get-activities:success-empty');
 
-      cy.visit(`/fyllut/testingactivities/aktiviteter?sub=digital&innsendingsId=${innsendingsId}`);
-      cy.wait('@getTestFormActivities');
+      cy.visit(`/fyllut/testingactivities?sub=digital`);
+      cy.defaultWaits();
+      cy.clickStart();
       cy.wait('@getActivities');
 
       cy.findByRole('group', { name: 'Velg hvilken aktivitet du vil søke om stønad for' })
@@ -109,21 +119,11 @@ describe('Activities', () => {
       cy.mocksUseRouteVariant('get-activities:success-empty');
 
       // Check the submission values
-      cy.intercept('PUT', '/fyllut/api/send-inn/utfyltsoknad', (req) => {
-        const {
-          submission: {
-            data: { container },
-          },
-        } = req.body;
-        expect(container.aktivitet.aktivitetId).to.equal(defaultActivity.aktivitetId);
-        expect(container.aktivitet.periode.fom).to.equal('');
-        expect(container.aktivitet.periode.tom).to.equal('');
-        expect(container.maalgruppe).to.equal(prefillMaalgruppe);
-        req.reply(201);
-      }).as('submit');
+      verifySubmissionValues(prefillMaalgruppe, defaultActivity);
 
-      cy.visit(`/fyllut/testingactivities/aktiviteter?sub=digital&innsendingsId=${innsendingsId}`);
-      cy.wait('@getTestFormActivities');
+      cy.visit(`/fyllut/testingactivities?sub=digital`);
+      cy.defaultWaits();
+      cy.clickStart();
       cy.wait('@getActivities');
 
       // Select the default activity
@@ -140,7 +140,7 @@ describe('Activities', () => {
 
       // Submit
       cy.clickSaveAndContinue();
-      cy.wait('@submit');
+      cy.wait('@submitMellomlagring');
     });
 
     it('should default to ANNET for maalgruppe', () => {
@@ -149,21 +149,11 @@ describe('Activities', () => {
       cy.mocksUseRouteVariant('get-prefill-data:success-empty');
 
       // Check the submission values
-      cy.intercept('PUT', '/fyllut/api/send-inn/utfyltsoknad', (req) => {
-        const {
-          submission: {
-            data: { container },
-          },
-        } = req.body;
-        expect(container.aktivitet.aktivitetId).to.equal(defaultActivity.aktivitetId);
-        expect(container.aktivitet.periode.fom).to.equal('');
-        expect(container.aktivitet.periode.tom).to.equal('');
-        expect(container.maalgruppe).to.equal('ANNET');
-        req.reply(201);
-      }).as('submit');
+      verifySubmissionValues('ANNET', defaultActivity);
 
-      cy.visit(`/fyllut/testingactivities/aktiviteter?sub=digital&innsendingsId=${innsendingsId}`);
-      cy.wait('@getTestFormActivities');
+      cy.visit(`/fyllut/testingactivities?sub=digital`);
+      cy.defaultWaits();
+      cy.clickStart();
       cy.wait('@getActivities');
 
       // Select the default activity
@@ -180,7 +170,7 @@ describe('Activities', () => {
 
       // Submit
       cy.clickSaveAndContinue();
-      cy.wait('@submit');
+      cy.wait('@submitMellomlagring');
     });
   });
 
@@ -188,8 +178,9 @@ describe('Activities', () => {
     it('should show checkbox with default activity and info alert', () => {
       cy.mocksUseRouteVariant('get-activities:failure');
 
-      cy.visit(`/fyllut/testingactivities/aktiviteter?sub=digital&innsendingsId=${innsendingsId}`);
-      cy.wait('@getTestFormActivities');
+      cy.visit(`/fyllut/testingactivities?sub=digital`);
+      cy.defaultWaits();
+      cy.clickStart();
       cy.wait('@getActivities');
 
       cy.contains('Velg hvilken aktivitet du vil søke om stønad for');
