@@ -35,6 +35,8 @@
     "test:coverage": "yarn workspaces run test:coverage",
     "cypress:bygger": "yarn workspace @navikt/bygger-frontend cypress",
     "cypress:fyllut": "yarn workspace @navikt/fyllut-frontend cypress",
+    "cypress:bygger:open": "yarn workspace @navikt/bygger-frontend cypress:open",
+    "cypress:fyllut:open": "yarn workspace @navikt/fyllut-frontend cypress:open",
     "check-types": "yarn workspaces run check-types",
     "mocks:fyllut": "cd mocks && yarn mocks:fyllut",
     "mocks:fyllut:no-cli": "cd mocks && yarn mocks:fyllut:no-cli",

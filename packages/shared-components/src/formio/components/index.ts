@@ -1,3 +1,4 @@
+import FormioTextArea from 'formiojs/components/textarea/TextArea';
 import Activities from './core/activities/Activities';
 import Alert from './core/alert/Alert';
 import Button from './core/button/Button';
@@ -46,6 +47,7 @@ const customComponents = {
   datagrid: DataGrid,
   textfield: TextField,
   textarea: TextArea,
+  formioTextArea: FormioTextArea,
   number: Number,
   navSkjemagruppe: FormGroup,
   selectboxes: SelectBoxes,
