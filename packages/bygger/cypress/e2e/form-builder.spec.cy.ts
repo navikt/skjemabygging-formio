@@ -139,6 +139,19 @@ describe('Form Builder', () => {
       cy.findByRole('checkbox', { name: val2 }).should('exist');
     });
 
+    it('Edit JSON - Change label', () => {
+      cy.findByRole('group', { name: 'Flervalg' })
+        .should('exist')
+        .closest("[data-testid='builder-component']")
+        .within(() => {
+          cy.clickBuilderComponentButton('Rediger JSON');
+        });
+      cy.get('div').contains('"label": "Flervalg"').click({ force: true });
+      cy.focused().type('{end}{leftArrow}{leftArrow} (endret)', { force: true });
+      cy.get('[data-testid="editorSaveButton"]').click();
+      cy.get('label').contains('Flervalg (endret)');
+    });
+
     // TODO: Add test for radio group when it gets the new data values.
   });
 });
