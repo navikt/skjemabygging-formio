@@ -7,8 +7,7 @@ describe('Alert', () => {
   beforeEach(() => {
     cy.defaultIntercepts();
     cy.visit('/fyllut/testingalert/page1?sub=paper');
-    cy.wait('@getConfig');
-    cy.wait('@getForm');
+    cy.defaultWaits();
   });
 
   // New alerts (using react)

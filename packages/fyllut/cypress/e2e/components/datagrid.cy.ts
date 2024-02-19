@@ -19,7 +19,7 @@ describe('Datagrid', () => {
   describe('Optional fields in datagrid', () => {
     it('does not trigger validation error on optional fields in datagrid rows', () => {
       cy.visit('/fyllut/datagrid123?sub=digital');
-      cy.wait('@getForm');
+      cy.defaultWaits();
       cy.clickStart();
       cy.findByRole('button', { name: 'Legg til' }).click();
       cy.clickSaveAndContinue();
@@ -31,7 +31,7 @@ describe('Datagrid', () => {
 
     it('does not display empty datagrid rows on summary page', () => {
       cy.visit('/fyllut/datagrid123?sub=digital');
-      cy.wait('@getForm');
+      cy.defaultWaits();
       cy.clickStart();
       cy.findByRole('button', { name: 'Legg til' }).click();
       cy.clickSaveAndContinue();

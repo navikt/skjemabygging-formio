@@ -21,7 +21,7 @@ describe('Prefill data', () => {
   describe('new application', () => {
     it('should prefill data for new application on the first page (name)', () => {
       cy.visit('/fyllut/testprefilldata?sub=digital');
-      cy.wait('@getForm');
+      cy.defaultWaits();
       cy.clickStart();
       cy.wait('@getPrefillData');
       cy.wait('@createMellomlagring');
@@ -33,7 +33,7 @@ describe('Prefill data', () => {
 
     it('should prefill data for new application on the second page (name)', () => {
       cy.visit('/fyllut/testprefilldata?sub=digital');
-      cy.wait('@getForm');
+      cy.defaultWaits();
       cy.clickStart();
       cy.wait('@getPrefillData');
       cy.wait('@createMellomlagring');
@@ -46,7 +46,7 @@ describe('Prefill data', () => {
 
     it('should not prefill data for new application if submissionMethod is paper', () => {
       cy.visit('/fyllut/testprefilldata?sub=paper');
-      cy.wait('@getForm');
+      cy.defaultWaits();
       cy.clickStart();
 
       // Should not make a request to get prefill data
@@ -65,7 +65,7 @@ describe('Prefill data', () => {
       cy.mocksUseRouteVariant('get-soknad:success-prefill-data');
 
       cy.visit('/fyllut/testprefilldata/side1?sub=digital&innsendingsId=d2f41ebc-ba98-4fc5-a195-29b098bf50a7');
-      cy.wait('@getForm');
+      cy.defaultWaits();
       cy.wait('@getPrefillData');
 
       cy.findByRole('heading', { name: 'Side 1' }).should('exist');
@@ -81,7 +81,7 @@ describe('Prefill data', () => {
       cy.mocksUseRouteVariant('get-soknad:success-prefill-data');
 
       cy.visit('/fyllut/testprefilldata/side1?sub=digital&innsendingsId=d2f41ebc-ba98-4fc5-a195-29b098bf50a7');
-      cy.wait('@getForm');
+      cy.defaultWaits();
       cy.wait('@getPrefillData');
       cy.clickSaveAndContinue();
 

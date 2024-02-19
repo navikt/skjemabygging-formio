@@ -92,7 +92,7 @@ describe('Basic form', () => {
   describe("submission method 'paper'", () => {
     beforeEach(() => {
       cy.visit('/fyllut/cypress101/skjema?sub=paper');
-      cy.wait('@getForm');
+      cy.defaultWaits();
     });
 
     it('visits the correct form', () => {
@@ -130,7 +130,7 @@ describe('Basic form', () => {
   describe("submission method 'digital'", () => {
     beforeEach(() => {
       cy.visit('/fyllut/cypress101?sub=digital');
-      cy.wait('@getForm');
+      cy.defaultWaits();
     });
 
     describe('Fill in form', () => {
@@ -145,7 +145,7 @@ describe('Basic form', () => {
   describe('submission method not specified in url', () => {
     beforeEach(() => {
       cy.visit('/fyllut/cypress101');
-      cy.wait('@getForm');
+      cy.defaultWaits();
     });
 
     describe('Fill in form', () => {

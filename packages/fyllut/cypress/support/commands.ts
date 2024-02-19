@@ -102,13 +102,21 @@ Cypress.Commands.add('defaultInterceptsMellomlagring', () => {
 Cypress.Commands.add('submitMellomlagring', (callback: (req: CyHttpMessages.IncomingHttpRequest) => void) => {
   cy.intercept('PUT', '/fyllut/api/send-inn/utfyltsoknad', (req) => {
     callback(req);
-    req.reply(201);
   }).as('submitMellomlagring');
+
+  return cy;
 });
 
 Cypress.Commands.add('defaultInterceptsExternal', () => {
   cy.intercept('GET', '/fyllut/api/send-inn/prefill-data*').as('getPrefillData');
   cy.intercept('GET', '/fyllut/api/send-inn/activities*').as('getActivities');
+  return cy;
+});
+
+Cypress.Commands.add('defaultWaits', () => {
+  cy.wait('@getConfig');
+  cy.wait('@getForm');
+  cy.wait('@getTranslations');
   return cy;
 });
 

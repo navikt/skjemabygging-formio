@@ -7,8 +7,8 @@ describe('Components', () => {
     beforeEach(() => {
       cy.defaultIntercepts();
       cy.visit('/fyllut/pengerogkonto/skjema');
+      cy.defaultWaits();
       cy.wait('@getCurrencies');
-      cy.wait('@getForm');
     });
 
     it('triggers errors', () => {

@@ -20,9 +20,7 @@ describe('Amplitude', () => {
   it('logs for all relevant events', () => {
     // Disabler dekoratør, siden den også gjør kall til "/collect-auto". Det fører til at checkLogToAmplitude feiler, siden den er avhengig av at kall gjørers i riktig rekkefølge
     cy.visit('/fyllut/cypress101');
-    cy.wait('@getConfig');
-    cy.wait('@getForm');
-    cy.wait('@getTranslations');
+    cy.defaultWaits();
     cy.wait('@getGlobalTranslations');
 
     // Select digital submission and go to the form

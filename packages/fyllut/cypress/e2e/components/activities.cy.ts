@@ -44,14 +44,17 @@ describe('Activities', () => {
     cy.mocksRestoreRouteVariants();
   });
 
+  after(() => {
+    cy.mocksRestoreRouteVariants();
+  });
+
   describe('activities from backend', () => {
     it('should show radiogroup with activity from backend and default activity', () => {
       cy.mocksUseRouteVariant('get-soknad:success-activities-empty');
 
       cy.visit(`/fyllut/testingactivities?sub=digital`);
-      cy.wait('@getForm');
+      cy.defaultWaits();
       cy.clickStart();
-
       cy.wait('@getActivities');
 
       cy.findByRole('group', { name: 'Velg hvilken aktivitet du vil søke om stønad for' })
@@ -70,9 +73,8 @@ describe('Activities', () => {
       verifySubmissionValues(activityJson.maalgruppe, activityJson);
 
       cy.visit(`/fyllut/testingactivities?sub=digital`);
-      cy.wait('@getForm');
+      cy.defaultWaits();
       cy.clickStart();
-
       cy.wait('@getActivities');
 
       // Select the activity from backend
@@ -99,9 +101,8 @@ describe('Activities', () => {
       cy.mocksUseRouteVariant('get-activities:success-empty');
 
       cy.visit(`/fyllut/testingactivities?sub=digital`);
-      cy.wait('@getForm');
+      cy.defaultWaits();
       cy.clickStart();
-
       cy.wait('@getActivities');
 
       cy.findByRole('group', { name: 'Velg hvilken aktivitet du vil søke om stønad for' })
@@ -121,9 +122,8 @@ describe('Activities', () => {
       verifySubmissionValues(prefillMaalgruppe, defaultActivity);
 
       cy.visit(`/fyllut/testingactivities?sub=digital`);
-      cy.wait('@getForm');
+      cy.defaultWaits();
       cy.clickStart();
-
       cy.wait('@getActivities');
 
       // Select the default activity
@@ -152,9 +152,8 @@ describe('Activities', () => {
       verifySubmissionValues('ANNET', defaultActivity);
 
       cy.visit(`/fyllut/testingactivities?sub=digital`);
-      cy.wait('@getForm');
+      cy.defaultWaits();
       cy.clickStart();
-
       cy.wait('@getActivities');
 
       // Select the default activity
@@ -180,9 +179,8 @@ describe('Activities', () => {
       cy.mocksUseRouteVariant('get-activities:failure');
 
       cy.visit(`/fyllut/testingactivities?sub=digital`);
-      cy.wait('@getForm');
+      cy.defaultWaits();
       cy.clickStart();
-
       cy.wait('@getActivities');
 
       cy.contains('Velg hvilken aktivitet du vil søke om stønad for');

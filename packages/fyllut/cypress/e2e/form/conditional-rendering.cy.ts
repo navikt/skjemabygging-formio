@@ -18,7 +18,7 @@ describe('Conditional rendering', () => {
     beforeEach(() => {
       cy.defaultIntercepts();
       cy.visit('/fyllut/conditionalxmas');
-      cy.wait('@getForm');
+      cy.defaultWaits();
       cy.clickStart(); // <-- navigate from information page to the form
     });
 
@@ -119,7 +119,7 @@ describe('Conditional rendering', () => {
 
     it('renders conditional fields when navigating from summary page', () => {
       cy.visit('/fyllut/testmellomlagring/oppsummering?sub=digital&innsendingsId=01234567-abcd-4ebd-90d4-34448ebaaaa2');
-      cy.wait('@getForm');
+      cy.defaultWaits();
       cy.wait('@getMellomlagring');
       cy.findByRole('link', { name: 'Rediger valgfrie opplysninger' }).should('be.visible');
       cy.findByRole('link', { name: 'Rediger valgfrie opplysninger' }).click();
@@ -131,7 +131,7 @@ describe('Conditional rendering', () => {
 
     it('removes values of conditional fields when they are hidden', () => {
       cy.visit('/fyllut/testmellomlagring?sub=paper');
-      cy.wait('@getForm');
+      cy.defaultWaits();
       cy.clickStart();
       cy.findByRole('textbox', { name: 'Hva drakk du til frokost (valgfritt)' }).should('be.visible');
       cy.findByRole('textbox', { name: 'Hva syntes du om frokosten?' }).should('not.exist');

@@ -29,6 +29,8 @@ declare global {
 
       defaultInterceptsExternal(): Chainable<JQuery<HTMLElement>>;
 
+      defaultWaits(): Chainable<JQuery<HTMLElement>>;
+
       submitMellomlagring(callback: (req: CyHttpMessages.IncomingHttpRequest) => void): Chainable<JQuery<HTMLElement>>;
 
       shouldBeVisible(): Chainable<JQuery>;

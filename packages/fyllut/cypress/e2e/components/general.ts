@@ -16,10 +16,8 @@ describe('Custom react components', () => {
     describe('Fill in form and view summary, paper', () => {
       beforeEach(() => {
         cy.visit('/fyllut/customcomps/dineopplysninger?sub=paper');
-        cy.wait('@getConfig');
-        cy.wait('@getForm');
+        cy.defaultWaits();
         cy.wait('@getGlobalTranslations');
-        cy.wait('@getTranslations');
         cy.wait('@getCountries');
         cy.wait('@getCurrencies');
       });
@@ -118,10 +116,8 @@ describe('Custom react components', () => {
     describe('Fill in form and view summary, digital', () => {
       beforeEach(() => {
         cy.visit('/fyllut/customcomps/dineopplysninger?sub=digital');
-        cy.wait('@getConfig');
-        cy.wait('@getForm');
+        cy.defaultWaits();
         cy.wait('@getGlobalTranslations');
-        cy.wait('@getTranslations');
         cy.wait('@getCountries');
         cy.wait('@getCurrencies');
       });
@@ -177,8 +173,7 @@ describe('Custom react components', () => {
     describe('Components within conditional DataGrid', () => {
       beforeEach(() => {
         cy.visit('/fyllut/customcompsdatagrid/dineopplysninger?sub=paper');
-        cy.wait('@getConfig');
-        cy.wait('@getForm');
+        cy.defaultWaits();
         cy.findByRole('checkbox', { name: 'Avkryssingsboks' }).click();
       });
 

@@ -7,9 +7,7 @@ describe('Axe: Accessibility testing', () => {
     before(() => {
       cy.defaultIntercepts();
       cy.visit('/fyllut/cypressaxe');
-      cy.wait('@getConfig');
-      cy.wait('@getForm');
-      cy.wait('@getTranslations');
+      cy.defaultWaits();
       cy.injectAxe();
     });
 

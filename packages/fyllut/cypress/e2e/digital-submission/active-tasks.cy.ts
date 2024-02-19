@@ -34,7 +34,7 @@ describe('Active tasks', () => {
 
     it('redirects to /fyllut/:skjemapath:/paabegynt', () => {
       cy.visit('/fyllut/testmellomlagring?sub=digital');
-      cy.wait('@getForm');
+      cy.defaultWaits();
       cy.clickStart();
       cy.wait('@getActiveTasks');
       cy.findByRole('heading', { name: TEXTS.statiske.paabegynt.oneActiveTaskHeading });
@@ -79,7 +79,7 @@ describe('Active tasks', () => {
       const continueLink = new RegExp(`${TEXTS.statiske.paabegynt.continueTask}`);
       cy.findByRole('link', { name: continueLink }).should('be.visible');
       cy.findByRole('link', { name: continueLink }).click();
-      cy.wait('@getForm');
+      cy.defaultWaits();
       cy.findByRole('heading', { name: 'Oppsummering' });
     });
 

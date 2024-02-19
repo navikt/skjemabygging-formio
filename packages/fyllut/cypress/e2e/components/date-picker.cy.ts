@@ -8,8 +8,7 @@ describe('NavDatepicker', () => {
   beforeEach(() => {
     cy.defaultIntercepts();
     cy.visit('/fyllut/navdatepicker/veiledning?sub=paper');
-    cy.wait('@getConfig');
-    cy.wait('@getForm');
+    cy.defaultWaits();
   });
 
   describe('Date input value', () => {
