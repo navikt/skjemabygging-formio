@@ -3,3 +3,6 @@ package-lock.json
 # Ignore yaml files because it contains handlebars logic 
 **/.nais/*.yaml
 **/.nais/*.yml
+
+## Ignore all EJS files:
+**/*.ejs
