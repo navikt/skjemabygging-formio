@@ -1,10 +1,10 @@
 /*
- * General tests for custom react components
+ * General tests for react components
  */
 
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 
-describe('Custom react components', () => {
+describe('React components', () => {
   beforeEach(() => {
     Cypress.automation('remote:debugger:protocol', {
       command: 'Network.clearBrowserCache',
@@ -15,11 +15,13 @@ describe('Custom react components', () => {
   describe('General', () => {
     describe('Fill in form and view summary, paper', () => {
       beforeEach(() => {
+        cy.intercept('GET', 'https://www.nav.no/fyllut/countries*').as('getCountrySelect');
         cy.visit('/fyllut/customcomps/dineopplysninger?sub=paper');
         cy.defaultWaits();
-        cy.wait('@getGlobalTranslations');
-        cy.wait('@getCountries');
         cy.wait('@getCurrencies');
+        cy.wait('@getCountries');
+        cy.wait('@getGlobalTranslations');
+        cy.wait('@getCountrySelect');
       });
 
       it('reflects changes on summary page when editing data', () => {
@@ -117,8 +119,6 @@ describe('Custom react components', () => {
       beforeEach(() => {
         cy.visit('/fyllut/customcomps/dineopplysninger?sub=digital');
         cy.defaultWaits();
-        cy.wait('@getGlobalTranslations');
-        cy.wait('@getCountries');
         cy.wait('@getCurrencies');
       });
 

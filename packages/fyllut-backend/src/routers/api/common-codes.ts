@@ -35,6 +35,7 @@ const commonCodes = {
 
     try {
       const response = await fetchCommonCodeDescriptions(req, 'ValutaBetaling', languageCode);
+
       for (const [key, values] of Object.entries(response.betydninger)) {
         const currencyName = (values as any)[0]?.beskrivelser?.[languageCode]?.term;
         const newObj = { label: `${currencyName} (${key})`, value: key };

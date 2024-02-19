@@ -204,7 +204,6 @@
           "tableView": false,
           "modalEdit": false,
           "data": {
-            "resource": "",
             "url": "http://127.0.0.1:3001/fyllut/api/common-codes/currencies?lang=nb"
           },
           "valueProperty": "",

@@ -1,6 +1,5 @@
 /*
- * Tests that various components behaves as expected
- * - Penger og konto
+ * Tests that "penger og konto" component works as expected
  */
 describe('Components', () => {
   describe('Penger og konto', () => {
