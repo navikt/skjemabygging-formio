@@ -74,9 +74,10 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
         events: NavForm.getDefaultEmitter(),
       });
 
+      const submissionCopy = JSON.parse(JSON.stringify(submission));
       const instance = await formio.ready;
-      await instance.setSubmission(submission);
-      instance.checkData(submission.data, [], undefined);
+      await instance.setSubmission(submissionCopy);
+      instance.checkData(submissionCopy.data, [], undefined);
 
       const panelValidations = validateWizardPanels(instance, form, submission);
       setPanelValidationList(panelValidations);

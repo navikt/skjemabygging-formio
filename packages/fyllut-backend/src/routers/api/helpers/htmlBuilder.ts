@@ -87,11 +87,12 @@ const sectionContent = (components: Summary.Component[], level: number): string 
         case 'image':
           return img(component);
         case 'alertstripe':
-          return alert(component);
+        case 'htmlelement':
+          return html(component);
+        case 'activities':
+          return activity(component);
         case 'attachment':
           return attachment(component as Summary.Attachment);
-        case 'htmlelement':
-          return htmlelement(component);
         default:
           return field(component);
       }
@@ -130,15 +131,15 @@ const attachment = (component: Summary.Attachment) => {
   return html;
 };
 
-const htmlelement = (component: Summary.Field) => {
+const activity = (component: Summary.Activity) =>
+  `<div class="spm">${component.label}</div><div class="svar">: ${component.value.text}</div>`;
+
+const html = (component: Summary.Field) => {
   if (component.label) {
     return field(component);
   }
   return `<div>${component.value}</div>`;
 };
-
-const alert = (component: Summary.Field) =>
-  `<div class="label">${component.label}</div><div class="alert">${component.value}</div>`;
 
 const img = (component: Summary.Image) => `
 <div>

@@ -3,4 +3,5 @@ export interface ConfigType {
   NAIS_CLUSTER_NAME: string;
   isDelingslenke: boolean;
   isDevelopment: boolean;
+  isLoggedIn: boolean;
 }

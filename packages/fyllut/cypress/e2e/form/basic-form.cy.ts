@@ -1,16 +1,15 @@
+/*
+ * Tests filling out a basic form with contact information and verifying that the information is displayed in the summary (for both digital/paper)
+ */
 describe('Basic form', () => {
   beforeEach(() => {
     cy.defaultIntercepts();
-    // TODO: Remove getConfig intercept (use default intercept) when mellomlagring is enabled
-    cy.intercept('GET', '/fyllut/api/config', {
-      body: { FEATURE_TOGGLES: { enableTranslations: true, enableMellomlagring: false } },
-    }).as('getConfig');
-    cy.intercept('GET', '/fyllut/api/forms/cypress101').as('getCypress101');
+    cy.defaultInterceptsMellomlagring();
   });
 
-  const fillInForm = (expectVedleggspanel: boolean) => {
+  const fillInForm = (expectVedleggspanel: boolean, submissionMethod: 'paper' | 'digital') => {
     // Steg 1 -> Steg 2
-    cy.clickNextStep();
+    submissionMethod === 'paper' ? cy.clickNextStep() : cy.clickSaveAndContinue();
 
     cy.findByRole('combobox', { name: 'Tittel' }).should('exist').click();
     cy.findByText('Fru').should('exist').click();
@@ -51,7 +50,7 @@ describe('Basic form', () => {
     }
 
     // Step 3 -> Oppsummering
-    cy.clickNextStep();
+    submissionMethod === 'paper' ? cy.clickNextStep() : cy.clickSaveAndContinue();
     cy.findByRole('heading', { level: 2, name: 'Oppsummering' }).should('exist');
 
     // Gå tilbake til skjema fra oppsummering, og naviger til oppsummering på nytt
@@ -64,13 +63,13 @@ describe('Basic form', () => {
     // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(500);
 
-    cy.clickNextStep();
+    submissionMethod === 'paper' ? cy.clickNextStep() : cy.clickSaveAndContinue();
     cy.findByRole('heading', { level: 2, name: 'Dine opplysninger' }).should('exist');
     if (expectVedleggspanel) {
       cy.clickNextStep();
       cy.findByRole('heading', { level: 2, name: 'Vedlegg' }).should('exist');
     }
-    cy.clickNextStep();
+    submissionMethod === 'paper' ? cy.clickNextStep() : cy.clickSaveAndContinue();
 
     // Oppsummering
     cy.findByRole('heading', { level: 2, name: 'Oppsummering' }).should('exist');
@@ -90,10 +89,10 @@ describe('Basic form', () => {
       });
   };
 
-  describe("Subscription method 'paper'", () => {
+  describe("submission method 'paper'", () => {
     beforeEach(() => {
       cy.visit('/fyllut/cypress101/skjema?sub=paper');
-      cy.wait('@getCypress101');
+      cy.defaultWaits();
     });
 
     it('visits the correct form', () => {
@@ -123,41 +122,43 @@ describe('Basic form', () => {
 
     describe('Fill in form', () => {
       it('fill in - go to summary - edit form - navigate back to summary', () => {
-        fillInForm(true);
+        fillInForm(true, 'paper');
       });
     });
   });
 
-  describe("Subscription method 'digital'", () => {
+  describe("submission method 'digital'", () => {
     beforeEach(() => {
       cy.visit('/fyllut/cypress101?sub=digital');
-      cy.wait('@getCypress101');
+      cy.defaultWaits();
     });
 
     describe('Fill in form', () => {
       it('fill in - go to summary - edit form - navigate back to summary', () => {
         cy.clickStart();
-        fillInForm(false);
+        cy.wait('@createMellomlagring');
+        fillInForm(false, 'digital');
       });
     });
   });
 
-  describe('Subscription method not specified in url', () => {
+  describe('submission method not specified in url', () => {
     beforeEach(() => {
       cy.visit('/fyllut/cypress101');
-      cy.wait('@getCypress101');
+      cy.defaultWaits();
     });
 
     describe('Fill in form', () => {
       it('select submission method paper - fill in - go to summary - edit form - navigate back to summary', () => {
         cy.get('[type="radio"]').check('paper');
         cy.clickStart();
-        fillInForm(true);
+        fillInForm(true, 'paper');
       });
       it('select submission method digital - fill in - go to summary - edit form - navigate back to summary', () => {
         cy.get('[type="radio"]').check('digital');
         cy.clickStart();
-        fillInForm(false);
+        cy.wait('@createMellomlagring');
+        fillInForm(false, 'digital');
       });
     });
   });

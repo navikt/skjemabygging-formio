@@ -163,6 +163,7 @@ export interface Component {
   valueComponent?: Component;
   isInline?: boolean;
   textDisplay?: 'form' | 'formPdf' | 'pdf';
+  autoExpand?: boolean;
   customClass?: string;
 }
 
@@ -190,6 +191,7 @@ export interface ComponentValidate {
   patternMessage?: string;
   min?: number;
   max?: number;
+  maxLength?: number;
 }
 
 export interface ComponentConditional {
@@ -223,15 +225,22 @@ export interface FormsResponseForm extends Pick<NavFormType, '_id' | 'title' | '
 export type SubmissionData = Record<string, string | number | boolean | any[] | object>;
 
 type ErrorType =
-  | 'GET FAILED'
-  | 'CREATE FAILED'
-  | 'UPDATE FAILED'
-  | 'DELETE FAILED'
-  | 'SUBMIT FAILED'
-  | 'SUBMIT AND UPDATE FAILED';
+  | 'GET_FAILED'
+  | 'CREATE_FAILED'
+  | 'UPDATE_FAILED'
+  | 'UPDATE_FAILED_NOT_FOUND'
+  | 'DELETE_FAILED'
+  | 'DELETE_FAILED_NOT_FOUND'
+  | 'SUBMIT_FAILED'
+  | 'SUBMIT_FAILED_NOT_FOUND'
+  | 'SUBMIT_AND_UPDATE_FAILED';
 export type MellomlagringError = {
   title?: string;
-  message: string;
+  message?: string;
+  messageStart?: string;
+  messageEnd?: string;
+  linkText?: string;
+  url?: string;
   type: ErrorType;
   messageParams?: Record<string, any>;
 };
@@ -247,7 +256,7 @@ export interface FyllutState {
 
 export interface Submission {
   data: SubmissionData;
-  metadata: {
+  metadata?: {
     selectedData: any;
     timezone: string;
     offset: number;
@@ -258,7 +267,7 @@ export interface Submission {
     pathName: string;
     onLine: boolean;
   };
-  state: string;
+  state?: string;
   fyllutState?: FyllutState;
 }
 

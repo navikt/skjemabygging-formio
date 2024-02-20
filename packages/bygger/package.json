@@ -22,9 +22,9 @@
     "cypress:open": "cypress open"
   },
   "dependencies": {
-    "@navikt/ds-css": "^5.10.1",
+    "@navikt/ds-css": "^5.17.4",
     "@navikt/ds-icons": "^3.4.3",
-    "@navikt/ds-react": "^5.10.1",
+    "@navikt/ds-react": "^5.17.4",
     "@navikt/skjemadigitalisering-shared-components": "1.0.0",
     "@navikt/skjemadigitalisering-shared-domain": "1.0.0",
     "classnames": "^2.5.1",

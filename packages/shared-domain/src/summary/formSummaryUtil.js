@@ -162,19 +162,23 @@ function handleField(component, submission, formSummaryObject, parentContainerKe
 function handleDataGridRows(component, submission, translate) {
   const { key, rowTitle, components } = component;
   const dataGridSubmission = FormioUtils.getValue(submission, key) || [];
-  return dataGridSubmission.map((rowSubmission, index) => {
-    const dataGridRowComponents = components.reduce(
-      (handledComponents, subComponent) =>
-        handleComponent(subComponent, { data: rowSubmission }, handledComponents, '', translate),
-      [],
-    );
-    return {
-      type: 'datagrid-row',
-      label: translate(rowTitle),
-      key: `${key}-row-${index}`,
-      components: dataGridRowComponents,
-    };
-  });
+  return dataGridSubmission
+    .map((rowSubmission, index) => {
+      const dataGridRowComponents = components.reduce(
+        (handledComponents, subComponent) =>
+          handleComponent(subComponent, { data: rowSubmission }, handledComponents, '', translate),
+        [],
+      );
+      if (dataGridRowComponents.length > 0) {
+        return {
+          type: 'datagrid-row',
+          label: translate(rowTitle),
+          key: `${key}-row-${index}`,
+          components: dataGridRowComponents,
+        };
+      }
+    })
+    .filter((row) => !!row);
 }
 
 function handleDataGrid(component, submission, formSummaryObject, translate) {

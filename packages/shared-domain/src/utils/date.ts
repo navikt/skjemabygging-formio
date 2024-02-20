@@ -1,15 +1,15 @@
 import moment from 'moment';
 
 const dateAndTimeFormat: Intl.DateTimeFormatOptions = {
-  day: 'numeric',
+  day: '2-digit',
   month: '2-digit',
   year: 'numeric',
-  hour: 'numeric',
-  minute: 'numeric',
+  hour: '2-digit',
+  minute: '2-digit',
 };
 
 const dateFormat: Intl.DateTimeFormatOptions = {
-  day: 'numeric',
+  day: '2-digit',
   month: '2-digit',
   year: 'numeric',
 };

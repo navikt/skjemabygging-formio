@@ -35,6 +35,16 @@ export namespace Summary {
     value: string[];
   }
 
+  export interface Activity extends Omit<Field, 'type' | 'value'> {
+    type: 'activities';
+    value: {
+      aktivitetId: string;
+      maalgruppe: string;
+      periode: { fom: string; tom: string };
+      text: string;
+    };
+  }
+
   export interface Image extends Omit<Field, 'type'> {
     type: 'image';
     value: string;
@@ -67,5 +77,14 @@ export namespace Summary {
     components: DataGridRow[];
   }
 
-  export type Component = Field | Fieldset | Panel | DataGrid | DataGridRow | Selectboxes | Image | Attachment;
+  export type Component =
+    | Field
+    | Fieldset
+    | Panel
+    | DataGrid
+    | DataGridRow
+    | Selectboxes
+    | Image
+    | Attachment
+    | Activity;
 }

@@ -10,6 +10,7 @@ import {
   assembleSendInnSoknadBody,
   byteArrayToObject,
   isMellomLagringEnabled,
+  isNotFound,
   sanitizeInnsendingsId,
   validateInnsendingsId,
 } from './helpers/sendInn';
@@ -57,12 +58,11 @@ const sendInnSoknad = {
           `Feil ved kall til SendInn. ${getErrorMessage}`,
           true,
         );
-        if (
-          sendInnResponse.status === 404 ||
-          responseError?.['http_response_body']?.errorCode === 'illegalAction.applicationSentInOrDeleted'
-        ) {
+        if (isNotFound(sendInnResponse, responseError)) {
+          logger.info(`${sanitizedInnsendingsId}: Not found. Failed to get`, responseError);
           return res.sendStatus(404);
         }
+
         logger.debug('Failed to fetch data from SendInn');
         return next(responseError);
       }
@@ -115,6 +115,7 @@ const sendInnSoknad = {
       next(err);
     }
   },
+
   put: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const idportenPid = getIdportenPid(req);
@@ -152,8 +153,18 @@ const sendInnSoknad = {
         logger.debug('Successfylly updated data in SendInn');
         res.json(await sendInnResponse.json());
       } else {
+        const responseError = await responseToError(
+          sendInnResponse,
+          `Feil ved kall til SendInn. ${putErrorMessage}`,
+          true,
+        );
+        if (isNotFound(sendInnResponse, responseError)) {
+          logger.info(`${sanitizedInnsendingsId}: Not found. Failed to update`, responseError);
+          return res.sendStatus(404);
+        }
+
         logger.debug('Failed to update data in SendInn');
-        next(await responseToError(sendInnResponse, `Feil ved kall til SendInn. ${putErrorMessage}`, true));
+        next(responseError);
       }
     } catch (err) {
       next(err);
@@ -192,8 +203,18 @@ const sendInnSoknad = {
         const json = await sendInnResponse.json();
         res.json(json);
       } else {
+        const responseError = await responseToError(
+          sendInnResponse,
+          `Feil ved kall til SendInn. ${deleteErrorMessage}`,
+          true,
+        );
+        if (isNotFound(sendInnResponse, responseError)) {
+          logger.info(`${sanitizedInnsendingsId}: Not found. Failed to delete`, responseError);
+          return res.sendStatus(404);
+        }
+
         logger.debug(`Failed to delete soknad with innsendingsId ${sanitizedInnsendingsId}`);
-        next(await responseToError(sendInnResponse, `Feil ved kall til SendInn. ${deleteErrorMessage}`, true));
+        next(responseError);
       }
     } catch (err) {
       next(err);

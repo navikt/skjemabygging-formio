@@ -19,6 +19,7 @@ export type SendInnConfig = {
     soknad: string;
     utfyltSoknad: string;
     prefillData: string;
+    activities: string;
   };
 };
 

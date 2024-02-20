@@ -111,7 +111,7 @@
   {% } %}
   <fieldset ref="{{ctx.datagridKey}}-tbody">
     {% if (!ctx.component.hideLabel) { %}
-    <legend class="navds-fieldset__legend">{{ctx.t(ctx.component.label)}}</legend>
+    <legend class="navds-fieldset__legend-formio-template">{{ctx.t(ctx.component.label)}}</legend>
     <span class="label-track-changes">
       {{ctx.util.getDiffTag(ctx)}}
     </span>
@@ -122,7 +122,7 @@
     {% ctx.rows.forEach(function(row, index) { %}
       <div class="navds-fieldset__content" ref="{{ctx.datagridKey}}-row">
         {% if (ctx.component.rowTitle) { %}
-          <legend class="navds-fieldset__legend">{{ctx.t(ctx.component.rowTitle)}}</legend>
+          <legend class="navds-fieldset__legend-formio-template">{{ctx.t(ctx.component.rowTitle)}}</legend>
         {% } %}
         {% ctx.columns.forEach(function(col) { %}
         <div ref="{{ctx.datagridKey}}">

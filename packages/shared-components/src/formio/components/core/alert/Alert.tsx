@@ -42,7 +42,8 @@ class Alert extends BaseComponent {
 
   renderReact(element) {
     element.render(
-      <>
+      <div>
+        {this.getTextDisplayTag()}
         {this.getDiffTag()}
         <NavAlert
           id={this.getId()}
@@ -53,7 +54,7 @@ class Alert extends BaseComponent {
         >
           <div dangerouslySetInnerHTML={{ __html: this.getContent() }} />
         </NavAlert>
-      </>,
+      </div>,
     );
   }
 }

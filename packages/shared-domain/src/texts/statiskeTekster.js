@@ -1,5 +1,11 @@
 export const statiske = {
   loading: 'Laster...',
+  external: {
+    minSide: {
+      linkText: 'Min side',
+      url: 'https://www.nav.no/minside',
+    },
+  },
   introPage: {
     title: 'Vær oppmerksom på dette før du begynner å fylle ut skjemaet',
     paperDescriptionBold: 'Du må fylle ut skjemaet digitalt, og så sende det i posten.',
@@ -52,15 +58,30 @@ export const statiske = {
       message:
         'Vi klarte ikke å lagre søknaden. Vennligst prøv igjen senere. Vær oppmerksom på at du kan miste endringene dine hvis du forlater nettstedet.',
     },
+    updateNotFound: {
+      title: 'Beklager, det har skjedd en feil',
+      messageStart: 'Vi kunne ikke lagre søknaden fordi den allerede er sendt inn eller slettet. Gå til ',
+      messageEnd: ' for å se dine påbegynte og innsendte søknader.',
+    },
     delete: {
       title: 'Beklager, vi har midlertidige tekniske problemer.',
       message: 'Vi klarte ikke å slette den lagrede søknaden. Vennligst prøv igjen senere.',
+    },
+    deleteNotFound: {
+      title: 'Beklager, det har skjedd en feil',
+      messageStart: 'Vi kunne ikke slette søknaden fordi den allerede er slettet eller sendt inn. Gå til ',
+      messageEnd: ' for å se dine påbegynte og innsendte søknader.',
     },
     submit: {
       title: 'Beklager, vi har midlertidige tekniske problemer.',
       draftSaved: 'Skjemaet ble sist lagret {{date}}. Du finner utkastet på Min Side. Vennligst prøv igjen senere.',
       draftNotSaved:
         'Vennligst prøv igjen senere. Vær oppmerksom på at du kan miste endringene dine hvis du forlater nettstedet.',
+    },
+    submitNotFound: {
+      title: 'Beklager, det har skjedd en feil',
+      messageStart: 'Vi kunne ikke sende inn søknaden fordi den allerede er sendt inn eller slettet. Gå til ',
+      messageEnd: ' for å se dine påbegynte og innsendte søknader.',
     },
   },
   summaryPage: {
@@ -114,5 +135,9 @@ export const statiske = {
     nav: 'Jeg ønsker at NAV innhenter denne dokumentasjonen',
     deadline:
       'Hvis vi ikke har mottatt dette vedlegget innen vedleggsfrist! blir saken behandlet med de opplysningene som foreligger. Det kan føre til at saken din blir avslått.',
+  },
+  activities: {
+    defaultActivity: 'Jeg får ikke opp noen aktiviteter her som stemmer med det jeg vil søke om',
+    error: 'Kunne ikke hente aktiviteter. Du kan fortsatt gå videre uten å velge aktivitet.',
   },
 };

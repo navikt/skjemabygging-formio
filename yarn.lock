@@ -808,39 +808,39 @@
     "@mocks-server/admin-api-client" "7.0.0"
     "@mocks-server/admin-api-paths" "5.0.0"
 
-"@navikt/aksel-icons@^5.10.1":
-  version "5.10.1"
-  resolved "https://npm.pkg.github.com/download/@navikt/aksel-icons/5.10.1/02483b56f481c1bfd1e9256eac9f8c35f920b742#02483b56f481c1bfd1e9256eac9f8c35f920b742"
-  integrity sha512-VOwshZoNAOCrmfWyfTkKHwKdUpF9a77zOAuonM3zkrluo66NRwa1p9rqas6ZrAZjGUjtxQ7dXg+reLdqsxfUWw==
+"@navikt/aksel-icons@^5.17.4":
+  version "5.17.4"
+  resolved "https://npm.pkg.github.com/download/@navikt/aksel-icons/5.17.4/2d92ead2b90b58963459d5c9d937db711eb758f6#2d92ead2b90b58963459d5c9d937db711eb758f6"
+  integrity sha512-PDyFCPwx9efNsvnOpBrG6sl9/KKhE95svOVzka4aGtp6qlujAviKGmwTF1aG6xUVCyrEpypVbN+57sl5R/pG6Q==
 
-"@navikt/ds-css@^5.10.1":
-  version "5.10.1"
-  resolved "https://npm.pkg.github.com/download/@navikt/ds-css/5.10.1/fb0dc63ae42c7ba17aa47992829952d4598d5def#fb0dc63ae42c7ba17aa47992829952d4598d5def"
-  integrity sha512-+PheVLcMgFz7V/o3LNDOfT2A/pmh57IbTVc4XHedY6y1fmA6YoQ6DeqPKryb1OYrC+hdagMjrA0J/snKsWH2xw==
+"@navikt/ds-css@^5.17.4":
+  version "5.17.4"
+  resolved "https://npm.pkg.github.com/download/@navikt/ds-css/5.17.4/86fd965263f82b53c7139cf3a2f0b298874a1f02#86fd965263f82b53c7139cf3a2f0b298874a1f02"
+  integrity sha512-ODJ1IaSFR/VIIuEqLE326TMQd4QlwPL/WE1wwv6U5cglit9EUwJ4aQZM1SEvyul2K00qN64kl0iuMOMY5t++FA==
 
 "@navikt/ds-icons@^3.4.3":
   version "3.4.3"
   resolved "https://npm.pkg.github.com/download/@navikt/ds-icons/3.4.3/eaa8fc38f6d184806d3405a5efbc9d137c2b8d27#eaa8fc38f6d184806d3405a5efbc9d137c2b8d27"
   integrity sha512-Ys25tnDUzS+AtagMMW4/154OCZy+pTxCv9uiV4YcZUeXMfjnMiRWx1dueyCODb7FF7Jd6TwELd3G6ieQt/rf+w==
 
-"@navikt/ds-react@^5.10.1":
-  version "5.10.1"
-  resolved "https://npm.pkg.github.com/download/@navikt/ds-react/5.10.1/57cd27a134fac3c2c92aadaa86d4864d1efa2c3d#57cd27a134fac3c2c92aadaa86d4864d1efa2c3d"
-  integrity sha512-60y6aovWVdycRI6WczBnvjzAbRSK0wa6XAwx53NULmBM/KnqLurYlg61P8twx+HE959LDlZ2x/R6+oSYGWBRBA==
+"@navikt/ds-react@^5.17.4":
+  version "5.17.4"
+  resolved "https://npm.pkg.github.com/download/@navikt/ds-react/5.17.4/5ee7cfedd31c03cc4b85d6916bfd93650de91a87#5ee7cfedd31c03cc4b85d6916bfd93650de91a87"
+  integrity sha512-bVhrOhb2IVVodHJMrdEWXBPKNsyzD+O9YOXD8tmE9wgPctDUXSSx/pjdiHOPa/LWklNaStSKlVy3OQdpcsnyLQ==
   dependencies:
     "@floating-ui/react" "0.25.4"
-    "@navikt/aksel-icons" "^5.10.1"
-    "@navikt/ds-tokens" "^5.10.1"
+    "@navikt/aksel-icons" "^5.17.4"
+    "@navikt/ds-tokens" "^5.17.4"
     "@radix-ui/react-tabs" "1.0.0"
     "@radix-ui/react-toggle-group" "1.0.0"
     clsx "^1.2.1"
-    date-fns "2.29.3"
+    date-fns "^2.30.0"
     react-day-picker "8.3.4"
 
-"@navikt/ds-tokens@^5.10.1":
-  version "5.10.1"
-  resolved "https://npm.pkg.github.com/download/@navikt/ds-tokens/5.10.1/e6ad53ab10ea5a6e9e206fe010c5781fdda949c3#e6ad53ab10ea5a6e9e206fe010c5781fdda949c3"
-  integrity sha512-7M6sUuuoS4aY/xPbTJNsrer2zFXq7hzkQ5Ccv6WjpLh3wZ51Hy+fqSeyMZrsEo4/IPdVvErndDWMyDKmfoGThQ==
+"@navikt/ds-tokens@^5.17.4":
+  version "5.17.4"
+  resolved "https://npm.pkg.github.com/download/@navikt/ds-tokens/5.17.4/fb910b486aa77595200d8bf95397b017310ae027#fb910b486aa77595200d8bf95397b017310ae027"
+  integrity sha512-W17JANoQ5zbJ175at4C4uh1iW0IzBWn7XXX+96CbBVdXtrEnyl9AKNnLJ+LXp5Brl8qzUB+meihhYSCgV1Q7KA==
 
 "@navikt/fnrvalidator@^1.3.3":
   version "1.3.3"
@@ -2997,11 +2997,6 @@ data-urls@^4.0.0:
     abab "^2.0.6"
     whatwg-mimetype "^3.0.0"
     whatwg-url "^12.0.0"
-
-date-fns@2.29.3:
-  version "2.29.3"
-  resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-2.29.3.tgz#27402d2fc67eb442b511b70bbdf98e6411cd68a8"
-  integrity sha512-dDCnyH2WnnKusqvZZ6+jA1O51Ibt8ZMRNkDZdyAyK4YfbDwa/cEmuztzG5pk6hqlp9aSBPYcjOlktquahGwGeA==
 
 date-fns@^2.30.0:
   version "2.30.0"
@@ -7920,10 +7915,10 @@ vite-tsconfig-paths@^4.2.3:
     globrex "^0.1.2"
     tsconfck "^2.1.0"
 
-"vite@^3.0.0 || ^4.0.0 || ^5.0.0-0", "vite@^3.1.0 || ^4.0.0 || ^5.0.0-0", vite@^4.4.12:
-  version "4.4.12"
-  resolved "https://registry.yarnpkg.com/vite/-/vite-4.4.12.tgz#e9c355d5a0d8a47afa46cb4bad10820da333da5c"
-  integrity sha512-KtPlUbWfxzGVul8Nut8Gw2Qe8sBzWY+8QVc5SL8iRFnpnrcoCaNlzO40c1R6hPmcdTwIPEDkq0Y9+27a5tVbdQ==
+"vite@^3.0.0 || ^4.0.0 || ^5.0.0-0", "vite@^3.1.0 || ^4.0.0 || ^5.0.0-0", vite@^4.5.2:
+  version "4.5.2"
+  resolved "https://registry.yarnpkg.com/vite/-/vite-4.5.2.tgz#d6ea8610e099851dad8c7371599969e0f8b97e82"
+  integrity sha512-tBCZBNSBbHQkaGyhGCDUGqeo2ph8Fstyp6FMSvTtsXeZSPpSMGlviAOav2hxVTqFcx8Hj/twtWKsMJXNY0xI8w==
   dependencies:
     esbuild "^0.18.10"
     postcss "^8.4.27"

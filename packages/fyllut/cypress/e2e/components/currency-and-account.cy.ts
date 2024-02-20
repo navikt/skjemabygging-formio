@@ -1,11 +1,13 @@
+/*
+ * Tests that "penger og konto" component works as expected
+ */
 describe('Components', () => {
   describe('Penger og konto', () => {
     beforeEach(() => {
       cy.defaultIntercepts();
-      cy.intercept('GET', '/fyllut/api/forms/pengerogkonto').as('getPengerOgKontoForm');
       cy.visit('/fyllut/pengerogkonto/skjema');
+      cy.defaultWaits();
       cy.wait('@getCurrencies');
-      cy.wait('@getPengerOgKontoForm');
     });
 
     it('triggers errors', () => {
