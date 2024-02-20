@@ -139,6 +139,29 @@ class BaseComponent extends FormioReactComponent {
   }
 
   /**
+   * Get textDisplay tag for custom component renderReact()
+   */
+  getTextDisplayTag() {
+    if (!this.builderMode) {
+      return <></>;
+    }
+
+    if (this.component?.textDisplay === 'pdf') {
+      return (
+        <Tag variant="alt3" className="mb-4" size="xsmall">
+          PDF
+        </Tag>
+      );
+    } else if (this.component?.textDisplay === 'formPdf') {
+      return (
+        <Tag variant="alt3" className="mb-4" size="xsmall">
+          Skjema og PDF
+        </Tag>
+      );
+    }
+  }
+
+  /**
    * Used to set focus when clicking error summary.
    */
   focus() {

@@ -13,6 +13,7 @@ const alertForm = () => {
       editFormDisplay.alertType(),
       editFormDisplay.inline(),
       editFormDisplay.textDisplay(),
+      editFormDisplay.hidden('value = data.textDisplay === "pdf"'),
       editFormDisplay.contentForPdf(),
     ]),
     api([
