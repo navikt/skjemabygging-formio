@@ -42,7 +42,8 @@ class Alert extends BaseComponent {
 
   renderReact(element) {
     element.render(
-      <>
+      <div>
+        {this.getTextDisplayTag()}
         {this.getDiffTag()}
         <NavAlert
           id={this.getId()}
@@ -51,9 +52,9 @@ class Alert extends BaseComponent {
           fullWidth={false} // Removes border-radius if true
           size="medium"
         >
-          <div dangerouslySetInnerHTML={{ __html: this.t(this.getContent()) }} />
+          <div dangerouslySetInnerHTML={{ __html: this.getContent() }} />
         </NavAlert>
-      </>,
+      </div>,
     );
   }
 }
