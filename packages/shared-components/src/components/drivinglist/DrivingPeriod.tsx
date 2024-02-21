@@ -1,6 +1,7 @@
 import { Accordion, Checkbox, CheckboxGroup, TextField } from '@navikt/ds-react';
 import { dateUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { useMemo } from 'react';
+import { DrivingListValues } from './NavDrivingList';
 
 interface DrivingPeriodProps {
   id: string;
@@ -8,13 +9,13 @@ interface DrivingPeriodProps {
   periodTo: Date;
   onValueChange: (value: any) => void;
   hasParking: boolean;
-  values?: { date: string; parking: string }[];
+  values?: DrivingListValues;
 }
 
 const DrivingPeriod = ({ id, periodFrom, periodTo, onValueChange, values, hasParking }: DrivingPeriodProps) => {
   const periodDates = useMemo(() => dateUtils.getDatesInRange(periodFrom, periodTo), [periodFrom, periodTo]);
 
-  const selectedDates = values?.map((value) => value.date);
+  const selectedDates = values?.dates?.map((value) => value.date);
 
   const showParking = (date: string) => {
     if (selectedDates?.includes(date) && !!hasParking) {
@@ -25,23 +26,23 @@ const DrivingPeriod = ({ id, periodFrom, periodTo, onValueChange, values, hasPar
 
   const onChange = (checkBoxValues: string[]) => {
     const mappedValues = checkBoxValues.map((newValue) => {
-      const existingValue = values?.find((val) => val.date === newValue);
+      const existingValue = values?.dates?.find((val) => val.date === newValue);
       const parking = existingValue ? existingValue.parking : '';
       return { date: newValue, parking };
     });
 
-    onValueChange(mappedValues);
+    onValueChange({ ...values, dates: mappedValues });
   };
 
   const onChangeParking = (date: Date, parking: string) => {
-    const newValues = values?.map((existingValue) => {
+    const mappedValues = values?.dates?.map((existingValue) => {
       if (existingValue.date === toLocaleDate(date)) {
         return { date: existingValue.date, parking };
       }
       return existingValue;
     });
 
-    onValueChange(newValues);
+    onValueChange({ ...values, dates: mappedValues });
   };
 
   const toLocaleDate = (date: Date) => {
@@ -62,7 +63,7 @@ const DrivingPeriod = ({ id, periodFrom, periodTo, onValueChange, values, hasPar
         <CheckboxGroup
           legend="Kryss av for de dagene du har brukt egen bil og har hatt parkeringsutgifter"
           onChange={(values) => onChange(values)}
-          value={values?.map((value) => value.date) ?? []}
+          value={values?.dates?.map((value) => value.date) ?? []}
         >
           {periodDates.map((date) => {
             return (
@@ -74,8 +75,9 @@ const DrivingPeriod = ({ id, periodFrom, periodTo, onValueChange, values, hasPar
                     type="text"
                     size="medium"
                     inputMode="numeric"
+                    className="nav-input--s"
                     pattern="[0-9]*"
-                    value={values?.find((val) => val.date === toLocaleDate(date))?.parking}
+                    value={values?.dates?.find((val) => val.date === toLocaleDate(date))?.parking}
                     onChange={(event) => onChangeParking(date, event.currentTarget.value)}
                   />
                 ) : null}

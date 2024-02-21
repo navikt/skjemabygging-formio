@@ -9,7 +9,6 @@ const drivingListBuilder = () => {
       validateOn: 'blur',
       validate: {
         required: true,
-        multiple: true,
       },
     },
   };

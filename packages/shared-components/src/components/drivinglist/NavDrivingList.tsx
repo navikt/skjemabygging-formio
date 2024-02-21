@@ -1,32 +1,33 @@
-import { Accordion, DatePicker, Radio, RadioGroup, useDatepicker } from '@navikt/ds-react';
+import { Accordion, Radio, RadioGroup } from '@navikt/ds-react';
 import { SendInnAktivitet } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { getActivities } from '../../api/sendinn/sendInnActivities';
+import DatePicker from '../datepicker/DatePicker';
 import DrivingPeriod from './DrivingPeriod';
 
 interface NavDrivingListProps {
   onValueChange: (value: any) => void;
   appConfig: any;
-  values: any;
+  values: DrivingListValues;
+}
+
+export interface DrivingListValues {
+  selectedDate: string;
+  selectedPeriodType?: 'weekly' | 'monthly';
+  periods?: DrivingListPeriod[];
+  parking?: boolean;
+  dates: { date: string; parking: string }[];
 }
 
 interface DrivingListPeriod {
   periodFrom: Date;
   periodTo: Date;
-  hasParking: boolean;
   id: string;
 }
 
 const NavDrivingList = ({ appConfig, onValueChange, values }: NavDrivingListProps) => {
   const [activities, setActivities] = useState<SendInnAktivitet[]>([]);
-  const [periods, setPeriods] = useState<DrivingListPeriod[]>([]);
-  const [parking, setParking] = useState<boolean>(false);
-  const [periodType, setPeriodType] = useState<'weekly' | 'monthly'>();
-
-  const { datepickerProps, inputProps, selectedDay } = useDatepicker({
-    onDateChange: (date) => onDateChange(date),
-  });
 
   // FIXME: Get the correct submission method here
   const submissionMethod = 'paper';
@@ -46,7 +47,7 @@ const NavDrivingList = ({ appConfig, onValueChange, values }: NavDrivingListProp
     fetchData();
   }, []);
 
-  const generatePeriods = (periodType: 'weekly' | 'monthly', date?: Date) => {
+  const generatePeriods = (periodType: 'weekly' | 'monthly', date?: string) => {
     if (!date) return;
 
     const drivingListPeriods: DrivingListPeriod[] = [];
@@ -59,32 +60,59 @@ const NavDrivingList = ({ appConfig, onValueChange, values }: NavDrivingListProp
       endDate.setMonth(endDate.getMonth() + 1);
     }
 
-    drivingListPeriods.push({ periodFrom: startDate, periodTo: endDate, hasParking: parking, id: uuidv4() });
+    drivingListPeriods.push({ periodFrom: startDate, periodTo: endDate, id: uuidv4() });
 
     return drivingListPeriods;
   };
 
-  const onDateChange = (date?: Date) => {
-    if (periodType === 'weekly') {
-      setPeriods(generatePeriods('weekly', date) ?? []);
-    } else if (periodType === 'monthly') {
-      setPeriods(generatePeriods('monthly', date) ?? []);
+  const updateValues = <K extends keyof DrivingListValues>(key: K, value: DrivingListValues[K]) => {
+    onValueChange({ ...values, [key]: value });
+  };
+
+  const onDateChange = (date?: string) => {
+    console.log(date);
+    if (values?.selectedDate === date) return;
+    if (values?.selectedPeriodType === 'weekly') {
+      onValueChange({
+        ...values,
+        selectedDate: date,
+        selectedPeriodType: 'weekly',
+        periods: generatePeriods('weekly', date) ?? [],
+        dates: [],
+      });
+    } else if (values?.selectedPeriodType === 'monthly') {
+      onValueChange({
+        ...values,
+        selectedDate: date,
+        selectedPeriodType: 'monthly',
+        periods: generatePeriods('monthly', date) ?? [],
+        dates: [],
+      });
+    } else if (date) {
+      updateValues('selectedDate', date);
     }
   };
 
   const onPeriodChange = (period: 'weekly' | 'monthly') => {
     if (period === 'weekly') {
-      setPeriods(generatePeriods('weekly', selectedDay) ?? []);
-      setPeriodType('weekly');
+      onValueChange({
+        ...values,
+        selectedPeriodType: 'weekly',
+        periods: generatePeriods('weekly', values?.selectedDate) ?? [],
+        dates: [],
+      });
     } else {
-      setPeriods(generatePeriods('monthly', selectedDay) ?? []);
-      setPeriodType('monthly');
+      onValueChange({
+        ...values,
+        selectedPeriodType: 'monthly',
+        periods: generatePeriods('monthly', values?.selectedDate) ?? [],
+        dates: [],
+      });
     }
   };
 
-  const onParkingChange = (parking: string) => {
-    if (parking === 'true') setParking(true);
-    if (parking === 'false') setParking(false);
+  const onParkingChange = (parking: boolean) => {
+    updateValues('parking', parking);
   };
 
   const renderDigitalDrivingList = () => {
@@ -116,11 +144,11 @@ const NavDrivingList = ({ appConfig, onValueChange, values }: NavDrivingListProp
 
   // FIXME: Should be able to add/remove periods
   const renderPaperDrivingList = () => {
-    return periods.map((period) => {
+    return values?.periods?.map((period) => {
       return (
         <DrivingPeriod
           key={period.id}
-          hasParking={parking}
+          hasParking={values?.parking ?? false}
           onValueChange={onValueChange}
           id={period.id}
           periodFrom={period.periodFrom}
@@ -131,19 +159,35 @@ const NavDrivingList = ({ appConfig, onValueChange, values }: NavDrivingListProp
     });
   };
 
+  // FIXME: any
   const renderPaperOptions = () => {
     return (
       <>
-        <DatePicker {...datepickerProps}>
-          <DatePicker.Input {...inputProps} label="Velg første dato" />
-        </DatePicker>
-        <RadioGroup legend="Velg periode for innsending" onChange={(value) => onPeriodChange(value)}>
+        <DatePicker
+          id={'drivingListDatePicker'}
+          isRequired={true}
+          value={values?.selectedDate}
+          onChange={(date: string) => onDateChange(date)}
+          locale={'nb-NO'}
+          readOnly={false}
+          error={undefined}
+          inputRef={undefined}
+        />
+        <RadioGroup
+          legend="Velg periode for innsending"
+          onChange={(value) => onPeriodChange(value)}
+          value={values?.selectedPeriodType}
+        >
           <Radio value="weekly">{'Ukentlig'}</Radio>
           <Radio value="monthly">{'Månedlig'}</Radio>
         </RadioGroup>
-        <RadioGroup legend="Skal du registrere parkering?" onChange={(value) => onParkingChange(value)}>
-          <Radio value="true">{'Ja'}</Radio>
-          <Radio value="false">{'Nei'}</Radio>
+        <RadioGroup
+          legend="Skal du registrere parkering?"
+          onChange={(value) => onParkingChange(value)}
+          value={values?.parking}
+        >
+          <Radio value={true}>{'Ja'}</Radio>
+          <Radio value={false}>{'Nei'}</Radio>
         </RadioGroup>
       </>
     );
