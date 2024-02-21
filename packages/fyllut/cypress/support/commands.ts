@@ -80,14 +80,15 @@ Cypress.Commands.add('checkLogToAmplitude', (eventType: string, properties) => {
 });
 
 Cypress.Commands.add('defaultIntercepts', () => {
-  cy.intercept('POST', '/amplitude/collect-auto').as('amplitudeLogging');
-  cy.intercept('POST', '/fyllut/api/log*', { body: 'ok' }).as('logger');
-  cy.intercept('GET', '/fyllut/api/config*').as('getConfig');
-  cy.intercept('GET', '/fyllut/api/countries*').as('getCountries');
-  cy.intercept('GET', '/fyllut/api/global-translations/*').as('getGlobalTranslations');
-  cy.intercept('GET', '/fyllut/api/common-codes/currencies*').as('getCurrencies');
-  cy.intercept('GET', '/fyllut/api/translations/*').as('getTranslations');
-  cy.intercept('GET', '/fyllut/api/forms/*').as('getForm');
+  const log = false;
+  cy.intercept('POST', '/amplitude/collect-auto', { log }).as('amplitudeLogging');
+  cy.intercept('POST', '/fyllut/api/log*', { body: 'ok', log }).as('logger');
+  cy.intercept('GET', '/fyllut/api/config*', { log }).as('getConfig');
+  cy.intercept('GET', '/fyllut/api/countries*', { log }).as('getCountries');
+  cy.intercept('GET', '/fyllut/api/global-translations/*', { log }).as('getGlobalTranslations');
+  cy.intercept('GET', '/fyllut/api/common-codes/currencies*', { log }).as('getCurrencies');
+  cy.intercept('GET', '/fyllut/api/translations/*', { log }).as('getTranslations');
+  cy.intercept('GET', '/fyllut/api/forms/*', { log }).as('getForm');
   return cy;
 });
 
