@@ -24,7 +24,7 @@ const getRelevantAttachments = (form: NavFormType, submissionData: SubmissionDat
       tittel: comp.properties.vedleggstittel,
       label: comp.label,
       beskrivelse: comp.description,
-      pakrevd: false,
+      pakrevd: true,
       propertyNavn: comp.key,
       vedleggskjema: comp.properties.vedleggskjema,
       /* TODO: We should not use the native 'id' to identify the attachment, because it may change when the component changes.
