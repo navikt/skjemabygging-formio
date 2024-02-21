@@ -12,7 +12,6 @@ const editFormWidthPercent = (): Component => {
     defaultValue: 100,
     key: 'widthPercent',
     type: 'number',
-    input: true,
   };
 };
 

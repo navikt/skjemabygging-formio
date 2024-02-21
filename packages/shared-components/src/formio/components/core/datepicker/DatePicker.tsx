@@ -11,7 +11,6 @@ export default class DatePicker extends BaseComponent {
     return BaseComponent.schema({
       type: 'navDatepicker',
       label: 'Dato (dd.mm.åååå)',
-      dataGridLabel: true,
     });
   }
 

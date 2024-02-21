@@ -1,7 +1,6 @@
 export const description = [
   {
     type: 'select',
-    input: true,
     label: 'Plassering av beskrivelse',
     key: 'descriptionPosition',
     dataSrc: 'values',

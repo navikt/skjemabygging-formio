@@ -5,10 +5,6 @@ const employerBuilder = () => {
       label: 'Arbeidsgiver',
       type: 'textfield',
       key: 'arbeidsgiver',
-      fieldSize: 'input--xxl',
-      input: true,
-      dataGridLabel: true,
-      clearOnHide: true,
       validateOn: 'blur',
       validate: {
         required: true,

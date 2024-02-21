@@ -8,7 +8,6 @@ const editFormButtonText = (): Component => {
     validate: {
       required: true,
     },
-    input: true,
   };
 };
 

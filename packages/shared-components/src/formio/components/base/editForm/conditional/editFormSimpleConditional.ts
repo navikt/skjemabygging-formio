@@ -12,7 +12,6 @@ const editFormSimpleConditional = (): Component => {
     components: [
       {
         type: 'select',
-        input: true,
         label: 'Denne komponenten skal vises:',
         key: 'conditional.show',
         dataSrc: 'values',
@@ -25,7 +24,6 @@ const editFormSimpleConditional = (): Component => {
       },
       {
         type: 'select',
-        input: true,
         label: 'Når følgende komponent:',
         key: 'conditional.when',
         dataSrc: 'custom',
@@ -38,7 +36,6 @@ const editFormSimpleConditional = (): Component => {
       },
       {
         type: 'textfield',
-        input: true,
         label: 'Har verdien:',
         key: 'conditional.eq',
       },

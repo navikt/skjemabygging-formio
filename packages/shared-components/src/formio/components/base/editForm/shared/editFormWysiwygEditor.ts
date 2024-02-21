@@ -17,7 +17,6 @@ const editFormWysiwygEditor = (heading: boolean = true): Component => {
     wysiwyg: {
       toolbar,
     },
-    input: true,
   };
 };
 

@@ -5,11 +5,7 @@ const emailBuilder = () => {
       label: 'E-post',
       type: 'email',
       key: 'epost',
-      fieldSize: 'input--xxl',
-      input: true,
-      dataGridLabel: true,
       autocomplete: 'email',
-      clearOnHide: true,
       spellcheck: false,
       validateOn: 'blur',
       validate: {

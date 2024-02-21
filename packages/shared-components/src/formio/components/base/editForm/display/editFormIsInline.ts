@@ -5,7 +5,6 @@ const editFormInline = (): Component => {
     label: 'Inline',
     type: 'navCheckbox',
     key: 'isInline',
-    input: true,
   };
 };
 

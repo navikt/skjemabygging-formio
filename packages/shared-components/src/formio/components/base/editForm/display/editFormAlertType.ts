@@ -5,7 +5,6 @@ const editFormAlertType = (): Component => {
     label: 'Type',
     type: 'radiopanel',
     key: 'alerttype',
-    input: true,
     values: [
       {
         value: 'info',
