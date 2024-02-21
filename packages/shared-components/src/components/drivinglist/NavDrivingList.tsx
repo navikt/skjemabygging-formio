@@ -3,12 +3,13 @@ import { SendInnAktivitet } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { getActivities } from '../../api/sendinn/sendInnActivities';
+import { AppConfigContextType } from '../../context/config/configContext';
 import DatePicker from '../datepicker/DatePicker';
 import DrivingPeriod from './DrivingPeriod';
 
 interface NavDrivingListProps {
-  onValueChange: (value: any) => void;
-  appConfig: any;
+  onValueChange: (value: object) => void;
+  appConfig: AppConfigContextType;
   values: DrivingListValues;
 }
 
@@ -47,10 +48,9 @@ const NavDrivingList = ({ appConfig, onValueChange, values }: NavDrivingListProp
     fetchData();
   }, []);
 
-  const generatePeriods = (periodType: 'weekly' | 'monthly', date?: string) => {
-    if (!date) return;
+  const generatePeriods = (periodType: 'weekly' | 'monthly', date?: string): DrivingListPeriod[] => {
+    if (!date) return [];
 
-    const drivingListPeriods: DrivingListPeriod[] = [];
     const startDate = new Date(date);
     const endDate = new Date(date);
 
@@ -59,60 +59,43 @@ const NavDrivingList = ({ appConfig, onValueChange, values }: NavDrivingListProp
     } else if (periodType === 'monthly') {
       endDate.setMonth(endDate.getMonth() + 1);
     }
-
-    drivingListPeriods.push({ periodFrom: startDate, periodTo: endDate, id: uuidv4() });
-
-    return drivingListPeriods;
+    return [{ periodFrom: startDate, periodTo: endDate, id: uuidv4() }];
   };
 
-  const updateValues = <K extends keyof DrivingListValues>(key: K, value: DrivingListValues[K]) => {
+  const updateValue = <K extends keyof DrivingListValues>(key: K, value: DrivingListValues[K]) => {
     onValueChange({ ...values, [key]: value });
   };
 
+  const updateMultipleValues = (multipleValues: object) => {
+    onValueChange({ ...values, ...multipleValues, dates: [] });
+  };
+
   const onDateChange = (date?: string) => {
-    console.log(date);
     if (values?.selectedDate === date) return;
+
     if (values?.selectedPeriodType === 'weekly') {
-      onValueChange({
-        ...values,
-        selectedDate: date,
-        selectedPeriodType: 'weekly',
-        periods: generatePeriods('weekly', date) ?? [],
-        dates: [],
-      });
+      const periods = generatePeriods('weekly', date) ?? [];
+      updateMultipleValues({ selectedDate: date, periods });
     } else if (values?.selectedPeriodType === 'monthly') {
-      onValueChange({
-        ...values,
-        selectedDate: date,
-        selectedPeriodType: 'monthly',
-        periods: generatePeriods('monthly', date) ?? [],
-        dates: [],
-      });
+      const periods = generatePeriods('monthly', date) ?? [];
+      updateMultipleValues({ selectedDate: date, periods });
     } else if (date) {
-      updateValues('selectedDate', date);
+      updateValue('selectedDate', date);
     }
   };
 
   const onPeriodChange = (period: 'weekly' | 'monthly') => {
     if (period === 'weekly') {
-      onValueChange({
-        ...values,
-        selectedPeriodType: 'weekly',
-        periods: generatePeriods('weekly', values?.selectedDate) ?? [],
-        dates: [],
-      });
+      const periods = generatePeriods('weekly', values?.selectedDate) ?? [];
+      updateMultipleValues({ selectedDate: values?.selectedDate, periods, selectedPeriodType: 'weekly' });
     } else {
-      onValueChange({
-        ...values,
-        selectedPeriodType: 'monthly',
-        periods: generatePeriods('monthly', values?.selectedDate) ?? [],
-        dates: [],
-      });
+      const periods = generatePeriods('monthly', values?.selectedDate) ?? [];
+      updateMultipleValues({ selectedDate: values?.selectedDate, periods, selectedPeriodType: 'monthly' });
     }
   };
 
   const onParkingChange = (parking: boolean) => {
-    updateValues('parking', parking);
+    updateValue('parking', parking);
   };
 
   const renderDigitalDrivingList = () => {
@@ -159,7 +142,6 @@ const NavDrivingList = ({ appConfig, onValueChange, values }: NavDrivingListProp
     });
   };
 
-  // FIXME: any
   const renderPaperOptions = () => {
     return (
       <>
