@@ -12,18 +12,7 @@ interface DrivingPeriodProps {
 }
 
 const DrivingPeriod = ({ id, periodFrom, periodTo, onValueChange, values, hasParking }: DrivingPeriodProps) => {
-  const getDates = (startDate: Date, endDate: Date) => {
-    const dates: Date[] = [];
-    const currentDate = startDate;
-
-    while (currentDate <= endDate) {
-      dates.push(new Date(currentDate));
-      currentDate.setDate(currentDate.getDate() + 1);
-    }
-
-    return dates;
-  };
-  const memoDates = useMemo(() => getDates(periodFrom, periodTo), [periodFrom, periodTo]);
+  const periodDates = useMemo(() => dateUtils.getDatesInRange(periodFrom, periodTo), [periodFrom, periodTo]);
 
   const selectedDates = values?.map((value) => value.date);
 
@@ -75,7 +64,7 @@ const DrivingPeriod = ({ id, periodFrom, periodTo, onValueChange, values, hasPar
           onChange={(values) => onChange(values)}
           value={values?.map((value) => value.date) ?? []}
         >
-          {memoDates.map((date) => {
+          {periodDates.map((date) => {
             return (
               <div key={date.toISOString()}>
                 <Checkbox value={toLocaleDate(date)}>{toWeekdayAndDate(date)}</Checkbox>
