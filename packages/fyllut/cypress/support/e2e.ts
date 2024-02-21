@@ -17,3 +17,6 @@ import { register } from '@mocks-server/cypress-commands';
 import 'cypress-axe';
 import './commands';
 register();
+before(() => {
+  cy.intercept({ resourceType: /xhr|fetch/ }, { log: false });
+});
