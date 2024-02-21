@@ -128,5 +128,8 @@ export const statiske = {
   activities: {
     defaultActivity: 'Jeg får ikke opp noen aktiviteter her som stemmer med det jeg vil søke om',
     error: 'Kunne ikke hente aktiviteter. Du kan fortsatt gå videre uten å velge aktivitet.',
+    drivingListError: 'Kunne ikke hente aktiviteter. Du kan sende inn søknad via papir',
+    noVedtak:
+      'Det er ikke registrert vedtak om tilleggsstønad på deg. Du må søke om tilleggsstønad og motta vedtak før du kan sende inn liste over utgifter til daglig reise med bruk av egen bil.',
   },
 };
