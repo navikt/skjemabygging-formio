@@ -32,7 +32,7 @@
     "@mocks-server/cypress-commands": "^6.1.1",
     "@testing-library/react": "^14.2.1",
     "cypress-axe": "^1.5.0",
-    "cypress-wait-until": "^2.0.1",
+    "cypress-wait-until": "^3.0.1",
     "lodash.template": "^4.5.0",
     "moment": "^2.30.1",
     "prop-types": "^15.8.1"
