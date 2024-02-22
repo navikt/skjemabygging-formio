@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { getActivities } from '../../api/sendinn/sendInnActivities';
 import { AppConfigContextType } from '../../context/config/configContext';
+import { getComponentInfo } from '../../formio/components/core/driving-list/DrivingList.info';
 import DatePicker from '../datepicker/DatePicker';
 import DrivingPeriod from './DrivingPeriod';
 
@@ -11,6 +12,8 @@ interface NavDrivingListProps {
   onValueChange: (value: object) => void;
   appConfig: AppConfigContextType;
   values: DrivingListValues;
+  t(text: string, params?: any): any;
+  locale: string;
 }
 
 export interface DrivingListValues {
@@ -27,16 +30,14 @@ interface DrivingListPeriod {
   id: string;
 }
 
-const NavDrivingList = ({ appConfig, onValueChange, values }: NavDrivingListProps) => {
+const NavDrivingList = ({ appConfig, onValueChange, values, t, locale }: NavDrivingListProps) => {
   const [activities, setActivities] = useState<SendInnAktivitet[]>([]);
-
-  // FIXME: Get the correct submission method here
-  const submissionMethod = 'paper';
+  const submissionMethod = appConfig.submissionMethod;
 
   useEffect(() => {
     const fetchData = async () => {
       // FIXME: Update if statement
-      if (appConfig?.app === 'fyllut' && submissionMethod !== 'paper') {
+      if (appConfig?.app === 'fyllut' && submissionMethod === 'digital') {
         const result = await getActivities(appConfig);
 
         if (result) {
@@ -111,9 +112,9 @@ const NavDrivingList = ({ appConfig, onValueChange, values }: NavDrivingListProp
 
           return (
             <DrivingPeriod
+              t={t}
               hasParking={vedtak.trengerParkering}
               onValueChange={onValueChange}
-              id={betalingsplan.betalingsplanId}
               key={betalingsplan.betalingsplanId}
               periodFrom={periodFrom}
               periodTo={periodTo}
@@ -130,10 +131,10 @@ const NavDrivingList = ({ appConfig, onValueChange, values }: NavDrivingListProp
     return values?.periods?.map((period) => {
       return (
         <DrivingPeriod
+          t={t}
           key={period.id}
           hasParking={values?.parking ?? false}
           onValueChange={onValueChange}
-          id={period.id}
           periodFrom={period.periodFrom}
           periodTo={period.periodTo}
           values={values}
@@ -146,30 +147,33 @@ const NavDrivingList = ({ appConfig, onValueChange, values }: NavDrivingListProp
     return (
       <>
         <DatePicker
-          id={'drivingListDatePicker'}
+          id={getComponentInfo('datePicker').id}
+          label={t(getComponentInfo('datePicker').label)}
           isRequired={true}
           value={values?.selectedDate}
           onChange={(date: string) => onDateChange(date)}
-          locale={'nb-NO'}
+          locale={locale}
           readOnly={false}
           error={undefined}
           inputRef={undefined}
         />
         <RadioGroup
-          legend="Velg periode for innsending"
+          id={getComponentInfo('periodType').id}
+          legend={t(getComponentInfo('periodType').label)}
           onChange={(value) => onPeriodChange(value)}
           value={values?.selectedPeriodType}
         >
-          <Radio value="weekly">{'Ukentlig'}</Radio>
-          <Radio value="monthly">{'Månedlig'}</Radio>
+          <Radio value="weekly">{t('Ukentlig')}</Radio>
+          <Radio value="monthly">{t('Månedlig')}</Radio>
         </RadioGroup>
         <RadioGroup
-          legend="Skal du registrere parkering?"
+          id={getComponentInfo('parkingRadio').id}
+          legend={t(getComponentInfo('parkingRadio').label)}
           onChange={(value) => onParkingChange(value)}
           value={values?.parking}
         >
-          <Radio value={true}>{'Ja'}</Radio>
-          <Radio value={false}>{'Nei'}</Radio>
+          <Radio value={true}>{t('Ja')}</Radio>
+          <Radio value={false}>{t('Nei')}</Radio>
         </RadioGroup>
       </>
     );
@@ -178,7 +182,9 @@ const NavDrivingList = ({ appConfig, onValueChange, values }: NavDrivingListProp
   return (
     <>
       {submissionMethod === 'paper' && renderPaperOptions()}
-      <Accordion>{submissionMethod === 'paper' ? renderPaperDrivingList() : renderDigitalDrivingList()} </Accordion>
+      <Accordion id={getComponentInfo('dates').id}>
+        {submissionMethod === 'paper' ? renderPaperDrivingList() : renderDigitalDrivingList()}{' '}
+      </Accordion>
     </>
   );
 };

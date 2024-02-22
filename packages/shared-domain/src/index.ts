@@ -1,3 +1,4 @@
+import { ComponentError } from './component';
 import type { ConfigType } from './config';
 import { Enhet, Enhetstype, supportedEnhetstyper } from './enhet';
 import {
@@ -86,6 +87,7 @@ export {
 };
 export type {
   Component,
+  ComponentError,
   ConfigType,
   DependencyType,
   DisplayType,

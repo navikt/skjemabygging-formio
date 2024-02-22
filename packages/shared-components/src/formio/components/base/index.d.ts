@@ -1,4 +1,4 @@
-import { Component, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
+import { Component, ComponentError, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import Select from 'react-select/base';
 import { AppConfigContextType } from '../../../context/config/configContext';
 interface IReactComponent {
@@ -40,6 +40,7 @@ interface ReactComponentType {
   error?: {
     message: string;
   } | null;
+  componentErrors?: ComponentError[];
   builderMode: boolean;
   init(): any;
   redraw(): any;

@@ -1,14 +1,17 @@
 import { ReactComponent } from '@formio/react';
+import { ComponentError } from '@navikt/skjemadigitalisering-shared-domain';
 import { createRoot } from 'react-dom/client';
 import { IReactComponent } from './index';
 
 class FormioReactComponent extends (ReactComponent as unknown as IReactComponent) {
   componentMessage?: string;
   rootElement: any;
+  componentErrors: ComponentError[];
 
   constructor(component, options, data) {
     super(component, options, data);
     this.componentMessage = undefined;
+    this.componentErrors = [];
   }
 
   build(element: any) {

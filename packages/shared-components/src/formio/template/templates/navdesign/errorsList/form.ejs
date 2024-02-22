@@ -13,6 +13,7 @@
       class="navds-link"
       tabIndex="0"
       role="link"
+      onclick="document.getElementById('{{ err.keyOrPath }}')?.scrollIntoView(true);"
     >
       {{err.message}}
     </span>

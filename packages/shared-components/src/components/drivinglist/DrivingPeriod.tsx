@@ -1,20 +1,20 @@
 import { Accordion, Checkbox, CheckboxGroup, TextField } from '@navikt/ds-react';
 import { dateUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { useMemo } from 'react';
+import { getComponentInfo } from '../../formio/components/core/driving-list/DrivingList.info';
 import { DrivingListValues } from './NavDrivingList';
 
 interface DrivingPeriodProps {
-  id: string;
   periodFrom: Date;
   periodTo: Date;
   onValueChange: (value: any) => void;
   hasParking: boolean;
   values?: DrivingListValues;
+  t: (text: string, params?: any) => any;
 }
 
-const DrivingPeriod = ({ id, periodFrom, periodTo, onValueChange, values, hasParking }: DrivingPeriodProps) => {
+const DrivingPeriod = ({ periodFrom, periodTo, onValueChange, values, hasParking, t }: DrivingPeriodProps) => {
   const periodDates = useMemo(() => dateUtils.getDatesInRange(periodFrom, periodTo), [periodFrom, periodTo]);
-
   const selectedDates = values?.dates?.map((value) => value.date);
 
   const showParking = (date: string) => {
@@ -57,11 +57,12 @@ const DrivingPeriod = ({ id, periodFrom, periodTo, onValueChange, values, hasPar
 
   // FIXME: Fix validation on number and input size
   return (
-    <Accordion.Item key={id}>
+    <Accordion.Item>
       <Accordion.Header>{header}</Accordion.Header>
       <Accordion.Content>
         <CheckboxGroup
-          legend="Kryss av for de dagene du har brukt egen bil og har hatt parkeringsutgifter"
+          id={getComponentInfo('dates').id}
+          legend={t(getComponentInfo('dates').label)}
           onChange={(values) => onChange(values)}
           value={values?.dates?.map((value) => value.date) ?? []}
         >
@@ -71,7 +72,8 @@ const DrivingPeriod = ({ id, periodFrom, periodTo, onValueChange, values, hasPar
                 <Checkbox value={toLocaleDate(date)}>{toWeekdayAndDate(date)}</Checkbox>
                 {showParking(toLocaleDate(date)) ? (
                   <TextField
-                    label={'Parkering'}
+                    id={getComponentInfo('parkingExpenses').id}
+                    label={t(getComponentInfo('parkingExpenses').label)}
                     type="text"
                     size="medium"
                     inputMode="numeric"

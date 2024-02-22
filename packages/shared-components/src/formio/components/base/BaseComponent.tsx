@@ -226,6 +226,34 @@ class BaseComponent extends FormioReactComponent {
       </>
     );
   }
+
+  // ComponentId is used to scroll to the correct component when clicking on error summary
+  // Message is the error message that is shown in the error summary
+  addError(componentId: string, message: string) {
+    this.componentErrors.push({ componentId, message });
+  }
+
+  removeError(componentId: string) {
+    this.componentErrors = this.errors.filter((error) => error.componentId !== componentId);
+  }
+
+  removeAllErrors() {
+    this.componentErrors = [];
+  }
+
+  renderErrors() {
+    if (this.componentErrors.length > 0) {
+      const errors = this.componentErrors.map((error) => ({
+        level: 'error',
+        message: error.message,
+        path: error.componentId,
+        context: { hasLabel: true }, // To not show the label of the component in the error summary (ex: "label: message")
+      }));
+      // @ts-ignore FIXME
+      super.setCustomValidity(errors);
+      return false;
+    }
+  }
 }
 
 export default BaseComponent;
