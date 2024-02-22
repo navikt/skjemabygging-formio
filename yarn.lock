@@ -2949,10 +2949,10 @@ cypress-axe@^1.5.0:
   resolved "https://registry.yarnpkg.com/cypress-axe/-/cypress-axe-1.5.0.tgz#95082734583da77b51ce9b7784e14a442016c7a1"
   integrity sha512-Hy/owCjfj+25KMsecvDgo4fC/781ccL+e8p+UUYoadGVM2ogZF9XIKbiM6KI8Y3cEaSreymdD6ZzccbI2bY0lQ==
 
-cypress-wait-until@^2.0.1:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/cypress-wait-until/-/cypress-wait-until-2.0.1.tgz#69c575c7207d83e4ae023e2aaecf2b66148c9fc0"
-  integrity sha512-+IyVnYNiaX1+C+V/LazrJWAi/CqiwfNoRSrFviECQEyolW1gDRy765PZosL2alSSGK8V10Y7BGfOQyZUDgmnjQ==
+cypress-wait-until@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/cypress-wait-until/-/cypress-wait-until-3.0.1.tgz#6a697a600f4fb8cd2897489a15fda77c9857abec"
+  integrity sha512-kpoa8yL6Bi/JNsThGBbrrm7g4SNzYyBUv9M5pF6/NTVm/ClY0HnJzeuWnHiAUZKIZ5l86Oedb12wQyjx7/CWPg==
 
 cypress@^13.6.5:
   version "13.6.5"
