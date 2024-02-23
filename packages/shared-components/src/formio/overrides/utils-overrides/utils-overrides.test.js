@@ -356,6 +356,13 @@ describe('utils-overrides', () => {
       expect(UtilsOverrides.isBornBeforeYear(1964, 'fnr', { data: { fnr: '11013912345' } })).toBe(false);
     });
 
+    it('handles invalid submission value', () => {
+      expect(UtilsOverrides.isBornBeforeYear(1964, 'dato', { data: { dato: '1234' } })).toBe(false);
+      expect(UtilsOverrides.isBornBeforeYear(1964, 'dato', { data: { dato: '12.02.2002' } })).toBe(false);
+      expect(UtilsOverrides.isBornBeforeYear(1964, 'dato', { data: { dato: 1234 } })).toBe(false);
+      expect(UtilsOverrides.isBornBeforeYear(1964, 'dato', { data: { dato: true } })).toBe(false);
+    });
+
     describe('birth date 18.09.1922', () => {
       const FNR = '18092200163';
 
@@ -373,16 +380,22 @@ describe('utils-overrides', () => {
 
     it('birth date 01.05.1956', () => {
       const FNR = '01055600046';
+      const DATE = '1956-05-01';
       expect(UtilsOverrides.isBornBeforeYear(1955, 'fnr', { data: { fnr: FNR } })).toBe(false);
       expect(UtilsOverrides.isBornBeforeYear(1956, 'fnr', { data: { fnr: FNR } })).toBe(false);
       expect(UtilsOverrides.isBornBeforeYear(1957, 'fnr', { data: { fnr: FNR } })).toBe(true);
       expect(UtilsOverrides.isBornBeforeYear(2054, 'fnr', { data: { fnr: FNR } })).toBe(true);
       expect(UtilsOverrides.isBornBeforeYear(2055, 'fnr', { data: { fnr: FNR } })).toBe(true);
       expect(UtilsOverrides.isBornBeforeYear(2056, 'fnr', { data: { fnr: FNR } })).toBe(true);
+
+      expect(UtilsOverrides.isBornBeforeYear(1955, 'dato', { data: { dato: DATE } })).toBe(false);
+      expect(UtilsOverrides.isBornBeforeYear(1956, 'dato', { data: { dato: DATE } })).toBe(false);
+      expect(UtilsOverrides.isBornBeforeYear(1957, 'dato', { data: { dato: DATE } })).toBe(true);
     });
 
     it('birth date 13.04.2039', () => {
       const FNR = '13043950287';
+      const DATE = '2039-04-13';
       expect(UtilsOverrides.isBornBeforeYear(1938, 'fnr', { data: { fnr: FNR } })).toBe(false);
       expect(UtilsOverrides.isBornBeforeYear(1939, 'fnr', { data: { fnr: FNR } })).toBe(false);
       expect(UtilsOverrides.isBornBeforeYear(1940, 'fnr', { data: { fnr: FNR } })).toBe(false);
@@ -391,14 +404,23 @@ describe('utils-overrides', () => {
       expect(UtilsOverrides.isBornBeforeYear(2038, 'fnr', { data: { fnr: FNR } })).toBe(false);
       expect(UtilsOverrides.isBornBeforeYear(2039, 'fnr', { data: { fnr: FNR } })).toBe(false);
       expect(UtilsOverrides.isBornBeforeYear(2040, 'fnr', { data: { fnr: FNR } })).toBe(true);
+
+      expect(UtilsOverrides.isBornBeforeYear(2038, 'dato', { data: { dato: DATE } })).toBe(false);
+      expect(UtilsOverrides.isBornBeforeYear(2039, 'dato', { data: { dato: DATE } })).toBe(false);
+      expect(UtilsOverrides.isBornBeforeYear(2040, 'dato', { data: { dato: DATE } })).toBe(true);
     });
 
     it('handles composite key', () => {
       const FNR = '01055600046';
-      const submission = { data: { fornavn: '', container: { fodselsnummer: FNR } } };
+      const DATE = '1956-05-01';
+      const submission = { data: { fornavn: '', container: { fodselsnummer: FNR, dato: DATE } } };
       expect(UtilsOverrides.isBornBeforeYear(1955, 'container.fodselsnummer', submission)).toBe(false);
       expect(UtilsOverrides.isBornBeforeYear(1956, 'container.fodselsnummer', submission)).toBe(false);
       expect(UtilsOverrides.isBornBeforeYear(1957, 'container.fodselsnummer', submission)).toBe(true);
+
+      expect(UtilsOverrides.isBornBeforeYear(1955, 'container.dato', submission)).toBe(false);
+      expect(UtilsOverrides.isBornBeforeYear(1956, 'container.dato', submission)).toBe(false);
+      expect(UtilsOverrides.isBornBeforeYear(1957, 'container.dato', submission)).toBe(true);
     });
   });
 
@@ -420,17 +442,31 @@ describe('utils-overrides', () => {
       expect(UtilsOverrides.getAge('fnr', { data: { fnr: FNR_INVALID } }, pointInTime('01.05.1957'))).toBeUndefined();
     });
 
+    it('handles invalid submission value', () => {
+      expect(UtilsOverrides.getAge('dato', { data: { dato: '1234' } })).toBe(undefined);
+      expect(UtilsOverrides.getAge('dato', { data: { dato: '12.02.2002' } })).toBe(undefined);
+      expect(UtilsOverrides.getAge('dato', { data: { dato: 1234 } })).toBe(undefined);
+      expect(UtilsOverrides.getAge('dato', { data: { dato: true } })).toBe(undefined);
+    });
+
     it('returns correct age', () => {
       const FNR = '01055631685';
+      const DATE = '1956-05-01';
       expect(UtilsOverrides.getAge('fnr', { data: { fnr: FNR } }, pointInTime('30.04.1957'))).toBe(0);
       expect(UtilsOverrides.getAge('fnr', { data: { fnr: FNR } }, pointInTime('01.05.1957'))).toBe(1);
       expect(UtilsOverrides.getAge('fnr', { data: { fnr: FNR } }, pointInTime('15.10.2024'))).toBe(68);
+      expect(UtilsOverrides.getAge('dato', { data: { dato: DATE } }, pointInTime('30.04.1957'))).toBe(0);
+      expect(UtilsOverrides.getAge('dato', { data: { dato: DATE } }, pointInTime('01.05.1957'))).toBe(1);
+      expect(UtilsOverrides.getAge('dato', { data: { dato: DATE } }, pointInTime('15.10.2024'))).toBe(68);
     });
 
     it('handles future fnr', () => {
       const FNR = '06073350288';
+      const DATE = '2033-07-06';
       expect(UtilsOverrides.getAge('fnr', { data: { fnr: FNR } }, pointInTime('15.10.2024'))).toBe(-8);
       expect(UtilsOverrides.getAge('fnr', { data: { fnr: FNR } }, pointInTime('06.07.2033'))).toBe(0);
+      expect(UtilsOverrides.getAge('dato', { data: { dato: DATE } }, pointInTime('15.10.2024'))).toBe(-8);
+      expect(UtilsOverrides.getAge('dato', { data: { dato: DATE } }, pointInTime('06.07.2033'))).toBe(0);
     });
   });
 
@@ -444,15 +480,20 @@ describe('utils-overrides', () => {
 
     it('checks if age is inside interval', () => {
       const FNR = '01055631685';
-      const submission = { data: { fnr: FNR } };
+      const DATE = '1956-05-01';
+      const submission = { data: { fnr: FNR, dato: DATE } };
 
       // lower boundary
       expect(UtilsOverrides.isAgeBetween([18, 64], 'fnr', submission, pointInTime('30.04.1974'))).toBe(false);
       expect(UtilsOverrides.isAgeBetween([18, 64], 'fnr', submission, pointInTime('01.05.1974'))).toBe(true);
+      expect(UtilsOverrides.isAgeBetween([18, 64], 'dato', submission, pointInTime('30.04.1974'))).toBe(false);
+      expect(UtilsOverrides.isAgeBetween([18, 64], 'dato', submission, pointInTime('01.05.1974'))).toBe(true);
 
       // upper boundary
       expect(UtilsOverrides.isAgeBetween([18, 58], 'fnr', submission, pointInTime('30.04.2015'))).toBe(true);
       expect(UtilsOverrides.isAgeBetween([18, 58], 'fnr', submission, pointInTime('01.05.2015'))).toBe(false);
+      expect(UtilsOverrides.isAgeBetween([18, 58], 'dato', submission, pointInTime('30.04.2015'))).toBe(true);
+      expect(UtilsOverrides.isAgeBetween([18, 58], 'dato', submission, pointInTime('01.05.2015'))).toBe(false);
     });
   });
 });
