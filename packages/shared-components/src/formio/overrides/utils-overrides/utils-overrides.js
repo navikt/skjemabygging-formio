@@ -161,7 +161,7 @@ const getBirthDate = (fnrOrDateKey, submission = {}) => {
     return moment(submissionValue, 'YYYY-MM-DD');
   }
   if (value && fnrvalidator.fnr(value).status === 'valid') {
-    getBirthDateFromFnr(value);
+    return getBirthDateFromFnr(value);
   }
   return undefined;
 };
