@@ -28,6 +28,11 @@ class DrivingList extends BaseComponent {
     this.rerender();
   }
 
+  isValidParking(value: string) {
+    if (value === '') return true;
+    return /^\d+$/.test(value);
+  }
+
   override checkValidity(data: any): boolean {
     this.removeAllErrors();
     const componentData = data[this.defaultSchema.key] as DrivingListValues;
@@ -58,6 +63,19 @@ class DrivingList extends BaseComponent {
       if (componentData?.dates?.length === 0) {
         this.addError(getComponentInfo('dates').id, requiredError('dates', this.t.bind(this)));
       }
+    }
+
+    if (componentData?.dates?.some((date) => !this.isValidParking(date.parking))) {
+      this.addError(getComponentInfo('dates').id, this.t('Parkeringsutgiftene må være et gyldig beløp'));
+    }
+
+    if (componentData?.dates?.some((date) => Number(date.parking) > 100)) {
+      this.addError(
+        getComponentInfo('dates').id,
+        this.t(
+          'Du kan ikke legge inn parkeringsutgifter over 100 kroner i den elektroniske kjørelisten. Hvis du har parkeringsutgifter over 100 kroner per dag må du sende inn kjøreliste på skjema NAV 00-01.01 og legge ved kvitteringer som dokumenterer utgiften.',
+        ),
+      );
     }
 
     this.renderErrors();
