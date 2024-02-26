@@ -45,7 +45,7 @@ import { Operator } from './migration/operator';
 import type { Mottaksadresse, MottaksadresseData } from './mottaksadresse';
 import type { ReportDefinition } from './reports';
 import type { GlobalTranslationsResourceContent, MottaksadresserResourceContent, ResourceContent } from './resource';
-import { SendInnAktivitet } from './sendinn/activity';
+import { SendInnAktivitet, SubmissionActivity } from './sendinn/activity';
 import type { Summary } from './summary/FormSummaryType';
 import MockedComponentObjectForTest from './summary/MockedComponentObjectForTest';
 import formSummaryUtil from './summary/formSummaryUtil';
@@ -129,6 +129,7 @@ export type {
   ScopedTranslationMap,
   SendInnAktivitet,
   Submission,
+  SubmissionActivity,
   SubmissionData,
   SubmissionMethod,
   Summary,

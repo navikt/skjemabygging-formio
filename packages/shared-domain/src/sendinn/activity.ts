@@ -44,3 +44,10 @@ export interface BetalingsplanUtgiftsperiode {
   fom: string;
   tom: string;
 }
+
+export interface SubmissionActivity {
+  aktivitetId: string;
+  maalgruppe: string;
+  periode: { fom: string; tom: string };
+  text: string;
+}

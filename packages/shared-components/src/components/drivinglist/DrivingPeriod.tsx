@@ -1,19 +1,30 @@
 import { Accordion, Checkbox, CheckboxGroup, TextField } from '@navikt/ds-react';
 import { dateUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { useMemo } from 'react';
-import { getComponentInfo } from '../../formio/components/core/driving-list/DrivingList.info';
-import { DrivingListValues } from './NavDrivingList';
+import {
+  getComponentInfo,
+  toLocaleDate,
+  toWeekdayAndDate,
+} from '../../formio/components/core/driving-list/DrivingList.utils';
+import makeStyles from '../../util/styles/jss/jss';
+import { DrivingListSubmission } from './NavDrivingList';
 
 interface DrivingPeriodProps {
   periodFrom: Date;
   periodTo: Date;
   onValueChange: (value: any) => void;
   hasParking: boolean;
-  values?: DrivingListValues;
+  values?: DrivingListSubmission;
   t: (text: string, params?: any) => any;
   index: number;
   readOnly?: boolean;
 }
+
+const useDrivingPeriodStyles = makeStyles({
+  parkingTextField: {
+    marginBottom: '1rem',
+  },
+});
 
 const DrivingPeriod = ({
   periodFrom,
@@ -25,6 +36,7 @@ const DrivingPeriod = ({
   index,
   readOnly = false,
 }: DrivingPeriodProps) => {
+  const styles = useDrivingPeriodStyles();
   const periodDates = useMemo(() => dateUtils.getDatesInRange(periodFrom, periodTo), [periodFrom, periodTo]);
   const selectedDates = values?.dates?.map((value) => value.date);
 
@@ -56,14 +68,6 @@ const DrivingPeriod = ({
     onValueChange({ ...values, dates: mappedValues });
   };
 
-  const toLocaleDate = (date: Date) => {
-    return dateUtils.toLocaleDate(date.toString());
-  };
-
-  const toWeekdayAndDate = (date: Date) => {
-    return dateUtils.toWeekdayAndDate(date.toString());
-  };
-
   const header = `${toLocaleDate(periodFrom)} - ${toLocaleDate(periodTo)}`;
 
   // FIXME: Fix validation on number and input size
@@ -91,7 +95,7 @@ const DrivingPeriod = ({
                     type="text"
                     size="medium"
                     inputMode="numeric"
-                    className="nav-input--s"
+                    className={`nav-input--s ${styles.parkingTextField}`}
                     value={values?.dates?.find((val) => val.date === toLocaleDate(date))?.parking}
                     onChange={(event) => onChangeParking(date, event.currentTarget.value)}
                     readOnly={readOnly}

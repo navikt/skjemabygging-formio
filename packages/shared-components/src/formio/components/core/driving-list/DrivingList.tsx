@@ -1,8 +1,8 @@
-import NavDrivingList, { DrivingListValues } from '../../../../components/drivinglist/NavDrivingList';
+import NavDrivingList, { DrivingListSubmission } from '../../../../components/drivinglist/NavDrivingList';
 import BaseComponent from '../../base/BaseComponent';
 import drivingListBuilder from './DrivingList.builder';
 import drivingListForm from './DrivingList.form';
-import { getComponentInfo, requiredError } from './DrivingList.info';
+import { getComponentInfo, requiredError } from './DrivingList.utils';
 
 class DrivingList extends BaseComponent {
   static schema() {
@@ -35,7 +35,7 @@ class DrivingList extends BaseComponent {
 
   override checkValidity(data: any): boolean {
     this.removeAllErrors();
-    const componentData = data[this.defaultSchema.key] as DrivingListValues;
+    const componentData = data[this.defaultSchema.key] as DrivingListSubmission;
 
     const submissionMethod = this.getAppConfig()?.submissionMethod;
 
