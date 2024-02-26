@@ -357,6 +357,7 @@ describe('utils-overrides', () => {
     });
 
     it('handles invalid submission value', () => {
+      expect(UtilsOverrides.isBornBeforeYear(1964, 'dato', { data: { dato: '' } })).toBe(false);
       expect(UtilsOverrides.isBornBeforeYear(1964, 'dato', { data: { dato: '1234' } })).toBe(false);
       expect(UtilsOverrides.isBornBeforeYear(1964, 'dato', { data: { dato: '12.02.2002' } })).toBe(false);
       expect(UtilsOverrides.isBornBeforeYear(1964, 'dato', { data: { dato: 1234 } })).toBe(false);
@@ -443,6 +444,7 @@ describe('utils-overrides', () => {
     });
 
     it('handles invalid submission value', () => {
+      expect(UtilsOverrides.getAge('dato', { data: { dato: '' } })).toBe(undefined);
       expect(UtilsOverrides.getAge('dato', { data: { dato: '1234' } })).toBe(undefined);
       expect(UtilsOverrides.getAge('dato', { data: { dato: '12.02.2002' } })).toBe(undefined);
       expect(UtilsOverrides.getAge('dato', { data: { dato: 1234 } })).toBe(undefined);
