@@ -1,4 +1,4 @@
-import { htmlString2Json, json2HtmlString } from './converters';
+import { HtmlAsJsonElement, HtmlAsJsonTextElement, htmlString2Json, json2HtmlString } from './converters';
 import { isHtmlString, translateHtml } from './translate';
 
 const htmlUtils = {
@@ -8,4 +8,5 @@ const htmlUtils = {
   json2HtmlString,
 };
 
+export type { HtmlAsJsonElement, HtmlAsJsonTextElement };
 export default htmlUtils;

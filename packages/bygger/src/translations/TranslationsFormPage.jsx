@@ -2,8 +2,8 @@ import { BodyShort, Heading } from '@navikt/ds-react';
 import { makeStyles } from '@navikt/skjemadigitalisering-shared-components';
 import { useEffect, useState } from 'react';
 import { languagesInNorwegian, useI18nDispatch } from '../context/i18n';
+import FormItem from './FormItem';
 import ObsoleteTranslationsPanel from './ObsoleteTranslationsPanel';
-import TranslationTextInput from './TranslationTextInput';
 
 const useTranslationsListStyles = makeStyles({
   root: {
@@ -11,53 +11,6 @@ const useTranslationsListStyles = makeStyles({
     margin: '0 auto',
   },
 });
-
-const FormItem = ({ currentTranslation, text, type, languageCode }) => {
-  const [showGlobalTranslation, setShowGlobalTranslation] = useState(false);
-  const [hasGlobalTranslation, setHasGlobalTranslation] = useState(false);
-  const [globalTranslation, setGlobalTranslation] = useState('');
-  const [tempGlobalTranslation, setTempGlobalTranslation] = useState('');
-
-  const dispatch = useI18nDispatch();
-
-  useEffect(() => {
-    if (currentTranslation && currentTranslation[text]) {
-      if (currentTranslation[text].scope === 'global') {
-        setHasGlobalTranslation(true);
-        setShowGlobalTranslation(true);
-        setTempGlobalTranslation(currentTranslation[text].value);
-      }
-      setGlobalTranslation(currentTranslation[text].value);
-    } else {
-      setGlobalTranslation('');
-      setHasGlobalTranslation(false);
-      setShowGlobalTranslation(false);
-    }
-  }, [currentTranslation, text]);
-
-  const updateTranslations = (targetValue) => {
-    dispatch({
-      type: 'update',
-      payload: { lang: languageCode, translation: { [text]: { value: targetValue, scope: 'local' } } },
-    });
-    setGlobalTranslation(targetValue);
-  };
-
-  return (
-    <TranslationTextInput
-      text={text}
-      value={globalTranslation}
-      type={type}
-      key={`${text}-${languageCode}`}
-      hasGlobalTranslation={hasGlobalTranslation}
-      tempGlobalTranslation={tempGlobalTranslation}
-      showGlobalTranslation={showGlobalTranslation}
-      onChange={updateTranslations}
-      setHasGlobalTranslation={setHasGlobalTranslation}
-      setGlobalTranslation={setGlobalTranslation}
-    />
-  );
-};
 
 const TranslationsToRemove = ({ translations, languageCode }) => {
   const dispatch = useI18nDispatch();
@@ -110,11 +63,13 @@ const TranslationsFormPage = ({ skjemanummer, translations, title, flattenedComp
         {`Oversettelser${languageCode ? ' på ' + languagesInNorwegian[languageCode] : ''}`}
       </Heading>
       <form>
-        {flattenedComponents.map(({ text, type }) => {
+        {flattenedComponents.map((comp) => {
+          const { text, type, htmlElementAsJson } = comp;
           return (
             <FormItem
-              currentTranslation={currentTranslation}
+              translations={currentTranslation}
               text={text}
+              htmlElementAsJson={htmlElementAsJson}
               type={type}
               key={`translation-${skjemanummer}-${text}-${languageCode}`}
               languageCode={languageCode}

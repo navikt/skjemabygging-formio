@@ -23,7 +23,7 @@ import FyllUtRouter from './pages/FyllUtRouter';
 import Styles from './styles';
 import * as formUtils from './util/form/form.js';
 import NavFormioJs from './util/formio/formiojs';
-import htmlUtils from './util/html';
+import htmlUtils, { HtmlAsJsonElement, HtmlAsJsonTextElement } from './util/html';
 import makeStyles from './util/styles/jss/jss';
 import { navCssVariables } from './util/styles/nav-css/navCssVariables';
 import i18nData from './util/translation/i18nData';
@@ -61,4 +61,4 @@ export {
   useLanguages,
   useModal,
 };
-export type { FetchHeader, FetchOptions };
+export type { FetchHeader, FetchOptions, HtmlAsJsonElement, HtmlAsJsonTextElement };

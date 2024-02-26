@@ -1,8 +1,10 @@
 interface HtmlAsJsonTextElement {
+  id: string;
   type: 'TextElement';
   textContent: string | null;
 }
 interface HtmlAsJsonElement {
+  id: string;
   type: 'Element';
   tagName: string;
   attributes: Array<[string, string]>;
@@ -26,23 +28,32 @@ const fromNode = (node: ChildNode): HtmlAsJsonElement | HtmlAsJsonTextElement =>
   }
 };
 
-const TextElement = (element: Element): HtmlAsJsonTextElement => ({
-  type: 'TextElement',
-  textContent: element.textContent,
-});
-
-const Element = (element: Element): HtmlAsJsonElement => ({
-  type: 'Element',
-  tagName: element.tagName,
-  attributes: Array.from(element.attributes, ({ name, value }) => [name, value]),
-  children: Array.from(element.childNodes, fromNode),
-});
-
-const json2HtmlString = (jsonElement: HtmlAsJsonElement, translate?: (texts: string) => string) => {
-  return (toNode(jsonElement, translate) as HTMLElement).outerHTML.toString();
+const TextElement = (element: Element): HtmlAsJsonTextElement => {
+  return {
+    id: element.textContent!.replaceAll(' ', ''),
+    type: 'TextElement',
+    textContent: element.textContent,
+  };
 };
 
-const toNode = (jsonElement: HtmlAsJsonElement | HtmlAsJsonTextElement, translate?: (text: string) => string) => {
+const Element = (element: Element): HtmlAsJsonElement => {
+  return {
+    id: element.textContent!.replaceAll(' ', ''),
+    type: 'Element',
+    tagName: element.tagName,
+    attributes: Array.from(element.attributes, ({ name, value }) => [name, value]),
+    children: Array.from(element.childNodes, fromNode),
+  };
+};
+
+const json2HtmlString = (jsonElement: HtmlAsJsonElement, translate?: (text: string) => string) => {
+  return (toNode(jsonElement, translate) as HTMLElement).innerHTML.toString();
+};
+
+const toNode = (
+  jsonElement: HtmlAsJsonElement | HtmlAsJsonTextElement,
+  translate: (text: string) => string = (text) => text,
+) => {
   switch (jsonElement?.type) {
     case 'Element':
       return HtmlNode(jsonElement.tagName, jsonElement.attributes, jsonElement.children, translate);
@@ -70,3 +81,4 @@ const HtmlNode = (
 };
 
 export { htmlString2Json, json2HtmlString };
+export type { HtmlAsJsonElement, HtmlAsJsonTextElement };

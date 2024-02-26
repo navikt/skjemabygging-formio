@@ -1,4 +1,5 @@
-import { NavFormioJs } from '@navikt/skjemadigitalisering-shared-components';
+import { HtmlAsJsonElement, htmlUtils, NavFormioJs } from '@navikt/skjemadigitalisering-shared-components';
+
 import {
   Component,
   FormioTranslationMap,
@@ -9,14 +10,14 @@ import {
 } from '@navikt/skjemadigitalisering-shared-domain';
 
 type TextObjectType = ReturnType<typeof textObject>;
-type InputType = ReturnType<typeof getInputType>;
+type InputType = 'text' | 'textarea';
 type CsvRow = {
   text: string;
 } & {
   [key in Language]?: string;
 };
 
-const getInputType = (value: string) => {
+const getInputType = (value: string): InputType => {
   return value?.length < 80 ? 'text' : 'textarea';
 };
 
@@ -152,17 +153,17 @@ const getTranslatablePropertiesFromForm = (form: NavFormType) =>
 const withoutDuplicatedComponents = (textObject: TextObjectType, index: number, currentComponents: TextObjectType[]) =>
   index === currentComponents.findIndex((currentComponent) => currentComponent.text === textObject.text);
 
-const textObject = (withInputType: boolean, value: string) => {
-  if (withInputType)
-    return {
-      text: value,
-      type: getInputType(value) as InputType,
-    };
-  else {
-    return {
-      text: value,
-    };
-  }
+const textObject = (
+  withInputType: boolean,
+  value: string,
+): { text: string; type?: InputType; htmlElementAsJson?: HtmlAsJsonElement } => {
+  const htmlElementAsJson = htmlUtils.isHtmlString(value) ? htmlUtils.htmlString2Json(value) : undefined;
+  const type = withInputType ? getInputType(value) : undefined;
+  return {
+    text: value,
+    ...(type && { type }),
+    ...(htmlElementAsJson && { htmlElementAsJson }),
+  };
 };
 
 const getFormTexts = (form?: NavFormType, withInputType = false) => {
@@ -182,9 +183,7 @@ const getFormTexts = (form?: NavFormType, withInputType = false) => {
         .filter((key) => component[key] !== undefined)
         .flatMap((key) => {
           if (key === 'values' || key === 'data') {
-            return component[key]
-              .filter((value) => value !== '')
-              .map((value) => textObject(withInputType, value)) as TextObjectType;
+            return component[key].filter((value) => value !== '').map((value) => textObject(withInputType, value));
           }
           return textObject(withInputType, component[key]);
         }),
@@ -249,3 +248,4 @@ export {
   sanitizeForCsv,
   withoutDuplicatedComponents,
 };
+export type { InputType };
