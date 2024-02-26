@@ -27,7 +27,6 @@ const editFormAdditionalDescription = (): Component => {
           custom:
             'valid = (!input && data.additionalDescriptionText) ? "Lenketekst er påkrevd, når man har utvidet beskrivelse" : true;',
         },
-        input: true,
       },
     ],
   };

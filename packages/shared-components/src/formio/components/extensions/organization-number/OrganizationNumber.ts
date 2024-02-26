@@ -11,16 +11,7 @@ class OrganizationNumber extends TextField {
       type: 'orgNr',
       key: 'orgNr',
       fieldSize: 'input--s',
-      input: true,
       spellcheck: false,
-      dataGridLabel: true,
-      clearOnHide: true,
-      delimiter: true,
-      truncateMultipleSpaces: false,
-      requireDecimal: false,
-      maxLength: 9,
-      displayMask: '999 999 999',
-      inputMaskPlaceholderChar: ' ', // U+00a0 -space
     });
   }
 

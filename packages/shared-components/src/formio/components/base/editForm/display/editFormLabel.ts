@@ -8,7 +8,6 @@ const editFormLabel = (): Component => {
     validate: {
       required: true,
     },
-    input: true,
   };
 };
 

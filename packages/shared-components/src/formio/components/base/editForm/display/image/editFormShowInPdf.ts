@@ -6,7 +6,6 @@ const editFormShowInPdf = (): Component => {
     label: 'Inkludér bilde i pdf',
     key: 'showInPdf',
     customDefaultValue: 'value=true',
-    input: true,
   };
 };
 

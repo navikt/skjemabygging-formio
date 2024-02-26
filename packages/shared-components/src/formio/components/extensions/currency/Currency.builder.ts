@@ -6,11 +6,7 @@ const currencyBuilder = () => {
       type: 'currency',
       key: 'belop',
       fieldSize: 'input--s',
-      input: true,
       currency: 'nok',
-      spellcheck: false,
-      dataGridLabel: true,
-      clearOnHide: true,
       validateOn: 'blur',
       validate: {
         required: true,

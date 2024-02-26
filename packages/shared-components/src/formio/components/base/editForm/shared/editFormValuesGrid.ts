@@ -3,14 +3,12 @@ import { Component } from '@navikt/skjemadigitalisering-shared-domain';
 const editFormValuesGrid = (): Component => ({
   key: '',
   type: 'datagrid',
-  input: true,
   label: 'Dataverdier',
   reorder: true,
   components: [
     {
       label: 'Ledetekst',
       key: 'label',
-      input: true,
       type: 'textfield',
       hideLabel: true,
       validate: {
@@ -20,7 +18,6 @@ const editFormValuesGrid = (): Component => ({
     {
       label: 'Dataverdi',
       key: 'value',
-      input: true,
       type: 'textfield',
       hideLabel: true,
       allowCalculateOverride: true,

@@ -7,7 +7,6 @@ const editFormContentForPdf = (): Component => {
       'Denne skal ikke lengre brukes og innholdet bør fjernes. Bruk funksjonaliteten om hvor innhold skal vises istedenfor',
     type: 'textfield',
     key: 'contentForPdf',
-    input: true,
   };
 };
 

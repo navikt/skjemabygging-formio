@@ -11,7 +11,6 @@ const editFormProperties = (): Component => {
       type: 'textfield',
       key: 'value',
       label: 'Verdi',
-      input: true,
     },
   };
 };

@@ -10,7 +10,6 @@ const editFormImage = (): Component => {
     image: true,
     filePattern: '.png, .jpg, .jpeg',
     webcam: false,
-    input: true,
     multiple: false,
     validate: {
       required: true,
