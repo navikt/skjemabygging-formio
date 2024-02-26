@@ -12,7 +12,7 @@ const editFormAttachment = (): Component[] => {
 
     if (showDeadline) {
       components.push({
-        type: 'checkbox',
+        type: 'navCheckbox',
         key: 'showDeadline',
         label: 'Informér bruker om ettersendelsesfrist (settes i skjemainnstillinger)',
       });
@@ -25,7 +25,7 @@ const editFormAttachment = (): Component[] => {
         label: '',
         components: [
           {
-            type: 'checkbox',
+            type: 'navCheckbox',
             key: 'enabled',
             label: 'Bruker må oppgi tilleggsinformasjon',
           },
@@ -57,7 +57,7 @@ const editFormAttachment = (): Component[] => {
       customConditional,
       components: [
         {
-          type: 'checkbox',
+          type: 'navCheckbox',
           key: 'enabled',
           label,
         },
@@ -78,7 +78,6 @@ const editFormAttachment = (): Component[] => {
       label: 'Velg vedlegsstype',
       type: 'radiopanel',
       key: 'attachmentType',
-      input: true,
       values: [
         {
           label: 'Standard vedlegg',
