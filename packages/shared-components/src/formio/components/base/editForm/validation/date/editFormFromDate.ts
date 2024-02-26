@@ -10,7 +10,6 @@ const editFormFromDate = (): Component => ({
   components: [
     {
       type: 'select',
-      input: true,
       label: 'Datofelt for fra-dato',
       key: 'beforeDateInputKey',
       dataSrc: 'custom',
@@ -26,7 +25,6 @@ const editFormFromDate = (): Component => ({
       label: 'Kan være lik',
       key: 'mayBeEqual',
       defaultValue: false,
-      input: true,
     },
   ],
 });

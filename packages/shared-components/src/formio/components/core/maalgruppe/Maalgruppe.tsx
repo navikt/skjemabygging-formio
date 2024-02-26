@@ -8,7 +8,6 @@ class Maalgruppe extends BaseComponent {
       label: 'Målgruppe',
       type: 'maalgruppe',
       key: 'maalgruppe',
-      input: true,
       hideLabel: true,
       hidden: true,
       clearOnHide: false,

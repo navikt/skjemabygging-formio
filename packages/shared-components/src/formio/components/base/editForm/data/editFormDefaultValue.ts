@@ -5,7 +5,6 @@ const editFormDefaultValue = (type: string): Component => {
     type,
     label: 'Standard verdi',
     key: 'defaultValue',
-    input: true,
   };
 };
 

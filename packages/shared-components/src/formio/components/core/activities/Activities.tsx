@@ -23,7 +23,6 @@ class Activities extends BaseComponent {
       label: 'Velg hvilken aktivitet du vil søke om stønad for',
       type: 'activities',
       key: 'aktivitet',
-      input: true,
       hideLabel: true,
     });
   }

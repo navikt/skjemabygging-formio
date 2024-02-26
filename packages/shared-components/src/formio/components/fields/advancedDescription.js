@@ -4,7 +4,6 @@ export const advancedDescription = [
   ...description,
   {
     type: 'checkbox',
-    input: true,
     label: 'Utvidet beskrivelse',
     key: 'additionalDescription',
     defaultValue: false,
@@ -14,7 +13,6 @@ export const advancedDescription = [
     type: 'textfield',
     key: 'additionalDescriptionLabel',
     label: 'Lenketekst for utvidet beskrivelse',
-    input: true,
     conditional: {
       show: true,
       when: 'additionalDescription',
@@ -35,7 +33,6 @@ export const advancedDescription = [
       isUseWorkerDisabled: true,
       mode: 'ace/mode/html',
     },
-    input: true,
     inputType: 'text',
     inputFormat: 'html',
     conditional: {

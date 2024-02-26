@@ -16,7 +16,6 @@ const editFormFieldSizeField = (): Component => {
         { label: 'XS', value: 'input--xs' },
       ],
     },
-    input: true,
   };
 };
 
