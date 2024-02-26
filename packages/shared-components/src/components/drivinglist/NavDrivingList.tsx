@@ -1,10 +1,11 @@
-import { Accordion, Radio, RadioGroup } from '@navikt/ds-react';
+import { Accordion, Alert, Heading, Radio, RadioGroup, Skeleton } from '@navikt/ds-react';
 import { SendInnAktivitet } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { getActivities } from '../../api/sendinn/sendInnActivities';
 import { AppConfigContextType } from '../../context/config/configContext';
 import { getComponentInfo } from '../../formio/components/core/driving-list/DrivingList.info';
+import makeStyles from '../../util/styles/jss/jss';
 import DatePicker from '../datepicker/DatePicker';
 import DrivingPeriod from './DrivingPeriod';
 
@@ -30,19 +31,39 @@ interface DrivingListPeriod {
   id: string;
 }
 
+const useDrivinglistStyles = makeStyles({
+  accordion: {
+    paddingBottom: '4rem',
+  },
+});
+
 const NavDrivingList = ({ appConfig, onValueChange, values, t, locale }: NavDrivingListProps) => {
   const [activities, setActivities] = useState<SendInnAktivitet[]>([]);
-  const submissionMethod = appConfig.submissionMethod;
+  const [loading, setLoading] = useState<boolean>(true);
+  const [showError, setShowError] = useState<boolean>(false);
+  const styles = useDrivinglistStyles();
+
+  const submissionMethod = appConfig?.submissionMethod;
+  const isLoggedIn = appConfig?.config?.isLoggedIn;
+  const app = appConfig?.app;
 
   useEffect(() => {
     const fetchData = async () => {
-      // FIXME: Update if statement
-      if (appConfig?.app === 'fyllut' && submissionMethod === 'digital') {
-        const result = await getActivities(appConfig);
+      if (app === 'fyllut' && isLoggedIn) {
+        try {
+          setLoading(true);
+          const result = await getActivities(appConfig);
+          setLoading(false);
 
-        if (result) {
-          setActivities(result);
+          if (result) {
+            setActivities(result);
+          }
+        } catch (ex) {
+          setLoading(false);
+          setShowError(true);
         }
+      } else {
+        setLoading(false);
       }
     };
 
@@ -99,51 +120,83 @@ const NavDrivingList = ({ appConfig, onValueChange, values, t, locale }: NavDriv
     updateValue('parking', parking);
   };
 
-  const renderDigitalDrivingList = () => {
+  const renderDrivingListFromActivities = () => {
     // FIXME: Get the correct data here
     const activity = activities[0];
     const vedtak = activity?.saksinformasjon?.vedtaksinformasjon?.[0];
 
     return (
-      <Accordion>
-        {vedtak?.betalingsplan.map((betalingsplan) => {
-          const periodFrom = new Date(betalingsplan.utgiftsperiode.fom);
-          const periodTo = new Date(betalingsplan.utgiftsperiode.tom);
+      <>
+        <Heading size="medium" spacing={true}>
+          {t('Legg til kjøreliste')}
+        </Heading>
+        <Accordion id={getComponentInfo('dates').id} className={styles.accordion}>
+          {vedtak?.betalingsplan
+            .filter((x) => !!x.journalpostId)
+            .map((betalingsplan, index) => {
+              const periodFrom = new Date(betalingsplan.utgiftsperiode.fom);
+              const periodTo = new Date(betalingsplan.utgiftsperiode.tom);
 
-          return (
-            <DrivingPeriod
-              t={t}
-              hasParking={vedtak.trengerParkering}
-              onValueChange={onValueChange}
-              key={betalingsplan.betalingsplanId}
-              periodFrom={periodFrom}
-              periodTo={periodTo}
-              values={values}
-            />
-          );
-        })}
-      </Accordion>
+              return (
+                <DrivingPeriod
+                  t={t}
+                  index={index}
+                  hasParking={vedtak.trengerParkering}
+                  onValueChange={onValueChange}
+                  key={betalingsplan.betalingsplanId}
+                  periodFrom={periodFrom}
+                  periodTo={periodTo}
+                  values={values}
+                />
+              );
+            })}
+        </Accordion>
+        <Heading size="medium" spacing={true}>
+          {t('Perioder du tidligere har fått refundert reiseutgifter for')}
+        </Heading>
+        <Accordion className={styles.accordion}>
+          {vedtak?.betalingsplan
+            .filter((x) => !x.journalpostId)
+            .map((betalingsplan, index) => {
+              const periodFrom = new Date(betalingsplan.utgiftsperiode.fom);
+              const periodTo = new Date(betalingsplan.utgiftsperiode.tom);
+
+              return (
+                <DrivingPeriod
+                  t={t}
+                  index={index}
+                  hasParking={vedtak.trengerParkering}
+                  onValueChange={onValueChange}
+                  key={betalingsplan.betalingsplanId}
+                  periodFrom={periodFrom}
+                  periodTo={periodTo}
+                  values={values}
+                  readOnly={true}
+                />
+              );
+            })}
+        </Accordion>
+      </>
     );
   };
 
   // FIXME: Should be able to add/remove periods
-  const renderPaperDrivingList = () => {
-    return values?.periods?.map((period) => {
-      return (
-        <DrivingPeriod
-          t={t}
-          key={period.id}
-          hasParking={values?.parking ?? false}
-          onValueChange={onValueChange}
-          periodFrom={period.periodFrom}
-          periodTo={period.periodTo}
-          values={values}
-        />
-      );
-    });
+  const renderDrivingPeriodsFromDates = () => {
+    return values?.periods?.map((period, index) => (
+      <DrivingPeriod
+        t={t}
+        index={index}
+        key={period.id}
+        hasParking={values?.parking ?? false}
+        onValueChange={onValueChange}
+        periodFrom={period.periodFrom}
+        periodTo={period.periodTo}
+        values={values}
+      />
+    ));
   };
 
-  const renderPaperOptions = () => {
+  const renderDrivingListFromDates = () => {
     return (
       <>
         <DatePicker
@@ -161,7 +214,7 @@ const NavDrivingList = ({ appConfig, onValueChange, values, t, locale }: NavDriv
           id={getComponentInfo('periodType').id}
           legend={t(getComponentInfo('periodType').label)}
           onChange={(value) => onPeriodChange(value)}
-          value={values?.selectedPeriodType}
+          defaultValue={values?.selectedPeriodType}
         >
           <Radio value="weekly">{t('Ukentlig')}</Radio>
           <Radio value="monthly">{t('Månedlig')}</Radio>
@@ -170,23 +223,58 @@ const NavDrivingList = ({ appConfig, onValueChange, values, t, locale }: NavDriv
           id={getComponentInfo('parkingRadio').id}
           legend={t(getComponentInfo('parkingRadio').label)}
           onChange={(value) => onParkingChange(value)}
-          value={values?.parking}
+          defaultValue={values?.parking}
         >
           <Radio value={true}>{t('Ja')}</Radio>
           <Radio value={false}>{t('Nei')}</Radio>
         </RadioGroup>
+        <Accordion id={getComponentInfo('dates').id}>{renderDrivingPeriodsFromDates()}</Accordion>
       </>
     );
   };
 
-  return (
-    <>
-      {submissionMethod === 'paper' && renderPaperOptions()}
-      <Accordion id={getComponentInfo('dates').id}>
-        {submissionMethod === 'paper' ? renderPaperDrivingList() : renderDigitalDrivingList()}{' '}
-      </Accordion>
-    </>
-  );
+  const renderNoActivitiesAlert = () => {
+    return (
+      <Alert variant="info">
+        {t(
+          'Du har ikke vedtak om stønad til daglig reise med bruk av egen bil. Det er ikke registrert vedtak om tilleggsstønad på deg. Du må søke om tilleggsstønad og motta vedtak før du kan sende inn liste over utgifter til daglig reise med bruk av egen bil.',
+        )}
+      </Alert>
+    );
+  };
+
+  const isLoggedInWithActivities = isLoggedIn && activities.length > 0;
+  const isLoggedInWithoutActivities = isLoggedIn && activities.length === 0;
+
+  const renderDrivingList = () => {
+    if (loading) {
+      return <Skeleton variant="rounded" width="100%" height={150} />;
+    }
+
+    if (showError && submissionMethod === 'digital') {
+      return <Alert variant="error">{t('Det oppstod en feil ved henting av aktiviteter')}</Alert>;
+    }
+
+    if (isLoggedInWithoutActivities && submissionMethod === 'paper') {
+      return renderDrivingListFromDates();
+    }
+
+    if (isLoggedInWithoutActivities && submissionMethod === 'digital') {
+      return renderNoActivitiesAlert();
+    }
+
+    if (!isLoggedIn && submissionMethod === 'paper') {
+      return renderDrivingListFromDates();
+    }
+
+    if (isLoggedInWithActivities && submissionMethod === 'digital') {
+      return renderDrivingListFromActivities();
+    }
+
+    return renderDrivingListFromDates();
+  };
+
+  return renderDrivingList();
 };
 
 export default NavDrivingList;

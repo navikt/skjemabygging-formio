@@ -11,9 +11,20 @@ interface DrivingPeriodProps {
   hasParking: boolean;
   values?: DrivingListValues;
   t: (text: string, params?: any) => any;
+  index: number;
+  readOnly?: boolean;
 }
 
-const DrivingPeriod = ({ periodFrom, periodTo, onValueChange, values, hasParking, t }: DrivingPeriodProps) => {
+const DrivingPeriod = ({
+  periodFrom,
+  periodTo,
+  onValueChange,
+  values,
+  hasParking,
+  t,
+  index,
+  readOnly = false,
+}: DrivingPeriodProps) => {
   const periodDates = useMemo(() => dateUtils.getDatesInRange(periodFrom, periodTo), [periodFrom, periodTo]);
   const selectedDates = values?.dates?.map((value) => value.date);
 
@@ -57,7 +68,7 @@ const DrivingPeriod = ({ periodFrom, periodTo, onValueChange, values, hasParking
 
   // FIXME: Fix validation on number and input size
   return (
-    <Accordion.Item>
+    <Accordion.Item defaultOpen={index === 0 && readOnly === false}>
       <Accordion.Header>{header}</Accordion.Header>
       <Accordion.Content>
         <CheckboxGroup
@@ -65,11 +76,14 @@ const DrivingPeriod = ({ periodFrom, periodTo, onValueChange, values, hasParking
           legend={t(getComponentInfo('dates').label)}
           onChange={(values) => onChange(values)}
           value={values?.dates?.map((value) => value.date) ?? []}
+          readOnly={readOnly}
         >
           {periodDates.map((date) => {
             return (
               <div key={date.toISOString()}>
-                <Checkbox value={toLocaleDate(date)}>{toWeekdayAndDate(date)}</Checkbox>
+                <Checkbox value={toLocaleDate(date)} readOnly={readOnly}>
+                  {toWeekdayAndDate(date)}
+                </Checkbox>
                 {showParking(toLocaleDate(date)) ? (
                   <TextField
                     id={getComponentInfo('parkingExpenses').id}
@@ -78,9 +92,9 @@ const DrivingPeriod = ({ periodFrom, periodTo, onValueChange, values, hasParking
                     size="medium"
                     inputMode="numeric"
                     className="nav-input--s"
-                    pattern="[0-9]*"
                     value={values?.dates?.find((val) => val.date === toLocaleDate(date))?.parking}
                     onChange={(event) => onChangeParking(date, event.currentTarget.value)}
+                    readOnly={readOnly}
                   />
                 ) : null}
               </div>
