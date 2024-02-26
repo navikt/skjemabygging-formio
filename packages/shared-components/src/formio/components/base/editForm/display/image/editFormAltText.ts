@@ -5,7 +5,6 @@ const editFormAltText = (): Component => {
     type: 'textfield',
     label: 'Alternativ tekst',
     key: 'altText',
-    input: true,
     validate: {
       required: true,
     },

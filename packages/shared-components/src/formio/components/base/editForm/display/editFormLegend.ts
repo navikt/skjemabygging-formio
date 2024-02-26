@@ -8,7 +8,6 @@ const editFormLegend = (): Component => {
     validate: {
       required: true,
     },
-    input: true,
   };
 };
 

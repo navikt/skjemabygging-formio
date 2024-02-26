@@ -2,7 +2,7 @@ import { Component } from '@navikt/skjemadigitalisering-shared-domain';
 
 const editFormAceEditor = (type: 'html' | 'javascript' | 'json'): Component => {
   return {
-    type: 'textarea',
+    type: 'formioTextArea',
     key: 'aceEditor',
     label: '',
     rows: 5,
@@ -14,7 +14,6 @@ const editFormAceEditor = (type: 'html' | 'javascript' | 'json'): Component => {
       indentedSoftWrap: false,
     },
     as: type,
-    input: true,
   };
 };
 

@@ -36,6 +36,7 @@ const sendInnConfig: SendInnConfig = {
     soknad: '/fyllUt/v1/soknad',
     utfyltSoknad: '/fyllUt/v1/utfyltSoknad',
     prefillData: '/fyllUt/v1/prefill-data',
+    activities: '/fyllUt/v1/aktiviteter',
   },
 };
 
@@ -55,7 +56,7 @@ const localDevelopmentConfig: DefaultConfig = {
   mockIdportenPid: process.env.MOCK_IDPORTEN_PID || '12345678911',
   mockIdportenJwt: process.env.MOCK_IDPORTEN_JWT || 'IDPORTEN_JWT',
   noFormValidation: process.env.NO_FORM_VALIDATION === 'true',
-  noDecorator: process.env.NO_DECORATOR === 'false',
+  noDecorator: process.env.NO_DECORATOR === 'true',
   tokenx: {
     ...tokenx,
     wellKnownUrl:

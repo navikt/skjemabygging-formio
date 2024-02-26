@@ -58,6 +58,39 @@ WebformBuilder.prototype.editComponent = function (component, parent, isNew, isJ
     }
   }
   originalEditComponent.call(this, component, parent, isNew, isJsonEdit, original, flags);
+
+  if (isJsonEdit) {
+    this.editForm.form = {
+      ...this.editForm.form,
+      components: [
+        {
+          type: 'formioTextArea',
+          as: 'json',
+          editor: 'ace',
+          input: true,
+          key: 'componentJson',
+          label: 'JSON definisjon',
+          validate: {
+            required: true,
+          },
+        },
+        {
+          type: 'checkbox',
+          key: 'showFullSchema',
+          label: 'Full definisjon',
+        },
+      ],
+    };
+
+    // Need to run this again to attach the edit components controls. In earlier FormioJS versions this was not necessary
+    this.attachEditComponentControls(
+      component,
+      parent,
+      isNew,
+      original,
+      NavFormioJs.Components.components[component.type],
+    );
+  }
 };
 
 WebformBuilder.prototype.destroy = function (...args) {

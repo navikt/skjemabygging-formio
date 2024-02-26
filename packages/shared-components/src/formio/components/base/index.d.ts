@@ -1,6 +1,6 @@
-import { Component } from '@navikt/skjemadigitalisering-shared-domain';
+import { Component, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import Select from 'react-select/base';
-
+import { AppConfigContextType } from '../../../context/config/configContext';
 interface IReactComponent {
   new (component, options, data): ReactComponentType;
   prototype: ReactComponentType;
@@ -9,6 +9,7 @@ interface IReactComponent {
 }
 
 interface ReactComponentType {
+  data?: any;
   shouldSetValue?: any;
   dataForSetting?: any;
   reactInstance?: HTMLInputElement | Select;
@@ -17,6 +18,7 @@ interface ReactComponentType {
   validate(data, dirty, rowData): boolean;
   updateValue(value, flags?: {}): any;
   setReactInstance(element): void;
+  resetValue(): void;
   setValue(value: any): void;
   // Field
   render(element: any): any;
@@ -27,7 +29,12 @@ interface ReactComponentType {
   refs?: any;
   errors: any[];
   root: any;
-  options: any;
+  options: {
+    appConfig: AppConfigContextType;
+    readOnly: boolean;
+    namespace: string;
+    formConfig: { publishedForm: NavFormType };
+  };
   visible: any | boolean;
   hideLabel: boolean;
   error?: {

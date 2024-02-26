@@ -6,10 +6,7 @@ const timeBuilder = () => {
       type: 'textfield',
       key: 'tid',
       fieldSize: 'input--xs',
-      input: true,
-      dataGridLabel: true,
       spellcheck: false,
-      clearOnHide: true,
       validateOn: 'blur',
       validate: {
         required: true,

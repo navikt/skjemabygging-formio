@@ -9,10 +9,7 @@ class SelectBoxes extends FormioSelectBoxes {
       type: 'selectboxes',
       key: 'selectboxes',
       fieldSize: 'input--xxl',
-      input: true,
       isNavCheckboxPanel: true,
-      clearOnHide: true,
-      dataGridLabel: true,
     });
   }
 

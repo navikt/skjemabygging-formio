@@ -10,13 +10,11 @@ const editFormLimitRelativelyToToday = (): Component => ({
       type: 'number',
       label: 'Tidligst tillatt dato (antall dager fram/bak i tid)',
       key: 'earliestAllowedDate',
-      input: true,
     },
     {
       type: 'number',
       label: 'Senest tillatt dato (antall dager fram/bak i tid)',
       key: 'latestAllowedDate',
-      input: true,
     },
     {
       label: '',

@@ -59,7 +59,7 @@ const SendInnProvider = ({
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const { loggSkjemaFullfort } = useAmplitude();
+  const { loggSkjemaFullfort, loggSkjemaInnsendingFeilet } = useAmplitude();
 
   const isMellomlagringEnabled =
     app === 'fyllut' && submissionMethod === 'digital' && !!featureToggles?.enableMellomlagring;
@@ -284,6 +284,8 @@ const SendInnProvider = ({
         }
         return response;
       } catch (submitError: any) {
+        loggSkjemaInnsendingFeilet();
+
         if (submitError.status === 404) {
           dispatchFyllutMellomlagring({ type: 'error', error: 'SUBMIT_FAILED_NOT_FOUND' });
         } else {

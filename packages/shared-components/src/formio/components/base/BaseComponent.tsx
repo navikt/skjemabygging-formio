@@ -133,6 +133,43 @@ class BaseComponent extends FormioReactComponent {
   }
 
   /**
+   * Get app config (same as useAppConfig hook) for custom component renderReact()
+   */
+  getAppConfig() {
+    return this.options?.appConfig;
+  }
+
+  /**
+   * Get whether user is logged in or not for custom component renderReact()
+   */
+  getIsLoggedIn() {
+    return this.options?.appConfig?.config?.isLoggedIn;
+  }
+
+  /**
+   * Get textDisplay tag for custom component renderReact()
+   */
+  getTextDisplayTag() {
+    if (!this.builderMode) {
+      return <></>;
+    }
+
+    if (this.component?.textDisplay === 'pdf') {
+      return (
+        <Tag variant="alt3" className="mb-4" size="xsmall">
+          PDF
+        </Tag>
+      );
+    } else if (this.component?.textDisplay === 'formPdf') {
+      return (
+        <Tag variant="alt3" className="mb-4" size="xsmall">
+          Skjema og PDF
+        </Tag>
+      );
+    }
+  }
+
+  /**
    * Used to set focus when clicking error summary.
    */
   focus() {

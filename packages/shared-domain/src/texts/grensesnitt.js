@@ -81,4 +81,8 @@ export const grensesnitt = {
     inputHasFocus: '{{label}} har fokus.',
     onFilterSearchResult: 'for søkeordet {{inputValue}}.',
   },
+  navTextarea: {
+    counterLeft: 'tegn igjen',
+    counterTooMuch: 'tegn for mye',
+  },
 };

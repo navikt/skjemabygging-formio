@@ -1,4 +1,3 @@
-import { Tag } from '@navikt/ds-react';
 import React from 'react';
 import BaseComponent from '../../base/BaseComponent';
 import htmlElementBuilder from './HtmlElement.builder';
@@ -30,26 +29,11 @@ class HtmlElement extends BaseComponent {
     return this.component?.tag as string;
   }
 
-  getTextDisplayTag() {
-    if (this.component?.textDisplay === 'pdf') {
-      return (
-        <Tag variant="alt3" className="mb-4" size="xsmall">
-          PDF
-        </Tag>
-      );
-    } else if (this.component?.textDisplay === 'formPdf') {
-      return (
-        <Tag variant="alt3" className="mb-4" size="xsmall">
-          Skjema og PDF
-        </Tag>
-      );
-    }
-  }
-
   renderReact(element) {
     element.render(
       <div>
         {this.getTextDisplayTag()}
+        {this.getDiffTag()}
         {React.createElement(this.getTag(), {
           dangerouslySetInnerHTML: {
             __html: this.getContent(),

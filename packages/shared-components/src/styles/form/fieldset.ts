@@ -1,7 +1,7 @@
 const fieldset = {
   '& .navds-fieldset': {
     margin: 'var(--a-spacing-5) 0',
-    '&__legend': {
+    '&__legend-formio-template': {
       fontSize: '1.25rem',
       lineHeight: '1.625rem',
       marginBottom: 'var(--a-spacing-2)',

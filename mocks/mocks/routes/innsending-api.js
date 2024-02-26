@@ -3,11 +3,11 @@ const mellomlagringValid1 = require('../data/innsending-api/mellomlagring/getTes
 const mellomlagringValid2 = require('../data/innsending-api/mellomlagring/getTestMellomlagring-valid-2.json');
 const mellomlagringValidExtraValues = require('../data/innsending-api/mellomlagring/getTestMellomlagring-valid-extra-values.json');
 const prefillDataNames = require('../data/innsending-api/prefill-data/prefill-data-names.json');
-
+const activities = require('../data/innsending-api/activities/activities.json');
 const paabegyntMellomlagringOgInnsendt = require('../data/innsending-api/active-tasks/mellomlagringOgEttersending.json');
 const paabegyntMellomlagring = require('../data/innsending-api/active-tasks/mellomlagring.json');
 const paabegyntInnsendt = require('../data/innsending-api/active-tasks/ettersending.json');
-
+const mellomlagringActivities = require('../data/innsending-api/activities/mellomlagring-activities.json');
 const objectToByteArray = (obj) => Array.from(new TextEncoder().encode(JSON.stringify(obj)));
 
 const base64Encode = (data) => {
@@ -52,32 +52,6 @@ module.exports = [
         options: {
           status: 200,
           body: paabegyntInnsendt,
-        },
-      },
-    ],
-  },
-  {
-    id: 'post-send-inn',
-    url: '/send-inn/fyllUt/v1/leggTilVedlegg',
-    method: 'POST',
-    variants: [
-      {
-        id: 'success',
-        type: 'json',
-        options: {
-          status: 302,
-          body: {},
-          headers: {
-            Location: 'http://localhost:3300/send-inn-frontend',
-          },
-        },
-      },
-      {
-        id: 'failure',
-        type: 'text',
-        options: {
-          status: 500,
-          body: 'Internal Server Error',
         },
       },
     ],
@@ -180,6 +154,14 @@ module.exports = [
         },
       },
       {
+        id: 'success-activities-empty',
+        type: 'json',
+        options: {
+          status: 200,
+          body: convertToInnsendingApiResponse(mellomlagringActivities),
+        },
+      },
+      {
         id: 'not-found',
         type: 'json',
         options: {
@@ -255,13 +237,56 @@ module.exports = [
     method: 'GET',
     variants: [
       {
-        id: 'success-name',
+        id: 'success',
         type: 'json',
         options: {
           status: 200,
           body: {
             sokerFornavn: 'Ola',
             sokerEtternavn: 'Nordmann',
+            sokerMaalgruppe: 'ARBSOKERE',
+          },
+        },
+      },
+      {
+        id: 'success-empty',
+        type: 'json',
+        options: {
+          status: 200,
+          body: {},
+        },
+      },
+    ],
+  },
+  {
+    id: 'get-activities',
+    url: '/send-inn/fyllUt/v1/aktiviteter',
+    method: 'GET',
+    variants: [
+      {
+        id: 'success',
+        type: 'json',
+        options: {
+          status: 200,
+          body: activities,
+        },
+      },
+      {
+        id: 'success-empty',
+        type: 'json',
+        options: {
+          status: 200,
+          body: [],
+        },
+      },
+      {
+        id: 'failure',
+        type: 'json',
+        options: {
+          status: 500,
+          body: {
+            message: 'Serverfeil ved henting av aktiviteter',
+            errorCode: 'arenaError',
           },
         },
       },

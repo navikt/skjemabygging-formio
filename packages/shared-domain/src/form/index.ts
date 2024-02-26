@@ -160,6 +160,7 @@ export interface Component {
   valueComponent?: Component;
   isInline?: boolean;
   textDisplay?: 'form' | 'formPdf' | 'pdf';
+  autoExpand?: boolean;
 }
 
 export interface ComponentProperties {
@@ -187,6 +188,7 @@ export interface ComponentValidate {
   patternMessage?: string;
   min?: number;
   max?: number;
+  maxLength?: number;
 }
 
 export interface ComponentConditional {

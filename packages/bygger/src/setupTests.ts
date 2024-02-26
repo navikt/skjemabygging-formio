@@ -1,4 +1,5 @@
 import '@testing-library/jest-dom';
+import { cleanup } from '@testing-library/react';
 import { Blob } from 'node:buffer';
 import { URL } from 'node:url';
 import { vi } from 'vitest';
@@ -13,3 +14,11 @@ fetchMock.enableMocks();
 globalThis.URL = URL;
 // @ts-ignore
 globalThis.Blob = Blob;
+
+afterEach(() => {
+  cleanup();
+});
+
+afterAll(() => {
+  vi.restoreAllMocks();
+});

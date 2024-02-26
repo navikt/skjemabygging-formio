@@ -15,8 +15,6 @@ const attachmentBuilder = () => {
           type: 'radiopanel',
           key: 'annenDokumentasjon',
           otherDocumentation: true,
-          input: true,
-          clearOnHide: true,
           validate: {
             required: true,
           },

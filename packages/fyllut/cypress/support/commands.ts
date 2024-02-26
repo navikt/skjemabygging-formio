@@ -12,6 +12,7 @@ import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import '@testing-library/cypress/add-commands';
 import { expect } from 'chai';
 import 'cypress-wait-until';
+import { CyHttpMessages } from 'cypress/types/net-stubbing';
 import { parse } from 'querystring';
 
 // -- This is a parent command --
@@ -80,24 +81,42 @@ Cypress.Commands.add('checkLogToAmplitude', (eventType: string, properties) => {
 
 Cypress.Commands.add('defaultIntercepts', () => {
   cy.intercept('POST', '/amplitude/collect-auto').as('amplitudeLogging');
-  cy.intercept('POST', /\/fyllut\/api\/log.*/, { body: 'ok' }).as('logger');
-  cy.intercept('GET', '/fyllut/api/config').as('getConfig');
-  cy.intercept('GET', /fyllut\/api\/countries.*/).as('getCountries');
-  cy.intercept('GET', /\/fyllut\/api\/global-translations\.*/).as('getGlobalTranslation');
-  cy.intercept('GET', /fyllut\/api\/common-codes\/currencies.*/).as('getCurrencies');
-  cy.intercept('GET', '/fyllut/api/translations/*').as('getTranslation');
+  cy.intercept('POST', '/fyllut/api/log*', { body: 'ok' }).as('logger');
+  cy.intercept('GET', '/fyllut/api/config*').as('getConfig');
+  cy.intercept('GET', '/fyllut/api/countries*').as('getCountries');
+  cy.intercept('GET', '/fyllut/api/global-translations/*').as('getGlobalTranslations');
+  cy.intercept('GET', '/fyllut/api/common-codes/currencies*').as('getCurrencies');
+  cy.intercept('GET', '/fyllut/api/translations/*').as('getTranslations');
+  cy.intercept('GET', '/fyllut/api/forms/*').as('getForm');
   return cy;
 });
 
 Cypress.Commands.add('defaultInterceptsMellomlagring', () => {
   cy.intercept('POST', '/fyllut/api/send-inn/soknad*').as('createMellomlagring');
   cy.intercept('PUT', '/fyllut/api/send-inn/soknad*').as('updateMellomlagring');
+  cy.intercept('GET', '/fyllut/api/send-inn/soknad/*').as('getMellomlagring');
+
   return cy;
 });
 
-Cypress.Commands.add('defaultInterceptsPrefillData', () => {
+Cypress.Commands.add('submitMellomlagring', (callback: (req: CyHttpMessages.IncomingHttpRequest) => void) => {
+  cy.intercept('PUT', '/fyllut/api/send-inn/utfyltsoknad', (req) => {
+    callback(req);
+  }).as('submitMellomlagring');
+
+  return cy;
+});
+
+Cypress.Commands.add('defaultInterceptsExternal', () => {
   cy.intercept('GET', '/fyllut/api/send-inn/prefill-data*').as('getPrefillData');
-  cy.intercept('GET', '/fyllut/api/forms/*').as('getTestFormPrefillData');
+  cy.intercept('GET', '/fyllut/api/send-inn/activities*').as('getActivities');
+  return cy;
+});
+
+Cypress.Commands.add('defaultWaits', () => {
+  cy.wait('@getConfig');
+  cy.wait('@getForm');
+  cy.wait('@getTranslations');
   return cy;
 });
 

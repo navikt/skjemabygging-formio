@@ -8,10 +8,7 @@ class Day extends FormioDay {
       label: 'Mnd / år',
       type: 'day',
       key: 'manedAr',
-      input: true,
-      dataGridLabel: true,
       fieldSize: 'input--s',
-      clearOnHide: true,
       fields: {
         day: {
           fieldSize: 'input--s',
