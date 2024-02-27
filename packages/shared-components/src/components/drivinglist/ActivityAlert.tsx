@@ -7,14 +7,15 @@ type ActivityAlertProps = {
   activityName: string;
   vedtak: AktivitetVedtaksinformasjon;
   t: any;
+  className?: string;
 };
 
-const ActivityAlert = ({ activityName, vedtak, t }: ActivityAlertProps) => {
+const ActivityAlert = ({ activityName, vedtak, t, className }: ActivityAlertProps) => {
   const vedtakPeriodFrom = new Date(vedtak.periode.fom);
   const vedtakPeriodTo = new Date(vedtak.periode.tom);
 
   return (
-    <Alert variant={'info'}>
+    <Alert variant={'info'} className={className}>
       {
         <>
           <Heading size="xsmall">{t(TEXTS.statiske.drivingList.activity)}</Heading>

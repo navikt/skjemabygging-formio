@@ -47,18 +47,30 @@ export const toWeekdayAndDate = (date: Date) => {
   return dateUtils.toWeekdayAndDate(date.toString());
 };
 
-export const generatePeriods = (periodType: 'weekly' | 'monthly', date?: string): DrivingListPeriod[] => {
+export const generatePeriods = (
+  periodType: 'weekly' | 'monthly',
+  date?: string,
+  numberOfPeriods: number = 1,
+): DrivingListPeriod[] => {
   if (!date) return [];
 
-  const startDate = new Date(date);
-  const endDate = new Date(date);
+  const periods: DrivingListPeriod[] = [];
 
-  if (periodType === 'weekly') {
-    endDate.setDate(endDate.getDate() + 6);
-  } else if (periodType === 'monthly') {
-    endDate.setMonth(endDate.getMonth() + 1);
+  for (let i = 0; i < numberOfPeriods; i++) {
+    const startDate = new Date(date);
+    const endDate = new Date(date);
+
+    if (periodType === 'weekly') {
+      startDate.setDate(startDate.getDate() + 6 * (i - 1));
+      endDate.setDate(endDate.getDate() + 6 * i);
+    } else if (periodType === 'monthly') {
+      startDate.setDate(startDate.getDate() + 6 * (i - 1));
+      endDate.setMonth(endDate.getMonth() + 1 * i);
+    }
+    periods.push({ periodFrom: startDate, periodTo: endDate, id: uuidv4() });
   }
-  return [{ periodFrom: startDate, periodTo: endDate, id: uuidv4() }];
+
+  return periods;
 };
 
 export const isValidParking = (value: string) => {

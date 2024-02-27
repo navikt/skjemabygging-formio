@@ -15,6 +15,7 @@ interface NavDatePickerProps {
   error?: string;
   inputRef?: any;
   label?: string;
+  className?: string;
 }
 
 const DatePicker = ({
@@ -27,6 +28,7 @@ const DatePicker = ({
   error,
   inputRef,
   label,
+  className,
 }: NavDatePickerProps) => {
   // @ts-ignore
   const { datepickerProps, inputProps, setSelected, reset }: DatePickerProps = useDatepicker({
@@ -58,6 +60,7 @@ const DatePicker = ({
         ref={inputRef}
         hideLabel={!label}
         label={label}
+        className={className}
       />
     </AkselDatePicker>
   );

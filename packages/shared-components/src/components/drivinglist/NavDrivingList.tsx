@@ -1,4 +1,4 @@
-import { Accordion, Alert, BodyShort, Heading, Radio, RadioGroup, Skeleton } from '@navikt/ds-react';
+import { Accordion, Alert, BodyShort, Button, Heading, Radio, RadioGroup, Skeleton } from '@navikt/ds-react';
 import { SendInnAktivitet, SubmissionActivity, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useState } from 'react';
 import { VedtakBetalingsplan } from '../../../../shared-domain/src/sendinn/activity';
@@ -25,12 +25,19 @@ interface NavDrivingListProps {
 }
 
 const useDrivinglistStyles = makeStyles({
-  heading: {
-    paddingTop: '1rem',
+  paddingBottom: {
+    paddingBottom: '2.5rem',
   },
-  accordion: {
-    paddingTop: '2rem',
-    paddingBottom: '2rem',
+  paddingTop: {
+    paddingTop: '2.5rem',
+  },
+  marginBottom: {
+    marginBottom: '2.5rem',
+  },
+  buttonContainer: {
+    display: 'flex',
+    gap: '1rem',
+    marginTop: '1rem',
   },
 });
 
@@ -127,7 +134,6 @@ const NavDrivingList = ({ appConfig, onValueChange, values, t, locale }: NavDriv
         periodFrom={periodFrom}
         periodTo={periodTo}
         values={values}
-        readOnly={!betalingsplan.journalpostId}
       />
     );
   };
@@ -147,11 +153,17 @@ const NavDrivingList = ({ appConfig, onValueChange, values, t, locale }: NavDriv
           onChange={(activity) => onActivityChange(activity)}
           appConfig={appConfig}
           t={t}
+          className={styles.paddingBottom}
         />
         {activity && vedtak && (
           <>
-            <ActivityAlert activityName={activity.aktivitetsnavn} vedtak={vedtak} t={t} />
-            <Accordion tabIndex={-1} id={drivingListMetadata('dates').id} className={styles.accordion} size="small">
+            <ActivityAlert
+              activityName={activity.aktivitetsnavn}
+              vedtak={vedtak}
+              t={t}
+              className={styles.marginBottom}
+            />
+            <Accordion tabIndex={-1} id={drivingListMetadata('dates').id} className={styles.paddingBottom} size="small">
               {vedtak?.betalingsplan
                 .filter((x) => !!x.journalpostId)
                 .map((betalingsplan, index) =>
@@ -202,6 +214,28 @@ const NavDrivingList = ({ appConfig, onValueChange, values, t, locale }: NavDriv
     ));
   };
 
+  const addPeriod = () => {
+    if (values?.selectedDate && values?.selectedPeriodType) {
+      const periods = generatePeriods(
+        values?.selectedPeriodType,
+        values.selectedDate,
+        (values.periods?.length ?? 0) + 1,
+      );
+      updateValue('periods', periods);
+    }
+  };
+
+  const removePeriod = () => {
+    if (values?.selectedDate && values?.selectedPeriodType) {
+      const periods = generatePeriods(
+        values?.selectedPeriodType,
+        values.selectedDate,
+        (values.periods?.length ?? 0) - 1,
+      );
+      updateValue('periods', periods);
+    }
+  };
+
   const renderDrivingListFromDates = () => {
     return (
       <>
@@ -215,6 +249,7 @@ const NavDrivingList = ({ appConfig, onValueChange, values, t, locale }: NavDriv
           readOnly={false}
           error={undefined}
           inputRef={undefined}
+          className={styles.paddingBottom}
         />
         <RadioGroup
           id={drivingListMetadata('periodType').id}
@@ -222,6 +257,7 @@ const NavDrivingList = ({ appConfig, onValueChange, values, t, locale }: NavDriv
           onChange={(value) => onPeriodChange(value)}
           defaultValue={values?.selectedPeriodType}
           tabIndex={-1}
+          className={styles.paddingBottom}
         >
           <Radio value="weekly">{t(TEXTS.common.weekly)}</Radio>
           <Radio value="monthly">{t(TEXTS.common.monthly)}</Radio>
@@ -232,13 +268,26 @@ const NavDrivingList = ({ appConfig, onValueChange, values, t, locale }: NavDriv
           onChange={(value) => onParkingChange(value)}
           defaultValue={values?.parking}
           tabIndex={-1}
+          className={styles.paddingBottom}
         >
           <Radio value={true}>{t(TEXTS.common.yes)}</Radio>
           <Radio value={false}>{t(TEXTS.common.no)}</Radio>
         </RadioGroup>
-        <Accordion tabIndex={-1} id={drivingListMetadata('dates').id}>
+        <Accordion tabIndex={-1} id={drivingListMetadata('dates').id} className={styles.paddingBottom}>
           {renderDrivingPeriodsFromDates()}
         </Accordion>
+        {values?.periods && values.periods.length > 0 && (
+          <div className={styles.buttonContainer}>
+            <Button variant="primary" size="small" type="button" onClick={() => addPeriod()}>
+              {t('Legg til periode')}
+            </Button>
+            {values?.periods.length > 1 && (
+              <Button variant="secondary" size="small" type="button" onClick={() => removePeriod()}>
+                {t('Fjern periode')}
+              </Button>
+            )}
+          </div>
+        )}
       </>
     );
   };
