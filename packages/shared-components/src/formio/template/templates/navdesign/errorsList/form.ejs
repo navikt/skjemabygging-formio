@@ -13,8 +13,8 @@
         class="navds-link"
         tabIndex="0"
         role="link"
-        onclick="document.getElementById('{{ err.keyOrPath }}')?.scrollIntoView(true);"
-        onkeydown="if (event.key === 'Enter') { document.getElementById('{{ err.keyOrPath }}')?.scrollIntoView(true); }"
+        onclick="document.getElementById('{{ err.keyOrPath }}')?.focus();"
+        onkeydown="if (event.key === 'Enter') { document.getElementById('{{ err.keyOrPath }}')?.focus(); }"
       >
         {{err.message}}
       </span>
