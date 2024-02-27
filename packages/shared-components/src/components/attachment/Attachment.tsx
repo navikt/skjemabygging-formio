@@ -5,7 +5,7 @@ import {
   ComponentValue,
   TEXTS,
 } from '@navikt/skjemadigitalisering-shared-domain';
-import { ReactNode, useEffect, useState } from 'react';
+import { ReactNode } from 'react';
 import SingleSelect from '../single-select/SingleSelect';
 
 interface Props {
@@ -13,46 +13,36 @@ interface Props {
   description: ReactNode;
   error: ReactNode;
   value?: any;
-  values?: ComponentValue[];
-  attachmentValues?: AttachmentSettingValues;
+  attachmentValues?: AttachmentSettingValues | ComponentValue[];
   onChange: (value: AttachmentValue) => void;
   translate: (text: string) => string;
 }
 
-const Attachment = ({
-  attachmentValues,
-  values = [],
-  value,
-  title,
-  description,
-  error,
-  onChange,
-  translate,
-}: Props) => {
-  const [showDeadline, setShowDeadline] = useState<boolean>(false);
-  const [additionalDocumentation, setAdditionalDocumentation] = useState<any>('');
-
-  const getValues = () => {
+const Attachment = ({ attachmentValues, value, title, description, error, onChange, translate }: Props) => {
+  const getValues = (): ComponentValue[] => {
     if (attachmentValues) {
-      return Object.entries(attachmentValues)
-        .map(([key, values]) => {
-          if (!values.enabled) {
-            return undefined;
-          } else {
-            return {
-              value: key,
-              label: translate(TEXTS.statiske.attachment[key]),
-            };
-          }
-        })
-        .filter((values) => !!values) as ComponentValue[];
+      if (Array.isArray(attachmentValues)) {
+        return attachmentValues;
+      } else if (typeof attachmentValues === 'object') {
+        return Object.entries(attachmentValues)
+          .map(([key, values]) => {
+            if (!values.enabled) {
+              return undefined;
+            } else {
+              return {
+                value: key,
+                label: translate(TEXTS.statiske.attachment[key]),
+              };
+            }
+          })
+          .filter((values) => !!values) as ComponentValue[];
+      }
     }
 
-    return values;
+    return [];
   };
 
   const handleAttachmentChange = (key) => {
-    updateState(key);
     onChange({
       ...value,
       key,
@@ -68,18 +58,8 @@ const Attachment = ({
     });
   };
 
-  const updateState = (key: string) => {
-    setShowDeadline(!!attachmentValues?.[key]?.showDeadline);
-    setAdditionalDocumentation(
-      attachmentValues?.[key]?.additionalDocumentation.enabled
-        ? attachmentValues?.[key]?.additionalDocumentation
-        : undefined,
-    );
-  };
-
-  useEffect(() => {
-    updateState(value?.key);
-  }, [value]);
+  const additionalDocumentation = attachmentValues?.[value?.key]?.additionalDocumentation;
+  const showDeadline = !!attachmentValues?.[value?.key]?.showDeadline;
 
   return (
     <div>
@@ -91,7 +71,7 @@ const Attachment = ({
         error={error}
         onChange={handleAttachmentChange}
       />
-      {additionalDocumentation && (
+      {additionalDocumentation?.enabled && (
         <Textarea
           className="mb-4"
           label={translate(additionalDocumentation.label)}

@@ -236,17 +236,16 @@ const getAttachmentProperties = (form: NavFormType): Attachment[] => {
   const attachmentPanel = getAttachmentPanel(form);
   if (!attachmentPanel || !attachmentPanel.components) return [];
 
-  const attachments = attachmentPanel.components
+  return attachmentPanel.components
     .filter((component) => isAttachment(component))
     .map((component) => ({
       vedleggstittel: component.properties?.vedleggstittel,
       vedleggskode: component.properties?.vedleggskode,
       label: component.label,
     }));
-
-  return attachments;
 };
 
+// TODO: Remove check on leggerVedNaa when all attachment components are migrated to type attachment
 const isAttachment = (comp: Component) =>
   comp.type === 'attachment' || comp.values?.some((v) => v.value === 'leggerVedNaa');
 

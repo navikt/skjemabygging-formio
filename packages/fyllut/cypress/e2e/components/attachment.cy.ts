@@ -18,7 +18,7 @@ describe('Attachment', () => {
     textarea: 'Ledetekst tilleggsinformasjon',
   };
 
-  it('reflects changes on summary page when editing data', () => {
+  it('check different attachment settings', () => {
     cy.findByRole('textbox', { name: TITLE.textarea }).should('not.exist');
 
     cy.findByRole('group', { name: TITLE.attachment })

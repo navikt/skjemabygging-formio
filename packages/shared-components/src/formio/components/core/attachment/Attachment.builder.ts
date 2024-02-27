@@ -9,6 +9,18 @@ const attachmentBuilder = () => {
       validate: {
         required: true,
       },
+      attachmentType: 'default',
+      attachmentValues: {
+        leggerVedNaa: {
+          enabled: true,
+        },
+        ettersender: {
+          enabled: true,
+        },
+        levertTidligere: {
+          enabled: true,
+        },
+      },
     },
   };
 };

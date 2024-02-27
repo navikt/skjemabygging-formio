@@ -21,12 +21,8 @@ class Attachment extends BaseComponent {
     return attachmentBuilder();
   }
 
-  getValues() {
-    return this.component?.values;
-  }
-
   getAttachmentValues() {
-    return this.component?.attachmentValues;
+    return this.component?.attachmentValues ? this.component?.attachmentValues : this.component?.values;
   }
 
   handleChange(value, flags) {
@@ -37,7 +33,6 @@ class Attachment extends BaseComponent {
   renderReact(element) {
     element.render(
       <NavAttachment
-        values={this.getValues()}
         value={this.getValue()}
         attachmentValues={this.getAttachmentValues()}
         title={this.getLabel()}

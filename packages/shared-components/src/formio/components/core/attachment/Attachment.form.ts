@@ -3,10 +3,9 @@ import editFormConditional from '../../base/editForm/conditional';
 import editFormData from '../../base/editForm/data';
 import editFormDisplay from '../../base/editForm/display';
 import editFormTabs from '../../base/editForm/editFormTabs';
-import editFormValidation from '../../base/editForm/validation';
 
 const attachmentForm = () => {
-  const { api, conditional, createTabs, display, validation, data } = editFormTabs;
+  const { api, conditional, createTabs, display, data } = editFormTabs;
 
   // prettier-ignore
   return createTabs(
@@ -17,9 +16,6 @@ const attachmentForm = () => {
     ]),
     data([
       ...editFormData.attachment(),
-    ]),
-    validation([
-      editFormValidation.required(),
     ]),
     api([
       editFormApi.key(),

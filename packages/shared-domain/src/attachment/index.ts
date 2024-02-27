@@ -21,9 +21,9 @@ interface AttachmentSettingValue {
 interface AttachmentValue {
   key: string;
   description: string;
-  additionalDocumentation: string;
-  additionalDocumentationLabel: string;
-  deadlineWarning: string;
+  additionalDocumentation?: string;
+  additionalDocumentationLabel?: string;
+  deadlineWarning?: string;
 }
 
 export type { AttachmentSettingValues, AttachmentValue };

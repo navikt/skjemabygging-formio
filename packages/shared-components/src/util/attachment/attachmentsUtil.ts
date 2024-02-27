@@ -41,7 +41,8 @@ const hasOtherDocumentation = (form, submissionData) => {
     .flattenComponents(form.components)
     .map(sanitize)
     .filter((comp) => FormioUtils.checkCondition(comp, undefined, submissionData, form))
-    .some((component) => component.otherDocumentation);
+    .some((component) => component.otherDocumentation || component.attachmentType === 'other');
+  // TODO: Remove otherDocumentation from component when all attachments have attachmentType set
 };
 
 const sanitize = (component) => {
