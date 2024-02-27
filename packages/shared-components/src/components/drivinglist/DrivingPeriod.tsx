@@ -1,8 +1,10 @@
 import { Accordion, Checkbox, CheckboxGroup, TextField } from '@navikt/ds-react';
 import { dateUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { TFunction } from 'i18next';
 import { useMemo } from 'react';
 import {
   DrivingListSubmission,
+  DrivingListValues,
   drivingListMetadata,
   toLocaleDate,
   toWeekdayAndDate,
@@ -12,10 +14,10 @@ import makeStyles from '../../util/styles/jss/jss';
 interface DrivingPeriodProps {
   periodFrom: Date;
   periodTo: Date;
-  onValueChange: (value: any) => void;
+  updateValues: (values: DrivingListValues) => void;
   hasParking: boolean;
   values?: DrivingListSubmission;
-  t: (text: string, params?: any) => any;
+  t: TFunction;
   index: number;
 }
 
@@ -25,10 +27,12 @@ const useDrivingPeriodStyles = makeStyles({
   },
 });
 
-const DrivingPeriod = ({ periodFrom, periodTo, onValueChange, values, hasParking, t }: DrivingPeriodProps) => {
+const DrivingPeriod = ({ periodFrom, periodTo, updateValues, values, hasParking, t }: DrivingPeriodProps) => {
   const styles = useDrivingPeriodStyles();
+
   const periodDates = useMemo(() => dateUtils.getDatesInRange(periodFrom, periodTo), [periodFrom, periodTo]);
   const selectedDates = values?.dates?.map((value) => value.date);
+  const header = `${toLocaleDate(periodFrom)} - ${toLocaleDate(periodTo)}`;
 
   const showParking = (date: string) => {
     if (selectedDates?.includes(date) && !!hasParking) {
@@ -44,7 +48,7 @@ const DrivingPeriod = ({ periodFrom, periodTo, onValueChange, values, hasParking
       return { date: newValue, parking };
     });
 
-    onValueChange({ ...values, dates: mappedValues });
+    updateValues({ dates: mappedValues });
   };
 
   const onChangeParking = (date: Date, parking: string) => {
@@ -55,10 +59,8 @@ const DrivingPeriod = ({ periodFrom, periodTo, onValueChange, values, hasParking
       return existingValue;
     });
 
-    onValueChange({ ...values, dates: mappedValues });
+    updateValues({ dates: mappedValues });
   };
-
-  const header = `${toLocaleDate(periodFrom)} - ${toLocaleDate(periodTo)}`;
 
   return (
     <Accordion.Item>

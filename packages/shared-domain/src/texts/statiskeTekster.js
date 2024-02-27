@@ -138,5 +138,7 @@ export const statiske = {
     noVedtak:
       'Det er ikke registrert vedtak om tilleggsstønad på deg. Du må søke om tilleggsstønad og motta vedtak før du kan sende inn liste over utgifter til daglig reise med bruk av egen bil.',
     previousDrivingList: 'Perioder du tidligere har fått refundert reiseutgifter for',
+    addPeriod: 'Legg til periode',
+    removePeriod: 'Fjern periode',
   },
 };

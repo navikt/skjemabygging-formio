@@ -1,12 +1,12 @@
 import { Alert, BodyShort, Heading } from '@navikt/ds-react';
-import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { AktivitetVedtaksinformasjon } from '../../../../shared-domain/src/sendinn/activity';
+import { AktivitetVedtaksinformasjon, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { TFunction } from 'i18next';
 import { toLocaleDate } from '../../formio/components/core/driving-list/DrivingList.utils';
 
 type ActivityAlertProps = {
   activityName: string;
   vedtak: AktivitetVedtaksinformasjon;
-  t: any;
+  t: TFunction;
   className?: string;
 };
 

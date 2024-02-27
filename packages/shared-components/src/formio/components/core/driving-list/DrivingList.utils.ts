@@ -16,7 +16,9 @@ export interface DrivingListSubmission {
   dates: { date: string; parking: string }[];
   selectedActivity?: string;
 }
-
+export type DrivingListValues = Partial<
+  Record<keyof DrivingListSubmission, DrivingListSubmission[keyof DrivingListSubmission]>
+>;
 export type DrivingListMetadataId = (typeof metadata)[number]['id'];
 export type DrivingListErrorType = 'required';
 
@@ -61,11 +63,13 @@ export const generatePeriods = (
     const endDate = new Date(date);
 
     if (periodType === 'weekly') {
-      startDate.setDate(startDate.getDate() + 6 * (i - 1));
-      endDate.setDate(endDate.getDate() + 6 * i);
+      startDate.setDate(startDate.getDate() + i + 6 * i);
+      endDate.setDate(endDate.getDate() + i + 6 * (i + 1));
     } else if (periodType === 'monthly') {
-      startDate.setDate(startDate.getDate() + 6 * (i - 1));
-      endDate.setMonth(endDate.getMonth() + 1 * i);
+      console.log('startDate', startDate);
+      startDate.setMonth(startDate.getMonth() + 1 * i);
+      endDate.setMonth(endDate.getMonth() + 1 * (i + 1));
+      endDate.setDate(endDate.getDate() - 1);
     }
     periods.push({ periodFrom: startDate, periodTo: endDate, id: uuidv4() });
   }

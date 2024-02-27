@@ -45,7 +45,12 @@ import { Operator } from './migration/operator';
 import type { Mottaksadresse, MottaksadresseData } from './mottaksadresse';
 import type { ReportDefinition } from './reports';
 import type { GlobalTranslationsResourceContent, MottaksadresserResourceContent, ResourceContent } from './resource';
-import { SendInnAktivitet, SubmissionActivity } from './sendinn/activity';
+import {
+  AktivitetVedtaksinformasjon,
+  SendInnAktivitet,
+  SubmissionActivity,
+  VedtakBetalingsplan,
+} from './sendinn/activity';
 import type { Summary } from './summary/FormSummaryType';
 import MockedComponentObjectForTest from './summary/MockedComponentObjectForTest';
 import formSummaryUtil from './summary/formSummaryUtil';
@@ -86,6 +91,7 @@ export {
   validatorUtils,
 };
 export type {
+  AktivitetVedtaksinformasjon,
   Component,
   ComponentError,
   ConfigType,
@@ -138,4 +144,5 @@ export type {
   TranslationTag,
   UkjentBruker,
   UsageContext,
+  VedtakBetalingsplan,
 };
