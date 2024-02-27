@@ -10,13 +10,11 @@ const editFormLimitToEarliestLatest = (): Component => ({
       type: 'navDatepicker',
       label: 'Tidligst tillatt dato',
       key: 'specificEarliestAllowedDate',
-      input: true,
     },
     {
       type: 'navDatepicker',
       label: 'Senest tillatt dato',
       key: 'specificLatestAllowedDate',
-      input: true,
     },
   ],
 });

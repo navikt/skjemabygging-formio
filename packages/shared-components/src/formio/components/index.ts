@@ -1,3 +1,4 @@
+import FormioTextArea from 'formiojs/components/textarea/TextArea';
 import Activities from './core/activities/Activities';
 import Alert from './core/alert/Alert';
 import Button from './core/button/Button';
@@ -9,6 +10,7 @@ import Day from './core/day/Day';
 import FormGroup from './core/form-group/FormGroup';
 import HtmlElement from './core/html-element/HtmlElement';
 import Image from './core/image/Image';
+import Maalgruppe from './core/maalgruppe/Maalgruppe';
 import Panel from './core/panel/Panel';
 import Radio from './core/radio/Radio';
 import Row from './core/row/Row';
@@ -22,7 +24,6 @@ import CurrencySelect from './extensions/currency-select/CurrencySelect';
 import Currency from './extensions/currency/Currency';
 import Email from './extensions/email/Email';
 import IBAN from './extensions/iban/IBAN';
-import Maalgruppe from './extensions/maalgruppe/Maalgruppe';
 import NationalIdentityNumber from './extensions/national-identity-number/NationalIdentityNumber';
 import Number from './extensions/number/Number';
 import OrganizationNumber from './extensions/organization-number/OrganizationNumber';
@@ -46,6 +47,7 @@ const customComponents = {
   datagrid: DataGrid,
   textfield: TextField,
   textarea: TextArea,
+  formioTextArea: FormioTextArea,
   number: Number,
   navSkjemagruppe: FormGroup,
   selectboxes: SelectBoxes,

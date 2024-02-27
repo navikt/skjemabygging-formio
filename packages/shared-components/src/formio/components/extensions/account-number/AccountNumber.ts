@@ -11,12 +11,7 @@ class AccountNumber extends TextField {
       type: 'bankAccount',
       key: 'kontoNummer',
       fieldSize: 'input--s',
-      input: true,
-      dataGridLabel: true,
       spellcheck: false,
-      clearOnHide: true,
-      displayMask: '9999 99 99999',
-      inputMaskPlaceholderChar: ' ', // U+00a0 -space
     });
   }
 

@@ -22,7 +22,6 @@ const yourInformationBuilder = () => {
           label: 'Har du norsk fødselsnummer eller d-nummer?',
           key: 'harDuNorskFodselsnummerEllerDNummer',
           type: 'radiopanel',
-          input: true,
           validateOn: 'blur',
           tableView: false,
           values: [
@@ -43,7 +42,6 @@ const yourInformationBuilder = () => {
           label: 'Fødselsnummer eller d-nummer',
           key: 'fodselsnummerDNummerSoker',
           type: 'fnrfield',
-          input: true,
           tableView: true,
           conditional: {
             show: true,
@@ -57,8 +55,6 @@ const yourInformationBuilder = () => {
           mayBeEqual: false,
           key: 'fodselsdatoDdMmAaaaSoker',
           type: 'navDatepicker',
-          dataGridLabel: true,
-          input: true,
           tableView: false,
           validateOn: 'blur',
           validate: {
@@ -78,7 +74,6 @@ const yourInformationBuilder = () => {
           key: 'alertstripe',
           type: 'alertstripe',
           alerttype: 'info',
-          input: true,
           tableView: false,
           conditional: {
             show: true,
@@ -90,7 +85,6 @@ const yourInformationBuilder = () => {
           label: 'Bor du i Norge?',
           key: 'borDuINorge',
           type: 'radiopanel',
-          input: true,
           tableView: false,
           validateOn: 'blur',
           validate: {
@@ -116,7 +110,6 @@ const yourInformationBuilder = () => {
           label: 'Er kontaktadressen din en vegadresse eller postboksadresse?',
           key: 'vegadresseEllerPostboksadresse',
           type: 'radiopanel',
-          input: true,
           validateOn: 'blur',
           tableView: false,
           values: [
@@ -157,8 +150,6 @@ const yourInformationBuilder = () => {
               visArvelger: true,
               key: 'gyldigFraDatoDdMmAaaa1',
               type: 'navDatepicker',
-              dataGridLabel: true,
-              input: true,
               tableView: false,
               mayBeEqual: false,
               validateOn: 'blur',
@@ -172,8 +163,6 @@ const yourInformationBuilder = () => {
               visArvelger: true,
               key: 'gyldigTilDatoDdMmAaaa1',
               type: 'navDatepicker',
-              dataGridLabel: true,
-              input: true,
               tableView: false,
               latestAllowedDate: 365,
               description:
@@ -206,8 +195,7 @@ const yourInformationBuilder = () => {
               visArvelger: true,
               key: 'gyldigFraDatoDdMmAaaa2',
               type: 'navDatepicker',
-              dataGridLabel: true,
-              input: true,
+
               tableView: false,
               mayBeEqual: false,
               validateOn: 'blur',
@@ -229,8 +217,6 @@ const yourInformationBuilder = () => {
               validateOn: 'blur',
               key: 'gyldigTilDatoDdMmAaaa2',
               type: 'navDatepicker',
-              dataGridLabel: true,
-              input: true,
               tableView: false,
               latestAllowedDate: 365,
             },
@@ -255,8 +241,6 @@ const yourInformationBuilder = () => {
               visArvelger: true,
               key: 'gyldigFraDatoDdMmAaaa',
               type: 'navDatepicker',
-              dataGridLabel: true,
-              input: true,
               tableView: false,
               mayBeEqual: false,
               validateOn: 'blur',
@@ -270,8 +254,6 @@ const yourInformationBuilder = () => {
               visArvelger: true,
               key: 'gyldigTilDatoDdMmAaaa',
               type: 'navDatepicker',
-              dataGridLabel: true,
-              input: true,
               tableView: false,
               description:
                 'Du velger selv hvor lenge adressen skal være gyldig, maksimalt 1 år. Etter 1 år må du endre eller forlenge adressen.',

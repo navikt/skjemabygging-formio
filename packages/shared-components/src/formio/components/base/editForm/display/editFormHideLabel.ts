@@ -5,7 +5,6 @@ const editFormHideLabel = (): Component => {
     type: 'checkbox',
     label: 'Skjul ledetekst',
     key: 'hideLabel',
-    input: true,
   };
 };
 

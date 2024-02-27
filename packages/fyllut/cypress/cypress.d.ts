@@ -1,5 +1,6 @@
 import { ByRoleOptions } from '@testing-library/cypress';
 import { ByRoleMatcher } from '@testing-library/dom';
+import { CyHttpMessages } from 'cypress/types/net-stubbing';
 
 declare global {
   namespace Cypress {
@@ -26,9 +27,11 @@ declare global {
 
       defaultInterceptsMellomlagring(): Chainable<JQuery<HTMLElement>>;
 
-      defaultInterceptsPrefillData(): Chainable<JQuery<HTMLElement>>;
+      defaultInterceptsExternal(): Chainable<JQuery<HTMLElement>>;
 
-      defaultInterceptsActivities(): Chainable<JQuery<HTMLElement>>;
+      defaultWaits(): Chainable<JQuery<HTMLElement>>;
+
+      submitMellomlagring(callback: (req: CyHttpMessages.IncomingHttpRequest) => void): Chainable<JQuery<HTMLElement>>;
 
       shouldBeVisible(): Chainable<JQuery>;
 

@@ -9,7 +9,7 @@ const editFormWysiwygEditor = (heading: boolean = true): Component => {
   toolbar.push('bold', 'link', 'bulletedList', 'numberedList');
 
   return {
-    type: 'textarea',
+    type: 'formioTextArea',
     key: 'wysiwygEditor',
     label: '',
     rows: 5,
@@ -17,7 +17,6 @@ const editFormWysiwygEditor = (heading: boolean = true): Component => {
     wysiwyg: {
       toolbar,
     },
-    input: true,
   };
 };
 

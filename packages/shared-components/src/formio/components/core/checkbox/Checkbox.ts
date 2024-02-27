@@ -8,10 +8,7 @@ class Checkbox extends FormioCheckbox {
       label: 'Avkryssingsboks',
       type: 'navCheckbox',
       key: 'Avkryssingsboks',
-      input: true,
       hideLabel: false,
-      clearOnHide: true,
-      dataGridLabel: true,
     });
   }
 

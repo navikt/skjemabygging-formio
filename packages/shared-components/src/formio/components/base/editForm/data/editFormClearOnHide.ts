@@ -6,7 +6,6 @@ const editFormClearOnHide = (): Component => {
     label: 'Nullstill verdi når feltet skjules',
     key: 'clearOnHide',
     defaultValue: true,
-    input: true,
   };
 };
 

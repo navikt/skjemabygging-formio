@@ -3,7 +3,6 @@ import { Component } from '@navikt/skjemadigitalisering-shared-domain';
 const editFormKey = (): Component => {
   return {
     type: 'textfield',
-    input: true,
     key: 'key',
     label: 'Nøkkel',
     validate: {

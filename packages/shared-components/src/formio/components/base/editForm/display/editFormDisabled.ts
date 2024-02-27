@@ -5,7 +5,6 @@ const editFormDisabled = (): Component => {
     type: 'checkbox',
     label: 'Deaktivert',
     key: 'disabled',
-    input: true,
   };
 };
 

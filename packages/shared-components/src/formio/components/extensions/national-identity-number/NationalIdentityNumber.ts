@@ -13,9 +13,7 @@ export default class NationalIdentityNumber extends TextFieldComponent {
       type: 'fnrfield',
       key: 'fodselsnummerDNummer',
       fieldSize: 'input--s',
-      input: true,
       spellcheck: false,
-      dataGridLabel: true,
     });
   }
 

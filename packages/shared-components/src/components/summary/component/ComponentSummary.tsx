@@ -36,6 +36,7 @@ const ComponentSummary = ({ components, formUrl = '', panelValidationList = [] }
           case 'image':
             return <ImageSummary key={key} component={comp} />;
           case 'htmlelement':
+          case 'alertstripe':
             return <SummaryField key={key} component={comp as Summary.Field} html={true} />;
           case 'activities':
             return <ActivitySummary key={key} component={comp as Summary.Activity} />;
