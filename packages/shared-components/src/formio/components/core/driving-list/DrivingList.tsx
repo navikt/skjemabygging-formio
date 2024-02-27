@@ -1,8 +1,9 @@
-import NavDrivingList, { DrivingListSubmission } from '../../../../components/drivinglist/NavDrivingList';
+import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import NavDrivingList from '../../../../components/drivinglist/NavDrivingList';
 import BaseComponent from '../../base/BaseComponent';
 import drivingListBuilder from './DrivingList.builder';
 import drivingListForm from './DrivingList.form';
-import { getComponentInfo, requiredError } from './DrivingList.utils';
+import { DrivingListSubmission, getComponentInfo, requiredError } from './DrivingList.utils';
 
 class DrivingList extends BaseComponent {
   static schema() {
@@ -66,16 +67,11 @@ class DrivingList extends BaseComponent {
     }
 
     if (componentData?.dates?.some((date) => !this.isValidParking(date.parking))) {
-      this.addError(getComponentInfo('dates').id, this.t('Parkeringsutgiftene må være et gyldig beløp'));
+      this.addError(getComponentInfo('dates').id, this.t(TEXTS.validering.validParkingExpenses));
     }
 
     if (componentData?.dates?.some((date) => Number(date.parking) > 100)) {
-      this.addError(
-        getComponentInfo('dates').id,
-        this.t(
-          'Du kan ikke legge inn parkeringsutgifter over 100 kroner i den elektroniske kjørelisten. Hvis du har parkeringsutgifter over 100 kroner per dag må du sende inn kjøreliste på skjema NAV 00-01.01 og legge ved kvitteringer som dokumenterer utgiften.',
-        ),
-      );
+      this.addError(getComponentInfo('dates').id, this.t(TEXTS.validering.parkingExpensesAboveHundred));
     }
 
     this.renderErrors();

@@ -2,12 +2,12 @@ import { Accordion, Checkbox, CheckboxGroup, TextField } from '@navikt/ds-react'
 import { dateUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { useMemo } from 'react';
 import {
+  DrivingListSubmission,
   getComponentInfo,
   toLocaleDate,
   toWeekdayAndDate,
 } from '../../formio/components/core/driving-list/DrivingList.utils';
 import makeStyles from '../../util/styles/jss/jss';
-import { DrivingListSubmission } from './NavDrivingList';
 
 interface DrivingPeriodProps {
   periodFrom: Date;

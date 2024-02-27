@@ -129,8 +129,14 @@ export const statiske = {
     defaultActivity: 'Jeg får ikke opp noen aktiviteter her som stemmer med det jeg vil søke om',
     error: 'Det oppstod en feil ved henting av aktiviteter.',
     errorContinue: 'Det oppstod en feil ved henting av aktiviteter. Du kan fortsatt gå videre uten å velge aktivitet',
-    drivingListError: 'Kunne ikke hente aktiviteter. Du kan sende inn søknad via papir',
+  },
+  drivingList: {
+    activity: 'Aktivitet',
+    period: 'Periode for aktiviteten',
+    dailyRate: 'Din dagsats uten parkeringsutgift',
+    error: 'Kunne ikke hente aktiviteter. Du kan sende inn søknad via papir',
     noVedtak:
       'Det er ikke registrert vedtak om tilleggsstønad på deg. Du må søke om tilleggsstønad og motta vedtak før du kan sende inn liste over utgifter til daglig reise med bruk av egen bil.',
+    previousDrivingList: 'Perioder du tidligere har fått refundert reiseutgifter for',
   },
 };

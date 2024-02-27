@@ -1,11 +1,15 @@
 import { Accordion, Alert, BodyShort, Heading, Radio, RadioGroup, Skeleton } from '@navikt/ds-react';
 import { SendInnAktivitet, SubmissionActivity, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useState } from 'react';
-import { v4 as uuidv4 } from 'uuid';
 import { AktivitetVedtaksinformasjon, VedtakBetalingsplan } from '../../../../shared-domain/src/sendinn/activity';
 import { getActivities } from '../../api/sendinn/sendInnActivities';
 import { AppConfigContextType } from '../../context/config/configContext';
-import { getComponentInfo, toLocaleDate } from '../../formio/components/core/driving-list/DrivingList.utils';
+import {
+  DrivingListSubmission,
+  generatePeriods,
+  getComponentInfo,
+  toLocaleDate,
+} from '../../formio/components/core/driving-list/DrivingList.utils';
 import makeStyles from '../../util/styles/jss/jss';
 import NavActivities from '../activities/NavActivities';
 import DatePicker from '../datepicker/DatePicker';
@@ -17,21 +21,6 @@ interface NavDrivingListProps {
   values: DrivingListSubmission;
   t(text: string, params?: any): any;
   locale: string;
-}
-
-export interface DrivingListSubmission {
-  selectedDate: string;
-  selectedPeriodType?: 'weekly' | 'monthly';
-  periods?: DrivingListPeriod[];
-  parking?: boolean;
-  dates: { date: string; parking: string }[];
-  selectedActivity?: string;
-}
-
-interface DrivingListPeriod {
-  periodFrom: Date;
-  periodTo: Date;
-  id: string;
 }
 
 const useDrivinglistStyles = makeStyles({
@@ -76,20 +65,6 @@ const NavDrivingList = ({ appConfig, onValueChange, values, t, locale }: NavDriv
 
     fetchData();
   }, []);
-
-  const generatePeriods = (periodType: 'weekly' | 'monthly', date?: string): DrivingListPeriod[] => {
-    if (!date) return [];
-
-    const startDate = new Date(date);
-    const endDate = new Date(date);
-
-    if (periodType === 'weekly') {
-      endDate.setDate(endDate.getDate() + 6);
-    } else if (periodType === 'monthly') {
-      endDate.setMonth(endDate.getMonth() + 1);
-    }
-    return [{ periodFrom: startDate, periodTo: endDate, id: uuidv4() }];
-  };
 
   const updateValue = (key: keyof DrivingListSubmission, value: DrivingListSubmission[keyof DrivingListSubmission]) => {
     onValueChange({ ...values, [key]: value });
@@ -164,17 +139,17 @@ const NavDrivingList = ({ appConfig, onValueChange, values, t, locale }: NavDriv
       <Alert variant={'info'}>
         {
           <>
-            <Heading size="xsmall">{'Aktivitet'}</Heading>
+            <Heading size="xsmall">{t(TEXTS.statiske.drivingList.activity)}</Heading>
             <BodyShort size="medium" spacing={true}>
               {activityName}
             </BodyShort>
 
-            <Heading size="xsmall">{'Periode for aktiviteten'}</Heading>
+            <Heading size="xsmall">{t(TEXTS.statiske.drivingList.period)}</Heading>
             <BodyShort size="medium" spacing={true}>{`${toLocaleDate(vedtakPeriodFrom)} - ${toLocaleDate(
               vedtakPeriodTo,
             )}`}</BodyShort>
 
-            <Heading size="xsmall">{'Din dagsats uten parkeringsutgift'}</Heading>
+            <Heading size="xsmall">{t(TEXTS.statiske.drivingList.dailyRate)}</Heading>
             <BodyShort size="medium" spacing={true}>
               {vedtak.dagsats}
             </BodyShort>
@@ -212,7 +187,7 @@ const NavDrivingList = ({ appConfig, onValueChange, values, t, locale }: NavDriv
             {alreadyRefunded.length > 0 && (
               <>
                 <Heading size="small" spacing={true}>
-                  {t('Perioder du tidligere har fått refundert reiseutgifter for')}
+                  {t(TEXTS.statiske.drivingList.previousDrivingList)}
                 </Heading>
                 <ul>
                   {vedtak?.betalingsplan
@@ -291,7 +266,7 @@ const NavDrivingList = ({ appConfig, onValueChange, values, t, locale }: NavDriv
   };
 
   const renderNoActivitiesAlert = () => {
-    return <Alert variant="info">{t(TEXTS.statiske.activities.noVedtak)}</Alert>;
+    return <Alert variant="info">{t(TEXTS.statiske.drivingList.noVedtak)}</Alert>;
   };
 
   const isLoggedInWithActivities = isLoggedIn && activities.length > 0;
