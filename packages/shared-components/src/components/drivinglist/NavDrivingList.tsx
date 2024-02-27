@@ -1,18 +1,19 @@
 import { Accordion, Alert, BodyShort, Heading, Radio, RadioGroup, Skeleton } from '@navikt/ds-react';
 import { SendInnAktivitet, SubmissionActivity, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useState } from 'react';
-import { AktivitetVedtaksinformasjon, VedtakBetalingsplan } from '../../../../shared-domain/src/sendinn/activity';
+import { VedtakBetalingsplan } from '../../../../shared-domain/src/sendinn/activity';
 import { getActivities } from '../../api/sendinn/sendInnActivities';
 import { AppConfigContextType } from '../../context/config/configContext';
 import {
   DrivingListSubmission,
+  drivingListMetadata,
   generatePeriods,
-  getComponentInfo,
   toLocaleDate,
 } from '../../formio/components/core/driving-list/DrivingList.utils';
 import makeStyles from '../../util/styles/jss/jss';
 import NavActivities from '../activities/NavActivities';
 import DatePicker from '../datepicker/DatePicker';
+import ActivityAlert from './ActivityAlert';
 import DrivingPeriod from './DrivingPeriod';
 
 interface NavDrivingListProps {
@@ -45,7 +46,7 @@ const NavDrivingList = ({ appConfig, onValueChange, values, t, locale }: NavDriv
 
   useEffect(() => {
     const fetchData = async () => {
-      if (app === 'fyllut' && isLoggedIn) {
+      if (app === 'fyllut' && isLoggedIn && submissionMethod === 'digital') {
         try {
           setLoading(true);
           const result = await getActivities(appConfig);
@@ -131,44 +132,17 @@ const NavDrivingList = ({ appConfig, onValueChange, values, t, locale }: NavDriv
     );
   };
 
-  const renderActivityAlert = (activityName: string, vedtak: AktivitetVedtaksinformasjon) => {
-    const vedtakPeriodFrom = new Date(vedtak.periode.fom);
-    const vedtakPeriodTo = new Date(vedtak.periode.tom);
-
-    return (
-      <Alert variant={'info'}>
-        {
-          <>
-            <Heading size="xsmall">{t(TEXTS.statiske.drivingList.activity)}</Heading>
-            <BodyShort size="medium" spacing={true}>
-              {activityName}
-            </BodyShort>
-
-            <Heading size="xsmall">{t(TEXTS.statiske.drivingList.period)}</Heading>
-            <BodyShort size="medium" spacing={true}>{`${toLocaleDate(vedtakPeriodFrom)} - ${toLocaleDate(
-              vedtakPeriodTo,
-            )}`}</BodyShort>
-
-            <Heading size="xsmall">{t(TEXTS.statiske.drivingList.dailyRate)}</Heading>
-            <BodyShort size="medium" spacing={true}>
-              {vedtak.dagsats}
-            </BodyShort>
-          </>
-        }
-      </Alert>
-    );
-  };
-
   const renderDrivingListFromActivities = () => {
     const activity = activities.find((x) => x.aktivitetId === values?.selectedActivity);
+    // FIXME: Is it always the first vedtak?
     const vedtak = activity?.saksinformasjon?.vedtaksinformasjon?.[0];
     const alreadyRefunded = vedtak?.betalingsplan.filter((x) => !x.journalpostId) ?? [];
 
     return (
       <>
         <NavActivities
-          id={getComponentInfo('activityRadio').id}
-          label={t(getComponentInfo('activityRadio').label)}
+          id={drivingListMetadata('activityRadio').id}
+          label={t(drivingListMetadata('activityRadio').label)}
           value={activity}
           onChange={(activity) => onActivityChange(activity)}
           appConfig={appConfig}
@@ -176,8 +150,8 @@ const NavDrivingList = ({ appConfig, onValueChange, values, t, locale }: NavDriv
         />
         {activity && vedtak && (
           <>
-            {renderActivityAlert(activity.aktivitetsnavn, vedtak)}
-            <Accordion id={getComponentInfo('dates').id} className={styles.accordion} size="small">
+            <ActivityAlert activityName={activity.aktivitetsnavn} vedtak={vedtak} t={t} />
+            <Accordion tabIndex={-1} id={drivingListMetadata('dates').id} className={styles.accordion} size="small">
               {vedtak?.betalingsplan
                 .filter((x) => !!x.journalpostId)
                 .map((betalingsplan, index) =>
@@ -232,8 +206,8 @@ const NavDrivingList = ({ appConfig, onValueChange, values, t, locale }: NavDriv
     return (
       <>
         <DatePicker
-          id={getComponentInfo('datePicker').id}
-          label={t(getComponentInfo('datePicker').label)}
+          id={drivingListMetadata('datePicker').id}
+          label={t(drivingListMetadata('datePicker').label)}
           isRequired={true}
           value={values?.selectedDate}
           onChange={(date: string) => onDateChange(date)}
@@ -243,24 +217,28 @@ const NavDrivingList = ({ appConfig, onValueChange, values, t, locale }: NavDriv
           inputRef={undefined}
         />
         <RadioGroup
-          id={getComponentInfo('periodType').id}
-          legend={t(getComponentInfo('periodType').label)}
+          id={drivingListMetadata('periodType').id}
+          legend={t(drivingListMetadata('periodType').label)}
           onChange={(value) => onPeriodChange(value)}
           defaultValue={values?.selectedPeriodType}
+          tabIndex={-1}
         >
-          <Radio value="weekly">{t('Ukentlig')}</Radio>
-          <Radio value="monthly">{t('Månedlig')}</Radio>
+          <Radio value="weekly">{t(TEXTS.common.weekly)}</Radio>
+          <Radio value="monthly">{t(TEXTS.common.monthly)}</Radio>
         </RadioGroup>
         <RadioGroup
-          id={getComponentInfo('parkingRadio').id}
-          legend={t(getComponentInfo('parkingRadio').label)}
+          id={drivingListMetadata('parkingRadio').id}
+          legend={t(drivingListMetadata('parkingRadio').label)}
           onChange={(value) => onParkingChange(value)}
           defaultValue={values?.parking}
+          tabIndex={-1}
         >
-          <Radio value={true}>{t('Ja')}</Radio>
-          <Radio value={false}>{t('Nei')}</Radio>
+          <Radio value={true}>{t(TEXTS.common.yes)}</Radio>
+          <Radio value={false}>{t(TEXTS.common.no)}</Radio>
         </RadioGroup>
-        <Accordion id={getComponentInfo('dates').id}>{renderDrivingPeriodsFromDates()}</Accordion>
+        <Accordion tabIndex={-1} id={drivingListMetadata('dates').id}>
+          {renderDrivingPeriodsFromDates()}
+        </Accordion>
       </>
     );
   };

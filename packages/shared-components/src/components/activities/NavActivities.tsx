@@ -25,13 +25,14 @@ const NavActivities = (props: Props) => {
   const [activities, setActivities] = useState<SendInnAktivitet[]>([]);
   const [showError, setShowError] = useState<boolean>(false);
 
+  const submissionMethod = props.appConfig?.submissionMethod;
   const isLoggedIn = props.appConfig?.config?.isLoggedIn;
   const app = props.appConfig?.app;
 
   // Will fetch activities if not provided in props
   useEffect(() => {
     const fetchData = async () => {
-      if (app === 'fyllut' && isLoggedIn) {
+      if (app === 'fyllut' && isLoggedIn && submissionMethod === 'digital') {
         try {
           setLoading(true);
           const result = await getActivities(props.appConfig);
@@ -65,7 +66,6 @@ const NavActivities = (props: Props) => {
         legend={props.label}
         value={props.value?.aktivitetId ? [props.value?.aktivitetId] : []}
         onChange={(values) => onChangeRadio(values[0] ?? props.defaultActivity)}
-        // ref={(ref) => this.setReactInstance(ref)}
         description={props.description}
         className={props.className}
         error={props.error}

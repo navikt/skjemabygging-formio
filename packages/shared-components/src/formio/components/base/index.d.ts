@@ -61,6 +61,7 @@ interface ReactComponentType {
   addMessages(messages): void;
   addFocusBlurEvents(element): void;
   labelIsHidden(): boolean;
+  setCustomValidity(messages: object, dirty?: boolean, external?: boolean): void;
   // Element
   id?: any;
   emit(event: string, data: Object): void;

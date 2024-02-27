@@ -3,7 +3,7 @@ import { dateUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { useMemo } from 'react';
 import {
   DrivingListSubmission,
-  getComponentInfo,
+  drivingListMetadata,
   toLocaleDate,
   toWeekdayAndDate,
 } from '../../formio/components/core/driving-list/DrivingList.utils';
@@ -70,14 +70,12 @@ const DrivingPeriod = ({
 
   const header = `${toLocaleDate(periodFrom)} - ${toLocaleDate(periodTo)}`;
 
-  // FIXME: Fix validation on number and input size
   return (
     <Accordion.Item defaultOpen={index === 0 && readOnly === false}>
       <Accordion.Header>{header}</Accordion.Header>
       <Accordion.Content>
         <CheckboxGroup
-          id={getComponentInfo('dates').id}
-          legend={t(getComponentInfo('dates').label)}
+          legend={t(drivingListMetadata('dates').label)}
           onChange={(values) => onChange(values)}
           value={values?.dates?.map((value) => value.date) ?? []}
           readOnly={readOnly}
@@ -90,8 +88,8 @@ const DrivingPeriod = ({
                 </Checkbox>
                 {showParking(toLocaleDate(date)) ? (
                   <TextField
-                    id={getComponentInfo('parkingExpenses').id}
-                    label={t(getComponentInfo('parkingExpenses').label)}
+                    id={drivingListMetadata('parkingExpenses').id}
+                    label={t(drivingListMetadata('parkingExpenses').label)}
                     type="text"
                     size="medium"
                     inputMode="numeric"

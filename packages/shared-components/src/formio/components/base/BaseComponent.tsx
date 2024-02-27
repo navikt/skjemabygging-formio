@@ -249,7 +249,6 @@ class BaseComponent extends FormioReactComponent {
         path: error.componentId,
         context: { hasLabel: true }, // To not show the label of the component in the error summary (ex: "label: message")
       }));
-      // @ts-ignore FIXME
       super.setCustomValidity(errors);
       return false;
     }
