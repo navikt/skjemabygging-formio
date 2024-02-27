@@ -17,9 +17,10 @@ export interface DrivingListSubmission {
   selectedActivity?: string;
 }
 
-export type ComponentId = (typeof componentsInfo)[number]['id'];
+export type DrivingListMetadataId = (typeof metadata)[number]['id'];
+export type DrivingListErrorType = 'required';
 
-export const componentsInfo = [
+const metadata = [
   { id: 'activityRadio', label: 'Velg hvilken aktivitet du vil søke om stønad for' },
   { id: 'parkingRadio', label: 'Skal du registrere parkering?' },
   { id: 'periodType', label: 'Velg periode for innsending' },
@@ -28,14 +29,14 @@ export const componentsInfo = [
   { id: 'parkingExpenses', label: 'Parkeringsutgifter (kr)' },
 ] as const;
 
-export const getComponentInfo = (componentId: ComponentId) => {
-  const componentInfo = componentsInfo.find((component) => component.id === componentId);
-  if (!componentInfo) throw Error(`Component with id ${componentId} not found`);
-  return componentInfo;
+export const drivingListMetadata = (metadataId: DrivingListMetadataId) => {
+  const metadataInfo = metadata.find((data) => data.id === metadataId);
+  if (!metadataInfo) throw Error(`Metadata with id ${metadataId} not found`);
+  return metadataInfo;
 };
 
-export const requiredError = (componentId: ComponentId, t: (key: string, params?: any) => string) => {
-  return t(validering.required, { field: t(getComponentInfo(componentId).label) });
+export const requiredError = (componentId: DrivingListMetadataId, t: (key: string, params?: any) => string) => {
+  return t(validering.required, { field: t(drivingListMetadata(componentId).label) });
 };
 
 export const toLocaleDate = (date: Date) => {
@@ -58,4 +59,9 @@ export const generatePeriods = (periodType: 'weekly' | 'monthly', date?: string)
     endDate.setMonth(endDate.getMonth() + 1);
   }
   return [{ periodFrom: startDate, periodTo: endDate, id: uuidv4() }];
+};
+
+export const isValidParking = (value: string) => {
+  if (value === '') return true;
+  return /^\d+$/.test(value);
 };

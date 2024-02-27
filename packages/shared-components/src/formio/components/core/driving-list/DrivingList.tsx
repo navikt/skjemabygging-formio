@@ -3,7 +3,14 @@ import NavDrivingList from '../../../../components/drivinglist/NavDrivingList';
 import BaseComponent from '../../base/BaseComponent';
 import drivingListBuilder from './DrivingList.builder';
 import drivingListForm from './DrivingList.form';
-import { DrivingListSubmission, getComponentInfo, requiredError } from './DrivingList.utils';
+import {
+  DrivingListErrorType,
+  DrivingListMetadataId,
+  DrivingListSubmission,
+  drivingListMetadata,
+  isValidParking,
+  requiredError,
+} from './DrivingList.utils';
 
 class DrivingList extends BaseComponent {
   static schema() {
@@ -29,9 +36,14 @@ class DrivingList extends BaseComponent {
     this.rerender();
   }
 
-  isValidParking(value: string) {
-    if (value === '') return true;
-    return /^\d+$/.test(value);
+  override addError(metadataId: DrivingListMetadataId, message: string): void {
+    super.addError(drivingListMetadata(metadataId).id, message);
+  }
+
+  addErrorOfType(metadataId: DrivingListMetadataId, errorType: DrivingListErrorType) {
+    if (errorType === 'required') {
+      super.addError(drivingListMetadata(metadataId).id, requiredError(metadataId, this.t.bind(this)));
+    }
   }
 
   override checkValidity(data: any): boolean {
@@ -39,39 +51,39 @@ class DrivingList extends BaseComponent {
     const componentData = data[this.defaultSchema.key] as DrivingListSubmission;
 
     const submissionMethod = this.getAppConfig()?.submissionMethod;
-
+    // FIXME: Check innsending=INGEN
     if (submissionMethod === 'paper') {
       const parkingSelected = componentData?.parking !== undefined && componentData?.parking !== null;
 
       if (!componentData?.selectedDate) {
-        this.addError(getComponentInfo('datePicker').id, requiredError('datePicker', this.t.bind(this)));
+        this.addErrorOfType('datePicker', 'required');
       }
 
       if (!componentData?.selectedPeriodType) {
-        this.addError(getComponentInfo('periodType').id, requiredError('periodType', this.t.bind(this)));
+        this.addErrorOfType('periodType', 'required');
       }
 
       if (!parkingSelected) {
-        this.addError(getComponentInfo('parkingRadio').id, requiredError('parkingRadio', this.t.bind(this)));
+        this.addErrorOfType('parkingRadio', 'required');
       }
 
       const allSelected = componentData?.selectedDate && componentData?.selectedPeriodType && parkingSelected;
 
       if (allSelected && componentData.dates?.length === 0) {
-        this.addError(getComponentInfo('dates').id, requiredError('dates', this.t.bind(this)));
+        this.addErrorOfType('dates', 'required');
       }
     } else {
       if (componentData?.dates?.length === 0) {
-        this.addError(getComponentInfo('dates').id, requiredError('dates', this.t.bind(this)));
+        this.addErrorOfType('dates', 'required');
       }
     }
 
-    if (componentData?.dates?.some((date) => !this.isValidParking(date.parking))) {
-      this.addError(getComponentInfo('dates').id, this.t(TEXTS.validering.validParkingExpenses));
+    if (componentData?.dates?.some((date) => !isValidParking(date.parking))) {
+      this.addError('dates', this.t(TEXTS.validering.validParkingExpenses));
     }
 
     if (componentData?.dates?.some((date) => Number(date.parking) > 100)) {
-      this.addError(getComponentInfo('dates').id, this.t(TEXTS.validering.parkingExpensesAboveHundred));
+      this.addError('dates', this.t(TEXTS.validering.parkingExpensesAboveHundred));
     }
 
     this.renderErrors();
