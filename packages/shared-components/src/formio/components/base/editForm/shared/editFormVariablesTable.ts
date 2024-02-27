@@ -23,9 +23,9 @@ const editFormVariablesTable = (additional?: string): Component => {
       '</table><br/>' +
       '<p>Egendefinerte hjelpefunksjoner på utils.</p>' +
       '<table class="table table-bordered table-condensed table-striped">' +
-      "<tr><th>isBornBeforeYear</th><td>Gitt api-key til et fødselsnummer returnerer denne funksjonen om personen er født tidligere enn oppgitt årstall.<br/><small><pre>utils.isBornBeforeYear(1964, 'fnr', submission)</pre></small></td></tr>" +
-      "<tr><th>isAgeBetween</th><td>Gitt api-key til et fødselsnummer returnerer denne funksjonen om personens alder ligger innenfor et intervall.<br/><small><pre>utils.isAgeBetween([18, 67], 'fnr', submission)</pre></small></td></tr>" +
-      "<tr><th>getAge</th><td>Gitt api-key til et fødselsnummer returnerer denne funksjonen personens alder.<br/><small><pre>utils.getAge('fnr', submission)</pre></small></td></tr>" +
+      "<tr><th>isBornBeforeYear</th><td>Gitt api-key (API-nøkkel) til et fødselsnummer eller datofelt returnerer denne funksjonen om personen er født tidligere enn oppgitt årstall.<br/><small><pre>utils.isBornBeforeYear(1964, 'apiKey', submission)</pre></small></td></tr>" +
+      "<tr><th>isAgeBetween</th><td>Gitt api-key (API-nøkkel) til et fødselsnummer eller datofelt returnerer denne funksjonen om personens alder ligger innenfor et intervall.<br/><small><pre>utils.isAgeBetween([18, 67], 'apiKey', submission)</pre></small></td></tr>" +
+      "<tr><th>getAge</th><td>Gitt api-key (API-nøkkel) til et fødselsnummer eller datofelt returnerer denne funksjonen personens alder.<br/><small><pre>utils.getAge('apiKey', submission)</pre></small></td></tr>" +
       '</table><br/>',
   };
 };
