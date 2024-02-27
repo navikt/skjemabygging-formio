@@ -66,7 +66,6 @@ export const generatePeriods = (
       startDate.setDate(startDate.getDate() + i + 6 * i);
       endDate.setDate(endDate.getDate() + i + 6 * (i + 1));
     } else if (periodType === 'monthly') {
-      console.log('startDate', startDate);
       startDate.setMonth(startDate.getMonth() + 1 * i);
       endDate.setMonth(endDate.getMonth() + 1 * (i + 1));
       endDate.setDate(endDate.getDate() - 1);

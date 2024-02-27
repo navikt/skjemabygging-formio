@@ -54,6 +54,7 @@ class DrivingList extends BaseComponent {
     // FIXME: Check innsending=INGEN
     if (submissionMethod === 'paper') {
       const parkingSelected = componentData?.parking !== undefined && componentData?.parking !== null;
+      const allSelected = componentData?.selectedDate && componentData?.selectedPeriodType && parkingSelected;
 
       if (!componentData?.selectedDate) {
         this.addErrorOfType('datePicker', 'required');
@@ -66,8 +67,6 @@ class DrivingList extends BaseComponent {
       if (!parkingSelected) {
         this.addErrorOfType('parkingRadio', 'required');
       }
-
-      const allSelected = componentData?.selectedDate && componentData?.selectedPeriodType && parkingSelected;
 
       if (allSelected && componentData.dates?.length === 0) {
         this.addErrorOfType('dates', 'required');

@@ -51,7 +51,6 @@ const DrivingListFromDates = ({ values, updateValues, t, locale }: Props) => {
 
     if (period === 'weekly') {
       const periods = generatePeriods('weekly', values?.selectedDate, numberOfPeriods) ?? [];
-      console.log('periods', periods);
       updateValues({ selectedDate: values?.selectedDate, periods, selectedPeriodType: 'weekly', dates: [] });
     } else {
       const periods = generatePeriods('monthly', values?.selectedDate, numberOfPeriods) ?? [];

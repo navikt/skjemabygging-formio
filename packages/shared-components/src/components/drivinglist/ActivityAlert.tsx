@@ -14,26 +14,24 @@ const ActivityAlert = ({ activityName, vedtak, t, className }: ActivityAlertProp
   const vedtakPeriodFrom = new Date(vedtak.periode.fom);
   const vedtakPeriodTo = new Date(vedtak.periode.tom);
 
+  const period = `${toLocaleDate(vedtakPeriodFrom)} - ${toLocaleDate(vedtakPeriodTo)}`;
+
   return (
     <Alert variant={'info'} className={className}>
-      {
-        <>
-          <Heading size="xsmall">{t(TEXTS.statiske.drivingList.activity)}</Heading>
-          <BodyShort size="medium" spacing={true}>
-            {activityName}
-          </BodyShort>
+      <Heading size="xsmall">{t(TEXTS.statiske.drivingList.activity)}</Heading>
+      <BodyShort size="medium" spacing={true}>
+        {activityName}
+      </BodyShort>
 
-          <Heading size="xsmall">{t(TEXTS.statiske.drivingList.period)}</Heading>
-          <BodyShort size="medium" spacing={true}>{`${toLocaleDate(vedtakPeriodFrom)} - ${toLocaleDate(
-            vedtakPeriodTo,
-          )}`}</BodyShort>
+      <Heading size="xsmall">{t(TEXTS.statiske.drivingList.period)}</Heading>
+      <BodyShort size="medium" spacing={true}>
+        {period}
+      </BodyShort>
 
-          <Heading size="xsmall">{t(TEXTS.statiske.drivingList.dailyRate)}</Heading>
-          <BodyShort size="medium" spacing={true}>
-            {vedtak.dagsats}
-          </BodyShort>
-        </>
-      }
+      <Heading size="xsmall">{t(TEXTS.statiske.drivingList.dailyRate)}</Heading>
+      <BodyShort size="medium" spacing={true}>
+        {vedtak.dagsats}
+      </BodyShort>
     </Alert>
   );
 };

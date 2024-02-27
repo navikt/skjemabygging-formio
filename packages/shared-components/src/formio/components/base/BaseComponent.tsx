@@ -227,14 +227,10 @@ class BaseComponent extends FormioReactComponent {
     );
   }
 
-  // ComponentId is used to scroll to the correct component when clicking on error summary
+  // MetadataId is used to focus to the correct element when clicking on error summary
   // Message is the error message that is shown in the error summary
-  addError(componentId: string, message: string) {
-    this.componentErrors.push({ componentId, message });
-  }
-
-  removeError(componentId: string) {
-    this.componentErrors = this.errors.filter((error) => error.componentId !== componentId);
+  addError(metadataId: string, message: string) {
+    this.componentErrors.push({ metadataId, message });
   }
 
   removeAllErrors() {
@@ -246,7 +242,7 @@ class BaseComponent extends FormioReactComponent {
       const errors = this.componentErrors.map((error) => ({
         level: 'error',
         message: error.message,
-        path: error.componentId,
+        path: error.metadataId,
         context: { hasLabel: true }, // To not show the label of the component in the error summary (ex: "label: message")
       }));
       super.setCustomValidity(errors);
