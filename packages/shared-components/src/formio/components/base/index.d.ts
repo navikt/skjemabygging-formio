@@ -49,7 +49,7 @@ interface ReactComponentType {
   destroy(): void;
   beforeSubmit(): any;
   updateOnChange(flags: any, changed: boolean | any): boolean;
-  t(text: string, params?: any): any;
+  t: TFunction;
   loadRefs(element: any, refs: any): any;
   checkValidity(data: any, dirty: any | boolean, rowData: any): boolean;
   getValue(): any;
