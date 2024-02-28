@@ -5,6 +5,7 @@ import {
 } from '@navikt/skjemadigitalisering-shared-domain';
 
 export interface I18nState {
+  status: 'LOADING' | 'INITIALIZED';
   translations: FormioTranslationMap;
   translationsForNavForm: I18nTranslations;
   localTranslationsForNavForm: I18nTranslations;
@@ -24,6 +25,7 @@ function reducer(state: I18nState, action: I18nAction) {
       return {
         ...state,
         translations: action.payload,
+        status: 'INITIALIZED',
       };
     case 'updateTranslationsForNavForm':
       return {

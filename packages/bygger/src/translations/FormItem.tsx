@@ -16,7 +16,7 @@ interface Props {
 const FormItem = ({ translations, text, htmlElementAsJson, type, languageCode }: Props) => {
   const [showGlobalTranslation, setShowGlobalTranslation] = useState(false);
   const [hasGlobalTranslation, setHasGlobalTranslation] = useState(false);
-  const [currentTranslation, setCurrentTranslation] = useState('');
+  const [currentTranslation, setCurrentTranslation] = useState<string>();
   const [tempGlobalTranslation, setTempGlobalTranslation] = useState('');
 
   const dispatch = useI18nDispatch();
@@ -44,6 +44,10 @@ const FormItem = ({ translations, text, htmlElementAsJson, type, languageCode }:
     });
     setCurrentTranslation(targetValue);
   };
+
+  if (currentTranslation === undefined) {
+    return <></>;
+  }
 
   if (htmlElementAsJson?.type === 'Element') {
     return (
