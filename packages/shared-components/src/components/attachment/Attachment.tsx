@@ -52,7 +52,7 @@ const Attachment = ({ attachmentValues, value, title, description, error, onChan
       description: TEXTS.statiske.attachment[key],
       deadlineWarning: !!attachmentValues?.[key]?.showDeadline ? TEXTS.statiske.attachment.deadline : undefined,
       additionalDocumentation: attachmentValues?.[key]?.additionalDocumentation?.enabled
-        ? value.additionalDocumentation
+        ? value?.additionalDocumentation
         : undefined,
     });
   };
