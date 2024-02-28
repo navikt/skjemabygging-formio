@@ -1,0 +1,22 @@
+import { Summary } from '@navikt/skjemadigitalisering-shared-domain';
+
+export interface Props {
+  component: Summary.DrivingList;
+}
+
+const DrivingListSummary = ({ component }: Props) => {
+  return (
+    <>
+      <dt>{component.label}</dt>
+      <dd>
+        <ul>
+          {component.value.dates.map((date) => {
+            return <li key={date.date}>{`${date.date} ${date.parking ? `- ${date.parking}kr` : ''}`}</li>;
+          })}
+        </ul>
+      </dd>
+    </>
+  );
+};
+
+export default DrivingListSummary;

@@ -3,23 +3,6 @@ import { TFunction } from 'i18next';
 import { v4 as uuidv4 } from 'uuid';
 import { validering } from '../../../../../../shared-domain/src/texts/validering';
 
-export interface DrivingListPeriod {
-  periodFrom: Date;
-  periodTo: Date;
-  id: string;
-}
-
-export interface DrivingListSubmission {
-  selectedDate: string;
-  selectedPeriodType?: 'weekly' | 'monthly';
-  periods?: DrivingListPeriod[];
-  parking?: boolean;
-  dates: { date: string; parking: string }[];
-  selectedActivity?: string;
-}
-export type DrivingListValues = Partial<
-  Record<keyof DrivingListSubmission, DrivingListSubmission[keyof DrivingListSubmission]>
->;
 export type DrivingListMetadataId = (typeof metadata)[number]['id'];
 export type DrivingListErrorType = 'required';
 
