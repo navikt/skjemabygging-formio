@@ -5,7 +5,7 @@ import {
   ComponentValue,
   TEXTS,
 } from '@navikt/skjemadigitalisering-shared-domain';
-import { ReactNode } from 'react';
+import { ChangeEvent, ReactNode } from 'react';
 import SingleSelect from '../single-select/SingleSelect';
 
 interface Props {
@@ -45,17 +45,19 @@ const Attachment = ({ attachmentValues, value, title, description, error, onChan
     return [];
   };
 
-  const handleAttachmentChange = (key) => {
+  const handleAttachmentChange = (key: string) => {
     onChange({
       ...value,
       key,
       description: TEXTS.statiske.attachment[key],
-      deadlineWarning: showDeadline ? value.deadlineWarning : undefined,
-      additionalDocumentation: additionalDocumentation?.enabled ? value.additionalDocumentation : undefined,
+      deadlineWarning: !!attachmentValues?.[key]?.showDeadline ? TEXTS.statiske.attachment.deadline : undefined,
+      additionalDocumentation: attachmentValues?.[key]?.additionalDocumentation?.enabled
+        ? value.additionalDocumentation
+        : undefined,
     });
   };
 
-  const handleAdditionalDocumentationChange = (event) => {
+  const handleAdditionalDocumentationChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
     onChange({
       ...value,
       additionalDocumentation: event.currentTarget.value,
