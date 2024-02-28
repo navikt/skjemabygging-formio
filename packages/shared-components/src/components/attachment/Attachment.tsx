@@ -19,6 +19,9 @@ interface Props {
 }
 
 const Attachment = ({ attachmentValues, value, title, description, error, onChange, translate }: Props) => {
+  const additionalDocumentation = attachmentValues?.[value?.key]?.additionalDocumentation;
+  const showDeadline = !!attachmentValues?.[value?.key]?.showDeadline;
+
   const getValues = (): ComponentValue[] => {
     if (attachmentValues) {
       if (Array.isArray(attachmentValues)) {
@@ -47,7 +50,8 @@ const Attachment = ({ attachmentValues, value, title, description, error, onChan
       ...value,
       key,
       description: TEXTS.statiske.attachment[key],
-      deadlineWarning: TEXTS.statiske.attachment.deadline,
+      deadlineWarning: showDeadline ? value.deadlineWarning : undefined,
+      additionalDocumentation: additionalDocumentation?.enabled ? value.additionalDocumentation : undefined,
     });
   };
 
@@ -57,9 +61,6 @@ const Attachment = ({ attachmentValues, value, title, description, error, onChan
       additionalDocumentation: event.currentTarget.value,
     });
   };
-
-  const additionalDocumentation = attachmentValues?.[value?.key]?.additionalDocumentation;
-  const showDeadline = !!attachmentValues?.[value?.key]?.showDeadline;
 
   return (
     <div>
