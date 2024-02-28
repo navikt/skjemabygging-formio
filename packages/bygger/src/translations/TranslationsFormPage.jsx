@@ -33,7 +33,7 @@ const TranslationsToRemove = ({ translations, languageCode }) => {
 
 const TranslationsFormPage = ({ skjemanummer, translations, title, flattenedComponents, languageCode }) => {
   const classes = useTranslationsListStyles();
-  const [currentTranslation, setCurrentTranslation] = useState({});
+  const [currentTranslation, setCurrentTranslation] = useState();
   const [unusedTranslations, setUnusedTranslations] = useState([]);
 
   useEffect(
@@ -49,6 +49,10 @@ const TranslationsFormPage = ({ skjemanummer, translations, title, flattenedComp
       .filter(([key, _]) => !flattenedComponents.some(({ text }) => text === key));
     setUnusedTranslations(unusedTranslationsAsEntries);
   }, [translations, flattenedComponents, languageCode]);
+
+  if (!currentTranslation) {
+    return <></>;
+  }
 
   return (
     <div className={classes.root}>

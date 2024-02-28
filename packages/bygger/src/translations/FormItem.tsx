@@ -1,4 +1,4 @@
-import { HtmlAsJsonElement, HtmlAsJsonTextElement, htmlUtils } from '@navikt/skjemadigitalisering-shared-components';
+import { HtmlAsJsonElement, HtmlAsJsonTextElement } from '@navikt/skjemadigitalisering-shared-components';
 import { ScopedTranslationMap } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useState } from 'react';
 import { useI18nDispatch } from '../context/i18n';
@@ -54,9 +54,7 @@ const FormItem = ({ translations, text, htmlElementAsJson, type, languageCode }:
       <TranslationFormHtmlItem
         text={text}
         htmlElementAsJson={htmlElementAsJson}
-        storedTranslation={
-          htmlUtils.isHtmlString(currentTranslation) ? htmlUtils.htmlString2Json(currentTranslation) : undefined
-        }
+        storedTranslation={currentTranslation}
         updateTranslation={updateTranslations}
       />
     );
