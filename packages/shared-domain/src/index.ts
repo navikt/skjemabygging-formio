@@ -47,7 +47,7 @@ import type { ReportDefinition } from './reports';
 import type { GlobalTranslationsResourceContent, MottaksadresserResourceContent, ResourceContent } from './resource';
 import { AktivitetVedtaksinformasjon, SendInnAktivitet, VedtakBetalingsplan } from './sendinn/activity';
 import { SubmissionActivity } from './submission/activity';
-import { DrivingListSubmission } from './submission/drivingList';
+import { DrivingListPeriod, DrivingListSubmission, DrivingListValues } from './submission/drivingList';
 import type { Summary } from './summary/FormSummaryType';
 import MockedComponentObjectForTest from './summary/MockedComponentObjectForTest';
 import formSummaryUtil from './summary/formSummaryUtil';
@@ -94,7 +94,9 @@ export type {
   ConfigType,
   DependencyType,
   DisplayType,
+  DrivingListPeriod,
   DrivingListSubmission,
+  DrivingListValues,
   Enhet,
   Enhetstype,
   FeatureTogglesMap,

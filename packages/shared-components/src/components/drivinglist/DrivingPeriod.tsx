@@ -1,10 +1,8 @@
 import { Accordion, Checkbox, CheckboxGroup, TextField } from '@navikt/ds-react';
-import { dateUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { DrivingListSubmission, DrivingListValues, dateUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { TFunction } from 'i18next';
 import { useMemo } from 'react';
 import {
-  DrivingListSubmission,
-  DrivingListValues,
   drivingListMetadata,
   toLocaleDate,
   toWeekdayAndDate,

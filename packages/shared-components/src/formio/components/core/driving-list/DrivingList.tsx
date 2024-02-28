@@ -1,4 +1,4 @@
-import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { DrivingListSubmission, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import NavDrivingList from '../../../../components/drivinglist/NavDrivingList';
 import BaseComponent from '../../base/BaseComponent';
 import drivingListBuilder from './DrivingList.builder';
@@ -6,7 +6,6 @@ import drivingListForm from './DrivingList.form';
 import {
   DrivingListErrorType,
   DrivingListMetadataId,
-  DrivingListSubmission,
   drivingListMetadata,
   isValidParking,
   requiredError,

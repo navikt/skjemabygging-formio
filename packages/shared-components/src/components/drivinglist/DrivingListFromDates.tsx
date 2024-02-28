@@ -1,12 +1,7 @@
 import { Accordion, Button, Radio, RadioGroup } from '@navikt/ds-react';
-import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { DrivingListSubmission, DrivingListValues, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { TFunction } from 'i18next';
-import {
-  DrivingListSubmission,
-  DrivingListValues,
-  drivingListMetadata,
-  generatePeriods,
-} from '../../formio/components/core/driving-list/DrivingList.utils';
+import { drivingListMetadata, generatePeriods } from '../../formio/components/core/driving-list/DrivingList.utils';
 import makeStyles from '../../util/styles/jss/jss';
 import DatePicker from '../datepicker/DatePicker';
 import DrivingPeriod from './DrivingPeriod';

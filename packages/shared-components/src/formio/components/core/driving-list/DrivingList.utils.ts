@@ -1,4 +1,4 @@
-import { dateUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { DrivingListPeriod, dateUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { TFunction } from 'i18next';
 import { v4 as uuidv4 } from 'uuid';
 import { validering } from '../../../../../../shared-domain/src/texts/validering';

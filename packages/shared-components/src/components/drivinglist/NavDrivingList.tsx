@@ -1,10 +1,14 @@
 import { Alert, Skeleton } from '@navikt/ds-react';
-import { SendInnAktivitet, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  DrivingListSubmission,
+  DrivingListValues,
+  SendInnAktivitet,
+  TEXTS,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import { TFunction } from 'i18next';
 import { useEffect, useState } from 'react';
 import { getActivities } from '../../api/sendinn/sendInnActivities';
 import { AppConfigContextType } from '../../context/config/configContext';
-import { DrivingListSubmission, DrivingListValues } from '../../formio/components/core/driving-list/DrivingList.utils';
 import DrivingListFromActivities from './DrivingListFromActivities';
 import DrivingListFromDates from './DrivingListFromDates';
 

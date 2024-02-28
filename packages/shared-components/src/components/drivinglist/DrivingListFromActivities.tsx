@@ -1,5 +1,7 @@
 import { Accordion, BodyShort, Heading } from '@navikt/ds-react';
 import {
+  DrivingListSubmission,
+  DrivingListValues,
   SendInnAktivitet,
   SubmissionActivity,
   TEXTS,
@@ -7,12 +9,7 @@ import {
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { TFunction } from 'i18next';
 import { AppConfigContextType } from '../../context/config/configContext';
-import {
-  DrivingListSubmission,
-  DrivingListValues,
-  drivingListMetadata,
-  toLocaleDate,
-} from '../../formio/components/core/driving-list/DrivingList.utils';
+import { drivingListMetadata, toLocaleDate } from '../../formio/components/core/driving-list/DrivingList.utils';
 import makeStyles from '../../util/styles/jss/jss';
 import NavActivities from '../activities/NavActivities';
 import ActivityAlert from './ActivityAlert';
