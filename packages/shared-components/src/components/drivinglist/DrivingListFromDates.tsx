@@ -63,18 +63,20 @@ const DrivingListFromDates = ({ values, updateValues, t, locale }: Props) => {
   };
 
   const renderDrivingPeriodsFromDates = () => {
-    return values?.periods?.map((period, index) => (
-      <DrivingPeriod
-        t={t}
-        index={index}
-        key={period.id}
-        hasParking={values?.parking ?? false}
-        updateValues={updateValues}
-        periodFrom={period.periodFrom}
-        periodTo={period.periodTo}
-        values={values}
-      />
-    ));
+    return values?.periods
+      ?.sort((a, b) => a.periodFrom.getTime() - b.periodFrom.getTime())
+      .map((period, index) => (
+        <DrivingPeriod
+          t={t}
+          index={index}
+          key={period.id}
+          hasParking={values?.parking ?? false}
+          updateValues={updateValues}
+          periodFrom={period.periodFrom}
+          periodTo={period.periodTo}
+          values={values}
+        />
+      ));
   };
 
   const addPeriod = () => {
@@ -99,6 +101,29 @@ const DrivingListFromDates = ({ values, updateValues, t, locale }: Props) => {
     }
   };
 
+  const showAddButton = () => {
+    const lastPeriod = values?.periods?.reduce((prev, current) =>
+      new Date(prev.periodTo) > new Date(current.periodTo) ? prev : current,
+    );
+    if (!lastPeriod) return false;
+
+    const lastPeriodDate = new Date(lastPeriod.periodTo);
+
+    if (values?.selectedPeriodType === 'weekly') {
+      lastPeriodDate.setDate(lastPeriodDate.getDate() + 7);
+    } else if (lastPeriod && values.selectedPeriodType === 'monthly') {
+      lastPeriodDate.setMonth(lastPeriodDate.getMonth() + 1);
+    } else {
+      return false;
+    }
+
+    return lastPeriodDate < new Date();
+  };
+
+  const showRemoveButton = () => {
+    return values?.periods?.length && values?.periods?.length > 1;
+  };
+
   const renderDrivingListFromDates = () => {
     return (
       <>
@@ -113,6 +138,7 @@ const DrivingListFromDates = ({ values, updateValues, t, locale }: Props) => {
           error={undefined}
           inputRef={undefined}
           className={styles.paddingBottom}
+          toDate={new Date()}
         />
         <RadioGroup
           id={drivingListMetadata('periodType').id}
@@ -141,10 +167,12 @@ const DrivingListFromDates = ({ values, updateValues, t, locale }: Props) => {
         </Accordion>
         {values?.periods && values.periods.length > 0 && (
           <div className={styles.buttonContainer}>
-            <Button variant="primary" size="small" type="button" onClick={() => addPeriod()}>
-              {t(TEXTS.statiske.drivingList.addPeriod)}
-            </Button>
-            {values?.periods.length > 1 && (
+            {showAddButton() && (
+              <Button variant="primary" size="small" type="button" onClick={() => addPeriod()}>
+                {t(TEXTS.statiske.drivingList.addPeriod)}
+              </Button>
+            )}
+            {showRemoveButton() && (
               <Button variant="secondary" size="small" type="button" onClick={() => removePeriod()}>
                 {t(TEXTS.statiske.drivingList.removePeriod)}
               </Button>
