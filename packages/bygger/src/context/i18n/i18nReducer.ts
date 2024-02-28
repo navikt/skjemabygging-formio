@@ -19,7 +19,7 @@ export type I18nAction =
   | { type: 'remove'; payload: { lang: string; key: string } }
   | { type: 'updateLanguageId'; payload: { lang: string; id: string } };
 
-function reducer(state: I18nState, action: I18nAction) {
+function reducer(state: I18nState, action: I18nAction): I18nState {
   switch (action.type) {
     case 'init':
       return {
