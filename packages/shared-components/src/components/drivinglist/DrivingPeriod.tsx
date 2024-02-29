@@ -51,7 +51,7 @@ const DrivingPeriod = ({ periodFrom, periodTo, updateValues, values, hasParking,
 
   const onChangeParking = (date: Date, parking: string) => {
     const mappedValues = values?.dates?.map((existingValue) => {
-      if (existingValue.date === toLocaleDate(date)) {
+      if (existingValue.date === date.toISOString()) {
         return { date: existingValue.date, parking };
       }
       return existingValue;
@@ -72,8 +72,8 @@ const DrivingPeriod = ({ periodFrom, periodTo, updateValues, values, hasParking,
           {periodDates.map((date) => {
             return (
               <div key={date.toISOString()}>
-                <Checkbox value={toLocaleDate(date)}>{toWeekdayAndDate(date)}</Checkbox>
-                {showParking(toLocaleDate(date)) ? (
+                <Checkbox value={date.toISOString()}>{toWeekdayAndDate(date)}</Checkbox>
+                {showParking(date.toISOString()) ? (
                   <TextField
                     id={drivingListMetadata('parkingExpenses').id}
                     label={t(drivingListMetadata('parkingExpenses').label)}
@@ -81,7 +81,7 @@ const DrivingPeriod = ({ periodFrom, periodTo, updateValues, values, hasParking,
                     size="medium"
                     inputMode="numeric"
                     className={`nav-input--s ${styles.parkingTextField}`}
-                    value={values?.dates?.find((val) => val.date === toLocaleDate(date))?.parking}
+                    value={values?.dates?.find((val) => val.date === date.toISOString())?.parking}
                     onChange={(event) => onChangeParking(date, event.currentTarget.value)}
                   />
                 ) : null}

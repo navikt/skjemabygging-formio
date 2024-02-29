@@ -35,11 +35,11 @@ const NavDrivingList = ({ appConfig, onValueChange, values, t, locale }: NavDriv
         try {
           setLoading(true);
           const result = await getActivities(appConfig);
-          setLoading(false);
 
           if (result) {
             setActivities(result);
           }
+          setLoading(false);
         } catch (ex) {
           setLoading(false);
           setShowError(true);

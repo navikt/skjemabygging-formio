@@ -1,6 +1,7 @@
 import { Accordion, Button, Radio, RadioGroup } from '@navikt/ds-react';
 import { DrivingListSubmission, DrivingListValues, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { TFunction } from 'i18next';
+import { useEffect } from 'react';
 import { drivingListMetadata, generatePeriods } from '../../formio/components/core/driving-list/DrivingList.utils';
 import makeStyles from '../../util/styles/jss/jss';
 import DatePicker from '../datepicker/DatePicker';
@@ -27,6 +28,13 @@ const useDrivinglistStyles = makeStyles({
 const DrivingListFromDates = ({ values, updateValues, t, locale }: Props) => {
   const styles = useDrivinglistStyles();
 
+  useEffect(() => {
+    if (!!values?.selectedPeriodType && !!values?.selectedDate && !!values?.periods?.length) {
+      const periods = generatePeriods(values.selectedPeriodType, values.selectedDate, values.periods.length) ?? [];
+      updateValues({ periods });
+    }
+  }, []);
+
   const onDateChange = (date?: string) => {
     if (values?.selectedDate === date) return;
 
@@ -42,6 +50,7 @@ const DrivingListFromDates = ({ values, updateValues, t, locale }: Props) => {
   };
 
   const onPeriodChange = (period: 'weekly' | 'monthly') => {
+    if (values?.selectedPeriodType === period) return;
     const numberOfPeriods = 1;
 
     if (period === 'weekly') {
@@ -59,7 +68,7 @@ const DrivingListFromDates = ({ values, updateValues, t, locale }: Props) => {
 
   const renderDrivingPeriodsFromDates = () => {
     return values?.periods
-      ?.sort((a, b) => a.periodFrom.getTime() - b.periodFrom.getTime())
+      ?.sort((a, b) => new Date(a.periodFrom).getTime() - new Date(b.periodFrom).getTime())
       .map((period, index) => (
         <DrivingPeriod
           t={t}
@@ -92,7 +101,16 @@ const DrivingListFromDates = ({ values, updateValues, t, locale }: Props) => {
         values.selectedDate,
         (values.periods?.length ?? 0) - 1,
       );
-      updateValues({ periods });
+
+      // Filter out dates that fall within the removed periods
+      const filteredDates = values?.dates?.filter((dateObj) => {
+        const date = new Date(dateObj.date);
+        return periods.some((period) => {
+          return date >= new Date(period.periodFrom) && date <= new Date(period.periodTo);
+        });
+      });
+
+      updateValues({ periods, dates: filteredDates });
     }
   };
 
