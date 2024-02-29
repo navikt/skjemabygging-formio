@@ -1,5 +1,6 @@
-import { FormPropertiesType, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
+import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import nock from 'nock';
+import { MockInstance } from 'vitest';
 import { Backend } from '../Backend';
 import config from '../config';
 import PublisherService from './PublisherService';
@@ -85,12 +86,7 @@ describe('PublisherService', () => {
     });
 
     describe('when publishing fails', () => {
-      // @ts-ignore
-      let formioServiceSpy: vi.SpyInstance<
-        Promise<NavFormType>,
-        [form: NavFormType, formioToken: string, userName: string, formProps?: Partial<FormPropertiesType> | undefined]
-      >;
-
+      let formioServiceSpy: MockInstance;
       let nockScope: nock.Scope;
       let formioApiRequestBodies: NavFormType[];
 

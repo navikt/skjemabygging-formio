@@ -57,6 +57,9 @@ const global = {
       gridTemplateColumns: 'minmax(20rem, 2fr) minmax(15rem, 1fr)',
       margin: '0 auto',
     },
+    '&:focus-visible': {
+      outline: 'none',
+    },
   },
   '.nav-form > .alert.alert-danger': {
     '@media screen and (min-width: 40rem)': {
