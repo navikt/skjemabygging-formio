@@ -3,13 +3,13 @@ import { SendInnAktivitet, SubmissionActivity, TEXTS } from '@navikt/skjemadigit
 import { ReactNode, useEffect, useState } from 'react';
 import { getActivities } from '../../api/sendinn/sendInnActivities';
 import { AppConfigContextType } from '../../context/config/configContext';
-import { mapActivityText } from '../../formio/components/core/activities/Activities.utils';
+import { mapActivity, mapActivityText } from '../../formio/components/core/activities/Activities.utils';
 
 type Props = {
   id: string;
   label?: ReactNode;
-  value?: SendInnAktivitet | SubmissionActivity;
-  onChange: (value?: SendInnAktivitet | SubmissionActivity, options?: object) => void;
+  value?: SubmissionActivity;
+  onChange: (value?: SubmissionActivity, options?: object) => void;
   description?: ReactNode;
   className?: string;
   error?: string;
@@ -17,7 +17,6 @@ type Props = {
   appConfig: AppConfigContextType;
   setLastRef?: (ref: any) => void;
   t: any;
-  activities?: SendInnAktivitet[];
 };
 
 const NavActivities = (props: Props) => {
@@ -53,19 +52,13 @@ const NavActivities = (props: Props) => {
     fetchData();
   }, []);
 
-  useEffect(() => {
-    if (props.activities) {
-      setActivities(props.activities);
-    }
-  }, [props.activities]);
-
   const renderCheckbox = () => {
     return (
       <CheckboxGroup
         id={props.id}
         legend={props.label}
         value={props.value?.aktivitetId ? [props.value?.aktivitetId] : []}
-        onChange={(values) => onChangeRadio(values[0] ?? props.defaultActivity)}
+        onChange={(values) => onChangeActivity(values[0] ?? props.defaultActivity)}
         description={props.description}
         className={props.className}
         error={props.error}
@@ -77,13 +70,13 @@ const NavActivities = (props: Props) => {
     );
   };
 
-  const onChangeRadio = (value: string) => {
+  const onChangeActivity = (value: string) => {
     if (value === 'ingenAktivitet') {
       props.onChange(props.defaultActivity, { modified: true });
     } else {
       const activity = activities.find((x) => x.aktivitetId === value);
       if (activity) {
-        props.onChange(activity, { modified: true });
+        props.onChange(mapActivity(activity), { modified: true });
       }
     }
   };
@@ -94,7 +87,7 @@ const NavActivities = (props: Props) => {
         id={props.id}
         legend={props.label}
         value={props.value?.aktivitetId ?? ''}
-        onChange={(value) => onChangeRadio(value)}
+        onChange={(value) => onChangeActivity(value)}
         description={props.description}
         className={props.className}
         error={props.error}

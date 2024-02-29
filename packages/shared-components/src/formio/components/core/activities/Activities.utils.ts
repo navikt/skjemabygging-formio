@@ -1,4 +1,4 @@
-import { SendInnAktivitet, dateUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { SendInnAktivitet, SubmissionActivity, dateUtils } from '@navikt/skjemadigitalisering-shared-domain';
 
 export const mapActivityText = (activity: SendInnAktivitet) => {
   return `${activity.aktivitetsnavn}: ${dateUtils.toLocaleDate(activity.periode.fom)} - ${dateUtils.toLocaleDate(
@@ -6,7 +6,7 @@ export const mapActivityText = (activity: SendInnAktivitet) => {
   )}`;
 };
 
-export const mapActivity = (activity: SendInnAktivitet) => {
+export const mapActivity = (activity: SendInnAktivitet): SubmissionActivity => {
   return {
     aktivitetId: activity.aktivitetId,
     maalgruppe: activity.maalgruppe,

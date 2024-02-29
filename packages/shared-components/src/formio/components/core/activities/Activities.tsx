@@ -3,7 +3,6 @@ import NavActivities from '../../../../components/activities/NavActivities';
 import BaseComponent from '../../base/BaseComponent';
 import activitiesBuilder from './Activities.builder';
 import activitiesForm from './Activities.form';
-import { mapActivity } from './Activities.utils';
 
 class Activities extends BaseComponent {
   lastRef: HTMLInputElement | null = null;
@@ -36,14 +35,11 @@ class Activities extends BaseComponent {
   }
 
   // The radio/checkbox values are simple strings, but the whole activity object is stored in the submission
-  changeHandler(value?: SendInnAktivitet | SubmissionActivity, opts?: object) {
+  changeHandler(value?: SubmissionActivity, opts?: object) {
     if (!value) {
       super.resetValue();
-    } else if (value.aktivitetId === 'ingenAktivitet') {
-      super.updateValue(value, opts);
-    } else {
-      super.updateValue(mapActivity(value as SendInnAktivitet), opts);
     }
+    super.updateValue(value, opts);
     this.rerender();
   }
 
