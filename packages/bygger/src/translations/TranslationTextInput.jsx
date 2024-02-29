@@ -15,9 +15,6 @@ const useStyles = makeStyles({
     '& .textarea--medMeta__teller': {
       display: 'none',
     },
-    '& textarea': {
-      width: 'inherit',
-    },
     '& textarea:read-only': {
       borderColor: '#78706a',
       backgroundColor: '#e9e7e7',
@@ -64,6 +61,7 @@ const TranslationTextInput = ({
             onChange(event.target.value);
           }}
           readOnly={hasGlobalTranslation}
+          resize="vertical"
         />
       ) : (
         <DebounceInput

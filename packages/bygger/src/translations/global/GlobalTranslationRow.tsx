@@ -73,6 +73,7 @@ const GlobalTranslationRow = ({
               setDuplicatedWarning(true);
             }
           }}
+          resize="vertical"
         />
         <Textarea
           label=""
@@ -83,6 +84,7 @@ const GlobalTranslationRow = ({
           onChange={(event) => {
             updateTranslation(id, originalText, event.target.value);
           }}
+          resize="vertical"
         />
         <Delete onClick={() => deleteOneRow(id)} />
       </div>
