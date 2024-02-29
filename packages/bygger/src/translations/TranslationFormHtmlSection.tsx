@@ -1,5 +1,5 @@
-import { PlusIcon } from '@navikt/aksel-icons';
-import { Alert, Box, Button, Heading, HStack, VStack } from '@navikt/ds-react';
+import { PlusIcon, XMarkIcon } from '@navikt/aksel-icons';
+import { Alert, Box, Button, HStack, Heading, VStack } from '@navikt/ds-react';
 import Divider from '@navikt/ds-react/esm/dropdown/Menu/Divider';
 import {
   HtmlAsJsonElement,
@@ -15,11 +15,13 @@ interface Props {
   htmlElementAsJson: HtmlAsJsonElement | HtmlAsJsonTextElement;
   storedTranslation: string;
   updateTranslation: (text: string) => void;
+  onSelectLegacy: () => void;
 }
 
 const useStyles = makeStyles({
   outerBox: {
     marginBottom: '1rem',
+    paddingBottom: 'var(--a-spacing-4)',
   },
   divider: {
     border: '1px solid var(--a-border-divider)',
@@ -44,7 +46,13 @@ const isSameStructure = (
   return elementTreeA.type === elementTreeB.type;
 };
 
-const TranslationFormHtmlItem = ({ text, htmlElementAsJson, storedTranslation, updateTranslation }: Props) => {
+const TranslationFormHtmlSection = ({
+  text,
+  htmlElementAsJson,
+  storedTranslation,
+  updateTranslation,
+  onSelectLegacy,
+}: Props) => {
   const [currentTranslation, setCurrentTranslation] = useState<HtmlAsJsonElement | HtmlAsJsonTextElement>();
 
   const translationIsMissing = useMemo(
@@ -73,10 +81,6 @@ const TranslationFormHtmlItem = ({ text, htmlElementAsJson, storedTranslation, u
     setCurrentTranslation(htmlElementAsJson);
   };
 
-  const useIncompatibleTranslation = () => {
-    setCurrentTranslation(htmlUtils.htmlString2Json(storedTranslation));
-  };
-
   if (htmlElementAsJson.type === 'Element') {
     return (
       <Box
@@ -92,8 +96,8 @@ const TranslationFormHtmlItem = ({ text, htmlElementAsJson, storedTranslation, u
         <Divider />
         {translationIsMissing && (
           <VStack gap="4" align="start">
-            <Alert size="small" variant="warning">
-              Oversettelse mangler. Klikk start ny for å begynne å legge til ny oversettelse
+            <Alert inline size="small" variant="warning">
+              Oversettelse mangler. Klikk "Start ny oversettelse" for å legge til ny.
             </Alert>
             <Button size="small" variant="primary" onClick={startNewTranslation} icon={<PlusIcon aria-hidden />}>
               Start ny oversettelse
@@ -106,7 +110,7 @@ const TranslationFormHtmlItem = ({ text, htmlElementAsJson, storedTranslation, u
             <Heading size={'xsmall'}>Teksten har en eksisterende oversettelse som ikke følger samme struktur</Heading>
             <div dangerouslySetInnerHTML={{ __html: storedTranslation }} />
             <HStack gap="6">
-              <Button size="small" variant="secondary" onClick={useIncompatibleTranslation}>
+              <Button size="small" variant="secondary" onClick={onSelectLegacy} icon={<XMarkIcon aria-hidden />}>
                 Bruk eksisterende oversettelse
               </Button>
               <Button size="small" variant="primary" onClick={startNewTranslation} icon={<PlusIcon aria-hidden />}>
@@ -115,16 +119,18 @@ const TranslationFormHtmlItem = ({ text, htmlElementAsJson, storedTranslation, u
             </HStack>
           </VStack>
         )}
-        {/*Preview:*/}
         {/*{currentTranslation && (*/}
-        {/*  <div*/}
-        {/*    dangerouslySetInnerHTML={{ __html: htmlUtils.json2HtmlString(currentTranslation as HtmlAsJsonElement) }}*/}
-        {/*  />*/}
+        {/*  <>*/}
+        {/*    <div>{storedTranslation}</div>*/}
+        {/*    <div*/}
+        {/*      dangerouslySetInnerHTML={{ __html: htmlUtils.json2HtmlString(currentTranslation as HtmlAsJsonElement) }}*/}
+        {/*    />*/}
+        {/*  </>*/}
         {/*)}*/}
         {currentTranslation?.type === 'Element' &&
-          currentTranslation.children.map((translationElement, index) => {
-            const originalTextElement =
-              htmlElementAsJson?.type === 'Element' ? htmlElementAsJson.children[index] : undefined;
+          htmlElementAsJson.type === 'Element' &&
+          htmlElementAsJson.children.map((originalTextElement, index) => {
+            const translationElement = currentTranslation.children[index];
             return (
               <TranslationFormHtmlInput
                 key={`html-translation-${translationElement.id}`}
@@ -149,4 +155,4 @@ const TranslationFormHtmlItem = ({ text, htmlElementAsJson, storedTranslation, u
   return <></>;
 };
 
-export default TranslationFormHtmlItem;
+export default TranslationFormHtmlSection;

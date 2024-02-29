@@ -1,10 +1,18 @@
-import { HtmlAsJsonElement, HtmlAsJsonTextElement } from '@navikt/skjemadigitalisering-shared-components';
+import { ArrowUndoIcon } from '@navikt/aksel-icons';
+import { Button } from '@navikt/ds-react';
+import { HtmlAsJsonElement, HtmlAsJsonTextElement, makeStyles } from '@navikt/skjemadigitalisering-shared-components';
 import { ScopedTranslationMap } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useState } from 'react';
 import { useI18nDispatch } from '../context/i18n';
-import TranslationFormHtmlItem from './TranslationFormHtmlItem';
+import TranslationFormHtmlSection from './TranslationFormHtmlSection';
 import TranslationTextInput from './TranslationTextInput';
 
+const useStyles = makeStyles({
+  undoButton: {
+    width: 'fit-content',
+    marginBottom: 'var(--a-spacing-8)',
+  },
+});
 interface Props {
   translations: ScopedTranslationMap;
   text: string;
@@ -18,8 +26,10 @@ const FormItem = ({ translations, text, htmlElementAsJson, type, languageCode }:
   const [hasGlobalTranslation, setHasGlobalTranslation] = useState(false);
   const [currentTranslation, setCurrentTranslation] = useState<string>();
   const [tempGlobalTranslation, setTempGlobalTranslation] = useState('');
+  const [useLegacyHtmlTranslation, setUseLegacyHtmlTranslation] = useState(false);
 
   const dispatch = useI18nDispatch();
+  const styles = useStyles();
 
   useEffect(() => {
     if (translations && translations[text]) {
@@ -37,7 +47,6 @@ const FormItem = ({ translations, text, htmlElementAsJson, type, languageCode }:
   }, [translations, text]);
 
   const updateTranslations = (targetValue) => {
-    console.log('UpdateTranslations', targetValue);
     dispatch({
       type: 'update',
       payload: { lang: languageCode, translation: { [text]: { value: targetValue, scope: 'local' } } },
@@ -49,29 +58,43 @@ const FormItem = ({ translations, text, htmlElementAsJson, type, languageCode }:
     return <></>;
   }
 
-  if (htmlElementAsJson?.type === 'Element') {
+  if (htmlElementAsJson?.type === 'Element' && !useLegacyHtmlTranslation) {
     return (
-      <TranslationFormHtmlItem
+      <TranslationFormHtmlSection
         text={text}
         htmlElementAsJson={htmlElementAsJson}
         storedTranslation={currentTranslation}
         updateTranslation={updateTranslations}
+        onSelectLegacy={() => setUseLegacyHtmlTranslation(true)}
       />
     );
   }
   return (
-    <TranslationTextInput
-      text={text}
-      value={currentTranslation}
-      type={type}
-      key={`${text}-${languageCode}`}
-      hasGlobalTranslation={hasGlobalTranslation}
-      tempGlobalTranslation={tempGlobalTranslation}
-      showGlobalTranslation={showGlobalTranslation}
-      onChange={updateTranslations}
-      setHasGlobalTranslation={setHasGlobalTranslation}
-      setGlobalTranslation={setCurrentTranslation}
-    />
+    <div className="mb-4">
+      <TranslationTextInput
+        text={text}
+        value={currentTranslation}
+        type={type}
+        key={`${text}-${languageCode}`}
+        hasGlobalTranslation={hasGlobalTranslation}
+        tempGlobalTranslation={tempGlobalTranslation}
+        showGlobalTranslation={showGlobalTranslation}
+        onChange={updateTranslations}
+        setHasGlobalTranslation={setHasGlobalTranslation}
+        setGlobalTranslation={setCurrentTranslation}
+      />
+      {useLegacyHtmlTranslation && (
+        <Button
+          className={styles.undoButton}
+          size="small"
+          variant="secondary"
+          onClick={() => setUseLegacyHtmlTranslation(false)}
+          icon={<ArrowUndoIcon aria-hidden />}
+        >
+          Gå tilbake til vanlig HTML oversetting
+        </Button>
+      )}
+    </div>
   );
 };
 

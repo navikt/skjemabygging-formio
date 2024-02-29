@@ -5,7 +5,7 @@ import { languagesInNorwegian, useI18nDispatch } from '../context/i18n';
 import FormItem from './FormItem';
 import ObsoleteTranslationsPanel from './ObsoleteTranslationsPanel';
 
-const useTranslationsListStyles = makeStyles({
+const useStyles = makeStyles({
   root: {
     width: '80ch',
     margin: '0 auto',
@@ -32,7 +32,7 @@ const TranslationsToRemove = ({ translations, languageCode }) => {
 };
 
 const TranslationsFormPage = ({ skjemanummer, translations, title, flattenedComponents, languageCode }) => {
-  const classes = useTranslationsListStyles();
+  const styles = useStyles();
   const [currentTranslation, setCurrentTranslation] = useState();
   const [unusedTranslations, setUnusedTranslations] = useState([]);
 
@@ -55,7 +55,7 @@ const TranslationsFormPage = ({ skjemanummer, translations, title, flattenedComp
   }
 
   return (
-    <div className={classes.root}>
+    <div className={styles.root}>
       <Heading level="1" size="xlarge">
         {title}
       </Heading>
