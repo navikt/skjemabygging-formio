@@ -1,5 +1,5 @@
-import { Accordion, Checkbox, CheckboxGroup, TextField } from '@navikt/ds-react';
-import { DrivingListSubmission, DrivingListValues, dateUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { Accordion, Alert, Checkbox, CheckboxGroup, TextField } from '@navikt/ds-react';
+import { DrivingListSubmission, DrivingListValues, TEXTS, dateUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { TFunction } from 'i18next';
 import { useMemo } from 'react';
 import {
@@ -17,6 +17,8 @@ interface DrivingPeriodProps {
   values?: DrivingListSubmission;
   t: TFunction;
   index: number;
+  refundAmount?: number;
+  dailyRate?: number;
 }
 
 const useDrivingPeriodStyles = makeStyles({
@@ -25,7 +27,16 @@ const useDrivingPeriodStyles = makeStyles({
   },
 });
 
-const DrivingPeriod = ({ periodFrom, periodTo, updateValues, values, hasParking, t }: DrivingPeriodProps) => {
+const DrivingPeriod = ({
+  periodFrom,
+  periodTo,
+  updateValues,
+  values,
+  hasParking,
+  t,
+  refundAmount,
+  dailyRate,
+}: DrivingPeriodProps) => {
   const styles = useDrivingPeriodStyles();
 
   const periodDates = useMemo(() => dateUtils.getDatesInRange(periodFrom, periodTo), [periodFrom, periodTo]);
@@ -60,6 +71,33 @@ const DrivingPeriod = ({ periodFrom, periodTo, updateValues, values, hasParking,
     updateValues({ dates: mappedValues });
   };
 
+  const renderWarningAlert = () => {
+    return <Alert variant="warning">{t(TEXTS.statiske.drivingList.expensesTooHigh)}</Alert>;
+  };
+
+  const shouldRenderExpensesWarningAlert = () => {
+    if (refundAmount) {
+      const totalParking = periodDates.reduce((acc, currentDate) => {
+        const dateInValues = values?.dates.find((date) => date.date === currentDate.toISOString());
+        if (dateInValues) {
+          return acc + Number(dateInValues.parking);
+        }
+        return acc;
+      }, 0);
+
+      const totalDailyRate = periodDates.reduce((acc, currentDate) => {
+        const dateInValues = values?.dates.find((date) => date.date === currentDate.toISOString());
+        if (dateInValues && dailyRate) {
+          return acc + dailyRate;
+        }
+        return acc;
+      }, 0);
+
+      return totalParking + totalDailyRate > refundAmount;
+    }
+    return false;
+  };
+
   return (
     <Accordion.Item>
       <Accordion.Header>{header}</Accordion.Header>
@@ -89,6 +127,7 @@ const DrivingPeriod = ({ periodFrom, periodTo, updateValues, values, hasParking,
             );
           })}
         </CheckboxGroup>
+        {shouldRenderExpensesWarningAlert() ? renderWarningAlert() : null}
       </Accordion.Content>
     </Accordion.Item>
   );

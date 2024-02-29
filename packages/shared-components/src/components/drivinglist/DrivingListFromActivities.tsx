@@ -1,5 +1,6 @@
 import { Accordion, BodyShort, Heading } from '@navikt/ds-react';
 import {
+  AktivitetVedtaksinformasjon,
   DrivingListSubmission,
   DrivingListValues,
   SendInnAktivitet,
@@ -42,7 +43,7 @@ const DrivingListFromActivities = ({ values, t, updateValues, activities, appCon
   const renderDrivingPeriodsFromActivities = (
     betalingsplan: VedtakBetalingsplan,
     index: number,
-    hasParking: boolean,
+    vedtak: AktivitetVedtaksinformasjon,
   ) => {
     const periodFrom = new Date(betalingsplan.utgiftsperiode.fom);
     const periodTo = new Date(betalingsplan.utgiftsperiode.tom);
@@ -51,12 +52,14 @@ const DrivingListFromActivities = ({ values, t, updateValues, activities, appCon
       <DrivingPeriod
         t={t}
         index={index}
-        hasParking={hasParking}
+        hasParking={vedtak.trengerParkering}
         updateValues={updateValues}
         key={betalingsplan.betalingsplanId}
         periodFrom={periodFrom}
         periodTo={periodTo}
         values={values}
+        refundAmount={betalingsplan.beloep}
+        dailyRate={vedtak.dagsats}
       />
     );
   };
@@ -91,9 +94,7 @@ const DrivingListFromActivities = ({ values, t, updateValues, activities, appCon
                 .filter((x) => !!x.journalpostId === false)
                 .filter((x) => new Date(x.utgiftsperiode.tom) < new Date())
                 .sort((a, b) => new Date(a.utgiftsperiode.fom).getTime() - new Date(b.utgiftsperiode.fom).getTime())
-                .map((betalingsplan, index) =>
-                  renderDrivingPeriodsFromActivities(betalingsplan, index, vedtak.trengerParkering),
-                )}
+                .map((betalingsplan, index) => renderDrivingPeriodsFromActivities(betalingsplan, index, vedtak))}
             </Accordion>
             {alreadyRefunded.length > 0 && (
               <>

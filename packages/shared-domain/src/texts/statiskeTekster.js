@@ -134,6 +134,8 @@ export const statiske = {
     activity: 'Aktivitet',
     period: 'Periode for aktiviteten',
     dailyRate: 'Din dagsats uten parkeringsutgift',
+    expensesTooHigh:
+      'I vedtaket ditt om stønad til daglig reise beregnet vi hvor mye du vil få utbetalt i hver periode. Du har nå lagt inn høyere utgifter til bruk av egen bil enn det vi har beregnet. Du vil sannsynligvis ikke få refundert alle utgiftene du har lagt inn for denne perioden.',
     error: 'Kunne ikke hente aktiviteter. Du kan sende inn søknad via papir',
     noVedtak:
       'Det er ikke registrert vedtak om tilleggsstønad på deg. Du må søke om tilleggsstønad og motta vedtak før du kan sende inn liste over utgifter til daglig reise med bruk av egen bil.',
