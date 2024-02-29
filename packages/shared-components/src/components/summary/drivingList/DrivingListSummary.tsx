@@ -10,9 +10,11 @@ const DrivingListSummary = ({ component }: Props) => {
       <dt>{component.label}</dt>
       <dd>
         <ul>
-          {component.value.dates.map((date) => {
-            return <li key={date.date}>{`${date.date} ${date.parking ? `- ${date.parking}kr` : ''}`}</li>;
-          })}
+          {component.value.dates
+            .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+            .map((date) => {
+              return <li key={date.date}>{`${date.date} ${date.parking ? `- ${date.parking}kr` : ''}`}</li>;
+            })}
         </ul>
       </dd>
     </>

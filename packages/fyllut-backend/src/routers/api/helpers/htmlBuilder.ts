@@ -127,6 +127,7 @@ const drivingList = (component) => `
   <div class="svar"> 
     <ul>
       ${component.value.dates
+        .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
         .map((date) => {
           return `<li key="${date.date}">${date.date} ${date.parking ? `- ${date.parking}kr` : ''}</li>`;
         })
