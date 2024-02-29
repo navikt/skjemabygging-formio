@@ -88,7 +88,7 @@ const DrivingListFromActivities = ({ values, t, updateValues, activities, appCon
             />
             <Accordion tabIndex={-1} id={drivingListMetadata('dates').id} className={styles.paddingBottom} size="small">
               {vedtak?.betalingsplan
-                .filter((x) => !!x.journalpostId)
+                .filter((x) => !!x.journalpostId === false)
                 .filter((x) => new Date(x.utgiftsperiode.tom) < new Date())
                 .sort((a, b) => new Date(a.utgiftsperiode.fom).getTime() - new Date(b.utgiftsperiode.fom).getTime())
                 .map((betalingsplan, index) =>
@@ -102,7 +102,8 @@ const DrivingListFromActivities = ({ values, t, updateValues, activities, appCon
                 </Heading>
                 <ul>
                   {vedtak?.betalingsplan
-                    .filter((x) => !x.journalpostId)
+                    .filter((x) => !!x.journalpostId === true)
+                    .sort((a, b) => new Date(a.utgiftsperiode.fom).getTime() - new Date(b.utgiftsperiode.fom).getTime())
                     .map((betalingsplan) => {
                       const periodFrom = new Date(betalingsplan.utgiftsperiode.fom);
                       const periodTo = new Date(betalingsplan.utgiftsperiode.tom);
