@@ -10,15 +10,17 @@ export const mapVedtak = (activities: SendInnAktivitet[]) => {
   return activities.reduce<SubmissionActivity[]>((acc, activity) => {
     const vedtaksinformasjon = activity.saksinformasjon.vedtaksinformasjon;
 
-    const vedtak = vedtaksinformasjon.map(
-      (vedtak): SubmissionActivity => ({
-        aktivitetId: activity.aktivitetId,
-        maalgruppe: activity.maalgruppe,
-        periode: vedtak.periode,
-        text: mapActivityText(activity),
-        vedtaksId: vedtak.vedtakId,
-      }),
-    );
+    const vedtak = vedtaksinformasjon
+      .filter((x) => !!x.betalingsplan.length)
+      .map(
+        (vedtak): SubmissionActivity => ({
+          aktivitetId: activity.aktivitetId,
+          maalgruppe: activity.maalgruppe,
+          periode: vedtak.periode,
+          text: mapActivityText(activity),
+          vedtaksId: vedtak.vedtakId,
+        }),
+      );
 
     return [...acc, ...vedtak];
   }, []);
