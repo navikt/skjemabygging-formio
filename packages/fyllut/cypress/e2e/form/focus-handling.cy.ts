@@ -74,7 +74,9 @@ describe('Focus handling', () => {
           cy.get('li').should('have.length', 2);
         });
 
-      cy.findByRole('link', { name: 'Du må fylle ut: Hvilken type bolig bor du i?' }).should('exist').click();
+      cy.findByRoleWhenAttached('link', { name: 'Du må fylle ut: Hvilken type bolig bor du i?' })
+        .should('exist')
+        .click();
       cy.findByRole('group', { name: 'Hvilken type bolig bor du i?' })
         .should('exist')
         .shouldBeVisible()

@@ -1,7 +1,7 @@
 import { Radio as AkselRadio, RadioGroup } from '@navikt/ds-react';
-import FormioUtils from 'formiojs/utils';
 import Ready from '../../../../util/form/ready';
 import BaseComponent from '../../base/BaseComponent';
+import { blurHandler, focusHandler } from '../../base/focus-helpers';
 import radioBuilder from './Radio.builder';
 import radioForm from './Radio.form';
 
@@ -66,20 +66,6 @@ class Radio extends BaseComponent {
     this.rerender();
   }
 
-  onRadioFocus(value) {
-    this.setFocusedComponent(this, value);
-  }
-
-  onRadioBlur(value) {
-    this.root.pendingBlur = FormioUtils.delay(() => {
-      const focusedComponent = this.getFocusedComponent();
-      const focusedValue = this.getFocusedValue();
-      if (focusedComponent === this && focusedValue === value) {
-        this.setFocusedComponent(null);
-      }
-    });
-  }
-
   renderReact(element) {
     const values = this.component!.values ?? [];
     return element.render(
@@ -99,8 +85,8 @@ class Radio extends BaseComponent {
           <AkselRadio
             key={obj.value}
             value={obj.value}
-            onFocus={() => this.onRadioFocus(obj.value)}
-            onBlur={() => this.onRadioBlur(obj.value)}
+            onFocus={focusHandler(this, { focusedValue: obj.value, skipEmit: true })}
+            onBlur={blurHandler(this, { focusedValue: obj.value, skipEmit: true })}
             ref={(ref) => {
               this.addRef(`input:${obj.value}`, ref);
               if (index === arr.length - 1) {
