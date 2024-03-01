@@ -1,4 +1,4 @@
-import { DrivingListPeriod, dateUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { DrivingListPeriod, TEXTS, dateUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { TFunction } from 'i18next';
 import { v4 as uuidv4 } from 'uuid';
 import { validering } from '../../../../../../shared-domain/src/texts/validering';
@@ -7,12 +7,12 @@ export type DrivingListMetadataId = (typeof metadata)[number]['id'];
 export type DrivingListErrorType = 'required';
 
 const metadata = [
-  { id: 'activityRadio', label: 'Velg hvilken aktivitet du vil søke om stønad for' },
-  { id: 'parkingRadio', label: 'Skal du registrere parkering?' },
-  { id: 'periodType', label: 'Velg periode for innsending' },
-  { id: 'datePicker', label: 'Velg første dato' },
-  { id: 'dates', label: 'Kryss av for de dagene du har brukt egen bil og har hatt parkeringsutgifter' },
-  { id: 'parkingExpenses', label: 'Parkeringsutgifter (kr)' },
+  { id: 'activityRadio', label: TEXTS.statiske.activities.label },
+  { id: 'parkingRadio', label: TEXTS.statiske.drivingList.parking },
+  { id: 'periodType', label: TEXTS.statiske.drivingList.periodType },
+  { id: 'datePicker', label: TEXTS.statiske.drivingList.datePicker },
+  { id: 'dates', label: TEXTS.statiske.drivingList.dateSelect },
+  { id: 'parkingExpenses', label: TEXTS.statiske.drivingList.parkingExpenses },
 ] as const;
 
 export const drivingListMetadata = (metadataId: DrivingListMetadataId) => {

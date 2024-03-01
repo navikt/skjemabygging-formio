@@ -126,6 +126,7 @@ export const statiske = {
     defaultText: 'Jeg bekrefter at opplysningene er riktige.',
   },
   activities: {
+    label: 'Velg hvilken aktivitet du vil søke om stønad for',
     defaultActivity: 'Jeg får ikke opp noen aktiviteter her som stemmer med det jeg vil søke om',
     error: 'Det oppstod en feil ved henting av aktiviteter.',
     errorContinue: 'Det oppstod en feil ved henting av aktiviteter. Du kan fortsatt gå videre uten å velge aktivitet',
@@ -142,5 +143,11 @@ export const statiske = {
     previousDrivingList: 'Perioder du tidligere har fått refundert reiseutgifter for',
     addPeriod: 'Legg til periode',
     removePeriod: 'Fjern periode',
+    label: 'Legg til kjøreliste for en eller flere perioder',
+    parking: 'Skal du registrere parkering?',
+    periodType: 'Velg periode for innsending',
+    datePicker: 'Velg første dato',
+    dateSelect: 'Kryss av for de dagene du har brukt egen bil og har hatt parkeringsutgifter',
+    parkingExpenses: 'Parkeringsutgifter (kr)',
   },
 };

@@ -14,7 +14,7 @@ import {
 class DrivingList extends BaseComponent {
   static schema() {
     return BaseComponent.schema({
-      label: 'Legg til kjøreliste for en eller flere perioder',
+      label: TEXTS.statiske.drivingList.label,
       type: 'drivinglist',
       key: 'drivinglist',
       input: true,

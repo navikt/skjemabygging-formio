@@ -18,7 +18,7 @@ class Activities extends BaseComponent {
 
   static schema() {
     return BaseComponent.schema({
-      label: 'Velg hvilken aktivitet du vil søke om stønad for',
+      label: TEXTS.statiske.activities.label,
       type: 'activities',
       key: 'aktivitet',
       input: true,
