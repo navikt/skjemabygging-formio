@@ -73,9 +73,7 @@ const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
                 },
               }),
             );
-          }
-          // FIXME: Test this
-          else if (innsending === 'KUN_PAPIR') {
+          } else if (innsending === 'KUN_PAPIR') {
             const targetUrl = `${config.fyllutPath}/${formPath}`;
             return res.redirect(
               url.format({

@@ -65,7 +65,7 @@ const DrivingPeriod = ({
   const onChangeParking = (date: Date, parking: string) => {
     const mappedValues = values?.dates?.map((existingValue) => {
       if (existingValue.date === date.toISOString()) {
-        return { date: existingValue.date, parking, betalingsplanId };
+        return { date: existingValue.date, parking: parking.trim(), betalingsplanId };
       }
       return existingValue;
     });
