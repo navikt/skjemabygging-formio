@@ -77,6 +77,7 @@ const DrivingPeriod = ({
     return <Alert variant="warning">{t(TEXTS.statiske.drivingList.expensesTooHigh)}</Alert>;
   };
 
+  // Should render warning if the sum of all parking expenses + sum of daily rates is higher than the refund amount for the period
   const shouldRenderExpensesWarningAlert = () => {
     if (refundAmount) {
       const totalParking = periodDates.reduce((acc, currentDate) => {

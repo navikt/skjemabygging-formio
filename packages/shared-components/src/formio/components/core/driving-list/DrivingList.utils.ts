@@ -1,7 +1,6 @@
 import { DrivingListPeriod, TEXTS, dateUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { TFunction } from 'i18next';
 import { v4 as uuidv4 } from 'uuid';
-import { validering } from '../../../../../../shared-domain/src/texts/validering';
 
 export type DrivingListMetadataId = (typeof metadata)[number]['id'];
 export type DrivingListErrorType = 'required';
@@ -22,7 +21,8 @@ export const drivingListMetadata = (metadataId: DrivingListMetadataId) => {
 };
 
 export const requiredError = (componentId: DrivingListMetadataId, t: TFunction): string => {
-  return t(validering.required, { field: t(drivingListMetadata(componentId).label) });
+  const field = t(drivingListMetadata(componentId).label);
+  return t('required', { field });
 };
 
 export const toLocaleDate = (date: Date) => {
