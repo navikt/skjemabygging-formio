@@ -1,10 +1,12 @@
 import { ReactComponent } from '@formio/react';
 import { createRoot } from 'react-dom/client';
+import Ready from '../../../util/form/ready';
 import { IReactComponent } from './index';
 
 class FormioReactComponent extends (ReactComponent as unknown as IReactComponent) {
   componentMessage?: string;
   rootElement: any;
+  _reactRendered = Ready();
 
   constructor(component, options, data) {
     super(component, options, data);
@@ -15,6 +17,10 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
     return this.attach(element);
   }
 
+  get reactReady() {
+    return this._reactRendered.promise;
+  }
+
   attachReact(element: any) {
     this.rootElement = createRoot(element);
     this.renderReact(this.rootElement);
@@ -23,6 +29,7 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
   setReactInstance(element) {
     this.reactInstance = element;
     this.addFocusBlurEvents(element);
+    this._reactRendered.resolve();
   }
 
   detachReact(element) {
@@ -68,6 +75,7 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
 
   rerender() {
     if (this.rootElement) {
+      this._reactRendered.reset();
       this.renderReact(this.rootElement);
     }
   }

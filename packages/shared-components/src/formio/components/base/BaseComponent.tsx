@@ -1,6 +1,7 @@
 import { Tag } from '@navikt/ds-react';
 import { Component, formDiffingTool, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import Field from 'formiojs/components/_classes/field/Field';
+import FormioUtils from 'formiojs/utils';
 import { ReactNode } from 'react';
 import FormioReactComponent from './FormioReactComponent';
 
@@ -46,6 +47,69 @@ class BaseComponent extends FormioReactComponent {
         {this.getDiffTag()}
       </>
     );
+  }
+
+  setFocusedComponent(component: BaseComponent | null, value: any = null) {
+    this.root.focusedComponent = component;
+    this.root.focusedValue = value;
+  }
+
+  getFocusedComponent() {
+    return this.root.focusedComponent;
+  }
+
+  getFocusedValue() {
+    return this.root.focusedValue;
+  }
+
+  restoreFocus() {
+    const focusedComponent = this.getFocusedComponent();
+    const isFocused = focusedComponent?.path === this.path;
+    if (isFocused) {
+      const focusedValue = this.getFocusedValue();
+      this.focus({ focusedValue });
+    }
+  }
+
+  addFocusBlurEvents(element, emit = true) {
+    this.addEventListener(element, 'focus', () => {
+      const focusedComponent = this.getFocusedComponent();
+      if (focusedComponent !== this) {
+        if (this.root.pendingBlur) {
+          this.root.pendingBlur();
+        }
+        this.setFocusedComponent(this);
+        if (emit) {
+          this.emit('focus', this);
+        }
+      } else if (focusedComponent === this && this.root.pendingBlur) {
+        this.root.pendingBlur.cancel();
+        this.root.pendingBlur = null;
+      }
+    });
+    this.addEventListener(element, 'blur', () => {
+      this.root.pendingBlur = FormioUtils.delay(() => {
+        if (emit) {
+          this.emit('blur', this);
+        }
+        if (this.component?.validateOn === 'blur') {
+          this.root.triggerChange(
+            { fromBlur: true },
+            {
+              instance: this,
+              component: this.component,
+              value: this.dataValue,
+              flags: { fromBlur: true },
+            },
+          );
+        }
+        const focusedComponent = this.getFocusedComponent();
+        if (focusedComponent === this) {
+          this.setFocusedComponent(null);
+          this.root.pendingBlur = null;
+        }
+      });
+    });
   }
 
   getHideLabel() {
@@ -162,12 +226,14 @@ class BaseComponent extends FormioReactComponent {
   }
 
   /**
-   * Used to set focus when clicking error summary.
+   * Used to set focus when clicking error summary, and when restoring focus after rerender.
    */
-  focus() {
-    if (this.reactInstance) {
-      this.reactInstance.focus();
-    }
+  focus(focusData?: any) {
+    this.reactReady.then(() => {
+      if (this.reactInstance) {
+        this.reactInstance.focus(focusData);
+      }
+    });
   }
 
   /**
