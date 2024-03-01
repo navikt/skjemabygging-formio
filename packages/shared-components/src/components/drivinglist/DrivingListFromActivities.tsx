@@ -67,23 +67,23 @@ const DrivingListFromActivities = ({ values, t, updateValues, activities, appCon
 
   const renderDrivingListFromActivities = () => {
     const activitySelections = mapToSubmissionActivity(activities, 'vedtak');
-    const activitySelection = activitySelections.find((activity) => activity.vedtaksId === values?.selectedVedtaksId);
+    const vedtakSelection = activitySelections.find((activity) => activity.vedtaksId === values?.selectedVedtaksId);
 
-    const activity = activities.find((activity) =>
+    const selectedActivity = activities.find((activity) =>
       activity.saksinformasjon.vedtaksinformasjon.some((vedtak) => vedtak.vedtakId === values?.selectedVedtaksId),
     );
-    const vedtak = activity?.saksinformasjon?.vedtaksinformasjon?.find(
+    const selectedVedtak = selectedActivity?.saksinformasjon?.vedtaksinformasjon?.find(
       (vedtak) => vedtak.vedtakId === values?.selectedVedtaksId,
     );
 
-    const alreadyRefunded = vedtak?.betalingsplan.filter((x) => !x.journalpostId) ?? [];
+    const alreadyRefunded = selectedVedtak?.betalingsplan.filter((x) => !!x.journalpostId === true) ?? [];
 
     return (
       <>
         <NavActivities
           id={drivingListMetadata('activityRadio').id}
           label={t(drivingListMetadata('activityRadio').label)}
-          value={activitySelection}
+          value={vedtakSelection}
           onChange={(activity) => onActivityChange(activity)}
           appConfig={appConfig}
           t={t}
@@ -91,20 +91,22 @@ const DrivingListFromActivities = ({ values, t, updateValues, activities, appCon
           dataType="vedtak"
           activities={activities}
         />
-        {activity && vedtak && (
+        {selectedActivity && selectedVedtak && (
           <>
             <ActivityAlert
-              activityName={activity.aktivitetsnavn}
-              vedtak={vedtak}
+              activityName={selectedActivity.aktivitetsnavn}
+              vedtak={selectedVedtak}
               t={t}
               className={styles.marginBottom}
             />
             <Accordion tabIndex={-1} id={drivingListMetadata('dates').id} className={styles.paddingBottom} size="small">
-              {vedtak?.betalingsplan
+              {selectedVedtak?.betalingsplan
                 .filter((x) => !!x.journalpostId === false)
                 .filter((x) => new Date(x.utgiftsperiode.tom) < new Date())
                 .sort((a, b) => new Date(a.utgiftsperiode.fom).getTime() - new Date(b.utgiftsperiode.fom).getTime())
-                .map((betalingsplan, index) => renderDrivingPeriodsFromActivities(betalingsplan, index, vedtak))}
+                .map((betalingsplan, index) =>
+                  renderDrivingPeriodsFromActivities(betalingsplan, index, selectedVedtak),
+                )}
             </Accordion>
             {alreadyRefunded.length > 0 && (
               <>
@@ -112,8 +114,7 @@ const DrivingListFromActivities = ({ values, t, updateValues, activities, appCon
                   {t(TEXTS.statiske.drivingList.previousDrivingList)}
                 </Heading>
                 <ul>
-                  {vedtak?.betalingsplan
-                    .filter((x) => !!x.journalpostId === true)
+                  {alreadyRefunded
                     .sort((a, b) => new Date(a.utgiftsperiode.fom).getTime() - new Date(b.utgiftsperiode.fom).getTime())
                     .map((betalingsplan) => {
                       const periodFrom = new Date(betalingsplan.utgiftsperiode.fom);
