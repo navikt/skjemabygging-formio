@@ -64,6 +64,7 @@ const NavDrivingList = ({ appConfig, onValueChange, values, t, locale }: NavDriv
         activities={activities}
         updateValues={updateValues}
         appConfig={appConfig}
+        locale={locale}
       />
     );
   };

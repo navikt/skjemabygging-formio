@@ -20,6 +20,7 @@ interface DrivingPeriodProps {
   refundAmount?: number;
   dailyRate?: number;
   betalingsplanId?: string;
+  locale?: string;
 }
 
 const useDrivingPeriodStyles = makeStyles({
@@ -38,6 +39,7 @@ const DrivingPeriod = ({
   refundAmount,
   dailyRate,
   betalingsplanId,
+  locale,
 }: DrivingPeriodProps) => {
   const styles = useDrivingPeriodStyles();
 
@@ -113,7 +115,7 @@ const DrivingPeriod = ({
           {periodDates.map((date) => {
             return (
               <div key={date.toISOString()}>
-                <Checkbox value={date.toISOString()}>{toWeekdayAndDate(date)}</Checkbox>
+                <Checkbox value={date.toISOString()}>{toWeekdayAndDate(date, locale)}</Checkbox>
                 {showParking(date.toISOString()) ? (
                   <TextField
                     id={drivingListMetadata('parkingExpenses').id}

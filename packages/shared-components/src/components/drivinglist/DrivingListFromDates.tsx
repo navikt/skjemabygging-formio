@@ -79,6 +79,7 @@ const DrivingListFromDates = ({ values, updateValues, t, locale }: Props) => {
           periodFrom={period.periodFrom}
           periodTo={period.periodTo}
           values={values}
+          locale={locale}
         />
       ));
   };

@@ -23,6 +23,7 @@ type Props = {
   updateValues: (values: DrivingListValues) => void;
   activities: SendInnAktivitet[];
   appConfig: AppConfigContextType;
+  locale?: string;
 };
 
 const useDrivinglistStyles = makeStyles({
@@ -34,7 +35,7 @@ const useDrivinglistStyles = makeStyles({
   },
 });
 
-const DrivingListFromActivities = ({ values, t, updateValues, activities, appConfig }: Props) => {
+const DrivingListFromActivities = ({ values, t, updateValues, activities, appConfig, locale }: Props) => {
   const styles = useDrivinglistStyles();
 
   const onActivityChange = (activity?: SubmissionActivity) => {
@@ -61,6 +62,7 @@ const DrivingListFromActivities = ({ values, t, updateValues, activities, appCon
         values={values}
         refundAmount={betalingsplan.beloep}
         dailyRate={vedtak.dagsats}
+        locale={locale}
       />
     );
   };

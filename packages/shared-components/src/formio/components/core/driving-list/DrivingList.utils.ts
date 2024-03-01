@@ -29,8 +29,8 @@ export const toLocaleDate = (date: Date) => {
   return dateUtils.toLocaleDate(date.toString());
 };
 
-export const toWeekdayAndDate = (date: Date) => {
-  return dateUtils.toWeekdayAndDate(date.toString());
+export const toWeekdayAndDate = (date: Date, locale?: string) => {
+  return dateUtils.toWeekdayAndDate(date.toString(), locale);
 };
 
 export const generatePeriods = (
