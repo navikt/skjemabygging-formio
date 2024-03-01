@@ -10,6 +10,7 @@ import {
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { TFunction } from 'i18next';
 import { AppConfigContextType } from '../../context/config/configContext';
+import { mapToSubmissionActivity } from '../../formio/components/core/activities/Activities.utils';
 import { drivingListMetadata, toLocaleDate } from '../../formio/components/core/driving-list/DrivingList.utils';
 import makeStyles from '../../util/styles/jss/jss';
 import NavActivities from '../activities/NavActivities';
@@ -36,8 +37,8 @@ const useDrivinglistStyles = makeStyles({
 const DrivingListFromActivities = ({ values, t, updateValues, activities, appConfig }: Props) => {
   const styles = useDrivinglistStyles();
 
-  const onActivityChange = (activity?: SendInnAktivitet | SubmissionActivity) => {
-    updateValues({ selectedActivity: activity?.aktivitetId, dates: [] });
+  const onActivityChange = (activity?: SubmissionActivity) => {
+    updateValues({ selectedVedtaksId: activity?.vedtaksId, dates: [] });
   };
 
   const renderDrivingPeriodsFromActivities = (
@@ -54,7 +55,7 @@ const DrivingListFromActivities = ({ values, t, updateValues, activities, appCon
         index={index}
         hasParking={vedtak.trengerParkering}
         updateValues={updateValues}
-        key={betalingsplan.betalingsplanId}
+        betalingsplanId={betalingsplan.betalingsplanId}
         periodFrom={periodFrom}
         periodTo={periodTo}
         values={values}
@@ -65,9 +66,16 @@ const DrivingListFromActivities = ({ values, t, updateValues, activities, appCon
   };
 
   const renderDrivingListFromActivities = () => {
-    const activity = activities.find((x) => x.aktivitetId === values?.selectedActivity);
-    // FIXME: Is it always the first vedtak?
-    const vedtak = activity?.saksinformasjon?.vedtaksinformasjon?.[0];
+    const activitySelections = mapToSubmissionActivity(activities, 'vedtak');
+    const activitySelection = activitySelections.find((activity) => activity.vedtaksId === values?.selectedVedtaksId);
+
+    const activity = activities.find((activity) =>
+      activity.saksinformasjon.vedtaksinformasjon.some((vedtak) => vedtak.vedtakId === values?.selectedVedtaksId),
+    );
+    const vedtak = activity?.saksinformasjon?.vedtaksinformasjon?.find(
+      (vedtak) => vedtak.vedtakId === values?.selectedVedtaksId,
+    );
+
     const alreadyRefunded = vedtak?.betalingsplan.filter((x) => !x.journalpostId) ?? [];
 
     return (
@@ -75,11 +83,13 @@ const DrivingListFromActivities = ({ values, t, updateValues, activities, appCon
         <NavActivities
           id={drivingListMetadata('activityRadio').id}
           label={t(drivingListMetadata('activityRadio').label)}
-          value={activity}
+          value={activitySelection}
           onChange={(activity) => onActivityChange(activity)}
           appConfig={appConfig}
           t={t}
           className={styles.paddingBottom}
+          dataType="vedtak"
+          activities={activities}
         />
         {activity && vedtak && (
           <>

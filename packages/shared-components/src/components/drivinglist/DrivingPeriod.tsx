@@ -19,6 +19,7 @@ interface DrivingPeriodProps {
   index: number;
   refundAmount?: number;
   dailyRate?: number;
+  betalingsplanId?: string;
 }
 
 const useDrivingPeriodStyles = makeStyles({
@@ -36,6 +37,7 @@ const DrivingPeriod = ({
   t,
   refundAmount,
   dailyRate,
+  betalingsplanId,
 }: DrivingPeriodProps) => {
   const styles = useDrivingPeriodStyles();
 
@@ -54,7 +56,7 @@ const DrivingPeriod = ({
     const mappedValues = checkBoxValues.map((newValue) => {
       const existingValue = values?.dates?.find((val) => val.date === newValue);
       const parking = existingValue ? existingValue.parking : '';
-      return { date: newValue, parking };
+      return { date: newValue, parking, betalingsplanId };
     });
 
     updateValues({ dates: mappedValues });
@@ -63,7 +65,7 @@ const DrivingPeriod = ({
   const onChangeParking = (date: Date, parking: string) => {
     const mappedValues = values?.dates?.map((existingValue) => {
       if (existingValue.date === date.toISOString()) {
-        return { date: existingValue.date, parking };
+        return { date: existingValue.date, parking, betalingsplanId };
       }
       return existingValue;
     });

@@ -67,6 +67,8 @@ class Activities extends BaseComponent {
           appConfig={this.getAppConfig()}
           defaultActivity={this.defaultActivity}
           t={this.t.bind(this)}
+          dataType="aktivitet"
+          setLastRef={(ref) => this.setLastRef(ref)}
         />
       </>,
     );

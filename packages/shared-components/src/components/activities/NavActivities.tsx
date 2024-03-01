@@ -3,7 +3,7 @@ import { SendInnAktivitet, SubmissionActivity, TEXTS } from '@navikt/skjemadigit
 import { ReactNode, useEffect, useState } from 'react';
 import { getActivities } from '../../api/sendinn/sendInnActivities';
 import { AppConfigContextType } from '../../context/config/configContext';
-import { mapActivity, mapActivityText } from '../../formio/components/core/activities/Activities.utils';
+import { mapToSubmissionActivity } from '../../formio/components/core/activities/Activities.utils';
 
 type Props = {
   id: string;
@@ -17,29 +17,36 @@ type Props = {
   appConfig: AppConfigContextType;
   setLastRef?: (ref: any) => void;
   t: any;
+  dataType: ActivityDataType;
+  activities?: SendInnAktivitet[];
 };
+
+type ActivityDataType = 'aktivitet' | 'vedtak';
 
 const NavActivities = (props: Props) => {
   const [loading, setLoading] = useState<boolean>(true);
-  const [activities, setActivities] = useState<SendInnAktivitet[]>([]);
+  const [activitySelections, setActivitySelections] = useState<SubmissionActivity[]>([]);
   const [showError, setShowError] = useState<boolean>(false);
 
   const submissionMethod = props.appConfig?.submissionMethod;
   const isLoggedIn = props.appConfig?.config?.isLoggedIn;
   const app = props.appConfig?.app;
 
-  // Will fetch activities if not provided in props
+  const getId = (activity: SubmissionActivity) => {
+    return activity.vedtaksId ?? activity.aktivitetId;
+  };
+
   useEffect(() => {
     const fetchData = async () => {
-      if (app === 'fyllut' && isLoggedIn && submissionMethod === 'digital') {
+      if (app === 'fyllut' && isLoggedIn && submissionMethod === 'digital' && !props.activities) {
         try {
           setLoading(true);
           const result = await getActivities(props.appConfig);
-          setLoading(false);
 
           if (result) {
-            setActivities(result);
+            setActivitySelections(mapToSubmissionActivity(result, props.dataType));
           }
+          setLoading(false);
         } catch (ex) {
           setLoading(false);
           setShowError(true);
@@ -52,13 +59,19 @@ const NavActivities = (props: Props) => {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    if (props.activities) {
+      setActivitySelections(mapToSubmissionActivity(props.activities, props.dataType));
+    }
+  }, [props.activities, props.dataType]);
+
   const renderCheckbox = () => {
     return (
       <CheckboxGroup
         id={props.id}
         legend={props.label}
         value={props.value?.aktivitetId ? [props.value?.aktivitetId] : []}
-        onChange={(values) => onChangeActivity(values[0] ?? props.defaultActivity)}
+        onChange={(values) => onChangeActivity(values[0])}
         description={props.description}
         className={props.className}
         error={props.error}
@@ -70,13 +83,19 @@ const NavActivities = (props: Props) => {
     );
   };
 
-  const onChangeActivity = (value: string) => {
-    if (value === 'ingenAktivitet') {
+  const onChangeActivity = (value?: string) => {
+    if (!value) {
+      props.onChange(undefined, { modified: true });
+    } else if (value === 'ingenAktivitet') {
       props.onChange(props.defaultActivity, { modified: true });
     } else {
-      const activity = activities.find((x) => x.aktivitetId === value);
-      if (activity) {
-        props.onChange(mapActivity(activity), { modified: true });
+      const vedtakActivity = activitySelections.find((x) => x.vedtaksId === value);
+      const activity = activitySelections.find((x) => x.aktivitetId === value);
+
+      if (vedtakActivity) {
+        props.onChange(vedtakActivity, { modified: true });
+      } else if (activity) {
+        props.onChange(activity, { modified: true });
       }
     }
   };
@@ -86,20 +105,20 @@ const NavActivities = (props: Props) => {
       <RadioGroup
         id={props.id}
         legend={props.label}
-        value={props.value?.aktivitetId ?? ''}
+        value={props.value?.vedtaksId ?? props.value?.aktivitetId ?? ''}
         onChange={(value) => onChangeActivity(value)}
         description={props.description}
         className={props.className}
         error={props.error}
       >
-        {activities?.map((activity: SendInnAktivitet, index, arr) => {
+        {activitySelections?.map((activity: SubmissionActivity, index, arr) => {
           return (
             <Radio
-              key={activity.aktivitetId}
-              value={activity.aktivitetId}
+              key={getId(activity)}
+              value={getId(activity)}
               {...(index === arr.length - 1 && { ref: (ref) => props.setLastRef?.(ref) })}
             >
-              {mapActivityText(activity)}
+              {activity.text}
             </Radio>
           );
         })}
@@ -114,7 +133,7 @@ const NavActivities = (props: Props) => {
     return <Alert variant="info">{`${props.t(TEXTS.statiske.activities.errorContinue)}`}</Alert>;
   };
 
-  const hasActivities = activities.length > 0;
+  const hasActivities = activitySelections.length > 0;
 
   // Shows checkbox when there are no activities or it is displayed in byggeren
   // Shows radio when there are 1 or more activities

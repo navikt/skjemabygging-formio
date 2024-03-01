@@ -5,12 +5,17 @@ export interface DrivingListPeriod {
 }
 
 export interface DrivingListSubmission {
+  // Paper
   selectedDate: string;
   selectedPeriodType?: 'weekly' | 'monthly';
   periods?: DrivingListPeriod[];
   parking?: boolean;
-  dates: { date: string; parking: string }[];
-  selectedActivity?: string;
+
+  // Digital
+  selectedVedtaksId?: string;
+
+  // Paper and Digital
+  dates: { date: string; parking: string; betalingsplanId?: string }[];
 }
 
 export type DrivingListValues = Partial<

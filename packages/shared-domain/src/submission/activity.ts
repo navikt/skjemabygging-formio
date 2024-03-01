@@ -3,4 +3,5 @@ export interface SubmissionActivity {
   maalgruppe: string;
   periode: { fom: string; tom: string };
   text: string;
+  vedtaksId?: string;
 }
