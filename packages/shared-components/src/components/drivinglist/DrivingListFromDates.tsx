@@ -8,7 +8,7 @@ import DatePicker from '../datepicker/DatePicker';
 import DrivingPeriod from './DrivingPeriod';
 
 type Props = {
-  values: DrivingListSubmission;
+  values?: DrivingListSubmission;
   t: TFunction;
   updateValues: (values: DrivingListValues) => void;
   locale: string;
@@ -30,7 +30,7 @@ const DrivingListFromDates = ({ values, updateValues, t, locale }: Props) => {
 
   useEffect(() => {
     if (!!values?.selectedPeriodType && !!values?.selectedDate && !!values?.periods?.length) {
-      const periods = generatePeriods(values.selectedPeriodType, values.selectedDate, values.periods.length) ?? [];
+      const periods = generatePeriods(values?.selectedPeriodType, values?.selectedDate, values?.periods.length) ?? [];
       updateValues({ periods });
     }
   }, []);
@@ -98,8 +98,8 @@ const DrivingListFromDates = ({ values, updateValues, t, locale }: Props) => {
     if (values?.selectedDate && values?.selectedPeriodType) {
       const periods = generatePeriods(
         values?.selectedPeriodType,
-        values.selectedDate,
-        (values.periods?.length ?? 0) - 1,
+        values?.selectedDate,
+        (values?.periods?.length ?? 0) - 1,
       );
 
       // Filter out dates that fall within the removed periods
@@ -124,7 +124,7 @@ const DrivingListFromDates = ({ values, updateValues, t, locale }: Props) => {
 
     if (values?.selectedPeriodType === 'weekly') {
       lastPeriodDate.setDate(lastPeriodDate.getDate() + 7);
-    } else if (lastPeriod && values.selectedPeriodType === 'monthly') {
+    } else if (lastPeriod && values?.selectedPeriodType === 'monthly') {
       lastPeriodDate.setMonth(lastPeriodDate.getMonth() + 1);
     } else {
       return false;
@@ -137,22 +137,21 @@ const DrivingListFromDates = ({ values, updateValues, t, locale }: Props) => {
     return values?.periods?.length && values?.periods?.length > 1;
   };
 
+  const toDate = () => {
+    const date = new Date();
+
+    if (values?.selectedPeriodType === 'weekly') {
+      date.setDate(date.getDate() - 6);
+      return date;
+    } else if (values?.selectedPeriodType === 'monthly') {
+      date.setMonth(date.getMonth() - 1);
+      return date;
+    }
+  };
+
   const renderDrivingListFromDates = () => {
     return (
       <>
-        <DatePicker
-          id={drivingListMetadata('datePicker').id}
-          label={t(drivingListMetadata('datePicker').label)}
-          isRequired={true}
-          value={values?.selectedDate}
-          onChange={(date: string) => onDateChange(date)}
-          locale={locale}
-          readOnly={false}
-          error={undefined}
-          inputRef={undefined}
-          className={styles.paddingBottom}
-          toDate={new Date()}
-        />
         <RadioGroup
           id={drivingListMetadata('periodType').id}
           legend={t(drivingListMetadata('periodType').label)}
@@ -164,21 +163,40 @@ const DrivingListFromDates = ({ values, updateValues, t, locale }: Props) => {
           <Radio value="weekly">{t(TEXTS.common.weekly)}</Radio>
           <Radio value="monthly">{t(TEXTS.common.monthly)}</Radio>
         </RadioGroup>
-        <RadioGroup
-          id={drivingListMetadata('parkingRadio').id}
-          legend={t(drivingListMetadata('parkingRadio').label)}
-          onChange={(value) => onParkingChange(value)}
-          defaultValue={values?.parking}
-          tabIndex={-1}
-          className={styles.paddingBottom}
-        >
-          <Radio value={true}>{t(TEXTS.common.yes)}</Radio>
-          <Radio value={false}>{t(TEXTS.common.no)}</Radio>
-        </RadioGroup>
+        {values?.selectedPeriodType && (
+          <>
+            <DatePicker
+              id={drivingListMetadata('datePicker').id}
+              label={t(drivingListMetadata('datePicker').label)}
+              isRequired={true}
+              value={values?.selectedDate}
+              onChange={(date: string) => onDateChange(date)}
+              locale={locale}
+              readOnly={false}
+              error={undefined}
+              inputRef={undefined}
+              className={styles.paddingBottom}
+              toDate={toDate()}
+              defaultMonth={toDate()}
+            />
+            <RadioGroup
+              id={drivingListMetadata('parkingRadio').id}
+              legend={t(drivingListMetadata('parkingRadio').label)}
+              onChange={(value) => onParkingChange(value)}
+              defaultValue={values?.parking}
+              tabIndex={-1}
+              className={styles.paddingBottom}
+            >
+              <Radio value={true}>{t(TEXTS.common.yes)}</Radio>
+              <Radio value={false}>{t(TEXTS.common.no)}</Radio>
+            </RadioGroup>
+          </>
+        )}
+
         <Accordion tabIndex={-1} id={drivingListMetadata('dates').id} className={styles.paddingBottom}>
           {renderDrivingPeriodsFromDates()}
         </Accordion>
-        {values?.periods && values.periods.length > 0 && (
+        {values?.periods && values?.periods.length > 0 && (
           <div className={styles.buttonContainer}>
             {showAddButton() && (
               <Button variant="primary" size="small" type="button" onClick={() => addPeriod()}>

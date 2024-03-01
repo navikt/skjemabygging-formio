@@ -18,6 +18,7 @@ interface NavDatePickerProps {
   className?: string;
   fromDate?: Date;
   toDate?: Date;
+  defaultMonth?: Date;
 }
 
 const DatePicker = ({
@@ -33,6 +34,7 @@ const DatePicker = ({
   className,
   fromDate,
   toDate,
+  defaultMonth,
 }: NavDatePickerProps) => {
   // @ts-ignore
   const { datepickerProps, inputProps, setSelected, reset }: DatePickerProps = useDatepicker({
@@ -42,6 +44,7 @@ const DatePicker = ({
     },
     toDate: toDate,
     fromDate: fromDate,
+    defaultMonth: defaultMonth,
   } as UseDatepickerOptions);
 
   useEffect(() => {
