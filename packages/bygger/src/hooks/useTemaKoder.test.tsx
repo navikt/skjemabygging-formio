@@ -1,11 +1,11 @@
 import { AppConfigProvider } from '@navikt/skjemadigitalisering-shared-components';
 import { renderHook, waitFor } from '@testing-library/react';
+import { MockInstance } from 'vitest';
 import createMockImplementation from '../../test/backendMockImplementation';
 import useTemaKoder from './useTemaKoder';
 
 describe('useTemaKoder', () => {
-  // @ts-ignore
-  let fetchSpy: vi.SpyInstance;
+  let fetchSpy: MockInstance;
   let appConfig: any;
   const projectUrl = 'http://test.example.org';
 
@@ -35,10 +35,13 @@ describe('useTemaKoder', () => {
   });
 
   describe('When fetch returns with not ok', () => {
-    let errorSpy;
-    // @ts-ignore
-    beforeEach(() => (errorSpy = vi.spyOn(console, 'error').mockImplementation(vi.fn())));
-    afterEach(() => errorSpy.mockClear());
+    let errorSpy: MockInstance;
+    beforeEach(() => {
+      errorSpy = vi.spyOn(console, 'error').mockImplementation(vi.fn());
+    });
+    afterEach(() => {
+      errorSpy.mockClear();
+    });
 
     it('returns an error message', async () => {
       fetchSpy.mockImplementation(() => Promise.resolve(new Response(null, { status: 503 })));
