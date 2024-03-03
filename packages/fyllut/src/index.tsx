@@ -1,5 +1,6 @@
 import { AppConfigProvider, url } from '@navikt/skjemadigitalisering-shared-components';
 import { ConfigType, SubmissionMethod } from '@navikt/skjemadigitalisering-shared-domain';
+import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import App from './App';
@@ -26,21 +27,23 @@ httpFyllut
 const renderReact = (dokumentInnsendingBaseURL, config) => {
   const root = createRoot(document.getElementById('root')!);
   root.render(
-    <BrowserRouter basename="/fyllut">
-      <AppConfigProvider
-        dokumentinnsendingBaseURL={dokumentInnsendingBaseURL}
-        featureToggles={featureToggles}
-        baseUrl={'/fyllut'}
-        fyllutBaseURL={'/fyllut'}
-        submissionMethod={subissionMethod}
-        app="fyllut"
-        config={config}
-        http={httpFyllut}
-        enableFrontendLogger
-      >
-        {config.isDelingslenke && <ConfirmDelingslenkeModal />}
-        <App />
-      </AppConfigProvider>
-    </BrowserRouter>,
+    <StrictMode>
+      <BrowserRouter basename="/fyllut">
+        <AppConfigProvider
+          dokumentinnsendingBaseURL={dokumentInnsendingBaseURL}
+          featureToggles={featureToggles}
+          baseUrl={'/fyllut'}
+          fyllutBaseURL={'/fyllut'}
+          submissionMethod={subissionMethod}
+          app="fyllut"
+          config={config}
+          http={httpFyllut}
+          enableFrontendLogger
+        >
+          {config.isDelingslenke && <ConfirmDelingslenkeModal />}
+          <App />
+        </AppConfigProvider>
+      </BrowserRouter>
+    </StrictMode>,
   );
 };
