@@ -7,6 +7,7 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
   componentMessage?: string;
   rootElement: any;
   _reactRendered = Ready();
+  _reactRefs: {} = {};
 
   constructor(component, options, data) {
     super(component, options, data);
@@ -15,10 +16,6 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
 
   build(element: any) {
     return this.attach(element);
-  }
-
-  get reactReady() {
-    return this._reactRendered.promise;
   }
 
   attachReact(element: any) {
@@ -78,6 +75,29 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
       this._reactRendered.reset();
       this.renderReact(this.rootElement);
     }
+  }
+
+  /**
+   * Resolves when the React component has been rendered, and {@link setReactInstance} has been invoked.
+   */
+  get reactReady() {
+    return Promise.all([this._reactRendered.promise, this.reactRefsReady]);
+  }
+
+  /**
+   * Override to let the component decide when its refs are ready, typically when all
+   * ref callbacks have been invoked.
+   */
+  get reactRefsReady() {
+    return Promise.resolve();
+  }
+
+  addRef(name: string, ref: any) {
+    this._reactRefs[name] = ref;
+  }
+
+  getRef(name: string) {
+    return this._reactRefs[name];
   }
 
   /**

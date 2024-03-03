@@ -8,7 +8,6 @@ import radioForm from './Radio.form';
 class Radio extends BaseComponent {
   lastRadioRef: HTMLInputElement | null = null;
   _reactRefsReady = Ready();
-  _reactRefs: {} = {};
 
   static schema() {
     return BaseComponent.schema({
@@ -41,16 +40,12 @@ class Radio extends BaseComponent {
     return Radio.schema();
   }
 
-  addRef(name: string, ref: any) {
-    this._reactRefs[name] = ref;
-  }
-
-  getRef(name: string) {
-    return this._reactRefs[name];
+  get reactRefsReady() {
+    return this._reactRefsReady.promise;
   }
 
   focus(focusData: any = {}) {
-    Promise.all([this.reactReady, this._reactRefsReady.promise]).then(() => {
+    this.reactReady.then(() => {
       const { focusedValue } = focusData;
       if (focusedValue) {
         const input = this.getRef(`input:${focusedValue}`);

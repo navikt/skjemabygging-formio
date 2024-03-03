@@ -51,6 +51,8 @@ interface ReactComponentType {
   updateOnChange(flags: any, changed: boolean | any): boolean;
   t(text: string, params?: any): any;
   loadRefs(element: any, refs: any): any;
+  getRef(name: any): any;
+  setRef(name: any, ref: any): void;
   checkValidity(data: any, dirty: any | boolean, rowData: any): boolean;
   getValue(): any;
   hasChanged(before: any, after: any): boolean;
