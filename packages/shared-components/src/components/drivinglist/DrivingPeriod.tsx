@@ -1,4 +1,4 @@
-import { Accordion, Alert, Checkbox, CheckboxGroup, TextField } from '@navikt/ds-react';
+import { Accordion, Alert, BodyShort, Checkbox, CheckboxGroup, Heading, TextField } from '@navikt/ds-react';
 import { DrivingListSubmission, DrivingListValues, TEXTS, dateUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { TFunction } from 'i18next';
 import { useMemo } from 'react';
@@ -76,7 +76,12 @@ const DrivingPeriod = ({
   };
 
   const renderWarningAlert = () => {
-    return <Alert variant="warning">{t(TEXTS.statiske.drivingList.expensesTooHigh)}</Alert>;
+    return (
+      <Alert variant="warning">
+        <Heading size="xsmall">{t(TEXTS.statiske.drivingList.expensesTooHighHeader)}</Heading>
+        <BodyShort>{t(TEXTS.statiske.drivingList.expensesTooHigh)}</BodyShort>
+      </Alert>
+    );
   };
 
   // Should render warning if the sum of all parking expenses + sum of daily rates is higher than the refund amount for the period
@@ -104,7 +109,7 @@ const DrivingPeriod = ({
   };
 
   const drivingListLegend = () => {
-    if (values?.parking === true) {
+    if (values?.parking === true || hasParking === true) {
       return t(drivingListMetadata('dates').label) + ' ' + t(TEXTS.statiske.drivingList.dateSelectParking);
     }
     return t(drivingListMetadata('dates').label);
@@ -125,7 +130,6 @@ const DrivingPeriod = ({
                 <Checkbox value={date.toISOString()}>{toWeekdayAndDate(date, locale)}</Checkbox>
                 {showParking(date.toISOString()) ? (
                   <TextField
-                    id={drivingListMetadata('parkingExpenses').id}
                     label={t(drivingListMetadata('parkingExpenses').label)}
                     type="text"
                     size="medium"

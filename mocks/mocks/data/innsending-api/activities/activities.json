@@ -4,7 +4,7 @@
     "aktivitetstype": "ARBTREN",
     "aktivitetsnavn": "Arbeidstrening",
     "periode": {
-      "fom": "2023-12-06",
+      "fom": "2023-12-01",
       "tom": "2024-04-06"
     },
     "antallDagerPerUke": 5,
@@ -22,26 +22,33 @@
           "vedtakId": "34359921",
           "dagsats": 63,
           "periode": {
-            "fom": "2023-12-06",
+            "fom": "2023-12-01",
             "tom": "2024-04-06"
           },
-          "trengerParkering": false,
+          "trengerParkering": true,
           "betalingsplan": [
+            {
+              "betalingsplanId": "14514541",
+              "beloep": 315,
+              "utgiftsperiode": {
+                "fom": "2023-12-01",
+                "tom": "2023-12-07"
+              }
+            },
             {
               "betalingsplanId": "14514540",
               "beloep": 315,
               "utgiftsperiode": {
-                "fom": "2023-12-06",
-                "tom": "2024-04-06"
-              },
-              "journalpostId": "480716180"
+                "fom": "2023-12-08",
+                "tom": "2023-12-14"
+              }
             },
             {
               "betalingsplanId": "14514541",
               "beloep": 315,
               "utgiftsperiode": {
-                "fom": "2023-12-06",
-                "tom": "2024-04-06"
+                "fom": "2023-12-14",
+                "tom": "2023-12-20"
               },
               "journalpostId": "480716180"
             }

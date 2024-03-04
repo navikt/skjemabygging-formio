@@ -14,7 +14,7 @@ const defaultActivity = {
   text: TEXTS.statiske.activities.defaultActivity,
 };
 
-const activityText = 'Arbeidstrening: 06.12.2023 - 06.04.2024';
+const activityText = 'Arbeidstrening: 01.12.2023 - 06.04.2024';
 const prefillMaalgruppe = 'ARBSOKERE';
 const activityJson = activitiesJson[0];
 

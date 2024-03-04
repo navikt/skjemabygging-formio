@@ -50,7 +50,7 @@ class DrivingList extends BaseComponent {
     const componentData = data[this.defaultSchema.key] as DrivingListSubmission;
 
     const submissionMethod = this.getAppConfig()?.submissionMethod;
-    // FIXME: Check innsending=INGEN
+
     if (submissionMethod === 'paper') {
       const parkingSelected = componentData?.parking !== undefined && componentData?.parking !== null;
       const periodSelected = !!componentData?.selectedPeriodType;
@@ -72,7 +72,10 @@ class DrivingList extends BaseComponent {
       if (allSelected && componentData.dates?.length === 0) {
         this.addErrorOfType('dates', 'required');
       }
-    } else {
+    } else if (submissionMethod === 'digital') {
+      if (!componentData?.selectedVedtaksId) {
+        this.addErrorOfType('activityRadio', 'required');
+      }
       if (componentData?.dates?.length === 0) {
         this.addErrorOfType('dates', 'required');
       }
