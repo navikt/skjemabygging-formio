@@ -15,6 +15,7 @@ interface NavDatePickerProps {
   error?: string;
   inputRef?: any;
   label?: string;
+  description?: string;
   className?: string;
   fromDate?: Date;
   toDate?: Date;
@@ -31,6 +32,7 @@ const DatePicker = ({
   error,
   inputRef,
   label,
+  description,
   className,
   fromDate,
   toDate,
@@ -70,6 +72,7 @@ const DatePicker = ({
         hideLabel={!label}
         label={label}
         className={className}
+        description={description}
       />
     </AkselDatePicker>
   );

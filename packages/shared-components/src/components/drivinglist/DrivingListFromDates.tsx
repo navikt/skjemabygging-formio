@@ -15,8 +15,8 @@ type Props = {
 };
 
 const useDrivinglistStyles = makeStyles({
-  paddingBottom: {
-    paddingBottom: '2.5rem',
+  marginBottom: {
+    marginBottom: '2.5rem',
   },
   buttonContainer: {
     display: 'flex',
@@ -29,11 +29,21 @@ const DrivingListFromDates = ({ values, updateValues, t, locale }: Props) => {
   const styles = useDrivinglistStyles();
 
   useEffect(() => {
-    if (!!values?.selectedPeriodType && !!values?.selectedDate && !!values?.periods?.length) {
-      const periods = generatePeriods(values?.selectedPeriodType, values?.selectedDate, values?.periods.length) ?? [];
+    if (allFieldsForPeriodsAreSet()) {
+      const periods = generatePeriods(values!.selectedPeriodType!, values!.selectedDate, values!.periods!.length) ?? [];
       updateValues({ periods });
     }
   }, []);
+
+  const allFieldsForPeriodsAreSet = () => {
+    return (
+      !!values?.selectedPeriodType &&
+      !!values?.selectedDate &&
+      !!values?.periods?.length &&
+      values?.parking !== undefined &&
+      values?.parking !== null
+    );
+  };
 
   const onDateChange = (date?: string) => {
     if (values?.selectedDate === date) return;
@@ -67,6 +77,7 @@ const DrivingListFromDates = ({ values, updateValues, t, locale }: Props) => {
   };
 
   const renderDrivingPeriodsFromDates = () => {
+    if (!allFieldsForPeriodsAreSet()) return;
     return values?.periods
       ?.sort((a, b) => new Date(a.periodFrom).getTime() - new Date(b.periodFrom).getTime())
       .map((period, index) => (
@@ -159,7 +170,7 @@ const DrivingListFromDates = ({ values, updateValues, t, locale }: Props) => {
           onChange={(value) => onPeriodChange(value)}
           defaultValue={values?.selectedPeriodType}
           tabIndex={-1}
-          className={styles.paddingBottom}
+          className={styles.marginBottom}
         >
           <Radio value="weekly">{t(TEXTS.common.weekly)}</Radio>
           <Radio value="monthly">{t(TEXTS.common.monthly)}</Radio>
@@ -176,9 +187,10 @@ const DrivingListFromDates = ({ values, updateValues, t, locale }: Props) => {
               readOnly={false}
               error={undefined}
               inputRef={undefined}
-              className={styles.paddingBottom}
+              className={styles.marginBottom}
               toDate={toDate()}
               defaultMonth={toDate()}
+              description={t(drivingListMetadata('datePicker').description ?? '')}
             />
             <RadioGroup
               id={drivingListMetadata('parkingRadio').id}
@@ -186,7 +198,7 @@ const DrivingListFromDates = ({ values, updateValues, t, locale }: Props) => {
               onChange={(value) => onParkingChange(value)}
               defaultValue={values?.parking}
               tabIndex={-1}
-              className={styles.paddingBottom}
+              className={styles.marginBottom}
             >
               <Radio value={true}>{t(TEXTS.common.yes)}</Radio>
               <Radio value={false}>{t(TEXTS.common.no)}</Radio>
@@ -194,10 +206,10 @@ const DrivingListFromDates = ({ values, updateValues, t, locale }: Props) => {
           </>
         )}
 
-        <Accordion tabIndex={-1} id={drivingListMetadata('dates').id} className={styles.paddingBottom}>
+        <Accordion tabIndex={-1} id={drivingListMetadata('dates').id} className={styles.marginBottom}>
           {renderDrivingPeriodsFromDates()}
         </Accordion>
-        {values?.periods && values?.periods.length > 0 && (
+        {allFieldsForPeriodsAreSet() && values!.periods!.length > 0 && (
           <div className={styles.buttonContainer}>
             {showAddButton() && (
               <Button variant="primary" size="small" type="button" onClick={() => addPeriod()}>

@@ -103,12 +103,19 @@ const DrivingPeriod = ({
     return false;
   };
 
+  const drivingListLegend = () => {
+    if (values?.parking === true) {
+      return t(drivingListMetadata('dates').label) + ' ' + t(TEXTS.statiske.drivingList.dateSelectParking);
+    }
+    return t(drivingListMetadata('dates').label);
+  };
+
   return (
     <Accordion.Item>
       <Accordion.Header>{header}</Accordion.Header>
       <Accordion.Content>
         <CheckboxGroup
-          legend={t(drivingListMetadata('dates').label)}
+          legend={drivingListLegend()}
           onChange={(values) => onChange(values)}
           value={values?.dates?.map((value) => value.date) ?? []}
         >

@@ -146,8 +146,11 @@ export const statiske = {
     label: 'Legg til kjøreliste for en eller flere perioder',
     parking: 'Skal du registrere parkering?',
     periodType: 'Velg periode for innsending',
-    datePicker: 'Velg første dato',
-    dateSelect: 'Kryss av for de dagene du har brukt egen bil og har hatt parkeringsutgifter',
+    datePicker: 'Velg første dato i perioden',
+    datePickerDescription:
+      'Den tidligste tilgjengelige datoen er en periode før dagens dato. Det er ikke mulig å legge til kjørelister for fremtidige datoer',
+    dateSelect: 'Kryss av for de dagene du har brukt egen bil',
+    dateSelectParking: 'og har hatt parkeringsutgifter',
     parkingExpenses: 'Parkeringsutgifter (kr)',
   },
 };

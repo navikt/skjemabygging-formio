@@ -23,6 +23,8 @@ type Props = {
 
 type ActivityDataType = 'aktivitet' | 'vedtak';
 
+// Renders a activity-data from Arena
+// In some cases it's more relevant to list all 'vedtak' that are part of the activities instead
 const NavActivities = (props: Props) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [activitySelections, setActivitySelections] = useState<SubmissionActivity[]>([]);
@@ -31,10 +33,6 @@ const NavActivities = (props: Props) => {
   const submissionMethod = props.appConfig?.submissionMethod;
   const isLoggedIn = props.appConfig?.config?.isLoggedIn;
   const app = props.appConfig?.app;
-
-  const getId = (activity: SubmissionActivity) => {
-    return activity.vedtaksId ?? activity.aktivitetId;
-  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -64,6 +62,10 @@ const NavActivities = (props: Props) => {
       setActivitySelections(mapToSubmissionActivity(props.activities, props.dataType));
     }
   }, [props.activities, props.dataType]);
+
+  const getId = (activity: SubmissionActivity) => {
+    return activity.vedtaksId ?? activity.aktivitetId;
+  };
 
   const renderCheckbox = () => {
     return (

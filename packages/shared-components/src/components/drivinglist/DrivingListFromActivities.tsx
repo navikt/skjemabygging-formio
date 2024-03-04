@@ -27,9 +27,6 @@ type Props = {
 };
 
 const useDrivinglistStyles = makeStyles({
-  paddingBottom: {
-    paddingBottom: '2.5rem',
-  },
   marginBottom: {
     marginBottom: '2.5rem',
   },
@@ -89,7 +86,7 @@ const DrivingListFromActivities = ({ values, t, updateValues, activities, appCon
           onChange={(activity) => onActivityChange(activity)}
           appConfig={appConfig}
           t={t}
-          className={styles.paddingBottom}
+          className={styles.marginBottom}
           dataType="vedtak"
           activities={activities}
         />
@@ -101,7 +98,7 @@ const DrivingListFromActivities = ({ values, t, updateValues, activities, appCon
               t={t}
               className={styles.marginBottom}
             />
-            <Accordion tabIndex={-1} id={drivingListMetadata('dates').id} className={styles.paddingBottom} size="small">
+            <Accordion tabIndex={-1} id={drivingListMetadata('dates').id} className={styles.marginBottom} size="small">
               {selectedVedtak?.betalingsplan
                 .filter((x) => !!x.journalpostId === false)
                 .filter((x) => new Date(x.utgiftsperiode.tom) < new Date())

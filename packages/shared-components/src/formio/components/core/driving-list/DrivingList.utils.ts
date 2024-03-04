@@ -9,12 +9,18 @@ const metadata = [
   { id: 'activityRadio', label: TEXTS.statiske.activities.label },
   { id: 'parkingRadio', label: TEXTS.statiske.drivingList.parking },
   { id: 'periodType', label: TEXTS.statiske.drivingList.periodType },
-  { id: 'datePicker', label: TEXTS.statiske.drivingList.datePicker },
+  {
+    id: 'datePicker',
+    label: TEXTS.statiske.drivingList.datePicker,
+    description: TEXTS.statiske.drivingList.datePickerDescription,
+  },
   { id: 'dates', label: TEXTS.statiske.drivingList.dateSelect },
   { id: 'parkingExpenses', label: TEXTS.statiske.drivingList.parkingExpenses },
 ] as const;
 
-export const drivingListMetadata = (metadataId: DrivingListMetadataId) => {
+export const drivingListMetadata = (
+  metadataId: DrivingListMetadataId,
+): { id: DrivingListMetadataId; label: string; description?: string } => {
   const metadataInfo = metadata.find((data) => data.id === metadataId);
   if (!metadataInfo) throw Error(`Metadata with id ${metadataId} not found`);
   return metadataInfo;
