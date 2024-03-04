@@ -46,9 +46,9 @@ class Radio extends BaseComponent {
 
   focus(focusData: any = {}) {
     this.reactReady.then(() => {
-      const { focusedValue } = focusData;
-      if (focusedValue) {
-        const input = this.getRef(`input:${focusedValue}`);
+      const { focusedElementName } = focusData;
+      if (focusedElementName) {
+        const input = this.getRef(`input:${focusedElementName}`);
         input?.focus();
       } else {
         this.lastRadioRef?.focus();
@@ -80,8 +80,8 @@ class Radio extends BaseComponent {
           <AkselRadio
             key={obj.value}
             value={obj.value}
-            onFocus={focusHandler(this, { focusedValue: obj.value, skipEmit: true })}
-            onBlur={blurHandler(this, { focusedValue: obj.value, skipEmit: true })}
+            onFocus={focusHandler(this, { focusedElementName: obj.value, skipEmit: true })}
+            onBlur={blurHandler(this, { focusedElementName: obj.value, skipEmit: true })}
             ref={(ref) => {
               this.addRef(`input:${obj.value}`, ref);
               if (index === arr.length - 1) {

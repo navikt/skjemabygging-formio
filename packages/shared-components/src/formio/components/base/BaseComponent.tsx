@@ -49,28 +49,47 @@ class BaseComponent extends FormioReactComponent {
     );
   }
 
-  setFocusedComponent(component: BaseComponent | null, value: any = null) {
+  /**
+   * Set which component is currently focused, and optionally which element inside this component.
+   * This is stored on 'this.root' which usually is the webform/wizard.
+   * @param component
+   * @param elementName
+   */
+  setFocusedComponent(component: BaseComponent | null, elementName: any = null) {
     this.root.focusedComponent = component;
-    this.root.focusedValue = value;
+    this.root.focusedElementName = elementName;
   }
 
+  /**
+   * Returns the currently focused component.
+   */
   getFocusedComponent() {
     return this.root.focusedComponent;
   }
 
-  getFocusedValue() {
-    return this.root.focusedValue;
+  /**
+   * Returns the name of focused element inside currently focused component.
+   */
+  getFocusedElementName() {
+    return this.root.focusedElementName;
   }
 
+  /**
+   * Copied from Formio Component#restoreFocus, and adjusted to our needs.
+   */
   restoreFocus() {
     const focusedComponent = this.getFocusedComponent();
     const isFocused = focusedComponent?.path === this.path;
     if (isFocused) {
-      const focusedValue = this.getFocusedValue();
-      this.focus({ focusedValue });
+      const focusedElementName = this.getFocusedElementName();
+      this.focus({ focusedElementName });
     }
   }
 
+  /**
+   * Overrides Formio Component#addFocusBlurEvents.
+   * @param element The element
+   */
   addFocusBlurEvents(element) {
     this.addEventListener(element, 'focus', focusHandler(this));
     this.addEventListener(element, 'blur', blurHandler(this));
