@@ -33,6 +33,44 @@ describe('Focus handling', () => {
         });
     });
 
+    it('sets focus to correct radio input when value is toggled back and forth', () => {
+      cy.visit('/fyllut/datagridconditional/barnSomSoknadenGjelderFor?sub=paper');
+      cy.defaultWaits();
+      cy.findByLabelText('Fornavn').should('exist').type('Klara');
+      cy.findByRole('group', { name: 'Trenger barnet briller?' })
+        .should('exist')
+        .within(() => {
+          cy.findByLabelText('Ja').click();
+        });
+      cy.findByText('Her vises en informasjonstekst.').should('exist').shouldBeVisible();
+      cy.findByRole('group', { name: 'Trenger barnet briller?' })
+        .should('exist')
+        .within(() => {
+          cy.findByLabelText('Ja').should('have.focus');
+          cy.findByLabelText('Nei').click();
+        });
+      cy.findByText('Her vises en informasjonstekst.').should('not.exist');
+      cy.findByRole('group', { name: 'Trenger barnet briller?' })
+        .should('exist')
+        .within(() => {
+          cy.findByLabelText('Nei').should('have.focus');
+          cy.findByLabelText('Ja').click();
+        });
+      cy.findByText('Her vises en informasjonstekst.').should('exist').shouldBeVisible();
+      cy.findByRole('group', { name: 'Trenger barnet briller?' })
+        .should('exist')
+        .within(() => {
+          cy.findByLabelText('Ja').should('have.focus');
+          cy.findByLabelText('Nei').click();
+        });
+      cy.findByText('Her vises en informasjonstekst.').should('not.exist');
+      cy.findByRole('group', { name: 'Trenger barnet briller?' })
+        .should('exist')
+        .within(() => {
+          cy.findByLabelText('Nei').should('have.focus');
+        });
+    });
+
     it('restores textfield focus after rerender due to conditional', () => {
       cy.visit('/fyllut/datagridconditional/levering?sub=paper');
       cy.defaultWaits();
@@ -85,7 +123,7 @@ describe('Focus handling', () => {
           cy.findByLabelText('Rekkehus').click();
         });
 
-      cy.findByRole('link', { name: 'Du må fylle ut: Mottakers fornavn' }).should('exist').click();
+      cy.findByRoleWhenAttached('link', { name: 'Du må fylle ut: Mottakers fornavn' }).should('exist').click();
       cy.findByRole('textbox', { name: 'Mottakers fornavn' }).should('have.focus').type('Max');
 
       cy.findByRole('heading', { name: TEXTS.validering.error }).should('not.exist');

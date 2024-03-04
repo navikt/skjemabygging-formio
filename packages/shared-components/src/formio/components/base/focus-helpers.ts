@@ -15,7 +15,11 @@ export const focusHandler =
   (thisComponent: BaseComponent, opts: Opts = {}) =>
   () => {
     const focusedComponent = thisComponent.getFocusedComponent();
-    if (focusedComponent !== thisComponent) {
+    const focusedElementName = thisComponent.getFocusedElementName();
+    if (
+      focusedComponent !== thisComponent ||
+      (opts.focusedElementName && focusedElementName !== opts.focusedElementName)
+    ) {
       if (thisComponent.root.pendingBlur) {
         thisComponent.root.pendingBlur();
       }

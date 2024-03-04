@@ -63,6 +63,7 @@ class Radio extends BaseComponent {
 
   renderReact(element) {
     const values = this.component!.values ?? [];
+    this._reactRefsReady.reset();
     return element.render(
       <RadioGroup
         id={this.getId()}

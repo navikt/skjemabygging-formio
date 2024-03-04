@@ -72,6 +72,7 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
 
   rerender() {
     if (this.rootElement) {
+      this._reactRefs = {};
       this._reactRendered.reset();
       this.renderReact(this.rootElement);
     }
