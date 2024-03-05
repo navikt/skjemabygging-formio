@@ -1,4 +1,4 @@
-import { TEXTS, dateUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 
 const ACTIVITIES_LABEL = TEXTS.statiske.activities.label;
 const DATE_PICKER_LABEL = TEXTS.statiske.drivingList.datePicker;
@@ -7,6 +7,15 @@ const PARKING_LABEL = TEXTS.statiske.drivingList.parking;
 const PARKING_EXPENSES_LABEL = /Parkeringsutgifter \(kr\)/;
 const DAY_PICKER_LABEL_WITH_PARKING =
   TEXTS.statiske.drivingList.dateSelect + ' ' + TEXTS.statiske.drivingList.dateSelectParking;
+
+const dateFormatShortYear: Intl.DateTimeFormatOptions = {
+  day: '2-digit',
+  month: '2-digit',
+  year: '2-digit',
+};
+
+const toLocaleDateShortYear = (date: string, locale = 'no') =>
+  new Date(date).toLocaleString(locale, dateFormatShortYear);
 
 describe('DrivingList', () => {
   before(() => {
@@ -113,7 +122,7 @@ describe('DrivingList', () => {
 
       cy.findByRole('radio', { name: 'Ukentlig' }).should('exist').check();
 
-      const dateString = `${dateUtils.toLocaleDateShortYear(twoWeeksAgo.toString())}{esc}`;
+      const dateString = `${toLocaleDateShortYear(twoWeeksAgo.toString())}{esc}`;
       cy.findByRole('textbox', { name: DATE_PICKER_LABEL }).should('exist').type(dateString);
       cy.findByRole('radio', { name: 'Ja' }).should('exist').check();
 

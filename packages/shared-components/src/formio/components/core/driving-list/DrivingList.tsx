@@ -99,7 +99,6 @@ class DrivingList extends BaseComponent {
   }
 
   renderReact(element) {
-    console.log(this.getValue());
     element.render(
       <NavDrivingList
         onValueChange={(value) => this.onValueChange(value)}

@@ -1,4 +1,4 @@
-import { DrivingListPeriod, TEXTS, dateUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { DrivingListPeriod, DrivingListSubmission, TEXTS, dateUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { TFunction } from 'i18next';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -69,4 +69,49 @@ export const generatePeriods = (
 export const isValidParking = (value: string) => {
   if (value === '') return true;
   return /^\d+$/.test(value);
+};
+
+export const allFieldsForPeriodsAreSet = (values?: DrivingListSubmission) => {
+  return (
+    !!values?.selectedPeriodType &&
+    !!values?.selectedDate &&
+    !!values?.periods?.length &&
+    values?.parking !== undefined &&
+    values?.parking !== null
+  );
+};
+
+export const showAddButton = (values?: DrivingListSubmission) => {
+  const lastPeriod = values?.periods?.reduce((prev, current) =>
+    new Date(prev.periodTo) > new Date(current.periodTo) ? prev : current,
+  );
+  if (!lastPeriod) return false;
+
+  const lastPeriodDate = new Date(lastPeriod.periodTo);
+
+  if (values?.selectedPeriodType === 'weekly') {
+    lastPeriodDate.setDate(lastPeriodDate.getDate() + 7);
+  } else if (lastPeriod && values?.selectedPeriodType === 'monthly') {
+    lastPeriodDate.setMonth(lastPeriodDate.getMonth() + 1);
+  } else {
+    return false;
+  }
+
+  return lastPeriodDate < new Date();
+};
+
+export const showRemoveButton = (values?: DrivingListSubmission) => {
+  return values?.periods?.length && values?.periods?.length > 1;
+};
+
+export const toDate = (values?: DrivingListSubmission) => {
+  const date = new Date();
+
+  if (values?.selectedPeriodType === 'weekly') {
+    date.setDate(date.getDate() - 7);
+    return date;
+  } else if (values?.selectedPeriodType === 'monthly') {
+    date.setMonth(date.getMonth() - 1);
+    return date;
+  }
 };

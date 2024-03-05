@@ -2,7 +2,14 @@ import { Accordion, Button, Radio, RadioGroup } from '@navikt/ds-react';
 import { DrivingListSubmission, DrivingListValues, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { TFunction } from 'i18next';
 import { useEffect } from 'react';
-import { drivingListMetadata, generatePeriods } from '../../formio/components/core/driving-list/DrivingList.utils';
+import {
+  allFieldsForPeriodsAreSet,
+  drivingListMetadata,
+  generatePeriods,
+  showAddButton,
+  showRemoveButton,
+  toDate,
+} from '../../formio/components/core/driving-list/DrivingList.utils';
 import makeStyles from '../../util/styles/jss/jss';
 import DatePicker from '../datepicker/DatePicker';
 import DrivingPeriod from './DrivingPeriod';
@@ -29,21 +36,11 @@ const DrivingListFromDates = ({ values, updateValues, t, locale }: Props) => {
   const styles = useDrivinglistStyles();
 
   useEffect(() => {
-    if (allFieldsForPeriodsAreSet()) {
+    if (allFieldsForPeriodsAreSet(values)) {
       const periods = generatePeriods(values!.selectedPeriodType!, values!.selectedDate, values!.periods!.length) ?? [];
       updateValues({ periods });
     }
-  }, []);
-
-  const allFieldsForPeriodsAreSet = () => {
-    return (
-      !!values?.selectedPeriodType &&
-      !!values?.selectedDate &&
-      !!values?.periods?.length &&
-      values?.parking !== undefined &&
-      values?.parking !== null
-    );
-  };
+  }, [updateValues, values]);
 
   const onDateChange = (date?: string) => {
     if (values?.selectedDate === date) return;
@@ -77,7 +74,7 @@ const DrivingListFromDates = ({ values, updateValues, t, locale }: Props) => {
   };
 
   const renderDrivingPeriodsFromDates = () => {
-    if (!allFieldsForPeriodsAreSet()) return;
+    if (!allFieldsForPeriodsAreSet(values)) return;
     return values?.periods
       ?.sort((a, b) => new Date(a.periodFrom).getTime() - new Date(b.periodFrom).getTime())
       .map((period, index) => (
@@ -126,41 +123,6 @@ const DrivingListFromDates = ({ values, updateValues, t, locale }: Props) => {
     }
   };
 
-  const showAddButton = () => {
-    const lastPeriod = values?.periods?.reduce((prev, current) =>
-      new Date(prev.periodTo) > new Date(current.periodTo) ? prev : current,
-    );
-    if (!lastPeriod) return false;
-
-    const lastPeriodDate = new Date(lastPeriod.periodTo);
-
-    if (values?.selectedPeriodType === 'weekly') {
-      lastPeriodDate.setDate(lastPeriodDate.getDate() + 7);
-    } else if (lastPeriod && values?.selectedPeriodType === 'monthly') {
-      lastPeriodDate.setMonth(lastPeriodDate.getMonth() + 1);
-    } else {
-      return false;
-    }
-
-    return lastPeriodDate < new Date();
-  };
-
-  const showRemoveButton = () => {
-    return values?.periods?.length && values?.periods?.length > 1;
-  };
-
-  const toDate = () => {
-    const date = new Date();
-
-    if (values?.selectedPeriodType === 'weekly') {
-      date.setDate(date.getDate() - 7);
-      return date;
-    } else if (values?.selectedPeriodType === 'monthly') {
-      date.setMonth(date.getMonth() - 1);
-      return date;
-    }
-  };
-
   const renderDrivingListFromDates = () => {
     return (
       <>
@@ -188,8 +150,8 @@ const DrivingListFromDates = ({ values, updateValues, t, locale }: Props) => {
               error={undefined}
               inputRef={undefined}
               className={styles.marginBottom}
-              toDate={toDate()}
-              defaultMonth={toDate()}
+              toDate={toDate(values)}
+              defaultMonth={toDate(values)}
               description={t(drivingListMetadata('datePicker').description ?? '')}
             />
             <RadioGroup
@@ -209,14 +171,14 @@ const DrivingListFromDates = ({ values, updateValues, t, locale }: Props) => {
         <Accordion tabIndex={-1} id={drivingListMetadata('dates').id} className={styles.marginBottom}>
           {renderDrivingPeriodsFromDates()}
         </Accordion>
-        {allFieldsForPeriodsAreSet() && values!.periods!.length > 0 && (
+        {allFieldsForPeriodsAreSet(values) && values!.periods!.length > 0 && (
           <div className={styles.buttonContainer}>
-            {showAddButton() && (
+            {showAddButton(values) && (
               <Button variant="primary" size="small" type="button" onClick={() => addPeriod()}>
                 {t(TEXTS.statiske.drivingList.addPeriod)}
               </Button>
             )}
-            {showRemoveButton() && (
+            {showRemoveButton(values) && (
               <Button variant="secondary" size="small" type="button" onClick={() => removePeriod()}>
                 {t(TEXTS.statiske.drivingList.removePeriod)}
               </Button>

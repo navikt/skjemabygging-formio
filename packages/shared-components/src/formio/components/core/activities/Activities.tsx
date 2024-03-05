@@ -18,10 +18,9 @@ class Activities extends BaseComponent {
 
   static schema() {
     return BaseComponent.schema({
-      label: TEXTS.statiske.activities.label,
+      label: 'Velg hvilken aktivitet du vil søke om stønad for',
       type: 'activities',
       key: 'aktivitet',
-      hideLabel: true,
     });
   }
 

@@ -14,12 +14,6 @@ const dateFormat: Intl.DateTimeFormatOptions = {
   year: 'numeric',
 };
 
-const dateFormatShortYear: Intl.DateTimeFormatOptions = {
-  day: '2-digit',
-  month: '2-digit',
-  year: '2-digit',
-};
-
 const weekdayAndDateFormat: Intl.DateTimeFormatOptions = {
   weekday: 'long',
   year: '2-digit',
@@ -30,8 +24,6 @@ const weekdayAndDateFormat: Intl.DateTimeFormatOptions = {
 const toLocaleDateAndTime = (date: string, locale = 'no') => new Date(date).toLocaleString(locale, dateAndTimeFormat);
 const toLocaleDate = (date: string, locale = 'no') => new Date(date).toLocaleString(locale, dateFormat);
 const toWeekdayAndDate = (date: string, locale = 'no') => new Date(date).toLocaleString(locale, weekdayAndDateFormat);
-const toLocaleDateShortYear = (date: string, locale = 'no') =>
-  new Date(date).toLocaleString(locale, dateFormatShortYear);
 
 export const getIso8601String = () => {
   return moment().toISOString();
@@ -55,7 +47,6 @@ const dateUtils = {
   toLocaleDate,
   toWeekdayAndDate,
   getDatesInRange,
-  toLocaleDateShortYear,
 };
 
 export default dateUtils;

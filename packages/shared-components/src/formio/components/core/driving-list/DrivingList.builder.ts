@@ -8,7 +8,7 @@ const drivingListBuilder = () => {
       ...schema,
       validateOn: 'blur',
       validate: {
-        required: true,
+        required: false, // Handled by custom validation
       },
     },
   };
