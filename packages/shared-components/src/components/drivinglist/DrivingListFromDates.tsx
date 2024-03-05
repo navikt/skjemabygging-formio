@@ -153,7 +153,7 @@ const DrivingListFromDates = ({ values, updateValues, t, locale }: Props) => {
     const date = new Date();
 
     if (values?.selectedPeriodType === 'weekly') {
-      date.setDate(date.getDate() - 6);
+      date.setDate(date.getDate() - 7);
       return date;
     } else if (values?.selectedPeriodType === 'monthly') {
       date.setMonth(date.getMonth() - 1);

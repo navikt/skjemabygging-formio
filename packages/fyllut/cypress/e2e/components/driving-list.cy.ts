@@ -215,7 +215,8 @@ describe('DrivingList', () => {
         });
     });
 
-    it.only('should render alert when there are no activities', () => {
+    // FIXME: Should this be handled differently?
+    it('should render alert when there are no activities', () => {
       cy.visit(`/fyllut/testdrivinglist?sub=digital`);
       cy.defaultWaits();
       cy.mocksUseRouteVariant('get-activities:success-empty');

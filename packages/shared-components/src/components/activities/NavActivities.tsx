@@ -1,5 +1,6 @@
 import { Alert, Checkbox, CheckboxGroup, Radio, RadioGroup, Skeleton } from '@navikt/ds-react';
 import { SendInnAktivitet, SubmissionActivity, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { TFunction } from 'i18next';
 import { ReactNode, useEffect, useState } from 'react';
 import { getActivities } from '../../api/sendinn/sendInnActivities';
 import { AppConfigContextType } from '../../context/config/configContext';
@@ -15,8 +16,8 @@ type Props = {
   error?: string;
   defaultActivity?: SubmissionActivity;
   appConfig: AppConfigContextType;
-  setLastRef?: (ref: any) => void;
-  t: any;
+  setLastRef?: (ref: HTMLInputElement | null) => void;
+  t: TFunction;
   dataType: ActivityDataType;
   activities?: SendInnAktivitet[];
 };
