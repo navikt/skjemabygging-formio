@@ -16,6 +16,7 @@ const translationsSubmissionMethod = require('../data/formio-api/submission-meth
 const globalTranslationsEn = require('../data/formio-api/global-translation.json');
 const formCustomCompsAlert = require('../data/formio-api/custom-components-alert.json');
 const formActivities = require('../data/formio-api/activities.json');
+const formDatagridConditional = require('../data/formio-api/datagrid-conditional.json');
 
 const allForms = [
   { form: formCypress101, translations: translationsCypress101 },
@@ -31,6 +32,7 @@ const allForms = [
   { form: formTestMellomlagring, translations: undefined },
   { form: formTestPrefillData, translations: undefined },
   { form: formActivities, translations: undefined },
+  { form: formDatagridConditional, translations: undefined },
 ];
 
 const findTestdata = (formPath) => allForms.find((testdata) => testdata.form.path === formPath);

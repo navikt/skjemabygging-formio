@@ -161,6 +161,7 @@ export interface Component {
   isInline?: boolean;
   textDisplay?: 'form' | 'formPdf' | 'pdf';
   autoExpand?: boolean;
+  validateOn?: string;
 }
 
 export interface ComponentProperties {
