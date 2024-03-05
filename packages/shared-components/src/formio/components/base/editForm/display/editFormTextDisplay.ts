@@ -2,7 +2,6 @@ import { Component } from '@navikt/skjemadigitalisering-shared-domain';
 
 const editFormTextDisplay = (): Component => ({
   type: 'radiopanel',
-  input: true,
   key: 'textDisplay',
   defaultValue: 'form',
   label: 'Hvor skal innholdet vises',

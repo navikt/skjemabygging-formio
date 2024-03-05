@@ -12,8 +12,6 @@ class DataGrid extends FormioDataGrid {
       label: 'Repeterende data',
       key: 'datagrid',
       type: 'datagrid',
-      clearOnHide: true,
-      input: true,
       isNavDataGrid: true,
       tree: true,
       components: [],

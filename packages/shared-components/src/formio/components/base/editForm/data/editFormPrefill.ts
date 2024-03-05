@@ -3,7 +3,6 @@ import { Component, PrefillType } from '@navikt/skjemadigitalisering-shared-doma
 const editFormPrefill = (): Component => {
   return {
     type: 'select',
-    input: true,
     label: 'Preutfylling',
     key: 'prefill',
     dataSrc: 'values',

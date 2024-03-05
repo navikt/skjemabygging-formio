@@ -21,7 +21,6 @@ class Activities extends BaseComponent {
       label: TEXTS.statiske.activities.label,
       type: 'activities',
       key: 'aktivitet',
-      input: true,
       hideLabel: true,
     });
   }

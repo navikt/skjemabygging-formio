@@ -14,7 +14,6 @@ const editFormAceEditor = (type: 'html' | 'javascript' | 'json'): Component => {
       indentedSoftWrap: false,
     },
     as: type,
-    input: true,
   };
 };
 

@@ -5,8 +5,6 @@ const attachmentBuilder = () => {
       label: '< Navn på vedlegg > + husk å legge inn Gosys vedleggstittel og vedleggskode under API-fanen',
       type: 'radiopanel',
       key: 'vedleggNr',
-      input: true,
-      clearOnHide: true,
       properties: {
         vedleggstittel: '',
         vedleggskode: '',

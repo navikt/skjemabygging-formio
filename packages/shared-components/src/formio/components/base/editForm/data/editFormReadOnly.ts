@@ -6,7 +6,6 @@ const editFormReadOnly = (): Component => {
     label: 'Skrivebeskyttet',
     key: 'readOnly',
     defaultValue: false,
-    input: true,
   };
 };
 

@@ -9,10 +9,7 @@ class Number extends FormioNumber {
       type: 'number',
       key: 'number',
       fieldSize: 'input--m',
-      input: true,
-      dataGridLabel: true,
       spellcheck: false,
-      clearOnHide: true,
     });
   }
 

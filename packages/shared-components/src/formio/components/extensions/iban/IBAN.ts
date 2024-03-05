@@ -11,10 +11,7 @@ class IBAN extends TextField {
       type: 'iban',
       key: `iban`,
       fieldSize: 'input--l',
-      input: true,
       spellcheck: false,
-      dataGridLabel: true,
-      clearOnHide: true,
     });
   }
 

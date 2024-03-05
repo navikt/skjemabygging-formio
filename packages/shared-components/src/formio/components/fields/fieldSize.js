@@ -1,6 +1,5 @@
 export const fieldSizeField = {
   type: 'select',
-  input: true,
   label: 'Feltstørrelse',
   key: 'fieldSize',
   dataSrc: 'values',
