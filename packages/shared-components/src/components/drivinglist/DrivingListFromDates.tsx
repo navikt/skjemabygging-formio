@@ -1,7 +1,7 @@
 import { Accordion, Button, Radio, RadioGroup } from '@navikt/ds-react';
 import { DrivingListSubmission, DrivingListValues, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { TFunction } from 'i18next';
-import { useEffect } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import {
   allFieldsForPeriodsAreSet,
   drivingListMetadata,
@@ -35,12 +35,19 @@ const useDrivinglistStyles = makeStyles({
 const DrivingListFromDates = ({ values, updateValues, t, locale }: Props) => {
   const styles = useDrivinglistStyles();
 
-  useEffect(() => {
-    if (allFieldsForPeriodsAreSet(values)) {
+  const allPeriodFieldsSet = useMemo(() => allFieldsForPeriodsAreSet(values), [values]);
+
+  // Generate periods when coming from summary page
+  const generateInitialPeriods = useCallback(() => {
+    if (allPeriodFieldsSet) {
       const periods = generatePeriods(values!.selectedPeriodType!, values!.selectedDate, values!.periods!.length) ?? [];
       updateValues({ periods });
     }
-  }, [updateValues, values]);
+  }, [allPeriodFieldsSet]);
+
+  useEffect(() => {
+    generateInitialPeriods();
+  }, [generateInitialPeriods]);
 
   const onDateChange = (date?: string) => {
     if (values?.selectedDate === date) return;
@@ -74,7 +81,7 @@ const DrivingListFromDates = ({ values, updateValues, t, locale }: Props) => {
   };
 
   const renderDrivingPeriodsFromDates = () => {
-    if (!allFieldsForPeriodsAreSet(values)) return;
+    if (!allPeriodFieldsSet) return;
     return values?.periods
       ?.sort((a, b) => new Date(a.periodFrom).getTime() - new Date(b.periodFrom).getTime())
       .map((period, index) => (
@@ -171,7 +178,7 @@ const DrivingListFromDates = ({ values, updateValues, t, locale }: Props) => {
         <Accordion tabIndex={-1} id={drivingListMetadata('dates').id} className={styles.marginBottom}>
           {renderDrivingPeriodsFromDates()}
         </Accordion>
-        {allFieldsForPeriodsAreSet(values) && values!.periods!.length > 0 && (
+        {allPeriodFieldsSet && values!.periods!.length > 0 && (
           <div className={styles.buttonContainer}>
             {showAddButton(values) && (
               <Button variant="primary" size="small" type="button" onClick={() => addPeriod()}>

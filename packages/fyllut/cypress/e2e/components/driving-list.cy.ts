@@ -67,7 +67,7 @@ describe('DrivingList', () => {
           cy.findAllByRole('checkbox').should('have.length', 7);
           cy.findByRole('checkbox', { name: 'mandag 15.05.23' }).should('exist').check();
           cy.findByRole('checkbox', { name: 'søndag 21.05.23' }).should('exist').check();
-          cy.findByRole('textbox', { name: PARKING_EXPENSES_LABEL }).should('exist').type('100');
+          cy.findAllByRole('textbox', { name: PARKING_EXPENSES_LABEL }).eq(0).should('exist').type('100');
         });
 
       cy.clickNextStep();
