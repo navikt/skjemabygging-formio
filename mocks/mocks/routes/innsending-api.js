@@ -8,6 +8,8 @@ const paabegyntMellomlagringOgInnsendt = require('../data/innsending-api/active-
 const paabegyntMellomlagring = require('../data/innsending-api/active-tasks/mellomlagring.json');
 const paabegyntInnsendt = require('../data/innsending-api/active-tasks/ettersending.json');
 const mellomlagringActivities = require('../data/innsending-api/activities/mellomlagring-activities.json');
+const mellomlagringDrivingList = require('../data/innsending-api/driving-list/mellomlagring-driving-list.json');
+
 const objectToByteArray = (obj) => Array.from(new TextEncoder().encode(JSON.stringify(obj)));
 
 const base64Encode = (data) => {
@@ -151,6 +153,14 @@ module.exports = [
         options: {
           status: 200,
           body: convertToInnsendingApiResponse(prefillDataNames),
+        },
+      },
+      {
+        id: 'success-driving-list',
+        type: 'json',
+        options: {
+          status: 200,
+          body: convertToInnsendingApiResponse(mellomlagringDrivingList),
         },
       },
       {

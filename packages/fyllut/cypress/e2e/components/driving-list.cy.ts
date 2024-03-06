@@ -157,7 +157,7 @@ describe('DrivingList', () => {
         cy.findByText('01.12.2023 - 06.04.2024').should('exist');
 
         cy.findByRole('heading', { name: 'Din dagsats uten parkeringsutgift' }).should('exist');
-        cy.findByText('63').should('exist');
+        cy.findByText('63kr').should('exist');
       });
 
       cy.findByRole('heading', { name: 'Perioder du tidligere har fått refundert reiseutgifter for' }).should('exist');
@@ -197,6 +197,25 @@ describe('DrivingList', () => {
         });
     });
 
+    it('should fill out mellomlagret values', () => {
+      cy.visit(`/fyllut/testdrivinglist/veiledning?sub=digital&innsendingsId=8495201b-71fd-4a95-82f8-d224d32237e5`);
+      cy.mocksUseRouteVariant('get-soknad:success-driving-list');
+      cy.defaultWaits();
+      cy.wait('@getActivities');
+
+      cy.findByRole('radio', { name: 'Arbeidstrening: 01.12.2023 - 06.04.2024' }).should('be.checked');
+
+      cy.findByRole('button', { name: '01.12.2023 - 07.12.2023' }).click();
+      cy.findByRole('checkbox', { name: 'fredag 01.12.23' }).should('be.checked');
+      cy.findByRole('checkbox', { name: 'mandag 04.12.23' }).should('be.checked');
+      cy.findAllByRole('textbox', { name: PARKING_EXPENSES_LABEL }).eq(0).should('have.value', '');
+      cy.findAllByRole('textbox', { name: PARKING_EXPENSES_LABEL }).eq(1).should('have.value', '50');
+
+      cy.findByRole('button', { name: '08.12.2023 - 14.12.2023' }).click();
+      cy.findAllByRole('textbox', { name: PARKING_EXPENSES_LABEL }).eq(2).should('have.value', '100');
+      cy.findByRole('checkbox', { name: 'søndag 10.12.23' }).should('be.checked');
+    });
+
     it('should show errors', () => {
       cy.visit(`/fyllut/testdrivinglist?sub=digital`);
       cy.defaultWaits();
@@ -224,8 +243,7 @@ describe('DrivingList', () => {
         });
     });
 
-    // FIXME: Should this be handled differently?
-    it('should render alert when there are no activities', () => {
+    it.only('should render alert when there are no activities and error when trying to continue', () => {
       cy.visit(`/fyllut/testdrivinglist?sub=digital`);
       cy.defaultWaits();
       cy.mocksUseRouteVariant('get-activities:success-empty');
@@ -235,6 +253,9 @@ describe('DrivingList', () => {
       cy.get('.navds-alert').within(() => {
         cy.findByText(TEXTS.statiske.drivingList.noVedtak).should('exist');
       });
+
+      cy.clickSaveAndContinue();
+      cy.findByRole('link', { name: `Du må fylle ut: ${ACTIVITIES_LABEL}` }).should('exist');
     });
   });
 });

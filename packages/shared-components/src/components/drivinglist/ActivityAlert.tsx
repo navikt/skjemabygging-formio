@@ -30,7 +30,7 @@ const ActivityAlert = ({ activityName, vedtak, t, className }: ActivityAlertProp
 
       <Heading size="xsmall">{t(TEXTS.statiske.drivingList.dailyRate)}</Heading>
       <BodyShort size="medium" spacing={true}>
-        {vedtak.dagsats}
+        {`${vedtak.dagsats}kr`}
       </BodyShort>
     </Alert>
   );
