@@ -105,8 +105,11 @@ const checkComponentDiff = (
   publishedForm?: NavFormType,
   mergeSchema = defaultMergeSchema,
 ) => {
-  if (publishedForm) {
-    const publishedComponent = navFormUtils.findByNavIdOrKey(currentComponent, publishedForm.components);
+  if (currentComponent.navId && publishedForm) {
+    const publishedComponent: Component | undefined = navFormUtils.findByNavId(
+      currentComponent.navId,
+      publishedForm.components,
+    );
     const publishedComponentWithDefaultSchema = publishedComponent
       ? mergeSchema(publishedComponent)
       : publishedComponent;

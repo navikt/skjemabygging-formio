@@ -260,17 +260,17 @@ class BaseComponent extends FormioReactComponent {
     return (
       <>
         {diff.isNew && (
-          <Tag size="xsmall" variant="warning">
+          <Tag size="xsmall" variant="warning" data-testid="diff-tag">
             Ny
           </Tag>
         )}
         {diff.changesToCurrentComponent?.length > 0 && (
-          <Tag size="xsmall" variant="warning">
+          <Tag size="xsmall" variant="warning" data-testid="diff-tag">
             Endring
           </Tag>
         )}
         {diff.deletedComponents?.length > 0 && (
-          <Tag size="xsmall" variant="warning">
+          <Tag size="xsmall" variant="warning" data-testid="diff-tag">
             Slettede elementer
           </Tag>
         )}

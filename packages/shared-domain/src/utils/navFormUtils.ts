@@ -97,17 +97,6 @@ const findByKey = (key: string, components: Component[]): Component | undefined 
   findComponent((c) => c.key === key, components);
 const findByNavId = (navId: string, components: Component[]): Component | undefined =>
   findComponent((c) => c.navId === navId, components);
-type ComponentIdType = Pick<Component, 'navId' | 'key'>;
-const findByNavIdOrKey = (ids: ComponentIdType, components: Component[]): Component | undefined => {
-  let comp;
-  if (ids.navId) {
-    comp = findByNavId(ids.navId, components);
-  }
-  if (!comp) {
-    comp = findByKey(ids.key, components);
-  }
-  return comp;
-};
 
 const findComponentsByProperty = (property: string, form: NavFormType): Component[] => {
   return flattenComponents(form.components).filter((component) => !!component[property]);
@@ -278,7 +267,6 @@ const navFormUtils = {
   removeVedleggspanel,
   findByKey,
   findByNavId,
-  findByNavIdOrKey,
   findComponentsByProperty,
   enrichComponentsWithNavIds,
   getActivePanelsFromForm,

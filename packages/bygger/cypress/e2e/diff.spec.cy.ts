@@ -91,6 +91,27 @@ describe('Diff', () => {
       });
     });
 
+    describe('New component with same key as deleted component', () => {
+      beforeEach(() => {
+        cy.findByRole('link', { name: 'Mer informasjon' }).click();
+      });
+
+      it('is rendered with tag "Ny"', () => {
+        cy.findByLabelText(/Nytt tekstfelt/)
+          .should('exist')
+          .parent()
+          .within(() => {
+            cy.findByTestId('diff-tag').should('exist').should('contain.text', 'Ny');
+          });
+      });
+
+      it('shows no changes in component modal', () => {
+        cy.openEditComponentModal(cy.findByLabelText(/Nytt tekstfelt/));
+        cy.findByLabelText('Endringer').should('not.exist');
+        cy.findByLabelText('Slettede elementer').should('not.exist');
+      });
+    });
+
     describe('Edit component modal', () => {
       it("Shows changes for text component :: label 'Fornavn' -> 'Fornavn2'", () => {
         cy.findByRole('textbox', { name: 'Fornavn2 Endring' }).should('be.visible');
