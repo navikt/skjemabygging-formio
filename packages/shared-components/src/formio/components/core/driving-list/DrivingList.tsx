@@ -45,9 +45,9 @@ class DrivingList extends BaseComponent {
     }
   }
 
-  override checkValidity(data: any): boolean {
+  override checkValidity(): boolean {
     this.removeAllErrors();
-    const componentData = data[this.defaultSchema.key] as DrivingListSubmission;
+    const componentData = this.getValue() as DrivingListSubmission;
 
     const submissionMethod = this.getAppConfig()?.submissionMethod;
 

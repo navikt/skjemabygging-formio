@@ -50,16 +50,16 @@ const DrivingListFromActivities = ({ values, t, updateValues, activities, appCon
     return (
       <DrivingPeriod
         t={t}
+        key={betalingsplan.betalingsplanId}
         index={index}
         hasParking={vedtak.trengerParkering}
         updateValues={updateValues}
-        betalingsplanId={betalingsplan.betalingsplanId}
         periodFrom={periodFrom}
         periodTo={periodTo}
         values={values}
-        refundAmount={betalingsplan.beloep}
         dailyRate={vedtak.dagsats}
         locale={locale}
+        betalingsplan={betalingsplan}
       />
     );
   };

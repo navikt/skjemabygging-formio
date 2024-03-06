@@ -1,5 +1,11 @@
 import { Accordion, Alert, BodyShort, Checkbox, CheckboxGroup, Heading, TextField } from '@navikt/ds-react';
-import { DrivingListSubmission, DrivingListValues, TEXTS, dateUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  DrivingListSubmission,
+  DrivingListValues,
+  TEXTS,
+  VedtakBetalingsplan,
+  dateUtils,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import { TFunction } from 'i18next';
 import { useMemo } from 'react';
 import {
@@ -17,10 +23,9 @@ interface DrivingPeriodProps {
   values?: DrivingListSubmission;
   t: TFunction;
   index: number;
-  refundAmount?: number;
   dailyRate?: number;
-  betalingsplanId?: string;
   locale?: string;
+  betalingsplan?: VedtakBetalingsplan;
 }
 
 const useDrivingPeriodStyles = makeStyles({
@@ -36,10 +41,9 @@ const DrivingPeriod = ({
   values,
   hasParking,
   t,
-  refundAmount,
   dailyRate,
-  betalingsplanId,
   locale,
+  betalingsplan,
 }: DrivingPeriodProps) => {
   const styles = useDrivingPeriodStyles();
 
@@ -58,6 +62,7 @@ const DrivingPeriod = ({
     const mappedValues = checkBoxValues.map((newValue) => {
       const existingValue = values?.dates?.find((val) => val.date === newValue);
       const parking = existingValue ? existingValue.parking : '';
+      const betalingsplanId = existingValue ? existingValue.betalingsplanId : betalingsplan?.betalingsplanId;
       return { date: newValue, parking, betalingsplanId };
     });
 
@@ -67,7 +72,7 @@ const DrivingPeriod = ({
   const onChangeParking = (date: Date, parking: string) => {
     const mappedValues = values?.dates?.map((existingValue) => {
       if (existingValue.date === date.toISOString()) {
-        return { date: existingValue.date, parking: parking.trim(), betalingsplanId };
+        return { date: existingValue.date, parking: parking.trim(), betalingsplanId: existingValue.betalingsplanId };
       }
       return existingValue;
     });
@@ -86,7 +91,7 @@ const DrivingPeriod = ({
 
   // Should render warning if the sum of all parking expenses + sum of daily rates is higher than the refund amount for the period
   const shouldRenderExpensesWarningAlert = () => {
-    if (refundAmount) {
+    if (betalingsplan?.beloep) {
       const totalParking = periodDates.reduce((acc, currentDate) => {
         const dateInValues = values?.dates.find((date) => date.date === currentDate.toISOString());
         if (dateInValues) {
@@ -103,7 +108,7 @@ const DrivingPeriod = ({
         return acc;
       }, 0);
 
-      return totalParking + totalDailyRate > refundAmount;
+      return totalParking + totalDailyRate > betalingsplan.beloep;
     }
     return false;
   };
