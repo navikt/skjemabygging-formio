@@ -85,6 +85,8 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
     };
     if (isMellomlagringEnabled && submission.data) {
       initializePanelValidation();
+    } else {
+      setPanelValidationList([]);
     }
   }, [isMellomlagringEnabled, form, submission]);
 

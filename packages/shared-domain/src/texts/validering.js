@@ -10,6 +10,7 @@ export const validering = {
   minLength: '{{field}} kan ikke være mindre enn {{length}} tegn.',
   pattern: '{{field}} stemmer ikke med {{pattern}}',
   required: 'Du må fylle ut: {{field}}',
+  valueIsNotAvailable: '{{field}} er en ugyldig verdi.',
 
   //Dato / tid
   invalid_date: '{{field}} er ikke en gyldig dato.',
