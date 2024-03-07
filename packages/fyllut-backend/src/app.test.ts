@@ -82,8 +82,8 @@ describe('app', () => {
           const testform001 = createFormDefinition('KUN_PAPIR');
           nock(formioProjectUrl!).get('/form?type=form&tags=nav-skjema&path=testform001').reply(200, [testform001]);
 
-          const res = await request(createApp()).get('/fyllut/testform001').expect(200);
-          expect(res.get('location')).toBeUndefined();
+          const res = await request(createApp()).get('/fyllut/testform001?lang=en').expect(302);
+          expect(res.get('location')).toBe('/fyllut/testform001?lang=en&sub=paper');
         });
 
         it('renders index.html when query param sub is paper', async () => {

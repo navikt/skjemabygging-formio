@@ -51,7 +51,7 @@ interface ReactComponentType {
   destroy(): void;
   beforeSubmit(): any;
   updateOnChange(flags: any, changed: boolean | any): boolean;
-  t(text: string, params?: any): any;
+  t: TFunction;
   loadRefs(element: any, refs: any): any;
   getRef(name: any): any;
   setRef(name: any, ref: any): void;
@@ -65,6 +65,7 @@ interface ReactComponentType {
   addMessages(messages): void;
   addFocusBlurEvents(element): void;
   labelIsHidden(): boolean;
+  setCustomValidity(messages: object, dirty?: boolean, external?: boolean): void;
   // Element
   id?: any;
   emit(event: string, data: Object): void;

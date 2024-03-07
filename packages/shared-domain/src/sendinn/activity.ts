@@ -37,7 +37,7 @@ export interface VedtakBetalingsplan {
   betalingsplanId: string;
   beloep: number;
   utgiftsperiode: BetalingsplanUtgiftsperiode;
-  journalpostId: string;
+  journalpostId?: string;
 }
 
 export interface BetalingsplanUtgiftsperiode {
