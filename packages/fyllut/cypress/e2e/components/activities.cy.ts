@@ -15,7 +15,7 @@ const defaultActivity = {
   text: TEXTS.statiske.activities.defaultActivity,
 };
 
-const activityText = 'Arbeidstrening: 06.12.2023 - 06.04.2024';
+const activityText = 'Arbeidstrening: 01.12.2023 - 06.04.2024';
 const prefillMaalgruppe = 'ARBSOKERE';
 const activityJson = activitiesJson[0];
 
@@ -282,7 +282,7 @@ describe('Activities', () => {
       cy.findByRole('checkbox', { name: activityText }).should('not.exist');
       cy.findByRole('checkbox', { name: defaultActivity.text }).should('exist');
 
-      cy.get('.navds-alert--info').contains(TEXTS.statiske.activities.error);
+      cy.get('.navds-alert--info').contains(TEXTS.statiske.activities.errorContinue);
     });
   });
 });

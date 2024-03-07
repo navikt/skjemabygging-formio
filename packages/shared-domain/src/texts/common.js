@@ -17,5 +17,7 @@ const common = {
   month: 'Måned',
   day: 'Dag',
   year: 'År',
+  weekly: 'Ukentlig',
+  monthly: 'Månedlig',
 };
 export default common;

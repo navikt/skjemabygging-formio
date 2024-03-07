@@ -15,6 +15,8 @@ const formSelectSoknadInvalidInstrumentV1 = require('../data/innsending-api/mell
 const mellomlagringActivities = require('../data/innsending-api/activities/mellomlagring-activities.json');
 const mellomlagringActivitiesPrefilledMaalgruppe = require('../data/innsending-api/activities/mellomlagring-activities-prefilled-maalgruppe.json');
 const nav083591soknadComplete = require('../data/innsending-api/mellomlagring/nav083591/complete.json');
+const mellomlagringDrivingList = require('../data/innsending-api/driving-list/mellomlagring-driving-list.json');
+
 const objectToByteArray = (obj) => Array.from(new TextEncoder().encode(JSON.stringify(obj)));
 
 const base64Encode = (data) => {
@@ -158,6 +160,14 @@ module.exports = [
         options: {
           status: 200,
           body: convertToInnsendingApiResponse(prefillDataNames),
+        },
+      },
+      {
+        id: 'success-driving-list',
+        type: 'json',
+        options: {
+          status: 200,
+          body: convertToInnsendingApiResponse(mellomlagringDrivingList),
         },
       },
       {
