@@ -1,4 +1,5 @@
 import { HtmlAsJsonElement, HtmlAsJsonTextElement } from '@navikt/skjemadigitalisering-shared-components';
+import { markDown2Json } from '@navikt/skjemadigitalisering-shared-components/src/util/html/converters';
 import TranslationTextInput from './TranslationTextInput';
 import { getInputType } from './utils';
 
@@ -10,7 +11,6 @@ interface Props {
 }
 
 const TranslationFormHtmlInput = ({ text, htmlElementAsJson, currentTranslation, updateTranslation }: Props) => {
-  // TODO: if (htmlElementAsJson.type === 'Element' && !['A', 'STRONG', 'B'].includes(htmlElementAsJson.tagName)) {
   if (htmlElementAsJson.type === 'Element') {
     return (
       <div>
@@ -23,10 +23,17 @@ const TranslationFormHtmlInput = ({ text, htmlElementAsJson, currentTranslation,
               text={originalTextElement['textContent'] ?? ''}
               htmlElementAsJson={originalTextElement}
               currentTranslation={translationElement}
-              updateTranslation={(element) => {
-                const updatedTranslation = currentTranslation;
+              updateTranslation={(element: HtmlAsJsonElement) => {
+                console.log('updateTranslation', element);
+                const updatedTranslation = JSON.parse(JSON.stringify(currentTranslation));
                 if (updatedTranslation && updatedTranslation?.type === 'Element') {
-                  updatedTranslation.children[index] = element;
+                  console.log('-- updateTranslation', { element, updatedTranslation });
+                  if (element.tagName === 'DIV') {
+                    updatedTranslation.children = element.children;
+                  } else {
+                    updatedTranslation.children[index] = element;
+                  }
+                  console.log('-- children', updatedTranslation.children);
                 }
                 updateTranslation(updatedTranslation);
               }}
@@ -44,17 +51,18 @@ const TranslationFormHtmlInput = ({ text, htmlElementAsJson, currentTranslation,
         value={currentTranslation?.type === 'TextElement' ? currentTranslation.textContent?.trim() : ''}
         type={getInputType(htmlElementAsJson.textContent ?? '')}
         onChange={(value: string) => {
-          let translatedTextWithWhiteSpace = value.trim();
+          let textContentWithWhiteSpaces = value.trim();
           if (htmlElementAsJson.textContent?.startsWith(' ')) {
-            translatedTextWithWhiteSpace = ` ${translatedTextWithWhiteSpace}`;
+            textContentWithWhiteSpaces = ` ${textContentWithWhiteSpaces}`;
           }
           if (htmlElementAsJson.textContent?.endsWith(' ')) {
-            translatedTextWithWhiteSpace = `${translatedTextWithWhiteSpace} `;
+            textContentWithWhiteSpaces = `${textContentWithWhiteSpaces} `;
           }
-          updateTranslation({
-            ...htmlElementAsJson,
-            textContent: translatedTextWithWhiteSpace,
-          });
+          // updateTranslation({
+          //   ...htmlElementAsJson,
+          //   textContent: htmlUtils.markDown2HtmlString(textContentWithWhiteSpaces),
+          // });
+          updateTranslation(markDown2Json(textContentWithWhiteSpaces, htmlElementAsJson));
         }}
         hasGlobalTranslation={false}
         tempGlobalTranslation={undefined}

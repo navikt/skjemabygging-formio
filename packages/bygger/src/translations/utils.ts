@@ -157,7 +157,9 @@ const textObject = (
   withInputType: boolean,
   value: string,
 ): { text: string; type?: InputType; htmlElementAsJson?: HtmlAsJsonElement } => {
-  const htmlElementAsJson = htmlUtils.isHtmlString(value) ? htmlUtils.htmlString2Json(value) : undefined;
+  const htmlElementAsJson = htmlUtils.isHtmlString(value)
+    ? htmlUtils.htmlString2Json(value, ['P', 'H3', 'LI'])
+    : undefined;
   const type = withInputType ? getInputType(value) : undefined;
   return {
     text: value,

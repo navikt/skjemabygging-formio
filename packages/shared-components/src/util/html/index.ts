@@ -1,11 +1,17 @@
-import { HtmlAsJsonElement, HtmlAsJsonTextElement, htmlString2Json, json2HtmlString } from './converters';
-import { isHtmlString, translateHtml } from './translate';
+import {
+  HtmlAsJsonElement,
+  HtmlAsJsonTextElement,
+  htmlString2Json,
+  json2HtmlString,
+  markDown2Json,
+} from './converters';
+import { isHtmlString } from './translate';
 
 const htmlUtils = {
   isHtmlString,
-  translateHtml,
   htmlString2Json,
   json2HtmlString,
+  markDown2Json,
 };
 
 export type { HtmlAsJsonElement, HtmlAsJsonTextElement };

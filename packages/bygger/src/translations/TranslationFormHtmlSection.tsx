@@ -63,7 +63,7 @@ const TranslationFormHtmlSection = ({
     if (!currentTranslation) {
       const storedTranslationAsJson =
         !!storedTranslation && htmlUtils.isHtmlString(storedTranslation)
-          ? htmlUtils.htmlString2Json(storedTranslation)
+          ? htmlUtils.htmlString2Json(storedTranslation, ['P', 'H3', 'LI'])
           : undefined;
       return storedTranslationAsJson && !isSameStructure(htmlElementAsJson, storedTranslationAsJson);
     }
@@ -71,15 +71,22 @@ const TranslationFormHtmlSection = ({
 
   useEffect(() => {
     if (!currentTranslation && !translationIsMissing && !incompatibleTranslationExists) {
-      setCurrentTranslation(htmlUtils.htmlString2Json(storedTranslation));
+      // console.log('storedTranslation 2 json', htmlUtils.htmlString2Json(storedTranslation));
+      setCurrentTranslation(htmlUtils.htmlString2Json(storedTranslation, ['P', 'H3', 'LI']));
     }
   }, [currentTranslation, incompatibleTranslationExists, storedTranslation, translationIsMissing]);
 
   const styles = useStyles();
 
   const startNewTranslation = () => {
+    console.log('START new translation', htmlElementAsJson);
     setCurrentTranslation(htmlElementAsJson);
   };
+
+  if (currentTranslation) {
+    // console.log('Oversettelse: ', htmlUtils.json2HtmlString(currentTranslation as HtmlAsJsonElement));
+    console.log('currentTranlsation', currentTranslation);
+  }
 
   if (htmlElementAsJson.type === 'Element') {
     return (
@@ -119,30 +126,37 @@ const TranslationFormHtmlSection = ({
             </HStack>
           </VStack>
         )}
-        {/*{currentTranslation && (*/}
-        {/*  <>*/}
-        {/*    <div>{storedTranslation}</div>*/}
-        {/*    <div*/}
-        {/*      dangerouslySetInnerHTML={{ __html: htmlUtils.json2HtmlString(currentTranslation as HtmlAsJsonElement) }}*/}
-        {/*    />*/}
-        {/*  </>*/}
-        {/*)}*/}
+        {currentTranslation && (
+          <>
+            <b>Lagret:</b>
+            <div>{storedTranslation}</div>
+            <b>Oversett:</b>
+            <div
+              dangerouslySetInnerHTML={{ __html: htmlUtils.json2HtmlString(currentTranslation as HtmlAsJsonElement) }}
+            />
+          </>
+        )}
         {currentTranslation?.type === 'Element' &&
           htmlElementAsJson.type === 'Element' &&
-          htmlElementAsJson.children.map((originalTextElement, index) => {
+          htmlElementAsJson.children.map((originalElement, index) => {
             const translationElement = currentTranslation.children[index];
             return (
               <TranslationFormHtmlInput
                 key={`html-translation-${translationElement.id}`}
                 text={translationElement['textContent'] ?? ''}
-                htmlElementAsJson={originalTextElement}
+                htmlElementAsJson={originalElement}
                 currentTranslation={translationElement}
                 updateTranslation={(element) => {
+                  console.log('*- updateTranslation', element);
                   const updatedTranslation = currentTranslation;
                   if (updatedTranslation && updatedTranslation?.type === 'Element') {
                     updatedTranslation.children[index] = element;
-                    setCurrentTranslation(updatedTranslation);
-                    updateTranslation(htmlUtils.json2HtmlString(updatedTranslation));
+                    const updatedTranslationHtmlString = htmlUtils.json2HtmlString(updatedTranslation);
+                    // console.log('** updatedTranslation', htmlUtils.htmlString2Json(updatedTranslationHtmlString, ["P", "H3", "LI"]));
+                    setCurrentTranslation(htmlUtils.htmlString2Json(updatedTranslationHtmlString, ['P', 'H3', 'LI']));
+
+                    console.log('* ** WillBeUpdated', updatedTranslationHtmlString);
+                    updateTranslation(updatedTranslationHtmlString);
                   }
                 }}
               />

@@ -8,4 +8,4 @@ const translateHtml = (htmlString: string, translate: (text: string) => string) 
   return json2HtmlString(htmlString2Json(htmlString), translate);
 };
 
-export { isHtmlString, translateHtml };
+export { isHtmlString };
