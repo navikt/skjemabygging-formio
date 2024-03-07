@@ -45,7 +45,8 @@ const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList,
   const innsending: InnsendingType = form.properties.innsending || 'PAPIR_OG_DIGITAL';
   const styles = useStyles();
   const hasAttachments = hasRelevantAttachments(form, submission?.data ?? {});
-  const canSubmit = (panelValidationList ?? []).every((panelValidation) => !panelValidation.hasValidationErrors);
+  const canSubmit =
+    !!panelValidationList && panelValidationList.every((panelValidation) => !panelValidation.hasValidationErrors);
 
   const exitUrl = urlUtils.getExitUrl(window.location.href);
 

@@ -1,4 +1,5 @@
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { Utils } from 'formiojs';
 import { useEffect, useRef, useState } from 'react';
 import ReactSelect, { OnChangeValue, components } from 'react-select';
 import Select from 'react-select/base';
@@ -93,6 +94,8 @@ const ReactSelectWrapper = ({
   );
 };
 
+type SelectInitOptions = { skipOnlyAvailableItems?: boolean };
+
 /**
  * TODO: Rename this to Select and dont use wrapper when we change to Aksel component.
  */
@@ -100,6 +103,8 @@ class NavSelect extends BaseComponent {
   isLoading = false;
   loadFinished = false;
   selectOptions: any = [];
+  itemsLoaded: Promise<any> | undefined = undefined;
+  itemsLoadedResolve: undefined | ((value?: any) => void) = undefined;
 
   static schema() {
     return BaseComponent.schema({
@@ -107,6 +112,10 @@ class NavSelect extends BaseComponent {
       type: 'navSelect',
       key: 'navSelect',
       dataSrc: 'values',
+      validate: {
+        required: true,
+        onlyAvailableItems: true,
+      },
     });
   }
 
@@ -136,11 +145,15 @@ class NavSelect extends BaseComponent {
     }
   }
 
-  renderReact(element) {
+  loadItems() {
     const component = this.component!;
     if (component.dataSrc === 'values') {
       this.selectOptions = component.data?.values ?? [];
     } else if (component.dataSrc === 'url' && !this.isLoading && !this.loadFinished) {
+      this.itemsLoadedResolve?.();
+      this.itemsLoaded = new Promise((resolve) => {
+        this.itemsLoadedResolve = resolve;
+      });
       const dataUrl = component.data.url;
       this.isLoading = true;
       http
@@ -163,10 +176,46 @@ class NavSelect extends BaseComponent {
         .finally(() => {
           this.isLoading = false;
           this.loadFinished = true;
+          this.itemsLoadedResolve?.();
           this.rerender();
         });
     }
+  }
 
+  init(options: SelectInitOptions = {}) {
+    super.init();
+    const { skipOnlyAvailableItems = false } = options;
+    this.validators = this.validators.concat(skipOnlyAvailableItems ? [] : ['onlyAvailableItems']);
+    this.loadItems();
+  }
+
+  get dataReady(): Promise<any> {
+    return this.itemsLoaded || Promise.resolve();
+  }
+
+  get ready() {
+    return this.dataReady.then(() => this);
+  }
+
+  /**
+   * Denne funksjonen kalles fra formio sin valideringskode når validator 'onlyAvailableItems' er aktivert.
+   *
+   * @param setting Komponent-egenskap 'validate.onlyAvailableItems'
+   * @param value Verdi som skal valideres
+   */
+  validateValueAvailability(setting, value) {
+    if (!Utils.boolValue(setting) || !value) {
+      return true;
+    }
+    const options = this.selectOptions;
+    if (options) {
+      return !!options.find((option) => option.value === value.value);
+    }
+    return false;
+  }
+
+  renderReact(element) {
+    const component = this.component!;
     return element.render(
       <ReactSelectWrapper
         component={component}
