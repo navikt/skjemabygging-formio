@@ -9,13 +9,12 @@ import {
   SendInnSoknadBody,
   assembleSendInnSoknadBody,
   byteArrayToObject,
-  isMellomLagringEnabled,
   isNotFound,
   sanitizeInnsendingsId,
   validateInnsendingsId,
 } from './helpers/sendInn';
 
-const { featureToggles, sendInnConfig } = config;
+const { sendInnConfig } = config;
 const getErrorMessage = 'Kan ikke hente mellomlagret søknad.';
 const postErrorMessage = 'Kan ikke starte mellomlagring av søknaden.';
 const putErrorMessage = 'Kan ikke oppdatere mellomlagret søknad.';
@@ -25,14 +24,6 @@ const sendInnSoknad = {
   get: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const tokenxAccessToken = getTokenxAccessToken(req);
-
-      if (!isMellomLagringEnabled(featureToggles)) {
-        logger.warn(
-          `Mellomlagring er ikke skrudd på. Avbryter henting av mellomlagring med innsendingsId ${req.params.innsendingsId} for søknad ${sendInnConfig.paths.soknad}`,
-        );
-        res.end();
-        return;
-      }
 
       const sanitizedInnsendingsId = sanitizeInnsendingsId(req.params.innsendingsId);
       const errorMessage = validateInnsendingsId(sanitizedInnsendingsId, getErrorMessage);
@@ -89,10 +80,6 @@ const sendInnSoknad = {
       const tokenxAccessToken = getTokenxAccessToken(req);
       const body = assembleSendInnSoknadBody(req.body, idportenPid, null);
       const forceCreateParam = !!req.query?.forceMellomlagring ? '?force=true' : '';
-      if (!isMellomLagringEnabled(featureToggles)) {
-        res.json(body);
-        return;
-      }
 
       const sendInnResponse = await fetch(`${sendInnConfig.host}${sendInnConfig.paths.soknad}${forceCreateParam}`, {
         method: 'POST',
@@ -130,11 +117,6 @@ const sendInnSoknad = {
         return;
       }
       const body = assembleSendInnSoknadBody(req.body, idportenPid, null);
-
-      if (!isMellomLagringEnabled(featureToggles)) {
-        res.json(body);
-        return;
-      }
 
       const sendInnResponse = await fetch(
         `${sendInnConfig.host}${sendInnConfig.paths.soknad}/${sanitizedInnsendingsId}`,
@@ -178,11 +160,6 @@ const sendInnSoknad = {
       const errorMessage = validateInnsendingsId(sanitizedInnsendingsId, deleteErrorMessage);
       if (errorMessage) {
         next(new Error(errorMessage));
-        return;
-      }
-
-      if (!isMellomLagringEnabled(featureToggles)) {
-        res.status(501).end();
         return;
       }
 

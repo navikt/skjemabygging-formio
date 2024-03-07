@@ -6,15 +6,9 @@ import { logger } from '../../logger';
 import { getIdportenPid, getTokenxAccessToken } from '../../security/tokenHelper';
 import { responseToError } from '../../utils/errorHandling';
 import { createPdfAsByteArray } from './helpers/pdfService';
-import {
-  assembleSendInnSoknadBody,
-  isMellomLagringEnabled,
-  isNotFound,
-  sanitizeInnsendingsId,
-  validateInnsendingsId,
-} from './helpers/sendInn';
+import { assembleSendInnSoknadBody, isNotFound, sanitizeInnsendingsId, validateInnsendingsId } from './helpers/sendInn';
 
-const { featureToggles, sendInnConfig } = config;
+const { sendInnConfig } = config;
 
 const sendInnUtfyltSoknad = {
   put: async (req: Request, res: Response, next: NextFunction) => {
@@ -47,11 +41,6 @@ const sendInnUtfyltSoknad = {
       );
 
       const body = assembleSendInnSoknadBody(req.body, idportenPid, pdfByteArray);
-
-      if (!isMellomLagringEnabled(featureToggles)) {
-        res.json(body);
-        return;
-      }
 
       const sendInnResponse = await fetch(
         `${sendInnConfig.host}${sendInnConfig.paths.utfyltSoknad}/${sanitizedInnsendingsId}`,
