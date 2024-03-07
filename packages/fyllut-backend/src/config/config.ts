@@ -8,7 +8,7 @@ if (process.env.NODE_ENV !== 'test') {
   dotenv.config();
 }
 
-const defaultEnabledFeatures = '';
+const defaultEnabledFeatures = 'translations,sendInnIntegration';
 
 const tokenx: TokenxConfig = {
   privateJwk: process.env.TOKEN_X_PRIVATE_JWK!,

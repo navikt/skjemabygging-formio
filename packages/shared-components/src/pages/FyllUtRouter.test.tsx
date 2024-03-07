@@ -27,7 +27,7 @@ describe('FyllUtRouter', () => {
 
   const renderFyllUtRouter = ({ form, translationsForNavForm }, appConfigProps) => {
     const config = {
-      featureToggles: {},
+      featureToggles: { enableTranslations: true },
       ...appConfigProps,
     };
 
@@ -50,9 +50,16 @@ describe('FyllUtRouter', () => {
     );
   };
 
-  it('Knapp for å velge språk rendres', () => {
-    renderFyllUtRouter({ form, translationsForNavForm }, { featureToggles: {} });
-    expect(screen.queryByRole('button', { name: labelNorskBokmal })).not.toBeNull();
+  describe('Knapp for å velge språk', () => {
+    it('Rendres ikke når feature toggle er false', () => {
+      renderFyllUtRouter({ form, translationsForNavForm }, { featureToggles: { enableTranslations: false } });
+      expect(screen.queryByRole('button', { name: labelNorskBokmal })).toBeNull();
+    });
+
+    it('Rendres når feature toggle er true', () => {
+      renderFyllUtRouter({ form, translationsForNavForm }, { featureToggles: { enableTranslations: true } });
+      expect(screen.queryByRole('button', { name: labelNorskBokmal })).not.toBeNull();
+    });
   });
 
   describe('Endring av språk', () => {

@@ -3,6 +3,7 @@ import {
   FyllUtRouter,
   i18nData,
   LoadingComponent,
+  useAppConfig,
 } from '@navikt/skjemadigitalisering-shared-components';
 import { useEffect, useState } from 'react';
 import { loadCountryNamesForLanguages, loadFormTranslations, loadGlobalTranslationsForLanguages } from '../api';
@@ -10,25 +11,30 @@ import { loadCountryNamesForLanguages, loadFormTranslations, loadGlobalTranslati
 function FormPage({ form }) {
   const [translation, setTranslation] = useState({});
   const [ready, setReady] = useState(false);
+  const { featureToggles } = useAppConfig();
   useEffect(() => {
     async function fetchTranslations() {
-      const localTranslationsForForm = await loadFormTranslations(form.path);
-      const availableLanguages = Object.keys(localTranslationsForForm);
-      const countryNameTranslations = await loadCountryNamesForLanguages(availableLanguages);
-      const globalTranslations = await loadGlobalTranslationsForLanguages(availableLanguages);
+      if (featureToggles.enableTranslations) {
+        const localTranslationsForForm = await loadFormTranslations(form.path);
+        const availableLanguages = Object.keys(localTranslationsForForm);
+        const countryNameTranslations = await loadCountryNamesForLanguages(availableLanguages);
+        const globalTranslations = await loadGlobalTranslationsForLanguages(availableLanguages);
 
-      return availableLanguages.reduce(
-        (accumulated, lang) => ({
-          ...accumulated,
-          [lang]: {
-            ...accumulated[lang],
-            ...countryNameTranslations[lang],
-            ...globalTranslations[lang],
-            ...localTranslationsForForm[lang],
-          },
-        }),
-        { 'nb-NO': i18nData['nb-NO'] },
-      );
+        return availableLanguages.reduce(
+          (accumulated, lang) => ({
+            ...accumulated,
+            [lang]: {
+              ...accumulated[lang],
+              ...countryNameTranslations[lang],
+              ...globalTranslations[lang],
+              ...localTranslationsForForm[lang],
+            },
+          }),
+          { 'nb-NO': i18nData['nb-NO'] },
+        );
+      } else {
+        return {};
+      }
     }
     fetchTranslations().then((completeI18n) => {
       setReady(true);
@@ -36,7 +42,7 @@ function FormPage({ form }) {
         setTranslation(completeI18n);
       }
     });
-  }, [form]);
+  }, [form, featureToggles.enableTranslations]);
 
   if (!ready) {
     return <LoadingComponent />;

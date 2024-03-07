@@ -51,7 +51,7 @@ describe('prefillDataContext', () => {
         <AppConfigProvider
           app={'fyllut'}
           submissionMethod={submissionMethod}
-          featureToggles={{}}
+          featureToggles={{ enableMellomlagring: true }}
           http={mockHttp as unknown as typeof http}
           baseUrl={'http://test.example.no'}
           config={{ isTest: true }}
@@ -86,7 +86,7 @@ describe('prefillDataContext', () => {
         <AppConfigProvider
           app={'fyllut'}
           submissionMethod={submissionMethod}
-          featureToggles={{}}
+          featureToggles={{ enableMellomlagring: true }}
           http={mockHttp as unknown as typeof http}
           baseUrl={'http://test.example.no'}
           config={{ isTest: true }}

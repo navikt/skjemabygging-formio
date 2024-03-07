@@ -28,7 +28,7 @@ describe('FormPage', () => {
     fetchMock.doMock();
   });
 
-  const renderFormPage = (form, featureToggles = {}) => {
+  const renderFormPage = (form, featureToggles = { enableTranslations: true }) => {
     render(
       <MemoryRouter>
         <AppConfigProvider featureToggles={featureToggles} config={{}}>
@@ -37,6 +37,19 @@ describe('FormPage', () => {
       </MemoryRouter>,
     );
   };
+
+  describe('FeatureToggle enableTranslations=false', () => {
+    it('renders form when translations are not enabled', async () => {
+      fetchMock.mockImplementation((url, _options) => {
+        return Promise.reject(new Error(`Ingen kall til backend forventes: ${url}`));
+      });
+
+      renderFormPage(form, { enableTranslations: false });
+
+      expect(await screen.findByRole('heading', { name: 'Testskjema' })).toBeInTheDocument();
+      expect(screen.queryByRole('button', { name: 'Norsk bokmål' })).not.toBeInTheDocument();
+    });
+  });
 
   describe('Language selector', () => {
     it('is not rendered if no translations are available', async () => {

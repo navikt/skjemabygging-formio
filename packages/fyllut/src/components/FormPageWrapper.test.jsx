@@ -26,9 +26,6 @@ describe('FormPageWrapper', () => {
       if (url === '/fyllut/api/forms/unknownForm') {
         return Promise.resolve(new Response('', { status: 404 }));
       }
-      if (url.startsWith('/fyllut/api/translations')) {
-        return Promise.resolve(new Response(JSON.stringify({}), RESPONSE_HEADERS));
-      }
       throw new Error('Unknown URL: ' + url);
     });
 
@@ -65,9 +62,6 @@ describe('FormPageWrapper', () => {
       if (url === '/fyllut/api/forms/knownForm') {
         return Promise.resolve(new Response(JSON.stringify(mockedForm), RESPONSE_HEADERS));
       }
-      if (url.startsWith('/fyllut/api/translations')) {
-        return Promise.resolve(new Response(JSON.stringify({}), RESPONSE_HEADERS));
-      }
       throw new Error('Unknown URL: ' + url);
     });
 
@@ -99,9 +93,6 @@ describe('FormPageWrapper', () => {
       fetchMock.mockImplementation((url) => {
         if (url === '/fyllut/api/forms/nav123456') {
           return Promise.resolve(new Response(JSON.stringify(mockedForm), RESPONSE_HEADERS));
-        }
-        if (url.startsWith('/fyllut/api/translations')) {
-          return Promise.resolve(new Response(JSON.stringify({}), RESPONSE_HEADERS));
         }
         throw new Error('Unknown URL: ' + url);
       });

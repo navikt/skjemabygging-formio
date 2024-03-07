@@ -3,9 +3,9 @@ import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import ConfirmationModal from '../../components/modal/confirmation/ConfirmationModal';
 import NavForm from '../../components/nav-form/NavForm';
-import { useAmplitude } from '../../context/amplitude';
+import { useAmplitude } from '../../context/amplitude/index';
 import { useAppConfig } from '../../context/config/configContext';
-import { useLanguages } from '../../context/languages';
+import { useLanguages } from '../../context/languages/index.js';
 import { useSendInn } from '../../context/sendInn/sendInnContext';
 import { LoadingComponent } from '../../index';
 import { scrollToAndSetFocus } from '../../util/focus-management/focus-management';
@@ -31,14 +31,14 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: Fil
     loggSkjemaValideringFeilet,
     loggNavigering,
   } = useAmplitude();
-  const { submissionMethod } = useAppConfig();
+  const { featureToggles, submissionMethod } = useAppConfig();
   const [formForRendering, setFormForRendering] = useState<NavFormType>();
   const {
     startMellomlagring,
     updateMellomlagring,
     deleteMellomlagring,
     mellomlagringError,
-    isMellomlagringAvailable,
+    isMellomlagringEnabled,
     isMellomlagringReady,
     isMellomlagringActive,
   } = useSendInn();
@@ -59,10 +59,10 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: Fil
   }, [loggSkjemaApnet, submissionMethod]);
 
   useEffect(() => {
-    if (isMellomlagringAvailable) {
+    if (isMellomlagringEnabled) {
       startMellomlagring(submission as Submission);
     }
-  }, [submission, startMellomlagring, isMellomlagringAvailable]);
+  }, [submission, startMellomlagring, isMellomlagringEnabled]);
 
   // Clean up mutationObserver
   const removeMutationObserver = () => {
@@ -92,11 +92,11 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: Fil
     }
   }, [hash]);
 
-  if (!translationsForNavForm) {
+  if (featureToggles?.enableTranslations && !translationsForNavForm) {
     return null;
   }
 
-  if (isMellomlagringAvailable && !isMellomlagringReady && !mellomlagringError) {
+  if (isMellomlagringEnabled && !isMellomlagringReady && !mellomlagringError) {
     return <LoadingComponent heightOffsetRem={18} />;
   }
 
@@ -239,8 +239,8 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: Fil
     <div>
       <NavForm
         form={formForRendering}
-        language={currentLanguage}
-        i18n={translationsForNavForm}
+        language={featureToggles?.enableTranslations ? currentLanguage : undefined}
+        i18n={featureToggles?.enableTranslations ? translationsForNavForm : undefined}
         submission={submission}
         onBlur={loggSkjemaSporsmalBesvart}
         onChange={loggSkjemaSporsmalBesvartForSpesialTyper}

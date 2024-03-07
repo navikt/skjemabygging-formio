@@ -4,12 +4,18 @@ import { config } from '../../../../config/config';
 import { logger } from '../../../../logger';
 import { getTokenxAccessToken } from '../../../../security/tokenHelper';
 import { responseToError } from '../../../../utils/errorHandling';
+import { isMellomLagringEnabled } from './../../helpers/sendInn';
 
-const { sendInnConfig } = config;
+const { featureToggles, sendInnConfig } = config;
 
 const sendInnPrefillData = {
   get: async (req: Request, res: Response, next: NextFunction) => {
     try {
+      if (!isMellomLagringEnabled(featureToggles)) {
+        res.json();
+        return;
+      }
+
       const tokenxAccessToken = getTokenxAccessToken(req);
       const propertiesParam = !!req.query?.properties ? `properties=${req.query.properties}` : '';
 

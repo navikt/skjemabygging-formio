@@ -57,7 +57,7 @@ export interface Props {
 }
 
 export function SummaryPage({ form, submission, formUrl }: Props) {
-  const { isMellomlagringAvailable } = useSendInn();
+  const { isMellomlagringEnabled } = useSendInn();
   const { translate } = useLanguages();
   const styles = useStyles();
   const { declarationType, declarationText } = form.properties;
@@ -83,12 +83,12 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
       setPanelValidationList(panelValidations);
       instance.destroy(true);
     };
-    if (isMellomlagringAvailable && submission.data) {
+    if (isMellomlagringEnabled && submission.data) {
       initializePanelValidation();
     } else {
       setPanelValidationList([]);
     }
-  }, [isMellomlagringAvailable, form, submission]);
+  }, [isMellomlagringEnabled, form, submission]);
 
   useEffect(() => scrollToAndSetFocus('main', 'start'), []);
   const declarationRef = useRef<HTMLInputElement>(null);

@@ -6,7 +6,7 @@ import { getIdportenPid, getTokenxAccessToken } from '../../security/tokenHelper
 import { responseToError } from '../../utils/errorHandling.js';
 import { createPdfAsByteArray } from './helpers/pdfService';
 
-const { sendInnConfig } = config;
+const { featureToggles, sendInnConfig } = config;
 
 const objectToByteArray = (obj) => Array.from(new TextEncoder().encode(JSON.stringify(obj)));
 
@@ -73,6 +73,11 @@ const sendInn = {
 
       if (!!form.properties.ettersendelsesfrist) {
         body.fristForEttersendelse = parseInt(form.properties.ettersendelsesfrist);
+      }
+      if (!featureToggles.enableSendInnIntegration) {
+        logger.debug('SendInn integration not enabled, returning data in body');
+        res.json(body);
+        return;
       }
       logger.debug('Posting data to SendInn');
       const sendInnResponse = await fetch(`${sendInnConfig.host}${sendInnConfig.paths.leggTilVedlegg}`, {
