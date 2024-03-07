@@ -172,6 +172,25 @@ describe('Activities', () => {
     });
   });
 
+  describe('conditionals on maalgruppe', () => {
+    it('should hide component when maalgruppe is prefilled', () => {
+      cy.mocksUseRouteVariant('get-prefill-data:success');
+      cy.visit('/fyllut/testingactivities/aktiviteter?sub=digital');
+      cy.defaultWaits();
+      cy.wait('@getActivities');
+
+      cy.findByText('Målgruppe ble ikke preutfylt').should('not.exist');
+    });
+    it('should show component when maalgruppe is not prefilled', () => {
+      cy.mocksUseRouteVariant('get-prefill-data:success-empty');
+      cy.visit('/fyllut/testingactivities/aktiviteter?sub=digital');
+      cy.defaultWaits();
+      cy.wait('@getActivities');
+
+      cy.findByText('Målgruppe ble ikke preutfylt').should('exist');
+    });
+  });
+
   describe('no activities from backend', () => {
     it('should show checkbox with default activity', () => {
       cy.mocksUseRouteVariant('get-soknad:success-activities-empty');
