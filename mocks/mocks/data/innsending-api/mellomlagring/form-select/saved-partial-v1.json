@@ -1,0 +1,41 @@
+{
+  "brukerId": "03876399856",
+  "skjemanr": "Test-select",
+  "tittel": "Tester nedtrekksmeny",
+  "tema": "BIL",
+  "spraak": "nb",
+  "hoveddokument": {
+    "vedleggsnr": "Test-select",
+    "tittel": "Tester nedtrekksmeny",
+    "label": "Tester nedtrekksmeny",
+    "pakrevd": true,
+    "mimetype": "application/pdf"
+  },
+  "hoveddokumentVariant": {
+    "vedleggsnr": "Test-select",
+    "tittel": "Tester nedtrekksmeny",
+    "label": "Tester nedtrekksmeny",
+    "pakrevd": false,
+    "mimetype": "application/json",
+    "document": {
+      "language": "nb-NO",
+      "data": {
+        "data": {
+          "velgInstrument": {
+            "label": "Piano",
+            "value": "piano"
+          }
+        }
+      }
+    }
+  },
+  "innsendingsId": "df6c8a69-9eb0-4878-b51f-38b3849ef9b6",
+  "status": "Opprettet",
+  "vedleggsListe": [],
+  "kanLasteOppAnnet": true,
+  "fristForEttersendelse": 14,
+  "endretDato": "2024-02-09T12:36:59.940133+01:00",
+  "skalSlettesDato": "2024-04-05",
+  "skjemaPath": "testselect",
+  "visningsType": "fyllUt"
+}
