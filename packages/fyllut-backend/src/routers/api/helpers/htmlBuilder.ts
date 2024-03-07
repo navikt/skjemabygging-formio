@@ -72,6 +72,7 @@ ${sectionContent(formSection.components, 1)}`;
 
 const sectionContent = (components: Summary.Component[], level: number): string => {
   return components
+    .filter((component) => !component.hiddenInSummary)
     .map((component) => {
       switch (component.type) {
         case 'fieldset':

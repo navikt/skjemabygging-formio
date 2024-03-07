@@ -78,6 +78,8 @@ function formatValue(component, value, translate) {
       const prefix = component.prefix ? `${component.prefix} ` : '';
       const suffix = component.suffix ? ` ${component.suffix}` : '';
       return prefix + Number(value).toLocaleString('no', { maximumFractionDigits: 2 }) + suffix;
+    case 'maalgruppe':
+      return value.calculated;
     default:
       return value;
   }
@@ -145,6 +147,7 @@ function handleField(component, submission, formSummaryObject, parentContainerKe
       label: translate(label),
       key: componentKey,
       type,
+      hiddenInSummary: type === 'maalgruppe',
       value: formatValue(component, submissionValue, translate),
     },
   ];

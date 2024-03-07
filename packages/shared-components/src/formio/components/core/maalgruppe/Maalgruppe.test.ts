@@ -7,7 +7,7 @@ describe('calculateMaalgruppeValue function', () => {
     maalgruppe = new Maalgruppe(undefined, {}, {});
   });
 
-  it('should return maalgruppe if it exists and is not empty', () => {
+  it('should return maalgruppe from activity if it exists', () => {
     const testData = {
       data: {
         aktivitet: {
@@ -19,10 +19,10 @@ describe('calculateMaalgruppeValue function', () => {
       },
     };
     const result = maalgruppe.calculateMaalgruppeValue.call(testData);
-    expect(result).toEqual('someValue');
+    expect(result).toEqual({ calculated: 'someValue', prefilled: 'defaultValue' });
   });
 
-  it('should return defaultValue if maalgruppe is not set', () => {
+  it('should return ANNET if maalgruppe is not set on activity', () => {
     const testData = {
       data: {
         aktivitet: {},
@@ -32,7 +32,25 @@ describe('calculateMaalgruppeValue function', () => {
       },
     };
     const result = maalgruppe.calculateMaalgruppeValue.call(testData);
-    expect(result).toEqual('defaultValue');
+    expect(result).toEqual({ calculated: 'ANNET', prefilled: 'defaultValue' });
+  });
+
+  it('should return ANNET if default activity is chosen', () => {
+    const testData = {
+      data: {
+        aktivitet: {
+          aktivitetId: 'ingenAktivitet',
+          maalgruppe: '',
+          periode: { fom: '', tom: '' },
+          text: '',
+        },
+      },
+      component: {
+        defaultValue: 'defaultValue',
+      },
+    };
+    const result = maalgruppe.calculateMaalgruppeValue.call(testData);
+    expect(result).toEqual({ calculated: 'ANNET', prefilled: 'defaultValue' });
   });
 
   it('should return ANNET if neither maalgruppe nor defaultValue is set', () => {
@@ -43,6 +61,6 @@ describe('calculateMaalgruppeValue function', () => {
       component: {},
     };
     const result = maalgruppe.calculateMaalgruppeValue.call(testData);
-    expect(result).toEqual('ANNET');
+    expect(result).toEqual({ calculated: 'ANNET', prefilled: undefined });
   });
 });

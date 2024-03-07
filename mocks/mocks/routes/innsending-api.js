@@ -4,10 +4,12 @@ const mellomlagringValid2 = require('../data/innsending-api/mellomlagring/getTes
 const mellomlagringValidExtraValues = require('../data/innsending-api/mellomlagring/getTestMellomlagring-valid-extra-values.json');
 const prefillDataNames = require('../data/innsending-api/prefill-data/prefill-data-names.json');
 const activities = require('../data/innsending-api/activities/activities.json');
+const activitiesMultiple = require('../data/innsending-api/activities/activities-multiple.json');
 const paabegyntMellomlagringOgInnsendt = require('../data/innsending-api/active-tasks/mellomlagringOgEttersending.json');
 const paabegyntMellomlagring = require('../data/innsending-api/active-tasks/mellomlagring.json');
 const paabegyntInnsendt = require('../data/innsending-api/active-tasks/ettersending.json');
 const mellomlagringActivities = require('../data/innsending-api/activities/mellomlagring-activities.json');
+const mellomlagringActivitiesPrefilledMaalgruppe = require('../data/innsending-api/activities/mellomlagring-activities-prefilled-maalgruppe.json');
 const objectToByteArray = (obj) => Array.from(new TextEncoder().encode(JSON.stringify(obj)));
 
 const base64Encode = (data) => {
@@ -162,6 +164,14 @@ module.exports = [
         },
       },
       {
+        id: 'success-activities-prefilled-maalgruppe',
+        type: 'json',
+        options: {
+          status: 200,
+          body: convertToInnsendingApiResponse(mellomlagringActivitiesPrefilledMaalgruppe),
+        },
+      },
+      {
         id: 'not-found',
         type: 'json',
         options: {
@@ -269,6 +279,14 @@ module.exports = [
         options: {
           status: 200,
           body: activities,
+        },
+      },
+      {
+        id: 'success-multiple',
+        type: 'json',
+        options: {
+          status: 200,
+          body: activitiesMultiple,
         },
       },
       {

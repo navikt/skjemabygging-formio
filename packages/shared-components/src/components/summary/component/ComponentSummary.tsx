@@ -17,33 +17,35 @@ interface Props {
 const ComponentSummary = ({ components, formUrl = '', panelValidationList = [] }: Props) => {
   return (
     <>
-      {components.map((comp) => {
-        const { type, key } = comp;
-        switch (type) {
-          case 'panel':
-            const panelValidation = panelValidationList!.find((panelValidation) => panelValidation.key === key);
-            const hasValidationErrors = !!panelValidation?.hasValidationErrors;
-            return (
-              <PanelSummary key={key} component={comp} formUrl={formUrl} hasValidationErrors={hasValidationErrors} />
-            );
-          case 'fieldset':
-          case 'navSkjemagruppe':
-            return <FieldsetSummary key={key} component={comp} formUrl={formUrl} />;
-          case 'datagrid':
-            return <DataGridSummary key={key} component={comp} formUrl={formUrl} />;
-          case 'selectboxes':
-            return <SelectBoxesSummary key={key} component={comp} />;
-          case 'image':
-            return <ImageSummary key={key} component={comp} />;
-          case 'htmlelement':
-          case 'alertstripe':
-            return <SummaryField key={key} component={comp as Summary.Field} html={true} />;
-          case 'activities':
-            return <ActivitySummary key={key} component={comp as Summary.Activity} />;
-          default:
-            return <SummaryField key={key} component={comp as Summary.Field} />;
-        }
-      })}
+      {components
+        .filter((comp) => !comp.hiddenInSummary)
+        .map((comp) => {
+          const { type, key } = comp;
+          switch (type) {
+            case 'panel':
+              const panelValidation = panelValidationList!.find((panelValidation) => panelValidation.key === key);
+              const hasValidationErrors = !!panelValidation?.hasValidationErrors;
+              return (
+                <PanelSummary key={key} component={comp} formUrl={formUrl} hasValidationErrors={hasValidationErrors} />
+              );
+            case 'fieldset':
+            case 'navSkjemagruppe':
+              return <FieldsetSummary key={key} component={comp} formUrl={formUrl} />;
+            case 'datagrid':
+              return <DataGridSummary key={key} component={comp} formUrl={formUrl} />;
+            case 'selectboxes':
+              return <SelectBoxesSummary key={key} component={comp} />;
+            case 'image':
+              return <ImageSummary key={key} component={comp} />;
+            case 'htmlelement':
+            case 'alertstripe':
+              return <SummaryField key={key} component={comp as Summary.Field} html={true} />;
+            case 'activities':
+              return <ActivitySummary key={key} component={comp as Summary.Activity} />;
+            default:
+              return <SummaryField key={key} component={comp as Summary.Field} />;
+          }
+        })}
     </>
   );
 };

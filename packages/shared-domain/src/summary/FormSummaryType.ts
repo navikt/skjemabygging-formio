@@ -69,5 +69,7 @@ export namespace Summary {
     components: DataGridRow[];
   }
 
-  export type Component = Field | Fieldset | Panel | DataGrid | DataGridRow | Selectboxes | Image | Activity;
+  export type Component = (Field | Fieldset | Panel | DataGrid | DataGridRow | Selectboxes | Image | Activity) & {
+    hiddenInSummary?: boolean;
+  };
 }
