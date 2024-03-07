@@ -1,16 +1,17 @@
 import { Alert, BodyShort, Heading } from '@navikt/ds-react';
 import { AktivitetVedtaksinformasjon, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { TFunction } from 'i18next';
 import { toLocaleDate } from '../../formio/components/core/driving-list/DrivingList.utils';
+import { useDrivingList } from '../../formio/components/core/driving-list/DrivingListContext';
 
 type ActivityAlertProps = {
   activityName: string;
   vedtak: AktivitetVedtaksinformasjon;
-  t: TFunction;
   className?: string;
 };
 
-const ActivityAlert = ({ activityName, vedtak, t, className }: ActivityAlertProps) => {
+const ActivityAlert = ({ activityName, vedtak, className }: ActivityAlertProps) => {
+  const { t } = useDrivingList();
+
   const vedtakPeriodFrom = new Date(vedtak.periode.fom);
   const vedtakPeriodTo = new Date(vedtak.periode.tom);
 

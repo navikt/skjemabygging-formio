@@ -1,29 +1,21 @@
 import { Accordion, BodyShort, Heading } from '@navikt/ds-react';
 import {
   AktivitetVedtaksinformasjon,
-  DrivingListSubmission,
-  DrivingListValues,
   SendInnAktivitet,
   SubmissionActivity,
   TEXTS,
   VedtakBetalingsplan,
 } from '@navikt/skjemadigitalisering-shared-domain';
-import { TFunction } from 'i18next';
-import { AppConfigContextType } from '../../context/config/configContext';
 import { mapToSubmissionActivity } from '../../formio/components/core/activities/Activities.utils';
 import { drivingListMetadata, toLocaleDate } from '../../formio/components/core/driving-list/DrivingList.utils';
+import { useDrivingList } from '../../formio/components/core/driving-list/DrivingListContext';
 import makeStyles from '../../util/styles/jss/jss';
 import NavActivities from '../activities/NavActivities';
 import ActivityAlert from './ActivityAlert';
 import DrivingPeriod from './DrivingPeriod';
 
 type Props = {
-  values: DrivingListSubmission;
-  t: TFunction;
-  updateValues: (values: DrivingListValues) => void;
   activities: SendInnAktivitet[];
-  appConfig: AppConfigContextType;
-  locale?: string;
 };
 
 const useDrivinglistStyles = makeStyles({
@@ -32,7 +24,9 @@ const useDrivinglistStyles = makeStyles({
   },
 });
 
-const DrivingListFromActivities = ({ values, t, updateValues, activities, appConfig, locale }: Props) => {
+const DrivingListFromActivities = ({ activities }: Props) => {
+  const { values, updateValues, t, appConfig } = useDrivingList();
+
   const styles = useDrivinglistStyles();
 
   const onActivityChange = (activity?: SubmissionActivity) => {
@@ -49,16 +43,12 @@ const DrivingListFromActivities = ({ values, t, updateValues, activities, appCon
 
     return (
       <DrivingPeriod
-        t={t}
         key={betalingsplan.betalingsplanId}
         index={index}
         hasParking={vedtak.trengerParkering}
-        updateValues={updateValues}
         periodFrom={periodFrom}
         periodTo={periodTo}
-        values={values}
         dailyRate={vedtak.dagsats}
-        locale={locale}
         betalingsplan={betalingsplan}
       />
     );
@@ -95,7 +85,6 @@ const DrivingListFromActivities = ({ values, t, updateValues, activities, appCon
             <ActivityAlert
               activityName={selectedActivity.aktivitetsnavn}
               vedtak={selectedVedtak}
-              t={t}
               className={styles.marginBottom}
             />
             <Accordion tabIndex={-1} id={drivingListMetadata('dates').id} className={styles.marginBottom} size="small">

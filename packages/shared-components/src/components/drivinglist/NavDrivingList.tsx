@@ -1,26 +1,13 @@
 import { Alert, Skeleton } from '@navikt/ds-react';
-import {
-  DrivingListSubmission,
-  DrivingListValues,
-  SendInnAktivitet,
-  TEXTS,
-} from '@navikt/skjemadigitalisering-shared-domain';
-import { TFunction } from 'i18next';
+import { SendInnAktivitet, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useState } from 'react';
 import { getActivities } from '../../api/sendinn/sendInnActivities';
-import { AppConfigContextType } from '../../context/config/configContext';
+import { useDrivingList } from '../../formio/components/core/driving-list/DrivingListContext';
 import DrivingListFromActivities from './DrivingListFromActivities';
 import DrivingListFromDates from './DrivingListFromDates';
 
-interface NavDrivingListProps {
-  onValueChange: (value: object) => void;
-  appConfig: AppConfigContextType;
-  values: DrivingListSubmission;
-  t: TFunction;
-  locale: string;
-}
-
-const NavDrivingList = ({ appConfig, onValueChange, values, t, locale }: NavDrivingListProps) => {
+const NavDrivingList = () => {
+  const { appConfig, t, values } = useDrivingList();
   const [activities, setActivities] = useState<SendInnAktivitet[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [showError, setShowError] = useState<boolean>(false);
@@ -52,29 +39,6 @@ const NavDrivingList = ({ appConfig, onValueChange, values, t, locale }: NavDriv
     fetchData();
   }, []);
 
-  const updateValues = (multipleValues: DrivingListValues) => {
-    onValueChange({ ...values, ...multipleValues });
-  };
-
-  const renderDrivingListFromActivities = () => {
-    return (
-      <DrivingListFromActivities
-        values={values}
-        t={t}
-        activities={activities}
-        updateValues={updateValues}
-        appConfig={appConfig}
-        locale={locale}
-      />
-    );
-  };
-
-  const renderDrivingListFromDates = () => {
-    return (
-      <DrivingListFromDates values={values} t={t} locale={locale} updateValues={updateValues}></DrivingListFromDates>
-    );
-  };
-
   const renderNoActivitiesAlert = () => {
     return <Alert variant="info">{t(TEXTS.statiske.drivingList.noVedtak)}</Alert>;
   };
@@ -93,14 +57,14 @@ const NavDrivingList = ({ appConfig, onValueChange, values, t, locale }: NavDriv
     }
 
     if (submissionMethod === 'paper') {
-      return renderDrivingListFromDates();
+      return <DrivingListFromDates />;
     }
 
     if (submissionMethod === 'digital') {
-      return renderDrivingListFromActivities();
+      return <DrivingListFromActivities activities={activities} />;
     }
 
-    return renderDrivingListFromDates();
+    return <DrivingListFromDates />;
   };
 
   return renderDrivingList();

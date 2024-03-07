@@ -1,4 +1,4 @@
-import { DrivingListSubmission, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { DrivingListSubmission, DrivingListValues, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import NavDrivingList from '../../../../components/drivinglist/NavDrivingList';
 import BaseComponent from '../../base/BaseComponent';
 import drivingListBuilder from './DrivingList.builder';
@@ -10,6 +10,7 @@ import {
   isValidParking,
   requiredError,
 } from './DrivingList.utils';
+import { DrivingListProvider } from './DrivingListContext';
 
 class DrivingList extends BaseComponent {
   static schema() {
@@ -18,7 +19,6 @@ class DrivingList extends BaseComponent {
       type: 'drivinglist',
       key: 'drivinglist',
       input: true,
-      hideLabel: true,
     });
   }
 
@@ -98,15 +98,21 @@ class DrivingList extends BaseComponent {
     return true;
   }
 
+  updateValues(multipleValues: DrivingListValues) {
+    this.onValueChange({ ...this.getValue(), ...multipleValues });
+  }
+
   renderReact(element) {
     element.render(
-      <NavDrivingList
-        onValueChange={(value) => this.onValueChange(value)}
+      <DrivingListProvider
+        updateValues={this.updateValues.bind(this)}
         values={this.getValue()}
         appConfig={this.getAppConfig()}
         t={this.t.bind(this)}
         locale={this.getLocale()}
-      />,
+      >
+        <NavDrivingList />
+      </DrivingListProvider>,
     );
   }
 }

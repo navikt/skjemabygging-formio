@@ -1,6 +1,5 @@
 import { Accordion, Button, Radio, RadioGroup } from '@navikt/ds-react';
-import { DrivingListSubmission, DrivingListValues, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { TFunction } from 'i18next';
+import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useCallback, useEffect, useMemo } from 'react';
 import {
   allFieldsForPeriodsAreSet,
@@ -10,16 +9,10 @@ import {
   showRemoveButton,
   toDate,
 } from '../../formio/components/core/driving-list/DrivingList.utils';
+import { useDrivingList } from '../../formio/components/core/driving-list/DrivingListContext';
 import makeStyles from '../../util/styles/jss/jss';
 import DatePicker from '../datepicker/DatePicker';
 import DrivingPeriod from './DrivingPeriod';
-
-type Props = {
-  values?: DrivingListSubmission;
-  t: TFunction;
-  updateValues: (values: DrivingListValues) => void;
-  locale: string;
-};
 
 const useDrivinglistStyles = makeStyles({
   marginBottom: {
@@ -32,7 +25,9 @@ const useDrivinglistStyles = makeStyles({
   },
 });
 
-const DrivingListFromDates = ({ values, updateValues, t, locale }: Props) => {
+const DrivingListFromDates = () => {
+  const { values, updateValues, t, locale } = useDrivingList();
+
   const styles = useDrivinglistStyles();
 
   const allPeriodFieldsSet = useMemo(() => allFieldsForPeriodsAreSet(values), [values]);
@@ -69,10 +64,10 @@ const DrivingListFromDates = ({ values, updateValues, t, locale }: Props) => {
 
     if (period === 'weekly') {
       const periods = generatePeriods('weekly', values?.selectedDate, numberOfPeriods) ?? [];
-      updateValues({ selectedDate: values?.selectedDate, periods, selectedPeriodType: 'weekly', dates: [] });
+      updateValues({ selectedDate: '', periods, selectedPeriodType: 'weekly', dates: [] });
     } else {
       const periods = generatePeriods('monthly', values?.selectedDate, numberOfPeriods) ?? [];
-      updateValues({ selectedDate: values?.selectedDate, periods, selectedPeriodType: 'monthly', dates: [] });
+      updateValues({ selectedDate: '', periods, selectedPeriodType: 'monthly', dates: [] });
     }
   };
 
@@ -86,15 +81,11 @@ const DrivingListFromDates = ({ values, updateValues, t, locale }: Props) => {
       ?.sort((a, b) => new Date(a.periodFrom).getTime() - new Date(b.periodFrom).getTime())
       .map((period, index) => (
         <DrivingPeriod
-          t={t}
           index={index}
           key={period.id}
           hasParking={values?.parking ?? false}
-          updateValues={updateValues}
           periodFrom={period.periodFrom}
           periodTo={period.periodTo}
-          values={values}
-          locale={locale}
         />
       ));
   };

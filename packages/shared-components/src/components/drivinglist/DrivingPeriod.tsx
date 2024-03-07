@@ -1,30 +1,20 @@
 import { Accordion, Alert, BodyShort, Checkbox, CheckboxGroup, Heading, TextField } from '@navikt/ds-react';
-import {
-  DrivingListSubmission,
-  DrivingListValues,
-  TEXTS,
-  VedtakBetalingsplan,
-  dateUtils,
-} from '@navikt/skjemadigitalisering-shared-domain';
-import { TFunction } from 'i18next';
+import { TEXTS, VedtakBetalingsplan, dateUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { useMemo } from 'react';
 import {
   drivingListMetadata,
   toLocaleDate,
   toWeekdayAndDate,
 } from '../../formio/components/core/driving-list/DrivingList.utils';
+import { useDrivingList } from '../../formio/components/core/driving-list/DrivingListContext';
 import makeStyles from '../../util/styles/jss/jss';
 
 interface DrivingPeriodProps {
   periodFrom: Date;
   periodTo: Date;
-  updateValues: (values: DrivingListValues) => void;
   hasParking: boolean;
-  values?: DrivingListSubmission;
-  t: TFunction;
   index: number;
   dailyRate?: number;
-  locale?: string;
   betalingsplan?: VedtakBetalingsplan;
 }
 
@@ -34,17 +24,9 @@ const useDrivingPeriodStyles = makeStyles({
   },
 });
 
-const DrivingPeriod = ({
-  periodFrom,
-  periodTo,
-  updateValues,
-  values,
-  hasParking,
-  t,
-  dailyRate,
-  locale,
-  betalingsplan,
-}: DrivingPeriodProps) => {
+const DrivingPeriod = ({ periodFrom, periodTo, hasParking, dailyRate, betalingsplan }: DrivingPeriodProps) => {
+  const { values, updateValues, t, locale } = useDrivingList();
+
   const styles = useDrivingPeriodStyles();
 
   const periodDates = useMemo(() => dateUtils.getDatesInRange(periodFrom, periodTo), [periodFrom, periodTo]);
