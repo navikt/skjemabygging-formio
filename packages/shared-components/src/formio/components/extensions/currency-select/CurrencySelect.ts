@@ -14,7 +14,15 @@ class CurrencySelect extends NavSelect {
       },
       dataSrc: 'url',
       disableLimit: true,
+      validate: {
+        required: true,
+        onlyAvailableItems: false,
+      },
     };
+  }
+
+  init() {
+    super.init({ skipOnlyAvailableItems: true });
   }
 
   static get builderInfo() {
