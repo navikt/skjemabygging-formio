@@ -126,7 +126,32 @@ export const statiske = {
     defaultText: 'Jeg bekrefter at opplysningene er riktige.',
   },
   activities: {
+    label: 'Velg hvilken aktivitet du vil søke om stønad for',
     defaultActivity: 'Jeg får ikke opp noen aktiviteter her som stemmer med det jeg vil søke om',
-    error: 'Kunne ikke hente aktiviteter. Du kan fortsatt gå videre uten å velge aktivitet.',
+    error: 'Det oppstod en feil ved henting av aktiviteter.',
+    errorContinue: 'Det oppstod en feil ved henting av aktiviteter. Du kan fortsatt gå videre uten å velge aktivitet',
+  },
+  drivingList: {
+    activity: 'Aktivitet',
+    period: 'Periode for aktiviteten',
+    dailyRate: 'Din dagsats uten parkeringsutgift',
+    expensesTooHighHeader: 'Utgiftene er høyere enn beløpet du kan få refundert',
+    expensesTooHigh:
+      'I vedtaket ditt om stønad til daglig reise beregnet vi hvor mye du vil få utbetalt i hver periode. Du har nå lagt inn høyere utgifter til bruk av egen bil enn det vi har beregnet. Du vil sannsynligvis ikke få refundert alle utgiftene du har lagt inn for denne perioden.',
+    error: 'Kunne ikke hente aktiviteter. Du kan sende inn søknad via papir',
+    noVedtak:
+      'Det er ikke registrert vedtak om tilleggsstønad på deg. Du må søke om tilleggsstønad og motta vedtak før du kan sende inn liste over utgifter til daglig reise med bruk av egen bil.',
+    previousDrivingList: 'Perioder du tidligere har fått refundert reiseutgifter for',
+    addPeriod: 'Legg til periode',
+    removePeriod: 'Fjern periode',
+    label: 'Legg til kjøreliste for en eller flere perioder',
+    parking: 'Skal du registrere parkering?',
+    periodType: 'Velg periode for innsending',
+    datePicker: 'Velg første dato i perioden',
+    datePickerDescription:
+      'Den tidligste tilgjengelige datoen er en periode før dagens dato. Det er ikke mulig å legge til kjørelister for fremtidige datoer',
+    dateSelect: 'Kryss av for de dagene du har brukt egen bil',
+    dateSelectParking: 'og har hatt parkeringsutgifter',
+    parkingExpenses: 'Parkeringsutgifter (kr)',
   },
 };
