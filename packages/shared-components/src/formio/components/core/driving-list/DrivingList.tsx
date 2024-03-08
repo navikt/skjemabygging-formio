@@ -32,7 +32,17 @@ class DrivingList extends BaseComponent {
 
   onValueChange(value) {
     super.updateValue(value, { modified: true });
-    this.rerender();
+
+    // If next button has been clicked (submitted), check the whole form for errors
+    if (this.root.submitted) {
+      this.checkValidity();
+    } else {
+      this.rerender();
+    }
+  }
+
+  override get errors() {
+    return this.componentErrors;
   }
 
   override addError(metadataId: DrivingListMetadataId, message: string): void {
@@ -43,6 +53,10 @@ class DrivingList extends BaseComponent {
     if (errorType === 'required') {
       super.addError(drivingListMetadata(metadataId).id, requiredError(metadataId, this.t.bind(this)));
     }
+  }
+
+  getComponentError(metadataId: DrivingListMetadataId) {
+    return this.componentErrors.find((error) => error.metadataId === metadataId)?.message;
   }
 
   override checkValidity(): boolean {
@@ -89,7 +103,7 @@ class DrivingList extends BaseComponent {
       this.addError('dates', this.t(TEXTS.validering.parkingExpensesAboveHundred));
     }
 
-    this.renderErrors();
+    this.rerender();
 
     if (this.componentErrors.length > 0) {
       return false;
@@ -110,6 +124,7 @@ class DrivingList extends BaseComponent {
         appConfig={this.getAppConfig()}
         t={this.t.bind(this)}
         locale={this.getLocale()}
+        getComponentError={this.getComponentError.bind(this)}
       >
         <NavDrivingList />
       </DrivingListProvider>,

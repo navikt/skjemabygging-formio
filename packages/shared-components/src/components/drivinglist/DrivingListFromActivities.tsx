@@ -25,7 +25,7 @@ const useDrivinglistStyles = makeStyles({
 });
 
 const DrivingListFromActivities = ({ activities }: Props) => {
-  const { values, updateValues, t, appConfig } = useDrivingList();
+  const { values, updateValues, t, appConfig, getComponentError } = useDrivingList();
 
   const styles = useDrivinglistStyles();
 
@@ -79,6 +79,7 @@ const DrivingListFromActivities = ({ activities }: Props) => {
           className={styles.marginBottom}
           dataType="vedtak"
           activities={activities}
+          error={getComponentError('activityRadio')}
         />
         {selectedActivity && selectedVedtak && (
           <>
