@@ -117,9 +117,9 @@ describe('Focus handling', () => {
         .click();
       cy.findByRole('group', { name: 'Hvilken type bolig bor du i?' })
         .should('exist')
+        .should('have.focus')
         .shouldBeVisible()
         .within(() => {
-          cy.findByLabelText('Tomannsbolig').should('have.focus');
           cy.findByLabelText('Rekkehus').click();
         });
 

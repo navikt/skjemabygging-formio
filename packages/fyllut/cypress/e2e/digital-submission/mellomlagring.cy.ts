@@ -252,11 +252,15 @@ describe('Mellomlagring', () => {
               cy.get('li').should('have.length', 2);
             });
 
-          cy.findByRole('link', { name: 'Du må fylle ut: Farge' }).should('exist').click();
-          cy.findByRole('radio', { name: 'Grønn' }).should('have.focus');
-          cy.findByRole('radio', { name: 'Rød' }).should('exist').click();
+          cy.findByRoleWhenAttached('link', { name: 'Du må fylle ut: Farge' }).should('exist').click();
+          cy.findByRole('group', { name: 'Farge' })
+            .should('exist')
+            .should('have.focus')
+            .within(() => {
+              cy.findByLabelText('Rød').click();
+            });
 
-          cy.findByRole('link', { name: 'Du må fylle ut: Tekst på kortet' }).should('exist').click();
+          cy.findByRoleWhenAttached('link', { name: 'Du må fylle ut: Tekst på kortet' }).should('exist').click();
           cy.findByLabelText('Tekst på kortet').should('have.focus').type('Takk for hjelpen!');
 
           cy.findByRole('link', { name: 'Oppsummering' }).click();
