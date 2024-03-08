@@ -60,7 +60,7 @@ const jsonFromElement = (
     type: 'Element',
     tagName: element.tagName,
     attributes: Array.from(element.attributes, ({ name, value }) => [name, value]),
-    isWrapper,
+    isWrapper: !!isWrapper,
     children: convertChildrenToText
       ? [jsonFromTextContent(Array.from(element.childNodes, htmlNode2MarkDown).join(''), element)]
       : Array.from(element.childNodes, (childNode) => fromNode(childNode, skipConversionWithinTags)),
@@ -71,7 +71,6 @@ const json2HtmlString = (
   jsonElement: HtmlAsJsonElement | HtmlAsJsonTextElement,
   originalStructure: HtmlAsJsonTextElement,
 ) => {
-  // console.log('json2HtmlString', jsonElement);
   switch (jsonElement?.type) {
     case 'Element':
       const htmlElement = toNode(jsonElement) as HTMLElement;
@@ -136,27 +135,26 @@ const markDown2Json = (
   const matches = markDown.match(markDownLinkRegex);
 
   if (matches) {
-    // console.log('markDown2Json original', original);
     let htmlString = markDown;
     matches.forEach((match, index) => {
       const captures = captureRegex.exec(match);
-      // console.log('captures', { captureRegex, match, captures });
       if (captures) {
         const text = captures[1];
         const url = captures[2];
-        // console.log('replace', { htmlString, match });
-        //TODO base a-tag-conversion on original
+        const originalATag = original.htmlContentAsJson?.filter(
+          (element) => element.type === 'Element' && element.tagName === 'A',
+        )?.[index];
+        if (originalATag) {
+          const originalCopy = JSON.parse(JSON.stringify(originalATag));
+          originalCopy.attributes = [...originalCopy.attributes, ['href', url]];
+          // FIXME: only supports <a> with one child
+          originalCopy.children = [{ ...originalCopy.children[0], textContent: text }];
+          htmlString = htmlString.replace(match, json2HtmlString(originalCopy));
+        }
         htmlString = htmlString.replace(match, `<a href=${url}>${text}</a>`);
-
-        // console.log('text, url, html', { text, url, htmlString });
       }
     });
-    // console.log('Final htmlString');
-    const asJson = htmlString2Json(htmlString);
-    // console.log('markDown2Json asJson', asJson);
-
     return htmlString2Json(htmlString);
-    // return json2HtmlString(htmlString2Json(htmlString));
   }
   return { ...original, textContent: markDown };
 };
@@ -185,24 +183,6 @@ const htmlNode2MarkDown = (node: Element | ChildNode): string => {
   }
   return '';
 };
-
-// const json2MarkDown = (element: HtmlAsJsonElement | HtmlAsJsonTextElement): string => {
-//   if (element.type === 'TextElement') {
-//     return element.textContent ?? '';
-//   }
-//   switch (element.tagName) {
-//     case 'P':
-//     case 'LI':
-//     case 'H3':
-//       // console.log(element.tagName, element.children);
-//       return element.children.map(json2MarkDown).join('');
-//     case 'STRONG':
-//     case 'B':
-//       return `**${element.children.map(json2MarkDown).join('')}**`;
-//     default:
-//       return json2HtmlString(element);
-//   }
-// };
 
 export { htmlString2Json, json2HtmlString, markDown2Json };
 export type { HtmlAsJsonElement, HtmlAsJsonTextElement };

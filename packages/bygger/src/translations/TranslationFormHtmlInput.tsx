@@ -1,5 +1,4 @@
-import { HtmlAsJsonElement, HtmlAsJsonTextElement } from '@navikt/skjemadigitalisering-shared-components';
-import { markDown2Json } from '@navikt/skjemadigitalisering-shared-components/src/util/html/converters';
+import { HtmlAsJsonElement, HtmlAsJsonTextElement, htmlUtils } from '@navikt/skjemadigitalisering-shared-components';
 import TranslationTextInput from './TranslationTextInput';
 import { getInputType } from './utils';
 
@@ -62,7 +61,8 @@ const TranslationFormHtmlInput = ({ text, htmlElementAsJson, currentTranslation,
           //   ...htmlElementAsJson,
           //   textContent: htmlUtils.markDown2HtmlString(textContentWithWhiteSpaces),
           // });
-          updateTranslation(markDown2Json(textContentWithWhiteSpaces, htmlElementAsJson));
+          console.log('>>Update this text (+original)', textContentWithWhiteSpaces, htmlElementAsJson);
+          updateTranslation(htmlUtils.markDown2Json(textContentWithWhiteSpaces, htmlElementAsJson));
         }}
         hasGlobalTranslation={false}
         tempGlobalTranslation={undefined}
