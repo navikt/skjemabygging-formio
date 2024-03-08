@@ -1,12 +1,12 @@
 import BaseComponent from '../../base/BaseComponent';
 import maalgruppeBuilder from './Maalgruppe.builder';
 import maalgruppeForm from './Maalgruppe.form';
+import { findSelectedMaalgruppe } from './Maalgruppe.utils';
 
 export interface MaalgruppeValueType {
   calculated?: string;
   prefilled?: string;
 }
-
 class Maalgruppe extends BaseComponent {
   static schema() {
     return BaseComponent.schema({
@@ -31,7 +31,7 @@ class Maalgruppe extends BaseComponent {
     const activityMaalgruppe = this.data?.aktivitet?.maalgruppe;
     const prefilledMaalgruppe = this.data?.maalgruppe?.prefilled || this.component?.defaultValue;
     return {
-      calculated: activityMaalgruppe || 'ANNET',
+      calculated: activityMaalgruppe || findSelectedMaalgruppe(this.root?.data || {}) || 'ANNET',
       prefilled: prefilledMaalgruppe,
     };
   }
