@@ -3,6 +3,7 @@ import { PanelValidation } from '../../../util/form/panel-validation/panelValida
 import ActivitySummary from '../activity/ActivitySummary';
 import AttachmentSummary from '../attachment/AttachmentSummary';
 import DataGridSummary from '../datagrid/DataGridSummary';
+import DrivingListSummary from '../drivingList/DrivingListSummary';
 import SummaryField from '../field/SummaryField';
 import FieldsetSummary from '../fieldset/FieldsetSummary';
 import ImageSummary from '../image/ImageSummary';
@@ -43,6 +44,8 @@ const ComponentSummary = ({ components, formUrl = '', panelValidationList = [] }
             return <AttachmentSummary key={key} component={comp as Summary.Attachment} />;
           case 'activities':
             return <ActivitySummary key={key} component={comp as Summary.Activity} />;
+          case 'drivinglist':
+            return <DrivingListSummary key={key} component={comp as Summary.DrivingList} />;
           default:
             return <SummaryField key={key} component={comp as Summary.Field} />;
         }

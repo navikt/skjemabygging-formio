@@ -24,7 +24,7 @@ describe('NavDatePicker', () => {
 
   beforeEach(() => {
     datePicker = new DatePicker(undefined, {}, {});
-    vi.spyOn(DatePicker.prototype, 't').mockImplementation(mockedTranslate);
+    vi.spyOn(DatePicker.prototype, 't').mockImplementation(mockedTranslate as any);
   });
 
   describe('Valideringsfunksjonene', () => {

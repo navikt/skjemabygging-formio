@@ -165,6 +165,7 @@ export interface Component {
   textDisplay?: 'form' | 'formPdf' | 'pdf';
   autoExpand?: boolean;
   customClass?: string;
+  validateOn?: string;
 }
 
 export interface ComponentProperties {

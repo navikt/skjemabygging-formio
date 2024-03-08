@@ -1,4 +1,6 @@
 import { AttachmentValue } from '../attachment';
+import { SubmissionActivity } from '../submission/activity';
+import { DrivingListSubmission } from '../submission/drivingList';
 
 export namespace Summary {
   export type SubmissionValue = string | number;
@@ -37,12 +39,12 @@ export namespace Summary {
 
   export interface Activity extends Omit<Field, 'type' | 'value'> {
     type: 'activities';
-    value: {
-      aktivitetId: string;
-      maalgruppe: string;
-      periode: { fom: string; tom: string };
-      text: string;
-    };
+    value: SubmissionActivity;
+  }
+
+  export interface DrivingList extends Omit<Field, 'type' | 'value'> {
+    type: 'drivinglist';
+    value: DrivingListSubmission;
   }
 
   export interface Image extends Omit<Field, 'type'> {
@@ -85,6 +87,7 @@ export namespace Summary {
     | DataGridRow
     | Selectboxes
     | Image
+    | Activity
     | Attachment
-    | Activity;
+    | DrivingList;
 }

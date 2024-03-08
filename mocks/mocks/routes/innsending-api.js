@@ -7,7 +7,14 @@ const activities = require('../data/innsending-api/activities/activities.json');
 const paabegyntMellomlagringOgInnsendt = require('../data/innsending-api/active-tasks/mellomlagringOgEttersending.json');
 const paabegyntMellomlagring = require('../data/innsending-api/active-tasks/mellomlagring.json');
 const paabegyntInnsendt = require('../data/innsending-api/active-tasks/ettersending.json');
+const formSelectSoknadPartialV1 = require('../data/innsending-api/mellomlagring/form-select/saved-partial-v1.json');
+const formSelectSoknadCompleteV1 = require('../data/innsending-api/mellomlagring/form-select/saved-complete-v1.json');
+const formSelectSoknadInvalidCountryV1 = require('../data/innsending-api/mellomlagring/form-select/saved-invalid-country-v1.json');
+const formSelectSoknadInvalidInstrumentV1 = require('../data/innsending-api/mellomlagring/form-select/saved-invalid-instrument-v2.json');
 const mellomlagringActivities = require('../data/innsending-api/activities/mellomlagring-activities.json');
+const nav083591soknadComplete = require('../data/innsending-api/mellomlagring/nav083591/complete.json');
+const mellomlagringDrivingList = require('../data/innsending-api/driving-list/mellomlagring-driving-list.json');
+
 const objectToByteArray = (obj) => Array.from(new TextEncoder().encode(JSON.stringify(obj)));
 
 const base64Encode = (data) => {
@@ -154,11 +161,59 @@ module.exports = [
         },
       },
       {
+        id: 'success-driving-list',
+        type: 'json',
+        options: {
+          status: 200,
+          body: convertToInnsendingApiResponse(mellomlagringDrivingList),
+        },
+      },
+      {
         id: 'success-activities-empty',
         type: 'json',
         options: {
           status: 200,
           body: convertToInnsendingApiResponse(mellomlagringActivities),
+        },
+      },
+      {
+        id: 'form-select-partial-v1',
+        type: 'json',
+        options: {
+          status: 200,
+          body: convertToInnsendingApiResponse(formSelectSoknadPartialV1),
+        },
+      },
+      {
+        id: 'form-select-complete-v1',
+        type: 'json',
+        options: {
+          status: 200,
+          body: convertToInnsendingApiResponse(formSelectSoknadCompleteV1),
+        },
+      },
+      {
+        id: 'form-select-invalid-country-v1',
+        type: 'json',
+        options: {
+          status: 200,
+          body: convertToInnsendingApiResponse(formSelectSoknadInvalidCountryV1),
+        },
+      },
+      {
+        id: 'form-select-invalid-instrument-v1',
+        type: 'json',
+        options: {
+          status: 200,
+          body: convertToInnsendingApiResponse(formSelectSoknadInvalidInstrumentV1),
+        },
+      },
+      {
+        id: 'nav083501-complete-v1',
+        type: 'json',
+        options: {
+          status: 200,
+          body: convertToInnsendingApiResponse(nav083591soknadComplete),
         },
       },
       {

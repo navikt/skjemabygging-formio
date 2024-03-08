@@ -1,4 +1,5 @@
 import { AttachmentSettingValues, AttachmentValue } from './attachment';
+import { ComponentError } from './component';
 import type { ConfigType } from './config';
 import { Enhet, Enhetstype, supportedEnhetstyper } from './enhet';
 import {
@@ -46,7 +47,9 @@ import { Operator } from './migration/operator';
 import type { Mottaksadresse, MottaksadresseData } from './mottaksadresse';
 import type { ReportDefinition } from './reports';
 import type { GlobalTranslationsResourceContent, MottaksadresserResourceContent, ResourceContent } from './resource';
-import { SendInnAktivitet } from './sendinn/activity';
+import { AktivitetVedtaksinformasjon, SendInnAktivitet, VedtakBetalingsplan } from './sendinn/activity';
+import { SubmissionActivity } from './submission/activity';
+import { DrivingListPeriod, DrivingListSubmission, DrivingListValues } from './submission/drivingList';
 import type { Summary } from './summary/FormSummaryType';
 import MockedComponentObjectForTest from './summary/MockedComponentObjectForTest';
 import formSummaryUtil from './summary/formSummaryUtil';
@@ -87,13 +90,18 @@ export {
   validatorUtils,
 };
 export type {
+  AktivitetVedtaksinformasjon,
   AttachmentSettingValues,
   AttachmentValue,
   Component,
+  ComponentError,
   ComponentValue,
   ConfigType,
   DependencyType,
   DisplayType,
+  DrivingListPeriod,
+  DrivingListSubmission,
+  DrivingListValues,
   Enhet,
   Enhetstype,
   FeatureTogglesMap,
@@ -132,6 +140,7 @@ export type {
   ScopedTranslationMap,
   SendInnAktivitet,
   Submission,
+  SubmissionActivity,
   SubmissionData,
   SubmissionMethod,
   Summary,
@@ -140,4 +149,5 @@ export type {
   TranslationTag,
   UkjentBruker,
   UsageContext,
+  VedtakBetalingsplan,
 };

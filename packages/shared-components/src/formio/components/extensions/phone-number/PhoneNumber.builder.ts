@@ -9,6 +9,7 @@ const phoneNumberBuilder = (keyPostfix = '') => {
       spellcheck: false,
       autocomplete: 'tel',
       validateOn: 'blur',
+      inputMask: false,
       validate: {
         required: true,
       },

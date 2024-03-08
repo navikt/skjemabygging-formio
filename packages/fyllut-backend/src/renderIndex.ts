@@ -73,6 +73,17 @@ const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
                 },
               }),
             );
+          } else if (innsending === 'KUN_PAPIR') {
+            const targetUrl = `${config.fyllutPath}/${formPath}`;
+            return res.redirect(
+              url.format({
+                pathname: targetUrl,
+                query: {
+                  ...(req.query as ParsedUrlQueryInput),
+                  sub: 'paper',
+                },
+              }),
+            );
           }
         } else if (qpSub && !navFormUtils.isSubmissionMethodAllowed(qpSub, form)) {
           logger.info('Submission method is not allowed', { qpSub, formPath, innsending });

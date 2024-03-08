@@ -1,0 +1,61 @@
+{
+  "brukerId": "03876399856",
+  "skjemanr": "Test-select",
+  "tittel": "Tester nedtrekksmeny",
+  "tema": "BIL",
+  "spraak": "nb",
+  "hoveddokument": {
+    "vedleggsnr": "Test-select",
+    "tittel": "Tester nedtrekksmeny",
+    "label": "Tester nedtrekksmeny",
+    "pakrevd": true,
+    "mimetype": "application/pdf"
+  },
+  "hoveddokumentVariant": {
+    "vedleggsnr": "Test-select",
+    "tittel": "Tester nedtrekksmeny",
+    "label": "Tester nedtrekksmeny",
+    "pakrevd": false,
+    "mimetype": "application/json",
+    "document": {
+      "language": "nb-NO",
+      "data": {
+        "data": {
+          "velgInstrument": {
+            "label": "Piano",
+            "value": "piano"
+          },
+          "velgLand": {
+            "label": "Invalid country",
+            "value": "INVALID"
+          },
+          "velgValutaDuVilBetaleMed": {
+            "label": "Euro (EUR)",
+            "value": "EUR"
+          }
+        },
+        "metadata": {
+          "timezone": "Europe/Oslo",
+          "offset": 60,
+          "origin": "https://fyllut-preprod.intern.dev.nav.no",
+          "referrer": "https://fyllut-preprod.intern.dev.nav.no/fyllut/testselect/paabegynt?sub=digital",
+          "browserName": "Netscape",
+          "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36",
+          "pathName": "/fyllut/testselect/veiledning",
+          "onLine": true
+        },
+        "state": "submitted",
+        "_vnote": ""
+      }
+    }
+  },
+  "innsendingsId": "df6c8a69-9eb0-4878-b51f-38b3849ef9b6",
+  "status": "Opprettet",
+  "vedleggsListe": [],
+  "kanLasteOppAnnet": true,
+  "fristForEttersendelse": 14,
+  "endretDato": "2024-02-09T12:50:15.227151+01:00",
+  "skalSlettesDato": "2024-04-05",
+  "skjemaPath": "testselect",
+  "visningsType": "fyllUt"
+}

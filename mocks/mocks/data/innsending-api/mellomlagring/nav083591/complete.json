@@ -1,0 +1,111 @@
+{
+  "brukerId": "03876399856",
+  "skjemanr": "NAV 08-35.01",
+  "tittel": "Inntektsopplysninger for selvstendig næringsdrivende og/eller frilansere som skal ha sykepenger",
+  "tema": "SYK",
+  "spraak": "nb",
+  "hoveddokument": {
+    "vedleggsnr": "NAV 08-35.01",
+    "tittel": "Inntektsopplysninger for selvstendig næringsdrivende og/eller frilansere som skal ha sykepenger",
+    "label": "Inntektsopplysninger for selvstendig næringsdrivende og/eller frilansere som skal ha sykepenger",
+    "pakrevd": true,
+    "mimetype": "application/pdf"
+  },
+  "hoveddokumentVariant": {
+    "vedleggsnr": "NAV 08-35.01",
+    "tittel": "Inntektsopplysninger for selvstendig næringsdrivende og/eller frilansere som skal ha sykepenger",
+    "label": "Inntektsopplysninger for selvstendig næringsdrivende og/eller frilansere som skal ha sykepenger",
+    "pakrevd": false,
+    "mimetype": "application/json",
+    "document": {
+      "language": "nb-NO",
+      "data": {
+        "data": {
+          "jegPlikterAGiDeOpplysningerOgLevereDeDokumenteneSomErNodvendigeForAtNavSkalKunneVurdereMineRettigheter": true,
+          "jegHarGjortMegKjentMedMinPliktTilAInformereNavOmEndringerSomKanHaBetydningForSykepengeneJegFarUtbetalt": true,
+          "hvaSlagsVirksomhetDriverDu": {
+            "selvstendigNaeringsdrivende": true,
+            "frilanser": true
+          },
+          "fornavnSoker": "test",
+          "etternavnSoker": "test",
+          "harDuNorskFodselsnummerEllerDNummer": "ja",
+          "fodselsnummerDNummerSoker": "25058236813",
+          "oppgiDatoForForsteSykefravaersdagDdMmAaaa": "2024-02-01",
+          "hvaSlagsSelvstendigNaeringsvirksomhetDriverDu": {
+            "enkeltpersonforetak": true,
+            "fiskeBladA": false,
+            "fiskeBladB": false,
+            "fiskeLott": false,
+            "fiskeHyre": false,
+            "jordbrukSkogbruk": false,
+            "dagmammaIEgetHjem": false,
+            "annenVirksomhet": false
+          },
+          "harDuInntekterSomArbeidstakerITilleggTilInntektSomSelvstendigNaeringsdrivendeOgEllerFrilanser": "nei",
+          "andreOpplysningerDuMenerErViktigeNarNavSkalFastsetteSykepengegrunnlagetDitt": "nei",
+          "harDuDokumentasjonDuOnskerALeggeVedSoknaden": "ja",
+          "hvaOnskerDuALeggeVed": {
+            "personinntektsskjema": true,
+            "resultatregnskap": true,
+            "naeringsoppgave": false,
+            "annet": false
+          },
+          "narStartetDuSomFrilanserDdMmAaaa": "2023-11-01",
+          "harDuInntektFraFosterhjem": "nei",
+          "orgNr": "242667913",
+          "narStartetDuVirksomhetenDinDdMmAaaa": "2024-02-14",
+          "hvaHarDuHattINaeringsresultatForSkattDeSiste12Manedene": 1200000,
+          "harDetVaertDriftIVirksomhetenFremTilDuBleSykmeldt": "ja",
+          "vilDuFortsattHaNaeringsinntektMensDuErSykmeldt": "nei",
+          "erVirksomhetenRegistrertINorge": "nei",
+          "landvelger": {
+            "label": "Frankrike",
+            "value": "FR"
+          },
+          "harDuFattEnVarigEndringAvArbeidssituasjonenVirksomhetenILopetAvDeSisteFireArene": "nei",
+          "personinntektsskjema1": "leggerVedNaa",
+          "resultatregnskap1": "leggerVedNaa"
+        },
+        "metadata": {
+          "timezone": "Europe/Oslo",
+          "offset": 60,
+          "origin": "https://fyllut-preprod.intern.dev.nav.no",
+          "referrer": "https://fyllut-preprod.intern.dev.nav.no/fyllut/nav083501",
+          "browserName": "Netscape",
+          "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36",
+          "pathName": "/fyllut/nav083501/vedlegg",
+          "onLine": true
+        },
+        "state": "submitted",
+        "_vnote": ""
+      }
+    }
+  },
+  "innsendingsId": "2db25aab-3524-4426-a333-489542bf16bf",
+  "status": "Opprettet",
+  "vedleggsListe": [
+    {
+      "vedleggsnr": "L2",
+      "tittel": "Personinntektsskjema",
+      "label": "Personinntektsskjema",
+      "pakrevd": true,
+      "beskrivelse": "",
+      "formioId": "eiaivlp"
+    },
+    {
+      "vedleggsnr": "L2",
+      "tittel": "Resultatregnskap",
+      "label": "Resultatregnskap",
+      "pakrevd": true,
+      "beskrivelse": "",
+      "formioId": "etpewjh"
+    }
+  ],
+  "kanLasteOppAnnet": true,
+  "fristForEttersendelse": 14,
+  "endretDato": "2024-02-15T10:26:31.152815+01:00",
+  "skalSlettesDato": "2024-04-11",
+  "skjemaPath": "nav083501",
+  "visningsType": "fyllUt"
+}
