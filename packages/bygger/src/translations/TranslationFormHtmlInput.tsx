@@ -49,7 +49,7 @@ const TranslationFormHtmlInput = ({ text, htmlElementAsJson, currentTranslation,
         text={text}
         value={currentTranslation?.type === 'TextElement' ? currentTranslation.textContent?.trim() : ''}
         type={getInputType(htmlElementAsJson.textContent ?? '')}
-        onChange={(value: string) => {
+        onBlur={(value: string) => {
           let textContentWithWhiteSpaces = value.trim();
           if (htmlElementAsJson.textContent?.startsWith(' ')) {
             textContentWithWhiteSpaces = ` ${textContentWithWhiteSpaces}`;

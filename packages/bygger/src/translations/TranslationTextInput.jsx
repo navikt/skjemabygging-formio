@@ -42,6 +42,7 @@ const TranslationTextInput = ({
   hasGlobalTranslation,
   tempGlobalTranslation,
   showGlobalTranslation,
+  onBlur,
   onChange,
   setHasGlobalTranslation,
   setGlobalTranslation,
@@ -58,7 +59,11 @@ const TranslationTextInput = ({
           value={value}
           description={hasGlobalTranslation ? 'Denne teksten er globalt oversatt' : undefined}
           onChange={(event) => {
-            onChange(event.target.value);
+            if (onChange) onChange(event.target.value);
+          }}
+          onBlur={(event) => {
+            console.log('onBlur', event);
+            if (onBlur) onBlur(event.target.value);
           }}
           readOnly={hasGlobalTranslation}
           resize="vertical"
@@ -73,7 +78,11 @@ const TranslationTextInput = ({
           value={value}
           description={hasGlobalTranslation ? 'Denne teksten er globalt oversatt' : undefined}
           onChange={(event) => {
-            onChange(event.target.value);
+            if (onChange) onChange(event.target.value);
+          }}
+          onBlur={(event) => {
+            console.log('onBlur', event);
+            if (onBlur) onBlur(event.target.value);
           }}
           readOnly={hasGlobalTranslation}
         />
