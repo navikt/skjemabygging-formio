@@ -16,7 +16,6 @@ type Props = {
   error?: string;
   defaultActivity?: SubmissionActivity;
   appConfig: AppConfigContextType;
-  setLastRef?: (ref: HTMLInputElement | null) => void;
   t: TFunction;
   dataType: ActivityDataType;
   activities?: SendInnAktivitet[];
@@ -78,10 +77,9 @@ const NavActivities = (props: Props) => {
         description={props.description}
         className={props.className}
         error={props.error}
+        tabIndex={-1}
       >
-        <Checkbox value={props.defaultActivity?.aktivitetId} ref={(ref) => props.setLastRef?.(ref)}>
-          {props.defaultActivity?.text}
-        </Checkbox>
+        <Checkbox value={props.defaultActivity?.aktivitetId}>{props.defaultActivity?.text}</Checkbox>
       </CheckboxGroup>
     );
   };
@@ -113,14 +111,11 @@ const NavActivities = (props: Props) => {
         description={props.description}
         className={props.className}
         error={props.error}
+        tabIndex={-1}
       >
-        {activitySelections?.map((activity: SubmissionActivity, index, arr) => {
+        {activitySelections?.map((activity: SubmissionActivity) => {
           return (
-            <Radio
-              key={getId(activity)}
-              value={getId(activity)}
-              {...(index === arr.length - 1 && { ref: (ref) => props.setLastRef?.(ref) })}
-            >
+            <Radio key={getId(activity)} value={getId(activity)}>
               {activity.text}
             </Radio>
           );
