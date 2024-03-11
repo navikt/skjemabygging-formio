@@ -3,11 +3,11 @@ import { useSendInn } from '../../../context/sendInn/sendInnContext';
 import { LoadingComponent } from '../../../index';
 
 export const SubmissionWrapper = ({ submission, url, children }) => {
-  const { isMellomlagringEnabled } = useSendInn();
+  const { isMellomlagringAvailable } = useSendInn();
   const [searchParams] = useSearchParams();
   const innsendingsId = searchParams.get('innsendingsId');
 
-  const expectsSavedSubmissionFromMellomlagring = isMellomlagringEnabled && !!innsendingsId;
+  const expectsSavedSubmissionFromMellomlagring = isMellomlagringAvailable && !!innsendingsId;
 
   if (!submission && expectsSavedSubmissionFromMellomlagring) {
     return <LoadingComponent />;

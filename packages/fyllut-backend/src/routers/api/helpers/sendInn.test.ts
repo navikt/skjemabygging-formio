@@ -5,7 +5,6 @@ import {
   SendInnSoknadBody,
   assembleSendInnSoknadBody,
   byteArrayToObject,
-  isMellomLagringEnabled,
   objectToByteArray,
   sanitizeInnsendingsId,
   validateInnsendingsId,
@@ -78,24 +77,6 @@ describe('sendInn API helper', () => {
       expect(validateInnsendingsId('abcd.123-ABCD-cdef-9876-12345678abcd')).toBe(
         'abcd.123-ABCD-cdef-9876-12345678abcd er ikke en gyldig innsendingsId.',
       );
-    });
-  });
-
-  describe('isMellomlagringEnabled', () => {
-    it('returns false when featureToggles is empty', () => {
-      expect(isMellomLagringEnabled({})).toBe(false);
-    });
-
-    it('returns true when both mellomlagring and sendInnIntegration is enabled', () => {
-      expect(isMellomLagringEnabled({ enableMellomlagring: true, enableSendInnIntegration: true })).toBe(true);
-    });
-
-    it('returns false when mellomlagring is enabled but sendInnIntegration is disabled', () => {
-      expect(isMellomLagringEnabled({ enableMellomlagring: true, enableSendInnIntegration: false })).toBe(false);
-    });
-
-    it('returns false when mellomlagring is disabled and sendInnIntegration is enabled', () => {
-      expect(isMellomLagringEnabled({ enableMellomlagring: false, enableSendInnIntegration: true })).toBe(false);
     });
   });
 

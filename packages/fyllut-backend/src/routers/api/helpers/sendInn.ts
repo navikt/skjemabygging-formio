@@ -1,9 +1,4 @@
-import {
-  FeatureTogglesMap,
-  I18nTranslationMap,
-  NavFormType,
-  Submission,
-} from '@navikt/skjemadigitalisering-shared-domain';
+import { I18nTranslationMap, NavFormType, Submission } from '@navikt/skjemadigitalisering-shared-domain';
 import { config } from '../../../config/config';
 import { logger } from '../../../logger';
 import { base64Encode } from '../../../utils/base64';
@@ -69,19 +64,6 @@ const validateInnsendingsId = (innsendingsId: string | undefined, supplementaryM
     logger.error(errorMessage);
   }
   return errorMessage;
-};
-
-const isMellomLagringEnabled = (featureToggles: FeatureTogglesMap) => {
-  if (!featureToggles?.enableMellomlagring) {
-    logger.debug('Mellomlagring not enabled, returning data in body');
-    return false;
-  }
-
-  if (!featureToggles?.enableSendInnIntegration) {
-    logger.debug('SendInn integration not enabled, returning data in body');
-    return false;
-  }
-  return true;
 };
 
 const assembleSendInnSoknadBody = (
@@ -167,7 +149,6 @@ const isNotFound = (response: { status: number }, responseError: Error | undefin
 export {
   assembleSendInnSoknadBody,
   byteArrayToObject,
-  isMellomLagringEnabled,
   isNotFound,
   objectToByteArray,
   sanitizeInnsendingsId,
