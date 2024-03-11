@@ -152,8 +152,12 @@ const NavActivities = (props: Props) => {
 
   return (
     <>
-      {renderActivities()}
-      {showError && renderNoActivitiesAlert()}
+      {submissionMethod === 'digital' && (
+        <>
+          {renderActivities()}
+          {showError && renderNoActivitiesAlert()}
+        </>
+      )}
     </>
   );
 };
