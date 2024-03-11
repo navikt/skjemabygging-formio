@@ -1,4 +1,9 @@
-import { SendInnAktivitet, SubmissionActivity, dateUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  AktivitetVedtaksinformasjon,
+  SendInnAktivitet,
+  SubmissionActivity,
+  dateUtils,
+} from '@navikt/skjemadigitalisering-shared-domain';
 
 export const mapActivityText = (activity: SendInnAktivitet) => {
   if (!activity.periode.fom) {
@@ -7,6 +12,16 @@ export const mapActivityText = (activity: SendInnAktivitet) => {
 
   return `${activity.aktivitetsnavn}: ${dateUtils.toLocaleDate(activity.periode.fom)} - ${
     activity.periode.tom ? dateUtils.toLocaleDate(activity.periode.tom) : ''
+  }`;
+};
+
+export const mapVedtakText = (activity: SendInnAktivitet, vedtak: AktivitetVedtaksinformasjon) => {
+  if (!vedtak.periode.fom) {
+    return activity.aktivitetsnavn;
+  }
+
+  return `${activity.aktivitetsnavn}: ${dateUtils.toLocaleDate(vedtak.periode.fom)} - ${
+    vedtak.periode.tom ? dateUtils.toLocaleDate(vedtak.periode.tom) : ''
   }`;
 };
 
@@ -21,7 +36,7 @@ export const mapVedtak = (activities: SendInnAktivitet[]) => {
           aktivitetId: activity.aktivitetId,
           maalgruppe: activity.maalgruppe,
           periode: vedtak.periode,
-          text: mapActivityText(activity),
+          text: mapVedtakText(activity, vedtak),
           vedtaksId: vedtak.vedtakId,
         }),
       );
