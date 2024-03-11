@@ -39,7 +39,12 @@ const NavActivities = (props: Props) => {
       if (app === 'fyllut' && isLoggedIn && submissionMethod === 'digital' && !props.activities) {
         try {
           setLoading(true);
-          const result = await getActivities(props.appConfig);
+          let result: SendInnAktivitet[] | undefined = [];
+          if (props.dataType === 'vedtak') {
+            result = await getActivities(props.appConfig, 'dagligreise');
+          } else {
+            result = await getActivities(props.appConfig, 'aktivitet');
+          }
 
           if (result) {
             setActivitySelections(mapToSubmissionActivity(result, props.dataType));
