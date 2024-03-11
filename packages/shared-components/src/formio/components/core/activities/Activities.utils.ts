@@ -1,9 +1,13 @@
 import { SendInnAktivitet, SubmissionActivity, dateUtils } from '@navikt/skjemadigitalisering-shared-domain';
 
 export const mapActivityText = (activity: SendInnAktivitet) => {
-  return `${activity.aktivitetsnavn}: ${dateUtils.toLocaleDate(activity.periode.fom)} - ${dateUtils.toLocaleDate(
-    activity.periode.tom,
-  )}`;
+  if (!activity.periode.fom) {
+    return activity.aktivitetsnavn;
+  }
+
+  return `${activity.aktivitetsnavn}: ${dateUtils.toLocaleDate(activity.periode.fom)} - ${
+    activity.periode.tom ? dateUtils.toLocaleDate(activity.periode.tom) : ''
+  }`;
 };
 
 export const mapVedtak = (activities: SendInnAktivitet[]) => {
