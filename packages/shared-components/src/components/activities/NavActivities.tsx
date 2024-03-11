@@ -141,7 +141,7 @@ const NavActivities = (props: Props) => {
   // Shows checkbox when there are no activities or it is displayed in byggeren
   // Shows radio when there are 1 or more activities
   const renderActivities = () => {
-    if (hasActivities && loading) {
+    if (loading) {
       return <Skeleton variant="rounded" width="100%" height={150} />;
     } else if (hasActivities && !loading) {
       return renderRadioGroup();
