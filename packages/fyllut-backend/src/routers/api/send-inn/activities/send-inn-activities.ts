@@ -20,6 +20,7 @@ const sendInnActivities = {
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${tokenxAccessToken}`,
+            'x-innsendingsid': req.headers['x-innsendingsid'] as string,
           },
         },
       );
