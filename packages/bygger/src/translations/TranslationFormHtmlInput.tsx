@@ -6,7 +6,7 @@ interface Props {
   text: string;
   htmlElementAsJson: HtmlAsJsonElement | HtmlAsJsonTextElement;
   currentTranslation?: HtmlAsJsonElement | HtmlAsJsonTextElement;
-  updateTranslation: (HtmlAsJsonElement) => void;
+  updateTranslation: (element: HtmlAsJsonElement | HtmlAsJsonTextElement) => void;
 }
 
 const TranslationFormHtmlInput = ({ text, htmlElementAsJson, currentTranslation, updateTranslation }: Props) => {
@@ -23,16 +23,13 @@ const TranslationFormHtmlInput = ({ text, htmlElementAsJson, currentTranslation,
               htmlElementAsJson={originalTextElement}
               currentTranslation={translationElement}
               updateTranslation={(element: HtmlAsJsonElement) => {
-                console.log('updateTranslation', element);
                 const updatedTranslation = JSON.parse(JSON.stringify(currentTranslation));
                 if (updatedTranslation && updatedTranslation?.type === 'Element') {
-                  console.log('-- updateTranslation', { element, updatedTranslation });
                   if (element.tagName === 'DIV') {
                     updatedTranslation.children = element.children;
                   } else {
                     updatedTranslation.children[index] = element;
                   }
-                  console.log('-- children', updatedTranslation.children);
                 }
                 updateTranslation(updatedTranslation);
               }}
@@ -57,11 +54,6 @@ const TranslationFormHtmlInput = ({ text, htmlElementAsJson, currentTranslation,
           if (htmlElementAsJson.textContent?.endsWith(' ')) {
             textContentWithWhiteSpaces = `${textContentWithWhiteSpaces} `;
           }
-          // updateTranslation({
-          //   ...htmlElementAsJson,
-          //   textContent: htmlUtils.markDown2HtmlString(textContentWithWhiteSpaces),
-          // });
-          console.log('>>Update this text (+original)', textContentWithWhiteSpaces, htmlElementAsJson);
           updateTranslation(htmlUtils.markDown2Json(textContentWithWhiteSpaces, htmlElementAsJson));
         }}
         hasGlobalTranslation={false}

@@ -54,39 +54,37 @@ const TranslationFormHtmlSection = ({
   onSelectLegacy,
 }: Props) => {
   const [currentTranslation, setCurrentTranslation] = useState<HtmlAsJsonElement | HtmlAsJsonTextElement>();
+  const [currentTranslationWithMarkDown, setCurrentTranslationWithMarkDown] = useState<
+    HtmlAsJsonElement | HtmlAsJsonTextElement
+  >();
 
   const translationIsMissing = useMemo(
     () => !currentTranslation && (!storedTranslation || !htmlUtils.isHtmlString(storedTranslation)),
     [currentTranslation, storedTranslation],
   );
   const incompatibleTranslationExists = useMemo(() => {
-    if (!currentTranslation) {
+    if (!currentTranslationWithMarkDown) {
       const storedTranslationAsJson =
         !!storedTranslation && htmlUtils.isHtmlString(storedTranslation)
           ? htmlUtils.htmlString2Json(storedTranslation, ['P', 'H3', 'LI'])
           : undefined;
       return storedTranslationAsJson && !isSameStructure(htmlElementAsJson, storedTranslationAsJson);
     }
-  }, [currentTranslation, htmlElementAsJson, storedTranslation]);
+  }, [currentTranslationWithMarkDown, htmlElementAsJson, storedTranslation]);
 
   useEffect(() => {
     if (!currentTranslation && !translationIsMissing && !incompatibleTranslationExists) {
-      // console.log('storedTranslation 2 json', htmlUtils.htmlString2Json(storedTranslation));
-      setCurrentTranslation(htmlUtils.htmlString2Json(storedTranslation, ['P', 'H3', 'LI']));
+      setCurrentTranslation(htmlUtils.htmlString2Json(storedTranslation));
+      setCurrentTranslationWithMarkDown(htmlUtils.htmlString2Json(storedTranslation, ['P', 'H3', 'LI']));
     }
   }, [currentTranslation, incompatibleTranslationExists, storedTranslation, translationIsMissing]);
 
   const styles = useStyles();
 
   const startNewTranslation = () => {
-    console.log('START new translation', htmlElementAsJson);
-    setCurrentTranslation(htmlElementAsJson);
+    setCurrentTranslation(htmlUtils.htmlString2Json(text));
+    setCurrentTranslationWithMarkDown(htmlElementAsJson);
   };
-
-  if (currentTranslation) {
-    // console.log('Oversettelse: ', htmlUtils.json2HtmlString(currentTranslation as HtmlAsJsonElement));
-    console.log('currentTranlsation', currentTranslation);
-  }
 
   if (htmlElementAsJson.type === 'Element') {
     return (
@@ -136,10 +134,10 @@ const TranslationFormHtmlSection = ({
             />
           </>
         )}
-        {currentTranslation?.type === 'Element' &&
+        {currentTranslationWithMarkDown?.type === 'Element' &&
           htmlElementAsJson.type === 'Element' &&
           htmlElementAsJson.children.map((originalElement, index) => {
-            const translationElement = currentTranslation.children[index];
+            const translationElement = currentTranslationWithMarkDown.children[index];
             return (
               <TranslationFormHtmlInput
                 key={`html-translation-${translationElement.id}`}
@@ -147,15 +145,17 @@ const TranslationFormHtmlSection = ({
                 htmlElementAsJson={originalElement}
                 currentTranslation={translationElement}
                 updateTranslation={(element) => {
-                  console.log('*- updateTranslation', element);
                   const updatedTranslation = currentTranslation;
                   if (updatedTranslation && updatedTranslation?.type === 'Element') {
                     updatedTranslation.children[index] = element;
                     const updatedTranslationHtmlString = htmlUtils.json2HtmlString(updatedTranslation);
-                    // console.log('** updatedTranslation', htmlUtils.htmlString2Json(updatedTranslationHtmlString, ["P", "H3", "LI"]));
-                    setCurrentTranslation(htmlUtils.htmlString2Json(updatedTranslationHtmlString, ['P', 'H3', 'LI']));
-
-                    console.log('* ** WillBeUpdated', updatedTranslationHtmlString);
+                    const updatedTranslation2Json = htmlUtils.htmlString2Json(updatedTranslationHtmlString, [
+                      'P',
+                      'H3',
+                      'LI',
+                    ]);
+                    setCurrentTranslation(updatedTranslation);
+                    setCurrentTranslationWithMarkDown(updatedTranslation2Json);
                     updateTranslation(updatedTranslationHtmlString);
                   }
                 }}
