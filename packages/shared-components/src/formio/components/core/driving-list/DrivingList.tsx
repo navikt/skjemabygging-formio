@@ -59,6 +59,14 @@ class DrivingList extends BaseComponent {
     return this.componentErrors.find((error) => error.metadataId === metadataId)?.message;
   }
 
+  override focus(focusData: any) {
+    console.log(`DrivingList focus param='${JSON.stringify(focusData)}'`);
+    const { metadataId } = focusData;
+    if (metadataId) {
+      this.getRef(metadataId)?.focus();
+    }
+  }
+
   override checkValidity(): boolean {
     this.removeAllErrors();
     const componentData = this.getValue() as DrivingListSubmission;
@@ -125,6 +133,7 @@ class DrivingList extends BaseComponent {
         t={this.t.bind(this)}
         locale={this.getLocale()}
         getComponentError={this.getComponentError.bind(this)}
+        addRef={this.addRef.bind(this)}
       >
         <NavDrivingList />
       </DrivingListProvider>,

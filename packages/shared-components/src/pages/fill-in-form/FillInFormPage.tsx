@@ -1,4 +1,11 @@
-import { FyllutState, NavFormType, navFormUtils, Submission, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  ComponentError,
+  FyllutState,
+  NavFormType,
+  navFormUtils,
+  Submission,
+  TEXTS,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import EventEmitter from 'eventemitter3';
 import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -8,6 +15,7 @@ import { useAmplitude } from '../../context/amplitude';
 import { useAppConfig } from '../../context/config/configContext';
 import { useLanguages } from '../../context/languages';
 import { useSendInn } from '../../context/sendInn/sendInnContext';
+import { KeyOrFocusComponentId } from '../../formio/overrides/wizard-overrides.js/focusOnComponent';
 import { LoadingComponent } from '../../index';
 import { scrollToAndSetFocus } from '../../util/focus-management/focus-management';
 import { getPanelSlug } from '../../util/form/form';
@@ -48,7 +56,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: Fil
   const { hash } = useLocation();
   const mutationObserverRef = useRef<MutationObserver | undefined>(undefined);
   const [showModal, setShowModal] = useState<ModalType>();
-  const [errors, setErrors] = useState<any[]>([]);
+  const [errors, setErrors] = useState<ComponentError[]>([]);
   const externalEvents = useMemo(() => new EventEmitter(), []);
   const errorSummaryRef = useRef<HTMLElement | null>(null);
 
@@ -69,9 +77,9 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: Fil
     }
   }, [submission, startMellomlagring, isMellomlagringAvailable]);
 
-  const focusOnComponent = useCallback(
-    (path: string) => {
-      externalEvents.emit('focusOnComponent', path);
+  const focusOnComponent = useCallback<(id: KeyOrFocusComponentId) => void>(
+    (id: KeyOrFocusComponentId) => {
+      externalEvents.emit('focusOnComponent', id);
     },
     [externalEvents],
   );

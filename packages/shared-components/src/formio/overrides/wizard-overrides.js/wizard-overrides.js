@@ -1,4 +1,5 @@
 import { Formio, Utils } from 'formiojs';
+import focusOnComponent from './focusOnComponent';
 
 const Wizard = Formio.Displays.displays.wizard;
 const WebForm = Formio.Displays.displays.webform;
@@ -318,19 +319,29 @@ Wizard.prototype.onChange = function (flags, changed, modified, changes) {
   }
 };
 
+/**
+ * We take full control of the error summary, so this function does not invoke the original
+ * showErrors in Webform.
+ * @returns errors
+ */
 Wizard.prototype.showErrors = function () {
   const errs = this.getComponents()
     .reduce((errors, comp) => errors.concat(comp.errors || []), [])
     .filter((err) => err.level !== 'hidden')
     .map((err) => {
       return {
-        message: err.messages[0].message,
-        formattedKeyOrPath: Utils.getStringFromComponentPath(err.messages[0].path),
+        message: err.message || err.messages[0].message,
+        path: err.path || Utils.getStringFromComponentPath(err.messages[0].path),
+        metadataId: err.metadataId,
       };
     });
   this.hasErrors = errs.length > 0;
   this.emit('showErrors', errs);
   return errs;
+};
+
+Wizard.prototype.focusOnComponent = function (arg) {
+  focusOnComponent(this)(arg);
 };
 
 const originalOnSubmissionError = Wizard.prototype.onSubmissionError;

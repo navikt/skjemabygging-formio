@@ -11,6 +11,7 @@ interface DrivingListContextContextType {
   t: TFunction;
   locale: string;
   getComponentError: (metadataId: DrivingListMetadataId) => string | undefined;
+  addRef: (name: string, ref: any) => void;
 }
 
 interface DrivingListProviderProps extends DrivingListContextContextType {

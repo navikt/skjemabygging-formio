@@ -1,10 +1,12 @@
 import { ErrorSummary } from '@navikt/ds-react';
+import { ComponentError } from '@navikt/skjemadigitalisering-shared-domain';
 import { forwardRef } from 'react';
+import { KeyOrFocusComponentId } from '../../formio/overrides/wizard-overrides.js/focusOnComponent';
 
 interface FormErrorSummaryProps {
   heading: string;
-  errors: any[];
-  focusOnComponent: Function;
+  errors: ComponentError[];
+  focusOnComponent: (componentId: KeyOrFocusComponentId) => void;
 }
 
 const FormErrorSummary = forwardRef<HTMLDivElement, FormErrorSummaryProps>(
@@ -17,14 +19,14 @@ const FormErrorSummary = forwardRef<HTMLDivElement, FormErrorSummaryProps>(
         {errors.map((error) => (
           <ErrorSummary.Item
             tabIndex={0}
-            onClick={() => focusOnComponent(error.formattedKeyOrPath)}
+            onClick={() => focusOnComponent({ path: error.path, metadataId: error.metadataId })}
             onKeyUp={(event) => {
               if (event.key === 'Enter' || event.key === ' ') {
                 event.stopPropagation();
-                focusOnComponent(error.formattedKeyOrPath);
+                focusOnComponent({ path: error.path, metadataId: error.metadataId });
               }
             }}
-            key={error.formattedKeyOrPath}
+            key={`${error.path}${error.metadataId && `-${error.metadataId}`}`}
           >
             {error.message}
           </ErrorSummary.Item>

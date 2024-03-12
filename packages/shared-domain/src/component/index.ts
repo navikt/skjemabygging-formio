@@ -1,9 +1,9 @@
 export interface ComponentError {
-  metadataId: string;
+  metadataId?: string;
   message: string;
   path: string;
   level: 'error';
 
-  messages: { formattedKeyOrPath: string; message: string; context: { hasLabel: boolean } }[];
-  component: { key: string };
+  messages?: { formattedKeyOrPath: string; message: string; context: { hasLabel: boolean } }[];
+  component?: { key: string };
 }

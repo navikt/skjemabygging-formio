@@ -1,6 +1,7 @@
 import { Tag } from '@navikt/ds-react';
 import { Component, formDiffingTool, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import Field from 'formiojs/components/_classes/field/Field';
+import FormioUtils from 'formiojs/utils';
 import { ReactNode } from 'react';
 import FormioReactComponent from './FormioReactComponent';
 import { blurHandler, focusHandler } from './focus-helpers';
@@ -285,11 +286,7 @@ class BaseComponent extends FormioReactComponent {
       metadataId,
       message,
       level: 'error',
-      path: metadataId,
-
-      // For the error summary (will be removed when the new error summary is implemented)
-      messages: [{ formattedKeyOrPath: metadataId, message, context: { hasLabel: true } }],
-      component: { key: metadataId },
+      path: FormioUtils.getComponentPath(this.component),
     });
   }
 
