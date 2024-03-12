@@ -6,14 +6,25 @@ interface Props {
   text: string;
   htmlElementAsJson: HtmlAsJsonElement | HtmlAsJsonTextElement;
   currentTranslation?: HtmlAsJsonElement | HtmlAsJsonTextElement;
+  currentTranslationWithMarkDown?: HtmlAsJsonElement | HtmlAsJsonTextElement;
   updateTranslation: (element: HtmlAsJsonElement | HtmlAsJsonTextElement) => void;
 }
 
-const TranslationFormHtmlInput = ({ text, htmlElementAsJson, currentTranslation, updateTranslation }: Props) => {
+const TranslationFormHtmlInput = ({
+  text,
+  htmlElementAsJson,
+  currentTranslation,
+  currentTranslationWithMarkDown,
+  updateTranslation,
+}: Props) => {
   if (htmlElementAsJson.type === 'Element') {
     return (
       <div>
         {htmlElementAsJson.children.map((originalTextElement, index) => {
+          const translationElementWithMarkDown =
+            currentTranslationWithMarkDown?.type === 'Element'
+              ? currentTranslationWithMarkDown.children[index]
+              : undefined;
           const translationElement =
             currentTranslation?.type === 'Element' ? currentTranslation.children[index] : undefined;
           return (
@@ -22,7 +33,9 @@ const TranslationFormHtmlInput = ({ text, htmlElementAsJson, currentTranslation,
               text={originalTextElement['textContent'] ?? ''}
               htmlElementAsJson={originalTextElement}
               currentTranslation={translationElement}
+              currentTranslationWithMarkDown={translationElementWithMarkDown}
               updateTranslation={(element: HtmlAsJsonElement) => {
+                //TODO: Try to convert "withMarkDown" to html from htmlContentAsJson
                 const updatedTranslation = JSON.parse(JSON.stringify(currentTranslation));
                 if (updatedTranslation && updatedTranslation?.type === 'Element') {
                   if (element.tagName === 'DIV') {
@@ -44,7 +57,11 @@ const TranslationFormHtmlInput = ({ text, htmlElementAsJson, currentTranslation,
     return (
       <TranslationTextInput
         text={text}
-        value={currentTranslation?.type === 'TextElement' ? currentTranslation.textContent?.trim() : ''}
+        value={
+          currentTranslationWithMarkDown?.type === 'TextElement'
+            ? currentTranslationWithMarkDown.textContent?.trim()
+            : ''
+        }
         type={getInputType(htmlElementAsJson.textContent ?? '')}
         onBlur={(value: string) => {
           let textContentWithWhiteSpaces = value.trim();

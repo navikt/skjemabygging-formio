@@ -135,15 +135,18 @@ const TranslationFormHtmlSection = ({
           </>
         )}
         {currentTranslationWithMarkDown?.type === 'Element' &&
+          currentTranslation?.type === 'Element' &&
           htmlElementAsJson.type === 'Element' &&
           htmlElementAsJson.children.map((originalElement, index) => {
-            const translationElement = currentTranslationWithMarkDown.children[index];
+            const translationElement = currentTranslation.children[index];
+            const translationElementWithMarkDown = currentTranslationWithMarkDown.children[index];
             return (
               <TranslationFormHtmlInput
-                key={`html-translation-${translationElement.id}`}
-                text={translationElement['textContent'] ?? ''}
+                key={`html-translation-${translationElementWithMarkDown.id}`}
+                text={translationElementWithMarkDown['textContent'] ?? ''}
                 htmlElementAsJson={originalElement}
                 currentTranslation={translationElement}
+                currentTranslationWithMarkDown={translationElementWithMarkDown}
                 updateTranslation={(element) => {
                   const updatedTranslation = currentTranslation;
                   if (updatedTranslation && updatedTranslation?.type === 'Element') {
