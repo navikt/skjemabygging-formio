@@ -53,6 +53,15 @@ describe('Activities', () => {
     cy.mocksRestoreRouteVariants();
   });
 
+  describe('paper', () => {
+    it('should not show activity component when submission method is paper', () => {
+      cy.visit(`/fyllut/testingactivities?sub=paper`);
+      cy.defaultWaits();
+      cy.clickStart();
+      cy.findByRole('group', { name: 'Velg hvilken aktivitet du vil søke om stønad for' }).should('not.exist');
+    });
+  });
+
   describe('activities from backend', () => {
     it('should show radiogroup with activity from backend and default activity', () => {
       cy.mocksUseRouteVariant('get-soknad:success-activities-empty');

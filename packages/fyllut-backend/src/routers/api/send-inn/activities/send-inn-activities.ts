@@ -13,13 +13,17 @@ const sendInnActivities = {
     try {
       const tokenxAccessToken = getTokenxAccessToken(req);
 
-      const activitiesResponse = await fetch(`${sendInnConfig.host}${sendInnConfig.paths.activities}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${tokenxAccessToken}`,
+      const activitiesResponse = await fetch(
+        `${sendInnConfig.host}${sendInnConfig.paths.activities}?dagligreise=${req.query.dagligreise ?? false}`,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${tokenxAccessToken}`,
+            'x-innsendingsid': req.headers['x-innsendingsid'] as string,
+          },
         },
-      });
+      );
 
       if (activitiesResponse.ok) {
         res.status(activitiesResponse.status);

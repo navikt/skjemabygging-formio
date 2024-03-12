@@ -39,7 +39,12 @@ const NavActivities = (props: Props) => {
       if (app === 'fyllut' && isLoggedIn && submissionMethod === 'digital' && !props.activities) {
         try {
           setLoading(true);
-          const result = await getActivities(props.appConfig);
+          let result: SendInnAktivitet[] | undefined = [];
+          if (props.dataType === 'vedtak') {
+            result = await getActivities(props.appConfig, true);
+          } else {
+            result = await getActivities(props.appConfig, false);
+          }
 
           if (result) {
             setActivitySelections(mapToSubmissionActivity(result, props.dataType));
@@ -136,7 +141,7 @@ const NavActivities = (props: Props) => {
   // Shows checkbox when there are no activities or it is displayed in byggeren
   // Shows radio when there are 1 or more activities
   const renderActivities = () => {
-    if (hasActivities && loading) {
+    if (loading) {
       return <Skeleton variant="rounded" width="100%" height={150} />;
     } else if (hasActivities && !loading) {
       return renderRadioGroup();
@@ -147,8 +152,12 @@ const NavActivities = (props: Props) => {
 
   return (
     <>
-      {renderActivities()}
-      {showError && renderNoActivitiesAlert()}
+      {submissionMethod === 'digital' && (
+        <>
+          {renderActivities()}
+          {showError && renderNoActivitiesAlert()}
+        </>
+      )}
     </>
   );
 };
