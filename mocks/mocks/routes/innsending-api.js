@@ -338,7 +338,7 @@ module.exports = [
             res.status(200);
             res.contentType('application/json; charset=UTF-8');
 
-            if (!!dagligreise) {
+            if (dagligreise === 'true') {
               res.send(activitiesMultiple); // Includes saksinformasjon (vedtak for daglig reise)
             } else {
               res.send(activities);
