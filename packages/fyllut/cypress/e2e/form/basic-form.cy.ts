@@ -1,6 +1,8 @@
 /*
  * Tests filling out a basic form with contact information and verifying that the information is displayed in the summary (for both digital/paper)
  */
+import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+
 describe('Basic form', () => {
   beforeEach(() => {
     cy.defaultIntercepts();
@@ -112,10 +114,12 @@ describe('Basic form', () => {
         cy.clickNextStep();
         cy.clickNextStep();
         cy.findByRole('heading', { level: 2, name: 'Dine opplysninger' });
-        cy.findByText('For å gå videre må du rette opp følgende:').should('exist');
-
-        cy.findAllByRole('link', { name: /^Du må fylle ut:/ }).should('have.length', 4);
-        cy.findByRoleWhenAttached('link', { name: 'Du må fylle ut: Fornavn' }).click();
+        cy.findByRole('region', { name: TEXTS.validering.error })
+          .should('exist')
+          .within(() => {
+            cy.findAllByText(/Du må fylle ut:/).should('have.length', 4);
+            cy.findByText('Du må fylle ut: Fornavn').click();
+          });
         cy.findByRole('textbox', { name: 'Fornavn' }).should('have.focus');
       });
     });
