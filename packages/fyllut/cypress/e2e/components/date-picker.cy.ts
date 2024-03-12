@@ -2,6 +2,7 @@
  * Tests that the datepicker component (react) renders, validates and handles interactions correctly
  */
 
+import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import * as moment from 'moment';
 
 describe('NavDatepicker', () => {
@@ -57,8 +58,7 @@ describe('NavDatepicker', () => {
       cy.clickNextStep();
 
       cy.findByRole('heading', { name: 'Oppsummering' }).should('not.exist');
-      cy.findAllByText('Du må fylle ut: Tilfeldig dato').should('have.length', 1);
-      cy.findAllByText('Tilfeldig dato: Du må fylle ut: Tilfeldig dato').should('have.length', 1);
+      cy.findAllByText('Du må fylle ut: Tilfeldig dato').should('have.length', 2);
     });
   });
 
@@ -66,10 +66,12 @@ describe('NavDatepicker', () => {
     it('has focus after clicking validation message link', () => {
       cy.clickNextStep();
 
-      cy.findAllByText('Du må fylle ut: Tilfeldig dato').should('have.length', 1);
-      cy.findByRoleWhenAttached('link', { name: 'Tilfeldig dato: Du må fylle ut: Tilfeldig dato' })
+      cy.findAllByText('Du må fylle ut: Tilfeldig dato').should('have.length', 2);
+      cy.findByRole('region', { name: TEXTS.validering.error })
         .should('exist')
-        .click();
+        .within(() => {
+          cy.findByText('Du må fylle ut: Tilfeldig dato').should('exist').click();
+        });
 
       cy.findByRole('textbox', { name: 'Tilfeldig dato' }).should('have.focus').type('02.02.2023');
       cy.clickNextStep();
@@ -82,7 +84,7 @@ describe('NavDatepicker', () => {
     const MY_TEST_DATE = '15.05.2023';
 
     beforeEach(() => {
-      cy.findByRole('textbox', { name: 'Tilfeldig dato' }).should('be.visible');
+      cy.findByRole('textbox', { name: 'Tilfeldig dato' }).should('be.visible').should('not.be.disabled');
       cy.findByRole('textbox', { name: 'Tilfeldig dato' }).type(`${MY_TEST_DATE}{esc}`);
     });
 
@@ -91,23 +93,24 @@ describe('NavDatepicker', () => {
       const VALIDATION_TEXT = `Datoen må være senere enn ${MY_TEST_DATE}`;
 
       it('fails when date is before', () => {
-        cy.findByRole('textbox', { name: LABEL }).type('14.05.2023');
+        cy.findByRole('textbox', { name: LABEL }).should('not.be.disabled').type('14.05.2023');
         cy.clickNextStep();
 
-        cy.findAllByText(VALIDATION_TEXT).should('have.length', 1);
+        cy.findAllByText(VALIDATION_TEXT).should('have.length', 2);
       });
 
       it('fails when date is equal', () => {
-        cy.findByRole('textbox', { name: LABEL }).type('15.05.2023');
+        cy.findByRole('textbox', { name: LABEL }).should('not.be.disabled').type('15.05.2023');
         cy.clickNextStep();
 
-        cy.findAllByText(VALIDATION_TEXT).should('have.length', 1);
+        cy.findAllByText(VALIDATION_TEXT).should('have.length', 2);
       });
 
       it('ok when date is later', () => {
-        cy.findByRole('textbox', { name: LABEL }).type('16.05.2023');
+        cy.findByRole('textbox', { name: LABEL }).should('not.be.disabled').type('16.05.2023');
         cy.clickNextStep();
 
+        cy.findByRole('heading', { name: 'Oppsummering' }).should('be.visible');
         cy.findAllByText(VALIDATION_TEXT).should('have.length', 0);
       });
     });
@@ -117,23 +120,25 @@ describe('NavDatepicker', () => {
       const VALIDATION_TEXT = `Datoen kan ikke være tidligere enn ${MY_TEST_DATE}`;
 
       it('fails when date is before', () => {
-        cy.findByRole('textbox', { name: LABEL }).type(`14.05.2023{esc}`);
+        cy.findByRole('textbox', { name: LABEL }).should('not.be.disabled').type(`14.05.2023{esc}`);
         cy.clickNextStep();
 
-        cy.findAllByText(VALIDATION_TEXT).should('have.length', 1);
+        cy.findAllByText(VALIDATION_TEXT).should('have.length', 2);
       });
 
       it('fails when date is equal', () => {
-        cy.findByRole('textbox', { name: LABEL }).type('15.05.2023{esc}');
+        cy.findByRole('textbox', { name: LABEL }).should('not.be.disabled').type('15.05.2023{esc}');
         cy.clickNextStep();
 
+        cy.findByRole('heading', { name: 'Oppsummering' }).should('be.visible');
         cy.findAllByText(VALIDATION_TEXT).should('have.length', 0);
       });
 
       it('ok when date is later', () => {
-        cy.findByRole('textbox', { name: LABEL }).type('16.05.2023{esc}');
+        cy.findByRole('textbox', { name: LABEL }).should('not.be.disabled').type('16.05.2023{esc}');
         cy.clickNextStep();
 
+        cy.findByRole('heading', { name: 'Oppsummering' }).should('be.visible');
         cy.findAllByText(VALIDATION_TEXT).should('have.length', 0);
       });
     });
@@ -149,7 +154,7 @@ describe('NavDatepicker', () => {
       cy.findByRole('textbox', { name: LABEL }).type('15.07.2023{esc}');
       cy.clickNextStep();
 
-      cy.findAllByText(VALIDATION_TEXT).should('have.length', 1);
+      cy.findAllByText(VALIDATION_TEXT).should('have.length', 2);
     });
 
     it("is ok when date is equal to 'earliest date'", () => {
@@ -170,7 +175,7 @@ describe('NavDatepicker', () => {
       cy.findByRole('textbox', { name: LABEL }).type('01.09.2023{esc}');
       cy.clickNextStep();
 
-      cy.findAllByText(VALIDATION_TEXT).should('have.length', 1);
+      cy.findAllByText(VALIDATION_TEXT).should('have.length', 2);
     });
   });
 
@@ -190,15 +195,13 @@ describe('NavDatepicker', () => {
     it('fails when date is before the earliest limit', () => {
       cy.findByRole('textbox', { name: LABEL }).type(plusDays(NOW, EARLIEST_RELATIVE - 1));
       cy.clickNextStep();
-      console.log('VALIDATION_TEXT', VALIDATION_TEXT);
 
-      cy.findAllByText(VALIDATION_TEXT).should('have.length', 1);
+      cy.findAllByText(VALIDATION_TEXT).should('have.length', 2);
     });
 
     it('is ok when date is exactly the earliest limit', () => {
       cy.findByRole('textbox', { name: LABEL }).type(plusDays(NOW, EARLIEST_RELATIVE));
       cy.clickNextStep();
-      console.log('VALIDATION_TEXT', VALIDATION_TEXT);
 
       cy.findAllByText(VALIDATION_TEXT).should('have.length', 0);
     });
@@ -206,7 +209,6 @@ describe('NavDatepicker', () => {
     it('is ok when date is exactly the latest limit', () => {
       cy.findByRole('textbox', { name: LABEL }).type(plusDays(NOW, LATEST_RELATIVE));
       cy.clickNextStep();
-      console.log('VALIDATION_TEXT', VALIDATION_TEXT);
 
       cy.findAllByText(VALIDATION_TEXT).should('have.length', 0);
     });
@@ -214,9 +216,8 @@ describe('NavDatepicker', () => {
     it('fails when date is after the earliest limit', () => {
       cy.findByRole('textbox', { name: LABEL }).type(plusDays(NOW, LATEST_RELATIVE + 1));
       cy.clickNextStep();
-      console.log('VALIDATION_TEXT', VALIDATION_TEXT);
 
-      cy.findAllByText(VALIDATION_TEXT).should('have.length', 1);
+      cy.findAllByText(VALIDATION_TEXT).should('have.length', 2);
     });
   });
 });

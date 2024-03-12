@@ -91,7 +91,11 @@ describe('DrivingList', () => {
 
       // Should fill out form
       cy.clickNextStep();
-      cy.findByRole('link', { name: `Du må fylle ut: ${PERIOD_TYPE_LABEL}` }).should('exist');
+      cy.findByRole('region', { name: TEXTS.validering.error })
+        .should('exist')
+        .within(() => {
+          cy.findByText(`Du må fylle ut: ${PERIOD_TYPE_LABEL}`).should('exist');
+        });
 
       cy.findByRole('radio', { name: 'Ukentlig' }).should('exist').check();
       cy.findByRole('textbox', { name: DATE_PICKER_LABEL }).should('exist').type('15.05.23{esc}');
@@ -102,13 +106,21 @@ describe('DrivingList', () => {
       // Parking expenses should not be over 100
       cy.findByRole('textbox', { name: PARKING_EXPENSES_LABEL }).should('exist').type('101');
       cy.clickNextStep();
-      cy.findByRole('link', { name: TEXTS.validering.parkingExpensesAboveHundred }).should('exist');
+      cy.findByRole('region', { name: TEXTS.validering.error })
+        .should('exist')
+        .within(() => {
+          cy.findByText(TEXTS.validering.parkingExpensesAboveHundred).should('exist');
+        });
 
       // Parking expenses should be a number
       cy.findByRole('textbox', { name: PARKING_EXPENSES_LABEL }).clear();
       cy.findByRole('textbox', { name: PARKING_EXPENSES_LABEL }).type('text');
       cy.clickNextStep();
-      cy.findByRole('link', { name: TEXTS.validering.validParkingExpenses }).should('exist');
+      cy.findByRole('region', { name: TEXTS.validering.error })
+        .should('exist')
+        .within(() => {
+          cy.findByText(TEXTS.validering.validParkingExpenses).should('exist');
+        });
     });
 
     it('should add and remove periods', () => {
@@ -224,7 +236,11 @@ describe('DrivingList', () => {
       cy.wait('@getActivities');
 
       cy.clickSaveAndContinue();
-      cy.findByRole('link', { name: `Du må fylle ut: ${ACTIVITIES_LABEL}` }).should('exist');
+      cy.findByRole('region', { name: TEXTS.validering.error })
+        .should('exist')
+        .within(() => {
+          cy.findByText(`Du må fylle ut: ${ACTIVITIES_LABEL}`).should('exist');
+        });
 
       cy.findByRole('radio', { name: 'Arbeidstrening: 01.12.2023 - 06.04.2024' }).should('exist').check();
 
@@ -243,7 +259,7 @@ describe('DrivingList', () => {
         });
     });
 
-    it.only('should render alert when there are no activities and error when trying to continue', () => {
+    it('should render alert when there are no activities and error when trying to continue', () => {
       cy.visit(`/fyllut/testdrivinglist?sub=digital`);
       cy.defaultWaits();
       cy.mocksUseRouteVariant('get-activities:success-empty');
@@ -255,7 +271,11 @@ describe('DrivingList', () => {
       });
 
       cy.clickSaveAndContinue();
-      cy.findByRole('link', { name: `Du må fylle ut: ${ACTIVITIES_LABEL}` }).should('exist');
+      cy.findByRole('region', { name: TEXTS.validering.error })
+        .should('exist')
+        .within(() => {
+          cy.findByText(`Du må fylle ut: ${ACTIVITIES_LABEL}`).should('exist');
+        });
     });
   });
 });

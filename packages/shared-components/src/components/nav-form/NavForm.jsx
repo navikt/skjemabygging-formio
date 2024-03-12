@@ -57,8 +57,8 @@ const NavForm = (props) => {
 
   useEffect(() => {
     const { externalEvents } = props;
-    externalEvents.on('focusOnComponent', (args) => formio.focusOnComponent(args));
-    return () => externalEvents.removeListener('focusOnComponent');
+    externalEvents?.on('focusOnComponent', (args) => formio.focusOnComponent(args));
+    return () => externalEvents?.removeListener('focusOnComponent');
   }, [props.externalEvents, formio]);
 
   const createWebformInstance = (srcOrForm) => {
