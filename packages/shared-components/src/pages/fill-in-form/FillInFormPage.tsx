@@ -46,10 +46,8 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: Fil
   const { hash } = useLocation();
   const { panelSlug } = useParams();
   const mutationObserverRef = useRef<MutationObserver | undefined>(undefined);
-  const formioInstanceRef = useRef();
+  const formioInstanceRef = useRef<any>();
   const [showModal, setShowModal] = useState<ModalType>();
-
-  const [oldPanelSlug, setOldPanelSlug] = useState(panelSlug);
 
   const exitUrl = urlUtils.getExitUrl(window.location.href);
   const deletionDate = submission?.fyllutState?.mellomlagring?.deletionDate ?? '';
@@ -281,13 +279,11 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: Fil
   }, [hash]);
 
   useEffect(() => {
-    if (panelSlug !== oldPanelSlug) {
-      setOldPanelSlug(panelSlug);
-      if (formioInstanceRef.current) {
-        goToPanelFromUrlParam(formioInstanceRef.current);
-      }
+    const instance = formioInstanceRef.current;
+    if (instance && instance.currentPanel?.key !== panelSlug) {
+      goToPanelFromUrlParam(instance);
     }
-  }, [panelSlug, goToPanelFromUrlParam, oldPanelSlug]);
+  }, [panelSlug, goToPanelFromUrlParam]);
 
   if (!translationsForNavForm) {
     return null;
