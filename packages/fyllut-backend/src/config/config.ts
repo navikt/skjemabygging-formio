@@ -4,7 +4,10 @@ import { logger } from '../logger';
 import { NaisCluster } from './nais-cluster.js';
 import { AmplitudeConfig, ConfigType, DefaultConfig, IdportenConfig, SendInnConfig, TokenxConfig } from './types';
 
-if (process.env.NODE_ENV !== 'test') {
+const { DOTENV_FILE } = process.env;
+if (DOTENV_FILE) {
+  dotenv.config({ path: [`.env.${DOTENV_FILE}.local`, `.env.${DOTENV_FILE}`] });
+} else if (process.env.NODE_ENV !== 'test') {
   dotenv.config();
 }
 
