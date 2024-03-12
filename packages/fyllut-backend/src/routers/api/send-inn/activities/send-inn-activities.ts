@@ -14,7 +14,7 @@ const sendInnActivities = {
       const tokenxAccessToken = getTokenxAccessToken(req);
 
       const activitiesResponse = await fetch(
-        `${sendInnConfig.host}${sendInnConfig.paths.activities}?type=${req.query.type ?? 'aktivitet'}`,
+        `${sendInnConfig.host}${sendInnConfig.paths.activities}?dagligreise=${req.query.dagligreise ?? false}`,
         {
           method: 'GET',
           headers: {

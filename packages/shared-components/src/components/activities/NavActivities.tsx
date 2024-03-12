@@ -41,9 +41,9 @@ const NavActivities = (props: Props) => {
           setLoading(true);
           let result: SendInnAktivitet[] | undefined = [];
           if (props.dataType === 'vedtak') {
-            result = await getActivities(props.appConfig, 'dagligreise');
+            result = await getActivities(props.appConfig, true);
           } else {
-            result = await getActivities(props.appConfig, 'aktivitet');
+            result = await getActivities(props.appConfig, false);
           }
 
           if (result) {

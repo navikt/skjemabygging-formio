@@ -333,12 +333,12 @@ module.exports = [
         type: 'middleware',
         options: {
           middleware: (req, res) => {
-            const type = req.query.type;
+            const dagligreise = req.query.dagligreise;
 
             res.status(200);
             res.contentType('application/json; charset=UTF-8');
 
-            if (type === 'dagligreise') {
+            if (!!dagligreise) {
               res.send(activitiesMultiple); // Includes saksinformasjon (vedtak for daglig reise)
             } else {
               res.send(activities);
