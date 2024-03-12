@@ -21,6 +21,7 @@
 # misc
 .DS_Store
 .env
+.env*.local
 environments
 package.json.backup
 yarn.lock.backup

@@ -15,6 +15,7 @@ interface FetchHeader {
   'Fyllut-Submission-Method'?: SubmissionMethodType;
   'Bygger-Formio-Token'?: string;
   'x-jwt-token'?: string; // formio token when invoking formio api directly
+  'x-innsendingsid'?: string;
 }
 
 interface FetchOptions {

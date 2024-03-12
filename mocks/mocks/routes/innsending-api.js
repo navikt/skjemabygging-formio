@@ -330,6 +330,24 @@ module.exports = [
     variants: [
       {
         id: 'success',
+        type: 'middleware',
+        options: {
+          middleware: (req, res) => {
+            const dagligreise = req.query.dagligreise;
+
+            res.status(200);
+            res.contentType('application/json; charset=UTF-8');
+
+            if (dagligreise === 'true') {
+              res.send(activitiesMultiple); // Includes saksinformasjon (vedtak for daglig reise)
+            } else {
+              res.send(activities);
+            }
+          },
+        },
+      },
+      {
+        id: 'success',
         type: 'json',
         options: {
           status: 200,

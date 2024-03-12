@@ -21,7 +21,7 @@ const NavDrivingList = () => {
       if (app === 'fyllut' && isLoggedIn && submissionMethod === 'digital') {
         try {
           setLoading(true);
-          const result = await getActivities(appConfig);
+          const result = await getActivities(appConfig, true);
 
           if (result) {
             setActivities(result);
