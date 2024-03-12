@@ -55,6 +55,12 @@ const NavForm = (props) => {
     [formio],
   );
 
+  useEffect(() => {
+    const { externalEvents } = props;
+    externalEvents.on('focusOnComponent', (args) => formio.focusOnComponent(args));
+    return () => externalEvents.removeListener('focusOnComponent');
+  }, [props.externalEvents, formio]);
+
   const createWebformInstance = (srcOrForm) => {
     const { formioform, formReady, language, i18n } = props;
     instance = new (formioform || FormioForm)(element, srcOrForm, {
@@ -185,6 +191,9 @@ NavForm.propTypes = {
   onBlur: PropTypes.func,
   onInitialized: PropTypes.func,
   onWizardPageSelected: PropTypes.func,
+  onShowErrors: PropTypes.func,
+  onErrorSummaryFocus: PropTypes.func,
+  externalEvents: PropTypes.object,
   formReady: PropTypes.func,
   submissionReady: PropTypes.func,
   formioform: PropTypes.any,

@@ -1,5 +1,6 @@
 import { FyllutState, NavFormType, navFormUtils, Submission, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
+import EventEmitter from 'eventemitter3';
+import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import ConfirmationModal from '../../components/modal/confirmation/ConfirmationModal';
 import NavForm from '../../components/nav-form/NavForm';
@@ -11,6 +12,7 @@ import { LoadingComponent } from '../../index';
 import { scrollToAndSetFocus } from '../../util/focus-management/focus-management';
 import { getPanelSlug } from '../../util/form/form';
 import urlUtils from '../../util/url/url';
+import FormErrorSummary from './FormErrorSummary';
 
 type ModalType = 'save' | 'delete' | 'discard';
 
@@ -46,6 +48,9 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: Fil
   const { hash } = useLocation();
   const mutationObserverRef = useRef<MutationObserver | undefined>(undefined);
   const [showModal, setShowModal] = useState<ModalType>();
+  const [errors, setErrors] = useState<any[]>([]);
+  const externalEvents = useMemo(() => new EventEmitter(), []);
+  const errorSummaryRef = useRef<HTMLElement | null>(null);
 
   const exitUrl = urlUtils.getExitUrl(window.location.href);
   const deletionDate = submission?.fyllutState?.mellomlagring?.deletionDate ?? '';
@@ -63,6 +68,13 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: Fil
       startMellomlagring(submission as Submission);
     }
   }, [submission, startMellomlagring, isMellomlagringAvailable]);
+
+  const focusOnComponent = useCallback(
+    (path: string) => {
+      externalEvents.emit('focusOnComponent', path);
+    },
+    [externalEvents],
+  );
 
   // Clean up mutationObserver
   const removeMutationObserver = () => {
@@ -171,6 +183,16 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: Fil
     goToPanelFromUrlParam(formioInstance);
   }
 
+  function onShowErrors(errorsFromForm) {
+    setErrors(errorsFromForm);
+  }
+
+  function onErrorSummaryFocus() {
+    if (errorSummaryRef.current) {
+      errorSummaryRef.current.focus();
+    }
+  }
+
   const getModalTexts = (modalType?: ModalType) => {
     switch (modalType) {
       case 'save':
@@ -237,6 +259,12 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: Fil
 
   return (
     <div>
+      <FormErrorSummary
+        heading={translate(TEXTS.validering.error)}
+        errors={errors}
+        focusOnComponent={focusOnComponent}
+        ref={(ref) => (errorSummaryRef.current = ref)}
+      />
       <NavForm
         form={formForRendering}
         language={currentLanguage}
@@ -253,6 +281,9 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: Fil
         formReady={onFormReady}
         submissionReady={goToPanelFromUrlParam}
         onWizardPageSelected={onWizardPageSelected}
+        onShowErrors={onShowErrors}
+        onErrorSummaryFocus={onErrorSummaryFocus}
+        externalEvents={externalEvents}
         className="nav-form"
       />
       <ConfirmationModal

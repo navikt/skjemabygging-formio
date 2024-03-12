@@ -1,4 +1,4 @@
-import { Formio } from 'formiojs';
+import { Formio, Utils } from 'formiojs';
 
 const Wizard = Formio.Displays.displays.wizard;
 const WebForm = Formio.Displays.displays.webform;
@@ -243,17 +243,8 @@ Wizard.prototype.attachHeader = function () {
     } else {
       this.currentPage.components.forEach((comp) => comp.setPristine(false));
 
-      this.showErrors([]);
-
-      if (this.refs.errorRef) {
-        this.loadRefs(this.element, {
-          errorRefHeader: 'single',
-        });
-
-        this.refs.errorRefHeader?.focus();
-      } else {
-        this.scrollIntoView(this.element);
-      }
+      this.showErrors();
+      setTimeout(() => this.emit('errorSummaryFocus'), 0);
 
       return Promise.reject(this.errors, true);
     }
@@ -311,4 +302,40 @@ Wizard.prototype.rebuild = function () {
     this.setPage(currentPage);
   };
   return originalRebuild.call(this).then(setCurrentPage.bind(this));
+};
+
+const originalOnChange = Wizard.prototype.onChange;
+Wizard.prototype.onChange = function (flags, changed, modified, changes) {
+  originalOnChange.call(this, flags, changed, modified, changes);
+  /**
+   * The original function checks this.alert, but since we have taken control over the
+   * error summary we need to check this.hasErrors.
+   */
+  if (this.hasErrors && !this.submitted) {
+    // if submitted, invoking checkValidity is handled elsewhere
+    this.checkValidity(this.localData, false, this.localData, true);
+    this.showErrors();
+  }
+};
+
+Wizard.prototype.showErrors = function () {
+  const errs = this.getComponents()
+    .reduce((errors, comp) => errors.concat(comp.errors || []), [])
+    .filter((err) => err.level !== 'hidden')
+    .map((err) => {
+      return {
+        message: err.messages[0].message,
+        formattedKeyOrPath: Utils.getStringFromComponentPath(err.messages[0].path),
+      };
+    });
+  this.hasErrors = errs.length > 0;
+  this.emit('showErrors', errs);
+  return errs;
+};
+
+const originalOnSubmissionError = Wizard.prototype.onSubmissionError;
+Wizard.prototype.onSubmissionError = function (error) {
+  const result = originalOnSubmissionError.call(this, error);
+  setTimeout(() => this.emit('errorSummaryFocus'), 0);
+  return result;
 };
