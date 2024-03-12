@@ -1,4 +1,3 @@
-import alert from './alert';
 import builderComponent from './builderComponent';
 import builderEditForm from './builderEditForm';
 import builderWizard from './builderWizard';
@@ -10,7 +9,6 @@ import cssClasses from './cssClasses';
 import datagrid from './datagrid';
 import day from './day';
 import dialog from './dialog';
-import errorsList from './errorsList';
 import field from './field';
 import file from './file';
 import html from './html';
@@ -46,7 +44,6 @@ export default {
   defaultIconset: 'fa',
   iconClass,
   cssClasses,
-  alert,
   builderComponent,
   builderEditForm,
   builderWizard,
@@ -57,7 +54,6 @@ export default {
   datagrid,
   day,
   dialog,
-  errorsList,
   field,
   file,
   html,
