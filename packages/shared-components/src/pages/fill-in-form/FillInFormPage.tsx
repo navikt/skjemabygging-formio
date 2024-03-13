@@ -59,7 +59,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: Fil
   const formioInstanceRef = useRef<any>();
   const [showModal, setShowModal] = useState<ModalType>();
   const [errors, setErrors] = useState<ComponentError[]>([]);
-  const externalEvents = useMemo(() => new EventEmitter(), []);
+  const fyllutEvents = useMemo(() => new EventEmitter(), []);
   const errorSummaryRef = useRef<HTMLElement | null>(null);
 
   const exitUrl = urlUtils.getExitUrl(window.location.href);
@@ -75,9 +75,9 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: Fil
 
   const focusOnComponent = useCallback<(id: KeyOrFocusComponentId) => void>(
     (id: KeyOrFocusComponentId) => {
-      externalEvents.emit('focusOnComponent', id);
+      fyllutEvents.emit('focusOnComponent', id);
     },
-    [externalEvents],
+    [fyllutEvents],
   );
 
   const goToPanelFromUrlParam = useCallback(
@@ -353,7 +353,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: Fil
         onWizardPageSelected={onWizardPageSelected}
         onShowErrors={onShowErrors}
         onErrorSummaryFocus={onErrorSummaryFocus}
-        externalEvents={externalEvents}
+        fyllutEvents={fyllutEvents}
         className="nav-form"
       />
       <ConfirmationModal
