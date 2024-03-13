@@ -329,7 +329,7 @@ describe('form summary', () => {
                 value: 'Inni container 1',
               },
               {
-                key: 'level2container.tekstfelt',
+                key: 'level1container.level2container.tekstfelt',
                 label: 'Tekstfelt',
                 type: 'textfield',
                 value: 'Inni container 2',
@@ -743,19 +743,19 @@ describe('form summary', () => {
                   components: [
                     {
                       label: 'Field',
-                      key: 'container2.field',
+                      key: 'container1.container2.field',
                       type: 'textfield',
                       value: 'nested-field-2',
                     },
                     {
                       label: 'Field',
-                      key: 'container3.field',
+                      key: 'container1.container2.container3.field',
                       type: 'textfield',
                       value: 'nested-field-3',
                     },
                     {
                       label: 'Field',
-                      key: 'container4.field',
+                      key: 'container1.container2.container3.container4.field',
                       type: 'textfield',
                       value: 'nested-field-4',
                     },
