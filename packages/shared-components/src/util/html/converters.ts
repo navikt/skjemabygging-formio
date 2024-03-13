@@ -126,34 +126,87 @@ const HtmlNode = (
   return htmlElement;
 };
 
+const convertMarkDownToJson = (jsonElement) => {
+  switch (jsonElement?.type) {
+    case 'Element':
+      return {
+        ...jsonElement,
+        children: jsonElement.children.map(convertMarkDownToJson),
+      };
+    case 'TextElement':
+      // console.log('#>> toNode md?', jsonElement);
+      return TextNode(jsonElement.textContent);
+    default:
+      throw Error('unsupported type: ' + (jsonElement as any)?.type);
+  }
+};
+
+const linkMarkDown2HtmlString = (
+  markDown: string,
+  originalATag?: HtmlAsJsonElement | HtmlAsJsonTextElement,
+): string => {
+  const captureRegex = /\[([^[]+)\]\(([^[]+)\)/;
+
+  const captures = captureRegex.exec(markDown);
+  console.log('captures', captures);
+  if (captures) {
+    const text = captures[1];
+    const url = captures[2];
+
+    if (originalATag) {
+      const originalCopy = JSON.parse(JSON.stringify(originalATag));
+      originalCopy.attributes = [...originalCopy.attributes, ['href', url]];
+      // FIXME: only supports <a> with one child
+      console.log('Original A-tag', originalCopy, originalATag);
+      originalCopy.children = [{ ...originalCopy.children[0], textContent: text }];
+      return json2HtmlString(originalCopy);
+    }
+    return `<a href=${url}>${text}</a>`;
+  }
+  return markDown;
+};
+
+const strongMarkDown2HtmlString = (markDown: string) => {
+  const captureRegex = /\*{2}([^*]*)\*{2}/;
+  const captures = captureRegex.exec(markDown);
+  if (captures) {
+    const innerText = captures[1];
+    // We don't care if the original uses a b-tag, since strong is used as default in the wysiwyg-editor
+    //TODO use the exisisting html-creator-functionality?
+    return `<strong>${innerText}</strong>`;
+  }
+  return markDown;
+};
+
 const markDown2Json = (
   markDown: string,
   original: HtmlAsJsonTextElement,
 ): HtmlAsJsonElement | HtmlAsJsonTextElement => {
   const markDownLinkRegex = /\[[^[]+\]\([^[]+\)/gm;
-  const captureRegex = /\[([^[]+)\]\(([^[]+)\)/;
-  const matches = markDown.match(markDownLinkRegex);
+  const markDownStrongRegex = /\*{2}[^*]*\*{2}/gm;
 
-  if (matches) {
-    let htmlString = markDown;
-    matches.forEach((match, index) => {
-      const captures = captureRegex.exec(match);
-      if (captures) {
-        const text = captures[1];
-        const url = captures[2];
-        const originalATag = original.htmlContentAsJson?.filter(
-          (element) => element.type === 'Element' && element.tagName === 'A',
-        )?.[index];
-        if (originalATag) {
-          const originalCopy = JSON.parse(JSON.stringify(originalATag));
-          originalCopy.attributes = [...originalCopy.attributes, ['href', url]];
-          // FIXME: only supports <a> with one child
-          originalCopy.children = [{ ...originalCopy.children[0], textContent: text }];
-          htmlString = htmlString.replace(match, json2HtmlString(originalCopy));
-        }
-        htmlString = htmlString.replace(match, `<a href=${url}>${text}</a>`);
-      }
+  let htmlString = markDown;
+
+  const linkMatches = markDown.match(markDownLinkRegex);
+
+  if (linkMatches) {
+    linkMatches.forEach((match, index) => {
+      const originalATag = original.htmlContentAsJson?.filter(
+        (element) => element.type === 'Element' && element.tagName === 'A',
+      )?.[index];
+      const aTag = linkMarkDown2HtmlString(match, originalATag);
+      htmlString = htmlString.replace(match, aTag);
     });
+  }
+
+  const strongMatches = htmlString.match(markDownStrongRegex);
+  if (strongMatches) {
+    strongMatches.forEach((match) => {
+      const strongTag = strongMarkDown2HtmlString(match);
+      htmlString = htmlString.replace(match, strongTag);
+    });
+  }
+  if (linkMatches || strongMatches) {
     return htmlString2Json(htmlString);
   }
   return { ...original, textContent: markDown };
