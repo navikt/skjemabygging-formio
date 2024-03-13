@@ -119,7 +119,7 @@ describe('DrivingList', () => {
       cy.findByRole('region', { name: TEXTS.validering.error })
         .should('exist')
         .within(() => {
-          cy.findByText(TEXTS.validering.validParkingExpenses).should('exist');
+          cy.findByText('15.05.2023: Parkeringsutgiftene må være et gyldig beløp').should('exist');
         });
     });
 
