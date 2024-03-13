@@ -22,7 +22,7 @@
             "fom": "2024-01-01",
             "tom": "2024-08-31"
           },
-          "trengerParkering": false,
+          "trengerParkering": true,
           "betalingsplan": [
             {
               "betalingsplanId": "15573660",
@@ -30,7 +30,8 @@
               "utgiftsperiode": {
                 "fom": "2024-01-01",
                 "tom": "2024-01-07"
-              }
+              },
+              "journalpostId": "480716180"
             },
             {
               "betalingsplanId": "15573661",
