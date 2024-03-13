@@ -160,12 +160,14 @@ function handleField(component, submission, formSummaryObject, parentContainerKe
   ) {
     return formSummaryObject;
   }
+  const hiddenInSummary = type === 'maalgruppe';
   return [
     ...formSummaryObject,
     {
       label: translate(label),
       key: componentKey,
       type,
+      ...(hiddenInSummary && { hiddenInSummary }),
       value: formatValue(component, submissionValue, translate, form),
     },
   ];

@@ -22,20 +22,20 @@
       "data": {
         "data": {
           "drivinglist": {
-            "selectedVedtaksId": "34359921",
+            "selectedVedtaksId": "43258683",
             "dates": [
               {
-                "date": "2023-12-01T00:00:00.000Z",
+                "date": "2024-01-08T00:00:00.000Z",
                 "parking": "",
                 "betalingsplanId": "14514541"
               },
               {
-                "date": "2023-12-04T00:00:00.000Z",
+                "date": "2024-01-12T00:00:00.000Z",
                 "parking": "50",
                 "betalingsplanId": "14514542"
               },
               {
-                "date": "2023-12-10T00:00:00.000Z",
+                "date": "2024-01-15T00:00:00.000Z",
                 "parking": "100",
                 "betalingsplanId": "14514540"
               }

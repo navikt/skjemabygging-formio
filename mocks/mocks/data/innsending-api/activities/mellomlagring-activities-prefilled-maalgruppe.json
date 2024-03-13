@@ -1,0 +1,64 @@
+{
+  "brukerId": "19876898104",
+  "skjemanr": "testing-activities",
+  "tittel": "Testing activities",
+  "tema": "AGR",
+  "spraak": "nb",
+  "hoveddokument": {
+    "vedleggsnr": "testing-activities",
+    "tittel": "Testing activities",
+    "label": "Testing activities",
+    "pakrevd": true,
+    "mimetype": "application/pdf"
+  },
+  "hoveddokumentVariant": {
+    "vedleggsnr": "testing-activities",
+    "tittel": "Testing activities",
+    "label": "Testing activities",
+    "pakrevd": false,
+    "mimetype": "application/json",
+    "document": {
+      "language": "nb-NO",
+      "data": {
+        "data": {
+          "container": {
+            "maalgruppe": {
+              "calculated": "ANNET",
+              "prefilled": "MOTDAGPEN"
+            },
+            "aktivitet": {
+              "aktivitetId": "ingenAktivitet",
+              "maalgruppe": "",
+              "periode": {
+                "fom": "",
+                "tom": ""
+              },
+              "text": "Jeg får ikke opp noen aktiviteter her som stemmer med det jeg vil søke om"
+            }
+          }
+        },
+        "metadata": {
+          "timezone": "Europe/Oslo",
+          "offset": 60,
+          "origin": "http://localhost:3001",
+          "referrer": "http://localhost:3001/fyllut/testingactivities/veiledning?sub=digital&innsendingsId=fb47c474-66c1-46ba-8124-723447a79e8e&lang=nb-NO",
+          "browserName": "Netscape",
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36",
+          "pathName": "/fyllut/testingactivities/veiledning",
+          "onLine": true
+        },
+        "state": "submitted",
+        "_vnote": ""
+      }
+    }
+  },
+  "innsendingsId": "fb47c474-66c1-46ba-8124-723447a79e83",
+  "status": "Opprettet",
+  "vedleggsListe": [],
+  "kanLasteOppAnnet": true,
+  "fristForEttersendelse": 14,
+  "endretDato": "2024-02-13T14:15:27.73904+01:00",
+  "skalSlettesDato": "2024-04-09",
+  "skjemaPath": "testingactivities",
+  "visningsType": "fyllUt"
+}

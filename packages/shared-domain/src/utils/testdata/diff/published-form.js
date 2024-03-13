@@ -1,3 +1,5 @@
+import { enrichComponentsWithNavIds } from '../../navFormUtils';
+
 const form = {
   title: 'AK tester nedtrekksliste',
   name: 'testAk001',
@@ -772,4 +774,4 @@ const form = {
   _vid: 0,
 };
 
-export default form;
+export default { ...form, components: enrichComponentsWithNavIds(form.components) };

@@ -26,7 +26,7 @@ const useDrivinglistStyles = makeStyles({
 });
 
 const DrivingListFromDates = () => {
-  const { values, updateValues, t, locale } = useDrivingList();
+  const { values, updateValues, t, locale, getComponentError } = useDrivingList();
 
   const styles = useDrivinglistStyles();
 
@@ -131,6 +131,7 @@ const DrivingListFromDates = () => {
           defaultValue={values?.selectedPeriodType}
           tabIndex={-1}
           className={styles.marginBottom}
+          error={getComponentError('periodType')}
         >
           <Radio value="weekly">{t(TEXTS.common.weekly)}</Radio>
           <Radio value="monthly">{t(TEXTS.common.monthly)}</Radio>
@@ -145,7 +146,7 @@ const DrivingListFromDates = () => {
               onChange={(date: string) => onDateChange(date)}
               locale={locale}
               readOnly={false}
-              error={undefined}
+              error={getComponentError('datePicker')}
               inputRef={undefined}
               className={styles.marginBottom}
               toDate={toDate(values)}
@@ -155,6 +156,7 @@ const DrivingListFromDates = () => {
             <RadioGroup
               id={drivingListMetadata('parkingRadio').id}
               legend={t(drivingListMetadata('parkingRadio').label)}
+              error={getComponentError('parkingRadio')}
               onChange={(value) => onParkingChange(value)}
               defaultValue={values?.parking}
               tabIndex={-1}

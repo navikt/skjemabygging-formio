@@ -260,17 +260,17 @@ class BaseComponent extends FormioReactComponent {
     return (
       <>
         {diff.isNew && (
-          <Tag size="xsmall" variant="warning">
+          <Tag size="xsmall" variant="warning" data-testid="diff-tag">
             Ny
           </Tag>
         )}
         {diff.changesToCurrentComponent?.length > 0 && (
-          <Tag size="xsmall" variant="warning">
+          <Tag size="xsmall" variant="warning" data-testid="diff-tag">
             Endring
           </Tag>
         )}
         {diff.deletedComponents?.length > 0 && (
-          <Tag size="xsmall" variant="warning">
+          <Tag size="xsmall" variant="warning" data-testid="diff-tag">
             Slettede elementer
           </Tag>
         )}
@@ -281,24 +281,20 @@ class BaseComponent extends FormioReactComponent {
   // MetadataId is used to focus to the correct element when clicking on error summary
   // Message is the error message that is shown in the error summary
   addError(metadataId: string, message: string) {
-    this.componentErrors.push({ metadataId, message });
+    this.componentErrors.push({
+      metadataId,
+      message,
+      level: 'error',
+      path: metadataId,
+
+      // For the error summary (will be removed when the new error summary is implemented)
+      messages: [{ formattedKeyOrPath: metadataId, message, context: { hasLabel: true } }],
+      component: { key: metadataId },
+    });
   }
 
   removeAllErrors() {
     this.componentErrors = [];
-  }
-
-  renderErrors() {
-    if (this.componentErrors.length > 0) {
-      const errors = this.componentErrors.map((error) => ({
-        level: 'error',
-        message: error.message,
-        path: error.metadataId,
-        context: { hasLabel: true }, // To not show the label of the component in the error summary (ex: "label: message")
-      }));
-      super.setCustomValidity(errors);
-      return false;
-    }
   }
 }
 

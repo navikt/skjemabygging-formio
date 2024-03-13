@@ -29,7 +29,7 @@ interface SendInnContextType {
   submitSoknad: (submission: Submission) => Promise<SendInnSoknadResponse | undefined>;
   deleteMellomlagring: () => Promise<{ status: string; info: string } | undefined>;
   isMellomlagringActive: boolean;
-  isMellomlagringEnabled: boolean;
+  isMellomlagringAvailable: boolean;
   isMellomlagringReady: boolean;
   innsendingsId?: string;
   mellomlagringError: MellomlagringError | undefined;
@@ -55,16 +55,15 @@ const SendInnProvider = ({
   onFyllutStateChange,
 }: SendInnProviderProps) => {
   const appConfig = useAppConfig();
-  const { app, submissionMethod, featureToggles, logger, baseUrl } = appConfig;
+  const { app, submissionMethod, logger, baseUrl } = appConfig;
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const { loggSkjemaFullfort, loggSkjemaInnsendingFeilet } = useAmplitude();
 
-  const isMellomlagringEnabled =
-    app === 'fyllut' && submissionMethod === 'digital' && !!featureToggles?.enableMellomlagring;
+  const isMellomlagringAvailable = app === 'fyllut' && submissionMethod === 'digital';
   // isMellomlagringReady is true if we either have successfully fetched or created mellomlagring, or if mellomlagring is not enabled
-  const [isMellomlagringReady, setIsMellomlagringReady] = useState(!isMellomlagringEnabled);
+  const [isMellomlagringReady, setIsMellomlagringReady] = useState(!isMellomlagringAvailable);
   const [initStatus, setInitStatus] = useState<'pending' | 'started' | 'done' | 'error'>('pending');
   // Make sure that we only create once
   const [isCreateStarted, setIsCreateStarted] = useState(false);
@@ -159,13 +158,6 @@ const SendInnProvider = ({
       return;
     }
 
-    // Complete the initialization before creating if createMellomlagring is not enabled
-    // Makes it possible to turn off NEW creations of mellomlagring, by setting createMellomlagring=false in ENABLED_FEATURES, without affecting existing ones
-    if (!featureToggles?.enableCreateMellomlagring) {
-      setIsMellomlagringReady(true);
-      return;
-    }
-
     try {
       setIsCreateStarted(true);
       const currentLanguage = getLanguageFromSearchParams();
@@ -205,7 +197,7 @@ const SendInnProvider = ({
   };
 
   const updateMellomlagring = async (submission: Submission): Promise<SendInnSoknadResponse | undefined> => {
-    if (!isMellomlagringEnabled || !isMellomlagringReady) {
+    if (!isMellomlagringAvailable || !isMellomlagringReady) {
       return;
     }
 
@@ -236,7 +228,7 @@ const SendInnProvider = ({
   };
 
   const deleteMellomlagring = async (): Promise<{ status: string; info: string } | undefined> => {
-    if (!isMellomlagringEnabled || !innsendingsId) {
+    if (!isMellomlagringAvailable || !innsendingsId) {
       return;
     }
 
@@ -266,7 +258,7 @@ const SendInnProvider = ({
     const submission = removeFyllutState(appSubmission);
     let redirectLocation: string | undefined = undefined;
     const setRedirectLocation = (loc: string) => (redirectLocation = loc);
-    if (isMellomlagringEnabled && innsendingsId) {
+    if (isMellomlagringAvailable && innsendingsId) {
       try {
         const response = await updateUtfyltSoknad(
           appConfig,
@@ -325,7 +317,7 @@ const SendInnProvider = ({
     deleteMellomlagring,
     submitSoknad,
     innsendingsId,
-    isMellomlagringEnabled,
+    isMellomlagringAvailable,
     isMellomlagringActive: !!fyllutMellomlagringState?.isActive,
     isMellomlagringReady,
     mellomlagringError: fyllutMellomlagringState?.error,

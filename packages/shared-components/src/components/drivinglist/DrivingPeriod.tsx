@@ -25,7 +25,7 @@ const useDrivingPeriodStyles = makeStyles({
 });
 
 const DrivingPeriod = ({ periodFrom, periodTo, hasParking, dailyRate, betalingsplan }: DrivingPeriodProps) => {
-  const { values, updateValues, t, locale } = useDrivingList();
+  const { values, updateValues, t, locale, getComponentError } = useDrivingList();
 
   const styles = useDrivingPeriodStyles();
 
@@ -110,6 +110,7 @@ const DrivingPeriod = ({ periodFrom, periodTo, hasParking, dailyRate, betalingsp
           legend={drivingListLegend()}
           onChange={(values) => onChange(values)}
           value={values?.dates?.map((value) => value.date) ?? []}
+          error={getComponentError('dates')}
         >
           {periodDates.map((date) => {
             return (

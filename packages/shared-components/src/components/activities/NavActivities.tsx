@@ -16,7 +16,6 @@ type Props = {
   error?: string;
   defaultActivity?: SubmissionActivity;
   appConfig: AppConfigContextType;
-  setLastRef?: (ref: HTMLInputElement | null) => void;
   t: TFunction;
   dataType: ActivityDataType;
   activities?: SendInnAktivitet[];
@@ -40,7 +39,12 @@ const NavActivities = (props: Props) => {
       if (app === 'fyllut' && isLoggedIn && submissionMethod === 'digital' && !props.activities) {
         try {
           setLoading(true);
-          const result = await getActivities(props.appConfig);
+          let result: SendInnAktivitet[] | undefined = [];
+          if (props.dataType === 'vedtak') {
+            result = await getActivities(props.appConfig, true);
+          } else {
+            result = await getActivities(props.appConfig, false);
+          }
 
           if (result) {
             setActivitySelections(mapToSubmissionActivity(result, props.dataType));
@@ -78,10 +82,9 @@ const NavActivities = (props: Props) => {
         description={props.description}
         className={props.className}
         error={props.error}
+        tabIndex={-1}
       >
-        <Checkbox value={props.defaultActivity?.aktivitetId} ref={(ref) => props.setLastRef?.(ref)}>
-          {props.defaultActivity?.text}
-        </Checkbox>
+        <Checkbox value={props.defaultActivity?.aktivitetId}>{props.defaultActivity?.text}</Checkbox>
       </CheckboxGroup>
     );
   };
@@ -113,14 +116,11 @@ const NavActivities = (props: Props) => {
         description={props.description}
         className={props.className}
         error={props.error}
+        tabIndex={-1}
       >
-        {activitySelections?.map((activity: SubmissionActivity, index, arr) => {
+        {activitySelections?.map((activity: SubmissionActivity) => {
           return (
-            <Radio
-              key={getId(activity)}
-              value={getId(activity)}
-              {...(index === arr.length - 1 && { ref: (ref) => props.setLastRef?.(ref) })}
-            >
+            <Radio key={getId(activity)} value={getId(activity)}>
               {activity.text}
             </Radio>
           );
@@ -141,7 +141,7 @@ const NavActivities = (props: Props) => {
   // Shows checkbox when there are no activities or it is displayed in byggeren
   // Shows radio when there are 1 or more activities
   const renderActivities = () => {
-    if (hasActivities && loading) {
+    if (loading) {
       return <Skeleton variant="rounded" width="100%" height={150} />;
     } else if (hasActivities && !loading) {
       return renderRadioGroup();
@@ -152,8 +152,12 @@ const NavActivities = (props: Props) => {
 
   return (
     <>
-      {renderActivities()}
-      {showError && renderNoActivitiesAlert()}
+      {submissionMethod === 'digital' && (
+        <>
+          {renderActivities()}
+          {showError && renderNoActivitiesAlert()}
+        </>
+      )}
     </>
   );
 };

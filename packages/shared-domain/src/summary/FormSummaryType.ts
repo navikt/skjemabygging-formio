@@ -79,7 +79,7 @@ export namespace Summary {
     components: DataGridRow[];
   }
 
-  export type Component =
+  export type Component = (
     | Field
     | Fieldset
     | Panel
@@ -89,5 +89,8 @@ export namespace Summary {
     | Image
     | Activity
     | Attachment
-    | DrivingList;
+    | DrivingList
+  ) & {
+    hiddenInSummary?: boolean;
+  };
 }

@@ -6,7 +6,6 @@ import radioBuilder from './Radio.builder';
 import radioForm from './Radio.form';
 
 class Radio extends BaseComponent {
-  lastRadioRef: HTMLInputElement | null = null;
   _reactRefsReady = Ready();
 
   static schema() {
@@ -51,7 +50,7 @@ class Radio extends BaseComponent {
         const input = this.getRef(`input:${focusedElementName}`);
         input?.focus();
       } else {
-        this.lastRadioRef?.focus();
+        this.reactInstance?.focus();
       }
     });
   }
@@ -76,6 +75,7 @@ class Radio extends BaseComponent {
         readOnly={this.getReadOnly()}
         spellCheck={this.getSpellCheck()}
         error={this.getError()}
+        tabIndex={-1}
       >
         {values.map((obj, index, arr) => (
           <AkselRadio
@@ -86,7 +86,6 @@ class Radio extends BaseComponent {
             ref={(ref) => {
               this.addRef(`input:${obj.value}`, ref);
               if (index === arr.length - 1) {
-                this.lastRadioRef = ref;
                 this._reactRefsReady.resolve();
               }
             }}

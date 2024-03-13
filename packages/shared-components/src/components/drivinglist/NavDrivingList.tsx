@@ -7,7 +7,7 @@ import DrivingListFromActivities from './DrivingListFromActivities';
 import DrivingListFromDates from './DrivingListFromDates';
 
 const NavDrivingList = () => {
-  const { appConfig, t, values } = useDrivingList();
+  const { appConfig, t } = useDrivingList();
   const [activities, setActivities] = useState<SendInnAktivitet[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [showError, setShowError] = useState<boolean>(false);
@@ -21,7 +21,7 @@ const NavDrivingList = () => {
       if (app === 'fyllut' && isLoggedIn && submissionMethod === 'digital') {
         try {
           setLoading(true);
-          const result = await getActivities(appConfig);
+          const result = await getActivities(appConfig, true);
 
           if (result) {
             setActivities(result);

@@ -41,16 +41,6 @@ class Activities extends BaseComponent {
     this.rerender();
   }
 
-  focus() {
-    if (this.lastRef) {
-      this.lastRef.focus();
-    }
-  }
-
-  setLastRef(ref: any) {
-    this.lastRef = ref;
-  }
-
   renderReact(element) {
     element.render(
       <>
@@ -66,7 +56,6 @@ class Activities extends BaseComponent {
           defaultActivity={this.defaultActivity}
           t={this.t.bind(this)}
           dataType="aktivitet"
-          setLastRef={(ref) => this.setLastRef(ref)}
         />
       </>,
     );

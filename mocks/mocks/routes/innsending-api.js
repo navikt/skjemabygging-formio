@@ -4,6 +4,7 @@ const mellomlagringValid2 = require('../data/innsending-api/mellomlagring/getTes
 const mellomlagringValidExtraValues = require('../data/innsending-api/mellomlagring/getTestMellomlagring-valid-extra-values.json');
 const prefillDataNames = require('../data/innsending-api/prefill-data/prefill-data-names.json');
 const activities = require('../data/innsending-api/activities/activities.json');
+const activitiesMultiple = require('../data/innsending-api/activities/activities-multiple.json');
 const paabegyntMellomlagringOgInnsendt = require('../data/innsending-api/active-tasks/mellomlagringOgEttersending.json');
 const paabegyntMellomlagring = require('../data/innsending-api/active-tasks/mellomlagring.json');
 const paabegyntInnsendt = require('../data/innsending-api/active-tasks/ettersending.json');
@@ -12,6 +13,7 @@ const formSelectSoknadCompleteV1 = require('../data/innsending-api/mellomlagring
 const formSelectSoknadInvalidCountryV1 = require('../data/innsending-api/mellomlagring/form-select/saved-invalid-country-v1.json');
 const formSelectSoknadInvalidInstrumentV1 = require('../data/innsending-api/mellomlagring/form-select/saved-invalid-instrument-v2.json');
 const mellomlagringActivities = require('../data/innsending-api/activities/mellomlagring-activities.json');
+const mellomlagringActivitiesPrefilledMaalgruppe = require('../data/innsending-api/activities/mellomlagring-activities-prefilled-maalgruppe.json');
 const nav083591soknadComplete = require('../data/innsending-api/mellomlagring/nav083591/complete.json');
 const mellomlagringDrivingList = require('../data/innsending-api/driving-list/mellomlagring-driving-list.json');
 
@@ -177,6 +179,14 @@ module.exports = [
         },
       },
       {
+        id: 'success-activities-prefilled-maalgruppe',
+        type: 'json',
+        options: {
+          status: 200,
+          body: convertToInnsendingApiResponse(mellomlagringActivitiesPrefilledMaalgruppe),
+        },
+      },
+      {
         id: 'form-select-partial-v1',
         type: 'json',
         options: {
@@ -320,10 +330,36 @@ module.exports = [
     variants: [
       {
         id: 'success',
+        type: 'middleware',
+        options: {
+          middleware: (req, res) => {
+            const dagligreise = req.query.dagligreise;
+
+            res.status(200);
+            res.contentType('application/json; charset=UTF-8');
+
+            if (dagligreise === 'true') {
+              res.send(activitiesMultiple); // Includes saksinformasjon (vedtak for daglig reise)
+            } else {
+              res.send(activities);
+            }
+          },
+        },
+      },
+      {
+        id: 'success',
         type: 'json',
         options: {
           status: 200,
           body: activities,
+        },
+      },
+      {
+        id: 'success-multiple',
+        type: 'json',
+        options: {
+          status: 200,
+          body: activitiesMultiple,
         },
       },
       {
