@@ -279,14 +279,14 @@ class BaseComponent extends FormioReactComponent {
     );
   }
 
-  // MetadataId is used to focus to the correct element when clicking on error summary
+  // elementId is used to focus to the correct element when clicking on error summary
   // Message is the error message that is shown in the error summary
-  addError(metadataId: string, message: string) {
+  addError(message: string, elementId?: string) {
     this.componentErrors.push({
-      metadataId,
       message,
       level: 'error',
       path: FormioUtils.getComponentPath(this.component),
+      elementId,
     });
   }
 

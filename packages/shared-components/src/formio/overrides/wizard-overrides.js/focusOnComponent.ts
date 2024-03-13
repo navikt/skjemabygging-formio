@@ -1,4 +1,4 @@
-export type KeyOrFocusComponentId = string | { path: string; metadataId?: string };
+export type KeyOrFocusComponentId = string | { path: string; elementId?: string };
 
 /**
  * Overriding wizard's focusOnComponent to allow giving focus to components inside the formio component,
@@ -6,14 +6,13 @@ export type KeyOrFocusComponentId = string | { path: string; metadataId?: string
  * @param wizard
  */
 const focusOnComponent = (wizard) => (keyOrFocusComponentId: KeyOrFocusComponentId) => {
-  console.log(`Wizard focusOnComponent param='${JSON.stringify(keyOrFocusComponentId)}'`);
   if (!keyOrFocusComponentId) {
     return;
   }
   let pageIndex = 0;
   const paramIsString = typeof keyOrFocusComponentId === 'string';
   const key = paramIsString ? keyOrFocusComponentId : keyOrFocusComponentId.path;
-  const metadataId = !paramIsString ? keyOrFocusComponentId.metadataId : undefined;
+  const elementId = !paramIsString ? keyOrFocusComponentId.elementId : undefined;
 
   const [page] = wizard.pages.filter((page, index) => {
     let hasComponent = false;
@@ -32,13 +31,13 @@ const focusOnComponent = (wizard) => (keyOrFocusComponentId: KeyOrFocusComponent
       wizard.showErrors();
       const component = wizard.getComponent(key);
       if (component) {
-        component.focus({ metadataId });
+        component.focus({ elementId });
       }
     });
   }
   const component = wizard.getComponent(key);
   if (component) {
-    component.focus({ metadataId });
+    component.focus({ elementId });
   }
 };
 

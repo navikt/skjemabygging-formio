@@ -19,14 +19,14 @@ const FormErrorSummary = forwardRef<HTMLDivElement, FormErrorSummaryProps>(
         {errors.map((error) => (
           <ErrorSummary.Item
             tabIndex={0}
-            onClick={() => focusOnComponent({ path: error.path, metadataId: error.metadataId })}
+            onClick={() => focusOnComponent({ path: error.path, elementId: error.elementId })}
             onKeyUp={(event) => {
               if (event.key === 'Enter' || event.key === ' ') {
                 event.stopPropagation();
-                focusOnComponent({ path: error.path, metadataId: error.metadataId });
+                focusOnComponent({ path: error.path, elementId: error.elementId });
               }
             }}
-            key={`${error.path}${error.metadataId && `-${error.metadataId}`}`}
+            key={`${error.path}${error.elementId && `-${error.elementId}`}`}
           >
             {error.message}
           </ErrorSummary.Item>

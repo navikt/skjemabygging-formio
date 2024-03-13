@@ -330,9 +330,9 @@ Wizard.prototype.showErrors = function () {
     .filter((err) => err.level !== 'hidden')
     .map((err) => {
       return {
-        message: err.message || err.messages[0].message,
-        path: err.path || Utils.getStringFromComponentPath(err.messages[0].path),
-        metadataId: err.metadataId,
+        message: err.message || err.messages?.[0]?.message,
+        path: err.path || Utils.getStringFromComponentPath(err.messages?.[0]?.path),
+        elementId: err.elementId,
       };
     });
   this.hasErrors = errs.length > 0;

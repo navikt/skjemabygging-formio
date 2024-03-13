@@ -1,5 +1,5 @@
 export interface ComponentError {
-  metadataId?: string;
+  elementId?: string;
   message: string;
   path: string;
   level: 'error';

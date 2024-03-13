@@ -170,7 +170,12 @@ const DrivingListFromDates = () => {
           </>
         )}
 
-        <Accordion tabIndex={-1} id={drivingListMetadata('dates').id} className={styles.marginBottom}>
+        <Accordion
+          tabIndex={-1}
+          id={drivingListMetadata('dates').id}
+          className={styles.marginBottom}
+          ref={(ref) => addRef('dates', ref)}
+        >
           {renderDrivingPeriodsFromDates()}
         </Accordion>
         {allPeriodFieldsSet && values!.periods!.length > 0 && (
