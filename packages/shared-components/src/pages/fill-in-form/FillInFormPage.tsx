@@ -23,6 +23,7 @@ import urlUtils from '../../util/url/url';
 import FormErrorSummary from './FormErrorSummary';
 
 type ModalType = 'save' | 'delete' | 'discard';
+type FyllutEvent = 'focusOnComponent';
 
 interface FillInFormPageProps {
   form: NavFormType;
@@ -59,7 +60,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: Fil
   const formioInstanceRef = useRef<any>();
   const [showModal, setShowModal] = useState<ModalType>();
   const [errors, setErrors] = useState<ComponentError[]>([]);
-  const fyllutEvents = useMemo(() => new EventEmitter(), []);
+  const fyllutEvents = useMemo(() => new EventEmitter<FyllutEvent>(), []);
   const errorSummaryRef = useRef<HTMLElement | null>(null);
 
   const exitUrl = urlUtils.getExitUrl(window.location.href);
