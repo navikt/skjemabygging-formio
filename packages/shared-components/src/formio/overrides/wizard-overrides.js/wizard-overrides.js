@@ -309,8 +309,8 @@ const originalOnChange = Wizard.prototype.onChange;
 Wizard.prototype.onChange = function (flags, changed, modified, changes) {
   originalOnChange.call(this, flags, changed, modified, changes);
   /**
-   * The original function checks this.alert, but since we have taken control over the
-   * error summary we need to check this.hasErrors.
+   * The original onChange function uses this.alert, but that will not be set anymore since we have
+   * taken control over the error summary, so we use this.hasErrors instead which is set in showErrors.
    */
   if (this.hasErrors && !this.submitted) {
     // if submitted, invoking checkValidity is handled elsewhere
