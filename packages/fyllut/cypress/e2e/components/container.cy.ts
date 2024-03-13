@@ -1,3 +1,7 @@
+/*
+ * Tests that fields inside containers are displayed on the summary page and populated with stored values
+ */
+
 describe('Container/Beholder', () => {
   before(() => {
     cy.configMocksServer();
