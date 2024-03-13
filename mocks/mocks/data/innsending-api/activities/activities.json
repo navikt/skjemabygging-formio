@@ -4,7 +4,7 @@
     "aktivitetstype": "ARBTREN",
     "aktivitetsnavn": "Arbeidstrening",
     "periode": {
-      "fom": "2023-12-06",
+      "fom": "2023-12-01",
       "tom": "2024-04-06"
     },
     "antallDagerPerUke": 5,
@@ -14,41 +14,6 @@
     "erStoenadsberettigetAktivitet": true,
     "erUtdanningsaktivitet": false,
     "arrangoer": "MOELV BIL & CARAVAN AS",
-    "saksinformasjon": {
-      "saksnummerArena": "12837895",
-      "sakstype": "TSR",
-      "vedtaksinformasjon": [
-        {
-          "vedtakId": "34359921",
-          "dagsats": 63,
-          "periode": {
-            "fom": "2023-12-06",
-            "tom": "2024-04-06"
-          },
-          "trengerParkering": false,
-          "betalingsplan": [
-            {
-              "betalingsplanId": "14514540",
-              "beloep": 315,
-              "utgiftsperiode": {
-                "fom": "2023-12-06",
-                "tom": "2024-04-06"
-              },
-              "journalpostId": "480716180"
-            },
-            {
-              "betalingsplanId": "14514541",
-              "beloep": 315,
-              "utgiftsperiode": {
-                "fom": "2023-12-06",
-                "tom": "2024-04-06"
-              },
-              "journalpostId": "480716180"
-            }
-          ]
-        }
-      ]
-    },
     "maalgruppe": "NEDSARBEVN"
   }
 ]

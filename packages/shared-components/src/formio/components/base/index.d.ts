@@ -13,6 +13,7 @@ interface ReactComponentType {
   shouldSetValue?: any;
   dataForSetting?: any;
   reactInstance?: HTMLInputElement | Select;
+  dataReady: Promise<any>;
   attachReact(element, ref): any;
   detachReact(element): any;
   validate(data, dirty, rowData): boolean;
@@ -24,6 +25,7 @@ interface ReactComponentType {
   render(element: any): any;
   // Component
   component?: Component;
+  path?: string;
   defaultValue?: any;
   dataValue?: any;
   refs?: any;
@@ -41,15 +43,18 @@ interface ReactComponentType {
     message: string;
   } | null;
   builderMode: boolean;
-  init(): any;
+  validators: any[];
+  init(options?: {}): any;
   redraw(): any;
   attach(element: any): any;
   detach(): void;
   destroy(): void;
   beforeSubmit(): any;
   updateOnChange(flags: any, changed: boolean | any): boolean;
-  t(text: string, params?: any, ...args): any;
+  t: TFunction;
   loadRefs(element: any, refs: any): any;
+  getRef(name: any): any;
+  setRef(name: any, ref: any): void;
   checkValidity(data: any, dirty: any | boolean, rowData: any): boolean;
   getValue(): any;
   hasChanged(before: any, after: any): boolean;
@@ -60,6 +65,7 @@ interface ReactComponentType {
   addMessages(messages): void;
   addFocusBlurEvents(element): void;
   labelIsHidden(): boolean;
+  setCustomValidity(messages: object, dirty?: boolean, external?: boolean): void;
   // Element
   id?: any;
   emit(event: string, data: Object): void;

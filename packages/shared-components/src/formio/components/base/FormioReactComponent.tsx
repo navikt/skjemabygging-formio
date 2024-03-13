@@ -1,14 +1,20 @@
 import { ReactComponent } from '@formio/react';
+import { ComponentError } from '@navikt/skjemadigitalisering-shared-domain';
 import { createRoot } from 'react-dom/client';
+import Ready from '../../../util/form/ready';
 import { IReactComponent } from './index';
 
 class FormioReactComponent extends (ReactComponent as unknown as IReactComponent) {
   componentMessage?: string;
   rootElement: any;
+  componentErrors: ComponentError[];
+  _reactRendered = Ready();
+  _reactRefs: {} = {};
 
   constructor(component, options, data) {
     super(component, options, data);
     this.componentMessage = undefined;
+    this.componentErrors = [];
   }
 
   build(element: any) {
@@ -23,6 +29,7 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
   setReactInstance(element) {
     this.reactInstance = element;
     this.addFocusBlurEvents(element);
+    this._reactRendered.resolve();
   }
 
   detachReact(element) {
@@ -68,8 +75,33 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
 
   rerender() {
     if (this.rootElement) {
+      this._reactRefs = {};
+      this._reactRendered.reset();
       this.renderReact(this.rootElement);
     }
+  }
+
+  /**
+   * Resolves when the React component has been rendered, and {@link setReactInstance} has been invoked.
+   */
+  get reactReady() {
+    return Promise.all([this._reactRendered.promise, this.reactRefsReady]);
+  }
+
+  /**
+   * Override to let the component decide when its refs are ready, typically when all
+   * ref callbacks have been invoked.
+   */
+  get reactRefsReady() {
+    return Promise.resolve();
+  }
+
+  addRef(name: string, ref: any) {
+    this._reactRefs[name] = ref;
+  }
+
+  getRef(name: string) {
+    return this._reactRefs[name];
   }
 
   /**

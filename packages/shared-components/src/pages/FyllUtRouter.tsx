@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { Route, Routes, useResolvedPath } from 'react-router-dom';
 import { FormTitle } from '../components/form/form-title/FormTitle';
 import { SubmissionWrapper } from '../components/summary/submission-wrapper/SubmissionWrapper';
-import { useAppConfig } from '../context/config/configContext';
 import { LanguageSelector, LanguagesProvider } from '../context/languages';
 import { PrefillDataProvider } from '../context/prefill-data/PrefillDataContext';
 import { SendInnProvider } from '../context/sendInn/sendInnContext';
@@ -27,7 +26,6 @@ const useStyles = makeStyles({
 });
 
 const FyllUtRouter = ({ form, translations }) => {
-  const { featureToggles } = useAppConfig();
   const [submission, setSubmission] = useState<Submission | { fyllutState: FyllutState }>();
   const formBaseUrl = useResolvedPath('').pathname;
   const styles = useStyles();
@@ -57,7 +55,9 @@ const FyllUtRouter = ({ form, translations }) => {
           <div className={styles.container}>
             <div className="fyllut-layout">
               <div className="main-col"></div>
-              <div className="right-col">{featureToggles!.enableTranslations && <LanguageSelector />}</div>
+              <div className="right-col">
+                <LanguageSelector />
+              </div>
             </div>
             <Routes>
               <Route path="/" element={<IntroPage form={form} formUrl={formBaseUrl} />} />

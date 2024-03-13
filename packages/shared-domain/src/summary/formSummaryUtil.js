@@ -112,14 +112,22 @@ function handlePanel(
   ];
 }
 
-function handleContainer(component, submission, formSummaryObject, translate, evaluatedConditionals) {
+function handleContainer(
+  component,
+  submission,
+  formSummaryObject,
+  parentContainerKey,
+  translate,
+  evaluatedConditionals,
+) {
   const { components, key } = component;
+  const containerKey = createComponentKey(parentContainerKey, key);
   if (!components || components.length === 0) {
     return formSummaryObject;
   } else {
     const mappedSubComponents = components.reduce(
       (subComponents, subComponent) =>
-        handleComponent(subComponent, submission, subComponents, key, translate, evaluatedConditionals),
+        handleComponent(subComponent, submission, subComponents, containerKey, translate, evaluatedConditionals),
       [],
     );
     return [...formSummaryObject, ...mappedSubComponents];
@@ -139,12 +147,14 @@ function handleField(component, submission, formSummaryObject, parentContainerKe
   ) {
     return formSummaryObject;
   }
+  const hiddenInSummary = type === 'maalgruppe';
   return [
     ...formSummaryObject,
     {
       label: translate(label),
       key: componentKey,
       type,
+      ...(hiddenInSummary && { hiddenInSummary }),
       value: formatValue(component, submissionValue, translate),
     },
   ];
@@ -380,7 +390,14 @@ function handleComponent(
     case 'alertstripe':
       return handleHtmlElement(component, formSummaryObject, parentContainerKey, translate, evaluatedConditionals);
     case 'container':
-      return handleContainer(component, submission, formSummaryObject, translate, evaluatedConditionals);
+      return handleContainer(
+        component,
+        submission,
+        formSummaryObject,
+        parentContainerKey,
+        translate,
+        evaluatedConditionals,
+      );
     case 'datagrid':
       return handleDataGrid(component, submission, formSummaryObject, translate);
     case 'selectboxes':

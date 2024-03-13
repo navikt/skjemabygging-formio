@@ -1,5 +1,5 @@
 import { NavFormType, Submission } from '@navikt/skjemadigitalisering-shared-domain';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import { http } from '../../index';
@@ -44,7 +44,7 @@ describe('sendInnContext', () => {
         <AppConfigProvider
           app={'fyllut'}
           submissionMethod={submissionMethod}
-          featureToggles={{ enableMellomlagring: true, enableCreateMellomlagring: true }}
+          featureToggles={{}}
           http={mockHttp as unknown as typeof http}
           baseUrl={'http://test.example.no'}
           config={{ isTest: true }}
@@ -121,66 +121,6 @@ describe('sendInnContext', () => {
             submission,
             submissionMethod,
             innsendingsId,
-          }),
-          headers,
-          expect.objectContaining({
-            setRedirectLocation: expect.any(Function),
-          }),
-        );
-      });
-    });
-  });
-
-  describe('When mellomlagring is not enabled', () => {
-    beforeEach(() => {
-      render(
-        <AppConfigProvider
-          app={'fyllut'}
-          submissionMethod={submissionMethod}
-          featureToggles={{ enableMellomlagring: false }}
-          http={mockHttp as unknown as typeof http}
-          baseUrl={'http://test.example.no'}
-          config={{ isTest: true }}
-        >
-          <MemoryRouter>
-            <SendInnProvider
-              form={form}
-              formUrl={`/fyllut/${form.path}`}
-              translations={translations}
-              updateSubmission={vi.fn()}
-              onFyllutStateChange={vi.fn()}
-            >
-              <TestComponent submission={submission} />
-            </SendInnProvider>
-          </MemoryRouter>
-        </AppConfigProvider>,
-      );
-    });
-
-    describe('startMellomlagring', () => {
-      it('does not send a POST request to /api/send-inn/soknad', async () => {
-        await userEvent.click(screen.getByRole('button', { name: 'Start mellomlagring' }));
-        expect(mockHttp.post).not.toHaveBeenCalled();
-      });
-    });
-
-    describe('updateMellomlagring', () => {
-      it('does not send a PUT request to /api/send-inn/soknad', async () => {
-        await userEvent.click(screen.getByRole('button', { name: 'Oppdater mellomlagring' }));
-        expect(mockHttp.put).not.toHaveBeenCalled();
-      });
-    });
-
-    describe('submitSoknad', () => {
-      it('sends a POST request to /api/send-inn', async () => {
-        await userEvent.click(screen.getByRole('button', { name: 'Send inn søknad' }));
-        await waitFor(() => expect(mockHttp.post).toHaveBeenCalledTimes(1));
-        expect(mockHttp.post).toHaveBeenCalledWith(
-          'http://test.example.no/api/send-inn',
-          expect.objectContaining({
-            form,
-            submission,
-            submissionMethod,
           }),
           headers,
           expect.objectContaining({

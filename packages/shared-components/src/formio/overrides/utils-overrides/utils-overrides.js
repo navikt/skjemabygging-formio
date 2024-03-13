@@ -80,7 +80,7 @@ const createList = (components, labelId) => {
 };
 
 const TAG = (text) =>
-  `<span class="navds-tag navds-tag--warning navds-tag--xsmall navds-detail navds-detail--small">${text}</span>`;
+  `<span class="navds-tag navds-tag--warning navds-tag--xsmall navds-detail navds-detail--small" data-testid="diff-tag">${text}</span>`;
 
 const getDiffTag = (ctx) => {
   const { component, config, self } = ctx;

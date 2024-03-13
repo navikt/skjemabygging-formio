@@ -1,0 +1,69 @@
+{
+  "brukerId": "19876898104",
+  "skjemanr": "test-driving-list",
+  "tittel": "Testing driving list",
+  "tema": "BIL",
+  "spraak": "nb",
+  "hoveddokument": {
+    "vedleggsnr": "test-driving-list",
+    "tittel": "Testing driving list",
+    "label": "Testing driving list",
+    "pakrevd": true,
+    "mimetype": "application/pdf"
+  },
+  "hoveddokumentVariant": {
+    "vedleggsnr": "test-driving-list",
+    "tittel": "Testing driving list",
+    "label": "Testing driving list",
+    "pakrevd": false,
+    "mimetype": "application/json",
+    "document": {
+      "language": "nb-NO",
+      "data": {
+        "data": {
+          "drivinglist": {
+            "selectedVedtaksId": "43258683",
+            "dates": [
+              {
+                "date": "2024-01-08T00:00:00.000Z",
+                "parking": "",
+                "betalingsplanId": "14514541"
+              },
+              {
+                "date": "2024-01-12T00:00:00.000Z",
+                "parking": "50",
+                "betalingsplanId": "14514542"
+              },
+              {
+                "date": "2024-01-15T00:00:00.000Z",
+                "parking": "100",
+                "betalingsplanId": "14514540"
+              }
+            ]
+          }
+        },
+        "metadata": {
+          "timezone": "Europe/Oslo",
+          "offset": 60,
+          "origin": "http://localhost:3001",
+          "referrer": "http://localhost:3001/fyllut/testdrivinglist/veiledning?sub=digital&innsendingsId=8495201b-71fd-4a95-82f8-d224d32237e5&lang=nb-NO",
+          "browserName": "Netscape",
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+          "pathName": "/fyllut/testdrivinglist/veiledning",
+          "onLine": true
+        },
+        "state": "submitted",
+        "_vnote": ""
+      }
+    }
+  },
+  "innsendingsId": "8495201b-71fd-4a95-82f8-d224d32237e5",
+  "status": "Opprettet",
+  "vedleggsListe": [],
+  "kanLasteOppAnnet": true,
+  "fristForEttersendelse": 14,
+  "endretDato": "2024-03-06T16:22:24.981865+01:00",
+  "skalSlettesDato": "2024-05-01",
+  "skjemaPath": "testdrivinglist",
+  "visningsType": "fyllUt"
+}

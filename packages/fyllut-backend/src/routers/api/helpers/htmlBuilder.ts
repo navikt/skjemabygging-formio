@@ -1,4 +1,5 @@
 import {
+  dateUtils,
   DeclarationType,
   FormPropertiesType,
   formSummaryUtil,
@@ -72,6 +73,7 @@ ${sectionContent(formSection.components, 1)}`;
 
 const sectionContent = (components: Summary.Component[], level: number): string => {
   return components
+    .filter((component) => !component.hiddenInSummary)
     .map((component) => {
       switch (component.type) {
         case 'fieldset':
@@ -91,6 +93,8 @@ const sectionContent = (components: Summary.Component[], level: number): string 
           return html(component);
         case 'activities':
           return activity(component);
+        case 'drivinglist':
+          return drivingList(component);
         default:
           return field(component);
       }
@@ -119,6 +123,21 @@ const field = (component: Summary.Field) =>
 
 const activity = (component: Summary.Activity) =>
   `<div class="spm">${component.label}</div><div class="svar">: ${component.value.text}</div>`;
+
+const drivingList = (component) => `
+  <div class="spm">${component.label}</div>
+  <div class="svar"> 
+    <ul>
+      ${component.value.dates
+        .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+        .map((date) => {
+          return `<li key="${date.date}">${dateUtils.toLocaleDate(date.date)} ${
+            date.parking ? `- ${date.parking}kr` : ''
+          }</li>`;
+        })
+        .join('')}
+    </ul>
+  </div>`;
 
 const html = (component: Summary.Field) => {
   if (component.label) {

@@ -1,11 +1,11 @@
 import { FyllutState, NavFormType, navFormUtils, Submission, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { Dispatch, SetStateAction, useCallback, useEffect, useRef, useState } from 'react';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import ConfirmationModal from '../../components/modal/confirmation/ConfirmationModal';
 import NavForm from '../../components/nav-form/NavForm';
-import { useAmplitude } from '../../context/amplitude/index';
+import { useAmplitude } from '../../context/amplitude';
 import { useAppConfig } from '../../context/config/configContext';
-import { useLanguages } from '../../context/languages/index.js';
+import { useLanguages } from '../../context/languages';
 import { useSendInn } from '../../context/sendInn/sendInnContext';
 import { LoadingComponent } from '../../index';
 import { scrollToAndSetFocus } from '../../util/focus-management/focus-management';
@@ -31,24 +31,210 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: Fil
     loggSkjemaValideringFeilet,
     loggNavigering,
   } = useAmplitude();
-  const { featureToggles, submissionMethod } = useAppConfig();
+  const { submissionMethod } = useAppConfig();
   const [formForRendering, setFormForRendering] = useState<NavFormType>();
   const {
     startMellomlagring,
     updateMellomlagring,
     deleteMellomlagring,
     mellomlagringError,
-    isMellomlagringEnabled,
+    isMellomlagringAvailable,
     isMellomlagringReady,
     isMellomlagringActive,
   } = useSendInn();
   const { currentLanguage, translationsForNavForm, translate } = useLanguages();
   const { hash } = useLocation();
+  const { panelSlug } = useParams();
   const mutationObserverRef = useRef<MutationObserver | undefined>(undefined);
+  const formioInstanceRef = useRef<any>();
   const [showModal, setShowModal] = useState<ModalType>();
 
   const exitUrl = urlUtils.getExitUrl(window.location.href);
   const deletionDate = submission?.fyllutState?.mellomlagring?.deletionDate ?? '';
+
+  const updatePanelUrl = useCallback(
+    (panelPath) => {
+      // We need to get location data from window, since this function runs inside formio
+      navigate({ pathname: `${formUrl}/${panelPath}`, search: window.location.search });
+    },
+    [formUrl, navigate],
+  );
+
+  const goToPanelFromUrlParam = useCallback(
+    (formioInstance) => {
+      // We need to get location data from window, since this function runs inside formio
+      // www.nav.no/fyllut/:form/:panel
+      const panelFromUrl = window.location.pathname.split('/')[3];
+      if (!panelFromUrl) {
+        const pathOfPanel = getPanelSlug(form, 0);
+        updatePanelUrl(pathOfPanel);
+      } else {
+        if (typeof formioInstance?.setPage === 'function') {
+          const panelIndex = formioInstance.currentPanels.indexOf(panelFromUrl);
+          if (panelIndex >= 0) {
+            formioInstance.setPage(panelIndex);
+          } else {
+            formioInstance.setPage(0);
+          }
+        }
+      }
+    },
+    [form, updatePanelUrl],
+  );
+
+  const onNextOrPreviousPage = useCallback(
+    (page, currentPanels) => {
+      if (page <= currentPanels.length - 1) {
+        updatePanelUrl(currentPanels[page]);
+      }
+      scrollToAndSetFocus('#maincontent', 'start');
+    },
+    [updatePanelUrl],
+  );
+
+  const onNextPage = useCallback(
+    ({ page, currentPanels, submission }) => {
+      if (isMellomlagringActive) {
+        updateMellomlagring(submission);
+        setSubmission(submission);
+      }
+      loggNavigering({
+        lenkeTekst: translate(TEXTS.grensesnitt.navigation.next),
+        destinasjon: `${formUrl}/${currentPanels?.[page]}`,
+      });
+      loggSkjemaStegFullfort({ steg: page, skjemastegNokkel: currentPanels?.[page - 1] || '' });
+      onNextOrPreviousPage(page, currentPanels);
+    },
+    [
+      formUrl,
+      isMellomlagringActive,
+      updateMellomlagring,
+      loggNavigering,
+      loggSkjemaStegFullfort,
+      onNextOrPreviousPage,
+      setSubmission,
+      translate,
+    ],
+  );
+
+  const onPreviousPage = useCallback(
+    ({ page, currentPanels }) => {
+      loggNavigering({
+        lenkeTekst: translate(TEXTS.grensesnitt.navigation.previous),
+        destinasjon: `${formUrl}/${currentPanels?.[page - 2]}`,
+      });
+      onNextOrPreviousPage(page, currentPanels);
+    },
+    [formUrl, loggNavigering, onNextOrPreviousPage, translate],
+  );
+
+  const onCancel = useCallback(
+    ({ submission }) => {
+      setSubmission(submission);
+      setShowModal(isMellomlagringActive ? 'delete' : 'discard');
+    },
+    [isMellomlagringActive, setSubmission, setShowModal],
+  );
+
+  const onSave = useCallback(
+    ({ submission }) => {
+      setSubmission(submission);
+      setShowModal('save');
+    },
+    [setSubmission, setShowModal],
+  );
+
+  const onWizardPageSelected = useCallback(
+    (panel) => {
+      loggNavigering({ lenkeTekst: translate(panel.component.title), destinasjon: `${formUrl}/${panel.path}` });
+      updatePanelUrl(panel.path);
+    },
+    [formUrl, loggNavigering, updatePanelUrl, translate],
+  );
+
+  const onFormReady = useCallback(
+    (formioInstance) => {
+      formioInstanceRef.current = formioInstance;
+      goToPanelFromUrlParam(formioInstance);
+    },
+    [goToPanelFromUrlParam],
+  );
+
+  const getModalTexts = useCallback(
+    (modalType?: ModalType) => {
+      switch (modalType) {
+        case 'save':
+          return {
+            ...TEXTS.grensesnitt.confirmSavePrompt,
+            body: translate(TEXTS.grensesnitt.confirmSavePrompt.body, { date: deletionDate }),
+          };
+        case 'delete':
+          return TEXTS.grensesnitt.confirmDeletePrompt;
+        case 'discard':
+        default:
+          return TEXTS.grensesnitt.confirmDiscardPrompt;
+      }
+    },
+    [deletionDate, translate],
+  );
+
+  const onSubmit = useCallback(
+    (submission) => {
+      if (isMellomlagringActive) {
+        updateMellomlagring(submission);
+      }
+      setSubmission(submission);
+      loggNavigering({
+        lenkeTekst: translate(TEXTS.grensesnitt.navigation.submit),
+        destinasjon: `${formUrl}/oppsummering`,
+      });
+      // We need to get location data from window, since this function runs inside formio
+      const skjemastegNokkel = window.location.pathname.split(`${formUrl}/`)[1];
+      loggSkjemaStegFullfort({
+        steg: form.components.findIndex((panel) => panel.key === skjemastegNokkel) + 1,
+        skjemastegNokkel,
+      });
+      // We need to get location data from window, since this function runs inside formio
+      navigate({ pathname: `${formUrl}/oppsummering`, search: window.location.search });
+    },
+    [
+      form.components,
+      formUrl,
+      isMellomlagringActive,
+      loggNavigering,
+      loggSkjemaStegFullfort,
+      navigate,
+      setSubmission,
+      translate,
+      updateMellomlagring,
+    ],
+  );
+
+  const onValidationError = useCallback(() => {
+    loggSkjemaValideringFeilet();
+  }, [loggSkjemaValideringFeilet]);
+
+  const onConfirmCancel = useCallback(async () => {
+    const logNavigation = (lenkeTekst) =>
+      loggNavigering({
+        lenkeTekst,
+        destinasjon: exitUrl,
+      });
+
+    switch (showModal) {
+      case 'save':
+        logNavigation(translate(TEXTS.grensesnitt.navigation.saveDraft));
+        await updateMellomlagring(submission as Submission);
+        break;
+      case 'delete':
+        logNavigation(translate(TEXTS.grensesnitt.navigation.saveDraft));
+        await deleteMellomlagring();
+        break;
+      case 'discard':
+      default:
+        logNavigation(translate(TEXTS.grensesnitt.navigation.cancel));
+    }
+  }, [deleteMellomlagring, exitUrl, loggNavigering, showModal, submission, translate, updateMellomlagring]);
 
   useEffect(() => {
     setFormForRendering(submissionMethod === 'digital' ? navFormUtils.removeVedleggspanel(form) : form);
@@ -59,10 +245,10 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: Fil
   }, [loggSkjemaApnet, submissionMethod]);
 
   useEffect(() => {
-    if (isMellomlagringEnabled) {
+    if (isMellomlagringAvailable) {
       startMellomlagring(submission as Submission);
     }
-  }, [submission, startMellomlagring, isMellomlagringEnabled]);
+  }, [submission, startMellomlagring, isMellomlagringAvailable]);
 
   // Clean up mutationObserver
   const removeMutationObserver = () => {
@@ -92,144 +278,20 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: Fil
     }
   }, [hash]);
 
-  if (featureToggles?.enableTranslations && !translationsForNavForm) {
+  useEffect(() => {
+    const instance = formioInstanceRef.current;
+    if (instance && instance.currentPanel?.key !== panelSlug) {
+      goToPanelFromUrlParam(instance);
+    }
+  }, [panelSlug, goToPanelFromUrlParam]);
+
+  if (!translationsForNavForm) {
     return null;
   }
 
-  if (isMellomlagringEnabled && !isMellomlagringReady && !mellomlagringError) {
+  if (isMellomlagringAvailable && !isMellomlagringReady && !mellomlagringError) {
     return <LoadingComponent heightOffsetRem={18} />;
   }
-
-  function updatePanelUrl(panelPath) {
-    // We need to get location data from window, since this function runs inside formio
-    navigate({ pathname: `${formUrl}/${panelPath}`, search: window.location.search });
-  }
-
-  function goToPanelFromUrlParam(formioInstance) {
-    // We need to get location data from window, since this function runs inside formio
-    // www.nav.no/fyllut/:form/:panel
-    const panelFromUrl = window.location.pathname.split('/')[3];
-    if (!panelFromUrl) {
-      const pathOfPanel = getPanelSlug(form, 0);
-      updatePanelUrl(pathOfPanel);
-    } else {
-      if (typeof formioInstance?.setPage === 'function') {
-        const panelIndex = formioInstance.currentPanels.indexOf(panelFromUrl);
-        if (panelIndex >= 0) {
-          formioInstance.setPage(panelIndex);
-        } else {
-          formioInstance.setPage(0);
-        }
-      }
-    }
-  }
-
-  function onNextPage({ page, currentPanels, submission }) {
-    if (isMellomlagringActive) {
-      updateMellomlagring(submission);
-      setSubmission(submission);
-    }
-    loggNavigering({
-      lenkeTekst: translate(TEXTS.grensesnitt.navigation.next),
-      destinasjon: `${formUrl}/${currentPanels?.[page]}`,
-    });
-    loggSkjemaStegFullfort({ steg: page, skjemastegNokkel: currentPanels?.[page - 1] || '' });
-    onNextOrPreviousPage(page, currentPanels);
-  }
-
-  function onPreviousPage({ page, currentPanels }) {
-    loggNavigering({
-      lenkeTekst: translate(TEXTS.grensesnitt.navigation.previous),
-      destinasjon: `${formUrl}/${currentPanels?.[page - 2]}`,
-    });
-    onNextOrPreviousPage(page, currentPanels);
-  }
-
-  function onCancel({ submission }) {
-    setSubmission(submission);
-    setShowModal(isMellomlagringActive ? 'delete' : 'discard');
-  }
-
-  function onSave({ submission }) {
-    setSubmission(submission);
-    setShowModal('save');
-  }
-
-  function onNextOrPreviousPage(page, currentPanels) {
-    if (page <= currentPanels.length - 1) {
-      updatePanelUrl(currentPanels[page]);
-    }
-    scrollToAndSetFocus('#maincontent', 'start');
-  }
-
-  function onWizardPageSelected(panel) {
-    loggNavigering({ lenkeTekst: translate(panel.component.title), destinasjon: `${formUrl}/${panel.path}` });
-    updatePanelUrl(panel.path);
-  }
-
-  function onFormReady(formioInstance) {
-    goToPanelFromUrlParam(formioInstance);
-  }
-
-  const getModalTexts = (modalType?: ModalType) => {
-    switch (modalType) {
-      case 'save':
-        return {
-          ...TEXTS.grensesnitt.confirmSavePrompt,
-          body: translate(TEXTS.grensesnitt.confirmSavePrompt.body, { date: deletionDate }),
-        };
-      case 'delete':
-        return TEXTS.grensesnitt.confirmDeletePrompt;
-      case 'discard':
-      default:
-        return TEXTS.grensesnitt.confirmDiscardPrompt;
-    }
-  };
-
-  const onSubmit = (submission) => {
-    if (isMellomlagringActive) {
-      updateMellomlagring(submission);
-    }
-    setSubmission(submission);
-    loggNavigering({
-      lenkeTekst: translate(TEXTS.grensesnitt.navigation.submit),
-      destinasjon: `${formUrl}/oppsummering`,
-    });
-    // We need to get location data from window, since this function runs inside formio
-    const skjemastegNokkel = window.location.pathname.split(`${formUrl}/`)[1];
-    loggSkjemaStegFullfort({
-      steg: form.components.findIndex((panel) => panel.key === skjemastegNokkel) + 1,
-      skjemastegNokkel,
-    });
-    // We need to get location data from window, since this function runs inside formio
-    navigate({ pathname: `${formUrl}/oppsummering`, search: window.location.search });
-  };
-
-  const onValidationError = () => {
-    loggSkjemaValideringFeilet();
-  };
-
-  const onConfirmCancel = async () => {
-    const logNavigation = (lenkeTekst) =>
-      loggNavigering({
-        lenkeTekst,
-        destinasjon: exitUrl,
-      });
-
-    switch (showModal) {
-      case 'save':
-        logNavigation(translate(TEXTS.grensesnitt.navigation.saveDraft));
-        await updateMellomlagring(submission as Submission);
-        break;
-      case 'delete':
-        logNavigation(translate(TEXTS.grensesnitt.navigation.saveDraft));
-        await deleteMellomlagring();
-        break;
-      case 'discard':
-      default:
-        logNavigation(translate(TEXTS.grensesnitt.navigation.cancel));
-    }
-  };
 
   if (!formForRendering) {
     return null;
@@ -239,8 +301,8 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: Fil
     <div>
       <NavForm
         form={formForRendering}
-        language={featureToggles?.enableTranslations ? currentLanguage : undefined}
-        i18n={featureToggles?.enableTranslations ? translationsForNavForm : undefined}
+        language={currentLanguage}
+        i18n={translationsForNavForm}
         submission={submission}
         onBlur={loggSkjemaSporsmalBesvart}
         onChange={loggSkjemaSporsmalBesvartForSpesialTyper}

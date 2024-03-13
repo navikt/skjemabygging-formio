@@ -5,6 +5,7 @@
 
 import { SendInnAktivitet, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { expect } from 'chai';
+import activitiesMultipleJson from '../../../../../mocks/mocks/data/innsending-api/activities/activities-multiple.json';
 import activitiesJson from '../../../../../mocks/mocks/data/innsending-api/activities/activities.json';
 
 const defaultActivity = {
@@ -14,11 +15,14 @@ const defaultActivity = {
   text: TEXTS.statiske.activities.defaultActivity,
 };
 
-const activityText = 'Arbeidstrening: 06.12.2023 - 06.04.2024';
+const activityText = 'Arbeidstrening: 01.12.2023 - 06.04.2024';
 const prefillMaalgruppe = 'ARBSOKERE';
 const activityJson = activitiesJson[0];
 
-const verifySubmissionValues = (maalgruppe: string, aktivitet: Partial<SendInnAktivitet>) => {
+const verifySubmissionValues = (
+  maalgruppe: { calculated: string; prefilled: string },
+  aktivitet: Partial<SendInnAktivitet>,
+) => {
   cy.submitMellomlagring((req) => {
     const {
       submission: {
@@ -28,7 +32,8 @@ const verifySubmissionValues = (maalgruppe: string, aktivitet: Partial<SendInnAk
     expect(container.aktivitet.aktivitetId).to.equal(aktivitet.aktivitetId);
     expect(container.aktivitet.periode.fom).to.equal(aktivitet.periode.fom);
     expect(container.aktivitet.periode.tom).to.equal(aktivitet.periode.tom);
-    expect(container.maalgruppe).to.equal(maalgruppe);
+    expect(container.maalgruppe.calculated).to.equal(maalgruppe.calculated);
+    expect(container.maalgruppe.prefilled).to.equal(maalgruppe.prefilled);
   });
 };
 
@@ -46,6 +51,15 @@ describe('Activities', () => {
 
   after(() => {
     cy.mocksRestoreRouteVariants();
+  });
+
+  describe('paper', () => {
+    it('should not show activity component when submission method is paper', () => {
+      cy.visit(`/fyllut/testingactivities?sub=paper`);
+      cy.defaultWaits();
+      cy.clickStart();
+      cy.findByRole('group', { name: 'Velg hvilken aktivitet du vil søke om stønad for' }).should('not.exist');
+    });
   });
 
   describe('activities from backend', () => {
@@ -66,11 +80,11 @@ describe('Activities', () => {
         });
     });
 
-    it('should select maalgruppe attached to activity', () => {
+    it('should select maalgruppe attached to activity as the calculated', () => {
       cy.mocksUseRouteVariant('get-soknad:success-activities-empty');
 
       // Check the submission values
-      verifySubmissionValues(activityJson.maalgruppe, activityJson);
+      verifySubmissionValues({ calculated: activityJson.maalgruppe, prefilled: prefillMaalgruppe }, activityJson);
 
       cy.visit(`/fyllut/testingactivities?sub=digital`);
       cy.defaultWaits();
@@ -86,12 +100,103 @@ describe('Activities', () => {
       cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
       cy.get('dl').within(() => {
         cy.get('dd').eq(0).should('contain.text', activityText);
-        cy.get('dd').eq(1).should('contain.text', activityJson.maalgruppe);
       });
 
       // Submit
       cy.clickSaveAndContinue();
       cy.wait('@submitMellomlagring');
+    });
+
+    describe('saved application', () => {
+      describe('with prefilled maalgruppe MOTDAGPEN and default activity chosen', () => {
+        beforeEach(() => {
+          cy.mocksUseRouteVariant('get-activities:success-multiple');
+          cy.mocksUseRouteVariant('get-soknad:success-activities-prefilled-maalgruppe');
+
+          cy.visit(
+            `/fyllut/testingactivities/aktiviteter?sub=digital&innsendingsId=fb47c474-66c1-46ba-8124-723447a79e83`,
+          );
+          cy.defaultWaits();
+          cy.defaultInterceptsMellomlagring();
+          cy.wait('@getMellomlagring');
+          cy.wait('@getActivities');
+
+          // Verify that activity from saved application is checked
+          cy.findByRole('group', { name: 'Velg hvilken aktivitet du vil søke om stønad for' })
+            .should('exist')
+            .within(() => {
+              cy.findByLabelText(defaultActivity.text).should('be.checked');
+            });
+        });
+
+        it('should keep prefilled maalgruppe from saved application, not overwrite with new value from prefill endpoint', () => {
+          // Go to summary page
+          cy.clickSaveAndContinue();
+
+          // Should show activity in summary
+          cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
+          cy.get('dl').within(() => {
+            cy.get('dd').eq(0).should('include.text', defaultActivity.text);
+          });
+
+          // Expected submission values
+          verifySubmissionValues({ calculated: 'ANNET', prefilled: 'MOTDAGPEN' }, defaultActivity);
+
+          // Submit
+          cy.clickSaveAndContinue();
+          cy.wait('@submitMellomlagring');
+        });
+
+        it('should allow user to change chosen activity and update calculated maalgruppe to reflect that', () => {
+          const activityAvklaring = activitiesMultipleJson.find(
+            (activity) => activity.aktivitetsnavn === 'Avklaring',
+          ) as SendInnAktivitet;
+
+          // Select the activity from backend
+          cy.findByRole('group', { name: 'Velg hvilken aktivitet du vil søke om stønad for' })
+            .should('exist')
+            .within(() => {
+              cy.findByRole('radio', { name: /Avklaring/ })
+                .should('exist')
+                .check(activityAvklaring.aktivitetId);
+            });
+
+          // Go to summary page
+          cy.clickSaveAndContinue();
+
+          // Should show activity and maalgruppe in summary
+          cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
+          cy.get('dl').within(() => {
+            cy.get('dd').eq(0).should('include.text', 'Avklaring');
+          });
+
+          // Expected submission values
+          verifySubmissionValues({ calculated: 'NEDSARBEVN', prefilled: 'MOTDAGPEN' }, activityAvklaring);
+
+          // Submit
+          cy.clickSaveAndContinue();
+          cy.wait('@submitMellomlagring');
+        });
+      });
+    });
+  });
+
+  describe('conditionals on maalgruppe', () => {
+    it('should hide component when maalgruppe is prefilled', () => {
+      cy.mocksUseRouteVariant('get-prefill-data:success');
+      cy.visit('/fyllut/testingactivities/aktiviteter?sub=digital');
+      cy.defaultWaits();
+      cy.wait('@getActivities');
+
+      cy.findByText('Målgruppe ble ikke preutfylt').should('not.exist');
+    });
+    it('should show component when maalgruppe is not prefilled', () => {
+      cy.mocksUseRouteVariant('get-prefill-data:success-empty');
+      cy.visit('/fyllut/testingactivities/aktiviteter?sub=digital');
+      cy.defaultWaits();
+      cy.wait('@getActivities');
+
+      cy.findByText('Målgruppe ble ikke preutfylt').should('exist');
     });
   });
 
@@ -114,12 +219,12 @@ describe('Activities', () => {
         });
     });
 
-    it('should select maalgruppe from defaultValue', () => {
+    it('should default to ANNET as calculated maalgruppe when default activity is selected', () => {
       cy.mocksUseRouteVariant('get-soknad:success-activities-empty');
       cy.mocksUseRouteVariant('get-activities:success-empty');
 
       // Check the submission values
-      verifySubmissionValues(prefillMaalgruppe, defaultActivity);
+      verifySubmissionValues({ calculated: 'ANNET', prefilled: prefillMaalgruppe }, defaultActivity);
 
       cy.visit(`/fyllut/testingactivities?sub=digital`);
       cy.defaultWaits();
@@ -135,7 +240,6 @@ describe('Activities', () => {
       cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
       cy.get('dl').within(() => {
         cy.get('dd').eq(0).should('contain.text', defaultActivity.text);
-        cy.get('dd').eq(1).should('contain.text', prefillMaalgruppe);
       });
 
       // Submit
@@ -149,7 +253,7 @@ describe('Activities', () => {
       cy.mocksUseRouteVariant('get-prefill-data:success-empty');
 
       // Check the submission values
-      verifySubmissionValues('ANNET', defaultActivity);
+      verifySubmissionValues({ calculated: 'ANNET', prefilled: null }, defaultActivity);
 
       cy.visit(`/fyllut/testingactivities?sub=digital`);
       cy.defaultWaits();
@@ -165,7 +269,6 @@ describe('Activities', () => {
       cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
       cy.get('dl').within(() => {
         cy.get('dd').eq(0).should('contain.text', defaultActivity.text);
-        cy.get('dd').eq(1).should('contain.text', 'ANNET');
       });
 
       // Submit
@@ -188,7 +291,7 @@ describe('Activities', () => {
       cy.findByRole('checkbox', { name: activityText }).should('not.exist');
       cy.findByRole('checkbox', { name: defaultActivity.text }).should('exist');
 
-      cy.get('.navds-alert--info').contains(TEXTS.statiske.activities.error);
+      cy.get('.navds-alert--info').contains(TEXTS.statiske.activities.errorContinue);
     });
   });
 });

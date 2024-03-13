@@ -7,6 +7,7 @@ import Container from './core/container/Container';
 import DataGrid from './core/datagrid/DataGrid';
 import DatePicker from './core/datepicker/DatePicker';
 import Day from './core/day/Day';
+import DrivingList from './core/driving-list/DrivingList';
 import FormGroup from './core/form-group/FormGroup';
 import HtmlElement from './core/html-element/HtmlElement';
 import Image from './core/image/Image';
@@ -32,6 +33,7 @@ import PhoneNumber from './extensions/phone-number/PhoneNumber';
 const customComponents = {
   container: Container,
   activities: Activities,
+  drivinglist: DrivingList,
   maalgruppe: Maalgruppe,
   alertstripe: Alert,
   fnrfield: NationalIdentityNumber,

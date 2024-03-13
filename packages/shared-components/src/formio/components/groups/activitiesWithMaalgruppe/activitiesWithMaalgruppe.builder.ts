@@ -8,6 +8,8 @@ const activitiesWithMaalgruppeBuilder = () => {
       components: [activitiesBuilder().schema, maalgruppeBuilder().schema],
       type: 'container',
       hideLabel: true,
+      key: 'aktiviteterOgMaalgruppe',
+      label: 'Aktiviteter og målgruppe',
     },
   };
 };
