@@ -80,6 +80,7 @@ const DrivingListFromActivities = ({ activities }: Props) => {
           dataType="vedtak"
           activities={activities}
           error={getComponentError('activityRadio')}
+          ref={(ref) => addRef('activityRadio', ref)}
         />
         {selectedActivity && selectedVedtak && (
           <>
