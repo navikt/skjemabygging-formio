@@ -37,6 +37,7 @@ class Attachment extends BaseComponent {
         attachmentValues={this.getAttachmentValues()}
         title={this.getLabel()}
         description={this.getDescription()}
+        deadline={this.options.properties?.ettersendelsesfrist}
         error={this.getError()}
         onChange={(value) => {
           this.handleChange(value, { modified: true });

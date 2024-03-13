@@ -7,6 +7,8 @@ const editFormAttachment = (): Component[] => {
     additionalDocumentation: boolean,
     showDeadline: boolean,
     customConditional: string = '',
+    customConditionalOptions?: string,
+    forceEnabled: boolean = false,
   ) => {
     const components: Component[] = [];
 
@@ -34,7 +36,7 @@ const editFormAttachment = (): Component[] => {
             key: 'label',
             customClass: 'ml',
             label: 'Ledetekst for tilleggsinformasjon',
-            customConditional: `show = row.enabled === true`,
+            customConditional: 'show = row.enabled === true',
             validate: {
               required: true,
             },
@@ -44,7 +46,7 @@ const editFormAttachment = (): Component[] => {
             key: 'description',
             customClass: 'ml',
             label: 'Beskrivelse av krav til tilleggsinformasjon',
-            customConditional: `show = row.enabled === true`,
+            customConditional: 'show = row.enabled === true',
           },
         ],
       });
@@ -59,6 +61,8 @@ const editFormAttachment = (): Component[] => {
         {
           type: 'navCheckbox',
           key: 'enabled',
+          defaultValue: forceEnabled,
+          readOnly: forceEnabled,
           label,
         },
         {
@@ -66,7 +70,7 @@ const editFormAttachment = (): Component[] => {
           key: '',
           label: '',
           customClass: 'ml',
-          customConditional: `show = row.enabled === true`,
+          customConditional: customConditionalOptions ? customConditionalOptions : 'show = row.enabled === true',
           components,
         },
       ],
@@ -106,9 +110,24 @@ const editFormAttachment = (): Component[] => {
           title: 'Velg innsendingsalternativer for dette vedlegget',
           customClass: 'group-margin-small',
           components: [
-            component('leggerVedNaa', TEXTS.statiske.attachment.leggerVedNaa, true, false),
+            component(
+              'leggerVedNaa',
+              TEXTS.statiske.attachment.leggerVedNaa,
+              true,
+              false,
+              undefined,
+              'show = data?.attachmentType === "default"',
+            ),
             component('ettersender', TEXTS.statiske.attachment.ettersender, true, true),
-            component('nei', TEXTS.statiske.attachment.nei, true, false, 'show = data?.attachmentType === "other"'),
+            component(
+              'nei',
+              TEXTS.statiske.attachment.nei,
+              false,
+              false,
+              'show = data?.attachmentType === "other"',
+              undefined,
+              true,
+            ),
             component(
               'levertTidligere',
               TEXTS.statiske.attachment.levertTidligere,
@@ -130,7 +149,7 @@ const editFormAttachment = (): Component[] => {
               true,
               'show = data?.attachmentType === "default"',
             ),
-            component('nav', TEXTS.statiske.attachment.nav, true, true, 'show = data?.attachmentType === "default"'),
+            component('nav', TEXTS.statiske.attachment.nav, true, false, 'show = data?.attachmentType === "default"'),
           ],
         },
       ],

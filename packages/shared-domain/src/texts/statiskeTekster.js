@@ -134,7 +134,7 @@ export const statiske = {
     andre: 'Sendes inn av andre (for eksempel lege, arbeidsgiver)',
     nav: 'Jeg ønsker at NAV innhenter denne dokumentasjonen',
     deadline:
-      'Hvis vi ikke har mottatt dette vedlegget innen vedleggsfrist! blir saken behandlet med de opplysningene som foreligger. Det kan føre til at saken din blir avslått.',
+      'Hvis vi ikke har mottatt dette vedlegget innen {{deadline}} dager blir saken behandlet med de opplysningene som foreligger.',
   },
   activities: {
     label: 'Velg hvilken aktivitet du vil søke om stønad for',

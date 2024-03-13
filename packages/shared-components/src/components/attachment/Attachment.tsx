@@ -15,10 +15,11 @@ interface Props {
   value?: any;
   attachmentValues?: AttachmentSettingValues | ComponentValue[];
   onChange: (value: AttachmentValue) => void;
-  translate: (text: string) => string;
+  translate: (text: string, params?: any) => string;
+  deadline?: string;
 }
 
-const Attachment = ({ attachmentValues, value, title, description, error, onChange, translate }: Props) => {
+const Attachment = ({ attachmentValues, value, title, description, error, onChange, translate, deadline }: Props) => {
   const additionalDocumentation = attachmentValues?.[value?.key]?.additionalDocumentation;
   const showDeadline = !!attachmentValues?.[value?.key]?.showDeadline;
 
@@ -49,8 +50,6 @@ const Attachment = ({ attachmentValues, value, title, description, error, onChan
     onChange({
       ...value,
       key,
-      description: TEXTS.statiske.attachment[key],
-      deadlineWarning: !!attachmentValues?.[key]?.showDeadline ? TEXTS.statiske.attachment.deadline : undefined,
       additionalDocumentation: attachmentValues?.[key]?.additionalDocumentation?.enabled
         ? value?.additionalDocumentation
         : undefined,
@@ -85,7 +84,7 @@ const Attachment = ({ attachmentValues, value, title, description, error, onChan
       )}
       {showDeadline && (
         <Alert variant="warning" inline>
-          {translate(TEXTS.statiske.attachment.deadline)}
+          {translate(TEXTS.statiske.attachment.deadline, { deadline })}
         </Alert>
       )}
     </div>

@@ -19,7 +19,13 @@ const SingleSelect = ({ values = [], value, title, description, error, onChange 
   if (values.length === 1) {
     const [keyValueCheckbox] = values;
     return (
-      <CheckboxGroup legend={title} description={description} error={error} onChange={handleChange} value={value}>
+      <CheckboxGroup
+        legend={title}
+        description={description}
+        error={error}
+        onChange={handleChange}
+        value={value ? [value] : []}
+      >
         <Checkbox value={keyValueCheckbox.value}>{keyValueCheckbox.label}</Checkbox>
       </CheckboxGroup>
     );

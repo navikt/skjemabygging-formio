@@ -19,8 +19,12 @@ const attachmentForm = () => {
     ]),
     api([
       editFormApi.key(),
-      editFormApi.property('Vedleggstittel', 'vedleggstittel', true),
-      editFormApi.property('Vedleggskode', 'vedleggskode', true),
+      // Vedleggstittel is required to publish, but validation happens before publishing.
+      editFormApi.property('Vedleggstittel', 'vedleggstittel', false,
+        'Er påkrevd for publisering av skjemaet'),
+      // Vedleggskode is required to publish, but validation happens before publishing.
+      editFormApi.property('Vedleggskode', 'vedleggskode', false,
+        'Er påkrevd for publisering av skjemaet'),
       editFormApi.property('Vedleggskjema', 'vedleggskjema', false,
         'Hvis vedleggskjema er oppgitt vises lenke til utfylling av skjemaet, på opplastningssiden for digital innsending. Eksempel på format "nav100750"'),
     ]),
