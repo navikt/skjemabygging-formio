@@ -309,7 +309,14 @@ module.exports = [
           body: {
             sokerFornavn: 'Ola',
             sokerEtternavn: 'Nordmann',
-            sokerMaalgruppe: 'ARBSOKERE',
+            sokerMaalgruppe: {
+              gyldighetsperiode: {
+                fom: '2024-01-01',
+                tom: '2024-05-13',
+              },
+              maalgruppetype: 'ARBSOKERE',
+              maalgruppenavn: 'Arbeidssøker',
+            },
           },
         },
       },

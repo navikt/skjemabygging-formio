@@ -14,6 +14,13 @@
     "erStoenadsberettigetAktivitet": true,
     "erUtdanningsaktivitet": false,
     "arrangoer": "MOELV BIL & CARAVAN AS",
-    "maalgruppe": "NEDSARBEVN"
+    "maalgruppe": {
+      "gyldighetsperiode": {
+        "fom": "2023-01-01",
+        "tom": "2024-05-13"
+      },
+      "maalgruppetype": "ARBSOKERE",
+      "maalgruppenavn": "Arbeidssøker"
+    }
   }
 ]
