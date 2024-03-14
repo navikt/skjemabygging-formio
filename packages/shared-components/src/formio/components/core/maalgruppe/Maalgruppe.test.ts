@@ -8,8 +8,8 @@ describe('calculateMaalgruppeValue function', () => {
   });
 
   const prefilled = {
-    maalgruppetype: 'defaultValue',
-    maalgruppenavn: 'default name',
+    maalgruppetype: 'NEDSARBEVN',
+    maalgruppenavn: 'Person med nedsatt arbeidsevne pga. sykdom',
     gyldighetsperiode: { fom: '2024-01-01', tom: '2025-01-01' },
   };
 

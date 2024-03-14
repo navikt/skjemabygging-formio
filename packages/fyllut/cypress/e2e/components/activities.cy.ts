@@ -36,38 +36,44 @@ const verifySubmissionValues = (maalgruppe: SubmissionMaalgruppe, aktivitet: Par
   cy.submitMellomlagring((req) => {
     const {
       submission: {
-        data: { container: submissionData },
+        data: { container: aktivitetMaalgruppeSubmission },
       },
     } = req.body;
 
-    expect(submissionData.aktivitet.aktivitetId).to.equal(aktivitet.aktivitetId);
-    expect(submissionData.aktivitet.periode.fom).to.equal(aktivitet.periode.fom);
-    expect(submissionData.aktivitet.periode.tom).to.equal(aktivitet.periode.tom);
+    expect(aktivitetMaalgruppeSubmission.aktivitet.aktivitetId).to.equal(aktivitet.aktivitetId);
+    expect(aktivitetMaalgruppeSubmission.aktivitet.periode.fom).to.equal(aktivitet.periode.fom);
+    expect(aktivitetMaalgruppeSubmission.aktivitet.periode.tom).to.equal(aktivitet.periode.tom);
 
     // Activity målgruppe (if selected)
-    if (submissionData.aktivitet.maalgruppe) {
-      expect(submissionData.aktivitet.maalgruppe.maalgruppetype).to.equal(aktivitet.maalgruppe.maalgruppetype);
-      expect(submissionData.aktivitet.maalgruppe.gyldighetsperiode.fom).to.equal(
+    if (aktivitetMaalgruppeSubmission.aktivitet.maalgruppe) {
+      expect(aktivitetMaalgruppeSubmission.aktivitet.maalgruppe.maalgruppetype).to.equal(
+        aktivitet.maalgruppe.maalgruppetype,
+      );
+      expect(aktivitetMaalgruppeSubmission.aktivitet.maalgruppe.gyldighetsperiode.fom).to.equal(
         aktivitet.maalgruppe.gyldighetsperiode.fom,
       );
-      expect(submissionData.aktivitet.maalgruppe.gyldighetsperiode.tom).to.equal(
+      expect(aktivitetMaalgruppeSubmission.aktivitet.maalgruppe.gyldighetsperiode.tom).to.equal(
         aktivitet.maalgruppe.gyldighetsperiode.tom,
       );
     }
 
     // Prefilled målgruppe (if prefilled)
-    if (submissionData.maalgruppe.prefilled) {
-      expect(submissionData.maalgruppe.prefilled.maalgruppetype).to.equal(maalgruppe.prefilled.maalgruppetype);
-      expect(submissionData.maalgruppe.prefilled.gyldighetsperiode.fom).to.equal(
+    if (aktivitetMaalgruppeSubmission.maalgruppe.prefilled) {
+      expect(aktivitetMaalgruppeSubmission.maalgruppe.prefilled.maalgruppetype).to.equal(
+        maalgruppe.prefilled.maalgruppetype,
+      );
+      expect(aktivitetMaalgruppeSubmission.maalgruppe.prefilled.gyldighetsperiode.fom).to.equal(
         maalgruppe.prefilled.gyldighetsperiode.fom,
       );
-      expect(submissionData.maalgruppe.prefilled.gyldighetsperiode.tom).to.equal(
+      expect(aktivitetMaalgruppeSubmission.maalgruppe.prefilled.gyldighetsperiode.tom).to.equal(
         maalgruppe.prefilled.gyldighetsperiode.tom,
       );
     }
 
     // Calculated målgruppe
-    expect(submissionData.maalgruppe.calculated.maalgruppetype).to.equal(maalgruppe.calculated.maalgruppetype);
+    expect(aktivitetMaalgruppeSubmission.maalgruppe.calculated.maalgruppetype).to.equal(
+      maalgruppe.calculated.maalgruppetype,
+    );
   });
 };
 
