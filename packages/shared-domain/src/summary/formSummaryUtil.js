@@ -85,9 +85,10 @@ function formatValue(component, value, translate, form) {
           component.attachmentValues?.[value.key]?.additionalDocumentation?.label,
         ),
         additionalDocumentation: translate(value.additionalDocumentation),
-        deadlineWarning: !!component.attachmentValues?.[value.key]?.showDeadline
-          ? translate(TEXTS.statiske.attachment.deadline, { deadline: form?.properties?.ettersendelsesfrist })
-          : undefined,
+        deadlineWarning:
+          !!component.attachmentValues?.[value.key]?.showDeadline && form?.properties?.ettersendelsesfrist
+            ? translate(TEXTS.statiske.attachment.deadline, { deadline: form?.properties?.ettersendelsesfrist })
+            : undefined,
       };
     default:
       return value;

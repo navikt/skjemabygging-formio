@@ -117,7 +117,7 @@ export interface Component {
   prefillKey?: PrefillKey;
   values?: ComponentValue[];
   attachmentValues?: AttachmentSettingValues;
-  attachmentType?: 'default' | 'other';
+  attachmentType?: string;
   hideLabel?: boolean;
   description?: string;
   suffix?: string;

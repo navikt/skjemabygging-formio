@@ -17,7 +17,7 @@ const attachmentBuilder = () => {
           validate: {
             required: true,
           },
-          attachmentType: 'other',
+          attachmentType: 'default',
           properties: {
             vedleggstittel: 'Annet',
             vedleggskode: 'N6',
@@ -27,11 +27,7 @@ const attachmentBuilder = () => {
               enabled: true,
             },
             ettersender: {
-              additionalDocumentation: {
-                enabled: false,
-              },
               enabled: true,
-              showDeadline: false,
             },
             nei: {
               enabled: true,

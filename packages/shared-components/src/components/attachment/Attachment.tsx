@@ -82,7 +82,7 @@ const Attachment = ({ attachmentValues, value, title, description, error, onChan
           onChange={handleAdditionalDocumentationChange}
         />
       )}
-      {showDeadline && (
+      {showDeadline && deadline && (
         <Alert variant="warning" inline>
           {translate(TEXTS.statiske.attachment.deadline, { deadline })}
         </Alert>
