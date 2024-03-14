@@ -12,30 +12,31 @@ const attachmentBuilder = () => {
         {
           label: 'Annen dokumentasjon',
           description: 'Har du noen annen dokumentasjon du ønsker å legge ved?',
-          type: 'radiopanel',
+          type: 'attachment',
           key: 'annenDokumentasjon',
-          otherDocumentation: true,
           validate: {
             required: true,
           },
+          attachmentType: 'other',
           properties: {
             vedleggstittel: 'Annet',
             vedleggskode: 'N6',
           },
-          values: [
-            {
-              value: 'nei',
-              label: 'Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved.',
+          attachmentValues: {
+            leggerVedNaa: {
+              enabled: true,
             },
-            {
-              value: 'leggerVedNaa',
-              label: 'Ja, jeg legger det ved denne søknaden.',
+            ettersender: {
+              additionalDocumentation: {
+                enabled: false,
+              },
+              enabled: true,
+              showDeadline: false,
             },
-            {
-              value: 'ettersender',
-              label: 'Jeg ettersender dokumentasjonen senere.',
+            nei: {
+              enabled: true,
             },
-          ],
+          },
         },
       ],
     },
