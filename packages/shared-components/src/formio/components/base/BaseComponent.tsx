@@ -29,10 +29,6 @@ class BaseComponent extends FormioReactComponent {
     });
   }
 
-  t(text, params = {}, ...args) {
-    return super.t(text, params, ...args);
-  }
-
   /**
    * Get id for custom component renderReact()
    */
