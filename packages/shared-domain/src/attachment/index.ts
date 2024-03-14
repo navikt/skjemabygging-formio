@@ -1,5 +1,5 @@
 interface AttachmentSettingValues {
-  leggerVedNaa: AttachmentSettingValue;
+  leggerVedNaa?: AttachmentSettingValue;
   ettersender?: AttachmentSettingValue;
   nei?: AttachmentSettingValue;
   levertTidligere?: AttachmentSettingValue;
