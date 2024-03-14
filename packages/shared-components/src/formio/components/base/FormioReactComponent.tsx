@@ -9,7 +9,7 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
   rootElement: any;
   componentErrors: ComponentError[];
   _reactRendered = Ready();
-  _reactRefs: {} = {};
+  _reactRefs: Record<string, HTMLElement> = {};
 
   constructor(component, options, data) {
     super(component, options, data);
@@ -96,11 +96,15 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
     return Promise.resolve();
   }
 
-  addRef(name: string, ref: any) {
-    this._reactRefs[name] = ref;
+  addRef(name: string, ref: HTMLElement | null) {
+    if (ref) {
+      this._reactRefs[name] = ref;
+    } else {
+      delete this._reactRefs[name];
+    }
   }
 
-  getRef(name: string) {
+  getRef(name: string): HTMLElement | null {
     return this._reactRefs[name];
   }
 

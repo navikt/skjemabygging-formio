@@ -216,7 +216,10 @@ class BaseComponent extends FormioReactComponent {
    */
   focus(focusData?: any) {
     this.reactReady.then(() => {
-      if (this.reactInstance) {
+      const { elementId } = focusData;
+      if (elementId) {
+        this.getRef(elementId)?.focus();
+      } else if (this.reactInstance) {
         this.reactInstance.focus(focusData);
       }
     });
