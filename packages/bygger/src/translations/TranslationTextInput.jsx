@@ -62,7 +62,6 @@ const TranslationTextInput = ({
             if (onChange) onChange(event.target.value);
           }}
           onBlur={(event) => {
-            console.log('onBlur', event);
             if (onBlur) onBlur(event.target.value);
           }}
           readOnly={hasGlobalTranslation}
@@ -81,7 +80,6 @@ const TranslationTextInput = ({
             if (onChange) onChange(event.target.value);
           }}
           onBlur={(event) => {
-            console.log('onBlur', event);
             if (onBlur) onBlur(event.target.value);
           }}
           readOnly={hasGlobalTranslation}

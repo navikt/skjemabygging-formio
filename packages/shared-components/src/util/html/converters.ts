@@ -18,6 +18,8 @@ interface HtmlAsJsonElement {
   isWrapper: boolean;
 }
 
+const isHtmlString = (text: string) => /<[^>]*>/.test(text);
+
 const htmlString2Json = (htmlString: string, skipConversionWithin: AcceptedTag[] = []): HtmlAsJsonElement => {
   const div = document.createElement('div');
   div.innerHTML = htmlString;
@@ -67,35 +69,16 @@ const jsonFromElement = (
   };
 };
 
-const json2HtmlString = (
-  jsonElement: HtmlAsJsonElement | HtmlAsJsonTextElement,
-  originalStructure: HtmlAsJsonTextElement,
-) => {
+const json2HtmlString = (jsonElement: HtmlAsJsonElement | HtmlAsJsonTextElement): string => {
   switch (jsonElement?.type) {
     case 'Element':
       const htmlElement = toNode(jsonElement) as HTMLElement;
       return jsonElement.isWrapper ? htmlElement.innerHTML.toString() : htmlElement.outerHTML.toString();
     case 'TextElement':
-      // markDown2Json(jsonElement.textContent ?? '');
-      const asJson = markDown2Json(jsonElement.textContent ?? '', originalStructure);
-      console.log('markDown2Json', asJson);
-      if (asJson.type === 'Element') {
-        //TODO check that this is reached
-        return json2HtmlString(asJson, originalStructure);
-      } else if (asJson.type === 'TextElement') {
-        // console.log('json2HtmlString', asJson);
-        //TODO check that this is reached
-        return asJson.textContent ?? '';
-      }
-      //TODO check that this is reached
       return jsonElement.textContent ?? '';
     default:
       throw Error('unsupported type: ' + (jsonElement as any)?.type);
   }
-  // const node = toNode(jsonElement, translate);
-  // if (!node['outerHTML']?.toString()) {
-  //   console.log('NODE', node, node.outerHTML);
-  // }
 };
 
 const toNode = (jsonElement: HtmlAsJsonElement | HtmlAsJsonTextElement) => {
@@ -237,5 +220,5 @@ const htmlNode2MarkDown = (node: Element | ChildNode): string => {
   return '';
 };
 
-export { htmlString2Json, json2HtmlString, markDown2Json };
+export { htmlString2Json, isHtmlString, json2HtmlString, markDown2Json };
 export type { HtmlAsJsonElement, HtmlAsJsonTextElement };

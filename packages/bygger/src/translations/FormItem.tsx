@@ -80,6 +80,7 @@ const FormItem = ({ translations, text, htmlElementAsJson, type, languageCode }:
         tempGlobalTranslation={tempGlobalTranslation}
         showGlobalTranslation={showGlobalTranslation}
         onChange={updateTranslations}
+        onBlur={undefined}
         setHasGlobalTranslation={setHasGlobalTranslation}
         setGlobalTranslation={setCurrentTranslation}
       />

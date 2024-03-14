@@ -34,10 +34,12 @@ const TranslationFormHtmlInput = ({
               htmlElementAsJson={originalTextElement}
               currentTranslation={translationElement}
               currentTranslationWithMarkDown={translationElementWithMarkDown}
-              updateTranslation={(element: HtmlAsJsonElement) => {
+              updateTranslation={(element: HtmlAsJsonElement | HtmlAsJsonTextElement) => {
                 //TODO: Try to convert "withMarkDown" to html from htmlContentAsJson
-                const updatedTranslation = JSON.parse(JSON.stringify(currentTranslation));
-                if (updatedTranslation && updatedTranslation?.type === 'Element') {
+                const updatedTranslation: HtmlAsJsonElement | HtmlAsJsonTextElement = JSON.parse(
+                  JSON.stringify(currentTranslation),
+                );
+                if (updatedTranslation && updatedTranslation?.type === 'Element' && element.type === 'Element') {
                   if (element.tagName === 'DIV') {
                     updatedTranslation.children = element.children;
                   } else {
@@ -73,6 +75,7 @@ const TranslationFormHtmlInput = ({
           }
           updateTranslation(htmlUtils.markDown2Json(textContentWithWhiteSpaces, htmlElementAsJson));
         }}
+        onChange={undefined}
         hasGlobalTranslation={false}
         tempGlobalTranslation={undefined}
         showGlobalTranslation={false}

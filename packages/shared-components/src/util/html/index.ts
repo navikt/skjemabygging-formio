@@ -2,10 +2,10 @@ import {
   HtmlAsJsonElement,
   HtmlAsJsonTextElement,
   htmlString2Json,
+  isHtmlString,
   json2HtmlString,
   markDown2Json,
 } from './converters';
-import { isHtmlString } from './translate';
 
 const htmlUtils = {
   isHtmlString,
