@@ -6,6 +6,7 @@ const formCustomComps = require('../data/formio-api/custom-components.json');
 const formCustomCompsDatagrid = require('../data/formio-api/custom-components-datagrid.json');
 const formDatagrid = require('../data/formio-api/datagrid.json');
 const formContainer = require('../data/formio-api/container123.json');
+const formContainerDatagrid = require('../data/formio-api/container-datagrid.json');
 const formNavdatepicker = require('../data/formio-api/navdatepicker.json');
 const formSubmissionMethod = require('../data/formio-api/submission-method.json');
 const formTestMellomlagring = require('../data/formio-api/test-mellomlagring.json');
@@ -30,6 +31,7 @@ const allForms = [
   { form: formPengerOgKonto, translations: undefined },
   { form: formConditionalXmas, translations: translationsConditionalXmas },
   { form: formContainer, translations: undefined },
+  { form: formContainerDatagrid, translations: undefined },
   { form: formCustomComps, translations: translationsCustomComps },
   { form: formCustomCompsDatagrid, translations: undefined },
   { form: formCustomCompsAlert, translations: undefined },

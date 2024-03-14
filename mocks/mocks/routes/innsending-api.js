@@ -2,6 +2,7 @@ const responseWithInnsendingsId = require('../data/innsending-api/mellomlagring/
 const mellomlagringValid1 = require('../data/innsending-api/mellomlagring/getTestMellomlagring-valid-1.json');
 const mellomlagringValid2 = require('../data/innsending-api/mellomlagring/getTestMellomlagring-valid-2.json');
 const container123Complete = require('../data/innsending-api/mellomlagring/container123/complete.json');
+const containerDatagrid123Complete = require('../data/innsending-api/mellomlagring/containerDatagrid123/complete.json');
 const mellomlagringValidExtraValues = require('../data/innsending-api/mellomlagring/getTestMellomlagring-valid-extra-values.json');
 const prefillDataNames = require('../data/innsending-api/prefill-data/prefill-data-names.json');
 const activities = require('../data/innsending-api/activities/activities.json');
@@ -193,6 +194,14 @@ module.exports = [
         options: {
           status: 200,
           body: convertToInnsendingApiResponse(container123Complete),
+        },
+      },
+      {
+        id: 'containerdatagrid123-complete',
+        type: 'json',
+        options: {
+          status: 200,
+          body: convertToInnsendingApiResponse(containerDatagrid123Complete),
         },
       },
       {
