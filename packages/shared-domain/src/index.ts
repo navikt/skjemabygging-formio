@@ -45,9 +45,16 @@ import { Operator } from './migration/operator';
 import type { Mottaksadresse, MottaksadresseData } from './mottaksadresse';
 import type { ReportDefinition } from './reports';
 import type { GlobalTranslationsResourceContent, MottaksadresserResourceContent, ResourceContent } from './resource';
-import { AktivitetVedtaksinformasjon, SendInnAktivitet, VedtakBetalingsplan } from './sendinn/activity';
+import {
+  AktivitetPeriode,
+  AktivitetVedtaksinformasjon,
+  SendInnAktivitet,
+  SendInnMaalgruppe,
+  VedtakBetalingsplan,
+} from './sendinn/activity';
 import { SubmissionActivity } from './submission/activity';
 import { DrivingListPeriod, DrivingListSubmission, DrivingListValues } from './submission/drivingList';
+import { SubmissionMaalgruppe } from './submission/maalgruppe';
 import type { Summary } from './summary/FormSummaryType';
 import MockedComponentObjectForTest from './summary/MockedComponentObjectForTest';
 import formSummaryUtil from './summary/formSummaryUtil';
@@ -88,6 +95,7 @@ export {
   validatorUtils,
 };
 export type {
+  AktivitetPeriode,
   AktivitetVedtaksinformasjon,
   Component,
   ComponentError,
@@ -134,9 +142,11 @@ export type {
   ResourceContent,
   ScopedTranslationMap,
   SendInnAktivitet,
+  SendInnMaalgruppe,
   Submission,
   SubmissionActivity,
   SubmissionData,
+  SubmissionMaalgruppe,
   SubmissionMethod,
   Summary,
   TranslationResource,
