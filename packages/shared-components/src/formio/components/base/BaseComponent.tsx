@@ -57,6 +57,7 @@ class BaseComponent extends FormioReactComponent {
    * @param elementName
    */
   setFocusedComponent(component: BaseComponent | null, elementName: any = null) {
+    this.logger.trace(`setFocusedComponent ${component ? 'this' : 'null'}`, { elementName });
     this.root.focusedComponent = component;
     this.root.focusedElementName = elementName;
   }
@@ -84,6 +85,11 @@ class BaseComponent extends FormioReactComponent {
     const isFocused = focusedComponent?.path === this.path;
     if (isFocused) {
       const focusedElementName = this.getFocusedElementName();
+      this.logger.debug('restoreFocus isFocused', {
+        elementName: focusedElementName,
+        navId: this.component?.navId,
+        type: this.component?.type,
+      });
       this.focus({ focusedElementName });
     }
   }
@@ -172,13 +178,6 @@ class BaseComponent extends FormioReactComponent {
    */
   getError() {
     return this.error?.message;
-  }
-
-  /**
-   * Get app config (same as useAppConfig hook) for custom component renderReact()
-   */
-  getAppConfig() {
-    return this.options?.appConfig;
   }
 
   /**
@@ -282,6 +281,7 @@ class BaseComponent extends FormioReactComponent {
   // elementId is used to focus to the correct element when clicking on error summary
   // Message is the error message that is shown in the error summary
   addError(message: string, elementId?: string) {
+    this.logger.debug('addError', { errorMessage: message });
     this.componentErrors.push({
       message,
       level: 'error',

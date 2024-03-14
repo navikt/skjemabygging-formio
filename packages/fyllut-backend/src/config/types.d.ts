@@ -29,6 +29,12 @@ export type IdportenConfig = {
   idportenIssuer: string;
 };
 
+export type FrontendLoggerConfigType = {
+  enabled: boolean;
+  browserOnly: boolean;
+  logLevel: 'trace' | 'debug' | 'info' | 'error';
+};
+
 export type DefaultConfig = {
   gitVersion: string;
   sentryDsn?: string;
@@ -52,6 +58,7 @@ export type DefaultConfig = {
   noFormValidation?: boolean;
   noDecorator?: boolean;
   amplitude: AmplitudeConfig;
+  frontendLoggerConfig: FrontendLoggerConfigType;
 };
 
 export type ConfigType = DefaultConfig & {
