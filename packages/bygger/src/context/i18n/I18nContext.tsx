@@ -23,8 +23,12 @@ const loadTranslationsAndInitState = async (
   loadTranslations: () => Promise<FormioTranslationMap>,
   dispatch: React.Dispatch<I18nAction>,
 ): Promise<void> => {
-  const translations = await loadTranslations();
-  dispatch({ type: 'init', payload: translations });
+  try {
+    const translations = await loadTranslations();
+    dispatch({ type: 'init', payload: translations });
+  } catch (e) {
+    dispatch({ type: 'error' });
+  }
 };
 
 const I18nDispatchContext = createContext<React.Dispatch<I18nAction>>(() => {});
