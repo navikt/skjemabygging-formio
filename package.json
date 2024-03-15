@@ -22,7 +22,7 @@
   "scripts": {
     "build": "yarn workspaces run build",
     "clean": "yarn workspaces run clean",
-    "start": "concurrently --kill-others-on-fail \"yarn:start:*\"",
+    "start": "concurrently --kill-others-on-fail \"yarn:start:fyllut\" \"yarn:start:bygger\"",
     "start:bygger": "concurrently --kill-others-on-fail \"yarn workspace @navikt/bygger-backend start\" \"yarn workspace @navikt/bygger-frontend start\"",
     "start:fyllut": "concurrently --kill-others-on-fail \"yarn workspace @navikt/fyllut-backend start\" \"yarn workspace @navikt/fyllut-frontend start\"",
     "start:fyllut:env:test": "concurrently --kill-others-on-fail \"yarn workspace @navikt/fyllut-backend start:env:test\" \"yarn workspace @navikt/fyllut-frontend start\"",
