@@ -182,8 +182,9 @@ function handleDataGridRows(component, submission, translate) {
     .filter((row) => !!row);
 }
 
-function handleDataGrid(component, submission, formSummaryObject, translate) {
+function handleDataGrid(component, submission, formSummaryObject, parentContainerKey, translate) {
   const { label, key, type } = component;
+  const componentKey = createComponentKey(parentContainerKey, key);
 
   const dataGridRows = handleDataGridRows(component, submission, translate);
   if (dataGridRows.length === 0) {
@@ -194,7 +195,7 @@ function handleDataGrid(component, submission, formSummaryObject, translate) {
     ...formSummaryObject,
     {
       label: translate(label),
-      key,
+      key: componentKey,
       type,
       components: dataGridRows,
     },
@@ -399,7 +400,7 @@ function handleComponent(
         evaluatedConditionals,
       );
     case 'datagrid':
-      return handleDataGrid(component, submission, formSummaryObject, translate);
+      return handleDataGrid(component, submission, formSummaryObject, parentContainerKey, translate);
     case 'selectboxes':
       return handleSelectboxes(component, submission, formSummaryObject, parentContainerKey, translate);
     case 'navCheckbox':
@@ -426,7 +427,7 @@ function handleComponent(
           translate,
         );
       } else {
-        return handleContainer(component, submission, formSummaryObject, translate);
+        return handleContainer(component, submission, formSummaryObject, parentContainerKey, translate);
       }
     default:
       return handleField(component, submission, formSummaryObject, parentContainerKey, translate);
