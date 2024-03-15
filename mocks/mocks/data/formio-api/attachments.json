@@ -227,7 +227,8 @@
     "publishedLanguages": [],
     "modifiedBy": "fornavn.etternavn@nav.no",
     "published": "2022-11-22T10:00:47.211Z",
-    "publishedBy": "fornavn.etternavn@nav.no"
+    "publishedBy": "fornavn.etternavn@nav.no",
+    "ettersendelsesfrist": "14"
   },
   "access": [
     {

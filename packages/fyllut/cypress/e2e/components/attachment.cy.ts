@@ -65,22 +65,20 @@ describe('Attachment', () => {
 
     cy.findByRole('textbox', { name: TITLE.textarea }).should('exist');
 
-    cy.findByRole('group', { name: TITLE.attachment })
-      .should('exist')
-      .within(() => {
-        cy.findByLabelText(TEXTS.statiske.attachment.ettersender).should('exist').check({ force: true });
-        cy.findByLabelText(TEXTS.statiske.attachment.ettersender).should('be.checked');
-      });
+    cy.findByRole('group', { name: TITLE.attachment }).within(() => {
+      cy.findByLabelText(TEXTS.statiske.attachment.ettersender).should('exist').check({ force: true });
+      cy.findByLabelText(TEXTS.statiske.attachment.ettersender).should('be.checked');
+    });
 
     cy.findByRole('textbox', { name: TITLE.textarea }).should('not.exist');
-    cy.get('.navds-alert').contains(TEXTS.statiske.attachment.deadline).should('exist');
+    cy.get('.navds-alert')
+      .contains(TEXTS.statiske.attachment.deadline.replace(/{{deadline}}/, 14))
+      .should('exist');
 
-    cy.findByRole('group', { name: TITLE.attachment })
-      .should('exist')
-      .within(() => {
-        cy.findByLabelText(TEXTS.statiske.attachment.nei).should('exist').check({ force: true });
-        cy.findByLabelText(TEXTS.statiske.attachment.nei).should('be.checked');
-      });
+    cy.findByRole('group', { name: TITLE.attachment }).within(() => {
+      cy.findByLabelText(TEXTS.statiske.attachment.nei).should('exist').check({ force: true });
+      cy.findByLabelText(TEXTS.statiske.attachment.nei).should('be.checked');
+    });
 
     cy.findByRole('textbox', { name: TITLE.textarea }).should('not.exist');
     cy.get('.navds-alert').should('not.exist');

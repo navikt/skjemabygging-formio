@@ -9,9 +9,9 @@ class Activities extends BaseComponent {
   isLoading = false;
   loadFinished = false;
   activities?: SendInnAktivitet[] = undefined;
-  defaultActivity = {
+  defaultActivity: SubmissionActivity = {
     aktivitetId: 'ingenAktivitet',
-    maalgruppe: '',
+    maalgruppe: { maalgruppetype: '', maalgruppenavn: '', gyldighetsperiode: { fom: '', tom: '' } },
     periode: { fom: '', tom: '' },
     text: this.t(TEXTS.statiske.activities.defaultActivity),
   };

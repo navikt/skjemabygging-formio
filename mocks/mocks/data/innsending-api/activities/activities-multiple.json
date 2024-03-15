@@ -309,7 +309,14 @@
         }
       ]
     },
-    "maalgruppe": "NEDSARBEVN"
+    "maalgruppe": {
+      "gyldighetsperiode": {
+        "fom": "2024-01-01",
+        "tom": "2024-05-13"
+      },
+      "maalgruppetype": "ARBSOKERE",
+      "maalgruppenavn": "Arbeidssøker"
+    }
   },
   {
     "aktivitetId": "142075139",
@@ -412,6 +419,13 @@
         }
       ]
     },
-    "maalgruppe": "NEDSARBEVN"
+    "maalgruppe": {
+      "gyldighetsperiode": {
+        "fom": "2024-02-01",
+        "tom": "2024-06-01"
+      },
+      "maalgruppetype": "ENSFORUTD",
+      "maalgruppenavn": "Enslig forsørger under utdanning"
+    }
   }
 ]
