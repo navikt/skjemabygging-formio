@@ -181,15 +181,18 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: Fil
     [goToPanelFromUrlParam],
   );
 
-  function onShowErrors(errorsFromForm) {
-    setErrors(errorsFromForm);
-  }
+  const onShowErrors = useCallback(
+    (errorsFromForm: ComponentError[]) => {
+      setErrors(errorsFromForm);
+    },
+    [setErrors],
+  );
 
-  function onErrorSummaryFocus() {
+  const onErrorSummaryFocus = useCallback(() => {
     if (errorSummaryRef.current) {
       errorSummaryRef.current.focus();
     }
-  }
+  }, []);
 
   const getModalTexts = useCallback(
     (modalType?: ModalType) => {
