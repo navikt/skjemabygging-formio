@@ -29,9 +29,7 @@ describe('React components', () => {
         cy.findByRole('textbox', { name: 'Fornavn' }).type('Storm');
         cy.findByRole('combobox', { name: 'I hvilket land bor du?' }).click();
 
-        cy.findByRole('combobox', { name: 'I hvilket land bor du?' }).type(
-          'Nor{downArrow}{downArrow}{downArrow}{downArrow}{enter}',
-        );
+        cy.findByRole('combobox', { name: 'I hvilket land bor du?' }).type('Norge{enter}');
         cy.findByRole('combobox', { name: 'Velg instrument (valgfritt)' }).type('Gitar{enter}');
         cy.findByRole('textbox', { name: 'Gyldig fra dato' }).type('01.01.2023{esc}');
         cy.clickNextStep();
@@ -126,9 +124,7 @@ describe('React components', () => {
         cy.findByRole('heading', { name: 'Dine opplysninger' }).should('be.visible');
         cy.findByRole('textbox', { name: 'Fornavn' }).should('be.visible');
         cy.findByRoleWhenAttached('textbox', { name: 'Fornavn' }).type('Storm');
-        cy.findByRole('combobox', { name: 'I hvilket land bor du?' })
-          .should('be.visible')
-          .type('Nor{downArrow}{downArrow}{downArrow}{downArrow}{enter}');
+        cy.findByRole('combobox', { name: 'I hvilket land bor du?' }).should('be.visible').type('Norge{enter}');
         cy.findByRole('combobox', { name: 'Velg valuta' }).should('be.visible').type('{upArrow}{enter}');
         cy.findByRole('combobox', { name: 'Velg instrument (valgfritt)' }).type('Gitar{enter}');
         cy.findByRole('textbox', { name: 'Gyldig fra dato' }).type('01.01.2023{esc}');

@@ -1,5 +1,13 @@
-import { FyllutState, NavFormType, navFormUtils, Submission, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { Dispatch, SetStateAction, useCallback, useEffect, useRef, useState } from 'react';
+import {
+  ComponentError,
+  FyllutState,
+  NavFormType,
+  navFormUtils,
+  Submission,
+  TEXTS,
+} from '@navikt/skjemadigitalisering-shared-domain';
+import EventEmitter from 'eventemitter3';
+import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import ConfirmationModal from '../../components/modal/confirmation/ConfirmationModal';
 import NavForm from '../../components/nav-form/NavForm';
@@ -7,12 +15,15 @@ import { useAmplitude } from '../../context/amplitude';
 import { useAppConfig } from '../../context/config/configContext';
 import { useLanguages } from '../../context/languages';
 import { useSendInn } from '../../context/sendInn/sendInnContext';
+import { KeyOrFocusComponentId } from '../../formio/overrides/wizard-overrides.js/focusOnComponent';
 import { LoadingComponent } from '../../index';
 import { scrollToAndSetFocus } from '../../util/focus-management/focus-management';
 import { getPanelSlug } from '../../util/form/form';
 import urlUtils from '../../util/url/url';
+import FormErrorSummary from './FormErrorSummary';
 
 type ModalType = 'save' | 'delete' | 'discard';
+type FyllutEvent = 'focusOnComponent';
 
 interface FillInFormPageProps {
   form: NavFormType;
@@ -48,6 +59,9 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: Fil
   const mutationObserverRef = useRef<MutationObserver | undefined>(undefined);
   const formioInstanceRef = useRef<any>();
   const [showModal, setShowModal] = useState<ModalType>();
+  const [errors, setErrors] = useState<ComponentError[]>([]);
+  const fyllutEvents = useMemo(() => new EventEmitter<FyllutEvent>(), []);
+  const errorSummaryRef = useRef<HTMLElement | null>(null);
 
   const exitUrl = urlUtils.getExitUrl(window.location.href);
   const deletionDate = submission?.fyllutState?.mellomlagring?.deletionDate ?? '';
@@ -58,6 +72,13 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: Fil
       navigate({ pathname: `${formUrl}/${panelPath}`, search: window.location.search });
     },
     [formUrl, navigate],
+  );
+
+  const focusOnComponent = useCallback<(id: KeyOrFocusComponentId) => void>(
+    (id: KeyOrFocusComponentId) => {
+      fyllutEvents.emit('focusOnComponent', id);
+    },
+    [fyllutEvents],
   );
 
   const goToPanelFromUrlParam = useCallback(
@@ -159,6 +180,19 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: Fil
     },
     [goToPanelFromUrlParam],
   );
+
+  const onShowErrors = useCallback(
+    (errorsFromForm: ComponentError[]) => {
+      setErrors(errorsFromForm);
+    },
+    [setErrors],
+  );
+
+  const onErrorSummaryFocus = useCallback(() => {
+    if (errorSummaryRef.current) {
+      errorSummaryRef.current.focus();
+    }
+  }, []);
 
   const getModalTexts = useCallback(
     (modalType?: ModalType) => {
@@ -299,6 +333,12 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: Fil
 
   return (
     <div>
+      <FormErrorSummary
+        heading={translate(TEXTS.validering.error)}
+        errors={errors}
+        focusOnComponent={focusOnComponent}
+        ref={(ref) => (errorSummaryRef.current = ref)}
+      />
       <NavForm
         form={formForRendering}
         language={currentLanguage}
@@ -315,6 +355,9 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: Fil
         formReady={onFormReady}
         submissionReady={goToPanelFromUrlParam}
         onWizardPageSelected={onWizardPageSelected}
+        onShowErrors={onShowErrors}
+        onErrorSummaryFocus={onErrorSummaryFocus}
+        fyllutEvents={fyllutEvents}
         className="nav-form"
       />
       <ConfirmationModal

@@ -2,7 +2,6 @@ import { DrivingListSubmission, DrivingListValues } from '@navikt/skjemadigitali
 import { TFunction } from 'i18next';
 import { createContext, useContext } from 'react';
 import { AppConfigContextType } from '../../../../context/config/configContext';
-import { DrivingListMetadataId } from './DrivingList.utils';
 
 interface DrivingListContextContextType {
   updateValues: (value: DrivingListValues) => void;
@@ -10,7 +9,8 @@ interface DrivingListContextContextType {
   values: DrivingListSubmission;
   t: TFunction;
   locale: string;
-  getComponentError: (metadataId: DrivingListMetadataId) => string | undefined;
+  getComponentError: (elementId: string) => string | undefined;
+  addRef: (name: string, ref: HTMLElement | null) => void;
 }
 
 interface DrivingListProviderProps extends DrivingListContextContextType {
