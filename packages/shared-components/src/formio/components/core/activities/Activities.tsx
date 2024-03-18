@@ -12,7 +12,6 @@ class Activities extends BaseComponent {
 
   defaultActivity: SubmissionActivity = {
     aktivitetId: 'ingenAktivitet',
-    maalgruppe: { maalgruppetype: 'ANNET' },
     text: this.t(TEXTS.statiske.activities.defaultActivity),
   };
 

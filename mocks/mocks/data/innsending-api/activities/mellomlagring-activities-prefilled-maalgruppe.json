@@ -37,7 +37,6 @@
             },
             "aktivitet": {
               "aktivitetId": "ingenAktivitet",
-              "maalgruppe": { "maalgruppetype": "ANNET" },
               "text": "Jeg får ikke opp noen aktiviteter her som stemmer med det jeg vil søke om"
             }
           }

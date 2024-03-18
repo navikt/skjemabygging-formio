@@ -16,7 +16,6 @@ import activitiesJson from '../../../../../mocks/mocks/data/innsending-api/activ
 
 const defaultActivity: SubmissionActivity = {
   aktivitetId: 'ingenAktivitet',
-  maalgruppe: { maalgruppetype: 'ANNET' },
   text: TEXTS.statiske.activities.defaultActivity,
 };
 
