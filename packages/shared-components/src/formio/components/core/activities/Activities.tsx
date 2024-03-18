@@ -20,7 +20,6 @@ class Activities extends BaseComponent {
       label: 'Velg hvilken aktivitet du vil søke om stønad for',
       type: 'activities',
       key: 'aktivitet',
-      input: true,
     });
   }
 
@@ -50,7 +49,7 @@ class Activities extends BaseComponent {
       const componentData = this.getValue() as SubmissionActivity;
 
       if (!componentData) {
-        const requiredError = this.t('required', { field: this.getLabelText() });
+        const requiredError = this.t('required', { field: this.getLabel({ labelTextOnly: true }) });
         super.addError(this.getId(), requiredError);
       }
     }
@@ -79,7 +78,7 @@ class Activities extends BaseComponent {
         {this.getDiffTag()}
         <NavActivities
           id={this.getId()}
-          label={this.getLabelText()}
+          label={this.getLabel({ showOptional: false })}
           value={this.getValue()}
           onChange={(value, options) => this.changeHandler(value, options)}
           description={this.getDescription()}
