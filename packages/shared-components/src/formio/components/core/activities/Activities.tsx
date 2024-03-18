@@ -36,7 +36,7 @@ class Activities extends BaseComponent {
   }
 
   override getError(): string | undefined {
-    const error = this.componentErrors.find((error) => error.path === this.getId());
+    const error = this.componentErrors[0];
     if (error) return error.message;
   }
 
@@ -50,7 +50,7 @@ class Activities extends BaseComponent {
 
       if (!componentData) {
         const requiredError = this.t('required', { field: this.getLabel({ labelTextOnly: true }) });
-        super.addError(this.getId(), requiredError);
+        super.addError(requiredError);
       }
     }
 
@@ -88,6 +88,7 @@ class Activities extends BaseComponent {
           defaultActivity={this.defaultActivity}
           t={this.t.bind(this)}
           dataType="aktivitet"
+          ref={(ref) => this.setReactInstance(ref)}
         />
       </>,
     );
