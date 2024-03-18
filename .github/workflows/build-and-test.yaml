@@ -161,7 +161,7 @@ jobs:
           repo: navikt/skjemautfylling-formio
 
       - name: 'Trigger deploy fyllut to dev'
-        uses: benc-uk/workflow-dispatch@v121
+        uses: benc-uk/workflow-dispatch@v1
         with:
           workflow: 'Trigger dev deploy'
           repo: navikt/skjemautfylling-formio
