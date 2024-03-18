@@ -41,7 +41,7 @@ class BaseComponent extends FormioReactComponent {
    */
   getLabel(options?: { showOptional?: boolean; showDiffTag?: boolean; labelTextOnly?: boolean }) {
     const defaultOptions = { showOptional: true, showDiffTag: true, labelTextOnly: false };
-    const { showOptional, showDiffTag, labelTextOnly } = { ...defaultOptions, ...options };
+    const { showOptional, showDiffTag, labelTextOnly } = { ...defaultOptions, ...(options ?? {}) };
 
     if (labelTextOnly) return this.t(this.component?.label ?? '');
 
