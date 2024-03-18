@@ -249,7 +249,7 @@ describe('Mellomlagring', () => {
             .should('exist')
             .within(() => {
               cy.get('a').should('have.length', 2);
-              cy.findByText('Du må fylle ut: Farge').should('exist').click();
+              cy.findByRole('link', { name: 'Du må fylle ut: Farge' }).should('exist').click();
             });
 
           cy.findByRole('group', { name: 'Farge' })
@@ -263,7 +263,7 @@ describe('Mellomlagring', () => {
             .should('exist')
             .within(() => {
               cy.get('a').should('have.length', 1);
-              cy.findByText('Du må fylle ut: Tekst på kortet').should('exist').click();
+              cy.findByRole('link', { name: 'Du må fylle ut: Tekst på kortet' }).should('exist').click();
             });
           cy.findByLabelText('Tekst på kortet').should('have.focus').type('Takk for hjelpen!');
 

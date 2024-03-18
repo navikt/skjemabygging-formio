@@ -20,10 +20,10 @@ describe('Components', () => {
       cy.findByRole('region', { name: TEXTS.validering.error })
         .should('exist')
         .within(() => {
-          cy.findByText('Dette er ikke et gyldig kontonummer').should('exist');
-          cy.findByText('Oppgitt IBAN inneholder ugyldig landkode (to store bokstaver i starten av IBAN-koden)').should(
-            'exist',
-          );
+          cy.findByRole('link', { name: 'Dette er ikke et gyldig kontonummer' }).should('exist');
+          cy.findByRole('link', {
+            name: 'Oppgitt IBAN inneholder ugyldig landkode (to store bokstaver i starten av IBAN-koden)',
+          }).should('exist');
         });
 
       cy.findAllByText('Du må fylle ut: Velg valuta').should('have.length', 2);

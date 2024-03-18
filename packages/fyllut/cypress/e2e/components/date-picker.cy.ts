@@ -70,7 +70,7 @@ describe('NavDatepicker', () => {
       cy.findByRole('region', { name: TEXTS.validering.error })
         .should('exist')
         .within(() => {
-          cy.findByText('Du må fylle ut: Tilfeldig dato').should('exist').click();
+          cy.findByRole('link', { name: 'Du må fylle ut: Tilfeldig dato' }).should('exist').click();
         });
 
       cy.findByRole('textbox', { name: 'Tilfeldig dato' }).should('have.focus').type('02.02.2023');

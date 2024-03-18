@@ -117,8 +117,8 @@ describe('Basic form', () => {
         cy.findByRole('region', { name: TEXTS.validering.error })
           .should('exist')
           .within(() => {
-            cy.findAllByText(/Du må fylle ut:/).should('have.length', 4);
-            cy.findByText('Du må fylle ut: Fornavn').click();
+            cy.findAllByRole('link', { name: /Du må fylle ut:/ }).should('have.length', 4);
+            cy.findByRole('link', { name: 'Du må fylle ut: Fornavn' }).click();
           });
         cy.findByRole('textbox', { name: 'Fornavn' }).should('have.focus');
       });
