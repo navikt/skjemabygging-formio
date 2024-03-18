@@ -16,9 +16,8 @@ updates:
     groups:
       navikt-aksel:
         patterns:
-          - '@navikt/*'
-        exclude-patterns:
-          - '@navikt/nav-dekoratoren-moduler'
+          - '@navikt/ds-*'
+          - '@navikt/aksel-icons'
         update-types:
           - 'major'
       all-minor-patch:
