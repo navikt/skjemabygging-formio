@@ -36,8 +36,7 @@ describe('calculateMaalgruppeValue function', () => {
       data: {
         aktivitet: {
           aktivitetId: 'ingenAktivitet',
-          maalgruppe: '',
-          periode: { fom: '', tom: '' },
+          maalgruppe: { maalgruppetype: 'ANNET' },
           text: '',
         },
       },

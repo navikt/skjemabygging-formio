@@ -16,8 +16,7 @@ import activitiesJson from '../../../../../mocks/mocks/data/innsending-api/activ
 
 const defaultActivity: SubmissionActivity = {
   aktivitetId: 'ingenAktivitet',
-  maalgruppe: { maalgruppetype: '', gyldighetsperiode: { fom: '', tom: '' }, maalgruppenavn: '' },
-  periode: { fom: '', tom: '' },
+  maalgruppe: { maalgruppetype: 'ANNET' },
   text: TEXTS.statiske.activities.defaultActivity,
 };
 
@@ -41,19 +40,19 @@ const verifySubmissionValues = (maalgruppe: SubmissionMaalgruppe, aktivitet: Par
     } = req.body;
 
     expect(aktivitetMaalgruppeSubmission.aktivitet.aktivitetId).to.equal(aktivitet.aktivitetId);
-    expect(aktivitetMaalgruppeSubmission.aktivitet.periode.fom).to.equal(aktivitet.periode.fom);
-    expect(aktivitetMaalgruppeSubmission.aktivitet.periode.tom).to.equal(aktivitet.periode.tom);
+    expect(aktivitetMaalgruppeSubmission.aktivitet.periode?.fom).to.equal(aktivitet.periode?.fom);
+    expect(aktivitetMaalgruppeSubmission.aktivitet.periode?.tom).to.equal(aktivitet.periode?.tom);
 
     // Activity målgruppe (if selected)
     if (aktivitetMaalgruppeSubmission.aktivitet.maalgruppe) {
       expect(aktivitetMaalgruppeSubmission.aktivitet.maalgruppe.maalgruppetype).to.equal(
         aktivitet.maalgruppe.maalgruppetype,
       );
-      expect(aktivitetMaalgruppeSubmission.aktivitet.maalgruppe.gyldighetsperiode.fom).to.equal(
-        aktivitet.maalgruppe.gyldighetsperiode.fom,
+      expect(aktivitetMaalgruppeSubmission.aktivitet.maalgruppe.gyldighetsperiode?.fom).to.equal(
+        aktivitet.maalgruppe.gyldighetsperiode?.fom,
       );
-      expect(aktivitetMaalgruppeSubmission.aktivitet.maalgruppe.gyldighetsperiode.tom).to.equal(
-        aktivitet.maalgruppe.gyldighetsperiode.tom,
+      expect(aktivitetMaalgruppeSubmission.aktivitet.maalgruppe.gyldighetsperiode?.tom).to.equal(
+        aktivitet.maalgruppe.gyldighetsperiode?.tom,
       );
     }
 
@@ -374,6 +373,19 @@ describe('Activities', () => {
       cy.findByRole('checkbox', { name: defaultActivity.text }).should('exist');
 
       cy.get('.navds-alert--info').contains(TEXTS.statiske.activities.errorContinue);
+    });
+  });
+
+  describe('validation errors', () => {
+    it('should show validation errors', () => {
+      cy.visit(`/fyllut/testingactivities?sub=digital`);
+      cy.defaultWaits();
+      cy.clickStart();
+      cy.wait('@getActivities');
+
+      cy.clickSaveAndContinue();
+
+      cy.findByRole('link', { name: `Du må fylle ut: ${TEXTS.statiske.activities.label}` }).should('exist');
     });
   });
 });

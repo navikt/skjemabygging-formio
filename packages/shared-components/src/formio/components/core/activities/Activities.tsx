@@ -9,10 +9,10 @@ class Activities extends BaseComponent {
   isLoading = false;
   loadFinished = false;
   activities?: SendInnAktivitet[] = undefined;
+
   defaultActivity: SubmissionActivity = {
     aktivitetId: 'ingenAktivitet',
-    maalgruppe: { maalgruppetype: '', maalgruppenavn: '', gyldighetsperiode: { fom: '', tom: '' } },
-    periode: { fom: '', tom: '' },
+    maalgruppe: { maalgruppetype: 'ANNET' },
     text: this.t(TEXTS.statiske.activities.defaultActivity),
   };
 
@@ -21,6 +21,7 @@ class Activities extends BaseComponent {
       label: 'Velg hvilken aktivitet du vil søke om stønad for',
       type: 'activities',
       key: 'aktivitet',
+      input: true,
     });
   }
 
@@ -30,6 +31,38 @@ class Activities extends BaseComponent {
 
   static get builderInfo() {
     return activitiesBuilder();
+  }
+
+  override get errors() {
+    return this.componentErrors;
+  }
+
+  override getError(): string | undefined {
+    const error = this.componentErrors.find((error) => error.path === this.getId());
+    if (error) return error.message;
+  }
+
+  override checkValidity(): boolean {
+    this.removeAllErrors();
+
+    const submissionMethod = this.getAppConfig()?.submissionMethod;
+
+    if (submissionMethod === 'digital') {
+      const componentData = this.getValue() as SubmissionActivity;
+
+      if (!componentData) {
+        const requiredError = this.t('required', { field: this.getLabelText() });
+        super.addError(this.getId(), requiredError);
+      }
+    }
+
+    this.rerender();
+
+    if (this.componentErrors.length > 0) {
+      return false;
+    }
+
+    return true;
   }
 
   // The radio/checkbox values are simple strings, but the whole activity object is stored in the submission
@@ -44,9 +77,10 @@ class Activities extends BaseComponent {
   renderReact(element) {
     element.render(
       <>
+        {this.getDiffTag()}
         <NavActivities
           id={this.getId()}
-          label={this.getLabel()}
+          label={this.getLabelText()}
           value={this.getValue()}
           onChange={(value, options) => this.changeHandler(value, options)}
           description={this.getDescription()}

@@ -49,6 +49,10 @@ class BaseComponent extends FormioReactComponent {
     );
   }
 
+  getLabelText() {
+    return this.t(this.component?.label ?? '');
+  }
+
   /**
    * Set which component is currently focused, and optionally which element inside this component.
    * This is stored on 'this.root' which usually points to the webform/wizard.
