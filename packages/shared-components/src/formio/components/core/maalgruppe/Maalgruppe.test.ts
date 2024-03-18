@@ -7,20 +7,13 @@ describe('calculateMaalgruppeValue function', () => {
     maalgruppe = new Maalgruppe(undefined, {}, {});
   });
 
-  it('should return maalgruppe from activity if it exists', () => {
-    const testData = {
-      data: {
-        aktivitet: {
-          maalgruppe: 'someValue',
-        },
-      },
-      component: {
-        defaultValue: 'defaultValue',
-      },
-    };
-    const result = maalgruppe.calculateMaalgruppeValue.call(testData);
-    expect(result).toEqual({ calculated: 'someValue', prefilled: 'defaultValue' });
-  });
+  const prefilled = {
+    maalgruppetype: 'NEDSARBEVN',
+    maalgruppenavn: 'Person med nedsatt arbeidsevne pga. sykdom',
+    gyldighetsperiode: { fom: '2024-01-01', tom: '2025-01-01' },
+  };
+
+  const maalgruppeAnnet = { maalgruppetype: 'ANNET' };
 
   it('should return ANNET if maalgruppe is not set on activity', () => {
     const testData = {
@@ -28,11 +21,14 @@ describe('calculateMaalgruppeValue function', () => {
         aktivitet: {},
       },
       component: {
-        defaultValue: 'defaultValue',
+        defaultValue: prefilled,
       },
     };
     const result = maalgruppe.calculateMaalgruppeValue.call(testData);
-    expect(result).toEqual({ calculated: 'ANNET', prefilled: 'defaultValue' });
+    expect(result).toEqual({
+      calculated: maalgruppeAnnet,
+      prefilled,
+    });
   });
 
   it('should return ANNET if default activity is chosen', () => {
@@ -40,17 +36,15 @@ describe('calculateMaalgruppeValue function', () => {
       data: {
         aktivitet: {
           aktivitetId: 'ingenAktivitet',
-          maalgruppe: '',
-          periode: { fom: '', tom: '' },
           text: '',
         },
       },
       component: {
-        defaultValue: 'defaultValue',
+        defaultValue: prefilled,
       },
     };
     const result = maalgruppe.calculateMaalgruppeValue.call(testData);
-    expect(result).toEqual({ calculated: 'ANNET', prefilled: 'defaultValue' });
+    expect(result).toEqual({ calculated: maalgruppeAnnet, prefilled: prefilled });
   });
 
   it('should return ANNET if neither maalgruppe nor defaultValue is set', () => {
@@ -61,7 +55,7 @@ describe('calculateMaalgruppeValue function', () => {
       component: {},
     };
     const result = maalgruppe.calculateMaalgruppeValue.call(testData);
-    expect(result).toEqual({ calculated: 'ANNET', prefilled: undefined });
+    expect(result).toEqual({ calculated: maalgruppeAnnet, prefilled: undefined });
   });
 
   it('should return maalgruppe, if selected in Din Situasjon', () => {
@@ -73,7 +67,7 @@ describe('calculateMaalgruppeValue function', () => {
       },
     };
     const result = maalgruppe.calculateMaalgruppeValue.call(testData);
-    expect(result).toEqual({ calculated: 'MOTDAGPEN', prefilled: undefined });
+    expect(result).toEqual({ calculated: { maalgruppetype: 'MOTDAGPEN' }, prefilled: undefined });
   });
 
   it('should return maalgruppe based on priority, if multiple selected in Din Situasjon', () => {
@@ -88,7 +82,7 @@ describe('calculateMaalgruppeValue function', () => {
       },
     };
     const result = maalgruppe.calculateMaalgruppeValue.call(testData);
-    expect(result).toEqual({ calculated: 'ENSFORUTD', prefilled: undefined });
+    expect(result).toEqual({ calculated: { maalgruppetype: 'ENSFORUTD' }, prefilled: undefined });
   });
 
   it('should accept "ja", as well as true, but not "truthy" values', () => {
@@ -102,7 +96,7 @@ describe('calculateMaalgruppeValue function', () => {
       },
     };
     const result = maalgruppe.calculateMaalgruppeValue.call(testData);
-    expect(result).toEqual({ calculated: 'ENSFORUTD', prefilled: undefined });
+    expect(result).toEqual({ calculated: { maalgruppetype: 'ENSFORUTD' }, prefilled: undefined });
   });
 
   it('should return ANNET, if nothing is selected in Din Situasjon', () => {
@@ -123,6 +117,6 @@ describe('calculateMaalgruppeValue function', () => {
       },
     };
     const result = maalgruppe.calculateMaalgruppeValue.call(testData);
-    expect(result).toEqual({ calculated: 'ANNET', prefilled: undefined });
+    expect(result).toEqual({ calculated: { maalgruppetype: 'ANNET' }, prefilled: undefined });
   });
 });

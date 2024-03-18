@@ -40,12 +40,19 @@ class BaseComponent extends FormioReactComponent {
   /**
    * Get label for custom component renderReact()
    */
-  getLabel() {
+  getLabel(options?: { showOptional?: boolean; showDiffTag?: boolean; labelTextOnly?: boolean }) {
+    const defaultOptions = { showOptional: true, showDiffTag: true, labelTextOnly: false };
+    const { showOptional, showDiffTag, labelTextOnly } = { ...defaultOptions, ...(options ?? {}) };
+
+    if (labelTextOnly) return this.t(this.component?.label ?? '');
+
     return (
       <>
         {this.t(this.component?.label ?? '')}
-        {this.component?.validate?.required && !this.component?.readOnly ? '' : ` (${this.t('valgfritt')})`}
-        {this.getDiffTag()}
+        {this.component?.validate?.required && !this.component?.readOnly
+          ? ''
+          : showOptional && ` (${this.t('valgfritt')})`}
+        {showDiffTag && this.getDiffTag()}
       </>
     );
   }

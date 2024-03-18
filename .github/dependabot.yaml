@@ -1,21 +1,36 @@
 version: 2
+registries:
+  npm-github:
+    type: npm-registry
+    url: https://npm.pkg.github.com
+    token: ${{secrets.READER_TOKEN}}
 updates:
   - package-ecosystem: 'npm'
     directory: '/'
+    registries:
+      - npm-github
     schedule:
       interval: 'monthly'
     versioning-strategy: increase
     open-pull-requests-limit: 20
     groups:
-      navikt:
+      navikt-aksel:
         patterns:
-          - '@navikt/*'
+          - '@navikt/ds-*'
+          - '@navikt/aksel-icons'
+        update-types:
+          - 'major'
       all-minor-patch:
         patterns:
           - '*'
         update-types:
           - 'minor'
           - 'patch'
+      typescript-eslint:
+        patterns: 
+          - '@typescript-eslint/*'
+        update-types:
+          - 'major'
     ignore:
       - dependency-name: 'formiojs'
 

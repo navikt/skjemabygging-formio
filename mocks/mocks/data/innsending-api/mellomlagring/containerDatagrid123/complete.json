@@ -1,0 +1,62 @@
+{
+  "brukerId": "28898698736",
+  "skjemanr": "containerDatagrid123",
+  "tittel": "Container med datagrid",
+  "tema": "GEN",
+  "spraak": "nb",
+  "hoveddokument": {
+    "vedleggsnr": "containerDatagrid123",
+    "tittel": "Container med datagrid",
+    "label": "Container med datagrid",
+    "pakrevd": true,
+    "mimetype": "application/pdf"
+  },
+  "hoveddokumentVariant": {
+    "vedleggsnr": "containerDatagrid123",
+    "tittel": "Container med datagrid",
+    "label": "Container med datagrid",
+    "pakrevd": false,
+    "mimetype": "application/json",
+    "document": {
+      "language": "nb-NO",
+      "data": {
+        "data": {
+          "visBeholderMedRepeterendeData": "ja",
+          "beholderMedRepeterendeData": {
+            "repeterendeFelter": [
+              {
+                "datoIDatagrid": "2025-12-31",
+                "tekstfeltIDatagrid1": "Tekstfelt-verdi"
+              },
+              {
+                "datoIDatagrid": "2026-12-31",
+                "tekstfeltIDatagrid1": "Tekstfelt-verdi2"
+              }
+            ]
+          }
+        },
+        "metadata": {
+          "timezone": "Europe/Oslo",
+          "offset": 60,
+          "origin": "https://fyllut-preprod.intern.dev.nav.no",
+          "referrer": "https://testid.test.idporten.no/",
+          "browserName": "Netscape",
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+          "pathName": "/fyllut/containerdatagrid123/page3",
+          "onLine": true
+        },
+        "state": "submitted",
+        "_vnote": ""
+      }
+    }
+  },
+  "innsendingsId": "b5ea6d20-cc84-4562-9051-ecd5d9a24220",
+  "status": "Opprettet",
+  "vedleggsListe": [],
+  "kanLasteOppAnnet": true,
+  "fristForEttersendelse": 14,
+  "endretDato": "2024-03-14T14:40:58.530287+01:00",
+  "skalSlettesDato": "2024-05-09",
+  "skjemaPath": "containerdatagrid123",
+  "visningsType": "fyllUt"
+}

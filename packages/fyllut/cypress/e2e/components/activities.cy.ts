@@ -3,37 +3,75 @@
  * Tests the rendering for different number of activities from backend and error from backend
  */
 
-import { SendInnAktivitet, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  SendInnAktivitet,
+  SendInnMaalgruppe,
+  SubmissionActivity,
+  SubmissionMaalgruppe,
+  TEXTS,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import { expect } from 'chai';
 import activitiesMultipleJson from '../../../../../mocks/mocks/data/innsending-api/activities/activities-multiple.json';
 import activitiesJson from '../../../../../mocks/mocks/data/innsending-api/activities/activities.json';
 
-const defaultActivity = {
+const defaultActivity: SubmissionActivity = {
   aktivitetId: 'ingenAktivitet',
-  maalgruppe: '',
-  periode: { fom: '', tom: '' },
   text: TEXTS.statiske.activities.defaultActivity,
 };
 
 const activityText = 'Arbeidstrening: 01.12.2023 - 06.04.2024';
-const prefillMaalgruppe = 'ARBSOKERE';
+const prefillMaalgruppe: SendInnMaalgruppe = {
+  gyldighetsperiode: {
+    fom: '2024-01-01',
+    tom: '2024-05-13',
+  },
+  maalgruppetype: 'ARBSOKERE',
+  maalgruppenavn: 'Arbeidssøker',
+};
 const activityJson = activitiesJson[0];
 
-const verifySubmissionValues = (
-  maalgruppe: { calculated: string; prefilled: string },
-  aktivitet: Partial<SendInnAktivitet>,
-) => {
+const verifySubmissionValues = (maalgruppe: SubmissionMaalgruppe, aktivitet: Partial<SubmissionActivity>) => {
   cy.submitMellomlagring((req) => {
     const {
       submission: {
-        data: { container },
+        data: { container: aktivitetMaalgruppeSubmission },
       },
     } = req.body;
-    expect(container.aktivitet.aktivitetId).to.equal(aktivitet.aktivitetId);
-    expect(container.aktivitet.periode.fom).to.equal(aktivitet.periode.fom);
-    expect(container.aktivitet.periode.tom).to.equal(aktivitet.periode.tom);
-    expect(container.maalgruppe.calculated).to.equal(maalgruppe.calculated);
-    expect(container.maalgruppe.prefilled).to.equal(maalgruppe.prefilled);
+
+    expect(aktivitetMaalgruppeSubmission.aktivitet.aktivitetId).to.equal(aktivitet.aktivitetId);
+    expect(aktivitetMaalgruppeSubmission.aktivitet.periode?.fom).to.equal(aktivitet.periode?.fom);
+    expect(aktivitetMaalgruppeSubmission.aktivitet.periode?.tom).to.equal(aktivitet.periode?.tom);
+
+    // Activity målgruppe (if selected)
+    if (aktivitetMaalgruppeSubmission.aktivitet.maalgruppe) {
+      expect(aktivitetMaalgruppeSubmission.aktivitet.maalgruppe.maalgruppetype).to.equal(
+        aktivitet.maalgruppe.maalgruppetype,
+      );
+      expect(aktivitetMaalgruppeSubmission.aktivitet.maalgruppe.gyldighetsperiode?.fom).to.equal(
+        aktivitet.maalgruppe.gyldighetsperiode?.fom,
+      );
+      expect(aktivitetMaalgruppeSubmission.aktivitet.maalgruppe.gyldighetsperiode?.tom).to.equal(
+        aktivitet.maalgruppe.gyldighetsperiode?.tom,
+      );
+    }
+
+    // Prefilled målgruppe (if prefilled)
+    if (aktivitetMaalgruppeSubmission.maalgruppe.prefilled) {
+      expect(aktivitetMaalgruppeSubmission.maalgruppe.prefilled.maalgruppetype).to.equal(
+        maalgruppe.prefilled.maalgruppetype,
+      );
+      expect(aktivitetMaalgruppeSubmission.maalgruppe.prefilled.gyldighetsperiode.fom).to.equal(
+        maalgruppe.prefilled.gyldighetsperiode.fom,
+      );
+      expect(aktivitetMaalgruppeSubmission.maalgruppe.prefilled.gyldighetsperiode.tom).to.equal(
+        maalgruppe.prefilled.gyldighetsperiode.tom,
+      );
+    }
+
+    // Calculated målgruppe
+    expect(aktivitetMaalgruppeSubmission.maalgruppe.calculated.maalgruppetype).to.equal(
+      maalgruppe.calculated.maalgruppetype,
+    );
   });
 };
 
@@ -80,11 +118,17 @@ describe('Activities', () => {
         });
     });
 
-    it('should select maalgruppe attached to activity as the calculated', () => {
+    it('should select activity and store correct submission values', () => {
       cy.mocksUseRouteVariant('get-soknad:success-activities-empty');
 
       // Check the submission values
-      verifySubmissionValues({ calculated: activityJson.maalgruppe, prefilled: prefillMaalgruppe }, activityJson);
+      verifySubmissionValues(
+        {
+          calculated: { maalgruppetype: 'ANNET' },
+          prefilled: prefillMaalgruppe,
+        },
+        activityJson,
+      );
 
       cy.visit(`/fyllut/testingactivities?sub=digital`);
       cy.defaultWaits();
@@ -96,7 +140,7 @@ describe('Activities', () => {
 
       cy.clickSaveAndContinue();
 
-      // Should show activity and maalgruppe in summary
+      // Should show activity in summary
       cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
       cy.get('dl').within(() => {
         cy.get('dd').eq(0).should('contain.text', activityText);
@@ -140,14 +184,26 @@ describe('Activities', () => {
           });
 
           // Expected submission values
-          verifySubmissionValues({ calculated: 'ANNET', prefilled: 'MOTDAGPEN' }, defaultActivity);
+          verifySubmissionValues(
+            {
+              calculated: { maalgruppetype: 'ANNET' },
+              prefilled: {
+                maalgruppetype: 'MOTDAGPEN',
+                gyldighetsperiode: {
+                  fom: '2024-01-01',
+                  tom: '2024-05-13',
+                },
+              },
+            },
+            defaultActivity,
+          );
 
           // Submit
           cy.clickSaveAndContinue();
           cy.wait('@submitMellomlagring');
         });
 
-        it('should allow user to change chosen activity and update calculated maalgruppe to reflect that', () => {
+        it('should allow user to change chosen activity and update selected maalgruppe to reflect that', () => {
           const activityAvklaring = activitiesMultipleJson.find(
             (activity) => activity.aktivitetsnavn === 'Avklaring',
           ) as SendInnAktivitet;
@@ -171,7 +227,19 @@ describe('Activities', () => {
           });
 
           // Expected submission values
-          verifySubmissionValues({ calculated: 'NEDSARBEVN', prefilled: 'MOTDAGPEN' }, activityAvklaring);
+          verifySubmissionValues(
+            {
+              calculated: { maalgruppetype: 'ANNET' },
+              prefilled: {
+                maalgruppetype: 'MOTDAGPEN',
+                gyldighetsperiode: {
+                  fom: '2024-01-01',
+                  tom: '2024-05-13',
+                },
+              },
+            },
+            activityAvklaring,
+          );
 
           // Submit
           cy.clickSaveAndContinue();
@@ -224,7 +292,13 @@ describe('Activities', () => {
       cy.mocksUseRouteVariant('get-activities:success-empty');
 
       // Check the submission values
-      verifySubmissionValues({ calculated: 'ANNET', prefilled: prefillMaalgruppe }, defaultActivity);
+      verifySubmissionValues(
+        {
+          calculated: { maalgruppetype: 'ANNET' },
+          prefilled: prefillMaalgruppe,
+        },
+        defaultActivity,
+      );
 
       cy.visit(`/fyllut/testingactivities?sub=digital`);
       cy.defaultWaits();
@@ -253,7 +327,13 @@ describe('Activities', () => {
       cy.mocksUseRouteVariant('get-prefill-data:success-empty');
 
       // Check the submission values
-      verifySubmissionValues({ calculated: 'ANNET', prefilled: null }, defaultActivity);
+      verifySubmissionValues(
+        {
+          calculated: { maalgruppetype: 'ANNET' },
+          prefilled: null,
+        },
+        defaultActivity,
+      );
 
       cy.visit(`/fyllut/testingactivities?sub=digital`);
       cy.defaultWaits();
@@ -292,6 +372,19 @@ describe('Activities', () => {
       cy.findByRole('checkbox', { name: defaultActivity.text }).should('exist');
 
       cy.get('.navds-alert--info').contains(TEXTS.statiske.activities.errorContinue);
+    });
+  });
+
+  describe('validation errors', () => {
+    it('should show validation errors', () => {
+      cy.visit(`/fyllut/testingactivities?sub=digital`);
+      cy.defaultWaits();
+      cy.clickStart();
+      cy.wait('@getActivities');
+
+      cy.clickSaveAndContinue();
+
+      cy.findByRole('link', { name: `Du må fylle ut: ${TEXTS.statiske.activities.label}` }).should('exist');
     });
   });
 });
