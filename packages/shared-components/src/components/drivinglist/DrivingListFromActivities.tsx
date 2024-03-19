@@ -12,6 +12,7 @@ import {
   toLocaleDateLongMonth,
 } from '../../formio/components/core/driving-list/DrivingList.utils';
 import { useDrivingList } from '../../formio/components/core/driving-list/DrivingListContext';
+import makeStyles from '../../util/styles/jss/jss';
 import NavActivities from '../activities/NavActivities';
 import ActivityAlert from './ActivityAlert';
 import DrivingPeriod from './DrivingPeriod';
@@ -20,8 +21,16 @@ type Props = {
   activities: SendInnAktivitet[];
 };
 
+const useDrivinglistStyles = makeStyles({
+  accoridonHeader: {
+    marginBottom: 'var(--a-spacing-2)',
+  },
+});
+
 const DrivingListFromActivities = ({ activities }: Props) => {
   const { values, updateValues, t, appConfig, getComponentError, addRef, locale } = useDrivingList();
+
+  const styles = useDrivinglistStyles();
 
   const onActivityChange = (activity?: SubmissionActivity) => {
     updateValues({ selectedVedtaksId: activity?.vedtaksId, dates: [] });
@@ -80,6 +89,9 @@ const DrivingListFromActivities = ({ activities }: Props) => {
         {selectedActivity && selectedVedtak && (
           <>
             <ActivityAlert activityName={selectedActivity.aktivitetsnavn} vedtak={selectedVedtak} className={'mb'} />
+            <Heading size="xsmall" className={styles.accoridonHeader}>
+              {TEXTS.statiske.drivingList.accordionHeader}
+            </Heading>
             <Accordion
               tabIndex={-1}
               id={drivingListMetadata('dates').id}

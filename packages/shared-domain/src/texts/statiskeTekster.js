@@ -144,7 +144,6 @@ export const statiske = {
     previousDrivingList: 'Perioder du tidligere har fått refundert reiseutgifter for',
     addPeriod: 'Legg til periode',
     removePeriod: 'Fjern periode',
-    label: 'Legg til kjøreliste for en eller flere perioder',
     parking: 'Skal du registrere parkering?',
     periodType: 'Velg periode for innsending',
     datePicker: 'Velg første dato i perioden',
@@ -153,5 +152,6 @@ export const statiske = {
     dateSelect: 'Kryss av for de dagene du har brukt egen bil',
     dateSelectParking: 'og har hatt parkeringsutgifter',
     parkingExpenses: 'Parkeringsutgifter (kr)',
+    accordionHeader: 'Legg til kjøreliste for én eller flere perioder',
   },
 };

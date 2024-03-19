@@ -1,4 +1,4 @@
-import { Accordion, Button, Radio, RadioGroup } from '@navikt/ds-react';
+import { Accordion, Button, Heading, Radio, RadioGroup } from '@navikt/ds-react';
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useCallback, useEffect, useMemo } from 'react';
 import {
@@ -17,7 +17,10 @@ import DrivingPeriod from './DrivingPeriod';
 const useDrivinglistStyles = makeStyles({
   buttonContainer: {
     display: 'flex',
-    gap: '1rem',
+    gap: 'var(--a-spacing-4)',
+  },
+  accoridonHeader: {
+    marginBottom: 'var(--a-spacing-2)',
   },
 });
 
@@ -166,6 +169,9 @@ const DrivingListFromDates = () => {
           </>
         )}
 
+        <Heading size="xsmall" className={styles.accoridonHeader}>
+          {TEXTS.statiske.drivingList.accordionHeader}
+        </Heading>
         <Accordion
           tabIndex={-1}
           id={drivingListMetadata('dates').id}
