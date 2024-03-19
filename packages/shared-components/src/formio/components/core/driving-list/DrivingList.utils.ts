@@ -54,6 +54,7 @@ export const generatePeriods = (
   if (!date) return [];
 
   const periods: DrivingListPeriod[] = [];
+  const today = new Date();
 
   for (let i = 0; i < numberOfPeriods; i++) {
     const startDate = new Date(date);
@@ -67,6 +68,12 @@ export const generatePeriods = (
       endDate.setMonth(endDate.getMonth() + 1 * (i + 1));
       endDate.setDate(endDate.getDate() - 1);
     }
+
+    if (endDate > today) {
+      endDate.setMonth(today.getMonth());
+      endDate.setDate(today.getDate());
+    }
+
     periods.push({ periodFrom: startDate, periodTo: endDate, id: uuidv4() });
   }
 
@@ -94,17 +101,10 @@ export const showAddButton = (values?: DrivingListSubmission) => {
   );
   if (!lastPeriod) return false;
 
-  const lastPeriodDate = new Date(lastPeriod.periodTo);
+  const lastPeriodDate = new Date(lastPeriod.periodTo).setHours(0, 0, 0, 0);
+  const today = new Date().setHours(0, 0, 0, 0);
 
-  if (values?.selectedPeriodType === 'weekly') {
-    lastPeriodDate.setDate(lastPeriodDate.getDate() + 7);
-  } else if (lastPeriod && values?.selectedPeriodType === 'monthly') {
-    lastPeriodDate.setMonth(lastPeriodDate.getMonth() + 1);
-  } else {
-    return false;
-  }
-
-  return lastPeriodDate < new Date();
+  return lastPeriodDate < today;
 };
 
 export const showRemoveButton = (values?: DrivingListSubmission) => {
@@ -115,10 +115,11 @@ export const toDate = (values?: DrivingListSubmission) => {
   const date = new Date();
 
   if (values?.selectedPeriodType === 'weekly') {
-    date.setDate(date.getDate() - 7);
+    date.setDate(date.getDate() - 6);
     return date;
   } else if (values?.selectedPeriodType === 'monthly') {
     date.setMonth(date.getMonth() - 1);
+    date.setDate(date.getDate() + 1);
     return date;
   }
 };
