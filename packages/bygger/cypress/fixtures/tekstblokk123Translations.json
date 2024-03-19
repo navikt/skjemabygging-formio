@@ -1,0 +1,60 @@
+[{
+  "form": "6045e4d3af48ce0003080d75",
+  "owner": "607051c797f5430003e4f041",
+  "roles": [],
+  "access": [],
+  "externalIds": [],
+  "metadata": {
+    "headers": {
+      "host": "formio-api-server.ekstern.dev.nav.no",
+      "x-request-id": "1f2832fc5c294416605e797b1fad25c3",
+      "x-real-ip": "45.152.51.4",
+      "x-forwarded-for": "45.152.51.4",
+      "x-forwarded-host": "formio-api-server.ekstern.dev.nav.no",
+      "x-forwarded-port": "443",
+      "x-forwarded-proto": "https",
+      "x-forwarded-scheme": "https",
+      "x-scheme": "https",
+      "x-original-forwarded-for": "45.152.51.4, 34.95.69.10",
+      "content-length": "98",
+      "sec-ch-ua": "\" Not A;Brand\";v=\"99\", \"Chromium\";v=\"98\", \"Google Chrome\";v=\"98\"",
+      "content-type": "application/json",
+      "sec-ch-ua-mobile": "?0",
+      "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36",
+      "sec-ch-ua-platform": "\"Windows\"",
+      "accept": "*/*",
+      "origin": "http://localhost:3000",
+      "sec-fetch-site": "cross-site",
+      "sec-fetch-mode": "cors",
+      "sec-fetch-dest": "empty",
+      "referer": "http://localhost:3000/",
+      "accept-encoding": "gzip, deflate, br",
+      "accept-language": "nb-NO,nb;q=0.9,no;q=0.8,nn;q=0.7,en;q=0.6",
+      "x-cloud-trace-context": "d1fc775b49ff1b493673893a8ae21e25/60551207716467416",
+      "via": "1.1 google",
+      "x-client-city": "Oslo Municipality",
+      "x-client-citylatlong": "59.914185,10.752410",
+      "x-client-rtt": "16",
+      "x-client-region": "NO",
+      "l5d-client-id": "gw-ekstern-dev-nav-no-ingress-nginx.nginx.serviceaccount.identity.linkerd.cluster.local"
+    }
+  },
+  "data": {
+    "name": "global.tekstblokk123",
+    "scope": "local",
+    "form": "tekstblokk123",
+    "language": "nn-NO",
+    "i18n": {
+      "Du må selv skrive under på leveattesten. I tillegg må du få bekreftet attesten enten av to myndige personer (vitner) eller av en offentlig myndighet.": "Du må sjølv skrive....",
+      "<h3>Overskrift</h3><p>Beskrivelse av dette skjemaet med <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://www.nav.no\">lenke til NAV</a>.</p>": "<div><h3>Overskrift</h3><p>Beskrivelse av dette skjemaet med <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://www.nav.no\">lenke til NAV</a>.</p></div>",
+      "<h3>Tekstblokk med mye formatering og eksisterende oversettelse</h3><p>Dette er et avsnitt</p><p>Her er et avsnitt <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://www.vg.no\">med lenke til VG</a> og her kommer en liste:</p><ul><li>Ta oppvasken</li><li>Handle <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://www.coop.no/\"><strong>matvarer</strong></a>, og <strong>vurder</strong> å <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://www.zalando.no\">kjøpe <strong>nye</strong> klær</a>.</li></ul><p>Nytt avsnitt. Ny liste (numerert denne gangen):</p><ol><li>Første prioritet</li><li>Også viktig, men ikke så viktig</li><li>Kan utsettes</li><li>Trengs egentlig ikke å gjøres</li></ol>": "<h3>Tekstblokk med mye formatering og eksisterende oversettelse</h3><p>Dette er et avsnitt</p><p>Her er eit avsnitt <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://www.dagogtid.no\">med lenke til DAG OG TID</a>, og her er ei ei liste:</p><ul><li>Ta oppvasken</li><li>Handle <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://www.kiwi.no/\"><strong>matvarer</strong></a>, og <strong>tenk på om du skal</strong> <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://www.zalando.no\">kjøpe <strong>nye</strong> klær</a>.</li></ul><p>Nytt avsnitt. Ny liste (numerert denne gangen):</p><ol><li>Første prioritet</li><li>Også viktig, men ikke så viktig</li><li>Kan utsettes</li><li>Trengs egentlig ikke å gjøres</li></ol>"
+    }
+  },
+  "_id": "6217a16d81df996a71091d0b",
+  "created": "2022-02-24T15:17:01.586Z",
+  "modified": "2024-03-15T14:30:46.645Z",
+  "_fvid": 0,
+  "project": "628ca77305690db58c974cfd",
+  "state": "submitted",
+  "_vid": 0
+}]

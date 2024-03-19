@@ -39,8 +39,8 @@ const TranslationFormHtmlInput = ({
                 const updatedTranslation: HtmlAsJsonElement | HtmlAsJsonTextElement = JSON.parse(
                   JSON.stringify(currentTranslation),
                 );
-                if (updatedTranslation && updatedTranslation?.type === 'Element' && element.type === 'Element') {
-                  if (element.tagName === 'DIV') {
+                if (updatedTranslation && updatedTranslation?.type === 'Element') {
+                  if (element.type === 'Element' && element.tagName === 'DIV') {
                     updatedTranslation.children = element.children;
                   } else {
                     updatedTranslation.children[index] = element;

@@ -88,4 +88,94 @@ describe('Translations', () => {
       });
     });
   });
+
+  const assessHtmlTranlationInput = (
+    indexOfHtmlItem: number,
+    labelOfHtmlItem: string,
+    fieldLabel: string,
+    existingValue: string,
+  ) => {
+    cy.get('[data-testid=html-translation]')
+      .eq(indexOfHtmlItem)
+      .within(() => {
+        cy.findAllByRole('heading', {
+          name: labelOfHtmlItem,
+        }).should('be.visible');
+        cy.findByRole('textbox', {
+          name: fieldLabel,
+        }).should('have.value', existingValue);
+      });
+  };
+  const typeNewHtmlTranslationInput = (indexOfHtmlItem: number, fieldLabel: string, newValue: string) => {
+    return cy
+      .get('[data-testid=html-translation]')
+      .eq(indexOfHtmlItem)
+      .within(() => {
+        cy.findByRole('textbox', { name: fieldLabel }).focus();
+        cy.findByRole('textbox', { name: fieldLabel }).clear();
+        cy.findByRole('textbox', { name: fieldLabel }).type(
+          newValue,
+          // { force: true },
+        );
+        cy.findByRole('textbox', { name: fieldLabel }).blur();
+      });
+  };
+
+  describe('Form translations - html', () => {
+    const htmlWithExistingTranslation =
+      '<h3>Tekstblokk med mye formatering og eksisterende oversettelse</h3><p>Dette er et avsnitt</p><p>Her er et avsnitt <a target="_blank" rel="noopener noreferrer" href="https://www.vg.no">med lenke til VG</a> og her kommer en liste:</p><ul><li>Ta oppvasken</li><li>Handle <a target="_blank" rel="noopener noreferrer" href="https://www.coop.no/"><strong>matvarer</strong></a>, og <strong>vurder</strong> å <a target="_blank" rel="noopener noreferrer" href="https://www.zalando.no">kjøpe <strong>nye</strong> klær</a>.</li></ul><p>Nytt avsnitt. Ny liste (numerert denne gangen):</p><ol><li>Første prioritet</li><li>Også viktig, men ikke så viktig</li><li>Kan utsettes</li><li>Trengs egentlig ikke å gjøres</li></ol>';
+
+    beforeEach(() => {
+      cy.intercept('GET', '/api/forms/tekstblokk123', { fixture: 'tekstblokk123.json' }).as('getForm');
+      cy.intercept('GET', '/api/published-forms/formWithTekstblokk', { statusCode: 404 }).as('getPublishedForm');
+      cy.intercept('GET', '/api/countries?*', { fixture: 'getCountriesLangNb.json' }).as('getCountriesLangNb');
+      cy.intercept('GET', /language\/submission?.*/, { fixture: 'tekstblokk123Translations.json' }).as(
+        'getTranslations',
+      );
+      cy.intercept('PUT', /language\/submission?.*/).as('updateTranslations');
+
+      cy.visit('/forms/tekstblokk123');
+      cy.wait('@getForm');
+      cy.findByRole('link', { name: 'Språk' }).click();
+      cy.wait('@getTranslations', { timeout: 10000 });
+    });
+
+    it('lets you change links', () => {
+      const expectedHtmlResult =
+        '<h3>Tekstblokk med mye formatering og eksisterende oversettelse</h3><p>Dette er et avsnitt</p><p>Her er eit avsnitt <a target="_blank" rel="noopener noreferrer" href="https://www.ap.no">med lenke til AFTENPOSTEN</a>. Her kommer ei liste:</p><ul><li>Ta oppvasken</li><li>Handle <a target="_blank" rel="noopener noreferrer" href="https://www.kiwi.no/"><strong>matvarer</strong></a>, og <strong>tenk på om du skal</strong> <a target="_blank" rel="noopener noreferrer" href="https://www.zalando.no">kjøpe <strong>nye</strong> klær</a>.</li></ul><p>Nytt avsnitt. Ny liste (numerert denne gangen):</p><ol><li>Første prioritet</li><li>Også viktig, men ikke så viktig</li><li>Kan utsettes</li><li>Trengs egentlig ikke å gjøres</li></ol>';
+      cy.get('[data-testid=html-translation]').should('have.length', 3);
+      const paragraphWithLink = 'Her er et avsnitt [med lenke til VG](https://www.vg.no) og her kommer en liste:';
+      assessHtmlTranlationInput(
+        1,
+        'Tekstblokk med mye formatering og eksisterende oversettelse',
+        paragraphWithLink,
+        'Her er eit avsnitt [med lenke til DAG OG TID](https://www.dagogtid.no), og her er ei ei liste:',
+      );
+      typeNewHtmlTranslationInput(
+        1,
+        paragraphWithLink,
+        'Her er eit avsnitt [med lenke til AFTENPOSTEN](https://www.ap.no). Her kommer ei liste:',
+      );
+      cy.findByRole('button', { name: 'Lagre' }).click();
+      cy.wait('@updateTranslations').then((interception) => {
+        // eslint-disable-next-line vitest/valid-expect
+        expect(interception.request.body.data.i18n[htmlWithExistingTranslation]).to.equal(expectedHtmlResult);
+      });
+    });
+
+    it('updates the tranlation of a list item without affecting the other list items', () => {
+      const updatedTranslation =
+        '<h3>Tekstblokk med mye formatering og eksisterende oversettelse</h3><p>Dette er et avsnitt</p><p>Her er eit avsnitt <a target="_blank" rel="noopener noreferrer" href="https://www.dagogtid.no">med lenke til DAG OG TID</a>, og her er ei ei liste:</p><ul><li>Ta ut av oppvasken</li><li>Handle <a target="_blank" rel="noopener noreferrer" href="https://www.kiwi.no/"><strong>matvarer</strong></a>, og <strong>tenk på om du skal</strong> <a target="_blank" rel="noopener noreferrer" href="https://www.zalando.no">kjøpe <strong>nye</strong> klær</a>.</li></ul><p>Nytt avsnitt. Ny liste (numerert denne gangen):</p><ol><li>Første prioritet</li><li>Ganske viktig</li><li>Kan utsettes</li><li>Trengs egentlig ikke å gjøres</li></ol>';
+      const listItem1 = 'Ta oppvasken';
+      const listItem2 = 'Også viktig, men ikke så viktig';
+      typeNewHtmlTranslationInput(1, listItem1, 'Ta ut av oppvasken');
+      typeNewHtmlTranslationInput(1, listItem2, 'Ganske viktig');
+      cy.findByRole('button', { name: 'Lagre' }).click();
+      cy.wait('@updateTranslations').then((interception) => {
+        console.log('INTERCEPTION', JSON.stringify(interception.request.body, null, 2));
+        // eslint-disable-next-line vitest/valid-expect
+        expect(interception.request.body.data.i18n[htmlWithExistingTranslation]).to.equal(updatedTranslation);
+      });
+    });
+  });
 });

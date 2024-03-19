@@ -89,6 +89,7 @@ const TranslationFormHtmlSection = ({
   if (htmlElementAsJson.type === 'Element') {
     return (
       <Box
+        data-testid="html-translation"
         className={styles.outerBox}
         padding="2"
         paddingInline="4"
