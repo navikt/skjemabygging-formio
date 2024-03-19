@@ -85,6 +85,7 @@ const DrivingListFromActivities = ({ activities }: Props) => {
           error={getComponentError('activityRadio')}
           ref={(ref) => addRef('activityRadio', ref)}
           locale={locale}
+          shouldAutoSelectSingleActivity={true}
         />
         {selectedActivity && selectedVedtak && (
           <>

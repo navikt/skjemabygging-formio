@@ -20,6 +20,7 @@ type Props = {
   dataType: ActivityDataType;
   activities?: SendInnAktivitet[];
   locale: string;
+  shouldAutoSelectSingleActivity?: boolean;
 };
 
 type ActivityDataType = 'aktivitet' | 'vedtak';
@@ -48,7 +49,9 @@ const NavActivities = forwardRef<HTMLFieldSetElement, Props>((props: Props, ref)
           }
 
           if (result) {
-            setActivitySelections(mapToSubmissionActivity(result, props.dataType, props.locale));
+            const submissionActivities = mapToSubmissionActivity(result, props.dataType, props.locale);
+            autoSelectSingleActivity(submissionActivities);
+            setActivitySelections(submissionActivities);
           }
           setLoading(false);
         } catch (ex) {
@@ -65,12 +68,20 @@ const NavActivities = forwardRef<HTMLFieldSetElement, Props>((props: Props, ref)
 
   useEffect(() => {
     if (props.activities) {
-      setActivitySelections(mapToSubmissionActivity(props.activities, props.dataType, props.locale));
+      const submissionActivities = mapToSubmissionActivity(props.activities, props.dataType, props.locale);
+      autoSelectSingleActivity(submissionActivities);
+      setActivitySelections(submissionActivities);
     }
   }, [props.activities, props.dataType]);
 
   const getId = (activity: SubmissionActivity) => {
     return activity.vedtaksId ?? activity.aktivitetId;
+  };
+
+  const autoSelectSingleActivity = (submissionActivities: SubmissionActivity[]) => {
+    if (submissionActivities.length === 1 && props.shouldAutoSelectSingleActivity) {
+      props.onChange(submissionActivities[0], { modified: true });
+    }
   };
 
   const renderCheckbox = () => {
@@ -139,16 +150,17 @@ const NavActivities = forwardRef<HTMLFieldSetElement, Props>((props: Props, ref)
     return <Alert variant="info">{`${props.t(TEXTS.statiske.activities.errorContinue)}`}</Alert>;
   };
 
-  const hasActivities = activitySelections.length > 0;
-
-  // Shows checkbox when there are no activities or it is displayed in byggeren
-  // Shows radio when there are 1 or more activities
+  // For the driving list if there is only one activity, it it selected by default and not shown (the default activity is not shown either)
+  // Show radio buttons if there are multiple activities (including the default activity)
+  // Show checkbox if there are no activities (default activity is shown)
   const renderActivities = () => {
     if (loading) {
       return <Skeleton variant="rounded" width="100%" height={150} />;
-    } else if (hasActivities && !loading) {
+    } else if (activitySelections.length === 1 && props.shouldAutoSelectSingleActivity) {
+      return <></>;
+    } else if (activitySelections.length > 0 && !loading) {
       return renderRadioGroup();
-    } else if (props.defaultActivity && !loading) {
+    } else if (activitySelections.length === 0 && props.defaultActivity && !loading) {
       return renderCheckbox();
     }
   };

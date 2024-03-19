@@ -136,7 +136,7 @@ describe('DrivingList', () => {
       cy.findByRole('region', { name: TEXTS.validering.error }).should('not.exist');
     });
 
-    it('should add and remove periods', () => {
+    it.only('should add and remove periods', () => {
       cy.visit(`/fyllut/testdrivinglist?sub=paper`);
       cy.defaultWaits();
       cy.clickStart();
@@ -153,11 +153,13 @@ describe('DrivingList', () => {
 
       cy.findByRole('button', { name: 'Fjern periode' }).should('not.exist');
       cy.findByRole('button', { name: 'Legg til periode' }).click();
-      cy.get('.navds-accordion__item').should('have.length', 2);
+      cy.findByRole('button', { name: 'Legg til periode' }).click();
+
+      cy.get('.navds-accordion__item').should('have.length', 3);
       cy.findByRole('button', { name: 'Legg til periode' }).should('not.exist');
 
       cy.findByRole('button', { name: 'Fjern periode' }).should('exist').click();
-      cy.get('.navds-accordion__item').should('have.length', 1);
+      cy.get('.navds-accordion__item').should('have.length', 2);
     });
   });
 

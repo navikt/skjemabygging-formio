@@ -32,7 +32,7 @@ describe('generatePeriods function', () => {
     expect(result).toEqual(expectedPeriods);
   });
 
-  it.only('should have todays date as the last periodTo', () => {
+  it('should have todays date as the last periodTo', () => {
     const today = new Date();
     const tenDaysAgo = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 10);
     const formattedDate = tenDaysAgo.toISOString().split('T')[0];
