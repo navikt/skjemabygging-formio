@@ -169,9 +169,12 @@ const DrivingListFromDates = () => {
           </>
         )}
 
-        <Heading size="xsmall" className={styles.accoridonHeader}>
-          {TEXTS.statiske.drivingList.accordionHeader}
-        </Heading>
+        {allPeriodFieldsSet && (
+          <Heading size="xsmall" className={styles.accoridonHeader}>
+            {TEXTS.statiske.drivingList.accordionHeader}
+          </Heading>
+        )}
+
         <Accordion
           tabIndex={-1}
           id={drivingListMetadata('dates').id}
