@@ -19,6 +19,7 @@ type Props = {
   t: TFunction;
   dataType: ActivityDataType;
   activities?: SendInnAktivitet[];
+  locale: string;
 };
 
 type ActivityDataType = 'aktivitet' | 'vedtak';
@@ -47,7 +48,7 @@ const NavActivities = forwardRef<HTMLFieldSetElement, Props>((props: Props, ref)
           }
 
           if (result) {
-            setActivitySelections(mapToSubmissionActivity(result, props.dataType));
+            setActivitySelections(mapToSubmissionActivity(result, props.dataType, props.locale));
           }
           setLoading(false);
         } catch (ex) {
@@ -64,7 +65,7 @@ const NavActivities = forwardRef<HTMLFieldSetElement, Props>((props: Props, ref)
 
   useEffect(() => {
     if (props.activities) {
-      setActivitySelections(mapToSubmissionActivity(props.activities, props.dataType));
+      setActivitySelections(mapToSubmissionActivity(props.activities, props.dataType, props.locale));
     }
   }, [props.activities, props.dataType]);
 

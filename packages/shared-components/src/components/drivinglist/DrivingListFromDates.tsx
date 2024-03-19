@@ -15,13 +15,9 @@ import DatePicker from '../datepicker/DatePicker';
 import DrivingPeriod from './DrivingPeriod';
 
 const useDrivinglistStyles = makeStyles({
-  marginBottom: {
-    marginBottom: '2.5rem',
-  },
   buttonContainer: {
     display: 'flex',
     gap: '1rem',
-    marginTop: '1rem',
   },
 });
 
@@ -130,7 +126,7 @@ const DrivingListFromDates = () => {
           onChange={(value) => onPeriodChange(value)}
           defaultValue={values?.selectedPeriodType}
           tabIndex={-1}
-          className={styles.marginBottom}
+          className={'mb'}
           error={getComponentError('periodType')}
           ref={(ref) => addRef(drivingListMetadata('periodType').id, ref)}
         >
@@ -149,7 +145,7 @@ const DrivingListFromDates = () => {
               readOnly={false}
               error={getComponentError('datePicker')}
               inputRef={(ref) => addRef(drivingListMetadata('datePicker').id, ref)}
-              className={styles.marginBottom}
+              className={'mb'}
               toDate={toDate(values)}
               defaultMonth={toDate(values)}
               description={t(drivingListMetadata('datePicker').description ?? '')}
@@ -162,7 +158,7 @@ const DrivingListFromDates = () => {
               defaultValue={values?.parking}
               tabIndex={-1}
               ref={(ref) => addRef(drivingListMetadata('parkingRadio').id, ref)}
-              className={styles.marginBottom}
+              className={'mb'}
             >
               <Radio value={true}>{t(TEXTS.common.yes)}</Radio>
               <Radio value={false}>{t(TEXTS.common.no)}</Radio>
@@ -173,7 +169,7 @@ const DrivingListFromDates = () => {
         <Accordion
           tabIndex={-1}
           id={drivingListMetadata('dates').id}
-          className={styles.marginBottom}
+          className={'mb'}
           ref={(ref) => addRef('dates', ref)}
         >
           {renderDrivingPeriodsFromDates()}

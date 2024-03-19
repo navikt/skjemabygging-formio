@@ -7,9 +7,11 @@ import {
   VedtakBetalingsplan,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { mapToSubmissionActivity } from '../../formio/components/core/activities/Activities.utils';
-import { drivingListMetadata, toLocaleDate } from '../../formio/components/core/driving-list/DrivingList.utils';
+import {
+  drivingListMetadata,
+  toLocaleDateLongMonth,
+} from '../../formio/components/core/driving-list/DrivingList.utils';
 import { useDrivingList } from '../../formio/components/core/driving-list/DrivingListContext';
-import makeStyles from '../../util/styles/jss/jss';
 import NavActivities from '../activities/NavActivities';
 import ActivityAlert from './ActivityAlert';
 import DrivingPeriod from './DrivingPeriod';
@@ -18,16 +20,8 @@ type Props = {
   activities: SendInnAktivitet[];
 };
 
-const useDrivinglistStyles = makeStyles({
-  marginBottom: {
-    marginBottom: '2.5rem',
-  },
-});
-
 const DrivingListFromActivities = ({ activities }: Props) => {
-  const { values, updateValues, t, appConfig, getComponentError, addRef } = useDrivingList();
-
-  const styles = useDrivinglistStyles();
+  const { values, updateValues, t, appConfig, getComponentError, addRef, locale } = useDrivingList();
 
   const onActivityChange = (activity?: SubmissionActivity) => {
     updateValues({ selectedVedtaksId: activity?.vedtaksId, dates: [] });
@@ -55,7 +49,7 @@ const DrivingListFromActivities = ({ activities }: Props) => {
   };
 
   const renderDrivingListFromActivities = () => {
-    const activitySelections = mapToSubmissionActivity(activities, 'vedtak');
+    const activitySelections = mapToSubmissionActivity(activities, 'vedtak', locale);
     const vedtakSelection = activitySelections.find((activity) => activity.vedtaksId === values?.selectedVedtaksId);
 
     const selectedActivity = activities.find((activity) =>
@@ -76,23 +70,20 @@ const DrivingListFromActivities = ({ activities }: Props) => {
           onChange={(activity) => onActivityChange(activity)}
           appConfig={appConfig}
           t={t}
-          className={styles.marginBottom}
+          className={'mb'}
           dataType="vedtak"
           activities={activities}
           error={getComponentError('activityRadio')}
           ref={(ref) => addRef('activityRadio', ref)}
+          locale={locale}
         />
         {selectedActivity && selectedVedtak && (
           <>
-            <ActivityAlert
-              activityName={selectedActivity.aktivitetsnavn}
-              vedtak={selectedVedtak}
-              className={styles.marginBottom}
-            />
+            <ActivityAlert activityName={selectedActivity.aktivitetsnavn} vedtak={selectedVedtak} className={'mb'} />
             <Accordion
               tabIndex={-1}
               id={drivingListMetadata('dates').id}
-              className={styles.marginBottom}
+              className={'mb'}
               size="small"
               ref={(ref) => addRef('dates', ref)}
             >
@@ -105,7 +96,7 @@ const DrivingListFromActivities = ({ activities }: Props) => {
                 )}
             </Accordion>
             {alreadyRefunded.length > 0 && (
-              <>
+              <div className={'mb'}>
                 <Heading size="small" spacing={true}>
                   {t(TEXTS.statiske.drivingList.previousDrivingList)}
                 </Heading>
@@ -118,13 +109,13 @@ const DrivingListFromActivities = ({ activities }: Props) => {
                       return (
                         <li key={betalingsplan.betalingsplanId}>
                           <BodyShort size="medium">
-                            {`${toLocaleDate(periodFrom)} - ${toLocaleDate(periodTo)} (${betalingsplan.beloep} kr)`}
+                            {`${toLocaleDateLongMonth(periodFrom, locale)} - ${toLocaleDateLongMonth(periodTo, locale)} (${betalingsplan.beloep} kr)`}
                           </BodyShort>
                         </li>
                       );
                     })}
                 </ul>
-              </>
+              </div>
             )}
           </>
         )}

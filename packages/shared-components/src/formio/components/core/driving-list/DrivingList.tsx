@@ -19,6 +19,7 @@ class DrivingList extends BaseComponent {
       type: 'drivinglist',
       key: 'drivinglist',
       input: true,
+      hideLabel: true,
     });
   }
 

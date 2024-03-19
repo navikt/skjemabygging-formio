@@ -16,14 +16,22 @@ const dateFormat: Intl.DateTimeFormatOptions = {
 
 const weekdayAndDateFormat: Intl.DateTimeFormatOptions = {
   weekday: 'long',
-  year: '2-digit',
-  month: '2-digit',
+  year: 'numeric',
+  month: 'long',
   day: '2-digit',
+};
+
+const longMonthDateFormat: Intl.DateTimeFormatOptions = {
+  day: '2-digit',
+  month: 'long',
+  year: 'numeric',
 };
 
 const toLocaleDateAndTime = (date: string, locale = 'no') => new Date(date).toLocaleString(locale, dateAndTimeFormat);
 const toLocaleDate = (date: string, locale = 'no') => new Date(date).toLocaleString(locale, dateFormat);
 const toWeekdayAndDate = (date: string, locale = 'no') => new Date(date).toLocaleString(locale, weekdayAndDateFormat);
+const toLocaleDateLongMonth = (date: string, locale = 'no') =>
+  new Date(date).toLocaleString(locale, longMonthDateFormat);
 
 export const getIso8601String = () => {
   return moment().toISOString();
@@ -47,6 +55,7 @@ const dateUtils = {
   toLocaleDate,
   toWeekdayAndDate,
   getDatesInRange,
+  toLocaleDateLongMonth,
 };
 
 export default dateUtils;

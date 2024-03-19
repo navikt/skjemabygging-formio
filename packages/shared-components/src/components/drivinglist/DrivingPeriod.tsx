@@ -3,7 +3,7 @@ import { TEXTS, VedtakBetalingsplan, dateUtils } from '@navikt/skjemadigitaliser
 import { useMemo } from 'react';
 import {
   drivingListMetadata,
-  toLocaleDate,
+  toLocaleDateLongMonth,
   toWeekdayAndDate,
 } from '../../formio/components/core/driving-list/DrivingList.utils';
 import { useDrivingList } from '../../formio/components/core/driving-list/DrivingListContext';
@@ -31,7 +31,7 @@ const DrivingPeriod = ({ periodFrom, periodTo, hasParking, dailyRate, betalingsp
 
   const periodDates = useMemo(() => dateUtils.getDatesInRange(periodFrom, periodTo), [periodFrom, periodTo]);
   const selectedDates = values?.dates?.map((value) => value.date);
-  const header = `${toLocaleDate(periodFrom)} - ${toLocaleDate(periodTo)}`;
+  const header = `${toLocaleDateLongMonth(periodFrom, locale)} - ${toLocaleDateLongMonth(periodTo, locale)}`;
 
   const showParking = (date: string) => {
     if (selectedDates?.includes(date) && !!hasParking) {

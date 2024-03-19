@@ -1,6 +1,6 @@
 import { Alert, BodyShort, Heading } from '@navikt/ds-react';
 import { AktivitetVedtaksinformasjon, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { toLocaleDate } from '../../formio/components/core/driving-list/DrivingList.utils';
+import { toLocaleDateLongMonth } from '../../formio/components/core/driving-list/DrivingList.utils';
 import { useDrivingList } from '../../formio/components/core/driving-list/DrivingListContext';
 
 type ActivityAlertProps = {
@@ -10,12 +10,12 @@ type ActivityAlertProps = {
 };
 
 const ActivityAlert = ({ activityName, vedtak, className }: ActivityAlertProps) => {
-  const { t } = useDrivingList();
+  const { t, locale } = useDrivingList();
 
   const vedtakPeriodFrom = new Date(vedtak.periode.fom);
   const vedtakPeriodTo = new Date(vedtak.periode.tom);
 
-  const period = `${toLocaleDate(vedtakPeriodFrom)} - ${toLocaleDate(vedtakPeriodTo)}`;
+  const period = `${toLocaleDateLongMonth(vedtakPeriodFrom, locale)} - ${toLocaleDateLongMonth(vedtakPeriodTo, locale)}`;
 
   return (
     <Alert variant={'info'} className={className}>

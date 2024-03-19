@@ -31,11 +31,18 @@ export const requiredError = (componentId: DrivingListMetadataId, t: TFunction):
   return t('required', { field });
 };
 
+export const toLocaleDateLongMonth = (date: Date, locale?: string) => {
+  if (!date) return '';
+  return dateUtils.toLocaleDateLongMonth(date.toString(), locale);
+};
+
 export const toLocaleDate = (date: Date) => {
+  if (!date) return '';
   return dateUtils.toLocaleDate(date.toString());
 };
 
 export const toWeekdayAndDate = (date: Date, locale?: string) => {
+  if (!date) return '';
   return dateUtils.toWeekdayAndDate(date.toString(), locale);
 };
 
