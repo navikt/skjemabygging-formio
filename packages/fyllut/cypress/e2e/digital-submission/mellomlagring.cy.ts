@@ -196,7 +196,6 @@ describe('Mellomlagring', () => {
               const { submission: fixtureSubmission, ...fixtureRest } = fixture;
               expect(bodySubmission.data).to.deep.eq(fixtureSubmission.data);
               expect(bodyRest).to.deep.eq(fixtureRest);
-              req.reply(201);
             });
           });
         });
@@ -210,7 +209,7 @@ describe('Mellomlagring', () => {
           cy.findByText('Ønsker du å få gaven innpakket').should('exist');
           cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.saveAndContinue }).should('exist').click();
           cy.wait('@submitMellomlagring');
-          cy.url().should('not.include', 'testMellomlagring');
+          cy.url().should('not.include', 'testmellomlagring').should('include', '/send-inn-frontend');
         });
 
         it('retrieves mellomlagring and lets you navigate to first empty panel', () => {
