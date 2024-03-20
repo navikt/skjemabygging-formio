@@ -1,3 +1,4 @@
+import editFormAttachment from './editFormAttachment';
 import editFormCalculateValue from './editFormCalculateValue';
 import editFormClearOnHide from './editFormClearOnHide';
 import editFormDataValues from './editFormDataValues';
@@ -14,6 +15,7 @@ const editFormData = {
   readOnly: editFormReadOnly,
   values: editFormValues,
   prefill: editFormPrefill,
+  attachment: editFormAttachment,
 };
 
 export default editFormData;

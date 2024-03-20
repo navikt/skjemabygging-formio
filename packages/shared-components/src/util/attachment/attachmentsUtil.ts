@@ -24,7 +24,7 @@ const getRelevantAttachments = (form: NavFormType, submissionData: SubmissionDat
       tittel: comp.properties.vedleggstittel,
       label: comp.label,
       beskrivelse: comp.description,
-      pakrevd: comp.properties.vedleggErValgfritt !== 'ja',
+      pakrevd: true,
       propertyNavn: comp.key,
       vedleggskjema: comp.properties.vedleggskjema,
       /* TODO: We should not use the native 'id' to identify the attachment, because it may change when the component changes.
@@ -41,7 +41,8 @@ const hasOtherDocumentation = (form, submissionData) => {
     .flattenComponents(form.components)
     .map(sanitize)
     .filter((comp) => FormioUtils.checkCondition(comp, undefined, submissionData, form))
-    .some((component) => component.otherDocumentation);
+    .some((component) => component.otherDocumentation || component.attachmentType === 'other');
+  // TODO: Remove otherDocumentation from component when all attachments have attachmentType set
 };
 
 const sanitize = (component) => {

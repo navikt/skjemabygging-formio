@@ -95,6 +95,8 @@ const sectionContent = (components: Summary.Component[], level: number): string 
           return activity(component);
         case 'drivinglist':
           return drivingList(component);
+        case 'attachment':
+          return attachment(component as Summary.Attachment);
         default:
           return field(component);
       }
@@ -120,6 +122,18 @@ ${sectionContent(component.components, level)}
 
 const field = (component: Summary.Field) =>
   `<div class="spm">${component.label}</div><div class="svar">: ${component.value}</div>`;
+
+const attachment = (component: Summary.Attachment) => {
+  let html = `<div class="spm">${component.label}</div><div class="svar">: ${component.value.description}</div>`;
+  if (component.value.additionalDocumentationLabel && component.value.additionalDocumentation) {
+    html += `<div class="spm">${component.value.additionalDocumentationLabel}</div><div class="svar">: ${component.value.additionalDocumentation}</div>`;
+  }
+  if (component.value.deadlineWarning) {
+    html += `<div class="alert">${component.value.deadlineWarning}</div>`;
+  }
+
+  return html;
+};
 
 const activity = (component: Summary.Activity) =>
   `<div class="spm">${component.label}</div><div class="svar">: ${component.value.text}</div>`;

@@ -1,0 +1,246 @@
+{
+  "_id": "61e7be0045916800030aee6d",
+  "type": "form",
+  "tags": ["nav-skjema", ""],
+  "owner": "606ea4ab852cf50003ac20d3",
+  "components": [
+    {
+      "title": "Vedlegg",
+      "breadcrumbClickable": true,
+      "buttonSettings": {
+        "previous": true,
+        "cancel": true,
+        "next": true
+      },
+      "navigateOnEnter": false,
+      "saveOnEnter": false,
+      "scrollToTop": false,
+      "collapsible": false,
+      "key": "vedlegg",
+      "isAttachmentPanel": true,
+      "type": "panel",
+      "label": "Vedlegg",
+      "input": false,
+      "components": [
+        {
+          "validate": {
+            "required": true
+          },
+          "attachmentValues": {
+            "leggerVedNaa": {
+              "enabled": true,
+              "additionalDocumentation": {
+                "enabled": true,
+                "label": "Ledetekst tilleggsinformasjon",
+                "description": "Beskrivelse av krav til tilleggsinformasjon"
+              }
+            },
+            "ettersender": {
+              "enabled": true,
+              "showDeadline": true,
+              "additionalDocumentation": {
+                "enabled": false
+              }
+            },
+            "nei": {
+              "enabled": true,
+              "additionalDocumentation": {
+                "enabled": false
+              }
+            }
+          },
+          "label": "Ny vedleggskomponent",
+          "key": "vedlegg1",
+          "properties": {
+            "vedleggstittel": "key",
+            "vedleggskode": "test"
+          },
+          "input": true,
+          "tableView": false,
+          "validateOn": "blur",
+          "fieldSize": "input--xxl",
+          "type": "attachment",
+          "dataSrc": "values",
+          "attachmentType": "other",
+          "navId": "el6gm88"
+        },
+        {
+          "label": "Gammel radio komponent",
+          "values": [
+            {
+              "value": "leggerVedNaa",
+              "label": "Jeg legger det ved denne søknaden (anbefalt)",
+              "shortcut": ""
+            },
+            {
+              "value": "levertTidligere",
+              "label": "Jeg har levert denne dokumentasjonen tidligere",
+              "shortcut": ""
+            }
+          ],
+          "validate": {
+            "required": true,
+            "custom": "",
+            "customPrivate": false,
+            "strictDateValidation": false,
+            "multiple": false,
+            "unique": false,
+            "onlyAvailableItems": false
+          },
+          "key": "oldAttachment",
+          "properties": {
+            "vedleggstittel": "Test",
+            "vedleggskode": "O9"
+          },
+          "type": "radiopanel",
+          "input": true,
+          "validateOn": "blur",
+          "tableView": false,
+          "placeholder": "",
+          "prefix": "",
+          "customClass": "",
+          "suffix": "",
+          "multiple": false,
+          "defaultValue": null,
+          "protected": false,
+          "unique": false,
+          "persistent": true,
+          "hidden": false,
+          "clearOnHide": true,
+          "refreshOn": "",
+          "redrawOn": "",
+          "modalEdit": false,
+          "dataGridLabel": false,
+          "labelPosition": "top",
+          "description": "",
+          "errorLabel": "",
+          "tooltip": "",
+          "hideLabel": false,
+          "tabindex": "",
+          "disabled": false,
+          "autofocus": false,
+          "dbIndex": false,
+          "customDefaultValue": "",
+          "calculateValue": "",
+          "calculateServer": false,
+          "widget": null,
+          "attributes": {},
+          "conditional": {
+            "show": null,
+            "when": null,
+            "eq": ""
+          },
+          "overlay": {
+            "style": "",
+            "left": "",
+            "top": "",
+            "width": "",
+            "height": ""
+          },
+          "allowCalculateOverride": false,
+          "encrypted": false,
+          "showCharCount": false,
+          "showWordCount": false,
+          "allowMultipleMasks": false,
+          "addons": [],
+          "inputType": "radio",
+          "fieldSet": false,
+          "id": "erg3rgt"
+        }
+      ],
+      "tableView": false,
+      "placeholder": "",
+      "prefix": "",
+      "customClass": "",
+      "suffix": "",
+      "multiple": false,
+      "defaultValue": null,
+      "protected": false,
+      "unique": false,
+      "persistent": false,
+      "hidden": false,
+      "clearOnHide": false,
+      "refreshOn": "",
+      "redrawOn": "",
+      "modalEdit": false,
+      "dataGridLabel": false,
+      "labelPosition": "top",
+      "description": "",
+      "errorLabel": "",
+      "tooltip": "",
+      "hideLabel": false,
+      "tabindex": "",
+      "disabled": false,
+      "autofocus": false,
+      "dbIndex": false,
+      "customDefaultValue": "",
+      "calculateValue": "",
+      "calculateServer": false,
+      "widget": null,
+      "attributes": {},
+      "validateOn": "change",
+      "validate": {
+        "required": false,
+        "custom": "",
+        "customPrivate": false,
+        "strictDateValidation": false,
+        "multiple": false,
+        "unique": false
+      },
+      "conditional": {
+        "show": null,
+        "when": null,
+        "eq": ""
+      },
+      "overlay": {
+        "style": "",
+        "left": "",
+        "top": "",
+        "width": "",
+        "height": ""
+      },
+      "allowCalculateOverride": false,
+      "encrypted": false,
+      "showCharCount": false,
+      "showWordCount": false,
+      "properties": {},
+      "allowMultipleMasks": false,
+      "addons": [],
+      "tree": false,
+      "lazyLoad": false,
+      "theme": "default",
+      "breadcrumb": "default",
+      "id": "eun8oti"
+    }
+  ],
+  "display": "wizard",
+  "name": "attachments",
+  "title": "Attachments test",
+  "path": "attachments",
+  "properties": {
+    "skjemanummer": "ATT-123",
+    "tema": "CYP",
+    "innsending": "PAPIR_OG_DIGITAL",
+    "hasLabeledSignatures": false,
+    "modified": "2022-12-08T12:09:17.108Z",
+    "enhetMaVelgesVedPapirInnsending": false,
+    "publishedLanguages": [],
+    "modifiedBy": "fornavn.etternavn@nav.no",
+    "published": "2022-11-22T10:00:47.211Z",
+    "publishedBy": "fornavn.etternavn@nav.no",
+    "ettersendelsesfrist": "14"
+  },
+  "access": [
+    {
+      "type": "read_all",
+      "roles": ["628ca77305690db58c974d04", "628ca77305690db58c974d09", "628ca77305690db58c974d0e"]
+    }
+  ],
+  "submissionAccess": [],
+  "created": "2022-01-19T07:30:08.345Z",
+  "modified": "2022-12-08T11:46:32.068Z",
+  "machineName": "customComponents",
+  "project": "628ca77305690db58c974cfd",
+  "_vid": 0,
+  "revisions": ""
+}

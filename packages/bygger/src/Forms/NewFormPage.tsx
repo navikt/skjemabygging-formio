@@ -78,6 +78,7 @@ const NewFormPage: React.FC<Props> = ({ formio }): React.ReactElement => {
         innsending: 'PAPIR_OG_DIGITAL',
         ettersending: 'PAPIR_OG_DIGITAL',
         signatures: [{ label: '', description: '', key: uuidv4() }],
+        ettersendelsesfrist: '14',
       },
       components: defaultFormFields() as Component[],
     },

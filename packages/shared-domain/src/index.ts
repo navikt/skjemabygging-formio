@@ -1,8 +1,10 @@
+import { AttachmentSettingValues, AttachmentValue } from './attachment';
 import { ComponentError } from './component';
 import type { ConfigType } from './config';
 import { Enhet, Enhetstype, supportedEnhetstyper } from './enhet';
 import {
   Component,
+  ComponentValue,
   DeclarationType,
   DisplayType,
   FormPropertiesPublishing,
@@ -97,8 +99,11 @@ export {
 export type {
   AktivitetPeriode,
   AktivitetVedtaksinformasjon,
+  AttachmentSettingValues,
+  AttachmentValue,
   Component,
   ComponentError,
+  ComponentValue,
   ConfigType,
   DependencyType,
   DisplayType,

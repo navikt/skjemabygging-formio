@@ -225,18 +225,18 @@ const getAttachmentProperties = (form: NavFormType): Attachment[] => {
   const attachmentPanel = getAttachmentPanel(form);
   if (!attachmentPanel || !attachmentPanel.components) return [];
 
-  const attachments = attachmentPanel.components
+  return attachmentPanel.components
     .filter((component) => isAttachment(component))
     .map((component) => ({
       vedleggstittel: component.properties?.vedleggstittel,
       vedleggskode: component.properties?.vedleggskode,
       label: component.label,
     }));
-
-  return attachments;
 };
 
-const isAttachment = (comp: Component) => comp.values?.some((v) => v.value === 'leggerVedNaa');
+// TODO: Remove check on leggerVedNaa when all attachment components are migrated to type attachment
+const isAttachment = (comp: Component) =>
+  comp.type === 'attachment' || comp.values?.some((v) => v.value === 'leggerVedNaa');
 
 const isDigital = (type: 'innsending' | 'ettersending', form: NavFormType) => {
   // If field is empty, it defaults to PAPIR_OG_DIGITAL

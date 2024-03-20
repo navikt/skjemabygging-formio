@@ -1,3 +1,4 @@
+import { AttachmentSettingValues } from '../attachment';
 import { Enhetstype } from '../enhet';
 
 export type DisplayType = 'wizard' | 'form';
@@ -88,7 +89,7 @@ export type FormPropertiesPublishing = Pick<
 
 type ComponentDataSrc = 'values' | 'url' | 'json' | 'custom' | 'resource';
 
-interface ComponentValue {
+export interface ComponentValue {
   value: string;
   label: string;
 }
@@ -115,6 +116,8 @@ export interface Component {
   isAttachmentPanel?: boolean;
   prefillKey?: PrefillKey;
   values?: ComponentValue[];
+  attachmentValues?: AttachmentSettingValues;
+  attachmentType?: string;
   hideLabel?: boolean;
   description?: string;
   suffix?: string;
@@ -161,13 +164,13 @@ export interface Component {
   isInline?: boolean;
   textDisplay?: 'form' | 'formPdf' | 'pdf';
   autoExpand?: boolean;
+  customClass?: string;
   validateOn?: string;
 }
 
 export interface ComponentProperties {
   vedleggstittel?: string;
   vedleggskode?: string;
-  vedleggErValgfritt?: 'ja' | 'nei';
   vedleggskjema?: string;
 }
 
