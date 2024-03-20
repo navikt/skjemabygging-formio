@@ -37,12 +37,13 @@ describe('generatePeriods function', () => {
   });
 
   it('should have todays date as the last periodTo', () => {
-    const today = new Date();
-    const tenDaysAgo = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 10);
-    const formattedDate = tenDaysAgo.toISOString().split('T')[0];
+    const today = DateTime.now();
+    const tenDaysAgo = today.minus({ days: 10 }).toISODate();
 
-    const result = generatePeriods(formattedDate, 2);
+    const result = generatePeriods(tenDaysAgo, 2);
 
-    expect(result[1].periodTo.getDate()).toEqual(today.getDate());
+    const lastPeriodTo = DateTime.fromJSDate(result[1].periodTo);
+
+    expect(lastPeriodTo.toISODate()).toEqual(today.toISODate());
   });
 });

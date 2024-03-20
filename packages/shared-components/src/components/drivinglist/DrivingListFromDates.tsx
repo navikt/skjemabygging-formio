@@ -55,9 +55,8 @@ const DrivingListFromDates = () => {
     updateValues({ parking: parking });
   };
 
-  const renderDrivingPeriodsFromDates = () => {
-    if (!allPeriodFieldsSet) return;
-    return values?.periods
+  const renderDrivingPeriodsFromDates = () =>
+    values?.periods
       ?.sort((a, b) => new Date(a.periodFrom).getTime() - new Date(b.periodFrom).getTime())
       .map((period, index) => (
         <DrivingPeriod
@@ -68,7 +67,6 @@ const DrivingListFromDates = () => {
           periodTo={period.periodTo}
         />
       ));
-  };
 
   const addPeriod = () => {
     if (values?.selectedDate) {
@@ -126,32 +124,32 @@ const DrivingListFromDates = () => {
         </RadioGroup>
 
         {allPeriodFieldsSet && (
-          <Heading size="xsmall" className={styles.accoridonHeader}>
-            {TEXTS.statiske.drivingList.accordionHeader}
-          </Heading>
-        )}
+          <>
+            <Heading size="xsmall" className={styles.accoridonHeader}>
+              {TEXTS.statiske.drivingList.accordionHeader}
+            </Heading>
+            <Accordion
+              tabIndex={-1}
+              id={drivingListMetadata('dates').id}
+              className={'mb'}
+              ref={(ref) => addRef('dates', ref)}
+            >
+              {renderDrivingPeriodsFromDates()}
+            </Accordion>
 
-        <Accordion
-          tabIndex={-1}
-          id={drivingListMetadata('dates').id}
-          className={'mb'}
-          ref={(ref) => addRef('dates', ref)}
-        >
-          {renderDrivingPeriodsFromDates()}
-        </Accordion>
-        {allPeriodFieldsSet && (
-          <div className={styles.buttonContainer}>
-            {showAddButton(values) && (
-              <Button variant="primary" size="small" type="button" onClick={() => addPeriod()}>
-                {t(TEXTS.statiske.drivingList.addPeriod)}
-              </Button>
-            )}
-            {showRemoveButton(values) && (
-              <Button variant="secondary" size="small" type="button" onClick={() => removePeriod()}>
-                {t(TEXTS.statiske.drivingList.removePeriod)}
-              </Button>
-            )}
-          </div>
+            <div className={styles.buttonContainer}>
+              {showAddButton(values) && (
+                <Button variant="primary" size="small" type="button" onClick={() => addPeriod()}>
+                  {t(TEXTS.statiske.drivingList.addPeriod)}
+                </Button>
+              )}
+              {showRemoveButton(values) && (
+                <Button variant="secondary" size="small" type="button" onClick={() => removePeriod()}>
+                  {t(TEXTS.statiske.drivingList.removePeriod)}
+                </Button>
+              )}
+            </div>
+          </>
         )}
       </>
     );
