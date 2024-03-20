@@ -2,7 +2,6 @@ import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 
 const ACTIVITIES_LABEL = TEXTS.statiske.activities.label;
 const DATE_PICKER_LABEL = TEXTS.statiske.drivingList.datePicker;
-const PERIOD_TYPE_LABEL = TEXTS.statiske.drivingList.periodType;
 const PARKING_LABEL = TEXTS.statiske.drivingList.parking;
 const PARKING_EXPENSES_LABEL = /Parkeringsutgifter \(kr\)/;
 const DAY_PICKER_LABEL_WITH_PARKING =
@@ -38,18 +37,6 @@ describe('DrivingList', () => {
       cy.visit(`/fyllut/testdrivinglist?sub=paper`);
       cy.defaultWaits();
       cy.clickStart();
-
-      // Should not show parking and date input before selecting period type
-      cy.findByRole('textbox', { name: DATE_PICKER_LABEL }).should('not.exist');
-      cy.findByRole('group', { name: PARKING_LABEL }).should('not.exist');
-
-      cy.findByRole('group', { name: PERIOD_TYPE_LABEL })
-        .should('exist')
-        .within(() => {
-          cy.findAllByRole('radio').should('have.length', 2);
-          cy.findByRole('radio', { name: 'Månedlig' }).should('exist');
-          cy.findByRole('radio', { name: 'Ukentlig' }).should('exist').check();
-        });
 
       cy.findByRole('textbox', { name: DATE_PICKER_LABEL }).should('exist').type('15.05.23{esc}');
       cy.findByRole('group', { name: PARKING_LABEL })
@@ -94,16 +81,9 @@ describe('DrivingList', () => {
       cy.findByRole('region', { name: TEXTS.validering.error })
         .should('exist')
         .within(() => {
-          cy.findByRole('link', { name: `Du må fylle ut: ${PERIOD_TYPE_LABEL}` })
+          cy.findByRole('link', { name: `Du må fylle ut: ${DATE_PICKER_LABEL}` })
             .should('exist')
             .click();
-        });
-
-      cy.findByRole('group', { name: PERIOD_TYPE_LABEL })
-        .should('exist')
-        .should('have.focus')
-        .within(() => {
-          cy.findByRole('radio', { name: 'Ukentlig' }).should('exist').check();
         });
 
       cy.findByRole('textbox', { name: DATE_PICKER_LABEL }).should('exist').type('15.05.23{esc}');
@@ -136,7 +116,7 @@ describe('DrivingList', () => {
       cy.findByRole('region', { name: TEXTS.validering.error }).should('not.exist');
     });
 
-    it.only('should add and remove periods', () => {
+    it('should add and remove periods', () => {
       cy.visit(`/fyllut/testdrivinglist?sub=paper`);
       cy.defaultWaits();
       cy.clickStart();
@@ -144,8 +124,6 @@ describe('DrivingList', () => {
       const today = new Date();
       const twoWeeksAgo = new Date(today);
       twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14);
-
-      cy.findByRole('radio', { name: 'Ukentlig' }).should('exist').check();
 
       const dateString = `${toLocaleDateShortYear(twoWeeksAgo.toString())}{esc}`;
       cy.findByRole('textbox', { name: DATE_PICKER_LABEL }).should('exist').type(dateString);

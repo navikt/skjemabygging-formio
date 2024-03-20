@@ -9,7 +9,6 @@ export type DrivingListErrorType = 'required';
 const metadata = [
   { id: 'activityRadio', label: TEXTS.statiske.activities.label },
   { id: 'parkingRadio', label: TEXTS.statiske.drivingList.parking },
-  { id: 'periodType', label: TEXTS.statiske.drivingList.periodType },
   {
     id: 'datePicker',
     label: TEXTS.statiske.drivingList.datePicker,
@@ -47,11 +46,7 @@ export const toWeekdayAndDate = (date: Date, locale?: string) => {
   return dateUtils.toWeekdayAndDate(date.toString(), locale);
 };
 
-export const generatePeriods = (
-  periodType: 'weekly' | 'monthly',
-  date?: string,
-  numberOfPeriods: number = 1,
-): DrivingListPeriod[] => {
+export const generatePeriods = (date?: string, numberOfPeriods: number = 1): DrivingListPeriod[] => {
   if (!date) return [];
 
   const periods: DrivingListPeriod[] = [];
@@ -61,13 +56,8 @@ export const generatePeriods = (
     let startDate = DateTime.fromISO(date);
     let endDate = DateTime.fromISO(date);
 
-    if (periodType === 'weekly') {
-      startDate = startDate.plus({ weeks: i });
-      endDate = endDate.plus({ weeks: i + 1 }).minus({ days: 1 });
-    } else if (periodType === 'monthly') {
-      startDate = startDate.plus({ months: i });
-      endDate = endDate.plus({ months: i + 1 }).minus({ days: 1 });
-    }
+    startDate = startDate.plus({ weeks: i });
+    endDate = endDate.plus({ weeks: i + 1 }).minus({ days: 1 });
 
     if (endDate > today) {
       endDate = today;
@@ -85,18 +75,11 @@ export const isValidParking = (value: string) => {
 };
 
 export const allFieldsForPeriodsAreSet = (values?: DrivingListSubmission) => {
-  return (
-    !!values?.selectedPeriodType &&
-    !!values?.selectedDate &&
-    !!values?.periods?.length &&
-    values?.parking !== undefined &&
-    values?.parking !== null
-  );
+  return !!values?.selectedDate && values?.parking !== undefined && values?.parking !== null;
 };
 
 export const showAddButton = (values?: DrivingListSubmission) => {
   if (!values) return false;
-
   const lastPeriod = values?.periods?.reduce((prev, current) =>
     DateTime.fromJSDate(prev.periodTo) > DateTime.fromJSDate(current.periodTo) ? prev : current,
   );
@@ -116,12 +99,7 @@ export const toDate = (values?: DrivingListSubmission) => {
   if (!values) return;
 
   let date = DateTime.now();
-
-  if (values.selectedPeriodType === 'weekly') {
-    date = date.minus({ week: 1 }).plus({ days: 1 });
-  } else if (values.selectedPeriodType === 'monthly') {
-    date = date.minus({ months: 1 }).plus({ days: 1 });
-  }
+  date = date.minus({ week: 1 }).plus({ days: 1 });
 
   return date.toJSDate();
 };

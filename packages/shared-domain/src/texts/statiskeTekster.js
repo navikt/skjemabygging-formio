@@ -145,10 +145,9 @@ export const statiske = {
     addPeriod: 'Legg til periode',
     removePeriod: 'Fjern periode',
     parking: 'Skal du registrere parkering?',
-    periodType: 'Velg periode for innsending',
-    datePicker: 'Velg første dato i perioden',
+    datePicker: 'Velg første dato i perioden du ønsker å levere kjøreliste for (dd.mm.åååå)',
     datePickerDescription:
-      'Den tidligste tilgjengelige datoen er en periode før dagens dato. Det er ikke mulig å legge til kjørelister for fremtidige datoer',
+      'Du vil få mulighet til å sende kjøreliste fra denne datoen frem til dagens dato. Det er ikke mulig å legge til kjørelister for fremtidige datoer',
     dateSelect: 'Kryss av for de dagene du har brukt egen bil',
     dateSelectParking: 'og har hatt parkeringsutgifter',
     parkingExpenses: 'Parkeringsutgifter (kr)',
