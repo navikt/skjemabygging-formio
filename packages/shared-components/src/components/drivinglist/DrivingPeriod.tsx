@@ -75,7 +75,7 @@ const DrivingPeriod = ({ periodFrom, periodTo, hasParking, dailyRate, betalingsp
   const shouldRenderExpensesWarningAlert = () => {
     if (betalingsplan?.beloep) {
       const totalParking = periodDates.reduce((acc, currentDate) => {
-        const dateInValues = values?.dates.find((date) => date.date === currentDate.toISOString());
+        const dateInValues = values?.dates?.find((date) => date.date === currentDate.toISOString());
         if (dateInValues) {
           return acc + Number(dateInValues.parking);
         }
@@ -83,7 +83,7 @@ const DrivingPeriod = ({ periodFrom, periodTo, hasParking, dailyRate, betalingsp
       }, 0);
 
       const totalDailyRate = periodDates.reduce((acc, currentDate) => {
-        const dateInValues = values?.dates.find((date) => date.date === currentDate.toISOString());
+        const dateInValues = values?.dates?.find((date) => date.date === currentDate.toISOString());
         if (dateInValues && dailyRate) {
           return acc + dailyRate;
         }

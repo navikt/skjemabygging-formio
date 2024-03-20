@@ -21,6 +21,10 @@ type Props = {
   activities: SendInnAktivitet[];
 };
 
+type ActivityChangeOptions = {
+  autoSelect?: boolean;
+};
+
 const useDrivinglistStyles = makeStyles({
   accoridonHeader: {
     marginBottom: 'var(--a-spacing-3)',
@@ -32,8 +36,12 @@ const DrivingListFromActivities = ({ activities }: Props) => {
 
   const styles = useDrivinglistStyles();
 
-  const onActivityChange = (activity?: SubmissionActivity) => {
-    updateValues({ selectedVedtaksId: activity?.vedtaksId, dates: [] });
+  const onActivityChange = (activity?: SubmissionActivity, options?: ActivityChangeOptions) => {
+    if (options?.autoSelect) {
+      updateValues({ selectedVedtaksId: activity?.vedtaksId });
+    } else {
+      updateValues({ selectedVedtaksId: activity?.vedtaksId, dates: [] });
+    }
   };
 
   const renderDrivingPeriodsFromActivities = (
@@ -78,7 +86,9 @@ const DrivingListFromActivities = ({ activities }: Props) => {
           id={drivingListMetadata('activityRadio').id}
           label={t(drivingListMetadata('activityRadio').label)}
           value={vedtakSelection}
-          onChange={(activity) => onActivityChange(activity)}
+          onChange={(activity?: SubmissionActivity, options?: ActivityChangeOptions) =>
+            onActivityChange(activity, options)
+          }
           appConfig={appConfig}
           t={t}
           className={'mb'}

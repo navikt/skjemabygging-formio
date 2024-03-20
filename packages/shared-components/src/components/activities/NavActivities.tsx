@@ -80,7 +80,7 @@ const NavActivities = forwardRef<HTMLFieldSetElement, Props>((props: Props, ref)
 
   const autoSelectSingleActivity = (submissionActivities: SubmissionActivity[]) => {
     if (submissionActivities.length === 1 && props.shouldAutoSelectSingleActivity) {
-      props.onChange(submissionActivities[0], { modified: true });
+      props.onChange(submissionActivities[0], { modified: true, autoSelect: true });
     }
   };
 
