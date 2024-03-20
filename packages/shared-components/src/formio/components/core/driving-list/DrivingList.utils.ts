@@ -1,10 +1,22 @@
-import { DrivingListPeriod, DrivingListSubmission, TEXTS, dateUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  AktivitetPeriode,
+  DrivingListPeriod,
+  DrivingListSubmission,
+  TEXTS,
+  dateUtils,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import { TFunction } from 'i18next';
 import { DateTime } from 'luxon';
 import { v4 as uuidv4 } from 'uuid';
 
 export type DrivingListMetadataId = (typeof metadata)[number]['id'];
 export type DrivingListErrorType = 'required';
+export interface ActivityAlertData {
+  aktivitetsnavn: string;
+  dagsats: number;
+  periode: AktivitetPeriode;
+  vedtaksId: string;
+}
 
 const metadata = [
   { id: 'activityRadio', label: TEXTS.statiske.activities.label },

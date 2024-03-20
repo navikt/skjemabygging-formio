@@ -6,7 +6,7 @@ import {
   TEXTS,
   VedtakBetalingsplan,
 } from '@navikt/skjemadigitalisering-shared-domain';
-import { mapToSubmissionActivity } from '../../formio/components/core/activities/Activities.utils';
+import { mapToSubmissionActivity, mapToVedtaklist } from '../../formio/components/core/activities/Activities.utils';
 import {
   drivingListMetadata,
   toLocaleDateLongMonth,
@@ -72,6 +72,8 @@ const DrivingListFromActivities = ({ activities }: Props) => {
 
     return (
       <>
+        <ActivityAlert vedtakData={mapToVedtaklist(activities)} className={'mb'} />
+
         <NavActivities
           id={drivingListMetadata('activityRadio').id}
           label={t(drivingListMetadata('activityRadio').label)}
@@ -89,7 +91,6 @@ const DrivingListFromActivities = ({ activities }: Props) => {
         />
         {selectedActivity && selectedVedtak && (
           <>
-            <ActivityAlert activityName={selectedActivity.aktivitetsnavn} vedtak={selectedVedtak} className={'mb'} />
             <Heading size="xsmall" className={styles.accoridonHeader}>
               {TEXTS.statiske.drivingList.accordionHeader}
             </Heading>

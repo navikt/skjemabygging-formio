@@ -130,11 +130,13 @@ export const statiske = {
     defaultActivity: 'Jeg får ikke opp noen aktiviteter her som stemmer med det jeg vil søke om',
     error: 'Det oppstod en feil ved henting av aktiviteter.',
     errorContinue: 'Det oppstod en feil ved henting av aktiviteter. Du kan fortsatt gå videre uten å velge aktivitet',
+    yourActivities: 'Dine aktiviteter',
+    registeredActivities: 'Vi har registrert at du deltar på følgende aktivitet(er):',
   },
   drivingList: {
     activity: 'Aktivitet',
-    period: 'Periode for aktiviteten',
-    dailyRate: 'Din dagsats uten parkeringsutgift',
+    period: 'Periode: {{period}}',
+    dailyRate: 'Dagsats for parkeringsavigt: {{rate}} kr',
     expensesTooHighHeader: 'Utgiftene er høyere enn beløpet du kan få refundert',
     expensesTooHigh:
       'I vedtaket ditt om stønad til daglig reise beregnet vi hvor mye du vil få utbetalt i hver periode. Du har nå lagt inn høyere utgifter til bruk av egen bil enn det vi har beregnet. Du vil sannsynligvis ikke få refundert alle utgiftene du har lagt inn for denne perioden.',

@@ -1,38 +1,47 @@
 import { Alert, BodyShort, Heading } from '@navikt/ds-react';
-import { AktivitetVedtaksinformasjon, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { toLocaleDateLongMonth } from '../../formio/components/core/driving-list/DrivingList.utils';
+import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { ActivityAlertData, toLocaleDateLongMonth } from '../../formio/components/core/driving-list/DrivingList.utils';
 import { useDrivingList } from '../../formio/components/core/driving-list/DrivingListContext';
+import makeStyles from '../../util/styles/jss/jss';
 
 type ActivityAlertProps = {
-  activityName: string;
-  vedtak: AktivitetVedtaksinformasjon;
-  className?: string;
+  vedtakData: ActivityAlertData[];
+  className: string;
 };
 
-const ActivityAlert = ({ activityName, vedtak, className }: ActivityAlertProps) => {
+const useActivityAlertStyles = makeStyles({
+  vedtakGroup: {
+    marginBottom: 'var(--a-spacing-4)',
+  },
+});
+
+const ActivityAlert = ({ vedtakData, className }: ActivityAlertProps) => {
   const { t, locale } = useDrivingList();
-
-  const vedtakPeriodFrom = new Date(vedtak.periode.fom);
-  const vedtakPeriodTo = new Date(vedtak.periode.tom);
-
-  const period = `${toLocaleDateLongMonth(vedtakPeriodFrom, locale)} - ${toLocaleDateLongMonth(vedtakPeriodTo, locale)}`;
+  const activityAlertStyles = useActivityAlertStyles();
 
   return (
     <Alert variant={'info'} className={className}>
-      <Heading size="xsmall">{t(TEXTS.statiske.drivingList.activity)}</Heading>
+      <Heading size="small" spacing={true}>
+        {t(TEXTS.statiske.activities.yourActivities)}
+      </Heading>
       <BodyShort size="medium" spacing={true}>
-        {activityName}
+        {t(TEXTS.statiske.activities.registeredActivities)}
       </BodyShort>
 
-      <Heading size="xsmall">{t(TEXTS.statiske.drivingList.period)}</Heading>
-      <BodyShort size="medium" spacing={true}>
-        {period}
-      </BodyShort>
+      {vedtakData.map((vedtak) => {
+        const vedtakPeriodFrom = new Date(vedtak.periode.fom);
+        const vedtakPeriodTo = new Date(vedtak.periode.tom);
 
-      <Heading size="xsmall">{t(TEXTS.statiske.drivingList.dailyRate)}</Heading>
-      <BodyShort size="medium" spacing={true}>
-        {`${vedtak.dagsats}kr`}
-      </BodyShort>
+        const period = `${toLocaleDateLongMonth(vedtakPeriodFrom, locale)} - ${toLocaleDateLongMonth(vedtakPeriodTo, locale)}`;
+
+        return (
+          <div key={vedtak.vedtaksId} className={activityAlertStyles.vedtakGroup}>
+            <Heading size="xsmall">{vedtak.aktivitetsnavn}</Heading>
+            <BodyShort size="medium">{t(TEXTS.statiske.drivingList.period, { period })}</BodyShort>
+            <BodyShort size="medium">{t(TEXTS.statiske.drivingList.dailyRate, { rate: vedtak.dagsats })}</BodyShort>
+          </div>
+        );
+      })}
     </Alert>
   );
 };

@@ -4,6 +4,7 @@ import {
   SubmissionActivity,
   dateUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
+import { ActivityAlertData } from '../driving-list/DrivingList.utils';
 
 export const mapActivityText = (activity: SendInnAktivitet, locale: string) => {
   if (!activity.periode.fom) {
@@ -67,4 +68,21 @@ export const mapToSubmissionActivity = (
     return mapVedtak(activities, locale);
   }
   return [];
+};
+
+export const mapToVedtaklist = (activities: SendInnAktivitet[]) => {
+  return activities.reduce<ActivityAlertData[]>((acc, activity) => {
+    const vedtaksinformasjon = activity.saksinformasjon.vedtaksinformasjon;
+
+    const vedtak = vedtaksinformasjon
+      .filter((x) => !!x.betalingsplan.length)
+      .map((vedtak) => ({
+        aktivitetsnavn: activity.aktivitetsnavn,
+        dagsats: vedtak.dagsats,
+        periode: vedtak.periode,
+        vedtaksId: vedtak.vedtakId,
+      }));
+
+    return [...acc, ...vedtak];
+  }, []);
 };
