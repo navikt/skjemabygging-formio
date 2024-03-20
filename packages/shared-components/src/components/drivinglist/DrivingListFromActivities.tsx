@@ -23,7 +23,7 @@ type Props = {
 
 const useDrivinglistStyles = makeStyles({
   accoridonHeader: {
-    marginBottom: 'var(--a-spacing-2)',
+    marginBottom: 'var(--a-spacing-3)',
   },
 });
 

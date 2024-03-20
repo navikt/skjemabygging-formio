@@ -11,7 +11,7 @@ type ActivityAlertProps = {
 
 const useActivityAlertStyles = makeStyles({
   vedtakGroup: {
-    marginBottom: 'var(--a-spacing-4)',
+    marginBottom: 'var(--a-spacing-3)',
   },
 });
 
