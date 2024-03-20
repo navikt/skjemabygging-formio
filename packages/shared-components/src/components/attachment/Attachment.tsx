@@ -23,6 +23,8 @@ const Attachment = ({ attachmentValues, value, title, description, error, onChan
   const additionalDocumentation = attachmentValues?.[value?.key]?.additionalDocumentation;
   const showDeadline = !!attachmentValues?.[value?.key]?.showDeadline;
 
+  const additionalDocumentationMaxLength = 20;
+
   const getValues = (): ComponentValue[] => {
     if (attachmentValues) {
       if (Array.isArray(attachmentValues)) {
@@ -57,10 +59,13 @@ const Attachment = ({ attachmentValues, value, title, description, error, onChan
   };
 
   const handleAdditionalDocumentationChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
-    onChange({
-      ...value,
-      additionalDocumentation: event.currentTarget.value,
-    });
+    const additionalDocumentation = event.currentTarget.value ?? '';
+    if (additionalDocumentation.length <= additionalDocumentationMaxLength) {
+      onChange({
+        ...value,
+        additionalDocumentation,
+      });
+    }
   };
 
   return (
@@ -80,6 +85,7 @@ const Attachment = ({ attachmentValues, value, title, description, error, onChan
           value={value?.additionalDocumentation ?? ''}
           description={translate(additionalDocumentation.description)}
           onChange={handleAdditionalDocumentationChange}
+          maxLength={additionalDocumentationMaxLength}
         />
       )}
       {showDeadline && deadline && (
