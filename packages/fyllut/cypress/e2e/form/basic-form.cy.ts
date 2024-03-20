@@ -114,10 +114,12 @@ describe('Basic form', () => {
         cy.clickNextStep();
         cy.clickNextStep();
         cy.findByRole('heading', { level: 2, name: 'Dine opplysninger' });
-        cy.findByText('For å gå videre må du rette opp følgende:').should('exist');
-
-        cy.findAllByRole('link', { name: /^Du må fylle ut:/ }).should('have.length', 4);
-        cy.findByRoleWhenAttached('link', { name: 'Du må fylle ut: Fornavn' }).click();
+        cy.findByRole('region', { name: TEXTS.validering.error })
+          .should('exist')
+          .within(() => {
+            cy.findAllByRole('link', { name: /Du må fylle ut:/ }).should('have.length', 4);
+            cy.findByRole('link', { name: 'Du må fylle ut: Fornavn' }).click();
+          });
         cy.findByRole('textbox', { name: 'Fornavn' }).should('have.focus');
       });
     });

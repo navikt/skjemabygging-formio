@@ -37,11 +37,6 @@
             },
             "aktivitet": {
               "aktivitetId": "ingenAktivitet",
-              "maalgruppe": "",
-              "periode": {
-                "fom": "",
-                "tom": ""
-              },
               "text": "Jeg får ikke opp noen aktiviteter her som stemmer med det jeg vil søke om"
             }
           }

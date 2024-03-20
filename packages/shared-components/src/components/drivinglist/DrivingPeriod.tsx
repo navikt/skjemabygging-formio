@@ -25,7 +25,7 @@ const useDrivingPeriodStyles = makeStyles({
 });
 
 const DrivingPeriod = ({ periodFrom, periodTo, hasParking, dailyRate, betalingsplan }: DrivingPeriodProps) => {
-  const { values, updateValues, t, locale, getComponentError } = useDrivingList();
+  const { values, updateValues, t, locale, getComponentError, addRef } = useDrivingList();
 
   const styles = useDrivingPeriodStyles();
 
@@ -125,6 +125,8 @@ const DrivingPeriod = ({ periodFrom, periodTo, hasParking, dailyRate, betalingsp
                     className={`nav-input--s ${styles.parkingTextField}`}
                     value={values?.dates?.find((val) => val.date === date.toISOString())?.parking}
                     onChange={(event) => onChangeParking(date, event.currentTarget.value)}
+                    ref={(ref) => addRef(`dates:${date.toISOString()}:parking`, ref)}
+                    error={getComponentError(`dates:${date.toISOString()}:parking`)}
                   />
                 ) : null}
               </div>

@@ -1,6 +1,8 @@
 /*
  * Tests that "penger og konto" component works as expected
  */
+import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+
 describe('Components', () => {
   describe('Penger og konto', () => {
     beforeEach(() => {
@@ -14,10 +16,16 @@ describe('Components', () => {
       cy.findByRole('textbox', { name: 'Kontonummer' }).should('exist').type('12345678980');
       cy.findByRole('textbox', { name: 'IBAN' }).should('exist').type('AB04RABO8424598490');
       cy.clickNextStep();
-      cy.findByText('Kontonummer: Dette er ikke et gyldig kontonummer').should('exist');
-      cy.findByText(
-        'IBAN: Oppgitt IBAN inneholder ugyldig landkode (to store bokstaver i starten av IBAN-koden)',
-      ).should('exist');
+
+      cy.findByRole('region', { name: TEXTS.validering.error })
+        .should('exist')
+        .within(() => {
+          cy.findByRole('link', { name: 'Dette er ikke et gyldig kontonummer' }).should('exist');
+          cy.findByRole('link', {
+            name: 'Oppgitt IBAN inneholder ugyldig landkode (to store bokstaver i starten av IBAN-koden)',
+          }).should('exist');
+        });
+
       cy.findAllByText('Du må fylle ut: Velg valuta').should('have.length', 2);
       cy.findAllByText('Du må fylle ut: Beløp').should('have.length', 2);
     });

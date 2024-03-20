@@ -1,6 +1,7 @@
 import { Tag } from '@navikt/ds-react';
 import { Component, formDiffingTool, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import Field from 'formiojs/components/_classes/field/Field';
+import FormioUtils from 'formiojs/utils';
 import { ReactNode } from 'react';
 import FormioReactComponent from './FormioReactComponent';
 import { blurHandler, focusHandler } from './focus-helpers';
@@ -39,12 +40,19 @@ class BaseComponent extends FormioReactComponent {
   /**
    * Get label for custom component renderReact()
    */
-  getLabel() {
+  getLabel(options?: { showOptional?: boolean; showDiffTag?: boolean; labelTextOnly?: boolean }) {
+    const defaultOptions = { showOptional: true, showDiffTag: true, labelTextOnly: false };
+    const { showOptional, showDiffTag, labelTextOnly } = { ...defaultOptions, ...(options ?? {}) };
+
+    if (labelTextOnly) return this.t(this.component?.label ?? '');
+
     return (
       <>
         {this.t(this.component?.label ?? '')}
-        {this.component?.validate?.required && !this.component?.readOnly ? '' : ` (${this.t('valgfritt')})`}
-        {this.getDiffTag()}
+        {this.component?.validate?.required && !this.component?.readOnly
+          ? ''
+          : showOptional && ` (${this.t('valgfritt')})`}
+        {showDiffTag && this.getDiffTag()}
       </>
     );
   }
@@ -215,7 +223,10 @@ class BaseComponent extends FormioReactComponent {
    */
   focus(focusData?: any) {
     this.reactReady.then(() => {
-      if (this.reactInstance) {
+      const { elementId } = focusData;
+      if (elementId) {
+        this.getRef(elementId)?.focus();
+      } else if (this.reactInstance) {
         this.reactInstance.focus(focusData);
       }
     });
@@ -278,18 +289,14 @@ class BaseComponent extends FormioReactComponent {
     );
   }
 
-  // MetadataId is used to focus to the correct element when clicking on error summary
+  // elementId is used to focus to the correct element when clicking on error summary
   // Message is the error message that is shown in the error summary
-  addError(metadataId: string, message: string) {
+  addError(message: string, elementId?: string) {
     this.componentErrors.push({
-      metadataId,
       message,
       level: 'error',
-      path: metadataId,
-
-      // For the error summary (will be removed when the new error summary is implemented)
-      messages: [{ formattedKeyOrPath: metadataId, message, context: { hasLabel: true } }],
-      component: { key: metadataId },
+      path: FormioUtils.getComponentPath(this.component),
+      elementId,
     });
   }
 
