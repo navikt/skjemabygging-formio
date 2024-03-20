@@ -1,5 +1,6 @@
 import { DrivingListPeriod, DrivingListSubmission, TEXTS, dateUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { TFunction } from 'i18next';
+import { DateTime } from 'luxon';
 import { v4 as uuidv4 } from 'uuid';
 
 export type DrivingListMetadataId = (typeof metadata)[number]['id'];
@@ -54,27 +55,25 @@ export const generatePeriods = (
   if (!date) return [];
 
   const periods: DrivingListPeriod[] = [];
-  const today = new Date();
+  const today = DateTime.now();
 
   for (let i = 0; i < numberOfPeriods; i++) {
-    const startDate = new Date(date);
-    const endDate = new Date(date);
+    let startDate = DateTime.fromISO(date);
+    let endDate = DateTime.fromISO(date);
 
     if (periodType === 'weekly') {
-      startDate.setDate(startDate.getDate() + i + 6 * i);
-      endDate.setDate(endDate.getDate() + i + 6 * (i + 1));
+      startDate = startDate.plus({ weeks: i });
+      endDate = endDate.plus({ weeks: i + 1 }).minus({ days: 1 });
     } else if (periodType === 'monthly') {
-      startDate.setMonth(startDate.getMonth() + 1 * i);
-      endDate.setMonth(endDate.getMonth() + 1 * (i + 1));
-      endDate.setDate(endDate.getDate() - 1);
+      startDate = startDate.plus({ months: i });
+      endDate = endDate.plus({ months: i + 1 }).minus({ days: 1 });
     }
 
     if (endDate > today) {
-      endDate.setMonth(today.getMonth());
-      endDate.setDate(today.getDate());
+      endDate = today;
     }
 
-    periods.push({ periodFrom: startDate, periodTo: endDate, id: uuidv4() });
+    periods.push({ periodFrom: startDate.toJSDate(), periodTo: endDate.toJSDate(), id: uuidv4() });
   }
 
   return periods;
@@ -96,13 +95,15 @@ export const allFieldsForPeriodsAreSet = (values?: DrivingListSubmission) => {
 };
 
 export const showAddButton = (values?: DrivingListSubmission) => {
+  if (!values) return false;
+
   const lastPeriod = values?.periods?.reduce((prev, current) =>
-    new Date(prev.periodTo) > new Date(current.periodTo) ? prev : current,
+    DateTime.fromJSDate(prev.periodTo) > DateTime.fromJSDate(current.periodTo) ? prev : current,
   );
   if (!lastPeriod) return false;
 
-  const lastPeriodDate = new Date(lastPeriod.periodTo).setHours(0, 0, 0, 0);
-  const today = new Date().setHours(0, 0, 0, 0);
+  const lastPeriodDate = DateTime.fromJSDate(lastPeriod.periodTo).startOf('day');
+  const today = DateTime.local().startOf('day');
 
   return lastPeriodDate < today;
 };
@@ -112,14 +113,15 @@ export const showRemoveButton = (values?: DrivingListSubmission) => {
 };
 
 export const toDate = (values?: DrivingListSubmission) => {
-  const date = new Date();
+  if (!values) return;
 
-  if (values?.selectedPeriodType === 'weekly') {
-    date.setDate(date.getDate() - 6);
-    return date;
-  } else if (values?.selectedPeriodType === 'monthly') {
-    date.setMonth(date.getMonth() - 1);
-    date.setDate(date.getDate() + 1);
-    return date;
+  let date = DateTime.now();
+
+  if (values.selectedPeriodType === 'weekly') {
+    date = date.minus({ week: 1 }).plus({ days: 1 });
+  } else if (values.selectedPeriodType === 'monthly') {
+    date = date.minus({ months: 1 }).plus({ days: 1 });
   }
+
+  return date.toJSDate();
 };

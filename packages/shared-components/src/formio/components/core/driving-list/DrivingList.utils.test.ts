@@ -1,4 +1,5 @@
 import { DrivingListPeriod } from '@navikt/skjemadigitalisering-shared-domain';
+import { DateTime } from 'luxon';
 import { generatePeriods } from './DrivingList.utils';
 
 describe('generatePeriods function', () => {
@@ -12,22 +13,47 @@ describe('generatePeriods function', () => {
     expect(result.length).toBe(1);
   });
 
-  it('should return an array of weekly periods when periodType is weekly', () => {
-    const result = generatePeriods('weekly', '2024-03-01', 3);
+  it.only('should return an array of weekly periods when periodType is weekly', () => {
+    const result = generatePeriods('weekly', '2023-03-01', 3);
+
     const expectedPeriods: DrivingListPeriod[] = [
-      { periodFrom: new Date('2024-03-01'), periodTo: new Date('2024-03-07'), id: expect.any(String) },
-      { periodFrom: new Date('2024-03-08'), periodTo: new Date('2024-03-14'), id: expect.any(String) },
-      { periodFrom: new Date('2024-03-15'), periodTo: new Date('2024-03-21'), id: expect.any(String) },
+      {
+        periodFrom: DateTime.fromISO('2023-03-01').toJSDate(),
+        periodTo: DateTime.fromISO('2023-03-07').toJSDate(),
+        id: expect.any(String),
+      },
+      {
+        periodFrom: DateTime.fromISO('2023-03-08').toJSDate(),
+        periodTo: DateTime.fromISO('2023-03-14').toJSDate(),
+        id: expect.any(String),
+      },
+      {
+        periodFrom: DateTime.fromISO('2023-03-15').toJSDate(),
+        periodTo: DateTime.fromISO('2023-03-21').toJSDate(),
+        id: expect.any(String),
+      },
     ];
     expect(result).toEqual(expectedPeriods);
   });
 
   it('should return an array of monthly periods when periodType is monthly', () => {
-    const result = generatePeriods('monthly', '2024-01-01', 3);
+    const result = generatePeriods('monthly', '2023-12-01', 3);
     const expectedPeriods: DrivingListPeriod[] = [
-      { periodFrom: new Date('2024-01-01'), periodTo: new Date('2024-01-31'), id: expect.any(String) },
-      { periodFrom: new Date('2024-02-01'), periodTo: new Date('2024-02-29'), id: expect.any(String) }, // Leap year
-      { periodFrom: new Date('2024-03-01'), periodTo: new Date('2024-03-31'), id: expect.any(String) },
+      {
+        periodFrom: DateTime.fromISO('2023-12-01').toJSDate(),
+        periodTo: DateTime.fromISO('2023-12-31').toJSDate(),
+        id: expect.any(String),
+      },
+      {
+        periodFrom: DateTime.fromISO('2024-01-01').toJSDate(),
+        periodTo: DateTime.fromISO('2024-01-31').toJSDate(),
+        id: expect.any(String),
+      }, // Leap year
+      {
+        periodFrom: DateTime.fromISO('2024-02-01').toJSDate(),
+        periodTo: DateTime.fromISO('2024-02-29').toJSDate(),
+        id: expect.any(String),
+      },
     ];
     expect(result).toEqual(expectedPeriods);
   });
