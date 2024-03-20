@@ -23,7 +23,7 @@ const Attachment = ({ attachmentValues, value, title, description, error, onChan
   const additionalDocumentation = attachmentValues?.[value?.key]?.additionalDocumentation;
   const showDeadline = !!attachmentValues?.[value?.key]?.showDeadline;
 
-  const additionalDocumentationMaxLength = 20;
+  const additionalDocumentationMaxLength = 200;
 
   const getValues = (): ComponentValue[] => {
     if (attachmentValues) {
