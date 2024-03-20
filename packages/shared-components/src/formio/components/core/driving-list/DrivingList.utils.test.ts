@@ -4,7 +4,7 @@ import { generatePeriods } from './DrivingList.utils';
 
 describe('generatePeriods function', () => {
   it('should return an empty array if no date is provided', () => {
-    const result = generatePeriods('weekly');
+    const result = generatePeriods();
     expect(result).toEqual([]);
   });
 
@@ -13,7 +13,7 @@ describe('generatePeriods function', () => {
     expect(result.length).toBe(1);
   });
 
-  it.only('should return an array of weekly periods', () => {
+  it('should return an array of weekly periods', () => {
     const result = generatePeriods('2023-03-01', 3);
 
     const expectedPeriods: DrivingListPeriod[] = [
