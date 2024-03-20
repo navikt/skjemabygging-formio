@@ -155,14 +155,15 @@ describe('DrivingList', () => {
         });
 
       cy.get('.navds-alert').within(() => {
-        cy.findByRole('heading', { name: 'Aktivitet' }).should('exist');
-        cy.findByText('Arbeidstrening').should('exist');
+        cy.findByRole('heading', { name: 'Dine aktiviteter' }).should('exist');
 
-        cy.findByRole('heading', { name: 'Periode for aktiviteten' }).should('exist');
-        cy.findByText('01. januar 2024 - 31. august 2024').should('exist');
+        cy.findByRole('heading', { name: 'Arbeidstrening' }).should('exist');
+        cy.findByText('Periode: 01. januar 2024 - 31. august 2024').should('exist');
+        cy.findAllByText('Dagsats for parkeringsavgift: 67 kr').eq(0).should('exist').get;
 
-        cy.findByRole('heading', { name: 'Din dagsats uten parkeringsutgift' }).should('exist');
-        cy.findByText('67kr').should('exist');
+        cy.findByRole('heading', { name: 'Avklaring' }).should('exist');
+        cy.findByText('Periode: 01. februar 2024 - 31. mars 2024').should('exist');
+        cy.findAllByText('Dagsats for parkeringsavgift: 67 kr').eq(1).should('exist');
       });
 
       cy.findByRole('heading', { name: 'Perioder du tidligere har fått refundert reiseutgifter for' }).should('exist');
