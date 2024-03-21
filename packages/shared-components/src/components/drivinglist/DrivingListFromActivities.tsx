@@ -16,6 +16,7 @@ import makeStyles from '../../util/styles/jss/jss';
 import NavActivities from '../activities/NavActivities';
 import ActivityAlert from './ActivityAlert';
 import DrivingPeriod from './DrivingPeriod';
+import PeriodInfo from './PeriodInfo';
 
 type Props = {
   activities: SendInnAktivitet[];
@@ -81,7 +82,6 @@ const DrivingListFromActivities = ({ activities }: Props) => {
     return (
       <>
         <ActivityAlert vedtakData={mapToVedtaklist(activities)} className={'mb'} />
-
         <NavActivities
           id={drivingListMetadata('activityRadio').id}
           label={t(drivingListMetadata('activityRadio').label)}
@@ -101,6 +101,7 @@ const DrivingListFromActivities = ({ activities }: Props) => {
         />
         {selectedActivity && selectedVedtak && (
           <>
+            <PeriodInfo />
             <Heading size="xsmall" className={styles.accoridonHeader}>
               {TEXTS.statiske.drivingList.accordionHeader}
             </Heading>

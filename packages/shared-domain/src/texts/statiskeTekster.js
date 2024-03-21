@@ -141,6 +141,13 @@ export const statiske = {
     expensesTooHigh:
       'I vedtaket ditt om stønad til daglig reise beregnet vi hvor mye du vil få utbetalt i hver periode. Du har nå lagt inn høyere utgifter til bruk av egen bil enn det vi har beregnet. Du vil sannsynligvis ikke få refundert alle utgiftene du har lagt inn for denne perioden.',
     error: 'Kunne ikke hente aktiviteter. Du kan sende inn søknad via papir',
+    periodInfoHeader: 'Tilgjengelige perioder',
+    periodInfoSubheader: 'Nedenfor har vi listet opp hvilke perioder du kan levere kjøreliste for.',
+    periodInfoYouCan: 'Du kan:',
+    periodInfoElement1: 'levere kjøreliste for flere perioder av gangen',
+    periodInfoElement2: 'gå tilbake og levere kjøreliste for andre periode senere',
+    periodInfoElement3: 'ikke gå tilbake og endre kjørelister for perioder du allerede har sendt inn',
+    periodInfoElement4: 'ikke levere kjøreliste for perioder frem i tid',
     noVedtakHeading: 'Vi har ikke registert at du har vedtak om stønad til daglig reise med bruk av egen bil',
     noVedtak:
       'Du må søke om tilleggsstønad og motta vedtak før du kan sende inn liste over utgifter til daglig reise med bruk av egen bil. Ta kontakt med NAV på telefon 55 55 33 33 hvis du mener du allerede har vedtak.',
