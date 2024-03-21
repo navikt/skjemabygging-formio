@@ -20,13 +20,16 @@ describe('Amplitude', () => {
   });
 
   it('logs for all relevant events', () => {
-    // Disabler dekoratør, siden den også gjør kall til "/collect-auto". Det fører til at checkLogToAmplitude feiler, siden den er avhengig av at kall gjørers i riktig rekkefølge
     cy.visit('/fyllut/cypress101');
     cy.defaultWaits();
     cy.wait('@getGlobalTranslations');
 
     // Select digital submission and go to the form
-    cy.get('[type="radio"]').check('digital');
+    cy.findByRole('group', { name: 'Hvordan vil du sende inn skjemaet?' })
+      .should('exist')
+      .within(() => {
+        cy.findByLabelText('Send digitalt (krever innlogging)').should('exist').check();
+      });
     cy.clickStart();
     cy.checkLogToAmplitude('skjema åpnet', { innsendingskanal: 'digital' });
 
@@ -51,10 +54,11 @@ describe('Amplitude', () => {
 
     cy.checkLogToAmplitude('skjemaspørsmål besvart', { spørsmål: 'Etternavn' });
 
-    cy.get('.navds-radio-group')
-      .first()
+    cy.findByRole('group', { name: 'Har du norsk fødselsnummer eller D-nummer?' })
       .should('exist')
-      .within(($radio) => cy.findByLabelText('Nei').should('exist').check());
+      .within(() => {
+        cy.findByLabelText('Nei').should('exist').check();
+      });
     cy.checkLogToAmplitude('skjemaspørsmål besvart', { spørsmål: 'Har du norsk fødselsnummer eller D-nummer?' });
 
     cy.findByRole('textbox', { name: 'Din fødselsdato (dd.mm.åååå)' }).should('be.visible').type('10.05.1995{esc}');
@@ -62,16 +66,18 @@ describe('Amplitude', () => {
 
     cy.checkLogToAmplitude('skjemaspørsmål besvart', { spørsmål: 'Din fødselsdato (dd.mm.åååå)' });
 
-    cy.get('.navds-radio-group')
-      .eq(1)
+    cy.findByRole('group', { name: 'Bor du i Norge?' })
       .should('exist')
-      .within(($radio) => cy.findByLabelText('Ja').should('exist').check());
+      .within(() => {
+        cy.findByLabelText('Ja').should('exist').check();
+      });
     cy.checkLogToAmplitude('skjemaspørsmål besvart', { spørsmål: 'Bor du i Norge?' });
 
-    cy.get('.navds-radio-group')
-      .eq(2)
+    cy.findByRole('group', { name: 'Er kontaktadressen din en vegadresse eller postboksadresse?' })
       .should('exist')
-      .within(($radio) => cy.findByLabelText('Vegadresse').should('exist').check());
+      .within(() => {
+        cy.findByLabelText('Vegadresse').should('exist').check();
+      });
     cy.checkLogToAmplitude('skjemaspørsmål besvart', {
       spørsmål: 'Er kontaktadressen din en vegadresse eller postboksadresse?',
     });
