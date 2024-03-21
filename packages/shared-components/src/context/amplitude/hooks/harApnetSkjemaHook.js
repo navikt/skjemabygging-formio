@@ -1,12 +1,12 @@
-import { useState } from 'react';
+import { useRef } from 'react';
 import { loggEventSkjemaApnet } from '../../../util/amplitude/amplitude';
 
 export default function useHarApnetSkjema(form) {
-  const [harApnetSkjema, setHarApnetSkjema] = useState(false);
+  const harApnetSkjema = useRef(false);
   return (innsendingskanal) => {
-    if (!harApnetSkjema) {
+    if (!harApnetSkjema.current) {
+      harApnetSkjema.current = true;
       loggEventSkjemaApnet(form, innsendingskanal);
-      setHarApnetSkjema(true);
     }
   };
 }
