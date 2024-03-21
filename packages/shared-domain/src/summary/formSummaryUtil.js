@@ -1,7 +1,7 @@
-import FormioUtils from 'formiojs/utils';
 import moment from 'moment';
 import 'moment/locale/nb';
 import TEXTS from '../texts';
+import FormioUtils from '../utils/formio/FormioUtils';
 import sanitizeJavaScriptCode from '../utils/formio/sanitize-javascript-code';
 import { addToMap } from '../utils/objectUtils';
 import { toPascalCase } from '../utils/stringUtils';

@@ -1,7 +1,7 @@
 // @ts-ignore
-import FormioUtils from 'formiojs/utils';
 import { Attachment, Component, FormsResponseForm, NavFormType, Panel, PrefillData, Submission } from '../form';
 import { formSummaryUtil } from '../index';
+import FormioUtils from '../utils/formio/FormioUtils';
 import { camelCase } from './stringUtils';
 
 export const toFormPath = (text: string) => camelCase(text).toLowerCase();
