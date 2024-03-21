@@ -1,5 +1,4 @@
 import {
-  dateUtils,
   DeclarationType,
   FormPropertiesType,
   formSummaryUtil,
@@ -24,7 +23,7 @@ const createHtmlFromSubmission = (
   translate: (text: string) => string,
   lang: string = 'nb',
 ) => {
-  const symmaryPanels: Summary.Panel[] = formSummaryUtil.createFormSummaryPanels(form, submission, translate);
+  const symmaryPanels: Summary.Panel[] = formSummaryUtil.createFormSummaryPanels(form, submission, translate, lang);
   const confirmation = createConfirmationSection(form, translate);
   const signatures = signatureSection(form.properties, submissionMethod, translate);
 
@@ -141,13 +140,11 @@ const activity = (component: Summary.Activity) =>
 const drivingList = (component) => `
   <div class="spm">${component.label}</div>
   <div class="svar"> 
+    <p>${component.value.description}</p>
     <ul>
       ${component.value.dates
-        .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
         .map((date) => {
-          return `<li key="${date.date}">${dateUtils.toLocaleDate(date.date)} ${
-            date.parking ? `- ${date.parking}kr` : ''
-          }</li>`;
+          return `<li key="${date.key}">${date.text}</li>`;
         })
         .join('')}
     </ul>

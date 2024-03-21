@@ -173,5 +173,8 @@ export const statiske = {
     dateSelectParking: 'og har hatt parkeringsutgifter',
     parkingExpenses: 'Parkeringsutgifter (kr)',
     accordionHeader: 'Legg til kjøreliste for én eller flere perioder',
+    summaryDescription: 'Du har oppgitt at du har reist med egen bil på disse dagene:',
+    summaryTextParking: '{{date}}, parkeringsutgift: {{parking}} kr',
+    summaryText: '{{date}}',
   },
 };
