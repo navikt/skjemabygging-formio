@@ -139,7 +139,7 @@ const DrivingListFromDates = () => {
 
             <div className={styles.buttonContainer}>
               {showAddButton(values) && (
-                <Button variant="primary" size="small" type="button" onClick={() => addPeriod()}>
+                <Button variant="secondary" size="small" type="button" onClick={() => addPeriod()}>
                   {t(TEXTS.statiske.drivingList.addPeriod)}
                 </Button>
               )}
