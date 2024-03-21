@@ -105,7 +105,13 @@ const TranslationFormHtmlSection = ({
             <Alert inline size="small" variant="warning">
               Oversettelse mangler. Klikk "Start ny oversettelse" for å legge til ny.
             </Alert>
-            <Button size="small" variant="primary" onClick={startNewTranslation} icon={<PlusIcon aria-hidden />}>
+            <Button
+              type="button"
+              size="small"
+              variant="primary"
+              onClick={startNewTranslation}
+              icon={<PlusIcon aria-hidden />}
+            >
               Start ny oversettelse
             </Button>
           </VStack>
@@ -116,10 +122,22 @@ const TranslationFormHtmlSection = ({
             <Heading size={'xsmall'}>Teksten har en eksisterende oversettelse som ikke følger samme struktur</Heading>
             <div dangerouslySetInnerHTML={{ __html: storedTranslation }} />
             <HStack gap="6">
-              <Button size="small" variant="secondary" onClick={onSelectLegacy} icon={<XMarkIcon aria-hidden />}>
+              <Button
+                type="button"
+                size="small"
+                variant="secondary"
+                onClick={onSelectLegacy}
+                icon={<XMarkIcon aria-hidden />}
+              >
                 Bruk eksisterende oversettelse
               </Button>
-              <Button size="small" variant="primary" onClick={startNewTranslation} icon={<PlusIcon aria-hidden />}>
+              <Button
+                type="button"
+                size="small"
+                variant="primary"
+                onClick={startNewTranslation}
+                icon={<PlusIcon aria-hidden />}
+              >
                 Start ny oversettelse
               </Button>
             </HStack>

@@ -55,7 +55,7 @@
       "tableView": false,
       "components": [
         {
-          "content": "<div><h3>Overskrift</h3><p>Beskrivelse av dette skjemaet med <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://www.nav.no\">lenke til NAV</a>.</p><div>",
+          "content": "<h3>Overskrift</h3><p>Beskrivelse av dette skjemaet med <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://www.nav.no\">lenke til NAV</a>.</p>",
           "textDisplay": "form",
           "key": "htmlelement1",
           "type": "htmlelement",

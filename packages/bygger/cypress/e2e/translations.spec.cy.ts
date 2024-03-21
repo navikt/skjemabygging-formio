@@ -140,10 +140,66 @@ describe('Translations', () => {
       cy.wait('@getTranslations', { timeout: 10000 });
     });
 
+    it('lets you edit old versions of translations and start new translations', () => {
+      const expectedI18n = {
+        'Du må selv skrive under på leveattesten. I tillegg må du få bekreftet attesten enten av to myndige personer (vitner) eller av en offentlig myndighet.':
+          'Du må sjølv skrive....',
+        '<h3>Overskrift</h3><p>Beskrivelse av dette skjemaet med <a target="_blank" rel="noopener noreferrer" href="https://www.nav.no">lenke til NAV</a>.</p>':
+          '<h3>Overskrift</h3><p>Beskrivelse med <a target="_blank" rel="noopener noreferrer" href="https://www.nav.no/minside">lenke til minside</a>.</p>',
+        '<h3>Tekstblokk med mye formatering og eksisterende oversettelse</h3><p>Dette er et avsnitt</p><p>Her er et avsnitt <a target="_blank" rel="noopener noreferrer" href="https://www.vg.no">med lenke til VG</a> og her kommer en liste:</p><ul><li>Ta oppvasken</li><li>Handle <a target="_blank" rel="noopener noreferrer" href="https://www.coop.no/"><strong>matvarer</strong></a>, og <strong>vurder</strong> å <a target="_blank" rel="noopener noreferrer" href="https://www.zalando.no">kjøpe <strong>nye</strong> klær</a>.</li></ul><p>Nytt avsnitt. Ny liste (numerert denne gangen):</p><ol><li>Første prioritet</li><li>Også viktig, men ikke så viktig</li><li>Kan utsettes</li><li>Trengs egentlig ikke å gjøres</li></ol>':
+          '<h3>Tekstblokk med mye formatering og eksisterende oversettelse</h3><p>Dette er et avsnitt</p><p>Her er eit avsnitt <a target="_blank" rel="noopener noreferrer" href="https://www.dagogtid.no">med lenke til DAG OG TID</a>, og her er ei ei liste:</p><ul><li>Ta oppvasken</li><li>Handle <a target="_blank" rel="noopener noreferrer" href="https://www.kiwi.no/"><strong>matvarer</strong></a>, og <strong>tenk på om du skal</strong> <a target="_blank" rel="noopener noreferrer" href="https://www.zalando.no">kjøpe <strong>nye</strong> klær</a>.</li></ul><p>Nytt avsnitt. Ny liste (numerert denne gangen):</p><ol><li>Første prioritet</li><li>Også viktig, men ikke så viktig</li><li>Kan utsettes</li><li>Trengs egentlig ikke å gjøres</li></ol>',
+      };
+      cy.get('[data-testid=html-translation]').should('have.length', 3);
+      cy.get('[data-testid=html-translation]')
+        .first()
+        .within(() => {
+          cy.findAllByRole('heading', { name: 'Overskrift' }).should('be.visible');
+          cy.findAllByRole('textbox').should('have.length', 0);
+          cy.findByRole('button', { name: 'Start ny oversettelse' }).should('be.visible');
+          cy.findByRole('button', { name: 'Bruk eksisterende oversettelse' }).should('be.visible');
+          cy.findByRole('button', { name: 'Bruk eksisterende oversettelse' }).click();
+        });
+      cy.get('[data-testid=html-translation]').should('have.length', 2);
+      cy.findByRole('button', { name: 'Gå tilbake til vanlig HTML-oversetting' }).should('be.visible');
+      cy.findByRole('button', { name: 'Gå tilbake til vanlig HTML-oversetting' }).click();
+      cy.get('[data-testid=html-translation]').should('have.length', 3);
+      cy.get('[data-testid=html-translation]')
+        .first()
+        .within(() => {
+          cy.findAllByRole('heading', { name: 'Overskrift' }).should('be.visible');
+          cy.findByRole('button', { name: 'Start ny oversettelse' }).should('be.visible');
+          cy.findByRole('button', { name: 'Start ny oversettelse' }).click();
+          cy.findByRole('textbox', { name: 'Overskrift' }).should('be.visible');
+          cy.findByRole('textbox', {
+            name: 'Beskrivelse av dette skjemaet med [lenke til NAV](https://www.nav.no).',
+          }).should('have.value', 'Beskrivelse av dette skjemaet med [lenke til NAV](https://www.nav.no).');
+        });
+      typeNewHtmlTranslationInput(
+        0,
+        'Beskrivelse av dette skjemaet med [lenke til NAV](https://www.nav.no).',
+        'Beskrivelse med [lenke til minside](https://www.nav.no/minside).',
+      );
+
+      cy.get('[data-testid=html-translation]')
+        .last()
+        .within(() => {
+          cy.findAllByRole('heading', { name: 'Tekstblokk med mye formatering og manglende oversettelse' }).should(
+            'be.visible',
+          );
+          cy.findAllByRole('textbox').should('have.length', 0);
+          cy.findAllByRole('button').should('have.length', 1);
+          cy.findByRole('button', { name: 'Start ny oversettelse' }).click();
+        });
+      cy.findByRole('button', { name: 'Lagre' }).click();
+      cy.wait('@updateTranslations').then((interception) => {
+        // eslint-disable-next-line vitest/valid-expect
+        expect(interception.request.body.data.i18n).to.deep.equal(expectedI18n);
+      });
+    });
+
     it('lets you change links', () => {
       const expectedHtmlResult =
         '<h3>Tekstblokk med mye formatering og eksisterende oversettelse</h3><p>Dette er et avsnitt</p><p>Her er eit avsnitt <a target="_blank" rel="noopener noreferrer" href="https://www.ap.no">med lenke til AFTENPOSTEN</a>. Her kommer ei liste:</p><ul><li>Ta oppvasken</li><li>Handle <a target="_blank" rel="noopener noreferrer" href="https://www.kiwi.no/"><strong>matvarer</strong></a>, og <strong>tenk på om du skal</strong> <a target="_blank" rel="noopener noreferrer" href="https://www.zalando.no">kjøpe <strong>nye</strong> klær</a>.</li></ul><p>Nytt avsnitt. Ny liste (numerert denne gangen):</p><ol><li>Første prioritet</li><li>Også viktig, men ikke så viktig</li><li>Kan utsettes</li><li>Trengs egentlig ikke å gjøres</li></ol>';
-      cy.get('[data-testid=html-translation]').should('have.length', 3);
       const paragraphWithLink = 'Her er et avsnitt [med lenke til VG](https://www.vg.no) og her kommer en liste:';
       assessHtmlTranlationInput(
         1,

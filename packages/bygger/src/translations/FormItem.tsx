@@ -87,12 +87,13 @@ const FormItem = ({ translations, text, htmlElementAsJson, type, languageCode }:
       {useLegacyHtmlTranslation && (
         <Button
           className={styles.undoButton}
+          type="button"
           size="small"
           variant="secondary"
           onClick={() => setUseLegacyHtmlTranslation(false)}
           icon={<ArrowUndoIcon aria-hidden />}
         >
-          Gå tilbake til vanlig HTML oversetting
+          Gå tilbake til vanlig HTML-oversetting
         </Button>
       )}
     </div>
