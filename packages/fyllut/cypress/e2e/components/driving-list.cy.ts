@@ -270,6 +270,7 @@ describe('DrivingList', () => {
       cy.wait('@getActivities');
 
       cy.get('.navds-alert').within(() => {
+        cy.findByText(TEXTS.statiske.drivingList.noVedtakHeading).should('exist');
         cy.findByText(TEXTS.statiske.drivingList.noVedtak).should('exist');
       });
 
