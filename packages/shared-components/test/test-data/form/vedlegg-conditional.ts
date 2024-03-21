@@ -1766,7 +1766,7 @@ const form = {
                   id: 'em31d1l',
                 },
                 {
-                  label: 'Vegnavn og husnummer, evt. postboks',
+                  label: 'Vegnavn og husnummer, eller postboks',
                   type: 'textfield',
                   key: 'postboksNrSoker',
                   autocomplete: 'street-address',
