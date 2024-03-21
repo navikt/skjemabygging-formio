@@ -28,7 +28,7 @@ jobs:
         uses: cypress-io/github-action@v6
         with:
           install: false
-          start: yarn preview:fyllut
+          start: FYLLUT_BACKEND_LOGLEVEL=${{ runner.debug == '1' && 'debug' || 'error' }} yarn preview:fyllut
           wait-on: 'http://localhost:3001/fyllut/internal/isready'
           wait-on-timeout: 120
           command: yarn cypress:fyllut
