@@ -68,10 +68,15 @@ export const generatePeriods = (date?: string, numberOfPeriods: number = 1): Dri
     let startDate = DateTime.fromISO(date);
     let endDate = DateTime.fromISO(date);
 
-    startDate = startDate.plus({ weeks: i });
-    endDate = endDate.plus({ weeks: i + 1 }).minus({ days: 1 });
+    startDate = startDate.startOf('week').plus({ weeks: i });
+    endDate = endDate
+      .startOf('week')
+      .plus({ weeks: i + 1 })
+      .minus({ days: 1 });
 
-    if (endDate > today) {
+    if (i === 0) {
+      startDate = DateTime.fromISO(date);
+    } else if (endDate > today) {
       endDate = today;
     }
 
