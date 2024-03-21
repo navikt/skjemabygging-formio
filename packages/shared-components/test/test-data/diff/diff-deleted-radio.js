@@ -32,7 +32,7 @@ const panelDiff = {
           onlyAvailableItems: false,
         },
         key: 'bekreftelsePaSkoleplass1',
-        properties: { vedleggstittel: 'Bekreftelse fra skole', vedleggskode: 'O9', vedleggErValgfritt: 'ja' },
+        properties: { vedleggstittel: 'Bekreftelse fra skole', vedleggskode: 'O9' },
         type: 'radiopanel',
         input: true,
         validateOn: 'blur',

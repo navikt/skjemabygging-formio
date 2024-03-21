@@ -2,6 +2,7 @@ import norskPostboksadresseSchema from '../../../form-builder-options/schemas/no
 import norskVegadresseSchema from '../../../form-builder-options/schemas/norskVegadresseSchema';
 import utenlandskAdresseSchema from '../../../form-builder-options/schemas/utenlandskAdresseSchema';
 import firstNameBuilder from '../../extensions/first-name/FirstName.builder';
+import nationalIdentityNumberBuilder from '../../extensions/national-identity-number/NationalIdentityNumber.builder';
 import surnameBuilder from '../../extensions/surname/Surname.builder';
 
 const yourInformationBuilder = () => {
@@ -39,10 +40,7 @@ const yourInformationBuilder = () => {
           },
         },
         {
-          label: 'Fødselsnummer eller d-nummer',
-          key: 'fodselsnummerDNummerSoker',
-          type: 'fnrfield',
-          tableView: true,
+          ...nationalIdentityNumberBuilder(keyPostfix).schema,
           conditional: {
             show: true,
             when: 'harDuNorskFodselsnummerEllerDNummer',

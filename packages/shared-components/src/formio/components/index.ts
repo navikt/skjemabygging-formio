@@ -1,6 +1,7 @@
 import FormioTextArea from 'formiojs/components/textarea/TextArea';
 import Activities from './core/activities/Activities';
 import Alert from './core/alert/Alert';
+import Attachment from './core/attachment/Attachment';
 import Button from './core/button/Button';
 import Checkbox from './core/checkbox/Checkbox';
 import Container from './core/container/Container';
@@ -62,5 +63,6 @@ const customComponents = {
   email: Email,
   phoneNumber: PhoneNumber,
   currency: Currency,
+  attachment: Attachment,
 };
 export default customComponents;

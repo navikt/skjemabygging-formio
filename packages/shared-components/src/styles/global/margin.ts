@@ -8,6 +8,9 @@ const margin = {
   '.mb-14': {
     marginBottom: 'var(--a-spacing-14)',
   },
+  '.ml': {
+    marginLeft: 'var(--a-spacing-10)',
+  },
 };
 
 export default margin;

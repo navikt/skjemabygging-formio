@@ -1,3 +1,4 @@
+import { AttachmentValue } from '../attachment';
 import { SubmissionActivity } from '../submission/activity';
 import { DrivingListSubmission } from '../submission/drivingList';
 
@@ -21,7 +22,8 @@ export namespace Summary {
     | 'landvelger'
     | 'currency'
     | 'valutavelger'
-    | 'alertstripe';
+    | 'alertstripe'
+    | 'attachment';
 
   export interface Field {
     label: string;
@@ -59,6 +61,11 @@ export namespace Summary {
     components: Component[];
   }
 
+  export interface Attachment extends Omit<Field, 'type' | 'value'> {
+    type: 'attachment';
+    value: AttachmentValue;
+  }
+
   export interface Panel extends Omit<Fieldset, 'type'> {
     type: 'panel';
   }
@@ -81,6 +88,7 @@ export namespace Summary {
     | Selectboxes
     | Image
     | Activity
+    | Attachment
     | DrivingList
   ) & {
     hiddenInSummary?: boolean;

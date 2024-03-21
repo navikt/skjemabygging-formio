@@ -1,4 +1,5 @@
 import alertBuilder from '../components/core/alert/Alert.builder';
+import attachmentBuilder from '../components/core/attachment/Attachment.builder';
 import checkboxBuilder from '../components/core/checkbox/Checkbox.builder';
 import htmlElementBuilder from '../components/core/html-element/HtmlElement.builder';
 import imageBuilder from '../components/core/image/Image.builder';
@@ -8,7 +9,6 @@ import selectBuilder from '../components/core/select/Select.builder';
 import textAreaBuilder from '../components/core/textarea/TextArea.builder';
 import textFieldBuilder from '../components/core/textfield/TextField.builder';
 import numberBuilder from '../components/extensions/number/Number.builder';
-import attachmentBuilder from '../components/groups/attachment/Attachment.builder';
 
 const basicGroup = {
   title: 'Standard felter',

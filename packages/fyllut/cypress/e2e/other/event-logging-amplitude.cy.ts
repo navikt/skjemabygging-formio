@@ -6,6 +6,8 @@
  * TODO: Maybe we should also have tests for opening sub=digital or sub=paper directly, to see that the "skjema startet" logging is handled correctly.
  */
 
+import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+
 describe('Amplitude', () => {
   before(() => {
     cy.configMocksServer();
@@ -106,7 +108,7 @@ describe('Amplitude', () => {
 
     // Gå tilbake til skjema fra oppsummering, og naviger til oppsummering på nytt
     // for å verifisere at ingen valideringsfeil oppstår grunnet manglende verdier.
-    cy.findByRoleWhenAttached('link', { name: 'Fortsett utfylling' }).should('exist').click();
+    cy.findByRoleWhenAttached('link', { name: TEXTS.grensesnitt.summaryPage.editAnswers }).should('exist').click();
     // There is a weird re-render happening after navigating back to the form,
     // where the first panel will be rendered for a time before redirecting to the intended panel.
     // If the user navigates during this time period, the navigation is ignored.
@@ -114,7 +116,7 @@ describe('Amplitude', () => {
     cy.wait(500);
 
     cy.checkLogToAmplitude('navigere', {
-      lenkeTekst: 'Fortsett utfylling',
+      lenkeTekst: TEXTS.grensesnitt.summaryPage.editAnswers,
       destinasjon: '/cypress101/veiledning',
     });
     cy.findByRole('heading', { level: 2, name: 'Oppsummering' }).should('not.exist');

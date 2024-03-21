@@ -80,7 +80,6 @@ const defaultAttachmentValues: RadioPanelOption[] = [
 const defaultAttachmentProperties: ComponentProperties = {
   vedleggstittel: 'Bekreftelse fra skole',
   vedleggskode: 'S1',
-  vedleggErValgfritt: 'ja',
 };
 
 const createDummyAttachment = (
