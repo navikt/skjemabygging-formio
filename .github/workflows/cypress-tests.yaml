@@ -28,11 +28,13 @@ jobs:
         uses: cypress-io/github-action@v6
         with:
           install: false
-          start: FYLLUT_BACKEND_LOGLEVEL=${{ runner.debug == '1' && 'debug' || 'error' }} yarn preview:fyllut
+          start: yarn preview:fyllut
           wait-on: 'http://localhost:3001/fyllut/internal/isready'
           wait-on-timeout: 120
           command: yarn cypress:fyllut
           config: video=false
+        env:
+          FYLLUT_BACKEND_LOGLEVEL=${{ runner.debug == '1' && 'debug' || 'error' }}
 
   cypress-run-bygger:
     runs-on: ubuntu-latest-8-cores
