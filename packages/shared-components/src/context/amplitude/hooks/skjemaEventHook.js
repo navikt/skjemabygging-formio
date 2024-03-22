@@ -1,32 +1,24 @@
-import { useEffect, useState } from 'react';
-import useSkjemaSporsmalBesvart from './skjemaSporsmalBesvartHook';
-import useSkjemaStartet from './skjemaStartetHook';
+import { useCallback, useRef } from 'react';
+import { loggEventSkjemaSporsmalBesvart, loggEventSkjemaStartet } from '../../../util/amplitude/amplitude';
 
 export default function useSkjemaSporsmalEvent(form) {
-  const [lastSporsmalEvent, setLastSporsmalEvent] = useState(null);
-  const loggSkjemaStartet = useSkjemaStartet(form);
-  const loggSkjemaSporsmalBesvart = useSkjemaSporsmalBesvart(form);
-  const loggSkjemaSporsmalBesvartForSpesialTyper = (event) => {
-    if (
-      event.changed &&
-      ['radio', 'checkbox', 'navDatepicker', 'day', 'radiopanel', 'navCheckbox', 'navSelect'].includes(
-        event.changed.component.type,
-      )
-    ) {
-      setLastSporsmalEvent({
-        component: event.changed.component,
-        _data: event.data,
-      });
-    }
-  };
+  const skjemaStartet = useRef(false);
 
-  useEffect(() => {
-    loggSkjemaStartet(lastSporsmalEvent);
-    loggSkjemaSporsmalBesvart(lastSporsmalEvent);
-  }, [lastSporsmalEvent, loggSkjemaSporsmalBesvart, loggSkjemaStartet]);
+  const loggSkjemaSporsmalBesvart = useCallback(
+    (event) => {
+      const { component, value } = event;
+      if (component.input && value) {
+        if (!skjemaStartet.current) {
+          skjemaStartet.current = true;
+          loggEventSkjemaStartet(form);
+        }
+        loggEventSkjemaSporsmalBesvart(form, component.label, component.key, value, component.validate.required);
+      }
+    },
+    [form],
+  );
 
   return {
-    loggSkjemaSporsmalBesvart: setLastSporsmalEvent,
-    loggSkjemaSporsmalBesvartForSpesialTyper,
+    loggSkjemaSporsmalBesvart,
   };
 }
