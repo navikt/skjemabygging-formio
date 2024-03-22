@@ -1,8 +1,8 @@
 import { logLevelIsEnabled } from './logLevel';
 
-describe('logging', () => {
-  describe('log level isEnabled', () => {
-    it('backendLogLevel trace', () => {
+describe('LogLevel', () => {
+  describe('logLevelIsEnabled', () => {
+    it('configLevel trace', () => {
       const isEnabled = logLevelIsEnabled('trace');
       expect(isEnabled('trace')).toBe(true);
       expect(isEnabled('debug')).toBe(true);
@@ -10,7 +10,7 @@ describe('logging', () => {
       expect(isEnabled('warning')).toBe(true);
       expect(isEnabled('error')).toBe(true);
     });
-    it('backendLogLevel debug', () => {
+    it('configLevel debug', () => {
       const isEnabled = logLevelIsEnabled('debug');
       expect(isEnabled('trace')).toBe(false);
       expect(isEnabled('debug')).toBe(true);
@@ -18,7 +18,7 @@ describe('logging', () => {
       expect(isEnabled('warning')).toBe(true);
       expect(isEnabled('error')).toBe(true);
     });
-    it('backendLogLevel info', () => {
+    it('configLevel info', () => {
       const isEnabled = logLevelIsEnabled('info');
       expect(isEnabled('trace')).toBe(false);
       expect(isEnabled('debug')).toBe(false);
@@ -26,7 +26,7 @@ describe('logging', () => {
       expect(isEnabled('warning')).toBe(true);
       expect(isEnabled('error')).toBe(true);
     });
-    it('backendLogLevel warning', () => {
+    it('configLevel warning', () => {
       const isEnabled = logLevelIsEnabled('warning');
       expect(isEnabled('trace')).toBe(false);
       expect(isEnabled('debug')).toBe(false);
@@ -34,7 +34,7 @@ describe('logging', () => {
       expect(isEnabled('warning')).toBe(true);
       expect(isEnabled('error')).toBe(true);
     });
-    it('backendLogLevel error', () => {
+    it('configLevel error', () => {
       const isEnabled = logLevelIsEnabled('error');
       expect(isEnabled('trace')).toBe(false);
       expect(isEnabled('debug')).toBe(false);
