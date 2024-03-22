@@ -1,4 +1,4 @@
-import { Summary, dateUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { Summary } from '@navikt/skjemadigitalisering-shared-domain';
 
 export interface Props {
   component: Summary.DrivingList;
@@ -9,16 +9,11 @@ const DrivingListSummary = ({ component }: Props) => {
     <>
       <dt>{component.label}</dt>
       <dd>
+        <p>{component.value.description}</p>
         <ul>
-          {component.value.dates
-            .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
-            .map((date) => {
-              return (
-                <li key={date.date}>{`${dateUtils.toLocaleDate(date.date)} ${
-                  date.parking ? `- ${date.parking}kr` : ''
-                }`}</li>
-              );
-            })}
+          {component.value.dates.map((date) => {
+            return <li key={date.key}>{date.text}</li>;
+          })}
         </ul>
       </dd>
     </>

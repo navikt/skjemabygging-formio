@@ -1,4 +1,4 @@
-import { Alert, Skeleton } from '@navikt/ds-react';
+import { Alert, BodyShort, Heading, Skeleton } from '@navikt/ds-react';
 import { SendInnAktivitet, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useState } from 'react';
 import { getActivities } from '../../api/sendinn/sendInnActivities';
@@ -40,7 +40,16 @@ const NavDrivingList = () => {
   }, []);
 
   const renderNoActivitiesAlert = () => {
-    return <Alert variant="info">{t(TEXTS.statiske.drivingList.noVedtak)}</Alert>;
+    return (
+      <Alert variant="info">
+        <Heading size="small" spacing={true}>
+          {t(TEXTS.statiske.drivingList.noVedtakHeading)}
+        </Heading>
+        <BodyShort size="medium" spacing={true}>
+          {t(TEXTS.statiske.drivingList.noVedtak)}
+        </BodyShort>
+      </Alert>
+    );
   };
 
   const renderDrivingList = () => {

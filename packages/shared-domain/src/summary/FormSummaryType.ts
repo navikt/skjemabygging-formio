@@ -1,6 +1,5 @@
 import { AttachmentValue } from '../attachment';
 import { SubmissionActivity } from '../submission/activity';
-import { DrivingListSubmission } from '../submission/drivingList';
 
 export namespace Summary {
   export type SubmissionValue = string | number;
@@ -44,7 +43,7 @@ export namespace Summary {
 
   export interface DrivingList extends Omit<Field, 'type' | 'value'> {
     type: 'drivinglist';
-    value: DrivingListSubmission;
+    value: { description: string; dates: { text: string; key: string }[] };
   }
 
   export interface Image extends Omit<Field, 'type'> {

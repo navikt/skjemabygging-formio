@@ -9,7 +9,6 @@ const drivingListForm = () => {
   return createTabs(
     display([
       editFormDisplay.label(),
-      editFormDisplay.hideLabel(),
       editFormDisplay.description(),
       editFormDisplay.additionalDescription(),
     ]),

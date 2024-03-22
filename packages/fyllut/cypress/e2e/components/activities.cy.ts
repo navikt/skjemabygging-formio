@@ -19,7 +19,7 @@ const defaultActivity: SubmissionActivity = {
   text: TEXTS.statiske.activities.defaultActivity,
 };
 
-const activityText = 'Arbeidstrening: 01.12.2023 - 06.04.2024';
+const activityText = 'Arbeidstrening: 01. desember 2023 - 06. april 2024';
 const prefillMaalgruppe: SendInnMaalgruppe = {
   gyldighetsperiode: {
     fom: '2024-01-01',

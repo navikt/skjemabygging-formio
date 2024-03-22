@@ -1,14 +1,26 @@
-import { DrivingListPeriod, DrivingListSubmission, TEXTS, dateUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  AktivitetPeriode,
+  DrivingListPeriod,
+  DrivingListSubmission,
+  TEXTS,
+  dateUtils,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import { TFunction } from 'i18next';
+import { DateTime } from 'luxon';
 import { v4 as uuidv4 } from 'uuid';
 
 export type DrivingListMetadataId = (typeof metadata)[number]['id'];
 export type DrivingListErrorType = 'required';
+export interface ActivityAlertData {
+  aktivitetsnavn: string;
+  dagsats: number;
+  periode: AktivitetPeriode;
+  vedtaksId: string;
+}
 
 const metadata = [
   { id: 'activityRadio', label: TEXTS.statiske.activities.label },
   { id: 'parkingRadio', label: TEXTS.statiske.drivingList.parking },
-  { id: 'periodType', label: TEXTS.statiske.drivingList.periodType },
   {
     id: 'datePicker',
     label: TEXTS.statiske.drivingList.datePicker,
@@ -31,36 +43,44 @@ export const requiredError = (componentId: DrivingListMetadataId, t: TFunction):
   return t('required', { field });
 };
 
+export const toLocaleDateLongMonth = (date: Date, locale?: string) => {
+  if (!date) return '';
+  return dateUtils.toLocaleDateLongMonth(date.toString(), locale);
+};
+
 export const toLocaleDate = (date: Date) => {
+  if (!date) return '';
   return dateUtils.toLocaleDate(date.toString());
 };
 
 export const toWeekdayAndDate = (date: Date, locale?: string) => {
+  if (!date) return '';
   return dateUtils.toWeekdayAndDate(date.toString(), locale);
 };
 
-export const generatePeriods = (
-  periodType: 'weekly' | 'monthly',
-  date?: string,
-  numberOfPeriods: number = 1,
-): DrivingListPeriod[] => {
+export const generatePeriods = (date?: string, numberOfPeriods: number = 1): DrivingListPeriod[] => {
   if (!date) return [];
 
   const periods: DrivingListPeriod[] = [];
+  const today = DateTime.now();
 
   for (let i = 0; i < numberOfPeriods; i++) {
-    const startDate = new Date(date);
-    const endDate = new Date(date);
+    let startDate = DateTime.fromISO(date);
+    let endDate = DateTime.fromISO(date);
 
-    if (periodType === 'weekly') {
-      startDate.setDate(startDate.getDate() + i + 6 * i);
-      endDate.setDate(endDate.getDate() + i + 6 * (i + 1));
-    } else if (periodType === 'monthly') {
-      startDate.setMonth(startDate.getMonth() + 1 * i);
-      endDate.setMonth(endDate.getMonth() + 1 * (i + 1));
-      endDate.setDate(endDate.getDate() - 1);
+    startDate = startDate.startOf('week').plus({ weeks: i });
+    endDate = endDate
+      .startOf('week')
+      .plus({ weeks: i + 1 })
+      .minus({ days: 1 });
+
+    if (i === 0) {
+      startDate = DateTime.fromISO(date);
+    } else if (endDate > today) {
+      endDate = today;
     }
-    periods.push({ periodFrom: startDate, periodTo: endDate, id: uuidv4() });
+
+    periods.push({ periodFrom: startDate.toJSDate(), periodTo: endDate.toJSDate(), id: uuidv4() });
   }
 
   return periods;
@@ -72,32 +92,20 @@ export const isValidParking = (value: string) => {
 };
 
 export const allFieldsForPeriodsAreSet = (values?: DrivingListSubmission) => {
-  return (
-    !!values?.selectedPeriodType &&
-    !!values?.selectedDate &&
-    !!values?.periods?.length &&
-    values?.parking !== undefined &&
-    values?.parking !== null
-  );
+  return !!values?.selectedDate && values?.parking !== undefined && values?.parking !== null;
 };
 
 export const showAddButton = (values?: DrivingListSubmission) => {
+  if (!values) return false;
   const lastPeriod = values?.periods?.reduce((prev, current) =>
-    new Date(prev.periodTo) > new Date(current.periodTo) ? prev : current,
+    DateTime.fromJSDate(prev.periodTo) > DateTime.fromJSDate(current.periodTo) ? prev : current,
   );
   if (!lastPeriod) return false;
 
-  const lastPeriodDate = new Date(lastPeriod.periodTo);
+  const lastPeriodDate = DateTime.fromJSDate(lastPeriod.periodTo).startOf('day');
+  const today = DateTime.local().startOf('day');
 
-  if (values?.selectedPeriodType === 'weekly') {
-    lastPeriodDate.setDate(lastPeriodDate.getDate() + 7);
-  } else if (lastPeriod && values?.selectedPeriodType === 'monthly') {
-    lastPeriodDate.setMonth(lastPeriodDate.getMonth() + 1);
-  } else {
-    return false;
-  }
-
-  return lastPeriodDate < new Date();
+  return lastPeriodDate < today;
 };
 
 export const showRemoveButton = (values?: DrivingListSubmission) => {
@@ -105,13 +113,10 @@ export const showRemoveButton = (values?: DrivingListSubmission) => {
 };
 
 export const toDate = (values?: DrivingListSubmission) => {
-  const date = new Date();
+  if (!values) return;
 
-  if (values?.selectedPeriodType === 'weekly') {
-    date.setDate(date.getDate() - 7);
-    return date;
-  } else if (values?.selectedPeriodType === 'monthly') {
-    date.setMonth(date.getMonth() - 1);
-    return date;
-  }
+  let date = DateTime.now();
+  date = date.minus({ week: 1 }).plus({ days: 1 });
+
+  return date.toJSDate();
 };
