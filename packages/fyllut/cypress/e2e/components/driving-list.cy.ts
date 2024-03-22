@@ -66,8 +66,8 @@ describe('DrivingList', () => {
           cy.get('dt').eq(0).should('contain.text', 'Legg til kjøreliste for en eller flere perioder');
 
           cy.findAllByRole('listitem').should('have.length', 2);
-          cy.findByText('15.05.2023 - 100kr').should('exist');
-          cy.findByText('21.05.2023').should('exist');
+          cy.findByText('mandag 15. mai 2023, parkeringsutgift: 100 kr').should('exist');
+          cy.findByText('søndag 21. mai 2023').should('exist');
         });
     });
 
@@ -198,8 +198,8 @@ describe('DrivingList', () => {
           cy.get('dt').eq(0).should('contain.text', 'Legg til kjøreliste for en eller flere perioder');
 
           cy.findAllByRole('listitem').should('have.length', 2);
-          cy.findByText('13.01.2024 - 100kr').should('exist');
-          cy.findByText('19.01.2024').should('exist');
+          cy.findByText('lørdag 13. januar 2024, parkeringsutgift: 100 kr').should('exist');
+          cy.findByText('fredag 19. januar 2024').should('exist');
         });
     });
 
