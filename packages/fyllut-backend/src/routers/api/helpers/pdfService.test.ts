@@ -45,4 +45,27 @@ describe('translateWithTextReplacements function', () => {
     );
     expect(translatedText).toBe('Replace replacedField and {{nonExistentField}}');
   });
+
+  it('should ignore extra fields in the text replacements object', () => {
+    const extraReplacements = {
+      field1: 'replacedField',
+      field2: 'anotherReplacedField',
+      field3: 'unusedReplacement',
+    };
+    expect(translateWithTextReplacements(translations, 'singleReplacement', extraReplacements)).toBe(
+      'You must fill in: replacedField',
+    );
+  });
+
+  it('should replace all occurrences of the same placeholder', () => {
+    const translationsWithRepeatedPlaceholder = {
+      repeatedPlaceholder: 'Replace {{field1}} with {{field1}}',
+    };
+    const translatedText = translateWithTextReplacements(
+      translationsWithRepeatedPlaceholder,
+      'repeatedPlaceholder',
+      textReplacements,
+    );
+    expect(translatedText).toBe('Replace replacedField with replacedField');
+  });
 });
