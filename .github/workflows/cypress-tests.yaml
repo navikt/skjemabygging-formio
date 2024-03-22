@@ -33,6 +33,8 @@ jobs:
           wait-on-timeout: 120
           command: yarn cypress:fyllut
           config: video=false
+        env:
+          FYLLUT_BACKEND_LOGLEVEL: ${{ runner.debug == '1' && 'debug' || 'error' }}
 
   cypress-run-bygger:
     runs-on: ubuntu-latest-8-cores
