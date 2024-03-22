@@ -175,6 +175,5 @@ export const statiske = {
     accordionHeader: 'Legg til kjøreliste for én eller flere perioder',
     summaryDescription: 'Du har oppgitt at du har reist med egen bil på disse dagene:',
     summaryTextParking: '{{date}}, parkeringsutgift: {{parking}} kr',
-    summaryText: '{{date}}',
   },
 };

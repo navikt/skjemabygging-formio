@@ -105,7 +105,7 @@ function formatValue(component, value, translate, form, language) {
                     date: formattedDate,
                     parking: date.parking,
                   })
-                : translate(TEXTS.statiske.drivingList.summaryText, { date: formattedDate }),
+                : formattedDate,
             };
           }),
       };

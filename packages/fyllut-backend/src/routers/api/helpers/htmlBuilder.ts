@@ -23,7 +23,13 @@ const createHtmlFromSubmission = (
   translate: (text: string) => string,
   lang: string = 'nb',
 ) => {
-  const symmaryPanels: Summary.Panel[] = formSummaryUtil.createFormSummaryPanels(form, submission, translate, lang);
+  const symmaryPanels: Summary.Panel[] = formSummaryUtil.createFormSummaryPanels(
+    form,
+    submission,
+    translate,
+    true,
+    lang,
+  );
   const confirmation = createConfirmationSection(form, translate);
   const signatures = signatureSection(form.properties, submissionMethod, translate);
 

@@ -1,4 +1,9 @@
-import { I18nTranslationMap, NavFormType, Submission } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  I18nTranslationMap,
+  I18nTranslationReplacements,
+  NavFormType,
+  Submission,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import correlator from 'express-correlation-id';
 import { config } from '../../../config/config';
 import { logger } from '../../../logger';
@@ -22,6 +27,28 @@ export const createPdfAsByteArray = async (
   return Array.from(base64Decode(pdf.data) ?? []);
 };
 
+export const translateWithTextReplacements = (
+  translations: I18nTranslationMap,
+  text: string,
+  textReplacements?: I18nTranslationReplacements,
+): string => {
+  const translation = translations[text] || text;
+
+  if (textReplacements) {
+    // Match placeholders like {{field}}
+    const placeholderRegex = /\{\{([^{}]+)\}\}/g;
+
+    // Replace placeholders in translation text
+    const translatedText = translation.replace(placeholderRegex, (match, placeholder: string) => {
+      return textReplacements[placeholder] ? textReplacements[placeholder] : match;
+    });
+
+    return translatedText;
+  }
+
+  return translation;
+};
+
 export const createPdf = async (
   accessToken: string,
   form: NavFormType,
@@ -30,7 +57,9 @@ export const createPdf = async (
   translations: I18nTranslationMap,
   language: string,
 ) => {
-  const translate = (text: string): string => translations[text] || text;
+  const translate = (text: string, textReplacements?: I18nTranslationReplacements) =>
+    translateWithTextReplacements(translations, text, textReplacements);
+
   const html = createHtmlFromSubmission(form, submission, submissionMethod, translate, language);
   if (!html || Object.keys(html).length === 0) {
     throw Error('Missing HTML for generating PDF.');

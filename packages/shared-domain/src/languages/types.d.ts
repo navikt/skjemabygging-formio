@@ -2,6 +2,7 @@ export type Language = 'nb-NO' | 'nn-NO' | 'en' | 'pl';
 export type TranslationScope = 'global' | 'local' | 'component-countryName';
 export type TranslationTag = 'skjematekster' | 'grensesnitt' | 'statiske-tekster' | 'validering';
 export type I18nTranslationMap = Record<string, string>;
+export type I18nTranslationReplacements = Record<string, string>;
 export type I18nTranslations = Record<string, I18nTranslationMap>;
 
 export interface ScopedTranslationMap {
