@@ -3,7 +3,7 @@ import { translateWithTextReplacements } from './pdfService';
 const translations = {
   singleReplacement: 'You must fill in: {{field1}}',
   multipleReplacement: 'You must fill in: {{field1}} and {{field2}}',
-  noReplacement: 'This is a test',
+  noReplacement: 'No replacements',
 };
 
 const textReplacements = {
@@ -18,12 +18,12 @@ describe('translateWithTextReplacements function', () => {
     );
   });
 
-  it('should return original text if no replacements provided', () => {
-    expect(translateWithTextReplacements(translations, 'noReplacement')).toBe('This is a test');
+  it('should return translated text with no replacements', () => {
+    expect(translateWithTextReplacements(translations, 'noReplacement', textReplacements)).toBe('No replacements');
   });
 
   it('should return original text if translation not found', () => {
-    expect(translateWithTextReplacements(translations, 'This text is not translated')).toBe(
+    expect(translateWithTextReplacements(translations, 'This text is not translated', textReplacements)).toBe(
       'This text is not translated',
     );
   });
