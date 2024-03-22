@@ -8,6 +8,7 @@ class Button extends FormioButton {
       label: 'Knapp',
       type: 'button',
       key: 'knapp',
+      hideLabel: true,
     });
   }
 

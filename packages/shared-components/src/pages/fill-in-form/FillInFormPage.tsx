@@ -37,7 +37,6 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: Fil
   const {
     loggSkjemaApnet,
     loggSkjemaSporsmalBesvart,
-    loggSkjemaSporsmalBesvartForSpesialTyper,
     loggSkjemaStegFullfort,
     loggSkjemaValideringFeilet,
     loggNavigering,
@@ -344,8 +343,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: Fil
         language={currentLanguage}
         i18n={translationsForNavForm}
         submission={submission}
-        onBlur={loggSkjemaSporsmalBesvart}
-        onChange={loggSkjemaSporsmalBesvartForSpesialTyper}
+        onComponentChange={loggSkjemaSporsmalBesvart}
         onError={onValidationError}
         onSubmit={onSubmit}
         onNextPage={onNextPage}

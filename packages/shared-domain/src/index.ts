@@ -43,6 +43,8 @@ import type {
   TranslationScope,
   TranslationTag,
 } from './languages/types';
+import loggingUtils from './logging';
+import type { LogLevel } from './logging/types';
 import migrationUtils, { MigrationLevel } from './migration';
 import { Operator } from './migration/operator';
 import type { Mottaksadresse, MottaksadresseData } from './mottaksadresse';
@@ -87,6 +89,7 @@ export {
   guid,
   languagesUtil,
   localizationUtils,
+  loggingUtils,
   migrationUtils,
   navFormUtils,
   navFormioUtils,
@@ -132,6 +135,7 @@ export type {
   InnsendingType,
   KjentBruker,
   Language,
+  LogLevel,
   MellomlagringError,
   MigrationLevel,
   Mottaksadresse,

@@ -2,6 +2,7 @@ import ecsFormat from '@elastic/ecs-morgan-format';
 import correlator from 'express-correlation-id';
 import morgan from 'morgan';
 import { config } from '../config/config';
+import { isEnabled } from '../logging';
 import { clean } from '../utils/logCleaning.js';
 
 const { isTest } = config;
@@ -19,7 +20,7 @@ const httpRequestLogger = morgan(
     );
   },
   {
-    skip: (req) => isTest || INTERNAL_PATHS.test(req.originalUrl),
+    skip: (req, res) => isTest || INTERNAL_PATHS.test(req.originalUrl) || (res.statusCode < 500 && !isEnabled('info')),
   },
 );
 

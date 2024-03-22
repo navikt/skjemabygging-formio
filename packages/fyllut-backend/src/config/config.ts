@@ -112,6 +112,7 @@ const config: ConfigType = {
   isProduction: process.env.NODE_ENV === 'production',
   isDelingslenke: process.env.NAIS_APP_NAME === 'skjemautfylling-delingslenke',
   pdlTokenScopeCluster: process.env.PDL_TOKEN_SCOPE_CLUSTER!,
+  backendLogLevel: process.env.FYLLUT_BACKEND_LOGLEVEL || (process.env.NODE_ENV === 'test' ? 'warning' : 'info'),
 };
 
 const checkConfigConsistency = (config: ConfigType, logError = logger.error, exit = process.exit) => {

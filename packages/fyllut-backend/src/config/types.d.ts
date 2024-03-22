@@ -63,5 +63,6 @@ export type ConfigType = DefaultConfig & {
   isTest: boolean;
   isProduction: boolean;
   isDelingslenke: boolean;
+  backendLogLevel: string;
   pdlTokenScopeCluster: string;
 };
