@@ -7,7 +7,10 @@ export type ComponentLogger = {
   info: LoggerFunction;
   error: LoggerFunction;
 };
-const createComponentLogger = (appConfig: AppConfigContextType, messagePrefix: string = ''): ComponentLogger => {
+const createComponentLogger = (
+  appConfig: AppConfigContextType | undefined,
+  messagePrefix: string = '',
+): ComponentLogger => {
   const appConfigLogger = appConfig?.logger;
   return {
     trace: (message, context) => appConfigLogger?.trace(`${messagePrefix}${message}`, context),

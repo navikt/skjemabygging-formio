@@ -1,4 +1,4 @@
-import { FeatureTogglesMap } from '@navikt/skjemadigitalisering-shared-domain';
+import { FeatureTogglesMap, LogLevel } from '@navikt/skjemadigitalisering-shared-domain';
 
 export type TokenxConfig = {
   privateJwk: string;
@@ -32,7 +32,7 @@ export type IdportenConfig = {
 export type FrontendLoggerConfigType = {
   enabled: boolean;
   browserOnly: boolean;
-  logLevel: 'trace' | 'debug' | 'info' | 'error';
+  logLevel: LogLevel;
 };
 
 export type DefaultConfig = {
