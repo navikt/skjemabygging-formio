@@ -89,7 +89,7 @@ function renderPrepareLetterPage(
 ) {
   render(
     <MemoryRouter>
-      <AppConfigProvider enableFrontendLogger>
+      <AppConfigProvider>
         <PrepareLetterPage form={form} submission={submission} translations={translations} formUrl="/" />
       </AppConfigProvider>
     </MemoryRouter>,

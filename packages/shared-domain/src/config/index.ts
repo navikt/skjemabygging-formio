@@ -4,4 +4,10 @@ export interface ConfigType {
   isDelingslenke: boolean;
   isDevelopment: boolean;
   isLoggedIn: boolean;
+  amplitudeApiEndpoint: string;
+  loggerConfig: {
+    enabled: boolean;
+    logLevel: number;
+    browserOnly: boolean;
+  };
 }

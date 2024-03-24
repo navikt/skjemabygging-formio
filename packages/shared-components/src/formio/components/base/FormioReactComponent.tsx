@@ -2,6 +2,7 @@ import { ReactComponent } from '@formio/react';
 import { ComponentError } from '@navikt/skjemadigitalisering-shared-domain';
 import { createRoot } from 'react-dom/client';
 import Ready from '../../../util/form/ready';
+import createComponentLogger, { ComponentLogger } from './createComponentLogger';
 import { IReactComponent } from './index';
 
 class FormioReactComponent extends (ReactComponent as unknown as IReactComponent) {
@@ -10,11 +11,20 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
   componentErrors: ComponentError[];
   _reactRendered = Ready();
   _reactRefs: Record<string, HTMLElement> = {};
+  _logger?: ComponentLogger;
 
   constructor(component, options, data) {
     super(component, options, data);
     this.componentMessage = undefined;
     this.componentErrors = [];
+  }
+
+  get logger(): ComponentLogger {
+    if (!this._logger) {
+      const prefix = `[${this.component!.navId} ${this.component!.type}] `;
+      this._logger = createComponentLogger(this.getAppConfig(), prefix);
+    }
+    return this._logger;
   }
 
   build(element: any) {
@@ -30,6 +40,13 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
     this.reactInstance = element;
     this.addFocusBlurEvents(element);
     this._reactRendered.resolve();
+  }
+
+  /**
+   * Get app config (same as useAppConfig hook) for custom component renderReact()
+   */
+  getAppConfig() {
+    return this.options?.appConfig;
   }
 
   detachReact(element) {

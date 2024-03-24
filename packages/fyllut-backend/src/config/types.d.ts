@@ -1,4 +1,4 @@
-import { FeatureTogglesMap } from '@navikt/skjemadigitalisering-shared-domain';
+import { FeatureTogglesMap, LogLevel } from '@navikt/skjemadigitalisering-shared-domain';
 
 export type TokenxConfig = {
   privateJwk: string;
@@ -29,6 +29,12 @@ export type IdportenConfig = {
   idportenIssuer: string;
 };
 
+export type FrontendLoggerConfigType = {
+  enabled: boolean;
+  browserOnly: boolean;
+  logLevel: LogLevel;
+};
+
 export type DefaultConfig = {
   gitVersion: string;
   sentryDsn?: string;
@@ -52,6 +58,7 @@ export type DefaultConfig = {
   noFormValidation?: boolean;
   noDecorator?: boolean;
   amplitude: AmplitudeConfig;
+  frontendLoggerConfig: FrontendLoggerConfigType;
 };
 
 export type ConfigType = DefaultConfig & {
