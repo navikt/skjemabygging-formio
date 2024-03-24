@@ -1,3 +1,8 @@
+export interface SendInnMaalgruppe {
+  gyldighetsperiode?: AktivitetPeriode;
+  maalgruppetype: string;
+  maalgruppenavn?: string;
+}
 export interface SendInnAktivitet {
   aktivitetId: string;
   aktivitetstype: string;
@@ -11,7 +16,7 @@ export interface SendInnAktivitet {
   erUtdanningsaktivitet: boolean;
   arrangoer: string;
   saksinformasjon: AktivitetSaksinformasjon;
-  maalgruppe: string;
+  maalgruppe?: SendInnMaalgruppe;
 }
 
 export interface AktivitetPeriode {

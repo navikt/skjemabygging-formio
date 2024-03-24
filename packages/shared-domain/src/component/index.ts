@@ -3,7 +3,4 @@ export interface ComponentError {
   message: string;
   path: string;
   level: 'error';
-
-  messages?: { formattedKeyOrPath: string; message: string; context: { hasLabel: boolean } }[];
-  component?: { key: string };
 }

@@ -1,4 +1,4 @@
-import fnrvalidator from '@navikt/fnrvalidator';
+import { idnr } from '@navikt/fnrvalidator';
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import TextFieldComponent from 'formiojs/components/textfield/TextField';
 import nationalIdentityNumberBuilder from './NationalIdentityNumber.builder';
@@ -38,7 +38,7 @@ export default class NationalIdentityNumber extends TextFieldComponent {
     const inputValueNoSpace = inputValue.replace(' ', '');
 
     // @ts-ignore
-    const { status, type } = fnrvalidator.idnr(inputValueNoSpace);
+    const { status, type } = idnr(inputValueNoSpace);
     if (!ALLOWED_TYPES.includes(type) || status !== 'valid') {
       //translate based on key in validering file.
       // @ts-ignore

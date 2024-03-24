@@ -115,7 +115,7 @@ describe('Focus handling', () => {
       cy.findByRole('region', { name: TEXTS.validering.error })
         .should('exist')
         .within(() => {
-          cy.findByText('Du må fylle ut: Hvilken type bolig bor du i?').should('exist').click();
+          cy.findByRole('link', { name: 'Du må fylle ut: Hvilken type bolig bor du i?' }).should('exist').click();
         });
 
       cy.findByRole('group', { name: 'Hvilken type bolig bor du i?' })
@@ -129,7 +129,7 @@ describe('Focus handling', () => {
       cy.findByRole('region', { name: TEXTS.validering.error })
         .should('exist')
         .within(() => {
-          cy.findByText('Du må fylle ut: Mottakers fornavn').should('exist').click();
+          cy.findByRole('link', { name: 'Du må fylle ut: Mottakers fornavn' }).should('exist').click();
         });
       cy.findByRole('textbox', { name: 'Mottakers fornavn' }).should('have.focus').type('Max');
 

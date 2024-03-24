@@ -22,35 +22,36 @@ const findComponent = (formSummaryComponents, key: string) => {
 
 const isChainedKey = (key: string) => key.split('.').length > 1;
 
-const removeConainerPrefixFromKey = (component) => {
+const removeFirstConainerPrefixFromKey = (component) => {
   const [_containerKey, ...newKey] = component.key.split('.');
   return { ...component, key: newKey.join('.') };
 };
 
 const filterOutIfNotInSummary = (originalData: SubmissionData, formSummaryComponents) => {
-  const filteredSubmissionEntries = Object.entries(originalData)
-    .map(([key, value]) => {
+  const filteredSubmissionEntries = Object.entries(originalData).reduce<[string, SubmissionData['Prop']][]>(
+    (previousEntries, [key, value]): [string, SubmissionData['Prop']][] => {
       const matchingComponents = findComponent(formSummaryComponents, key);
       // Remove value from submission
-      if (matchingComponents.length === 0) return undefined;
+      if (matchingComponents.length === 0) return previousEntries;
       // Container
       if (isChainedKey(matchingComponents[0].key)) {
-        const containerComponents = matchingComponents.map(removeConainerPrefixFromKey);
+        const containerComponents = matchingComponents.map(removeFirstConainerPrefixFromKey);
         const nestedData = filterOutIfNotInSummary(value as SubmissionData, containerComponents);
-        return nestedData ? [key, nestedData] : undefined;
+        return nestedData ? [...previousEntries, [key, nestedData]] : previousEntries;
       }
       const [matchingComponent] = matchingComponents;
       // Datagrid
       if (matchingComponent.type === 'datagrid') {
-        const nestedData = matchingComponent.components.map((row, index) => {
+        const nestedData = (matchingComponent.components as any[]).map((row, index) => {
           return filterOutIfNotInSummary(value[index], row.components);
         });
-        return [key, nestedData];
+        return [...previousEntries, [key, nestedData]];
       }
 
-      return [key, value];
-    })
-    .filter((entry) => !!entry);
+      return [...previousEntries, [key, value]];
+    },
+    [],
+  );
 
   return Object.fromEntries(filteredSubmissionEntries);
 };

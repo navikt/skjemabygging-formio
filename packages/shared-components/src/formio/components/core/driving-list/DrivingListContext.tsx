@@ -10,7 +10,7 @@ interface DrivingListContextContextType {
   t: TFunction;
   locale: string;
   getComponentError: (elementId: string) => string | undefined;
-  addRef: (name: string, ref: any) => void;
+  addRef: (name: string, ref: HTMLElement | null) => void;
 }
 
 interface DrivingListProviderProps extends DrivingListContextContextType {

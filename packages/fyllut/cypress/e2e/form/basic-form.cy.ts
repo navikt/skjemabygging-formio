@@ -57,7 +57,7 @@ describe('Basic form', () => {
 
     // Gå tilbake til skjema fra oppsummering, og naviger til oppsummering på nytt
     // for å verifisere at ingen valideringsfeil oppstår grunnet manglende verdier.
-    cy.findByRoleWhenAttached('link', { name: 'Fortsett utfylling' }).should('exist').click();
+    cy.findByRoleWhenAttached('link', { name: TEXTS.grensesnitt.summaryPage.editAnswers }).should('exist').click();
 
     // There is a weird re-render happening after navigating back to the form,
     // where the first panel will be rendered for a time before redirecting to the intended panel.
@@ -117,8 +117,8 @@ describe('Basic form', () => {
         cy.findByRole('region', { name: TEXTS.validering.error })
           .should('exist')
           .within(() => {
-            cy.findAllByText(/Du må fylle ut:/).should('have.length', 4);
-            cy.findByText('Du må fylle ut: Fornavn').click();
+            cy.findAllByRole('link', { name: /Du må fylle ut:/ }).should('have.length', 4);
+            cy.findByRole('link', { name: 'Du må fylle ut: Fornavn' }).click();
           });
         cy.findByRole('textbox', { name: 'Fornavn' }).should('have.focus');
       });

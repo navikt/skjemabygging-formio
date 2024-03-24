@@ -1,7 +1,7 @@
-import FormioUtils from 'formiojs/utils';
 import moment from 'moment';
 import 'moment/locale/nb';
 import TEXTS from '../texts';
+import FormioUtils from '../utils/formio/FormioUtils';
 import sanitizeJavaScriptCode from '../utils/formio/sanitize-javascript-code';
 import { addToMap } from '../utils/objectUtils';
 import { toPascalCase } from '../utils/stringUtils';
@@ -10,7 +10,7 @@ function createComponentKey(parentContainerKey, key) {
   return parentContainerKey.length > 0 ? `${parentContainerKey}.${key}` : key;
 }
 
-function formatValue(component, value, translate) {
+function formatValue(component, value, translate, form) {
   switch (component.type) {
     case 'radiopanel':
     case 'radio':
@@ -78,6 +78,18 @@ function formatValue(component, value, translate) {
       const prefix = component.prefix ? `${component.prefix} ` : '';
       const suffix = component.suffix ? ` ${component.suffix}` : '';
       return prefix + Number(value).toLocaleString('no', { maximumFractionDigits: 2 }) + suffix;
+    case 'attachment':
+      return {
+        description: translate(TEXTS.statiske.attachment[value.key]),
+        additionalDocumentationLabel: translate(
+          component.attachmentValues?.[value.key]?.additionalDocumentation?.label,
+        ),
+        additionalDocumentation: translate(value.additionalDocumentation),
+        deadlineWarning:
+          !!component.attachmentValues?.[value.key]?.showDeadline && form?.properties?.ettersendelsesfrist
+            ? translate(TEXTS.statiske.attachment.deadline, { deadline: form?.properties?.ettersendelsesfrist })
+            : undefined,
+      };
     default:
       return value;
   }
@@ -91,11 +103,21 @@ function handlePanel(
   translate,
   evaluatedConditionals,
   excludeEmptyPanels,
+  form,
 ) {
   const { title, key, type, components = [] } = component;
   const subComponents = components.reduce(
     (subComponents, subComponent) =>
-      handleComponent(subComponent, submission, subComponents, parentContainerKey, translate, evaluatedConditionals),
+      handleComponent(
+        subComponent,
+        submission,
+        subComponents,
+        parentContainerKey,
+        translate,
+        evaluatedConditionals,
+        excludeEmptyPanels,
+        form,
+      ),
     [],
   );
   if (subComponents.length === 0 && excludeEmptyPanels) {
@@ -112,21 +134,30 @@ function handlePanel(
   ];
 }
 
-function handleContainer(component, submission, formSummaryObject, translate, evaluatedConditionals) {
+function handleContainer(
+  component,
+  submission,
+  formSummaryObject,
+  parentContainerKey,
+  translate,
+  evaluatedConditionals,
+  form,
+) {
   const { components, key } = component;
+  const containerKey = createComponentKey(parentContainerKey, key);
   if (!components || components.length === 0) {
     return formSummaryObject;
   } else {
     const mappedSubComponents = components.reduce(
       (subComponents, subComponent) =>
-        handleComponent(subComponent, submission, subComponents, key, translate, evaluatedConditionals),
+        handleComponent(subComponent, submission, subComponents, containerKey, translate, evaluatedConditionals, form),
       [],
     );
     return [...formSummaryObject, ...mappedSubComponents];
   }
 }
 
-function handleField(component, submission, formSummaryObject, parentContainerKey, translate) {
+function handleField(component, submission, formSummaryObject, parentContainerKey, translate, form) {
   const { key, label, type } = component;
   const componentKey = createComponentKey(parentContainerKey, key);
   const submissionValue = FormioUtils.getValue(submission, componentKey);
@@ -147,19 +178,19 @@ function handleField(component, submission, formSummaryObject, parentContainerKe
       key: componentKey,
       type,
       ...(hiddenInSummary && { hiddenInSummary }),
-      value: formatValue(component, submissionValue, translate),
+      value: formatValue(component, submissionValue, translate, form),
     },
   ];
 }
 
-function handleDataGridRows(component, submission, translate) {
+function handleDataGridRows(component, submission, translate, form) {
   const { key, rowTitle, components } = component;
   const dataGridSubmission = FormioUtils.getValue(submission, key) || [];
   return dataGridSubmission
     .map((rowSubmission, index) => {
       const dataGridRowComponents = components.reduce(
         (handledComponents, subComponent) =>
-          handleComponent(subComponent, { data: rowSubmission }, handledComponents, '', translate),
+          handleComponent(subComponent, { data: rowSubmission }, handledComponents, '', translate, form),
         [],
       );
       if (dataGridRowComponents.length > 0) {
@@ -174,10 +205,11 @@ function handleDataGridRows(component, submission, translate) {
     .filter((row) => !!row);
 }
 
-function handleDataGrid(component, submission, formSummaryObject, translate) {
+function handleDataGrid(component, submission, formSummaryObject, parentContainerKey, translate, form) {
   const { label, key, type } = component;
+  const componentKey = createComponentKey(parentContainerKey, key);
 
-  const dataGridRows = handleDataGridRows(component, submission, translate);
+  const dataGridRows = handleDataGridRows(component, submission, translate, form);
   if (dataGridRows.length === 0) {
     return [...formSummaryObject];
   }
@@ -186,7 +218,7 @@ function handleDataGrid(component, submission, formSummaryObject, translate) {
     ...formSummaryObject,
     {
       label: translate(label),
-      key,
+      key: componentKey,
       type,
       components: dataGridRows,
     },
@@ -200,6 +232,7 @@ function handleFieldSet(
   parentContainerKey,
   translate,
   evaluatedConditionals,
+  form,
 ) {
   const { legend, key, components, type } = component;
   if (!components || components.length === 0) {
@@ -207,7 +240,15 @@ function handleFieldSet(
   }
   const mappedSubComponents = components.reduce(
     (subComponents, subComponent) =>
-      handleComponent(subComponent, submission, subComponents, parentContainerKey, translate, evaluatedConditionals),
+      handleComponent(
+        subComponent,
+        submission,
+        subComponents,
+        parentContainerKey,
+        translate,
+        evaluatedConditionals,
+        form,
+      ),
     [],
   );
   if (mappedSubComponents.length === 0) {
@@ -245,7 +286,7 @@ function handleSelectboxes(component, submission, formSummaryObject, parentConta
   ];
 }
 
-function handleCheckBox(component, submission, formSummaryObject, parentContainerKey, translate) {
+function handleCheckBox(component, submission, formSummaryObject, parentContainerKey, translate, form) {
   const { key, label, type } = component;
   const componentKey = createComponentKey(parentContainerKey, key);
   const submissionValue = FormioUtils.getValue(submission, componentKey);
@@ -259,7 +300,7 @@ function handleCheckBox(component, submission, formSummaryObject, parentContaine
         label: translate(label),
         key: componentKey,
         type,
-        value: formatValue(component, submissionValue, translate),
+        value: formatValue(component, submissionValue, translate, form),
       },
     ];
   }
@@ -360,6 +401,7 @@ function handleComponent(
   translate,
   evaluatedConditionals = {},
   excludeEmptyPanels = true,
+  form = {},
 ) {
   if (!shouldShowInSummary(component.key, evaluatedConditionals)) {
     return formSummaryObject;
@@ -374,6 +416,7 @@ function handleComponent(
         translate,
         evaluatedConditionals,
         excludeEmptyPanels,
+        form,
       );
     case 'button':
     case 'content':
@@ -382,13 +425,21 @@ function handleComponent(
     case 'alertstripe':
       return handleHtmlElement(component, formSummaryObject, parentContainerKey, translate, evaluatedConditionals);
     case 'container':
-      return handleContainer(component, submission, formSummaryObject, translate, evaluatedConditionals);
+      return handleContainer(
+        component,
+        submission,
+        formSummaryObject,
+        parentContainerKey,
+        translate,
+        evaluatedConditionals,
+        form,
+      );
     case 'datagrid':
-      return handleDataGrid(component, submission, formSummaryObject, translate);
+      return handleDataGrid(component, submission, formSummaryObject, parentContainerKey, translate, form);
     case 'selectboxes':
       return handleSelectboxes(component, submission, formSummaryObject, parentContainerKey, translate);
     case 'navCheckbox':
-      return handleCheckBox(component, submission, formSummaryObject, parentContainerKey, translate);
+      return handleCheckBox(component, submission, formSummaryObject, parentContainerKey, translate, form);
     case 'fieldset':
     case 'navSkjemagruppe':
       return handleFieldSet(
@@ -398,6 +449,7 @@ function handleComponent(
         parentContainerKey,
         translate,
         evaluatedConditionals,
+        form,
       );
     case 'image':
       return handleImage(component, formSummaryObject, parentContainerKey, translate);
@@ -411,10 +463,10 @@ function handleComponent(
           translate,
         );
       } else {
-        return handleContainer(component, submission, formSummaryObject, translate);
+        return handleContainer(component, submission, formSummaryObject, parentContainerKey, translate);
       }
     default:
-      return handleField(component, submission, formSummaryObject, parentContainerKey, translate);
+      return handleField(component, submission, formSummaryObject, parentContainerKey, translate, form);
   }
 }
 
@@ -465,6 +517,7 @@ function createFormSummaryObject(form, submission = { data: {} }, translate = (t
         translate,
         evaluatedConditionalsMap,
         excludeEmptyPanels,
+        form,
       ),
     [],
   );

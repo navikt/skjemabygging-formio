@@ -1,4 +1,4 @@
-import fnrvalidator from '@navikt/fnrvalidator';
+import { fnr as fnrvalidator } from '@navikt/fnrvalidator';
 import { formDiffingTool, navFormioUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { Utils } from 'formiojs';
 import moment from 'moment/moment';
@@ -160,7 +160,7 @@ const getBirthDate = (fnrOrDateKey, submission = {}) => {
   if (moment(submissionValue, 'YYYY-MM-DD', true).isValid()) {
     return moment(submissionValue, 'YYYY-MM-DD');
   }
-  if (value && fnrvalidator.fnr(value).status === 'valid') {
+  if (value && fnrvalidator(value).status === 'valid') {
     return getBirthDateFromFnr(value);
   }
   return undefined;

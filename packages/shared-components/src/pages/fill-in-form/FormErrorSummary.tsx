@@ -9,6 +9,8 @@ interface FormErrorSummaryProps {
   focusOnComponent: (componentId: KeyOrFocusComponentId) => void;
 }
 
+const SPACE = ' ';
+
 const FormErrorSummary = forwardRef<HTMLDivElement, FormErrorSummaryProps>(
   ({ heading, errors, focusOnComponent }, ref) => {
     if (!errors.length) {
@@ -18,10 +20,13 @@ const FormErrorSummary = forwardRef<HTMLDivElement, FormErrorSummaryProps>(
       <ErrorSummary heading={heading} ref={ref}>
         {errors.map((error) => (
           <ErrorSummary.Item
-            tabIndex={0}
-            onClick={() => focusOnComponent({ path: error.path, elementId: error.elementId })}
+            href="#"
+            onClick={(event) => {
+              event.preventDefault();
+              focusOnComponent({ path: error.path, elementId: error.elementId });
+            }}
             onKeyUp={(event) => {
-              if (event.key === 'Enter' || event.key === ' ') {
+              if (event.key === 'Enter' || event.key === SPACE) {
                 event.stopPropagation();
                 focusOnComponent({ path: error.path, elementId: error.elementId });
               }

@@ -94,7 +94,9 @@ describe('DrivingList', () => {
       cy.findByRole('region', { name: TEXTS.validering.error })
         .should('exist')
         .within(() => {
-          cy.findByText(`Du må fylle ut: ${PERIOD_TYPE_LABEL}`).should('exist').click();
+          cy.findByRole('link', { name: `Du må fylle ut: ${PERIOD_TYPE_LABEL}` })
+            .should('exist')
+            .click();
         });
 
       cy.findByRole('group', { name: PERIOD_TYPE_LABEL })
@@ -115,7 +117,7 @@ describe('DrivingList', () => {
       cy.findByRole('region', { name: TEXTS.validering.error })
         .should('exist')
         .within(() => {
-          cy.findByText(TEXTS.validering.parkingExpensesAboveHundred).should('exist');
+          cy.findByRole('link', { name: TEXTS.validering.parkingExpensesAboveHundred }).should('exist');
         });
 
       // Parking expenses should be a number
@@ -125,7 +127,9 @@ describe('DrivingList', () => {
       cy.findByRole('region', { name: TEXTS.validering.error })
         .should('exist')
         .within(() => {
-          cy.findByText('15.05.2023: Parkeringsutgiftene må være et gyldig beløp').should('exist').click();
+          cy.findByRole('link', { name: 'Parkeringsutgiftene for 15.05.2023 må være et gyldig beløp' })
+            .should('exist')
+            .click();
         });
 
       cy.findByRole('textbox', { name: PARKING_EXPENSES_LABEL }).should('have.focus').type('{selectall}78');
@@ -248,7 +252,9 @@ describe('DrivingList', () => {
       cy.findByRole('region', { name: TEXTS.validering.error })
         .should('exist')
         .within(() => {
-          cy.findByText(`Du må fylle ut: ${ACTIVITIES_LABEL}`).should('exist').click();
+          cy.findByRole('link', { name: `Du må fylle ut: ${ACTIVITIES_LABEL}` })
+            .should('exist')
+            .click();
         });
 
       cy.findByRole('group', { name: ACTIVITIES_LABEL })
@@ -290,7 +296,7 @@ describe('DrivingList', () => {
       cy.findByRole('region', { name: TEXTS.validering.error })
         .should('exist')
         .within(() => {
-          cy.findByText(`Du må fylle ut: ${ACTIVITIES_LABEL}`).should('exist');
+          cy.findByRole('link', { name: `Du må fylle ut: ${ACTIVITIES_LABEL}` }).should('exist');
         });
     });
   });

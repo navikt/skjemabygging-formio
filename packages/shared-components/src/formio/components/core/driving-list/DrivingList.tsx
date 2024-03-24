@@ -55,13 +55,6 @@ class DrivingList extends BaseComponent {
     return this.componentErrors.find((error) => error.elementId === elementId)?.message;
   }
 
-  override focus(focusData: any) {
-    const { elementId } = focusData;
-    if (elementId) {
-      this.getRef(elementId)?.focus();
-    }
-  }
-
   override checkValidity(): boolean {
     this.removeAllErrors();
     const componentData = this.getValue() as DrivingListSubmission;
@@ -102,12 +95,10 @@ class DrivingList extends BaseComponent {
       if (!isValidParking(date.parking)) {
         const message = this.t(TEXTS.validering.validParkingExpenses, { dato: dateUtils.toLocaleDate(date.date) });
         this.addError(message, `dates:${date.date}:parking`);
+      } else if (Number(date.parking) > 100) {
+        this.addError(this.t(TEXTS.validering.parkingExpensesAboveHundred), `dates:${date.date}:parking`);
       }
     });
-
-    if (componentData?.dates?.some((date) => Number(date.parking) > 100)) {
-      this.addError(this.t(TEXTS.validering.parkingExpensesAboveHundred), 'dates');
-    }
 
     this.rerender();
 

@@ -121,7 +121,7 @@
           "modalEdit": false,
           "data": {
             "resource": "",
-            "url": "https://www.nav.no/fyllut/countries?lang=nb"
+            "url": "http://localhost:3001/fyllut/countries?lang=nb"
           },
           "valueProperty": "",
           "clearOnHide": true,

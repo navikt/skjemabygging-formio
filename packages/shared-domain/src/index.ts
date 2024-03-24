@@ -1,8 +1,10 @@
+import { AttachmentSettingValues, AttachmentValue } from './attachment';
 import { ComponentError } from './component';
 import type { ConfigType } from './config';
 import { Enhet, Enhetstype, supportedEnhetstyper } from './enhet';
 import {
   Component,
+  ComponentValue,
   DeclarationType,
   DisplayType,
   FormPropertiesPublishing,
@@ -40,14 +42,23 @@ import type {
   TranslationScope,
   TranslationTag,
 } from './languages/types';
+import loggingUtils from './logging';
+import type { LogLevel } from './logging/types';
 import migrationUtils, { MigrationLevel } from './migration';
 import { Operator } from './migration/operator';
 import type { Mottaksadresse, MottaksadresseData } from './mottaksadresse';
 import type { ReportDefinition } from './reports';
 import type { GlobalTranslationsResourceContent, MottaksadresserResourceContent, ResourceContent } from './resource';
-import { AktivitetVedtaksinformasjon, SendInnAktivitet, VedtakBetalingsplan } from './sendinn/activity';
+import {
+  AktivitetPeriode,
+  AktivitetVedtaksinformasjon,
+  SendInnAktivitet,
+  SendInnMaalgruppe,
+  VedtakBetalingsplan,
+} from './sendinn/activity';
 import { SubmissionActivity } from './submission/activity';
 import { DrivingListPeriod, DrivingListSubmission, DrivingListValues } from './submission/drivingList';
+import { SubmissionMaalgruppe } from './submission/maalgruppe';
 import type { Summary } from './summary/FormSummaryType';
 import MockedComponentObjectForTest from './summary/MockedComponentObjectForTest';
 import formSummaryUtil from './summary/formSummaryUtil';
@@ -77,6 +88,7 @@ export {
   guid,
   languagesUtil,
   localizationUtils,
+  loggingUtils,
   migrationUtils,
   navFormUtils,
   navFormioUtils,
@@ -88,9 +100,13 @@ export {
   validatorUtils,
 };
 export type {
+  AktivitetPeriode,
   AktivitetVedtaksinformasjon,
+  AttachmentSettingValues,
+  AttachmentValue,
   Component,
   ComponentError,
+  ComponentValue,
   ConfigType,
   DependencyType,
   DisplayType,
@@ -117,6 +133,7 @@ export type {
   InnsendingType,
   KjentBruker,
   Language,
+  LogLevel,
   MellomlagringError,
   MigrationLevel,
   Mottaksadresse,
@@ -134,9 +151,11 @@ export type {
   ResourceContent,
   ScopedTranslationMap,
   SendInnAktivitet,
+  SendInnMaalgruppe,
   Submission,
   SubmissionActivity,
   SubmissionData,
+  SubmissionMaalgruppe,
   SubmissionMethod,
   Summary,
   TranslationResource,
