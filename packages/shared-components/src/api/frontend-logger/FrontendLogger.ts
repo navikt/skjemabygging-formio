@@ -1,13 +1,5 @@
+import { LogLevel, loggingUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import baseHttp from '../util/http/http';
-
-type LogLevel = 'info' | 'error' | 'debug' | 'trace';
-const LogLevelRank: Record<LogLevel, number> = {
-  trace: 1,
-  debug: 2,
-  info: 3,
-  error: 4,
-};
-const atLeastInfo = (level: LogLevel) => LogLevelRank[level] >= LogLevelRank['info'];
 
 type BaseHttp = typeof baseHttp;
 
@@ -19,6 +11,7 @@ class FrontendLogger {
   private readonly http: BaseHttp;
   private readonly baseUrl: string;
   private readonly config: LoggerConfig;
+  private readonly isEnabled: (level: LogLevel) => boolean;
 
   constructor(http: BaseHttp, baseUrl: string = '', config: LoggerConfig = {}) {
     //enabled: boolean = false, options: OptionsParam = {browserOnly: false, logLevel: 'info'}) {
@@ -30,6 +23,7 @@ class FrontendLogger {
       enabled: true,
       ...config,
     };
+    this.isEnabled = loggingUtils.logLevelIsEnabled(this.config.logLevel as LogLevel);
   }
 
   trace(message: string, metadata?: object) {
@@ -64,15 +58,11 @@ class FrontendLogger {
     return this.log('error', message, metadata);
   }
 
-  shouldLog(level: LogLevel) {
-    return LogLevelRank[level] >= LogLevelRank[this.config.logLevel as string];
-  }
-
   private async log(level: LogLevel, message: string, metadata?: object) {
-    if (this.config.enabled && this.shouldLog(level)) {
+    if (this.config.enabled && this.isEnabled(level)) {
       if (this.config.browserOnly) {
         console.log(message, { ...metadata, level });
-      } else if (atLeastInfo(level)) {
+      } else {
         return this.http
           .post(`${this.baseUrl}/api/log/${level}`, {
             message,
