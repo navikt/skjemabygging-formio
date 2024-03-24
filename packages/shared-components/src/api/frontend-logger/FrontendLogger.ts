@@ -11,10 +11,9 @@ class FrontendLogger {
   private readonly http: BaseHttp;
   private readonly baseUrl: string;
   private readonly config: LoggerConfig;
-  private readonly isEnabled: (level: LogLevel) => boolean;
+  private readonly logLevelIsEnabled: (level: LogLevel) => boolean;
 
   constructor(http: BaseHttp, baseUrl: string = '', config: LoggerConfig = {}) {
-    //enabled: boolean = false, options: OptionsParam = {browserOnly: false, logLevel: 'info'}) {
     this.http = http;
     this.baseUrl = baseUrl;
     this.config = {
@@ -23,7 +22,7 @@ class FrontendLogger {
       enabled: true,
       ...config,
     };
-    this.isEnabled = loggingUtils.logLevelIsEnabled(this.config.logLevel as LogLevel);
+    this.logLevelIsEnabled = loggingUtils.logLevelIsEnabled(this.config.logLevel as LogLevel);
   }
 
   trace(message: string, metadata?: object) {
@@ -59,7 +58,7 @@ class FrontendLogger {
   }
 
   private async log(level: LogLevel, message: string, metadata?: object) {
-    if (this.config.enabled && this.isEnabled(level)) {
+    if (this.config.enabled && this.logLevelIsEnabled(level)) {
       if (this.config.browserOnly) {
         console.log(message, { ...metadata, level });
       } else {
