@@ -61,7 +61,6 @@ describe('Form Metadata Validation', () => {
 
     const errors = validateFormMetadata(sampleForm, usageContext);
 
-    console.log(errors);
     expect(errors).toEqual({
       innsending: 'Du må velge innsendingstype',
       ettersending: 'Du må velge innsendingstype for ettersending',
