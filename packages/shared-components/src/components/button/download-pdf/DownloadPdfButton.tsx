@@ -37,7 +37,7 @@ const DownloadPdfButton = ({
         />
         <input type="text" name="language" value={currentLanguage} readOnly={true} />
       </form>
-      <div className="mb">
+      <div className="mb-4">
         <input
           form={form.path}
           className="navds-button navds-button--primary navds-body-short font-bold"
