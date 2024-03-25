@@ -20,6 +20,9 @@ interface HtmlAsJsonElement {
 
 const isHtmlString = (text: string) => /<[^>]*>/.test(text);
 
+const getChild = (htmlAsJson: HtmlAsJsonElement | HtmlAsJsonTextElement | undefined, index: number) =>
+  htmlAsJson?.type === 'Element' && htmlAsJson.children.length > index ? htmlAsJson.children[index] : undefined;
+
 const htmlString2Json = (htmlString: string, skipConversionWithin: AcceptedTag[] = []): HtmlAsJsonElement => {
   const div = document.createElement('div');
   div.innerHTML = htmlString;
@@ -220,5 +223,5 @@ const htmlNode2MarkDown = (node: Element | ChildNode): string => {
   return '';
 };
 
-export { htmlString2Json, isHtmlString, json2HtmlString, markDown2Json };
+export { getChild, htmlString2Json, isHtmlString, json2HtmlString, markDown2Json };
 export type { HtmlAsJsonElement, HtmlAsJsonTextElement };

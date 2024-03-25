@@ -1,4 +1,9 @@
-import { HtmlAsJsonElement, htmlUtils, NavFormioJs } from '@navikt/skjemadigitalisering-shared-components';
+import {
+  HtmlAsJsonElement,
+  HtmlAsJsonTextElement,
+  htmlUtils,
+  NavFormioJs,
+} from '@navikt/skjemadigitalisering-shared-components';
 
 import {
   Component,
@@ -168,7 +173,7 @@ const textObject = (
   };
 };
 
-const getFormTexts = (form?: NavFormType, withInputType = false) => {
+const getFormTexts = (form?: NavFormType, withInputType = false): TextObjectType[] => {
   if (!form) {
     return [];
   }
@@ -205,26 +210,103 @@ const escapeQuote = (text?: string) => {
 
 const sanitizeForCsv = (text?: string) => escapeQuote(removeLineBreaks(text));
 
+const createTranslationsTextRow = (text: string, translations: FormioTranslationMap, order: string, type = 'tekst') => {
+  return Object.entries(translations).reduce(
+    (prevFormRowObject, [languageCode, currentTranslations]) => {
+      const translationObject = currentTranslations.translations[text];
+      if (!translationObject || !translationObject.value) {
+        return prevFormRowObject;
+      }
+      const sanitizedTranslation = sanitizeForCsv(translationObject.value)!;
+      const translation =
+        translationObject.scope === 'global' ? sanitizedTranslation.concat(' (Global Tekst)') : sanitizedTranslation;
+      return {
+        ...prevFormRowObject,
+        [languageCode]: translation,
+      };
+    },
+    { type, order, text: sanitizeForCsv(text)! },
+  );
+};
+
+const getTranslationsForChild = (
+  translations: { [lang: string]: { translations: { value: HtmlAsJsonElement | HtmlAsJsonTextElement | undefined } } },
+  childIndex: number,
+) =>
+  Object.entries(translations ?? {}).reduce(
+    (acc, [lang, translation]) => ({
+      ...acc,
+      [lang]: { translations: { value: htmlUtils.getChild(translation.translations.value, childIndex) } },
+    }),
+    {},
+  );
+
+const createTranslationsHtmlRows = (
+  htmlElementAsJson: HtmlAsJsonElement | HtmlAsJsonTextElement,
+  translations: { [lang: string]: { translations: { value: HtmlAsJsonElement | HtmlAsJsonTextElement | undefined } } },
+  order: string,
+  htmlOrder: number = 0,
+) => {
+  if (htmlElementAsJson.type === 'TextElement' && htmlElementAsJson.textContent) {
+    const textTranslations = Object.entries(translations).reduce(
+      (acc, [lang, translation]) => ({
+        ...acc,
+        [lang]: {
+          translations: {
+            [htmlElementAsJson.textContent!]: {
+              value:
+                translation.translations.value?.type === 'TextElement'
+                  ? translation.translations.value.textContent
+                  : '',
+            },
+          },
+        },
+      }),
+      {},
+    );
+    return [
+      createTranslationsTextRow(
+        htmlElementAsJson.textContent,
+        textTranslations,
+        `${order}-${String(++htmlOrder).padStart(3, '0')}`,
+        'html',
+      ),
+    ];
+  } else if (htmlElementAsJson.type === 'Element') {
+    return htmlElementAsJson.children.flatMap((child, index) => {
+      const rows = createTranslationsHtmlRows(child, getTranslationsForChild(translations, index), order, htmlOrder);
+      htmlOrder += rows.length;
+      return rows;
+    });
+  }
+};
+
 const getTextsAndTranslationsForForm = (form: NavFormType, translations: FormioTranslationMap): CsvRow[] => {
   const textComponents = getFormTexts(form, false);
-  return textComponents.map((textComponent) => {
-    return Object.entries(translations).reduce(
-      (prevFormRowObject, [languageCode, currentTranslations]) => {
-        const translationObject = currentTranslations.translations[textComponent.text];
-        if (!translationObject || !translationObject.value) {
-          return prevFormRowObject;
+  let textIndex = 0;
+  const data = textComponents.flatMap((textComponent) => {
+    if (textComponent.htmlElementAsJson) {
+      const htmlTranslations = Object.entries(translations).reduce((acc, [lang, translation]) => {
+        const translationValue = translation.translations[textComponent.text]?.value ?? '';
+        if (!htmlUtils.isHtmlString(translationValue)) {
+          return acc;
         }
-        const sanitizedTranslation = sanitizeForCsv(translationObject.value)!;
-        const translation =
-          translationObject.scope === 'global' ? sanitizedTranslation.concat(' (Global Tekst)') : sanitizedTranslation;
+        const translationAsJson = htmlUtils.htmlString2Json(translationValue, ['P', 'H3', 'LI']);
         return {
-          ...prevFormRowObject,
-          [languageCode]: translation,
+          ...acc,
+          [lang]: { translations: { ...translation.translations[textComponent.text], value: translationAsJson } },
         };
-      },
-      { text: sanitizeForCsv(textComponent.text)! },
-    );
+      }, {});
+      return createTranslationsHtmlRows(
+        textComponent.htmlElementAsJson,
+        htmlTranslations,
+        `${++textIndex}`.padStart(3, '0'),
+      );
+    } else {
+      return createTranslationsTextRow(textComponent.text, translations, `${++textIndex}`.padStart(3, '0'));
+    }
   });
+  return data;
 };
 
 const getTextsAndTranslationsHeaders = (translations: FormioTranslationMap) => {
@@ -238,7 +320,11 @@ const getTextsAndTranslationsHeaders = (translations: FormioTranslationMap) => {
         },
       ];
     },
-    [{ label: 'Skjematekster', key: 'text' }],
+    [
+      { label: 'Type', key: 'type' },
+      { label: 'Rekkefølge', key: 'order' },
+      { label: 'Skjematekster', key: 'text' },
+    ],
   );
 };
 

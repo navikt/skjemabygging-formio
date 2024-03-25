@@ -1,4 +1,5 @@
 import {
+  getChild,
   HtmlAsJsonElement,
   HtmlAsJsonTextElement,
   htmlString2Json,
@@ -9,6 +10,7 @@ import {
 
 const htmlUtils = {
   isHtmlString,
+  getChild,
   htmlString2Json,
   json2HtmlString,
   markDown2Json,
