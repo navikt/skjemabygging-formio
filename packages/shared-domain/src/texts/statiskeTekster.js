@@ -103,7 +103,7 @@ export const statiske = {
       'Hvis du velger digital innsending må du laste ned skjemaet i neste steg og laste det opp igjen etter innlogging.',
   },
   prepareLetterPage: {
-    subTitle: 'Innsending/Send til NAV',
+    subTitle: 'Søknaden er ikke sendt ennå',
     chooseEntity: 'Velg hvilken NAV-enhet som skal motta innsendingen',
     selectEntityDefault: 'Velg enhet',
     entityNotSelectedError: 'Førsteside kan ikke genereres før du har valgt enhet',
