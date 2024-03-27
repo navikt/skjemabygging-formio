@@ -1,5 +1,5 @@
 import { PlusIcon, XMarkIcon } from '@navikt/aksel-icons';
-import { Alert, Box, Button, HStack, Heading, VStack } from '@navikt/ds-react';
+import { Alert, Box, Button, HStack, Heading, HelpText, VStack } from '@navikt/ds-react';
 import Divider from '@navikt/ds-react/esm/dropdown/Menu/Divider';
 import {
   HtmlAsJsonElement,
@@ -22,6 +22,10 @@ const useStyles = makeStyles({
   outerBox: {
     marginBottom: '1rem',
     paddingBottom: 'var(--a-spacing-4)',
+  },
+  markdownExample: {
+    display: 'grid',
+    gridTemplateColumns: '1fr 4fr',
   },
   divider: {
     border: '1px solid var(--a-border-divider)',
@@ -98,7 +102,29 @@ const TranslationFormHtmlSection = ({
         borderColor="border-default"
         borderWidth="2"
       >
-        <div dangerouslySetInnerHTML={{ __html: text }} />
+        <HStack justify="space-between" wrap={false}>
+          <div dangerouslySetInnerHTML={{ __html: text }} />
+          <HelpText title="Hjelp til bruk av markdown" placement="bottom">
+            <p>Oversettelser av html bruker markdown til lenker og fet skrift.</p>
+            Lenker skrives med klammer rundt lenketeksten etterfulgt av en url omgitt av parenteser
+            <Box className="mb-4" padding="4" background="surface-default" borderRadius="large">
+              <div className={styles.markdownExample}>
+                Eksempel: <div>[lenketekst til Nav](https://www.nav.no)</div>
+                Resultat: <a href={'https://www.nav.no'}>lenketekst til Nav</a>
+              </div>
+            </Box>
+            Fet skrift markeres med to stjerner (**) før og etter
+            <Box padding="4" background="surface-default" borderRadius="large">
+              <div className={styles.markdownExample}>
+                Eksempel: <div>Vanlig tekst etterfulgt av **fet tekst**</div>
+                Resultat:
+                <div>
+                  Vanlig tekst etterfulgt av <strong>fet tekst</strong>
+                </div>
+              </div>
+            </Box>
+          </HelpText>
+        </HStack>
         <Divider />
         {translationIsMissing && (
           <VStack gap="4" align="start">
