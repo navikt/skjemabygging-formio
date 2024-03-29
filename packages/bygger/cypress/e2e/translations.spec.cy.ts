@@ -113,10 +113,7 @@ describe('Translations', () => {
       .within(() => {
         cy.findByRole('textbox', { name: fieldLabel }).focus();
         cy.findByRole('textbox', { name: fieldLabel }).clear();
-        cy.findByRole('textbox', { name: fieldLabel }).type(
-          newValue,
-          // { force: true },
-        );
+        cy.findByRole('textbox', { name: fieldLabel }).type(newValue);
         cy.findByRole('textbox', { name: fieldLabel }).blur();
       });
   };
@@ -187,7 +184,8 @@ describe('Translations', () => {
             'be.visible',
           );
           cy.findAllByRole('textbox').should('have.length', 0);
-          cy.findAllByRole('button').should('have.length', 1);
+          cy.findAllByRole('button').should('have.length', 2);
+          cy.findAllByRole('button', { name: 'Bruk eksisterende oversettelse' }).should('have.length', 0);
           cy.findByRole('button', { name: 'Start ny oversettelse' }).click();
         });
       cy.findByRole('button', { name: 'Lagre' }).click();
