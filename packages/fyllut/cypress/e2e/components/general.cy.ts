@@ -71,7 +71,7 @@ describe('React components', () => {
 
         cy.findByRole('link', { name: TEXTS.grensesnitt.moveForward }).click();
 
-        cy.findByRole('heading', { name: 'Innsending/Send til NAV' }).should('exist');
+        cy.findByRole('heading', { name: TEXTS.statiske.prepareLetterPage.subTitle }).should('exist');
 
         cy.findByRole('link', { name: TEXTS.grensesnitt.goBack }).click();
 
