@@ -21,5 +21,9 @@ jobs:
           scope: '@navikt'
       - name: 'Install dependencies'
         run: yarn
+      - name: set timezone
+        uses: szenius/set-timezone@v1.2
+        with:
+          timezoneLinux: 'Europe/Oslo'
       - name: 'Test with coverage report'
         run: yarn test:coverage
