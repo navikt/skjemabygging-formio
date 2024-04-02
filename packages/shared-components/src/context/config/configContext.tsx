@@ -1,6 +1,6 @@
-import { SubmissionMethod } from '@navikt/skjemadigitalisering-shared-domain';
+import { FrontendLoggerConfigType, SubmissionMethod } from '@navikt/skjemadigitalisering-shared-domain';
 import React, { useContext, useState } from 'react';
-import FrontendLogger, { LoggerConfig } from '../../api/frontend-logger/FrontendLogger';
+import FrontendLogger from '../../api/frontend-logger/FrontendLogger';
 import baseHttp from '../../api/util/http/http';
 
 type FeatureTogglesMap = {
@@ -40,7 +40,7 @@ function AppConfigProvider({
   http = baseHttp,
   diffOn = true,
 }: AppConfigProviderProps) {
-  const logger = new FrontendLogger(http!, baseUrl, config?.loggerConfig as LoggerConfig);
+  const logger = new FrontendLogger(http!, baseUrl, config?.loggerConfig as FrontendLoggerConfigType);
   const [internalDiffOn, setDiffOn] = useState<boolean>(diffOn!);
   return (
     <AppConfigContext.Provider
