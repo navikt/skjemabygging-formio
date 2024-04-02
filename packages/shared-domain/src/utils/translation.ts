@@ -26,7 +26,7 @@ const injectParams = (
 ) => {
   if (template && params) {
     return template.replace(
-      /{{2}([^{}]*)}{2}/g,
+      /{{2}([^{}]+)}{2}/g,
       (match, $1) =>
         translateWithTextReplacements({ originalText: params[$1], translations, currentLanguage }) || match,
     );
