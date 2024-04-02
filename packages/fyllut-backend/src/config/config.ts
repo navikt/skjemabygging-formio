@@ -1,16 +1,8 @@
-import { featureUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { FrontendLoggerConfigType, configUtils, featureUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import dotenv from 'dotenv';
 import { logger } from '../logger';
 import { NaisCluster } from './nais-cluster.js';
-import {
-  AmplitudeConfig,
-  ConfigType,
-  DefaultConfig,
-  FrontendLoggerConfigType,
-  IdportenConfig,
-  SendInnConfig,
-  TokenxConfig,
-} from './types';
+import { AmplitudeConfig, ConfigType, DefaultConfig, IdportenConfig, SendInnConfig, TokenxConfig } from './types';
 
 const { DOTENV_FILE } = process.env;
 if (DOTENV_FILE) {
@@ -31,22 +23,7 @@ const amplitude: AmplitudeConfig = {
   apiEndpoint: process.env.AMPLITUDE_API_ENDPOINT ?? '',
 };
 
-const loadJsonFromEnv = (envName, defaultValue = {}) => {
-  try {
-    const value = process.env[envName];
-    return value ? JSON.parse(value) : defaultValue;
-  } catch (error) {
-    logger.warn(`Failed trying to load json from env '${envName}'`, error);
-  }
-  return defaultValue;
-};
-
-const frontendLoggerConfigFromEnv = loadJsonFromEnv('FYLLUT_FRONTEND_LOGCONFIG');
-const frontendLoggerConfig: FrontendLoggerConfigType = {
-  enabled: frontendLoggerConfigFromEnv?.enabled ?? true,
-  logLevel: frontendLoggerConfigFromEnv?.logLevel ?? 'info',
-  browserOnly: frontendLoggerConfigFromEnv?.browserOnly ?? false,
-};
+const frontendLoggerConfig: FrontendLoggerConfigType = configUtils.loadJsonFromEnv('FYLLUT_FRONTEND_LOGCONFIG');
 
 const idporten: IdportenConfig = {
   idportenClientId: process.env.IDPORTEN_CLIENT_ID!,

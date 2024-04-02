@@ -16,6 +16,7 @@ const config = (req: ByggerRequest, res: Response) => {
     isDevelopment: appConfig.isDevelopment,
     featureToggles: appConfig.featureToggles,
     formioRoleIds: appConfig.formio.roleIds,
+    loggerConfig: appConfig.frontendLoggerConfig,
     user,
   });
 };

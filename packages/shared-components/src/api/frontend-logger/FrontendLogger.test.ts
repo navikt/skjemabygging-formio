@@ -71,5 +71,21 @@ describe('FrontendLogger', () => {
       expect(consoleLogMock).toHaveBeenCalledOnce();
       expect(consoleLogMock).toHaveBeenNthCalledWith(1, 'Debug message', { debug: '1', level: 'debug' });
     });
+
+    it('respects config flag enabled=false', async () => {
+      const logger = createLogger({ enabled: false, browserOnly: true, logLevel: 'debug' });
+      await logger._trace('Trace message', { trace: '1' });
+      await logger._debug('Debug message', { debug: '1' });
+      expect(consoleLogMock).toHaveBeenCalledTimes(0);
+    });
+
+    it('defaults to enabled=true and log level info', async () => {
+      const logger = createLogger({ browserOnly: true });
+      await logger._trace('Trace message', { trace: '1' });
+      await logger._debug('Debug message', { debug: '1' });
+      await logger._info('Info message', { info: '1' });
+      expect(consoleLogMock).toHaveBeenCalledOnce();
+      expect(consoleLogMock).toHaveBeenNthCalledWith(1, 'Info message', { info: '1', level: 'info' });
+    });
   });
 });

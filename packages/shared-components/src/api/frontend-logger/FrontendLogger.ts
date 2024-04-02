@@ -17,10 +17,9 @@ class FrontendLogger {
     this.http = http;
     this.baseUrl = baseUrl;
     this.config = {
-      browserOnly: false,
-      logLevel: 'info',
-      enabled: true,
-      ...config,
+      browserOnly: config.browserOnly ?? false,
+      logLevel: config.logLevel || 'info',
+      enabled: config.enabled ?? true,
     };
     this.logLevelIsEnabled = loggingUtils.logLevelIsEnabled(this.config.logLevel as LogLevel);
   }

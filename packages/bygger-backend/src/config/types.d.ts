@@ -1,3 +1,5 @@
+import { FrontendLoggerConfigType } from '@navikt/skjemadigitalisering-shared-domain';
+
 export type AzureConfig = {
   openidTokenEndpoint: string;
   openidConfigJwksUri: string;
@@ -61,5 +63,6 @@ export type ConfigType = {
   isProduction: boolean;
   isDevelopment: boolean;
   featureToggles: { [key: string]: boolean };
+  frontendLoggerConfig: FrontendLoggerConfigType;
   naisClusterName?: 'dev-gcp' | 'prod-gcp';
 };
