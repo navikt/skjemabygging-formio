@@ -17,12 +17,12 @@
     "cypress:open": "cypress open"
   },
   "dependencies": {
-    "@navikt/ds-css": "^5.17.4",
+    "@navikt/ds-css": "^6.3.4",
     "@navikt/ds-icons": "^3.4.3",
-    "@navikt/ds-react": "^5.17.4",
+    "@navikt/ds-react": "^6.3.4",
     "@navikt/skjemadigitalisering-shared-components": "1.0.0",
     "@navikt/skjemadigitalisering-shared-domain": "1.0.0",
-    "axe-core": "^4.8.4",
+    "axe-core": "^4.9.0",
     "classnames": "^2.5.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

@@ -1,6 +1,6 @@
 import { SubmissionMethod } from '@navikt/skjemadigitalisering-shared-domain';
 import React, { useContext, useState } from 'react';
-import FrontendLogger from '../../api/frontend-logger/FrontendLogger';
+import FrontendLogger, { LoggerConfig } from '../../api/frontend-logger/FrontendLogger';
 import baseHttp from '../../api/util/http/http';
 
 type FeatureTogglesMap = {
@@ -24,7 +24,6 @@ interface AppConfigContextType {
 
 type AppConfigProviderProps = {
   children: React.ReactNode;
-  enableFrontendLogger?: boolean;
 } & AppConfigContextType;
 
 const AppConfigContext = React.createContext<AppConfigContextType>({});
@@ -39,10 +38,9 @@ function AppConfigProvider({
   app,
   config,
   http = baseHttp,
-  enableFrontendLogger = false,
   diffOn = true,
 }: AppConfigProviderProps) {
-  const logger = new FrontendLogger(http!, baseUrl, enableFrontendLogger);
+  const logger = new FrontendLogger(http!, baseUrl, config?.loggerConfig as LoggerConfig);
   const [internalDiffOn, setDiffOn] = useState<boolean>(diffOn!);
   return (
     <AppConfigContext.Provider

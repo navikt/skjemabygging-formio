@@ -1,4 +1,4 @@
-import { featureUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { configUtils, featureUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import dotenv from 'dotenv';
 import {
   devAzure,
@@ -88,6 +88,7 @@ const config: ConfigType = {
   isDevelopment: nodeEnv === 'development',
   featureToggles: featureUtils.toFeatureToggles(env('ENABLED_FEATURES', devEnabledFeatures)),
   naisClusterName: env('NAIS_CLUSTER_NAME') as 'dev-gcp' | 'prod-gcp' | undefined,
+  frontendLoggerConfig: configUtils.loadJsonFromEnv('BYGGER_FRONTEND_LOGCONFIG'),
 };
 
 export default config;

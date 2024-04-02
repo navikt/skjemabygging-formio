@@ -1,6 +1,7 @@
 import { AttachmentSettingValues, AttachmentValue } from './attachment';
 import { ComponentError } from './component';
-import type { ConfigType } from './config';
+import configUtils from './config';
+import type { ConfigType } from './config/types';
 import { Enhet, Enhetstype, supportedEnhetstyper } from './enhet';
 import {
   Component,
@@ -44,7 +45,7 @@ import type {
   TranslationTag,
 } from './languages/types';
 import loggingUtils from './logging';
-import type { LogLevel } from './logging/types';
+import type { FrontendLoggerConfigType, LogLevel } from './logging/types';
 import migrationUtils, { MigrationLevel } from './migration';
 import { Operator } from './migration/operator';
 import type { Mottaksadresse, MottaksadresseData } from './mottaksadresse';
@@ -83,6 +84,7 @@ export {
   MockedComponentObjectForTest,
   PrefillType,
   TEXTS,
+  configUtils,
   dateUtils,
   featureUtils,
   formDiffingTool,
@@ -128,6 +130,7 @@ export type {
   FormioTranslationPayload,
   FormsResponseForm,
   ForstesideRequestBody,
+  FrontendLoggerConfigType,
   FyllutState,
   GlobalTranslationMap,
   GlobalTranslationsResourceContent,

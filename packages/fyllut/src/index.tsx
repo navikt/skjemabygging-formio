@@ -38,7 +38,6 @@ const renderReact = (dokumentInnsendingBaseURL, config) => {
           app="fyllut"
           config={config}
           http={httpFyllut}
-          enableFrontendLogger
         >
           {config.isDelingslenke && <ConfirmDelingslenkeModal />}
           <App />

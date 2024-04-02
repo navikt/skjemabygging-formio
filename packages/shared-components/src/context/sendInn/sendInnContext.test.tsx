@@ -47,7 +47,7 @@ describe('sendInnContext', () => {
           featureToggles={{}}
           http={mockHttp as unknown as typeof http}
           baseUrl={'http://test.example.no'}
-          config={{ isTest: true }}
+          config={{ isTest: true, loggerConfig: { enabled: false } }}
         >
           <MemoryRouter>
             <SendInnProvider
