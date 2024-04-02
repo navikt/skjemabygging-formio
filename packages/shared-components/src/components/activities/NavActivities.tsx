@@ -158,9 +158,9 @@ const NavActivities = forwardRef<HTMLFieldSetElement, Props>((props: Props, ref)
       return <Skeleton variant="rounded" width="100%" height={150} />;
     } else if (activitySelections.length === 1 && props.shouldAutoSelectSingleActivity) {
       return <></>;
-    } else if (activitySelections.length > 0 && !loading) {
+    } else if (activitySelections.length > 0) {
       return renderRadioGroup();
-    } else if (activitySelections.length === 0 && props.defaultActivity && !loading) {
+    } else if (props.defaultActivity) {
       return renderCheckbox();
     }
   };
