@@ -91,8 +91,6 @@ class DrivingList extends BaseComponent {
       if (!isValidParking(date.parking)) {
         const message = this.t(TEXTS.validering.validParkingExpenses, { dato: dateUtils.toLocaleDate(date.date) });
         this.addError(message, `dates:${date.date}:parking`);
-      } else if (Number(date.parking) > 100) {
-        this.addError(this.t(TEXTS.validering.parkingExpensesAboveHundred), `dates:${date.date}:parking`);
       }
     });
 
