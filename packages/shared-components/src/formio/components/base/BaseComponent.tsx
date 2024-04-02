@@ -220,7 +220,7 @@ class BaseComponent extends FormioReactComponent {
   /**
    * Used to set focus when clicking error summary, and when restoring focus after rerender.
    */
-  focus(focusData?: any) {
+  focus(focusData: any = {}) {
     this.reactReady.then(() => {
       const { elementId } = focusData;
       if (elementId) {
