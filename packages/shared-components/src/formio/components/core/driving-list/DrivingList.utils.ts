@@ -1,13 +1,5 @@
-import {
-  AktivitetPeriode,
-  DrivingListPeriod,
-  DrivingListSubmission,
-  TEXTS,
-  dateUtils,
-} from '@navikt/skjemadigitalisering-shared-domain';
+import { AktivitetPeriode, DrivingListSubmission, TEXTS, dateUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { TFunction } from 'i18next';
-import { DateTime } from 'luxon';
-import { v4 as uuidv4 } from 'uuid';
 
 export type DrivingListMetadataId = (typeof metadata)[number]['id'];
 export type DrivingListErrorType = 'required';
@@ -58,34 +50,6 @@ export const toWeekdayAndDate = (date: Date, locale?: string) => {
   return dateUtils.toWeekdayAndDate(date.toString(), locale);
 };
 
-export const generatePeriods = (date?: string, numberOfPeriods: number = 1): DrivingListPeriod[] => {
-  if (!date) return [];
-
-  const periods: DrivingListPeriod[] = [];
-  const today = DateTime.now();
-
-  for (let i = 0; i < numberOfPeriods; i++) {
-    let startDate = DateTime.fromISO(date);
-    let endDate = DateTime.fromISO(date);
-
-    startDate = startDate.startOf('week').plus({ weeks: i });
-    endDate = endDate
-      .startOf('week')
-      .plus({ weeks: i + 1 })
-      .minus({ days: 1 });
-
-    if (i === 0) {
-      startDate = DateTime.fromISO(date);
-    } else if (endDate > today) {
-      endDate = today;
-    }
-
-    periods.push({ periodFrom: startDate.toJSDate(), periodTo: endDate.toJSDate(), id: uuidv4() });
-  }
-
-  return periods;
-};
-
 export const isValidParking = (value: string) => {
   if (value === '') return true;
   return /^\d+$/.test(value);
@@ -96,14 +60,17 @@ export const allFieldsForPeriodsAreSet = (values?: DrivingListSubmission) => {
 };
 
 export const showAddButton = (values?: DrivingListSubmission) => {
-  if (!values) return false;
-  const lastPeriod = values?.periods?.reduce((prev, current) =>
-    DateTime.fromJSDate(prev.periodTo) > DateTime.fromJSDate(current.periodTo) ? prev : current,
+  if (!values || !values.periods || values.periods.length === 0) return false;
+
+  const lastPeriod = values.periods.reduce((prev, current) =>
+    new Date(prev.periodTo) > new Date(current.periodTo) ? prev : current,
   );
+
   if (!lastPeriod) return false;
 
-  const lastPeriodDate = DateTime.fromJSDate(lastPeriod.periodTo).startOf('day');
-  const today = DateTime.local().startOf('day');
+  const lastPeriodDate = new Date(lastPeriod.periodTo).setHours(0, 0, 0, 0);
+
+  const today = new Date().setHours(0, 0, 0, 0);
 
   return lastPeriodDate < today;
 };
@@ -115,8 +82,8 @@ export const showRemoveButton = (values?: DrivingListSubmission) => {
 export const toDate = (values?: DrivingListSubmission) => {
   if (!values) return;
 
-  let date = DateTime.now();
-  date = date.minus({ week: 1 }).plus({ days: 1 });
+  const date = new Date();
+  date.setDate(date.getDate() - 6);
 
-  return date.toJSDate();
+  return date;
 };

@@ -1,10 +1,9 @@
 import { Accordion, Button, Heading, Radio, RadioGroup } from '@navikt/ds-react';
-import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { TEXTS, dateUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { useCallback, useEffect, useMemo } from 'react';
 import {
   allFieldsForPeriodsAreSet,
   drivingListMetadata,
-  generatePeriods,
   showAddButton,
   showRemoveButton,
   toDate,
@@ -34,7 +33,7 @@ const DrivingListFromDates = () => {
   // Generate periods when coming from summary page
   const generateInitialPeriods = useCallback(() => {
     if (allPeriodFieldsSet) {
-      const periods = generatePeriods(values?.selectedDate, values?.periods?.length) ?? [];
+      const periods = dateUtils.generateWeeklyPeriods(values?.selectedDate, values?.periods?.length) ?? [];
       updateValues({ periods });
     }
   }, [allPeriodFieldsSet]);
@@ -47,7 +46,7 @@ const DrivingListFromDates = () => {
     if (values?.selectedDate === date) return;
     if (!date) return;
 
-    const periods = generatePeriods(date) ?? [];
+    const periods = dateUtils.generateWeeklyPeriods(date) ?? [];
     updateValues({ selectedDate: date, periods, dates: [] });
   };
 
@@ -70,14 +69,14 @@ const DrivingListFromDates = () => {
 
   const addPeriod = () => {
     if (values?.selectedDate) {
-      const periods = generatePeriods(values.selectedDate, (values.periods?.length ?? 0) + 1);
+      const periods = dateUtils.generateWeeklyPeriods(values.selectedDate, (values.periods?.length ?? 0) + 1);
       updateValues({ periods });
     }
   };
 
   const removePeriod = () => {
     if (values?.selectedDate && values) {
-      const periods = generatePeriods(values?.selectedDate, (values?.periods?.length ?? 0) - 1);
+      const periods = dateUtils.generateWeeklyPeriods(values?.selectedDate, (values?.periods?.length ?? 0) - 1);
 
       // Filter out dates that fall within the removed periods
       const filteredDates = values?.dates?.filter((dateObj) => {

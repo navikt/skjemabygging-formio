@@ -1,4 +1,12 @@
+import { DateTime } from 'luxon';
 import moment from 'moment';
+import { v4 as uuidv4 } from 'uuid';
+
+interface WeeklyPeriod {
+  periodFrom: Date;
+  periodTo: Date;
+  id: string;
+}
 
 const dateAndTimeFormat: Intl.DateTimeFormatOptions = {
   day: '2-digit',
@@ -49,6 +57,34 @@ const getDatesInRange = (startDate: Date, endDate: Date) => {
   return dates;
 };
 
+export const generateWeeklyPeriods = (date?: string, numberOfPeriods: number = 1): WeeklyPeriod[] => {
+  if (!date) return [];
+
+  const periods: WeeklyPeriod[] = [];
+  const today = DateTime.now();
+
+  for (let i = 0; i < numberOfPeriods; i++) {
+    let startDate = DateTime.fromISO(date);
+    let endDate = DateTime.fromISO(date);
+
+    startDate = startDate.startOf('week').plus({ weeks: i });
+    endDate = endDate
+      .startOf('week')
+      .plus({ weeks: i + 1 })
+      .minus({ days: 1 });
+
+    if (i === 0) {
+      startDate = DateTime.fromISO(date);
+    } else if (endDate > today) {
+      endDate = today;
+    }
+
+    periods.push({ periodFrom: startDate.toJSDate(), periodTo: endDate.toJSDate(), id: uuidv4() });
+  }
+
+  return periods;
+};
+
 const dateUtils = {
   getIso8601String,
   toLocaleDateAndTime,
@@ -56,6 +92,7 @@ const dateUtils = {
   toWeekdayAndDate,
   getDatesInRange,
   toLocaleDateLongMonth,
+  generateWeeklyPeriods,
 };
 
 export default dateUtils;

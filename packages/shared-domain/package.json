@@ -25,6 +25,11 @@
   },
   "dependencies": {
     "formiojs": "4.18.0",
+    "luxon": "^3.4.4",
     "moment": "^2.30.1"
+  },
+  "devDependencies": {
+    "@types/luxon": "^3.4.2",
+    "@types/uuid": "^9.0.8"
   }
 }
