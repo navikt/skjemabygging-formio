@@ -46,9 +46,9 @@ describe('generatePeriods function', () => {
     const today = DateTime.now();
     const tenDaysAgo = today.minus({ days: 10 });
 
-    const result = generatePeriods(tenDaysAgo.toISODate(), 2);
+    const result = generatePeriods(tenDaysAgo.toISODate(), 3);
 
-    const lastPeriodTo = DateTime.fromJSDate(result[1].periodTo);
+    const lastPeriodTo = DateTime.fromJSDate(result[result.length - 1].periodTo);
 
     expect(lastPeriodTo.toISODate()).toEqual(today.toISODate());
   });
