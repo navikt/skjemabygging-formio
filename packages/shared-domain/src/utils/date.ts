@@ -75,7 +75,8 @@ export const generateWeeklyPeriods = (date?: string, numberOfPeriods: number = 1
 
     if (i === 0) {
       startDate = DateTime.fromISO(date);
-    } else if (endDate > today) {
+    }
+    if (endDate > today) {
       endDate = today;
     }
 

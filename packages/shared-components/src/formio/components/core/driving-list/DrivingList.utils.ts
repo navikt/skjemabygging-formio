@@ -80,12 +80,3 @@ export const showAddButton = (values?: DrivingListSubmission) => {
 export const showRemoveButton = (values?: DrivingListSubmission) => {
   return values?.periods?.length && values?.periods?.length > 1;
 };
-
-export const toDate = (values?: DrivingListSubmission) => {
-  if (!values) return;
-
-  const date = new Date();
-  date.setDate(date.getDate() - 6);
-
-  return date;
-};

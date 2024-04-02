@@ -6,7 +6,6 @@ import {
   drivingListMetadata,
   showAddButton,
   showRemoveButton,
-  toDate,
 } from '../../formio/components/core/driving-list/DrivingList.utils';
 import { useDrivingList } from '../../formio/components/core/driving-list/DrivingListContext';
 import makeStyles from '../../util/styles/jss/jss';
@@ -104,8 +103,8 @@ const DrivingListFromDates = () => {
           error={getComponentError('datePicker')}
           inputRef={(ref) => addRef(drivingListMetadata('datePicker').id, ref)}
           className={'mb'}
-          toDate={toDate(values)}
-          defaultMonth={toDate(values)}
+          toDate={new Date()}
+          defaultMonth={new Date()}
           description={t(drivingListMetadata('datePicker').description ?? '')}
         />
         <RadioGroup
