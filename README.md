@@ -78,6 +78,17 @@ Eksempelet over ville ført til et featureToggles-objekt som ser slik ut:
       enableDiff: false
     }
 
+## Frontend logger
+
+Både bygger og fyllut har støtte for å logge feil som skjer i frontend. Begge backends har et endepunkt
+`/api/log/(info|error)` som tar feilmeldinger fra frontend og logger de.
+
+I fyllut er det for øvrig mulig å konfigurere frontend logger til å kun logge i nettleserens konsoll, noe som kan være
+nyttig under debugging lokalt. Dette gjøres ved sette `{"browserOnly":true}` i miljøvariabel:
+
+    FYLLUT_FRONTEND_LOGCONFIG={"enabled":true,"logLevel":"trace","browserOnly":true}
+    BYGGER_FRONTEND_LOGCONFIG={"enabled":true,"logLevel":"debug","browserOnly":true}
+
 ## Kjøre Fyllut lokalt med mellomlagring
 
 Legg til feature toggle `mellomlagring` i `.env`-filen til fyllut for å skru på mellomlagring. For å kjøre lokalt med

@@ -1,4 +1,4 @@
-import { featureUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { FrontendLoggerConfigType, configUtils, featureUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import dotenv from 'dotenv';
 import { logger } from '../logger';
 import { NaisCluster } from './nais-cluster.js';
@@ -22,6 +22,8 @@ const tokenx: TokenxConfig = {
 const amplitude: AmplitudeConfig = {
   apiEndpoint: process.env.AMPLITUDE_API_ENDPOINT ?? '',
 };
+
+const frontendLoggerConfig: FrontendLoggerConfigType = configUtils.loadJsonFromEnv('FYLLUT_FRONTEND_LOGCONFIG');
 
 const idporten: IdportenConfig = {
   idportenClientId: process.env.IDPORTEN_CLIENT_ID!,
@@ -76,6 +78,7 @@ const localDevelopmentConfig: DefaultConfig = {
     idportenJwksUri: idporten.idportenJwksUri || 'https://test.idporten.no/jwks.json',
   },
   amplitude,
+  frontendLoggerConfig,
 };
 
 const defaultConfig: DefaultConfig = {
@@ -99,6 +102,7 @@ const defaultConfig: DefaultConfig = {
   sendInnConfig,
   idporten,
   amplitude,
+  frontendLoggerConfig,
 };
 
 const config: ConfigType = {
