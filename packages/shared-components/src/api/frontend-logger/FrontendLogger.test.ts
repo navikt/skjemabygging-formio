@@ -127,7 +127,7 @@ describe('FrontendLogger', () => {
       });
 
       it('message with other tag is ignored', async () => {
-        await logger._info('message', { tags: ['wizard'] });
+        await logger._info('message', { tags: ['focus'] });
         expect(consoleLogMock).toHaveBeenCalledTimes(0);
       });
 
