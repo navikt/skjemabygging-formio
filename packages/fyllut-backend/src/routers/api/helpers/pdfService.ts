@@ -37,7 +37,12 @@ export const createPdf = async (
   language: string,
 ) => {
   const translate = (text: string, textReplacements?: I18nTranslationReplacements) =>
-    translationUtils.translateWithTextReplacements({ translations, originalText: text, params: textReplacements });
+    translationUtils.translateWithTextReplacements({
+      translations,
+      originalText: text,
+      params: textReplacements,
+      currentLanguage: language,
+    });
 
   const html = createHtmlFromSubmission(form, submission, submissionMethod, translate, language);
   if (!html || Object.keys(html).length === 0) {

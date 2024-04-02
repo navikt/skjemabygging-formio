@@ -11,7 +11,8 @@ const translateWithTextReplacements = ({
   translations?: I18nTranslationMap;
   currentLanguage?: string;
 }): string => {
-  const currentTranslation = currentLanguage ? translations?.[currentLanguage] : translations;
+  const currentTranslation =
+    currentLanguage && translations?.[currentLanguage] ? translations?.[currentLanguage] : translations;
 
   return currentTranslation && currentTranslation[originalText]
     ? injectParams(currentTranslation[originalText], params, translations, currentLanguage)
@@ -24,7 +25,7 @@ const injectParams = (
   translations?: I18nTranslationMap,
   currentLanguage?: string,
 ) => {
-  if (template && params) {
+  if (template && params && typeof template === 'string') {
     return template.replace(
       /{{2}([^{}]+)}{2}/g,
       (match, $1) =>

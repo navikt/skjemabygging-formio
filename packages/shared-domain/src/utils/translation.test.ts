@@ -1,6 +1,5 @@
-import { translationUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import translationUtils from './translation';
 
-translationUtils;
 const translations = {
   singleReplacement: 'You must fill in: {{field1}}',
   multipleReplacement: 'You must fill in: {{field1}} and {{field2}}',
