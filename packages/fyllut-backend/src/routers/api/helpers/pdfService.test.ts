@@ -1,5 +1,6 @@
-import { translateWithTextReplacements } from './pdfService';
+import { translationUtils } from '@navikt/skjemadigitalisering-shared-domain';
 
+translationUtils;
 const translations = {
   singleReplacement: 'You must fill in: {{field1}}',
   multipleReplacement: 'You must fill in: {{field1}} and {{field2}}',
@@ -13,36 +14,50 @@ const textReplacements = {
 
 describe('translateWithTextReplacements function', () => {
   it('should return translated text with replacements', () => {
-    expect(translateWithTextReplacements(translations, 'singleReplacement', textReplacements)).toBe(
-      'You must fill in: replacedField',
-    );
+    expect(
+      translationUtils.translateWithTextReplacements({
+        translations,
+        originalText: 'singleReplacement',
+        params: textReplacements,
+      }),
+    ).toBe('You must fill in: replacedField');
   });
 
   it('should return translated text with no replacements', () => {
-    expect(translateWithTextReplacements(translations, 'noReplacement', textReplacements)).toBe('No replacements');
+    expect(
+      translationUtils.translateWithTextReplacements({
+        translations,
+        originalText: 'noReplacement',
+        params: textReplacements,
+      }),
+    ).toBe('No replacements');
   });
 
   it('should return original text if translation not found', () => {
-    expect(translateWithTextReplacements(translations, 'This text is not translated', textReplacements)).toBe(
-      'This text is not translated',
-    );
+    expect(
+      translationUtils.translateWithTextReplacements({
+        translations,
+        originalText: 'This text is not translated',
+        params: textReplacements,
+      }),
+    ).toBe('This text is not translated');
   });
 
   it('should handle multiple replacements in the same text', () => {
-    const translatedText = translateWithTextReplacements(
+    const translatedText = translationUtils.translateWithTextReplacements({
       translations,
-      'Replace {{field1}} and {{field2}}',
-      textReplacements,
-    );
+      originalText: 'Replace {{field1}} and {{field2}}',
+      params: textReplacements,
+    });
     expect(translatedText).toBe('Replace replacedField and anotherReplacedField');
   });
 
   it('should handle missing replacements gracefully', () => {
-    const translatedText = translateWithTextReplacements(
+    const translatedText = translationUtils.translateWithTextReplacements({
       translations,
-      'Replace {{field1}} and {{nonExistentField}}',
-      textReplacements,
-    );
+      originalText: 'Replace {{field1}} and {{nonExistentField}}',
+      params: textReplacements,
+    });
     expect(translatedText).toBe('Replace replacedField and {{nonExistentField}}');
   });
 
@@ -52,20 +67,24 @@ describe('translateWithTextReplacements function', () => {
       field2: 'anotherReplacedField',
       field3: 'unusedReplacement',
     };
-    expect(translateWithTextReplacements(translations, 'singleReplacement', extraReplacements)).toBe(
-      'You must fill in: replacedField',
-    );
+    expect(
+      translationUtils.translateWithTextReplacements({
+        translations,
+        originalText: 'singleReplacement',
+        params: extraReplacements,
+      }),
+    ).toBe('You must fill in: replacedField');
   });
 
   it('should replace all occurrences of the same placeholder', () => {
     const translationsWithRepeatedPlaceholder = {
       repeatedPlaceholder: 'Replace {{field1}} with {{field1}}',
     };
-    const translatedText = translateWithTextReplacements(
-      translationsWithRepeatedPlaceholder,
-      'repeatedPlaceholder',
-      textReplacements,
-    );
+    const translatedText = translationUtils.translateWithTextReplacements({
+      translations: translationsWithRepeatedPlaceholder,
+      originalText: 'repeatedPlaceholder',
+      params: textReplacements,
+    });
     expect(translatedText).toBe('Replace replacedField with replacedField');
   });
 });
