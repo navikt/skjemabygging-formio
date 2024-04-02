@@ -1,14 +1,16 @@
+import { FrontendLoggerConfigType } from '@navikt/skjemadigitalisering-shared-domain';
 import nock from 'nock';
 import { afterAll, beforeAll } from 'vitest';
 import http from '../util/http/http';
-import FrontendLogger, { LoggerConfig } from './FrontendLogger';
+import FrontendLogger from './FrontendLogger';
 
 const BASE_PATH = 'http://test.nav.no';
 const PATH_API_LOG_ERROR = '/api/log/error';
 const PATH_API_LOG_INFO = '/api/log/info';
 
 describe('FrontendLogger', () => {
-  const createLogger = (config: LoggerConfig = { enabled: true }) => new FrontendLogger(http, BASE_PATH, config);
+  const createLogger = (config: Partial<FrontendLoggerConfigType> = { enabled: true }) =>
+    new FrontendLogger(http, BASE_PATH, config);
   let originalConsoleLog;
   let consoleLogMock;
 
@@ -86,6 +88,53 @@ describe('FrontendLogger', () => {
       await logger._info('Info message', { info: '1' });
       expect(consoleLogMock).toHaveBeenCalledOnce();
       expect(consoleLogMock).toHaveBeenNthCalledWith(1, 'Info message', { info: '1', level: 'info' });
+    });
+  });
+
+  describe('config filterTags', () => {
+    describe('filterTags is empty array', () => {
+      let logger: FrontendLogger;
+
+      beforeEach(() => {
+        logger = createLogger({ enabled: true, browserOnly: true, filterTags: [] });
+      });
+
+      it('message with tag is logged', async () => {
+        await logger._info('message', { tags: ['component'] });
+        expect(consoleLogMock).toHaveBeenCalledOnce();
+        expect(consoleLogMock).toHaveBeenCalledWith('message', expect.anything());
+      });
+
+      it('message with no tag is logged', async () => {
+        await logger._info('message', {});
+        expect(consoleLogMock).toHaveBeenCalledOnce();
+        expect(consoleLogMock).toHaveBeenCalledWith('message', expect.anything());
+      });
+    });
+
+    describe('filterTags is not empty array', () => {
+      let logger: FrontendLogger;
+      const tag = 'component';
+
+      beforeEach(() => {
+        logger = createLogger({ enabled: true, browserOnly: true, filterTags: [tag] });
+      });
+
+      it('message with correct tag is logged', async () => {
+        await logger._info('message', { tags: [tag] });
+        expect(consoleLogMock).toHaveBeenCalledOnce();
+        expect(consoleLogMock).toHaveBeenCalledWith('message', expect.anything());
+      });
+
+      it('message with other tag is ignored', async () => {
+        await logger._info('message', { tags: ['wizard'] });
+        expect(consoleLogMock).toHaveBeenCalledTimes(0);
+      });
+
+      it('message with no tag is ignored', async () => {
+        await logger._info('message', {});
+        expect(consoleLogMock).toHaveBeenCalledTimes(0);
+      });
     });
   });
 });

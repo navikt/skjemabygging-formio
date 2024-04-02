@@ -1,3 +1,5 @@
+import { FrontendLoggerConfigType } from '../logging/types';
+
 export interface ConfigType {
   FEATURE_TOGGLES: string;
   NAIS_CLUSTER_NAME: string;
@@ -5,9 +7,5 @@ export interface ConfigType {
   isDevelopment: boolean;
   isLoggedIn: boolean;
   amplitudeApiEndpoint: string;
-  loggerConfig: {
-    enabled: boolean;
-    logLevel: number;
-    browserOnly: boolean;
-  };
+  loggerConfig: FrontendLoggerConfigType;
 }

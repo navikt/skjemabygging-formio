@@ -23,7 +23,8 @@ const amplitude: AmplitudeConfig = {
   apiEndpoint: process.env.AMPLITUDE_API_ENDPOINT ?? '',
 };
 
-const frontendLoggerConfig: FrontendLoggerConfigType = configUtils.loadJsonFromEnv('FYLLUT_FRONTEND_LOGCONFIG');
+const frontendLoggerConfig: Partial<FrontendLoggerConfigType> =
+  configUtils.loadJsonFromEnv('FYLLUT_FRONTEND_LOGCONFIG');
 
 const idporten: IdportenConfig = {
   idportenClientId: process.env.IDPORTEN_CLIENT_ID!,

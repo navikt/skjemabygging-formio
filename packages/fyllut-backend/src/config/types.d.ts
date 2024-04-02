@@ -52,7 +52,7 @@ export type DefaultConfig = {
   noFormValidation?: boolean;
   noDecorator?: boolean;
   amplitude: AmplitudeConfig;
-  frontendLoggerConfig: FrontendLoggerConfigType;
+  frontendLoggerConfig: Partial<FrontendLoggerConfigType>;
 };
 
 export type ConfigType = DefaultConfig & {

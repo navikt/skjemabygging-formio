@@ -2,7 +2,7 @@ import { ReactComponent } from '@formio/react';
 import { ComponentError } from '@navikt/skjemadigitalisering-shared-domain';
 import { createRoot } from 'react-dom/client';
 import Ready from '../../../util/form/ready';
-import createComponentLogger, { ComponentLogger } from './createComponentLogger';
+import { ComponentLogger, createComponentLogger } from './FormioReactComponent.utils';
 import { IReactComponent } from './index';
 
 class FormioReactComponent extends (ReactComponent as unknown as IReactComponent) {
@@ -21,8 +21,8 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
 
   get logger(): ComponentLogger {
     if (!this._logger) {
-      const prefix = `[${this.component!.navId} ${this.component!.type}] `;
-      this._logger = createComponentLogger(this.getAppConfig(), prefix);
+      const messagePrefix = `[${this.component!.navId} ${this.component!.type}] `;
+      this._logger = createComponentLogger(this.getAppConfig(), { messagePrefix, defaultTags: ['component'] });
     }
     return this._logger;
   }

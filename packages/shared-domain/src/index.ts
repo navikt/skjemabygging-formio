@@ -44,7 +44,7 @@ import type {
   TranslationTag,
 } from './languages/types';
 import loggingUtils from './logging';
-import type { FrontendLoggerConfigType, LogLevel } from './logging/types';
+import type { FrontendLoggerConfigType, LogContext, LogLevel, LogTag } from './logging/types';
 import migrationUtils, { MigrationLevel } from './migration';
 import { Operator } from './migration/operator';
 import type { Mottaksadresse, MottaksadresseData } from './mottaksadresse';
@@ -136,7 +136,9 @@ export type {
   InnsendingType,
   KjentBruker,
   Language,
+  LogContext,
   LogLevel,
+  LogTag,
   MellomlagringError,
   MigrationLevel,
   Mottaksadresse,
