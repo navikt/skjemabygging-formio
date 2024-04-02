@@ -311,14 +311,124 @@ describe('testGetAllTextsAndTypeForForm', () => {
       {
         text: 'Mer informasjon finner dere på Brønnøysundregistrenes nettside <a href= "https://www.brreg.no/bedrift/underenhet/" target="_blank">Underenhet (åpnes i ny fane)</a>.',
         type: 'textarea',
+        htmlElementAsJson: {
+          id: 'MerinformasjonfinnerderepåBrønnøysundregistrenesnettsideUnderenhet(åpnesinyfane).',
+          type: 'Element',
+          tagName: 'DIV',
+          attributes: [],
+          isWrapper: true,
+          children: [
+            {
+              id: 'MerinformasjonfinnerderepåBrønnøysundregistrenesnettside',
+              type: 'TextElement',
+              textContent: 'Mer informasjon finner dere på Brønnøysundregistrenes nettside ',
+            },
+            {
+              id: 'Underenhet(åpnesinyfane)',
+              type: 'Element',
+              tagName: 'A',
+              attributes: [
+                ['href', 'https://www.brreg.no/bedrift/underenhet/'],
+                ['target', '_blank'],
+              ],
+              isWrapper: false,
+              children: [
+                { id: 'Underenhet(åpnesinyfane)', type: 'TextElement', textContent: 'Underenhet (åpnes i ny fane)' },
+              ],
+            },
+            { id: '.', type: 'TextElement', textContent: '.' },
+          ],
+        },
       },
       { text: 'Alertstrip with content', type: 'text' },
       { text: 'show content in Pdf', type: 'text' },
       {
         text: '<h3>Eventuell utbetaling av AAP</h3> Du kan bare ha ett kontonummer registrert hos NAV. Du kan enkelt <a href="https://www.nav.no/soknader/nb/person/diverse/endre-opplysninger-om-bankkontonummer#papirsoknader" target="_blank"> endre hvilket kontonummer vi benytter (åpnes i ny fane)</a>. <br/>',
         type: 'textarea',
+        htmlElementAsJson: {
+          id: 'EventuellutbetalingavAAPDukanbarehaettkontonummerregistrerthosNAV.Dukanenkeltendrehvilketkontonummervibenytter(åpnesinyfane).',
+          type: 'Element',
+          tagName: 'DIV',
+          attributes: [],
+          isWrapper: true,
+          children: [
+            {
+              id: 'EventuellutbetalingavAAP',
+              type: 'Element',
+              tagName: 'H3',
+              attributes: [],
+              isWrapper: false,
+              children: [
+                {
+                  id: 'EventuellutbetalingavAAP',
+                  type: 'TextElement',
+                  textContent: 'Eventuell utbetaling av AAP',
+                  htmlContentAsJson: [
+                    { id: 'EventuellutbetalingavAAP', type: 'TextElement', textContent: 'Eventuell utbetaling av AAP' },
+                  ],
+                },
+              ],
+            },
+            {
+              id: 'DukanbarehaettkontonummerregistrerthosNAV.Dukanenkelt',
+              type: 'TextElement',
+              textContent: ' Du kan bare ha ett kontonummer registrert hos NAV. Du kan enkelt ',
+            },
+            {
+              id: 'endrehvilketkontonummervibenytter(åpnesinyfane)',
+              type: 'Element',
+              tagName: 'A',
+              attributes: [
+                [
+                  'href',
+                  'https://www.nav.no/soknader/nb/person/diverse/endre-opplysninger-om-bankkontonummer#papirsoknader',
+                ],
+                ['target', '_blank'],
+              ],
+              isWrapper: false,
+              children: [
+                {
+                  id: 'endrehvilketkontonummervibenytter(åpnesinyfane)',
+                  type: 'TextElement',
+                  textContent: ' endre hvilket kontonummer vi benytter (åpnes i ny fane)',
+                },
+              ],
+            },
+            { id: '.', type: 'TextElement', textContent: '. ' },
+            { id: '<br>', type: 'TextElement', textContent: '<br>' },
+          ],
+        },
       },
-      { text: '<h3>Eventuell utbetaling av AAP</h3>', type: 'text' },
+      {
+        text: '<h3>Eventuell utbetaling av AAP</h3>',
+        type: 'text',
+        htmlElementAsJson: {
+          id: 'EventuellutbetalingavAAP',
+          type: 'Element',
+          tagName: 'DIV',
+          attributes: [],
+          isWrapper: true,
+          children: [
+            {
+              id: 'EventuellutbetalingavAAP',
+              type: 'Element',
+              tagName: 'H3',
+              attributes: [],
+              isWrapper: false,
+              children: [
+                {
+                  id: 'EventuellutbetalingavAAP',
+                  type: 'TextElement',
+                  textContent: 'Eventuell utbetaling av AAP',
+                  htmlContentAsJson: [
+                    { id: 'EventuellutbetalingavAAP', type: 'TextElement', textContent: 'Eventuell utbetaling av AAP' },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      },
       { text: 'Eventuell utbetaling av AAP', type: 'text' },
     ]);
   });
@@ -501,11 +611,16 @@ describe('testGetTextsAndTranslationsForForm', () => {
   it('Test form with translations', () => {
     const actual = getTextsAndTranslationsForForm(form, translations);
     expect(actual).toEqual([
-      { text: 'test' },
-      { text: 'Introduksjon' },
-      { text: 'Ja', en: 'Yes (Global Tekst)' },
-      { text: 'Jeg', 'nn-NO': 'Eg' },
-      { text: '<p>Test linjeskift linux windows apple </p>', en: '<p>Test Line break linux windows apple </p>' },
+      { order: '001', type: 'tekst', text: 'test' },
+      { order: '002', type: 'tekst', text: 'Introduksjon' },
+      { order: '003', type: 'tekst', text: 'Ja', en: 'Yes (Global Tekst)' },
+      { order: '004', type: 'tekst', text: 'Jeg', 'nn-NO': 'Eg' },
+      {
+        order: '005-001',
+        type: 'html',
+        text: 'Test linjeskift linux windows apple ',
+        en: 'Test Line break linux windows apple ',
+      },
     ]);
   });
 });
@@ -550,32 +665,37 @@ describe('Skjema med globale oversettelser som inneholder linjeskift', () => {
   };
   it('fjerner linjeskift i tekster som skal eksporteres', () => {
     const eksport = getTextsAndTranslationsForForm(form, translations);
-    expect(eksport).toHaveLength(2);
+    console.log('** ** EKSPORT', JSON.stringify(eksport, null, 2));
+    expect(eksport).toHaveLength(6);
 
     expect(eksport[0].text).toBe('Veiledning');
     expect(eksport[0].en).toBe('Guidance (Global Tekst)');
     expect(eksport[0]['nn-NO']).toBe('Rettleiing (Global Tekst)');
 
-    expect(eksport[1].text).toBe(
-      'NAV sender svar. <br> Se <a href=""https://www.nav.no/person/"" target=""_blank"">link</a>.',
-    );
-    expect(eksport[1].en).toBe(
-      'NAV sends answers. <br> See <a href=""https://www.nav.no/person/"" target=""_blank"">link</a>. (Global Tekst)',
-    );
-    expect(eksport[1]['nn-NO']).toBe(
-      'NAV sender svar. <br> Sjå <a href=""https://www.nav.no/person/"" target=""_blank"">lenke</a>. (Global Tekst)',
-    );
+    expect([eksport[1].text, eksport[2].text, eksport[3].text]).toEqual(['NAV sender svar. ', '<br>', ' Se ']);
+    expect([eksport[1].en, eksport[2].en, eksport[3].en]).toEqual(['NAV sends answers. ', '<br>', ' See ']);
+    expect([eksport[1]['nn-NO'], eksport[2]['nn-NO'], eksport[3]['nn-NO']]).toEqual([
+      'NAV sender svar. ',
+      '<br>',
+      ' Sjå ',
+    ]);
   });
 });
 describe('testGetCSVfileHeaders', () => {
   it('Test headers with only origin form text', () => {
     const actual = getTextsAndTranslationsHeaders([] as FormioTranslationMap);
-    expect(actual).toEqual([{ key: 'text', label: 'Skjematekster' }]);
+    expect(actual).toEqual([
+      { key: 'type', label: 'Type' },
+      { key: 'order', label: 'Rekkefølge' },
+      { key: 'text', label: 'Skjematekster' },
+    ]);
   });
 
   it('Test headers with origin form text and language code', () => {
     const actual = getTextsAndTranslationsHeaders({ en: {}, 'nn-NO': {} } as FormioTranslationMap);
     expect(actual).toEqual([
+      { key: 'type', label: 'Type' },
+      { key: 'order', label: 'Rekkefølge' },
       { key: 'text', label: 'Skjematekster' },
       { key: 'en', label: 'EN' },
       { key: 'nn-NO', label: 'NN-NO' },
