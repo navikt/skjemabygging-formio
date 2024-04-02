@@ -42,6 +42,7 @@ describe('generateWeeklyPeriods function', () => {
 
   it('should have todays date as the last periodTo', () => {
     const today = new Date();
+    today.setHours(0, 0, 0, 0);
 
     const tenDaysAgo = new Date(today);
     tenDaysAgo.setDate(today.getDate() - 10);

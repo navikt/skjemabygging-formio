@@ -6,6 +6,15 @@ const translations = {
   noReplacement: 'No replacements',
 };
 
+const translationsWithLanguageCode = {
+  en: {
+    singleReplacement: 'You must fill in: {{field1}}',
+  },
+  'nb-NO': {
+    singleReplacement: 'Du må fylle ut: {{field1}}',
+  },
+};
+
 const textReplacements = {
   field1: 'replacedField',
   field2: 'anotherReplacedField',
@@ -85,5 +94,27 @@ describe('translateWithTextReplacements function', () => {
       params: textReplacements,
     });
     expect(translatedText).toBe('Replace replacedField with replacedField');
+  });
+});
+
+describe('translateWithTextReplacements function with currentLanguage', () => {
+  it('should return translated text with replacements', () => {
+    expect(
+      translationUtils.translateWithTextReplacements({
+        translations: translationsWithLanguageCode,
+        originalText: 'singleReplacement',
+        params: textReplacements,
+        currentLanguage: 'en',
+      }),
+    ).toBe('You must fill in: replacedField');
+
+    expect(
+      translationUtils.translateWithTextReplacements({
+        translations: translationsWithLanguageCode,
+        originalText: 'singleReplacement',
+        params: textReplacements,
+        currentLanguage: 'nb-NO',
+      }),
+    ).toBe('Du må fylle ut: replacedField');
   });
 });

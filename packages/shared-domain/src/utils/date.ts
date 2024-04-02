@@ -61,7 +61,7 @@ export const generateWeeklyPeriods = (date?: string, numberOfPeriods: number = 1
   if (!date) return [];
 
   const periods: WeeklyPeriod[] = [];
-  const today = DateTime.now();
+  const today = DateTime.now().startOf('day');
 
   for (let i = 0; i < numberOfPeriods; i++) {
     let startDate = DateTime.fromISO(date);

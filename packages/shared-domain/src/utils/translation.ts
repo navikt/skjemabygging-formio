@@ -1,4 +1,4 @@
-import { I18nTranslationMap, I18nTranslationReplacements } from '../languages/types';
+import { I18nTranslationMap, I18nTranslationReplacements, I18nTranslations } from '../languages/types';
 
 const translateWithTextReplacements = ({
   originalText = '',
@@ -8,9 +8,9 @@ const translateWithTextReplacements = ({
 }: {
   originalText: string;
   params?: I18nTranslationReplacements;
-  translations?: I18nTranslationMap;
+  translations?: I18nTranslations | I18nTranslationMap;
   currentLanguage?: string;
-}): string => {
+}) => {
   const currentTranslation =
     currentLanguage && translations?.[currentLanguage] ? translations?.[currentLanguage] : translations;
 
@@ -20,9 +20,9 @@ const translateWithTextReplacements = ({
 };
 
 const injectParams = (
-  template: string,
+  template: string | I18nTranslationMap,
   params?: I18nTranslationReplacements,
-  translations?: I18nTranslationMap,
+  translations?: I18nTranslations | I18nTranslationMap,
   currentLanguage?: string,
 ) => {
   if (template && params && typeof template === 'string') {

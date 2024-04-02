@@ -68,9 +68,11 @@ export const showAddButton = (values?: DrivingListSubmission) => {
 
   if (!lastPeriod) return false;
 
-  const lastPeriodDate = new Date(lastPeriod.periodTo).setHours(0, 0, 0, 0);
+  const lastPeriodDate = new Date(lastPeriod.periodTo);
+  lastPeriodDate.setHours(0, 0, 0, 0);
 
-  const today = new Date().setHours(0, 0, 0, 0);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
 
   return lastPeriodDate < today;
 };
