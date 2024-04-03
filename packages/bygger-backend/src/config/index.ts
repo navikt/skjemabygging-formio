@@ -9,6 +9,7 @@ import {
   devGithubApp,
   devPusher,
   devSkjemabyggingProxy,
+  prodFormio,
 } from './development';
 import { ConfigType, NodeEnv } from './types';
 
@@ -72,6 +73,9 @@ const config: ConfigType = {
       userResource: env('FORMIO_FORM_ID_USER'),
     },
     jwtSecret: env('FORMIO_JWT_SECRET'),
+  },
+  prodFormio: {
+    projectUrl: env('FORMIO_PROJECT_URL_PROD', prodFormio.projectUrl),
   },
   fyllut: {
     baseUrl: env('FYLLUT_BASE_URL', devFyllut.baseUrl),

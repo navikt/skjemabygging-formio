@@ -1,5 +1,5 @@
 import { RequestHandler } from 'express';
-import { formioService } from '../../../services';
+import { copyService, formioService } from '../../../services';
 import { BadRequest } from '../helpers/errors';
 
 const OBJECT_ID_REGEX = /^[0-9a-fA-F]{24}$/;
@@ -35,9 +35,25 @@ const put: RequestHandler = async (req, res, next) => {
   }
 };
 
+const copyFromProd: RequestHandler = async (req, res, next) => {
+  if (!copyService) {
+    return res.sendStatus(405);
+  }
+  try {
+    const { formPath } = req.params;
+    const formioToken = req.getFormioToken?.();
+    const userName = req.getUser?.().name;
+    const savedForm = await copyService.form(formPath, formioToken, userName);
+    return res.json(savedForm);
+  } catch (error) {
+    next(error);
+  }
+};
+
 const form = {
   get,
   put,
+  copyFromProd,
 };
 
 export default form;

@@ -8,26 +8,26 @@ import {
 import { fetchWithErrorHandling } from '../fetchUtils';
 
 export class FormioService {
-  private readonly projectUrl: string;
+  public readonly projectUrl: string;
 
   constructor(projectUrl: string) {
     this.projectUrl = projectUrl;
   }
 
-  async fetchFromProjectApi(path: string): Promise<any> {
+  async fetchFromProjectApi<T>(path: string): Promise<T> {
     const response = await fetchWithErrorHandling(`${this.projectUrl}${path}`, {
       headers: { 'Content-Type': 'application/json' },
     });
-    return response.data;
+    return response.data as T;
   }
 
   async getForm(formPath: string) {
-    const formData: any = await this.fetchFromProjectApi(`/form?type=form&path=${formPath}&limit=1`);
+    const formData = await this.fetchFromProjectApi<NavFormType[]>(`/form?type=form&path=${formPath}&limit=1`);
     return formData[0];
   }
 
   async getForms(formPaths: string[], limit = 1000) {
-    return this.fetchFromProjectApi(`/form?type=form&path__in=${formPaths.toString()}&limit=${limit}`);
+    return this.fetchFromProjectApi<NavFormType[]>(`/form?type=form&path__in=${formPaths.toString()}&limit=${limit}`);
   }
 
   async getPublishedForms(select = '', limit = 1000): Promise<NavFormType[]> {

@@ -8,5 +8,6 @@ const formsRouter = express.Router();
 formsRouter.get('/', forms.get);
 formsRouter.get('/:formPath', form.get);
 formsRouter.put('/:formPath', authorizedPublisher, form.put);
+formsRouter.put('/:formPath/copy-from-prod', authorizedPublisher, form.copyFromProd);
 
 export default formsRouter;

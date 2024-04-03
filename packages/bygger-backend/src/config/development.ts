@@ -28,6 +28,10 @@ export const devFormio: Partial<FormioConfig> = {
   },
 };
 
+export const prodFormio: Pick<FormioConfig, 'projectUrl'> = {
+  projectUrl: 'https://formio-api-server.ekstern.dev.nav.no/jvcemxwcpghcqjn',
+};
+
 export const devFyllut: FyllutConfig = {
   baseUrl: 'https://skjemadelingslenke.ekstern.dev.nav.no/fyllut',
 };
