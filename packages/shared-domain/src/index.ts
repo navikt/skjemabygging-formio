@@ -36,6 +36,7 @@ import type {
   FormioTranslationPayload,
   GlobalTranslationMap,
   I18nTranslationMap,
+  I18nTranslationReplacements,
   I18nTranslations,
   Language,
   ScopedTranslationMap,
@@ -75,6 +76,7 @@ import objectUtils from './utils/objectUtils';
 import paginationUtils from './utils/pagination';
 import signatureUtils from './utils/signatureUtils';
 import stringUtils from './utils/stringUtils';
+import translationUtils from './utils/translation';
 import validatorUtils from './utils/validatorUtils';
 
 export {
@@ -99,6 +101,7 @@ export {
   signatureUtils,
   stringUtils,
   supportedEnhetstyper,
+  translationUtils,
   validatorUtils,
 };
 export type {
@@ -132,6 +135,7 @@ export type {
   GlobalTranslationMap,
   GlobalTranslationsResourceContent,
   I18nTranslationMap,
+  I18nTranslationReplacements,
   I18nTranslations,
   InnsendingType,
   KjentBruker,
