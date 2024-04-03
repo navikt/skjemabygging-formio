@@ -16,7 +16,8 @@ const reportService = new ReportService(formioService);
 
 const pusherService = new PusherService();
 
-const prodGcp = config.naisClusterName === 'prod-gcp';
-const copyService = !prodGcp ? createCopyService(new FormioService(config.prodFormio.projectUrl), formioService) : null;
+const copyService = config.prodFormio?.projectUrl
+  ? createCopyService(new FormioService(config.prodFormio.projectUrl), formioService)
+  : null;
 
 export { backendInstance, copyService, formioService, publisherService, pusherService, reportService };

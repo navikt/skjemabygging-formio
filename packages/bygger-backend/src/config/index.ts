@@ -35,6 +35,8 @@ const optionalEnv = (name: string): string | undefined => {
   return process.env[name];
 };
 
+const naisClusterName = env('NAIS_CLUSTER_NAME') as 'dev-gcp' | 'prod-gcp' | undefined;
+
 const config: ConfigType = {
   azure: {
     openidTokenEndpoint: env('AZURE_OPENID_CONFIG_TOKEN_ENDPOINT', devAzure.openidTokenEndpoint),
@@ -74,9 +76,12 @@ const config: ConfigType = {
     },
     jwtSecret: env('FORMIO_JWT_SECRET'),
   },
-  prodFormio: {
-    projectUrl: env('FORMIO_PROJECT_URL_PROD', prodFormio.projectUrl),
-  },
+  prodFormio:
+    naisClusterName !== 'prod-gcp'
+      ? {
+          projectUrl: env('FORMIO_PROJECT_URL_PROD', prodFormio.projectUrl),
+        }
+      : undefined,
   fyllut: {
     baseUrl: env('FYLLUT_BASE_URL', devFyllut.baseUrl),
   },
@@ -91,7 +96,7 @@ const config: ConfigType = {
   isProduction: nodeEnv === 'production',
   isDevelopment: nodeEnv === 'development',
   featureToggles: featureUtils.toFeatureToggles(env('ENABLED_FEATURES', devEnabledFeatures)),
-  naisClusterName: env('NAIS_CLUSTER_NAME') as 'dev-gcp' | 'prod-gcp' | undefined,
+  naisClusterName,
   frontendLoggerConfig: configUtils.loadJsonFromEnv('BYGGER_FRONTEND_LOGCONFIG'),
 };
 

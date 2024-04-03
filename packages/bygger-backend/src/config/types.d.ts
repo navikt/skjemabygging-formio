@@ -54,7 +54,7 @@ export type ConfigType = {
   skjemabyggingProxy: SkjemabyggingProxyConfig;
   publishRepo: PublishRepoConfig;
   formio: FormioConfig;
-  prodFormio: Pick<FormioConfig, 'projectUrl'>;
+  prodFormio?: Pick<FormioConfig, 'projectUrl'>;
   fyllut: FyllutConfig;
   pusher: PusherConfig;
   githubApp: GithubAppConfig;
