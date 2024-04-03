@@ -1,7 +1,7 @@
 import {
   HtmlAsJsonElement,
   HtmlAsJsonTextElement,
-  htmlUtils,
+  htmlAsJsonUtils,
   NavFormioJs,
 } from '@navikt/skjemadigitalisering-shared-components';
 
@@ -161,8 +161,8 @@ const textObject = (
   withInputType: boolean,
   value: string,
 ): { text: string; type?: InputType; htmlElementAsJson?: HtmlAsJsonElement } => {
-  const htmlElementAsJson = htmlUtils.isHtmlString(value)
-    ? htmlUtils.htmlString2Json(value, ['P', 'H3', 'LI'])
+  const htmlElementAsJson = htmlAsJsonUtils.isHtmlString(value)
+    ? htmlAsJsonUtils.htmlString2Json(value, ['P', 'H3', 'LI'])
     : undefined;
   const type = withInputType ? getInputType(value) : undefined;
   return {
@@ -250,7 +250,7 @@ const getTranslationsForChild = (
   Object.entries(translations ?? {}).reduce(
     (acc, [lang, translation]) => ({
       ...acc,
-      [lang]: { translations: { value: htmlUtils.getChild(translation.translations.value, childIndex) } },
+      [lang]: { translations: { value: htmlAsJsonUtils.getChild(translation.translations.value, childIndex) } },
     }),
     {},
   );
@@ -302,10 +302,10 @@ const getTextsAndTranslationsForForm = (form: NavFormType, translations: FormioT
     if (textComponent.htmlElementAsJson) {
       const htmlTranslations = Object.entries(translations).reduce((acc, [lang, translation]) => {
         const translationValue = translation.translations[textComponent.text]?.value ?? '';
-        if (!htmlUtils.isHtmlString(translationValue)) {
+        if (!htmlAsJsonUtils.isHtmlString(translationValue)) {
           return acc;
         }
-        const translationAsJson = htmlUtils.htmlString2Json(translationValue, ['P', 'H3', 'LI']);
+        const translationAsJson = htmlAsJsonUtils.htmlString2Json(translationValue, ['P', 'H3', 'LI']);
         return {
           ...acc,
           [lang]: { translations: { ...translation.translations[textComponent.text], value: translationAsJson } },

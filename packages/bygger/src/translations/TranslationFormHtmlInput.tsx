@@ -1,4 +1,8 @@
-import { HtmlAsJsonElement, HtmlAsJsonTextElement, htmlUtils } from '@navikt/skjemadigitalisering-shared-components';
+import {
+  HtmlAsJsonElement,
+  HtmlAsJsonTextElement,
+  htmlAsJsonUtils,
+} from '@navikt/skjemadigitalisering-shared-components';
 import TranslationTextInput from './TranslationTextInput';
 import { getInputType } from './utils';
 
@@ -73,7 +77,7 @@ const TranslationFormHtmlInput = ({
           if (htmlElementAsJson.textContent?.endsWith(' ')) {
             textContentWithWhiteSpaces = `${textContentWithWhiteSpaces} `;
           }
-          updateTranslation(htmlUtils.markDown2Json(textContentWithWhiteSpaces, htmlElementAsJson));
+          updateTranslation(htmlAsJsonUtils.markdown2Json(textContentWithWhiteSpaces, htmlElementAsJson));
         }}
         onChange={undefined}
         hasGlobalTranslation={false}

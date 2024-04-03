@@ -3,7 +3,7 @@ import { Alert, Box, Button, HStack, Heading, HelpText, VStack } from '@navikt/d
 import {
   HtmlAsJsonElement,
   HtmlAsJsonTextElement,
-  htmlUtils,
+  htmlAsJsonUtils,
   makeStyles,
 } from '@navikt/skjemadigitalisering-shared-components';
 import { useEffect, useMemo, useState } from 'react';
@@ -64,14 +64,14 @@ const TranslationFormHtmlSection = ({
   >();
 
   const translationIsMissing = useMemo(
-    () => !currentTranslation && (!storedTranslation || !htmlUtils.isHtmlString(storedTranslation)),
+    () => !currentTranslation && (!storedTranslation || !htmlAsJsonUtils.isHtmlString(storedTranslation)),
     [currentTranslation, storedTranslation],
   );
   const incompatibleTranslationExists = useMemo(() => {
     if (!currentTranslationWithMarkDown) {
       const storedTranslationAsJson =
-        !!storedTranslation && htmlUtils.isHtmlString(storedTranslation)
-          ? htmlUtils.htmlString2Json(storedTranslation, ['P', 'H3', 'LI'])
+        !!storedTranslation && htmlAsJsonUtils.isHtmlString(storedTranslation)
+          ? htmlAsJsonUtils.htmlString2Json(storedTranslation, ['P', 'H3', 'LI'])
           : undefined;
       return storedTranslationAsJson && !isSameStructure(htmlElementAsJson, storedTranslationAsJson);
     }
@@ -79,15 +79,15 @@ const TranslationFormHtmlSection = ({
 
   useEffect(() => {
     if (!currentTranslation && !translationIsMissing && !incompatibleTranslationExists) {
-      setCurrentTranslation(htmlUtils.htmlString2Json(storedTranslation));
-      setCurrentTranslationWithMarkDown(htmlUtils.htmlString2Json(storedTranslation, ['P', 'H3', 'LI']));
+      setCurrentTranslation(htmlAsJsonUtils.htmlString2Json(storedTranslation));
+      setCurrentTranslationWithMarkDown(htmlAsJsonUtils.htmlString2Json(storedTranslation, ['P', 'H3', 'LI']));
     }
   }, [currentTranslation, incompatibleTranslationExists, storedTranslation, translationIsMissing]);
 
   const styles = useStyles();
 
   const startNewTranslation = () => {
-    setCurrentTranslation(htmlUtils.htmlString2Json(text));
+    setCurrentTranslation(htmlAsJsonUtils.htmlString2Json(text));
     setCurrentTranslationWithMarkDown(htmlElementAsJson);
   };
 
@@ -176,7 +176,9 @@ const TranslationFormHtmlSection = ({
             <div>{storedTranslation}</div>
             <b>Oversett:</b>
             <div
-              dangerouslySetInnerHTML={{ __html: htmlUtils.json2HtmlString(currentTranslation as HtmlAsJsonElement) }}
+              dangerouslySetInnerHTML={{
+                __html: htmlAsJsonUtils.json2HtmlString(currentTranslation as HtmlAsJsonElement),
+              }}
             />
           </>
         )}
@@ -197,8 +199,8 @@ const TranslationFormHtmlSection = ({
                   const updatedTranslation = currentTranslation;
                   if (updatedTranslation && updatedTranslation?.type === 'Element') {
                     updatedTranslation.children[index] = element;
-                    const updatedTranslationHtmlString = htmlUtils.json2HtmlString(updatedTranslation);
-                    const updatedTranslation2Json = htmlUtils.htmlString2Json(updatedTranslationHtmlString, [
+                    const updatedTranslationHtmlString = htmlAsJsonUtils.json2HtmlString(updatedTranslation);
+                    const updatedTranslation2Json = htmlAsJsonUtils.htmlString2Json(updatedTranslationHtmlString, [
                       'P',
                       'H3',
                       'LI',
