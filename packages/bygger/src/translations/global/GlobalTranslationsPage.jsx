@@ -4,7 +4,7 @@ import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useMemo, useReducer, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { AppLayout } from '../../components/AppLayout';
-import PrimaryButtonWithSpinner from '../../components/PrimaryButtonWithSpinner';
+import ButtonWithSpinner from '../../components/ButtonWithSpinner';
 import UserFeedback from '../../components/UserFeedback';
 import Column from '../../components/layout/Column';
 import Row from '../../components/layout/Row';
@@ -276,7 +276,7 @@ const GlobalTranslationsPage = ({
                 languageCode={languageCode}
                 publishGlobalTranslations={publishGlobalTranslations}
               />
-              <PrimaryButtonWithSpinner onClick={onSaveGlobalTranslations}>Lagre</PrimaryButtonWithSpinner>
+              <ButtonWithSpinner onClick={onSaveGlobalTranslations}>Lagre</ButtonWithSpinner>
               <UserFeedback />
               <GlobalCsvLink allGlobalTranslations={allGlobalTranslations} languageCode={languageCode} />
             </Column>
