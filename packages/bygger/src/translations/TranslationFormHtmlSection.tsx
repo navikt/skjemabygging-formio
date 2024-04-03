@@ -1,6 +1,5 @@
 import { PlusIcon, XMarkIcon } from '@navikt/aksel-icons';
 import { Alert, Box, Button, HStack, Heading, HelpText, VStack } from '@navikt/ds-react';
-import Divider from '@navikt/ds-react/esm/dropdown/Menu/Divider';
 import {
   HtmlAsJsonElement,
   HtmlAsJsonTextElement,
@@ -28,7 +27,9 @@ const useStyles = makeStyles({
     gridTemplateColumns: '1fr 4fr',
   },
   divider: {
-    border: '1px solid var(--a-border-divider)',
+    margin: 'var(--a-spacing-3) 0',
+    border: 'none',
+    borderBottom: '1px solid var(--a-border-divider)',
   },
 });
 
@@ -125,7 +126,7 @@ const TranslationFormHtmlSection = ({
             </Box>
           </HelpText>
         </HStack>
-        <Divider />
+        <hr className={styles.divider} />
         {translationIsMissing && (
           <VStack gap="4" align="start">
             <Alert inline size="small" variant="warning">
@@ -144,7 +145,7 @@ const TranslationFormHtmlSection = ({
         )}
         {incompatibleTranslationExists && (
           <VStack gap="4" align="start">
-            <Divider color="border-default" />
+            <hr className={styles.divider} />
             <Heading size={'xsmall'}>Teksten har en eksisterende oversettelse som ikke følger samme struktur</Heading>
             <div dangerouslySetInnerHTML={{ __html: storedTranslation }} />
             <HStack gap="6">
