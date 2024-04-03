@@ -35,7 +35,6 @@ describe('PublishModalComponents', () => {
       const form = createFormWithAttachment({
         vedleggstittel: 'Bekreftelse fra skole',
         vedleggskode: 'B1',
-        vedleggErValgfritt: 'ja',
       });
       renderPublishSettingsModal(form);
     });
@@ -66,7 +65,6 @@ describe('PublishModalComponents', () => {
       const form = createFormWithAttachment({
         vedleggstittel: 'Bekreftelse fra skole',
         vedleggskode: '',
-        vedleggErValgfritt: 'ja',
       });
       renderPublishSettingsModal(form);
     });
@@ -87,7 +85,6 @@ describe('PublishModalComponents', () => {
       const form = createFormWithAttachment({
         vedleggstittel: '',
         vedleggskode: 'B1',
-        vedleggErValgfritt: 'ja',
       });
       renderPublishSettingsModal(form);
     });
@@ -108,7 +105,6 @@ describe('PublishModalComponents', () => {
       const form = createFormWithAttachment({
         vedleggstittel: '',
         vedleggskode: '',
-        vedleggErValgfritt: 'ja',
       });
       renderPublishSettingsModal(form);
     });

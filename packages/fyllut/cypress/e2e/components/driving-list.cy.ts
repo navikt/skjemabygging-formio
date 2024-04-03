@@ -91,9 +91,21 @@ describe('DrivingList', () => {
 
       // Should fill out form
       cy.clickNextStep();
-      cy.findByRole('link', { name: `Du må fylle ut: ${PERIOD_TYPE_LABEL}` }).should('exist');
+      cy.findByRole('region', { name: TEXTS.validering.error })
+        .should('exist')
+        .within(() => {
+          cy.findByRole('link', { name: `Du må fylle ut: ${PERIOD_TYPE_LABEL}` })
+            .should('exist')
+            .click();
+        });
 
-      cy.findByRole('radio', { name: 'Ukentlig' }).should('exist').check();
+      cy.findByRole('group', { name: PERIOD_TYPE_LABEL })
+        .should('exist')
+        .should('have.focus')
+        .within(() => {
+          cy.findByRole('radio', { name: 'Ukentlig' }).should('exist').check();
+        });
+
       cy.findByRole('textbox', { name: DATE_PICKER_LABEL }).should('exist').type('15.05.23{esc}');
       cy.findByRole('radio', { name: 'Ja' }).should('exist').check();
       cy.findByRole('button', { name: '15.05.2023 - 21.05.2023' }).click();
@@ -102,13 +114,26 @@ describe('DrivingList', () => {
       // Parking expenses should not be over 100
       cy.findByRole('textbox', { name: PARKING_EXPENSES_LABEL }).should('exist').type('101');
       cy.clickNextStep();
-      cy.findByRole('link', { name: TEXTS.validering.parkingExpensesAboveHundred }).should('exist');
+      cy.findByRole('region', { name: TEXTS.validering.error })
+        .should('exist')
+        .within(() => {
+          cy.findByRole('link', { name: TEXTS.validering.parkingExpensesAboveHundred }).should('exist');
+        });
 
       // Parking expenses should be a number
       cy.findByRole('textbox', { name: PARKING_EXPENSES_LABEL }).clear();
       cy.findByRole('textbox', { name: PARKING_EXPENSES_LABEL }).type('text');
       cy.clickNextStep();
-      cy.findByRole('link', { name: TEXTS.validering.validParkingExpenses }).should('exist');
+      cy.findByRole('region', { name: TEXTS.validering.error })
+        .should('exist')
+        .within(() => {
+          cy.findByRole('link', { name: 'Parkeringsutgiftene for 15.05.2023 må være et gyldig beløp' })
+            .should('exist')
+            .click();
+        });
+
+      cy.findByRole('textbox', { name: PARKING_EXPENSES_LABEL }).should('have.focus').type('{selectall}78');
+      cy.findByRole('region', { name: TEXTS.validering.error }).should('not.exist');
     });
 
     it('should add and remove periods', () => {
@@ -224,9 +249,20 @@ describe('DrivingList', () => {
       cy.wait('@getActivities');
 
       cy.clickSaveAndContinue();
-      cy.findByRole('link', { name: `Du må fylle ut: ${ACTIVITIES_LABEL}` }).should('exist');
+      cy.findByRole('region', { name: TEXTS.validering.error })
+        .should('exist')
+        .within(() => {
+          cy.findByRole('link', { name: `Du må fylle ut: ${ACTIVITIES_LABEL}` })
+            .should('exist')
+            .click();
+        });
 
-      cy.findByRole('radio', { name: 'Arbeidstrening: 01.01.2024 - 31.08.2024' }).should('exist').check();
+      cy.findByRole('group', { name: ACTIVITIES_LABEL })
+        .should('exist')
+        .should('have.focus')
+        .within(() => {
+          cy.findByRole('radio', { name: 'Arbeidstrening: 01.01.2024 - 31.08.2024' }).should('exist').check();
+        });
 
       // Expenses are higher than the refund limit
       cy.findByRole('button', { name: '08.01.2024 - 14.01.2024' }).click();
@@ -257,7 +293,11 @@ describe('DrivingList', () => {
       });
 
       cy.clickSaveAndContinue();
-      cy.findByRole('link', { name: `Du må fylle ut: ${ACTIVITIES_LABEL}` }).should('exist');
+      cy.findByRole('region', { name: TEXTS.validering.error })
+        .should('exist')
+        .within(() => {
+          cy.findByRole('link', { name: `Du må fylle ut: ${ACTIVITIES_LABEL}` }).should('exist');
+        });
     });
   });
 });

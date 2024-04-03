@@ -761,7 +761,7 @@ describe('form summary', () => {
                     },
                     {
                       label: 'Datagrid',
-                      key: 'datagrid',
+                      key: 'container1.container2.container3.container4.datagrid',
                       type: 'datagrid',
                       components: [
                         {

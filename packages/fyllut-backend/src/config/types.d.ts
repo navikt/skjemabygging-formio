@@ -1,4 +1,4 @@
-import { FeatureTogglesMap } from '@navikt/skjemadigitalisering-shared-domain';
+import { FeatureTogglesMap, FrontendLoggerConfigType } from '@navikt/skjemadigitalisering-shared-domain';
 
 export type TokenxConfig = {
   privateJwk: string;
@@ -52,6 +52,7 @@ export type DefaultConfig = {
   noFormValidation?: boolean;
   noDecorator?: boolean;
   amplitude: AmplitudeConfig;
+  frontendLoggerConfig: FrontendLoggerConfigType;
 };
 
 export type ConfigType = DefaultConfig & {
@@ -63,5 +64,6 @@ export type ConfigType = DefaultConfig & {
   isTest: boolean;
   isProduction: boolean;
   isDelingslenke: boolean;
+  backendLogLevel: string;
   pdlTokenScopeCluster: string;
 };

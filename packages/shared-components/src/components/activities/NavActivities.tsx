@@ -1,7 +1,7 @@
 import { Alert, Checkbox, CheckboxGroup, Radio, RadioGroup, Skeleton } from '@navikt/ds-react';
 import { SendInnAktivitet, SubmissionActivity, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { TFunction } from 'i18next';
-import { ReactNode, useEffect, useState } from 'react';
+import { ReactNode, forwardRef, useEffect, useState } from 'react';
 import { getActivities } from '../../api/sendinn/sendInnActivities';
 import { AppConfigContextType } from '../../context/config/configContext';
 import { mapToSubmissionActivity } from '../../formio/components/core/activities/Activities.utils';
@@ -25,7 +25,7 @@ type ActivityDataType = 'aktivitet' | 'vedtak';
 
 // Renders a activity-data from Arena
 // In some cases it's more relevant to list all 'vedtak' that are part of the activities instead
-const NavActivities = (props: Props) => {
+const NavActivities = forwardRef<HTMLFieldSetElement, Props>((props: Props, ref) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [activitySelections, setActivitySelections] = useState<SubmissionActivity[]>([]);
   const [showError, setShowError] = useState<boolean>(false);
@@ -83,6 +83,7 @@ const NavActivities = (props: Props) => {
         className={props.className}
         error={props.error}
         tabIndex={-1}
+        ref={ref}
       >
         <Checkbox value={props.defaultActivity?.aktivitetId}>{props.defaultActivity?.text}</Checkbox>
       </CheckboxGroup>
@@ -117,6 +118,7 @@ const NavActivities = (props: Props) => {
         className={props.className}
         error={props.error}
         tabIndex={-1}
+        ref={ref}
       >
         {activitySelections?.map((activity: SubmissionActivity) => {
           return (
@@ -160,6 +162,6 @@ const NavActivities = (props: Props) => {
       )}
     </>
   );
-};
+});
 
 export default NavActivities;

@@ -1,6 +1,6 @@
 import { Component } from '@navikt/skjemadigitalisering-shared-domain';
 
-const defaultValue = (type: string): Component => {
+const editFormDefaultValue = (type: string): Component => {
   return {
     type,
     label: 'Standard verdi',
@@ -8,4 +8,4 @@ const defaultValue = (type: string): Component => {
   };
 };
 
-export default defaultValue;
+export default editFormDefaultValue;

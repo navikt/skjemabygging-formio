@@ -2,7 +2,8 @@ import { ConfigType } from '@navikt/skjemadigitalisering-shared-domain';
 import { config as configObject } from '../../config/config';
 import { getIsLoggedIn } from '../../security/tokenHelper';
 
-const { naisClusterName, featureToggles, isDelingslenke, isDevelopment, amplitude } = configObject;
+const { naisClusterName, featureToggles, isDelingslenke, isDevelopment, amplitude, frontendLoggerConfig } =
+  configObject;
 
 const config = {
   get: async (req, res): Promise<ConfigType> => {
@@ -15,6 +16,7 @@ const config = {
       isDevelopment,
       amplitudeApiEndpoint: amplitude.apiEndpoint,
       isLoggedIn,
+      loggerConfig: frontendLoggerConfig,
     });
   },
 };

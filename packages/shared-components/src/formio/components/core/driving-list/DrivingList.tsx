@@ -1,12 +1,12 @@
-import { DrivingListSubmission, DrivingListValues, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { dateUtils, DrivingListSubmission, DrivingListValues, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import NavDrivingList from '../../../../components/drivinglist/NavDrivingList';
 import BaseComponent from '../../base/BaseComponent';
 import drivingListBuilder from './DrivingList.builder';
 import drivingListForm from './DrivingList.form';
 import {
   DrivingListErrorType,
-  DrivingListMetadataId,
   drivingListMetadata,
+  DrivingListMetadataId,
   isValidParking,
   requiredError,
 } from './DrivingList.utils';
@@ -45,18 +45,14 @@ class DrivingList extends BaseComponent {
     return this.componentErrors;
   }
 
-  override addError(metadataId: DrivingListMetadataId, message: string): void {
-    super.addError(drivingListMetadata(metadataId).id, message);
-  }
-
   addErrorOfType(metadataId: DrivingListMetadataId, errorType: DrivingListErrorType) {
     if (errorType === 'required') {
-      super.addError(drivingListMetadata(metadataId).id, requiredError(metadataId, this.t.bind(this)));
+      super.addError(requiredError(metadataId, this.t.bind(this)), drivingListMetadata(metadataId).id);
     }
   }
 
-  getComponentError(metadataId: DrivingListMetadataId) {
-    return this.componentErrors.find((error) => error.metadataId === metadataId)?.message;
+  getComponentError(elementId: string) {
+    return this.componentErrors.find((error) => error.elementId === elementId)?.message;
   }
 
   override checkValidity(): boolean {
@@ -95,13 +91,14 @@ class DrivingList extends BaseComponent {
       }
     }
 
-    if (componentData?.dates?.some((date) => !isValidParking(date.parking))) {
-      this.addError('dates', this.t(TEXTS.validering.validParkingExpenses));
-    }
-
-    if (componentData?.dates?.some((date) => Number(date.parking) > 100)) {
-      this.addError('dates', this.t(TEXTS.validering.parkingExpensesAboveHundred));
-    }
+    componentData?.dates?.forEach((date) => {
+      if (!isValidParking(date.parking)) {
+        const message = this.t(TEXTS.validering.validParkingExpenses, { dato: dateUtils.toLocaleDate(date.date) });
+        this.addError(message, `dates:${date.date}:parking`);
+      } else if (Number(date.parking) > 100) {
+        this.addError(this.t(TEXTS.validering.parkingExpensesAboveHundred), `dates:${date.date}:parking`);
+      }
+    });
 
     this.rerender();
 
@@ -125,6 +122,7 @@ class DrivingList extends BaseComponent {
         t={this.t.bind(this)}
         locale={this.getLocale()}
         getComponentError={this.getComponentError.bind(this)}
+        addRef={this.addRef.bind(this)}
       >
         <NavDrivingList />
       </DrivingListProvider>,

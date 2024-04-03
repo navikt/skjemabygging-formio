@@ -26,7 +26,7 @@ const useDrivinglistStyles = makeStyles({
 });
 
 const DrivingListFromDates = () => {
-  const { values, updateValues, t, locale, getComponentError } = useDrivingList();
+  const { values, updateValues, t, locale, getComponentError, addRef } = useDrivingList();
 
   const styles = useDrivinglistStyles();
 
@@ -132,6 +132,7 @@ const DrivingListFromDates = () => {
           tabIndex={-1}
           className={styles.marginBottom}
           error={getComponentError('periodType')}
+          ref={(ref) => addRef(drivingListMetadata('periodType').id, ref)}
         >
           <Radio value="weekly">{t(TEXTS.common.weekly)}</Radio>
           <Radio value="monthly">{t(TEXTS.common.monthly)}</Radio>
@@ -147,7 +148,7 @@ const DrivingListFromDates = () => {
               locale={locale}
               readOnly={false}
               error={getComponentError('datePicker')}
-              inputRef={undefined}
+              inputRef={(ref) => addRef(drivingListMetadata('datePicker').id, ref)}
               className={styles.marginBottom}
               toDate={toDate(values)}
               defaultMonth={toDate(values)}
@@ -160,6 +161,7 @@ const DrivingListFromDates = () => {
               onChange={(value) => onParkingChange(value)}
               defaultValue={values?.parking}
               tabIndex={-1}
+              ref={(ref) => addRef(drivingListMetadata('parkingRadio').id, ref)}
               className={styles.marginBottom}
             >
               <Radio value={true}>{t(TEXTS.common.yes)}</Radio>
@@ -168,7 +170,12 @@ const DrivingListFromDates = () => {
           </>
         )}
 
-        <Accordion tabIndex={-1} id={drivingListMetadata('dates').id} className={styles.marginBottom}>
+        <Accordion
+          tabIndex={-1}
+          id={drivingListMetadata('dates').id}
+          className={styles.marginBottom}
+          ref={(ref) => addRef('dates', ref)}
+        >
           {renderDrivingPeriodsFromDates()}
         </Accordion>
         {allPeriodFieldsSet && values!.periods!.length > 0 && (

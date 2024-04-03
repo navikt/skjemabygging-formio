@@ -122,7 +122,7 @@ describe('NavSelect', () => {
     nextButton.click();
 
     const errorMessages = await screen.findAllByText('Du må fylle ut: Velg frukt');
-    expect(errorMessages).toHaveLength(2); // på toppen av siden, og nedenfor input-feltet
+    expect(errorMessages).toHaveLength(1); // nedenfor input-feltet
   });
 
   it('changes language', async () => {

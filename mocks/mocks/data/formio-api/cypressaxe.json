@@ -1250,7 +1250,7 @@
               "id": "eycf5ht"
             },
             {
-              "label": "Vegnavn og husnummer, evt. postboks",
+              "label": "Vegnavn og husnummer, eller postboks",
               "type": "textfield",
               "key": "postboksNr",
               "autocomplete": "street-address",
@@ -2135,7 +2135,7 @@
               }
             ],
             "custom": "",
-            "url": "https://www.nav.no/fyllut/countries?lang=nb"
+            "url": "http://localhost:3001/fyllut/countries?lang=nb"
           },
           "valueProperty": "",
           "template": "<span>{{ item.label }}</span>",

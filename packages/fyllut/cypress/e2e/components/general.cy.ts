@@ -15,13 +15,11 @@ describe('React components', () => {
   describe('General', () => {
     describe('Fill in form and view summary, paper', () => {
       beforeEach(() => {
-        cy.intercept('GET', 'https://www.nav.no/fyllut/countries*').as('getCountrySelect');
         cy.visit('/fyllut/customcomps/dineopplysninger?sub=paper');
         cy.defaultWaits();
         cy.wait('@getCurrencies');
         cy.wait('@getCountries');
         cy.wait('@getGlobalTranslations');
-        cy.wait('@getCountrySelect');
       });
 
       it('reflects changes on summary page when editing data', () => {
@@ -29,9 +27,7 @@ describe('React components', () => {
         cy.findByRole('textbox', { name: 'Fornavn' }).type('Storm');
         cy.findByRole('combobox', { name: 'I hvilket land bor du?' }).click();
 
-        cy.findByRole('combobox', { name: 'I hvilket land bor du?' }).type(
-          'Nor{downArrow}{downArrow}{downArrow}{downArrow}{enter}',
-        );
+        cy.findByRole('combobox', { name: 'I hvilket land bor du?' }).type('Norge{enter}');
         cy.findByRole('combobox', { name: 'Velg instrument (valgfritt)' }).type('Gitar{enter}');
         cy.findByRole('textbox', { name: 'Gyldig fra dato' }).type('01.01.2023{esc}');
         cy.clickNextStep();
@@ -75,7 +71,7 @@ describe('React components', () => {
 
         cy.findByRole('link', { name: TEXTS.grensesnitt.moveForward }).click();
 
-        cy.findByRole('heading', { name: 'Innsending/Send til NAV' }).should('exist');
+        cy.findByRole('heading', { name: TEXTS.statiske.prepareLetterPage.subTitle }).should('exist');
 
         cy.findByRole('link', { name: TEXTS.grensesnitt.goBack }).click();
 
@@ -119,20 +115,24 @@ describe('React components', () => {
       beforeEach(() => {
         cy.visit('/fyllut/customcomps/dineopplysninger?sub=digital');
         cy.defaultWaits();
+        cy.defaultInterceptsMellomlagring();
+        cy.wait('@createMellomlagring');
         cy.wait('@getCurrencies');
+        cy.wait('@getCountries');
       });
 
       it('make sure components keep their values after going to summary page', () => {
         cy.findByRole('heading', { name: 'Dine opplysninger' }).should('be.visible');
+        cy.findByRole('button', { name: 'Lagre og fortsett' }).should('be.visible');
+
         cy.findByRole('textbox', { name: 'Fornavn' }).should('be.visible');
         cy.findByRoleWhenAttached('textbox', { name: 'Fornavn' }).type('Storm');
-        cy.findByRole('combobox', { name: 'I hvilket land bor du?' })
-          .should('be.visible')
-          .type('Nor{downArrow}{downArrow}{downArrow}{downArrow}{enter}');
+        cy.findByRole('combobox', { name: 'I hvilket land bor du?' }).should('be.visible').type('Norge{enter}');
         cy.findByRole('combobox', { name: 'Velg valuta' }).should('be.visible').type('{upArrow}{enter}');
         cy.findByRole('combobox', { name: 'Velg instrument (valgfritt)' }).type('Gitar{enter}');
         cy.findByRole('textbox', { name: 'Gyldig fra dato' }).type('01.01.2023{esc}');
         cy.clickSaveAndContinue();
+        cy.wait('@updateMellomlagring');
 
         cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
         cy.findByRole('button', { name: 'Dine opplysninger' });
@@ -154,7 +154,11 @@ describe('React components', () => {
           });
 
         cy.findByRole('link', { name: 'Rediger dine opplysninger' }).click();
+        // Expect requests since we navigate back from summary page
+        cy.wait('@getCurrencies');
+        cy.wait('@getCountries');
         cy.findByRole('heading', { name: 'Dine opplysninger' }).should('exist');
+        cy.findByRole('button', { name: 'Lagre og fortsett' }).should('be.visible');
 
         cy.findByRole('textbox', { name: 'Fornavn' }).should('have.value', 'Storm');
         // TODO: Not the nicest way to check values from react-select. But not worth the time to debug since it will be replaced by Aksel select.

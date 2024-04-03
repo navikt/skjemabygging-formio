@@ -44,28 +44,41 @@ const NavForm = (props) => {
   const [formio, setFormio] = useState(undefined);
   useStyles();
   const { prefillData } = usePrefillData();
-  const appconfig = useAppConfig();
+  const appConfig = useAppConfig();
 
   useEffect(
     () => () => {
       if (formio) {
+        appConfig.logger?.debug('Destroy formio on unmount', { formioId: formio.id });
         formio.destroy(true);
       }
     },
     [formio],
   );
 
+  useEffect(() => {
+    const { fyllutEvents } = props;
+    fyllutEvents?.on('focusOnComponent', (args) => formio.focusOnComponent(args));
+    return () => fyllutEvents?.removeListener('focusOnComponent');
+  }, [props.fyllutEvents, formio]);
+
   const createWebformInstance = (srcOrForm) => {
     const { formioform, formReady, language, i18n } = props;
+    appConfig.logger?.debug('create webform instance', {
+      formioId: formio?.id,
+      form: srcOrForm.properties?.skjemanummer || srcOrForm,
+      language,
+    });
     instance = new (formioform || FormioForm)(element, srcOrForm, {
       language,
       i18n,
       sanitizeConfig: SANITIZE_CONFIG,
       events: NavForm.getDefaultEmitter(),
-      appConfig: appconfig,
+      appConfig,
     });
 
     createPromise = instance.ready.then((formioInstance) => {
+      appConfig.logger?.debug('Formio ready', { formioId: formioInstance.id, oldFormioId: formio?.id });
       if (formio) {
         formio.destroy(true);
       }
@@ -79,6 +92,7 @@ const NavForm = (props) => {
   };
 
   const onAnyEvent = (event, ...args) => {
+    appConfig.logger?.trace(`formio event '${event}'`, { formioId: formio?.id, eventArgs: args });
     if (event.startsWith('formio.')) {
       const funcName = `on${event.charAt(7).toUpperCase()}${event.slice(8)}`;
       // eslint-disable-next-line no-prototype-builtins
@@ -139,12 +153,14 @@ const NavForm = (props) => {
 
   useEffect(() => {
     if (formio) {
+      appConfig.logger?.debug('set language', { formioId: formio?.id, language: props.language });
       formio.language = props.language;
     }
   }, [props.language]);
 
   useEffect(() => {
     if (formio && props.submission) {
+      appConfig.logger?.debug('set submission', { formioId: formio?.id });
       formio.setSubmission(JSON.parse(JSON.stringify(props.submission))).then(() => {
         if (props.submission.fyllutState) {
           formio.redrawNavigation();
@@ -152,6 +168,7 @@ const NavForm = (props) => {
       });
     }
     if (formio && prefillData) {
+      appConfig.logger?.debug('prefill data and set form', { formioId: formio?.id });
       formio.form = navFormUtils.prefillForm(formio.form, prefillData);
     }
   }, [props.submission, formio, prefillData]);
@@ -185,6 +202,9 @@ NavForm.propTypes = {
   onBlur: PropTypes.func,
   onInitialized: PropTypes.func,
   onWizardPageSelected: PropTypes.func,
+  onShowErrors: PropTypes.func,
+  onErrorSummaryFocus: PropTypes.func,
+  fyllutEvents: PropTypes.object,
   formReady: PropTypes.func,
   submissionReady: PropTypes.func,
   formioform: PropTypes.any,

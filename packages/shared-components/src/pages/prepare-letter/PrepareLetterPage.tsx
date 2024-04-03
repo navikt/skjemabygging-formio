@@ -31,7 +31,7 @@ const useStyles = makeStyles({
     display: 'flex',
     flexDirection: 'column',
     '& section.wizard-page': {
-      paddingBottom: '3.5rem',
+      paddingBottom: '2rem',
     },
   },
 });

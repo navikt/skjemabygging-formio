@@ -6,6 +6,7 @@ import {
 } from '@navikt/skjemadigitalisering-shared-components';
 
 import {
+  AttachmentSettingValues,
   Component,
   FormioTranslationMap,
   Language,
@@ -126,14 +127,13 @@ const getTranslatablePropertiesFromForm = (form: NavFormType) =>
         description,
         additionalDescriptionLabel,
         additionalDescriptionText,
-        suffix,
-        prefix,
         data,
         contentForPdf,
         altText,
         buttonText,
         addAnother,
         removeAnother,
+        attachmentValues,
       }) => ({
         title,
         label: getLabel(label, type, !!hideLabel),
@@ -144,14 +144,13 @@ const getTranslatablePropertiesFromForm = (form: NavFormType) =>
         description: getTextFromComponentProperty(description),
         additionalDescriptionLabel: getTextFromComponentProperty(additionalDescriptionLabel),
         additionalDescriptionText: getTextFromComponentProperty(additionalDescriptionText),
-        suffix: getTextFromComponentProperty(filterSpecialSuffix(suffix || '')),
-        prefix: getTextFromComponentProperty(prefix),
         data: data?.values ? data.values.map((value) => value.label) : undefined,
         contentForPdf: getTextFromComponentProperty(contentForPdf),
         altText: getTextFromComponentProperty(altText),
         buttonText: getTextFromComponentProperty(buttonText),
         addAnother: getTextFromComponentProperty(addAnother),
         removeAnother: getTextFromComponentProperty(removeAnother),
+        attachmentValues: getAttachmentTexts(attachmentValues),
       }),
     );
 
@@ -173,10 +172,23 @@ const textObject = (
   };
 };
 
+const getAttachmentTexts = (attachmentValues?: AttachmentSettingValues) => {
+  if (!attachmentValues) {
+    return undefined;
+  }
+
+  return Object.entries(attachmentValues)
+    .flatMap(([key, values]) => {
+      return [values?.additionalDocumentation?.label, values?.additionalDocumentation?.description];
+    })
+    .filter((values) => !!values);
+};
+
 const getFormTexts = (form?: NavFormType, withInputType = false): TextObjectType[] => {
   if (!form) {
     return [];
   }
+
   const simplifiedComponentObject = [
     {
       title: form.title,
@@ -189,8 +201,10 @@ const getFormTexts = (form?: NavFormType, withInputType = false): TextObjectType
       Object.keys(component)
         .filter((key) => component[key] !== undefined)
         .flatMap((key) => {
-          if (key === 'values' || key === 'data') {
-            return component[key].filter((value) => value !== '').map((value) => textObject(withInputType, value));
+          if (key === 'values' || key === 'data' || key === 'attachmentValues') {
+            return component[key]
+              .filter((value) => value !== '')
+              .map((value) => textObject(withInputType, value)) as TextObjectType;
           }
           return textObject(withInputType, component[key]);
         }),

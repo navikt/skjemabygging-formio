@@ -196,7 +196,6 @@ describe('Mellomlagring', () => {
               const { submission: fixtureSubmission, ...fixtureRest } = fixture;
               expect(bodySubmission.data).to.deep.eq(fixtureSubmission.data);
               expect(bodyRest).to.deep.eq(fixtureRest);
-              req.reply(201);
             });
           });
         });
@@ -210,7 +209,7 @@ describe('Mellomlagring', () => {
           cy.findByText('Ønsker du å få gaven innpakket').should('exist');
           cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.saveAndContinue }).should('exist').click();
           cy.wait('@submitMellomlagring');
-          cy.url().should('not.include', 'testMellomlagring');
+          cy.url().should('not.include', 'testmellomlagring').should('include', '/send-inn-frontend');
         });
 
         it('retrieves mellomlagring and lets you navigate to first empty panel', () => {
@@ -245,14 +244,13 @@ describe('Mellomlagring', () => {
           cy.clickSaveAndContinue();
           cy.get('@updateMellomlagringSpy').should('not.have.been.called');
 
-          cy.findByRole('heading', { name: TEXTS.validering.error })
+          cy.findByRole('region', { name: TEXTS.validering.error })
             .should('exist')
-            .parent()
             .within(() => {
-              cy.get('li').should('have.length', 2);
+              cy.get('a').should('have.length', 2);
+              cy.findByRole('link', { name: 'Du må fylle ut: Farge' }).should('exist').click();
             });
 
-          cy.findByRoleWhenAttached('link', { name: 'Du må fylle ut: Farge' }).should('exist').click();
           cy.findByRole('group', { name: 'Farge' })
             .should('exist')
             .should('have.focus')
@@ -260,7 +258,12 @@ describe('Mellomlagring', () => {
               cy.findByLabelText('Rød').click();
             });
 
-          cy.findByRoleWhenAttached('link', { name: 'Du må fylle ut: Tekst på kortet' }).should('exist').click();
+          cy.findByRole('region', { name: TEXTS.validering.error })
+            .should('exist')
+            .within(() => {
+              cy.get('a').should('have.length', 1);
+              cy.findByRole('link', { name: 'Du må fylle ut: Tekst på kortet' }).should('exist').click();
+            });
           cy.findByLabelText('Tekst på kortet').should('have.focus').type('Takk for hjelpen!');
 
           cy.findByRole('link', { name: 'Oppsummering' }).click();
