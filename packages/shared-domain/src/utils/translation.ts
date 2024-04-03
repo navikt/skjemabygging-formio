@@ -2,7 +2,7 @@ import { I18nTranslationMap, I18nTranslationReplacements, I18nTranslations } fro
 
 const translateWithTextReplacements = ({
   originalText = '',
-  params = {},
+  params,
   translations = {},
   currentLanguage = 'nb-NO',
 }: {
@@ -20,7 +20,7 @@ const translateWithTextReplacements = ({
 };
 
 const injectParams = (
-  template: string | I18nTranslationMap,
+  template: string | number,
   params?: I18nTranslationReplacements,
   translations?: I18nTranslations | I18nTranslationMap,
   currentLanguage?: string,
