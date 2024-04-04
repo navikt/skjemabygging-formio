@@ -1,4 +1,5 @@
 import { RequestHandler } from 'express';
+import config from '../../../config';
 import { copyService, formioService } from '../../../services';
 import { BadRequest } from '../helpers/errors';
 
@@ -36,7 +37,7 @@ const put: RequestHandler = async (req, res, next) => {
 };
 
 const copyFromProd: RequestHandler = async (req, res, next) => {
-  if (!copyService) {
+  if (config.naisClusterName === 'prod-gcp' || !copyService) {
     return res.sendStatus(405);
   }
   try {
