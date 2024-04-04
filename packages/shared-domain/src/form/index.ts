@@ -217,6 +217,7 @@ export interface NavFormType {
   properties: FormPropertiesType;
   components: Component[];
   access?: ResourceAccess[];
+  project?: string;
 }
 
 export interface FormsResponseForm extends Pick<NavFormType, '_id' | 'title' | 'path' | 'modified'> {

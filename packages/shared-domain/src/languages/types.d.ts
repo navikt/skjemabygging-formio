@@ -45,6 +45,7 @@ export interface FormioTranslationPayload {
   externalIds: unknown[];
   created: string;
   modified: string;
+  project?: string;
 }
 
 export type GlobalTranslationMap = {
