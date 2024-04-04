@@ -12,6 +12,30 @@ export const useFormioForms = () => {
 
   const loadForm = useCallback(async (formPath) => http.get(`/api/forms/${formPath}`), [http]);
 
+  const onCopyFromProd = useCallback(
+    async (formPath) => {
+      try {
+        const savedForm = await http.put(
+          `/api/forms/${formPath}/overwrite-with-prod`,
+          {},
+          {
+            'Bygger-Formio-Token': NavFormioJs.Formio.getToken(),
+          },
+        );
+        feedbackEmit.success('Skjemaet er kopiert fra produksjon');
+        return savedForm;
+      } catch (error) {
+        if (error instanceof http.UnauthenticatedError) {
+          feedbackEmit.error('Kopiering feilet. Du har blitt logget ut.');
+        } else {
+          feedbackEmit.error(error.message);
+        }
+        return { error: true };
+      }
+    },
+    [feedbackEmit, http],
+  );
+
   const onSave = useCallback(
     async (callbackForm) => {
       try {
@@ -95,5 +119,6 @@ export const useFormioForms = () => {
     onSave,
     onPublish,
     onUnpublish,
+    onCopyFromProd,
   };
 };

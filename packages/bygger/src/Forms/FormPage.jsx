@@ -8,7 +8,7 @@ import { TestFormPage } from './TestFormPage';
 import { loadPublishedForm } from './diffing/publishedForm';
 import formPageReducer from './formPageReducer';
 
-export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish, onUnpublish }) => {
+export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish, onUnpublish, onCopyFromProd }) => {
   const { featureToggles, diffOn } = useAppConfig();
   const { formPath } = useParams();
   const [state, dispatch] = useReducer(formPageReducer, { status: 'LOADING' }, (state) => state);
@@ -70,6 +70,13 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish, onUnpu
       });
   };
 
+  const copyFormFromProduction = async () => {
+    const savedForm = await onCopyFromProd(state.form.path);
+    if (!savedForm.error) {
+      dispatch({ type: 'form-saved', form: savedForm });
+    }
+  };
+
   if (state.status === 'LOADING') {
     return <LoadingComponent />;
   }
@@ -105,6 +112,7 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish, onUnpu
               onChange={onChange}
               onPublish={publishForm}
               onUnpublish={unpublishForm}
+              onCopyFromProd={copyFormFromProduction}
             />
           }
         />

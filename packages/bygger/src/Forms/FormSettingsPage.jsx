@@ -1,5 +1,5 @@
 import { Button, Heading } from '@navikt/ds-react';
-import { makeStyles, useModal } from '@navikt/skjemadigitalisering-shared-components';
+import { makeStyles, useAppConfig, useModal } from '@navikt/skjemadigitalisering-shared-components';
 import { useState } from 'react';
 import { AppLayout } from '../components/AppLayout';
 import ButtonWithSpinner from '../components/ButtonWithSpinner';
@@ -18,11 +18,12 @@ const useStyles = makeStyles({
   },
 });
 
-export function FormSettingsPage({ form, publishedForm, onSave, onChange, onPublish, onUnpublish }) {
+export function FormSettingsPage({ form, publishedForm, onSave, onChange, onPublish, onUnpublish, onCopyFromProd }) {
   const title = form.title;
   const [openPublishSettingModal, setOpenPublishSettingModal] = useModal();
   const styles = useStyles();
   const [errors, setErrors] = useState({});
+  const { config } = useAppConfig();
 
   const validateAndSave = async (form) => {
     const updatedErrors = validateFormMetadata(form, 'edit');
@@ -59,6 +60,11 @@ export function FormSettingsPage({ form, publishedForm, onSave, onChange, onPubl
           </Button>
           <UnpublishButton onUnpublish={onUnpublish} form={form} />
           <ButtonWithSpinner onClick={() => validateAndSave(form)}>Lagre</ButtonWithSpinner>
+          {!config.isProdGcp && (
+            <ButtonWithSpinner variant="secondary" onClick={onCopyFromProd}>
+              Kopier fra produksjon
+            </ButtonWithSpinner>
+          )}
           <FormStatusPanel publishProperties={form.properties} />
           <UserFeedback />
         </Column>
