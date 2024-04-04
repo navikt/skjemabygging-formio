@@ -1,8 +1,8 @@
 import { BodyShort, Button, Heading } from '@navikt/ds-react';
 import { FormBuilderOptions, makeStyles, useModal } from '@navikt/skjemadigitalisering-shared-components';
 import { AppLayout } from '../components/AppLayout';
+import ButtonWithSpinner from '../components/ButtonWithSpinner';
 import NavFormBuilder from '../components/NavFormBuilder';
-import PrimaryButtonWithSpinner from '../components/PrimaryButtonWithSpinner';
 import SkjemaVisningSelect from '../components/SkjemaVisningSelect';
 import UserFeedback from '../components/UserFeedback';
 import Column from '../components/layout/Column';
@@ -62,7 +62,7 @@ export function EditFormPage({ form, publishedForm, onSave, onChange, onPublish,
               Publiser
             </Button>
             <UnpublishButton onUnpublish={onUnpublish} form={form} />
-            <PrimaryButtonWithSpinner onClick={() => onSave(form)}>Lagre</PrimaryButtonWithSpinner>
+            <ButtonWithSpinner onClick={() => onSave(form)}>Lagre</ButtonWithSpinner>
             <FormStatusPanel publishProperties={form.properties} />
             <UserFeedback />
           </Column>

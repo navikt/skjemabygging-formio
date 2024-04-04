@@ -6,31 +6,43 @@ import {
   TEXTS,
   VedtakBetalingsplan,
 } from '@navikt/skjemadigitalisering-shared-domain';
-import { mapToSubmissionActivity } from '../../formio/components/core/activities/Activities.utils';
-import { drivingListMetadata, toLocaleDate } from '../../formio/components/core/driving-list/DrivingList.utils';
+import { mapToSubmissionActivity, mapToVedtaklist } from '../../formio/components/core/activities/Activities.utils';
+import {
+  drivingListMetadata,
+  toLocaleDateLongMonth,
+} from '../../formio/components/core/driving-list/DrivingList.utils';
 import { useDrivingList } from '../../formio/components/core/driving-list/DrivingListContext';
 import makeStyles from '../../util/styles/jss/jss';
 import NavActivities from '../activities/NavActivities';
 import ActivityAlert from './ActivityAlert';
 import DrivingPeriod from './DrivingPeriod';
+import PeriodInfo from './PeriodInfo';
 
 type Props = {
   activities: SendInnAktivitet[];
 };
 
+type ActivityChangeOptions = {
+  autoSelect?: boolean;
+};
+
 const useDrivinglistStyles = makeStyles({
-  marginBottom: {
-    marginBottom: '2.5rem',
+  accoridonHeader: {
+    marginBottom: 'var(--a-spacing-3)',
   },
 });
 
 const DrivingListFromActivities = ({ activities }: Props) => {
-  const { values, updateValues, t, appConfig, getComponentError, addRef } = useDrivingList();
+  const { values, updateValues, t, appConfig, getComponentError, addRef, locale } = useDrivingList();
 
   const styles = useDrivinglistStyles();
 
-  const onActivityChange = (activity?: SubmissionActivity) => {
-    updateValues({ selectedVedtaksId: activity?.vedtaksId, dates: [] });
+  const onActivityChange = (activity?: SubmissionActivity, options?: ActivityChangeOptions) => {
+    if (options?.autoSelect) {
+      updateValues({ selectedVedtaksId: activity?.vedtaksId });
+    } else {
+      updateValues({ selectedVedtaksId: activity?.vedtaksId, dates: [] });
+    }
   };
 
   const renderDrivingPeriodsFromActivities = (
@@ -55,7 +67,7 @@ const DrivingListFromActivities = ({ activities }: Props) => {
   };
 
   const renderDrivingListFromActivities = () => {
-    const activitySelections = mapToSubmissionActivity(activities, 'vedtak');
+    const activitySelections = mapToSubmissionActivity(activities, 'vedtak', locale);
     const vedtakSelection = activitySelections.find((activity) => activity.vedtaksId === values?.selectedVedtaksId);
 
     const selectedActivity = activities.find((activity) =>
@@ -69,30 +81,34 @@ const DrivingListFromActivities = ({ activities }: Props) => {
 
     return (
       <>
+        <ActivityAlert vedtakData={mapToVedtaklist(activities)} className={'mb'} />
         <NavActivities
           id={drivingListMetadata('activityRadio').id}
           label={t(drivingListMetadata('activityRadio').label)}
           value={vedtakSelection}
-          onChange={(activity) => onActivityChange(activity)}
+          onChange={(activity?: SubmissionActivity, options?: ActivityChangeOptions) =>
+            onActivityChange(activity, options)
+          }
           appConfig={appConfig}
           t={t}
-          className={styles.marginBottom}
+          className={'mb'}
           dataType="vedtak"
           activities={activities}
           error={getComponentError('activityRadio')}
           ref={(ref) => addRef('activityRadio', ref)}
+          locale={locale}
+          shouldAutoSelectSingleActivity={true}
         />
         {selectedActivity && selectedVedtak && (
           <>
-            <ActivityAlert
-              activityName={selectedActivity.aktivitetsnavn}
-              vedtak={selectedVedtak}
-              className={styles.marginBottom}
-            />
+            <PeriodInfo />
+            <Heading size="xsmall" className={styles.accoridonHeader}>
+              {TEXTS.statiske.drivingList.accordionHeader}
+            </Heading>
             <Accordion
               tabIndex={-1}
               id={drivingListMetadata('dates').id}
-              className={styles.marginBottom}
+              className={'mb'}
               size="small"
               ref={(ref) => addRef('dates', ref)}
             >
@@ -105,7 +121,7 @@ const DrivingListFromActivities = ({ activities }: Props) => {
                 )}
             </Accordion>
             {alreadyRefunded.length > 0 && (
-              <>
+              <div className={'mb'}>
                 <Heading size="small" spacing={true}>
                   {t(TEXTS.statiske.drivingList.previousDrivingList)}
                 </Heading>
@@ -118,13 +134,13 @@ const DrivingListFromActivities = ({ activities }: Props) => {
                       return (
                         <li key={betalingsplan.betalingsplanId}>
                           <BodyShort size="medium">
-                            {`${toLocaleDate(periodFrom)} - ${toLocaleDate(periodTo)} (${betalingsplan.beloep} kr)`}
+                            {`${toLocaleDateLongMonth(periodFrom, locale)} - ${toLocaleDateLongMonth(periodTo, locale)} (${betalingsplan.beloep} kr)`}
                           </BodyShort>
                         </li>
                       );
                     })}
                 </ul>
-              </>
+              </div>
             )}
           </>
         )}

@@ -2,9 +2,9 @@ import { Button, Heading } from '@navikt/ds-react';
 import { makeStyles, useAppConfig, useModal } from '@navikt/skjemadigitalisering-shared-components';
 import { useState } from 'react';
 import { AppLayout } from '../components/AppLayout';
+import ButtonWithSpinner from '../components/ButtonWithSpinner';
 import { FormMetadataEditor } from '../components/FormMetaDataEditor/FormMetadataEditor';
 import { isFormMetadataValid, validateFormMetadata } from '../components/FormMetaDataEditor/utils/utils';
-import PrimaryButtonWithSpinner from '../components/PrimaryButtonWithSpinner';
 import UserFeedback from '../components/UserFeedback';
 import Column from '../components/layout/Column';
 import Row from '../components/layout/Row';
@@ -59,10 +59,8 @@ export function FormSettingsPage({ form, publishedForm, onSave, onChange, onPubl
             Publiser
           </Button>
           <UnpublishButton onUnpublish={onUnpublish} form={form} />
-          <PrimaryButtonWithSpinner onClick={() => validateAndSave(form)}>Lagre</PrimaryButtonWithSpinner>
-          {!config.isProdGcp && (
-            <PrimaryButtonWithSpinner onClick={onCopyFromProd}>Kopier fra produksjon</PrimaryButtonWithSpinner>
-          )}
+          <ButtonWithSpinner onClick={() => validateAndSave(form)}>Lagre</ButtonWithSpinner>
+          {!config.isProdGcp && <ButtonWithSpinner onClick={onCopyFromProd}>Kopier fra produksjon</ButtonWithSpinner>}
           <FormStatusPanel publishProperties={form.properties} />
           <UserFeedback />
         </Column>
