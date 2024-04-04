@@ -15,7 +15,7 @@ export const createCopyService = (
       source: formioServiceSource.projectUrl,
       target: formioServiceTarget.projectUrl,
     };
-    logger.info(`Will try to copy form ${formPath}...`, logMeta);
+    logger.info(`Will overwrite form ${formPath} with data from source...`, logMeta);
 
     const sourceForm = await formioServiceSource.getForm(formPath);
     if (!sourceForm) {
@@ -38,9 +38,9 @@ export const createCopyService = (
     await formioServiceTarget.deleteTranslations(formPath, token);
 
     if (sourceTranslations.length > 0) {
+      logger.info(`Will overwrite translations for form ${formPath} with data from source...`, logMeta);
       const languageForm = await formioServiceTarget.getForm('language', 'resource');
       if (languageForm) {
-        logger.info(`Will try to copy translations for form ${formPath}...`, logMeta);
         const translations = sourceTranslations.map((t) => {
           return {
             data: t.data,
