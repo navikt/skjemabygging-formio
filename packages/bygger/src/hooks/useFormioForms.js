@@ -16,7 +16,7 @@ export const useFormioForms = () => {
     async (formPath) => {
       try {
         const savedForm = await http.put(
-          `/api/forms/${formPath}/copy-from-prod`,
+          `/api/forms/${formPath}/overwrite-with-prod`,
           {},
           {
             'Bygger-Formio-Token': NavFormioJs.Formio.getToken(),
