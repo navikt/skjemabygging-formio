@@ -170,18 +170,7 @@ const TranslationFormHtmlSection = ({
             </HStack>
           </VStack>
         )}
-        {currentTranslation && (
-          <>
-            <b>Lagret:</b>
-            <div>{storedTranslation}</div>
-            <b>Oversett:</b>
-            <div
-              dangerouslySetInnerHTML={{
-                __html: htmlAsJsonUtils.json2HtmlString(currentTranslation as HtmlAsJsonElement),
-              }}
-            />
-          </>
-        )}
+
         {currentTranslationWithMarkDown?.type === 'Element' &&
           currentTranslation?.type === 'Element' &&
           htmlElementAsJson.type === 'Element' &&
@@ -196,7 +185,7 @@ const TranslationFormHtmlSection = ({
                 currentTranslation={translationElement}
                 currentTranslationWithMarkDown={translationElementWithMarkDown}
                 updateTranslation={(element) => {
-                  const updatedTranslation = currentTranslation;
+                  const updatedTranslation = JSON.parse(JSON.stringify(currentTranslation));
                   if (updatedTranslation && updatedTranslation?.type === 'Element') {
                     updatedTranslation.children[index] = element;
                     const updatedTranslationHtmlString = htmlAsJsonUtils.json2HtmlString(updatedTranslation);
