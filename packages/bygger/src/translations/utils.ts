@@ -162,7 +162,7 @@ const textObject = (
   value: string,
 ): { text: string; type?: InputType; htmlElementAsJson?: HtmlAsJsonElement } => {
   const htmlElementAsJson = htmlAsJsonUtils.isHtmlString(value)
-    ? htmlAsJsonUtils.htmlString2Json(value, ['P', 'H3', 'LI'])
+    ? htmlAsJsonUtils.htmlString2Json(value, htmlAsJsonUtils.defaultLeafs)
     : undefined;
   const type = withInputType ? getInputType(value) : undefined;
   return {
@@ -298,14 +298,14 @@ const createTranslationsHtmlRows = (
 const getTextsAndTranslationsForForm = (form: NavFormType, translations: FormioTranslationMap): CsvRow[] => {
   const textComponents = getFormTexts(form, false);
   let textIndex = 0;
-  const data = textComponents.flatMap((textComponent) => {
+  return textComponents.flatMap((textComponent) => {
     if (textComponent.htmlElementAsJson) {
       const htmlTranslations = Object.entries(translations).reduce((acc, [lang, translation]) => {
         const translationValue = translation.translations[textComponent.text]?.value ?? '';
         if (!htmlAsJsonUtils.isHtmlString(translationValue)) {
           return acc;
         }
-        const translationAsJson = htmlAsJsonUtils.htmlString2Json(translationValue, ['P', 'H3', 'LI']);
+        const translationAsJson = htmlAsJsonUtils.htmlString2Json(translationValue, htmlAsJsonUtils.defaultLeafs);
         return {
           ...acc,
           [lang]: { translations: { ...translation.translations[textComponent.text], value: translationAsJson } },
@@ -320,7 +320,6 @@ const getTextsAndTranslationsForForm = (form: NavFormType, translations: FormioT
       return createTranslationsTextRow(textComponent.text, translations, `${++textIndex}`.padStart(3, '0'));
     }
   });
-  return data;
 };
 
 const getTextsAndTranslationsHeaders = (translations: FormioTranslationMap) => {

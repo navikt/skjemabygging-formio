@@ -1,6 +1,6 @@
 import { htmlString2Json, isHtmlString, json2HtmlString } from './converters/htmlString';
 import { markdown2Json } from './converters/markdown';
-import { HtmlAsJsonElement, HtmlAsJsonTextElement, getChild } from './htmlAsJson';
+import { HtmlAsJsonElement, HtmlAsJsonTextElement, defaultLeafs, getChild } from './htmlAsJson';
 
 const htmlAsJsonUtils = {
   isHtmlString,
@@ -8,6 +8,7 @@ const htmlAsJsonUtils = {
   htmlString2Json,
   json2HtmlString,
   markdown2Json,
+  defaultLeafs,
 };
 
 export type { HtmlAsJsonElement, HtmlAsJsonTextElement };

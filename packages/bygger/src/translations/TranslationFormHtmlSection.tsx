@@ -71,7 +71,7 @@ const TranslationFormHtmlSection = ({
     if (!currentTranslationWithMarkDown) {
       const storedTranslationAsJson =
         !!storedTranslation && htmlAsJsonUtils.isHtmlString(storedTranslation)
-          ? htmlAsJsonUtils.htmlString2Json(storedTranslation, ['P', 'H3', 'LI'])
+          ? htmlAsJsonUtils.htmlString2Json(storedTranslation, htmlAsJsonUtils.defaultLeafs)
           : undefined;
       return storedTranslationAsJson && !isSameStructure(htmlElementAsJson, storedTranslationAsJson);
     }
@@ -80,7 +80,9 @@ const TranslationFormHtmlSection = ({
   useEffect(() => {
     if (!currentTranslation && !translationIsMissing && !incompatibleTranslationExists) {
       setCurrentTranslation(htmlAsJsonUtils.htmlString2Json(storedTranslation));
-      setCurrentTranslationWithMarkDown(htmlAsJsonUtils.htmlString2Json(storedTranslation, ['P', 'H3', 'LI']));
+      setCurrentTranslationWithMarkDown(
+        htmlAsJsonUtils.htmlString2Json(storedTranslation, htmlAsJsonUtils.defaultLeafs),
+      );
     }
   }, [currentTranslation, incompatibleTranslationExists, storedTranslation, translationIsMissing]);
 
@@ -189,11 +191,10 @@ const TranslationFormHtmlSection = ({
                   if (updatedTranslation && updatedTranslation?.type === 'Element') {
                     updatedTranslation.children[index] = element;
                     const updatedTranslationHtmlString = htmlAsJsonUtils.json2HtmlString(updatedTranslation);
-                    const updatedTranslation2Json = htmlAsJsonUtils.htmlString2Json(updatedTranslationHtmlString, [
-                      'P',
-                      'H3',
-                      'LI',
-                    ]);
+                    const updatedTranslation2Json = htmlAsJsonUtils.htmlString2Json(
+                      updatedTranslationHtmlString,
+                      htmlAsJsonUtils.defaultLeafs,
+                    );
                     setCurrentTranslation(updatedTranslation);
                     setCurrentTranslationWithMarkDown(updatedTranslation2Json);
                     updateTranslation(updatedTranslationHtmlString);

@@ -6,7 +6,8 @@ interface HtmlAsJsonTextElement {
   htmlContentAsJson?: Array<HtmlAsJsonElement | HtmlAsJsonTextElement>;
 }
 
-const acceptedTags = ['P', 'H3', 'LI', 'OL', 'UL', 'A', 'B', 'STRONG'];
+const defaultLeafs: AcceptedTag[] = ['P', 'H3', 'LI'];
+const acceptedTags = ['P', 'H3', 'LI', 'OL', 'UL', 'A', 'B', 'STRONG'] as const;
 type AcceptedTag = (typeof acceptedTags)[number];
 
 interface HtmlAsJsonElement {
@@ -15,12 +16,12 @@ interface HtmlAsJsonElement {
   tagName: string;
   attributes: Array<[string, string]>;
   children: Array<HtmlAsJsonElement | HtmlAsJsonTextElement>;
-  // Used to keep track of wrapping div, which is used to support htmlStrings with multiple tags on the top level
+  // isWrapper is true if this is an outer wrapping div, which is used to support htmlStrings with multiple tags on the top level
   isWrapper: boolean;
 }
 
 const getChild = (htmlAsJson: HtmlAsJsonElement | HtmlAsJsonTextElement | undefined, index: number) =>
   htmlAsJson?.type === 'Element' && htmlAsJson.children.length > index ? htmlAsJson.children[index] : undefined;
 
-export { acceptedTags, getChild };
+export { acceptedTags, defaultLeafs, getChild };
 export type { AcceptedTag, HtmlAsJsonElement, HtmlAsJsonTextElement };
