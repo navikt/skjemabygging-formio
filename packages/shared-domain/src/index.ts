@@ -11,6 +11,7 @@ import {
   FormPropertiesPublishing,
   FormPropertiesType,
   FormSignaturesType,
+  FormType,
   FormsResponseForm,
   FyllutState,
   InnsendingType,
@@ -50,7 +51,12 @@ import migrationUtils, { MigrationLevel } from './migration';
 import { Operator } from './migration/operator';
 import type { Mottaksadresse, MottaksadresseData } from './mottaksadresse';
 import type { ReportDefinition } from './reports';
-import type { GlobalTranslationsResourceContent, MottaksadresserResourceContent, ResourceContent } from './resource';
+import type { FormioResource, ResourceName } from './resource';
+import type {
+  GlobalTranslationsResourceContent,
+  MottaksadresserResourceContent,
+  ResourceContent,
+} from './resource/published';
 import {
   AktivitetPeriode,
   AktivitetVedtaksinformasjon,
@@ -124,6 +130,8 @@ export type {
   FormPropertiesPublishing,
   FormPropertiesType,
   FormSignaturesType,
+  FormType,
+  FormioResource,
   FormioTranslation,
   FormioTranslationData,
   FormioTranslationMap,
@@ -156,6 +164,7 @@ export type {
   ReportDefinition,
   ResourceAccess,
   ResourceContent,
+  ResourceName,
   ScopedTranslationMap,
   SendInnAktivitet,
   SendInnMaalgruppe,

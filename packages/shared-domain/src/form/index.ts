@@ -2,6 +2,7 @@ import { AttachmentSettingValues } from '../attachment';
 import { Enhetstype } from '../enhet';
 
 export type DisplayType = 'wizard' | 'form';
+export type FormType = 'form' | 'resource';
 export type InnsendingType = 'PAPIR_OG_DIGITAL' | 'KUN_PAPIR' | 'KUN_DIGITAL' | 'INGEN';
 export type SubmissionMethod = 'paper' | 'digital';
 

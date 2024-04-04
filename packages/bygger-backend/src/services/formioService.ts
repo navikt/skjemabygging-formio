@@ -1,10 +1,13 @@
 import {
   dateUtils,
+  FormioResource,
   FormioTranslationPayload,
   FormPropertiesPublishing,
   FormPropertiesType,
+  FormType,
   NavFormType,
   navFormUtils,
+  ResourceName,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { fetchWithErrorHandling } from '../fetchUtils';
 import { logger } from '../logging/logger';
@@ -23,7 +26,7 @@ export class FormioService {
     return response.data as T;
   }
 
-  async getForm(formPath: string, type: string = 'form') {
+  async getForm(formPath: string, type: FormType = 'form') {
     const formData = await this.fetchFromProjectApi<NavFormType[]>(`/form?type=${type}&path=${formPath}&limit=1`);
     return formData[0];
   }
@@ -50,10 +53,13 @@ export class FormioService {
     );
   }
 
+  async getResourceSubmissions<T extends FormioResource>(resourceName: ResourceName, query?: string): Promise<T[]> {
+    return this.fetchFromProjectApi<T[]>(`/${resourceName}/submission?limit=1000${query ? `&${query}` : ''}`);
+  }
+
   async getTranslations(formPath: string) {
-    return this.fetchFromProjectApi<FormioTranslationPayload[]>(
-      `/language/submission?data.name__regex=/^global\\.${formPath}$/gi&limit=1000`,
-    );
+    const query = `data.name__regex=/^global\\.${formPath}$/gi`;
+    return this.getResourceSubmissions<FormioTranslationPayload>('language', query);
   }
 
   async saveTranslation(resource: FormioTranslationPayload, userToken: string) {
@@ -89,7 +95,7 @@ export class FormioService {
   async deleteTranslations(formPath: string, userToken: string) {
     const translations = await this.getTranslations(formPath);
     if (translations.length > 0) {
-      logger.debug(`Will delete all translations for form ${formPath}`, {
+      logger.info(`Will delete all translations for form ${formPath}`, {
         translationIds: translations.map((t) => t._id),
       });
       await Promise.all(translations.map((t) => this.deleteTranslation(t._id, userToken)));

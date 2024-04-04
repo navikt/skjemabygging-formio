@@ -1,3 +1,5 @@
+import { FormioResource } from '../resource';
+
 export interface MottaksadresseData {
   adresselinje1: string;
   adresselinje2?: string;
@@ -7,15 +9,6 @@ export interface MottaksadresseData {
   temakoder?: string;
 }
 
-export interface Mottaksadresse {
-  _id: string;
+export interface Mottaksadresse extends FormioResource {
   data: MottaksadresseData;
-  owner?: string;
-  roles?: unknown[];
-  access?: unknown[];
-  metadata?: unknown;
-  form?: string;
-  externalIds?: unknown[];
-  created?: string;
-  modified?: string;
 }
