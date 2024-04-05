@@ -1,4 +1,4 @@
-import { AcceptedTag, acceptedTags, HtmlAsJsonElement, HtmlAsJsonTextElement } from '../htmlAsJson';
+import { AcceptedTag, HtmlAsJsonElement, HtmlAsJsonTextElement, isAcceptedTag } from '../htmlAsJson';
 import { json2HtmlString } from './htmlString';
 import { htmlNode2Markdown } from './markdown';
 
@@ -33,7 +33,7 @@ const fromNode = (node: ChildNode, skipConversionWithin: AcceptedTag[]): HtmlAsJ
     return fromTextContent(node.textContent);
   } else if (node?.nodeType === Node.ELEMENT_NODE) {
     const element = node as Element;
-    if (acceptedTags.includes(element.tagName)) {
+    if (isAcceptedTag(element.tagName)) {
       return fromElement(element, skipConversionWithin);
     }
     return fromTextContent(json2HtmlString(fromElement(element, skipConversionWithin)));
@@ -60,7 +60,7 @@ const fromElement = (
 ): HtmlAsJsonElement => {
   const convertChildrenToText = (skipConversionWithinTags as string[]).includes(element.tagName);
   return {
-    id: element.textContent!.replaceAll(' ', ''),
+    id: `${element.tagName.toLowerCase()}-${element.textContent!.replaceAll(' ', '')}`,
     type: 'Element',
     tagName: element.tagName,
     attributes: Array.from(element.attributes, ({ name, value }) => [name, value]),

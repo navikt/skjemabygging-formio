@@ -1,3 +1,11 @@
+const defaultLeafs: AcceptedTag[] = ['P', 'H3', 'LI'];
+const acceptedTags = ['P', 'H3', 'LI', 'OL', 'UL', 'A', 'B', 'STRONG'] as const;
+type AcceptedTag = (typeof acceptedTags)[number];
+
+const isAcceptedTag = (tag: string): tag is AcceptedTag => {
+  return ([...acceptedTags] as string[]).includes(tag);
+};
+
 interface HtmlAsJsonTextElement {
   id: string;
   type: 'TextElement';
@@ -5,10 +13,6 @@ interface HtmlAsJsonTextElement {
   // If textContent is a result of several elements being combined, e.g. as markdown, htmlContentAsJson wil store the generated html structure for structural memory
   htmlContentAsJson?: Array<HtmlAsJsonElement | HtmlAsJsonTextElement>;
 }
-
-const defaultLeafs: AcceptedTag[] = ['P', 'H3', 'LI'];
-const acceptedTags = ['P', 'H3', 'LI', 'OL', 'UL', 'A', 'B', 'STRONG'] as const;
-type AcceptedTag = (typeof acceptedTags)[number];
 
 interface HtmlAsJsonElement {
   id: string;
@@ -23,5 +27,5 @@ interface HtmlAsJsonElement {
 const getChild = (htmlAsJson: HtmlAsJsonElement | HtmlAsJsonTextElement | undefined, index: number) =>
   htmlAsJson?.type === 'Element' && htmlAsJson.children.length > index ? htmlAsJson.children[index] : undefined;
 
-export { acceptedTags, defaultLeafs, getChild };
+export { acceptedTags, defaultLeafs, getChild, isAcceptedTag };
 export type { AcceptedTag, HtmlAsJsonElement, HtmlAsJsonTextElement };

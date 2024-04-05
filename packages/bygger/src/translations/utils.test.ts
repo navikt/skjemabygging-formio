@@ -260,7 +260,7 @@ describe('testGetAllTextsAndTypeForForm', () => {
         text: 'Mer informasjon finner dere på Brønnøysundregistrenes nettside <a href= "https://www.brreg.no/bedrift/underenhet/" target="_blank">Underenhet (åpnes i ny fane)</a>.',
         type: 'textarea',
         htmlElementAsJson: {
-          id: 'MerinformasjonfinnerderepåBrønnøysundregistrenesnettsideUnderenhet(åpnesinyfane).',
+          id: 'div-MerinformasjonfinnerderepåBrønnøysundregistrenesnettsideUnderenhet(åpnesinyfane).',
           type: 'Element',
           tagName: 'DIV',
           attributes: [],
@@ -272,7 +272,7 @@ describe('testGetAllTextsAndTypeForForm', () => {
               textContent: 'Mer informasjon finner dere på Brønnøysundregistrenes nettside ',
             },
             {
-              id: 'Underenhet(åpnesinyfane)',
+              id: 'a-Underenhet(åpnesinyfane)',
               type: 'Element',
               tagName: 'A',
               attributes: [
@@ -294,14 +294,14 @@ describe('testGetAllTextsAndTypeForForm', () => {
         text: '<h3>Eventuell utbetaling av AAP</h3> Du kan bare ha ett kontonummer registrert hos NAV. Du kan enkelt <a href="https://www.nav.no/soknader/nb/person/diverse/endre-opplysninger-om-bankkontonummer#papirsoknader" target="_blank"> endre hvilket kontonummer vi benytter (åpnes i ny fane)</a>. <br/>',
         type: 'textarea',
         htmlElementAsJson: {
-          id: 'EventuellutbetalingavAAPDukanbarehaettkontonummerregistrerthosNAV.Dukanenkeltendrehvilketkontonummervibenytter(åpnesinyfane).',
+          id: 'div-EventuellutbetalingavAAPDukanbarehaettkontonummerregistrerthosNAV.Dukanenkeltendrehvilketkontonummervibenytter(åpnesinyfane).',
           type: 'Element',
           tagName: 'DIV',
           attributes: [],
           isWrapper: true,
           children: [
             {
-              id: 'EventuellutbetalingavAAP',
+              id: 'h3-EventuellutbetalingavAAP',
               type: 'Element',
               tagName: 'H3',
               attributes: [],
@@ -323,7 +323,7 @@ describe('testGetAllTextsAndTypeForForm', () => {
               textContent: ' Du kan bare ha ett kontonummer registrert hos NAV. Du kan enkelt ',
             },
             {
-              id: 'endrehvilketkontonummervibenytter(åpnesinyfane)',
+              id: 'a-endrehvilketkontonummervibenytter(åpnesinyfane)',
               type: 'Element',
               tagName: 'A',
               attributes: [
@@ -351,14 +351,14 @@ describe('testGetAllTextsAndTypeForForm', () => {
         text: '<h3>Eventuell utbetaling av AAP</h3>',
         type: 'text',
         htmlElementAsJson: {
-          id: 'EventuellutbetalingavAAP',
+          id: 'div-EventuellutbetalingavAAP',
           type: 'Element',
           tagName: 'DIV',
           attributes: [],
           isWrapper: true,
           children: [
             {
-              id: 'EventuellutbetalingavAAP',
+              id: 'h3-EventuellutbetalingavAAP',
               type: 'Element',
               tagName: 'H3',
               attributes: [],
