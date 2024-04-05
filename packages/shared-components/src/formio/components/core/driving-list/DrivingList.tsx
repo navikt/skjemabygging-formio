@@ -19,6 +19,7 @@ class DrivingList extends BaseComponent {
       type: 'drivinglist',
       key: 'drivinglist',
       input: true,
+      hideLabel: true,
     });
   }
 
@@ -63,19 +64,14 @@ class DrivingList extends BaseComponent {
 
     if (submissionMethod === 'paper') {
       const parkingSelected = componentData?.parking !== undefined && componentData?.parking !== null;
-      const periodSelected = !!componentData?.selectedPeriodType;
       const dateSelected = !!componentData?.selectedDate;
-      const allSelected = !!componentData?.selectedDate && !!componentData?.selectedPeriodType && parkingSelected;
+      const allSelected = !!componentData?.selectedDate && parkingSelected;
 
-      if (!periodSelected) {
-        this.addErrorOfType('periodType', 'required');
-      }
-
-      if (periodSelected && !dateSelected) {
+      if (!dateSelected) {
         this.addErrorOfType('datePicker', 'required');
       }
 
-      if (periodSelected && !parkingSelected) {
+      if (!parkingSelected) {
         this.addErrorOfType('parkingRadio', 'required');
       }
 
@@ -95,8 +91,6 @@ class DrivingList extends BaseComponent {
       if (!isValidParking(date.parking)) {
         const message = this.t(TEXTS.validering.validParkingExpenses, { dato: dateUtils.toLocaleDate(date.date) });
         this.addError(message, `dates:${date.date}:parking`);
-      } else if (Number(date.parking) > 100) {
-        this.addError(this.t(TEXTS.validering.parkingExpensesAboveHundred), `dates:${date.date}:parking`);
       }
     });
 

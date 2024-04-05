@@ -9,6 +9,7 @@ import {
   devGithubApp,
   devPusher,
   devSkjemabyggingProxy,
+  prodFormio,
 } from './development';
 import { ConfigType, NodeEnv } from './types';
 
@@ -33,6 +34,8 @@ const env = (name: string, devValue?: string): string => {
 const optionalEnv = (name: string): string | undefined => {
   return process.env[name];
 };
+
+const naisClusterName = env('NAIS_CLUSTER_NAME') as 'dev-gcp' | 'prod-gcp' | undefined;
 
 const config: ConfigType = {
   azure: {
@@ -73,6 +76,12 @@ const config: ConfigType = {
     },
     jwtSecret: env('FORMIO_JWT_SECRET'),
   },
+  prodFormio:
+    naisClusterName !== 'prod-gcp'
+      ? {
+          projectUrl: env('FORMIO_PROJECT_URL_PROD', prodFormio.projectUrl),
+        }
+      : undefined,
   fyllut: {
     baseUrl: env('FYLLUT_BASE_URL', devFyllut.baseUrl),
   },
@@ -87,7 +96,7 @@ const config: ConfigType = {
   isProduction: nodeEnv === 'production',
   isDevelopment: nodeEnv === 'development',
   featureToggles: featureUtils.toFeatureToggles(env('ENABLED_FEATURES', devEnabledFeatures)),
-  naisClusterName: env('NAIS_CLUSTER_NAME') as 'dev-gcp' | 'prod-gcp' | undefined,
+  naisClusterName,
   frontendLoggerConfig: configUtils.loadJsonFromEnv('BYGGER_FRONTEND_LOGCONFIG'),
 };
 

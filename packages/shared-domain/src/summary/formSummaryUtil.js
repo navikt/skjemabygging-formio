@@ -1,6 +1,7 @@
 import moment from 'moment';
 import 'moment/locale/nb';
 import TEXTS from '../texts';
+import dateUtils from '../utils/date';
 import FormioUtils from '../utils/formio/FormioUtils';
 import sanitizeJavaScriptCode from '../utils/formio/sanitize-javascript-code';
 import { addToMap } from '../utils/objectUtils';
@@ -10,7 +11,7 @@ function createComponentKey(parentContainerKey, key) {
   return parentContainerKey.length > 0 ? `${parentContainerKey}.${key}` : key;
 }
 
-function formatValue(component, value, translate, form) {
+function formatValue(component, value, translate, form, language) {
   switch (component.type) {
     case 'radiopanel':
     case 'radio':
@@ -90,6 +91,24 @@ function formatValue(component, value, translate, form) {
             ? translate(TEXTS.statiske.attachment.deadline, { deadline: form?.properties?.ettersendelsesfrist })
             : undefined,
       };
+    case 'drivinglist':
+      return {
+        description: translate(TEXTS.statiske.drivingList.summaryDescription),
+        dates: value.dates
+          .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+          .map((date) => {
+            const formattedDate = dateUtils.toWeekdayAndDate(date.date, language);
+            return {
+              key: date.date,
+              text: date.parking
+                ? translate(TEXTS.statiske.drivingList.summaryTextParking, {
+                    date: formattedDate,
+                    parking: date.parking,
+                  })
+                : formattedDate,
+            };
+          }),
+      };
     default:
       return value;
   }
@@ -104,6 +123,7 @@ function handlePanel(
   evaluatedConditionals,
   excludeEmptyPanels,
   form,
+  language,
 ) {
   const { title, key, type, components = [] } = component;
   const subComponents = components.reduce(
@@ -117,6 +137,7 @@ function handlePanel(
         evaluatedConditionals,
         excludeEmptyPanels,
         form,
+        language,
       ),
     [],
   );
@@ -141,7 +162,9 @@ function handleContainer(
   parentContainerKey,
   translate,
   evaluatedConditionals,
+  excludeEmptyPanels,
   form,
+  language,
 ) {
   const { components, key } = component;
   const containerKey = createComponentKey(parentContainerKey, key);
@@ -150,14 +173,24 @@ function handleContainer(
   } else {
     const mappedSubComponents = components.reduce(
       (subComponents, subComponent) =>
-        handleComponent(subComponent, submission, subComponents, containerKey, translate, evaluatedConditionals, form),
+        handleComponent(
+          subComponent,
+          submission,
+          subComponents,
+          containerKey,
+          translate,
+          evaluatedConditionals,
+          excludeEmptyPanels,
+          form,
+          language,
+        ),
       [],
     );
     return [...formSummaryObject, ...mappedSubComponents];
   }
 }
 
-function handleField(component, submission, formSummaryObject, parentContainerKey, translate, form) {
+function handleField(component, submission, formSummaryObject, parentContainerKey, translate, form, language) {
   const { key, label, type } = component;
   const componentKey = createComponentKey(parentContainerKey, key);
   const submissionValue = FormioUtils.getValue(submission, componentKey);
@@ -178,19 +211,29 @@ function handleField(component, submission, formSummaryObject, parentContainerKe
       key: componentKey,
       type,
       ...(hiddenInSummary && { hiddenInSummary }),
-      value: formatValue(component, submissionValue, translate, form),
+      value: formatValue(component, submissionValue, translate, form, language),
     },
   ];
 }
 
-function handleDataGridRows(component, submission, translate, form) {
+function handleDataGridRows(component, submission, translate, form, language) {
   const { key, rowTitle, components } = component;
   const dataGridSubmission = FormioUtils.getValue(submission, key) || [];
   return dataGridSubmission
     .map((rowSubmission, index) => {
       const dataGridRowComponents = components.reduce(
         (handledComponents, subComponent) =>
-          handleComponent(subComponent, { data: rowSubmission }, handledComponents, '', translate, form),
+          handleComponent(
+            subComponent,
+            { data: rowSubmission },
+            handledComponents,
+            '',
+            translate,
+            {},
+            true,
+            form,
+            language,
+          ),
         [],
       );
       if (dataGridRowComponents.length > 0) {
@@ -205,11 +248,11 @@ function handleDataGridRows(component, submission, translate, form) {
     .filter((row) => !!row);
 }
 
-function handleDataGrid(component, submission, formSummaryObject, parentContainerKey, translate, form) {
+function handleDataGrid(component, submission, formSummaryObject, parentContainerKey, translate, form, language) {
   const { label, key, type } = component;
   const componentKey = createComponentKey(parentContainerKey, key);
 
-  const dataGridRows = handleDataGridRows(component, submission, translate, form);
+  const dataGridRows = handleDataGridRows(component, submission, translate, form, language);
   if (dataGridRows.length === 0) {
     return [...formSummaryObject];
   }
@@ -232,7 +275,9 @@ function handleFieldSet(
   parentContainerKey,
   translate,
   evaluatedConditionals,
+  excludeEmptyPanels,
   form,
+  language,
 ) {
   const { legend, key, components, type } = component;
   if (!components || components.length === 0) {
@@ -247,7 +292,9 @@ function handleFieldSet(
         parentContainerKey,
         translate,
         evaluatedConditionals,
+        excludeEmptyPanels,
         form,
+        language,
       ),
     [],
   );
@@ -286,7 +333,7 @@ function handleSelectboxes(component, submission, formSummaryObject, parentConta
   ];
 }
 
-function handleCheckBox(component, submission, formSummaryObject, parentContainerKey, translate, form) {
+function handleCheckBox(component, submission, formSummaryObject, parentContainerKey, translate, form, language) {
   const { key, label, type } = component;
   const componentKey = createComponentKey(parentContainerKey, key);
   const submissionValue = FormioUtils.getValue(submission, componentKey);
@@ -300,7 +347,7 @@ function handleCheckBox(component, submission, formSummaryObject, parentContaine
         label: translate(label),
         key: componentKey,
         type,
-        value: formatValue(component, submissionValue, translate, form),
+        value: formatValue(component, submissionValue, translate, form, language),
       },
     ];
   }
@@ -402,6 +449,7 @@ function handleComponent(
   evaluatedConditionals = {},
   excludeEmptyPanels = true,
   form = {},
+  language = 'nb-NO',
 ) {
   if (!shouldShowInSummary(component.key, evaluatedConditionals)) {
     return formSummaryObject;
@@ -417,13 +465,21 @@ function handleComponent(
         evaluatedConditionals,
         excludeEmptyPanels,
         form,
+        language,
       );
     case 'button':
     case 'content':
       return formSummaryObject;
     case 'htmlelement':
     case 'alertstripe':
-      return handleHtmlElement(component, formSummaryObject, parentContainerKey, translate, evaluatedConditionals);
+      return handleHtmlElement(
+        component,
+        formSummaryObject,
+        parentContainerKey,
+        translate,
+        evaluatedConditionals,
+        language,
+      );
     case 'container':
       return handleContainer(
         component,
@@ -432,14 +488,16 @@ function handleComponent(
         parentContainerKey,
         translate,
         evaluatedConditionals,
+        excludeEmptyPanels,
         form,
+        language,
       );
     case 'datagrid':
-      return handleDataGrid(component, submission, formSummaryObject, parentContainerKey, translate, form);
+      return handleDataGrid(component, submission, formSummaryObject, parentContainerKey, translate, form, language);
     case 'selectboxes':
       return handleSelectboxes(component, submission, formSummaryObject, parentContainerKey, translate);
     case 'navCheckbox':
-      return handleCheckBox(component, submission, formSummaryObject, parentContainerKey, translate, form);
+      return handleCheckBox(component, submission, formSummaryObject, parentContainerKey, translate, form, language);
     case 'fieldset':
     case 'navSkjemagruppe':
       return handleFieldSet(
@@ -449,7 +507,9 @@ function handleComponent(
         parentContainerKey,
         translate,
         evaluatedConditionals,
+        excludeEmptyPanels,
         form,
+        language,
       );
     case 'image':
       return handleImage(component, formSummaryObject, parentContainerKey, translate);
@@ -463,10 +523,20 @@ function handleComponent(
           translate,
         );
       } else {
-        return handleContainer(component, submission, formSummaryObject, parentContainerKey, translate);
+        return handleContainer(
+          component,
+          submission,
+          formSummaryObject,
+          parentContainerKey,
+          translate,
+          evaluatedConditionals,
+          excludeEmptyPanels,
+          form,
+          language,
+        );
       }
     default:
-      return handleField(component, submission, formSummaryObject, parentContainerKey, translate, form);
+      return handleField(component, submission, formSummaryObject, parentContainerKey, translate, form, language);
   }
 }
 
@@ -505,7 +575,13 @@ function mapAndEvaluateConditionals(form, data = {}) {
   return evaluateConditionals(form.components, form, data).reduce(addToMap, {});
 }
 
-function createFormSummaryObject(form, submission = { data: {} }, translate = (txt) => txt, excludeEmptyPanels) {
+function createFormSummaryObject(
+  form,
+  submission = { data: {} },
+  translate = (txt) => txt,
+  excludeEmptyPanels,
+  language,
+) {
   const evaluatedConditionalsMap = mapAndEvaluateConditionals(form, submission.data);
   return form.components.reduce(
     (formSummaryObject, component) =>
@@ -518,13 +594,14 @@ function createFormSummaryObject(form, submission = { data: {} }, translate = (t
         evaluatedConditionalsMap,
         excludeEmptyPanels,
         form,
+        language,
       ),
     [],
   );
 }
 
-function createFormSummaryPanels(form, submission, translate, excludeEmptyPanels) {
-  return createFormSummaryObject(form, submission, translate, excludeEmptyPanels).filter(
+function createFormSummaryPanels(form, submission, translate, excludeEmptyPanels, language) {
+  return createFormSummaryObject(form, submission, translate, excludeEmptyPanels, language).filter(
     (component) => component.type === 'panel',
   );
 }

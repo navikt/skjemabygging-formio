@@ -1,9 +1,10 @@
 import { Backend } from '../Backend';
 import config from '../config';
-import { FormioService } from './formioService';
 import PublisherService from './PublisherService';
 import PusherService from './PusherService';
 import ReportService from './ReportService';
+import { createCopyService } from './copy/CopyService';
+import { FormioService } from './formioService';
 
 const formioService = new FormioService(config.formio.projectUrl);
 
@@ -15,4 +16,8 @@ const reportService = new ReportService(formioService);
 
 const pusherService = new PusherService();
 
-export { backendInstance, formioService, publisherService, pusherService, reportService };
+const copyService = config.prodFormio?.projectUrl
+  ? createCopyService(new FormioService(config.prodFormio.projectUrl), formioService)
+  : null;
+
+export { backendInstance, copyService, formioService, publisherService, pusherService, reportService };

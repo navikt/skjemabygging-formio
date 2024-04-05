@@ -1,3 +1,4 @@
+import { I18nTranslationReplacements, translationUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, useContext, useEffect, useState } from 'react';
 import useCurrentLanguage from './hooks/useCurrentLanguage';
 import useLanguageCodeFromURL from './hooks/useLanguageCodeFromURL';
@@ -34,18 +35,13 @@ export const LanguagesProvider = ({ children, translations }) => {
     setTranslationsForNavForm(translations);
   }, [translations]);
 
-  function translate(originalText: string = '', params?: Record<string | number, any>): string {
-    const currentTranslation = translations[currentLanguage];
-    return currentTranslation && currentTranslation[originalText]
-      ? injectParams(currentTranslation[originalText], params)
-      : injectParams(originalText, params);
-  }
-
-  const injectParams = (template, params) => {
-    if (template && params) {
-      return template.replace(/{{2}([^{}]*)}{2}/g, (match, $1) => translate(params[$1]) || match);
-    }
-    return template;
+  const translate = (originalText: string = '', params?: I18nTranslationReplacements): string => {
+    return translationUtils.translateWithTextReplacements({
+      originalText,
+      params,
+      translations,
+      currentLanguage,
+    });
   };
 
   return (

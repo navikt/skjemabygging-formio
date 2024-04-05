@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { CSVLink } from 'react-csv';
 import { useParams } from 'react-router-dom';
 import { AppLayout } from '../components/AppLayout';
-import PrimaryButtonWithSpinner from '../components/PrimaryButtonWithSpinner';
+import ButtonWithSpinner from '../components/ButtonWithSpinner';
 import UserFeedback from '../components/UserFeedback';
 import Column from '../components/layout/Column';
 import Row from '../components/layout/Row';
@@ -117,7 +117,7 @@ const TranslationsByFormPage = ({ loadForm, saveTranslation }: TranslationsByFor
           <div className={styles.sideBarContainer}>
             <Column className={styles.stickySideBar}>
               <FormBuilderLanguageSelector languages={languages} formPath={path} />
-              <PrimaryButtonWithSpinner onClick={onSave}>Lagre</PrimaryButtonWithSpinner>
+              <ButtonWithSpinner onClick={onSave}>Lagre</ButtonWithSpinner>
               <UserFeedback />
               <CSVLink
                 data={getTextsAndTranslationsForForm(form, translations)}

@@ -6,7 +6,7 @@ import { FormsListPage } from './FormsListPage';
 import NewFormPage from './NewFormPage';
 
 export const FormsRouter = ({ formio, serverURL }) => {
-  const { loadForm, loadFormsList, onSave, onPublish, onUnpublish } = useFormioForms();
+  const { loadForm, loadFormsList, onSave, onPublish, onUnpublish, onCopyFromProd } = useFormioForms();
   const { loadTranslationsForEditPage } = useFormioTranslations(serverURL, formio);
 
   return (
@@ -22,6 +22,7 @@ export const FormsRouter = ({ formio, serverURL }) => {
             onSave={onSave}
             onPublish={onPublish}
             onUnpublish={onUnpublish}
+            onCopyFromProd={onCopyFromProd}
           />
         }
       />

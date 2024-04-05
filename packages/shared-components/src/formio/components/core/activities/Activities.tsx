@@ -89,6 +89,8 @@ class Activities extends BaseComponent {
           t={this.t.bind(this)}
           dataType="aktivitet"
           ref={(ref) => this.setReactInstance(ref)}
+          locale={this.getLocale()}
+          shouldAutoSelectSingleActivity={false}
         />
       </>,
     );
