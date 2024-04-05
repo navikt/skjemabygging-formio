@@ -1,9 +1,9 @@
 /* 
-This form has a radiopanel that shows/hides a container with "annet" key
+This form has a radiopanel with "ja/nei" that shows/hides a container with "annet" key
 In another container there is a textfield with the same "annet" key
 
-Previously if the radiopanel was set to "nei", the textfield in the other container would not show up in the summary
-This is because the evaluatedConditionalsMap would contain: { annet: false } indicating that all components with the key "annet" should be hidden
+Previously if the radiopanel was set to "nei" (hides the container with "annet" key), the textfield in the other container would not show up in the summary even though it was filled out
+This is because the evaluatedConditionalsMap would contain: { annet: false } indicating that all components with the key "annet" should be hidden (which is not desired)
 
 The fix is to add the navId to the key in the evaluatedConditionalsMap. This test is to verify that the fix works as intended
 */
