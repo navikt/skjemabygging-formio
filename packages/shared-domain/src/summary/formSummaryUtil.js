@@ -11,6 +11,12 @@ function createComponentKey(parentContainerKey, key) {
   return parentContainerKey.length > 0 ? `${parentContainerKey}.${key}` : key;
 }
 
+// Used when creating the evaluatedConditionalsMap
+// Components can have the same key (if they are in different containers), but will always have a unique navId.
+function createComponentKeyWithNavId(component) {
+  return `${component.key}-${component.navId}`;
+}
+
 function formatValue(component, value, translate, form, language) {
   switch (component.type) {
     case 'radiopanel':
@@ -356,7 +362,7 @@ function handleCheckBox(component, submission, formSummaryObject, parentContaine
 function handleHtmlElement(component, formSummaryObject, parentContainerKey, translate, evaluatedConditionals) {
   const { key, contentForPdf, type, textDisplay, content } = component;
 
-  if (shouldShowInSummary(key, evaluatedConditionals)) {
+  if (shouldShowInSummary(createComponentKeyWithNavId(component), evaluatedConditionals)) {
     const componentKey = createComponentKey(parentContainerKey, key);
     if (textDisplay === 'formPdf' || textDisplay === 'pdf') {
       return [
@@ -451,7 +457,7 @@ function handleComponent(
   form = {},
   language = 'nb-NO',
 ) {
-  if (!shouldShowInSummary(component.key, evaluatedConditionals)) {
+  if (!shouldShowInSummary(createComponentKeyWithNavId(component), evaluatedConditionals)) {
     return formSummaryObject;
   }
   switch (component.type) {
@@ -540,8 +546,9 @@ function handleComponent(
   }
 }
 
-const shouldShowInSummary = (componentKey, evaluatedConditionals) =>
-  evaluatedConditionals[componentKey] === undefined || evaluatedConditionals[componentKey];
+const shouldShowInSummary = (componentKey, evaluatedConditionals) => {
+  return evaluatedConditionals[componentKey] === undefined || evaluatedConditionals[componentKey];
+};
 
 function evaluateConditionals(components = [], form, data, row = []) {
   return components
@@ -552,7 +559,7 @@ function evaluateConditionals(components = [], form, data, row = []) {
     })
     .flatMap((component) => {
       if (!FormioUtils.checkCondition(component, row, data, form)) {
-        return [{ key: component.key, value: false }];
+        return [{ key: createComponentKeyWithNavId(component), value: false }];
       }
       switch (component.type) {
         case 'container':
@@ -564,13 +571,17 @@ function evaluateConditionals(components = [], form, data, row = []) {
         case 'htmlelement':
         case 'image':
         case 'alertstripe':
-          return { key: component.key, value: FormioUtils.checkCondition(component, row, data, form) };
+          return {
+            key: createComponentKeyWithNavId(component),
+            value: FormioUtils.checkCondition(component, row, data, form),
+          };
         default:
           return [];
       }
     });
 }
 
+// A map of components (key-navId) with their conditional evaluation (used to determine if a component should be shown in the summary/PDF or not in shouldShowInSummary())
 function mapAndEvaluateConditionals(form, data = {}) {
   return evaluateConditionals(form.components, form, data).reduce(addToMap, {});
 }
