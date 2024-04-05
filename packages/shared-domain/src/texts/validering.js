@@ -37,6 +37,9 @@ export const validering = {
   //org
   orgNrCustomError: 'Dette er ikke et gyldig organisasjonsnummer',
 
+  //accountNumber
+  accountNumberCustomError: 'Dette er ikke et gyldig kontonummer',
+
   // driving list
   validParkingExpenses: 'Parkeringsutgiftene for {{dato}} må være et gyldig beløp',
 };
