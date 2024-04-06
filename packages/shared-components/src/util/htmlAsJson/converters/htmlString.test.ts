@@ -44,5 +44,50 @@ describe('htmlString conversion', () => {
       );
       expect(actual).toMatchObject(expected);
     });
+
+    it('converts A, STRONG, and B-tags to markdown, if they are skipped when converting to json', () => {
+      const actual = htmlString2Json(
+        "<p>Avsnitt <strong>med</strong> <a href='www.nav.no'>lenke</a> og <b>fet skrift</b></p>",
+        ['P'],
+      );
+      const expected = jsonElement(
+        'div-Avsnittmedlenkeogfetskrift',
+        'DIV',
+        [
+          jsonElement('p-Avsnittmedlenkeogfetskrift', 'P', [
+            jsonTextElement(
+              'Avsnitt**med**[lenke](www.nav.no)og**fetskrift**',
+              'Avsnitt **med** [lenke](www.nav.no) og **fet skrift**',
+            ),
+          ]),
+        ],
+        true,
+      );
+      expect(actual).toMatchObject(expected);
+    });
+
+    it('keeps non-accepted tags (like EM) as html strings', () => {
+      const actual = htmlString2Json(
+        '<p>Avsnitt <em>med kursiv skrift</em></p><ol><li>Punkt <em>med kursiv skrift</em></li></ol>',
+        ['LI'],
+      );
+      const expected = jsonElement(
+        'div-AvsnittmedkursivskriftPunktmedkursivskrift',
+        'DIV',
+        [
+          jsonElement('p-Avsnittmedkursivskrift', 'P', [
+            jsonTextElement('Avsnitt', 'Avsnitt '),
+            jsonTextElement('<em>medkursivskrift</em>', '<em>med kursiv skrift</em>'),
+          ]),
+          jsonElement('ol-Punktmedkursivskrift', 'OL', [
+            jsonElement('li-Punktmedkursivskrift', 'LI', [
+              jsonTextElement('Punkt<em>medkursivskrift</em>', 'Punkt <em>med kursiv skrift</em>'),
+            ]),
+          ]),
+        ],
+        true,
+      );
+      expect(actual).toMatchObject(expected);
+    });
   });
 });

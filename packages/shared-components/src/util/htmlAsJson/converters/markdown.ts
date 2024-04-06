@@ -17,7 +17,6 @@ const linkMarkdown2HtmlString = (
       const originalCopy = JSON.parse(JSON.stringify(originalATag));
       originalCopy.attributes = [...originalCopy.attributes, ['href', url]];
       // FIXME: only supports <a> with one child
-      // console.log('Original A-tag', originalCopy, originalATag);
       originalCopy.children = [{ ...originalCopy.children[0], textContent: text }];
       return json2HtmlString(originalCopy);
     }
@@ -32,7 +31,6 @@ const strongMarkdown2HtmlString = (markdown: string) => {
   if (captures) {
     const innerText = captures[1];
     // We don't care if the original uses a b-tag, since strong is used as default in the wysiwyg-editor
-    //TODO use the exisisting html-creator-functionality?
     return `<strong>${innerText}</strong>`;
   }
   return markdown;

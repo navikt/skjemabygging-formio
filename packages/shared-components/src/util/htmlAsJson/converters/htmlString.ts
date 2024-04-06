@@ -15,29 +15,10 @@ const json2HtmlString = (jsonElement: HtmlAsJsonElement | HtmlAsJsonTextElement)
       const htmlElement = toNode(jsonElement) as HTMLElement;
       return jsonElement.isWrapper ? htmlElement.innerHTML.toString() : htmlElement.outerHTML.toString();
     case 'TextElement':
-      // markDown2Json(jsonElement.textContent ?? '');
-      // const asJson = markDown2Json(jsonElement.textContent ?? '', originalStructure);
-      // console.log('AAA markDown2Json', asJson);
-      // if (asJson.type === 'Element') {
-      //   //TODO check that this is reached
-      //   console.log('BBB');
-      //   return json2HtmlString(asJson, originalStructure);
-      // } else if (asJson.type === 'TextElement') {
-      //   // console.log('json2HtmlString', asJson);
-      //   //TODO check that this is reached
-      //   console.log('CCC');
-      //   return asJson.textContent ?? '';
-      // }
-      // //TODO check that this is reached
-      // console.log('DDD');
       return jsonElement.textContent ?? '';
     default:
       throw Error('unsupported type: ' + (jsonElement as any)?.type);
   }
-  // const node = toNode(jsonElement, translate);
-  // if (!node['outerHTML']?.toString()) {
-  //   console.log('NODE', node, node.outerHTML);
-  // }
 };
 
 export { htmlString2Json, isHtmlString, json2HtmlString };
