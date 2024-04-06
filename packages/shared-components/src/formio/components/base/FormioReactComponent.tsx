@@ -145,7 +145,9 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
     const isValid = super.setComponentValidity(messages, dirty, silentCheck);
     if (this.error?.message !== this.componentMessage) {
       this.componentMessage = this.error?.message;
-      this.rerender();
+      if (!silentCheck) {
+        this.rerender();
+      }
     }
     return isValid;
   }

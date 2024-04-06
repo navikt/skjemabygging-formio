@@ -35,14 +35,38 @@ const longMonthDateFormat: Intl.DateTimeFormatOptions = {
   year: 'numeric',
 };
 
-const toLocaleDateAndTime = (date: string, locale = 'no') => new Date(date).toLocaleString(locale, dateAndTimeFormat);
-const toLocaleDate = (date: string, locale = 'no') => new Date(date).toLocaleString(locale, dateFormat);
-const toWeekdayAndDate = (date: string, locale = 'no') => new Date(date).toLocaleString(locale, weekdayAndDateFormat);
-const toLocaleDateLongMonth = (date: string, locale = 'no') =>
+const dateSubmissionFormat = 'yyyy-MM-dd';
+
+const toLocaleDateAndTime = (date: string, locale = 'no') => {
+  return new Date(date).toLocaleString(locale, dateAndTimeFormat);
+};
+
+const toLocaleDate = (date: string | Date, locale = 'no') => {
+  if (typeof date === 'string') {
+    date = new Date(date);
+  }
+
+  return date.toLocaleString(locale, dateFormat);
+};
+
+const toWeekdayAndDate = (date: string, locale = 'no') => {
+  return new Date(date).toLocaleString(locale, weekdayAndDateFormat);
+};
+
+const toLocaleDateLongMonth = (date: string, locale = 'no') => {
   new Date(date).toLocaleString(locale, longMonthDateFormat);
+};
 
 export const getIso8601String = () => {
   return moment().toISOString();
+};
+
+const toSubmissionDate = (date: string | Date) => {
+  if (typeof date === 'string') {
+    date = new Date(date);
+  }
+
+  return DateTime.fromJSDate(date).toFormat(dateSubmissionFormat);
 };
 
 const getDatesInRange = (startDate: Date, endDate: Date) => {
@@ -86,14 +110,20 @@ export const generateWeeklyPeriods = (date?: string, numberOfPeriods: number = 1
   return periods;
 };
 
+const addDays = (days: number) => {
+  return DateTime.now().plus({ days }).toJSDate();
+};
+
 const dateUtils = {
   getIso8601String,
   toLocaleDateAndTime,
   toLocaleDate,
+  toSubmissionDate,
   toWeekdayAndDate,
   getDatesInRange,
   toLocaleDateLongMonth,
   generateWeeklyPeriods,
+  addDays,
 };
 
 export default dateUtils;

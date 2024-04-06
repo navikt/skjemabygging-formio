@@ -31,8 +31,7 @@ function formatValue(component, value, translate, form, language) {
       if (!value) {
         return '';
       }
-      const date = new Date(value);
-      return `${date.getDate()}.${date.getMonth() + 1}.${date.getFullYear()}`; // TODO: month is zero based.
+      return dateUtils.toLocaleDate(value);
     }
     case 'navCheckbox': {
       return value ? translate(TEXTS.common.yes) : translate(TEXTS.common.no);

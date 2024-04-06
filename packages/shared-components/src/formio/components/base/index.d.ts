@@ -40,6 +40,7 @@ interface ReactComponentType {
   };
   visible: any | boolean;
   hideLabel: boolean;
+  dirty: boolean;
   error?: {
     message: string;
   } | null;
@@ -56,7 +57,7 @@ interface ReactComponentType {
   loadRefs(element: any, refs: any): any;
   getRef(name: any): any;
   setRef(name: any, ref: any): void;
-  checkValidity(data: any, dirty: any | boolean, rowData: any): boolean;
+  checkValidity(data: any, dirty: any | boolean, row: any, silentCheck: boolean): boolean;
   getValue(): any;
   hasChanged(before: any, after: any): boolean;
   clearOnHide(): void;

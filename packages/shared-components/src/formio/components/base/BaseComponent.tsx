@@ -141,7 +141,7 @@ class BaseComponent extends FormioReactComponent {
   /**
    * Get whether custom component is required renderReact()
    */
-  getIsRequired() {
+  isRequired() {
     return this.component?.validate?.required;
   }
 

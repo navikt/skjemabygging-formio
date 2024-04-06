@@ -166,6 +166,12 @@ export interface Component {
   autoExpand?: boolean;
   customClass?: string;
   validateOn?: string;
+  specificEarliestAllowedDate?: string;
+  specificLatestAllowedDate?: string;
+  beforeDateInputKey?: string;
+  mayBeEqual?: string;
+  earliestAllowedDate?: string;
+  latestAllowedDate?: string;
 }
 
 export interface ComponentProperties {
