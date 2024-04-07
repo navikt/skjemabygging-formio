@@ -23,7 +23,13 @@ import FyllUtRouter from './pages/FyllUtRouter';
 import Styles from './styles';
 import * as formUtils from './util/form/form.js';
 import NavFormioJs from './util/formio/formiojs';
-import htmlAsJsonUtils, { HtmlAsJsonElement, HtmlAsJsonTextElement } from './util/htmlAsJson';
+import htmlAsJsonUtils, {
+  HtmlAsJsonElement,
+  HtmlAsJsonTextElement,
+  HtmlElement,
+  HtmlObject,
+  HtmlTextElement,
+} from './util/htmlAsJson';
 import makeStyles from './util/styles/jss/jss';
 import { navCssVariables } from './util/styles/nav-css/navCssVariables';
 import i18nData from './util/translation/i18nData';
@@ -39,6 +45,9 @@ export {
   FormBuilderOptions,
   FormBuilderSchemas,
   FyllUtRouter,
+  HtmlElement,
+  HtmlObject,
+  HtmlTextElement,
   LanguageSelector,
   LanguagesProvider,
   LoadingComponent,

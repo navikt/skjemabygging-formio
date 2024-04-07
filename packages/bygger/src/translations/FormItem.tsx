@@ -1,6 +1,11 @@
 import { ArrowUndoIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
-import { HtmlAsJsonElement, HtmlAsJsonTextElement, makeStyles } from '@navikt/skjemadigitalisering-shared-components';
+import {
+  HtmlAsJsonElement,
+  HtmlAsJsonTextElement,
+  HtmlElement,
+  makeStyles,
+} from '@navikt/skjemadigitalisering-shared-components';
 import { ScopedTranslationMap } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useState } from 'react';
 import { useI18nDispatch } from '../context/i18n';
@@ -17,11 +22,12 @@ interface Props {
   translations: ScopedTranslationMap;
   text: string;
   htmlElementAsJson?: HtmlAsJsonElement | HtmlAsJsonTextElement;
+  html: HtmlElement;
   type: string;
   languageCode: string;
 }
 
-const FormItem = ({ translations, text, htmlElementAsJson, type, languageCode }: Props) => {
+const FormItem = ({ translations, text, html, htmlElementAsJson, type, languageCode }: Props) => {
   const [showGlobalTranslation, setShowGlobalTranslation] = useState(false);
   const [hasGlobalTranslation, setHasGlobalTranslation] = useState(false);
   const [currentTranslation, setCurrentTranslation] = useState<string>();

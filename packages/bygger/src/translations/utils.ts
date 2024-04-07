@@ -2,6 +2,7 @@ import {
   HtmlAsJsonElement,
   HtmlAsJsonTextElement,
   htmlAsJsonUtils,
+  HtmlElement,
   NavFormioJs,
 } from '@navikt/skjemadigitalisering-shared-components';
 
@@ -164,11 +165,13 @@ const textObject = (
   const htmlElementAsJson = htmlAsJsonUtils.isHtmlString(value)
     ? htmlAsJsonUtils.htmlString2Json(value, htmlAsJsonUtils.defaultLeafs)
     : undefined;
+  const html = new HtmlElement(htmlAsJsonUtils, value);
   const type = withInputType ? getInputType(value) : undefined;
   return {
     text: value,
     ...(type && { type }),
     ...(htmlElementAsJson && { htmlElementAsJson }),
+    ...(html && { html }),
   };
 };
 
