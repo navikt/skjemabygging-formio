@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 
 interface Props {
   children: React.ReactNode;
+  className?: string;
   onClick: Function;
   variant?:
     | 'primary'
@@ -14,7 +15,7 @@ interface Props {
     | 'danger';
 }
 
-const ButtonWithSpinner = ({ children, onClick, variant = 'primary' }: Props) => {
+const ButtonWithSpinner = ({ children, className, onClick, variant = 'primary' }: Props) => {
   const [isSaving, setIsSaving] = useState(false);
   async function onClickWithSpinner() {
     setIsSaving(true);
@@ -25,7 +26,7 @@ const ButtonWithSpinner = ({ children, onClick, variant = 'primary' }: Props) =>
     }
   }
   return (
-    <Button variant={variant} onClick={onClickWithSpinner} loading={isSaving}>
+    <Button className={className} variant={variant} onClick={onClickWithSpinner} loading={isSaving}>
       {children}
     </Button>
   );

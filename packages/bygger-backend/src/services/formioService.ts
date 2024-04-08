@@ -8,7 +8,9 @@ import {
   NavFormType,
   navFormUtils,
   ResourceName,
+  stringUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
+import config from '../config';
 import { fetchWithErrorHandling } from '../fetchUtils';
 import { logger } from '../logging/logger';
 
@@ -26,7 +28,43 @@ export class FormioService {
     return response.data as T;
   }
 
-  async getForm(formPath: string, type: FormType = 'form') {
+  async createNewForm(skjemanummer: string, userToken: string) {
+    const trimmedSkjemanummer = skjemanummer.trim();
+    const form: NavFormType = {
+      type: 'form',
+      display: 'wizard',
+      tags: ['nav-skjema', ''],
+      title: 'Midlertidig tittel',
+      path: navFormUtils.toFormPath(trimmedSkjemanummer),
+      name: stringUtils.camelCase(trimmedSkjemanummer),
+      properties: {
+        skjemanummer: trimmedSkjemanummer,
+        tema: '',
+      },
+      components: [],
+      access: [
+        {
+          type: 'read_all',
+          roles: [config.formio.roleIds.everyone],
+        },
+        {
+          type: 'update_all',
+          roles: [config.formio.roleIds.authenticated, config.formio.roleIds.administrator],
+        },
+      ],
+    };
+    const response = await fetchWithErrorHandling(`${this.projectUrl}/form`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-jwt-token': userToken,
+      },
+      body: JSON.stringify(form),
+    });
+    return response.data as NavFormType;
+  }
+
+  async getForm(formPath: string, type: FormType = 'form'): Promise<NavFormType | undefined> {
     const formData = await this.fetchFromProjectApi<NavFormType[]>(`/form?type=${type}&path=${formPath}&limit=1`);
     return formData[0];
   }

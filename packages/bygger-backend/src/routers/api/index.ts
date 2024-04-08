@@ -9,6 +9,7 @@ import formDiff from './formDiff';
 import formsRouter from './forms';
 import apiErrorHandler from './helpers/apiErrorHandler';
 import authorizedPublisher from './helpers/authorizedPublisher';
+import importRouter from './import';
 import log from './log';
 import migrate from './migrate';
 import migratePreview from './migrate-preview';
@@ -40,6 +41,7 @@ apiRouter.get('/migrate/preview/:formPath', migratePreview);
 apiRouter.post('/migrate/update', authorizedPublisher, migrateUpdate);
 apiRouter.get('/form/:formPath/diff', formDiff);
 apiRouter.use('/forms', formsRouter);
+apiRouter.use('/import', importRouter);
 apiRouter.post('/log/:level', rateLimiter(60000, 60), log);
 
 apiRouter.use(apiErrorHandler);
