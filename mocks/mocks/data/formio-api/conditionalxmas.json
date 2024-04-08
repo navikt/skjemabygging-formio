@@ -51,6 +51,7 @@
           "errorLabel": "",
           "errors": "",
           "key": "radiopanel1",
+          "navId": "spowel2",
           "tags": [],
           "properties": {},
           "conditional": {
@@ -168,7 +169,8 @@
       "tree": false,
       "lazyLoad": false,
       "breadcrumb": "default",
-      "id": "efzaj6"
+      "id": "efzaj6",
+      "navId": "fkwj4sd"
     },
     {
       "title": "Pinnekjøtt",
@@ -335,7 +337,8 @@
       "addons": [],
       "tree": false,
       "lazyLoad": false,
-      "id": "e4ury51"
+      "id": "e4ury51",
+      "navId": "ecsd6za"
     },
     {
       "title": "Lutefisk",
@@ -503,7 +506,8 @@
       "addons": [],
       "tree": false,
       "lazyLoad": false,
-      "id": "es27ays"
+      "id": "es27ays",
+      "navId": "skowzl2"
     },
     {
       "title": "Marsipangris",

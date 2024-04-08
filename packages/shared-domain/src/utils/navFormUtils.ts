@@ -208,7 +208,10 @@ const getActivePanelsFromForm = (form: NavFormType, submission?: Submission, sub
   const conditionals = formSummaryUtil.mapAndEvaluateConditionals(form, submission?.data ?? {});
   return form.components
     .filter((component: Component) => component.type === 'panel')
-    .filter((panel): panel is Panel => conditionals[panel.key] !== false)
+    .filter((panel): panel is Panel => {
+      const key = formSummaryUtil.createComponentKeyWithNavId(panel);
+      return conditionals[key] !== false;
+    })
     .filter((panel) => !(submissionMethod === 'digital' && isVedleggspanel(panel)));
 };
 
