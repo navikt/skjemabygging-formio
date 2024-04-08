@@ -636,5 +636,6 @@ export default {
   createFormSummaryPanels,
   handleComponent,
   mapAndEvaluateConditionals,
+  createComponentKeyWithNavId,
   findFirstInput,
 };
