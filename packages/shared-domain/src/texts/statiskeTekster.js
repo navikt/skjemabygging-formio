@@ -151,7 +151,6 @@ export const statiske = {
     expensesTooHighHeader: 'Utgiftene er høyere enn beløpet du kan få refundert',
     expensesTooHigh:
       'I vedtaket ditt om stønad til daglig reise beregnet vi hvor mye du vil få utbetalt i hver periode. Du har nå lagt inn høyere utgifter til bruk av egen bil enn det vi har beregnet. Du vil sannsynligvis ikke få refundert alle utgiftene du har lagt inn for denne perioden.',
-    error: 'Kunne ikke hente aktiviteter. Du kan sende inn søknad via papir',
     periodInfoHeader: 'Tilgjengelige perioder',
     periodInfoSubheader: 'Nedenfor har vi listet opp hvilke perioder du kan levere kjøreliste for.',
     periodInfoYouCan: 'Du kan:',
@@ -168,7 +167,7 @@ export const statiske = {
     parking: 'Skal du registrere parkering?',
     datePicker: 'Velg første dato i perioden du ønsker å levere kjøreliste for (dd.mm.åååå)',
     datePickerDescription:
-      'Du vil få mulighet til å sende kjøreliste fra denne datoen frem til dagens dato. Det er ikke mulig å legge til kjørelister for fremtidige datoer',
+      'Du vil få mulighet til å sende kjøreliste fra denne datoen frem til dagens dato. Det er ikke mulig å legge til kjørelister for fremtidige datoer.',
     dateSelect: 'Kryss av for de dagene du har brukt egen bil',
     dateSelectParking: 'og har hatt parkeringsutgifter',
     parkingExpenses: 'Parkeringsutgifter (kr)',
