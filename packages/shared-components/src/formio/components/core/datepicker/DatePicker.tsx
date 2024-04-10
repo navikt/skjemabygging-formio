@@ -1,4 +1,5 @@
-import { dateUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { Component, dateUtils, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import FormioUtils from 'formiojs/utils';
 import ReactDatePicker from '../../../../components/datepicker/DatePicker';
 import { ComponentUtilsProvider } from '../../../../context/component/componentUtilsContext';
 import BaseComponent from '../../base/BaseComponent';
@@ -37,6 +38,15 @@ export default class DatePicker extends BaseComponent {
 
   setValueOnReactInstance(_value) {}
 
+  getComponentsWithDateInputKey() {
+    return navFormUtils
+      .flattenComponents(this.root.getComponents() as Component[])
+      .filter(
+        (component) =>
+          component.type === 'navDatepicker' && component.component?.beforeDateInputKey === this.component?.key,
+      );
+  }
+
   onValidate(errorMessage?: string) {
     this.removeAllErrors();
     if (errorMessage) {
@@ -47,6 +57,17 @@ export default class DatePicker extends BaseComponent {
     this.root.showErrors();
   }
 
+  onUpdate(value: string) {
+    this.updateValue(value, { modified: true });
+
+    if (this.component?.beforeDateInputKey) {
+      const referenceComponent = navFormUtils.findByKey(this.component?.beforeDateInputKey, this.root.getComponents());
+      referenceComponent?.rerender();
+    } else {
+      this.getComponentsWithDateInputKey().map((component) => component.rerender());
+    }
+  }
+
   checkComponentValidity(data, dirty, row, options = {}) {
     this.setComponentValidity(this.componentErrors, dirty, !!options?.fromBlur);
 
@@ -54,7 +75,9 @@ export default class DatePicker extends BaseComponent {
   }
 
   getFromDate() {
-    if (this.component?.earliestAllowedDate && !Number.isNaN(+this.component?.earliestAllowedDate)) {
+    if (this.component?.beforeDateInputKey) {
+      return FormioUtils.getValue(this.root.submission, this.component?.beforeDateInputKey);
+    } else if (this.component?.earliestAllowedDate && !Number.isNaN(+this.component?.earliestAllowedDate)) {
       return dateUtils.addDays(+this.component?.earliestAllowedDate);
     } else if (this.component?.specificEarliestAllowedDate) {
       return new Date(this.component?.specificEarliestAllowedDate);
@@ -62,7 +85,14 @@ export default class DatePicker extends BaseComponent {
   }
 
   getToDate() {
-    if (this.component?.latestAllowedDate && !Number.isNaN(+this.component?.latestAllowedDate)) {
+    const lowestReferencedDate = dateUtils.min(
+      this.getComponentsWithDateInputKey()
+        .map((component) => component.getValue())
+        .filter(Boolean),
+    );
+    if (lowestReferencedDate) {
+      return lowestReferencedDate;
+    } else if (this.component?.latestAllowedDate && !Number.isNaN(+this.component?.latestAllowedDate)) {
       return dateUtils.addDays(+this.component?.latestAllowedDate);
     } else if (this.component?.specificLatestAllowedDate) {
       return new Date(this.component?.specificLatestAllowedDate);
@@ -70,19 +100,13 @@ export default class DatePicker extends BaseComponent {
   }
 
   renderReact(element) {
-    const { beforeDateInputKey, mayBeEqual } = this.component;
-
-    console.log(this.root.data);
-
-    console.log(`beforeDateInputKey: ${beforeDateInputKey}`, `mayBeEqual: ${mayBeEqual}`);
-
     return element.render(
       <ComponentUtilsProvider component={this}>
         <ReactDatePicker
           id={this.getId()}
           required={this.isRequired()}
           value={this.getDefaultValue()}
-          onChange={(value: string) => this.updateValue(value, { modified: true })}
+          onChange={this.onUpdate.bind(this)}
           onValidate={this.onValidate.bind(this)}
           readOnly={this.getReadOnly()}
           error={this.getError()}

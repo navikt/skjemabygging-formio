@@ -42,7 +42,6 @@ const DatePicker = ({
   const { datepickerProps, inputProps, setSelected, reset } = useDatepicker({
     required: required,
     onValidate: (dateValidation) => {
-      console.log(dateValidation);
       validate(dateValidation);
     },
     onDateChange: (val) => {
@@ -58,7 +57,7 @@ const DatePicker = ({
     (dateValidation?: DateValidationT) => {
       if (required && (!dateValidation || dateValidation.isEmpty)) {
         onValidate(translate('required', { field: getLabel({ labelTextOnly: true }) }));
-      } else if (!dateValidation?.isEmpty) {
+      } else if (dateValidation && !dateValidation?.isEmpty) {
         if (dateValidation?.isValidDate) {
           onValidate(undefined);
         } else if (dateValidation?.isBefore && fromDate) {

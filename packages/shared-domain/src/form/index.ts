@@ -111,6 +111,7 @@ export interface Component {
   valueProperty?: string;
   labelProperty?: string;
   properties?: ComponentProperties;
+  component?: Component;
   components?: Component[];
   otherDocumentation?: boolean;
   isAttachmentPanel?: boolean;
@@ -172,6 +173,8 @@ export interface Component {
   mayBeEqual?: string;
   earliestAllowedDate?: string;
   latestAllowedDate?: string;
+  getValue: () => string;
+  rerender: () => string;
 }
 
 export interface ComponentProperties {

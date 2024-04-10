@@ -110,8 +110,12 @@ export const generateWeeklyPeriods = (date?: string, numberOfPeriods: number = 1
   return periods;
 };
 
-const addDays = (days: number) => {
+const addDays = (days: number): Date => {
   return DateTime.now().plus({ days }).toJSDate();
+};
+
+const min = (dates: string[]) => {
+  return DateTime.min(...dates.map((date: string) => DateTime.fromISO(date)))?.toJSDate();
 };
 
 const dateUtils = {
@@ -124,6 +128,7 @@ const dateUtils = {
   toLocaleDateLongMonth,
   generateWeeklyPeriods,
   addDays,
+  min,
 };
 
 export default dateUtils;
