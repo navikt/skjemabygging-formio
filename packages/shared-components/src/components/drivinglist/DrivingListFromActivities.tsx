@@ -6,6 +6,7 @@ import {
   TEXTS,
   VedtakBetalingsplan,
 } from '@navikt/skjemadigitalisering-shared-domain';
+import { useComponentUtils } from '../../context/component/componentUtilsContext';
 import { mapToSubmissionActivity, mapToVedtaklist } from '../../formio/components/core/activities/Activities.utils';
 import {
   drivingListMetadata,
@@ -33,7 +34,8 @@ const useDrivinglistStyles = makeStyles({
 });
 
 const DrivingListFromActivities = ({ activities }: Props) => {
-  const { values, updateValues, t, appConfig, getComponentError, addRef, locale } = useDrivingList();
+  const { values, updateValues, getComponentError } = useDrivingList();
+  const { translate, locale, appConfig, addRef } = useComponentUtils();
 
   const styles = useDrivinglistStyles();
 
@@ -84,19 +86,16 @@ const DrivingListFromActivities = ({ activities }: Props) => {
         <ActivityAlert vedtakData={mapToVedtaklist(activities)} className={'mb'} />
         <NavActivities
           id={drivingListMetadata('activityRadio').id}
-          label={t(drivingListMetadata('activityRadio').label)}
+          label={translate(drivingListMetadata('activityRadio').label)}
           value={vedtakSelection}
           onChange={(activity?: SubmissionActivity, options?: ActivityChangeOptions) =>
             onActivityChange(activity, options)
           }
-          appConfig={appConfig}
-          t={t}
           className={'mb'}
           dataType="vedtak"
           activities={activities}
           error={getComponentError('activityRadio')}
           ref={(ref) => addRef('activityRadio', ref)}
-          locale={locale}
           shouldAutoSelectSingleActivity={true}
         />
         {selectedActivity && selectedVedtak && (
@@ -123,7 +122,7 @@ const DrivingListFromActivities = ({ activities }: Props) => {
             {alreadyRefunded.length > 0 && (
               <div className={'mb'}>
                 <Heading size="small" spacing={true}>
-                  {t(TEXTS.statiske.drivingList.previousDrivingList)}
+                  {translate(TEXTS.statiske.drivingList.previousDrivingList)}
                 </Heading>
                 <ul>
                   {alreadyRefunded

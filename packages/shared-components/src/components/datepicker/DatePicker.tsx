@@ -58,7 +58,7 @@ const DatePicker = ({
   const validate = useCallback(
     (dateValidation?: DateValidationT) => {
       console.log(dateValidation);
-      if (onValidate) {
+      if (onValidate && translate) {
         if (required && (!dateValidation || dateValidation.isEmpty)) {
           onValidate(translate('required', { field: labelText }));
         } else if (dateValidation && !dateValidation?.isEmpty) {
