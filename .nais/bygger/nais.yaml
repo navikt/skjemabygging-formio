@@ -10,6 +10,10 @@ metadata:
 spec:
   image: {{image}}
   port: 8080
+  observability:
+    autoInstrumentation:
+      enabled: true
+      runtime: nodejs
   liveness:
     path: "/internal/isAlive"
     initialDelay: 20
