@@ -1,6 +1,8 @@
 import { Accordion, Button, Heading, Radio, RadioGroup } from '@navikt/ds-react';
 import { TEXTS, dateUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { useCallback, useEffect, useMemo } from 'react';
+import { ComponentUtilsProvider } from '../../context/component/componentUtilsContext';
+import BaseComponent from '../../formio/components/base/BaseComponent';
 import {
   allFieldsForPeriodsAreSet,
   drivingListMetadata,
@@ -92,21 +94,23 @@ const DrivingListFromDates = () => {
   const renderDrivingListFromDates = () => {
     return (
       <>
-        <DatePicker
-          id={drivingListMetadata('datePicker').id}
-          label={t(drivingListMetadata('datePicker').label)}
-          isRequired={true}
-          value={values?.selectedDate}
-          onChange={(date: string) => onDateChange(date)}
-          locale={locale}
-          readOnly={false}
-          error={getComponentError('datePicker')}
-          inputRef={(ref) => addRef(drivingListMetadata('datePicker').id, ref)}
-          className={'mb'}
-          toDate={new Date()}
-          defaultMonth={new Date()}
-          description={t(drivingListMetadata('datePicker').description ?? '')}
-        />
+        <ComponentUtilsProvider component={{ getLocale: () => locale } as BaseComponent}>
+          <DatePicker
+            id={drivingListMetadata('datePicker').id}
+            label={t(drivingListMetadata('datePicker').label)}
+            labelText={t(drivingListMetadata('datePicker').label)}
+            required={true}
+            value={values?.selectedDate}
+            onChange={(date: string) => onDateChange(date)}
+            readOnly={false}
+            error={getComponentError('datePicker')}
+            inputRef={(ref) => addRef(drivingListMetadata('datePicker').id, ref)}
+            className={'mb'}
+            toDate={new Date()}
+            defaultMonth={new Date()}
+            description={t(drivingListMetadata('datePicker').description ?? '')}
+          />
+        </ComponentUtilsProvider>
         <RadioGroup
           id={drivingListMetadata('parkingRadio').id}
           legend={t(drivingListMetadata('parkingRadio').label)}

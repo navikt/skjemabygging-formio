@@ -8,12 +8,13 @@ interface NavDatePickerProps {
   id: string;
   required?: boolean;
   onChange: (val: string) => void;
-  onValidate: (errorMessage?: string) => void;
+  onValidate?: (errorMessage?: string) => void;
   value: string;
   readOnly?: boolean;
   error?: string;
   inputRef?: any;
-  getLabel: (options?: object) => string;
+  label: string;
+  labelText: string;
   description?: ReactNode;
   className?: string;
   fromDate?: Date;
@@ -30,7 +31,8 @@ const DatePicker = ({
   readOnly,
   error,
   inputRef,
-  getLabel,
+  label,
+  labelText,
   description,
   className,
   fromDate,
@@ -55,33 +57,32 @@ const DatePicker = ({
 
   const validate = useCallback(
     (dateValidation?: DateValidationT) => {
-      if (required && (!dateValidation || dateValidation.isEmpty)) {
-        onValidate(translate('required', { field: getLabel({ labelTextOnly: true }) }));
-      } else if (dateValidation && !dateValidation?.isEmpty) {
-        if (dateValidation?.isValidDate) {
-          onValidate(undefined);
-        } else if (dateValidation?.isBefore && fromDate) {
-          onValidate(
-            translate('minDate', {
-              field: getLabel({ labelTextOnly: true }),
-              minDate: dateUtils.toLocaleDate(fromDate),
-            }),
-          );
-        } else if (dateValidation?.isAfter && toDate) {
-          onValidate(
-            translate('maxDate', { field: getLabel({ labelTextOnly: true }), maxDate: dateUtils.toLocaleDate(toDate) }),
-          );
+      console.log(dateValidation);
+      if (onValidate) {
+        if (required && (!dateValidation || dateValidation.isEmpty)) {
+          onValidate(translate('required', { field: labelText }));
+        } else if (dateValidation && !dateValidation?.isEmpty) {
+          if (dateValidation?.isValidDate) {
+            onValidate(undefined);
+          } else if (dateValidation?.isBefore && fromDate) {
+            onValidate(
+              translate('minDate', {
+                field: labelText,
+                minDate: dateUtils.toLocaleDate(fromDate),
+              }),
+            );
+          } else if (dateValidation?.isAfter && toDate) {
+            onValidate(translate('maxDate', { field: labelText, maxDate: dateUtils.toLocaleDate(toDate) }));
+          } else {
+            onValidate(translate('invalid_date', { field: labelText }));
+          }
         } else {
-          onValidate(translate('invalid_date', { field: getLabel({ labelTextOnly: true }) }));
+          onValidate(undefined);
         }
-      } else {
-        onValidate(undefined);
       }
     },
     [required],
   );
-
-  const label = getLabel?.();
 
   useEffect(() => {
     validate();

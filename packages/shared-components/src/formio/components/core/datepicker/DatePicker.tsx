@@ -88,7 +88,7 @@ export default class DatePicker extends BaseComponent {
   getToDate() {
     const lowestReferencedDate = dateUtils.min(
       this.getComponentsWithDateInputKey()
-        .map((component) => component.getValue())
+        .map((component) => component.getValue?.() ?? '')
         .filter(Boolean),
     );
     if (lowestReferencedDate) {
@@ -113,7 +113,8 @@ export default class DatePicker extends BaseComponent {
           error={this.getError()}
           inputRef={(ref) => this.setReactInstance(ref)}
           description={this.getDescription()}
-          getLabel={this.getLabel.bind(this)}
+          label={this.getLabel()}
+          labelText={this.getLabel({ labelTextOnly: true })}
           fromDate={this.getFromDate()}
           toDate={this.getToDate()}
         />
