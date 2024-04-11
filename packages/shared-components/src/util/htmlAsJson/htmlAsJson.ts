@@ -7,7 +7,7 @@ const isAcceptedTag = (tag: string): tag is AcceptedTag => {
 };
 
 interface HtmlAsJsonTextElement {
-  id: string;
+  id?: string;
   type: 'TextElement';
   textContent: string | null;
   // If textContent is a result of several elements being combined, e.g. as markdown, htmlContentAsJson wil store the generated html structure for structural memory
@@ -15,7 +15,7 @@ interface HtmlAsJsonTextElement {
 }
 
 interface HtmlAsJsonElement {
-  id: string;
+  id?: string;
   type: 'Element';
   tagName: string;
   attributes: Array<[string, string]>;

@@ -1,11 +1,18 @@
-import { HtmlAsJsonElement, HtmlAsJsonTextElement } from '../htmlAsJson';
+import { HtmlAsJsonElement } from '../htmlAsJson';
 import { fromNode } from './htmlNode';
 import { htmlString2Json, json2HtmlString } from './htmlString';
 
-const linkMarkdown2HtmlString = (
-  markdown: string,
-  originalATag?: HtmlAsJsonElement | HtmlAsJsonTextElement,
-): string => {
+const strongMarkdown2HtmlString = (markdown: string, tag: 'B' | 'STRONG' = 'STRONG') => {
+  const captureRegex = /\*{2}([^*]*)\*{2}/;
+  const captures = captureRegex.exec(markdown);
+  if (captures) {
+    const innerText = captures[1];
+    return tag === 'B' ? `<b>${innerText}</b>` : `<strong>${innerText}</strong>`;
+  }
+  return markdown;
+};
+
+const linkMarkdown2HtmlString = (markdown: string): string => {
   const captureRegex = /\[([^[]+)\]\(([^[]+)\)/;
 
   const captures = captureRegex.exec(markdown);
@@ -13,33 +20,12 @@ const linkMarkdown2HtmlString = (
     const text = captures[1];
     const url = captures[2];
 
-    if (originalATag) {
-      const originalCopy = JSON.parse(JSON.stringify(originalATag));
-      originalCopy.attributes = [...originalCopy.attributes, ['href', url]];
-      // FIXME: only supports <a> with one child
-      originalCopy.children = [{ ...originalCopy.children[0], textContent: text }];
-      return json2HtmlString(originalCopy);
-    }
     return `<a href=${url}>${text}</a>`;
   }
   return markdown;
 };
 
-const strongMarkdown2HtmlString = (markdown: string) => {
-  const captureRegex = /\*{2}([^*]*)\*{2}/;
-  const captures = captureRegex.exec(markdown);
-  if (captures) {
-    const innerText = captures[1];
-    // We don't care if the original uses a b-tag, since strong is used as default in the wysiwyg-editor
-    return `<strong>${innerText}</strong>`;
-  }
-  return markdown;
-};
-
-const markdown2Json = (
-  markdown: string,
-  original: HtmlAsJsonTextElement,
-): HtmlAsJsonElement | HtmlAsJsonTextElement => {
+const markdown2Json = (markdown: string): HtmlAsJsonElement | undefined => {
   const markdownLinkRegex = /\[[^[]+\]\([^[]+\)/gm;
   const markdownStrongRegex = /\*{2}[^*]*\*{2}/gm;
 
@@ -48,11 +34,8 @@ const markdown2Json = (
   const linkMatches = markdown.match(markdownLinkRegex);
 
   if (linkMatches) {
-    linkMatches.forEach((match, index) => {
-      const originalATag = original.htmlContentAsJson?.filter(
-        (element) => element.type === 'Element' && element.tagName === 'A',
-      )?.[index];
-      const aTag = linkMarkdown2HtmlString(match, originalATag);
+    linkMatches.forEach((match) => {
+      const aTag = linkMarkdown2HtmlString(match);
       htmlString = htmlString.replace(match, aTag);
     });
   }
@@ -67,7 +50,7 @@ const markdown2Json = (
   if (linkMatches || strongMatches) {
     return htmlString2Json(htmlString);
   }
-  return { ...original, textContent: markdown };
+  return undefined;
 };
 
 const htmlNode2Markdown = (node: Element | ChildNode): string => {
@@ -95,4 +78,8 @@ const htmlNode2Markdown = (node: Element | ChildNode): string => {
   return '';
 };
 
-export { htmlNode2Markdown, markdown2Json };
+const markdownFromHtmlNodes = (nodes: Array<Element | Text>): string => {
+  return Array.from(nodes, htmlNode2Markdown).join('');
+};
+
+export { htmlNode2Markdown, linkMarkdown2HtmlString, markdown2Json, markdownFromHtmlNodes, strongMarkdown2HtmlString };

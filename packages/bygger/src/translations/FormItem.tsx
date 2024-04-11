@@ -1,11 +1,6 @@
 import { ArrowUndoIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
-import {
-  HtmlAsJsonElement,
-  HtmlAsJsonTextElement,
-  HtmlElement,
-  makeStyles,
-} from '@navikt/skjemadigitalisering-shared-components';
+import { htmlAsJsonUtils, HtmlElement, HtmlObject, makeStyles } from '@navikt/skjemadigitalisering-shared-components';
 import { ScopedTranslationMap } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useState } from 'react';
 import { useI18nDispatch } from '../context/i18n';
@@ -21,13 +16,11 @@ const useStyles = makeStyles({
 interface Props {
   translations: ScopedTranslationMap;
   text: string;
-  htmlElementAsJson?: HtmlAsJsonElement | HtmlAsJsonTextElement;
-  html: HtmlElement;
   type: string;
   languageCode: string;
 }
 
-const FormItem = ({ translations, text, html, htmlElementAsJson, type, languageCode }: Props) => {
+const FormItem = ({ translations, text, type, languageCode }: Props) => {
   const [showGlobalTranslation, setShowGlobalTranslation] = useState(false);
   const [hasGlobalTranslation, setHasGlobalTranslation] = useState(false);
   const [currentTranslation, setCurrentTranslation] = useState<string>();
@@ -52,6 +45,8 @@ const FormItem = ({ translations, text, html, htmlElementAsJson, type, languageC
     }
   }, [translations, text]);
 
+  const html = htmlAsJsonUtils.isHtmlString(text) ? new HtmlElement(htmlAsJsonUtils, text) : undefined;
+
   const updateTranslations = (targetValue) => {
     dispatch({
       type: 'update',
@@ -64,11 +59,11 @@ const FormItem = ({ translations, text, html, htmlElementAsJson, type, languageC
     return <></>;
   }
 
-  if (htmlElementAsJson?.type === 'Element' && !useLegacyHtmlTranslation) {
+  if (HtmlObject.isElement(html) && !useLegacyHtmlTranslation) {
     return (
       <TranslationFormHtmlSection
         text={text}
-        htmlElementAsJson={htmlElementAsJson}
+        html={html}
         storedTranslation={currentTranslation}
         updateTranslation={updateTranslations}
         onSelectLegacy={() => setUseLegacyHtmlTranslation(true)}

@@ -46,7 +46,6 @@ const fromTextContent = (textContent: string, parentElement?: Element): HtmlAsJs
     ? Array.from(parentElement.childNodes, (childNode) => fromNode(childNode, []))
     : undefined;
   return {
-    id: textContent.replaceAll(' ', ''),
     type: 'TextElement',
     textContent,
     htmlContentAsJson,
@@ -60,7 +59,6 @@ const fromElement = (
 ): HtmlAsJsonElement => {
   const convertChildrenToText = (skipConversionWithinTags as string[]).includes(element.tagName);
   return {
-    id: `${element.tagName.toLowerCase()}-${element.textContent!.replaceAll(' ', '')}`,
     type: 'Element',
     tagName: element.tagName,
     attributes: Array.from(element.attributes, ({ name, value }) => [name, value]),

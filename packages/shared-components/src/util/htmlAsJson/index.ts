@@ -1,10 +1,19 @@
 import HtmlElement, { HtmlObject, HtmlTextElement } from './HtmlObject';
 import { fromNode, toNode } from './converters/htmlNode';
 import { htmlString2Json, isHtmlString, json2HtmlString } from './converters/htmlString';
-import { markdown2Json } from './converters/markdown';
+import {
+  htmlNode2Markdown,
+  linkMarkdown2HtmlString,
+  markdown2Json,
+  markdownFromHtmlNodes,
+  strongMarkdown2HtmlString,
+} from './converters/markdown';
 import { HtmlAsJsonElement, HtmlAsJsonTextElement, defaultLeafs, getChild } from './htmlAsJson';
 
 const htmlAsJsonUtils = {
+  htmlNode2Markdown,
+  linkMarkdown2HtmlString,
+  strongMarkdown2HtmlString,
   fromNode,
   toNode,
   isHtmlString,
@@ -12,6 +21,7 @@ const htmlAsJsonUtils = {
   htmlString2Json,
   json2HtmlString,
   markdown2Json,
+  markdownFromHtmlNodes,
   defaultLeafs,
 };
 

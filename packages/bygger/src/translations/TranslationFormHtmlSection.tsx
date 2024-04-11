@@ -3,6 +3,8 @@ import { Alert, Box, Button, HStack, Heading, HelpText, VStack } from '@navikt/d
 import {
   HtmlAsJsonElement,
   HtmlAsJsonTextElement,
+  HtmlElement,
+  HtmlObject,
   htmlAsJsonUtils,
   makeStyles,
 } from '@navikt/skjemadigitalisering-shared-components';
@@ -11,7 +13,7 @@ import TranslationFormHtmlInput from './TranslationFormHtmlInput';
 
 interface Props {
   text: string;
-  htmlElementAsJson: HtmlAsJsonElement | HtmlAsJsonTextElement;
+  html: HtmlElement;
   storedTranslation: string;
   updateTranslation: (text: string) => void;
   onSelectLegacy: () => void;
@@ -51,37 +53,29 @@ const isSameStructure = (
   return elementTreeA.type === elementTreeB.type;
 };
 
-const TranslationFormHtmlSection = ({
-  text,
-  htmlElementAsJson,
-  storedTranslation,
-  updateTranslation,
-  onSelectLegacy,
-}: Props) => {
-  const [currentTranslation, setCurrentTranslation] = useState<HtmlAsJsonElement | HtmlAsJsonTextElement>();
-  const [currentTranslationWithMarkDown, setCurrentTranslationWithMarkDown] = useState<
-    HtmlAsJsonElement | HtmlAsJsonTextElement
-  >();
+const TranslationFormHtmlSection = ({ text, html, storedTranslation, updateTranslation, onSelectLegacy }: Props) => {
+  const [currentTranslation, setCurrentTranslation] = useState<HtmlObject>();
 
   const translationIsMissing = useMemo(
     () => !currentTranslation && (!storedTranslation || !htmlAsJsonUtils.isHtmlString(storedTranslation)),
     [currentTranslation, storedTranslation],
   );
   const incompatibleTranslationExists = useMemo(() => {
-    if (!currentTranslationWithMarkDown) {
+    if (!currentTranslation) {
       const storedTranslationAsJson =
         !!storedTranslation && htmlAsJsonUtils.isHtmlString(storedTranslation)
           ? htmlAsJsonUtils.htmlString2Json(storedTranslation, htmlAsJsonUtils.defaultLeafs)
           : undefined;
-      return storedTranslationAsJson && !isSameStructure(htmlElementAsJson, storedTranslationAsJson);
+      return storedTranslationAsJson && !isSameStructure(html.getJson(), storedTranslationAsJson);
     }
-  }, [currentTranslationWithMarkDown, htmlElementAsJson, storedTranslation]);
+  }, [currentTranslation, html, storedTranslation]);
 
   useEffect(() => {
     if (!currentTranslation && !translationIsMissing && !incompatibleTranslationExists) {
-      setCurrentTranslation(htmlAsJsonUtils.htmlString2Json(storedTranslation));
-      setCurrentTranslationWithMarkDown(
-        htmlAsJsonUtils.htmlString2Json(storedTranslation, htmlAsJsonUtils.defaultLeafs),
+      setCurrentTranslation(
+        new HtmlElement(htmlAsJsonUtils, storedTranslation, undefined, undefined, {
+          skipConversionWithin: ['H3', 'P', 'LI'],
+        }),
       );
     }
   }, [currentTranslation, incompatibleTranslationExists, storedTranslation, translationIsMissing]);
@@ -89,11 +83,12 @@ const TranslationFormHtmlSection = ({
   const styles = useStyles();
 
   const startNewTranslation = () => {
-    setCurrentTranslation(htmlAsJsonUtils.htmlString2Json(text));
-    setCurrentTranslationWithMarkDown(htmlElementAsJson);
+    setCurrentTranslation(
+      new HtmlElement(htmlAsJsonUtils, text, undefined, undefined, { skipConversionWithin: ['H3', 'P', 'LI'] }),
+    );
   };
 
-  if (htmlElementAsJson.type === 'Element') {
+  if (html.type === 'Element') {
     return (
       <Box
         data-testid="html-translation"
@@ -173,32 +168,22 @@ const TranslationFormHtmlSection = ({
           </VStack>
         )}
 
-        {currentTranslationWithMarkDown?.type === 'Element' &&
-          currentTranslation?.type === 'Element' &&
-          htmlElementAsJson.type === 'Element' &&
-          htmlElementAsJson.children.map((originalElement, index) => {
+        {HtmlObject.isElement(html) &&
+          HtmlObject.isElement(currentTranslation) &&
+          // TODO: test html.containsMarkdown
+          html.children.map((originalElement, index) => {
             const translationElement = currentTranslation.children[index];
-            const translationElementWithMarkDown = currentTranslationWithMarkDown.children[index];
             return (
               <TranslationFormHtmlInput
-                key={`html-translation-${translationElementWithMarkDown.id}`}
-                text={translationElementWithMarkDown['textContent'] ?? ''}
-                htmlElementAsJson={originalElement}
+                key={`html-translation-${originalElement.id}`}
+                text={originalElement.innerText}
+                html={originalElement}
                 currentTranslation={translationElement}
-                currentTranslationWithMarkDown={translationElementWithMarkDown}
-                updateTranslation={(element) => {
-                  const updatedTranslation = JSON.parse(JSON.stringify(currentTranslation));
-                  if (updatedTranslation && updatedTranslation?.type === 'Element') {
-                    updatedTranslation.children[index] = element;
-                    const updatedTranslationHtmlString = htmlAsJsonUtils.json2HtmlString(updatedTranslation);
-                    const updatedTranslation2Json = htmlAsJsonUtils.htmlString2Json(
-                      updatedTranslationHtmlString,
-                      htmlAsJsonUtils.defaultLeafs,
-                    );
-                    setCurrentTranslation(updatedTranslation);
-                    setCurrentTranslationWithMarkDown(updatedTranslation2Json);
-                    updateTranslation(updatedTranslationHtmlString);
-                  }
+                updateTranslation={(updatedTranslationHtmlObject) => {
+                  const updatedTranslationRoot = updatedTranslationHtmlObject.getRoot();
+                  setCurrentTranslation(updatedTranslationRoot);
+                  const htmlString = updatedTranslationRoot.toHtmlString();
+                  updateTranslation(htmlString);
                 }}
               />
             );

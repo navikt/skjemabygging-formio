@@ -68,13 +68,11 @@ const TranslationsFormPage = ({ skjemanummer, translations, title, flattenedComp
       </Heading>
       <form>
         {flattenedComponents.map((comp) => {
-          const { text, type, htmlElementAsJson, html } = comp;
+          const { text, type } = comp;
           return (
             <FormItem
               translations={currentTranslation}
               text={text}
-              htmlElementAsJson={htmlElementAsJson}
-              html={html}
               type={type}
               key={`translation-${skjemanummer}-${text}-${languageCode}`}
               languageCode={languageCode}
