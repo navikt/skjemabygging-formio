@@ -62,13 +62,14 @@ export default class DatePicker extends BaseComponent {
 
     if (this.component?.beforeDateInputKey) {
       const referenceComponent = navFormUtils.findByKey(this.component?.beforeDateInputKey, this.root.getComponents());
-      referenceComponent?.rerender();
+      referenceComponent?.rerender?.();
     } else {
-      this.getComponentsWithDateInputKey().map((component) => component.rerender());
+      this.getComponentsWithDateInputKey().map((component) => component.rerender?.());
     }
   }
 
   checkComponentValidity(data, dirty, row, options = {}) {
+    // @ts-ignore
     this.setComponentValidity(this.componentErrors, dirty, !!options?.fromBlur);
 
     return this.componentErrors.length === 0;

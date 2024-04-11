@@ -173,8 +173,8 @@ export interface Component {
   mayBeEqual?: string;
   earliestAllowedDate?: string;
   latestAllowedDate?: string;
-  getValue: () => string;
-  rerender: () => string;
+  getValue?: () => string;
+  rerender?: () => string;
 }
 
 export interface ComponentProperties {
