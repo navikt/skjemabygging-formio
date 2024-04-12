@@ -30,18 +30,16 @@ export class FormioService {
 
   async createNewForm(skjemanummer: string, userToken: string) {
     const trimmedSkjemanummer = skjemanummer.trim();
+    const defaultForm = navFormUtils.createDefaultForm();
     const form: NavFormType = {
-      type: 'form',
-      display: 'wizard',
-      tags: ['nav-skjema', ''],
-      title: 'Midlertidig tittel',
+      ...defaultForm,
+      title: 'Skjematittel',
       path: navFormUtils.toFormPath(trimmedSkjemanummer),
       name: stringUtils.camelCase(trimmedSkjemanummer),
       properties: {
+        ...defaultForm.properties,
         skjemanummer: trimmedSkjemanummer,
-        tema: '',
       },
-      components: [],
       access: [
         {
           type: 'read_all',
