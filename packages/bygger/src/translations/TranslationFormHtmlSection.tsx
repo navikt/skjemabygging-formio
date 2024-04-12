@@ -13,7 +13,6 @@ import TranslationFormHtmlInput from './TranslationFormHtmlInput';
 
 interface Props {
   text: string;
-  html: HtmlElement;
   storedTranslation: string;
   updateTranslation: (text: string) => void;
   onSelectLegacy: () => void;
