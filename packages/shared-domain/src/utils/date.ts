@@ -42,7 +42,7 @@ const toLocaleDateAndTime = (date: string, locale = 'no') => {
 };
 
 const toLocaleDate = (date: string | Date, locale = 'no') => {
-  if (typeof date === 'string') {
+  if (typeof date !== 'object') {
     date = new Date(date);
   }
 
@@ -62,7 +62,7 @@ export const getIso8601String = () => {
 };
 
 const toSubmissionDate = (date: string | Date) => {
-  if (typeof date === 'string') {
+  if (typeof date !== 'object') {
     date = new Date(date);
   }
 
