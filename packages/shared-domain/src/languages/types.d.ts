@@ -31,7 +31,7 @@ export type TranslationResource = {
 export interface FormioTranslationData {
   name: string;
   scope: TranslationScope;
-  form: string;
+  form?: string;
   tag: TranslationTag | '';
   language: Language;
   i18n: I18nTranslationMap;

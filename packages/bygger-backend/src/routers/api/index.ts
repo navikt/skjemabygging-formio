@@ -7,6 +7,7 @@ import deprecatedUnpublishForm from './deprecated-unpublish-form';
 import enhetsliste from './enhetsliste';
 import formDiff from './formDiff';
 import formsRouter from './forms';
+import globalTranslationsRouter from './global-translations';
 import apiErrorHandler from './helpers/apiErrorHandler';
 import authorizedPublisher from './helpers/authorizedPublisher';
 import importRouter from './import';
@@ -42,6 +43,7 @@ apiRouter.post('/migrate/update', authorizedPublisher, migrateUpdate);
 apiRouter.get('/form/:formPath/diff', formDiff);
 apiRouter.use('/forms', formsRouter);
 apiRouter.use('/import', importRouter);
+apiRouter.use('/global-translations', authorizedPublisher, globalTranslationsRouter);
 apiRouter.post('/log/:level', rateLimiter(60000, 60), log);
 
 apiRouter.use(apiErrorHandler);

@@ -1,7 +1,7 @@
 import { Button, Heading } from '@navikt/ds-react';
-import { LoadingComponent, makeStyles, useModal } from '@navikt/skjemadigitalisering-shared-components';
+import { LoadingComponent, makeStyles, useAppConfig, useModal } from '@navikt/skjemadigitalisering-shared-components';
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { useEffect, useMemo, useReducer, useState } from 'react';
+import { useCallback, useEffect, useMemo, useReducer, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { AppLayout } from '../../components/AppLayout';
 import ButtonWithSpinner from '../../components/ButtonWithSpinner';
@@ -66,8 +66,10 @@ const GlobalTranslationsPage = ({
   loadGlobalTranslations,
   publishGlobalTranslations,
   saveTranslation,
+  importFromProduction,
 }) => {
   const { tag, languageCode } = useParams();
+  const { config } = useAppConfig();
   const selectedTag = tag || tags.SKJEMATEKSTER;
   const [isDeleteLanguageModalOpen, setIsDeleteLanguageModalOpen] = useModal();
 
@@ -113,6 +115,13 @@ const GlobalTranslationsPage = ({
       });
     }
   }, [globalTranslationsWithLanguagecodeAndTag]);
+
+  const importFromProd = useCallback(async () => {
+    await importFromProduction(languageCode);
+    return loadGlobalTranslations()
+      .then((translations) => setAllGlobalTranslations(translations))
+      .catch(() => {});
+  }, [importFromProduction, loadGlobalTranslations, languageCode]);
 
   const languages = useMemo(() => getAvailableLanguages(allGlobalTranslations), [allGlobalTranslations]);
   const predefinedOriginalTextList = useMemo(() => getAllPredefinedOriginalTexts(), []);
@@ -279,6 +288,11 @@ const GlobalTranslationsPage = ({
               <ButtonWithSpinner onClick={onSaveGlobalTranslations}>Lagre</ButtonWithSpinner>
               <UserFeedback />
               <GlobalCsvLink allGlobalTranslations={allGlobalTranslations} languageCode={languageCode} />
+              {!config?.isProdGcp && (
+                <ButtonWithSpinner variant="secondary" onClick={importFromProd}>
+                  Kopier fra produksjon
+                </ButtonWithSpinner>
+              )}
             </Column>
           </div>
         </Row>

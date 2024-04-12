@@ -1,4 +1,4 @@
-import { FormioTranslationPayload } from '@navikt/skjemadigitalisering-shared-domain';
+import { FormioTranslationPayload, Language } from '@navikt/skjemadigitalisering-shared-domain';
 import { logger } from '../../logging/logger';
 import { ApiError } from '../../routers/api/helpers/errors';
 import { FormioService } from '../formioService';
@@ -66,6 +66,44 @@ export const createCopyService = (
       logger.info(`No translations for form ${formPath} found in source`);
     }
     return savedForm;
+  },
+  globalTranslations: async (language: Language, token: string) => {
+    const sourceTranslations = await formioServiceSource.getGlobalTranslations(language);
+    const targetTranslations = await formioServiceTarget.getGlobalTranslations(language);
+    const languageForm = await formioServiceTarget.getForm('language', 'resource');
+
+    if (languageForm) {
+      if (targetTranslations.length) {
+        logger.info(`Deleting global translations for ${language} in target`, {
+          targetTranslationsIds: targetTranslations.map((t) => t._id),
+          language,
+        });
+        await Promise.all(targetTranslations.map((t) => formioServiceTarget.deleteTranslation(t._id!, token)));
+      }
+      const savedTranslations = await Promise.all(
+        sourceTranslations.map((t) =>
+          formioServiceTarget.saveTranslation(
+            {
+              data: t.data,
+              form: languageForm._id!,
+              project: languageForm.project,
+            },
+            token,
+          ),
+        ),
+      );
+      logger.info(`Global translations for ${language} copied to target`, {
+        sourceTranslationsIds: sourceTranslations.map((t) => t._id),
+        targetTranslationsIds: savedTranslations.map((t) => t._id),
+        language,
+      });
+    } else {
+      logger.warn(`Unable to locate form 'language' in target when trying to copy global translations ${language}`, {
+        source: formioServiceSource.projectUrl,
+        target: formioServiceTarget.projectUrl,
+      });
+      throw new ApiError('Could not find form "language" in target', false);
+    }
   },
   getSourceForms: async () => {
     return await formioServiceSource.getAllForms(1000, true, 'path,title,properties.skjemanummer');

@@ -17,6 +17,7 @@ type Result = Pick<NavFormType, 'path' | 'title'> & {
 const ImportFormsPage = () => {
   const styles = useStyles();
   const [forms, setForms] = useState<NavFormType[]>([]);
+  const [formsErrorMessage, setFormsErrorMessage] = useState<string | undefined>(undefined);
   const [options, setOptions] = useState<ComboboxOption[]>([]);
   const [filteredOptions, setFilteredOptions] = useState<ComboboxOption[]>([]);
   const [results, setResults] = useState<Result[]>([]);
@@ -26,7 +27,7 @@ const ImportFormsPage = () => {
     api
       .getFormsInProduction()
       .then((forms) => setForms(forms))
-      .catch((err) => console.log(err));
+      .catch((_err) => setFormsErrorMessage('Feil ved henting av skjema fra produksjon'));
   }, []);
 
   useEffect(() => {
@@ -97,6 +98,7 @@ const ImportFormsPage = () => {
         isMultiSelect
         onChange={(event) => filterOptions(event?.target.value as string)}
         onToggleSelected={toggleSelected}
+        error={formsErrorMessage}
       />
     );
   };
@@ -135,7 +137,7 @@ const ImportFormsPage = () => {
         </Heading>
       </Row>
       <Row className={styles.main}>
-        {!options.length ? <Skeleton width="100%" height={80} /> : renderCombobox()}
+        {!options.length && !formsErrorMessage ? <Skeleton width="100%" height={80} /> : renderCombobox()}
         <ButtonWithSpinner
           className={styles.submitButton}
           onClick={() => overwriteForms(selectedOptions.map((o) => o.value))}

@@ -3,7 +3,9 @@ import { FormioService } from '../formioService';
 import { createCopyService } from './CopyService';
 import devForm from './testdata/dev/form';
 import languageForm from './testdata/dev/form-language';
+import devGlobalTranslationsEn from './testdata/dev/global-translations-en';
 import prodForm from './testdata/prod/form';
+import prodGlobalTranslationsEn from './testdata/prod/global-translations-en';
 import prodTranslations from './testdata/prod/translations';
 import { CopyService } from './types';
 
@@ -75,6 +77,50 @@ describe('CopyService', () => {
       expect(savedDevForm.properties.tema).toEqual(prodForm.properties.tema);
       expect(savedDevForm.components).toHaveLength(prodForm.components.length);
       expect(savedDevForm.title).toEqual(prodForm.title);
+    });
+  });
+
+  describe('globalTranslations', () => {
+    let devMock: FormioService;
+    let prodMock: FormioService;
+    let copyService: CopyService;
+
+    beforeEach(() => {
+      devMock = {
+        getForm: vi.fn().mockImplementation((path) => {
+          if (path === 'language') {
+            return Promise.resolve(languageForm);
+          }
+          throw Error(`unexpected function invokation (path=${path})`);
+        }),
+        getGlobalTranslations: vi.fn().mockImplementation(() => Promise.resolve(devGlobalTranslationsEn)),
+        deleteTranslation: vi.fn().mockImplementation(() => Promise.resolve()),
+        saveTranslation: vi.fn().mockImplementation(() => Promise.resolve([])),
+      } as unknown as FormioService;
+      prodMock = {
+        getGlobalTranslations: vi.fn().mockImplementation(() => Promise.resolve(prodGlobalTranslationsEn)),
+      } as unknown as FormioService;
+
+      const formioServiceDevMock = vi.mocked(devMock);
+      const formioServiceProdMock = vi.mocked(prodMock);
+      copyService = createCopyService(formioServiceProdMock, formioServiceDevMock);
+    });
+
+    it('copies global translations for given language', async () => {
+      await copyService.globalTranslations('en', 'token');
+      expect(devMock.saveTranslation).toHaveBeenCalledTimes(4);
+      prodGlobalTranslationsEn.forEach((t) => {
+        expect(devMock.saveTranslation).toHaveBeenCalledWith(
+          expect.objectContaining({
+            data: t.data,
+          }),
+          'token',
+        );
+      });
+      expect(devMock.deleteTranslation).toHaveBeenCalledTimes(4);
+      devGlobalTranslationsEn.forEach((t) => {
+        expect(devMock.deleteTranslation).toHaveBeenCalledWith(t._id, 'token');
+      });
     });
   });
 });
