@@ -23,7 +23,10 @@ export const createCopyService = (
       throw new ApiError('Fant ikke skjemaet som skulle kopieres', true);
     }
 
-    const targetForm = await formioServiceTarget.getForm(formPath);
+    let targetForm = await formioServiceTarget.getForm(formPath);
+    if (!targetForm) {
+      targetForm = await formioServiceTarget.createNewForm(sourceForm.properties.skjemanummer, token);
+    }
     targetForm.title = sourceForm.title;
     targetForm.properties = sourceForm.properties;
     targetForm.components = sourceForm.components;
@@ -63,5 +66,8 @@ export const createCopyService = (
       logger.info(`No translations for form ${formPath} found in source`);
     }
     return savedForm;
+  },
+  getSourceForms: async () => {
+    return await formioServiceSource.getAllForms(1000, true, 'path,title,properties.skjemanummer');
   },
 });

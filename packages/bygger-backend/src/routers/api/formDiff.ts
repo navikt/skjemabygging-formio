@@ -19,7 +19,7 @@ const formDiff = async (req: Request, res: Response, next: NextFunction) => {
 
     const form = await formioService.getForm(formPath);
 
-    res.json(formDiffingTool.generateNavFormDiff(publishedForm, form));
+    res.json(formDiffingTool.generateNavFormDiff(publishedForm, form!));
   } catch (error) {
     next(error);
   }

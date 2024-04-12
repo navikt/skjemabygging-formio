@@ -3,7 +3,7 @@ import { Dropdown, InternalHeader } from '@navikt/ds-react';
 import { Link } from 'react-router-dom';
 import { useDropdownStyles } from '../styles';
 
-const AdminMenu = () => {
+const AdminMenu = ({ showImport = false }) => {
   const dropdownStyles = useDropdownStyles();
   return (
     <Dropdown>
@@ -33,6 +33,12 @@ const AdminMenu = () => {
             {' '}
             <Link to="/rapporter">Rapporter</Link>
           </Dropdown.Menu.GroupedList.Item>
+          {showImport && (
+            <Dropdown.Menu.GroupedList.Item>
+              {' '}
+              <Link to="/import/skjema">Importer</Link>
+            </Dropdown.Menu.GroupedList.Item>
+          )}
         </Dropdown.Menu.GroupedList>
       </Dropdown.Menu>
     </Dropdown>
