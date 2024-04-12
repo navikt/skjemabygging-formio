@@ -5,6 +5,7 @@ import {
   FormPropertiesPublishing,
   FormPropertiesType,
   FormType,
+  Language,
   NavFormType,
   navFormUtils,
   ResourceName,
@@ -13,6 +14,8 @@ import {
 import config from '../config';
 import { fetchWithErrorHandling } from '../fetchUtils';
 import { logger } from '../logging/logger';
+
+type FormioTranslation = FormioTranslationPayload | (Omit<FormioTranslationPayload, '_id'> & { _id?: string });
 
 export class FormioService {
   public readonly projectUrl: string;
@@ -100,7 +103,12 @@ export class FormioService {
     return this.getResourceSubmissions<FormioTranslationPayload>('language', query);
   }
 
-  async saveTranslation(resource: FormioTranslationPayload, userToken: string) {
+  async getGlobalTranslations(language: Language) {
+    const query = `data.scope=global&data.language=${language}&limit=20`;
+    return this.getResourceSubmissions<FormioTranslationPayload>('language', query);
+  }
+
+  async saveTranslation(resource: FormioTranslation, userToken: string) {
     const translationId = resource._id;
     const response = await fetchWithErrorHandling(
       `${this.projectUrl}/language/submission${translationId ? `/${translationId}` : ''}`,
@@ -136,7 +144,7 @@ export class FormioService {
       logger.info(`Will delete all translations for form ${formPath}`, {
         translationIds: translations.map((t) => t._id),
       });
-      await Promise.all(translations.map((t) => this.deleteTranslation(t._id, userToken)));
+      await Promise.all(translations.map((t) => this.deleteTranslation(t._id!, userToken)));
     } else {
       logger.debug(`No translations to delete for form ${formPath}`);
     }
