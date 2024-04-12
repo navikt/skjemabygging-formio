@@ -9,6 +9,7 @@ const mottaksadresser: Mottaksadresse[] = [
       postnummer: '0591',
       poststed: 'Oslo',
     },
+    form: '9',
   },
   {
     _id: '2',
@@ -18,6 +19,7 @@ const mottaksadresser: Mottaksadresse[] = [
       postnummer: '6400',
       poststed: 'Molde',
     },
+    form: '9',
   },
 ];
 export default mottaksadresser;

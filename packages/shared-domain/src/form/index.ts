@@ -2,6 +2,7 @@ import { AttachmentSettingValues } from '../attachment';
 import { Enhetstype } from '../enhet';
 
 export type DisplayType = 'wizard' | 'form';
+export type FormType = 'form' | 'resource';
 export type InnsendingType = 'PAPIR_OG_DIGITAL' | 'KUN_PAPIR' | 'KUN_DIGITAL' | 'INGEN';
 export type SubmissionMethod = 'paper' | 'digital';
 
@@ -217,6 +218,7 @@ export interface NavFormType {
   properties: FormPropertiesType;
   components: Component[];
   access?: ResourceAccess[];
+  project?: string;
 }
 
 export interface FormsResponseForm extends Pick<NavFormType, '_id' | 'title' | 'path' | 'modified'> {

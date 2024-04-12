@@ -37,6 +37,7 @@ const imgForm = {
       label: 'Input Condition',
       type: 'textfield',
       key: 'inputCondition',
+      navId: 'dkv84ks',
       fieldSize: 'input--xxl',
       input: true,
       dataGridLabel: true,
@@ -62,6 +63,7 @@ const imgForm = {
       showInPdf: true,
       widthPercent: 100,
       key: 'image1',
+      navId: 'sdh82sz',
       conditional: {
         show: false,
         when: 'inputCondition',

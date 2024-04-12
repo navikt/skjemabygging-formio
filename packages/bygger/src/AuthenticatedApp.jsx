@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { FormsRouter } from './Forms';
+import ImportFormsPage from './import/ImportFormsPage';
 import BulkPublishPage from './migration/BulkPublishPage';
 import MigrationRouter from './migration/MigrationRouter';
 import MottaksadresserPage from './mottaksadresser/MottaksadresserPage';
@@ -13,6 +14,7 @@ function AuthenticatedApp({ serverURL, formio }) {
       <Routes>
         <Route path="/forms/*" element={<FormsRouter formio={formio} serverURL={serverURL} />} />
         <Route path="/translations/*" element={<TranslationsRouter formio={formio} serverURL={serverURL} />} />
+        <Route path="/import/skjema" element={<ImportFormsPage />} />
         <Route path="/mottaksadresser" element={<MottaksadresserPage />} />
         <Route path="/migrering/*" element={<MigrationRouter />} />
         <Route path="/bulk-publisering" element={<BulkPublishPage />} />

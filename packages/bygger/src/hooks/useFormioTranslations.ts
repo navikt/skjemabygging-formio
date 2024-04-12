@@ -392,6 +392,30 @@ export const useFormioTranslations = (serverURL, formio) => {
     [saveTranslation, feedbackEmit],
   );
 
+  const importFromProduction = useCallback(
+    async (languageCode: Language) => {
+      try {
+        await http!.put(
+          `/api/global-translations/${languageCode}/copy-from-prod`,
+          {},
+          {
+            'Bygger-Formio-Token': NavFormioJs.Formio.getToken(),
+          },
+        );
+        feedbackEmit.success(
+          `Globale oversettelser for ${languagesInNorwegian[languageCode]} er kopiert fra produksjon.`,
+        );
+        return Promise.resolve();
+      } catch (err) {
+        feedbackEmit.error(
+          `Feil oppstod ved forsøk på å kopiere globale oversettelser for ${languagesInNorwegian[languageCode]} fra produksjon.`,
+        );
+        return Promise.resolve();
+      }
+    },
+    [feedbackEmit, http],
+  );
+
   return {
     loadGlobalTranslations,
     loadGlobalTranslationsForTranslationsPage,
@@ -400,5 +424,6 @@ export const useFormioTranslations = (serverURL, formio) => {
     deleteTranslation,
     saveLocalTranslation,
     saveGlobalTranslation,
+    importFromProduction,
   };
 };

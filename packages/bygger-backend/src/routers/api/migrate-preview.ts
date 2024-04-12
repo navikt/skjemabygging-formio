@@ -17,7 +17,7 @@ const migratePreview = async (req: Request, res: Response, next: NextFunction) =
       searchFilters,
       dependencyFilters,
       editOptions,
-      form,
+      form!,
       migrationLevel,
     );
     res.json(formForPreview);

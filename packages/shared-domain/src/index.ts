@@ -11,6 +11,7 @@ import {
   FormPropertiesPublishing,
   FormPropertiesType,
   FormSignaturesType,
+  FormType,
   FormsResponseForm,
   FyllutState,
   InnsendingType,
@@ -36,6 +37,7 @@ import type {
   FormioTranslationPayload,
   GlobalTranslationMap,
   I18nTranslationMap,
+  I18nTranslationReplacements,
   I18nTranslations,
   Language,
   ScopedTranslationMap,
@@ -49,7 +51,12 @@ import migrationUtils, { MigrationLevel } from './migration';
 import { Operator } from './migration/operator';
 import type { Mottaksadresse, MottaksadresseData } from './mottaksadresse';
 import type { ReportDefinition } from './reports';
-import type { GlobalTranslationsResourceContent, MottaksadresserResourceContent, ResourceContent } from './resource';
+import type { FormioResource, ResourceName } from './resource';
+import type {
+  GlobalTranslationsResourceContent,
+  MottaksadresserResourceContent,
+  ResourceContent,
+} from './resource/published';
 import {
   AktivitetPeriode,
   AktivitetVedtaksinformasjon,
@@ -75,6 +82,7 @@ import objectUtils from './utils/objectUtils';
 import paginationUtils from './utils/pagination';
 import signatureUtils from './utils/signatureUtils';
 import stringUtils from './utils/stringUtils';
+import translationUtils from './utils/translation';
 import validatorUtils from './utils/validatorUtils';
 
 export {
@@ -99,6 +107,7 @@ export {
   signatureUtils,
   stringUtils,
   supportedEnhetstyper,
+  translationUtils,
   validatorUtils,
 };
 export type {
@@ -121,6 +130,8 @@ export type {
   FormPropertiesPublishing,
   FormPropertiesType,
   FormSignaturesType,
+  FormType,
+  FormioResource,
   FormioTranslation,
   FormioTranslationData,
   FormioTranslationMap,
@@ -132,6 +143,7 @@ export type {
   GlobalTranslationMap,
   GlobalTranslationsResourceContent,
   I18nTranslationMap,
+  I18nTranslationReplacements,
   I18nTranslations,
   InnsendingType,
   KjentBruker,
@@ -154,6 +166,7 @@ export type {
   ReportDefinition,
   ResourceAccess,
   ResourceContent,
+  ResourceName,
   ScopedTranslationMap,
   SendInnAktivitet,
   SendInnMaalgruppe,

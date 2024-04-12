@@ -4,7 +4,6 @@ import { Component, NavFormType, navFormUtils, stringUtils } from '@navikt/skjem
 import cloneDeep from 'lodash.clonedeep';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { v4 as uuidv4 } from 'uuid';
 import { AppLayout } from '../components/AppLayout';
 import { CreationFormMetadataEditor } from '../components/FormMetaDataEditor/FormMetadataEditor';
 import { isFormMetadataValid, validateFormMetadata } from '../components/FormMetaDataEditor/utils/utils';
@@ -66,20 +65,7 @@ const NewFormPage: React.FC<Props> = ({ formio }): React.ReactElement => {
   const styles = useStyles();
   const [state, setState] = useState<State>({
     form: {
-      tags: ['nav-skjema', ''],
-      type: 'form',
-      display: 'wizard',
-      name: '',
-      title: '',
-      path: '',
-      properties: {
-        skjemanummer: '',
-        tema: '',
-        innsending: 'PAPIR_OG_DIGITAL',
-        ettersending: 'PAPIR_OG_DIGITAL',
-        signatures: [{ label: '', description: '', key: uuidv4() }],
-        ettersendelsesfrist: '14',
-      },
+      ...navFormUtils.createDefaultForm(),
       components: defaultFormFields() as Component[],
     },
   });

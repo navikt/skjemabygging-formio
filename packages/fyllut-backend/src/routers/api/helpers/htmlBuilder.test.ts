@@ -1,4 +1,5 @@
 import { FormPropertiesType, NavFormType, Submission, Summary } from '@navikt/skjemadigitalisering-shared-domain';
+import { conditionalsForm, conditionalsSubmission } from '../testdata/conditionals';
 import { body, createHtmlFromSubmission, signatureSection } from './htmlBuilder';
 
 const createContainer = (
@@ -52,6 +53,17 @@ describe('htmlBuilder', () => {
     it('sets norsk Bokmål as language by default', () => {
       expect(html).toContain('xml:lang="nb"');
       expect(html).toContain('lang="nb"');
+    });
+
+    // See conditionals.ts for explanation
+    it('should show data in html with a form that has components with same key ("annet") and one of them is conditionally hidden', () => {
+      html = createHtmlFromSubmission(
+        conditionalsForm as unknown as NavFormType,
+        conditionalsSubmission as unknown as Submission,
+        'digital',
+        mockTranslate,
+      );
+      expect(html).toContain('tekst som skal vises');
     });
 
     it('sets the language from parameter', () => {

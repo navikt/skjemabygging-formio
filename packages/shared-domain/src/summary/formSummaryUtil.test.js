@@ -60,26 +60,29 @@ describe('form summary', () => {
       const formObject = createFormObject([
         createPanelObject('p1', [
           createDummyRadioPanel(),
-          createDummyAlertstripe('Alert1', '', '', { show: true, when: 'radiopanel', eq: 'ja' }),
-          createDummyAlertstripe('Alert2', '', '', { show: false, when: 'radiopanel', eq: 'ja' }),
+          createDummyAlertstripe('Alert1', '', '', { show: true, when: 'radiopanel', eq: 'ja' }, 'navId1'),
+          createDummyAlertstripe('Alert2', '', '', { show: false, when: 'radiopanel', eq: 'ja' }, 'navId2'),
         ]),
       ]);
       const data = { radiopanel: 'ja' };
 
-      expect(mapAndEvaluateConditionals(formObject, data)).toEqual({ alert1: true, alert2: false });
+      expect(mapAndEvaluateConditionals(formObject, data)).toEqual({ 'alert1-navId1': true, 'alert2-navId2': false });
     });
   });
 
   describe('Image component with custom conditional', () => {
     it('should not be visible when inputCondition=doNotShowImg', () => {
       const { imgForm, submissionDoNotShowConditionalInput } = testImgFormCustomConditional;
-      expect(mapAndEvaluateConditionals(imgForm, submissionDoNotShowConditionalInput)).toEqual({ image1: false });
+
+      expect(mapAndEvaluateConditionals(imgForm, submissionDoNotShowConditionalInput)).toEqual({
+        'image1-sdh82sz': false,
+      });
     });
 
     it('should display image when inputCondition other value than doNotShowImg', () => {
       const { imgForm, submissionOtherInput, submissionEmptyInput } = testImgFormCustomConditional;
-      expect(mapAndEvaluateConditionals(imgForm, submissionOtherInput)).toEqual({ image1: true });
-      expect(mapAndEvaluateConditionals(imgForm, submissionEmptyInput)).toEqual({ image1: true });
+      expect(mapAndEvaluateConditionals(imgForm, submissionOtherInput)).toEqual({ 'image1-sdh82sz': true });
+      expect(mapAndEvaluateConditionals(imgForm, submissionEmptyInput)).toEqual({ 'image1-sdh82sz': true });
     });
   });
 
@@ -230,24 +233,24 @@ describe('form summary', () => {
       describe('when a mapping of evaluated conditionals is passed to handleComponent', () => {
         it('is ignored if the conditional is false', () => {
           const actual = handleComponent(
-            createDummyAlertstripe('Alertstripe with conditional', '', 'contentForPdf'),
+            createDummyAlertstripe('Alertstripe with conditional', '', 'contentForPdf', {}, 'navId'),
             dummySubmission,
             [],
             '',
-            mockedTranslate(),
-            { alertstripewithconditional: false },
+            mockedTranslate,
+            { 'alertstripewithconditional-navId': false },
           );
           expect(actual.find((component) => component.type === 'alertstripe')).toBeUndefined();
         });
 
         it('is added if the conditional is true', () => {
           const actual = handleComponent(
-            createDummyAlertstripe('Alertstripe with conditional', '', 'contentForPdf'),
+            createDummyAlertstripe('Alertstripe with conditional', '', 'contentForPdf', 'navId'),
             dummySubmission,
             [],
             '',
             mockedTranslate,
-            { alertstripewithconditional: true },
+            { 'alertstripewithconditional-navId': true },
           );
           expect(actual.find((component) => component.type === 'alertstripe').value).toBe('contentForPdf');
         });

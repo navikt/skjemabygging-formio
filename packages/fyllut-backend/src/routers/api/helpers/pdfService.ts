@@ -1,4 +1,10 @@
-import { I18nTranslationMap, NavFormType, Submission } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  I18nTranslationMap,
+  I18nTranslationReplacements,
+  NavFormType,
+  Submission,
+  translationUtils,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import correlator from 'express-correlation-id';
 import { config } from '../../../config/config';
 import { logger } from '../../../logger';
@@ -30,7 +36,14 @@ export const createPdf = async (
   translations: I18nTranslationMap,
   language: string,
 ) => {
-  const translate = (text: string): string => translations[text] || text;
+  const translate = (text: string, textReplacements?: I18nTranslationReplacements) =>
+    translationUtils.translateWithTextReplacements({
+      translations,
+      originalText: text,
+      params: textReplacements,
+      currentLanguage: language,
+    });
+
   const html = createHtmlFromSubmission(form, submission, submissionMethod, translate, language);
   if (!html || Object.keys(html).length === 0) {
     throw Error('Missing HTML for generating PDF.');

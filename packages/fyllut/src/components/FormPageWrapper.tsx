@@ -1,7 +1,7 @@
 import { LoadingComponent, useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
 import { NavFormType, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useState } from 'react';
-import { useParams, useSearchParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import httpFyllut from '../util/httpFyllut';
 import FormPage from './FormPage';
 import PageNotFound from './PageNotFound';
@@ -11,8 +11,7 @@ export const FormPageWrapper = () => {
   const { formPath } = useParams();
   const [status, setStatus] = useState('LOADING');
   const [form, setForm] = useState<NavFormType>();
-  const { submissionMethod, config, http, logger } = useAppConfig();
-  const [searchParams] = useSearchParams();
+  const { submissionMethod } = useAppConfig();
 
   useEffect(() => {
     httpFyllut
@@ -22,28 +21,6 @@ export const FormPageWrapper = () => {
         setStatus('FINISHED LOADING');
       })
       .catch((err) => {
-        // Temporary workaround. Remove in eight weeks :)
-        if (err instanceof http!.HttpError && err.status === 404) {
-          const innsendingsId = searchParams.get('innsendingsId');
-          if (innsendingsId) {
-            http!
-              .get<{ visningsType }>(`/fyllut/api/send-inn/soknad/${innsendingsId}`)
-              .then((soknad) => {
-                if (soknad?.visningsType === 'dokumentinnsending') {
-                  const isDevGcp = config?.NAIS_CLUSTER_NAME === 'dev-gcp';
-                  const baseUrl = isDevGcp ? 'https://www.intern.dev.nav.no' : 'https://www.nav.no';
-                  logger?.info('Redirigerer søknad med visningstype dokumentinnsending', { baseUrl, innsendingsId });
-                  window.location.href = `${baseUrl}/sendinn/${innsendingsId}`;
-                }
-              })
-              .catch((err) => {
-                logger?.info('Redirigering av søknad med visningstype dokumentinnsending feilet', {
-                  innsendingsId,
-                  errorMessage: err?.message,
-                });
-              });
-          }
-        }
         setStatus(err instanceof httpFyllut.UnauthenticatedError ? 'UNAUTHENTICATED' : 'FORM NOT FOUND');
       });
   }, [formPath]);

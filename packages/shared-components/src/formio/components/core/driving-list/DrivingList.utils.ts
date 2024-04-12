@@ -1,14 +1,18 @@
-import { DrivingListPeriod, DrivingListSubmission, TEXTS, dateUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { AktivitetPeriode, DrivingListSubmission, TEXTS, dateUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { TFunction } from 'i18next';
-import { v4 as uuidv4 } from 'uuid';
 
 export type DrivingListMetadataId = (typeof metadata)[number]['id'];
 export type DrivingListErrorType = 'required';
+export interface ActivityAlertData {
+  aktivitetsnavn: string;
+  dagsats: number;
+  periode: AktivitetPeriode;
+  vedtaksId: string;
+}
 
 const metadata = [
   { id: 'activityRadio', label: TEXTS.statiske.activities.label },
   { id: 'parkingRadio', label: TEXTS.statiske.drivingList.parking },
-  { id: 'periodType', label: TEXTS.statiske.drivingList.periodType },
   {
     id: 'datePicker',
     label: TEXTS.statiske.drivingList.datePicker,
@@ -31,39 +35,19 @@ export const requiredError = (componentId: DrivingListMetadataId, t: TFunction):
   return t('required', { field });
 };
 
+export const toLocaleDateLongMonth = (date: Date, locale?: string) => {
+  if (!date) return '';
+  return dateUtils.toLocaleDateLongMonth(date.toString(), locale);
+};
+
 export const toLocaleDate = (date: Date) => {
+  if (!date) return '';
   return dateUtils.toLocaleDate(date.toString());
 };
 
 export const toWeekdayAndDate = (date: Date, locale?: string) => {
+  if (!date) return '';
   return dateUtils.toWeekdayAndDate(date.toString(), locale);
-};
-
-export const generatePeriods = (
-  periodType: 'weekly' | 'monthly',
-  date?: string,
-  numberOfPeriods: number = 1,
-): DrivingListPeriod[] => {
-  if (!date) return [];
-
-  const periods: DrivingListPeriod[] = [];
-
-  for (let i = 0; i < numberOfPeriods; i++) {
-    const startDate = new Date(date);
-    const endDate = new Date(date);
-
-    if (periodType === 'weekly') {
-      startDate.setDate(startDate.getDate() + i + 6 * i);
-      endDate.setDate(endDate.getDate() + i + 6 * (i + 1));
-    } else if (periodType === 'monthly') {
-      startDate.setMonth(startDate.getMonth() + 1 * i);
-      endDate.setMonth(endDate.getMonth() + 1 * (i + 1));
-      endDate.setDate(endDate.getDate() - 1);
-    }
-    periods.push({ periodFrom: startDate, periodTo: endDate, id: uuidv4() });
-  }
-
-  return periods;
 };
 
 export const isValidParking = (value: string) => {
@@ -72,46 +56,27 @@ export const isValidParking = (value: string) => {
 };
 
 export const allFieldsForPeriodsAreSet = (values?: DrivingListSubmission) => {
-  return (
-    !!values?.selectedPeriodType &&
-    !!values?.selectedDate &&
-    !!values?.periods?.length &&
-    values?.parking !== undefined &&
-    values?.parking !== null
-  );
+  return !!values?.selectedDate && values?.parking !== undefined && values?.parking !== null;
 };
 
 export const showAddButton = (values?: DrivingListSubmission) => {
-  const lastPeriod = values?.periods?.reduce((prev, current) =>
+  if (!values || !values.periods || values.periods.length === 0) return false;
+
+  const lastPeriod = values.periods.reduce((prev, current) =>
     new Date(prev.periodTo) > new Date(current.periodTo) ? prev : current,
   );
+
   if (!lastPeriod) return false;
 
   const lastPeriodDate = new Date(lastPeriod.periodTo);
+  lastPeriodDate.setHours(0, 0, 0, 0);
 
-  if (values?.selectedPeriodType === 'weekly') {
-    lastPeriodDate.setDate(lastPeriodDate.getDate() + 7);
-  } else if (lastPeriod && values?.selectedPeriodType === 'monthly') {
-    lastPeriodDate.setMonth(lastPeriodDate.getMonth() + 1);
-  } else {
-    return false;
-  }
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
 
-  return lastPeriodDate < new Date();
+  return lastPeriodDate < today;
 };
 
 export const showRemoveButton = (values?: DrivingListSubmission) => {
   return values?.periods?.length && values?.periods?.length > 1;
-};
-
-export const toDate = (values?: DrivingListSubmission) => {
-  const date = new Date();
-
-  if (values?.selectedPeriodType === 'weekly') {
-    date.setDate(date.getDate() - 7);
-    return date;
-  } else if (values?.selectedPeriodType === 'monthly') {
-    date.setMonth(date.getMonth() - 1);
-    return date;
-  }
 };

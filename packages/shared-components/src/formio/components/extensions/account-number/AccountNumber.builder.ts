@@ -10,7 +10,6 @@ const accountNumberBuilder = () => {
       validate: {
         required: true,
         custom: 'valid = instance.validateAccountNumber(input)',
-        customMessage: 'Dette er ikke et gyldig kontonummer',
       },
     },
   };

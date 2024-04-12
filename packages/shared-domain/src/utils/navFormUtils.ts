@@ -1,4 +1,5 @@
 // @ts-ignore
+import { v4 as uuidv4 } from 'uuid';
 import { Attachment, Component, FormsResponseForm, NavFormType, Panel, PrefillData, Submission } from '../form';
 import { formSummaryUtil } from '../index';
 import FormioUtils from '../utils/formio/FormioUtils';
@@ -208,7 +209,10 @@ const getActivePanelsFromForm = (form: NavFormType, submission?: Submission, sub
   const conditionals = formSummaryUtil.mapAndEvaluateConditionals(form, submission?.data ?? {});
   return form.components
     .filter((component: Component) => component.type === 'panel')
-    .filter((panel): panel is Panel => conditionals[panel.key] !== false)
+    .filter((panel): panel is Panel => {
+      const key = formSummaryUtil.createComponentKeyWithNavId(panel);
+      return conditionals[key] !== false;
+    })
     .filter((panel) => !(submissionMethod === 'digital' && isVedleggspanel(panel)));
 };
 
@@ -256,6 +260,24 @@ const isNone = (type: 'innsending' | 'ettersending', form: NavFormType) => {
   return form.properties[type] === 'INGEN';
 };
 
+const createDefaultForm = (): NavFormType => ({
+  tags: ['nav-skjema', ''],
+  type: 'form',
+  display: 'wizard',
+  name: '',
+  title: '',
+  path: '',
+  properties: {
+    skjemanummer: '',
+    tema: '',
+    innsending: 'PAPIR_OG_DIGITAL',
+    ettersending: 'PAPIR_OG_DIGITAL',
+    signatures: [{ label: '', description: '', key: uuidv4() }],
+    ettersendelsesfrist: '14',
+  },
+  components: [],
+});
+
 const navFormUtils = {
   formMatcherPredicate,
   toFormPath,
@@ -278,5 +300,6 @@ const navFormUtils = {
   isAttachment,
   isNone,
   prefillForm,
+  createDefaultForm,
 };
 export default navFormUtils;

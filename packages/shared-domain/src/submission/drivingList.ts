@@ -7,7 +7,6 @@ export interface DrivingListPeriod {
 export interface DrivingListSubmission {
   // Paper
   selectedDate: string;
-  selectedPeriodType?: 'weekly' | 'monthly';
   periods?: DrivingListPeriod[];
   parking?: boolean;
 

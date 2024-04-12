@@ -17,6 +17,7 @@ const config = (req: ByggerRequest, res: Response) => {
     featureToggles: appConfig.featureToggles,
     formioRoleIds: appConfig.formio.roleIds,
     loggerConfig: appConfig.frontendLoggerConfig,
+    isProdGcp: appConfig.naisClusterName === 'prod-gcp',
     user,
   });
 };

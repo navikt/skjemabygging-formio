@@ -2,7 +2,6 @@ import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 
 const ACTIVITIES_LABEL = TEXTS.statiske.activities.label;
 const DATE_PICKER_LABEL = TEXTS.statiske.drivingList.datePicker;
-const PERIOD_TYPE_LABEL = TEXTS.statiske.drivingList.periodType;
 const PARKING_LABEL = TEXTS.statiske.drivingList.parking;
 const PARKING_EXPENSES_LABEL = /Parkeringsutgifter \(kr\)/;
 const DAY_PICKER_LABEL_WITH_PARKING =
@@ -39,18 +38,6 @@ describe('DrivingList', () => {
       cy.defaultWaits();
       cy.clickStart();
 
-      // Should not show parking and date input before selecting period type
-      cy.findByRole('textbox', { name: DATE_PICKER_LABEL }).should('not.exist');
-      cy.findByRole('group', { name: PARKING_LABEL }).should('not.exist');
-
-      cy.findByRole('group', { name: PERIOD_TYPE_LABEL })
-        .should('exist')
-        .within(() => {
-          cy.findAllByRole('radio').should('have.length', 2);
-          cy.findByRole('radio', { name: 'Månedlig' }).should('exist');
-          cy.findByRole('radio', { name: 'Ukentlig' }).should('exist').check();
-        });
-
       cy.findByRole('textbox', { name: DATE_PICKER_LABEL }).should('exist').type('15.05.23{esc}');
       cy.findByRole('group', { name: PARKING_LABEL })
         .should('exist')
@@ -59,14 +46,14 @@ describe('DrivingList', () => {
           cy.findByRole('radio', { name: 'Ja' }).should('exist').check();
         });
 
-      cy.findByRole('button', { name: '15.05.2023 - 21.05.2023' }).click();
+      cy.findByRole('button', { name: '15. mai 2023 - 21. mai 2023' }).click();
 
       cy.findByRole('group', { name: DAY_PICKER_LABEL_WITH_PARKING })
         .should('exist')
         .within(() => {
           cy.findAllByRole('checkbox').should('have.length', 7);
-          cy.findByRole('checkbox', { name: 'mandag 15.05.23' }).should('exist').check();
-          cy.findByRole('checkbox', { name: 'søndag 21.05.23' }).should('exist').check();
+          cy.findByRole('checkbox', { name: 'mandag 15. mai 2023' }).should('exist').check();
+          cy.findByRole('checkbox', { name: 'søndag 21. mai 2023' }).should('exist').check();
           cy.findAllByRole('textbox', { name: PARKING_EXPENSES_LABEL }).eq(0).should('exist').type('100');
         });
 
@@ -79,8 +66,8 @@ describe('DrivingList', () => {
           cy.get('dt').eq(0).should('contain.text', 'Legg til kjøreliste for en eller flere perioder');
 
           cy.findAllByRole('listitem').should('have.length', 2);
-          cy.findByText('15.05.2023 - 100kr').should('exist');
-          cy.findByText('21.05.2023').should('exist');
+          cy.findByText('mandag 15. mai 2023, parkeringsutgift: 100 kr').should('exist');
+          cy.findByText('søndag 21. mai 2023').should('exist');
         });
     });
 
@@ -94,31 +81,15 @@ describe('DrivingList', () => {
       cy.findByRole('region', { name: TEXTS.validering.error })
         .should('exist')
         .within(() => {
-          cy.findByRole('link', { name: `Du må fylle ut: ${PERIOD_TYPE_LABEL}` })
+          cy.findByRole('link', { name: `Du må fylle ut: ${DATE_PICKER_LABEL}` })
             .should('exist')
             .click();
         });
 
-      cy.findByRole('group', { name: PERIOD_TYPE_LABEL })
-        .should('exist')
-        .should('have.focus')
-        .within(() => {
-          cy.findByRole('radio', { name: 'Ukentlig' }).should('exist').check();
-        });
-
       cy.findByRole('textbox', { name: DATE_PICKER_LABEL }).should('exist').type('15.05.23{esc}');
       cy.findByRole('radio', { name: 'Ja' }).should('exist').check();
-      cy.findByRole('button', { name: '15.05.2023 - 21.05.2023' }).click();
-      cy.findByRole('checkbox', { name: 'mandag 15.05.23' }).should('exist').check();
-
-      // Parking expenses should not be over 100
-      cy.findByRole('textbox', { name: PARKING_EXPENSES_LABEL }).should('exist').type('101');
-      cy.clickNextStep();
-      cy.findByRole('region', { name: TEXTS.validering.error })
-        .should('exist')
-        .within(() => {
-          cy.findByRole('link', { name: TEXTS.validering.parkingExpensesAboveHundred }).should('exist');
-        });
+      cy.findByRole('button', { name: '15. mai 2023 - 21. mai 2023' }).click();
+      cy.findByRole('checkbox', { name: 'mandag 15. mai 2023' }).should('exist').check();
 
       // Parking expenses should be a number
       cy.findByRole('textbox', { name: PARKING_EXPENSES_LABEL }).clear();
@@ -145,19 +116,19 @@ describe('DrivingList', () => {
       const twoWeeksAgo = new Date(today);
       twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14);
 
-      cy.findByRole('radio', { name: 'Ukentlig' }).should('exist').check();
-
       const dateString = `${toLocaleDateShortYear(twoWeeksAgo.toString())}{esc}`;
       cy.findByRole('textbox', { name: DATE_PICKER_LABEL }).should('exist').type(dateString);
       cy.findByRole('radio', { name: 'Ja' }).should('exist').check();
 
       cy.findByRole('button', { name: 'Fjern periode' }).should('not.exist');
       cy.findByRole('button', { name: 'Legg til periode' }).click();
-      cy.get('.navds-accordion__item').should('have.length', 2);
+      cy.findByRole('button', { name: 'Legg til periode' }).click();
+
+      cy.get('.navds-accordion__item').should('have.length', 3);
       cy.findByRole('button', { name: 'Legg til periode' }).should('not.exist');
 
       cy.findByRole('button', { name: 'Fjern periode' }).should('exist').click();
-      cy.get('.navds-accordion__item').should('have.length', 1);
+      cy.get('.navds-accordion__item').should('have.length', 2);
     });
   });
 
@@ -171,32 +142,33 @@ describe('DrivingList', () => {
       cy.findByRole('group', { name: ACTIVITIES_LABEL })
         .should('exist')
         .within(() => {
-          cy.findByRole('radio', { name: 'Arbeidstrening: 01.01.2024 - 31.08.2024' }).should('exist').check();
+          cy.findByRole('radio', { name: 'Arbeidstrening: 01. januar 2024 - 31. august 2024' }).should('exist').check();
         });
 
       cy.get('.navds-alert').within(() => {
-        cy.findByRole('heading', { name: 'Aktivitet' }).should('exist');
-        cy.findByText('Arbeidstrening').should('exist');
+        cy.findByRole('heading', { name: 'Dine aktiviteter' }).should('exist');
 
-        cy.findByRole('heading', { name: 'Periode for aktiviteten' }).should('exist');
-        cy.findByText('01.01.2024 - 31.08.2024').should('exist');
+        cy.findByRole('heading', { name: 'Arbeidstrening' }).should('exist');
+        cy.findByText('Periode: 01. januar 2024 - 31. august 2024').should('exist');
+        cy.findAllByText('Dagsats for parkeringsavgift: 67 kr').eq(0).should('exist').get;
 
-        cy.findByRole('heading', { name: 'Din dagsats uten parkeringsutgift' }).should('exist');
-        cy.findByText('67kr').should('exist');
+        cy.findByRole('heading', { name: 'Avklaring' }).should('exist');
+        cy.findByText('Periode: 01. februar 2024 - 31. mars 2024').should('exist');
+        cy.findAllByText('Dagsats for parkeringsavgift: 67 kr').eq(1).should('exist');
       });
 
       cy.findByRole('heading', { name: 'Perioder du tidligere har fått refundert reiseutgifter for' }).should('exist');
-      cy.findByText('01.01.2024 - 07.01.2024 (335 kr)').should('exist');
+      cy.findByText('01. januar 2024 - 07. januar 2024 (335 kr)').should('exist');
 
-      cy.findByRole('button', { name: '08.01.2024 - 14.01.2024' }).click();
-      cy.findByRole('button', { name: '15.01.2024 - 21.01.2024' }).click();
+      cy.findByRole('button', { name: '08. januar 2024 - 14. januar 2024' }).click();
+      cy.findByRole('button', { name: '15. januar 2024 - 21. januar 2024' }).click();
 
       cy.findAllByRole('group', { name: DAY_PICKER_LABEL_WITH_PARKING })
         .should('exist')
         .first()
         .within(() => {
           cy.findAllByRole('checkbox').should('have.length', 7);
-          cy.findByRole('checkbox', { name: 'lørdag 13.01.24' }).should('exist').check();
+          cy.findByRole('checkbox', { name: 'lørdag 13. januar 2024' }).should('exist').check();
           cy.findByRole('textbox', { name: PARKING_EXPENSES_LABEL }).should('exist').type('100');
         });
 
@@ -205,7 +177,7 @@ describe('DrivingList', () => {
         .last()
         .within(() => {
           cy.findAllByRole('checkbox').should('have.length', 7);
-          cy.findByRole('checkbox', { name: 'fredag 19.01.24' }).should('exist').check();
+          cy.findByRole('checkbox', { name: 'fredag 19. januar 2024' }).should('exist').check();
         });
 
       cy.clickSaveAndContinue();
@@ -217,8 +189,8 @@ describe('DrivingList', () => {
           cy.get('dt').eq(0).should('contain.text', 'Legg til kjøreliste for en eller flere perioder');
 
           cy.findAllByRole('listitem').should('have.length', 2);
-          cy.findByText('13.01.2024 - 100kr').should('exist');
-          cy.findByText('19.01.2024').should('exist');
+          cy.findByText('lørdag 13. januar 2024, parkeringsutgift: 100 kr').should('exist');
+          cy.findByText('fredag 19. januar 2024').should('exist');
         });
     });
 
@@ -228,17 +200,17 @@ describe('DrivingList', () => {
       cy.defaultWaits();
       cy.wait('@getActivities');
 
-      cy.findByRole('radio', { name: 'Arbeidstrening: 01.01.2024 - 31.08.2024' }).should('be.checked');
+      cy.findByRole('radio', { name: 'Arbeidstrening: 01. januar 2024 - 31. august 2024' }).should('be.checked');
 
-      cy.findByRole('button', { name: '08.01.2024 - 14.01.2024' }).click();
-      cy.findByRole('checkbox', { name: 'mandag 08.01.24' }).should('be.checked');
-      cy.findByRole('checkbox', { name: 'fredag 12.01.24' }).should('be.checked');
+      cy.findByRole('button', { name: '08. januar 2024 - 14. januar 2024' }).click();
+      cy.findByRole('checkbox', { name: 'mandag 08. januar 2024' }).should('be.checked');
+      cy.findByRole('checkbox', { name: 'fredag 12. januar 2024' }).should('be.checked');
       cy.findAllByRole('textbox', { name: PARKING_EXPENSES_LABEL }).eq(0).should('have.value', '');
       cy.findAllByRole('textbox', { name: PARKING_EXPENSES_LABEL }).eq(1).should('have.value', '50');
 
-      cy.findByRole('button', { name: '15.01.2024 - 21.01.2024' }).click();
+      cy.findByRole('button', { name: '15. januar 2024 - 21. januar 2024' }).click();
       cy.findAllByRole('textbox', { name: PARKING_EXPENSES_LABEL }).eq(2).should('have.value', '100');
-      cy.findByRole('checkbox', { name: 'mandag 15.01.24' }).should('be.checked');
+      cy.findByRole('checkbox', { name: 'mandag 15. januar 2024' }).should('be.checked');
     });
 
     it('should show errors', () => {
@@ -261,14 +233,14 @@ describe('DrivingList', () => {
         .should('exist')
         .should('have.focus')
         .within(() => {
-          cy.findByRole('radio', { name: 'Arbeidstrening: 01.01.2024 - 31.08.2024' }).should('exist').check();
+          cy.findByRole('radio', { name: 'Arbeidstrening: 01. januar 2024 - 31. august 2024' }).should('exist').check();
         });
 
       // Expenses are higher than the refund limit
-      cy.findByRole('button', { name: '08.01.2024 - 14.01.2024' }).click();
-      cy.findByRole('checkbox', { name: 'fredag 12.01.24' }).should('exist').check();
-      cy.findByRole('checkbox', { name: 'lørdag 13.01.24' }).should('exist').check();
-      cy.findByRole('checkbox', { name: 'søndag 14.01.24' }).should('exist').check();
+      cy.findByRole('button', { name: '08. januar 2024 - 14. januar 2024' }).click();
+      cy.findByRole('checkbox', { name: 'fredag 12. januar 2024' }).should('exist').check();
+      cy.findByRole('checkbox', { name: 'lørdag 13. januar 2024' }).should('exist').check();
+      cy.findByRole('checkbox', { name: 'søndag 14. januar 2024' }).should('exist').check();
 
       cy.findAllByRole('textbox', { name: PARKING_EXPENSES_LABEL }).eq(0).should('exist').type('100');
       cy.findAllByRole('textbox', { name: PARKING_EXPENSES_LABEL }).eq(1).should('exist').type('100');
@@ -289,6 +261,7 @@ describe('DrivingList', () => {
       cy.wait('@getActivities');
 
       cy.get('.navds-alert').within(() => {
+        cy.findByText(TEXTS.statiske.drivingList.noVedtakHeading).should('exist');
         cy.findByText(TEXTS.statiske.drivingList.noVedtak).should('exist');
       });
 

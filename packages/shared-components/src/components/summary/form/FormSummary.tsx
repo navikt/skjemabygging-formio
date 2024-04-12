@@ -18,7 +18,7 @@ interface Props {
 }
 
 const FormSummary = ({ form, formUrl, submission, panelValidationList }: Props) => {
-  const { translate } = useLanguages();
+  const { translate, currentLanguage } = useLanguages();
   const { submissionMethod } = useAppConfig();
   // @ts-ignore <- remove when createFormSummaryObject is converted to typescript
   const summaryComponents: Summary.Component[] = formSummaryUtil.createFormSummaryPanels(
@@ -26,6 +26,7 @@ const FormSummary = ({ form, formUrl, submission, panelValidationList }: Props) 
     submission,
     translate,
     false,
+    currentLanguage,
   );
   const activePanels = navFormUtils
     .getActivePanelsFromForm(form, submission, submissionMethod)
