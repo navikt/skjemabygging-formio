@@ -59,14 +59,14 @@ export function FormSettingsPage({ form, publishedForm, onSave, onChange, onPubl
             Publiser
           </Button>
           <UnpublishButton onUnpublish={onUnpublish} form={form} />
-          <ButtonWithSpinner onClick={() => validateAndSave(form)}>Lagre</ButtonWithSpinner>
           {!config.isProdGcp && (
             <ButtonWithSpinner variant="secondary" onClick={onCopyFromProd}>
               Kopier fra produksjon
             </ButtonWithSpinner>
           )}
-          <FormStatusPanel publishProperties={form.properties} />
+          <ButtonWithSpinner onClick={() => validateAndSave(form)}>Lagre</ButtonWithSpinner>
           <UserFeedback />
+          <FormStatusPanel publishProperties={form.properties} />
         </Column>
       </Row>
 

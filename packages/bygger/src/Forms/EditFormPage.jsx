@@ -63,8 +63,8 @@ export function EditFormPage({ form, publishedForm, onSave, onChange, onPublish,
             </Button>
             <UnpublishButton onUnpublish={onUnpublish} form={form} />
             <ButtonWithSpinner onClick={() => onSave(form)}>Lagre</ButtonWithSpinner>
-            <FormStatusPanel publishProperties={form.properties} />
             <UserFeedback />
+            <FormStatusPanel publishProperties={form.properties} />
           </Column>
         </Row>
       </AppLayout>
