@@ -394,7 +394,6 @@ export const useFormioTranslations = (serverURL, formio) => {
 
   const importFromProduction = useCallback(
     async (languageCode: Language) => {
-      console.log('import from production', languageCode);
       try {
         await http!.put(
           `/api/global-translations/${languageCode}/copy-from-prod`,
