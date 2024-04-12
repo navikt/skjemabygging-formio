@@ -269,6 +269,7 @@ class HtmlTextElement extends HtmlObject {
   get innerText(): string {
     return this.textContent ?? '';
   }
+}
 
 export { HtmlObject, HtmlTextElement };
 export default HtmlElement;
