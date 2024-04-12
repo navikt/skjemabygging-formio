@@ -25,7 +25,7 @@ abstract class HtmlObject {
     this.parent = parent;
     this.converter = converter;
     this.originalHtmlString = htmlString;
-    this.originalHtmlJson = htmlJson ?? converter.htmlString2Json(htmlString!, ['H3', 'P', 'LI']); // FIXME: htmlString!
+    this.originalHtmlJson = htmlJson ?? converter.htmlString2Json(htmlString!, options?.skipConversionWithin); // FIXME: htmlString!
     this.id = this.originalHtmlJson.id ? this.originalHtmlJson.id : uuid();
     this.options = options;
   }

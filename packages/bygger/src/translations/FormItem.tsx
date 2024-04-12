@@ -1,6 +1,6 @@
 import { ArrowUndoIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
-import { htmlAsJsonUtils, HtmlElement, HtmlObject, makeStyles } from '@navikt/skjemadigitalisering-shared-components';
+import { htmlAsJsonUtils, makeStyles } from '@navikt/skjemadigitalisering-shared-components';
 import { ScopedTranslationMap } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useState } from 'react';
 import { useI18nDispatch } from '../context/i18n';
@@ -45,8 +45,6 @@ const FormItem = ({ translations, text, type, languageCode }: Props) => {
     }
   }, [translations, text]);
 
-  const html = htmlAsJsonUtils.isHtmlString(text) ? new HtmlElement(htmlAsJsonUtils, text) : undefined;
-
   const updateTranslations = (targetValue) => {
     dispatch({
       type: 'update',
@@ -59,11 +57,10 @@ const FormItem = ({ translations, text, type, languageCode }: Props) => {
     return <></>;
   }
 
-  if (HtmlObject.isElement(html) && !useLegacyHtmlTranslation) {
+  if (htmlAsJsonUtils.isHtmlString(text) && !useLegacyHtmlTranslation) {
     return (
       <TranslationFormHtmlSection
         text={text}
-        html={html}
         storedTranslation={currentTranslation}
         updateTranslation={updateTranslations}
         onSelectLegacy={() => setUseLegacyHtmlTranslation(true)}

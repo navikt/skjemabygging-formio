@@ -53,20 +53,29 @@ const isSameStructure = (
   return elementTreeA.type === elementTreeB.type;
 };
 
-const TranslationFormHtmlSection = ({ text, html, storedTranslation, updateTranslation, onSelectLegacy }: Props) => {
+const TranslationFormHtmlSection = ({ text, storedTranslation, updateTranslation, onSelectLegacy }: Props) => {
   const [currentTranslation, setCurrentTranslation] = useState<HtmlObject>();
+
+  const html = useMemo(
+    () =>
+      htmlAsJsonUtils.isHtmlString(text)
+        ? new HtmlElement(htmlAsJsonUtils, text, undefined, undefined, { skipConversionWithin: ['H3', 'P', 'LI'] })
+        : undefined,
+    [text],
+  );
 
   const translationIsMissing = useMemo(
     () => !currentTranslation && (!storedTranslation || !htmlAsJsonUtils.isHtmlString(storedTranslation)),
     [currentTranslation, storedTranslation],
   );
+
   const incompatibleTranslationExists = useMemo(() => {
     if (!currentTranslation) {
       const storedTranslationAsJson =
         !!storedTranslation && htmlAsJsonUtils.isHtmlString(storedTranslation)
           ? htmlAsJsonUtils.htmlString2Json(storedTranslation, htmlAsJsonUtils.defaultLeafs)
           : undefined;
-      return storedTranslationAsJson && !isSameStructure(html.getJson(), storedTranslationAsJson);
+      return storedTranslationAsJson && !isSameStructure(html?.getJson(), storedTranslationAsJson);
     }
   }, [currentTranslation, html, storedTranslation]);
 
@@ -88,7 +97,7 @@ const TranslationFormHtmlSection = ({ text, html, storedTranslation, updateTrans
     );
   };
 
-  if (html.type === 'Element') {
+  if (HtmlObject.isElement(html)) {
     return (
       <Box
         data-testid="html-translation"
@@ -168,8 +177,7 @@ const TranslationFormHtmlSection = ({ text, html, storedTranslation, updateTrans
           </VStack>
         )}
 
-        {HtmlObject.isElement(html) &&
-          HtmlObject.isElement(currentTranslation) &&
+        {HtmlObject.isElement(currentTranslation) &&
           // TODO: test html.containsMarkdown
           html.children.map((originalElement, index) => {
             const translationElement = currentTranslation.children[index];
