@@ -82,7 +82,7 @@ class DrivingList extends BaseComponent {
       if (!componentData?.selectedVedtaksId) {
         this.addErrorOfType('activityRadio', 'required');
       }
-      if (componentData?.dates?.length === 0) {
+      if (!componentData?.dates || componentData?.dates?.length === 0) {
         this.addErrorOfType('dates', 'required');
       }
     }
