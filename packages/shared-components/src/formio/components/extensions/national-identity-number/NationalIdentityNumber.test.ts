@@ -49,5 +49,19 @@ describe('Fodselsnummer', () => {
     it('fails validation for tnr', () => {
       expect(fnrComp.validateFnrNew(VALID_TNR)).toEqual(TEXTS.validering.fodselsnummerDNummer);
     });
+
+    it.only('succeeds validation for tnr if env is delingslenke', () => {
+      fnrComp.options = {
+        appConfig: { config: { isDelingslenke: true } },
+      };
+      expect(fnrComp.validateFnrNew(VALID_TNR)).toBe(true);
+    });
+
+    it.only('succeeds validation for tnr if env is development', () => {
+      fnrComp.options = {
+        appConfig: { config: { isDevelopment: true } },
+      };
+      expect(fnrComp.validateFnrNew(VALID_TNR)).toBe(true);
+    });
   });
 });

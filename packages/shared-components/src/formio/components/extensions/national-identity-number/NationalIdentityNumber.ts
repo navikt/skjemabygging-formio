@@ -1,12 +1,16 @@
 import { idnr } from '@navikt/fnrvalidator';
-import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { ConfigType, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import TextFieldComponent from 'formiojs/components/textfield/TextField';
 import nationalIdentityNumberBuilder from './NationalIdentityNumber.builder';
 import nationalIdentityNumberForm from './NationalIdentityNumber.form';
 
 const ALLOWED_TYPES = ['fnr', 'dnr'];
+const ALLOWED_TEST_TYPES = ['fnr', 'dnr', 'hnr', 'tnr', 'dnr-and-hnr'];
 
 export default class NationalIdentityNumber extends TextFieldComponent {
+  options: any;
+  t: any;
+
   static schema() {
     return TextFieldComponent.schema({
       label: 'Fødselsnummer eller d-nummer',
@@ -35,18 +39,31 @@ export default class NationalIdentityNumber extends TextFieldComponent {
       return true;
     }
 
-    const inputValueNoSpace = inputValue.replace(' ', '');
+    const appConfig = this.options?.appConfig?.config as ConfigType;
+    const shouldAcceptTestFnr = appConfig?.isDelingslenke || appConfig?.isDevelopment;
 
-    // @ts-ignore
-    const { status, type } = idnr(inputValueNoSpace);
-    if (!ALLOWED_TYPES.includes(type) || status !== 'valid') {
-      //translate based on key in validering file.
-      // @ts-ignore
-      return this.t('fodselsnummerDNummer') === 'fodselsnummerDNummer'
+    const inputValueNoSpace = inputValue.replace(' ', '');
+    const result = idnr(inputValueNoSpace);
+
+    const errorMessage: string =
+      this.t('fodselsnummerDNummer') === 'fodselsnummerDNummer'
         ? TEXTS.validering.fodselsnummerDNummer
-        : // @ts-ignore
-          this.t('fodselsnummerDNummer');
+        : this.t('fodselsnummerDNummer');
+
+    if (result.status === 'invalid') {
+      return errorMessage;
     }
+
+    if (result.status === 'valid') {
+      if (ALLOWED_TYPES.includes(result.type)) {
+        return true;
+      } else if (shouldAcceptTestFnr) {
+        return ALLOWED_TEST_TYPES.includes(result.type);
+      } else {
+        return errorMessage;
+      }
+    }
+
     return true;
   }
 }
