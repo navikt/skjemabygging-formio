@@ -6,6 +6,8 @@ describe('Form Builder', () => {
     cy.intercept('GET', '/api/config', { fixture: 'config.json' }).as('getConfig');
     cy.intercept('GET', /language\/submission?.*/, { fixture: 'globalTranslations.json' }).as('getTranslations');
     cy.intercept('GET', '/api/countries*', { fixture: 'getCountriesLangNb.json' }).as('getCountriesLangNb');
+    cy.intercept('GET', '/mottaksadresse/submission', { fixture: 'mottakadresse.json' }).as('getMottakAdresse');
+    cy.intercept('GET', '/api/temakoder', { fixture: 'temakoder.json' }).as('getTemaKoder');
   });
 
   describe('Diff form', () => {
@@ -103,6 +105,7 @@ describe('Form Builder', () => {
       cy.openEditComponentModal(cy.findByRole('combobox', { name: 'Nedtrekksmeny' }));
       cy.findByRole('tab', { name: 'Data' }).click();
       cy.findByRole('textbox', { name: labelName }).type(val);
+      cy.findAllByDisplayValue(val).should('have.length', 2);
       cy.findByRole('textbox', { name: valueName }).type(`{selectall}${valAlt}`);
       cy.findByRole('button', { name: addAnotherName }).click();
       cy.findAllByRole('textbox', { name: labelName }).eq(1).type(val1);
@@ -121,6 +124,7 @@ describe('Form Builder', () => {
       cy.openEditComponentModal(cy.findByRole('group', { name: 'Flervalg' }));
       cy.findByRole('tab', { name: 'Data' }).click();
       cy.findByRole('textbox', { name: labelName }).type(val);
+      cy.findAllByDisplayValue(val).should('have.length', 4);
       cy.findByRole('textbox', { name: valueName }).type(`{selectall}${valAlt}`);
       cy.findByRole('button', { name: addAnotherName }).click();
       cy.findAllByRole('textbox', { name: labelName }).eq(1).type(val1);
@@ -153,5 +157,41 @@ describe('Form Builder', () => {
     });
 
     // TODO: Add test for radio group when it gets the new data values.
+  });
+
+  describe('Duplicate component keys', () => {
+    beforeEach(() => {
+      cy.intercept('GET', '/api/forms/cypresssettings', { fixture: 'getForm.json' }).as('getForm');
+      cy.intercept('GET', '/api/published-forms/*', { statusCode: 404 }).as('getPublishedForm');
+      cy.visit('forms/cypresssettings');
+    });
+
+    describe('component with same API key as panel', () => {
+      beforeEach(() => {
+        cy.findByRole('link', { name: 'Dine opplysninger' }).click();
+        cy.get('[title="Rediger"]').spread((_editPanelButton, editFornavnComponent) =>
+          editFornavnComponent.click({ force: true }),
+        );
+        cy.findByRole('tab', { name: 'API' }).click();
+        cy.findByDisplayValue('fornavnSoker').type('{selectall}personopplysninger');
+        cy.get('[data-testid="editorSaveButton"]').click();
+      });
+
+      it('should show error message stating duplicate API key', () => {
+        cy.findByText('API Key is not unique: personopplysninger').should('exist');
+      });
+
+      it('should not remove panel when changing components key to something else', () => {
+        cy.get('[title="Rediger"]').spread((_editPanelButton, editFornavnComponent) =>
+          editFornavnComponent.click({ force: true }),
+        );
+        cy.findByRole('tab', { name: 'API' }).click();
+        cy.findByDisplayValue('personopplysninger').type('Component');
+        cy.get('[data-testid="editorSaveButton"]').click();
+
+        cy.findByRole('link', { name: 'Dine opplysninger' }).should('exist');
+        cy.findByLabelText('Fornavn').should('exist');
+      });
+    });
   });
 });
