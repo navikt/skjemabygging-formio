@@ -50,14 +50,14 @@ describe('Fodselsnummer', () => {
       expect(fnrComp.validateFnrNew(VALID_TNR)).toEqual(TEXTS.validering.fodselsnummerDNummer);
     });
 
-    it.only('succeeds validation for tnr if env is delingslenke', () => {
+    it('succeeds validation for tnr if env is delingslenke', () => {
       fnrComp.options = {
         appConfig: { config: { isDelingslenke: true } },
       };
       expect(fnrComp.validateFnrNew(VALID_TNR)).toBe(true);
     });
 
-    it.only('succeeds validation for tnr if env is development', () => {
+    it('succeeds validation for tnr if env is development', () => {
       fnrComp.options = {
         appConfig: { config: { isDevelopment: true } },
       };
