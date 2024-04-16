@@ -8,7 +8,7 @@ import {
   htmlAsJsonUtils,
   makeStyles,
 } from '@navikt/skjemadigitalisering-shared-components';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import TranslationFormHtmlInput from './TranslationFormHtmlInput';
 
 interface Props {
@@ -53,7 +53,7 @@ const isSameStructure = (
 };
 
 const TranslationFormHtmlSection = ({ text, storedTranslation, updateTranslation, onSelectLegacy }: Props) => {
-  const [currentTranslation, setCurrentTranslation] = useState<HtmlObject>();
+  const translationObject = useRef<HtmlElement>();
 
   const html = useMemo(
     () =>
@@ -64,36 +64,34 @@ const TranslationFormHtmlSection = ({ text, storedTranslation, updateTranslation
   );
 
   const translationIsMissing = useMemo(
-    () => !currentTranslation && (!storedTranslation || !htmlAsJsonUtils.isHtmlString(storedTranslation)),
-    [currentTranslation, storedTranslation],
+    () => !translationObject.current && (!storedTranslation || !htmlAsJsonUtils.isHtmlString(storedTranslation)),
+    [storedTranslation],
   );
 
   const incompatibleTranslationExists = useMemo(() => {
-    if (!currentTranslation) {
+    if (!translationObject.current) {
       const storedTranslationAsJson =
         !!storedTranslation && htmlAsJsonUtils.isHtmlString(storedTranslation)
           ? htmlAsJsonUtils.htmlString2Json(storedTranslation, htmlAsJsonUtils.defaultLeafs)
           : undefined;
       return storedTranslationAsJson && !isSameStructure(html?.getJson(), storedTranslationAsJson);
     }
-  }, [currentTranslation, html, storedTranslation]);
+  }, [html, storedTranslation]);
 
   useEffect(() => {
-    if (!currentTranslation && !translationIsMissing && !incompatibleTranslationExists) {
-      setCurrentTranslation(
-        new HtmlElement(htmlAsJsonUtils, storedTranslation, undefined, undefined, {
-          skipConversionWithin: ['H3', 'P', 'LI'],
-        }),
-      );
+    if (!translationObject.current && !translationIsMissing && !incompatibleTranslationExists) {
+      translationObject.current = new HtmlElement(htmlAsJsonUtils, storedTranslation, undefined, undefined, {
+        skipConversionWithin: ['H3', 'P', 'LI'],
+      });
     }
-  }, [currentTranslation, incompatibleTranslationExists, storedTranslation, translationIsMissing]);
+  }, [incompatibleTranslationExists, storedTranslation, translationIsMissing]);
 
   const styles = useStyles();
 
   const startNewTranslation = () => {
-    setCurrentTranslation(
-      new HtmlElement(htmlAsJsonUtils, text, undefined, undefined, { skipConversionWithin: ['H3', 'P', 'LI'] }),
-    );
+    translationObject.current = new HtmlElement(htmlAsJsonUtils, text, undefined, undefined, {
+      skipConversionWithin: ['H3', 'P', 'LI'],
+    });
   };
 
   if (HtmlObject.isElement(html)) {
@@ -176,21 +174,26 @@ const TranslationFormHtmlSection = ({ text, storedTranslation, updateTranslation
           </VStack>
         )}
 
-        {HtmlObject.isElement(currentTranslation) &&
+        {HtmlObject.isElement(translationObject.current) &&
           // TODO: test html.containsMarkdown
           html.children.map((originalElement, index) => {
-            const translationElement = currentTranslation.children[index];
+            const translationElement = translationObject.current?.children[index];
             return (
               <TranslationFormHtmlInput
                 key={`html-translation-${originalElement.id}`}
                 text={originalElement.innerText}
                 html={originalElement}
                 currentTranslation={translationElement}
-                updateTranslation={(updatedTranslationHtmlObject) => {
-                  const updatedTranslationRoot = updatedTranslationHtmlObject.getRoot();
-                  setCurrentTranslation(updatedTranslationRoot);
-                  const htmlString = updatedTranslationRoot.toHtmlString();
-                  updateTranslation(htmlString);
+                updateTranslation={({ id, value }) => {
+                  if (translationObject.current) {
+                    translationObject.current.update(id, value);
+                    const htmlString = translationObject.current.toHtmlString();
+                    updateTranslation(htmlString);
+                  }
+                  // const updatedTranslationRoot = updatedTranslationHtmlObject.getRoot();
+                  // // setCurrentTranslation(updatedTranslationRoot);
+                  // const htmlString = updatedTranslationRoot.toHtmlString();
+                  // updateTranslation(htmlString);
                 }}
               />
             );

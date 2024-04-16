@@ -1,4 +1,4 @@
-import { htmlAsJsonUtils, HtmlObject } from '@navikt/skjemadigitalisering-shared-components';
+import { HtmlObject } from '@navikt/skjemadigitalisering-shared-components';
 import TranslationTextInput from './TranslationTextInput';
 import { getInputType } from './utils';
 
@@ -6,7 +6,7 @@ interface Props {
   text: string;
   html: HtmlObject;
   currentTranslation?: HtmlObject;
-  updateTranslation: (element: HtmlObject) => void;
+  updateTranslation: (element: { id: string; value: string }) => void;
 }
 
 const TranslationFormHtmlInput = ({ text, html, currentTranslation, updateTranslation }: Props) => {
@@ -45,10 +45,8 @@ const TranslationFormHtmlInput = ({ text, html, currentTranslation, updateTransl
         type={getInputType(markdown ?? '')}
         onBlur={(value: string) => {
           // TODO: check markdown with surrounding space
-          const asJson = htmlAsJsonUtils.markdown2Json(value);
-          const updatedTranslation = asJson?.children && currentTranslation.updateChildren(asJson?.children);
-          if (updatedTranslation) {
-            updateTranslation(updatedTranslation);
+          if (value !== currentTranslation.markdown) {
+            updateTranslation({ id: currentTranslation.id, value });
           }
         }}
         onChange={undefined}
@@ -72,7 +70,6 @@ const TranslationFormHtmlInput = ({ text, html, currentTranslation, updateTransl
         value={currentTranslation.textContent?.trim()}
         type={getInputType(html.textContent ?? '')}
         onBlur={(value: string) => {
-          console.log('value', value);
           let textContentWithWhiteSpaces = value.trim();
           if (html.textContent?.startsWith(' ')) {
             textContentWithWhiteSpaces = ` ${textContentWithWhiteSpaces}`;
@@ -81,8 +78,9 @@ const TranslationFormHtmlInput = ({ text, html, currentTranslation, updateTransl
             textContentWithWhiteSpaces = `${textContentWithWhiteSpaces} `;
           }
 
-          currentTranslation.textContent = textContentWithWhiteSpaces;
-          updateTranslation(currentTranslation);
+          if (textContentWithWhiteSpaces !== currentTranslation.textContent) {
+            updateTranslation({ id: currentTranslation.id, value: textContentWithWhiteSpaces });
+          }
         }}
         onChange={undefined}
         hasGlobalTranslation={false}

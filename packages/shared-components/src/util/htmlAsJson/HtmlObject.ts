@@ -32,10 +32,11 @@ abstract class HtmlObject {
 
   abstract get type(): 'Element' | 'TextElement';
   abstract get innerText(): string;
-  abstract clone(): HtmlElement | HtmlTextElement;
+  abstract updateInternal(id: string, value: string): HtmlElement | HtmlTextElement | undefined;
+  abstract populate(value: HtmlAsJsonElement | HtmlAsJsonTextElement): HtmlElement | HtmlTextElement | undefined;
+  // abstract clone(): HtmlElement | HtmlTextElement;
   abstract getJson(): HtmlAsJsonElement | HtmlAsJsonTextElement;
   abstract toHtmlString(): string;
-  abstract findLeaf(id: string): HtmlTextElement | undefined;
 
   static isElement(html?: HtmlObject): html is HtmlElement {
     return !!html && html.type === 'Element';
@@ -45,11 +46,16 @@ abstract class HtmlObject {
     return !!html && html.type === 'TextElement';
   }
 
-  update(value?: HtmlAsJsonElement | HtmlAsJsonTextElement): HtmlObject | undefined {
-    if (value) {
-      this.originalHtmlJson = value;
-      return this;
+  update(id: string, value: string): HtmlElement | HtmlTextElement | undefined {
+    if (this.parent) {
+      return this.getRoot().update(id, value) as HtmlElement | undefined;
     }
+    return this.updateInternal(id, value);
+  }
+
+  refresh(): HtmlObject {
+    this.originalHtmlJson = this.getJson();
+    return this;
   }
 
   getRoot(): HtmlObject {
@@ -69,6 +75,7 @@ class HtmlElement extends HtmlObject {
   attributes: Array<[string, string]>;
   children: HtmlObject[];
   childrenAsMarkdown?: HtmlTextElement[];
+  // TODO: rremove iswrapper
   // isWrapper is true if this is an outer wrapping div, which is used to support htmlStrings with multiple tags on the top level
   isWrapper: boolean;
 
@@ -100,7 +107,7 @@ class HtmlElement extends HtmlObject {
   }
 
   private createMarkdownChildren(children: HtmlObject[], skipConversionWithin: string[] = []) {
-    if (skipConversionWithin.includes(this.tagName)) {
+    if (skipConversionWithin.includes(this.tagName) && children.some((child) => HtmlElement.isElement(child))) {
       return children.map(
         (child) =>
           new HtmlTextElement(
@@ -136,10 +143,10 @@ class HtmlElement extends HtmlObject {
     this.attributes = Object.entries(targetAttributeObjects);
   }
 
-  updateChildren(sourceChildren: Array<HtmlAsJsonElement | HtmlAsJsonTextElement>) {
+  private updateChildren(sourceChildren: Array<HtmlAsJsonElement | HtmlAsJsonTextElement>) {
     let sourceIndex = 0;
     this.children = this.children.reduce((acc: HtmlObject[], child: HtmlObject): HtmlObject[] => {
-      const result = child.update(sourceChildren[sourceIndex]);
+      const result = child.populate(sourceChildren[sourceIndex]);
       if (result) {
         sourceIndex += 1;
         return [...acc, result];
@@ -161,33 +168,42 @@ class HtmlElement extends HtmlObject {
     }
     return this;
   }
-  update(value?: HtmlAsJsonElement | HtmlAsJsonTextElement): HtmlElement | undefined {
-    // TODO: must update json and htmlElement
-    if (value?.type !== 'Element' || value?.tagName !== this.tagName) {
-      return;
-    }
-    super.update(value);
-    this.updateAttributes(value.attributes);
-    this.updateChildren(value.children);
+
+  populate(elementJson: HtmlAsJsonElement): HtmlElement {
+    this.updateAttributes(elementJson.attributes);
+    this.updateChildren(elementJson.children);
+    this.childrenAsMarkdown = this.createMarkdownChildren(this.children, this.options?.skipConversionWithin);
+    this.refresh();
     return this;
   }
 
-  updateMarkdown(value: string) {}
-
-  clone(): HtmlElement {
-    return new HtmlElement(this.converter, this.originalHtmlString, this.getJson(), this.parent, this.options);
-  }
-
-  findChild(id: string) {
-    return this.children.find((child) => child.id === id);
-  }
-
-  findLeaf(id: string): HtmlTextElement | undefined {
-    for (const child of this.children) {
-      const leaf = child.findLeaf(id);
-      if (leaf) return leaf;
+  updateInternal(id: string, value: string): HtmlElement | undefined {
+    let newElementJson: HtmlAsJsonElement | undefined;
+    if (this.id === id) {
+      newElementJson = this.converter.markdown2Json(value);
+      if (newElementJson?.tagName !== this.tagName) {
+        throw Error(`Can't update. Given value "${value}" is not compatible with element with id ${this.id}.`);
+      }
+      return this.populate(newElementJson);
     }
+    let found;
+    for (const child of this.children) {
+      const updateResult = child.updateInternal(id, value);
+      found = updateResult ? updateResult : undefined;
+    }
+    return found;
   }
+
+  // clone(): HtmlElement {
+  //   return new HtmlElement(this.converter, this.toHtmlString(), this.getJson(), this.parent, this.options);
+  // }
+
+  // findLeaf(id: string): HtmlTextElement | undefined {
+  //   for (const child of this.children) {
+  //     const leaf = child.findLeaf(id);
+  //     if (leaf) return leaf;
+  //   }
+  // }
 
   getJson(): HtmlAsJsonElement {
     return {
@@ -228,27 +244,39 @@ class HtmlTextElement extends HtmlObject {
     this.isMarkdownText = !!options?.isMarkdownText;
   }
 
+  updateInternal(id: string, text: string): HtmlTextElement | undefined {
+    if (id === this.id) {
+      this.textContent = text;
+      this.refresh();
+      return this;
+    }
+    // if (typeof value === 'string') {
+    //   this.textContent = value;
+    // }
+    // if (typeof value === 'object' && value?.type === 'TextElement') {
+    //   this.textContent = value.textContent;
+    // }
+  }
+
+  populate(value: HtmlAsJsonTextElement) {
+    if (value.id && value.textContent) {
+      return this.updateInternal(value.id, value.textContent);
+    }
+  }
+
   get type(): 'TextElement' {
     return 'TextElement';
   }
 
-  update(value?: HtmlAsJsonTextElement | HtmlAsJsonElement): HtmlTextElement | undefined {
-    if (value?.type !== 'TextElement') {
-      return;
-    }
-    this.textContent = value.textContent;
-    return this;
-  }
+  // clone(): HtmlTextElement {
+  //   return new HtmlTextElement(this.converter, this.toHtmlString(), this.getJson(), this.parent, this.options);
+  // }
 
-  clone(): HtmlTextElement {
-    return new HtmlTextElement(this.converter, this.originalHtmlString, this.getJson(), this.parent, this.options);
-  }
-
-  findLeaf(id: string): HtmlTextElement | undefined {
-    if (this.id === id) {
-      return this;
-    }
-  }
+  // findLeaf(id: string): HtmlTextElement | undefined {
+  //   if (this.id === id) {
+  //     return this;
+  //   }
+  // }
 
   getJson(): HtmlAsJsonTextElement {
     return {
@@ -269,6 +297,40 @@ class HtmlTextElement extends HtmlObject {
   get innerText(): string {
     return this.textContent ?? '';
   }
+
+  // private updateMarkdown(value: string): HtmlElement {
+  //   //TODO: look into why parent is optional
+  //   const htmlSibling = this.parent?.findChild(this.id);
+  //   if (HtmlObject.isElement(htmlSibling)) {
+  //     let asHtmlString: string;
+  //     switch (htmlSibling.tagName) {
+  //       case 'A':
+  //         asHtmlString = this.converter.linkMarkdown2HtmlString(value);
+  //         break;
+  //       case 'B':
+  //       case 'STRONG':
+  //         asHtmlString = this.converter.strongMarkdown2HtmlString(value);
+  //         break;
+  //       default:
+  //         throw Error(`Markdown is not supported for tag ${htmlSibling.tagName}`);
+  //     }
+  //     const asJson = new HtmlElement(this.converter, asHtmlString).getJson();
+  //     const updateResult = htmlSibling.update(asJson);
+  //     if (!updateResult) {
+  //       throw Error(`Can't update markdown. Source and target don't match`);
+  //     }
+  //     return updateResult;
+  //   }
+  //   throw Error(`Can't update markdown. Expected target to be an Element, but got ${htmlSibling?.type}`);
+  // }
+  //
+  // updateTextContent(value: string): HtmlElement | HtmlTextElement {
+  //   this.textContent = value;
+  //   if (this.isMarkdownText) {
+  //     return this.updateMarkdown(value);
+  //   }
+  //   return this;
+  // }
 }
 
 export { HtmlObject, HtmlTextElement };
