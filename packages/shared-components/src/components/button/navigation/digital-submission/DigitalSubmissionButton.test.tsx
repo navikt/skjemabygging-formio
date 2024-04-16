@@ -14,8 +14,8 @@ vi.mock('../../context/languages/hooks/useLanguageCodeFromURL', () => {
   };
 });
 
-vi.mock('react-router-dom', async (importOriginal) => {
-  const actual = (await importOriginal()) as object;
+vi.mock('react-router-dom', async () => {
+  const actual = await vi.importActual<object>('react-router-dom');
   const params = new URLSearchParams();
   params.set('innsendingsId', '6895e72c-bd59-4964-a098-822c4a83799c');
   params.set('lang', 'nb');
