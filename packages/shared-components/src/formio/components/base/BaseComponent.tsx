@@ -135,7 +135,8 @@ class BaseComponent extends FormioReactComponent {
    * Get class name for custom component renderReact()
    */
   getClassName() {
-    return this.component?.fieldSize ? `nav-${this.component?.fieldSize}` : '';
+    // TODO: Remove nav-new and nav- prefix for fieldsize when all components are Aksel
+    return this.component?.fieldSize ? `nav-${this.component?.fieldSize} nav-new` : 'nav-new';
   }
 
   /**
