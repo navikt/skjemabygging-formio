@@ -221,8 +221,12 @@ describe('DrivingList', () => {
 
       cy.findByRole('radio', { name: 'Arbeidstrening: 01. januar 2024 - 31. august 2024' }).should('be.checked');
 
-      // Should not show error message when loading mellomlagret driving list without dates
-      cy.get('.navds-alert').should('have.length', 1);
+      // Should not show error message when loading mellomlagret driving list without dates. Only show the activity alert
+      cy.get('.navds-alert')
+        .should('have.length', 1)
+        .within(() => {
+          cy.findByText('Dine aktiviteter').should('exist');
+        });
     });
 
     it('should show errors', () => {
