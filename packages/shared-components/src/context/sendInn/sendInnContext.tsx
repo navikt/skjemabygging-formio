@@ -11,7 +11,6 @@ import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import {
   SendInnSoknadResponse,
   createSoknad,
-  createSoknadWithoutInnsendingsId,
   deleteSoknad,
   getSoknad,
   soknadAlreadyExists,
@@ -258,56 +257,37 @@ const SendInnProvider = ({
     const submission = removeFyllutState(appSubmission);
     let redirectLocation: string | undefined = undefined;
     const setRedirectLocation = (loc: string) => (redirectLocation = loc);
-    if (isMellomlagringAvailable && innsendingsId) {
-      try {
-        const response = await updateUtfyltSoknad(
-          appConfig,
-          form,
-          submission,
-          currentLanguage,
-          translation,
-          innsendingsId,
-          setRedirectLocation,
-        );
-        logger?.info(`${innsendingsId}: Mellomlagring was submitted`);
-        await loggSkjemaFullfort();
-        if (redirectLocation) {
-          window.location.href = redirectLocation;
-        }
-        return response;
-      } catch (submitError: any) {
-        loggSkjemaInnsendingFeilet();
-
-        if (submitError.status === 404) {
-          dispatchFyllutMellomlagring({ type: 'error', error: 'SUBMIT_FAILED_NOT_FOUND' });
-        } else {
-          logger?.error(`${innsendingsId}: Failed to submit, will try to store changes`, submitError as Error);
-          try {
-            await updateSoknad(appConfig, form, submission, currentLanguage, translation, innsendingsId);
-            dispatchFyllutMellomlagring({ type: 'error', error: 'SUBMIT_FAILED' });
-          } catch (updateError) {
-            logger?.error(
-              `${innsendingsId}: Failed to update mellomlagring after a failed submit`,
-              updateError as Error,
-            );
-            dispatchFyllutMellomlagring({ type: 'error', error: 'SUBMIT_AND_UPDATE_FAILED' });
-          }
-        }
-      }
-    } else {
-      const response = await createSoknadWithoutInnsendingsId(
+    try {
+      const response = await updateUtfyltSoknad(
         appConfig,
         form,
         submission,
         currentLanguage,
         translation,
+        innsendingsId,
         setRedirectLocation,
       );
+      logger?.info(`${innsendingsId}: Mellomlagring was submitted`);
       await loggSkjemaFullfort();
       if (redirectLocation) {
         window.location.href = redirectLocation;
       }
       return response;
+    } catch (submitError: any) {
+      loggSkjemaInnsendingFeilet();
+
+      if (submitError.status === 404) {
+        dispatchFyllutMellomlagring({ type: 'error', error: 'SUBMIT_FAILED_NOT_FOUND' });
+      } else {
+        logger?.error(`${innsendingsId}: Failed to submit, will try to store changes`, submitError as Error);
+        try {
+          await updateSoknad(appConfig, form, submission, currentLanguage, translation, innsendingsId);
+          dispatchFyllutMellomlagring({ type: 'error', error: 'SUBMIT_FAILED' });
+        } catch (updateError) {
+          logger?.error(`${innsendingsId}: Failed to update mellomlagring after a failed submit`, updateError as Error);
+          dispatchFyllutMellomlagring({ type: 'error', error: 'SUBMIT_AND_UPDATE_FAILED' });
+        }
+      }
     }
   };
 
