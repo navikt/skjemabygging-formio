@@ -43,7 +43,6 @@ const DigitalSubmissionButton = ({
       onError(new Error(translate(TEXTS.grensesnitt.emptySubmissionError)));
       return;
     }
-    console.log('submission', submission);
 
     try {
       setLoading(true);
