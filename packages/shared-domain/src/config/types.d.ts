@@ -3,6 +3,7 @@ export interface ConfigType {
   NAIS_CLUSTER_NAME: string;
   isDelingslenke: boolean;
   isDevelopment: boolean;
+  isProduction: boolean;
   isLoggedIn: boolean;
   amplitudeApiEndpoint: string;
   loggerConfig: {

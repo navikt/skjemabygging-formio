@@ -40,7 +40,6 @@ export default class NationalIdentityNumber extends TextFieldComponent {
     }
 
     const appConfig = this.options?.appConfig?.config as ConfigType;
-    const shouldAcceptTestFnr = appConfig?.isDelingslenke || appConfig?.isDevelopment;
 
     const inputValueNoSpace = inputValue.replace(' ', '');
     const result = idnr(inputValueNoSpace);
@@ -57,7 +56,7 @@ export default class NationalIdentityNumber extends TextFieldComponent {
     if (result.status === 'valid') {
       if (ALLOWED_TYPES.includes(result.type)) {
         return true;
-      } else if (shouldAcceptTestFnr) {
+      } else if (!appConfig?.isProduction) {
         return ALLOWED_TEST_TYPES.includes(result.type);
       } else {
         return errorMessage;
