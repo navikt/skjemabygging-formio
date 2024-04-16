@@ -55,14 +55,14 @@ describe('Fodselsnummer', () => {
 
     it('succeeds validation for tnr if env is delingslenke', () => {
       fnrComp.options = {
-        appConfig: { config: { isDelingslenke: true } },
+        appConfig: { config: { isDelingslenke: true, isProduction: false } },
       };
       expect(fnrComp.validateFnrNew(VALID_TNR)).toBe(true);
     });
 
     it('succeeds validation for tnr if env is development', () => {
       fnrComp.options = {
-        appConfig: { config: { isDevelopment: true } },
+        appConfig: { config: { isDevelopment: true, isProduction: false } },
       };
       expect(fnrComp.validateFnrNew(VALID_TNR)).toBe(true);
     });

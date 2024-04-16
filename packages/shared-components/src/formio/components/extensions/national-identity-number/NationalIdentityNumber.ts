@@ -41,8 +41,6 @@ export default class NationalIdentityNumber extends TextFieldComponent {
 
     const appConfig = this.options?.appConfig?.config as ConfigType;
 
-    console.log('appConfig', appConfig);
-
     const inputValueNoSpace = inputValue.replace(' ', '');
     const result = idnr(inputValueNoSpace);
 
