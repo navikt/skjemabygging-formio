@@ -213,6 +213,22 @@ describe('DrivingList', () => {
       cy.findByRole('checkbox', { name: 'mandag 15. januar 2024' }).should('be.checked');
     });
 
+    it('should load driving list without dates', () => {
+      cy.visit(`/fyllut/testdrivinglist/veiledning?sub=digital&innsendingsId=a66e8932-ce2a-41c1-932b-716fc487813b`);
+      cy.mocksUseRouteVariant('get-soknad:success-driving-list-no-dates');
+      cy.defaultWaits();
+      cy.wait('@getActivities');
+
+      cy.findByRole('radio', { name: 'Arbeidstrening: 01. januar 2024 - 31. august 2024' }).should('be.checked');
+
+      // Should not show error message when loading mellomlagret driving list without dates. Only show the activity alert
+      cy.get('.navds-alert')
+        .should('have.length', 1)
+        .within(() => {
+          cy.findByText('Dine aktiviteter').should('exist');
+        });
+    });
+
     it('should show errors', () => {
       cy.visit(`/fyllut/testdrivinglist?sub=digital`);
       cy.defaultWaits();

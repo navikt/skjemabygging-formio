@@ -18,6 +18,7 @@ const mellomlagringActivities = require('../data/innsending-api/activities/mello
 const mellomlagringActivitiesPrefilledMaalgruppe = require('../data/innsending-api/activities/mellomlagring-activities-prefilled-maalgruppe.json');
 const nav083591soknadComplete = require('../data/innsending-api/mellomlagring/nav083591/complete.json');
 const mellomlagringDrivingList = require('../data/innsending-api/driving-list/mellomlagring-driving-list.json');
+const mellomlagringDrivingListNoDates = require('../data/innsending-api/driving-list/mellomlagring-driving-list-no-dates.json');
 
 const objectToByteArray = (obj) => Array.from(new TextEncoder().encode(JSON.stringify(obj)));
 
@@ -170,6 +171,14 @@ module.exports = [
         options: {
           status: 200,
           body: convertToInnsendingApiResponse(mellomlagringDrivingList),
+        },
+      },
+      {
+        id: 'success-driving-list-no-dates',
+        type: 'json',
+        options: {
+          status: 200,
+          body: convertToInnsendingApiResponse(mellomlagringDrivingListNoDates),
         },
       },
       {
