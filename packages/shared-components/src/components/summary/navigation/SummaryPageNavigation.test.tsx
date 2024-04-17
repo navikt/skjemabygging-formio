@@ -12,9 +12,13 @@ import SummaryPageNavigation, { Props } from './SummaryPageNavigation';
 
 vi.mock('react-router-dom', async () => {
   const actual = await vi.importActual<object>('react-router-dom');
+  const params = new URLSearchParams();
+  params.set('innsendingsId', '6895e72c-bd59-4964-a098-822c4a83799c');
+  params.set('lang', 'nb');
   return {
     ...actual,
     useRouteMatch: () => ({ url: '/forms/previous' }),
+    useSearchParams: vi.fn().mockReturnValue([params, vi.fn()]),
   };
 });
 
@@ -164,7 +168,7 @@ describe('SummaryPageNavigation', () => {
         .defaultReplyHeaders({
           Location: sendInnUrl,
         })
-        .post('/api/send-inn')
+        .put('/api/send-inn/utfyltsoknad')
         .reply(201, {}, { Location: 'https://www.unittest.nav.no/send-inn/123' });
       const form = formWithProperties({ innsending: 'KUN_DIGITAL' }, defaultFormWithAttachment);
       const { buttons } = await renderSummaryPageNavigation({ form }, { baseUrl: basePath });
@@ -190,7 +194,7 @@ describe('SummaryPageNavigation', () => {
         .defaultReplyHeaders({
           Location: sendInnUrl,
         })
-        .post('/api/send-inn')
+        .put('/api/send-inn/utfyltsoknad')
         .reply(201, {}, { Location: 'https://www.unittest.nav.no/send-inn/123' });
       const form = formWithProperties({ innsending: 'KUN_DIGITAL' });
       const { buttons } = await renderSummaryPageNavigation({ form }, { baseUrl: basePath });
@@ -231,7 +235,7 @@ describe('SummaryPageNavigation', () => {
           .defaultReplyHeaders({
             Location: sendInnUrl,
           })
-          .post('/api/send-inn')
+          .put('/api/send-inn/utfyltsoknad')
           .reply(201, {}, { Location: 'https://www.unittest.nav.no/send-inn/123' });
         const form = formWithProperties({ innsending: 'PAPIR_OG_DIGITAL' });
         const { buttons } = await renderSummaryPageNavigation(
