@@ -34,7 +34,6 @@ abstract class HtmlObject {
   abstract get innerText(): string;
   abstract updateInternal(id: string, value: string): HtmlElement | HtmlTextElement | undefined;
   abstract populate(value: HtmlAsJsonElement | HtmlAsJsonTextElement): HtmlElement | HtmlTextElement | undefined;
-  // abstract clone(): HtmlElement | HtmlTextElement;
   abstract getJson(): HtmlAsJsonElement | HtmlAsJsonTextElement;
   abstract toHtmlString(): string;
 
@@ -75,9 +74,6 @@ class HtmlElement extends HtmlObject {
   attributes: Array<[string, string]>;
   children: HtmlObject[];
   childrenAsMarkdown?: HtmlTextElement[];
-  // TODO: rremove iswrapper
-  // isWrapper is true if this is an outer wrapping div, which is used to support htmlStrings with multiple tags on the top level
-  isWrapper: boolean;
 
   constructor(
     converter: typeof htmlAsJsonUtils,
@@ -90,7 +86,6 @@ class HtmlElement extends HtmlObject {
     const htmlElementJson = this.originalHtmlJson as HtmlAsJsonElement; //Fixme
     this.tagName = htmlElementJson.tagName;
     this.attributes = htmlElementJson.attributes;
-    this.isWrapper = htmlElementJson.isWrapper;
     this.children = this.createChildrenFromJson(htmlElementJson, options);
     this.childrenAsMarkdown = this.createMarkdownChildren(this.children, options?.skipConversionWithin);
   }
@@ -194,17 +189,6 @@ class HtmlElement extends HtmlObject {
     return found;
   }
 
-  // clone(): HtmlElement {
-  //   return new HtmlElement(this.converter, this.toHtmlString(), this.getJson(), this.parent, this.options);
-  // }
-
-  // findLeaf(id: string): HtmlTextElement | undefined {
-  //   for (const child of this.children) {
-  //     const leaf = child.findLeaf(id);
-  //     if (leaf) return leaf;
-  //   }
-  // }
-
   getJson(): HtmlAsJsonElement {
     return {
       id: this.id,
@@ -212,12 +196,12 @@ class HtmlElement extends HtmlObject {
       tagName: this.tagName!, // FIXME
       attributes: this.attributes!,
       children: this.children!.map((child) => child.getJson()),
-      isWrapper: this.isWrapper!,
+      isWrapper: !this.parent,
     };
   }
 
   toHtmlString(): string {
-    if (this.isWrapper) {
+    if (!this.parent) {
       return (this.toHtmlElement() as HTMLElement).innerHTML.toString();
     }
     return (this.toHtmlElement() as HTMLElement).outerHTML.toString();
@@ -250,12 +234,6 @@ class HtmlTextElement extends HtmlObject {
       this.refresh();
       return this;
     }
-    // if (typeof value === 'string') {
-    //   this.textContent = value;
-    // }
-    // if (typeof value === 'object' && value?.type === 'TextElement') {
-    //   this.textContent = value.textContent;
-    // }
   }
 
   populate(value: HtmlAsJsonTextElement) {
@@ -267,16 +245,6 @@ class HtmlTextElement extends HtmlObject {
   get type(): 'TextElement' {
     return 'TextElement';
   }
-
-  // clone(): HtmlTextElement {
-  //   return new HtmlTextElement(this.converter, this.toHtmlString(), this.getJson(), this.parent, this.options);
-  // }
-
-  // findLeaf(id: string): HtmlTextElement | undefined {
-  //   if (this.id === id) {
-  //     return this;
-  //   }
-  // }
 
   getJson(): HtmlAsJsonTextElement {
     return {
@@ -297,40 +265,6 @@ class HtmlTextElement extends HtmlObject {
   get innerText(): string {
     return this.textContent ?? '';
   }
-
-  // private updateMarkdown(value: string): HtmlElement {
-  //   //TODO: look into why parent is optional
-  //   const htmlSibling = this.parent?.findChild(this.id);
-  //   if (HtmlObject.isElement(htmlSibling)) {
-  //     let asHtmlString: string;
-  //     switch (htmlSibling.tagName) {
-  //       case 'A':
-  //         asHtmlString = this.converter.linkMarkdown2HtmlString(value);
-  //         break;
-  //       case 'B':
-  //       case 'STRONG':
-  //         asHtmlString = this.converter.strongMarkdown2HtmlString(value);
-  //         break;
-  //       default:
-  //         throw Error(`Markdown is not supported for tag ${htmlSibling.tagName}`);
-  //     }
-  //     const asJson = new HtmlElement(this.converter, asHtmlString).getJson();
-  //     const updateResult = htmlSibling.update(asJson);
-  //     if (!updateResult) {
-  //       throw Error(`Can't update markdown. Source and target don't match`);
-  //     }
-  //     return updateResult;
-  //   }
-  //   throw Error(`Can't update markdown. Expected target to be an Element, but got ${htmlSibling?.type}`);
-  // }
-  //
-  // updateTextContent(value: string): HtmlElement | HtmlTextElement {
-  //   this.textContent = value;
-  //   if (this.isMarkdownText) {
-  //     return this.updateMarkdown(value);
-  //   }
-  //   return this;
-  // }
 }
 
 export { HtmlObject, HtmlTextElement };
