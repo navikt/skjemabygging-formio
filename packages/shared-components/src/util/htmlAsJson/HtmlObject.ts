@@ -25,7 +25,7 @@ abstract class HtmlObject {
     this.parent = parent;
     this.converter = converter;
     this.originalHtmlString = htmlString;
-    this.originalHtmlJson = htmlJson ?? converter.htmlString2Json(htmlString!, options?.skipConversionWithin); // FIXME: htmlString!
+    this.originalHtmlJson = htmlJson ?? converter.htmlString2Json(htmlString!); // FIXME: htmlString!
     this.id = this.originalHtmlJson.id ? this.originalHtmlJson.id : uuid();
     this.options = options;
   }
@@ -141,7 +141,16 @@ class HtmlElement extends HtmlObject {
   private updateChildren(sourceChildren: Array<HtmlAsJsonElement | HtmlAsJsonTextElement>) {
     let sourceIndex = 0;
     this.children = this.children.reduce((acc: HtmlObject[], child: HtmlObject): HtmlObject[] => {
-      const result = child.populate(sourceChildren[sourceIndex]);
+      let sourceChild = sourceChildren[sourceIndex];
+      //TODO: replace with check on similarity?
+      if (
+        !sourceChild.id &&
+        sourceChild.type === child.type &&
+        (sourceChild.type === 'TextElement' || sourceChild.tagName === (child as HtmlElement).tagName)
+      ) {
+        sourceChild = { ...sourceChild, id: child.id };
+      }
+      const result = child.populate(sourceChild);
       if (result) {
         sourceIndex += 1;
         return [...acc, result];
@@ -160,27 +169,28 @@ class HtmlElement extends HtmlObject {
           ? new HtmlElement(this.converter, undefined, newChildJson, this)
           : new HtmlTextElement(this.converter, undefined, newChildJson, this);
       this.children = [...this.children, newChild];
+      sourceIndex += 1;
     }
     return this;
   }
 
-  populate(elementJson: HtmlAsJsonElement): HtmlElement {
-    this.updateAttributes(elementJson.attributes);
-    this.updateChildren(elementJson.children);
-    this.childrenAsMarkdown = this.createMarkdownChildren(this.children, this.options?.skipConversionWithin);
-    this.refresh();
-    return this;
+  populate(elementJson: HtmlAsJsonElement): HtmlElement | undefined {
+    if (elementJson.id === this.id) {
+      this.updateAttributes(elementJson.attributes);
+      this.updateChildren(elementJson.children);
+      this.childrenAsMarkdown = this.createMarkdownChildren(this.children, this.options?.skipConversionWithin);
+      this.refresh();
+      return this;
+    }
   }
 
   updateInternal(id: string, value: string): HtmlElement | undefined {
     let newElementJson: HtmlAsJsonElement | undefined;
     if (this.id === id) {
       newElementJson = this.converter.markdown2Json(value);
-      if (newElementJson?.tagName !== this.tagName) {
-        throw Error(`Can't update. Given value "${value}" is not compatible with element with id ${this.id}.`);
-      }
-      return this.populate(newElementJson);
+      return this.populate({ ...this, children: newElementJson.children, isWrapper: !this.parent });
     }
+
     let found;
     for (const child of this.children) {
       const updateResult = child.updateInternal(id, value);
@@ -228,6 +238,7 @@ class HtmlTextElement extends HtmlObject {
     this.isMarkdownText = !!options?.isMarkdownText;
   }
 
+  //TODO: switch content of updateInternal and populates
   updateInternal(id: string, text: string): HtmlTextElement | undefined {
     if (id === this.id) {
       this.textContent = text;

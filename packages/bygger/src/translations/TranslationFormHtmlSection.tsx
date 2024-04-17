@@ -73,7 +73,7 @@ const TranslationFormHtmlSection = ({ text, storedTranslation, updateTranslation
     if (!translationObject.current) {
       const storedTranslationAsJson =
         !!storedTranslation && htmlAsJsonUtils.isHtmlString(storedTranslation)
-          ? htmlAsJsonUtils.htmlString2Json(storedTranslation, htmlAsJsonUtils.defaultLeafs)
+          ? htmlAsJsonUtils.htmlString2Json(storedTranslation)
           : undefined;
       return storedTranslationAsJson && !isSameStructure(html?.getJson(), storedTranslationAsJson);
     }
@@ -193,10 +193,6 @@ const TranslationFormHtmlSection = ({ text, storedTranslation, updateTranslation
                     const htmlString = translationObject.current.toHtmlString();
                     updateTranslation(htmlString);
                   }
-                  // const updatedTranslationRoot = updatedTranslationHtmlObject.getRoot();
-                  // // setCurrentTranslation(updatedTranslationRoot);
-                  // const htmlString = updatedTranslationRoot.toHtmlString();
-                  // updateTranslation(htmlString);
                 }}
               />
             );

@@ -25,7 +25,7 @@ const linkMarkdown2HtmlString = (markdown: string): string => {
   return markdown;
 };
 
-const markdown2Json = (markdown: string): HtmlAsJsonElement | undefined => {
+const markdown2Json = (markdown: string): HtmlAsJsonElement => {
   const markdownLinkRegex = /\[[^[]+\]\([^[]+\)/gm;
   const markdownStrongRegex = /\*{2}[^*]*\*{2}/gm;
 
@@ -47,10 +47,8 @@ const markdown2Json = (markdown: string): HtmlAsJsonElement | undefined => {
       htmlString = htmlString.replace(match, strongTag);
     });
   }
-  if (linkMatches || strongMatches) {
-    return htmlString2Json(htmlString);
-  }
-  return undefined;
+
+  return htmlString2Json(htmlString);
 };
 
 const htmlNode2Markdown = (node: Element | ChildNode): string => {
