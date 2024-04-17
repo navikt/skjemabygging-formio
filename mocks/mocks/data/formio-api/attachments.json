@@ -145,7 +145,8 @@
           "addons": [],
           "inputType": "radio",
           "fieldSet": false,
-          "id": "erg3rgt"
+          "id": "erg3rgt",
+          "navId": "ek6gm99"
         }
       ],
       "tableView": false,
