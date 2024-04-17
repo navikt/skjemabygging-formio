@@ -51,11 +51,21 @@ class NavFormBuilder extends Component {
     formBuilderOptions: PropTypes.object,
   };
 
+  get logger() {
+    const { appConfig } = this.props.formBuilderOptions;
+    return appConfig?.logger;
+  }
+
   handleChange = () => {
     this.props.onChange(cloneDeep(this.builder.instance.form));
   };
 
+  traceEvent = (event, ...args) => {
+    this.logger?.trace(`FormBuilder event '${event}`, { eventArgs: args });
+  };
+
   createBuilder = (page) => {
+    this.logger?.debug('FormBuilder create', { page });
     this.builder = new NavFormioJs.Formio.FormBuilder(
       this.element.current,
       cloneDeep(this.props.form),
@@ -66,7 +76,9 @@ class NavFormBuilder extends Component {
     }
     this.builderReady = this.builder.ready;
     this.builderReady.then(() => {
+      this.logger?.debug('FormBuilder ready');
       this.builder?.instance?.on('change', this.handleChange);
+      this.builder?.instance?.onAny(this.traceEvent);
       this.builderState = 'ready';
       if (this.props.onReady) {
         this.props.onReady();
@@ -75,7 +87,9 @@ class NavFormBuilder extends Component {
   };
 
   destroyBuilder = () => {
+    this.logger?.debug('FormBuilder destroy');
     this.builder.instance.off('change', this.handleChange);
+    this.builder.instance.offAny(this.traceEvent);
     this.builder.instance.destroy(true);
     this.builder.destroy();
     this.builder = null;
@@ -97,12 +111,15 @@ class NavFormBuilder extends Component {
     const prevPublishedForm = prevProps.formBuilderOptions.formConfig.publishedForm;
     const nextPublishedForm = this.props.formBuilderOptions.formConfig.publishedForm;
     if (!isEqual(nextPublishedForm, prevPublishedForm)) {
+      this.logger?.debug('FormBuilder published form changed, will redraw');
       builderInstance.options.formConfig.publishedForm = nextPublishedForm;
       builderInstance.redraw();
     }
     if (isEqual(builderInstance.form, this.props.form)) {
+      this.logger?.debug('FormBuilder form not changed, return');
       return;
     }
+    this.logger?.debug('FormBuilder form changed, will update');
     this.updateFormBuilder();
   };
 
