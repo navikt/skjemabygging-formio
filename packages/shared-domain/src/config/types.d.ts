@@ -1,9 +1,8 @@
 export interface ConfigType {
   FEATURE_TOGGLES: string;
-  NAIS_CLUSTER_NAME: string;
+  NAIS_CLUSTER_NAME?: 'dev-gcp' | 'prod-gcp';
   isDelingslenke: boolean;
   isDevelopment: boolean;
-  isProduction: boolean;
   isLoggedIn: boolean;
   amplitudeApiEndpoint: string;
   loggerConfig: {
