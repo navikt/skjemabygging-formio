@@ -14,6 +14,17 @@ vi.mock('../../context/languages/hooks/useLanguageCodeFromURL', () => {
   };
 });
 
+vi.mock('react-router-dom', async () => {
+  const actual = await vi.importActual<object>('react-router-dom');
+  const params = new URLSearchParams();
+  params.set('innsendingsId', '6895e72c-bd59-4964-a098-822c4a83799c');
+  params.set('lang', 'nb');
+  return {
+    ...actual,
+    useSearchParams: vi.fn().mockReturnValue([params, vi.fn()]),
+  };
+});
+
 const BASE_URL = 'http://www.unittest.nav.no/fyllut';
 const SEND_INN_URL = 'http://www.unittest.nav.no/sendInn/soknad/123';
 
@@ -79,9 +90,8 @@ describe('DigitalSubmissionButton', () => {
       window.location = originalWindowLocation;
     });
 
-    it('calls onError when backend returns 500', async () => {
-      nock(BASE_URL).post('/api/send-inn').reply(500, { message: 'Feil ved kall til SendInn' });
-      renderButton({ onError });
+    it('calls onError when submission is undefined', async () => {
+      renderButton({ onError, submission: undefined });
       const button = screen.getByRole('button', { name: BUTTON_TEXT });
       expect(button).toBeInTheDocument();
       await userEvent.click(button);
@@ -90,7 +100,7 @@ describe('DigitalSubmissionButton', () => {
     });
 
     it('redirects when backend returns 201 and Location header', async () => {
-      nock(BASE_URL).post('/api/send-inn').reply(201, 'CREATED', { Location: SEND_INN_URL });
+      nock(BASE_URL).put('/api/send-inn/utfyltsoknad').reply(201, 'CREATED', { Location: SEND_INN_URL });
       renderButton({ onError });
       const button = screen.getByRole('button', { name: BUTTON_TEXT });
       expect(button).toBeInTheDocument();
@@ -100,7 +110,7 @@ describe('DigitalSubmissionButton', () => {
     });
 
     it("responds with error when clicked in application 'bygger'", async () => {
-      nock(BASE_URL).post('/api/send-inn').reply(201, 'CREATED', { Location: SEND_INN_URL });
+      nock(BASE_URL).put('/api/send-inn/utfyltsoknad').reply(201, 'CREATED', { Location: SEND_INN_URL });
       renderButton({ onError }, { app: 'bygger' });
       const button = screen.getByRole('button', { name: BUTTON_TEXT });
       expect(button).toBeInTheDocument();
