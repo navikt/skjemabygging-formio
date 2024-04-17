@@ -1,4 +1,4 @@
-import { DateTime } from 'luxon';
+import { DateTime, Settings } from 'luxon';
 import moment from 'moment';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -14,12 +14,14 @@ const dateAndTimeFormat: Intl.DateTimeFormatOptions = {
   year: 'numeric',
   hour: '2-digit',
   minute: '2-digit',
+  timeZone: 'Europe/Oslo',
 };
 
 const dateFormat: Intl.DateTimeFormatOptions = {
   day: '2-digit',
   month: '2-digit',
   year: 'numeric',
+  timeZone: 'Europe/Oslo',
 };
 
 const weekdayAndDateFormat: Intl.DateTimeFormatOptions = {
@@ -27,12 +29,14 @@ const weekdayAndDateFormat: Intl.DateTimeFormatOptions = {
   year: 'numeric',
   month: 'long',
   day: '2-digit',
+  timeZone: 'Europe/Oslo',
 };
 
 const longMonthDateFormat: Intl.DateTimeFormatOptions = {
   day: '2-digit',
   month: 'long',
   year: 'numeric',
+  timeZone: 'Europe/Oslo',
 };
 
 const toLocaleDateAndTime = (date: string, locale = 'no') => new Date(date).toLocaleString(locale, dateAndTimeFormat);
@@ -59,6 +63,7 @@ const getDatesInRange = (startDate: Date, endDate: Date) => {
 
 export const generateWeeklyPeriods = (date?: string, numberOfPeriods: number = 1): WeeklyPeriod[] => {
   if (!date) return [];
+  Settings.defaultZone = 'Europe/Oslo';
 
   const periods: WeeklyPeriod[] = [];
   const today = DateTime.now().startOf('day');
