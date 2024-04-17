@@ -113,7 +113,7 @@ const config: ConfigType = {
   featureToggles: featureUtils.toFeatureToggles(process.env.ENABLED_FEATURES ?? defaultEnabledFeatures),
   isDevelopment: process.env.NODE_ENV === 'development',
   isTest: process.env.NODE_ENV === 'test',
-  isProduction: process.env.NODE_ENV === 'production' && process.env.NAIS_CLUSTER_NAME === 'prod-gcp',
+  isProduction: process.env.NODE_ENV === 'production',
   isDelingslenke: process.env.NAIS_APP_NAME === 'skjemautfylling-delingslenke',
   pdlTokenScopeCluster: process.env.PDL_TOKEN_SCOPE_CLUSTER!,
   backendLogLevel: process.env.FYLLUT_BACKEND_LOGLEVEL || (process.env.NODE_ENV === 'test' ? 'warning' : 'info'),

@@ -11,7 +11,7 @@ describe('Fodselsnummer', () => {
     beforeEach(() => {
       fnrComp = new NationalIdenityNumber();
       fnrComp.options = {
-        appConfig: { config: { isProduction: true } },
+        appConfig: { config: { NAIS_CLUSTER_NAME: 'prod-gcp' } },
       };
       // @ts-ignore
       vi.spyOn(NationalIdenityNumber.prototype, 't').mockImplementation((text) => text);
@@ -55,14 +55,14 @@ describe('Fodselsnummer', () => {
 
     it('succeeds validation for tnr if env is delingslenke', () => {
       fnrComp.options = {
-        appConfig: { config: { isDelingslenke: true, isProduction: false } },
+        appConfig: { config: { isDelingslenke: true, NAIS_CLUSTER_NAME: 'dev-gcp' } },
       };
       expect(fnrComp.validateFnrNew(VALID_TNR)).toBe(true);
     });
 
     it('succeeds validation for tnr if env is development', () => {
       fnrComp.options = {
-        appConfig: { config: { isDevelopment: true, isProduction: false } },
+        appConfig: { config: { isDevelopment: true, NAIS_CLUSTER_NAME: 'dev-gcp' } },
       };
       expect(fnrComp.validateFnrNew(VALID_TNR)).toBe(true);
     });

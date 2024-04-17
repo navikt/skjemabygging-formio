@@ -54,13 +54,17 @@ export default class NationalIdentityNumber extends TextFieldComponent {
     }
 
     if (result.status === 'valid') {
+      // Allow only fnr and dnr in production
       if (ALLOWED_TYPES.includes(result.type)) {
         return true;
-      } else if (!appConfig?.isProduction) {
-        return ALLOWED_TEST_TYPES.includes(result.type);
-      } else {
-        return errorMessage;
       }
+
+      // Allow all types in test environments
+      if (appConfig?.NAIS_CLUSTER_NAME !== 'prod-gcp') {
+        return ALLOWED_TEST_TYPES.includes(result.type);
+      }
+
+      return errorMessage;
     }
 
     return true;
