@@ -8,7 +8,7 @@ import {
   htmlAsJsonUtils,
   makeStyles,
 } from '@navikt/skjemadigitalisering-shared-components';
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import TranslationFormHtmlInput from './TranslationFormHtmlInput';
 
 interface Props {
@@ -54,6 +54,7 @@ const isSameStructure = (
 
 const TranslationFormHtmlSection = ({ text, storedTranslation, updateTranslation, onSelectLegacy }: Props) => {
   const translationObject = useRef<HtmlElement>();
+  const [translationReady, setTranslationReady] = useState(false);
 
   const html = useMemo(
     () =>
@@ -83,6 +84,7 @@ const TranslationFormHtmlSection = ({ text, storedTranslation, updateTranslation
       translationObject.current = new HtmlElement(htmlAsJsonUtils, storedTranslation, undefined, undefined, {
         skipConversionWithin: ['H3', 'P', 'LI'],
       });
+      setTranslationReady(true);
     }
   }, [incompatibleTranslationExists, storedTranslation, translationIsMissing]);
 
@@ -92,6 +94,7 @@ const TranslationFormHtmlSection = ({ text, storedTranslation, updateTranslation
     translationObject.current = new HtmlElement(htmlAsJsonUtils, text, undefined, undefined, {
       skipConversionWithin: ['H3', 'P', 'LI'],
     });
+    setTranslationReady(true);
   };
 
   if (HtmlObject.isElement(html)) {
@@ -174,7 +177,7 @@ const TranslationFormHtmlSection = ({ text, storedTranslation, updateTranslation
           </VStack>
         )}
 
-        {HtmlObject.isElement(translationObject.current) &&
+        {translationReady &&
           // TODO: test html.containsMarkdown
           html.children.map((originalElement, index) => {
             const translationElement = translationObject.current?.children[index];
