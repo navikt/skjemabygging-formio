@@ -90,7 +90,7 @@ describe('DigitalSubmissionButton', () => {
       window.location = originalWindowLocation;
     });
 
-    it('calls onError when backend returns 500', async () => {
+    it('calls onError when submission is undefined', async () => {
       renderButton({ onError, submission: undefined });
       const button = screen.getByRole('button', { name: BUTTON_TEXT });
       expect(button).toBeInTheDocument();

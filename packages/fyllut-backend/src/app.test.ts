@@ -214,6 +214,7 @@ describe('app', () => {
       .reply(200, { keys: [key.toJSON(false)] });
 
     const innsendingsId = '65ed0008-ec72-4c90-8b44-165d3c265da0';
+    const sendInnLocation = 'http://www.unittest.nav.no/sendInn/123';
     const azureTokenEndpoint = process.env.AZURE_OPENID_CONFIG_TOKEN_ENDPOINT!;
     const tokenxEndpoint = 'http://tokenx-unittest.nav.no/token';
     const applicationData = {
@@ -245,7 +246,7 @@ describe('app', () => {
       .reply(200, { access_token: '123456' }, { 'Content-Type': 'application/json' });
     const sendInnNockScope = nock(sendInnConfig?.host)
       .put(`${sendInnConfig?.paths.utfyltSoknad}/${innsendingsId}`)
-      .reply(200, {});
+      .reply(302, 'FOUND', { Location: sendInnLocation });
 
     const res = await request(createApp())
       .put('/fyllut/api/send-inn/utfyltsoknad')
@@ -253,6 +254,7 @@ describe('app', () => {
       .set('Fyllut-Submission-Method', 'digital')
       .set('Authorization', `Bearer ${createMockIdportenJwt({ pid: '12345678911' }, undefined, key)}`); // <-- injected by idporten sidecar
     expect(res.status).toBe(201);
+    expect(res.headers['location']).toMatch(sendInnLocation);
 
     azureOpenidScope.done();
     skjemabyggingproxyScope.done();
