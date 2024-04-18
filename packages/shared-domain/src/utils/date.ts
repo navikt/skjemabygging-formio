@@ -1,4 +1,4 @@
-import { DateTime, Settings } from 'luxon';
+import { DateTime } from 'luxon';
 import moment from 'moment';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -8,20 +8,21 @@ interface WeeklyPeriod {
   id: string;
 }
 
+const defaultTimeZone = 'Europe/Oslo';
+
 const dateAndTimeFormat: Intl.DateTimeFormatOptions = {
   day: '2-digit',
   month: '2-digit',
   year: 'numeric',
   hour: '2-digit',
   minute: '2-digit',
-  timeZone: 'Europe/Oslo',
 };
 
 const dateFormat: Intl.DateTimeFormatOptions = {
   day: '2-digit',
   month: '2-digit',
   year: 'numeric',
-  timeZone: 'Europe/Oslo',
+  timeZone: defaultTimeZone,
 };
 
 const weekdayAndDateFormat: Intl.DateTimeFormatOptions = {
@@ -29,33 +30,46 @@ const weekdayAndDateFormat: Intl.DateTimeFormatOptions = {
   year: 'numeric',
   month: 'long',
   day: '2-digit',
-  timeZone: 'Europe/Oslo',
+  timeZone: defaultTimeZone,
 };
 
 const longMonthDateFormat: Intl.DateTimeFormatOptions = {
   day: '2-digit',
   month: 'long',
   year: 'numeric',
-  timeZone: 'Europe/Oslo',
+  timeZone: defaultTimeZone,
 };
 
 const toLocaleDateAndTime = (date: string, locale = 'no') => new Date(date).toLocaleString(locale, dateAndTimeFormat);
-const toLocaleDate = (date: string, locale = 'no') => new Date(date).toLocaleString(locale, dateFormat);
-const toWeekdayAndDate = (date: string, locale = 'no') => new Date(date).toLocaleString(locale, weekdayAndDateFormat);
-const toLocaleDateLongMonth = (date: string, locale = 'no') =>
-  new Date(date).toLocaleString(locale, longMonthDateFormat);
+
+const toLocaleDate = (date: string, locale = 'no') => {
+  return DateTime.fromISO(date, { zone: defaultTimeZone }).setLocale(locale).toLocaleString(dateFormat);
+};
+
+const toWeekdayAndDate = (date: string, locale = 'no') => {
+  return DateTime.fromISO(date, { zone: defaultTimeZone }).setLocale(locale).toLocaleString(weekdayAndDateFormat);
+};
+
+const toLocaleDateLongMonth = (date: string, locale = 'no') => {
+  return DateTime.fromISO(date, { zone: defaultTimeZone }).setLocale(locale).toLocaleString(longMonthDateFormat);
+};
 
 export const getIso8601String = () => {
   return moment().toISOString();
 };
 
-const getDatesInRange = (startDate: Date, endDate: Date) => {
-  const dates: Date[] = [];
-  const currentDate = new Date(startDate);
+const getDatesInRange = (start: string, end: string) => {
+  const startDate = DateTime.fromISO(start, { zone: defaultTimeZone });
+  const endDate = DateTime.fromISO(end, { zone: defaultTimeZone });
+  const dates: string[] = [];
+
+  let currentDate = startDate;
 
   while (currentDate <= endDate) {
-    dates.push(new Date(currentDate));
-    currentDate.setDate(currentDate.getDate() + 1);
+    if (currentDate.isValid) {
+      dates.push(currentDate.toISODate());
+      currentDate = currentDate.plus({ days: 1 });
+    }
   }
 
   return dates;
@@ -63,10 +77,9 @@ const getDatesInRange = (startDate: Date, endDate: Date) => {
 
 export const generateWeeklyPeriods = (date?: string, numberOfPeriods: number = 1): WeeklyPeriod[] => {
   if (!date) return [];
-  Settings.defaultZone = 'Europe/Oslo';
 
   const periods: WeeklyPeriod[] = [];
-  const today = DateTime.now().startOf('day');
+  const today = DateTime.now().setZone(defaultTimeZone).startOf('day');
 
   for (let i = 0; i < numberOfPeriods; i++) {
     let startDate = DateTime.fromISO(date);
