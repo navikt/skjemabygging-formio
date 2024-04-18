@@ -157,10 +157,7 @@ const getTranslatablePropertiesFromForm = (form: NavFormType) =>
 const withoutDuplicatedComponents = (textObject: TextObjectType, index: number, currentComponents: TextObjectType[]) =>
   index === currentComponents.findIndex((currentComponent) => currentComponent.text === textObject.text);
 
-const textObject = (
-  withInputType: boolean,
-  value: string,
-): { text: string; type?: InputType; htmlElementAsJson?: HtmlAsJsonElement } => {
+const textObject = (withInputType: boolean, value: string): { text: string; type?: InputType } => {
   const type = withInputType ? getInputType(value) : undefined;
   return {
     text: value,
@@ -295,7 +292,7 @@ const getTextsAndTranslationsForForm = (form: NavFormType, translations: FormioT
   const textComponents = getFormTexts(form, false);
   let textIndex = 0;
   return textComponents.flatMap((textComponent) => {
-    if (textComponent.htmlElementAsJson) {
+    if (htmlAsJsonUtils.isHtmlString(textComponent.text)) {
       const htmlTranslations = Object.entries(translations).reduce((acc, [lang, translation]) => {
         const translationValue = translation.translations[textComponent.text]?.value ?? '';
         if (!htmlAsJsonUtils.isHtmlString(translationValue)) {
@@ -307,11 +304,8 @@ const getTextsAndTranslationsForForm = (form: NavFormType, translations: FormioT
           [lang]: { translations: { ...translation.translations[textComponent.text], value: translationAsJson } },
         };
       }, {});
-      return createTranslationsHtmlRows(
-        textComponent.htmlElementAsJson,
-        htmlTranslations,
-        `${++textIndex}`.padStart(3, '0'),
-      );
+      const htmlText = htmlAsJsonUtils.htmlString2Json(textComponent.text, htmlAsJsonUtils.defaultLeafs);
+      return createTranslationsHtmlRows(htmlText, htmlTranslations, `${++textIndex}`.padStart(3, '0'));
     } else {
       return createTranslationsTextRow(textComponent.text, translations, `${++textIndex}`.padStart(3, '0'));
     }

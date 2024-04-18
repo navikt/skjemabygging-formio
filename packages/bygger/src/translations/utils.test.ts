@@ -259,124 +259,14 @@ describe('testGetAllTextsAndTypeForForm', () => {
       {
         text: 'Mer informasjon finner dere på Brønnøysundregistrenes nettside <a href= "https://www.brreg.no/bedrift/underenhet/" target="_blank">Underenhet (åpnes i ny fane)</a>.',
         type: 'textarea',
-        htmlElementAsJson: {
-          id: 'div-MerinformasjonfinnerderepåBrønnøysundregistrenesnettsideUnderenhet(åpnesinyfane).',
-          type: 'Element',
-          tagName: 'DIV',
-          attributes: [],
-          isWrapper: true,
-          children: [
-            {
-              id: 'MerinformasjonfinnerderepåBrønnøysundregistrenesnettside',
-              type: 'TextElement',
-              textContent: 'Mer informasjon finner dere på Brønnøysundregistrenes nettside ',
-            },
-            {
-              id: 'a-Underenhet(åpnesinyfane)',
-              type: 'Element',
-              tagName: 'A',
-              attributes: [
-                ['href', 'https://www.brreg.no/bedrift/underenhet/'],
-                ['target', '_blank'],
-              ],
-              isWrapper: false,
-              children: [
-                { id: 'Underenhet(åpnesinyfane)', type: 'TextElement', textContent: 'Underenhet (åpnes i ny fane)' },
-              ],
-            },
-            { id: '.', type: 'TextElement', textContent: '.' },
-          ],
-        },
       },
       { text: 'Alertstrip with content', type: 'text' },
       { text: 'show content in Pdf', type: 'text' },
       {
         text: '<h3>Eventuell utbetaling av AAP</h3> Du kan bare ha ett kontonummer registrert hos NAV. Du kan enkelt <a href="https://www.nav.no/soknader/nb/person/diverse/endre-opplysninger-om-bankkontonummer#papirsoknader" target="_blank"> endre hvilket kontonummer vi benytter (åpnes i ny fane)</a>. <br/>',
         type: 'textarea',
-        htmlElementAsJson: {
-          id: 'div-EventuellutbetalingavAAPDukanbarehaettkontonummerregistrerthosNAV.Dukanenkeltendrehvilketkontonummervibenytter(åpnesinyfane).',
-          type: 'Element',
-          tagName: 'DIV',
-          attributes: [],
-          isWrapper: true,
-          children: [
-            {
-              id: 'h3-EventuellutbetalingavAAP',
-              type: 'Element',
-              tagName: 'H3',
-              attributes: [],
-              isWrapper: false,
-              children: [
-                {
-                  id: 'EventuellutbetalingavAAP',
-                  type: 'TextElement',
-                  textContent: 'Eventuell utbetaling av AAP',
-                  htmlContentAsJson: [
-                    { id: 'EventuellutbetalingavAAP', type: 'TextElement', textContent: 'Eventuell utbetaling av AAP' },
-                  ],
-                },
-              ],
-            },
-            {
-              id: 'DukanbarehaettkontonummerregistrerthosNAV.Dukanenkelt',
-              type: 'TextElement',
-              textContent: ' Du kan bare ha ett kontonummer registrert hos NAV. Du kan enkelt ',
-            },
-            {
-              id: 'a-endrehvilketkontonummervibenytter(åpnesinyfane)',
-              type: 'Element',
-              tagName: 'A',
-              attributes: [
-                [
-                  'href',
-                  'https://www.nav.no/soknader/nb/person/diverse/endre-opplysninger-om-bankkontonummer#papirsoknader',
-                ],
-                ['target', '_blank'],
-              ],
-              isWrapper: false,
-              children: [
-                {
-                  id: 'endrehvilketkontonummervibenytter(åpnesinyfane)',
-                  type: 'TextElement',
-                  textContent: ' endre hvilket kontonummer vi benytter (åpnes i ny fane)',
-                },
-              ],
-            },
-            { id: '.', type: 'TextElement', textContent: '. ' },
-            { id: '<br>', type: 'TextElement', textContent: '<br>' },
-          ],
-        },
       },
-      {
-        text: '<h3>Eventuell utbetaling av AAP</h3>',
-        type: 'text',
-        htmlElementAsJson: {
-          id: 'div-EventuellutbetalingavAAP',
-          type: 'Element',
-          tagName: 'DIV',
-          attributes: [],
-          isWrapper: true,
-          children: [
-            {
-              id: 'h3-EventuellutbetalingavAAP',
-              type: 'Element',
-              tagName: 'H3',
-              attributes: [],
-              isWrapper: false,
-              children: [
-                {
-                  id: 'EventuellutbetalingavAAP',
-                  type: 'TextElement',
-                  textContent: 'Eventuell utbetaling av AAP',
-                  htmlContentAsJson: [
-                    { id: 'EventuellutbetalingavAAP', type: 'TextElement', textContent: 'Eventuell utbetaling av AAP' },
-                  ],
-                },
-              ],
-            },
-          ],
-        },
-      },
+      { text: '<h3>Eventuell utbetaling av AAP</h3>', type: 'text' },
       { text: 'Eventuell utbetaling av AAP', type: 'text' },
     ]);
   });
