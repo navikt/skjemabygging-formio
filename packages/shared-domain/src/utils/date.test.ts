@@ -1,5 +1,5 @@
+import { DateTime } from 'luxon';
 import { generateWeeklyPeriods, getIso8601String } from './date';
-
 describe('date.ts', () => {
   describe('getIso8601String', () => {
     it('Validate format', () => {
@@ -26,18 +26,18 @@ describe('generateWeeklyPeriods function', () => {
 
     const expectedPeriods = [
       {
-        periodFrom: new Date('2023-02-28T23:00:00.000Z'), // Wednesday
-        periodTo: new Date('2023-03-04T23:00:00.000Z'), // Sunday
+        periodFrom: '2023-03-01', // Wednesday
+        periodTo: '2023-03-05', // Sunday
         id: expect.any(String),
       },
       {
-        periodFrom: new Date('2023-03-05T23:00:00.000Z'), // Monday
-        periodTo: new Date('2023-03-11T23:00:00.000Z'), // Sunday
+        periodFrom: '2023-03-06', // Monday
+        periodTo: '2023-03-12', // Sunday
         id: expect.any(String),
       },
       {
-        periodFrom: new Date('2023-03-12T23:00:00.000Z'), // Monday
-        periodTo: new Date('2023-03-18T23:00:00.000Z'), // Sunday
+        periodFrom: '2023-03-13', // Monday
+        periodTo: '2023-03-19', // Sunday
         id: expect.any(String),
       },
     ];
@@ -51,16 +51,14 @@ describe('generateWeeklyPeriods function', () => {
   });
 
   it('should have todays date as the last periodTo', () => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    const today = DateTime.now().startOf('day');
 
-    const tenDaysAgo = new Date(today);
-    tenDaysAgo.setDate(today.getDate() - 10);
+    const tenDaysAgo = today.minus({ days: 10 });
 
-    const result = generateWeeklyPeriods(tenDaysAgo.toISOString(), 3);
+    const result = generateWeeklyPeriods(tenDaysAgo.toISO(), 3);
 
-    const lastPeriodTo = new Date(result[result.length - 1].periodTo);
+    const lastPeriodTo = result[result.length - 1].periodTo;
 
-    expect(lastPeriodTo.toISOString()).toEqual(today.toISOString());
+    expect(lastPeriodTo).toEqual(today.toISODate());
   });
 });

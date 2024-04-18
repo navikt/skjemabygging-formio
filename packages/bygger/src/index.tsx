@@ -1,4 +1,5 @@
 import { AppConfigProvider } from '@navikt/skjemadigitalisering-shared-components';
+import { Settings } from 'luxon';
 import Pusher from 'pusher-js';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
@@ -20,6 +21,9 @@ fetch('/api/config')
     return res.json();
   })
   .then((config) => renderReact(config));
+
+const defaultTimeZone = 'Europe/Oslo';
+Settings.defaultZone = defaultTimeZone;
 
 const renderReact = (config) => {
   const root = createRoot(document.getElementById('root')!);

@@ -1,5 +1,6 @@
 import { AppConfigProvider, url } from '@navikt/skjemadigitalisering-shared-components';
 import { ConfigType, SubmissionMethod } from '@navikt/skjemadigitalisering-shared-domain';
+import { Settings } from 'luxon';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
@@ -23,6 +24,9 @@ httpFyllut
   .catch((error) => {
     console.error(`Could not fetch config from server: ${error}`);
   });
+
+const defaultTimeZone = 'Europe/Oslo';
+Settings.defaultZone = defaultTimeZone;
 
 const renderReact = (dokumentInnsendingBaseURL, config) => {
   const root = createRoot(document.getElementById('root')!);
