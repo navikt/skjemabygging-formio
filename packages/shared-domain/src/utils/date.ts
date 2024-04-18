@@ -3,8 +3,8 @@ import moment from 'moment';
 import { v4 as uuidv4 } from 'uuid';
 
 interface WeeklyPeriod {
-  periodFrom: Date;
-  periodTo: Date;
+  periodFrom: string;
+  periodTo: string;
   id: string;
 }
 
@@ -82,8 +82,8 @@ export const generateWeeklyPeriods = (date?: string, numberOfPeriods: number = 1
   const today = DateTime.now().setZone(defaultTimeZone).startOf('day');
 
   for (let i = 0; i < numberOfPeriods; i++) {
-    let startDate = DateTime.fromISO(date);
-    let endDate = DateTime.fromISO(date);
+    let startDate = DateTime.fromISO(date, { zone: defaultTimeZone });
+    let endDate = DateTime.fromISO(date, { zone: defaultTimeZone });
 
     startDate = startDate.startOf('week').plus({ weeks: i });
     endDate = endDate
@@ -92,13 +92,16 @@ export const generateWeeklyPeriods = (date?: string, numberOfPeriods: number = 1
       .minus({ days: 1 });
 
     if (i === 0) {
-      startDate = DateTime.fromISO(date);
+      startDate = DateTime.fromISO(date, { zone: defaultTimeZone });
     }
+
     if (endDate > today) {
       endDate = today;
     }
 
-    periods.push({ periodFrom: startDate.toJSDate(), periodTo: endDate.toJSDate(), id: uuidv4() });
+    if (startDate.isValid && endDate.isValid) {
+      periods.push({ periodFrom: startDate.toISO(), periodTo: endDate.toISO(), id: uuidv4() });
+    }
   }
 
   return periods;
