@@ -1,5 +1,6 @@
 const label = {
-  '& label.navds-label': {
+  // TODO: Delete this file and .nav-new when all components are Aksel.
+  '& :not(.nav-new) > label.navds-label': {
     '&:after': {
       content: "''",
       height: 'var(--a-spacing-2)',
