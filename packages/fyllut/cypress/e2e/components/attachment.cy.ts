@@ -83,4 +83,44 @@ describe('Attachment', () => {
     cy.findByRole('textbox', { name: TITLE.textarea }).should('not.exist');
     cy.get('.navds-alert').should('not.exist');
   });
+
+  it('is focusable', () => {
+    cy.clickNextStep();
+
+    cy.findByRole('region', { name: TEXTS.validering.error })
+      .should('exist')
+      .should('have.focus')
+      .within(() => {
+        cy.get('li').should('have.length', 2);
+        cy.findByRole('link', { name: `Du må fylle ut: ${TITLE.oldAttachment}` })
+          .should('exist')
+          .click();
+      });
+
+    cy.findByRole('group', { name: TITLE.oldAttachment })
+      .should('have.focus')
+      .within(() => {
+        cy.findByLabelText('Jeg legger det ved denne søknaden (anbefalt)').click();
+      });
+
+    cy.findByRole('region', { name: TEXTS.validering.error })
+      .should('exist')
+      .within(() => {
+        cy.get('li').should('have.length', 1);
+        cy.findByRole('link', { name: `Du må fylle ut: ${TITLE.attachment}` })
+          .should('exist')
+          .click();
+      });
+
+    cy.findByRole('group', { name: TITLE.attachment })
+      .should('have.focus')
+      .within(() => {
+        cy.findByLabelText(TEXTS.statiske.attachment.leggerVedNaa).click();
+      });
+
+    cy.findByRole('region', { name: TEXTS.validering.error }).should('not.exist');
+    cy.clickNextStep();
+
+    cy.findByRole('heading', { name: 'Oppsummering' }).shouldBeVisible();
+  });
 });
