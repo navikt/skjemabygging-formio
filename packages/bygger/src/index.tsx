@@ -11,6 +11,7 @@ import httpBygger from './util/httpBygger';
 const dokumentinnsendingDevURL = 'https://tjenester-q0.nav.no/dokumentinnsending';
 
 Pusher.logToConsole = true;
+Settings.defaultZone = 'Europe/Oslo';
 
 fetch('/api/config')
   .then((res) => {
@@ -21,9 +22,6 @@ fetch('/api/config')
     return res.json();
   })
   .then((config) => renderReact(config));
-
-const defaultTimeZone = 'Europe/Oslo';
-Settings.defaultZone = defaultTimeZone;
 
 const renderReact = (config) => {
   const root = createRoot(document.getElementById('root')!);

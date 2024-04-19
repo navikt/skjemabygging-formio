@@ -12,6 +12,7 @@ import httpFyllut from './util/httpFyllut';
 let featureToggles = {};
 
 const subissionMethod = url.getUrlParam(window.location.search, 'sub') as SubmissionMethod;
+Settings.defaultZone = 'Europe/Oslo';
 
 httpFyllut
   .get<ConfigType>('/fyllut/api/config')
@@ -24,9 +25,6 @@ httpFyllut
   .catch((error) => {
     console.error(`Could not fetch config from server: ${error}`);
   });
-
-const defaultTimeZone = 'Europe/Oslo';
-Settings.defaultZone = defaultTimeZone;
 
 const renderReact = (dokumentInnsendingBaseURL, config) => {
   const root = createRoot(document.getElementById('root')!);
