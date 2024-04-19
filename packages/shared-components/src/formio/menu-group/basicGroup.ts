@@ -1,5 +1,4 @@
 import alertBuilder from '../components/core/alert/Alert.builder';
-import defaultAttachmentBuilder from '../components/core/attachment/default/DefaultAttachment.builder';
 import checkboxBuilder from '../components/core/checkbox/Checkbox.builder';
 import htmlElementBuilder from '../components/core/html-element/HtmlElement.builder';
 import imageBuilder from '../components/core/image/Image.builder';
@@ -21,7 +20,6 @@ const basicGroup = {
     selectBoxes: selectBoxesBuilder(),
     select: selectBuilder(),
     radio: radioBuilder(),
-    attachment: defaultAttachmentBuilder(),
     image: imageBuilder(),
     alertstripe: alertBuilder(),
     htmlElement: htmlElementBuilder(),

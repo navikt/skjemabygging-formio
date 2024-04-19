@@ -8,7 +8,7 @@ class OtherAttachment extends BaseComponent {
     return BaseComponent.schema({
       label: 'Annen dokumentasjon',
       description: 'Har du noen annen dokumentasjon du ønsker å legge ved?',
-      type: 'attachment',
+      type: 'otherAttachment', // For review: This needs to be its own type it seems? If not we can't separate the "otherAttachmentForm" and "defaultAttachmentForm"
       key: 'annenDokumentasjon',
       dataSrc: 'values',
     });
