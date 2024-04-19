@@ -3,8 +3,8 @@ import { Alert, Box, Button, HStack, Heading, HelpText, VStack } from '@navikt/d
 import {
   HtmlAsJsonElement,
   HtmlAsJsonTextElement,
-  HtmlElement,
-  HtmlObject,
+  StructuredHtml,
+  StructuredHtmlElement,
   htmlAsJsonUtils,
   makeStyles,
 } from '@navikt/skjemadigitalisering-shared-components';
@@ -53,13 +53,15 @@ const isSameStructure = (
 };
 
 const TranslationFormHtmlSection = ({ text, storedTranslation, updateTranslation, onSelectLegacy }: Props) => {
-  const translationObject = useRef<HtmlElement>();
+  const translationObject = useRef<StructuredHtmlElement>();
   const [translationReady, setTranslationReady] = useState(false);
 
   const html = useMemo(
     () =>
       htmlAsJsonUtils.isHtmlString(text)
-        ? new HtmlElement(htmlAsJsonUtils, text, undefined, undefined, { skipConversionWithin: ['H3', 'P', 'LI'] })
+        ? new StructuredHtmlElement(htmlAsJsonUtils, text, undefined, undefined, {
+            skipConversionWithin: ['H3', 'P', 'LI'],
+          })
         : undefined,
     [text],
   );
@@ -81,7 +83,7 @@ const TranslationFormHtmlSection = ({ text, storedTranslation, updateTranslation
 
   useEffect(() => {
     if (!translationObject.current && !translationIsMissing && !incompatibleTranslationExists) {
-      translationObject.current = new HtmlElement(htmlAsJsonUtils, storedTranslation, undefined, undefined, {
+      translationObject.current = new StructuredHtmlElement(htmlAsJsonUtils, storedTranslation, undefined, undefined, {
         skipConversionWithin: ['H3', 'P', 'LI'],
       });
       setTranslationReady(true);
@@ -91,13 +93,13 @@ const TranslationFormHtmlSection = ({ text, storedTranslation, updateTranslation
   const styles = useStyles();
 
   const startNewTranslation = () => {
-    translationObject.current = new HtmlElement(htmlAsJsonUtils, text, undefined, undefined, {
+    translationObject.current = new StructuredHtmlElement(htmlAsJsonUtils, text, undefined, undefined, {
       skipConversionWithin: ['H3', 'P', 'LI'],
     });
     setTranslationReady(true);
   };
 
-  if (HtmlObject.isElement(html)) {
+  if (StructuredHtml.isElement(html)) {
     return (
       <Box
         data-testid="html-translation"

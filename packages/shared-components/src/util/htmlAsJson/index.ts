@@ -1,4 +1,3 @@
-import HtmlElement, { HtmlObject, HtmlTextElement } from './HtmlObject';
 import { fromNode, toNode } from './converters/htmlNode';
 import { htmlString2Json, isHtmlString, json2HtmlString } from './converters/htmlString';
 import {
@@ -25,6 +24,5 @@ const htmlAsJsonUtils = {
   defaultLeafs,
 };
 
-export { HtmlElement, HtmlObject, HtmlTextElement };
 export type { HtmlAsJsonElement, HtmlAsJsonTextElement };
 export default htmlAsJsonUtils;

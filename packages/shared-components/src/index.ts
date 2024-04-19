@@ -26,9 +26,9 @@ import NavFormioJs from './util/formio/formiojs';
 import htmlAsJsonUtils, {
   HtmlAsJsonElement,
   HtmlAsJsonTextElement,
-  HtmlElement,
-  HtmlObject,
-  HtmlTextElement,
+  StructuredHtml,
+  StructuredHtmlElement,
+  StructuredHtmlText,
 } from './util/htmlAsJson';
 import makeStyles from './util/styles/jss/jss';
 import { navCssVariables } from './util/styles/nav-css/navCssVariables';
@@ -45,15 +45,15 @@ export {
   FormBuilderOptions,
   FormBuilderSchemas,
   FyllUtRouter,
-  HtmlElement,
-  HtmlObject,
-  HtmlTextElement,
   LanguageSelector,
   LanguagesProvider,
   LoadingComponent,
   Modal,
   NavForm,
   NavFormioJs,
+  StructuredHtml,
+  StructuredHtmlElement,
+  StructuredHtmlText,
   Styles,
   formUtils,
   guid,

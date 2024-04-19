@@ -1,20 +1,20 @@
-import { HtmlObject } from '@navikt/skjemadigitalisering-shared-components';
+import { StructuredHtml } from '@navikt/skjemadigitalisering-shared-components';
 import TranslationTextInput from './TranslationTextInput';
 import { getInputType } from './utils';
 
 interface Props {
   text: string;
-  html: HtmlObject;
-  currentTranslation?: HtmlObject;
+  html: StructuredHtml;
+  currentTranslation?: StructuredHtml;
   updateTranslation: (element: { id: string; value: string }) => void;
 }
 
 const TranslationFormHtmlInput = ({ text, html, currentTranslation, updateTranslation }: Props) => {
-  if (HtmlObject.isElement(html) && !html.containsMarkdown) {
+  if (StructuredHtml.isElement(html) && !html.containsMarkdown) {
     return (
       <div>
         {html.children.map((originalElement, index) => {
-          const translationChildren = HtmlObject.isElement(currentTranslation)
+          const translationChildren = StructuredHtml.isElement(currentTranslation)
             ? currentTranslation.children
             : undefined;
           return (
@@ -32,8 +32,8 @@ const TranslationFormHtmlInput = ({ text, html, currentTranslation, updateTransl
   }
 
   if (
-    HtmlObject.isElement(html) &&
-    HtmlObject.isElement(currentTranslation) &&
+    StructuredHtml.isElement(html) &&
+    StructuredHtml.isElement(currentTranslation) &&
     html.containsMarkdown &&
     currentTranslation.containsMarkdown
   ) {
@@ -60,8 +60,8 @@ const TranslationFormHtmlInput = ({ text, html, currentTranslation, updateTransl
   }
 
   if (
-    HtmlObject.isTextElement(html) &&
-    HtmlObject.isTextElement(currentTranslation) &&
+    StructuredHtml.isTextElement(html) &&
+    StructuredHtml.isTextElement(currentTranslation) &&
     text.replace(/\s/g, '').length > 0
   ) {
     return (

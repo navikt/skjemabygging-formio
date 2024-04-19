@@ -1,0 +1,161 @@
+import htmlAsJsonUtils, { HtmlAsJsonElement, HtmlAsJsonTextElement } from '../../htmlAsJson';
+import StructuredHtml, { StructuredHtmlOptions } from './StructuredHtml';
+import StructuredHtmlText from './StructuredHtmlText';
+
+class StructuredHtmlElement extends StructuredHtml {
+  tagName: string;
+  attributes: Array<[string, string]>;
+  children: StructuredHtml[];
+  childrenAsMarkdown?: StructuredHtmlText[];
+
+  constructor(
+    converter: typeof htmlAsJsonUtils,
+    htmlString?: string,
+    htmlJson?: HtmlAsJsonElement,
+    parent?: StructuredHtmlElement,
+    options?: StructuredHtmlOptions,
+  ) {
+    super(converter, htmlString, htmlJson, parent, options);
+    const htmlElementJson = this.originalHtmlJson as HtmlAsJsonElement; //Fixme
+    this.tagName = htmlElementJson.tagName;
+    this.attributes = htmlElementJson.attributes;
+    this.children = this.createChildrenFromJson(htmlElementJson, options);
+    this.childrenAsMarkdown = this.createMarkdownChildren(this.children, options?.skipConversionWithin);
+  }
+
+  private createChildrenFromJson(htmlElementJson: HtmlAsJsonElement, options?: StructuredHtmlOptions) {
+    return htmlElementJson.children.map((childJson) => {
+      if (childJson.type === 'Element') {
+        return new StructuredHtmlElement(this.converter, undefined, childJson, this, options);
+      } else if (childJson.type === 'TextElement') {
+        return new StructuredHtmlText(this.converter, undefined, childJson, this, options);
+      }
+      throw Error(`unsupported type: ${this.type}`);
+    });
+  }
+
+  private createMarkdownChildren(children: StructuredHtml[], skipConversionWithin: string[] = []) {
+    if (
+      skipConversionWithin.includes(this.tagName) &&
+      children.some((child) => StructuredHtmlElement.isElement(child))
+    ) {
+      return children.map(
+        (child) =>
+          new StructuredHtmlText(
+            this.converter,
+            undefined,
+            {
+              id: child.id,
+              type: 'TextElement',
+              textContent: this.converter.htmlNode2Markdown(child.toHtmlElement()),
+            },
+            this,
+            { isMarkdownText: true },
+          ),
+      );
+    }
+  }
+
+  get type(): 'Element' {
+    return 'Element';
+  }
+
+  get innerText(): string {
+    return (this.toHtmlElement() as HTMLElement).innerText;
+  }
+
+  get markdown(): string | undefined {
+    return this.childrenAsMarkdown?.map((child) => child.textContent).join('');
+  }
+
+  get containsMarkdown(): boolean {
+    return !!this.childrenAsMarkdown;
+  }
+
+  updateAttributes(sourceAttributes: Array<[string, string]>) {
+    const targetAttributeObjects = Object.fromEntries(this.attributes);
+    sourceAttributes.forEach(([key, value]) => (targetAttributeObjects[key] = value));
+    this.attributes = Object.entries(targetAttributeObjects);
+  }
+
+  private updateChildren(sourceChildren: Array<HtmlAsJsonElement | HtmlAsJsonTextElement>) {
+    let sourceIndex = 0;
+    this.children = this.children.reduce((acc: StructuredHtml[], child: StructuredHtml): StructuredHtml[] => {
+      let sourceChild = sourceChildren[sourceIndex];
+      //TODO: replace with check on similarity?
+      if (
+        !sourceChild.id &&
+        sourceChild.type === child.type &&
+        (sourceChild.type === 'TextElement' || sourceChild.tagName === (child as StructuredHtmlElement).tagName)
+      ) {
+        sourceChild = { ...sourceChild, id: child.id };
+      }
+      const result = child.populate(sourceChild);
+      if (result) {
+        sourceIndex += 1;
+        return [...acc, result];
+      }
+      // If the target doesn't match on type or tagName, either the original element has been removed, or a new element has been placed before it
+      // we assume that it was removed, but reconstructs it in the while loop below if that was not the case
+      return acc;
+    }, []);
+
+    // if there are still leftovers in the sourceChild array, something did not match up or new elements have been added
+    // either way, leftovers are constructed as new objects
+    while (sourceIndex < sourceChildren.length) {
+      const newChildJson = sourceChildren[sourceIndex];
+      const newChild =
+        newChildJson.type === 'Element'
+          ? new StructuredHtmlElement(this.converter, undefined, newChildJson, this)
+          : new StructuredHtmlText(this.converter, undefined, newChildJson, this);
+      this.children = [...this.children, newChild];
+      sourceIndex += 1;
+    }
+    return this;
+  }
+
+  populate(elementJson: HtmlAsJsonElement): StructuredHtmlElement | undefined {
+    if (elementJson.id === this.id) {
+      this.updateAttributes(elementJson.attributes);
+      this.updateChildren(elementJson.children);
+      this.childrenAsMarkdown = this.createMarkdownChildren(this.children, this.options?.skipConversionWithin);
+      this.refresh();
+      return this;
+    }
+  }
+
+  updateInternal(id: string, value: string): StructuredHtmlElement | undefined {
+    let newElementJson: HtmlAsJsonElement | undefined;
+    if (this.id === id) {
+      newElementJson = this.converter.markdown2Json(value);
+      return this.populate({ ...this, children: newElementJson.children, isWrapper: !this.parent });
+    }
+
+    let found;
+    for (const child of this.children) {
+      const updateResult = child.updateInternal(id, value);
+      found = updateResult ? updateResult : undefined;
+    }
+    return found;
+  }
+
+  toJson(): HtmlAsJsonElement {
+    return {
+      id: this.id,
+      type: 'Element', //Fixme
+      tagName: this.tagName!, // FIXME
+      attributes: this.attributes!,
+      children: this.children!.map((child) => child.toJson()),
+      isWrapper: !this.parent,
+    };
+  }
+
+  toHtmlString(): string {
+    if (!this.parent) {
+      return (this.toHtmlElement() as HTMLElement).innerHTML.toString();
+    }
+    return (this.toHtmlElement() as HTMLElement).outerHTML.toString();
+  }
+}
+
+export default StructuredHtmlElement;
