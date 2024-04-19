@@ -130,13 +130,13 @@ class StructuredHtmlElement extends StructuredHtml {
     return found;
   }
 
-  toJson(): HtmlAsJsonElement {
+  toJson(getMarkdown?: boolean): HtmlAsJsonElement {
     return {
       id: this.id,
       type: 'Element', //Fixme
       tagName: this.tagName!, // FIXME
       attributes: this.attributes!,
-      children: this.children!.map((child) => child.toJson()),
+      children: (getMarkdown ? this.childrenAsMarkdown ?? [] : this.children).map((child) => child.toJson()),
       isWrapper: !this.parent,
     };
   }

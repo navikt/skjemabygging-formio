@@ -1,12 +1,12 @@
-import { AcceptedTag, HtmlAsJsonElement, HtmlAsJsonTextElement } from './htmlAsJson';
+import { HtmlAsJsonElement, HtmlAsJsonTextElement } from './htmlAsJson';
 import { fromElement, toNode } from './htmlNode';
 
 const isHtmlString = (text: string) => /<[^>]*>/.test(text);
 
-const htmlString2Json = (htmlString: string, skipConversionWithin: AcceptedTag[] = []): HtmlAsJsonElement => {
+const htmlString2Json = (htmlString: string): HtmlAsJsonElement => {
   const div = document.createElement('div');
   div.innerHTML = htmlString;
-  return JSON.parse(JSON.stringify(fromElement(div, skipConversionWithin, true)));
+  return JSON.parse(JSON.stringify(fromElement(div, true)));
 };
 
 const json2HtmlString = (jsonElement: HtmlAsJsonElement | HtmlAsJsonTextElement): string => {

@@ -1,6 +1,5 @@
-import { AcceptedTag, HtmlAsJsonElement, HtmlAsJsonTextElement, isAcceptedTag } from './htmlAsJson';
+import { HtmlAsJsonElement, HtmlAsJsonTextElement, isAcceptedTag } from './htmlAsJson';
 import { json2HtmlString } from './htmlString';
-import { htmlNode2Markdown } from './markdown';
 
 const toNode = (jsonElement: HtmlAsJsonElement | HtmlAsJsonTextElement) => {
   switch (jsonElement?.type) {
@@ -28,22 +27,22 @@ const createHtmlNode = (
   return htmlElement;
 };
 
-const fromNode = (node: ChildNode, skipConversionWithin: AcceptedTag[]): HtmlAsJsonElement | HtmlAsJsonTextElement => {
+const fromNode = (node: ChildNode): HtmlAsJsonElement | HtmlAsJsonTextElement => {
   if (node?.nodeType === Node.TEXT_NODE && node.textContent) {
     return fromTextContent(node.textContent);
   } else if (node?.nodeType === Node.ELEMENT_NODE) {
     const element = node as Element;
     if (isAcceptedTag(element.tagName)) {
-      return fromElement(element, skipConversionWithin);
+      return fromElement(element);
     }
-    return fromTextContent(json2HtmlString(fromElement(element, skipConversionWithin)));
+    return fromTextContent(json2HtmlString(fromElement(element)));
   }
   throw Error(`unsupported nodeType: ${node.nodeType}`);
 };
 
 const fromTextContent = (textContent: string, parentElement?: Element): HtmlAsJsonTextElement => {
   const htmlContentAsJson = parentElement
-    ? Array.from(parentElement.childNodes, (childNode) => fromNode(childNode, []))
+    ? Array.from(parentElement.childNodes, (childNode) => fromNode(childNode))
     : undefined;
   return {
     type: 'TextElement',
@@ -52,20 +51,13 @@ const fromTextContent = (textContent: string, parentElement?: Element): HtmlAsJs
   };
 };
 
-const fromElement = (
-  element: Element,
-  skipConversionWithinTags: AcceptedTag[],
-  isWrapper?: boolean,
-): HtmlAsJsonElement => {
-  const convertChildrenToText = (skipConversionWithinTags as string[]).includes(element.tagName);
+const fromElement = (element: Element, isWrapper?: boolean): HtmlAsJsonElement => {
   return {
     type: 'Element',
     tagName: element.tagName,
     attributes: Array.from(element.attributes, ({ name, value }) => [name, value]),
     isWrapper: !!isWrapper,
-    children: convertChildrenToText
-      ? [fromTextContent(Array.from(element.childNodes, htmlNode2Markdown).join(''), element)]
-      : Array.from(element.childNodes, (childNode) => fromNode(childNode, skipConversionWithinTags)),
+    children: Array.from(element.childNodes, (childNode) => fromNode(childNode)),
   };
 };
 

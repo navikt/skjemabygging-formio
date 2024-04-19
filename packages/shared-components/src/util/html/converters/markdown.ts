@@ -70,7 +70,7 @@ const htmlNode2Markdown = (node: Element | ChildNode): string => {
       case 'A':
         return `[${Array.from(element.childNodes, htmlNode2Markdown).join('')}](${element.getAttribute('href')})`;
       default:
-        return json2HtmlString(fromNode(element, []));
+        return json2HtmlString(fromNode(element));
     }
   }
   return '';

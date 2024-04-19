@@ -3,6 +3,7 @@ import {
   HtmlAsJsonTextElement,
   htmlConverter,
   NavFormioJs,
+  StructuredHtmlElement,
 } from '@navikt/skjemadigitalisering-shared-components';
 
 import {
@@ -298,13 +299,17 @@ const getTextsAndTranslationsForForm = (form: NavFormType, translations: FormioT
         if (!htmlConverter.isHtmlString(translationValue)) {
           return acc;
         }
-        const translationAsJson = htmlConverter.htmlString2Json(translationValue, ['H3', 'P', 'LI']);
+        const translationAsJson = new StructuredHtmlElement(translationValue, {
+          skipConversionWithin: ['H3', 'P', 'LI'],
+        }).toJson(true);
         return {
           ...acc,
           [lang]: { translations: { ...translation.translations[textComponent.text], value: translationAsJson } },
         };
       }, {});
-      const htmlText = htmlConverter.htmlString2Json(textComponent.text, ['H3', 'P', 'LI']);
+      const htmlText = new StructuredHtmlElement(textComponent.text, {
+        skipConversionWithin: ['H3', 'P', 'LI'],
+      }).toJson(true);
       return createTranslationsHtmlRows(htmlText, htmlTranslations, `${++textIndex}`.padStart(3, '0'));
     } else {
       return createTranslationsTextRow(textComponent.text, translations, `${++textIndex}`.padStart(3, '0'));
