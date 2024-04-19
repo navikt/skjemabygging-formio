@@ -1,7 +1,7 @@
-import Attachment from './Attachment';
+import OtherAttachment from './OtherAttachment';
 
-const attachmentBuilder = () => {
-  const schema = Attachment.schema();
+const otherAttachmentBuilder = () => {
+  const schema = OtherAttachment.schema();
   return {
     title: schema.label,
     schema: {
@@ -9,7 +9,11 @@ const attachmentBuilder = () => {
       validate: {
         required: true,
       },
-      attachmentType: 'default',
+      properties: {
+        vedleggstittel: 'Annet',
+        vedleggskode: 'N6',
+      },
+      attachmentType: 'other',
       attachmentValues: {
         leggerVedNaa: {
           enabled: true,
@@ -25,4 +29,4 @@ const attachmentBuilder = () => {
   };
 };
 
-export default attachmentBuilder;
+export default otherAttachmentBuilder;
