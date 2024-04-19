@@ -298,13 +298,13 @@ const getTextsAndTranslationsForForm = (form: NavFormType, translations: FormioT
         if (!htmlConverter.isHtmlString(translationValue)) {
           return acc;
         }
-        const translationAsJson = htmlConverter.htmlString2Json(translationValue, htmlConverter.defaultLeafs);
+        const translationAsJson = htmlConverter.htmlString2Json(translationValue, ['H3', 'P', 'LI']);
         return {
           ...acc,
           [lang]: { translations: { ...translation.translations[textComponent.text], value: translationAsJson } },
         };
       }, {});
-      const htmlText = htmlConverter.htmlString2Json(textComponent.text, htmlConverter.defaultLeafs);
+      const htmlText = htmlConverter.htmlString2Json(textComponent.text, ['H3', 'P', 'LI']);
       return createTranslationsHtmlRows(htmlText, htmlTranslations, `${++textIndex}`.padStart(3, '0'));
     } else {
       return createTranslationsTextRow(textComponent.text, translations, `${++textIndex}`.padStart(3, '0'));

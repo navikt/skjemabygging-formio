@@ -1,20 +1,13 @@
-import htmlConverter, { HtmlAsJsonElement, HtmlAsJsonTextElement } from '../converters';
+import htmlConverter, { HtmlAsJsonTextElement } from '../converters';
 import StructuredHtml, { StructuredHtmlOptions } from './StructuredHtml';
-import StructuredHtmlElement from './StructuredHtmlElement';
 
 class StructuredHtmlText extends StructuredHtml {
   textContent: string | null;
   isMarkdownText: boolean;
 
-  constructor(
-    converter: typeof htmlConverter,
-    htmlString?: string,
-    htmlJson?: HtmlAsJsonElement | HtmlAsJsonTextElement,
-    parent?: StructuredHtmlElement,
-    options?: StructuredHtmlOptions,
-  ) {
-    super(converter, htmlString, htmlJson, parent, options);
-    this.textContent = (this.originalHtmlJson as HtmlAsJsonTextElement).textContent; //Fixme
+  constructor(input: string | HtmlAsJsonTextElement, options?: StructuredHtmlOptions, converter = htmlConverter) {
+    super(input, options, converter);
+    this.textContent = (this.originalHtmlJson as HtmlAsJsonTextElement).textContent;
     this.isMarkdownText = !!options?.isMarkdownText;
   }
 

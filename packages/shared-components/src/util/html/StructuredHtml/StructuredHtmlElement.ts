@@ -8,14 +8,8 @@ class StructuredHtmlElement extends StructuredHtml {
   children: StructuredHtml[];
   childrenAsMarkdown?: StructuredHtmlText[];
 
-  constructor(
-    converter: typeof htmlConverter,
-    htmlString?: string,
-    htmlJson?: HtmlAsJsonElement,
-    parent?: StructuredHtmlElement,
-    options?: StructuredHtmlOptions,
-  ) {
-    super(converter, htmlString, htmlJson, parent, options);
+  constructor(input: string | HtmlAsJsonElement, options?: StructuredHtmlOptions, converter = htmlConverter) {
+    super(input, options, converter);
     const htmlElementJson = this.originalHtmlJson as HtmlAsJsonElement; //Fixme
     this.tagName = htmlElementJson.tagName;
     this.attributes = htmlElementJson.attributes;
@@ -26,9 +20,9 @@ class StructuredHtmlElement extends StructuredHtml {
   private createChildrenFromJson(htmlElementJson: HtmlAsJsonElement, options?: StructuredHtmlOptions) {
     return htmlElementJson.children.map((childJson) => {
       if (childJson.type === 'Element') {
-        return new StructuredHtmlElement(this.converter, undefined, childJson, this, options);
+        return new StructuredHtmlElement(childJson, { ...options, parent: this });
       } else if (childJson.type === 'TextElement') {
-        return new StructuredHtmlText(this.converter, undefined, childJson, this, options);
+        return new StructuredHtmlText(childJson, { ...options, parent: this });
       }
       throw Error(`unsupported type: ${this.type}`);
     });
@@ -42,15 +36,12 @@ class StructuredHtmlElement extends StructuredHtml {
       return children.map(
         (child) =>
           new StructuredHtmlText(
-            this.converter,
-            undefined,
             {
               id: child.id,
               type: 'TextElement',
               textContent: this.converter.htmlNode2Markdown(child.toHtmlElement()),
             },
-            this,
-            { isMarkdownText: true },
+            { parent: this, isMarkdownText: true },
           ),
       );
     }
@@ -106,8 +97,8 @@ class StructuredHtmlElement extends StructuredHtml {
       const newChildJson = sourceChildren[sourceIndex];
       const newChild =
         newChildJson.type === 'Element'
-          ? new StructuredHtmlElement(this.converter, undefined, newChildJson, this)
-          : new StructuredHtmlText(this.converter, undefined, newChildJson, this);
+          ? new StructuredHtmlElement(newChildJson, { parent: this })
+          : new StructuredHtmlText(newChildJson, { parent: this });
       this.children = [...this.children, newChild];
       sourceIndex += 1;
     }

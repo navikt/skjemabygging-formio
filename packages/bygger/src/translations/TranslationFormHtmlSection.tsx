@@ -34,6 +34,7 @@ const useStyles = makeStyles({
   },
 });
 
+//TODO: move to class
 const isSameStructure = (
   elementTreeA?: HtmlAsJsonElement | HtmlAsJsonTextElement,
   elementTreeB?: HtmlAsJsonElement | HtmlAsJsonTextElement,
@@ -59,9 +60,7 @@ const TranslationFormHtmlSection = ({ text, storedTranslation, updateTranslation
   const html = useMemo(
     () =>
       htmlConverter.isHtmlString(text)
-        ? new StructuredHtmlElement(htmlConverter, text, undefined, undefined, {
-            skipConversionWithin: ['H3', 'P', 'LI'],
-          })
+        ? new StructuredHtmlElement(text, { skipConversionWithin: ['H3', 'P', 'LI'] })
         : undefined,
     [text],
   );
@@ -77,13 +76,13 @@ const TranslationFormHtmlSection = ({ text, storedTranslation, updateTranslation
         !!storedTranslation && htmlConverter.isHtmlString(storedTranslation)
           ? htmlConverter.htmlString2Json(storedTranslation)
           : undefined;
-      return storedTranslationAsJson && !isSameStructure(html?.getJson(), storedTranslationAsJson);
+      return storedTranslationAsJson && !isSameStructure(html?.toJson(), storedTranslationAsJson);
     }
   }, [html, storedTranslation]);
 
   useEffect(() => {
     if (!translationObject.current && !translationIsMissing && !incompatibleTranslationExists) {
-      translationObject.current = new StructuredHtmlElement(htmlConverter, storedTranslation, undefined, undefined, {
+      translationObject.current = new StructuredHtmlElement(storedTranslation, {
         skipConversionWithin: ['H3', 'P', 'LI'],
       });
       setTranslationReady(true);
@@ -93,7 +92,7 @@ const TranslationFormHtmlSection = ({ text, storedTranslation, updateTranslation
   const styles = useStyles();
 
   const startNewTranslation = () => {
-    translationObject.current = new StructuredHtmlElement(htmlConverter, text, undefined, undefined, {
+    translationObject.current = new StructuredHtmlElement(text, {
       skipConversionWithin: ['H3', 'P', 'LI'],
     });
     setTranslationReady(true);

@@ -5,6 +5,7 @@ import StructuredHtmlElement from './StructuredHtmlElement';
 import StructuredHtmlText from './StructuredHtmlText';
 
 type StructuredHtmlOptions = {
+  parent?: StructuredHtmlElement;
   skipConversionWithin?: AcceptedTag[];
   isMarkdownText?: boolean;
 };
@@ -18,16 +19,18 @@ abstract class StructuredHtml {
   options?: StructuredHtmlOptions;
 
   protected constructor(
-    converter: typeof htmlConverter,
-    htmlString?: string,
-    htmlJson?: HtmlAsJsonElement | HtmlAsJsonTextElement,
-    parent?: StructuredHtmlElement,
+    input: string | HtmlAsJsonElement | HtmlAsJsonTextElement,
     options?: StructuredHtmlOptions,
+    converter = htmlConverter,
   ) {
-    this.parent = parent;
+    this.parent = options?.parent;
     this.converter = converter;
-    this.originalHtmlString = htmlString;
-    this.originalHtmlJson = htmlJson ?? converter.htmlString2Json(htmlString!); // FIXME: htmlString!
+    if (typeof input === 'string') {
+      this.originalHtmlString = input;
+      this.originalHtmlJson = converter.htmlString2Json(input);
+    } else {
+      this.originalHtmlJson = input;
+    }
     this.id = this.originalHtmlJson.id ? this.originalHtmlJson.id : uuid();
     this.options = options;
   }
