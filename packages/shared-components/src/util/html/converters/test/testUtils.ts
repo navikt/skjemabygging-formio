@@ -1,13 +1,11 @@
 import { AcceptedTag, HtmlAsJsonElement, HtmlAsJsonTextElement } from '../htmlAsJson';
 
 const jsonElement = (
-  id: string,
   tagName: AcceptedTag | 'DIV',
   children: Array<HtmlAsJsonElement | HtmlAsJsonTextElement>,
   isWrapper = false,
   attributes = [],
 ): HtmlAsJsonElement => ({
-  id,
   type: 'Element',
   tagName,
   attributes,
@@ -15,8 +13,7 @@ const jsonElement = (
   children,
 });
 
-const jsonTextElement = (id: string, textContent: string): HtmlAsJsonTextElement => ({
-  id,
+const jsonTextElement = (textContent: string): HtmlAsJsonTextElement => ({
   type: 'TextElement',
   textContent,
 });

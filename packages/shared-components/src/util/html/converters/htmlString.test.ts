@@ -6,14 +6,13 @@ describe('htmlString conversion', () => {
     it('generates a json representation of the html string', () => {
       const actual = htmlString2Json('<h3>Overskrift</h3><p>Avsnitt</p><ol><li>Punkt 1</li><li>Punkt 2</li></ol>');
       const expected = jsonElement(
-        'div-OverskriftAvsnittPunkt1Punkt2',
         'DIV',
         [
-          jsonElement('h3-Overskrift', 'H3', [jsonTextElement('Overskrift', 'Overskrift')]),
-          jsonElement('p-Avsnitt', 'P', [jsonTextElement('Avsnitt', 'Avsnitt')]),
-          jsonElement('ol-Punkt1Punkt2', 'OL', [
-            jsonElement('li-Punkt1', 'LI', [jsonTextElement('Punkt1', 'Punkt 1')]),
-            jsonElement('li-Punkt2', 'LI', [jsonTextElement('Punkt2', 'Punkt 2')]),
+          jsonElement('H3', [jsonTextElement('Overskrift')]),
+          jsonElement('P', [jsonTextElement('Avsnitt')]),
+          jsonElement('OL', [
+            jsonElement('LI', [jsonTextElement('Punkt 1')]),
+            jsonElement('LI', [jsonTextElement('Punkt 2')]),
           ]),
         ],
         true,
@@ -27,18 +26,10 @@ describe('htmlString conversion', () => {
         ['LI'],
       );
       const expected = jsonElement(
-        'div-AvsnittmedfetskriftPunktmedfetskrift',
         'DIV',
         [
-          jsonElement('p-Avsnittmedfetskrift', 'P', [
-            jsonTextElement('Avsnitt', 'Avsnitt '),
-            jsonElement('b-medfetskrift', 'B', [jsonTextElement('medfetskrift', 'med fet skrift')]),
-          ]),
-          jsonElement('ol-Punktmedfetskrift', 'OL', [
-            jsonElement('li-Punktmedfetskrift', 'LI', [
-              jsonTextElement('Punkt**medfetskrift**', 'Punkt **med fet skrift**'),
-            ]),
-          ]),
+          jsonElement('P', [jsonTextElement('Avsnitt '), jsonElement('B', [jsonTextElement('med fet skrift')])]),
+          jsonElement('OL', [jsonElement('LI', [jsonTextElement('Punkt **med fet skrift**')])]),
         ],
         true,
       );
@@ -51,16 +42,8 @@ describe('htmlString conversion', () => {
         ['P'],
       );
       const expected = jsonElement(
-        'div-Avsnittmedlenkeogfetskrift',
         'DIV',
-        [
-          jsonElement('p-Avsnittmedlenkeogfetskrift', 'P', [
-            jsonTextElement(
-              'Avsnitt**med**[lenke](www.nav.no)og**fetskrift**',
-              'Avsnitt **med** [lenke](www.nav.no) og **fet skrift**',
-            ),
-          ]),
-        ],
+        [jsonElement('P', [jsonTextElement('Avsnitt**med**[lenke](www.nav.no)og**fetskrift**')])],
         true,
       );
       expect(actual).toMatchObject(expected);
@@ -72,18 +55,10 @@ describe('htmlString conversion', () => {
         ['LI'],
       );
       const expected = jsonElement(
-        'div-AvsnittmedkursivskriftPunktmedkursivskrift',
         'DIV',
         [
-          jsonElement('p-Avsnittmedkursivskrift', 'P', [
-            jsonTextElement('Avsnitt', 'Avsnitt '),
-            jsonTextElement('<em>medkursivskrift</em>', '<em>med kursiv skrift</em>'),
-          ]),
-          jsonElement('ol-Punktmedkursivskrift', 'OL', [
-            jsonElement('li-Punktmedkursivskrift', 'LI', [
-              jsonTextElement('Punkt<em>medkursivskrift</em>', 'Punkt <em>med kursiv skrift</em>'),
-            ]),
-          ]),
+          jsonElement('P', [jsonTextElement('Avsnitt '), jsonTextElement('<em>med kursiv skrift</em>')]),
+          jsonElement('OL', [jsonElement('LI', [jsonTextElement('Punkt <em>med kursiv skrift</em>')])]),
         ],
         true,
       );
