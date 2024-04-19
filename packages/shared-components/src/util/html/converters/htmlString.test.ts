@@ -1,5 +1,5 @@
-import { jsonElement, jsonTextElement } from '../test/testUtils';
 import { htmlString2Json } from './htmlString';
+import { jsonElement, jsonTextElement } from './test/testUtils';
 
 describe('htmlString conversion', () => {
   describe('from htmlString to json', () => {

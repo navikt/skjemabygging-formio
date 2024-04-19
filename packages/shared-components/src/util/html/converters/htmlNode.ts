@@ -1,4 +1,4 @@
-import { AcceptedTag, HtmlAsJsonElement, HtmlAsJsonTextElement, isAcceptedTag } from '../htmlAsJson';
+import { AcceptedTag, HtmlAsJsonElement, HtmlAsJsonTextElement, isAcceptedTag } from './htmlAsJson';
 import { json2HtmlString } from './htmlString';
 import { htmlNode2Markdown } from './markdown';
 

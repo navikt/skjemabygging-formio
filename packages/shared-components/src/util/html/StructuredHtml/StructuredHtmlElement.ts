@@ -1,4 +1,4 @@
-import htmlAsJsonUtils, { HtmlAsJsonElement, HtmlAsJsonTextElement } from '../../htmlAsJson';
+import htmlConverter, { HtmlAsJsonElement, HtmlAsJsonTextElement } from '../converters';
 import StructuredHtml, { StructuredHtmlOptions } from './StructuredHtml';
 import StructuredHtmlText from './StructuredHtmlText';
 
@@ -9,7 +9,7 @@ class StructuredHtmlElement extends StructuredHtml {
   childrenAsMarkdown?: StructuredHtmlText[];
 
   constructor(
-    converter: typeof htmlAsJsonUtils,
+    converter: typeof htmlConverter,
     htmlString?: string,
     htmlJson?: HtmlAsJsonElement,
     parent?: StructuredHtmlElement,

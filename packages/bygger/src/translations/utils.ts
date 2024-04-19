@@ -1,7 +1,7 @@
 import {
   HtmlAsJsonElement,
   HtmlAsJsonTextElement,
-  htmlAsJsonUtils,
+  htmlConverter,
   NavFormioJs,
 } from '@navikt/skjemadigitalisering-shared-components';
 
@@ -243,7 +243,7 @@ const getTranslationsForChild = (
   Object.entries(translations ?? {}).reduce(
     (acc, [lang, translation]) => ({
       ...acc,
-      [lang]: { translations: { value: htmlAsJsonUtils.getChild(translation.translations.value, childIndex) } },
+      [lang]: { translations: { value: htmlConverter.getChild(translation.translations.value, childIndex) } },
     }),
     {},
   );
@@ -292,19 +292,19 @@ const getTextsAndTranslationsForForm = (form: NavFormType, translations: FormioT
   const textComponents = getFormTexts(form, false);
   let textIndex = 0;
   return textComponents.flatMap((textComponent) => {
-    if (htmlAsJsonUtils.isHtmlString(textComponent.text)) {
+    if (htmlConverter.isHtmlString(textComponent.text)) {
       const htmlTranslations = Object.entries(translations).reduce((acc, [lang, translation]) => {
         const translationValue = translation.translations[textComponent.text]?.value ?? '';
-        if (!htmlAsJsonUtils.isHtmlString(translationValue)) {
+        if (!htmlConverter.isHtmlString(translationValue)) {
           return acc;
         }
-        const translationAsJson = htmlAsJsonUtils.htmlString2Json(translationValue, htmlAsJsonUtils.defaultLeafs);
+        const translationAsJson = htmlConverter.htmlString2Json(translationValue, htmlConverter.defaultLeafs);
         return {
           ...acc,
           [lang]: { translations: { ...translation.translations[textComponent.text], value: translationAsJson } },
         };
       }, {});
-      const htmlText = htmlAsJsonUtils.htmlString2Json(textComponent.text, htmlAsJsonUtils.defaultLeafs);
+      const htmlText = htmlConverter.htmlString2Json(textComponent.text, htmlConverter.defaultLeafs);
       return createTranslationsHtmlRows(htmlText, htmlTranslations, `${++textIndex}`.padStart(3, '0'));
     } else {
       return createTranslationsTextRow(textComponent.text, translations, `${++textIndex}`.padStart(3, '0'));

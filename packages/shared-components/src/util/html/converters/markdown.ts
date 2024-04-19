@@ -1,4 +1,4 @@
-import { HtmlAsJsonElement } from '../htmlAsJson';
+import { HtmlAsJsonElement } from './htmlAsJson';
 import { fromNode } from './htmlNode';
 import { htmlString2Json, json2HtmlString } from './htmlString';
 

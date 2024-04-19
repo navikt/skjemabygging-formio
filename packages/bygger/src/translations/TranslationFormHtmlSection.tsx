@@ -5,7 +5,7 @@ import {
   HtmlAsJsonTextElement,
   StructuredHtml,
   StructuredHtmlElement,
-  htmlAsJsonUtils,
+  htmlConverter,
   makeStyles,
 } from '@navikt/skjemadigitalisering-shared-components';
 import { useEffect, useMemo, useRef, useState } from 'react';
@@ -58,8 +58,8 @@ const TranslationFormHtmlSection = ({ text, storedTranslation, updateTranslation
 
   const html = useMemo(
     () =>
-      htmlAsJsonUtils.isHtmlString(text)
-        ? new StructuredHtmlElement(htmlAsJsonUtils, text, undefined, undefined, {
+      htmlConverter.isHtmlString(text)
+        ? new StructuredHtmlElement(htmlConverter, text, undefined, undefined, {
             skipConversionWithin: ['H3', 'P', 'LI'],
           })
         : undefined,
@@ -67,15 +67,15 @@ const TranslationFormHtmlSection = ({ text, storedTranslation, updateTranslation
   );
 
   const translationIsMissing = useMemo(
-    () => !translationObject.current && (!storedTranslation || !htmlAsJsonUtils.isHtmlString(storedTranslation)),
+    () => !translationObject.current && (!storedTranslation || !htmlConverter.isHtmlString(storedTranslation)),
     [storedTranslation],
   );
 
   const incompatibleTranslationExists = useMemo(() => {
     if (!translationObject.current) {
       const storedTranslationAsJson =
-        !!storedTranslation && htmlAsJsonUtils.isHtmlString(storedTranslation)
-          ? htmlAsJsonUtils.htmlString2Json(storedTranslation)
+        !!storedTranslation && htmlConverter.isHtmlString(storedTranslation)
+          ? htmlConverter.htmlString2Json(storedTranslation)
           : undefined;
       return storedTranslationAsJson && !isSameStructure(html?.getJson(), storedTranslationAsJson);
     }
@@ -83,7 +83,7 @@ const TranslationFormHtmlSection = ({ text, storedTranslation, updateTranslation
 
   useEffect(() => {
     if (!translationObject.current && !translationIsMissing && !incompatibleTranslationExists) {
-      translationObject.current = new StructuredHtmlElement(htmlAsJsonUtils, storedTranslation, undefined, undefined, {
+      translationObject.current = new StructuredHtmlElement(htmlConverter, storedTranslation, undefined, undefined, {
         skipConversionWithin: ['H3', 'P', 'LI'],
       });
       setTranslationReady(true);
@@ -93,7 +93,7 @@ const TranslationFormHtmlSection = ({ text, storedTranslation, updateTranslation
   const styles = useStyles();
 
   const startNewTranslation = () => {
-    translationObject.current = new StructuredHtmlElement(htmlAsJsonUtils, text, undefined, undefined, {
+    translationObject.current = new StructuredHtmlElement(htmlConverter, text, undefined, undefined, {
       skipConversionWithin: ['H3', 'P', 'LI'],
     });
     setTranslationReady(true);

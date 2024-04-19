@@ -1,15 +1,15 @@
-import { fromNode, toNode } from './converters/htmlNode';
-import { htmlString2Json, isHtmlString, json2HtmlString } from './converters/htmlString';
+import { HtmlAsJsonElement, HtmlAsJsonTextElement, defaultLeafs, getChild } from './htmlAsJson';
+import { fromNode, toNode } from './htmlNode';
+import { htmlString2Json, isHtmlString, json2HtmlString } from './htmlString';
 import {
   htmlNode2Markdown,
   linkMarkdown2HtmlString,
   markdown2Json,
   markdownFromHtmlNodes,
   strongMarkdown2HtmlString,
-} from './converters/markdown';
-import { HtmlAsJsonElement, HtmlAsJsonTextElement, defaultLeafs, getChild } from './htmlAsJson';
+} from './markdown';
 
-const htmlAsJsonUtils = {
+const htmlConverter = {
   htmlNode2Markdown,
   linkMarkdown2HtmlString,
   strongMarkdown2HtmlString,
@@ -21,8 +21,8 @@ const htmlAsJsonUtils = {
   json2HtmlString,
   markdown2Json,
   markdownFromHtmlNodes,
-  defaultLeafs,
 };
 
+export { defaultLeafs };
 export type { HtmlAsJsonElement, HtmlAsJsonTextElement };
-export default htmlAsJsonUtils;
+export default htmlConverter;

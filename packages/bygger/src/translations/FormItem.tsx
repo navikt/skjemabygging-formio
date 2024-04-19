@@ -1,6 +1,6 @@
 import { ArrowUndoIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
-import { htmlAsJsonUtils, makeStyles } from '@navikt/skjemadigitalisering-shared-components';
+import { htmlConverter, makeStyles } from '@navikt/skjemadigitalisering-shared-components';
 import { ScopedTranslationMap } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useState } from 'react';
 import { useI18nDispatch } from '../context/i18n';
@@ -57,7 +57,7 @@ const FormItem = ({ translations, text, type, languageCode }: Props) => {
     return <></>;
   }
 
-  if (htmlAsJsonUtils.isHtmlString(text) && !useLegacyHtmlTranslation) {
+  if (htmlConverter.isHtmlString(text) && !useLegacyHtmlTranslation) {
     return (
       <TranslationFormHtmlSection
         text={text}

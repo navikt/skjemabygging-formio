@@ -1,6 +1,6 @@
 import { v4 as uuid } from 'uuid';
-import htmlAsJsonUtils, { HtmlAsJsonElement, HtmlAsJsonTextElement } from '../../htmlAsJson';
-import { AcceptedTag } from '../../htmlAsJson/htmlAsJson';
+import htmlConverter, { HtmlAsJsonElement, HtmlAsJsonTextElement } from '../converters';
+import { AcceptedTag } from '../converters/htmlAsJson';
 import StructuredHtmlElement from './StructuredHtmlElement';
 import StructuredHtmlText from './StructuredHtmlText';
 
@@ -11,14 +11,14 @@ type StructuredHtmlOptions = {
 
 abstract class StructuredHtml {
   parent?: StructuredHtmlElement;
-  converter: typeof htmlAsJsonUtils;
+  converter: typeof htmlConverter;
   originalHtmlString?: string;
   originalHtmlJson: HtmlAsJsonElement | HtmlAsJsonTextElement;
   id: string;
   options?: StructuredHtmlOptions;
 
   protected constructor(
-    converter: typeof htmlAsJsonUtils,
+    converter: typeof htmlConverter,
     htmlString?: string,
     htmlJson?: HtmlAsJsonElement | HtmlAsJsonTextElement,
     parent?: StructuredHtmlElement,

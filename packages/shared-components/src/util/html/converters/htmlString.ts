@@ -1,4 +1,4 @@
-import { AcceptedTag, HtmlAsJsonElement, HtmlAsJsonTextElement } from '../htmlAsJson';
+import { AcceptedTag, HtmlAsJsonElement, HtmlAsJsonTextElement } from './htmlAsJson';
 import { fromElement, toNode } from './htmlNode';
 
 const isHtmlString = (text: string) => /<[^>]*>/.test(text);
