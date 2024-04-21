@@ -1,8 +1,6 @@
 import { PlusIcon, XMarkIcon } from '@navikt/aksel-icons';
 import { Alert, Box, Button, HStack, Heading, HelpText, VStack } from '@navikt/ds-react';
 import {
-  HtmlAsJsonElement,
-  HtmlAsJsonTextElement,
   StructuredHtml,
   StructuredHtmlElement,
   htmlConverter,
@@ -34,25 +32,6 @@ const useStyles = makeStyles({
   },
 });
 
-//TODO: move to class
-const isSameStructure = (
-  elementTreeA?: HtmlAsJsonElement | HtmlAsJsonTextElement,
-  elementTreeB?: HtmlAsJsonElement | HtmlAsJsonTextElement,
-) => {
-  if (!elementTreeA || !elementTreeB) {
-    return false;
-  }
-  if (elementTreeA.type === 'Element' && elementTreeB.type === 'Element') {
-    if (elementTreeA.tagName !== elementTreeB.tagName) {
-      return false;
-    }
-    return elementTreeA.children.every((childA, index) => {
-      return elementTreeB.children.length > index && isSameStructure(childA, elementTreeB.children[index]);
-    });
-  }
-  return elementTreeA.type === elementTreeB.type;
-};
-
 const TranslationFormHtmlSection = ({ text, storedTranslation, updateTranslation, onSelectLegacy }: Props) => {
   const translationObject = useRef<StructuredHtmlElement>();
   const [translationReady, setTranslationReady] = useState(false);
@@ -72,11 +51,7 @@ const TranslationFormHtmlSection = ({ text, storedTranslation, updateTranslation
 
   const incompatibleTranslationExists = useMemo(() => {
     if (!translationObject.current) {
-      const storedTranslationAsJson =
-        !!storedTranslation && htmlConverter.isHtmlString(storedTranslation)
-          ? htmlConverter.htmlString2Json(storedTranslation)
-          : undefined;
-      return storedTranslationAsJson && !isSameStructure(html?.toJson(), storedTranslationAsJson);
+      return !html?.matches(new StructuredHtmlElement(storedTranslation, { skipConversionWithin: ['H3', 'P', 'LI'] }));
     }
   }, [html, storedTranslation]);
 

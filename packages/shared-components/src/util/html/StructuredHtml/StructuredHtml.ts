@@ -41,6 +41,7 @@ abstract class StructuredHtml {
     value: HtmlAsJsonElement | HtmlAsJsonTextElement,
   ): StructuredHtmlElement | StructuredHtmlText | undefined;
   abstract updateInternal(id: string, value: string): StructuredHtmlElement | StructuredHtmlText | undefined;
+  abstract matches(other: StructuredHtml | undefined): boolean;
   abstract toJson(): HtmlAsJsonElement | HtmlAsJsonTextElement;
   abstract toHtmlString(): string;
 

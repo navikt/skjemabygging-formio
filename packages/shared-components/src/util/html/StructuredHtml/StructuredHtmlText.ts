@@ -34,6 +34,10 @@ class StructuredHtmlText extends StructuredHtml {
     }
   }
 
+  matches(other: StructuredHtml | undefined) {
+    return StructuredHtml.isTextElement(other);
+  }
+
   toJson(): HtmlAsJsonTextElement {
     return {
       id: this.id,
