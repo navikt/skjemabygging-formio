@@ -76,8 +76,4 @@ const htmlNode2Markdown = (node: Element | ChildNode): string => {
   return '';
 };
 
-const markdownFromHtmlNodes = (nodes: Array<Element | Text>): string => {
-  return Array.from(nodes, htmlNode2Markdown).join('');
-};
-
-export { htmlNode2Markdown, linkMarkdown2HtmlString, markdown2Json, markdownFromHtmlNodes, strongMarkdown2HtmlString };
+export { htmlNode2Markdown, markdown2Json };
