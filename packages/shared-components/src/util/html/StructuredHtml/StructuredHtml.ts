@@ -42,7 +42,7 @@ abstract class StructuredHtml {
   ): StructuredHtmlElement | StructuredHtmlText | undefined;
   abstract updateInternal(id: string, value: string): StructuredHtmlElement | StructuredHtmlText | undefined;
   abstract matches(other: StructuredHtml | undefined): boolean;
-  abstract toJson(): HtmlAsJsonElement | HtmlAsJsonTextElement;
+  abstract toJson(getMarkdown?: boolean): HtmlAsJsonElement | HtmlAsJsonTextElement;
   abstract toHtmlString(): string;
 
   static isElement(html?: StructuredHtml): html is StructuredHtmlElement {

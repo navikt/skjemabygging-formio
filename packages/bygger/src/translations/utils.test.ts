@@ -472,7 +472,7 @@ describe('Skjema med globale oversettelser som inneholder linjeskift', () => {
           {
             label: 'Alertstripe',
             type: 'alertstripe',
-            content: 'NAV sender svar.\n<br>\nSe <a href="https://www.nav.no/person/" target="_blank">link</a>.',
+            content: '<p>NAV sender svar.\n<br>\nSe <a href="https://www.nav.no/person/" target="_blank">link</a>.</p>',
           },
         ],
       },
@@ -485,8 +485,8 @@ describe('Skjema med globale oversettelser som inneholder linjeskift', () => {
     en: {
       translations: {
         Veiledning: { value: 'Guidance', scope: 'global' },
-        'NAV sender svar.\n<br>\nSe <a href="https://www.nav.no/person/" target="_blank">link</a>.': {
-          value: 'NAV sends answers.\n<br>\nSee <a href="https://www.nav.no/person/" target="_blank">link</a>.',
+        '<p>NAV sender svar.\n<br>\nSe <a href="https://www.nav.no/person/" target="_blank">link</a>.</p>': {
+          value: '<p>NAV sends answers.\n<br>\nSee <a href="https://www.nav.no/person/" target="_blank">link</a>.</p>',
           scope: 'global',
         },
       },
@@ -494,8 +494,8 @@ describe('Skjema med globale oversettelser som inneholder linjeskift', () => {
     'nn-NO': {
       translations: {
         Veiledning: { value: 'Rettleiing', scope: 'global' },
-        'NAV sender svar.\n<br>\nSe <a href="https://www.nav.no/person/" target="_blank">link</a>.': {
-          value: 'NAV sender svar.\n<br>\nSjå <a href="https://www.nav.no/person/" target="_blank">lenke</a>.',
+        '<p>NAV sender svar.\n<br>\nSe <a href="https://www.nav.no/person/" target="_blank">link</a>.</p>': {
+          value: '<p>NAV sender svar.\n<br>\nSjå <a href="https://www.nav.no/person/" target="_blank">lenke</a>.</p>',
           scope: 'global',
         },
       },
@@ -503,7 +503,6 @@ describe('Skjema med globale oversettelser som inneholder linjeskift', () => {
   };
   it('fjerner linjeskift i tekster som skal eksporteres', () => {
     const eksport = getTextsAndTranslationsForForm(form, translations);
-    console.log('** ** EKSPORT', JSON.stringify(eksport, null, 2));
     expect(eksport).toHaveLength(6);
 
     expect(eksport[0].text).toBe('Veiledning');

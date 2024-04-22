@@ -157,7 +157,7 @@ class StructuredHtmlElement extends StructuredHtml {
       tagName: this.tagName!, // FIXME
       attributes: this.attributes!,
       children: (getMarkdown && this.containsMarkdown ? this.childrenAsMarkdown ?? [] : this.children).map((child) =>
-        child.toJson(),
+        child.toJson(getMarkdown),
       ),
       isWrapper: !this.parent,
     };
