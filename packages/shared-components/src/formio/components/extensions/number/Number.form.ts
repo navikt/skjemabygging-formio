@@ -17,8 +17,8 @@ const numberForm = () => {
     ]),
     validation([
       editFormValidation.required(),
-      editFormValidation.minLength(),
-      editFormValidation.maxLength(),
+      editFormValidation.minNumber(),
+      editFormValidation.maxNumber(),
       editFormValidation.customValidation(),
       editFormValidation.customError(),
     ]),
