@@ -145,8 +145,7 @@ class StructuredHtmlElement extends StructuredHtml {
 
   matches(other: StructuredHtml | undefined) {
     if (StructuredHtml.isElement(other) && other.tagName === this.tagName) {
-      const childrenMatch = this.matchesChildren(other);
-      return childrenMatch;
+      return this.matchesChildren(other);
     }
     return false;
   }
@@ -157,7 +156,9 @@ class StructuredHtmlElement extends StructuredHtml {
       type: 'Element', //Fixme
       tagName: this.tagName!, // FIXME
       attributes: this.attributes!,
-      children: (getMarkdown ? this.childrenAsMarkdown ?? [] : this.children).map((child) => child.toJson()),
+      children: (getMarkdown && this.containsMarkdown ? this.childrenAsMarkdown ?? [] : this.children).map((child) =>
+        child.toJson(),
+      ),
       isWrapper: !this.parent,
     };
   }
