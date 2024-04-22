@@ -1,4 +1,5 @@
 import { AppConfigProvider } from '@navikt/skjemadigitalisering-shared-components';
+import { Settings } from 'luxon';
 import Pusher from 'pusher-js';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
@@ -10,6 +11,7 @@ import httpBygger from './util/httpBygger';
 const dokumentinnsendingDevURL = 'https://tjenester-q0.nav.no/dokumentinnsending';
 
 Pusher.logToConsole = true;
+Settings.defaultZone = 'Europe/Oslo';
 
 fetch('/api/config')
   .then((res) => {
