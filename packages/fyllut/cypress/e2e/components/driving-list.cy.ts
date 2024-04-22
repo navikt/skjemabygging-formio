@@ -91,6 +91,15 @@ describe('DrivingList', () => {
       cy.findByRole('button', { name: '15. mai 2023 - 21. mai 2023' }).click();
       cy.findByRole('checkbox', { name: 'mandag 15. mai 2023' }).should('exist').check();
 
+      // Parking expenses should not be over 100
+      cy.findByRole('textbox', { name: PARKING_EXPENSES_LABEL }).should('exist').type('101');
+      cy.clickNextStep();
+      cy.findByRole('region', { name: TEXTS.validering.error })
+        .should('exist')
+        .within(() => {
+          cy.findByRole('link', { name: TEXTS.validering.parkingExpensesAboveHundred }).should('exist');
+        });
+
       // Parking expenses should be a number
       cy.findByRole('textbox', { name: PARKING_EXPENSES_LABEL }).clear();
       cy.findByRole('textbox', { name: PARKING_EXPENSES_LABEL }).type('text');
