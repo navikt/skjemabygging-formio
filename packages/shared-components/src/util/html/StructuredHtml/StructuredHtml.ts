@@ -49,7 +49,7 @@ abstract class StructuredHtml {
     return !!html && html.type === 'Element';
   }
 
-  static isTextElement(html?: StructuredHtml): html is StructuredHtmlText {
+  static isText(html?: StructuredHtml): html is StructuredHtmlText {
     return !!html && html.type === 'TextElement';
   }
 

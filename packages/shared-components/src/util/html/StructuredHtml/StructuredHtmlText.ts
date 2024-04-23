@@ -35,7 +35,7 @@ class StructuredHtmlText extends StructuredHtml {
   }
 
   matches(other: StructuredHtml | undefined) {
-    return StructuredHtml.isTextElement(other);
+    return StructuredHtml.isText(other);
   }
 
   toJson(): HtmlAsJsonTextElement {

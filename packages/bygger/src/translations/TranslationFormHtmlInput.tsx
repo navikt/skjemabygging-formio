@@ -59,11 +59,7 @@ const TranslationFormHtmlInput = ({ text, html, currentTranslation, updateTransl
     );
   }
 
-  if (
-    StructuredHtml.isTextElement(html) &&
-    StructuredHtml.isTextElement(currentTranslation) &&
-    text.replace(/\s/g, '').length > 0
-  ) {
+  if (StructuredHtml.isText(html) && StructuredHtml.isText(currentTranslation) && text.replace(/\s/g, '').length > 0) {
     return (
       <TranslationTextInput
         text={text}
