@@ -43,6 +43,7 @@ class Attachment extends BaseComponent {
           this.handleChange(value, { modified: true });
         }}
         translate={this.t.bind(this)}
+        ref={(ref) => this.setReactInstance(ref)}
       />,
     );
   }

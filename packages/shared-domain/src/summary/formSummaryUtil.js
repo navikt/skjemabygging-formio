@@ -99,8 +99,8 @@ function formatValue(component, value, translate, form, language) {
     case 'drivinglist':
       return {
         description: translate(TEXTS.statiske.drivingList.summaryDescription),
-        dates: value.dates
-          .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+        dates: value?.dates
+          ?.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
           .map((date) => {
             const formattedDate = dateUtils.toWeekdayAndDate(date.date, language);
             return {

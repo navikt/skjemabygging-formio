@@ -37,4 +37,6 @@ export const validering = {
 
   // driving list
   validParkingExpenses: 'Parkeringsutgiftene for {{dato}} må være et gyldig beløp',
+  parkingExpensesAboveHundred:
+    'Fordi du har parkeringsutgifter over 100 kroner per dag må du sende inn kjørelisten på papir og legge ved kvitteringer som dokumenterer utgiften. Bruk samme søknad, men velg "Send i posten"',
 };

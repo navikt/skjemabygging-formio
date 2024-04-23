@@ -1,10 +1,9 @@
 import { DateTime } from 'luxon';
-import moment from 'moment';
 import { v4 as uuidv4 } from 'uuid';
 
 interface WeeklyPeriod {
-  periodFrom: Date;
-  periodTo: Date;
+  periodFrom: string;
+  periodTo: string;
   id: string;
 }
 
@@ -38,41 +37,40 @@ const longMonthDateFormat: Intl.DateTimeFormatOptions = {
 const inputFormat = 'dd.MM.yyyy';
 const submissionFormat = 'yyyy-MM-dd';
 
-const toLocaleDateAndTime = (date: string, locale = 'no') => {
-  return new Date(date).toLocaleString(locale, dateAndTimeFormat);
-};
+const toLocaleDateAndTime = (date: string, locale = 'no') => new Date(date).toLocaleString(locale, dateAndTimeFormat);
 
-const toLocaleDate = (date: string | Date, locale = 'no') => {
-  if (typeof date !== 'object') {
-    date = new Date(date);
-  }
-
-  return date.toLocaleString(locale, dateFormat);
+const toLocaleDate = (date: string, locale = 'no') => {
+  return DateTime.fromISO(date).setLocale(locale).toLocaleString(dateFormat);
 };
 
 const toWeekdayAndDate = (date: string, locale = 'no') => {
-  return new Date(date).toLocaleString(locale, weekdayAndDateFormat);
+  return DateTime.fromISO(date).setLocale(locale).toLocaleString(weekdayAndDateFormat);
 };
 
 const toLocaleDateLongMonth = (date: string, locale = 'no') => {
-  new Date(date).toLocaleString(locale, longMonthDateFormat);
-};
-
-export const getIso8601String = () => {
-  return moment().toISOString();
+  return DateTime.fromISO(date).setLocale(locale).toLocaleString(longMonthDateFormat);
 };
 
 const toSubmissionDate = (date: string) => {
   return DateTime.fromFormat(date, inputFormat).toFormat(submissionFormat);
 };
 
-const getDatesInRange = (startDate: Date, endDate: Date) => {
-  const dates: Date[] = [];
-  const currentDate = new Date(startDate);
+export const getIso8601String = () => {
+  return DateTime.utc().toISO();
+};
+
+const getDatesInRange = (start: string, end: string) => {
+  const startDate = DateTime.fromISO(start);
+  const endDate = DateTime.fromISO(end);
+  const dates: string[] = [];
+
+  let currentDate = startDate;
 
   while (currentDate <= endDate) {
-    dates.push(new Date(currentDate));
-    currentDate.setDate(currentDate.getDate() + 1);
+    if (currentDate.isValid) {
+      dates.push(currentDate.toISODate());
+      currentDate = currentDate.plus({ days: 1 });
+    }
   }
 
   return dates;
@@ -97,11 +95,14 @@ export const generateWeeklyPeriods = (date?: string, numberOfPeriods: number = 1
     if (i === 0) {
       startDate = DateTime.fromISO(date);
     }
+
     if (endDate > today) {
       endDate = today;
     }
 
-    periods.push({ periodFrom: startDate.toJSDate(), periodTo: endDate.toJSDate(), id: uuidv4() });
+    if (startDate.isValid && endDate.isValid) {
+      periods.push({ periodFrom: startDate.toISODate(), periodTo: endDate.toISODate(), id: uuidv4() });
+    }
   }
 
   return periods;

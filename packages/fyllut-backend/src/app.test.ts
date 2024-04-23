@@ -213,15 +213,23 @@ describe('app', () => {
       .get('/idporten-oidc-provider/jwk')
       .reply(200, { keys: [key.toJSON(false)] });
 
-    const azureTokenEndpoint = process.env.AZURE_OPENID_CONFIG_TOKEN_ENDPOINT!;
+    const innsendingsId = '65ed0008-ec72-4c90-8b44-165d3c265da0';
     const sendInnLocation = 'http://www.unittest.nav.no/sendInn/123';
+    const azureTokenEndpoint = process.env.AZURE_OPENID_CONFIG_TOKEN_ENDPOINT!;
     const tokenxEndpoint = 'http://tokenx-unittest.nav.no/token';
     const applicationData = {
-      form: { components: [], properties: { skjemanummer: 'NAV 12.34-56' } },
-      submission: { data: {} },
+      form: {
+        components: [],
+        path: 'nav123456',
+        title: 'NAV 12.34-56',
+        properties: { skjemanummer: 'NAV 12.34-56', tema: 'BIL' },
+      },
+      submission: { data: { fodselsnummerDNummerSoker: '12345678911' } },
       attachments: [],
       language: 'nb-NO',
-      translations: {},
+      translation: {},
+      submissionMethod: 'digital',
+      innsendingsId,
     };
 
     const azureOpenidScope = nock(extractHost(azureTokenEndpoint))
@@ -236,12 +244,12 @@ describe('app', () => {
     const tokenEndpointNockScope = nock(extractHost(tokenxEndpoint))
       .post(extractPath(tokenxEndpoint))
       .reply(200, { access_token: '123456' }, { 'Content-Type': 'application/json' });
-    const sendInnNockScope = nock(sendInnConfig?.host as string)
-      .post(sendInnConfig?.paths.leggTilVedlegg as string)
+    const sendInnNockScope = nock(sendInnConfig?.host)
+      .put(`${sendInnConfig?.paths.utfyltSoknad}/${innsendingsId}`)
       .reply(302, 'FOUND', { Location: sendInnLocation });
 
     const res = await request(createApp())
-      .post('/fyllut/api/send-inn')
+      .put('/fyllut/api/send-inn/utfyltsoknad')
       .send(applicationData)
       .set('Fyllut-Submission-Method', 'digital')
       .set('Authorization', `Bearer ${createMockIdportenJwt({ pid: '12345678911' }, undefined, key)}`); // <-- injected by idporten sidecar

@@ -1,5 +1,5 @@
 import { BodyShort, Button, Heading } from '@navikt/ds-react';
-import { FormBuilderOptions, makeStyles, useModal } from '@navikt/skjemadigitalisering-shared-components';
+import { FormBuilderOptions, makeStyles, useAppConfig, useModal } from '@navikt/skjemadigitalisering-shared-components';
 import { AppLayout } from '../components/AppLayout';
 import ButtonWithSpinner from '../components/ButtonWithSpinner';
 import NavFormBuilder from '../components/NavFormBuilder';
@@ -27,11 +27,13 @@ export function EditFormPage({ form, publishedForm, onSave, onChange, onPublish,
     properties: { skjemanummer },
   } = form;
   const [openPublishSettingModal, setOpenPublishSettingModal] = useModal();
+  const appConfig = useAppConfig();
   const styles = useStyles();
   const formBuilderOptions = {
     ...FormBuilderOptions,
     formConfig: { publishedForm },
     hooks: { beforeSaveComponentSettings },
+    appConfig,
   };
   return (
     <>

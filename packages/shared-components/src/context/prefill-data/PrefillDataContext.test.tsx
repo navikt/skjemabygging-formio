@@ -1,5 +1,6 @@
 import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import { render, screen } from '@testing-library/react';
+import { act } from 'react-dom/test-utils';
 import { MemoryRouter } from 'react-router-dom';
 import { http } from '../../index';
 import { AppConfigProvider } from '../config/configContext';
@@ -45,24 +46,26 @@ describe('prefillDataContext', () => {
   });
 
   describe('Form with prefillKey', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       mockHttp.get.mockReturnValue({ sokerFornavn: 'Ola', sokerEtternavn: 'Nordmann' });
-      render(
-        <AppConfigProvider
-          app={'fyllut'}
-          submissionMethod={submissionMethod}
-          featureToggles={{}}
-          http={mockHttp as unknown as typeof http}
-          baseUrl={'http://test.example.no'}
-          config={{ isTest: true }}
-        >
-          <MemoryRouter>
-            <PrefillDataProvider form={formWithPrefillKeys}>
-              <TestComponent />
-            </PrefillDataProvider>
-          </MemoryRouter>
-        </AppConfigProvider>,
-      );
+      await act(async () => {
+        render(
+          <AppConfigProvider
+            app={'fyllut'}
+            submissionMethod={submissionMethod}
+            featureToggles={{}}
+            http={mockHttp as unknown as typeof http}
+            baseUrl={'http://test.example.no'}
+            config={{ isTest: true }}
+          >
+            <MemoryRouter>
+              <PrefillDataProvider form={formWithPrefillKeys}>
+                <TestComponent />
+              </PrefillDataProvider>
+            </MemoryRouter>
+          </AppConfigProvider>,
+        );
+      });
     });
 
     it('should send send a GET request to /api/send-inn/prefill-data if form has prefillKey', async () => {
@@ -81,23 +84,25 @@ describe('prefillDataContext', () => {
   });
 
   describe('Form without prefillKey', () => {
-    beforeEach(() => {
-      render(
-        <AppConfigProvider
-          app={'fyllut'}
-          submissionMethod={submissionMethod}
-          featureToggles={{}}
-          http={mockHttp as unknown as typeof http}
-          baseUrl={'http://test.example.no'}
-          config={{ isTest: true }}
-        >
-          <MemoryRouter>
-            <PrefillDataProvider form={formWithoutPrefillKeys}>
-              <TestComponent />
-            </PrefillDataProvider>
-          </MemoryRouter>
-        </AppConfigProvider>,
-      );
+    beforeEach(async () => {
+      await act(async () => {
+        render(
+          <AppConfigProvider
+            app={'fyllut'}
+            submissionMethod={submissionMethod}
+            featureToggles={{}}
+            http={mockHttp as unknown as typeof http}
+            baseUrl={'http://test.example.no'}
+            config={{ isTest: true }}
+          >
+            <MemoryRouter>
+              <PrefillDataProvider form={formWithoutPrefillKeys}>
+                <TestComponent />
+              </PrefillDataProvider>
+            </MemoryRouter>
+          </AppConfigProvider>,
+        );
+      });
     });
 
     it('should not send send a GET request to /api/send-inn/prefill-data if form does not have prefillKey', async () => {

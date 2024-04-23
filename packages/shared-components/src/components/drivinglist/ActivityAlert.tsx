@@ -1,7 +1,7 @@
 import { Alert, BodyShort, Heading } from '@navikt/ds-react';
-import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { TEXTS, dateUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { useComponentUtils } from '../../context/component/componentUtilsContext';
-import { ActivityAlertData, toLocaleDateLongMonth } from '../../formio/components/core/driving-list/DrivingList.utils';
+import { ActivityAlertData } from '../../formio/components/core/driving-list/DrivingList.utils';
 import makeStyles from '../../util/styles/jss/jss';
 
 type ActivityAlertProps = {
@@ -29,10 +29,10 @@ const ActivityAlert = ({ vedtakData, className }: ActivityAlertProps) => {
       </BodyShort>
 
       {vedtakData.map((vedtak) => {
-        const vedtakPeriodFrom = new Date(vedtak.periode.fom);
-        const vedtakPeriodTo = new Date(vedtak.periode.tom);
+        const vedtakPeriodFrom = vedtak.periode.fom;
+        const vedtakPeriodTo = vedtak.periode.tom;
 
-        const period = `${toLocaleDateLongMonth(vedtakPeriodFrom, locale)} - ${toLocaleDateLongMonth(vedtakPeriodTo, locale)}`;
+        const period = `${dateUtils.toLocaleDateLongMonth(vedtakPeriodFrom, locale)} - ${dateUtils.toLocaleDateLongMonth(vedtakPeriodTo, locale)}`;
 
         return (
           <div key={vedtak.vedtaksId} className={activityAlertStyles.vedtakGroup}>

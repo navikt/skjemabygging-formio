@@ -22,31 +22,14 @@
       "data": {
         "data": {
           "drivinglist": {
-            "selectedVedtaksId": "43258683",
-            "dates": [
-              {
-                "date": "2024-01-08",
-                "parking": "",
-                "betalingsplanId": "14514541"
-              },
-              {
-                "date": "2024-01-12",
-                "parking": "50",
-                "betalingsplanId": "14514542"
-              },
-              {
-                "date": "2024-01-15",
-                "parking": "100",
-                "betalingsplanId": "14514540"
-              }
-            ]
+            "selectedVedtaksId": "43258683"
           }
         },
         "metadata": {
           "timezone": "Europe/Oslo",
           "offset": 60,
           "origin": "http://localhost:3001",
-          "referrer": "http://localhost:3001/fyllut/testdrivinglist/veiledning?sub=digital&innsendingsId=8495201b-71fd-4a95-82f8-d224d32237e5&lang=nb-NO",
+          "referrer": "http://localhost:3001/fyllut/testdrivinglist/veiledning?sub=digital&innsendingsId=a66e8932-ce2a-41c1-932b-716fc487813b&lang=nb-NO",
           "browserName": "Netscape",
           "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
           "pathName": "/fyllut/testdrivinglist/veiledning",
@@ -57,7 +40,7 @@
       }
     }
   },
-  "innsendingsId": "8495201b-71fd-4a95-82f8-d224d32237e5",
+  "innsendingsId": "a66e8932-ce2a-41c1-932b-716fc487813b",
   "status": "Opprettet",
   "vedleggsListe": [],
   "kanLasteOppAnnet": true,
