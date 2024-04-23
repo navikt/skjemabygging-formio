@@ -25,7 +25,7 @@ const useDrivinglistStyles = makeStyles({
 
 const DrivingListFromDates = () => {
   const { values, updateValues, getComponentError } = useDrivingList();
-  const { translate, locale, addRef } = useComponentUtils();
+  const { translate, addRef } = useComponentUtils();
 
   const styles = useDrivinglistStyles();
 
@@ -97,7 +97,6 @@ const DrivingListFromDates = () => {
         <DatePicker
           id={drivingListMetadata('datePicker').id}
           label={translate(drivingListMetadata('datePicker').label)}
-          labelText={translate(drivingListMetadata('datePicker').label)}
           required={true}
           value={values?.selectedDate}
           onChange={(date: string) => onDateChange(date)}
@@ -105,8 +104,8 @@ const DrivingListFromDates = () => {
           error={getComponentError('datePicker')}
           inputRef={(ref) => addRef(drivingListMetadata('datePicker').id, ref)}
           className={'mb'}
-          toDate={new Date()}
-          defaultMonth={new Date()}
+          toDate={dateUtils.toSubmissionDate()}
+          defaultMonth={dateUtils.toSubmissionDate()}
           description={translate(drivingListMetadata('datePicker').description ?? '')}
         />
         <RadioGroup

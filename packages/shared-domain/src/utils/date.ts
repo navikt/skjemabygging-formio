@@ -51,8 +51,12 @@ const toLocaleDateLongMonth = (date: string, locale = 'no') => {
   return DateTime.fromISO(date).setLocale(locale).toLocaleString(longMonthDateFormat);
 };
 
-const toSubmissionDate = (date: string) => {
-  return DateTime.fromFormat(date, inputFormat).toFormat(submissionFormat);
+const toSubmissionDate = (date?: string) => {
+  if (date) {
+    return DateTime.fromFormat(date, inputFormat).toFormat(submissionFormat);
+  } else {
+    return DateTime.now().toFormat(submissionFormat);
+  }
 };
 
 export const getIso8601String = () => {

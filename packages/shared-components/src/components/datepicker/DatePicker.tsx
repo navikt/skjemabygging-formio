@@ -18,7 +18,7 @@ interface NavDatePickerProps {
   className?: string;
   fromDate?: string;
   toDate?: string;
-  defaultMonth?: Date;
+  defaultMonth?: string;
 }
 
 const DatePicker = ({
@@ -42,7 +42,7 @@ const DatePicker = ({
     required: required,
     toDate: toDate ? new Date(toDate) : undefined,
     fromDate: fromDate ? new Date(fromDate) : undefined,
-    defaultMonth: defaultMonth,
+    defaultMonth: defaultMonth ? new Date(defaultMonth) : undefined,
     allowTwoDigitYear: false,
   } as UseDatepickerOptions);
 
