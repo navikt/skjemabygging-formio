@@ -7,6 +7,7 @@ import {
 } from '@navikt/skjemadigitalisering-shared-components';
 
 import {
+  AttachmentSettingValue,
   AttachmentSettingValues,
   Component,
   FormioTranslationMap,
@@ -16,9 +17,11 @@ import {
   signatureUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
 
-type TextObjectType = ReturnType<typeof textObject>;
+type TextObjectType = { text: string; type?: InputType };
 type InputType = 'text' | 'textarea';
 type CsvRow = {
+  type: 'tekst' | 'html';
+  order: string;
   text: string;
 } & {
   [key in Language]?: string;
@@ -28,14 +31,9 @@ const getInputType = (value: string): InputType => {
   return value?.length < 80 ? 'text' : 'textarea';
 };
 
-const filterSpecialSuffix = (suffix: string) => {
-  const specialSuffixList = ['%', 'km', 'cm', 'kg', 'kr', 'm'];
-  return specialSuffixList.indexOf(suffix) >= 0 ? '' : suffix;
-};
-
 const getTextFromComponentProperty = (property: string | undefined) => (property !== '' ? property : undefined);
 
-const extractTextsFromProperties = (props: NavFormType['properties']) => {
+const extractTextsFromProperties = (props: NavFormType['properties']): TextObjectType[] => {
   const array: { text: string; type: InputType }[] = [];
   if (props?.innsendingOverskrift) {
     array.push({
@@ -87,7 +85,7 @@ const extractTextsFromProperties = (props: NavFormType['properties']) => {
   return array;
 };
 
-const getContent = (content: string | undefined) => {
+const getContent = (content: string | undefined): string | undefined => {
   if (content) {
     // Formio.js runs code that changes the original text before translating,
     // and to avoid mismatch in translation object keys we need to do the same.
@@ -158,7 +156,7 @@ const getTranslatablePropertiesFromForm = (form: NavFormType) =>
 const withoutDuplicatedComponents = (textObject: TextObjectType, index: number, currentComponents: TextObjectType[]) =>
   index === currentComponents.findIndex((currentComponent) => currentComponent.text === textObject.text);
 
-const textObject = (withInputType: boolean, value: string): { text: string; type?: InputType } => {
+const textObject = (withInputType: boolean, value: string): TextObjectType => {
   const type = withInputType ? getInputType(value) : undefined;
   return {
     text: value,
@@ -166,16 +164,16 @@ const textObject = (withInputType: boolean, value: string): { text: string; type
   };
 };
 
-const getAttachmentTexts = (attachmentValues?: AttachmentSettingValues) => {
+const getAttachmentTexts = (attachmentValues?: AttachmentSettingValues): undefined | string[] => {
   if (!attachmentValues) {
     return undefined;
   }
 
-  return Object.entries(attachmentValues)
-    .flatMap(([key, values]) => {
-      return [values?.additionalDocumentation?.label, values?.additionalDocumentation?.description];
-    })
-    .filter((values) => !!values);
+  return Object.values(attachmentValues).flatMap((value: AttachmentSettingValue) => {
+    return value.additionalDocumentation
+      ? [value?.additionalDocumentation?.label, value?.additionalDocumentation?.description]
+      : [];
+  });
 };
 
 const getFormTexts = (form?: NavFormType, withInputType = false): TextObjectType[] => {
@@ -218,7 +216,12 @@ const escapeQuote = (text?: string) => {
 
 const sanitizeForCsv = (text?: string) => escapeQuote(removeLineBreaks(text));
 
-const createTranslationsTextRow = (text: string, translations: FormioTranslationMap, order: string, type = 'tekst') => {
+const createTranslationsTextRow = (
+  text: string,
+  translations: FormioTranslationMap,
+  order: string,
+  type: 'tekst' | 'html' = 'tekst',
+): CsvRow => {
   return Object.entries(translations).reduce(
     (prevFormRowObject, [languageCode, currentTranslations]) => {
       const translationObject = currentTranslations.translations[text];
@@ -254,9 +257,9 @@ const createTranslationsHtmlRows = (
   translations: { [lang: string]: { translations: { value: HtmlAsJsonElement | HtmlAsJsonTextElement | undefined } } },
   order: string,
   htmlOrder: number = 0,
-) => {
+): CsvRow[] => {
   if (htmlElementAsJson.type === 'TextElement' && htmlElementAsJson.textContent) {
-    const textTranslations = Object.entries(translations).reduce(
+    const textTranslations: FormioTranslationMap = Object.entries(translations).reduce(
       (acc, [lang, translation]) => ({
         ...acc,
         [lang]: {
@@ -287,6 +290,7 @@ const createTranslationsHtmlRows = (
       return rows;
     });
   }
+  return [];
 };
 
 const getTextsAndTranslationsForForm = (form: NavFormType, translations: FormioTranslationMap): CsvRow[] => {

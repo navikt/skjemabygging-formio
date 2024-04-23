@@ -26,4 +26,4 @@ interface AttachmentValue {
   deadlineWarning?: string;
 }
 
-export type { AttachmentSettingValues, AttachmentValue };
+export type { AttachmentSettingValue, AttachmentSettingValues, AttachmentValue };

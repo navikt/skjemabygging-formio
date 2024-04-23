@@ -1,4 +1,4 @@
-import { AttachmentSettingValues, AttachmentValue } from './attachment';
+import { AttachmentSettingValue, AttachmentSettingValues, AttachmentValue } from './attachment';
 import { ComponentError } from './component';
 import configUtils from './config';
 import type { ConfigType } from './config/types';
@@ -107,6 +107,7 @@ export {
 export type {
   AktivitetPeriode,
   AktivitetVedtaksinformasjon,
+  AttachmentSettingValue,
   AttachmentSettingValues,
   AttachmentValue,
   Component,
