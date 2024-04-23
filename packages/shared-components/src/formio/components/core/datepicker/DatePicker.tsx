@@ -1,6 +1,6 @@
 import { Component, dateUtils, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import FormioUtils from 'formiojs/utils';
-import ReactDatePicker from '../../../../components/datepicker/DatePicker';
+import ReactDatePicker, { validateDate } from '../../../../components/datepicker/DatePicker';
 import { ComponentUtilsProvider } from '../../../../context/component/componentUtilsContext';
 import BaseComponent from '../../base/BaseComponent';
 import datePickerBuilder from './DatePicker.builder';
@@ -47,74 +47,95 @@ export default class DatePicker extends BaseComponent {
       );
   }
 
-  onValidate(errorMessage?: string) {
-    this.removeAllErrors();
-    if (errorMessage) {
-      this.addError(errorMessage);
-    }
-
-    this.setComponentValidity(this.componentErrors, this.dirty, !this.root.submitted);
-    this.root.showErrors();
-  }
-
-  onUpdate(value: string) {
-    this.updateValue(value, { modified: true });
-
-    if (this.component?.beforeDateInputKey) {
-      const referenceComponent = navFormUtils.findByKey(this.component?.beforeDateInputKey, this.root.getComponents());
-      referenceComponent?.rerender?.();
-    } else {
-      this.getComponentsWithDateInputKey().map((component) => component.rerender?.());
-    }
-  }
-
   checkComponentValidity(data, dirty, row, options = {}) {
-    // @ts-ignore
-    this.setComponentValidity(this.componentErrors, dirty, !!options?.fromBlur);
+    if (!this.shouldSkipValidation(data, dirty, row)) {
+      const errorMessage = validateDate(
+        {
+          required: this.isRequired(),
+          value: this.getValue(),
+          label: this.getLabel({ labelTextOnly: true }),
+          fromDate: this.getFromDate(),
+          toDate: this.getToDate(),
+        },
+        this.t.bind(this),
+      );
 
-    return this.componentErrors.length === 0;
+      this.setComponentValidity(errorMessage ? [this.createError(errorMessage, undefined)] : [], dirty, undefined);
+
+      return !errorMessage;
+    }
+
+    return true;
   }
 
-  getFromDate() {
+  getFromDate(): string | undefined {
     if (this.component?.beforeDateInputKey) {
-      return FormioUtils.getValue(this.root.submission, this.component?.beforeDateInputKey);
+      const beforeDateValue = FormioUtils.getValue(this.root.submission, this.component?.beforeDateInputKey);
+      if (beforeDateValue) {
+        if (this.component?.mayBeEqual) {
+          return beforeDateValue;
+        } else {
+          return dateUtils.addDays(1, beforeDateValue);
+        }
+      }
+
+      return undefined;
     } else if (this.component?.earliestAllowedDate && !Number.isNaN(+this.component?.earliestAllowedDate)) {
       return dateUtils.addDays(+this.component?.earliestAllowedDate);
     } else if (this.component?.specificEarliestAllowedDate) {
-      return new Date(this.component?.specificEarliestAllowedDate);
+      return this.component?.specificEarliestAllowedDate;
     }
   }
 
-  getToDate() {
+  getToDate(): string | undefined {
     const lowestReferencedDate = dateUtils.min(
       this.getComponentsWithDateInputKey()
         .map((component) => component.getValue?.() ?? '')
         .filter(Boolean),
     );
+
     if (lowestReferencedDate) {
       return lowestReferencedDate;
     } else if (this.component?.latestAllowedDate && !Number.isNaN(+this.component?.latestAllowedDate)) {
       return dateUtils.addDays(+this.component?.latestAllowedDate);
     } else if (this.component?.specificLatestAllowedDate) {
-      return new Date(this.component?.specificLatestAllowedDate);
+      return this.component?.specificLatestAllowedDate;
     }
   }
 
-  renderReact(element) {
+  onUpdate(value: string) {
+    if (value !== (this.getValue() ?? '')) {
+      if (dateUtils.isValid(value, 'input')) {
+        this.updateValue(dateUtils.toSubmissionDate(value), { modified: true });
+      } else {
+        this.updateValue(value, { modified: true });
+      }
+
+      if (this.component?.beforeDateInputKey) {
+        const referenceComponent = navFormUtils.findByKey(
+          this.component?.beforeDateInputKey,
+          this.root.getComponents(),
+        );
+        referenceComponent?.rerender?.();
+      } else {
+        this.getComponentsWithDateInputKey().map((component) => component.rerender?.());
+      }
+    }
+  }
+
+  override renderReact(element) {
     return element.render(
       <ComponentUtilsProvider component={this}>
         <ReactDatePicker
           id={this.getId()}
           required={this.isRequired()}
-          value={this.getDefaultValue()}
+          value={this.getValue()}
           onChange={this.onUpdate.bind(this)}
-          onValidate={this.onValidate.bind(this)}
           readOnly={this.getReadOnly()}
           error={this.getError()}
           inputRef={(ref) => this.setReactInstance(ref)}
           description={this.getDescription()}
           label={this.getLabel()}
-          labelText={this.getLabel({ labelTextOnly: true })}
           fromDate={this.getFromDate()}
           toDate={this.getToDate()}
         />

@@ -64,6 +64,7 @@ interface ReactComponentType {
   deleteValue(): void;
   hasValue(): boolean;
   setComponentValidity(messages, dirty, silentCheck): boolean;
+  shouldSkipValidation(data, dirty, row): boolean;
   addMessages(messages): void;
   addFocusBlurEvents(element): void;
   labelIsHidden(): boolean;

@@ -1,9 +1,10 @@
 /*
  * Tests that the datepicker component (react) renders, validates and handles interactions correctly
  */
+import { dateUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 
-import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import * as moment from 'moment';
+const validateionBefore = (date: string) => `Datoen kan ikke være tidligere enn ${date}`;
+const validateionAfter = (date: string) => `Datoen kan ikke være senere ${date}`;
 
 describe('NavDatepicker', () => {
   beforeEach(() => {
@@ -14,7 +15,7 @@ describe('NavDatepicker', () => {
 
   describe('Date input value', () => {
     beforeEach(() => {
-      cy.findByRole('textbox', { name: 'Tilfeldig dato' }).type('06.06.2022');
+      cy.findByRole('textbox', { name: 'Tilfeldig dato' }).type('06.06.2022{esc}');
       cy.clickNextStep();
       cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
     });
@@ -24,7 +25,7 @@ describe('NavDatepicker', () => {
         .first()
         .within(() => {
           cy.get('dt').eq(0).should('contain.text', 'Tilfeldig dato');
-          cy.get('dd').eq(0).should('contain.text', '6.6.2022');
+          cy.get('dd').eq(0).should('contain.text', '06.06.2022');
         });
     });
 
@@ -40,7 +41,7 @@ describe('NavDatepicker', () => {
         .first()
         .within(() => {
           cy.get('dt').eq(0).should('contain.text', 'Tilfeldig dato');
-          cy.get('dd').eq(0).should('contain.text', '18.6.2020');
+          cy.get('dd').eq(0).should('contain.text', '18.06.2020');
         });
     });
 
@@ -90,20 +91,21 @@ describe('NavDatepicker', () => {
 
     describe('mayBeEqual=false', () => {
       const LABEL = 'Dato med validering mot annet datofelt (valgfritt)';
-      const VALIDATION_TEXT = `Datoen må være senere enn ${MY_TEST_DATE}`;
 
       it('fails when date is before', () => {
         cy.findByRole('textbox', { name: LABEL }).should('not.be.disabled').type('14.05.2023');
         cy.clickNextStep();
 
-        cy.findAllByText(VALIDATION_TEXT).should('have.length', 2);
+        cy.findAllByText(validateionBefore('16.05.2023')).should('have.length', 2);
+        cy.findAllByText(validateionAfter('14.05.2023')).should('have.length', 2);
       });
 
       it('fails when date is equal', () => {
         cy.findByRole('textbox', { name: LABEL }).should('not.be.disabled').type('15.05.2023');
         cy.clickNextStep();
 
-        cy.findAllByText(VALIDATION_TEXT).should('have.length', 2);
+        cy.findAllByText(validateionBefore('16.05.2023')).should('have.length', 2);
+        cy.findAllByText(validateionAfter('14.05.2023')).should('have.length', 0);
       });
 
       it('ok when date is later', () => {
@@ -111,19 +113,19 @@ describe('NavDatepicker', () => {
         cy.clickNextStep();
 
         cy.findByRole('heading', { name: 'Oppsummering' }).should('be.visible');
-        cy.findAllByText(VALIDATION_TEXT).should('have.length', 0);
+        cy.findAllByText(validateionBefore('16.05.2023')).should('have.length', 0);
+        cy.findAllByText(validateionAfter('14.05.2023')).should('have.length', 0);
       });
     });
 
     describe('mayBeEqual=true', () => {
       const LABEL = 'Dato med validering mot annet datofelt (kan være lik) (valgfritt)';
-      const VALIDATION_TEXT = `Datoen kan ikke være tidligere enn ${MY_TEST_DATE}`;
 
       it('fails when date is before', () => {
         cy.findByRole('textbox', { name: LABEL }).should('not.be.disabled').type(`14.05.2023{esc}`);
         cy.clickNextStep();
 
-        cy.findAllByText(VALIDATION_TEXT).should('have.length', 2);
+        cy.findAllByText(validateionBefore(MY_TEST_DATE)).should('have.length', 2);
       });
 
       it('fails when date is equal', () => {
@@ -131,7 +133,7 @@ describe('NavDatepicker', () => {
         cy.clickNextStep();
 
         cy.findByRole('heading', { name: 'Oppsummering' }).should('be.visible');
-        cy.findAllByText(VALIDATION_TEXT).should('have.length', 0);
+        cy.findAllByText(validateionBefore(MY_TEST_DATE)).should('have.length', 0);
       });
 
       it('ok when date is later', () => {
@@ -139,7 +141,7 @@ describe('NavDatepicker', () => {
         cy.clickNextStep();
 
         cy.findByRole('heading', { name: 'Oppsummering' }).should('be.visible');
-        cy.findAllByText(VALIDATION_TEXT).should('have.length', 0);
+        cy.findAllByText(validateionBefore(MY_TEST_DATE)).should('have.length', 0);
       });
     });
   });
@@ -148,34 +150,33 @@ describe('NavDatepicker', () => {
     const LABEL = 'Dato med validering av tidligst og senest (valgfritt)';
     const EARLIEST_DATE = '01.08.2023';
     const LATEST_DATE = '31.08.2023';
-    const VALIDATION_TEXT = `Datoen kan ikke være tidligere enn ${EARLIEST_DATE} eller senere enn ${LATEST_DATE}`;
 
     it("fails when date is before 'earliest date'", () => {
       cy.findByRole('textbox', { name: LABEL }).type('15.07.2023{esc}');
       cy.clickNextStep();
 
-      cy.findAllByText(VALIDATION_TEXT).should('have.length', 2);
+      cy.findAllByText(validateionBefore(EARLIEST_DATE)).should('have.length', 2);
     });
 
     it("is ok when date is equal to 'earliest date'", () => {
       cy.findByRole('textbox', { name: LABEL }).type(`${EARLIEST_DATE}{esc}`);
       cy.clickNextStep();
 
-      cy.findAllByText(VALIDATION_TEXT).should('have.length', 0);
+      cy.findAllByText(validateionBefore(EARLIEST_DATE)).should('have.length', 0);
     });
 
     it("is ok when date is equal to 'latest date'", () => {
       cy.findByRole('textbox', { name: LABEL }).type(`${LATEST_DATE}{esc}`);
       cy.clickNextStep();
 
-      cy.findAllByText(VALIDATION_TEXT).should('have.length', 0);
+      cy.findAllByText(validateionAfter(LATEST_DATE)).should('have.length', 0);
     });
 
     it("fails when date is after 'latest date'", () => {
       cy.findByRole('textbox', { name: LABEL }).type('01.09.2023{esc}');
       cy.clickNextStep();
 
-      cy.findAllByText(VALIDATION_TEXT).should('have.length', 2);
+      cy.findAllByText(validateionAfter(LATEST_DATE)).should('have.length', 2);
     });
   });
 
@@ -184,40 +185,36 @@ describe('NavDatepicker', () => {
     const LATEST_RELATIVE = 5;
 
     const LABEL = 'Dato med validering av antall dager tilbake eller framover (valgfritt)';
-    const NOW = moment();
-    const INPUT_FORMAT = 'DD.MM.YYYY';
-    const plusDays = (date, number) => date.clone().add(number, 'days').format(INPUT_FORMAT);
-    const VALIDATION_TEXT = `Datoen kan ikke være tidligere enn ${plusDays(
-      NOW,
-      EARLIEST_RELATIVE,
-    )} eller senere enn ${plusDays(NOW, LATEST_RELATIVE)}`;
+
+    const beforeDate = dateUtils.toLocaleDate(dateUtils.addDays(EARLIEST_RELATIVE));
+    const afterDate = dateUtils.toLocaleDate(dateUtils.addDays(LATEST_RELATIVE));
 
     it('fails when date is before the earliest limit', () => {
-      cy.findByRole('textbox', { name: LABEL }).type(plusDays(NOW, EARLIEST_RELATIVE - 1));
+      cy.findByRole('textbox', { name: LABEL }).type(dateUtils.toLocaleDate(dateUtils.addDays(EARLIEST_RELATIVE - 1)));
       cy.clickNextStep();
 
-      cy.findAllByText(VALIDATION_TEXT).should('have.length', 2);
+      cy.findAllByText(validateionBefore(beforeDate)).should('have.length', 2);
     });
 
     it('is ok when date is exactly the earliest limit', () => {
-      cy.findByRole('textbox', { name: LABEL }).type(plusDays(NOW, EARLIEST_RELATIVE));
+      cy.findByRole('textbox', { name: LABEL }).type(dateUtils.toLocaleDate(dateUtils.addDays(EARLIEST_RELATIVE)));
       cy.clickNextStep();
 
-      cy.findAllByText(VALIDATION_TEXT).should('have.length', 0);
+      cy.findAllByText(validateionBefore(beforeDate)).should('have.length', 0);
     });
 
     it('is ok when date is exactly the latest limit', () => {
-      cy.findByRole('textbox', { name: LABEL }).type(plusDays(NOW, LATEST_RELATIVE));
+      cy.findByRole('textbox', { name: LABEL }).type(dateUtils.toLocaleDate(dateUtils.addDays(LATEST_RELATIVE)));
       cy.clickNextStep();
 
-      cy.findAllByText(VALIDATION_TEXT).should('have.length', 0);
+      cy.findAllByText(validateionAfter(afterDate)).should('have.length', 0);
     });
 
     it('fails when date is after the earliest limit', () => {
-      cy.findByRole('textbox', { name: LABEL }).type(plusDays(NOW, LATEST_RELATIVE + 1));
+      cy.findByRole('textbox', { name: LABEL }).type(dateUtils.toLocaleDate(dateUtils.addDays(LATEST_RELATIVE + 1)));
       cy.clickNextStep();
 
-      cy.findAllByText(VALIDATION_TEXT).should('have.length', 2);
+      cy.findAllByText(validateionAfter(afterDate)).should('have.length', 2);
     });
   });
 });

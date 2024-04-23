@@ -35,7 +35,8 @@ const longMonthDateFormat: Intl.DateTimeFormatOptions = {
   year: 'numeric',
 };
 
-const dateSubmissionFormat = 'yyyy-MM-dd';
+const inputFormat = 'dd.MM.yyyy';
+const submissionFormat = 'yyyy-MM-dd';
 
 const toLocaleDateAndTime = (date: string, locale = 'no') => {
   return new Date(date).toLocaleString(locale, dateAndTimeFormat);
@@ -61,12 +62,8 @@ export const getIso8601String = () => {
   return moment().toISOString();
 };
 
-const toSubmissionDate = (date: string | Date) => {
-  if (typeof date !== 'object') {
-    date = new Date(date);
-  }
-
-  return DateTime.fromJSDate(date).toFormat(dateSubmissionFormat);
+const toSubmissionDate = (date: string) => {
+  return DateTime.fromFormat(date, inputFormat).toFormat(submissionFormat);
 };
 
 const getDatesInRange = (startDate: Date, endDate: Date) => {
@@ -110,12 +107,31 @@ export const generateWeeklyPeriods = (date?: string, numberOfPeriods: number = 1
   return periods;
 };
 
-const addDays = (days: number): Date => {
-  return DateTime.now().plus({ days }).toJSDate();
+const addDays = (days: number, isoDate?: string): string => {
+  let date: DateTime;
+  if (!isoDate) {
+    date = DateTime.now();
+  } else {
+    date = DateTime.fromISO(isoDate);
+  }
+
+  return date.plus({ days }).toFormat(submissionFormat);
 };
 
 const min = (dates: string[]) => {
-  return DateTime.min(...dates.map((date: string) => DateTime.fromISO(date)))?.toJSDate();
+  return DateTime.min(...dates.map((date: string) => DateTime.fromISO(date)))?.toFormat(submissionFormat);
+};
+
+const isValid = (date: string, format: 'input' | 'submission') => {
+  return date && DateTime.fromFormat(date, format === 'input' ? inputFormat : submissionFormat)?.isValid;
+};
+
+const isBeforeDate = (date1: string, date2: string, equal: boolean = true) => {
+  if (equal) {
+    return DateTime.fromISO(date1).startOf('day') < DateTime.fromISO(date2).startOf('day');
+  } else {
+    return DateTime.fromISO(date1).startOf('day') <= DateTime.fromISO(date2).startOf('day');
+  }
 };
 
 const dateUtils = {
@@ -129,6 +145,8 @@ const dateUtils = {
   generateWeeklyPeriods,
   addDays,
   min,
+  isValid,
+  isBeforeDate,
 };
 
 export default dateUtils;

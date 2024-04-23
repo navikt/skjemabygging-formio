@@ -1,24 +1,23 @@
-import { DatePicker as AkselDatePicker, DateValidationT, useDatepicker } from '@navikt/ds-react';
+import { DatePicker as AkselDatePicker, useDatepicker } from '@navikt/ds-react';
 import { UseDatepickerOptions } from '@navikt/ds-react/esm/date/hooks/useDatepicker';
 import { dateUtils } from '@navikt/skjemadigitalisering-shared-domain';
-import { ReactNode, useCallback, useEffect } from 'react';
+import { ReactNode, useEffect } from 'react';
 import { useComponentUtils } from '../../context/component/componentUtilsContext';
+import { validateDate } from './dateValidation';
 
 interface NavDatePickerProps {
   id: string;
   required?: boolean;
   onChange: (val: string) => void;
-  onValidate?: (errorMessage?: string) => void;
   value: string;
   readOnly?: boolean;
   error?: string;
   inputRef?: any;
   label: string;
-  labelText: string;
   description?: ReactNode;
   className?: string;
-  fromDate?: Date;
-  toDate?: Date;
+  fromDate?: string;
+  toDate?: string;
   defaultMonth?: Date;
 }
 
@@ -26,83 +25,43 @@ const DatePicker = ({
   id,
   required,
   onChange,
-  onValidate,
   value,
   readOnly,
   error,
   inputRef,
   label,
-  labelText,
   description,
   className,
   fromDate,
   toDate,
   defaultMonth,
 }: NavDatePickerProps) => {
-  const { translate, locale } = useComponentUtils();
+  const { locale } = useComponentUtils();
 
   const { datepickerProps, inputProps, setSelected, reset } = useDatepicker({
     required: required,
-    onValidate: (dateValidation) => {
-      validate(dateValidation);
-    },
-    onDateChange: (val) => {
-      onChange(val ? dateUtils.toSubmissionDate(val) : '');
-    },
-    toDate: toDate,
-    fromDate: fromDate,
+    toDate: toDate ? new Date(toDate) : undefined,
+    fromDate: fromDate ? new Date(fromDate) : undefined,
     defaultMonth: defaultMonth,
     allowTwoDigitYear: false,
   } as UseDatepickerOptions);
 
-  const validate = useCallback(
-    (dateValidation?: DateValidationT) => {
-      console.log(dateValidation);
-      if (onValidate && translate) {
-        if (required && (!dateValidation || dateValidation.isEmpty)) {
-          onValidate(translate('required', { field: labelText }));
-        } else if (dateValidation && !dateValidation?.isEmpty) {
-          if (dateValidation?.isValidDate) {
-            onValidate(undefined);
-          } else if (dateValidation?.isBefore && fromDate) {
-            onValidate(
-              translate('minDate', {
-                field: labelText,
-                minDate: dateUtils.toLocaleDate(fromDate),
-              }),
-            );
-          } else if (dateValidation?.isAfter && toDate) {
-            onValidate(translate('maxDate', { field: labelText, maxDate: dateUtils.toLocaleDate(toDate) }));
-          } else {
-            onValidate(translate('invalid_date', { field: labelText }));
-          }
-        } else {
-          onValidate(undefined);
-        }
-      }
-    },
-    [required],
-  );
-
-  useEffect(() => {
-    validate();
-  }, [validate]);
-
   useEffect(() => {
     if (value) {
-      setSelected(new Date(value));
+      if (dateUtils.isValid(value, 'submission')) {
+        setSelected(new Date(value));
+      }
     } else {
       reset();
     }
   }, [value]);
 
+  useEffect(() => {
+    onChange(inputProps.value as string);
+  }, [inputProps.value]);
+
   return (
-    <AkselDatePicker
-      mode="single"
-      selected={value ? new Date(value) : (undefined as any)}
-      locale={locale as any}
-      {...datepickerProps}
-    >
+    <AkselDatePicker mode="single" locale={locale as any} {...datepickerProps}>
       <AkselDatePicker.Input
         id={id}
         {...inputProps}
@@ -119,3 +78,5 @@ const DatePicker = ({
 };
 
 export default DatePicker;
+
+export { validateDate };
