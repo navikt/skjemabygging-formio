@@ -5,6 +5,7 @@ interface PropertyOptions {
   key: string;
   required: boolean;
   description?: string;
+  customConditional?: string;
   readOnly?: boolean;
 }
 
@@ -19,6 +20,7 @@ const editFormProperty = (options: PropertyOptions): Component => {
     },
     input: true,
     readOnly: options.readOnly ?? false,
+    customConditional: options.customConditional,
   };
 };
 

@@ -20,26 +20,50 @@ const defaultAttachmentForm = () => {
     api([
       editFormApi.key(),
       // Vedleggstittel is required to publish, but validation happens before publishing.
+      // Vedleggstittel is read-only when attachmentType is "other".
       editFormApi.property({
         label: 'Vedleggstittel',
         key: 'vedleggstittel',
         required: false,
         description: 'Er påkrevd for publisering av skjemaet',
+        customConditional: 'show = data.attachmentType === "default"',
       }),
+      editFormApi.property({
+        label: 'Vedleggstittel',
+        key: 'vedleggstittel',
+        required: false,
+        description: 'Er påkrevd for publisering av skjemaet',
+        customConditional: 'show = data.attachmentType === "other"',
+        readOnly: true,
+      }),
+
       // Vedleggskode is required to publish, but validation happens before publishing.
+      // Vedleggskode is read-only when attachmentType is "other".
       editFormApi.property({
         label: 'Vedleggskode',
         key: 'vedleggskode',
         required: false,
         description: 'Er påkrevd for publisering av skjemaet',
+        customConditional: 'show = data.attachmentType === "default"',
       }),
+      editFormApi.property({
+        label: 'Vedleggskode',
+        key: 'vedleggskode',
+        required: false,
+        description: 'Er påkrevd for publisering av skjemaet',
+        customConditional: 'show = data.attachmentType === "other"',
+        readOnly: true,
+      }),
+
+      // Vedleggskjema is only shown when attachmentType is "default".
       editFormApi.property({
         label: 'Vedleggskjema',
         key: 'vedleggskjema',
         required: false,
         description:
           'Hvis vedleggskjema er oppgitt vises lenke til utfylling av skjemaet, på opplastningssiden for digital innsending. Eksempel på format "nav100750"',
-      }),
+        customConditional: 'show = data.attachmentType === "default"',
+        }),
     ]),
     conditional([
       editFormConditional.simpleConditional(),
