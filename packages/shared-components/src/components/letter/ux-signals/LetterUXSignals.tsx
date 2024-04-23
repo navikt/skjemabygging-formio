@@ -9,10 +9,11 @@ const useStyles = makeStyles({
 });
 
 interface Props {
-  code: string;
+  id: string;
+  demo: boolean;
 }
 
-const LetterUXSignals = ({ code }: Props) => {
+const LetterUXSignals = ({ id, demo = false }: Props) => {
   const classes = useStyles();
   useEffect(() => {
     const script = document.createElement('script');
@@ -27,7 +28,7 @@ const LetterUXSignals = ({ code }: Props) => {
 
   return (
     <section>
-      <div data-uxsignals-embed={code} className={classes.uxsignals} />
+      <div data-uxsignals-embed={id} data-uxsignals-mode={demo ? 'demo' : ''} className={classes.uxsignals} />
     </section>
   );
 };
