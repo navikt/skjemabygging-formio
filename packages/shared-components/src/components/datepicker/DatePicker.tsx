@@ -1,9 +1,9 @@
 import { DatePicker as AkselDatePicker, DatePickerProps, useDatepicker } from '@navikt/ds-react';
 import { UseDatepickerOptions } from '@navikt/ds-react/esm/date/hooks/useDatepicker';
-import moment from 'moment/moment';
+import { DateTime } from 'luxon';
 import { useEffect } from 'react';
 
-const SUBMISSION_DATE_FORMAT = 'YYYY-MM-DD';
+const SUBMISSION_DATE_FORMAT = 'yyyy-MM-dd';
 
 interface NavDatePickerProps {
   id: string;
@@ -42,7 +42,7 @@ const DatePicker = ({
   const { datepickerProps, inputProps, setSelected, reset }: DatePickerProps = useDatepicker({
     required: isRequired,
     onDateChange: (val) => {
-      onChange(val ? moment(val).format(SUBMISSION_DATE_FORMAT) : '');
+      onChange(val ? DateTime.fromJSDate(val).toFormat(SUBMISSION_DATE_FORMAT) : '');
     },
     toDate: toDate,
     fromDate: fromDate,
@@ -51,7 +51,7 @@ const DatePicker = ({
 
   useEffect(() => {
     if (value) {
-      setSelected(moment(value, SUBMISSION_DATE_FORMAT).toDate());
+      setSelected(DateTime.fromISO(value).toJSDate());
     } else {
       reset();
     }
@@ -59,7 +59,7 @@ const DatePicker = ({
 
   return (
     <AkselDatePicker
-      selected={value ? moment(value, SUBMISSION_DATE_FORMAT).toDate() : undefined}
+      selected={value ? DateTime.fromISO(value).toJSDate() : undefined}
       locale={locale}
       {...datepickerProps}
     >

@@ -1,5 +1,6 @@
 import { AppConfigProvider, url } from '@navikt/skjemadigitalisering-shared-components';
 import { ConfigType, SubmissionMethod } from '@navikt/skjemadigitalisering-shared-domain';
+import { Settings } from 'luxon';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
@@ -11,6 +12,7 @@ import httpFyllut from './util/httpFyllut';
 let featureToggles = {};
 
 const subissionMethod = url.getUrlParam(window.location.search, 'sub') as SubmissionMethod;
+Settings.defaultZone = 'Europe/Oslo';
 
 httpFyllut
   .get<ConfigType>('/fyllut/api/config')

@@ -1,17 +1,13 @@
 import { Accordion, Alert, BodyShort, Checkbox, CheckboxGroup, Heading, TextField } from '@navikt/ds-react';
 import { TEXTS, VedtakBetalingsplan, dateUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { useMemo } from 'react';
-import {
-  drivingListMetadata,
-  toLocaleDateLongMonth,
-  toWeekdayAndDate,
-} from '../../formio/components/core/driving-list/DrivingList.utils';
+import { drivingListMetadata } from '../../formio/components/core/driving-list/DrivingList.utils';
 import { useDrivingList } from '../../formio/components/core/driving-list/DrivingListContext';
 import makeStyles from '../../util/styles/jss/jss';
 
 interface DrivingPeriodProps {
-  periodFrom: Date;
-  periodTo: Date;
+  periodFrom: string;
+  periodTo: string;
   hasParking: boolean;
   index: number;
   dailyRate?: number;
@@ -31,7 +27,7 @@ const DrivingPeriod = ({ periodFrom, periodTo, hasParking, dailyRate, betalingsp
 
   const periodDates = useMemo(() => dateUtils.getDatesInRange(periodFrom, periodTo), [periodFrom, periodTo]);
   const selectedDates = values?.dates?.map((value) => value.date);
-  const header = `${toLocaleDateLongMonth(periodFrom, locale)} - ${toLocaleDateLongMonth(periodTo, locale)}`;
+  const header = `${dateUtils.toLocaleDateLongMonth(periodFrom, locale)} - ${dateUtils.toLocaleDateLongMonth(periodTo, locale)}`;
 
   const showParking = (date: string) => {
     if (selectedDates?.includes(date) && !!hasParking) {
@@ -51,9 +47,9 @@ const DrivingPeriod = ({ periodFrom, periodTo, hasParking, dailyRate, betalingsp
     updateValues({ dates: mappedValues });
   };
 
-  const onChangeParking = (date: Date, parking: string) => {
+  const onChangeParking = (date: string, parking: string) => {
     const mappedValues = values?.dates?.map((existingValue) => {
-      if (existingValue.date === date.toISOString()) {
+      if (existingValue.date === date) {
         return { date: existingValue.date, parking: parking.trim(), betalingsplanId: existingValue.betalingsplanId };
       }
       return existingValue;
@@ -75,7 +71,7 @@ const DrivingPeriod = ({ periodFrom, periodTo, hasParking, dailyRate, betalingsp
   const shouldRenderExpensesWarningAlert = () => {
     if (betalingsplan?.beloep) {
       const totalParking = periodDates.reduce((acc, currentDate) => {
-        const dateInValues = values?.dates?.find((date) => date.date === currentDate.toISOString());
+        const dateInValues = values?.dates?.find((date) => date.date === currentDate);
         if (dateInValues) {
           return acc + Number(dateInValues.parking);
         }
@@ -83,7 +79,7 @@ const DrivingPeriod = ({ periodFrom, periodTo, hasParking, dailyRate, betalingsp
       }, 0);
 
       const totalDailyRate = periodDates.reduce((acc, currentDate) => {
-        const dateInValues = values?.dates?.find((date) => date.date === currentDate.toISOString());
+        const dateInValues = values?.dates?.find((date) => date.date === currentDate);
         if (dateInValues && dailyRate) {
           return acc + dailyRate;
         }
@@ -114,19 +110,19 @@ const DrivingPeriod = ({ periodFrom, periodTo, hasParking, dailyRate, betalingsp
         >
           {periodDates.map((date) => {
             return (
-              <div key={date.toISOString()}>
-                <Checkbox value={date.toISOString()}>{toWeekdayAndDate(date, locale)}</Checkbox>
-                {showParking(date.toISOString()) ? (
+              <div key={date}>
+                <Checkbox value={date}>{dateUtils.toWeekdayAndDate(date, locale)}</Checkbox>
+                {showParking(date) ? (
                   <TextField
                     label={t(drivingListMetadata('parkingExpenses').label)}
                     type="text"
                     size="medium"
                     inputMode="numeric"
                     className={`nav-input--s ${styles.parkingTextField}`}
-                    value={values?.dates?.find((val) => val.date === date.toISOString())?.parking}
+                    value={values?.dates?.find((val) => val.date === date)?.parking}
                     onChange={(event) => onChangeParking(date, event.currentTarget.value)}
-                    ref={(ref) => addRef(`dates:${date.toISOString()}:parking`, ref)}
-                    error={getComponentError(`dates:${date.toISOString()}:parking`)}
+                    ref={(ref) => addRef(`dates:${date}:parking`, ref)}
+                    error={getComponentError(`dates:${date}:parking`)}
                   />
                 ) : null}
               </div>
