@@ -25,7 +25,7 @@ class PublisherService {
 
   async publishForm(form: NavFormType, translations: I18nTranslations | undefined, opts: Opts) {
     const { userName, formioToken } = opts || {};
-    let formWithPublishProps;
+    let formWithPublishProps: NavFormType | undefined;
     try {
       const publishedLanguages = translations ? Object.keys(translations) : undefined;
       const now = dateUtils.getIso8601String();
@@ -35,7 +35,7 @@ class PublisherService {
       const publishResult = await this.backend.publishForm(formWithPublishProps, translations, form.path);
       return { changed: !!publishResult, form: formWithPublishProps };
     } catch (error) {
-      logger.error(`Failed to publish form`, error);
+      logger.error('Error occurred while trying to publish form', { error, formPath: form.path });
       if (formWithPublishProps) {
         logger.debug('Rolling back props since publishing failed', { formPath: form.path });
         const rollbackFormProps = createRollbackProps(form);
