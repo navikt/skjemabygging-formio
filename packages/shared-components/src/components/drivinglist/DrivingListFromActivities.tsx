@@ -1,4 +1,4 @@
-import { Accordion, BodyShort, Heading } from '@navikt/ds-react';
+import { Accordion, Alert, BodyShort, Heading } from '@navikt/ds-react';
 import {
   AktivitetVedtaksinformasjon,
   SendInnAktivitet,
@@ -66,6 +66,16 @@ const DrivingListFromActivities = ({ activities }: Props) => {
     );
   };
 
+  const parkingInfoAlert = (selectedVedtak: AktivitetVedtaksinformasjon) => {
+    if (selectedVedtak.trengerParkering) {
+      return (
+        <Alert variant="info" className="mb">
+          <div dangerouslySetInnerHTML={{ __html: TEXTS.statiske.drivingList.parkingInfo }} />
+        </Alert>
+      );
+    }
+  };
+
   const renderDrivingListFromActivities = () => {
     const activitySelections = mapToSubmissionActivity(activities, 'vedtak', locale);
     const vedtakSelection = activitySelections.find((activity) => activity.vedtaksId === values?.selectedVedtaksId);
@@ -99,6 +109,7 @@ const DrivingListFromActivities = ({ activities }: Props) => {
         {selectedActivity && selectedVedtak && (
           <>
             <PeriodInfo />
+            {parkingInfoAlert(selectedVedtak)}
             <Heading size="xsmall" className={styles.accoridonHeader}>
               {TEXTS.statiske.drivingList.accordionHeader}
             </Heading>

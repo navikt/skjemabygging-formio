@@ -19,7 +19,8 @@ const publishForm = async (req: Request, res: Response, next: NextFunction) => {
 
   try {
     const result = await publisherService.publishForm(form, translations, { formioToken, userName });
-    logger.info('Form is published', logMeta);
+    const logMessage: string = result.changed ? 'Form is published' : 'Form has not been changed, publish aborted';
+    logger.info(logMessage, logMeta);
     res.json(result);
   } catch (error) {
     logger.error('Failed to publish form', logMeta);
