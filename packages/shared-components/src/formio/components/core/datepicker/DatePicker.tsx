@@ -129,7 +129,7 @@ export default class DatePicker extends BaseComponent {
         <ReactDatePicker
           id={this.getId()}
           required={this.isRequired()}
-          value={this.getValue()}
+          value={this.getDefaultValue()}
           onChange={this.onUpdate.bind(this)}
           readOnly={this.getReadOnly()}
           error={this.getError()}
