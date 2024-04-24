@@ -145,7 +145,7 @@ describe('Amplitude', () => {
         cy.get('dt').eq(3).should('contain.text', 'Har du norsk fødselsnummer eller D-nummer?');
         cy.get('dd').eq(3).should('contain.text', 'Nei');
         cy.get('dt').eq(4).should('contain.text', 'Din fødselsdato (dd.mm.åååå)');
-        cy.get('dd').eq(4).should('contain.text', '10.5.1995');
+        cy.get('dd').eq(4).should('contain.text', '10.05.1995');
       });
 
     // First attempt is intercepted and fails, so we can test "innsending feilet"
