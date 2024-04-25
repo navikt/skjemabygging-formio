@@ -10,6 +10,7 @@ const panelForm = () => {
   return createTabs(
     display([
       editFormDisplay.title(),
+      editFormDisplay.isAttachmentPanel()
     ]),
     api([
       editFormApi.key(),
