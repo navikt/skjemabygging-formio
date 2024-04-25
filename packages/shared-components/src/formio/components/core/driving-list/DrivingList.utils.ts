@@ -1,4 +1,4 @@
-import { AktivitetPeriode, DrivingListSubmission, TEXTS, dateUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { AktivitetPeriode, DrivingListSubmission, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { TFunction } from 'i18next';
 
 export type DrivingListMetadataId = (typeof metadata)[number]['id'];
@@ -33,21 +33,6 @@ export const drivingListMetadata = (
 export const requiredError = (componentId: DrivingListMetadataId, t: TFunction): string => {
   const field = t(drivingListMetadata(componentId).label);
   return t('required', { field });
-};
-
-export const toLocaleDateLongMonth = (date: Date, locale?: string) => {
-  if (!date) return '';
-  return dateUtils.toLocaleDateLongMonth(date.toString(), locale);
-};
-
-export const toLocaleDate = (date: Date) => {
-  if (!date) return '';
-  return dateUtils.toLocaleDate(date.toString());
-};
-
-export const toWeekdayAndDate = (date: Date, locale?: string) => {
-  if (!date) return '';
-  return dateUtils.toWeekdayAndDate(date.toString(), locale);
 };
 
 export const isValidParking = (value: string) => {

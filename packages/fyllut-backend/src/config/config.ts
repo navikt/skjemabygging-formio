@@ -38,7 +38,6 @@ const sendInnConfig: SendInnConfig = {
   paths: {
     opprettedeSoknaderForSkjema: (skjemanummer, soknadstyper = ['soknad', 'ettersendelse']) =>
       `/frontend/v1/skjema/${skjemanummer}/soknader?soknadstyper=${soknadstyper.toString()}`,
-    leggTilVedlegg: '/fyllUt/v1/leggTilVedlegg', //Deprecated
     soknad: '/fyllUt/v1/soknad',
     utfyltSoknad: '/fyllUt/v1/utfyltSoknad',
     prefillData: '/fyllUt/v1/prefill-data',

@@ -6,6 +6,7 @@ import datagrid from './datagrid';
 import datepicker from './datepicker';
 import day from './day';
 import error from './error';
+import field from './field';
 import fieldset from './fieldset';
 import group from './group';
 import htmlElement from './htmlElement';
@@ -29,10 +30,12 @@ const form = {
     ...builderComponents,
     ...button,
     ...choices,
+    ...datagrid,
     ...datepicker,
     ...day,
     ...error,
     ...fieldset,
+    ...field,
     ...input,
     ...inputGroup,
     ...img,
@@ -48,7 +51,6 @@ const form = {
     ...table,
     ...tabs,
     ...typography,
-    ...datagrid,
     '& [hidden]': {
       display: 'none !important',
     },
