@@ -84,9 +84,10 @@ Både bygger og fyllut har støtte for å logge hendelser i frontend. Begge back
 `/api/log/(info|error)` som tar meldinger fra frontend og logger de.
 
 Det er for øvrig mulig å konfigurere frontend-logger til å kun logge i nettleserens konsoll, noe som kan være
-nyttig under debugging lokalt. Dette gjøres ved å sette `{"browserOnly":true}` i .env-filen.
-Dersom man synes det blir for mye støy i nettleserens konsoll kan man filtrere meldingene på tags ved å
-oppgi `filterTags` (en liste med hvilke tags som skal inkluderes i loggen) i config-objektet.
+nyttig under debugging lokalt. Dette gjøres ved å sette `{"browserOnly":true}` i .env-filen for ønsket backend;
+log config sendes til frontend i responsen fra `/api/config`. Dersom man synes det blir for mye støy i nettleserens
+konsoll kan man filtrere meldingene på tags ved å oppgi `filterTags` (en liste med hvilke tags som skal inkluderes
+i loggen) i config-objektet.
 
     FYLLUT_FRONTEND_LOGCONFIG={"enabled":true,"logLevel":"trace","browserOnly":true,"filterTags":["component","focus"]}
     BYGGER_FRONTEND_LOGCONFIG={"enabled":true,"logLevel":"debug","browserOnly":true}
