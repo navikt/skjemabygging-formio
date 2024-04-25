@@ -3,7 +3,6 @@ import editFormCalculateValue from './editFormCalculateValue';
 import editFormClearOnHide from './editFormClearOnHide';
 import editFormDataValues from './editFormDataValues';
 import editFormDefaultValue from './editFormDefaultValue';
-import editFormIsAttachmentPanel from './editFormIsAttachmentPanel';
 import editFormPrefill from './editFormPrefill';
 import editFormReadOnly from './editFormReadOnly';
 import editFormValues from './editFormValues';
@@ -17,7 +16,6 @@ const editFormData = {
   values: editFormValues,
   prefill: editFormPrefill,
   attachment: editFormAttachment,
-  isAttachmentPanel: editFormIsAttachmentPanel,
 };
 
 export default editFormData;
