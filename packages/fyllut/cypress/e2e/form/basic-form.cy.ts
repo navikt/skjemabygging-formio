@@ -71,6 +71,10 @@ describe('Basic form', () => {
       cy.clickNextStep();
       cy.findByRole('heading', { level: 2, name: 'Vedlegg' }).should('exist');
     }
+
+    // Check if we can wait for other values to be rendered instead of just a general wait.
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(500);
     submissionMethod === 'paper' ? cy.clickNextStep() : cy.clickSaveAndContinue();
 
     // Oppsummering
