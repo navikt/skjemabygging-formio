@@ -5,18 +5,14 @@ describe('htmlString conversion', () => {
   describe('from htmlString to json', () => {
     it('generates a json representation of the html string', () => {
       const actual = htmlString2Json('<h3>Overskrift</h3><p>Avsnitt</p><ol><li>Punkt 1</li><li>Punkt 2</li></ol>');
-      const expected = jsonElement(
-        'DIV',
-        [
-          jsonElement('H3', [jsonTextElement('Overskrift')]),
-          jsonElement('P', [jsonTextElement('Avsnitt')]),
-          jsonElement('OL', [
-            jsonElement('LI', [jsonTextElement('Punkt 1')]),
-            jsonElement('LI', [jsonTextElement('Punkt 2')]),
-          ]),
-        ],
-        true,
-      );
+      const expected = jsonElement('DIV', [
+        jsonElement('H3', [jsonTextElement('Overskrift')]),
+        jsonElement('P', [jsonTextElement('Avsnitt')]),
+        jsonElement('OL', [
+          jsonElement('LI', [jsonTextElement('Punkt 1')]),
+          jsonElement('LI', [jsonTextElement('Punkt 2')]),
+        ]),
+      ]);
       expect(actual).toEqual(expected);
     });
 

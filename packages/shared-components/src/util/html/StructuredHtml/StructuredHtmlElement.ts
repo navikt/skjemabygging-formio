@@ -131,7 +131,7 @@ class StructuredHtmlElement extends StructuredHtml {
     let newElementJson: HtmlAsJsonElement | undefined;
     if (this.id === id) {
       newElementJson = this.converter.markdown2Json(value);
-      return this.populate({ ...this, children: newElementJson.children, isWrapper: !this.parent });
+      return this.populate({ ...this, children: newElementJson.children });
     }
 
     let found;
@@ -158,7 +158,6 @@ class StructuredHtmlElement extends StructuredHtml {
       children: (getMarkdown && this.containsMarkdown ? this.childrenAsMarkdown ?? [] : this.children).map((child) =>
         child.toJson(getMarkdown),
       ),
-      isWrapper: !this.parent,
     };
   }
 

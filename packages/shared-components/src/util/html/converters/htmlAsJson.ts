@@ -10,8 +10,6 @@ interface HtmlAsJsonTextElement {
   id?: string;
   type: 'TextElement';
   textContent: string | null;
-  // If textContent is a result of several elements being combined, e.g. as markdown, htmlContentAsJson wil store the generated html structure for structural memory
-  htmlContentAsJson?: Array<HtmlAsJsonElement | HtmlAsJsonTextElement>;
 }
 
 interface HtmlAsJsonElement {
@@ -20,8 +18,6 @@ interface HtmlAsJsonElement {
   tagName: string;
   attributes: Array<[string, string]>;
   children: Array<HtmlAsJsonElement | HtmlAsJsonTextElement>;
-  // isWrapper is true if this is an outer wrapping div, which is used to support htmlStrings with multiple tags on the top level
-  isWrapper: boolean;
 }
 
 const getChild = (htmlAsJson: HtmlAsJsonElement | HtmlAsJsonTextElement | undefined, index: number) =>

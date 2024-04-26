@@ -62,7 +62,6 @@ const htmlNode2Markdown = (node: Element | ChildNode): string => {
       case 'OL':
       case 'UL':
       case 'LI':
-        // console.log(element.tagName, element.childNodes);
         return Array.from(element.childNodes, htmlNode2Markdown).join('');
       case 'STRONG':
       case 'B':

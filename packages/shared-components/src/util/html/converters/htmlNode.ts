@@ -40,23 +40,18 @@ const fromNode = (node: ChildNode): HtmlAsJsonElement | HtmlAsJsonTextElement =>
   throw Error(`unsupported nodeType: ${node.nodeType}`);
 };
 
-const fromTextContent = (textContent: string, parentElement?: Element): HtmlAsJsonTextElement => {
-  const htmlContentAsJson = parentElement
-    ? Array.from(parentElement.childNodes, (childNode) => fromNode(childNode))
-    : undefined;
+const fromTextContent = (textContent: string): HtmlAsJsonTextElement => {
   return {
     type: 'TextElement',
     textContent,
-    htmlContentAsJson,
   };
 };
 
-const fromElement = (element: Element, isWrapper?: boolean): HtmlAsJsonElement => {
+const fromElement = (element: Element): HtmlAsJsonElement => {
   return {
     type: 'Element',
     tagName: element.tagName,
     attributes: Array.from(element.attributes, ({ name, value }) => [name, value]),
-    isWrapper: !!isWrapper,
     children: Array.from(element.childNodes, (childNode) => fromNode(childNode)),
   };
 };
