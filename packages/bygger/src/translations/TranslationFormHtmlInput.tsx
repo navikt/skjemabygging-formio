@@ -10,7 +10,54 @@ interface Props {
 }
 
 const TranslationFormHtmlInput = ({ text, html, currentTranslation, updateTranslation }: Props) => {
-  if (StructuredHtml.isElement(html) && !html.containsMarkdown) {
+  const isMarkdown =
+    StructuredHtml.isElement(html) &&
+    html.containsMarkdown &&
+    StructuredHtml.isElement(currentTranslation) &&
+    currentTranslation.containsMarkdown;
+  const isText =
+    StructuredHtml.isText(html) && StructuredHtml.isText(currentTranslation) && text.replace(/\s/g, '').length > 0;
+
+  let originalText: string | undefined;
+  let originalValue: string | null | undefined;
+  if (isMarkdown) {
+    originalText = html.markdown;
+    originalValue = currentTranslation.markdown;
+  } else if (isText) {
+    originalText = text;
+    originalValue = currentTranslation.textContent;
+  }
+
+  if (isText || isMarkdown) {
+    return (
+      <TranslationTextInput
+        text={originalText}
+        value={originalValue?.trim()}
+        type={getInputType(originalText ?? '')}
+        onBlur={(value: string) => {
+          let textContentWithWhiteSpaces = value.trim();
+          if (originalText?.startsWith(' ')) {
+            textContentWithWhiteSpaces = ` ${textContentWithWhiteSpaces}`;
+          }
+          if (originalText?.endsWith(' ')) {
+            textContentWithWhiteSpaces = `${textContentWithWhiteSpaces} `;
+          }
+
+          if (textContentWithWhiteSpaces !== originalValue) {
+            updateTranslation({ id: currentTranslation.id, value: textContentWithWhiteSpaces });
+          }
+        }}
+        onChange={undefined}
+        hasGlobalTranslation={false}
+        tempGlobalTranslation={undefined}
+        showGlobalTranslation={false}
+        setHasGlobalTranslation={undefined}
+        setGlobalTranslation={undefined}
+      />
+    );
+  }
+
+  if (StructuredHtml.isElement(html)) {
     return (
       <div>
         {html.children.map((originalElement, index) => {
@@ -28,63 +75,6 @@ const TranslationFormHtmlInput = ({ text, html, currentTranslation, updateTransl
           );
         })}
       </div>
-    );
-  }
-
-  if (
-    StructuredHtml.isElement(html) &&
-    StructuredHtml.isElement(currentTranslation) &&
-    html.containsMarkdown &&
-    currentTranslation.containsMarkdown
-  ) {
-    const markdown = html.markdown;
-    return (
-      <TranslationTextInput
-        text={markdown}
-        value={currentTranslation.markdown}
-        type={getInputType(markdown ?? '')}
-        onBlur={(value: string) => {
-          // TODO: check markdown with surrounding space
-          if (value !== currentTranslation.markdown) {
-            updateTranslation({ id: currentTranslation.id, value });
-          }
-        }}
-        onChange={undefined}
-        hasGlobalTranslation={false}
-        tempGlobalTranslation={undefined}
-        showGlobalTranslation={false}
-        setHasGlobalTranslation={undefined}
-        setGlobalTranslation={undefined}
-      />
-    );
-  }
-
-  if (StructuredHtml.isText(html) && StructuredHtml.isText(currentTranslation) && text.replace(/\s/g, '').length > 0) {
-    return (
-      <TranslationTextInput
-        text={text}
-        value={currentTranslation.textContent?.trim()}
-        type={getInputType(html.textContent ?? '')}
-        onBlur={(value: string) => {
-          let textContentWithWhiteSpaces = value.trim();
-          if (html.textContent?.startsWith(' ')) {
-            textContentWithWhiteSpaces = ` ${textContentWithWhiteSpaces}`;
-          }
-          if (html.textContent?.endsWith(' ')) {
-            textContentWithWhiteSpaces = `${textContentWithWhiteSpaces} `;
-          }
-
-          if (textContentWithWhiteSpaces !== currentTranslation.textContent) {
-            updateTranslation({ id: currentTranslation.id, value: textContentWithWhiteSpaces });
-          }
-        }}
-        onChange={undefined}
-        hasGlobalTranslation={false}
-        tempGlobalTranslation={undefined}
-        showGlobalTranslation={false}
-        setHasGlobalTranslation={undefined}
-        setGlobalTranslation={undefined}
-      />
     );
   }
 

@@ -41,7 +41,7 @@ class StructuredHtmlText extends StructuredHtml {
   toJson(): HtmlAsJsonTextElement {
     return {
       id: this.id,
-      type: 'TextElement', //Fixme
+      type: 'TextElement',
       textContent: this.textContent,
     };
   }

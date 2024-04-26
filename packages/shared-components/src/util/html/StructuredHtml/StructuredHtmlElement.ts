@@ -10,7 +10,7 @@ class StructuredHtmlElement extends StructuredHtml {
 
   constructor(input: string | HtmlAsJsonElement, options?: StructuredHtmlOptions, converter = htmlConverter) {
     super(input, options, converter);
-    const htmlElementJson = this.originalHtmlJson as HtmlAsJsonElement; //Fixme
+    const htmlElementJson = this.originalHtmlJson as HtmlAsJsonElement;
     this.tagName = htmlElementJson.tagName;
     this.attributes = htmlElementJson.attributes;
     this.children = this.createChildrenFromJson(htmlElementJson, options);
@@ -51,7 +51,6 @@ class StructuredHtmlElement extends StructuredHtml {
     let sourceIndex = 0;
     this.children = this.children.reduce((acc: StructuredHtml[], child: StructuredHtml): StructuredHtml[] => {
       let sourceChild = sourceChildren[sourceIndex];
-      //TODO: replace with check on similarity?
       if (
         !sourceChild.id &&
         sourceChild.type === child.type &&
@@ -64,8 +63,8 @@ class StructuredHtmlElement extends StructuredHtml {
         sourceIndex += 1;
         return [...acc, result];
       }
-      // If the target doesn't match on type or tagName, either the original element has been removed, or a new element has been placed before it
-      // we assume that it was removed, but reconstructs it in the while loop below if that was not the case
+      // If the target doesn't match on type or tagName, either the original element has been removed, or a new element has been placed before it.
+      // We assume that it was removed, but reconstructs any remaining source elements below
       return acc;
     }, []);
 
@@ -153,9 +152,9 @@ class StructuredHtmlElement extends StructuredHtml {
   toJson(getMarkdown?: boolean): HtmlAsJsonElement {
     return {
       id: this.id,
-      type: 'Element', //Fixme
-      tagName: this.tagName!, // FIXME
-      attributes: this.attributes!,
+      type: 'Element',
+      tagName: this.tagName,
+      attributes: this.attributes,
       children: (getMarkdown && this.containsMarkdown ? this.childrenAsMarkdown ?? [] : this.children).map((child) =>
         child.toJson(getMarkdown),
       ),
