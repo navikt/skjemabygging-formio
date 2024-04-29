@@ -5,7 +5,7 @@ env:
   NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
-  cypress-run-fyllut:
+  cypress-install:
     runs-on: ubuntu-latest-8-cores
     permissions:
       contents: 'read'
@@ -18,10 +18,47 @@ jobs:
           node-version: '20.8.0'
           registry-url: https://npm.pkg.github.com/
           scope: '@navikt'
+          cache: 'yarn'
       - name: 'Install dependencies'
         run: yarn --frozen-lockfile
       - name: 'Build application'
         run: yarn build
+      - name: Upload build arifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: build
+          path: |
+            packages/bygger/dist
+            packages/bygger-backend/dist
+            packages/fyllut/dist
+            packages/fyllut-backend/dist
+            packages/shared-components/dist
+            packages/shared-domain/dist
+
+  cypress-run-fyllut:
+    runs-on: ubuntu-latest-8-cores
+    needs: cypress-install
+    permissions:
+      contents: 'read'
+      packages: read
+    steps:
+      - name: 'Checkout'
+        uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20.8.0'
+          registry-url: https://npm.pkg.github.com/
+          scope: '@navikt'
+          cache: 'yarn'
+      - name: 'Install dependencies'
+        run: yarn --frozen-lockfile
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: build
+          path: packages
+      - name: Display structure of downloaded files
+        run: ls -R
       - name: 'Run mock server'
         run: yarn mocks:fyllut:no-cli &
       - name: 'Cypress tests (fyllut)'
@@ -38,6 +75,7 @@ jobs:
 
   cypress-run-bygger:
     runs-on: ubuntu-latest-8-cores
+    needs: cypress-install
     permissions:
       contents: 'read'
       packages: read
@@ -49,10 +87,16 @@ jobs:
           node-version: '20.8.0'
           registry-url: https://npm.pkg.github.com/
           scope: '@navikt'
+          cache: 'yarn'
       - name: 'Install dependencies'
         run: yarn --frozen-lockfile
-      - name: 'Build application'
-        run: yarn build
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: build
+          path: packages
+      - name: Display structure of downloaded files
+        run: ls -R
       - name: 'Cypress tests (bygger)'
         uses: cypress-io/github-action@v6
         with:
