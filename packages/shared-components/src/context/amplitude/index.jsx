@@ -31,7 +31,7 @@ function AmplitudeProvider({ children, form }) {
   const { config } = useAppConfig();
   useEffect(() => {
     if (config.amplitudeApiEndpoint) {
-      initAmplitude(config.amplitudeApiEndpoint, config.amplitudeDisbaleBatch);
+      initAmplitude(config.amplitudeApiEndpoint, config.amplitudeDisableBatch);
     }
   }, [config]);
   const loggSkjemaStegFullfort = useSkjemaStegFullfort(form);

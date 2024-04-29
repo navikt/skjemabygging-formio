@@ -1,16 +1,9 @@
-// import amplitude from 'amplitude-js';
 import * as amplitude from '@amplitude/analytics-browser';
 
 export const initAmplitude = (apiEndpoint, disableBatch) => {
   const config = {
     serverUrl: apiEndpoint,
-    defaultTracking: {
-      attribution: true,
-      pageViews: false,
-      sessions: false,
-      fileDownload: false,
-      formInteractions: false,
-    },
+    defaultTracking: false,
     ingestionMetadata: {
       // Required by https://github.com/navikt/amplitude-proxy
       sourceName: window.location.toString(),
