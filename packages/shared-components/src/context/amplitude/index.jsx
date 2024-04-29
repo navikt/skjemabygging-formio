@@ -25,15 +25,13 @@ const defaultValues = {
   loggSkjemaFullfort: () => Promise.resolve(),
 };
 
-const isGcp = (config) => !!config.NAIS_CLUSTER_NAME;
-
 const AmplitudeContext = createContext(defaultValues);
 
 function AmplitudeProvider({ children, form }) {
   const { config } = useAppConfig();
   useEffect(() => {
     if (config.amplitudeApiEndpoint) {
-      initAmplitude(config.amplitudeApiEndpoint, isGcp(config));
+      initAmplitude(config.amplitudeApiEndpoint, config.amplitudeDisbaleBatch);
     }
   }, [config]);
   const loggSkjemaStegFullfort = useSkjemaStegFullfort(form);

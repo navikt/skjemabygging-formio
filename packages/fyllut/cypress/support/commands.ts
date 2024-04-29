@@ -13,7 +13,6 @@ import '@testing-library/cypress/add-commands';
 import { expect } from 'chai';
 import 'cypress-wait-until';
 import { CyHttpMessages } from 'cypress/types/net-stubbing';
-import { parse } from 'querystring';
 
 // -- This is a parent command --
 // Cypress.Commands.add('login', (email, password) => { ... })
@@ -66,8 +65,10 @@ Cypress.Commands.add('checkLogToAmplitude', (eventType: string, properties) => {
   return cy
     .wait('@amplitudeLogging')
     .its('request.body')
-    .then(parse)
-    .then((body: any) => JSON.parse(body.e)[0])
+    .then((body) => {
+      expect(body.events).to.have.length(1);
+      return body.events[0];
+    })
     .then((event) => {
       expect(event.event_type).to.equal(eventType);
       if (properties && Object.keys(properties).length > 0) {

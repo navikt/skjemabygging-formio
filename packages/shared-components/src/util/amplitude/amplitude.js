@@ -1,14 +1,27 @@
-import amplitude from 'amplitude-js';
+// import amplitude from 'amplitude-js';
+import * as amplitude from '@amplitude/analytics-browser';
 
-export const initAmplitude = (apiEndpoint, isGcp) => {
-  amplitude.getInstance().init('default', '', {
-    apiEndpoint,
-    saveEvents: false,
-    includeUtm: true,
-    forceHttps: isGcp,
-    includeReferrer: true,
-    platform: window.location.toString(),
-  });
+export const initAmplitude = (apiEndpoint, disableBatch) => {
+  const config = {
+    serverUrl: apiEndpoint,
+    defaultTracking: {
+      attribution: true,
+      pageViews: false,
+      sessions: false,
+      fileDownload: false,
+      formInteractions: false,
+    },
+    ingestionMetadata: {
+      // Required by https://github.com/navikt/amplitude-proxy
+      sourceName: window.location.toString(),
+    },
+  };
+
+  if (disableBatch) {
+    config.flushQueueSize = 1;
+  }
+
+  amplitude.init('default', '', config);
 };
 
 function createEventData(form, customProperties = {}) {
@@ -19,22 +32,9 @@ function createEventData(form, customProperties = {}) {
   };
 }
 
-export function logAmplitudeEvent(eventName, eventData, done) {
-  let callbackSuccess = undefined;
-  let callbackFailure = undefined;
-  if (done) {
-    callbackSuccess = () => done();
-    callbackFailure = () => {
-      console.error(`failed to log amplitude event ${eventName}`);
-      done();
-    };
-  }
-  setTimeout(() => {
-    try {
-      amplitude.getInstance().logEvent(eventName, eventData, callbackSuccess, callbackFailure);
-    } catch (error) {
-      console.error(error);
-    }
+function logAmplitudeEvent(eventName, eventData) {
+  return amplitude.track(eventName, eventData).promise.catch((error) => {
+    console.error(`failed to log amplitude event ${eventName}`, error);
   });
 }
 
@@ -76,9 +76,7 @@ export function loggEventDokumentLastetNed(form, tittel) {
 }
 
 export function loggEventSkjemaFullfort(form) {
-  return new Promise((resolve) => {
-    logAmplitudeEvent('skjema fullført', createEventData(form), resolve);
-  });
+  return logAmplitudeEvent('skjema fullført', createEventData(form));
 }
 
 export function loggEventSkjemaValideringFeilet(form) {

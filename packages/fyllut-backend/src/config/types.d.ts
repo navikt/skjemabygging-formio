@@ -8,6 +8,7 @@ export type TokenxConfig = {
 
 export type AmplitudeConfig = {
   apiEndpoint: string;
+  disableBatch: boolean;
 };
 
 export type SendInnConfig = {
