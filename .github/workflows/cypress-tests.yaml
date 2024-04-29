@@ -38,6 +38,12 @@ jobs:
   cypress-run-fyllut:
     runs-on: ubuntu-latest-8-cores
     needs: cypress-install
+    strategy:
+      # don't fail the entire matrix on failure
+      fail-fast: false
+      matrix:
+        # run copies of the current job in parallel
+        containers: [1, 2, 3, 4]
     permissions:
       contents: 'read'
       packages: read
@@ -65,6 +71,7 @@ jobs:
         uses: cypress-io/github-action@v6
         with:
           install: false
+          parallel: true
           start: yarn preview:fyllut
           wait-on: 'http://localhost:3001/fyllut/internal/isready'
           wait-on-timeout: 120
@@ -76,6 +83,12 @@ jobs:
   cypress-run-bygger:
     runs-on: ubuntu-latest-8-cores
     needs: cypress-install
+    strategy:
+      # don't fail the entire matrix on failure
+      fail-fast: false
+      matrix:
+        # run copies of the current job in parallel
+        containers: [1, 2]
     permissions:
       contents: 'read'
       packages: read
@@ -101,6 +114,7 @@ jobs:
         uses: cypress-io/github-action@v6
         with:
           install: false
+          parallel: true
           start: yarn preview:bygger
           wait-on: 'http://localhost:3000/internal/isready'
           wait-on-timeout: 120
