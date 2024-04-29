@@ -4,7 +4,6 @@ import makeStyles from '../../../util/styles/jss/jss';
 const useStyles = makeStyles({
   uxsignals: {
     maxWidth: '640px',
-    margin: '-20px',
   },
 });
 
