@@ -1,5 +1,5 @@
 import BaseComponent from '../../base/BaseComponent';
-import TextField from '../../core/textfield/TextField';
+import TextField, { InputMode } from '../../core/textfield/TextField';
 import emailBuilder from './Email.builder';
 import emailForm from './Email.form';
 
@@ -17,6 +17,10 @@ class Email extends TextField {
   }
   static get builderInfo() {
     return emailBuilder();
+  }
+
+  override getInputMode(): InputMode {
+    return 'email';
   }
 
   init() {
