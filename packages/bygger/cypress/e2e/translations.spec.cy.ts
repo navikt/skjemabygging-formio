@@ -190,7 +190,6 @@ describe('Translations', () => {
         });
       cy.findByRole('button', { name: 'Lagre' }).click();
       cy.wait('@updateTranslations').then((interception) => {
-        // eslint-disable-next-line vitest/valid-expect
         expect(interception.request.body.data.i18n).to.deep.equal(expectedI18n);
       });
     });
@@ -212,7 +211,6 @@ describe('Translations', () => {
       );
       cy.findByRole('button', { name: 'Lagre' }).click();
       cy.wait('@updateTranslations').then((interception) => {
-        // eslint-disable-next-line vitest/valid-expect
         expect(interception.request.body.data.i18n[htmlWithExistingTranslation]).to.equal(expectedHtmlResult);
       });
     });
@@ -227,7 +225,6 @@ describe('Translations', () => {
       cy.findByRole('button', { name: 'Lagre' }).click();
       cy.wait('@updateTranslations').then((interception) => {
         console.log('INTERCEPTION', JSON.stringify(interception.request.body, null, 2));
-        // eslint-disable-next-line vitest/valid-expect
         expect(interception.request.body.data.i18n[htmlWithExistingTranslation]).to.equal(updatedTranslation);
       });
     });

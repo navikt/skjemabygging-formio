@@ -154,7 +154,6 @@ const TranslationFormHtmlSection = ({ text, storedTranslation, updateTranslation
         )}
 
         {translationReady &&
-          // TODO: test html.containsMarkdown
           html.children.map((originalElement, index) => {
             const translationElement = translationObject.current?.children[index];
             return (

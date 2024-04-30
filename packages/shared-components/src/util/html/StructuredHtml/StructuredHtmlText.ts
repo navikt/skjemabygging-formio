@@ -21,16 +21,15 @@ class StructuredHtmlText extends StructuredHtml {
 
   populate(value: HtmlAsJsonTextElement) {
     if (value.id && value.textContent) {
-      return this.updateInternal(value.id, value.textContent);
+      this.textContent = value.textContent;
+      this.refresh();
+      return this;
     }
   }
 
-  //TODO: switch content of updateInternal and populates
   updateInternal(id: string, text: string): StructuredHtmlText | undefined {
     if (id === this.id) {
-      this.textContent = text;
-      this.refresh();
-      return this;
+      return this.populate({ id, type: 'TextElement', textContent: text });
     }
   }
 
