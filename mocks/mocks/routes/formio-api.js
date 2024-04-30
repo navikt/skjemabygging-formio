@@ -25,6 +25,7 @@ const formDatagridConditional = require('../data/formio-api/datagrid-conditional
 const nav083501 = require('../data/formio-api/nav083501.json');
 const formDrivingList = require('../data/formio-api/driving-list.json');
 const formAttachment = require('../data/formio-api/attachments.json');
+const numberForm = require('../data/formio-api/number.json');
 
 const allForms = [
   { form: formCypress101, translations: translationsCypress101 },
@@ -47,6 +48,7 @@ const allForms = [
   { form: nav083501, translations: undefined },
   { form: formDrivingList, translations: undefined },
   { form: formAttachment, translations: undefined },
+  { form: numberForm, translations: undefined },
 ];
 
 const findTestdata = (formPath) => allForms.find((testdata) => testdata.form.path === formPath);

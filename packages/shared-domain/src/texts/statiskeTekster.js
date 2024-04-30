@@ -171,6 +171,8 @@ export const statiske = {
     dateSelect: 'Kryss av for de dagene du har brukt egen bil',
     dateSelectParking: 'og har hatt parkeringsutgifter',
     parkingExpenses: 'Parkeringsutgifter (kr)',
+    parkingInfo:
+      'Hvis du har parkeringsutgifter over 100 kroner per dag må du <a href="/fyllut/nav111224b?sub=paper">sende inn kjørelisten på papir</a>. Husk å legge ved kvitteringer som dokumenterer utgiften.',
     accordionHeader: 'Legg til kjøreliste for én eller flere perioder',
     summaryDescription: 'Du har oppgitt at du har reist med egen bil på disse dagene:',
     summaryTextParking: '{{date}}, parkeringsutgift: {{parking}} kr',

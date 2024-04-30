@@ -42,4 +42,5 @@ export const validering = {
 
   // driving list
   validParkingExpenses: 'Parkeringsutgiftene for {{dato}} må være et gyldig beløp',
+  parkingExpensesAboveHundred: 'Maksimalt 100 kroner pr. dag',
 };

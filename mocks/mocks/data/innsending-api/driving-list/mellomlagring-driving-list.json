@@ -25,17 +25,17 @@
             "selectedVedtaksId": "43258683",
             "dates": [
               {
-                "date": "2024-01-08T00:00:00.000Z",
+                "date": "2024-01-08",
                 "parking": "",
                 "betalingsplanId": "14514541"
               },
               {
-                "date": "2024-01-12T00:00:00.000Z",
+                "date": "2024-01-12",
                 "parking": "50",
                 "betalingsplanId": "14514542"
               },
               {
-                "date": "2024-01-15T00:00:00.000Z",
+                "date": "2024-01-15",
                 "parking": "100",
                 "betalingsplanId": "14514540"
               }

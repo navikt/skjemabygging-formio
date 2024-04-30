@@ -78,35 +78,39 @@ export async function performChangesOnSeparateBranch(repo, base, branch, perform
   logger.info(`Create new branch ${branch} based on ${base}`, baseRef);
   await repo.createRef(branch, baseRef.data.object.sha);
 
-  await performChanges(repo, branch);
-
   let updatedBaseSha;
-  if (await repo.hasBranchChanged(baseRef, branch)) {
-    // Only create and merge pull request if the branch contains changes, compared to the base branch
-    const pullRequest = await repo.createPullRequest('Automatic publishing job', branch, base);
-    logger.info('Created pull-request', {
-      pullRequest: pullRequest.data.number,
-      baseRef,
-      branch,
-      committMessage: mergeCommitMessage,
-    });
-    await repo.mergePullRequest(pullRequest.data.number, mergeCommitMessage);
-    const updatedBase = await repo.getRef(base);
-    updatedBaseSha = updatedBase.data.object.sha;
-    logger.info('Merged pull-request', {
-      updatedBaseSha,
-      pullRequest: pullRequest.data.number,
-      baseRef,
-      branch,
-    });
-  }
-
   try {
-    await repo.deleteRef(branch);
-  } catch (error) {
-    logger.error(`Failed to delete branch ${branch}`, error);
+    await performChanges(repo, branch);
+
+    if (await repo.hasBranchChanged(baseRef, branch)) {
+      // Only create and merge pull request if the branch contains changes, compared to the base branch
+      const pullRequest = await repo.createPullRequest('Automatic publishing job', branch, base);
+      logger.info('Created pull-request', {
+        pullRequest: pullRequest.data.number,
+        baseRef,
+        branch,
+        committMessage: mergeCommitMessage,
+      });
+      await repo.mergePullRequest(pullRequest.data.number, mergeCommitMessage);
+      const updatedBase = await repo.getRef(base);
+      updatedBaseSha = updatedBase.data.object.sha;
+      logger.info('Merged pull-request', {
+        updatedBaseSha,
+        pullRequest: pullRequest.data.number,
+        baseRef,
+        branch,
+      });
+    } else {
+      logger.info(`Skipping pull-request due to no changes on ${branch} compared to ${base}`);
+    }
+  } finally {
+    try {
+      await repo.deleteRef(branch);
+      logger.info(`Deleted branch ${branch}`);
+    } catch (error) {
+      logger.error(`Failed to delete branch ${branch}`, error);
+    }
   }
-  logger.info(`Deleted branch ${branch}`);
   return updatedBaseSha;
 }
 

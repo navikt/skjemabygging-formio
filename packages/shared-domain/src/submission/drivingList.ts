@@ -1,6 +1,6 @@
 export interface DrivingListPeriod {
-  periodFrom: Date;
-  periodTo: Date;
+  periodFrom: string;
+  periodTo: string;
   id: string;
 }
 
