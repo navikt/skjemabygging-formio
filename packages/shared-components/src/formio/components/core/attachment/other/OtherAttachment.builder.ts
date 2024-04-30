@@ -1,11 +1,13 @@
-import OtherAttachment from './OtherAttachment';
-
 const otherAttachmentBuilder = () => {
-  const schema = OtherAttachment.schema();
+  const label = 'Annen dokumentasjon';
   return {
-    title: schema.label,
+    title: label,
     schema: {
-      ...schema,
+      label,
+      description: 'Har du noen annen dokumentasjon du ønsker å legge ved?',
+      type: 'attachment',
+      key: 'annenDokumentasjon',
+      dataSrc: 'values',
       validate: {
         required: true,
       },
