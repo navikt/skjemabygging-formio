@@ -44,7 +44,7 @@
     "react-select": "^5.8.0"
   },
   "devDependencies": {
-    "@testing-library/react": "^14.2.2",
+    "@testing-library/react": "^15.0.6",
     "@types/uuid": "^9.0.8",
     "i18next": "^23.10.1",
     "lodash.merge": "^4.6.2",
