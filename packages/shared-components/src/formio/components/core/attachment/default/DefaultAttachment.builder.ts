@@ -1,7 +1,7 @@
-import Attachment from './Attachment';
+import DefaultAttachment from './DefaultAttachment';
 
-const attachmentBuilder = () => {
-  const schema = Attachment.schema();
+const defaultAttachmentBuilder = () => {
+  const schema = DefaultAttachment.schema();
   return {
     title: schema.label,
     schema: {
@@ -25,4 +25,4 @@ const attachmentBuilder = () => {
   };
 };
 
-export default attachmentBuilder;
+export default defaultAttachmentBuilder;

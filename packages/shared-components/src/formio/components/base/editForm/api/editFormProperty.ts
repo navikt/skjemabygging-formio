@@ -1,15 +1,26 @@
 import { Component } from '@navikt/skjemadigitalisering-shared-domain';
 
-const editFormProperty = (label: string, key: string, required: boolean, description?: string): Component => {
+interface PropertyOptions {
+  label: string;
+  key: string;
+  required: boolean;
+  description?: string;
+  customConditional?: string;
+  readOnly?: boolean;
+}
+
+const editFormProperty = (options: PropertyOptions): Component => {
   return {
     type: 'textfield',
-    key: `properties.${key}`,
-    description,
-    label,
+    key: `properties.${options.key}`,
+    description: options.description,
+    label: options.label,
     validate: {
-      required,
+      required: options.required,
     },
     input: true,
+    readOnly: options.readOnly ?? false,
+    customConditional: options.customConditional,
   };
 };
 
