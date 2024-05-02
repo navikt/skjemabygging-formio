@@ -3,7 +3,7 @@ import { fromNode } from './htmlNode';
 import { htmlString2Json, json2HtmlString } from './htmlString';
 
 const strongMarkdown2HtmlString = (markdown: string, tag: 'B' | 'STRONG' = 'STRONG') => {
-  const captureRegex = /\*{2}([^*]*)\*{2}/;
+  const captureRegex = /^\*{2}([^*]*)\*{2}$/;
   const captures = captureRegex.exec(markdown);
   if (captures) {
     const innerText = captures[1];
@@ -13,7 +13,7 @@ const strongMarkdown2HtmlString = (markdown: string, tag: 'B' | 'STRONG' = 'STRO
 };
 
 const linkMarkdown2HtmlString = (markdown: string): string => {
-  const captureRegex = /\[([^[]+)\]\(([^[]+)\)/;
+  const captureRegex = /^\[([^[]+)\]\(([^[]+)\)$/;
 
   const captures = captureRegex.exec(markdown);
   if (captures) {
@@ -28,6 +28,10 @@ const linkMarkdown2HtmlString = (markdown: string): string => {
 const markdown2Json = (markdown: string): HtmlAsJsonElement => {
   const markdownLinkRegex = /\[[^[]+\]\([^[]+\)/gm;
   const markdownStrongRegex = /\*{2}[^*]*\*{2}/gm;
+
+  if (markdown.length > 10000) {
+    throw Error('Text block is too large to generate markdown. Consider dividing it into smaller parts');
+  }
 
   let htmlString = markdown;
 
