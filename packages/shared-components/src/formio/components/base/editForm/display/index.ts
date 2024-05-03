@@ -21,6 +21,7 @@ import editFormRows from './editFormRows';
 import editFormSpellCheck from './editFormSpellCheck';
 import editFormTextDisplay from './editFormTextDisplay';
 import editFormTitle from './editFormTitle';
+import editFormTitleSizeField from './editFormTitleSize';
 import editShowYearPicker from './editShowYearPicker';
 import editFormAltText from './image/editFormAltText';
 import editFormImage from './image/editFormImage';
@@ -56,6 +57,7 @@ const editFormDisplay = {
   textDisplay: editFormTextDisplay,
   hidden: editFormHidden,
   isAttachmentPanel: editFormIsAttachmentPanel,
+  titleSize: editFormTitleSizeField,
 };
 
 export default editFormDisplay;
