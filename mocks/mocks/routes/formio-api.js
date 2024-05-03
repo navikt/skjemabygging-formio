@@ -26,6 +26,7 @@ const nav083501 = require('../data/formio-api/nav083501.json');
 const formDrivingList = require('../data/formio-api/driving-list.json');
 const formAttachment = require('../data/formio-api/attachments.json');
 const numberForm = require('../data/formio-api/number.json');
+const formAccordion = require('../data/formio-api/accordion.json');
 
 const allForms = [
   { form: formCypress101, translations: translationsCypress101 },
@@ -49,6 +50,7 @@ const allForms = [
   { form: formDrivingList, translations: undefined },
   { form: formAttachment, translations: undefined },
   { form: numberForm, translations: undefined },
+  { form: formAccordion, translations: undefined },
 ];
 
 const findTestdata = (formPath) => allForms.find((testdata) => testdata.form.path === formPath);
