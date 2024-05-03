@@ -5,7 +5,7 @@ import { AppConfigContextType } from '../config/configContext';
 interface ComponentUtilsContextType {
   appConfig: AppConfigContextType;
   translate: (originalText: string | undefined, params?: Record<string | number, any>) => string;
-  locale: string;
+  locale: 'nb' | 'nn' | 'en';
   addRef: (name: string, ref: HTMLElement | null) => void;
 }
 

@@ -40,16 +40,16 @@ const DatePicker = ({
 
   const { datepickerProps, inputProps, setSelected, reset } = useDatepicker({
     required: required,
-    toDate: toDate ? new Date(toDate) : undefined,
-    fromDate: fromDate ? new Date(fromDate) : undefined,
-    defaultMonth: defaultMonth ? new Date(defaultMonth) : undefined,
+    toDate: toDate ? dateUtils.toJSDate(toDate) : undefined,
+    fromDate: fromDate ? dateUtils.toJSDate(fromDate) : undefined,
+    defaultMonth: defaultMonth ? dateUtils.toJSDate(defaultMonth) : undefined,
     allowTwoDigitYear: false,
   } as UseDatepickerOptions);
 
   useEffect(() => {
     if (value) {
       if (dateUtils.isValid(value, 'submission')) {
-        setSelected(new Date(value));
+        setSelected(dateUtils.toJSDate(value));
       }
     } else {
       reset();
@@ -61,7 +61,7 @@ const DatePicker = ({
   }, [inputProps.value]);
 
   return (
-    <AkselDatePicker mode="single" locale={locale as any} {...datepickerProps}>
+    <AkselDatePicker mode="single" locale={locale} {...datepickerProps}>
       <AkselDatePicker.Input
         id={id}
         {...inputProps}

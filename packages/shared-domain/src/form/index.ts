@@ -175,7 +175,7 @@ export interface Component {
   earliestAllowedDate?: string;
   latestAllowedDate?: string;
   getValue?: () => string;
-  rerender?: () => string;
+  rerender?: () => void;
 }
 
 export interface ComponentProperties {

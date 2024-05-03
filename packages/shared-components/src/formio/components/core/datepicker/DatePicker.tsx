@@ -48,7 +48,9 @@ export default class DatePicker extends BaseComponent {
   }
 
   checkComponentValidity(data, dirty, row, options = {}) {
-    if (!this.shouldSkipValidation(data, dirty, row)) {
+    if (this.shouldSkipValidation(data, dirty, row)) {
+      this.setCustomValidity('');
+    } else {
       const errorMessage = validateDate(
         {
           required: this.isRequired(),
@@ -88,15 +90,7 @@ export default class DatePicker extends BaseComponent {
   }
 
   getToDate(): string | undefined {
-    const lowestReferencedDate = dateUtils.min(
-      this.getComponentsWithDateInputKey()
-        .map((component) => component.getValue?.() ?? '')
-        .filter(Boolean),
-    );
-
-    if (lowestReferencedDate) {
-      return lowestReferencedDate;
-    } else if (this.component?.latestAllowedDate && !Number.isNaN(+this.component?.latestAllowedDate)) {
+    if (this.component?.latestAllowedDate && !Number.isNaN(+this.component?.latestAllowedDate)) {
       return dateUtils.addDays(+this.component?.latestAllowedDate);
     } else if (this.component?.specificLatestAllowedDate) {
       return this.component?.specificLatestAllowedDate;

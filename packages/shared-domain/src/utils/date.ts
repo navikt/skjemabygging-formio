@@ -59,6 +59,10 @@ const toSubmissionDate = (date?: string) => {
   }
 };
 
+const toJSDate = (date: string) => {
+  return DateTime.fromISO(date).toJSDate();
+};
+
 export const getIso8601String = () => {
   return DateTime.utc().toISO();
 };
@@ -131,12 +135,8 @@ const isValid = (date: string, format: 'input' | 'submission') => {
   return date && DateTime.fromFormat(date, format === 'input' ? inputFormat : submissionFormat)?.isValid;
 };
 
-const isBeforeDate = (date1: string, date2: string, equal: boolean = true) => {
-  if (equal) {
-    return DateTime.fromISO(date1).startOf('day') < DateTime.fromISO(date2).startOf('day');
-  } else {
-    return DateTime.fromISO(date1).startOf('day') <= DateTime.fromISO(date2).startOf('day');
-  }
+const isBeforeDate = (date1: string, date2: string) => {
+  return DateTime.fromISO(date1).startOf('day') < DateTime.fromISO(date2).startOf('day');
 };
 
 const dateUtils = {
@@ -144,6 +144,7 @@ const dateUtils = {
   toLocaleDateAndTime,
   toLocaleDate,
   toSubmissionDate,
+  toJSDate,
   toWeekdayAndDate,
   getDatesInRange,
   toLocaleDateLongMonth,

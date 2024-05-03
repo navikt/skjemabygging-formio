@@ -4,7 +4,7 @@
 import { dateUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 
 const validateionBefore = (date: string) => `Datoen kan ikke være tidligere enn ${date}`;
-const validateionAfter = (date: string) => `Datoen kan ikke være senere ${date}`;
+const validationAfter = (date: string) => `Datoen kan ikke være senere ${date}`;
 
 describe('NavDatepicker', () => {
   beforeEach(() => {
@@ -97,7 +97,7 @@ describe('NavDatepicker', () => {
         cy.clickNextStep();
 
         cy.findAllByText(validateionBefore('16.05.2023')).should('have.length', 2);
-        cy.findAllByText(validateionAfter('14.05.2023')).should('have.length', 2);
+        cy.findAllByText(validationAfter('14.05.2023')).should('have.length', 2);
       });
 
       it('fails when date is equal', () => {
@@ -105,7 +105,7 @@ describe('NavDatepicker', () => {
         cy.clickNextStep();
 
         cy.findAllByText(validateionBefore('16.05.2023')).should('have.length', 2);
-        cy.findAllByText(validateionAfter('14.05.2023')).should('have.length', 0);
+        cy.findAllByText(validationAfter('14.05.2023')).should('have.length', 0);
       });
 
       it('ok when date is later', () => {
@@ -114,7 +114,7 @@ describe('NavDatepicker', () => {
 
         cy.findByRole('heading', { name: 'Oppsummering' }).should('be.visible');
         cy.findAllByText(validateionBefore('16.05.2023')).should('have.length', 0);
-        cy.findAllByText(validateionAfter('14.05.2023')).should('have.length', 0);
+        cy.findAllByText(validationAfter('14.05.2023')).should('have.length', 0);
       });
     });
 
@@ -169,14 +169,14 @@ describe('NavDatepicker', () => {
       cy.findByRole('textbox', { name: LABEL }).type(`${LATEST_DATE}{esc}`);
       cy.clickNextStep();
 
-      cy.findAllByText(validateionAfter(LATEST_DATE)).should('have.length', 0);
+      cy.findAllByText(validationAfter(LATEST_DATE)).should('have.length', 0);
     });
 
     it("fails when date is after 'latest date'", () => {
       cy.findByRole('textbox', { name: LABEL }).type('01.09.2023{esc}');
       cy.clickNextStep();
 
-      cy.findAllByText(validateionAfter(LATEST_DATE)).should('have.length', 2);
+      cy.findAllByText(validationAfter(LATEST_DATE)).should('have.length', 2);
     });
   });
 
@@ -207,14 +207,14 @@ describe('NavDatepicker', () => {
       cy.findByRole('textbox', { name: LABEL }).type(dateUtils.toLocaleDate(dateUtils.addDays(LATEST_RELATIVE)));
       cy.clickNextStep();
 
-      cy.findAllByText(validateionAfter(afterDate)).should('have.length', 0);
+      cy.findAllByText(validationAfter(afterDate)).should('have.length', 0);
     });
 
     it('fails when date is after the earliest limit', () => {
       cy.findByRole('textbox', { name: LABEL }).type(dateUtils.toLocaleDate(dateUtils.addDays(LATEST_RELATIVE + 1)));
       cy.clickNextStep();
 
-      cy.findAllByText(validateionAfter(afterDate)).should('have.length', 2);
+      cy.findAllByText(validationAfter(afterDate)).should('have.length', 2);
     });
   });
 });

@@ -17,7 +17,7 @@ const validateDate = (dateValidationObject: DateValidationObject, translate): st
     return translate('invalid_date', { field: dateValidationObject.label });
   } else if (
     dateValidationObject.fromDate &&
-    dateUtils.isBeforeDate(dateValidationObject.value, dateValidationObject.fromDate, true)
+    dateUtils.isBeforeDate(dateValidationObject.value, dateValidationObject.fromDate)
   ) {
     return translate('minDate', {
       field: dateValidationObject.label,
@@ -25,7 +25,7 @@ const validateDate = (dateValidationObject: DateValidationObject, translate): st
     });
   } else if (
     dateValidationObject.toDate &&
-    dateUtils.isBeforeDate(dateValidationObject.toDate, dateValidationObject.value, true)
+    dateUtils.isBeforeDate(dateValidationObject.toDate, dateValidationObject.value)
   ) {
     return translate('maxDate', {
       field: dateValidationObject.label,
