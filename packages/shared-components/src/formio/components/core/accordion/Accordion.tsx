@@ -32,7 +32,7 @@ class Accordion extends BaseComponent {
     element.render(
       <NavAccordion id={this.getId()} ref={(ref) => this.setReactInstance(ref)} headingSize={this.getTitleSize()}>
         {this.getAccordionValues()?.map((item, index) => (
-          <NavAccordion.Item key={index}>
+          <NavAccordion.Item key={index} defaultOpen={item.defaultOpen}>
             <NavAccordion.Header>{item.title}</NavAccordion.Header>
             <NavAccordion.Content>
               <div dangerouslySetInnerHTML={{ __html: item.content }}></div>
