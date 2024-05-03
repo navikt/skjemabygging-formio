@@ -6,9 +6,6 @@ const accordionBuilder = () => {
     title: schema.label,
     schema: {
       ...schema,
-      validate: {
-        required: true,
-      },
     },
   };
 };
