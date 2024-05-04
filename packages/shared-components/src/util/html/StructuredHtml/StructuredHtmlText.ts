@@ -7,7 +7,9 @@ class StructuredHtmlText extends StructuredHtml {
 
   constructor(input: string | HtmlAsJsonTextElement, options?: StructuredHtmlOptions, converter = htmlConverter) {
     super(input, options, converter);
-    this.textContent = (this.originalHtmlJson as HtmlAsJsonTextElement).textContent;
+    this.textContent = options?.withEmptyTextContent
+      ? null
+      : (this.originalHtmlJson as HtmlAsJsonTextElement).textContent;
     this.isMarkdownText = !!options?.isMarkdownText;
   }
 

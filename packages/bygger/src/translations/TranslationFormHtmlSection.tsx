@@ -69,6 +69,7 @@ const TranslationFormHtmlSection = ({ text, storedTranslation, updateTranslation
   const startNewTranslation = () => {
     translationObject.current = new StructuredHtmlElement(text, {
       skipConversionWithin: ['H3', 'P', 'LI'],
+      withEmptyTextContent: true,
     });
     setTranslationReady(true);
   };
@@ -155,16 +156,23 @@ const TranslationFormHtmlSection = ({ text, storedTranslation, updateTranslation
 
         {translationReady &&
           html.children.map((originalElement, index) => {
-            const translationElement = translationObject.current?.children[index];
+            const translationChild = translationObject.current?.children[index];
             return (
               <TranslationFormHtmlInput
                 key={`html-translation-${originalElement.id}`}
                 text={originalElement.innerText}
                 html={originalElement}
-                currentTranslation={translationElement}
-                updateTranslation={({ id, value }) => {
+                translationParentId={translationObject.current?.id}
+                currentTranslation={translationChild}
+                updateTranslation={({ id, parentId, value }) => {
                   if (translationObject.current) {
-                    translationObject.current.update(id, value);
+                    if (id) {
+                      translationObject.current.update(id, value);
+                    } else if (parentId) {
+                      translationObject.current.add(parentId, value);
+                    } else {
+                      throw Error("Can't update translation without an id");
+                    }
                     const htmlString = translationObject.current.toHtmlString();
                     updateTranslation(htmlString);
                   }

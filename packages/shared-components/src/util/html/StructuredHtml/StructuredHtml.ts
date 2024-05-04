@@ -8,6 +8,7 @@ type StructuredHtmlOptions = {
   parent?: StructuredHtmlElement;
   skipConversionWithin?: AcceptedTag[];
   isMarkdownText?: boolean;
+  withEmptyTextContent?: boolean;
 };
 
 abstract class StructuredHtml {

@@ -14,7 +14,7 @@ class StructuredHtmlElement extends StructuredHtml {
     this.tagName = htmlElementJson.tagName;
     this.attributes = htmlElementJson.attributes;
     this.children = this.createChildrenFromJson(htmlElementJson, options);
-    this.childrenAsMarkdown = this.createMarkdownChildren(this.children, options?.skipConversionWithin);
+    this.childrenAsMarkdown = this.createMarkdownChildren(this.children, options);
   }
 
   private createChildrenFromJson(htmlElementJson: HtmlAsJsonElement, options?: StructuredHtmlOptions) {
@@ -28,9 +28,9 @@ class StructuredHtmlElement extends StructuredHtml {
     });
   }
 
-  private createMarkdownChildren(children: StructuredHtml[], skipConversionWithin: string[] = []) {
+  private createMarkdownChildren(children: StructuredHtml[], options?: StructuredHtmlOptions) {
     if (
-      skipConversionWithin.includes(this.tagName) &&
+      (options?.skipConversionWithin ?? ([] as string[])).includes(this.tagName) &&
       children.some((child) => StructuredHtmlElement.isElement(child))
     ) {
       return children.map(
@@ -39,7 +39,9 @@ class StructuredHtmlElement extends StructuredHtml {
             {
               id: child.id,
               type: 'TextElement',
-              textContent: this.converter.htmlNode2Markdown(child.toHtmlElement()),
+              textContent: options?.withEmptyTextContent
+                ? null
+                : this.converter.htmlNode2Markdown(child.toHtmlElement()),
             },
             { parent: this, isMarkdownText: true },
           ),
@@ -111,6 +113,22 @@ class StructuredHtmlElement extends StructuredHtml {
     return !!this.childrenAsMarkdown && ((this.options?.skipConversionWithin as string[]) ?? []).includes(this.tagName);
   }
 
+  add(id: string, value: string) {
+    if (id === this.id) {
+      this.children.push(
+        new StructuredHtmlText({ type: 'TextElement', textContent: value }, { parent: this }, this.converter),
+      );
+      return true;
+    }
+    let wasAdded = false;
+    this.children.forEach((child) => {
+      if (!wasAdded && StructuredHtml.isElement(child)) {
+        wasAdded = child.add(id, value);
+      }
+    });
+    return wasAdded;
+  }
+
   updateAttributes(sourceAttributes: Array<[string, string]>) {
     const targetAttributeObjects = Object.fromEntries(this.attributes);
     sourceAttributes.forEach(([key, value]) => (targetAttributeObjects[key] = value));
@@ -121,20 +139,20 @@ class StructuredHtmlElement extends StructuredHtml {
     if (elementJson.id === this.id) {
       this.updateAttributes(elementJson.attributes);
       this.updateChildren(elementJson.children);
-      this.childrenAsMarkdown = this.createMarkdownChildren(this.children, this.options?.skipConversionWithin);
+      this.childrenAsMarkdown = this.createMarkdownChildren(this.children, this.options);
       this.refresh();
       return this;
     }
   }
 
-  updateInternal(id: string, value: string): StructuredHtmlElement | undefined {
+  updateInternal(id: string, value: string): StructuredHtmlElement | StructuredHtmlText | undefined {
     let newElementJson: HtmlAsJsonElement | undefined;
     if (this.id === id) {
       newElementJson = this.converter.markdown2Json(value);
       return this.populate({ ...this, children: newElementJson.children });
     }
 
-    let found;
+    let found: StructuredHtmlElement | StructuredHtmlText | undefined;
     for (const child of this.children) {
       const updateResult = child.updateInternal(id, value);
       found = updateResult ? updateResult : undefined;

@@ -6,17 +6,21 @@ interface Props {
   text: string;
   html: StructuredHtml;
   currentTranslation?: StructuredHtml;
-  updateTranslation: (element: { id: string; value: string }) => void;
+  updateTranslation: (element: { id?: string; parentId?: string; value: string }) => void;
+  translationParentId?: string;
 }
 
-const TranslationFormHtmlInput = ({ text, html, currentTranslation, updateTranslation }: Props) => {
+const TranslationFormHtmlInput = ({
+  text,
+  html,
+  currentTranslation,
+  updateTranslation,
+  translationParentId,
+}: Props) => {
   const isMarkdown =
-    StructuredHtml.isElement(html) &&
-    html.containsMarkdown &&
-    StructuredHtml.isElement(currentTranslation) &&
-    currentTranslation.containsMarkdown;
-  const isText =
-    StructuredHtml.isText(html) && StructuredHtml.isText(currentTranslation) && text.replace(/\s/g, '').length > 0;
+    StructuredHtml.isElement(html) && html.containsMarkdown && StructuredHtml.isElement(currentTranslation);
+  const isText = StructuredHtml.isText(html) && text.replace(/\s/g, '').length > 0;
+  const isTranslationText = StructuredHtml.isText(currentTranslation);
 
   let originalText: string | undefined;
   let originalValue: string | null | undefined;
@@ -25,7 +29,7 @@ const TranslationFormHtmlInput = ({ text, html, currentTranslation, updateTransl
     originalValue = currentTranslation.markdown;
   } else if (isText) {
     originalText = text;
-    originalValue = currentTranslation.textContent;
+    originalValue = isTranslationText ? currentTranslation.textContent : '';
   }
 
   if (isText || isMarkdown) {
@@ -44,7 +48,8 @@ const TranslationFormHtmlInput = ({ text, html, currentTranslation, updateTransl
           }
 
           if (textContentWithWhiteSpaces !== originalValue) {
-            updateTranslation({ id: currentTranslation.id, value: textContentWithWhiteSpaces });
+            const id = isTranslationText ? { id: currentTranslation.id } : { parentId: translationParentId };
+            updateTranslation({ ...id, value: textContentWithWhiteSpaces });
           }
         }}
         onChange={undefined}
@@ -69,6 +74,7 @@ const TranslationFormHtmlInput = ({ text, html, currentTranslation, updateTransl
               key={`html-translation-${originalElement.id}`}
               text={originalElement.innerText}
               html={originalElement}
+              translationParentId={currentTranslation?.id}
               currentTranslation={translationChildren?.[index]}
               updateTranslation={updateTranslation}
             />
