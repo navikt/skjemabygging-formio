@@ -1,5 +1,7 @@
+import { AccordionSettingValues } from '../accordion';
 import { AttachmentSettingValues } from '../attachment';
 import { Enhetstype } from '../enhet';
+import { TextSize } from '../text';
 
 export type DisplayType = 'wizard' | 'form';
 export type FormType = 'form' | 'resource';
@@ -118,6 +120,7 @@ export interface Component {
   prefillKey?: PrefillKey;
   values?: ComponentValue[];
   attachmentValues?: AttachmentSettingValues;
+  accordionValues?: AccordionSettingValues;
   attachmentType?: string;
   hideLabel?: boolean;
   description?: string;
@@ -140,6 +143,7 @@ export interface Component {
   collapsible?: boolean;
   collapsed?: boolean;
   fieldSize?: string;
+  titleSize?: TextSize;
   autoComplete?: string;
   spellCheck?: boolean;
   rows?: number;
@@ -167,6 +171,7 @@ export interface Component {
   autoExpand?: boolean;
   customClass?: string;
   validateOn?: string;
+  isNavDataGrid?: boolean;
 }
 
 export interface ComponentProperties {
