@@ -3,6 +3,8 @@ import BaseComponent from '../../base/BaseComponent';
 import textFieldBuilder from './TextField.builder';
 import textFieldForm from './TextField.form';
 
+export type InputMode = 'none' | 'text' | 'tel' | 'url' | 'email' | 'numeric' | 'decimal' | 'search';
+
 class TextField extends BaseComponent {
   static schema() {
     return BaseComponent.schema({
@@ -27,6 +29,10 @@ class TextField extends BaseComponent {
     return super.getValue() ?? '';
   }
 
+  getInputMode(): InputMode {
+    return 'text';
+  }
+
   renderReact(element) {
     element.render(
       <NavTextField
@@ -42,6 +48,7 @@ class TextField extends BaseComponent {
         readOnly={this.getReadOnly()}
         spellCheck={this.getSpellCheck()}
         error={this.getError()}
+        inputMode={this.getInputMode()}
       />,
     );
   }

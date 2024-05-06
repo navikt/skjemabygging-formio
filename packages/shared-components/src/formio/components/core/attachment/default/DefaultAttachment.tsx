@@ -1,9 +1,9 @@
-import NavAttachment from '../../../../components/attachment/Attachment';
-import BaseComponent from '../../base/BaseComponent';
-import attachmentBuilder from './Attachment.builder';
-import attachmentForm from './Attachment.form';
+import NavAttachment from '../../../../../components/attachment/Attachment';
+import BaseComponent from '../../../base/BaseComponent';
+import defaultAttachmentBuilder from './DefaultAttachment.builder';
+import defaultAttachmentForm from './DefaultAttachment.form';
 
-class Attachment extends BaseComponent {
+class DefaultAttachment extends BaseComponent {
   static schema() {
     return BaseComponent.schema({
       label: 'Vedlegg',
@@ -14,11 +14,11 @@ class Attachment extends BaseComponent {
   }
 
   static editForm() {
-    return attachmentForm();
+    return defaultAttachmentForm();
   }
 
   static get builderInfo() {
-    return attachmentBuilder();
+    return defaultAttachmentBuilder();
   }
 
   getAttachmentValues() {
@@ -49,4 +49,4 @@ class Attachment extends BaseComponent {
   }
 }
 
-export default Attachment;
+export default DefaultAttachment;
