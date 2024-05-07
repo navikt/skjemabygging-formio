@@ -38,7 +38,7 @@ const useStyles = makeStyles({
 
 export function PrepareLetterPage({ form, submission, translations, formUrl }: Props) {
   useEffect(() => scrollToAndSetFocus('main', 'start'), []);
-  const { fyllutBaseURL, baseUrl, logger } = useAppConfig();
+  const { fyllutBaseURL, baseUrl, logger, config } = useAppConfig();
   const { translate } = useLanguages();
   const [enhetsListe, setEnhetsListe] = useState<Enhet[]>([]);
   const [enhetsListeError, setEnhetsListeError] = useState(false);
@@ -46,7 +46,9 @@ export function PrepareLetterPage({ form, submission, translations, formUrl }: P
 
   const styles = useStyles();
 
-  const { enhetMaVelgesVedPapirInnsending, enhetstyper, skjemanummer } = form.properties;
+  const { enhetMaVelgesVedPapirInnsending, enhetstyper, skjemanummer, uxSignalsId, uxSignalsInnsending } =
+    form.properties;
+  const includeUxSignals = uxSignalsId && uxSignalsInnsending !== 'KUN_DIGITAL';
 
   useEffect(() => {
     if (enhetMaVelgesVedPapirInnsending) {
@@ -100,10 +102,7 @@ export function PrepareLetterPage({ form, submission, translations, formUrl }: P
           {hasAttachments && <LetterAddAttachment index={2} vedleggSomSkalSendes={attachments} translate={translate} />}
           <LetterInTheMail index={hasAttachments ? 3 : 2} vedleggSomSkalSendes={attachments} translate={translate} />
           <NavigateButtonComponent translate={translate} goBackUrl={`${formUrl}/oppsummering`} />
-          {
-            // TODO: If the UXSignal pilot is successful, the study code should be a new setting on the form.
-            skjemanummer === 'NAV 08-09.06' && <LetterUXSignals code="study-dont9j6txe" />
-          }
+          {includeUxSignals && <LetterUXSignals id={uxSignalsId} demo={config?.NAIS_CLUSTER_NAME !== 'prod-gcp'} />}
         </section>
       </section>
     </div>

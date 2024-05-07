@@ -83,6 +83,8 @@ export interface FormPropertiesType {
   descriptionOfSignatures?: string;
   descriptionOfSignaturesPositionUnder?: boolean;
   prefill?: PrefillKey[];
+  uxSignalsId?: string;
+  uxSignalsInnsending?: InnsendingType;
 }
 
 export type FormPropertiesPublishing = Pick<
