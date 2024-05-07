@@ -17,11 +17,11 @@ abstract class StructuredHtml {
   originalHtmlString?: string;
   originalHtmlJson: HtmlAsJsonElement | HtmlAsJsonTextElement;
   id: string;
-  options?: StructuredHtmlOptions;
+  internalOptions?: StructuredHtmlOptions;
 
   protected constructor(
     input: string | HtmlAsJsonElement | HtmlAsJsonTextElement,
-    options?: StructuredHtmlOptions,
+    options: StructuredHtmlOptions = {},
     converter = htmlConverter,
   ) {
     this.parent = options?.parent;
@@ -33,13 +33,18 @@ abstract class StructuredHtml {
       this.originalHtmlJson = input;
     }
     this.id = this.originalHtmlJson.id ? this.originalHtmlJson.id : uuid();
-    this.options = options;
+    const { parent, withEmptyTextContent, ...storedOptions } = options;
+    this.internalOptions = storedOptions;
   }
 
   abstract get type(): 'Element' | 'TextElement';
   abstract get innerText(): string;
+  get options(): StructuredHtmlOptions {
+    const { parent, withEmptyTextContent, ...publicOptions } = this.internalOptions ?? {};
+    return publicOptions;
+  }
   abstract populate(
-    value: HtmlAsJsonElement | HtmlAsJsonTextElement,
+    value: HtmlAsJsonElement | HtmlAsJsonTextElement | undefined,
   ): StructuredHtmlElement | StructuredHtmlText | undefined;
   abstract updateInternal(id: string, value: string): StructuredHtmlElement | StructuredHtmlText | undefined;
   abstract matches(other: StructuredHtml | undefined): boolean;

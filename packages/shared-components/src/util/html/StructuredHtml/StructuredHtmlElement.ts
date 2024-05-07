@@ -52,8 +52,9 @@ class StructuredHtmlElement extends StructuredHtml {
   private updateChildren(sourceChildren: Array<HtmlAsJsonElement | HtmlAsJsonTextElement>) {
     let sourceIndex = 0;
     this.children = this.children.reduce((acc: StructuredHtml[], child: StructuredHtml): StructuredHtml[] => {
-      let sourceChild = sourceChildren[sourceIndex];
+      let sourceChild: HtmlAsJsonElement | HtmlAsJsonTextElement | undefined = sourceChildren[sourceIndex];
       if (
+        sourceChild &&
         !sourceChild.id &&
         sourceChild.type === child.type &&
         (sourceChild.type === 'TextElement' || sourceChild.tagName === (child as StructuredHtmlElement).tagName)
@@ -65,7 +66,7 @@ class StructuredHtmlElement extends StructuredHtml {
         sourceIndex += 1;
         return [...acc, result];
       }
-      // If the target doesn't match on type or tagName, either the original element has been removed, or a new element has been placed before it.
+      // If the target and source doesn't match, either the original element has been removed, or a new element has been placed before it.
       // We assume that it was removed, but reconstructs any remaining source elements below
       return acc;
     }, []);
@@ -113,30 +114,14 @@ class StructuredHtmlElement extends StructuredHtml {
     return !!this.childrenAsMarkdown && ((this.options?.skipConversionWithin as string[]) ?? []).includes(this.tagName);
   }
 
-  add(id: string, value: string) {
-    if (id === this.id) {
-      this.children.push(
-        new StructuredHtmlText({ type: 'TextElement', textContent: value }, { parent: this }, this.converter),
-      );
-      return true;
-    }
-    let wasAdded = false;
-    this.children.forEach((child) => {
-      if (!wasAdded && StructuredHtml.isElement(child)) {
-        wasAdded = child.add(id, value);
-      }
-    });
-    return wasAdded;
-  }
-
   updateAttributes(sourceAttributes: Array<[string, string]>) {
     const targetAttributeObjects = Object.fromEntries(this.attributes);
     sourceAttributes.forEach(([key, value]) => (targetAttributeObjects[key] = value));
     this.attributes = Object.entries(targetAttributeObjects);
   }
 
-  populate(elementJson: HtmlAsJsonElement): StructuredHtmlElement | undefined {
-    if (elementJson.id === this.id) {
+  populate(elementJson?: HtmlAsJsonElement): StructuredHtmlElement | undefined {
+    if (elementJson?.id === this.id) {
       this.updateAttributes(elementJson.attributes);
       this.updateChildren(elementJson.children);
       this.childrenAsMarkdown = this.createMarkdownChildren(this.children, this.options);

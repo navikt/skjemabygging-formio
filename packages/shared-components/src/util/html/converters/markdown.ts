@@ -20,7 +20,7 @@ const linkMarkdown2HtmlString = (markdown: string): string => {
     const text = captures[1];
     const url = captures[2];
 
-    return `<a href=${url}>${text}</a>`;
+    return `<a target="_blank" rel="noopener noreferrer" href=${url}>${text}</a>`;
   }
   return markdown;
 };

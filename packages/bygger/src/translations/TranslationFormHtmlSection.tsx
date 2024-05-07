@@ -162,14 +162,11 @@ const TranslationFormHtmlSection = ({ text, storedTranslation, updateTranslation
                 key={`html-translation-${originalElement.id}`}
                 text={originalElement.innerText}
                 html={originalElement}
-                translationParentId={translationObject.current?.id}
                 currentTranslation={translationChild}
-                updateTranslation={({ id, parentId, value }) => {
+                updateTranslation={({ id, value }) => {
                   if (translationObject.current) {
                     if (id) {
                       translationObject.current.update(id, value);
-                    } else if (parentId) {
-                      translationObject.current.add(parentId, value);
                     } else {
                       throw Error("Can't update translation without an id");
                     }

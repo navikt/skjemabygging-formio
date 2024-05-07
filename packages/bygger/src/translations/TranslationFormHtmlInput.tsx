@@ -6,17 +6,11 @@ interface Props {
   text: string;
   html: StructuredHtml;
   currentTranslation?: StructuredHtml;
-  updateTranslation: (element: { id?: string; parentId?: string; value: string }) => void;
+  updateTranslation: (element: { id?: string; value: string }) => void;
   translationParentId?: string;
 }
 
-const TranslationFormHtmlInput = ({
-  text,
-  html,
-  currentTranslation,
-  updateTranslation,
-  translationParentId,
-}: Props) => {
+const TranslationFormHtmlInput = ({ text, html, currentTranslation, updateTranslation }: Props) => {
   const isMarkdown =
     StructuredHtml.isElement(html) && html.containsMarkdown && StructuredHtml.isElement(currentTranslation);
   const isText = StructuredHtml.isText(html) && text.replace(/\s/g, '').length > 0;
@@ -47,9 +41,11 @@ const TranslationFormHtmlInput = ({
             textContentWithWhiteSpaces = `${textContentWithWhiteSpaces} `;
           }
 
-          if (textContentWithWhiteSpaces !== originalValue) {
-            const id = isTranslationText ? { id: currentTranslation.id } : { parentId: translationParentId };
-            updateTranslation({ ...id, value: textContentWithWhiteSpaces });
+          if (
+            textContentWithWhiteSpaces !== originalValue &&
+            !(textContentWithWhiteSpaces.length === 0 && originalValue === null)
+          ) {
+            updateTranslation({ id: currentTranslation?.id, value: textContentWithWhiteSpaces });
           }
         }}
         onChange={undefined}
