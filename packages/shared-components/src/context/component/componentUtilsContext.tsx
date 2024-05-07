@@ -24,7 +24,7 @@ export const ComponentUtilsProvider = ({ children, ...props }: ComponentUtilsPro
         appConfig: component?.getAppConfig(),
         translate: (originalText, params) => component?.t(originalText, params),
         locale: component?.getLocale(),
-        addRef: component?.addRef,
+        addRef: component?.addRef.bind(component),
       }}
     >
       {children}
