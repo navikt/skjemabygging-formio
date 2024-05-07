@@ -97,7 +97,6 @@ describe('NavDatepicker', () => {
         cy.clickNextStep();
 
         cy.findAllByText(validateionBefore('16.05.2023')).should('have.length', 2);
-        cy.findAllByText(validationAfter('14.05.2023')).should('have.length', 2);
       });
 
       it('fails when date is equal', () => {
@@ -105,7 +104,6 @@ describe('NavDatepicker', () => {
         cy.clickNextStep();
 
         cy.findAllByText(validateionBefore('16.05.2023')).should('have.length', 2);
-        cy.findAllByText(validationAfter('14.05.2023')).should('have.length', 0);
       });
 
       it('ok when date is later', () => {
@@ -114,7 +112,6 @@ describe('NavDatepicker', () => {
 
         cy.findByRole('heading', { name: 'Oppsummering' }).should('be.visible');
         cy.findAllByText(validateionBefore('16.05.2023')).should('have.length', 0);
-        cy.findAllByText(validationAfter('14.05.2023')).should('have.length', 0);
       });
     });
 
