@@ -59,7 +59,11 @@ describe('Basic form', () => {
     // for å verifisere at ingen valideringsfeil oppstår grunnet manglende verdier.
     cy.findByRoleWhenAttached('link', { name: TEXTS.grensesnitt.summaryPage.editAnswers }).should('exist').click();
 
-    cy.findByRoleWhenAttached('heading', { level: 2, name: 'Veiledning' }).should('exist');
+    // There is a weird re-render happening after navigating back to the form,
+    // where the first panel will be rendered for a time before redirecting to the intended panel.
+    // If the user navigates during this time period, the navigation is ignored.
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(500);
 
     submissionMethod === 'paper' ? cy.clickNextStep() : cy.clickSaveAndContinue();
 
