@@ -25,7 +25,7 @@ describe('Basic form', () => {
       .should('exist')
       .within(($radio) => cy.findByLabelText('Nei').should('exist').check({ force: true }));
 
-    cy.findByRole('textbox', { name: 'Din fødselsdato (dd.mm.åååå)' }).should('exist').type('10.05.1995{esc}');
+    cy.findByRole('textbox', { name: 'Din fødselsdato (dd.mm.åååå)' }).should('exist').type('10.05.1995');
     cy.get('.navds-radio-group')
       .eq(1)
       .should('exist')
@@ -63,7 +63,7 @@ describe('Basic form', () => {
     // where the first panel will be rendered for a time before redirecting to the intended panel.
     // If the user navigates during this time period, the navigation is ignored.
     // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(500);
+    cy.wait(1000);
 
     submissionMethod === 'paper' ? cy.clickNextStep() : cy.clickSaveAndContinue();
 
