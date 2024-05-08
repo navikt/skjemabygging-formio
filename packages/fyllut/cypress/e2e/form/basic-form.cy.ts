@@ -25,7 +25,7 @@ describe('Basic form', () => {
       .should('exist')
       .within(($radio) => cy.findByLabelText('Nei').should('exist').check({ force: true }));
 
-    cy.findByRole('textbox', { name: 'Din fødselsdato (dd.mm.åååå)' }).should('exist').type('10.05.1995');
+    cy.findByRole('textbox', { name: 'Din fødselsdato (dd.mm.åååå)' }).should('exist').type('10.05.1995{esc}');
     cy.get('.navds-radio-group')
       .eq(1)
       .should('exist')
