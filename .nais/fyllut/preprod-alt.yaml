@@ -16,6 +16,10 @@ azure:
   application:
     tenant: trygdeetaten.no
 accessPolicy:
+  inbound:
+    rules:
+      - application: send-inn-frontend-alt
+        namespace: team-soknad
   outbound:
     rules:
       - application: skjemabygging-proxy
