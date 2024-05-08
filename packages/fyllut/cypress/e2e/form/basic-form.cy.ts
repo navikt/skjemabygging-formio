@@ -53,7 +53,7 @@ describe('Basic form', () => {
 
     // Step 3 -> Oppsummering
     submissionMethod === 'paper' ? cy.clickNextStep() : cy.clickSaveAndContinue();
-    cy.findByRole('heading', { level: 2, name: 'Oppsummering' }).should('exist');
+    cy.findByRoleWhenAttached('heading', { level: 2, name: 'Oppsummering' }).should('exist');
 
     // Gå tilbake til skjema fra oppsummering, og naviger til oppsummering på nytt
     // for å verifisere at ingen valideringsfeil oppstår grunnet manglende verdier.
