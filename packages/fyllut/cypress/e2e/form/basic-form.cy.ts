@@ -59,12 +59,15 @@ describe('Basic form', () => {
     // for å verifisere at ingen valideringsfeil oppstår grunnet manglende verdier.
     cy.findByRoleWhenAttached('link', { name: TEXTS.grensesnitt.summaryPage.editAnswers }).should('exist').click();
 
+    cy.findByRoleWhenAttached('heading', { level: 2, name: 'Veiledning' }).should('exist');
+
     submissionMethod === 'paper' ? cy.clickNextStep() : cy.clickSaveAndContinue();
-    cy.findByRole('heading', { level: 2, name: 'Dine opplysninger' }).should('exist');
-    cy.findByRole('textbox', { name: 'Din fødselsdato (dd.mm.åååå)' }).should('exist');
+
+    cy.findByRoleWhenAttached('heading', { level: 2, name: 'Dine opplysninger' }).should('exist');
+    cy.findByRoleWhenAttached('textbox', { name: 'Din fødselsdato (dd.mm.åååå)' }).should('exist');
     if (expectVedleggspanel) {
       cy.clickNextStep();
-      cy.findByRole('heading', { level: 2, name: 'Vedlegg' }).should('exist');
+      cy.findByRoleWhenAttached('heading', { level: 2, name: 'Vedlegg' }).should('exist');
     }
 
     submissionMethod === 'paper' ? cy.clickNextStep() : cy.clickSaveAndContinue();
@@ -134,7 +137,7 @@ describe('Basic form', () => {
     });
 
     describe('Fill in form', () => {
-      it.only('fill in - go to summary - edit form - navigate back to summary', () => {
+      it('fill in - go to summary - edit form - navigate back to summary', () => {
         cy.clickStart();
         cy.wait('@createMellomlagring');
         fillInForm(false, 'digital');
