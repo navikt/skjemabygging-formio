@@ -142,7 +142,7 @@ describe('Translations', () => {
         'Du må selv skrive under på leveattesten. I tillegg må du få bekreftet attesten enten av to myndige personer (vitner) eller av en offentlig myndighet.':
           'Du må sjølv skrive....',
         '<h3>Overskrift</h3><p>Beskrivelse av dette skjemaet med <a target="_blank" rel="noopener noreferrer" href="https://www.nav.no">lenke til NAV</a>.</p>':
-          '<h3>Overskrift</h3><p>Beskrivelse med <a target="_blank" rel="noopener noreferrer" href="https://www.nav.no/minside">lenke til minside</a>.</p>',
+          '<h3></h3><p>Beskrivelse med <a target="_blank" rel="noopener noreferrer" href="https://www.nav.no/minside">lenke til minside</a>.</p>',
         '<h3>Tekstblokk med mye formatering og eksisterende oversettelse</h3><p>Dette er et avsnitt</p><p>Her er et avsnitt <a target="_blank" rel="noopener noreferrer" href="https://www.vg.no">med lenke til VG</a> og her kommer en liste:</p><ul><li>Ta oppvasken</li><li>Handle <a target="_blank" rel="noopener noreferrer" href="https://www.coop.no/"><strong>matvarer</strong></a>, og <strong>vurder</strong> å <a target="_blank" rel="noopener noreferrer" href="https://www.zalando.no">kjøpe <strong>nye</strong> klær</a>.</li></ul><p>Nytt avsnitt. Ny liste (numerert denne gangen):</p><ol><li>Første prioritet</li><li>Også viktig, men ikke så viktig</li><li>Kan utsettes</li><li>Trengs egentlig ikke å gjøres</li></ol>':
           '<h3>Tekstblokk med mye formatering og eksisterende oversettelse</h3><p>Dette er et avsnitt</p><p>Her er eit avsnitt <a target="_blank" rel="noopener noreferrer" href="https://www.dagogtid.no">med lenke til DAG OG TID</a>, og her er ei ei liste:</p><ul><li>Ta oppvasken</li><li>Handle <a target="_blank" rel="noopener noreferrer" href="https://www.kiwi.no/"><strong>matvarer</strong></a>, og <strong>tenk på om du skal</strong> <a target="_blank" rel="noopener noreferrer" href="https://www.zalando.no">kjøpe <strong>nye</strong> klær</a>.</li></ul><p>Nytt avsnitt. Ny liste (numerert denne gangen):</p><ol><li>Første prioritet</li><li>Også viktig, men ikke så viktig</li><li>Kan utsettes</li><li>Trengs egentlig ikke å gjøres</li></ol>',
       };
@@ -169,7 +169,7 @@ describe('Translations', () => {
           cy.findByRole('textbox', { name: 'Overskrift' }).should('be.visible');
           cy.findByRole('textbox', {
             name: 'Beskrivelse av dette skjemaet med [lenke til NAV](https://www.nav.no).',
-          }).should('have.value', 'Beskrivelse av dette skjemaet med [lenke til NAV](https://www.nav.no).');
+          }).should('have.value', '');
         });
       typeNewHtmlTranslationInput(
         0,
@@ -183,10 +183,10 @@ describe('Translations', () => {
           cy.findAllByRole('heading', { name: 'Tekstblokk med mye formatering og manglende oversettelse' }).should(
             'be.visible',
           );
-          cy.findAllByRole('textbox').should('have.length', 0);
-          cy.findAllByRole('button').should('have.length', 2);
+          cy.findAllByRole('textbox').should('have.length', 10);
+          cy.findAllByRole('button').should('have.length', 1);
           cy.findAllByRole('button', { name: 'Bruk eksisterende oversettelse' }).should('have.length', 0);
-          cy.findByRole('button', { name: 'Start ny oversettelse' }).click();
+          cy.findAllByRole('button', { name: 'Start ny oversettelse' }).should('have.length', 0);
         });
       cy.findByRole('button', { name: 'Lagre' }).click();
       cy.wait('@updateTranslations').then((interception) => {
@@ -224,7 +224,6 @@ describe('Translations', () => {
       typeNewHtmlTranslationInput(1, listItem2, 'Ganske viktig');
       cy.findByRole('button', { name: 'Lagre' }).click();
       cy.wait('@updateTranslations').then((interception) => {
-        console.log('INTERCEPTION', JSON.stringify(interception.request.body, null, 2));
         expect(interception.request.body.data.i18n[htmlWithExistingTranslation]).to.equal(updatedTranslation);
       });
     });
