@@ -10,7 +10,7 @@ import TranslationTextInput from './TranslationTextInput';
 const useStyles = makeStyles({
   undoButton: {
     width: 'fit-content',
-    marginBottom: 'var(--a-spacing-8)',
+    margin: 'var(--a-spacing-4) 0',
   },
 });
 interface Props {
@@ -67,8 +67,21 @@ const FormItem = ({ translations, text, type, languageCode }: Props) => {
       />
     );
   }
+
   return (
     <div className="mb-4">
+      {useLegacyHtmlTranslation && (
+        <Button
+          className={styles.undoButton}
+          type="button"
+          size="small"
+          variant="secondary"
+          onClick={() => setUseLegacyHtmlTranslation(false)}
+          icon={<ArrowUndoIcon aria-hidden />}
+        >
+          Gå tilbake til vanlig HTML-oversetting
+        </Button>
+      )}
       <TranslationTextInput
         text={text}
         value={currentTranslation}
@@ -82,18 +95,6 @@ const FormItem = ({ translations, text, type, languageCode }: Props) => {
         setHasGlobalTranslation={setHasGlobalTranslation}
         setGlobalTranslation={setCurrentTranslation}
       />
-      {useLegacyHtmlTranslation && (
-        <Button
-          className={styles.undoButton}
-          type="button"
-          size="small"
-          variant="secondary"
-          onClick={() => setUseLegacyHtmlTranslation(false)}
-          icon={<ArrowUndoIcon aria-hidden />}
-        >
-          Gå tilbake til vanlig HTML-oversetting
-        </Button>
-      )}
     </div>
   );
 };

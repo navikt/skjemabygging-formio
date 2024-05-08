@@ -1,5 +1,5 @@
-import { PlusIcon, XMarkIcon } from '@navikt/aksel-icons';
-import { Alert, Box, Button, HStack, Heading, HelpText, VStack } from '@navikt/ds-react';
+import { ArrowUndoIcon, PlusIcon, XMarkIcon } from '@navikt/aksel-icons';
+import { Box, Button, HStack, Heading, HelpText, VStack } from '@navikt/ds-react';
 import {
   StructuredHtml,
   StructuredHtmlElement,
@@ -18,7 +18,7 @@ interface Props {
 
 const useStyles = makeStyles({
   outerBox: {
-    marginBottom: '1rem',
+    marginBottom: 'var(--a-spacing-8)',
     paddingBottom: 'var(--a-spacing-4)',
   },
   markdownExample: {
@@ -35,6 +35,15 @@ const useStyles = makeStyles({
 const TranslationFormHtmlSection = ({ text, storedTranslation, updateTranslation, onSelectLegacy }: Props) => {
   const translationObject = useRef<StructuredHtmlElement>();
   const [translationReady, setTranslationReady] = useState(false);
+  const [incompatibleTranslation, setIncompatibleTranslation] = useState<string>();
+
+  const startNewTranslation = () => {
+    translationObject.current = new StructuredHtmlElement(text, {
+      skipConversionWithin: ['H3', 'P', 'LI'],
+      withEmptyTextContent: true,
+    });
+    setTranslationReady(true);
+  };
 
   const html = useMemo(
     () =>
@@ -44,35 +53,24 @@ const TranslationFormHtmlSection = ({ text, storedTranslation, updateTranslation
     [text],
   );
 
-  const translationIsMissing = useMemo(
-    () => !translationObject.current && (!storedTranslation || !htmlConverter.isHtmlString(storedTranslation)),
-    [storedTranslation],
-  );
-
-  const incompatibleTranslationExists = useMemo(() => {
-    if (!translationObject.current) {
-      return !html?.matches(new StructuredHtmlElement(storedTranslation, { skipConversionWithin: ['H3', 'P', 'LI'] }));
-    }
-  }, [html, storedTranslation]);
-
   useEffect(() => {
-    if (!translationObject.current && !translationIsMissing && !incompatibleTranslationExists) {
-      translationObject.current = new StructuredHtmlElement(storedTranslation, {
-        skipConversionWithin: ['H3', 'P', 'LI'],
-      });
-      setTranslationReady(true);
+    if (!translationObject.current && !incompatibleTranslation) {
+      if (!storedTranslation) {
+        startNewTranslation();
+      } else if (
+        !html?.matches(new StructuredHtmlElement(storedTranslation, { skipConversionWithin: ['H3', 'P', 'LI'] }))
+      ) {
+        setIncompatibleTranslation(storedTranslation);
+      } else {
+        translationObject.current = new StructuredHtmlElement(storedTranslation, {
+          skipConversionWithin: ['H3', 'P', 'LI'],
+        });
+        setTranslationReady(true);
+      }
     }
-  }, [incompatibleTranslationExists, storedTranslation, translationIsMissing]);
+  }, [html, incompatibleTranslation, startNewTranslation, storedTranslation]);
 
   const styles = useStyles();
-
-  const startNewTranslation = () => {
-    translationObject.current = new StructuredHtmlElement(text, {
-      skipConversionWithin: ['H3', 'P', 'LI'],
-      withEmptyTextContent: true,
-    });
-    setTranslationReady(true);
-  };
 
   if (StructuredHtml.isElement(html)) {
     return (
@@ -110,23 +108,7 @@ const TranslationFormHtmlSection = ({ text, storedTranslation, updateTranslation
           </HelpText>
         </HStack>
         <hr className={styles.divider} />
-        {translationIsMissing && (
-          <VStack gap="4" align="start">
-            <Alert inline size="small" variant="warning">
-              Oversettelse mangler. Klikk "Start ny oversettelse" for å legge til ny.
-            </Alert>
-            <Button
-              type="button"
-              size="small"
-              variant="primary"
-              onClick={startNewTranslation}
-              icon={<PlusIcon aria-hidden />}
-            >
-              Start ny oversettelse
-            </Button>
-          </VStack>
-        )}
-        {incompatibleTranslationExists && (
+        {incompatibleTranslation && !translationReady && (
           <VStack gap="4" align="start">
             <hr className={styles.divider} />
             <Heading size={'xsmall'}>Teksten har en eksisterende oversettelse som ikke følger samme struktur</Heading>
@@ -152,6 +134,22 @@ const TranslationFormHtmlSection = ({ text, storedTranslation, updateTranslation
               </Button>
             </HStack>
           </VStack>
+        )}
+
+        {incompatibleTranslation && translationReady && (
+          <Button
+            className="mb-4"
+            type="button"
+            size="small"
+            variant="secondary"
+            onClick={() => {
+              updateTranslation(incompatibleTranslation);
+              setTranslationReady(false);
+            }}
+            icon={<ArrowUndoIcon aria-hidden />}
+          >
+            Forkast og gå tilbake
+          </Button>
         )}
 
         {translationReady &&

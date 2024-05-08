@@ -12,7 +12,9 @@ class StructuredHtmlElement extends StructuredHtml {
     super(input, options, converter);
     const htmlElementJson = this.originalHtmlJson as HtmlAsJsonElement;
     this.tagName = htmlElementJson.tagName;
-    this.attributes = htmlElementJson.attributes;
+    this.attributes = htmlElementJson.attributes.filter(
+      ([key, _]) => !(options?.withEmptyTextContent && key === 'href'),
+    );
     this.children = this.createChildrenFromJson(htmlElementJson, options);
     this.childrenAsMarkdown = this.createMarkdownChildren(this.children, options);
   }
@@ -29,10 +31,7 @@ class StructuredHtmlElement extends StructuredHtml {
   }
 
   private createMarkdownChildren(children: StructuredHtml[], options?: StructuredHtmlOptions) {
-    if (
-      (options?.skipConversionWithin ?? ([] as string[])).includes(this.tagName) &&
-      children.some((child) => StructuredHtmlElement.isElement(child))
-    ) {
+    if ((options?.skipConversionWithin ?? ([] as string[])).includes(this.tagName)) {
       return children.map(
         (child) =>
           new StructuredHtmlText(
@@ -89,13 +88,7 @@ class StructuredHtmlElement extends StructuredHtml {
     if (this.containsMarkdown && other.containsMarkdown) {
       return true;
     }
-    let otherChildIndex = 0;
-    this.children.forEach((child) => {
-      if (other.children[otherChildIndex] && child.matches(other.children[otherChildIndex])) {
-        otherChildIndex++;
-      }
-    });
-    return otherChildIndex >= other.children.length;
+    return this.children.every((child, index) => child.matches(other.children[index]));
   }
 
   get type(): 'Element' {

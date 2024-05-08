@@ -69,9 +69,12 @@ const htmlNode2Markdown = (node: Element | ChildNode): string => {
         return Array.from(element.childNodes, htmlNode2Markdown).join('');
       case 'STRONG':
       case 'B':
-        return `**${Array.from(element.childNodes, htmlNode2Markdown).join('')}**`;
+        const boldText = Array.from(element.childNodes, htmlNode2Markdown).join('');
+        return boldText ? `**${boldText}**` : '';
       case 'A':
-        return `[${Array.from(element.childNodes, htmlNode2Markdown).join('')}](${element.getAttribute('href')})`;
+        const linkText = Array.from(element.childNodes, htmlNode2Markdown).join('');
+        const url = element.getAttribute('href');
+        return linkText || url ? `[${linkText}](${url})` : '';
       default:
         return json2HtmlString(fromNode(element));
     }
