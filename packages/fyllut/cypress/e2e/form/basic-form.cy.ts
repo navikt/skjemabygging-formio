@@ -73,7 +73,7 @@ describe('Basic form', () => {
     submissionMethod === 'paper' ? cy.clickNextStep() : cy.clickSaveAndContinue();
 
     // Oppsummering
-    cy.findByRole('heading', { level: 2, name: 'Oppsummering' }).should('exist');
+    cy.findByRoleWhenAttached('heading', { level: 2, name: 'Oppsummering' }).should('exist');
     cy.get('dl')
       .eq(1)
       .within(() => {
