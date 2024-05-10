@@ -7,7 +7,7 @@ const WizardBuilder = Formio.Builders.builders.wizard;
 // @ts-ignore
 const WebformBuilder = Formio.Builders.builders.webform;
 
-// WizardBuilder uses the "addPage" function to pate component which doesn't use the formio clipboard
+// WizardBuilder uses the "addPage" function to paste component which doesn't use the formio clipboard
 WizardBuilder.prototype.pasteComponent = function (component) {
   WebformBuilder.prototype.pasteComponent.call(this, component);
 };
