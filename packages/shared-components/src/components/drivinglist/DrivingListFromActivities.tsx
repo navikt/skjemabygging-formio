@@ -74,6 +74,31 @@ const DrivingListFromActivities = ({ activities }: Props) => {
     }
   };
 
+  const noPeriodsAlert = (vedtakPeriods: VedtakBetalingsplan[], selectedVedtak: AktivitetVedtaksinformasjon) => {
+    if (vedtakPeriods.length === 0) {
+      const nextPeriodFom = selectedVedtak?.betalingsplan
+        ?.filter((x) => !!x.journalpostId === false)
+        ?.filter((x) => new Date(x.utgiftsperiode.tom) > new Date())?.[0]?.utgiftsperiode?.fom;
+
+      return (
+        <Alert variant="info" className="mb">
+          <BodyShort>
+            {t(TEXTS.statiske.drivingList.noPeriods, {
+              date: dateUtils.toLocaleDateLongMonth(nextPeriodFom, locale),
+            })}
+          </BodyShort>
+        </Alert>
+      );
+    }
+  };
+
+  const filteredVedtakPeriods = (selectedVedtak: AktivitetVedtaksinformasjon) => {
+    return selectedVedtak?.betalingsplan
+      ?.filter((x) => !!x.journalpostId === false)
+      ?.filter((x) => new Date(x.utgiftsperiode.tom) < new Date())
+      ?.sort((a, b) => new Date(a.utgiftsperiode.fom).getTime() - new Date(b.utgiftsperiode.fom).getTime());
+  };
+
   const renderDrivingListFromActivities = () => {
     const activitySelections = mapToSubmissionActivity(activities, 'vedtak', locale);
     const vedtakSelection = activitySelections.find((activity) => activity.vedtaksId === values?.selectedVedtaksId);
@@ -114,6 +139,7 @@ const DrivingListFromActivities = ({ activities }: Props) => {
             <Heading size="xsmall" className={styles.accoridonHeader}>
               {TEXTS.statiske.drivingList.accordionHeader}
             </Heading>
+            {noPeriodsAlert(filteredVedtakPeriods(selectedVedtak), selectedVedtak)}
             <Accordion
               tabIndex={-1}
               id={drivingListMetadata('dates').id}
@@ -121,14 +147,11 @@ const DrivingListFromActivities = ({ activities }: Props) => {
               size="small"
               ref={(ref) => addRef('dates', ref)}
             >
-              {selectedVedtak?.betalingsplan
-                .filter((x) => !!x.journalpostId === false)
-                .filter((x) => new Date(x.utgiftsperiode.tom) < new Date())
-                .sort((a, b) => new Date(a.utgiftsperiode.fom).getTime() - new Date(b.utgiftsperiode.fom).getTime())
-                .map((betalingsplan, index) =>
-                  renderDrivingPeriodsFromActivities(betalingsplan, index, selectedVedtak),
-                )}
+              {filteredVedtakPeriods(selectedVedtak).map((betalingsplan, index) =>
+                renderDrivingPeriodsFromActivities(betalingsplan, index, selectedVedtak),
+              )}
             </Accordion>
+
             {alreadyRefunded.length > 0 && (
               <div className={'mb'}>
                 <Heading size="small" spacing={true}>
