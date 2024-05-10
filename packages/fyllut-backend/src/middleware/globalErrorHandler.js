@@ -1,4 +1,5 @@
 import correlator from 'express-correlation-id';
+import { v4 as uuidv4 } from 'uuid';
 import { config } from '../config/config';
 import { logger } from '../logger.js';
 
@@ -6,7 +7,7 @@ const { isTest } = config;
 
 const globalErrorHandler = (err, req, res, _next) => {
   if (!err.correlation_id) {
-    err.correlation_id = correlator.getId();
+    err.correlation_id = correlator.getId() ?? uuidv4();
   }
 
   if (!isTest) {

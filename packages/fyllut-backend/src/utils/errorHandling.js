@@ -1,4 +1,5 @@
 import correlator from 'express-correlation-id';
+import { v4 as uuidv4 } from 'uuid';
 
 /**
  *
@@ -14,7 +15,7 @@ async function responseToError(response, errorMessage, functional = false) {
   error.http_response_body = contentType?.includes('application/json') ? await response.json() : await response.text();
   error.http_url = response.url;
   error.http_status = response.status;
-  error.correlation_id = correlator.getId();
+  error.correlation_id = correlator.getId() ?? uuidv4();
   return error;
 }
 
@@ -24,7 +25,7 @@ function synchronousResponseToError(errorMessage, body, status, url, functional 
   error.http_response_body = body;
   error.http_url = url;
   error.http_status = status;
-  error.correlation_id = correlator.getId();
+  error.correlation_id = correlator.getId() ?? uuidv4();
   return error;
 }
 

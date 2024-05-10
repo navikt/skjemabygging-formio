@@ -1,6 +1,7 @@
 import ecsFormat from '@elastic/ecs-morgan-format';
 import correlator from 'express-correlation-id';
 import morgan from 'morgan';
+import { v4 as uuidv4 } from 'uuid';
 import { config } from '../config/config';
 import { isEnabled } from '../logging';
 import { clean } from '../utils/logCleaning.js';
@@ -15,7 +16,7 @@ const httpRequestLogger = morgan(
       clean({
         ...logEntry,
         level: res.statusCode < 500 ? 'Info' : 'Error',
-        correlation_id: correlator.getId(),
+        correlation_id: correlator.getId() ?? uuidv4(),
       }),
     );
   },

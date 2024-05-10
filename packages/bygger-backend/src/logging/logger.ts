@@ -1,8 +1,9 @@
 import correlator from 'express-correlation-id';
+import { v4 as uuidv4 } from 'uuid';
 import { createLogger, format, transports } from 'winston';
 
 const correlationIdFormat = format((info) => {
-  info.correlation_id = correlator.getId();
+  info.correlation_id = correlator.getId() ?? uuidv4();
   return info;
 });
 
