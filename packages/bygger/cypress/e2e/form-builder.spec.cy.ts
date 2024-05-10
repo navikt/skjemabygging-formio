@@ -166,6 +166,27 @@ describe('Form Builder', () => {
       cy.visit('forms/cypresssettings');
     });
 
+    describe('component with same navId', () => {
+      beforeEach(() => {
+        cy.findByRole('link', { name: 'Dine opplysninger' }).click();
+      });
+
+      it('should show error message stating duplicate navId', () => {
+        cy.get('[title="Rediger JSON"]').spread((_editPanelButton, editFornavnComponent) =>
+          editFornavnComponent.click({ force: true }),
+        );
+
+        // Replace existing navId with the navId of another component
+        cy.get('.ace_text-input').type(
+          '{downArrow}{rightArrow}{rightArrow}{rightArrow}{rightArrow}{rightArrow}{rightArrow}{rightArrow}{rightArrow}{rightArrow}{rightArrow}{rightArrow}{del}{del}{del}{del}{del}{del}{del}annenDokumentasjonNavId',
+          { force: true },
+        );
+
+        cy.get('[data-testid="editorSaveButton"]').click();
+        cy.findByText('NavId må være unik').should('exist');
+      });
+    });
+
     describe('component with same API key as panel', () => {
       beforeEach(() => {
         cy.findByRole('link', { name: 'Dine opplysninger' }).click();
@@ -178,7 +199,7 @@ describe('Form Builder', () => {
       });
 
       it('should show error message stating duplicate API key', () => {
-        cy.findByText('API Key is not unique: personopplysninger').should('exist');
+        cy.findByText('API Key må være unik: personopplysninger').should('exist');
       });
 
       it('should not remove panel when changing components key to something else', () => {

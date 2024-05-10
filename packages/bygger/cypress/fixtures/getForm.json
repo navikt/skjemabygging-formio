@@ -5,10 +5,7 @@
   "path": "cypresssettings",
   "type": "form",
   "display": "wizard",
-  "tags": [
-    "nav-skjema",
-    ""
-  ],
+  "tags": ["nav-skjema", ""],
   "owner": "2345yu3tg3ygew8",
   "components": [
     {
@@ -159,6 +156,7 @@
       "theme": "default",
       "components": [
         {
+          "navId": "fornavn",
           "label": "Fornavn",
           "type": "textfield",
           "key": "fornavnSoker",
@@ -315,6 +313,7 @@
           "type": "radiopanel",
           "key": "annenDokumentasjon",
           "input": true,
+          "navId": "annenDokumentasjonNavId",
           "clearOnHide": true,
           "validate": {
             "required": true
@@ -366,10 +365,7 @@
   "access": [
     {
       "type": "read_all",
-      "roles": [
-        "role1",
-        "role2"
-      ]
+      "roles": ["role1", "role2"]
     }
   ],
   "submissionAccess": [],
