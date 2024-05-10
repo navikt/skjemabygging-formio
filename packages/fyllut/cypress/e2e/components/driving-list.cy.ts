@@ -238,8 +238,8 @@ describe('DrivingList', () => {
     });
 
     it('should show info alert without periods (all in the future)', () => {
-      cy.visit(`/fyllut/testdrivinglist/veiledning?sub=digital`);
       cy.mocksUseRouteVariant('get-activities:success-future');
+      cy.visit(`/fyllut/testdrivinglist/veiledning?sub=digital`);
       cy.defaultWaits();
       cy.wait('@getActivities');
 
@@ -250,7 +250,7 @@ describe('DrivingList', () => {
         .eq(2)
         .within(() => {
           cy.findByText(
-            'Du har ingen tilgjengelige perioder å levere kjøreliste for. Husk at det er ikke mulig å levere kjørelister for perioder frem i tid. Neste periode er fra 08. januar 2099',
+            'Du har ingen tilgjengelige perioder å levere kjøreliste for. Husk at det ikke er mulig å levere kjørelister for perioder frem i tid. Neste periode er fra 08. januar 2099',
           ).should('exist');
         });
     });
