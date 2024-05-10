@@ -237,7 +237,7 @@ describe('DrivingList', () => {
         });
     });
 
-    it.only('should show info alert without periods (all in the future)', () => {
+    it('should show info alert without periods (all in the future)', () => {
       cy.visit(`/fyllut/testdrivinglist/veiledning?sub=digital`);
       cy.mocksUseRouteVariant('get-activities:success-future');
       cy.defaultWaits();
