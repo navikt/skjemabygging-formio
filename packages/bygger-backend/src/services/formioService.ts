@@ -175,8 +175,12 @@ export class FormioService {
     if (!props.modifiedBy) {
       props.modifiedBy = userName;
     }
-    console.log('DUPLICATES:', findDuplicateNavIds(form));
-    const enrichedForm = enrichComponents ? addNavIdToComponents(form) : form;
+
+    const formWithoutDuplicateNavids = replaceDuplicateNavIds(form);
+    const enrichedForm = enrichComponents
+      ? addNavIdToComponents(formWithoutDuplicateNavids)
+      : formWithoutDuplicateNavids;
+
     const formWithProps = updateProps(enrichedForm, props);
     const response: any = await fetchWithErrorHandling(`${updateFormUrl}/${form._id}`, {
       method: 'PUT',
@@ -216,28 +220,20 @@ const addNavIdToComponents = (form: NavFormType): NavFormType => ({
   components: navFormUtils.enrichComponentsWithNavIds(form.components)!,
 });
 
-const findDuplicateNavIds = (form: NavFormType): string[] => {
-  const duplicateNavIds = new Set<string>();
-  const navIds = new Map<string, string[]>();
+const replaceDuplicateNavIds = (form: NavFormType) => {
+  const navIds: string[] = [];
 
-  FormioUtils.eachComponent(form.components, (comp, path) => {
+  FormioUtils.eachComponent(form.components, (comp) => {
     if (!comp.navId) {
       return;
     }
 
-    if (navIds.has(comp.navId)) {
-      const paths = navIds.get(comp.navId)!;
-      navIds.set(comp.navId, [...paths, path]);
+    if (navIds.includes(comp.navId)) {
+      comp.navId = FormioUtils.getRandomComponentId();
     } else {
-      navIds.set(comp.navId, [path]);
+      navIds.push(comp.navId);
     }
   });
 
-  navIds.forEach((paths) => {
-    if (paths.length >= 2) {
-      paths.forEach((path) => duplicateNavIds.add(path));
-    }
-  });
-
-  return Array.from(duplicateNavIds);
+  return form;
 };
