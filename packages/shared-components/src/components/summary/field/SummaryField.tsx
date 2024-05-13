@@ -1,4 +1,5 @@
 import { Summary } from '@navikt/skjemadigitalisering-shared-domain';
+import DOMPurify from 'dompurify';
 
 export interface Props {
   component: Summary.Field;
@@ -8,7 +9,11 @@ export interface Props {
 const SummaryField = ({ component, html }: Props) => (
   <>
     <dt>{component.label}</dt>
-    {html ? <dd dangerouslySetInnerHTML={{ __html: component.value }} /> : <dd>{component.value}</dd>}
+    {html ? (
+      <dd dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(`${component.value}`) }} />
+    ) : (
+      <dd>{component.value}</dd>
+    )}
   </>
 );
 

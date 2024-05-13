@@ -1,5 +1,6 @@
 import { Tag } from '@navikt/ds-react';
 import { Component, formDiffingTool, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import DOMPurify from 'dompurify';
 import Field from 'formiojs/components/_classes/field/Field';
 import FormioUtils from 'formiojs/utils';
 import { ReactNode } from 'react';
@@ -127,7 +128,7 @@ class BaseComponent extends FormioReactComponent {
    */
   getDescription(): ReactNode {
     return this.component?.description ? (
-      <div dangerouslySetInnerHTML={{ __html: this.t(this.component?.description) }}></div>
+      <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(this.t(this.component?.description)) }}></div>
     ) : undefined;
   }
 
