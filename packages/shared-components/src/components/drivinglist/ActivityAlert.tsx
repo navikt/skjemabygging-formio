@@ -32,7 +32,7 @@ const ActivityAlert = ({ vedtakData, className }: ActivityAlertProps) => {
         const vedtakPeriodFrom = vedtak.periode.fom;
         const vedtakPeriodTo = vedtak.periode.tom;
 
-        const period = `${dateUtils.toLocaleDateLongMonth(vedtakPeriodFrom, locale)} - ${dateUtils.toLocaleDateLongMonth(vedtakPeriodTo, locale)}`;
+        const period = `${dateUtils.toLocaleDateLongMonth(vedtakPeriodFrom, locale)} - ${vedtakPeriodTo ? dateUtils.toLocaleDateLongMonth(vedtakPeriodTo, locale) : ''}`;
 
         return (
           <div key={vedtak.vedtaksId} className={activityAlertStyles.vedtakGroup}>

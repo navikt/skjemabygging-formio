@@ -49,7 +49,7 @@ const DrivingListFromActivities = ({ activities }: Props) => {
     vedtak: AktivitetVedtaksinformasjon,
   ) => {
     const periodFrom = betalingsplan.utgiftsperiode.fom;
-    const periodTo = betalingsplan.utgiftsperiode.tom;
+    const periodTo = betalingsplan.utgiftsperiode.tom ?? new Date().toISOString();
 
     return (
       <DrivingPeriod
@@ -76,15 +76,18 @@ const DrivingListFromActivities = ({ activities }: Props) => {
 
   const noPeriodsAlert = (vedtakPeriods: VedtakBetalingsplan[], selectedVedtak: AktivitetVedtaksinformasjon) => {
     if (vedtakPeriods.length === 0) {
-      const nextPeriodFom = selectedVedtak?.betalingsplan
+      const futurePeriodEnds = selectedVedtak?.betalingsplan
         ?.filter((x) => !!x.journalpostId === false)
-        ?.filter((x) => new Date(x.utgiftsperiode.tom) > new Date())?.[0]?.utgiftsperiode?.fom;
+        ?.filter((x) => (x.utgiftsperiode.tom ? new Date(x.utgiftsperiode?.tom) > new Date() : true));
 
+      const nextPeriodEnd = futurePeriodEnds?.[0]?.utgiftsperiode?.tom;
+
+      if (!nextPeriodEnd) return null;
       return (
         <Alert variant="info" className="mb">
           <BodyShort>
             {t(TEXTS.statiske.drivingList.noPeriods, {
-              date: dateUtils.toLocaleDateLongMonth(nextPeriodFom, locale),
+              date: dateUtils.toLocaleDateLongMonth(nextPeriodEnd, locale),
             })}
           </BodyShort>
         </Alert>
@@ -95,7 +98,7 @@ const DrivingListFromActivities = ({ activities }: Props) => {
   const filteredVedtakPeriods = (selectedVedtak: AktivitetVedtaksinformasjon) => {
     return selectedVedtak?.betalingsplan
       ?.filter((x) => !!x.journalpostId === false)
-      ?.filter((x) => new Date(x.utgiftsperiode.tom) < new Date())
+      ?.filter((x) => (x.utgiftsperiode?.tom ? new Date(x.utgiftsperiode.tom) < new Date() : true))
       ?.sort((a, b) => new Date(a.utgiftsperiode.fom).getTime() - new Date(b.utgiftsperiode.fom).getTime());
   };
 
@@ -166,7 +169,7 @@ const DrivingListFromActivities = ({ activities }: Props) => {
                       return (
                         <li key={betalingsplan.betalingsplanId}>
                           <BodyShort size="medium">
-                            {`${dateUtils.toLocaleDateLongMonth(periodFrom, locale)} - ${dateUtils.toLocaleDateLongMonth(periodTo, locale)} (${betalingsplan.beloep} kr)`}
+                            {`${dateUtils.toLocaleDateLongMonth(periodFrom, locale)} ${periodTo ? ' - ' + dateUtils.toLocaleDateLongMonth(periodTo, locale) : ''} (${betalingsplan.beloep} kr)`}
                           </BodyShort>
                         </li>
                       );

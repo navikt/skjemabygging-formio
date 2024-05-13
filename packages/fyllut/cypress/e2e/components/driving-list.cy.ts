@@ -250,7 +250,7 @@ describe('DrivingList', () => {
         .eq(2)
         .within(() => {
           cy.findByText(
-            'Du har ingen tilgjengelige perioder å levere kjøreliste for. Husk at det ikke er mulig å levere kjørelister for perioder frem i tid. Neste periode er fra 08. januar 2099',
+            'Du har ingen tilgjengelige perioder å levere kjøreliste for. Husk at det ikke er mulig å levere kjørelister for perioder frem i tid. Neste periode slutter 14. januar 2099',
           ).should('exist');
         });
     });
