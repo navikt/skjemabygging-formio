@@ -11,6 +11,7 @@ import {
   ResourceName,
   stringUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
+import FormioUtils from '../../../shared-domain/src/utils/formio/FormioUtils';
 import config from '../config';
 import { fetchWithErrorHandling } from '../fetchUtils';
 import { logger } from '../logging/logger';
@@ -174,6 +175,7 @@ export class FormioService {
     if (!props.modifiedBy) {
       props.modifiedBy = userName;
     }
+    console.log('DUPLICATES:', findDuplicateNavIds(form));
     const enrichedForm = enrichComponents ? addNavIdToComponents(form) : form;
     const formWithProps = updateProps(enrichedForm, props);
     const response: any = await fetchWithErrorHandling(`${updateFormUrl}/${form._id}`, {
@@ -213,3 +215,29 @@ const addNavIdToComponents = (form: NavFormType): NavFormType => ({
   ...form,
   components: navFormUtils.enrichComponentsWithNavIds(form.components)!,
 });
+
+const findDuplicateNavIds = (form: NavFormType): string[] => {
+  const duplicateNavIds = new Set<string>();
+  const navIds = new Map<string, string[]>();
+
+  FormioUtils.eachComponent(form.components, (comp, path) => {
+    if (!comp.navId) {
+      return;
+    }
+
+    if (navIds.has(comp.navId)) {
+      const paths = navIds.get(comp.navId)!;
+      navIds.set(comp.navId, [...paths, path]);
+    } else {
+      navIds.set(comp.navId, [path]);
+    }
+  });
+
+  navIds.forEach((paths) => {
+    if (paths.length >= 2) {
+      paths.forEach((path) => duplicateNavIds.add(path));
+    }
+  });
+
+  return Array.from(duplicateNavIds);
+};
