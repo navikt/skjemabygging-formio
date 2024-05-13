@@ -21,7 +21,7 @@ export interface SendInnAktivitet {
 
 export interface AktivitetPeriode {
   fom: string;
-  tom: string;
+  tom?: string;
 }
 
 export interface AktivitetSaksinformasjon {
@@ -47,5 +47,5 @@ export interface VedtakBetalingsplan {
 
 export interface BetalingsplanUtgiftsperiode {
   fom: string;
-  tom: string;
+  tom?: string;
 }
