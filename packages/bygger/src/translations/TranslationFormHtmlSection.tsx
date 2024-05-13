@@ -6,6 +6,7 @@ import {
   htmlConverter,
   makeStyles,
 } from '@navikt/skjemadigitalisering-shared-components';
+import DOMPurify from 'dompurify';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import TranslationFormHtmlInput from './TranslationFormHtmlInput';
 
@@ -85,7 +86,7 @@ const TranslationFormHtmlSection = ({ text, storedTranslation, updateTranslation
         borderWidth="2"
       >
         <HStack justify="space-between" wrap={false}>
-          <div dangerouslySetInnerHTML={{ __html: text }} />
+          <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(text) }} />
           <HelpText title="Hjelp til bruk av markdown" placement="bottom">
             <p>Oversettelser av html bruker markdown til lenker og fet skrift.</p>
             Lenker skrives med klammer rundt lenketeksten etterfulgt av en url omgitt av parenteser
@@ -112,7 +113,7 @@ const TranslationFormHtmlSection = ({ text, storedTranslation, updateTranslation
           <VStack gap="4" align="start">
             <hr className={styles.divider} />
             <Heading size={'xsmall'}>Teksten har en eksisterende oversettelse som ikke følger samme struktur</Heading>
-            <div dangerouslySetInnerHTML={{ __html: storedTranslation }} />
+            <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(storedTranslation) }} />
             <HStack gap="6">
               <Button
                 type="button"

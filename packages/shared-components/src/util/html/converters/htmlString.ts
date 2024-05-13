@@ -1,3 +1,4 @@
+import DOMPurify from 'dompurify';
 import { HtmlAsJsonElement, HtmlAsJsonTextElement } from './htmlAsJson';
 import { fromElement, toNode } from './htmlNode';
 
@@ -8,8 +9,9 @@ import { fromElement, toNode } from './htmlNode';
 const isHtmlString = (text: string) => /<(?!br\s*\/?)[^>]+>/gm.test(text);
 
 const htmlString2Json = (htmlString: string): HtmlAsJsonElement => {
+  const sanitizedHtmlString = DOMPurify.sanitize(htmlString);
   const div = document.createElement('div');
-  div.innerHTML = htmlString;
+  div.innerHTML = sanitizedHtmlString;
   return JSON.parse(JSON.stringify(fromElement(div)));
 };
 

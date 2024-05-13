@@ -1,3 +1,4 @@
+import DOMPurify from 'dompurify';
 import React from 'react';
 import BaseComponent from '../../base/BaseComponent';
 import htmlElementBuilder from './HtmlElement.builder';
@@ -36,7 +37,7 @@ class HtmlElement extends BaseComponent {
         {this.getDiffTag()}
         {React.createElement(this.getTag(), {
           dangerouslySetInnerHTML: {
-            __html: this.getContent(),
+            __html: DOMPurify.sanitize(this.getContent()),
           },
         })}
       </div>,
