@@ -185,25 +185,20 @@ export const isSubmissionMethodAllowed = (submissionMethod: string, form: NavFor
 export const enrichComponentsWithNavIds = (
   components: Component[] | undefined,
   navIdGenerator: () => string = FormioUtils.getRandomComponentId,
-  overwriteNavIds = false,
 ): Component[] | undefined => {
   if (components) {
     return components.map((component) => {
       const subComponents = component.components;
-      if (!component.navId || overwriteNavIds) {
+      if (!component.navId) {
         return {
           ...component,
           navId: navIdGenerator(),
-          ...(subComponents && {
-            components: enrichComponentsWithNavIds(subComponents, navIdGenerator, overwriteNavIds),
-          }),
+          ...(subComponents && { components: enrichComponentsWithNavIds(subComponents, navIdGenerator) }),
         };
       }
       return {
         ...component,
-        ...(subComponents && {
-          components: enrichComponentsWithNavIds(subComponents, navIdGenerator, overwriteNavIds),
-        }),
+        ...(subComponents && { components: enrichComponentsWithNavIds(subComponents, navIdGenerator) }),
       };
     });
   }

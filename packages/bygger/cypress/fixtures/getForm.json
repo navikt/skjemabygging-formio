@@ -156,7 +156,6 @@
       "theme": "default",
       "components": [
         {
-          "navId": "fornavn",
           "label": "Fornavn",
           "type": "textfield",
           "key": "fornavnSoker",
@@ -313,7 +312,6 @@
           "type": "radiopanel",
           "key": "annenDokumentasjon",
           "input": true,
-          "navId": "annenDokumentasjonNavId",
           "clearOnHide": true,
           "validate": {
             "required": true
