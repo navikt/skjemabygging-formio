@@ -6,7 +6,7 @@ import { logger } from './logger.js';
 import metricsServer from './metrics-server';
 import './utils/errorToJson.js';
 
-const setupNodeCluster = !!process.env.NAIS_CLUSTER_NAME || process.env.ENABLE_CLUSTER === 'true';
+const setupNodeCluster = !!process.env.NAIS_CLUSTER_NAME || process.env.ENABLE_NODE_CLUSTER === 'true';
 const numCPUs = nodeOs.availableParallelism();
 const port = parseInt(process.env.PORT || '8080');
 const metricsPort = parseInt(process.env.METRICS_PORT || '4001');
