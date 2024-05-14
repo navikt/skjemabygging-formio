@@ -27,6 +27,7 @@ import cloneDeep from 'lodash.clonedeep';
 import isEqual from 'lodash.isequal';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import '../formio-overrides/builder-utils-overrides';
 import '../formio-overrides/webform-builder-overrides';
 import { builderStyles } from './styles';
 
