@@ -3,7 +3,7 @@ import { Component, formDiffingTool, navFormUtils } from '@navikt/skjemadigitali
 import Field from 'formiojs/components/_classes/field/Field';
 import FormioUtils from 'formiojs/utils';
 import { ReactNode } from 'react';
-import { InnerHtml } from '../../../index';
+import InnerHtml from '../../../components/inner-html/InnerHtml';
 import FormioReactComponent from './FormioReactComponent';
 import { blurHandler, focusHandler } from './focus-helpers';
 

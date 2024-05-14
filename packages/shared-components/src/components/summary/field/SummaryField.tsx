@@ -1,5 +1,5 @@
 import { Summary } from '@navikt/skjemadigitalisering-shared-domain';
-import { InnerHtml } from '../../../index';
+import InnerHtml from '../../inner-html/InnerHtml';
 
 export interface Props {
   component: Summary.Field;
