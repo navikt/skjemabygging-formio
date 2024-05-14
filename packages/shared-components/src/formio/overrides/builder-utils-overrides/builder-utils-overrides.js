@@ -1,7 +1,7 @@
 import FormioUtils from 'formiojs/utils';
 import BuilderUtils from 'formiojs/utils/builder';
 
-const originalUniqify = BuilderUtils.uniquify.bind({});
+const originalUniqify = BuilderUtils.uniquify;
 
 BuilderUtils.uniquify = function (container, component) {
   FormioUtils.eachComponent(
