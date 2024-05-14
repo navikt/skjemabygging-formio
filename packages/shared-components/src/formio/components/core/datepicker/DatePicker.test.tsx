@@ -100,11 +100,12 @@ describe('NavDatePicker', () => {
       expect(datepickerInput.value).toBe('01.01.2020');
 
       await userEvent.clear(datepickerInput);
+      datepickerInput.blur();
       expect(datepickerInput.value).toBe('');
 
       const nextButton = screen.getByRole('button', { name: 'Neste steg' });
       expect(nextButton).toBeInTheDocument();
-      nextButton.click();
+      await act(async () => nextButton.click());
 
       const errorMessage = await screen.findByText('Du må fylle ut: Dato (dd.mm.åååå)');
       expect(errorMessage).toBeInTheDocument();

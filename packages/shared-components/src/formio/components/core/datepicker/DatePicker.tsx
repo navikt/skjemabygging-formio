@@ -62,7 +62,11 @@ export default class DatePicker extends BaseComponent {
         this.t.bind(this),
       );
 
-      return this.setComponentValidity(errorMessage ? [this.createError(errorMessage, undefined)] : [], dirty, undefined);
+      return this.setComponentValidity(
+        errorMessage ? [this.createError(errorMessage, undefined)] : [],
+        dirty,
+        undefined,
+      );
     }
 
     return true;
@@ -99,10 +103,7 @@ export default class DatePicker extends BaseComponent {
     this.updateValue(value, { modified: true });
 
     if (this.component?.beforeDateInputKey) {
-      const referenceComponent = navFormUtils.findByKey(
-        this.component?.beforeDateInputKey,
-        this.root.getComponents(),
-      );
+      const referenceComponent = navFormUtils.findByKey(this.component?.beforeDateInputKey, this.root.getComponents());
       referenceComponent?.rerender?.();
     } else {
       this.getComponentsWithDateInputKey().map((component) => component.rerender?.());

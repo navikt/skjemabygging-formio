@@ -29,6 +29,7 @@ httpFyllut
 const renderReact = (dokumentInnsendingBaseURL, config) => {
   const root = createRoot(document.getElementById('root')!);
   root.render(
+    <StrictMode>
       <BrowserRouter basename="/fyllut">
         <AppConfigProvider
           dokumentinnsendingBaseURL={dokumentInnsendingBaseURL}
@@ -44,5 +45,6 @@ const renderReact = (dokumentInnsendingBaseURL, config) => {
           <App />
         </AppConfigProvider>
       </BrowserRouter>
+    </StrictMode>,
   );
 };
