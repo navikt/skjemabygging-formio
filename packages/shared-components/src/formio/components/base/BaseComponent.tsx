@@ -1,9 +1,9 @@
 import { Tag } from '@navikt/ds-react';
 import { Component, formDiffingTool, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
-import DOMPurify from 'dompurify';
 import Field from 'formiojs/components/_classes/field/Field';
 import FormioUtils from 'formiojs/utils';
 import { ReactNode } from 'react';
+import { InnerHtml } from '../../../index';
 import FormioReactComponent from './FormioReactComponent';
 import { blurHandler, focusHandler } from './focus-helpers';
 
@@ -127,9 +127,7 @@ class BaseComponent extends FormioReactComponent {
    * Get description for custom component renderReact()
    */
   getDescription(): ReactNode {
-    return this.component?.description ? (
-      <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(this.t(this.component?.description)) }}></div>
-    ) : undefined;
+    return this.component?.description ? <InnerHtml content={this.t(this.component?.description)} /> : undefined;
   }
 
   /**

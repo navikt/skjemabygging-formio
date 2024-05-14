@@ -10,6 +10,7 @@ import {
 import { mapToSubmissionActivity, mapToVedtaklist } from '../../formio/components/core/activities/Activities.utils';
 import { drivingListMetadata } from '../../formio/components/core/driving-list/DrivingList.utils';
 import { useDrivingList } from '../../formio/components/core/driving-list/DrivingListContext';
+import { InnerHtml } from '../../index';
 import makeStyles from '../../util/styles/jss/jss';
 import NavActivities from '../activities/NavActivities';
 import ActivityAlert from './ActivityAlert';
@@ -68,7 +69,7 @@ const DrivingListFromActivities = ({ activities }: Props) => {
     if (selectedVedtak.trengerParkering) {
       return (
         <Alert variant="info" className="mb">
-          <div dangerouslySetInnerHTML={{ __html: TEXTS.statiske.drivingList.parkingInfo }} />
+          <InnerHtml content={t(TEXTS.statiske.drivingList.parkingInfo)} />
         </Alert>
       );
     }
