@@ -1,16 +1,16 @@
+import { NavFormioJs } from '@navikt/skjemadigitalisering-shared-components';
 import { Component } from '@navikt/skjemadigitalisering-shared-domain';
-import FormioUtils from 'formiojs/utils';
-import BuilderUtils from 'formiojs/utils/builder';
 
-const originalUniqify = BuilderUtils.uniquify;
+const originalUniqify = NavFormioJs.BuilderUtils.uniquify;
+const { eachComponent, getRandomComponentId } = NavFormioJs.Utils;
 
 console.log('Builder utils imported');
-BuilderUtils.uniquify = function (container, component: Component) {
+NavFormioJs.BuilderUtils.uniquify = function (container, component: Component) {
   console.log('Uniquifying component', container, component);
-  FormioUtils.eachComponent(
+  eachComponent(
     [component],
-    (component) => {
-      component.navId = FormioUtils.getRandomComponentId();
+    (component: Component) => {
+      component.navId = getRandomComponentId();
     },
     true,
   );
