@@ -1,6 +1,7 @@
 import ecsFormat from '@elastic/ecs-morgan-format';
 import correlator from 'express-correlation-id';
 import morgan from 'morgan';
+import nodeProcess from 'node:process';
 import { config } from '../config/config';
 import { isEnabled } from '../logging';
 import { clean } from '../utils/logCleaning.js';
@@ -16,6 +17,7 @@ const httpRequestLogger = morgan(
         ...logEntry,
         level: res.statusCode < 500 ? 'Info' : 'Error',
         correlation_id: correlator.getId(),
+        node_worker_pid: nodeProcess.pid,
       }),
     );
   },
