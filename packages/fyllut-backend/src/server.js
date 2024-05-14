@@ -20,6 +20,9 @@ if (setupNodeCluster && nodeCluster.isPrimary) {
   metricsServer.listen(metricsPort);
   logger.info(`Metrics server for node cluster listening to ${metricsPort}`);
 
+  const app = createApp();
+  app.listen(port);
+
   // Fork workers
   for (let i = 0; i < numCPUs; i++) {
     nodeCluster.fork();
