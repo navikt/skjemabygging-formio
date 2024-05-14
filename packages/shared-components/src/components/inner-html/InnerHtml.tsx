@@ -9,7 +9,7 @@ interface Props {
 const InnerHtml = ({ tag = 'div', content }: Props) => {
   return React.createElement(tag, {
     dangerouslySetInnerHTML: {
-      __html: DOMPurify.sanitize(content),
+      __html: DOMPurify.sanitize(content, { ADD_ATTR: ['target'] }),
     },
   });
 };
