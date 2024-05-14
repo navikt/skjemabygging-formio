@@ -36,7 +36,7 @@ export default class DatePicker extends BaseComponent {
     return true;
   }
 
-  setValueOnReactInstance(_value) {}
+  //setValueOnReactInstance(_value) {}
 
   getComponentsWithDateInputKey() {
     return navFormUtils
@@ -62,9 +62,7 @@ export default class DatePicker extends BaseComponent {
         this.t.bind(this),
       );
 
-      this.setComponentValidity(errorMessage ? [this.createError(errorMessage, undefined)] : [], dirty, undefined);
-
-      return !errorMessage;
+      return this.setComponentValidity(errorMessage ? [this.createError(errorMessage, undefined)] : [], dirty, undefined);
     }
 
     return true;
@@ -98,22 +96,16 @@ export default class DatePicker extends BaseComponent {
   }
 
   onUpdate(value: string) {
-    if (value !== (this.getValue() ?? '')) {
-      if (dateUtils.isValid(value, 'input')) {
-        this.updateValue(dateUtils.toSubmissionDate(value), { modified: true });
-      } else {
-        this.updateValue(value, { modified: true });
-      }
+    this.updateValue(value, { modified: true });
 
-      if (this.component?.beforeDateInputKey) {
-        const referenceComponent = navFormUtils.findByKey(
-          this.component?.beforeDateInputKey,
-          this.root.getComponents(),
-        );
-        referenceComponent?.rerender?.();
-      } else {
-        this.getComponentsWithDateInputKey().map((component) => component.rerender?.());
-      }
+    if (this.component?.beforeDateInputKey) {
+      const referenceComponent = navFormUtils.findByKey(
+        this.component?.beforeDateInputKey,
+        this.root.getComponents(),
+      );
+      referenceComponent?.rerender?.();
+    } else {
+      this.getComponentsWithDateInputKey().map((component) => component.rerender?.());
     }
   }
 

@@ -46,22 +46,34 @@ const DatePicker = ({
     allowTwoDigitYear: false,
   } as UseDatepickerOptions);
 
+
   useEffect(() => {
-    if (value) {
-      if (dateUtils.isValid(value, 'submission')) {
-        setSelected(dateUtils.toJSDate(value));
+    // Only set selected if the value is different from the existing datepicker value.
+    if (inputProps.value !== (value ?? '')) {
+      if (value) {
+        if (dateUtils.isValid(value, 'submission')) {
+          setSelected(dateUtils.toJSDate(value));
+        }
+      } else {
+        reset();
       }
-    } else {
-      reset();
     }
   }, [value]);
 
   useEffect(() => {
-    onChange(inputProps.value as string);
+    let newValue = inputProps.value as string;
+    if (dateUtils.isValid(newValue, 'input')) {
+      newValue = dateUtils.toSubmissionDate(newValue);
+    }
+
+    // Ignore newValue if empty since we cant differentiate between initial load and the user clearing the value.
+    if (newValue !== '' && newValue !== value) {
+      onChange(newValue);
+    }
   }, [inputProps.value]);
 
   return (
-    <AkselDatePicker mode="single" locale={locale} {...datepickerProps}>
+    <AkselDatePicker mode="single" locale={locale} {...datepickerProps} selected={undefined}>
       <AkselDatePicker.Input
         id={id}
         {...inputProps}
@@ -72,6 +84,13 @@ const DatePicker = ({
         label={label}
         description={description}
         className={className}
+        onBlur={(e) => {
+          // Since we have problem listening on empty value on inputProps.value
+          // we need to trigger onChange on blur when there is an empty value.
+          if (e.target.value === '') {
+            onChange('');
+          }
+        }}
       />
     </AkselDatePicker>
   );

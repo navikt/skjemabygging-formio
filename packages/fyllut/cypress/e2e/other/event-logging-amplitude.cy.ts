@@ -127,6 +127,7 @@ describe('Amplitude', () => {
     });
     cy.findByRole('heading', { level: 2, name: 'Oppsummering' }).should('not.exist');
     cy.clickSaveAndContinue();
+    cy.findByRoleWhenAttached('textbox', { name: 'Din fødselsdato (dd.mm.åååå)' }).should('exist');
     cy.checkLogToAmplitude('navigere', { lenkeTekst: 'Neste steg', destinasjon: '/cypress101/personopplysninger' });
     cy.clickSaveAndContinue();
     cy.checkLogToAmplitude('navigere', { lenkeTekst: 'Neste steg', destinasjon: '/cypress101/oppsummering' });
