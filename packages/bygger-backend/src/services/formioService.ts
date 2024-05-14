@@ -175,6 +175,7 @@ export class FormioService {
       props.modifiedBy = userName;
     }
 
+    // These are redundant because we override the uniquify function to generate a unique navId, however, we keep them here for extra safety and for old forms
     const uniqueNavIdForm = navFormUtils.replaceDuplicateNavIds(form);
     const enrichedForm = enrichComponents ? addNavIdToComponents(uniqueNavIdForm) : uniqueNavIdForm;
 
