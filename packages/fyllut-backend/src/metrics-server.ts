@@ -15,4 +15,14 @@ metricsServer.get('/node-cluster-metrics', async (req, res) => {
   }
 });
 
+metricsServer.get('/isAlive', (req, res) => {
+  res.status(200);
+  res.send('Alive');
+});
+
+metricsServer.get('/isReady', (req, res) => {
+  res.status(200);
+  res.send('Ready');
+});
+
 export default metricsServer;

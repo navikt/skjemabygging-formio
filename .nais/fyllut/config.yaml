@@ -33,11 +33,13 @@ spec:
      - {{url}}
   {{/each}}
   liveness:
-    path: /fyllut/internal/isAlive
+    path: /isAlive
     initialDelay: 10
+    port: 4001
   readiness:
-    path: /fyllut/internal/isReady
+    path: /isReady
     initialDelay: 10
+    port: 4001
   replicas:
     min: 2
     max: 4
