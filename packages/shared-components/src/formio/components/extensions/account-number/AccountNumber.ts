@@ -27,7 +27,8 @@ class AccountNumber extends TextField {
     if (accountNumber === '' || accountNumber === null) {
       return true;
     }
-    return validatorUtils.isAccountNumber(accountNumber + '');
+    const isValid = validatorUtils.isAccountNumber(accountNumber + '');
+    return isValid ? true : 'accountNumberCustomError';
   }
 }
 

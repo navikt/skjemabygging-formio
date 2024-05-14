@@ -1,11 +1,14 @@
+import Email from './Email';
+
 const emailBuilder = () => {
+  const schema = Email.schema();
+
   return {
     title: 'E-post',
     schema: {
-      label: 'E-post',
-      type: 'email',
-      key: 'epost',
+      ...schema,
       autocomplete: 'email',
+      inputType: 'email',
       spellcheck: false,
       validateOn: 'blur',
       validate: {

@@ -1,7 +1,14 @@
-import { Language, TranslationResource } from '../languages/types';
-import { Mottaksadresse } from '../mottaksadresse';
+export type ResourceName = 'language' | 'mottaksadresse';
 
-export type MottaksadresserResourceContent = Mottaksadresse[];
-export type GlobalTranslationsResourceContent = Record<Language, TranslationResource[]>;
-
-export type ResourceContent = MottaksadresserResourceContent | GlobalTranslationsResourceContent;
+export interface FormioResource {
+  _id: string;
+  owner?: string;
+  roles?: unknown[];
+  data: any;
+  access?: unknown[];
+  form: string;
+  externalIds?: unknown[];
+  created?: string;
+  modified?: string;
+  project?: string;
+}

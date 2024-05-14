@@ -1,11 +1,21 @@
 import {
   dateUtils,
+  FormioResource,
+  FormioTranslationPayload,
   FormPropertiesPublishing,
   FormPropertiesType,
+  FormType,
+  Language,
   NavFormType,
   navFormUtils,
+  ResourceName,
+  stringUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
+import config from '../config';
 import { fetchWithErrorHandling } from '../fetchUtils';
+import { logger } from '../logging/logger';
+
+type FormioTranslation = FormioTranslationPayload | (Omit<FormioTranslationPayload, '_id'> & { _id?: string });
 
 export class FormioService {
   public readonly projectUrl: string;
@@ -21,8 +31,42 @@ export class FormioService {
     return response.data as T;
   }
 
-  async getForm(formPath: string) {
-    const formData = await this.fetchFromProjectApi<NavFormType[]>(`/form?type=form&path=${formPath}&limit=1`);
+  async createNewForm(skjemanummer: string, userToken: string) {
+    const trimmedSkjemanummer = skjemanummer.trim();
+    const defaultForm = navFormUtils.createDefaultForm();
+    const form: NavFormType = {
+      ...defaultForm,
+      title: 'Skjematittel',
+      path: navFormUtils.toFormPath(trimmedSkjemanummer),
+      name: stringUtils.camelCase(trimmedSkjemanummer),
+      properties: {
+        ...defaultForm.properties,
+        skjemanummer: trimmedSkjemanummer,
+      },
+      access: [
+        {
+          type: 'read_all',
+          roles: [config.formio.roleIds.everyone],
+        },
+        {
+          type: 'update_all',
+          roles: [config.formio.roleIds.authenticated, config.formio.roleIds.administrator],
+        },
+      ],
+    };
+    const response = await fetchWithErrorHandling(`${this.projectUrl}/form`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-jwt-token': userToken,
+      },
+      body: JSON.stringify(form),
+    });
+    return response.data as NavFormType;
+  }
+
+  async getForm(formPath: string, type: FormType = 'form'): Promise<NavFormType | undefined> {
+    const formData = await this.fetchFromProjectApi<NavFormType[]>(`/form?type=${type}&path=${formPath}&limit=1`);
     return formData[0];
   }
 
@@ -46,6 +90,62 @@ export class FormioService {
     return this.fetchFromProjectApi(
       `/form?type=form${excludeDeleted ? '&tags=nav-skjema' : ''}&select=${select}&limit=${limit}`,
     );
+  }
+
+  async getResourceSubmissions<T extends FormioResource>(resourceName: ResourceName, query?: string): Promise<T[]> {
+    return this.fetchFromProjectApi<T[]>(`/${resourceName}/submission?limit=1000${query ? `&${query}` : ''}`);
+  }
+
+  async getTranslations(formPath: string) {
+    const query = `data.name__regex=/^global\\.${formPath}$/gi`;
+    return this.getResourceSubmissions<FormioTranslationPayload>('language', query);
+  }
+
+  async getGlobalTranslations(language: Language) {
+    const query = `data.scope=global&data.language=${language}&limit=20`;
+    return this.getResourceSubmissions<FormioTranslationPayload>('language', query);
+  }
+
+  async saveTranslation(resource: FormioTranslation, userToken: string) {
+    const translationId = resource._id;
+    const response = await fetchWithErrorHandling(
+      `${this.projectUrl}/language/submission${translationId ? `/${translationId}` : ''}`,
+      {
+        method: translationId ? 'PUT' : 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-jwt-token': userToken,
+        },
+        body: JSON.stringify(resource),
+      },
+    );
+    return response.data as FormioTranslationPayload;
+  }
+
+  async saveTranslations(translations: FormioTranslationPayload[], userToken: string) {
+    return await Promise.all(translations.map((t) => this.saveTranslation(t, userToken)));
+  }
+
+  async deleteTranslation(translationId: string, userToken: string) {
+    await fetchWithErrorHandling(`${this.projectUrl}/language/submission/${translationId}`, {
+      method: 'DELETE',
+      headers: {
+        'x-jwt-token': userToken,
+      },
+    });
+    return translationId;
+  }
+
+  async deleteTranslations(formPath: string, userToken: string) {
+    const translations = await this.getTranslations(formPath);
+    if (translations.length > 0) {
+      logger.info(`Will delete all translations for form ${formPath}`, {
+        translationIds: translations.map((t) => t._id),
+      });
+      await Promise.all(translations.map((t) => this.deleteTranslation(t._id!, userToken)));
+    } else {
+      logger.debug(`No translations to delete for form ${formPath}`);
+    }
   }
 
   async getFormioUser(userToken: string) {

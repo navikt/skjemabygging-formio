@@ -33,6 +33,8 @@ const mapLimitedForm = (form, t) => {
       ettersending: form.properties.ettersending,
       enhetstyper: form.properties.enhetstyper,
       enhetMaVelgesVedPapirInnsending: form.properties.enhetMaVelgesVedPapirInnsending,
+      uxSignalsId: form.properties.uxSignalsId,
+      uxSignalsInnsending: form.properties.uxSignalsInnsending,
     },
     attachments: getAttachments(form, t),
   };

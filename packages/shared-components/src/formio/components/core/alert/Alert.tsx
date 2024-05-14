@@ -1,6 +1,6 @@
 import { AlertProps, Alert as NavAlert } from '@navikt/ds-react';
-import DOMPurify from 'dompurify';
 import Field from 'formiojs/components/_classes/field/Field';
+import { InnerHtml } from '../../../../index';
 import BaseComponent from '../../base/BaseComponent';
 import alertBuilder from './Alert.builder';
 import alertForm from './Alert.form';
@@ -53,7 +53,7 @@ class Alert extends BaseComponent {
           fullWidth={false} // Removes border-radius if true
           size="medium"
         >
-          <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(this.getContent()) }} />
+          <InnerHtml content={this.getContent()} />
         </NavAlert>
       </div>,
     );

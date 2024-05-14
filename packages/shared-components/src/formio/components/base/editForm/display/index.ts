@@ -11,6 +11,7 @@ import editFormDisabled from './editFormDisabled';
 import editFormFieldSizeField from './editFormFieldSize';
 import editFormHidden from './editFormHidden';
 import editFormHideLabel from './editFormHideLabel';
+import editFormIsAttachmentPanel from './editFormIsAttachmentPanel';
 import editFormInline from './editFormIsInline';
 import editFormLabel from './editFormLabel';
 import editFormLegend from './editFormLegend';
@@ -20,6 +21,7 @@ import editFormRows from './editFormRows';
 import editFormSpellCheck from './editFormSpellCheck';
 import editFormTextDisplay from './editFormTextDisplay';
 import editFormTitle from './editFormTitle';
+import editFormTitleSizeField from './editFormTitleSize';
 import editShowYearPicker from './editShowYearPicker';
 import editFormAltText from './image/editFormAltText';
 import editFormImage from './image/editFormImage';
@@ -54,6 +56,8 @@ const editFormDisplay = {
   rowTitle: editFormRowTitle,
   textDisplay: editFormTextDisplay,
   hidden: editFormHidden,
+  isAttachmentPanel: editFormIsAttachmentPanel,
+  titleSize: editFormTitleSizeField,
 };
 
 export default editFormDisplay;

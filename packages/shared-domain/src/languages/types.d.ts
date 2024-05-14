@@ -1,3 +1,5 @@
+import { FormioResource } from '../resource';
+
 export type Language = 'nb-NO' | 'nn-NO' | 'en' | 'pl';
 export type TranslationScope = 'global' | 'local' | 'component-countryName';
 export type TranslationTag = 'skjematekster' | 'grensesnitt' | 'statiske-tekster' | 'validering';
@@ -29,22 +31,14 @@ export type TranslationResource = {
 export interface FormioTranslationData {
   name: string;
   scope: TranslationScope;
-  form: string;
+  form?: string;
   tag: TranslationTag | '';
   language: Language;
   i18n: I18nTranslationMap;
 }
 
-export interface FormioTranslationPayload {
-  _id: string;
-  owner: string;
-  roles: unknown[];
+export interface FormioTranslationPayload extends FormioResource {
   data: FormioTranslationData;
-  access: unknown[];
-  form: string;
-  externalIds: unknown[];
-  created: string;
-  modified: string;
 }
 
 export type GlobalTranslationMap = {

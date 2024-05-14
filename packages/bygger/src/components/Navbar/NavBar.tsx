@@ -32,7 +32,7 @@ export const NavBar = ({ formPath, visSkjemaMeny, visOversettelsesMeny }: Props)
         </div>
         <div className={styles.headerMenus}>
           <NotificationDropdown />
-          {showAdmin && <AdminMenu />}
+          {showAdmin && <AdminMenu showImport={!config?.isProdGcp} />}
           <UserMenu />
         </div>
       </InternalHeader>

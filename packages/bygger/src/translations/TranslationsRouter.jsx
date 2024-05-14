@@ -15,6 +15,7 @@ const TranslationsRouter = ({ formio, serverURL }) => {
     deleteTranslation,
     saveLocalTranslation,
     saveGlobalTranslation,
+    importFromProduction,
   } = useFormioTranslations(serverURL, formio);
 
   return (
@@ -29,6 +30,7 @@ const TranslationsRouter = ({ formio, serverURL }) => {
             publishGlobalTranslations={publishGlobalTranslations}
             deleteTranslation={deleteTranslation}
             saveTranslation={saveGlobalTranslation}
+            importFromProduction={importFromProduction}
           />
         }
       />

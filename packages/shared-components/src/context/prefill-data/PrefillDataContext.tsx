@@ -24,7 +24,7 @@ export const PrefillDataProvider = ({ children, form }: PrefillDataProviderProps
       if (prefillComponents.length === 0) return null;
 
       // No need to fetch prefill data if submission method is paper (currently not supported)
-      if (submissionMethod === 'paper') return null;
+      if (submissionMethod !== 'digital') return null;
 
       const properties = prefillComponents.map((component) => component.prefillKey);
       const uniqueProperties = [...new Set(properties)].join(',');

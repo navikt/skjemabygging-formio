@@ -94,4 +94,28 @@ describe('FormioService', () => {
       expect(savedForms[0].properties.modified).toEqual(savedForms[1].properties.modified);
     });
   });
+
+  describe('createNewForm', () => {
+    afterEach(() => {
+      nock.cleanAll();
+    });
+
+    it('sets default properties', async () => {
+      nock(config.formio.projectUrl)
+        .post('/form')
+        .reply((uri, requestBody) => [200, requestBody]);
+      const skjemanummer = 'NAV 01-00.00';
+      const savedForm = await formioService.createNewForm(skjemanummer, 'formio-token');
+      expect(savedForm._id).toBeUndefined();
+      expect(savedForm.type).toEqual('form');
+      expect(savedForm.display).toEqual('wizard');
+      expect(savedForm.tags).toEqual(expect.arrayContaining(['nav-skjema']));
+      expect(savedForm.path).toEqual('nav010000');
+      expect(savedForm.name).toEqual('nav010000');
+      expect(savedForm.title).toBeTruthy();
+      expect(savedForm.properties.skjemanummer).toEqual(skjemanummer);
+      expect(savedForm.access).toHaveLength(2);
+      expect(savedForm.components).toHaveLength(0);
+    });
+  });
 });

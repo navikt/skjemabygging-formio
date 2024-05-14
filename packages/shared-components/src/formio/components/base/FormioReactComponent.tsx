@@ -6,7 +6,6 @@ import createComponentLogger, { ComponentLogger } from './createComponentLogger'
 import { IReactComponent } from './index';
 
 class FormioReactComponent extends (ReactComponent as unknown as IReactComponent) {
-  componentMessage?: string;
   rootElement: any;
   componentErrors: ComponentError[];
   _reactRendered = Ready();
@@ -15,7 +14,6 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
 
   constructor(component, options, data) {
     super(component, options, data);
-    this.componentMessage = undefined;
     this.componentErrors = [];
   }
 
@@ -141,13 +139,12 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
   /**
    * Set error
    */
-  setComponentValidity(messages, dirty, silentCheck) {
-    const isValid = super.setComponentValidity(messages, dirty, silentCheck);
-    if (this.error?.message !== this.componentMessage) {
-      this.componentMessage = this.error?.message;
+  override setCustomValidity(messages: string | string[], dirty?: boolean, external?: boolean) {
+    const previousErrorMessage = this.error?.message;
+    super.setCustomValidity(messages, dirty, external);
+    if (this.error?.message !== previousErrorMessage) {
       this.rerender();
     }
-    return isValid;
   }
 }
 

@@ -1,17 +1,16 @@
-import { Accordion, BodyShort, Heading } from '@navikt/ds-react';
+import { Accordion, Alert, BodyShort, Heading } from '@navikt/ds-react';
 import {
   AktivitetVedtaksinformasjon,
   SendInnAktivitet,
   SubmissionActivity,
   TEXTS,
   VedtakBetalingsplan,
+  dateUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { mapToSubmissionActivity, mapToVedtaklist } from '../../formio/components/core/activities/Activities.utils';
-import {
-  drivingListMetadata,
-  toLocaleDateLongMonth,
-} from '../../formio/components/core/driving-list/DrivingList.utils';
+import { drivingListMetadata } from '../../formio/components/core/driving-list/DrivingList.utils';
 import { useDrivingList } from '../../formio/components/core/driving-list/DrivingListContext';
+import { InnerHtml } from '../../index';
 import makeStyles from '../../util/styles/jss/jss';
 import NavActivities from '../activities/NavActivities';
 import ActivityAlert from './ActivityAlert';
@@ -50,8 +49,8 @@ const DrivingListFromActivities = ({ activities }: Props) => {
     index: number,
     vedtak: AktivitetVedtaksinformasjon,
   ) => {
-    const periodFrom = new Date(betalingsplan.utgiftsperiode.fom);
-    const periodTo = new Date(betalingsplan.utgiftsperiode.tom);
+    const periodFrom = betalingsplan.utgiftsperiode.fom;
+    const periodTo = betalingsplan.utgiftsperiode.tom;
 
     return (
       <DrivingPeriod
@@ -64,6 +63,16 @@ const DrivingListFromActivities = ({ activities }: Props) => {
         betalingsplan={betalingsplan}
       />
     );
+  };
+
+  const parkingInfoAlert = (selectedVedtak: AktivitetVedtaksinformasjon) => {
+    if (selectedVedtak.trengerParkering) {
+      return (
+        <Alert variant="info" className="mb">
+          <InnerHtml content={t(TEXTS.statiske.drivingList.parkingInfo)} />
+        </Alert>
+      );
+    }
   };
 
   const renderDrivingListFromActivities = () => {
@@ -102,6 +111,7 @@ const DrivingListFromActivities = ({ activities }: Props) => {
         {selectedActivity && selectedVedtak && (
           <>
             <PeriodInfo />
+            {parkingInfoAlert(selectedVedtak)}
             <Heading size="xsmall" className={styles.accoridonHeader}>
               {TEXTS.statiske.drivingList.accordionHeader}
             </Heading>
@@ -129,12 +139,12 @@ const DrivingListFromActivities = ({ activities }: Props) => {
                   {alreadyRefunded
                     .sort((a, b) => new Date(a.utgiftsperiode.fom).getTime() - new Date(b.utgiftsperiode.fom).getTime())
                     .map((betalingsplan) => {
-                      const periodFrom = new Date(betalingsplan.utgiftsperiode.fom);
-                      const periodTo = new Date(betalingsplan.utgiftsperiode.tom);
+                      const periodFrom = betalingsplan.utgiftsperiode.fom;
+                      const periodTo = betalingsplan.utgiftsperiode.tom;
                       return (
                         <li key={betalingsplan.betalingsplanId}>
                           <BodyShort size="medium">
-                            {`${toLocaleDateLongMonth(periodFrom, locale)} - ${toLocaleDateLongMonth(periodTo, locale)} (${betalingsplan.beloep} kr)`}
+                            {`${dateUtils.toLocaleDateLongMonth(periodFrom, locale)} - ${dateUtils.toLocaleDateLongMonth(periodTo, locale)} (${betalingsplan.beloep} kr)`}
                           </BodyShort>
                         </li>
                       );

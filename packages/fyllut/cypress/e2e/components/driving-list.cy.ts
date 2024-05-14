@@ -105,6 +105,11 @@ describe('DrivingList', () => {
 
       cy.findByRole('textbox', { name: PARKING_EXPENSES_LABEL }).should('have.focus').type('{selectall}78');
       cy.findByRole('region', { name: TEXTS.validering.error }).should('not.exist');
+
+      // Parking expenses should not show even with value over 100
+      cy.findByRole('textbox', { name: PARKING_EXPENSES_LABEL }).should('exist').type('101');
+      cy.clickNextStep();
+      cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
     });
 
     it('should add and remove periods', () => {
@@ -145,17 +150,19 @@ describe('DrivingList', () => {
           cy.findByRole('radio', { name: 'Arbeidstrening: 01. januar 2024 - 31. august 2024' }).should('exist').check();
         });
 
-      cy.get('.navds-alert').within(() => {
-        cy.findByRole('heading', { name: 'Dine aktiviteter' }).should('exist');
+      cy.get('.navds-alert')
+        .eq(0)
+        .within(() => {
+          cy.findByRole('heading', { name: 'Dine aktiviteter' }).should('exist');
 
-        cy.findByRole('heading', { name: 'Arbeidstrening' }).should('exist');
-        cy.findByText('Periode: 01. januar 2024 - 31. august 2024').should('exist');
-        cy.findAllByText('Dagsats for parkeringsavgift: 67 kr').eq(0).should('exist').get;
+          cy.findByRole('heading', { name: 'Arbeidstrening' }).should('exist');
+          cy.findByText('Periode: 01. januar 2024 - 31. august 2024').should('exist');
+          cy.findAllByText('Dagsats for parkeringsavgift: 67 kr').eq(0).should('exist').get;
 
-        cy.findByRole('heading', { name: 'Avklaring' }).should('exist');
-        cy.findByText('Periode: 01. februar 2024 - 31. mars 2024').should('exist');
-        cy.findAllByText('Dagsats for parkeringsavgift: 67 kr').eq(1).should('exist');
-      });
+          cy.findByRole('heading', { name: 'Avklaring' }).should('exist');
+          cy.findByText('Periode: 01. februar 2024 - 31. mars 2024').should('exist');
+          cy.findAllByText('Dagsats for parkeringsavgift: 67 kr').eq(1).should('exist');
+        });
 
       cy.findByRole('heading', { name: 'Perioder du tidligere har fått refundert reiseutgifter for' }).should('exist');
       cy.findByText('01. januar 2024 - 07. januar 2024 (335 kr)').should('exist');
@@ -213,6 +220,23 @@ describe('DrivingList', () => {
       cy.findByRole('checkbox', { name: 'mandag 15. januar 2024' }).should('be.checked');
     });
 
+    it.only('should load driving list without dates', () => {
+      cy.visit(`/fyllut/testdrivinglist/veiledning?sub=digital&innsendingsId=a66e8932-ce2a-41c1-932b-716fc487813b`);
+      cy.mocksUseRouteVariant('get-soknad:success-driving-list-no-dates');
+      cy.defaultWaits();
+      cy.wait('@getActivities');
+
+      cy.findByRole('radio', { name: 'Arbeidstrening: 01. januar 2024 - 31. august 2024' }).should('be.checked');
+
+      // Should not show error message when loading mellomlagret driving list without dates. Only show the activity alert and alert for parking
+      cy.get('.navds-alert')
+        .should('have.length', 2)
+        .eq(0)
+        .within(() => {
+          cy.findByText('Dine aktiviteter').should('exist');
+        });
+    });
+
     it('should show errors', () => {
       cy.visit(`/fyllut/testdrivinglist?sub=digital`);
       cy.defaultWaits();
@@ -247,7 +271,7 @@ describe('DrivingList', () => {
       cy.findAllByRole('textbox', { name: PARKING_EXPENSES_LABEL }).eq(2).should('exist').type('100');
 
       cy.get('.navds-alert')
-        .eq(1)
+        .eq(2)
         .within(() => {
           cy.findByRole('heading', { name: TEXTS.statiske.drivingList.expensesTooHighHeader }).should('exist');
         });

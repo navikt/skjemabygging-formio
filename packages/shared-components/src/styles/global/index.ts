@@ -61,12 +61,6 @@ const global = {
       outline: 'none',
     },
   },
-  // TODO: Delete this temp class when all components are Aksel
-  '.navds-text-field--error > .navds-text-field__input:not(:hover):not(:disabled), .navds-text-field--error > .navds-text-field__input:focus-visible:not(:hover):not(:disabled)':
-    {
-      borderColor: 'inherit',
-      boxShadow: 'none',
-    },
   ...labelTrackChanges,
   ...errorSummary,
   ...buttonRow,

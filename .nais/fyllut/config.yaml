@@ -12,6 +12,10 @@ metadata:
 spec:
   image: {{image}}
   port: 8080
+  observability:
+    autoInstrumentation:
+      enabled: true
+      runtime: nodejs
   azure:
     application:
       enabled: true
@@ -53,6 +57,11 @@ spec:
         - application: fyllut-ettersending
         - application: statuspoll
           namespace: navdig
+      {{#each accessPolicy.inbound.rules}}
+        - application: {{this.application}}
+          namespace: {{this.namespace}}
+          cluster: {{this.cluster}}
+      {{/each}}
     outbound:
       rules:
       {{#each accessPolicy.outbound.rules}}

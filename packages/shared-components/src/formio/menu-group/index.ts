@@ -1,3 +1,4 @@
+import attachmentGroup from './attachmentGroup';
 import basicGroup from './basicGroup';
 import currencyAndAccountGroup from './currencyAndAccountGroup';
 import dateAndTimeGroup from './dateAndTimeGroup';
@@ -14,6 +15,7 @@ const menuGroup = {
   data: null,
   premium: null,
   basicGroup,
+  attachmentGroup,
   personGroup,
   currencyAndAccountGroup,
   organizationGroup,

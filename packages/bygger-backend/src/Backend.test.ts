@@ -178,6 +178,37 @@ describe('Backend', () => {
         expect(mockRepoDeleteRef).toHaveBeenCalledWith(expectedBranchName);
       });
     });
+
+    describe('when getRef does not return the newly created branch', () => {
+      const MAIN_BRANCH_SHA = 'main-branch-sha';
+      const ERROR_MESSAGE = 'Not found';
+      beforeEach(() => {
+        mockRepoGetRef.mockImplementation((branch) => {
+          if (branch === configForTest.publishRepo.base) {
+            return { data: { object: { sha: MAIN_BRANCH_SHA } } };
+          }
+          throw new Error(ERROR_MESSAGE);
+        });
+      });
+
+      it('deletes publish branch', async () => {
+        let error: Error | undefined = undefined;
+        try {
+          await backend.publishForm({ title: 'Form' }, { en: {} }, formPath);
+        } catch (err) {
+          error = err as Error;
+          expect(mockRepoGetRef).toHaveBeenCalledTimes(2);
+          expect(mockRepoCreateRef).toHaveBeenCalledOnce();
+          expect(mockRepoCreateRef).toHaveBeenCalledWith(expectedBranchName, MAIN_BRANCH_SHA);
+          expect(mockRepoDeleteRef).toHaveBeenCalledOnce();
+          expect(mockRepoDeleteRef).toHaveBeenCalledWith(expectedBranchName);
+          expect(mockRepoCreatePullRequest).not.toHaveBeenCalled();
+          expect(mockRepoMergePullRequest).not.toHaveBeenCalled();
+        }
+        expect(error).toBeDefined();
+        expect(error?.message).toEqual(ERROR_MESSAGE);
+      });
+    });
   });
 
   describe('publishResource', () => {
