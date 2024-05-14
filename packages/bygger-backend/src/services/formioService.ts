@@ -11,7 +11,6 @@ import {
   ResourceName,
   stringUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
-import FormioUtils from '../../../shared-domain/src/utils/formio/FormioUtils';
 import config from '../config';
 import { fetchWithErrorHandling } from '../fetchUtils';
 import { logger } from '../logging/logger';
@@ -176,10 +175,8 @@ export class FormioService {
       props.modifiedBy = userName;
     }
 
-    const formWithoutDuplicateNavids = replaceDuplicateNavIds(form);
-    const enrichedForm = enrichComponents
-      ? addNavIdToComponents(formWithoutDuplicateNavids)
-      : formWithoutDuplicateNavids;
+    const uniqueNavIdForm = navFormUtils.replaceDuplicateNavIds(form);
+    const enrichedForm = enrichComponents ? addNavIdToComponents(uniqueNavIdForm) : uniqueNavIdForm;
 
     const formWithProps = updateProps(enrichedForm, props);
     const response: any = await fetchWithErrorHandling(`${updateFormUrl}/${form._id}`, {
@@ -219,21 +216,3 @@ const addNavIdToComponents = (form: NavFormType): NavFormType => ({
   ...form,
   components: navFormUtils.enrichComponentsWithNavIds(form.components)!,
 });
-
-const replaceDuplicateNavIds = (form: NavFormType) => {
-  const navIds: string[] = [];
-
-  FormioUtils.eachComponent(form.components, (comp) => {
-    if (!comp.navId) {
-      return;
-    }
-
-    if (navIds.includes(comp.navId)) {
-      comp.navId = FormioUtils.getRandomComponentId();
-    } else {
-      navIds.push(comp.navId);
-    }
-  });
-
-  return form;
-};
