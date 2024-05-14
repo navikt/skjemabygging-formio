@@ -20,9 +20,6 @@ if (setupNodeCluster && nodeCluster.isPrimary) {
   metricsServer.listen(metricsPort);
   logger.info(`Metrics server for node cluster listening to ${metricsPort}`);
 
-  const app = createApp();
-  app.listen(port);
-
   // Fork workers
   for (let i = 0; i < numCPUs; i++) {
     nodeCluster.fork();
@@ -33,7 +30,7 @@ if (setupNodeCluster && nodeCluster.isPrimary) {
   });
 } else {
   const app = createApp();
-  if (import.meta.env.PROD) {
+  if (nodeCluster.isWorker) {
     app.listen(port);
     logger.info(`Worker ${process.pid} started, listening to ${port}`);
   } else {
