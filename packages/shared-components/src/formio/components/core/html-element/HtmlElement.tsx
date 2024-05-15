@@ -1,4 +1,4 @@
-import React from 'react';
+import InnerHtml from '../../../../components/inner-html/InnerHtml';
 import BaseComponent from '../../base/BaseComponent';
 import htmlElementBuilder from './HtmlElement.builder';
 import htmlElementForm from './HtmlElement.form';
@@ -34,11 +34,7 @@ class HtmlElement extends BaseComponent {
       <div>
         {this.getTextDisplayTag()}
         {this.getDiffTag()}
-        {React.createElement(this.getTag(), {
-          dangerouslySetInnerHTML: {
-            __html: this.getContent(),
-          },
-        })}
+        <InnerHtml tag={this.getTag()} content={this.getContent()} />
       </div>,
     );
   }
