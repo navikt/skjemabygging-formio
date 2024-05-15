@@ -1,3 +1,4 @@
+import { PadlockLockedFillIcon } from '@navikt/aksel-icons';
 import { Down, Up, UpDown } from '@navikt/ds-icons';
 import { Button, Heading } from '@navikt/ds-react';
 import { LoadingComponent, makeStyles } from '@navikt/skjemadigitalisering-shared-components';
@@ -135,6 +136,12 @@ const useFormsListPageStyles = makeStyles({
     gridColumn: '2 / 3',
     width: 'max-content',
   },
+  padlockIcon: {
+    marginLeft: '0.3rem',
+    color: 'black',
+    verticalAlign: 'middle',
+    marginTop: '-0.2rem', // FIXME
+  },
 });
 
 interface FormsListPageProps {
@@ -194,6 +201,7 @@ const FormsListPage = ({ loadFormsList }: FormsListPageProps) => {
               </Link>
               <Link className="lenke" data-testid="editLink" to={`${formMetadata.path}/edit`}>
                 {formMetadata.title}
+                {formMetadata.isLockedForm && <PadlockLockedFillIcon title="Låst" className={classes.padlockIcon} />}
               </Link>
               <FormStatus status={formMetadata.status} size="small" />
             </li>
