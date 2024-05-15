@@ -71,7 +71,7 @@ const DrivingListFromActivities = ({ activities }: Props) => {
     if (selectedVedtak.trengerParkering) {
       return (
         <Alert variant="info" className="mb">
-          <InnerHtml content={t(TEXTS.statiske.drivingList.parkingInfo)} />
+          <InnerHtml content={translate(TEXTS.statiske.drivingList.parkingInfo)} />
         </Alert>
       );
     }
