@@ -122,7 +122,6 @@ class DrivingList extends BaseComponent {
         >
           <NavDrivingList />
         </DrivingListProvider>
-        ,
       </ComponentUtilsProvider>,
     );
   }
