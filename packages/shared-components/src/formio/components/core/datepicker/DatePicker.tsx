@@ -36,14 +36,15 @@ export default class DatePicker extends BaseComponent {
     return true;
   }
 
-  //setValueOnReactInstance(_value) {}
-
   getComponentsWithDateInputKey() {
+    // Utils.getContextComponents that is used to select components for beforeDateInputKey only show unique keys.
+    // So this regex works now, but would be better if we had a selector that actually checked for complex keys
     return navFormUtils
       .flattenComponents(this.root.getComponents() as Component[])
       .filter(
         (component) =>
-          component.type === 'navDatepicker' && component.component?.beforeDateInputKey === this.component?.key,
+          component.type === 'navDatepicker' &&
+          component.component?.beforeDateInputKey?.replace(/^(.+)\./, '') === this.component?.key,
       );
   }
 
@@ -75,6 +76,7 @@ export default class DatePicker extends BaseComponent {
   getFromDate(): string | undefined {
     if (this.component?.beforeDateInputKey) {
       const beforeDateValue = FormioUtils.getValue(this.root.submission, this.component?.beforeDateInputKey);
+
       if (beforeDateValue) {
         if (this.component?.mayBeEqual) {
           return beforeDateValue;
@@ -102,12 +104,7 @@ export default class DatePicker extends BaseComponent {
   onUpdate(value: string) {
     this.updateValue(value, { modified: true });
 
-    if (this.component?.beforeDateInputKey) {
-      const referenceComponent = navFormUtils.findByKey(this.component?.beforeDateInputKey, this.root.getComponents());
-      referenceComponent?.rerender?.();
-    } else {
-      this.getComponentsWithDateInputKey().map((component) => component.rerender?.());
-    }
+    this.getComponentsWithDateInputKey().map((component) => component.rerender?.());
   }
 
   override renderReact(element) {
