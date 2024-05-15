@@ -39,8 +39,11 @@ spec:
     path: /fyllut/internal/isReady
     initialDelay: 10
   replicas:
-    min: 2
-    max: 4
+    min: {{replicas-min}}
+    max: {{replicas-max}}
+    scalingStrategy:
+      cpu:
+        thresholdPercentage: 90
   resources:
     limits:
       memory: 512Mi
