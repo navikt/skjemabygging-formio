@@ -5,10 +5,7 @@
   "path": "cypresssettings",
   "type": "form",
   "display": "wizard",
-  "tags": [
-    "nav-skjema",
-    ""
-  ],
+  "tags": ["nav-skjema", ""],
   "owner": "2345yu3tg3ygew8",
   "components": [
     {
@@ -366,10 +363,7 @@
   "access": [
     {
       "type": "read_all",
-      "roles": [
-        "role1",
-        "role2"
-      ]
+      "roles": ["role1", "role2"]
     }
   ],
   "submissionAccess": [],

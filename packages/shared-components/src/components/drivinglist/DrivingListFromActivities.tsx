@@ -10,9 +10,9 @@ import {
 import { mapToSubmissionActivity, mapToVedtaklist } from '../../formio/components/core/activities/Activities.utils';
 import { drivingListMetadata } from '../../formio/components/core/driving-list/DrivingList.utils';
 import { useDrivingList } from '../../formio/components/core/driving-list/DrivingListContext';
-import { InnerHtml } from '../../index';
 import makeStyles from '../../util/styles/jss/jss';
 import NavActivities from '../activities/NavActivities';
+import InnerHtml from '../inner-html/InnerHtml';
 import ActivityAlert from './ActivityAlert';
 import DrivingPeriod from './DrivingPeriod';
 import PeriodInfo from './PeriodInfo';

@@ -1,4 +1,4 @@
-import { InnerHtml } from '../../../../index';
+import InnerHtml from '../../../../components/inner-html/InnerHtml';
 import BaseComponent from '../../base/BaseComponent';
 import htmlElementBuilder from './HtmlElement.builder';
 import htmlElementForm from './HtmlElement.form';

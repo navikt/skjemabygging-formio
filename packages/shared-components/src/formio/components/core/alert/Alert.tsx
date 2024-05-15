@@ -1,6 +1,6 @@
 import { AlertProps, Alert as NavAlert } from '@navikt/ds-react';
 import Field from 'formiojs/components/_classes/field/Field';
-import { InnerHtml } from '../../../../index';
+import InnerHtml from '../../../../components/inner-html/InnerHtml';
 import BaseComponent from '../../base/BaseComponent';
 import alertBuilder from './Alert.builder';
 import alertForm from './Alert.form';

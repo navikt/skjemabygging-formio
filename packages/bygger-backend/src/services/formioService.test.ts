@@ -12,6 +12,27 @@ describe('FormioService', () => {
           modified: '2022-06-28T10:02:15.634Z',
           modifiedBy: 'dennis',
         },
+        components: [
+          {
+            type: 'textfield',
+            navId: 'duplicateNavId',
+            id: 'textField1',
+          },
+          {
+            type: 'textfield',
+            navId: 'duplicateNavId',
+            id: 'textField2',
+          },
+          {
+            type: 'container',
+            id: 'container1',
+            components: [{ type: 'textfield', navId: 'duplicateNavId', id: 'subComponent1' }],
+          },
+          {
+            type: 'textfield',
+            id: 'textField3',
+          },
+        ],
       } as NavFormType;
 
       beforeEach(() => {
@@ -28,6 +49,23 @@ describe('FormioService', () => {
         const savedForm = await formioService.saveForm(form, 'formio-token', 'tore');
         expect(savedForm.properties.modified).not.toEqual(form.properties.modified);
         expect(savedForm.properties.modifiedBy).toBe('tore');
+      });
+
+      it('is updated with new navIds when there are duplicates or missing navIds', async () => {
+        const savedForm = await formioService.saveForm(form, 'formio-token', 'tore', {}, true);
+
+        // First component keeps its navId
+        expect(savedForm.components.find((comp) => comp.id === 'textField1')?.navId).toBe('duplicateNavId');
+
+        // The rest are updated to a new navId
+        expect(savedForm.components.find((comp) => comp.id === 'textField2')?.navId).not.toBe('duplicateNavId');
+        expect(savedForm.components.find((comp) => comp.id === 'container1')?.navId).not.toBe('duplicateNavId');
+        expect(savedForm.components.find((comp) => comp.components?.[0].id === 'subComponent1')?.navId).not.toBe(
+          'duplicateNavId',
+        );
+
+        // Or added if missing
+        expect(savedForm.components.find((comp) => comp.id === 'textField3')?.navId).toBeDefined();
       });
 
       it('are updated with values specified in formProps parameter', async () => {

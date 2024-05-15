@@ -1,5 +1,5 @@
 import { Accordion as NavAccordion } from '@navikt/ds-react';
-import { InnerHtml } from '../../../../index';
+import InnerHtml from '../../../../components/inner-html/InnerHtml';
 import BaseComponent from '../../base/BaseComponent';
 import accordionBuilder from './Accordion.builder';
 import accordionForm from './Accordion.form';
