@@ -381,14 +381,6 @@ module.exports = [
         },
       },
       {
-        id: 'success',
-        type: 'json',
-        options: {
-          status: 200,
-          body: activities,
-        },
-      },
-      {
         id: 'success-multiple',
         type: 'json',
         options: {

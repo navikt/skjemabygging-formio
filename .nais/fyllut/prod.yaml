@@ -17,6 +17,10 @@ azure:
   application:
     tenant: nav.no
 accessPolicy:
+  inbound:
+    rules:
+      - application: send-inn-frontend
+        namespace: team-soknad
   outbound:
     rules:
       - application: skjemabygging-proxy

@@ -278,6 +278,24 @@ const createDefaultForm = (): NavFormType => ({
   components: [],
 });
 
+const replaceDuplicateNavIds = (form: NavFormType) => {
+  const navIds: string[] = [];
+
+  FormioUtils.eachComponent(form.components, (comp) => {
+    if (!comp.navId) {
+      return;
+    }
+
+    if (navIds.includes(comp.navId)) {
+      comp.navId = FormioUtils.getRandomComponentId();
+    } else {
+      navIds.push(comp.navId);
+    }
+  });
+
+  return form;
+};
+
 const navFormUtils = {
   formMatcherPredicate,
   toFormPath,
@@ -301,5 +319,6 @@ const navFormUtils = {
   isNone,
   prefillForm,
   createDefaultForm,
+  replaceDuplicateNavIds,
 };
 export default navFormUtils;

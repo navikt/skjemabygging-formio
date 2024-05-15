@@ -3,6 +3,7 @@ import { Component, ComponentError, formDiffingTool, navFormUtils } from '@navik
 import Field from 'formiojs/components/_classes/field/Field';
 import FormioUtils from 'formiojs/utils';
 import { ReactNode } from 'react';
+import InnerHtml from '../../../components/inner-html/InnerHtml';
 import FormioReactComponent from './FormioReactComponent';
 import { blurHandler, focusHandler } from './focus-helpers';
 
@@ -126,9 +127,7 @@ class BaseComponent extends FormioReactComponent {
    * Get description for custom component renderReact()
    */
   getDescription(): ReactNode {
-    return this.component?.description ? (
-      <div dangerouslySetInnerHTML={{ __html: this.t(this.component?.description) }}></div>
-    ) : undefined;
+    return this.component?.description ? <InnerHtml content={this.t(this.component?.description)} /> : undefined;
   }
 
   /**

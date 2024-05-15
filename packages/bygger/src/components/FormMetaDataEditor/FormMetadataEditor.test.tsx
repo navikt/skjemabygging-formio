@@ -2,6 +2,7 @@ import { AppConfigProvider } from '@navikt/skjemadigitalisering-shared-component
 import { FormPropertiesType, NavFormType, supportedEnhetstyper } from '@navikt/skjemadigitalisering-shared-domain';
 import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import React from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import form from '../../../example_data/Form.json';
 import featureToggles from '../../../test/featureToggles';
@@ -526,6 +527,117 @@ describe('FormMetadataEditor', () => {
         expect(mockOnChange).toHaveBeenCalled();
         const updatedForm = mockOnChange.mock.calls[0][0] as NavFormType;
         expect(updatedForm.properties.descriptionOfSignatures).toBe('Lang beskrivelse av hvorfor man signerer');
+      });
+    });
+
+    describe('UX signals', () => {
+      const LABEL_ID = /UX signals id/i;
+      const LABEL_INNSENDING = /UX signals skal vises for:/i;
+
+      describe('Form without ux signals properties', () => {
+        let rerender: (ui: React.ReactNode) => void;
+
+        beforeEach(() => {
+          const uxProps: Partial<FormPropertiesType> = {
+            uxSignalsId: undefined,
+            uxSignalsInnsending: undefined,
+          };
+          const form = formMedProps(uxProps);
+          ({ rerender } = render(<FormMetadataEditor form={form} onChange={mockOnChange} />));
+        });
+
+        it('sets innsendingstype to its default value when id is provided', async () => {
+          const input = screen.getByRole('textbox', { name: LABEL_ID });
+          await userEvent.click(input);
+          await userEvent.paste('abcd-1234');
+          expect(mockOnChange).toHaveBeenCalled();
+          expect(mockOnChange).toHaveBeenLastCalledWith(
+            expect.objectContaining({
+              properties: expect.objectContaining({
+                uxSignalsId: 'abcd-1234',
+                uxSignalsInnsending: 'PAPIR_OG_DIGITAL',
+              }),
+            }),
+          );
+        });
+
+        it('ignores changes to id with spaces', async () => {
+          const input = screen.getByRole('textbox', { name: LABEL_ID });
+          await userEvent.click(input);
+          await userEvent.paste(' ');
+          expect(mockOnChange).toHaveBeenCalled();
+          expect(mockOnChange).toHaveBeenLastCalledWith(
+            expect.objectContaining({
+              properties: expect.objectContaining({ uxSignalsId: undefined, uxSignalsInnsending: undefined }),
+            }),
+          );
+        });
+
+        it('does not display innsending combobox before id is provided', async () => {
+          expect(screen.queryByRole('combobox', { name: LABEL_INNSENDING })).not.toBeInTheDocument();
+
+          const input = screen.getByRole('textbox', { name: LABEL_ID });
+          await userEvent.click(input);
+          await userEvent.paste('u');
+
+          expect(mockOnChange).toHaveBeenCalled();
+          const calls = mockOnChange.mock.calls;
+          const updatedForm = calls[calls.length - 1][0];
+
+          rerender(<FormMetadataEditor form={updatedForm} onChange={mockOnChange} />);
+
+          const combobox = screen.queryByRole('combobox', { name: LABEL_INNSENDING });
+          expect(combobox).toBeInTheDocument();
+          expect(combobox).toHaveValue('PAPIR_OG_DIGITAL');
+        });
+      });
+
+      describe('Form with both id and innsending in properties', () => {
+        beforeEach(() => {
+          const uxProps: Partial<FormPropertiesType> = {
+            uxSignalsId: '123',
+            uxSignalsInnsending: 'PAPIR_OG_DIGITAL',
+          };
+          const form = formMedProps(uxProps);
+          render(<FormMetadataEditor form={form} onChange={mockOnChange} />);
+        });
+
+        it('renders correct values', async () => {
+          const idInput = screen.getByRole('textbox', { name: LABEL_ID });
+          expect(idInput).toHaveValue('123');
+          expect(screen.getByRole('combobox', { name: LABEL_INNSENDING })).toHaveValue('PAPIR_OG_DIGITAL');
+        });
+
+        it('also clears innsendingstype when id is cleared', async () => {
+          const idInput = screen.getByRole('textbox', { name: LABEL_ID });
+          await userEvent.clear(idInput);
+          expect(mockOnChange).toHaveBeenCalled();
+          expect(mockOnChange).toHaveBeenLastCalledWith(
+            expect.objectContaining({
+              properties: expect.objectContaining({ uxSignalsId: undefined, uxSignalsInnsending: undefined }),
+            }),
+          );
+        });
+
+        it('selects another innsendingstype', async () => {
+          const combobox = screen.getByRole('combobox', { name: LABEL_INNSENDING });
+          await userEvent.selectOptions(combobox, 'KUN_PAPIR');
+          expect(mockOnChange).toHaveBeenCalled();
+          expect(mockOnChange).toHaveBeenLastCalledWith(
+            expect.objectContaining({
+              properties: expect.objectContaining({ uxSignalsId: '123', uxSignalsInnsending: 'KUN_PAPIR' }),
+            }),
+          );
+        });
+
+        it('only includes valid innsendingstype for UX signals', () => {
+          const combobox = screen.getByRole('combobox', { name: LABEL_INNSENDING });
+          const allOptions: HTMLOptionElement[] = within(combobox).getAllByRole('option');
+          expect(allOptions).toHaveLength(3);
+          allOptions.forEach((option) => {
+            expect(option.value).toMatch(/KUN_PAPIR|PAPIR_OG_DIGITAL|KUN_DIGITAL/);
+          });
+        });
       });
     });
   });

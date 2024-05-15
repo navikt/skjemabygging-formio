@@ -174,7 +174,11 @@ export class FormioService {
     if (!props.modifiedBy) {
       props.modifiedBy = userName;
     }
-    const enrichedForm = enrichComponents ? addNavIdToComponents(form) : form;
+
+    // These are redundant because we override the uniquify function to generate a unique navId, however, we keep them here for extra safety and for old forms
+    const uniqueNavIdForm = navFormUtils.replaceDuplicateNavIds(form);
+    const enrichedForm = enrichComponents ? addNavIdToComponents(uniqueNavIdForm) : uniqueNavIdForm;
+
     const formWithProps = updateProps(enrichedForm, props);
     const response: any = await fetchWithErrorHandling(`${updateFormUrl}/${form._id}`, {
       method: 'PUT',

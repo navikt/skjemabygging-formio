@@ -1,4 +1,5 @@
 import FormioTextArea from 'formiojs/components/textarea/TextArea';
+import Accordion from './core/accordion/Accordion';
 import Activities from './core/activities/Activities';
 import Alert from './core/alert/Alert';
 import DefaultAttachment from './core/attachment/default/DefaultAttachment';
@@ -64,5 +65,6 @@ const customComponents = {
   phoneNumber: PhoneNumber,
   currency: Currency,
   attachment: DefaultAttachment,
+  accordion: Accordion,
 };
 export default customComponents;

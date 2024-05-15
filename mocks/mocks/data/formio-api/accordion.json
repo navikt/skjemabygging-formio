@@ -1,12 +1,22 @@
 {
-  "_id": "hg378gh38hgr833",
-  "title": "Cypress test for settings page",
-  "name": "cypressSettings",
-  "path": "cypresssettings",
+  "_id": "66349967a0524d2584d3fd05",
+  "title": "Accordion test",
+  "name": "accordionTest",
+  "path": "accordiontest",
   "type": "form",
   "display": "wizard",
   "tags": ["nav-skjema", ""],
-  "owner": "2345yu3tg3ygew8",
+  "access": [
+    {
+      "type": "read_all",
+      "roles": ["000000000000000000000000"]
+    },
+    {
+      "type": "update_all",
+      "roles": ["628ca77305690db58c974d04", "628ca77305690db58c974d09"]
+    }
+  ],
+  "owner": "64cc9fc4739f245ce96bb79a",
   "components": [
     {
       "title": "Veiledning",
@@ -16,11 +26,29 @@
       "theme": "default",
       "components": [
         {
-          "label": "Veiledningstekst",
-          "type": "htmlelement",
-          "key": "veiledningstekst",
-          "input": false,
-          "content": "Her skal det stå litt informasjon om søknaden",
+          "titleSize": "small",
+          "accordionValues": [
+            {
+              "title": "Title1",
+              "content": "<p>Content1</p>"
+            },
+            {
+              "content": "<p><strong>Content2</strong></p>",
+              "title": "Title2"
+            },
+            {
+              "content": "<p><a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://www.google.com/\">Link3</a></p>",
+              "title": "Title3"
+            }
+          ],
+          "conditional": {
+            "show": null,
+            "when": null,
+            "eq": ""
+          },
+          "customConditional": "",
+          "key": "accordion",
+          "input": true,
           "placeholder": "",
           "prefix": "",
           "customClass": "",
@@ -29,12 +57,93 @@
           "defaultValue": null,
           "protected": false,
           "unique": false,
-          "persistent": false,
+          "persistent": true,
           "hidden": false,
           "clearOnHide": true,
           "refreshOn": "",
           "redrawOn": "",
           "tableView": false,
+          "modalEdit": false,
+          "label": "Trekkspill",
+          "dataGridLabel": false,
+          "labelPosition": "top",
+          "description": "",
+          "errorLabel": "",
+          "tooltip": "",
+          "hideLabel": false,
+          "tabindex": "",
+          "disabled": false,
+          "autofocus": false,
+          "dbIndex": false,
+          "customDefaultValue": "",
+          "calculateValue": "",
+          "calculateServer": false,
+          "widget": null,
+          "attributes": {},
+          "validateOn": "blur",
+          "validate": {
+            "required": true,
+            "custom": "",
+            "customPrivate": false,
+            "strictDateValidation": false,
+            "multiple": false,
+            "unique": false
+          },
+          "overlay": {
+            "style": "",
+            "left": "",
+            "top": "",
+            "width": "",
+            "height": ""
+          },
+          "allowCalculateOverride": false,
+          "encrypted": false,
+          "showCharCount": false,
+          "showWordCount": false,
+          "properties": {},
+          "allowMultipleMasks": false,
+          "addons": [],
+          "fieldSize": "input--xxl",
+          "type": "accordion",
+          "id": "eo1ded",
+          "navId": "e5x8w16"
+        },
+        {
+          "titleSize": "small",
+          "accordionValues": [
+            {
+              "title": "DefaultOpen",
+              "content": "<p>This is open</p>",
+              "defaultOpen": true
+            }
+          ],
+          "key": "accordion1",
+          "input": true,
+          "tableView": false,
+          "label": "Trekkspill",
+          "validate": {
+            "required": true,
+            "custom": "",
+            "customPrivate": false,
+            "strictDateValidation": false,
+            "multiple": false,
+            "unique": false
+          },
+          "type": "accordion",
+          "id": "eynmzzs",
+          "placeholder": "",
+          "prefix": "",
+          "customClass": "",
+          "suffix": "",
+          "multiple": false,
+          "defaultValue": null,
+          "protected": false,
+          "unique": false,
+          "persistent": true,
+          "hidden": false,
+          "clearOnHide": true,
+          "refreshOn": "",
+          "redrawOn": "",
           "modalEdit": false,
           "dataGridLabel": false,
           "labelPosition": "top",
@@ -51,15 +160,7 @@
           "calculateServer": false,
           "widget": null,
           "attributes": {},
-          "validateOn": "change",
-          "validate": {
-            "required": false,
-            "custom": "",
-            "customPrivate": false,
-            "strictDateValidation": false,
-            "multiple": false,
-            "unique": false
-          },
+          "validateOn": "blur",
           "conditional": {
             "show": null,
             "when": null,
@@ -79,11 +180,11 @@
           "properties": {},
           "allowMultipleMasks": false,
           "addons": [],
-          "tag": "p",
-          "attrs": [],
-          "id": "e4j7se"
+          "fieldSize": "input--xxl",
+          "navId": "enmdc2"
         }
       ],
+      "id": "e6osv8q",
       "placeholder": "",
       "prefix": "",
       "customClass": "",
@@ -146,36 +247,47 @@
       "tree": false,
       "lazyLoad": false,
       "breadcrumb": "default",
-      "id": "erg5g9t"
+      "navId": "ezimksl"
     },
     {
-      "title": "Dine opplysninger",
+      "title": "Vedlegg",
       "type": "panel",
+      "key": "vedlegg",
       "input": false,
-      "key": "personopplysninger",
       "theme": "default",
+      "isAttachmentPanel": true,
       "components": [
         {
-          "label": "Fornavn",
-          "type": "textfield",
-          "key": "fornavnSoker",
-          "fieldSize": "input--xxl",
-          "input": true,
-          "dataGridLabel": true,
-          "clearOnHide": true,
-          "autocomplete": "given-name",
-          "validateOn": "blur",
+          "label": "Annen dokumentasjon",
+          "description": "Har du noen annen dokumentasjon du ønsker å legge ved?",
+          "type": "attachment",
+          "key": "annenDokumentasjon",
           "validate": {
             "required": true,
             "custom": "",
             "customPrivate": false,
             "strictDateValidation": false,
             "multiple": false,
-            "unique": false,
-            "minLength": "",
-            "maxLength": "",
-            "pattern": ""
+            "unique": false
           },
+          "attachmentType": "other",
+          "properties": {
+            "vedleggstittel": "Annet",
+            "vedleggskode": "N6"
+          },
+          "attachmentValues": {
+            "leggerVedNaa": {
+              "enabled": true
+            },
+            "ettersender": {
+              "enabled": true
+            },
+            "nei": {
+              "enabled": true
+            }
+          },
+          "id": "e8vr79g",
+          "input": true,
           "placeholder": "",
           "prefix": "",
           "customClass": "",
@@ -186,12 +298,13 @@
           "unique": false,
           "persistent": true,
           "hidden": false,
+          "clearOnHide": true,
           "refreshOn": "",
           "redrawOn": "",
-          "tableView": true,
+          "tableView": false,
           "modalEdit": false,
+          "dataGridLabel": false,
           "labelPosition": "top",
-          "description": "",
           "errorLabel": "",
           "tooltip": "",
           "hideLabel": false,
@@ -202,10 +315,9 @@
           "customDefaultValue": "",
           "calculateValue": "",
           "calculateServer": false,
-          "widget": {
-            "type": "input"
-          },
+          "widget": null,
           "attributes": {},
+          "validateOn": "blur",
           "conditional": {
             "show": null,
             "when": null,
@@ -222,19 +334,14 @@
           "encrypted": false,
           "showCharCount": false,
           "showWordCount": false,
-          "properties": {},
           "allowMultipleMasks": false,
           "addons": [],
-          "mask": false,
-          "inputType": "text",
-          "inputFormat": "plain",
-          "inputMask": "",
-          "displayMask": "",
-          "spellcheck": true,
-          "truncateMultipleSpaces": false,
-          "id": "efera9o"
+          "fieldSize": "input--xxl",
+          "dataSrc": "values",
+          "navId": "ermy4fh"
         }
       ],
+      "id": "esxns8n",
       "placeholder": "",
       "prefix": "",
       "customClass": "",
@@ -297,77 +404,30 @@
       "tree": false,
       "lazyLoad": false,
       "breadcrumb": "default",
-      "id": "euteueq"
-    },
-    {
-      "title": "Vedlegg",
-      "type": "panel",
-      "input": false,
-      "key": "vedleggpanel",
-      "theme": "default",
-      "components": [
-        {
-          "label": "Annen dokumentasjon",
-          "description": "Har du noen annen dokumentasjon du ønsker å legge ved?",
-          "type": "radiopanel",
-          "key": "annenDokumentasjon",
-          "input": true,
-          "clearOnHide": true,
-          "validate": {
-            "required": true
-          },
-          "otherDocumentation": true,
-          "properties": {
-            "vedleggstittel": "Annet",
-            "vedleggskode": "N6"
-          },
-          "values": [
-            {
-              "value": "nei",
-              "label": "Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved."
-            },
-            {
-              "value": "leggerVedNaa",
-              "label": "Ja, jeg legger det ved denne søknaden."
-            },
-            {
-              "value": "ettersender",
-              "label": "Jeg ettersender dokumentasjonen senere."
-            }
-          ]
-        }
-      ]
+      "navId": "e4lp81"
     }
   ],
   "properties": {
-    "skjemanummer": "cypress-settings",
-    "tema": "CYPRESSTEST",
+    "skjemanummer": "accordion-test",
+    "tema": "AGR",
     "innsending": "PAPIR_OG_DIGITAL",
     "ettersending": "PAPIR_OG_DIGITAL",
     "signatures": [
       {
-        "label": "Lege",
-        "description": "Instruksjoner fra lege...",
-        "key": "5b2366f2-ed4f-4172-b89a-42202de00f2f"
+        "label": "",
+        "description": "",
+        "key": "f5d1221c-4a7c-4231-ad5c-757980886fdf"
       }
     ],
-    "isTestForm": true,
-    "modified": "2022-09-22T10:39:43.497Z",
-    "modifiedBy": "test@nav.no",
-    "downloadPdfButtonText": "Test",
-    "descriptionOfSignatures": "Test Instructions"
+    "ettersendelsesfrist": "14",
+    "modified": "2024-05-03T08:01:26.843Z"
   },
-  "project": "project1",
+  "project": "628ca77305690db58c974cfd",
   "revisions": "",
+  "submissionRevisions": "",
   "_vid": 0,
-  "access": [
-    {
-      "type": "read_all",
-      "roles": ["role1", "role2"]
-    }
-  ],
   "submissionAccess": [],
-  "created": "2022-09-19T08:26:26.936Z",
-  "modified": "2022-09-22T10:39:44.218Z",
-  "machineName": "machine:cypressSettings"
+  "created": "2024-05-03T07:59:35.980Z",
+  "modified": "2024-05-03T08:01:27.383Z",
+  "machineName": "jvcemxwcpghcqjn:accordionTest"
 }

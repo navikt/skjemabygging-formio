@@ -1,3 +1,4 @@
+import editFormNavDatagrid from './editFormAccordionGrid';
 import editFormAttachment from './editFormAttachment';
 import editFormCalculateValue from './editFormCalculateValue';
 import editFormClearOnHide from './editFormClearOnHide';
@@ -16,6 +17,7 @@ const editFormData = {
   values: editFormValues,
   prefill: editFormPrefill,
   attachment: editFormAttachment,
+  navDataGrid: editFormNavDatagrid,
 };
 
 export default editFormData;

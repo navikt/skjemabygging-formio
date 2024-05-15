@@ -1,4 +1,5 @@
 import {
+  Enhetstype,
   FormPropertiesType,
   NavFormType,
   Submission,
@@ -18,6 +19,17 @@ vi.mock('../../context/languages', () => ({
 }));
 
 vi.mock('../../util/pdf/pdf');
+
+vi.mock('../../components/letter/ux-signals/LetterUXSignals', () => {
+  return {
+    default: ({ id, demo }) => (
+      <section data-testid="uxsignals">
+        <div data-testid="uxsignals-id">{id}</div>
+        <div data-testid="uxsignals-demo">{demo ? 'true' : 'false'}</div>
+      </section>
+    ),
+  };
+});
 
 const DEFAULT_TRANSLATIONS = {};
 const RESPONSE_HEADERS = {
@@ -72,7 +84,7 @@ const defaultSubmission = {
     fornavn: 'Mie',
   } as SubmissionData,
 } as Submission;
-const formWithProperties = (props) => {
+const formWithProperties = (props: Partial<FormPropertiesType>) => {
   return {
     ...defaultForm,
     properties: {
@@ -82,15 +94,15 @@ const formWithProperties = (props) => {
   };
 };
 
-function renderPrepareLetterPage(
-  form = defaultForm,
-  submission = defaultSubmission,
-  translations = DEFAULT_TRANSLATIONS,
-) {
+const defaultConfig = {
+  NAIS_CLUSTER_NAME: 'dev-gcp',
+};
+
+function renderPrepareLetterPage(form = defaultForm, config = defaultConfig) {
   render(
     <MemoryRouter>
-      <AppConfigProvider>
-        <PrepareLetterPage form={form} submission={submission} translations={translations} formUrl="/" />
+      <AppConfigProvider config={config}>
+        <PrepareLetterPage form={form} submission={defaultSubmission} translations={DEFAULT_TRANSLATIONS} formUrl="/" />
       </AppConfigProvider>
     </MemoryRouter>,
   );
@@ -160,7 +172,7 @@ describe('PrepareLetterPage', () => {
 
   describe("When form property 'enhetMaVelgesVedPapirInnsending' is true", () => {
     const DOWN_ARROW = { keyCode: 40 };
-    const enhetstyper = ['ALS', 'ARK', 'LOKAL'];
+    const enhetstyper: Enhetstype[] = ['ALS', 'ARK', 'LOKAL'];
 
     describe("When form property 'enhetstyper' is provided", () => {
       beforeEach(async () => {
@@ -198,10 +210,11 @@ describe('PrepareLetterPage', () => {
           console.error(`Manglende testoppsett: Ukjent url ${url}`);
           return Promise.reject<Response>();
         });
+        const GAMMEL_TYPE = 'GAMMEL_TYPE' as Enhetstype;
         renderPrepareLetterPage(
           formWithProperties({
             enhetMaVelgesVedPapirInnsending: true,
-            enhetstyper: ['GAMMEL_TYPE'],
+            enhetstyper: [GAMMEL_TYPE],
             skjemanummer: SKJEMANUMMER,
           }),
         );
@@ -276,5 +289,95 @@ describe('PrepareLetterPage', () => {
         expect(enhetSelectList).toHaveLength(6);
       },
     );
+  });
+
+  describe('UX signals', () => {
+    const UX_SIGNALS_ID = 'abc-123';
+    const DEV_CONFIG = {
+      NAIS_CLUSTER_NAME: 'dev-gcp',
+    };
+    const PROD_CONFIG = {
+      NAIS_CLUSTER_NAME: 'prod-gcp',
+    };
+
+    it('does not render when ux signals id is missing', () => {
+      renderPrepareLetterPage(
+        formWithProperties({
+          uxSignalsId: undefined,
+          uxSignalsInnsending: undefined,
+        }),
+        DEV_CONFIG,
+      );
+      const uxSignalsSection = screen.queryByTestId('uxsignals');
+      expect(uxSignalsSection).not.toBeInTheDocument();
+    });
+
+    it('renders in demo mode', async () => {
+      const config = {
+        NAIS_CLUSTER_NAME: 'dev-gcp',
+      };
+      renderPrepareLetterPage(
+        formWithProperties({
+          uxSignalsId: UX_SIGNALS_ID,
+          uxSignalsInnsending: 'PAPIR_OG_DIGITAL',
+        }),
+        config,
+      );
+      const id = screen.queryByTestId('uxsignals-id');
+      expect(id).toBeInTheDocument();
+      expect(id).toHaveTextContent(UX_SIGNALS_ID);
+      const demo = screen.queryByTestId('uxsignals-demo');
+      expect(demo).toBeInTheDocument();
+      expect(demo).toHaveTextContent('true');
+    });
+
+    it('renders in production mode', () => {
+      renderPrepareLetterPage(
+        formWithProperties({
+          uxSignalsId: UX_SIGNALS_ID,
+          uxSignalsInnsending: 'PAPIR_OG_DIGITAL',
+        }),
+        PROD_CONFIG,
+      );
+      const demo = screen.queryByTestId('uxsignals-demo');
+      expect(demo).toBeInTheDocument();
+      expect(demo).toHaveTextContent('false');
+    });
+
+    describe('innsendingstype', () => {
+      it('renders when ux innsendingstype is KUN_PAPIR', () => {
+        renderPrepareLetterPage(
+          formWithProperties({
+            uxSignalsId: UX_SIGNALS_ID,
+            uxSignalsInnsending: 'KUN_PAPIR',
+          }),
+          DEV_CONFIG,
+        );
+        const uxSignalsSection = screen.queryByTestId('uxsignals');
+        expect(uxSignalsSection).toBeInTheDocument();
+      });
+      it('renders when ux innsendingstype is PAPIR_OG_DIGITAL', () => {
+        renderPrepareLetterPage(
+          formWithProperties({
+            uxSignalsId: UX_SIGNALS_ID,
+            uxSignalsInnsending: 'PAPIR_OG_DIGITAL',
+          }),
+          DEV_CONFIG,
+        );
+        const uxSignalsSection = screen.queryByTestId('uxsignals');
+        expect(uxSignalsSection).toBeInTheDocument();
+      });
+      it('does not render when ux innsendingstype is KUN_DIGITAL', () => {
+        renderPrepareLetterPage(
+          formWithProperties({
+            uxSignalsId: UX_SIGNALS_ID,
+            uxSignalsInnsending: 'KUN_DIGITAL',
+          }),
+          DEV_CONFIG,
+        );
+        const uxSignalsSection = screen.queryByTestId('uxsignals');
+        expect(uxSignalsSection).not.toBeInTheDocument();
+      });
+    });
   });
 });
