@@ -1,17 +1,9 @@
-import { ConfirmationModal } from '@navikt/skjemadigitalisering-shared-components';
+import { ConfirmationModal, useModal } from '@navikt/skjemadigitalisering-shared-components';
 import { I18nTranslations, NavFormType, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import useLockedFormModal from '../../hooks/useLockedFormModal';
 import ConfirmPublishModal from './ConfirmPublishModal';
 import PublishSettingsModal from './PublishSettingsModal';
-
-interface Modals {
-  publishSettingModalValidated: boolean;
-  confirmPublishModal: boolean;
-  userMessageModal: boolean;
-}
-
-interface PartialModals extends Partial<Modals> {}
 
 interface PublishModalComponentsProps {
   form: NavFormType;
@@ -32,77 +24,59 @@ const PublishModalComponents = ({
   openPublishSettingModal,
   setOpenPublishSettingModal,
 }: PublishModalComponentsProps) => {
+  const [openPublishSettingModalValidated, setOpenPublishSettingModalValidated] = useModal();
+  const [openConfirmPublishModal, setOpenConfirmPublishModal] = useModal();
+  const [userMessageModal, setUserMessageModal] = useModal();
   const { lockedFormModalContent, openLockedFormModal } = useLockedFormModal(form);
-
-  const [modals, setModals] = useState<Modals>({
-    publishSettingModalValidated: false,
-    confirmPublishModal: false,
-    userMessageModal: false,
-  });
-
   const [selectedLanguageCodeList, setSelectedLanguageCodeList] = useState<string[]>([]);
   const isLockedForm = form.properties.isLockedForm;
 
-  const closeModal = useCallback(() => {
-    setOpenPublishSettingModal(false);
-  }, [setOpenPublishSettingModal]);
-
-  const updateModals = useCallback(
-    (newModals: PartialModals) => {
-      if (Object.values(newModals).some((value) => value === false)) {
-        closeModal();
-      }
-
-      setModals((prevModals) => ({
-        ...prevModals,
-        ...newModals,
-      }));
-    },
-    [closeModal],
-  );
-
   useEffect(() => {
-    const handlePublishSettingModal = () => {
-      if (openPublishSettingModal) {
-        const attachmentsAreValid = validateAttachments(form);
-
-        if (isLockedForm) {
-          openLockedFormModal();
-        } else if (attachmentsAreValid) {
-          updateModals({ publishSettingModalValidated: true });
-        } else {
-          updateModals({ userMessageModal: true });
-        }
+    if (openPublishSettingModal) {
+      const attachmentsAreValid = validateAttachments(form);
+      if (isLockedForm) {
+        openLockedFormModal();
+      } else if (attachmentsAreValid) {
+        setOpenPublishSettingModalValidated(true);
       } else {
-        updateModals({ publishSettingModalValidated: false });
+        setOpenPublishSettingModal(false);
+        setUserMessageModal(true);
       }
-    };
-
-    handlePublishSettingModal();
-  }, [openPublishSettingModal, form, updateModals, isLockedForm, closeModal, openLockedFormModal]);
+    } else {
+      setOpenPublishSettingModalValidated(false);
+    }
+  }, [
+    openPublishSettingModal,
+    form,
+    setOpenPublishSettingModalValidated,
+    setOpenPublishSettingModal,
+    setUserMessageModal,
+    isLockedForm,
+    openLockedFormModal,
+  ]);
 
   return (
     <>
       <PublishSettingsModal
-        open={modals.publishSettingModalValidated}
-        onClose={() => closeModal()}
+        open={openPublishSettingModalValidated}
+        onClose={() => setOpenPublishSettingModal(false)}
         onConfirm={(languageCodes) => {
-          updateModals({ confirmPublishModal: true });
+          setOpenConfirmPublishModal(true);
           setSelectedLanguageCodeList(languageCodes);
         }}
         form={form}
       />
       <ConfirmPublishModal
-        open={modals.confirmPublishModal}
-        onClose={() => closeModal()}
+        open={openConfirmPublishModal}
+        onClose={() => setOpenConfirmPublishModal(false)}
         form={form}
         onPublish={onPublish}
         publishLanguageCodeList={selectedLanguageCodeList}
       />
       <ConfirmationModal
-        open={modals.userMessageModal}
-        onClose={() => updateModals({ userMessageModal: false })}
-        onConfirm={() => updateModals({ userMessageModal: false })}
+        open={userMessageModal}
+        onClose={() => setUserMessageModal(false)}
+        onConfirm={() => setUserMessageModal(false)}
         texts={{
           title: 'Brukermelding',
           confirm: 'Ok',
