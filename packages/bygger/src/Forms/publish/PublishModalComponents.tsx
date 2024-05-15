@@ -1,8 +1,24 @@
-import { ConfirmationModal, useModal } from '@navikt/skjemadigitalisering-shared-components';
-import { NavFormType, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
-import { useEffect, useState } from 'react';
+import { ConfirmationModal } from '@navikt/skjemadigitalisering-shared-components';
+import { I18nTranslations, NavFormType, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { useCallback, useEffect, useState } from 'react';
+import useLockedFormModal from '../../hooks/useLockedFormModal';
 import ConfirmPublishModal from './ConfirmPublishModal';
 import PublishSettingsModal from './PublishSettingsModal';
+
+interface Modals {
+  publishSettingModalValidated: boolean;
+  confirmPublishModal: boolean;
+  userMessageModal: boolean;
+}
+
+interface PartialModals extends Partial<Modals> {}
+
+interface PublishModalComponentsProps {
+  form: NavFormType;
+  onPublish: (form: NavFormType, translations: I18nTranslations) => void;
+  openPublishSettingModal: boolean;
+  setOpenPublishSettingModal: (open: boolean) => void;
+}
 
 const validateAttachments = (form: NavFormType) =>
   navFormUtils
@@ -10,60 +26,90 @@ const validateAttachments = (form: NavFormType) =>
     .filter(navFormUtils.isAttachment)
     .every((comp) => comp.properties?.vedleggskode && comp.properties?.vedleggstittel);
 
-const PublishModalComponents = ({ form, onPublish, openPublishSettingModal, setOpenPublishSettingModal }) => {
-  const [openPublishSettingModalValidated, setOpenPublishSettingModalValidated] = useModal();
-  const [openConfirmPublishModal, setOpenConfirmPublishModal] = useModal();
-  const [userMessageModal, setUserMessageModal] = useModal();
+const PublishModalComponents = ({
+  form,
+  onPublish,
+  openPublishSettingModal,
+  setOpenPublishSettingModal,
+}: PublishModalComponentsProps) => {
+  const { lockedFormModalContent, openLockedFormModal } = useLockedFormModal(form);
+
+  const [modals, setModals] = useState<Modals>({
+    publishSettingModalValidated: false,
+    confirmPublishModal: false,
+    userMessageModal: false,
+  });
+
   const [selectedLanguageCodeList, setSelectedLanguageCodeList] = useState<string[]>([]);
+  const isLockedForm = form.properties.isLockedForm;
+
+  const closeModal = useCallback(() => {
+    setOpenPublishSettingModal(false);
+  }, [setOpenPublishSettingModal]);
+
+  const updateModals = useCallback(
+    (newModals: PartialModals) => {
+      if (Object.values(newModals).some((value) => value === false)) {
+        closeModal();
+      }
+
+      setModals((prevModals) => ({
+        ...prevModals,
+        ...newModals,
+      }));
+    },
+    [closeModal],
+  );
 
   useEffect(() => {
-    if (openPublishSettingModal) {
-      const attachmentsAreValid = validateAttachments(form);
-      if (attachmentsAreValid) {
-        setOpenPublishSettingModalValidated(true);
+    const handlePublishSettingModal = () => {
+      if (openPublishSettingModal) {
+        const attachmentsAreValid = validateAttachments(form);
+
+        if (isLockedForm) {
+          openLockedFormModal();
+        } else if (attachmentsAreValid) {
+          updateModals({ publishSettingModalValidated: true });
+        } else {
+          updateModals({ userMessageModal: true });
+        }
       } else {
-        setOpenPublishSettingModal(false);
-        setUserMessageModal(true);
+        updateModals({ publishSettingModalValidated: false });
       }
-    } else {
-      setOpenPublishSettingModalValidated(false);
-    }
-  }, [
-    openPublishSettingModal,
-    form,
-    setOpenPublishSettingModalValidated,
-    setOpenPublishSettingModal,
-    setUserMessageModal,
-  ]);
+    };
+
+    handlePublishSettingModal();
+  }, [openPublishSettingModal, form, updateModals, isLockedForm, closeModal, openLockedFormModal]);
 
   return (
     <>
       <PublishSettingsModal
-        open={openPublishSettingModalValidated}
-        onClose={() => setOpenPublishSettingModal(false)}
+        open={modals.publishSettingModalValidated}
+        onClose={() => closeModal()}
         onConfirm={(languageCodes) => {
-          setOpenConfirmPublishModal(true);
+          updateModals({ confirmPublishModal: true });
           setSelectedLanguageCodeList(languageCodes);
         }}
         form={form}
       />
       <ConfirmPublishModal
-        open={openConfirmPublishModal}
-        onClose={() => setOpenConfirmPublishModal(false)}
+        open={modals.confirmPublishModal}
+        onClose={() => closeModal()}
         form={form}
         onPublish={onPublish}
         publishLanguageCodeList={selectedLanguageCodeList}
       />
       <ConfirmationModal
-        open={userMessageModal}
-        onClose={() => setUserMessageModal(false)}
-        onConfirm={() => setUserMessageModal(false)}
+        open={modals.userMessageModal}
+        onClose={() => updateModals({ userMessageModal: false })}
+        onConfirm={() => updateModals({ userMessageModal: false })}
         texts={{
           title: 'Brukermelding',
           confirm: 'Ok',
           body: 'Du må fylle ut vedleggskode og vedleggstittel for alle vedlegg før skjemaet kan publiseres.',
         }}
       />
+      {lockedFormModalContent}
     </>
   );
 };

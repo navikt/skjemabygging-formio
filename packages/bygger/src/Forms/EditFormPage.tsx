@@ -9,6 +9,7 @@ import SkjemaVisningSelect from '../components/SkjemaVisningSelect';
 import UserFeedback from '../components/UserFeedback';
 import Column from '../components/layout/Column';
 import Row from '../components/layout/Row';
+import useLockedFormModal from '../hooks/useLockedFormModal';
 import beforeSaveComponentSettings from './formBuilderHooks/beforeSaveComponentSettings';
 import PublishModalComponents from './publish/PublishModalComponents';
 import FormStatusPanel from './status/FormStatusPanel';
@@ -43,6 +44,8 @@ export function EditFormPage({ form, publishedForm, onSave, onChange, onPublish,
     properties: { skjemanummer, isLockedForm },
   } = form;
   const [openPublishSettingModal, setOpenPublishSettingModal] = useModal();
+  const { lockedFormModalContent, openLockedFormModal } = useLockedFormModal(form);
+
   const appConfig = useAppConfig();
   const styles = useStyles();
   const formBuilderOptions = {
@@ -51,6 +54,7 @@ export function EditFormPage({ form, publishedForm, onSave, onChange, onPublish,
     hooks: { beforeSaveComponentSettings },
     appConfig,
   };
+
   return (
     <>
       <AppLayout
@@ -78,14 +82,29 @@ export function EditFormPage({ form, publishedForm, onSave, onChange, onPublish,
           <Column>
             <Button
               variant="secondary"
-              onClick={() => setOpenPublishSettingModal(true)}
+              onClick={() => {
+                if (isLockedForm) {
+                  openLockedFormModal();
+                } else {
+                  setOpenPublishSettingModal(true);
+                }
+              }}
               type="button"
               icon={isLockedForm && <PadlockLockedIcon />}
             >
               Publiser
             </Button>
             <UnpublishButton onUnpublish={onUnpublish} form={form} />
-            <ButtonWithSpinner onClick={() => onSave(form)} icon={isLockedForm && <PadlockLockedIcon />}>
+            <ButtonWithSpinner
+              onClick={() => {
+                if (isLockedForm) {
+                  openLockedFormModal();
+                } else {
+                  onSave(form);
+                }
+              }}
+              icon={isLockedForm && <PadlockLockedIcon />}
+            >
               Lagre
             </ButtonWithSpinner>
             <UserFeedback />
@@ -93,6 +112,7 @@ export function EditFormPage({ form, publishedForm, onSave, onChange, onPublish,
           </Column>
         </Row>
       </AppLayout>
+      {lockedFormModalContent}
 
       <PublishModalComponents
         form={form}
