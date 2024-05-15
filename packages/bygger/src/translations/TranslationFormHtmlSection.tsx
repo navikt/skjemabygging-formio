@@ -1,12 +1,12 @@
 import { ArrowUndoIcon, PlusIcon, XMarkIcon } from '@navikt/aksel-icons';
 import { Box, Button, HStack, Heading, HelpText, VStack } from '@navikt/ds-react';
 import {
+  InnerHtml,
   StructuredHtml,
   StructuredHtmlElement,
   htmlConverter,
   makeStyles,
 } from '@navikt/skjemadigitalisering-shared-components';
-import DOMPurify from 'dompurify';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import TranslationFormHtmlInput from './TranslationFormHtmlInput';
 
@@ -86,7 +86,7 @@ const TranslationFormHtmlSection = ({ text, storedTranslation, updateTranslation
         borderWidth="2"
       >
         <HStack justify="space-between" wrap={false}>
-          <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(text) }} />
+          <InnerHtml content={text} />
           <HelpText title="Hjelp til bruk av markdown" placement="bottom">
             <p>Oversettelser av html bruker markdown til lenker og fet skrift.</p>
             Lenker skrives med klammer rundt lenketeksten etterfulgt av en url omgitt av parenteser
@@ -113,7 +113,7 @@ const TranslationFormHtmlSection = ({ text, storedTranslation, updateTranslation
           <VStack gap="4" align="start">
             <hr className={styles.divider} />
             <Heading size={'xsmall'}>Teksten har en eksisterende oversettelse som ikke følger samme struktur</Heading>
-            <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(storedTranslation) }} />
+            <InnerHtml content={storedTranslation} />
             <HStack gap="6">
               <Button
                 type="button"
