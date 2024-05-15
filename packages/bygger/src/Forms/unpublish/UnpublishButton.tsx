@@ -1,7 +1,7 @@
+import { PadlockLockedIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
 import { ConfirmationModal, useModal } from '@navikt/skjemadigitalisering-shared-components';
 import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
-
 interface UnpublishButtonProps {
   onUnpublish: () => void;
   form: NavFormType;
@@ -9,12 +9,18 @@ interface UnpublishButtonProps {
 
 const UnpublishButton = ({ onUnpublish, form }: UnpublishButtonProps) => {
   const [openConfirmModal, setOpenConfirmModal] = useModal();
+  const isLockedForm = form.properties.isLockedForm;
 
   return (
     <>
       {form.properties?.published && (
         <>
-          <Button variant="secondary" onClick={() => setOpenConfirmModal(true)} type="button">
+          <Button
+            variant="secondary"
+            onClick={() => setOpenConfirmModal(true)}
+            type="button"
+            icon={isLockedForm && <PadlockLockedIcon />}
+          >
             Avpubliser
           </Button>
 
