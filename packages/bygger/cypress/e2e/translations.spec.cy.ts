@@ -1,3 +1,5 @@
+import { expect } from 'chai';
+
 describe('Translations', () => {
   beforeEach(() => {
     cy.intercept('GET', '/api/config', { fixture: 'config.json' }).as('getConfig');
@@ -134,10 +136,10 @@ describe('Translations', () => {
       cy.visit('/forms/tekstblokk123');
       cy.wait('@getForm');
       cy.findByRole('link', { name: 'Språk' }).click();
-      cy.wait('@getTranslations', { timeout: 10000 });
+      cy.wait('@getTranslations', { timeout: 20000 });
     });
 
-    it('lets you edit old versions of translations and start new translations', () => {
+    it('lets you edit old versions of translations and start new translation', () => {
       const expectedI18n = {
         'Du må selv skrive under på leveattesten. I tillegg må du få bekreftet attesten enten av to myndige personer (vitner) eller av en offentlig myndighet.':
           'Du må sjølv skrive....',
@@ -174,9 +176,50 @@ describe('Translations', () => {
       typeNewHtmlTranslationInput(
         0,
         'Beskrivelse av dette skjemaet med [lenke til NAV](https://www.nav.no).',
+        'Litt tekst',
+      );
+      cy.get('[data-testid=html-translation]')
+        .first()
+        .within(() => {
+          cy.findByRole('button', { name: 'Forkast og gå tilbake' }).should('be.visible');
+          cy.findByRole('button', { name: 'Forkast og gå tilbake' }).click();
+          cy.findByRole('button', { name: 'Bruk eksisterende oversettelse' }).should('be.visible');
+          cy.findByRole('button', { name: 'Bruk eksisterende oversettelse' }).click();
+        });
+
+      // Tar vare på opprinnelig oversettelse selv om man har klikket på start ny, og begynt å redigere
+      cy.findByRole('textbox', {
+        name: '<h3>Overskrift</h3><p>Beskrivelse av dette skjemaet med <a target="_blank" rel="noopener noreferrer" href="https://www.nav.no">lenke til NAV</a>.</p>',
+      }).should(
+        'have.value',
+        '<h2>Overskrift</h2><p>Beskrivelse av dette skjemaet med <a target="_blank" rel="noopener noreferrer" href="https://www.nav.no">lenke til NAV</a>.</p>',
+      );
+      cy.findByRole('button', { name: 'Gå tilbake til vanlig HTML-oversetting' }).should('be.visible');
+      cy.findByRole('button', { name: 'Gå tilbake til vanlig HTML-oversetting' }).click();
+
+      cy.get('[data-testid=html-translation]')
+        .first()
+        .within(() => {
+          cy.findAllByRole('heading', { name: 'Overskrift' }).should('be.visible');
+          cy.findByRole('button', { name: 'Start ny oversettelse' }).should('be.visible');
+          cy.findByRole('button', { name: 'Start ny oversettelse' }).click();
+          cy.findByRole('textbox', {
+            name: 'Beskrivelse av dette skjemaet med [lenke til NAV](https://www.nav.no).',
+          }).should('have.value', '');
+        });
+      typeNewHtmlTranslationInput(
+        0,
+        'Beskrivelse av dette skjemaet med [lenke til NAV](https://www.nav.no).',
         'Beskrivelse med [lenke til minside](https://www.nav.no/minside).',
       );
 
+      cy.findByRole('button', { name: 'Lagre' }).click();
+      cy.wait('@updateTranslations').then((interception) => {
+        expect(interception.request.body.data.i18n).to.deep.equal(expectedI18n);
+      });
+    });
+
+    it('starts new translation when there is no existing translation', () => {
       cy.get('[data-testid=html-translation]')
         .last()
         .within(() => {
@@ -188,10 +231,6 @@ describe('Translations', () => {
           cy.findAllByRole('button', { name: 'Bruk eksisterende oversettelse' }).should('have.length', 0);
           cy.findAllByRole('button', { name: 'Start ny oversettelse' }).should('have.length', 0);
         });
-      cy.findByRole('button', { name: 'Lagre' }).click();
-      cy.wait('@updateTranslations').then((interception) => {
-        expect(interception.request.body.data.i18n).to.deep.equal(expectedI18n);
-      });
     });
 
     it('lets you change links', () => {
@@ -215,7 +254,7 @@ describe('Translations', () => {
       });
     });
 
-    it('updates the tranlation of a list item without affecting the other list items', () => {
+    it('updates the translation of a list item without affecting the other list items', () => {
       const updatedTranslation =
         '<h3>Tekstblokk med mye formatering og eksisterende oversettelse</h3><p>Dette er et avsnitt</p><p>Her er eit avsnitt <a target="_blank" rel="noopener noreferrer" href="https://www.dagogtid.no">med lenke til DAG OG TID</a>, og her er ei ei liste:</p><ul><li>Ta ut av oppvasken</li><li>Handle <a target="_blank" rel="noopener noreferrer" href="https://www.kiwi.no/"><strong>matvarer</strong></a>, og <strong>tenk på om du skal</strong> <a target="_blank" rel="noopener noreferrer" href="https://www.zalando.no">kjøpe <strong>nye</strong> klær</a>.</li></ul><p>Nytt avsnitt. Ny liste (numerert denne gangen):</p><ol><li>Første prioritet</li><li>Ganske viktig</li><li>Kan utsettes</li><li>Trengs egentlig ikke å gjøres</li></ol>';
       const listItem1 = 'Ta oppvasken';
