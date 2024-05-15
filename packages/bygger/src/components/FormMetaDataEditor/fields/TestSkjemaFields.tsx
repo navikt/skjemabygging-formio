@@ -20,6 +20,7 @@ const useStyles = makeStyles({
 
 const TestSkjemaFields = ({ onChange, form }: TestSkjemaFieldsProps) => {
   const isTestForm = form.properties.isTestForm;
+  const isLockedForm = form.properties.isLockedForm;
   const path = form.path;
 
   const styles = useStyles();
@@ -36,6 +37,19 @@ const TestSkjemaFields = ({ onChange, form }: TestSkjemaFieldsProps) => {
           }
         >
           Dette er et testskjema
+        </Checkbox>
+
+        <Checkbox
+          id="lockForm"
+          checked={!!isLockedForm}
+          onChange={(event) =>
+            onChange({
+              ...form,
+              properties: { ...form.properties, isLockedForm: event.target.checked },
+            })
+          }
+        >
+          Lås for redigering
         </Checkbox>
         <span>
           Skjemadelingslenke
