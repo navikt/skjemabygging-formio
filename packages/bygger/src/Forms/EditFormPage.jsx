@@ -60,11 +60,13 @@ export function EditFormPage({ form, publishedForm, onSave, onChange, onPublish,
             formBuilderOptions={formBuilderOptions}
           />
           <Column>
-            <Button variant="secondary" onClick={() => setOpenPublishSettingModal(true)} type="button">
+            <ButtonWithSpinner onClick={() => onSave(form)} size="small">
+              Lagre
+            </ButtonWithSpinner>
+            <Button variant="secondary" onClick={() => setOpenPublishSettingModal(true)} type="button" size="small">
               Publiser
             </Button>
             <UnpublishButton onUnpublish={onUnpublish} form={form} />
-            <ButtonWithSpinner onClick={() => onSave(form)}>Lagre</ButtonWithSpinner>
             <UserFeedback />
             <FormStatusPanel publishProperties={form.properties} />
           </Column>

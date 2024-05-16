@@ -7,7 +7,7 @@ const useStyles = makeStyles({
     flexDirection: 'column',
 
     '& > *': {
-      marginBottom: '1rem',
+      marginBottom: '0.75rem',
     },
   },
 });

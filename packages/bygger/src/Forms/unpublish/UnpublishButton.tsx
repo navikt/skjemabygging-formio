@@ -1,5 +1,5 @@
 import { Button } from '@navikt/ds-react';
-import { ConfirmationModal, useModal } from '@navikt/skjemadigitalisering-shared-components';
+import { ConfirmationModal, makeStyles, useModal } from '@navikt/skjemadigitalisering-shared-components';
 import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 
 interface UnpublishButtonProps {
@@ -7,18 +7,25 @@ interface UnpublishButtonProps {
   form: NavFormType;
 }
 
+const useStyles = makeStyles({
+  noMargin: {
+    margin: 0,
+  },
+});
+
 const UnpublishButton = ({ onUnpublish, form }: UnpublishButtonProps) => {
   const [openConfirmModal, setOpenConfirmModal] = useModal();
+  const styles = useStyles();
 
   return (
     <>
       {form.properties?.published && (
         <>
-          <Button variant="secondary" onClick={() => setOpenConfirmModal(true)} type="button">
+          <Button variant="tertiary" onClick={() => setOpenConfirmModal(true)} type="button" size="small">
             Avpubliser
           </Button>
 
-          <div>
+          <div className={styles.noMargin}>
             <ConfirmationModal
               open={openConfirmModal}
               onClose={() => setOpenConfirmModal(false)}

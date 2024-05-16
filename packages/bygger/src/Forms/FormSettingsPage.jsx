@@ -55,16 +55,18 @@ export function FormSettingsPage({ form, publishedForm, onSave, onChange, onPubl
           <FormMetadataEditor form={form} publishedForm={publishedForm} errors={errors} onChange={onChange} />
         </Column>
         <Column>
-          <Button variant="secondary" onClick={() => setOpenPublishSettingModal(true)} type="button">
+          <ButtonWithSpinner onClick={() => validateAndSave(form)} size="small">
+            Lagre
+          </ButtonWithSpinner>
+          <Button variant="secondary" onClick={() => setOpenPublishSettingModal(true)} type="button" size="small">
             Publiser
           </Button>
           <UnpublishButton onUnpublish={onUnpublish} form={form} />
           {!config.isProdGcp && (
-            <ButtonWithSpinner variant="secondary" onClick={onCopyFromProd}>
+            <ButtonWithSpinner variant="tertiary" onClick={onCopyFromProd} size="small">
               Kopier fra produksjon
             </ButtonWithSpinner>
           )}
-          <ButtonWithSpinner onClick={() => validateAndSave(form)}>Lagre</ButtonWithSpinner>
           <UserFeedback />
           <FormStatusPanel publishProperties={form.properties} />
         </Column>

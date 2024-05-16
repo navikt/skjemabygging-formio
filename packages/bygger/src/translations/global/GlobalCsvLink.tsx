@@ -38,7 +38,7 @@ const GlobalCsvLink = ({ allGlobalTranslations, languageCode }: Props) => {
       data={csvData}
       headers={csvHeaders}
       filename={`globale-oversettelser-${languageCode}.csv`}
-      className="navds-button navds-button--secondary navds-label"
+      className="navds-button navds-button--secondary navds-button--small navds-label navds-label--small"
       separator=";"
       enclosingCharacter='"'
     >

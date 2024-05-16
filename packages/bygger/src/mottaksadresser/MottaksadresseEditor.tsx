@@ -82,7 +82,7 @@ const MottaksadresseEditor = ({
         )}
         <div>
           {(!editMode || loadingForm) && mottaksadresse && (
-            <Button variant="secondary" onClick={() => onEdit()} loading={loadingForm} type="button">
+            <Button variant="secondary" onClick={() => onEdit()} loading={loadingForm} type="button" size="small">
               Endre
             </Button>
           )}

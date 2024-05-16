@@ -13,9 +13,10 @@ interface Props {
     | 'tertiary'
     | 'tertiary-neutral'
     | 'danger';
+  size?: 'medium' | 'small' | 'xsmall';
 }
 
-const ButtonWithSpinner = ({ children, className, onClick, variant = 'primary' }: Props) => {
+const ButtonWithSpinner = ({ children, className, onClick, variant = 'primary', size = 'medium' }: Props) => {
   const [isSaving, setIsSaving] = useState(false);
   async function onClickWithSpinner() {
     setIsSaving(true);
@@ -26,7 +27,7 @@ const ButtonWithSpinner = ({ children, className, onClick, variant = 'primary' }
     }
   }
   return (
-    <Button className={className} variant={variant} onClick={onClickWithSpinner} loading={isSaving}>
+    <Button className={className} variant={variant} onClick={onClickWithSpinner} loading={isSaving} size={size}>
       {children}
     </Button>
   );

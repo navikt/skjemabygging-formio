@@ -278,21 +278,23 @@ const GlobalTranslationsPage = ({
           <div className={classes.sideBarContainer}>
             <Column className={classes.stickySideBar}>
               <FormBuilderLanguageSelector languages={languages} formPath="global" tag={selectedTag} />
-              <Button variant="secondary" onClick={() => setIsDeleteLanguageModalOpen(true)} type="button">
-                Slett språk
-              </Button>
+              <ButtonWithSpinner onClick={onSaveGlobalTranslations} size="small">
+                Lagre
+              </ButtonWithSpinner>
               <PublishGlobalTranslationsButton
                 languageCode={languageCode}
                 publishGlobalTranslations={publishGlobalTranslations}
               />
-              <ButtonWithSpinner onClick={onSaveGlobalTranslations}>Lagre</ButtonWithSpinner>
-              <UserFeedback />
               <GlobalCsvLink allGlobalTranslations={allGlobalTranslations} languageCode={languageCode} />
               {!config?.isProdGcp && (
-                <ButtonWithSpinner variant="secondary" onClick={importFromProd}>
+                <ButtonWithSpinner variant="tertiary" onClick={importFromProd} size="small">
                   Kopier fra produksjon
                 </ButtonWithSpinner>
               )}
+              <Button variant="tertiary" onClick={() => setIsDeleteLanguageModalOpen(true)} type="button" size="small">
+                Slett språk
+              </Button>
+              <UserFeedback />
             </Column>
           </div>
         </Row>

@@ -9,7 +9,7 @@ const PublishGlobalTranslationsButton = ({ languageCode, publishGlobalTranslatio
   };
 
   return (
-    <Button variant="secondary" onClick={publish} loading={publishing} type="button">
+    <Button variant="secondary" onClick={publish} loading={publishing} type="button" size="small">
       Publiser
     </Button>
   );
