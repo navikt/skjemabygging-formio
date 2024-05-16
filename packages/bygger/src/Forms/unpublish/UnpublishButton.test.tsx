@@ -14,7 +14,7 @@ describe('UnpublishButton', () => {
   };
 
   it('do not render button if not published', () => {
-    renderButton({} as NavFormType);
+    renderButton({ properties: {} } as NavFormType);
     expect(screen.queryByRole('button')).not.toBeInTheDocument();
   });
 
