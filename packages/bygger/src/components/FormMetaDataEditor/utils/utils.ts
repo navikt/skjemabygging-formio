@@ -1,10 +1,19 @@
 import { DeclarationType, NavFormType, UsageContext } from '@navikt/skjemadigitalisering-shared-domain';
 
 export type UpdateFormFunction = (form: NavFormType) => void;
-export type FormMetadataError = { [key: string]: string };
+export type FormMetadataErrorKeys =
+  | 'title'
+  | 'skjemanummer'
+  | 'tema'
+  | 'innsending'
+  | 'ettersending'
+  | 'lockedFormReason'
+  | 'declarationText';
+export type FormMetadataError = { [key in FormMetadataErrorKeys]: string };
 
 export const validateFormMetadata = (form: NavFormType, usageContext: UsageContext) => {
   const errors = {} as FormMetadataError;
+
   if (!form.title) {
     errors.title = 'Du må oppgi skjematittel';
   }
@@ -17,6 +26,10 @@ export const validateFormMetadata = (form: NavFormType, usageContext: UsageConte
 
   if (form.properties.skjemanummer.length > 20) {
     errors.skjemanummer = 'Skjemanummeret kan ikke være lengre enn 20 tegn';
+  }
+
+  if (form.properties.isLockedForm && !form.properties.lockedFormReason) {
+    errors.lockedFormReason = 'Du må oppgi en grunn for at skjemaet er låst';
   }
 
   // Some fields are only required in edit mode

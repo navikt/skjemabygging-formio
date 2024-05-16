@@ -38,7 +38,7 @@ const BasicFields = ({ onChange, diff, form, errors, usageContext }: BasicFields
           onChange={(event) =>
             onChange({ ...form, properties: { ...form.properties, lockedFormReason: event.target.value } })
           }
-          error={errors?.skjemanummer}
+          error={errors?.lockedFormReason}
         />
       )}
 
