@@ -174,6 +174,8 @@ export interface Component {
   customClass?: string;
   validateOn?: string;
   isNavDataGrid?: boolean;
+  hidden?: boolean;
+  clearOnHide?: boolean;
 }
 
 export interface ComponentProperties {
