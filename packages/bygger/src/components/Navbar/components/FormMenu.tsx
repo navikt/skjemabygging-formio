@@ -20,14 +20,14 @@ export const FormMenu = ({ formPath }) => {
         <span className={styles.linkText}>Innstillinger</span>
       </MenuLink>
 
-      <MenuLink to={`/forms/${formPath}/view/veiledning`} noIconStyling={false}>
-        <Eye fontSize={'1.5rem'} role="presentation" />
-        <span className={styles.linkText}>Forhåndsvis</span>
-      </MenuLink>
-
       <MenuLink to={`/forms/${formPath}/edit`} noIconStyling={false}>
         <Edit fontSize={'1.5rem'} role="presentation" />
         <span className={styles.linkText}>Rediger skjema</span>
+      </MenuLink>
+
+      <MenuLink to={`/forms/${formPath}/view/veiledning`} noIconStyling={false}>
+        <Eye fontSize={'1.5rem'} role="presentation" />
+        <span className={styles.linkText}>Forhåndsvis</span>
       </MenuLink>
 
       <MenuLink to={`/translations/${formPath}${currentLanguage ? `/${currentLanguage}` : ''}`} noIconStyling={false}>
