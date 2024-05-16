@@ -21,6 +21,13 @@ describe('UnpublishButton', () => {
   it('renders button', async () => {
     renderButton();
     expect(await screen.findByRole('button')).toBeInTheDocument();
+    expect(screen.queryByTitle('Låseikon')).not.toBeInTheDocument();
+  });
+
+  it('renders button with lock', async () => {
+    renderButton({ properties: { published: dateUtils.getIso8601String(), isLockedForm: true } } as NavFormType);
+    expect(await screen.findByRole('button')).toBeInTheDocument();
+    expect(screen.getByTitle('Låseikon')).toBeInTheDocument();
   });
 
   it('click button', async () => {
