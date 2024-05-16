@@ -31,7 +31,7 @@ const ReportsPage = () => {
   }, [http, userData]);
 
   return (
-    <AppLayout navBarProps={{}}>
+    <AppLayout>
       <Row>
         <Column className={styles.reports}>
           <Heading level="1" size="xlarge">

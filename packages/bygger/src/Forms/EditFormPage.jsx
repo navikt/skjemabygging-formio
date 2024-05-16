@@ -39,7 +39,7 @@ export function EditFormPage({ form, publishedForm, onSave, onChange, onPublish,
     <>
       <AppLayout
         navBarProps={{
-          visSkjemaMeny: true,
+          formMenu: true,
           formPath: form.path,
         }}
       >

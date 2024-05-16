@@ -52,13 +52,7 @@ const BulkPublishPage = () => {
   }
 
   return (
-    <AppLayout
-      navBarProps={{
-        title: 'Bulkpubliser skjemaer',
-        visSkjemaliste: true,
-        visSkjemaMeny: false,
-      }}
-    >
+    <AppLayout>
       <main className={styles.root}>
         <Column className={styles.mainContent}>
           <BulkPublishPanel forms={forms!} />

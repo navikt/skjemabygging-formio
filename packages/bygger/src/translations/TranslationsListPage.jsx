@@ -50,13 +50,7 @@ export function TranslationsListPage({ loadFormsList }) {
   }
 
   return (
-    <AppLayout
-      navBarProps={{
-        title: 'Oversettelser',
-        visSkjemaliste: true,
-        visLagNyttSkjema: false,
-      }}
-    >
+    <AppLayout>
       <main className={classes.root}>
         <nav className="mb">
           <Heading level="2" size="large">

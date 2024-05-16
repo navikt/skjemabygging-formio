@@ -1,11 +1,10 @@
 import { Down, Up, UpDown } from '@navikt/ds-icons';
-import { Button, Heading } from '@navikt/ds-react';
+import { Heading } from '@navikt/ds-react';
 import { LoadingComponent, makeStyles } from '@navikt/skjemadigitalisering-shared-components';
 import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AppLayout } from '../components/AppLayout';
-import ActionRow from '../components/layout/ActionRow';
 import {
   FormMetadata,
   SortDirection,
@@ -167,21 +166,12 @@ const FormsListPage = ({ loadFormsList }: FormsListPageProps) => {
     return <h1>Finner ingen skjemaer...</h1>;
   }
 
-  const onNew = () => navigate('/forms/new');
-
   return (
     <AppLayout
       navBarProps={{
-        title: 'Skjemaoversikt',
-        visSkjemaliste: false,
-        visOversettelseliste: true,
+        formListMenu: true,
       }}
     >
-      <ActionRow>
-        <Button className={classes.centerColumn} onClick={onNew}>
-          Lag nytt skjema
-        </Button>
-      </ActionRow>
       <nav className={classes.root}>
         <Heading level="2" size="small">
           Velg skjema:

@@ -231,10 +231,7 @@ const GlobalTranslationsPage = ({
     <>
       <AppLayout
         navBarProps={{
-          title: 'Globale oversettelser',
-          visOversettelseliste: true,
-          visLagNyttSkjema: false,
-          visOversettelsesMeny: true,
+          translationMenu: true,
         }}
       >
         <Row className={classes.titleRow}>
