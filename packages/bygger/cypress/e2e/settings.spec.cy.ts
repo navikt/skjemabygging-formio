@@ -32,8 +32,8 @@ describe('FormSettingsPage', () => {
     cy.intercept('PUT', '/api/forms/cypresssettings', (req) => {
       expect(req.body.properties.tema).to.include(_submitData.tema);
       expect(req.body.title).to.include(_submitData.title);
-      expect(req.body.properties.isLockedForm).to.include(_submitData.isLockedForm);
-      expect(req.body.properties.lockedFormReason).to.include(_submitData.lockedFormReason);
+      expect(req.body.properties.isLockedForm).to.equal(_submitData.isLockedForm);
+      expect(req.body.properties.lockedFormReason).to.equal(_submitData.lockedFormReason);
       expect(req.body.properties.skjemanummer).to.include(_submitData.skjemanummer);
       expect(req.body.properties.descriptionOfSignatures).to.include(_submitData.descriptionOfSignatures);
       expect(req.body.properties.innsending).to.include(_submitData.innsending);
