@@ -11,6 +11,7 @@ const _submitData = {
   signatureLabel: 'Test account',
   signatureDescription: 'Instruction from test...',
   lockedFormReason: 'Test reason for locking',
+  isLockedForm: true,
 };
 
 describe('FormSettingsPage', () => {
@@ -31,6 +32,7 @@ describe('FormSettingsPage', () => {
     cy.intercept('PUT', '/api/forms/cypresssettings', (req) => {
       expect(req.body.properties.tema).to.include(_submitData.tema);
       expect(req.body.title).to.include(_submitData.title);
+      expect(req.body.properties.isLockedForm).to.include(_submitData.isLockedForm);
       expect(req.body.properties.lockedFormReason).to.include(_submitData.lockedFormReason);
       expect(req.body.properties.skjemanummer).to.include(_submitData.skjemanummer);
       expect(req.body.properties.descriptionOfSignatures).to.include(_submitData.descriptionOfSignatures);
