@@ -27,7 +27,7 @@ const UnpublishButton = ({ onUnpublish, form }: UnpublishButtonProps) => {
               }
             }}
             type="button"
-            icon={isLockedForm && <PadlockLockedIcon />}
+            icon={isLockedForm && <PadlockLockedIcon title="Låseikon" />}
           >
             Avpubliser
           </Button>

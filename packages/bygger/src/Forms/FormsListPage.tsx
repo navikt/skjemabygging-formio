@@ -201,7 +201,9 @@ const FormsListPage = ({ loadFormsList }: FormsListPageProps) => {
               </Link>
               <Link className="lenke" data-testid="editLink" to={`${formMetadata.path}/edit`}>
                 {formMetadata.title}
-                {formMetadata.isLockedForm && <PadlockLockedFillIcon title="Låst" className={classes.padlockIcon} />}
+                {formMetadata.isLockedForm && (
+                  <PadlockLockedFillIcon title="Låseikon" className={classes.padlockIcon} />
+                )}
               </Link>
               <FormStatus status={formMetadata.status} size="small" />
             </li>

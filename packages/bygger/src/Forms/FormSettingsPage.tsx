@@ -89,7 +89,7 @@ export function FormSettingsPage({
               }
             }}
             type="button"
-            icon={isLockedForm && <PadlockLockedIcon />}
+            icon={isLockedForm && <PadlockLockedIcon title="Låseikon" />}
           >
             Publiser
           </Button>

@@ -66,7 +66,7 @@ export function EditFormPage({ form, publishedForm, onSave, onChange, onPublish,
           <SkjemaVisningSelect form={form} onChange={onChange} />
           <Column className={styles.centerColumn}>
             <Heading level="1" size="xlarge">
-              {title} {isLockedForm && <PadlockLockedIcon className={styles.padlockIcon} />}
+              {title} {isLockedForm && <PadlockLockedIcon title="Låseikon" className={styles.padlockIcon} />}
             </Heading>
             <BodyShort>{skjemanummer}</BodyShort>
           </Column>
@@ -89,7 +89,7 @@ export function EditFormPage({ form, publishedForm, onSave, onChange, onPublish,
                 }
               }}
               type="button"
-              icon={isLockedForm && <PadlockLockedIcon />}
+              icon={isLockedForm && <PadlockLockedIcon title="Låseikon" />}
             >
               Publiser
             </Button>
@@ -102,7 +102,7 @@ export function EditFormPage({ form, publishedForm, onSave, onChange, onPublish,
                   onSave(form);
                 }
               }}
-              icon={isLockedForm && <PadlockLockedIcon />}
+              icon={isLockedForm && <PadlockLockedIcon title="Låseikon" />}
             >
               Lagre
             </ButtonWithSpinner>
