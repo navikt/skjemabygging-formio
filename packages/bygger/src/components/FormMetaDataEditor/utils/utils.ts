@@ -8,11 +8,13 @@ export type FormMetadataErrorKeys =
   | 'innsending'
   | 'ettersending'
   | 'lockedFormReason'
-  | 'declarationText';
-export type FormMetadataError = { [key in FormMetadataErrorKeys]: string };
+  | 'declarationText'
+  | 'uxSignalsId'
+  | 'uxSignalsInnsending';
+export type FormMetadataError = Partial<{ [key in FormMetadataErrorKeys]: string }>;
 
 export const validateFormMetadata = (form: NavFormType, usageContext: UsageContext) => {
-  const errors = {} as FormMetadataError;
+  const errors: FormMetadataError = {};
 
   if (!form.title) {
     errors.title = 'Du må oppgi skjematittel';
