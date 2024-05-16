@@ -16,6 +16,9 @@ const useStyles = makeStyles({
     display: 'flex',
     justifyContent: 'space-between',
   },
+  copyLink: {
+    alignSelf: 'center',
+  },
 });
 
 const TestSkjemaFields = ({ onChange, form }: TestSkjemaFieldsProps) => {
@@ -51,7 +54,7 @@ const TestSkjemaFields = ({ onChange, form }: TestSkjemaFieldsProps) => {
         >
           Lås for redigering
         </Checkbox>
-        <span>
+        <span className={styles.copyLink}>
           Skjemadelingslenke
           <Button
             onClick={() => copy(`${config!.fyllutBaseUrl}/test/login?formPath=${path}`)}

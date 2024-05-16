@@ -23,9 +23,8 @@ const useStyles = makeStyles({
     gridColumn: '2 / 3',
   },
   padlockIcon: {
-    color: 'black',
-    verticalAlign: 'middle',
-    marginTop: '-0.5rem', // FIXME
+    position: 'relative',
+    top: '0.4rem',
   },
 });
 

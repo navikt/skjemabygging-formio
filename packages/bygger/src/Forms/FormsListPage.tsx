@@ -137,10 +137,10 @@ const useFormsListPageStyles = makeStyles({
     width: 'max-content',
   },
   padlockIcon: {
-    marginLeft: '0.3rem',
     color: 'black',
-    verticalAlign: 'middle',
-    marginTop: '-0.2rem', // FIXME
+    position: 'relative',
+    top: '0.2rem',
+    left: '0.4rem',
   },
 });
 
