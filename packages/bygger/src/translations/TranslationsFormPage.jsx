@@ -36,10 +36,11 @@ const TranslationsFormPage = ({ skjemanummer, translations, title, flattenedComp
   const [currentTranslation, setCurrentTranslation] = useState();
   const [unusedTranslations, setUnusedTranslations] = useState([]);
 
-  useEffect(
-    () => setCurrentTranslation((translations[languageCode] && translations[languageCode].translations) || {}),
-    [translations, languageCode],
-  );
+  useEffect(() => {
+    if (translations && languageCode) {
+      setCurrentTranslation(translations?.[languageCode]?.translations ?? {});
+    }
+  }, [translations, languageCode]);
 
   useEffect(() => {
     const unusedTranslationsAsEntries = Object.entries(

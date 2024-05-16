@@ -212,8 +212,6 @@ describe('Translations', () => {
         'Beskrivelse av dette skjemaet med [lenke til NAV](https://www.nav.no).',
         'Beskrivelse med [lenke til minside](https://www.nav.no/minside).',
       );
-      // eslint-disable-next-line cypress/no-unnecessary-waiting
-      cy.wait(500);
 
       cy.findByRole('button', { name: 'Lagre' }).click();
       cy.wait('@updateTranslations').then((interception) => {
@@ -250,8 +248,6 @@ describe('Translations', () => {
         paragraphWithLink,
         'Her er eit avsnitt [med lenke til AFTENPOSTEN](https://www.ap.no). Her kommer ei liste:',
       );
-      // eslint-disable-next-line cypress/no-unnecessary-waiting
-      cy.wait(500);
       cy.findByRole('button', { name: 'Lagre' }).click();
       cy.wait('@updateTranslations').then((interception) => {
         expect(interception.request.body.data.i18n[htmlWithExistingTranslation]).to.equal(expectedHtmlResult);
@@ -265,8 +261,6 @@ describe('Translations', () => {
       const listItem2 = 'Også viktig, men ikke så viktig';
       typeNewHtmlTranslationInput(1, listItem1, 'Ta ut av oppvasken');
       typeNewHtmlTranslationInput(1, listItem2, 'Ganske viktig');
-      // eslint-disable-next-line cypress/no-unnecessary-waiting
-      cy.wait(500);
       cy.findByRole('button', { name: 'Lagre' }).click();
       cy.wait('@updateTranslations').then((interception) => {
         expect(interception.request.body.data.i18n[htmlWithExistingTranslation]).to.equal(updatedTranslation);
