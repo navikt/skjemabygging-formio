@@ -2,8 +2,8 @@ import { Heading } from '@navikt/ds-react';
 import { LoadingComponent, makeStyles } from '@navikt/skjemadigitalisering-shared-components';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { FormsList } from '../Forms/FormsListPage';
-import { asFormMetadata } from '../Forms/formsListUtils';
+import { FormsList } from '../Forms/list/FormsListPage';
+import { asFormMetadata } from '../Forms/list/formsListUtils';
 import FormStatus from '../Forms/status/FormStatus';
 import { AppLayout } from '../components/AppLayout';
 

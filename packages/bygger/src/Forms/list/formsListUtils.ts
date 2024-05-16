@@ -1,6 +1,6 @@
 import { FormPropertiesType, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
-import { determineStatus } from './status/FormStatus';
-import { Status } from './status/types';
+import { determineStatus } from '../status/FormStatus';
+import { Status } from '../status/types';
 
 export type SortDirection = 'ascending' | 'descending';
 export type FormMetadata = Pick<NavFormType, '_id' | 'title' | 'path' | 'tags'> &

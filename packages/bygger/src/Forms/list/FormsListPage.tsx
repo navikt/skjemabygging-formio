@@ -4,8 +4,9 @@ import { LoadingComponent, makeStyles } from '@navikt/skjemadigitalisering-share
 import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { AppLayout } from '../components/AppLayout';
-import ActionRow from '../components/layout/ActionRow';
+import { AppLayout } from '../../components/AppLayout';
+import ActionRow from '../../components/layout/ActionRow';
+import FormStatus from '../status/FormStatus';
 import {
   FormMetadata,
   SortDirection,
@@ -14,7 +15,6 @@ import {
   sortByStatus,
   sortFormsByProperty,
 } from './formsListUtils';
-import FormStatus from './status/FormStatus';
 
 const useFormsListStyles = makeStyles({
   list: {

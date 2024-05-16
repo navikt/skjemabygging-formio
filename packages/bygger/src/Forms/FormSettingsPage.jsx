@@ -1,4 +1,4 @@
-import { Button, Heading } from '@navikt/ds-react';
+import { BodyShort, Button, Heading } from '@navikt/ds-react';
 import { makeStyles, useAppConfig, useModal } from '@navikt/skjemadigitalisering-shared-components';
 import { useState } from 'react';
 import { AppLayout } from '../components/AppLayout';
@@ -19,7 +19,10 @@ const useStyles = makeStyles({
 });
 
 export function FormSettingsPage({ form, publishedForm, onSave, onChange, onPublish, onUnpublish, onCopyFromProd }) {
-  const title = form.title;
+  const {
+    title,
+    properties: { skjemanummer },
+  } = form;
   const [openPublishSettingModal, setOpenPublishSettingModal] = useModal();
   const styles = useStyles();
   const [errors, setErrors] = useState({});
@@ -48,6 +51,7 @@ export function FormSettingsPage({ form, publishedForm, onSave, onChange, onPubl
           <Heading level="1" size="xlarge">
             {title}
           </Heading>
+          <BodyShort>{skjemanummer}</BodyShort>
         </Column>
       </Row>
       <Row>
