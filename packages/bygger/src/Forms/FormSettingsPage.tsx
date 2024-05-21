@@ -104,7 +104,7 @@ export function FormSettingsPage({
           </Button>
           <UnpublishButton onUnpublish={onUnpublish} form={form} />
           {!config?.isProdGcp && (
-            <ButtonWithSpinner variant="secondary" onClick={onCopyFromProd}>
+            <ButtonWithSpinner variant="tertiary" onClick={onCopyFromProd} size="small">
               Kopier fra produksjon
             </ButtonWithSpinner>
           )}
