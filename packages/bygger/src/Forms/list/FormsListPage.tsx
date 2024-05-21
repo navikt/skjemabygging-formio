@@ -5,7 +5,7 @@ import { LoadingComponent, makeStyles } from '@navikt/skjemadigitalisering-share
 import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { AppLayout } from '../components/AppLayout';
+import { AppLayout } from '../../components/AppLayout';
 import FormStatus from '../status/FormStatus';
 import {
   FormMetadata,

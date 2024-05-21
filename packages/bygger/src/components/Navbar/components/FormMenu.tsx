@@ -16,22 +16,22 @@ export const FormMenu = ({ formPath }) => {
   return (
     <>
       <MenuLink to={`/forms/${formPath}/settings`} noIconStyling={false}>
-        <SettingsFilled fontSize={'24px'} role="presentation" />
+        <SettingsFilled fontSize={'1.5rem'} role="presentation" />
         <span className={styles.linkText}>Innstillinger</span>
       </MenuLink>
 
       <MenuLink to={`/forms/${formPath}/edit`} noIconStyling={false}>
-        <EditFilled fontSize={'24px'} role="presentation" />
+        <EditFilled fontSize={'1.5rem'} role="presentation" />
         <span className={styles.linkText}>Rediger skjema</span>
       </MenuLink>
 
       <MenuLink to={`/forms/${formPath}/view/veiledning`} noIconStyling={false}>
-        <EyeFilled fontSize={'24px'} role="presentation" />
+        <EyeFilled fontSize={'1.5rem'} role="presentation" />
         <span className={styles.linkText}>Forhåndsvis</span>
       </MenuLink>
 
       <MenuLink to={`/translations/${formPath}${currentLanguage ? `/${currentLanguage}` : ''}`} noIconStyling={false}>
-        <GlobeFilled fontSize={'24px'} role="presentation" />
+        <GlobeFilled fontSize={'1.5rem'} role="presentation" />
         <span className={styles.linkText}>Språk</span>
       </MenuLink>
     </>
