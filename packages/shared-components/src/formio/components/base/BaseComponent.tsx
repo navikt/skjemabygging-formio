@@ -1,5 +1,5 @@
 import { Tag } from '@navikt/ds-react';
-import { Component, formDiffingTool, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { Component, ComponentError, formDiffingTool, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import Field from 'formiojs/components/_classes/field/Field';
 import FormioUtils from 'formiojs/utils';
 import { ReactNode } from 'react';
@@ -141,7 +141,7 @@ class BaseComponent extends FormioReactComponent {
   /**
    * Get whether custom component is required renderReact()
    */
-  getIsRequired() {
+  isRequired() {
     return this.component?.validate?.required;
   }
 
@@ -294,12 +294,16 @@ class BaseComponent extends FormioReactComponent {
   // Message is the error message that is shown in the error summary
   addError(message: string, elementId?: string) {
     this.logger.debug('addError', { errorMessage: message });
-    this.componentErrors.push({
+    this.componentErrors.push(this.createError(message, elementId));
+  }
+
+  createError(message: string, elementId?: string): ComponentError {
+    return {
       message,
       level: 'error',
       path: FormioUtils.getComponentPath(this.component),
       elementId,
-    });
+    };
   }
 
   removeAllErrors() {

@@ -8,7 +8,7 @@ const maalgruppeForm = () => {
   // prettier-ignore
   return createTabs(
     data([
-      editFormData.calculateValue()
+      editFormData.calculateValue(),
     ]),
     conditional([
       editFormConditional.simpleConditional(),

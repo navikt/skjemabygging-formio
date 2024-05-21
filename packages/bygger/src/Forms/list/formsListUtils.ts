@@ -1,10 +1,12 @@
 import { FormPropertiesType, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
-import { determineStatus } from './status/FormStatus';
-import { Status } from './status/types';
+import { determineStatus } from '../status/FormStatus';
+import { Status } from '../status/types';
 
 export type SortDirection = 'ascending' | 'descending';
 export type FormMetadata = Pick<NavFormType, '_id' | 'title' | 'path' | 'tags'> &
-  Pick<FormPropertiesType, 'skjemanummer' | 'modified' | 'published' | 'unpublished' | 'tema'> & { status: Status };
+  Pick<FormPropertiesType, 'skjemanummer' | 'modified' | 'published' | 'unpublished' | 'tema' | 'isLockedForm'> & {
+    status: Status;
+  };
 
 export function sortFormsByProperty(
   formMetadataList: FormMetadata[],
@@ -83,5 +85,6 @@ export function asFormMetadata(form: NavFormType): FormMetadata {
     skjemanummer: form.properties ? (form.properties.skjemanummer ? form.properties.skjemanummer.trim() : '') : '',
     tema: form.properties ? (form.properties.tema ? form.properties.tema : '') : '',
     status: determineStatus(form.properties),
+    isLockedForm: form.properties.isLockedForm,
   };
 }

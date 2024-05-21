@@ -2,8 +2,8 @@ import { Route, Routes } from 'react-router-dom';
 import { useFormioForms } from '../hooks/useFormioForms';
 import { useFormioTranslations } from '../hooks/useFormioTranslations';
 import { FormPage } from './FormPage';
-import { FormsListPage } from './FormsListPage';
 import NewFormPage from './NewFormPage';
+import { FormsListPage } from './list/FormsListPage';
 
 export const FormsRouter = ({ formio, serverURL }) => {
   const { loadForm, loadFormsList, onSave, onPublish, onUnpublish, onCopyFromProd } = useFormioForms();

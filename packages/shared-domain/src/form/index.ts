@@ -70,6 +70,8 @@ export interface FormPropertiesType {
   innsendingForklaring?: string;
   innsendingOverskrift?: string;
   isTestForm?: boolean;
+  isLockedForm?: boolean;
+  lockedFormReason?: string;
   declarationType?: DeclarationType;
   declarationText?: string;
   mottaksadresseId?: string;
@@ -116,6 +118,7 @@ export interface Component {
   valueProperty?: string;
   labelProperty?: string;
   properties?: ComponentProperties;
+  component?: Component;
   components?: Component[];
   otherDocumentation?: boolean;
   isAttachmentPanel?: boolean;
@@ -174,6 +177,16 @@ export interface Component {
   customClass?: string;
   validateOn?: string;
   isNavDataGrid?: boolean;
+  hidden?: boolean;
+  clearOnHide?: boolean;
+  specificEarliestAllowedDate?: string;
+  specificLatestAllowedDate?: string;
+  beforeDateInputKey?: string;
+  mayBeEqual?: string;
+  earliestAllowedDate?: string;
+  latestAllowedDate?: string;
+  getValue?: () => string;
+  rerender?: () => void;
 }
 
 export interface ComponentProperties {

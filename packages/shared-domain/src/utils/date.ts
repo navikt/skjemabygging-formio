@@ -34,6 +34,9 @@ const longMonthDateFormat: Intl.DateTimeFormatOptions = {
   year: 'numeric',
 };
 
+const inputFormat = 'dd.MM.yyyy';
+const submissionFormat = 'yyyy-MM-dd';
+
 const toLocaleDateAndTime = (date: string, locale = 'no') => new Date(date).toLocaleString(locale, dateAndTimeFormat);
 
 const toLocaleDate = (date: string, locale = 'no') => {
@@ -46,6 +49,18 @@ const toWeekdayAndDate = (date: string, locale = 'no') => {
 
 const toLocaleDateLongMonth = (date: string, locale = 'no') => {
   return DateTime.fromISO(date).setLocale(locale).toLocaleString(longMonthDateFormat);
+};
+
+const toSubmissionDate = (date?: string) => {
+  if (date) {
+    return DateTime.fromFormat(date, inputFormat).toFormat(submissionFormat);
+  } else {
+    return DateTime.now().toFormat(submissionFormat);
+  }
+};
+
+const toJSDate = (date: string) => {
+  return DateTime.fromISO(date).toJSDate();
 };
 
 export const getIso8601String = () => {
@@ -101,14 +116,43 @@ export const generateWeeklyPeriods = (date?: string, numberOfPeriods: number = 1
   return periods;
 };
 
+const addDays = (days: number, isoDate?: string): string => {
+  let date: DateTime;
+  if (!isoDate) {
+    date = DateTime.now();
+  } else {
+    date = DateTime.fromISO(isoDate);
+  }
+
+  return date.plus({ days }).toFormat(submissionFormat);
+};
+
+const min = (dates: string[]) => {
+  return DateTime.min(...dates.map((date: string) => DateTime.fromISO(date)))?.toFormat(submissionFormat);
+};
+
+const isValid = (date: string, format: 'input' | 'submission') => {
+  return date && DateTime.fromFormat(date, format === 'input' ? inputFormat : submissionFormat)?.isValid;
+};
+
+const isBeforeDate = (date1: string, date2: string) => {
+  return DateTime.fromISO(date1).startOf('day') < DateTime.fromISO(date2).startOf('day');
+};
+
 const dateUtils = {
   getIso8601String,
   toLocaleDateAndTime,
   toLocaleDate,
+  toSubmissionDate,
+  toJSDate,
   toWeekdayAndDate,
   getDatesInRange,
   toLocaleDateLongMonth,
   generateWeeklyPeriods,
+  addDays,
+  min,
+  isValid,
+  isBeforeDate,
 };
 
 export default dateUtils;

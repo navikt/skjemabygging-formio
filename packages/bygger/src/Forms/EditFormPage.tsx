@@ -1,5 +1,7 @@
+import { PadlockLockedIcon } from '@navikt/aksel-icons';
 import { BodyShort, Button, Heading } from '@navikt/ds-react';
 import { FormBuilderOptions, makeStyles, useAppConfig, useModal } from '@navikt/skjemadigitalisering-shared-components';
+import { I18nTranslations, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import { AppLayout } from '../components/AppLayout';
 import ButtonWithSpinner from '../components/ButtonWithSpinner';
 import NavFormBuilder from '../components/NavFormBuilder';
@@ -7,6 +9,7 @@ import SkjemaVisningSelect from '../components/SkjemaVisningSelect';
 import UserFeedback from '../components/UserFeedback';
 import Column from '../components/layout/Column';
 import Row from '../components/layout/Row';
+import useLockedFormModal from '../hooks/useLockedFormModal';
 import beforeSaveComponentSettings from './formBuilderHooks/beforeSaveComponentSettings';
 import PublishModalComponents from './publish/PublishModalComponents';
 import FormStatusPanel from './status/FormStatusPanel';
@@ -19,14 +22,29 @@ const useStyles = makeStyles({
   centerColumn: {
     gridColumn: '2 / 3',
   },
+  padlockIcon: {
+    position: 'relative',
+    top: '0.4rem',
+  },
 });
 
-export function EditFormPage({ form, publishedForm, onSave, onChange, onPublish, onUnpublish }) {
+interface EditFormPageProps {
+  form: NavFormType;
+  publishedForm: NavFormType;
+  onSave: (form: NavFormType) => void;
+  onChange: (form: NavFormType) => void;
+  onPublish: (form: NavFormType, translations: I18nTranslations) => void;
+  onUnpublish: () => void;
+}
+
+export function EditFormPage({ form, publishedForm, onSave, onChange, onPublish, onUnpublish }: EditFormPageProps) {
   const {
     title,
-    properties: { skjemanummer },
+    properties: { skjemanummer, isLockedForm },
   } = form;
   const [openPublishSettingModal, setOpenPublishSettingModal] = useModal();
+  const { lockedFormModalContent, openLockedFormModal } = useLockedFormModal(form);
+
   const appConfig = useAppConfig();
   const styles = useStyles();
   const formBuilderOptions = {
@@ -35,6 +53,7 @@ export function EditFormPage({ form, publishedForm, onSave, onChange, onPublish,
     hooks: { beforeSaveComponentSettings },
     appConfig,
   };
+
   return (
     <>
       <AppLayout
@@ -47,7 +66,7 @@ export function EditFormPage({ form, publishedForm, onSave, onChange, onPublish,
           <SkjemaVisningSelect form={form} onChange={onChange} />
           <Column className={styles.centerColumn}>
             <Heading level="1" size="xlarge">
-              {title}
+              {title} {isLockedForm && <PadlockLockedIcon title="Skjemaet er låst" className={styles.padlockIcon} />}
             </Heading>
             <BodyShort>{skjemanummer}</BodyShort>
           </Column>
@@ -60,16 +79,41 @@ export function EditFormPage({ form, publishedForm, onSave, onChange, onPublish,
             formBuilderOptions={formBuilderOptions}
           />
           <Column>
-            <Button variant="secondary" onClick={() => setOpenPublishSettingModal(true)} type="button">
+            <ButtonWithSpinner
+              onClick={() => {
+                if (isLockedForm) {
+                  openLockedFormModal();
+                } else {
+                  onSave(form);
+                }
+              }}
+              size="small"
+              icon={isLockedForm && <PadlockLockedIcon title="Skjemaet er låst" />}
+            >
+              Lagre
+            </ButtonWithSpinner>
+            <Button
+              variant="secondary"
+              onClick={() => {
+                if (isLockedForm) {
+                  openLockedFormModal();
+                } else {
+                  setOpenPublishSettingModal(true);
+                }
+              }}
+              type="button"
+              size="small"
+              icon={isLockedForm && <PadlockLockedIcon title="Skjemaet er låst" />}
+            >
               Publiser
             </Button>
             <UnpublishButton onUnpublish={onUnpublish} form={form} />
-            <ButtonWithSpinner onClick={() => onSave(form)}>Lagre</ButtonWithSpinner>
             <UserFeedback />
             <FormStatusPanel publishProperties={form.properties} />
           </Column>
         </Row>
       </AppLayout>
+      {lockedFormModalContent}
 
       <PublishModalComponents
         form={form}

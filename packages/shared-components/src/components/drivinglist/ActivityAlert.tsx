@@ -1,7 +1,7 @@
 import { Alert, BodyShort, Heading } from '@navikt/ds-react';
 import { TEXTS, dateUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { useComponentUtils } from '../../context/component/componentUtilsContext';
 import { ActivityAlertData } from '../../formio/components/core/driving-list/DrivingList.utils';
-import { useDrivingList } from '../../formio/components/core/driving-list/DrivingListContext';
 import makeStyles from '../../util/styles/jss/jss';
 
 type ActivityAlertProps = {
@@ -16,16 +16,16 @@ const useActivityAlertStyles = makeStyles({
 });
 
 const ActivityAlert = ({ vedtakData, className }: ActivityAlertProps) => {
-  const { t, locale } = useDrivingList();
+  const { translate, locale } = useComponentUtils();
   const activityAlertStyles = useActivityAlertStyles();
 
   return (
     <Alert variant={'info'} className={className}>
       <Heading size="small" spacing={true}>
-        {t(TEXTS.statiske.activities.yourActivities)}
+        {translate(TEXTS.statiske.activities.yourActivities)}
       </Heading>
       <BodyShort size="medium" spacing={true}>
-        {t(TEXTS.statiske.activities.registeredActivities)}
+        {translate(TEXTS.statiske.activities.registeredActivities)}
       </BodyShort>
 
       {vedtakData.map((vedtak) => {
@@ -37,8 +37,10 @@ const ActivityAlert = ({ vedtakData, className }: ActivityAlertProps) => {
         return (
           <div key={vedtak.vedtaksId} className={activityAlertStyles.vedtakGroup}>
             <Heading size="xsmall">{vedtak.aktivitetsnavn}</Heading>
-            <BodyShort size="medium">{t(TEXTS.statiske.drivingList.period, { period })}</BodyShort>
-            <BodyShort size="medium">{t(TEXTS.statiske.drivingList.dailyRate, { rate: vedtak.dagsats })}</BodyShort>
+            <BodyShort size="medium">{translate(TEXTS.statiske.drivingList.period, { period })}</BodyShort>
+            <BodyShort size="medium">
+              {translate(TEXTS.statiske.drivingList.dailyRate, { rate: vedtak.dagsats })}
+            </BodyShort>
           </div>
         );
       })}
