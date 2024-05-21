@@ -1,6 +1,7 @@
 import { Accordion, Button, Heading, Radio, RadioGroup } from '@navikt/ds-react';
 import { TEXTS, dateUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { useCallback, useEffect, useMemo } from 'react';
+import { useComponentUtils } from '../../context/component/componentUtilsContext';
 import {
   allFieldsForPeriodsAreSet,
   drivingListMetadata,
@@ -23,7 +24,8 @@ const useDrivinglistStyles = makeStyles({
 });
 
 const DrivingListFromDates = () => {
-  const { values, updateValues, t, locale, getComponentError, addRef } = useDrivingList();
+  const { values, updateValues, getComponentError } = useDrivingList();
+  const { translate, addRef } = useComponentUtils();
 
   const styles = useDrivinglistStyles();
 
@@ -94,22 +96,21 @@ const DrivingListFromDates = () => {
       <>
         <DatePicker
           id={drivingListMetadata('datePicker').id}
-          label={t(drivingListMetadata('datePicker').label)}
-          isRequired={true}
+          label={translate(drivingListMetadata('datePicker').label)}
+          required={true}
           value={values?.selectedDate}
           onChange={(date: string) => onDateChange(date)}
-          locale={locale}
           readOnly={false}
           error={getComponentError('datePicker')}
           inputRef={(ref) => addRef(drivingListMetadata('datePicker').id, ref)}
           className={'mb'}
-          toDate={new Date()}
-          defaultMonth={new Date()}
-          description={t(drivingListMetadata('datePicker').description ?? '')}
+          toDate={dateUtils.toSubmissionDate()}
+          defaultMonth={dateUtils.toSubmissionDate()}
+          description={translate(drivingListMetadata('datePicker').description ?? '')}
         />
         <RadioGroup
           id={drivingListMetadata('parkingRadio').id}
-          legend={t(drivingListMetadata('parkingRadio').label)}
+          legend={translate(drivingListMetadata('parkingRadio').label)}
           error={getComponentError('parkingRadio')}
           onChange={(value) => onParkingChange(value)}
           defaultValue={values?.parking}
@@ -117,8 +118,8 @@ const DrivingListFromDates = () => {
           ref={(ref) => addRef(drivingListMetadata('parkingRadio').id, ref)}
           className={'mb'}
         >
-          <Radio value={true}>{t(TEXTS.common.yes)}</Radio>
-          <Radio value={false}>{t(TEXTS.common.no)}</Radio>
+          <Radio value={true}>{translate(TEXTS.common.yes)}</Radio>
+          <Radio value={false}>{translate(TEXTS.common.no)}</Radio>
         </RadioGroup>
 
         {allPeriodFieldsSet && (
@@ -138,12 +139,12 @@ const DrivingListFromDates = () => {
             <div className={styles.buttonContainer}>
               {showAddButton(values) && (
                 <Button variant="secondary" size="small" type="button" onClick={() => addPeriod()}>
-                  {t(TEXTS.statiske.drivingList.addPeriod)}
+                  {translate(TEXTS.statiske.drivingList.addPeriod)}
                 </Button>
               )}
               {showRemoveButton(values) && (
                 <Button variant="secondary" size="small" type="button" onClick={() => removePeriod()}>
-                  {t(TEXTS.statiske.drivingList.removePeriod)}
+                  {translate(TEXTS.statiske.drivingList.removePeriod)}
                 </Button>
               )}
             </div>

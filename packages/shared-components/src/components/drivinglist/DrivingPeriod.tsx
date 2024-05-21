@@ -1,6 +1,7 @@
 import { Accordion, Alert, BodyShort, Checkbox, CheckboxGroup, Heading, TextField } from '@navikt/ds-react';
 import { TEXTS, VedtakBetalingsplan, dateUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { useMemo } from 'react';
+import { useComponentUtils } from '../../context/component/componentUtilsContext';
 import { drivingListMetadata } from '../../formio/components/core/driving-list/DrivingList.utils';
 import { useDrivingList } from '../../formio/components/core/driving-list/DrivingListContext';
 import makeStyles from '../../util/styles/jss/jss';
@@ -21,7 +22,8 @@ const useDrivingPeriodStyles = makeStyles({
 });
 
 const DrivingPeriod = ({ periodFrom, periodTo, hasParking, dailyRate, betalingsplan }: DrivingPeriodProps) => {
-  const { values, updateValues, t, locale, getComponentError, addRef } = useDrivingList();
+  const { values, updateValues, getComponentError } = useDrivingList();
+  const { translate, locale, addRef } = useComponentUtils();
 
   const styles = useDrivingPeriodStyles();
 
@@ -61,8 +63,8 @@ const DrivingPeriod = ({ periodFrom, periodTo, hasParking, dailyRate, betalingsp
   const renderWarningAlert = () => {
     return (
       <Alert variant="warning">
-        <Heading size="xsmall">{t(TEXTS.statiske.drivingList.expensesTooHighHeader)}</Heading>
-        <BodyShort>{t(TEXTS.statiske.drivingList.expensesTooHigh)}</BodyShort>
+        <Heading size="xsmall">{translate(TEXTS.statiske.drivingList.expensesTooHighHeader)}</Heading>
+        <BodyShort>{translate(TEXTS.statiske.drivingList.expensesTooHigh)}</BodyShort>
       </Alert>
     );
   };
@@ -93,9 +95,11 @@ const DrivingPeriod = ({ periodFrom, periodTo, hasParking, dailyRate, betalingsp
 
   const drivingListLegend = () => {
     if (values?.parking === true || hasParking === true) {
-      return t(drivingListMetadata('dates').label) + ' ' + t(TEXTS.statiske.drivingList.dateSelectParking);
+      return (
+        translate(drivingListMetadata('dates').label) + ' ' + translate(TEXTS.statiske.drivingList.dateSelectParking)
+      );
     }
-    return t(drivingListMetadata('dates').label);
+    return translate(drivingListMetadata('dates').label);
   };
 
   return (
@@ -114,7 +118,7 @@ const DrivingPeriod = ({ periodFrom, periodTo, hasParking, dailyRate, betalingsp
                 <Checkbox value={date}>{dateUtils.toWeekdayAndDate(date, locale)}</Checkbox>
                 {showParking(date) ? (
                   <TextField
-                    label={t(drivingListMetadata('parkingExpenses').label)}
+                    label={translate(drivingListMetadata('parkingExpenses').label)}
                     type="text"
                     size="medium"
                     inputMode="numeric"

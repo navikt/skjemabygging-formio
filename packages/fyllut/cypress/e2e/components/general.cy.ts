@@ -66,7 +66,7 @@ describe('React components', () => {
             cy.get('dt').eq(3).should('contain.text', 'Velg instrument');
             cy.get('dd').eq(3).should('contain.text', 'Gitar');
             cy.get('dt').eq(4).should('contain.text', 'Gyldig fra dato');
-            cy.get('dd').eq(4).should('contain.text', '1.1.2023');
+            cy.get('dd').eq(4).should('contain.text', '01.01.2023');
           });
 
         cy.findByRole('link', { name: TEXTS.grensesnitt.moveForward }).click();
@@ -106,7 +106,7 @@ describe('React components', () => {
             cy.get('dt').eq(2).should('contain.text', 'Velg valuta');
             cy.get('dd').eq(2).should('contain.text', 'Norske kroner (NOK)');
             cy.get('dt').eq(3).should('contain.text', 'Gyldig fra dato');
-            cy.get('dd').eq(3).should('contain.text', '2.1.2023');
+            cy.get('dd').eq(3).should('contain.text', '02.01.2023');
           });
       });
     });
@@ -148,7 +148,7 @@ describe('React components', () => {
             cy.get('dt').eq(3).should('contain.text', 'Velg instrument');
             cy.get('dd').eq(3).should('contain.text', 'Gitar');
             cy.get('dt').eq(4).should('contain.text', 'Gyldig fra dato');
-            cy.get('dd').eq(4).should('contain.text', '1.1.2023');
+            cy.get('dd').eq(4).should('contain.text', '01.01.2023');
             cy.get('dt').eq(5).should('contain.text', 'Velg frukt');
             cy.get('dd').eq(5).should('contain.text', 'Fersken');
           });

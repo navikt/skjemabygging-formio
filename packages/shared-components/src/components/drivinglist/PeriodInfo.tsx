@@ -1,40 +1,40 @@
 import { BodyShort, Heading } from '@navikt/ds-react';
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { useDrivingList } from '../../formio/components/core/driving-list/DrivingListContext';
+import { useComponentUtils } from '../../context/component/componentUtilsContext';
 
 const PeriodInfo = () => {
-  const { t } = useDrivingList();
+  const { translate } = useComponentUtils();
 
   return (
     <div className="mb">
       <Heading size="small" spacing={true}>
-        {t(TEXTS.statiske.drivingList.periodInfoHeader)}
+        {translate(TEXTS.statiske.drivingList.periodInfoHeader)}
       </Heading>
       <BodyShort size="medium" spacing={true}>
-        {t(TEXTS.statiske.drivingList.periodInfoSubheader)}
+        {translate(TEXTS.statiske.drivingList.periodInfoSubheader)}
       </BodyShort>
       <BodyShort size="medium" spacing={true}>
-        {t(TEXTS.statiske.drivingList.periodInfoYouCan)}
+        {translate(TEXTS.statiske.drivingList.periodInfoYouCan)}
       </BodyShort>
       <ul>
         <li>
           <BodyShort size="medium" spacing={true}>
-            {t(TEXTS.statiske.drivingList.periodInfoElement1)}
+            {translate(TEXTS.statiske.drivingList.periodInfoElement1)}
           </BodyShort>
         </li>
         <li>
           <BodyShort size="medium" spacing={true}>
-            {t(TEXTS.statiske.drivingList.periodInfoElement2)}
+            {translate(TEXTS.statiske.drivingList.periodInfoElement2)}
           </BodyShort>
         </li>
         <li>
           <BodyShort size="medium" spacing={true}>
-            {t(TEXTS.statiske.drivingList.periodInfoElement3)}
+            {translate(TEXTS.statiske.drivingList.periodInfoElement3)}
           </BodyShort>
         </li>
         <li>
           <BodyShort size="medium" spacing={true}>
-            {t(TEXTS.statiske.drivingList.periodInfoElement4)}
+            {translate(TEXTS.statiske.drivingList.periodInfoElement4)}
           </BodyShort>
         </li>
       </ul>
