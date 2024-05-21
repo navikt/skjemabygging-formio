@@ -2,6 +2,7 @@ import { Button } from '@navikt/ds-react';
 import React, { useState } from 'react';
 
 interface Props {
+  icon?: React.ReactNode;
   children: React.ReactNode;
   className?: string;
   onClick: Function;
@@ -15,7 +16,7 @@ interface Props {
     | 'danger';
 }
 
-const ButtonWithSpinner = ({ children, className, onClick, variant = 'primary' }: Props) => {
+const ButtonWithSpinner = ({ children, className, onClick, variant = 'primary', icon }: Props) => {
   const [isSaving, setIsSaving] = useState(false);
   async function onClickWithSpinner() {
     setIsSaving(true);
@@ -26,7 +27,7 @@ const ButtonWithSpinner = ({ children, className, onClick, variant = 'primary' }
     }
   }
   return (
-    <Button className={className} variant={variant} onClick={onClickWithSpinner} loading={isSaving}>
+    <Button className={className} variant={variant} onClick={onClickWithSpinner} loading={isSaving} icon={icon}>
       {children}
     </Button>
   );

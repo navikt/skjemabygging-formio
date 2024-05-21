@@ -1,5 +1,7 @@
+import { PadlockLockedIcon } from '@navikt/aksel-icons';
 import { Button, Heading } from '@navikt/ds-react';
 import { makeStyles, useAppConfig, useModal } from '@navikt/skjemadigitalisering-shared-components';
+import { I18nTranslations, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import { useState } from 'react';
 import { AppLayout } from '../components/AppLayout';
 import ButtonWithSpinner from '../components/ButtonWithSpinner';
@@ -8,6 +10,7 @@ import { isFormMetadataValid, validateFormMetadata } from '../components/FormMet
 import UserFeedback from '../components/UserFeedback';
 import Column from '../components/layout/Column';
 import Row from '../components/layout/Row';
+import useLockedFormModal from '../hooks/useLockedFormModal';
 import PublishModalComponents from './publish/PublishModalComponents';
 import FormStatusPanel from './status/FormStatusPanel';
 import UnpublishButton from './unpublish/UnpublishButton';
@@ -18,14 +21,35 @@ const useStyles = makeStyles({
   },
 });
 
-export function FormSettingsPage({ form, publishedForm, onSave, onChange, onPublish, onUnpublish, onCopyFromProd }) {
+interface FormSettingsPageProps {
+  form: NavFormType;
+  publishedForm: NavFormType;
+  onSave: (form: NavFormType) => void;
+  onChange: (form: NavFormType) => void;
+  onPublish: (form: NavFormType, translations: I18nTranslations) => void;
+  onUnpublish: () => void;
+  onCopyFromProd: () => void;
+}
+
+export function FormSettingsPage({
+  form,
+  publishedForm,
+  onSave,
+  onChange,
+  onPublish,
+  onUnpublish,
+  onCopyFromProd,
+}: FormSettingsPageProps) {
   const title = form.title;
+  const isLockedForm = form.properties.isLockedForm;
   const [openPublishSettingModal, setOpenPublishSettingModal] = useModal();
+  const { lockedFormModalContent, openLockedFormModal } = useLockedFormModal(form);
+
   const styles = useStyles();
   const [errors, setErrors] = useState({});
   const { config } = useAppConfig();
 
-  const validateAndSave = async (form) => {
+  const validateAndSave = async (form: NavFormType) => {
     const updatedErrors = validateFormMetadata(form, 'edit');
     if (isFormMetadataValid(updatedErrors)) {
       setErrors({});
@@ -55,11 +79,22 @@ export function FormSettingsPage({ form, publishedForm, onSave, onChange, onPubl
           <FormMetadataEditor form={form} publishedForm={publishedForm} errors={errors} onChange={onChange} />
         </Column>
         <Column>
-          <Button variant="secondary" onClick={() => setOpenPublishSettingModal(true)} type="button">
+          <Button
+            variant="secondary"
+            onClick={() => {
+              if (isLockedForm) {
+                openLockedFormModal();
+              } else {
+                setOpenPublishSettingModal(true);
+              }
+            }}
+            type="button"
+            icon={isLockedForm && <PadlockLockedIcon title="Skjemaet er låst" />}
+          >
             Publiser
           </Button>
           <UnpublishButton onUnpublish={onUnpublish} form={form} />
-          {!config.isProdGcp && (
+          {!config?.isProdGcp && (
             <ButtonWithSpinner variant="secondary" onClick={onCopyFromProd}>
               Kopier fra produksjon
             </ButtonWithSpinner>
@@ -69,7 +104,7 @@ export function FormSettingsPage({ form, publishedForm, onSave, onChange, onPubl
           <FormStatusPanel publishProperties={form.properties} />
         </Column>
       </Row>
-
+      {lockedFormModalContent}
       <PublishModalComponents
         form={form}
         onPublish={onPublish}

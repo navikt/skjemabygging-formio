@@ -14,13 +14,20 @@ describe('UnpublishButton', () => {
   };
 
   it('do not render button if not published', () => {
-    renderButton({} as NavFormType);
+    renderButton({ properties: {} } as NavFormType);
     expect(screen.queryByRole('button')).not.toBeInTheDocument();
   });
 
   it('renders button', async () => {
     renderButton();
     expect(await screen.findByRole('button')).toBeInTheDocument();
+    expect(screen.queryByTitle('Skjemaet er låst')).not.toBeInTheDocument();
+  });
+
+  it('renders button with lock', async () => {
+    renderButton({ properties: { published: dateUtils.getIso8601String(), isLockedForm: true } } as NavFormType);
+    expect(await screen.findByRole('button')).toBeInTheDocument();
+    expect(screen.getByTitle('Skjemaet er låst')).toBeInTheDocument();
   });
 
   it('click button', async () => {

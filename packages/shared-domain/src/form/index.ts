@@ -70,6 +70,8 @@ export interface FormPropertiesType {
   innsendingForklaring?: string;
   innsendingOverskrift?: string;
   isTestForm?: boolean;
+  isLockedForm?: boolean;
+  lockedFormReason?: string;
   declarationType?: DeclarationType;
   declarationText?: string;
   mottaksadresseId?: string;
