@@ -117,18 +117,20 @@ const TranslationsByFormPage = ({ loadForm, saveTranslation }: TranslationsByFor
           <div className={styles.sideBarContainer}>
             <Column className={styles.stickySideBar}>
               <FormBuilderLanguageSelector languages={languages} formPath={path} />
-              <ButtonWithSpinner onClick={onSave}>Lagre</ButtonWithSpinner>
-              <UserFeedback />
+              <ButtonWithSpinner onClick={onSave} size="small">
+                Lagre
+              </ButtonWithSpinner>
               <CSVLink
                 data={getTextsAndTranslationsForForm(form, translations)}
                 filename={`${title}(${path})_Oversettelser.csv`}
-                className="navds-button navds-button--secondary navds-label"
+                className="navds-button navds-button--tertiary navds-button--small navds-label navds-label--small"
                 separator={';'}
                 headers={getTextsAndTranslationsHeaders(translations)}
                 enclosingCharacter={'"'}
               >
                 Eksporter
               </CSVLink>
+              <UserFeedback />
             </Column>
           </div>
         </Row>

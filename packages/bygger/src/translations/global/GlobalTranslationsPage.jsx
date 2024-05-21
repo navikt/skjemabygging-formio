@@ -24,7 +24,7 @@ import {
   tags,
 } from './utils';
 
-const useGlobalTranslationsPageStyles = makeStyles({
+const useStyles = makeStyles({
   root: {
     maxWidth: '80%',
     margin: '0 auto 2rem',
@@ -39,12 +39,6 @@ const useGlobalTranslationsPageStyles = makeStyles({
     gap: '2rem',
     marginBottom: '1rem',
     alignItems: 'center',
-  },
-  titleRow: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: '3rem',
   },
   addButton: {
     maxWidth: '15rem',
@@ -73,7 +67,7 @@ const GlobalTranslationsPage = ({
   const selectedTag = tag || tags.SKJEMATEKSTER;
   const [isDeleteLanguageModalOpen, setIsDeleteLanguageModalOpen] = useModal();
 
-  const classes = useGlobalTranslationsPageStyles();
+  const styles = useStyles();
   const [allGlobalTranslations, setAllGlobalTranslations] = useState({});
   const [globalTranslationsWithLanguagecodeAndTag, setGlobalTranslationsWithLanguagecodeAndTag] = useState({});
   const navigate = useNavigate();
@@ -237,17 +231,16 @@ const GlobalTranslationsPage = ({
           visOversettelsesMeny: true,
         }}
       >
-        <Row className={classes.titleRow}>
-          <Heading level="1" size="large">
-            {languageCode && languageCode !== 'undefined' ? languagesInNorwegian[languageCode] : ''}
-          </Heading>
-        </Row>
         <Row>
-          <Column className={classes.mainCol}>
+          <Column className={styles.mainCol}>
+            <Heading level="1" size="xlarge" className="mb-14">
+              {languageCode && languageCode !== 'undefined' ? languagesInNorwegian[languageCode] : ''}
+            </Heading>
+
             {selectedTag === tags.SKJEMATEKSTER ? (
               <div>
                 <GlobalTranslationsPanel
-                  classes={classes}
+                  classes={styles}
                   currentTranslation={currentTranslation}
                   languageCode={languageCode}
                   updateOriginalText={updateOriginalText}
@@ -257,7 +250,7 @@ const GlobalTranslationsPage = ({
                 />
                 <Button
                   variant="secondary"
-                  className={classes.addButton}
+                  className={styles.addButton}
                   onClick={() => addNewTranslation()}
                   type="button"
                 >
@@ -266,7 +259,7 @@ const GlobalTranslationsPage = ({
               </div>
             ) : (
               <ApplicationTextTranslationEditPanel
-                classes={classes}
+                classes={styles}
                 selectedTag={selectedTag}
                 translations={currentTranslation}
                 languageCode={languageCode}
@@ -275,24 +268,26 @@ const GlobalTranslationsPage = ({
               />
             )}
           </Column>
-          <div className={classes.sideBarContainer}>
-            <Column className={classes.stickySideBar}>
+          <div className={styles.sideBarContainer}>
+            <Column className={styles.stickySideBar}>
               <FormBuilderLanguageSelector languages={languages} formPath="global" tag={selectedTag} />
-              <Button variant="secondary" onClick={() => setIsDeleteLanguageModalOpen(true)} type="button">
-                Slett språk
-              </Button>
+              <ButtonWithSpinner onClick={onSaveGlobalTranslations} size="small">
+                Lagre
+              </ButtonWithSpinner>
               <PublishGlobalTranslationsButton
                 languageCode={languageCode}
                 publishGlobalTranslations={publishGlobalTranslations}
               />
-              <ButtonWithSpinner onClick={onSaveGlobalTranslations}>Lagre</ButtonWithSpinner>
-              <UserFeedback />
               <GlobalCsvLink allGlobalTranslations={allGlobalTranslations} languageCode={languageCode} />
               {!config?.isProdGcp && (
-                <ButtonWithSpinner variant="secondary" onClick={importFromProd}>
+                <ButtonWithSpinner variant="tertiary" onClick={importFromProd} size="small">
                   Kopier fra produksjon
                 </ButtonWithSpinner>
               )}
+              <Button variant="tertiary" onClick={() => setIsDeleteLanguageModalOpen(true)} type="button" size="small">
+                Slett språk
+              </Button>
+              <UserFeedback />
             </Column>
           </div>
         </Row>

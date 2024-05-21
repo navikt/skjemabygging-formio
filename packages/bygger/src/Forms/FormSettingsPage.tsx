@@ -1,5 +1,6 @@
 import { PadlockLockedIcon } from '@navikt/aksel-icons';
-import { Button, Heading } from '@navikt/ds-react';
+import { BodyShort, Button, Heading } from '@navikt/ds-react';
+
 import { makeStyles, useAppConfig, useModal } from '@navikt/skjemadigitalisering-shared-components';
 import { I18nTranslations, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import { useState } from 'react';
@@ -40,7 +41,10 @@ export function FormSettingsPage({
   onUnpublish,
   onCopyFromProd,
 }: FormSettingsPageProps) {
-  const title = form.title;
+  const {
+    title,
+    properties: { skjemanummer },
+  } = form;
   const isLockedForm = form.properties.isLockedForm;
   const [openPublishSettingModal, setOpenPublishSettingModal] = useModal();
   const { lockedFormModalContent, openLockedFormModal } = useLockedFormModal(form);
@@ -72,6 +76,7 @@ export function FormSettingsPage({
           <Heading level="1" size="xlarge">
             {title}
           </Heading>
+          <BodyShort>{skjemanummer}</BodyShort>
         </Column>
       </Row>
       <Row>
@@ -79,6 +84,9 @@ export function FormSettingsPage({
           <FormMetadataEditor form={form} publishedForm={publishedForm} errors={errors} onChange={onChange} />
         </Column>
         <Column>
+          <ButtonWithSpinner onClick={() => validateAndSave(form)} size="small">
+            Lagre
+          </ButtonWithSpinner>
           <Button
             variant="secondary"
             onClick={() => {
@@ -89,17 +97,17 @@ export function FormSettingsPage({
               }
             }}
             type="button"
+            size="small"
             icon={isLockedForm && <PadlockLockedIcon title="Skjemaet er låst" />}
           >
             Publiser
           </Button>
           <UnpublishButton onUnpublish={onUnpublish} form={form} />
           {!config?.isProdGcp && (
-            <ButtonWithSpinner variant="secondary" onClick={onCopyFromProd}>
+            <ButtonWithSpinner variant="tertiary" onClick={onCopyFromProd} size="small">
               Kopier fra produksjon
             </ButtonWithSpinner>
           )}
-          <ButtonWithSpinner onClick={() => validateAndSave(form)}>Lagre</ButtonWithSpinner>
           <UserFeedback />
           <FormStatusPanel publishProperties={form.properties} />
         </Column>

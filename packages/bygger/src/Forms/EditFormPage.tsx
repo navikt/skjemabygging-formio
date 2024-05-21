@@ -79,6 +79,19 @@ export function EditFormPage({ form, publishedForm, onSave, onChange, onPublish,
             formBuilderOptions={formBuilderOptions}
           />
           <Column>
+            <ButtonWithSpinner
+              onClick={() => {
+                if (isLockedForm) {
+                  openLockedFormModal();
+                } else {
+                  onSave(form);
+                }
+              }}
+              size="small"
+              icon={isLockedForm && <PadlockLockedIcon title="Skjemaet er låst" />}
+            >
+              Lagre
+            </ButtonWithSpinner>
             <Button
               variant="secondary"
               onClick={() => {
@@ -89,23 +102,12 @@ export function EditFormPage({ form, publishedForm, onSave, onChange, onPublish,
                 }
               }}
               type="button"
+              size="small"
               icon={isLockedForm && <PadlockLockedIcon title="Skjemaet er låst" />}
             >
               Publiser
             </Button>
             <UnpublishButton onUnpublish={onUnpublish} form={form} />
-            <ButtonWithSpinner
-              onClick={() => {
-                if (isLockedForm) {
-                  openLockedFormModal();
-                } else {
-                  onSave(form);
-                }
-              }}
-              icon={isLockedForm && <PadlockLockedIcon title="Skjemaet er låst" />}
-            >
-              Lagre
-            </ButtonWithSpinner>
             <UserFeedback />
             <FormStatusPanel publishProperties={form.properties} />
           </Column>
