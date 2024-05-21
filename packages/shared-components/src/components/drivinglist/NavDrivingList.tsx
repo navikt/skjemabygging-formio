@@ -2,12 +2,12 @@ import { Alert, BodyShort, Heading, Skeleton } from '@navikt/ds-react';
 import { SendInnAktivitet, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useState } from 'react';
 import { getActivities } from '../../api/sendinn/sendInnActivities';
-import { useDrivingList } from '../../formio/components/core/driving-list/DrivingListContext';
+import { useComponentUtils } from '../../context/component/componentUtilsContext';
 import DrivingListFromActivities from './DrivingListFromActivities';
 import DrivingListFromDates from './DrivingListFromDates';
 
 const NavDrivingList = () => {
-  const { appConfig, t } = useDrivingList();
+  const { translate, appConfig } = useComponentUtils();
   const [activities, setActivities] = useState<SendInnAktivitet[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [showError, setShowError] = useState<boolean>(false);
@@ -43,10 +43,10 @@ const NavDrivingList = () => {
     return (
       <Alert variant="info">
         <Heading size="small" spacing={true}>
-          {t(TEXTS.statiske.drivingList.noVedtakHeading)}
+          {translate(TEXTS.statiske.drivingList.noVedtakHeading)}
         </Heading>
         <BodyShort size="medium" spacing={true}>
-          {t(TEXTS.statiske.drivingList.noVedtak)}
+          {translate(TEXTS.statiske.drivingList.noVedtak)}
         </BodyShort>
       </Alert>
     );
@@ -58,7 +58,7 @@ const NavDrivingList = () => {
     }
 
     if (showError) {
-      return <Alert variant="error">{t(TEXTS.statiske.activities.error)}</Alert>;
+      return <Alert variant="error">{translate(TEXTS.statiske.activities.error)}</Alert>;
     }
 
     if (submissionMethod === 'digital' && activities.length === 0) {

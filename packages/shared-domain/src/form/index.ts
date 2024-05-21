@@ -116,6 +116,7 @@ export interface Component {
   valueProperty?: string;
   labelProperty?: string;
   properties?: ComponentProperties;
+  component?: Component;
   components?: Component[];
   otherDocumentation?: boolean;
   isAttachmentPanel?: boolean;
@@ -174,6 +175,14 @@ export interface Component {
   customClass?: string;
   validateOn?: string;
   isNavDataGrid?: boolean;
+  specificEarliestAllowedDate?: string;
+  specificLatestAllowedDate?: string;
+  beforeDateInputKey?: string;
+  mayBeEqual?: string;
+  earliestAllowedDate?: string;
+  latestAllowedDate?: string;
+  getValue?: () => string;
+  rerender?: () => void;
 }
 
 export interface ComponentProperties {
