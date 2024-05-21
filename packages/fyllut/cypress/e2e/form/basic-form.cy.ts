@@ -134,7 +134,7 @@ describe('Basic form', () => {
       cy.defaultWaits();
     });
 
-    describe.only('Fill in form', () => {
+    describe('Fill in form', () => {
       it('fill in - go to summary - edit form - navigate back to summary', () => {
         cy.clickStart();
         cy.wait('@createMellomlagring');

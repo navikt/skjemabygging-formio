@@ -220,7 +220,7 @@ describe('DrivingList', () => {
       cy.findByRole('checkbox', { name: 'mandag 15. januar 2024' }).should('be.checked');
     });
 
-    it.only('should load driving list without dates', () => {
+    it('should load driving list without dates', () => {
       cy.visit(`/fyllut/testdrivinglist/veiledning?sub=digital&innsendingsId=a66e8932-ce2a-41c1-932b-716fc487813b`);
       cy.mocksUseRouteVariant('get-soknad:success-driving-list-no-dates');
       cy.defaultWaits();
