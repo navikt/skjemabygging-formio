@@ -14,7 +14,7 @@ const useStyles = makeStyles({
   navBarLink: {
     display: 'flex',
     alignItems: 'center',
-    padding: '4px 15px',
+    padding: '5px 15px',
     flexDirection: 'column',
     color: 'var(--a-gray-50)',
     textDecoration: 'none',
@@ -24,7 +24,7 @@ const useStyles = makeStyles({
       flexDirection: 'row',
     },
     '&.active': {
-      borderBottom: '4px solid var(--a-border-action)',
+      borderBottom: '5px solid var(--a-border-action)',
       paddingBottom: '0',
     },
   },
