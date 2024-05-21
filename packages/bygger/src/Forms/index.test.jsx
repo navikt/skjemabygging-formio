@@ -48,7 +48,7 @@ describe('FormsRouter', () => {
 
   it('lets you navigate to new form page from the list of all forms', async () => {
     renderApp('/forms');
-    const knapp = await screen.findByRole('button', { name: 'Lag nytt skjema' });
+    const knapp = await screen.findByRole('link', { name: 'Nytt skjema' });
     await userEvent.click(knapp);
     expect(await screen.findByRole('button', { name: 'Opprett' })).toBeInTheDocument();
   });

@@ -66,8 +66,7 @@ export function FormSettingsPage({
   return (
     <AppLayout
       navBarProps={{
-        title: 'Skjemainnstillinger',
-        visSkjemaMeny: true,
+        formMenu: true,
         formPath: form.path,
       }}
     >

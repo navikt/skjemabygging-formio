@@ -5,17 +5,20 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/auth-context';
 import AdminMenu from './components/AdminMenu';
 import { FormMenu } from './components/FormMenu';
+import { ListMenu } from './components/ListMenu';
 import NotificationDropdown from './components/NotificationDropdown';
 import { TranslationsMenu } from './components/TranslationsMenu';
 import UserMenu from './components/UserMenu';
 import { useNavBarStyles } from './styles';
 
-interface Props {
-  formPath: string;
-  visSkjemaMeny: boolean;
-  visOversettelsesMeny: boolean;
+export interface NavBarProps {
+  formPath?: string;
+  formMenu?: boolean;
+  formListMenu?: boolean;
+  translationMenu?: boolean;
 }
-export const NavBar = ({ formPath, visSkjemaMeny, visOversettelsesMeny }: Props) => {
+
+export const NavBar = ({ formPath, formMenu, formListMenu, translationMenu }: NavBarProps) => {
   const { userData } = useAuth();
   const { config } = useAppConfig();
   const styles = useNavBarStyles();
@@ -27,8 +30,9 @@ export const NavBar = ({ formPath, visSkjemaMeny, visOversettelsesMeny }: Props)
           <HomeFilled fontSize="1.5rem" role="presentation" />
         </Link>
         <div className={styles.navBarLinks}>
-          {visSkjemaMeny && <FormMenu formPath={formPath} />}
-          {visOversettelsesMeny && <TranslationsMenu />}
+          {formMenu && <FormMenu formPath={formPath} />}
+          {formListMenu && <ListMenu />}
+          {translationMenu && <TranslationsMenu />}
         </div>
         <div className={styles.headerMenus}>
           <NotificationDropdown />

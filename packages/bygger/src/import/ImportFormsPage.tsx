@@ -130,7 +130,7 @@ const ImportFormsPage = () => {
   };
 
   return (
-    <AppLayout navBarProps={{}}>
+    <AppLayout>
       <Row className={styles.titleRow}>
         <Heading size="large" level="1">
           Importer skjema fra produksjon

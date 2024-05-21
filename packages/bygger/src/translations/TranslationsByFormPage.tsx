@@ -96,11 +96,7 @@ const TranslationsByFormPage = ({ loadForm, saveTranslation }: TranslationsByFor
     <>
       <AppLayout
         navBarProps={{
-          title: 'Rediger oversettelse',
-          visSkjemaliste: false,
-          visLagNyttSkjema: false,
-          visOversettelseliste: true,
-          visSkjemaMeny: true,
+          formMenu: true,
           formPath: form.path,
         }}
       >
