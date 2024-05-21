@@ -46,7 +46,6 @@ const DatePicker = ({
     allowTwoDigitYear: false,
   } as UseDatepickerOptions);
 
-
   useEffect(() => {
     // Only set selected if the value is different from the existing datepicker value.
     if (inputProps.value !== (value ?? '')) {

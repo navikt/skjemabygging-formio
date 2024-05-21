@@ -177,6 +177,8 @@ export interface Component {
   customClass?: string;
   validateOn?: string;
   isNavDataGrid?: boolean;
+  hidden?: boolean;
+  clearOnHide?: boolean;
   specificEarliestAllowedDate?: string;
   specificLatestAllowedDate?: string;
   beforeDateInputKey?: string;
