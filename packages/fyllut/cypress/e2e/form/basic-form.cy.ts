@@ -53,28 +53,25 @@ describe('Basic form', () => {
 
     // Step 3 -> Oppsummering
     submissionMethod === 'paper' ? cy.clickNextStep() : cy.clickSaveAndContinue();
-    cy.findByRole('heading', { level: 2, name: 'Oppsummering' }).should('exist');
+    cy.findByRoleWhenAttached('heading', { level: 2, name: 'Oppsummering' }).should('exist');
 
     // Gå tilbake til skjema fra oppsummering, og naviger til oppsummering på nytt
     // for å verifisere at ingen valideringsfeil oppstår grunnet manglende verdier.
     cy.findByRoleWhenAttached('link', { name: TEXTS.grensesnitt.summaryPage.editAnswers }).should('exist').click();
 
-    // There is a weird re-render happening after navigating back to the form,
-    // where the first panel will be rendered for a time before redirecting to the intended panel.
-    // If the user navigates during this time period, the navigation is ignored.
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(500);
-
     submissionMethod === 'paper' ? cy.clickNextStep() : cy.clickSaveAndContinue();
-    cy.findByRole('heading', { level: 2, name: 'Dine opplysninger' }).should('exist');
+
+    cy.findByRoleWhenAttached('heading', { level: 2, name: 'Dine opplysninger' }).should('exist');
+    cy.findByRoleWhenAttached('textbox', { name: 'Din fødselsdato (dd.mm.åååå)' }).should('exist');
     if (expectVedleggspanel) {
       cy.clickNextStep();
-      cy.findByRole('heading', { level: 2, name: 'Vedlegg' }).should('exist');
+      cy.findByRoleWhenAttached('heading', { level: 2, name: 'Vedlegg' }).should('exist');
     }
+
     submissionMethod === 'paper' ? cy.clickNextStep() : cy.clickSaveAndContinue();
 
     // Oppsummering
-    cy.findByRole('heading', { level: 2, name: 'Oppsummering' }).should('exist');
+    cy.findByRoleWhenAttached('heading', { level: 2, name: 'Oppsummering' }).should('exist');
     cy.get('dl')
       .eq(1)
       .within(() => {
@@ -87,7 +84,7 @@ describe('Basic form', () => {
         cy.get('dt').eq(3).should('contain.text', 'Har du norsk fødselsnummer eller D-nummer?');
         cy.get('dd').eq(3).should('contain.text', 'Nei');
         cy.get('dt').eq(4).should('contain.text', 'Din fødselsdato (dd.mm.åååå)');
-        cy.get('dd').eq(4).should('contain.text', '10.5.1995');
+        cy.get('dd').eq(4).should('contain.text', '10.05.1995');
       });
   };
 

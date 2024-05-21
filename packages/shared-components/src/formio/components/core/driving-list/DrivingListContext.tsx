@@ -1,16 +1,10 @@
 import { DrivingListSubmission, DrivingListValues } from '@navikt/skjemadigitalisering-shared-domain';
-import { TFunction } from 'i18next';
 import { createContext, useContext } from 'react';
-import { AppConfigContextType } from '../../../../context/config/configContext';
 
 interface DrivingListContextContextType {
-  updateValues: (value: DrivingListValues) => void;
-  appConfig: AppConfigContextType;
   values: DrivingListSubmission;
-  t: TFunction;
-  locale: string;
+  updateValues: (value: DrivingListValues) => void;
   getComponentError: (elementId: string) => string | undefined;
-  addRef: (name: string, ref: HTMLElement | null) => void;
 }
 
 interface DrivingListProviderProps extends DrivingListContextContextType {

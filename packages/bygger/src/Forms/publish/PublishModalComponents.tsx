@@ -1,8 +1,16 @@
 import { ConfirmationModal, useModal } from '@navikt/skjemadigitalisering-shared-components';
-import { NavFormType, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { I18nTranslations, NavFormType, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useState } from 'react';
+import useLockedFormModal from '../../hooks/useLockedFormModal';
 import ConfirmPublishModal from './ConfirmPublishModal';
 import PublishSettingsModal from './PublishSettingsModal';
+
+interface PublishModalComponentsProps {
+  form: NavFormType;
+  onPublish: (form: NavFormType, translations: I18nTranslations) => void;
+  openPublishSettingModal: boolean;
+  setOpenPublishSettingModal: (open: boolean) => void;
+}
 
 const validateAttachments = (form: NavFormType) =>
   navFormUtils
@@ -10,16 +18,25 @@ const validateAttachments = (form: NavFormType) =>
     .filter(navFormUtils.isAttachment)
     .every((comp) => comp.properties?.vedleggskode && comp.properties?.vedleggstittel);
 
-const PublishModalComponents = ({ form, onPublish, openPublishSettingModal, setOpenPublishSettingModal }) => {
+const PublishModalComponents = ({
+  form,
+  onPublish,
+  openPublishSettingModal,
+  setOpenPublishSettingModal,
+}: PublishModalComponentsProps) => {
   const [openPublishSettingModalValidated, setOpenPublishSettingModalValidated] = useModal();
   const [openConfirmPublishModal, setOpenConfirmPublishModal] = useModal();
   const [userMessageModal, setUserMessageModal] = useModal();
+  const { lockedFormModalContent, openLockedFormModal } = useLockedFormModal(form);
   const [selectedLanguageCodeList, setSelectedLanguageCodeList] = useState<string[]>([]);
+  const isLockedForm = form.properties.isLockedForm;
 
   useEffect(() => {
     if (openPublishSettingModal) {
       const attachmentsAreValid = validateAttachments(form);
-      if (attachmentsAreValid) {
+      if (isLockedForm) {
+        openLockedFormModal();
+      } else if (attachmentsAreValid) {
         setOpenPublishSettingModalValidated(true);
       } else {
         setOpenPublishSettingModal(false);
@@ -34,6 +51,8 @@ const PublishModalComponents = ({ form, onPublish, openPublishSettingModal, setO
     setOpenPublishSettingModalValidated,
     setOpenPublishSettingModal,
     setUserMessageModal,
+    isLockedForm,
+    openLockedFormModal,
   ]);
 
   return (
@@ -64,6 +83,7 @@ const PublishModalComponents = ({ form, onPublish, openPublishSettingModal, setO
           body: 'Du må fylle ut vedleggskode og vedleggstittel for alle vedlegg før skjemaet kan publiseres.',
         }}
       />
+      {lockedFormModalContent}
     </>
   );
 };
