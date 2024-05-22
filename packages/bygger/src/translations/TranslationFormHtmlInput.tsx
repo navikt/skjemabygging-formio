@@ -13,7 +13,7 @@ interface Props {
 const TranslationFormHtmlInput = ({ text, html, currentTranslation, updateTranslation }: Props) => {
   const isMarkdown =
     StructuredHtml.isElement(html) && html.containsMarkdown && StructuredHtml.isElement(currentTranslation);
-  const isText = StructuredHtml.isText(html) && text.replace(/\s/g, '').length > 0;
+  const isText = StructuredHtml.isText(html) && text.trim() !== '';
   const isTranslationText = StructuredHtml.isText(currentTranslation);
 
   let originalText: string | undefined;
@@ -26,28 +26,30 @@ const TranslationFormHtmlInput = ({ text, html, currentTranslation, updateTransl
     originalValue = isTranslationText ? currentTranslation.textContent : '';
   }
 
+  const onBlur = (value: string) => {
+    let textContentWithWhiteSpaces = value.trim();
+    if (originalText?.startsWith(' ')) {
+      textContentWithWhiteSpaces = ` ${textContentWithWhiteSpaces}`;
+    }
+    if (originalText?.endsWith(' ')) {
+      textContentWithWhiteSpaces = `${textContentWithWhiteSpaces} `;
+    }
+
+    if (
+      textContentWithWhiteSpaces !== originalValue &&
+      !(textContentWithWhiteSpaces.length === 0 && originalValue === null)
+    ) {
+      updateTranslation({ id: currentTranslation?.id, value: textContentWithWhiteSpaces });
+    }
+  };
+
   if (isText || isMarkdown) {
     return (
       <TranslationTextInput
         text={originalText}
         value={originalValue?.trim()}
         type={getInputType(originalText ?? '')}
-        onBlur={(value: string) => {
-          let textContentWithWhiteSpaces = value.trim();
-          if (originalText?.startsWith(' ')) {
-            textContentWithWhiteSpaces = ` ${textContentWithWhiteSpaces}`;
-          }
-          if (originalText?.endsWith(' ')) {
-            textContentWithWhiteSpaces = `${textContentWithWhiteSpaces} `;
-          }
-
-          if (
-            textContentWithWhiteSpaces !== originalValue &&
-            !(textContentWithWhiteSpaces.length === 0 && originalValue === null)
-          ) {
-            updateTranslation({ id: currentTranslation?.id, value: textContentWithWhiteSpaces });
-          }
-        }}
+        onBlur={onBlur}
         onChange={undefined}
         hasGlobalTranslation={false}
         tempGlobalTranslation={undefined}
