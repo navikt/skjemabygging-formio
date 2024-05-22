@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import moment from 'moment';
 import FormStatusIndicator from './FormStatusIndicator';
 import { useStatusStyles } from './styles';
@@ -47,7 +48,7 @@ const FormStatus = ({ status, size, iconOnly = false }: FormStatusProps) => {
   return (
     <div className={styles.statusRow}>
       <FormStatusIndicator status={status} size={size} title={iconOnly ? statusTexts[status] : undefined} />
-      {!iconOnly && <p className={styles.rowText}>{statusTexts[status]}</p>}
+      <p className={classNames(styles.rowText, { 'sr-only': iconOnly })}>{statusTexts[status]}</p>
     </div>
   );
 };

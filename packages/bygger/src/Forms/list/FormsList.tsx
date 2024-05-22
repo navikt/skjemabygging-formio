@@ -97,7 +97,7 @@ const FormsList = ({ forms }: FormsListPageProps) => {
                   <Link to={form.path} className="sr-only">
                     {form.number}
                   </Link>
-                  <span className="aria-hidden">{form.number}</span>
+                  <span aria-hidden={true}>{form.number}</span>
                 </Table.DataCell>
                 <Table.DataCell className={styles.titleColumn}>
                   {form.title}
