@@ -3,7 +3,7 @@ import { useFormioForms } from '../hooks/useFormioForms';
 import { useFormioTranslations } from '../hooks/useFormioTranslations';
 import { FormPage } from './FormPage';
 import NewFormPage from './NewFormPage';
-import { FormsListPage } from './list/FormsListPage';
+import FormsListPage from './list/FormsListPage';
 
 export const FormsRouter = ({ formio, serverURL }) => {
   const { loadForm, loadFormsList, onSave, onPublish, onUnpublish, onCopyFromProd } = useFormioForms();

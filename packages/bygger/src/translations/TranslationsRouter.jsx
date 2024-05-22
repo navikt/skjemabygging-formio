@@ -3,11 +3,10 @@ import { useFormioForms } from '../hooks/useFormioForms';
 import { useFormioTranslations } from '../hooks/useFormioTranslations';
 import NewTranslation from './NewTranslation';
 import { TranslationsByFormRoute } from './TranslationsByFormRoute.tsx';
-import { TranslationsListPage } from './TranslationsListPage';
 import GlobalTranslationsPage from './global/GlobalTranslationsPage';
 
 const TranslationsRouter = ({ formio, serverURL }) => {
-  const { loadForm, loadFormsList } = useFormioForms();
+  const { loadForm } = useFormioForms();
   const {
     loadGlobalTranslationsForTranslationsPage,
     publishGlobalTranslations,
@@ -20,7 +19,6 @@ const TranslationsRouter = ({ formio, serverURL }) => {
 
   return (
     <Routes>
-      <Route path={'/'} element={<TranslationsListPage loadFormsList={loadFormsList} />} />
       <Route path={'/new'} element={<NewTranslation projectURL={formio.projectURL} />} />
       <Route
         path={'/global/:languageCode?/:tag?'}
