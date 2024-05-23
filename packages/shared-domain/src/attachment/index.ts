@@ -19,7 +19,7 @@ interface AttachmentSettingValue {
 }
 
 interface AttachmentValue {
-  key: string;
+  key: keyof AttachmentSettingValues;
   description: string;
   additionalDocumentation?: string;
   additionalDocumentationLabel?: string;
