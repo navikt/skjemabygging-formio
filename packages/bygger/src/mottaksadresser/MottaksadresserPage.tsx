@@ -14,12 +14,7 @@ const useStyles = makeStyles({
 const MottaksadresserPage = () => {
   const styles = useStyles();
   return (
-    <AppLayout
-      navBarProps={{
-        visOversettelseliste: false,
-        visSkjemaliste: true,
-      }}
-    >
+    <AppLayout>
       <Row>
         <Column className={styles.centerColumn}>
           <Heading level="1" size="xlarge">

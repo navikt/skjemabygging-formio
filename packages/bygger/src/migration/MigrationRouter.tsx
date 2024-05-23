@@ -5,13 +5,7 @@ import MigrationPage from './MigrationPage';
 
 const MigrationRouter = () => {
   return (
-    <AppLayout
-      navBarProps={{
-        title: 'Migrer skjema',
-        visSkjemaliste: true,
-        visSkjemaMeny: false,
-      }}
-    >
+    <AppLayout>
       <Routes>
         <Route path={'/forhandsvis/:formPath'} element={<MigrationFormPreview />} />
         <Route path={'/'} element={<MigrationPage />} />

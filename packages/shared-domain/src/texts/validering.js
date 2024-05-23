@@ -1,5 +1,5 @@
 export const validering = {
-  //Generelle feilmeldinger
+  // Generelle feilmeldinger
   error: 'For å gå videre må du rette opp følgende:',
   invalid_email: '{{field}} må være en gyldig epost-adresse.',
   invalid_regex: '{{field}} passer ikke til uttrykket {{regex}}.',
@@ -12,32 +12,27 @@ export const validering = {
   required: 'Du må fylle ut: {{field}}',
   valueIsNotAvailable: '{{field}} er en ugyldig verdi.',
 
-  //Dato / tid
+  // Dato / tid
   invalid_date: '{{field}} er ikke en gyldig dato.',
   invalid_day: '{{field}} er ikke en gyldig dag.', // eslint-disable-line camelcase
-  maxDate: '{{field}} kan ikke inneholde dato etter {{- maxDate}}',
-  minDate: '{{field}} kan ikke inneholde dato før {{- minDate}}',
+  maxDate: 'Datoen kan ikke være senere {{maxDate}}',
+  minDate: 'Datoen kan ikke være tidligere enn {{minDate}}',
   maxYear: '{{field}} kan ikke være senere enn {{maxYear}}',
   minYear: '{{field}} kan ikke være før {{minYear}}',
 
-  //IBAN
+  // IBAN
   noIBANProvided: 'Gyldig IBAN er ikke oppgitt',
   wrongBBANLength: 'Oppgitt IBAN har feil lengde.',
   noIBANCountry: 'Oppgitt IBAN inneholder ugyldig landkode (to store bokstaver i starten av IBAN-koden)',
   invalidIBAN: 'Oppgitt IBAN er ugyldig. Sjekk at du har tastet riktig.',
 
-  //custom component
+  // national identity number
   fodselsnummerDNummer: 'Dette er ikke et gyldig fødselsnummer eller D-nummer',
-  dateNotBeforeFromDate: 'Datoen kan ikke være tidligere enn {{fromDate}}',
-  dateAfterFromDate: 'Datoen må være senere enn {{fromDate}}',
-  dateNotBeforeAllowedDate: 'Datoen kan ikke være tidligere enn',
-  dateInBetween: 'Datoen kan ikke være tidligere enn {{minDate}} eller senere enn {{maxDate}}',
-  dateNotLaterThanAllowedDate: 'Datoen kan ikke være senere enn',
 
-  //org
+  // org
   orgNrCustomError: 'Dette er ikke et gyldig organisasjonsnummer',
 
-  //accountNumber
+  // accountNumber
   accountNumberCustomError: 'Dette er ikke et gyldig kontonummer',
 
   // driving list

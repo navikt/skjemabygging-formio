@@ -9,8 +9,7 @@ export function TestFormPage({ form }) {
   return (
     <AppLayout
       navBarProps={{
-        title: 'Forhåndsvisning',
-        visSkjemaMeny: true,
+        formMenu: true,
         formPath: form.path,
       }}
     >

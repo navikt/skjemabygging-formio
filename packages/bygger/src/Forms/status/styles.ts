@@ -10,6 +10,7 @@ const useStatusStyles = makeStyles({
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
   },
   toggleDiffButton: {
     marginTop: '0.5rem',

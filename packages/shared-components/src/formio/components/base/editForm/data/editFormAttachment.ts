@@ -79,29 +79,10 @@ const editFormAttachment = (): Component[] => {
 
   return [
     {
-      label: 'Velg vedlegsstype',
-      type: 'radiopanel',
-      key: 'attachmentType',
-      values: [
-        {
-          label: 'Standard vedlegg',
-          value: 'default',
-        },
-        {
-          label: 'Annen dokumentasjon',
-          value: 'other',
-        },
-      ],
-      validate: {
-        required: true,
-      },
-    },
-    {
       type: 'container',
       key: 'attachmentValues',
       label: '',
       hideLabel: true,
-      customConditional: 'show = data?.attachmentType',
       components: [
         {
           type: 'panel',

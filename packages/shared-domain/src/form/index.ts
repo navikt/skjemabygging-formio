@@ -1,5 +1,7 @@
+import { AccordionSettingValues } from '../accordion';
 import { AttachmentSettingValues } from '../attachment';
 import { Enhetstype } from '../enhet';
+import { TextSize } from '../text';
 
 export type DisplayType = 'wizard' | 'form';
 export type FormType = 'form' | 'resource';
@@ -68,6 +70,8 @@ export interface FormPropertiesType {
   innsendingForklaring?: string;
   innsendingOverskrift?: string;
   isTestForm?: boolean;
+  isLockedForm?: boolean;
+  lockedFormReason?: string;
   declarationType?: DeclarationType;
   declarationText?: string;
   mottaksadresseId?: string;
@@ -81,6 +85,8 @@ export interface FormPropertiesType {
   descriptionOfSignatures?: string;
   descriptionOfSignaturesPositionUnder?: boolean;
   prefill?: PrefillKey[];
+  uxSignalsId?: string;
+  uxSignalsInnsending?: InnsendingType;
 }
 
 export type FormPropertiesPublishing = Pick<
@@ -112,12 +118,14 @@ export interface Component {
   valueProperty?: string;
   labelProperty?: string;
   properties?: ComponentProperties;
+  component?: Component;
   components?: Component[];
   otherDocumentation?: boolean;
   isAttachmentPanel?: boolean;
   prefillKey?: PrefillKey;
   values?: ComponentValue[];
   attachmentValues?: AttachmentSettingValues;
+  accordionValues?: AccordionSettingValues;
   attachmentType?: string;
   hideLabel?: boolean;
   description?: string;
@@ -140,6 +148,7 @@ export interface Component {
   collapsible?: boolean;
   collapsed?: boolean;
   fieldSize?: string;
+  titleSize?: TextSize;
   autoComplete?: string;
   spellCheck?: boolean;
   rows?: number;
@@ -167,6 +176,17 @@ export interface Component {
   autoExpand?: boolean;
   customClass?: string;
   validateOn?: string;
+  isNavDataGrid?: boolean;
+  hidden?: boolean;
+  clearOnHide?: boolean;
+  specificEarliestAllowedDate?: string;
+  specificLatestAllowedDate?: string;
+  beforeDateInputKey?: string;
+  mayBeEqual?: string;
+  earliestAllowedDate?: string;
+  latestAllowedDate?: string;
+  getValue?: () => string;
+  rerender?: () => void;
 }
 
 export interface ComponentProperties {

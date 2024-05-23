@@ -7,11 +7,13 @@ import {
   VedtakBetalingsplan,
   dateUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
+import { useComponentUtils } from '../../context/component/componentUtilsContext';
 import { mapToSubmissionActivity, mapToVedtaklist } from '../../formio/components/core/activities/Activities.utils';
 import { drivingListMetadata } from '../../formio/components/core/driving-list/DrivingList.utils';
 import { useDrivingList } from '../../formio/components/core/driving-list/DrivingListContext';
 import makeStyles from '../../util/styles/jss/jss';
 import NavActivities from '../activities/NavActivities';
+import InnerHtml from '../inner-html/InnerHtml';
 import ActivityAlert from './ActivityAlert';
 import DrivingPeriod from './DrivingPeriod';
 import PeriodInfo from './PeriodInfo';
@@ -31,7 +33,8 @@ const useDrivinglistStyles = makeStyles({
 });
 
 const DrivingListFromActivities = ({ activities }: Props) => {
-  const { values, updateValues, t, appConfig, getComponentError, addRef, locale } = useDrivingList();
+  const { values, updateValues, getComponentError } = useDrivingList();
+  const { translate, locale, addRef } = useComponentUtils();
 
   const styles = useDrivinglistStyles();
 
@@ -68,7 +71,7 @@ const DrivingListFromActivities = ({ activities }: Props) => {
     if (selectedVedtak.trengerParkering) {
       return (
         <Alert variant="info" className="mb">
-          <div dangerouslySetInnerHTML={{ __html: TEXTS.statiske.drivingList.parkingInfo }} />
+          <InnerHtml content={translate(TEXTS.statiske.drivingList.parkingInfo)} />
         </Alert>
       );
     }
@@ -92,19 +95,16 @@ const DrivingListFromActivities = ({ activities }: Props) => {
         <ActivityAlert vedtakData={mapToVedtaklist(activities)} className={'mb'} />
         <NavActivities
           id={drivingListMetadata('activityRadio').id}
-          label={t(drivingListMetadata('activityRadio').label)}
+          label={translate(drivingListMetadata('activityRadio').label)}
           value={vedtakSelection}
           onChange={(activity?: SubmissionActivity, options?: ActivityChangeOptions) =>
             onActivityChange(activity, options)
           }
-          appConfig={appConfig}
-          t={t}
           className={'mb'}
           dataType="vedtak"
           activities={activities}
           error={getComponentError('activityRadio')}
           ref={(ref) => addRef('activityRadio', ref)}
-          locale={locale}
           shouldAutoSelectSingleActivity={true}
         />
         {selectedActivity && selectedVedtak && (
@@ -132,7 +132,7 @@ const DrivingListFromActivities = ({ activities }: Props) => {
             {alreadyRefunded.length > 0 && (
               <div className={'mb'}>
                 <Heading size="small" spacing={true}>
-                  {t(TEXTS.statiske.drivingList.previousDrivingList)}
+                  {translate(TEXTS.statiske.drivingList.previousDrivingList)}
                 </Heading>
                 <ul>
                   {alreadyRefunded

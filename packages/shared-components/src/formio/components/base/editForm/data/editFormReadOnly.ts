@@ -1,11 +1,20 @@
 import { Component } from '@navikt/skjemadigitalisering-shared-domain';
 
-const editFormReadOnly = (): Component => {
+interface ReadOnlyOptions {
+  hidden?: boolean;
+  clearOnHide?: boolean;
+  calculateValue?: string;
+}
+
+const editFormReadOnly = (options?: ReadOnlyOptions): Component => {
   return {
     type: 'checkbox',
     label: 'Skrivebeskyttet',
     key: 'readOnly',
     defaultValue: false,
+    hidden: !!options?.hidden,
+    clearOnHide: options?.clearOnHide ? true : false,
+    calculateValue: options?.calculateValue,
   };
 };
 

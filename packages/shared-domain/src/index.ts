@@ -70,6 +70,7 @@ import { SubmissionMaalgruppe } from './submission/maalgruppe';
 import type { Summary } from './summary/FormSummaryType';
 import MockedComponentObjectForTest from './summary/MockedComponentObjectForTest';
 import formSummaryUtil from './summary/formSummaryUtil';
+import { TextSize, TextSizeShort } from './text';
 import TEXTS from './texts';
 import dateUtils from './utils/date';
 import featureUtils, { FeatureTogglesMap } from './utils/featureUtils';
@@ -176,6 +177,8 @@ export type {
   SubmissionMaalgruppe,
   SubmissionMethod,
   Summary,
+  TextSize,
+  TextSizeShort,
   TranslationResource,
   TranslationScope,
   TranslationTag,

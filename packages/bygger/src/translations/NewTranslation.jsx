@@ -13,13 +13,7 @@ const NewTranslation = ({ projectURL }) => {
   const styles = useStyles();
 
   return (
-    <AppLayout
-      navBarProps={{
-        title: 'Oversettelser',
-        visOversettelseliste: true,
-        visLagNyttSkjema: false,
-      }}
-    >
+    <AppLayout>
       <PageWrapper>
         <NavForm className={styles.form} src={`${projectURL}/language`} />
       </PageWrapper>

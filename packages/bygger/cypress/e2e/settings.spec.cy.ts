@@ -10,6 +10,8 @@ const _submitData = {
   descriptionOfSignatures: 'Test Instructions',
   signatureLabel: 'Test account',
   signatureDescription: 'Instruction from test...',
+  lockedFormReason: 'Test reason for locking',
+  isLockedForm: true,
 };
 
 describe('FormSettingsPage', () => {
@@ -30,6 +32,8 @@ describe('FormSettingsPage', () => {
     cy.intercept('PUT', '/api/forms/cypresssettings', (req) => {
       expect(req.body.properties.tema).to.include(_submitData.tema);
       expect(req.body.title).to.include(_submitData.title);
+      expect(req.body.properties.isLockedForm).to.equal(_submitData.isLockedForm);
+      expect(req.body.properties.lockedFormReason).to.equal(_submitData.lockedFormReason);
       expect(req.body.properties.skjemanummer).to.include(_submitData.skjemanummer);
       expect(req.body.properties.descriptionOfSignatures).to.include(_submitData.descriptionOfSignatures);
       expect(req.body.properties.innsending).to.include(_submitData.innsending);
@@ -38,6 +42,12 @@ describe('FormSettingsPage', () => {
       expect(req.body.properties.signatures[0].description).to.include(_submitData.signatureDescription);
       req.reply(req.body);
     }).as('compareRequestData');
+
+    cy.findByRole('checkbox', { name: 'Lås for redigering' }).check();
+
+    cy.findByRole('textbox', { name: 'Beskriv hvorfor skjemaet er låst' }).focus();
+    cy.findByRole('textbox', { name: 'Beskriv hvorfor skjemaet er låst' }).clear();
+    cy.findByRole('textbox', { name: 'Beskriv hvorfor skjemaet er låst' }).type(_submitData.lockedFormReason);
 
     cy.findByRole('textbox', { name: 'Tittel' }).focus();
     cy.findByRole('textbox', { name: 'Tittel' }).clear();

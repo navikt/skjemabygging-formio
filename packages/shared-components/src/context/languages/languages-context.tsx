@@ -2,6 +2,7 @@ import { I18nTranslationReplacements, translationUtils } from '@navikt/skjemadig
 import { createContext, useContext, useEffect, useState } from 'react';
 import useCurrentLanguage from './hooks/useCurrentLanguage';
 import useLanguageCodeFromURL from './hooks/useLanguageCodeFromURL';
+
 interface LanguageContextType {
   availableLanguages: string[];
   currentLanguage: string;

@@ -2135,7 +2135,7 @@
               }
             ],
             "custom": "",
-            "url": "http://localhost:3001/fyllut/countries?lang=nb"
+            "url": "http://localhost:3001/fyllut/api/countries?lang=nb"
           },
           "valueProperty": "",
           "template": "<span>{{ item.label }}</span>",
