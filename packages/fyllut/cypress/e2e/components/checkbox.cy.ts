@@ -6,6 +6,13 @@ import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { expect } from 'chai';
 
 describe('Checkbox', () => {
+  before(() => {
+    cy.configMocksServer();
+  });
+
+  after(() => {
+    cy.mocksRestoreRouteVariants();
+  });
   describe('Paper', () => {
     beforeEach(() => {
       cy.defaultIntercepts();
@@ -70,7 +77,7 @@ describe('Checkbox', () => {
     });
   });
 
-  describe('digital', () => {
+  describe('Digital', () => {
     it('should have correct submission values', () => {
       cy.defaultIntercepts();
       cy.visit('/fyllut/checkboxtest/checkboxPage?sub=digital');
