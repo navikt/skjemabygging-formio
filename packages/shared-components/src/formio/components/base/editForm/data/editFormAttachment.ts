@@ -1,4 +1,4 @@
-import { Component, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { AttachmentType, Component, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 
 interface EditFormAttachmentComponent {
   key: string;
@@ -10,6 +10,14 @@ interface EditFormAttachmentComponent {
   forceEnabled?: boolean;
   readOnly?: boolean;
 }
+
+const showForAttachmentType = (attachmentType: AttachmentType) => {
+  return `show = data.attachmentType === "${attachmentType}"`;
+};
+
+const showForRowEnabled = (enabled: boolean) => {
+  return `show = row.enabled === ${enabled}`;
+};
 
 const additionalDocumentationComponents = () => {
   return {
@@ -27,7 +35,7 @@ const additionalDocumentationComponents = () => {
         key: 'label',
         customClass: 'ml',
         label: 'Ledetekst for tilleggsinformasjon',
-        customConditional: 'show = row.enabled === true',
+        customConditional: showForRowEnabled(true),
         validate: {
           required: true,
         },
@@ -37,7 +45,7 @@ const additionalDocumentationComponents = () => {
         key: 'description',
         customClass: 'ml',
         label: 'Beskrivelse av krav til tilleggsinformasjon',
-        customConditional: 'show = row.enabled === true',
+        customConditional: showForRowEnabled(true),
       },
     ],
   };
@@ -86,7 +94,7 @@ const editFormAttachment = (): Component[] => {
           key: '',
           label: '',
           customClass: 'ml',
-          customConditional: customConditionalOptions ? customConditionalOptions : 'show = row.enabled === true',
+          customConditional: customConditionalOptions ? customConditionalOptions : showForRowEnabled(true),
           components,
         },
       ],
@@ -112,14 +120,14 @@ const editFormAttachment = (): Component[] => {
               label: TEXTS.statiske.attachment.leggerVedNaa,
               additionalDocumentation: true,
               showDeadline: false,
-              customConditional: 'show = data?.attachmentType === "default"',
+              customConditional: showForAttachmentType('default'),
             }),
             component({
               key: 'leggerVedNaa',
               label: TEXTS.statiske.attachment.leggerVedNaa,
               additionalDocumentation: false,
               showDeadline: false,
-              customConditional: 'show = data?.attachmentType === "other"',
+              customConditional: showForAttachmentType('other'),
               readOnly: true,
             }),
             component({
@@ -127,14 +135,14 @@ const editFormAttachment = (): Component[] => {
               label: TEXTS.statiske.attachment.ettersender,
               additionalDocumentation: true,
               showDeadline: true,
-              customConditional: 'show = data?.attachmentType === "default"',
+              customConditional: showForAttachmentType('default'),
             }),
             component({
               key: 'nei',
               label: TEXTS.statiske.attachment.nei,
               additionalDocumentation: false,
               showDeadline: false,
-              customConditional: 'show = data?.attachmentType === "other"',
+              customConditional: showForAttachmentType('other'),
               forceEnabled: true,
               readOnly: true,
             }),
@@ -143,28 +151,28 @@ const editFormAttachment = (): Component[] => {
               label: TEXTS.statiske.attachment.levertTidligere,
               additionalDocumentation: true,
               showDeadline: false,
-              customConditional: 'show = data?.attachmentType === "default"',
+              customConditional: showForAttachmentType('default'),
             }),
             component({
               key: 'harIkke',
               label: TEXTS.statiske.attachment.harIkke,
               additionalDocumentation: true,
               showDeadline: false,
-              customConditional: 'show = data?.attachmentType === "default"',
+              customConditional: showForAttachmentType('default'),
             }),
             component({
               key: 'andre',
               label: TEXTS.statiske.attachment.andre,
               additionalDocumentation: true,
               showDeadline: true,
-              customConditional: 'show = data?.attachmentType === "default"',
+              customConditional: showForAttachmentType('default'),
             }),
             component({
               key: 'nav',
               label: TEXTS.statiske.attachment.nav,
               additionalDocumentation: true,
               showDeadline: false,
-              customConditional: 'show = data?.attachmentType === "default"',
+              customConditional: showForAttachmentType('default'),
             }),
           ],
         },
