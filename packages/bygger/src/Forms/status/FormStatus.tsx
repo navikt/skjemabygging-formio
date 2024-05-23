@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import moment from 'moment';
 import FormStatusIndicator from './FormStatusIndicator';
 import { useStatusStyles } from './styles';
@@ -28,9 +29,13 @@ export function determineStatus(publishProperties: PublishStatusProperties): Sta
   return 'UNKNOWN';
 }
 
-type FormStatusProps = { status: Status; size: StreetLightSize };
+type FormStatusProps = {
+  status: Status;
+  size: StreetLightSize;
+  iconOnly?: boolean;
+};
 
-const FormStatus = ({ status, size }: FormStatusProps) => {
+const FormStatus = ({ status, size, iconOnly = false }: FormStatusProps) => {
   const styles = useStatusStyles({});
   const statusTexts: Record<Status, string> = {
     PUBLISHED: 'Publisert',
@@ -42,8 +47,8 @@ const FormStatus = ({ status, size }: FormStatusProps) => {
   };
   return (
     <div className={styles.statusRow}>
-      <FormStatusIndicator status={status} size={size} />
-      <p className={styles.rowText}>{statusTexts[status]}</p>
+      <FormStatusIndicator status={status} size={size} title={iconOnly ? statusTexts[status] : undefined} />
+      <p className={classNames(styles.rowText, { 'sr-only': iconOnly })}>{statusTexts[status]}</p>
     </div>
   );
 };
