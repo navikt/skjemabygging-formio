@@ -13,6 +13,7 @@ describe('Checkbox', () => {
   after(() => {
     cy.mocksRestoreRouteVariants();
   });
+
   describe('Paper', () => {
     beforeEach(() => {
       cy.defaultIntercepts();
@@ -106,7 +107,7 @@ describe('Checkbox', () => {
       cy.wait('@submitMellomlagring');
     });
 
-    it.only('should load mellomlagring', () => {
+    it('should load mellomlagring', () => {
       cy.mocksUseRouteVariant('get-soknad:success-checkbox');
 
       cy.defaultIntercepts();
