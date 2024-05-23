@@ -1,3 +1,5 @@
+import { logger } from '../logger';
+
 export class ErrorWithCause extends Error {
   cause: Error;
   constructor(message: string, cause: Error) {
@@ -5,3 +7,8 @@ export class ErrorWithCause extends Error {
     this.cause = cause;
   }
 }
+
+export const logErrorWithStacktrace = (error: Error) => {
+  const { message, stack, ...errDetails } = error;
+  logger.error(message, { stack, ...errDetails });
+};
