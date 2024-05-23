@@ -99,8 +99,7 @@ describe('Checkbox', () => {
         expect(data.requiredCheckbox).to.equal(true);
         expect(data.readOnlyCheckboxChecked).to.equal(true);
         expect(data.checkboxDescription).to.equal(true);
-
-        expect(data.readOnlyCheckbox).to.equal(undefined);
+        expect(data.readOnlyCheckbox).to.equal(false);
       });
 
       cy.clickSaveAndContinue();
