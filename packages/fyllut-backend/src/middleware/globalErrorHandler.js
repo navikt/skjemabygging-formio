@@ -1,6 +1,6 @@
 import correlator from 'express-correlation-id';
 import { config } from '../config/config';
-import { logErrorWithStacktrace } from '../utils/errors.js';
+import { logErrorWithStacktrace } from '../utils/errors';
 
 const { isTest } = config;
 
