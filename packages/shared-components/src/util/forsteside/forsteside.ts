@@ -52,7 +52,10 @@ export function getVedleggsFelterSomSkalSendes(submissionData: SubmissionData, f
   return navFormUtils
     .flattenComponents(form.components)
     .filter((component) => component.properties && !!component.properties.vedleggskode)
-    .filter((component) => submissionData[component.key] === 'leggerVedNaa' || component.type === 'attachment');
+    .filter(
+      (component) =>
+        submissionData[component.key] === 'leggerVedNaa' || submissionData[component.key]['key'] === 'leggerVedNaa',
+    );
 }
 
 export function genererVedleggsListe(form: NavFormType, submissionData: SubmissionData): string[] {
