@@ -1,48 +1,23 @@
-import Harness from '../../../../../test/harness.js';
-import { setupNavFormio } from '../../../../../test/navform-render';
-import Checkbox from './Checkbox.js';
-
-const compDef = {
-  label: 'Avkryssingsboks',
-  type: 'navCheckbox',
-  key: 'Avkryssingsboks',
-  input: true,
-  hideLabel: false,
-  clearOnHide: true,
-  validateOn: 'blur',
-  validate: {
-    required: true,
-  },
-};
+import { screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import form from '../../../../../../../mocks/mocks/data/formio-api/custom-composents-checkbox.json';
+import { renderNavForm, setupNavFormio } from '../../../../../test/navform-render';
 
 describe('NavCheckbox', () => {
   beforeAll(setupNavFormio);
 
-  it('Should build a checkbox component', () => {
-    return Harness.testCreate(Checkbox, compDef).then((component) => {
-      const inputs = Harness.testElements(component, 'input[type="checkbox"]', 1);
-      for (let i = 0; i < inputs.length; i++) {
-        expect(inputs[i].getAttribute('class').indexOf('navds-checkbox__input') !== -1).toBeTruthy();
-        expect(inputs[i].name).toBe(`data[${compDef.key}]`);
-      }
-      Harness.testElements(component, 'label', 1);
+  it('should update checked value', async () => {
+    await renderNavForm({
+      form,
     });
-  });
+    const normalCheckbox = screen.getByLabelText('Normal checkbox (valgfritt)') as HTMLInputElement;
+    expect(normalCheckbox).toBeInTheDocument();
+    expect(normalCheckbox.checked).toBe(false);
 
-  it('Label is rendered', () => {
-    return Harness.testCreate(Checkbox, compDef).then((component) => {
-      const labels = component.element.querySelectorAll('label');
-      expect(labels).toHaveLength(1);
-    });
-  });
+    await userEvent.click(normalCheckbox);
+    expect(normalCheckbox.checked).toBe(true);
 
-  it('Should be able to unselect a checkbox component with the radio input type', () => {
-    return Harness.testCreate(Checkbox, compDef).then((component) => {
-      const input = Harness.testElement(component, 'input', 1);
-      Harness.clickElement(component, input);
-      expect(input.checked).toBe(true);
-      Harness.clickElement(component, input);
-      expect(input.checked).toBe(false);
-    });
+    await userEvent.click(normalCheckbox);
+    expect(normalCheckbox.checked).toBe(false);
   });
 });
