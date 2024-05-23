@@ -8,6 +8,7 @@ interface EditFormAttachmentComponent {
   customConditional?: string;
   customConditionalOptions?: string;
   forceEnabled?: boolean;
+  readOnly?: boolean;
 }
 
 const additionalDocumentationComponents = () => {
@@ -51,6 +52,7 @@ const editFormAttachment = (): Component[] => {
     customConditional = '',
     customConditionalOptions = '',
     forceEnabled = false,
+    readOnly = false,
   }: EditFormAttachmentComponent) => {
     const components: Component[] = [];
 
@@ -76,7 +78,7 @@ const editFormAttachment = (): Component[] => {
           type: 'navCheckbox',
           key: 'enabled',
           defaultValue: forceEnabled,
-          readOnly: forceEnabled,
+          readOnly: readOnly,
           label,
         },
         {
@@ -110,14 +112,22 @@ const editFormAttachment = (): Component[] => {
               label: TEXTS.statiske.attachment.leggerVedNaa,
               additionalDocumentation: true,
               showDeadline: false,
-              customConditional: undefined,
-              customConditionalOptions: 'show = data?.attachmentType === "default"',
+              customConditional: 'show = data?.attachmentType === "default"',
+            }),
+            component({
+              key: 'leggerVedNaa',
+              label: TEXTS.statiske.attachment.leggerVedNaa,
+              additionalDocumentation: false,
+              showDeadline: false,
+              customConditional: 'show = data?.attachmentType === "other"',
+              readOnly: true,
             }),
             component({
               key: 'ettersender',
               label: TEXTS.statiske.attachment.ettersender,
               additionalDocumentation: true,
               showDeadline: true,
+              customConditional: 'show = data?.attachmentType === "default"',
             }),
             component({
               key: 'nei',
@@ -125,8 +135,8 @@ const editFormAttachment = (): Component[] => {
               additionalDocumentation: false,
               showDeadline: false,
               customConditional: 'show = data?.attachmentType === "other"',
-              customConditionalOptions: undefined,
               forceEnabled: true,
+              readOnly: true,
             }),
             component({
               key: 'levertTidligere',
