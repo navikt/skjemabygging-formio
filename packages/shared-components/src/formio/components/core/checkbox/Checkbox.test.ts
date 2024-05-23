@@ -1,6 +1,6 @@
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import form from '../../../../../../../mocks/mocks/data/formio-api/custom-composents-checkbox.json';
+import form from '../../../../../../../mocks/mocks/data/formio-api/custom-components-checkbox.json';
 import { renderNavForm, setupNavFormio } from '../../../../../test/navform-render';
 
 describe('NavCheckbox', () => {

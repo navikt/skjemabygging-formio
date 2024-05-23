@@ -27,7 +27,7 @@ const formDrivingList = require('../data/formio-api/driving-list.json');
 const formAttachment = require('../data/formio-api/attachments.json');
 const numberForm = require('../data/formio-api/number.json');
 const formAccordion = require('../data/formio-api/accordion.json');
-const checkboxForm = require('../data/formio-api/custom-composents-checkbox.json');
+const checkboxForm = require('../data/formio-api/custom-components-checkbox.json');
 
 const allForms = [
   { form: formCypress101, translations: translationsCypress101 },
