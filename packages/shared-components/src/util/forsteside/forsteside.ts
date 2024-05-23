@@ -1,4 +1,5 @@
 import {
+  AttachmentValue,
   ForstesideRequestBody,
   KjentBruker,
   Mottaksadresse,
@@ -54,7 +55,8 @@ export function getVedleggsFelterSomSkalSendes(submissionData: SubmissionData, f
     .filter((component) => component.properties && !!component.properties.vedleggskode)
     .filter(
       (component) =>
-        submissionData[component.key] === 'leggerVedNaa' || submissionData[component.key]?.['key'] === 'leggerVedNaa',
+        submissionData[component.key] === 'leggerVedNaa' ||
+        (submissionData[component.key] as AttachmentValue)?.key === 'leggerVedNaa',
     );
 }
 
