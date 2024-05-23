@@ -48,22 +48,11 @@ export function genererSkjemaTittel(skjemaTittel, skjemanummer) {
   return `${skjemanummer} ${skjemaTittel}`;
 }
 
-/**
- * Basert på at custom property vedleggskode er satt og at verdien er leggerVedNaa.
- */
-export function genererVedleggKeysSomSkalSendes(form: NavFormType, submissionData: SubmissionData) {
-  return navFormUtils
-    .flattenComponents(form.components)
-    .filter((component) => component.properties && !!component.properties.vedleggskode)
-    .filter((vedlegg) => submissionData[vedlegg.key] === 'leggerVedNaa')
-    .map((vedlegg) => vedlegg.properties?.vedleggskode);
-}
-
 export function getVedleggsFelterSomSkalSendes(submissionData: SubmissionData, form: NavFormType) {
   return navFormUtils
     .flattenComponents(form.components)
     .filter((component) => component.properties && !!component.properties.vedleggskode)
-    .filter((vedlegg) => submissionData[vedlegg.key] === 'leggerVedNaa');
+    .filter((component) => submissionData[component.key] === 'leggerVedNaa' || component.type === 'attachment');
 }
 
 export function genererVedleggsListe(form: NavFormType, submissionData: SubmissionData): string[] {

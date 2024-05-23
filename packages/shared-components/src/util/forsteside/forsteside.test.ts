@@ -6,7 +6,6 @@ import {
   genererMottaksadresse,
   genererPersonalia,
   genererSkjemaTittel,
-  genererVedleggKeysSomSkalSendes,
   genererVedleggsListe,
   getVedleggsFelterSomSkalSendes,
 } from './forsteside';
@@ -106,32 +105,6 @@ describe('getVedleggsFelterSomSkalSendes', () => {
       } as unknown as NavFormType,
     );
     expect(actual.map((component) => component.key)).toEqual(['vedlegg1', 'vedlegg2', 'vedlegg3']);
-  });
-});
-
-describe('genererVedleggSomSkalSendes', () => {
-  it('adds vedlegg marked as leggerVedNaa', () => {
-    const actual = genererVedleggKeysSomSkalSendes(formMedVedlegg, {
-      vedleggQ7: 'leggerVedNaa',
-      vedleggO9: 'leggerVedNaa',
-    });
-    expect(actual).toEqual(['O9', 'Q7']);
-  });
-
-  it('does not add vedlegg marked as ettersender', () => {
-    const actual = genererVedleggKeysSomSkalSendes(formMedVedlegg, {
-      vedleggQ7: 'leggerVedNaa',
-      vedleggO9: 'ettersender',
-    });
-    expect(actual).toEqual(['Q7']);
-  });
-
-  it('does not add vedlegg marked as levertTidligere', () => {
-    const actual = genererVedleggKeysSomSkalSendes(formMedVedlegg, {
-      vedleggQ7: 'levertTidligere',
-      vedleggO9: 'leggerVedNaa',
-    });
-    expect(actual).toEqual(['O9']);
   });
 });
 
