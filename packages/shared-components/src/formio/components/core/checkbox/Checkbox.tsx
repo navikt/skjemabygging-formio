@@ -20,13 +20,8 @@ class Checkbox extends BaseComponent {
     return checkboxBuilder();
   }
 
-  override setValue(value?: boolean): void {
-    // Set initial value to false if it's not required
-    if (value === null && this.component?.validate?.required === false) {
-      super.updateValue(false, { modified: true });
-    } else {
-      super.setValue(value);
-    }
+  get emptyValue() {
+    return false;
   }
 
   changeHandler(selectedCheckboxes: string[], opts: { modified: boolean }) {
@@ -52,7 +47,6 @@ class Checkbox extends BaseComponent {
         className={this.getClassName()}
         readOnly={this.getReadOnly()}
         error={this.getError()}
-        tabIndex={-1}
       >
         <AkselCheckbox value={this.component?.key}>{this.getLabel()}</AkselCheckbox>
       </CheckboxGroup>,
