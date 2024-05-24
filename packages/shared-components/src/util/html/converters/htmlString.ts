@@ -31,7 +31,7 @@ const json2HtmlString = (jsonElement: HtmlAsJsonElement | HtmlAsJsonTextElement)
   switch (jsonElement?.type) {
     case 'Element':
       const htmlElement = toNode(jsonElement) as HTMLElement;
-      return htmlElement.outerHTML.toString();
+      return htmlElement.tagName === 'DIV' ? htmlElement.innerHTML.toString() : htmlElement.outerHTML.toString();
     case 'TextElement':
       return jsonElement.textContent ?? '';
     default:

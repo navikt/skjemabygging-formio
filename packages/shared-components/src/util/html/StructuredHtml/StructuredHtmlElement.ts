@@ -88,7 +88,12 @@ class StructuredHtmlElement extends StructuredHtml {
     if (this.containsMarkdown && other.containsMarkdown) {
       return true;
     }
-    return this.children.every((child, index) => child.matches(other.children[index]));
+    const elementChildren = this.children.filter(StructuredHtml.isElement);
+    const othersElementChildren = other.children.filter(StructuredHtml.isElement);
+    return (
+      elementChildren.length === othersElementChildren.length &&
+      elementChildren.every((child, index) => child.matches(othersElementChildren[index]))
+    );
   }
 
   get type(): 'Element' {
@@ -96,7 +101,7 @@ class StructuredHtmlElement extends StructuredHtml {
   }
 
   get innerText(): string {
-    return (this.toHtmlElement() as HTMLElement).innerText;
+    return this.children.map((child) => child.innerText).join('');
   }
 
   get markdown(): string | undefined {

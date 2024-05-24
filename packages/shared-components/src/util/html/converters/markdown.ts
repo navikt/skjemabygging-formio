@@ -1,13 +1,13 @@
-import { HtmlAsJsonElement } from './htmlAsJson';
+import { HtmlAsJsonElement, isAcceptedTag } from './htmlAsJson';
 import { fromNode } from './htmlNode';
 import { htmlString2Json, json2HtmlString } from './htmlString';
 
-const strongMarkdown2HtmlString = (markdown: string, tag: 'B' | 'STRONG' = 'STRONG') => {
+const strongMarkdown2HtmlString = (markdown: string) => {
   const captureRegex = /^\*{2}([^*]*)\*{2}$/;
   const captures = captureRegex.exec(markdown);
   if (captures) {
     const innerText = captures[1];
-    return tag === 'B' ? `<b>${innerText}</b>` : `<strong>${innerText}</strong>`;
+    return `<strong>${innerText}</strong>`;
   }
   return markdown;
 };
@@ -60,13 +60,8 @@ const htmlNode2Markdown = (node: Element | ChildNode): string => {
     return node.textContent ?? '';
   } else if (node.nodeType === Node.ELEMENT_NODE) {
     const element = node as Element;
+
     switch (element.tagName) {
-      case 'P':
-      case 'H3':
-      case 'OL':
-      case 'UL':
-      case 'LI':
-        return Array.from(element.childNodes, htmlNode2Markdown).join('');
       case 'STRONG':
       case 'B':
         const boldText = Array.from(element.childNodes, htmlNode2Markdown).join('');
@@ -76,6 +71,10 @@ const htmlNode2Markdown = (node: Element | ChildNode): string => {
         const url = element.getAttribute('href');
         return linkText || url ? `[${linkText}](${url})` : '';
       default:
+        if (isAcceptedTag(element.tagName)) {
+          const textContent = Array.from(element.childNodes, htmlNode2Markdown).join('');
+          return `<${element.tagName.toLowerCase()}>${textContent}</${element.tagName.toLowerCase()}>`;
+        }
         return json2HtmlString(fromNode(element));
     }
   }

@@ -1,65 +1,59 @@
-import { htmlString2Json } from './htmlString';
+import { expect } from 'vitest';
+import { htmlString2Json, isHtmlString, json2HtmlString } from './htmlString';
 import { jsonElement, jsonTextElement } from './test/testUtils';
 
 describe('htmlString conversion', () => {
-  describe('from htmlString to json', () => {
-    it('generates a json representation of the html string', () => {
-      const actual = htmlString2Json('<h3>Overskrift</h3><p>Avsnitt</p><ol><li>Punkt 1</li><li>Punkt 2</li></ol>');
-      const expected = jsonElement('DIV', [
-        jsonElement('H3', [jsonTextElement('Overskrift')]),
-        jsonElement('P', [jsonTextElement('Avsnitt')]),
-        jsonElement('OL', [
-          jsonElement('LI', [jsonTextElement('Punkt 1')]),
-          jsonElement('LI', [jsonTextElement('Punkt 2')]),
-        ]),
-      ]);
-      expect(actual).toEqual(expected);
+  describe('isHtmlString', () => {
+    it('returns true if string contains an opening tag', () => {
+      expect(isHtmlString('bla bla <a>hello')).toBe(true);
+      expect(isHtmlString('bla bla <a href="www.url.no">hello')).toBe(true);
+      expect(isHtmlString('bla bla <a href="www.url.no" target="_blank" rel="noopener noreferrer">hello')).toBe(true);
     });
 
-    //TODO: test in class
-    // it('skips conversion of children within the given tags', () => {
-    //   const actual = htmlString2Json(
-    //     '<p>Avsnitt <b>med fet skrift</b></p><ol><li>Punkt <b>med fet skrift</b></li></ol>',
-    //     ['LI'],
-    //   );
-    //   const expected = jsonElement(
-    //     'DIV',
-    //     [
-    //       jsonElement('P', [jsonTextElement('Avsnitt '), jsonElement('B', [jsonTextElement('med fet skrift')])]),
-    //       jsonElement('OL', [jsonElement('LI', [jsonTextElement('Punkt **med fet skrift**')])]),
-    //     ],
-    //     true,
-    //   );
-    //   expect(actual).toMatchObject(expected);
-    // });
-    //
-    // it('converts A, STRONG, and B-tags to markdown, if they are skipped when converting to json', () => {
-    //   const actual = htmlString2Json(
-    //     "<p>Avsnitt <strong>med</strong> <a href='www.nav.no'>lenke</a> og <b>fet skrift</b></p>",
-    //     ['P'],
-    //   );
-    //   const expected = jsonElement(
-    //     'DIV',
-    //     [jsonElement('P', [jsonTextElement('Avsnitt**med**[lenke](www.nav.no)og**fetskrift**')])],
-    //     true,
-    //   );
-    //   expect(actual).toMatchObject(expected);
-    // });
-    //
-    // it('keeps non-accepted tags (like EM) as html strings', () => {
-    //   const actual = htmlString2Json(
-    //     '<p>Avsnitt <em>med kursiv skrift</em></p><ol><li>Punkt <em>med kursiv skrift</em></li></ol>',
-    //     ['LI'],
-    //   );
-    //   const expected = jsonElement(
-    //     'DIV',
-    //     [
-    //       jsonElement('P', [jsonTextElement('Avsnitt '), jsonTextElement('<em>med kursiv skrift</em>')]),
-    //       jsonElement('OL', [jsonElement('LI', [jsonTextElement('Punkt <em>med kursiv skrift</em>')])]),
-    //     ],
-    //     true,
-    //   );
-    //   expect(actual).toMatchObject(expected);
-    // });
+    it('returns false if the only tag is a <br>', () => {
+      expect(isHtmlString('bla bla <br>hello')).toBe(false);
+    });
+
+    it('returns true if it contains an allowed tag in addition to a <br>', () => {
+      expect(isHtmlString('bla <a> bla <br>hello')).toBe(true);
+    });
+
+    it('does not match when string contains a < with no closing >', () => {
+      expect(isHtmlString('bla bla <a hello')).toBe(false);
+    });
+  });
+
+  describe('htmlString <-> json', () => {
+    const htmlString =
+      '<h3>Overskrift</h3><p>Avsnitt med <b>fet skrift</b></p><ol><li><a href="www.url.no" target="_blank">Punkt 1 med lenke</a></li><li>Punkt 2</li></ol>';
+    const json = jsonElement('DIV', [
+      jsonElement('H3', [jsonTextElement('Overskrift')]),
+      jsonElement('P', [jsonTextElement('Avsnitt med '), jsonElement('B', [jsonTextElement('fet skrift')])]),
+      jsonElement('OL', [
+        jsonElement('LI', [
+          jsonElement(
+            'A',
+            [jsonTextElement('Punkt 1 med lenke')],
+            [
+              ['href', 'www.url.no'],
+              ['target', '_blank'],
+            ],
+          ),
+        ]),
+        jsonElement('LI', [jsonTextElement('Punkt 2')]),
+      ]),
+    ]);
+
+    it('generates a json representation of the html string and generates back to original htmlString', () => {
+      const actual = htmlString2Json(htmlString);
+      expect(actual).toEqual(json);
+      expect(json2HtmlString(actual)).toEqual(htmlString);
+    });
+
+    it('generates a hml string from json and generates back to the original json', () => {
+      const actual = json2HtmlString(json);
+      expect(actual).toEqual(htmlString);
+      expect(htmlString2Json(actual)).toEqual(json);
+    });
   });
 });
