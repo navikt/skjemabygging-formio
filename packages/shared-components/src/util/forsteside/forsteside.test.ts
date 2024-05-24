@@ -6,7 +6,6 @@ import {
   genererMottaksadresse,
   genererPersonalia,
   genererSkjemaTittel,
-  genererVedleggKeysSomSkalSendes,
   genererVedleggsListe,
   getVedleggsFelterSomSkalSendes,
 } from './forsteside';
@@ -107,31 +106,47 @@ describe('getVedleggsFelterSomSkalSendes', () => {
     );
     expect(actual.map((component) => component.key)).toEqual(['vedlegg1', 'vedlegg2', 'vedlegg3']);
   });
-});
 
-describe('genererVedleggSomSkalSendes', () => {
-  it('adds vedlegg marked as leggerVedNaa', () => {
-    const actual = genererVedleggKeysSomSkalSendes(formMedVedlegg, {
-      vedleggQ7: 'leggerVedNaa',
-      vedleggO9: 'leggerVedNaa',
+  describe('handles new attachment type', () => {
+    it('onlye leggerVedNaa should be included', () => {
+      const actual = getVedleggsFelterSomSkalSendes(
+        {
+          vedlegg1: {
+            key: 'ettersender',
+          },
+          vedlegg2: {
+            key: 'nei',
+          },
+          vedlegg3: {
+            key: 'leggerVedNaa',
+          },
+          vedlegg4: {
+            key: 'levertTidligere',
+          },
+          vedlegg5: {
+            key: 'harIkke',
+          },
+          vedlegg6: {
+            key: 'andre',
+          },
+          vedlegg7: {
+            key: 'nav',
+          },
+        },
+        {
+          components: [
+            genererVedleggComponent('vedlegg1', 'Label 1', 'O9', 'Vedleggstittel 1'),
+            genererVedleggComponent('vedlegg2', 'Label 2', 'O9', 'Vedleggstittel 2'),
+            genererVedleggComponent('vedlegg3', 'Label 3', 'Q7', 'Vedleggstittel 3'),
+            genererVedleggComponent('vedlegg4', 'Label 4', 'Q7', 'Vedleggstittel 4'),
+            genererVedleggComponent('vedlegg5', 'Label 5', 'Q7', 'Vedleggstittel 5'),
+            genererVedleggComponent('vedlegg6', 'Label 6', 'Q7', 'Vedleggstittel 6'),
+            genererVedleggComponent('vedlegg7', 'Label 7', 'Q7', 'Vedleggstittel 7'),
+          ],
+        } as unknown as NavFormType,
+      );
+      expect(actual.map((component) => component.key)).toEqual(['vedlegg3']);
     });
-    expect(actual).toEqual(['O9', 'Q7']);
-  });
-
-  it('does not add vedlegg marked as ettersender', () => {
-    const actual = genererVedleggKeysSomSkalSendes(formMedVedlegg, {
-      vedleggQ7: 'leggerVedNaa',
-      vedleggO9: 'ettersender',
-    });
-    expect(actual).toEqual(['Q7']);
-  });
-
-  it('does not add vedlegg marked as levertTidligere', () => {
-    const actual = genererVedleggKeysSomSkalSendes(formMedVedlegg, {
-      vedleggQ7: 'levertTidligere',
-      vedleggO9: 'leggerVedNaa',
-    });
-    expect(actual).toEqual(['O9']);
   });
 });
 
