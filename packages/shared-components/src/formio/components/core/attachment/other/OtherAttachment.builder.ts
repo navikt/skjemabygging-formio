@@ -20,10 +20,7 @@ const otherAttachmentBuilder = () => {
         leggerVedNaa: {
           enabled: true,
         },
-        ettersender: {
-          enabled: true,
-        },
-        levertTidligere: {
+        nei: {
           enabled: true,
         },
       },

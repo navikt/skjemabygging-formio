@@ -95,7 +95,7 @@ export type FormPropertiesPublishing = Pick<
 >;
 
 type ComponentDataSrc = 'values' | 'url' | 'json' | 'custom' | 'resource';
-
+export type AttachmentType = 'default' | 'other';
 export interface ComponentValue {
   value: string;
   label: string;
@@ -126,7 +126,7 @@ export interface Component {
   values?: ComponentValue[];
   attachmentValues?: AttachmentSettingValues;
   accordionValues?: AccordionSettingValues;
-  attachmentType?: string;
+  attachmentType?: AttachmentType;
   hideLabel?: boolean;
   description?: string;
   suffix?: string;
