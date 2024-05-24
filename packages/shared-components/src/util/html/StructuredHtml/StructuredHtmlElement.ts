@@ -85,11 +85,15 @@ class StructuredHtmlElement extends StructuredHtml {
   }
 
   private matchesChildren(other: StructuredHtmlElement) {
-    if (this.containsMarkdown && other.containsMarkdown) {
-      return true;
-    }
     const elementChildren = this.children.filter(StructuredHtml.isElement);
     const othersElementChildren = other.children.filter(StructuredHtml.isElement);
+
+    if (
+      (this.containsMarkdown || elementChildren.length === 0) &&
+      (other.containsMarkdown || othersElementChildren.length === 0)
+    ) {
+      return true;
+    }
     return (
       elementChildren.length === othersElementChildren.length &&
       elementChildren.every((child, index) => child.matches(othersElementChildren[index]))

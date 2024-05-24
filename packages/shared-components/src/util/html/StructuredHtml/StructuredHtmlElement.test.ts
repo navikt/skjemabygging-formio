@@ -166,5 +166,70 @@ describe('StructuredHtmlElement', () => {
         expect((withStrongNoMarkdownJsonJsonChildren[1] as HtmlAsJsonElement).tagName).toBe('STRONG');
       });
     });
+
+    it('consider markdown as text when matching structurally similar html', () => {
+      expect(withLink.matches(new StructuredHtmlElement('<ul><li>Punkt 1</li><li>Punkt 2</li></ul>'))).toBe(true);
+      expect(
+        withLink.matches(new StructuredHtmlElement('<ul><li>Punkt 1 med <p>tekst</p></li><li>Punkt 2</li></ul>')),
+      ).toBe(false);
+      expect(
+        withLink.matches(
+          new StructuredHtmlElement('<ul><li>Punkt 1 med <p>tekst</p></li><li>Punkt 2</li></ul>', {
+            skipConversionWithin: ['LI'],
+          }),
+        ),
+      ).toBe(true);
+    });
+
+    describe('tags with markdown', () => {
+      let withLinkMarkdownTag: StructuredHtmlElement;
+      let withStrongMarkdownTag: StructuredHtmlElement;
+      let withStrongNoMarkdownTag: StructuredHtmlElement;
+
+      beforeEach(() => {
+        withLinkMarkdownTag = (withLink.children[0] as StructuredHtmlElement).children[0] as StructuredHtmlElement;
+        withStrongMarkdownTag = withStrong.children[0] as StructuredHtmlElement;
+        withStrongNoMarkdownTag = withStrongNoMarkdown.children[0] as StructuredHtmlElement;
+      });
+
+      it('contains markdown if set to skip conversion within', () => {
+        expect(withLinkMarkdownTag.containsMarkdown).toBe(true);
+        expect(withStrongMarkdownTag.containsMarkdown).toBe(true);
+        expect(withStrongNoMarkdownTag.containsMarkdown).toBe(false);
+      });
+
+      it('updates links', () => {
+        expect(withLinkMarkdownTag.markdown).toBe('Punkt 1 med [lenketekst](www.url.no)');
+        withLink.update(withLinkMarkdownTag.id, 'Endret punkt med [ny lenketekst](www.ny-url.no) og ny tekst etter');
+        const updatedLinkMarkdownTag = (withLink.children[0] as StructuredHtmlElement)
+          .children[0] as StructuredHtmlElement;
+        expect(updatedLinkMarkdownTag.markdown).toBe(
+          'Endret punkt med [ny lenketekst](www.ny-url.no) og ny tekst etter',
+        );
+        expect(updatedLinkMarkdownTag.toHtmlString()).toBe(
+          '<li>Endret punkt med <a href="www.ny-url.no">ny lenketekst</a> og ny tekst etter</li>',
+        );
+      });
+
+      it('updates strong markdown', () => {
+        expect(withStrongMarkdownTag.markdown).toBe('Avsnitt med **fet skrift**.');
+        withStrong.update(withStrongMarkdownTag.id, 'Endret avsnitt med **endret fet skrift**');
+        const updatedStrongMarkdownTag = withStrong.children[0] as StructuredHtmlElement;
+        expect(updatedStrongMarkdownTag.markdown).toBe('Endret avsnitt med **endret fet skrift**');
+        expect(updatedStrongMarkdownTag.toHtmlString()).toBe(
+          '<p>Endret avsnitt med <strong>endret fet skrift</strong></p>',
+        );
+      });
+
+      it('updates strong without markdown', () => {
+        expect(withStrongNoMarkdownTag.markdown).toBeUndefined();
+        withStrongNoMarkdown.update(withStrongNoMarkdownTag.id, 'Endret avsnitt med **endret fet skrift**.');
+        const updatedStrongNoMarkdownTag = withStrongNoMarkdown.children[0] as StructuredHtmlElement;
+        expect(updatedStrongNoMarkdownTag.markdown).toBeUndefined();
+        expect(updatedStrongNoMarkdownTag.toHtmlString()).toBe(
+          '<p>Endret avsnitt med <strong>endret fet skrift</strong>.</p>',
+        );
+      });
+    });
   });
 });
