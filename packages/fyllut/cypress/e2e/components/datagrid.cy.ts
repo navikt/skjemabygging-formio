@@ -54,7 +54,7 @@ describe('Datagrid', () => {
       cy.clickSaveAndContinue();
       cy.findByRole('heading', { name: 'Oppsummering' }).shouldBeVisible();
       cy.findByText('Sjokolade').shouldBeVisible();
-      cy.findByText('12.2.2024').shouldBeVisible();
+      cy.findByText('12.02.2024').shouldBeVisible();
     });
 
     it('gets populated with values from mellomlagring', () => {

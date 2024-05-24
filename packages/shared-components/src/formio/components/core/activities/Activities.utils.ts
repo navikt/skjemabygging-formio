@@ -39,6 +39,7 @@ export const mapVedtak = (activities: SendInnAktivitet[], locale: string) => {
           periode: vedtak.periode,
           text: mapVedtakText(activity, vedtak, locale),
           vedtaksId: vedtak.vedtakId,
+          tema: activity.saksinformasjon.sakstype,
         }),
       );
 

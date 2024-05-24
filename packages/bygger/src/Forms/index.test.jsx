@@ -48,7 +48,7 @@ describe('FormsRouter', () => {
 
   it('lets you navigate to new form page from the list of all forms', async () => {
     renderApp('/forms');
-    const knapp = await screen.findByRole('button', { name: 'Lag nytt skjema' });
+    const knapp = await screen.findByRole('link', { name: 'Nytt skjema' });
     await userEvent.click(knapp);
     expect(await screen.findByRole('button', { name: 'Opprett' })).toBeInTheDocument();
   });
@@ -61,18 +61,9 @@ describe('FormsRouter', () => {
 
   it('navigates from the list to the editor', async () => {
     renderApp('/forms');
-    const link = await screen.findByRole('link', { name: 'debug skjema' });
+    const link = await screen.findByText('debug skjema');
     await userEvent.click(link);
     expect(await screen.findByRole('heading', { name: 'debug skjema' })).toBeInTheDocument();
     expect(await screen.findByLabelText('Text Area', { exact: false })).toBeInTheDocument();
-  });
-
-  it('displays all the forms with an edit link', async () => {
-    renderApp('/forms');
-    const editLinks = await screen.findAllByTestId('editLink');
-    expect(editLinks).toHaveLength(2);
-    editLinks.forEach((link) =>
-      expect(link.href).toMatch(/http:\/\/localhost(:\d+)?\/forms\/(columns|debugskjema)\/edit/),
-    );
   });
 });

@@ -1,9 +1,8 @@
 import { Alert, Checkbox, CheckboxGroup, Radio, RadioGroup, Skeleton } from '@navikt/ds-react';
 import { SendInnAktivitet, SubmissionActivity, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { TFunction } from 'i18next';
 import { ReactNode, forwardRef, useEffect, useState } from 'react';
 import { getActivities } from '../../api/sendinn/sendInnActivities';
-import { AppConfigContextType } from '../../context/config/configContext';
+import { useComponentUtils } from '../../context/component/componentUtilsContext';
 import { mapToSubmissionActivity } from '../../formio/components/core/activities/Activities.utils';
 
 type Props = {
@@ -15,11 +14,8 @@ type Props = {
   className?: string;
   error?: string;
   defaultActivity?: SubmissionActivity;
-  appConfig: AppConfigContextType;
-  t: TFunction;
   dataType: ActivityDataType;
   activities?: SendInnAktivitet[];
-  locale: string;
   shouldAutoSelectSingleActivity?: boolean;
 };
 
@@ -31,10 +27,11 @@ const NavActivities = forwardRef<HTMLFieldSetElement, Props>((props: Props, ref)
   const [loading, setLoading] = useState<boolean>(true);
   const [activitySelections, setActivitySelections] = useState<SubmissionActivity[]>([]);
   const [showError, setShowError] = useState<boolean>(false);
+  const { translate, locale, appConfig } = useComponentUtils();
 
-  const submissionMethod = props.appConfig?.submissionMethod;
-  const isLoggedIn = props.appConfig?.config?.isLoggedIn;
-  const app = props.appConfig?.app;
+  const submissionMethod = appConfig?.submissionMethod;
+  const isLoggedIn = appConfig?.config?.isLoggedIn;
+  const app = appConfig?.app;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -43,13 +40,13 @@ const NavActivities = forwardRef<HTMLFieldSetElement, Props>((props: Props, ref)
           setLoading(true);
           let result: SendInnAktivitet[] | undefined = [];
           if (props.dataType === 'vedtak') {
-            result = await getActivities(props.appConfig, true);
+            result = await getActivities(appConfig, true);
           } else {
-            result = await getActivities(props.appConfig, false);
+            result = await getActivities(appConfig, false);
           }
 
           if (result) {
-            const submissionActivities = mapToSubmissionActivity(result, props.dataType, props.locale);
+            const submissionActivities = mapToSubmissionActivity(result, props.dataType, locale);
             autoSelectSingleActivity(submissionActivities);
             setActivitySelections(submissionActivities);
           }
@@ -68,7 +65,7 @@ const NavActivities = forwardRef<HTMLFieldSetElement, Props>((props: Props, ref)
 
   useEffect(() => {
     if (props.activities) {
-      const submissionActivities = mapToSubmissionActivity(props.activities, props.dataType, props.locale);
+      const submissionActivities = mapToSubmissionActivity(props.activities, props.dataType, locale);
       autoSelectSingleActivity(submissionActivities);
       setActivitySelections(submissionActivities);
     }
@@ -147,7 +144,7 @@ const NavActivities = forwardRef<HTMLFieldSetElement, Props>((props: Props, ref)
   };
 
   const renderNoActivitiesAlert = () => {
-    return <Alert variant="info">{`${props.t(TEXTS.statiske.activities.errorContinue)}`}</Alert>;
+    return <Alert variant="info">{`${translate(TEXTS.statiske.activities.errorContinue)}`}</Alert>;
   };
 
   // For the driving list if there is only one activity, it it selected by default and not shown (the default activity is not shown either)

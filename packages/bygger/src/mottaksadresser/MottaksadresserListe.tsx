@@ -71,10 +71,10 @@ const MottaksadresserListe = () => {
         ))}
       </Column>
       <Column>
-        <Button onClick={onPublish} loading={publishing} className={styles.publishButton}>
+        <Button onClick={onPublish} loading={publishing} className={styles.publishButton} size="small">
           Publiser mottaksadresser
         </Button>
-        <Button variant="secondary" onClick={() => editMottaksadresse('new')} type="button">
+        <Button variant="secondary" onClick={() => editMottaksadresse('new')} type="button" size="small">
           Legg til ny
         </Button>
         <UserFeedback />

@@ -1,5 +1,6 @@
 import { dateUtils, DrivingListSubmission, DrivingListValues, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import NavDrivingList from '../../../../components/drivinglist/NavDrivingList';
+import { ComponentUtilsProvider } from '../../../../context/component/componentUtilsContext';
 import BaseComponent from '../../base/BaseComponent';
 import drivingListBuilder from './DrivingList.builder';
 import drivingListForm from './DrivingList.form';
@@ -111,18 +112,17 @@ class DrivingList extends BaseComponent {
   }
 
   renderReact(element) {
+    // TODO: Delete DrivingListProvider and use prop drilling instead
     element.render(
-      <DrivingListProvider
-        updateValues={this.updateValues.bind(this)}
-        values={this.getValue()}
-        appConfig={this.getAppConfig()}
-        t={this.t.bind(this)}
-        locale={this.getLocale()}
-        getComponentError={this.getComponentError.bind(this)}
-        addRef={this.addRef.bind(this)}
-      >
-        <NavDrivingList />
-      </DrivingListProvider>,
+      <ComponentUtilsProvider component={this}>
+        <DrivingListProvider
+          updateValues={this.updateValues.bind(this)}
+          values={this.getValue()}
+          getComponentError={this.getComponentError.bind(this)}
+        >
+          <NavDrivingList />
+        </DrivingListProvider>
+      </ComponentUtilsProvider>,
     );
   }
 }

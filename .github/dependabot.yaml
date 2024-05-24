@@ -31,6 +31,11 @@ updates:
           - '@typescript-eslint/*'
         update-types:
           - 'major'
+      testing-library:
+        patterns: 
+          - '@testing-library/*'
+        update-types:
+          - 'major'
     ignore:
       - dependency-name: 'formiojs'
 

@@ -4,6 +4,7 @@ import configUtils from './config';
 import type { ConfigType } from './config/types';
 import { Enhet, Enhetstype, supportedEnhetstyper } from './enhet';
 import {
+  AttachmentType,
   Component,
   ComponentValue,
   DeclarationType,
@@ -116,6 +117,7 @@ export type {
   AktivitetVedtaksinformasjon,
   AttachmentSettingValue,
   AttachmentSettingValues,
+  AttachmentType,
   AttachmentValue,
   Component,
   ComponentError,

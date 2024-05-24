@@ -7,6 +7,7 @@ import ErrorPage from './components/error/page/ErrorPage';
 import InnerHtml from './components/inner-html/InnerHtml';
 import LanguageSelector from './components/language-selector/LanguageSelector';
 import LoadingComponent from './components/loading/LoadingComponent';
+import SkeletonList from './components/loading/SkeletonList';
 import Modal from './components/modal/Modal';
 import ConfirmationModal from './components/modal/confirmation/ConfirmationModal';
 import useModal from './components/modal/useModal';
@@ -50,6 +51,7 @@ export {
   Modal,
   NavForm,
   NavFormioJs,
+  SkeletonList,
   StructuredHtml,
   StructuredHtmlElement,
   StructuredHtmlText,

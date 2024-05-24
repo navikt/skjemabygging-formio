@@ -1,4 +1,5 @@
 import { makeStyles } from '@navikt/skjemadigitalisering-shared-components';
+import classNames from 'classnames';
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 
@@ -12,40 +13,35 @@ interface Props {
 const useStyles = makeStyles({
   navBarLink: {
     display: 'flex',
-    alignSelf: 'center',
     alignItems: 'center',
-    padding: '5px 15px 0 15px',
+    padding: '5px 15px',
     flexDirection: 'column',
-    color: '#a1a1a1',
+    color: 'var(--a-gray-50)',
     textDecoration: 'none',
-    '@media (max-width: 1040px)': {
+    lineHeight: '20px',
+    '@media (max-width: 960px)': {
       height: '100%',
       flexDirection: 'row',
-      padding: '0 15px 0 15px',
+    },
+    '&.active': {
+      borderBottom: '5px solid var(--a-border-action)',
+      paddingBottom: '0',
     },
   },
   navBarLinkNoIcon: {
-    height: '100%',
-    display: 'flex',
     flexDirection: 'row',
-    alignItems: 'center',
-    padding: '0 15px 0 15px',
-    color: '#a1a1a1',
-    textDecoration: 'none',
   },
 });
 
 export const MenuLink = ({ children, to, dataKey, noIconStyling }: Props) => {
   const styles = useStyles();
-  const navLinkActiveStyle = { color: '#ffffff', borderBottom: '3px solid #0074df' };
 
   return (
     <>
       <NavLink
-        className={`${noIconStyling ? styles.navBarLinkNoIcon : styles.navBarLink}`}
+        className={classNames(styles.navBarLink, { [styles.navBarLinkNoIcon]: noIconStyling })}
         to={to}
         data-key={dataKey}
-        style={({ isActive }) => (isActive ? navLinkActiveStyle : {})}
       >
         {children}
       </NavLink>

@@ -41,6 +41,7 @@ interface ReactComponentType {
   };
   visible: any | boolean;
   hideLabel: boolean;
+  dirty: boolean;
   error?: {
     message: string;
   } | null;
@@ -57,13 +58,14 @@ interface ReactComponentType {
   loadRefs(element: any, refs: any): any;
   getRef(name: any): any;
   setRef(name: any, ref: any): void;
-  checkValidity(data: any, dirty: any | boolean, rowData: any): boolean;
+  checkValidity(data: any, dirty: any | boolean, row: any, silentCheck: boolean): boolean;
   getValue(): any;
   hasChanged(before: any, after: any): boolean;
   clearOnHide(): void;
   deleteValue(): void;
   hasValue(): boolean;
   setComponentValidity(messages, dirty, silentCheck): boolean;
+  shouldSkipValidation(data, dirty, row): boolean;
   addMessages(messages): void;
   addFocusBlurEvents(element): void;
   labelIsHidden(): boolean;
