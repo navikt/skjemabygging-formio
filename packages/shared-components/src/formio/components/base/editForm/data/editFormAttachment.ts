@@ -1,7 +1,7 @@
-import { AttachmentType, Component, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { AttachmentSettingValues, AttachmentType, Component, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 
 interface EditFormAttachmentComponent {
-  key: string;
+  key: keyof AttachmentSettingValues;
   label: string;
   additionalDocumentation: boolean;
   showDeadline: boolean;
