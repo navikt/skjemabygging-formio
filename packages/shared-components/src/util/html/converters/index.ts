@@ -4,6 +4,7 @@ import { htmlString2Json, isHtmlString, sanitizeHtmlString } from './htmlString'
 import { htmlNode2Markdown, markdown2Json } from './markdown';
 
 const htmlConverter = {
+  defaultLeafs,
   sanitizeHtmlString,
   htmlNode2Markdown,
   toNode,
@@ -13,6 +14,5 @@ const htmlConverter = {
   markdown2Json,
 };
 
-export { defaultLeafs };
 export type { HtmlAsJsonElement, HtmlAsJsonTextElement };
 export default htmlConverter;

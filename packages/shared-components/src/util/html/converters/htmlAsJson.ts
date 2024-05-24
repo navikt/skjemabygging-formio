@@ -1,4 +1,11 @@
-const defaultLeafs: AcceptedTag[] = ['P', 'H3', 'LI'];
+/**
+ * The array defaultLeafs is used to define tags which we expect to only contain children that are either
+ * text or html tags that supports markdown conversion (like <a> and <strong>)
+ *
+ * The arrays acceptedTags and defaultLeafs may need to be changed if we redefine what tags are allowed in the ckeditor,
+ * otherwise tags may appear as plain text where we are using these converters
+ * */
+const defaultLeafs: AcceptedTag[] = ['H3', 'P', 'LI'];
 const acceptedTags = ['P', 'H3', 'LI', 'OL', 'UL', 'A', 'B', 'STRONG'] as const;
 type AcceptedTag = (typeof acceptedTags)[number];
 
