@@ -44,7 +44,7 @@ const useUnsavedChangesModal = () => {
         texts={{
           title: 'Du har ulagrede endringer i skjemaet',
           body: 'Vil du forlate siden uten å lagre?',
-          confirm: 'Slett endringer',
+          confirm: 'Forkast endringer',
           cancel: 'Avbryt',
         }}
       />
