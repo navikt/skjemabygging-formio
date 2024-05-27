@@ -22,8 +22,9 @@ const sanitizeHtmlString = (htmlString: string, options?: SanitizeOptions): stri
 
 const htmlString2Json = (htmlString: string): HtmlAsJsonElement => {
   const sanitizedHtmlString = sanitizeHtmlString(htmlString);
+  const sanitizedWithNoNewlines = sanitizedHtmlString.replace(/[\n\r]/g, '');
   const div = document.createElement('div');
-  div.innerHTML = sanitizedHtmlString;
+  div.innerHTML = sanitizedWithNoNewlines;
   return JSON.parse(JSON.stringify(fromElement(div)));
 };
 
