@@ -94,10 +94,7 @@ const FormsList = ({ forms }: FormsListPageProps) => {
             return (
               <Table.Row key={form.id} onClick={() => navigate(form.path)} className={styles.clickableRow}>
                 <Table.DataCell className={styles.idColumn}>
-                  <Link to={form.path} className="sr-only">
-                    {form.number}
-                  </Link>
-                  <span aria-hidden={true}>{form.number}</span>
+                  <Link to={form.path}>{form.number}</Link>
                 </Table.DataCell>
                 <Table.DataCell className={styles.titleColumn}>
                   {form.title}
