@@ -1,5 +1,4 @@
 import { Component, FormPropertiesType, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
-import { TFunction } from 'i18next';
 import Select from 'react-select/base';
 import { AppConfigContextType } from '../../../context/config/configContext';
 interface IReactComponent {
