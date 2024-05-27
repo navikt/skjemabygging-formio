@@ -103,9 +103,12 @@ class PublisherService {
         const errs: Record<string, Error> = {};
         results.forEach((result, index) => {
           if (result.status === 'rejected') {
+            const err = result.reason;
+            const { message, stack, ...errDetails } = err;
+            const logMeta = { reason: message, stack, ...errDetails };
             const form = forms[index];
-            logger.error(`Failed to update props for ${form.path}`, result.reason);
-            errs[form.path] = result.reason;
+            logger.error(`Failed to update props for ${form.path}`, logMeta);
+            errs[form.path] = err;
           }
         });
         const failedUpdates = Object.keys(errs);
