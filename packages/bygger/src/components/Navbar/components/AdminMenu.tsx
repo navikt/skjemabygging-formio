@@ -1,6 +1,5 @@
 import { System } from '@navikt/ds-icons';
 import { Dropdown, InternalHeader } from '@navikt/ds-react';
-import { Link } from 'react-router-dom';
 import useUnsavedChangesModal from '../../../hooks/useUnsavedChangesModal';
 import { AdminMenuLink } from './AdminMenuLink';
 
@@ -29,7 +28,9 @@ const AdminMenu = ({ showImport = false }) => {
               </AdminMenuLink>
             </Dropdown.Menu.GroupedList.Item>
             <Dropdown.Menu.GroupedList.Item>
-              <Link to="/bulk-publisering">Bulkpublisering</Link>
+              <AdminMenuLink showUnsavedChangesModal={showUnsavedChangesModal} to="/bulk-publisering">
+                Bulkpublisering
+              </AdminMenuLink>
             </Dropdown.Menu.GroupedList.Item>
             <Dropdown.Menu.GroupedList.Item>
               <AdminMenuLink showUnsavedChangesModal={showUnsavedChangesModal} to="/mottaksadresser">
