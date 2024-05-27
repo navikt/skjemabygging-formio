@@ -13,7 +13,7 @@ const publishForms = async (req: Request, res: Response, next: NextFunction) => 
     return;
   }
 
-  const logMeta = { formPaths, userName };
+  const logMeta = { formPaths, numberOfForms: formPaths.length, userName };
   logger.info('Attempting to publish forms', logMeta);
   try {
     const forms: any = await formioService.getForms(formPaths);
