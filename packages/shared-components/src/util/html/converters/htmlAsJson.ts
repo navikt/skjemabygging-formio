@@ -5,7 +5,7 @@
  * The arrays acceptedTags and defaultLeafs may need to be changed if we redefine what tags are allowed in the ckeditor,
  * otherwise tags may appear as plain text where we are using these converters
  * */
-const defaultLeafs: AcceptedTag[] = ['H3', 'P', 'LI'];
+const defaultLeaves: AcceptedTag[] = ['H3', 'P', 'LI'];
 const acceptedTags = ['P', 'H3', 'LI', 'OL', 'UL', 'A', 'B', 'STRONG'] as const;
 type AcceptedTag = (typeof acceptedTags)[number];
 
@@ -30,5 +30,5 @@ interface HtmlAsJsonElement {
 const getChild = (htmlAsJson: HtmlAsJsonElement | HtmlAsJsonTextElement | undefined, index: number) =>
   htmlAsJson?.type === 'Element' && htmlAsJson.children.length > index ? htmlAsJson.children[index] : undefined;
 
-export { acceptedTags, defaultLeafs, getChild, isAcceptedTag };
+export { acceptedTags, defaultLeaves, getChild, isAcceptedTag };
 export type { AcceptedTag, HtmlAsJsonElement, HtmlAsJsonTextElement };

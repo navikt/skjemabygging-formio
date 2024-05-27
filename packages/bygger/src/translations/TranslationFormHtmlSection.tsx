@@ -40,7 +40,7 @@ const TranslationFormHtmlSection = ({ text, storedTranslation, updateTranslation
 
   const startNewTranslation = () => {
     translationObject.current = new StructuredHtmlElement(text, {
-      skipConversionWithin: htmlConverter.defaultLeafs,
+      skipConversionWithin: htmlConverter.defaultLeaves,
       withEmptyTextContent: true,
     });
     setTranslationReady(true);
@@ -49,7 +49,7 @@ const TranslationFormHtmlSection = ({ text, storedTranslation, updateTranslation
   const html = useMemo(
     () =>
       htmlConverter.isHtmlString(text)
-        ? new StructuredHtmlElement(text, { skipConversionWithin: htmlConverter.defaultLeafs })
+        ? new StructuredHtmlElement(text, { skipConversionWithin: htmlConverter.defaultLeaves })
         : undefined,
     [text],
   );
@@ -60,13 +60,13 @@ const TranslationFormHtmlSection = ({ text, storedTranslation, updateTranslation
         startNewTranslation();
       } else if (
         !html?.matches(
-          new StructuredHtmlElement(storedTranslation, { skipConversionWithin: htmlConverter.defaultLeafs }),
+          new StructuredHtmlElement(storedTranslation, { skipConversionWithin: htmlConverter.defaultLeaves }),
         )
       ) {
         setIncompatibleTranslation(storedTranslation);
       } else {
         translationObject.current = new StructuredHtmlElement(storedTranslation, {
-          skipConversionWithin: htmlConverter.defaultLeafs,
+          skipConversionWithin: htmlConverter.defaultLeaves,
         });
         setTranslationReady(true);
       }

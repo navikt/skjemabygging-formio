@@ -304,7 +304,7 @@ const getTextsAndTranslationsForForm = (form: NavFormType, translations: FormioT
           return acc;
         }
         const translationAsJson = new StructuredHtmlElement(translationValue, {
-          skipConversionWithin: htmlConverter.defaultLeafs,
+          skipConversionWithin: htmlConverter.defaultLeaves,
         }).toJson(true);
         return {
           ...acc,
@@ -312,7 +312,7 @@ const getTextsAndTranslationsForForm = (form: NavFormType, translations: FormioT
         };
       }, {});
       const htmlText = new StructuredHtmlElement(textComponent.text, {
-        skipConversionWithin: htmlConverter.defaultLeafs,
+        skipConversionWithin: htmlConverter.defaultLeaves,
       }).toJson(true);
       return createTranslationsHtmlRows(htmlText, htmlTranslations, `${++textIndex}`.padStart(3, '0'));
     } else {

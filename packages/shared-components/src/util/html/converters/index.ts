@@ -1,10 +1,10 @@
-import { HtmlAsJsonElement, HtmlAsJsonTextElement, defaultLeafs, getChild } from './htmlAsJson';
+import { HtmlAsJsonElement, HtmlAsJsonTextElement, defaultLeaves, getChild } from './htmlAsJson';
 import { toNode } from './htmlNode';
 import { htmlString2Json, isHtmlString, sanitizeHtmlString } from './htmlString';
 import { htmlNode2Markdown, markdown2Json } from './markdown';
 
 const htmlConverter = {
-  defaultLeafs,
+  defaultLeaves,
   sanitizeHtmlString,
   htmlNode2Markdown,
   toNode,
