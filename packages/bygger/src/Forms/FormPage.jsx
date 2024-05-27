@@ -43,6 +43,8 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish, onUnpu
 
   const saveForm = async (form) => {
     const savedForm = await onSave(form);
+    sessionStorage.removeItem(formPath);
+
     if (!savedForm.error) {
       dispatch({ type: 'form-saved', form: savedForm });
       return savedForm;

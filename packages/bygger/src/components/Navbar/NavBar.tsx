@@ -3,6 +3,7 @@ import { InternalHeader } from '@navikt/ds-react';
 import { useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/auth-context';
+import useUnsavedChangesModal from '../../hooks/useUnsavedChangesModal';
 import AdminMenu from './components/AdminMenu';
 import { FormMenu } from './components/FormMenu';
 import { ListMenu } from './components/ListMenu';
@@ -23,10 +24,17 @@ export const NavBar = ({ formPath, formMenu, formListMenu, translationMenu }: Na
   const { config } = useAppConfig();
   const styles = useNavBarStyles();
   const showAdmin = userData?.isAdmin;
+  const { showUnsavedChangesModal, unsavedChangesModalContent } = useUnsavedChangesModal();
+
   return (
     <section>
       <InternalHeader className={config?.isDevelopment ? styles.navBarLocal : styles.navBar}>
-        <Link className={styles.formsLink} to="/forms" aria-label="Gå til skjemaliste">
+        <Link
+          className={styles.formsLink}
+          to={'/forms'}
+          aria-label="Gå til skjemaliste"
+          onClick={(e) => showUnsavedChangesModal(e, { redirectTo: '/forms' })}
+        >
           <HomeFilled fontSize="1.5rem" role="presentation" />
         </Link>
         <div className={styles.navBarLinks}>
@@ -41,6 +49,7 @@ export const NavBar = ({ formPath, formMenu, formListMenu, translationMenu }: Na
         </div>
       </InternalHeader>
       {config?.isDevelopment && <div className={styles.indicateLocalBorder} />}
+      {unsavedChangesModalContent}
     </section>
   );
 };
