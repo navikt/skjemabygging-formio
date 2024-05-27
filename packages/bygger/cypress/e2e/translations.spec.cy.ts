@@ -18,12 +18,12 @@ describe('Translations', () => {
 
         cy.visit('/forms/tst123456');
         cy.wait('@getForm');
-        cy.wait('@getTranslations', { timeout: 10000 });
+        cy.wait('@getTranslations');
       });
 
       it('shows translated texts for chosen language', () => {
         cy.findByRole('link', { name: 'Språk' }).click();
-        cy.findByDisplayValue('Annan dokumentasjon', { timeout: 10000 }).should('exist');
+        cy.findByDisplayValue('Annan dokumentasjon').should('exist');
         cy.findByRole('button', { name: 'Norsk nynorsk' }).click();
         cy.findByRole('link', { name: 'Engelsk' }).click();
         cy.findByDisplayValue('Other documentation').should('exist');
@@ -38,7 +38,7 @@ describe('Translations', () => {
 
         cy.visit('/forms/tst123456');
         cy.wait('@getForm');
-        cy.wait('@getTranslationsFailure', { timeout: 10000 });
+        cy.wait('@getTranslationsFailure');
       });
 
       it('shows error message', () => {
@@ -138,7 +138,7 @@ describe('Translations', () => {
       cy.visit('/forms/tekstblokk123');
       cy.wait('@getForm');
       cy.findByRole('link', { name: 'Språk' }).click();
-      cy.wait('@getTranslations', { timeout: 20000 });
+      cy.wait('@getTranslations');
     });
 
     it('lets you edit old versions of translations and start new translation', () => {
