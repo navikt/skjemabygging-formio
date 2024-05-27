@@ -30,7 +30,9 @@ const markdown2Json = (markdown: string): HtmlAsJsonElement => {
   const markdownStrongRegex = /\*{2}[^*]+\*{2}/gm;
 
   if (markdown.length > 10000) {
-    throw Error('Text block is too large to generate markdown. Consider dividing it into smaller parts');
+    throw Error(
+      'Tekstblokken er for stor til å generere markdown. Prøv å dele opp den opprinnelige teksten i flere avsnitt.',
+    );
   }
 
   let htmlString = markdown;

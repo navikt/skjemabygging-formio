@@ -8,6 +8,7 @@ import {
   makeStyles,
 } from '@navikt/skjemadigitalisering-shared-components';
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { useFeedbackEmit } from '../context/notifications/FeedbackContext';
 import TranslationFormHtmlInput from './TranslationFormHtmlInput';
 
 interface Props {
@@ -34,6 +35,7 @@ const useStyles = makeStyles({
 });
 
 const TranslationFormHtmlSection = ({ text, storedTranslation, updateTranslation, onSelectLegacy }: Props) => {
+  const feedbackEmit = useFeedbackEmit();
   const translationObject = useRef<StructuredHtmlElement>();
   const [translationReady, setTranslationReady] = useState(false);
   const [incompatibleTranslation, setIncompatibleTranslation] = useState<string>();
@@ -167,9 +169,13 @@ const TranslationFormHtmlSection = ({ text, storedTranslation, updateTranslation
                 updateTranslation={({ id, value }) => {
                   if (translationObject.current) {
                     if (id) {
-                      translationObject.current.update(id, value);
+                      try {
+                        translationObject.current.update(id, value);
+                      } catch (error: any) {
+                        feedbackEmit.error(error?.message ?? `Det oppsto en feil: ${error}`);
+                      }
                     } else {
-                      throw Error("Can't update translation without an id");
+                      feedbackEmit.error('Det oppsto en feil. Oversettelsen kan ikke oppdateres fordi den mangler id.');
                     }
                     const htmlString = translationObject.current.toHtmlString();
                     updateTranslation(htmlString);
