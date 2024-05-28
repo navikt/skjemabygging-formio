@@ -1,4 +1,5 @@
 import { Checkbox as AkselCheckbox, CheckboxGroup } from '@navikt/ds-react';
+import InnerHtml from '../../../../components/inner-html/InnerHtml';
 import BaseComponent from '../../base/BaseComponent';
 import checkboxBuilder from './Checkbox.builder';
 import checkboxForm from './Checkbox.form';
@@ -43,11 +44,11 @@ class Checkbox extends BaseComponent {
         value={this.getCheckboxGroupValue()}
         onChange={(value) => this.changeHandler(value, { modified: true })}
         ref={(ref) => this.setReactInstance(ref)}
-        description={this.getDescription()}
         className={this.getClassName()}
         readOnly={this.getReadOnly()}
         error={this.getError()}
       >
+        <InnerHtml content={this.t(this.component?.description)} />
         <AkselCheckbox value={this.component?.key}>{this.getLabel()}</AkselCheckbox>
       </CheckboxGroup>,
     );
