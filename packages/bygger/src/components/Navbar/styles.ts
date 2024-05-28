@@ -1,11 +1,5 @@
 import { makeStyles } from '@navikt/skjemadigitalisering-shared-components';
 
-export const useDropdownStyles = makeStyles({
-  dropdownMenu: {
-    top: '56px !important',
-  },
-});
-
 export const useNavBarStyles = makeStyles({
   navBar: {
     height: '56px',

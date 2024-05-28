@@ -57,8 +57,10 @@ class NavFormBuilder extends Component {
     return appConfig?.logger;
   }
 
-  handleChange = () => {
-    this.props.onChange(cloneDeep(this.builder.instance.form));
+  handleChange = (data) => {
+    if (data.type === 'form') {
+      this.props.onChange(cloneDeep(this.builder.instance.form));
+    }
   };
 
   traceEvent = (event, ...args) => {
