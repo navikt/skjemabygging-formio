@@ -187,7 +187,10 @@ export interface Component {
   latestAllowedDate?: string;
   getValue?: () => string;
   rerender?: () => void;
+  inputType?: InputMode;
 }
+
+export type InputMode = 'none' | 'text' | 'tel' | 'url' | 'email' | 'numeric' | 'decimal' | 'search';
 
 export interface ComponentProperties {
   vedleggstittel?: string;

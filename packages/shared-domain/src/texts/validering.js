@@ -4,8 +4,6 @@ export const validering = {
   invalid_email: '{{field}} må være en gyldig epost-adresse.',
   invalid_regex: '{{field}} passer ikke til uttrykket {{regex}}.',
   mask: 'Dette er ikke et gyldig {{field}}.',
-  max: '{{field}} kan ikke være større enn {{max}}.',
-  min: '{{field}} kan ikke være mindre enn {{min}}.',
   maxLength: '{{field}} kan ikke være mer enn {{length}} tegn.',
   minLength: '{{field}} kan ikke være mindre enn {{length}} tegn.',
   pattern: '{{field}} stemmer ikke med {{pattern}}',
@@ -38,4 +36,10 @@ export const validering = {
   // driving list
   validParkingExpenses: 'Parkeringsutgiftene for {{dato}} må være et gyldig beløp',
   parkingExpensesAboveHundred: 'Maksimalt 100 kroner pr. dag',
+
+  // Number
+  max: '{{field}} kan ikke være større enn {{max}}.',
+  min: '{{field}} kan ikke være mindre enn {{min}}.',
+  integer: '{{field}} er ikke et gyldig heltall.',
+  decimal: '{{field}} er ikke et gyldig desimaltall.',
 };

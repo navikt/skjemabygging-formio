@@ -1,9 +1,8 @@
 import { TextField as NavTextField } from '@navikt/ds-react';
+import { InputMode } from '@navikt/skjemadigitalisering-shared-domain';
 import BaseComponent from '../../base/BaseComponent';
 import textFieldBuilder from './TextField.builder';
 import textFieldForm from './TextField.form';
-
-export type InputMode = 'none' | 'text' | 'tel' | 'url' | 'email' | 'numeric' | 'decimal' | 'search';
 
 class TextField extends BaseComponent {
   static schema() {
@@ -13,7 +12,6 @@ class TextField extends BaseComponent {
       key: 'tekstfelt',
       spellcheck: true,
       inputType: 'text',
-      inputFormat: 'plain',
     });
   }
 
@@ -26,6 +24,8 @@ class TextField extends BaseComponent {
   }
 
   getValue() {
+    if (this.getLabel({ labelTextOnly: true }) === 'Minimum')
+      console.log('parent getValue', this.getLabel({ labelTextOnly: true }));
     return super.getValue() ?? '';
   }
 
@@ -33,13 +33,19 @@ class TextField extends BaseComponent {
     return 'text';
   }
 
+  handleChange(value: string): any {
+    super.updateValue(value, { modified: true });
+  }
+
   renderReact(element) {
+    if (this.getLabel({ labelTextOnly: true }) === 'Minimum')
+      console.log('parent render', this.getLabel({ labelTextOnly: true }));
     element.render(
       <NavTextField
         id={this.getId()}
         defaultValue={this.getValue()}
         ref={(ref) => this.setReactInstance(ref)}
-        onChange={(event) => this.updateValue(event.currentTarget.value, { modified: true })}
+        onChange={(event) => this.handleChange(event.currentTarget.value)}
         label={this.getLabel()}
         hideLabel={this.getHideLabel()}
         description={this.getDescription()}
