@@ -1,6 +1,6 @@
 import { LoadingComponent, useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
 import { useCallback, useEffect, useReducer } from 'react';
-import { Navigate, Route, Routes, useParams } from 'react-router-dom';
+import { Navigate, Route, Routes, useBeforeUnload, useParams } from 'react-router-dom';
 import I18nStateProvider from '../context/i18n/I18nContext';
 import { EditFormPage } from './EditFormPage';
 import { FormSettingsPage } from './FormSettingsPage';
@@ -15,6 +15,12 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish, onUnpu
   const loadTranslationsForFormPath = useCallback(
     () => loadTranslations(state.form?.path),
     [loadTranslations, state.form?.path],
+  );
+
+  useBeforeUnload(
+    useCallback(() => {
+      sessionStorage.removeItem(formPath);
+    }, [formPath]),
   );
 
   useEffect(() => {
