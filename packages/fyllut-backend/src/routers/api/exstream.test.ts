@@ -38,8 +38,7 @@ describe('exstream', () => {
     expect(next).toHaveBeenCalledTimes(1);
     const error = next.mock.calls[0][0];
     expect(error?.message).toBe('Generering av PDF feilet');
-    expect(error?.html_title).toBe(formTitle);
-    expect(error?.html_paragraphs).toHaveLength(1);
+    expect(error?.render_html).toBe(true);
     expect(res.send).not.toHaveBeenCalled();
     skjemabyggingproxyScope.done();
   });
