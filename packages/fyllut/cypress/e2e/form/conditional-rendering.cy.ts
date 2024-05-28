@@ -148,7 +148,7 @@ describe('Conditional rendering', () => {
     });
   });
 
-  describe.only('conditionally show a component, but the component has hidden=true', () => {
+  describe('conditionally show a component, but the component has hidden=true', () => {
     beforeEach(() => {
       cy.defaultIntercepts();
     });
