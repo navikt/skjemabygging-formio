@@ -44,7 +44,7 @@ class Number extends TextField {
   }
 
   validateNumber() {
-    if (this.getValue() === undefined) {
+    if (this.getValue() === '' || this.getValue() === undefined) {
       return;
     }
 
