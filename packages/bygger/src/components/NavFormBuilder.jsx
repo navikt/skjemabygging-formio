@@ -58,10 +58,9 @@ class NavFormBuilder extends Component {
   }
 
   handleChange = (data) => {
-    if (data.path) {
-      sessionStorage.setItem(data.path, JSON.stringify({ changed: true }));
+    if (data.type === 'form') {
+      this.props.onChange(cloneDeep(this.builder.instance.form));
     }
-    this.props.onChange(cloneDeep(this.builder.instance.form));
   };
 
   traceEvent = (event, ...args) => {

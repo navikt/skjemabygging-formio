@@ -17,6 +17,7 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish, onUnpu
     [loadTranslations, state.form?.path],
   );
 
+  // Clear session storage on refresh
   useBeforeUnload(
     useCallback(() => {
       sessionStorage.removeItem(formPath);
@@ -44,6 +45,7 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish, onUnpu
   }, [loadForm, formPath, featureToggles.enableDiff]);
 
   const onChange = (changedForm) => {
+    sessionStorage.setItem(changedForm.path, JSON.stringify({ changed: true }));
     dispatch({ type: 'form-changed', form: changedForm });
   };
 
