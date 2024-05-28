@@ -95,14 +95,11 @@ class PublisherService {
           };
         }),
       ).then((results) => {
-        results.forEach((result) => {
-          if (result.status === 'fulfilled') {
-            publications.push(result.value);
-          }
-        });
         const errs: Record<string, Error> = {};
         results.forEach((result, index) => {
-          if (result.status === 'rejected') {
+          if (result.status === 'fulfilled') {
+            publications.push(result.value);
+          } else {
             const err = result.reason;
             const { message, stack, ...errDetails } = err;
             const logMeta = { reason: message, stack, ...errDetails };
@@ -135,7 +132,10 @@ class PublisherService {
         ).then((results) => {
           results.forEach((result, index) => {
             if (result.status === 'rejected') {
-              logger.warn(`Failed to rollback props for ${publications[index].originalForm.path}`);
+              const err = result.reason;
+              const { message, stack, ...errDetails } = err;
+              const logMeta = { reason: message, stack, ...errDetails };
+              logger.warn(`Failed to rollback props for ${publications[index].originalForm.path}`, logMeta);
             }
           });
         });
