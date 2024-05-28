@@ -28,11 +28,10 @@ function synchronousResponseToError(errorMessage, body, status, url, functional 
   return error;
 }
 
-function htmlResponseError(message, title) {
+function htmlResponseError(message) {
   const error = new Error(message);
   error.functional = false;
-  error.html_title = title;
-  error.html_paragraphs = [message];
+  error.render_html = true;
   error.correlation_id = correlator.getId();
   return error;
 }

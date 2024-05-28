@@ -30,10 +30,8 @@ const parseBody = (
 
 const exstream = {
   post: async (req: Request, res: Response, next: NextFunction) => {
-    let formTitle: string | undefined = undefined;
     try {
       const { form, submission, submissionMethod, translations, language } = parseBody(req);
-      formTitle = form.title;
       const pdf = await createPdf(
         req.headers.AzureAccessToken as string,
         form,
@@ -46,7 +44,7 @@ const exstream = {
       res.send(base64Decode(pdf.data));
     } catch (e) {
       logErrorWithStacktrace(e as Error);
-      const createPdfError = htmlResponseError('Generering av PDF feilet', formTitle || 'Ukjent skjema');
+      const createPdfError = htmlResponseError('Generering av PDF feilet');
       next(createPdfError);
     }
   },

@@ -11,16 +11,6 @@ const createJson = (err) => {
   };
 };
 
-const createHtml = (err) => {
-  const paragraphs = err.html_paragraphs;
-  const title = err.html_title;
-  return `
-    <html lang="nb">
-    <head><title>${title}</title></head>
-    <body>${paragraphs.map((pContent) => `<p>${pContent}</p>`).join('')}</body>
-    </html>`;
-};
-
 const globalErrorHandler = (err, req, res, _next) => {
   if (!err.correlation_id) {
     err.correlation_id = correlator.getId();
@@ -31,9 +21,12 @@ const globalErrorHandler = (err, req, res, _next) => {
   }
 
   res.status(500);
-  const shouldReturnHtml = err.html_paragraphs?.length > 0;
-  res.contentType(shouldReturnHtml ? 'text/html' : 'application/json');
-  res.send(shouldReturnHtml ? createHtml(err) : createJson(err));
+  if (err.render_html) {
+    res.redirect(`${config.fyllutPath}/500?correlationId=${err.correlation_id}`);
+  } else {
+    res.contentType('application/json');
+    res.send(createJson(err));
+  }
 };
 
 export default globalErrorHandler;
