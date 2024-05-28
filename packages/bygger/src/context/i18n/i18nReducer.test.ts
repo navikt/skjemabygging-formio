@@ -51,6 +51,7 @@ const mockedLocalTranslationsForNavForm: I18nTranslations = {
 describe('i18nReducer', () => {
   describe('init state', () => {
     const initialState: I18nState = {
+      status: 'LOADING',
       translations: {},
       translationsForNavForm: {},
       localTranslationsForNavForm: {},
@@ -59,6 +60,7 @@ describe('i18nReducer', () => {
     it("assigns payload to translations on action type 'init'", () => {
       expect(reducer(initialState, { type: 'init', payload: mockedTranslations })).toEqual({
         ...initialState,
+        status: 'INITIALIZED',
         translations: mockedTranslations,
       });
     });
@@ -87,6 +89,7 @@ describe('i18nReducer', () => {
 
   describe('update', () => {
     const initialState: I18nState = {
+      status: 'INITIALIZED',
       translations: mockedTranslations,
       translationsForNavForm: {},
       localTranslationsForNavForm: {},
@@ -115,6 +118,7 @@ describe('i18nReducer', () => {
 
   describe('remove', () => {
     const initialState: I18nState = {
+      status: 'INITIALIZED',
       translations: mockedTranslations,
       translationsForNavForm: {},
       localTranslationsForNavForm: {},

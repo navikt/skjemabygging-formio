@@ -36,7 +36,7 @@ const TranslationsByFormPage = ({ loadForm, saveTranslation }: TranslationsByFor
   const { formPath, languageCode = '' } = useParams();
   const [form, setForm] = useState<NavFormType>();
   const [status, setStatus] = useState('LOADING');
-  const { translations } = useI18nState();
+  const { translations, status: translationStatus } = useI18nState();
   const languages = useMemo(() => getAvailableLanguages(translations), [translations]);
   const dispatch = useI18nDispatch();
 
@@ -78,7 +78,7 @@ const TranslationsByFormPage = ({ loadForm, saveTranslation }: TranslationsByFor
     }
   };
 
-  if (status === 'LOADING') {
+  if (status === 'LOADING' || translationStatus === 'LOADING') {
     return <LoadingComponent />;
   }
 

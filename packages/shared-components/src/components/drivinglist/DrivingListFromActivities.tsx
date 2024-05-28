@@ -40,9 +40,9 @@ const DrivingListFromActivities = ({ activities }: Props) => {
 
   const onActivityChange = (activity?: SubmissionActivity, options?: ActivityChangeOptions) => {
     if (options?.autoSelect) {
-      updateValues({ selectedVedtaksId: activity?.vedtaksId });
+      updateValues({ selectedVedtaksId: activity?.vedtaksId, tema: activity?.tema });
     } else {
-      updateValues({ selectedVedtaksId: activity?.vedtaksId, dates: [] });
+      updateValues({ selectedVedtaksId: activity?.vedtaksId, tema: activity?.tema, dates: [] });
     }
   };
 

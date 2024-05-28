@@ -1,18 +1,18 @@
 import moment from 'moment';
-import { FormMetadata, sortByFormNumber, sortByStatus, sortFormsByProperty } from './formsListUtils';
+import { FormListType } from './FormsList';
+import sortedForms from './formsListSortUtils';
 
 const baseMoment = moment().toISOString();
 const earlier = (base, days) => moment(base).subtract(days, 'day').toISOString();
 const later = (base, days) => moment(base).add(days, 'day').toISOString();
-const createFormMetadata = (properties: Partial<FormMetadata>): FormMetadata =>
+const createFormMetadata = (properties: Partial<FormListType>): FormListType =>
   ({
-    _id: 'id',
+    id: 'id',
     modified: baseMoment,
     title: 'AAA',
-    skjemanummer: '000',
+    number: '000',
     status: 'UNKNOWN',
-    ...properties,
-  }) as FormMetadata;
+  }) as FormListType;
 
 describe('formsListUtils', () => {
   describe('sortFormsByProperty', () => {
@@ -27,13 +27,19 @@ describe('formsListUtils', () => {
       const list = [aBC, ABC, AAsta, number123, emptyString, abc, A1];
 
       it('sorts in ascending order', () => {
-        const sorted = sortFormsByProperty(list, 'title', 'ascending');
+        const sorted = sortedForms(list, {
+          orderBy: 'title',
+          direction: 'ascending',
+        });
         expect(sorted).toHaveLength(7);
         expect(sorted).toStrictEqual([emptyString, number123, A1, ABC, aBC, abc, AAsta]);
       });
 
       it('sorts modified (date) in descending order', () => {
-        const sorted = sortFormsByProperty(list, 'modified', 'descending');
+        const sorted = sortedForms(list, {
+          orderBy: 'modified',
+          direction: 'descending',
+        });
         expect(sorted).toHaveLength(7);
         expect(sorted).toStrictEqual([AAsta, abc, aBC, ABC, A1, number123, emptyString]);
       });
@@ -49,13 +55,19 @@ describe('formsListUtils', () => {
       const list = [early, noDate, latest, late, earliest, middle];
 
       it('sorts in ascending order', () => {
-        const sorted = sortFormsByProperty(list, 'modified', 'ascending');
+        const sorted = sortedForms(list, {
+          orderBy: 'modified',
+          direction: 'ascending',
+        });
         expect(sorted).toHaveLength(6);
         expect(sorted).toStrictEqual([noDate, earliest, early, middle, late, latest]);
       });
 
       it('sorts modified (date) in descending order', () => {
-        const sorted = sortFormsByProperty(list, 'modified', 'descending');
+        const sorted = sortedForms(list, {
+          orderBy: 'modified',
+          direction: 'descending',
+        });
         expect(sorted).toHaveLength(6);
         expect(sorted).toStrictEqual([latest, late, middle, early, earliest, noDate]);
       });
@@ -63,21 +75,27 @@ describe('formsListUtils', () => {
   });
 
   describe('sortByFormNumber', () => {
-    const nav01 = createFormMetadata({ skjemanummer: 'NAV 01-00.00' });
-    const nav02 = createFormMetadata({ skjemanummer: 'NAV 02-00.00' });
-    const nav03 = createFormMetadata({ skjemanummer: 'NAV 03-00.00' });
-    const noneStandard01 = createFormMetadata({ skjemanummer: 'ABC 02-00.00' });
-    const noneStandard02 = createFormMetadata({ skjemanummer: 'NAV 02.00-00' });
+    const nav01 = createFormMetadata({ number: 'NAV 01-00.00' });
+    const nav02 = createFormMetadata({ number: 'NAV 02-00.00' });
+    const nav03 = createFormMetadata({ number: 'NAV 03-00.00' });
+    const noneStandard01 = createFormMetadata({ number: 'ABC 02-00.00' });
+    const noneStandard02 = createFormMetadata({ number: 'NAV 02.00-00' });
     const list = [nav02, noneStandard02, nav03, noneStandard01, nav01];
 
     it('places standard NAV form numbers first on ascending sort', () => {
-      const sorted = sortByFormNumber(list, 'ascending');
+      const sorted = sortedForms(list, {
+        orderBy: 'number',
+        direction: 'ascending',
+      });
       expect(sorted).toHaveLength(5);
       expect(sorted).toStrictEqual([nav01, nav02, nav03, noneStandard01, noneStandard02]);
     });
 
     it('places standard NAV form numbers last on descending sort', () => {
-      const sorted = sortByFormNumber(list, 'descending');
+      const sorted = sortedForms(list, {
+        orderBy: 'number',
+        direction: 'descending',
+      });
       expect(sorted).toHaveLength(5);
       expect(sorted).toStrictEqual([noneStandard02, noneStandard01, nav03, nav02, nav01]);
     });
@@ -94,23 +112,35 @@ describe('formsListUtils', () => {
     const listWithUnknown = [pending, unknown, published, draft, unpublished, testform];
 
     it('sorts the list by status in fixed ascending order', () => {
-      const sorted = sortByStatus(list, 'ascending');
+      const sorted = sortedForms(list, {
+        orderBy: 'status',
+        direction: 'ascending',
+      });
       expect(sorted).toStrictEqual([published, pending, draft, unpublished, testform]);
     });
 
     it('sorts the list by status in fixed descending order', () => {
-      const sorted = sortByStatus(list, 'descending');
+      const sorted = sortedForms(list, {
+        orderBy: 'status',
+        direction: 'descending',
+      });
       expect(sorted).toStrictEqual([testform, unpublished, draft, pending, published]);
     });
 
     it('adds items with status UNKNOWN to the end of list when sorting in ascending order', () => {
-      const sorted = sortByStatus(listWithUnknown, 'ascending');
+      const sorted = sortedForms(listWithUnknown, {
+        orderBy: 'status',
+        direction: 'ascending',
+      });
       expect(sorted).toHaveLength(6);
       expect(sorted[5].status).toBe('UNKNOWN');
     });
 
     it('adds items with status UNKNOWN to the end of list when sorting in descending order', () => {
-      const sorted = sortByStatus(listWithUnknown, 'descending');
+      const sorted = sortedForms(listWithUnknown, {
+        orderBy: 'status',
+        direction: 'descending',
+      });
       expect(sorted).toHaveLength(6);
       expect(sorted[5].status).toBe('UNKNOWN');
     });

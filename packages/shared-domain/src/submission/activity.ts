@@ -6,4 +6,5 @@ export interface SubmissionActivity {
   periode?: { fom: string; tom: string };
   text: string;
   vedtaksId?: string;
+  tema?: string;
 }

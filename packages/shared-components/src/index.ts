@@ -7,6 +7,7 @@ import ErrorPage from './components/error/page/ErrorPage';
 import InnerHtml from './components/inner-html/InnerHtml';
 import LanguageSelector from './components/language-selector/LanguageSelector';
 import LoadingComponent from './components/loading/LoadingComponent';
+import SkeletonList from './components/loading/SkeletonList';
 import Modal from './components/modal/Modal';
 import ConfirmationModal from './components/modal/confirmation/ConfirmationModal';
 import useModal from './components/modal/useModal';
@@ -24,6 +25,10 @@ import FyllUtRouter from './pages/FyllUtRouter';
 import Styles from './styles';
 import * as formUtils from './util/form/form.js';
 import NavFormioJs from './util/formio/formiojs';
+import StructuredHtml from './util/html/StructuredHtml/StructuredHtml';
+import StructuredHtmlElement from './util/html/StructuredHtml/StructuredHtmlElement';
+import StructuredHtmlText from './util/html/StructuredHtml/StructuredHtmlText';
+import htmlConverter, { HtmlAsJsonElement, HtmlAsJsonTextElement } from './util/html/converters';
 import makeStyles from './util/styles/jss/jss';
 import { navCssVariables } from './util/styles/nav-css/navCssVariables';
 import i18nData from './util/translation/i18nData';
@@ -46,9 +51,14 @@ export {
   Modal,
   NavForm,
   NavFormioJs,
+  SkeletonList,
+  StructuredHtml,
+  StructuredHtmlElement,
+  StructuredHtmlText,
   Styles,
   formUtils,
   guid,
+  htmlConverter,
   http,
   i18nData,
   makeStyles,
@@ -61,4 +71,4 @@ export {
   useLanguages,
   useModal,
 };
-export type { FetchHeader, FetchOptions };
+export type { FetchHeader, FetchOptions, HtmlAsJsonElement, HtmlAsJsonTextElement };
