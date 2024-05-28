@@ -24,8 +24,6 @@ class TextField extends BaseComponent {
   }
 
   getValue() {
-    if (this.getLabel({ labelTextOnly: true }) === 'Minimum')
-      console.log('parent getValue', this.getLabel({ labelTextOnly: true }));
     return super.getValue() ?? '';
   }
 
@@ -38,8 +36,6 @@ class TextField extends BaseComponent {
   }
 
   renderReact(element) {
-    if (this.getLabel({ labelTextOnly: true }) === 'Minimum')
-      console.log('parent render', this.getLabel({ labelTextOnly: true }));
     element.render(
       <NavTextField
         id={this.getId()}
