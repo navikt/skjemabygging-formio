@@ -1,6 +1,12 @@
 import { makeStyles, navCssVariables } from '@navikt/skjemadigitalisering-shared-components';
+import React from 'react';
 import PageWrapper from '../Forms/PageWrapper';
-import { NavBar } from './Navbar/NavBar';
+import { NavBar, NavBarProps } from './Navbar/NavBar';
+
+export interface Props {
+  children: React.ReactNode;
+  navBarProps?: NavBarProps;
+}
 
 const useStyles = makeStyles({
   noScroll: {
@@ -11,7 +17,7 @@ const useStyles = makeStyles({
   },
 });
 
-export const AppLayout = ({ children, navBarProps }) => {
+export const AppLayout = ({ children, navBarProps }: Props) => {
   const styles = useStyles();
   return (
     <>

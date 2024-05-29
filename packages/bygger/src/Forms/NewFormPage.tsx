@@ -127,7 +127,7 @@ const NewFormPage: React.FC<Props> = ({ formio }): React.ReactElement => {
   };
 
   return (
-    <AppLayout navBarProps={{ title: 'Opprett nytt skjema' }}>
+    <AppLayout>
       <Row>
         <Column className={styles.centerColumn}>
           <Heading level="1" size="xlarge">

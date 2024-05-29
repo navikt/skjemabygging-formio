@@ -17,10 +17,18 @@ const parseBody = async (res: Response): Promise<unknown | string> => {
 };
 
 export async function fetchWithErrorHandling(url: RequestInfo, options: RequestInit) {
-  const res = await fetch(url, options);
+  const method = options.method || 'GET';
+  let res: Response;
+  try {
+    res = await fetch(url, options);
+  } catch (err: any) {
+    const { message, stack, ...errDetails } = err;
+    const logMeta = { errorMessage: message, stack, ...errDetails, url, method };
+    logger.error(`Fetch ${method} ${url} threw error`, logMeta);
+    throw err;
+  }
   if (!res.ok) {
     const responseBody = await parseBody(res);
-    const method = options.method || 'GET';
     const logMeta = {
       responseBody,
       status: res.status,

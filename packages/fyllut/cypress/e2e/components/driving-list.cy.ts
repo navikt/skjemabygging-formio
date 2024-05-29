@@ -7,14 +7,13 @@ const PARKING_EXPENSES_LABEL = /Parkeringsutgifter \(kr\)/;
 const DAY_PICKER_LABEL_WITH_PARKING =
   TEXTS.statiske.drivingList.dateSelect + ' ' + TEXTS.statiske.drivingList.dateSelectParking;
 
-const dateFormatShortYear: Intl.DateTimeFormatOptions = {
+const dateFormatLongYear: Intl.DateTimeFormatOptions = {
   day: '2-digit',
   month: '2-digit',
-  year: '2-digit',
+  year: 'numeric',
 };
 
-const toLocaleDateShortYear = (date: string, locale = 'no') =>
-  new Date(date).toLocaleString(locale, dateFormatShortYear);
+const toLocaleDateLongYear = (date: string, locale = 'no') => new Date(date).toLocaleString(locale, dateFormatLongYear);
 
 describe('DrivingList', () => {
   before(() => {
@@ -38,7 +37,7 @@ describe('DrivingList', () => {
       cy.defaultWaits();
       cy.clickStart();
 
-      cy.findByRole('textbox', { name: DATE_PICKER_LABEL }).should('exist').type('15.05.23{esc}');
+      cy.findByRole('textbox', { name: DATE_PICKER_LABEL }).should('exist').type('15.05.2023{esc}');
       cy.findByRole('group', { name: PARKING_LABEL })
         .should('exist')
         .within(() => {
@@ -86,7 +85,7 @@ describe('DrivingList', () => {
             .click();
         });
 
-      cy.findByRole('textbox', { name: DATE_PICKER_LABEL }).should('exist').type('15.05.23{esc}');
+      cy.findByRole('textbox', { name: DATE_PICKER_LABEL }).should('exist').type('15.05.2023{esc}');
       cy.findByRole('radio', { name: 'Ja' }).should('exist').check();
       cy.findByRole('button', { name: '15. mai 2023 - 21. mai 2023' }).click();
       cy.findByRole('checkbox', { name: 'mandag 15. mai 2023' }).should('exist').check();
@@ -121,7 +120,7 @@ describe('DrivingList', () => {
       const twoWeeksAgo = new Date(today);
       twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14);
 
-      const dateString = `${toLocaleDateShortYear(twoWeeksAgo.toString())}{esc}`;
+      const dateString = `${toLocaleDateLongYear(twoWeeksAgo.toString())}{esc}`;
       cy.findByRole('textbox', { name: DATE_PICKER_LABEL }).should('exist').type(dateString);
       cy.findByRole('radio', { name: 'Ja' }).should('exist').check();
 

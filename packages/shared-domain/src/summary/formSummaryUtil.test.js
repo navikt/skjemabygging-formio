@@ -916,7 +916,7 @@ describe('form summary', () => {
               label: 'Startdato-label',
               key: 'startdato',
               type: 'navDatepicker',
-              value: '3.10.2021',
+              value: '03.10.2021',
             },
           ]),
         ]);
@@ -934,7 +934,7 @@ describe('form summary', () => {
               label: 'Startdato-label',
               key: 'startdato',
               type: 'navDatepicker',
-              value: '3.10.2021',
+              value: '03.10.2021',
             },
           ]),
         ]);
@@ -1020,7 +1020,7 @@ describe('form summary', () => {
       const datoUtenfor = actual[0].components[0];
       expect(datoUtenfor.type).toBe('navDatepicker');
       expect(datoUtenfor.label).toBe('Dato utenfor');
-      expect(datoUtenfor.value).toBe('1.10.2021');
+      expect(datoUtenfor.value).toBe('01.10.2021');
 
       const dataGrid = actual[0].components[1];
       expect(dataGrid.type).toBe('datagrid');
@@ -1034,7 +1034,7 @@ describe('form summary', () => {
       const datoIDataGrid = dataGridRow1.components[0];
       expect(datoIDataGrid.type).toBe('navDatepicker');
       expect(datoIDataGrid.label).toBe('Dato i data grid');
-      expect(datoIDataGrid.value).toBe('2.10.2021');
+      expect(datoIDataGrid.value).toBe('02.10.2021');
 
       const skjemagruppe = dataGridRow1.components[1];
       expect(skjemagruppe.type).toBe('navSkjemagruppe');
@@ -1043,7 +1043,7 @@ describe('form summary', () => {
       const datoISkjemagruppeInneIDataGrid = skjemagruppe.components[0];
       expect(datoISkjemagruppeInneIDataGrid.type).toBe('navDatepicker');
       expect(datoISkjemagruppeInneIDataGrid.label).toBe('Dato i skjemagruppe i data grid');
-      expect(datoISkjemagruppeInneIDataGrid.value).toBe('3.10.2021');
+      expect(datoISkjemagruppeInneIDataGrid.value).toBe('03.10.2021');
 
       const skjemagruppeUtenforDataGrid = actual[0].components[2];
       expect(skjemagruppeUtenforDataGrid.type).toBe('navSkjemagruppe');
@@ -1052,7 +1052,7 @@ describe('form summary', () => {
       const datoISkjemagruppeUtenforDataGrid = skjemagruppeUtenforDataGrid.components[0];
       expect(datoISkjemagruppeUtenforDataGrid.type).toBe('navDatepicker');
       expect(datoISkjemagruppeUtenforDataGrid.label).toBe('Dato i skjemagruppe utenfor Data Grid');
-      expect(datoISkjemagruppeUtenforDataGrid.value).toBe('4.10.2021');
+      expect(datoISkjemagruppeUtenforDataGrid.value).toBe('04.10.2021');
     });
   });
 });

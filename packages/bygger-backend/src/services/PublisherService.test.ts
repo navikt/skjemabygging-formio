@@ -238,13 +238,15 @@ describe('PublisherService', () => {
 
   describe('publishForms (bulk)', () => {
     const testForms: NavFormType[] = [
-      { _id: '1', properties: { publishedLanguages: ['en'] } } as unknown as NavFormType,
+      { _id: '1', path: 'path1', properties: { publishedLanguages: ['en'] } } as unknown as NavFormType,
       {
         _id: '2',
+        path: 'path2',
         properties: { publishedLanguages: [], published: '2022-07-28T10:00:10.325Z', publishedBy: 'ernie' },
       } as unknown as NavFormType,
       {
         _id: '3',
+        path: 'path3',
         properties: {
           publishedLanguages: undefined,
           modified: '2022-06-28T10:02:15.634Z',
@@ -391,6 +393,81 @@ describe('PublisherService', () => {
         expect(form3PropsRollback.unpublished).toBeDefined();
         expect(form3PropsRollback.unpublished).toEqual(testForms[2].properties.unpublished);
         expect(form3PropsRollback.unpublishedBy).toBeDefined();
+      });
+    });
+
+    describe('when formio update props fails', () => {
+      let nockScope: nock.Scope;
+      let formioApiRequestBodies: NavFormType[];
+
+      beforeEach(() => {
+        formioApiRequestBodies = [];
+        backendMock = { publishForms: () => '123456789' } as unknown as Backend;
+        publisherService = new PublisherService(formioService, backendMock);
+        const formEndpoint = /\/form\/(\d*)$/;
+        nockScope = nock(config.formio.projectUrl)
+          .put(formEndpoint)
+          .times(2) // <-- formio update props succeeds on first two forms
+          .reply((uri, requestBody) => {
+            formioApiRequestBodies.push(requestBody as NavFormType);
+            return [200, requestBody];
+          });
+        nockScope = nock(config.formio.projectUrl)
+          .put(formEndpoint)
+          .reply((uri, requestBody) => {
+            formioApiRequestBodies.push(requestBody as NavFormType);
+            return [500, 'Internal server error']; // <-- formio update props fails on third form
+          });
+        nockScope = nock(config.formio.projectUrl)
+          .put(formEndpoint)
+          .times(2) // <-- expecting rollback of the two first forms
+          .reply((uri, requestBody) => {
+            formioApiRequestBodies.push(requestBody as NavFormType);
+            return [200, requestBody];
+          });
+      });
+
+      afterEach(() => {
+        expect(nockScope.isDone()).toBe(true);
+      });
+
+      it('properties are rolled back', async () => {
+        let errorThrown = false;
+        try {
+          await publisherService.publishForms(testForms, opts);
+        } catch (error: any) {
+          errorThrown = true;
+          expect(error.message).toBe('Bulk-publisering feilet');
+        }
+        expect(errorThrown).toBe(true);
+        expect(formioApiRequestBodies).toHaveLength(5);
+
+        const form1Props = formioApiRequestBodies[0].properties;
+        const form2Props = formioApiRequestBodies[1].properties;
+        const form3Props = formioApiRequestBodies[2].properties;
+
+        expect(form1Props.modified).toBeDefined();
+        expect(form1Props.modifiedBy).toEqual(opts.userName);
+        expect(form1Props.published).toBeDefined();
+        expect(form1Props.publishedBy).toEqual(opts.userName);
+
+        expect(form2Props.published).toBeDefined();
+        expect(form2Props.publishedBy).toEqual(opts.userName);
+
+        expect(form3Props.published).toBeDefined();
+        expect(form3Props.unpublished).toBeUndefined();
+
+        const form1PropsRollback = formioApiRequestBodies[3].properties;
+        const form2PropsRollback = formioApiRequestBodies[4].properties;
+
+        expect(form1PropsRollback.modified).not.toEqual(form1Props.modified);
+        expect(form1PropsRollback.modifiedBy).toEqual(opts.userName);
+        expect(form1PropsRollback.published).toBeUndefined();
+        expect(form1PropsRollback.publishedBy).toBeUndefined();
+
+        expect(form2PropsRollback.published).toEqual(testForms[1].properties.published);
+        expect(form2PropsRollback.published).not.toEqual(form2Props.published);
+        expect(form2PropsRollback.publishedBy).toEqual(testForms[1].properties.publishedBy);
       });
     });
   });

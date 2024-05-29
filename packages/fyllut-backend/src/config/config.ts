@@ -21,6 +21,7 @@ const tokenx: TokenxConfig = {
 
 const amplitude: AmplitudeConfig = {
   apiEndpoint: process.env.AMPLITUDE_API_ENDPOINT ?? '',
+  disableBatch: process.env.AMPLITUDE_DISABLE_BATCH === 'true',
 };
 
 const frontendLoggerConfig: FrontendLoggerConfigType = configUtils.loadJsonFromEnv('FYLLUT_FRONTEND_LOGCONFIG');

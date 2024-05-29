@@ -1,4 +1,5 @@
 import { Accordion as NavAccordion } from '@navikt/ds-react';
+import InnerHtml from '../../../../components/inner-html/InnerHtml';
 import BaseComponent from '../../base/BaseComponent';
 import accordionBuilder from './Accordion.builder';
 import accordionForm from './Accordion.form';
@@ -35,7 +36,7 @@ class Accordion extends BaseComponent {
           <NavAccordion.Item key={index} defaultOpen={item.defaultOpen}>
             <NavAccordion.Header>{item.title}</NavAccordion.Header>
             <NavAccordion.Content>
-              <div dangerouslySetInnerHTML={{ __html: item.content }}></div>
+              <InnerHtml content={item.content} />
             </NavAccordion.Content>
           </NavAccordion.Item>
         ))}

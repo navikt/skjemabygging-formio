@@ -1,6 +1,7 @@
 import { Component } from '@navikt/skjemadigitalisering-shared-domain';
 import editFormAceEditor from '../shared/editFormAceEditor';
 import editFormVariablesTable from '../shared/editFormVariablesTable';
+import editFormReadOnly from './editFormReadOnly';
 
 const editFormCalculateValue = (): Component => {
   return {
@@ -26,6 +27,13 @@ const editFormCalculateValue = (): Component => {
             <h5>Eksempel:</h5>
             <pre>value = data.a + data.b + data.c;</pre>
           </small>`,
+      },
+      {
+        ...editFormReadOnly({
+          hidden: true,
+          clearOnHide: false,
+          calculateValue: 'value = row.calculateValue !== ""',
+        }),
       },
       {
         type: 'panel',

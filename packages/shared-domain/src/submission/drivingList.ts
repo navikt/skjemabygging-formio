@@ -12,6 +12,7 @@ export interface DrivingListSubmission {
 
   // Digital
   selectedVedtaksId?: string;
+  tema?: string;
 
   // Paper and Digital
   dates: { date: string; parking: string; betalingsplanId?: string }[];

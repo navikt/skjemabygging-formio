@@ -13,6 +13,7 @@ interface I18nStateProviderProps {
 }
 
 const initialState: I18nState = {
+  status: 'LOADING',
   translations: {},
   translationsForNavForm: {},
   localTranslationsForNavForm: {},
@@ -22,8 +23,12 @@ const loadTranslationsAndInitState = async (
   loadTranslations: () => Promise<FormioTranslationMap>,
   dispatch: React.Dispatch<I18nAction>,
 ): Promise<void> => {
-  const translations = await loadTranslations();
-  dispatch({ type: 'init', payload: translations });
+  try {
+    const translations = await loadTranslations();
+    dispatch({ type: 'init', payload: translations });
+  } catch (e) {
+    dispatch({ type: 'error' });
+  }
 };
 
 const I18nDispatchContext = createContext<React.Dispatch<I18nAction>>(() => {});
@@ -39,7 +44,7 @@ function I18nStateProvider({ children, loadTranslations, form }: I18nStateProvid
 
   useEffect(() => {
     loadTranslationsAndInitState(loadTranslations, dispatch).catch(() => {});
-  }, [loadTranslations, dispatch]);
+  }, [loadTranslations]);
 
   useEffect(() => {
     const translationsAsI18n = mapTranslationsToFormioI18nObject(state.translations);
@@ -53,7 +58,7 @@ function I18nStateProvider({ children, loadTranslations, form }: I18nStateProvid
       },
     };
     dispatch({ type: 'updateTranslationsForNavForm', payload: translationsForNavForm });
-  }, [state.translations, form, dispatch]);
+  }, [state.translations, form]);
 
   useEffect(() => {
     const localTranslationsForNavForm = mapTranslationsToFormioI18nObject(
@@ -61,7 +66,7 @@ function I18nStateProvider({ children, loadTranslations, form }: I18nStateProvid
       (translation) => translation.scope !== 'component-countryName' && translation.scope !== 'global',
     );
     dispatch({ type: 'updateLocalTranslationsForNavForm', payload: localTranslationsForNavForm });
-  }, [state.translations, dispatch]);
+  }, [state.translations]);
 
   return (
     <I18nDispatchContext.Provider value={dispatch}>

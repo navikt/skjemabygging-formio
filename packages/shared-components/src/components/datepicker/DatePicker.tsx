@@ -1,33 +1,31 @@
-import { DatePicker as AkselDatePicker, DatePickerProps, useDatepicker } from '@navikt/ds-react';
+import { DatePicker as AkselDatePicker, useDatepicker } from '@navikt/ds-react';
 import { UseDatepickerOptions } from '@navikt/ds-react/esm/date/hooks/useDatepicker';
-import { DateTime } from 'luxon';
-import { useEffect } from 'react';
-
-const SUBMISSION_DATE_FORMAT = 'yyyy-MM-dd';
+import { dateUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { ReactNode, useEffect } from 'react';
+import { useComponentUtils } from '../../context/component/componentUtilsContext';
+import { validateDate } from './dateValidation';
 
 interface NavDatePickerProps {
   id: string;
-  isRequired?: boolean;
+  required?: boolean;
   onChange: (val: string) => void;
   value: string;
-  locale: string;
   readOnly?: boolean;
   error?: string;
   inputRef?: any;
-  label?: string;
-  description?: string;
+  label: string;
+  description?: ReactNode;
   className?: string;
-  fromDate?: Date;
-  toDate?: Date;
-  defaultMonth?: Date;
+  fromDate?: string;
+  toDate?: string;
+  defaultMonth?: string;
 }
 
 const DatePicker = ({
   id,
-  isRequired,
+  required,
   onChange,
   value,
-  locale,
   readOnly,
   error,
   inputRef,
@@ -38,44 +36,65 @@ const DatePicker = ({
   toDate,
   defaultMonth,
 }: NavDatePickerProps) => {
-  // @ts-ignore
-  const { datepickerProps, inputProps, setSelected, reset }: DatePickerProps = useDatepicker({
-    required: isRequired,
-    onDateChange: (val) => {
-      onChange(val ? DateTime.fromJSDate(val).toFormat(SUBMISSION_DATE_FORMAT) : '');
-    },
-    toDate: toDate,
-    fromDate: fromDate,
-    defaultMonth: defaultMonth,
+  const { locale } = useComponentUtils();
+
+  const { datepickerProps, inputProps, setSelected, reset } = useDatepicker({
+    required: required,
+    toDate: toDate ? dateUtils.toJSDate(toDate) : undefined,
+    fromDate: fromDate ? dateUtils.toJSDate(fromDate) : undefined,
+    defaultMonth: defaultMonth ? dateUtils.toJSDate(defaultMonth) : undefined,
+    allowTwoDigitYear: false,
   } as UseDatepickerOptions);
 
   useEffect(() => {
-    if (value) {
-      setSelected(DateTime.fromISO(value).toJSDate());
-    } else {
-      reset();
+    // Only set selected if the value is different from the existing datepicker value.
+    if (inputProps.value !== (value ?? '')) {
+      if (value) {
+        if (dateUtils.isValid(value, 'submission')) {
+          setSelected(dateUtils.toJSDate(value));
+        }
+      } else {
+        reset();
+      }
     }
   }, [value]);
 
+  useEffect(() => {
+    let newValue = inputProps.value as string;
+    if (dateUtils.isValid(newValue, 'input')) {
+      newValue = dateUtils.toSubmissionDate(newValue);
+    }
+
+    // Ignore newValue if empty since we cant differentiate between initial load and the user clearing the value.
+    if (newValue !== '' && newValue !== value) {
+      onChange(newValue);
+    }
+  }, [inputProps.value]);
+
   return (
-    <AkselDatePicker
-      selected={value ? DateTime.fromISO(value).toJSDate() : undefined}
-      locale={locale}
-      {...datepickerProps}
-    >
+    <AkselDatePicker mode="single" locale={locale} {...datepickerProps} selected={undefined}>
       <AkselDatePicker.Input
         id={id}
+        {...inputProps}
         readOnly={readOnly}
         error={error}
-        {...inputProps}
         ref={inputRef}
         hideLabel={!label}
         label={label}
-        className={className}
         description={description}
+        className={className}
+        onBlur={(e) => {
+          // Since we have problem listening on empty value on inputProps.value
+          // we need to trigger onChange on blur when there is an empty value.
+          if (e.target.value === '') {
+            onChange('');
+          }
+        }}
       />
     </AkselDatePicker>
   );
 };
 
 export default DatePicker;
+
+export { validateDate };

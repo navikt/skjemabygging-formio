@@ -1,15 +1,67 @@
-import { Component, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { AttachmentSettingValues, AttachmentType, Component, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+
+interface EditFormAttachmentComponent {
+  key: keyof AttachmentSettingValues;
+  label: string;
+  additionalDocumentation: boolean;
+  showDeadline: boolean;
+  customConditional?: string;
+  customConditionalOptions?: string;
+  forceEnabled?: boolean;
+  readOnly?: boolean;
+}
+
+const showForAttachmentType = (attachmentType: AttachmentType) => {
+  return `show = data.attachmentType === "${attachmentType}"`;
+};
+
+const showForRowEnabled = (enabled: boolean) => {
+  return `show = row.enabled === ${enabled}`;
+};
+
+const additionalDocumentationComponents = () => {
+  return {
+    type: 'container',
+    key: 'additionalDocumentation',
+    label: '',
+    components: [
+      {
+        type: 'navCheckbox',
+        key: 'enabled',
+        label: 'Bruker må oppgi tilleggsinformasjon',
+      },
+      {
+        type: 'textfield',
+        key: 'label',
+        customClass: 'ml',
+        label: 'Ledetekst for tilleggsinformasjon',
+        customConditional: showForRowEnabled(true),
+        validate: {
+          required: true,
+        },
+      },
+      {
+        type: 'textfield',
+        key: 'description',
+        customClass: 'ml',
+        label: 'Beskrivelse av krav til tilleggsinformasjon',
+        customConditional: showForRowEnabled(true),
+      },
+    ],
+  };
+};
 
 const editFormAttachment = (): Component[] => {
-  const component = (
-    key: string,
-    label: string,
-    additionalDocumentation: boolean,
-    showDeadline: boolean,
-    customConditional: string = '',
-    customConditionalOptions?: string,
-    forceEnabled: boolean = false,
-  ) => {
+  const component = ({
+    key,
+    label,
+    additionalDocumentation,
+    showDeadline,
+    customConditional = '',
+    customConditionalOptions = '',
+    forceEnabled = false,
+    readOnly = false,
+  }: EditFormAttachmentComponent) => {
     const components: Component[] = [];
 
     if (showDeadline) {
@@ -21,35 +73,7 @@ const editFormAttachment = (): Component[] => {
     }
 
     if (additionalDocumentation) {
-      components.push({
-        type: 'container',
-        key: 'additionalDocumentation',
-        label: '',
-        components: [
-          {
-            type: 'navCheckbox',
-            key: 'enabled',
-            label: 'Bruker må oppgi tilleggsinformasjon',
-          },
-          {
-            type: 'textfield',
-            key: 'label',
-            customClass: 'ml',
-            label: 'Ledetekst for tilleggsinformasjon',
-            customConditional: 'show = row.enabled === true',
-            validate: {
-              required: true,
-            },
-          },
-          {
-            type: 'textfield',
-            key: 'description',
-            customClass: 'ml',
-            label: 'Beskrivelse av krav til tilleggsinformasjon',
-            customConditional: 'show = row.enabled === true',
-          },
-        ],
-      });
+      components.push(additionalDocumentationComponents());
     }
 
     return {
@@ -62,7 +86,7 @@ const editFormAttachment = (): Component[] => {
           type: 'navCheckbox',
           key: 'enabled',
           defaultValue: forceEnabled,
-          readOnly: forceEnabled,
+          readOnly: readOnly,
           label,
         },
         {
@@ -70,7 +94,7 @@ const editFormAttachment = (): Component[] => {
           key: '',
           label: '',
           customClass: 'ml',
-          customConditional: customConditionalOptions ? customConditionalOptions : 'show = row.enabled === true',
+          customConditional: customConditionalOptions ? customConditionalOptions : showForRowEnabled(true),
           components,
         },
       ],
@@ -91,46 +115,65 @@ const editFormAttachment = (): Component[] => {
           title: 'Velg innsendingsalternativer for dette vedlegget',
           customClass: 'group-margin-small',
           components: [
-            component(
-              'leggerVedNaa',
-              TEXTS.statiske.attachment.leggerVedNaa,
-              true,
-              false,
-              undefined,
-              'show = data?.attachmentType === "default"',
-            ),
-            component('ettersender', TEXTS.statiske.attachment.ettersender, true, true),
-            component(
-              'nei',
-              TEXTS.statiske.attachment.nei,
-              false,
-              false,
-              'show = data?.attachmentType === "other"',
-              undefined,
-              true,
-            ),
-            component(
-              'levertTidligere',
-              TEXTS.statiske.attachment.levertTidligere,
-              true,
-              false,
-              'show = data?.attachmentType === "default"',
-            ),
-            component(
-              'harIkke',
-              TEXTS.statiske.attachment.harIkke,
-              true,
-              false,
-              'show = data?.attachmentType === "default"',
-            ),
-            component(
-              'andre',
-              TEXTS.statiske.attachment.andre,
-              true,
-              true,
-              'show = data?.attachmentType === "default"',
-            ),
-            component('nav', TEXTS.statiske.attachment.nav, true, false, 'show = data?.attachmentType === "default"'),
+            component({
+              key: 'leggerVedNaa',
+              label: TEXTS.statiske.attachment.leggerVedNaa,
+              additionalDocumentation: true,
+              showDeadline: false,
+              customConditional: showForAttachmentType('default'),
+            }),
+            component({
+              key: 'leggerVedNaa',
+              label: TEXTS.statiske.attachment.leggerVedNaa,
+              additionalDocumentation: false,
+              showDeadline: false,
+              customConditional: showForAttachmentType('other'),
+              readOnly: true,
+            }),
+            component({
+              key: 'ettersender',
+              label: TEXTS.statiske.attachment.ettersender,
+              additionalDocumentation: true,
+              showDeadline: true,
+              customConditional: showForAttachmentType('default'),
+            }),
+            component({
+              key: 'nei',
+              label: TEXTS.statiske.attachment.nei,
+              additionalDocumentation: false,
+              showDeadline: false,
+              customConditional: showForAttachmentType('other'),
+              forceEnabled: true,
+              readOnly: true,
+            }),
+            component({
+              key: 'levertTidligere',
+              label: TEXTS.statiske.attachment.levertTidligere,
+              additionalDocumentation: true,
+              showDeadline: false,
+              customConditional: showForAttachmentType('default'),
+            }),
+            component({
+              key: 'harIkke',
+              label: TEXTS.statiske.attachment.harIkke,
+              additionalDocumentation: true,
+              showDeadline: false,
+              customConditional: showForAttachmentType('default'),
+            }),
+            component({
+              key: 'andre',
+              label: TEXTS.statiske.attachment.andre,
+              additionalDocumentation: true,
+              showDeadline: true,
+              customConditional: showForAttachmentType('default'),
+            }),
+            component({
+              key: 'nav',
+              label: TEXTS.statiske.attachment.nav,
+              additionalDocumentation: true,
+              showDeadline: false,
+              customConditional: showForAttachmentType('default'),
+            }),
           ],
         },
       ],

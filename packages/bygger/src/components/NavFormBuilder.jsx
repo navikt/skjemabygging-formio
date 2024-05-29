@@ -27,6 +27,7 @@ import cloneDeep from 'lodash.clonedeep';
 import isEqual from 'lodash.isequal';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import '../formio-overrides/builder-utils-overrides';
 import '../formio-overrides/webform-builder-overrides';
 import { builderStyles } from './styles';
 
@@ -56,8 +57,10 @@ class NavFormBuilder extends Component {
     return appConfig?.logger;
   }
 
-  handleChange = () => {
-    this.props.onChange(cloneDeep(this.builder.instance.form));
+  handleChange = (data) => {
+    if (data.type === 'form') {
+      this.props.onChange(cloneDeep(this.builder.instance.form));
+    }
   };
 
   traceEvent = (event, ...args) => {

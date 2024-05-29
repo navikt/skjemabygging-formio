@@ -1,0 +1,54 @@
+{
+  "brukerId": "19876898104",
+  "skjemanr": "checkbox-test",
+  "tittel": "checkbox-test",
+  "tema": "AGR",
+  "spraak": "nb",
+  "hoveddokument": {
+    "vedleggsnr": "checkbox-test",
+    "tittel": "checkbox-test",
+    "label": "checkbox-test",
+    "pakrevd": true,
+    "mimetype": "application/pdf"
+  },
+  "hoveddokumentVariant": {
+    "vedleggsnr": "checkbox-test",
+    "tittel": "checkbox-test",
+    "label": "checkbox-test",
+    "pakrevd": false,
+    "mimetype": "application/json",
+    "document": {
+      "language": "nb-NO",
+      "data": {
+        "data": {
+          "readOnlyCheckboxChecked": true,
+          "normalCheckbox": true,
+          "readOnlyCheckbox": false,
+          "checkboxDescription": true,
+          "requiredCheckbox": true
+        },
+        "metadata": {
+          "timezone": "Europe/Oslo",
+          "offset": 120,
+          "origin": "http://localhost:3001",
+          "referrer": "http://localhost:3001/fyllut/checkboxtest",
+          "browserName": "Netscape",
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+          "pathName": "/fyllut/checkboxtest/checkboxPage",
+          "onLine": true
+        },
+        "state": "submitted",
+        "_vnote": ""
+      }
+    }
+  },
+  "innsendingsId": "1fa18260-cabd-437c-bd2a-9de16ac6f0e0",
+  "status": "Opprettet",
+  "vedleggsListe": [],
+  "kanLasteOppAnnet": true,
+  "fristForEttersendelse": 14,
+  "endretDato": "2024-05-23T08:28:25.56089+02:00",
+  "skalSlettesDato": "2024-07-18",
+  "skjemaPath": "checkboxtest",
+  "visningsType": "fyllUt"
+}

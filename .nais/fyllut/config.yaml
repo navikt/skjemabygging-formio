@@ -39,11 +39,13 @@ spec:
     path: /fyllut/internal/isReady
     initialDelay: 10
   replicas:
-    min: 2
-    max: 4
+    min: {{replicas-min}}
+    max: {{replicas-max}}
+    scalingStrategy:
+      cpu:
+        thresholdPercentage: 90
   resources:
     limits:
-      cpu: 500m
       memory: 512Mi
     requests:
       cpu: 200m
@@ -93,7 +95,7 @@ spec:
     - name: PDL_TOKEN_SCOPE_CLUSTER
       value: {{pdl-token-scope-cluster}}
     - name: AMPLITUDE_API_ENDPOINT
-      value: "amplitude.nav.no/collect-auto"
+      value: "https://amplitude.nav.no/collect-auto"
     - name: FYLLUT_FRONTEND_URL
       value: {{fyllut-frontend-url}}
   envFrom:
