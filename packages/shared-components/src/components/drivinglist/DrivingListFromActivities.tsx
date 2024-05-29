@@ -52,7 +52,7 @@ const DrivingListFromActivities = ({ activities }: Props) => {
     vedtak: AktivitetVedtaksinformasjon,
   ) => {
     const periodFrom = betalingsplan.utgiftsperiode.fom;
-    const periodTo = betalingsplan.utgiftsperiode.tom ?? new Date().toISOString();
+    const periodTo = betalingsplan.utgiftsperiode.tom;
 
     return (
       <DrivingPeriod
@@ -81,7 +81,7 @@ const DrivingListFromActivities = ({ activities }: Props) => {
     if (vedtakPeriods.length === 0) {
       const futurePeriodEnds = selectedVedtak?.betalingsplan
         ?.filter((x) => !!x.journalpostId === false)
-        ?.filter((x) => (x.utgiftsperiode.tom ? new Date(x.utgiftsperiode?.tom) > new Date() : true));
+        ?.filter((x) => new Date(x.utgiftsperiode.tom) > new Date());
 
       const nextPeriodEnd = futurePeriodEnds?.[0]?.utgiftsperiode?.tom;
 
@@ -89,7 +89,7 @@ const DrivingListFromActivities = ({ activities }: Props) => {
       return (
         <Alert variant="info" className="mb">
           <BodyShort>
-            {t(TEXTS.statiske.drivingList.noPeriods, {
+            {translate(TEXTS.statiske.drivingList.noPeriods, {
               date: dateUtils.toLocaleDateLongMonth(nextPeriodEnd, locale),
             })}
           </BodyShort>
@@ -101,7 +101,7 @@ const DrivingListFromActivities = ({ activities }: Props) => {
   const filteredVedtakPeriods = (selectedVedtak: AktivitetVedtaksinformasjon) => {
     return selectedVedtak?.betalingsplan
       ?.filter((x) => !!x.journalpostId === false)
-      ?.filter((x) => (x.utgiftsperiode?.tom ? new Date(x.utgiftsperiode.tom) < new Date() : true))
+      ?.filter((x) => new Date(x.utgiftsperiode.tom) < new Date())
       ?.sort((a, b) => new Date(a.utgiftsperiode.fom).getTime() - new Date(b.utgiftsperiode.fom).getTime());
   };
 
