@@ -83,6 +83,13 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
   }
 
   /**
+   * Will always hide component if hidden is true, regardless of other conditionals
+   */
+  shouldForceHide() {
+    return this.component?.hidden ?? false;
+  }
+
+  /**
    * To render a react component, override this function
    * and pass the jsx element as a param to element's render function
    */

@@ -147,4 +147,24 @@ describe('Conditional rendering', () => {
       cy.findByRole('textbox', { name: 'Hva syntes du om frokosten?' }).should('have.value', '');
     });
   });
+
+  describe('conditionally show a component, but the component has hidden=true', () => {
+    beforeEach(() => {
+      cy.defaultIntercepts();
+    });
+
+    it('shows components with textDisplay=form and hides components with textDisplay=pdf', () => {
+      cy.visit('/fyllut/hiddentest?sub=paper');
+      cy.defaultWaits();
+      cy.clickStart();
+
+      cy.findByRole('checkbox', { name: 'Show components (valgfritt)' }).click();
+
+      cy.findByText('This text should only be visible in form').should('exist');
+      cy.findByText('This alert should only be visible in form').should('exist');
+
+      cy.findByText('This text should only be visible in PDF').should('not.exist');
+      cy.findByText('This alert should only be visible in PDF').should('not.exist');
+    });
+  });
 });
