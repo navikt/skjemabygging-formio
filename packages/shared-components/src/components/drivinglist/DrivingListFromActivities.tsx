@@ -77,6 +77,34 @@ const DrivingListFromActivities = ({ activities }: Props) => {
     }
   };
 
+  const noPeriodsAlert = (vedtakPeriods: VedtakBetalingsplan[], selectedVedtak: AktivitetVedtaksinformasjon) => {
+    if (vedtakPeriods.length === 0) {
+      const futurePeriodEnds = selectedVedtak?.betalingsplan
+        ?.filter((x) => !!x.journalpostId === false)
+        ?.filter((x) => new Date(x.utgiftsperiode.tom) > new Date());
+
+      const nextPeriodEnd = futurePeriodEnds?.[0]?.utgiftsperiode?.tom;
+
+      if (!nextPeriodEnd) return null;
+      return (
+        <Alert variant="info" className="mb">
+          <BodyShort>
+            {translate(TEXTS.statiske.drivingList.noPeriods, {
+              date: dateUtils.toLocaleDateLongMonth(nextPeriodEnd, locale),
+            })}
+          </BodyShort>
+        </Alert>
+      );
+    }
+  };
+
+  const filteredVedtakPeriods = (selectedVedtak: AktivitetVedtaksinformasjon) => {
+    return selectedVedtak?.betalingsplan
+      ?.filter((x) => !!x.journalpostId === false)
+      ?.filter((x) => new Date(x.utgiftsperiode.tom) < new Date())
+      ?.sort((a, b) => new Date(a.utgiftsperiode.fom).getTime() - new Date(b.utgiftsperiode.fom).getTime());
+  };
+
   const renderDrivingListFromActivities = () => {
     const activitySelections = mapToSubmissionActivity(activities, 'vedtak', locale);
     const vedtakSelection = activitySelections.find((activity) => activity.vedtaksId === values?.selectedVedtaksId);
@@ -114,6 +142,7 @@ const DrivingListFromActivities = ({ activities }: Props) => {
             <Heading size="xsmall" className={styles.accoridonHeader}>
               {TEXTS.statiske.drivingList.accordionHeader}
             </Heading>
+            {noPeriodsAlert(filteredVedtakPeriods(selectedVedtak), selectedVedtak)}
             <Accordion
               tabIndex={-1}
               id={drivingListMetadata('dates').id}
@@ -121,14 +150,11 @@ const DrivingListFromActivities = ({ activities }: Props) => {
               size="small"
               ref={(ref) => addRef('dates', ref)}
             >
-              {selectedVedtak?.betalingsplan
-                .filter((x) => !!x.journalpostId === false)
-                .filter((x) => new Date(x.utgiftsperiode.tom) < new Date())
-                .sort((a, b) => new Date(a.utgiftsperiode.fom).getTime() - new Date(b.utgiftsperiode.fom).getTime())
-                .map((betalingsplan, index) =>
-                  renderDrivingPeriodsFromActivities(betalingsplan, index, selectedVedtak),
-                )}
+              {filteredVedtakPeriods(selectedVedtak).map((betalingsplan, index) =>
+                renderDrivingPeriodsFromActivities(betalingsplan, index, selectedVedtak),
+              )}
             </Accordion>
+
             {alreadyRefunded.length > 0 && (
               <div className={'mb'}>
                 <Heading size="small" spacing={true}>
@@ -143,7 +169,7 @@ const DrivingListFromActivities = ({ activities }: Props) => {
                       return (
                         <li key={betalingsplan.betalingsplanId}>
                           <BodyShort size="medium">
-                            {`${dateUtils.toLocaleDateLongMonth(periodFrom, locale)} - ${dateUtils.toLocaleDateLongMonth(periodTo, locale)} (${betalingsplan.beloep} kr)`}
+                            {`${dateUtils.toLocaleDateLongMonth(periodFrom, locale)} ${periodTo ? ' - ' + dateUtils.toLocaleDateLongMonth(periodTo, locale) : ''} (${betalingsplan.beloep} kr)`}
                           </BodyShort>
                         </li>
                       );
