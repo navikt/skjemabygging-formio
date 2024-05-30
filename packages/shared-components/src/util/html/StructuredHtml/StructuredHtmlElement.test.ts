@@ -57,20 +57,45 @@ describe('StructuredHtmlElement', () => {
       expect(children[2].children).toHaveLength(2);
     });
 
-    it('matches structurally similar html', () => {
-      const structurallyEqual = new StructuredHtmlElement('<h3></h3><p></p><ul><li></li><li></li></ul>');
-      const structurallyEqualWithExtraText = new StructuredHtmlElement(
-        '<h3>Text</h3>missplaced text<p></p><ul><li></li><li></li></ul>',
-      );
-      expect(structuredHtmlElement.matches(structurallyEqual)).toBe(true);
-      expect(structurallyEqualWithExtraText.matches(structurallyEqual)).toBe(true);
+    it('matches on structural equal htmlElements', () => {
+      const originalStructure = new StructuredHtmlElement('<h3></h3><p></p><ul><li></li><li></li></ul>');
+      const withoutH3 = new StructuredHtmlElement('<p></p><ul><li></li><li></li></ul>');
+      const withExtraListItem = new StructuredHtmlElement('<h3></h3><p></p><ul><li></li><li></li><li></li></ul>');
+      const withDifferentListType = new StructuredHtmlElement('<h3></h3><p></p><ol><li></li><li></li></ol>');
+
+      // matches itself
+      expect(originalStructure.matches(originalStructure)).toBe(true);
+      expect(withoutH3.matches(withoutH3)).toBe(true);
+      expect(withExtraListItem.matches(withExtraListItem)).toBe(true);
+      expect(withDifferentListType.matches(withDifferentListType)).toBe(true);
+
+      // does not match if structure is different
+      expect(originalStructure.matches(withoutH3)).toBe(false);
+      expect(originalStructure.matches(withExtraListItem)).toBe(false);
+      expect(originalStructure.matches(withDifferentListType)).toBe(false);
     });
 
-    it('does not match html with missing or additional tags', () => {
-      const missingTag = new StructuredHtmlElement('<h3></h3><ul><li></li><li></li></ul>');
-      const additionalTag = new StructuredHtmlElement('<h3></h3><p></p><ul><li></li><li></li><li></li></ul>');
-      expect(structuredHtmlElement.matches(missingTag)).toBe(false);
-      expect(structuredHtmlElement.matches(additionalTag)).toBe(false);
+    it('matches on structural equal htmlElements that contains a subset of the textContent', () => {
+      const withAllText = structuredHtmlElement;
+      const withoutText = new StructuredHtmlElement('<h3></h3><p></p><ul><li></li><li></li></ul>');
+      const withHeading = new StructuredHtmlElement('<h3>Overskrift</h3><p></p><ul><li></li><li></li></ul>');
+      const withMisplacedText = new StructuredHtmlElement('<h3></h3>missplaced text<p></p><ul><li></li><li></li></ul>');
+
+      // matches itself
+      expect(withAllText.matches(withAllText)).toBe(true);
+      expect(withoutText.matches(withoutText)).toBe(true);
+      expect(withHeading.matches(withHeading)).toBe(true);
+      expect(withMisplacedText.matches(withMisplacedText)).toBe(true);
+
+      // matches only if set of textContent is subset
+      expect(withAllText.matches(withoutText)).toBe(true);
+      expect(withAllText.matches(withHeading)).toBe(true);
+      expect(withAllText.matches(withMisplacedText)).toBe(false);
+
+      // does not match if set of textContent is more expansive
+      expect(withoutText.matches(withAllText)).toBe(false);
+      expect(withHeading.matches(withAllText)).toBe(false);
+      expect(withMisplacedText.matches(withAllText)).toBe(false);
     });
 
     it('updates individual values', () => {

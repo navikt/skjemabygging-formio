@@ -85,18 +85,23 @@ class StructuredHtmlElement extends StructuredHtml {
   }
 
   private matchesChildren(other: StructuredHtmlElement) {
-    const elementChildren = this.children.filter(StructuredHtml.isElement);
+    const thisElementChildren = this.children.filter(StructuredHtml.isElement);
     const othersElementChildren = other.children.filter(StructuredHtml.isElement);
 
-    if (
-      (this.containsMarkdown || elementChildren.length === 0) &&
-      (other.containsMarkdown || othersElementChildren.length === 0)
-    ) {
+    // if this contains markdown it matches the other element if the following is true:
+    // - if other has elements as children they must have been converted to markdown
+    if (this.containsMarkdown && (other.containsMarkdown || othersElementChildren.length === 0)) {
       return true;
     }
+
+    // it matches other if the following is true:
+    // - must have the same amount or fewer children in total
+    // - must have the same amount of element children
+    // - each element child must match other's corresponding element child, in sequential order
     return (
-      elementChildren.length === othersElementChildren.length &&
-      elementChildren.every((child, index) => child.matches(othersElementChildren[index]))
+      this.children.length >= other.children.length &&
+      thisElementChildren.length === othersElementChildren.length &&
+      thisElementChildren.every((child, index) => child.matches(othersElementChildren[index]))
     );
   }
 
