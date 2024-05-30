@@ -98,13 +98,16 @@ function formatValue(component, value, translate, form, language) {
       };
     case 'navAddress':
       const bostedsadresse = value.sokerAdresser?.bostedsadresse;
-      const adresse = bostedsadresse?.adresse ?? '';
-      const postnummer = bostedsadresse?.postnummer ?? '';
-      const co = bostedsadresse?.co ? `c/o ${bostedsadresse.co}` : '';
-      const postboks = bostedsadresse?.postboks ?? '';
+      const adresse = bostedsadresse?.adresse;
+      const postnummer = bostedsadresse?.postnummer;
+      const co = bostedsadresse?.co ? `c/o ${bostedsadresse.co}` : undefined;
+      const postboks = bostedsadresse?.postboks;
+
+      const addressComponents = [adresse, postnummer, postboks, co].filter(Boolean);
+      const address = addressComponents.join(' ');
 
       return {
-        address: adresse + postnummer + postboks + co,
+        address,
         linkText: translate(TEXTS.statiske.address.skatteetatenLink),
       };
     case 'drivinglist':

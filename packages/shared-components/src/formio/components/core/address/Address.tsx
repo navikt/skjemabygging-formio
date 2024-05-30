@@ -10,6 +10,10 @@ class Address extends BaseComponent {
       label: 'Adresse',
       type: 'navAddress',
       key: 'address',
+
+      hideLabel: true,
+      hidden: true,
+      clearOnHide: false,
     });
   }
 
