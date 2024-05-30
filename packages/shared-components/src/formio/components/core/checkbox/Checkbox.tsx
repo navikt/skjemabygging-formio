@@ -28,7 +28,7 @@ class Checkbox extends BaseComponent {
   changeHandler(selectedCheckboxes: string[], opts: { modified: boolean }) {
     // There is always either 0 or 1 checkbox selected
     const isChecked = selectedCheckboxes.length > 0;
-    super.updateValue(isChecked, opts);
+    super.onUserUpdate(isChecked, opts);
     this.rerender();
   }
 

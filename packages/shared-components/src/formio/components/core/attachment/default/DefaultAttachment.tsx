@@ -26,7 +26,7 @@ class DefaultAttachment extends BaseComponent {
   }
 
   handleChange(value, flags) {
-    super.updateValue(value, flags);
+    super.onUserUpdate(value, flags);
     this.rerender();
   }
 

@@ -102,7 +102,7 @@ export default class DatePicker extends BaseComponent {
   }
 
   onUpdate(value: string) {
-    this.updateValue(value, { modified: true });
+    this.onUserUpdate(value, { modified: true });
 
     this.getComponentsWithDateInputKey().map((component) => component.rerender?.());
   }

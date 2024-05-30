@@ -56,7 +56,7 @@ class Radio extends BaseComponent {
   }
 
   changeHandler(value, opts) {
-    super.updateValue(value, opts);
+    super.onUserUpdate(value, opts);
     this.rerender();
   }
 

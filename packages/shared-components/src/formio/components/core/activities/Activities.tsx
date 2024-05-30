@@ -69,7 +69,7 @@ class Activities extends BaseComponent {
     if (!value) {
       super.resetValue();
     }
-    super.updateValue(value, opts);
+    super.onUserUpdate(value, opts);
     this.rerender();
   }
 
