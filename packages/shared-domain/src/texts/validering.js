@@ -40,6 +40,6 @@ export const validering = {
   // Number
   max: '{{field}} kan ikke være større enn {{max}}.',
   min: '{{field}} kan ikke være mindre enn {{min}}.',
-  integer: '{{field}} er ikke et gyldig tall.',
-  decimal: '{{field}} er ikke et gyldig desimaltall, med maksimalt to desimaler.',
+  integer: 'Oppgi et tall uten desimaler.',
+  decimal: 'Oppgi et tall med maksimalt to desimaler.',
 };
