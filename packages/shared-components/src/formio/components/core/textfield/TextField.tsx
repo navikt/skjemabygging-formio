@@ -39,7 +39,7 @@ class TextField extends BaseComponent {
         id={this.getId()}
         defaultValue={this.getValue()}
         ref={(ref) => this.setReactInstance(ref)}
-        onChange={(event) => this.updateValue(event.currentTarget.value, { modified: true })}
+        onChange={(event) => this.onUserUpdate(event.currentTarget.value, { modified: true })}
         label={this.getLabel()}
         hideLabel={this.getHideLabel()}
         description={this.getDescription()}
