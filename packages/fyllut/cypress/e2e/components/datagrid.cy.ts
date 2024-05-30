@@ -1,6 +1,8 @@
 /*
  * Tests datagrid component
  */
+import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+
 describe('Datagrid', () => {
   before(() => {
     cy.configMocksServer();
@@ -17,6 +19,20 @@ describe('Datagrid', () => {
   });
 
   describe('Optional fields in datagrid', () => {
+    it('does not reset datagrid textfield values when adding a new row', () => {
+      cy.visit('/fyllut/datagrid123?sub=digital');
+      cy.defaultWaits();
+      cy.clickStart();
+      cy.findByRole('textbox', { name: 'Tekstfelt (valgfritt)' }).type('Hund');
+      cy.clickSaveAndContinue();
+      cy.findByRoleWhenAttached('heading', { level: 2, name: 'Oppsummering' }).should('exist');
+      cy.findByRoleWhenAttached('link', { name: TEXTS.grensesnitt.summaryPage.editAnswers }).should('exist').click();
+      cy.findByRole('textbox', { name: 'Tekstfelt (valgfritt)' }).should('have.value', 'Hund');
+      cy.findByRole('textbox', { name: 'Tekstfelt (valgfritt)' }).type('{selectall}Katt');
+      cy.findByRole('button', { name: 'Legg til' }).click();
+      cy.findAllByRole('textbox', { name: 'Tekstfelt (valgfritt)' }).first().should('have.value', 'Katt');
+    });
+
     it('does not trigger validation error on optional fields in datagrid rows', () => {
       cy.visit('/fyllut/datagrid123?sub=digital');
       cy.defaultWaits();
