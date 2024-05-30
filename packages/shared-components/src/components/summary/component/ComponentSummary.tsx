@@ -1,6 +1,7 @@
 import { Summary } from '@navikt/skjemadigitalisering-shared-domain';
 import { PanelValidation } from '../../../util/form/panel-validation/panelValidation';
 import ActivitySummary from '../activity/ActivitySummary';
+import AddressSummary from '../address/AddressSummary';
 import AttachmentSummary from '../attachment/AttachmentSummary';
 import DataGridSummary from '../datagrid/DataGridSummary';
 import DrivingListSummary from '../drivingList/DrivingListSummary';
@@ -48,6 +49,8 @@ const ComponentSummary = ({ components, formUrl = '', panelValidationList = [] }
               return <ActivitySummary key={key} component={comp as Summary.Activity} />;
             case 'drivinglist':
               return <DrivingListSummary key={key} component={comp as Summary.DrivingList} />;
+            case 'navAddress':
+              return <AddressSummary key={key} component={comp as Summary.Address} />;
             default:
               return <SummaryField key={key} component={comp as Summary.Field} />;
           }

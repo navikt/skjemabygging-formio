@@ -96,6 +96,17 @@ function formatValue(component, value, translate, form, language) {
             ? translate(TEXTS.statiske.attachment.deadline, { deadline: form?.properties?.ettersendelsesfrist })
             : undefined,
       };
+    case 'navAddress':
+      const bostedsadresse = value.sokerAdresser?.bostedsadresse;
+      const adresse = bostedsadresse?.adresse ?? '';
+      const postnummer = bostedsadresse?.postnummer ?? '';
+      const co = bostedsadresse?.co ? `c/o ${bostedsadresse.co}` : '';
+      const postboks = bostedsadresse?.postboks ?? '';
+
+      return {
+        address: adresse + postnummer + postboks + co,
+        linkText: translate(TEXTS.statiske.address.skatteetatenLink),
+      };
     case 'drivinglist':
       return {
         description: translate(TEXTS.statiske.drivingList.summaryDescription),

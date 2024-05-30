@@ -100,6 +100,8 @@ const sectionContent = (components: Summary.Component[], level: number): string 
           return activity(component);
         case 'drivinglist':
           return drivingList(component);
+        case 'navAddress':
+          return address(component);
         case 'attachment':
           return attachment(component as Summary.Attachment);
         default:
@@ -139,6 +141,9 @@ const attachment = (component: Summary.Attachment) => {
 
   return html;
 };
+
+const address = (component: Summary.Address) =>
+  `<div class="spm">${component.label}</div><div class="svar">: ${component.value.address}</div>`;
 
 const activity = (component: Summary.Activity) =>
   `<div class="spm">${component.label}</div><div class="svar">: ${component.value.text}</div>`;
