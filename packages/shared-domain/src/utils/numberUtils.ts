@@ -1,5 +1,5 @@
 const isValidDecimal = (value: string) => {
-  return /^-?\d+\.?\d*$/.test(value);
+  return /^-?\d+\.?\d{0,2}$/.test(value);
 };
 
 const isValidInteger = (value: string) => {

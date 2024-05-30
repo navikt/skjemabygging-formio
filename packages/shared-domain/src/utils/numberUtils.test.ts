@@ -6,8 +6,9 @@ describe('numberValidators', () => {
       expect(numberUtils.isValidDecimal('-0.5')).toBe(true);
       expect(numberUtils.isValidDecimal('-0.1')).toBe(true);
       expect(numberUtils.isValidDecimal('0')).toBe(true);
+      expect(numberUtils.isValidDecimal('1')).toBe(true);
       expect(numberUtils.isValidDecimal('1.5')).toBe(true);
-      expect(numberUtils.isValidDecimal('1.123456789')).toBe(true);
+      expect(numberUtils.isValidDecimal('1.12')).toBe(true);
       expect(numberUtils.isValidDecimal('123456789.0')).toBe(true);
     });
 
@@ -16,6 +17,7 @@ describe('numberValidators', () => {
       expect(numberUtils.isValidDecimal('1.1a')).toBe(false);
       expect(numberUtils.isValidDecimal('1.1a')).toBe(false);
       expect(numberUtils.isValidDecimal('1.1.1')).toBe(false);
+      expect(numberUtils.isValidDecimal('1.123')).toBe(false);
       // Comma is valid in NO, but we need to convert comma to dot before validating
       expect(numberUtils.isValidDecimal('1,1')).toBe(false);
     });
