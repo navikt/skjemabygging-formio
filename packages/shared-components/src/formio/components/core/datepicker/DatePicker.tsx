@@ -86,7 +86,10 @@ export default class DatePicker extends BaseComponent {
       }
 
       return undefined;
-    } else if (this.component?.earliestAllowedDate && !Number.isNaN(+this.component?.earliestAllowedDate)) {
+    } else if (
+      this.component?.earliestAllowedDate !== undefined &&
+      !Number.isNaN(+this.component?.earliestAllowedDate)
+    ) {
       return dateUtils.addDays(+this.component?.earliestAllowedDate);
     } else if (this.component?.specificEarliestAllowedDate) {
       return this.component?.specificEarliestAllowedDate;
@@ -94,7 +97,7 @@ export default class DatePicker extends BaseComponent {
   }
 
   getToDate(): string | undefined {
-    if (this.component?.latestAllowedDate && !Number.isNaN(+this.component?.latestAllowedDate)) {
+    if (this.component?.latestAllowedDate !== undefined && !Number.isNaN(+this.component?.latestAllowedDate)) {
       return dateUtils.addDays(+this.component?.latestAllowedDate);
     } else if (this.component?.specificLatestAllowedDate) {
       return this.component?.specificLatestAllowedDate;
