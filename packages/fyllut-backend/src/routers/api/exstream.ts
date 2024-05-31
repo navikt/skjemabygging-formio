@@ -7,6 +7,8 @@ import {
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { NextFunction, Request, Response } from 'express';
 import { base64Decode } from '../../utils/base64';
+import { htmlResponseError } from '../../utils/errorHandling';
+import { logErrorWithStacktrace } from '../../utils/errors';
 import { createPdf } from './helpers/pdfService';
 
 const parseBody = (
@@ -41,7 +43,9 @@ const exstream = {
       res.contentType(pdf.contentType);
       res.send(base64Decode(pdf.data));
     } catch (e) {
-      next(e);
+      logErrorWithStacktrace(e as Error);
+      const createPdfError = htmlResponseError('Generering av PDF feilet');
+      next(createPdfError);
     }
   },
 };

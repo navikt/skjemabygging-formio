@@ -55,8 +55,8 @@ class Radio extends BaseComponent {
     });
   }
 
-  changeHandler(value, opts) {
-    super.updateValue(value, opts);
+  changeHandler(value) {
+    super.handleChange(value);
     this.rerender();
   }
 
@@ -68,7 +68,7 @@ class Radio extends BaseComponent {
         id={this.getId()}
         legend={this.getLabel()}
         value={this.getValue()}
-        onChange={(value) => this.changeHandler(value, { modified: true })}
+        onChange={(value) => this.changeHandler(value)}
         ref={(ref) => this.setReactInstance(ref)}
         description={this.getDescription()}
         className={this.getClassName()}

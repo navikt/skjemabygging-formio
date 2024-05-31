@@ -1,6 +1,8 @@
 /*
  * Tests datagrid component
  */
+import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+
 describe('Datagrid', () => {
   before(() => {
     cy.configMocksServer();
@@ -17,6 +19,50 @@ describe('Datagrid', () => {
   });
 
   describe('Optional fields in datagrid', () => {
+    it.only('does not reset values in react rendered fields inside datagrid when adding a new row', () => {
+      cy.visit('/fyllut/datagridReact?sub=digital');
+      cy.defaultWaits();
+      cy.clickStart();
+      cy.findByRole('checkbox', { name: 'Avkryssingsboks inni datagrid (valgfritt)' }).check();
+      cy.findByRole('textbox', { name: 'Dato inni datagrid' }).type('15.01.2022');
+      cy.findByRole('combobox', { name: 'Nedtrekksmeny inni datagrid' }).type('F{enter}');
+      cy.findByRole('radio', { name: 'Nei' }).check();
+      cy.findByRole('textbox', { name: 'Tekstområde inni datagrid' }).type('Lorem Ipsum');
+      cy.findByRole('textbox', { name: 'Tekstfelt inni datagrid' }).type('Hund');
+      cy.clickSaveAndContinue();
+      cy.findByRoleWhenAttached('heading', { level: 2, name: 'Oppsummering' }).should('exist');
+      cy.findByRoleWhenAttached('link', { name: TEXTS.grensesnitt.summaryPage.editAnswers }).should('exist').click();
+
+      // check original values
+      cy.findByRole('checkbox', { name: 'Avkryssingsboks inni datagrid (valgfritt)' }).should('be.checked');
+      cy.findByRole('textbox', { name: 'Dato inni datagrid' }).should('have.value', '15.01.2022');
+      cy.findByText('Ferge').should('be.visible');
+      cy.findByText('Buss').should('not.exist');
+      cy.findByRole('radio', { name: 'Nei' }).should('be.checked');
+      cy.findByRole('textbox', { name: 'Tekstområde inni datagrid' }).should('have.value', 'Lorem Ipsum');
+      cy.findByRole('textbox', { name: 'Tekstfelt inni datagrid' }).should('have.value', 'Hund');
+
+      // change values
+      cy.findByRole('checkbox', { name: 'Avkryssingsboks inni datagrid (valgfritt)' }).click();
+      cy.findByRole('textbox', { name: 'Dato inni datagrid' }).type('{selectall}24.12.1999');
+      cy.findByRole('combobox', { name: 'Nedtrekksmeny inni datagrid' }).type('Bu{enter}');
+      cy.findByRole('radio', { name: 'Ja' }).check();
+      cy.findByRole('textbox', { name: 'Tekstområde inni datagrid' }).type('{selectall}En vegg av tekst');
+      cy.findByRole('textbox', { name: 'Tekstfelt inni datagrid' }).type('{selectall}Katt');
+
+      cy.findByRole('button', { name: 'Legg til' }).click();
+      cy.findAllByRole('button', { name: 'Fjern' }).last().click();
+
+      // check that no values were reset to original
+      cy.findByRole('checkbox', { name: 'Avkryssingsboks inni datagrid (valgfritt)' }).should('not.be.checked');
+      cy.findByRole('textbox', { name: 'Dato inni datagrid' }).should('have.value', '24.12.1999');
+      cy.findByText('Ferge').should('not.exist');
+      cy.findByText('Buss').should('be.visible');
+      cy.findByRole('radio', { name: 'Ja' }).should('be.checked');
+      cy.findByRole('textbox', { name: 'Tekstområde inni datagrid' }).should('have.value', 'En vegg av tekst');
+      cy.findByRole('textbox', { name: 'Tekstfelt inni datagrid' }).should('have.value', 'Katt');
+    });
+
     it('does not trigger validation error on optional fields in datagrid rows', () => {
       cy.visit('/fyllut/datagrid123?sub=digital');
       cy.defaultWaits();

@@ -1,8 +1,15 @@
 import correlator from 'express-correlation-id';
 import { config } from '../config/config';
-import { logger } from '../logger.js';
+import { logErrorWithStacktrace } from '../utils/errors';
 
 const { isTest } = config;
+
+const createJson = (err) => {
+  return {
+    message: err.functional ? err.message : 'Det oppstod en feil',
+    correlation_id: err.correlation_id,
+  };
+};
 
 const globalErrorHandler = (err, req, res, _next) => {
   if (!err.correlation_id) {
@@ -10,13 +17,16 @@ const globalErrorHandler = (err, req, res, _next) => {
   }
 
   if (!isTest) {
-    const { message, stack, ...errDetails } = err;
-    logger.error(message, { stack, ...errDetails });
+    logErrorWithStacktrace(err);
   }
 
   res.status(500);
-  res.contentType('application/json');
-  res.send({ message: err.functional ? err.message : 'Det oppstod en feil', correlation_id: err.correlation_id });
+  if (err.render_html) {
+    res.redirect(`${config.fyllutPath}/500?correlationId=${err.correlation_id}`);
+  } else {
+    res.contentType('application/json');
+    res.send(createJson(err));
+  }
 };
 
 export default globalErrorHandler;

@@ -490,12 +490,12 @@ describe('form summary', () => {
       it('to be formated correctly', () => {
         const actual = handleComponent(
           createDummyNumberField(),
-          { data: { number: 2512.3889999999997 } },
+          { data: { number: 2512.388 } },
           [],
           '',
           mockedTranslate,
         );
-        expect(actual[0].value).toEqual('2 512,39'.replaceAll(' ', '\u00A0'));
+        expect(actual[0].value).toEqual('2 512,388'.replaceAll(' ', '\u00A0'));
       });
 
       it('should add prefix and suffix', () => {

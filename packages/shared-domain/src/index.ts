@@ -16,6 +16,7 @@ import {
   FormsResponseForm,
   FyllutState,
   InnsendingType,
+  InputMode,
   MellomlagringError,
   NavFormType,
   NewFormSignatureType,
@@ -80,6 +81,7 @@ import navFormioUtils from './utils/formio';
 import { guid } from './utils/guid';
 import localizationUtils from './utils/localization';
 import navFormUtils, { DependencyType } from './utils/navFormUtils';
+import numberUtils from './utils/numberUtils';
 import objectUtils from './utils/objectUtils';
 import paginationUtils from './utils/pagination';
 import signatureUtils from './utils/signatureUtils';
@@ -104,6 +106,7 @@ export {
   migrationUtils,
   navFormUtils,
   navFormioUtils,
+  numberUtils,
   objectUtils,
   paginationUtils,
   signatureUtils,
@@ -150,6 +153,7 @@ export type {
   I18nTranslationReplacements,
   I18nTranslations,
   InnsendingType,
+  InputMode,
   KjentBruker,
   Language,
   LogLevel,

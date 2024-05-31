@@ -33,7 +33,7 @@ class DrivingList extends BaseComponent {
   }
 
   onValueChange(value) {
-    super.updateValue(value, { modified: true });
+    super.handleChange(value);
 
     // If next button has been clicked (submitted), check the whole form for errors
     if (this.root.submitted) {
