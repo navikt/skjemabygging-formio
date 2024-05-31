@@ -6,6 +6,7 @@ const addressBuilder = () => {
     title: 'Adresse',
     schema: {
       ...schema,
+      prefillKey: 'sokerAdresser',
     },
   };
 };

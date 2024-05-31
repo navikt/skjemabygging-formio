@@ -97,7 +97,7 @@ function formatValue(component, value, translate, form, language) {
             : undefined,
       };
     case 'navAddress':
-      const bostedsadresse = value.sokerAdresser?.bostedsadresse;
+      const bostedsadresse = value?.bostedsadresse;
 
       const addressComponents = [
         bostedsadresse?.co ? `c/o ${bostedsadresse.co}` : undefined,

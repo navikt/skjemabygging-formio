@@ -665,6 +665,7 @@
           "input": true,
           "key": "folkeregistrertAdresse",
           "tableView": false,
+          "prefillKey": "sokerAdresser",
           "label": "Folkeregistrert adresse",
           "type": "navAddress",
           "navId": "ej4l8eo",
