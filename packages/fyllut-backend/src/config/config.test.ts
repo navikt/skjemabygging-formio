@@ -30,7 +30,7 @@ describe('config', () => {
     } as ConfigType;
     // @ts-ignore
     checkConfigConsistency(config, logError, exit);
-    expect(logError).toBeCalledWith('Invalid configuration: FORMIO_PROJECT_URL is required when using FormioApi');
+    expect(logError).toBeCalledWith('Invalid configuration: Formio api service url is required when using FormioApi');
     expect(exit).toBeCalledWith(1);
   });
 
@@ -38,7 +38,7 @@ describe('config', () => {
     const config = {
       useFormioApi: true,
       naisClusterName: NaisCluster.DEV,
-      formioProjectUrl: 'https://form.io',
+      formioApiServiceUrl: 'https://form.io',
     } as ConfigType;
     // @ts-ignore
     checkConfigConsistency(config, logError, exit);

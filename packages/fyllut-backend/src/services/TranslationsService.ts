@@ -27,8 +27,8 @@ class TranslationsService {
   }
 
   async fetchTranslationsFromFormioApi(formPath: string) {
-    const { formioProjectUrl } = this._config;
-    const response = await fetch(`${formioProjectUrl}/language/submission?data.form=${formPath}&limit=1000`, {
+    const { formioApiServiceUrl } = this._config;
+    const response = await fetch(`${formioApiServiceUrl}/language/submission?data.form=${formPath}&limit=1000`, {
       method: 'GET',
     });
     if (response.ok) {
@@ -40,9 +40,9 @@ class TranslationsService {
   }
 
   async fetchGlobalTranslationsFromFormioApi(lang: string) {
-    const { formioProjectUrl } = this._config;
+    const { formioApiServiceUrl } = this._config;
     const response = await fetch(
-      `${formioProjectUrl}/language/submission?data.name=global&data.language=${lang}&limit=1000`,
+      `${formioApiServiceUrl}/language/submission?data.name=global&data.language=${lang}&limit=1000`,
       { method: 'GET' },
     );
     if (response.ok) {

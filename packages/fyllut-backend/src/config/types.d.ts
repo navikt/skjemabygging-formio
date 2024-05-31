@@ -33,7 +33,7 @@ export type DefaultConfig = {
   gitVersion: string;
   sentryDsn?: string;
   useFormioApi: boolean;
-  formioProjectUrl: string;
+  formioApiServiceUrl?: string;
   forstesideUrl: string;
   decoratorUrl: string;
   fyllutFrontendUrl: string;
