@@ -11,6 +11,7 @@ import editFormDisabled from './editFormDisabled';
 import editFormFieldSizeField from './editFormFieldSize';
 import editFormHidden from './editFormHidden';
 import editFormHideLabel from './editFormHideLabel';
+import editFormInputType from './editFormInputType';
 import editFormIsAttachmentPanel from './editFormIsAttachmentPanel';
 import editFormInline from './editFormIsInline';
 import editFormLabel from './editFormLabel';
@@ -58,6 +59,7 @@ const editFormDisplay = {
   hidden: editFormHidden,
   isAttachmentPanel: editFormIsAttachmentPanel,
   titleSize: editFormTitleSizeField,
+  inputType: editFormInputType,
 };
 
 export default editFormDisplay;

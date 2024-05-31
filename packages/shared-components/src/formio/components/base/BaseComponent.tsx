@@ -50,9 +50,7 @@ class BaseComponent extends FormioReactComponent {
     return (
       <>
         {this.t(this.component?.label ?? '')}
-        {this.component?.validate?.required && !this.component?.readOnly
-          ? ''
-          : showOptional && ` (${this.t('valgfritt')})`}
+        {this.isRequired() && !this.component?.readOnly ? '' : showOptional && ` (${this.t('valgfritt')})`}
         {showDiffTag && this.getDiffTag()}
       </>
     );
