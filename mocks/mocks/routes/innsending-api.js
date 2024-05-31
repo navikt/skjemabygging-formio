@@ -21,6 +21,7 @@ const mellomlagringDrivingList = require('../data/innsending-api/driving-list/me
 const mellomlagringDrivingListNoDates = require('../data/innsending-api/driving-list/mellomlagring-driving-list-no-dates.json');
 const mellomlagringCheckbox = require('../data/innsending-api/checkbox/mellomlagring-checkbox.json');
 const activitesFuture = require('../data/innsending-api/activities/activities-future.json');
+const prefillData = require('../data/innsending-api/prefill-data/prefill-data.json');
 
 const objectToByteArray = (obj) => Array.from(new TextEncoder().encode(JSON.stringify(obj)));
 
@@ -343,18 +344,7 @@ module.exports = [
         type: 'json',
         options: {
           status: 200,
-          body: {
-            sokerFornavn: 'Ola',
-            sokerEtternavn: 'Nordmann',
-            sokerMaalgruppe: {
-              gyldighetsperiode: {
-                fom: '2024-01-01',
-                tom: '2024-05-13',
-              },
-              maalgruppetype: 'ARBSOKERE',
-              maalgruppenavn: 'Arbeidssøker',
-            },
-          },
+          body: prefillData,
         },
       },
       {
