@@ -3,7 +3,7 @@ import address from './Address';
 const addressBuilder = () => {
   const schema = address.schema();
   return {
-    title: schema.label,
+    title: 'Adresse',
     schema: {
       ...schema,
     },

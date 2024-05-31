@@ -8,21 +8,24 @@ type Props = {
 };
 
 const NavAddress = ({ updateValue }: Props) => {
-  const { translate, appConfig } = useComponentUtils();
+  const { appConfig } = useComponentUtils();
+
+  const submissionMethod = appConfig?.submissionMethod;
+  const isLoggedIn = appConfig?.config?.isLoggedIn;
+  const app = appConfig?.app;
 
   useEffect(() => {
     const fetchData = async () => {
-      if (appConfig?.app === 'fyllut' && appConfig?.config?.isLoggedIn && appConfig?.submissionMethod === 'digital') {
+      if (app === 'fyllut' && isLoggedIn && submissionMethod === 'digital') {
         const response = await http?.get<PrefillData>(
           `${appConfig?.baseUrl}/api/send-inn/prefill-data?properties=sokerAdresser`,
         );
-        console.log(response);
         updateValue(response);
       }
     };
 
     fetchData();
-  }, [appConfig?.app, appConfig?.baseUrl, appConfig?.config?.isLoggedIn, appConfig?.submissionMethod, updateValue]);
+  }, [app, appConfig?.baseUrl, isLoggedIn, submissionMethod, updateValue]);
 
   return null;
 };

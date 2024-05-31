@@ -7,13 +7,11 @@ import addressForm from './Address.form';
 class Address extends BaseComponent {
   static schema() {
     return BaseComponent.schema({
-      label: 'Adresse',
+      label: 'Folkeregistrert adresse',
       type: 'navAddress',
       key: 'address',
 
       hideLabel: true,
-      hidden: true,
-      clearOnHide: false,
     });
   }
 
