@@ -68,7 +68,11 @@ class Number extends TextField {
   }
 
   handleChange(value: string): any {
-    return super.handleChange(this.replaceCommasAndSpaces(value));
+    if (value !== undefined && value !== null && value !== '') {
+      return super.handleChange(parseFloat(this.replaceCommasAndSpaces(value)));
+    }
+
+    return super.handleChange(value);
   }
 
   setValue(value: string): any {
