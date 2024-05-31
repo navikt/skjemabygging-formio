@@ -4,8 +4,9 @@ import { base64Decode } from '../../utils/base64';
 import exstream from './exstream';
 
 describe('exstream', () => {
+  const formTitle = 'testskjema';
   const defaultBody = {
-    form: JSON.stringify({ components: [], properties: { skjemanummer: 'NAV 12.34-56' } }),
+    form: JSON.stringify({ title: formTitle, components: [], properties: { skjemanummer: 'NAV 12.34-56' } }),
     submission: JSON.stringify({ data: {} }),
     submissionMethod: 'paper',
     translations: JSON.stringify({}),
@@ -35,8 +36,9 @@ describe('exstream', () => {
     await exstream.post(req, res, next);
 
     expect(next).toHaveBeenCalledTimes(1);
-    const error = next.mock.calls[0][0] as Error;
-    expect(error?.message).toBe('Feil ved generering av PDF hos Exstream');
+    const error = next.mock.calls[0][0];
+    expect(error?.message).toBe('Generering av PDF feilet');
+    expect(error?.render_html).toBe(true);
     expect(res.send).not.toHaveBeenCalled();
     skjemabyggingproxyScope.done();
   });

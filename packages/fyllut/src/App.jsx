@@ -2,6 +2,7 @@ import '@navikt/ds-css';
 import { makeStyles, Styles } from '@navikt/skjemadigitalisering-shared-components';
 import { Route, Routes } from 'react-router-dom';
 import { AllForms } from './components/AllForms';
+import InternalServerError from './components/errors/InternalServerError';
 import { FormPageWrapper } from './components/FormPageWrapper';
 
 const useStyles = makeStyles({
@@ -17,6 +18,7 @@ const App = () => {
     <main className={styles.app}>
       <Routes>
         <Route path="/" element={<AllForms />} />
+        <Route path="/500" element={<InternalServerError />} />
         <Route path="/:formPath/*" element={<FormPageWrapper />} />
       </Routes>
     </main>
