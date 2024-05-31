@@ -225,7 +225,7 @@ class NavSelect extends BaseComponent {
         ariaLiveMessages={this.translateAriaLiveMessages(ariaLiveMessages)}
         screenReaderStatus={({ count }: { count: number }) => this.t(SELECT_TEXTS.numberOfAvailableOptions, { count })}
         loadingMessage={() => this.t(TEXTS.statiske.loading)}
-        onChange={(value) => this.updateValue(value, {})}
+        onChange={(value) => this.onUserUpdate(value, { modified: true })}
         inputRef={(ref) => this.setReactInstance(ref)}
         isLoading={this.isLoading}
       />,
