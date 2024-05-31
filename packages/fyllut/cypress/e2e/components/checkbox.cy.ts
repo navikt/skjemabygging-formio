@@ -76,6 +76,13 @@ describe('Checkbox', () => {
       // Component error
       cy.findAllByText('Du må fylle ut: Required checkbox').should('have.length', 2);
     });
+
+    it('should show description', () => {
+      cy.findByText('Normal description text').should('exist');
+      cy.findByRole('button', { name: 'Extended description' }).should('exist');
+      cy.findByRole('button', { name: 'Extended description' }).click();
+      cy.findByText('Extended description text').should('exist');
+    });
   });
 
   describe('Digital', () => {

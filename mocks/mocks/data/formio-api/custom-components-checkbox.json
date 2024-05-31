@@ -307,8 +307,8 @@
           "id": "ef0bxga"
         },
         {
-          "description": "<p>Description</p>",
-          "additionalDescriptionText": "<p>Extended description</p>",
+          "description": "<p>Normal description text</p>",
+          "additionalDescriptionText": "<p>Extended description text</p>",
           "label": "Checkbox description",
           "additionalDescriptionLabel": "Extended description",
           "key": "checkboxDescription",

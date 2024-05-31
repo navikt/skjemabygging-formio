@@ -6,10 +6,12 @@ module.exports = [
     variants: [
       {
         id: 'success',
-        type: 'text',
+        type: 'json',
         options: {
           status: 200,
-          body: 'success',
+          body: {
+            code: 200,
+          },
         },
       },
     ],

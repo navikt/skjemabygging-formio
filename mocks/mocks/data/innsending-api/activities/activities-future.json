@@ -1,0 +1,431 @@
+[
+  {
+    "aktivitetId": "142075136",
+    "aktivitetstype": "ARBTREN",
+    "aktivitetsnavn": "Arbeidstrening",
+    "periode": {
+      "fom": "2099-01-01",
+      "tom": "2099-08-31"
+    },
+    "aktivitetsstatus": "BEHOV",
+    "aktivitetsstatusnavn": "Behov",
+    "erStoenadsberettigetAktivitet": true,
+    "erUtdanningsaktivitet": false,
+    "saksinformasjon": {
+      "saksnummerArena": "14796767",
+      "sakstype": "TSO",
+      "vedtaksinformasjon": [
+        {
+          "vedtakId": "43258683",
+          "dagsats": 67,
+          "periode": {
+            "fom": "2099-01-01",
+            "tom": "2099-08-31"
+          },
+          "trengerParkering": true,
+          "betalingsplan": [
+            {
+              "betalingsplanId": "15573660",
+              "beloep": 335,
+              "utgiftsperiode": {
+                "fom": "2099-01-01",
+                "tom": "2099-01-07"
+              },
+              "journalpostId": "480716180"
+            },
+            {
+              "betalingsplanId": "15573661",
+              "beloep": 335,
+              "utgiftsperiode": {
+                "fom": "2099-01-08",
+                "tom": "2099-01-14"
+              }
+            },
+            {
+              "betalingsplanId": "15573662",
+              "beloep": 335,
+              "utgiftsperiode": {
+                "fom": "2099-01-15",
+                "tom": "2099-01-21"
+              }
+            },
+            {
+              "betalingsplanId": "15573663",
+              "beloep": 335,
+              "utgiftsperiode": {
+                "fom": "2099-01-22",
+                "tom": "2099-01-28"
+              }
+            },
+            {
+              "betalingsplanId": "15573664",
+              "beloep": 335,
+              "utgiftsperiode": {
+                "fom": "2099-01-29",
+                "tom": "2099-02-04"
+              }
+            },
+            {
+              "betalingsplanId": "15573665",
+              "beloep": 335,
+              "utgiftsperiode": {
+                "fom": "2099-02-05",
+                "tom": "2099-02-11"
+              }
+            },
+            {
+              "betalingsplanId": "15573666",
+              "beloep": 335,
+              "utgiftsperiode": {
+                "fom": "2099-02-12",
+                "tom": "2099-02-18"
+              }
+            },
+            {
+              "betalingsplanId": "15573667",
+              "beloep": 335,
+              "utgiftsperiode": {
+                "fom": "2099-02-19",
+                "tom": "2099-02-25"
+              }
+            },
+            {
+              "betalingsplanId": "15573668",
+              "beloep": 335,
+              "utgiftsperiode": {
+                "fom": "2099-02-26",
+                "tom": "2099-03-03"
+              }
+            },
+            {
+              "betalingsplanId": "15573669",
+              "beloep": 335,
+              "utgiftsperiode": {
+                "fom": "2099-03-04",
+                "tom": "2099-03-10"
+              }
+            },
+            {
+              "betalingsplanId": "15573670",
+              "beloep": 335,
+              "utgiftsperiode": {
+                "fom": "2099-03-11",
+                "tom": "2099-03-17"
+              }
+            },
+            {
+              "betalingsplanId": "15573671",
+              "beloep": 335,
+              "utgiftsperiode": {
+                "fom": "2099-03-18",
+                "tom": "2099-03-24"
+              }
+            },
+            {
+              "betalingsplanId": "15573672",
+              "beloep": 335,
+              "utgiftsperiode": {
+                "fom": "2099-03-25",
+                "tom": "2099-03-31"
+              }
+            },
+            {
+              "betalingsplanId": "15573673",
+              "beloep": 335,
+              "utgiftsperiode": {
+                "fom": "2099-04-01",
+                "tom": "2099-04-07"
+              }
+            },
+            {
+              "betalingsplanId": "15573674",
+              "beloep": 335,
+              "utgiftsperiode": {
+                "fom": "2099-04-08",
+                "tom": "2099-04-14"
+              }
+            },
+            {
+              "betalingsplanId": "15573675",
+              "beloep": 335,
+              "utgiftsperiode": {
+                "fom": "2099-04-15",
+                "tom": "2099-04-21"
+              }
+            },
+            {
+              "betalingsplanId": "15573676",
+              "beloep": 335,
+              "utgiftsperiode": {
+                "fom": "2099-04-22",
+                "tom": "2099-04-28"
+              }
+            },
+            {
+              "betalingsplanId": "15573677",
+              "beloep": 335,
+              "utgiftsperiode": {
+                "fom": "2099-04-29",
+                "tom": "2099-05-05"
+              }
+            },
+            {
+              "betalingsplanId": "15573678",
+              "beloep": 335,
+              "utgiftsperiode": {
+                "fom": "2099-05-06",
+                "tom": "2099-05-12"
+              }
+            },
+            {
+              "betalingsplanId": "15573679",
+              "beloep": 335,
+              "utgiftsperiode": {
+                "fom": "2099-05-13",
+                "tom": "2099-05-19"
+              }
+            },
+            {
+              "betalingsplanId": "15573680",
+              "beloep": 335,
+              "utgiftsperiode": {
+                "fom": "2099-05-20",
+                "tom": "2099-05-26"
+              }
+            },
+            {
+              "betalingsplanId": "15573681",
+              "beloep": 335,
+              "utgiftsperiode": {
+                "fom": "2099-05-27",
+                "tom": "2099-06-02"
+              }
+            },
+            {
+              "betalingsplanId": "15573682",
+              "beloep": 335,
+              "utgiftsperiode": {
+                "fom": "2099-06-03",
+                "tom": "2099-06-09"
+              }
+            },
+            {
+              "betalingsplanId": "15573683",
+              "beloep": 335,
+              "utgiftsperiode": {
+                "fom": "2099-06-10",
+                "tom": "2099-06-16"
+              }
+            },
+            {
+              "betalingsplanId": "15573684",
+              "beloep": 335,
+              "utgiftsperiode": {
+                "fom": "2099-06-17",
+                "tom": "2099-06-23"
+              }
+            },
+            {
+              "betalingsplanId": "15573685",
+              "beloep": 335,
+              "utgiftsperiode": {
+                "fom": "2099-06-24",
+                "tom": "2099-06-30"
+              }
+            },
+            {
+              "betalingsplanId": "15573686",
+              "beloep": 335,
+              "utgiftsperiode": {
+                "fom": "2099-07-01",
+                "tom": "2099-07-07"
+              }
+            },
+            {
+              "betalingsplanId": "15573687",
+              "beloep": 335,
+              "utgiftsperiode": {
+                "fom": "2099-07-08",
+                "tom": "2099-07-14"
+              }
+            },
+            {
+              "betalingsplanId": "15573688",
+              "beloep": 335,
+              "utgiftsperiode": {
+                "fom": "2099-07-15",
+                "tom": "2099-07-21"
+              }
+            },
+            {
+              "betalingsplanId": "15573689",
+              "beloep": 335,
+              "utgiftsperiode": {
+                "fom": "2099-07-22",
+                "tom": "2099-07-28"
+              }
+            },
+            {
+              "betalingsplanId": "15573690",
+              "beloep": 335,
+              "utgiftsperiode": {
+                "fom": "2099-07-29",
+                "tom": "2099-08-04"
+              }
+            },
+            {
+              "betalingsplanId": "15573691",
+              "beloep": 335,
+              "utgiftsperiode": {
+                "fom": "2099-08-05",
+                "tom": "2099-08-11"
+              }
+            },
+            {
+              "betalingsplanId": "15573692",
+              "beloep": 335,
+              "utgiftsperiode": {
+                "fom": "2099-08-12",
+                "tom": "2099-08-18"
+              }
+            },
+            {
+              "betalingsplanId": "15573693",
+              "beloep": 335,
+              "utgiftsperiode": {
+                "fom": "2099-08-19",
+                "tom": "2099-08-25"
+              }
+            },
+            {
+              "betalingsplanId": "15573694",
+              "beloep": 335,
+              "utgiftsperiode": {
+                "fom": "2099-08-26",
+                "tom": "2099-08-31"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "maalgruppe": {
+      "gyldighetsperiode": {
+        "fom": "2099-01-01",
+        "tom": "2099-05-13"
+      },
+      "maalgruppetype": "ARBSOKERE",
+      "maalgruppenavn": "Arbeidssøker"
+    }
+  },
+  {
+    "aktivitetId": "142075139",
+    "aktivitetstype": "AVKLARAG",
+    "aktivitetsnavn": "Avklaring",
+    "periode": {
+      "fom": "2099-02-01",
+      "tom": "2099-04-30"
+    },
+    "aktivitetsstatus": "BEHOV",
+    "aktivitetsstatusnavn": "Behov",
+    "erStoenadsberettigetAktivitet": true,
+    "erUtdanningsaktivitet": false,
+    "saksinformasjon": {
+      "saksnummerArena": "14796871",
+      "sakstype": "TSO",
+      "vedtaksinformasjon": [
+        {
+          "vedtakId": "43258859",
+          "dagsats": 67,
+          "periode": {
+            "fom": "2099-02-01",
+            "tom": "2099-03-31"
+          },
+          "trengerParkering": false,
+          "betalingsplan": [
+            {
+              "betalingsplanId": "15573854",
+              "beloep": 335,
+              "utgiftsperiode": {
+                "fom": "2099-02-01",
+                "tom": "2099-02-07"
+              }
+            },
+            {
+              "betalingsplanId": "15573855",
+              "beloep": 335,
+              "utgiftsperiode": {
+                "fom": "2099-02-08",
+                "tom": "2099-02-14"
+              }
+            },
+            {
+              "betalingsplanId": "15573856",
+              "beloep": 335,
+              "utgiftsperiode": {
+                "fom": "2099-02-15",
+                "tom": "2099-02-21"
+              }
+            },
+            {
+              "betalingsplanId": "15573857",
+              "beloep": 335,
+              "utgiftsperiode": {
+                "fom": "2099-02-22",
+                "tom": "2099-02-28"
+              }
+            },
+            {
+              "betalingsplanId": "15573858",
+              "beloep": 335,
+              "utgiftsperiode": {
+                "fom": "2099-02-29",
+                "tom": "2099-03-06"
+              }
+            },
+            {
+              "betalingsplanId": "15573859",
+              "beloep": 335,
+              "utgiftsperiode": {
+                "fom": "2099-03-07",
+                "tom": "2099-03-13"
+              }
+            },
+            {
+              "betalingsplanId": "15573860",
+              "beloep": 335,
+              "utgiftsperiode": {
+                "fom": "2099-03-14",
+                "tom": "2099-03-20"
+              }
+            },
+            {
+              "betalingsplanId": "15573861",
+              "beloep": 335,
+              "utgiftsperiode": {
+                "fom": "2099-03-21",
+                "tom": "2099-03-27"
+              }
+            },
+            {
+              "betalingsplanId": "15573862",
+              "beloep": 134,
+              "utgiftsperiode": {
+                "fom": "2099-03-28",
+                "tom": "2099-03-31"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "maalgruppe": {
+      "gyldighetsperiode": {
+        "fom": "2099-02-01",
+        "tom": "2099-06-01"
+      },
+      "maalgruppetype": "ENSFORUTD",
+      "maalgruppenavn": "Enslig forsørger under utdanning"
+    }
+  }
+]

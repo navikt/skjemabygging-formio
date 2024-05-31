@@ -19,11 +19,11 @@ interface AttachmentSettingValue {
 }
 
 interface AttachmentValue {
-  key: string;
+  key: keyof AttachmentSettingValues;
   description: string;
   additionalDocumentation?: string;
   additionalDocumentationLabel?: string;
   deadlineWarning?: string;
 }
 
-export type { AttachmentSettingValues, AttachmentValue };
+export type { AttachmentSettingValue, AttachmentSettingValues, AttachmentValue };

@@ -1,5 +1,5 @@
-import DOMPurify from 'dompurify';
 import React from 'react';
+import htmlConverter from '../../util/html/converters';
 
 interface Props {
   tag?: string;
@@ -10,7 +10,7 @@ interface Props {
 const InnerHtml = ({ tag = 'div', content, className }: Props) => {
   return React.createElement(tag, {
     dangerouslySetInnerHTML: {
-      __html: DOMPurify.sanitize(content, { ADD_ATTR: ['target'] }),
+      __html: htmlConverter.sanitizeHtmlString(content),
     },
     className,
   });

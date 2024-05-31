@@ -5,6 +5,7 @@ import {
 } from '@navikt/skjemadigitalisering-shared-domain';
 
 export interface I18nState {
+  status: 'LOADING' | 'INITIALIZED' | 'ERROR';
   translations: FormioTranslationMap;
   translationsForNavForm: I18nTranslations;
   localTranslationsForNavForm: I18nTranslations;
@@ -12,18 +13,25 @@ export interface I18nState {
 
 export type I18nAction =
   | { type: 'init'; payload: FormioTranslationMap }
+  | { type: 'error' }
   | { type: 'updateTranslationsForNavForm'; payload: I18nTranslations }
   | { type: 'updateLocalTranslationsForNavForm'; payload: I18nTranslations }
   | { type: 'update'; payload: { lang: string; translation: ScopedTranslationMap } }
   | { type: 'remove'; payload: { lang: string; key: string } }
   | { type: 'updateLanguageId'; payload: { lang: string; id: string } };
 
-function reducer(state: I18nState, action: I18nAction) {
+function reducer(state: I18nState, action: I18nAction): I18nState {
   switch (action.type) {
     case 'init':
       return {
         ...state,
         translations: action.payload,
+        status: 'INITIALIZED',
+      };
+    case 'error':
+      return {
+        ...state,
+        status: 'ERROR',
       };
     case 'updateTranslationsForNavForm':
       return {

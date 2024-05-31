@@ -76,10 +76,10 @@ class PublisherService {
     const now = dateUtils.getIso8601String();
     const { userName, formioToken } = opts || {};
 
-    let publications: Publication[] | undefined;
+    const publications: Publication[] = [];
     let gitSha;
     try {
-      publications = await Promise.all(
+      await Promise.allSettled(
         forms.map(async (originalForm) => {
           const formProps = createPublishProps(now, userName);
           const formWithPublishProps = await this.formioService.saveForm(
@@ -94,17 +94,51 @@ class PublisherService {
             formWithPublishProps,
           };
         }),
-      );
+      ).then((results) => {
+        const errs: Record<string, Error> = {};
+        results.forEach((result, index) => {
+          if (result.status === 'fulfilled') {
+            publications.push(result.value);
+          } else {
+            const err = result.reason;
+            const { message, stack, ...errDetails } = err;
+            const logMeta = { reason: message, stack, ...errDetails };
+            const form = forms[index];
+            logger.error(`Failed to update props for ${form.path}`, logMeta);
+            errs[form.path] = err;
+          }
+        });
+        const failedUpdates = Object.keys(errs);
+        if (failedUpdates.length > 0) {
+          const err = new Error(`Failed to update props for ${failedUpdates.length} form(s)`);
+          err['failedFormPaths'] = failedUpdates;
+          throw err;
+        }
+      });
       gitSha = await this.backend.publishForms(publications.map((pub) => pub.formWithPublishProps));
-    } catch (error) {
-      if (publications) {
-        await Promise.all(
+    } catch (error: any) {
+      logger.error(`Error during publishForms, rolling back props for ${publications.length} form(s)`, {
+        reason: error.message,
+        failedFormPaths: error.failedFormPaths ?? 'unknown',
+        rollbackFormPaths: publications?.map((p) => p.originalForm.path),
+      });
+      if (publications.length) {
+        await Promise.allSettled(
           publications.map((pub) => {
             const { originalForm, formWithPublishProps } = pub;
             const rollbackFormProps = createRollbackProps(originalForm);
             return this.formioService.saveForm(formWithPublishProps, formioToken, userName, rollbackFormProps);
           }),
-        );
+        ).then((results) => {
+          results.forEach((result, index) => {
+            if (result.status === 'rejected') {
+              const err = result.reason;
+              const { message, stack, ...errDetails } = err;
+              const logMeta = { reason: message, stack, ...errDetails };
+              logger.warn(`Failed to rollback props for ${publications[index].originalForm.path}`, logMeta);
+            }
+          });
+        });
       }
       throw new ApiError('Bulk-publisering feilet', true, error as Error);
     }

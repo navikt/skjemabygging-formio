@@ -8,6 +8,7 @@ interface Props {
   to: string;
   dataKey?: string;
   noIconStyling: boolean;
+  onClick?: (e: React.MouseEvent) => void;
 }
 
 const useStyles = makeStyles({
@@ -33,7 +34,7 @@ const useStyles = makeStyles({
   },
 });
 
-export const MenuLink = ({ children, to, dataKey, noIconStyling }: Props) => {
+export const MenuLink = ({ children, to, dataKey, noIconStyling, onClick }: Props) => {
   const styles = useStyles();
 
   return (
@@ -42,6 +43,7 @@ export const MenuLink = ({ children, to, dataKey, noIconStyling }: Props) => {
         className={classNames(styles.navBarLink, { [styles.navBarLinkNoIcon]: noIconStyling })}
         to={to}
         data-key={dataKey}
+        onClick={onClick}
       >
         {children}
       </NavLink>

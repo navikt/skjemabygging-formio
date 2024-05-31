@@ -15,6 +15,7 @@ const config = {
       isDelingslenke,
       isDevelopment,
       amplitudeApiEndpoint: amplitude.apiEndpoint,
+      amplitudeDisableBatch: amplitude.disableBatch,
       isLoggedIn,
       loggerConfig: frontendLoggerConfig,
     });

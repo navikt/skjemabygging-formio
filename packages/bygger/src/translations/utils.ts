@@ -1,5 +1,13 @@
-import { NavFormioJs } from '@navikt/skjemadigitalisering-shared-components';
 import {
+  HtmlAsJsonElement,
+  HtmlAsJsonTextElement,
+  htmlConverter,
+  NavFormioJs,
+  StructuredHtmlElement,
+} from '@navikt/skjemadigitalisering-shared-components';
+
+import {
+  AttachmentSettingValue,
   AttachmentSettingValues,
   Component,
   FormioTranslationMap,
@@ -9,26 +17,23 @@ import {
   signatureUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
 
-type TextObjectType = ReturnType<typeof textObject>;
-type InputType = ReturnType<typeof getInputType>;
+type TextObjectType = { text: string; type?: InputType };
+type InputType = 'text' | 'textarea';
 type CsvRow = {
+  type: 'tekst' | 'html';
+  order: string;
   text: string;
 } & {
   [key in Language]?: string;
 };
 
-const getInputType = (value: string) => {
+const getInputType = (value: string): InputType => {
   return value?.length < 80 ? 'text' : 'textarea';
-};
-
-const filterSpecialSuffix = (suffix: string) => {
-  const specialSuffixList = ['%', 'km', 'cm', 'kg', 'kr', 'm'];
-  return specialSuffixList.indexOf(suffix) >= 0 ? '' : suffix;
 };
 
 const getTextFromComponentProperty = (property: string | undefined) => (property !== '' ? property : undefined);
 
-const extractTextsFromProperties = (props: NavFormType['properties']) => {
+const extractTextsFromProperties = (props: NavFormType['properties']): TextObjectType[] => {
   const array: { text: string; type: InputType }[] = [];
   if (props?.innsendingOverskrift) {
     array.push({
@@ -80,7 +85,7 @@ const extractTextsFromProperties = (props: NavFormType['properties']) => {
   return array;
 };
 
-const getContent = (content: string | undefined) => {
+const getContent = (content: string | undefined): string | undefined => {
   if (content) {
     // Formio.js runs code that changes the original text before translating,
     // and to avoid mismatch in translation object keys we need to do the same.
@@ -151,32 +156,27 @@ const getTranslatablePropertiesFromForm = (form: NavFormType) =>
 const withoutDuplicatedComponents = (textObject: TextObjectType, index: number, currentComponents: TextObjectType[]) =>
   index === currentComponents.findIndex((currentComponent) => currentComponent.text === textObject.text);
 
-const textObject = (withInputType: boolean, value: string) => {
-  if (withInputType)
-    return {
-      text: value,
-      type: getInputType(value) as InputType,
-    };
-  else {
-    return {
-      text: value,
-    };
-  }
+const textObject = (withInputType: boolean, value: string): TextObjectType => {
+  const type = withInputType ? getInputType(value) : undefined;
+  return {
+    text: value,
+    ...(type && { type }),
+  };
 };
 
-const getAttachmentTexts = (attachmentValues?: AttachmentSettingValues) => {
+const getAttachmentTexts = (attachmentValues?: AttachmentSettingValues): undefined | string[] => {
   if (!attachmentValues) {
     return undefined;
   }
 
-  return Object.entries(attachmentValues)
-    .flatMap(([key, values]) => {
-      return [values?.additionalDocumentation?.label, values?.additionalDocumentation?.description];
-    })
-    .filter((values) => !!values);
+  return Object.values(attachmentValues).flatMap((value: AttachmentSettingValue) => {
+    return value.additionalDocumentation
+      ? [value?.additionalDocumentation?.label, value?.additionalDocumentation?.description]
+      : [];
+  });
 };
 
-const getFormTexts = (form?: NavFormType, withInputType = false) => {
+const getFormTexts = (form?: NavFormType, withInputType = false): TextObjectType[] => {
   if (!form) {
     return [];
   }
@@ -216,25 +216,108 @@ const escapeQuote = (text?: string) => {
 
 const sanitizeForCsv = (text?: string) => escapeQuote(removeLineBreaks(text));
 
+const createTranslationsTextRow = (
+  text: string,
+  translations: FormioTranslationMap,
+  order: string,
+  type: 'tekst' | 'html' = 'tekst',
+): CsvRow => {
+  return Object.entries(translations).reduce(
+    (prevFormRowObject, [languageCode, currentTranslations]) => {
+      const translationObject = currentTranslations.translations[text];
+      if (!translationObject || !translationObject.value) {
+        return prevFormRowObject;
+      }
+      const sanitizedTranslation = sanitizeForCsv(translationObject.value)!;
+      const translation =
+        translationObject.scope === 'global' ? sanitizedTranslation.concat(' (Global Tekst)') : sanitizedTranslation;
+      return {
+        ...prevFormRowObject,
+        [languageCode]: translation,
+      };
+    },
+    { type, order, text: sanitizeForCsv(text)! },
+  );
+};
+
+const getTranslationsForChild = (
+  translations: { [lang: string]: { translations: { value: HtmlAsJsonElement | HtmlAsJsonTextElement | undefined } } },
+  childIndex: number,
+) =>
+  Object.entries(translations ?? {}).reduce(
+    (acc, [lang, translation]) => ({
+      ...acc,
+      [lang]: { translations: { value: htmlConverter.getChild(translation.translations.value, childIndex) } },
+    }),
+    {},
+  );
+
+const createTranslationsHtmlRows = (
+  htmlElementAsJson: HtmlAsJsonElement | HtmlAsJsonTextElement,
+  translations: { [lang: string]: { translations: { value: HtmlAsJsonElement | HtmlAsJsonTextElement | undefined } } },
+  order: string,
+  htmlOrder: number = 0,
+): CsvRow[] => {
+  if (htmlElementAsJson.type === 'TextElement' && htmlElementAsJson.textContent) {
+    const textTranslations: FormioTranslationMap = Object.entries(translations).reduce(
+      (acc, [lang, translation]) => ({
+        ...acc,
+        [lang]: {
+          translations: {
+            [htmlElementAsJson.textContent!]: {
+              value:
+                translation.translations.value?.type === 'TextElement'
+                  ? translation.translations.value.textContent
+                  : '',
+            },
+          },
+        },
+      }),
+      {},
+    );
+    return [
+      createTranslationsTextRow(
+        htmlElementAsJson.textContent,
+        textTranslations,
+        `${order}-${String(++htmlOrder).padStart(3, '0')}`,
+        'html',
+      ),
+    ];
+  } else if (htmlElementAsJson.type === 'Element') {
+    return htmlElementAsJson.children.flatMap((child, index) => {
+      const rows = createTranslationsHtmlRows(child, getTranslationsForChild(translations, index), order, htmlOrder);
+      htmlOrder += rows.length;
+      return rows;
+    });
+  }
+  return [];
+};
+
 const getTextsAndTranslationsForForm = (form: NavFormType, translations: FormioTranslationMap): CsvRow[] => {
   const textComponents = getFormTexts(form, false);
-  return textComponents.map((textComponent) => {
-    return Object.entries(translations).reduce(
-      (prevFormRowObject, [languageCode, currentTranslations]) => {
-        const translationObject = currentTranslations.translations[textComponent.text];
-        if (!translationObject || !translationObject.value) {
-          return prevFormRowObject;
+  let textIndex = 0;
+  return textComponents.flatMap((textComponent) => {
+    if (htmlConverter.isHtmlString(textComponent.text)) {
+      const htmlTranslations = Object.entries(translations).reduce((acc, [lang, translation]) => {
+        const translationValue = translation.translations[textComponent.text]?.value ?? '';
+        if (!htmlConverter.isHtmlString(translationValue)) {
+          return acc;
         }
-        const sanitizedTranslation = sanitizeForCsv(translationObject.value)!;
-        const translation =
-          translationObject.scope === 'global' ? sanitizedTranslation.concat(' (Global Tekst)') : sanitizedTranslation;
+        const translationAsJson = new StructuredHtmlElement(translationValue, {
+          skipConversionWithin: htmlConverter.defaultLeaves,
+        }).toJson(true);
         return {
-          ...prevFormRowObject,
-          [languageCode]: translation,
+          ...acc,
+          [lang]: { translations: { ...translation.translations[textComponent.text], value: translationAsJson } },
         };
-      },
-      { text: sanitizeForCsv(textComponent.text)! },
-    );
+      }, {});
+      const htmlText = new StructuredHtmlElement(textComponent.text, {
+        skipConversionWithin: htmlConverter.defaultLeaves,
+      }).toJson(true);
+      return createTranslationsHtmlRows(htmlText, htmlTranslations, `${++textIndex}`.padStart(3, '0'));
+    } else {
+      return createTranslationsTextRow(textComponent.text, translations, `${++textIndex}`.padStart(3, '0'));
+    }
   });
 };
 
@@ -249,7 +332,11 @@ const getTextsAndTranslationsHeaders = (translations: FormioTranslationMap) => {
         },
       ];
     },
-    [{ label: 'Skjematekster', key: 'text' }],
+    [
+      { label: 'Type', key: 'type' },
+      { label: 'Rekkefølge', key: 'order' },
+      { label: 'Skjematekster', key: 'text' },
+    ],
   );
 };
 
@@ -261,3 +348,4 @@ export {
   sanitizeForCsv,
   withoutDuplicatedComponents,
 };
+export type { InputType };

@@ -236,6 +236,24 @@ describe('DrivingList', () => {
         });
     });
 
+    it('should show info alert without periods (all in the future)', () => {
+      cy.mocksUseRouteVariant('get-activities:success-future');
+      cy.visit(`/fyllut/testdrivinglist/veiledning?sub=digital`);
+      cy.defaultWaits();
+      cy.wait('@getActivities');
+
+      cy.findByRole('radio', { name: 'Arbeidstrening: 01. januar 2099 - 31. august 2099' }).check();
+
+      cy.get('.navds-alert')
+        .should('have.length', 3)
+        .eq(2)
+        .within(() => {
+          cy.findByText(
+            'Du har ingen tilgjengelige perioder å levere kjøreliste for. Husk at det ikke er mulig å levere kjørelister for perioder frem i tid. Neste periode slutter 14. januar 2099',
+          ).should('exist');
+        });
+    });
+
     it('should show errors', () => {
       cy.visit(`/fyllut/testdrivinglist?sub=digital`);
       cy.defaultWaits();
