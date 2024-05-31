@@ -147,10 +147,10 @@ describe('numberValidators', () => {
     });
 
     it('digits', () => {
-      expect(numberUtils.toLocaleString('10.500000', 2)).toBe('10,5');
-      expect(numberUtils.toLocaleString('10.123', 2)).toBe('10,12');
-      expect(numberUtils.toLocaleString('10.005', 2)).toBe('10,01');
-      expect(numberUtils.toLocaleString('10.504', 2)).toBe('10,5');
+      expect(numberUtils.toLocaleString('10.500000')).toBe('10,5');
+      expect(numberUtils.toLocaleString('10.123')).toBe('10,12');
+      expect(numberUtils.toLocaleString('10.005')).toBe('10,01');
+      expect(numberUtils.toLocaleString('10.504')).toBe('10,5');
     });
 
     it('invalid numbers', () => {
