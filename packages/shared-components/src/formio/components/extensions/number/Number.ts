@@ -67,11 +67,15 @@ class Number extends TextField {
     return this.t(key, { field: this.getLabel({ labelTextOnly: true }), ...options });
   }
 
-  handleChange(value: string): any {
-    return super.handleChange(this.replaceCommasAndSpaces(value));
+  handleChange(value: string) {
+    if (value !== undefined && (numberUtils.isValidDecimal(value) || numberUtils.isValidInteger(value))) {
+      return super.handleChange(parseFloat(this.replaceCommasAndSpaces(value)));
+    } else {
+      return super.handleChange(this.replaceCommasAndSpaces(value));
+    }
   }
 
-  setValue(value: string): any {
+  setValue(value: string) {
     // Need to format the number if it is saved or if you come back from summary page.
     super.setValue(numberUtils.toLocaleString(value));
   }

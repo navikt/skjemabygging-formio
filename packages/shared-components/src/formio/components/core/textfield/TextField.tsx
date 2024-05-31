@@ -31,7 +31,7 @@ class TextField extends BaseComponent {
     return 'text';
   }
 
-  handleChange(value: string) {
+  handleChange(value: string | number) {
     super.handleChange(value);
   }
 
