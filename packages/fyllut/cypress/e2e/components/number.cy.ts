@@ -19,7 +19,7 @@ describe('number component', () => {
         .should('exist')
         .type('10,1');
       cy.clickNextStep();
-      cy.findByRole('link', { name: `Tall er ikke et gyldig heltall.` }).should('exist');
+      cy.findByRole('link', { name: `Oppgi et tall uten desimaler.` }).should('exist');
       cy.findByRole('textbox', { name: /^Tall/ }).should('exist').type('{selectall}10');
       cy.clickNextStep();
       cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
@@ -62,14 +62,14 @@ describe('number component', () => {
   describe('min/max values', () => {
     // Min = 10
     it('should show error for min value', () => {
-      cy.findByRole('textbox', { name: 'Tall' }).should('exist').type('9');
+      cy.findByRole('textbox', { name: /^Tall/ }).should('exist').type('9');
       cy.clickNextStep();
       cy.findByRole('link', { name: `Tall kan ikke være mindre enn 10.` }).should('exist');
     });
 
     // Max = 100
     it('should show error for max value', () => {
-      cy.findByRole('textbox', { name: 'Tall' }).should('exist').type('101');
+      cy.findByRole('textbox', { name: /^Tall/ }).should('exist').type('101');
       cy.clickNextStep();
       cy.findByRole('link', { name: `Tall kan ikke være større enn 100.` }).should('exist');
     });

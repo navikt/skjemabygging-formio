@@ -84,7 +84,7 @@ function formatValue(component, value, translate, form, language) {
     case 'number':
       const prefix = component.prefix ? `${component.prefix} ` : '';
       const suffix = component.suffix ? ` ${component.suffix}` : '';
-      return prefix + numberUtils.toLocaleString(value, 2) + suffix;
+      return prefix + numberUtils.toLocaleString(value) + suffix;
     case 'attachment':
       return {
         description: translate(TEXTS.statiske.attachment[value.key]),

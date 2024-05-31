@@ -36,7 +36,7 @@ const isSmallerOrEqualMax = (value?: string | number, max?: string | number) => 
   return valueFloat <= maxFloat;
 };
 
-const toLocaleString = (value?: string | number, digits?: number) => {
+const toLocaleString = (value?: string | number) => {
   if (value === undefined || value === null || value === '') {
     return '';
   }
@@ -47,12 +47,7 @@ const toLocaleString = (value?: string | number, digits?: number) => {
     return value;
   }
 
-  const options = {};
-  if (digits && digits > 0) {
-    options['maximumFractionDigits'] = digits;
-  }
-
-  return number.toLocaleString('no', options);
+  return number.toLocaleString('no', {});
 };
 
 const numberUtils = {

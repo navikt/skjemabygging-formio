@@ -31,7 +31,7 @@ class TextField extends BaseComponent {
     return 'text';
   }
 
-  handleChange(value: string): any {
+  handleChange(value: string) {
     super.updateValue(value, { modified: true });
   }
 
