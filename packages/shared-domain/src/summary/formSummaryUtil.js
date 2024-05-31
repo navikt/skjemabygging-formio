@@ -104,7 +104,7 @@ function formatValue(component, value, translate, form, language) {
       const postboks = bostedsadresse?.postboks;
 
       const addressComponents = [adresse, postnummer, postboks, co].filter(Boolean);
-      const address = addressComponents.join(',');
+      const address = addressComponents.join(', ');
 
       return {
         address,
