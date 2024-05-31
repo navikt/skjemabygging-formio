@@ -221,7 +221,7 @@ class NavSelect extends BaseComponent {
         component={component}
         options={this.translateOptionLabels(this.selectOptions)}
         label={this.t(component.label)}
-        value={this.translateOptionLabel(this.getDefaultValue())}
+        value={this.translateOptionLabel(this.getValue())}
         ariaLiveMessages={this.translateAriaLiveMessages(ariaLiveMessages)}
         screenReaderStatus={({ count }: { count: number }) => this.t(SELECT_TEXTS.numberOfAvailableOptions, { count })}
         loadingMessage={() => this.t(TEXTS.statiske.loading)}
