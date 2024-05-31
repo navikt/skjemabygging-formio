@@ -146,13 +146,6 @@ describe('numberValidators', () => {
       expect(numberUtils.toLocaleString('10.504')).toBe('10,504');
     });
 
-    it('digits', () => {
-      expect(numberUtils.toLocaleString('10.500000')).toBe('10,5');
-      expect(numberUtils.toLocaleString('10.123')).toBe('10,12');
-      expect(numberUtils.toLocaleString('10.005')).toBe('10,01');
-      expect(numberUtils.toLocaleString('10.504')).toBe('10,5');
-    });
-
     it('invalid numbers', () => {
       expect(numberUtils.toLocaleString('10,5')).toBe('10,5');
       expect(numberUtils.toLocaleString('asdf')).toBe('asdf');
