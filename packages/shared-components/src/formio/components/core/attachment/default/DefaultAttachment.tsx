@@ -25,8 +25,8 @@ class DefaultAttachment extends BaseComponent {
     return this.component?.attachmentValues ? this.component?.attachmentValues : this.component?.values;
   }
 
-  handleChange(value, flags) {
-    super.updateValue(value, flags);
+  handleChange(value) {
+    super.handleChange(value);
     this.rerender();
   }
 
@@ -39,9 +39,7 @@ class DefaultAttachment extends BaseComponent {
         description={this.getDescription()}
         deadline={this.options.properties?.ettersendelsesfrist}
         error={this.getError()}
-        onChange={(value) => {
-          this.handleChange(value, { modified: true });
-        }}
+        onChange={(value) => this.handleChange(value)}
         translate={this.t.bind(this)}
         ref={(ref) => this.setReactInstance(ref)}
       />,

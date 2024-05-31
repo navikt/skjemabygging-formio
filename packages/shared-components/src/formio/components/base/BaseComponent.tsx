@@ -115,13 +115,6 @@ class BaseComponent extends FormioReactComponent {
   }
 
   /**
-   * Get default value for custom component renderReact()
-   */
-  getDefaultValue() {
-    return this.dataForSetting || this.dataValue;
-  }
-
-  /**
    * Get description for custom component renderReact()
    */
   getDescription(): ReactNode {

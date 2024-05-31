@@ -25,10 +25,10 @@ class Checkbox extends BaseComponent {
     return false;
   }
 
-  changeHandler(selectedCheckboxes: string[], opts: { modified: boolean }) {
+  changeHandler(selectedCheckboxes: string[]) {
     // There is always either 0 or 1 checkbox selected
     const isChecked = selectedCheckboxes.length > 0;
-    super.updateValue(isChecked, opts);
+    super.handleChange(isChecked);
     this.rerender();
   }
 
@@ -42,7 +42,7 @@ class Checkbox extends BaseComponent {
         legend={this.getLabel()}
         hideLegend={true}
         value={this.getCheckboxGroupValue()}
-        onChange={(value) => this.changeHandler(value, { modified: true })}
+        onChange={(value) => this.changeHandler(value)}
         ref={(ref) => this.setReactInstance(ref)}
         className={this.getClassName()}
         readOnly={this.getReadOnly()}

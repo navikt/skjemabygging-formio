@@ -102,7 +102,7 @@ export default class DatePicker extends BaseComponent {
   }
 
   onUpdate(value: string) {
-    this.updateValue(value, { modified: true });
+    this.handleChange(value);
 
     this.getComponentsWithDateInputKey().map((component) => component.rerender?.());
   }
@@ -113,7 +113,7 @@ export default class DatePicker extends BaseComponent {
         <ReactDatePicker
           id={this.getId()}
           required={this.isRequired()}
-          value={this.getDefaultValue()}
+          value={this.getValue()}
           onChange={this.onUpdate.bind(this)}
           readOnly={this.getReadOnly()}
           error={this.getError()}
