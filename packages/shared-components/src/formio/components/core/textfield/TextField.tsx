@@ -32,7 +32,7 @@ class TextField extends BaseComponent {
   }
 
   handleChange(value: string) {
-    super.updateValue(value, { modified: true });
+    super.handleChange(value);
   }
 
   renderReact(element) {
