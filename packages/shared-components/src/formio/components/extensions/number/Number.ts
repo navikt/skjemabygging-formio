@@ -33,8 +33,6 @@ class Number extends TextField {
   checkComponentValidity(data, dirty, row, options = {}) {
     const validity = super.checkComponentValidity(data, dirty, row, options);
 
-    console.log(data);
-
     if (validity) {
       const errorMessage = this.validateNumber();
       if (errorMessage) {
