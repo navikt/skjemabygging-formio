@@ -33,6 +33,8 @@ class Number extends TextField {
   checkComponentValidity(data, dirty, row, options = {}) {
     const validity = super.checkComponentValidity(data, dirty, row, options);
 
+    console.log(data);
+
     if (validity) {
       const errorMessage = this.validateNumber();
       if (errorMessage) {
@@ -68,10 +70,16 @@ class Number extends TextField {
   }
 
   handleChange(value: string) {
-    if (value !== undefined && (numberUtils.isValidDecimal(value) || numberUtils.isValidInteger(value))) {
-      return super.handleChange(parseFloat(this.replaceCommasAndSpaces(value)));
-    } else {
-      return super.handleChange(this.replaceCommasAndSpaces(value));
+    if (value !== undefined) {
+      const dataValue = this.replaceCommasAndSpaces(value);
+      if (
+        (this.getInputMode() === 'decimal' && numberUtils.isValidDecimal(dataValue)) ||
+        (this.getInputMode() === 'numeric' && numberUtils.isValidInteger(dataValue))
+      ) {
+        return super.handleChange(parseFloat(dataValue));
+      } else {
+        return super.handleChange(dataValue);
+      }
     }
   }
 
