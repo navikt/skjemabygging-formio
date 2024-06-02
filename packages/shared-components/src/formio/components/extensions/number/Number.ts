@@ -68,10 +68,16 @@ class Number extends TextField {
   }
 
   handleChange(value: string) {
-    if (value !== undefined && (numberUtils.isValidDecimal(value) || numberUtils.isValidInteger(value))) {
-      return super.handleChange(parseFloat(this.replaceCommasAndSpaces(value)));
-    } else {
-      return super.handleChange(this.replaceCommasAndSpaces(value));
+    if (value !== undefined) {
+      const dataValue = this.replaceCommasAndSpaces(value);
+      if (
+        (this.getInputMode() === 'decimal' && numberUtils.isValidDecimal(dataValue)) ||
+        (this.getInputMode() === 'numeric' && numberUtils.isValidInteger(dataValue))
+      ) {
+        return super.handleChange(parseFloat(dataValue));
+      } else {
+        return super.handleChange(dataValue);
+      }
     }
   }
 
