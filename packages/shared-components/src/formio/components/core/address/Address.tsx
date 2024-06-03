@@ -27,7 +27,11 @@ class Address extends BaseComponent {
   renderReact(element) {
     if (this.builderMode) {
       element.render(
-        <BodyShort>{'Denne komponenten er skjult for brukeren, men vises på oppsummeringssiden og i PDF'}</BodyShort>,
+        <BodyShort>
+          {
+            'Denne komponenten henter bostedsadressen fra PDL. Den er skjult for brukeren, men vises på oppsummeringssiden og i PDF.'
+          }
+        </BodyShort>,
       );
     }
   }
