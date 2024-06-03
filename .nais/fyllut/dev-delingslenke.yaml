@@ -16,8 +16,11 @@ pdl-token-scope-cluster: "dev-fss"
 azure:
   application:
     tenant: trygdeetaten.no
-secrets:
-  - formio-server-access-prod
+environmentVars:
+  - name: FORMIO_API_SERVICE
+    value: http://formio-enterprise-server
+  - name: FORMIO_PROJECT_NAME
+    value: jvcemxwcpghcqjn
 accessPolicy:
   inbound:
     rules:
@@ -28,6 +31,9 @@ accessPolicy:
       - application: skjemabygging-proxy
         namespace: skjemadigitalisering
         cluster: dev-fss
+      - application: formio-enterprise-server
+        namespace: skjemadigitalisering
+        cluster: dev-gcp
       - application: innsending-api
         namespace: team-soknad
         cluster: dev-gcp

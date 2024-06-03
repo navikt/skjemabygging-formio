@@ -13,8 +13,7 @@ send-inn-token-x-client-id: prod-gcp:team-soknad:innsending-api
 send-inn-host: http://innsending-api.team-soknad
 forms-source: "static"
 pdl-token-scope-cluster: "prod-fss"
-secrets:
-  - sentry-dsn
+environmentVars: []
 azure:
   application:
     tenant: nav.no

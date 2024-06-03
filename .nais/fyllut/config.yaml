@@ -98,7 +98,7 @@ spec:
       value: "https://amplitude.nav.no/collect-auto"
     - name: FYLLUT_FRONTEND_URL
       value: {{fyllut-frontend-url}}
-  envFrom:
-  {{#each secrets as |secret|}}
-    - secret: {{secret}}
-  {{/each}}
+    {{#each environmentVars}}
+    - name: {{this.name}}
+      value: {{this.value}}
+    {{/each}}
