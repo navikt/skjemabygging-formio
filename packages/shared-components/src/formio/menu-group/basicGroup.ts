@@ -1,5 +1,4 @@
 import accordionBuilder from '../components/core/accordion/Accordion.builder';
-import addressBuilder from '../components/core/address/Address.builder';
 import alertBuilder from '../components/core/alert/Alert.builder';
 import checkboxBuilder from '../components/core/checkbox/Checkbox.builder';
 import htmlElementBuilder from '../components/core/html-element/HtmlElement.builder';
@@ -26,7 +25,6 @@ const basicGroup = {
     alertstripe: alertBuilder(),
     htmlElement: htmlElementBuilder(),
     accordion: accordionBuilder(),
-    address: addressBuilder(),
   },
 };
 
