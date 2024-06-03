@@ -44,21 +44,23 @@ class Number extends TextField {
   }
 
   validateNumber() {
-    if (this.getValue() === '' || this.getValue() === undefined) {
+    // Get data value from parent instead of formatted number from this.getValue()
+    const value = super.getValue();
+    if (value === '' || value === undefined) {
       return;
     }
 
     if (this.getInputMode() === 'decimal') {
-      if (!numberUtils.isValidDecimal(this.getValue())) return this.translateWithLabel(TEXTS.validering.decimal);
+      if (!numberUtils.isValidDecimal(value)) return this.translateWithLabel(TEXTS.validering.decimal);
     } else if (this.getInputMode() === 'numeric') {
-      if (!numberUtils.isValidInteger(this.getValue())) return this.translateWithLabel(TEXTS.validering.integer);
+      if (!numberUtils.isValidInteger(value)) return this.translateWithLabel(TEXTS.validering.integer);
     }
 
-    if (!numberUtils.isBiggerOrEqualMin(this.getValue(), this.getMinValue())) {
+    if (!numberUtils.isBiggerOrEqualMin(value, this.getMinValue())) {
       return this.translateWithLabel(TEXTS.validering.min, { min: numberUtils.toLocaleString(this.getMinValue()) });
     }
 
-    if (!numberUtils.isSmallerOrEqualMax(this.getValue(), this.getMaxValue())) {
+    if (!numberUtils.isSmallerOrEqualMax(value, this.getMaxValue())) {
       return this.translateWithLabel(TEXTS.validering.max, { max: numberUtils.toLocaleString(this.getMaxValue()) });
     }
   }
@@ -79,6 +81,11 @@ class Number extends TextField {
         return super.handleChange(dataValue);
       }
     }
+  }
+
+  getValue() {
+    // Need to format the number when jumping between tabs or else we show the data value instead of display value
+    return numberUtils.toLocaleString(super.getValue());
   }
 
   setValue(value: string) {
