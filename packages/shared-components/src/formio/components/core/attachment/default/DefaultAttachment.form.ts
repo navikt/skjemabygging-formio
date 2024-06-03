@@ -21,7 +21,7 @@ const defaultAttachmentForm = () => {
       editFormApi.key(),
       // Vedleggstittel is required to publish, but validation happens before publishing.
       // Vedleggstittel is read-only when attachmentType is "other".
-      editFormApi.vedleggskode({
+      editFormApi.vedleggstittel({
         customConditional: 'show = data.attachmentType === "default"',
       }),
       editFormApi.vedleggstittel({

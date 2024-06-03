@@ -187,6 +187,7 @@ export interface Component {
   latestAllowedDate?: string;
   getValue?: () => string;
   rerender?: () => void;
+  onChange?: (props) => void;
 }
 
 export interface ComponentProperties {

@@ -7,19 +7,14 @@ interface PropertyOptions {
 }
 
 const editFormVedleggstittel = (options: PropertyOptions): Component => {
-  return {
-    ...editFormApi.property({
-      label: 'Vedleggstittel',
-      key: 'vedleggstittel',
-      required: false,
-      description: 'Er påkrevd for publisering av skjemaet',
-      customConditional: options.customConditional,
-      readOnly: options.readOnly,
-    }),
-    onChange: (props) => {
-      props.submission.data.navId = undefined;
-    },
-  };
+  return editFormApi.property({
+    label: 'Vedleggstittel',
+    key: 'vedleggstittel',
+    required: false,
+    description: 'Er påkrevd for publisering av skjemaet',
+    customConditional: options.customConditional,
+    readOnly: options.readOnly,
+  });
 };
 
 export default editFormVedleggstittel;
