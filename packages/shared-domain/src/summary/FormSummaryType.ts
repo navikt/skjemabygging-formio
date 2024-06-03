@@ -36,6 +36,14 @@ export namespace Summary {
     value: string[];
   }
 
+  export interface Address extends Omit<Field, 'type' | 'value'> {
+    type: 'navAddress';
+    value: {
+      address: string;
+      linkText: string;
+    };
+  }
+
   export interface Activity extends Omit<Field, 'type' | 'value'> {
     type: 'activities';
     value: SubmissionActivity;
@@ -89,6 +97,7 @@ export namespace Summary {
     | Activity
     | Attachment
     | DrivingList
+    | Address
   ) & {
     hiddenInSummary?: boolean;
   };

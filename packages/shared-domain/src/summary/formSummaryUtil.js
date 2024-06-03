@@ -97,6 +97,25 @@ function formatValue(component, value, translate, form, language) {
             ? translate(TEXTS.statiske.attachment.deadline, { deadline: form?.properties?.ettersendelsesfrist })
             : undefined,
       };
+    case 'navAddress':
+      const bostedsadresse = value?.bostedsadresse;
+
+      const addressComponents = [
+        bostedsadresse?.co ? `c/o ${bostedsadresse.co}` : undefined,
+        bostedsadresse?.adresse,
+        bostedsadresse?.bygning,
+        bostedsadresse?.postboks,
+        bostedsadresse?.postnummer,
+        bostedsadresse?.bySted,
+        bostedsadresse?.region,
+        bostedsadresse?.landkode,
+      ].filter(Boolean);
+      const address = addressComponents.join(', ');
+
+      return {
+        address,
+        linkText: translate(TEXTS.statiske.address.skatteetatenLink),
+      };
     case 'drivinglist':
       return {
         description: translate(TEXTS.statiske.drivingList.summaryDescription),

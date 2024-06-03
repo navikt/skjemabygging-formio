@@ -1,0 +1,22 @@
+{
+  "sokerFornavn": "Ola",
+  "sokerEtternavn": "Nordmann",
+  "sokerMaalgruppe": {
+    "gyldighetsperiode": {
+      "fom": "2024-01-01",
+      "tom": "2024-05-13"
+    },
+    "maalgruppetype": "ARBSOKERE",
+    "maalgruppenavn": "Arbeidssøker"
+  },
+  "sokerAdresser": {
+    "bostedsadresse": {
+      "gyldigFraOgMed": "2023-05-31",
+      "adresse": "Testveien 1C",
+      "postnummer": "1234",
+      "landkode": "NOR"
+    },
+    "oppholdsadresser": [],
+    "kontaktadresser": []
+  }
+}
