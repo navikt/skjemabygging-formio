@@ -1,3 +1,4 @@
+import { BodyShort } from '@navikt/ds-react';
 import BaseComponent from '../../base/BaseComponent';
 import addressBuilder from './Address.builder';
 import addressForm from './Address.form';
@@ -24,7 +25,11 @@ class Address extends BaseComponent {
   }
 
   renderReact(element) {
-    element.render(<></>);
+    if (this.builderMode) {
+      element.render(
+        <BodyShort>{'Denne komponenten er skjult for brukeren, men vises på oppsummeringssiden og i PDF'}</BodyShort>,
+      );
+    }
   }
 }
 
