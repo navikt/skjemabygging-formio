@@ -9,6 +9,7 @@ class Address extends BaseComponent {
       type: 'navAddress',
       key: 'folkeregistrertAdresse',
 
+      hidden: true,
       hideLabel: true,
       clearOnHide: false,
     });
