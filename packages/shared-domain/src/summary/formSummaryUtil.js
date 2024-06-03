@@ -102,9 +102,9 @@ function formatValue(component, value, translate, form, language) {
       const addressComponents = [
         bostedsadresse?.co ? `c/o ${bostedsadresse.co}` : undefined,
         bostedsadresse?.adresse,
-        bostedsadresse?.postnummer,
-        bostedsadresse?.postboks,
         bostedsadresse?.bygning,
+        bostedsadresse?.postboks,
+        bostedsadresse?.postnummer,
         bostedsadresse?.bySted,
         bostedsadresse?.region,
         bostedsadresse?.landkode,
