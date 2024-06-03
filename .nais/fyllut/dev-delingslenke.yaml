@@ -28,6 +28,9 @@ accessPolicy:
       - application: skjemabygging-proxy
         namespace: skjemadigitalisering
         cluster: dev-fss
+      - application: formio-enterprise-server
+        namespace: skjemadigitalisering
+        cluster: dev-gcp
       - application: innsending-api
         namespace: team-soknad
         cluster: dev-gcp
