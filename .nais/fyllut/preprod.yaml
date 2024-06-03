@@ -1,6 +1,7 @@
 app-name: skjemautfylling-preprod
 ingresses:
   - "https://fyllut-preprod.intern.dev.nav.no/fyllut"
+  - "https://fyllut-preprod.ansatt.dev.nav.no/fyllut"
 replicas-min: 2
 replicas-max: 4
 fyllut-frontend-url: "https://fyllut-preprod.intern.dev.nav.no/fyllut"
