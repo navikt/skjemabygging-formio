@@ -1,4 +1,4 @@
-import { Component, dateUtils, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { Component, dateUtils, navFormUtils, numberUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import FormioUtils from 'formiojs/utils';
 import ReactDatePicker, { validateDate } from '../../../../components/datepicker/DatePicker';
 import { ComponentUtilsProvider } from '../../../../context/component/componentUtilsContext';
@@ -86,7 +86,10 @@ export default class DatePicker extends BaseComponent {
       }
 
       return undefined;
-    } else if (this.component?.earliestAllowedDate && !Number.isNaN(+this.component?.earliestAllowedDate)) {
+    } else if (
+      this.component?.earliestAllowedDate !== undefined &&
+      numberUtils.isValidInteger(this.component?.earliestAllowedDate)
+    ) {
       return dateUtils.addDays(+this.component?.earliestAllowedDate);
     } else if (this.component?.specificEarliestAllowedDate) {
       return this.component?.specificEarliestAllowedDate;
@@ -94,7 +97,10 @@ export default class DatePicker extends BaseComponent {
   }
 
   getToDate(): string | undefined {
-    if (this.component?.latestAllowedDate && !Number.isNaN(+this.component?.latestAllowedDate)) {
+    if (
+      this.component?.latestAllowedDate !== undefined &&
+      numberUtils.isValidInteger(this.component?.latestAllowedDate)
+    ) {
       return dateUtils.addDays(+this.component?.latestAllowedDate);
     } else if (this.component?.specificLatestAllowedDate) {
       return this.component?.specificLatestAllowedDate;
