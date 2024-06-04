@@ -1,6 +1,7 @@
 import { InputMode, numberUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import BaseComponent from '../../base/BaseComponent';
 import TextField from '../../core/textfield/TextField';
+import numberBuilder from './Number.builder';
 import numberForm from './Number.form';
 
 class Number extends TextField {
@@ -16,6 +17,10 @@ class Number extends TextField {
 
   static editForm() {
     return numberForm();
+  }
+
+  static get builderInfo() {
+    return numberBuilder();
   }
 
   getInputMode(): InputMode {
