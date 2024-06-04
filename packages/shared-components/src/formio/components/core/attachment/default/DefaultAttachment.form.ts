@@ -21,36 +21,20 @@ const defaultAttachmentForm = () => {
       editFormApi.key(),
       // Vedleggstittel is required to publish, but validation happens before publishing.
       // Vedleggstittel is read-only when attachmentType is "other".
-      editFormApi.property({
-        label: 'Vedleggstittel',
-        key: 'vedleggstittel',
-        required: false,
-        description: 'Er påkrevd for publisering av skjemaet',
+      editFormApi.vedleggstittel({
         customConditional: 'show = data.attachmentType === "default"',
       }),
-      editFormApi.property({
-        label: 'Vedleggstittel',
-        key: 'vedleggstittel',
-        required: false,
-        description: 'Er påkrevd for publisering av skjemaet',
+      editFormApi.vedleggstittel({
         customConditional: 'show = data.attachmentType === "other"',
         readOnly: true,
       }),
 
       // Vedleggskode is required to publish, but validation happens before publishing.
       // Vedleggskode is read-only when attachmentType is "other".
-      editFormApi.property({
-        label: 'Vedleggskode',
-        key: 'vedleggskode',
-        required: false,
-        description: 'Er påkrevd for publisering av skjemaet',
+      editFormApi.vedleggskode({
         customConditional: 'show = data.attachmentType === "default"',
       }),
-      editFormApi.property({
-        label: 'Vedleggskode',
-        key: 'vedleggskode',
-        required: false,
-        description: 'Er påkrevd for publisering av skjemaet',
+      editFormApi.vedleggskode({
         customConditional: 'show = data.attachmentType === "other"',
         readOnly: true,
       }),
