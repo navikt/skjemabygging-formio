@@ -85,6 +85,15 @@ describe('Basic form', () => {
         cy.get('dd').eq(3).should('contain.text', 'Nei');
         cy.get('dt').eq(4).should('contain.text', 'Din fødselsdato (dd.mm.åååå)');
         cy.get('dd').eq(4).should('contain.text', '10.05.1995');
+        if (submissionMethod === 'digital') {
+          cy.get('dt').eq(5).should('contain.text', 'Folkeregistrert adresse');
+          cy.get('dd').eq(5).should('contain.text', 'Testveien 1C, 1234');
+          cy.findByText(TEXTS.statiske.address.skatteetatenLink);
+        }
+        if (submissionMethod === 'paper') {
+          cy.get('dt').eq(5).should('not.contain.text', 'Folkeregistrert adresse');
+          cy.get('dd').eq(5).should('not.contain.text', 'Testveien 1C, 1234');
+        }
       });
   };
 

@@ -1,9 +1,11 @@
 import moment from 'moment';
 import 'moment/locale/nb';
 import TEXTS from '../texts';
+import currencyUtils from '../utils/currencyUtils';
 import dateUtils from '../utils/date';
 import FormioUtils from '../utils/formio/FormioUtils';
 import sanitizeJavaScriptCode from '../utils/formio/sanitize-javascript-code';
+import numberUtils from '../utils/numberUtils';
 import { addToMap } from '../utils/objectUtils';
 import { toPascalCase } from '../utils/stringUtils';
 
@@ -64,7 +66,10 @@ function formatValue(component, value, translate, form, language) {
       }
     }
     case 'currency':
-      return Number(value).toLocaleString('no', { style: 'currency', currency: component.currency || 'nok' });
+      return currencyUtils.toLocaleString(value, {
+        currency: component.currency,
+        integer: component.inputType === 'numeric',
+      });
     case 'bankAccount':
       const bankAccountRegex = /^(\d{4})(\d{2})(\d{5})$/;
       const [bankAccountMatch, ...bankAccountGroups] =
@@ -83,7 +88,7 @@ function formatValue(component, value, translate, form, language) {
     case 'number':
       const prefix = component.prefix ? `${component.prefix} ` : '';
       const suffix = component.suffix ? ` ${component.suffix}` : '';
-      return prefix + Number(value).toLocaleString('no', { maximumFractionDigits: 2 }) + suffix;
+      return prefix + numberUtils.toLocaleString(value) + suffix;
     case 'attachment':
       return {
         description: translate(TEXTS.statiske.attachment[value.key]),
@@ -95,6 +100,25 @@ function formatValue(component, value, translate, form, language) {
           !!component.attachmentValues?.[value.key]?.showDeadline && form?.properties?.ettersendelsesfrist
             ? translate(TEXTS.statiske.attachment.deadline, { deadline: form?.properties?.ettersendelsesfrist })
             : undefined,
+      };
+    case 'navAddress':
+      const bostedsadresse = value?.bostedsadresse;
+
+      const addressComponents = [
+        bostedsadresse?.co ? `c/o ${bostedsadresse.co}` : undefined,
+        bostedsadresse?.adresse,
+        bostedsadresse?.bygning,
+        bostedsadresse?.postboks,
+        bostedsadresse?.postnummer,
+        bostedsadresse?.bySted,
+        bostedsadresse?.region,
+        bostedsadresse?.landkode,
+      ].filter(Boolean);
+      const address = addressComponents.join(', ');
+
+      return {
+        address,
+        linkText: translate(TEXTS.statiske.address.skatteetatenLink),
       };
     case 'drivinglist':
       return {
@@ -421,18 +445,22 @@ function handleAmountWithCurrencySelector(component, submission, formSummaryObje
       return obj.type === type;
     });
 
-  const numberKey = componentWithType('number')?.key;
-  const valutaKey = componentWithType('valutavelger')?.key;
+  const numberComponent = componentWithType('number');
+  const currencyComponent = componentWithType('valutavelger');
+
+  if (!numberComponent || !currencyComponent) {
+    return formSummaryObject;
+  }
 
   const submissionValue = FormioUtils.getValue(submission, componentKey);
 
-  const number = submissionValue?.[numberKey];
+  const number = submissionValue?.[numberComponent.key];
 
   if (!number) {
     return formSummaryObject;
   }
 
-  const currency = submissionValue[valutaKey].value || 'nok';
+  const currency = submissionValue[currencyComponent.key].value;
 
   return [
     ...formSummaryObject,
@@ -440,7 +468,11 @@ function handleAmountWithCurrencySelector(component, submission, formSummaryObje
       label: translate(label),
       key,
       type: 'currency',
-      value: Number(number).toLocaleString('no', { style: 'currency', currency, currencyDisplay: 'code' }),
+      value: currencyUtils.toLocaleString(number, {
+        iso: true,
+        currency,
+        integer: numberComponent.inputType === 'numeric',
+      }),
     },
   ];
 }

@@ -179,4 +179,7 @@ export const statiske = {
     summaryDescription: 'Du har oppgitt at du har reist med egen bil på disse dagene:',
     summaryTextParking: '{{date}}, parkeringsutgift: {{parking}} kr',
   },
+  address: {
+    skatteetatenLink: 'Endre folkeregistrert adresse på Skatteetatens nettsider (åpnes i ny fane)',
+  },
 };

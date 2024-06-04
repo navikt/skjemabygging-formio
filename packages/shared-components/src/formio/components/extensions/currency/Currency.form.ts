@@ -11,6 +11,7 @@ const currencyForm = () => {
   return createTabs(
     display([
       editFormDisplay.label(),
+      editFormDisplay.inputType(),
       editFormDisplay.fieldSize(),
       editFormDisplay.description(),
       editFormDisplay.additionalDescription(),

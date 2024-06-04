@@ -1,6 +1,7 @@
 import FormioTextArea from 'formiojs/components/textarea/TextArea';
 import Accordion from './core/accordion/Accordion';
 import Activities from './core/activities/Activities';
+import Address from './core/address/Address';
 import Alert from './core/alert/Alert';
 import DefaultAttachment from './core/attachment/default/DefaultAttachment';
 import Button from './core/button/Button';
@@ -66,5 +67,6 @@ const customComponents = {
   currency: Currency,
   attachment: DefaultAttachment,
   accordion: Accordion,
+  navAddress: Address,
 };
 export default customComponents;

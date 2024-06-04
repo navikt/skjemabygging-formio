@@ -45,10 +45,19 @@ const sendInnConfig: SendInnConfig = {
   },
 };
 
+function loadFormioApiServiceUrl() {
+  const formioApiService = process.env.FORMIO_API_SERVICE;
+  const formioProjectName = process.env.FORMIO_PROJECT_NAME;
+  if (formioApiService && formioProjectName) {
+    return `${formioApiService}/${formioProjectName}`;
+  }
+  return undefined;
+}
+
 const localDevelopmentConfig: DefaultConfig = {
   gitVersion: 'local',
   useFormioApi: true,
-  formioProjectUrl: process.env.FORMIO_PROJECT_URL || 'https://formio-api.intern.dev.nav.no/jvcemxwcpghcqjn',
+  formioApiServiceUrl: loadFormioApiServiceUrl() || 'https://formio-api.intern.dev.nav.no/jvcemxwcpghcqjn',
   forstesideUrl: 'https://www.nav.no/soknader/api/forsteside',
   decoratorUrl: 'https://www.nav.no/dekoratoren?simple=true',
   fyllutFrontendUrl: process.env.FYLLUT_FRONTEND_URL || 'http://localhost:3001/fyllut',
@@ -85,7 +94,7 @@ const defaultConfig: DefaultConfig = {
   sentryDsn: process.env.VITE_SENTRY_DSN!,
   gitVersion: process.env.GIT_SHA!,
   useFormioApi: process.env.FORMS_SOURCE === 'formioapi',
-  formioProjectUrl: process.env.FORMIO_PROJECT_URL!,
+  formioApiServiceUrl: loadFormioApiServiceUrl(),
   forstesideUrl: process.env.FOERSTESIDE_URL!,
   decoratorUrl: process.env.DECORATOR_URL!,
   fyllutFrontendUrl: process.env.FYLLUT_FRONTEND_URL!,
@@ -120,14 +129,14 @@ const config: ConfigType = {
 };
 
 const checkConfigConsistency = (config: ConfigType, logError = logger.error, exit = process.exit) => {
-  const { useFormioApi, naisClusterName, formioProjectUrl } = config;
+  const { useFormioApi, naisClusterName, formioApiServiceUrl } = config;
   if (useFormioApi) {
     if (naisClusterName === NaisCluster.PROD) {
       logError(`Invalid configuration: FormioApi is not allowed in ${naisClusterName}`);
       exit(1);
     }
-    if (!formioProjectUrl) {
-      logError('Invalid configuration: FORMIO_PROJECT_URL is required when using FormioApi');
+    if (!formioApiServiceUrl) {
+      logError('Invalid configuration: Formio api service url is required when using FormioApi');
       exit(1);
     }
   }

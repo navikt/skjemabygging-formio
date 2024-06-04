@@ -22,6 +22,7 @@ const globalTranslationsEn = require('../data/formio-api/global-translation.json
 const formCustomCompsAlert = require('../data/formio-api/custom-components-alert.json');
 const formActivities = require('../data/formio-api/activities.json');
 const formDatagridConditional = require('../data/formio-api/datagrid-conditional.json');
+const formDatagridReactComponents = require('../data/formio-api/datagrid-react-components.json');
 const nav083501 = require('../data/formio-api/nav083501.json');
 const formDrivingList = require('../data/formio-api/driving-list.json');
 const formAttachment = require('../data/formio-api/attachments.json');
@@ -48,6 +49,7 @@ const allForms = [
   { form: formSelectV1, formV2: formSelectV2, translations: undefined },
   { form: formActivities, translations: undefined },
   { form: formDatagridConditional, translations: undefined },
+  { form: formDatagridReactComponents, translations: undefined },
   { form: nav083501, translations: undefined },
   { form: formDrivingList, translations: undefined },
   { form: formAttachment, translations: undefined },

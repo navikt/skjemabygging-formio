@@ -1,5 +1,6 @@
+import { InputMode } from '@navikt/skjemadigitalisering-shared-domain';
 import BaseComponent from '../../base/BaseComponent';
-import TextField, { InputMode } from '../../core/textfield/TextField';
+import TextField from '../../core/textfield/TextField';
 import emailBuilder from './Email.builder';
 import emailForm from './Email.form';
 

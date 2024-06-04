@@ -188,7 +188,10 @@ export interface Component {
   getValue?: () => string;
   rerender?: () => void;
   onChange?: (props) => void;
+  inputType?: InputMode;
 }
+
+export type InputMode = 'none' | 'text' | 'tel' | 'url' | 'email' | 'numeric' | 'decimal' | 'search';
 
 export interface ComponentProperties {
   vedleggstittel?: string;

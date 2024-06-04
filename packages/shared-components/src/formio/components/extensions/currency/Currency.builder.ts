@@ -1,12 +1,11 @@
+import Currency from './Currency';
+
 const currencyBuilder = () => {
+  const schema = Currency.schema();
   return {
-    title: 'Beløp',
+    title: schema.label,
     schema: {
-      label: 'Beløp',
-      type: 'currency',
-      key: 'belop',
-      fieldSize: 'input--s',
-      currency: 'nok',
+      ...schema,
       validateOn: 'blur',
       validate: {
         required: true,

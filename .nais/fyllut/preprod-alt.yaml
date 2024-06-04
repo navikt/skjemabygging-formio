@@ -12,8 +12,11 @@ skjemabygging-proxy-url: https://skjemabygging-proxy.dev-fss-pub.nais.io
 send-inn-token-x-client-id: dev-gcp:team-soknad:innsending-api
 send-inn-host: http://innsending-api.team-soknad
 forms-source: "formioapi"
-secrets:
-  - formio-server-access-dev
+environmentVars:
+  - name: FORMIO_API_SERVICE
+    value: http://formio-api
+  - name: FORMIO_PROJECT_NAME
+    value: jvcemxwcpghcqjn
 azure:
   application:
     tenant: trygdeetaten.no
@@ -27,6 +30,9 @@ accessPolicy:
       - application: skjemabygging-proxy
         namespace: skjemadigitalisering
         cluster: dev-fss
+      - application: formio-api
+        namespace: skjemadigitalisering
+        cluster: dev-gcp
       - application: innsending-api
         namespace: team-soknad
         cluster: dev-gcp
