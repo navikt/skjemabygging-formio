@@ -69,7 +69,7 @@ const TranslationFormHtmlSection = ({ text, storedTranslation, updateTranslation
           new StructuredHtmlElement(storedTranslation, { skipConversionWithin: htmlConverter.defaultLeaves }),
         )
       ) {
-        setTranslationState((state) => ({ ...state, incompatible: storedTranslation, ready: true }));
+        setTranslationState((state) => ({ ...state, incompatible: storedTranslation, ready: false }));
       } else {
         setTranslationObject(
           new StructuredHtmlElement(storedTranslation, {
@@ -155,7 +155,7 @@ const TranslationFormHtmlSection = ({ text, storedTranslation, updateTranslation
             variant="secondary"
             onClick={() => {
               updateTranslation(translationState.incompatible!);
-              setTranslationState((state) => ({ ...state, ready: true }));
+              setTranslationState((state) => ({ ...state, ready: false }));
             }}
             icon={<ArrowUndoIcon aria-hidden />}
           >
