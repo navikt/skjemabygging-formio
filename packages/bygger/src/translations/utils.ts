@@ -191,9 +191,9 @@ const getFormTexts = (form?: NavFormType, withInputType = false): TextObjectType
   return simplifiedComponentObject
     .flatMap((component) =>
       Object.keys(component)
-        .filter((key) => component[key] !== undefined)
+        .filter((key) => component[key] !== undefined && key !== 'attachmentValues')
         .flatMap((key) => {
-          if (key === 'values' || key === 'data' || key === 'attachmentValues') {
+          if (key === 'values' || key === 'data') {
             return component[key]
               .filter((value) => value !== '')
               .map((value) => textObject(withInputType, value)) as TextObjectType;
