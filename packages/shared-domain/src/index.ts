@@ -74,6 +74,7 @@ import MockedComponentObjectForTest from './summary/MockedComponentObjectForTest
 import formSummaryUtil from './summary/formSummaryUtil';
 import { TextSize, TextSizeShort } from './text';
 import TEXTS from './texts';
+import currencyUtils from './utils/currencyUtils';
 import dateUtils from './utils/date';
 import featureUtils, { FeatureTogglesMap } from './utils/featureUtils';
 import formDiffingTool, { NavFormSettingsDiff } from './utils/formDiffingTool';
@@ -95,6 +96,7 @@ export {
   PrefillType,
   TEXTS,
   configUtils,
+  currencyUtils,
   dateUtils,
   featureUtils,
   formDiffingTool,
