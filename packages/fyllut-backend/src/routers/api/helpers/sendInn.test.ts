@@ -12,6 +12,7 @@ import {
 
 const defaultFormProperties = { skjemanummer: 'NAV123', tema: 'TEMA', ettersendelsesfrist: '14' };
 const defaultForm = { title: 'Standard skjema', properties: defaultFormProperties };
+const fyllutUrl = 'https://www.nav.test.dev.no/fyllut';
 
 const defaultRequestBody = {
   form: defaultForm as NavFormType,
@@ -31,6 +32,7 @@ const attachment2 = {
   tittel: 'Vedlegg 2',
   label: 'Vedlegg 2',
   beskrivelse: 'Beskrivelse',
+  vedleggskjema: 'nav123456',
 } as Attachment;
 
 const requestBodyWithAttachments = {
@@ -84,7 +86,7 @@ describe('sendInn API helper', () => {
     describe('Without attachments', () => {
       let body: SendInnSoknadBody;
       beforeEach(() => {
-        body = assembleSendInnSoknadBody(defaultRequestBody, idPortenPid, '', submissionPdfAsByteArray);
+        body = assembleSendInnSoknadBody(defaultRequestBody, idPortenPid, fyllutUrl, submissionPdfAsByteArray);
       });
 
       it('adds the pid and form meta data', () => {
@@ -134,12 +136,15 @@ describe('sendInn API helper', () => {
     describe('With attachments', () => {
       let body: SendInnSoknadBody;
       beforeEach(() => {
-        body = assembleSendInnSoknadBody(requestBodyWithAttachments, idPortenPid, '', submissionPdfAsByteArray);
+        body = assembleSendInnSoknadBody(requestBodyWithAttachments, idPortenPid, fyllutUrl, submissionPdfAsByteArray);
       });
 
-      it('adds vedleggsliste and kanLasteOppAnnet', () => {
+      it('adds kanLasteOppAnnet and vedleggsliste including vedleggsurl if applicable', () => {
         expect(body.kanLasteOppAnnet).toBe(true);
-        expect(body.vedleggsListe).toEqual([attachment1, attachment2]);
+        expect(body.vedleggsListe).toEqual([
+          attachment1,
+          { ...attachment2, vedleggsurl: `${fyllutUrl}/${attachment2.vedleggskjema}?sub=paper` },
+        ]);
       });
     });
 
@@ -156,7 +161,12 @@ describe('sendInn API helper', () => {
       };
 
       it('translates form metadata', () => {
-        const body = assembleSendInnSoknadBody(requestBodyWithTranslation, idPortenPid, '', submissionPdfAsByteArray);
+        const body = assembleSendInnSoknadBody(
+          requestBodyWithTranslation,
+          idPortenPid,
+          fyllutUrl,
+          submissionPdfAsByteArray,
+        );
         expect(body).toEqual(
           expect.objectContaining({
             spraak: 'en',
@@ -168,7 +178,12 @@ describe('sendInn API helper', () => {
       });
 
       it('translates vedlegg metadata', () => {
-        const body = assembleSendInnSoknadBody(requestBodyWithTranslation, idPortenPid, '', submissionPdfAsByteArray);
+        const body = assembleSendInnSoknadBody(
+          requestBodyWithTranslation,
+          idPortenPid,
+          fyllutUrl,
+          submissionPdfAsByteArray,
+        );
         expect(body.vedleggsListe).toHaveLength(2);
         expect(body.vedleggsListe).toEqual([
           expect.objectContaining({
