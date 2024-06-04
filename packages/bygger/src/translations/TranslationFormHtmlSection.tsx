@@ -7,7 +7,7 @@ import {
   htmlConverter,
   makeStyles,
 } from '@navikt/skjemadigitalisering-shared-components';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useFeedbackEmit } from '../context/notifications/FeedbackContext';
 import TranslationFormHtmlInput from './TranslationFormHtmlInput';
 
@@ -17,6 +17,8 @@ interface Props {
   updateTranslation: (text: string) => void;
   onSelectLegacy: () => void;
 }
+
+type TranslationState = { ready: boolean; incompatible?: string; current?: string };
 
 const useStyles = makeStyles({
   outerBox: {
@@ -36,16 +38,17 @@ const useStyles = makeStyles({
 
 const TranslationFormHtmlSection = ({ text, storedTranslation, updateTranslation, onSelectLegacy }: Props) => {
   const feedbackEmit = useFeedbackEmit();
-  const translationObject = useRef<StructuredHtmlElement>();
-  const [translationReady, setTranslationReady] = useState(false);
-  const [incompatibleTranslation, setIncompatibleTranslation] = useState<string>();
+  const [translationState, setTranslationState] = useState<TranslationState>({ ready: false });
+  const [translationObject, setTranslationObject] = useState<StructuredHtmlElement>();
 
   const startNewTranslation = () => {
-    translationObject.current = new StructuredHtmlElement(text, {
-      skipConversionWithin: htmlConverter.defaultLeaves,
-      withEmptyTextContent: true,
-    });
-    setTranslationReady(true);
+    setTranslationObject(
+      new StructuredHtmlElement(text, {
+        skipConversionWithin: htmlConverter.defaultLeaves,
+        withEmptyTextContent: true,
+      }),
+    );
+    setTranslationState((state) => ({ ...state, ready: true }));
   };
 
   const html = useMemo(
@@ -57,7 +60,8 @@ const TranslationFormHtmlSection = ({ text, storedTranslation, updateTranslation
   );
 
   useEffect(() => {
-    if (!translationObject.current && !incompatibleTranslation) {
+    if (storedTranslation !== translationState.current && !translationState.incompatible) {
+      setTranslationState((state) => ({ ...state, current: storedTranslation }));
       if (!storedTranslation) {
         startNewTranslation();
       } else if (
@@ -65,15 +69,17 @@ const TranslationFormHtmlSection = ({ text, storedTranslation, updateTranslation
           new StructuredHtmlElement(storedTranslation, { skipConversionWithin: htmlConverter.defaultLeaves }),
         )
       ) {
-        setIncompatibleTranslation(storedTranslation);
+        setTranslationState((state) => ({ ...state, incompatible: storedTranslation, ready: false }));
       } else {
-        translationObject.current = new StructuredHtmlElement(storedTranslation, {
-          skipConversionWithin: htmlConverter.defaultLeaves,
-        });
-        setTranslationReady(true);
+        setTranslationObject(
+          new StructuredHtmlElement(storedTranslation, {
+            skipConversionWithin: htmlConverter.defaultLeaves,
+          }),
+        );
+        setTranslationState((state) => ({ ...state, ready: true }));
       }
     }
-  }, [html, incompatibleTranslation, startNewTranslation, storedTranslation]);
+  }, [translationObject, html, startNewTranslation, storedTranslation, translationState]);
 
   const styles = useStyles();
 
@@ -113,7 +119,7 @@ const TranslationFormHtmlSection = ({ text, storedTranslation, updateTranslation
           </HelpText>
         </HStack>
         <hr className={styles.divider} />
-        {incompatibleTranslation && !translationReady && (
+        {translationState.incompatible && !translationState.ready && (
           <VStack gap="4" align="start">
             <hr className={styles.divider} />
             <Heading size={'xsmall'}>Teksten har en eksisterende oversettelse som ikke følger samme struktur</Heading>
@@ -141,15 +147,15 @@ const TranslationFormHtmlSection = ({ text, storedTranslation, updateTranslation
           </VStack>
         )}
 
-        {incompatibleTranslation && translationReady && (
+        {translationState.incompatible && translationState.ready && (
           <Button
             className="mb-4"
             type="button"
             size="small"
             variant="secondary"
             onClick={() => {
-              updateTranslation(incompatibleTranslation);
-              setTranslationReady(false);
+              updateTranslation(translationState.incompatible!);
+              setTranslationState((state) => ({ ...state, ready: false }));
             }}
             icon={<ArrowUndoIcon aria-hidden />}
           >
@@ -157,27 +163,27 @@ const TranslationFormHtmlSection = ({ text, storedTranslation, updateTranslation
           </Button>
         )}
 
-        {translationReady &&
+        {translationState.ready &&
+          translationObject &&
           html.children.map((originalElement, index) => {
-            const translationChild = translationObject.current?.children[index];
             return (
               <TranslationFormHtmlInput
                 key={`html-translation-${originalElement.id}`}
                 text={originalElement.innerText}
                 html={originalElement}
-                currentTranslation={translationChild}
+                currentTranslation={translationObject?.children[index]}
                 updateTranslation={({ id, value }) => {
-                  if (translationObject.current) {
+                  if (translationObject) {
                     if (id) {
                       try {
-                        translationObject.current.update(id, value);
+                        translationObject.update(id, value);
                       } catch (error: any) {
                         feedbackEmit.error(error?.message ?? `Det oppsto en feil: ${error}`);
                       }
                     } else {
                       feedbackEmit.error('Det oppsto en feil. Oversettelsen kan ikke oppdateres fordi den mangler id.');
                     }
-                    const htmlString = translationObject.current.toHtmlString();
+                    const htmlString = translationObject.toHtmlString();
                     updateTranslation(htmlString);
                   }
                 }}

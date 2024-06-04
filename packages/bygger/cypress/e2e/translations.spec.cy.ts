@@ -326,5 +326,39 @@ describe('Translations', () => {
         expect(interception.request.body.data.i18n[htmlWithExistingTranslation]).to.equal(updatedTranslation);
       });
     });
+
+    it('shows and changes translation for chosen language', () => {
+      const expectedHtmlResult =
+        '<h3></h3><p>This is paragraph 1</p><p><a target="_blank" rel="noopener noreferrer"></a></p><ul><li></li><li><a target="_blank" rel="noopener noreferrer"><strong></strong></a><strong></strong><a target="_blank" rel="noopener noreferrer"><strong></strong></a></li></ul><p></p><ol><li></li><li></li><li></li><li></li></ol>';
+      const htmlItemLabel = 'Tekstblokk med mye formatering og eksisterende oversettelse';
+      const htmlInputLabel = 'Her er et avsnitt [med lenke til VG](https://www.vg.no) og her kommer en liste:';
+      cy.findByRole('heading', { name: 'Oversettelser på Norsk nynorsk' }).should('exist');
+      assessHtmlTranlationInput(
+        1,
+        htmlItemLabel,
+        htmlInputLabel,
+        'Her er eit avsnitt [med lenke til DAG OG TID](https://www.dagogtid.no), og her er ei ei liste:',
+      );
+      cy.findByRole('button', { name: 'Norsk nynorsk' }).click();
+      cy.findByRole('link', { name: 'Engelsk' }).click();
+      cy.findByRole('heading', { name: 'Oversettelser på Engelsk' }).should('exist');
+      assessHtmlTranlationInput(
+        1,
+        htmlItemLabel,
+        htmlInputLabel,
+        'Here comes a paragraph [with a link to BBC](https://www.bbc.co.uk), and here is a list:',
+      );
+      assessHtmlTranlationInput(
+        2,
+        'Tekstblokk med mye formatering og manglende oversettelse',
+        'Dette er avsnitt 1',
+        '',
+      );
+      typeNewHtmlTranslationInput(2, 'Dette er avsnitt 1', 'This is paragraph 1');
+      cy.findByRole('button', { name: 'Lagre' }).click();
+      cy.wait('@updateTranslations').then((interception) => {
+        expect(interception.request.body.data.i18n[htmlWithNoTranslation]).to.equal(expectedHtmlResult);
+      });
+    });
   });
 });
