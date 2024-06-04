@@ -5,6 +5,7 @@ import { logger } from '../../logger';
 import { getIdportenPid, getTokenxAccessToken } from '../../security/tokenHelper';
 import { base64Decode } from '../../utils/base64';
 import { responseToError } from '../../utils/errorHandling';
+import { getFyllutUrl } from '../../utils/url';
 import {
   SendInnSoknadBody,
   assembleSendInnSoknadBody,
@@ -78,7 +79,8 @@ const sendInnSoknad = {
     try {
       const idportenPid = getIdportenPid(req);
       const tokenxAccessToken = getTokenxAccessToken(req);
-      const body = assembleSendInnSoknadBody(req.body, idportenPid, null);
+      const fyllutBaseUrl = getFyllutUrl(req);
+      const body = assembleSendInnSoknadBody(req.body, idportenPid, fyllutBaseUrl, null);
       const forceCreateParam = !!req.query?.forceMellomlagring ? '?force=true' : '';
 
       const sendInnResponse = await fetch(`${sendInnConfig.host}${sendInnConfig.paths.soknad}${forceCreateParam}`, {
@@ -107,6 +109,7 @@ const sendInnSoknad = {
     try {
       const idportenPid = getIdportenPid(req);
       const tokenxAccessToken = getTokenxAccessToken(req);
+      const fyllutUrl = getFyllutUrl(req);
 
       const { innsendingsId } = req.body;
 
@@ -116,7 +119,7 @@ const sendInnSoknad = {
         next(new Error(errorMessage));
         return;
       }
-      const body = assembleSendInnSoknadBody(req.body, idportenPid, null);
+      const body = assembleSendInnSoknadBody(req.body, idportenPid, fyllutUrl, null);
 
       const sendInnResponse = await fetch(
         `${sendInnConfig.host}${sendInnConfig.paths.soknad}/${sanitizedInnsendingsId}`,

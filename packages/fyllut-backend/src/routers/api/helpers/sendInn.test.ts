@@ -84,7 +84,7 @@ describe('sendInn API helper', () => {
     describe('Without attachments', () => {
       let body: SendInnSoknadBody;
       beforeEach(() => {
-        body = assembleSendInnSoknadBody(defaultRequestBody, idPortenPid, submissionPdfAsByteArray);
+        body = assembleSendInnSoknadBody(defaultRequestBody, idPortenPid, '', submissionPdfAsByteArray);
       });
 
       it('adds the pid and form meta data', () => {
@@ -134,7 +134,7 @@ describe('sendInn API helper', () => {
     describe('With attachments', () => {
       let body: SendInnSoknadBody;
       beforeEach(() => {
-        body = assembleSendInnSoknadBody(requestBodyWithAttachments, idPortenPid, submissionPdfAsByteArray);
+        body = assembleSendInnSoknadBody(requestBodyWithAttachments, idPortenPid, '', submissionPdfAsByteArray);
       });
 
       it('adds vedleggsliste and kanLasteOppAnnet', () => {
@@ -156,7 +156,7 @@ describe('sendInn API helper', () => {
       };
 
       it('translates form metadata', () => {
-        const body = assembleSendInnSoknadBody(requestBodyWithTranslation, idPortenPid, submissionPdfAsByteArray);
+        const body = assembleSendInnSoknadBody(requestBodyWithTranslation, idPortenPid, '', submissionPdfAsByteArray);
         expect(body).toEqual(
           expect.objectContaining({
             spraak: 'en',
@@ -168,7 +168,7 @@ describe('sendInn API helper', () => {
       });
 
       it('translates vedlegg metadata', () => {
-        const body = assembleSendInnSoknadBody(requestBodyWithTranslation, idPortenPid, submissionPdfAsByteArray);
+        const body = assembleSendInnSoknadBody(requestBodyWithTranslation, idPortenPid, '', submissionPdfAsByteArray);
         expect(body.vedleggsListe).toHaveLength(2);
         expect(body.vedleggsListe).toEqual([
           expect.objectContaining({
