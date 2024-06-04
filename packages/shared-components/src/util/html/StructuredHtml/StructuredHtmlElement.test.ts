@@ -171,15 +171,17 @@ describe('StructuredHtmlElement', () => {
         const withLinkJsonMarkdownChildren = (
           (withLinkJson.children[0] as HtmlAsJsonElement).children[0] as HtmlAsJsonElement
         ).children;
-        expect((withLinkJsonMarkdownChildren[0] as HtmlAsJsonTextElement).textContent).toBe('Punkt 1 med ');
-        expect((withLinkJsonMarkdownChildren[1] as HtmlAsJsonTextElement).textContent).toBe('[lenketekst](www.url.no)');
+        expect((withLinkJsonMarkdownChildren[0] as HtmlAsJsonTextElement).textContent).toBe(
+          'Punkt 1 med [lenketekst](www.url.no)',
+        );
       });
 
       it('converts strong to json with markdown', () => {
         const withStrongJson = withStrong.toJson(true);
         const withStrongJsonMarkdownChildren = (withStrongJson.children[0] as HtmlAsJsonElement).children;
-        expect((withStrongJsonMarkdownChildren[0] as HtmlAsJsonTextElement).textContent).toBe('Avsnitt med ');
-        expect((withStrongJsonMarkdownChildren[1] as HtmlAsJsonTextElement).textContent).toBe('**fet skrift**');
+        expect((withStrongJsonMarkdownChildren[0] as HtmlAsJsonTextElement).textContent).toBe(
+          'Avsnitt med **fet skrift**.',
+        );
       });
 
       it('does not convert strong to markdown when conversion was done without skipping within given tags', () => {
