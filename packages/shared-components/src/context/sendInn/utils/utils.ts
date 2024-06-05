@@ -103,8 +103,16 @@ export const getSubmissionWithFyllutState = (
   }
 };
 
-export const removeFyllutState = (submission: Submission): Submission => {
-  const submissionCopy = { ...submission };
+export const transformSubmissionBeforeSubmitting = (submission: Submission): Submission => {
+  const replacer = (_key: string, value: string | number | boolean | any[] | object) => {
+    //Remove empty objects and empty arrays
+    if (typeof value === 'object' && Object.keys(value).length === 0) {
+      return undefined;
+    }
+    return value;
+  };
+
+  const submissionCopy = JSON.parse(JSON.stringify(submission, replacer));
   delete submissionCopy.fyllutState;
   return submissionCopy;
 };
