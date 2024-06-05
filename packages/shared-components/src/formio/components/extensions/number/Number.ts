@@ -52,7 +52,7 @@ class Number extends TextField {
     // Get data value from parent instead of formatted number from this.getValue()
     const value = super.getValue();
 
-    if (value === '' || value === undefined) {
+    if (value === '' || value === undefined || !!this.component?.calculateValue) {
       return;
     }
 
@@ -92,6 +92,11 @@ class Number extends TextField {
   getValue() {
     // Need to format the number when jumping between tabs or else we show the data value instead of display value
     return numberUtils.toLocaleString(super.getValue());
+  }
+
+  setValueOnReactInstance(value) {
+    // This is needed to handle formatting after calculate value
+    super.setValueOnReactInstance(numberUtils.toLocaleString(value));
   }
 
   replaceCommasAndSpaces(value: string) {
