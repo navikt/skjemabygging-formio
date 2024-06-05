@@ -51,6 +51,7 @@ class Number extends TextField {
   validateNumber() {
     // Get data value from parent instead of formatted number from this.getValue()
     const value = super.getValue();
+
     if (value === '' || value === undefined) {
       return;
     }
@@ -91,11 +92,6 @@ class Number extends TextField {
   getValue() {
     // Need to format the number when jumping between tabs or else we show the data value instead of display value
     return numberUtils.toLocaleString(super.getValue());
-  }
-
-  setValue(value: string) {
-    // Need to format the number if it is saved or if you come back from summary page.
-    super.setValue(numberUtils.toLocaleString(value));
   }
 
   replaceCommasAndSpaces(value: string) {
