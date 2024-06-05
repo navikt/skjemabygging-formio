@@ -40,7 +40,9 @@ const fetchFromFormioApi = async (url) => {
     if (response.ok) {
       return await response.json();
     }
-    logger.warn(`Failed to retrieve forms from ${url}`);
+    const contentType = response.headers.get('content-type');
+    const errorResponseBody = contentType?.includes('application/json') ? await response.json() : await response.text();
+    logger.warn(`Failed to retrieve forms from ${url}`, { errorResponseBody });
   }
   return [];
 };
