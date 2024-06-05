@@ -104,15 +104,20 @@ export const getSubmissionWithFyllutState = (
 };
 
 export const transformSubmissionBeforeSubmitting = (submission: Submission): Submission => {
+  if (!submission?.data || (typeof submission.data === 'object' && Object.keys(submission.data).length === 0)) {
+    return { data: {} };
+  }
+
   const replacer = (_key: string, value: string | number | boolean | any[] | object) => {
-    //Remove empty objects and empty arrays
-    if (typeof value === 'object' && Object.keys(value).length === 0) {
+    //Remove empty objects and empty arrays (but not null)
+    if (value && typeof value === 'object' && Object.keys(value).length === 0) {
       return undefined;
     }
     return value;
   };
 
-  const submissionCopy = JSON.parse(JSON.stringify(submission, replacer));
-  delete submissionCopy.fyllutState;
-  return submissionCopy;
+  const { data, fyllutState, ...rest } = submission;
+  const dataCopy = JSON.parse(JSON.stringify(data, replacer)) ?? {};
+
+  return { data: dataCopy, ...rest };
 };
