@@ -1,7 +1,8 @@
 import { fetchDecoratorHtml } from '@navikt/nav-dekoratoren-moduler/ssr';
 import { config } from './config/config';
-import { NaisCluster } from './config/nais-cluster.js';
-import { logger } from './logger.js';
+import { NaisCluster } from './config/nais-cluster';
+import { logger } from './logger';
+import { getFyllutUrl } from './utils/url';
 
 const { naisClusterName } = config;
 
@@ -27,7 +28,7 @@ const getDecorator = async (redirect) => {
 
 const createRedirectUrl = (req, res) => {
   const formId = res.locals.formId;
-  const baseUrl = `https://${req.get('host')}/fyllut`;
+  const baseUrl = getFyllutUrl(req);
   if (formId) {
     return `${baseUrl}?form=${res.locals.formId}`;
   }

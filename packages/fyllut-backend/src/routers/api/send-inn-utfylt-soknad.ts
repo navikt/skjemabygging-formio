@@ -5,6 +5,7 @@ import { config } from '../../config/config';
 import { logger } from '../../logger';
 import { getIdportenPid, getTokenxAccessToken } from '../../security/tokenHelper';
 import { responseToError } from '../../utils/errorHandling';
+import { getFyllutUrl } from '../../utils/url';
 import { createPdfAsByteArray } from './helpers/pdfService';
 import { assembleSendInnSoknadBody, isNotFound, sanitizeInnsendingsId, validateInnsendingsId } from './helpers/sendInn';
 
@@ -15,6 +16,7 @@ const sendInnUtfyltSoknad = {
     try {
       const idportenPid = getIdportenPid(req);
       const tokenxAccessToken = getTokenxAccessToken(req);
+      const fyllutUrl = getFyllutUrl(req);
 
       const { form, submission, submissionMethod, translation, language, innsendingsId } = req.body;
       if (!req.headers.AzureAccessToken) {
@@ -40,7 +42,7 @@ const sendInnUtfyltSoknad = {
         localizationUtils.getLanguageCodeAsIso639_1(language),
       );
 
-      const body = assembleSendInnSoknadBody(req.body, idportenPid, pdfByteArray);
+      const body = assembleSendInnSoknadBody(req.body, idportenPid, fyllutUrl, pdfByteArray);
 
       const sendInnResponse = await fetch(
         `${sendInnConfig.host}${sendInnConfig.paths.utfyltSoknad}/${sanitizedInnsendingsId}`,

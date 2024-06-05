@@ -1,5 +1,4 @@
 import { I18nTranslationMap, NavFormType, Submission } from '@navikt/skjemadigitalisering-shared-domain';
-import { config } from '../../../config/config';
 import { logger } from '../../../logger';
 import { base64Encode } from '../../../utils/base64';
 
@@ -77,6 +76,7 @@ const assembleSendInnSoknadBody = (
     innsendingsId?: string;
   },
   idportenPid: string,
+  fyllutUrl: string,
   submissionPdfAsByteArray: number[] | null = null,
 ): SendInnSoknadBody => {
   const { form, submission, language, translation = {}, attachments, otherDocumentation, innsendingsId } = requestBody;
@@ -130,7 +130,7 @@ const assembleSendInnSoknadBody = (
       beskrivelse: translate(attachment.beskrivelse),
       tittel: translate(attachment.tittel),
       ...(attachment.vedleggskjema && {
-        vedleggsurl: `${config.fyllutFrontendUrl}/${attachment.vedleggskjema}?sub=paper`,
+        vedleggsurl: `${fyllutUrl}/${attachment.vedleggskjema}?sub=paper`,
       }),
     }));
   }

@@ -96,8 +96,6 @@ spec:
       value: {{pdl-token-scope-cluster}}
     - name: AMPLITUDE_API_ENDPOINT
       value: "https://amplitude.nav.no/collect-auto"
-    - name: FYLLUT_FRONTEND_URL
-      value: {{fyllut-frontend-url}}
     {{#each environmentVars}}
     - name: {{this.name}}
       value: {{this.value}}

@@ -60,7 +60,6 @@ const localDevelopmentConfig: DefaultConfig = {
   formioApiServiceUrl: loadFormioApiServiceUrl() || 'https://formio-api.intern.dev.nav.no/jvcemxwcpghcqjn',
   forstesideUrl: 'https://www.nav.no/soknader/api/forsteside',
   decoratorUrl: 'https://www.nav.no/dekoratoren?simple=true',
-  fyllutFrontendUrl: process.env.FYLLUT_FRONTEND_URL || 'http://localhost:3001/fyllut',
   skjemabyggingProxyUrl: process.env.SKJEMABYGGING_PROXY_URL || 'https://skjemabygging-proxy.dev-fss-pub.nais.io',
   skjemabyggingProxyClientId: '95170319-b4d7-4190-8271-118ed19bafbf',
   azureOpenidTokenEndpoint:
@@ -97,7 +96,6 @@ const defaultConfig: DefaultConfig = {
   formioApiServiceUrl: loadFormioApiServiceUrl(),
   forstesideUrl: process.env.FOERSTESIDE_URL!,
   decoratorUrl: process.env.DECORATOR_URL!,
-  fyllutFrontendUrl: process.env.FYLLUT_FRONTEND_URL!,
   skjemabyggingProxyUrl: process.env.SKJEMABYGGING_PROXY_URL!,
   skjemabyggingProxyClientId: process.env.SKJEMABYGGING_PROXY_CLIENT_ID!,
   azureOpenidTokenEndpoint: process.env.AZURE_OPENID_CONFIG_TOKEN_ENDPOINT!,
@@ -126,6 +124,7 @@ const config: ConfigType = {
   isDelingslenke: process.env.NAIS_APP_NAME === 'skjemautfylling-delingslenke',
   pdlTokenScopeCluster: process.env.PDL_TOKEN_SCOPE_CLUSTER!,
   backendLogLevel: process.env.FYLLUT_BACKEND_LOGLEVEL || (process.env.NODE_ENV === 'test' ? 'warning' : 'info'),
+  port: parseInt(process.env.PORT || '8080'),
 };
 
 const checkConfigConsistency = (config: ConfigType, logError = logger.error, exit = process.exit) => {

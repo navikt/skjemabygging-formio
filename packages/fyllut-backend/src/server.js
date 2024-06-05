@@ -1,5 +1,5 @@
 import { createApp } from './app';
-import { logger } from './logger.js';
+import { logger } from './logger';
 import './utils/errorToJson.js';
 
 const port = parseInt(process.env.PORT || '8080');

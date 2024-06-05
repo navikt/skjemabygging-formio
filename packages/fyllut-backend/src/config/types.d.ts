@@ -36,7 +36,6 @@ export type DefaultConfig = {
   formioApiServiceUrl?: string;
   forstesideUrl: string;
   decoratorUrl: string;
-  fyllutFrontendUrl: string;
   skjemabyggingProxyUrl: string;
   skjemabyggingProxyClientId: string;
   azureOpenidTokenEndpoint: string;
@@ -66,4 +65,5 @@ export type ConfigType = DefaultConfig & {
   isDelingslenke: boolean;
   backendLogLevel: string;
   pdlTokenScopeCluster: string;
+  port: number;
 };
