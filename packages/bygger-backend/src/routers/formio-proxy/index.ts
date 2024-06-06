@@ -20,7 +20,6 @@ formioProxyRouter.all('*', async (req, res, next) => {
         changeOrigin: true,
         proxyTimeout: 60000,
         timeout: 60000,
-        xfwd: true,
       },
       (err) => {
         const { message, stack, ...errDetails } = err;
