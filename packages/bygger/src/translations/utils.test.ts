@@ -501,23 +501,21 @@ describe('Skjema med globale oversettelser som inneholder linjeskift', () => {
       },
     },
   };
+
   it('fjerner linjeskift i tekster som skal eksporteres', () => {
     const eksport = getTextsAndTranslationsForForm(form, translations);
-    expect(eksport).toHaveLength(6);
+    expect(eksport).toHaveLength(2);
 
     expect(eksport[0].text).toBe('Veiledning');
     expect(eksport[0].en).toBe('Guidance (Global Tekst)');
     expect(eksport[0]['nn-NO']).toBe('Rettleiing (Global Tekst)');
 
-    expect([eksport[1].text, eksport[2].text, eksport[3].text]).toEqual(['NAV sender svar. ', '<br>', ' Se ']);
-    expect([eksport[1].en, eksport[2].en, eksport[3].en]).toEqual(['NAV sends answers. ', '<br>', ' See ']);
-    expect([eksport[1]['nn-NO'], eksport[2]['nn-NO'], eksport[3]['nn-NO']]).toEqual([
-      'NAV sender svar. ',
-      '<br>',
-      ' Sjå ',
-    ]);
+    expect(eksport[1].text).toEqual('NAV sender svar. <br> Se [link](https://www.nav.no/person/).');
+    expect(eksport[1].en).toEqual('NAV sends answers. <br> See [link](https://www.nav.no/person/).');
+    expect(eksport[1]['nn-NO']).toEqual('NAV sender svar. <br> Sjå [lenke](https://www.nav.no/person/).');
   });
 });
+
 describe('testGetCSVfileHeaders', () => {
   it('Test headers with only origin form text', () => {
     const actual = getTextsAndTranslationsHeaders([] as FormioTranslationMap);
