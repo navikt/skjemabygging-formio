@@ -40,7 +40,7 @@ class DefaultAttachment extends BaseComponent {
         deadline={this.options.properties?.ettersendelsesfrist}
         error={this.getError()}
         onChange={(value) => this.handleChange(value)}
-        translate={this.t.bind(this)}
+        translate={this.translate.bind(this)}
         ref={(ref) => this.setReactInstance(ref)}
       />,
     );

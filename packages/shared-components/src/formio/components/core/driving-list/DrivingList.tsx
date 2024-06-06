@@ -42,14 +42,13 @@ class DrivingList extends BaseComponent {
       this.rerender();
     }
   }
-
   override get errors() {
     return this.componentErrors;
   }
 
   addErrorOfType(metadataId: DrivingListMetadataId, errorType: DrivingListErrorType) {
     if (errorType === 'required') {
-      super.addError(requiredError(metadataId, this.t.bind(this)), drivingListMetadata(metadataId).id);
+      super.addError(requiredError(metadataId, this.translate.bind(this)), drivingListMetadata(metadataId).id);
     }
   }
 
@@ -90,11 +89,13 @@ class DrivingList extends BaseComponent {
 
     componentData?.dates?.forEach((date) => {
       if (!isValidParking(date.parking)) {
-        const message = this.t(TEXTS.validering.validParkingExpenses, { dato: dateUtils.toLocaleDate(date.date) });
+        const message = this.translate(TEXTS.validering.validParkingExpenses, {
+          dato: dateUtils.toLocaleDate(date.date),
+        });
         this.addError(message, `dates:${date.date}:parking`);
       }
       if (Number(date.parking) > 100 && this.getAppConfig().submissionMethod === 'digital') {
-        this.addError(this.t(TEXTS.validering.parkingExpensesAboveHundred), `dates:${date.date}:parking`);
+        this.addError(this.translate(TEXTS.validering.parkingExpensesAboveHundred), `dates:${date.date}:parking`);
       }
     });
 

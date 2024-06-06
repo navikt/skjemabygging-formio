@@ -1,5 +1,5 @@
 import { AktivitetPeriode, DrivingListSubmission, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { TFunction } from 'i18next';
+import { TFunction, TOptions } from 'i18next';
 
 export type DrivingListMetadataId = (typeof metadata)[number]['id'];
 export type DrivingListErrorType = 'required';
@@ -30,7 +30,10 @@ export const drivingListMetadata = (
   return metadataInfo;
 };
 
-export const requiredError = (componentId: DrivingListMetadataId, t: TFunction): string => {
+export const requiredError = (
+  componentId: DrivingListMetadataId,
+  t: { (key: string, options?: TOptions): ReturnType<TFunction> },
+) => {
   const field = t(drivingListMetadata(componentId).label);
   return t('required', { field });
 };

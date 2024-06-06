@@ -128,15 +128,15 @@ class NavSelect extends BaseComponent {
   }
 
   translateOptionLabels(options) {
-    return options.map((option) => ({ ...option, label: this.t(option.label) }));
+    return options.map((option) => ({ ...option, label: this.translate(option.label) }));
   }
 
   translateOptionLabel(option) {
-    return option && option.label ? { ...option, label: this.t(option.label) } : option;
+    return option && option.label ? { ...option, label: this.translate(option.label) } : option;
   }
 
   translateAriaLiveMessages(messages) {
-    return messages(this.t.bind(this));
+    return messages(this.translate.bind(this));
   }
 
   setValueOnReactInstance(value) {
@@ -220,11 +220,13 @@ class NavSelect extends BaseComponent {
       <ReactSelectWrapper
         component={component}
         options={this.translateOptionLabels(this.selectOptions)}
-        label={this.t(component.label)}
+        label={this.translate(component.label)}
         value={this.translateOptionLabel(this.getValue())}
         ariaLiveMessages={this.translateAriaLiveMessages(ariaLiveMessages)}
-        screenReaderStatus={({ count }: { count: number }) => this.t(SELECT_TEXTS.numberOfAvailableOptions, { count })}
-        loadingMessage={() => this.t(TEXTS.statiske.loading)}
+        screenReaderStatus={({ count }: { count: number }) =>
+          this.translate(SELECT_TEXTS.numberOfAvailableOptions, { count })
+        }
+        loadingMessage={() => this.translate(TEXTS.statiske.loading)}
         onChange={(value) => this.handleChange(value)}
         inputRef={(ref) => this.setReactInstance(ref)}
         isLoading={this.isLoading}
