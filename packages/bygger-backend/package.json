@@ -15,7 +15,7 @@
     "test:coverage": "vitest --run --coverage"
   },
   "dependencies": {
-    "@octokit/auth-app": "^6.0.4",
+    "@octokit/auth-app": "^7.1.0",
     "@octokit/rest": "^20.1.1",
     "@octokit/webhooks-types": "^7.5.1",
     "@navikt/skjemadigitalisering-shared-domain": "1.0.0",
