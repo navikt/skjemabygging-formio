@@ -22,6 +22,7 @@ export type PublishRepoConfig = {
 
 export type FormioConfig = {
   projectUrl: string;
+  projectName: string;
   projectId: string;
   roleIds: Record<string, string>;
   formIds: Record<string, string>;
