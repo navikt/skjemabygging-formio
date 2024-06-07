@@ -57,11 +57,18 @@ class BaseComponent extends FormioReactComponent {
     );
   }
 
+  /**
+   * @deprecated Use `translate` instead of `t` in React components
+   */
+  t = (...params) => {
+    return super.t(...params);
+  };
+
   translate(key?: string, options: TOptions = {}): ReturnType<TFunction> {
     if (Object.keys(options).length === 0) {
-      return this.t(key);
+      return super.t(key);
     }
-    return this.t(key, { ...options, interpolation: { escapeValue: false } });
+    return super.t(key, { ...options, interpolation: { escapeValue: false } });
   }
 
   /**
