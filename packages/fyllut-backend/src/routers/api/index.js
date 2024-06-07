@@ -10,7 +10,7 @@ import config from './config';
 import countries from './countries.js';
 import enhetsliste from './enhetsliste.js';
 import exstream from './exstream';
-import form from './form.js';
+import form from './form';
 import forms from './forms';
 import forsteside from './forsteside';
 import globalTranslations from './global-translations.js';

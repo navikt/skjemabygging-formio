@@ -1,5 +1,6 @@
 import moment from 'moment';
 import 'moment/locale/nb';
+import attachmentUtils from '../attachment';
 import TEXTS from '../texts';
 import currencyUtils from '../utils/currencyUtils';
 import dateUtils from '../utils/date';
@@ -90,17 +91,7 @@ function formatValue(component, value, translate, form, language) {
       const suffix = component.suffix ? ` ${component.suffix}` : '';
       return prefix + numberUtils.toLocaleString(value) + suffix;
     case 'attachment':
-      return {
-        description: translate(TEXTS.statiske.attachment[value.key]),
-        additionalDocumentationLabel: translate(
-          component.attachmentValues?.[value.key]?.additionalDocumentation?.label,
-        ),
-        additionalDocumentation: translate(value.additionalDocumentation),
-        deadlineWarning:
-          !!component.attachmentValues?.[value.key]?.showDeadline && form?.properties?.ettersendelsesfrist
-            ? translate(TEXTS.statiske.attachment.deadline, { deadline: form?.properties?.ettersendelsesfrist })
-            : undefined,
-      };
+      return attachmentUtils.mapToAttachmentSummary({ translate, value, component, form });
     case 'navAddress':
       const bostedsadresse = value?.bostedsadresse;
 
