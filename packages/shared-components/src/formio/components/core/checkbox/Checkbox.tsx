@@ -48,7 +48,7 @@ class Checkbox extends BaseComponent {
         readOnly={this.getReadOnly()}
         error={this.getError()}
       >
-        <InnerHtml content={this.t(this.component?.description)} />
+        <InnerHtml content={this.translate(this.component?.description)} />
         <AkselCheckbox value={this.component?.key}>{this.getLabel()}</AkselCheckbox>
       </CheckboxGroup>,
     );

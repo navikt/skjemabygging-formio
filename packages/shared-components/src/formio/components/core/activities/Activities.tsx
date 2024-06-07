@@ -13,7 +13,7 @@ class Activities extends BaseComponent {
 
   defaultActivity: SubmissionActivity = {
     aktivitetId: 'ingenAktivitet',
-    text: this.t(TEXTS.statiske.activities.defaultActivity),
+    text: this.translate(TEXTS.statiske.activities.defaultActivity),
   };
 
   static schema() {
@@ -50,7 +50,9 @@ class Activities extends BaseComponent {
       const componentData = this.getValue() as SubmissionActivity;
 
       if (!componentData) {
-        const requiredError = this.t('required', { field: this.getLabel({ labelTextOnly: true }) });
+        const requiredError = this.translate('required', {
+          field: this.getLabel({ labelTextOnly: true }),
+        });
         super.addError(requiredError);
       }
     }

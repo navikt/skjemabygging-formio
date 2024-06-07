@@ -58,8 +58,8 @@ class TextArea extends BaseComponent {
           spellCheck={this.getSpellCheck()}
           error={this.getError()}
           i18n={{
-            counterLeft: this.t(TRANSLATIONS.counterLeft),
-            counterTooMuch: this.t(TRANSLATIONS.counterTooMuch),
+            counterLeft: this.translate(TRANSLATIONS.counterLeft),
+            counterTooMuch: this.translate(TRANSLATIONS.counterTooMuch),
           }}
         />
       </>,

@@ -72,7 +72,7 @@ class Number extends TextField {
   }
 
   translateWithLabel(key: string, options = {}) {
-    return this.t(key, { field: this.getLabel({ labelTextOnly: true }), ...options });
+    return this.translate(key, { field: this.getLabel({ labelTextOnly: true }), ...options });
   }
 
   handleChange(value: string) {

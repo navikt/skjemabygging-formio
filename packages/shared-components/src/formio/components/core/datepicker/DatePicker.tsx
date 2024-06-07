@@ -60,7 +60,7 @@ export default class DatePicker extends BaseComponent {
           fromDate: this.getFromDate(),
           toDate: this.getToDate(),
         },
-        this.t.bind(this),
+        this.translate.bind(this),
       );
 
       return this.setComponentValidity(

@@ -2,6 +2,7 @@ import { Tag } from '@navikt/ds-react';
 import { Component, ComponentError, formDiffingTool, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import Field from 'formiojs/components/_classes/field/Field';
 import FormioUtils from 'formiojs/utils';
+import { TFunction, TOptions } from 'i18next';
 import { ReactNode } from 'react';
 import InnerHtml from '../../../components/inner-html/InnerHtml';
 import FormioReactComponent from './FormioReactComponent';
@@ -45,15 +46,29 @@ class BaseComponent extends FormioReactComponent {
     const defaultOptions = { showOptional: true, showDiffTag: true, labelTextOnly: false };
     const { showOptional, showDiffTag, labelTextOnly } = { ...defaultOptions, ...(options ?? {}) };
 
-    if (labelTextOnly) return this.t(this.component?.label ?? '');
+    if (labelTextOnly) return this.translate(this.component?.label ?? '');
 
     return (
       <>
-        {this.t(this.component?.label ?? '')}
-        {this.isRequired() || !!this.component?.readOnly ? '' : showOptional && ` (${this.t('valgfritt')})`}
+        {this.translate(this.component?.label ?? '')}
+        {this.isRequired() || !!this.component?.readOnly ? '' : showOptional && ` (${this.translate('valgfritt')})`}
         {showDiffTag && this.getDiffTag()}
       </>
     );
+  }
+
+  /**
+   * @deprecated Use `translate` instead of `t` in React components
+   */
+  t = (...params) => {
+    return super.t(...params);
+  };
+
+  translate(key?: string, options: TOptions = {}): ReturnType<TFunction> {
+    if (Object.keys(options).length === 0) {
+      return super.t(key);
+    }
+    return super.t(key, { ...options, interpolation: { escapeValue: false } });
   }
 
   /**
@@ -118,7 +133,9 @@ class BaseComponent extends FormioReactComponent {
    * Get description for custom component renderReact()
    */
   getDescription(): ReactNode {
-    return this.component?.description ? <InnerHtml content={this.t(this.component?.description)} /> : undefined;
+    return this.component?.description ? (
+      <InnerHtml content={this.translate(this.component?.description)} />
+    ) : undefined;
   }
 
   /**
@@ -140,7 +157,7 @@ class BaseComponent extends FormioReactComponent {
    * Get content for custom component renderReact()
    */
   getContent() {
-    return this.component?.content ? this.t(this.component?.content) : '';
+    return this.component?.content ? this.translate(this.component?.content) : '';
   }
 
   /**
