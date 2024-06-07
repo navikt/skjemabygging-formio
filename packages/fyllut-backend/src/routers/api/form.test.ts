@@ -1,3 +1,4 @@
+import { Component, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import FormService from '../../services/FormService';
 import TranslationsService from '../../services/TranslationsService';
 import { mockRequest, mockResponse } from '../../test/testHelpers';
@@ -21,24 +22,27 @@ describe('[endpoint] form', () => {
             return {
               'Norsk skjematittel': 'Nynorsk skjematittel',
               'Norsk vedleggsnavn': 'Nynorsk vedleggsnavn',
-            };
+            } as Record<string, string>;
           default:
             return {};
         }
       });
-      vi.spyOn(FormService.prototype, 'loadForm').mockImplementationOnce(async (formPath) => ({
-        path: formPath,
-        title: 'Norsk skjematittel',
-        properties: {},
-        components: [
-          {
-            label: 'Norsk vedleggsnavn',
-            properties: {
-              vedleggskode: 'B1',
-            },
-          },
-        ],
-      }));
+      vi.spyOn(FormService.prototype, 'loadForm').mockImplementationOnce(
+        async (formPath) =>
+          ({
+            path: formPath,
+            title: 'Norsk skjematittel',
+            properties: {},
+            components: [
+              {
+                label: 'Norsk vedleggsnavn',
+                properties: {
+                  vedleggskode: 'B1',
+                },
+              } as Component,
+            ],
+          }) as NavFormType,
+      );
     });
 
     describe('when type is limited', () => {
