@@ -3,6 +3,7 @@ import attachmentUtils, {
   AttachmentSettingValues,
   AttachmentValue,
   LimitedFormAttachment,
+  SubmissionAttachmentValue,
 } from './attachment';
 import { ComponentError } from './component';
 import configUtils from './config';
@@ -187,6 +188,7 @@ export type {
   SendInnMaalgruppe,
   Submission,
   SubmissionActivity,
+  SubmissionAttachmentValue,
   SubmissionData,
   SubmissionMaalgruppe,
   SubmissionMethod,

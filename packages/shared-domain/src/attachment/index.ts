@@ -78,4 +78,10 @@ const attachmentUtils = {
 };
 
 export default attachmentUtils;
-export type { AttachmentSettingValue, AttachmentSettingValues, AttachmentValue, LimitedFormAttachment };
+export type {
+  AttachmentSettingValue,
+  AttachmentSettingValues,
+  AttachmentValue,
+  LimitedFormAttachment,
+  SubmissionAttachmentValue,
+};
