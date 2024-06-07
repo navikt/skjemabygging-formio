@@ -88,8 +88,7 @@ const mapAttachmentValues = (
         data?.additionalDocumentation?.enabled && additionalDocumentationLabel;
       const shouldShowAdditionalDocumentationDescription =
         data?.additionalDocumentation?.enabled && additionalDocumentationDescription;
-      const shouldShowDeadline =
-        !!attachmentValues?.[attachmentKey]?.showDeadline && form.properties?.ettersendelsesfrist;
+      const shouldShowDeadline = !!data?.showDeadline && form.properties?.ettersendelsesfrist;
 
       return {
         key,
@@ -133,3 +132,4 @@ const getAttachments = (form: NavFormType, translate: TranslateFunction) => {
 };
 
 export default form;
+export { mapAttachmentValues };
