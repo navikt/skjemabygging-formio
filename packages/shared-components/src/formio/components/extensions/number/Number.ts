@@ -36,6 +36,10 @@ class Number extends TextField {
   }
 
   checkComponentValidity(data, dirty, row, options = {}) {
+    if (!!this.component?.calculateValue) {
+      return true;
+    }
+
     const validity = super.checkComponentValidity(data, dirty, row, options);
 
     if (validity) {
@@ -52,7 +56,7 @@ class Number extends TextField {
     // Get data value from parent instead of formatted number from this.getValue()
     const value = super.getValue();
 
-    if (value === '' || value === undefined || !!this.component?.calculateValue) {
+    if (value === '' || value === undefined) {
       return;
     }
 

@@ -47,7 +47,7 @@ const toLocaleString = (value?: string | number) => {
     return value;
   }
 
-  return number.toLocaleString('no', {});
+  return number.toLocaleString('no', { maximumFractionDigits: 2 });
 };
 
 const numberUtils = {

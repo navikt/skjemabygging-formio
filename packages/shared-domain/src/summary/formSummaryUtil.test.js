@@ -495,7 +495,7 @@ describe('form summary', () => {
           '',
           mockedTranslate,
         );
-        expect(actual[0].value).toEqual('2 512,388'.replaceAll(' ', '\u00A0'));
+        expect(actual[0].value).toEqual('2 512,39'.replaceAll(' ', '\u00A0'));
       });
 
       it('should add prefix and suffix', () => {
