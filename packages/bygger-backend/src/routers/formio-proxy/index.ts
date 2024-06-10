@@ -1,9 +1,9 @@
 import express from 'express';
 import httpProxy from 'http-proxy';
-import config from '../../config';
 import { logger } from '../../logging/logger';
+import { getFormioApiServiceUrl } from '../../util/formio';
 
-const formioProjectUrl = config.formio.projectUrl;
+const formioProjectUrl = getFormioApiServiceUrl();
 const proxy = httpProxy.createProxyServer({});
 
 const formioProxyRouter = express.Router();

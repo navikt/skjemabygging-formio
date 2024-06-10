@@ -1,10 +1,10 @@
 import nock from 'nock';
-import config from '../../../config';
 import { mockRequest, mockResponse } from '../../../test/testHelpers';
+import { getFormioApiServiceUrl } from '../../../util/formio';
 import authorizedPublisher from './authorizedPublisher';
 
 describe('authorizedPublisher', () => {
-  const projectUrl = config.formio.projectUrl;
+  const projectUrl = getFormioApiServiceUrl();
 
   beforeAll(() => {
     vi.spyOn(console, 'error').mockImplementation(() => {});

@@ -23,3 +23,4 @@ secrets:
   - formio-server-access
   - bygger-pusher
   - github-app-installation
+environmentVars: []

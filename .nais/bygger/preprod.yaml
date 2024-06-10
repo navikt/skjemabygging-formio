@@ -24,3 +24,8 @@ secrets:
   - formio-server-access-dev
   - bygger-pusher-dev
   - github-app-installation
+environmentVars:
+  - name: FORMIO_API_SERVICE_PROD
+    value: http://formio-enterprise-server
+  - name: FORMIO_PROJECT_NAME_PROD
+    value: jvcemxwcpghcqjn

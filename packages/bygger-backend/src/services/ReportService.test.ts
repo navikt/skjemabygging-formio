@@ -2,7 +2,7 @@ import { Component, FormPropertiesType, NavFormType } from '@navikt/skjemadigita
 import MemoryStream from 'memorystream';
 import nock from 'nock';
 import { ComponentProperties } from '../../../shared-domain/src/form';
-import config from '../config';
+import { getFormioApiServiceUrl } from '../util/formio';
 import ReportService from './ReportService';
 import { formioService } from './index';
 
@@ -52,7 +52,7 @@ describe('ReportService', () => {
     const createWritableStream = () => new MemoryStream(undefined, { readable: false });
 
     const setupNock = (publishedForms: Partial<NavFormType>[]) => {
-      nockScope = nock(config.formio.projectUrl)
+      nockScope = nock(getFormioApiServiceUrl())
         .get(/\/form\?.*$/)
         .times(1)
         .reply(200, publishedForms);
