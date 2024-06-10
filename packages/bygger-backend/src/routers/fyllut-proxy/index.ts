@@ -5,6 +5,9 @@ import { logger } from '../../logging/logger';
 
 const fyllutBaseUrl = config.fyllut.baseUrl;
 const proxy = httpProxy.createProxyServer({});
+proxy.on('proxyReq', (proxyReq) => {
+  proxyReq.removeHeader('authorization');
+});
 
 const fyllutProxyRouter = express.Router();
 
