@@ -11,6 +11,10 @@ const list = {
   },
   '& ol, & ul': {
     marginTop: 0,
+    paddingLeft: 'var(--a-spacing-5)',
+    '& li': {
+      marginBottom: 'var(--a-spacing-3)',
+    },
   },
 };
 export default list;
