@@ -20,6 +20,9 @@ accessPolicy:
       - application: formio-api
         namespace: skjemadigitalisering
         cluster: dev-gcp
+      - application: formio-enterprise-server
+        namespace: skjemadigitalisering
+        cluster: dev-gcp
     external:
       - host: fyllut-preprod.intern.dev.nav.no
       - host: skjemabygging-proxy.dev-fss-pub.nais.io
