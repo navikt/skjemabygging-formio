@@ -11,7 +11,7 @@ const config = (req: ByggerRequest, res: Response) => {
   }
   res.json({
     formioProjectUrl: `${getByggerUrl(req)}/${appConfig.formio.projectName}`,
-    fyllutBaseUrl: appConfig.fyllut.baseUrl,
+    fyllutBaseUrl: `${getByggerUrl(req)}/fyllut`,
     pusherCluster: appConfig.pusher.cluster,
     pusherKey: appConfig.pusher.key,
     isDevelopment: appConfig.isDevelopment,
