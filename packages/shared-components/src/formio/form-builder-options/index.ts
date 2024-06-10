@@ -19,6 +19,11 @@ const FormBuilderOptions = {
               view: 'h3',
               title: 'Overskrift',
             },
+            {
+              model: 'heading4',
+              view: 'h4',
+              title: 'Underoverskrift',
+            },
           ],
         },
         link: {
