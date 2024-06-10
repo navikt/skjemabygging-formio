@@ -6,7 +6,7 @@ const alert = {
   },
   '& .formio-component-alertstripe': {
     marginBottom: 'var(--a-spacing-10)',
-    '& .alertContent h3, :last-child': {
+    '& .alertContent :last-child': {
       marginBottom: 0,
     },
   },
