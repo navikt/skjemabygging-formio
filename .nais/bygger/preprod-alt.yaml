@@ -14,6 +14,9 @@ accessPolicy:
       - application: skjemabygging-proxy
         namespace: skjemadigitalisering
         cluster: dev-fss
+      - application: formio-api
+        namespace: skjemadigitalisering
+        cluster: dev-gcp
     external:
       - host: fyllut-preprod-alt.intern.dev.nav.no
       - host: skjemabygging-proxy.dev-fss-pub.nais.io
