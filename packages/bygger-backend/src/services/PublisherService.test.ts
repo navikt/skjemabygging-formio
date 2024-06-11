@@ -2,11 +2,13 @@ import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import nock from 'nock';
 import { MockInstance } from 'vitest';
 import { Backend } from '../Backend';
-import config from '../config';
+import { getFormioApiServiceUrl } from '../util/formio';
 import PublisherService from './PublisherService';
 import { formioService } from './index';
 
 const opts = { userName: 'todd', formioToken: 'valid-formio-token' };
+
+const FORMIO_API_SERVICE_URL = getFormioApiServiceUrl();
 
 describe('PublisherService', () => {
   let publisherService: PublisherService;
@@ -26,7 +28,7 @@ describe('PublisherService', () => {
       beforeEach(() => {
         backendMock = { publishForm: () => 'git-commit-hash' } as unknown as Backend;
         publisherService = new PublisherService(formioService, backendMock);
-        nockScope = nock(config.formio.projectUrl)
+        nockScope = nock(FORMIO_API_SERVICE_URL)
           .put(/\/form\/(\d*)$/)
           .times(1)
           .reply((uri, requestBody) => [200, requestBody]);
@@ -99,7 +101,7 @@ describe('PublisherService', () => {
         } as unknown as Backend;
         publisherService = new PublisherService(formioService, backendMock);
         formioServiceSpy = vi.spyOn(formioService, 'saveForm');
-        nockScope = nock(config.formio.projectUrl)
+        nockScope = nock(FORMIO_API_SERVICE_URL)
           .put(/\/form\/(\d*)$/)
           .times(2)
           .reply((uri, requestBody) => {
@@ -160,7 +162,7 @@ describe('PublisherService', () => {
       beforeEach(() => {
         backendMock = { unpublishForm: () => testGitSha } as unknown as Backend;
         publisherService = new PublisherService(formioService, backendMock);
-        nockScope = nock(config.formio.projectUrl)
+        nockScope = nock(FORMIO_API_SERVICE_URL)
           .put(/\/form\/(\d*)$/)
           .times(1)
           .reply((uri, requestBody) => [200, requestBody]);
@@ -197,7 +199,7 @@ describe('PublisherService', () => {
           },
         } as unknown as Backend;
         publisherService = new PublisherService(formioService, backendMock);
-        nockScope = nock(config.formio.projectUrl)
+        nockScope = nock(FORMIO_API_SERVICE_URL)
           .put(/\/form\/(\d*)$/)
           .times(2)
           .reply((uri, requestBody) => {
@@ -266,7 +268,7 @@ describe('PublisherService', () => {
         formioApiRequestBodies = [];
         backendMock = { publishForms: () => testGitSha } as unknown as Backend;
         publisherService = new PublisherService(formioService, backendMock);
-        nockScope = nock(config.formio.projectUrl)
+        nockScope = nock(FORMIO_API_SERVICE_URL)
           .put(/\/form\/(\d*)$/)
           .times(3)
           .reply((uri, requestBody) => {
@@ -338,7 +340,7 @@ describe('PublisherService', () => {
           },
         } as unknown as Backend;
         publisherService = new PublisherService(formioService, backendMock);
-        nockScope = nock(config.formio.projectUrl)
+        nockScope = nock(FORMIO_API_SERVICE_URL)
           .put(/\/form\/(\d*)$/)
           .times(6) // 3 before publish, and 3 after publish fails
           .reply((uri, requestBody) => {
@@ -405,20 +407,20 @@ describe('PublisherService', () => {
         backendMock = { publishForms: () => '123456789' } as unknown as Backend;
         publisherService = new PublisherService(formioService, backendMock);
         const formEndpoint = /\/form\/(\d*)$/;
-        nockScope = nock(config.formio.projectUrl)
+        nockScope = nock(FORMIO_API_SERVICE_URL)
           .put(formEndpoint)
           .times(2) // <-- formio update props succeeds on first two forms
           .reply((uri, requestBody) => {
             formioApiRequestBodies.push(requestBody as NavFormType);
             return [200, requestBody];
           });
-        nockScope = nock(config.formio.projectUrl)
+        nockScope = nock(FORMIO_API_SERVICE_URL)
           .put(formEndpoint)
           .reply((uri, requestBody) => {
             formioApiRequestBodies.push(requestBody as NavFormType);
             return [500, 'Internal server error']; // <-- formio update props fails on third form
           });
-        nockScope = nock(config.formio.projectUrl)
+        nockScope = nock(FORMIO_API_SERVICE_URL)
           .put(formEndpoint)
           .times(2) // <-- expecting rollback of the two first forms
           .reply((uri, requestBody) => {

@@ -1,7 +1,9 @@
 import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import nock from 'nock';
-import config from '../config';
+import { getFormioApiServiceUrl } from '../util/formio';
 import { formioService } from './index';
+
+const FORMIO_API_SERVICE_URL = getFormioApiServiceUrl();
 
 describe('FormioService', () => {
   describe('saveForm', () => {
@@ -36,7 +38,7 @@ describe('FormioService', () => {
       } as NavFormType;
 
       beforeEach(() => {
-        nock(config.formio.projectUrl)
+        nock(FORMIO_API_SERVICE_URL)
           .put(/\/form\/(\d*)$/)
           .reply((uri, requestBody) => [200, requestBody]);
       });
@@ -82,7 +84,7 @@ describe('FormioService', () => {
 
     describe('http error from formio api', () => {
       beforeEach(() => {
-        nock(config.formio.projectUrl)
+        nock(FORMIO_API_SERVICE_URL)
           .put(/\/form\/(\d*)$/)
           .reply(500);
         vi.spyOn(console, 'error').mockImplementation(() => {});
@@ -112,7 +114,7 @@ describe('FormioService', () => {
 
   describe('saveForms', () => {
     beforeEach(() => {
-      nock(config.formio.projectUrl)
+      nock(FORMIO_API_SERVICE_URL)
         .put(/\/form\/(\d*)$/)
         .times(2)
         .reply((uri, requestBody) => [200, requestBody]);
@@ -139,7 +141,7 @@ describe('FormioService', () => {
     });
 
     it('sets default properties', async () => {
-      nock(config.formio.projectUrl)
+      nock(FORMIO_API_SERVICE_URL)
         .post('/form')
         .reply((uri, requestBody) => [200, requestBody]);
       const skjemanummer = 'NAV 01-00.00';

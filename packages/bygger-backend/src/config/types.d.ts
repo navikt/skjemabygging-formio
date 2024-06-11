@@ -21,7 +21,7 @@ export type PublishRepoConfig = {
 };
 
 export type FormioConfig = {
-  projectUrl: string;
+  apiService: string;
   projectName: string;
   projectId: string;
   roleIds: Record<string, string>;
@@ -55,7 +55,7 @@ export type ConfigType = {
   skjemabyggingProxy: SkjemabyggingProxyConfig;
   publishRepo: PublishRepoConfig;
   formio: FormioConfig;
-  prodFormio?: Pick<FormioConfig, 'projectUrl'>;
+  prodFormio?: Pick<FormioConfig, 'apiService' | 'projectName'>;
   fyllut: FyllutConfig;
   pusher: PusherConfig;
   githubApp: GithubAppConfig;
