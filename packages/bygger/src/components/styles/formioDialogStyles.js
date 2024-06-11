@@ -96,12 +96,6 @@ const formioDialogStyles = {
       margin: '0',
     },
 
-    '& h4': {
-      fontSize: '1.4rem',
-      fontWeight: '500',
-      lineHeight: '1.2',
-    },
-
     '& .lead': {
       fontSize: '1.25rem',
       fontWeight: '300',

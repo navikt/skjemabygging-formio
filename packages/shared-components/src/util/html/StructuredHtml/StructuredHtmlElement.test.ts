@@ -17,7 +17,7 @@ describe('StructuredHtmlElement', () => {
   });
 
   describe('from htmlString', () => {
-    const htmlString = '<h3>Overskrift</h3><p>Avsnitt</p><ul><li>Punkt 1</li><li>Punkt 2</li></ul>';
+    const htmlString = '<h4>Overskrift</h4><p>Avsnitt</p><ul><li>Punkt 1</li><li>Punkt 2</li></ul>';
     let structuredHtmlElement: StructuredHtmlElement;
 
     beforeEach(() => {
@@ -28,7 +28,7 @@ describe('StructuredHtmlElement', () => {
       expect(structuredHtmlElement.tagName).toBe('DIV');
       expect(structuredHtmlElement.children).toHaveLength(3);
       const children = structuredHtmlElement.children as StructuredHtmlElement[];
-      expect(children[0].tagName).toBe('H3');
+      expect(children[0].tagName).toBe('H4');
       expect(children[1].tagName).toBe('P');
       expect(children[2].tagName).toBe('UL');
       expect(children[2].children).toHaveLength(2);
@@ -51,35 +51,35 @@ describe('StructuredHtmlElement', () => {
       expect(json.tagName).toBe('DIV');
       expect(json.children).toHaveLength(3);
       const children = json.children as HtmlAsJsonElement[];
-      expect(children[0].tagName).toBe('H3');
+      expect(children[0].tagName).toBe('H4');
       expect(children[1].tagName).toBe('P');
       expect(children[2].tagName).toBe('UL');
       expect(children[2].children).toHaveLength(2);
     });
 
     it('matches on structural equal htmlElements', () => {
-      const originalStructure = new StructuredHtmlElement('<h3></h3><p></p><ul><li></li><li></li></ul>');
-      const withoutH3 = new StructuredHtmlElement('<p></p><ul><li></li><li></li></ul>');
-      const withExtraListItem = new StructuredHtmlElement('<h3></h3><p></p><ul><li></li><li></li><li></li></ul>');
-      const withDifferentListType = new StructuredHtmlElement('<h3></h3><p></p><ol><li></li><li></li></ol>');
+      const originalStructure = new StructuredHtmlElement('<h4></h4><p></p><ul><li></li><li></li></ul>');
+      const withoutH4 = new StructuredHtmlElement('<p></p><ul><li></li><li></li></ul>');
+      const withExtraListItem = new StructuredHtmlElement('<h4></h4><p></p><ul><li></li><li></li><li></li></ul>');
+      const withDifferentListType = new StructuredHtmlElement('<h4></h4><p></p><ol><li></li><li></li></ol>');
 
       // matches itself
       expect(originalStructure.matches(originalStructure)).toBe(true);
-      expect(withoutH3.matches(withoutH3)).toBe(true);
+      expect(withoutH4.matches(withoutH4)).toBe(true);
       expect(withExtraListItem.matches(withExtraListItem)).toBe(true);
       expect(withDifferentListType.matches(withDifferentListType)).toBe(true);
 
       // does not match if structure is different
-      expect(originalStructure.matches(withoutH3)).toBe(false);
+      expect(originalStructure.matches(withoutH4)).toBe(false);
       expect(originalStructure.matches(withExtraListItem)).toBe(false);
       expect(originalStructure.matches(withDifferentListType)).toBe(false);
     });
 
     it('matches on structural equal htmlElements that contains a subset of the textContent', () => {
       const withAllText = structuredHtmlElement;
-      const withoutText = new StructuredHtmlElement('<h3></h3><p></p><ul><li></li><li></li></ul>');
-      const withHeading = new StructuredHtmlElement('<h3>Overskrift</h3><p></p><ul><li></li><li></li></ul>');
-      const withMisplacedText = new StructuredHtmlElement('<h3></h3>missplaced text<p></p><ul><li></li><li></li></ul>');
+      const withoutText = new StructuredHtmlElement('<h4></h4><p></p><ul><li></li><li></li></ul>');
+      const withHeading = new StructuredHtmlElement('<h4>Overskrift</h4><p></p><ul><li></li><li></li></ul>');
+      const withMisplacedText = new StructuredHtmlElement('<h4></h4>missplaced text<p></p><ul><li></li><li></li></ul>');
 
       // matches itself
       expect(withAllText.matches(withAllText)).toBe(true);
@@ -103,11 +103,11 @@ describe('StructuredHtmlElement', () => {
       const listItem1Id = (structuredHtmlElement.children[2] as StructuredHtmlElement).children[0].id;
       structuredHtmlElement.update(paragraphId, 'Nytt avsnitt');
       expect(structuredHtmlElement.toHtmlString()).toBe(
-        '<h3>Overskrift</h3><p>Nytt avsnitt</p><ul><li>Punkt 1</li><li>Punkt 2</li></ul>',
+        '<h4>Overskrift</h4><p>Nytt avsnitt</p><ul><li>Punkt 1</li><li>Punkt 2</li></ul>',
       );
       structuredHtmlElement.update(listItem1Id, 'Nytt punkt');
       expect(structuredHtmlElement.toHtmlString()).toBe(
-        '<h3>Overskrift</h3><p>Nytt avsnitt</p><ul><li>Nytt punkt</li><li>Punkt 2</li></ul>',
+        '<h4>Overskrift</h4><p>Nytt avsnitt</p><ul><li>Nytt punkt</li><li>Punkt 2</li></ul>',
       );
       expect(structuredHtmlElement.innerText).toBe('OverskriftNytt avsnittNytt punktPunkt 2');
       expect((structuredHtmlElement.toJson() as any).children[1].children[0].textContent).toBe('Nytt avsnitt');
@@ -171,15 +171,17 @@ describe('StructuredHtmlElement', () => {
         const withLinkJsonMarkdownChildren = (
           (withLinkJson.children[0] as HtmlAsJsonElement).children[0] as HtmlAsJsonElement
         ).children;
-        expect((withLinkJsonMarkdownChildren[0] as HtmlAsJsonTextElement).textContent).toBe('Punkt 1 med ');
-        expect((withLinkJsonMarkdownChildren[1] as HtmlAsJsonTextElement).textContent).toBe('[lenketekst](www.url.no)');
+        expect((withLinkJsonMarkdownChildren[0] as HtmlAsJsonTextElement).textContent).toBe(
+          'Punkt 1 med [lenketekst](www.url.no)',
+        );
       });
 
       it('converts strong to json with markdown', () => {
         const withStrongJson = withStrong.toJson(true);
         const withStrongJsonMarkdownChildren = (withStrongJson.children[0] as HtmlAsJsonElement).children;
-        expect((withStrongJsonMarkdownChildren[0] as HtmlAsJsonTextElement).textContent).toBe('Avsnitt med ');
-        expect((withStrongJsonMarkdownChildren[1] as HtmlAsJsonTextElement).textContent).toBe('**fet skrift**');
+        expect((withStrongJsonMarkdownChildren[0] as HtmlAsJsonTextElement).textContent).toBe(
+          'Avsnitt med **fet skrift**.',
+        );
       });
 
       it('does not convert strong to markdown when conversion was done without skipping within given tags', () => {

@@ -20,7 +20,7 @@ import {
 import { useAmplitude } from '../amplitude';
 import { useAppConfig } from '../config/configContext';
 import { mellomlagringReducer } from './reducer/mellomlagringReducer';
-import { getSubmissionWithFyllutState, removeFyllutState } from './utils/utils';
+import { getSubmissionWithFyllutState, transformSubmissionBeforeSubmitting } from './utils/utils';
 
 interface SendInnContextType {
   startMellomlagring: (submission: Submission) => Promise<SendInnSoknadResponse | undefined>;
@@ -165,7 +165,7 @@ const SendInnProvider = ({
       const response = await createSoknad(
         appConfig,
         form,
-        removeFyllutState(submission),
+        transformSubmissionBeforeSubmitting(submission),
         currentLanguage,
         translation,
         forceMellomlagring,
@@ -206,7 +206,7 @@ const SendInnProvider = ({
       const response = await updateSoknad(
         appConfig,
         form,
-        removeFyllutState(submission),
+        transformSubmissionBeforeSubmitting(submission),
         currentLanguage,
         translation,
         innsendingsId,
@@ -254,7 +254,7 @@ const SendInnProvider = ({
 
     const currentLanguage = getLanguageFromSearchParams();
     const translation = translationForLanguage(currentLanguage);
-    const submission = removeFyllutState(appSubmission);
+    const submission = transformSubmissionBeforeSubmitting(appSubmission);
     let redirectLocation: string | undefined = undefined;
     const setRedirectLocation = (loc: string) => (redirectLocation = loc);
     try {

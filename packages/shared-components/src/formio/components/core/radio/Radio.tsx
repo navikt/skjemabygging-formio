@@ -90,7 +90,7 @@ class Radio extends BaseComponent {
               }
             }}
           >
-            {this.t(obj.label)}
+            {this.translate(obj.label)}
           </AkselRadio>
         ))}
       </RadioGroup>,

@@ -36,6 +36,10 @@ class Number extends TextField {
   }
 
   checkComponentValidity(data, dirty, row, options = {}) {
+    if (!!this.component?.calculateValue) {
+      return true;
+    }
+
     const validity = super.checkComponentValidity(data, dirty, row, options);
 
     if (validity) {
@@ -51,6 +55,7 @@ class Number extends TextField {
   validateNumber() {
     // Get data value from parent instead of formatted number from this.getValue()
     const value = super.getValue();
+
     if (value === '' || value === undefined) {
       return;
     }
@@ -71,7 +76,7 @@ class Number extends TextField {
   }
 
   translateWithLabel(key: string, options = {}) {
-    return this.t(key, { field: this.getLabel({ labelTextOnly: true }), ...options });
+    return this.translate(key, { field: this.getLabel({ labelTextOnly: true }), ...options });
   }
 
   handleChange(value: string) {
@@ -93,9 +98,9 @@ class Number extends TextField {
     return numberUtils.toLocaleString(super.getValue());
   }
 
-  setValue(value: string) {
-    // Need to format the number if it is saved or if you come back from summary page.
-    super.setValue(numberUtils.toLocaleString(value));
+  setValueOnReactInstance(value) {
+    // This is needed to handle formatting after calculate value
+    super.setValueOnReactInstance(numberUtils.toLocaleString(value));
   }
 
   replaceCommasAndSpaces(value: string) {

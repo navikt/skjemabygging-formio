@@ -5,8 +5,8 @@
  * The arrays acceptedTags and defaultLeafs may need to be changed if we redefine what tags are allowed in the ckeditor,
  * otherwise tags may appear as plain text where we are using these converters
  * */
-const defaultLeaves: AcceptedTag[] = ['H3', 'P', 'LI'];
-const acceptedTags = ['P', 'H3', 'LI', 'OL', 'UL', 'A', 'B', 'STRONG'] as const;
+const defaultLeaves: AcceptedTag[] = ['H3', 'H4', 'P', 'LI'];
+const acceptedTags = ['P', 'H3', 'H4', 'LI', 'OL', 'UL', 'A', 'B', 'STRONG'] as const;
 type AcceptedTag = (typeof acceptedTags)[number];
 
 const isAcceptedTag = (tag: string): tag is AcceptedTag => {

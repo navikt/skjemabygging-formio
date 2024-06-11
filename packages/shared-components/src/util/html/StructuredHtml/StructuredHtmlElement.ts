@@ -160,14 +160,15 @@ class StructuredHtmlElement extends StructuredHtml {
   }
 
   toJson(getMarkdown?: boolean): HtmlAsJsonElement {
+    const markdown = getMarkdown && this.containsMarkdown ? this.markdown : undefined;
+    const children = markdown ? [new StructuredHtmlText(markdown, { isMarkdownText: true })] : this.children;
+
     return {
       id: this.id,
       type: 'Element',
       tagName: this.tagName,
       attributes: this.attributes,
-      children: (getMarkdown && this.containsMarkdown ? this.childrenAsMarkdown ?? [] : this.children).map((child) =>
-        child.toJson(getMarkdown),
-      ),
+      children: children.map((child: StructuredHtml) => child.toJson(getMarkdown)),
     };
   }
 

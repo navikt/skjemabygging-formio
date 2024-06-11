@@ -1,8 +1,8 @@
 import { Alert, Textarea } from '@navikt/ds-react';
 import {
   AttachmentSettingValues,
-  AttachmentValue,
   ComponentValue,
+  SubmissionAttachmentValue,
   TEXTS,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { ChangeEvent, ReactNode, forwardRef } from 'react';
@@ -14,7 +14,7 @@ interface Props {
   error: ReactNode;
   value?: any;
   attachmentValues?: AttachmentSettingValues | ComponentValue[];
-  onChange: (value: AttachmentValue) => void;
+  onChange: (value: SubmissionAttachmentValue) => void;
   translate: (text: string, params?: any) => string;
   deadline?: string;
 }

@@ -1,4 +1,10 @@
-import { AttachmentSettingValue, AttachmentSettingValues, AttachmentValue } from './attachment';
+import attachmentUtils, {
+  AttachmentSettingValue,
+  AttachmentSettingValues,
+  AttachmentValue,
+  LimitedFormAttachment,
+  SubmissionAttachmentValue,
+} from './attachment';
 import { ComponentError } from './component';
 import configUtils from './config';
 import type { ConfigType } from './config/types';
@@ -95,6 +101,7 @@ export {
   MockedComponentObjectForTest,
   PrefillType,
   TEXTS,
+  attachmentUtils,
   configUtils,
   currencyUtils,
   dateUtils,
@@ -158,6 +165,7 @@ export type {
   InputMode,
   KjentBruker,
   Language,
+  LimitedFormAttachment,
   LogLevel,
   MellomlagringError,
   MigrationLevel,
@@ -180,6 +188,7 @@ export type {
   SendInnMaalgruppe,
   Submission,
   SubmissionActivity,
+  SubmissionAttachmentValue,
   SubmissionData,
   SubmissionMaalgruppe,
   SubmissionMethod,

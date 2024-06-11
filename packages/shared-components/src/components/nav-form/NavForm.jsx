@@ -37,7 +37,7 @@ const useStyles = makeStyles({
   '@global': Styles.form,
 });
 
-const NavForm = (props) => {
+const NavForm = ({ language = 'nb-NO', i18n = i18nData, ...props }) => {
   let instance;
   let createPromise;
   let element;
@@ -63,7 +63,7 @@ const NavForm = (props) => {
   }, [props.fyllutEvents, formio]);
 
   const createWebformInstance = (srcOrForm) => {
-    const { formioform, formReady, language, i18n } = props;
+    const { formioform, formReady } = props;
     appConfig.logger?.debug('create webform instance', {
       formioId: formio?.id,
       form: srcOrForm.properties?.skjemanummer || srcOrForm,
@@ -125,7 +125,7 @@ const NavForm = (props) => {
 
   useEffect(() => {
     const { src } = props;
-    if (src && Object.keys(props.i18n).length !== 0) {
+    if (src && Object.keys(i18n).length !== 0) {
       createWebformInstance(src).then(() => {
         if (formio) {
           formio.src = src;
@@ -133,11 +133,11 @@ const NavForm = (props) => {
       });
       initializeFormio();
     }
-  }, [props.src, props.i18n]);
+  }, [props.src, i18n]);
 
   useEffect(() => {
     const { form, url } = props;
-    if (form && Object.keys(props.i18n).length !== 0) {
+    if (form && Object.keys(i18n).length !== 0) {
       createWebformInstance(form).then(() => {
         if (formio) {
           formio.form = form;
@@ -149,14 +149,14 @@ const NavForm = (props) => {
       });
       initializeFormio();
     }
-  }, [props.form, props.i18n]);
+  }, [props.form, i18n]);
 
   useEffect(() => {
     if (formio) {
-      appConfig.logger?.debug('set language', { formioId: formio?.id, language: props.language });
-      formio.language = props.language;
+      appConfig.logger?.debug('set language', { formioId: formio?.id, language });
+      formio.language = language;
     }
-  }, [props.language]);
+  }, [language]);
 
   useEffect(() => {
     if (formio && props.submission) {
@@ -208,11 +208,6 @@ NavForm.propTypes = {
   formReady: PropTypes.func,
   submissionReady: PropTypes.func,
   formioform: PropTypes.any,
-};
-
-NavForm.defaultProps = {
-  language: 'nb-NO',
-  i18n: i18nData,
 };
 
 NavForm.getDefaultEmitter = () => {

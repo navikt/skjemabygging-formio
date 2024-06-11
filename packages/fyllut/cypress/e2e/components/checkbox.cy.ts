@@ -122,10 +122,10 @@ describe('Checkbox', () => {
 
       cy.findByRole('checkbox', { name: 'Normal checkbox (valgfritt)' }).should('be.checked');
       cy.findByRole('checkbox', { name: 'Required checkbox' }).should('be.checked');
-      cy.findByRole('checkbox', { name: 'ReadOnly checkbox checked (valgfritt)' }).should('be.checked');
+      cy.findByRole('checkbox', { name: 'ReadOnly checkbox checked' }).should('be.checked');
       cy.findByRole('checkbox', { name: 'Checkbox description (valgfritt)' }).should('be.checked');
 
-      cy.findByRole('checkbox', { name: 'ReadOnly checkbox (valgfritt)' }).should('not.be.checked');
+      cy.findByRole('checkbox', { name: 'ReadOnly checkbox' }).should('not.be.checked');
     });
   });
 });

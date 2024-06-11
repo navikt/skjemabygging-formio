@@ -143,7 +143,8 @@ describe('numberValidators', () => {
       expect(numberUtils.toLocaleString('10')).toBe('10');
       expect(numberUtils.toLocaleString('10.5')).toBe('10,5');
       expect(numberUtils.toLocaleString('10.500000')).toBe('10,5');
-      expect(numberUtils.toLocaleString('10.504')).toBe('10,504');
+      expect(numberUtils.toLocaleString('10.504')).toBe('10,5');
+      expect(numberUtils.toLocaleString('10.5047')).toBe('10,5');
     });
 
     it('invalid numbers', () => {
