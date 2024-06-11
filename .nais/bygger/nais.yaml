@@ -48,6 +48,8 @@ spec:
       value: {{skjemabygging-proxy-url}}
     - name: SKJEMABYGGING_PROXY_CLIENT_ID
       value: {{skjemabygging-proxy-client-id}}
+    - name: FORMIO_PROJECT_NAME
+      value: jvcemxwcpghcqjn
   envFrom:
   {{#each secrets as |secret|}}
     - secret: {{secret}}

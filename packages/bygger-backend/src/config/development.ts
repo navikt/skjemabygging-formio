@@ -21,6 +21,7 @@ export const devSkjemabyggingProxy: Partial<SkjemabyggingProxyConfig> = {
 
 export const devFormio: Partial<FormioConfig> = {
   projectUrl: 'https://formio-api.intern.dev.nav.no/jvcemxwcpghcqjn',
+  projectName: 'jvcemxwcpghcqjn',
   roleIds: {
     administrator: '628ca77305690db58c974d04',
     authenticated: '628ca77305690db58c974d09',

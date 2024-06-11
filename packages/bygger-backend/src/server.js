@@ -5,12 +5,14 @@ import { buildDirectory, buildDirectoryIndexHtml } from './context.js';
 import authHandler from './middleware/authHandler';
 import { fsAccessRateLimiter } from './middleware/ratelimit';
 import apiRouter from './routers/api';
+import formioProxyRouter from './routers/formio-proxy';
 import internalRouter from './routers/internal';
 import notificationsRouter from './routers/notifications';
 import './util/errorToJson';
 
 const app = express();
 
+app.use(`/${config.formio.projectName}`, formioProxyRouter);
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 app.use(correlator());

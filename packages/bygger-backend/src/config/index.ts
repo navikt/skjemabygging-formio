@@ -65,6 +65,7 @@ const config: ConfigType = {
   },
   formio: {
     projectUrl: env('FORMIO_PROJECT_URL', devFormio.projectUrl),
+    projectName: env('FORMIO_PROJECT_NAME', devFormio.projectName),
     projectId: env('FORMIO_PROJECT_ID'),
     roleIds: {
       administrator: env('FORMIO_ROLE_ID_ADMINISTRATOR', devFormio.roleIds?.administrator),
