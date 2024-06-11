@@ -25,6 +25,8 @@ accessPolicy:
     rules:
       - application: send-inn-frontend-alt
         namespace: team-soknad
+      - application: skjemabygging-preprod-alt
+        namespace: skjemadigitalisering
   outbound:
     rules:
       - application: skjemabygging-proxy
