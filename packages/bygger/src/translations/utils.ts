@@ -153,7 +153,7 @@ const getTranslatablePropertiesFromForm = (form: NavFormType) =>
         addAnother: getTextFromComponentProperty(addAnother),
         removeAnother: getTextFromComponentProperty(removeAnother),
         attachmentValues: getAttachmentTexts(attachmentValues),
-        accordionValues: getAccordionValues(accordionValues),
+        accordionValues: getAccordionTexts(accordionValues),
       }),
     );
 
@@ -168,7 +168,7 @@ const textObject = (withInputType: boolean, value: string): TextObjectType => {
   };
 };
 
-const getAccordionValues = (accordionValues?: AccordionSettingValues): undefined | string[] => {
+const getAccordionTexts = (accordionValues?: AccordionSettingValues): undefined | string[] => {
   if (!accordionValues) {
     return undefined;
   }
