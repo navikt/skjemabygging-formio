@@ -1,3 +1,4 @@
+import { AccordionSettingValue, AccordionSettingValues } from './accordion';
 import attachmentUtils, {
   AttachmentSettingValue,
   AttachmentSettingValues,
@@ -125,6 +126,8 @@ export {
   validatorUtils,
 };
 export type {
+  AccordionSettingValue,
+  AccordionSettingValues,
   AktivitetPeriode,
   AktivitetVedtaksinformasjon,
   AttachmentSettingValue,
