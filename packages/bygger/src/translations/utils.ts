@@ -7,6 +7,8 @@ import {
 } from '@navikt/skjemadigitalisering-shared-components';
 
 import {
+  AccordionSettingValue,
+  AccordionSettingValues,
   AttachmentSettingValue,
   AttachmentSettingValues,
   Component,
@@ -133,6 +135,7 @@ const getTranslatablePropertiesFromForm = (form: NavFormType) =>
         addAnother,
         removeAnother,
         attachmentValues,
+        accordionValues,
       }) => ({
         title,
         label: getLabel(label, type, !!hideLabel),
@@ -150,6 +153,7 @@ const getTranslatablePropertiesFromForm = (form: NavFormType) =>
         addAnother: getTextFromComponentProperty(addAnother),
         removeAnother: getTextFromComponentProperty(removeAnother),
         attachmentValues: getAttachmentTexts(attachmentValues),
+        accordionValues: getAccordionTexts(accordionValues),
       }),
     );
 
@@ -162,6 +166,16 @@ const textObject = (withInputType: boolean, value: string): TextObjectType => {
     text: value,
     ...(type && { type }),
   };
+};
+
+const getAccordionTexts = (accordionValues?: AccordionSettingValues): undefined | string[] => {
+  if (!accordionValues) {
+    return undefined;
+  }
+
+  return accordionValues.flatMap((value: AccordionSettingValue) => {
+    return [value.title, value.content];
+  });
 };
 
 const getAttachmentTexts = (attachmentValues?: AttachmentSettingValues): undefined | string[] => {
@@ -193,7 +207,7 @@ const getFormTexts = (form?: NavFormType, withInputType = false): TextObjectType
       Object.keys(component)
         .filter((key) => component[key] !== undefined && key !== 'attachmentValues')
         .flatMap((key) => {
-          if (key === 'values' || key === 'data') {
+          if (key === 'values' || key === 'data' || key === 'accordionValues') {
             return component[key]
               .filter((value) => value !== '')
               .map((value) => textObject(withInputType, value)) as TextObjectType;
