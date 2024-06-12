@@ -4,6 +4,7 @@ import AddressFields from './fields/AddressFields';
 import BasicFields from './fields/BasicFields';
 import DeclarationFields from './fields/DeclarationFields';
 import EnhetFields from './fields/EnhetFields';
+import MellomlagrinDurationFields from './fields/MellomlagringDurationFields';
 import SignatureFields from './fields/SignatureFields';
 import SubmissionFields from './fields/SubmissionFields';
 import UxSignalsFields from './fields/UxSignalsFields';
@@ -76,6 +77,10 @@ const BasicFormMetadataEditor = ({ form, publishedForm, onChange, usageContext, 
 
   const signatureFields = () => <SignatureFields onChange={onChange} diff={diff} form={form} />;
 
+  const mellomlagringFields = () => (
+    <MellomlagrinDurationFields onChange={onChange} diff={diff} form={form} errors={errors} />
+  );
+
   const uxSignalsFields = () => <UxSignalsFields onChange={onChange} diff={diff} form={form} />;
 
   return (
@@ -90,6 +95,7 @@ const BasicFormMetadataEditor = ({ form, publishedForm, onChange, usageContext, 
           {addressFields()}
           {enhetFields()}
           {uxSignalsFields()}
+          {mellomlagringFields()}
           {instructionFields()}
           {signatureFields()}
         </>

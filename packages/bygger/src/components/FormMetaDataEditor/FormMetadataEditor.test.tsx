@@ -63,6 +63,7 @@ const defaultForm: NavFormType = {
         key: 'ddade517-86c6-4f1e-b730-a477e01dc245',
       },
     ],
+    mellomlagringDurationDays: '28',
   },
   display: 'wizard',
 };
@@ -220,6 +221,21 @@ describe('FormMetadataEditor', () => {
         expect(mockOnChange).toHaveBeenCalledTimes(1);
         const updatedForm = mockOnChange.mock.calls[0][0] as NavFormType;
         expect(updatedForm.properties.ettersendelsesfrist).toBe('');
+      });
+    });
+
+    describe.only('mellomlagringDurationDays', () => {
+      it('is saved in properties', async () => {
+        const form = formMedProps({ mellomlagringDurationDays: undefined, ettersending: 'KUN_DIGITAL' });
+
+        render(<FormMetadataEditor form={form} onChange={mockOnChange} />);
+        const input = screen.getByLabelText('Mellomlagringstid (dager)');
+        await userEvent.click(input);
+        await userEvent.paste('42');
+
+        expect(mockOnChange).toHaveBeenCalledTimes(1);
+        const updatedForm = mockOnChange.mock.calls[0][0] as NavFormType;
+        expect(updatedForm.properties.mellomlagringDurationDays).toBe('42');
       });
     });
 
