@@ -1,5 +1,6 @@
 import { SpanKind, SpanStatusCode, trace } from '@opentelemetry/api';
 import { NextFunction, Request, Response } from 'express';
+import { logger } from '../logger';
 import { logErrorWithStacktrace } from '../utils/errors';
 
 const traceWrapper = (spanName: string, fn: Function) => async (req: Request, res: Response, next: NextFunction) => {
@@ -14,6 +15,7 @@ const traceWrapper = (spanName: string, fn: Function) => async (req: Request, re
     },
   };
   await tracer.startActiveSpan(spanName, spanOptions, async (span) => {
+    const start = Date.now();
     try {
       await fn(req, res, next);
       span.setStatus({ code: SpanStatusCode.OK });
@@ -22,6 +24,8 @@ const traceWrapper = (spanName: string, fn: Function) => async (req: Request, re
       logErrorWithStacktrace(err);
       throw err;
     } finally {
+      const durationMs = Date.now() - start;
+      logger.info(`Duration '${spanName}': ${durationMs} ms`);
       span.end();
     }
   });
