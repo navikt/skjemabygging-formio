@@ -3,7 +3,7 @@ import { HttpError } from '../../../fetchUtils';
 import { formioService } from '../../../services';
 import { ByggerRequest } from '../../../types';
 import { getFormioToken } from '../../../util/requestTool';
-import { BadRequest, UnauthorizedError } from './errors';
+import { InternalServerError, UnauthorizedError } from './errors';
 
 const authorizedPublisher = async (req: ByggerRequest, res: Response, next: NextFunction) => {
   const formioToken = getFormioToken(req);
@@ -17,7 +17,7 @@ const authorizedPublisher = async (req: ByggerRequest, res: Response, next: Next
     if ((e as HttpError).response?.status === 401) {
       next(new UnauthorizedError('Invalid formio token'));
     } else {
-      next(new BadRequest('Could not fetch user'));
+      next(new InternalServerError('Could not fetch user'));
     }
     return;
   }
