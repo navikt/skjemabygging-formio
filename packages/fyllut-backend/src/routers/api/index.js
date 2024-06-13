@@ -1,7 +1,6 @@
 import express from 'express';
 import { config as appConfig } from '../../config/config';
 import { rateLimiter } from '../../middleware/ratelimit';
-import traceWrapper from '../../middleware/traceWrapper';
 import tryCatch from '../../middleware/tryCatch';
 import idportenAuthHandler from '../../security/idportenAuthHandler';
 import activeTasks from './active-tasks';
@@ -30,7 +29,7 @@ const apiRouter = express.Router();
 const { featureToggles } = appConfig;
 const { azureSkjemabyggingProxy, azurePdl, tokenxPdl, tokenxSendInn } = initApiConfig();
 
-apiRouter.all('*', traceWrapper('idporten.auth', idportenAuthHandler));
+apiRouter.all('*', idportenAuthHandler);
 apiRouter.get('/config', config.get);
 apiRouter.get('/countries', countries.get);
 apiRouter.get('/enhetsliste', azureSkjemabyggingProxy, enhetsliste.get);
