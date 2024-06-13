@@ -57,7 +57,7 @@ const TestSkjemaFields = ({ onChange, form }: TestSkjemaFieldsProps) => {
         <span className={styles.copyLink}>
           Skjemadelingslenke
           <Button
-            onClick={() => copy(`${config!.fyllutBaseUrl}/test/login?formPath=${path}`)}
+            onClick={() => copy(`${config!.skjemadelingslenkeUrl}/test/login?formPath=${path}`)}
             icon={<Copy />}
             title="Kopier skjemadelingslenke"
             variant="tertiary"
