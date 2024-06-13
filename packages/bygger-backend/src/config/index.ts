@@ -86,7 +86,7 @@ const config: ConfigType = {
       : undefined,
   fyllut: {
     baseUrl: env('FYLLUT_BASE_URL', devFyllut.baseUrl),
-    skjemadelingslenkeUrl: devFyllut.skjemadelingslenkeUrl,
+    skjemadelingslenkeUrl: 'https://skjemadelingslenke.ekstern.dev.nav.no/fyllut',
   },
   pusher: {
     cluster: env('PUSHER_CLUSTER', devPusher.cluster),

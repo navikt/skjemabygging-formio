@@ -34,9 +34,8 @@ export const prodFormio: Pick<FormioConfig, 'apiService' | 'projectName'> = {
   projectName: 'jvcemxwcpghcqjn',
 };
 
-export const devFyllut: FyllutConfig = {
+export const devFyllut: Partial<FyllutConfig> = {
   baseUrl: 'https://skjemadelingslenke.ekstern.dev.nav.no/fyllut',
-  skjemadelingslenkeUrl: 'https://skjemadelingslenke.ekstern.dev.nav.no/fyllut',
 };
 
 export const devPusher: Partial<PusherConfig> = {
