@@ -19,7 +19,7 @@ describe('Datagrid', () => {
   });
 
   describe('Optional fields in datagrid', () => {
-    it.only('does not reset values in react rendered fields inside datagrid when adding a new row', () => {
+    it('does not reset values in react rendered fields inside datagrid when adding a new row', () => {
       cy.visit('/fyllut/datagridReact?sub=digital');
       cy.defaultWaits();
       cy.clickStart();

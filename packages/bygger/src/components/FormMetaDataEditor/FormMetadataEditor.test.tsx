@@ -224,7 +224,7 @@ describe('FormMetadataEditor', () => {
       });
     });
 
-    describe.only('mellomlagringDurationDays', () => {
+    describe('mellomlagringDurationDays', () => {
       it('is saved in properties', async () => {
         const form = formMedProps({ mellomlagringDurationDays: undefined, ettersending: 'KUN_DIGITAL' });
 
