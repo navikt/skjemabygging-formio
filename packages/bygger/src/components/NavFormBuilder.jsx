@@ -23,8 +23,8 @@
  * */
 
 import { NavFormioJs, makeStyles } from '@navikt/skjemadigitalisering-shared-components';
+import { navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import cloneDeep from 'lodash.clonedeep';
-import isEqual from 'lodash.isequal';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import '../formio-overrides/builder-utils-overrides';
@@ -113,12 +113,12 @@ class NavFormBuilder extends Component {
     const builderInstance = this.builder.instance;
     const prevPublishedForm = prevProps.formBuilderOptions.formConfig.publishedForm;
     const nextPublishedForm = this.props.formBuilderOptions.formConfig.publishedForm;
-    if (!isEqual(nextPublishedForm, prevPublishedForm)) {
+    if (!navFormUtils.isEqual(nextPublishedForm, prevPublishedForm, [])) {
       this.logger?.debug('FormBuilder published form changed, will redraw');
       builderInstance.options.formConfig.publishedForm = nextPublishedForm;
       builderInstance.redraw();
     }
-    if (isEqual(builderInstance.form, this.props.form)) {
+    if (navFormUtils.isEqual(builderInstance.form, this.props.form)) {
       this.logger?.debug('FormBuilder form not changed, return');
       return;
     }
