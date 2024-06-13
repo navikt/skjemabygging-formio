@@ -1,4 +1,4 @@
-import { SpanKind, SpanStatusCode, trace } from '@opentelemetry/api';
+import { SpanKind, SpanStatusCode, context, trace } from '@opentelemetry/api';
 import { NextFunction, Request, Response } from 'express';
 import { FlattenedJWSInput, JWSHeaderParameters, createRemoteJWKSet, jwtVerify } from 'jose';
 import { GetKeyFunction } from 'jose/dist/types/types';
@@ -28,6 +28,14 @@ const idportenAuthHandler = async (req: Request, res: Response, next: NextFuncti
     req.getIdportenJwt = () => mockIdportenJwt;
     req.getIdportenPid = () => mockIdportenPid!;
   } else if (authHeader) {
+    const activeSpan = trace.getSpan(context.active());
+    if (activeSpan) {
+      const { spanId, traceId, traceState } = activeSpan.spanContext();
+      logger.info(`Active span :: spanId=${spanId} traceId=${traceId} traceState=${traceState || '<undefined>'}`);
+    } else {
+      logger.info('No active span');
+    }
+
     const tracer = trace.getTracer(process.env.NAIS_APP_NAME!);
     const spanOptions = {
       kind: SpanKind.SERVER,
