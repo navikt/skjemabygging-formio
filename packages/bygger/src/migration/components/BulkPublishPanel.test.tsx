@@ -24,6 +24,7 @@ const properties: FormPropertiesType = {
     signature4: '',
     signature5: '',
   },
+  mellomlagringDurationDays: '28',
 };
 const form: NavFormType = {
   title: 'Form title',

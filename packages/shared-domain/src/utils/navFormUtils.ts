@@ -260,7 +260,7 @@ const isNone = (type: 'innsending' | 'ettersending', form: NavFormType) => {
   return form.properties[type] === 'INGEN';
 };
 
-const createDefaultForm = (): NavFormType => ({
+const createDefaultForm = (config): NavFormType => ({
   tags: ['nav-skjema', ''],
   type: 'form',
   display: 'wizard',
@@ -274,6 +274,7 @@ const createDefaultForm = (): NavFormType => ({
     ettersending: 'PAPIR_OG_DIGITAL',
     signatures: [{ label: '', description: '', key: uuidv4() }],
     ettersendelsesfrist: '14',
+    mellomlagringDurationDays: (config?.mellomlagringDurationDays as string) ?? '28',
   },
   components: [],
 });

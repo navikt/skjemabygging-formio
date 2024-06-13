@@ -67,4 +67,5 @@ export type ConfigType = {
   featureToggles: { [key: string]: boolean };
   frontendLoggerConfig: FrontendLoggerConfigType;
   naisClusterName?: 'dev-gcp' | 'prod-gcp';
+  mellomlagringDurationDays: string;
 };

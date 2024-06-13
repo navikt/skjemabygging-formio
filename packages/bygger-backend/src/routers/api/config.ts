@@ -20,6 +20,7 @@ const config = (req: ByggerRequest, res: Response) => {
     loggerConfig: appConfig.frontendLoggerConfig,
     isProdGcp: appConfig.naisClusterName === 'prod-gcp',
     user,
+    mellomlagringDurationDays: appConfig.mellomlagringDurationDays,
   });
 };
 
