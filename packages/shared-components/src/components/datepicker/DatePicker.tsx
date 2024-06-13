@@ -72,7 +72,13 @@ const DatePicker = ({
   }, [inputProps.value]);
 
   return (
-    <AkselDatePicker mode="single" locale={locale} {...datepickerProps} selected={undefined}>
+    <AkselDatePicker
+      mode="single"
+      locale={locale}
+      {...datepickerProps}
+      selected={undefined}
+      dropdownCaption={!!(fromDate && toDate)}
+    >
       <AkselDatePicker.Input
         id={id}
         {...inputProps}
