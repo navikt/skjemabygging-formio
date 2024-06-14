@@ -3,14 +3,14 @@ import { NavFormSettingsDiff, NavFormType } from '@navikt/skjemadigitalisering-s
 import LabelWithDiff from '../LabelWithDiff';
 import { FormMetadataError, UpdateFormFunction } from '../utils/utils';
 
-export interface BasicFieldsProps {
+export interface MellomlagringDurationProps {
   onChange: UpdateFormFunction;
   diff: NavFormSettingsDiff;
   form: NavFormType;
   errors?: FormMetadataError;
 }
 
-const MellomlagrinDurationFields = ({ onChange, diff, form, errors }: BasicFieldsProps) => {
+const MellomlagrinDurationFields = ({ onChange, diff, form, errors }: MellomlagringDurationProps) => {
   const mellomlagringDurationDays = form.properties.mellomlagringDurationDays;
 
   return (
