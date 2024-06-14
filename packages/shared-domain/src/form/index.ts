@@ -99,6 +99,7 @@ export type AttachmentType = 'default' | 'other';
 export interface ComponentValue {
   value: string;
   label: string;
+  description?: string;
 }
 
 export interface Component {

@@ -138,6 +138,10 @@ class BaseComponent extends FormioReactComponent {
     ) : undefined;
   }
 
+  getValueDescription(index: number) {
+    return this.translate(this.component?.values?.[index]?.description);
+  }
+
   /**
    * Get class name for custom component renderReact()
    */
