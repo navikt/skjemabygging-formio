@@ -3,6 +3,7 @@ import { FlattenedJWSInput, JWSHeaderParameters, createRemoteJWKSet, jwtVerify }
 import { GetKeyFunction } from 'jose/dist/types/types';
 import { config } from '../config/config';
 import { logger } from '../logger.js';
+import { appMetrics } from '../services';
 import { IdportenTokenPayload } from '../types/custom';
 
 const { isDevelopment, mockIdportenJwt, mockIdportenPid } = config;
@@ -31,11 +32,14 @@ const idportenAuthHandler = async (req: Request, res: Response, next: NextFuncti
 
     logger.debug('Verifying jwt...');
     let tokenContent: IdportenTokenPayload;
+    const stopTimer = appMetrics.idportenVerifyTokenDuration.startTimer();
     try {
       tokenContent = await verifyToken(token);
     } catch (err) {
       logger.warn('Failed to verify jwt signature', err);
       return res.sendStatus(401);
+    } finally {
+      stopTimer();
     }
     const currentTime = new Date().getTime() / 1000;
     const expired = tokenContent.exp! - 10 < currentTime;
