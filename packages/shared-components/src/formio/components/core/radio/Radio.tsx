@@ -81,6 +81,7 @@ class Radio extends BaseComponent {
           <AkselRadio
             key={obj.value}
             value={obj.value}
+            description={this.getValueDescription(index)}
             onFocus={focusHandler(this, { focusedElementName: obj.value, skipEmit: true })}
             onBlur={blurHandler(this, { focusedElementName: obj.value, skipEmit: true })}
             ref={(ref) => {

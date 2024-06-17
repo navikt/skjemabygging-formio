@@ -16,7 +16,7 @@ const radioForm = (componentType: string) => {
       editFormDisplay.additionalDescription(),
     ]),
     data([
-      editFormData.values(),
+      editFormData.values({withDescription: true}),
       editFormData.defaultValue(componentType),
     ]),
     validation([
