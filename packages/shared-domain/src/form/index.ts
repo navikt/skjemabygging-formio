@@ -218,6 +218,7 @@ export interface ComponentValidate {
   patternMessage?: string;
   min?: number;
   max?: number;
+  minLength?: number;
   maxLength?: number;
 }
 
