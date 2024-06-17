@@ -153,7 +153,7 @@ describe('Form Builder', () => {
       cy.get('div').contains('"label": "Flervalg"').click({ force: true });
       cy.focused().type('{end}{leftArrow}{leftArrow} (endret)', { force: true });
       cy.get('[data-testid="editorSaveButton"]').click();
-      cy.get('label').contains('Flervalg (endret)');
+      cy.findByRole('group', { name: 'Flervalg (endret)' }).should('exist');
     });
 
     // TODO: Add test for radio group when it gets the new data values.
