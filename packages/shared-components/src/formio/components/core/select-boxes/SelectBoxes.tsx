@@ -1,14 +1,10 @@
 import { Checkbox, CheckboxGroup } from '@navikt/ds-react';
 import FormioSelectBoxes from 'formiojs/components/selectboxes/SelectBoxes';
-import Ready from '../../../../util/form/ready';
 import BaseComponent from '../../base/BaseComponent';
-import { blurHandler, focusHandler } from '../../base/focus-helpers';
 import selectBoxesBuilder from './SelectBoxes.builder';
 import selectBoxesForm from './SelectBoxes.form';
 
 class SelectBoxes extends BaseComponent {
-  _reactRefsReady = Ready();
-
   static schema() {
     return FormioSelectBoxes.schema({
       label: 'Flervalg',
@@ -24,22 +20,6 @@ class SelectBoxes extends BaseComponent {
 
   static get builderInfo() {
     return selectBoxesBuilder();
-  }
-
-  get reactRefsReady() {
-    return this._reactRefsReady.promise;
-  }
-
-  focus(focusData: any = {}) {
-    this.reactReady.then(() => {
-      const { focusedElementName } = focusData;
-      if (focusedElementName) {
-        const input = this.getRef(`input:${focusedElementName}`);
-        input?.focus();
-      } else {
-        this.reactInstance?.focus();
-      }
-    });
   }
 
   // Submission value is an object
@@ -69,7 +49,6 @@ class SelectBoxes extends BaseComponent {
 
   renderReact(element) {
     const values = this.component!.values ?? [];
-    this._reactRefsReady.reset();
 
     const componentValue = this.convertToArray(this.getValue());
 
@@ -87,19 +66,7 @@ class SelectBoxes extends BaseComponent {
         tabIndex={-1}
       >
         {values.map((obj, index, arr) => (
-          <Checkbox
-            key={obj.value}
-            value={obj.value}
-            description={this.getValueDescription(index)}
-            onFocus={focusHandler(this, { focusedElementName: obj.value, skipEmit: true })}
-            onBlur={blurHandler(this, { focusedElementName: obj.value, skipEmit: true })}
-            ref={(ref) => {
-              this.addRef(`input:${obj.value}`, ref);
-              if (index === arr.length - 1) {
-                this._reactRefsReady.resolve();
-              }
-            }}
-          >
+          <Checkbox key={obj.value} value={obj.value} description={this.getValueDescription(index)}>
             {this.translate(obj.label)}
           </Checkbox>
         ))}
