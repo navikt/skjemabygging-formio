@@ -31,7 +31,6 @@ describe('idportenAuthHandler', () => {
       const next = vi.fn();
       idportenAuthHandler(req, res, next);
       expect(res.sendStatus).toHaveBeenCalledTimes(1);
-      // @ts-expect-error
       expect(res.sendStatus.mock.calls[0][0]).toBe(401);
       expect(next).not.toHaveBeenCalled();
       expect(typeof req.getIdportenPid).toBe('undefined');
@@ -55,7 +54,6 @@ describe('idportenAuthHandler', () => {
       const next = vi.fn();
       await idportenAuthHandler(req, res, next);
       expect(res.sendStatus).toHaveBeenCalledTimes(1);
-      // @ts-expect-error
       expect(res.sendStatus.mock.calls[0][0]).toBe(401);
       expect(next).not.toHaveBeenCalled();
     });
@@ -67,7 +65,6 @@ describe('idportenAuthHandler', () => {
       const next = vi.fn();
       await idportenAuthHandler(req, res, next);
       expect(res.sendStatus).toHaveBeenCalledTimes(1);
-      // @ts-expect-error
       expect(res.sendStatus.mock.calls[0][0]).toBe(401);
       expect(next).not.toHaveBeenCalled();
     });
@@ -79,7 +76,6 @@ describe('idportenAuthHandler', () => {
       const next = vi.fn();
       await idportenAuthHandler(req, res, next);
       expect(res.sendStatus).toHaveBeenCalledTimes(1);
-      // @ts-expect-error
       expect(res.sendStatus.mock.calls[0][0]).toBe(401);
       expect(next).not.toHaveBeenCalled();
     });
@@ -91,7 +87,6 @@ describe('idportenAuthHandler', () => {
       const next = vi.fn();
       await idportenAuthHandler(req, res, next);
       expect(res.sendStatus).toHaveBeenCalledTimes(1);
-      // @ts-expect-error
       expect(res.sendStatus.mock.calls[0][0]).toBe(401);
       expect(next).not.toHaveBeenCalled();
     });

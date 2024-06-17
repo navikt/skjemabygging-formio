@@ -1,4 +1,11 @@
-import { AttachmentSettingValue, AttachmentSettingValues, AttachmentValue } from './attachment';
+import { AccordionSettingValue, AccordionSettingValues } from './accordion';
+import attachmentUtils, {
+  AttachmentSettingValue,
+  AttachmentSettingValues,
+  AttachmentValue,
+  LimitedFormAttachment,
+  SubmissionAttachmentValue,
+} from './attachment';
 import { ComponentError } from './component';
 import configUtils from './config';
 import type { ConfigType } from './config/types';
@@ -95,6 +102,7 @@ export {
   MockedComponentObjectForTest,
   PrefillType,
   TEXTS,
+  attachmentUtils,
   configUtils,
   currencyUtils,
   dateUtils,
@@ -118,6 +126,8 @@ export {
   validatorUtils,
 };
 export type {
+  AccordionSettingValue,
+  AccordionSettingValues,
   AktivitetPeriode,
   AktivitetVedtaksinformasjon,
   AttachmentSettingValue,
@@ -158,6 +168,7 @@ export type {
   InputMode,
   KjentBruker,
   Language,
+  LimitedFormAttachment,
   LogLevel,
   MellomlagringError,
   MigrationLevel,
@@ -180,6 +191,7 @@ export type {
   SendInnMaalgruppe,
   Submission,
   SubmissionActivity,
+  SubmissionAttachmentValue,
   SubmissionData,
   SubmissionMaalgruppe,
   SubmissionMethod,

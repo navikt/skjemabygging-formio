@@ -2,9 +2,10 @@ app-name: skjemabygging-preprod
 env-name: dev-gcp
 ingresses:
 - "https://skjemabygging-preprod.intern.dev.nav.no"
+- "https://skjemabygging-preprod.ansatt.dev.nav.no"
 logs-url: https://logs.adeo.no/app/r/s/lvnlu
 special-type-to-use-in-alertmanager-config: "fyllut-sendinn-alerts-dev"
-fyllut-base-url: https://fyllut-preprod.intern.dev.nav.no/fyllut
+fyllut-base-url: http://skjemautfylling-preprod/fyllut
 enabled-features: translations,diff
 publish-repo: skjemautfylling-formio
 publish-repo-owner: navikt
@@ -17,10 +18,23 @@ accessPolicy:
       - application: skjemabygging-proxy
         namespace: skjemadigitalisering
         cluster: dev-fss
+      - application: formio-api
+        namespace: skjemadigitalisering
+        cluster: dev-gcp
+      - application: formio-enterprise-server
+        namespace: skjemadigitalisering
+        cluster: dev-gcp
+      - application: skjemautfylling-preprod
+        namespace: skjemadigitalisering
+        cluster: dev-gcp
     external:
-      - host: fyllut-preprod.intern.dev.nav.no
       - host: skjemabygging-proxy.dev-fss-pub.nais.io
 secrets:
   - formio-server-access-dev
   - bygger-pusher-dev
   - github-app-installation
+environmentVars:
+  - name: FORMIO_API_SERVICE_PROD
+    value: http://formio-enterprise-server
+  - name: FORMIO_PROJECT_NAME_PROD
+    value: jvcemxwcpghcqjn

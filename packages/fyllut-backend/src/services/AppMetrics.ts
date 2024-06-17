@@ -6,6 +6,8 @@ class AppMetrics {
   private readonly _exstreamPdfRequestsCounter: Counter;
   private readonly _exstreamPdfFailuresCounter: Counter;
   private readonly _outgoingRequestDuration: Histogram;
+  private readonly _expressJsonBodyParserDuration: Histogram;
+  private readonly _idportenVerifyTokenDuration: Histogram;
 
   constructor() {
     logger.info('Initializing metrics client');
@@ -36,6 +38,24 @@ class AppMetrics {
     this._outgoingRequestDuration.zero({ service: 'exstream', method: 'createPdf', error: 'false' });
     this._outgoingRequestDuration.zero({ service: 'exstream', method: 'createPdf', error: 'true' });
 
+    this._expressJsonBodyParserDuration = new Histogram({
+      name: 'fyllut_express_json_body_parser_seconds',
+      help: 'Express json body parser duration',
+      labelNames: ['endpoint', 'error'],
+      buckets: [0.025, 0.05, 0.1, 0.2, 0.4, 0.8, 1.6, 3.2, 6.4, 12.8],
+      registers: [this._register],
+    });
+    this._expressJsonBodyParserDuration.zero({ endpoint: 'put-utfyltsoknad', error: 'false' });
+    this._expressJsonBodyParserDuration.zero({ endpoint: 'put-utfyltsoknad', error: 'true' });
+
+    this._idportenVerifyTokenDuration = new Histogram({
+      name: 'fyllut_idporten_verify_token_seconds',
+      help: 'Idporten auth duration',
+      labelNames: [],
+      buckets: [0.025, 0.05, 0.1, 0.2, 0.4, 0.8, 1.6, 3.2, 6.4, 12.8],
+      registers: [this._register],
+    });
+
     collectDefaultMetrics({ register: this._register });
   }
 
@@ -53,6 +73,14 @@ class AppMetrics {
 
   public get outgoingRequestDuration() {
     return this._outgoingRequestDuration;
+  }
+
+  public get idportenVerifyTokenDuration() {
+    return this._idportenVerifyTokenDuration;
+  }
+
+  public get expressJsonBodyParserDuration() {
+    return this._expressJsonBodyParserDuration;
   }
 }
 

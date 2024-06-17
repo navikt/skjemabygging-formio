@@ -20,7 +20,8 @@ export const devSkjemabyggingProxy: Partial<SkjemabyggingProxyConfig> = {
 };
 
 export const devFormio: Partial<FormioConfig> = {
-  projectUrl: 'https://formio-api.intern.dev.nav.no/jvcemxwcpghcqjn',
+  apiService: 'https://formio-api.intern.dev.nav.no',
+  projectName: 'jvcemxwcpghcqjn',
   roleIds: {
     administrator: '628ca77305690db58c974d04',
     authenticated: '628ca77305690db58c974d09',
@@ -28,11 +29,12 @@ export const devFormio: Partial<FormioConfig> = {
   },
 };
 
-export const prodFormio: Pick<FormioConfig, 'projectUrl'> = {
-  projectUrl: 'https://formio-api-server.ekstern.dev.nav.no/jvcemxwcpghcqjn',
+export const prodFormio: Pick<FormioConfig, 'apiService' | 'projectName'> = {
+  apiService: 'https://formio-api-server.ekstern.dev.nav.no',
+  projectName: 'jvcemxwcpghcqjn',
 };
 
-export const devFyllut: FyllutConfig = {
+export const devFyllut: Partial<FyllutConfig> = {
   baseUrl: 'https://skjemadelingslenke.ekstern.dev.nav.no/fyllut',
 };
 

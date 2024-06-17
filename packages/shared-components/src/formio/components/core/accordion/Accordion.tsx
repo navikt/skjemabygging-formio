@@ -10,6 +10,7 @@ class Accordion extends BaseComponent {
       label: 'Trekkspill',
       type: 'accordion',
       key: 'accordion',
+      hideLabel: true,
     });
   }
 
@@ -34,9 +35,9 @@ class Accordion extends BaseComponent {
       <NavAccordion id={this.getId()} ref={(ref) => this.setReactInstance(ref)} headingSize={this.getTitleSize()}>
         {this.getAccordionValues()?.map((item, index) => (
           <NavAccordion.Item key={index} defaultOpen={item.defaultOpen}>
-            <NavAccordion.Header>{item.title}</NavAccordion.Header>
+            <NavAccordion.Header>{this.translate(item.title)}</NavAccordion.Header>
             <NavAccordion.Content>
-              <InnerHtml content={item.content} />
+              <InnerHtml content={this.translate(item.content)} />
             </NavAccordion.Content>
           </NavAccordion.Item>
         ))}

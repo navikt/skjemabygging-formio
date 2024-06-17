@@ -1,10 +1,10 @@
 import nock from 'nock';
-import config from '../../../config';
 import { mockRequest, mockResponse } from '../../../test/testHelpers';
+import { getFormioApiServiceUrl } from '../../../util/formio';
 import authorizedPublisher from './authorizedPublisher';
 
 describe('authorizedPublisher', () => {
-  const projectUrl = config.formio.projectUrl;
+  const projectUrl = getFormioApiServiceUrl();
 
   beforeAll(() => {
     vi.spyOn(console, 'error').mockImplementation(() => {});
@@ -60,7 +60,7 @@ describe('authorizedPublisher', () => {
     expect(nextArg.message).toBe('Missing formio token');
   });
 
-  it('Rejects request when formio token is invalid', async () => {
+  it('Rejects request when formio token is invalid, with 401', async () => {
     nock(projectUrl).get('/current').reply(401);
     const req = mockRequest({
       body: {
@@ -74,5 +74,21 @@ describe('authorizedPublisher', () => {
     const nextArg = next.mock.calls[0][0];
     expect(nextArg).toBeDefined();
     expect(nextArg.message).toBe('Invalid formio token');
+  });
+
+  it('Rejects request when formio token is invalid, with 400', async () => {
+    nock(projectUrl).get('/current').reply(400);
+    const req = mockRequest({
+      body: {
+        token: 'invalid-formio-token',
+      },
+    });
+    const res = mockResponse();
+    const next = vi.fn();
+    await authorizedPublisher(req, res, next);
+    expect(next).toHaveBeenCalledTimes(1);
+    const nextArg = next.mock.calls[0][0];
+    expect(nextArg).toBeDefined();
+    expect(nextArg.message).toBe('Could not fetch user');
   });
 });

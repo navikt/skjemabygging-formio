@@ -53,7 +53,7 @@ class Alert extends BaseComponent {
           fullWidth={false} // Removes border-radius if true
           size="medium"
         >
-          <InnerHtml content={this.getContent()} />
+          <InnerHtml content={this.getContent()} className={'alertContent'} />
         </NavAlert>
       </div>,
     );

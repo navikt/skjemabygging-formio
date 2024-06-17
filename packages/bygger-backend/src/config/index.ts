@@ -64,7 +64,8 @@ const config: ConfigType = {
     installationId: env('GITHUB_APP_INSTALLATION_ID'),
   },
   formio: {
-    projectUrl: env('FORMIO_PROJECT_URL', devFormio.projectUrl),
+    apiService: env('FORMIO_API_SERVICE', devFormio.apiService),
+    projectName: env('FORMIO_PROJECT_NAME', devFormio.projectName),
     projectId: env('FORMIO_PROJECT_ID'),
     roleIds: {
       administrator: env('FORMIO_ROLE_ID_ADMINISTRATOR', devFormio.roleIds?.administrator),
@@ -79,11 +80,13 @@ const config: ConfigType = {
   prodFormio:
     naisClusterName !== 'prod-gcp'
       ? {
-          projectUrl: env('FORMIO_PROJECT_URL_PROD', prodFormio.projectUrl),
+          apiService: env('FORMIO_API_SERVICE_PROD', prodFormio.apiService),
+          projectName: env('FORMIO_PROJECT_NAME_PROD', prodFormio.projectName),
         }
       : undefined,
   fyllut: {
     baseUrl: env('FYLLUT_BASE_URL', devFyllut.baseUrl),
+    skjemadelingslenkeUrl: 'https://skjemadelingslenke.ekstern.dev.nav.no/fyllut',
   },
   pusher: {
     cluster: env('PUSHER_CLUSTER', devPusher.cluster),

@@ -1,11 +1,11 @@
 import {
-  AttachmentValue,
   ForstesideRequestBody,
   KjentBruker,
   Mottaksadresse,
   MottaksadresseData,
   NavFormType,
   navFormUtils,
+  SubmissionAttachmentValue,
   SubmissionData,
   UkjentBruker,
 } from '@navikt/skjemadigitalisering-shared-domain';
@@ -56,7 +56,7 @@ export function getVedleggsFelterSomSkalSendes(submissionData: SubmissionData, f
     .filter(
       (component) =>
         submissionData[component.key] === 'leggerVedNaa' ||
-        (submissionData[component.key] as AttachmentValue)?.key === 'leggerVedNaa',
+        (submissionData[component.key] as SubmissionAttachmentValue)?.key === 'leggerVedNaa',
     );
 }
 

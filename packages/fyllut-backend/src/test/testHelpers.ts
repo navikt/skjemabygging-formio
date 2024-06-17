@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import jose from 'node-jose';
+import { Mock } from 'vitest';
 
 const keystore = jose.JWK.createKeyStore();
 
@@ -17,7 +18,16 @@ const extractPath = (url: string): string => {
   return url.substring(getPosition(url, '/', 3));
 };
 
-function mockResponse(): Response {
+interface MockedResponse extends Response {
+  json: Mock;
+  send: Mock;
+  contentType: Mock;
+  status: Mock;
+  sendStatus: Mock;
+  header: Mock;
+}
+
+function mockResponse(): MockedResponse {
   return {
     json: vi.fn(),
     send: vi.fn(),
@@ -25,7 +35,7 @@ function mockResponse(): Response {
     status: vi.fn(),
     sendStatus: vi.fn(),
     header: vi.fn(),
-  } as unknown as Response;
+  } as unknown as MockedResponse;
 }
 
 type MockRequestParams = {
