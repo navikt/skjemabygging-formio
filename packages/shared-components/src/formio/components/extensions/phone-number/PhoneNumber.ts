@@ -10,8 +10,6 @@ class PhoneNumber extends TextField {
       label: 'Telefonnummer',
       type: 'phoneNumber',
       key: 'telefonNummer',
-      inputMode: 'decimal', // FIXME: trenger vi denne?
-      inputType: 'tel',
     });
   }
 
@@ -24,7 +22,7 @@ class PhoneNumber extends TextField {
   }
 
   getInputMode(): InputMode {
-    return this.component?.inputType || 'tel';
+    return 'tel';
   }
 }
 
