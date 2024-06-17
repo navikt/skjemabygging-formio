@@ -205,11 +205,11 @@ const getFormTexts = (form?: NavFormType, withInputType = false): TextObjectType
   return simplifiedComponentObject
     .flatMap((component) =>
       Object.keys(component)
-        .filter((key) => component[key] !== undefined && key !== 'attachmentValues')
+        .filter((key) => component[key] !== undefined)
         .flatMap((key) => {
-          if (key === 'values' || key === 'data' || key === 'accordionValues') {
+          if (key === 'values' || key === 'data' || key === 'accordionValues' || key === 'attachmentValues') {
             return component[key]
-              .filter((value) => value !== '')
+              .filter((value) => !!value)
               .map((value) => textObject(withInputType, value)) as TextObjectType;
           }
           return textObject(withInputType, component[key]);
