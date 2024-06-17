@@ -17,6 +17,7 @@ import {
   NavFormType,
   navFormUtils,
   signatureUtils,
+  TEXTS,
 } from '@navikt/skjemadigitalisering-shared-domain';
 
 type TextObjectType = { text: string; type?: InputType };
@@ -183,10 +184,12 @@ const getAttachmentTexts = (attachmentValues?: AttachmentSettingValues): undefin
     return undefined;
   }
 
-  return Object.values(attachmentValues).flatMap((value: AttachmentSettingValue) => {
-    return value.additionalDocumentation
+  return Object.entries(attachmentValues).flatMap(([key, value]: [string, AttachmentSettingValue]) => {
+    const option = value.enabled ? [TEXTS.statiske.attachment[key]] : [];
+    const additionalDocumentation = value.additionalDocumentation
       ? [value?.additionalDocumentation?.label, value?.additionalDocumentation?.description]
       : [];
+    return [...option, ...additionalDocumentation];
   });
 };
 
