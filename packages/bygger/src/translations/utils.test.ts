@@ -3,10 +3,13 @@ import {
   FormioTranslationMap,
   MockedComponentObjectForTest,
   NavFormType,
+  TEXTS,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { getFormTexts, getTextsAndTranslationsForForm, getTextsAndTranslationsHeaders } from './utils';
 
 const {
+  createDummyAttachment,
+  createDummyAttachmentValues,
   createDummyCheckbox,
   createDummyContainerElement,
   createDummyContentElement,
@@ -284,6 +287,44 @@ describe('testGetAllTextsAndTypeForForm', () => {
       { text: 'Juice', type: 'text' },
     ]);
   });
+
+  it('Test form with Attachment', () => {
+    const actual = getFormTexts(
+      createFormObject(
+        [
+          createPanelObject(
+            'Vedleggspanel',
+            [
+              createDummyAttachment(
+                'Mitt vedlegg',
+                { vedleggstittel: 'Vedleggstittel', vedleggskode: 'ABC' },
+                createDummyAttachmentValues([
+                  { key: 'leggerVedNaa' },
+                  { key: 'ettersender', label: 'Ettersending label', description: 'Ettersending description' },
+                  { key: 'harIkke', label: 'Har ikke label' },
+                ]),
+              ),
+            ],
+            'Vedleggspanel',
+          ),
+        ],
+        'title',
+      ),
+      true,
+    );
+    expect(actual).toEqual([
+      { text: 'title', type: 'text' },
+      { text: 'Vedleggspanel', type: 'text' },
+      { text: 'Mitt vedlegg', type: 'text' },
+      { text: TEXTS.statiske.attachment.leggerVedNaa, type: 'text' },
+      { text: TEXTS.statiske.attachment.ettersender, type: 'text' },
+      { text: 'Ettersending label', type: 'text' },
+      { text: 'Ettersending description', type: 'text' },
+      { text: TEXTS.statiske.attachment.harIkke, type: 'text' },
+      { text: 'Har ikke label', type: 'text' },
+    ]);
+  });
+
   it('Test form with button component', () => {
     const actual = getFormTexts(
       createFormObject(
