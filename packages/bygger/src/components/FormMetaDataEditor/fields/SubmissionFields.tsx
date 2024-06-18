@@ -1,4 +1,4 @@
-import { TextField, Textarea } from '@navikt/ds-react';
+import { Checkbox, TextField, Textarea } from '@navikt/ds-react';
 import { InnsendingType, NavFormSettingsDiff, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import LabelWithDiff from '../LabelWithDiff';
 import SubmissionTypeSelect from '../SubmissionTypeSelect';
@@ -15,6 +15,7 @@ const SubmissionFields = ({ onChange, diff, form, errors }: SubmissionFieldsProp
   const innsending = form.properties.innsending;
   const ettersending = form.properties.ettersending;
   const ettersendelsesfrist = form.properties.ettersendelsesfrist;
+  const hideUserTypes = form.properties.hideUserTypes;
 
   return (
     <>
@@ -87,6 +88,19 @@ const SubmissionFields = ({ onChange, diff, form, errors }: SubmissionFieldsProp
           />
         </>
       )}
+
+      <Checkbox
+        className="mb"
+        checked={hideUserTypes}
+        onChange={(event) =>
+          onChange({
+            ...form,
+            properties: { ...form.properties, hideUserTypes: event.target.checked },
+          })
+        }
+      >
+        {'Skjul valg for hvem innsendingen gjelder i ettersendingsløsningen'}
+      </Checkbox>
     </>
   );
 };
