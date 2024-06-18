@@ -10,7 +10,6 @@ class SelectBoxes extends BaseComponent {
       label: 'Flervalg',
       type: 'selectboxes',
       key: 'selectboxes',
-      isNavCheckboxPanel: true, // FIXME: needed?
     });
   }
 
@@ -41,8 +40,8 @@ class SelectBoxes extends BaseComponent {
     this.rerender();
   }
 
-  // FIXME: Should this use override?
-  isEmpty(value = this.dataValue) {
+  // Only empty if the values are all false
+  override isEmpty(value = this.dataValue) {
     if (!value) return true;
     return !Object.values(value).some(Boolean);
   }
@@ -61,7 +60,6 @@ class SelectBoxes extends BaseComponent {
         ref={(ref) => this.setReactInstance(ref)}
         className={this.getClassName()}
         readOnly={this.getReadOnly()}
-        spellCheck={this.getSpellCheck()} // FIXME: needed?
         error={this.getError()}
         tabIndex={-1}
       >

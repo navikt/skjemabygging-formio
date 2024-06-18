@@ -5,11 +5,11 @@
       <div class="description" id="d-{{ctx.instance.id}}-{{ctx.component.key}}">{{ctx.t(ctx.component.description, { _userInput: true })}}</div>
     {% } %}
 
-    {% if (ctx.component.label && ((ctx.builder || !ctx.component.hideLabel) && ctx.component.type !== "radio" && ctx.component.type !== "container" && ctx.component.type !== "alertstripe" && ctx.component.type !== "selectboxes" && ctx.component.type !== "navCheckbox" && ctx.component.type !== "datagrid" && ctx.component.type !== "navSkjemagruppe" && !ctx.component.isNavCheckboxPanel)) { %}
+    {% if (ctx.component.label && ((ctx.builder || !ctx.component.hideLabel) && ctx.component.type !== "radio" && ctx.component.type !== "container" && ctx.component.type !== "alertstripe" && ctx.component.type !== "selectboxes" && ctx.component.type !== "navCheckbox" && ctx.component.type !== "datagrid" && ctx.component.type !== "navSkjemagruppe" )) { %}
       {{ ctx.labelMarkup }}
     {% } %}
 
-    {% if (ctx.component.description && ctx.component.type !== "radio" && ctx.component.type !== "selectboxes" && ctx.component.type !== "datagrid" && !ctx.component.isNavCheckboxPanel && ctx.component.descriptionPosition !== "above" && (ctx.component.type !== "navCheckbox" || !ctx.component.descriptionPosition)) { %}
+    {% if (ctx.component.description && ctx.component.type !== "radio" && ctx.component.type !== "selectboxes" && ctx.component.type !== "datagrid" && ctx.component.descriptionPosition !== "above" && (ctx.component.type !== "navCheckbox" || !ctx.component.descriptionPosition)) { %}
       <div class="description" id="d-{{ctx.instance.id}}-{{ctx.component.key}}">{{ctx.t(ctx.component.description, { _userInput: true })}}</div>
     {% } %}
 
