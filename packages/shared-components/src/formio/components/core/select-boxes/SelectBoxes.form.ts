@@ -16,7 +16,7 @@ const selectBoxesForm = (componentType: string) => {
       editFormDisplay.additionalDescription(),
     ]),
     data([
-      editFormData.values(),
+      editFormData.values({withDescription: true, minLength: 2}),
       editFormData.defaultValue(componentType),
     ]),
     validation([

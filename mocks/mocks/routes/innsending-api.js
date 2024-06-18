@@ -22,6 +22,7 @@ const mellomlagringDrivingListNoDates = require('../data/innsending-api/driving-
 const mellomlagringCheckbox = require('../data/innsending-api/checkbox/mellomlagring-checkbox.json');
 const activitesFuture = require('../data/innsending-api/activities/activities-future.json');
 const prefillData = require('../data/innsending-api/prefill-data/prefill-data.json');
+const mellomlagringSelectBoxes = require('../data/innsending-api/select-boxes/mellomlagring-select-boxes.json');
 
 const objectToByteArray = (obj) => Array.from(new TextEncoder().encode(JSON.stringify(obj)));
 
@@ -206,6 +207,14 @@ module.exports = [
         options: {
           status: 200,
           body: convertToInnsendingApiResponse(mellomlagringCheckbox),
+        },
+      },
+      {
+        id: 'success-select-boxes',
+        type: 'json',
+        options: {
+          status: 200,
+          body: convertToInnsendingApiResponse(mellomlagringSelectBoxes),
         },
       },
       {
