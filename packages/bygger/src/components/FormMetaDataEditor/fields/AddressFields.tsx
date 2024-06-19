@@ -1,6 +1,6 @@
-import { Alert, Select } from '@navikt/ds-react';
+import { Alert, Link, Select } from '@navikt/ds-react';
 import { MottaksadresseData, NavFormSettingsDiff, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
-import { Link } from 'react-router-dom';
+import { Link as ReactRouterLink } from 'react-router-dom';
 import useMottaksadresser from '../../../hooks/useMottaksadresser';
 import LabelWithDiff from '../LabelWithDiff';
 import { UpdateFormFunction } from '../utils/utils';
@@ -66,7 +66,9 @@ const AddressFields = ({ onChange, diff, form }: AddressFieldsProps) => {
         </div>
       )}
       <div className="mb">
-        <Link to="/mottaksadresser">Rediger mottaksadresser</Link>
+        <Link as={ReactRouterLink} to="/mottaksadresser">
+          Rediger mottaksadresser
+        </Link>
       </div>
     </>
   );

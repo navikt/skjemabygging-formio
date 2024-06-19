@@ -1,9 +1,9 @@
 import { PadlockLockedIcon } from '@navikt/aksel-icons';
-import { SortState, Table } from '@navikt/ds-react';
+import { Link, SortState, Table } from '@navikt/ds-react';
 import { makeStyles } from '@navikt/skjemadigitalisering-shared-components';
 import { dateUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link as ReactRouterLink, useNavigate } from 'react-router-dom';
 import FormStatus from '../status/FormStatus';
 import { Status } from '../status/types';
 import sortedForms from './formsListSortUtils';
@@ -94,7 +94,9 @@ const FormsList = ({ forms }: FormsListPageProps) => {
             return (
               <Table.Row key={form.id} onClick={() => navigate(form.path)} className={styles.clickableRow}>
                 <Table.DataCell className={styles.idColumn}>
-                  <Link to={form.path}>{form.number}</Link>
+                  <Link as={ReactRouterLink} to={form.path}>
+                    {form.number}
+                  </Link>
                 </Table.DataCell>
                 <Table.DataCell className={styles.titleColumn}>
                   {form.title}

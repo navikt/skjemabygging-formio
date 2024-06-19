@@ -1,5 +1,7 @@
+import { Link } from '@navikt/ds-react';
+import { makeStyles } from '@navikt/skjemadigitalisering-shared-components';
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link as ReactRouterLink } from 'react-router-dom';
 
 interface Props {
   children: React.ReactNode;
@@ -7,10 +9,22 @@ interface Props {
   showUnsavedChangesModal: (event: React.MouseEvent, { redirectTo }: { redirectTo: string }) => void;
 }
 
+const useStyles = makeStyles({
+  adminLink: {
+    width: '100%',
+  },
+});
+
 export const AdminMenuLink = ({ children, to, showUnsavedChangesModal }: Props) => {
+  const styles = useStyles();
   return (
     <>
-      <Link to={to} onClick={(e) => showUnsavedChangesModal(e, { redirectTo: to })}>
+      <Link
+        as={ReactRouterLink}
+        className={styles.adminLink}
+        to={to}
+        onClick={(e) => showUnsavedChangesModal(e, { redirectTo: to })}
+      >
         {children}
       </Link>
     </>

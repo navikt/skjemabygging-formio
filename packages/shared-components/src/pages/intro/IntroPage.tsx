@@ -1,7 +1,7 @@
-import { GuidePanel, Heading, Radio, RadioGroup } from '@navikt/ds-react';
+import { GuidePanel, Heading, Link, Radio, RadioGroup } from '@navikt/ds-react';
 import { NavFormType, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useState } from 'react';
-import { Link, useHref, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { Link as ReactRouterLink, useHref, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import http from '../../api/util/http/http';
 import { useLanguages } from '../../context/languages';
 import { useAppConfig } from '../../index';
@@ -146,6 +146,7 @@ export function IntroPage({ form, formUrl }: Props) {
           )}
           {!mustSelectSubmissionMethod && (
             <Link
+              as={ReactRouterLink}
               className="navds-button navds-button--primary"
               to={{
                 pathname: innsendingsIdFromUrl ? `${formUrl}/oppsummering` : `${formUrl}/${firstPanelSlug}`,

@@ -1,8 +1,8 @@
 import { ArrowRightIcon } from '@navikt/aksel-icons';
-import { Alert, Button, Heading } from '@navikt/ds-react';
+import { Alert, Button, Heading, Link } from '@navikt/ds-react';
 import { InnsendingType, NavFormType, Submission, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link as ReactRouterLink, useLocation } from 'react-router-dom';
 import { useAmplitude } from '../../../context/amplitude';
 import { useAppConfig } from '../../../context/config/configContext';
 import { useLanguages } from '../../../context/languages';
@@ -99,6 +99,7 @@ const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList,
             innsending === 'KUN_PAPIR' ||
             (app === 'bygger' && innsending === 'PAPIR_OG_DIGITAL')) && (
             <Link
+              as={ReactRouterLink}
               className="navds-button navds-button--primary"
               onClick={(e) => onClickPapirOrIngenInnsending(e, 'send-i-posten')}
               to={{ pathname: `${formUrl}/send-i-posten`, search }}
@@ -140,6 +141,7 @@ const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList,
 
           {innsending === 'INGEN' && (
             <Link
+              as={ReactRouterLink}
               className="navds-button navds-button--primary"
               onClick={(e) => onClickPapirOrIngenInnsending(e, 'ingen-innsending')}
               to={{ pathname: `${formUrl}/ingen-innsending`, search }}

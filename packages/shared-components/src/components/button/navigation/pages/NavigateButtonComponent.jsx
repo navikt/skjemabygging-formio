@@ -1,6 +1,7 @@
 import { ArrowLeftIcon } from '@navikt/aksel-icons';
+import { Link } from '@navikt/ds-react';
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { Link, useLocation } from 'react-router-dom';
+import { Link as ReactRouterLink, useLocation } from 'react-router-dom';
 import { useAmplitude } from '../../../../context/amplitude/index';
 import CancelButton from '../cancel/CancelButton';
 
@@ -12,6 +13,7 @@ const NavigateButtonComponent = ({ goBackUrl, translate }) => {
     <nav>
       <div className="button-row">
         <Link
+          as={ReactRouterLink}
           className="navds-button navds-button--secondary"
           onClick={() => {
             loggNavigering({

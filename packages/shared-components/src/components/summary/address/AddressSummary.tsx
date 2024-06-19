@@ -1,6 +1,5 @@
 import { Link } from '@navikt/ds-react';
 import { Summary } from '@navikt/skjemadigitalisering-shared-domain';
-
 interface Props {
   component: Summary.Address;
 }

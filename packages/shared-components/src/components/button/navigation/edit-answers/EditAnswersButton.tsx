@@ -1,6 +1,7 @@
 import { ArrowLeftIcon } from '@navikt/aksel-icons';
+import { Link } from '@navikt/ds-react';
 import { NavFormType, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { Link, useLocation } from 'react-router-dom';
+import { Link as ReactRouterLink, useLocation } from 'react-router-dom';
 import { useAmplitude } from '../../../../context/amplitude';
 import { useLanguages } from '../../../../context/languages';
 import { PanelValidation, findFormStartingPoint } from '../../../../util/form/panel-validation/panelValidation';
@@ -22,6 +23,7 @@ const EditAnswersButton = ({ form, formUrl, panelValidationList }: Props) => {
 
   return (
     <Link
+      as={ReactRouterLink}
       className={`navds-button navds-button--${hasValidationErrors ? 'primary' : 'secondary'}`}
       onClick={() =>
         loggNavigering({
