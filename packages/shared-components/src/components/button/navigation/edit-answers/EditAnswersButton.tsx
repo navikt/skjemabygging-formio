@@ -5,6 +5,7 @@ import { Link as ReactRouterLink, useLocation } from 'react-router-dom';
 import { useAmplitude } from '../../../../context/amplitude';
 import { useLanguages } from '../../../../context/languages';
 import { PanelValidation, findFormStartingPoint } from '../../../../util/form/panel-validation/panelValidation';
+import makeStyles from '../../../../util/styles/jss/jss';
 
 interface Props {
   form: NavFormType;
@@ -12,10 +13,17 @@ interface Props {
   panelValidationList: PanelValidation[] | undefined;
 }
 
+const useStyles = makeStyles({
+  removeUnderline: {
+    textDecoration: 'none',
+  },
+});
+
 const EditAnswersButton = ({ form, formUrl, panelValidationList }: Props) => {
   const { loggNavigering } = useAmplitude();
   const { search } = useLocation();
   const { translate } = useLanguages();
+  const styles = useStyles();
 
   const formStartingPoint = findFormStartingPoint(form, panelValidationList);
   const pathname = `${formUrl}/${formStartingPoint.panel}`;
@@ -24,7 +32,7 @@ const EditAnswersButton = ({ form, formUrl, panelValidationList }: Props) => {
   return (
     <Link
       as={ReactRouterLink}
-      className={`navds-button navds-button--${hasValidationErrors ? 'primary' : 'secondary'}`}
+      className={`navds-button navds-button--${hasValidationErrors ? 'primary' : 'secondary'} ${styles.removeUnderline}`}
       onClick={() =>
         loggNavigering({
           lenkeTekst: translate(TEXTS.grensesnitt.summaryPage.editAnswers),
