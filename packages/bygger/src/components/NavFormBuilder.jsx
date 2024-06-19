@@ -103,6 +103,7 @@ class NavFormBuilder extends Component {
     const page = this.builder.instance.page;
     this.destroyBuilder();
     this.createBuilder(page);
+    this.handleChange(this.builder.instance.form);
   }
 
   componentDidMount = () => {
