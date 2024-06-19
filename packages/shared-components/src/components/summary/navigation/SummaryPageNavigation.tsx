@@ -31,6 +31,10 @@ const useStyles = makeStyles({
     display: 'flex',
     justifyContent: 'center',
   },
+  forwardButton: {
+    color: 'var(--a-white)',
+    textDecoration: 'none',
+  },
 });
 
 const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList, isValid }: Props) => {
@@ -100,7 +104,7 @@ const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList,
             (app === 'bygger' && innsending === 'PAPIR_OG_DIGITAL')) && (
             <Link
               as={ReactRouterLink}
-              className="navds-button navds-button--primary"
+              className={`navds-button navds-button--primary ${styles.forwardButton}`}
               onClick={(e) => onClickPapirOrIngenInnsending(e, 'send-i-posten')}
               to={{ pathname: `${formUrl}/send-i-posten`, search }}
             >

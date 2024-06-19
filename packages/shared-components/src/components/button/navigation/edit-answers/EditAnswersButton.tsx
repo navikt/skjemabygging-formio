@@ -14,7 +14,11 @@ interface Props {
 }
 
 const useStyles = makeStyles({
-  removeUnderline: {
+  primaryButton: {
+    textDecoration: 'none',
+    color: 'var(--a-white)',
+  },
+  secondaryButton: {
     textDecoration: 'none',
   },
 });
@@ -32,7 +36,7 @@ const EditAnswersButton = ({ form, formUrl, panelValidationList }: Props) => {
   return (
     <Link
       as={ReactRouterLink}
-      className={`navds-button navds-button--${hasValidationErrors ? 'primary' : 'secondary'} ${styles.removeUnderline}`}
+      className={`navds-button navds-button--${hasValidationErrors ? `primary ${styles.primaryButton}` : `secondary ${styles.secondaryButton}`}`}
       onClick={() =>
         loggNavigering({
           lenkeTekst: translate(TEXTS.grensesnitt.summaryPage.editAnswers),

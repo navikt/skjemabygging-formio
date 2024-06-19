@@ -4,13 +4,20 @@ import { useEffect, useState } from 'react';
 import { Link as ReactRouterLink, useHref, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import http from '../../api/util/http/http';
 import { useLanguages } from '../../context/languages';
-import { useAppConfig } from '../../index';
+import { makeStyles, useAppConfig } from '../../index';
 import { getPanelSlug } from '../../util/form/form';
 
 export interface Props {
   form: NavFormType;
   formUrl: string;
 }
+
+const useStyles = makeStyles({
+  startButton: {
+    color: 'var(--a-white)',
+    textDecoration: 'none',
+  },
+});
 
 const supportsPapirOgDigital = (form: NavFormType) => {
   const { innsending } = form.properties;
@@ -34,6 +41,7 @@ export function IntroPage({ form, formUrl }: Props) {
   const [selectedSubmissionMethod, setSelectedSubmissionMethod] = useState<string | undefined>(submissionMethod);
   const firstPanelSlug = getPanelSlug(form, 0);
   const basePath = useHref('/');
+  const styles = useStyles();
 
   useEffect(() => {
     if (selectedSubmissionMethod) {
@@ -137,7 +145,7 @@ export function IntroPage({ form, formUrl }: Props) {
         <nav className="button-row button-row__center">
           {mustSelectSubmissionMethod && selectedSubmissionMethod && (
             <a
-              className="navds-button navds-button--primary navds-body-short font-bold"
+              className={`navds-button navds-button--primary navds-body-short font-bold ${styles.startButton}`}
               onClick={navigateToFormPage}
               href="#"
             >
