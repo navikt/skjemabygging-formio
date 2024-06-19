@@ -3,6 +3,7 @@ import {
   findDependentComponents,
   flattenComponents,
   formMatcherPredicate,
+  isEqual,
   isSubmissionMethodAllowed,
   removeComponents,
   removeVedleggspanel,
@@ -16,6 +17,7 @@ import formWithMultipleConditionalDependencies from './testdata/conditional-mult
 import formWithPanel from './testdata/conditional-panel';
 import formWithSimpleConditional from './testdata/conditional-simple';
 import formWithSkjemagruppe from './testdata/conditional-skjemagruppe';
+import nav100750 from './testdata/nav100750';
 
 describe('navFormUtils', () => {
   describe('toFormPath', () => {
@@ -679,6 +681,32 @@ describe('navFormUtils', () => {
         const allowed = isSubmissionMethodAllowed('digital', testform);
         expect(allowed).toBe(true);
       });
+    });
+  });
+
+  describe('isEqual', () => {
+    const withDifferentModified = {
+      ...nav100750,
+      properties: { ...nav100750.properties, modified: '2024-03-01T08:13:33.878Z' },
+    };
+    const withReOrderedProperties = {
+      ...nav100750,
+      access: nav100750.access,
+      machineName: nav100750.machineName,
+      owner: nav100750.owner,
+      properties: {
+        ...nav100750.properties,
+        tema: nav100750.properties.tema,
+      },
+    };
+
+    it('compares two forms and skips certain properties', () => {
+      expect(isEqual(nav100750, withDifferentModified)).toBe(false);
+      expect(isEqual(nav100750, withDifferentModified, ['modified'])).toBe(true);
+    });
+
+    it('ignores ordering of properties', () => {
+      expect(isEqual(nav100750, withReOrderedProperties)).toBe(true);
     });
   });
 

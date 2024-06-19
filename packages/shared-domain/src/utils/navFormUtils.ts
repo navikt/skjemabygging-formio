@@ -27,6 +27,20 @@ export function flattenComponents<ComponentLike extends { components?: Component
   }, []);
 }
 
+const deepSortByKeys = (obj?: object) => {
+  if (!obj) return obj;
+  return Object.fromEntries(
+    Object.entries(obj)
+      .map(([key, value]) => (typeof value === 'object' ? [key, deepSortByKeys(value)] : [key, value]))
+      .sort((a, b) => a[0].localeCompare(b[0])),
+  );
+};
+
+export const isEqual = (formA?: NavFormType, formB?: NavFormType, skipProperties: string[] = []) => {
+  const replacer = (key: string, value: unknown) => (skipProperties.includes(key) ? undefined : value);
+  return JSON.stringify(deepSortByKeys(formA), replacer) === JSON.stringify(deepSortByKeys(formB), replacer);
+};
+
 function isKeyInText(key: string, text: string) {
   return text && text.search(`\\w+\\.${key}\\b`) > -1;
 }
@@ -317,6 +331,7 @@ const navFormUtils = {
   isPaper,
   isAttachment,
   isNone,
+  isEqual,
   prefillForm,
   createDefaultForm,
   replaceDuplicateNavIds,

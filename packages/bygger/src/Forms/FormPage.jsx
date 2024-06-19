@@ -46,7 +46,14 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish, onUnpu
 
   const onChange = (changedForm) => {
     sessionStorage.setItem(changedForm.path, JSON.stringify({ changed: true }));
-    dispatch({ type: 'form-changed', form: changedForm });
+    dispatch({
+      type: 'form-changed',
+      form: {
+        ...changedForm,
+        modified: state.form.modified,
+        properties: { ...changedForm.properties, modified: state.form.properties.modified },
+      },
+    });
   };
 
   const saveForm = async (form) => {
