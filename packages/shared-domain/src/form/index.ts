@@ -87,6 +87,7 @@ export interface FormPropertiesType {
   prefill?: PrefillKey[];
   uxSignalsId?: string;
   uxSignalsInnsending?: InnsendingType;
+  hideUserTypes?: boolean;
 }
 
 export type FormPropertiesPublishing = Pick<
