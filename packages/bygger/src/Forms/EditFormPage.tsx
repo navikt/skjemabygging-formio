@@ -31,7 +31,7 @@ const useStyles = makeStyles({
 interface EditFormPageProps {
   form: NavFormType;
   publishedForm: NavFormType;
-  onSave: (form: NavFormType) => void;
+  onSave: (form: NavFormType) => Promise<void>;
   onChange: (form: NavFormType) => void;
   onPublish: (form: NavFormType, translations: I18nTranslations) => void;
   onUnpublish: () => void;
@@ -80,11 +80,11 @@ export function EditFormPage({ form, publishedForm, onSave, onChange, onPublish,
           />
           <Column>
             <ButtonWithSpinner
-              onClick={() => {
+              onClick={async () => {
                 if (isLockedForm) {
                   openLockedFormModal();
                 } else {
-                  onSave(form);
+                  await onSave(form);
                 }
               }}
               size="small"
