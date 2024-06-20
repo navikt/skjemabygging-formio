@@ -142,5 +142,4 @@ class NavFormBuilder extends Component {
   };
 }
 
-export { NavFormBuilder as UnstyledNavFormBuilder };
 export default NavFormBuilder;

@@ -54,6 +54,13 @@ export function EditFormPage({ form, publishedForm, onSave, onChange, onPublish,
     appConfig,
   };
 
+  const handleChange = (changedForm: NavFormType) =>
+    onChange({
+      ...changedForm,
+      modified: form.modified,
+      properties: { ...changedForm.properties, modified: form.properties.modified },
+    });
+
   return (
     <>
       <AppLayout
@@ -63,7 +70,7 @@ export function EditFormPage({ form, publishedForm, onSave, onChange, onPublish,
         }}
       >
         <Row>
-          <SkjemaVisningSelect form={form} onChange={onChange} />
+          <SkjemaVisningSelect form={form} onChange={handleChange} />
           <Column className={styles.centerColumn}>
             <Heading level="1" size="xlarge">
               {title} {isLockedForm && <PadlockLockedIcon title="Skjemaet er låst" className={styles.padlockIcon} />}
@@ -75,7 +82,7 @@ export function EditFormPage({ form, publishedForm, onSave, onChange, onPublish,
           <NavFormBuilder
             className={styles.formBuilder}
             form={form}
-            onChange={onChange}
+            onChange={handleChange}
             formBuilderOptions={formBuilderOptions}
           />
           <Column>
