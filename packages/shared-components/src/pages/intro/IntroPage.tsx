@@ -4,9 +4,9 @@ import { useEffect, useState } from 'react';
 import { Link as ReactRouterLink, useHref, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import http from '../../api/util/http/http';
 import { useLanguages } from '../../context/languages';
-import { makeStyles, useAppConfig } from '../../index';
+import { useAppConfig } from '../../index';
 import { getPanelSlug } from '../../util/form/form';
-
+import makeStyles from '../../util/styles/jss/jss';
 export interface Props {
   form: NavFormType;
   formUrl: string;
