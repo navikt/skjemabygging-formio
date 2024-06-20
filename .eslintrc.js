@@ -10,7 +10,7 @@ module.exports = {
     'plugin:react-hooks/recommended',
   ],
   parser: '@typescript-eslint/parser',
-  plugins: ['react', 'react-hooks', 'import', '@typescript-eslint', 'vitest', 'cypress'],
+  plugins: ['react', 'react-hooks', 'import', '@typescript-eslint', 'vitest', 'cypress', 'no-only-tests'],
   globals: {
     fetchMock: true,
     vi: true,
@@ -36,6 +36,7 @@ module.exports = {
       'error',
       { forbid: ['@navikt/skjemadigitalisering-shared-@(components|domain)/**'] },
     ], // Should not import from shared components or domain
+    'no-only-tests/no-only-tests': 'error', // Should not have any .only() in tests
   },
   root: true,
 };
