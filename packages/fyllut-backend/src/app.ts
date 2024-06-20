@@ -6,6 +6,7 @@ import { checkConfigConsistency, config } from './config/config';
 import { NaisCluster } from './config/nais-cluster';
 import { buildDirectory } from './context.js';
 import { setupDeprecatedEndpoints } from './deprecatedEndpoints.js';
+import expressJsonMetricHandler from './middleware/expressJsonMetricHandler';
 import globalErrorHandler from './middleware/globalErrorHandler.js';
 import httpRequestLogger from './middleware/httpRequestLogger.js';
 import { stripTrailingSlash } from './middleware/stripTrailingSlash';
@@ -20,7 +21,7 @@ export const createApp = (setupDev: boolean = false) => {
   const app = express();
   app.use(httpRequestLogger);
 
-  app.use(express.json({ limit: '50mb' }));
+  app.use(expressJsonMetricHandler(express.json({ limit: '50mb' })));
   app.use(express.urlencoded({ extended: true, limit: '50mb' }));
   app.use(correlator());
   app.use(cors());

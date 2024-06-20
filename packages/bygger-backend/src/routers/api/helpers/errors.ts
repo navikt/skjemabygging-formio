@@ -24,6 +24,12 @@ export class BadRequest extends HttpError {
   }
 }
 
+export class InternalServerError extends HttpError {
+  constructor(message: string) {
+    super(message, 500);
+  }
+}
+
 export class ApiError extends Error {
   cause?: Error;
   functional: boolean;

@@ -87,6 +87,7 @@ export interface FormPropertiesType {
   prefill?: PrefillKey[];
   uxSignalsId?: string;
   uxSignalsInnsending?: InnsendingType;
+  hideUserTypes?: boolean;
   mellomlagringDurationDays: string;
 }
 
@@ -100,6 +101,7 @@ export type AttachmentType = 'default' | 'other';
 export interface ComponentValue {
   value: string;
   label: string;
+  description?: string;
 }
 
 export interface Component {
@@ -218,6 +220,7 @@ export interface ComponentValidate {
   patternMessage?: string;
   min?: number;
   max?: number;
+  minLength?: number;
   maxLength?: number;
 }
 

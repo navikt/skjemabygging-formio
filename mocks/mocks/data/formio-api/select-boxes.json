@@ -1,0 +1,463 @@
+{
+  "_id": "666ff7af1301140a4a5a4775",
+  "title": "Select boxes test",
+  "name": "selectBoxesTest",
+  "path": "selectboxestest",
+  "type": "form",
+  "display": "wizard",
+  "tags": ["nav-skjema", ""],
+  "access": [
+    {
+      "type": "read_all",
+      "roles": ["000000000000000000000000"]
+    },
+    {
+      "type": "update_all",
+      "roles": ["628ca77305690db58c974d04", "628ca77305690db58c974d09"]
+    }
+  ],
+  "owner": "64cc9fc4739f245ce96bb79a",
+  "components": [
+    {
+      "isAttachmentPanel": false,
+      "conditional": {
+        "show": null,
+        "when": null,
+        "eq": ""
+      },
+      "customConditional": "",
+      "title": "Selectboxes",
+      "key": "veiledning",
+      "type": "panel",
+      "input": false,
+      "components": [
+        {
+          "validate": {
+            "required": true,
+            "custom": "",
+            "customPrivate": false,
+            "strictDateValidation": false,
+            "multiple": false,
+            "unique": false,
+            "onlyAvailableItems": false
+          },
+          "label": "Select boxes",
+          "key": "selectBoxes",
+          "values": [
+            {
+              "label": "Choice 1",
+              "value": "choice1"
+            },
+            {
+              "value": "choice2",
+              "label": "Choice 2"
+            },
+            {
+              "value": "choice3",
+              "label": "Choice 3"
+            }
+          ],
+          "input": true,
+          "tableView": false,
+          "validateOn": "blur",
+          "type": "selectboxes",
+          "inputType": "checkbox",
+          "navId": "eyqfjt",
+          "id": "eynwysp",
+          "placeholder": "",
+          "prefix": "",
+          "customClass": "",
+          "suffix": "",
+          "multiple": false,
+          "defaultValue": null,
+          "protected": false,
+          "unique": false,
+          "persistent": true,
+          "hidden": false,
+          "clearOnHide": true,
+          "refreshOn": "",
+          "redrawOn": "",
+          "modalEdit": false,
+          "dataGridLabel": false,
+          "labelPosition": "top",
+          "description": "",
+          "errorLabel": "",
+          "tooltip": "",
+          "hideLabel": false,
+          "tabindex": "",
+          "disabled": false,
+          "autofocus": false,
+          "dbIndex": false,
+          "customDefaultValue": "",
+          "calculateValue": "",
+          "calculateServer": false,
+          "widget": null,
+          "attributes": {},
+          "conditional": {
+            "show": null,
+            "when": null,
+            "eq": ""
+          },
+          "overlay": {
+            "style": "",
+            "left": "",
+            "top": "",
+            "width": "",
+            "height": ""
+          },
+          "allowCalculateOverride": false,
+          "encrypted": false,
+          "showCharCount": false,
+          "showWordCount": false,
+          "properties": {},
+          "allowMultipleMasks": false,
+          "addons": [],
+          "dataSrc": "values",
+          "authenticate": false,
+          "ignoreCache": false,
+          "template": "<span>{{ item.label }}</span>",
+          "data": {
+            "url": ""
+          },
+          "fieldSet": false,
+          "inline": false,
+          "isNavCheckboxPanel": true
+        },
+        {
+          "description": "",
+          "additionalDescriptionText": "",
+          "validate": {
+            "required": true,
+            "custom": "",
+            "customPrivate": false,
+            "strictDateValidation": false,
+            "multiple": false,
+            "unique": false,
+            "onlyAvailableItems": false
+          },
+          "errors": "",
+          "conditional": {
+            "show": null,
+            "when": null,
+            "eq": ""
+          },
+          "customConditional": "",
+          "label": "Select boxes with defaultValue",
+          "additionalDescriptionLabel": "",
+          "key": "selectBoxesWithDefaultValue",
+          "values": [
+            {
+              "label": "Choice 1",
+              "value": "choice1"
+            },
+            {
+              "value": "choice2",
+              "label": "Choice 2"
+            },
+            {
+              "value": "choice3",
+              "label": "Choice 3"
+            }
+          ],
+          "input": true,
+          "placeholder": "",
+          "prefix": "",
+          "customClass": "",
+          "suffix": "",
+          "multiple": false,
+          "protected": false,
+          "unique": false,
+          "persistent": true,
+          "hidden": false,
+          "clearOnHide": true,
+          "refreshOn": "",
+          "redrawOn": "",
+          "tableView": false,
+          "modalEdit": false,
+          "dataGridLabel": false,
+          "labelPosition": "top",
+          "errorLabel": "",
+          "tooltip": "",
+          "hideLabel": false,
+          "tabindex": "",
+          "disabled": false,
+          "autofocus": false,
+          "dbIndex": false,
+          "customDefaultValue": "",
+          "calculateValue": "",
+          "calculateServer": false,
+          "widget": null,
+          "attributes": {},
+          "validateOn": "blur",
+          "overlay": {
+            "style": "",
+            "left": "",
+            "top": "",
+            "width": "",
+            "height": ""
+          },
+          "allowCalculateOverride": false,
+          "encrypted": false,
+          "showCharCount": false,
+          "showWordCount": false,
+          "properties": {},
+          "allowMultipleMasks": false,
+          "addons": [],
+          "dataSrc": "values",
+          "authenticate": false,
+          "ignoreCache": false,
+          "template": "<span>{{ item.label }}</span>",
+          "type": "selectboxes",
+          "inputType": "radio",
+          "data": {
+            "url": ""
+          },
+          "fieldSet": false,
+          "inline": false,
+          "isNavCheckboxPanel": true,
+          "navId": "e7fyvys",
+          "id": "e2jx6dw",
+          "defaultValue": {
+            "choice1": true,
+            "choice2": true,
+            "choice3": false
+          }
+        },
+        {
+          "description": "<p>Normal description</p>",
+          "additionalDescriptionText": "<p>Extended description text</p>",
+          "validate": {
+            "required": true,
+            "custom": "",
+            "customPrivate": false,
+            "strictDateValidation": false,
+            "multiple": false,
+            "unique": false,
+            "onlyAvailableItems": false
+          },
+          "errors": "",
+          "conditional": {
+            "show": null,
+            "when": null,
+            "eq": ""
+          },
+          "customConditional": "",
+          "label": "Select boxes with description",
+          "additionalDescriptionLabel": "Extended description",
+          "key": "selectBoxesWithDescription",
+          "values": [
+            {
+              "label": "Choice 1",
+              "value": "choice1",
+              "description": "Description 1"
+            },
+            {
+              "value": "choice2",
+              "label": "Choice 2",
+              "description": "Description 2"
+            },
+            {
+              "value": "choice3",
+              "label": "Choice 3",
+              "description": "Description 3"
+            },
+            {
+              "value": "choice4",
+              "label": "Choice 4",
+              "description": "Description 4"
+            },
+            {
+              "value": "choice5",
+              "label": "Choice 5"
+            }
+          ],
+          "defaultValue": {
+            "choice1": false,
+            "choice2": false,
+            "choice3": false,
+            "choice4": false,
+            "choice5": false
+          },
+          "input": true,
+          "tableView": false,
+          "validateOn": "blur",
+          "type": "selectboxes",
+          "inputType": "checkbox",
+          "navId": "ei4858",
+          "placeholder": "",
+          "prefix": "",
+          "customClass": "",
+          "suffix": "",
+          "multiple": false,
+          "protected": false,
+          "unique": false,
+          "persistent": true,
+          "hidden": false,
+          "clearOnHide": true,
+          "refreshOn": "",
+          "redrawOn": "",
+          "modalEdit": false,
+          "dataGridLabel": false,
+          "labelPosition": "top",
+          "errorLabel": "",
+          "tooltip": "",
+          "hideLabel": false,
+          "tabindex": "",
+          "disabled": false,
+          "autofocus": false,
+          "dbIndex": false,
+          "customDefaultValue": "",
+          "calculateValue": "",
+          "calculateServer": false,
+          "widget": null,
+          "attributes": {},
+          "overlay": {
+            "style": "",
+            "left": "",
+            "top": "",
+            "width": "",
+            "height": ""
+          },
+          "allowCalculateOverride": false,
+          "encrypted": false,
+          "showCharCount": false,
+          "showWordCount": false,
+          "properties": {},
+          "allowMultipleMasks": false,
+          "addons": [],
+          "dataSrc": "values",
+          "authenticate": false,
+          "ignoreCache": false,
+          "template": "<span>{{ item.label }}</span>",
+          "data": {
+            "url": ""
+          },
+          "fieldSet": false,
+          "inline": false,
+          "isNavCheckboxPanel": true,
+          "id": "ed550ae"
+        }
+      ],
+      "tableView": false,
+      "label": "Panel",
+      "navId": "ez1onmr",
+      "placeholder": "",
+      "prefix": "",
+      "customClass": "",
+      "suffix": "",
+      "multiple": false,
+      "defaultValue": null,
+      "protected": false,
+      "unique": false,
+      "persistent": false,
+      "hidden": false,
+      "clearOnHide": false,
+      "refreshOn": "",
+      "redrawOn": "",
+      "modalEdit": false,
+      "dataGridLabel": false,
+      "labelPosition": "top",
+      "description": "",
+      "errorLabel": "",
+      "tooltip": "",
+      "hideLabel": false,
+      "tabindex": "",
+      "disabled": false,
+      "autofocus": false,
+      "dbIndex": false,
+      "customDefaultValue": "",
+      "calculateValue": "",
+      "calculateServer": false,
+      "widget": null,
+      "attributes": {},
+      "validateOn": "change",
+      "validate": {
+        "required": false,
+        "custom": "",
+        "customPrivate": false,
+        "strictDateValidation": false,
+        "multiple": false,
+        "unique": false
+      },
+      "overlay": {
+        "style": "",
+        "left": "",
+        "top": "",
+        "width": "",
+        "height": ""
+      },
+      "allowCalculateOverride": false,
+      "encrypted": false,
+      "showCharCount": false,
+      "showWordCount": false,
+      "properties": {},
+      "allowMultipleMasks": false,
+      "addons": [],
+      "tree": false,
+      "lazyLoad": false,
+      "theme": "default",
+      "breadcrumb": "default",
+      "id": "elp5mf8"
+    },
+    {
+      "title": "Vedlegg",
+      "type": "panel",
+      "key": "vedlegg",
+      "input": false,
+      "theme": "default",
+      "isAttachmentPanel": true,
+      "components": [
+        {
+          "label": "Annen dokumentasjon",
+          "description": "Har du noen annen dokumentasjon du ønsker å legge ved?",
+          "type": "attachment",
+          "key": "annenDokumentasjon",
+          "validate": {
+            "required": true
+          },
+          "attachmentType": "other",
+          "properties": {
+            "vedleggstittel": "Annet",
+            "vedleggskode": "N6"
+          },
+          "attachmentValues": {
+            "leggerVedNaa": {
+              "enabled": true
+            },
+            "ettersender": {
+              "enabled": true
+            },
+            "nei": {
+              "enabled": true
+            }
+          },
+          "navId": "e30kk7e"
+        }
+      ],
+      "navId": "e06hdc7"
+    }
+  ],
+  "properties": {
+    "skjemanummer": "select-boxes-test",
+    "tema": "AGR",
+    "innsending": "PAPIR_OG_DIGITAL",
+    "ettersending": "PAPIR_OG_DIGITAL",
+    "signatures": [
+      {
+        "label": "",
+        "description": "",
+        "key": "90aab859-e711-4852-bd61-5390228f0978"
+      }
+    ],
+    "ettersendelsesfrist": "14",
+    "modified": "2024-06-17T10:46:53.427Z"
+  },
+  "project": "628ca77305690db58c974cfd",
+  "revisions": "",
+  "submissionRevisions": "",
+  "_vid": 0,
+  "submissionAccess": [],
+  "created": "2024-06-17T08:45:35.356Z",
+  "modified": "2024-06-17T10:46:53.897Z",
+  "machineName": "jvcemxwcpghcqjn:selectBoxesTest"
+}

@@ -31,6 +31,7 @@ export type FormioConfig = {
 
 export type FyllutConfig = {
   baseUrl: string;
+  skjemadelingslenkeUrl: string;
 };
 
 export type PusherConfig = {

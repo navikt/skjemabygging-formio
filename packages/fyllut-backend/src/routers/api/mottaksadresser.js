@@ -1,11 +1,11 @@
 import { config } from '../../config/config';
 import { fetchFromFormioApi, loadFileFromDirectory } from '../../utils/forms.js';
 
-const { useFormioApi, formioProjectUrl, resourcesDir } = config;
+const { useFormioApi, formioApiServiceUrl, resourcesDir } = config;
 
 const loadMottaksadresser = async () => {
   return useFormioApi
-    ? await fetchFromFormioApi(`${formioProjectUrl}/mottaksadresse/submission`)
+    ? await fetchFromFormioApi(`${formioApiServiceUrl}/mottaksadresse/submission`)
     : await loadFileFromDirectory(resourcesDir, 'mottaksadresser.json', []);
 };
 

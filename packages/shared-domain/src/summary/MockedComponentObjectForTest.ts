@@ -1,3 +1,4 @@
+import { AttachmentSettingValues } from '../attachment';
 import type { Component, ComponentProperties, FormPropertiesType, NavFormType } from '../form';
 import FormioUtils from '../utils/formio/FormioUtils';
 
@@ -70,38 +71,43 @@ const createDummyRadioPanel = (
     navId,
   }) as Component;
 
-const defaultAttachmentValues: RadioPanelOption[] = [
-  {
-    value: 'leggerVedNaa',
-    label: 'Jeg legger det ved denne søknaden (anbefalt)',
-  },
-  {
-    value: 'ettersender',
-    label:
-      'Jeg ettersender dokumentasjonen senere (jeg er klar over at NAV ikke kan behandle søknaden før jeg har levert dokumentasjonen)',
-  },
-  {
-    value: 'levertTidligere',
-    label: 'Jeg har levert denne dokumentasjonen tidligere',
-  },
-];
+const defaultAttachmentValues: AttachmentSettingValues = {
+  leggerVedNaa: { enabled: true },
+  ettersender: { enabled: true },
+  levertTidligere: { enabled: true },
+};
 
 const defaultAttachmentProperties: ComponentProperties = {
   vedleggstittel: 'Bekreftelse fra skole',
   vedleggskode: 'S1',
 };
 
+const createDummyAttachmentValues = (
+  values: Array<{ key: keyof AttachmentSettingValues; label?: string; description?: string; showDeadline?: boolean }>,
+): AttachmentSettingValues => {
+  return Object.fromEntries(
+    values.map(({ key, label, description, showDeadline }) => [
+      key,
+      {
+        enabled: true,
+        showDeadline,
+        ...{ additionalDocumentation: label || description ? { enabled: true, label, description } : undefined },
+      },
+    ]),
+  );
+};
+
 const createDummyAttachment = (
   label = 'Vedlegg1',
   properties: ComponentProperties = defaultAttachmentProperties,
-  values: RadioPanelOption[] = defaultAttachmentValues,
+  attachmentValues: AttachmentSettingValues = defaultAttachmentValues,
   navId: string = createNavId(),
 ): Component =>
   ({
     label,
     key: keyFromLabel(label),
-    type: 'radiopanel',
-    values,
+    type: 'attachment',
+    attachmentValues,
     properties,
     navId,
   }) as Component;
@@ -367,6 +373,7 @@ const mockedComponentObjectForTest = {
   createDummyEmail,
   createDummyRadioPanel,
   createDummyAttachment,
+  createDummyAttachmentValues,
   createDummyRadioPanelWithNumberValues,
   createDummySelectboxes,
   createDummyImage,

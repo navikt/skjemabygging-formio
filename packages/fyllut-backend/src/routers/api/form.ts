@@ -56,6 +56,7 @@ const mapLimitedForm = (form: NavFormType, translate: TranslateFunction) => {
       enhetMaVelgesVedPapirInnsending: form.properties.enhetMaVelgesVedPapirInnsending,
       uxSignalsId: form.properties.uxSignalsId,
       uxSignalsInnsending: form.properties.uxSignalsInnsending,
+      hideUserTypes: form.properties.hideUserTypes,
     },
     attachments: getAttachments(form, translate),
   };

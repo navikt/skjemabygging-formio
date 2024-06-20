@@ -1,0 +1,66 @@
+{
+  "brukerId": "19876898104",
+  "skjemanr": "select-boxes-test",
+  "tittel": "Select boxes test",
+  "tema": "AGR",
+  "spraak": "nb",
+  "hoveddokument": {
+    "vedleggsnr": "select-boxes-test",
+    "tittel": "Select boxes test",
+    "label": "Select boxes test",
+    "pakrevd": true,
+    "mimetype": "application/pdf"
+  },
+  "hoveddokumentVariant": {
+    "vedleggsnr": "select-boxes-test",
+    "tittel": "Select boxes test",
+    "label": "Select boxes test",
+    "pakrevd": false,
+    "mimetype": "application/json",
+    "document": {
+      "language": "nb-NO",
+      "data": {
+        "data": {
+          "selectBoxesWithDefaultValue": {
+            "choice1": true,
+            "choice2": true,
+            "choice3": false
+          },
+          "selectBoxesWithDescription": {
+            "choice1": true,
+            "choice2": false,
+            "choice3": false,
+            "choice4": false,
+            "choice5": false
+          },
+          "selectBoxes": {
+            "choice1": true,
+            "choice2": false,
+            "choice3": false
+          }
+        },
+        "metadata": {
+          "timezone": "Europe/Oslo",
+          "offset": 120,
+          "origin": "http://localhost:3001",
+          "referrer": "http://localhost:3001/fyllut/selectboxestest",
+          "browserName": "Netscape",
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
+          "pathName": "/fyllut/selectboxestest/veiledning",
+          "onLine": true
+        },
+        "state": "submitted",
+        "_vnote": ""
+      }
+    }
+  },
+  "innsendingsId": "e5a341ee-810d-4138-9550-b96d5c307cb6",
+  "status": "Opprettet",
+  "vedleggsListe": [],
+  "kanLasteOppAnnet": true,
+  "fristForEttersendelse": 14,
+  "endretDato": "2024-06-17T13:21:09.17675+02:00",
+  "skalSlettesDato": "2024-07-15T11:21:09.166405Z",
+  "skjemaPath": "selectboxestest",
+  "visningsType": "fyllUt"
+}
