@@ -63,7 +63,7 @@ describe('Datagrid', () => {
       cy.findByRole('textbox', { name: 'Tekstfelt inni datagrid' }).should('have.value', 'Katt');
     });
 
-    it('does not trigger validation error on optional fields in datagrid rows', () => {
+    it('does not trigger validation error on optional fields in datagrid rows (if datagrid has required: false)', () => {
       cy.visit('/fyllut/datagrid123?sub=digital');
       cy.defaultWaits();
       cy.clickStart();
