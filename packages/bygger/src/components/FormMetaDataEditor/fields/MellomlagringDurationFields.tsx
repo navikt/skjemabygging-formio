@@ -16,6 +16,7 @@ const MellomlagrinDurationFields = ({ onChange, diff, form, errors }: Mellomlagr
   return (
     <>
       <TextField
+        onWheel={(e) => e.currentTarget.blur()} // disable scroll wheel on number input
         className="mb"
         label={<LabelWithDiff label="Mellomlagringstid (dager)" diff={!!diff.mellomlagringDurationDays} />}
         type="number"
