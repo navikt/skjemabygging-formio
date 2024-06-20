@@ -103,6 +103,7 @@ class NavSelect extends BaseComponent {
   isLoading = false;
   loadFinished = false;
   selectOptions: any = [];
+  ignoreOptions: any = [];
   itemsLoaded: Promise<any> | undefined = undefined;
   itemsLoadedResolve: undefined | ((value?: any) => void) = undefined;
 
@@ -160,10 +161,17 @@ class NavSelect extends BaseComponent {
         .get<any[]>(dataUrl)
         .then((data) => {
           const { valueProperty, labelProperty } = component;
-          this.selectOptions = data.map((obj) => ({
-            label: obj[labelProperty || 'label'],
-            value: obj[valueProperty || 'value'],
-          }));
+
+          this.selectOptions = data
+            .map((obj) => {
+              if (!(this.ignoreOptions ?? []).includes(obj[labelProperty || 'value'])) {
+                return {
+                  label: obj[labelProperty || 'label'],
+                  value: obj[valueProperty || 'value'],
+                };
+              }
+            })
+            .filter(Boolean);
         })
         .catch((err) => {
           this.emit('componentError', {

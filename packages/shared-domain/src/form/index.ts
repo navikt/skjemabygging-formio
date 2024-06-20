@@ -191,6 +191,7 @@ export interface Component {
   rerender?: () => void;
   onChange?: (props) => void;
   inputType?: InputMode;
+  ignoreNorway?: boolean;
 }
 
 export type InputMode = 'none' | 'text' | 'tel' | 'url' | 'email' | 'numeric' | 'decimal' | 'search';
