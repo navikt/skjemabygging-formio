@@ -19,7 +19,7 @@ describe('Datagrid', () => {
   });
 
   describe('Optional fields in datagrid', () => {
-    it.only('does not reset values in react rendered fields inside datagrid when adding a new row', () => {
+    it('does not reset values in react rendered fields inside datagrid when adding a new row', () => {
       cy.visit('/fyllut/datagridReact?sub=digital');
       cy.defaultWaits();
       cy.clickStart();
@@ -63,7 +63,7 @@ describe('Datagrid', () => {
       cy.findByRole('textbox', { name: 'Tekstfelt inni datagrid' }).should('have.value', 'Katt');
     });
 
-    it('does not trigger validation error on optional fields in datagrid rows', () => {
+    it('does not trigger validation error on optional fields in datagrid rows (if datagrid has required: false)', () => {
       cy.visit('/fyllut/datagrid123?sub=digital');
       cy.defaultWaits();
       cy.clickStart();

@@ -85,7 +85,7 @@
           "attributes": {},
           "validateOn": "blur",
           "validate": {
-            "required": true,
+            "required": false,
             "custom": "",
             "customPrivate": false,
             "strictDateValidation": false,

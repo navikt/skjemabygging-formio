@@ -10,7 +10,7 @@ module.exports = {
     'plugin:react-hooks/recommended',
   ],
   parser: '@typescript-eslint/parser',
-  plugins: ['react', 'react-hooks', 'import', '@typescript-eslint', 'vitest', 'cypress'],
+  plugins: ['react', 'react-hooks', 'import', '@typescript-eslint', 'vitest', 'cypress', 'no-only-tests'],
   globals: {
     fetchMock: true,
     vi: true,
@@ -21,6 +21,7 @@ module.exports = {
     'cypress/globals': true,
   },
   rules: {
+    'no-only-tests/no-only-tests': 'error', // should not ignore tests
     'no-unused-labels': 'error', // Should not have any unused labels
     'import/no-duplicates': 'error', // Should not import the same module twice (should be handled automatically by prettier-plugin-organize-imports)
     '@typescript-eslint/no-unused-vars': ['warn', { ignoreRestSiblings: true, argsIgnorePattern: '^[_$].*' }], // ignores unused variables starting with _ or $
