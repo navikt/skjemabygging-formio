@@ -145,7 +145,7 @@ export function IntroPage({ form, formUrl }: Props) {
         <nav className="button-row button-row__center">
           {mustSelectSubmissionMethod && selectedSubmissionMethod && (
             <a
-              className={`navds-button navds-button--primary navds-body-short font-bold ${styles.startButton}`}
+              className="navds-button navds-button--primary navds-body-short font-bold"
               onClick={navigateToFormPage}
               href="#"
             >
@@ -155,7 +155,7 @@ export function IntroPage({ form, formUrl }: Props) {
           {!mustSelectSubmissionMethod && (
             <Link
               as={ReactRouterLink}
-              className="navds-button navds-button--primary"
+              className={`navds-button navds-button--primary ${styles.startButton}`}
               to={{
                 pathname: innsendingsIdFromUrl ? `${formUrl}/oppsummering` : `${formUrl}/${firstPanelSlug}`,
                 search,
