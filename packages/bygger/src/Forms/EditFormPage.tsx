@@ -2,6 +2,7 @@ import { PadlockLockedIcon } from '@navikt/aksel-icons';
 import { BodyShort, Button, Heading } from '@navikt/ds-react';
 import { FormBuilderOptions, makeStyles, useAppConfig, useModal } from '@navikt/skjemadigitalisering-shared-components';
 import { I18nTranslations, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
+import { useCallback } from 'react';
 import { AppLayout } from '../components/AppLayout';
 import ButtonWithSpinner from '../components/ButtonWithSpinner';
 import NavFormBuilder from '../components/NavFormBuilder';
@@ -54,12 +55,15 @@ export function EditFormPage({ form, publishedForm, onSave, onChange, onPublish,
     appConfig,
   };
 
-  const handleChange = (changedForm: NavFormType) =>
-    onChange({
-      ...changedForm,
-      modified: form.modified,
-      properties: { ...changedForm.properties, modified: form.properties.modified },
-    });
+  const handleChange = useCallback(
+    (changedForm: NavFormType) =>
+      onChange({
+        ...changedForm,
+        modified: form.modified,
+        properties: { ...changedForm.properties, modified: form.properties.modified },
+      }),
+    [form.modified, form.properties.modified, onChange],
+  );
 
   return (
     <>
