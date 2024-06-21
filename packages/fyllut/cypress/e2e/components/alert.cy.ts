@@ -23,8 +23,8 @@ describe('Alert', () => {
     cy.contains('.formio-component-alertstripe', 'New alert 1').should('have.css', 'marginBottom', '40px');
   });
 
-  it('should have marginBottom of 0px as the last element in the group', () => {
-    cy.contains('.formio-component-alertstripe', 'New alert 2').should('have.css', 'marginBottom', '0px');
+  it('should have marginBottom of 40px as the last element in the group', () => {
+    cy.contains('.formio-component-alertstripe', 'New alert 2').should('have.css', 'marginBottom', '40px');
   });
 
   it('should not show any labels', () => {

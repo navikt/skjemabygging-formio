@@ -10,9 +10,6 @@ const alert = {
       marginBottom: 0,
     },
   },
-  '& .formio-component-alertstripe:last-child': {
-    marginBottom: '0',
-  },
 };
 
 export default alert;
