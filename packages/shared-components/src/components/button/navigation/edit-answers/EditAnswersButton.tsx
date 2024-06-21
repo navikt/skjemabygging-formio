@@ -1,11 +1,10 @@
 import { ArrowLeftIcon } from '@navikt/aksel-icons';
-import { Link } from '@navikt/ds-react';
 import { NavFormType, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { Link as ReactRouterLink, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { useAmplitude } from '../../../../context/amplitude';
 import { useLanguages } from '../../../../context/languages';
 import { PanelValidation, findFormStartingPoint } from '../../../../util/form/panel-validation/panelValidation';
-import makeStyles from '../../../../util/styles/jss/jss';
+import LinkButton from '../../../link-button/LinkButton';
 
 interface Props {
   form: NavFormType;
@@ -13,30 +12,18 @@ interface Props {
   panelValidationList: PanelValidation[] | undefined;
 }
 
-const useStyles = makeStyles({
-  primaryButton: {
-    textDecoration: 'none',
-    color: 'var(--a-white)',
-  },
-  secondaryButton: {
-    textDecoration: 'none',
-  },
-});
-
 const EditAnswersButton = ({ form, formUrl, panelValidationList }: Props) => {
   const { loggNavigering } = useAmplitude();
   const { search } = useLocation();
   const { translate } = useLanguages();
-  const styles = useStyles();
 
   const formStartingPoint = findFormStartingPoint(form, panelValidationList);
   const pathname = `${formUrl}/${formStartingPoint.panel}`;
   const hasValidationErrors = panelValidationList?.some((panelValidation) => panelValidation.hasValidationErrors);
 
   return (
-    <Link
-      as={ReactRouterLink}
-      className={`navds-button navds-button--${hasValidationErrors ? `primary ${styles.primaryButton}` : `secondary ${styles.secondaryButton}`}`}
+    <LinkButton
+      buttonVariant={hasValidationErrors ? 'primary' : 'secondary'}
       onClick={() =>
         loggNavigering({
           lenkeTekst: translate(TEXTS.grensesnitt.summaryPage.editAnswers),
@@ -51,7 +38,7 @@ const EditAnswersButton = ({ form, formUrl, panelValidationList }: Props) => {
       <span aria-live="polite" className="navds-body-short font-bold">
         {translate(TEXTS.grensesnitt.summaryPage.editAnswers)}
       </span>
-    </Link>
+    </LinkButton>
   );
 };
 

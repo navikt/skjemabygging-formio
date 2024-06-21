@@ -1,23 +1,16 @@
-import { GuidePanel, Heading, Link, Radio, RadioGroup } from '@navikt/ds-react';
+import { GuidePanel, Heading, Radio, RadioGroup } from '@navikt/ds-react';
 import { NavFormType, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useState } from 'react';
-import { Link as ReactRouterLink, useHref, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { useHref, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import http from '../../api/util/http/http';
+import LinkButton from '../../components/link-button/LinkButton';
 import { useLanguages } from '../../context/languages';
 import { useAppConfig } from '../../index';
 import { getPanelSlug } from '../../util/form/form';
-import makeStyles from '../../util/styles/jss/jss';
 export interface Props {
   form: NavFormType;
   formUrl: string;
 }
-
-const useStyles = makeStyles({
-  startButton: {
-    color: 'var(--a-white)',
-    textDecoration: 'none',
-  },
-});
 
 const supportsPapirOgDigital = (form: NavFormType) => {
   const { innsending } = form.properties;
@@ -41,7 +34,6 @@ export function IntroPage({ form, formUrl }: Props) {
   const [selectedSubmissionMethod, setSelectedSubmissionMethod] = useState<string | undefined>(submissionMethod);
   const firstPanelSlug = getPanelSlug(form, 0);
   const basePath = useHref('/');
-  const styles = useStyles();
 
   useEffect(() => {
     if (selectedSubmissionMethod) {
@@ -153,9 +145,8 @@ export function IntroPage({ form, formUrl }: Props) {
             </a>
           )}
           {!mustSelectSubmissionMethod && (
-            <Link
-              as={ReactRouterLink}
-              className={`navds-button navds-button--primary ${styles.startButton}`}
+            <LinkButton
+              buttonVariant="primary"
               to={{
                 pathname: innsendingsIdFromUrl ? `${formUrl}/oppsummering` : `${formUrl}/${firstPanelSlug}`,
                 search,
@@ -164,7 +155,7 @@ export function IntroPage({ form, formUrl }: Props) {
               <span aria-live="polite" className="navds-body-short font-bold">
                 {translate(TEXTS.grensesnitt.introPage.start)}
               </span>
-            </Link>
+            </LinkButton>
           )}
           <button onClick={() => navigate(-1)} className="navds-button navds-button--tertiary">
             <span aria-live="polite" className="navds-body-short font-bold">
