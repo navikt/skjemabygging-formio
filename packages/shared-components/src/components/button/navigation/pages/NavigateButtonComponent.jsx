@@ -1,7 +1,8 @@
 import { ArrowLeftIcon } from '@navikt/aksel-icons';
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { Link, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { useAmplitude } from '../../../../context/amplitude/index';
+import LinkButton from '../../../link-button/LinkButton';
 import CancelButton from '../cancel/CancelButton';
 
 const NavigateButtonComponent = ({ goBackUrl, translate }) => {
@@ -11,8 +12,8 @@ const NavigateButtonComponent = ({ goBackUrl, translate }) => {
   return (
     <nav>
       <div className="button-row">
-        <Link
-          className="navds-button navds-button--secondary"
+        <LinkButton
+          buttonVariant="secondary"
           onClick={() => {
             loggNavigering({
               lenkeTekst: translate(TEXTS.grensesnitt.goBack),
@@ -27,7 +28,7 @@ const NavigateButtonComponent = ({ goBackUrl, translate }) => {
           <span aria-live="polite" className="navds-body-short font-bold">
             {translate(TEXTS.grensesnitt.goBack)}
           </span>
-        </Link>
+        </LinkButton>
       </div>
       <div className="button-row">
         <CancelButton />

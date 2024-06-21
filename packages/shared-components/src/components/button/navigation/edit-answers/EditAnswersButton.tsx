@@ -1,9 +1,10 @@
 import { ArrowLeftIcon } from '@navikt/aksel-icons';
 import { NavFormType, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { Link, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { useAmplitude } from '../../../../context/amplitude';
 import { useLanguages } from '../../../../context/languages';
 import { PanelValidation, findFormStartingPoint } from '../../../../util/form/panel-validation/panelValidation';
+import LinkButton from '../../../link-button/LinkButton';
 
 interface Props {
   form: NavFormType;
@@ -21,8 +22,8 @@ const EditAnswersButton = ({ form, formUrl, panelValidationList }: Props) => {
   const hasValidationErrors = panelValidationList?.some((panelValidation) => panelValidation.hasValidationErrors);
 
   return (
-    <Link
-      className={`navds-button navds-button--${hasValidationErrors ? 'primary' : 'secondary'}`}
+    <LinkButton
+      buttonVariant={hasValidationErrors ? 'primary' : 'secondary'}
       onClick={() =>
         loggNavigering({
           lenkeTekst: translate(TEXTS.grensesnitt.summaryPage.editAnswers),
@@ -37,7 +38,7 @@ const EditAnswersButton = ({ form, formUrl, panelValidationList }: Props) => {
       <span aria-live="polite" className="navds-body-short font-bold">
         {translate(TEXTS.grensesnitt.summaryPage.editAnswers)}
       </span>
-    </Link>
+    </LinkButton>
   );
 };
 

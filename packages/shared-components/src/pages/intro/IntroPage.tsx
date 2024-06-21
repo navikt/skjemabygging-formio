@@ -1,12 +1,12 @@
 import { GuidePanel, Heading, Radio, RadioGroup } from '@navikt/ds-react';
 import { NavFormType, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useState } from 'react';
-import { Link, useHref, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { useHref, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import http from '../../api/util/http/http';
+import LinkButton from '../../components/link-button/LinkButton';
 import { useLanguages } from '../../context/languages';
 import { useAppConfig } from '../../index';
 import { getPanelSlug } from '../../util/form/form';
-
 export interface Props {
   form: NavFormType;
   formUrl: string;
@@ -145,8 +145,8 @@ export function IntroPage({ form, formUrl }: Props) {
             </a>
           )}
           {!mustSelectSubmissionMethod && (
-            <Link
-              className="navds-button navds-button--primary"
+            <LinkButton
+              buttonVariant="primary"
               to={{
                 pathname: innsendingsIdFromUrl ? `${formUrl}/oppsummering` : `${formUrl}/${firstPanelSlug}`,
                 search,
@@ -155,7 +155,7 @@ export function IntroPage({ form, formUrl }: Props) {
               <span aria-live="polite" className="navds-body-short font-bold">
                 {translate(TEXTS.grensesnitt.introPage.start)}
               </span>
-            </Link>
+            </LinkButton>
           )}
           <button onClick={() => navigate(-1)} className="navds-button navds-button--tertiary">
             <span aria-live="polite" className="navds-body-short font-bold">

@@ -1,7 +1,7 @@
 import { ExclamationmarkTriangleFillIcon } from '@navikt/aksel-icons';
-import { Accordion } from '@navikt/ds-react';
+import { Accordion, Link } from '@navikt/ds-react';
 import { Summary, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { Link, useLocation } from 'react-router-dom';
+import { Link as ReactRouterLink, useLocation } from 'react-router-dom';
 import { useAmplitude } from '../../../context/amplitude';
 import { useLanguages } from '../../../context/languages';
 import makeStyles from '../../../util/styles/jss/jss';
@@ -54,6 +54,7 @@ const PanelSummary = ({ component, formUrl, hasValidationErrors }: Props) => {
           </Accordion.Header>
           <Accordion.Content>
             <Link
+              as={ReactRouterLink}
               to={{ pathname: `${formUrl}/${key}`, search }}
               className={link}
               onClick={(e) => loggNavigering({ lenkeTekst: panelLinkText, destinasjon: e.view.document.location.href })}

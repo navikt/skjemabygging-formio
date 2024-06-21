@@ -1,6 +1,6 @@
-import { Dropdown, InternalHeader } from '@navikt/ds-react';
+import { Dropdown, InternalHeader, Link } from '@navikt/ds-react';
 import { makeStyles } from '@navikt/skjemadigitalisering-shared-components';
-import { Link } from 'react-router-dom';
+import { Link as ReactRouterLink } from 'react-router-dom';
 import { useAuth } from '../../../context/auth-context';
 
 const useStyles = makeStyles({
@@ -23,7 +23,7 @@ const UserMenu = () => {
       <Dropdown.Menu>
         <Dropdown.Menu.List>
           <Dropdown.Menu.List.Item className={styles.logOutBtn}>
-            <Link className="navds-button navds-button--secondary navds-button--small" to="/" onClick={logout}>
+            <Link as={ReactRouterLink} to="/" onClick={logout}>
               Logg ut
             </Link>
           </Dropdown.Menu.List.Item>

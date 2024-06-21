@@ -1,7 +1,7 @@
 import { HomeFilled } from '@navikt/ds-icons';
-import { InternalHeader } from '@navikt/ds-react';
+import { InternalHeader, Link } from '@navikt/ds-react';
 import { useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
-import { Link } from 'react-router-dom';
+import { Link as ReactRouterLink } from 'react-router-dom';
 import { useAuth } from '../../context/auth-context';
 import useUnsavedChangesModal from '../../hooks/useUnsavedChangesModal';
 import AdminMenu from './components/AdminMenu';
@@ -30,6 +30,7 @@ export const NavBar = ({ formPath, formMenu, formListMenu, translationMenu }: Na
     <section>
       <InternalHeader className={config?.isDevelopment ? styles.navBarLocal : styles.navBar}>
         <Link
+          as={ReactRouterLink}
           className={styles.formsLink}
           to={'/forms'}
           aria-label="Gå til skjemaliste"

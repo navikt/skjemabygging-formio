@@ -1,6 +1,7 @@
 import { Collapse, Expand } from '@navikt/ds-icons';
+import { Link } from '@navikt/ds-react';
 import { useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link as ReactRouterLink } from 'react-router-dom';
 import makeStyles from '../../../util/styles/jss/jss';
 
 const useSelectStyle = makeStyles({
@@ -80,6 +81,7 @@ const Select = ({ label, className, options, ariaLabel }) => {
                 }
               >
                 <Link
+                  as={ReactRouterLink}
                   className="select-list__option__link"
                   to={href}
                   onClick={() => {

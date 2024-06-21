@@ -2,7 +2,7 @@ import { ArrowRightIcon } from '@navikt/aksel-icons';
 import { Alert, Button, Heading } from '@navikt/ds-react';
 import { InnsendingType, NavFormType, Submission, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { useAmplitude } from '../../../context/amplitude';
 import { useAppConfig } from '../../../context/config/configContext';
 import { useLanguages } from '../../../context/languages';
@@ -15,6 +15,7 @@ import urlUtils from '../../../util/url/url';
 import DigitalSubmissionButton from '../../button/navigation/digital-submission/DigitalSubmissionButton';
 import EditAnswersButton from '../../button/navigation/edit-answers/EditAnswersButton';
 import SaveAndDeleteButtons from '../../button/navigation/save-and-delete/SaveAndDeleteButtons';
+import LinkButton from '../../link-button/LinkButton';
 import ConfirmationModal from '../../modal/confirmation/ConfirmationModal';
 import DigitalSubmissionWithPrompt from '../../submission/DigitalSubmissionWithPrompt';
 
@@ -98,8 +99,8 @@ const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList,
           {(submissionMethod === 'paper' ||
             innsending === 'KUN_PAPIR' ||
             (app === 'bygger' && innsending === 'PAPIR_OG_DIGITAL')) && (
-            <Link
-              className="navds-button navds-button--primary"
+            <LinkButton
+              buttonVariant="primary"
               onClick={(e) => onClickPapirOrIngenInnsending(e, 'send-i-posten')}
               to={{ pathname: `${formUrl}/send-i-posten`, search }}
             >
@@ -109,7 +110,7 @@ const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList,
               <span className="navds-button__icon">
                 <ArrowRightIcon aria-hidden />
               </span>
-            </Link>
+            </LinkButton>
           )}
           {canSubmit &&
             (submissionMethod === 'digital' || innsending === 'KUN_DIGITAL') &&
@@ -139,8 +140,8 @@ const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList,
             ))}
 
           {innsending === 'INGEN' && (
-            <Link
-              className="navds-button navds-button--primary"
+            <LinkButton
+              buttonVariant="primary"
               onClick={(e) => onClickPapirOrIngenInnsending(e, 'ingen-innsending')}
               to={{ pathname: `${formUrl}/ingen-innsending`, search }}
             >
@@ -150,7 +151,7 @@ const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList,
               <span className="navds-button__icon">
                 <ArrowRightIcon aria-hidden />
               </span>
-            </Link>
+            </LinkButton>
           )}
           <EditAnswersButton form={form} formUrl={formUrl} panelValidationList={panelValidationList} />
         </div>
