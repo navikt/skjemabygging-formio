@@ -4,7 +4,7 @@ import editFormLimitToEarliestLatest from './editFormLimitToEarliestLatest';
 
 const editFormDateValidation = {
   fromDate: editFormFromDate,
-  limitRelativelyToToDay: editFormLimitRelativelyToToday,
+  limitRelativelyToToday: editFormLimitRelativelyToToday,
   limitToEarliestLatest: editFormLimitToEarliestLatest,
 };
 

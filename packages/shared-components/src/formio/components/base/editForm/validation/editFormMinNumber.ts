@@ -1,9 +1,15 @@
 import { Component } from '@navikt/skjemadigitalisering-shared-domain';
 
-const editFormMinNumber = (): Component => {
+interface Options {
+  label?: string;
+}
+
+const editFormMinNumber = (options?: Options): Component => {
+  const label = options?.label ?? 'Minimum';
+
   return {
     type: 'number',
-    label: 'Minimum',
+    label,
     key: 'validate.min',
   };
 };

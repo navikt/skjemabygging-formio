@@ -1,9 +1,15 @@
 import { Component } from '@navikt/skjemadigitalisering-shared-domain';
 
-const editFormMaxNumber = (): Component => {
+interface Options {
+  label?: string;
+}
+
+const editFormMaxNumber = (options?: Options): Component => {
+  const label = options?.label ?? 'Maksimum';
+
   return {
     type: 'number',
-    label: 'Maksimum',
+    label,
     key: 'validate.max',
   };
 };

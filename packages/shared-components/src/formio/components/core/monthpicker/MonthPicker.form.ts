@@ -5,7 +5,7 @@ import editFormTabs from '../../base/editForm/editFormTabs';
 import editFormValidation from '../../base/editForm/validation';
 import editFormDateValidation from '../../base/editForm/validation/date';
 
-const datePickerForm = () => {
+const monthPickerForm = () => {
   const { api, conditional, createTabs, display, validation } = editFormTabs;
 
   //prettier-ignore
@@ -13,15 +13,13 @@ const datePickerForm = () => {
     display([
       editFormDisplay.label(),
       editFormDisplay.description(),
-      editFormDisplay.showYearPicker(),
     ]),
     validation([
       editFormValidation.required(),
-      editFormDateValidation.fromDate(),
-      editFormDateValidation.limitRelativelyToToday('day'),
-      editFormDateValidation.limitToEarliestLatest(),
-      editFormValidation.customValidation(),
-      editFormValidation.customError(),
+      editFormValidation.minNumber({label: "Minimum år"}),
+      editFormValidation.maxNumber({label: "Maksimum år"}),
+      editFormDateValidation.limitRelativelyToToday('month'),
+
     ]),
     api([
       editFormApi.key(),
@@ -33,4 +31,4 @@ const datePickerForm = () => {
   );
 };
 
-export default datePickerForm;
+export default monthPickerForm;
