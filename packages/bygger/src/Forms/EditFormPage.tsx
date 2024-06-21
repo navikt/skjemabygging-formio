@@ -2,6 +2,7 @@ import { PadlockLockedIcon } from '@navikt/aksel-icons';
 import { BodyShort, Button, Heading } from '@navikt/ds-react';
 import { FormBuilderOptions, makeStyles, useAppConfig, useModal } from '@navikt/skjemadigitalisering-shared-components';
 import { I18nTranslations, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
+import { useCallback } from 'react';
 import { AppLayout } from '../components/AppLayout';
 import ButtonWithSpinner from '../components/ButtonWithSpinner';
 import NavFormBuilder from '../components/NavFormBuilder';
@@ -31,7 +32,7 @@ const useStyles = makeStyles({
 interface EditFormPageProps {
   form: NavFormType;
   publishedForm: NavFormType;
-  onSave: (form: NavFormType) => void;
+  onSave: (form: NavFormType) => Promise<void>;
   onChange: (form: NavFormType) => void;
   onPublish: (form: NavFormType, translations: I18nTranslations) => void;
   onUnpublish: () => void;
@@ -54,6 +55,16 @@ export function EditFormPage({ form, publishedForm, onSave, onChange, onPublish,
     appConfig,
   };
 
+  const handleChange = useCallback(
+    (changedForm: NavFormType) =>
+      onChange({
+        ...changedForm,
+        modified: form.modified,
+        properties: { ...changedForm.properties, modified: form.properties.modified },
+      }),
+    [form.modified, form.properties.modified, onChange],
+  );
+
   return (
     <>
       <AppLayout
@@ -63,7 +74,7 @@ export function EditFormPage({ form, publishedForm, onSave, onChange, onPublish,
         }}
       >
         <Row>
-          <SkjemaVisningSelect form={form} onChange={onChange} />
+          <SkjemaVisningSelect form={form} onChange={handleChange} />
           <Column className={styles.centerColumn}>
             <Heading level="1" size="xlarge">
               {title} {isLockedForm && <PadlockLockedIcon title="Skjemaet er låst" className={styles.padlockIcon} />}
@@ -75,16 +86,16 @@ export function EditFormPage({ form, publishedForm, onSave, onChange, onPublish,
           <NavFormBuilder
             className={styles.formBuilder}
             form={form}
-            onChange={onChange}
+            onChange={handleChange}
             formBuilderOptions={formBuilderOptions}
           />
           <Column>
             <ButtonWithSpinner
-              onClick={() => {
+              onClick={async () => {
                 if (isLockedForm) {
                   openLockedFormModal();
                 } else {
-                  onSave(form);
+                  await onSave(form);
                 }
               }}
               size="small"

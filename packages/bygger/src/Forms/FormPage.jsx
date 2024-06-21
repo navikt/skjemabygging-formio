@@ -44,10 +44,10 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish, onUnpu
       });
   }, [loadForm, formPath, featureToggles.enableDiff]);
 
-  const onChange = (changedForm) => {
+  const onChange = useCallback((changedForm) => {
     sessionStorage.setItem(changedForm.path, JSON.stringify({ changed: true }));
     dispatch({ type: 'form-changed', form: changedForm });
-  };
+  }, []);
 
   const saveForm = async (form) => {
     const savedForm = await onSave(form);
