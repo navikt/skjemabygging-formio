@@ -38,6 +38,7 @@ const inputFormat = 'dd.MM.yyyy';
 const submissionFormat = 'yyyy-MM-dd';
 
 const validMonthInputFormats = ['MM.yyyy', 'MM/yyyy', 'MM-yyyy', 'MM yyyy', 'MMMM yyyy', 'MMM yyyy'];
+const submissionFormatMonth = 'yyyy-MM';
 const inputFormatMonthLong = 'MMMM yyyy';
 
 const toLocaleDateAndTime = (date: string, locale = 'no') => new Date(date).toLocaleString(locale, dateAndTimeFormat);
@@ -63,7 +64,9 @@ const toSubmissionDate = (date?: string) => {
 };
 
 const toLongMonthFormat = (date?: string, locale: string = 'nb-NO') => {
-  return date && DateTime.fromFormat(date, submissionFormat).toFormat(inputFormatMonthLong, { locale });
+  return (
+    date && DateTime.fromFormat(date, submissionFormatMonth, { locale }).toFormat(inputFormatMonthLong, { locale })
+  );
 };
 
 const findUsedInputFormat = (date?: string, locale: string = 'nb-NO') => {
@@ -76,6 +79,10 @@ const isValidInputMonth = (date?: string, locale: string = 'nb-NO') => {
   const usedInputFormat = findUsedInputFormat(date, locale);
   if (!usedInputFormat) return false;
   return DateTime.fromFormat(date, usedInputFormat, { locale })?.isValid;
+};
+
+const isValidMonthSubmission = (date?: string) => {
+  return date && DateTime.fromFormat(date, submissionFormatMonth)?.isValid;
 };
 
 const startOfYear = (year: string) => {
@@ -91,12 +98,12 @@ const toSubmissionDateMonth = (date?: string, locale: string = 'nb-NO') => {
 
   // ISO from onMonthChange
   if (DateTime.fromISO(date).isValid) {
-    return DateTime.fromISO(date).toFormat(submissionFormat);
+    return DateTime.fromISO(date).toFormat(submissionFormatMonth);
   } else if (isValidInputMonth(date)) {
     // Month input from input field
     const usedInputFormat = findUsedInputFormat(date);
     if (!usedInputFormat) return '';
-    return DateTime.fromFormat(date, usedInputFormat, { locale }).toFormat(submissionFormat);
+    return DateTime.fromFormat(date, usedInputFormat, { locale }).toFormat(submissionFormatMonth);
   } else {
     return '';
   }
@@ -206,6 +213,7 @@ const dateUtils = {
   startOfYear,
   endOfYear,
   isAfterDate,
+  isValidMonthSubmission,
 };
 
 export default dateUtils;

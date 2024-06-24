@@ -129,6 +129,8 @@ function formatValue(component, value, translate, form, language) {
             };
           }),
       };
+    case 'monthPicker':
+      return toPascalCase(dateUtils.toLongMonthFormat(value, language));
     default:
       return value;
   }

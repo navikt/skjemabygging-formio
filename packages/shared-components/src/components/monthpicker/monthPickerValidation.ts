@@ -1,10 +1,6 @@
 import { dateUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { TFunction } from 'i18next';
 
-interface DateValidationObject {
-  date?: string;
-}
-
 interface ValidationOptions {
   label: string;
   translate: TFunction;
@@ -22,7 +18,7 @@ const validateDate = (date: string | undefined, options: ValidationOptions): str
 
   if (!date) return;
 
-  if (!dateUtils.isValid(date, 'submission')) {
+  if (!dateUtils.isValidMonthSubmission(date)) {
     return translate('invalid_date', { field: label });
   }
 

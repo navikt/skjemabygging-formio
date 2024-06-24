@@ -26,13 +26,12 @@ const MonthPicker = ({ minYear, maxYear, required, onChange, value, error }: Mon
     },
   });
 
-  // TODO: Check for 4 digits in year (for dropdown caption)
   return (
     <AkselMonthPicker {...monthpickerProps} locale={locale} dropdownCaption={!!(minYear && maxYear)}>
       <AkselMonthPicker.Input
         label="Velg måned"
         {...inputProps}
-        value={dateUtils.isValid(value, 'submission') ? dateUtils.toLongMonthFormat(value, locale) : value ?? ''}
+        value={dateUtils.isValidMonthSubmission(value) ? dateUtils.toLongMonthFormat(value, locale) : value ?? ''}
         error={error}
         onChange={(e) => {
           const inputValue = e.target.value;
