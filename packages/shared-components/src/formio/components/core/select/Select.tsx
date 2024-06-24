@@ -103,7 +103,7 @@ class NavSelect extends BaseComponent {
   isLoading = false;
   loadFinished = false;
   selectOptions: any = [];
-  ignoreOptions: any = [];
+  ignoreOptions: string[] = [];
   itemsLoaded: Promise<any> | undefined = undefined;
   itemsLoadedResolve: undefined | ((value?: any) => void) = undefined;
 
