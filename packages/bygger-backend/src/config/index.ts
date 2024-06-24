@@ -101,6 +101,7 @@ const config: ConfigType = {
   featureToggles: featureUtils.toFeatureToggles(env('ENABLED_FEATURES', devEnabledFeatures)),
   naisClusterName,
   frontendLoggerConfig: configUtils.loadJsonFromEnv('BYGGER_FRONTEND_LOGCONFIG'),
+  mellomlagringDurationDays: '28',
 };
 
 export default config;

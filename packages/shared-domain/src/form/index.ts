@@ -88,6 +88,7 @@ export interface FormPropertiesType {
   uxSignalsId?: string;
   uxSignalsInnsending?: InnsendingType;
   hideUserTypes?: boolean;
+  mellomlagringDurationDays: string;
 }
 
 export type FormPropertiesPublishing = Pick<

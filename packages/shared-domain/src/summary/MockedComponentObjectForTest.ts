@@ -288,6 +288,7 @@ const createPanelObject = (
 const dummyFormProperties: FormPropertiesType = {
   skjemanummer: '',
   tema: '',
+  mellomlagringDurationDays: '28',
 };
 
 const createFormPropertiesObject = (partialFormProperties: Partial<FormPropertiesType> = {}) => ({

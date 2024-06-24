@@ -65,7 +65,7 @@ const NewFormPage: React.FC<Props> = ({ formio }): React.ReactElement => {
   const styles = useStyles();
   const [state, setState] = useState<State>({
     form: {
-      ...navFormUtils.createDefaultForm(),
+      ...navFormUtils.createDefaultForm(config),
       components: defaultFormFields() as Component[],
     },
   });

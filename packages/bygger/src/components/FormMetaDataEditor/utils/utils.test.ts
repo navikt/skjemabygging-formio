@@ -16,6 +16,7 @@ describe('Form Metadata Validation', () => {
       properties: {
         skjemanummer: 'NAV 12-13.14',
         tema: 'AAP',
+        mellomlagringDurationDays: '28',
       },
       components: [],
     };
@@ -79,5 +80,31 @@ describe('Form Metadata Validation', () => {
       skjemanummer: 'Skjemanummeret kan ikke være lengre enn 20 tegn',
     });
     expect(isFormMetadataValid(errors)).toBe(false);
+  });
+
+  it('should show error for non-integer mellomlagringDurationDays', () => {
+    const usageContext: UsageContext = 'edit';
+    sampleForm.properties.mellomlagringDurationDays = '28.3';
+    sampleForm.properties.innsending = 'KUN_DIGITAL';
+    sampleForm.properties.ettersending = 'KUN_PAPIR';
+
+    const errors = validateFormMetadata(sampleForm, usageContext);
+
+    expect(errors).toEqual({
+      mellomlagringDurationDays: 'Mellomlagringstiden må være et heltall',
+    });
+    expect(isFormMetadataValid(errors)).toBe(false);
+  });
+
+  it('should handle valid mellomlagringDurationDays', () => {
+    const usageContext: UsageContext = 'edit';
+    sampleForm.properties.mellomlagringDurationDays = '30';
+    sampleForm.properties.innsending = 'KUN_DIGITAL';
+    sampleForm.properties.ettersending = 'KUN_PAPIR';
+
+    const errors = validateFormMetadata(sampleForm, usageContext);
+
+    expect(errors).toEqual({});
+    expect(isFormMetadataValid(errors)).toBe(true);
   });
 });

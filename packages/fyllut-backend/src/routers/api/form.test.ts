@@ -21,6 +21,7 @@ const testForm: NavFormType = {
     ettersendelsesfrist: '12',
     skjemanummer: '',
     tema: '',
+    mellomlagringDurationDays: '28',
   },
   components: [],
 };
