@@ -8,10 +8,11 @@ interface MonthPickerProps {
   required?: boolean;
   onChange: (val: string) => void;
   value?: string;
+  error?: string;
 }
 
 // TODO: Add amplitude test
-const MonthPicker = ({ minYear, maxYear, required, onChange, value }: MonthPickerProps) => {
+const MonthPicker = ({ minYear, maxYear, required, onChange, value, error }: MonthPickerProps) => {
   const { locale } = useComponentUtils();
 
   const { monthpickerProps, inputProps } = useMonthpicker({
@@ -32,10 +33,10 @@ const MonthPicker = ({ minYear, maxYear, required, onChange, value }: MonthPicke
         label="Velg måned"
         {...inputProps}
         value={dateUtils.isValid(value, 'submission') ? dateUtils.toLongMonthFormat(value, locale) : value ?? ''}
+        error={error}
         onChange={(e) => {
-          console.log('halla');
           const inputValue = e.target.value;
-          const hasValidSubmissionInput = dateUtils.isValidInputMonth(inputValue);
+          const hasValidSubmissionInput = dateUtils.isValidInputMonth(inputValue, locale);
           if (hasValidSubmissionInput) {
             onChange(dateUtils.toSubmissionDateMonth(inputValue));
           } else {

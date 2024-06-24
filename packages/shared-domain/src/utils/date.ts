@@ -37,7 +37,7 @@ const longMonthDateFormat: Intl.DateTimeFormatOptions = {
 const inputFormat = 'dd.MM.yyyy';
 const submissionFormat = 'yyyy-MM-dd';
 
-const validMonthInputFormats = ['MM.yyyy', 'MM/yyyy', 'MM-yyyy', 'MM yyyy'];
+const validMonthInputFormats = ['MM.yyyy', 'MM/yyyy', 'MM-yyyy', 'MM yyyy', 'MMMM yyyy', 'MMM yyyy'];
 const inputFormatMonthLong = 'MMMM yyyy';
 
 const toLocaleDateAndTime = (date: string, locale = 'no') => new Date(date).toLocaleString(locale, dateAndTimeFormat);
@@ -62,33 +62,31 @@ const toSubmissionDate = (date?: string) => {
   }
 };
 
-const toLongMonthFormat = (date?: string, locale: string = 'no') => {
+const toLongMonthFormat = (date?: string, locale: string = 'nb-NO') => {
   return date && DateTime.fromFormat(date, submissionFormat).toFormat(inputFormatMonthLong, { locale });
 };
 
-const findUsedInputFormat = (date?: string) => {
+const findUsedInputFormat = (date?: string, locale: string = 'nb-NO') => {
   if (!date) return;
-  return validMonthInputFormats.find((format) => DateTime.fromFormat(date, format).isValid);
+  return validMonthInputFormats.find((format) => DateTime.fromFormat(date, format, { locale }).isValid);
 };
 
-const isValidInputMonth = (date?: string) => {
+const isValidInputMonth = (date?: string, locale: string = 'nb-NO') => {
   if (!date) return false;
-  const usedInputFormat = findUsedInputFormat(date);
+  const usedInputFormat = findUsedInputFormat(date, locale);
   if (!usedInputFormat) return false;
-  return DateTime.fromFormat(date, usedInputFormat)?.isValid;
+  return DateTime.fromFormat(date, usedInputFormat, { locale })?.isValid;
 };
 
 const startOfYear = (year: string) => {
-  if (year.length !== 4) return;
   return DateTime.fromFormat(`${year}`, 'yyyy').startOf('year');
 };
 
 const endOfYear = (year: string) => {
-  if (year.length !== 4) return;
   return DateTime.fromFormat(`${year}`, 'yyyy').endOf('year');
 };
 
-const toSubmissionDateMonth = (date?: string) => {
+const toSubmissionDateMonth = (date?: string, locale: string = 'nb-NO') => {
   if (!date) return '';
 
   // ISO from onMonthChange
@@ -98,7 +96,7 @@ const toSubmissionDateMonth = (date?: string) => {
     // Month input from input field
     const usedInputFormat = findUsedInputFormat(date);
     if (!usedInputFormat) return '';
-    return DateTime.fromFormat(date, usedInputFormat).toFormat(submissionFormat);
+    return DateTime.fromFormat(date, usedInputFormat, { locale }).toFormat(submissionFormat);
   } else {
     return '';
   }
@@ -184,6 +182,10 @@ const isBeforeDate = (date1: string, date2: string) => {
   return DateTime.fromISO(date1).startOf('day') < DateTime.fromISO(date2).startOf('day');
 };
 
+const isAfterDate = (date1: string, date2: string) => {
+  return DateTime.fromISO(date1).startOf('day') > DateTime.fromISO(date2).startOf('day');
+};
+
 const dateUtils = {
   getIso8601String,
   toLocaleDateAndTime,
@@ -203,6 +205,7 @@ const dateUtils = {
   toSubmissionDateMonth,
   startOfYear,
   endOfYear,
+  isAfterDate,
 };
 
 export default dateUtils;

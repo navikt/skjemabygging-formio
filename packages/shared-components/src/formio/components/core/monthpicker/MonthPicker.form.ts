@@ -16,9 +16,9 @@ const monthPickerForm = () => {
     ]),
     validation([
       editFormValidation.required(),
-      editFormValidation.minNumber({label: "Minimum år"}),
-      editFormValidation.maxNumber({label: "Maksimum år"}),
-      editFormDateValidation.limitRelativelyToToday('month'),
+      editFormValidation.minYear(),
+      editFormValidation.maxYear(),
+      editFormDateValidation.limitRelativelyToToday('year'),
 
     ]),
     api([

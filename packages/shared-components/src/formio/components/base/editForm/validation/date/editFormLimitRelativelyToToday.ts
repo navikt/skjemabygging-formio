@@ -1,11 +1,11 @@
 import { Component } from '@navikt/skjemadigitalisering-shared-domain';
 
-const editFormLimitRelativelyToToday = (type: 'day' | 'month'): Component => {
-  const pluralType = type === 'day' ? 'dager' : 'måneder';
+const editFormLimitRelativelyToToday = (type: 'day' | 'year'): Component => {
+  const pluralType = type === 'day' ? 'dager' : 'år';
   const example =
     type == 'day'
       ? 'hvis tidligst tillatt er satt til -5, vil datoer før 10. august 2022 gi feilmelding når skjemaet fylles ut 15. august 2022'
-      : 'hvis tidligst tillatt er satt til -1, vil måneder før mars 2022 gi feilmelding når skjemaet fylles ut april 2022';
+      : 'hvis tidligst tillatt er satt til -5, vil år før 2020 gi feilmelding når skjemaet fylles ut i 2025';
   return {
     type: 'panel',
     title: 'Begrens periode relativt til dagens dato',
