@@ -1,18 +1,16 @@
 import { idnr } from '@navikt/fnrvalidator';
-import { ConfigType, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import TextFieldComponent from 'formiojs/components/textfield/TextField';
+import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import BaseComponent from '../../base/BaseComponent';
+import TextField from '../../core/textfield/TextField';
 import nationalIdentityNumberBuilder from './NationalIdentityNumber.builder';
 import nationalIdentityNumberForm from './NationalIdentityNumber.form';
 
 const ALLOWED_TYPES = ['fnr', 'dnr'];
 const ALLOWED_TEST_TYPES = ['fnr', 'dnr', 'hnr', 'tnr', 'dnr-and-hnr'];
 
-export default class NationalIdentityNumber extends TextFieldComponent {
-  options: any;
-  t: any;
-
+export default class NationalIdentityNumber extends TextField {
   static schema() {
-    return TextFieldComponent.schema({
+    return BaseComponent.schema({
       label: 'Fødselsnummer eller d-nummer',
       type: 'fnrfield',
       key: 'fodselsnummerDNummer',
@@ -39,15 +37,15 @@ export default class NationalIdentityNumber extends TextFieldComponent {
       return true;
     }
 
-    const appConfig = this.options?.appConfig?.config as ConfigType;
+    const appConfig = this.options?.appConfig?.config;
 
-    const inputValueNoSpace = inputValue.replace(' ', '');
-    const result = idnr(inputValueNoSpace);
+    const inputValueNoSpace = inputValue?.replace(' ', '');
+    const result = idnr(inputValueNoSpace ?? '');
 
     const errorMessage: string =
-      this.t('fodselsnummerDNummer') === 'fodselsnummerDNummer'
+      this.translate('fodselsnummerDNummer') === 'fodselsnummerDNummer'
         ? TEXTS.validering.fodselsnummerDNummer
-        : this.t('fodselsnummerDNummer');
+        : this.translate('fodselsnummerDNummer');
 
     if (result.status === 'invalid') {
       return errorMessage;

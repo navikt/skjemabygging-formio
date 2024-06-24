@@ -1,12 +1,13 @@
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import TextField from 'formiojs/components/textfield/TextField';
 import * as ibantools from 'ibantools';
+import BaseComponent from '../../base/BaseComponent';
+import TextField from '../../core/textfield/TextField';
 import IBANBuilder from './IBAN.builder';
 import ibanForm from './IBAN.form';
 
 class IBAN extends TextField {
   static schema() {
-    return TextField.schema({
+    return BaseComponent.schema({
       label: 'IBAN',
       type: 'iban',
       key: `iban`,
@@ -29,7 +30,7 @@ class IBAN extends TextField {
 
   getErrorMessage(key) {
     // @ts-ignore
-    return this.t(key) === key ? TEXTS.validering[key] : this.t(key);
+    return this.translate(key) === key ? TEXTS.validering[key] : this.translate(key);
   }
 
   validateIban(iban) {
