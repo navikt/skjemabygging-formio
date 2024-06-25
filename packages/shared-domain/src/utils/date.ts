@@ -181,7 +181,7 @@ const min = (dates: string[]) => {
   return DateTime.min(...dates.map((date: string) => DateTime.fromISO(date)))?.toFormat(submissionFormat);
 };
 
-const isValid = (date?: string, format: 'input' | 'submission' = 'input') => {
+const isValid = (date: string, format: 'input' | 'submission') => {
   return date && DateTime.fromFormat(date, format === 'input' ? inputFormat : submissionFormat)?.isValid;
 };
 
