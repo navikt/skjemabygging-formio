@@ -3,6 +3,7 @@ import { dateUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { useComponentUtils } from '../../context/component/componentUtilsContext';
 
 interface MonthPickerProps {
+  label: React.ReactNode;
   minYear?: number;
   maxYear?: number;
   required?: boolean;
@@ -12,7 +13,7 @@ interface MonthPickerProps {
 }
 
 // TODO: Add amplitude test
-const MonthPicker = ({ minYear, maxYear, required, onChange, value, error }: MonthPickerProps) => {
+const MonthPicker = ({ minYear, maxYear, required, onChange, value, error, label }: MonthPickerProps) => {
   const { locale } = useComponentUtils();
 
   const { monthpickerProps, inputProps } = useMonthpicker({
@@ -29,7 +30,7 @@ const MonthPicker = ({ minYear, maxYear, required, onChange, value, error }: Mon
   return (
     <AkselMonthPicker {...monthpickerProps} locale={locale} dropdownCaption={!!(minYear && maxYear)}>
       <AkselMonthPicker.Input
-        label="Velg måned"
+        label={label}
         {...inputProps}
         value={dateUtils.isValidMonthSubmission(value) ? dateUtils.toLongMonthFormat(value, locale) : value ?? ''}
         error={error}

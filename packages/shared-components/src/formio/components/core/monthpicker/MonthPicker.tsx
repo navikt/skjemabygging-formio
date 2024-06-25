@@ -63,10 +63,12 @@ class MonthPicker extends BaseComponent {
     const minYear = this.component?.validate?.minYear;
     const earliestAllowedDate = this.component?.earliestAllowedDate;
 
+    // When picking a specific date like 2020
     if (minYear && String(minYear).length === 4 && numberUtils.isValidInteger(String(minYear))) {
       return minYear;
     }
 
+    // When picking a relative date like 5 years ago (postitive/negative number)
     if (earliestAllowedDate) {
       return Number(new Date().getFullYear() + earliestAllowedDate);
     }
@@ -76,10 +78,12 @@ class MonthPicker extends BaseComponent {
     const maxYear = this.component?.validate?.maxYear;
     const latestAllowedDate = this.component?.latestAllowedDate;
 
+    // When picking a specific date like 2020
     if (maxYear && String(maxYear).length === 4 && numberUtils.isValidInteger(String(maxYear))) {
       return maxYear;
     }
 
+    // When picking a relative date like 5 years ago (postitive/negative number)
     if (latestAllowedDate) {
       return Number(new Date().getFullYear() + latestAllowedDate);
     }
@@ -95,6 +99,7 @@ class MonthPicker extends BaseComponent {
           onChange={this.onValueChange.bind(this)}
           value={this.getValue()}
           error={this.errors[0]?.message}
+          label={this.getLabel()}
         />
       </ComponentUtilsProvider>,
     );
