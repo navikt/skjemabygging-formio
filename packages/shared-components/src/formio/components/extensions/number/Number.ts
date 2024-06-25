@@ -11,7 +11,7 @@ class Number extends TextField {
       type: 'number',
       key: 'tall',
       spellcheck: false,
-      inputType: 'decimal',
+      inputType: 'numeric',
     });
   }
 
@@ -24,7 +24,7 @@ class Number extends TextField {
   }
 
   getInputMode(): InputMode {
-    return this.component?.inputType || 'decimal';
+    return this.component?.inputType || 'numeric';
   }
 
   getMinValue() {
