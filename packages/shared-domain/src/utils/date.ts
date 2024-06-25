@@ -69,6 +69,11 @@ const toLongMonthFormat = (date?: string, locale: string = 'nb-NO') => {
   );
 };
 
+const toJSDateFromMonthSubmission = (date?: string) => {
+  if (!date) return;
+  return DateTime.fromFormat(date, submissionFormatMonth).toJSDate();
+};
+
 const findUsedInputFormat = (date?: string, locale: string = 'nb-NO') => {
   if (!date) return;
   return validMonthInputFormats.find((format) => DateTime.fromFormat(date, format, { locale }).isValid);
@@ -214,6 +219,7 @@ const dateUtils = {
   endOfYear,
   isAfterDate,
   isValidMonthSubmission,
+  toJSDateFromMonthSubmission,
 };
 
 export default dateUtils;

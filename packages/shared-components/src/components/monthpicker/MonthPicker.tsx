@@ -21,7 +21,8 @@ const MonthPicker = ({ minYear, maxYear, required, onChange, value, error, label
     fromDate: dateUtils.startOfYear(`${minYear ?? '1900'}`)?.toJSDate(),
     toDate: dateUtils.endOfYear(`${maxYear ?? '2100'}`)?.toJSDate(),
     allowTwoDigitYear: false,
-    defaultYear: maxYear ? dateUtils.endOfYear(`${maxYear}`)?.toJSDate() : new Date(),
+    defaultYear:
+      value && dateUtils.isValidMonthSubmission(value) ? dateUtils.toJSDateFromMonthSubmission(value) : new Date(),
     onMonthChange(date) {
       onChange(dateUtils.toSubmissionDateMonth(date?.toISOString()));
     },
