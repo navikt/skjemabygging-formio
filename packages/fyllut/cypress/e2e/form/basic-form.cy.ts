@@ -41,6 +41,7 @@ describe('Basic form', () => {
     cy.findByRole('textbox', { name: 'Fra hvilken dato skal denne adressen brukes (dd.mm.åååå)?' })
       .should('exist')
       .type('01.01.2020');
+    cy.findByRole('textbox', { name: 'Velg måned' }).should('exist').type('01.2020');
 
     if (expectVedleggspanel) {
       // Steg 2 -> Steg 3
@@ -123,7 +124,7 @@ describe('Basic form', () => {
         cy.findByRole('region', { name: TEXTS.validering.error })
           .should('exist')
           .within(() => {
-            cy.findAllByRole('link', { name: /Du må fylle ut:/ }).should('have.length', 4);
+            cy.findAllByRole('link', { name: /Du må fylle ut:/ }).should('have.length', 5);
             cy.findByRole('link', { name: 'Du må fylle ut: Fornavn' }).click();
           });
         cy.findByRole('textbox', { name: 'Fornavn' }).should('have.focus');
