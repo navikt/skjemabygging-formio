@@ -90,7 +90,6 @@ class MonthPicker extends BaseComponent {
   }
 
   override renderReact(element) {
-    console.log('getvalue', this.getValue());
     return element.render(
       <ComponentUtilsProvider component={this}>
         <ReactMonthPicker
@@ -100,6 +99,7 @@ class MonthPicker extends BaseComponent {
           value={this.getValue()}
           error={this.errors[0]?.message}
           label={this.getLabel()}
+          description={this.getDescription()}
         />
       </ComponentUtilsProvider>,
     );

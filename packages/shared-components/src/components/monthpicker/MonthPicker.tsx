@@ -10,10 +10,10 @@ interface MonthPickerProps {
   onChange: (val: string) => void;
   value?: string;
   error?: string;
+  description?: React.ReactNode;
 }
 
-// TODO: Add amplitude test
-const MonthPicker = ({ minYear, maxYear, required, onChange, value, error, label }: MonthPickerProps) => {
+const MonthPicker = ({ minYear, maxYear, required, onChange, value, error, label, description }: MonthPickerProps) => {
   const { locale } = useComponentUtils();
 
   const { monthpickerProps, inputProps } = useMonthpicker({
@@ -34,6 +34,7 @@ const MonthPicker = ({ minYear, maxYear, required, onChange, value, error, label
         {...inputProps}
         value={dateUtils.isValidMonthSubmission(value) ? dateUtils.toLongMonthFormat(value, locale) : value ?? ''}
         error={error}
+        description={description}
         onChange={(e) => {
           const inputValue = e.target.value;
           const hasValidSubmissionInput = dateUtils.isValidInputMonth(inputValue, locale);
