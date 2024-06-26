@@ -57,6 +57,7 @@ const mapLimitedForm = (form: NavFormType, translate: TranslateFunction) => {
       uxSignalsId: form.properties.uxSignalsId,
       uxSignalsInnsending: form.properties.uxSignalsInnsending,
       hideUserTypes: form.properties.hideUserTypes,
+      publishedLanguages: form.properties.publishedLanguages ?? [],
     },
     attachments: getAttachments(form, translate),
   };
