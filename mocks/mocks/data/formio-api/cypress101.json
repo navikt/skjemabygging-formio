@@ -2991,7 +2991,7 @@
           "label": "Velg måned",
           "earliestAllowedDate": -4,
           "latestAllowedDate": 4,
-          "key": "monthYear",
+          "key": "monthPicker",
           "input": true,
           "tableView": false,
           "validateOn": "blur",

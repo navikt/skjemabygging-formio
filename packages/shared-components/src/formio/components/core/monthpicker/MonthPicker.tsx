@@ -11,9 +11,9 @@ import monthPickerForm from './MonthPicker.form';
 class MonthPicker extends BaseComponent {
   static schema() {
     return FormioDay.schema({
-      label: 'Mnd / år (ny)',
+      label: 'Månedsvelger',
       type: 'monthPicker',
-      key: 'monthYear',
+      key: 'monthPicker',
     });
   }
 
