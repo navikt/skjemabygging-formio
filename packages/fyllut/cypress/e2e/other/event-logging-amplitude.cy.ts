@@ -106,6 +106,9 @@ describe('Amplitude', () => {
       spørsmål: 'Fra hvilken dato skal denne adressen brukes (dd.mm.åååå)?',
     });
 
+    cy.findByRole('textbox', { name: 'Velg måned' }).type('01.2020{esc}');
+    cy.checkLogToAmplitude('skjemaspørsmål besvart', { spørsmål: 'Velg måned' });
+
     // Step 2 -> Oppsummering
     cy.clickSaveAndContinue();
     cy.checkLogToAmplitude('navigere', { lenkeTekst: 'Neste steg', destinasjon: '/cypress101/oppsummering' });
@@ -147,6 +150,23 @@ describe('Amplitude', () => {
         cy.get('dd').eq(3).should('contain.text', 'Nei');
         cy.get('dt').eq(4).should('contain.text', 'Din fødselsdato (dd.mm.åååå)');
         cy.get('dd').eq(4).should('contain.text', '10.05.1995');
+        cy.get('dt').eq(5).should('contain.text', 'Folkeregistrert adresse');
+        cy.get('dd').eq(5).should('contain.text', 'Testveien 1C, 1234, NOR');
+        cy.get('dt').eq(6).should('contain.text', 'Bor du i Norge?');
+        cy.get('dd').eq(6).should('contain.text', 'Ja');
+        cy.get('dt').eq(7).should('contain.text', 'Er kontaktadressen din en vegadresse eller postboksadresse?');
+        cy.get('dd').eq(7).should('contain.text', 'Vegadresse');
+        cy.get('dt').eq(8).should('contain.text', 'Kontaktadresse');
+        cy.get('dt').eq(9).should('contain.text', 'Vegadresse');
+        cy.get('dd').eq(9).should('contain.text', 'Kirkegata 1');
+        cy.get('dt').eq(10).should('contain.text', 'Postnummer');
+        cy.get('dd').eq(10).should('contain.text', '1234');
+        cy.get('dt').eq(11).should('contain.text', 'Poststed');
+        cy.get('dd').eq(11).should('contain.text', 'Nesvik');
+        cy.get('dt').eq(12).should('contain.text', 'Fra hvilken dato skal denne adressen brukes (dd.mm.åååå)?');
+        cy.get('dd').eq(12).should('contain.text', '01.01.2020');
+        cy.get('dt').eq(13).should('contain.text', 'Velg måned');
+        cy.get('dd').eq(13).should('contain.text', 'Januar 2020');
       });
 
     // First attempt is intercepted and fails, so we can test "innsending feilet"

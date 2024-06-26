@@ -223,6 +223,8 @@ export interface ComponentValidate {
   max?: number;
   minLength?: number;
   maxLength?: number;
+  minYear?: number;
+  maxYear?: number;
 }
 
 export interface ComponentConditional {
