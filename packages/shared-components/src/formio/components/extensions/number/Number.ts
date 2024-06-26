@@ -24,7 +24,7 @@ class Number extends TextField {
   }
 
   getInputMode(): InputMode {
-    return this.component?.inputType || 'numeric';
+    return this.component?.inputType || 'decimal';
   }
 
   getMinValue() {
