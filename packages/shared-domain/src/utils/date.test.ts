@@ -1,5 +1,6 @@
 import { DateTime } from 'luxon';
-import { generateWeeklyPeriods, getIso8601String } from './date';
+import dateUtils, { generateWeeklyPeriods, getIso8601String } from './date';
+
 describe('date.ts', () => {
   describe('getIso8601String', () => {
     it('Validate format', () => {
@@ -60,5 +61,96 @@ describe('generateWeeklyPeriods function', () => {
     const lastPeriodTo = result[result.length - 1].periodTo;
 
     expect(lastPeriodTo).toEqual(today.toISODate());
+  });
+});
+
+describe('Month functions', () => {
+  describe('toLongMonthFormat', () => {
+    it('should convert date to long month format', () => {
+      const date = '2024-06';
+      expect(dateUtils.toLongMonthFormat(date, 'en-US')).toBe('June 2024');
+      expect(dateUtils.toLongMonthFormat(date, 'nb-NO')).toBe('juni 2024');
+    });
+
+    it('should return undefined for missing date', () => {
+      expect(dateUtils.toLongMonthFormat()).toBeUndefined();
+    });
+  });
+
+  describe('toJSDateFromMonthSubmission', () => {
+    it('should convert valid date to JS Date object', () => {
+      const date = '2024-06';
+      expect(dateUtils.toJSDateFromMonthSubmission(date)).toEqual(new Date(2024, 5)); // JS Date month is zero-based
+    });
+
+    it('should return undefined for missing date', () => {
+      expect(dateUtils.toJSDateFromMonthSubmission()).toBeUndefined();
+    });
+  });
+
+  describe('findUsedInputFormat', () => {
+    it('should find the correct input format', () => {
+      expect(dateUtils.findUsedInputFormat('06.2024', 'nb-NO')).toBe('MM.yyyy');
+      expect(dateUtils.findUsedInputFormat('06-2024', 'nb-NO')).toBe('MM-yyyy');
+    });
+
+    it('should return undefined for invalid date', () => {
+      expect(dateUtils.findUsedInputFormat('invalid-date')).toBeUndefined();
+    });
+
+    it('should return undefined for missing date', () => {
+      expect(dateUtils.findUsedInputFormat()).toBeUndefined();
+    });
+  });
+
+  describe('isValidInputMonth', () => {
+    it('should validate correct input month format', () => {
+      expect(dateUtils.isValidInputMonth('06.2024', 'nb-NO')).toBe(true);
+      expect(dateUtils.isValidInputMonth('2024-05', 'nb-NO')).toBe(false);
+    });
+
+    it('should invalidate incorrect input month format', () => {
+      expect(dateUtils.isValidInputMonth('invalid-date')).toBe(false);
+    });
+
+    it('should return false for missing date', () => {
+      expect(dateUtils.isValidInputMonth()).toBe(false);
+    });
+  });
+
+  describe('isValidMonthSubmission', () => {
+    it('should validate correct submission month format', () => {
+      expect(dateUtils.isValidMonthSubmission('2024-06')).toBe(true);
+    });
+
+    it('should invalidate incorrect submission month format', () => {
+      expect(dateUtils.isValidMonthSubmission('invalid-date')).toBe(false);
+    });
+
+    it('should return false for missing date', () => {
+      expect(dateUtils.isValidMonthSubmission()).toBe(false);
+    });
+  });
+
+  describe('startOfYear', () => {
+    it('should return start of the year for given year', () => {
+      expect(dateUtils.startOfYear('2024').toISO()).toBe(DateTime.fromObject({ year: 2024, month: 1, day: 1 }).toISO());
+    });
+  });
+
+  describe('endOfYear', () => {
+    it('should return end of the year for given year', () => {
+      expect(dateUtils.endOfYear('2024').toISO()).toBe(
+        DateTime.fromObject({
+          year: 2024,
+          month: 12,
+          day: 31,
+          hour: 23,
+          minute: 59,
+          second: 59,
+          millisecond: 999,
+        }).toISO(),
+      );
+    });
   });
 });

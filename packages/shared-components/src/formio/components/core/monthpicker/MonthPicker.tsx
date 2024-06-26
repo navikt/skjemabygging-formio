@@ -100,6 +100,7 @@ class MonthPicker extends BaseComponent {
           error={this.errors[0]?.message}
           label={this.getLabel()}
           description={this.getDescription()}
+          inputRef={(ref) => this.setReactInstance(ref)}
         />
       </ComponentUtilsProvider>,
     );

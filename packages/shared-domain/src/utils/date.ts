@@ -87,7 +87,8 @@ const isValidInputMonth = (date?: string, locale: string = 'nb-NO') => {
 };
 
 const isValidMonthSubmission = (date?: string) => {
-  return date && DateTime.fromFormat(date, submissionFormatMonth)?.isValid;
+  if (!date) return false;
+  return DateTime.fromFormat(date, submissionFormatMonth)?.isValid;
 };
 
 const startOfYear = (year: string) => {
@@ -220,6 +221,7 @@ const dateUtils = {
   isAfterDate,
   isValidMonthSubmission,
   toJSDateFromMonthSubmission,
+  findUsedInputFormat,
 };
 
 export default dateUtils;

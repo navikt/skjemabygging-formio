@@ -88,6 +88,23 @@ describe('Month picker', () => {
       cy.clickNextStep();
       cy.findAllByText('Relative monthPicker kan ikke være senere enn 2027').should('have.length', 2);
     });
+
+    it.only('has focus after clicking validation message link', () => {
+      cy.clickNextStep();
+
+      cy.findAllByText('Du må fylle ut: Required monthPicker').should('have.length', 2);
+      cy.findByRole('region', { name: TEXTS.validering.error })
+        .should('exist')
+        .within(() => {
+          cy.findByRole('link', { name: 'Du må fylle ut: Required monthPicker' }).should('exist').click();
+        });
+
+      cy.findByRole('textbox', { name: 'Required monthPicker' }).should('have.focus');
+      cy.findByRole('textbox', { name: 'Required monthPicker' }).type('02.2024');
+      cy.clickNextStep();
+
+      cy.findByRole('heading', { name: 'Vedlegg' }).should('exist');
+    });
   });
 
   describe('Digital', () => {
