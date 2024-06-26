@@ -91,11 +91,11 @@ const isValidMonthSubmission = (date?: string) => {
 };
 
 const startOfYear = (year: string) => {
-  return DateTime.fromFormat(`${year}`, 'yyyy').startOf('year');
+  return DateTime.fromFormat(year, 'yyyy').startOf('year');
 };
 
 const endOfYear = (year: string) => {
-  return DateTime.fromFormat(`${year}`, 'yyyy').endOf('year');
+  return DateTime.fromFormat(year, 'yyyy').endOf('year');
 };
 
 const toSubmissionDateMonth = (date?: string, locale: string = 'nb-NO') => {
