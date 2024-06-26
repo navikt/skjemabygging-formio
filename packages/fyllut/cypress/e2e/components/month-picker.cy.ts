@@ -89,7 +89,7 @@ describe('Month picker', () => {
       cy.findAllByText('Relative monthPicker kan ikke være senere enn 2027').should('have.length', 2);
     });
 
-    it.only('has focus after clicking validation message link', () => {
+    it('has focus after clicking validation message link', () => {
       cy.clickNextStep();
 
       cy.findAllByText('Du må fylle ut: Required monthPicker').should('have.length', 2);
