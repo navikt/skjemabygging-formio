@@ -53,11 +53,20 @@ export function FormSettingsPage({
   const [errors, setErrors] = useState({});
   const { config } = useAppConfig();
 
+  // Set default properties if they are not set
+  const setDefaultProperties = (form: NavFormType) => {
+    if (!form.properties.mellomlagringDurationDays) {
+      form.properties.mellomlagringDurationDays = (config?.mellomlagringDurationDays as string) ?? '28';
+    }
+    return form;
+  };
+
   const validateAndSave = async (form: NavFormType) => {
-    const updatedErrors = validateFormMetadata(form, 'edit');
+    const updatedForm = setDefaultProperties(form);
+    const updatedErrors = validateFormMetadata(updatedForm, 'edit');
     if (isFormMetadataValid(updatedErrors)) {
       setErrors({});
-      return await onSave(form);
+      return await onSave(updatedForm);
     } else {
       setErrors(updatedErrors);
     }

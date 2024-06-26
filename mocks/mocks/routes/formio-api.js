@@ -32,6 +32,7 @@ const checkboxForm = require('../data/formio-api/custom-components-checkbox.json
 const hiddenConditionalForm = require('../data/formio-api/hidden-conditional.json');
 const radioForm = require('../data/formio-api/radio.json');
 const selectBoxesForm = require('../data/formio-api/select-boxes.json');
+const monthPickerForm = require('../data/formio-api/month-picker.json');
 
 const allForms = [
   { form: formCypress101, translations: translationsCypress101 },
@@ -61,6 +62,7 @@ const allForms = [
   { form: hiddenConditionalForm, translations: undefined },
   { form: radioForm, translations: undefined },
   { form: selectBoxesForm, translations: undefined },
+  { form: monthPickerForm, translations: undefined },
 ];
 
 const findTestdata = (formPath) => allForms.find((testdata) => testdata.form.path === formPath);

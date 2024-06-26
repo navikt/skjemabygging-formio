@@ -2983,6 +2983,42 @@
           "tree": false,
           "lazyLoad": false,
           "id": "ev7t8r"
+        },
+        {
+          "validate": {
+            "required": true
+          },
+          "label": "Velg måned",
+          "earliestAllowedDate": -4,
+          "latestAllowedDate": 4,
+          "key": "monthPicker",
+          "input": true,
+          "tableView": false,
+          "validateOn": "blur",
+          "type": "monthPicker",
+          "navId": "en8fz",
+          "fields": {
+            "day": {
+              "type": "number",
+              "placeholder": "",
+              "required": false
+            },
+            "month": {
+              "type": "select",
+              "placeholder": "",
+              "required": false
+            },
+            "year": {
+              "type": "number",
+              "placeholder": "",
+              "required": false
+            }
+          },
+          "dayFirst": false,
+          "protected": false,
+          "persistent": true,
+          "id": "ekuzj45",
+          "keyModified": true
         }
       ],
       "placeholder": "",

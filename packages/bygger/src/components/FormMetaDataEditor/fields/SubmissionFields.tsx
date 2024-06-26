@@ -47,6 +47,7 @@ const SubmissionFields = ({ onChange, diff, form, errors }: SubmissionFieldsProp
 
       {!!ettersending && ettersending !== 'INGEN' && (
         <TextField
+          onWheel={(e) => e.currentTarget.blur()} // disable scroll wheel on number input
           className="mb"
           label={<LabelWithDiff label="Ettersendelsesfrist (dager)" diff={!!diff.ettersendelsesfrist} />}
           type="number"

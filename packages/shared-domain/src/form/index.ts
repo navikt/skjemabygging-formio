@@ -88,6 +88,7 @@ export interface FormPropertiesType {
   uxSignalsId?: string;
   uxSignalsInnsending?: InnsendingType;
   hideUserTypes?: boolean;
+  mellomlagringDurationDays: string;
 }
 
 export type FormPropertiesPublishing = Pick<
@@ -222,6 +223,8 @@ export interface ComponentValidate {
   max?: number;
   minLength?: number;
   maxLength?: number;
+  minYear?: number;
+  maxYear?: number;
 }
 
 export interface ComponentConditional {

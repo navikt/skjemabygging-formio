@@ -35,6 +35,7 @@ interface SendInnSoknadBody {
   vedleggsListe?: Attachment[];
   kanLasteOppAnnet?: boolean;
   innsendingsId?: string;
+  mellomlagringDager?: number;
 }
 
 const isValidUuid = (innsendingsId: string): boolean => {
@@ -118,6 +119,10 @@ const assembleSendInnSoknadBody = (
     hoveddokumentVariant,
     innsendingsId,
   };
+
+  if (!!form.properties.mellomlagringDurationDays) {
+    body.mellomlagringDager = parseInt(form.properties.mellomlagringDurationDays);
+  }
 
   if (!!form.properties.ettersendelsesfrist) {
     body.fristForEttersendelse = parseInt(form.properties.ettersendelsesfrist);

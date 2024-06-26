@@ -33,7 +33,7 @@ export class FormioService {
 
   async createNewForm(skjemanummer: string, userToken: string) {
     const trimmedSkjemanummer = skjemanummer.trim();
-    const defaultForm = navFormUtils.createDefaultForm();
+    const defaultForm = navFormUtils.createDefaultForm(config);
     const form: NavFormType = {
       ...defaultForm,
       title: 'Skjematittel',
