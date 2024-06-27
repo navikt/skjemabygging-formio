@@ -1,4 +1,11 @@
-import { Summary } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  SummaryActivity,
+  SummaryAddress,
+  SummaryAttachment,
+  SummaryComponent,
+  SummaryDrivingList,
+  SummaryField as SummaryFieldType,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import { PanelValidation } from '../../../util/form/panel-validation/panelValidation';
 import ActivitySummary from '../activity/ActivitySummary';
 import AddressSummary from '../address/AddressSummary';
@@ -12,7 +19,7 @@ import PanelSummary from '../panel/PanelSummary';
 import SelectBoxesSummary from '../select-boxes/SelectBoxesSummary';
 
 interface Props {
-  components: Summary.Component[];
+  components: SummaryComponent[];
   formUrl?: string;
   panelValidationList?: PanelValidation[];
 }
@@ -43,17 +50,17 @@ const ComponentSummary = ({ components, formUrl = '', panelValidationList = [] }
               return <ImageSummary key={key} component={comp} />;
             case 'htmlelement':
             case 'alertstripe':
-              return <SummaryField key={key} component={comp as Summary.Field} html={true} />;
+              return <SummaryField key={key} component={comp as SummaryFieldType} html={true} />;
             case 'attachment':
-              return <AttachmentSummary key={key} component={comp as Summary.Attachment} />;
+              return <AttachmentSummary key={key} component={comp as SummaryAttachment} />;
             case 'activities':
-              return <ActivitySummary key={key} component={comp as Summary.Activity} />;
+              return <ActivitySummary key={key} component={comp as SummaryActivity} />;
             case 'drivinglist':
-              return <DrivingListSummary key={key} component={comp as Summary.DrivingList} />;
+              return <DrivingListSummary key={key} component={comp as SummaryDrivingList} />;
             case 'navAddress':
-              return <AddressSummary key={key} component={comp as Summary.Address} />;
+              return <AddressSummary key={key} component={comp as SummaryAddress} />;
             default:
-              return <SummaryField key={key} component={comp as Summary.Field} />;
+              return <SummaryField key={key} component={comp as SummaryFieldType} />;
           }
         })}
     </>

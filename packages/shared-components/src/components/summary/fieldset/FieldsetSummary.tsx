@@ -1,8 +1,8 @@
-import { Summary } from '@navikt/skjemadigitalisering-shared-domain';
+import { SummaryFieldset } from '@navikt/skjemadigitalisering-shared-domain';
 import ComponentSummary from '../component/ComponentSummary';
 
 interface Props {
-  component: Summary.Fieldset;
+  component: SummaryFieldset;
   formUrl: string;
 }
 
