@@ -1,12 +1,8 @@
-import { idnr } from '@navikt/fnrvalidator';
-import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import BaseComponent from '../../base/BaseComponent';
 import TextField from '../../core/textfield/TextField';
 import nationalIdentityNumberBuilder from './NationalIdentityNumber.builder';
 import nationalIdentityNumberForm from './NationalIdentityNumber.form';
-
-const ALLOWED_TYPES = ['fnr', 'dnr'];
-const ALLOWED_TEST_TYPES = ['fnr', 'dnr', 'hnr', 'tnr', 'dnr-and-hnr'];
+import { validateNationalIdentityNumber } from './NationalIdentityNumberValidator';
 
 export default class NationalIdentityNumber extends TextField {
   static schema() {
@@ -31,40 +27,26 @@ export default class NationalIdentityNumber extends TextField {
     return NationalIdentityNumber.schema();
   }
 
-  validateFnrNew(inputValue) {
-    if (inputValue === '') {
-      // Vi lar default required-validering ta hånd om tomt felt feilmelding
+  checkComponentValidity(data, dirty, row, options = {}) {
+    if (this.shouldSkipValidation(data, dirty, row)) {
+      this.setCustomValidity('');
       return true;
     }
 
     const appConfig = this.options?.appConfig?.config;
+    const errorMessage = validateNationalIdentityNumber(
+      {
+        value: this.getValue(),
+        label: this.getLabel({ labelTextOnly: true }),
+        required: this.isRequired(),
+        allowTestTypes: appConfig?.NAIS_CLUSTER_NAME !== 'prod-gcp',
+      },
+      this.translate.bind(this),
+    );
+    return this.setComponentValidity(errorMessage ? [this.createError(errorMessage, undefined)] : [], dirty, undefined);
+  }
 
-    const inputValueNoSpace = inputValue?.replace(' ', '');
-    const result = idnr(inputValueNoSpace ?? '');
-
-    const errorMessage: string =
-      this.translate('fodselsnummerDNummer') === 'fodselsnummerDNummer'
-        ? TEXTS.validering.fodselsnummerDNummer
-        : this.translate('fodselsnummerDNummer');
-
-    if (result.status === 'invalid') {
-      return errorMessage;
-    }
-
-    if (result.status === 'valid') {
-      // Allow only fnr and dnr in production
-      if (ALLOWED_TYPES.includes(result.type)) {
-        return true;
-      }
-
-      // Allow all types in test environments
-      if (appConfig?.NAIS_CLUSTER_NAME !== 'prod-gcp') {
-        return ALLOWED_TEST_TYPES.includes(result.type);
-      }
-
-      return errorMessage;
-    }
-
+  validateFnrNew(_inputValue) {
     return true;
   }
 }
