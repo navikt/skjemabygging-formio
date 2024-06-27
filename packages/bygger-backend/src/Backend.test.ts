@@ -22,6 +22,7 @@ describe('Backend', () => {
   const formPath = 'skjema';
 
   beforeEach(() => {
+    backend = createBackendForTest();
     // @ts-ignore
     GitHubRepo.mockImplementation(() => {
       return {
@@ -39,9 +40,6 @@ describe('Backend', () => {
   });
 
   let backend: any;
-  beforeEach(() => {
-    backend = createBackendForTest();
-  });
 
   afterEach(() => {
     // @ts-ignore
@@ -182,6 +180,7 @@ describe('Backend', () => {
     describe('when getRef does not return the newly created branch', () => {
       const MAIN_BRANCH_SHA = 'main-branch-sha';
       const ERROR_MESSAGE = 'Not found';
+
       beforeEach(() => {
         mockRepoGetRef.mockImplementation((branch) => {
           if (branch === configForTest.publishRepo.base) {

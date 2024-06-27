@@ -5,6 +5,7 @@ import prettierConfig from 'eslint-config-prettier';
 import pluginChaiFriendly from 'eslint-plugin-chai-friendly';
 import pluginCypress from 'eslint-plugin-cypress/flat';
 import _import from 'eslint-plugin-import';
+import pluginMocha from 'eslint-plugin-mocha';
 import noOnlyTests from 'eslint-plugin-no-only-tests';
 import react from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
@@ -21,6 +22,8 @@ export default tseslint.config(
   eslint.configs.recommended,
   pluginCypress.configs.recommended,
   pluginCypress.configs.globals,
+  pluginMocha.configs.flat.recommended,
+
   ...tseslint.configs.recommended,
 
   {
@@ -77,6 +80,9 @@ export default tseslint.config(
       'no-extra-boolean-cast': 'off',
       'no-case-declarations': 'off',
       'vitest/expect-expect': 'off',
+      'mocha/no-mocha-arrows': 'off',
+      'mocha/no-setup-in-describe': 'off',
+      'mocha/consistent-spacing-between-blocks': 'warn',
 
       'react/jsx-key': [
         'error',

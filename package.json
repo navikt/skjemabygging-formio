@@ -99,6 +99,7 @@
     ]
   },
   "dependencies": {
-    "eslint-plugin-chai-friendly": "^1.0.0"
+    "eslint-plugin-chai-friendly": "^1.0.0",
+    "eslint-plugin-mocha": "^10.4.3"
   }
 }
