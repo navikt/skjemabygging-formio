@@ -58,9 +58,11 @@ export default tseslint.config(
       ...reactHooks.configs.recommended.rules,
 
       // Errors
-      'mocha/no-exclusive-tests': 'error',
-      'no-unused-labels': 'error',
-      'import/no-duplicates': 'error',
+      'mocha/no-exclusive-tests': 'error', // Should not ignore tests
+      'no-unused-labels': 'error', // Should not have any unused labels
+      'import/no-duplicates': 'error', // Should not import the same module twice (should be handled automatically by prettier-plugin-organize-imports)
+
+      // Ignores unused variables starting with _ or $
       '@typescript-eslint/no-unused-vars': [
         'error',
         {
@@ -69,12 +71,16 @@ export default tseslint.config(
           varsIgnorePattern: '^[_$].*',
         },
       ],
+
+      // There was an error with a missing key that crashed the app
       'react/jsx-key': [
         'error',
         {
           checkFragmentShorthand: true,
         },
       ],
+
+      // Should not import from shared components or domain
       'import/no-internal-modules': [
         'error',
         {
@@ -83,19 +89,16 @@ export default tseslint.config(
       ],
 
       // Warnings
-      '@typescript-eslint/ban-types': 'warn',
-      '@typescript-eslint/no-explicit-any': 'warn',
-      '@typescript-eslint/ban-ts-comment': 'warn',
-      '@typescript-eslint/no-namespace': 'warn',
-      'no-extra-boolean-cast': 'warn',
-      'no-case-declarations': 'warn',
-      'vitest/expect-expect': 'warn',
-      'mocha/no-setup-in-describe': 'warn',
-      'mocha/consistent-spacing-between-blocks': 'warn',
-      'mocha/max-top-level-suites': 'warn',
+      '@typescript-eslint/ban-types': 'warn', // TODO: Remove 'Function' as a type mostly
+      '@typescript-eslint/ban-ts-comment': 'warn', // No @ts-ignore or @ts-nocheck comments
+      '@typescript-eslint/no-namespace': 'warn', // TODO: FormSummaryType.ts has a Summary namespace
+      'no-case-declarations': 'warn', // TODO: Remove "let/const" in switch cases
+      'mocha/no-setup-in-describe': 'warn', // Should not have setup code in describe
 
       // Disabled
-      'mocha/no-mocha-arrows': 'off',
+      'mocha/no-mocha-arrows': 'off', // We don't use "this" context in tests so we can use arrow functions
+      'vitest/expect-expect': 'off', // Cypress tests don't necessarily use expect
+      '@typescript-eslint/no-explicit-any': 'off', // Explicit any's
     },
   },
   {
