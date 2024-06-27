@@ -6,7 +6,6 @@ import pluginChaiFriendly from 'eslint-plugin-chai-friendly';
 import pluginCypress from 'eslint-plugin-cypress/flat';
 import _import from 'eslint-plugin-import';
 import pluginMocha from 'eslint-plugin-mocha';
-import noOnlyTests from 'eslint-plugin-no-only-tests';
 import react from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
 import vitest from 'eslint-plugin-vitest';
@@ -30,7 +29,6 @@ export default tseslint.config(
       react,
       vitest,
       cypress: pluginCypress,
-      'no-only-tests': noOnlyTests,
       'chai-friendly': pluginChaiFriendly,
 
       // TODO: Replace (and remove compatability packages in package.json) when flat config is supported in these plugins
@@ -60,7 +58,7 @@ export default tseslint.config(
       ...reactHooks.configs.recommended.rules,
 
       // Errors
-      'no-only-tests/no-only-tests': 'error',
+      'mocha/no-exclusive-tests': 'error',
       'no-unused-labels': 'error',
       'import/no-duplicates': 'error',
       '@typescript-eslint/no-unused-vars': [
