@@ -1,9 +1,8 @@
-import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import * as ibantools from 'ibantools';
 import BaseComponent from '../../base/BaseComponent';
 import TextField from '../../core/textfield/TextField';
 import IBANBuilder from './IBAN.builder';
 import ibanForm from './IBAN.form';
+import { validateIBAN } from './IBANValidator';
 
 class IBAN extends TextField {
   static schema() {
@@ -28,22 +27,25 @@ class IBAN extends TextField {
     return IBAN.schema();
   }
 
-  getErrorMessage(key) {
-    // @ts-ignore
-    return this.translate(key) === key ? TEXTS.validering[key] : this.translate(key);
-  }
-
-  validateIban(iban) {
-    const { validateIBAN, ValidationErrorsIBAN } = ibantools;
-    const { valid, errorCodes } = validateIBAN(iban);
-    if (valid || errorCodes.includes(ValidationErrorsIBAN.NoIBANProvided)) {
+  checkComponentValidity(data, dirty, row, options = {}) {
+    if (this.shouldSkipValidation(data, dirty, row)) {
+      this.setCustomValidity('');
       return true;
     }
 
-    if (errorCodes.includes(ValidationErrorsIBAN.WrongBBANLength)) return this.getErrorMessage('wrongBBANLength');
-    if (errorCodes.includes(ValidationErrorsIBAN.NoIBANCountry)) return this.getErrorMessage('noIBANCountry');
+    const errorMessage = validateIBAN(
+      {
+        value: this.getValue(),
+        label: this.getLabel({ labelTextOnly: true }),
+        required: this.isRequired(),
+      },
+      this.translate.bind(this),
+    );
+    return this.setComponentValidity(errorMessage ? [this.createError(errorMessage, undefined)] : [], dirty, undefined);
+  }
 
-    return this.getErrorMessage('invalidIBAN');
+  validateIban(_iban) {
+    return true;
   }
 }
 

@@ -1,6 +1,5 @@
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { afterEach } from 'vitest';
-import { default as NationalIdenityNumber } from './NationalIdentityNumber.js';
+import { default as NationalIdenityNumber } from './NationalIdentityNumber';
 
 const VALID_HNR = '13527248013';
 const VALID_TNR = '10915596784';
