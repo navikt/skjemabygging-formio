@@ -25,6 +25,7 @@ describe('FormMigrationLogger', () => {
 
     describe('When all entries contains identical original and new components', () => {
       let log: FormMigrationLogData;
+
       beforeEach(() => {
         logger.add(idKeyAndLabel('a'), idKeyAndLabel('a'));
         logger.add(idKeyAndLabel('b'), idKeyAndLabel('b'));
@@ -50,6 +51,7 @@ describe('FormMigrationLogger', () => {
       const componentA = idKeyAndLabel('a');
       const componentB = idKeyAndLabel('b');
       const noChanges = idKeyAndLabel('no-changes');
+
       beforeEach(() => {
         logger.add(
           { ...componentA, customProperty: 'old value' } as Component,

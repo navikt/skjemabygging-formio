@@ -648,7 +648,7 @@ const findFirstInput = (component) => {
 
   for (const subComponent of component?.components ?? []) {
     const firstInputInSubComponent = findFirstInput(subComponent);
-    if (!!firstInputInSubComponent) {
+    if (firstInputInSubComponent) {
       return firstInputInSubComponent;
     }
   }

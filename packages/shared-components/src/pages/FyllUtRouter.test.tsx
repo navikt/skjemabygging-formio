@@ -91,6 +91,7 @@ describe('FyllUtRouter', () => {
       }
       expect(screen.queryByRole('link', { name: 'Vedleggsliste' })).toBeInTheDocument();
     });
+
     it('Renders vedleggspanel when submission method is paper', () => {
       renderFyllUtRouter({ form, translationsForNavForm }, { submissionMethod: 'paper' });
       expect(screen.queryByRole('heading', { name: form.title })).toBeInTheDocument();
@@ -100,6 +101,7 @@ describe('FyllUtRouter', () => {
       }
       expect(screen.queryByRole('link', { name: 'Vedleggsliste' })).toBeInTheDocument();
     });
+
     it('Does not render vedleggspanel when submission method is digital', () => {
       renderFyllUtRouter({ form, translationsForNavForm }, { submissionMethod: 'digital' });
       expect(screen.queryByRole('heading', { name: form.title })).toBeInTheDocument();

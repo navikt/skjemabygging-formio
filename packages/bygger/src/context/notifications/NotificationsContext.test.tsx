@@ -38,9 +38,11 @@ describe('NotificationsContext', () => {
       } as Channel;
     });
   });
+
   afterEach(() => {
     channelSubscriptions = {};
   });
+
   describe('usePusherNotifications', () => {
     it('initially returns no messages', () => {
       const { result } = renderHook(() => usePusherNotifications(), { wrapper });

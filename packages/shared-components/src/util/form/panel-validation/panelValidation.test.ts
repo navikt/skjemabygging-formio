@@ -92,6 +92,7 @@ describe('panelValidationUtils', () => {
 
     describe('When form has no validation errors', () => {
       const form = { components: [panelWithThreeInputs, panelWithNestedInput, panelWithOneInput] } as NavFormType;
+
       it('returns key of the first input component in an empty panel', () => {
         const panelValidation: PanelValidation[] = [
           panelWithThreeInputsValid,

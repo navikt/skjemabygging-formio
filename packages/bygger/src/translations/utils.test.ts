@@ -31,6 +31,7 @@ describe('testGetAllTextsAndTypeForForm', () => {
     const actual = getFormTexts(createFormObject([], 'title'), true);
     expect(actual).toEqual([{ text: 'title', type: 'text' }]);
   });
+
   it('Test form with panel and text fields', () => {
     const actual = getFormTexts(
       createFormObject(
@@ -57,6 +58,7 @@ describe('testGetAllTextsAndTypeForForm', () => {
       { text: 'wktcZylADGp1ewUpfHa6f0DSAhCWjNzDW7b1RJkiigXise0QQaw92SJoMpGvlt8BEL8vAcXRset4KjAIV', type: 'textarea' },
     ]);
   });
+
   it('Test form with panel, html elements and contents', () => {
     const actual = getFormTexts(
       createFormObject(
@@ -91,6 +93,7 @@ describe('testGetAllTextsAndTypeForForm', () => {
       { text: 'VrcUdaapouM1tt1nPQmW4qlUs7P0bbkAoiFLHyRmP0qlkDCptvszDEntC5iGZB2hkkBgYkU8I8CQzwgn1', type: 'textarea' },
     ]);
   });
+
   it('Test form with panel, skjemagruppe and radio panel', () => {
     const actual = getFormTexts(
       createFormObject(
@@ -122,6 +125,7 @@ describe('testGetAllTextsAndTypeForForm', () => {
       { text: 'FlGufFRHJLytgypGcRa0kqP1M9mgYTC8FZWCTJTn7sVnfqDWDNQI0eT5TvovfWB3oWDVwrBqBfLThXeUF', type: 'textarea' },
     ]);
   });
+
   it('Test form with panel, skjemagruppe, datagrid and radio panel', () => {
     const actual = getFormTexts(
       createFormObject(
@@ -162,6 +166,7 @@ describe('testGetAllTextsAndTypeForForm', () => {
       { text: 'Radio panel inside data grid without label', type: 'text' },
     ]);
   });
+
   it('Test form with panel, container and checkbox', () => {
     const actual = getFormTexts(
       createFormObject(
@@ -203,6 +208,7 @@ describe('testGetAllTextsAndTypeForForm', () => {
       { text: 'RyiX3OuRGRdTT1AIoP6qK2MLGPkXdij36yFs0NiTY1WfptfYkuY0cBZOIk4mLLMJWgEEt0SpaQUojObrM', type: 'textarea' },
     ]);
   });
+
   it('Test form with duplicated text field', () => {
     const actual = getFormTexts(
       createFormObject(
@@ -224,6 +230,7 @@ describe('testGetAllTextsAndTypeForForm', () => {
       { text: 'Email', type: 'text' },
     ]);
   });
+
   it('Test form with alertstripes and HTML element', () => {
     const actual = getFormTexts(
       createFormObject(
@@ -273,6 +280,7 @@ describe('testGetAllTextsAndTypeForForm', () => {
       { text: 'Eventuell utbetaling av AAP', type: 'text' },
     ]);
   });
+
   it('Test form with select component', () => {
     const actual = getFormTexts(
       createFormObject([createPanelObject('Introduksjon', [createDummySelectComponent()], 'Introduksjon')], 'title'),
@@ -341,6 +349,7 @@ describe('testGetAllTextsAndTypeForForm', () => {
       { text: 'buttonText', type: 'text' },
     ]);
   });
+
   it('Henter innsendingsrelaterte tekster fra form properties', () => {
     const actual = getFormTexts(
       {
@@ -362,6 +371,7 @@ describe('testGetAllTextsAndTypeForForm', () => {
       { text: 'Skriv ut skjemaet', type: 'text' },
     ]);
   });
+
   it('Henter downloadPdfButtonText form properties', () => {
     const actual = getFormTexts(
       {
@@ -381,6 +391,7 @@ describe('testGetAllTextsAndTypeForForm', () => {
       { text: 'Last ned pdf', type: 'text' },
     ]);
   });
+
   it('Henter signatur-relaterte tekster fra form properties', () => {
     const actual = getFormTexts(
       {

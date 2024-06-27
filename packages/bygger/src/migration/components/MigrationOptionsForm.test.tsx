@@ -4,6 +4,7 @@ import MigrationOptionsForm from './MigrationOptionsForm';
 describe('MigrationOptionsForm', () => {
   const onSubmitMock = vi.fn();
   const dispatchMock = vi.fn();
+
   beforeEach(() => {
     render(
       <MigrationOptionsForm title="title" addRowText="addRowText" dispatch={dispatchMock} testId="search-filters">

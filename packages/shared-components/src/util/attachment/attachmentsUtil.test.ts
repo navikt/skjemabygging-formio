@@ -54,6 +54,7 @@ describe('attachmentUtil', () => {
         expect(attachments).toHaveLength(0);
       });
     });
+
     describe('form containing attachment with custom conditional', () => {
       const form = {
         components: [
@@ -85,6 +86,7 @@ describe('attachmentUtil', () => {
         expect(attachments).toHaveLength(0);
       });
     });
+
     describe('form containing attachment with custom conditional which has expression possibly resulting in undefined error', () => {
       const form = {
         components: [
@@ -122,6 +124,7 @@ describe('attachmentUtil', () => {
         const attachments = getRelevantAttachments(vedleggConditional.form, vedleggConditional.submission.data);
         expect(attachments).toHaveLength(3);
       });
+
       it('Some attachments are triggered', () => {
         const submissionDataCopy: SubmissionData = JSON.parse(JSON.stringify(vedleggConditional.submission.data));
         submissionDataCopy.harDuDokumentasjonDuOnskerALeggeVedSoknaden = 'ja';
@@ -134,6 +137,7 @@ describe('attachmentUtil', () => {
         const attachments = getRelevantAttachments(vedleggConditional.form, submissionDataCopy);
         expect(attachments).toHaveLength(2);
       });
+
       it('No attachments are triggered', () => {
         const submissionDataCopy = JSON.parse(JSON.stringify(vedleggConditional.submission.data));
         submissionDataCopy.harDuDokumentasjonDuOnskerALeggeVedSoknaden = 'nei';

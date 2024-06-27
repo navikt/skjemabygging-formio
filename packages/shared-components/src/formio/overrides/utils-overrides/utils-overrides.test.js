@@ -144,6 +144,7 @@ describe('utils-overrides', () => {
       const html = UtilsOverrides.navFormDiffToHtml(diffSummary);
       expect(html).toMatchSnapshot();
     });
+
     it('ignores props whos value changes from undefined to falsy', () => {
       const changes = {
         status: 'Endring',
@@ -217,18 +218,21 @@ describe('utils-overrides', () => {
         expect(html).toBe('');
         expect(html).toMatchSnapshot();
       });
+
       it('should list changes for navSelect', () => {
         const navSelect = navFormUtils.findByNavId('e0a8kbj', formNavSelectChanges.components);
         const componentDiff = formDiffingTool.getComponentDiff(navSelect, publishedForm);
         const html = UtilsOverrides.navFormDiffToHtml(componentDiff);
         expect(html).toMatchSnapshot();
       });
+
       it('should list changed key', () => {
         const radiopanel = navFormUtils.findByKey('doYouLiveInNorway', formNavSelectChanges.components);
         const componentDiff = formDiffingTool.getComponentDiff(radiopanel, publishedForm);
         const html = UtilsOverrides.navFormDiffToHtml(componentDiff);
         expect(html).toMatchSnapshot();
       });
+
       it('should list change in conditional', () => {
         const alertstripe = navFormUtils.findByKey('alertstripeArstid', formNavSelectChanges.components);
         const componentDiff = formDiffingTool.getComponentDiff(alertstripe, publishedForm);

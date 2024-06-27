@@ -3,12 +3,15 @@ import SearchFilterInput from './SearchFilterInput';
 
 describe('SearchFilterInput', () => {
   const dispatchMock = vi.fn();
+
   beforeEach(() => {
     render(<SearchFilterInput id={'id'} searchFilter={{ key: 'Feltnavn', value: 'value' }} dispatch={dispatchMock} />);
   });
+
   afterEach(() => {
     dispatchMock.mockReset();
   });
+
   describe('Feltnavn input field', () => {
     it('is rendered', () => {
       expect(screen.getByLabelText('Feltnavn')).toBeDefined();

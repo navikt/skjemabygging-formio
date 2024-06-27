@@ -257,6 +257,7 @@ describe('SummaryPageNavigation', () => {
 
         window.location = originalWindowLocation;
       });
+
       it('hides next-button if validation of soknad is not complete', async () => {
         const form = formWithProperties({ innsending: 'PAPIR_OG_DIGITAL' });
         const { buttons } = await renderSummaryPageNavigation(
@@ -272,6 +273,7 @@ describe('SummaryPageNavigation', () => {
         expect(buttons.sendTilNavKnapp).toBeNull();
         expect(buttons.gaVidereKnapp).toBeNull();
       });
+
       it('hides next-button if validation of soknad contains validation errors', async () => {
         const form = formWithProperties({ innsending: 'PAPIR_OG_DIGITAL' });
         const { buttons } = await renderSummaryPageNavigation(
@@ -288,6 +290,7 @@ describe('SummaryPageNavigation', () => {
         expect(buttons.gaVidereKnapp).toBeNull();
       });
     });
+
     it('renders next-button when method=paper', async () => {
       const form = formWithProperties({ innsending: 'PAPIR_OG_DIGITAL' });
       const { router, buttons } = await renderSummaryPageNavigation({ form }, { submissionMethod: 'paper' });

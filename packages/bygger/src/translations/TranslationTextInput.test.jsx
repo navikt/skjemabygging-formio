@@ -62,6 +62,7 @@ describe('TranslationTextInput', () => {
     beforeEach(() => {
       setUp('text');
     });
+
     it('renders Input with type text', () => {
       expect(screen.getByRole('textbox').getAttribute('type')).toBe('text');
     });

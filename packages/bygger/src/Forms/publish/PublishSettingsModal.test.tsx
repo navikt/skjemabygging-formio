@@ -155,6 +155,7 @@ describe('getCompleteTranslationLanguageCodeList', () => {
     const actual = getCompleteTranslationLanguageCodeList(['Bor du i Norge', 'Ja', 'Nei'], {});
     expect(actual).toEqual([]);
   });
+
   it('return empty list when there are form text and not complete translations', () => {
     const actual = getCompleteTranslationLanguageCodeList(['Bor du i Norge?', 'Ja', 'Nei'], {
       en: { 'Bor du i Norge?': 'Do you live in Norway?' },
@@ -162,6 +163,7 @@ describe('getCompleteTranslationLanguageCodeList', () => {
     });
     expect(actual).toEqual([]);
   });
+
   it('return en when there are form text and complete English translations', () => {
     const actual = getCompleteTranslationLanguageCodeList(['Bor du i Norge?', 'Ja', 'Nei'], {
       en: { 'Bor du i Norge?': 'Do you live in Norway?', Ja: 'Yes', Nei: 'No' },

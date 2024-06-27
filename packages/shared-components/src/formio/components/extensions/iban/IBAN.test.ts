@@ -31,10 +31,12 @@ describe('IBAN', () => {
       validateIBAN.mockReturnValue({ valid: false, errorCodes: [ValidationErrorsIBAN.WrongBBANLength] });
       expect(iban.validateIban('ValidIBAN')).toBe(wrongBBANLength);
     });
+
     it('returns noIBANCountry error message when no country code is provided', () => {
       validateIBAN.mockReturnValue({ valid: false, errorCodes: [ValidationErrorsIBAN.NoIBANCountry] });
       expect(iban.validateIban('ValidIBAN')).toBe(noIBANCountry);
     });
+
     it('returns invalidIBAN error message when the IBAN is incorrect for other reasons', () => {
       validateIBAN.mockReturnValue({ valid: false, errorCodes: [99] });
       expect(iban.validateIban('ValidIBAN')).toBe(invalidIBAN);

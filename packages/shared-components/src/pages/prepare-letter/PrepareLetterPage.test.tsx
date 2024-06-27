@@ -133,6 +133,7 @@ describe('PrepareLetterPage', () => {
 
   describe('Førsteside-knapp', () => {
     let pdfDownloads: any[] = [];
+
     beforeEach(() => {
       pdfDownloads = [];
 
@@ -356,6 +357,7 @@ describe('PrepareLetterPage', () => {
         const uxSignalsSection = screen.queryByTestId('uxsignals');
         expect(uxSignalsSection).toBeInTheDocument();
       });
+
       it('renders when ux innsendingstype is PAPIR_OG_DIGITAL', () => {
         renderPrepareLetterPage(
           formWithProperties({
@@ -367,6 +369,7 @@ describe('PrepareLetterPage', () => {
         const uxSignalsSection = screen.queryByTestId('uxsignals');
         expect(uxSignalsSection).toBeInTheDocument();
       });
+
       it('does not render when ux innsendingstype is KUN_DIGITAL', () => {
         renderPrepareLetterPage(
           formWithProperties({

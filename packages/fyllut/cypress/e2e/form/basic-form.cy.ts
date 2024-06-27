@@ -165,6 +165,7 @@ describe('Basic form', () => {
         cy.clickStart();
         fillInForm(true, 'paper');
       });
+
       it('select submission method digital - fill in - go to summary - edit form - navigate back to summary', () => {
         cy.get('[type="radio"]').check('digital');
         cy.clickStart();

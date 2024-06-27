@@ -120,11 +120,11 @@ const assembleSendInnSoknadBody = (
     innsendingsId,
   };
 
-  if (!!form.properties.mellomlagringDurationDays) {
+  if (form.properties.mellomlagringDurationDays) {
     body.mellomlagringDager = parseInt(form.properties.mellomlagringDurationDays);
   }
 
-  if (!!form.properties.ettersendelsesfrist) {
+  if (form.properties.ettersendelsesfrist) {
     body.fristForEttersendelse = parseInt(form.properties.ettersendelsesfrist);
   }
 

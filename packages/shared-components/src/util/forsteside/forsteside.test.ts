@@ -79,6 +79,7 @@ describe('getVedleggsFelterSomSkalSendes', () => {
     );
     expect(actual.map((component) => component.key)).toEqual(['vedleggO9', 'vedleggQ7']);
   });
+
   it('does not add vedlegg which should not be submitted now', () => {
     const actual = getVedleggsFelterSomSkalSendes(
       {
@@ -89,6 +90,7 @@ describe('getVedleggsFelterSomSkalSendes', () => {
     );
     expect(actual.map((component) => component.key)).toEqual([]);
   });
+
   it('handles several vedlegg with the same vedleggskode', () => {
     const actual = getVedleggsFelterSomSkalSendes(
       {

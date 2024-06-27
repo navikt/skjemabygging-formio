@@ -166,6 +166,7 @@ describe('app', () => {
             const res = await request(createApp()).get('/fyllut/testform001/panel1?lang=en&sub=digital').expect(200);
             expect(res.get('location')).toBeUndefined();
           });
+
           it('does not redirect to intropage when sub=paper', async () => {
             const testform001 = createFormDefinition(innsending as InnsendingType);
             nock(formioApiServiceUrl!)

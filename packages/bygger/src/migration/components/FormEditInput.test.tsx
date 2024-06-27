@@ -3,12 +3,15 @@ import FormEditInput from './FormEditInput';
 
 describe('FormEditInput', () => {
   const dispatchMock = vi.fn();
+
   beforeEach(() => {
     render(<FormEditInput id={'a'} formEdit={{ key: 'Feltnavn', value: '' }} dispatch={dispatchMock} />);
   });
+
   afterEach(() => {
     dispatchMock.mockReset();
   });
+
   describe('Feltnavn input field', () => {
     it('is rendered', () => {
       expect(screen.getByLabelText('Feltnavn')).toBeDefined();

@@ -243,6 +243,7 @@ describe('Migration scripts', () => {
     describe('When dependencyFilters are provided (but searchFilters are not)', () => {
       let log;
       let migratedForms;
+
       beforeEach(async () => {
         const migrated = await migrateForms({}, {}, { type: 'radio' }, { disabled: true }, [
           formWithSimpleConditionalToRadio, // match on dependencyFilters
@@ -385,6 +386,7 @@ describe('Migration scripts', () => {
 
   describe('getEditScript', () => {
     let testComponent;
+
     beforeEach(() => {
       testComponent = {
         prop1: 'prop1',

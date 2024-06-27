@@ -40,7 +40,7 @@ describe('htmlBuilder', () => {
       components: [],
       properties: { signatures: [] },
     } as unknown as NavFormType;
-    let html: String;
+    let html: string;
 
     beforeEach(() => {
       html = createHtmlFromSubmission(formWithTitle, { data: {} } as Submission, 'digital', mockTranslate);

@@ -150,12 +150,14 @@ describe('navFormUtils', () => {
         expect(actual).toEqual(expect.arrayContaining(expected));
         expect(actual).toHaveLength(expected.length);
       });
+
       it('when given the id of the second component in the conditional it returns the key of the component owning the conditional', () => {
         const actual = findDependentComponents('eoql8pp', formWithCompositeCustomConditional);
         const expected = [expect.objectContaining({ key: 'hvisSolbrillerOgSolkremEllerSolseng' })];
         expect(actual).toEqual(expect.arrayContaining(expected));
         expect(actual).toHaveLength(expected.length);
       });
+
       it('when given the id of the last component in the conditional it returns the key of the component owning the conditional', () => {
         const actual = findDependentComponents('eo9rcfe', formWithCompositeCustomConditional);
         const expected = [expect.objectContaining({ key: 'hvisSolbrillerOgSolkremEllerSolseng' })];
@@ -790,6 +792,7 @@ describe('navFormUtils', () => {
         expect(components).toHaveLength(1);
         expect(Object.keys(components[0])).toEqual(['navId']);
       });
+
       it('is not added when navId is present', () => {
         const input = [{ navId: '1' }];
         const components = enrichComponentsWithNavIds(input, navIdGenerator);

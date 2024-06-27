@@ -26,6 +26,7 @@ describe('ApplicationTextTranslationEditPanel', () => {
 
   describe('Rendering with Grensesnitt texts and one translation', () => {
     const mockedUpdateTranslation = vi.fn();
+
     beforeEach(() => {
       render(
         <ApplicationTextTranslationEditPanel
@@ -60,6 +61,7 @@ describe('ApplicationTextTranslationEditPanel', () => {
         await waitFor(() => expect(mockedUpdateTranslation).toHaveBeenCalledTimes(1));
         expect(mockedUpdateTranslation).toHaveBeenCalledWith('id', 'Juli', 'new global translation');
       });
+
       it('calls updateTranslation with empty string as id, text and new value, when text did not have a translation', async () => {
         const text1 = screen.getByLabelText('Juni');
         fireEvent.change(text1, { target: { value: 'new global translation' } });

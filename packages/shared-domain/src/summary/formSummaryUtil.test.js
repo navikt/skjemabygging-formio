@@ -195,6 +195,7 @@ describe('form summary', () => {
         expect(actual.find((component) => component.type === 'content')).toBeUndefined();
       });
     });
+
     describe('htmlelement', () => {
       it('is added if it contains content for PDF', () => {
         const actual = handleComponent(
@@ -381,6 +382,7 @@ describe('form summary', () => {
           },
         ]);
       });
+
       it('does not add anything if no options are selected', () => {
         const actual = handleComponent(
           createDummySelectboxes(),

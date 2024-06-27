@@ -102,9 +102,11 @@ describe('FormStatusPanel', () => {
 
   describe('When form is unpublished and modified date is same as or before unpublished date', () => {
     const properties: PartialFormProperties = { modified: now, unpublished: now };
+
     beforeEach(() => {
       render(<FormStatusPanel publishProperties={properties as FormPropertiesType} />);
     });
+
     it('modified (date) is before unpublisheddate', () => {
       expect(screen.getByText('Avpublisert')).toBeInTheDocument();
     });
@@ -112,9 +114,11 @@ describe('FormStatusPanel', () => {
 
   describe('When form is unpublished and modified date is after unpublished date', () => {
     const properties: PartialFormProperties = { modified: now, unpublished: earlier };
+
     beforeEach(() => {
       render(<FormStatusPanel publishProperties={properties as FormPropertiesType} />);
     });
+
     it('modified (date) is after unpublisheddate', () => {
       expect(screen.getByText('Utkast')).toBeInTheDocument();
     });

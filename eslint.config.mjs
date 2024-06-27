@@ -15,7 +15,6 @@ import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
   {
-    // config with just ignores is the replacement for `.eslintignore`
     ignores: ['**/src/template/**', '**/dist/**', '**/build/**', '**/node_modules/**'],
   },
   prettierConfig,
@@ -23,9 +22,7 @@ export default tseslint.config(
   pluginCypress.configs.recommended,
   pluginCypress.configs.globals,
   pluginMocha.configs.flat.recommended,
-
   ...tseslint.configs.recommended,
-
   {
     files: ['**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx', '**/*.mjs'],
     plugins: {
@@ -73,16 +70,17 @@ export default tseslint.config(
         },
       ],
 
-      '@typescript-eslint/ban-types': 'off',
-      '@typescript-eslint/no-explicit-any': 'off',
-      '@typescript-eslint/ban-ts-comment': 'off',
-      '@typescript-eslint/no-namespace': 'off',
-      'no-extra-boolean-cast': 'off',
-      'no-case-declarations': 'off',
-      'vitest/expect-expect': 'off',
-      'mocha/no-mocha-arrows': 'off',
-      'mocha/no-setup-in-describe': 'off',
+      '@typescript-eslint/ban-types': 'warn',
+      '@typescript-eslint/no-explicit-any': 'warn',
+      '@typescript-eslint/ban-ts-comment': 'warn',
+      '@typescript-eslint/no-namespace': 'warn',
+      'no-extra-boolean-cast': 'warn',
+      'no-case-declarations': 'warn',
+      'vitest/expect-expect': 'warn',
+      'mocha/no-setup-in-describe': 'warn',
       'mocha/consistent-spacing-between-blocks': 'warn',
+      'mocha/max-top-level-suites': 'warn',
+      'mocha/no-mocha-arrows': 'off',
 
       'react/jsx-key': [
         'error',
