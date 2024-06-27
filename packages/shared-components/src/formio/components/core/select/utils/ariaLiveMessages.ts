@@ -21,11 +21,12 @@ export const ariaLiveMessages = (translate) => {
         case 'deselect-option':
         case 'pop-value':
         case 'remove-value':
-        case 'clear':
+        case 'clear': {
           const removedLabels = removedValues.map((value) => value.label ?? value);
           return removedLabels.length
             ? translate(SELECT_TEXTS.optionDeselected, { label: removedLabels.join(', ') })
             : '';
+        }
         case 'select-option':
           return isDisabled
             ? translate(SELECT_TEXTS.optionDisabled, { label })

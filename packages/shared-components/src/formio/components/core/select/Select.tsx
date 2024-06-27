@@ -79,12 +79,13 @@ const ReactSelectWrapper = ({
       loadingMessage={loadingMessage}
       onChange={(event: OnChangeValue<any, any>, actionType) => {
         switch (actionType.action) {
-          case 'select-option':
+          case 'select-option': {
             const newValue = event.value;
             const selectedOption = options.find((o) => o.value === newValue);
             setSelectedOption(selectedOption);
             onChange(selectedOption);
             break;
+          }
           case 'clear':
             setSelectedOption('');
             onChange('');

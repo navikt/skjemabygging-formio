@@ -92,7 +92,6 @@ export default tseslint.config(
       '@typescript-eslint/ban-types': 'warn', // TODO: Remove 'Function' as a type mostly
       '@typescript-eslint/ban-ts-comment': 'warn', // No @ts-ignore or @ts-nocheck comments
       '@typescript-eslint/no-namespace': 'warn', // TODO: FormSummaryType.ts has a Summary namespace
-      'no-case-declarations': 'warn', // TODO: Remove "let/const" in switch cases
       'mocha/no-setup-in-describe': 'warn', // Should not have setup code in describe
 
       // Disabled

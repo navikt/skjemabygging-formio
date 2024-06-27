@@ -25,12 +25,13 @@ const ComponentSummary = ({ components, formUrl = '', panelValidationList = [] }
         .map((comp) => {
           const { type, key } = comp;
           switch (type) {
-            case 'panel':
+            case 'panel': {
               const panelValidation = panelValidationList!.find((panelValidation) => panelValidation.key === key);
               const hasValidationErrors = !!panelValidation?.hasValidationErrors;
               return (
                 <PanelSummary key={key} component={comp} formUrl={formUrl} hasValidationErrors={hasValidationErrors} />
               );
+            }
             case 'fieldset':
             case 'navSkjemagruppe':
               return <FieldsetSummary key={key} component={comp} formUrl={formUrl} />;
