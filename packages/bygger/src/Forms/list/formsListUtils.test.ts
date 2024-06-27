@@ -5,7 +5,7 @@ import sortedForms from './formsListSortUtils';
 const baseMoment = moment().toISOString();
 const earlier = (base, days) => moment(base).subtract(days, 'day').toISOString();
 const later = (base, days) => moment(base).add(days, 'day').toISOString();
-const createFormMetadata = (properties: Partial<FormListType>): FormListType =>
+const createFormMetadata = (_properties: Partial<FormListType>): FormListType =>
   ({
     id: 'id',
     modified: baseMoment,

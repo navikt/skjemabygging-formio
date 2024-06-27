@@ -146,12 +146,6 @@ describe('useFormioForms', () => {
   describe('Test onPublish and onUnpublish', () => {
     let formioForms;
 
-    const createDate = (dateDiff = 0) => {
-      const date = new Date();
-      date.setDate(date.getDate() + dateDiff);
-      return date;
-    };
-
     const wrapper = ({ children }) => (
       <AppConfigProvider>
         <FeedbackEmitContext.Provider value={mockFeedbackEmit}>{children}</FeedbackEmitContext.Provider>

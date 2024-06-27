@@ -62,10 +62,11 @@ export default tseslint.config(
       'import/no-duplicates': 'error',
 
       '@typescript-eslint/no-unused-vars': [
-        'warn',
+        'error',
         {
           ignoreRestSiblings: true,
           argsIgnorePattern: '^[_$].*',
+          varsIgnorePattern: '^[_$].*',
         },
       ],
 
