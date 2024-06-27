@@ -729,7 +729,7 @@
           "rowTitle": "",
           "addAnother": "",
           "removeAnother": "",
-          "key": "datagrid",
+          "key": "datagrid2",
           "input": true,
           "tableView": false,
           "validateOn": "blur",

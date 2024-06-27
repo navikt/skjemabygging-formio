@@ -6,6 +6,18 @@ import { dateUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 const validateionBefore = (date: string) => `Datoen kan ikke være tidligere enn ${date}`;
 const validationAfter = (date: string) => `Datoen kan ikke være senere ${date}`;
 
+const allFieldsEneabled = () => {
+  cy.findByRole('textbox', { name: 'Tilfeldig dato' }).should('not.be.disabled');
+  cy.findByRole('textbox', { name: 'Dato med validering mot annet datofelt (valgfritt)' }).should('not.be.disabled');
+  cy.findByRole('textbox', { name: 'Dato med validering mot annet datofelt (kan være lik) (valgfritt)' }).should(
+    'not.be.disabled',
+  );
+  cy.findByRole('textbox', { name: 'Dato med validering av tidligst og senest (valgfritt)' }).should('not.be.disabled');
+  cy.findByRole('textbox', { name: 'Dato med validering av antall dager tilbake eller framover (valgfritt)' }).should(
+    'not.be.disabled',
+  );
+};
+
 describe('NavDatepicker', () => {
   beforeEach(() => {
     cy.defaultIntercepts();
@@ -15,6 +27,7 @@ describe('NavDatepicker', () => {
 
   describe('Date input value', () => {
     beforeEach(() => {
+      allFieldsEneabled();
       cy.findByRole('textbox', { name: 'Tilfeldig dato' }).type('06.06.2022{esc}');
       cy.clickNextStep();
       cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
@@ -71,10 +84,12 @@ describe('NavDatepicker', () => {
       cy.findByRole('region', { name: TEXTS.validering.error })
         .should('exist')
         .within(() => {
-          cy.findByRole('link', { name: 'Du må fylle ut: Tilfeldig dato' }).should('exist').click();
+          cy.findByRole('link', { name: 'Du må fylle ut: Tilfeldig dato' }).should('exist');
+          cy.findByRole('link', { name: 'Du må fylle ut: Tilfeldig dato' }).click();
         });
 
-      cy.findByRole('textbox', { name: 'Tilfeldig dato' }).should('have.focus').type('02.02.2023');
+      cy.findByRole('textbox', { name: 'Tilfeldig dato' }).should('have.focus');
+      cy.findByRole('textbox', { name: 'Tilfeldig dato' }).type('02.02.2023');
       cy.clickNextStep();
 
       cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
@@ -85,7 +100,7 @@ describe('NavDatepicker', () => {
     const MY_TEST_DATE = '15.05.2023';
 
     beforeEach(() => {
-      cy.findByRole('textbox', { name: 'Tilfeldig dato' }).should('be.visible').should('not.be.disabled');
+      allFieldsEneabled();
       cy.findByRole('textbox', { name: 'Tilfeldig dato' }).type(`${MY_TEST_DATE}{esc}`);
     });
 
@@ -93,21 +108,21 @@ describe('NavDatepicker', () => {
       const LABEL = 'Dato med validering mot annet datofelt (valgfritt)';
 
       it('fails when date is before', () => {
-        cy.findByRole('textbox', { name: LABEL }).should('not.be.disabled').type('14.05.2023');
+        cy.findByRole('textbox', { name: LABEL }).type('14.05.2023');
         cy.clickNextStep();
 
         cy.findAllByText(validateionBefore('16.05.2023')).should('have.length', 2);
       });
 
       it('fails when date is equal', () => {
-        cy.findByRole('textbox', { name: LABEL }).should('not.be.disabled').type('15.05.2023');
+        cy.findByRole('textbox', { name: LABEL }).type('15.05.2023');
         cy.clickNextStep();
 
         cy.findAllByText(validateionBefore('16.05.2023')).should('have.length', 2);
       });
 
       it('ok when date is later', () => {
-        cy.findByRole('textbox', { name: LABEL }).should('not.be.disabled').type('16.05.2023');
+        cy.findByRole('textbox', { name: LABEL }).type('16.05.2023');
         cy.clickNextStep();
 
         cy.findByRole('heading', { name: 'Oppsummering' }).should('be.visible');
@@ -119,14 +134,14 @@ describe('NavDatepicker', () => {
       const LABEL = 'Dato med validering mot annet datofelt (kan være lik) (valgfritt)';
 
       it('fails when date is before', () => {
-        cy.findByRole('textbox', { name: LABEL }).should('not.be.disabled').type(`14.05.2023{esc}`);
+        cy.findByRole('textbox', { name: LABEL }).type(`14.05.2023{esc}`);
         cy.clickNextStep();
 
         cy.findAllByText(validateionBefore(MY_TEST_DATE)).should('have.length', 2);
       });
 
       it('fails when date is equal', () => {
-        cy.findByRole('textbox', { name: LABEL }).should('not.be.disabled').type('15.05.2023{esc}');
+        cy.findByRole('textbox', { name: LABEL }).type('15.05.2023{esc}');
         cy.clickNextStep();
 
         cy.findByRole('heading', { name: 'Oppsummering' }).should('be.visible');
@@ -134,7 +149,7 @@ describe('NavDatepicker', () => {
       });
 
       it('ok when date is later', () => {
-        cy.findByRole('textbox', { name: LABEL }).should('not.be.disabled').type('16.05.2023{esc}');
+        cy.findByRole('textbox', { name: LABEL }).type('16.05.2023{esc}');
         cy.clickNextStep();
 
         cy.findByRole('heading', { name: 'Oppsummering' }).should('be.visible');
@@ -144,6 +159,10 @@ describe('NavDatepicker', () => {
   });
 
   describe('Validation of date with earliest / latest contraint', () => {
+    beforeEach(() => {
+      allFieldsEneabled();
+    });
+
     const LABEL = 'Dato med validering av tidligst og senest (valgfritt)';
     const EARLIEST_DATE = '01.08.2023';
     const LATEST_DATE = '31.08.2023';
@@ -178,6 +197,10 @@ describe('NavDatepicker', () => {
   });
 
   describe('Validation of date with earliest (-10) / latest (5) relative constraint', () => {
+    beforeEach(() => {
+      allFieldsEneabled();
+    });
+
     const EARLIEST_RELATIVE = -10;
     const LATEST_RELATIVE = 5;
 
