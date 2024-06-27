@@ -28,12 +28,14 @@ export default tseslint.config(
     plugins: {
       '@typescript-eslint': tseslint.plugin,
       react,
-      'react-hooks': fixupPluginRules(reactHooks),
-      import: fixupPluginRules(_import),
       vitest,
       cypress: pluginCypress,
       'no-only-tests': noOnlyTests,
       'chai-friendly': pluginChaiFriendly,
+
+      // TODO: Replace (and remove compatability packages in package.json) when flat config is supported in these plugins
+      'react-hooks': fixupPluginRules(reactHooks),
+      import: fixupPluginRules(_import),
     },
 
     languageOptions: {
@@ -57,10 +59,10 @@ export default tseslint.config(
       ...vitest.configs.recommended.rules,
       ...reactHooks.configs.recommended.rules,
 
+      // Errors
       'no-only-tests/no-only-tests': 'error',
       'no-unused-labels': 'error',
       'import/no-duplicates': 'error',
-
       '@typescript-eslint/no-unused-vars': [
         'error',
         {
@@ -69,7 +71,20 @@ export default tseslint.config(
           varsIgnorePattern: '^[_$].*',
         },
       ],
+      'react/jsx-key': [
+        'error',
+        {
+          checkFragmentShorthand: true,
+        },
+      ],
+      'import/no-internal-modules': [
+        'error',
+        {
+          forbid: ['@navikt/skjemadigitalisering-shared-@(components|domain)/**'],
+        },
+      ],
 
+      // Warnings
       '@typescript-eslint/ban-types': 'warn',
       '@typescript-eslint/no-explicit-any': 'warn',
       '@typescript-eslint/ban-ts-comment': 'warn',
@@ -80,21 +95,9 @@ export default tseslint.config(
       'mocha/no-setup-in-describe': 'warn',
       'mocha/consistent-spacing-between-blocks': 'warn',
       'mocha/max-top-level-suites': 'warn',
+
+      // Disabled
       'mocha/no-mocha-arrows': 'off',
-
-      'react/jsx-key': [
-        'error',
-        {
-          checkFragmentShorthand: true,
-        },
-      ],
-
-      'import/no-internal-modules': [
-        'error',
-        {
-          forbid: ['@navikt/skjemadigitalisering-shared-@(components|domain)/**'],
-        },
-      ],
     },
   },
 );
