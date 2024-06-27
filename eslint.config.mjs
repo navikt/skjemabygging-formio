@@ -98,4 +98,10 @@ export default tseslint.config(
       'mocha/no-mocha-arrows': 'off',
     },
   },
+  {
+    files: ['**/mocks/**'],
+    rules: {
+      '@typescript-eslint/no-var-requires': 'off',
+    },
+  },
 );

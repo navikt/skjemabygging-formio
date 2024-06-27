@@ -1,4 +1,4 @@
-import currencies from '../data/kodeverk/currencies.json';
+const currencies = require('../data/kodeverk/currencies.json');
 
 module.exports = [
   {
