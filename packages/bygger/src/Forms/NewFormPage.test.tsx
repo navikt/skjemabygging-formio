@@ -3,6 +3,7 @@ import { NavFormType, ResourceAccess } from '@navikt/skjemadigitalisering-shared
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
+import { Mock } from 'vitest';
 import mockMottaksadresser from '../../example_data/mottaksadresser.json';
 import featureToggles from '../../test/featureToggles';
 import FeedbackProvider from '../context/notifications/FeedbackContext';
@@ -14,9 +15,17 @@ const RESPONSE_HEADERS = {
   },
 };
 
+interface Config {
+  formioRoleIds: {
+    administrator?: string;
+    authenticated?: string;
+    everyone?: string;
+  };
+}
+
 const mockTemaKoder = { ABC: 'Tema 1', XYZ: 'Tema 3', DEF: 'Tema 2' };
 
-const renderNewFormPage = (formio: { saveForm: Function }, config = DEFAULT_CONFIG) => {
+const renderNewFormPage = (formio: { saveForm: () => void }, config: Partial<Config> = DEFAULT_CONFIG) => {
   render(
     <FeedbackProvider>
       <MemoryRouter>
@@ -53,8 +62,7 @@ describe('NewFormPage', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Opprett' }));
 
     expect(saveForm).toHaveBeenCalledTimes(1);
-    // @ts-ignore
-    const savedForm = saveForm.mock.calls[0][0] as NavFormType;
+    const savedForm = (saveForm as Mock).mock.calls[0][0] as NavFormType;
     expect(savedForm).toMatchObject({
       type: 'form',
       path: 'nav102030',
@@ -98,8 +106,7 @@ describe('NewFormPage', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Opprett' }));
 
     expect(saveForm).toHaveBeenCalledTimes(1);
-    // @ts-ignore
-    const savedForm = saveForm.mock.calls[0][0] as NavFormType;
+    const savedForm = (saveForm as Mock).mock.calls[0][0] as NavFormType;
     expect(savedForm.access).toHaveLength(2);
     const findAccessObject = (access: ResourceAccess[], type: string) => access.find((a) => a.type === type)!.roles;
     const readAllRoles = findAccessObject(savedForm.access!, 'read_all');
@@ -117,7 +124,6 @@ describe('NewFormPage', () => {
         everyone: DEFAULT_CONFIG.formioRoleIds.everyone,
       },
     };
-    // @ts-ignore role id removed for test
     renderNewFormPage({ saveForm }, config);
 
     await waitFor(() => screen.getByText('Opprett nytt skjema'));
@@ -137,7 +143,6 @@ describe('NewFormPage', () => {
     const config = {
       formioRoleIds: undefined,
     };
-    // @ts-ignore role id removed for test
     renderNewFormPage({ saveForm }, config);
 
     await waitFor(() => screen.getByText('Opprett nytt skjema'));

@@ -1,9 +1,9 @@
 import countries from 'i18n-iso-countries';
 import { getCountries } from './countries';
 
-describe('getCountries', () => {
-  countries.getNames = vi.fn().mockReturnValue({});
+countries.getNames = vi.fn().mockReturnValue({});
 
+describe('getCountries', () => {
   afterEach(() => {
     countries.getNames.mockClear();
   });

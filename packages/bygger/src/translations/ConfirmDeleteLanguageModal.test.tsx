@@ -1,10 +1,10 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import ConfirmDeleteLanguageModal from './ConfirmDeleteLanguageModal';
 
-describe('ConfirmDeleteLanguageModal', () => {
-  const mockedCloseModal = vi.fn();
-  const mockedOnConfirm = vi.fn();
+const mockedCloseModal = vi.fn();
+const mockedOnConfirm = vi.fn();
 
+describe('ConfirmDeleteLanguageModal', () => {
   const renderModal = (language = 'Norsk', isGlobal = false) => {
     render(
       <ConfirmDeleteLanguageModal

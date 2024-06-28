@@ -94,6 +94,7 @@ describe('i18nReducer', () => {
       translationsForNavForm: {},
       localTranslationsForNavForm: {},
     };
+
     it('adds a new translation to translations', () => {
       const newTranslation: ScopedTranslationMap = { Etternavn: { value: 'Last name', scope: 'local' } };
       const actualState = reducer(initialState, {
@@ -123,6 +124,7 @@ describe('i18nReducer', () => {
       translationsForNavForm: {},
       localTranslationsForNavForm: {},
     };
+
     it('removes translation from language', () => {
       expect(initialState.translations['nn-NO']?.translations['Fornavn']).toBeDefined();
       const actualState = reducer(initialState, { type: 'remove', payload: { lang: 'nn-NO', key: 'Fornavn' } });

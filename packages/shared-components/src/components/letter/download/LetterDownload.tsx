@@ -10,6 +10,16 @@ import DownloadPdfButton from '../../button/download-pdf/DownloadPdfButton';
 import AlertStripeHttpError from '../../error/alert-stripe/AlertStripeHttpError';
 import EnhetSelector from '../../select/enhet/EnhetSelector';
 
+class CorrelationIdError extends Error {
+  correlationId: string;
+
+  constructor(message: string, correlationId: string) {
+    super(message);
+    this.correlationId = correlationId;
+    Error.captureStackTrace(this, this.constructor);
+  }
+}
+
 async function lastNedFoersteside(form, submission, fyllutBaseURL, language, enhetNummer) {
   const mottaksadresser = enhetNummer ? [] : await fetchMottaksadresser(fyllutBaseURL);
   const body = genererFoerstesideData(form, submission.data, language, mottaksadresser, enhetNummer);
@@ -23,10 +33,7 @@ async function lastNedFoersteside(form, submission, fyllutBaseURL, language, enh
         return response;
       } else {
         const errorResponse = await response.json();
-        const error = new Error(errorResponse.message);
-        // @ts-ignore
-        error.correlationId = errorResponse.correlation_id;
-        throw error;
+        throw new CorrelationIdError(errorResponse.message, errorResponse.correlation_id);
       }
     })
     .then((response) => response.json())

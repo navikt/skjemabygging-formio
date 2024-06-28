@@ -1,8 +1,8 @@
-import { Summary } from '@navikt/skjemadigitalisering-shared-domain';
+import { SummaryField as SummaryFieldType } from '@navikt/skjemadigitalisering-shared-domain';
 import InnerHtml from '../../inner-html/InnerHtml';
 
 export interface Props {
-  component: Summary.Field;
+  component: SummaryFieldType;
   html?: boolean;
 }
 

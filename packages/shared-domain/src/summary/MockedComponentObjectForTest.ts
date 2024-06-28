@@ -268,6 +268,7 @@ const createDummyButtonComponent = (buttonText = 'Submit', label = 'Knapp', navI
   buttonText,
   key: keyFromLabel(label),
   type: 'button',
+  navId,
 });
 
 const createPanelObject = (

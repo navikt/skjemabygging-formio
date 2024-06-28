@@ -1,4 +1,4 @@
-import { I18nTranslations, languagesUtil } from '@navikt/skjemadigitalisering-shared-domain';
+import { FormioTranslationPayload, I18nTranslations, languagesUtil } from '@navikt/skjemadigitalisering-shared-domain';
 import fetch from 'node-fetch';
 import { ConfigType } from '../config/types';
 import { loadFileFromDirectory } from '../utils/forms';
@@ -32,8 +32,7 @@ class TranslationsService {
       method: 'GET',
     });
     if (response.ok) {
-      const translationsForForm = await response.json();
-      // @ts-ignore
+      const translationsForForm = (await response.json()) as FormioTranslationPayload[];
       return translationsForForm.reduce((acc, obj) => ({ ...acc, [obj.data.language]: { ...obj.data.i18n } }), {});
     }
     return {};

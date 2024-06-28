@@ -16,6 +16,7 @@ describe('logCleaning', () => {
       expect(JSON.stringify(cleaned)).not.toContain('Bearer 123456789');
       expect(JSON.stringify(cleaned)).not.toContain('Complete-azure-access-token');
     });
+
     it('is case-insensitive', () => {
       const cleaned = clean(
         replace(logStatement1, {

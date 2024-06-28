@@ -50,10 +50,9 @@ const testForm2 = {
   properties: { ...properties, ...pending, skjemanummer: '002' },
 };
 const testForm3 = { ...form, path: 'form3', name: 'Form 3', properties: { ...properties, skjemanummer: '003' } };
+const bulkPublish = vi.fn();
 
 describe('BulkPublishPanel', () => {
-  const bulkPublish = vi.fn();
-
   beforeEach(() => {
     vi.spyOn(api, 'bulkPublish').mockImplementation(bulkPublish);
     render(<BulkPublishPanel forms={[testForm1, testForm2, testForm3]} />);

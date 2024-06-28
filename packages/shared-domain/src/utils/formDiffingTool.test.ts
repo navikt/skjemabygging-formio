@@ -244,12 +244,14 @@ describe('formDiffingTool', () => {
       const changes = tool.checkComponentDiff(comp, undefined);
       expect(changes).toBeNull();
     });
+
     it('has no diff when component is not changed', () => {
       const comp = getComp('fornavn');
       const changes = tool.checkComponentDiff(comp, publishedForm);
       expect(changes.status).toBeUndefined();
       expect(changes.diff).toBeUndefined();
     });
+
     it('marks label as changed, but ignores id', () => {
       const comp = {
         ...getComp('fornavn'),
@@ -267,6 +269,7 @@ describe('formDiffingTool', () => {
       });
       expect(changes.diff.id).toBeUndefined();
     });
+
     it('marks label as changed', () => {
       const comp = {
         ...getComp('fornavn'),

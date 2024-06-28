@@ -10,8 +10,9 @@ vi.mock('../../context/languages/hooks/useLanguageCodeFromURL', () => {
   };
 });
 
+const onError = vi.fn();
+
 describe('DigitalSubmissionWithPrompt', () => {
-  const onError = vi.fn();
   const BASE_URL = 'http://www.unittest.nav.no/fyllut';
 
   beforeEach(() => {

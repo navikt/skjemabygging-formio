@@ -1,4 +1,3 @@
-// @ts-ignore
 import { v4 as uuidv4 } from 'uuid';
 import { Attachment, Component, FormsResponseForm, NavFormType, Panel, PrefillData, Submission } from '../form';
 import { formSummaryUtil } from '../index';

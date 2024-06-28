@@ -48,7 +48,6 @@ describe('ReportService', () => {
       expect(nockScope.isDone()).toBe(true);
     });
 
-    // @ts-ignore
     const createWritableStream = () => new MemoryStream(undefined, { readable: false });
 
     const setupNock = (publishedForms: Partial<NavFormType>[]) => {

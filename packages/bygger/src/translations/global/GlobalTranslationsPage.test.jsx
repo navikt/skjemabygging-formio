@@ -48,13 +48,16 @@ describe('GlobalTranslationsPage', () => {
 
   describe('Render global translation page with English translations', () => {
     let mockedLoadTranslation;
+
     beforeEach(async () => {
       mockedLoadTranslation = vi.fn(() => Promise.resolve(globalTranslations));
       await renderGlobalTranslationsPage(mockedLoadTranslation, 'en');
     });
+
     afterEach(() => {
       mockedLoadTranslation.mockClear();
     });
+
     it('renders header with English label', async () => {
       const addNewTranslationButton = screen.getByRole('button', { name: 'Legg til ny tekst' });
       const languageHeading = screen.getByRole('heading', { level: 1, name: 'Engelsk' });

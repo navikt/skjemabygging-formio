@@ -29,9 +29,10 @@ const htmlString2Json = (htmlString: string): HtmlAsJsonElement => {
 
 const json2HtmlString = (jsonElement: HtmlAsJsonElement | HtmlAsJsonTextElement): string => {
   switch (jsonElement?.type) {
-    case 'Element':
+    case 'Element': {
       const htmlElement = toNode(jsonElement) as HTMLElement;
       return htmlElement.tagName === 'DIV' ? htmlElement.innerHTML.toString() : htmlElement.outerHTML.toString();
+    }
     case 'TextElement':
       return jsonElement.textContent ?? '';
     default:

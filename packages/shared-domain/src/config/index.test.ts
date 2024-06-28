@@ -23,6 +23,7 @@ describe('configUtils', () => {
 
   describe('loadJsonFromEnv', () => {
     const DEFAULT_VALUE = {};
+
     describe('env variable not present', () => {
       it('handles missing env variable', () => {
         const processEnvMock = {};

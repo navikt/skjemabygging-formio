@@ -6,6 +6,12 @@ import { dateUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 const validateionBefore = (date: string) => `Datoen kan ikke være tidligere enn ${date}`;
 const validationAfter = (date: string) => `Datoen kan ikke være senere ${date}`;
 
+const EARLIEST_RELATIVE = -10;
+const LATEST_RELATIVE = 5;
+
+const beforeDate = dateUtils.toLocaleDate(dateUtils.addDays(EARLIEST_RELATIVE));
+const afterDate = dateUtils.toLocaleDate(dateUtils.addDays(LATEST_RELATIVE));
+
 const allFieldsEneabled = () => {
   cy.findByRole('textbox', { name: 'Tilfeldig dato' }).should('not.be.disabled');
   cy.findByRole('textbox', { name: 'Dato med validering mot annet datofelt (valgfritt)' }).should('not.be.disabled');
@@ -197,17 +203,7 @@ describe('NavDatepicker', () => {
   });
 
   describe('Validation of date with earliest (-10) / latest (5) relative constraint', () => {
-    beforeEach(() => {
-      allFieldsEneabled();
-    });
-
-    const EARLIEST_RELATIVE = -10;
-    const LATEST_RELATIVE = 5;
-
     const LABEL = 'Dato med validering av antall dager tilbake eller framover (valgfritt)';
-
-    const beforeDate = dateUtils.toLocaleDate(dateUtils.addDays(EARLIEST_RELATIVE));
-    const afterDate = dateUtils.toLocaleDate(dateUtils.addDays(LATEST_RELATIVE));
 
     it('fails when date is before the earliest limit', () => {
       cy.findByRole('textbox', { name: LABEL }).type(dateUtils.toLocaleDate(dateUtils.addDays(EARLIEST_RELATIVE - 1)));

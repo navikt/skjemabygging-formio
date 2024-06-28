@@ -1,8 +1,9 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import Modal from './Modal';
 
+const onClose = vi.fn();
+
 describe('Modal', () => {
-  const onClose = vi.fn();
   beforeAll(() => {
     render(
       <Modal onClose={onClose} open={true} title="Test">

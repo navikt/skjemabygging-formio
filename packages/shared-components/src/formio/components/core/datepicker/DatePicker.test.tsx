@@ -9,8 +9,6 @@ import DatePicker from './DatePicker';
 Date.now = vi.fn(() => new Date('2030-05-15T12:00:00.000Z').getTime());
 
 describe('NavDatePicker', () => {
-  let datePicker;
-
   const mockedTranslate = (text: string, params?: Record<string, any>) => {
     text = TEXTS.validering[text] ? TEXTS.validering[text] : text;
     if (params)
@@ -23,7 +21,6 @@ describe('NavDatePicker', () => {
   };
 
   beforeEach(() => {
-    datePicker = new DatePicker(undefined, {}, {});
     vi.spyOn(DatePicker.prototype, 't').mockImplementation(mockedTranslate as any);
   });
 

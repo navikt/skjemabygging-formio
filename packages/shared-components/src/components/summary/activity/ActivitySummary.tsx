@@ -1,7 +1,7 @@
-import { Summary } from '@navikt/skjemadigitalisering-shared-domain';
+import { SummaryActivity } from '@navikt/skjemadigitalisering-shared-domain';
 
 export interface Props {
-  component: Summary.Activity;
+  component: SummaryActivity;
 }
 
 const ActivitySummary = ({ component }: Props) => {

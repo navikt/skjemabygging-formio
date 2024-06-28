@@ -14,11 +14,11 @@ interface UserData {
 
 interface ContextProps {
   userData?: UserData;
-  login?: Function;
+  login?: (user: UserData) => void;
   logout?: MouseEventHandler<HTMLAnchorElement> | undefined;
 }
 
-const enforceUserName = (formioUser) => {
+const enforceUserName = (formioUser: UserData) => {
   if (formioUser && !formioUser.name) {
     return {
       ...formioUser,
@@ -34,7 +34,7 @@ function AuthProvider(props) {
   const [userData, setUserData] = useState(props.user || enforceUserName(NavFormioJs.Formio.getUser()));
   const navigate = useNavigate();
 
-  const login = (user) => {
+  const login = (user: UserData) => {
     setUserData(enforceUserName(user));
     navigate('/forms');
   };

@@ -198,6 +198,7 @@ describe('FormMetadataEditor', () => {
         expect(updatedForm.properties.downloadPdfButtonText).toBe('');
       });
     });
+
     describe('Ettersendelsesfrist', () => {
       it('lagres i properties', async () => {
         const form = formMedProps({ ettersendelsesfrist: undefined, ettersending: 'KUN_DIGITAL' });
@@ -448,6 +449,7 @@ describe('FormMetadataEditor', () => {
 
     describe('Signaturer', () => {
       let form: NavFormType;
+
       beforeEach(() => {
         form = formMedProps({});
       });

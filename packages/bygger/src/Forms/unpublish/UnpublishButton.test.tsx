@@ -2,8 +2,9 @@ import { dateUtils, NavFormType } from '@navikt/skjemadigitalisering-shared-doma
 import { fireEvent, render, screen } from '@testing-library/react';
 import UnpublishButton from './UnpublishButton';
 
+const onUnpublish = vi.fn();
+
 describe('UnpublishButton', () => {
-  const onUnpublish = vi.fn();
   const renderButton = (form?: NavFormType) => {
     if (!form) {
       form = {

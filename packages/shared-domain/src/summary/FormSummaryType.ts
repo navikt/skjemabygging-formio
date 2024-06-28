@@ -1,104 +1,102 @@
 import { AttachmentValue } from '../attachment';
 import { SubmissionActivity } from '../submission/activity';
 
-export namespace Summary {
-  export type SubmissionValue = string | number;
+export type SummarySubmissionValue = string | number;
 
-  export type FieldsetType = 'fieldset' | 'navSkjemagruppe';
-  export type FieldType =
-    | 'textfield'
-    | 'textarea'
-    | 'number'
-    | 'navCheckbox'
-    | 'radiopanel'
-    | 'navSelect'
-    | 'select'
-    | 'email'
-    | 'htmlelement'
-    | 'phoneNumber'
-    | 'navDatepicker'
-    | 'day'
-    | 'landvelger'
-    | 'currency'
-    | 'valutavelger'
-    | 'alertstripe'
-    | 'attachment';
+export type SummaryFieldsetType = 'fieldset' | 'navSkjemagruppe';
+export type SummaryFieldType =
+  | 'textfield'
+  | 'textarea'
+  | 'number'
+  | 'navCheckbox'
+  | 'radiopanel'
+  | 'navSelect'
+  | 'select'
+  | 'email'
+  | 'htmlelement'
+  | 'phoneNumber'
+  | 'navDatepicker'
+  | 'day'
+  | 'landvelger'
+  | 'currency'
+  | 'valutavelger'
+  | 'alertstripe'
+  | 'attachment';
 
-  export interface Field {
-    label: string;
-    key: string;
-    type: FieldType;
-    value: SubmissionValue;
-  }
+export interface SummaryField {
+  label: string;
+  key: string;
+  type: SummaryFieldType;
+  value: SummarySubmissionValue;
+}
 
-  export interface Selectboxes extends Omit<Field, 'type' | 'value'> {
-    type: 'selectboxes';
-    value: string[];
-  }
+export interface SummarySelectboxes extends Omit<SummaryField, 'type' | 'value'> {
+  type: 'selectboxes';
+  value: string[];
+}
 
-  export interface Address extends Omit<Field, 'type' | 'value'> {
-    type: 'navAddress';
-    value: {
-      address: string;
-      linkText: string;
-    };
-  }
-
-  export interface Activity extends Omit<Field, 'type' | 'value'> {
-    type: 'activities';
-    value: SubmissionActivity;
-  }
-
-  export interface DrivingList extends Omit<Field, 'type' | 'value'> {
-    type: 'drivinglist';
-    value: { description: string; dates: { text: string; key: string }[] };
-  }
-
-  export interface Image extends Omit<Field, 'type'> {
-    type: 'image';
-    value: string;
-    alt: string;
-    widthPercent: number;
-  }
-
-  export interface Fieldset {
-    label: string;
-    key: string;
-    type: FieldsetType;
-    components: Component[];
-  }
-
-  export interface Attachment extends Omit<Field, 'type' | 'value'> {
-    type: 'attachment';
-    value: AttachmentValue;
-  }
-
-  export interface Panel extends Omit<Fieldset, 'type'> {
-    type: 'panel';
-  }
-
-  export interface DataGridRow extends Omit<Fieldset, 'type'> {
-    type: 'datagrid-row';
-  }
-
-  export interface DataGrid extends Omit<Fieldset, 'type' | 'components'> {
-    type: 'datagrid';
-    components: DataGridRow[];
-  }
-
-  export type Component = (
-    | Field
-    | Fieldset
-    | Panel
-    | DataGrid
-    | DataGridRow
-    | Selectboxes
-    | Image
-    | Activity
-    | Attachment
-    | DrivingList
-    | Address
-  ) & {
-    hiddenInSummary?: boolean;
+export interface SummaryAddress extends Omit<SummaryField, 'type' | 'value'> {
+  type: 'navAddress';
+  value: {
+    address: string;
+    linkText: string;
   };
 }
+
+export interface SummaryActivity extends Omit<SummaryField, 'type' | 'value'> {
+  type: 'activities';
+  value: SubmissionActivity;
+}
+
+export interface SummaryDrivingList extends Omit<SummaryField, 'type' | 'value'> {
+  type: 'drivinglist';
+  value: { description: string; dates: { text: string; key: string }[] };
+}
+
+export interface SummaryImage extends Omit<SummaryField, 'type'> {
+  type: 'image';
+  value: string;
+  alt: string;
+  widthPercent: number;
+}
+
+export interface SummaryFieldset {
+  label: string;
+  key: string;
+  type: SummaryFieldsetType;
+  components: SummaryComponent[];
+}
+
+export interface SummaryAttachment extends Omit<SummaryField, 'type' | 'value'> {
+  type: 'attachment';
+  value: AttachmentValue;
+}
+
+export interface SummaryPanel extends Omit<SummaryFieldset, 'type'> {
+  type: 'panel';
+}
+
+export interface SummaryDataGridRow extends Omit<SummaryFieldset, 'type'> {
+  type: 'datagrid-row';
+}
+
+export interface SummaryDataGrid extends Omit<SummaryFieldset, 'type' | 'components'> {
+  type: 'datagrid';
+  components: SummaryDataGridRow[];
+}
+
+export type SummaryComponent = (
+  | SummaryField
+  | SummaryFieldset
+  | SummaryPanel
+  | SummaryDataGrid
+  | SummaryDataGridRow
+  | SummarySelectboxes
+  | SummaryImage
+  | SummaryActivity
+  | SummaryAttachment
+  | SummaryDrivingList
+  | SummaryAddress
+) & {
+  hiddenInSummary?: boolean;
+};

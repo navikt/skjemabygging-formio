@@ -48,7 +48,7 @@ export default class DatePicker extends BaseComponent {
       );
   }
 
-  checkComponentValidity(data, dirty, row, options = {}) {
+  checkComponentValidity(data, dirty, row, _options = {}) {
     if (this.shouldSkipValidation(data, dirty, row)) {
       this.setCustomValidity('');
     } else {

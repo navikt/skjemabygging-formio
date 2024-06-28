@@ -1,7 +1,7 @@
-import { Summary } from '@navikt/skjemadigitalisering-shared-domain';
+import { SummaryPanel } from '@navikt/skjemadigitalisering-shared-domain';
 
 interface Props {
-  component: Summary.Panel;
+  component: SummaryPanel;
   formUrl: string;
 }
 

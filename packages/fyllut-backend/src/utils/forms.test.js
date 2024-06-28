@@ -3,6 +3,7 @@ import { loadFileFromDirectory } from './forms';
 
 describe('get forms', () => {
   let spyOpen;
+
   beforeEach(() => {
     spyOpen = vi.spyOn(fs.promises, 'open').mockReturnValue({
       readFile: vi.fn().mockReturnValue(JSON.stringify({ content: 'fileContent' })),

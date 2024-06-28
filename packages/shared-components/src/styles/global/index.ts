@@ -32,6 +32,7 @@ const global = {
   h3: {
     fontSize: 'var(--a-font-size-heading-small)',
     lineHeight: 'var(--a-font-line-height-heading-small)',
+    marginBottom: 'var(--a-spacing-3)',
   },
   h4: {
     fontSize: 'var(--a-font-size-heading-xsmall)',

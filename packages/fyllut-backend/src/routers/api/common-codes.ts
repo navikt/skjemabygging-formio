@@ -30,8 +30,8 @@ const commonCodes = {
     // As of 15.07.2022. Different languageCode like nn or en just results in same term,
     // so no need to support req.query.languageCode
     const languageCode = 'nb';
-    const mostUsedCurr = [];
-    const currencyList = [];
+    const mostUsedCurr: { label: string; value: string }[] = [];
+    const currencyList: { label: string; value: string }[] = [];
 
     try {
       const response = await fetchCommonCodeDescriptions(req, 'ValutaBetaling', languageCode);
@@ -40,10 +40,8 @@ const commonCodes = {
         const currencyName = (values as any)[0]?.beskrivelser?.[languageCode]?.term;
         const newObj = { label: `${currencyName} (${key})`, value: key };
         if (key === 'NOK' || key === 'EUR' || key === 'SEK') {
-          // @ts-ignore
           mostUsedCurr.push(newObj);
         } else {
-          // @ts-ignore
           currencyList.push(newObj);
         }
       }

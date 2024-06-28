@@ -1,7 +1,7 @@
-import { Summary } from '@navikt/skjemadigitalisering-shared-domain';
+import { SummaryDrivingList } from '@navikt/skjemadigitalisering-shared-domain';
 
 export interface Props {
-  component: Summary.DrivingList;
+  component: SummaryDrivingList;
 }
 
 const DrivingListSummary = ({ component }: Props) => {

@@ -25,7 +25,7 @@ export const toPascalCase = (originalText) => {
 };
 
 export const addPrefixOrPostfix = (originalText, prefix = '', postfix = '') => {
-  if (!!prefix) {
+  if (prefix) {
     return `${prefix}${toPascalCase(originalText)}${postfix}`;
   } else {
     return `${originalText}${postfix}`;

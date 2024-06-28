@@ -8,6 +8,8 @@ import {
 import vedleggConditional from '../../../test/test-data/form/vedlegg-conditional';
 import { getRelevantAttachments, hasOtherDocumentation } from './attachmentsUtil';
 
+const borDuINorgeRadiopanelKey = borDuINorgeRadiopanel.key;
+
 describe('attachmentUtil', () => {
   describe('getRelevantAttachments', () => {
     describe('form containing attachment triggered by radiopanel submission value', () => {
@@ -24,7 +26,7 @@ describe('attachmentUtil', () => {
                 ...vedleggBekreftelseBostedsadresse,
                 conditional: {
                   show: true,
-                  when: borDuINorgeRadiopanel.key,
+                  when: borDuINorgeRadiopanelKey,
                   eq: 'nei',
                 },
               },
@@ -54,6 +56,7 @@ describe('attachmentUtil', () => {
         expect(attachments).toHaveLength(0);
       });
     });
+
     describe('form containing attachment with custom conditional', () => {
       const form = {
         components: [
@@ -66,7 +69,7 @@ describe('attachmentUtil', () => {
             components: [
               {
                 ...vedleggBekreftelseBostedsadresse,
-                customConditional: `show = data.${borDuINorgeRadiopanel.key} === "nei"`,
+                customConditional: `show = data.${borDuINorgeRadiopanelKey} === "nei"`,
               },
             ],
           },
@@ -85,6 +88,7 @@ describe('attachmentUtil', () => {
         expect(attachments).toHaveLength(0);
       });
     });
+
     describe('form containing attachment with custom conditional which has expression possibly resulting in undefined error', () => {
       const form = {
         components: [
@@ -97,7 +101,7 @@ describe('attachmentUtil', () => {
             components: [
               {
                 ...vedleggBekreftelseBostedsadresse,
-                customConditional: `show = data.ukjentpanel.svar === "nei" || data.${borDuINorgeRadiopanel.key} === "nei"`,
+                customConditional: `show = data.ukjentpanel.svar === "nei" || data.${borDuINorgeRadiopanelKey} === "nei"`,
               },
             ],
           },
@@ -122,6 +126,7 @@ describe('attachmentUtil', () => {
         const attachments = getRelevantAttachments(vedleggConditional.form, vedleggConditional.submission.data);
         expect(attachments).toHaveLength(3);
       });
+
       it('Some attachments are triggered', () => {
         const submissionDataCopy: SubmissionData = JSON.parse(JSON.stringify(vedleggConditional.submission.data));
         submissionDataCopy.harDuDokumentasjonDuOnskerALeggeVedSoknaden = 'ja';
@@ -134,6 +139,7 @@ describe('attachmentUtil', () => {
         const attachments = getRelevantAttachments(vedleggConditional.form, submissionDataCopy);
         expect(attachments).toHaveLength(2);
       });
+
       it('No attachments are triggered', () => {
         const submissionDataCopy = JSON.parse(JSON.stringify(vedleggConditional.submission.data));
         submissionDataCopy.harDuDokumentasjonDuOnskerALeggeVedSoknaden = 'nei';
@@ -153,7 +159,7 @@ describe('attachmentUtil', () => {
             {
               ...vedleggBekreftelseBostedsadresse,
               otherDocumentation: true,
-              customConditional: `show = data.ukjentpanel.svar === "nei" || data.${borDuINorgeRadiopanel.key} === "nei"`,
+              customConditional: `show = data.ukjentpanel.svar === "nei" || data.${borDuINorgeRadiopanelKey} === "nei"`,
             },
           ],
         },

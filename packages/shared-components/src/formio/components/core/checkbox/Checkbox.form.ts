@@ -5,7 +5,7 @@ import editFormTabs from '../../base/editForm/editFormTabs';
 import editFormValidation from '../../base/editForm/validation';
 
 const checkboxForm = () => {
-  const { api, conditional, createTabs, data, display, validation } = editFormTabs;
+  const { api, conditional, createTabs, display, validation } = editFormTabs;
 
   // prettier-ignore
   return createTabs(

@@ -2,11 +2,11 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import GlobalTranslationRow from './GlobalTranslationRow';
 
-describe('GlobalTranslationRow', () => {
-  let mockedUpdateTranslation = vi.fn();
-  let mockedUpdateOriginalText = vi.fn();
-  let mockedDeleteOneRow = vi.fn();
+let mockedUpdateTranslation = vi.fn();
+let mockedUpdateOriginalText = vi.fn();
+let mockedDeleteOneRow = vi.fn();
 
+describe('GlobalTranslationRow', () => {
   const renderGlobalTranslationRow = (
     mockedOriginalText: string,
     mockedTranslation: string,

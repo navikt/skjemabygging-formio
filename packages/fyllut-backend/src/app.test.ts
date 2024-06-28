@@ -133,6 +133,8 @@ describe('app', () => {
         });
       });
 
+      // Dynamically generated tests are exceptions to this rule: https://github.com/lo1tuma/eslint-plugin-mocha/blob/main/docs/rules/no-setup-in-describe.md
+      // eslint-disable-next-line mocha/no-setup-in-describe
       describe.each(['PAPIR_OG_DIGITAL', undefined])('innsending %s', (innsending) => {
         describe('query param sub is missing', () => {
           it('redirects to intropage and keeps other query params', async () => {
@@ -166,6 +168,7 @@ describe('app', () => {
             const res = await request(createApp()).get('/fyllut/testform001/panel1?lang=en&sub=digital').expect(200);
             expect(res.get('location')).toBeUndefined();
           });
+
           it('does not redirect to intropage when sub=paper', async () => {
             const testform001 = createFormDefinition(innsending as InnsendingType);
             nock(formioApiServiceUrl!)

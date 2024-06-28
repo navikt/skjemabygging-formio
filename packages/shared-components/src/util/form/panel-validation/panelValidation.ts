@@ -16,7 +16,7 @@ const findFirstInputWithValidationError = (wizardComponent, data): Component | u
 
   for (const subComponent of wizardComponent?.components ?? []) {
     const firstInputWithError = findFirstInputWithValidationError(subComponent, data);
-    if (!!firstInputWithError) {
+    if (firstInputWithError) {
       return firstInputWithError;
     }
   }

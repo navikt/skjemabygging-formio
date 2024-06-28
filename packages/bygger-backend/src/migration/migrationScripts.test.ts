@@ -12,6 +12,12 @@ import {
 } from './testData';
 import mockedForm from './testdata/form';
 
+const allForms: NavFormType[] = [
+  { ...mockedForm, path: 'form1', properties: { ...mockedForm.properties, skjemanummer: 'form1' } },
+  { ...mockedForm, path: 'form2', properties: { ...mockedForm.properties, skjemanummer: 'form2' } },
+  { ...mockedForm, path: 'form3', properties: { ...mockedForm.properties, skjemanummer: 'form3' } },
+];
+
 describe('Migration scripts', () => {
   describe('migrateForm', () => {
     const fnrEditOptions = { 'validate.custom': 'valid = instance.newValidateFnr(input)' };
@@ -187,12 +193,6 @@ describe('Migration scripts', () => {
   });
 
   describe('migrateForms', () => {
-    const allForms: NavFormType[] = [
-      { ...mockedForm, path: 'form1', properties: { ...mockedForm.properties, skjemanummer: 'form1' } },
-      { ...mockedForm, path: 'form2', properties: { ...mockedForm.properties, skjemanummer: 'form2' } },
-      { ...mockedForm, path: 'form3', properties: { ...mockedForm.properties, skjemanummer: 'form3' } },
-    ];
-
     it('generates log only for included form paths', async () => {
       const { log } = await migrateForms({}, { disabled: false }, {}, { disabled: true }, allForms, ['form1', 'form3']);
       expect(Object.keys(log)).toEqual(['form1', 'form3']);
@@ -243,6 +243,7 @@ describe('Migration scripts', () => {
     describe('When dependencyFilters are provided (but searchFilters are not)', () => {
       let log;
       let migratedForms;
+
       beforeEach(async () => {
         const migrated = await migrateForms({}, {}, { type: 'radio' }, { disabled: true }, [
           formWithSimpleConditionalToRadio, // match on dependencyFilters
@@ -385,6 +386,7 @@ describe('Migration scripts', () => {
 
   describe('getEditScript', () => {
     let testComponent;
+
     beforeEach(() => {
       testComponent = {
         prop1: 'prop1',

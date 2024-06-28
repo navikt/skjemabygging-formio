@@ -81,7 +81,7 @@ const sendInnSoknad = {
       const tokenxAccessToken = getTokenxAccessToken(req);
       const fyllutUrl = getFyllutUrl(req);
       const body = assembleSendInnSoknadBody(req.body, idportenPid, fyllutUrl, null);
-      const forceCreateParam = !!req.query?.forceMellomlagring ? '?force=true' : '';
+      const forceCreateParam = req.query?.forceMellomlagring ? '?force=true' : '';
 
       const sendInnResponse = await fetch(`${sendInnConfig.host}${sendInnConfig.paths.soknad}${forceCreateParam}`, {
         method: 'POST',

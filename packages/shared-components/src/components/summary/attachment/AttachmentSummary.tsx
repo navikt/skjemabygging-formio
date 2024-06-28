@@ -1,7 +1,7 @@
-import { Summary } from '@navikt/skjemadigitalisering-shared-domain';
+import { SummaryAttachment } from '@navikt/skjemadigitalisering-shared-domain';
 
 interface Props {
-  component: Summary.Attachment;
+  component: SummaryAttachment;
 }
 
 const AttachmentSummary = ({ component }: Props) => {

@@ -31,8 +31,7 @@ describe('Date Validation', () => {
     it('Check with undefined value', async () => {
       const errorMessage = validateDate(
         {
-          // @ts-ignore
-          value: undefined,
+          value: undefined as unknown as string,
           label: 'Label',
           required: true,
         },
@@ -44,8 +43,7 @@ describe('Date Validation', () => {
     it('Check with null value', async () => {
       const errorMessage = validateDate(
         {
-          // @ts-ignore
-          value: null,
+          value: null as unknown as string,
           label: 'Label',
           required: true,
         },

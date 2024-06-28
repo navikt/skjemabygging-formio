@@ -65,13 +65,15 @@ const htmlNode2Markdown = (node: Element | ChildNode): string => {
 
     switch (element.tagName) {
       case 'STRONG':
-      case 'B':
+      case 'B': {
         const boldText = Array.from(element.childNodes, htmlNode2Markdown).join('');
         return boldText ? `**${boldText}**` : '';
-      case 'A':
+      }
+      case 'A': {
         const linkText = Array.from(element.childNodes, htmlNode2Markdown).join('');
         const url = element.getAttribute('href');
         return linkText || url ? `[${linkText}](${url})` : '';
+      }
       default:
         if (isAcceptedTag(element.tagName)) {
           const textContent = Array.from(element.childNodes, htmlNode2Markdown).join('');

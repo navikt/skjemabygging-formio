@@ -16,11 +16,11 @@ const useStyles = makeStyles({
 
 interface Props {
   mottaksadresse?: Mottaksadresse;
-  onSubmitDone: Function;
-  onEdit?: Function;
-  onCancel: Function;
-  onFormReady: Function;
-  deleteMottaksadresse?: Function;
+  onSubmitDone: () => void;
+  onEdit?: () => void;
+  onCancel: () => void;
+  onFormReady: () => void;
+  deleteMottaksadresse?: (mottaksadresseId: string) => Promise<void>;
   editMode: boolean;
   loadingForm: boolean;
 }
@@ -59,9 +59,7 @@ const MottaksadresseEditor = ({
               <NavForm
                 src={`${NavFormioJs.Formio.getProjectUrl()}/mottaksadresse`}
                 submission={mottaksadresse ? cloneDeep(mottaksadresse) : undefined}
-                /* @ts-ignore */
                 onSubmitDone={onSubmitDone}
-                /* @ts-ignore */
                 formReady={onFormReady}
               />
             </AppConfigProvider>

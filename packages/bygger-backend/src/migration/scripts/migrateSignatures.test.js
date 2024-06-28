@@ -22,6 +22,7 @@ describe('Migration of signatures', () => {
   beforeAll(() => {
     migrationScript = migrateSignatures({}, []);
   });
+
   describe('for (legacy-)forms without a signatures object', () => {
     it('adds an array of signatures with a default object with empty strings for label and description', () => {
       const actual = migrationScript(createMockForm());

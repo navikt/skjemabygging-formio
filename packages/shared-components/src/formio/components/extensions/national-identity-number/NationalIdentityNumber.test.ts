@@ -13,7 +13,6 @@ describe('Fodselsnummer', () => {
       fnrComp.options = {
         appConfig: { config: { NAIS_CLUSTER_NAME: 'prod-gcp' } },
       };
-      // @ts-ignore
       vi.spyOn(NationalIdenityNumber.prototype, 't').mockImplementation((text) => text);
     });
 

@@ -2,8 +2,7 @@ import { useFormStatusIndicatorStyles } from './styles';
 import { Status, StreetLightSize } from './types';
 
 const FormStatusIndicator = ({ status, size, title }: { status: Status; size: StreetLightSize; title?: string }) => {
-  // @ts-ignore
-  const styles = useFormStatusIndicatorStyles({ size });
+  const styles = useFormStatusIndicatorStyles({ size } as Jss.Theme);
   switch (status) {
     case 'PUBLISHED':
       return <span className={`${styles.streetLight} ${styles.published}`} title={title} aria-hidden={true} />;

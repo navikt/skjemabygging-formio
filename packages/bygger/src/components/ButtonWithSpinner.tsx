@@ -5,7 +5,7 @@ interface Props {
   icon?: React.ReactNode;
   children: React.ReactNode;
   className?: string;
-  onClick: Function;
+  onClick: () => void;
   variant?:
     | 'primary'
     | 'primary-neutral'

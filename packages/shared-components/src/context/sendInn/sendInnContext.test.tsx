@@ -6,6 +6,12 @@ import { http } from '../../index';
 import { AppConfigProvider } from '../config/configContext';
 import { SendInnProvider, useSendInn } from './sendInnContext';
 
+const mockHttp = {
+  post: vi.fn(),
+  put: vi.fn(),
+  delete: vi.fn(),
+};
+
 describe('sendInnContext', () => {
   const TestComponent = ({ submission }) => {
     const { startMellomlagring, updateMellomlagring, deleteMellomlagring, submitSoknad, innsendingsId } = useSendInn();
@@ -21,11 +27,6 @@ describe('sendInnContext', () => {
     );
   };
 
-  const mockHttp = {
-    post: vi.fn(),
-    put: vi.fn(),
-    delete: vi.fn(),
-  };
   const innsendingsId = 'abc-123-456';
   const form = { title: 'TestSkjema', components: [] } as unknown as NavFormType;
   const translations = {};

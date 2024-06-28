@@ -9,6 +9,7 @@ import {
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
+import { Mock } from 'vitest';
 import forstesideMock from '../../../test/test-data/forsteside/forsteside-mock';
 import { AppConfigProvider } from '../../context/config/configContext';
 import pdf from '../../util/pdf/pdf';
@@ -133,11 +134,11 @@ describe('PrepareLetterPage', () => {
 
   describe('Førsteside-knapp', () => {
     let pdfDownloads: any[] = [];
+
     beforeEach(() => {
       pdfDownloads = [];
 
-      // @ts-ignore
-      pdf.lastNedFilBase64.mockImplementation((base64, tittel, filtype) => {
+      (pdf.lastNedFilBase64 as Mock).mockImplementation((base64, tittel, filtype) => {
         pdfDownloads.push({ base64, tittel, filtype });
       });
     });
@@ -241,8 +242,7 @@ describe('PrepareLetterPage', () => {
         expect(fetchMock.mock.calls[1][0]).toBe('/api/log/error');
         const request = {
           path: fetchMock.mock.calls[1][0],
-          // @ts-ignore
-          body: JSON.parse(fetchMock.mock.calls[1][1].body),
+          body: JSON.parse(fetchMock.mock.calls[1][1]?.body as string),
         };
         expect(request.path).toBe('/api/log/error');
         expect(request.body.message).toBe('Ingen relevante enheter funnet');
@@ -275,6 +275,8 @@ describe('PrepareLetterPage', () => {
       });
     });
 
+    // Dynamically generated tests are exceptions to this rule: https://github.com/lo1tuma/eslint-plugin-mocha/blob/main/docs/rules/no-setup-in-describe.md
+    // eslint-disable-next-line mocha/no-setup-in-describe
     it.each([[], undefined])(
       "renders EnhetSelector with all supported Enhet items, when 'enhetstyper' is empty/undefined",
       async (enhetstyper) => {
@@ -356,6 +358,7 @@ describe('PrepareLetterPage', () => {
         const uxSignalsSection = screen.queryByTestId('uxsignals');
         expect(uxSignalsSection).toBeInTheDocument();
       });
+
       it('renders when ux innsendingstype is PAPIR_OG_DIGITAL', () => {
         renderPrepareLetterPage(
           formWithProperties({
@@ -367,6 +370,7 @@ describe('PrepareLetterPage', () => {
         const uxSignalsSection = screen.queryByTestId('uxsignals');
         expect(uxSignalsSection).toBeInTheDocument();
       });
+
       it('does not render when ux innsendingstype is KUN_DIGITAL', () => {
         renderPrepareLetterPage(
           formWithProperties({

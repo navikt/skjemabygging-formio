@@ -1,6 +1,7 @@
 import { Enhet, supportedEnhetstyper } from '@navikt/skjemadigitalisering-shared-domain';
 import { Response } from 'express';
 import nock from 'nock';
+import { Mock } from 'vitest';
 import { config } from '../../config/config';
 import { mockNext } from '../../test/requestTestHelpers';
 import { mockRequest, mockResponse } from '../../test/testHelpers';
@@ -9,8 +10,7 @@ import enheter from './testdata/enheter';
 
 const { skjemabyggingProxyUrl } = config;
 
-// @ts-ignore
-const getEnhetslisteFromResponse = (res: Response): Enhet[] => res.json.mock.calls[0][0];
+const getEnhetslisteFromResponse = (res: Response): Enhet[] => (res.json as Mock).mock.calls[0][0];
 
 describe('[endpoint] enhetsliste', () => {
   let fetchEnhetslisteMock: nock.Scope;
@@ -80,8 +80,7 @@ describe('[endpoint] enhetsliste', () => {
       await enhetslisteEndpoint.get(req, res, next);
       expect(res.json).not.toHaveBeenCalled();
       expect(next).toHaveBeenCalledTimes(1);
-      // @ts-ignore
-      const error = next.mock.calls[0][0];
+      const error = (next as Mock).mock.calls[0][0];
       expect(error.message).toBe('Feil ved henting av enhetsliste');
       expect(error.functional).toBe(true);
     });

@@ -10,6 +10,7 @@ describe('LogLevel', () => {
       expect(isEnabled('warning')).toBe(true);
       expect(isEnabled('error')).toBe(true);
     });
+
     it('configLevel debug', () => {
       const isEnabled = logLevelIsEnabled('debug');
       expect(isEnabled('trace')).toBe(false);
@@ -18,6 +19,7 @@ describe('LogLevel', () => {
       expect(isEnabled('warning')).toBe(true);
       expect(isEnabled('error')).toBe(true);
     });
+
     it('configLevel info', () => {
       const isEnabled = logLevelIsEnabled('info');
       expect(isEnabled('trace')).toBe(false);
@@ -26,6 +28,7 @@ describe('LogLevel', () => {
       expect(isEnabled('warning')).toBe(true);
       expect(isEnabled('error')).toBe(true);
     });
+
     it('configLevel warning', () => {
       const isEnabled = logLevelIsEnabled('warning');
       expect(isEnabled('trace')).toBe(false);
@@ -34,6 +37,7 @@ describe('LogLevel', () => {
       expect(isEnabled('warning')).toBe(true);
       expect(isEnabled('error')).toBe(true);
     });
+
     it('configLevel error', () => {
       const isEnabled = logLevelIsEnabled('error');
       expect(isEnabled('trace')).toBe(false);

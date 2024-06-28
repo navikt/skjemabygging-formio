@@ -1,3 +1,4 @@
+import { Mock } from 'vitest';
 import {
   mockRepoCreateOrUpdateFileContents,
   mockRepoCreatePullRequest,
@@ -22,8 +23,8 @@ describe('Backend', () => {
   const formPath = 'skjema';
 
   beforeEach(() => {
-    // @ts-ignore
-    GitHubRepo.mockImplementation(() => {
+    backend = createBackendForTest();
+    (GitHubRepo as Mock).mockImplementation(() => {
       return {
         authenticate: vi.fn(),
         getRef: mockRepoGetRef,
@@ -39,13 +40,9 @@ describe('Backend', () => {
   });
 
   let backend: any;
-  beforeEach(() => {
-    backend = createBackendForTest();
-  });
 
   afterEach(() => {
-    // @ts-ignore
-    GitHubRepo.mockClear();
+    (GitHubRepo as Mock).mockClear();
     mockRepoGetRef.mockClear();
     mockRepoCreateRef.mockClear();
     mockRepoDeleteRef.mockClear();
@@ -182,6 +179,7 @@ describe('Backend', () => {
     describe('when getRef does not return the newly created branch', () => {
       const MAIN_BRANCH_SHA = 'main-branch-sha';
       const ERROR_MESSAGE = 'Not found';
+
       beforeEach(() => {
         mockRepoGetRef.mockImplementation((branch) => {
           if (branch === configForTest.publishRepo.base) {
