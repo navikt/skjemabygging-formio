@@ -34,6 +34,8 @@ const form = {
   ],
 } as unknown as NavFormType;
 
+const onStateUpdated = vi.fn();
+
 describe('I18nStateProvider', () => {
   const loadTranslations = () => Promise.resolve(mockedTranslations);
 
@@ -42,8 +44,6 @@ describe('I18nStateProvider', () => {
     onStateUpdated(state);
     return <div>Loaded translations for {Object.keys(state.translationsForNavForm).length} languages</div>;
   };
-
-  const onStateUpdated = vi.fn();
 
   beforeEach(async () => {
     render(

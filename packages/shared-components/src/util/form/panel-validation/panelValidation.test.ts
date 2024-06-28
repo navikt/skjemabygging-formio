@@ -1,65 +1,65 @@
 import { Component, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import { PanelValidation, findFormStartingPoint } from './panelValidation';
 
+const input = (key) => ({ key, input: true }) as Component;
+
+const firstPanelWithOneInput = { key: 'firstPanelWithOneInput', components: [input('firstInput')] };
+const firstPanelWithOneInputValid: PanelValidation = {
+  key: firstPanelWithOneInput.key,
+  hasValidationErrors: false,
+  summaryComponents: ['firstInput'],
+  firstInputComponent: input('firstInput'),
+};
+
+const panelWithOneInput = { key: 'panelWithOneInput', components: [input('singleInput')] };
+const panelWithOneInputValid: PanelValidation = {
+  key: panelWithOneInput.key,
+  hasValidationErrors: false,
+  summaryComponents: ['singleInput'],
+  firstInputComponent: input('singleInput'),
+};
+
+const panelWithThreeInputs = {
+  key: 'panelWithThreeInputs',
+  components: [{ key: 'notAnInput' }, input('input1'), input('input2'), input('input3')],
+};
+const panelWithThreeInputsValid: PanelValidation = {
+  key: panelWithThreeInputs.key,
+  hasValidationErrors: false,
+  summaryComponents: ['input1', 'input2'],
+  firstInputComponent: input('input1'),
+};
+
+const panelWithNoInputs = {
+  key: 'panelWithNoInputs',
+  components: [{ key: 'notAnInput' }, { key: 'alsoNotAnInput' }],
+};
+const panelWithNoInputsValid = {
+  key: panelWithNoInputs.key,
+  hasValidationErrors: false,
+  summaryComponents: [],
+};
+
+const nestedInput = input('nestedInput');
+const panelWithNestedInput = {
+  key: 'panelWithNestedInput',
+  components: [
+    {
+      key: 'level1',
+      components: [{ key: 'level2', components: [nestedInput] }],
+    },
+    input('topLevelInput'),
+  ],
+};
+const panelWithNestedInputValid: PanelValidation = {
+  key: panelWithNestedInput.key,
+  hasValidationErrors: false,
+  summaryComponents: ['nestedInput', 'topLevelInput'],
+  firstInputComponent: nestedInput,
+};
+
 describe('panelValidationUtils', () => {
   describe('findFormStartingPoint', () => {
-    const input = (key) => ({ key, input: true }) as Component;
-
-    const firstPanelWithOneInput = { key: 'firstPanelWithOneInput', components: [input('firstInput')] };
-    const firstPanelWithOneInputValid: PanelValidation = {
-      key: firstPanelWithOneInput.key,
-      hasValidationErrors: false,
-      summaryComponents: ['firstInput'],
-      firstInputComponent: input('firstInput'),
-    };
-
-    const panelWithOneInput = { key: 'panelWithOneInput', components: [input('singleInput')] };
-    const panelWithOneInputValid: PanelValidation = {
-      key: panelWithOneInput.key,
-      hasValidationErrors: false,
-      summaryComponents: ['singleInput'],
-      firstInputComponent: input('singleInput'),
-    };
-
-    const panelWithThreeInputs = {
-      key: 'panelWithThreeInputs',
-      components: [{ key: 'notAnInput' }, input('input1'), input('input2'), input('input3')],
-    };
-    const panelWithThreeInputsValid: PanelValidation = {
-      key: panelWithThreeInputs.key,
-      hasValidationErrors: false,
-      summaryComponents: ['input1', 'input2'],
-      firstInputComponent: input('input1'),
-    };
-
-    const panelWithNoInputs = {
-      key: 'panelWithNoInputs',
-      components: [{ key: 'notAnInput' }, { key: 'alsoNotAnInput' }],
-    };
-    const panelWithNoInputsValid = {
-      key: panelWithNoInputs.key,
-      hasValidationErrors: false,
-      summaryComponents: [],
-    };
-
-    const nestedInput = input('nestedInput');
-    const panelWithNestedInput = {
-      key: 'panelWithNestedInput',
-      components: [
-        {
-          key: 'level1',
-          components: [{ key: 'level2', components: [nestedInput] }],
-        },
-        input('topLevelInput'),
-      ],
-    };
-    const panelWithNestedInputValid: PanelValidation = {
-      key: panelWithNestedInput.key,
-      hasValidationErrors: false,
-      summaryComponents: ['nestedInput', 'topLevelInput'],
-      firstInputComponent: nestedInput,
-    };
-
     describe('When form has validation errors', () => {
       it('returns key of first input component with an error', () => {
         const form = { components: [firstPanelWithOneInput, panelWithThreeInputs, panelWithOneInput] } as NavFormType;

@@ -43,6 +43,7 @@ const createComponent = (
   }) as SummaryComponent;
 
 const mockTranslate = (text: string) => text;
+const panels = [createPanel('Panel 1'), createPanel('Panel 2'), createPanel('Panel 3')];
 
 describe('htmlBuilder', () => {
   describe('createHtmlFromSubmission', () => {
@@ -85,8 +86,6 @@ describe('htmlBuilder', () => {
   });
 
   describe('Fields from form and submission', () => {
-    const panels = [createPanel('Panel 1'), createPanel('Panel 2'), createPanel('Panel 3')];
-
     it('adds headers for each top level element in the array', () => {
       const bodyElement = body(panels);
       expect(bodyElement).toContain('<h2>Panel 1</h2>');

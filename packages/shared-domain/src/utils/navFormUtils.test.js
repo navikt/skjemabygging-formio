@@ -19,6 +19,21 @@ import formWithSimpleConditional from './testdata/conditional-simple';
 import formWithSkjemagruppe from './testdata/conditional-skjemagruppe';
 import nav100750 from './testdata/nav100750';
 
+const withDifferentModified = {
+  ...nav100750,
+  properties: { ...nav100750.properties, modified: '2024-03-01T08:13:33.878Z' },
+};
+const withReOrderedProperties = {
+  ...nav100750,
+  access: nav100750.access,
+  machineName: nav100750.machineName,
+  owner: nav100750.owner,
+  properties: {
+    ...nav100750.properties,
+    tema: nav100750.properties.tema,
+  },
+};
+
 describe('navFormUtils', () => {
   describe('toFormPath', () => {
     it('should create path from skjemanummer', () => {
@@ -49,37 +64,40 @@ describe('navFormUtils', () => {
     });
 
     describe('A form where path is derived from title (legacy)', () => {
-      const form = createForm('First test form', 'firsttestform', 'NAV 12-34.56');
-
       it('should match the path', () => {
+        const form = createForm('First test form', 'firsttestform', 'NAV 12-34.56');
         expect(formMatcherPredicate('firsttestform')(form)).toBe(true);
       });
 
       it('should match the skjemanummer', () => {
+        const form = createForm('First test form', 'firsttestform', 'NAV 12-34.56');
         expect(formMatcherPredicate('nav123456')(form)).toBe(true);
       });
 
       it('should not match other skjemanummer', () => {
+        const form = createForm('First test form', 'firsttestform', 'NAV 12-34.56');
         expect(formMatcherPredicate('nav654321')(form)).toBe(false);
       });
 
       it('should not match other title', () => {
+        const form = createForm('First test form', 'firsttestform', 'NAV 12-34.56');
         expect(formMatcherPredicate('secondtestform')(form)).toBe(false);
       });
     });
 
     describe('A form where the path is derived from skjemanummer', () => {
-      const form = createForm('Second test form', 'nav123456', 'NAV 12-34.56');
-
       it('should match the path', () => {
+        const form = createForm('Second test form', 'nav123456', 'NAV 12-34.56');
         expect(formMatcherPredicate('nav123456')(form)).toBe(true);
       });
 
       it('should match the title (legacy)', () => {
+        const form = createForm('Second test form', 'nav123456', 'NAV 12-34.56');
         expect(formMatcherPredicate('secondtestform')(form)).toBe(true);
       });
 
       it('should not match other skjemanummer', () => {
+        const form = createForm('Second test form', 'nav123456', 'NAV 12-34.56');
         expect(formMatcherPredicate('nav654321')(form)).toBe(false);
       });
     });
@@ -361,7 +379,10 @@ describe('navFormUtils', () => {
     describe('A form with group of components with external conditional dependencies', () => {
       const testForms = [formWithSkjemagruppe, formWithPanel, formWithContainer];
 
+      // Dynamically generated tests are exceptions to this rule: https://github.com/lo1tuma/eslint-plugin-mocha/blob/main/docs/rules/no-setup-in-describe.md
+      // eslint-disable-next-line mocha/no-setup-in-describe
       testForms.forEach((testForm) => {
+        // eslint-disable-next-line mocha/no-setup-in-describe
         describe(`Grouped with ${testForm.title}`, () => {
           it("returns two dependenct component keys for 'oppgiYndlingsfarge'", () => {
             const dependentKeys = findDependentComponents('e83xe9j', testForm);
@@ -687,21 +708,6 @@ describe('navFormUtils', () => {
   });
 
   describe('isEqual', () => {
-    const withDifferentModified = {
-      ...nav100750,
-      properties: { ...nav100750.properties, modified: '2024-03-01T08:13:33.878Z' },
-    };
-    const withReOrderedProperties = {
-      ...nav100750,
-      access: nav100750.access,
-      machineName: nav100750.machineName,
-      owner: nav100750.owner,
-      properties: {
-        ...nav100750.properties,
-        tema: nav100750.properties.tema,
-      },
-    };
-
     it('compares two forms and skips certain properties', () => {
       expect(isEqual(nav100750, withDifferentModified)).toBe(false);
       expect(isEqual(nav100750, withDifferentModified, ['modified'])).toBe(true);

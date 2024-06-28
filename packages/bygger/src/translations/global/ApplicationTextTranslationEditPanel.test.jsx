@@ -3,6 +3,8 @@ import ApplicationTextTranslationEditPanel, {
   getTranslationByOriginalText,
 } from './ApplicationTextTranslationEditPanel';
 
+const mockedUpdateTranslation = vi.fn();
+
 describe('ApplicationTextTranslationEditPanel', () => {
   describe('getTranslationByOriginalText', () => {
     it('returns translation object that matches originalText', () => {
@@ -25,8 +27,6 @@ describe('ApplicationTextTranslationEditPanel', () => {
   });
 
   describe('Rendering with Grensesnitt texts and one translation', () => {
-    const mockedUpdateTranslation = vi.fn();
-
     beforeEach(() => {
       render(
         <ApplicationTextTranslationEditPanel

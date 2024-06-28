@@ -1,9 +1,9 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import SearchFilterInput from './SearchFilterInput';
 
-describe('SearchFilterInput', () => {
-  const dispatchMock = vi.fn();
+const dispatchMock = vi.fn();
 
+describe('SearchFilterInput', () => {
   beforeEach(() => {
     render(<SearchFilterInput id={'id'} searchFilter={{ key: 'Feltnavn', value: 'value' }} dispatch={dispatchMock} />);
   });

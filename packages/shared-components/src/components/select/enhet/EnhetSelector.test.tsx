@@ -8,6 +8,7 @@ vi.mock('../../../context/languages/hooks/useLanguageCodeFromURL', () => {
     default: () => '',
   };
 });
+
 const mockOnSelectEnhet = vi.fn();
 const mockEnhetsListe = [
   { enhetNr: '1', navn: 'NAV abc' },
@@ -34,6 +35,8 @@ describe('EnhetSelector', () => {
       await waitFor(() => expect(screen.getByText('NAV abc')).toBeTruthy());
     });
 
+    // Dynamically generated tests are exceptions to this rule: https://github.com/lo1tuma/eslint-plugin-mocha/blob/main/docs/rules/no-setup-in-describe.md
+    // eslint-disable-next-line mocha/no-setup-in-describe
     it.each(mockEnhetsListe)('renders each option', (enhet) => {
       expect(screen.getByText(enhet.navn)).toBeDefined();
     });

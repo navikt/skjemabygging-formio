@@ -873,12 +873,6 @@ describe('form summary', () => {
     });
 
     describe('En datagrid med et tekstfelt og en navDatepicker', () => {
-      const form = createFormObject([
-        createPanelObject('Page 1', [
-          createDummyDataGrid('Data Grid', [createDummyTextfield('Fornavn'), createDummyNavDatepicker('Startdato')]),
-        ]),
-      ]);
-
       const summaryWithDatagridComponents = (datagridComponents) => ({
         label: 'Page 1',
         key: 'page1',
@@ -901,6 +895,11 @@ describe('form summary', () => {
       });
 
       it('Oppsummeringen inneholder både fornavn og startdato', () => {
+        const form = createFormObject([
+          createPanelObject('Page 1', [
+            createDummyDataGrid('Data Grid', [createDummyTextfield('Fornavn'), createDummyNavDatepicker('Startdato')]),
+          ]),
+        ]);
         const actual = createFormSummaryObject(form, {
           data: {
             datagrid: [{ fornavn: 'Trine', startdato: '2021-10-03' }],
@@ -925,6 +924,11 @@ describe('form summary', () => {
       });
 
       it('Oppsummeringen inneholder kun startdato siden fornavn ikke er oppgitt', () => {
+        const form = createFormObject([
+          createPanelObject('Page 1', [
+            createDummyDataGrid('Data Grid', [createDummyTextfield('Fornavn'), createDummyNavDatepicker('Startdato')]),
+          ]),
+        ]);
         const actual = createFormSummaryObject(form, {
           data: {
             datagrid: [{ startdato: '2021-10-03' }],

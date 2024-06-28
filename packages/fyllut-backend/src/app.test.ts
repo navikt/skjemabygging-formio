@@ -133,6 +133,8 @@ describe('app', () => {
         });
       });
 
+      // Dynamically generated tests are exceptions to this rule: https://github.com/lo1tuma/eslint-plugin-mocha/blob/main/docs/rules/no-setup-in-describe.md
+      // eslint-disable-next-line mocha/no-setup-in-describe
       describe.each(['PAPIR_OG_DIGITAL', undefined])('innsending %s', (innsending) => {
         describe('query param sub is missing', () => {
           it('redirects to intropage and keeps other query params', async () => {

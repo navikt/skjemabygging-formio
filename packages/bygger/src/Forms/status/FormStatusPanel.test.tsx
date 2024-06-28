@@ -10,10 +10,10 @@ type PartialFormProperties = Pick<
   'modified' | 'modifiedBy' | 'published' | 'publishedBy' | 'isTestForm' | 'unpublished'
 >;
 
-describe('FormStatusPanel', () => {
-  const now = moment().toISOString();
-  const earlier = moment(now).subtract('1', 'day').toISOString();
+const now = moment().toISOString();
+const earlier = moment(now).subtract('1', 'day').toISOString();
 
+describe('FormStatusPanel', () => {
   describe('When form has modified date and no publish date', () => {
     const properties: PartialFormProperties = { modified: now, modifiedBy: 'Jenny' };
 

@@ -93,7 +93,6 @@ export default tseslint.config(
 
       // Disabled
       'mocha/no-mocha-arrows': 'off', // We don't use "this" context in tests so we can use arrow functions
-      'mocha/no-setup-in-describe': 'off', // Setup for test cases in mocha should be done in before, beforeEach, or it
       'vitest/expect-expect': 'off', // Cypress tests don't necessarily use expect
       '@typescript-eslint/no-explicit-any': 'off', // Explicit any's
     },

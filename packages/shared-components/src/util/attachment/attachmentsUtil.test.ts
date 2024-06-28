@@ -8,6 +8,8 @@ import {
 import vedleggConditional from '../../../test/test-data/form/vedlegg-conditional';
 import { getRelevantAttachments, hasOtherDocumentation } from './attachmentsUtil';
 
+const borDuINorgeRadiopanelKey = borDuINorgeRadiopanel.key;
+
 describe('attachmentUtil', () => {
   describe('getRelevantAttachments', () => {
     describe('form containing attachment triggered by radiopanel submission value', () => {
@@ -24,7 +26,7 @@ describe('attachmentUtil', () => {
                 ...vedleggBekreftelseBostedsadresse,
                 conditional: {
                   show: true,
-                  when: borDuINorgeRadiopanel.key,
+                  when: borDuINorgeRadiopanelKey,
                   eq: 'nei',
                 },
               },
@@ -67,7 +69,7 @@ describe('attachmentUtil', () => {
             components: [
               {
                 ...vedleggBekreftelseBostedsadresse,
-                customConditional: `show = data.${borDuINorgeRadiopanel.key} === "nei"`,
+                customConditional: `show = data.${borDuINorgeRadiopanelKey} === "nei"`,
               },
             ],
           },
@@ -99,7 +101,7 @@ describe('attachmentUtil', () => {
             components: [
               {
                 ...vedleggBekreftelseBostedsadresse,
-                customConditional: `show = data.ukjentpanel.svar === "nei" || data.${borDuINorgeRadiopanel.key} === "nei"`,
+                customConditional: `show = data.ukjentpanel.svar === "nei" || data.${borDuINorgeRadiopanelKey} === "nei"`,
               },
             ],
           },
@@ -157,7 +159,7 @@ describe('attachmentUtil', () => {
             {
               ...vedleggBekreftelseBostedsadresse,
               otherDocumentation: true,
-              customConditional: `show = data.ukjentpanel.svar === "nei" || data.${borDuINorgeRadiopanel.key} === "nei"`,
+              customConditional: `show = data.ukjentpanel.svar === "nei" || data.${borDuINorgeRadiopanelKey} === "nei"`,
             },
           ],
         },

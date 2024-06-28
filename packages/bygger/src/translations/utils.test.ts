@@ -26,6 +26,21 @@ const {
   createPanelObject,
 } = MockedComponentObjectForTest;
 
+const form = createFormObject(
+  [
+    createPanelObject(
+      'Introduksjon',
+      [
+        createDummyTextfield('Ja'),
+        createDummyTextfield('Jeg'),
+        createDummyHTMLElement('HTML', '<p>Test linjeskift linux\nwindows\r\napple\r</p>'),
+      ],
+      'Introduksjon',
+    ),
+  ],
+  'test',
+);
+
 describe('utils', () => {
   describe('testGetAllTextsAndTypeForForm', () => {
     it('Test empty form', () => {
@@ -474,20 +489,6 @@ describe('utils', () => {
   });
 
   describe('testGetTextsAndTranslationsForForm', () => {
-    const form = createFormObject(
-      [
-        createPanelObject(
-          'Introduksjon',
-          [
-            createDummyTextfield('Ja'),
-            createDummyTextfield('Jeg'),
-            createDummyHTMLElement('HTML', '<p>Test linjeskift linux\nwindows\r\napple\r</p>'),
-          ],
-          'Introduksjon',
-        ),
-      ],
-      'test',
-    );
     const translations: FormioTranslationMap = {
       en: {
         id: '123',
