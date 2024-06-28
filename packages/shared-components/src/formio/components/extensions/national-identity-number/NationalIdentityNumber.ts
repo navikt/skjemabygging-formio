@@ -46,6 +46,9 @@ export default class NationalIdentityNumber extends TextField {
     return this.setComponentValidity(errorMessage ? [this.createError(errorMessage, undefined)] : [], dirty, undefined);
   }
 
+  /**
+   * @deprecated Validation has been moved. We keep this to support schemas that contains a reference to the function
+   */
   validateFnrNew(_inputValue) {
     return true;
   }

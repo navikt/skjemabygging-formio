@@ -44,7 +44,10 @@ class IBAN extends TextField {
     return this.setComponentValidity(errorMessage ? [this.createError(errorMessage, undefined)] : [], dirty, undefined);
   }
 
-  validateIban(_iban) {
+  /**
+   * @deprecated Validation has been moved. We keep this to support schemas that contains a reference to the function
+   */
+  validateIban(_inputValue) {
     return true;
   }
 }
