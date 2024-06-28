@@ -24,18 +24,17 @@ const testFormWithStandardAndReactComponents = {
             required: true,
           },
         },
-        /*{ TODO: Add back when datepicker works again
-          label: "Dato (dd.mm.åååå)",
-          type: "navDatepicker",
-          key: "datepicker",
+        {
+          label: 'Dato (dd.mm.åååå)',
+          type: 'navDatepicker',
+          key: 'datepicker',
           input: true,
           dataGridLabel: true,
-          validateOn: "blur",
+          validateOn: 'blur',
           validate: {
-            custom: "valid = instance.validateDatePickerV2(input, data, component, row);",
             required: true,
           },
-        },*/
+        },
         {
           label: 'IBAN',
           type: 'iban',
@@ -146,12 +145,11 @@ describe('NavForm', () => {
       expect(textField).toBeInTheDocument();
       expect(textField).toHaveValue('Donald');
 
-      /*
-      TODO: Add back when datepicker works
-      const datepicker = await screen.findByLabelText("Dato (dd.mm.åååå)");
+      const datepicker = await screen.findByLabelText('Dato (dd.mm.åååå)');
       expect(datepicker).toBeInTheDocument();
-      expect(datepicker).toHaveValue("01.01.2000");
-       */
+      await waitFor(() => {
+        expect(datepicker).toHaveValue('01.01.2000');
+      });
 
       const ibanField = await screen.findByLabelText('IBAN');
       expect(ibanField).toBeInTheDocument();
