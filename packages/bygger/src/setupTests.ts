@@ -12,10 +12,14 @@ fetchMock.enableMocks();
 globalThis.URL = nodeUrl as any;
 globalThis.Blob = Blob as any;
 
+// Setup tests should be allowed top level hooks
+// eslint-disable-next-line mocha/no-top-level-hooks
 afterEach(() => {
   cleanup();
 });
 
+// Setup tests should be allowed top level hooks
+// eslint-disable-next-line mocha/no-top-level-hooks
 afterAll(() => {
   vi.restoreAllMocks();
 });

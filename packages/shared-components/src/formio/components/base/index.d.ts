@@ -24,6 +24,7 @@ interface ReactComponentType {
   // Field
   render(element: any): any;
   // Component
+  key?: string;
   component?: Component;
   path?: string;
   defaultValue?: any;

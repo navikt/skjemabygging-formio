@@ -179,7 +179,6 @@ class NavSelect extends BaseComponent {
             component,
             message: err.toString(),
           });
-          // @ts-ignore
           console.warn(`Unable to load resources for ${this.key} (dataUrl=${dataUrl})`);
         })
         .finally(() => {

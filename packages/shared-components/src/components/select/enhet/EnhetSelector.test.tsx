@@ -8,7 +8,6 @@ vi.mock('../../../context/languages/hooks/useLanguageCodeFromURL', () => {
     default: () => '',
   };
 });
-
 const mockOnSelectEnhet = vi.fn();
 const mockEnhetsListe = [
   { enhetNr: '1', navn: 'NAV abc' },
