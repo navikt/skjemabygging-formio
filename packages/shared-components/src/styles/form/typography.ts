@@ -7,7 +7,7 @@ const typography = {
     marginTop: '0',
   },
   '& h3, & h4': {
-    margin: '0',
+    margin: '0 0 var(--a-spacing-3) 0',
   },
   '& h3 + h4': {
     marginTop: 'var(--a-spacing-6)',
