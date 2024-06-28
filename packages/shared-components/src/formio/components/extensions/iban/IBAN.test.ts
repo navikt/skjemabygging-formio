@@ -1,6 +1,6 @@
-// @ts-nocheck
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { validateIBAN, ValidationErrorsIBAN } from 'ibantools';
+import { Mock } from 'vitest';
 import IBAN from './IBAN.js';
 
 const { wrongBBANLength, noIBANCountry, invalidIBAN } = TEXTS.validering;
@@ -23,22 +23,22 @@ describe('IBAN', () => {
     });
 
     it('returns true when no IBAN is provided', () => {
-      validateIBAN.mockReturnValue({ valid: false, errorCodes: [ValidationErrorsIBAN.NoIBANProvided] });
+      (validateIBAN as Mock).mockReturnValue({ valid: false, errorCodes: [ValidationErrorsIBAN.NoIBANProvided] });
       expect(iban.validateIban('ValidIBAN')).toBe(true);
     });
 
     it('returns wrongBBANLength error message when BBAN part of IBAN has the wrong length', () => {
-      validateIBAN.mockReturnValue({ valid: false, errorCodes: [ValidationErrorsIBAN.WrongBBANLength] });
+      (validateIBAN as Mock).mockReturnValue({ valid: false, errorCodes: [ValidationErrorsIBAN.WrongBBANLength] });
       expect(iban.validateIban('ValidIBAN')).toBe(wrongBBANLength);
     });
 
     it('returns noIBANCountry error message when no country code is provided', () => {
-      validateIBAN.mockReturnValue({ valid: false, errorCodes: [ValidationErrorsIBAN.NoIBANCountry] });
+      (validateIBAN as Mock).mockReturnValue({ valid: false, errorCodes: [ValidationErrorsIBAN.NoIBANCountry] });
       expect(iban.validateIban('ValidIBAN')).toBe(noIBANCountry);
     });
 
     it('returns invalidIBAN error message when the IBAN is incorrect for other reasons', () => {
-      validateIBAN.mockReturnValue({ valid: false, errorCodes: [99] });
+      (validateIBAN as Mock).mockReturnValue({ valid: false, errorCodes: [99] });
       expect(iban.validateIban('ValidIBAN')).toBe(invalidIBAN);
     });
   });

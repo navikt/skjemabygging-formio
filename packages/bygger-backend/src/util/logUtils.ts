@@ -4,7 +4,6 @@ const processObject = (prefix: string, obj: object | undefined | null): { [k: st
     if (objectKeys.length > 0) {
       return objectKeys
         .map((key: string) => {
-          // @ts-ignore
           const value = obj[key];
           if (typeof value === 'object') {
             return processObject(`${prefix}_${key}`, value);

@@ -9,6 +9,7 @@ import {
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
+import { Mock } from 'vitest';
 import forstesideMock from '../../../test/test-data/forsteside/forsteside-mock';
 import { AppConfigProvider } from '../../context/config/configContext';
 import pdf from '../../util/pdf/pdf';
@@ -137,8 +138,7 @@ describe('PrepareLetterPage', () => {
     beforeEach(() => {
       pdfDownloads = [];
 
-      // @ts-ignore
-      pdf.lastNedFilBase64.mockImplementation((base64, tittel, filtype) => {
+      (pdf.lastNedFilBase64 as Mock).mockImplementation((base64, tittel, filtype) => {
         pdfDownloads.push({ base64, tittel, filtype });
       });
     });
@@ -242,8 +242,7 @@ describe('PrepareLetterPage', () => {
         expect(fetchMock.mock.calls[1][0]).toBe('/api/log/error');
         const request = {
           path: fetchMock.mock.calls[1][0],
-          // @ts-ignore
-          body: JSON.parse(fetchMock.mock.calls[1][1].body),
+          body: JSON.parse(fetchMock.mock.calls[1][1]?.body as string),
         };
         expect(request.path).toBe('/api/log/error');
         expect(request.body.message).toBe('Ingen relevante enheter funnet');

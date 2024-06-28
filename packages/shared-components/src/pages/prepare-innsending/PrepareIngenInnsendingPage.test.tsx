@@ -65,12 +65,11 @@ describe('PrepareIngenInnsendingPage', () => {
     await userEvent.click(lastNedSoknadKnapp);
     expect(submitCalls).toHaveLength(1);
 
-    // @ts-ignore
-    const submissionInput = submitCalls[0].target.children[0] as HTMLInputElement;
+    const form = submitCalls[0].target as HTMLFormElement;
+    const submissionInput = form.elements[0] as HTMLInputElement;
     expect(submissionInput.name).toBe('submission');
 
-    // @ts-ignore
-    const formInput = submitCalls[0].target.children[1] as HTMLInputElement;
+    const formInput = form.elements[1] as HTMLInputElement;
     expect(formInput.name).toBe('form');
     const formInputValueJson = JSON.parse(formInput.value);
     expect(formInputValueJson.title).toEqual(testForm.title);

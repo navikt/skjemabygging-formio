@@ -32,7 +32,7 @@ class TranslationsService {
       method: 'GET',
     });
     if (response.ok) {
-      const translationsForForm = await response.json();
+      const translationsForForm = (await response.json()) as I18nTranslations;
       // @ts-ignore
       return translationsForForm.reduce((acc, obj) => ({ ...acc, [obj.data.language]: { ...obj.data.i18n } }), {});
     }

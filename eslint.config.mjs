@@ -89,12 +89,11 @@ export default tseslint.config(
       ],
 
       // Warnings
-      '@typescript-eslint/ban-types': 'warn', // TODO: Remove 'Function' as a type mostly
       '@typescript-eslint/ban-ts-comment': 'warn', // No @ts-ignore or @ts-nocheck comments
-      'mocha/no-setup-in-describe': 'warn', // Should not have setup code in describe
 
       // Disabled
       'mocha/no-mocha-arrows': 'off', // We don't use "this" context in tests so we can use arrow functions
+      'mocha/no-setup-in-describe': 'off', // Setup for test cases in mocha should be done in before, beforeEach, or it
       'vitest/expect-expect': 'off', // Cypress tests don't necessarily use expect
       '@typescript-eslint/no-explicit-any': 'off', // Explicit any's
     },

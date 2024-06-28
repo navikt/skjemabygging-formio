@@ -13,8 +13,7 @@ interface Props {
 }
 
 const FormStatusPanel = ({ publishProperties, spacing, hideToggleDiffButton = false }: Props) => {
-  // @ts-ignore
-  const styles = useStatusStyles({ spacing });
+  const styles = useStatusStyles({ spacing } as Jss.Theme);
   const { modified, modifiedBy, published, publishedBy, unpublished, unpublishedBy } = publishProperties;
 
   const LabeledTimeAndUser = ({
@@ -26,8 +25,7 @@ const FormStatusPanel = ({ publishProperties, spacing, hideToggleDiffButton = fa
     timestamp?: string;
     userName?: string;
   }) => {
-    // @ts-ignore
-    const styles = useStatusStyles({ spacing });
+    const styles = useStatusStyles({ spacing } as Jss.Theme);
     if (!timestamp) {
       return <></>;
     }

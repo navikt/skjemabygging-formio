@@ -1,3 +1,4 @@
+import { Mock } from 'vitest';
 import {
   mockRepoCreateOrUpdateFileContents,
   mockRepoCreatePullRequest,
@@ -23,8 +24,7 @@ describe('Backend', () => {
 
   beforeEach(() => {
     backend = createBackendForTest();
-    // @ts-ignore
-    GitHubRepo.mockImplementation(() => {
+    (GitHubRepo as Mock).mockImplementation(() => {
       return {
         authenticate: vi.fn(),
         getRef: mockRepoGetRef,
@@ -42,8 +42,7 @@ describe('Backend', () => {
   let backend: any;
 
   afterEach(() => {
-    // @ts-ignore
-    GitHubRepo.mockClear();
+    (GitHubRepo as Mock).mockClear();
     mockRepoGetRef.mockClear();
     mockRepoCreateRef.mockClear();
     mockRepoDeleteRef.mockClear();

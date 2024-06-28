@@ -159,7 +159,6 @@ describe('SummaryPageNavigation', () => {
       const basePath = 'https://www.unittest.nav.no/fyllut';
       const sendInnUrl = 'https://www.unittest.nav.no/sendInn';
       const windowLocation = { href: basePath };
-      // @ts-ignore
       Object.defineProperty(window, 'location', {
         value: windowLocation,
         writable: true,
@@ -185,7 +184,6 @@ describe('SummaryPageNavigation', () => {
       const basePath = 'https://www.unittest.nav.no/fyllut';
       const sendInnUrl = 'https://www.unittest.nav.no/sendInn';
       const windowLocation = { href: basePath };
-      // @ts-ignore
       Object.defineProperty(window, 'location', {
         value: windowLocation,
         writable: true,
@@ -226,7 +224,6 @@ describe('SummaryPageNavigation', () => {
         const basePath = 'https://www.unittest.nav.no/fyllut';
         const sendInnUrl = 'https://www.unittest.nav.no/sendInn';
         const windowLocation = { href: basePath };
-        // @ts-ignore
         Object.defineProperty(window, 'location', {
           value: windowLocation,
           writable: true,

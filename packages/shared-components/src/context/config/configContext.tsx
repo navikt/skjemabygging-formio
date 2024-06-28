@@ -19,7 +19,7 @@ interface AppConfigContextType {
   http?: typeof baseHttp;
   logger?: FrontendLogger;
   diffOn?: boolean;
-  setDiffOn?: Function;
+  setDiffOn?: (diffOn: boolean) => void;
 }
 
 type AppConfigProviderProps = {
