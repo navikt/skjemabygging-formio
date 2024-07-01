@@ -237,4 +237,16 @@ describe('NavDatepicker', () => {
       cy.findAllByText(validationAfter(afterDate)).should('have.length', 2);
     });
   });
+
+  describe('Data grid', () => {
+    it('test to and from date inside data grid', () => {
+      cy.findByRole('textbox', { name: 'Tilfeldig dato' }).type('06.06.2022');
+
+      cy.findByRole('textbox', { name: /Grid fra/ }).type('02.02.2023');
+      cy.findByRole('textbox', { name: /Grid til/ }).type('01.02.2023');
+
+      cy.clickNextStep();
+      cy.findAllByText(validateionBefore('02.02.2023')).should('have.length', 2);
+    });
+  });
 });
