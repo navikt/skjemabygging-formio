@@ -244,7 +244,7 @@ describe('NavDatepicker', () => {
     });
 
     it('test to and from date inside data grid with valid date', () => {
-      cy.findByRole('textbox', { name: 'Tilfeldig dato' }).type('06.06.2022', { force: true });
+      cy.findByRole('textbox', { name: 'Tilfeldig dato' }).type('06.06.2022');
 
       cy.findByRole('textbox', { name: /Grid fra/ }).type('02.02.2023');
       cy.findByRole('textbox', { name: /Grid til/ }).type('03.02.2023');
@@ -260,7 +260,7 @@ describe('NavDatepicker', () => {
       cy.findByRole('textbox', { name: /Grid til/ }).type('01.02.2023');
 
       cy.clickNextStep();
-      cy.findAllByText(validateionBefore('02.02.2023')).should('have.length', 2);
+      cy.findAllByText(validateionBefore('03.02.2023')).should('have.length', 2);
     });
   });
 });
