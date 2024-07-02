@@ -239,7 +239,21 @@ describe('NavDatepicker', () => {
   });
 
   describe('Data grid', () => {
-    it('test to and from date inside data grid', () => {
+    beforeEach(() => {
+      allFieldsEneabled();
+    });
+
+    it('test to and from date inside data grid with valid date', () => {
+      cy.findByRole('textbox', { name: 'Tilfeldig dato' }).type('06.06.2022', { force: true });
+
+      cy.findByRole('textbox', { name: /Grid fra/ }).type('02.02.2023');
+      cy.findByRole('textbox', { name: /Grid til/ }).type('03.02.2023');
+
+      cy.clickNextStep();
+      cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
+    });
+
+    it('test to and from date inside data grid with invalid to date', () => {
       cy.findByRole('textbox', { name: 'Tilfeldig dato' }).type('06.06.2022');
 
       cy.findByRole('textbox', { name: /Grid fra/ }).type('02.02.2023');
