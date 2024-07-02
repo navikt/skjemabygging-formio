@@ -9,7 +9,6 @@ const datePickerBuilder = () => {
       validateOn: 'blur',
       validate: {
         required: true,
-        custom: 'valid = instance.validateDatePickerV2(input, data, component, row);',
       },
     },
   };
