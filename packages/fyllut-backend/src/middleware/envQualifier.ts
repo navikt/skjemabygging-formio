@@ -7,7 +7,7 @@ const envQualifier = (req: Request, _res: Response, next: NextFunction) => {
   let envQualifier: EnvQualifierType | undefined = undefined;
   if (config.naisClusterName !== NaisCluster.PROD) {
     const host = req.get('host');
-    if (host?.includes('fyllut-preprod.ansatt.dev.nav.no')) {
+    if (host?.includes('fyllut-preprod.ansatt.dev.nav.no') || host?.includes('skjemadelingslenke')) {
       envQualifier = EnvQualifier.preprodAnsatt;
     } else if (host?.includes('fyllut-preprod-alt.ansatt.dev.nav.no')) {
       envQualifier = EnvQualifier.preprodAltAnsatt;
