@@ -9,3 +9,7 @@ NavFormioJs.Builders.addBuilders({
   wizard: WizardBuilder,
   webform: WebformBuilder,
 });
+
+NavFormioJs.Builders.builders.wizard.prototype.removeComponent = WebformBuilder.prototype.removeComponent;
+NavFormioJs.Builders.builders.wizard.prototype.editComponent = WebformBuilder.prototype.editComponent;
+NavFormioJs.Builders.builders.wizard.prototype.destroy = WebformBuilder.prototype.destroy;
