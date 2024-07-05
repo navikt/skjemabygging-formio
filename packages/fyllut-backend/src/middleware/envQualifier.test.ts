@@ -39,7 +39,7 @@ describe('envQualifier', () => {
   const loadUrlsFromFile = (path: string) => {
     const file = fs.readFileSync(path, 'utf8');
     const matches = file.match(URL_REGEX);
-    const urls = matches?.map((url) => url.replace('"', '').replace('\n', ''));
+    const urls = matches?.map((url) => url.replace(/"/g, '').replace(/\n/g, ''));
     return urls?.filter((url) => url.endsWith('/fyllut')) || [];
   };
 
