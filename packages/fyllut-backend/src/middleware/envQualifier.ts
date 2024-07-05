@@ -3,24 +3,28 @@ import { config } from '../config/config';
 import { NaisCluster } from '../config/nais-cluster';
 import { EnvQualifier, EnvQualifierType } from '../types/env';
 
+const envQualifierMap = {
+  'fyllut-preprod.ansatt.dev.nav.no': EnvQualifier.preprodAnsatt,
+  'fyllut-preprod-alt.ansatt.dev.nav.no': EnvQualifier.preprodAltAnsatt,
+  'fyllut-preprod.intern.dev.nav.no': EnvQualifier.preprodIntern,
+  'fyllut-preprod-alt.intern.dev.nav.no': EnvQualifier.preprodAltIntern,
+  localhost: EnvQualifier.local,
+  skjemadelingslenke: EnvQualifier.preprodAnsatt,
+};
+
 const envQualifier = (req: Request, _res: Response, next: NextFunction) => {
   let envQualifier: EnvQualifierType | undefined = undefined;
   if (config.naisClusterName !== NaisCluster.PROD) {
     const host = req.get('host');
-    if (host?.includes('fyllut-preprod.ansatt.dev.nav.no') || host?.includes('skjemadelingslenke')) {
-      envQualifier = EnvQualifier.preprodAnsatt;
-    } else if (host?.includes('fyllut-preprod-alt.ansatt.dev.nav.no')) {
-      envQualifier = EnvQualifier.preprodAltAnsatt;
-    } else if (host?.includes('fyllut-preprod.intern.dev.nav.no')) {
-      envQualifier = EnvQualifier.preprodIntern;
-    } else if (host?.includes('fyllut-preprod-alt.intern.dev.nav.no')) {
-      envQualifier = EnvQualifier.preprodAltIntern;
-    } else if (host?.includes('localhost')) {
-      envQualifier = EnvQualifier.local;
+    const matchingUrl = Object.keys(envQualifierMap).find((partialUrl) => host?.includes(partialUrl));
+    if (matchingUrl) {
+      envQualifier = envQualifierMap[matchingUrl];
     }
   }
   req.getEnvQualifier = () => envQualifier;
   next();
 };
+
+export type PartialUrl = keyof typeof envQualifierMap; // export for test
 
 export default envQualifier;

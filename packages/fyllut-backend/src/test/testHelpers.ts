@@ -43,16 +43,17 @@ type MockRequestParams = {
   body?: object;
   params?: { [name: string]: string };
   query?: { [name: string]: string };
+  getMap?: Record<string, string | undefined>;
 };
 
-function mockRequest({ headers = {}, body, params = {}, query = {} }: MockRequestParams): Request {
+function mockRequest({ headers = {}, body, params = {}, query = {}, getMap = {} }: MockRequestParams): Request {
   return {
     header: (name: string) => headers?.[name],
     headers: { ...headers },
     body,
     params: { ...params },
     query: { ...query },
-    get: () => '',
+    get: (name: string) => getMap[name] ?? '',
   } as unknown as Request;
 }
 
