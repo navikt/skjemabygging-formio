@@ -7,6 +7,16 @@ describe('NationalIdentityNumber', () => {
     cy.defaultWaits();
   });
 
+  it('triggers error when NIN is empty', () => {
+    cy.findByRole('radio', { name: 'Ja' }).should('exist').click();
+    cy.clickNextStep();
+    cy.findByRole('region', { name: TEXTS.validering.error })
+      .should('exist')
+      .within(() => {
+        cy.findByRole('link', { name: 'Du må fylle ut: Fødselsnummer / D-nummer' }).should('exist');
+      });
+  });
+
   it('triggers error when NIN has invalid checksum', () => {
     cy.findByRole('radio', { name: 'Ja' }).should('exist').click();
     cy.findByRole('textbox', { name: 'Fødselsnummer / D-nummer' }).should('exist').type('18907299827');

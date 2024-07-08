@@ -28,20 +28,17 @@ class IBAN extends TextField {
   }
 
   checkComponentValidity(data, dirty, row, options = {}) {
-    if (this.shouldSkipValidation(data, dirty, row)) {
-      this.setCustomValidity('');
-      return true;
-    }
+    const validity = super.checkComponentValidity(data, dirty, row, options);
 
-    const errorMessage = validateIBAN(
-      {
-        value: this.getValue(),
-        label: this.getLabel({ labelTextOnly: true }),
-        required: this.isRequired(),
-      },
-      this.translate.bind(this),
-    );
-    return this.setComponentValidity(errorMessage ? [this.createError(errorMessage, undefined)] : [], dirty, undefined);
+    if (validity) {
+      const errorMessage = validateIBAN(this.getValue(), this.translate.bind(this));
+      return this.setComponentValidity(
+        errorMessage ? [this.createError(errorMessage, undefined)] : [],
+        dirty,
+        undefined,
+      );
+    }
+    return validity;
   }
 
   /**

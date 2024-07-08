@@ -5,17 +5,12 @@ const ALLOWED_TYPES = ['fnr', 'dnr'];
 const ALLOWED_TEST_TYPES = ['fnr', 'dnr', 'hnr', 'tnr', 'dnr-and-hnr'];
 type DateValidationOptions = {
   value: string;
-  label: string;
-  required?: boolean;
   allowTestTypes: boolean;
 };
 
-const validateNationalIdentityNumber = (
-  { value, label, required = false, allowTestTypes }: DateValidationOptions,
-  translate,
-) => {
-  if (value === '') {
-    return required ? translate('required', { field: label }) : undefined;
+const validateNationalIdentityNumber = ({ value, allowTestTypes }: DateValidationOptions, translate) => {
+  if (value === '' || value === undefined) {
+    return undefined;
   }
 
   const result = idnr(value.replace(' ', '') ?? '');
