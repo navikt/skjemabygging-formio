@@ -13,22 +13,57 @@ describe('Components', () => {
     });
 
     it('triggers errors', () => {
-      cy.findByRole('textbox', { name: 'Kontonummer' }).should('exist');
-      cy.findByRole('textbox', { name: 'Kontonummer' }).type('12345678980');
-      cy.findByRole('textbox', { name: 'IBAN' }).should('exist').type('AB04RABO8424598490');
+      cy.findByRole('textbox', { name: 'Kontonummer' }).should('exist').type('12345678980');
       cy.clickNextStep();
 
       cy.findByRole('region', { name: TEXTS.validering.error })
         .should('exist')
         .within(() => {
           cy.findByRole('link', { name: 'Dette er ikke et gyldig kontonummer' }).should('exist');
-          cy.findByRole('link', {
-            name: 'Oppgitt IBAN inneholder ugyldig landkode (to store bokstaver i starten av IBAN-koden)',
-          }).should('exist');
+          cy.findByRole('link', { name: 'Du må fylle ut: IBAN' }).should('exist');
         });
 
       cy.findAllByText('Du må fylle ut: Velg valuta').should('have.length', 2);
       cy.findAllByText('Du må fylle ut: Beløp').should('have.length', 2);
+    });
+
+    it('triggers errors when IBAN has wrong country code', () => {
+      cy.findByRole('textbox', { name: 'IBAN' }).should('exist').type('AB04RABO8424598490');
+      cy.clickNextStep();
+
+      cy.findByRole('region', { name: TEXTS.validering.error })
+        .should('exist')
+        .within(() => {
+          cy.findByRole('link', {
+            name: 'Oppgitt IBAN inneholder ugyldig landkode (to store bokstaver i starten av IBAN-koden)',
+          }).should('exist');
+        });
+    });
+
+    it('triggers error when IBAN is too long', () => {
+      cy.findByRole('textbox', { name: 'IBAN' }).should('exist').type('NL04RABO84245984901');
+      cy.clickNextStep();
+
+      cy.findByRole('region', { name: TEXTS.validering.error })
+        .should('exist')
+        .within(() => {
+          cy.findByRole('link', {
+            name: 'Oppgitt IBAN har feil lengde.',
+          }).should('exist');
+        });
+    });
+
+    it('triggers error when IBAN has invalid checksum', () => {
+      cy.findByRole('textbox', { name: 'IBAN' }).should('exist').type('NL04RABO8424598491');
+      cy.clickNextStep();
+
+      cy.findByRole('region', { name: TEXTS.validering.error })
+        .should('exist')
+        .within(() => {
+          cy.findByRole('link', {
+            name: 'Oppgitt IBAN er ugyldig. Sjekk at du har tastet riktig.',
+          }).should('exist');
+        });
     });
 
     it('allows kontonummer that starts with a 0', () => {
