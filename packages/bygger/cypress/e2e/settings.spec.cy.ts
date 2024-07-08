@@ -12,6 +12,7 @@ const _submitData = {
   signatureDescription: 'Instruction from test...',
   lockedFormReason: 'Test reason for locking',
   isLockedForm: true,
+  mellomlagringDurationDays: '10',
 };
 
 describe('FormSettingsPage', () => {
@@ -61,6 +62,10 @@ describe('FormSettingsPage', () => {
 
     cy.findByRole('combobox', { name: 'Innsending' }).select(_submitData.innsending);
     cy.findByRole('combobox', { name: 'Ettersending' }).select(_submitData.ettersending);
+
+    cy.findByRole('spinbutton', { name: 'Mellomlagringstid (dager)' }).focus();
+    cy.findByRole('spinbutton', { name: 'Mellomlagringstid (dager)' }).clear();
+    cy.findByRole('spinbutton', { name: 'Mellomlagringstid (dager)' }).type(_submitData.mellomlagringDurationDays);
 
     cy.findByRole('textbox', { name: 'Generelle instruksjoner (valgfritt)' }).focus();
     cy.findByRole('textbox', { name: 'Generelle instruksjoner (valgfritt)' }).clear();

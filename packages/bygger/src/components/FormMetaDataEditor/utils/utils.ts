@@ -1,4 +1,4 @@
-import { DeclarationType, NavFormType, UsageContext } from '@navikt/skjemadigitalisering-shared-domain';
+import { DeclarationType, NavFormType, UsageContext, numberUtils } from '@navikt/skjemadigitalisering-shared-domain';
 
 export type UpdateFormFunction = (form: NavFormType) => void;
 export type FormMetadataErrorKeys =
@@ -10,7 +10,8 @@ export type FormMetadataErrorKeys =
   | 'lockedFormReason'
   | 'declarationText'
   | 'uxSignalsId'
-  | 'uxSignalsInnsending';
+  | 'uxSignalsInnsending'
+  | 'mellomlagringDurationDays';
 export type FormMetadataError = Partial<{ [key in FormMetadataErrorKeys]: string }>;
 
 export const validateFormMetadata = (form: NavFormType, usageContext: UsageContext) => {
@@ -44,6 +45,9 @@ export const validateFormMetadata = (form: NavFormType, usageContext: UsageConte
     }
     if (form.properties.declarationType === DeclarationType.custom && !form.properties.declarationText) {
       errors.declarationText = 'Du må lage en tilpasset erklæringstekst';
+    }
+    if (!numberUtils.isValidInteger(form.properties.mellomlagringDurationDays)) {
+      errors.mellomlagringDurationDays = 'Mellomlagringstiden må være et heltall';
     }
   }
 

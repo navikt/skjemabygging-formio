@@ -15,6 +15,7 @@ import FormGroup from './core/form-group/FormGroup';
 import HtmlElement from './core/html-element/HtmlElement';
 import Image from './core/image/Image';
 import Maalgruppe from './core/maalgruppe/Maalgruppe';
+import MonthPicker from './core/monthpicker/MonthPicker';
 import Panel from './core/panel/Panel';
 import Radio from './core/radio/Radio';
 import Row from './core/row/Row';
@@ -68,5 +69,6 @@ const customComponents = {
   attachment: DefaultAttachment,
   accordion: Accordion,
   navAddress: Address,
+  monthPicker: MonthPicker,
 };
 export default customComponents;

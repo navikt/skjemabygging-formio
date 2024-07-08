@@ -4,17 +4,18 @@ import { appMetrics } from '../services';
 const expressJsonMetricHandler = (fn: Function) => async (req: Request, res: Response, next: NextFunction) => {
   if (req.method === 'PUT' && req.url.includes('/send-inn/utfyltsoknad')) {
     const stopTimer = appMetrics.expressJsonBodyParserDuration.startTimer({ endpoint: 'put-utfyltsoknad' });
-    let errorOccured = false;
     try {
-      await fn(req, res, next);
+      const nextWithTimer = (err?: Error) => {
+        stopTimer({ error: err ? 'true' : 'false' });
+        next(err);
+      };
+      fn(req, res, nextWithTimer);
     } catch (err) {
-      errorOccured = true;
+      stopTimer({ error: String('true') });
       throw err;
-    } finally {
-      stopTimer({ error: String(errorOccured) });
     }
   } else {
-    await fn(req, res, next);
+    fn(req, res, next);
   }
 };
 

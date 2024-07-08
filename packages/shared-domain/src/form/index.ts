@@ -88,6 +88,7 @@ export interface FormPropertiesType {
   uxSignalsId?: string;
   uxSignalsInnsending?: InnsendingType;
   hideUserTypes?: boolean;
+  mellomlagringDurationDays: string;
 }
 
 export type FormPropertiesPublishing = Pick<
@@ -191,6 +192,7 @@ export interface Component {
   rerender?: () => void;
   onChange?: (props) => void;
   inputType?: InputMode;
+  ignoreNorway?: boolean;
 }
 
 export type InputMode = 'none' | 'text' | 'tel' | 'url' | 'email' | 'numeric' | 'decimal' | 'search';
@@ -221,6 +223,8 @@ export interface ComponentValidate {
   max?: number;
   minLength?: number;
   maxLength?: number;
+  minYear?: number;
+  maxYear?: number;
 }
 
 export interface ComponentConditional {

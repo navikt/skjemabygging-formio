@@ -3,8 +3,10 @@ import editFormCustomMessage from './editFormCustomMessage';
 import editFormCustomValidation from './editFormCustomValidation';
 import editFormMaxLength from './editFormMaxLength';
 import editFormMaxNumber from './editFormMaxNumber';
+import editFormMaxYear from './editFormMaxYear';
 import editFormMinLength from './editFormMinLength';
 import editFormMinNumber from './editFormMinNumber';
+import editFormMinYear from './editFormMinYear';
 import editFormRequired from './editFormRequired';
 
 const editFormValidation = {
@@ -16,6 +18,8 @@ const editFormValidation = {
   customMessage: editFormCustomMessage,
   maxNumber: editFormMaxNumber,
   minNumber: editFormMinNumber,
+  minYear: editFormMinYear,
+  maxYear: editFormMaxYear,
 };
 
 export default editFormValidation;

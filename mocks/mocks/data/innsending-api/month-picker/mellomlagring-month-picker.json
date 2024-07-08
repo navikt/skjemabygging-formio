@@ -1,0 +1,40 @@
+{
+  "brukerId": "19876898104",
+  "skjemanr": "monthpicker-test",
+  "tittel": "Monthpicker test",
+  "tema": "AGR",
+  "spraak": "nb",
+  "hoveddokument": {
+    "vedleggsnr": "monthpicker-test",
+    "tittel": "Monthpicker test",
+    "label": "Monthpicker test",
+    "pakrevd": true,
+    "mimetype": "application/pdf"
+  },
+  "hoveddokumentVariant": {
+    "vedleggsnr": "monthpicker-test",
+    "tittel": "Monthpicker test",
+    "label": "Monthpicker test",
+    "pakrevd": false,
+    "mimetype": "application/json",
+    "document": {
+      "language": "nb-NO",
+      "data": {
+        "data": {
+          "requiredMonthPicker": "2022-02",
+          "minMaxMonthPicker": "not-a-date",
+          "relativeMonthPicker": "2022-01"
+        }
+      }
+    }
+  },
+  "innsendingsId": "62a75280-2a85-4e56-9de2-84faa63a2193",
+  "status": "Opprettet",
+  "vedleggsListe": [],
+  "kanLasteOppAnnet": true,
+  "fristForEttersendelse": 14,
+  "endretDato": "2024-06-25T12:38:34.681515+02:00",
+  "skalSlettesDato": "2024-07-23T10:38:34.676374Z",
+  "skjemaPath": "monthpickertest",
+  "visningsType": "fyllUt"
+}

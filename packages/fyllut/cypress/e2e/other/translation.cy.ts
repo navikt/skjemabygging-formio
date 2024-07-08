@@ -64,6 +64,8 @@ describe('Translations', () => {
       cy.findByRole('textbox', { name: 'Norwegian national identification / D number' })
         .should('exist')
         .type('16020256145');
+      cy.findByRole('textbox', { name: 'Velg måned' }).should('exist').type('02.2022');
+
       cy.clickNextStep();
 
       cy.findByRole('button', { name: 'English' }).should('exist');

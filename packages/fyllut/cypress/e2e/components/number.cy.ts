@@ -14,10 +14,10 @@ describe('number component', () => {
 
   describe('integer', () => {
     it('set integer values', () => {
-      cy.findByRole('textbox', { name: 'Påkrevd' }).should('exist').type('123456789');
-      cy.findByRole('textbox', { name: /^Minmax/ })
-        .should('exist')
-        .type('10');
+      cy.findByRole('textbox', { name: 'Påkrevd' }).should('exist');
+      cy.findByRole('textbox', { name: 'Påkrevd' }).type('123456789');
+      cy.findByRole('textbox', { name: /^Minmax/ }).should('exist');
+      cy.findByRole('textbox', { name: /^Minmax/ }).type('10');
       cy.findByRole('textbox', { name: 'Kalkulert verdi' }).should('have.value', '123\u00a0456\u00a0799');
       cy.clickSaveAndContinue();
       cy.clickSaveAndContinue();
@@ -36,7 +36,8 @@ describe('number component', () => {
     });
 
     it('set negative value', () => {
-      cy.findByRole('textbox', { name: 'Påkrevd' }).should('exist').type('-20');
+      cy.findByRole('textbox', { name: 'Påkrevd' }).should('exist');
+      cy.findByRole('textbox', { name: 'Påkrevd' }).type('-20');
       cy.clickSaveAndContinue();
 
       cy.findByRole('heading', { name: 'Desimaltall' }).should('exist');
@@ -46,7 +47,8 @@ describe('number component', () => {
       cy.clickSaveAndContinue();
 
       cy.findByRole('link', { name: `Du må fylle ut: Påkrevd` }).should('exist');
-      cy.findByRole('textbox', { name: 'Påkrevd' }).should('exist').type('10');
+      cy.findByRole('textbox', { name: 'Påkrevd' }).should('exist');
+      cy.findByRole('textbox', { name: 'Påkrevd' }).type('10');
       cy.clickSaveAndContinue();
 
       cy.findByRole('heading', { name: 'Desimaltall' }).should('exist');
@@ -55,50 +57,41 @@ describe('number component', () => {
     it('click error message sets focus to element.', () => {
       cy.clickSaveAndContinue();
 
-      cy.findByRole('link', { name: `Du må fylle ut: Påkrevd` }).should('exist').click();
+      cy.findByRole('link', { name: `Du må fylle ut: Påkrevd` }).should('exist');
+      cy.findByRole('link', { name: `Du må fylle ut: Påkrevd` }).click();
       cy.focused().prev().contains('Påkrevd');
     });
 
     it('should show error for min value', () => {
-      cy.findByRole('textbox', { name: /^Påkrevd/ })
-        .should('exist')
-        .type('0');
-      cy.findByRole('textbox', { name: /^Minmax/ })
-        .should('exist')
-        .type('-1');
+      cy.findByRole('textbox', { name: /^Påkrevd/ }).should('exist');
+      cy.findByRole('textbox', { name: /^Påkrevd/ }).type('0');
+      cy.findByRole('textbox', { name: /^Minmax/ }).should('exist');
+      cy.findByRole('textbox', { name: /^Minmax/ }).type('-1');
       cy.clickSaveAndContinue();
 
       cy.findByRole('link', { name: `Minmax kan ikke være mindre enn 0.` }).should('exist');
     });
 
     it('should show error for max value', () => {
-      cy.findByRole('textbox', { name: /^Påkrevd/ })
-        .should('exist')
-        .type('0');
-      cy.findByRole('textbox', { name: /^Minmax/ })
-        .should('exist')
-        .type('101');
+      cy.findByRole('textbox', { name: /^Påkrevd/ }).should('exist');
+      cy.findByRole('textbox', { name: /^Minmax/ }).type('101');
       cy.clickSaveAndContinue();
 
       cy.findByRole('link', { name: `Minmax kan ikke være større enn 100.` }).should('exist');
     });
 
     it('set illegal integer values', () => {
-      cy.findByRole('textbox', { name: /^Påkrevd/ })
-        .should('exist')
-        .type('0,2');
-      cy.findByRole('textbox', { name: /^Minmax/ })
-        .should('exist')
-        .type('0.1');
+      cy.findByRole('textbox', { name: /^Påkrevd/ }).should('exist');
+      cy.findByRole('textbox', { name: /^Påkrevd/ }).type('0,2');
+      cy.findByRole('textbox', { name: /^Minmax/ }).should('exist');
+      cy.findByRole('textbox', { name: /^Minmax/ }).type('0.1');
       cy.clickSaveAndContinue();
 
       cy.findAllByRole('link', { name: `Oppgi et tall uten desimaler.` }).should('have.length', 2);
-      cy.findByRole('textbox', { name: /^Påkrevd/ })
-        .should('exist')
-        .type('{selectall}10');
-      cy.findByRole('textbox', { name: /^Minmax/ })
-        .should('exist')
-        .type('{selectall}10');
+      cy.findByRole('textbox', { name: /^Påkrevd/ }).should('exist');
+      cy.findByRole('textbox', { name: /^Påkrevd/ }).type('{selectall}10');
+      cy.findByRole('textbox', { name: /^Minmax/ }).should('exist');
+      cy.findByRole('textbox', { name: /^Minmax/ }).type('{selectall}10');
       cy.clickSaveAndContinue();
 
       cy.findByRole('heading', { name: 'Desimaltall' }).should('exist');
@@ -107,19 +100,16 @@ describe('number component', () => {
 
   describe('decimals', () => {
     beforeEach(() => {
-      cy.findByRole('textbox', { name: /^Påkrevd/ })
-        .should('exist')
-        .type('1');
+      cy.findByRole('textbox', { name: /^Påkrevd/ }).should('exist');
+      cy.findByRole('textbox', { name: /^Påkrevd/ }).type('1');
       cy.clickSaveAndContinue();
     });
 
     it('set decimal values', () => {
-      cy.findByRole('textbox', { name: /^Desimal 1/ })
-        .should('exist')
-        .type('10,1');
-      cy.findByRole('textbox', { name: /^Desimal 2/ })
-        .should('exist')
-        .type('12345.23');
+      cy.findByRole('textbox', { name: /^Desimal 1/ }).should('exist');
+      cy.findByRole('textbox', { name: /^Desimal 1/ }).type('10,1');
+      cy.findByRole('textbox', { name: /^Desimal 2/ }).should('exist');
+      cy.findByRole('textbox', { name: /^Desimal 2/ }).type('12345.23');
       cy.clickSaveAndContinue();
 
       cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
@@ -136,12 +126,10 @@ describe('number component', () => {
     });
 
     it('set integer value in decimal fields', () => {
-      cy.findByRole('textbox', { name: /^Desimal 1/ })
-        .should('exist')
-        .type('10');
-      cy.findByRole('textbox', { name: /^Desimal 2/ })
-        .should('exist')
-        .type('12345');
+      cy.findByRole('textbox', { name: /^Desimal 1/ }).should('exist');
+      cy.findByRole('textbox', { name: /^Desimal 1/ }).type('10');
+      cy.findByRole('textbox', { name: /^Desimal 2/ }).should('exist');
+      cy.findByRole('textbox', { name: /^Desimal 2/ }).type('12345');
       cy.clickSaveAndContinue();
 
       cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
@@ -158,12 +146,10 @@ describe('number component', () => {
     });
 
     it('check calculate value is correctly formated', () => {
-      cy.findByRole('textbox', { name: /^Desimal 1/ })
-        .should('exist')
-        .type('1000005,1');
-      cy.findByRole('textbox', { name: /^Desimal 2/ })
-        .should('exist')
-        .type('333,2');
+      cy.findByRole('textbox', { name: /^Desimal 1/ }).should('exist');
+      cy.findByRole('textbox', { name: /^Desimal 1/ }).type('1000005,1');
+      cy.findByRole('textbox', { name: /^Desimal 2/ }).should('exist');
+      cy.findByRole('textbox', { name: /^Desimal 2/ }).type('333,2');
       cy.findByRole('textbox', { name: 'Kalkulert verdi' }).should('have.value', '3\u00a0001,22');
       cy.clickSaveAndContinue();
 
@@ -171,33 +157,32 @@ describe('number component', () => {
     });
 
     it('set decimal value with dot, change to comma when going back from summary', () => {
-      cy.findByRole('textbox', { name: /^Desimal 1/ })
-        .should('exist')
-        .type('10.10');
-      cy.findByRole('textbox', { name: /^Desimal 2/ })
-        .should('exist')
-        .type('1010.10');
+      cy.findByRole('textbox', { name: /^Desimal 1/ }).should('exist');
+      cy.findByRole('textbox', { name: /^Desimal 1/ }).type('10.10');
+      cy.findByRole('textbox', { name: /^Desimal 2/ }).should('exist');
+      cy.findByRole('textbox', { name: /^Desimal 2/ }).type('1010.10');
       cy.clickSaveAndContinue();
 
-      cy.findByRoleWhenAttached('link', { name: 'Rediger desimaltall' }).should('exist').click();
+      cy.findByRoleWhenAttached('link', { name: 'Rediger desimaltall' }).should('exist');
+      cy.findByRoleWhenAttached('link', { name: 'Rediger desimaltall' }).click();
+      cy.findByRole('textbox', { name: /^Desimal 1/ }).should('exist');
       cy.findByRole('textbox', { name: /^Desimal 1/ }).should('have.value', '10,1');
       cy.findByRole('textbox', { name: /^Desimal 2/ }).should('have.value', '1\u00a0010,1');
     });
 
     it('check that all values are stored in submission as float', () => {
-      cy.findByRole('textbox', { name: /^Desimal 1/ })
-        .should('exist')
-        .type('12');
-      cy.findByRole('textbox', { name: /^Desimal 2/ })
-        .should('exist')
-        .type('1000,1');
-      cy.findByRole('textbox', { name: /^Desimalgrid/ })
-        .should('exist')
-        .type('1123000,34');
+      cy.findByRole('textbox', { name: /^Desimal 1/ }).should('exist');
+      cy.findByRole('textbox', { name: /^Desimal 1/ }).type('12');
+      cy.findByRole('textbox', { name: /^Desimal 2/ }).should('exist');
+      cy.findByRole('textbox', { name: /^Desimal 2/ }).type('1000,1');
+      cy.findByRole('textbox', { name: /^Desimalgrid/ }).should('exist');
+      cy.findByRole('textbox', { name: /^Desimalgrid/ }).type('1123000,34');
       cy.clickSaveAndContinue();
 
-      cy.findByRoleWhenAttached('link', { name: 'Rediger desimaltall' }).should('exist').click();
+      cy.findByRoleWhenAttached('link', { name: 'Rediger desimaltall' }).should('exist');
+      cy.findByRoleWhenAttached('link', { name: 'Rediger desimaltall' }).click();
 
+      cy.findByRole('textbox', { name: /^Desimal 1/ }).should('exist');
       cy.findByRole('textbox', { name: /^Desimal 1/ }).should('have.value', '12');
       cy.findByRole('textbox', { name: /^Desimal 2/ }).should('have.value', '1\u00a0000,1');
       cy.findByRole('textbox', { name: /^Desimalgrid/ }).should('have.value', '1\u00a0123\u00a0000,34');
@@ -206,34 +191,28 @@ describe('number component', () => {
         const { submission } = req.body;
         expect(submission.data.desimal1).to.eq(12);
         expect(submission.data.desimal2).to.eq(1000.1);
-        expect(submission.data.datagrid[0].desimal3).to.eq(1123000.34);
+        expect(submission.data.datagrid2[0].desimal3).to.eq(1123000.34);
       }).as('submitMellomlagring');
 
       cy.clickSaveAndContinue();
     });
 
     it('set illegal decimal values', () => {
-      cy.findByRole('textbox', { name: /^Desimal 1/ })
-        .should('exist')
-        .type('10f');
-      cy.findByRole('textbox', { name: /^Desimal 2/ })
-        .should('exist')
-        .type('Asdf');
-      cy.findByRole('textbox', { name: /^Desimalgrid/ })
-        .should('exist')
-        .type(',');
+      cy.findByRole('textbox', { name: /^Desimal 1/ }).should('exist');
+      cy.findByRole('textbox', { name: /^Desimal 1/ }).type('10f');
+      cy.findByRole('textbox', { name: /^Desimal 2/ }).should('exist');
+      cy.findByRole('textbox', { name: /^Desimal 2/ }).type('Asdf');
+      cy.findByRole('textbox', { name: /^Desimalgrid/ }).should('exist');
+      cy.findByRole('textbox', { name: /^Desimalgrid/ }).type(',');
       cy.clickSaveAndContinue();
 
       cy.findAllByRole('link', { name: `Oppgi et tall med maksimalt to desimaler.` }).should('have.length', 3);
-      cy.findByRole('textbox', { name: /^Desimal 1/ })
-        .should('exist')
-        .type('{selectall}10');
-      cy.findByRole('textbox', { name: /^Desimal 2/ })
-        .should('exist')
-        .type('{selectall}11');
-      cy.findByRole('textbox', { name: /^Desimalgrid/ })
-        .should('exist')
-        .type('{selectall}12');
+      cy.findByRole('textbox', { name: /^Desimal 1/ }).should('exist');
+      cy.findByRole('textbox', { name: /^Desimal 1/ }).type('{selectall}10');
+      cy.findByRole('textbox', { name: /^Desimal 2/ }).should('exist');
+      cy.findByRole('textbox', { name: /^Desimal 2/ }).type('{selectall}11');
+      cy.findByRole('textbox', { name: /^Desimalgrid/ }).should('exist');
+      cy.findByRole('textbox', { name: /^Desimalgrid/ }).type('{selectall}12');
       cy.clickSaveAndContinue();
 
       cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');

@@ -1,25 +1,28 @@
 import editFormApi from '../../base/editForm/api';
 import editFormConditional from '../../base/editForm/conditional';
+import editFormData from '../../base/editForm/data';
 import editFormDisplay from '../../base/editForm/display';
 import editFormTabs from '../../base/editForm/editFormTabs';
 import editFormValidation from '../../base/editForm/validation';
-import editFormDateValidation from '../../base/editForm/validation/date';
+import editFormIgnoreNorway from './editForm/editFormIgnoreNorway';
 
-const datePickerForm = () => {
-  const { api, conditional, createTabs, display, validation } = editFormTabs;
+const countrySelectForm = (componentType: string) => {
+  const { api, conditional, createTabs, data, display, validation } = editFormTabs;
 
-  //prettier-ignore
+  // prettier-ignore
   return createTabs(
     display([
       editFormDisplay.label(),
+      editFormDisplay.fieldSize(),
       editFormDisplay.description(),
-      editFormDisplay.showYearPicker(),
+    ]),
+    data([
+      editFormIgnoreNorway(),
+      editFormData.dataValues(),
+      editFormData.defaultValue(componentType),
     ]),
     validation([
       editFormValidation.required(),
-      editFormDateValidation.fromDate(),
-      editFormDateValidation.limitRelativelyToToday('day'),
-      editFormDateValidation.limitToEarliestLatest(),
       editFormValidation.customValidation(),
       editFormValidation.customError(),
     ]),
@@ -33,4 +36,4 @@ const datePickerForm = () => {
   );
 };
 
-export default datePickerForm;
+export default countrySelectForm;

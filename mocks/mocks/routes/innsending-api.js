@@ -23,6 +23,7 @@ const mellomlagringCheckbox = require('../data/innsending-api/checkbox/mellomlag
 const activitesFuture = require('../data/innsending-api/activities/activities-future.json');
 const prefillData = require('../data/innsending-api/prefill-data/prefill-data.json');
 const mellomlagringSelectBoxes = require('../data/innsending-api/select-boxes/mellomlagring-select-boxes.json');
+const mellomlagringMonthPicker = require('../data/innsending-api/month-picker/mellomlagring-month-picker.json');
 
 const objectToByteArray = (obj) => Array.from(new TextEncoder().encode(JSON.stringify(obj)));
 
@@ -207,6 +208,14 @@ module.exports = [
         options: {
           status: 200,
           body: convertToInnsendingApiResponse(mellomlagringCheckbox),
+        },
+      },
+      {
+        id: 'success-month-picker',
+        type: 'json',
+        options: {
+          status: 200,
+          body: convertToInnsendingApiResponse(mellomlagringMonthPicker),
         },
       },
       {

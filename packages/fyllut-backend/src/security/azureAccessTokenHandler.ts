@@ -24,7 +24,12 @@ const azureAccessTokenHandler = (scope: string) => async (req: Request, res: Res
     req.headers.AzureAccessToken = json.access_token;
     next();
   } catch (error: any) {
-    logger.error(`Access token failed with: ${JSON.stringify(error.http_response_body)}`);
+    if (error.http_response_body) {
+      logger.error(`Access token failed with: ${JSON.stringify(error.http_response_body)}`);
+    } else {
+      logger.error(`Access token failed with: ${JSON.stringify(error)}`);
+    }
+
     next(error);
   }
 };
