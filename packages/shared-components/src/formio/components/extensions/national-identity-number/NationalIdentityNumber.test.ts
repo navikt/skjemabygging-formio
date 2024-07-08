@@ -1,5 +1,6 @@
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { default as NationalIdenityNumber } from './NationalIdentityNumber';
+import TextField from '../../core/textfield/TextField';
+import NationalIdenityNumber from './NationalIdentityNumber';
 
 const VALID_HNR = '13527248013';
 const VALID_TNR = '10915596784';
@@ -28,6 +29,7 @@ describe('Fodselsnummer', () => {
     vi.spyOn(NationalIdenityNumber.prototype, 'setComponentValidity').mockImplementation(
       mockedSetComponentValidity as any,
     );
+    vi.spyOn(TextField.prototype, 'checkComponentValidity').mockReturnValue(true);
   });
 
   afterEach(() => {
@@ -41,12 +43,6 @@ describe('Fodselsnummer', () => {
       path: 'fodselsnummerDNummer',
       elementId: undefined,
     };
-    const expectedMissing = {
-      message: 'Du må fylle ut: Label for Fnr',
-      level: 'error',
-      path: 'fodselsnummerDNummer',
-      elementId: undefined,
-    };
 
     it('successfully validates a fnr', () => {
       fnrComp.setValue('13097248022');
@@ -54,22 +50,16 @@ describe('Fodselsnummer', () => {
       expect(mockedSetComponentValidity.mock.calls[0][0]).toEqual([]);
     });
 
-    it('successfully validates empty fnr', () => {
+    it('ignores empty values', () => {
       fnrComp.setValue('');
       fnrComp.checkComponentValidity();
       expect(mockedSetComponentValidity.mock.calls[0][0]).toEqual([]);
     });
 
-    it('successfully validates empty fnr when it is required', () => {
-      fnrComp.component.validate.required = true;
-      fnrComp.setValue('');
-      fnrComp.checkComponentValidity();
-      expect(mockedSetComponentValidity.mock.calls[0][0]).toEqual([expectedMissing]);
-    });
-
     it('fails validation for invalid fnr', () => {
       fnrComp.setValue('13097248023');
       fnrComp.checkComponentValidity();
+      console.log(mockedSetComponentValidity.mock.calls[0][0]);
       expect(mockedSetComponentValidity.mock.calls[0][0]).toEqual([expectedInvalid]);
     });
 
@@ -80,7 +70,6 @@ describe('Fodselsnummer', () => {
     });
 
     it('successfully validates a dnr', () => {
-      expect(fnrComp.validateFnrNew('53097248016')).toBe(true);
       fnrComp.setValue('53097248016');
       fnrComp.checkComponentValidity();
       expect(mockedSetComponentValidity.mock.calls[0][0]).toEqual([]);

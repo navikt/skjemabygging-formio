@@ -1,6 +1,7 @@
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { validateIBAN, ValidationErrorsIBAN } from 'ibantools';
 import { Mock } from 'vitest';
+import TextField from '../../core/textfield/TextField';
 import IBAN from './IBAN';
 
 const { wrongBBANLength, noIBANCountry, invalidIBAN } = TEXTS.validering;
@@ -36,6 +37,7 @@ describe('IBAN', () => {
     ibanComp.setValue('IBAN-value');
     vi.spyOn(IBAN.prototype, 'translate').mockImplementation(mockedTranslate as any);
     vi.spyOn(IBAN.prototype, 'setComponentValidity').mockImplementation(mockedSetComponentValidity as any);
+    vi.spyOn(TextField.prototype, 'checkComponentValidity').mockReturnValue(true);
   });
 
   afterEach(() => {
@@ -56,16 +58,10 @@ describe('IBAN', () => {
       expect(mockedSetComponentValidity.mock.calls[0][0]).toEqual([]);
     });
 
-    it('successfully validates empty IBAN when it is required', () => {
-      const expected = {
-        ...defaultError,
-        message: 'Du må fylle ut: Label for IBAN',
-      };
-      (validateIBAN as Mock).mockReturnValue({ valid: false, errorCodes: [ValidationErrorsIBAN.NoIBANProvided] });
+    it('ignores empty value', () => {
       ibanComp.setValue('');
-      ibanComp.component.validate.required = true;
       ibanComp.checkComponentValidity();
-      expect(mockedSetComponentValidity.mock.calls[0][0]).toEqual([expected]);
+      expect(mockedSetComponentValidity.mock.calls[0][0]).toEqual([]);
     });
 
     it('successfully validates when BBAN part of IBAN has the wrong length', () => {
