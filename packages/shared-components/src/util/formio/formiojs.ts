@@ -1,4 +1,4 @@
-import { Builders, Components, Formio, Utils } from 'formiojs';
+import { Builders, Components, Displays, Formio, Utils } from 'formiojs';
 import BuilderUtils from 'formiojs/utils/builder';
 import CustomComponents from '../../formio/components';
 import Template from '../../formio/template';
@@ -9,6 +9,7 @@ const NavFormioJs = {
   Builders,
   Utils,
   BuilderUtils,
+  Displays,
 };
 
 NavFormioJs.Components.setComponents(CustomComponents);
