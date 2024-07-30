@@ -22,8 +22,7 @@ export const getDevUser = async (req: Request): Promise<User> => {
         isAdmin: true,
       };
     } catch (e) {
-      // @ts-ignore
-      console.error('Error while fetching dev user:', e.message);
+      console.error('Error while fetching dev user:', (e as Error).message);
     }
   }
   return devUser;

@@ -8,14 +8,14 @@ interface Props {
   open: boolean;
   onClose: () => void;
   publishLanguageCodeList: string[];
-  onPublish: Function;
+  onPublish: (form: NavFormType, translations: I18nTranslations) => void;
 }
 
 const getCompleteLocalTranslationsForNavForm = (
   localTranslationsForNavForm: I18nTranslations,
   publishLanguageCodeList: string[],
 ): I18nTranslations => {
-  return Object.keys(localTranslationsForNavForm).reduce((translations: {}, languageCode: string) => {
+  return Object.keys(localTranslationsForNavForm).reduce((translations: object, languageCode: string) => {
     if (publishLanguageCodeList.indexOf(languageCode) >= 0) {
       return { ...translations, [languageCode]: localTranslationsForNavForm[languageCode] };
     } else return { ...translations };

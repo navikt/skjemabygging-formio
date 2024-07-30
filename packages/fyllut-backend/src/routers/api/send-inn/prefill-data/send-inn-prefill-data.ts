@@ -11,7 +11,7 @@ const sendInnPrefillData = {
   get: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const tokenxAccessToken = getTokenxAccessToken(req);
-      const propertiesParam = !!req.query?.properties ? `properties=${req.query.properties}` : '';
+      const propertiesParam = req.query?.properties ? `properties=${req.query.properties}` : '';
 
       const sendInnResponse = await fetch(
         `${sendInnConfig.host}${sendInnConfig.paths.prefillData}?${propertiesParam}`,

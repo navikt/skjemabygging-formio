@@ -1,7 +1,7 @@
 import { Link } from '@navikt/ds-react';
-import { Summary } from '@navikt/skjemadigitalisering-shared-domain';
+import { SummaryAddress } from '@navikt/skjemadigitalisering-shared-domain';
 interface Props {
-  component: Summary.Address;
+  component: SummaryAddress;
 }
 
 const AttachmentSummary = ({ component }: Props) => {

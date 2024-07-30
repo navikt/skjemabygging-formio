@@ -36,7 +36,7 @@ class Number extends TextField {
   }
 
   checkComponentValidity(data, dirty, row, options = {}) {
-    if (!!this.component?.calculateValue) {
+    if (this.component?.calculateValue) {
       return true;
     }
 

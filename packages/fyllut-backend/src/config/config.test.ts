@@ -17,8 +17,7 @@ describe('config', () => {
       useFormioApi: true,
       naisClusterName: NaisCluster.PROD,
     } as ConfigType;
-    // @ts-ignore
-    checkConfigConsistency(config, logError, exit);
+    checkConfigConsistency(config, logError, exit as any);
     expect(logError).toBeCalledWith('Invalid configuration: FormioApi is not allowed in prod-gcp');
     expect(exit).toBeCalledWith(1);
   });
@@ -28,8 +27,7 @@ describe('config', () => {
       useFormioApi: true,
       naisClusterName: NaisCluster.DEV,
     } as ConfigType;
-    // @ts-ignore
-    checkConfigConsistency(config, logError, exit);
+    checkConfigConsistency(config, logError, exit as any);
     expect(logError).toBeCalledWith('Invalid configuration: Formio api service url is required when using FormioApi');
     expect(exit).toBeCalledWith(1);
   });
@@ -40,8 +38,7 @@ describe('config', () => {
       naisClusterName: NaisCluster.DEV,
       formioApiServiceUrl: 'https://form.io',
     } as ConfigType;
-    // @ts-ignore
-    checkConfigConsistency(config, logError, exit);
+    checkConfigConsistency(config, logError, exit as any);
     expect(logError).not.toBeCalled();
     expect(exit).not.toBeCalled();
   });

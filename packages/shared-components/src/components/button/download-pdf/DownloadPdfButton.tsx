@@ -7,7 +7,7 @@ interface Props {
   actionUrl: string;
   label: string;
   onClick: MouseEventHandler<HTMLInputElement>;
-  translations: { [key: string]: string } | {};
+  translations: { [key: string]: string } | object;
   submissionMethod?: string;
 }
 

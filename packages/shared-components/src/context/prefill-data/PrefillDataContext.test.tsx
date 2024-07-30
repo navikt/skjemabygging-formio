@@ -6,6 +6,10 @@ import { http } from '../../index';
 import { AppConfigProvider } from '../config/configContext';
 import { PrefillDataProvider, usePrefillData } from './PrefillDataContext';
 
+const mockHttp = {
+  get: vi.fn(),
+};
+
 describe('prefillDataContext', () => {
   const TestComponent = () => {
     const { prefillData } = usePrefillData();
@@ -20,10 +24,6 @@ describe('prefillDataContext', () => {
         )}
       </>
     );
-  };
-
-  const mockHttp = {
-    get: vi.fn(),
   };
 
   const formWithPrefillKeys = {

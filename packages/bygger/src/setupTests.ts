@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom';
 import { cleanup } from '@testing-library/react';
 import { Blob } from 'node:buffer';
-import { URL } from 'node:url';
+import { URL as nodeUrl } from 'node:url';
 import { vi } from 'vitest';
 import createFetchMock from 'vitest-fetch-mock';
 
@@ -9,16 +9,17 @@ const fetchMock = createFetchMock(vi);
 
 fetchMock.enableMocks();
 
-// GlobalCsvLink.test.tsx contains test for createObjectURL to reproduce this error.
-// @ts-ignore
-globalThis.URL = URL;
-// @ts-ignore
-globalThis.Blob = Blob;
+globalThis.URL = nodeUrl as any;
+globalThis.Blob = Blob as any;
 
+// Setup tests should be allowed top level hooks
+// eslint-disable-next-line mocha/no-top-level-hooks
 afterEach(() => {
   cleanup();
 });
 
+// Setup tests should be allowed top level hooks
+// eslint-disable-next-line mocha/no-top-level-hooks
 afterAll(() => {
   vi.restoreAllMocks();
 });

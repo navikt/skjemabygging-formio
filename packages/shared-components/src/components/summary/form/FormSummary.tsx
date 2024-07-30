@@ -3,7 +3,7 @@ import {
   NavFormType,
   navFormUtils,
   Submission,
-  Summary,
+  SummaryComponent,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { useLanguages } from '../../../context/languages';
 import { useAppConfig } from '../../../index';
@@ -20,8 +20,7 @@ interface Props {
 const FormSummary = ({ form, formUrl, submission, panelValidationList }: Props) => {
   const { translate, currentLanguage } = useLanguages();
   const { submissionMethod } = useAppConfig();
-  // @ts-ignore <- remove when createFormSummaryObject is converted to typescript
-  const summaryComponents: Summary.Component[] = formSummaryUtil.createFormSummaryPanels(
+  const summaryComponents: SummaryComponent[] = formSummaryUtil.createFormSummaryPanels(
     form,
     submission,
     translate,

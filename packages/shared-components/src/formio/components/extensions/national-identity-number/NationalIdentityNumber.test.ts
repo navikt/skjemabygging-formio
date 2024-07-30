@@ -5,6 +5,7 @@ import NationalIdenityNumber from './NationalIdentityNumber';
 const VALID_HNR = '13527248013';
 const VALID_TNR = '10915596784';
 
+const mockedSetComponentValidity = vi.fn();
 describe('Fodselsnummer', () => {
   let fnrComp;
 
@@ -13,8 +14,6 @@ describe('Fodselsnummer', () => {
     if (params) return text.replace(/{{2}([^{}]*field)}{2}/, params.field);
     else return text;
   };
-
-  const mockedSetComponentValidity = vi.fn();
 
   beforeEach(() => {
     fnrComp = new NationalIdenityNumber(

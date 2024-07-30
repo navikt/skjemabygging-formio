@@ -1,4 +1,4 @@
-import { Summary } from '@navikt/skjemadigitalisering-shared-domain';
+import { SummaryImage } from '@navikt/skjemadigitalisering-shared-domain';
 import makeStyles from '../../../util/styles/jss/jss';
 
 const useImgSummaryStyles = (widthPercent) => {
@@ -8,7 +8,7 @@ const useImgSummaryStyles = (widthPercent) => {
 };
 
 interface Props {
-  component: Summary.Image;
+  component: SummaryImage;
 }
 
 const ImageSummary = ({ component }: Props) => {

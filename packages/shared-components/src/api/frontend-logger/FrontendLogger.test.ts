@@ -60,7 +60,7 @@ describe('FrontendLogger', () => {
       nock(BASE_PATH).post(PATH_API_LOG_INFO).times(0);
       const logger = createLogger({ enabled: true, browserOnly: true });
       await logger._info('Info message');
-      expect(consoleLogMock).toHaveBeenCalledOnce();
+      expect(consoleLogMock).toHaveBeenCalledTimes(1);
       expect(nock.isDone()).toBe(true);
     });
 
@@ -68,7 +68,7 @@ describe('FrontendLogger', () => {
       const logger = createLogger({ enabled: true, browserOnly: true, logLevel: 'debug' });
       await logger._trace('Trace message', { trace: '1' });
       await logger._debug('Debug message', { debug: '1' });
-      expect(consoleLogMock).toHaveBeenCalledOnce();
+      expect(consoleLogMock).toHaveBeenCalledTimes(1);
       expect(consoleLogMock).toHaveBeenNthCalledWith(1, 'Debug message', { debug: '1', level: 'debug' });
     });
 
@@ -84,7 +84,7 @@ describe('FrontendLogger', () => {
       await logger._trace('Trace message', { trace: '1' });
       await logger._debug('Debug message', { debug: '1' });
       await logger._info('Info message', { info: '1' });
-      expect(consoleLogMock).toHaveBeenCalledOnce();
+      expect(consoleLogMock).toHaveBeenCalledTimes(1);
       expect(consoleLogMock).toHaveBeenNthCalledWith(1, 'Info message', { info: '1', level: 'info' });
     });
   });

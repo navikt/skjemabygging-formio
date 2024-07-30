@@ -3,16 +3,16 @@ import { mockRequest, mockResponse } from '../../test/testHelpers';
 import { base64Decode } from '../../utils/base64';
 import exstream from './exstream';
 
-describe('exstream', () => {
-  const formTitle = 'testskjema';
-  const defaultBody = {
-    form: JSON.stringify({ title: formTitle, components: [], properties: { skjemanummer: 'NAV 12.34-56' } }),
-    submission: JSON.stringify({ data: {} }),
-    submissionMethod: 'paper',
-    translations: JSON.stringify({}),
-    language: 'nb-NO',
-  };
+const formTitle = 'testskjema';
+const defaultBody = {
+  form: JSON.stringify({ title: formTitle, components: [], properties: { skjemanummer: 'NAV 12.34-56' } }),
+  submission: JSON.stringify({ data: {} }),
+  submissionMethod: 'paper',
+  translations: JSON.stringify({}),
+  language: 'nb-NO',
+};
 
+describe('exstream', () => {
   it('decodes and sends the pdf on success', async () => {
     const skjemabyggingproxyScope = nock(process.env.SKJEMABYGGING_PROXY_URL as string)
       .post('/exstream')

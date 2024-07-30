@@ -3,9 +3,9 @@ import { mockRequest, mockResponse } from '../../../test/testHelpers';
 import { getFormioApiServiceUrl } from '../../../util/formio';
 import authorizedPublisher from './authorizedPublisher';
 
-describe('authorizedPublisher', () => {
-  const projectUrl = getFormioApiServiceUrl();
+const projectUrl = getFormioApiServiceUrl();
 
+describe('authorizedPublisher', () => {
   beforeAll(() => {
     vi.spyOn(console, 'error').mockImplementation(() => {});
   });

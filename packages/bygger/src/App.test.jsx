@@ -13,6 +13,7 @@ const createFakeChannel = () => ({
 
 describe('App', () => {
   let formioFetch;
+
   beforeEach(() => {
     formioFetch = vi.spyOn(NavFormioJs.Formio, 'fetch');
     formioFetch.mockImplementation(createMockImplementation());

@@ -412,7 +412,7 @@ describe('Mellomlagring', () => {
             cy.mocksUseRouteVariant('get-soknad:form-select-complete-v1');
 
             cy.intercept('PUT', '/fyllut/api/send-inn/utfyltsoknad', (req) => {
-              const { submission, attachments, ...rest } = req.body;
+              const { submission, attachments } = req.body;
               expect(submission.data.velgInstrument).to.deep.eq({ label: 'Piano', value: 'piano' });
               expect(submission.data.velgLand).to.deep.eq({ label: 'Italia', value: 'IT' });
               expect(submission.data.velgValutaDuVilBetaleMed).to.deep.eq({ label: 'Euro (EUR)', value: 'EUR' });

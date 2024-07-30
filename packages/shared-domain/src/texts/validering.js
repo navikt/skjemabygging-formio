@@ -12,7 +12,7 @@ export const validering = {
 
   // Dato / tid
   invalid_date: '{{field}} er ikke en gyldig dato.',
-  invalid_day: '{{field}} er ikke en gyldig dag.', // eslint-disable-line camelcase
+  invalid_day: '{{field}} er ikke en gyldig dag.',
   maxDate: 'Datoen kan ikke være senere {{maxDate}}',
   minDate: 'Datoen kan ikke være tidligere enn {{minDate}}',
   maxYear: '{{field}} kan ikke være senere enn {{maxYear}}',

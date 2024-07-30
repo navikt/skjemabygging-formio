@@ -9,7 +9,7 @@ interface ObsoleteTranslation {
 interface Props {
   translations: ObsoleteTranslation[];
   className?: string;
-  onDelete: (t: ObsoleteTranslation) => {};
+  onDelete: (t: ObsoleteTranslation) => void;
 }
 
 const ObsoleteTranslationsPanel = ({ translations, onDelete }: Props) => {

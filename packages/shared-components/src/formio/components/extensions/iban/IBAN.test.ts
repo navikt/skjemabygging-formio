@@ -14,6 +14,7 @@ vi.mock('ibantools', async () => {
   };
 });
 
+const mockedSetComponentValidity = vi.fn();
 describe('IBAN', () => {
   let ibanComp;
 
@@ -28,8 +29,6 @@ describe('IBAN', () => {
     if (params) return text.replace(/{{2}([^{}]*field)}{2}/, params.field);
     else return text;
   };
-
-  const mockedSetComponentValidity = vi.fn();
 
   beforeEach(() => {
     ibanComp = new IBAN(undefined, {}, {});

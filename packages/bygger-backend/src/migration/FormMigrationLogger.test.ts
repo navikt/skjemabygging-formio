@@ -10,6 +10,10 @@ const idKeyAndLabel = (identifier: string): Component =>
     label: `label-${identifier}`,
   }) as unknown as Component;
 
+const componentA = idKeyAndLabel('a');
+const componentB = idKeyAndLabel('b');
+const noChanges = idKeyAndLabel('no-changes');
+
 describe('FormMigrationLogger', () => {
   let logger: FormMigrationLogger;
 
@@ -25,6 +29,7 @@ describe('FormMigrationLogger', () => {
 
     describe('When all entries contains identical original and new components', () => {
       let log: FormMigrationLogData;
+
       beforeEach(() => {
         logger.add(idKeyAndLabel('a'), idKeyAndLabel('a'));
         logger.add(idKeyAndLabel('b'), idKeyAndLabel('b'));
@@ -47,9 +52,7 @@ describe('FormMigrationLogger', () => {
 
     describe('When added entries includes changed compoenntes', () => {
       let log: FormMigrationLogData;
-      const componentA = idKeyAndLabel('a');
-      const componentB = idKeyAndLabel('b');
-      const noChanges = idKeyAndLabel('no-changes');
+
       beforeEach(() => {
         logger.add(
           { ...componentA, customProperty: 'old value' } as Component,

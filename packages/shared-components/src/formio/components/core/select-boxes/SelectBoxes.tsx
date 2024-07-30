@@ -63,7 +63,7 @@ class SelectBoxes extends BaseComponent {
         error={this.getError()}
         tabIndex={-1}
       >
-        {values.map((obj, index, arr) => (
+        {values.map((obj, index) => (
           <Checkbox key={obj.value} value={obj.value} description={this.getValueDescription(index)}>
             {this.translate(obj.label)}
           </Checkbox>
