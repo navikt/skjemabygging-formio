@@ -1,10 +1,10 @@
-import { Component, dateUtils, navFormUtils, numberUtils } from '@navikt/skjemadigitalisering-shared-domain';
-import FormioUtils from 'formiojs/utils';
+import { dateUtils, numberUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import ReactDatePicker, { validateDate } from '../../../../components/datepicker/DatePicker';
 import { ComponentUtilsProvider } from '../../../../context/component/componentUtilsContext';
 import BaseComponent from '../../base/BaseComponent';
 import datePickerBuilder from './DatePicker.builder';
 import datePickerForm from './DatePicker.form';
+import { getBeforeDateInputValue, getComponentsWithDateInputKey } from './DatePicker.utils';
 
 export default class DatePicker extends BaseComponent {
   static schema() {
@@ -36,18 +36,6 @@ export default class DatePicker extends BaseComponent {
     return true;
   }
 
-  getComponentsWithDateInputKey() {
-    // Utils.getContextComponents that is used to select components for beforeDateInputKey only show unique keys.
-    // So this regex works now, but would be better if we had a selector that actually checked for complex keys
-    return navFormUtils
-      .flattenComponents(this.root.getComponents() as Component[])
-      .filter(
-        (component) =>
-          component.type === 'navDatepicker' &&
-          component.component?.beforeDateInputKey?.replace(/^(.+)\./, '') === this.component?.key,
-      );
-  }
-
   checkComponentValidity(data, dirty, row, _options = {}) {
     if (this.shouldSkipValidation(data, dirty, row)) {
       this.setCustomValidity('');
@@ -75,13 +63,12 @@ export default class DatePicker extends BaseComponent {
 
   getFromDate(): string | undefined {
     if (this.component?.beforeDateInputKey) {
-      const beforeDateValue = FormioUtils.getValue(this.root.submission, this.component?.beforeDateInputKey);
-
-      if (beforeDateValue) {
+      const beforeDateInputValue = getBeforeDateInputValue(this);
+      if (beforeDateInputValue) {
         if (this.component?.mayBeEqual) {
-          return beforeDateValue;
+          return beforeDateInputValue;
         } else {
-          return dateUtils.addDays(1, beforeDateValue);
+          return dateUtils.addDays(1, beforeDateInputValue);
         }
       }
 
@@ -110,7 +97,7 @@ export default class DatePicker extends BaseComponent {
   onUpdate(value: string) {
     this.handleChange(value);
 
-    this.getComponentsWithDateInputKey().map((component) => component.rerender?.());
+    getComponentsWithDateInputKey(this).map((component) => component.rerender?.());
   }
 
   override renderReact(element) {

@@ -233,4 +233,54 @@ describe('NavDatepicker', () => {
       cy.findAllByText(validationAfter(afterDate)).should('have.length', 2);
     });
   });
+
+  describe('Data grid', () => {
+    beforeEach(() => {
+      allFieldsEneabled();
+    });
+
+    it('test to and from date inside data grid with valid date', () => {
+      cy.findByRole('textbox', { name: 'Tilfeldig dato' }).type('06.06.2022');
+
+      cy.findByRole('textbox', { name: /Grid fra/ }).type('02.02.2023');
+      cy.findByRole('textbox', { name: /Grid til/ }).type('03.02.2023');
+
+      cy.clickNextStep();
+      cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
+    });
+
+    it('test to and from date inside data grid with invalid to date', () => {
+      cy.findByRole('textbox', { name: 'Tilfeldig dato' }).type('06.06.2022');
+
+      cy.findByRole('textbox', { name: /Grid fra/ }).type('02.02.2023');
+      cy.findByRole('textbox', { name: /Grid til/ }).type('01.02.2023');
+
+      cy.clickNextStep();
+      cy.findAllByText(validateionBefore('03.02.2023')).should('have.length', 2);
+    });
+
+    it('test to and from date inside data grid with invalid to dated', () => {
+      cy.findByRole('textbox', { name: 'Tilfeldig dato' }).type('06.06.2022');
+
+      cy.findByRole('button', { name: 'Legg til' }).click();
+
+      cy.findAllByRole('textbox', { name: /Grid fra/ })
+        .eq(0)
+        .type('02.02.2023');
+      cy.findAllByRole('textbox', { name: /Grid til/ })
+        .eq(0)
+        .type('01.02.2023');
+
+      cy.findAllByRole('textbox', { name: /Grid fra/ })
+        .eq(1)
+        .type('04.02.2023');
+      cy.findAllByRole('textbox', { name: /Grid til/ })
+        .eq(1)
+        .type('03.02.2023');
+
+      cy.clickNextStep();
+      cy.findAllByText(validateionBefore('03.02.2023')).should('have.length', 2);
+      cy.findAllByText(validateionBefore('05.02.2023')).should('have.length', 2);
+    });
+  });
 });
