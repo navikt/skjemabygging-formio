@@ -193,6 +193,8 @@ export interface Component {
   onChange?: (props) => void;
   inputType?: InputMode;
   ignoreNorway?: boolean;
+  tree?: boolean;
+  path?: string;
 }
 
 export type InputMode = 'none' | 'text' | 'tel' | 'url' | 'email' | 'numeric' | 'decimal' | 'search';
@@ -245,6 +247,7 @@ export interface NavFormType {
   name: string;
   title: string;
   path: string;
+  key?: string;
   modified?: string;
   properties: FormPropertiesType;
   components: Component[];
