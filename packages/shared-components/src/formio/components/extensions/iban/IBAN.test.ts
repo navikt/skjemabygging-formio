@@ -1,11 +1,10 @@
-// @ts-nocheck
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { validateIBAN, ValidationErrorsIBAN } from 'ibantools';
-import IBAN from './IBAN.js';
+import { Mock } from 'vitest';
+import TextField from '../../core/textfield/TextField';
+import IBAN from './IBAN';
 
 const { wrongBBANLength, noIBANCountry, invalidIBAN } = TEXTS.validering;
-
-const iban = new IBAN();
 
 vi.mock('ibantools', async () => {
   const actual = await vi.importActual('ibantools');
@@ -14,30 +13,85 @@ vi.mock('ibantools', async () => {
     validateIBAN: vi.fn().mockReturnValue({ valid: true, errorCodes: [] }),
   };
 });
-vi.spyOn(IBAN.prototype, 'getErrorMessage').mockImplementation((key) => TEXTS.validering[key]);
 
 describe('IBAN', () => {
+  let ibanComp;
+
+  const defaultError = {
+    level: 'error',
+    path: 'iban',
+    elementId: undefined,
+  };
+
+  const mockedTranslate = (text: string, params?: Record<string, any>) => {
+    text = TEXTS.validering[text] ? TEXTS.validering[text] : text;
+    if (params) return text.replace(/{{2}([^{}]*field)}{2}/, params.field);
+    else return text;
+  };
+
+  const mockedSetComponentValidity = vi.fn();
+
+  beforeEach(() => {
+    ibanComp = new IBAN(undefined, {}, {});
+    ibanComp.component.label = 'Label for IBAN';
+    ibanComp.setValue('IBAN-value');
+    vi.spyOn(IBAN.prototype, 'translate').mockImplementation(mockedTranslate as any);
+    vi.spyOn(IBAN.prototype, 'setComponentValidity').mockImplementation(mockedSetComponentValidity as any);
+    vi.spyOn(TextField.prototype, 'checkComponentValidity').mockReturnValue(true);
+  });
+
+  afterEach(() => {
+    mockedSetComponentValidity.mockClear();
+  });
+
   describe('validateIban', () => {
-    it('returns true if IBAN is valid', () => {
-      expect(iban.validateIban('ValidIBAN')).toBe(true);
+    it('successfully validates valid IBAN', () => {
+      ibanComp.checkComponentValidity();
+      console.log(mockedSetComponentValidity.mock.calls[0][0]);
+      expect(mockedSetComponentValidity.mock.calls[0][0]).toEqual([]);
     });
 
-    it('returns true when no IBAN is provided', () => {
-      validateIBAN.mockReturnValue({ valid: false, errorCodes: [ValidationErrorsIBAN.NoIBANProvided] });
-      expect(iban.validateIban('ValidIBAN')).toBe(true);
+    it('successfully validates empty IBAN', () => {
+      (validateIBAN as Mock).mockReturnValue({ valid: false, errorCodes: [ValidationErrorsIBAN.NoIBANProvided] });
+      ibanComp.setValue('');
+      ibanComp.checkComponentValidity();
+      expect(mockedSetComponentValidity.mock.calls[0][0]).toEqual([]);
     });
 
-    it('returns wrongBBANLength error message when BBAN part of IBAN has the wrong length', () => {
-      validateIBAN.mockReturnValue({ valid: false, errorCodes: [ValidationErrorsIBAN.WrongBBANLength] });
-      expect(iban.validateIban('ValidIBAN')).toBe(wrongBBANLength);
+    it('ignores empty value', () => {
+      ibanComp.setValue('');
+      ibanComp.checkComponentValidity();
+      expect(mockedSetComponentValidity.mock.calls[0][0]).toEqual([]);
     });
-    it('returns noIBANCountry error message when no country code is provided', () => {
-      validateIBAN.mockReturnValue({ valid: false, errorCodes: [ValidationErrorsIBAN.NoIBANCountry] });
-      expect(iban.validateIban('ValidIBAN')).toBe(noIBANCountry);
+
+    it('successfully validates when BBAN part of IBAN has the wrong length', () => {
+      const expected = {
+        ...defaultError,
+        message: wrongBBANLength,
+      };
+      (validateIBAN as Mock).mockReturnValue({ valid: false, errorCodes: [ValidationErrorsIBAN.WrongBBANLength] });
+      ibanComp.checkComponentValidity();
+      expect(mockedSetComponentValidity.mock.calls[0][0]).toEqual([expected]);
     });
-    it('returns invalidIBAN error message when the IBAN is incorrect for other reasons', () => {
-      validateIBAN.mockReturnValue({ valid: false, errorCodes: [99] });
-      expect(iban.validateIban('ValidIBAN')).toBe(invalidIBAN);
+
+    it('successfully validates when no country code is provided', () => {
+      const expected = {
+        ...defaultError,
+        message: noIBANCountry,
+      };
+      (validateIBAN as Mock).mockReturnValue({ valid: false, errorCodes: [ValidationErrorsIBAN.NoIBANCountry] });
+      ibanComp.checkComponentValidity();
+      expect(mockedSetComponentValidity.mock.calls[0][0]).toEqual([expected]);
+    });
+
+    it('successfully validates when the IBAN is incorrect for other reasons', () => {
+      const expected = {
+        ...defaultError,
+        message: invalidIBAN,
+      };
+      (validateIBAN as Mock).mockReturnValue({ valid: false, errorCodes: [99] });
+      ibanComp.checkComponentValidity();
+      expect(mockedSetComponentValidity.mock.calls[0][0]).toEqual([expected]);
     });
   });
 });

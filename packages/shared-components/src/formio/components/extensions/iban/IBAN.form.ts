@@ -15,8 +15,6 @@ const ibanForm = () => {
     ]),
     validation([
       editFormValidation.required(),
-      editFormValidation.customValidation(),
-      editFormValidation.customError(),
     ]),
     api([
       editFormApi.key(),

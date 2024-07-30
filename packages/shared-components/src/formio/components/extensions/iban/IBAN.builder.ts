@@ -9,7 +9,6 @@ const IBANBuilder = () => {
       validateOn: 'blur',
       validate: {
         required: true,
-        custom: 'valid = instance.validateIban(input);',
       },
     },
   };

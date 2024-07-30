@@ -1,18 +1,12 @@
-import { idnr } from '@navikt/fnrvalidator';
-import { ConfigType, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import TextFieldComponent from 'formiojs/components/textfield/TextField';
+import BaseComponent from '../../base/BaseComponent';
+import TextField from '../../core/textfield/TextField';
 import nationalIdentityNumberBuilder from './NationalIdentityNumber.builder';
 import nationalIdentityNumberForm from './NationalIdentityNumber.form';
+import { validateNationalIdentityNumber } from './NationalIdentityNumberValidator';
 
-const ALLOWED_TYPES = ['fnr', 'dnr'];
-const ALLOWED_TEST_TYPES = ['fnr', 'dnr', 'hnr', 'tnr', 'dnr-and-hnr'];
-
-export default class NationalIdentityNumber extends TextFieldComponent {
-  options: any;
-  t: any;
-
+export default class NationalIdentityNumber extends TextField {
   static schema() {
-    return TextFieldComponent.schema({
+    return BaseComponent.schema({
       label: 'Fødselsnummer eller d-nummer',
       type: 'fnrfield',
       key: 'fodselsnummerDNummer',
@@ -33,40 +27,31 @@ export default class NationalIdentityNumber extends TextFieldComponent {
     return NationalIdentityNumber.schema();
   }
 
-  validateFnrNew(inputValue) {
-    if (inputValue === '') {
-      // Vi lar default required-validering ta hånd om tomt felt feilmelding
-      return true;
+  checkComponentValidity(data, dirty, row, options = {}) {
+    const validity = super.checkComponentValidity(data, dirty, row, options);
+
+    if (validity) {
+      const appConfig = this.options?.appConfig?.config;
+      const errorMessage = validateNationalIdentityNumber(
+        {
+          value: this.getValue(),
+          allowTestTypes: appConfig?.NAIS_CLUSTER_NAME !== 'prod-gcp',
+        },
+        this.translate.bind(this),
+      );
+      return this.setComponentValidity(
+        errorMessage ? [this.createError(errorMessage, undefined)] : [],
+        dirty,
+        undefined,
+      );
     }
+    return validity;
+  }
 
-    const appConfig = this.options?.appConfig?.config as ConfigType;
-
-    const inputValueNoSpace = inputValue.replace(' ', '');
-    const result = idnr(inputValueNoSpace);
-
-    const errorMessage: string =
-      this.t('fodselsnummerDNummer') === 'fodselsnummerDNummer'
-        ? TEXTS.validering.fodselsnummerDNummer
-        : this.t('fodselsnummerDNummer');
-
-    if (result.status === 'invalid') {
-      return errorMessage;
-    }
-
-    if (result.status === 'valid') {
-      // Allow only fnr and dnr in production
-      if (ALLOWED_TYPES.includes(result.type)) {
-        return true;
-      }
-
-      // Allow all types in test environments
-      if (appConfig?.NAIS_CLUSTER_NAME !== 'prod-gcp') {
-        return ALLOWED_TEST_TYPES.includes(result.type);
-      }
-
-      return errorMessage;
-    }
-
+  /**
+   * @deprecated Validation has been moved. We keep this to support schemas that contains a reference to the function
+   */
+  validateFnrNew(_inputValue) {
     return true;
   }
 }

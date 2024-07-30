@@ -10,7 +10,6 @@ const nationalIdentityNumberBuilder = (keyPostfix: string = '') => {
       validateOn: 'blur',
       validate: {
         required: true,
-        custom: 'valid = instance.validateFnrNew(input)',
       },
     },
   };
