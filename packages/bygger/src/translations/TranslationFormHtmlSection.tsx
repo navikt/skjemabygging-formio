@@ -74,7 +74,7 @@ const TranslationFormHtmlSection = ({ text, storedTranslation, updateTranslation
         )
       ) {
         setTranslationState((state) => ({ ...state, incompatible: storedTranslation, ready: false }));
-      } else {
+      } else if (!translationObject) {
         setTranslationObject(
           new StructuredHtmlElement(storedTranslation, {
             skipConversionWithin: htmlConverter.defaultLeaves,
