@@ -8,6 +8,9 @@ const checkboxBuilder = () => {
       ...schema,
     },
     validateOn: 'blur',
+    validate: {
+      required: true,
+    }
   };
 };
 
