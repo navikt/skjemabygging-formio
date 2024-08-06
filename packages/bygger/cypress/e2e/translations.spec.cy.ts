@@ -290,6 +290,26 @@ describe('Translations', () => {
       });
     });
 
+    it('preserves attributes of links', () => {
+      const expectedHtmlResult =
+        '<h3>Overskrift</h3><p>Avsnitt</p><p>Her er et avsnitt <a target="_blank" rel="noopener noreferrer" href="https://www.nyheter.no">med lenke til nyheter</a>.</p><ul><li></li><li><a target="_blank" rel="noopener noreferrer"><strong></strong></a><strong></strong><a target="_blank" rel="noopener noreferrer"><strong></strong></a></li></ul><p></p><ol><li></li><li></li><li></li><li></li></ol>';
+      const heading = 'Tekstblokk med mye formatering og manglende oversettelse';
+      const paragraph = 'Dette er avsnitt 1';
+      const paragraphWithTextAndLink =
+        'Her er et avsnitt [med lenke til VG](https://www.vg.no). Denne er så lang at den bør få et tekstområde, altså en sånn stor boks hvor man kan skrive inn masse tekst. Her kommer en liste:';
+      typeNewHtmlTranslationInput(2, heading, 'Overskrift');
+      typeNewHtmlTranslationInput(2, paragraph, 'Avsnitt');
+      typeNewHtmlTranslationInput(
+        2,
+        paragraphWithTextAndLink,
+        'Her er et avsnitt [med lenke til nyheter](https://www.nyheter.no).',
+      );
+      cy.findByRole('button', { name: 'Lagre' }).click();
+      cy.wait('@updateTranslations').then((interception) => {
+        expect(interception.request.body.data.i18n[htmlWithNoTranslation]).to.equal(expectedHtmlResult);
+      });
+    });
+
     it('lets you add new markdown for bold text', () => {
       const expectedHtmlResult =
         '<h3></h3><p><strong>Dette</strong> er et <strong>avsnitt med fet skrift</strong></p><p><a target="_blank" rel="noopener noreferrer"></a></p><ul><li></li><li><a target="_blank" rel="noopener noreferrer"><strong></strong></a><strong></strong><a target="_blank" rel="noopener noreferrer"><strong></strong></a></li></ul><p></p><ol><li></li><li></li><li></li><li></li></ol>';
