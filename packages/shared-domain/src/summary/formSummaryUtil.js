@@ -20,6 +20,15 @@ function createComponentKeyWithNavId(component) {
   return `${component.key}-${component.navId}`;
 }
 
+function formatPostnummerOgPoststed(bostedsadresse) {
+  if (bostedsadresse?.postnummer) {
+    return bostedsadresse.poststed
+      ? `${bostedsadresse?.postnummer} ${bostedsadresse?.poststed}`
+      : bostedsadresse.postnummer;
+  }
+  return undefined;
+}
+
 function formatValue(component, value, translate, form, language) {
   switch (component.type) {
     case 'radiopanel':
@@ -104,8 +113,7 @@ function formatValue(component, value, translate, form, language) {
         bostedsadresse?.adresse,
         bostedsadresse?.bygning,
         bostedsadresse?.postboks,
-        bostedsadresse?.postnummer,
-        bostedsadresse?.poststed,
+        formatPostnummerOgPoststed(bostedsadresse),
         bostedsadresse?.bySted,
         bostedsadresse?.region,
         bostedsadresse?.landkode,
