@@ -20,13 +20,13 @@ function createComponentKeyWithNavId(component) {
   return `${component.key}-${component.navId}`;
 }
 
-function formatPostnummerOgPoststed(bostedsadresse) {
+function formatPostnummerOgBySted(bostedsadresse) {
   if (bostedsadresse?.postnummer) {
-    return bostedsadresse.poststed
-      ? `${bostedsadresse?.postnummer} ${bostedsadresse?.poststed}`
+    return bostedsadresse.bySted
+      ? `${bostedsadresse?.postnummer} ${bostedsadresse?.bySted}`
       : bostedsadresse.postnummer;
   }
-  return undefined;
+  return bostedsadresse?.bySted;
 }
 
 function formatValue(component, value, translate, form, language) {
@@ -113,8 +113,7 @@ function formatValue(component, value, translate, form, language) {
         bostedsadresse?.adresse,
         bostedsadresse?.bygning,
         bostedsadresse?.postboks,
-        formatPostnummerOgPoststed(bostedsadresse),
-        bostedsadresse?.bySted,
+        formatPostnummerOgBySted(bostedsadresse),
         bostedsadresse?.region,
         bostedsadresse?.landkode,
       ].filter(Boolean);

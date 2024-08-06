@@ -4,14 +4,13 @@ interface Address {
 
   adresse?: string;
   postnummer?: string;
-  poststed?: string;
+  bySted?: string; // poststed for norske adresser
   landkode: string;
   co?: string;
   postboks?: string;
 
   // only for foreign addresses
   bygning?: string;
-  bySted?: string;
   region?: string;
 }
 
