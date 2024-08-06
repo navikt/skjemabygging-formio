@@ -105,6 +105,7 @@ function formatValue(component, value, translate, form, language) {
         bostedsadresse?.bygning,
         bostedsadresse?.postboks,
         bostedsadresse?.postnummer,
+        bostedsadresse?.poststed,
         bostedsadresse?.bySted,
         bostedsadresse?.region,
         bostedsadresse?.landkode,

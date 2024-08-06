@@ -4,6 +4,7 @@ interface Address {
 
   adresse?: string;
   postnummer?: string;
+  poststed?: string;
   landkode: string;
   co?: string;
   postboks?: string;
