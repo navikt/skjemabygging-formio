@@ -14,6 +14,7 @@
       "gyldigFraOgMed": "2023-05-31",
       "adresse": "Testveien 1C",
       "postnummer": "1234",
+      "bySted": "Plassen",
       "landkode": "NOR"
     },
     "oppholdsadresser": [],

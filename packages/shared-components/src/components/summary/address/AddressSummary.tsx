@@ -9,7 +9,9 @@ const AttachmentSummary = ({ component }: Props) => {
     <>
       <dt>{component.label}</dt>
       <dd>{component.value.address}</dd>
-      <Link href="https://www.skatteetaten.no/person/folkeregister/flytte">{component.value.linkText}</Link>
+      <Link href="https://www.skatteetaten.no/person/folkeregister/flytte" target="_blank">
+        {component.value.linkText}
+      </Link>
     </>
   );
 };
