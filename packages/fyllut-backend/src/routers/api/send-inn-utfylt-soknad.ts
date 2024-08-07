@@ -17,6 +17,7 @@ const sendInnUtfyltSoknad = {
       const idportenPid = getIdportenPid(req);
       const tokenxAccessToken = getTokenxAccessToken(req);
       const fyllutUrl = getFyllutUrl(req);
+      const envQualifier = req.getEnvQualifier();
 
       const { form, submission, submissionMethod, translation, language, innsendingsId } = req.body;
       if (!req.headers.AzureAccessToken) {
@@ -52,6 +53,7 @@ const sendInnUtfyltSoknad = {
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${tokenxAccessToken}`,
+            ...(envQualifier && { 'Nav-Env-Qualifier': envQualifier }),
           },
           body: JSON.stringify(body),
         },
