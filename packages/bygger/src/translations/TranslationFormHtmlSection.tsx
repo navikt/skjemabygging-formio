@@ -195,8 +195,13 @@ const TranslationFormHtmlSection = ({ text, storedTranslation, updateTranslation
                     } else {
                       feedbackEmit.error('Det oppsto en feil. Oversettelsen kan ikke oppdateres fordi den mangler id.');
                     }
-                    const htmlString = translationObject.toHtmlString();
-                    updateTranslation(htmlString);
+
+                    if (translationObject.innerText === '') {
+                      updateTranslation('');
+                    } else {
+                      const htmlString = translationObject.toHtmlString();
+                      updateTranslation(htmlString);
+                    }
                   }
                 }}
               />
