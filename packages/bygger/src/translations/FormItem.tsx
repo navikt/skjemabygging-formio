@@ -43,8 +43,10 @@ const FormItem = ({ translations, text, type, languageCode }: Props) => {
         setCurrentLanguage(languageCode);
       }
     } else {
-      setCurrentTranslation('');
-      setCurrentLanguage(languageCode);
+      if (currentLanguage !== languageCode) {
+        setCurrentTranslation('');
+        setCurrentLanguage(languageCode);
+      }
       setHasGlobalTranslation(false);
       setShowGlobalTranslation(false);
     }
@@ -57,8 +59,8 @@ const FormItem = ({ translations, text, type, languageCode }: Props) => {
     });
 
   const updateTranslations = (targetValue: string) => {
-    dispatchUpdate(targetValue);
     setCurrentTranslation(targetValue);
+    dispatchUpdate(targetValue);
   };
 
   if (currentTranslation === undefined) {
