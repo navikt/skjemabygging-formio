@@ -137,10 +137,13 @@ class StructuredHtmlElement extends StructuredHtml {
     }
   }
 
-  updateInternal(id: string, value: string): StructuredHtmlElement | StructuredHtmlText | undefined {
+  updateInternal(
+    id: string,
+    value: string | HtmlAsJsonElement,
+  ): StructuredHtmlElement | StructuredHtmlText | undefined {
     let newElementJson: HtmlAsJsonElement | undefined;
     if (this.id === id) {
-      newElementJson = this.converter.markdown2Json(value);
+      newElementJson = typeof value === 'string' ? this.converter.markdown2Json(value) : value;
       return this.populate({ ...this, children: newElementJson.children });
     }
 

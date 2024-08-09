@@ -46,7 +46,10 @@ abstract class StructuredHtml {
   abstract populate(
     value: HtmlAsJsonElement | HtmlAsJsonTextElement | undefined,
   ): StructuredHtmlElement | StructuredHtmlText | undefined;
-  abstract updateInternal(id: string, value: string): StructuredHtmlElement | StructuredHtmlText | undefined;
+  abstract updateInternal(
+    id: string,
+    value: string | HtmlAsJsonElement,
+  ): StructuredHtmlElement | StructuredHtmlText | undefined;
   abstract matches(other: StructuredHtml | undefined): boolean;
   abstract toJson(getMarkdown?: boolean): HtmlAsJsonElement | HtmlAsJsonTextElement;
   abstract toHtmlString(): string;
@@ -66,7 +69,7 @@ abstract class StructuredHtml {
     return this;
   }
 
-  update(id: string, value: string): StructuredHtmlElement | StructuredHtmlText | undefined {
+  update(id: string, value: string | HtmlAsJsonElement): StructuredHtmlElement | StructuredHtmlText | undefined {
     if (this.parent) {
       return this.getRoot().update(id, value) as StructuredHtmlElement | undefined;
     }

@@ -33,12 +33,12 @@ const TranslationsToRemove = ({ translations, languageCode }) => {
 
 const TranslationsFormPage = ({ skjemanummer, translations, title, flattenedComponents, languageCode }) => {
   const styles = useStyles();
-  const [currentTranslation, setCurrentTranslation] = useState();
+  const [currentTranslation, setCurrentTranslation] = useState({});
   const [unusedTranslations, setUnusedTranslations] = useState([]);
 
   useEffect(() => {
     if (translations && languageCode) {
-      setCurrentTranslation(translations?.[languageCode]?.translations ?? {});
+      setCurrentTranslation({ translations: translations?.[languageCode]?.translations ?? {}, languageCode });
     }
   }, [translations, languageCode]);
 
@@ -51,7 +51,7 @@ const TranslationsFormPage = ({ skjemanummer, translations, title, flattenedComp
     setUnusedTranslations(unusedTranslationsAsEntries);
   }, [translations, flattenedComponents, languageCode]);
 
-  if (!currentTranslation) {
+  if (!currentTranslation.translations) {
     return <></>;
   }
 
@@ -72,11 +72,11 @@ const TranslationsFormPage = ({ skjemanummer, translations, title, flattenedComp
           const { text, type } = comp;
           return (
             <FormItem
-              translations={currentTranslation}
+              translations={currentTranslation.translations}
               text={text}
               type={type}
-              key={`translation-${skjemanummer}-${text}-${languageCode}`}
-              languageCode={languageCode}
+              key={`translation-${skjemanummer}-${text}`}
+              languageCode={currentTranslation.languageCode}
             />
           );
         })}

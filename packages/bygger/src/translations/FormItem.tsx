@@ -26,6 +26,7 @@ const FormItem = ({ translations, text, type, languageCode }: Props) => {
   const [currentTranslation, setCurrentTranslation] = useState<string>();
   const [tempGlobalTranslation, setTempGlobalTranslation] = useState('');
   const [useLegacyHtmlTranslation, setUseLegacyHtmlTranslation] = useState(false);
+  const [currentLanguage, setCurrentLanguage] = useState<string>();
 
   const dispatch = useI18nDispatch();
   const styles = useStyles();
@@ -37,20 +38,29 @@ const FormItem = ({ translations, text, type, languageCode }: Props) => {
         setShowGlobalTranslation(true);
         setTempGlobalTranslation(translations[text].value ?? '');
       }
-      setCurrentTranslation(translations[text].value ?? '');
+      if (currentLanguage !== languageCode && currentTranslation !== translations[text].value) {
+        setCurrentTranslation(translations[text].value ?? '');
+        setCurrentLanguage(languageCode);
+      }
     } else {
-      setCurrentTranslation('');
+      if (currentLanguage !== languageCode) {
+        setCurrentTranslation('');
+        setCurrentLanguage(languageCode);
+      }
       setHasGlobalTranslation(false);
       setShowGlobalTranslation(false);
     }
-  }, [translations, text]);
+  }, [translations, text, currentLanguage, currentTranslation, languageCode]);
 
-  const updateTranslations = (targetValue) => {
+  const dispatchUpdate = (value: string) =>
     dispatch({
       type: 'update',
-      payload: { lang: languageCode, translation: { [text]: { value: targetValue, scope: 'local' } } },
+      payload: { lang: languageCode, translation: { [text]: { value, scope: 'local' } } },
     });
+
+  const updateTranslations = (targetValue: string) => {
     setCurrentTranslation(targetValue);
+    dispatchUpdate(targetValue);
   };
 
   if (currentTranslation === undefined) {
@@ -62,7 +72,7 @@ const FormItem = ({ translations, text, type, languageCode }: Props) => {
       <TranslationFormHtmlSection
         text={text}
         storedTranslation={currentTranslation}
-        updateTranslation={updateTranslations}
+        updateTranslation={dispatchUpdate}
         onSelectLegacy={() => setUseLegacyHtmlTranslation(true)}
       />
     );

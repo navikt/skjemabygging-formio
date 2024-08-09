@@ -7,7 +7,7 @@ import {
   htmlConverter,
   makeStyles,
 } from '@navikt/skjemadigitalisering-shared-components';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useFeedbackEmit } from '../context/notifications/FeedbackContext';
 import TranslationFormHtmlInput from './TranslationFormHtmlInput';
 
@@ -41,17 +41,7 @@ const TranslationFormHtmlSection = ({ text, storedTranslation, updateTranslation
   const [translationState, setTranslationState] = useState<TranslationState>({ ready: false });
   const [translationObject, setTranslationObject] = useState<StructuredHtmlElement>();
 
-  const startNewTranslation = () => {
-    setTranslationObject(
-      new StructuredHtmlElement(text, {
-        skipConversionWithin: htmlConverter.defaultLeaves,
-        withEmptyTextContent: true,
-      }),
-    );
-    setTranslationState((state) => ({ ...state, ready: true }));
-  };
-
-  const html = useMemo(
+  const originalLanguageHtml = useMemo(
     () =>
       htmlConverter.isHtmlString(text)
         ? new StructuredHtmlElement(text, { skipConversionWithin: htmlConverter.defaultLeaves })
@@ -59,13 +49,27 @@ const TranslationFormHtmlSection = ({ text, storedTranslation, updateTranslation
     [text],
   );
 
+  const originalHtmlNoContent = useMemo(
+    () =>
+      new StructuredHtmlElement(text, {
+        skipConversionWithin: htmlConverter.defaultLeaves,
+        withEmptyTextContent: true,
+      }),
+    [text],
+  );
+
+  const startNewTranslation = useCallback(() => {
+    setTranslationObject(originalHtmlNoContent);
+    setTranslationState((state) => ({ ...state, ready: true }));
+  }, [originalHtmlNoContent]);
+
   useEffect(() => {
     if (storedTranslation !== translationState.current && !translationState.incompatible) {
       setTranslationState((state) => ({ ...state, current: storedTranslation }));
       if (!storedTranslation) {
         startNewTranslation();
       } else if (
-        !html?.matches(
+        !originalLanguageHtml?.matches(
           new StructuredHtmlElement(storedTranslation, { skipConversionWithin: htmlConverter.defaultLeaves }),
         )
       ) {
@@ -79,11 +83,11 @@ const TranslationFormHtmlSection = ({ text, storedTranslation, updateTranslation
         setTranslationState((state) => ({ ...state, ready: true }));
       }
     }
-  }, [translationObject, html, startNewTranslation, storedTranslation, translationState]);
+  }, [translationObject, originalLanguageHtml, startNewTranslation, storedTranslation, translationState]);
 
   const styles = useStyles();
 
-  if (StructuredHtml.isElement(html)) {
+  if (StructuredHtml.isElement(originalLanguageHtml)) {
     return (
       <Box
         data-testid="html-translation"
@@ -165,7 +169,7 @@ const TranslationFormHtmlSection = ({ text, storedTranslation, updateTranslation
 
         {translationState.ready &&
           translationObject &&
-          html.children.map((originalElement, index) => {
+          originalLanguageHtml.children.map((originalElement, index) => {
             return (
               <TranslationFormHtmlInput
                 key={`html-translation-${originalElement.id}`}
@@ -176,7 +180,15 @@ const TranslationFormHtmlSection = ({ text, storedTranslation, updateTranslation
                   if (translationObject) {
                     if (id) {
                       try {
-                        translationObject.update(id, value);
+                        if (value === '') {
+                          const originalHtmlChild = originalHtmlNoContent.children[index];
+                          const originalValue = StructuredHtml.isElement(originalHtmlChild)
+                            ? originalHtmlChild.toJson()
+                            : '';
+                          translationObject.update(id, originalValue);
+                        } else {
+                          translationObject.update(id, value);
+                        }
                       } catch (error: any) {
                         feedbackEmit.error(error?.message ?? `Det oppsto en feil: ${error}`);
                       }

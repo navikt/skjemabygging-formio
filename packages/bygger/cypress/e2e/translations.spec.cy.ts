@@ -149,6 +149,7 @@ describe('Translations', () => {
           '<h4></h4><p>Beskrivelse med <a target="_blank" rel="noopener noreferrer" href="https://www.nav.no/minside">lenke til minside</a>.</p>',
         '<h3>Tekstblokk med mye formatering og eksisterende oversettelse</h3><p>Dette er et avsnitt</p><p>Her er et avsnitt <a target="_blank" rel="noopener noreferrer" href="https://www.vg.no">med lenke til VG</a> og her kommer en liste:</p><ul><li>Ta oppvasken</li><li>Handle <a target="_blank" rel="noopener noreferrer" href="https://www.coop.no/"><strong>matvarer</strong></a>, og <strong>vurder</strong> å <a target="_blank" rel="noopener noreferrer" href="https://www.zalando.no">kjøpe <strong>nye</strong> klær</a>.</li></ul><p>Nytt avsnitt. Ny liste (numerert denne gangen):</p><ol><li>Første prioritet</li><li>Også viktig, men ikke så viktig</li><li>Kan utsettes</li><li>Trengs egentlig ikke å gjøres</li></ol>':
           '<h3>Tekstblokk med mye formatering og eksisterende oversettelse</h3><p>Dette er et avsnitt</p><p>Her er eit avsnitt <a target="_blank" rel="noopener noreferrer" href="https://www.dagogtid.no">med lenke til DAG OG TID</a>, og her er ei ei liste:</p><ul><li>Ta oppvasken</li><li><a target="_blank" rel="noopener noreferrer" href="https://www.kiwi.no/"><strong>Handle matvarer</strong></a>, og <strong>tenk på om du skal</strong> <a target="_blank" rel="noopener noreferrer" href="https://www.zalando.no">kjøpe <strong>nye</strong> klær</a>.</li></ul><p>Nytt avsnitt. Ny liste (numerert denne gangen):</p><ol><li>Første prioritet</li><li>Også viktig, men ikke så viktig</li><li>Kan utsettes</li><li>Trengs egentlig ikke å gjøres</li></ol>',
+        Søker: 'Søkar',
       };
       cy.get('[data-testid=html-translation]').should('have.length', 3);
       cy.get('[data-testid=html-translation]')
@@ -290,6 +291,26 @@ describe('Translations', () => {
       });
     });
 
+    it('preserves attributes of links', () => {
+      const expectedHtmlResult =
+        '<h3>Overskrift</h3><p>Avsnitt</p><p>Her er et avsnitt <a target="_blank" rel="noopener noreferrer" href="https://www.nyheter.no">med lenke til nyheter</a>.</p><ul><li></li><li><a target="_blank" rel="noopener noreferrer"><strong></strong></a><strong></strong><a target="_blank" rel="noopener noreferrer"><strong></strong></a></li></ul><p></p><ol><li></li><li></li><li></li><li></li></ol>';
+      const heading = 'Tekstblokk med mye formatering og manglende oversettelse';
+      const paragraph = 'Dette er avsnitt 1';
+      const paragraphWithTextAndLink =
+        'Her er et avsnitt [med lenke til VG](https://www.vg.no). Denne er så lang at den bør få et tekstområde, altså en sånn stor boks hvor man kan skrive inn masse tekst. Her kommer en liste:';
+      typeNewHtmlTranslationInput(2, heading, 'Overskrift');
+      typeNewHtmlTranslationInput(2, paragraph, 'Avsnitt');
+      typeNewHtmlTranslationInput(
+        2,
+        paragraphWithTextAndLink,
+        'Her er et avsnitt [med lenke til nyheter](https://www.nyheter.no).',
+      );
+      cy.findByRole('button', { name: 'Lagre' }).click();
+      cy.wait('@updateTranslations').then((interception) => {
+        expect(interception.request.body.data.i18n[htmlWithNoTranslation]).to.equal(expectedHtmlResult);
+      });
+    });
+
     it('lets you add new markdown for bold text', () => {
       const expectedHtmlResult =
         '<h3></h3><p><strong>Dette</strong> er et <strong>avsnitt med fet skrift</strong></p><p><a target="_blank" rel="noopener noreferrer"></a></p><ul><li></li><li><a target="_blank" rel="noopener noreferrer"><strong></strong></a><strong></strong><a target="_blank" rel="noopener noreferrer"><strong></strong></a></li></ul><p></p><ol><li></li><li></li><li></li><li></li></ol>';
@@ -359,6 +380,30 @@ describe('Translations', () => {
       cy.wait('@updateTranslations').then((interception) => {
         expect(interception.request.body.data.i18n[htmlWithNoTranslation]).to.equal(expectedHtmlResult);
       });
+    });
+
+    it('updates with the correct translation when switching between languages', () => {
+      const headingWithExistingTranslation = 'Tekstblokk med mye formatering og eksisterende oversettelse';
+      cy.findByRole('heading', { name: 'Oversettelser på Norsk nynorsk' }).should('exist');
+      cy.findByRole('textbox', { name: headingWithExistingTranslation }).should(
+        'have.value',
+        'Tekstblokk med mye formatering og eksisterende oversettelse',
+      );
+      cy.findByRole('textbox', { name: 'Søker' }).should('have.value', 'Søkar');
+      cy.findByRole('button', { name: 'Norsk nynorsk' }).click();
+      cy.findByRole('link', { name: 'Engelsk' }).click();
+      cy.findByRole('textbox', { name: headingWithExistingTranslation }).should(
+        'have.value',
+        'Textblock with existing translation',
+      );
+      cy.findByRole('textbox', { name: 'Søker' }).should('have.value', '');
+      cy.findByRole('button', { name: 'Engelsk' }).click();
+      cy.findByRole('link', { name: 'Norsk nynorsk' }).click();
+      cy.findByRole('textbox', { name: headingWithExistingTranslation }).should(
+        'have.value',
+        'Tekstblokk med mye formatering og eksisterende oversettelse',
+      );
+      cy.findByRole('textbox', { name: 'Søker' }).should('have.value', 'Søkar');
     });
   });
 });
