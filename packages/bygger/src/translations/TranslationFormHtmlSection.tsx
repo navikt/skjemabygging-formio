@@ -87,6 +87,33 @@ const TranslationFormHtmlSection = ({ text, storedTranslation, updateTranslation
 
   const styles = useStyles();
 
+  const onUpdate = (id: string | undefined, value: string, index: number) => {
+    if (translationObject) {
+      if (id) {
+        try {
+          if (value === '') {
+            const originalHtmlChild = originalHtmlNoContent.children[index];
+            const originalValue = StructuredHtml.isElement(originalHtmlChild) ? originalHtmlChild.toJson() : '';
+            translationObject.update(id, originalValue);
+          } else {
+            translationObject.update(id, value);
+          }
+        } catch (error: any) {
+          feedbackEmit.error(error?.message ?? `Det oppsto en feil: ${error}`);
+        }
+      } else {
+        feedbackEmit.error('Det oppsto en feil. Oversettelsen kan ikke oppdateres fordi den mangler id.');
+      }
+
+      if (translationObject.innerText === '') {
+        updateTranslation('');
+      } else {
+        const htmlString = translationObject.toHtmlString();
+        updateTranslation(htmlString);
+      }
+    }
+  };
+
   if (StructuredHtml.isElement(originalLanguageHtml)) {
     return (
       <Box
@@ -176,34 +203,7 @@ const TranslationFormHtmlSection = ({ text, storedTranslation, updateTranslation
                 text={originalElement.innerText}
                 html={originalElement}
                 currentTranslation={translationObject?.children[index]}
-                updateTranslation={({ id, value }) => {
-                  if (translationObject) {
-                    if (id) {
-                      try {
-                        if (value === '') {
-                          const originalHtmlChild = originalHtmlNoContent.children[index];
-                          const originalValue = StructuredHtml.isElement(originalHtmlChild)
-                            ? originalHtmlChild.toJson()
-                            : '';
-                          translationObject.update(id, originalValue);
-                        } else {
-                          translationObject.update(id, value);
-                        }
-                      } catch (error: any) {
-                        feedbackEmit.error(error?.message ?? `Det oppsto en feil: ${error}`);
-                      }
-                    } else {
-                      feedbackEmit.error('Det oppsto en feil. Oversettelsen kan ikke oppdateres fordi den mangler id.');
-                    }
-
-                    if (translationObject.innerText === '') {
-                      updateTranslation('');
-                    } else {
-                      const htmlString = translationObject.toHtmlString();
-                      updateTranslation(htmlString);
-                    }
-                  }
-                }}
+                updateTranslation={({ id, value }) => onUpdate(id, value, index)}
               />
             );
           })}
