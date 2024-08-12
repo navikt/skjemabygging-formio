@@ -8,6 +8,7 @@ import FormStepper from '../../components/form/form-stepper/FormStepper';
 import NavForm from '../../components/nav-form/NavForm';
 import FormSummary from '../../components/summary/form/FormSummary';
 import SummaryPageNavigation from '../../components/summary/navigation/SummaryPageNavigation';
+import { useAppConfig } from '../../context/config/configContext';
 import { useLanguages } from '../../context/languages';
 import { useSendInn } from '../../context/sendInn/sendInnContext';
 import { SANITIZE_CONFIG } from '../../formio/form-builder-options/sanitizeConfig';
@@ -57,6 +58,7 @@ export interface Props {
 }
 
 export function SummaryPage({ form, submission, formUrl }: Props) {
+  const appConfig = useAppConfig();
   const { isMellomlagringAvailable } = useSendInn();
   const { translate } = useLanguages();
   const styles = useStyles();
@@ -72,6 +74,7 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
         i18n: {},
         sanitizeConfig: SANITIZE_CONFIG,
         events: NavForm.getDefaultEmitter(),
+        appConfig,
       });
 
       const submissionCopy = JSON.parse(JSON.stringify(submission));
@@ -88,7 +91,7 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
     } else {
       setPanelValidationList([]);
     }
-  }, [isMellomlagringAvailable, form, submission]);
+  }, [isMellomlagringAvailable, form, submission, appConfig]);
 
   useEffect(() => scrollToAndSetFocus('main', 'start'), []);
   const declarationRef = useRef<HTMLInputElement>(null);
