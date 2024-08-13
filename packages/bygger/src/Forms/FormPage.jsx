@@ -1,12 +1,14 @@
-import { LoadingComponent, useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
+import { useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
 import { useCallback, useEffect, useReducer } from 'react';
 import { Navigate, Route, Routes, useBeforeUnload, useParams } from 'react-router-dom';
 import I18nStateProvider from '../context/i18n/I18nContext';
-import { EditFormPage } from './EditFormPage';
-import { FormSettingsPage } from './FormSettingsPage';
-import { TestFormPage } from './TestFormPage';
 import { loadPublishedForm } from './diffing/publishedForm';
+import EditFormPage from './edit/EditFormPage';
+import FormError from './error/FormError';
 import formPageReducer from './formPageReducer';
+import { FormSettingsPage } from './settings/FormSettingsPage';
+import FormSkeleton from './skeleton/FormSkeleton';
+import { TestFormPage } from './TestFormPage';
 
 export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish, onUnpublish, onCopyFromProd }) => {
   const { featureToggles, diffOn } = useAppConfig();
@@ -39,8 +41,11 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish, onUnpu
         }
       })
       .catch((e) => {
-        console.log(e);
-        dispatch({ type: 'form-not-found' });
+        if (e.message === 'Not Found') {
+          dispatch({ type: 'form-not-found' });
+        } else {
+          dispatch({ type: 'form-error' });
+        }
       });
   }, [loadForm, formPath, featureToggles.enableDiff]);
 
@@ -88,11 +93,15 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish, onUnpu
   };
 
   if (state.status === 'LOADING') {
-    return <LoadingComponent />;
+    return <FormSkeleton leftSidebar={true} rightSidebar={true} />;
+  }
+
+  if (state.status === 'ERROR') {
+    return <FormError type="FORM_ERROR" />;
   }
 
   if (state.status === 'FORM NOT FOUND' || !state.form) {
-    return <h1>Vi fant ikke dette skjemaet...</h1>;
+    return <FormError type="FORM_NOT_FOUND" />;
   }
 
   return (

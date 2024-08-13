@@ -12,6 +12,11 @@ const useStyles = makeStyles({
   },
 });
 
+/**
+ * Remove this when no longer in use
+ *
+ * @deprecated
+ */
 const Column = ({ children, className = '' }) => {
   const styles = useStyles();
   return (

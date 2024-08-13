@@ -1,17 +1,18 @@
 const formComponentsListStyles = {
   '.formcomponents': {
-    overflowY: 'auto',
-    height: '100%',
+    //overflowY: 'auto',
+    //height: '100%',
+    //width: '14rem',
     '& .builder-sidebar_scroll': {
-      position: 'initial',
-      paddingBottom: '10rem',
+      /*position: 'initial',
+      paddingBottom: '10rem',*/
     },
     '& .card-body': {
       padding: '0.2rem',
     },
     '& .form-builder-panel': {
-      backgroundColor: '#ffffff',
-      borderRadius: 'calc(.25rem - 1px)',
+      //backgroundColor: '#ffffff',
+      //borderRadius: 'calc(.25rem - 1px)',
 
       '& .form-builder-group-header': {
         margin: '0',

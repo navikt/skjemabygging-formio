@@ -27,8 +27,8 @@ export const NavBar = ({ formPath, formMenu, formListMenu, translationMenu }: Na
   const { showUnsavedChangesModal, unsavedChangesModalContent } = useUnsavedChangesModal();
 
   return (
-    <section>
-      <InternalHeader className={config?.isDevelopment ? styles.navBarLocal : styles.navBar}>
+    <section className={styles.navBar}>
+      <InternalHeader className={styles.internalHeader}>
         <Link
           as={ReactRouterLink}
           className={styles.formsLink}

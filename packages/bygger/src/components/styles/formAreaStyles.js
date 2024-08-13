@@ -1,9 +1,5 @@
 const formAreaStyles = {
   '.formarea': {
-    paddingBottom: '20rem',
-    overflowY: 'auto',
-    height: '100%',
-
     // Start form panel list
     '& .breadcrumb': {
       display: 'flex',

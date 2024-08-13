@@ -1,5 +1,5 @@
 import { makeStyles, NavForm, useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
-import { NavBar } from './components/Navbar/NavBar';
+import { AppLayout } from './components/AppLayout';
 import { useAuth } from './context/auth-context';
 import PageWrapper from './Forms/PageWrapper';
 
@@ -15,8 +15,7 @@ const UnauthenticatedApp = ({ projectURL }) => {
   const { config } = useAppConfig();
   const styles = useStyles();
   return (
-    <>
-      <NavBar title={'Skjemabygger'} />
+    <AppLayout>
       <PageWrapper>
         {config?.isDevelopment ? (
           <NavForm className={styles.navForm} src={`${projectURL}/user/login`} onSubmitDone={(user) => login(user)} />
@@ -24,7 +23,7 @@ const UnauthenticatedApp = ({ projectURL }) => {
           <div>Vennligst vent, du logges ut...</div>
         )}
       </PageWrapper>
-    </>
+    </AppLayout>
   );
 };
 

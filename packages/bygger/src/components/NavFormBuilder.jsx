@@ -134,7 +134,7 @@ class NavFormBuilder extends Component {
   render = () => {
     return (
       <BuilderMountElement
-        className={`${this.props.className} bootstrap-style`}
+        className={`${this.props.className}`}
         data-testid="builderMountElement"
         setRef={this.element}
       ></BuilderMountElement>

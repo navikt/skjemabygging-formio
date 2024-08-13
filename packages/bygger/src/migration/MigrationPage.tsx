@@ -1,5 +1,5 @@
 import { Button, Heading, Pagination, ToggleGroup } from '@navikt/ds-react';
-import { NavFormioJs, makeStyles } from '@navikt/skjemadigitalisering-shared-components';
+import { makeStyles, NavFormioJs } from '@navikt/skjemadigitalisering-shared-components';
 import { MigrationLevel, NavFormType, paginationUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useMemo, useReducer, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
@@ -169,7 +169,7 @@ const MigrationPage = () => {
 
   return (
     <main className={styles.root}>
-      <Column className={styles.mainContent}>
+      <div className={styles.mainContent}>
         <Heading level="1" size="xlarge">
           Søk og migrer
         </Heading>
@@ -336,7 +336,7 @@ const MigrationPage = () => {
             )}
           </>
         )}
-      </Column>
+      </div>
       <Column className={styles.sideColumn}>
         <UserFeedback />
       </Column>

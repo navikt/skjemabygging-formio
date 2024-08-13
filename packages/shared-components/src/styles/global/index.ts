@@ -4,6 +4,8 @@ import errorSummary from './errorSummary';
 import labelTrackChanges from './labelTrackChanges';
 import margin from './margin';
 import preview from './preview';
+import rowLayout from './rowLayout';
+import sidebarLayout from './sidebarLayout';
 import stepper from './stepper';
 import vars from './vars';
 
@@ -62,6 +64,10 @@ const global = {
       outline: 'none',
     },
   },
+  // Override side in causes problems with our sticky elements.
+  '#root .navds-page__content--padding': {
+    paddingBlockEnd: 0,
+  },
   ...labelTrackChanges,
   ...errorSummary,
   ...buttonRow,
@@ -70,6 +76,8 @@ const global = {
   ...stepper,
   ...vars,
   ...ckEditor,
+  ...rowLayout,
+  ...sidebarLayout,
 };
 
 export default global;
