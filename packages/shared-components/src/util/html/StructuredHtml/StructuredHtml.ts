@@ -69,6 +69,20 @@ abstract class StructuredHtml {
     return this;
   }
 
+  findChild(id: string): StructuredHtml | undefined {
+    if (id === this.id) {
+      return this;
+    }
+    let found: StructuredHtml | undefined;
+    if (StructuredHtml.isElement(this)) {
+      for (const child of this.children) {
+        found = found || child.findChild(id);
+        if (found) break;
+      }
+    }
+    return found;
+  }
+
   update(id: string, value: string | HtmlAsJsonElement): StructuredHtmlElement | StructuredHtmlText | undefined {
     if (this.parent) {
       return this.getRoot().update(id, value) as StructuredHtmlElement | undefined;

@@ -87,12 +87,12 @@ const TranslationFormHtmlSection = ({ text, storedTranslation, updateTranslation
 
   const styles = useStyles();
 
-  const onUpdate = (id: string | undefined, value: string, index: number) => {
+  const onUpdate = ({ id, value }: { id?: string; value: string }) => {
     if (translationObject) {
       if (id) {
         try {
           if (value === '') {
-            const originalHtmlChild = originalHtmlNoContent.children[index];
+            const originalHtmlChild = originalHtmlNoContent.findChild(id);
             const originalValue = StructuredHtml.isElement(originalHtmlChild) ? originalHtmlChild.toJson() : '';
             translationObject.update(id, originalValue);
           } else {
@@ -203,7 +203,7 @@ const TranslationFormHtmlSection = ({ text, storedTranslation, updateTranslation
                 text={originalElement.innerText}
                 html={originalElement}
                 currentTranslation={translationObject?.children[index]}
-                updateTranslation={({ id, value }) => onUpdate(id, value, index)}
+                updateTranslation={onUpdate}
               />
             );
           })}
