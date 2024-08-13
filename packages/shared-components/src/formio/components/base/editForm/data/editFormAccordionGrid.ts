@@ -7,6 +7,13 @@ const editFormAccordionGrid = (): Component => ({
   label: 'Trekkspill dataverdier',
   reorder: false,
   isNavDataGrid: true,
+  validate: {
+    custom: 'valid = data.accordionValues.length > 1 || "Trekkspillkomponenten må ha minst to rader"',
+  },
+  defaultValue: [
+    { label: '', content: '' },
+    { label: '', content: '' },
+  ],
   dataSrc: 'values',
   components: [
     {
