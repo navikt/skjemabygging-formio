@@ -115,6 +115,15 @@ describe('StructuredHtmlElement', () => {
         'Nytt punkt',
       );
     });
+
+    it('finds existing children', () => {
+      const paragraphId = structuredHtmlElement.children[1].id;
+      const listItem1Id = (structuredHtmlElement.children[2] as StructuredHtmlElement).children[0].id;
+      const nonExistingId = `123${paragraphId}456`;
+      expect(structuredHtmlElement.findChild(paragraphId)?.toHtmlString()).toBe('<p>Avsnitt</p>');
+      expect(structuredHtmlElement.findChild(listItem1Id)?.toHtmlString()).toBe('<li>Punkt 1</li>');
+      expect(structuredHtmlElement.findChild(nonExistingId)).toBeUndefined();
+    });
   });
 
   describe('from htmlString with links and strong', () => {

@@ -115,7 +115,9 @@ describe('Translations', () => {
       .within(() => {
         cy.findByRole('textbox', { name: fieldLabel }).focus();
         cy.findByRole('textbox', { name: fieldLabel }).clear();
-        cy.findByRole('textbox', { name: fieldLabel }).type(newValue);
+        if (newValue) {
+          cy.findByRole('textbox', { name: fieldLabel }).type(newValue);
+        }
         cy.findByRole('textbox', { name: fieldLabel }).blur();
       });
   };
@@ -379,6 +381,31 @@ describe('Translations', () => {
       cy.findByRole('button', { name: 'Lagre' }).click();
       cy.wait('@updateTranslations').then((interception) => {
         expect(interception.request.body.data.i18n[htmlWithNoTranslation]).to.equal(expectedHtmlResult);
+      });
+    });
+
+    it('clears the translation when all inputs are empty', () => {
+      typeNewHtmlTranslationInput(1, 'Tekstblokk med mye formatering og eksisterende oversettelse', '');
+      typeNewHtmlTranslationInput(1, 'Dette er et avsnitt', '');
+      typeNewHtmlTranslationInput(
+        1,
+        'Her er et avsnitt [med lenke til VG](https://www.vg.no) og her kommer en liste:',
+        '',
+      );
+      typeNewHtmlTranslationInput(1, 'Ta oppvasken', '');
+      typeNewHtmlTranslationInput(
+        1,
+        'Handle [**matvarer**](https://www.coop.no/), og **vurder** å [kjøpe **nye** klær](https://www.zalando.no).',
+        '',
+      );
+      typeNewHtmlTranslationInput(1, 'Nytt avsnitt. Ny liste (numerert denne gangen):', '');
+      typeNewHtmlTranslationInput(1, 'Første prioritet', '');
+      typeNewHtmlTranslationInput(1, 'Også viktig, men ikke så viktig', '');
+      typeNewHtmlTranslationInput(1, 'Kan utsettes', '');
+      typeNewHtmlTranslationInput(1, 'Trengs egentlig ikke å gjøres', '');
+      cy.findByRole('button', { name: 'Lagre' }).click();
+      cy.wait('@updateTranslations').then((interception) => {
+        expect(interception.request.body.data.i18n[htmlWithExistingTranslation]).to.be.undefined;
       });
     });
 
