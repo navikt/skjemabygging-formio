@@ -230,7 +230,9 @@ const GlobalTranslationsPage = ({
           translationMenu: true,
         }}
       >
-        <TitleRowLayout left={true}>
+        <TitleRowLayout
+          right={<FormBuilderLanguageSelector languages={languages} formPath="global" tag={selectedTag} />}
+        >
           <Title right={<FormBuilderLanguageSelector languages={languages} formPath="global" tag={selectedTag} />}>
             {languageCode && languageCode !== 'undefined' ? languagesInNorwegian[languageCode] : ''}
           </Title>

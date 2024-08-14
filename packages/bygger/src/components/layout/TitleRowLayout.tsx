@@ -14,7 +14,6 @@ const useStyles = makeStyles({
     top: '5.5rem',
     left: 0,
     right: 0,
-    overflow: 'hidden',
     height: '4.5rem',
     backgroundColor: 'var(--a-bg-default)',
     zIndex: '10000',

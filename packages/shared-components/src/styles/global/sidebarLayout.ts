@@ -1,7 +1,7 @@
 const sidebarLayout = {
   '.sidebar-layout': {
     position: 'sticky',
-    height: 'calc(100vh - 11.5rem)',
+    height: 'calc(100vh - 10rem)',
     top: '10rem',
     overflowY: 'auto',
     overflowX: 'hidden',

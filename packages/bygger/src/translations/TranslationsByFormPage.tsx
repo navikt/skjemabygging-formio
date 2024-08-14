@@ -89,14 +89,13 @@ const TranslationsByFormPage = ({ loadForm, saveTranslation }: TranslationsByFor
           formPath: form.path,
         }}
       >
-        <TitleRowLayout>
+        <TitleRowLayout right={<FormBuilderLanguageSelector languages={languages} formPath={path} />}>
           <Title subTitle={skjemanummer}>{title}</Title>
         </TitleRowLayout>
         <RowLayout
           right={
             <SidebarLayout noScroll={true}>
               <VStack gap="1">
-                <FormBuilderLanguageSelector languages={languages} formPath={path} />
                 <ButtonWithSpinner onClick={onSave} size="small">
                   Lagre
                 </ButtonWithSpinner>

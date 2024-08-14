@@ -1,7 +1,13 @@
 import { Skeleton } from '@navikt/ds-react';
-import { SkeletonList } from '@navikt/skjemadigitalisering-shared-components';
+import { makeStyles, SkeletonList } from '@navikt/skjemadigitalisering-shared-components';
 import { AppLayout } from '../../components/AppLayout';
 import RowLayout from '../../components/layout/RowLayout';
+
+const useStyles = makeStyles({
+  header: {
+    marginBottom: 'var(--a-spacing-4)',
+  },
+});
 
 export interface Props {
   leftSidebar?: boolean;
@@ -10,15 +16,16 @@ export interface Props {
 
 const FormSkeleton = ({ leftSidebar, rightSidebar }: Props) => {
   const headerHeight = '4.5rem';
+  const styles = useStyles();
   return (
     <AppLayout>
       <RowLayout
+        className={styles.header}
         left={<Skeleton variant="rectangle" height={headerHeight} />}
         right={<Skeleton variant="rectangle" height={headerHeight} />}
       >
         <Skeleton variant="rectangle" height={headerHeight} />
       </RowLayout>
-      <br />
       <RowLayout
         left={leftSidebar && <SkeletonList size={9} height={40} />}
         right={rightSidebar && <SkeletonList size={3} height={40} />}
