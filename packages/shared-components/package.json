@@ -47,7 +47,7 @@
   },
   "devDependencies": {
     "@testing-library/react": "^15.0.6",
-    "@types/uuid": "^9.0.8",
+    "@types/uuid": "^10.0.0",
     "i18next": "^23.12.3",
     "lodash.merge": "^4.6.2",
     "lodash.template": "^4.5.0",

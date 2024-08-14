@@ -32,7 +32,7 @@
     "node-fetch": "^3.3.2",
     "node-jose": "^2.2.0",
     "pusher": "^5.2.0",
-    "uuid": "^9.0.1",
+    "uuid": "^10.0.0",
     "winston": "^3.14.1"
   },
   "devDependencies": {
@@ -46,7 +46,7 @@
     "@types/node": "^20.13.0",
     "@types/node-fetch": "^2.6.11",
     "@types/node-jose": "^1.1.13",
-    "@types/uuid": "^9.0.8",
+    "@types/uuid": "^10.0.0",
     "memorystream": "^0.3.1",
     "nock": "^13.5.4",
     "vite-plugin-node": "^3.1.0"
