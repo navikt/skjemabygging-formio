@@ -4,7 +4,6 @@ import Activities from './core/activities/Activities';
 import Address from './core/address/Address';
 import Alert from './core/alert/Alert';
 import DefaultAttachment from './core/attachment/default/DefaultAttachment';
-import Button from './core/button/Button';
 import Checkbox from './core/checkbox/Checkbox';
 import Container from './core/container/Container';
 import DataGrid from './core/datagrid/DataGrid';
@@ -61,7 +60,6 @@ const customComponents = {
   iban: IBAN,
   image: Image,
   row: Row,
-  button: Button,
   panel: Panel,
   email: Email,
   phoneNumber: PhoneNumber,
