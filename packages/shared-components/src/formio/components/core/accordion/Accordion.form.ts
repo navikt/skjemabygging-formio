@@ -16,7 +16,7 @@ const accordionForm = () => {
       editFormApi.key(),
     ]),
     data([
-      editFormData.navDataGrid(),
+      editFormData.accordionGrid(),
     ]),
     conditional([
       editFormConditional.simpleConditional(),
