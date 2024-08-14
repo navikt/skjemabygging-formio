@@ -27,8 +27,7 @@ import { navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import cloneDeep from 'lodash.clonedeep';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import '../formio-overrides/builder-utils-overrides';
-import '../formio-overrides/webform-builder-overrides';
+import '../formio';
 import { builderStyles } from './styles';
 
 const useBuilderMountElementStyles = makeStyles(builderStyles);
