@@ -174,9 +174,9 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
             isValid={isValid}
           />
         </div>
-        <aside className="right-col">
+        <div className="right-col">
           <FormStepper form={form} formUrl={formUrl} submission={submission} />
-        </aside>
+        </div>
       </section>
     </div>
   );
