@@ -64,7 +64,7 @@ const global = {
       outline: 'none',
     },
   },
-  // Override side in causes problems with our sticky elements.
+  // Override Aksel css for page, since it causes problems with our sticky elements.
   '#root .navds-page__content--padding': {
     paddingBlockEnd: 0,
   },

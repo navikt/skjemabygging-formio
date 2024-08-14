@@ -1,8 +1,6 @@
 import { AppLayout } from '../../components/AppLayout';
 import RowLayout from '../../components/layout/RowLayout';
-import FormErrorBody from './FormErrorBody';
-
-export type FormErrorType = 'FORMS_ERROR' | 'FORM_ERROR' | 'FORM_NOT_FOUND';
+import FormErrorBody, { FormErrorType } from './FormErrorBody';
 
 interface Props {
   type: FormErrorType;
