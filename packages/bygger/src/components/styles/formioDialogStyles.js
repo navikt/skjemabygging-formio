@@ -2,7 +2,7 @@ const formioDialogStyles = {
   '.formio-dialog': {
     position: 'fixed',
     overflow: 'auto',
-    zIndex: '10000',
+    zIndex: '10003',
     top: '0',
     right: '0',
     bottom: '0',

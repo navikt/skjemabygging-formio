@@ -1,5 +1,5 @@
-import { Button, Heading } from '@navikt/ds-react';
-import { makeStyles, useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
+import { Button, VStack } from '@navikt/ds-react';
+import { useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
 import { Component, NavFormType, navFormUtils, stringUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import cloneDeep from 'lodash.clonedeep';
 import React, { useState } from 'react';
@@ -7,17 +7,13 @@ import { useNavigate } from 'react-router-dom';
 import { AppLayout } from '../components/AppLayout';
 import { CreationFormMetadataEditor } from '../components/FormMetaDataEditor/FormMetadataEditor';
 import { isFormMetadataValid, validateFormMetadata } from '../components/FormMetaDataEditor/utils/utils';
+import RowLayout from '../components/layout/RowLayout';
+import SidebarLayout from '../components/layout/SidebarLayout';
+import Title from '../components/layout/Title';
+import TitleRowLayout from '../components/layout/TitleRowLayout';
 import UserFeedback from '../components/UserFeedback';
-import Column from '../components/layout/Column';
-import Row from '../components/layout/Row';
 import { useFeedbackEmit } from '../context/notifications/FeedbackContext';
 import { defaultFormFields } from './DefaultForm';
-
-const useStyles = makeStyles({
-  centerColumn: {
-    gridColumn: '2 / 3',
-  },
-});
 
 interface Props {
   formio: any;
@@ -62,7 +58,6 @@ const NewFormPage: React.FC<Props> = ({ formio }): React.ReactElement => {
   const { config } = useAppConfig();
   const feedbackEmit = useFeedbackEmit();
   const navigate = useNavigate();
-  const styles = useStyles();
   const [state, setState] = useState<State>({
     form: {
       ...navFormUtils.createDefaultForm(config),
@@ -128,22 +123,23 @@ const NewFormPage: React.FC<Props> = ({ formio }): React.ReactElement => {
 
   return (
     <AppLayout>
-      <Row>
-        <Column className={styles.centerColumn}>
-          <Heading level="1" size="xlarge">
-            Opprett nytt skjema
-          </Heading>
-        </Column>
-      </Row>
-      <Row>
-        <Column className={styles.centerColumn}>
-          <CreationFormMetadataEditor form={state.form} onChange={setForm} errors={errors} />
-        </Column>
-        <Column>
-          <Button onClick={onCreate}>Opprett</Button>
-          <UserFeedback />
-        </Column>
-      </Row>
+      <TitleRowLayout>
+        <Title>Opprett nytt skjema</Title>
+      </TitleRowLayout>
+      <RowLayout
+        right={
+          <SidebarLayout noScroll={true}>
+            <VStack gap="1">
+              <Button onClick={onCreate} size="small">
+                Opprett
+              </Button>
+              <UserFeedback />
+            </VStack>
+          </SidebarLayout>
+        }
+      >
+        <CreationFormMetadataEditor form={state.form} onChange={setForm} errors={errors} />
+      </RowLayout>
     </AppLayout>
   );
 };

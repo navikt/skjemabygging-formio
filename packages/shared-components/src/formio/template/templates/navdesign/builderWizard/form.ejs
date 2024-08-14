@@ -1,8 +1,10 @@
-<div class="formio builder formbuilder">
-  <div class="formcomponents">
-    {{ctx.sidebar}}
+<div class="formio builder row-layout formbuilder">
+  <div class="row-layout__left formcomponents">
+    <div class="sidebar-layout" style="text-align: left">
+        {{ctx.sidebar}}
+    </div>
   </div>
-  <div class="formarea">
+  <div class="row-layout__main formarea">
     <nav aria-label="Velg steg">
       <ol class="breadcrumb wizard-pages">
         {% ctx.pages.forEach(function(page, pageIndex) { %}

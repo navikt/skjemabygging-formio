@@ -1,4 +1,5 @@
-import { makeStyles, navCssVariables } from '@navikt/skjemadigitalisering-shared-components';
+import { Page } from '@navikt/ds-react';
+import { makeStyles } from '@navikt/skjemadigitalisering-shared-components';
 import React from 'react';
 import PageWrapper from '../Forms/PageWrapper';
 import { NavBar, NavBarProps } from './Navbar/NavBar';
@@ -9,22 +10,28 @@ export interface Props {
 }
 
 const useStyles = makeStyles({
-  noScroll: {
-    backgroundColor: navCssVariables.navGraBakgrunn,
+  page: {
+    minWidth: '1024px',
+  },
+  headerContainer: {
+    backgroundColor: 'var(--a-bg-default)',
     position: 'sticky',
     top: '0',
-    zIndex: 900,
+    zIndex: 10001,
+    height: '5.5rem',
   },
 });
 
 export const AppLayout = ({ children, navBarProps }: Props) => {
   const styles = useStyles();
   return (
-    <>
-      <div className={styles.noScroll}>
+    <Page className={styles.page}>
+      <div className={styles.headerContainer}>
         <NavBar {...navBarProps} />
       </div>
-      <PageWrapper>{children}</PageWrapper>
-    </>
+      <Page.Block width="2xl">
+        <PageWrapper>{children}</PageWrapper>
+      </Page.Block>
+    </Page>
   );
 };

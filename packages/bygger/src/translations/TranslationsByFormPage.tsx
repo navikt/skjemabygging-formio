@@ -1,13 +1,16 @@
-import { LoadingComponent, makeStyles } from '@navikt/skjemadigitalisering-shared-components';
+import { VStack } from '@navikt/ds-react';
+import { LoadingComponent } from '@navikt/skjemadigitalisering-shared-components';
 import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useMemo, useState } from 'react';
 import { CSVLink } from 'react-csv';
 import { useParams } from 'react-router-dom';
 import { AppLayout } from '../components/AppLayout';
 import ButtonWithSpinner from '../components/ButtonWithSpinner';
+import RowLayout from '../components/layout/RowLayout';
+import SidebarLayout from '../components/layout/SidebarLayout';
+import Title from '../components/layout/Title';
+import TitleRowLayout from '../components/layout/TitleRowLayout';
 import UserFeedback from '../components/UserFeedback';
-import Column from '../components/layout/Column';
-import Row from '../components/layout/Row';
 import { getAvailableLanguages, useI18nDispatch, useI18nState } from '../context/i18n';
 import FormBuilderLanguageSelector from '../context/i18n/FormBuilderLanguageSelector';
 import useRedirectIfNoLanguageCode from '../hooks/useRedirectIfNoLanguageCode';
@@ -18,19 +21,6 @@ interface TranslationsByFormPageProps {
   loadForm: any;
   saveTranslation: any;
 }
-
-const useStyles = makeStyles({
-  mainCol: {
-    gridColumn: '2 / 3',
-  },
-  sideBarContainer: {
-    height: '100%',
-  },
-  stickySideBar: {
-    position: 'sticky',
-    top: '7rem',
-  },
-});
 
 const TranslationsByFormPage = ({ loadForm, saveTranslation }: TranslationsByFormPageProps) => {
   const { formPath, languageCode = '' } = useParams();
@@ -56,7 +46,6 @@ const TranslationsByFormPage = ({ loadForm, saveTranslation }: TranslationsByFor
 
   const flattenedComponents = getFormTexts(form, true);
   const translationId = translations[languageCode]?.id;
-  const styles = useStyles();
 
   const onSave = async () => {
     const savedTranslation = await saveTranslation(
@@ -100,36 +89,38 @@ const TranslationsByFormPage = ({ loadForm, saveTranslation }: TranslationsByFor
           formPath: form.path,
         }}
       >
-        <Row>
-          <Column className={styles.mainCol}>
-            <TranslationsFormPage
-              skjemanummer={skjemanummer}
-              translations={translations}
-              languageCode={languageCode}
-              title={title}
-              flattenedComponents={flattenedComponents}
-            />
-          </Column>
-          <div className={styles.sideBarContainer}>
-            <Column className={styles.stickySideBar}>
-              <FormBuilderLanguageSelector languages={languages} formPath={path} />
-              <ButtonWithSpinner onClick={onSave} size="small">
-                Lagre
-              </ButtonWithSpinner>
-              <CSVLink
-                data={getTextsAndTranslationsForForm(form, translations)}
-                filename={`${title}(${path})_Oversettelser.csv`}
-                className="navds-button navds-button--tertiary navds-button--small navds-label navds-label--small"
-                separator={';'}
-                headers={getTextsAndTranslationsHeaders(translations)}
-                enclosingCharacter={'"'}
-              >
-                Eksporter
-              </CSVLink>
-              <UserFeedback />
-            </Column>
-          </div>
-        </Row>
+        <TitleRowLayout right={<FormBuilderLanguageSelector languages={languages} formPath={path} />}>
+          <Title subTitle={skjemanummer}>{title}</Title>
+        </TitleRowLayout>
+        <RowLayout
+          right={
+            <SidebarLayout noScroll={true}>
+              <VStack gap="1">
+                <ButtonWithSpinner onClick={onSave} size="small">
+                  Lagre
+                </ButtonWithSpinner>
+                <CSVLink
+                  data={getTextsAndTranslationsForForm(form, translations)}
+                  filename={`${title}(${path})_Oversettelser.csv`}
+                  className="navds-button navds-button--tertiary navds-button--small navds-label navds-label--small"
+                  separator={';'}
+                  headers={getTextsAndTranslationsHeaders(translations)}
+                  enclosingCharacter={'"'}
+                >
+                  Eksporter
+                </CSVLink>
+                <UserFeedback />
+              </VStack>
+            </SidebarLayout>
+          }
+        >
+          <TranslationsFormPage
+            skjemanummer={skjemanummer}
+            translations={translations}
+            languageCode={languageCode}
+            flattenedComponents={flattenedComponents}
+          />
+        </RowLayout>
       </AppLayout>
     </>
   );

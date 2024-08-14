@@ -1,22 +1,12 @@
-import { Alert, Button } from '@navikt/ds-react';
-import { makeStyles } from '@navikt/skjemadigitalisering-shared-components';
+import { Alert, Button, VStack } from '@navikt/ds-react';
 import { useState } from 'react';
+import RowLayout from '../components/layout/RowLayout';
+import SidebarLayout from '../components/layout/SidebarLayout';
 import UserFeedback from '../components/UserFeedback';
-import Column from '../components/layout/Column';
 import useMottaksadresser from '../hooks/useMottaksadresser';
 import MottaksadresseEditor from './MottaksadresseEditor';
 
-const useStyles = makeStyles({
-  mottaksadresser: {
-    gridColumn: '2 / 3',
-  },
-  publishButton: {
-    whiteSpace: 'inherit',
-  },
-});
-
 const MottaksadresserListe = () => {
-  const styles = useStyles();
   const { mottaksadresser, ready, errorMessage, loadMottaksadresser, deleteMottaksadresse, publishMottaksadresser } =
     useMottaksadresser();
   const [editAddressId, setEditAddressId] = useState<string | undefined>(undefined);
@@ -43,8 +33,22 @@ const MottaksadresserListe = () => {
   };
 
   return (
-    <>
-      <Column className={styles.mottaksadresser}>
+    <RowLayout
+      right={
+        <SidebarLayout noScroll={true}>
+          <VStack gap="1">
+            <Button onClick={onPublish} loading={publishing} size="small">
+              Publiser mottaksadresser
+            </Button>
+            <Button variant="secondary" onClick={() => editMottaksadresse('new')} type="button" size="small">
+              Legg til ny
+            </Button>
+            <UserFeedback />
+          </VStack>
+        </SidebarLayout>
+      }
+    >
+      <div>
         {!ready && 'Laster mottaksadresser...'}
         {errorMessage && <Alert variant="error">{errorMessage}</Alert>}
         {editAddressId === 'new' && (
@@ -56,30 +60,23 @@ const MottaksadresserListe = () => {
             editMode
           />
         )}
-        {mottaksadresser.map((entity) => (
-          <MottaksadresseEditor
-            key={entity._id}
-            mottaksadresse={entity}
-            editMode={editAddressId === entity._id}
-            onEdit={() => editMottaksadresse(entity._id)}
-            onCancel={clearEditAddressId}
-            onFormReady={() => setLoadingForm(false)}
-            onSubmitDone={onSubmitDone}
-            deleteMottaksadresse={deleteMottaksadresse}
-            loadingForm={editAddressId === entity._id && loadingForm}
-          />
-        ))}
-      </Column>
-      <Column>
-        <Button onClick={onPublish} loading={publishing} className={styles.publishButton} size="small">
-          Publiser mottaksadresser
-        </Button>
-        <Button variant="secondary" onClick={() => editMottaksadresse('new')} type="button" size="small">
-          Legg til ny
-        </Button>
-        <UserFeedback />
-      </Column>
-    </>
+        <VStack gap="2">
+          {mottaksadresser.map((entity) => (
+            <MottaksadresseEditor
+              key={entity._id}
+              mottaksadresse={entity}
+              editMode={editAddressId === entity._id}
+              onEdit={() => editMottaksadresse(entity._id)}
+              onCancel={clearEditAddressId}
+              onFormReady={() => setLoadingForm(false)}
+              onSubmitDone={onSubmitDone}
+              deleteMottaksadresse={deleteMottaksadresse}
+              loadingForm={editAddressId === entity._id && loadingForm}
+            />
+          ))}
+        </VStack>
+      </div>
+    </RowLayout>
   );
 };
 

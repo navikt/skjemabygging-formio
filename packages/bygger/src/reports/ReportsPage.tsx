@@ -1,20 +1,14 @@
-import { Alert, Heading } from '@navikt/ds-react';
-import { makeStyles, useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
+import { Alert } from '@navikt/ds-react';
+import { useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
 import { ReportDefinition } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useState } from 'react';
 import { AppLayout } from '../components/AppLayout';
-import Column from '../components/layout/Column';
-import Row from '../components/layout/Row';
+import RowLayout from '../components/layout/RowLayout';
+import Title from '../components/layout/Title';
+import TitleRowLayout from '../components/layout/TitleRowLayout';
 import { useAuth } from '../context/auth-context';
 
-const useStyles = makeStyles({
-  reports: {
-    gridColumn: '2 / 3',
-  },
-});
-
 const ReportsPage = () => {
-  const styles = useStyles();
   const { userData } = useAuth();
   const { config, http } = useAppConfig();
   const [reports, setReports] = useState<ReportDefinition[] | undefined>(undefined);
@@ -32,29 +26,28 @@ const ReportsPage = () => {
 
   return (
     <AppLayout>
-      <Row>
-        <Column className={styles.reports}>
-          <Heading level="1" size="xlarge">
-            Rapporter
-          </Heading>
-          {errorMessage && <Alert variant="error">{errorMessage}</Alert>}
-          {userData?.isAdmin ? (
-            <div>
-              <ul>
-                {reports?.map((report) => (
-                  <li key={report.id}>
-                    <a href={`${reportUrlPrefix}/api/reports/${report.id}`} target="_blank" rel="noreferrer">
-                      {report.title}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ) : (
-            <div>Du er ikke autorisert til å ta ut rapporter</div>
-          )}
-        </Column>
-      </Row>
+      <TitleRowLayout>
+        <Title>Rapporter</Title>
+      </TitleRowLayout>
+
+      <RowLayout>
+        {errorMessage && <Alert variant="error">{errorMessage}</Alert>}
+        {userData?.isAdmin ? (
+          <div>
+            <ul>
+              {reports?.map((report) => (
+                <li key={report.id}>
+                  <a href={`${reportUrlPrefix}/api/reports/${report.id}`} target="_blank" rel="noreferrer">
+                    {report.title}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : (
+          <div>Du er ikke autorisert til å ta ut rapporter</div>
+        )}
+      </RowLayout>
     </AppLayout>
   );
 };

@@ -2,20 +2,12 @@ import { makeStyles } from '@navikt/skjemadigitalisering-shared-components';
 
 export const useNavBarStyles = makeStyles({
   navBar: {
-    height: '56px',
-    justifyContent: 'center',
-    position: 'relative',
-    '@media (max-width: 1040px)': {
-      justifyContent: 'space-between',
-    },
+    height: '3.625rem',
   },
-  navBarLocal: {
-    height: '56px',
+  internalHeader: {
     justifyContent: 'center',
     position: 'relative',
-    '@media (max-width: 1040px)': {
-      justifyContent: 'space-between',
-    },
+    minHeight: '3.625rem',
   },
   formsLink: {
     height: '100%',
@@ -26,13 +18,9 @@ export const useNavBarStyles = makeStyles({
     marginRight: 'auto',
     padding: '0 30px',
     color: '#ffffff',
-    '@media (max-width: 1040px)': {
-      position: 'relative',
-      flexGrow: '1',
-    },
   },
   navBarLinks: {
-    height: '100%',
+    height: '3.625rem',
     display: 'flex',
   },
   headerMenus: {
@@ -40,9 +28,6 @@ export const useNavBarStyles = makeStyles({
     position: 'absolute',
     right: '0',
     display: 'flex',
-    '@media (max-width: 1040px)': {
-      position: 'relative',
-    },
   },
   indicateLocalBorder: {
     height: '10px',

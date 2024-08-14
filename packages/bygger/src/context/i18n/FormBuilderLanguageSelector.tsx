@@ -17,7 +17,7 @@ interface FormBuilderLanguageSelectorProps {
 
 const useStyles = makeStyles({
   sideBarLanguageSelector: {
-    margin: '0 auto 4rem',
+    maxWidth: '12rem',
   },
 });
 

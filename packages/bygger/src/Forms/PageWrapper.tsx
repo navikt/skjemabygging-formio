@@ -3,7 +3,6 @@ import { makeStyles } from '@navikt/skjemadigitalisering-shared-components';
 const useStyles = makeStyles({
   wrapper: {
     margin: '0 auto',
-    padding: '2rem 2rem 0',
   },
 });
 
