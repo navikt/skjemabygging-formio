@@ -1,5 +1,5 @@
 import htmlConverter, { HtmlAsJsonElement, HtmlAsJsonTextElement } from '../converters';
-import StructuredHtml, { StructuredHtmlOptions } from './StructuredHtml';
+import StructuredHtml, { StructuredHtmlOptions, ToJsonOptions } from './StructuredHtml';
 import StructuredHtmlText from './StructuredHtmlText';
 
 class StructuredHtmlElement extends StructuredHtml {
@@ -162,16 +162,18 @@ class StructuredHtmlElement extends StructuredHtml {
     return false;
   }
 
-  toJson(getMarkdown?: boolean): HtmlAsJsonElement {
-    const markdown = getMarkdown && this.containsMarkdown ? this.markdown : undefined;
-    const children = markdown ? [new StructuredHtmlText(markdown, { isMarkdownText: true })] : this.children;
+  toJson(options: ToJsonOptions = {}): HtmlAsJsonElement {
+    const markdown = options.getMarkdown && this.containsMarkdown ? this.markdown : undefined;
+    const children = markdown
+      ? [new StructuredHtmlText(markdown, { isMarkdownText: true, withEmptyTextContent: !!options.noContent })]
+      : this.children;
 
     return {
       id: this.id,
       type: 'Element',
       tagName: this.tagName,
-      attributes: this.attributes,
-      children: children.map((child: StructuredHtml) => child.toJson(getMarkdown)),
+      attributes: this.attributes.filter(([key, _]) => !(options.noContent && key === 'href')),
+      children: children.map((child: StructuredHtml) => child.toJson(options)),
     };
   }
 

@@ -1,5 +1,5 @@
 import htmlConverter, { HtmlAsJsonTextElement } from '../converters';
-import StructuredHtml, { StructuredHtmlOptions } from './StructuredHtml';
+import StructuredHtml, { StructuredHtmlOptions, ToJsonOptions } from './StructuredHtml';
 
 class StructuredHtmlText extends StructuredHtml {
   textContent: string | null;
@@ -38,11 +38,11 @@ class StructuredHtmlText extends StructuredHtml {
     return StructuredHtml.isText(other);
   }
 
-  toJson(): HtmlAsJsonTextElement {
+  toJson({ noContent }: ToJsonOptions = {}): HtmlAsJsonTextElement {
     return {
       id: this.id,
       type: 'TextElement',
-      textContent: this.textContent,
+      textContent: noContent ? '' : this.textContent,
     };
   }
 
