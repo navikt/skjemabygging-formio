@@ -38,11 +38,11 @@ class StructuredHtmlText extends StructuredHtml {
     return StructuredHtml.isText(other);
   }
 
-  toJson({ noContent }: ToJsonOptions = {}): HtmlAsJsonTextElement {
+  toJson({ noTextContent }: ToJsonOptions = {}): HtmlAsJsonTextElement {
     return {
       id: this.id,
       type: 'TextElement',
-      textContent: noContent ? '' : this.textContent,
+      textContent: noTextContent ? '' : this.textContent,
     };
   }
 

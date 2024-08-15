@@ -165,14 +165,14 @@ class StructuredHtmlElement extends StructuredHtml {
   toJson(options: ToJsonOptions = {}): HtmlAsJsonElement {
     const markdown = options.getMarkdown && this.containsMarkdown ? this.markdown : undefined;
     const children = markdown
-      ? [new StructuredHtmlText(markdown, { isMarkdownText: true, withEmptyTextContent: !!options.noContent })]
+      ? [new StructuredHtmlText(markdown, { isMarkdownText: true, withEmptyTextContent: !!options.noTextContent })]
       : this.children;
 
     return {
       id: this.id,
       type: 'Element',
       tagName: this.tagName,
-      attributes: this.attributes.filter(([key, _]) => !(options.noContent && key === 'href')),
+      attributes: this.attributes.filter(([key, _]) => !(options.noTextContent && key === 'href')),
       children: children.map((child: StructuredHtml) => child.toJson(options)),
     };
   }

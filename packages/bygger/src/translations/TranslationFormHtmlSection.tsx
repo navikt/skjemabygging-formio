@@ -49,19 +49,15 @@ const TranslationFormHtmlSection = ({ text, storedTranslation, updateTranslation
     [text],
   );
 
-  const originalHtmlNoContent = useMemo(
-    () =>
+  const startNewTranslation = useCallback(() => {
+    setTranslationObject(
       new StructuredHtmlElement(text, {
         skipConversionWithin: htmlConverter.defaultLeaves,
         withEmptyTextContent: true,
       }),
-    [text],
-  );
-
-  const startNewTranslation = useCallback(() => {
-    setTranslationObject(originalHtmlNoContent);
+    );
     setTranslationState((state) => ({ ...state, ready: true }));
-  }, [originalHtmlNoContent]);
+  }, [text]);
 
   useEffect(() => {
     if (storedTranslation !== translationState.current && !translationState.incompatible) {
@@ -93,7 +89,7 @@ const TranslationFormHtmlSection = ({ text, storedTranslation, updateTranslation
         try {
           if (value === '') {
             const originalValue = StructuredHtml.isElement(originalElement)
-              ? originalElement.toJson({ noContent: true })
+              ? originalElement.toJson({ noTextContent: true })
               : '';
             translationObject.update(id, originalValue);
           } else {
