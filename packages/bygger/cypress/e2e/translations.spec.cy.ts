@@ -432,11 +432,14 @@ describe('Translations', () => {
 
     it('updates with the correct translation when switching between languages', () => {
       const headingWithExistingTranslation = 'Tekstblokk med mye formatering og eksisterende oversettelse';
+      const headingWithoutTranslation = 'Tekstblokk med mye formatering og manglende oversettelse';
       cy.findByRole('heading', { name: 'Oversettelser på Norsk nynorsk' }).should('exist');
       cy.findByRole('textbox', { name: headingWithExistingTranslation }).should(
         'have.value',
         'Tekstblokk med mye formatering og eksisterende oversettelse',
       );
+      typeNewHtmlTranslationInput(2, headingWithoutTranslation, 'Nynorsk tekst');
+      cy.findByRole('textbox', { name: headingWithoutTranslation }).should('have.value', 'Nynorsk tekst');
       cy.findByRole('textbox', { name: 'Søker' }).should('have.value', 'Søkar');
       cy.findByRole('button', { name: 'Norsk nynorsk' }).click();
       cy.findByRole('link', { name: 'Engelsk' }).click();
@@ -444,6 +447,7 @@ describe('Translations', () => {
         'have.value',
         'Textblock with existing translation',
       );
+      cy.findByRole('textbox', { name: headingWithoutTranslation }).should('have.value', '');
       cy.findByRole('textbox', { name: 'Søker' }).should('have.value', '');
       cy.findByRole('button', { name: 'Engelsk' }).click();
       cy.findByRole('link', { name: 'Norsk nynorsk' }).click();

@@ -106,6 +106,7 @@ const TranslationFormHtmlSection = ({ text, storedTranslation, updateTranslation
         updateTranslation('');
       } else {
         const htmlString = translationObject.toHtmlString();
+        setTranslationState((prevState) => ({ ...prevState, current: htmlString }));
         updateTranslation(htmlString);
       }
     }
