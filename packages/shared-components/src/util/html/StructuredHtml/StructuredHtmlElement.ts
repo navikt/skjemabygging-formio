@@ -167,12 +167,13 @@ class StructuredHtmlElement extends StructuredHtml {
     const children = markdown
       ? [new StructuredHtmlText(markdown, { isMarkdownText: true, withEmptyTextContent: !!options.noTextContent })]
       : this.children;
+    const shouldExcludeAttr = (attributeName: string) => attributeName === 'href' && options.noTextContent;
 
     return {
       id: this.id,
       type: 'Element',
       tagName: this.tagName,
-      attributes: this.attributes.filter(([key, _]) => !(options.noTextContent && key === 'href')),
+      attributes: this.attributes.filter(([key, _]) => !shouldExcludeAttr(key)),
       children: children.map((child: StructuredHtml) => child.toJson(options)),
     };
   }
