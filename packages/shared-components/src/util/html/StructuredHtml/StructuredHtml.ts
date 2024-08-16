@@ -11,6 +11,8 @@ type StructuredHtmlOptions = {
   withEmptyTextContent?: boolean;
 };
 
+type ToJsonOptions = { getMarkdown?: boolean; noTextContent?: boolean };
+
 abstract class StructuredHtml {
   parent?: StructuredHtmlElement;
   converter: typeof htmlConverter;
@@ -51,7 +53,7 @@ abstract class StructuredHtml {
     value: string | HtmlAsJsonElement,
   ): StructuredHtmlElement | StructuredHtmlText | undefined;
   abstract matches(other: StructuredHtml | undefined): boolean;
-  abstract toJson(getMarkdown?: boolean): HtmlAsJsonElement | HtmlAsJsonTextElement;
+  abstract toJson(options?: ToJsonOptions): HtmlAsJsonElement | HtmlAsJsonTextElement;
   abstract toHtmlString(): string;
 
   static isElement(html?: StructuredHtml): html is StructuredHtmlElement {
@@ -100,5 +102,5 @@ abstract class StructuredHtml {
   }
 }
 
-export type { StructuredHtmlOptions };
+export type { StructuredHtmlOptions, ToJsonOptions };
 export default StructuredHtml;

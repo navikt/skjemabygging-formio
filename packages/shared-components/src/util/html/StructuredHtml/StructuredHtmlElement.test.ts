@@ -176,7 +176,7 @@ describe('StructuredHtmlElement', () => {
 
     describe('Converting to json', () => {
       it('converts link to json with markdown', () => {
-        const withLinkJson = withLink.toJson(true);
+        const withLinkJson = withLink.toJson({ getMarkdown: true });
         const withLinkJsonMarkdownChildren = (
           (withLinkJson.children[0] as HtmlAsJsonElement).children[0] as HtmlAsJsonElement
         ).children;
@@ -186,7 +186,7 @@ describe('StructuredHtmlElement', () => {
       });
 
       it('converts strong to json with markdown', () => {
-        const withStrongJson = withStrong.toJson(true);
+        const withStrongJson = withStrong.toJson({ getMarkdown: true });
         const withStrongJsonMarkdownChildren = (withStrongJson.children[0] as HtmlAsJsonElement).children;
         expect((withStrongJsonMarkdownChildren[0] as HtmlAsJsonTextElement).textContent).toBe(
           'Avsnitt med **fet skrift**.',
@@ -194,7 +194,7 @@ describe('StructuredHtmlElement', () => {
       });
 
       it('does not convert strong to markdown when conversion was done without skipping within given tags', () => {
-        const withStrongNoMarkdownJson = withStrongNoMarkdown.toJson(true);
+        const withStrongNoMarkdownJson = withStrongNoMarkdown.toJson({ getMarkdown: true });
         const withStrongNoMarkdownJsonJsonChildren = (withStrongNoMarkdownJson.children[0] as HtmlAsJsonElement)
           .children;
         expect((withStrongNoMarkdownJsonJsonChildren[0] as HtmlAsJsonTextElement).textContent).toBe('Avsnitt med ');
