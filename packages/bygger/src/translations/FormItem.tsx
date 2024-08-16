@@ -52,15 +52,12 @@ const FormItem = ({ translations, text, type, languageCode }: Props) => {
     }
   }, [translations, text, currentLanguage, currentTranslation, languageCode]);
 
-  const dispatchUpdate = (value: string) =>
-    dispatch({
-      type: 'update',
-      payload: { lang: languageCode, translation: { [text]: { value, scope: 'local' } } },
-    });
-
   const updateTranslations = (targetValue: string) => {
     setCurrentTranslation(targetValue);
-    dispatchUpdate(targetValue);
+    dispatch({
+      type: 'update',
+      payload: { lang: languageCode, translation: { [text]: { value: targetValue, scope: 'local' } } },
+    });
   };
 
   if (currentTranslation === undefined) {
@@ -72,7 +69,7 @@ const FormItem = ({ translations, text, type, languageCode }: Props) => {
       <TranslationFormHtmlSection
         text={text}
         storedTranslation={currentTranslation}
-        updateTranslation={dispatchUpdate}
+        updateTranslation={updateTranslations}
         onSelectLegacy={() => setUseLegacyHtmlTranslation(true)}
       />
     );
@@ -96,7 +93,6 @@ const FormItem = ({ translations, text, type, languageCode }: Props) => {
         text={text}
         value={currentTranslation}
         type={type}
-        key={`${text}-${languageCode}`}
         hasGlobalTranslation={hasGlobalTranslation}
         tempGlobalTranslation={tempGlobalTranslation}
         showGlobalTranslation={showGlobalTranslation}
