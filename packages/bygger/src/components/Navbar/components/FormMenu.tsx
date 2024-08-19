@@ -1,18 +1,9 @@
 import { EditFilled, EyeFilled, GlobeFilled, SettingsFilled } from '@navikt/ds-icons';
-import { makeStyles, useLanguageCodeFromURL } from '@navikt/skjemadigitalisering-shared-components';
+import { useLanguageCodeFromURL } from '@navikt/skjemadigitalisering-shared-components';
 import useUnsavedChangesModal from '../../../hooks/useUnsavedChangesModal';
 import { MenuLink } from './MenuLink';
 
-const useStyles = makeStyles({
-  linkText: {
-    '@media (max-width: 1040px)': {
-      display: 'none',
-    },
-  },
-});
-
 export const FormMenu = ({ formPath }) => {
-  const styles = useStyles();
   const currentLanguage = useLanguageCodeFromURL();
   const { unsavedChangesModalContent, showUnsavedChangesModal } = useUnsavedChangesModal();
 
@@ -20,17 +11,17 @@ export const FormMenu = ({ formPath }) => {
     <>
       <MenuLink to={`/forms/${formPath}/settings`} noIconStyling={false}>
         <SettingsFilled fontSize={'1.5rem'} role="presentation" />
-        <span className={styles.linkText}>Innstillinger</span>
+        <span>Innstillinger</span>
       </MenuLink>
 
       <MenuLink to={`/forms/${formPath}/edit`} noIconStyling={false}>
         <EditFilled fontSize={'1.5rem'} role="presentation" />
-        <span className={styles.linkText}>Rediger skjema</span>
+        <span>Rediger skjema</span>
       </MenuLink>
 
       <MenuLink to={`/forms/${formPath}/view/veiledning`} noIconStyling={false}>
         <EyeFilled fontSize={'1.5rem'} role="presentation" />
-        <span className={styles.linkText}>Forhåndsvis</span>
+        <span>Forhåndsvis</span>
       </MenuLink>
 
       <MenuLink
@@ -43,7 +34,7 @@ export const FormMenu = ({ formPath }) => {
         }
       >
         <GlobeFilled fontSize={'1.5rem'} role="presentation" />
-        <span className={styles.linkText}>Språk</span>
+        <span>Språk</span>
       </MenuLink>
 
       {unsavedChangesModalContent}

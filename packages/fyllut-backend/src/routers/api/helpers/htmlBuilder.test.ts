@@ -1,25 +1,36 @@
-import { FormPropertiesType, NavFormType, Submission, Summary } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  FormPropertiesType,
+  NavFormType,
+  Submission,
+  SummaryComponent,
+  SummaryDataGrid,
+  SummaryDataGridRow,
+  SummaryFieldset,
+  SummaryFieldsetType,
+  SummaryPanel,
+  SummarySubmissionValue,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import { conditionalsForm, conditionalsSubmission } from '../testdata/conditionals';
 import { body, createHtmlFromSubmission, signatureSection } from './htmlBuilder';
 
 const createContainer = (
   label: string,
-  type: Summary.FieldsetType | 'panel' | 'datagrid' | 'datagrid-row',
-  components: Summary.Component[] = [],
+  type: SummaryFieldsetType | 'panel' | 'datagrid' | 'datagrid-row',
+  components: SummaryComponent[] = [],
 ) =>
   ({
     label,
     components,
     key: label,
     type,
-  }) as Summary.Fieldset | Summary.Panel | Summary.DataGrid | Summary.DataGridRow;
+  }) as SummaryFieldset | SummaryPanel | SummaryDataGrid | SummaryDataGridRow;
 
-const createPanel = (label: string, components: Summary.Component[] = []) =>
-  createContainer(label, 'panel', components) as Summary.Panel;
+const createPanel = (label: string, components: SummaryComponent[] = []) =>
+  createContainer(label, 'panel', components) as SummaryPanel;
 
 const createComponent = (
   label: string,
-  value: Summary.SubmissionValue | string[],
+  value: SummarySubmissionValue | string[],
   type = 'textfield',
   optionalProps = {},
 ) =>
@@ -29,9 +40,10 @@ const createComponent = (
     type,
     key: label,
     ...optionalProps,
-  }) as Summary.Component;
+  }) as SummaryComponent;
 
 const mockTranslate = (text: string) => text;
+const panels = [createPanel('Panel 1'), createPanel('Panel 2'), createPanel('Panel 3')];
 
 describe('htmlBuilder', () => {
   describe('createHtmlFromSubmission', () => {
@@ -40,7 +52,7 @@ describe('htmlBuilder', () => {
       components: [],
       properties: { signatures: [] },
     } as unknown as NavFormType;
-    let html: String;
+    let html: string;
 
     beforeEach(() => {
       html = createHtmlFromSubmission(formWithTitle, { data: {} } as Submission, 'digital', mockTranslate);
@@ -74,8 +86,6 @@ describe('htmlBuilder', () => {
   });
 
   describe('Fields from form and submission', () => {
-    const panels = [createPanel('Panel 1'), createPanel('Panel 2'), createPanel('Panel 3')];
-
     it('adds headers for each top level element in the array', () => {
       const bodyElement = body(panels);
       expect(bodyElement).toContain('<h2>Panel 1</h2>');

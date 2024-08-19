@@ -261,6 +261,7 @@ describe('Activities', () => {
 
       cy.findByText('Målgruppe ble ikke preutfylt').should('not.exist');
     });
+
     it('should show component when maalgruppe is not prefilled', () => {
       cy.mocksUseRouteVariant('get-prefill-data:success-empty');
       cy.visit('/fyllut/testingactivities/aktiviteter?sub=digital');

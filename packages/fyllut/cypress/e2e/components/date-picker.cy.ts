@@ -6,6 +6,12 @@ import { dateUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 const validateionBefore = (date: string) => `Datoen kan ikke være tidligere enn ${date}`;
 const validationAfter = (date: string) => `Datoen kan ikke være senere ${date}`;
 
+const EARLIEST_RELATIVE = -10;
+const LATEST_RELATIVE = 5;
+
+const beforeDate = dateUtils.toLocaleDate(dateUtils.addDays(EARLIEST_RELATIVE));
+const afterDate = dateUtils.toLocaleDate(dateUtils.addDays(LATEST_RELATIVE));
+
 const allFieldsEneabled = () => {
   cy.findByRole('textbox', { name: 'Tilfeldig dato' }).should('not.be.disabled');
   cy.findByRole('textbox', { name: 'Dato med validering mot annet datofelt (valgfritt)' }).should('not.be.disabled');
@@ -197,17 +203,7 @@ describe('NavDatepicker', () => {
   });
 
   describe('Validation of date with earliest (-10) / latest (5) relative constraint', () => {
-    beforeEach(() => {
-      allFieldsEneabled();
-    });
-
-    const EARLIEST_RELATIVE = -10;
-    const LATEST_RELATIVE = 5;
-
     const LABEL = 'Dato med validering av antall dager tilbake eller framover (valgfritt)';
-
-    const beforeDate = dateUtils.toLocaleDate(dateUtils.addDays(EARLIEST_RELATIVE));
-    const afterDate = dateUtils.toLocaleDate(dateUtils.addDays(LATEST_RELATIVE));
 
     it('fails when date is before the earliest limit', () => {
       cy.findByRole('textbox', { name: LABEL }).type(dateUtils.toLocaleDate(dateUtils.addDays(EARLIEST_RELATIVE - 1)));
@@ -235,6 +231,56 @@ describe('NavDatepicker', () => {
       cy.clickNextStep();
 
       cy.findAllByText(validationAfter(afterDate)).should('have.length', 2);
+    });
+  });
+
+  describe('Data grid', () => {
+    beforeEach(() => {
+      allFieldsEneabled();
+    });
+
+    it('test to and from date inside data grid with valid date', () => {
+      cy.findByRole('textbox', { name: 'Tilfeldig dato' }).type('06.06.2022');
+
+      cy.findByRole('textbox', { name: /Grid fra/ }).type('02.02.2023');
+      cy.findByRole('textbox', { name: /Grid til/ }).type('03.02.2023');
+
+      cy.clickNextStep();
+      cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
+    });
+
+    it('test to and from date inside data grid with invalid to date', () => {
+      cy.findByRole('textbox', { name: 'Tilfeldig dato' }).type('06.06.2022');
+
+      cy.findByRole('textbox', { name: /Grid fra/ }).type('02.02.2023');
+      cy.findByRole('textbox', { name: /Grid til/ }).type('01.02.2023');
+
+      cy.clickNextStep();
+      cy.findAllByText(validateionBefore('03.02.2023')).should('have.length', 2);
+    });
+
+    it('test to and from date inside data grid with invalid to dated', () => {
+      cy.findByRole('textbox', { name: 'Tilfeldig dato' }).type('06.06.2022');
+
+      cy.findByRole('button', { name: 'Legg til' }).click();
+
+      cy.findAllByRole('textbox', { name: /Grid fra/ })
+        .eq(0)
+        .type('02.02.2023');
+      cy.findAllByRole('textbox', { name: /Grid til/ })
+        .eq(0)
+        .type('01.02.2023');
+
+      cy.findAllByRole('textbox', { name: /Grid fra/ })
+        .eq(1)
+        .type('04.02.2023');
+      cy.findAllByRole('textbox', { name: /Grid til/ })
+        .eq(1)
+        .type('03.02.2023');
+
+      cy.clickNextStep();
+      cy.findAllByText(validateionBefore('03.02.2023')).should('have.length', 2);
+      cy.findAllByText(validateionBefore('05.02.2023')).should('have.length', 2);
     });
   });
 });

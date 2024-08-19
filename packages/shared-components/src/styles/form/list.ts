@@ -16,5 +16,8 @@ const list = {
       marginBottom: 'var(--a-spacing-3)',
     },
   },
+  '& ul li:first-child': {
+    marginTop: 'var(--a-spacing-3)',
+  },
 };
 export default list;

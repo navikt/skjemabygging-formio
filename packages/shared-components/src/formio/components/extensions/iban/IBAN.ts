@@ -1,12 +1,12 @@
-import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import TextField from 'formiojs/components/textfield/TextField';
-import * as ibantools from 'ibantools';
+import BaseComponent from '../../base/BaseComponent';
+import TextField from '../../core/textfield/TextField';
 import IBANBuilder from './IBAN.builder';
 import ibanForm from './IBAN.form';
+import { validateIBAN } from './IBANValidator';
 
 class IBAN extends TextField {
   static schema() {
-    return TextField.schema({
+    return BaseComponent.schema({
       label: 'IBAN',
       type: 'iban',
       key: `iban`,
@@ -27,22 +27,25 @@ class IBAN extends TextField {
     return IBAN.schema();
   }
 
-  getErrorMessage(key) {
-    // @ts-ignore
-    return this.t(key) === key ? TEXTS.validering[key] : this.t(key);
+  checkComponentValidity(data, dirty, row, options = {}) {
+    const validity = super.checkComponentValidity(data, dirty, row, options);
+
+    if (validity) {
+      const errorMessage = validateIBAN(this.getValue(), this.translate.bind(this));
+      return this.setComponentValidity(
+        errorMessage ? [this.createError(errorMessage, undefined)] : [],
+        dirty,
+        undefined,
+      );
+    }
+    return validity;
   }
 
-  validateIban(iban) {
-    const { validateIBAN, ValidationErrorsIBAN } = ibantools;
-    const { valid, errorCodes } = validateIBAN(iban);
-    if (valid || errorCodes.includes(ValidationErrorsIBAN.NoIBANProvided)) {
-      return true;
-    }
-
-    if (errorCodes.includes(ValidationErrorsIBAN.WrongBBANLength)) return this.getErrorMessage('wrongBBANLength');
-    if (errorCodes.includes(ValidationErrorsIBAN.NoIBANCountry)) return this.getErrorMessage('noIBANCountry');
-
-    return this.getErrorMessage('invalidIBAN');
+  /**
+   * @deprecated Validation has been moved. We keep this to support schemas that contains a reference to the function
+   */
+  validateIban(_inputValue) {
+    return true;
   }
 }
 

@@ -1,24 +1,17 @@
-import { makeStyles, SkeletonList, useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
+import { SkeletonList, useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
 import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import { useCallback, useEffect, useState } from 'react';
 import { AppLayout } from '../../components/AppLayout';
+import RowLayout from '../../components/layout/RowLayout';
 import { determineStatus } from '../status/FormStatus';
+import FormError from './../error/FormError';
 import { FormListType, FormsList } from './FormsList';
-import FormsNoResult from './FormsNoResult';
-
-const useStyles = makeStyles({
-  root: {
-    maxWidth: '80rem',
-    margin: '0 auto 2rem',
-  },
-});
 
 interface FormsListPageProps {
   loadFormsList: () => Promise<NavFormType[]>;
 }
 
 const FormsListPage = ({ loadFormsList }: FormsListPageProps) => {
-  const styles = useStyles();
   const [loading, setLoading] = useState<boolean>(true);
   const [forms, setForms] = useState<FormListType[]>();
   const { logger } = useAppConfig();
@@ -28,12 +21,7 @@ const FormsListPage = ({ loadFormsList }: FormsListPageProps) => {
       const navForms = await loadFormsList();
       setForms(navForms.map(mapNavForm));
     } catch (e) {
-      try {
-        const navForms = await loadFormsList();
-        setForms(navForms.map(mapNavForm));
-      } catch (e) {
-        logger?.error('Could not load forms.');
-      }
+      logger?.error('Could not load forms.');
     } finally {
       setLoading(false);
     }
@@ -59,15 +47,15 @@ const FormsListPage = ({ loadFormsList }: FormsListPageProps) => {
 
   return (
     <AppLayout navBarProps={{ formListMenu: true }}>
-      <div className={styles.root}>
+      <RowLayout fullWidth={true}>
         {loading ? (
           <SkeletonList size={20} width="100%" height={60} />
         ) : forms ? (
           <FormsList forms={forms} />
         ) : (
-          <FormsNoResult />
+          <FormError type="FORMS_ERROR" layout={false} />
         )}
-      </div>
+      </RowLayout>
     </AppLayout>
   );
 };

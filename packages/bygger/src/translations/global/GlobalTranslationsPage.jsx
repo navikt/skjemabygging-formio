@@ -1,4 +1,4 @@
-import { Button, Heading } from '@navikt/ds-react';
+import { Button, VStack } from '@navikt/ds-react';
 import { LoadingComponent, makeStyles, useAppConfig, useModal } from '@navikt/skjemadigitalisering-shared-components';
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useCallback, useEffect, useMemo, useReducer, useState } from 'react';
@@ -6,8 +6,10 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { AppLayout } from '../../components/AppLayout';
 import ButtonWithSpinner from '../../components/ButtonWithSpinner';
 import UserFeedback from '../../components/UserFeedback';
-import Column from '../../components/layout/Column';
-import Row from '../../components/layout/Row';
+import RowLayout from '../../components/layout/RowLayout';
+import SidebarLayout from '../../components/layout/SidebarLayout';
+import Title from '../../components/layout/Title';
+import TitleRowLayout from '../../components/layout/TitleRowLayout';
 import { getAvailableLanguages, languagesInNorwegian } from '../../context/i18n';
 import FormBuilderLanguageSelector from '../../context/i18n/FormBuilderLanguageSelector';
 import useRedirectIfNoLanguageCode from '../../hooks/useRedirectIfNoLanguageCode';
@@ -228,66 +230,74 @@ const GlobalTranslationsPage = ({
           translationMenu: true,
         }}
       >
-        <Row>
-          <Column className={styles.mainCol}>
-            <Heading level="1" size="xlarge" className="mb-14">
-              {languageCode && languageCode !== 'undefined' ? languagesInNorwegian[languageCode] : ''}
-            </Heading>
-
-            {selectedTag === tags.SKJEMATEKSTER ? (
-              <div>
-                <GlobalTranslationsPanel
-                  classes={styles}
-                  currentTranslation={currentTranslation}
+        <TitleRowLayout
+          right={<FormBuilderLanguageSelector languages={languages} formPath="global" tag={selectedTag} />}
+        >
+          <Title right={<FormBuilderLanguageSelector languages={languages} formPath="global" tag={selectedTag} />}>
+            {languageCode && languageCode !== 'undefined' ? languagesInNorwegian[languageCode] : ''}
+          </Title>
+        </TitleRowLayout>
+        <RowLayout
+          right={
+            <SidebarLayout noScroll={true}>
+              <VStack gap="1">
+                <ButtonWithSpinner onClick={onSaveGlobalTranslations} size="small">
+                  Lagre
+                </ButtonWithSpinner>
+                <PublishGlobalTranslationsButton
                   languageCode={languageCode}
-                  updateOriginalText={updateOriginalText}
-                  updateTranslation={updateTranslation}
-                  deleteOneRow={deleteOneRow}
-                  predefinedGlobalOriginalTexts={predefinedOriginalTextList}
+                  publishGlobalTranslations={publishGlobalTranslations}
                 />
+                <GlobalCsvLink allGlobalTranslations={allGlobalTranslations} languageCode={languageCode} />
+                {!config?.isProdGcp && (
+                  <ButtonWithSpinner variant="tertiary" onClick={importFromProd} size="small">
+                    Kopier fra produksjon
+                  </ButtonWithSpinner>
+                )}
                 <Button
-                  variant="secondary"
-                  className={styles.addButton}
-                  onClick={() => addNewTranslation()}
+                  variant="tertiary"
+                  onClick={() => setIsDeleteLanguageModalOpen(true)}
                   type="button"
+                  size="small"
                 >
-                  Legg til ny tekst
+                  Slett språk
                 </Button>
-              </div>
-            ) : (
-              <ApplicationTextTranslationEditPanel
+                <UserFeedback />
+              </VStack>
+            </SidebarLayout>
+          }
+        >
+          {selectedTag === tags.SKJEMATEKSTER ? (
+            <div>
+              <GlobalTranslationsPanel
                 classes={styles}
-                selectedTag={selectedTag}
-                translations={currentTranslation}
+                currentTranslation={currentTranslation}
                 languageCode={languageCode}
+                updateOriginalText={updateOriginalText}
                 updateTranslation={updateTranslation}
                 deleteOneRow={deleteOneRow}
+                predefinedGlobalOriginalTexts={predefinedOriginalTextList}
               />
-            )}
-          </Column>
-          <div className={styles.sideBarContainer}>
-            <Column className={styles.stickySideBar}>
-              <FormBuilderLanguageSelector languages={languages} formPath="global" tag={selectedTag} />
-              <ButtonWithSpinner onClick={onSaveGlobalTranslations} size="small">
-                Lagre
-              </ButtonWithSpinner>
-              <PublishGlobalTranslationsButton
-                languageCode={languageCode}
-                publishGlobalTranslations={publishGlobalTranslations}
-              />
-              <GlobalCsvLink allGlobalTranslations={allGlobalTranslations} languageCode={languageCode} />
-              {!config?.isProdGcp && (
-                <ButtonWithSpinner variant="tertiary" onClick={importFromProd} size="small">
-                  Kopier fra produksjon
-                </ButtonWithSpinner>
-              )}
-              <Button variant="tertiary" onClick={() => setIsDeleteLanguageModalOpen(true)} type="button" size="small">
-                Slett språk
+              <Button
+                variant="secondary"
+                className={styles.addButton}
+                onClick={() => addNewTranslation()}
+                type="button"
+              >
+                Legg til ny tekst
               </Button>
-              <UserFeedback />
-            </Column>
-          </div>
-        </Row>
+            </div>
+          ) : (
+            <ApplicationTextTranslationEditPanel
+              classes={styles}
+              selectedTag={selectedTag}
+              translations={currentTranslation}
+              languageCode={languageCode}
+              updateTranslation={updateTranslation}
+              deleteOneRow={deleteOneRow}
+            />
+          )}
+        </RowLayout>
       </AppLayout>
       <ConfirmDeleteLanguageModal
         isOpen={isDeleteLanguageModalOpen}

@@ -7,9 +7,9 @@ interface Output {
   mottaksadresser: Mottaksadresse[];
   ready: boolean;
   errorMessage?: string;
-  loadMottaksadresser: Function;
-  deleteMottaksadresse: Function;
-  publishMottaksadresser: Function;
+  loadMottaksadresser: () => void;
+  deleteMottaksadresse: (id: string) => Promise<void>;
+  publishMottaksadresser: () => Promise<void>;
 }
 
 const useMottaksadresser = (): Output => {

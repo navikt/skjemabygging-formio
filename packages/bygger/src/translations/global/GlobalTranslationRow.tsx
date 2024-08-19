@@ -26,9 +26,9 @@ type Props = {
   id: string;
   originalText: string;
   translatedText: string;
-  updateTranslation: Function;
-  updateOriginalText: Function;
-  deleteOneRow: Function;
+  updateTranslation: (id: string, originalText: string, translatedText: string) => void;
+  updateOriginalText: (id: string, newOriginalText: string, oldOriginalText: string) => void;
+  deleteOneRow: (id: string) => void;
   currentOriginalTextList: string[];
   predefinedGlobalOriginalTexts: string[];
 };

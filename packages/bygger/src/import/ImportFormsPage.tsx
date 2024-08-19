@@ -1,13 +1,21 @@
-import { Heading, Skeleton, Table, UNSAFE_Combobox } from '@navikt/ds-react';
+import { Skeleton, Table, UNSAFE_Combobox } from '@navikt/ds-react';
 import { ComboboxOption } from '@navikt/ds-react/esm/form/combobox/types';
+import { makeStyles } from '@navikt/skjemadigitalisering-shared-components';
 import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import { useCallback, useEffect, useState } from 'react';
 import { AppLayout } from '../components/AppLayout';
 import ButtonWithSpinner from '../components/ButtonWithSpinner';
-import Row from '../components/layout/Row';
+import RowLayout from '../components/layout/RowLayout';
+import Title from '../components/layout/Title';
+import TitleRowLayout from '../components/layout/TitleRowLayout';
 import { formMatches, mapToOption } from './ImportFormsPage.utils';
 import api from './api';
-import { useStyles } from './styles';
+
+export const useStyles = makeStyles({
+  submitButton: {
+    marginTop: 'var(--a-spacing-4)',
+  },
+});
 
 type Result = Pick<NavFormType, 'path' | 'title'> & {
   skjemanummer: string;
@@ -96,7 +104,7 @@ const ImportFormsPage = () => {
         selectedOptions={selectedOptions}
         label="Søk etter skjema:"
         isMultiSelect
-        onChange={(event) => filterOptions(event?.target.value as string)}
+        onChange={(event: any) => filterOptions(event?.target?.value as string)}
         onToggleSelected={toggleSelected}
         error={formsErrorMessage}
       />
@@ -131,12 +139,11 @@ const ImportFormsPage = () => {
 
   return (
     <AppLayout>
-      <Row className={styles.titleRow}>
-        <Heading size="large" level="1">
-          Importer skjema fra produksjon
-        </Heading>
-      </Row>
-      <Row className={styles.main}>
+      <TitleRowLayout>
+        <Title>Importer skjema fra produksjon</Title>
+      </TitleRowLayout>
+
+      <RowLayout>
         {!options.length && !formsErrorMessage ? <Skeleton width="100%" height={80} /> : renderCombobox()}
         <ButtonWithSpinner
           className={styles.submitButton}
@@ -145,7 +152,7 @@ const ImportFormsPage = () => {
           Importer
         </ButtonWithSpinner>
         {renderSummary()}
-      </Row>
+      </RowLayout>
     </AppLayout>
   );
 };

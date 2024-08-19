@@ -11,6 +11,7 @@ import configUtils from './config';
 import type { ConfigType } from './config/types';
 import { Enhet, Enhetstype, supportedEnhetstyper } from './enhet';
 import {
+  Attachment,
   AttachmentType,
   Component,
   ComponentValue,
@@ -76,7 +77,22 @@ import {
 import { SubmissionActivity } from './submission/activity';
 import { DrivingListPeriod, DrivingListSubmission, DrivingListValues } from './submission/drivingList';
 import { SubmissionMaalgruppe } from './submission/maalgruppe';
-import type { Summary } from './summary/FormSummaryType';
+import {
+  SummaryActivity,
+  SummaryAddress,
+  SummaryAttachment,
+  SummaryComponent,
+  SummaryDataGrid,
+  SummaryDataGridRow,
+  SummaryDrivingList,
+  SummaryField,
+  SummaryFieldset,
+  SummaryFieldsetType,
+  SummaryImage,
+  SummaryPanel,
+  SummarySelectboxes,
+  SummarySubmissionValue,
+} from './summary/FormSummaryType';
 import MockedComponentObjectForTest from './summary/MockedComponentObjectForTest';
 import formSummaryUtil from './summary/formSummaryUtil';
 import { TextSize, TextSizeShort } from './text';
@@ -130,6 +146,7 @@ export type {
   AccordionSettingValues,
   AktivitetPeriode,
   AktivitetVedtaksinformasjon,
+  Attachment,
   AttachmentSettingValue,
   AttachmentSettingValues,
   AttachmentType,
@@ -195,7 +212,20 @@ export type {
   SubmissionData,
   SubmissionMaalgruppe,
   SubmissionMethod,
-  Summary,
+  SummaryActivity,
+  SummaryAddress,
+  SummaryAttachment,
+  SummaryComponent,
+  SummaryDataGrid,
+  SummaryDataGridRow,
+  SummaryDrivingList,
+  SummaryField,
+  SummaryFieldset,
+  SummaryFieldsetType,
+  SummaryImage,
+  SummaryPanel,
+  SummarySelectboxes,
+  SummarySubmissionValue,
   TextSize,
   TextSizeShort,
   TranslationResource,

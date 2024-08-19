@@ -1,16 +1,8 @@
-import { BodyShort, Heading } from '@navikt/ds-react';
-import { makeStyles } from '@navikt/skjemadigitalisering-shared-components';
+import { Heading } from '@navikt/ds-react';
 import { useEffect, useState } from 'react';
 import { languagesInNorwegian, useI18nDispatch } from '../context/i18n';
 import FormItem from './FormItem';
 import ObsoleteTranslationsPanel from './ObsoleteTranslationsPanel';
-
-const useStyles = makeStyles({
-  root: {
-    width: '80ch',
-    margin: '0 auto',
-  },
-});
 
 const TranslationsToRemove = ({ translations, languageCode }) => {
   const dispatch = useI18nDispatch();
@@ -31,14 +23,13 @@ const TranslationsToRemove = ({ translations, languageCode }) => {
   );
 };
 
-const TranslationsFormPage = ({ skjemanummer, translations, title, flattenedComponents, languageCode }) => {
-  const styles = useStyles();
-  const [currentTranslation, setCurrentTranslation] = useState();
+const TranslationsFormPage = ({ skjemanummer, translations, flattenedComponents, languageCode }) => {
+  const [currentTranslation, setCurrentTranslation] = useState({});
   const [unusedTranslations, setUnusedTranslations] = useState([]);
 
   useEffect(() => {
     if (translations && languageCode) {
-      setCurrentTranslation(translations?.[languageCode]?.translations ?? {});
+      setCurrentTranslation({ translations: translations?.[languageCode]?.translations ?? {}, languageCode });
     }
   }, [translations, languageCode]);
 
@@ -51,20 +42,16 @@ const TranslationsFormPage = ({ skjemanummer, translations, title, flattenedComp
     setUnusedTranslations(unusedTranslationsAsEntries);
   }, [translations, flattenedComponents, languageCode]);
 
-  if (!currentTranslation) {
+  if (!currentTranslation.translations) {
     return <></>;
   }
 
   return (
-    <div className={styles.root}>
-      <Heading level="1" size="xlarge">
-        {title}
-      </Heading>
-      <BodyShort className="mb">{skjemanummer}</BodyShort>
+    <div>
       {unusedTranslations.length > 0 && (
         <TranslationsToRemove translations={unusedTranslations} languageCode={languageCode} />
       )}
-      <Heading level="2" size="large">
+      <Heading level="2" size="medium">
         {`Oversettelser${languageCode ? ' på ' + languagesInNorwegian[languageCode] : ''}`}
       </Heading>
       <form>
@@ -72,11 +59,11 @@ const TranslationsFormPage = ({ skjemanummer, translations, title, flattenedComp
           const { text, type } = comp;
           return (
             <FormItem
-              translations={currentTranslation}
+              translations={currentTranslation.translations}
               text={text}
               type={type}
-              key={`translation-${skjemanummer}-${text}-${languageCode}`}
-              languageCode={languageCode}
+              key={`translation-${skjemanummer}-${text}`}
+              languageCode={currentTranslation.languageCode}
             />
           );
         })}

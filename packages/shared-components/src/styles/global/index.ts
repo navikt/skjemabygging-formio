@@ -4,6 +4,8 @@ import errorSummary from './errorSummary';
 import labelTrackChanges from './labelTrackChanges';
 import margin from './margin';
 import preview from './preview';
+import rowLayout from './rowLayout';
+import sidebarLayout from './sidebarLayout';
 import stepper from './stepper';
 import vars from './vars';
 
@@ -32,6 +34,7 @@ const global = {
   h3: {
     fontSize: 'var(--a-font-size-heading-small)',
     lineHeight: 'var(--a-font-line-height-heading-small)',
+    marginBottom: 'var(--a-spacing-3)',
   },
   h4: {
     fontSize: 'var(--a-font-size-heading-xsmall)',
@@ -61,6 +64,10 @@ const global = {
       outline: 'none',
     },
   },
+  // Override Aksel css for page, since it causes problems with our sticky elements.
+  '#root .navds-page__content--padding': {
+    paddingBlockEnd: 0,
+  },
   ...labelTrackChanges,
   ...errorSummary,
   ...buttonRow,
@@ -69,6 +76,8 @@ const global = {
   ...stepper,
   ...vars,
   ...ckEditor,
+  ...rowLayout,
+  ...sidebarLayout,
 };
 
 export default global;

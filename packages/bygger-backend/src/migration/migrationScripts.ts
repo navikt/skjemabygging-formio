@@ -94,7 +94,7 @@ function getEditScript(editOptions: object): EditScript {
       return { [currentValue]: acc };
     }, editOptionValue),
   );
-  const mergedEditOptionObject: {} = editOptionObjects.reduce(objectUtils.deepMerge, {});
+  const mergedEditOptionObject: object = editOptionObjects.reduce(objectUtils.deepMerge, {});
 
   return (comp) => {
     return objectUtils.deepMerge(comp, mergedEditOptionObject);

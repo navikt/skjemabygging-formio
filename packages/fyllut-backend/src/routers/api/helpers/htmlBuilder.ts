@@ -6,7 +6,17 @@ import {
   NewFormSignatureType,
   signatureUtils,
   Submission,
-  Summary,
+  SummaryActivity,
+  SummaryAddress,
+  SummaryAttachment,
+  SummaryComponent,
+  SummaryDataGrid,
+  SummaryDataGridRow,
+  SummaryField,
+  SummaryFieldset,
+  SummaryImage,
+  SummaryPanel,
+  SummarySelectboxes,
   TEXTS,
 } from '@navikt/skjemadigitalisering-shared-domain';
 
@@ -23,7 +33,7 @@ const createHtmlFromSubmission = (
   translate: (text: string) => string,
   lang: string = 'nb',
 ) => {
-  const symmaryPanels: Summary.Panel[] = formSummaryUtil.createFormSummaryPanels(
+  const symmaryPanels: SummaryPanel[] = formSummaryUtil.createFormSummaryPanels(
     form,
     submission,
     translate,
@@ -65,18 +75,18 @@ p {margin: 0}
 .underskrift {margin-bottom: 30px;}
 </style>`;
 
-const body = (formSummaryObject: Summary.Panel[], confirmation?: string, signatures?: string) => `
+const body = (formSummaryObject: SummaryPanel[], confirmation?: string, signatures?: string) => `
 <body>
 ${formSummaryObject.map(section).join('')}
 ${confirmation || ''}
 ${signatures || ''}
 </body>`;
 
-const section = (formSection: Summary.Panel) => `
+const section = (formSection: SummaryPanel) => `
 <h2>${formSection.label}</h2>
 ${sectionContent(formSection.components, 1)}`;
 
-const sectionContent = (components: Summary.Component[], level: number): string => {
+const sectionContent = (components: SummaryComponent[], level: number): string => {
   return components
     .filter((component) => !component.hiddenInSummary)
     .map((component) => {
@@ -103,7 +113,7 @@ const sectionContent = (components: Summary.Component[], level: number): string 
         case 'navAddress':
           return address(component);
         case 'attachment':
-          return attachment(component as Summary.Attachment);
+          return attachment(component as SummaryAttachment);
         default:
           return field(component);
       }
@@ -115,22 +125,22 @@ const h3 = (label: string) => `<h3>${label}</h3>`;
 const h4 = (label: string) => `<h4>${label}</h4>`;
 const addInnrykkClass = (level: number) => (level <= 2 ? 'class="innrykk"' : '');
 
-const subsection = (component: Summary.Fieldset | Summary.Panel | Summary.DataGrid, level: number) => `
+const subsection = (component: SummaryFieldset | SummaryPanel | SummaryDataGrid, level: number) => `
 ${level <= 1 ? h3(component.label) : h4(component.label)}
 <div ${addInnrykkClass(level)}>
 ${sectionContent(component.components, level + 1)}
 </div>`;
 
-const datagridRow = (component: Summary.DataGridRow, level: number) => `
+const datagridRow = (component: SummaryDataGridRow, level: number) => `
 <div class="row">
 ${component.label ? `<div class="row-label">${component.label}</div>` : ''}
 ${sectionContent(component.components, level)}
 </div>`;
 
-const field = (component: Summary.Field) =>
+const field = (component: SummaryField) =>
   `<div class="spm">${component.label}</div><div class="svar">: ${component.value}</div>`;
 
-const attachment = (component: Summary.Attachment) => {
+const attachment = (component: SummaryAttachment) => {
   let html = `<div class="spm">${component.label}</div><div class="svar">: ${component.value.description}</div>`;
   if (component.value.additionalDocumentationLabel && component.value.additionalDocumentation) {
     html += `<div class="spm">${component.value.additionalDocumentationLabel}</div><div class="svar">: ${component.value.additionalDocumentation}</div>`;
@@ -142,10 +152,10 @@ const attachment = (component: Summary.Attachment) => {
   return html;
 };
 
-const address = (component: Summary.Address) =>
+const address = (component: SummaryAddress) =>
   `<div class="spm">${component.label}</div><div class="svar">: ${component.value.address}</div>`;
 
-const activity = (component: Summary.Activity) =>
+const activity = (component: SummaryActivity) =>
   `<div class="spm">${component.label}</div><div class="svar">: ${component.value.text}</div>`;
 
 const drivingList = (component) => `
@@ -161,14 +171,14 @@ const drivingList = (component) => `
     </ul>
   </div>`;
 
-const html = (component: Summary.Field) => {
+const html = (component: SummaryField) => {
   if (component.label) {
     return field(component);
   }
   return `<div>${component.value}</div>`;
 };
 
-const img = (component: Summary.Image) => `
+const img = (component: SummaryImage) => `
 <div>
 <div class="spm">${component.label}</div>
 <img src="${component.value}" alt="${component.alt}" width="${calcImageWidth(component.widthPercent)}"/>
@@ -176,7 +186,7 @@ const img = (component: Summary.Image) => `
 </div>
 `;
 
-const multipleAnswers = (component: Summary.Selectboxes) => `
+const multipleAnswers = (component: SummarySelectboxes) => `
 <div class="spm">${component.label}</div>
 ${component.value.map((val) => `<div class="svar">: ${val}</div>`).join('')}`;
 

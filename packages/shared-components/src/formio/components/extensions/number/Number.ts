@@ -11,7 +11,7 @@ class Number extends TextField {
       type: 'number',
       key: 'tall',
       spellcheck: false,
-      inputType: 'decimal',
+      inputType: 'numeric',
     });
   }
 
@@ -36,7 +36,7 @@ class Number extends TextField {
   }
 
   checkComponentValidity(data, dirty, row, options = {}) {
-    if (!!this.component?.calculateValue) {
+    if (this.component?.calculateValue) {
       return true;
     }
 

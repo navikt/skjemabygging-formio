@@ -1,6 +1,9 @@
 const ckEditor = {
   '.ck-body-wrapper': {
-    'z-index': 10000,
+    'z-index': 20000,
+  },
+  '& .ck-content h3': {
+    marginBottom: 100,
   },
 };
 

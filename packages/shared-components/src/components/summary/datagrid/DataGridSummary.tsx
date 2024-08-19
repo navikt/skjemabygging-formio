@@ -1,8 +1,8 @@
-import { Summary } from '@navikt/skjemadigitalisering-shared-domain';
+import { SummaryDataGrid } from '@navikt/skjemadigitalisering-shared-domain';
 import ComponentSummary from '../component/ComponentSummary';
 
 interface Props {
-  component: Summary.DataGrid;
+  component: SummaryDataGrid;
   formUrl: string;
 }
 

@@ -1,7 +1,7 @@
-import { Summary } from '@navikt/skjemadigitalisering-shared-domain';
+import { SummaryDrivingList } from '@navikt/skjemadigitalisering-shared-domain';
 
 export interface Props {
-  component: Summary.DrivingList;
+  component: SummaryDrivingList;
 }
 
 const DrivingListSummary = ({ component }: Props) => {
@@ -11,7 +11,7 @@ const DrivingListSummary = ({ component }: Props) => {
       <dd>
         <p>{component.value.description}</p>
         <ul>
-          {component.value.dates.map((date) => {
+          {(component.value.dates ?? []).map((date) => {
             return <li key={date.key}>{date.text}</li>;
           })}
         </ul>

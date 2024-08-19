@@ -115,12 +115,25 @@ describe('Translations', () => {
       .within(() => {
         cy.findByRole('textbox', { name: fieldLabel }).focus();
         cy.findByRole('textbox', { name: fieldLabel }).clear();
-        cy.findByRole('textbox', { name: fieldLabel }).type(newValue);
+        if (newValue) {
+          cy.findByRole('textbox', { name: fieldLabel }).type(newValue);
+        }
         cy.findByRole('textbox', { name: fieldLabel }).blur();
       });
   };
 
   describe('Form translations - html', () => {
+    const existingTranslations = {
+      'Du må selv skrive under på leveattesten. I tillegg må du få bekreftet attesten enten av to myndige personer (vitner) eller av en offentlig myndighet.':
+        'Du må sjølv skrive....',
+      '<h4>Overskrift</h4><p>Beskrivelse av dette skjemaet med <a target="_blank" rel="noopener noreferrer" href="https://www.nav.no">lenke til NAV</a>.</p>':
+        '<h2>Overskrift</h2><p>Beskrivelse av dette skjemaet med <a target="_blank" rel="noopener noreferrer" href="https://www.nav.no">lenke til NAV</a>.</p>',
+      '<h3>Tekstblokk med mye formatering og eksisterende oversettelse</h3><p>Dette er et avsnitt</p><p>Her er et avsnitt <a target="_blank" rel="noopener noreferrer" href="https://www.vg.no">med lenke til VG</a> og her kommer en liste:</p><ul><li>Ta oppvasken</li><li>Handle <a target="_blank" rel="noopener noreferrer" href="https://www.coop.no/"><strong>matvarer</strong></a>, og <strong>vurder</strong> å <a target="_blank" rel="noopener noreferrer" href="https://www.zalando.no">kjøpe <strong>nye</strong> klær</a>.</li></ul><p>Nytt avsnitt. Ny liste (numerert denne gangen):</p><ol><li>Første prioritet</li><li>Også viktig, men ikke så viktig</li><li>Kan utsettes</li><li>Trengs egentlig ikke å gjøres</li></ol>':
+        '<h3>Tekstblokk med mye formatering og eksisterende oversettelse</h3><p>Dette er et avsnitt</p><p>Her er eit avsnitt <a target="_blank" rel="noopener noreferrer" href="https://www.dagogtid.no">med lenke til DAG OG TID</a>, og her er ei ei liste:</p><ul><li>Ta oppvasken</li><li><a target="_blank" rel="noopener noreferrer" href="https://www.kiwi.no/"><strong>Handle matvarer</strong></a>, og <strong>tenk på om du skal</strong> <a target="_blank" rel="noopener noreferrer" href="https://www.zalando.no">kjøpe <strong>nye</strong> klær</a>.</li></ul><p>Nytt avsnitt. Ny liste (numerert denne gangen):</p><ol><li>Første prioritet</li><li>Også viktig, men ikke så viktig</li><li>Kan utsettes</li><li>Trengs egentlig ikke å gjøres</li></ol>',
+      '<p>Dette er en <a target="_blank" rel="noopener noreferrer" href="https://www.vg.no">lenke som åpnes i ny fane</a>.</p>':
+        '<p>Dette er en <a href="https://www.vg.no">lenke som åpnes i ny fane</a>.</p>',
+      Søker: 'Søkar',
+    };
     const htmlWithExistingTranslation =
       '<h3>Tekstblokk med mye formatering og eksisterende oversettelse</h3><p>Dette er et avsnitt</p><p>Her er et avsnitt <a target="_blank" rel="noopener noreferrer" href="https://www.vg.no">med lenke til VG</a> og her kommer en liste:</p><ul><li>Ta oppvasken</li><li>Handle <a target="_blank" rel="noopener noreferrer" href="https://www.coop.no/"><strong>matvarer</strong></a>, og <strong>vurder</strong> å <a target="_blank" rel="noopener noreferrer" href="https://www.zalando.no">kjøpe <strong>nye</strong> klær</a>.</li></ul><p>Nytt avsnitt. Ny liste (numerert denne gangen):</p><ol><li>Første prioritet</li><li>Også viktig, men ikke så viktig</li><li>Kan utsettes</li><li>Trengs egentlig ikke å gjøres</li></ol>';
     const htmlWithNoTranslation =
@@ -143,14 +156,11 @@ describe('Translations', () => {
 
     it('lets you edit old versions of translations and start new translation', () => {
       const expectedI18n = {
-        'Du må selv skrive under på leveattesten. I tillegg må du få bekreftet attesten enten av to myndige personer (vitner) eller av en offentlig myndighet.':
-          'Du må sjølv skrive....',
+        ...existingTranslations,
         '<h4>Overskrift</h4><p>Beskrivelse av dette skjemaet med <a target="_blank" rel="noopener noreferrer" href="https://www.nav.no">lenke til NAV</a>.</p>':
           '<h4></h4><p>Beskrivelse med <a target="_blank" rel="noopener noreferrer" href="https://www.nav.no/minside">lenke til minside</a>.</p>',
-        '<h3>Tekstblokk med mye formatering og eksisterende oversettelse</h3><p>Dette er et avsnitt</p><p>Her er et avsnitt <a target="_blank" rel="noopener noreferrer" href="https://www.vg.no">med lenke til VG</a> og her kommer en liste:</p><ul><li>Ta oppvasken</li><li>Handle <a target="_blank" rel="noopener noreferrer" href="https://www.coop.no/"><strong>matvarer</strong></a>, og <strong>vurder</strong> å <a target="_blank" rel="noopener noreferrer" href="https://www.zalando.no">kjøpe <strong>nye</strong> klær</a>.</li></ul><p>Nytt avsnitt. Ny liste (numerert denne gangen):</p><ol><li>Første prioritet</li><li>Også viktig, men ikke så viktig</li><li>Kan utsettes</li><li>Trengs egentlig ikke å gjøres</li></ol>':
-          '<h3>Tekstblokk med mye formatering og eksisterende oversettelse</h3><p>Dette er et avsnitt</p><p>Her er eit avsnitt <a target="_blank" rel="noopener noreferrer" href="https://www.dagogtid.no">med lenke til DAG OG TID</a>, og her er ei ei liste:</p><ul><li>Ta oppvasken</li><li><a target="_blank" rel="noopener noreferrer" href="https://www.kiwi.no/"><strong>Handle matvarer</strong></a>, og <strong>tenk på om du skal</strong> <a target="_blank" rel="noopener noreferrer" href="https://www.zalando.no">kjøpe <strong>nye</strong> klær</a>.</li></ul><p>Nytt avsnitt. Ny liste (numerert denne gangen):</p><ol><li>Første prioritet</li><li>Også viktig, men ikke så viktig</li><li>Kan utsettes</li><li>Trengs egentlig ikke å gjøres</li></ol>',
       };
-      cy.get('[data-testid=html-translation]').should('have.length', 3);
+      cy.get('[data-testid=html-translation]').should('have.length', 4);
       cy.get('[data-testid=html-translation]')
         .first()
         .within(() => {
@@ -160,10 +170,10 @@ describe('Translations', () => {
           cy.findByRole('button', { name: 'Bruk eksisterende oversettelse' }).should('be.visible');
           cy.findByRole('button', { name: 'Bruk eksisterende oversettelse' }).click();
         });
-      cy.get('[data-testid=html-translation]').should('have.length', 2);
+      cy.get('[data-testid=html-translation]').should('have.length', 3);
       cy.findByRole('button', { name: 'Gå tilbake til vanlig HTML-oversetting' }).should('be.visible');
       cy.findByRole('button', { name: 'Gå tilbake til vanlig HTML-oversetting' }).click();
-      cy.get('[data-testid=html-translation]').should('have.length', 3);
+      cy.get('[data-testid=html-translation]').should('have.length', 4);
       cy.get('[data-testid=html-translation]')
         .first()
         .within(() => {
@@ -223,7 +233,7 @@ describe('Translations', () => {
 
     it('starts new translation when there is no existing translation', () => {
       cy.get('[data-testid=html-translation]')
-        .last()
+        .eq(2)
         .within(() => {
           cy.findAllByRole('heading', { name: 'Tekstblokk med mye formatering og manglende oversettelse' }).should(
             'be.visible',
@@ -287,6 +297,40 @@ describe('Translations', () => {
       cy.findByRole('button', { name: 'Lagre' }).click();
       cy.wait('@updateTranslations').then((interception) => {
         expect(interception.request.body.data.i18n[htmlWithExistingTranslation]).to.equal(expectedHtmlResult);
+      });
+    });
+
+    it('preserves attributes of links', () => {
+      const expectedHtmlResult =
+        '<h3>Overskrift</h3><p>Avsnitt</p><p>Her er et avsnitt <a target="_blank" rel="noopener noreferrer" href="https://www.nyheter.no">med lenke til nyheter</a>.</p><ul><li></li><li><a target="_blank" rel="noopener noreferrer"><strong></strong></a><strong></strong><a target="_blank" rel="noopener noreferrer"><strong></strong></a></li></ul><p></p><ol><li></li><li></li><li></li><li></li></ol>';
+      const heading = 'Tekstblokk med mye formatering og manglende oversettelse';
+      const paragraph = 'Dette er avsnitt 1';
+      const paragraphWithTextAndLink =
+        'Her er et avsnitt [med lenke til VG](https://www.vg.no). Denne er så lang at den bør få et tekstområde, altså en sånn stor boks hvor man kan skrive inn masse tekst. Her kommer en liste:';
+      typeNewHtmlTranslationInput(2, heading, 'Overskrift');
+      typeNewHtmlTranslationInput(2, paragraph, 'Avsnitt');
+      typeNewHtmlTranslationInput(
+        2,
+        paragraphWithTextAndLink,
+        'Her er et avsnitt [med lenke til nyheter](https://www.nyheter.no).',
+      );
+      cy.findByRole('button', { name: 'Lagre' }).click();
+      cy.wait('@updateTranslations').then((interception) => {
+        expect(interception.request.body.data.i18n[htmlWithNoTranslation]).to.equal(expectedHtmlResult);
+      });
+    });
+
+    it('adds attributes from original html when field is cleared', () => {
+      const html =
+        '<p>Dette er en <a target="_blank" rel="noopener noreferrer" href="https://www.vg.no">lenke som åpnes i ny fane</a>.</p>';
+      const markdown = 'Dette er en [lenke som åpnes i ny fane](https://www.vg.no).';
+      const expectedHtmlResult =
+        '<p>Dette er ei <a target="_blank" rel="noopener noreferrer" href="https://www.vg.no">lenkje som åpnes i ny fane</a>.</p>';
+      typeNewHtmlTranslationInput(3, markdown, '');
+      typeNewHtmlTranslationInput(3, markdown, 'Dette er ei [lenkje som åpnes i ny fane](https://www.vg.no).');
+      cy.findByRole('button', { name: 'Lagre' }).click();
+      cy.wait('@updateTranslations').then((interception) => {
+        expect(interception.request.body.data.i18n[html]).to.equal(expectedHtmlResult);
       });
     });
 
@@ -359,6 +403,59 @@ describe('Translations', () => {
       cy.wait('@updateTranslations').then((interception) => {
         expect(interception.request.body.data.i18n[htmlWithNoTranslation]).to.equal(expectedHtmlResult);
       });
+    });
+
+    it('clears the translation when all inputs are empty', () => {
+      typeNewHtmlTranslationInput(1, 'Tekstblokk med mye formatering og eksisterende oversettelse', '');
+      typeNewHtmlTranslationInput(1, 'Dette er et avsnitt', '');
+      typeNewHtmlTranslationInput(
+        1,
+        'Her er et avsnitt [med lenke til VG](https://www.vg.no) og her kommer en liste:',
+        '',
+      );
+      typeNewHtmlTranslationInput(1, 'Ta oppvasken', '');
+      typeNewHtmlTranslationInput(
+        1,
+        'Handle [**matvarer**](https://www.coop.no/), og **vurder** å [kjøpe **nye** klær](https://www.zalando.no).',
+        '',
+      );
+      typeNewHtmlTranslationInput(1, 'Nytt avsnitt. Ny liste (numerert denne gangen):', '');
+      typeNewHtmlTranslationInput(1, 'Første prioritet', '');
+      typeNewHtmlTranslationInput(1, 'Også viktig, men ikke så viktig', '');
+      typeNewHtmlTranslationInput(1, 'Kan utsettes', '');
+      typeNewHtmlTranslationInput(1, 'Trengs egentlig ikke å gjøres', '');
+      cy.findByRole('button', { name: 'Lagre' }).click();
+      cy.wait('@updateTranslations').then((interception) => {
+        expect(interception.request.body.data.i18n[htmlWithExistingTranslation]).to.be.undefined;
+      });
+    });
+
+    it('updates with the correct translation when switching between languages', () => {
+      const headingWithExistingTranslation = 'Tekstblokk med mye formatering og eksisterende oversettelse';
+      const headingWithoutTranslation = 'Tekstblokk med mye formatering og manglende oversettelse';
+      cy.findByRole('heading', { name: 'Oversettelser på Norsk nynorsk' }).should('exist');
+      cy.findByRole('textbox', { name: headingWithExistingTranslation }).should(
+        'have.value',
+        'Tekstblokk med mye formatering og eksisterende oversettelse',
+      );
+      typeNewHtmlTranslationInput(2, headingWithoutTranslation, 'Nynorsk tekst');
+      cy.findByRole('textbox', { name: headingWithoutTranslation }).should('have.value', 'Nynorsk tekst');
+      cy.findByRole('textbox', { name: 'Søker' }).should('have.value', 'Søkar');
+      cy.findByRole('button', { name: 'Norsk nynorsk' }).click();
+      cy.findByRole('link', { name: 'Engelsk' }).click();
+      cy.findByRole('textbox', { name: headingWithExistingTranslation }).should(
+        'have.value',
+        'Textblock with existing translation',
+      );
+      cy.findByRole('textbox', { name: headingWithoutTranslation }).should('have.value', '');
+      cy.findByRole('textbox', { name: 'Søker' }).should('have.value', '');
+      cy.findByRole('button', { name: 'Engelsk' }).click();
+      cy.findByRole('link', { name: 'Norsk nynorsk' }).click();
+      cy.findByRole('textbox', { name: headingWithExistingTranslation }).should(
+        'have.value',
+        'Tekstblokk med mye formatering og eksisterende oversettelse',
+      );
+      cy.findByRole('textbox', { name: 'Søker' }).should('have.value', 'Søkar');
     });
   });
 });

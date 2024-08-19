@@ -1,18 +1,9 @@
 const formComponentsListStyles = {
   '.formcomponents': {
-    overflowY: 'auto',
-    height: '100%',
-    '& .builder-sidebar_scroll': {
-      position: 'initial',
-      paddingBottom: '10rem',
-    },
     '& .card-body': {
       padding: '0.2rem',
     },
     '& .form-builder-panel': {
-      backgroundColor: '#ffffff',
-      borderRadius: 'calc(.25rem - 1px)',
-
       '& .form-builder-group-header': {
         margin: '0',
         padding: '0',

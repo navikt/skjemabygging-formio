@@ -12,7 +12,7 @@ import makeStyles from '../../util/styles/jss/jss';
 export interface Props {
   form: any;
   submission: Submission;
-  translations: { [key: string]: string } | {};
+  translations: { [key: string]: string } | object;
   formUrl: string;
 }
 

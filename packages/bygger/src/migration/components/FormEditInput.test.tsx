@@ -1,14 +1,17 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import FormEditInput from './FormEditInput';
 
+const dispatchMock = vi.fn();
+
 describe('FormEditInput', () => {
-  const dispatchMock = vi.fn();
   beforeEach(() => {
     render(<FormEditInput id={'a'} formEdit={{ key: 'Feltnavn', value: '' }} dispatch={dispatchMock} />);
   });
+
   afterEach(() => {
     dispatchMock.mockReset();
   });
+
   describe('Feltnavn input field', () => {
     it('is rendered', () => {
       expect(screen.getByLabelText('Feltnavn')).toBeDefined();

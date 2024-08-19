@@ -1,4 +1,4 @@
-import { Label, Panel } from '@navikt/ds-react';
+import { Box, Label } from '@navikt/ds-react';
 import FormStatus, { determineStatus } from './FormStatus';
 import PublishedLanguages from './PublishedLanguages';
 import Timestamp from './Timestamp';
@@ -13,8 +13,7 @@ interface Props {
 }
 
 const FormStatusPanel = ({ publishProperties, spacing, hideToggleDiffButton = false }: Props) => {
-  // @ts-ignore
-  const styles = useStatusStyles({ spacing });
+  const styles = useStatusStyles({ spacing } as Jss.Theme);
   const { modified, modifiedBy, published, publishedBy, unpublished, unpublishedBy } = publishProperties;
 
   const LabeledTimeAndUser = ({
@@ -26,8 +25,7 @@ const FormStatusPanel = ({ publishProperties, spacing, hideToggleDiffButton = fa
     timestamp?: string;
     userName?: string;
   }) => {
-    // @ts-ignore
-    const styles = useStatusStyles({ spacing });
+    const styles = useStatusStyles({ spacing } as Jss.Theme);
     if (!timestamp) {
       return <></>;
     }
@@ -41,7 +39,7 @@ const FormStatusPanel = ({ publishProperties, spacing, hideToggleDiffButton = fa
   };
 
   return (
-    <Panel className={styles.container}>
+    <Box className={styles.container}>
       <div className={styles.panelItem}>
         <Label>Status:</Label>
         <div className={styles.sidePanelFormStatusContainer}>
@@ -53,7 +51,7 @@ const FormStatusPanel = ({ publishProperties, spacing, hideToggleDiffButton = fa
       <LabeledTimeAndUser label="Sist publisert:" timestamp={published} userName={publishedBy} />
       <LabeledTimeAndUser label="Avpublisert:" timestamp={unpublished} userName={unpublishedBy} />
       <PublishedLanguages publishProperties={publishProperties} />
-    </Panel>
+    </Box>
   );
 };
 

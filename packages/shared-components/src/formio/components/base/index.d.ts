@@ -17,13 +17,14 @@ interface ReactComponentType {
   attachReact(element, ref): any;
   detachReact(element): any;
   validate(data, dirty, rowData): boolean;
-  updateValue(value, flags?: {}): any;
+  updateValue(value, flags?: object): any;
   setReactInstance(element): void;
   resetValue(): void;
   setValue(value: any): void;
   // Field
   render(element: any): any;
   // Component
+  key?: string;
   component?: Component;
   path?: string;
   defaultValue?: any;
@@ -46,7 +47,7 @@ interface ReactComponentType {
   } | null;
   builderMode: boolean;
   validators: any[];
-  init(options?: {}): any;
+  init(options?: object): any;
   redraw(): any;
   attach(element: any): any;
   detach(): void;
@@ -73,6 +74,6 @@ interface ReactComponentType {
   isEmpty(value?: any): boolean;
   // Element
   id?: any;
-  emit(event: string, data: Object): void;
+  emit(event: string, data: object): void;
   addEventListener(obj, type, func, persistent?);
 }

@@ -23,10 +23,8 @@ describe('numberValidators', () => {
     });
 
     it('except empty values to be invalid', () => {
-      // @ts-ignore
-      expect(numberUtils.isValidDecimal(undefined)).toBe(false);
-      // @ts-ignore
-      expect(numberUtils.isValidDecimal(null)).toBe(false);
+      expect(numberUtils.isValidDecimal(undefined as unknown as string)).toBe(false);
+      expect(numberUtils.isValidDecimal(null as unknown as string)).toBe(false);
       expect(numberUtils.isValidDecimal('')).toBe(false);
     });
   });
@@ -47,10 +45,8 @@ describe('numberValidators', () => {
     });
 
     it('except empty values to be invalid', () => {
-      // @ts-ignore
-      expect(numberUtils.isValidInteger(undefined)).toBe(false);
-      // @ts-ignore
-      expect(numberUtils.isValidInteger(null)).toBe(false);
+      expect(numberUtils.isValidInteger(undefined as unknown as string)).toBe(false);
+      expect(numberUtils.isValidInteger(null as unknown as string)).toBe(false);
       expect(numberUtils.isValidInteger('')).toBe(false);
     });
   });
@@ -58,10 +54,8 @@ describe('numberValidators', () => {
   describe('isBiggerOrEqualMin', () => {
     it('empty min value is handled as no max', () => {
       expect(numberUtils.isBiggerOrEqualMin('10', '')).toBe(true);
-      // @ts-ignore
-      expect(numberUtils.isBiggerOrEqualMin('10', undefined)).toBe(true);
-      // @ts-ignore
-      expect(numberUtils.isBiggerOrEqualMin('10', null)).toBe(true);
+      expect(numberUtils.isBiggerOrEqualMin('10', undefined as unknown as string)).toBe(true);
+      expect(numberUtils.isBiggerOrEqualMin('10', null as unknown as string)).toBe(true);
     });
 
     it('bigger or equal -5', () => {
@@ -99,10 +93,8 @@ describe('numberValidators', () => {
   describe('isSmallerOrEqualMax', () => {
     it('empty max value is handled as no max', () => {
       expect(numberUtils.isSmallerOrEqualMax('10', '')).toBe(true);
-      // @ts-ignore
       expect(numberUtils.isSmallerOrEqualMax('10', undefined)).toBe(true);
-      // @ts-ignore
-      expect(numberUtils.isSmallerOrEqualMax('10', null)).toBe(true);
+      expect(numberUtils.isSmallerOrEqualMax('10', null as unknown as string)).toBe(true);
     });
 
     it('smaller or equal -5', () => {

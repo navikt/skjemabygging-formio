@@ -7,7 +7,7 @@ import {
   htmlConverter,
   makeStyles,
 } from '@navikt/skjemadigitalisering-shared-components';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useFeedbackEmit } from '../context/notifications/FeedbackContext';
 import TranslationFormHtmlInput from './TranslationFormHtmlInput';
 
@@ -41,17 +41,7 @@ const TranslationFormHtmlSection = ({ text, storedTranslation, updateTranslation
   const [translationState, setTranslationState] = useState<TranslationState>({ ready: false });
   const [translationObject, setTranslationObject] = useState<StructuredHtmlElement>();
 
-  const startNewTranslation = () => {
-    setTranslationObject(
-      new StructuredHtmlElement(text, {
-        skipConversionWithin: htmlConverter.defaultLeaves,
-        withEmptyTextContent: true,
-      }),
-    );
-    setTranslationState((state) => ({ ...state, ready: true }));
-  };
-
-  const html = useMemo(
+  const originalLanguageHtml = useMemo(
     () =>
       htmlConverter.isHtmlString(text)
         ? new StructuredHtmlElement(text, { skipConversionWithin: htmlConverter.defaultLeaves })
@@ -59,13 +49,23 @@ const TranslationFormHtmlSection = ({ text, storedTranslation, updateTranslation
     [text],
   );
 
+  const startNewTranslation = useCallback(() => {
+    setTranslationObject(
+      new StructuredHtmlElement(text, {
+        skipConversionWithin: htmlConverter.defaultLeaves,
+        withEmptyTextContent: true,
+      }),
+    );
+    setTranslationState((state) => ({ ...state, ready: true }));
+  }, [text]);
+
   useEffect(() => {
     if (storedTranslation !== translationState.current && !translationState.incompatible) {
       setTranslationState((state) => ({ ...state, current: storedTranslation }));
       if (!storedTranslation) {
         startNewTranslation();
       } else if (
-        !html?.matches(
+        !originalLanguageHtml?.matches(
           new StructuredHtmlElement(storedTranslation, { skipConversionWithin: htmlConverter.defaultLeaves }),
         )
       ) {
@@ -79,11 +79,40 @@ const TranslationFormHtmlSection = ({ text, storedTranslation, updateTranslation
         setTranslationState((state) => ({ ...state, ready: true }));
       }
     }
-  }, [translationObject, html, startNewTranslation, storedTranslation, translationState]);
+  }, [translationObject, originalLanguageHtml, startNewTranslation, storedTranslation, translationState]);
 
   const styles = useStyles();
 
-  if (StructuredHtml.isElement(html)) {
+  const onUpdate = ({ id, value }: { id?: string; value: string }, originalElement: StructuredHtml) => {
+    if (translationObject) {
+      if (id) {
+        try {
+          if (value === '') {
+            const originalValue = StructuredHtml.isElement(originalElement)
+              ? originalElement.toJson({ noTextContent: true })
+              : '';
+            translationObject.update(id, originalValue);
+          } else {
+            translationObject.update(id, value);
+          }
+        } catch (error: any) {
+          feedbackEmit.error(error?.message ?? `Det oppsto en feil: ${error}`);
+        }
+      } else {
+        feedbackEmit.error('Det oppsto en feil. Oversettelsen kan ikke oppdateres fordi den mangler id.');
+      }
+
+      if (translationObject.innerText === '') {
+        updateTranslation('');
+      } else {
+        const htmlString = translationObject.toHtmlString();
+        setTranslationState((prevState) => ({ ...prevState, current: htmlString }));
+        updateTranslation(htmlString);
+      }
+    }
+  };
+
+  if (StructuredHtml.isElement(originalLanguageHtml)) {
     return (
       <Box
         data-testid="html-translation"
@@ -165,28 +194,14 @@ const TranslationFormHtmlSection = ({ text, storedTranslation, updateTranslation
 
         {translationState.ready &&
           translationObject &&
-          html.children.map((originalElement, index) => {
+          originalLanguageHtml.children.map((originalElement, index) => {
             return (
               <TranslationFormHtmlInput
                 key={`html-translation-${originalElement.id}`}
                 text={originalElement.innerText}
                 html={originalElement}
                 currentTranslation={translationObject?.children[index]}
-                updateTranslation={({ id, value }) => {
-                  if (translationObject) {
-                    if (id) {
-                      try {
-                        translationObject.update(id, value);
-                      } catch (error: any) {
-                        feedbackEmit.error(error?.message ?? `Det oppsto en feil: ${error}`);
-                      }
-                    } else {
-                      feedbackEmit.error('Det oppsto en feil. Oversettelsen kan ikke oppdateres fordi den mangler id.');
-                    }
-                    const htmlString = translationObject.toHtmlString();
-                    updateTranslation(htmlString);
-                  }
-                }}
+                updateTranslation={(event) => onUpdate(event, originalElement)}
               />
             );
           })}

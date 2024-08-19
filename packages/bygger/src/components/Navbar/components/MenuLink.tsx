@@ -20,10 +20,6 @@ const useStyles = makeStyles({
     color: 'var(--a-gray-50)',
     textDecoration: 'none',
     lineHeight: '20px',
-    '@media (max-width: 960px)': {
-      height: '100%',
-      flexDirection: 'row',
-    },
     '&.active': {
       borderBottom: '5px solid var(--a-border-action)',
       paddingBottom: '0',

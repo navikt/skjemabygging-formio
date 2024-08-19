@@ -55,9 +55,11 @@ describe('sendInn API helper', () => {
     it("removes all instances of '/' from innsendingsId", () => {
       expect(sanitizeInnsendingsId('abc/def/123')).toBe('abcdef123');
     });
+
     it("removes all instances of '.' from innsendingsId", () => {
       expect(sanitizeInnsendingsId('abc.def.123')).toBe('abcdef123');
     });
+
     it("removes both '/' and '.' from innsendingsId", () => {
       expect(sanitizeInnsendingsId('/abc/def.123/456.789.ABC.DEF.')).toBe('abcdef123456789ABCDEF');
     });
@@ -67,14 +69,17 @@ describe('sendInn API helper', () => {
     it('returns undefined when the innsendingsId is valid', () => {
       expect(validateInnsendingsId('12345678-ABCD-cdef-9876-12345678abcd')).toBeUndefined();
     });
+
     it('returns an error message when innsendingsId is missing', () => {
       expect(validateInnsendingsId(undefined)).toBe('InnsendingsId mangler.');
     });
+
     it('returns an error message when innsendingsId contains illegal character /', () => {
       expect(validateInnsendingsId('abcd/123-ABCD-cdef-9876-12345678abcd')).toBe(
         'abcd/123-ABCD-cdef-9876-12345678abcd er ikke en gyldig innsendingsId.',
       );
     });
+
     it('returns an error message when innsendingsId contains illegal character .', () => {
       expect(validateInnsendingsId('abcd.123-ABCD-cdef-9876-12345678abcd')).toBe(
         'abcd.123-ABCD-cdef-9876-12345678abcd er ikke en gyldig innsendingsId.',
@@ -85,6 +90,7 @@ describe('sendInn API helper', () => {
   describe('assembleSendInnSoknadBody', () => {
     describe('Without attachments', () => {
       let body: SendInnSoknadBody;
+
       beforeEach(() => {
         body = assembleSendInnSoknadBody(defaultRequestBody, idPortenPid, fyllutUrl, submissionPdfAsByteArray);
       });
@@ -135,6 +141,7 @@ describe('sendInn API helper', () => {
 
     describe('With attachments', () => {
       let body: SendInnSoknadBody;
+
       beforeEach(() => {
         body = assembleSendInnSoknadBody(requestBodyWithAttachments, idPortenPid, fyllutUrl, submissionPdfAsByteArray);
       });

@@ -115,6 +115,15 @@ describe('StructuredHtmlElement', () => {
         'Nytt punkt',
       );
     });
+
+    it('finds existing children', () => {
+      const paragraphId = structuredHtmlElement.children[1].id;
+      const listItem1Id = (structuredHtmlElement.children[2] as StructuredHtmlElement).children[0].id;
+      const nonExistingId = `123${paragraphId}456`;
+      expect(structuredHtmlElement.findChild(paragraphId)?.toHtmlString()).toBe('<p>Avsnitt</p>');
+      expect(structuredHtmlElement.findChild(listItem1Id)?.toHtmlString()).toBe('<li>Punkt 1</li>');
+      expect(structuredHtmlElement.findChild(nonExistingId)).toBeUndefined();
+    });
   });
 
   describe('from htmlString with links and strong', () => {
@@ -167,7 +176,7 @@ describe('StructuredHtmlElement', () => {
 
     describe('Converting to json', () => {
       it('converts link to json with markdown', () => {
-        const withLinkJson = withLink.toJson(true);
+        const withLinkJson = withLink.toJson({ getMarkdown: true });
         const withLinkJsonMarkdownChildren = (
           (withLinkJson.children[0] as HtmlAsJsonElement).children[0] as HtmlAsJsonElement
         ).children;
@@ -177,7 +186,7 @@ describe('StructuredHtmlElement', () => {
       });
 
       it('converts strong to json with markdown', () => {
-        const withStrongJson = withStrong.toJson(true);
+        const withStrongJson = withStrong.toJson({ getMarkdown: true });
         const withStrongJsonMarkdownChildren = (withStrongJson.children[0] as HtmlAsJsonElement).children;
         expect((withStrongJsonMarkdownChildren[0] as HtmlAsJsonTextElement).textContent).toBe(
           'Avsnitt med **fet skrift**.',
@@ -185,7 +194,7 @@ describe('StructuredHtmlElement', () => {
       });
 
       it('does not convert strong to markdown when conversion was done without skipping within given tags', () => {
-        const withStrongNoMarkdownJson = withStrongNoMarkdown.toJson(true);
+        const withStrongNoMarkdownJson = withStrongNoMarkdown.toJson({ getMarkdown: true });
         const withStrongNoMarkdownJsonJsonChildren = (withStrongNoMarkdownJson.children[0] as HtmlAsJsonElement)
           .children;
         expect((withStrongNoMarkdownJsonJsonChildren[0] as HtmlAsJsonTextElement).textContent).toBe('Avsnitt med ');

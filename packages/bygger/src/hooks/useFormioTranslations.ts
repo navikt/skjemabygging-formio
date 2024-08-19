@@ -162,7 +162,7 @@ export const useFormioTranslations = (serverURL, formio) => {
   );
 
   const loadAndInsertCountryNames = useCallback(
-    async (translations: FormioTranslationMap): Promise<FormioTranslationMap | {}> => {
+    async (translations: FormioTranslationMap): Promise<FormioTranslationMap | object> => {
       const localesInTranslations = Object.keys(translations).filter((lang): lang is Language => !!(lang as Language));
       localesInTranslations.unshift('nb-NO');
       return await Promise.all(localesInTranslations.map(loadCountryNames)).then((loadedCountryNames) => {

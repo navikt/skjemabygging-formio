@@ -2,6 +2,7 @@ import { transformSubmissionBeforeSubmitting } from './utils';
 
 describe('transformSubmissionBeforeSubmitting', () => {
   const fyllutState = { mellomlagring: { isActive: true } };
+
   it('removes fyllutState', () => {
     expect(
       transformSubmissionBeforeSubmitting({

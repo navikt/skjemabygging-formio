@@ -11,6 +11,8 @@ type StructuredHtmlOptions = {
   withEmptyTextContent?: boolean;
 };
 
+type ToJsonOptions = { getMarkdown?: boolean; noTextContent?: boolean };
+
 abstract class StructuredHtml {
   parent?: StructuredHtmlElement;
   converter: typeof htmlConverter;
@@ -46,9 +48,12 @@ abstract class StructuredHtml {
   abstract populate(
     value: HtmlAsJsonElement | HtmlAsJsonTextElement | undefined,
   ): StructuredHtmlElement | StructuredHtmlText | undefined;
-  abstract updateInternal(id: string, value: string): StructuredHtmlElement | StructuredHtmlText | undefined;
+  abstract updateInternal(
+    id: string,
+    value: string | HtmlAsJsonElement,
+  ): StructuredHtmlElement | StructuredHtmlText | undefined;
   abstract matches(other: StructuredHtml | undefined): boolean;
-  abstract toJson(getMarkdown?: boolean): HtmlAsJsonElement | HtmlAsJsonTextElement;
+  abstract toJson(options?: ToJsonOptions): HtmlAsJsonElement | HtmlAsJsonTextElement;
   abstract toHtmlString(): string;
 
   static isElement(html?: StructuredHtml): html is StructuredHtmlElement {
@@ -66,7 +71,21 @@ abstract class StructuredHtml {
     return this;
   }
 
-  update(id: string, value: string): StructuredHtmlElement | StructuredHtmlText | undefined {
+  findChild(id: string): StructuredHtml | undefined {
+    if (id === this.id) {
+      return this;
+    }
+    let found: StructuredHtml | undefined;
+    if (StructuredHtml.isElement(this)) {
+      for (const child of this.children) {
+        found = found || child.findChild(id);
+        if (found) break;
+      }
+    }
+    return found;
+  }
+
+  update(id: string, value: string | HtmlAsJsonElement): StructuredHtmlElement | StructuredHtmlText | undefined {
     if (this.parent) {
       return this.getRoot().update(id, value) as StructuredHtmlElement | undefined;
     }
@@ -83,5 +102,5 @@ abstract class StructuredHtml {
   }
 }
 
-export type { StructuredHtmlOptions };
+export type { StructuredHtmlOptions, ToJsonOptions };
 export default StructuredHtml;

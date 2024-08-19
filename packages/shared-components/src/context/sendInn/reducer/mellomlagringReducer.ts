@@ -88,7 +88,7 @@ const getError = (type: ErrorType, savedDate?: string): MellomlagringError => {
         message: TEXTS.statiske.mellomlagringError.submit.draftSaved,
         messageParams: { date: savedDate },
       };
-    case 'SUBMIT_AND_UPDATE_FAILED':
+    case 'SUBMIT_AND_UPDATE_FAILED': {
       const draftSavedMessage = savedDate
         ? {
             message: TEXTS.statiske.mellomlagringError.submit.draftSaved,
@@ -102,5 +102,6 @@ const getError = (type: ErrorType, savedDate?: string): MellomlagringError => {
         message: TEXTS.statiske.mellomlagringError.submit.draftNotSaved,
         ...draftSavedMessage,
       };
+    }
   }
 };

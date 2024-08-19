@@ -1,5 +1,7 @@
+import builder from './builder';
 import builderComponent from './builderComponent';
 import builderEditForm from './builderEditForm';
+import builderSidebar from './builderSidebar';
 import builderWizard from './builderWizard';
 import button from './button';
 import checkbox from './checkbox';
@@ -44,9 +46,11 @@ export default {
   defaultIconset: 'fa',
   iconClass,
   cssClasses,
+  builder,
   builderComponent,
   builderEditForm,
   builderWizard,
+  builderSidebar,
   button,
   checkbox,
   componentModal,

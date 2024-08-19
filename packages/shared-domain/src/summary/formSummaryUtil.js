@@ -20,10 +20,19 @@ function createComponentKeyWithNavId(component) {
   return `${component.key}-${component.navId}`;
 }
 
+function formatPostnummerOgBySted(bostedsadresse) {
+  if (bostedsadresse?.postnummer) {
+    return bostedsadresse.bySted
+      ? `${bostedsadresse?.postnummer} ${bostedsadresse?.bySted}`
+      : bostedsadresse.postnummer;
+  }
+  return bostedsadresse?.bySted;
+}
+
 function formatValue(component, value, translate, form, language) {
   switch (component.type) {
     case 'radiopanel':
-    case 'radio':
+    case 'radio': {
       const valueObject = component.values.find(
         (valueObject) => String(valueObject.value).toString() === String(value).toString(),
       );
@@ -32,6 +41,7 @@ function formatValue(component, value, translate, form, language) {
         return '';
       }
       return translate(valueObject.label);
+    }
     case 'signature': {
       console.log('rendering signature not supported');
       return '';
@@ -71,7 +81,7 @@ function formatValue(component, value, translate, form, language) {
         currency: component.currency,
         integer: component.inputType === 'numeric',
       });
-    case 'bankAccount':
+    case 'bankAccount': {
       const bankAccountRegex = /^(\d{4})(\d{2})(\d{5})$/;
       const [bankAccountMatch, ...bankAccountGroups] =
         (typeof value === 'string' && value?.match(bankAccountRegex)) || [];
@@ -79,20 +89,23 @@ function formatValue(component, value, translate, form, language) {
         return bankAccountGroups.join(' ');
       }
       return value;
-    case 'orgNr':
+    }
+    case 'orgNr': {
       const orgNrRegex = /^(\d{3})(\d{3})(\d{3})$/;
       const [orgNrMatch, ...orgNrGroups] = (typeof value === 'string' && value?.match(orgNrRegex)) || [];
       if (orgNrMatch) {
         return orgNrGroups.join(' ');
       }
       return value;
-    case 'number':
+    }
+    case 'number': {
       const prefix = component.prefix ? `${component.prefix} ` : '';
       const suffix = component.suffix ? ` ${component.suffix}` : '';
       return prefix + numberUtils.toLocaleString(value) + suffix;
+    }
     case 'attachment':
       return attachmentUtils.mapToAttachmentSummary({ translate, value, component, form });
-    case 'navAddress':
+    case 'navAddress': {
       const bostedsadresse = value?.bostedsadresse;
 
       const addressComponents = [
@@ -100,8 +113,7 @@ function formatValue(component, value, translate, form, language) {
         bostedsadresse?.adresse,
         bostedsadresse?.bygning,
         bostedsadresse?.postboks,
-        bostedsadresse?.postnummer,
-        bostedsadresse?.bySted,
+        formatPostnummerOgBySted(bostedsadresse),
         bostedsadresse?.region,
         bostedsadresse?.landkode,
       ].filter(Boolean);
@@ -111,6 +123,7 @@ function formatValue(component, value, translate, form, language) {
         address,
         linkText: translate(TEXTS.statiske.address.skatteetatenLink),
       };
+    }
     case 'drivinglist':
       return {
         description: translate(TEXTS.statiske.drivingList.summaryDescription),
@@ -648,7 +661,7 @@ const findFirstInput = (component) => {
 
   for (const subComponent of component?.components ?? []) {
     const firstInputInSubComponent = findFirstInput(subComponent);
-    if (!!firstInputInSubComponent) {
+    if (firstInputInSubComponent) {
       return firstInputInSubComponent;
     }
   }
