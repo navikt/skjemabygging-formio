@@ -7,6 +7,7 @@ const numberBuilder = () => {
     schema: {
       ...schema,
       validateOn: 'blur',
+      inputType: 'numeric',
       validate: {
         required: true,
       },

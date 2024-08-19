@@ -11,7 +11,7 @@ class Number extends TextField {
       type: 'number',
       key: 'tall',
       spellcheck: false,
-      inputType: 'numeric',
+      inputType: 'decimal',
     });
   }
 
