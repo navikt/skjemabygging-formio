@@ -11,6 +11,7 @@ const mockRequestWithPidAndTokenX = ({ headers = {}, body }: MockRequestParams) 
   const req = mockRequest({ headers, body });
   req.getIdportenPid = () => '12345678911';
   req.getTokenxAccessToken = () => 'tokenx-access-token-for-unittest';
+  req.getEnvQualifier = () => undefined;
   return req;
 };
 
