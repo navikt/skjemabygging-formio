@@ -406,24 +406,44 @@ describe('Translations', () => {
     });
 
     it('clears the translation when all inputs are empty', () => {
-      typeNewHtmlTranslationInput(1, 'Tekstblokk med mye formatering og eksisterende oversettelse', '');
-      typeNewHtmlTranslationInput(1, 'Dette er et avsnitt', '');
-      typeNewHtmlTranslationInput(
-        1,
-        'Her er et avsnitt [med lenke til VG](https://www.vg.no) og her kommer en liste:',
-        '',
-      );
-      typeNewHtmlTranslationInput(1, 'Ta oppvasken', '');
-      typeNewHtmlTranslationInput(
-        1,
-        'Handle [**matvarer**](https://www.coop.no/), og **vurder** å [kjøpe **nye** klær](https://www.zalando.no).',
-        '',
-      );
-      typeNewHtmlTranslationInput(1, 'Nytt avsnitt. Ny liste (numerert denne gangen):', '');
-      typeNewHtmlTranslationInput(1, 'Første prioritet', '');
-      typeNewHtmlTranslationInput(1, 'Også viktig, men ikke så viktig', '');
-      typeNewHtmlTranslationInput(1, 'Kan utsettes', '');
-      typeNewHtmlTranslationInput(1, 'Trengs egentlig ikke å gjøres', '');
+      const htmlItemLabel = 'Tekstblokk med mye formatering og eksisterende oversettelse';
+      const fields = {
+        header: 'Tekstblokk med mye formatering og eksisterende oversettelse',
+        paragraph1: 'Dette er et avsnitt',
+        paragraph2: 'Her er et avsnitt [med lenke til VG](https://www.vg.no) og her kommer en liste:',
+        listItem1: 'Ta oppvasken',
+        listItem2:
+          'Handle [**matvarer**](https://www.coop.no/), og **vurder** å [kjøpe **nye** klær](https://www.zalando.no).',
+        paragraph3: 'Nytt avsnitt. Ny liste (numerert denne gangen):',
+        orderedListItem1: 'Første prioritet',
+        orderedListItem2: 'Også viktig, men ikke så viktig',
+        orderedListItem3: 'Kan utsettes',
+        orderedListItem4: 'Trengs egentlig ikke å gjøres',
+      };
+      // Empty all inputs
+      typeNewHtmlTranslationInput(1, fields.header, '');
+      typeNewHtmlTranslationInput(1, fields.paragraph1, '');
+      typeNewHtmlTranslationInput(1, fields.paragraph2, '');
+      typeNewHtmlTranslationInput(1, fields.listItem1, '');
+      typeNewHtmlTranslationInput(1, fields.listItem2, '');
+      typeNewHtmlTranslationInput(1, fields.paragraph3, '');
+      typeNewHtmlTranslationInput(1, fields.orderedListItem1, '');
+      typeNewHtmlTranslationInput(1, fields.orderedListItem2, '');
+      typeNewHtmlTranslationInput(1, fields.orderedListItem3, '');
+      // Make sure that the inputs remain empty, and are not populated by e.g. <li></li>...
+      assessHtmlTranlationInput(1, htmlItemLabel, fields.header, '');
+      assessHtmlTranlationInput(1, htmlItemLabel, fields.paragraph1, '');
+      assessHtmlTranlationInput(1, htmlItemLabel, fields.paragraph2, '');
+      assessHtmlTranlationInput(1, htmlItemLabel, fields.listItem1, '');
+      assessHtmlTranlationInput(1, htmlItemLabel, fields.listItem2, '');
+      assessHtmlTranlationInput(1, htmlItemLabel, fields.paragraph3, '');
+      assessHtmlTranlationInput(1, htmlItemLabel, fields.orderedListItem1, '');
+      assessHtmlTranlationInput(1, htmlItemLabel, fields.orderedListItem2, '');
+      assessHtmlTranlationInput(1, htmlItemLabel, fields.orderedListItem3, '');
+      // Wait to empty the last field, because the translation is reset to original structure when all text content is empty
+      typeNewHtmlTranslationInput(1, fields.orderedListItem4, '');
+      assessHtmlTranlationInput(1, htmlItemLabel, fields.orderedListItem4, '');
+
       cy.findByRole('button', { name: 'Lagre' }).click();
       cy.wait('@updateTranslations').then((interception) => {
         expect(interception.request.body.data.i18n[htmlWithExistingTranslation]).to.be.undefined;
