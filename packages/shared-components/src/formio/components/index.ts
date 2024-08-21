@@ -31,6 +31,7 @@ import IBAN from './extensions/iban/IBAN';
 import NationalIdentityNumber from './extensions/national-identity-number/NationalIdentityNumber';
 import Number from './extensions/number/Number';
 import OrganizationNumber from './extensions/organization-number/OrganizationNumber';
+import Password from './extensions/password/Password';
 import PhoneNumber from './extensions/phone-number/PhoneNumber';
 
 const customComponents = {
@@ -68,5 +69,6 @@ const customComponents = {
   accordion: Accordion,
   navAddress: Address,
   monthPicker: MonthPicker,
+  password: Password,
 };
 export default customComponents;

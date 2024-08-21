@@ -31,6 +31,10 @@ class TextField extends BaseComponent {
     return 'text';
   }
 
+  isProtected(): boolean {
+    return this.component?.protected ?? false;
+  }
+
   handleChange(value: string | number) {
     super.handleChange(value);
   }
@@ -51,6 +55,7 @@ class TextField extends BaseComponent {
         spellCheck={this.getSpellCheck()}
         error={this.getError()}
         inputMode={this.getInputMode()}
+        type={this.isProtected() ? 'password' : 'text'}
       />,
     );
   }
