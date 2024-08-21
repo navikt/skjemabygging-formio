@@ -32,7 +32,7 @@ class TextField extends BaseComponent {
   }
 
   isProtected(): boolean {
-    return this.component?.protected ?? false;
+    return !!this.component?.protected;
   }
 
   handleChange(value: string | number) {
