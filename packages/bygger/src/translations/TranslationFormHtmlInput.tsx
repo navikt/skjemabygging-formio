@@ -4,22 +4,24 @@ import { getInputType } from './utils';
 
 interface Props {
   text: string;
-  html: StructuredHtml;
+  originalElement: StructuredHtml;
   currentTranslation?: StructuredHtml;
-  updateTranslation: (element: { id?: string; value: string }) => void;
+  updateTranslation: (event: { id?: string; value: string; originalElement: StructuredHtml }) => void;
   translationParentId?: string;
 }
 
-const TranslationFormHtmlInput = ({ text, html, currentTranslation, updateTranslation }: Props) => {
+const TranslationFormHtmlInput = ({ text, originalElement, currentTranslation, updateTranslation }: Props) => {
   const isMarkdown =
-    StructuredHtml.isElement(html) && html.containsMarkdown && StructuredHtml.isElement(currentTranslation);
-  const isText = StructuredHtml.isText(html) && text.trim() !== '';
+    StructuredHtml.isElement(originalElement) &&
+    originalElement.containsMarkdown &&
+    StructuredHtml.isElement(currentTranslation);
+  const isText = StructuredHtml.isText(originalElement) && text.trim() !== '';
   const isTranslationText = StructuredHtml.isText(currentTranslation);
 
   let originalText: string | undefined;
   let originalValue: string | null | undefined;
   if (isMarkdown) {
-    originalText = html.markdown;
+    originalText = originalElement.markdown;
     originalValue = currentTranslation.markdown;
   } else if (isText) {
     originalText = text;
@@ -39,7 +41,7 @@ const TranslationFormHtmlInput = ({ text, html, currentTranslation, updateTransl
       textContentWithWhiteSpaces !== originalValue &&
       !(textContentWithWhiteSpaces.length === 0 && originalValue === null)
     ) {
-      updateTranslation({ id: currentTranslation?.id, value: textContentWithWhiteSpaces });
+      updateTranslation({ id: currentTranslation?.id, value: textContentWithWhiteSpaces, originalElement });
     }
   };
 
@@ -60,10 +62,10 @@ const TranslationFormHtmlInput = ({ text, html, currentTranslation, updateTransl
     );
   }
 
-  if (StructuredHtml.isElement(html)) {
+  if (StructuredHtml.isElement(originalElement)) {
     return (
       <div>
-        {html.children.map((originalElement, index) => {
+        {originalElement.children.map((originalElement, index) => {
           const translationChildren = StructuredHtml.isElement(currentTranslation)
             ? currentTranslation.children
             : undefined;
@@ -71,7 +73,7 @@ const TranslationFormHtmlInput = ({ text, html, currentTranslation, updateTransl
             <TranslationFormHtmlInput
               key={`html-translation-${originalElement.id}`}
               text={originalElement.innerText}
-              html={originalElement}
+              originalElement={originalElement}
               translationParentId={currentTranslation?.id}
               currentTranslation={translationChildren?.[index]}
               updateTranslation={updateTranslation}
