@@ -195,6 +195,7 @@ export interface Component {
   ignoreNorway?: boolean;
   tree?: boolean;
   path?: string;
+  protected?: boolean;
 }
 
 export type InputMode = 'none' | 'text' | 'tel' | 'url' | 'email' | 'numeric' | 'decimal' | 'search';
