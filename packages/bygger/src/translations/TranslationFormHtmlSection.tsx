@@ -83,7 +83,15 @@ const TranslationFormHtmlSection = ({ text, storedTranslation, updateTranslation
 
   const styles = useStyles();
 
-  const onUpdate = ({ id, value }: { id?: string; value: string }, originalElement: StructuredHtml) => {
+  const onUpdate = ({
+    id,
+    value,
+    originalElement,
+  }: {
+    id?: string;
+    value: string;
+    originalElement: StructuredHtml;
+  }) => {
     if (translationObject) {
       if (id) {
         try {
@@ -199,9 +207,9 @@ const TranslationFormHtmlSection = ({ text, storedTranslation, updateTranslation
               <TranslationFormHtmlInput
                 key={`html-translation-${originalElement.id}`}
                 text={originalElement.innerText}
-                html={originalElement}
+                originalElement={originalElement}
                 currentTranslation={translationObject?.children[index]}
-                updateTranslation={(event) => onUpdate(event, originalElement)}
+                updateTranslation={onUpdate}
               />
             );
           })}
