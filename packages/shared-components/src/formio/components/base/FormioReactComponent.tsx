@@ -29,7 +29,7 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
     return this.attach(element);
   }
 
-  attachReact(element: any) {
+  attachReact(element: HTMLElement) {
     this.rootElement = createRoot(element);
     this.renderReact(this.rootElement);
   }

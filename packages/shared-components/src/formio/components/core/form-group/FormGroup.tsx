@@ -2,6 +2,7 @@ import { Box } from '@navikt/ds-react';
 import BaseComponent from '../../base/BaseComponent';
 import FormioReactNestedComponent from '../../base/FormioReactNestedComponent';
 import NestedComponents from '../../base/NestedComponents';
+import formGroupBuilder from './FormGroup.builder';
 import formGroupForm from './FormGroup.form';
 
 class FormGroup extends FormioReactNestedComponent {
@@ -19,6 +20,10 @@ class FormGroup extends FormioReactNestedComponent {
 
   static editForm() {
     return formGroupForm();
+  }
+
+  static get builderInfo() {
+    return formGroupBuilder();
   }
 
   // get defaultSchema() {

@@ -196,6 +196,7 @@ export interface Component {
   tree?: boolean;
   path?: string;
   protected?: boolean;
+  shouldIncludeSubFormPath?: boolean;
 }
 
 export type InputMode = 'none' | 'text' | 'tel' | 'url' | 'email' | 'numeric' | 'decimal' | 'search';

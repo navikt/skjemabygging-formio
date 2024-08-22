@@ -1,59 +1,149 @@
-import NestedComponent from 'formiojs/components/_classes/nested/NestedComponent';
-import { createRoot } from 'react-dom/client';
-import Ready from '../../../util/form/ready';
+import { Components, Utils } from 'formiojs';
+import { MutableRefObject } from 'react';
+import { NavFormioJs } from '../../../index';
+import BaseComponent from './BaseComponent';
+import { ReactComponentType } from './index';
+import _ = Utils._;
 
-class FormioReactNestedComponent extends NestedComponent {
-  rootElement: any;
-  nestedRef;
-  reactInstance;
-  _reactRendered = Ready();
+class FormioReactNestedComponent extends BaseComponent {
+  components;
+  nestedRef: MutableRefObject<any> | undefined;
 
   constructor(component, options, data) {
     super(component, options, data);
-    this.reactInstance = null;
   }
 
-  /**
-   * This method is called any time the component needs to be rebuilt. It is most frequently used to listen to other
-   * components using the this.on() function.
-   */
+  get componentComponents() {
+    return this.component?.components || [];
+  }
+
   init() {
+    this.components = this.components || [];
+    this.addComponents();
     return super.init();
   }
 
   /**
-   * This method is called before the component is going to be destroyed, which is when the component instance is
-   * destroyed. This is different from detach which is when the component instance still exists but the dom instance is
-   * removed.
-   */
-  destroy() {
-    return super.destroy();
-  }
-  /**
-   * This method is called before a form is submitted.
-   * It is used to perform any necessary actions or checks before the form data is sent.
    *
+   * @param element
+   * @param data
    */
-
-  beforeSubmit() {
-    return super.beforeSubmit();
+  addComponents(data?, options?) {
+    data = data || this.data;
+    options = options || this.options;
+    if (options.components) {
+      this.components = options.components;
+    } else {
+      const components = this.hook('addComponents', this.componentComponents, this) || [];
+      components.forEach((component) => this.addComponent(component, data));
+    }
   }
 
   /**
-   * The second phase of component building where the component is rendered as an HTML string.
+   * Add a new component to the components array.
    *
-   * @returns {string} - The return is the full string of the component
+   * @param {Object} component - The component JSON schema to add.
+   * @param {Object} data - The submission data object to house the data for this component.
+   * @param {HTMLElement} before - A DOM element to insert this element before.
+   * @param noAdd
+   * @return {Component} - The created component instance.
    */
-  render() {
-    // For react components, we simply render as a div which will become the react instance.
-    // By calling super.render(string) it will wrap the component with the needed wrappers to make it a full component.
-    return super.render(`<div ref="react-${this.id}"><div ref="${this.nestedKey}"></div></div>`);
+  addComponent(component, data, before?: HTMLElement, noAdd?: boolean) {
+    data = data || this.data;
+    if (this.options.parentPath) {
+      component.shouldIncludeSubFormPath = true;
+    }
+    component = this.hook('addComponent', component, data, before, noAdd);
+    const comp = this.createComponent(component, this.options, data, before ? before : null);
+    if (noAdd) {
+      return comp;
+    }
+    return comp;
+  }
+
+  /**
+   * Return a path of component's value.
+   *
+   * @param {Object} component - The component instance.
+   * @return {string} - The component's value path.
+   */
+  calculateComponentPath(component) {
+    let path = '';
+    if (component.component.key) {
+      // eslint-disable-next-line @typescript-eslint/no-this-alias
+      let thisPath: ReactComponentType = this;
+      while (thisPath && !thisPath.allowData && thisPath.parent) {
+        thisPath = thisPath.parent;
+      }
+      const rowIndex = component.row ? `[${Number.parseInt(component.row)}]` : '';
+      path = thisPath.path ? `${thisPath.path}${rowIndex}.` : '';
+      path += component._parentPath && component.component.shouldIncludeSubFormPath ? component._parentPath : '';
+      path += component.component.key;
+      return path;
+    }
+  }
+
+  /**
+   * Create a new component and add it to the components array.
+   *
+   * @param component
+   * @param data
+   */
+  createComponent(component, options, data, before, replacedComp?) {
+    if (!component) {
+      return;
+    }
+    options = options || this.options;
+    data = data || this.data;
+    options.parent = this;
+    options.parentVisible = this.visible;
+    options.root = options?.root || this.root || this;
+    options.localRoot = this.localRoot;
+    options.skipInit = true;
+    if (!(options.display === 'pdf' && this.builderMode)) {
+      component.id = NavFormioJs.Utils.getRandomComponentId();
+    }
+    if (!this.isInputComponent && this.component?.shouldIncludeSubFormPath) {
+      component.shouldIncludeSubFormPath = true;
+    }
+    const comp: ReactComponentType = Components.create(component, options, data, true) as ReactComponentType;
+
+    const path = this.calculateComponentPath(comp);
+    if (path) {
+      comp.path = path;
+    }
+    comp.init();
+    if (component.internal) {
+      return comp;
+    }
+
+    if (before) {
+      const index = _.findIndex(this.components, { id: before.id });
+      if (index !== -1) {
+        this.components.splice(index, 0, comp);
+      } else {
+        this.components.push(comp);
+      }
+    } else if (replacedComp) {
+      const index = _.findIndex(this.components, { id: replacedComp.id });
+      if (index !== -1) {
+        this.components[index] = comp;
+      } else {
+        this.components.push(comp);
+      }
+    } else {
+      this.components.push(comp);
+    }
+    return comp;
+  }
+
+  getComponents() {
+    return this.components || [];
   }
 
   renderComponents(components) {
     components = components || this.getComponents();
     const children = components.map((component) => component.render());
-    // console.log('RenderComponents', children, components);
     return this.renderTemplate('components', {
       children,
       components,
@@ -64,9 +154,9 @@ class FormioReactNestedComponent extends NestedComponent {
     return this.attach(element);
   }
 
-  attachComponents(element, components, container) {
+  attachComponents(element, components?, container?) {
     components = components || this.components;
-    container = container || this.component.components;
+    container = container || this.component?.components;
 
     element = this.hook('attachComponents', element, components, container, this);
     if (!element) {
@@ -89,89 +179,10 @@ class FormioReactNestedComponent extends NestedComponent {
     return Promise.all(promises);
   }
 
-  /**
-   * The third phase of component building where the component has been attached to the DOM as 'element' and is ready
-   * to have its javascript events attached.
-   *
-   * @param element
-   * @returns {Promise<void>} - Return a promise that resolves when the attach is complete.
-   */
-  attach(element) {
-    super.attach(element);
-
-    // The loadRefs function will find all dom elements that have the "ref" setting that match the object property.
-    // It can load a single element or multiple elements with the same ref.
-    console.log('REFS', this.refs);
-    this.loadRefs(element, {
-      [`react-${this.id}`]: 'single',
-      [this.nestedKey]: 'single',
-    });
-
-    if (this.refs[`react-${this.id}`]) {
-      this.attachReact(this.refs[`react-${this.id}`], this.setReactInstance.bind(this));
-      // if (this.shouldSetValue) {
-      //   this.setValue(this.dataForSetting);
-      //   this.updateValue(this.dataForSetting);
-      // }
-    }
-
-    console.log('attach nestedRef', this.nestedRef);
-    if (this.nestedRef?.current) {
-      const children = this.attachComponents(this.nestedRef.current);
-      console.log('children', children);
-    }
-    // console.log('nestedKey', this.nestedKey);
-    // if (this.refs[this.nestedKey]) {
-    //   this.attachComponents(this.refs[this.nestedKey]);
-    // }
-
-    return Promise.resolve();
-  }
-
-  detach() {
-    console.log('Detach', this.refs);
-    if (this.refs[`react-${this.id}`]) {
-      this.detachReact(this.refs[`react-${this.id}`]);
-    }
-    super.detach();
-  }
-
-  detachReact(element) {
-    // For now we prefer memory leak in development and test over spamming the console log...
-    // Wrapping in setTimeout causes problems when we do a redraw, so need to find a different solution.
-    // https://github.com/facebook/react/issues/25675#issuecomment-1518272581
-    if (element && this.rootElement && process.env.NODE_ENV === 'production') {
-      this.rootElement.unmount();
-      this.rootElement = undefined;
-    }
-  }
-
-  attachReact(element: any, _ref) {
-    this.rootElement = createRoot(element);
-    this.renderReact(this.rootElement);
-  }
-
-  setReactInstance(element) {
-    this.reactInstance = element;
-    // this.addFocusBlurEvents(element);
-    this._reactRendered.resolve();
-  }
-
   setNestedRef(ref) {
-    // console.log('NestedRef', ref);
-    if (!this.nestedRef?.current) {
-      this.nestedRef = ref;
-      console.log('after if', this.nestedRef, ref);
-      this.attachComponents(this.nestedRef.current);
-      // this.attach(this.element);
-    }
+    this.nestedRef = ref;
+    this.attachComponents(this.nestedRef?.current);
   }
-
-  /**
-   * To render a react component, override this function
-   * and pass the jsx element as a param to element's render function
-   */
-  renderReact(_element) {}
 }
 
 export default FormioReactNestedComponent;

@@ -26,6 +26,8 @@ interface ReactComponentType {
   // Component
   key?: string;
   component?: Component;
+  localRoot?: ReactComponentType;
+  parent?: ReactComponentType;
   path?: string;
   defaultValue?: any;
   dataValue?: any;
@@ -38,6 +40,7 @@ interface ReactComponentType {
     namespace: string;
     formConfig: { publishedForm: NavFormType };
     properties: FormPropertiesType;
+    parentPath: string;
   };
   visible: any | boolean;
   hideLabel: boolean;
@@ -49,6 +52,7 @@ interface ReactComponentType {
   validators: any[];
   init(options?: object): any;
   redraw(): any;
+  renderTemplate(name: string, data?: any, modeOption?: string): any;
   attach(element: any): any;
   detach(): void;
   destroy(): void;
@@ -72,8 +76,11 @@ interface ReactComponentType {
   labelIsHidden(): boolean;
   setCustomValidity(messages: string | string[], dirty?: boolean, external?: boolean): void;
   isEmpty(value?: any): boolean;
+  isInputComponent(): boolean;
+  allowData(): boolean;
   // Element
   id?: any;
+  hook(...arguments: any[]): any;
   emit(event: string, data: object): void;
   addEventListener(obj, type, func, persistent?);
 }
