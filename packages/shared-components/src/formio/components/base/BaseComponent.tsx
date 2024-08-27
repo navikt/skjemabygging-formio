@@ -168,7 +168,7 @@ class BaseComponent extends FormioReactComponent {
    * Get auto complete for custom component renderReact()
    */
   getAutoComplete() {
-    return this.component?.autoComplete ?? 'off';
+    return this.component?.autocomplete ?? 'off';
   }
 
   /**
