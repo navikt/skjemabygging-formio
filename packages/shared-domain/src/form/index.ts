@@ -152,7 +152,7 @@ export interface Component {
   collapsed?: boolean;
   fieldSize?: string;
   titleSize?: TextSize;
-  autoComplete?: string;
+  autocomplete?: string;
   spellCheck?: boolean;
   rows?: number;
   editor?: string;
