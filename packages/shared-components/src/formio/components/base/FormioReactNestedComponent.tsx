@@ -52,7 +52,7 @@ class FormioReactNestedComponent extends NestedComponent {
   render() {
     // For react components, we simply render as a div which will become the react instance.
     // By calling super.render(string) it will wrap the component with the needed wrappers to make it a full component.
-    return super.render(`<div ref="react-${this.id}"><div ref="${this.nestedKey}"></div></div>`);
+    return super.render(`<div ref="react-${this.id}"></div>`);
   }
 
   renderComponents(components) {
