@@ -4,7 +4,6 @@ const NestedComponents = ({ innerHtml, getRef }) => {
   const nestedRef = useRef(null);
 
   useEffect(() => {
-    console.log('useEffect', nestedRef);
     getRef(nestedRef);
   }, [getRef]);
 

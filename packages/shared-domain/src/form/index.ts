@@ -197,6 +197,7 @@ export interface Component {
   path?: string;
   protected?: boolean;
   shouldIncludeSubFormPath?: boolean;
+  lazyLoad?: boolean;
 }
 
 export type InputMode = 'none' | 'text' | 'tel' | 'url' | 'email' | 'numeric' | 'decimal' | 'search';
