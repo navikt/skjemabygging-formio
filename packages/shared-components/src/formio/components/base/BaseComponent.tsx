@@ -1,5 +1,5 @@
 import { Tag } from '@navikt/ds-react';
-import { Component, ComponentError, formDiffingTool, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { Component, ComponentError, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import Field from 'formiojs/components/_classes/field/Field';
 import FormioUtils from 'formiojs/utils';
 import { TFunction, TOptions } from 'i18next';
@@ -245,40 +245,6 @@ class BaseComponent extends FormioReactComponent {
     }
 
     return this.editFields;
-  }
-
-  /**
-   * Private function
-   *
-   * Create a diff <Tag> that is used in the label for the custom component.
-   */
-  getDiffTag() {
-    const publishedForm = this.options?.formConfig?.publishedForm;
-    if (!this.builderMode || !publishedForm) {
-      return <></>;
-    }
-
-    const diff = formDiffingTool.generateComponentDiff(this.component!, publishedForm, this.getEditFields());
-
-    return (
-      <>
-        {diff.isNew && (
-          <Tag size="xsmall" variant="warning" data-testid="diff-tag">
-            Ny
-          </Tag>
-        )}
-        {diff.changesToCurrentComponent?.length > 0 && (
-          <Tag size="xsmall" variant="warning" data-testid="diff-tag">
-            Endring
-          </Tag>
-        )}
-        {diff.deletedComponents?.length > 0 && (
-          <Tag size="xsmall" variant="warning" data-testid="diff-tag">
-            Slettede elementer
-          </Tag>
-        )}
-      </>
-    );
   }
 
   // elementId is used to focus to the correct element when clicking on error summary
