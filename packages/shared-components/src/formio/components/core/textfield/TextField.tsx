@@ -1,6 +1,8 @@
 import { TextField as NavTextField } from '@navikt/ds-react';
 import { InputMode } from '@navikt/skjemadigitalisering-shared-domain';
 import BaseComponent from '../../base/BaseComponent';
+import Description from '../../base/components/Description';
+import Label from '../../base/components/Label';
 import textFieldBuilder from './TextField.builder';
 import textFieldForm from './TextField.form';
 
@@ -46,9 +48,17 @@ class TextField extends BaseComponent {
         defaultValue={this.getValue()}
         ref={(ref) => this.setReactInstance(ref)}
         onChange={(event) => this.handleChange(event.currentTarget.value)}
-        label={this.getLabel()}
+        label={
+          <Label
+            component={this.component}
+            translate={this.translate.bind(this)}
+            options={this.options}
+            builderMode={this.builderMode}
+            editFields={this.editFields}
+          />
+        }
         hideLabel={this.getHideLabel()}
-        description={this.getDescription()}
+        description={<Description component={this.component} translate={this.translate.bind(this)} />}
         className={this.getClassName()}
         autoComplete={this.getAutoComplete()}
         readOnly={this.getReadOnly()}

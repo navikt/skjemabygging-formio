@@ -5,6 +5,8 @@ import ReactMonthPicker from '../../../../components/monthpicker/MonthPicker';
 import { validateDate } from '../../../../components/monthpicker/monthPickerValidation';
 import { ComponentUtilsProvider } from '../../../../context/component/componentUtilsContext';
 import BaseComponent from '../../base/BaseComponent';
+import Description from '../../base/components/Description';
+import Label from '../../base/components/Label';
 import monthPickerBuilder from './MonthPicker.builder';
 import monthPickerForm from './MonthPicker.form';
 
@@ -40,7 +42,7 @@ class MonthPicker extends BaseComponent {
     const required = this.isRequired();
     const error = validateDate(value, {
       required,
-      label: this.getLabel({ labelTextOnly: true }),
+      label: this.getLabel(),
       translate: this.translate.bind(this) as TFunction,
       minYear: this.minYear(),
       maxYear: this.maxYear(),
@@ -98,8 +100,16 @@ class MonthPicker extends BaseComponent {
           onChange={this.onValueChange.bind(this)}
           value={this.getValue()}
           error={this.errors[0]?.message}
-          label={this.getLabel()}
-          description={this.getDescription()}
+          label={
+            <Label
+              component={this.component}
+              translate={this.translate.bind(this)}
+              options={this.options}
+              builderMode={this.builderMode}
+              editFields={this.editFields}
+            />
+          }
+          description={<Description component={this.component} translate={this.translate.bind(this)} />}
           inputRef={(ref) => this.setReactInstance(ref)}
         />
       </ComponentUtilsProvider>,

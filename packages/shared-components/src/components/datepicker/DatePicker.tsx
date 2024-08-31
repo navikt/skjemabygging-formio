@@ -13,7 +13,7 @@ interface NavDatePickerProps {
   readOnly?: boolean;
   error?: string;
   inputRef?: any;
-  label: string;
+  label: ReactNode;
   description?: ReactNode;
   className?: string;
   fromDate?: string;

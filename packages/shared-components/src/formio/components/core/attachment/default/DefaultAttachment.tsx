@@ -1,5 +1,7 @@
 import NavAttachment from '../../../../../components/attachment/Attachment';
 import BaseComponent from '../../../base/BaseComponent';
+import Description from '../../../base/components/Description';
+import Label from '../../../base/components/Label';
 import defaultAttachmentBuilder from './DefaultAttachment.builder';
 import defaultAttachmentForm from './DefaultAttachment.form';
 
@@ -35,8 +37,16 @@ class DefaultAttachment extends BaseComponent {
       <NavAttachment
         value={this.getValue()}
         attachmentValues={this.getAttachmentValues()}
-        title={this.getLabel()}
-        description={this.getDescription()}
+        title={
+          <Label
+            component={this.component}
+            translate={this.translate.bind(this)}
+            options={this.options}
+            builderMode={this.builderMode}
+            editFields={this.editFields}
+          />
+        }
+        description={<Description component={this.component} translate={this.translate.bind(this)} />}
         deadline={this.options.properties?.ettersendelsesfrist}
         error={this.getError()}
         onChange={(value) => this.handleChange(value)}

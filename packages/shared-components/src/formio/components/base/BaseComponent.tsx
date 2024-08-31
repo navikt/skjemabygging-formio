@@ -3,9 +3,8 @@ import { Component, ComponentError, formDiffingTool, navFormUtils } from '@navik
 import Field from 'formiojs/components/_classes/field/Field';
 import FormioUtils from 'formiojs/utils';
 import { TFunction, TOptions } from 'i18next';
-import { ReactNode } from 'react';
-import InnerHtml from '../../../components/inner-html/InnerHtml';
 import FormioReactComponent from './FormioReactComponent';
+import baseComponentUtils from './baseComponentUtils';
 import { blurHandler, focusHandler } from './focus-helpers';
 
 /**
@@ -36,25 +35,14 @@ class BaseComponent extends FormioReactComponent {
    * Get id for custom component renderReact()
    */
   getId() {
-    return `${this.component?.id}-${this.component?.key}`;
+    return baseComponentUtils.getId(this.component);
   }
 
   /**
    * Get label for custom component renderReact()
    */
-  getLabel(options?: { showOptional?: boolean; showDiffTag?: boolean; labelTextOnly?: boolean }) {
-    const defaultOptions = { showOptional: true, showDiffTag: true, labelTextOnly: false };
-    const { showOptional, showDiffTag, labelTextOnly } = { ...defaultOptions, ...(options ?? {}) };
-
-    if (labelTextOnly) return this.translate(this.component?.label ?? '');
-
-    return (
-      <>
-        {this.translate(this.component?.label ?? '')}
-        {this.isRequired() || !!this.component?.readOnly ? '' : showOptional && ` (${this.translate('valgfritt')})`}
-        {showDiffTag && this.getDiffTag()}
-      </>
-    );
+  getLabel() {
+    return baseComponentUtils.getLabel(this.component);
   }
 
   /**
@@ -126,16 +114,7 @@ class BaseComponent extends FormioReactComponent {
   }
 
   getHideLabel() {
-    return this.component?.hideLabel ?? false;
-  }
-
-  /**
-   * Get description for custom component renderReact()
-   */
-  getDescription(): ReactNode {
-    return this.component?.description ? (
-      <InnerHtml content={this.translate(this.component?.description)} />
-    ) : undefined;
+    return baseComponentUtils.getHideLabel(this.component);
   }
 
   getValueDescription(index: number) {
@@ -154,7 +133,7 @@ class BaseComponent extends FormioReactComponent {
    * Get whether custom component is required renderReact()
    */
   isRequired() {
-    return this.component?.validate?.required;
+    return baseComponentUtils.isRequired(this.component);
   }
 
   /**
@@ -182,7 +161,7 @@ class BaseComponent extends FormioReactComponent {
    * Get read only for custom component renderReact()
    */
   getReadOnly() {
-    return this.component?.readOnly || this.options.readOnly;
+    return baseComponentUtils.isReadOnly(this.component, this.options);
   }
 
   /**
