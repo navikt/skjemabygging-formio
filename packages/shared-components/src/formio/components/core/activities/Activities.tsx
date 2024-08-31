@@ -90,7 +90,7 @@ class Activities extends BaseComponent {
                 translate={this.translate.bind(this)}
                 options={this.options}
                 builderMode={this.builderMode}
-                editFields={this.editFields}
+                editFields={this.getEditFields()}
                 labelOptions={{ showOptional: false }}
               />
             }

@@ -74,7 +74,7 @@ class Radio extends BaseComponent {
             translate={this.translate.bind(this)}
             options={this.options}
             builderMode={this.builderMode}
-            editFields={this.editFields}
+            editFields={this.getEditFields()}
           />
         }
         value={this.getValue()}

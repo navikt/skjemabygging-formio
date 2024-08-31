@@ -61,7 +61,7 @@ class SelectBoxes extends BaseComponent {
             translate={this.translate.bind(this)}
             options={this.options}
             builderMode={this.builderMode}
-            editFields={this.editFields}
+            editFields={this.getEditFields()}
           />
         }
         description={<Description component={this.component} translate={this.translate.bind(this)} />}

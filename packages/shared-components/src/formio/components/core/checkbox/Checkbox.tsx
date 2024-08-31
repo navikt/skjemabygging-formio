@@ -46,7 +46,7 @@ class Checkbox extends BaseComponent {
             translate={this.translate.bind(this)}
             options={this.options}
             builderMode={this.builderMode}
-            editFields={this.editFields}
+            editFields={this.getEditFields()}
           />
         }
         hideLegend={true}
@@ -64,7 +64,7 @@ class Checkbox extends BaseComponent {
             translate={this.translate.bind(this)}
             options={this.options}
             builderMode={this.builderMode}
-            editFields={this.editFields}
+            editFields={this.getEditFields()}
           />
         </AkselCheckbox>
       </CheckboxGroup>,

@@ -113,7 +113,7 @@ export default class DatePicker extends BaseComponent {
               translate={this.translate.bind(this)}
               options={this.options}
               builderMode={this.builderMode}
-              editFields={this.editFields}
+              editFields={this.getEditFields()}
             />
           }
           required={this.isRequired()}

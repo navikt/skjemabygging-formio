@@ -54,7 +54,7 @@ class TextField extends BaseComponent {
             translate={this.translate.bind(this)}
             options={this.options}
             builderMode={this.builderMode}
-            editFields={this.editFields}
+            editFields={this.getEditFields()}
           />
         }
         hideLabel={this.getHideLabel()}
