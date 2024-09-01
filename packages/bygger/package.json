@@ -22,9 +22,9 @@
     "cypress:open": "cypress open"
   },
   "dependencies": {
-    "@navikt/ds-css": "^6.16.0",
+    "@navikt/ds-css": "^6.16.2",
     "@navikt/ds-icons": "^3.4.3",
-    "@navikt/ds-react": "^6.16.0",
+    "@navikt/ds-react": "^6.16.2",
     "@navikt/skjemadigitalisering-shared-components": "1.0.0",
     "@navikt/skjemadigitalisering-shared-domain": "1.0.0",
     "classnames": "^2.5.1",
@@ -40,7 +40,7 @@
     "react-csv": "^2.2.2",
     "react-debounce-input": "^3.3.0",
     "react-dom": "^18.3.1",
-    "react-router-dom": "^6.26.0"
+    "react-router-dom": "^6.26.1"
   },
   "devDependencies": {
     "@testing-library/react": "^15.0.6",
