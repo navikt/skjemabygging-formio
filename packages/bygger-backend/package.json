@@ -43,7 +43,7 @@
     "@types/jsonwebtoken": "^9.0.6",
     "@types/luxon": "^3.4.2",
     "@types/memorystream": "^0.3.4",
-    "@types/node": "^20.13.0",
+    "@types/node": "^22.5.2",
     "@types/node-fetch": "^2.6.11",
     "@types/node-jose": "^1.1.13",
     "@types/uuid": "^10.0.0",
