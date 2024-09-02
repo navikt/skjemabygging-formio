@@ -196,7 +196,12 @@ export interface Component {
   tree?: boolean;
   path?: string;
   protected?: boolean;
+  disableAddingRemovingRows?: boolean;
+  addressPriority?: 'bostedsadresse' | 'oppholdsadresse' | 'kontaktadresse';
+  addressType?: AddressType;
 }
+
+export type AddressType = 'NORWEGIAN_ADDRESS' | 'POST_OFFICE_BOX' | 'FOREIGN_ADDRESS';
 
 export type InputMode = 'none' | 'text' | 'tel' | 'url' | 'email' | 'numeric' | 'decimal' | 'search';
 

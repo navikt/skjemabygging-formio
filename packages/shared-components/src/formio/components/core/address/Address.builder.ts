@@ -3,10 +3,9 @@ import address from './Address';
 const addressBuilder = () => {
   const schema = address.schema();
   return {
-    title: 'Adresse',
+    title: schema.label,
     schema: {
       ...schema,
-      prefillKey: 'sokerAdresser',
     },
   };
 };

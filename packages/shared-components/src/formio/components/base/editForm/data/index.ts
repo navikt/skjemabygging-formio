@@ -5,6 +5,7 @@ import editFormClearOnHide from './editFormClearOnHide';
 import editFormDataValues from './editFormDataValues';
 import editFormDefaultValue from './editFormDefaultValue';
 import editFormPrefill from './editFormPrefill';
+import editFormPrefillKey from './editFormPrefillKey';
 import editFormReadOnly from './editFormReadOnly';
 import editFormValues from './editFormValues';
 
@@ -16,6 +17,7 @@ const editFormData = {
   readOnly: editFormReadOnly,
   values: editFormValues,
   prefill: editFormPrefill,
+  prefillKey: editFormPrefillKey,
   attachment: editFormAttachment,
   accordionGrid: editFormAccordionGrid,
 };

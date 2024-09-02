@@ -1,4 +1,5 @@
 import { AccordionSettingValue, AccordionSettingValues } from './accordion';
+import Address from './address/address';
 import attachmentUtils, {
   AttachmentSettingValue,
   AttachmentSettingValues,
@@ -11,6 +12,7 @@ import configUtils from './config';
 import type { ConfigType } from './config/types';
 import { Enhet, Enhetstype, supportedEnhetstyper } from './enhet';
 import {
+  AddressType,
   Attachment,
   AttachmentType,
   Component,
@@ -75,6 +77,7 @@ import {
   VedtakBetalingsplan,
 } from './sendinn/activity';
 import { SubmissionActivity } from './submission/activity';
+import SubmissionAddress from './submission/address';
 import { DrivingListPeriod, DrivingListSubmission, DrivingListValues } from './submission/drivingList';
 import { SubmissionMaalgruppe } from './submission/maalgruppe';
 import {
@@ -144,6 +147,8 @@ export {
 export type {
   AccordionSettingValue,
   AccordionSettingValues,
+  Address,
+  AddressType,
   AktivitetPeriode,
   AktivitetVedtaksinformasjon,
   Attachment,
@@ -208,6 +213,7 @@ export type {
   SendInnMaalgruppe,
   Submission,
   SubmissionActivity,
+  SubmissionAddress,
   SubmissionAttachmentValue,
   SubmissionData,
   SubmissionMaalgruppe,

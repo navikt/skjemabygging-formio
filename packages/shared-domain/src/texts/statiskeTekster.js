@@ -181,5 +181,15 @@ export const statiske = {
   },
   address: {
     skatteetatenLink: 'Endre folkeregistrert adresse på Skatteetatens nettsider (åpnes i ny fane)',
+    streetAddress: 'Vegadresse',
+    streetAddressLong: 'Vegnavn og husnummer, eller postboks',
+    postalCode: 'Postnummer',
+    postalName: 'Poststed',
+    location: 'By / stedsnavn',
+    country: 'Land',
+    co: 'C/O',
+    poBox: 'Postboks',
+    building: 'Bygning',
+    region: 'Region',
   },
 };
