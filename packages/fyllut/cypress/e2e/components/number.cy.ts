@@ -59,7 +59,8 @@ describe('number component', () => {
 
       cy.findByRole('link', { name: `Du må fylle ut: Påkrevd` }).should('exist');
       cy.findByRole('link', { name: `Du må fylle ut: Påkrevd` }).click();
-      cy.focused().prev().contains('Påkrevd');
+      cy.focused().type('25');
+      cy.findByRole('textbox', { name: 'Påkrevd' }).should('have.value', '25');
     });
 
     it('should show error for min value', () => {

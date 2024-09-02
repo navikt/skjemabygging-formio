@@ -2,6 +2,8 @@ import { dateUtils, numberUtils } from '@navikt/skjemadigitalisering-shared-doma
 import ReactDatePicker, { validateDate } from '../../../../components/datepicker/DatePicker';
 import { ComponentUtilsProvider } from '../../../../context/component/componentUtilsContext';
 import BaseComponent from '../../base/BaseComponent';
+import Description from '../../base/components/Description';
+import Label from '../../base/components/Label';
 import datePickerBuilder from './DatePicker.builder';
 import datePickerForm from './DatePicker.form';
 import { getBeforeDateInputValue, getComponentsWithDateInputKey } from './DatePicker.utils';
@@ -44,7 +46,7 @@ export default class DatePicker extends BaseComponent {
         {
           required: this.isRequired(),
           value: this.getValue(),
-          label: this.getLabel({ labelTextOnly: true }),
+          label: this.getLabel(),
           fromDate: this.getFromDate(),
           toDate: this.getToDate(),
         },
@@ -105,14 +107,22 @@ export default class DatePicker extends BaseComponent {
       <ComponentUtilsProvider component={this}>
         <ReactDatePicker
           id={this.getId()}
+          label={
+            <Label
+              component={this.component}
+              translate={this.translate.bind(this)}
+              options={this.options}
+              builderMode={this.builderMode}
+              editFields={this.getEditFields()}
+            />
+          }
           required={this.isRequired()}
           value={this.getValue()}
           onChange={this.onUpdate.bind(this)}
           readOnly={this.getReadOnly()}
           error={this.getError()}
           inputRef={(ref) => this.setReactInstance(ref)}
-          description={this.getDescription()}
-          label={this.getLabel()}
+          description={<Description component={this.component} translate={this.translate.bind(this)} />}
           fromDate={this.getFromDate()}
           toDate={this.getToDate()}
         />

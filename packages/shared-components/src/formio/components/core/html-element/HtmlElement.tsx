@@ -1,5 +1,6 @@
 import InnerHtml from '../../../../components/inner-html/InnerHtml';
 import BaseComponent from '../../base/BaseComponent';
+import DiffTag from '../../base/components/DiffTag';
 import htmlElementBuilder from './HtmlElement.builder';
 import htmlElementForm from './HtmlElement.form';
 
@@ -33,7 +34,12 @@ class HtmlElement extends BaseComponent {
     element.render(
       <div>
         {this.getTextDisplayTag()}
-        {this.getDiffTag()}
+        <DiffTag
+          component={this.component}
+          options={this.options}
+          builderMode={this.builderMode}
+          editFields={this.getEditFields()}
+        />
         <InnerHtml tag={this.getTag()} content={this.getContent()} />
       </div>,
     );

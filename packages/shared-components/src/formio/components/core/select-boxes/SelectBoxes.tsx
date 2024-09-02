@@ -1,6 +1,8 @@
 import { Checkbox, CheckboxGroup } from '@navikt/ds-react';
 import FormioSelectBoxes from 'formiojs/components/selectboxes/SelectBoxes';
 import BaseComponent from '../../base/BaseComponent';
+import Description from '../../base/components/Description';
+import Label from '../../base/components/Label';
 import selectBoxesBuilder from './SelectBoxes.builder';
 import selectBoxesForm from './SelectBoxes.form';
 
@@ -53,8 +55,16 @@ class SelectBoxes extends BaseComponent {
 
     return element.render(
       <CheckboxGroup
-        legend={this.getLabel()}
-        description={this.getDescription()}
+        legend={
+          <Label
+            component={this.component}
+            translate={this.translate.bind(this)}
+            options={this.options}
+            builderMode={this.builderMode}
+            editFields={this.getEditFields()}
+          />
+        }
+        description={<Description component={this.component} translate={this.translate.bind(this)} />}
         value={componentValue}
         onChange={(value) => this.changeHandler(value)}
         ref={(ref) => this.setReactInstance(ref)}

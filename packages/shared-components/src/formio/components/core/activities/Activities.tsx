@@ -2,6 +2,9 @@ import { SendInnAktivitet, SubmissionActivity, TEXTS } from '@navikt/skjemadigit
 import NavActivities from '../../../../components/activities/NavActivities';
 import { ComponentUtilsProvider } from '../../../../context/component/componentUtilsContext';
 import BaseComponent from '../../base/BaseComponent';
+import Description from '../../base/components/Description';
+import DiffTag from '../../base/components/DiffTag';
+import Label from '../../base/components/Label';
 import activitiesBuilder from './Activities.builder';
 import activitiesForm from './Activities.form';
 
@@ -51,7 +54,7 @@ class Activities extends BaseComponent {
 
       if (!componentData) {
         const requiredError = this.translate('required', {
-          field: this.getLabel({ labelTextOnly: true }),
+          field: this.getLabel(),
         });
         super.addError(requiredError);
       }
@@ -78,14 +81,28 @@ class Activities extends BaseComponent {
   renderReact(element) {
     element.render(
       <>
-        {this.getDiffTag()}
+        <DiffTag
+          component={this.component}
+          options={this.options}
+          builderMode={this.builderMode}
+          editFields={this.getEditFields()}
+        />
         <ComponentUtilsProvider component={this}>
           <NavActivities
             id={this.getId()}
-            label={this.getLabel({ showOptional: false })}
+            label={
+              <Label
+                component={this.component}
+                translate={this.translate.bind(this)}
+                options={this.options}
+                builderMode={this.builderMode}
+                editFields={this.getEditFields()}
+                labelOptions={{ showOptional: false }}
+              />
+            }
             value={this.getValue()}
             onChange={(value, options) => this.changeHandler(value, options)}
-            description={this.getDescription()}
+            description={<Description component={this.component} translate={this.translate.bind(this)} />}
             className={this.getClassName()}
             error={this.getError()}
             defaultActivity={this.defaultActivity}

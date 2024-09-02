@@ -1,6 +1,8 @@
 import { Textarea as NavTextarea } from '@navikt/ds-react';
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import BaseComponent from '../../base/BaseComponent';
+import Description from '../../base/components/Description';
+import Label from '../../base/components/Label';
 import textAreaBuilder from './TextArea.builder';
 import textAreaForm from './TextArea.form';
 
@@ -49,9 +51,17 @@ class TextArea extends BaseComponent {
           maxRows={this.getMaxRows()}
           ref={(ref) => this.setReactInstance(ref)}
           onChange={(event) => this.handleChange(event.currentTarget.value)}
-          label={this.getLabel()}
+          label={
+            <Label
+              component={this.component}
+              translate={this.translate.bind(this)}
+              options={this.options}
+              builderMode={this.builderMode}
+              editFields={this.getEditFields()}
+            />
+          }
           hideLabel={this.getHideLabel()}
-          description={this.getDescription()}
+          description={<Description component={this.component} translate={this.translate.bind(this)} />}
           className={this.getClassName()}
           autoComplete={this.getAutoComplete()}
           readOnly={this.getReadOnly()}

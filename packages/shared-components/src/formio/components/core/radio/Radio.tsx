@@ -1,6 +1,8 @@
 import { Radio as AkselRadio, RadioGroup } from '@navikt/ds-react';
 import Ready from '../../../../util/form/ready';
 import BaseComponent from '../../base/BaseComponent';
+import Description from '../../base/components/Description';
+import Label from '../../base/components/Label';
 import { blurHandler, focusHandler } from '../../base/focus-helpers';
 import radioBuilder from './Radio.builder';
 import radioForm from './Radio.form';
@@ -66,11 +68,19 @@ class Radio extends BaseComponent {
     return element.render(
       <RadioGroup
         id={this.getId()}
-        legend={this.getLabel()}
+        legend={
+          <Label
+            component={this.component}
+            translate={this.translate.bind(this)}
+            options={this.options}
+            builderMode={this.builderMode}
+            editFields={this.getEditFields()}
+          />
+        }
         value={this.getValue()}
         onChange={(value) => this.changeHandler(value)}
         ref={(ref) => this.setReactInstance(ref)}
-        description={this.getDescription()}
+        description={<Description component={this.component} translate={this.translate.bind(this)} />}
         className={this.getClassName()}
         readOnly={this.getReadOnly()}
         spellCheck={this.getSpellCheck()}
