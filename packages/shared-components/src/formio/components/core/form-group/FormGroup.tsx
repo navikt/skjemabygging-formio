@@ -1,5 +1,6 @@
 import { Box } from '@navikt/ds-react';
 import BaseComponent from '../../base/BaseComponent';
+import Label from '../../base/components/Label';
 import FormioReactNestedComponent from '../../base/FormioReactNestedComponent';
 import NestedComponents from '../../base/NestedComponents';
 import formGroupBuilder from './FormGroup.builder';
@@ -29,7 +30,14 @@ class FormGroup extends FormioReactNestedComponent {
   renderReact(element) {
     element.render(
       <fieldset>
-        {this.getLabel()}
+        <Label
+          component={this.component}
+          options={this.options}
+          builderMode={this.builderMode}
+          editFields={this.getEditFields()}
+          translate={this.translate.bind(this)}
+          labelOptions={{ useLegend: true, showOptional: false }}
+        />
         <Box className="navds-fieldset__content">
           <NestedComponents
             getRef={(ref) => this.setNestedRef(ref)}

@@ -1,9 +1,9 @@
 import { Component } from '@navikt/skjemadigitalisering-shared-domain';
-import { getLabel, isRequired } from '../baseComponentUtils';
+import { getLabel, getLegend, isRequired } from '../baseComponentUtils';
 import { ReactComponentType } from '../index';
 import DiffTag from './DiffTag';
 
-type LabelOptions = { showOptional?: boolean; showDiffTag?: boolean };
+type LabelOptions = { showOptional?: boolean; showDiffTag?: boolean; useLegend?: boolean };
 
 interface Props {
   component?: Component;
@@ -15,12 +15,12 @@ interface Props {
 }
 
 const Label = ({ component, translate, options, builderMode, editFields, labelOptions }: Props) => {
-  const defaultOptions = { showOptional: true, showDiffTag: true };
-  const { showOptional, showDiffTag } = { ...defaultOptions, ...(labelOptions ?? {}) };
+  const defaultOptions = { showOptional: true, showDiffTag: true, useLegend: false };
+  const { showOptional, showDiffTag, useLegend } = { ...defaultOptions, ...(labelOptions ?? {}) };
 
   return (
     <>
-      {translate(getLabel(component))}
+      {translate(useLegend ? getLegend(component) : getLabel(component))}
       {isRequired(component) || !!component?.readOnly ? '' : showOptional && ` (${translate('valgfritt')})`}
       {showDiffTag && (
         <DiffTag component={component} options={options} builderMode={builderMode} editFields={editFields} />

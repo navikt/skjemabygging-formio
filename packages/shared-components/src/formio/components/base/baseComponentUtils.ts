@@ -12,6 +12,10 @@ export const getLabel = (component?: Component) => {
   return component?.label ?? '';
 };
 
+export const getLegend = (component?: Component) => {
+  return component?.legend ?? '';
+};
+
 export const getHideLabel = (component?: Component) => {
   return component?.hideLabel ?? false;
 };
