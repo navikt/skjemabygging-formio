@@ -1,26 +1,15 @@
-import { Component, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import NestedComponent from 'formiojs/components/_classes/nested/NestedComponent';
-import { TFunction, TOptions } from 'i18next';
 import { createRoot } from 'react-dom/client';
-import FormioReactComponent from './FormioReactComponent';
-import { IBaseComponent, INestedComponent } from './index';
+import { INestedComponent } from './index';
 
-class FormioReactNestedComponent extends (NestedComponent as INestedComponent) implements IBaseComponent {
+class FormioReactNestedComponent extends (NestedComponent as INestedComponent) {
   rootElement;
-  editFields;
   nestedRef;
   reactInstance;
 
   constructor(component, options, data) {
     super(component, options, data);
     this.reactInstance = null;
-  }
-
-  /**
-   * Required and used by Form.io
-   */
-  get defaultSchema() {
-    return (this.constructor as typeof FormioReactNestedComponent).schema();
   }
 
   render() {
@@ -33,36 +22,6 @@ class FormioReactNestedComponent extends (NestedComponent as INestedComponent) i
     this.nestedRef = ref;
     console.log('setNestedref', this.nestedRef, ref);
     this.attachComponents(this.nestedRef.current);
-  }
-
-  /**
-   * Private function
-   *
-   * Get the key from all components that is configured in editForm() in the custom component.
-   */
-  getEditFields() {
-    if (!this.editFields) {
-      const editForm: Component = (this.constructor as typeof FormioReactComponent).editForm();
-      this.editFields = navFormUtils
-        .flattenComponents(editForm.components?.[0].components as Component[])
-        .map((component) => component.key);
-    }
-
-    return this.editFields;
-  }
-
-  /**
-   * @deprecated Use `translate` instead of `t` in React components
-   */
-  t = (...params) => {
-    return super.t(...params);
-  };
-
-  translate(key?: string, options: TOptions = {}): ReturnType<TFunction> {
-    if (Object.keys(options).length === 0) {
-      return super.t(key);
-    }
-    return super.t(key, { ...options, interpolation: { escapeValue: false } });
   }
 
   /**

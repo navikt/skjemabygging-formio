@@ -1,13 +1,13 @@
 import { Box } from '@navikt/ds-react';
 import BaseComponent from '../../base/BaseComponent';
+import BaseNestedComponent from '../../base/BaseNestedComponent';
 import Description from '../../base/components/Description';
 import Label from '../../base/components/Label';
-import FormioReactNestedComponent from '../../base/FormioReactNestedComponent';
 import NestedComponents from '../../base/NestedComponents';
 import formGroupBuilder from './FormGroup.builder';
 import formGroupForm from './FormGroup.form';
 
-class FormGroup extends FormioReactNestedComponent {
+class FormGroup extends BaseNestedComponent {
   static schema() {
     return BaseComponent.schema({
       label: 'Skjemagruppe',
