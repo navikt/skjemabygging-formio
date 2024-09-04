@@ -6,6 +6,7 @@ import { TFunction, TOptions } from 'i18next';
 import FormioReactComponent from './FormioReactComponent';
 import baseComponentUtils from './baseComponentUtils';
 import { blurHandler, focusHandler } from './focus-helpers';
+import { IBaseComponent } from './index';
 
 /**
  * When creating a custom component that extends BaseComponent,
@@ -16,7 +17,7 @@ import { blurHandler, focusHandler } from './focus-helpers';
  * static get builderInfo(): Component
  * renderReact(element): void (this is optional)
  */
-class BaseComponent extends FormioReactComponent {
+class BaseComponent extends FormioReactComponent implements IBaseComponent {
   editFields;
 
   /**

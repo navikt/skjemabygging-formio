@@ -1,6 +1,8 @@
 import { Component, FormPropertiesType, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
+import { TFunction, TOptions } from 'i18next';
 import Select from 'react-select/base';
 import { AppConfigContextType } from '../../../context/config/configContext';
+
 interface IReactComponent {
   new (component, options, data): ReactComponentType;
   prototype: ReactComponentType;
@@ -8,20 +10,23 @@ interface IReactComponent {
   editForm(): any;
 }
 
-interface ReactComponentType {
-  data?: any;
-  shouldSetValue?: any;
-  dataForSetting?: any;
-  reactInstance?: HTMLInputElement | Select;
-  dataReady: Promise<any>;
-  attachReact(element, ref): any;
-  detachReact(element): any;
-  validate(data, dirty, rowData): boolean;
-  updateValue(value, flags?: object): any;
-  setReactInstance(element): void;
-  resetValue(): void;
-  setValue(value: any): void;
-  // Field
+interface INestedComponent {
+  new (component, options, data): NestedComponentType;
+  prototype: NestedComponentType;
+  schema(sources?: any): any;
+  editForm(): any;
+}
+
+interface IBaseComponent {
+  editFields: string[];
+  get defaultSchema(): any;
+  render(element: any): any;
+  getEditFields(): string[];
+  translate(key?: string, options: TOptions = {}): ReturnType<TFunction>;
+}
+
+type FormioField = {
+  //Field
   render(element: any): any;
   // Component
   key?: string;
@@ -30,7 +35,7 @@ interface ReactComponentType {
   defaultValue?: any;
   dataValue?: any;
   refs?: any;
-  errors: any[];
+  get errors(): any[];
   root: any;
   options: {
     appConfig: AppConfigContextType;
@@ -48,13 +53,14 @@ interface ReactComponentType {
   builderMode: boolean;
   validators: any[];
   init(options?: object): any;
+  renderTemplate(name: string, data: any, modeOption?: any): any;
   redraw(): any;
   attach(element: any): any;
   detach(): void;
   destroy(): void;
   beforeSubmit(): any;
   updateOnChange(flags: any, changed: boolean | any): boolean;
-  t: TFunction;
+  t: (...args: any[]) => string;
   loadRefs(element: any, refs: any): any;
   getRef(name: any): any;
   setRef(name: any, ref: any): void;
@@ -75,5 +81,28 @@ interface ReactComponentType {
   // Element
   id?: any;
   emit(event: string, data: object): void;
+  hook(...args: any[]): any;
   addEventListener(obj, type, func, persistent?);
-}
+};
+
+type NestedComponentType = {
+  components: Component[];
+  attachComponents(element: any, components?: Component[], container?: any): any;
+  renderComponents(components: Component[]): any;
+  getComponents(): Component[];
+} & FormioField;
+
+type ReactComponentType = {
+  data?: any;
+  shouldSetValue?: any;
+  dataForSetting?: any;
+  reactInstance?: HTMLInputElement | Select;
+  attachReact(element, ref): any;
+  detachReact(element): any;
+  get dataReady(): Promise<any>;
+  validate(data, dirty, rowData): boolean;
+  updateValue(value, flags?: object): any;
+  setReactInstance(element): void;
+  resetValue(): void;
+  setValue(value: any): void;
+} & FormioField;
