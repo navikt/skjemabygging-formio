@@ -44,9 +44,7 @@ class Activities extends BaseComponent {
   override checkValidity(): boolean {
     this.removeAllErrors();
 
-    const submissionMethod = this.getAppConfig()?.submissionMethod;
-
-    if (submissionMethod === 'digital') {
+    if (this.isSubmissionDigital()) {
       const componentData = this.getValue() as SubmissionActivity;
 
       if (!componentData) {

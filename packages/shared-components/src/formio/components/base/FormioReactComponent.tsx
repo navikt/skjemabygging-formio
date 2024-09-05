@@ -47,6 +47,14 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
     return this.options?.appConfig;
   }
 
+  isSubmissionPaper() {
+    return this.getAppConfig()?.submissionMethod === 'paper';
+  }
+
+  isSubmissionDigital() {
+    return this.getAppConfig()?.submissionMethod === 'digital';
+  }
+
   detachReact(element) {
     // For now we prefer memory leak in development and test over spamming the console log...
     // Wrapping in setTimeout causes problems when we do a redraw, so need to find a different solution.
