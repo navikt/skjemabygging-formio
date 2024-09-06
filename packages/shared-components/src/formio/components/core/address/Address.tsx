@@ -33,15 +33,15 @@ class Address extends BaseComponent {
     if (this.isSubmissionDigital() && this.component?.prefillKey && this.component?.prefillValue) {
       const addresses = this.component?.prefillValue as SubmissionAddress;
       if (this.component?.addressPriority === 'oppholdsadresse') {
-        this.setValue(
+        super.setValue(
           this.getOppholdsadresse(addresses) ?? this.getKontaktadresse(addresses) ?? this.getBostedsadresse(addresses),
         );
       } else if (this.component?.addressPriority === 'kontaktadresse') {
-        this.setValue(
+        super.setValue(
           this.getKontaktadresse(addresses) ?? this.getBostedsadresse(addresses) ?? this.getOppholdsadresse(addresses),
         );
       } else {
-        this.setValue(
+        super.setValue(
           this.getBostedsadresse(addresses) ?? this.getOppholdsadresse(addresses) ?? this.getKontaktadresse(addresses),
         );
       }
@@ -108,6 +108,13 @@ class Address extends BaseComponent {
 
   showAddressTypeChoice(): boolean {
     return !!this.component?.prefillKey && this.isSubmissionPaper();
+  }
+
+  setValue(value: any) {
+    // If prefillKey is set, never set the value, not even from previously saved submissions.
+    if (!this.component?.prefillKey) {
+      super.setValue(value);
+    }
   }
 
   renderReact(element) {

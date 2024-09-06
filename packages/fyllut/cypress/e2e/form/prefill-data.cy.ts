@@ -64,7 +64,7 @@ describe('Prefill data', () => {
   });
 
   describe('existing application', () => {
-    it('should not prefill data for existing application on the first page (name)', () => {
+    it('should prefill data for existing application on the first page (name)', () => {
       cy.mocksUseRouteVariant('get-soknad:success-prefill-data');
 
       cy.visit('/fyllut/testprefilldata/side1?sub=digital&innsendingsId=d2f41ebc-ba98-4fc5-a195-29b098bf50a7');
@@ -72,15 +72,15 @@ describe('Prefill data', () => {
       cy.wait('@getPrefillData');
 
       cy.findByRole('heading', { name: 'Side 1' }).should('exist');
-      cy.findByRole('textbox', { name: 'Fornavn' }).should('not.have.value', 'Ola');
-      cy.findByRole('textbox', { name: 'Etternavn' }).should('not.have.value', 'Nordmann');
+      cy.findByRole('textbox', { name: 'Fornavn' }).should('have.value', 'Ola');
+      cy.findByRole('textbox', { name: 'Etternavn' }).should('have.value', 'Nordmann');
 
-      // Should instead use existing data from innsending-api (database)
-      cy.findByRole('textbox', { name: 'Fornavn' }).should('have.value', 'John');
-      cy.findByRole('textbox', { name: 'Etternavn' }).should('have.value', 'Doe');
+      // Should not use existing data from innsending-api (database)
+      cy.findByRole('textbox', { name: 'Fornavn' }).should('not.have.value', 'John');
+      cy.findByRole('textbox', { name: 'Etternavn' }).should('not.have.value', 'Doe');
     });
 
-    it('should not prefill data for existing application on the second page (name)', () => {
+    it('should prefill data for existing application on the second page (name)', () => {
       cy.mocksUseRouteVariant('get-soknad:success-prefill-data');
 
       cy.visit('/fyllut/testprefilldata/side1?sub=digital&innsendingsId=d2f41ebc-ba98-4fc5-a195-29b098bf50a7');
@@ -89,12 +89,12 @@ describe('Prefill data', () => {
       cy.clickSaveAndContinue();
 
       cy.findByRole('heading', { name: 'Side 2' }).should('exist');
-      cy.findByRole('textbox', { name: 'Fornavn' }).should('not.have.value', 'Ola');
-      cy.findByRole('textbox', { name: 'Etternavn' }).should('not.have.value', 'Nordmann');
+      cy.findByRole('textbox', { name: 'Fornavn' }).should('have.value', 'Ola');
+      cy.findByRole('textbox', { name: 'Etternavn' }).should('have.value', 'Nordmann');
 
-      // Should instead use existing data from innsending-api (database)
-      cy.findByRole('textbox', { name: 'Fornavn' }).should('have.value', 'John');
-      cy.findByRole('textbox', { name: 'Etternavn' }).should('have.value', 'Cena');
+      // Should not use existing data from innsending-api (database)
+      cy.findByRole('textbox', { name: 'Fornavn' }).should('not.have.value', 'John');
+      cy.findByRole('textbox', { name: 'Etternavn' }).should('not.have.value', 'Cena');
     });
   });
 });

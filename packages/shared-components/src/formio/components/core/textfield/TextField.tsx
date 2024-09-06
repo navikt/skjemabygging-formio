@@ -30,7 +30,8 @@ class TextField extends BaseComponent {
 
   initPrefill() {
     if (this.isSubmissionDigital() && this.component?.prefillKey && this.component?.prefillValue) {
-      this.setValue(this.component?.prefillValue);
+      // Call parent setValue so ignore prefillKey block on local setValue.
+      super.setValue(this.component?.prefillValue);
     }
   }
 
@@ -39,7 +40,6 @@ class TextField extends BaseComponent {
   }
 
   getValue() {
-    // TODO: If prefill value is sett, we should always get latest values from prefill instead of mellomlagring.
     return super.getValue() ?? '';
   }
 
@@ -53,6 +53,13 @@ class TextField extends BaseComponent {
 
   handleChange(value: string | number) {
     super.handleChange(value);
+  }
+
+  setValue(value: any) {
+    // If prefillKey is set, never set the value, not even from previously saved submissions.
+    if (!this.component?.prefillKey) {
+      super.setValue(value);
+    }
   }
 
   renderReact(element) {
