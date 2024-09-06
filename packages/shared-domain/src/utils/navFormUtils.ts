@@ -120,8 +120,8 @@ const prefillForm = (navForm: NavFormType, prefillData: PrefillData) => {
   const formCopy = JSON.parse(JSON.stringify(navForm));
 
   FormioUtils.eachComponent(formCopy.components, (component: Component) => {
-    if (component.prefillKey && !component.defaultValue && prefillData[component.prefillKey]) {
-      component.defaultValue = prefillData[component.prefillKey];
+    if (component.prefillKey && prefillData[component.prefillKey]) {
+      component.prefillValue = prefillData[component.prefillKey];
     }
   });
 

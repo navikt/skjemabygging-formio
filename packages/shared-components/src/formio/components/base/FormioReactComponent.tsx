@@ -48,7 +48,7 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
   }
 
   isSubmissionPaper() {
-    return this.getAppConfig()?.submissionMethod === 'paper';
+    return this.getAppConfig()?.submissionMethod === 'paper' || !this.getAppConfig()?.submissionMethod;
   }
 
   isSubmissionDigital() {

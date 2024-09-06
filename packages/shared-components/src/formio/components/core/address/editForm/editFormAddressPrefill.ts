@@ -4,7 +4,7 @@ interface PropertyOptions {
   customConditional?: string;
 }
 
-const editFormAddressPriority = (options: PropertyOptions): Component => {
+const editFormAddressPrefill = (options: PropertyOptions): Component => {
   return {
     type: 'radiopanel',
     label: 'Adresse prioritet',
@@ -35,4 +35,4 @@ const editFormAddressPriority = (options: PropertyOptions): Component => {
   };
 };
 
-export default editFormAddressPriority;
+export default editFormAddressPrefill;

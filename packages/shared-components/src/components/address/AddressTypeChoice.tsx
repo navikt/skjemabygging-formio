@@ -13,21 +13,23 @@ const AddressTypeChoice = ({ onChange, values }: Props) => {
       <RadioGroup
         className="form-group"
         legend="Bor du i Norge"
-        value={values.borDuINorge}
+        value={values?.borDuINorge ?? ''}
         onChange={(value) => onChange('borDuINorge', value)}
       >
         <Radio value="true">Ja</Radio>
         <Radio value="false">Nei</Radio>
       </RadioGroup>
-
-      <RadioGroup
-        className="form-group"
-        legend="Er kontaktadressen din en vegadresse eller postboksadresse?"
-        onChange={(value) => onChange('vegadresseEllerPostboksadresse', value)}
-      >
-        <Radio value="vegadresse">Vegadresse</Radio>
-        <Radio value="postboksadresse">Postboksadresse</Radio>
-      </RadioGroup>
+      {values?.borDuINorge === 'true' && (
+        <RadioGroup
+          className="form-group"
+          legend="Er kontaktadressen din en vegadresse eller postboksadresse?"
+          value={values?.vegadresseEllerPostboksadresse ?? ''}
+          onChange={(value) => onChange('vegadresseEllerPostboksadresse', value)}
+        >
+          <Radio value="vegadresse">Vegadresse</Radio>
+          <Radio value="postboksadresse">Postboksadresse</Radio>
+        </RadioGroup>
+      )}
     </>
   );
 };

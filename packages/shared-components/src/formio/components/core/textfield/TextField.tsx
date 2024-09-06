@@ -23,6 +23,17 @@ class TextField extends BaseComponent {
     return textFieldBuilder();
   }
 
+  init() {
+    super.init();
+    this.initPrefill();
+  }
+
+  initPrefill() {
+    if (this.isSubmissionDigital() && this.component?.prefillKey && this.component?.prefillValue) {
+      this.setValue(this.component?.prefillValue);
+    }
+  }
+
   getValue() {
     return super.getValue() ?? '';
   }

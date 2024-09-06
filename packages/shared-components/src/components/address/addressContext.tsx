@@ -8,7 +8,6 @@ interface AddressContextType {
   readOnly?: boolean;
   label?: string;
   className?: string;
-  hideIfEmpty?: boolean;
 }
 
 interface AddressProviderProps extends AddressContextType {
@@ -17,17 +16,9 @@ interface AddressProviderProps extends AddressContextType {
 
 const AddressContext = createContext<AddressContextType>({} as AddressContextType);
 
-export const AddressProvider = ({
-  children,
-  onChange,
-  address,
-  readOnly,
-  label,
-  className,
-  hideIfEmpty,
-}: AddressProviderProps) => {
+export const AddressProvider = ({ children, onChange, address, readOnly, label, className }: AddressProviderProps) => {
   return (
-    <AddressContext.Provider value={{ onChange, address, readOnly, label, className, hideIfEmpty }}>
+    <AddressContext.Provider value={{ onChange, address, readOnly, label, className }}>
       {children}
     </AddressContext.Provider>
   );

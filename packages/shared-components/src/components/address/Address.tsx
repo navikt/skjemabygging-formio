@@ -7,31 +7,34 @@ import PostOfficeBox from './PostOfficeBox';
 
 interface Props {
   addressType?: AddressTypeDomain;
-  addressTypeUserSelect?: boolean;
-  onChange: (value: AddressDomain) => void;
-  address?: AddressDomain;
+  onChange: (value: AddressInput) => void;
+  address?: AddressInput;
   readOnly?: boolean;
   className?: string;
-  hideIfEmpty?: boolean;
+  addressTypeChoice?: boolean;
 }
 
 export interface AddressInput extends AddressDomain {
   borDuINorge?: string;
   vegadresseEllerPostboksadresse?: string;
 }
+
 export type AddressInputType = keyof AddressInput;
 
-const Address = ({ addressType, address, readOnly, className, hideIfEmpty, onChange }: Props) => {
-  //const [type, setType] = useState<AddressTypeDomain>(addressType);
-
+const Address = ({ addressType, address, readOnly, className, onChange, addressTypeChoice }: Props) => {
   const getAddress = () => {
-    switch (addressType) {
-      case 'NORWEGIAN_ADDRESS':
-        return <NorwegianAddress />;
-      case 'POST_OFFICE_BOX':
-        return <PostOfficeBox />;
-      case 'FOREIGN_ADDRESS':
-        return <ForeignAddress />;
+    if (
+      addressType === 'NORWEGIAN_ADDRESS' ||
+      (address?.borDuINorge === 'true' && address?.vegadresseEllerPostboksadresse === 'vegadresse')
+    ) {
+      return <NorwegianAddress />;
+    } else if (
+      addressType === 'POST_OFFICE_BOX' ||
+      (address?.borDuINorge === 'true' && address?.vegadresseEllerPostboksadresse === 'postboksadresse')
+    ) {
+      return <PostOfficeBox />;
+    } else if (addressType === 'FOREIGN_ADDRESS' || address?.borDuINorge === 'false') {
+      return <ForeignAddress />;
     }
   };
 
@@ -44,19 +47,18 @@ const Address = ({ addressType, address, readOnly, className, hideIfEmpty, onCha
     }
   };
 
-  console.log(addressType);
+  const showAddress = () => {
+    return addressType || address?.borDuINorge === 'false' || !!address?.vegadresseEllerPostboksadresse;
+  };
+
   return (
     <>
-      {!addressType && <AddressTypeChoice values={address as AddressInput} onChange={handleChange} />}
-      <AddressProvider
-        address={address}
-        readOnly={readOnly}
-        className={className}
-        hideIfEmpty={hideIfEmpty}
-        onChange={handleChange}
-      >
-        {getAddress()}
-      </AddressProvider>
+      {addressTypeChoice && <AddressTypeChoice values={address as AddressInput} onChange={handleChange} />}
+      {showAddress() && (
+        <AddressProvider address={address} readOnly={readOnly} className={className} onChange={handleChange}>
+          {getAddress()}
+        </AddressProvider>
+      )}
     </>
   );
 };

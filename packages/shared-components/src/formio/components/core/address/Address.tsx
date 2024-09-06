@@ -1,3 +1,4 @@
+import { Alert } from '@navikt/ds-react';
 import { Address as AddressDomain, AddressType, SubmissionAddress } from '@navikt/skjemadigitalisering-shared-domain';
 import NavAddress from '../../../../components/address/Address';
 import { ComponentUtilsProvider } from '../../../../context/component/componentUtilsContext';
@@ -23,42 +24,55 @@ class Address extends BaseComponent {
     return addressBuilder();
   }
 
+  init() {
+    super.init();
+    this.initAddress();
+  }
+
+  initAddress() {
+    if (this.isSubmissionDigital() && this.component?.prefillKey && this.component?.prefillValue) {
+      const addresses = this.component?.prefillValue as SubmissionAddress;
+      if (this.component?.addressPriority === 'oppholdsadresse') {
+        this.setValue(
+          this.getOppholdsadresse(addresses) ?? this.getKontaktadresse(addresses) ?? this.getBostedsadresse(addresses),
+        );
+      } else if (this.component?.addressPriority === 'kontaktadresse') {
+        this.setValue(
+          this.getKontaktadresse(addresses) ?? this.getBostedsadresse(addresses) ?? this.getOppholdsadresse(addresses),
+        );
+      } else {
+        this.setValue(
+          this.getBostedsadresse(addresses) ?? this.getOppholdsadresse(addresses) ?? this.getKontaktadresse(addresses),
+        );
+      }
+    }
+  }
+
   getAddressType(): AddressType | undefined {
-    console.log(this.component?.addressType, this.component?.prefillKey);
     if (this.component?.addressType) {
       return this.component?.addressType;
     }
 
     if (this.component?.prefillKey) {
-      const address = this.getAddress();
-      if (address?.landkode && address?.landkode?.toLowerCase() !== 'no') {
+      const address = this.getValue();
+      if (this.isSubmissionDigital()) {
+        if (address?.landkode && address?.landkode?.toLowerCase() !== 'no') {
+          return 'FOREIGN_ADDRESS';
+        } else if (address?.postboks) {
+          return 'POST_OFFICE_BOX';
+        }
+
+        return 'NORWEGIAN_ADDRESS';
+      } else if (address?.borDuINorge === 'true') {
+        if (address?.vegadresseEllerPostboksadresse === 'vegadresse') {
+          return 'NORWEGIAN_ADDRESS';
+        } else if (address?.vegadresseEllerPostboksadresse === 'postboksadresse') {
+          return 'POST_OFFICE_BOX';
+        }
+      } else if (address?.borDuINorge === 'false') {
         return 'FOREIGN_ADDRESS';
-      } else if (address?.postboks) {
-        return 'POST_OFFICE_BOX';
-      }
-
-      return 'NORWEGIAN_ADDRESS';
-    }
-  }
-
-  getAddress(): AddressDomain | undefined {
-    if (this.getValue()) {
-      const addresses = (this.getValue() as SubmissionAddress).sokerAdresser;
-      // TODO: delete
-      console.log('Adresser fra PDL', addresses);
-
-      if (this.component?.addressPriority === 'oppholdsadresse') {
-        return this.getBostedsadresse(addresses) ?? this.getAddressInDefaultOrder(addresses);
-      } else if (this.component?.addressPriority === 'kontaktadresse') {
-        return this.getKontaktadresse(addresses) ?? this.getAddressInDefaultOrder(addresses);
-      } else {
-        return this.getAddressInDefaultOrder(addresses);
       }
     }
-  }
-
-  getAddressInDefaultOrder(addresses) {
-    return this.getBostedsadresse(addresses) ?? this.getOppholdsadresse(addresses) ?? this.getKontaktadresse(addresses);
   }
 
   getBostedsadresse(addresses) {
@@ -81,37 +95,37 @@ class Address extends BaseComponent {
 
   handleChange(value: AddressDomain) {
     super.handleChange(value);
+    this.rerender();
+  }
+
+  getReadOnly(): boolean {
+    return !!this.component?.prefillKey && this.isSubmissionDigital();
+  }
+
+  showAddressTypeChoice(): boolean {
+    return !!this.component?.prefillKey && this.isSubmissionPaper();
   }
 
   renderReact(element) {
-    // TODO: delete
-    /*this.dataValue = {
-      sokerAdresser: {
-        bostedsadresse: {
-          //co: 'Lars Olav Torvik',
-          adresse: 'Steinliveien 12',
-          bygning: 'c',
-          postnummer: '1185',
-          bySted: 'Oslo',
-          postboks: '1000',
-          region: 'Region Oslo',
-          landkode: 'SE',
-        }
-      }
-    };*/
-
     element.render(
-      <ComponentUtilsProvider component={this}>
-        <NavAddress
-          onChange={this.handleChange.bind(this)}
-          addressType={this.getAddressType()}
-          address={this.getAddress()}
-          readOnly={this.getReadOnly()}
-          className={this.getClassName()}
-          // TODO: Find a way add a check for previewMode, since builderMode is false in modal preview.
-          hideIfEmpty={!this.builderMode}
-        />
-      </ComponentUtilsProvider>,
+      this.builderMode && !this.getAddressType() ? (
+        <Alert variant="info">
+          Adressekomponenten er satt opp med preutfylling fra PDL for digital innsending. For papirinnsending vil vi
+          vise valg av bosted for å gi dem riktige adressefelter. Bruk forhåndsvisning for å se hvordan dette ser ut på
+          papirinnsending.
+        </Alert>
+      ) : (
+        <ComponentUtilsProvider component={this}>
+          <NavAddress
+            onChange={this.handleChange.bind(this)}
+            addressType={this.getAddressType()}
+            address={this.getValue()}
+            readOnly={this.getReadOnly()}
+            addressTypeChoice={this.showAddressTypeChoice()}
+            className={this.getClassName()}
+          />
+        </ComponentUtilsProvider>
+      ),
     );
   }
 }

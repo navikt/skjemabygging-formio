@@ -199,6 +199,7 @@ export interface Component {
   disableAddingRemovingRows?: boolean;
   addressPriority?: 'bostedsadresse' | 'oppholdsadresse' | 'kontaktadresse';
   addressType?: AddressType;
+  prefillValue?: string | object;
 }
 
 export type AddressType = 'NORWEGIAN_ADDRESS' | 'POST_OFFICE_BOX' | 'FOREIGN_ADDRESS';
