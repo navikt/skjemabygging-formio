@@ -1,8 +1,9 @@
-import { TextField as NavTextField } from '@navikt/ds-react';
 import { InputMode } from '@navikt/skjemadigitalisering-shared-domain';
 import BaseComponent from '../../base/BaseComponent';
+import baseComponentUtils from '../../base/baseComponentUtils';
 import Description from '../../base/components/Description';
 import Label from '../../base/components/Label';
+import NavTextField from './NavTextField';
 import textFieldBuilder from './TextField.builder';
 import textFieldForm from './TextField.form';
 
@@ -34,7 +35,7 @@ class TextField extends BaseComponent {
   }
 
   isProtected(): boolean {
-    return !!this.component?.protected;
+    return baseComponentUtils.isProtected(this.component);
   }
 
   handleChange(value: string | number) {
@@ -46,7 +47,7 @@ class TextField extends BaseComponent {
       <NavTextField
         id={this.getId()}
         defaultValue={this.getValue()}
-        ref={(ref) => this.setReactInstance(ref)}
+        setInstance={(ref) => this.setReactInstance(ref)}
         onChange={(event) => this.handleChange(event.currentTarget.value)}
         label={
           <Label

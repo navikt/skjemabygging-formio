@@ -43,6 +43,11 @@ class BaseNestedComponent extends FormioReactNestedComponent implements IBaseCom
     }
     return super.t(key, { ...options, interpolation: { escapeValue: false } });
   }
+
+  updateSubmission(key: string, value: any) {
+    const component = navFormUtils.findByKey(key, this.getComponents()) as any;
+    component.updateValue(value);
+  }
 }
 
 export default BaseNestedComponent;

@@ -126,8 +126,7 @@ class BaseComponent extends FormioReactComponent implements IBaseComponent {
    * Get class name for custom component renderReact()
    */
   getClassName() {
-    // TODO: Remove nav-new and nav- prefix for fieldsize when all components are Aksel
-    return this.component?.fieldSize ? `nav-${this.component?.fieldSize} nav-new` : 'nav-new';
+    return baseComponentUtils.getClassName(this.component);
   }
 
   /**
@@ -148,7 +147,7 @@ class BaseComponent extends FormioReactComponent implements IBaseComponent {
    * Get auto complete for custom component renderReact()
    */
   getAutoComplete() {
-    return this.component?.autocomplete ?? 'off';
+    return baseComponentUtils.getAutoComplete(this.component);
   }
 
   /**
@@ -169,7 +168,7 @@ class BaseComponent extends FormioReactComponent implements IBaseComponent {
    * Get spell check for custom component renderReact()
    */
   getSpellCheck() {
-    return this.component?.spellCheck;
+    return baseComponentUtils.getSpellCheck(this.component);
   }
 
   /**
