@@ -56,7 +56,11 @@ class Address extends BaseComponent {
     if (this.component?.prefillKey) {
       const address = this.getValue();
       if (this.isSubmissionDigital()) {
-        if (address?.landkode && address?.landkode?.toLowerCase() !== 'no') {
+        if (
+          address?.landkode &&
+          address?.landkode?.toLowerCase() !== 'nor' &&
+          address?.landkode?.toLowerCase() !== 'no'
+        ) {
           return 'FOREIGN_ADDRESS';
         } else if (address?.postboks) {
           return 'POST_OFFICE_BOX';

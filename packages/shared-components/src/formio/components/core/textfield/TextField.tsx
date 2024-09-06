@@ -34,7 +34,12 @@ class TextField extends BaseComponent {
     }
   }
 
+  getReadOnly() {
+    return (!!this.component?.prefillKey && this.isSubmissionDigital()) || super.getReadOnly();
+  }
+
   getValue() {
+    // TODO: If prefill value is sett, we should always get latest values from prefill instead of mellomlagring.
     return super.getValue() ?? '';
   }
 

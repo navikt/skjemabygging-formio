@@ -29,6 +29,9 @@ describe('Prefill data', () => {
       cy.findByRole('heading', { name: 'Side 1' }).should('exist');
       cy.findByRole('textbox', { name: 'Fornavn' }).should('have.value', 'Ola');
       cy.findByRole('textbox', { name: 'Etternavn' }).should('have.value', 'Nordmann');
+      cy.findByRole('textbox', { name: 'Vegadresse' }).should('have.value', 'Testveien 1C');
+      cy.findByRole('textbox', { name: 'Postnummer' }).should('have.value', '1234');
+      cy.findByRole('textbox', { name: 'Poststed' }).should('have.value', 'Plassen');
     });
 
     it('should prefill data for new application on the second page (name)', () => {
