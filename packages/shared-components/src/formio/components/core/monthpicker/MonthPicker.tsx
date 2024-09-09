@@ -35,6 +35,10 @@ class MonthPicker extends BaseComponent {
   }
 
   override checkValidity(): boolean {
+    if (!this.visible) {
+      return true;
+    }
+
     this.removeAllErrors();
     const value = this.getValue() as string;
     const required = this.isRequired();
