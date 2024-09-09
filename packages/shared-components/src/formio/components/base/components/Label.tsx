@@ -15,14 +15,14 @@ interface Props {
 }
 
 const Label = ({ component, translate, options, builderMode, editFields, labelOptions }: Props) => {
-  const { getLabel, isRequired } = baseComponentUtils;
+  const { getLabel, isRequired, isReadOnly } = baseComponentUtils;
   const defaultOptions = { showOptional: true, showDiffTag: true };
   const { showOptional, showDiffTag } = { ...defaultOptions, ...(labelOptions ?? {}) };
 
   return (
     <>
       {translate(getLabel(component))}
-      {isRequired(component) || !!component?.readOnly ? '' : showOptional && ` (${translate('valgfritt')})`}
+      {isRequired(component) || isReadOnly(component) ? '' : showOptional && ` (${translate('valgfritt')})`}
       {showDiffTag && (
         <DiffTag component={component} options={options} builderMode={builderMode} editFields={editFields} />
       )}
