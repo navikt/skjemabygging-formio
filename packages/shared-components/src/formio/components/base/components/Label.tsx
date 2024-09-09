@@ -1,5 +1,5 @@
 import { Component } from '@navikt/skjemadigitalisering-shared-domain';
-import { getLabel, isRequired } from '../baseComponentUtils';
+import baseComponentUtils from '../baseComponentUtils';
 import { ReactComponentType } from '../index';
 import DiffTag from './DiffTag';
 
@@ -15,6 +15,7 @@ interface Props {
 }
 
 const Label = ({ component, translate, options, builderMode, editFields, labelOptions }: Props) => {
+  const { getLabel, isRequired } = baseComponentUtils;
   const defaultOptions = { showOptional: true, showDiffTag: true };
   const { showOptional, showDiffTag } = { ...defaultOptions, ...(labelOptions ?? {}) };
 
