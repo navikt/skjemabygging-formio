@@ -13,7 +13,7 @@ const ForeignAddress = () => {
       <AddressField type="postnummer" />
       <AddressField type="bySted" label={translate(TEXTS.statiske.address.location)} />
       <AddressField type="region" />
-      <AddressField type="landkode" />
+      <AddressField type="land" />
     </>
   );
 };

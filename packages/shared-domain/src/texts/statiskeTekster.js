@@ -180,6 +180,8 @@ export const statiske = {
     summaryTextParking: '{{date}}, parkeringsutgift: {{parking}} kr',
   },
   address: {
+    livesInNorway: 'Bor du i Norge?',
+    yourContactAddress: 'Er kontaktadressen din en vegadresse eller postboksadresse?',
     skatteetatenLink: 'Endre folkeregistrert adresse på Skatteetatens nettsider (åpnes i ny fane)',
     streetAddress: 'Vegadresse',
     streetAddressLong: 'Vegnavn og husnummer, eller postboks',
@@ -189,6 +191,7 @@ export const statiske = {
     country: 'Land',
     co: 'C/O',
     poBox: 'Postboks',
+    poAddress: 'Postboksadresse',
     building: 'Bygning',
     region: 'Region',
   },

@@ -6,6 +6,7 @@ interface Address {
   postnummer?: string;
   bySted?: string; // poststed for norske adresser
   landkode: string;
+  land: string;
   co?: string;
   postboks?: string;
 

@@ -1,4 +1,6 @@
 import { Radio, RadioGroup } from '@navikt/ds-react';
+import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { useComponentUtils } from '../../context/component/componentUtilsContext';
 import { AddressInput, AddressInputType } from './Address';
 
 interface Props {
@@ -7,27 +9,28 @@ interface Props {
 }
 
 const AddressTypeChoice = ({ onChange, values }: Props) => {
-  // TODO: Oversetting
+  const { translate } = useComponentUtils();
+
   return (
     <>
       <RadioGroup
         className="form-group"
-        legend="Bor du i Norge"
+        legend={translate(TEXTS.statiske.address.livesInNorway)}
         value={values?.borDuINorge ?? ''}
         onChange={(value) => onChange('borDuINorge', value)}
       >
-        <Radio value="true">Ja</Radio>
-        <Radio value="false">Nei</Radio>
+        <Radio value="true">{translate(TEXTS.common.yes)}</Radio>
+        <Radio value="false">{translate(TEXTS.common.no)}</Radio>
       </RadioGroup>
       {values?.borDuINorge === 'true' && (
         <RadioGroup
           className="form-group"
-          legend="Er kontaktadressen din en vegadresse eller postboksadresse?"
+          legend={translate(TEXTS.statiske.address.yourContactAddress)}
           value={values?.vegadresseEllerPostboksadresse ?? ''}
           onChange={(value) => onChange('vegadresseEllerPostboksadresse', value)}
         >
-          <Radio value="vegadresse">Vegadresse</Radio>
-          <Radio value="postboksadresse">Postboksadresse</Radio>
+          <Radio value="vegadresse">{translate(TEXTS.statiske.address.streetAddress)}</Radio>
+          <Radio value="postboksadresse">{translate(TEXTS.statiske.address.poAddress)}</Radio>
         </RadioGroup>
       )}
     </>

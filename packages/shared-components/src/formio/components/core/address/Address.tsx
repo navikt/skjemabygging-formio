@@ -123,7 +123,7 @@ class Address extends BaseComponent {
   }
 
   checkComponentValidity(data, dirty, row, _options = {}) {
-    if (this.shouldSkipValidation(data, dirty, row)) {
+    if (this.shouldSkipValidation(data, dirty, row) || this.getReadOnly()) {
       return true;
     }
 
@@ -140,7 +140,7 @@ class Address extends BaseComponent {
         this.validateRequired(address, 'bySted', AddressLabels.bySted);
       } else if (this.getAddressType() === 'FOREIGN_ADDRESS') {
         this.validateRequired(address, 'adresse', AddressLabels.adresse);
-        this.validateRequired(address, 'landkode', AddressLabels.landkode);
+        this.validateRequired(address, 'land', AddressLabels.landkode);
       }
 
       this.rerender();

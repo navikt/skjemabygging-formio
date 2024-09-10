@@ -35,8 +35,8 @@ const AddressField = ({ type, label }: Props) => {
         return address?.bygning;
       case 'co':
         return address?.co;
-      case 'landkode':
-        return address?.landkode; // TODO: Change with country name when we support that.
+      case 'land':
+        return address?.land;
       case 'postboks':
         return address?.postboks;
       case 'postnummer':
@@ -60,7 +60,7 @@ const AddressField = ({ type, label }: Props) => {
         return translateLabel(TEXTS.statiske.address.building);
       case 'co':
         return translateLabel(TEXTS.statiske.address.co);
-      case 'landkode':
+      case 'land':
         return translateLabel(TEXTS.statiske.address.country);
       case 'postboks':
         return translateLabel(TEXTS.statiske.address.poBox);
