@@ -35,13 +35,14 @@ class MonthPicker extends BaseComponent {
   }
 
   override checkValidity(data?: SubmissionData, dirty?: boolean, row?: SubmissionData): boolean {
+    this.removeAllErrors();
+
     const formioData = data || this.rootValue;
     const formioRow = row || this.data;
     if (this.shouldSkipValidation(formioData, !!dirty, formioRow)) {
       return true;
     }
 
-    this.removeAllErrors();
     const value = this.getValue() as string;
     const required = this.isRequired();
     const error = validateDate(value, {
