@@ -6,6 +6,7 @@ interface AddressContextType {
   onChange: (type: AddressInputType, value: string) => void;
   address?: Address;
   readOnly?: boolean;
+  required?: boolean;
   label?: string;
   className?: string;
 }
@@ -16,9 +17,17 @@ interface AddressProviderProps extends AddressContextType {
 
 const AddressContext = createContext<AddressContextType>({} as AddressContextType);
 
-export const AddressProvider = ({ children, onChange, address, readOnly, label, className }: AddressProviderProps) => {
+export const AddressProvider = ({
+  children,
+  onChange,
+  address,
+  readOnly,
+  required,
+  label,
+  className,
+}: AddressProviderProps) => {
   return (
-    <AddressContext.Provider value={{ onChange, address, readOnly, label, className }}>
+    <AddressContext.Provider value={{ onChange, address, readOnly, required, label, className }}>
       {children}
     </AddressContext.Provider>
   );

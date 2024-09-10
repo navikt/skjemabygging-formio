@@ -6,7 +6,8 @@ interface ComponentUtilsContextType {
   appConfig: AppConfigContextType;
   translate: (originalText: string | undefined, params?: Record<string | number, any>) => string;
   locale: 'nb' | 'nn' | 'en';
-  addRef: (name: string, ref: HTMLElement | null) => void;
+  addRef: (elementId: string, ref: HTMLElement | null) => void;
+  getComponentError: (elementId: string) => string | undefined;
 }
 
 interface ComponentUtilsProviderProps {
@@ -25,6 +26,7 @@ export const ComponentUtilsProvider = ({ children, ...props }: ComponentUtilsPro
         translate: (originalText, params) => component?.t(originalText, params),
         locale: component?.getLocale(),
         addRef: component?.addRef.bind(component),
+        getComponentError: component?.getComponentError.bind(component),
       }}
     >
       {children}

@@ -8,11 +8,27 @@ import { useAddress } from './addressContext';
 interface Props {
   type: AddressInputType;
   label?: string;
+  required?: boolean;
 }
 
-const AddressField = ({ type, label }: Props) => {
-  const { onChange, address, readOnly, className, hideIfEmpty } = useAddress();
-  const { translate } = useComponentUtils();
+type AddressLabelsMap = {
+  [key in AddressInputType]: string;
+};
+
+export const AddressLabels: Partial<AddressLabelsMap> = {
+  bygning: TEXTS.statiske.address.building,
+  co: TEXTS.statiske.address.co,
+  landkode: TEXTS.statiske.address.country,
+  postboks: TEXTS.statiske.address.poBox,
+  postnummer: TEXTS.statiske.address.postalCode,
+  bySted: TEXTS.statiske.address.postalName,
+  region: TEXTS.statiske.address.region,
+  adresse: TEXTS.statiske.address.streetAddress,
+};
+
+const AddressField = ({ type, label, required }: Props) => {
+  const { onChange, address, readOnly, className } = useAddress();
+  const { translate, addRef, getComponentError } = useComponentUtils();
 
   const getValue = () => {
     switch (type) {
@@ -42,25 +58,29 @@ const AddressField = ({ type, label }: Props) => {
 
     switch (type) {
       case 'bygning':
-        return translate(TEXTS.statiske.address.building);
+        return translateLabel(TEXTS.statiske.address.building);
       case 'co':
-        return translate(TEXTS.statiske.address.co);
+        return translateLabel(TEXTS.statiske.address.co);
       case 'landkode':
-        return translate(TEXTS.statiske.address.country);
+        return translateLabel(TEXTS.statiske.address.country);
       case 'postboks':
-        return translate(TEXTS.statiske.address.poBox);
+        return translateLabel(TEXTS.statiske.address.poBox);
       case 'postnummer':
-        return translate(TEXTS.statiske.address.postalCode);
+        return translateLabel(TEXTS.statiske.address.postalCode);
       case 'bySted':
-        return translate(TEXTS.statiske.address.postalName);
+        return translateLabel(TEXTS.statiske.address.postalName);
       case 'region':
-        return translate(TEXTS.statiske.address.region);
+        return translateLabel(TEXTS.statiske.address.region);
       case 'adresse':
-        return translate(TEXTS.statiske.address.streetAddress);
+        return translateLabel(TEXTS.statiske.address.streetAddress);
     }
   };
 
-  if (hideIfEmpty && readOnly && !getValue()) {
+  const translateLabel = (label: string) => {
+    return required || readOnly ? translate(label) : `${translate(label)} (${translate('valgfritt')})`;
+  };
+
+  if (readOnly && !getValue()) {
     return <></>;
   }
 
@@ -69,6 +89,8 @@ const AddressField = ({ type, label }: Props) => {
       onChange={(event) => onChange(type, event.currentTarget.value)}
       defaultValue={getValue()}
       label={getLabel()}
+      ref={(ref) => addRef(`address:${type}`, ref)}
+      error={getComponentError(`address:${type}`)}
       readOnly={readOnly}
       className={classNames('form-group', className)}
     />

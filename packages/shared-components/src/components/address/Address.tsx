@@ -10,6 +10,7 @@ interface Props {
   onChange: (value: AddressInput) => void;
   address?: AddressInput;
   readOnly?: boolean;
+  required?: boolean;
   className?: string;
   addressTypeChoice?: boolean;
 }
@@ -21,7 +22,7 @@ export interface AddressInput extends AddressDomain {
 
 export type AddressInputType = keyof AddressInput;
 
-const Address = ({ addressType, address, readOnly, className, onChange, addressTypeChoice }: Props) => {
+const Address = ({ addressType, address, readOnly, required, className, onChange, addressTypeChoice }: Props) => {
   const getAddress = () => {
     if (
       addressType === 'NORWEGIAN_ADDRESS' ||
@@ -55,7 +56,13 @@ const Address = ({ addressType, address, readOnly, className, onChange, addressT
     <>
       {addressTypeChoice && <AddressTypeChoice values={address as AddressInput} onChange={handleChange} />}
       {showAddress() && (
-        <AddressProvider address={address} readOnly={readOnly} className={className} onChange={handleChange}>
+        <AddressProvider
+          address={address}
+          readOnly={readOnly}
+          required={required}
+          className={className}
+          onChange={handleChange}
+        >
           {getAddress()}
         </AddressProvider>
       )}

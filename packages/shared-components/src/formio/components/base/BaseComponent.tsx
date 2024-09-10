@@ -321,6 +321,10 @@ class BaseComponent extends FormioReactComponent {
   removeAllErrors() {
     this.componentErrors = [];
   }
+
+  getComponentError(elementId: string) {
+    return this.componentErrors.find((error) => error.elementId === elementId)?.message;
+  }
 }
 
 export default BaseComponent;

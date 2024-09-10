@@ -1,6 +1,7 @@
 import { Alert } from '@navikt/ds-react';
 import { Address as AddressDomain, AddressType, SubmissionAddress } from '@navikt/skjemadigitalisering-shared-domain';
-import NavAddress from '../../../../components/address/Address';
+import NavAddress, { AddressInput, AddressInputType } from '../../../../components/address/Address';
+import { AddressLabels } from '../../../../components/address/AddressField';
 import { ComponentUtilsProvider } from '../../../../context/component/componentUtilsContext';
 import BaseComponent from '../../base/BaseComponent';
 import addressBuilder from './Address.builder';
@@ -117,6 +118,40 @@ class Address extends BaseComponent {
     }
   }
 
+  get errors() {
+    return this.componentErrors;
+  }
+
+  checkValidity(): boolean {
+    this.removeAllErrors();
+    const address = this.getValue() || ({} as AddressDomain);
+    if (this.isRequired()) {
+      if (this.getAddressType() === 'NORWEGIAN_ADDRESS') {
+        this.validateRequired(address, 'adresse', AddressLabels.adresse);
+        this.validateRequired(address, 'postnummer', AddressLabels.postnummer);
+        this.validateRequired(address, 'bySted', AddressLabels.bySted);
+      } else if (this.getAddressType() === 'POST_OFFICE_BOX') {
+        this.validateRequired(address, 'postboks', AddressLabels.postboks);
+        this.validateRequired(address, 'postnummer', AddressLabels.postnummer);
+        this.validateRequired(address, 'bySted', AddressLabels.bySted);
+      } else if (this.getAddressType() === 'FOREIGN_ADDRESS') {
+        this.validateRequired(address, 'adresse', AddressLabels.adresse);
+        this.validateRequired(address, 'landkode', AddressLabels.landkode);
+      }
+
+      this.rerender();
+    }
+
+    return this.componentErrors.length === 0;
+  }
+
+  validateRequired(address: AddressInput, addressType: AddressInputType, label) {
+    if (!address[addressType]) {
+      const elementId = `address:${addressType}`;
+      super.addError(this.translate('required', { field: label }), elementId);
+    }
+  }
+
   renderReact(element) {
     element.render(
       this.builderMode && !this.getAddressType() ? (
@@ -134,6 +169,7 @@ class Address extends BaseComponent {
             readOnly={this.getReadOnly()}
             addressTypeChoice={this.showAddressTypeChoice()}
             className={this.getClassName()}
+            required={this.isRequired()}
           />
         </ComponentUtilsProvider>
       ),

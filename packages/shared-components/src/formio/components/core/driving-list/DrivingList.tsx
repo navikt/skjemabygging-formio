@@ -52,10 +52,6 @@ class DrivingList extends BaseComponent {
     }
   }
 
-  getComponentError(elementId: string) {
-    return this.componentErrors.find((error) => error.elementId === elementId)?.message;
-  }
-
   override checkValidity(): boolean {
     this.removeAllErrors();
     const componentData = this.getValue() as DrivingListSubmission;
@@ -114,11 +110,7 @@ class DrivingList extends BaseComponent {
     // TODO: Delete DrivingListProvider and use prop drilling instead
     element.render(
       <ComponentUtilsProvider component={this}>
-        <DrivingListProvider
-          updateValues={this.updateValues.bind(this)}
-          values={this.getValue()}
-          getComponentError={this.getComponentError.bind(this)}
-        >
+        <DrivingListProvider updateValues={this.updateValues.bind(this)} values={this.getValue()}>
           <NavDrivingList />
         </DrivingListProvider>
       </ComponentUtilsProvider>,
