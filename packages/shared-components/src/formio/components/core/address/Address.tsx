@@ -122,7 +122,11 @@ class Address extends BaseComponent {
     return this.componentErrors;
   }
 
-  checkValidity(): boolean {
+  checkComponentValidity(data, dirty, row, _options = {}) {
+    if (this.shouldSkipValidation(data, dirty, row)) {
+      return true;
+    }
+
     this.removeAllErrors();
     const address = this.getValue() || ({} as AddressDomain);
     if (this.isRequired()) {
