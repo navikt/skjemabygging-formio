@@ -17,8 +17,7 @@ export const validering = {
   minDate: 'Datoen kan ikke være tidligere enn {{minDate}}',
   maxYear: '{{field}} kan ikke være senere enn {{maxYear}}',
   minYear: '{{field}} kan ikke være før {{minYear}}',
-  yearTooManyIntegers: 'Årstall kan ikke ha flere enn 4 siffer',
-  yearTooFewIntegers: 'Årstall kan ikke ha færre enn 4 siffer',
+  yearLength: '{{field}} må ha 4 siffer',
 
   // IBAN
   noIBANProvided: 'Gyldig IBAN er ikke oppgitt',

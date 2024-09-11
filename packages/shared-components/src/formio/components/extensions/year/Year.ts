@@ -56,11 +56,12 @@ class Year extends Number {
     // Get data value instead of formatted number from this.getValue()
     const value = this.getDataValue();
 
-    if (`${value}`.length > 4) {
-      return this.translateWithLabel(TEXTS.validering.yearTooManyIntegers);
+    if (value === '' || value === undefined) {
+      return;
     }
-    if (`${value}`.length < 4) {
-      return this.translateWithLabel(TEXTS.validering.yearTooFewIntegers);
+
+    if (`${value}`.length !== 4) {
+      return this.translateWithLabel(TEXTS.validering.yearLength);
     }
 
     if (!numberUtils.isBiggerOrEqualMin(value, this.getMinYear())) {
