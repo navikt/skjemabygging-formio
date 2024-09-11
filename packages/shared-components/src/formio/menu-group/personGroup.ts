@@ -1,3 +1,4 @@
+import addressBuilder from '../components/core/address/Address.builder';
 import citizenshipBuilder from '../components/extensions/citizenship/Citizenship.builder';
 import countrySelectBuilder from '../components/extensions/country-select/CountrySelect.builder';
 import emailBuilder from '../components/extensions/email/Email.builder';
@@ -18,6 +19,7 @@ const personGroup = {
     fnrfield: nationalIdentityNumberBuilder(),
     firstName: firstNameBuilder(),
     surname: surnameBuilder(),
+    address: addressBuilder(),
     norskVegadresse: {
       title: 'Norsk vegadresse',
       schema: norskVegadresseSchema(),

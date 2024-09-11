@@ -123,13 +123,14 @@ class Address extends BaseComponent {
   }
 
   checkComponentValidity(data, dirty, row, _options = {}) {
+    this.removeAllErrors();
+
     if (this.shouldSkipValidation(data, dirty, row) || this.getReadOnly()) {
       return true;
     }
 
-    this.removeAllErrors();
-    const address = this.getValue() || ({} as AddressDomain);
-    if (this.isRequired()) {
+    const address = this.getValue() as AddressDomain;
+    if (address && this.isRequired()) {
       if (this.getAddressType() === 'NORWEGIAN_ADDRESS') {
         this.validateRequired(address, 'adresse', AddressLabels.adresse);
         this.validateRequired(address, 'postnummer', AddressLabels.postnummer);
