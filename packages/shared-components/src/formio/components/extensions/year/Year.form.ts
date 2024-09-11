@@ -20,8 +20,8 @@ const yearForm = () => {
     ]),
     validation([
       editFormValidation.required(),
-      editFormValidation.minNumber(),
-      editFormValidation.maxNumber(),
+      editFormValidation.minYear(),
+      editFormValidation.maxYear(),
       editFormValidation.customValidation(),
       editFormValidation.customError(),
     ]),

@@ -1,4 +1,4 @@
-import { InputMode, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { InputMode, numberUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import BaseComponent from '../../base/BaseComponent';
 import Number from '../number/Number';
 import yearBuilder from './Year.builder';
@@ -31,8 +31,12 @@ class Year extends Number {
     return this.component?.inputType || 'numeric';
   }
 
-  replaceCommasAndSpaces(value: string): string {
-    return value?.replace(/\s/g, '');
+  getMinYear() {
+    return this.component?.validate?.minYear;
+  }
+
+  getMaxYear() {
+    return this.component?.validate?.maxYear;
   }
 
   checkComponentValidity(data, dirty, row, options = {}) {
@@ -58,6 +62,22 @@ class Year extends Number {
     if (`${value}`.length < 4) {
       return this.translateWithLabel(TEXTS.validering.yearTooFewIntegers);
     }
+
+    if (!numberUtils.isBiggerOrEqualMin(value, this.getMinYear())) {
+      return this.translateWithLabel(TEXTS.validering.minYear, {
+        minYear: numberUtils.toLocaleString(this.getMinYear(), this.getNumberFormatOptions()),
+      });
+    }
+
+    if (!numberUtils.isSmallerOrEqualMax(value, this.getMaxYear())) {
+      return this.translateWithLabel(TEXTS.validering.maxYear, {
+        maxYear: numberUtils.toLocaleString(this.getMaxYear(), this.getNumberFormatOptions()),
+      });
+    }
+  }
+
+  replaceCommasAndSpaces(value: string): string {
+    return value?.replace(/\s/g, '');
   }
 }
 
