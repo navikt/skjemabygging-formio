@@ -36,7 +36,7 @@ const isSmallerOrEqualMax = (value?: string | number, max?: string | number) => 
   return valueFloat <= maxFloat;
 };
 
-const toLocaleString = (value?: string | number, options: Intl.NumberFormatOptions = {}) => {
+const toLocaleString = (value?: string | number, options: Intl.NumberFormatOptions = { maximumFractionDigits: 2 }) => {
   if (value === undefined || value === null || value === '') {
     return '';
   }
