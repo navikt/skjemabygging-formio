@@ -20,13 +20,11 @@ function createComponentKeyWithNavId(component) {
   return `${component.key}-${component.navId}`;
 }
 
-function formatPostnummerOgBySted(bostedsadresse) {
-  if (bostedsadresse?.postnummer) {
-    return bostedsadresse.bySted
-      ? `${bostedsadresse?.postnummer} ${bostedsadresse?.bySted}`
-      : bostedsadresse.postnummer;
+function formatPostnummerOgBySted(address) {
+  if (address?.postnummer) {
+    return address.bySted ? `${address?.postnummer} ${address?.bySted}` : address.postnummer;
   }
-  return bostedsadresse?.bySted;
+  return address?.bySted;
 }
 
 function formatValue(component, value, translate, form, language) {
