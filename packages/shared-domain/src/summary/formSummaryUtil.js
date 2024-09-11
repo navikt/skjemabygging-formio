@@ -106,16 +106,14 @@ function formatValue(component, value, translate, form, language) {
     case 'attachment':
       return attachmentUtils.mapToAttachmentSummary({ translate, value, component, form });
     case 'navAddress': {
-      const bostedsadresse = value?.bostedsadresse;
-
       const addressComponents = [
-        bostedsadresse?.co ? `c/o ${bostedsadresse.co}` : undefined,
-        bostedsadresse?.adresse,
-        bostedsadresse?.bygning,
-        bostedsadresse?.postboks,
-        formatPostnummerOgBySted(bostedsadresse),
-        bostedsadresse?.region,
-        bostedsadresse?.landkode,
+        value?.co ? `c/o ${value.co}` : undefined,
+        value?.adresse,
+        value?.bygning,
+        value?.postboks,
+        formatPostnummerOgBySted(value),
+        value?.region,
+        value?.landkode,
       ].filter(Boolean);
       const address = addressComponents.join(', ');
 
