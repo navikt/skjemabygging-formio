@@ -23,6 +23,10 @@ class Number extends TextField {
     return numberBuilder();
   }
 
+  getNumberFormatOptions(): Intl.NumberFormatOptions {
+    return { maximumFractionDigits: 2 };
+  }
+
   getInputMode(): InputMode {
     return this.component?.inputType || 'decimal';
   }
@@ -53,8 +57,8 @@ class Number extends TextField {
   }
 
   validateNumber() {
-    // Get data value from parent instead of formatted number from this.getValue()
-    const value = super.getValue();
+    // Get data value instead of formatted number from this.getValue()
+    const value = this.getDataValue();
 
     if (value === '' || value === undefined) {
       return;
@@ -67,11 +71,15 @@ class Number extends TextField {
     }
 
     if (!numberUtils.isBiggerOrEqualMin(value, this.getMinValue())) {
-      return this.translateWithLabel(TEXTS.validering.min, { min: numberUtils.toLocaleString(this.getMinValue()) });
+      return this.translateWithLabel(TEXTS.validering.min, {
+        min: numberUtils.toLocaleString(this.getMinValue(), this.getNumberFormatOptions()),
+      });
     }
 
     if (!numberUtils.isSmallerOrEqualMax(value, this.getMaxValue())) {
-      return this.translateWithLabel(TEXTS.validering.max, { max: numberUtils.toLocaleString(this.getMaxValue()) });
+      return this.translateWithLabel(TEXTS.validering.max, {
+        max: numberUtils.toLocaleString(this.getMaxValue(), this.getNumberFormatOptions()),
+      });
     }
   }
 
@@ -93,14 +101,19 @@ class Number extends TextField {
     }
   }
 
-  getValue() {
+  getDataValue() {
+    // Get data value from parent instead of formatted number from this.getValue()
+    return super.getValue();
+  }
+
+  override getValue() {
     // Need to format the number when jumping between tabs or else we show the data value instead of display value
-    return numberUtils.toLocaleString(super.getValue());
+    return numberUtils.toLocaleString(super.getValue(), this.getNumberFormatOptions());
   }
 
   setValueOnReactInstance(value) {
     // This is needed to handle formatting after calculate value
-    super.setValueOnReactInstance(numberUtils.toLocaleString(value));
+    super.setValueOnReactInstance(numberUtils.toLocaleString(value, this.getNumberFormatOptions()));
   }
 
   replaceCommasAndSpaces(value: string) {

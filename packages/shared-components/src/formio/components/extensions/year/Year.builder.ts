@@ -1,7 +1,7 @@
-import Number from './Number';
+import Year from './Year';
 
-const numberBuilder = () => {
-  const schema = Number.schema();
+const yearBuilder = () => {
+  const schema = Year.schema();
   return {
     title: schema.label,
     schema: {
@@ -14,4 +14,4 @@ const numberBuilder = () => {
   };
 };
 
-export default numberBuilder;
+export default yearBuilder;

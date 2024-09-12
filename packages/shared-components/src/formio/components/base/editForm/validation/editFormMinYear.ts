@@ -2,13 +2,9 @@ import { Component } from '@navikt/skjemadigitalisering-shared-domain';
 
 const editFormMinYear = (): Component => {
   return {
-    type: 'number',
+    type: 'year',
     label: 'Minimum år',
     key: 'validate.minYear',
-    validate: {
-      min: 1900,
-      max: 2100,
-    },
   };
 };
 

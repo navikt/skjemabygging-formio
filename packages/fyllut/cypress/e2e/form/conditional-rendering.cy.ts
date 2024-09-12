@@ -160,6 +160,7 @@ describe('Conditional rendering', () => {
       cy.clickNextStep();
       cy.findByRole('link', { name: 'Du må fylle ut: Velg en måned' }).shouldBeVisible();
       cy.findByRole('link', { name: 'Du må fylle ut: Tall' }).shouldBeVisible();
+      cy.findByRole('link', { name: 'Du må fylle ut: Årstall' }).shouldBeVisible();
       cy.findByRole('link', { name: 'Du må fylle ut: IBAN' }).shouldBeVisible();
       cy.findByRole('link', { name: 'Du må fylle ut: Fødselsnummer eller d-nummer' }).shouldBeVisible();
 
@@ -170,6 +171,7 @@ describe('Conditional rendering', () => {
       cy.findByRole('textbox', { name: 'Velg en måned' }).should('not.exist');
       cy.findByRole('link', { name: 'Du må fylle ut: Velg en måned' }).should('not.exist');
       cy.findByRole('link', { name: 'Du må fylle ut: Tall' }).should('not.exist');
+      cy.findByRole('link', { name: 'Du må fylle ut: Årstall' }).should('not.exist');
       cy.findByRole('link', { name: 'Du må fylle ut: IBAN' }).should('not.exist');
       cy.findByRole('link', { name: 'Du må fylle ut: Fødselsnummer eller d-nummer' }).should('not.exist');
       cy.clickNextStep();
