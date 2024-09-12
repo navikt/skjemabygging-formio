@@ -47,19 +47,17 @@ class Alert extends BaseComponent {
   renderReact(element) {
     element.render(
       <ComponentUtilsProvider component={this}>
-        <div>
-          <TextDisplayTag component={this.component} />
-          <DiffTag component={this.component} editFields={this.getEditFields()} />
-          <NavAlert
-            id={this.getId()}
-            variant={this.getAlertType()}
-            inline={this.getIsinline()} // Removes background if true
-            fullWidth={false} // Removes border-radius if true
-            size="medium"
-          >
-            <InnerHtml content={this.getContent()} className={'alertContent'} />
-          </NavAlert>
-        </div>
+        <TextDisplayTag component={this.component} />
+        <DiffTag component={this.component} editFields={this.getEditFields()} />
+        <NavAlert
+          id={this.getId()}
+          variant={this.getAlertType()}
+          inline={this.getIsinline()} // Removes background if true
+          fullWidth={false} // Removes border-radius if true
+          size="medium"
+        >
+          <InnerHtml content={this.getContent()} className={'alertContent'} />
+        </NavAlert>
       </ComponentUtilsProvider>,
     );
   }
