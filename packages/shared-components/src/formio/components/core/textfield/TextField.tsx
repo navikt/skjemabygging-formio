@@ -1,6 +1,9 @@
 import { TextField as NavTextField } from '@navikt/ds-react';
 import { InputMode } from '@navikt/skjemadigitalisering-shared-domain';
+import { ComponentUtilsProvider } from '../../../../context/component/componentUtilsContext';
 import BaseComponent from '../../base/BaseComponent';
+import Description from '../../base/components/Description';
+import Label from '../../base/components/Label';
 import textFieldBuilder from './TextField.builder';
 import textFieldForm from './TextField.form';
 
@@ -41,22 +44,24 @@ class TextField extends BaseComponent {
 
   renderReact(element) {
     element.render(
-      <NavTextField
-        id={this.getId()}
-        defaultValue={this.getValue()}
-        ref={(ref) => this.setReactInstance(ref)}
-        onChange={(event) => this.handleChange(event.currentTarget.value)}
-        label={this.getLabel()}
-        hideLabel={this.getHideLabel()}
-        description={this.getDescription()}
-        className={this.getClassName()}
-        autoComplete={this.getAutoComplete()}
-        readOnly={this.getReadOnly()}
-        spellCheck={this.getSpellCheck()}
-        error={this.getError()}
-        inputMode={this.getInputMode()}
-        type={this.isProtected() ? 'password' : 'text'}
-      />,
+      <ComponentUtilsProvider component={this}>
+        <NavTextField
+          id={this.getId()}
+          defaultValue={this.getValue()}
+          ref={(ref) => this.setReactInstance(ref)}
+          onChange={(event) => this.handleChange(event.currentTarget.value)}
+          label={<Label component={this.component} editFields={this.getEditFields()} />}
+          hideLabel={this.getHideLabel()}
+          description={<Description component={this.component} />}
+          className={this.getClassName()}
+          autoComplete={this.getAutoComplete()}
+          readOnly={this.getReadOnly()}
+          spellCheck={this.getSpellCheck()}
+          error={this.getError()}
+          inputMode={this.getInputMode()}
+          type={this.isProtected() ? 'password' : 'text'}
+        />
+      </ComponentUtilsProvider>,
     );
   }
 }

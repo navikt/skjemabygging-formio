@@ -1,5 +1,8 @@
 import InnerHtml from '../../../../components/inner-html/InnerHtml';
+import { ComponentUtilsProvider } from '../../../../context/component/componentUtilsContext';
 import BaseComponent from '../../base/BaseComponent';
+import DiffTag from '../../base/components/DiffTag';
+import TextDisplayTag from '../../base/components/TextDisplayTag';
 import htmlElementBuilder from './HtmlElement.builder';
 import htmlElementForm from './HtmlElement.form';
 
@@ -31,11 +34,11 @@ class HtmlElement extends BaseComponent {
 
   renderReact(element) {
     element.render(
-      <div>
-        {this.getTextDisplayTag()}
-        {this.getDiffTag()}
+      <ComponentUtilsProvider component={this}>
+        <TextDisplayTag component={this.component} />
+        <DiffTag component={this.component} editFields={this.getEditFields()} />
         <InnerHtml tag={this.getTag()} content={this.getContent()} />
-      </div>,
+      </ComponentUtilsProvider>,
     );
   }
 }

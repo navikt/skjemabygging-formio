@@ -47,6 +47,10 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
     return this.options?.appConfig;
   }
 
+  getFormConfig() {
+    return this.options?.formConfig;
+  }
+
   detachReact(element) {
     // For now we prefer memory leak in development and test over spamming the console log...
     // Wrapping in setTimeout causes problems when we do a redraw, so need to find a different solution.

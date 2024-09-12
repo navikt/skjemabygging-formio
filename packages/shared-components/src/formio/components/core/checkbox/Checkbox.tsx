@@ -1,6 +1,8 @@
 import { Checkbox as AkselCheckbox, CheckboxGroup } from '@navikt/ds-react';
 import InnerHtml from '../../../../components/inner-html/InnerHtml';
+import { ComponentUtilsProvider } from '../../../../context/component/componentUtilsContext';
 import BaseComponent from '../../base/BaseComponent';
+import Label from '../../base/components/Label';
 import checkboxBuilder from './Checkbox.builder';
 import checkboxForm from './Checkbox.form';
 
@@ -38,19 +40,24 @@ class Checkbox extends BaseComponent {
 
   renderReact(element) {
     return element.render(
-      <CheckboxGroup
-        legend={this.getLabel()}
-        hideLegend={true}
-        value={this.getCheckboxGroupValue()}
-        onChange={(value) => this.changeHandler(value)}
-        ref={(ref) => this.setReactInstance(ref)}
-        className={this.getClassName()}
-        readOnly={this.getReadOnly()}
-        error={this.getError()}
-      >
-        <InnerHtml content={this.translate(this.component?.description)} />
-        <AkselCheckbox value={this.component?.key}>{this.getLabel()}</AkselCheckbox>
-      </CheckboxGroup>,
+      <ComponentUtilsProvider component={this}>
+        <CheckboxGroup
+          legend={this.getLabel()}
+          hideLegend={true}
+          value={this.getCheckboxGroupValue()}
+          onChange={(value) => this.changeHandler(value)}
+          ref={(ref) => this.setReactInstance(ref)}
+          className={this.getClassName()}
+          readOnly={this.getReadOnly()}
+          error={this.getError()}
+        >
+          <InnerHtml content={this.translate(this.component?.description)} />
+          <AkselCheckbox value={this.component?.key}>
+            <Label component={this.component} editFields={this.getEditFields()} />
+          </AkselCheckbox>
+        </CheckboxGroup>
+        D
+      </ComponentUtilsProvider>,
     );
   }
 }
