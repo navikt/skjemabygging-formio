@@ -122,15 +122,15 @@ class Address extends BaseComponent {
     return this.componentErrors;
   }
 
-  checkComponentValidity(data, dirty, row, _options = {}) {
+  checkValidity(data, dirty, row) {
     this.removeAllErrors();
 
     if (this.shouldSkipValidation(data, dirty, row) || this.getReadOnly()) {
       return true;
     }
 
-    const address = this.getValue() as AddressDomain;
-    if (address && this.isRequired()) {
+    const address = this.getValue() ?? ({} as AddressDomain);
+    if (this.isRequired()) {
       if (this.getAddressType() === 'NORWEGIAN_ADDRESS') {
         this.validateRequired(address, 'adresse', AddressLabels.adresse);
         this.validateRequired(address, 'postnummer', AddressLabels.postnummer);
@@ -159,13 +159,13 @@ class Address extends BaseComponent {
 
   renderReact(element) {
     element.render(
-      this.builderMode && !this.getAddressType() ? (
-        <Alert variant="info">
-          Adressekomponenten er satt opp med preutfylling fra PDL for digital innsending. For papirinnsending vil vi
-          vise valg av bosted for å gi dem riktige adressefelter. Bruk forhåndsvisning for å se hvordan dette ser ut på
-          papirinnsending.
-        </Alert>
-      ) : (
+      <>
+        {this.builderMode && !!this.component?.prefillKey && (
+          <Alert variant="info" className="mb-4">
+            Adressekomponenten er satt opp med preutfylling fra PDL for digital innsending. I byggeren ser man hvordan
+            dette ser ut ved papirinnsending.
+          </Alert>
+        )}
         <ComponentUtilsProvider component={this}>
           <NavAddress
             onChange={this.handleChange.bind(this)}
@@ -177,7 +177,7 @@ class Address extends BaseComponent {
             required={this.isRequired()}
           />
         </ComponentUtilsProvider>
-      ),
+      </>,
     );
   }
 }

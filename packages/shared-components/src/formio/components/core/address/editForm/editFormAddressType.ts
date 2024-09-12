@@ -16,7 +16,6 @@ const editFormAddressType = (options: PropertyOptions): AddressComponent => {
     type: 'radiopanel',
     label: 'Adressetype',
     key: 'addressType',
-    defaultValue: 'NORWEGIAN_ADDRESS',
     values: [
       {
         value: 'NORWEGIAN_ADDRESS',

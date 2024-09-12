@@ -6,6 +6,9 @@ const addressBuilder = () => {
     title: schema.label,
     schema: {
       ...schema,
+      validate: {
+        required: true,
+      },
     },
   };
 };
