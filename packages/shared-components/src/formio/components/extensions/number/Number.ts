@@ -106,7 +106,7 @@ class Number extends TextField {
     return super.getValue();
   }
 
-  getValue() {
+  override getValue() {
     // Need to format the number when jumping between tabs or else we show the data value instead of display value
     return numberUtils.toLocaleString(super.getValue(), this.getNumberFormatOptions());
   }

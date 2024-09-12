@@ -1,12 +1,11 @@
 import editFormApi from '../../base/editForm/api';
 import editFormConditional from '../../base/editForm/conditional';
-import editFormData from '../../base/editForm/data';
 import editFormDisplay from '../../base/editForm/display';
 import editFormTabs from '../../base/editForm/editFormTabs';
 import editFormValidation from '../../base/editForm/validation';
 
 const yearForm = () => {
-  const { api, conditional, createTabs, display, validation, data } = editFormTabs;
+  const { api, conditional, createTabs, display, validation } = editFormTabs;
 
   // prettier-ignore
   return createTabs(
@@ -14,9 +13,6 @@ const yearForm = () => {
       editFormDisplay.label(),
       editFormDisplay.description(),
       editFormDisplay.additionalDescription()
-    ]),
-    data([
-      editFormData.calculateValue(),
     ]),
     validation([
       editFormValidation.required(),

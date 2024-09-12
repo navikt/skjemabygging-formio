@@ -40,6 +40,10 @@ class Year extends Number {
   }
 
   checkComponentValidity(data, dirty, row, options = {}) {
+    if (this.shouldSkipValidation(data, dirty, row)) {
+      return true;
+    }
+
     const validity = super.checkComponentValidity(data, dirty, row, options);
 
     if (validity) {
@@ -60,7 +64,7 @@ class Year extends Number {
       return;
     }
 
-    if (`${value}`.length !== 4) {
+    if (value.toString().length !== 4) {
       return this.translateWithLabel(TEXTS.validering.yearLength);
     }
 
@@ -75,10 +79,6 @@ class Year extends Number {
         maxYear: numberUtils.toLocaleString(this.getMaxYear(), this.getNumberFormatOptions()),
       });
     }
-  }
-
-  replaceCommasAndSpaces(value: string): string {
-    return value?.replace(/\s/g, '');
   }
 }
 
