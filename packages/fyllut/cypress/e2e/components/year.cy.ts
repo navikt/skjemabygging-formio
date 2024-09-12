@@ -12,7 +12,7 @@ describe('year', () => {
     cy.findByRole('textbox', { name: 'Påkrevd årstall' }).should('exist');
     cy.findByRole('textbox', { name: 'Påkrevd årstall' }).type('2024');
     cy.findByRole('textbox', { name: 'MinMax årstall' }).should('exist');
-    cy.findByRole('textbox', { name: 'MinMax årstall' }).type('1995');
+    cy.findByRole('textbox', { name: 'MinMax årstall' }).type('1 9 9 5');
     cy.clickSaveAndContinue();
 
     cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
