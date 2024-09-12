@@ -1,16 +1,15 @@
 import { Tag } from '@navikt/ds-react';
 import { Component, formDiffingTool } from '@navikt/skjemadigitalisering-shared-domain';
-import { ReactComponentType } from '../index';
+import { useComponentUtils } from '../../../../context/component/componentUtilsContext';
 
 interface Props {
   component?: Component;
-  options: ReactComponentType['options'];
-  builderMode: boolean;
   editFields: string[];
 }
 
-const DiffTag = ({ component, options, builderMode, editFields }: Props) => {
-  const publishedForm = options?.formConfig?.publishedForm;
+const DiffTag = ({ component, editFields }: Props) => {
+  const { formConfig, builderMode } = useComponentUtils();
+  const publishedForm = formConfig?.publishedForm;
   if (!builderMode || !publishedForm) {
     return <></>;
   }

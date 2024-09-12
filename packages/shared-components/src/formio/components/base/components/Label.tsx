@@ -1,20 +1,19 @@
 import { Component } from '@navikt/skjemadigitalisering-shared-domain';
+import { useComponentUtils } from '../../../../context/component/componentUtilsContext';
 import baseComponentUtils from '../baseComponentUtils';
-import { ReactComponentType } from '../index';
 import DiffTag from './DiffTag';
 
 type LabelOptions = { showOptional?: boolean; showDiffTag?: boolean };
 
 interface Props {
   component?: Component;
-  translate: any;
-  options: ReactComponentType['options'];
-  builderMode: boolean;
   editFields: string[];
   labelOptions?: LabelOptions;
 }
 
-const Label = ({ component, translate, options, builderMode, editFields, labelOptions }: Props) => {
+const Label = ({ component, editFields, labelOptions }: Props) => {
+  const { translate } = useComponentUtils();
+
   const { getLabel, isRequired, isReadOnly } = baseComponentUtils;
   const defaultOptions = { showOptional: true, showDiffTag: true };
   const { showOptional, showDiffTag } = { ...defaultOptions, ...(labelOptions ?? {}) };
@@ -23,9 +22,7 @@ const Label = ({ component, translate, options, builderMode, editFields, labelOp
     <>
       {translate(getLabel(component))}
       {isRequired(component) || isReadOnly(component) ? '' : showOptional && ` (${translate('valgfritt')})`}
-      {showDiffTag && (
-        <DiffTag component={component} options={options} builderMode={builderMode} editFields={editFields} />
-      )}
+      {showDiffTag && <DiffTag component={component} editFields={editFields} />}
     </>
   );
 };

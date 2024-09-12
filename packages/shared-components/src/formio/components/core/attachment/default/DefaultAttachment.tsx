@@ -1,4 +1,5 @@
 import NavAttachment from '../../../../../components/attachment/Attachment';
+import { ComponentUtilsProvider } from '../../../../../context/component/componentUtilsContext';
 import BaseComponent from '../../../base/BaseComponent';
 import Description from '../../../base/components/Description';
 import Label from '../../../base/components/Label';
@@ -34,25 +35,19 @@ class DefaultAttachment extends BaseComponent {
 
   renderReact(element) {
     element.render(
-      <NavAttachment
-        value={this.getValue()}
-        attachmentValues={this.getAttachmentValues()}
-        title={
-          <Label
-            component={this.component}
-            translate={this.translate.bind(this)}
-            options={this.options}
-            builderMode={this.builderMode}
-            editFields={this.getEditFields()}
-          />
-        }
-        description={<Description component={this.component} translate={this.translate.bind(this)} />}
-        deadline={this.options.properties?.ettersendelsesfrist}
-        error={this.getError()}
-        onChange={(value) => this.handleChange(value)}
-        translate={this.translate.bind(this)}
-        ref={(ref) => this.setReactInstance(ref)}
-      />,
+      <ComponentUtilsProvider component={this}>
+        <NavAttachment
+          value={this.getValue()}
+          attachmentValues={this.getAttachmentValues()}
+          title={<Label component={this.component} editFields={this.getEditFields()} />}
+          description={<Description component={this.component} />}
+          deadline={this.options.properties?.ettersendelsesfrist}
+          error={this.getError()}
+          onChange={(value) => this.handleChange(value)}
+          translate={this.translate.bind(this)}
+          ref={(ref) => this.setReactInstance(ref)}
+        />
+      </ComponentUtilsProvider>,
     );
   }
 }

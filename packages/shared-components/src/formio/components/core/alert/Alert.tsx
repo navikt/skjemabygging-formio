@@ -1,6 +1,7 @@
 import { AlertProps, Alert as NavAlert } from '@navikt/ds-react';
 import Field from 'formiojs/components/_classes/field/Field';
 import InnerHtml from '../../../../components/inner-html/InnerHtml';
+import { ComponentUtilsProvider } from '../../../../context/component/componentUtilsContext';
 import BaseComponent from '../../base/BaseComponent';
 import DiffTag from '../../base/components/DiffTag';
 import alertBuilder from './Alert.builder';
@@ -44,24 +45,21 @@ class Alert extends BaseComponent {
 
   renderReact(element) {
     element.render(
-      <div>
-        {this.getTextDisplayTag()}
-        <DiffTag
-          component={this.component}
-          options={this.options}
-          builderMode={this.builderMode}
-          editFields={this.getEditFields()}
-        />
-        <NavAlert
-          id={this.getId()}
-          variant={this.getAlertType()}
-          inline={this.getIsinline()} // Removes background if true
-          fullWidth={false} // Removes border-radius if true
-          size="medium"
-        >
-          <InnerHtml content={this.getContent()} className={'alertContent'} />
-        </NavAlert>
-      </div>,
+      <ComponentUtilsProvider component={this}>
+        <div>
+          {this.getTextDisplayTag()}
+          <DiffTag component={this.component} editFields={this.getEditFields()} />
+          <NavAlert
+            id={this.getId()}
+            variant={this.getAlertType()}
+            inline={this.getIsinline()} // Removes background if true
+            fullWidth={false} // Removes border-radius if true
+            size="medium"
+          >
+            <InnerHtml content={this.getContent()} className={'alertContent'} />
+          </NavAlert>
+        </div>
+      </ComponentUtilsProvider>,
     );
   }
 }

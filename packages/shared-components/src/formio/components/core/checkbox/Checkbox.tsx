@@ -1,5 +1,6 @@
 import { Checkbox as AkselCheckbox, CheckboxGroup } from '@navikt/ds-react';
 import InnerHtml from '../../../../components/inner-html/InnerHtml';
+import { ComponentUtilsProvider } from '../../../../context/component/componentUtilsContext';
 import BaseComponent from '../../base/BaseComponent';
 import Label from '../../base/components/Label';
 import checkboxBuilder from './Checkbox.builder';
@@ -39,35 +40,24 @@ class Checkbox extends BaseComponent {
 
   renderReact(element) {
     return element.render(
-      <CheckboxGroup
-        legend={
-          <Label
-            component={this.component}
-            translate={this.translate.bind(this)}
-            options={this.options}
-            builderMode={this.builderMode}
-            editFields={this.getEditFields()}
-          />
-        }
-        hideLegend={true}
-        value={this.getCheckboxGroupValue()}
-        onChange={(value) => this.changeHandler(value)}
-        ref={(ref) => this.setReactInstance(ref)}
-        className={this.getClassName()}
-        readOnly={this.getReadOnly()}
-        error={this.getError()}
-      >
-        <InnerHtml content={this.translate(this.component?.description)} />
-        <AkselCheckbox value={this.component?.key}>
-          <Label
-            component={this.component}
-            translate={this.translate.bind(this)}
-            options={this.options}
-            builderMode={this.builderMode}
-            editFields={this.getEditFields()}
-          />
-        </AkselCheckbox>
-      </CheckboxGroup>,
+      <ComponentUtilsProvider component={this}>
+        <CheckboxGroup
+          legend={this.getLabel()}
+          hideLegend={true}
+          value={this.getCheckboxGroupValue()}
+          onChange={(value) => this.changeHandler(value)}
+          ref={(ref) => this.setReactInstance(ref)}
+          className={this.getClassName()}
+          readOnly={this.getReadOnly()}
+          error={this.getError()}
+        >
+          <InnerHtml content={this.translate(this.component?.description)} />
+          <AkselCheckbox value={this.component?.key}>
+            <Label component={this.component} editFields={this.getEditFields()} />
+          </AkselCheckbox>
+        </CheckboxGroup>
+        D
+      </ComponentUtilsProvider>,
     );
   }
 }

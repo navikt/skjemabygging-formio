@@ -107,22 +107,14 @@ export default class DatePicker extends BaseComponent {
       <ComponentUtilsProvider component={this}>
         <ReactDatePicker
           id={this.getId()}
-          label={
-            <Label
-              component={this.component}
-              translate={this.translate.bind(this)}
-              options={this.options}
-              builderMode={this.builderMode}
-              editFields={this.getEditFields()}
-            />
-          }
+          label={<Label component={this.component} editFields={this.getEditFields()} />}
           required={this.isRequired()}
           value={this.getValue()}
           onChange={this.onUpdate.bind(this)}
           readOnly={this.getReadOnly()}
           error={this.getError()}
           inputRef={(ref) => this.setReactInstance(ref)}
-          description={<Description component={this.component} translate={this.translate.bind(this)} />}
+          description={<Description component={this.component} />}
           fromDate={this.getFromDate()}
           toDate={this.getToDate()}
         />

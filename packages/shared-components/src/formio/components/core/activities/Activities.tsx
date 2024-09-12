@@ -80,38 +80,28 @@ class Activities extends BaseComponent {
 
   renderReact(element) {
     element.render(
-      <>
-        <DiffTag
-          component={this.component}
-          options={this.options}
-          builderMode={this.builderMode}
-          editFields={this.getEditFields()}
+      <ComponentUtilsProvider component={this}>
+        <DiffTag component={this.component} editFields={this.getEditFields()} />
+        <NavActivities
+          id={this.getId()}
+          label={
+            <Label
+              component={this.component}
+              editFields={this.getEditFields()}
+              labelOptions={{ showOptional: false }}
+            />
+          }
+          value={this.getValue()}
+          onChange={(value, options) => this.changeHandler(value, options)}
+          description={<Description component={this.component} />}
+          className={this.getClassName()}
+          error={this.getError()}
+          defaultActivity={this.defaultActivity}
+          dataType="aktivitet"
+          ref={(ref) => this.setReactInstance(ref)}
+          shouldAutoSelectSingleActivity={false}
         />
-        <ComponentUtilsProvider component={this}>
-          <NavActivities
-            id={this.getId()}
-            label={
-              <Label
-                component={this.component}
-                translate={this.translate.bind(this)}
-                options={this.options}
-                builderMode={this.builderMode}
-                editFields={this.getEditFields()}
-                labelOptions={{ showOptional: false }}
-              />
-            }
-            value={this.getValue()}
-            onChange={(value, options) => this.changeHandler(value, options)}
-            description={<Description component={this.component} translate={this.translate.bind(this)} />}
-            className={this.getClassName()}
-            error={this.getError()}
-            defaultActivity={this.defaultActivity}
-            dataType="aktivitet"
-            ref={(ref) => this.setReactInstance(ref)}
-            shouldAutoSelectSingleActivity={false}
-          />
-        </ComponentUtilsProvider>
-      </>,
+      </ComponentUtilsProvider>,
     );
   }
 }
