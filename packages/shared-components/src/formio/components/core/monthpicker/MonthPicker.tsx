@@ -1,4 +1,4 @@
-import { numberUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { numberUtils, SubmissionData } from '@navikt/skjemadigitalisering-shared-domain';
 import FormioDay from 'formiojs/components/day/Day';
 import { TFunction } from 'i18next';
 import ReactMonthPicker from '../../../../components/monthpicker/MonthPicker';
@@ -34,8 +34,15 @@ class MonthPicker extends BaseComponent {
     return this.componentErrors;
   }
 
-  override checkValidity(): boolean {
+  override checkValidity(data?: SubmissionData, dirty?: boolean, row?: SubmissionData): boolean {
     this.removeAllErrors();
+
+    const formioData = data || this.rootValue;
+    const formioRow = row || this.data;
+    if (this.shouldSkipValidation(formioData, !!dirty, formioRow)) {
+      return true;
+    }
+
     const value = this.getValue() as string;
     const required = this.isRequired();
     const error = validateDate(value, {
