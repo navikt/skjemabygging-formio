@@ -1,4 +1,3 @@
-import { Tag } from '@navikt/ds-react';
 import { Component, ComponentError, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import Field from 'formiojs/components/_classes/field/Field';
 import FormioUtils from 'formiojs/utils';
@@ -183,29 +182,6 @@ class BaseComponent extends FormioReactComponent {
    */
   getIsLoggedIn() {
     return this.options?.appConfig?.config?.isLoggedIn;
-  }
-
-  /**
-   * Get textDisplay tag for custom component renderReact()
-   */
-  getTextDisplayTag() {
-    if (!this.builderMode) {
-      return <></>;
-    }
-
-    if (this.component?.textDisplay === 'pdf') {
-      return (
-        <Tag variant="alt3" className="mb-4" size="xsmall">
-          PDF
-        </Tag>
-      );
-    } else if (this.component?.textDisplay === 'formPdf') {
-      return (
-        <Tag variant="alt3" className="mb-4" size="xsmall">
-          Skjema og PDF
-        </Tag>
-      );
-    }
   }
 
   /**

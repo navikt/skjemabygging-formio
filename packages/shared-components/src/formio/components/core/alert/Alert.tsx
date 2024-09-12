@@ -4,6 +4,7 @@ import InnerHtml from '../../../../components/inner-html/InnerHtml';
 import { ComponentUtilsProvider } from '../../../../context/component/componentUtilsContext';
 import BaseComponent from '../../base/BaseComponent';
 import DiffTag from '../../base/components/DiffTag';
+import TextDisplayTag from '../../base/components/TextDisplayTag';
 import alertBuilder from './Alert.builder';
 import alertForm from './Alert.form';
 
@@ -47,7 +48,7 @@ class Alert extends BaseComponent {
     element.render(
       <ComponentUtilsProvider component={this}>
         <div>
-          {this.getTextDisplayTag()}
+          <TextDisplayTag component={this.component} />
           <DiffTag component={this.component} editFields={this.getEditFields()} />
           <NavAlert
             id={this.getId()}
