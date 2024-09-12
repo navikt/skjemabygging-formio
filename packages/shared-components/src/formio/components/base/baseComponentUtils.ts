@@ -1,4 +1,4 @@
-import { Component } from '@navikt/skjemadigitalisering-shared-domain';
+import { Component, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { ReactComponentType } from './index';
 
 /**
@@ -16,6 +16,12 @@ const getHideLabel = (component?: Component) => {
   return component?.hideLabel ?? false;
 };
 
+const getEditFields = (editForm: Component) => {
+  return navFormUtils
+    .flattenComponents(editForm.components?.[0].components as Component[])
+    .map((component) => component.key);
+};
+
 /**
  * Get whether custom component is required renderReact()
  */
@@ -31,6 +37,7 @@ const baseComponentUtils = {
   getId,
   getLabel,
   getHideLabel,
+  getEditFields,
   isRequired,
   isReadOnly,
 };

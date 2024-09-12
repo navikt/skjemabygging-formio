@@ -1,4 +1,4 @@
-import { Component, ComponentError, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { Component, ComponentError } from '@navikt/skjemadigitalisering-shared-domain';
 import Field from 'formiojs/components/_classes/field/Field';
 import FormioUtils from 'formiojs/utils';
 import { TFunction, TOptions } from 'i18next';
@@ -207,6 +207,10 @@ class BaseComponent extends FormioReactComponent {
     return (this.constructor as typeof FormioReactComponent).schema();
   }
 
+  getEditForm(): Component {
+    return (this.constructor as typeof FormioReactComponent).editForm();
+  }
+
   /**
    * Private function
    *
@@ -214,10 +218,7 @@ class BaseComponent extends FormioReactComponent {
    */
   getEditFields() {
     if (!this.editFields) {
-      const editForm: Component = (this.constructor as typeof FormioReactComponent).editForm();
-      this.editFields = navFormUtils
-        .flattenComponents(editForm.components?.[0].components as Component[])
-        .map((component) => component.key);
+      this.editFields = baseComponentUtils.getEditFields(this.getEditForm());
     }
 
     return this.editFields;
