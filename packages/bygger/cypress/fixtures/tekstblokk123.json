@@ -126,7 +126,7 @@
           "attrs": []
         },
         {
-          "content": "<h3>Tekstblokk med mye formatering og eksisterende oversettelse</h3><p>Dette er et avsnitt</p><p>Her er et avsnitt <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://www.vg.no\">med lenke til VG</a> og her kommer en liste:</p><ul><li>Ta oppvasken</li><li>Handle <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://www.coop.no/\"><strong>matvarer</strong></a>, og <strong>vurder</strong> å <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://www.zalando.no\">kjøpe <strong>nye</strong> klær</a>.</li></ul><p>Nytt avsnitt. Ny liste (numerert denne gangen):</p><ol><li>Første prioritet</li><li>Også viktig, men ikke så viktig</li><li>Kan utsettes</li><li>Trengs egentlig ikke å gjøres</li></ol>",
+          "content": "<h3>Tekstblokk med mye formatering og eksisterende oversettelse</h3>\n\n<p>Dette er et avsnitt</p>\n<p>Her er et avsnitt <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://www.vg.no\">med lenke til VG</a> og her kommer en liste:</p><ul>\n<li>Ta oppvasken</li>\n<li>Handle <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://www.coop.no/\"><strong>matvarer</strong></a>, og <strong>vurder</strong> å <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://www.zalando.no\">kjøpe <strong>nye</strong> klær</a>.</li></ul><p>Nytt avsnitt. Ny liste (numerert denne gangen):</p><ol><li>Første prioritet</li><li>Også viktig, men ikke så viktig</li><li>Kan utsettes</li><li>Trengs egentlig ikke å gjøres</li></ol>",
           "textDisplay": "form",
           "hidden": false,
           "conditional": {

@@ -1,6 +1,7 @@
 import { v4 as uuid } from 'uuid';
 import htmlConverter, { HtmlAsJsonElement, HtmlAsJsonTextElement } from '../converters';
 import { AcceptedTag } from '../converters/htmlAsJson';
+import { sanitizeHtmlString } from '../converters/htmlString';
 import StructuredHtmlElement from './StructuredHtmlElement';
 import StructuredHtmlText from './StructuredHtmlText';
 
@@ -29,7 +30,7 @@ abstract class StructuredHtml {
     this.parent = options?.parent;
     this.converter = converter;
     if (typeof input === 'string') {
-      this.originalHtmlString = input;
+      this.originalHtmlString = sanitizeHtmlString(input);
       this.originalHtmlJson = converter.htmlString2Json(input);
     } else {
       this.originalHtmlJson = input;

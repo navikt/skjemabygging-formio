@@ -10,6 +10,8 @@ type SanitizeOptions = Omit<DOMPurify.Config, 'RETURN_DOM_FRAGMENT' | 'RETURN_DO
  */
 const isHtmlString = (text: string) => /<(?!br\s*\/?)[^>]+>/gm.test(text);
 
+const stripForLineBreaks = (text: string) => text.replaceAll('\n', '');
+
 /*
  * Sanitize happens twice because of a known issue with dompurify that reverses the order of attributes
  * See: https://github.com/cure53/DOMPurify/issues/276
@@ -17,7 +19,8 @@ const isHtmlString = (text: string) => /<(?!br\s*\/?)[^>]+>/gm.test(text);
 const sanitizeHtmlString = (htmlString: string, options?: SanitizeOptions): string => {
   const defaultOptions: SanitizeOptions = { ADD_ATTR: ['target'] };
   const sanitizeOptions = { ...defaultOptions, ...options };
-  return DOMPurify.sanitize(DOMPurify.sanitize(htmlString, sanitizeOptions), sanitizeOptions);
+  const withoutLineBreaks = stripForLineBreaks(htmlString);
+  return DOMPurify.sanitize(DOMPurify.sanitize(withoutLineBreaks, sanitizeOptions), sanitizeOptions);
 };
 
 const htmlString2Json = (htmlString: string): HtmlAsJsonElement => {

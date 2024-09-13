@@ -123,21 +123,21 @@ describe('Translations', () => {
   };
 
   describe('Form translations - html', () => {
+    const htmlWithExistingTranslation =
+      '<h3>Tekstblokk med mye formatering og eksisterende oversettelse</h3>\n\n<p>Dette er et avsnitt</p>\n<p>Her er et avsnitt <a target="_blank" rel="noopener noreferrer" href="https://www.vg.no">med lenke til VG</a> og her kommer en liste:</p><ul>\n<li>Ta oppvasken</li>\n<li>Handle <a target="_blank" rel="noopener noreferrer" href="https://www.coop.no/"><strong>matvarer</strong></a>, og <strong>vurder</strong> å <a target="_blank" rel="noopener noreferrer" href="https://www.zalando.no">kjøpe <strong>nye</strong> klær</a>.</li></ul><p>Nytt avsnitt. Ny liste (numerert denne gangen):</p><ol><li>Første prioritet</li><li>Også viktig, men ikke så viktig</li><li>Kan utsettes</li><li>Trengs egentlig ikke å gjøres</li></ol>';
+    const htmlWithNoTranslation =
+      '<h3>Tekstblokk med mye formatering og manglende oversettelse</h3><p>Dette er avsnitt 1</p><p>Her er et avsnitt <a target="_blank" rel="noopener noreferrer" href="https://www.vg.no">med lenke til VG</a>. Denne er så lang at den bør få et tekstområde, altså en sånn stor boks hvor man kan skrive inn masse tekst. Her kommer en liste:</p><ul><li>Ta oppvasken</li><li>Handle <a target="_blank" rel="noopener noreferrer" href="https://www.coop.no/"><strong>matvarer</strong></a>, og <strong>vurder</strong> å <a target="_blank" rel="noopener noreferrer" href="https://www.zalando.no">kjøpe <strong>nye</strong> klær</a>.</li></ul><p>Nytt avsnitt. Ny liste (numerert denne gangen):</p><ol><li>Første prioritet</li><li>Også viktig, men ikke så viktig</li><li>Kan utsettes</li><li>Trengs egentlig ikke å gjøres</li></ol>';
     const existingTranslations = {
       'Du må selv skrive under på leveattesten. I tillegg må du få bekreftet attesten enten av to myndige personer (vitner) eller av en offentlig myndighet.':
         'Du må sjølv skrive....',
       '<h4>Overskrift</h4><p>Beskrivelse av dette skjemaet med <a target="_blank" rel="noopener noreferrer" href="https://www.nav.no">lenke til NAV</a>.</p>':
         '<h2>Overskrift</h2><p>Beskrivelse av dette skjemaet med <a target="_blank" rel="noopener noreferrer" href="https://www.nav.no">lenke til NAV</a>.</p>',
-      '<h3>Tekstblokk med mye formatering og eksisterende oversettelse</h3><p>Dette er et avsnitt</p><p>Her er et avsnitt <a target="_blank" rel="noopener noreferrer" href="https://www.vg.no">med lenke til VG</a> og her kommer en liste:</p><ul><li>Ta oppvasken</li><li>Handle <a target="_blank" rel="noopener noreferrer" href="https://www.coop.no/"><strong>matvarer</strong></a>, og <strong>vurder</strong> å <a target="_blank" rel="noopener noreferrer" href="https://www.zalando.no">kjøpe <strong>nye</strong> klær</a>.</li></ul><p>Nytt avsnitt. Ny liste (numerert denne gangen):</p><ol><li>Første prioritet</li><li>Også viktig, men ikke så viktig</li><li>Kan utsettes</li><li>Trengs egentlig ikke å gjøres</li></ol>':
+      [htmlWithExistingTranslation]:
         '<h3>Tekstblokk med mye formatering og eksisterende oversettelse</h3><p>Dette er et avsnitt</p><p>Her er eit avsnitt <a target="_blank" rel="noopener noreferrer" href="https://www.dagogtid.no">med lenke til DAG OG TID</a>, og her er ei ei liste:</p><ul><li>Ta oppvasken</li><li><a target="_blank" rel="noopener noreferrer" href="https://www.kiwi.no/"><strong>Handle matvarer</strong></a>, og <strong>tenk på om du skal</strong> <a target="_blank" rel="noopener noreferrer" href="https://www.zalando.no">kjøpe <strong>nye</strong> klær</a>.</li></ul><p>Nytt avsnitt. Ny liste (numerert denne gangen):</p><ol><li>Første prioritet</li><li>Også viktig, men ikke så viktig</li><li>Kan utsettes</li><li>Trengs egentlig ikke å gjøres</li></ol>',
       '<p>Dette er en <a target="_blank" rel="noopener noreferrer" href="https://www.vg.no">lenke som åpnes i ny fane</a>.</p>':
         '<p>Dette er en <a href="https://www.vg.no">lenke som åpnes i ny fane</a>.</p>',
       Søker: 'Søkar',
     };
-    const htmlWithExistingTranslation =
-      '<h3>Tekstblokk med mye formatering og eksisterende oversettelse</h3><p>Dette er et avsnitt</p><p>Her er et avsnitt <a target="_blank" rel="noopener noreferrer" href="https://www.vg.no">med lenke til VG</a> og her kommer en liste:</p><ul><li>Ta oppvasken</li><li>Handle <a target="_blank" rel="noopener noreferrer" href="https://www.coop.no/"><strong>matvarer</strong></a>, og <strong>vurder</strong> å <a target="_blank" rel="noopener noreferrer" href="https://www.zalando.no">kjøpe <strong>nye</strong> klær</a>.</li></ul><p>Nytt avsnitt. Ny liste (numerert denne gangen):</p><ol><li>Første prioritet</li><li>Også viktig, men ikke så viktig</li><li>Kan utsettes</li><li>Trengs egentlig ikke å gjøres</li></ol>';
-    const htmlWithNoTranslation =
-      '<h3>Tekstblokk med mye formatering og manglende oversettelse</h3><p>Dette er avsnitt 1</p><p>Her er et avsnitt <a target="_blank" rel="noopener noreferrer" href="https://www.vg.no">med lenke til VG</a>. Denne er så lang at den bør få et tekstområde, altså en sånn stor boks hvor man kan skrive inn masse tekst. Her kommer en liste:</p><ul><li>Ta oppvasken</li><li>Handle <a target="_blank" rel="noopener noreferrer" href="https://www.coop.no/"><strong>matvarer</strong></a>, og <strong>vurder</strong> å <a target="_blank" rel="noopener noreferrer" href="https://www.zalando.no">kjøpe <strong>nye</strong> klær</a>.</li></ul><p>Nytt avsnitt. Ny liste (numerert denne gangen):</p><ol><li>Første prioritet</li><li>Også viktig, men ikke så viktig</li><li>Kan utsettes</li><li>Trengs egentlig ikke å gjøres</li></ol>';
 
     beforeEach(() => {
       cy.intercept('GET', '/api/forms/tekstblokk123', { fixture: 'tekstblokk123.json' }).as('getForm');
@@ -317,6 +317,59 @@ describe('Translations', () => {
       cy.findByRole('button', { name: 'Lagre' }).click();
       cy.wait('@updateTranslations').then((interception) => {
         expect(interception.request.body.data.i18n[htmlWithNoTranslation]).to.equal(expectedHtmlResult);
+      });
+    });
+
+    it('handles htmlStrings with linebreaks', () => {
+      const sectionLabel = 'Tekstblokk med mye formatering og eksisterende oversettelse';
+      const expectedLabelValue: Array<[string, { nn: string; en: string }]> = [
+        [
+          'Tekstblokk med mye formatering og eksisterende oversettelse',
+          {
+            nn: 'Tekstblokk med mye formatering og eksisterende oversettelse',
+            en: 'Textblock with existing translation',
+          },
+        ],
+        ['Dette er et avsnitt', { nn: 'Dette er et avsnitt', en: 'This is a paragraph' }],
+        [
+          'Her er et avsnitt [med lenke til VG](https://www.vg.no) og her kommer en liste:',
+          {
+            nn: 'Her er eit avsnitt [med lenke til DAG OG TID](https://www.dagogtid.no), og her er ei ei liste:',
+            en: 'Here comes a paragraph [with a link to BBC](https://www.bbc.co.uk), and here is a list:',
+          },
+        ],
+        ['Ta oppvasken', { nn: 'Ta oppvasken', en: 'Do the dishes' }],
+        [
+          'Handle [**matvarer**](https://www.coop.no/), og **vurder** å [kjøpe **nye** klær](https://www.zalando.no).',
+          {
+            nn: '[**Handle matvarer**](https://www.kiwi.no/), og **tenk på om du skal** [kjøpe **nye** klær](https://www.zalando.no).',
+            en: '[**Buy groceries**](https://www.wholefoods.com/), and **concider** [buying **new** clothes](https://www.zalando.com).',
+          },
+        ],
+        [
+          'Nytt avsnitt. Ny liste (numerert denne gangen):',
+          { nn: 'Nytt avsnitt. Ny liste (numerert denne gangen):', en: 'New numbered list' },
+        ],
+        ['Første prioritet', { nn: 'Første prioritet', en: 'First' }],
+        ['Også viktig, men ikke så viktig', { nn: 'Også viktig, men ikke så viktig', en: 'Second' }],
+        ['Kan utsettes', { nn: 'Kan utsettes', en: 'Third' }],
+        ['Trengs egentlig ikke å gjøres', { nn: 'Trengs egentlig ikke å gjøres', en: 'Fourth' }],
+      ];
+      const newText = 'new text';
+      const expectedHtmlResult = `<h3>${newText}</h3><p>${newText}</p><p>${newText}</p><ul><li>${newText}</li><li>${newText}</li></ul><p>${newText}</p><ol><li>${newText}</li><li>${newText}</li><li>${newText}</li><li>${newText}</li></ol>`;
+      expectedLabelValue.forEach(([label, values]) => {
+        assessHtmlTranlationInput(1, sectionLabel, label, values.nn);
+      });
+      cy.findByRole('button', { name: 'Norsk nynorsk' }).click();
+      cy.findByRole('link', { name: 'Engelsk' }).click();
+      cy.findByRole('heading', { name: 'Oversettelser på Engelsk' }).should('exist');
+      expectedLabelValue.forEach(([label, values]) => {
+        assessHtmlTranlationInput(1, sectionLabel, label, values.en);
+        typeNewHtmlTranslationInput(1, label, newText);
+      });
+      cy.findByRole('button', { name: 'Lagre' }).click();
+      cy.wait('@updateTranslations').then((interception) => {
+        expect(interception.request.body.data.i18n[htmlWithExistingTranslation]).to.equal(expectedHtmlResult);
       });
     });
 
