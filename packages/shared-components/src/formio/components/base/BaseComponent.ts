@@ -224,6 +224,14 @@ class BaseComponent extends FormioReactComponent {
     return this.editFields;
   }
 
+  isSubmissionPaper() {
+    return this.getAppConfig()?.submissionMethod === 'paper' || !this.getAppConfig()?.submissionMethod;
+  }
+
+  isSubmissionDigital() {
+    return this.getAppConfig()?.submissionMethod === 'digital';
+  }
+
   // elementId is used to focus to the correct element when clicking on error summary
   // Message is the error message that is shown in the error summary
   addError(message: string, elementId?: string) {
