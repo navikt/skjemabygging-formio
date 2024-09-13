@@ -1,20 +1,20 @@
 import BaseComponent from '../../base/BaseComponent';
 import TextField from '../../core/textfield/TextField';
-import surenameForm from './Surename.form';
 import surnameBuilder from './Surname.builder';
+import surnameForm from './Surname.form';
 
 class Surname extends TextField {
   static schema() {
     return BaseComponent.schema({
-      label: 'Fornavn',
-      type: 'surename',
+      label: 'Etternavn',
+      type: 'surname',
       autocomplete: 'family-name',
-      key: 'fornavn',
+      key: 'etternavn',
     });
   }
 
   static editForm() {
-    return surenameForm();
+    return surnameForm();
   }
   static get builderInfo() {
     return surnameBuilder();

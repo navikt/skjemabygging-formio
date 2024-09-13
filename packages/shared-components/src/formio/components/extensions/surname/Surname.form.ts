@@ -5,7 +5,7 @@ import editFormDisplay from '../../base/editForm/display';
 import editFormTabs from '../../base/editForm/editFormTabs';
 import editFormValidation from '../../base/editForm/validation';
 
-const surenameForm = () => {
+const surnameForm = () => {
   const { api, conditional, createTabs, display, validation, data } = editFormTabs;
 
   // prettier-ignore
@@ -32,4 +32,4 @@ const surenameForm = () => {
   );
 };
 
-export default surenameForm;
+export default surnameForm;
