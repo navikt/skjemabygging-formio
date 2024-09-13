@@ -1,7 +1,10 @@
 import { AlertProps, Alert as NavAlert } from '@navikt/ds-react';
 import Field from 'formiojs/components/_classes/field/Field';
 import InnerHtml from '../../../../components/inner-html/InnerHtml';
+import { ComponentUtilsProvider } from '../../../../context/component/componentUtilsContext';
 import BaseComponent from '../../base/BaseComponent';
+import DiffTag from '../../base/components/DiffTag';
+import TextDisplayTag from '../../base/components/TextDisplayTag';
 import alertBuilder from './Alert.builder';
 import alertForm from './Alert.form';
 
@@ -43,9 +46,9 @@ class Alert extends BaseComponent {
 
   renderReact(element) {
     element.render(
-      <div>
-        {this.getTextDisplayTag()}
-        {this.getDiffTag()}
+      <ComponentUtilsProvider component={this}>
+        <TextDisplayTag component={this.component} />
+        <DiffTag component={this.component} editFields={this.getEditFields()} />
         <NavAlert
           id={this.getId()}
           variant={this.getAlertType()}
@@ -55,7 +58,7 @@ class Alert extends BaseComponent {
         >
           <InnerHtml content={this.getContent()} className={'alertContent'} />
         </NavAlert>
-      </div>,
+      </ComponentUtilsProvider>,
     );
   }
 }

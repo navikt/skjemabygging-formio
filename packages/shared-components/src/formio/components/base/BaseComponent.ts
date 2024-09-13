@@ -1,11 +1,9 @@
-import { Tag } from '@navikt/ds-react';
-import { Component, ComponentError, formDiffingTool, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { Component, ComponentError } from '@navikt/skjemadigitalisering-shared-domain';
 import Field from 'formiojs/components/_classes/field/Field';
 import FormioUtils from 'formiojs/utils';
 import { TFunction, TOptions } from 'i18next';
-import { ReactNode } from 'react';
-import InnerHtml from '../../../components/inner-html/InnerHtml';
 import FormioReactComponent from './FormioReactComponent';
+import baseComponentUtils from './baseComponentUtils';
 import { blurHandler, focusHandler } from './focus-helpers';
 
 /**
@@ -36,25 +34,14 @@ class BaseComponent extends FormioReactComponent {
    * Get id for custom component renderReact()
    */
   getId() {
-    return `${this.component?.id}-${this.component?.key}`;
+    return baseComponentUtils.getId(this.component);
   }
 
   /**
    * Get label for custom component renderReact()
    */
-  getLabel(options?: { showOptional?: boolean; showDiffTag?: boolean; labelTextOnly?: boolean }) {
-    const defaultOptions = { showOptional: true, showDiffTag: true, labelTextOnly: false };
-    const { showOptional, showDiffTag, labelTextOnly } = { ...defaultOptions, ...(options ?? {}) };
-
-    if (labelTextOnly) return this.translate(this.component?.label ?? '');
-
-    return (
-      <>
-        {this.translate(this.component?.label ?? '')}
-        {this.isRequired() || !!this.component?.readOnly ? '' : showOptional && ` (${this.translate('valgfritt')})`}
-        {showDiffTag && this.getDiffTag()}
-      </>
-    );
+  getLabel() {
+    return baseComponentUtils.getLabel(this.component);
   }
 
   /**
@@ -126,16 +113,7 @@ class BaseComponent extends FormioReactComponent {
   }
 
   getHideLabel() {
-    return this.component?.hideLabel ?? false;
-  }
-
-  /**
-   * Get description for custom component renderReact()
-   */
-  getDescription(): ReactNode {
-    return this.component?.description ? (
-      <InnerHtml content={this.translate(this.component?.description)} />
-    ) : undefined;
+    return baseComponentUtils.getHideLabel(this.component);
   }
 
   getValueDescription(index: number) {
@@ -154,7 +132,7 @@ class BaseComponent extends FormioReactComponent {
    * Get whether custom component is required renderReact()
    */
   isRequired() {
-    return this.component?.validate?.required;
+    return baseComponentUtils.isRequired(this.component);
   }
 
   /**
@@ -182,7 +160,7 @@ class BaseComponent extends FormioReactComponent {
    * Get read only for custom component renderReact()
    */
   getReadOnly() {
-    return this.component?.readOnly || this.options.readOnly;
+    return baseComponentUtils.isReadOnly(this.component, this.options);
   }
 
   /**
@@ -204,29 +182,6 @@ class BaseComponent extends FormioReactComponent {
    */
   getIsLoggedIn() {
     return this.options?.appConfig?.config?.isLoggedIn;
-  }
-
-  /**
-   * Get textDisplay tag for custom component renderReact()
-   */
-  getTextDisplayTag() {
-    if (!this.builderMode) {
-      return <></>;
-    }
-
-    if (this.component?.textDisplay === 'pdf') {
-      return (
-        <Tag variant="alt3" className="mb-4" size="xsmall">
-          PDF
-        </Tag>
-      );
-    } else if (this.component?.textDisplay === 'formPdf') {
-      return (
-        <Tag variant="alt3" className="mb-4" size="xsmall">
-          Skjema og PDF
-        </Tag>
-      );
-    }
   }
 
   /**
@@ -252,6 +207,10 @@ class BaseComponent extends FormioReactComponent {
     return (this.constructor as typeof FormioReactComponent).schema();
   }
 
+  getEditForm(): Component {
+    return (this.constructor as typeof FormioReactComponent).editForm();
+  }
+
   /**
    * Private function
    *
@@ -259,55 +218,10 @@ class BaseComponent extends FormioReactComponent {
    */
   getEditFields() {
     if (!this.editFields) {
-      const editForm: Component = (this.constructor as typeof FormioReactComponent).editForm();
-      this.editFields = navFormUtils
-        .flattenComponents(editForm.components?.[0].components as Component[])
-        .map((component) => component.key);
+      this.editFields = baseComponentUtils.getEditFields(this.getEditForm());
     }
 
     return this.editFields;
-  }
-
-  /**
-   * Private function
-   *
-   * Create a diff <Tag> that is used in the label for the custom component.
-   */
-  getDiffTag() {
-    const publishedForm = this.options?.formConfig?.publishedForm;
-    if (!this.builderMode || !publishedForm) {
-      return <></>;
-    }
-
-    const diff = formDiffingTool.generateComponentDiff(this.component!, publishedForm, this.getEditFields());
-
-    return (
-      <>
-        {diff.isNew && (
-          <Tag size="xsmall" variant="warning" data-testid="diff-tag">
-            Ny
-          </Tag>
-        )}
-        {diff.changesToCurrentComponent?.length > 0 && (
-          <Tag size="xsmall" variant="warning" data-testid="diff-tag">
-            Endring
-          </Tag>
-        )}
-        {diff.deletedComponents?.length > 0 && (
-          <Tag size="xsmall" variant="warning" data-testid="diff-tag">
-            Slettede elementer
-          </Tag>
-        )}
-      </>
-    );
-  }
-
-  isSubmissionPaper() {
-    return this.getAppConfig()?.submissionMethod === 'paper' || !this.getAppConfig()?.submissionMethod;
-  }
-
-  isSubmissionDigital() {
-    return this.getAppConfig()?.submissionMethod === 'digital';
   }
 
   // elementId is used to focus to the correct element when clicking on error summary
@@ -328,10 +242,6 @@ class BaseComponent extends FormioReactComponent {
 
   removeAllErrors() {
     this.componentErrors = [];
-  }
-
-  getComponentError(elementId: string) {
-    return this.componentErrors.find((error) => error.elementId === elementId)?.message;
   }
 }
 

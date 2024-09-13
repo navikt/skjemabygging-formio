@@ -1,4 +1,5 @@
 import { createContext, useContext } from 'react';
+import { ReactComponentType } from '../../formio/components/base';
 import BaseComponent from '../../formio/components/base/BaseComponent';
 import { AppConfigContextType } from '../config/configContext';
 
@@ -8,6 +9,8 @@ interface ComponentUtilsContextType {
   locale: 'nb' | 'nn' | 'en';
   addRef: (elementId: string, ref: HTMLElement | null) => void;
   getComponentError: (elementId: string) => string | undefined;
+  formConfig: ReactComponentType['options']['formConfig'];
+  builderMode: boolean;
 }
 
 interface ComponentUtilsProviderProps {
@@ -27,6 +30,8 @@ export const ComponentUtilsProvider = ({ children, ...props }: ComponentUtilsPro
         locale: component?.getLocale(),
         addRef: component?.addRef.bind(component),
         getComponentError: component?.getComponentError.bind(component),
+        formConfig: component?.getFormConfig(),
+        builderMode: component?.builderMode,
       }}
     >
       {children}

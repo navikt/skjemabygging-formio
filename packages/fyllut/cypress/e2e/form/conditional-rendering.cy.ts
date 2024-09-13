@@ -146,6 +146,37 @@ describe('Conditional rendering', () => {
       cy.findByRole('textbox', { name: 'Hva syntes du om frokosten?' }).should('be.visible');
       cy.findByRole('textbox', { name: 'Hva syntes du om frokosten?' }).should('have.value', '');
     });
+
+    it('does not trigger validation on conditionally hidden components', () => {
+      cy.visit('/fyllut/testmellomlagring?sub=paper');
+      cy.defaultWaits();
+      cy.clickStart();
+      cy.findAllByRole('group', { name: 'Vis skjulte komponenter (valgfritt)' }).within(() => {
+        cy.findAllByRole('radio', { name: 'Ja' }).should('exist');
+        cy.findAllByRole('radio', { name: 'Ja' }).click();
+      });
+      cy.findByRole('textbox', { name: 'Tall' }).shouldBeVisible();
+
+      cy.clickNextStep();
+      cy.findByRole('link', { name: 'Du må fylle ut: Velg en måned' }).shouldBeVisible();
+      cy.findByRole('link', { name: 'Du må fylle ut: Tall' }).shouldBeVisible();
+      cy.findByRole('link', { name: 'Du må fylle ut: Årstall' }).shouldBeVisible();
+      cy.findByRole('link', { name: 'Du må fylle ut: IBAN' }).shouldBeVisible();
+      cy.findByRole('link', { name: 'Du må fylle ut: Fødselsnummer eller d-nummer' }).shouldBeVisible();
+
+      cy.findAllByRole('group', { name: 'Vis skjulte komponenter (valgfritt)' }).within(() => {
+        cy.findAllByRole('radio', { name: 'Nei' }).should('exist');
+        cy.findAllByRole('radio', { name: 'Nei' }).click();
+      });
+      cy.findByRole('textbox', { name: 'Velg en måned' }).should('not.exist');
+      cy.findByRole('link', { name: 'Du må fylle ut: Velg en måned' }).should('not.exist');
+      cy.findByRole('link', { name: 'Du må fylle ut: Tall' }).should('not.exist');
+      cy.findByRole('link', { name: 'Du må fylle ut: Årstall' }).should('not.exist');
+      cy.findByRole('link', { name: 'Du må fylle ut: IBAN' }).should('not.exist');
+      cy.findByRole('link', { name: 'Du må fylle ut: Fødselsnummer eller d-nummer' }).should('not.exist');
+      cy.clickNextStep();
+      cy.findByRole('heading', { name: 'Gave' });
+    });
   });
 
   describe('conditionally show a component, but the component has hidden=true', () => {

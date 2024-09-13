@@ -33,6 +33,7 @@ import Number from './extensions/number/Number';
 import OrganizationNumber from './extensions/organization-number/OrganizationNumber';
 import Password from './extensions/password/Password';
 import PhoneNumber from './extensions/phone-number/PhoneNumber';
+import Year from './extensions/year/Year';
 
 const customComponents = {
   container: Container,
@@ -70,5 +71,6 @@ const customComponents = {
   navAddress: Address,
   monthPicker: MonthPicker,
   password: Password,
+  year: Year,
 };
 export default customComponents;

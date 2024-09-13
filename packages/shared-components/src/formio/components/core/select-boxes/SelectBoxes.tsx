@@ -1,6 +1,9 @@
 import { Checkbox, CheckboxGroup } from '@navikt/ds-react';
 import FormioSelectBoxes from 'formiojs/components/selectboxes/SelectBoxes';
+import { ComponentUtilsProvider } from '../../../../context/component/componentUtilsContext';
 import BaseComponent from '../../base/BaseComponent';
+import Description from '../../base/components/Description';
+import Label from '../../base/components/Label';
 import selectBoxesBuilder from './SelectBoxes.builder';
 import selectBoxesForm from './SelectBoxes.form';
 
@@ -52,23 +55,25 @@ class SelectBoxes extends BaseComponent {
     const componentValue = this.convertToArray(this.getValue());
 
     return element.render(
-      <CheckboxGroup
-        legend={this.getLabel()}
-        description={this.getDescription()}
-        value={componentValue}
-        onChange={(value) => this.changeHandler(value)}
-        ref={(ref) => this.setReactInstance(ref)}
-        className={this.getClassName()}
-        readOnly={this.getReadOnly()}
-        error={this.getError()}
-        tabIndex={-1}
-      >
-        {values.map((obj, index) => (
-          <Checkbox key={obj.value} value={obj.value} description={this.getValueDescription(index)}>
-            {this.translate(obj.label)}
-          </Checkbox>
-        ))}
-      </CheckboxGroup>,
+      <ComponentUtilsProvider component={this}>
+        <CheckboxGroup
+          legend={<Label component={this.component} editFields={this.getEditFields()} />}
+          description={<Description component={this.component} />}
+          value={componentValue}
+          onChange={(value) => this.changeHandler(value)}
+          ref={(ref) => this.setReactInstance(ref)}
+          className={this.getClassName()}
+          readOnly={this.getReadOnly()}
+          error={this.getError()}
+          tabIndex={-1}
+        >
+          {values.map((obj, index) => (
+            <Checkbox key={obj.value} value={obj.value} description={this.getValueDescription(index)}>
+              {this.translate(obj.label)}
+            </Checkbox>
+          ))}
+        </CheckboxGroup>
+      </ComponentUtilsProvider>,
     );
   }
 }
