@@ -13,6 +13,7 @@ const monthPickerForm = () => {
     display([
       editFormDisplay.label(),
       editFormDisplay.description(),
+      editFormDisplay.additionalDescription(),
     ]),
     validation([
       editFormValidation.required(),
