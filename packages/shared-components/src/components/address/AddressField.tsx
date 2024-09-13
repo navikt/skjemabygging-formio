@@ -8,6 +8,7 @@ import { useAddress } from './addressContext';
 interface Props {
   type: AddressInputType;
   label?: string;
+  required?: boolean;
 }
 
 type AddressLabelsMap = {
@@ -25,8 +26,8 @@ export const AddressLabels: Partial<AddressLabelsMap> = {
   adresse: TEXTS.statiske.address.streetAddress,
 };
 
-const AddressField = ({ type, label }: Props) => {
-  const { onChange, address, readOnly, className, required } = useAddress();
+const AddressField = ({ type, label, required = false }: Props) => {
+  const { onChange, address, readOnly, className } = useAddress();
   const { translate, addRef, getComponentError } = useComponentUtils();
 
   const getValue = () => {
@@ -52,7 +53,7 @@ const AddressField = ({ type, label }: Props) => {
 
   const getLabel = () => {
     if (label) {
-      return label;
+      return translateLabel(label);
     }
 
     switch (type) {

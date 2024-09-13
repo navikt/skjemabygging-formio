@@ -38,6 +38,7 @@ interface ReactComponentType {
     namespace: string;
     formConfig: { publishedForm: NavFormType };
     properties: FormPropertiesType;
+    preview: boolean;
   };
   visible: any | boolean;
   hideLabel: boolean;

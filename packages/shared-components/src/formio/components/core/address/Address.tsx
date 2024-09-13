@@ -157,13 +157,22 @@ class Address extends BaseComponent {
     }
   }
 
+  showMissingAddressWarning() {
+    return this.isSubmissionDigital() && !this.getAppConfig()?.config?.isProdGcp && !this.getValue();
+  }
+
   renderReact(element) {
     element.render(
       <>
-        {this.builderMode && !!this.component?.prefillKey && (
+        {(this.builderMode || this.options.preview) && !!this.component?.prefillKey && (
           <Alert variant="info" className="mb-4">
             Adressekomponenten er satt opp med preutfylling fra PDL for digital innsending. I byggeren ser man hvordan
             dette ser ut ved papirinnsending.
+          </Alert>
+        )}
+        {this.showMissingAddressWarning() && (
+          <Alert variant="info" className="mb-4">
+            Vi fant ikke noe adresse på brukeren din (denne meldingen vises ikke i produksjon).
           </Alert>
         )}
         <ComponentUtilsProvider component={this}>
