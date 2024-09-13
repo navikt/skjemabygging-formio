@@ -1,12 +1,13 @@
+import Surname from './Surname';
+
 const surnameBuilder = (keyPostfix = '') => {
+  const schema = Surname.schema();
+
   return {
-    title: 'Etternavn',
+    title: schema.label,
     schema: {
-      label: 'Etternavn',
-      type: 'textfield',
+      ...schema,
       key: `etternavn${keyPostfix}`,
-      autocomplete: 'family-name',
-      validateOn: 'blur',
       validate: {
         required: true,
       },
