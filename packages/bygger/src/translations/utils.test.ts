@@ -513,8 +513,8 @@ describe('utils', () => {
         {
           order: '005-001',
           type: 'html',
-          text: 'Test linjeskift linux windows apple ',
-          en: 'Test Line break linux windows apple ',
+          text: 'Test linjeskift linuxwindowsapple',
+          en: 'Test Line break linuxwindowsapple',
         },
       ]);
     });
@@ -570,9 +570,9 @@ describe('utils', () => {
       expect(eksport[0].en).toBe('Guidance (Global Tekst)');
       expect(eksport[0]['nn-NO']).toBe('Rettleiing (Global Tekst)');
 
-      expect(eksport[1].text).toEqual('NAV sender svar. <br> Se [link](https://www.nav.no/person/).');
-      expect(eksport[1].en).toEqual('NAV sends answers. <br> See [link](https://www.nav.no/person/).');
-      expect(eksport[1]['nn-NO']).toEqual('NAV sender svar. <br> Sjå [lenke](https://www.nav.no/person/).');
+      expect(eksport[1].text).toEqual('NAV sender svar.<br>Se [link](https://www.nav.no/person/).');
+      expect(eksport[1].en).toEqual('NAV sends answers.<br>See [link](https://www.nav.no/person/).');
+      expect(eksport[1]['nn-NO']).toEqual('NAV sender svar.<br>Sjå [lenke](https://www.nav.no/person/).');
     });
   });
 

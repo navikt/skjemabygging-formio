@@ -10,7 +10,7 @@ type SanitizeOptions = Omit<DOMPurify.Config, 'RETURN_DOM_FRAGMENT' | 'RETURN_DO
  */
 const isHtmlString = (text: string) => /<(?!br\s*\/?)[^>]+>/gm.test(text);
 
-const stripForLineBreaks = (text: string) => text.replace(/(\r\n|\n|\r)/gm, ' ');
+const stripForLineBreaks = (text: string) => text.replace(/(\r\n|\n|\r)/gm, '');
 
 /*
  * Sanitize happens twice because of a known issue with dompurify that reverses the order of attributes
