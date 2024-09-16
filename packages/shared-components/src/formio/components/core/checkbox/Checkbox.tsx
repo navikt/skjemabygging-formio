@@ -56,7 +56,6 @@ class Checkbox extends BaseComponent {
             <Label component={this.component} editFields={this.getEditFields()} />
           </AkselCheckbox>
         </CheckboxGroup>
-        D
       </ComponentUtilsProvider>,
     );
   }
