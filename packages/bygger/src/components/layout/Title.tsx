@@ -14,6 +14,11 @@ const useStyles = makeStyles({
     position: 'relative',
     top: '0.4rem',
   },
+  heading: {
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+  },
 });
 
 const Title = ({ children, subTitle, lockedForm }: Props) => {
@@ -21,7 +26,7 @@ const Title = ({ children, subTitle, lockedForm }: Props) => {
 
   return (
     <Box>
-      <Heading level="1" size={subTitle ? 'medium' : 'large'}>
+      <Heading level="1" size={subTitle ? 'medium' : 'large'} className={styles.heading}>
         {children}
         {lockedForm && <PadlockLockedIcon title="Skjemaet er låst" className={styles.padlockIcon} />}
       </Heading>
