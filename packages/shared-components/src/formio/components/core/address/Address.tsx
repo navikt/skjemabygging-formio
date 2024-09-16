@@ -1,7 +1,11 @@
 import { Alert, Label as NavLabel } from '@navikt/ds-react';
-import { Address as AddressDomain, AddressType, SubmissionAddress } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  Address as AddressDomain,
+  AddressType,
+  SubmissionAddress,
+  TEXTS,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import NavAddress, { AddressInput, AddressInputType } from '../../../../components/address/Address';
-import { AddressLabels } from '../../../../components/address/AddressField';
 import { ComponentUtilsProvider } from '../../../../context/component/componentUtilsContext';
 import BaseComponent from '../../base/BaseComponent';
 import Label from '../../base/components/Label';
@@ -133,16 +137,16 @@ class Address extends BaseComponent {
     const address = this.getValue() ?? ({} as AddressDomain);
     if (this.isRequired()) {
       if (this.getAddressType() === 'NORWEGIAN_ADDRESS') {
-        this.validateRequired(address, 'adresse', AddressLabels.adresse);
-        this.validateRequired(address, 'postnummer', AddressLabels.postnummer);
-        this.validateRequired(address, 'bySted', AddressLabels.bySted);
+        this.validateRequired(address, 'adresse', TEXTS.statiske.address.streetAddress);
+        this.validateRequired(address, 'postnummer', TEXTS.statiske.address.postalCode);
+        this.validateRequired(address, 'bySted', TEXTS.statiske.address.postalName);
       } else if (this.getAddressType() === 'POST_OFFICE_BOX') {
-        this.validateRequired(address, 'postboks', AddressLabels.postboks);
-        this.validateRequired(address, 'postnummer', AddressLabels.postnummer);
-        this.validateRequired(address, 'bySted', AddressLabels.bySted);
+        this.validateRequired(address, 'postboks', TEXTS.statiske.address.poBox);
+        this.validateRequired(address, 'postnummer', TEXTS.statiske.address.postalCode);
+        this.validateRequired(address, 'bySted', TEXTS.statiske.address.postalName);
       } else if (this.getAddressType() === 'FOREIGN_ADDRESS') {
-        this.validateRequired(address, 'adresse', AddressLabels.adresse);
-        this.validateRequired(address, 'land', AddressLabels.landkode);
+        this.validateRequired(address, 'adresse', TEXTS.statiske.address.streetAddress);
+        this.validateRequired(address, 'land', TEXTS.statiske.address.country);
       }
 
       this.rerender();
