@@ -10,6 +10,9 @@ export const validering = {
   required: 'Du må fylle ut: {{field}}',
   valueIsNotAvailable: '{{field}} er en ugyldig verdi.',
 
+  // Tekstfelt
+  digitsOnly: '{{field}} kan kun inneholde siffer fra 0 til 9',
+
   // Dato / tid
   invalid_date: '{{field}} er ikke en gyldig dato.',
   invalid_day: '{{field}} er ikke en gyldig dag.',
