@@ -11,14 +11,12 @@ const POBoxField = ({ label, required = false }: Props) => {
   const { address } = useAddress();
 
   return (
-    <div className="form-group">
-      <AddressField
-        type="postboks"
-        label={label ?? TEXTS.statiske.address.poBox}
-        value={address?.postboks}
-        required={required}
-      ></AddressField>
-    </div>
+    <AddressField
+      type="postboks"
+      label={label ?? TEXTS.statiske.address.poBox}
+      value={address?.postboks}
+      required={required}
+    ></AddressField>
   );
 };
 

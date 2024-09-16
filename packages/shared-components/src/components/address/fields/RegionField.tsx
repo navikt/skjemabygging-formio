@@ -11,14 +11,12 @@ const RegionField = ({ label, required = false }: Props) => {
   const { address } = useAddress();
 
   return (
-    <div className="form-group">
-      <AddressField
-        type="region"
-        label={label ?? TEXTS.statiske.address.region}
-        value={address?.region}
-        required={required}
-      ></AddressField>
-    </div>
+    <AddressField
+      type="region"
+      label={label ?? TEXTS.statiske.address.region}
+      value={address?.region}
+      required={required}
+    ></AddressField>
   );
 };
 

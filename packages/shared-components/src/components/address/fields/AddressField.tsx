@@ -8,9 +8,10 @@ interface Props {
   label: string;
   value?: string;
   required?: boolean;
+  children?: React.ReactNode;
 }
 
-const AddressField = ({ type, label, value, required = false }: Props) => {
+const AddressField = ({ type, label, value, required = false, children }: Props) => {
   const { onChange, readOnly, className } = useAddress();
   const { translate, addRef, getComponentError } = useComponentUtils();
 
@@ -23,15 +24,18 @@ const AddressField = ({ type, label, value, required = false }: Props) => {
   }
 
   return (
-    <TextField
-      onChange={(event) => onChange(type, event.currentTarget.value)}
-      defaultValue={value}
-      label={translateLabel(label)}
-      ref={(ref) => addRef(`address:${type}`, ref)}
-      error={getComponentError(`address:${type}`)}
-      readOnly={readOnly}
-      className={className}
-    />
+    <div className="form-group">
+      <TextField
+        onChange={(event) => onChange(type, event.currentTarget.value)}
+        defaultValue={value}
+        label={translateLabel(label)}
+        ref={(ref) => addRef(`address:${type}`, ref)}
+        error={getComponentError(`address:${type}`)}
+        readOnly={readOnly}
+        className={className}
+      />
+      {children}
+    </div>
   );
 };
 

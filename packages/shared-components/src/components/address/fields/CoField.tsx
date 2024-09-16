@@ -14,19 +14,13 @@ const CoField = ({ label, required = false }: Props) => {
   const { translate } = useComponentUtils();
 
   return (
-    <div className="form-group">
-      <AddressField
-        type="co"
-        label={label ?? TEXTS.statiske.address.co}
-        value={address?.co}
-        required={required}
-      ></AddressField>
+    <AddressField type="co" label={label ?? TEXTS.statiske.address.co} value={address?.co} required={required}>
       <ReadMore header={translate('Hva er C/O?')}>
         {translate(
           'C/O brukes hvis ditt navn ikke står på den postkassen som posten er adressert til. Du oppgir da navnet på "eieren" av postkassen, som kan være navnet på en person eller et firma.',
         )}
       </ReadMore>
-    </div>
+    </AddressField>
   );
 };
 

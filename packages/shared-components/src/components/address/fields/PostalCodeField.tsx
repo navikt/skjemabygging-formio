@@ -11,14 +11,12 @@ const PostalCodeField = ({ label, required = false }: Props) => {
   const { address } = useAddress();
 
   return (
-    <div className="form-group">
-      <AddressField
-        type="postnummer"
-        label={label ?? TEXTS.statiske.address.postalCode}
-        value={address?.postnummer}
-        required={required}
-      ></AddressField>
-    </div>
+    <AddressField
+      type="postnummer"
+      label={label ?? TEXTS.statiske.address.postalCode}
+      value={address?.postnummer}
+      required={required}
+    ></AddressField>
   );
 };
 
