@@ -158,7 +158,12 @@ class Address extends BaseComponent {
   }
 
   showMissingAddressWarning() {
-    return this.isSubmissionDigital() && !this.getAppConfig()?.config?.isProdGcp && !this.getValue();
+    return (
+      this.isSubmissionDigital() &&
+      !this.getAppConfig()?.config?.isProdGcp &&
+      !this.getValue() &&
+      !!this.component?.prefillKey
+    );
   }
 
   renderReact(element) {
