@@ -14,7 +14,7 @@ const CoField = ({ label, required = false }: Props) => {
   const { translate } = useComponentUtils();
 
   return (
-    <div className="mb-4">
+    <div className="form-group">
       <AddressField
         type="co"
         label={label ?? TEXTS.statiske.address.co}

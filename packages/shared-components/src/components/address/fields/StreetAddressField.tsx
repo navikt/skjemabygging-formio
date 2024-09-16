@@ -11,12 +11,14 @@ const StreetAddressField = ({ label, required = false }: Props) => {
   const { address } = useAddress();
 
   return (
-    <AddressField
-      type="adresse"
-      label={label ?? TEXTS.statiske.address.streetAddress}
-      value={address?.adresse}
-      required={required}
-    ></AddressField>
+    <div className="form-group">
+      <AddressField
+        type="adresse"
+        label={label ?? TEXTS.statiske.address.streetAddress}
+        value={address?.adresse}
+        required={required}
+      ></AddressField>
+    </div>
   );
 };
 

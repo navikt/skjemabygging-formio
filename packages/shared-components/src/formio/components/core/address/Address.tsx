@@ -172,20 +172,12 @@ class Address extends BaseComponent {
   }
 
   renderReact(element) {
-    console.log(this.builderMode);
-    console.log(this.options.preview);
     element.render(
       <ComponentUtilsProvider component={this}>
-        {(this.builderMode || this.options.preview) && (
+        {!this.labelIsHidden() && (
           <NavLabel>
             <Label component={this.component} editFields={this.getEditFields()} />
           </NavLabel>
-        )}
-        {this.options.preview && !!this.component?.prefillKey && (
-          <Alert variant="info" className="mb-4">
-            Adressekomponenten er satt opp med preutfylling fra PDL for digital innsending. I byggeren ser man hvordan
-            dette ser ut ved papirinnsending.
-          </Alert>
         )}
         {this.showMissingAddressWarning() && (
           <Alert variant="info" className="mb-4">

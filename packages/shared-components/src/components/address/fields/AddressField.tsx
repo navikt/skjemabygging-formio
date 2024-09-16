@@ -1,5 +1,4 @@
 import { TextField } from '@navikt/ds-react';
-import classNames from 'classnames';
 import { useComponentUtils } from '../../../context/component/componentUtilsContext';
 import { AddressInputType } from '../Address';
 import { useAddress } from '../addressContext';
@@ -31,7 +30,7 @@ const AddressField = ({ type, label, value, required = false }: Props) => {
       ref={(ref) => addRef(`address:${type}`, ref)}
       error={getComponentError(`address:${type}`)}
       readOnly={readOnly}
-      className={classNames('form-group', className)}
+      className={className}
     />
   );
 };
