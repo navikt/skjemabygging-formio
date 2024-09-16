@@ -1,3 +1,4 @@
+import { Tag } from '@navikt/ds-react';
 import { Component } from '@navikt/skjemadigitalisering-shared-domain';
 import { useComponentUtils } from '../../../../context/component/componentUtilsContext';
 import baseComponentUtils from '../baseComponentUtils';
@@ -17,11 +18,17 @@ const Label = ({ component, editFields, labelOptions }: Props) => {
   const { getLabel, isRequired, isReadOnly } = baseComponentUtils;
   const defaultOptions = { showOptional: true, showDiffTag: true };
   const { showOptional, showDiffTag } = { ...defaultOptions, ...(labelOptions ?? {}) };
+  const { builderMode } = useComponentUtils();
 
   return (
     <>
       {translate(getLabel(component))}
       {isRequired(component) || isReadOnly(component) ? '' : showOptional && ` (${translate('valgfritt')})`}
+      {component?.prefillKey && builderMode && (
+        <Tag variant="alt3" className="mb-4" size="xsmall">
+          Preutfylling
+        </Tag>
+      )}
       {showDiffTag && <DiffTag component={component} editFields={editFields} />}
     </>
   );

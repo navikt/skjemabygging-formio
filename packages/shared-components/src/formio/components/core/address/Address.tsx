@@ -1,9 +1,10 @@
-import { Alert } from '@navikt/ds-react';
+import { Alert, Label as NavLabel } from '@navikt/ds-react';
 import { Address as AddressDomain, AddressType, SubmissionAddress } from '@navikt/skjemadigitalisering-shared-domain';
 import NavAddress, { AddressInput, AddressInputType } from '../../../../components/address/Address';
 import { AddressLabels } from '../../../../components/address/AddressField';
 import { ComponentUtilsProvider } from '../../../../context/component/componentUtilsContext';
 import BaseComponent from '../../base/BaseComponent';
+import Label from '../../base/components/Label';
 import addressBuilder from './Address.builder';
 import addressForm from './Address.form';
 
@@ -167,9 +168,16 @@ class Address extends BaseComponent {
   }
 
   renderReact(element) {
+    console.log(this.builderMode);
+    console.log(this.options.preview);
     element.render(
-      <>
-        {(this.builderMode || this.options.preview) && !!this.component?.prefillKey && (
+      <ComponentUtilsProvider component={this}>
+        {(this.builderMode || this.options.preview) && (
+          <NavLabel>
+            <Label component={this.component} editFields={this.getEditFields()} />
+          </NavLabel>
+        )}
+        {this.options.preview && !!this.component?.prefillKey && (
           <Alert variant="info" className="mb-4">
             Adressekomponenten er satt opp med preutfylling fra PDL for digital innsending. I byggeren ser man hvordan
             dette ser ut ved papirinnsending.
@@ -177,21 +185,20 @@ class Address extends BaseComponent {
         )}
         {this.showMissingAddressWarning() && (
           <Alert variant="info" className="mb-4">
-            Vi fant ikke noe adresse på brukeren din (denne meldingen vises ikke i produksjon).
+            Vi fant ikke noen adresse på denne testbrukeren. Legg inn adresse på brukeren i Dolly, eller bruk en annen
+            testbruker som har registrert adresse. (denne meldingen vises ikke i produksjon).
           </Alert>
         )}
-        <ComponentUtilsProvider component={this}>
-          <NavAddress
-            onChange={this.handleChange.bind(this)}
-            addressType={this.getAddressType()}
-            address={this.getValue()}
-            readOnly={this.getReadOnly()}
-            addressTypeChoice={this.showAddressTypeChoice()}
-            className={this.getClassName()}
-            required={this.isRequired()}
-          />
-        </ComponentUtilsProvider>
-      </>,
+        <NavAddress
+          onChange={this.handleChange.bind(this)}
+          addressType={this.getAddressType()}
+          address={this.getValue()}
+          readOnly={this.getReadOnly()}
+          addressTypeChoice={this.showAddressTypeChoice()}
+          className={this.getClassName()}
+          required={this.isRequired()}
+        />
+      </ComponentUtilsProvider>,
     );
   }
 }
