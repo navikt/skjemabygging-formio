@@ -10,7 +10,8 @@ const editFormPrefillKey = (options: PropertyOptions): Component => {
       {
         type: 'checkbox',
         label: 'Preutfylling',
-        description: 'Gjør automatisk oppslag mot PDL for å preutfylle data vi har om brukeren.',
+        description:
+          'Gjør automatisk oppslag mot PDL for å preutfylle data vi har om brukeren. Forhåndsvisning vil vise oppsett for papirinnsending. Bruk skjemadelingslenke under innstillinger for å teste digital innsending med testbruker fra Dolly.',
         key: 'prefill',
         defaultValue: false,
       },

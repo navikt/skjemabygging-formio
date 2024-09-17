@@ -1,7 +1,13 @@
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useComponentUtils } from '../../context/component/componentUtilsContext';
-import AddressField from './AddressField';
 import { useAddress } from './addressContext';
+import BuildingField from './fields/BuildingField';
+import CoField from './fields/CoField';
+import CountryField from './fields/CountryField';
+import PostalCodeField from './fields/PostalCodeField';
+import PostalNameField from './fields/PostalNameField';
+import RegionField from './fields/RegionField';
+import StreetAddressField from './fields/StreetAddressField';
 
 const ForeignAddress = () => {
   const { translate } = useComponentUtils();
@@ -9,13 +15,13 @@ const ForeignAddress = () => {
 
   return (
     <>
-      <AddressField type="co" />
-      <AddressField type="adresse" label={translate(TEXTS.statiske.address.streetAddressLong)} required={required} />
-      <AddressField type="bygning" />
-      <AddressField type="postnummer" />
-      <AddressField type="bySted" label={translate(TEXTS.statiske.address.location)} />
-      <AddressField type="region" />
-      <AddressField type="land" required={required} />
+      <CoField />
+      <StreetAddressField label={translate(TEXTS.statiske.address.streetAddressLong)} required={required} />
+      <BuildingField />
+      <PostalCodeField />
+      <PostalNameField label={translate(TEXTS.statiske.address.location)} />
+      <RegionField />
+      <CountryField required={required} />
     </>
   );
 };

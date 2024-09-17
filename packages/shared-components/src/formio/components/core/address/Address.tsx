@@ -1,9 +1,14 @@
-import { Alert } from '@navikt/ds-react';
-import { Address as AddressDomain, AddressType, SubmissionAddress } from '@navikt/skjemadigitalisering-shared-domain';
+import { Alert, Label as NavLabel } from '@navikt/ds-react';
+import {
+  Address as AddressDomain,
+  AddressType,
+  SubmissionAddress,
+  TEXTS,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import NavAddress, { AddressInput, AddressInputType } from '../../../../components/address/Address';
-import { AddressLabels } from '../../../../components/address/AddressField';
 import { ComponentUtilsProvider } from '../../../../context/component/componentUtilsContext';
 import BaseComponent from '../../base/BaseComponent';
+import Label from '../../base/components/Label';
 import addressBuilder from './Address.builder';
 import addressForm from './Address.form';
 
@@ -132,16 +137,16 @@ class Address extends BaseComponent {
     const address = this.getValue() ?? ({} as AddressDomain);
     if (this.isRequired()) {
       if (this.getAddressType() === 'NORWEGIAN_ADDRESS') {
-        this.validateRequired(address, 'adresse', AddressLabels.adresse);
-        this.validateRequired(address, 'postnummer', AddressLabels.postnummer);
-        this.validateRequired(address, 'bySted', AddressLabels.bySted);
+        this.validateRequired(address, 'adresse', TEXTS.statiske.address.streetAddress);
+        this.validateRequired(address, 'postnummer', TEXTS.statiske.address.postalCode);
+        this.validateRequired(address, 'bySted', TEXTS.statiske.address.postalName);
       } else if (this.getAddressType() === 'POST_OFFICE_BOX') {
-        this.validateRequired(address, 'postboks', AddressLabels.postboks);
-        this.validateRequired(address, 'postnummer', AddressLabels.postnummer);
-        this.validateRequired(address, 'bySted', AddressLabels.bySted);
+        this.validateRequired(address, 'postboks', TEXTS.statiske.address.poBox);
+        this.validateRequired(address, 'postnummer', TEXTS.statiske.address.postalCode);
+        this.validateRequired(address, 'bySted', TEXTS.statiske.address.postalName);
       } else if (this.getAddressType() === 'FOREIGN_ADDRESS') {
-        this.validateRequired(address, 'adresse', AddressLabels.adresse);
-        this.validateRequired(address, 'land', AddressLabels.landkode);
+        this.validateRequired(address, 'adresse', TEXTS.statiske.address.streetAddress);
+        this.validateRequired(address, 'land', TEXTS.statiske.address.country);
       }
 
       this.rerender();
@@ -158,35 +163,38 @@ class Address extends BaseComponent {
   }
 
   showMissingAddressWarning() {
-    return this.isSubmissionDigital() && !this.getAppConfig()?.config?.isProdGcp && !this.getValue();
+    return (
+      this.isSubmissionDigital() &&
+      !this.getAppConfig()?.config?.isProdGcp &&
+      !this.getValue() &&
+      !!this.component?.prefillKey
+    );
   }
 
   renderReact(element) {
     element.render(
-      <>
-        {(this.builderMode || this.options.preview) && !!this.component?.prefillKey && (
-          <Alert variant="info" className="mb-4">
-            Adressekomponenten er satt opp med preutfylling fra PDL for digital innsending. I byggeren ser man hvordan
-            dette ser ut ved papirinnsending.
-          </Alert>
+      <ComponentUtilsProvider component={this}>
+        {!this.labelIsHidden() && (
+          <NavLabel>
+            <Label component={this.component} editFields={this.getEditFields()} />
+          </NavLabel>
         )}
         {this.showMissingAddressWarning() && (
           <Alert variant="info" className="mb-4">
-            Vi fant ikke noe adresse på brukeren din (denne meldingen vises ikke i produksjon).
+            Vi fant ikke noen adresse på denne testbrukeren. Legg inn adresse på brukeren i Dolly, eller bruk en annen
+            testbruker som har registrert adresse. (denne meldingen vises ikke i produksjon).
           </Alert>
         )}
-        <ComponentUtilsProvider component={this}>
-          <NavAddress
-            onChange={this.handleChange.bind(this)}
-            addressType={this.getAddressType()}
-            address={this.getValue()}
-            readOnly={this.getReadOnly()}
-            addressTypeChoice={this.showAddressTypeChoice()}
-            className={this.getClassName()}
-            required={this.isRequired()}
-          />
-        </ComponentUtilsProvider>
-      </>,
+        <NavAddress
+          onChange={this.handleChange.bind(this)}
+          addressType={this.getAddressType()}
+          address={this.getValue()}
+          readOnly={this.getReadOnly()}
+          addressTypeChoice={this.showAddressTypeChoice()}
+          className={this.getClassName()}
+          required={this.isRequired()}
+        />
+      </ComponentUtilsProvider>,
     );
   }
 }

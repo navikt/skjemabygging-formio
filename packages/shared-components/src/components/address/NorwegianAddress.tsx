@@ -1,15 +1,18 @@
-import AddressField from './AddressField';
 import { useAddress } from './addressContext';
+import CoField from './fields/CoField';
+import PostalCodeField from './fields/PostalCodeField';
+import PostalNameField from './fields/PostalNameField';
+import StreetAddressField from './fields/StreetAddressField';
 
 const NorwegianAddress = () => {
   const { required } = useAddress();
 
   return (
     <>
-      <AddressField type="co" />
-      <AddressField type="adresse" required={required} />
-      <AddressField type="postnummer" required={required} />
-      <AddressField type="bySted" required={required} />
+      <CoField />
+      <StreetAddressField required={required} />
+      <PostalCodeField required={required} />
+      <PostalNameField required={required} />
     </>
   );
 };
