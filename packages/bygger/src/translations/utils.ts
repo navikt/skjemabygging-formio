@@ -107,6 +107,7 @@ const getLabel = (label: string, type: string, hideLabel: boolean) => {
     'navSkjemagruppe',
     'alertstripe',
     'image',
+    'accordion',
   ].includes(type);
   if (hideLabel || excludeLabelForType) return undefined;
   return label;
