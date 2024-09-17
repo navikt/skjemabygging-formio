@@ -13,6 +13,7 @@ const datePickerForm = () => {
     display([
       editFormDisplay.label(),
       editFormDisplay.description(),
+      editFormDisplay.additionalDescription(),
       editFormDisplay.showYearPicker(),
     ]),
     validation([
