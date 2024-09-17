@@ -31,7 +31,7 @@ const TitleRowLayout = ({ children, left, right }: Props) => {
 
   return (
     <div className={styles.fixedPosition}>
-      <RowLayout left={left} right={right}>
+      <RowLayout left={left} right={right} overflowHidden={true}>
         {children}
       </RowLayout>
     </div>
