@@ -8,6 +8,7 @@ export interface Props {
   right?: React.ReactNode;
   fixedPosition?: boolean;
   fullWidth?: boolean;
+  overflowHidden?: boolean;
   className?: string;
 }
 
@@ -15,15 +16,20 @@ const useStyles = makeStyles({
   sidePadding: {
     padding: '0 var(--a-spacing-4)',
   },
+  overflowHidden: {
+    overflow: 'hidden',
+  },
 });
 
-const RowLayout = ({ children, left, right, fullWidth, className }: Props) => {
+const RowLayout = ({ children, left, right, fullWidth, overflowHidden, className }: Props) => {
   const styles = useStyles();
 
   return (
     <div className={classNames('row-layout', styles.sidePadding, className)}>
       {(left || !fullWidth) && <div className="row-layout__left">{left}</div>}
-      <div className="row-layout__main">{children}</div>
+      <div className={classNames('row-layout__main', { [styles.overflowHidden]: overflowHidden }, className)}>
+        {children}
+      </div>
       {(right || !fullWidth) && <div className="row-layout__right">{right}</div>}
     </div>
   );
