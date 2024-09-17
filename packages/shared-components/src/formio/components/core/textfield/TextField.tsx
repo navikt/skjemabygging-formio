@@ -63,8 +63,10 @@ class TextField extends BaseComponent {
     }
 
     if (this.component?.validate?.digitsOnly) {
-      const containsNonDigits = !RegExp(/^\d+$/).test(value);
-      return containsNonDigits ? this.translateWithLabel(TEXTS.validering.digitsOnly) : undefined;
+      const containsDigitsOnly = RegExp(/^\d+$/).test(value);
+      if (!containsDigitsOnly) {
+        return this.translateWithLabel(TEXTS.validering.digitsOnly);
+      }
     }
   }
 
