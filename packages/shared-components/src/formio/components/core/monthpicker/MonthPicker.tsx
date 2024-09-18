@@ -39,9 +39,7 @@ class MonthPicker extends BaseComponent {
   override checkValidity(data?: SubmissionData, dirty?: boolean, row?: SubmissionData): boolean {
     this.removeAllErrors();
 
-    const formioData = data || this.rootValue;
-    const formioRow = row || this.data;
-    if (this.shouldSkipValidation(formioData, !!dirty, formioRow)) {
+    if (this.shouldSkipValidation(data, dirty, row)) {
       return true;
     }
 
