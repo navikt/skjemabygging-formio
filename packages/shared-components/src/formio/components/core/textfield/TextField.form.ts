@@ -23,6 +23,7 @@ const textFieldForm = () => {
     ]),
     validation([
       editFormValidation.required(),
+      editFormValidation.digitsOnly(),
       editFormValidation.minLength(),
       editFormValidation.maxLength(),
       editFormValidation.customMessage(),
