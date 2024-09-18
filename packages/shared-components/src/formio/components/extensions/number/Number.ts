@@ -40,10 +40,6 @@ class Number extends TextField {
   }
 
   checkComponentValidity(data, dirty, row, options = {}) {
-    if (this.shouldSkipValidation(data, dirty, row)) {
-      return true;
-    }
-
     if (this.component?.calculateValue) {
       return true;
     }

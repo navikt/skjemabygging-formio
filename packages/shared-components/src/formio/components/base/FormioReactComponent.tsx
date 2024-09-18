@@ -1,5 +1,5 @@
 import { ReactComponent } from '@formio/react';
-import { ComponentError, SubmissionData } from '@navikt/skjemadigitalisering-shared-domain';
+import { ComponentError } from '@navikt/skjemadigitalisering-shared-domain';
 import { createRoot } from 'react-dom/client';
 import Ready from '../../../util/form/ready';
 import createComponentLogger, { ComponentLogger } from './createComponentLogger';
@@ -100,12 +100,6 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
    */
   shouldForceHide() {
     return this.component?.hidden ?? false;
-  }
-
-  shouldSkipValidation(data?: SubmissionData, dirty?: boolean, row?: SubmissionData): boolean {
-    const formioData = data || this.rootValue;
-    const formioRow = row || this.data;
-    return super.shouldSkipValidation(formioData, !!dirty, formioRow);
   }
 
   /**

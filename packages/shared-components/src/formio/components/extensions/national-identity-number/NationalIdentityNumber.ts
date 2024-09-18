@@ -28,10 +28,6 @@ export default class NationalIdentityNumber extends TextField {
   }
 
   checkComponentValidity(data, dirty, row, options = {}) {
-    if (this.shouldSkipValidation(data, dirty, row)) {
-      return true;
-    }
-
     const validity = super.checkComponentValidity(data, dirty, row, options);
 
     if (validity) {
