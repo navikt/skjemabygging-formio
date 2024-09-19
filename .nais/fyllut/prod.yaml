@@ -10,6 +10,9 @@ skjemabygging-proxy-client-id: 031863f2-9881-44af-ace5-6b5ab52afeb1
 skjemabygging-proxy-url: https://skjemabygging-proxy.prod-fss-pub.nais.io
 send-inn-token-x-client-id: prod-gcp:team-soknad:innsending-api
 send-inn-host: http://innsending-api.team-soknad
+kodeverk:
+  url: http://kodeverk.team-rocket
+  scope: prod-gcp.team-rocket.kodeverk-api
 forms-source: "static"
 pdl-token-scope-cluster: "prod-fss"
 environmentVars: []
@@ -35,6 +38,9 @@ accessPolicy:
         cluster: prod-fss
       - application: nav-dekoratoren
         namespace: personbruker
+        cluster: prod-gcp
+      - application: kodeverk-api
+        namespace: team-rocket
         cluster: prod-gcp
     external:
       - host: skjemabygging-proxy.prod-fss-pub.nais.io

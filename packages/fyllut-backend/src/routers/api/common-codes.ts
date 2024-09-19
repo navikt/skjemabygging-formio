@@ -4,7 +4,7 @@ import fetch, { HeadersInit } from 'node-fetch';
 import { config } from '../../config/config';
 import { responseToError } from '../../utils/errorHandling.js';
 
-const { clientId, skjemabyggingProxyUrl } = config;
+const { clientId, kodeverk } = config;
 
 const commonCodes = {
   getArchiveSubjects: async (req: Request, res: Response, next: NextFunction) => {
@@ -72,7 +72,7 @@ const fetchCommonCodeDescriptions = async (
   const languageParam = languageCode ? `&spraak=${languageCode}` : '';
 
   const response = await fetch(
-    `${skjemabyggingProxyUrl}/kodeverk/${commonCode}/koder/betydninger?ekskluderUgyldige=true${languageParam}`,
+    `${kodeverk.url}/api/v1/kodeverk/${commonCode}/koder/betydninger?ekskluderUgyldige=true${languageParam}`,
     {
       method: 'GET',
       headers: {
