@@ -23,6 +23,7 @@ azure:
 accessPolicy:
   inbound:
     rules:
+      - application: fyllut-ettersending
       - application: send-inn-frontend
         namespace: team-soknad
       - application: skjemabygging-preprod

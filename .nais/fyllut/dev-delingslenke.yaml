@@ -23,7 +23,7 @@ environmentVars:
 accessPolicy:
   inbound:
     rules:
-      - application: send-inn-frontend
+      - application: send-inn-frontend-delingslenke
         namespace: team-soknad
   outbound:
     rules:
