@@ -70,13 +70,14 @@ const fetchCommonCodeDescriptions = async (
   languageCode: string,
 ): Promise<any> => {
   const languageParam = languageCode ? `&spraak=${languageCode}` : '';
+  const token = req.headers.AzureAccessToken;
 
   const response = await fetch(
     `${kodeverk.url}/api/v1/kodeverk/${commonCode}/koder/betydninger?ekskluderUgyldige=true${languageParam}`,
     {
       method: 'GET',
       headers: {
-        Authorization: `Bearer ${req.headers.AzureAccessToken}`,
+        ...(token && { Authorization: `Bearer ${token}` }),
         'x-correlation-id': correlator.getId(),
         'Nav-Call-Id': correlator.getId(),
         'Nav-Consumer-Id': clientId,

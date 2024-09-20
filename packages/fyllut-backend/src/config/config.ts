@@ -100,7 +100,7 @@ const localDevelopmentConfig: DefaultConfig = {
   },
   kodeverk: {
     ...kodeverk,
-    url: kodeverk.url || 'https://kodeverk-api.nav.no',
+    url: kodeverk.url || 'https://kodeverk-api.intern.nav.no',
     scope: kodeverk.scope || 'dev-gcp:team-rocket:kodeverk',
   },
   amplitude,

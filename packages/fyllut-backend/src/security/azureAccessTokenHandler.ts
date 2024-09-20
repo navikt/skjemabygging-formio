@@ -5,9 +5,13 @@ import { config } from '../config/config';
 import { logger } from '../logger';
 import { toJsonOrThrowError } from '../utils/errorHandling.js';
 
-const { clientId, clientSecret, azureOpenidTokenEndpoint } = config;
+const { clientId, clientSecret, azureOpenidTokenEndpoint, isDevelopment } = config;
 
-const azureAccessTokenHandler = (scope: string) => async (req: Request, res: Response, next: NextFunction) => {
+const azureAccessTokenHandler = (scope: string) => async (req: Request, _res: Response, next: NextFunction) => {
+  if (isDevelopment) {
+    logger.info(`Skipping Azure access token fetch (scope='${scope}')`);
+    return next();
+  }
   try {
     const response = await fetch(azureOpenidTokenEndpoint!, {
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
