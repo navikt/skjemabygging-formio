@@ -4,7 +4,7 @@ import fetch from 'node-fetch';
 import { config } from '../../config/config';
 import { toJsonOrThrowError } from '../../utils/errorHandling.js';
 
-const { skjemabyggingProxyUrl } = config;
+const { norg2, clientId } = config;
 
 const isEnhetstypeSupported = (enhet) => enhet.enhetNr !== '0000' && supportedEnhetstyper.includes(enhet.type);
 const pickRelevantProps = (enhet) => {
@@ -14,10 +14,10 @@ const pickRelevantProps = (enhet) => {
 
 const enhetsliste = {
   get: (req, res, next) => {
-    return fetch(`${skjemabyggingProxyUrl}/norg2/api/v1/enhet?enhetStatusListe=AKTIV`, {
+    return fetch(`${norg2.url}/norg2/api/v1/enhet?enhetStatusListe=AKTIV`, {
       headers: {
-        Authorization: `Bearer ${req.headers.AzureAccessToken}`,
         'x-correlation-id': correlator.getId(),
+        consumerId: clientId,
       },
     })
       .then(toJsonOrThrowError('Feil ved henting av enhetsliste', true))

@@ -63,6 +63,8 @@ spec:
       {{/each}}
     outbound:
       rules:
+        - application: norg2
+          namespace: org
       {{#each accessPolicy.outbound.rules}}
         - application: {{this.application}}
           namespace: {{this.namespace}}
@@ -93,6 +95,8 @@ spec:
       value: {{kodeverk.url}}
     - name: KODEVERK_SCOPE
       value: {{kodeverk.scope}}
+    - name: NORG2_URL
+      value: "http://norg2.org"
     - name: PDL_TOKEN_SCOPE_CLUSTER
       value: {{pdl-token-scope-cluster}}
     - name: AMPLITUDE_API_ENDPOINT
