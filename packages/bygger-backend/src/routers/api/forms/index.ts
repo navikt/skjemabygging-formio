@@ -9,5 +9,6 @@ formsRouter.get('/', forms.get);
 formsRouter.get('/:formPath', form.get);
 formsRouter.put('/:formPath', authorizedPublisher, form.put);
 formsRouter.put('/:formPath/overwrite-with-prod', authorizedPublisher, form.copyFromProd);
+formsRouter.put('/:formPath/config', authorizedPublisher, form.putConfig);
 
 export default formsRouter;

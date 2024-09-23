@@ -19,6 +19,7 @@ interface FormSettingsPageProps {
   onPublish: (form: NavFormType, translations: I18nTranslations) => void;
   onUnpublish: () => void;
   onCopyFromProd: () => void;
+  onToggleLocked: () => Promise<void>;
 }
 
 export function FormSettingsPage({
@@ -29,6 +30,7 @@ export function FormSettingsPage({
   onPublish,
   onUnpublish,
   onCopyFromProd,
+  onToggleLocked,
 }: FormSettingsPageProps) {
   const {
     title,
@@ -80,6 +82,7 @@ export function FormSettingsPage({
             onPublish={onPublish}
             onUnpublish={onUnpublish}
             onCopyFromProd={onCopyFromProd}
+            onToggleLocked={onToggleLocked}
             setOpenPublishSettingModal={setOpenPublishSettingModal}
           />
         }

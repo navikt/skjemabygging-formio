@@ -36,6 +36,18 @@ const put: RequestHandler = async (req, res, next) => {
   }
 };
 
+const putConfig: RequestHandler = async (req, res, next) => {
+  try {
+    const { formPath } = req.params;
+    const config = req.body;
+    const formioToken = req.getFormioToken?.();
+    const result = await formioService.updateConfig(formPath, config, formioToken);
+    res.json(result);
+  } catch (error) {
+    next(error);
+  }
+};
+
 const copyFromProd: RequestHandler = async (req, res, next) => {
   if (config.naisClusterName === 'prod-gcp' || !copyService) {
     return res.sendStatus(405);
@@ -54,6 +66,7 @@ const copyFromProd: RequestHandler = async (req, res, next) => {
 const form = {
   get,
   put,
+  putConfig,
   copyFromProd,
 };
 

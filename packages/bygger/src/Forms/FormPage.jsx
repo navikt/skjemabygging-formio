@@ -10,7 +10,15 @@ import { FormSettingsPage } from './settings/FormSettingsPage';
 import FormSkeleton from './skeleton/FormSkeleton';
 import { TestFormPage } from './TestFormPage';
 
-export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish, onUnpublish, onCopyFromProd }) => {
+export const FormPage = ({
+  loadForm,
+  loadTranslations,
+  onSave,
+  onPublish,
+  onUnpublish,
+  onCopyFromProd,
+  onToggleLocked,
+}) => {
   const { featureToggles, diffOn } = useAppConfig();
   const { formPath } = useParams();
   const [state, dispatch] = useReducer(formPageReducer, { status: 'LOADING' }, (state) => state);
@@ -92,6 +100,11 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish, onUnpu
     }
   };
 
+  const toggleLocked = async () => {
+    const toggledLockedForm = await onToggleLocked(state.form);
+    dispatch({ type: 'form-changed', form: toggledLockedForm });
+  };
+
   if (state.status === 'LOADING') {
     return <FormSkeleton leftSidebar={true} rightSidebar={true} />;
   }
@@ -132,6 +145,7 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish, onUnpu
               onPublish={publishForm}
               onUnpublish={unpublishForm}
               onCopyFromProd={copyFormFromProduction}
+              onToggleLocked={toggleLocked}
             />
           }
         />

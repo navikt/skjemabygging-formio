@@ -8,12 +8,14 @@ import SidebarLayout from '../../components/layout/SidebarLayout';
 import UserFeedback from '../../components/UserFeedback';
 import useLockedFormModal from '../../hooks/useLockedFormModal';
 import FormStatusPanel from '../status/FormStatusPanel';
+import ToggleFormLockButton from '../toggleFormLockButton/ToggleFormLockButton';
 import UnpublishButton from '../unpublish/UnpublishButton';
 
 interface FormSettingsPageProps {
   form: NavFormType;
   onPublish: (form: NavFormType, translations: I18nTranslations) => void;
   onUnpublish: () => void;
+  onToggleLocked: () => Promise<void>;
   onCopyFromProd: () => void;
   validateAndSave: (form: NavFormType) => void;
   setOpenPublishSettingModal: (open: boolean) => void;
@@ -22,6 +24,7 @@ interface FormSettingsPageProps {
 const FormSettingsSidebar = ({
   form,
   onUnpublish,
+  onToggleLocked,
   onCopyFromProd,
   validateAndSave,
   setOpenPublishSettingModal,
@@ -57,6 +60,7 @@ const FormSettingsSidebar = ({
             Kopier fra produksjon
           </ButtonWithSpinner>
         )}
+        <ToggleFormLockButton onToggleLocked={onToggleLocked} isLockedForm={isLockedForm} />
         <UserFeedback />
         <FormStatusPanel publishProperties={form.properties} />
       </VStack>

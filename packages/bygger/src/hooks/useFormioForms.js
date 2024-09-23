@@ -65,6 +65,40 @@ export const useFormioForms = () => {
     [feedbackEmit, http],
   );
 
+  const onToggleLocked = useCallback(
+    async (form) => {
+      const { isLockedForm, lockedFormReason } = form.properties;
+      try {
+        const response = await http.put(
+          `/api/forms/${form.path}/config`,
+          {
+            isLockedForm: !isLockedForm,
+            lockedFormReason,
+          },
+          {
+            'Bygger-Formio-Token': NavFormioJs.Formio.getToken(),
+          },
+        );
+        feedbackEmit.success(
+          response.properties.isLockedForm ? 'Skjemaet ble låst for redigering' : 'Skjemaet ble åpnet for redigering',
+        );
+        return response;
+      } catch (error) {
+        if (error instanceof http.UnauthenticatedError) {
+          feedbackEmit.error(
+            isLockedForm
+              ? 'Åpning av skjemaet feilet. Du har blitt logget ut'
+              : 'Låsing feilet. Du har blitt logget ut.',
+          );
+        } else {
+          feedbackEmit.error(error.message);
+        }
+        return { error: true };
+      }
+    },
+    [feedbackEmit, http],
+  );
+
   const onPublish = useCallback(
     async (form, translations) => {
       const payload = JSON.stringify({ form, translations });
@@ -120,5 +154,6 @@ export const useFormioForms = () => {
     onPublish,
     onUnpublish,
     onCopyFromProd,
+    onToggleLocked,
   };
 };
