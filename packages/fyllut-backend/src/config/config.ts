@@ -2,7 +2,15 @@ import { FrontendLoggerConfigType, configUtils, featureUtils } from '@navikt/skj
 import dotenv from 'dotenv';
 import { logger } from '../logger';
 import { NaisCluster } from './nais-cluster.js';
-import { AmplitudeConfig, ConfigType, DefaultConfig, IdportenConfig, SendInnConfig, TokenxConfig } from './types';
+import {
+  AmplitudeConfig,
+  ConfigType,
+  DefaultConfig,
+  IdportenConfig,
+  SendInnConfig,
+  ServiceConfig,
+  TokenxConfig,
+} from './types';
 
 const { DOTENV_FILE } = process.env;
 if (DOTENV_FILE) {
@@ -45,6 +53,11 @@ const sendInnConfig: SendInnConfig = {
   },
 };
 
+const kodeverk: ServiceConfig = {
+  url: process.env.KODEVERK_URL!,
+  scope: process.env.KODEVERK_SCOPE!,
+};
+
 function loadFormioApiServiceUrl() {
   const formioApiService = process.env.FORMIO_API_SERVICE;
   const formioProjectName = process.env.FORMIO_PROJECT_NAME;
@@ -85,6 +98,11 @@ const localDevelopmentConfig: DefaultConfig = {
     ...idporten,
     idportenJwksUri: idporten.idportenJwksUri || 'https://test.idporten.no/jwks.json',
   },
+  kodeverk: {
+    ...kodeverk,
+    url: kodeverk.url || 'https://kodeverk-api.intern.nav.no',
+    scope: kodeverk.scope || 'dev-gcp:team-rocket:kodeverk',
+  },
   amplitude,
   frontendLoggerConfig,
 };
@@ -107,6 +125,7 @@ const defaultConfig: DefaultConfig = {
   noDecorator: false,
   tokenx,
   sendInnConfig,
+  kodeverk,
   idporten,
   amplitude,
   frontendLoggerConfig,
