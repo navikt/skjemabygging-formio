@@ -11,7 +11,7 @@ skjemabygging-proxy-url: https://skjemabygging-proxy.prod-fss-pub.nais.io
 send-inn-token-x-client-id: prod-gcp:team-soknad:innsending-api
 send-inn-host: http://innsending-api.team-soknad
 kodeverk:
-  url: http://kodeverk.team-rocket
+  url: https://kodeverk-api.nav.no
   scope: prod-gcp.team-rocket.kodeverk-api
 forms-source: "static"
 pdl-token-scope-cluster: "prod-fss"
