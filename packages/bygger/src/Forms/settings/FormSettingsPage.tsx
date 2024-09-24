@@ -7,7 +7,6 @@ import { isFormMetadataValid, validateFormMetadata } from '../../components/Form
 import RowLayout from '../../components/layout/RowLayout';
 import Title from '../../components/layout/Title';
 import TitleRowLayout from '../../components/layout/TitleRowLayout';
-import useLockedFormModal from '../../hooks/useLockedFormModal';
 import PublishModalComponents from '../publish/PublishModalComponents';
 import FormSettingsSidebar from './FormSettingsSidebar';
 
@@ -38,7 +37,6 @@ export function FormSettingsPage({
   } = form;
   const isLockedForm = form.properties.isLockedForm;
   const [openPublishSettingModal, setOpenPublishSettingModal] = useModal();
-  const { lockedFormModalContent } = useLockedFormModal(form);
 
   const [errors, setErrors] = useState({});
   const { config } = useAppConfig();
@@ -89,7 +87,6 @@ export function FormSettingsPage({
       >
         <FormMetadataEditor form={form} publishedForm={publishedForm} errors={errors} onChange={onChange} />
       </RowLayout>
-      {lockedFormModalContent}
       <PublishModalComponents
         form={form}
         onPublish={onPublish}

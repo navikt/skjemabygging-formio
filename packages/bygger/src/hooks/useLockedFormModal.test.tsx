@@ -1,15 +1,22 @@
 import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import { fireEvent, render, screen } from '@testing-library/react';
+import LockedFormModal from '../Forms/lockedFormModal/LockedFormModal';
 import useLockedFormModal from './useLockedFormModal';
 
 const TestComponent = () => {
-  const { openLockedFormModal, lockedFormModalContent } = useLockedFormModal({
-    properties: { lockedFormReason: 'En god grunn' },
-  } as NavFormType);
+  const { openLockedFormModal, isLockedFormModalOpen, closeLockedFormModal } = useLockedFormModal();
   return (
     <div>
       <button onClick={openLockedFormModal}>Open Modal</button>
-      {lockedFormModalContent}
+      <LockedFormModal
+        open={isLockedFormModalOpen}
+        onClose={closeLockedFormModal}
+        form={
+          {
+            properties: { lockedFormReason: 'En god grunn' },
+          } as NavFormType
+        }
+      />
     </div>
   );
 };

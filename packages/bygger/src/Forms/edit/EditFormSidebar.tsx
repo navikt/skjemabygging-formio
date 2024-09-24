@@ -6,6 +6,7 @@ import ButtonWithSpinner from '../../components/ButtonWithSpinner';
 import SidebarLayout from '../../components/layout/SidebarLayout';
 import UserFeedback from '../../components/UserFeedback';
 import useLockedFormModal from '../../hooks/useLockedFormModal';
+import LockedFormModal from '../lockedFormModal/LockedFormModal';
 import PublishModalComponents from '../publish/PublishModalComponents';
 import FormStatusPanel from '../status/FormStatusPanel';
 import UnpublishButton from '../unpublish/UnpublishButton';
@@ -19,7 +20,7 @@ interface EditFormSidebarProps {
 
 const EditFormSidebar = ({ form, onSave, onPublish, onUnpublish }: EditFormSidebarProps) => {
   const [openPublishSettingModal, setOpenPublishSettingModal] = useModal();
-  const { lockedFormModalContent, openLockedFormModal } = useLockedFormModal(form);
+  const { openLockedFormModal, isLockedFormModalOpen, closeLockedFormModal } = useLockedFormModal();
 
   const {
     properties: { isLockedForm },
@@ -67,7 +68,7 @@ const EditFormSidebar = ({ form, onSave, onPublish, onUnpublish }: EditFormSideb
           setOpenPublishSettingModal={setOpenPublishSettingModal}
         />
 
-        {lockedFormModalContent}
+        <LockedFormModal open={isLockedFormModalOpen} onClose={closeLockedFormModal} form={form} />
       </VStack>
     </SidebarLayout>
   );

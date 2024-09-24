@@ -7,6 +7,7 @@ import ButtonWithSpinner from '../../components/ButtonWithSpinner';
 import SidebarLayout from '../../components/layout/SidebarLayout';
 import UserFeedback from '../../components/UserFeedback';
 import useLockedFormModal from '../../hooks/useLockedFormModal';
+import LockedFormModal from '../lockedFormModal/LockedFormModal';
 import FormStatusPanel from '../status/FormStatusPanel';
 import ToggleFormLockButton from '../toggleFormLockButton/ToggleFormLockButton';
 import UnpublishButton from '../unpublish/UnpublishButton';
@@ -31,23 +32,29 @@ const FormSettingsSidebar = ({
 }: FormSettingsPageProps) => {
   const isLockedForm = form.properties.isLockedForm;
   const { config } = useAppConfig();
-  const { openLockedFormModal } = useLockedFormModal(form);
+  const { openLockedFormModal, isLockedFormModalOpen, closeLockedFormModal } = useLockedFormModal();
+
+  const doIfUnlocked = (whenUnlocked: () => void): void => {
+    if (isLockedForm) {
+      openLockedFormModal();
+    } else {
+      whenUnlocked();
+    }
+  };
 
   return (
     <SidebarLayout noScroll={true}>
       <VStack gap="1">
-        <ButtonWithSpinner onClick={() => validateAndSave(form)} size="small">
+        <ButtonWithSpinner
+          onClick={() => doIfUnlocked(() => validateAndSave(form))}
+          size="small"
+          icon={isLockedForm && <PadlockLockedIcon title="Skjemaet er låst" />}
+        >
           Lagre
         </ButtonWithSpinner>
         <Button
           variant="secondary"
-          onClick={() => {
-            if (isLockedForm) {
-              openLockedFormModal();
-            } else {
-              setOpenPublishSettingModal(true);
-            }
-          }}
+          onClick={() => doIfUnlocked(() => setOpenPublishSettingModal(true))}
           type="button"
           size="small"
           icon={isLockedForm && <PadlockLockedIcon title="Skjemaet er låst" />}
@@ -64,6 +71,7 @@ const FormSettingsSidebar = ({
         <UserFeedback />
         <FormStatusPanel publishProperties={form.properties} />
       </VStack>
+      <LockedFormModal open={isLockedFormModalOpen} onClose={closeLockedFormModal} form={form} />
     </SidebarLayout>
   );
 };
