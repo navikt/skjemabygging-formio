@@ -33,7 +33,7 @@ const { azureSkjemabyggingProxy, azurePdl, kodeverkToken, tokenxPdl, tokenxSendI
 apiRouter.all('*', idportenAuthHandler, envQualifier);
 apiRouter.get('/config', config.get);
 apiRouter.get('/countries', countries.get);
-apiRouter.get('/enhetsliste', azureSkjemabyggingProxy, enhetsliste.get);
+apiRouter.get('/enhetsliste', enhetsliste.get);
 apiRouter.get('/forms', tryCatch(forms.get));
 apiRouter.get('/forms/:formPath', tryCatch(form.get));
 apiRouter.post('/foersteside', azureSkjemabyggingProxy, forsteside.post);

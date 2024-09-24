@@ -58,6 +58,10 @@ const kodeverk: ServiceConfig = {
   scope: process.env.KODEVERK_SCOPE!,
 };
 
+const norg2: ServiceConfig = {
+  url: process.env.NORG2_URL!,
+};
+
 function loadFormioApiServiceUrl() {
   const formioApiService = process.env.FORMIO_API_SERVICE;
   const formioProjectName = process.env.FORMIO_PROJECT_NAME;
@@ -103,6 +107,10 @@ const localDevelopmentConfig: DefaultConfig = {
     url: kodeverk.url || 'https://kodeverk-api.intern.nav.no',
     scope: kodeverk.scope || 'dev-gcp:team-rocket:kodeverk',
   },
+  norg2: {
+    ...norg2,
+    url: norg2.url || 'https://norg2.dev.intern.nav.no',
+  },
   amplitude,
   frontendLoggerConfig,
 };
@@ -126,6 +134,7 @@ const defaultConfig: DefaultConfig = {
   tokenx,
   sendInnConfig,
   kodeverk,
+  norg2,
   idporten,
   amplitude,
   frontendLoggerConfig,

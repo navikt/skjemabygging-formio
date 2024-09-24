@@ -8,7 +8,7 @@ import { mockRequest, mockResponse } from '../../test/testHelpers';
 import enhetslisteEndpoint from './enhetsliste';
 import enheter from './testdata/enheter';
 
-const { skjemabyggingProxyUrl } = config;
+const { norg2 } = config;
 
 const getEnhetslisteFromResponse = (res: Response): Enhet[] => (res.json as Mock).mock.calls[0][0];
 
@@ -21,7 +21,7 @@ describe('[endpoint] enhetsliste', () => {
 
   describe('When proxy returns complete list containg all enheter', () => {
     beforeEach(() => {
-      fetchEnhetslisteMock = nock(skjemabyggingProxyUrl!)
+      fetchEnhetslisteMock = nock(norg2.url)
         .get('/norg2/api/v1/enhet?enhetStatusListe=AKTIV')
         .reply(200, JSON.stringify(enheter));
     });
@@ -64,7 +64,7 @@ describe('[endpoint] enhetsliste', () => {
 
   describe('When proxy returns status 500', () => {
     beforeEach(() => {
-      fetchEnhetslisteMock = nock(skjemabyggingProxyUrl!)
+      fetchEnhetslisteMock = nock(norg2.url)
         .get('/norg2/api/v1/enhet?enhetStatusListe=AKTIV')
         .reply(500, JSON.stringify({ correlationId: '1234' }));
     });

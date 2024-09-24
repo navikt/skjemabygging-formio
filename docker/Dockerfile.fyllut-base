@@ -1,5 +1,5 @@
 FROM node:20.9.0-alpine
-ENV NODE_ENV production
+ENV NODE_ENV=production
 ARG git_sha
 
 WORKDIR /app
