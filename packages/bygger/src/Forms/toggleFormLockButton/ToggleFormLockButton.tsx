@@ -1,14 +1,15 @@
 import { BodyShort, Button, Textarea } from '@navikt/ds-react';
 import { Modal } from '@navikt/skjemadigitalisering-shared-components';
+import { FormPropertiesType } from '@navikt/skjemadigitalisering-shared-domain';
 import { useState } from 'react';
 
 interface Props {
-  onToggleLocked: () => Promise<void>;
+  onChangeLockedState: (properties: Partial<FormPropertiesType>) => Promise<void>;
   isLockedForm?: boolean;
   lockedFormReason?: string;
 }
 
-const ToggleFormLockButton = ({ onToggleLocked, isLockedForm, lockedFormReason }: Props) => {
+const ToggleFormLockButton = ({ onChangeLockedState, isLockedForm, lockedFormReason }: Props) => {
   const [lockedFormState, setLockedFormState] = useState<{
     reasonValue: string;
     error?: string;
@@ -33,7 +34,7 @@ const ToggleFormLockButton = ({ onToggleLocked, isLockedForm, lockedFormReason }
         ...rest,
         isLoading: true,
       }));
-      await onToggleLocked();
+      await onChangeLockedState({ isLockedForm: !isLockedForm, lockedFormReason: lockedFormState.reasonValue });
       setLockedFormState((state) => ({ ...state, isLoading: false, isModalOpen: false }));
     }
   };

@@ -1,5 +1,5 @@
 import { useAppConfig, useModal } from '@navikt/skjemadigitalisering-shared-components';
-import { I18nTranslations, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
+import { FormPropertiesType, I18nTranslations, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import { useState } from 'react';
 import { AppLayout } from '../../components/AppLayout';
 import { FormMetadataEditor } from '../../components/FormMetaDataEditor/FormMetadataEditor';
@@ -18,7 +18,7 @@ interface FormSettingsPageProps {
   onPublish: (form: NavFormType, translations: I18nTranslations) => void;
   onUnpublish: () => void;
   onCopyFromProd: () => void;
-  onToggleLocked: () => Promise<void>;
+  onChangeLockedState: (properties: Partial<FormPropertiesType>) => Promise<void>;
 }
 
 export function FormSettingsPage({
@@ -29,7 +29,7 @@ export function FormSettingsPage({
   onPublish,
   onUnpublish,
   onCopyFromProd,
-  onToggleLocked,
+  onChangeLockedState,
 }: FormSettingsPageProps) {
   const {
     title,
@@ -80,7 +80,7 @@ export function FormSettingsPage({
             onPublish={onPublish}
             onUnpublish={onUnpublish}
             onCopyFromProd={onCopyFromProd}
-            onToggleLocked={onToggleLocked}
+            onChangeLockedState={onChangeLockedState}
             setOpenPublishSettingModal={setOpenPublishSettingModal}
           />
         }

@@ -65,14 +65,14 @@ export const useFormioForms = () => {
     [feedbackEmit, http],
   );
 
-  const onToggleLocked = useCallback(
+  const onUpdateProperties = useCallback(
     async (form) => {
       const { isLockedForm, lockedFormReason } = form.properties;
       try {
         const response = await http.put(
           `/api/forms/${form.path}/config`,
           {
-            isLockedForm: !isLockedForm,
+            isLockedForm,
             lockedFormReason,
           },
           {
@@ -154,6 +154,6 @@ export const useFormioForms = () => {
     onPublish,
     onUnpublish,
     onCopyFromProd,
-    onToggleLocked,
+    onUpdateProperties,
   };
 };
