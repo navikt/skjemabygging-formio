@@ -35,6 +35,7 @@ const BasicFields = ({ onChange, diff, form, errors, usageContext }: BasicFields
           label="Beskriv hvorfor skjemaet er låst"
           id="lockedFormReason"
           value={lockedFormReason}
+          readOnly={isLockedForm}
           onChange={(event) =>
             onChange({ ...form, properties: { ...form.properties, lockedFormReason: event.target.value } })
           }
@@ -64,6 +65,7 @@ const BasicFields = ({ onChange, diff, form, errors, usageContext }: BasicFields
         value={title}
         onChange={(event) => onChange({ ...form, title: event.target.value })}
         error={errors?.title}
+        readOnly={isLockedForm}
       />
       {temaKodeFields()}
     </>

@@ -10,12 +10,31 @@ interface Props {
   onChange: (event: any) => void;
   excluded?: InnsendingType[];
   showDefaultOption?: boolean;
+  readonly?: boolean;
 }
 
-const SubmissionTypeSelect = ({ name, label, value, onChange, error, excluded, showDefaultOption = true }: Props) => {
+const SubmissionTypeSelect = ({
+  name,
+  label,
+  value,
+  onChange,
+  error,
+  excluded,
+  showDefaultOption = true,
+  readonly,
+}: Props) => {
   const include = useCallback((type: InnsendingType) => !excluded?.includes(type), [excluded]);
   return (
-    <Select className="mb" label={label} name={name} id={name} value={value} onChange={onChange} error={error}>
+    <Select
+      className="mb"
+      label={label}
+      name={name}
+      id={name}
+      value={value}
+      onChange={onChange}
+      error={error}
+      readOnly={readonly}
+    >
       {showDefaultOption && <option value="">Velg innsendingstype</option>}
       {include('PAPIR_OG_DIGITAL') && <option value="PAPIR_OG_DIGITAL">Papir og digital</option>}
       {include('KUN_PAPIR') && <option value="KUN_PAPIR">Kun papir</option>}

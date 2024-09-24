@@ -14,6 +14,7 @@ export interface AddressFieldsProps {
 const AddressFields = ({ onChange, diff, form }: AddressFieldsProps) => {
   const innsending = form.properties.innsending || 'PAPIR_OG_DIGITAL';
   const mottaksadresseId = form.properties.mottaksadresseId;
+  const isLockedForm = form.properties.isLockedForm;
   const { mottaksadresser, ready: isMottaksAdresserReady, errorMessage: mottaksadresseError } = useMottaksadresser();
 
   const toAddressString = (address: MottaksadresseData) => {
@@ -37,7 +38,7 @@ const AddressFields = ({ onChange, diff, form }: AddressFieldsProps) => {
             name="form-mottaksadresse"
             id="form-mottaksadresse"
             value={mottaksadresseId}
-            disabled={!isMottaksAdresserReady}
+            disabled={!isMottaksAdresserReady || isLockedForm}
             onChange={(event) =>
               onChange({
                 ...form,

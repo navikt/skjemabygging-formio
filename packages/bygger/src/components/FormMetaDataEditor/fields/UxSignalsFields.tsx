@@ -26,7 +26,7 @@ const mergeProps = (form: NavFormType, props: Partial<FormPropertiesType>): NavF
 });
 
 const UxSignalsFields = ({ onChange, diff, form, errors }: Props) => {
-  const { uxSignalsId, uxSignalsInnsending } = form.properties;
+  const { uxSignalsId, uxSignalsInnsending, isLockedForm } = form.properties;
 
   const idChangeHandler = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>, form: NavFormType) => {
@@ -62,6 +62,7 @@ const UxSignalsFields = ({ onChange, diff, form, errors }: Props) => {
         value={uxSignalsId || ''}
         onChange={(event) => idChangeHandler(event, form)}
         error={errors?.uxSignalsId}
+        readOnly={isLockedForm}
       />
       {uxSignalsId && (
         <SubmissionTypeSelect
@@ -72,6 +73,7 @@ const UxSignalsFields = ({ onChange, diff, form, errors }: Props) => {
           onChange={(event) => innsendingChangeHandler(event, form)}
           excluded={['INGEN']}
           error={errors?.uxSignalsInnsending}
+          readonly={isLockedForm}
         />
       )}
     </>

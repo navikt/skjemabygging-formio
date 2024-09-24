@@ -14,6 +14,7 @@ export interface TemaKodeFieldsProps {
 const TemaKodeFields = ({ onChange, diff, form, errors }: TemaKodeFieldsProps) => {
   const { temaKoder, ready: isTemaKoderReady, errorMessage: temaKoderError } = useTemaKoder();
   const tema = form.properties.tema;
+  const isLockedForm = form.properties.isLockedForm;
 
   return (
     <>
@@ -25,6 +26,7 @@ const TemaKodeFields = ({ onChange, diff, form, errors }: TemaKodeFieldsProps) =
         value={temaKoder?.find((temaKode) => temaKode.key === tema)?.key || ''}
         onChange={(event) => onChange({ ...form, properties: { ...form.properties, tema: event.target.value } })}
         error={errors?.tema}
+        readOnly={isLockedForm}
       >
         <option value="">{'Velg tema'}</option>
         {temaKoder?.map(({ key, value }) => (

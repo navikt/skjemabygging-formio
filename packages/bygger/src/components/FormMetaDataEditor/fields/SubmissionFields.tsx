@@ -16,6 +16,7 @@ const SubmissionFields = ({ onChange, diff, form, errors }: SubmissionFieldsProp
   const ettersending = form.properties.ettersending;
   const ettersendelsesfrist = form.properties.ettersendelsesfrist;
   const hideUserTypes = form.properties.hideUserTypes;
+  const isLockedForm = form.properties.isLockedForm;
 
   return (
     <>
@@ -24,6 +25,7 @@ const SubmissionFields = ({ onChange, diff, form, errors }: SubmissionFieldsProp
         label={<LabelWithDiff label="Innsending" diff={!!diff.innsending} />}
         value={innsending}
         error={errors?.innsending}
+        readonly={isLockedForm}
         onChange={(event) =>
           onChange({
             ...form,
@@ -37,6 +39,7 @@ const SubmissionFields = ({ onChange, diff, form, errors }: SubmissionFieldsProp
         label={<LabelWithDiff label="Ettersending" diff={!!diff.ettersending} />}
         value={ettersending}
         error={errors?.ettersending}
+        readonly={isLockedForm}
         onChange={(event) =>
           onChange({
             ...form,
@@ -53,6 +56,7 @@ const SubmissionFields = ({ onChange, diff, form, errors }: SubmissionFieldsProp
           type="number"
           id="ettersendelsesfrist"
           value={ettersendelsesfrist || ''}
+          readOnly={isLockedForm}
           onChange={(event) =>
             onChange({
               ...form,
@@ -69,6 +73,7 @@ const SubmissionFields = ({ onChange, diff, form, errors }: SubmissionFieldsProp
             className="mb"
             label={<LabelWithDiff label="Overskrift til innsending" diff={!!diff.innsendingOverskrift} />}
             value={form.properties.innsendingOverskrift || ''}
+            readOnly={isLockedForm}
             onChange={(event) =>
               onChange({
                 ...form,
@@ -80,6 +85,7 @@ const SubmissionFields = ({ onChange, diff, form, errors }: SubmissionFieldsProp
             className="mb"
             label={<LabelWithDiff label="Forklaring til innsending" diff={!!diff.innsendingForklaring} />}
             value={form.properties.innsendingForklaring || ''}
+            readOnly={isLockedForm}
             onChange={(event) =>
               onChange({
                 ...form,
@@ -93,6 +99,7 @@ const SubmissionFields = ({ onChange, diff, form, errors }: SubmissionFieldsProp
       <Checkbox
         className="mb"
         checked={hideUserTypes}
+        readOnly={isLockedForm}
         onChange={(event) =>
           onChange({
             ...form,
