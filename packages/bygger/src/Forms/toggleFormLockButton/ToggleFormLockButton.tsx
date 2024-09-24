@@ -23,7 +23,7 @@ const ToggleFormLockButton = ({ onChangeLockedState, isLockedForm, lockedFormRea
 
   const modalTitle = isLockedForm ? 'Låse opp skjemaet' : 'Lås skjemaet for redigering';
   const unlockFormBody = 'Er du sikker på at du vil låse opp skjemaet?';
-  const confirmButtonText = isLockedForm ? 'Lås opp' : 'Lås skjemaet';
+  const confirmButtonText = isLockedForm ? 'Lås opp' : 'Lås for redigering';
   const cancelButtonText = 'Avbryt';
 
   const onClickConfirm = async () => {
@@ -46,7 +46,7 @@ const ToggleFormLockButton = ({ onChangeLockedState, isLockedForm, lockedFormRea
   return (
     <>
       <Button onClick={() => showModal(true)} variant="tertiary" type="button" size="small">
-        {isLockedForm ? 'Lås opp skjemaet' : 'Lås skjemaet'}
+        {isLockedForm ? 'Lås opp skjemaet' : 'Lås for redigering'}
       </Button>
       <Modal open={lockedFormState.isModalOpen} onClose={() => showModal(false)} title={modalTitle}>
         <Modal.Body>
