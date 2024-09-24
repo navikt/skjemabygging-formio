@@ -1,4 +1,4 @@
-import { TextField, Textarea } from '@navikt/ds-react';
+import { TextField } from '@navikt/ds-react';
 import { NavFormSettingsDiff, NavFormType, UsageContext } from '@navikt/skjemadigitalisering-shared-domain';
 import LabelWithDiff from '../LabelWithDiff';
 import { FormMetadataError, UpdateFormFunction } from '../utils/utils';
@@ -16,7 +16,6 @@ export interface BasicFieldsProps {
 const BasicFields = ({ onChange, diff, form, errors, usageContext }: BasicFieldsProps) => {
   const skjemanummer = form.properties.skjemanummer;
   const isLockedForm = form.properties.isLockedForm;
-  const lockedFormReason = form.properties.lockedFormReason;
 
   const title = form.title;
 
@@ -29,20 +28,6 @@ const BasicFields = ({ onChange, diff, form, errors, usageContext }: BasicFields
   return (
     <>
       {testSkjemaFields()}
-      {isLockedForm && (
-        <Textarea
-          className="mb"
-          label="Beskriv hvorfor skjemaet er låst"
-          id="lockedFormReason"
-          value={lockedFormReason}
-          readOnly={isLockedForm}
-          onChange={(event) =>
-            onChange({ ...form, properties: { ...form.properties, lockedFormReason: event.target.value } })
-          }
-          error={errors?.lockedFormReason}
-        />
-      )}
-
       <TextField
         className="mb"
         label="Skjemanummer"
