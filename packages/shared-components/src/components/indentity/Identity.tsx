@@ -14,13 +14,13 @@ interface Props {
   readOnly?: boolean;
   required?: boolean;
   className?: string;
-  nationalIdentity: IdentityInput;
+  identity: IdentityInput;
 }
 
-const Identity = ({ readOnly, required, onChange, nationalIdentity, className }: Props) => {
+const Identity = ({ readOnly, required, onChange, identity, className }: Props) => {
   return (
     <IdentityProvider
-      nationalIdentity={nationalIdentity}
+      nationalIdentity={identity}
       readOnly={readOnly}
       required={required}
       onChange={onChange}
@@ -31,8 +31,8 @@ const Identity = ({ readOnly, required, onChange, nationalIdentity, className }:
       ) : (
         <>
           <DoYouHaveIdentityNumberRadio />
-          {nationalIdentity?.harDuFodselsnummer !== undefined &&
-            (nationalIdentity?.harDuFodselsnummer ? <IdentityNumberField /> : <BirthDateField />)}
+          {identity?.harDuFodselsnummer !== undefined &&
+            (identity?.harDuFodselsnummer ? <IdentityNumberField /> : <BirthDateField />)}
         </>
       )}
     </IdentityProvider>

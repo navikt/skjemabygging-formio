@@ -70,7 +70,7 @@ export default class Identity extends BaseComponent {
         />
         <NavIdentity
           onChange={this.handleChange.bind(this)}
-          nationalIdentity={this.getValue()}
+          identity={this.getValue()}
           className={this.getClassName()}
           readOnly={this.getReadOnly()}
           required={this.isRequired()}
