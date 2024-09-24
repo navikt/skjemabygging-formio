@@ -3,6 +3,7 @@ import citizenshipBuilder from '../components/extensions/citizenship/Citizenship
 import countrySelectBuilder from '../components/extensions/country-select/CountrySelect.builder';
 import emailBuilder from '../components/extensions/email/Email.builder';
 import firstNameBuilder from '../components/extensions/first-name/FirstName.builder';
+import identityBuilder from '../components/extensions/identity/Identity.builder';
 import nationalIdentityNumberBuilder from '../components/extensions/national-identity-number/NationalIdentityNumber.builder';
 import phoneNumberBuilder from '../components/extensions/phone-number/PhoneNumber.builder';
 import surnameBuilder from '../components/extensions/surname/Surname.builder';
@@ -17,6 +18,7 @@ const personGroup = {
   title: 'Person',
   components: {
     fnrfield: nationalIdentityNumberBuilder(),
+    identity: identityBuilder(),
     firstName: firstNameBuilder(),
     surname: surnameBuilder(),
     address: addressBuilder(),
