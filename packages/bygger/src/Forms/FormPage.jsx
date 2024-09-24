@@ -17,7 +17,7 @@ export const FormPage = ({
   onPublish,
   onUnpublish,
   onCopyFromProd,
-  onUpdateProperties,
+  onUpdateFormSettings,
 }) => {
   const { featureToggles, diffOn } = useAppConfig();
   const { formPath } = useParams();
@@ -101,7 +101,7 @@ export const FormPage = ({
   };
 
   const onChangeLockedState = async (properties) => {
-    const toggledLockedForm = await onUpdateProperties({
+    const toggledLockedForm = await onUpdateFormSettings({
       ...state.form,
       properties: { ...state.form.properties, ...properties },
     });

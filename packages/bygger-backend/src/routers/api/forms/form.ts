@@ -36,12 +36,12 @@ const put: RequestHandler = async (req, res, next) => {
   }
 };
 
-const putConfig: RequestHandler = async (req, res, next) => {
+const putFormSettings: RequestHandler = async (req, res, next) => {
   try {
     const { formPath } = req.params;
     const config = req.body;
     const formioToken = req.getFormioToken?.();
-    const result = await formioService.updateConfig(formPath, config, formioToken);
+    const result = await formioService.updateFormSettings(formPath, config, formioToken);
     res.json(result);
   } catch (error) {
     next(error);
@@ -66,7 +66,7 @@ const copyFromProd: RequestHandler = async (req, res, next) => {
 const form = {
   get,
   put,
-  putConfig,
+  putFormSettings,
   copyFromProd,
 };
 

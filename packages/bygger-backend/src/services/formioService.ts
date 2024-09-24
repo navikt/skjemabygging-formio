@@ -200,7 +200,7 @@ export class FormioService {
     return await Promise.all(forms.map((form) => this.saveForm(form, formioToken, userName, formProps)));
   }
 
-  async updateConfig(formPath: string, config: Partial<FormPropertiesType>, formioToken: string) {
+  async updateFormSettings(formPath: string, config: Partial<FormPropertiesType>, formioToken: string) {
     const form = await this.getForm(formPath);
     if (form) {
       const updateFormUrl = `${this.projectUrl}/form`;
