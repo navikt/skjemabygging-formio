@@ -1,9 +1,9 @@
 import { createContext, useContext } from 'react';
-import { NationalIdentityInput } from './Identity';
+import { IdentityInput } from './Identity';
 
 interface IdentityContextType {
-  onChange: (nationalIdentity: NationalIdentityInput) => void;
-  nationalIdentity?: NationalIdentityInput;
+  onChange: (nationalIdentity: IdentityInput) => void;
+  nationalIdentity?: IdentityInput;
   readOnly?: boolean;
   required?: boolean;
   className?: string;
