@@ -1,5 +1,5 @@
 import { ConfirmationModal, useModal } from '@navikt/skjemadigitalisering-shared-components';
-import { I18nTranslations, NavFormType, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { NavFormType, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useState } from 'react';
 import useLockedFormModal from '../../hooks/useLockedFormModal';
 import LockedFormModal from '../lockedFormModal/LockedFormModal';
@@ -8,7 +8,6 @@ import PublishSettingsModal from './PublishSettingsModal';
 
 interface PublishModalComponentsProps {
   form: NavFormType;
-  onPublish: (form: NavFormType, translations: I18nTranslations) => void;
   openPublishSettingModal: boolean;
   setOpenPublishSettingModal: (open: boolean) => void;
 }
@@ -21,7 +20,6 @@ const validateAttachments = (form: NavFormType) =>
 
 const PublishModalComponents = ({
   form,
-  onPublish,
   openPublishSettingModal,
   setOpenPublishSettingModal,
 }: PublishModalComponentsProps) => {
@@ -71,7 +69,6 @@ const PublishModalComponents = ({
         open={openConfirmPublishModal}
         onClose={() => setOpenConfirmPublishModal(false)}
         form={form}
-        onPublish={onPublish}
         publishLanguageCodeList={selectedLanguageCodeList}
       />
       <ConfirmationModal

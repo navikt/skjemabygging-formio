@@ -1,18 +1,18 @@
 import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import cloneDeep from 'lodash.clonedeep';
 
-type ReducerAction = 'form-loaded' | 'form-not-found' | 'form-changed' | 'form-saved' | 'form-error';
+type FormReducerAction = 'form-loaded' | 'form-not-found' | 'form-changed' | 'form-saved' | 'form-error';
 type Status = 'LOADING' | 'FINISHED LOADING' | 'FORM NOT FOUND' | 'ERROR';
-export type ReducerActionType = { type: ReducerAction; form?: NavFormType; publishedForm?: NavFormType };
+export type FormReducerActionType = { type: FormReducerAction; form?: NavFormType; publishedForm?: NavFormType };
 
-export interface ReducerState {
+export interface FormReducerState {
   status: Status;
   dbForm?: NavFormType;
   form?: NavFormType;
   publishedForm?: NavFormType | null;
 }
 
-const formPageReducer = (state: ReducerState, action: ReducerActionType) => {
+const formPageReducer = (state: FormReducerState, action: FormReducerActionType): FormReducerState => {
   const formClone = cloneDeep(action.form);
   switch (action.type) {
     case 'form-loaded':
