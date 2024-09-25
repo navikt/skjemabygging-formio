@@ -1,5 +1,5 @@
 import { BodyShort } from '@navikt/ds-react';
-import { ConfirmationModal, InnerHtml, makeStyles } from '@navikt/skjemadigitalisering-shared-components';
+import { ConfirmationModal } from '@navikt/skjemadigitalisering-shared-components';
 import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 
 interface Props {
@@ -8,15 +8,7 @@ interface Props {
   onClose: () => void;
 }
 
-const useStyles = makeStyles({
-  htmlContent: {
-    marginBottom: 'var(--a-spacing-4)',
-  },
-});
-
 const LockedFormModal = ({ form, open, onClose }: Props) => {
-  const styles = useStyles();
-
   return (
     <ConfirmationModal
       open={open}
@@ -28,7 +20,7 @@ const LockedFormModal = ({ form, open, onClose }: Props) => {
       }}
       children={
         <>
-          <InnerHtml content={form.properties.lockedFormReason ?? ''} className={styles.htmlContent}></InnerHtml>
+          <BodyShort className="mb-4">{form.properties.lockedFormReason}</BodyShort>
           <BodyShort>{'Gå til instillinger for å låse opp skjemaet.'}</BodyShort>
         </>
       }

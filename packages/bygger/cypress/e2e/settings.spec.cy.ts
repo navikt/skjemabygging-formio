@@ -31,8 +31,7 @@ describe('FormSettingsPage', () => {
 
   it('Locks form', () => {
     const lockedFormReason = 'Test reason for locking';
-    cy.intercept('PUT', '/api/forms/cypresssettings/config', (req) => {
-      console.log("PUT '/api/forms/cypresssettings/config'", req);
+    cy.intercept('PUT', '/api/forms/cypresssettings/form-settings', (req) => {
       expect(req.body).to.deep.equal({ isLockedForm: true, lockedFormReason });
 
       req.reply({ ...form, properties: { ...form.properties, ...req.body } });

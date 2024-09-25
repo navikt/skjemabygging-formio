@@ -1,13 +1,12 @@
 import { PadlockLockedIcon } from '@navikt/aksel-icons';
 import { Button, VStack } from '@navikt/ds-react';
 
-import { useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
+import { useAppConfig, useModal } from '@navikt/skjemadigitalisering-shared-components';
 import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import ButtonWithSpinner from '../../components/ButtonWithSpinner';
 import SidebarLayout from '../../components/layout/SidebarLayout';
 import UserFeedback from '../../components/UserFeedback';
 import { useForm } from '../../context/form/FormContext';
-import useLockedFormModal from '../../hooks/useLockedFormModal';
 import LockedFormModal from '../lockedFormModal/LockedFormModal';
 import FormStatusPanel from '../status/FormStatusPanel';
 import ToggleFormLockButton from '../toggleFormLockButton/ToggleFormLockButton';
@@ -22,12 +21,12 @@ interface FormSettingsPageProps {
 const FormSettingsSidebar = ({ form, validateAndSave, setOpenPublishSettingModal }: FormSettingsPageProps) => {
   const { config } = useAppConfig();
   const { copyFormFromProduction } = useForm();
-  const { openLockedFormModal, isLockedFormModalOpen, closeLockedFormModal } = useLockedFormModal();
+  const [lockedFormModal, setLockedFormModal] = useModal();
   const isLockedForm = form.properties.isLockedForm;
 
   const doIfUnlocked = (whenUnlocked: () => void): void => {
     if (isLockedForm) {
-      openLockedFormModal();
+      setLockedFormModal(true);
     } else {
       whenUnlocked();
     }
@@ -62,7 +61,7 @@ const FormSettingsSidebar = ({ form, validateAndSave, setOpenPublishSettingModal
         <UserFeedback />
         <FormStatusPanel publishProperties={form.properties} />
       </VStack>
-      <LockedFormModal open={isLockedFormModalOpen} onClose={closeLockedFormModal} form={form} />
+      <LockedFormModal open={lockedFormModal} onClose={() => setLockedFormModal(false)} form={form} />
     </SidebarLayout>
   );
 };
