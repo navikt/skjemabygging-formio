@@ -29,7 +29,7 @@ const FormSettingsSidebar = ({
   validateAndSave,
   setOpenPublishSettingModal,
 }: FormSettingsPageProps) => {
-  const isLockedForm = form.properties.isLockedForm;
+  const { isLockedForm, lockedFormReason } = form.properties;
   const { config } = useAppConfig();
   const [lockedFormModal, setLockedFormModal] = useModal();
 
@@ -66,7 +66,11 @@ const FormSettingsSidebar = ({
             Kopier fra produksjon
           </ButtonWithSpinner>
         )}
-        <ToggleFormLockButton onChangeLockedState={onChangeLockedState} isLockedForm={isLockedForm} />
+        <ToggleFormLockButton
+          onChangeLockedState={onChangeLockedState}
+          isLockedForm={isLockedForm}
+          lockedFormReason={lockedFormReason}
+        />
         <UserFeedback />
         <FormStatusPanel publishProperties={form.properties} />
       </VStack>
