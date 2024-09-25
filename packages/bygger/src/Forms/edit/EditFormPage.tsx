@@ -19,7 +19,7 @@ const useStyles = makeStyles({
 
 interface EditFormPageProps {
   form: NavFormType;
-  publishedForm: NavFormType;
+  publishedForm?: NavFormType;
 }
 
 const EditFormPage = ({ form, publishedForm }: EditFormPageProps) => {

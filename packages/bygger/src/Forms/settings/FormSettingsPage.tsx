@@ -13,10 +13,9 @@ import FormSettingsSidebar from './FormSettingsSidebar';
 
 interface FormSettingsPageProps {
   form: NavFormType;
-  publishedForm: NavFormType;
 }
 
-export function FormSettingsPage({ form, publishedForm }: FormSettingsPageProps) {
+export function FormSettingsPage({ form }: FormSettingsPageProps) {
   const { saveForm, changeForm } = useForm();
   const {
     title,
@@ -68,7 +67,7 @@ export function FormSettingsPage({ form, publishedForm }: FormSettingsPageProps)
           />
         }
       >
-        <FormMetadataEditor form={form} publishedForm={publishedForm} onChange={changeForm} errors={errors} />
+        <FormMetadataEditor form={form} onChange={changeForm} errors={errors} />
       </RowLayout>
       <PublishModalComponents
         form={form}

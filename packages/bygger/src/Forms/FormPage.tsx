@@ -1,4 +1,3 @@
-import { useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
 import { useCallback } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { useForm } from '../context/form/FormContext';
@@ -10,7 +9,6 @@ import FormSkeleton from './skeleton/FormSkeleton';
 import { TestFormPage } from './TestFormPage';
 
 export const FormPage = ({ loadTranslations }) => {
-  const { diffOn } = useAppConfig();
   const { formState } = useForm();
 
   const loadTranslationsForFormPath = useCallback(
@@ -33,17 +31,9 @@ export const FormPage = ({ loadTranslations }) => {
   return (
     <I18nStateProvider loadTranslations={loadTranslationsForFormPath} form={formState.form}>
       <Routes>
-        <Route
-          path={'/edit'}
-          element={<EditFormPage form={formState.form} publishedForm={diffOn ? formState.publishedForm : undefined} />}
-        />
+        <Route path={'/edit'} element={<EditFormPage form={formState.form} />} />
         <Route path={'/view/*'} element={<TestFormPage form={formState.form} />} />
-        <Route
-          path={'/settings'}
-          element={
-            <FormSettingsPage form={formState.form} publishedForm={diffOn ? formState.publishedForm : undefined} />
-          }
-        />
+        <Route path={'/settings'} element={<FormSettingsPage form={formState.form} />} />
         <Route path="/" element={<Navigate to={'edit'} replace />} />
       </Routes>
     </I18nStateProvider>
