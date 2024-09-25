@@ -4,7 +4,7 @@ import DatePicker from '../../datepicker/DatePicker';
 import { useIdentity } from '../identityContext';
 
 const BirthDateField = () => {
-  const { translate } = useComponentUtils();
+  const { translate, addRef, getComponentError } = useComponentUtils();
   const { nationalIdentity, onChange, className } = useIdentity();
 
   const handleChange = (value: string) => {
@@ -14,11 +14,15 @@ const BirthDateField = () => {
     });
   };
 
+  const refId = 'identity:fodselsdato';
+
   return (
     <DatePicker
       onChange={handleChange}
       className={className}
-      label={translate(TEXTS.statiske.nationalIdentityNumber.yourBirthdate)}
+      label={translate(TEXTS.statiske.identity.yourBirthdate)}
+      inputRef={(ref) => addRef(refId, ref)}
+      error={getComponentError(refId)}
       value={nationalIdentity?.fodselsdato ?? ''}
     />
   );

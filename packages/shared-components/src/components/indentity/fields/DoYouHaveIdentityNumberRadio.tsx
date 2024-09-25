@@ -5,7 +5,7 @@ import { useComponentUtils } from '../../../context/component/componentUtilsCont
 import { useIdentity } from '../identityContext';
 
 const DoYouHaveIdentityNumberRadio = () => {
-  const { translate } = useComponentUtils();
+  const { translate, addRef, getComponentError } = useComponentUtils();
   const { nationalIdentity, onChange, className } = useIdentity();
 
   const handleChange = (value: string) => {
@@ -15,14 +15,19 @@ const DoYouHaveIdentityNumberRadio = () => {
     });
   };
 
+  const refId = 'identity:harDuFodselsnummer';
+
   return (
     <RadioGroup
-      legend={translate(TEXTS.statiske.nationalIdentityNumber.doYouHaveIdentityNumber)}
+      legend={translate(TEXTS.statiske.identity.doYouHaveIdentityNumber)}
       onChange={(value) => handleChange(value)}
       defaultValue={nationalIdentity?.harDuFodselsnummer}
+      error={getComponentError(refId)}
       className={classNames('mb', className)}
     >
-      <Radio value="true">{translate(TEXTS.common.yes)}</Radio>
+      <Radio value="true" ref={(ref) => addRef(refId, ref)}>
+        {translate(TEXTS.common.yes)}
+      </Radio>
       <Radio value="false">{translate(TEXTS.common.no)}</Radio>
     </RadioGroup>
   );

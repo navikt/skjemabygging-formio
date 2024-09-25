@@ -155,7 +155,7 @@ class Address extends BaseComponent {
     return this.componentErrors.length === 0;
   }
 
-  validateRequired(address: AddressInput, addressType: AddressInputType, label) {
+  validateRequired(address: AddressInput, addressType: AddressInputType, label: string) {
     if (!address[addressType]) {
       const elementId = `address:${addressType}`;
       super.addError(this.translate('required', { field: label }), elementId);

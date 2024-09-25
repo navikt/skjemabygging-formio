@@ -1,4 +1,5 @@
-import NavIdentity, { IdentityInput } from '../../../../components/indentity/Identity';
+import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import NavIdentity, { IdentityInput, IdentityInputType } from '../../../../components/indentity/Identity';
 import { validateNationalIdentityNumber } from '../../../../components/indentity/NationalIdentityNumberValidator';
 import { ComponentUtilsProvider } from '../../../../context/component/componentUtilsContext';
 import BaseComponent from '../../base/BaseComponent';
@@ -9,12 +10,15 @@ import identityForm from './Identity.form';
 export default class Identity extends BaseComponent {
   static schema() {
     return BaseComponent.schema({
-      label: 'Identifikasjon',
+      label: 'Identitet',
       type: 'identity',
-      key: 'identifikasjon',
+      key: 'identitet',
       fieldSize: 'input--s',
       spellcheck: false,
       hideLabel: true,
+      validate: {
+        required: true,
+      },
     });
   }
 
@@ -39,7 +43,7 @@ export default class Identity extends BaseComponent {
     if (this.isSubmissionDigital() && this.component?.prefillKey && this.component?.prefillValue) {
       // Call parent setValue so ignore prefillKey block on local setValue.
       super.setValue({
-        identifikasjonsnummer: this.component?.prefillValue,
+        identitetsnummer: this.component?.prefillValue,
       } as IdentityInput);
     }
   }
@@ -48,29 +52,57 @@ export default class Identity extends BaseComponent {
     return !!this.component?.prefillKey && this.isSubmissionDigital();
   }
 
-  checkComponentValidity(data, dirty, row, options = {}) {
-    if (this.shouldSkipValidation(data, dirty, row)) {
+  get errors() {
+    return this.componentErrors;
+  }
+
+  checkValidity(data, dirty, row) {
+    this.removeAllErrors();
+
+    if (this.shouldSkipValidation(data, dirty, row) || this.getReadOnly()) {
       return true;
     }
 
-    const validity = super.checkComponentValidity(data, dirty, row, options);
+    const identity: IdentityInput = this.getValue() ?? {};
+    if (this.isRequired()) {
+      if (identity.harDuFodselsnummer === true) {
+        this.validateRequired(identity, 'identitetsnummer', TEXTS.statiske.identity.identityNumber);
+      } else if (identity.harDuFodselsnummer === false) {
+        this.validateRequired(identity, 'fodselsdato', TEXTS.statiske.identity.yourBirthdate);
+      } else {
+        this.validateRequired(identity, 'harDuFodselsnummer', TEXTS.statiske.identity.doYouHaveIdentityNumber);
+      }
+    }
 
-    if (validity) {
+    if (identity.identitetsnummer) {
       const appConfig = this.options?.appConfig?.config;
       const errorMessage = validateNationalIdentityNumber(
         {
-          value: this.getValue()?.identifikasjonsnummer,
+          value: this.getValue()?.identitetsnummer,
           allowTestTypes: appConfig?.NAIS_CLUSTER_NAME !== 'prod-gcp',
         },
         this.translate.bind(this),
       );
-      return this.setComponentValidity(
-        errorMessage ? [this.createError(errorMessage, undefined)] : [],
-        dirty,
-        undefined,
-      );
+
+      if (errorMessage) {
+        this.addIdentityError(TEXTS.statiske.identity.identityNumber, 'identitetsnummer');
+      }
     }
-    return validity;
+
+    this.rerender();
+
+    return this.componentErrors.length === 0;
+  }
+
+  validateRequired(identity: IdentityInput, identityType: IdentityInputType, label: string) {
+    if (!identity[identityType]) {
+      this.addIdentityError(this.translate('required', { field: label }), identityType);
+    }
+  }
+
+  addIdentityError(errorMessage: string, identityType: IdentityInputType) {
+    const elementId = `identity:${identityType}`;
+    super.addError(errorMessage, elementId);
   }
 
   handleChange(value: IdentityInput) {

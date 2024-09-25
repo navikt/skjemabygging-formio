@@ -5,9 +5,11 @@ import { IdentityProvider } from './identityContext';
 
 export interface IdentityInput {
   harDuFodselsnummer?: boolean;
-  identifikasjonsnummer?: string;
+  identitetsnummer?: string;
   fodselsdato?: string;
 }
+
+export type IdentityInputType = keyof IdentityInput;
 
 interface Props {
   onChange: (value: any) => void;

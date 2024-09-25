@@ -195,7 +195,7 @@ export const statiske = {
     building: 'Bygning',
     region: 'Region',
   },
-  nationalIdentityNumber: {
+  identity: {
     doYouHaveIdentityNumber: 'Har du norsk fødselsnummer eller d-nummer?',
     identityNumber: 'Fødselsnummer eller d-nummer',
     yourBirthdate: 'Din fødselsdato (dd.mm.åååå)',

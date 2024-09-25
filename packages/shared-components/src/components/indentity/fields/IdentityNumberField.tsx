@@ -4,22 +4,26 @@ import { useComponentUtils } from '../../../context/component/componentUtilsCont
 import { useIdentity } from '../identityContext';
 
 const IdentityNumberField = () => {
-  const { translate } = useComponentUtils();
+  const { translate, addRef, getComponentError } = useComponentUtils();
   const { nationalIdentity, onChange, readOnly, className } = useIdentity();
 
   const handleChange = (value: string) => {
     onChange({
       ...nationalIdentity,
-      identifikasjonsnummer: value,
+      identitetsnummer: value,
     });
   };
 
+  const refId = 'identity:identitetsnummer';
+
   return (
     <TextField
-      label={translate(TEXTS.statiske.nationalIdentityNumber.identityNumber)}
-      value={nationalIdentity?.identifikasjonsnummer}
+      label={translate(TEXTS.statiske.identity.identityNumber)}
+      value={nationalIdentity?.identitetsnummer}
       className={className}
       onChange={(event) => handleChange(event.currentTarget.value)}
+      ref={(ref) => addRef(refId, ref)}
+      error={getComponentError(refId)}
       readOnly={readOnly}
     />
   );
