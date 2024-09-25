@@ -1,12 +1,11 @@
 import { PadlockLockedIcon } from '@navikt/aksel-icons';
 import { Button, VStack } from '@navikt/ds-react';
 
-import { useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
+import { useAppConfig, useModal } from '@navikt/skjemadigitalisering-shared-components';
 import { FormPropertiesType, I18nTranslations, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import ButtonWithSpinner from '../../components/ButtonWithSpinner';
 import SidebarLayout from '../../components/layout/SidebarLayout';
 import UserFeedback from '../../components/UserFeedback';
-import useLockedFormModal from '../../hooks/useLockedFormModal';
 import LockedFormModal from '../lockedFormModal/LockedFormModal';
 import FormStatusPanel from '../status/FormStatusPanel';
 import ToggleFormLockButton from '../toggleFormLockButton/ToggleFormLockButton';
@@ -32,11 +31,11 @@ const FormSettingsSidebar = ({
 }: FormSettingsPageProps) => {
   const isLockedForm = form.properties.isLockedForm;
   const { config } = useAppConfig();
-  const { openLockedFormModal, isLockedFormModalOpen, closeLockedFormModal } = useLockedFormModal();
+  const [lockedFormModal, setLockedFormModal] = useModal();
 
   const doIfUnlocked = (whenUnlocked: () => void): void => {
     if (isLockedForm) {
-      openLockedFormModal();
+      setLockedFormModal(true);
     } else {
       whenUnlocked();
     }
@@ -71,7 +70,7 @@ const FormSettingsSidebar = ({
         <UserFeedback />
         <FormStatusPanel publishProperties={form.properties} />
       </VStack>
-      <LockedFormModal open={isLockedFormModalOpen} onClose={closeLockedFormModal} form={form} />
+      <LockedFormModal open={lockedFormModal} onClose={() => setLockedFormModal(false)} form={form} />
     </SidebarLayout>
   );
 };
