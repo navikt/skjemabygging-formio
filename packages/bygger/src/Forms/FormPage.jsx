@@ -101,10 +101,7 @@ export const FormPage = ({
   };
 
   const onChangeLockedState = async (properties) => {
-    const toggledLockedForm = await onUpdateFormSettings({
-      ...state.form,
-      properties: { ...state.form.properties, ...properties },
-    });
+    const toggledLockedForm = await onUpdateFormSettings(formPath, properties);
     dispatch({ type: 'form-changed', form: toggledLockedForm });
   };
 
