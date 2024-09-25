@@ -35,7 +35,7 @@ const EditFormPage = ({ form }: EditFormPageProps) => {
   const styles = useStyles();
   const formBuilderOptions = {
     ...FormBuilderOptions,
-    formConfig: { publishedForm },
+    formConfig: { publishedForm: appConfig.diffOn ? publishedForm : undefined },
     hooks: { beforeSaveComponentSettings },
     appConfig,
   };
