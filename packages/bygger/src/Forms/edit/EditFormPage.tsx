@@ -19,11 +19,13 @@ const useStyles = makeStyles({
 
 interface EditFormPageProps {
   form: NavFormType;
-  publishedForm?: NavFormType;
 }
 
-const EditFormPage = ({ form, publishedForm }: EditFormPageProps) => {
-  const { changeForm } = useForm();
+const EditFormPage = ({ form }: EditFormPageProps) => {
+  const {
+    formState: { publishedForm },
+    changeForm,
+  } = useForm();
   const {
     title,
     properties: { skjemanummer, isLockedForm },
