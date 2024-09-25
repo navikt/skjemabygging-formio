@@ -9,7 +9,7 @@ const envQualifierMap = {
   'fyllut-preprod.intern.dev.nav.no': EnvQualifier.preprodIntern,
   'fyllut-preprod-alt.intern.dev.nav.no': EnvQualifier.preprodAltIntern,
   localhost: EnvQualifier.local,
-  skjemadelingslenke: EnvQualifier.preprodAnsatt,
+  skjemadelingslenke: EnvQualifier.delingslenke,
 };
 
 const envQualifier = (req: Request, _res: Response, next: NextFunction) => {

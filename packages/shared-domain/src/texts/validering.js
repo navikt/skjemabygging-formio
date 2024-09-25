@@ -11,7 +11,7 @@ export const validering = {
   valueIsNotAvailable: '{{field}} er en ugyldig verdi.',
 
   // Tekstfelt
-  digitsOnly: '{{field}} kan kun inneholde siffer fra 0 til 9',
+  digitsOnly: '{{field}} kan bare inneholde siffer fra 0 til 9',
 
   // Dato / tid
   invalid_date: '{{field}} er ikke en gyldig dato.',
