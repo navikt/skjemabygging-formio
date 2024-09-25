@@ -83,10 +83,6 @@ class Number extends TextField {
     }
   }
 
-  translateWithLabel(key: string, options = {}) {
-    return this.translate(key, { field: this.getLabel(), ...options });
-  }
-
   handleChange(value: string) {
     if (value !== undefined) {
       const dataValue = this.replaceCommasAndSpaces(value);

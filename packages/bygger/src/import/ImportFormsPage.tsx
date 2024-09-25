@@ -104,7 +104,9 @@ const ImportFormsPage = () => {
         selectedOptions={selectedOptions}
         label="Søk etter skjema:"
         isMultiSelect
-        onChange={(event: any) => filterOptions(event?.target?.value as string)}
+        onChange={(value: string) => {
+          filterOptions(value);
+        }}
         onToggleSelected={toggleSelected}
         error={formsErrorMessage}
       />

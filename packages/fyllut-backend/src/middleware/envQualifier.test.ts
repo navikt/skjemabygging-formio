@@ -6,34 +6,36 @@ import envQualifier, { PartialUrl } from './envQualifier';
 
 const URL_REGEX = /(https?:\/\/[^ ]*)\n/g;
 
-describe('envQualifier', () => {
-  const envMap = {
-    preprod: {
-      naisIngress: '', // lastes fra nais config i beforeAll
-      expectedEnvQualifier: EnvQualifier.preprodIntern,
-    },
-    preprodAnsatt: {
-      naisIngress: '', // lastes fra nais config i beforeAll
-      expectedEnvQualifier: EnvQualifier.preprodAnsatt,
-    },
-    preprodAlt: {
-      naisIngress: '', // lastes fra nais config i beforeAll
-      expectedEnvQualifier: EnvQualifier.preprodAltIntern,
-    },
-    preprodAltAnsatt: {
-      naisIngress: '', // lastes fra nais config i beforeAll
-      expectedEnvQualifier: EnvQualifier.preprodAltAnsatt,
-    },
-    delingslenke: {
-      naisIngress: '', // lastes fra nais config i beforeAll
-      expectedEnvQualifier: EnvQualifier.preprodAnsatt,
-    },
-    localhost: {
-      naisIngress: 'http://localhost:3001/fyllut',
-      expectedEnvQualifier: EnvQualifier.local,
-    },
-  };
+const envMap = {
+  preprod: {
+    naisIngress: '', // lastes fra nais config i beforeAll
+    expectedEnvQualifier: EnvQualifier.preprodIntern,
+  },
+  preprodAnsatt: {
+    naisIngress: '', // lastes fra nais config i beforeAll
+    expectedEnvQualifier: EnvQualifier.preprodAnsatt,
+  },
+  preprodAlt: {
+    naisIngress: '', // lastes fra nais config i beforeAll
+    expectedEnvQualifier: EnvQualifier.preprodAltIntern,
+  },
+  preprodAltAnsatt: {
+    naisIngress: '', // lastes fra nais config i beforeAll
+    expectedEnvQualifier: EnvQualifier.preprodAltAnsatt,
+  },
+  delingslenke: {
+    naisIngress: '', // lastes fra nais config i beforeAll
+    expectedEnvQualifier: EnvQualifier.delingslenke,
+  },
+  localhost: {
+    naisIngress: 'http://localhost:3001/fyllut',
+    expectedEnvQualifier: EnvQualifier.local,
+  },
+};
 
+const allEnvironments = Object.keys(envMap);
+
+describe('envQualifier', () => {
   const urlMatch = (ingress: string, partialUrl: PartialUrl) => ingress.includes(partialUrl);
 
   const loadUrlsFromFile = (path: string) => {
@@ -70,7 +72,8 @@ describe('envQualifier', () => {
     });
   });
 
-  it.each(Object.keys(envMap))('Returnerer korrekt envQualifier for %s', async (envName) => {
+  // eslint-disable-next-line mocha/no-setup-in-describe
+  it.each(allEnvironments)('Returnerer korrekt envQualifier for %s', async (envName) => {
     const testdata = envMap[envName];
     const ingress = testdata.naisIngress;
     expect(ingress).toBeTruthy();

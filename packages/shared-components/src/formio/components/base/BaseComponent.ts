@@ -58,6 +58,10 @@ class BaseComponent extends FormioReactComponent {
     return super.t(key, { ...options, interpolation: { escapeValue: false } });
   }
 
+  translateWithLabel(key: string, options = {}) {
+    return this.translate(key, { field: this.getLabel(), ...options });
+  }
+
   /**
    * Set which component is currently focused, and optionally which element inside this component.
    * This is stored on 'this.root' which usually points to the webform/wizard.

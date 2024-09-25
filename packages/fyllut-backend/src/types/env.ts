@@ -3,6 +3,7 @@ export const EnvQualifier = {
   preprodAltIntern: 'preprodAltIntern',
   preprodAnsatt: 'preprodAnsatt',
   preprodAltAnsatt: 'preprodAltAnsatt',
+  delingslenke: 'delingslenke',
   local: 'local',
 } as const;
 
