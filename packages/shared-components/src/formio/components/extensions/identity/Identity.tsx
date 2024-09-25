@@ -30,6 +30,24 @@ export default class Identity extends BaseComponent {
     return Identity.schema();
   }
 
+  init() {
+    super.init();
+    this.initPrefill();
+  }
+
+  initPrefill() {
+    if (this.isSubmissionDigital() && this.component?.prefillKey && this.component?.prefillValue) {
+      // Call parent setValue so ignore prefillKey block on local setValue.
+      super.setValue({
+        identifikasjonsnummer: this.component?.prefillValue,
+      } as IdentityInput);
+    }
+  }
+
+  getReadOnly(): boolean {
+    return !!this.component?.prefillKey && this.isSubmissionDigital();
+  }
+
   checkComponentValidity(data, dirty, row, options = {}) {
     if (this.shouldSkipValidation(data, dirty, row)) {
       return true;
