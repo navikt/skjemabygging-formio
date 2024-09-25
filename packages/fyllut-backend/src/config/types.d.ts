@@ -23,6 +23,11 @@ export type SendInnConfig = {
   };
 };
 
+export type ServiceConfig = {
+  url: string;
+  scope?: string;
+};
+
 export type IdportenConfig = {
   idportenClientId: string;
   idportenJwksUri: string;
@@ -45,6 +50,8 @@ export type DefaultConfig = {
   translationDir?: string;
   tokenx: TokenxConfig;
   sendInnConfig: SendInnConfig;
+  kodeverk: ServiceConfig;
+  norg2: ServiceConfig;
   idporten: IdportenConfig;
   mockIdportenPid?: string;
   mockIdportenJwt?: string;

@@ -124,16 +124,6 @@ const MigrationPage = () => {
         },
       ),
     });
-    setSelectedToMigrate(
-      dryRunSearchResults
-        .filter(({ changed }) => changed > 0)
-        .map(({ path }) => path)
-        .filter((path) => {
-          const dryRunResultForForm = dryRunSearchResults.find((form) => form.path === path);
-          const numberOfBreakingChanges = dryRunResultForForm?.breakingChanges?.length || 0;
-          return numberOfBreakingChanges === 0;
-        }),
-    );
 
     setIsLoading(false);
     navigate({
