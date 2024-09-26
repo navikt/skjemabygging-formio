@@ -23,7 +23,7 @@
     "csv-stringify": "^6.5.1",
     "dotenv": "^16.4.5",
     "express": "^4.20.0",
-    "express-correlation-id": "^2.0.1",
+    "express-correlation-id": "^3.0.1",
     "express-rate-limit": "^7.4.0",
     "http-proxy": "^1.18.1",
     "jose": "^5.6.3",
