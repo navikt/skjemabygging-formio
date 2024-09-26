@@ -39,6 +39,7 @@ const renderNewFormPage = (formio: { saveForm: () => void }, config: Partial<Con
 
 describe('NewFormPage', () => {
   beforeEach(() => {
+    //@ts-expect-error
     fetchMock.mockImplementation((url) => {
       const stringUrl = url as string;
       if (stringUrl.endsWith('/mottaksadresse/submission')) {
