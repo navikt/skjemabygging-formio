@@ -111,19 +111,20 @@ function renderPrepareLetterPage(form = defaultForm, config = defaultConfig) {
 
 describe('PrepareLetterPage', () => {
   beforeEach(() => {
+    //@ts-expect-error
     fetchMock.mockImplementation((url) => {
-      url = url as string;
-      if (url.endsWith('/mottaksadresser')) {
+      const urlString = url as string;
+      if (urlString.endsWith('/mottaksadresser')) {
         return Promise.resolve(new Response(JSON.stringify([]), RESPONSE_HEADERS));
       }
-      if (url.endsWith('/api/foersteside')) {
+      if (urlString.endsWith('/api/foersteside')) {
         return Promise.resolve(new Response(JSON.stringify(forstesideMock), RESPONSE_HEADERS));
       }
-      if (url.endsWith('/api/enhetsliste')) {
+      if (urlString.endsWith('/api/enhetsliste')) {
         return Promise.resolve(new Response(JSON.stringify(mockEnhetsListe), RESPONSE_HEADERS));
       }
 
-      console.error(`Manglende testoppsett: Ukjent url ${url}`);
+      console.error(`Manglende testoppsett: Ukjent url ${urlString}`);
       return Promise.reject<Response>();
     });
   });
@@ -200,15 +201,16 @@ describe('PrepareLetterPage', () => {
       const SKJEMANUMMER = 'NAV 12.34-56';
 
       beforeEach(async () => {
+        //@ts-expect-error
         fetchMock.mockImplementation((url) => {
-          url = url as string;
-          if (url.endsWith('/api/enhetsliste')) {
+          const urlString = url as string;
+          if (urlString.endsWith('/api/enhetsliste')) {
             return Promise.resolve(new Response(JSON.stringify(mockEnhetsListe), RESPONSE_HEADERS));
           }
-          if (url.endsWith('/api/log/error')) {
+          if (urlString.endsWith('/api/log/error')) {
             return Promise.resolve(new Response('OK', RESPONSE_HEADERS_PLAIN_TEXT));
           }
-          console.error(`Manglende testoppsett: Ukjent url ${url}`);
+          console.error(`Manglende testoppsett: Ukjent url ${urlString}`);
           return Promise.reject<Response>();
         });
         const GAMMEL_TYPE = 'GAMMEL_TYPE' as Enhetstype;
@@ -252,9 +254,10 @@ describe('PrepareLetterPage', () => {
 
     describe('When fetching of enhetsliste fails', () => {
       beforeEach(async () => {
+        //@ts-expect-error
         fetchMock.mockImplementation((url) => {
-          url = url as string;
-          if (url.endsWith('/api/enhetsliste')) {
+          const urlString = url as string;
+          if (urlString.endsWith('/api/enhetsliste')) {
             return Promise.resolve(new Response(JSON.stringify({}), RESPONSE_HEADERS_ERROR));
           }
           console.error(`Manglende testoppsett: Ukjent url ${url}`);
