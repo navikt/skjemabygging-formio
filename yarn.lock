@@ -2913,12 +2913,10 @@ core-util-is@1.0.2:
   resolved "https://registry.npmjs.org/core-util-is/-/core-util-is-1.0.2.tgz"
   integrity sha512-3lqz5YjWTYnW6dlDa5TLaTCcShfar1e40rmcJVwCBJC6mWlFuj0eCHIElmG1g5kyuJ/GD+8Wn4FFCcz4gJPfaQ==
 
-correlation-id@^4.0.0:
-  version "4.0.0"
-  resolved "https://registry.npmjs.org/correlation-id/-/correlation-id-4.0.0.tgz"
-  integrity sha512-WvXtJBlovvOBKqTz/YwWP2gm6CXJZJArfGimp9s/ehmhJMPFbmnPMQe3K60Q9idGNixMvKojMjleyDhZEFdHfg==
-  dependencies:
-    uuid "^8.3.1"
+correlation-id@^5.2.0:
+  version "5.2.0"
+  resolved "https://registry.yarnpkg.com/correlation-id/-/correlation-id-5.2.0.tgz#5b23e507a928cebca45d146308b0060cb4783a86"
+  integrity sha512-qTsYujgBvWIx05qF9HV4+KoezGTelgqJiFnyEfRsEqjpQUZdWnraOGHD+IMep7lPFg6MiI55fvpC4qruKdY5Dw==
 
 cors@^2.8.5:
   version "2.8.5"
@@ -4275,12 +4273,12 @@ expect@^29.0.0:
     jest-message-util "^29.7.0"
     jest-util "^29.7.0"
 
-express-correlation-id@^2.0.1:
-  version "2.0.1"
-  resolved "https://registry.npmjs.org/express-correlation-id/-/express-correlation-id-2.0.1.tgz"
-  integrity sha512-jUxALLTg01TxUffi2jQ3IYO8WTxZL+oJUefLeGQ3XLBwpKZck6+aGvM25akrmQ1Kewhv5bfLgeqcHPrtT6YOxw==
+express-correlation-id@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/express-correlation-id/-/express-correlation-id-3.0.1.tgz#e41aa41b4b478d936390361b09d3a5ef97e9b101"
+  integrity sha512-H0dWSFiW8IRfqhBzK+Rx4dD1wU0d6SWZD4z4Pzs04lYBrVvHo8thQK4WzpXBptCDLQ+xCeb7bklB6rPjV7Q37A==
   dependencies:
-    correlation-id "^4.0.0"
+    correlation-id "^5.2.0"
 
 express-rate-limit@^7.4.0:
   version "7.4.0"
@@ -8670,7 +8668,7 @@ uuid@^10.0.0:
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-10.0.0.tgz#5a95aa454e6e002725c79055fd42aaba30ca6294"
   integrity sha512-8XkAphELsDnEGrDxUOHB3RGvXz6TeuYSGEZBOjtTtPm2lwhGBjLgOzLHB63IUWfBpNucQjND6d3AOudO+H3RWQ==
 
-uuid@^8.3.1, uuid@^8.3.2:
+uuid@^8.3.2:
   version "8.3.2"
   resolved "https://registry.npmjs.org/uuid/-/uuid-8.3.2.tgz"
   integrity sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==
