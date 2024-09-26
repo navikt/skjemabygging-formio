@@ -19,10 +19,10 @@ const AddressTypeChoice = ({ onChange, values }: Props) => {
         value={values?.borDuINorge ?? ''}
         onChange={(value) => onChange('borDuINorge', value)}
       >
-        <Radio value="true">{translate(TEXTS.common.yes)}</Radio>
-        <Radio value="false">{translate(TEXTS.common.no)}</Radio>
+        <Radio value="yes">{translate(TEXTS.common.yes)}</Radio>
+        <Radio value="no">{translate(TEXTS.common.no)}</Radio>
       </RadioGroup>
-      {values?.borDuINorge === 'true' && (
+      {values?.borDuINorge === 'yes' && (
         <RadioGroup
           className="form-group"
           legend={translate(TEXTS.statiske.address.yourContactAddress)}

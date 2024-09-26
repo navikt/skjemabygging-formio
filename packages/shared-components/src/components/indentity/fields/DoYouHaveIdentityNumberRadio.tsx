@@ -11,7 +11,7 @@ const DoYouHaveIdentityNumberRadio = () => {
   const handleChange = (value: string) => {
     onChange({
       ...nationalIdentity,
-      harDuFodselsnummer: value === 'true',
+      harDuFodselsnummer: value === 'yes',
     });
   };
 
@@ -23,12 +23,15 @@ const DoYouHaveIdentityNumberRadio = () => {
       onChange={(value) => handleChange(value)}
       defaultValue={nationalIdentity?.harDuFodselsnummer}
       error={getComponentError(refId)}
+      ref={(ref) => addRef(refId, ref)}
       className={classNames('mb', className)}
     >
-      <Radio value="true" ref={(ref) => addRef(refId, ref)}>
+      <Radio value="yes" ref={(ref) => addRef(`${refId}:yes`, ref)}>
         {translate(TEXTS.common.yes)}
       </Radio>
-      <Radio value="false">{translate(TEXTS.common.no)}</Radio>
+      <Radio value="no" ref={(ref) => addRef(`${refId}:no`, ref)}>
+        {translate(TEXTS.common.no)}
+      </Radio>
     </RadioGroup>
   );
 };
