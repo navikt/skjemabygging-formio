@@ -35,10 +35,12 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
     this.renderReact(this.rootElement);
   }
 
-  setReactInstance(element) {
+  setReactInstance(element, autoResolve: boolean = true) {
     this.reactInstance = element;
     this.addFocusBlurEvents(element);
-    this._reactRendered.resolve();
+    if (autoResolve) {
+      this.reactResolve();
+    }
   }
 
   /**
@@ -67,7 +69,6 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
   }
 
   setValueOnReactInstance(value) {
-    console.log('setValueOnReactInstance', value);
     if (this.reactInstance) (this.reactInstance as HTMLInputElement).value = value;
   }
 
@@ -90,20 +91,11 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
   }
 
   handleChange(value, flags = {}): any {
-    flags = flags || {};
-    const newValue = value === undefined || value === null ? this.getValue() : value;
-    const changed = newValue !== undefined ? this.hasChanged(newValue, this.dataValue) : false;
-
-    this.dataValue = Array.isArray(newValue) ? [...newValue] : newValue;
-
-    this.updateOnChange(flags, changed);
-    //this.updateValue(value, { modified: true, ...flags });
+    this.updateValue(value, { modified: true, ...flags });
     // The user has updated the value so we should no longer set it to default value
     // This fixes a bug where a redraw from adding a new datagrid row resets input value to "dataForSetting"
     // Consider removing if we are able to render datagrid in react
     this.shouldSetValue = false;
-
-    return changed;
   }
 
   /**
@@ -128,18 +120,14 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
   }
 
   /**
-   * Resolves when the React component has been rendered, and {@link setReactInstance} has been invoked.
+   * Resolves when the React component has been rendered.
    */
   get reactReady() {
-    return Promise.all([this._reactRendered.promise, this.reactRefsReady]);
+    return this._reactRendered.promise;
   }
 
-  /**
-   * Override to let the component decide when its refs are ready, typically when all
-   * ref callbacks have been invoked.
-   */
-  get reactRefsReady() {
-    return Promise.resolve();
+  reactResolve() {
+    this._reactRendered.resolve();
   }
 
   addRef(name: string, ref: HTMLElement | null) {
