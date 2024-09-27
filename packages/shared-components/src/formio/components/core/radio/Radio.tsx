@@ -45,18 +45,6 @@ class Radio extends BaseComponent {
     return this._reactRefsReady.promise;
   }
 
-  focus(focusData: any = {}) {
-    this.reactReady.then(() => {
-      const { focusedElementName } = focusData;
-      if (focusedElementName) {
-        const input = this.getRef(`${this.getId()}:${focusedElementName}`);
-        input?.focus();
-      } else {
-        this.reactInstance?.focus();
-      }
-    });
-  }
-
   changeHandler(value) {
     super.handleChange(value);
     this.rerender();

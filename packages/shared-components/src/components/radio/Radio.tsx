@@ -41,7 +41,7 @@ const Radio = forwardRef<HTMLFieldSetElement, Props>(
             onFocus={focus(obj.value)}
             onBlur={blur(obj.value)}
             ref={(r) => {
-              addRef(`${id}:${obj.value}`, r);
+              addRef(obj.value, r);
               if (resolve && index === arr.length - 1) {
                 resolve();
               }
