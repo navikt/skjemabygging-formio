@@ -1,6 +1,7 @@
 import { createContext, useContext } from 'react';
 import { ReactComponentType } from '../../formio/components/base';
 import BaseComponent from '../../formio/components/base/BaseComponent';
+import { blurHandler, focusHandler } from '../../formio/components/base/focus-helpers';
 import { AppConfigContextType } from '../config/configContext';
 
 interface ComponentUtilsContextType {
@@ -11,6 +12,8 @@ interface ComponentUtilsContextType {
   getComponentError: (elementId: string) => string | undefined;
   formConfig: ReactComponentType['options']['formConfig'];
   builderMode: boolean;
+  focusHandler: (elementId: string) => () => void;
+  blurHandler: (elementId: string) => () => void;
 }
 
 interface ComponentUtilsProviderProps {
@@ -32,6 +35,8 @@ export const ComponentUtilsProvider = ({ children, ...props }: ComponentUtilsPro
         getComponentError: component?.getComponentError.bind(component),
         formConfig: component?.getFormConfig(),
         builderMode: component?.builderMode,
+        focusHandler: (elementId: string) => () => focusHandler(component, { elementId, skipEmit: true })(),
+        blurHandler: (elementId: string) => () => blurHandler(component, { elementId, skipEmit: true })(),
       }}
     >
       {children}

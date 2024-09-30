@@ -1,4 +1,4 @@
-import { navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { Component, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { expect } from 'chai';
 
 describe('Form Builder', () => {
@@ -25,7 +25,7 @@ describe('Form Builder', () => {
     it('Trims properties "vedleggskode" and "vedleggstittel" before save', () => {
       cy.intercept('PUT', '/api/forms/tst123456', (req) => {
         const vedlegg = navFormUtils
-          .flattenComponents(req.body.components)
+          .flattenComponents<Component>(req.body.components)
           .find((comp) => comp.key === 'annenDokumentasjon');
         expect(vedlegg.properties.vedleggskode).to.equal('T2');
         expect(vedlegg.properties.vedleggstittel).to.equal('Last opp annen dokumentasjon');
@@ -48,7 +48,7 @@ describe('Form Builder', () => {
       it('should save changes made in edit modal', () => {
         cy.intercept('PUT', '/api/forms/tst123456', (req) => {
           const fodselsdato = navFormUtils
-            .flattenComponents(req.body.components)
+            .flattenComponents<Component>(req.body.components)
             .find((comp) => comp.key === 'fornavnSoker');
           expect(fodselsdato.label).to.equal('Fornavn');
           req.reply(200, req.body);
@@ -66,7 +66,7 @@ describe('Form Builder', () => {
       it('should save changes made in edit modal', () => {
         cy.intercept('PUT', '/api/forms/tst123456', (req) => {
           const fodselsdato = navFormUtils
-            .flattenComponents(req.body.components)
+            .flattenComponents<Component>(req.body.components)
             .find((comp) => comp.key === 'fodselsdatoDdMmAaaaSoker');
           expect(fodselsdato.label).to.equal('Din fødselsdato');
           req.reply(200, req.body);

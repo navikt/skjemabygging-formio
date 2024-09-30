@@ -9,7 +9,7 @@ const useStyles = makeStyles({
   },
 });
 
-const SignatureComponent = ({ signature, index, onChange, onDelete, diff = undefined }) => {
+const SignatureComponent = ({ signature, index, onChange, onDelete, diff = undefined, readonly }) => {
   const styles = useStyles();
   return (
     <Panel className="mb-4" border>
@@ -19,6 +19,7 @@ const SignatureComponent = ({ signature, index, onChange, onDelete, diff = undef
         onClick={onDelete}
         className={styles.closeBtn}
         aria-label={'Slett signatur ' + (index + 1)}
+        disabled={readonly}
       />
       <Fieldset data-testid="signatures">
         <legend>
@@ -37,6 +38,7 @@ const SignatureComponent = ({ signature, index, onChange, onDelete, diff = undef
           name={`signature${index + 1}`}
           placeholder='F.eks: "Søker", "Lege", "Evt. mor"'
           value={signature.label}
+          readOnly={readonly}
           onChange={(e) =>
             onChange({
               ...signature,
@@ -50,6 +52,7 @@ const SignatureComponent = ({ signature, index, onChange, onDelete, diff = undef
           name={`signatureInstruction${index}`}
           placeholder="Beskrivelse av hvorfor man signerer"
           value={signature.description}
+          readOnly={readonly}
           onChange={(e) =>
             onChange({
               ...signature,

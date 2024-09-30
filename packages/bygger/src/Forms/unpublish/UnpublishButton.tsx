@@ -2,7 +2,7 @@ import { PadlockLockedIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
 import { ConfirmationModal, makeStyles, useModal } from '@navikt/skjemadigitalisering-shared-components';
 import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
-import useLockedFormModal from '../../hooks/useLockedFormModal';
+import LockedFormModal from '../lockedFormModal/LockedFormModal';
 interface UnpublishButtonProps {
   onUnpublish: () => void;
   form: NavFormType;
@@ -16,7 +16,7 @@ const useStyles = makeStyles({
 
 const UnpublishButton = ({ onUnpublish, form }: UnpublishButtonProps) => {
   const [openConfirmModal, setOpenConfirmModal] = useModal();
-  const { lockedFormModalContent, openLockedFormModal } = useLockedFormModal(form);
+  const [lockedFormModal, setLockedFormModal] = useModal();
   const isLockedForm = form.properties.isLockedForm;
   const styles = useStyles();
 
@@ -28,7 +28,7 @@ const UnpublishButton = ({ onUnpublish, form }: UnpublishButtonProps) => {
             variant="tertiary"
             onClick={() => {
               if (isLockedForm) {
-                openLockedFormModal();
+                setLockedFormModal(true);
               } else {
                 setOpenConfirmModal(true);
               }
@@ -41,7 +41,7 @@ const UnpublishButton = ({ onUnpublish, form }: UnpublishButtonProps) => {
           </Button>
 
           <div className={styles.noMargin}>
-            {lockedFormModalContent}
+            <LockedFormModal open={lockedFormModal} onClose={() => setLockedFormModal(false)} form={form} />
             <ConfirmationModal
               open={openConfirmModal}
               onClose={() => setOpenConfirmModal(false)}

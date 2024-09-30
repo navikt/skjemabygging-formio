@@ -1,5 +1,5 @@
 import { useAppConfig, useModal } from '@navikt/skjemadigitalisering-shared-components';
-import { I18nTranslations, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
+import { FormPropertiesType, I18nTranslations, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import { useState } from 'react';
 import { AppLayout } from '../../components/AppLayout';
 import { FormMetadataEditor } from '../../components/FormMetaDataEditor/FormMetadataEditor';
@@ -7,7 +7,6 @@ import { isFormMetadataValid, validateFormMetadata } from '../../components/Form
 import RowLayout from '../../components/layout/RowLayout';
 import Title from '../../components/layout/Title';
 import TitleRowLayout from '../../components/layout/TitleRowLayout';
-import useLockedFormModal from '../../hooks/useLockedFormModal';
 import PublishModalComponents from '../publish/PublishModalComponents';
 import FormSettingsSidebar from './FormSettingsSidebar';
 
@@ -19,6 +18,7 @@ interface FormSettingsPageProps {
   onPublish: (form: NavFormType, translations: I18nTranslations) => void;
   onUnpublish: () => void;
   onCopyFromProd: () => void;
+  onChangeLockedState: (properties: Partial<FormPropertiesType>) => Promise<void>;
 }
 
 export function FormSettingsPage({
@@ -29,6 +29,7 @@ export function FormSettingsPage({
   onPublish,
   onUnpublish,
   onCopyFromProd,
+  onChangeLockedState,
 }: FormSettingsPageProps) {
   const {
     title,
@@ -36,7 +37,6 @@ export function FormSettingsPage({
   } = form;
   const isLockedForm = form.properties.isLockedForm;
   const [openPublishSettingModal, setOpenPublishSettingModal] = useModal();
-  const { lockedFormModalContent } = useLockedFormModal(form);
 
   const [errors, setErrors] = useState({});
   const { config } = useAppConfig();
@@ -80,13 +80,13 @@ export function FormSettingsPage({
             onPublish={onPublish}
             onUnpublish={onUnpublish}
             onCopyFromProd={onCopyFromProd}
+            onChangeLockedState={onChangeLockedState}
             setOpenPublishSettingModal={setOpenPublishSettingModal}
           />
         }
       >
         <FormMetadataEditor form={form} publishedForm={publishedForm} errors={errors} onChange={onChange} />
       </RowLayout>
-      {lockedFormModalContent}
       <PublishModalComponents
         form={form}
         onPublish={onPublish}

@@ -3,6 +3,7 @@ import { ComponentError, SubmissionData } from '@navikt/skjemadigitalisering-sha
 import { createRoot } from 'react-dom/client';
 import Ready from '../../../util/form/ready';
 import createComponentLogger, { ComponentLogger } from './createComponentLogger';
+import { blurHandler, focusHandler } from './focus-helpers';
 import { IReactComponent } from './index';
 
 class FormioReactComponent extends (ReactComponent as unknown as IReactComponent) {
@@ -34,10 +35,12 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
     this.renderReact(this.rootElement);
   }
 
-  setReactInstance(element) {
+  setReactInstance(element, autoResolve: boolean = true) {
     this.reactInstance = element;
     this.addFocusBlurEvents(element);
-    this._reactRendered.resolve();
+    if (autoResolve) {
+      this.reactResolve();
+    }
   }
 
   /**
@@ -117,18 +120,18 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
   }
 
   /**
-   * Resolves when the React component has been rendered, and {@link setReactInstance} has been invoked.
+   * Resolves when the React component has been rendered.
    */
   get reactReady() {
-    return Promise.all([this._reactRendered.promise, this.reactRefsReady]);
+    return this._reactRendered.promise;
   }
 
   /**
-   * Override to let the component decide when its refs are ready, typically when all
-   * ref callbacks have been invoked.
+   * Tell the component that React have finished rendering.
+   * Should only be necessary to call if you set autoResolve false in setReactInstance
    */
-  get reactRefsReady() {
-    return Promise.resolve();
+  reactResolve() {
+    this._reactRendered.resolve();
   }
 
   addRef(name: string, ref: HTMLElement | null) {
@@ -165,6 +168,76 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
     if (this.error?.message !== previousErrorMessage) {
       this.rerender();
     }
+  }
+
+  /**
+   * @return Currently focused component.
+   */
+  getFocusedComponent() {
+    return this.root.focusedComponent;
+  }
+
+  /**
+   * @return Name of focused element inside currently focused component.
+   */
+  getFocusedElementId() {
+    return this.root.focusedElementId;
+  }
+
+  /**
+   * Set which component is currently focused, and optionally which element inside this component.
+   * This is stored on 'this.root' which usually points to the webform/wizard.
+   * @param component
+   * @param elementId
+   */
+  setFocusedComponent(component: FormioReactComponent | null, elementId: any = null) {
+    this.logger.trace(`setFocusedComponent ${component ? 'this' : 'null'}`, { elementId });
+    this.root.focusedComponent = component;
+    this.root.focusedElementId = elementId;
+  }
+
+  /**
+   * Copied from Formio Component#restoreFocus, and adjusted to our needs.
+   * Invoked when component is being attached, e.g. during initial build or on rebuild/redraw.
+   */
+  restoreFocus() {
+    const focusedComponent = this.getFocusedComponent();
+    const isFocused = focusedComponent?.path === this.path;
+    if (isFocused) {
+      const elementId = this.getFocusedElementId();
+      this.logger.debug('restoreFocus isFocused', {
+        elementId: elementId,
+        navId: this.component?.navId,
+        type: this.component?.type,
+      });
+      this.focus({ elementId });
+    }
+  }
+
+  /**
+   * Overrides Formio Component#addFocusBlurEvents. We split the focus and blur handlers
+   * in order to be able to reuse them inside our React components.
+   * @param element The element
+   */
+  addFocusBlurEvents(element) {
+    this.addEventListener(element, 'focus', focusHandler(this));
+    this.addEventListener(element, 'blur', blurHandler(this));
+  }
+
+  /**
+   * Used to set focus when clicking error summary, and when restoring focus after rerender.
+   */
+  focus(focusData: any = {}) {
+    this.logger.debug('focus', { focusData });
+    this.reactReady.then(() => {
+      this.logger.debug('focus reactReady', { focusData, reactInstanceExists: !!this.reactInstance });
+      const { elementId } = focusData;
+      if (elementId) {
+        this.getRef(elementId)?.focus();
+      } else if (this.reactInstance) {
+        this.reactInstance.focus(focusData);
+      }
+    });
   }
 
   shouldSkipValidation(data?: SubmissionData, dirty?: boolean, row?: SubmissionData): boolean {

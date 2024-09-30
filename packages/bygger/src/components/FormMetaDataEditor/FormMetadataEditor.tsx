@@ -23,7 +23,7 @@ type BasicFormProps = Props & { usageContext: UsageContext };
 const BasicFormMetadataEditor = ({ form, publishedForm, onChange, usageContext, errors }: BasicFormProps) => {
   const diff = formDiffingTool.generateNavFormSettingsDiff(publishedForm, form);
   const {
-    properties: { downloadPdfButtonText, descriptionOfSignatures },
+    properties: { downloadPdfButtonText, descriptionOfSignatures, isLockedForm },
   } = form;
 
   const basicFields = () => (
@@ -48,6 +48,7 @@ const BasicFormMetadataEditor = ({ form, publishedForm, onChange, usageContext, 
         })
       }
       placeholder={TEXTS.grensesnitt.downloadApplication}
+      readOnly={isLockedForm}
     />
   );
 
@@ -65,6 +66,7 @@ const BasicFormMetadataEditor = ({ form, publishedForm, onChange, usageContext, 
         label={<LabelWithDiff label="Generelle instruksjoner (valgfritt)" diff={!!diff.descriptionOfSignatures} />}
         value={descriptionOfSignatures || ''}
         maxLength={0}
+        readOnly={isLockedForm}
         onChange={(event) =>
           onChange({
             ...form,
