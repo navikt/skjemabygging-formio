@@ -126,6 +126,10 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
     return this._reactRendered.promise;
   }
 
+  /**
+   * Tell the component that React have finished rendering.
+   * Should only be necessary to call if you set autoResolve false in setReactInstance
+   */
   reactResolve() {
     this._reactRendered.resolve();
   }

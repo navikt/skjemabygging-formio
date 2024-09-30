@@ -12,8 +12,8 @@ interface ComponentUtilsContextType {
   getComponentError: (elementId: string) => string | undefined;
   formConfig: ReactComponentType['options']['formConfig'];
   builderMode: boolean;
-  focus: (elementId: string) => () => void;
-  blur: (elementId: string) => () => void;
+  focusHandler: (elementId: string) => () => void;
+  blurHandler: (elementId: string) => () => void;
 }
 
 interface ComponentUtilsProviderProps {
@@ -35,8 +35,8 @@ export const ComponentUtilsProvider = ({ children, ...props }: ComponentUtilsPro
         getComponentError: component?.getComponentError.bind(component),
         formConfig: component?.getFormConfig(),
         builderMode: component?.builderMode,
-        focus: (elementId: string) => () => focusHandler(component, { elementId, skipEmit: true })(),
-        blur: (elementId: string) => () => blurHandler(component, { elementId, skipEmit: true })(),
+        focusHandler: (elementId: string) => () => focusHandler(component, { elementId, skipEmit: true })(),
+        blurHandler: (elementId: string) => () => blurHandler(component, { elementId, skipEmit: true })(),
       }}
     >
       {children}

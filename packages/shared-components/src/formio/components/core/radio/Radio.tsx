@@ -57,7 +57,7 @@ class Radio extends BaseComponent {
           className={this.getClassName()}
           readOnly={this.getReadOnly()}
           error={this.getError()}
-          resolve={() => this.reactResolve()}
+          reactResolve={() => this.reactResolve()}
         />
       </ComponentUtilsProvider>,
     );

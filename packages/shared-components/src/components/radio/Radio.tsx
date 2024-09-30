@@ -11,14 +11,14 @@ interface Props {
   values: ComponentValue[];
   error: ReactNode;
   onChange: (value: any) => void;
-  resolve?: () => void;
+  reactResolve?: () => void;
   className: string;
   readOnly?: boolean;
 }
 
 const Radio = forwardRef<HTMLFieldSetElement, Props>(
-  ({ id, legend, description, value, values, error, onChange, resolve, className, readOnly }: Props, ref) => {
-    const { addRef, translate, focus, blur } = useComponentUtils();
+  ({ id, legend, description, value, values, error, onChange, reactResolve, className, readOnly }: Props, ref) => {
+    const { addRef, translate, focusHandler, blurHandler } = useComponentUtils();
 
     return (
       <AkselRadioGroup
@@ -38,12 +38,12 @@ const Radio = forwardRef<HTMLFieldSetElement, Props>(
             key={obj.value}
             value={obj.value}
             description={translate(obj.description)}
-            onFocus={focus(obj.value)}
-            onBlur={blur(obj.value)}
+            onFocus={focusHandler(obj.value)}
+            onBlur={blurHandler(obj.value)}
             ref={(r) => {
               addRef(obj.value, r);
-              if (resolve && index === arr.length - 1) {
-                resolve();
+              if (reactResolve && index === arr.length - 1) {
+                reactResolve();
               }
             }}
           >
