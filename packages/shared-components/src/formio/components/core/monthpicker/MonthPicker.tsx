@@ -78,7 +78,7 @@ class MonthPicker extends BaseComponent {
     }
 
     // When picking a relative date like 5 years ago (postitive/negative number)
-    if (earliestAllowedDate) {
+    if (earliestAllowedDate !== undefined && earliestAllowedDate !== '') {
       return Number(new Date().getFullYear() + earliestAllowedDate);
     }
   }
@@ -93,7 +93,7 @@ class MonthPicker extends BaseComponent {
     }
 
     // When picking a relative date like 5 years ago (postitive/negative number)
-    if (latestAllowedDate) {
+    if (latestAllowedDate !== undefined && latestAllowedDate !== '') {
       return Number(new Date().getFullYear() + latestAllowedDate);
     }
   }
