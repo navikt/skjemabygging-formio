@@ -2,10 +2,11 @@ import { PadlockLockedIcon } from '@navikt/aksel-icons';
 import { Button, VStack } from '@navikt/ds-react';
 
 import { useAppConfig, useModal } from '@navikt/skjemadigitalisering-shared-components';
-import { FormPropertiesType, I18nTranslations, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
+import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import ButtonWithSpinner from '../../components/ButtonWithSpinner';
 import SidebarLayout from '../../components/layout/SidebarLayout';
 import UserFeedback from '../../components/UserFeedback';
+import { useForm } from '../../context/form/FormContext';
 import LockedFormModal from '../lockedFormModal/LockedFormModal';
 import FormStatusPanel from '../status/FormStatusPanel';
 import ToggleFormLockButton from '../toggleFormLockButton/ToggleFormLockButton';
@@ -13,25 +14,15 @@ import UnpublishButton from '../unpublish/UnpublishButton';
 
 interface FormSettingsPageProps {
   form: NavFormType;
-  onPublish: (form: NavFormType, translations: I18nTranslations) => void;
-  onUnpublish: () => void;
-  onChangeLockedState: (properties: Partial<FormPropertiesType>) => Promise<void>;
-  onCopyFromProd: () => void;
   validateAndSave: (form: NavFormType) => void;
   setOpenPublishSettingModal: (open: boolean) => void;
 }
 
-const FormSettingsSidebar = ({
-  form,
-  onUnpublish,
-  onChangeLockedState,
-  onCopyFromProd,
-  validateAndSave,
-  setOpenPublishSettingModal,
-}: FormSettingsPageProps) => {
-  const { isLockedForm, lockedFormReason } = form.properties;
+const FormSettingsSidebar = ({ form, validateAndSave, setOpenPublishSettingModal }: FormSettingsPageProps) => {
   const { config } = useAppConfig();
+  const { copyFormFromProduction } = useForm();
   const [lockedFormModal, setLockedFormModal] = useModal();
+  const { isLockedForm, lockedFormReason } = form.properties;
 
   const doIfUnlocked = (whenUnlocked: () => void): void => {
     if (isLockedForm) {
@@ -60,17 +51,13 @@ const FormSettingsSidebar = ({
         >
           Publiser
         </Button>
-        <UnpublishButton onUnpublish={onUnpublish} form={form} />
+        <UnpublishButton form={form} />
         {!config?.isProdGcp && (
-          <ButtonWithSpinner variant="tertiary" onClick={onCopyFromProd} size="small">
+          <ButtonWithSpinner variant="tertiary" onClick={copyFormFromProduction} size="small">
             Kopier fra produksjon
           </ButtonWithSpinner>
         )}
-        <ToggleFormLockButton
-          onChangeLockedState={onChangeLockedState}
-          isLockedForm={isLockedForm}
-          lockedFormReason={lockedFormReason}
-        />
+        <ToggleFormLockButton isLockedForm={isLockedForm} lockedFormReason={lockedFormReason} />
         <UserFeedback />
         <FormStatusPanel publishProperties={form.properties} />
       </VStack>

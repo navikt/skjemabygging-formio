@@ -1,6 +1,7 @@
 import { ConfirmationModal } from '@navikt/skjemadigitalisering-shared-components';
 import { I18nTranslations, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useState } from 'react';
+import { useForm } from '../../context/form/FormContext';
 import { useI18nState } from '../../context/i18n';
 
 interface Props {
@@ -8,7 +9,6 @@ interface Props {
   open: boolean;
   onClose: () => void;
   publishLanguageCodeList: string[];
-  onPublish: (form: NavFormType, translations: I18nTranslations) => void;
 }
 
 const getCompleteLocalTranslationsForNavForm = (
@@ -22,7 +22,8 @@ const getCompleteLocalTranslationsForNavForm = (
   }, {});
 };
 
-const ConfirmPublishModal = ({ open, onClose, form, publishLanguageCodeList, onPublish }: Props) => {
+const ConfirmPublishModal = ({ open, onClose, form, publishLanguageCodeList }: Props) => {
+  const { publishForm } = useForm();
   const { localTranslationsForNavForm } = useI18nState();
   const [completeLocalTranslationsForNavForm, setCompleteLocalTranslationsForNavForm] = useState<I18nTranslations>({});
 
@@ -35,7 +36,7 @@ const ConfirmPublishModal = ({ open, onClose, form, publishLanguageCodeList, onP
   return (
     <ConfirmationModal
       open={open}
-      onConfirm={() => onPublish(form, completeLocalTranslationsForNavForm)}
+      onConfirm={() => publishForm(form, completeLocalTranslationsForNavForm)}
       onClose={onClose}
       texts={{
         title: 'Publiseringsadvarsel',
