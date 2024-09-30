@@ -8,6 +8,7 @@ interface EnhetSettingsProps {
   selectedEnhetstyper?: Enhetstype[];
   onChangeEnhetMaVelges: (value: boolean) => void;
   onChangeEnhetstyper: (enhetstyper: Enhetstype[]) => void;
+  readOnly?: boolean;
 }
 
 const useStyles = makeStyles({
@@ -34,6 +35,7 @@ const EnhetSettings = ({
   selectedEnhetstyper,
   onChangeEnhetMaVelges,
   onChangeEnhetstyper,
+  readOnly,
 }: EnhetSettingsProps) => {
   const styles = useStyles();
 
@@ -45,7 +47,11 @@ const EnhetSettings = ({
 
   return (
     <>
-      <Checkbox checked={enhetMaVelges} onChange={(event) => onChangeEnhetMaVelges(event.target.checked)}>
+      <Checkbox
+        checked={enhetMaVelges}
+        onChange={(event) => onChangeEnhetMaVelges(event.target.checked)}
+        readOnly={readOnly}
+      >
         {'Bruker må velge enhet ved innsending på papir'}
       </Checkbox>
       {enhetMaVelges && selectedEnhetstyper && (
@@ -56,6 +62,7 @@ const EnhetSettings = ({
               <li key={enhetsType}>
                 <Checkbox
                   checked={selectedEnhetstyper.includes(enhetsType)}
+                  readOnly={readOnly}
                   onChange={(event) => {
                     const updatedSelectedEnhetstyper = event.target.checked
                       ? [...selectedEnhetstyper, enhetsType]
