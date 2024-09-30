@@ -69,7 +69,7 @@ export const useFormioForms = () => {
     async (formPath, properties) => {
       const { isLockedForm, lockedFormReason } = properties;
       try {
-        const response = await http.put(
+        const updatedForm = await http.put(
           `/api/forms/${formPath}/form-settings`,
           {
             isLockedForm,
@@ -80,9 +80,11 @@ export const useFormioForms = () => {
           },
         );
         feedbackEmit.success(
-          response.properties.isLockedForm ? 'Skjemaet ble låst for redigering' : 'Skjemaet ble åpnet for redigering',
+          updatedForm.properties.isLockedForm
+            ? 'Skjemaet ble låst for redigering'
+            : 'Skjemaet ble åpnet for redigering',
         );
-        return response;
+        return updatedForm;
       } catch (error) {
         if (error instanceof http.UnauthenticatedError) {
           feedbackEmit.error(
@@ -117,7 +119,11 @@ export const useFormioForms = () => {
           'Publiseringen inneholdt ingen endringer og ble avsluttet (nytt bygg av Fyllut ble ikke trigget)';
 
         const { changed, form } = await response.json();
-        changed ? feedbackEmit.success(success) : feedbackEmit.warning(warning);
+        if (changed) {
+          feedbackEmit.success(success);
+        } else {
+          feedbackEmit.warning(warning);
+        }
         return form;
       } else {
         const { message } = await response.json();
