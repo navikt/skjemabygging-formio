@@ -1,15 +1,19 @@
 import { createContext, useContext } from 'react';
 import { ReactComponentType } from '../../formio/components/base';
 import BaseComponent from '../../formio/components/base/BaseComponent';
+import { blurHandler, focusHandler } from '../../formio/components/base/focus-helpers';
 import { AppConfigContextType } from '../config/configContext';
 
 interface ComponentUtilsContextType {
   appConfig: AppConfigContextType;
   translate: (originalText: string | undefined, params?: Record<string | number, any>) => string;
   locale: 'nb' | 'nn' | 'en';
-  addRef: (name: string, ref: HTMLElement | null) => void;
+  addRef: (elementId: string, ref: HTMLElement | null) => void;
+  getComponentError: (elementId: string) => string | undefined;
   formConfig: ReactComponentType['options']['formConfig'];
   builderMode: boolean;
+  focusHandler: (elementId: string) => () => void;
+  blurHandler: (elementId: string) => () => void;
 }
 
 interface ComponentUtilsProviderProps {
@@ -28,8 +32,11 @@ export const ComponentUtilsProvider = ({ children, ...props }: ComponentUtilsPro
         translate: (originalText, params) => component?.t(originalText, params),
         locale: component?.getLocale(),
         addRef: component?.addRef.bind(component),
+        getComponentError: component?.getComponentError.bind(component),
         formConfig: component?.getFormConfig(),
         builderMode: component?.builderMode,
+        focusHandler: (elementId: string) => () => focusHandler(component, { elementId, skipEmit: true })(),
+        blurHandler: (elementId: string) => () => blurHandler(component, { elementId, skipEmit: true })(),
       }}
     >
       {children}

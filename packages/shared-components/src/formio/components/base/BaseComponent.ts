@@ -4,7 +4,6 @@ import FormioUtils from 'formiojs/utils';
 import { TFunction, TOptions } from 'i18next';
 import FormioReactComponent from './FormioReactComponent';
 import baseComponentUtils from './baseComponentUtils';
-import { blurHandler, focusHandler } from './focus-helpers';
 
 /**
  * When creating a custom component that extends BaseComponent,
@@ -60,60 +59,6 @@ class BaseComponent extends FormioReactComponent {
 
   translateWithLabel(key: string, options = {}) {
     return this.translate(key, { field: this.getLabel(), ...options });
-  }
-
-  /**
-   * Set which component is currently focused, and optionally which element inside this component.
-   * This is stored on 'this.root' which usually points to the webform/wizard.
-   * @param component
-   * @param elementName
-   */
-  setFocusedComponent(component: BaseComponent | null, elementName: any = null) {
-    this.logger.trace(`setFocusedComponent ${component ? 'this' : 'null'}`, { elementName });
-    this.root.focusedComponent = component;
-    this.root.focusedElementName = elementName;
-  }
-
-  /**
-   * @return Currently focused component.
-   */
-  getFocusedComponent() {
-    return this.root.focusedComponent;
-  }
-
-  /**
-   * @return Name of focused element inside currently focused component.
-   */
-  getFocusedElementName() {
-    return this.root.focusedElementName;
-  }
-
-  /**
-   * Copied from Formio Component#restoreFocus, and adjusted to our needs.
-   * Invoked when component is being attached, e.g. during initial build or on rebuild/redraw.
-   */
-  restoreFocus() {
-    const focusedComponent = this.getFocusedComponent();
-    const isFocused = focusedComponent?.path === this.path;
-    if (isFocused) {
-      const focusedElementName = this.getFocusedElementName();
-      this.logger.debug('restoreFocus isFocused', {
-        elementName: focusedElementName,
-        navId: this.component?.navId,
-        type: this.component?.type,
-      });
-      this.focus({ focusedElementName });
-    }
-  }
-
-  /**
-   * Overrides Formio Component#addFocusBlurEvents. We split the focus and blur handlers
-   * in order to be able to reuse them inside our React components.
-   * @param element The element
-   */
-  addFocusBlurEvents(element) {
-    this.addEventListener(element, 'focus', focusHandler(this));
-    this.addEventListener(element, 'blur', blurHandler(this));
   }
 
   getHideLabel() {
@@ -189,22 +134,6 @@ class BaseComponent extends FormioReactComponent {
   }
 
   /**
-   * Used to set focus when clicking error summary, and when restoring focus after rerender.
-   */
-  focus(focusData: any = {}) {
-    this.logger.debug('focus', { focusData });
-    this.reactReady.then(() => {
-      this.logger.debug('focus reactReady', { focusData, reactInstanceExists: !!this.reactInstance });
-      const { elementId } = focusData;
-      if (elementId) {
-        this.getRef(elementId)?.focus();
-      } else if (this.reactInstance) {
-        this.reactInstance.focus(focusData);
-      }
-    });
-  }
-
-  /**
    * Required and used by Form.io
    */
   get defaultSchema() {
@@ -246,6 +175,10 @@ class BaseComponent extends FormioReactComponent {
 
   removeAllErrors() {
     this.componentErrors = [];
+  }
+
+  getComponentError(elementId: string) {
+    return this.componentErrors.find((error) => error.elementId === elementId)?.message;
   }
 }
 

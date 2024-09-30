@@ -52,10 +52,6 @@ class DrivingList extends BaseComponent {
     }
   }
 
-  getComponentError(elementId: string) {
-    return this.componentErrors.find((error) => error.elementId === elementId)?.message;
-  }
-
   override checkValidity(): boolean {
     this.removeAllErrors();
     const componentData = this.getValue() as DrivingListSubmission;
