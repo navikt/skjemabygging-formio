@@ -291,6 +291,95 @@
           },
           "dayFirst": false,
           "id": "eh2hmiq"
+        },
+        {
+          "description": "<p>Earliest: -9<br>Latest: 0</p>",
+          "validate": {
+            "required": false,
+            "minYear": "",
+            "maxYear": "",
+            "custom": "",
+            "customPrivate": false,
+            "strictDateValidation": false,
+            "multiple": false,
+            "unique": false
+          },
+          "conditional": {
+            "show": null,
+            "when": null,
+            "eq": ""
+          },
+          "customConditional": "",
+          "label": "Relative monthPicker (with today as base)",
+          "earliestAllowedDate": -9,
+          "latestAllowedDate": 0,
+          "key": "relativeMonthPickerWithTodayAsBase",
+          "input": true,
+          "tableView": false,
+          "validateOn": "blur",
+          "type": "monthPicker",
+          "navId": "ej8nscaabc",
+          "placeholder": "",
+          "prefix": "",
+          "customClass": "",
+          "suffix": "",
+          "multiple": false,
+          "defaultValue": null,
+          "protected": false,
+          "unique": false,
+          "persistent": true,
+          "hidden": false,
+          "clearOnHide": true,
+          "refreshOn": "",
+          "redrawOn": "",
+          "modalEdit": false,
+          "dataGridLabel": false,
+          "labelPosition": "top",
+          "errorLabel": "",
+          "tooltip": "",
+          "hideLabel": false,
+          "tabindex": "",
+          "disabled": false,
+          "autofocus": false,
+          "dbIndex": false,
+          "customDefaultValue": "",
+          "calculateValue": "",
+          "calculateServer": false,
+          "widget": null,
+          "attributes": {},
+          "overlay": {
+            "style": "",
+            "left": "",
+            "top": "",
+            "width": "",
+            "height": ""
+          },
+          "allowCalculateOverride": false,
+          "encrypted": false,
+          "showCharCount": false,
+          "showWordCount": false,
+          "properties": {},
+          "allowMultipleMasks": false,
+          "addons": [],
+          "fields": {
+            "day": {
+              "type": "number",
+              "placeholder": "",
+              "required": false
+            },
+            "month": {
+              "type": "select",
+              "placeholder": "",
+              "required": false
+            },
+            "year": {
+              "type": "number",
+              "placeholder": "",
+              "required": false
+            }
+          },
+          "dayFirst": false,
+          "id": "eh2hmiqabc"
         }
       ],
       "id": "ednamne",

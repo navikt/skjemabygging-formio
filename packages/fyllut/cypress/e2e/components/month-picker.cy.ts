@@ -105,6 +105,14 @@ describe('Month picker', () => {
 
       cy.findByRole('heading', { name: 'Vedlegg' }).should('exist');
     });
+
+    it('lets you pick year from a select, if the monthpicker has a range set', () => {
+      cy.findByRole('textbox', { name: 'Relative monthPicker (with today as base) (valgfritt)' })
+        .parent()
+        .within(() => cy.findByRole('button', { name: 'Åpne månedsvelger' }).click());
+      cy.findByRole('combobox', { name: 'velg år' }).shouldBeVisible();
+      cy.findByRole('combobox', { name: 'velg år' }).should('have.value', '2024');
+    });
   });
 
   describe('Digital', () => {
