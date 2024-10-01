@@ -140,7 +140,7 @@ const getDatesInRange = (start: string, end: string) => {
   return dates;
 };
 
-const getDefaultMonthFromRange = (fromDate?: string, toDate?: string): Date | undefined => {
+const getDefaultDateFromRange = (fromDate?: string, toDate?: string): Date | undefined => {
   const now = DateTime.now().toString();
   if (!fromDate || !toDate || (isBeforeDate(fromDate, now) && isAfterDate(toDate, now))) {
     return undefined;
@@ -219,7 +219,7 @@ const dateUtils = {
   toJSDate,
   toWeekdayAndDate,
   getDatesInRange,
-  getDefaultMonthFromRange,
+  getDefaultDateFromRange,
   toLocaleDateLongMonth,
   generateWeeklyPeriods,
   addDays,

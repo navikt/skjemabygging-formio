@@ -12,7 +12,7 @@ const LATEST_RELATIVE = 5;
 
 let beforeDate;
 let afterDate;
-const toDayOverwrite = new Date(2020, 6, 14);
+const todayOverwrite = new Date(2020, 6, 14);
 
 const allFieldsEneabled = () => {
   cy.findByRole('textbox', { name: 'Tilfeldig dato' }).should('not.be.disabled');
@@ -29,9 +29,9 @@ const allFieldsEneabled = () => {
 describe('NavDatepicker', () => {
   beforeEach(() => {
     // Overwrite native global definition of current date
-    cy.clock(toDayOverwrite, ['Date']);
+    cy.clock(todayOverwrite, ['Date']);
     // We also have to overwrite luxon's definition of current date
-    Settings.now = () => toDayOverwrite.valueOf();
+    Settings.now = () => todayOverwrite.valueOf();
 
     beforeDate = dateUtils.toLocaleDate(dateUtils.addDays(EARLIEST_RELATIVE));
     afterDate = dateUtils.toLocaleDate(dateUtils.addDays(LATEST_RELATIVE));
