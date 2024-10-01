@@ -244,9 +244,20 @@ describe('NavDatepicker', () => {
     });
   });
 
-  describe('Dates with relative range earlier or later than to day', () => {
+  describe('Dates with range earlier or later than to day', () => {
+    const LABEL_TODAY = 'Dato med validering av antall dager tilbake eller framover (valgfritt)';
     const LABEL_PAST = 'Dato med intervall tidligere enn dagens dato (valgfritt)';
     const LABEL_FUTURE = 'Dato med intervall senere enn dagens dato (valgfritt)';
+
+    it('shows current month if range includes current date', () => {
+      cy.findByRole('textbox', { name: LABEL_TODAY })
+        .parent()
+        .within(() => {
+          cy.findByRole('button', { name: 'Åpne datovelger' }).click();
+        });
+
+      cy.findByRole('grid', { name: 'juli 2020' }).shouldBeVisible();
+    });
 
     it('shows the end of the range as default month when the range is in the past', () => {
       cy.findByRole('textbox', { name: LABEL_PAST })
