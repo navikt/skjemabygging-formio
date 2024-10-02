@@ -142,14 +142,17 @@ const getDatesInRange = (start: string, end: string) => {
 
 const getDefaultDateFromRange = (fromDate?: string, toDate?: string): Date | undefined => {
   const now = DateTime.now().toString();
-  if (!fromDate || !toDate || (isBeforeDate(fromDate, now) && isAfterDate(toDate, now))) {
+  if (!fromDate || !toDate || isBeforeDate(toDate, fromDate)) {
     return undefined;
   }
 
   if (isBeforeDate(toDate, now)) {
     return toJSDate(toDate);
   }
-  return toJSDate(fromDate);
+  if (isAfterDate(fromDate, now)) {
+    return toJSDate(fromDate);
+  }
+  return toJSDate(now);
 };
 
 export const generateWeeklyPeriods = (date?: string, numberOfPeriods: number = 1): WeeklyPeriod[] => {
