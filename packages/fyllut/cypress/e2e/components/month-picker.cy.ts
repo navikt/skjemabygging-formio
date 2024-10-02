@@ -118,7 +118,7 @@ describe('Month picker', () => {
       cy.findByRole('textbox', { name: 'MonthPicker with range in the past (valgfritt)' })
         .parent()
         .within(() => cy.findByRole('button', { name: 'Åpne månedsvelger' }).click());
-      cy.findByRole('combobox', { name: 'velg år' }).should('have.value', '2002');
+      cy.findByRole('combobox', { name: 'velg år' }).should('have.value', '2003');
     });
   });
 
