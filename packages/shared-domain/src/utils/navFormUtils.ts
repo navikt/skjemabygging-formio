@@ -147,16 +147,16 @@ export const findDependeeComponents = (componentWithDependencies: Component, for
 };
 
 const getComponentBranch = (targetComponentId: string) => {
-  const depthFirstSearch = (currentComponent: Component, path: Component[]) => {
+  const depthFirstSearch = (currentComponent: Component, branch: Component[]) => {
     if (currentComponent.type !== 'form') {
-      path.push(currentComponent);
+      branch.push(currentComponent);
     }
     if (currentComponent.id === targetComponentId) {
-      return path;
+      return branch;
     }
     if (currentComponent.components?.length) {
       for (const childComponent of currentComponent.components) {
-        const result = depthFirstSearch(childComponent, [...path]);
+        const result = depthFirstSearch(childComponent, [...branch]);
         if (result) {
           return result;
         }
