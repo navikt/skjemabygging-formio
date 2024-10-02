@@ -167,16 +167,16 @@ const getComponentBranch = (targetComponentId: string) => {
   return depthFirstSearch;
 };
 
-function findClosestDatagrid(id: string, form: NavFormType) {
+function findClosest(type: string, id: string, form: NavFormType) {
   const componentBranch: Component[] = getComponentBranch(id)(form as unknown as Component, []);
-  let closestDatagrid: Component | undefined = undefined;
+  let closest: Component | undefined = undefined;
   for (let i = componentBranch.length - 2; i >= 0; i--) {
-    if (componentBranch[i].type === 'datagrid') {
-      closestDatagrid = componentBranch[i];
+    if (componentBranch[i].type === type) {
+      closest = componentBranch[i];
       break;
     }
   }
-  return closestDatagrid;
+  return closest;
 }
 
 export const findDependentComponents = (id: string, form: NavFormType, evaluateClosestDatagrid: boolean = true) => {
@@ -189,7 +189,7 @@ export const findDependentComponents = (id: string, form: NavFormType, evaluateC
   if (component) {
     let dependentComponentsInsideDatagrid: DependentKeysType[] = [];
     if (evaluateClosestDatagrid) {
-      const closestDatagrid = findClosestDatagrid(id, form);
+      const closestDatagrid = findClosest('datagrid', id, form);
       if (closestDatagrid?.components?.length) {
         dependentComponentsInsideDatagrid = findDependentComponents(
           id,
