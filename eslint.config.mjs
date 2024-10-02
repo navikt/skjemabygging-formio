@@ -95,7 +95,7 @@ export default tseslint.config(
       'mocha/no-mocha-arrows': 'off', // We don't use "this" context in tests so we can use arrow functions
       'vitest/expect-expect': 'off', // Cypress tests don't necessarily use expect
       '@typescript-eslint/no-explicit-any': 'off', // Explicit any's
-      '@typescript-eslint/no-require-imports': 'off',
+      '@typescript-eslint/no-require-imports': 'off', // TODO: This should be fixed in code but had to be turned off temporary
     },
   },
   {
