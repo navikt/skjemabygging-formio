@@ -199,6 +199,25 @@ export class FormioService {
     };
     return await Promise.all(forms.map((form) => this.saveForm(form, formioToken, userName, formProps)));
   }
+
+  async updateFormSettings(formPath: string, config: Partial<FormPropertiesType>, formioToken: string) {
+    const form = await this.getForm(formPath);
+    if (form) {
+      const updateFormUrl = `${this.projectUrl}/form`;
+      const formWithProps = updateProps(form, config);
+      const response: any = await fetchWithErrorHandling(`${updateFormUrl}/${form._id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-jwt-token': formioToken,
+        },
+        body: JSON.stringify(formWithProps),
+      });
+      return response.data;
+    } else {
+      throw new Error(`Unable to lock form. Form ${formPath} not found.`);
+    }
+  }
 }
 
 const updateProps = (form: NavFormType, props: Partial<FormPropertiesType>): NavFormType => {

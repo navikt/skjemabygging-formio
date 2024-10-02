@@ -4,11 +4,14 @@ export const validering = {
   invalid_email: '{{field}} må være en gyldig epost-adresse.',
   invalid_regex: '{{field}} passer ikke til uttrykket {{regex}}.',
   mask: 'Dette er ikke et gyldig {{field}}.',
-  maxLength: '{{field}} kan ikke være mer enn {{length}} tegn.',
-  minLength: '{{field}} kan ikke være mindre enn {{length}} tegn.',
+  maxLength: '{{field}} kan maksimalt ha {{length}} tegn.',
+  minLength: '{{field}} må ha minst {{length}} tegn.',
   pattern: '{{field}} stemmer ikke med {{pattern}}',
   required: 'Du må fylle ut: {{field}}',
   valueIsNotAvailable: '{{field}} er en ugyldig verdi.',
+
+  // Tekstfelt
+  digitsOnly: '{{field}} kan bare inneholde siffer fra 0 til 9',
 
   // Dato / tid
   invalid_date: '{{field}} er ikke en gyldig dato.',

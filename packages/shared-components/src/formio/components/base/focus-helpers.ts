@@ -1,5 +1,5 @@
 import FormioUtils from 'formiojs/utils';
-import BaseComponent from './BaseComponent';
+import FormioReactComponent from './FormioReactComponent';
 
 /**
  * The focus and blur handlers are copied from Formio Component#addFocusBlurEvents.
@@ -8,22 +8,19 @@ import BaseComponent from './BaseComponent';
 
 type Opts = {
   skipEmit?: boolean;
-  focusedElementName?: any;
+  elementId?: any;
 };
 
 export const focusHandler =
-  (thisComponent: BaseComponent, opts: Opts = {}) =>
+  (thisComponent: FormioReactComponent, opts: Opts = {}) =>
   () => {
     const focusedComponent = thisComponent.getFocusedComponent();
-    const focusedElementName = thisComponent.getFocusedElementName();
-    if (
-      focusedComponent !== thisComponent ||
-      (opts.focusedElementName && focusedElementName !== opts.focusedElementName)
-    ) {
+    const focusedElementId = thisComponent.getFocusedElementId();
+    if (focusedComponent !== thisComponent || (opts.elementId && focusedElementId !== opts.elementId)) {
       if (thisComponent.root.pendingBlur) {
         thisComponent.root.pendingBlur();
       }
-      thisComponent.setFocusedComponent(thisComponent, opts.focusedElementName);
+      thisComponent.setFocusedComponent(thisComponent, opts.elementId);
       if (!opts.skipEmit) {
         thisComponent.emit('focus', thisComponent);
       }
@@ -34,7 +31,7 @@ export const focusHandler =
   };
 
 export const blurHandler =
-  (thisComponent: BaseComponent, opts: Opts = {}) =>
+  (thisComponent: FormioReactComponent, opts: Opts = {}) =>
   () => {
     thisComponent.root.pendingBlur = FormioUtils.delay(() => {
       if (!opts.skipEmit) {
@@ -52,12 +49,9 @@ export const blurHandler =
         );
       }
       const focusedComponent = thisComponent.getFocusedComponent();
-      const focusedElementName = thisComponent.getFocusedElementName();
+      const focusedElementId = thisComponent.getFocusedElementId();
       // only remove focused component on blur if this component was the focused component
-      if (
-        focusedComponent === thisComponent &&
-        (!focusedElementName || focusedElementName === opts.focusedElementName)
-      ) {
+      if (focusedComponent === thisComponent && (!focusedElementId || focusedElementId === opts.elementId)) {
         thisComponent.setFocusedComponent(null);
         thisComponent.root.pendingBlur = null;
       }

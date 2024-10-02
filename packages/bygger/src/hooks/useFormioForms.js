@@ -65,6 +65,42 @@ export const useFormioForms = () => {
     [feedbackEmit, http],
   );
 
+  const onUpdateFormSettings = useCallback(
+    async (formPath, properties) => {
+      const { isLockedForm, lockedFormReason } = properties;
+      try {
+        const updatedForm = await http.put(
+          `/api/forms/${formPath}/form-settings`,
+          {
+            isLockedForm,
+            lockedFormReason,
+          },
+          {
+            'Bygger-Formio-Token': NavFormioJs.Formio.getToken(),
+          },
+        );
+        feedbackEmit.success(
+          updatedForm.properties.isLockedForm
+            ? 'Skjemaet ble låst for redigering'
+            : 'Skjemaet ble åpnet for redigering',
+        );
+        return updatedForm;
+      } catch (error) {
+        if (error instanceof http.UnauthenticatedError) {
+          feedbackEmit.error(
+            isLockedForm
+              ? 'Åpning av skjemaet feilet. Du har blitt logget ut'
+              : 'Låsing feilet. Du har blitt logget ut.',
+          );
+        } else {
+          feedbackEmit.error(error.message);
+        }
+        return { error: true };
+      }
+    },
+    [feedbackEmit, http],
+  );
+
   const onPublish = useCallback(
     async (form, translations) => {
       const payload = JSON.stringify({ form, translations });
@@ -83,7 +119,11 @@ export const useFormioForms = () => {
           'Publiseringen inneholdt ingen endringer og ble avsluttet (nytt bygg av Fyllut ble ikke trigget)';
 
         const { changed, form } = await response.json();
-        changed ? feedbackEmit.success(success) : feedbackEmit.warning(warning);
+        if (changed) {
+          feedbackEmit.success(success);
+        } else {
+          feedbackEmit.warning(warning);
+        }
         return form;
       } else {
         const { message } = await response.json();
@@ -120,5 +160,6 @@ export const useFormioForms = () => {
     onPublish,
     onUnpublish,
     onCopyFromProd,
+    onUpdateFormSettings,
   };
 };

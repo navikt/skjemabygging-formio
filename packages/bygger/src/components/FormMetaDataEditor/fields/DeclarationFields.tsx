@@ -12,6 +12,7 @@ export interface DeclarationFieldsProps {
 
 const DeclarationFields = ({ onChange, diff, form, errors }: DeclarationFieldsProps) => {
   const declarationText = form.properties.declarationText;
+  const isLockedForm = form.properties.isLockedForm;
 
   return (
     <>
@@ -52,6 +53,7 @@ const DeclarationFields = ({ onChange, diff, form, errors }: DeclarationFieldsPr
               })
             }
             error={errors?.declarationText}
+            readOnly={isLockedForm}
           />
         )}
 

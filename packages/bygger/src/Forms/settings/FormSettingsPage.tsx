@@ -1,5 +1,5 @@
 import { useAppConfig, useModal } from '@navikt/skjemadigitalisering-shared-components';
-import { I18nTranslations, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
+import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import { useState } from 'react';
 import { AppLayout } from '../../components/AppLayout';
 import { FormMetadataEditor } from '../../components/FormMetaDataEditor/FormMetadataEditor';
@@ -7,36 +7,22 @@ import { isFormMetadataValid, validateFormMetadata } from '../../components/Form
 import RowLayout from '../../components/layout/RowLayout';
 import Title from '../../components/layout/Title';
 import TitleRowLayout from '../../components/layout/TitleRowLayout';
-import useLockedFormModal from '../../hooks/useLockedFormModal';
+import { useForm } from '../../context/form/FormContext';
 import PublishModalComponents from '../publish/PublishModalComponents';
 import FormSettingsSidebar from './FormSettingsSidebar';
 
 interface FormSettingsPageProps {
   form: NavFormType;
-  publishedForm: NavFormType;
-  onSave: (form: NavFormType) => void;
-  onChange: (form: NavFormType) => void;
-  onPublish: (form: NavFormType, translations: I18nTranslations) => void;
-  onUnpublish: () => void;
-  onCopyFromProd: () => void;
 }
 
-export function FormSettingsPage({
-  form,
-  publishedForm,
-  onSave,
-  onChange,
-  onPublish,
-  onUnpublish,
-  onCopyFromProd,
-}: FormSettingsPageProps) {
+export function FormSettingsPage({ form }: FormSettingsPageProps) {
+  const { saveForm, changeForm } = useForm();
   const {
     title,
     properties: { skjemanummer },
   } = form;
   const isLockedForm = form.properties.isLockedForm;
   const [openPublishSettingModal, setOpenPublishSettingModal] = useModal();
-  const { lockedFormModalContent } = useLockedFormModal(form);
 
   const [errors, setErrors] = useState({});
   const { config } = useAppConfig();
@@ -54,7 +40,7 @@ export function FormSettingsPage({
     const updatedErrors = validateFormMetadata(updatedForm, 'edit');
     if (isFormMetadataValid(updatedErrors)) {
       setErrors({});
-      onSave(updatedForm);
+      saveForm(updatedForm);
     } else {
       setErrors(updatedErrors);
     }
@@ -77,19 +63,14 @@ export function FormSettingsPage({
           <FormSettingsSidebar
             form={form}
             validateAndSave={validateAndSave}
-            onPublish={onPublish}
-            onUnpublish={onUnpublish}
-            onCopyFromProd={onCopyFromProd}
             setOpenPublishSettingModal={setOpenPublishSettingModal}
           />
         }
       >
-        <FormMetadataEditor form={form} publishedForm={publishedForm} errors={errors} onChange={onChange} />
+        <FormMetadataEditor form={form} onChange={changeForm} errors={errors} />
       </RowLayout>
-      {lockedFormModalContent}
       <PublishModalComponents
         form={form}
-        onPublish={onPublish}
         openPublishSettingModal={openPublishSettingModal}
         setOpenPublishSettingModal={setOpenPublishSettingModal}
       />

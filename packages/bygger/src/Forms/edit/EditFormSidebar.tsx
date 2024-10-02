@@ -1,25 +1,24 @@
 import { PadlockLockedIcon } from '@navikt/aksel-icons';
 import { Button, VStack } from '@navikt/ds-react';
 import { useModal } from '@navikt/skjemadigitalisering-shared-components';
-import { I18nTranslations, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
+import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import ButtonWithSpinner from '../../components/ButtonWithSpinner';
 import SidebarLayout from '../../components/layout/SidebarLayout';
 import UserFeedback from '../../components/UserFeedback';
-import useLockedFormModal from '../../hooks/useLockedFormModal';
+import { useForm } from '../../context/form/FormContext';
+import LockedFormModal from '../lockedFormModal/LockedFormModal';
 import PublishModalComponents from '../publish/PublishModalComponents';
 import FormStatusPanel from '../status/FormStatusPanel';
 import UnpublishButton from '../unpublish/UnpublishButton';
 
 interface EditFormSidebarProps {
   form: NavFormType;
-  onSave: (form: NavFormType) => Promise<void>;
-  onPublish: (form: NavFormType, translations: I18nTranslations) => void;
-  onUnpublish: () => void;
 }
 
-const EditFormSidebar = ({ form, onSave, onPublish, onUnpublish }: EditFormSidebarProps) => {
+const EditFormSidebar = ({ form }: EditFormSidebarProps) => {
   const [openPublishSettingModal, setOpenPublishSettingModal] = useModal();
-  const { lockedFormModalContent, openLockedFormModal } = useLockedFormModal(form);
+  const [lockedFormModal, setLockedFormModal] = useModal();
+  const { saveForm } = useForm();
 
   const {
     properties: { isLockedForm },
@@ -31,9 +30,9 @@ const EditFormSidebar = ({ form, onSave, onPublish, onUnpublish }: EditFormSideb
         <ButtonWithSpinner
           onClick={async () => {
             if (isLockedForm) {
-              openLockedFormModal();
+              setLockedFormModal(true);
             } else {
-              await onSave(form);
+              await saveForm(form);
             }
           }}
           size="small"
@@ -45,7 +44,7 @@ const EditFormSidebar = ({ form, onSave, onPublish, onUnpublish }: EditFormSideb
           variant="secondary"
           onClick={() => {
             if (isLockedForm) {
-              openLockedFormModal();
+              setLockedFormModal(true);
             } else {
               setOpenPublishSettingModal(true);
             }
@@ -56,18 +55,17 @@ const EditFormSidebar = ({ form, onSave, onPublish, onUnpublish }: EditFormSideb
         >
           Publiser
         </Button>
-        <UnpublishButton onUnpublish={onUnpublish} form={form} />
+        <UnpublishButton form={form} />
         <UserFeedback />
         <FormStatusPanel publishProperties={form.properties} />
 
         <PublishModalComponents
           form={form}
-          onPublish={onPublish}
           openPublishSettingModal={openPublishSettingModal}
           setOpenPublishSettingModal={setOpenPublishSettingModal}
         />
 
-        {lockedFormModalContent}
+        <LockedFormModal open={lockedFormModal} onClose={() => setLockedFormModal(false)} form={form} />
       </VStack>
     </SidebarLayout>
   );

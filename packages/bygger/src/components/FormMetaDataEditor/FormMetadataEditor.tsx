@@ -1,5 +1,7 @@
 import { Alert, Fieldset, Textarea, TextField } from '@navikt/ds-react';
+import { useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
 import { formDiffingTool, NavFormType, TEXTS, UsageContext } from '@navikt/skjemadigitalisering-shared-domain';
+import { useForm } from '../../context/form/FormContext';
 import AddressFields from './fields/AddressFields';
 import BasicFields from './fields/BasicFields';
 import DeclarationFields from './fields/DeclarationFields';
@@ -13,17 +15,19 @@ import { FormMetadataError, UpdateFormFunction } from './utils/utils';
 
 interface Props {
   form: NavFormType;
-  publishedForm?: NavFormType;
   onChange: UpdateFormFunction;
   errors?: FormMetadataError;
 }
 
 type BasicFormProps = Props & { usageContext: UsageContext };
 
-const BasicFormMetadataEditor = ({ form, publishedForm, onChange, usageContext, errors }: BasicFormProps) => {
-  const diff = formDiffingTool.generateNavFormSettingsDiff(publishedForm, form);
+const BasicFormMetadataEditor = ({ form, onChange, usageContext, errors }: BasicFormProps) => {
+  const { diffOn } = useAppConfig();
+  const { formState } = useForm();
+  const diff =
+    diffOn && formState.publishedForm ? formDiffingTool.generateNavFormSettingsDiff(formState.publishedForm, form) : {};
   const {
-    properties: { downloadPdfButtonText, descriptionOfSignatures },
+    properties: { downloadPdfButtonText, descriptionOfSignatures, isLockedForm },
   } = form;
 
   const basicFields = () => (
@@ -48,6 +52,7 @@ const BasicFormMetadataEditor = ({ form, publishedForm, onChange, usageContext, 
         })
       }
       placeholder={TEXTS.grensesnitt.downloadApplication}
+      readOnly={isLockedForm}
     />
   );
 
@@ -65,6 +70,7 @@ const BasicFormMetadataEditor = ({ form, publishedForm, onChange, usageContext, 
         label={<LabelWithDiff label="Generelle instruksjoner (valgfritt)" diff={!!diff.descriptionOfSignatures} />}
         value={descriptionOfSignatures || ''}
         maxLength={0}
+        readOnly={isLockedForm}
         onChange={(event) =>
           onChange({
             ...form,
@@ -108,12 +114,6 @@ export const CreationFormMetadataEditor = ({ form, onChange, errors }: Props) =>
   <BasicFormMetadataEditor form={form} onChange={onChange} usageContext="create" errors={errors} />
 );
 
-export const FormMetadataEditor = ({ form, publishedForm, onChange, errors }: Props) => (
-  <BasicFormMetadataEditor
-    form={form}
-    publishedForm={publishedForm}
-    onChange={onChange}
-    usageContext="edit"
-    errors={errors}
-  />
+export const FormMetadataEditor = ({ form, onChange, errors }: Props) => (
+  <BasicFormMetadataEditor form={form} onChange={onChange} usageContext="edit" errors={errors} />
 );

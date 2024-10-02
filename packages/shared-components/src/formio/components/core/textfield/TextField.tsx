@@ -1,5 +1,5 @@
 import { TextField as NavTextField } from '@navikt/ds-react';
-import { InputMode } from '@navikt/skjemadigitalisering-shared-domain';
+import { InputMode, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { ComponentUtilsProvider } from '../../../../context/component/componentUtilsContext';
 import BaseComponent from '../../base/BaseComponent';
 import Description from '../../base/components/Description';
@@ -56,6 +56,34 @@ class TextField extends BaseComponent {
 
   handleChange(value: string | number) {
     super.handleChange(value);
+  }
+
+  checkComponentValidity(data, dirty, row, options = {}) {
+    const validity = super.checkComponentValidity(data, dirty, row, options);
+
+    if (validity) {
+      const errorMessage = this.validateTextfield();
+      if (errorMessage) {
+        return this.setComponentValidity([this.createError(errorMessage, undefined)], dirty, undefined);
+      }
+    }
+
+    return validity;
+  }
+
+  private validateTextfield(): string | undefined {
+    const value = this.getValue();
+
+    if (value === '' || value === undefined) {
+      return;
+    }
+
+    if (this.component?.validate?.digitsOnly) {
+      const containsDigitsOnly = RegExp(/^\d+$/).test(value);
+      if (!containsDigitsOnly) {
+        return this.translateWithLabel(TEXTS.validering.digitsOnly);
+      }
+    }
   }
 
   setValue(value: any) {

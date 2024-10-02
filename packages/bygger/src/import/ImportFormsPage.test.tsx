@@ -7,6 +7,7 @@ import { mockImplementation } from './testdata/fetch-mock-implementation';
 
 describe('ImportFormsPage', () => {
   beforeEach(() => {
+    //@ts-expect-error
     fetchMock.mockImplementation(mockImplementation);
   });
 

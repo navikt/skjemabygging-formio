@@ -38,21 +38,9 @@ const TestSkjemaFields = ({ onChange, form }: TestSkjemaFieldsProps) => {
           onChange={(event) =>
             onChange({ ...form, properties: { ...form.properties, isTestForm: event.target.checked } })
           }
+          readOnly={isLockedForm}
         >
           Dette er et testskjema
-        </Checkbox>
-
-        <Checkbox
-          id="lockForm"
-          checked={!!isLockedForm}
-          onChange={(event) =>
-            onChange({
-              ...form,
-              properties: { ...form.properties, isLockedForm: event.target.checked },
-            })
-          }
-        >
-          Lås for redigering
         </Checkbox>
         <span className={styles.copyLink}>
           Skjemadelingslenke

@@ -18,6 +18,7 @@ export interface SignatureFieldsProps {
 const SignatureFields = ({ onChange, diff, form }: SignatureFieldsProps) => {
   const signatures = form.properties.signatures || [];
   const descriptionOfSignaturesPositionUnder = form.properties.descriptionOfSignaturesPositionUnder || false;
+  const isLockedForm = form.properties.isLockedForm;
 
   const addExistingSignature = (newSignature: NewFormSignatureType, index: number) =>
     onChange({
@@ -69,7 +70,8 @@ const SignatureFields = ({ onChange, diff, form }: SignatureFieldsProps) => {
     <>
       <Checkbox
         className="mb"
-        checked={!!descriptionOfSignaturesPositionUnder}
+        checked={descriptionOfSignaturesPositionUnder}
+        readOnly={isLockedForm}
         onChange={(event) =>
           onChange({
             ...form,
@@ -88,11 +90,12 @@ const SignatureFields = ({ onChange, diff, form }: SignatureFieldsProps) => {
             index={index}
             onChange={(newSignature) => addExistingSignature(newSignature, index)}
             onDelete={() => removeSignature(signature.key)}
+            readonly={isLockedForm}
           />
         </div>
       ))}
 
-      <Button variant="secondary" className="mb" onClick={addNewSignature}>
+      <Button variant="secondary" className="mb" onClick={addNewSignature} disabled={isLockedForm}>
         Legg til signatur
       </Button>
     </>

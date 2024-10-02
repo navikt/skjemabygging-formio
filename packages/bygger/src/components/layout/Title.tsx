@@ -12,7 +12,7 @@ export interface Props {
 const useStyles = makeStyles({
   padlockIcon: {
     position: 'relative',
-    top: '0.4rem',
+    top: '0.25rem',
   },
   heading: {
     textOverflow: 'ellipsis',
