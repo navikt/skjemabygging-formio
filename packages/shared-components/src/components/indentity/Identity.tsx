@@ -4,7 +4,7 @@ import IdentityNumberField from './fields/IdentityNumberField';
 import { IdentityProvider } from './identityContext';
 
 export interface IdentityInput {
-  harDuFodselsnummer?: boolean;
+  harDuFodselsnummer?: string;
   identitetsnummer?: string;
   fodselsdato?: string;
 }
@@ -34,7 +34,7 @@ const Identity = ({ readOnly, required, onChange, identity, className }: Props) 
         <>
           <DoYouHaveIdentityNumberRadio />
           {identity?.harDuFodselsnummer !== undefined &&
-            (identity?.harDuFodselsnummer ? <IdentityNumberField /> : <BirthDateField />)}
+            (identity?.harDuFodselsnummer === 'yes' ? <IdentityNumberField /> : <BirthDateField />)}
         </>
       )}
     </IdentityProvider>

@@ -29,7 +29,7 @@ const yourInformationBuilder = () => {
           ...addressBuilder().schema,
           prefill: true,
           prefillKey: 'sokerAdresser',
-          customConditional: 'show = row.identitet.harDuFodselsnummer === false',
+          customConditional: 'show = row.identitet.harDuFodselsnummer === "no"',
         },
         {
           label: 'Fra hvilken dato skal denne adressen brukes (dd.mm.åååå)?',
@@ -40,7 +40,7 @@ const yourInformationBuilder = () => {
             required: true,
             custom: 'valid = instance.validateDatePickerV2(input, data, component, row);',
           },
-          customConditional: 'show = row.identitet.harDuFodselsnummer === false',
+          customConditional: 'show = row.identitet.harDuFodselsnummer === "no"',
         },
         {
           label: 'Til hvilken dato skal denne adressen brukes (dd.mm.åååå)?',
@@ -54,7 +54,16 @@ const yourInformationBuilder = () => {
             required: true,
             custom: 'valid = instance.validateDatePickerV2(input, data, component, row);',
           },
-          customConditional: 'show = row.identitet.harDuFodselsnummer === false',
+          customConditional: 'show = row.identitet.harDuFodselsnummer === "no"',
+        },
+        {
+          label: 'Alertstripe',
+          content:
+            '<p>NAV sender svar på søknad og annen kommunikasjon til din folkeregistrerte adresse. Du kan <a href="https://www.skatteetaten.no/person/folkeregister/flytte/endre-postadresse/" target="_blank" rel="noopener noreferrer"> sjekke og endre din folkeregistrerte adresse på skatteetatens nettsider (åpnes i ny fane)</a>.</p>',
+          key: 'alertstripe',
+          type: 'alertstripe',
+          alerttype: 'info',
+          customConditional: 'show = row.identitet.harDuFodselsnummer === "yes" || row.identitet.identitetsnummer',
         },
       ],
     },

@@ -149,6 +149,13 @@ class Address extends BaseComponent {
         this.validateRequired(address, 'land', TEXTS.statiske.address.country);
       }
 
+      if (this.showAddressTypeChoice()) {
+        this.validateRequired(address, 'borDuINorge', TEXTS.statiske.address.livesInNorway);
+        if (address.borDuINorge) {
+          this.validateRequired(address, 'vegadresseEllerPostboksadresse', TEXTS.statiske.address.yourContactAddress);
+        }
+      }
+
       this.rerender();
     }
 

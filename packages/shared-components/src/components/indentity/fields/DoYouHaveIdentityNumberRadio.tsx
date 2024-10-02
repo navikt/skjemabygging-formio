@@ -11,7 +11,7 @@ const DoYouHaveIdentityNumberRadio = () => {
   const handleChange = (value: string) => {
     onChange({
       ...nationalIdentity,
-      harDuFodselsnummer: value === 'yes',
+      harDuFodselsnummer: value,
     });
   };
 
