@@ -59,6 +59,10 @@ class TextField extends BaseComponent {
   }
 
   checkComponentValidity(data, dirty, row, options = {}) {
+    if (this.getReadOnly()) {
+      return true;
+    }
+
     const validity = super.checkComponentValidity(data, dirty, row, options);
 
     if (validity) {
