@@ -146,7 +146,40 @@ export const findDependeeComponents = (componentWithDependencies: Component, for
   return dependees;
 };
 
-export const findDependentComponents = (id: string, form: NavFormType) => {
+const getComponentBranch = (targetComponentId: string) => {
+  const depthFirstSearch = (currentComponent: Component, path: Component[]) => {
+    if (currentComponent.type !== 'form') {
+      path.push(currentComponent);
+    }
+    if (currentComponent.id === targetComponentId) {
+      return path;
+    }
+    if (currentComponent.components?.length) {
+      for (const childComponent of currentComponent.components) {
+        const result = depthFirstSearch(childComponent, [...path]);
+        if (result) {
+          return result;
+        }
+      }
+    }
+    return null;
+  };
+  return depthFirstSearch;
+};
+
+function findClosestDatagrid(id: string, form: NavFormType) {
+  const componentBranch: Component[] = getComponentBranch(id)(form as unknown as Component, []);
+  let closestDatagrid: Component | undefined = undefined;
+  for (let i = componentBranch.length - 2; i >= 0; i--) {
+    if (componentBranch[i].type === 'datagrid') {
+      closestDatagrid = componentBranch[i];
+      break;
+    }
+  }
+  return closestDatagrid;
+}
+
+export const findDependentComponents = (id: string, form: NavFormType, evaluateClosestDatagrid: boolean = true) => {
   const idToPathMapping: { [s: string]: string } = {};
   FormioUtils.eachComponent(form.components, (component: Component, path: string) => {
     idToPathMapping[component.id!] = path;
@@ -154,8 +187,20 @@ export const findDependentComponents = (id: string, form: NavFormType) => {
 
   const component = findById(id, form.components);
   if (component) {
+    let dependentComponentsInsideDatagrid: DependentKeysType[] = [];
+    if (evaluateClosestDatagrid) {
+      const closestDatagrid = findClosestDatagrid(id, form);
+      if (closestDatagrid?.components?.length) {
+        dependentComponentsInsideDatagrid = findDependentComponents(
+          id,
+          closestDatagrid as unknown as NavFormType,
+          false,
+        );
+      }
+    }
     const downstreamPaths = flattenComponents([component]).map((comp) => idToPathMapping[comp.id!]);
-    return recursivelyFindDependentComponents(id, downstreamPaths, form.components);
+    const dependentComponentsInForm = recursivelyFindDependentComponents(id, downstreamPaths, form.components);
+    return [...dependentComponentsInForm, ...dependentComponentsInsideDatagrid];
   }
   return [];
 };
