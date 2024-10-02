@@ -10,15 +10,12 @@ const ERROR_MESSAGE_MISSING_KODE_OR_TITTEL =
 
 describe('PublishModalComponents', () => {
   let mockedCloseModal;
-  let mockedOnPublish;
   const renderPublishSettingsModal = (form) => {
     mockedCloseModal = vi.fn();
-    mockedOnPublish = vi.fn();
     render(
       <PublishModalComponents
         openPublishSettingModal={true}
         setOpenPublishSettingModal={mockedCloseModal}
-        onPublish={mockedOnPublish}
         form={form}
       />,
     );
