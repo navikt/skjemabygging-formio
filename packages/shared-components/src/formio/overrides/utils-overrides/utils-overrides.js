@@ -1,6 +1,6 @@
 import { fnr as fnrvalidator } from '@navikt/fnrvalidator';
 import { formDiffingTool, navFormioUtils } from '@navikt/skjemadigitalisering-shared-domain';
-import { Utils } from 'formiojs';
+import { Formio, Utils } from 'formiojs';
 import moment from 'moment/moment';
 
 const additionalDescription = (ctx) => {
@@ -190,6 +190,20 @@ const getBirthDateFromFnr = (fnr) => {
   return moment(birthDateStr, 'DDMMYYYY');
 };
 
+/**
+ * This is a helper function for developers to easily access submission data from browser console
+ */
+const data = () => {
+  let forms = [];
+  if (Formio.forms) {
+    for (const [_id, form] of Object.entries(Formio.forms)) {
+      forms.push(form?.submission?.data);
+    }
+  }
+
+  return forms;
+};
+
 const UtilsOverrides = {
   additionalDescription,
   translateHTMLTemplate,
@@ -201,6 +215,7 @@ const UtilsOverrides = {
   isBornBeforeYear,
   isAgeBetween,
   getAge,
+  data,
 };
 
 if (typeof global === 'object' && global.FormioUtils) {
