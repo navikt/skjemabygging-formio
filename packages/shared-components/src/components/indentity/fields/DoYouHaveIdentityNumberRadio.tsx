@@ -1,12 +1,12 @@
-import { Radio, RadioGroup } from '@navikt/ds-react';
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import classNames from 'classnames';
 import { useComponentUtils } from '../../../context/component/componentUtilsContext';
+import Radio from '../../radio/Radio';
 import { useIdentity } from '../identityContext';
 
 const DoYouHaveIdentityNumberRadio = () => {
   const { translate, addRef, getComponentError } = useComponentUtils();
-  const { nationalIdentity, onChange, className } = useIdentity();
+  const { nationalIdentity, onChange, className, readOnly } = useIdentity();
 
   const handleChange = (value: string) => {
     onChange({
@@ -18,21 +18,25 @@ const DoYouHaveIdentityNumberRadio = () => {
   const refId = 'identity:harDuFodselsnummer';
 
   return (
-    <RadioGroup
+    <Radio
       legend={translate(TEXTS.statiske.identity.doYouHaveIdentityNumber)}
+      value={nationalIdentity?.harDuFodselsnummer}
+      values={[
+        {
+          value: 'yes',
+          label: translate(TEXTS.common.yes),
+        },
+        {
+          value: 'no',
+          label: translate(TEXTS.common.no),
+        },
+      ]}
       onChange={(value) => handleChange(value)}
-      defaultValue={nationalIdentity?.harDuFodselsnummer}
-      error={getComponentError(refId)}
-      ref={(ref) => addRef(refId, ref)}
       className={classNames('mb', className)}
-    >
-      <Radio value="yes" ref={(ref) => addRef(`${refId}:yes`, ref)}>
-        {translate(TEXTS.common.yes)}
-      </Radio>
-      <Radio value="no" ref={(ref) => addRef(`${refId}:no`, ref)}>
-        {translate(TEXTS.common.no)}
-      </Radio>
-    </RadioGroup>
+      readOnly={readOnly}
+      ref={(ref) => addRef(refId, ref)}
+      error={getComponentError(refId)}
+    />
   );
 };
 

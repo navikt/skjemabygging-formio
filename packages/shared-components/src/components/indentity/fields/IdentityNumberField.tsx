@@ -19,7 +19,7 @@ const IdentityNumberField = () => {
   return (
     <TextField
       label={translate(TEXTS.statiske.identity.identityNumber)}
-      value={nationalIdentity?.identitetsnummer}
+      value={nationalIdentity?.identitetsnummer ?? ''}
       className={className}
       onChange={(event) => handleChange(event.currentTarget.value)}
       ref={(ref) => addRef(refId, ref)}

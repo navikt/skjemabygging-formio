@@ -1,4 +1,5 @@
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { validateDate } from '../../../../components/datepicker/dateValidation';
 import NavIdentity, { IdentityInput, IdentityInputType } from '../../../../components/indentity/Identity';
 import { validateNationalIdentityNumber } from '../../../../components/indentity/NationalIdentityNumberValidator';
 import { ComponentUtilsProvider } from '../../../../context/component/componentUtilsContext';
@@ -75,17 +76,29 @@ export default class Identity extends BaseComponent {
     }
 
     if (identity.identitetsnummer) {
-      const appConfig = this.options?.appConfig?.config;
       const errorMessage = validateNationalIdentityNumber(
         {
           value: this.getValue()?.identitetsnummer,
-          allowTestTypes: appConfig?.NAIS_CLUSTER_NAME !== 'prod-gcp',
+          allowTestTypes: this.getAppConfig().config?.NAIS_CLUSTER_NAME !== 'prod-gcp',
         },
         this.translate.bind(this),
       );
 
       if (errorMessage) {
         this.addIdentityError(TEXTS.statiske.identity.identityNumber, 'identitetsnummer');
+      }
+    } else if (identity.fodselsdato) {
+      const errorMessage = validateDate(
+        {
+          required: this.isRequired(),
+          value: identity.fodselsdato,
+          label: this.getLabel(),
+        },
+        this.translate.bind(this),
+      );
+
+      if (errorMessage) {
+        this.addIdentityError(TEXTS.statiske.identity.yourBirthdate, 'fodselsdato');
       }
     }
 
