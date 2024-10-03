@@ -14,7 +14,7 @@ interface ComponentUtilsContextType {
   builderMode: boolean;
   focusHandler: (elementId: string) => () => void;
   blurHandler: (elementId: string) => () => void;
-  reactResolve: () => () => void;
+  reactResolve: () => void;
 }
 
 interface ComponentUtilsProviderProps {
@@ -38,7 +38,7 @@ export const ComponentUtilsProvider = ({ children, ...props }: ComponentUtilsPro
         builderMode: component?.builderMode,
         focusHandler: (elementId: string) => () => focusHandler(component, { elementId, skipEmit: true })(),
         blurHandler: (elementId: string) => () => blurHandler(component, { elementId, skipEmit: true })(),
-        reactResolve: () => component?.reactResolve.bind(component),
+        reactResolve: component?.reactResolve.bind(component),
       }}
     >
       {children}
