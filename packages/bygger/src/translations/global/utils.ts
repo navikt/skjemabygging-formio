@@ -25,10 +25,10 @@ const flattenTextsForEditPanel = (texts: any): Array<any> => {
     .sort((a, b) => a.text.localeCompare(b.text));
 };
 
-const getAllPredefinedOriginalTexts = (skipUpperCasing = false): string[] => {
+const getAllPredefinedOriginalTexts = (): string[] => {
   const { grensesnitt, statiske, validering, common, pdfStatiske } = TEXTS;
   return objectUtils.flattenToArray({ ...grensesnitt, ...statiske, ...validering, ...common, pdfStatiske }, (entry) => {
-    return skipUpperCasing ? entry[1] : entry[1].toUpperCase();
+    return entry[1];
   });
 };
 
@@ -43,7 +43,7 @@ const getTranslationKeysForAllPredefinedTexts = (): string[] => {
 const getCurrentOriginalTextList = (currentTranslation: Array<any>): string[] => {
   return currentTranslation.reduce((originalTextList, translations) => {
     const { originalText } = translations;
-    if (originalText !== '') return [...originalTextList, originalText.toUpperCase()];
+    if (originalText !== '') return [...originalTextList, originalText];
     else return originalTextList;
   }, []);
 };
