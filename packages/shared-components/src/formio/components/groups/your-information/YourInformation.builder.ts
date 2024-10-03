@@ -29,7 +29,7 @@ const yourInformationBuilder = () => {
           ...addressBuilder().schema,
           prefill: true,
           prefillKey: 'sokerAdresser',
-          customConditional: 'show = row.identitet.harDuFodselsnummer === "no"',
+          customConditional: 'show = row.identitet.harDuFodselsnummer === "no" || row.identitet.identitetsnummer',
         },
         {
           label: 'Fra hvilken dato skal denne adressen brukes (dd.mm.åååå)?',
