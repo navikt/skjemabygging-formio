@@ -24,7 +24,7 @@ describe('GlobalTranslationRow', () => {
         updateOriginalText={mockedUpdateOriginalText}
         deleteOneRow={mockedDeleteOneRow}
         currentOriginalTextList={mockedCurrentOriginalTextList}
-        predefinedGlobalOriginalTexts={['FORRIGE', 'NESTE', 'FJERN']}
+        predefinedGlobalOriginalTexts={['forrige', 'neste', 'fjern']}
       />,
     );
   };

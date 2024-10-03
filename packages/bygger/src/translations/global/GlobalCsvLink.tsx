@@ -23,7 +23,7 @@ const GlobalCsvLink = ({ allGlobalTranslations, languageCode }: Props) => {
   const [csvHeaders, setCsvHeaders] = useState<CsvHeader[]>([]);
 
   useEffect(() => {
-    const allPredefinedOriginalTexts = getAllPredefinedOriginalTexts(true);
+    const allPredefinedOriginalTexts = getAllPredefinedOriginalTexts();
     const { data, headers } = transformGlobalTranslationsToCsvData(
       allGlobalTranslations,
       allPredefinedOriginalTexts,

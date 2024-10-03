@@ -58,14 +58,11 @@ const GlobalTranslationRow = ({
             setDuplicatedWarning(false);
           }}
           onBlur={(event) => {
-            if (predefinedGlobalOriginalTexts.indexOf(event.target.value.toUpperCase()) < 0) {
-              if (
-                currentOriginalTextList.filter((originalText) => originalText === event.target.value.toUpperCase())
-                  .length > 1
-              ) {
+            if (predefinedGlobalOriginalTexts.indexOf(event.target.value) < 0) {
+              if (currentOriginalTextList.filter((originalText) => originalText === event.target.value).length > 1) {
                 currentOriginalTextList.pop();
 
-                if (currentOriginalTextList.indexOf(event.target.value.toUpperCase()) >= 0) {
+                if (currentOriginalTextList.indexOf(event.target.value) >= 0) {
                   setDuplicatedWarning(true);
                 }
               }
