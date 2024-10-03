@@ -49,8 +49,8 @@ export default class Identity extends BaseComponent {
     }
   }
 
-  getReadOnly(): boolean {
-    return !!this.component?.prefillKey && this.isSubmissionDigital();
+  getReadOnly() {
+    return this.havePrefill() || super.getReadOnly();
   }
 
   get errors() {
