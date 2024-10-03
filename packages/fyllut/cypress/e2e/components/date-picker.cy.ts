@@ -2,6 +2,7 @@
  * Tests that the datepicker component (react) renders, validates and handles interactions correctly
  */
 import { dateUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { Settings } from 'luxon';
 
 const validateionBefore = (date: string) => `Datoen kan ikke være tidligere enn ${date}`;
 const validationAfter = (date: string) => `Datoen kan ikke være senere ${date}`;
@@ -9,8 +10,9 @@ const validationAfter = (date: string) => `Datoen kan ikke være senere ${date}`
 const EARLIEST_RELATIVE = -10;
 const LATEST_RELATIVE = 5;
 
-const beforeDate = dateUtils.toLocaleDate(dateUtils.addDays(EARLIEST_RELATIVE));
-const afterDate = dateUtils.toLocaleDate(dateUtils.addDays(LATEST_RELATIVE));
+let beforeDate;
+let afterDate;
+const todayOverwrite = new Date(2020, 6, 14);
 
 const allFieldsEneabled = () => {
   cy.findByRole('textbox', { name: 'Tilfeldig dato' }).should('not.be.disabled');
@@ -26,6 +28,14 @@ const allFieldsEneabled = () => {
 
 describe('NavDatepicker', () => {
   beforeEach(() => {
+    // Overwrite native global definition of current date
+    cy.clock(todayOverwrite, ['Date']);
+    // We also have to overwrite luxon's definition of current date
+    Settings.now = () => todayOverwrite.valueOf();
+
+    beforeDate = dateUtils.toLocaleDate(dateUtils.addDays(EARLIEST_RELATIVE));
+    afterDate = dateUtils.toLocaleDate(dateUtils.addDays(LATEST_RELATIVE));
+
     cy.defaultIntercepts();
     cy.visit('/fyllut/navdatepicker/veiledning?sub=paper');
     cy.defaultWaits();
@@ -231,6 +241,42 @@ describe('NavDatepicker', () => {
       cy.clickNextStep();
 
       cy.findAllByText(validationAfter(afterDate)).should('have.length', 2);
+    });
+  });
+
+  describe('Dates with range earlier or later than to day', () => {
+    const LABEL_TODAY = 'Dato med validering av antall dager tilbake eller framover (valgfritt)';
+    const LABEL_PAST = 'Dato med intervall tidligere enn dagens dato (valgfritt)';
+    const LABEL_FUTURE = 'Dato med intervall senere enn dagens dato (valgfritt)';
+
+    it('shows current month if range includes current date', () => {
+      cy.findByRole('textbox', { name: LABEL_TODAY })
+        .parent()
+        .within(() => {
+          cy.findByRole('button', { name: 'Åpne datovelger' }).click();
+        });
+
+      cy.findByRole('grid', { name: 'juli 2020' }).shouldBeVisible();
+    });
+
+    it('shows the end of the range as default month when the range is in the past', () => {
+      cy.findByRole('textbox', { name: LABEL_PAST })
+        .parent()
+        .within(() => {
+          cy.findByRole('button', { name: 'Åpne datovelger' }).click();
+        });
+
+      cy.findByRole('grid', { name: 'april 2012' }).shouldBeVisible();
+    });
+
+    it('shows the beginning of the range as default month when the range is in the future', () => {
+      cy.findByRole('textbox', { name: LABEL_FUTURE })
+        .parent()
+        .within(() => {
+          cy.findByRole('button', { name: 'Åpne datovelger' }).click();
+        });
+
+      cy.findByRole('grid', { name: 'september 2028' }).shouldBeVisible();
     });
   });
 

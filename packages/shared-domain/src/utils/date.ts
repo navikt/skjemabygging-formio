@@ -140,6 +140,21 @@ const getDatesInRange = (start: string, end: string) => {
   return dates;
 };
 
+const getDefaultDateFromRange = (fromDate?: string, toDate?: string): Date | undefined => {
+  const now = DateTime.now().toString();
+  if (!fromDate || !toDate || isBeforeDate(toDate, fromDate)) {
+    return undefined;
+  }
+
+  if (isBeforeDate(toDate, now)) {
+    return toJSDate(toDate);
+  }
+  if (isAfterDate(fromDate, now)) {
+    return toJSDate(fromDate);
+  }
+  return toJSDate(now);
+};
+
 export const generateWeeklyPeriods = (date?: string, numberOfPeriods: number = 1): WeeklyPeriod[] => {
   if (!date) return [];
 
@@ -207,6 +222,7 @@ const dateUtils = {
   toJSDate,
   toWeekdayAndDate,
   getDatesInRange,
+  getDefaultDateFromRange,
   toLocaleDateLongMonth,
   generateWeeklyPeriods,
   addDays,
