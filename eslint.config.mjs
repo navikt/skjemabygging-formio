@@ -14,7 +14,7 @@ import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
   {
-    ignores: ['**/src/template/**', '**/dist/**', '**/build/**', '**/node_modules/**'],
+    ignores: ['**/src/template/**', '**/dist/**', '**/build/**', '**/node_modules/**', 'mocks/'],
   },
   prettierConfig,
   eslint.configs.recommended,
