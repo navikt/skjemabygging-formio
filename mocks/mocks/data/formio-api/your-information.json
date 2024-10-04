@@ -80,7 +80,7 @@
               "type": "firstName",
               "prefill": true,
               "prefillKey": "sokerFornavn",
-              "navId": "e4wqvwp"
+              "navId": "e20c4z8"
             },
             {
               "input": true,
@@ -93,7 +93,7 @@
               "type": "surname",
               "prefill": true,
               "prefillKey": "sokerEtternavn",
-              "navId": "e38xvnb"
+              "navId": "ebza2op"
             },
             {
               "input": true,
@@ -103,7 +103,7 @@
               "type": "identity",
               "prefill": true,
               "prefillKey": "sokerIdentifikasjonsnummer",
-              "navId": "eorvol8"
+              "navId": "err45us"
             },
             {
               "input": true,
@@ -116,8 +116,8 @@
               "type": "navAddress",
               "prefill": true,
               "prefillKey": "sokerAdresser",
-              "customConditional": "show = row.identitet.harDuFodselsnummer === \"no\" || row.identitet.identitetsnummer",
-              "navId": "eigrwru"
+              "customConditional": "show = row.identitet.harDuFodselsnummer === \"no\" || (row.identitet.identitetsnummer && !row.identitet.harDuFodselsnummer)",
+              "navId": "e1v5i0l"
             },
             {
               "label": "Fra hvilken dato skal denne adressen brukes (dd.mm.åååå)?",
@@ -128,8 +128,8 @@
                 "required": true,
                 "custom": "valid = instance.validateDatePickerV2(input, data, component, row);"
               },
-              "customConditional": "show = row.identitet.harDuFodselsnummer === \"no\"",
-              "navId": "ebi5hyn",
+              "customConditional": "show = row.adresse.borDuINorge === \"no\" || (row.adresse.borDuINorge === \"yes\" && row.adresse.vegadresseEllerPostboksadresse)",
+              "navId": "ezjx5b",
               "input": true,
               "tableView": false
             },
@@ -144,8 +144,8 @@
                 "required": true,
                 "custom": "valid = instance.validateDatePickerV2(input, data, component, row);"
               },
-              "customConditional": "show = row.identitet.harDuFodselsnummer === \"no\"",
-              "navId": "e1oner8",
+              "customConditional": "show = row.adresse.borDuINorge === \"no\" || (row.adresse.borDuINorge === \"yes\" && row.adresse.vegadresseEllerPostboksadresse)",
+              "navId": "e2jr769",
               "input": true,
               "tableView": false
             },
@@ -154,13 +154,23 @@
               "content": "<p>NAV sender svar på søknad og annen kommunikasjon til din folkeregistrerte adresse. Du kan <a href=\"https://www.skatteetaten.no/person/folkeregister/flytte/endre-postadresse/\" target=\"_blank\" rel=\"noopener noreferrer\"> sjekke og endre din folkeregistrerte adresse på skatteetatens nettsider (åpnes i ny fane)</a>.</p>",
               "key": "alertstripe",
               "type": "alertstripe",
-              "customConditional": "show = row.identitet.harDuFodselsnummer === \"yes\" || row.identitet.identitetsnummer",
-              "navId": "e97vm1mr",
+              "customConditional": "show = row.identitet.harDuFodselsnummer === \"yes\"",
+              "navId": "eyx52a",
+              "input": false,
+              "tableView": false
+            },
+            {
+              "label": "Alertstripe",
+              "content": "<p>Adressen er hentet fra Folkeregisteret. Du kan <a href=\"https://www.skatteetaten.no/person/folkeregister/flytte/endre-postadresse/\" target=\"_blank\" rel=\"noopener noreferrer\"> endre adressen på Skatteetatens nettsider (åpnes i ny fane)</a>.</p>",
+              "key": "alertstripePrefill",
+              "type": "alertstripe",
+              "customConditional": "show = row.identitet.identitetsnummer && !row.identitet.harDuFodselsnummer",
+              "navId": "efzxx8p",
               "input": false,
               "tableView": false
             }
           ],
-          "navId": "enpz2a5",
+          "navId": "ebiuatr9",
           "input": true,
           "tableView": false
         }
@@ -600,7 +610,7 @@
     }
   ],
   "properties": {
-    "skjemanummer": "test-prefill-data",
+    "skjemanummer": "test-your-information",
     "tema": "ERS",
     "innsending": "PAPIR_OG_DIGITAL",
     "ettersending": "PAPIR_OG_DIGITAL",
