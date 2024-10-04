@@ -29,7 +29,8 @@ const yourInformationBuilder = () => {
           ...addressBuilder().schema,
           prefill: true,
           prefillKey: 'sokerAdresser',
-          customConditional: 'show = row.identitet.harDuFodselsnummer === "no" || row.identitet.identitetsnummer',
+          customConditional:
+            'show = row.identitet.harDuFodselsnummer === "no" || (row.identitet.identitetsnummer && !row.identitet.harDuFodselsnummer)',
         },
         {
           label: 'Fra hvilken dato skal denne adressen brukes (dd.mm.åååå)?',
@@ -40,7 +41,8 @@ const yourInformationBuilder = () => {
             required: true,
             custom: 'valid = instance.validateDatePickerV2(input, data, component, row);',
           },
-          customConditional: 'show = row.identitet.harDuFodselsnummer === "no"',
+          customConditional:
+            'show = row.adresse.borDuINorge === "no" || (row.adresse.borDuINorge === "yes" && row.adresse.vegadresseEllerPostboksadresse)',
         },
         {
           label: 'Til hvilken dato skal denne adressen brukes (dd.mm.åååå)?',
@@ -54,7 +56,8 @@ const yourInformationBuilder = () => {
             required: true,
             custom: 'valid = instance.validateDatePickerV2(input, data, component, row);',
           },
-          customConditional: 'show = row.identitet.harDuFodselsnummer === "no"',
+          customConditional:
+            'show = row.adresse.borDuINorge === "no" || (row.adresse.borDuINorge === "yes" && row.adresse.vegadresseEllerPostboksadresse)',
         },
         {
           label: 'Alertstripe',
@@ -63,7 +66,16 @@ const yourInformationBuilder = () => {
           key: 'alertstripe',
           type: 'alertstripe',
           alerttype: 'info',
-          customConditional: 'show = row.identitet.harDuFodselsnummer === "yes" || row.identitet.identitetsnummer',
+          customConditional: 'show = row.identitet.harDuFodselsnummer === "yes"',
+        },
+        {
+          label: 'Alertstripe',
+          content:
+            '<p>Adressen er hentet fra Folkeregisteret. Du kan <a href="https://www.skatteetaten.no/person/folkeregister/flytte/endre-postadresse/" target="_blank" rel="noopener noreferrer"> endre adressen på Skatteetatens nettsider (åpnes i ny fane)</a>.</p>',
+          key: 'alertstripe',
+          type: 'alertstripe',
+          alerttype: 'info',
+          customConditional: 'show = row.identitet.identitetsnummer && !row.identitet.harDuFodselsnummer',
         },
       ],
     },
