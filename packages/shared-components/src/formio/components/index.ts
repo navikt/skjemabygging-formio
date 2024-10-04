@@ -26,6 +26,7 @@ import AccountNumber from './extensions/account-number/AccountNumber';
 import CountrySelect from './extensions/country-select/CountrySelect';
 import CurrencySelect from './extensions/currency-select/CurrencySelect';
 import Currency from './extensions/currency/Currency';
+import DeclarationCheckbox from './extensions/declaration-checkbox/DeclarationCheckbox';
 import Email from './extensions/email/Email';
 import IBAN from './extensions/iban/IBAN';
 import NationalIdentityNumber from './extensions/national-identity-number/NationalIdentityNumber';
@@ -72,5 +73,6 @@ const customComponents = {
   monthPicker: MonthPicker,
   password: Password,
   year: Year,
+  declarationCheckbox: DeclarationCheckbox,
 };
 export default customComponents;

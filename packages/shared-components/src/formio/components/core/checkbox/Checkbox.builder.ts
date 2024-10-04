@@ -6,11 +6,10 @@ const checkboxBuilder = () => {
     title: schema.label,
     schema: {
       ...schema,
+      validate: {
+        required: true,
+      },
     },
-    validateOn: 'blur',
-    validate: {
-      required: true,
-    }
   };
 };
 
