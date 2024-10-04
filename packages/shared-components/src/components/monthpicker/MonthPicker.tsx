@@ -33,7 +33,9 @@ const MonthPicker = ({
     toDate: dateUtils.endOfYear(`${maxYear ?? '2100'}`)?.toJSDate(),
     allowTwoDigitYear: false,
     defaultYear:
-      value && dateUtils.isValidMonthSubmission(value) ? dateUtils.toJSDateFromMonthSubmission(value) : new Date(),
+      value && dateUtils.isValidMonthSubmission(value)
+        ? dateUtils.toJSDateFromMonthSubmission(value)
+        : dateUtils.getDefaultDateFromRange(minYear?.toString(), maxYear?.toString()),
     onMonthChange(date) {
       onChange(dateUtils.toSubmissionDateMonth(date?.toISOString()));
     },
@@ -44,7 +46,7 @@ const MonthPicker = ({
       <AkselMonthPicker.Input
         label={label}
         {...inputProps}
-        value={dateUtils.isValidMonthSubmission(value) ? dateUtils.toLongMonthFormat(value, locale) : value ?? ''}
+        value={dateUtils.isValidMonthSubmission(value) ? dateUtils.toLongMonthFormat(value, locale) : (value ?? '')}
         error={error}
         description={description}
         ref={inputRef}
