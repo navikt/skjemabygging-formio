@@ -26,16 +26,17 @@ describe('Your information', () => {
         cy.clickStart();
         cy.wait('@getPrefillData');
         cy.wait('@createMellomlagring');
+        cy.findByRole('heading', { name: 'Dine opplysninger' }).should('exist');
       });
 
       it('Should prefill data for new application on the first page (name)', () => {
-        cy.findByRole('heading', { name: 'Dine opplysninger' }).should('exist');
         cy.findByRole('textbox', { name: 'Fornavn' }).should('have.value', 'Ola');
         cy.findByRole('textbox', { name: 'Etternavn' }).should('have.value', 'Nordmann');
         cy.findByRole('textbox', { name: 'Fødselsnummer eller d-nummer' }).should('have.value', '08842748500');
         cy.findByRole('textbox', { name: 'Vegadresse' }).should('have.value', 'Testveien 1C');
         cy.findByRole('textbox', { name: 'Postnummer' }).should('have.value', '1234');
         cy.findByRole('textbox', { name: 'Poststed' }).should('have.value', 'Plassen');
+        cy.get('.navds-alert').should('have.length', 1);
       });
 
       it('Should prefill data for new application on the second page (name)', () => {
@@ -56,10 +57,15 @@ describe('Your information', () => {
         cy.wait('@getPrefillData');
       });
 
-      it('Should prefill data for existing application on the first page (name)', () => {
+      it('Should prefill data for existing application on the first page', () => {
         cy.findByRole('heading', { name: 'Dine opplysninger' }).should('exist');
         cy.findByRole('textbox', { name: 'Fornavn' }).should('have.value', 'Ola');
         cy.findByRole('textbox', { name: 'Etternavn' }).should('have.value', 'Nordmann');
+        cy.findByRole('textbox', { name: 'Fødselsnummer eller d-nummer' }).should('have.value', '08842748500');
+        cy.findByRole('textbox', { name: 'Vegadresse' }).should('have.value', 'Testveien 1C');
+        cy.findByRole('textbox', { name: 'Postnummer' }).should('have.value', '1234');
+        cy.findByRole('textbox', { name: 'Poststed' }).should('have.value', 'Plassen');
+        cy.get('.navds-alert').should('have.length', 1);
 
         // Should not use existing data from innsending-api (database)
         cy.findByRole('textbox', { name: 'Fornavn' }).should('not.have.value', 'John');
