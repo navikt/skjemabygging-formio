@@ -72,7 +72,7 @@ const yourInformationBuilder = () => {
           label: 'Alertstripe',
           content:
             '<p>Adressen er hentet fra Folkeregisteret. Du kan <a href="https://www.skatteetaten.no/person/folkeregister/flytte/endre-postadresse/" target="_blank" rel="noopener noreferrer"> endre adressen på Skatteetatens nettsider (åpnes i ny fane)</a>.</p>',
-          key: 'alertstripe',
+          key: 'alertstripePrefill',
           type: 'alertstripe',
           alerttype: 'info',
           customConditional: 'show = row.identitet.identitetsnummer && !row.identitet.harDuFodselsnummer',

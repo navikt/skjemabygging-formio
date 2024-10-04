@@ -187,7 +187,7 @@ class Address extends BaseComponent {
           labelIsHidden={this.labelIsHidden()}
         />
         {this.showMissingAddressWarning() && (
-          <Alert variant="info" className="mb-4">
+          <Alert variant="warning" className="mb-4">
             Vi fant ikke noen adresse på denne testbrukeren. Legg inn adresse på brukeren i Dolly, eller bruk en annen
             testbruker som har registrert adresse. (denne meldingen vises ikke i produksjon).
           </Alert>

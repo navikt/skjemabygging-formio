@@ -49,7 +49,6 @@ const Address = ({ addressType, address, readOnly, required, className, onChange
   };
 
   const showAddress = () => {
-    console.log(addressType, address?.borDuINorge === 'no', !!address?.vegadresseEllerPostboksadresse);
     return addressType || address?.borDuINorge === 'no' || !!address?.vegadresseEllerPostboksadresse;
   };
 
