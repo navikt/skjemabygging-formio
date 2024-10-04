@@ -1,4 +1,4 @@
-import { Alert, Label as NavLabel } from '@navikt/ds-react';
+import { Alert } from '@navikt/ds-react';
 import {
   Address as AddressDomain,
   AddressType,
@@ -8,7 +8,7 @@ import {
 import NavAddress, { AddressInput, AddressInputType } from '../../../../components/address/Address';
 import { ComponentUtilsProvider } from '../../../../context/component/componentUtilsContext';
 import BaseComponent from '../../base/BaseComponent';
-import Label from '../../base/components/Label';
+import ComponentLabel from '../../base/components/ComponentLabel';
 import addressBuilder from './Address.builder';
 import addressForm from './Address.form';
 
@@ -149,13 +149,20 @@ class Address extends BaseComponent {
         this.validateRequired(address, 'land', TEXTS.statiske.address.country);
       }
 
+      if (this.showAddressTypeChoice()) {
+        this.validateRequired(address, 'borDuINorge', TEXTS.statiske.address.livesInNorway);
+        if (address.borDuINorge) {
+          this.validateRequired(address, 'vegadresseEllerPostboksadresse', TEXTS.statiske.address.yourContactAddress);
+        }
+      }
+
       this.rerender();
     }
 
     return this.componentErrors.length === 0;
   }
 
-  validateRequired(address: AddressInput, addressType: AddressInputType, label) {
+  validateRequired(address: AddressInput, addressType: AddressInputType, label: string) {
     if (!address[addressType]) {
       const elementId = `address:${addressType}`;
       super.addError(this.translate('required', { field: label }), elementId);
@@ -174,11 +181,11 @@ class Address extends BaseComponent {
   renderReact(element) {
     element.render(
       <ComponentUtilsProvider component={this}>
-        {!this.labelIsHidden() && (
-          <NavLabel>
-            <Label component={this.component} editFields={this.getEditFields()} />
-          </NavLabel>
-        )}
+        <ComponentLabel
+          component={this.component}
+          editFields={this.getEditFields()}
+          labelIsHidden={this.labelIsHidden()}
+        />
         {this.showMissingAddressWarning() && (
           <Alert variant="info" className="mb-4">
             Vi fant ikke noen adresse på denne testbrukeren. Legg inn adresse på brukeren i Dolly, eller bruk en annen

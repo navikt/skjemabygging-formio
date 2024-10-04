@@ -165,6 +165,10 @@ class BaseComponent extends FormioReactComponent {
     return this.getAppConfig()?.submissionMethod === 'digital';
   }
 
+  havePrefill(): boolean {
+    return (this.isSubmissionDigital() && this.component?.prefillKey && !!this.component?.prefillValue) ?? false;
+  }
+
   // elementId is used to focus to the correct element when clicking on error summary
   // Message is the error message that is shown in the error summary
   addError(message: string, elementId?: string) {

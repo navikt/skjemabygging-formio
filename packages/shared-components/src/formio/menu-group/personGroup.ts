@@ -6,6 +6,7 @@ import firstNameBuilder from '../components/extensions/first-name/FirstName.buil
 import nationalIdentityNumberBuilder from '../components/extensions/national-identity-number/NationalIdentityNumber.builder';
 import phoneNumberBuilder from '../components/extensions/phone-number/PhoneNumber.builder';
 import surnameBuilder from '../components/extensions/surname/Surname.builder';
+import yourInformationBuilder from '../components/groups/your-information/YourInformation.builder';
 import norskPostboksadresseSchema from '../form-builder-options/schemas/norskPostboksadresseSchema';
 import norskVegadresseSchema from '../form-builder-options/schemas/norskVegadresseSchema';
 import postnummerSchema from '../form-builder-options/schemas/postnummerSchema';
@@ -16,6 +17,7 @@ import vegadresseSchema from '../form-builder-options/schemas/vegadresseSchema';
 const personGroup = {
   title: 'Person',
   components: {
+    yourInformation: yourInformationBuilder(),
     fnrfield: nationalIdentityNumberBuilder(),
     firstName: firstNameBuilder(),
     surname: surnameBuilder(),

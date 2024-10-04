@@ -32,14 +32,14 @@ class TextField extends BaseComponent {
   }
 
   initPrefill() {
-    if (this.isSubmissionDigital() && this.component?.prefillKey && this.component?.prefillValue) {
+    if (this.havePrefill()) {
       // Call parent setValue so ignore prefillKey block on local setValue.
       super.setValue(this.component?.prefillValue);
     }
   }
 
   getReadOnly() {
-    return (!!this.component?.prefillKey && this.isSubmissionDigital()) || super.getReadOnly();
+    return this.havePrefill() || super.getReadOnly();
   }
 
   getValue() {
@@ -59,6 +59,10 @@ class TextField extends BaseComponent {
   }
 
   checkComponentValidity(data, dirty, row, options = {}) {
+    if (this.getReadOnly()) {
+      return true;
+    }
+
     const validity = super.checkComponentValidity(data, dirty, row, options);
 
     if (validity) {
