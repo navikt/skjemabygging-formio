@@ -9,9 +9,17 @@ describe('Basic form', () => {
     cy.defaultInterceptsMellomlagring();
   });
 
+  const clickNext = (submissionMethod: 'paper' | 'digital') => {
+    if (submissionMethod === 'paper') {
+      cy.clickNextStep();
+    } else {
+      cy.clickSaveAndContinue();
+    }
+  };
+
   const fillInForm = (expectVedleggspanel: boolean, submissionMethod: 'paper' | 'digital') => {
     // Steg 1 -> Steg 2
-    submissionMethod === 'paper' ? cy.clickNextStep() : cy.clickSaveAndContinue();
+    clickNext(submissionMethod);
 
     cy.findByRole('combobox', { name: 'Tittel' }).should('exist').click();
     cy.findByText('Fru').should('exist').click();
@@ -53,14 +61,14 @@ describe('Basic form', () => {
     }
 
     // Step 3 -> Oppsummering
-    submissionMethod === 'paper' ? cy.clickNextStep() : cy.clickSaveAndContinue();
+    clickNext(submissionMethod);
     cy.findByRoleWhenAttached('heading', { level: 2, name: 'Oppsummering' }).should('exist');
 
     // Gå tilbake til skjema fra oppsummering, og naviger til oppsummering på nytt
     // for å verifisere at ingen valideringsfeil oppstår grunnet manglende verdier.
     cy.findByRoleWhenAttached('link', { name: TEXTS.grensesnitt.summaryPage.editAnswers }).should('exist').click();
 
-    submissionMethod === 'paper' ? cy.clickNextStep() : cy.clickSaveAndContinue();
+    clickNext(submissionMethod);
 
     cy.findByRoleWhenAttached('heading', { level: 2, name: 'Dine opplysninger' }).should('exist');
     cy.findByRoleWhenAttached('textbox', { name: 'Din fødselsdato (dd.mm.åååå)' }).should('exist');
@@ -69,7 +77,7 @@ describe('Basic form', () => {
       cy.findByRoleWhenAttached('heading', { level: 2, name: 'Vedlegg' }).should('exist');
     }
 
-    submissionMethod === 'paper' ? cy.clickNextStep() : cy.clickSaveAndContinue();
+    clickNext(submissionMethod);
 
     // Oppsummering
     cy.findByRoleWhenAttached('heading', { level: 2, name: 'Oppsummering' }).should('exist');
@@ -121,7 +129,7 @@ describe('Basic form', () => {
         cy.clickNextStep();
         cy.clickNextStep();
         cy.findByRole('heading', { level: 2, name: 'Dine opplysninger' });
-        cy.findByRole('region', { name: TEXTS.validering.error })
+        cy.get('[data-cy=error-summary]')
           .should('exist')
           .within(() => {
             cy.findAllByRole('link', { name: /Du må fylle ut:/ }).should('have.length', 5);

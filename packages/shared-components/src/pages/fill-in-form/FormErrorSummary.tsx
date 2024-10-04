@@ -17,7 +17,7 @@ const FormErrorSummary = forwardRef<HTMLDivElement, FormErrorSummaryProps>(
       return <></>;
     }
     return (
-      <ErrorSummary heading={heading} ref={ref}>
+      <ErrorSummary heading={heading} ref={ref} data-cy="error-summary">
         {errors.map((error) => (
           <ErrorSummary.Item
             href="#"

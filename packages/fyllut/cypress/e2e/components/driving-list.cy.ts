@@ -77,7 +77,7 @@ describe('DrivingList', () => {
 
       // Should fill out form
       cy.clickNextStep();
-      cy.findByRole('region', { name: TEXTS.validering.error })
+      cy.get('[data-cy=error-summary]')
         .should('exist')
         .within(() => {
           cy.findByRole('link', { name: `Du må fylle ut: ${DATE_PICKER_LABEL}` })
@@ -94,7 +94,7 @@ describe('DrivingList', () => {
       cy.findByRole('textbox', { name: PARKING_EXPENSES_LABEL }).clear();
       cy.findByRole('textbox', { name: PARKING_EXPENSES_LABEL }).type('text');
       cy.clickNextStep();
-      cy.findByRole('region', { name: TEXTS.validering.error })
+      cy.get('[data-cy=error-summary]')
         .should('exist')
         .within(() => {
           cy.findByRole('link', { name: 'Parkeringsutgiftene for 15.05.2023 må være et gyldig beløp' })
@@ -103,7 +103,7 @@ describe('DrivingList', () => {
         });
 
       cy.findByRole('textbox', { name: PARKING_EXPENSES_LABEL }).should('have.focus').type('{selectall}78');
-      cy.findByRole('region', { name: TEXTS.validering.error }).should('not.exist');
+      cy.get('[data-cy=error-summary]').should('not.exist');
 
       // Parking expenses should not show even with value over 100
       cy.findByRole('textbox', { name: PARKING_EXPENSES_LABEL }).should('exist').type('101');
@@ -156,7 +156,7 @@ describe('DrivingList', () => {
 
           cy.findByRole('heading', { name: 'Arbeidstrening' }).should('exist');
           cy.findByText('Periode: 01. januar 2024 - 31. august 2024').should('exist');
-          cy.findAllByText('Dagsats for parkeringsavgift: 67 kr').eq(0).should('exist').get;
+          cy.findAllByText('Dagsats for parkeringsavgift: 67 kr').eq(0).should('exist');
 
           cy.findByRole('heading', { name: 'Avklaring' }).should('exist');
           cy.findByText('Periode: 01. februar 2024 - 31. mars 2024').should('exist');
@@ -262,7 +262,7 @@ describe('DrivingList', () => {
       cy.wait('@getActivities');
 
       cy.clickSaveAndContinue();
-      cy.findByRole('region', { name: TEXTS.validering.error })
+      cy.get('[data-cy=error-summary]')
         .should('exist')
         .within(() => {
           cy.findByRole('link', { name: `Du må fylle ut: ${ACTIVITIES_LABEL}` })
@@ -307,7 +307,7 @@ describe('DrivingList', () => {
       });
 
       cy.clickSaveAndContinue();
-      cy.findByRole('region', { name: TEXTS.validering.error })
+      cy.get('[data-cy=error-summary]')
         .should('exist')
         .within(() => {
           cy.findByRole('link', { name: `Du må fylle ut: ${ACTIVITIES_LABEL}` }).should('exist');

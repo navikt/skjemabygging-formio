@@ -85,7 +85,7 @@ describe('Focus handling', () => {
       cy.visit('/fyllut/datagridconditional/levering?sub=paper');
       cy.defaultWaits();
       cy.clickNextStep();
-      cy.findByRole('region', { name: TEXTS.validering.error }).should('exist').should('have.focus');
+      cy.get('[data-cy=error-summary]').should('exist').should('have.focus');
     });
 
     it('puts focus on correct component when clicking in error summary', () => {
@@ -112,7 +112,7 @@ describe('Focus handling', () => {
           cy.get('li').should('have.length', 2);
         });
 
-      cy.findByRole('region', { name: TEXTS.validering.error })
+      cy.get('[data-cy=error-summary]')
         .should('exist')
         .within(() => {
           cy.findByRole('link', { name: 'Du må fylle ut: Hvilken type bolig bor du i?' }).should('exist').click();
@@ -126,14 +126,14 @@ describe('Focus handling', () => {
           cy.findByLabelText('Rekkehus').click();
         });
 
-      cy.findByRole('region', { name: TEXTS.validering.error })
+      cy.get('[data-cy=error-summary]')
         .should('exist')
         .within(() => {
           cy.findByRole('link', { name: 'Du må fylle ut: Mottakers fornavn' }).should('exist').click();
         });
       cy.findByRole('textbox', { name: 'Mottakers fornavn' }).should('have.focus').type('Max');
 
-      cy.findByRole('region', { name: TEXTS.validering.error }).should('not.exist');
+      cy.get('[data-cy=error-summary]').should('not.exist');
       cy.clickNextStep();
 
       cy.findByRole('heading', { name: 'Vedlegg' }).should('exist');
