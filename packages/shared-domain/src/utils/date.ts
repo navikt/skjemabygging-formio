@@ -238,6 +238,7 @@ const dateUtils = {
   isValidMonthSubmission,
   toJSDateFromMonthSubmission,
   findUsedInputFormat,
+  inputFormat,
 };
 
 export default dateUtils;
