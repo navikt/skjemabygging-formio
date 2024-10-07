@@ -90,7 +90,7 @@ describe('Attachment', () => {
     cy.get('[data-cy=error-summary]')
       .should('exist')
       .within(() => {
-        cy.findByRole('heading').should('have.focus', { name: TEXTS.validering.error });
+        cy.findByRole('heading', { name: TEXTS.validering.error }).should('have.focus');
         cy.get('li').should('have.length', 2);
         cy.findByRole('link', { name: `Du må fylle ut: ${TITLE.oldAttachment}` })
           .should('exist')
