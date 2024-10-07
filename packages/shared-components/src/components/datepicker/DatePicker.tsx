@@ -42,7 +42,7 @@ const DatePicker = ({
     required: required,
     toDate: toDate ? dateUtils.toJSDate(toDate) : undefined,
     fromDate: fromDate ? dateUtils.toJSDate(fromDate) : undefined,
-    defaultMonth: defaultMonth ? dateUtils.toJSDate(defaultMonth) : undefined,
+    defaultMonth: defaultMonth ? dateUtils.toJSDate(defaultMonth) : dateUtils.getDefaultDateFromRange(fromDate, toDate),
     allowTwoDigitYear: false,
   } as UseDatepickerOptions);
 

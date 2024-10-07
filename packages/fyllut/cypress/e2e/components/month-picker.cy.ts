@@ -104,6 +104,21 @@ describe('Month picker', () => {
 
       cy.findByRole('heading', { name: 'Vedlegg' }).should('exist');
     });
+
+    it('lets you pick year from a select, if the monthpicker has an allowed range', () => {
+      cy.findByRole('textbox', { name: 'Relative monthPicker (with today as base) (valgfritt)' })
+        .parent()
+        .within(() => cy.findByRole('button', { name: 'Åpne månedsvelger' }).click());
+      cy.findByRole('combobox', { name: 'velg år' }).shouldBeVisible();
+      cy.findByRole('combobox', { name: 'velg år' }).should('have.value', '2024');
+    });
+
+    it('opens dialog on a year inside the allowed range', () => {
+      cy.findByRole('textbox', { name: 'MonthPicker with range in the past (valgfritt)' })
+        .parent()
+        .within(() => cy.findByRole('button', { name: 'Åpne månedsvelger' }).click());
+      cy.findByRole('combobox', { name: 'velg år' }).should('have.value', '2003');
+    });
   });
 
   describe('Digital', () => {

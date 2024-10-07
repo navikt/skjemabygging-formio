@@ -1,4 +1,5 @@
 import { DateTime } from 'luxon';
+import { afterAll, beforeAll, beforeEach } from 'vitest';
 import dateUtils, { generateWeeklyPeriods, getIso8601String } from './date';
 
 describe('date.ts', () => {
@@ -128,6 +129,118 @@ describe('date.ts', () => {
 
       it('should return false for missing date', () => {
         expect(dateUtils.isValidMonthSubmission()).toBe(false);
+      });
+    });
+
+    describe('getDefaultDateFromRange', () => {
+      let now: DateTime;
+      let lastYearDate: DateTime;
+      let nextYearDate: DateTime;
+
+      beforeAll(() => {
+        vi.useFakeTimers();
+      });
+
+      afterAll(() => {
+        vi.useRealTimers();
+      });
+
+      beforeEach(() => {
+        now = DateTime.now();
+        lastYearDate = now.minus({ year: 1, month: 2 });
+        nextYearDate = now.plus({ year: 1, month: 2 });
+      });
+
+      it('returns undefined if range is invalid', () => {
+        expect(dateUtils.getDefaultDateFromRange(nextYearDate.toString(), lastYearDate.toString())).toBeUndefined();
+        expect(dateUtils.getDefaultDateFromRange(lastYearDate.toString(), undefined)).toBeUndefined();
+        expect(dateUtils.getDefaultDateFromRange(undefined, nextYearDate.toString())).toBeUndefined();
+      });
+
+      describe('When inputs are dateStrings', () => {
+        it('returns current date if it is within the range', () => {
+          expect(dateUtils.getDefaultDateFromRange(lastYearDate.toString(), nextYearDate.toString())).toEqual(
+            now.toJSDate(),
+          );
+        });
+
+        it('returns toDate as JSDate if the range is in the past', () => {
+          const expected = lastYearDate.toJSDate();
+          const actual = dateUtils.getDefaultDateFromRange(
+            lastYearDate.minus({ year: 10 }).toString(),
+            lastYearDate.toString(),
+          );
+          expect(actual?.valueOf()).not.toBeNaN();
+          expect(actual).toEqual(expected);
+        });
+
+        it('returns fromDate as JSDate if the range is in the future', () => {
+          const expected = nextYearDate.toJSDate();
+          const actual = dateUtils.getDefaultDateFromRange(
+            nextYearDate.toString(),
+            nextYearDate.plus({ year: 10 }).toString(),
+          );
+          expect(actual?.valueOf()).not.toBeNaN();
+          expect(actual).toEqual(expected);
+        });
+      });
+
+      describe('With year as input', () => {
+        let lastYear: number;
+        let nextYear: number;
+
+        beforeEach(() => {
+          lastYear = lastYearDate.year;
+          nextYear = nextYearDate.year;
+        });
+
+        it('returns current date if it is within the range', () => {
+          expect(dateUtils.getDefaultDateFromRange(lastYear.toString(), nextYear.toString())).toEqual(now.toJSDate());
+        });
+
+        it('return value has same year as toDate, if the range is in the past', () => {
+          expect(
+            dateUtils.getDefaultDateFromRange((lastYear - 10).toString(), lastYear.toString())?.getFullYear(),
+          ).toEqual(lastYear);
+        });
+
+        it('return value has same year as fromDate, if the range is in the future', () => {
+          expect(
+            dateUtils.getDefaultDateFromRange(nextYear.toString(), (nextYear + 10).toString())?.getFullYear(),
+          ).toEqual(nextYear);
+        });
+      });
+
+      describe('With yyyy-MM as input', () => {
+        let lastYearMonthInput: string;
+        let inThePastYearMonthInput: string;
+        let nextYearMonthInput: string;
+        let inTheFutureYearMonthInput: string;
+
+        beforeEach(() => {
+          lastYearMonthInput = `${lastYearDate.year}-04`;
+          inThePastYearMonthInput = `${lastYearDate.minus({ year: 10 }).year}-04`;
+          nextYearMonthInput = `${nextYearDate.year}-07`;
+          inTheFutureYearMonthInput = `${nextYearDate.plus({ year: 10 }).year}-07`;
+        });
+
+        it('returns current date if it is within the range', () => {
+          expect(dateUtils.getDefaultDateFromRange(lastYearMonthInput, nextYearMonthInput)).toEqual(now.toJSDate());
+        });
+
+        it('return value has same month and year as toDate, if the range is in the past', () => {
+          const expected = DateTime.fromISO(lastYearMonthInput).toJSDate();
+          const actual = dateUtils.getDefaultDateFromRange(inThePastYearMonthInput, lastYearMonthInput);
+          expect(actual?.valueOf()).not.toBeNaN();
+          expect(actual).toEqual(expected);
+        });
+
+        it('return value has same month and year as fromDate, if the range is in the future', () => {
+          const expected = DateTime.fromISO(nextYearMonthInput).toJSDate();
+          const actual = dateUtils.getDefaultDateFromRange(nextYearMonthInput, inTheFutureYearMonthInput);
+          expect(actual?.valueOf()).not.toBeNaN();
+          expect(actual).toEqual(expected);
+        });
       });
     });
 
