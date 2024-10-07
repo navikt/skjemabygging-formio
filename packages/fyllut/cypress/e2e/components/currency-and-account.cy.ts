@@ -1,7 +1,6 @@
 /*
  * Tests that "penger og konto" component works as expected
  */
-import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 
 describe('Components', () => {
   describe('Penger og konto', () => {
@@ -16,7 +15,7 @@ describe('Components', () => {
       cy.findByRole('textbox', { name: 'Kontonummer' }).should('exist').type('12345678980');
       cy.clickNextStep();
 
-      cy.findByRole('region', { name: TEXTS.validering.error })
+      cy.get('[data-cy=error-summary]')
         .should('exist')
         .within(() => {
           cy.findByRole('link', { name: 'Dette er ikke et gyldig kontonummer' }).should('exist');
@@ -31,7 +30,7 @@ describe('Components', () => {
       cy.findByRole('textbox', { name: 'IBAN' }).should('exist').type('AB04RABO8424598490');
       cy.clickNextStep();
 
-      cy.findByRole('region', { name: TEXTS.validering.error })
+      cy.get('[data-cy=error-summary]')
         .should('exist')
         .within(() => {
           cy.findByRole('link', {
@@ -44,7 +43,7 @@ describe('Components', () => {
       cy.findByRole('textbox', { name: 'IBAN' }).should('exist').type('NL04RABO84245984901');
       cy.clickNextStep();
 
-      cy.findByRole('region', { name: TEXTS.validering.error })
+      cy.get('[data-cy=error-summary]')
         .should('exist')
         .within(() => {
           cy.findByRole('link', {
@@ -57,7 +56,7 @@ describe('Components', () => {
       cy.findByRole('textbox', { name: 'IBAN' }).should('exist').type('NL04RABO8424598491');
       cy.clickNextStep();
 
-      cy.findByRole('region', { name: TEXTS.validering.error })
+      cy.get('[data-cy=error-summary]')
         .should('exist')
         .within(() => {
           cy.findByRole('link', {

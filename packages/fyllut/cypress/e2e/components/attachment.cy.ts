@@ -87,10 +87,10 @@ describe('Attachment', () => {
   it('is focusable', () => {
     cy.clickNextStep();
 
-    cy.findByRole('region', { name: TEXTS.validering.error })
+    cy.get('[data-cy=error-summary]')
       .should('exist')
-      .should('have.focus')
       .within(() => {
+        cy.findByRole('heading', { name: TEXTS.validering.error }).should('have.focus');
         cy.get('li').should('have.length', 2);
         cy.findByRole('link', { name: `Du må fylle ut: ${TITLE.oldAttachment}` })
           .should('exist')
@@ -103,7 +103,7 @@ describe('Attachment', () => {
         cy.findByLabelText('Jeg legger det ved denne søknaden (anbefalt)').click();
       });
 
-    cy.findByRole('region', { name: TEXTS.validering.error })
+    cy.get('[data-cy=error-summary]')
       .should('exist')
       .within(() => {
         cy.get('li').should('have.length', 1);
@@ -118,7 +118,7 @@ describe('Attachment', () => {
         cy.findByLabelText(TEXTS.statiske.attachment.leggerVedNaa).click();
       });
 
-    cy.findByRole('region', { name: TEXTS.validering.error }).should('not.exist');
+    cy.get('[data-cy=error-summary]').should('not.exist');
     cy.clickNextStep();
 
     cy.findByRole('heading', { name: 'Oppsummering' }).shouldBeVisible();

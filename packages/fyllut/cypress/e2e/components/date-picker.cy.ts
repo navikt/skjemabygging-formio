@@ -1,7 +1,7 @@
 /*
  * Tests that the datepicker component (react) renders, validates and handles interactions correctly
  */
-import { dateUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { dateUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { Settings } from 'luxon';
 
 const validateionBefore = (date: string) => `Datoen kan ikke være tidligere enn ${date}`;
@@ -97,7 +97,7 @@ describe('NavDatepicker', () => {
       cy.clickNextStep();
 
       cy.findAllByText('Du må fylle ut: Tilfeldig dato').should('have.length', 2);
-      cy.findByRole('region', { name: TEXTS.validering.error })
+      cy.get('[data-cy=error-summary]')
         .should('exist')
         .within(() => {
           cy.findByRole('link', { name: 'Du må fylle ut: Tilfeldig dato' }).should('exist');
