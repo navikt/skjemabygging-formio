@@ -126,7 +126,7 @@ export const statiske = {
     defaultText: 'Jeg bekrefter at opplysningene er riktige.',
     standardCheckboxLabel: 'Jeg vil svare så godt jeg kan på spørsmålene i søknaden.',
     standardCheckboxDescription:
-      '<p>Det er viktig at du gir oss riktige opplysninger slik at vi kan behandle saken din. <a target="_blank" rel="noopener noreferrer" href="https://www.nav.no/endringer">Les mer om viktigheten av å gi riktige opplysninger</a>.</p>',
+      '<p>Det er viktig at du gir oss riktige opplysninger slik at vi kan behandle saken din. <a target="_blank" rel="noopener noreferrer" href="https://www.nav.no/endringer">Les mer om viktigheten av å gi riktige opplysninger (åpnes i ny fane)</a>.</p>',
   },
   attachment: {
     leggerVedNaa: 'Jeg legger det ved dette skjemaet',
