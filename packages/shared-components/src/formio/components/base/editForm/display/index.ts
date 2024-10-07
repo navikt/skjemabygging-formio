@@ -3,6 +3,7 @@ import editFormAdditionalDescription from './editFormAdditionalDescription';
 import editFormAlertType from './editFormAlertType';
 import editFormAutoComplete from './editFormAutoComplete';
 import editFormAutoExpand from './editFormAutoExpand';
+import editFormBackgroundColor from './editFormBackgroundColor';
 import editFormButtonText from './editFormButtonText';
 import editFormContent from './editFormContent';
 import editFormContentForPdf from './editFormContentForPdf';
@@ -60,6 +61,7 @@ const editFormDisplay = {
   isAttachmentPanel: editFormIsAttachmentPanel,
   titleSize: editFormTitleSizeField,
   inputType: editFormInputType,
+  backgroundColor: editFormBackgroundColor,
 };
 
 export default editFormDisplay;

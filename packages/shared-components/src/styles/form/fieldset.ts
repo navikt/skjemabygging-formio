@@ -6,10 +6,14 @@ const fieldset = {
       marginBottom: 'var(--a-spacing-2)',
     },
     '&__content': {
-      borderLeft: '4px solid #368da8',
-      borderRadius: '0 0.25rem 0.25rem 0',
-      backgroundColor: '#e6f1f8',
       padding: '0.75rem 1rem',
+      borderLeft: '4px solid transparent',
+
+      '&--background-color': {
+        borderRadius: '0 0.25rem 0.25rem 0',
+        borderLeftColor: '#368da8',
+        backgroundColor: '#e6f1f8',
+      },
     },
   },
 };

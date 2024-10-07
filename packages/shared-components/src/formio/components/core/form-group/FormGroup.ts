@@ -11,6 +11,7 @@ class FormGroup extends Fieldset {
       components: [],
       input: false,
       persistent: false,
+      backgroundColor: true,
     });
   }
 

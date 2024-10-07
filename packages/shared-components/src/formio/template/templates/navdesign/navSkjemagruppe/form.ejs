@@ -17,7 +17,7 @@
     {% if (ctx.component.description && ctx.component.descriptionPosition !== "above") { %}
     <div class="description" id="d-{{ctx.instance.id}}-{{ctx.component.key}}">{{ctx.t(ctx.component.description)}}</div>
     {% } %}
-    <div class="navds-fieldset__content" ref="{{ctx.nestedKey}}">
+    <div class="navds-fieldset__content{{ ctx.component.backgroundColor !== false ? ' navds-fieldset__content--background-color' : ''  }}" ref="{{ctx.nestedKey}}">
         {{ctx.children}}
     </div>
 </fieldset>
