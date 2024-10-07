@@ -66,9 +66,9 @@ export default class Identity extends BaseComponent {
 
     const identity: IdentityInput = this.getValue() ?? {};
     if (this.isRequired()) {
-      if (identity.harDuFodselsnummer === 'yes') {
+      if (identity.harDuFodselsnummer === 'ja') {
         this.validateRequired(identity, 'identitetsnummer', TEXTS.statiske.identity.identityNumber);
-      } else if (identity.harDuFodselsnummer === 'no') {
+      } else if (identity.harDuFodselsnummer === 'nei') {
         this.validateRequired(identity, 'fodselsdato', TEXTS.statiske.identity.yourBirthdate);
       } else {
         this.validateRequired(identity, 'harDuFodselsnummer', TEXTS.statiske.identity.doYouHaveIdentityNumber);

@@ -34,7 +34,7 @@ const Identity = ({ readOnly, required, onChange, identity, className }: Props) 
         <>
           <DoYouHaveIdentityNumberRadio />
           {identity?.harDuFodselsnummer !== undefined &&
-            (identity?.harDuFodselsnummer === 'yes' ? <IdentityNumberField /> : <BirthDateField />)}
+            (identity?.harDuFodselsnummer === 'ja' ? <IdentityNumberField /> : <BirthDateField />)}
         </>
       )}
     </IdentityProvider>

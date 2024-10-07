@@ -23,11 +23,11 @@ const DoYouHaveIdentityNumberRadio = () => {
       value={nationalIdentity?.harDuFodselsnummer}
       values={[
         {
-          value: 'yes',
+          value: 'ja',
           label: translate(TEXTS.common.yes),
         },
         {
-          value: 'no',
+          value: 'nei',
           label: translate(TEXTS.common.no),
         },
       ]}

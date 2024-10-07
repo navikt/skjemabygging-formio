@@ -73,13 +73,13 @@ class Address extends BaseComponent {
         }
 
         return 'NORWEGIAN_ADDRESS';
-      } else if (address?.borDuINorge === 'yes') {
+      } else if (address?.borDuINorge === 'ja') {
         if (address?.vegadresseEllerPostboksadresse === 'vegadresse') {
           return 'NORWEGIAN_ADDRESS';
         } else if (address?.vegadresseEllerPostboksadresse === 'postboksadresse') {
           return 'POST_OFFICE_BOX';
         }
-      } else if (address?.borDuINorge === 'no') {
+      } else if (address?.borDuINorge === 'nei') {
         return 'FOREIGN_ADDRESS';
       }
     }
@@ -151,7 +151,7 @@ class Address extends BaseComponent {
 
       if (this.showAddressTypeChoice()) {
         this.validateRequired(address, 'borDuINorge', TEXTS.statiske.address.livesInNorway);
-        if (address.borDuINorge === 'yes') {
+        if (address.borDuINorge === 'ja') {
           this.validateRequired(address, 'vegadresseEllerPostboksadresse', TEXTS.statiske.address.yourContactAddress);
         }
       }

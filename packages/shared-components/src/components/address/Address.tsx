@@ -26,15 +26,15 @@ const Address = ({ addressType, address, readOnly, required, className, onChange
   const getAddress = () => {
     if (
       addressType === 'NORWEGIAN_ADDRESS' ||
-      (address?.borDuINorge === 'yes' && address?.vegadresseEllerPostboksadresse === 'vegadresse')
+      (address?.borDuINorge === 'ja' && address?.vegadresseEllerPostboksadresse === 'vegadresse')
     ) {
       return <NorwegianAddress />;
     } else if (
       addressType === 'POST_OFFICE_BOX' ||
-      (address?.borDuINorge === 'yes' && address?.vegadresseEllerPostboksadresse === 'postboksadresse')
+      (address?.borDuINorge === 'ja' && address?.vegadresseEllerPostboksadresse === 'postboksadresse')
     ) {
       return <PostOfficeBox />;
-    } else if (addressType === 'FOREIGN_ADDRESS' || address?.borDuINorge === 'no') {
+    } else if (addressType === 'FOREIGN_ADDRESS' || address?.borDuINorge === 'nei') {
       return <ForeignAddress />;
     }
   };
@@ -49,7 +49,7 @@ const Address = ({ addressType, address, readOnly, required, className, onChange
   };
 
   const showAddress = () => {
-    return addressType || address?.borDuINorge === 'no' || !!address?.vegadresseEllerPostboksadresse;
+    return addressType || address?.borDuINorge === 'nei' || !!address?.vegadresseEllerPostboksadresse;
   };
 
   return (
