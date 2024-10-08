@@ -113,12 +113,10 @@ function formatValue(component, value, translate, form, language) {
         value?.region,
         value?.land,
       ].filter(Boolean);
-      const address = addressComponents.join(', ');
-
-      return {
-        address,
-        linkText: translate(TEXTS.statiske.address.skatteetatenLink),
-      };
+      return addressComponents.join(', ');
+    }
+    case 'identity': {
+      return value?.harDuFodselsnummer === 'ja' ? value?.identitetsnummer : value?.fodselsdato;
     }
     case 'drivinglist':
       return {
@@ -434,6 +432,25 @@ function handleImage(component, formSummaryObject, parentContainerKey, translate
   return [...formSummaryObject];
 }
 
+function handleIdentity(component, submission, formSummaryObject, parentContainerKey, translate, form, language) {
+  const { key, type } = component;
+  const componentKey = createComponentKey(parentContainerKey, key);
+  const submissionValue = FormioUtils.getValue(submission, componentKey);
+
+  return [
+    ...formSummaryObject,
+    {
+      label:
+        submissionValue?.harDuFodselsnummer === 'ja'
+          ? translate(TEXTS.statiske.identity.identityNumber)
+          : translate(TEXTS.statiske.identity.yourBirthdate),
+      key: componentKey,
+      type,
+      value: formatValue(component, submissionValue, translate, form, language),
+    },
+  ];
+}
+
 function handleAmountWithCurrencySelector(component, submission, formSummaryObject, parentContainerKey, translate) {
   if (!submission.data) {
     return formSummaryObject;
@@ -574,6 +591,8 @@ function handleComponent(
           language,
         );
       }
+    case 'identity':
+      return handleIdentity(component, submission, formSummaryObject, parentContainerKey, translate, form, language);
     default:
       return handleField(component, submission, formSummaryObject, parentContainerKey, translate, form, language);
   }

@@ -67,11 +67,11 @@ export default class Identity extends BaseComponent {
     const identity: IdentityInput = this.getValue() ?? {};
     if (this.isRequired()) {
       if (identity.harDuFodselsnummer === 'ja') {
-        this.validateRequired(identity, 'identitetsnummer', TEXTS.statiske.identity.identityNumber);
+        this.validateRequiredField(identity, 'identitetsnummer', TEXTS.statiske.identity.identityNumber);
       } else if (identity.harDuFodselsnummer === 'nei') {
-        this.validateRequired(identity, 'fodselsdato', TEXTS.statiske.identity.yourBirthdate);
+        this.validateRequiredField(identity, 'fodselsdato', TEXTS.statiske.identity.yourBirthdate);
       } else {
-        this.validateRequired(identity, 'harDuFodselsnummer', TEXTS.statiske.identity.doYouHaveIdentityNumber);
+        this.validateRequiredField(identity, 'harDuFodselsnummer', TEXTS.statiske.identity.doYouHaveIdentityNumber);
       }
     }
 
@@ -107,7 +107,7 @@ export default class Identity extends BaseComponent {
     return this.componentErrors.length === 0;
   }
 
-  validateRequired(identity: IdentityInput, identityType: IdentityInputType, label: string) {
+  validateRequiredField(identity: IdentityInput, identityType: IdentityInputType, label: string) {
     if (!identity[identityType]) {
       this.addIdentityError(this.translate('required', { field: label }), identityType);
     }

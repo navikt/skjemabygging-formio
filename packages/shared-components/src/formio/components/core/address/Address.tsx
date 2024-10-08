@@ -137,22 +137,26 @@ class Address extends BaseComponent {
     const address = this.getValue() ?? ({} as AddressDomain);
     if (this.isRequired()) {
       if (this.getAddressType() === 'NORWEGIAN_ADDRESS') {
-        this.validateRequired(address, 'adresse', TEXTS.statiske.address.streetAddress);
-        this.validateRequired(address, 'postnummer', TEXTS.statiske.address.postalCode);
-        this.validateRequired(address, 'bySted', TEXTS.statiske.address.postalName);
+        this.validateRequiredField(address, 'adresse', TEXTS.statiske.address.streetAddress);
+        this.validateRequiredField(address, 'postnummer', TEXTS.statiske.address.postalCode);
+        this.validateRequiredField(address, 'bySted', TEXTS.statiske.address.postalName);
       } else if (this.getAddressType() === 'POST_OFFICE_BOX') {
-        this.validateRequired(address, 'postboks', TEXTS.statiske.address.poBox);
-        this.validateRequired(address, 'postnummer', TEXTS.statiske.address.postalCode);
-        this.validateRequired(address, 'bySted', TEXTS.statiske.address.postalName);
+        this.validateRequiredField(address, 'postboks', TEXTS.statiske.address.poBox);
+        this.validateRequiredField(address, 'postnummer', TEXTS.statiske.address.postalCode);
+        this.validateRequiredField(address, 'bySted', TEXTS.statiske.address.postalName);
       } else if (this.getAddressType() === 'FOREIGN_ADDRESS') {
-        this.validateRequired(address, 'adresse', TEXTS.statiske.address.streetAddress);
-        this.validateRequired(address, 'land', TEXTS.statiske.address.country);
+        this.validateRequiredField(address, 'adresse', TEXTS.statiske.address.streetAddress);
+        this.validateRequiredField(address, 'land', TEXTS.statiske.address.country);
       }
 
       if (this.showAddressTypeChoice()) {
-        this.validateRequired(address, 'borDuINorge', TEXTS.statiske.address.livesInNorway);
+        this.validateRequiredField(address, 'borDuINorge', TEXTS.statiske.address.livesInNorway);
         if (address.borDuINorge === 'ja') {
-          this.validateRequired(address, 'vegadresseEllerPostboksadresse', TEXTS.statiske.address.yourContactAddress);
+          this.validateRequiredField(
+            address,
+            'vegadresseEllerPostboksadresse',
+            TEXTS.statiske.address.yourContactAddress,
+          );
         }
       }
 
@@ -162,7 +166,7 @@ class Address extends BaseComponent {
     return this.componentErrors.length === 0;
   }
 
-  validateRequired(address: AddressInput, addressType: AddressInputType, label: string) {
+  validateRequiredField(address: AddressInput, addressType: AddressInputType, label: string) {
     if (!address[addressType]) {
       const elementId = `address:${addressType}`;
       super.addError(this.translate('required', { field: label }), elementId);

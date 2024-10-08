@@ -34,7 +34,7 @@ const yourInformationBuilder = () => {
             'show = row.identitet.harDuFodselsnummer === "nei" || (row.identitet.identitetsnummer && !row.identitet.harDuFodselsnummer)',
         },
         {
-          label: 'Gyldig fra (dd.mm.åååå)?',
+          label: 'Gyldig fra (dd.mm.åååå)',
           key: 'gyldigFraDatoDdMmAaaa',
           type: 'navDatepicker',
           description:
@@ -49,7 +49,7 @@ const yourInformationBuilder = () => {
             'show = row.adresse.borDuINorge === "nei" || (row.adresse.borDuINorge === "ja" && row.adresse.vegadresseEllerPostboksadresse)',
         },
         {
-          label: 'Gyldig til (dd.mm.åååå)?',
+          label: 'Gyldig til (dd.mm.åååå)',
           key: 'gyldigTilDatoDdMmAaaa',
           type: 'navDatepicker',
           description:
