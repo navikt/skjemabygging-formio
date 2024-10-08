@@ -92,7 +92,7 @@ class TextField extends BaseComponent {
 
   setValue(value: any) {
     // If prefillKey is set, never set the value, not even from previously saved submissions.
-    if (!this.component?.prefillKey) {
+    if (!this.havePrefill()) {
       super.setValue(value);
     }
   }
