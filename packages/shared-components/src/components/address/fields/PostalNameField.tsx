@@ -16,6 +16,7 @@ const PostalNameField = ({ label, required = false }: Props) => {
       label={label ?? TEXTS.statiske.address.postalName}
       value={address?.bySted}
       required={required}
+      autoComplete="address-level2"
     ></AddressField>
   );
 };

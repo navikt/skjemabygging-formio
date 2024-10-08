@@ -16,6 +16,7 @@ const PostalCodeField = ({ label, required = false }: Props) => {
       label={label ?? TEXTS.statiske.address.postalCode}
       value={address?.postnummer}
       required={required}
+      autoComplete="postal-code"
     ></AddressField>
   );
 };

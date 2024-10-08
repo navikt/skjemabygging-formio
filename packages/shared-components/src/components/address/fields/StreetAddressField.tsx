@@ -16,6 +16,7 @@ const StreetAddressField = ({ label, required = false }: Props) => {
       label={label ?? TEXTS.statiske.address.streetAddress}
       value={address?.adresse}
       required={required}
+      autoComplete="street-address"
     ></AddressField>
   );
 };

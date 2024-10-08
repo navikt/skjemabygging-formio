@@ -16,6 +16,7 @@ const CountryField = ({ label, required = false }: Props) => {
       label={label ?? TEXTS.statiske.address.country}
       value={address?.land}
       required={required}
+      autoComplete="country-name"
     ></AddressField>
   );
 };

@@ -9,9 +9,10 @@ interface Props {
   value?: string;
   required?: boolean;
   children?: React.ReactNode;
+  autoComplete?: string;
 }
 
-const AddressField = ({ type, label, value, required = false, children }: Props) => {
+const AddressField = ({ type, label, value, required = false, children, autoComplete }: Props) => {
   const { onChange, readOnly, className } = useAddress();
   const { translate, addRef, getComponentError } = useComponentUtils();
 
@@ -33,6 +34,7 @@ const AddressField = ({ type, label, value, required = false, children }: Props)
         error={getComponentError(`address:${type}`)}
         readOnly={readOnly}
         className={className}
+        autoComplete={autoComplete}
       />
       {children}
     </div>

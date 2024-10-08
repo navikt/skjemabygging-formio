@@ -16,6 +16,7 @@ const RegionField = ({ label, required = false }: Props) => {
       label={label ?? TEXTS.statiske.address.region}
       value={address?.region}
       required={required}
+      autoComplete="address-level1"
     ></AddressField>
   );
 };
