@@ -34,9 +34,11 @@ const yourInformationBuilder = () => {
             'show = row.identitet.harDuFodselsnummer === "nei" || (row.identitet.identitetsnummer && !row.identitet.harDuFodselsnummer)',
         },
         {
-          label: 'Fra hvilken dato skal denne adressen brukes (dd.mm.åååå)?',
+          label: 'Gyldig fra (dd.mm.åååå)?',
           key: 'gyldigFraDatoDdMmAaaa',
           type: 'navDatepicker',
+          description:
+            'Fra hvilken dato skal denne adressen brukes? Du kan sette denne datoen maks 1 år tilbake i tid.',
           mayBeEqual: false,
           earliestAllowedDate: -365,
           latestAllowedDate: 365,
@@ -47,7 +49,7 @@ const yourInformationBuilder = () => {
             'show = row.adresse.borDuINorge === "nei" || (row.adresse.borDuINorge === "ja" && row.adresse.vegadresseEllerPostboksadresse)',
         },
         {
-          label: 'Til hvilken dato skal denne adressen brukes (dd.mm.åååå)?',
+          label: 'Gyldig til (dd.mm.åååå)?',
           key: 'gyldigTilDatoDdMmAaaa',
           type: 'navDatepicker',
           description:
@@ -55,9 +57,6 @@ const yourInformationBuilder = () => {
           beforeDateInputKey: 'dineOpplysninger.gyldigFraDatoDdMmAaaa',
           latestAllowedDate: 365,
           mayBeEqual: false,
-          validate: {
-            required: true,
-          },
           customConditional:
             'show = row.adresse.borDuINorge === "nei" || (row.adresse.borDuINorge === "ja" && row.adresse.vegadresseEllerPostboksadresse)',
         },
