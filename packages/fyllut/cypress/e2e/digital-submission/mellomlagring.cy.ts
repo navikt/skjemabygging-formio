@@ -244,7 +244,7 @@ describe('Mellomlagring', () => {
           cy.clickSaveAndContinue();
           cy.get('@updateMellomlagringSpy').should('not.have.been.called');
 
-          cy.findByRole('region', { name: TEXTS.validering.error })
+          cy.get('[data-cy=error-summary]')
             .should('exist')
             .within(() => {
               cy.get('a').should('have.length', 2);
@@ -258,7 +258,7 @@ describe('Mellomlagring', () => {
               cy.findByLabelText('Rød').click();
             });
 
-          cy.findByRole('region', { name: TEXTS.validering.error })
+          cy.get('[data-cy=error-summary]')
             .should('exist')
             .within(() => {
               cy.get('a').should('have.length', 1);

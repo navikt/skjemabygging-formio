@@ -2,7 +2,6 @@
  * Tests that the month picker component (react) renders and functions correctly
  */
 
-import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { expect } from 'chai';
 
 describe('Month picker', () => {
@@ -45,7 +44,7 @@ describe('Month picker', () => {
       cy.clickNextStep();
 
       // Error summary
-      cy.findByRole('region', { name: TEXTS.validering.error })
+      cy.get('[data-cy=error-summary]')
         .should('exist')
         .within(() => {
           cy.findByRole('link', { name: 'Du må fylle ut: Required monthPicker' }).should('exist');
@@ -93,7 +92,7 @@ describe('Month picker', () => {
       cy.clickNextStep();
 
       cy.findAllByText('Du må fylle ut: Required monthPicker').should('have.length', 2);
-      cy.findByRole('region', { name: TEXTS.validering.error })
+      cy.get('[data-cy=error-summary]')
         .should('exist')
         .within(() => {
           cy.findByRole('link', { name: 'Du må fylle ut: Required monthPicker' }).should('exist').click();

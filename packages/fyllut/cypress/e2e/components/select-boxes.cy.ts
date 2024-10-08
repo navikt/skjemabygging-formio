@@ -2,7 +2,6 @@
  * Tests that the select boxes component (react) renders and functions correctly
  */
 
-import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { expect } from 'chai';
 
 describe('Select boxes', () => {
@@ -56,7 +55,7 @@ describe('Select boxes', () => {
       cy.clickNextStep();
 
       // Error summary
-      cy.findByRole('region', { name: TEXTS.validering.error })
+      cy.get('[data-cy=error-summary]')
         .should('exist')
         .within(() => {
           cy.findByRole('link', { name: 'Du må fylle ut: Select boxes' }).should('exist');

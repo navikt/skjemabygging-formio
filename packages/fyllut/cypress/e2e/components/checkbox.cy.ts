@@ -2,7 +2,6 @@
  * Tests that the checkbox component (react) renders and functions correctly
  */
 
-import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { expect } from 'chai';
 
 describe('Checkbox', () => {
@@ -67,7 +66,7 @@ describe('Checkbox', () => {
       cy.clickNextStep();
 
       // Error summary
-      cy.findByRole('region', { name: TEXTS.validering.error })
+      cy.get('[data-cy=error-summary]')
         .should('exist')
         .within(() => {
           cy.findByRole('link', { name: 'Du må fylle ut: Required checkbox' }).should('exist');

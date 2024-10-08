@@ -103,4 +103,10 @@ export default tseslint.config(
       '@typescript-eslint/no-var-requires': 'off',
     },
   },
+  {
+    files: ['**/cypress/e2e/**'],
+    rules: {
+      '@typescript-eslint/no-unused-expressions': 'off',
+    },
+  },
 );

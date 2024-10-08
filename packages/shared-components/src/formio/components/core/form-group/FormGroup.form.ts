@@ -11,6 +11,7 @@ const formGroupForm = () => {
     display([
       editFormDisplay.legend(),
       editFormDisplay.description(),
+      editFormDisplay.backgroundColor(),
     ]),
     api([
       editFormApi.key(),
