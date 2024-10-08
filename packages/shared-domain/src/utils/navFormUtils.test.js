@@ -12,6 +12,7 @@ import {
 import formWithContainer from './testdata/conditional-container';
 import formWithCustomConditional from './testdata/conditional-custom';
 import formWithCompositeCustomConditional from './testdata/conditional-custom-composite';
+import formWithDatagridConditional from './testdata/conditional-datagrid.js';
 import formWithJsonConditional from './testdata/conditional-json';
 import formWithMultipleConditionalDependencies from './testdata/conditional-multiple-dependencies';
 import formWithPanel from './testdata/conditional-panel';
@@ -179,6 +180,15 @@ describe('navFormUtils', () => {
       it('when given the id of the last component in the conditional it returns the key of the component owning the conditional', () => {
         const actual = findDependentComponents('eo9rcfe', formWithCompositeCustomConditional);
         const expected = [expect.objectContaining({ key: 'hvisSolbrillerOgSolkremEllerSolseng' })];
+        expect(actual).toEqual(expect.arrayContaining(expected));
+        expect(actual).toHaveLength(expected.length);
+      });
+    });
+
+    describe('component=a inside datagrid with custom conditional referring to component=b inside the same datagrid using row variable', () => {
+      it('returns component=a when checking component=b inside the datagrid', () => {
+        const actual = findDependentComponents('b', formWithDatagridConditional);
+        const expected = [expect.objectContaining({ key: 'sporsmalSomErAvhengigAvReferansesporsmal' })];
         expect(actual).toEqual(expect.arrayContaining(expected));
         expect(actual).toHaveLength(expected.length);
       });
