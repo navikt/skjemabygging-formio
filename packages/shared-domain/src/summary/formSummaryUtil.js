@@ -116,7 +116,7 @@ function formatValue(component, value, translate, form, language) {
       return addressComponents.join(', ');
     }
     case 'identity': {
-      return value?.harDuFodselsnummer === 'ja' ? value?.identitetsnummer : value?.fodselsdato;
+      return value?.harDuFodselsnummer === 'ja' ? value?.identitetsnummer : dateUtils.toLocaleDate(value?.fodselsdato);
     }
     case 'drivinglist':
       return {
