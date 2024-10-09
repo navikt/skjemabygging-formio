@@ -1,9 +1,9 @@
+import { SubmissionIdentity } from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, useContext } from 'react';
-import { IdentityInput } from './Identity';
 
 interface IdentityContextType {
-  onChange: (nationalIdentity: IdentityInput) => void;
-  nationalIdentity?: IdentityInput;
+  onChange: (nationalIdentity: SubmissionIdentity) => void;
+  nationalIdentity?: SubmissionIdentity;
   readOnly?: boolean;
   required?: boolean;
   className?: string;

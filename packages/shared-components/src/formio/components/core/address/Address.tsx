@@ -2,10 +2,11 @@ import { Alert } from '@navikt/ds-react';
 import {
   Address as AddressDomain,
   AddressType,
+  PrefillAddress,
   SubmissionAddress,
   TEXTS,
 } from '@navikt/skjemadigitalisering-shared-domain';
-import NavAddress, { AddressInput, AddressInputType } from '../../../../components/address/Address';
+import NavAddress, { SubmissionAddressType } from '../../../../components/address/Address';
 import { ComponentUtilsProvider } from '../../../../context/component/componentUtilsContext';
 import BaseComponent from '../../base/BaseComponent';
 import ComponentLabel from '../../base/components/ComponentLabel';
@@ -37,18 +38,24 @@ class Address extends BaseComponent {
 
   initAddress() {
     if (this.isSubmissionDigital() && this.component?.prefillKey && this.component?.prefillValue) {
-      const addresses = this.component?.prefillValue as SubmissionAddress;
+      const prefillAddresses = this.component?.prefillValue as PrefillAddress;
       if (this.component?.addressPriority === 'oppholdsadresse') {
         super.setValue(
-          this.getOppholdsadresse(addresses) ?? this.getKontaktadresse(addresses) ?? this.getBostedsadresse(addresses),
+          this.getOppholdsadresse(prefillAddresses) ??
+            this.getKontaktadresse(prefillAddresses) ??
+            this.getBostedsadresse(prefillAddresses),
         );
       } else if (this.component?.addressPriority === 'kontaktadresse') {
         super.setValue(
-          this.getKontaktadresse(addresses) ?? this.getBostedsadresse(addresses) ?? this.getOppholdsadresse(addresses),
+          this.getKontaktadresse(prefillAddresses) ??
+            this.getBostedsadresse(prefillAddresses) ??
+            this.getOppholdsadresse(prefillAddresses),
         );
       } else {
         super.setValue(
-          this.getBostedsadresse(addresses) ?? this.getOppholdsadresse(addresses) ?? this.getKontaktadresse(addresses),
+          this.getBostedsadresse(prefillAddresses) ??
+            this.getOppholdsadresse(prefillAddresses) ??
+            this.getKontaktadresse(prefillAddresses),
         );
       }
     }
@@ -166,7 +173,7 @@ class Address extends BaseComponent {
     return this.componentErrors.length === 0;
   }
 
-  validateRequiredField(address: AddressInput, addressType: AddressInputType, label: string) {
+  validateRequiredField(address: SubmissionAddress, addressType: SubmissionAddressType, label: string) {
     if (!address[addressType]) {
       const elementId = `address:${addressType}`;
       super.addError(this.translate('required', { field: label }), elementId);

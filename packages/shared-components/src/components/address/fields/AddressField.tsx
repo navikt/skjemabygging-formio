@@ -1,10 +1,10 @@
 import { TextField } from '@navikt/ds-react';
 import { useComponentUtils } from '../../../context/component/componentUtilsContext';
-import { AddressInputType } from '../Address';
+import { SubmissionAddressType } from '../Address';
 import { useAddress } from '../addressContext';
 
 interface Props {
-  type: AddressInputType;
+  type: SubmissionAddressType;
   label: string;
   value?: string;
   required?: boolean;

@@ -1,22 +1,17 @@
+import { SubmissionIdentity } from '@navikt/skjemadigitalisering-shared-domain';
 import BirthDateField from './fields/BirthDateField';
 import DoYouHaveIdentityNumberRadio from './fields/DoYouHaveIdentityNumberRadio';
 import IdentityNumberField from './fields/IdentityNumberField';
 import { IdentityProvider } from './identityContext';
 
-export interface IdentityInput {
-  harDuFodselsnummer?: string;
-  identitetsnummer?: string;
-  fodselsdato?: string;
-}
-
-export type IdentityInputType = keyof IdentityInput;
+export type SubmissionIdentityType = keyof SubmissionIdentity;
 
 interface Props {
   onChange: (value: any) => void;
   readOnly?: boolean;
   required?: boolean;
   className?: string;
-  identity: IdentityInput;
+  identity: SubmissionIdentity;
 }
 
 const Identity = ({ readOnly, required, onChange, identity, className }: Props) => {

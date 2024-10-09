@@ -1,11 +1,11 @@
-import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { SubmissionAddress, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useComponentUtils } from '../../context/component/componentUtilsContext';
 import Radio from '../radio/Radio';
-import { AddressInput, AddressInputType } from './Address';
+import { SubmissionAddressType } from './Address';
 
 interface Props {
-  onChange: (type: AddressInputType, value: string) => void;
-  values: AddressInput;
+  onChange: (type: SubmissionAddressType, value: string) => void;
+  values: SubmissionAddress;
 }
 
 const AddressTypeChoice = ({ onChange, values }: Props) => {

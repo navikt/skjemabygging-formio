@@ -62,6 +62,7 @@ import type { FrontendLoggerConfigType, LogLevel } from './logging/types';
 import migrationUtils, { MigrationLevel } from './migration';
 import { Operator } from './migration/operator';
 import type { Mottaksadresse, MottaksadresseData } from './mottaksadresse';
+import PrefillAddress from './prefill/prefillAddress';
 import type { ReportDefinition } from './reports';
 import type { FormioResource, ResourceName } from './resource';
 import type {
@@ -79,7 +80,9 @@ import {
 import { SubmissionActivity } from './submission/activity';
 import SubmissionAddress from './submission/address';
 import { DrivingListPeriod, DrivingListSubmission, DrivingListValues } from './submission/drivingList';
+import SubmissionIdentity from './submission/identity';
 import { SubmissionMaalgruppe } from './submission/maalgruppe';
+import SubmissionDefault from './submission/submission';
 import {
   SummaryActivity,
   SummaryAddress,
@@ -202,6 +205,7 @@ export type {
   NewFormSignatureType,
   Operator,
   Panel,
+  PrefillAddress,
   PrefillData,
   PrefillKey,
   ReportDefinition,
@@ -216,6 +220,8 @@ export type {
   SubmissionAddress,
   SubmissionAttachmentValue,
   SubmissionData,
+  SubmissionDefault,
+  SubmissionIdentity,
   SubmissionMaalgruppe,
   SubmissionMethod,
   SummaryActivity,

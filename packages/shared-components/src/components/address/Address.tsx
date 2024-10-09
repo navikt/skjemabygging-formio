@@ -1,4 +1,8 @@
-import { Address as AddressDomain, AddressType as AddressTypeDomain } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  Address as AddressDomain,
+  AddressType as AddressTypeDomain,
+  SubmissionAddress,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import { AddressProvider } from './addressContext';
 import AddressTypeChoice from './AddressTypeChoice';
 import ForeignAddress from './ForeignAddress';
@@ -7,20 +11,15 @@ import PostOfficeBox from './PostOfficeBox';
 
 interface Props {
   addressType?: AddressTypeDomain;
-  onChange: (value: AddressInput) => void;
-  address?: AddressInput;
+  onChange: (value: SubmissionAddress) => void;
+  address?: SubmissionAddress;
   readOnly?: boolean;
   required?: boolean;
   className?: string;
   addressTypeChoice?: boolean;
 }
 
-export interface AddressInput extends AddressDomain {
-  borDuINorge?: string;
-  vegadresseEllerPostboksadresse?: string;
-}
-
-export type AddressInputType = keyof AddressInput;
+export type SubmissionAddressType = keyof SubmissionAddress;
 
 const Address = ({ addressType, address, readOnly, required, className, onChange, addressTypeChoice }: Props) => {
   const getAddress = () => {
@@ -39,7 +38,7 @@ const Address = ({ addressType, address, readOnly, required, className, onChange
     }
   };
 
-  const handleChange = (type: AddressInputType, value: string) => {
+  const handleChange = (type: SubmissionAddressType, value: string) => {
     if (type) {
       onChange({
         ...address,
@@ -54,7 +53,7 @@ const Address = ({ addressType, address, readOnly, required, className, onChange
 
   return (
     <>
-      {addressTypeChoice && <AddressTypeChoice values={address as AddressInput} onChange={handleChange} />}
+      {addressTypeChoice && <AddressTypeChoice values={address as SubmissionAddress} onChange={handleChange} />}
       {showAddress() && (
         <AddressProvider
           address={address}

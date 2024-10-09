@@ -1,11 +1,8 @@
 import Address from '../address/address';
 
-interface SubmissionAddress {
-  sokerAdresser?: {
-    bostedsadresse?: Address;
-    oppholdsadresser?: Address[];
-    kontaktadresser?: Address[];
-  };
+interface SubmissionAddress extends Address {
+  borDuINorge?: string;
+  vegadresseEllerPostboksadresse?: string;
 }
 
 export default SubmissionAddress;

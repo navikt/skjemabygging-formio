@@ -1,6 +1,6 @@
-import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { SubmissionIdentity, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { validateDate } from '../../../../components/datepicker/dateValidation';
-import NavIdentity, { IdentityInput, IdentityInputType } from '../../../../components/indentity/Identity';
+import NavIdentity, { SubmissionIdentityType } from '../../../../components/indentity/Identity';
 import { validateNationalIdentityNumber } from '../../../../components/indentity/NationalIdentityNumberValidator';
 import { ComponentUtilsProvider } from '../../../../context/component/componentUtilsContext';
 import BaseComponent from '../../base/BaseComponent';
@@ -45,7 +45,7 @@ export default class Identity extends BaseComponent {
       // Call parent setValue so ignore prefillKey block on local setValue.
       super.setValue({
         identitetsnummer: this.component?.prefillValue,
-      } as IdentityInput);
+      } as SubmissionIdentity);
     }
   }
 
@@ -64,7 +64,7 @@ export default class Identity extends BaseComponent {
       return true;
     }
 
-    const identity: IdentityInput = this.getValue() ?? {};
+    const identity: SubmissionIdentity = this.getValue() ?? {};
     if (this.isRequired()) {
       if (identity.harDuFodselsnummer === 'ja') {
         this.validateRequiredField(identity, 'identitetsnummer', TEXTS.statiske.identity.identityNumber);
@@ -107,18 +107,18 @@ export default class Identity extends BaseComponent {
     return this.componentErrors.length === 0;
   }
 
-  validateRequiredField(identity: IdentityInput, identityType: IdentityInputType, label: string) {
+  validateRequiredField(identity: SubmissionIdentity, identityType: SubmissionIdentityType, label: string) {
     if (!identity[identityType]) {
       this.addIdentityError(this.translate('required', { field: label }), identityType);
     }
   }
 
-  addIdentityError(errorMessage: string, identityType: IdentityInputType) {
+  addIdentityError(errorMessage: string, identityType: SubmissionIdentityType) {
     const elementId = `identity:${identityType}`;
     super.addError(errorMessage, elementId);
   }
 
-  handleChange(value: IdentityInput) {
+  handleChange(value: SubmissionIdentity) {
     super.handleChange(value);
     this.rerender();
   }

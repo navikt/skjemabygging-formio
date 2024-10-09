@@ -1,9 +1,9 @@
 import { Address } from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, useContext } from 'react';
-import { AddressInputType } from './Address';
+import { SubmissionAddressType } from './Address';
 
 interface AddressContextType {
-  onChange: (type: AddressInputType, value: string) => void;
+  onChange: (type: SubmissionAddressType, value: string) => void;
   address?: Address;
   readOnly?: boolean;
   required?: boolean;
