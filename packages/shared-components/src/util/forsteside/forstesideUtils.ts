@@ -13,7 +13,7 @@ import { genererPersonalia } from './forstesideDepricatedUtils';
 type BrukerInfo = KjentBruker | UkjentBruker;
 
 const addressLine = (text?: string, prefix: string = ', ') => {
-  if (text) {
+  if (!text) {
     return '';
   }
 
@@ -21,32 +21,33 @@ const addressLine = (text?: string, prefix: string = ', ') => {
 };
 
 const getUserData = (submission: SubmissionDefault): BrukerInfo => {
-  if (!submission.identitet) {
+  if (!submission.dineOpplysninger) {
     // Denne er for å støtte gamle formatet på dine opplysninger.
     // Når alle skjemaer er skrevet om til nytt format kan denne fjernes.
     return genererPersonalia(submission);
   }
 
-  if (submission.identitet.identitetsnummer) {
+  if (submission.dineOpplysninger?.identitet?.identitetsnummer) {
     return {
       bruker: {
-        brukerId: submission.identitet.identitetsnummer,
+        brukerId: submission.dineOpplysninger?.identitet.identitetsnummer,
         brukerType: 'PERSON',
       },
     };
-  } else if (submission.address) {
+  } else if (submission.dineOpplysninger?.adresse) {
+    const address = submission.dineOpplysninger?.adresse;
     return {
       ukjentBrukerPersoninfo:
-        addressLine(submission.fornavn, '') +
-        addressLine(submission.etternavn, '') +
-        addressLine(submission.address.co, ', c/o ') +
-        addressLine(submission.address.postboks, ', Postboks ') +
-        addressLine(submission.address.adresse) +
-        addressLine(submission.address.bygning) +
-        addressLine(submission.address.postnummer) +
-        addressLine(submission.address.bySted, ' ') +
-        addressLine(submission.address.region) +
-        addressLine(submission.address.land ?? 'Norge', ''),
+        addressLine(submission.dineOpplysninger?.fornavn, '') +
+        addressLine(submission.dineOpplysninger?.etternavn, ' ') +
+        addressLine(address.co, ', c/o ') +
+        addressLine(address.postboks, ', Postboks ') +
+        addressLine(address.adresse) +
+        addressLine(address.bygning) +
+        addressLine(address.postnummer) +
+        addressLine(address.bySted, ' ') +
+        addressLine(address.region) +
+        addressLine(address.land ?? 'Norge'),
     };
   } else {
     throw Error('User needs to submit either identification number or address');
