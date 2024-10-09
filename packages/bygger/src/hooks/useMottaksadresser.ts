@@ -19,39 +19,36 @@ const useMottaksadresser = (): Output => {
   const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
 
   const loadMottaksadresser = () => {
-    fetch(`${NavFormioJs.Formio.getProjectUrl()}/mottaksadresse/submission`, {
+    fetch(`/api/recipients`, {
       method: 'GET',
     })
       .then(async (res) => {
         if (res.ok) {
           setErrorMessage(undefined);
-          const addresses = await res.json();
-          validateThemes(addresses);
-          return addresses;
+          return await res.json();
         }
         setErrorMessage('Feil ved henting av mottaksadresser');
         throw new Error(`Feil ved henting av mottaksadresser: ${res.status}`);
       })
-      .then((mottaksadresser: Mottaksadresse[]) => {
-        setMottaksadresser(mottaksadresser);
+      .then((recipients) => {
+        setMottaksadresser(
+          recipients.map(
+            ({ recipientId, name, poBoxAddress, postalCode, postalName }): Mottaksadresse => ({
+              data: {
+                id: recipientId,
+                adresselinje1: name,
+                adresselinje2: poBoxAddress,
+                postnummer: postalCode,
+                poststed: postalName,
+              },
+            }),
+          ),
+        );
         setReady(true);
       })
       .catch((err) => {
         console.error(err);
       });
-  };
-
-  const validateThemes = (addresses: Mottaksadresse[] = []) => {
-    const themes = addresses
-      .filter((address) => address.data.temakoder)
-      .flatMap((address) => address.data.temakoder?.split(','))
-      .map((theme) => theme?.trim());
-
-    if (new Set(themes).size !== themes.length) {
-      setErrorMessage('Tema kan bare være en gang per mottaksadresse');
-    } else if (themes.some((theme) => theme?.length !== 3)) {
-      setErrorMessage('Hvert tema skal bestå av tre tegn');
-    }
   };
 
   const deleteMottaksadresse = async (mottaksadresseId) => {
