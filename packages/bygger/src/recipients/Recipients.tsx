@@ -1,0 +1,47 @@
+import { VStack } from '@navikt/ds-react';
+import { SkeletonList } from '@navikt/skjemadigitalisering-shared-components';
+import RowLayout from '../components/layout/RowLayout';
+import SidebarLayout from '../components/layout/SidebarLayout';
+import UserFeedback from '../components/UserFeedback';
+import { useRecipients } from '../context/recipients/RecipientsContext';
+import RecipientTable from './RecipientTable';
+
+const Recipients = () => {
+  const { isReady, recipients } = useRecipients();
+
+  if (!isReady) {
+    return (
+      <RowLayout
+        right={
+          <SidebarLayout noScroll={true}>
+            <SkeletonList size={3} height={'4rem'} />
+          </SidebarLayout>
+        }
+      >
+        <SkeletonList size={8} height={'4rem'} />
+      </RowLayout>
+    );
+  }
+
+  return (
+    <RowLayout
+      right={
+        <SidebarLayout noScroll={true}>
+          <VStack gap="1">
+            {/*<Button onClick={onPublish} loading={publishing} size="small">*/}
+            {/*  Publiser mottaksadresser*/}
+            {/*</Button>*/}
+            {/*<Button variant="secondary" onClick={() => addNewRecipient()} type="button" size="small">
+              Legg til ny
+            </Button>*/}
+            <UserFeedback />
+          </VStack>
+        </SidebarLayout>
+      }
+    >
+      <RecipientTable recipients={recipients} />
+    </RowLayout>
+  );
+};
+
+export default Recipients;
