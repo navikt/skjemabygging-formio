@@ -1,4 +1,9 @@
-import { ForstesideRequestBody, Mottaksadresse, SubmissionDefault } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  ForstesideRequestBody,
+  Mottaksadresse,
+  Submission,
+  SubmissionDefault,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import {
   getAttachmentLabels,
   getAttachmentTitles,
@@ -10,7 +15,7 @@ import {
 
 const genererFoerstesideData = (
   form,
-  submission: SubmissionDefault,
+  submission: Submission,
   language = 'nb-NO',
   recipients: Mottaksadresse[] = [],
   unitNumber?: string,
@@ -23,7 +28,7 @@ const genererFoerstesideData = (
   const formTitle = getTitle(title, skjemanummer);
 
   return {
-    ...getUserData(submission),
+    ...getUserData(submission as SubmissionDefault),
     foerstesidetype: 'SKJEMA',
     navSkjemaId: skjemanummer,
     spraakkode: parseLanguage(language),

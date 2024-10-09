@@ -10,9 +10,13 @@ const adressLine = (text, prefix?) => {
 };
 
 export function genererPersonalia(submission: any): BrukerInfo {
+  if (!submission) {
+    throw Error('User needs to submit either fodselsNummer or address');
+  }
+
   const adresse = genererAdresse(submission);
 
-  if (submission.fodselsnummerDNummerSoker) {
+  if (submission?.fodselsnummerDNummerSoker) {
     return {
       bruker: {
         brukerId: submission.fodselsnummerDNummerSoker,
