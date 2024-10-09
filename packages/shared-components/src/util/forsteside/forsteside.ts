@@ -1,9 +1,4 @@
-import {
-  ForstesideRequestBody,
-  Mottaksadresse,
-  Submission,
-  SubmissionDefault,
-} from '@navikt/skjemadigitalisering-shared-domain';
+import { ForstesideRequestBody, Mottaksadresse, SubmissionDefault } from '@navikt/skjemadigitalisering-shared-domain';
 import {
   getAttachmentLabels,
   getAttachmentTitles,
@@ -15,7 +10,7 @@ import {
 
 const genererFoerstesideData = (
   form,
-  submission: Submission,
+  submission: SubmissionDefault,
   language = 'nb-NO',
   recipients: Mottaksadresse[] = [],
   unitNumber?: string,

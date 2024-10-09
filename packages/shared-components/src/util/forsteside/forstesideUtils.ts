@@ -4,7 +4,6 @@ import {
   MottaksadresseData,
   NavFormType,
   navFormUtils,
-  Submission,
   SubmissionAttachmentValue,
   SubmissionDefault,
   UkjentBruker,
@@ -54,15 +53,15 @@ const getUserData = (submission: SubmissionDefault): BrukerInfo => {
   }
 };
 
-const getAttachmentTitles = (form: NavFormType, submission: Submission): string[] => {
+const getAttachmentTitles = (form: NavFormType, submission: SubmissionDefault): string[] => {
   return getAttachments(submission, form).map((component) => component.properties!.vedleggstittel!);
 };
 
-const getAttachmentLabels = (form: NavFormType, submission: Submission): string[] => {
+const getAttachmentLabels = (form: NavFormType, submission: SubmissionDefault): string[] => {
   return getAttachments(submission, form).map((component) => component.label);
 };
 
-const getAttachments = (submission: Submission, form: NavFormType) => {
+const getAttachments = (submission: SubmissionDefault, form: NavFormType) => {
   return navFormUtils
     .flattenComponents(form.components)
     .filter((component) => component.properties && !!component.properties.vedleggskode)

@@ -1,4 +1,9 @@
-import { ForstesideRequestBody, Mottaksadresse, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  ForstesideRequestBody,
+  Mottaksadresse,
+  NavFormType,
+  SubmissionDefault,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import { genererFoerstesideData } from './forsteside';
 import { genererAdresse, genererPersonalia } from './forstesideDepricatedUtils';
 import { getAttachmentLabels, getAttachments, getAttachmentTitles, getRecipients, getTitle } from './forstesideUtils';
@@ -347,7 +352,7 @@ describe('forsteside', () => {
 
     describe('Språkkode', () => {
       const defaultForm = { properties: { skjemanummer: 'TST 10.11-12' }, components: [] };
-      const defaultSubmission = {};
+      const defaultSubmission = {} as SubmissionDefault;
 
       it('Bokmål brukes dersom språk ikke er valgt', () => {
         const forstesideRequest = genererFoerstesideData(defaultForm, defaultSubmission, undefined);
