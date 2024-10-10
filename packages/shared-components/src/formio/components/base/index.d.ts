@@ -33,7 +33,7 @@ interface ReactComponentType {
   refs?: any;
   errors: any[];
   root: any;
-  options?: {
+  options: {
     appConfig: AppConfigContextType;
     readOnly: boolean;
     namespace: string;
