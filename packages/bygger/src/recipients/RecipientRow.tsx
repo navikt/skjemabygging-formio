@@ -3,6 +3,7 @@ import { Button, HStack, Table, TextField } from '@navikt/ds-react';
 import { makeStyles } from '@navikt/skjemadigitalisering-shared-components';
 import { Recipient } from '@navikt/skjemadigitalisering-shared-domain';
 import { useState } from 'react';
+import { useRecipients } from '../context/recipients/RecipientsContext';
 
 const useStyles = makeStyles({
   editRow: {
@@ -22,8 +23,10 @@ const useStyles = makeStyles({
 type ViewState = 'display' | 'editing';
 
 const RecipientRow = ({ recipient }: { recipient: Partial<Recipient> }) => {
+  const { saveRecipient } = useRecipients();
   const { recipientId } = recipient;
   const [viewState, setViewState] = useState<ViewState>(recipientId === 'new' ? 'editing' : 'display');
+  const [isSaving, setIsSaving] = useState<boolean>(false);
   const [value, setValue] = useState(recipient);
   const styles = useStyles();
 
@@ -69,7 +72,7 @@ const RecipientRow = ({ recipient }: { recipient: Partial<Recipient> }) => {
               label="Enhetsnavn"
               hideLabel
               size="small"
-              value={value.name}
+              defaultValue={value.name}
               onChange={(event) => updateValueProperty('name', event.currentTarget.value)}
             />
           </Table.DataCell>
@@ -78,7 +81,7 @@ const RecipientRow = ({ recipient }: { recipient: Partial<Recipient> }) => {
               label="Postboksadresse"
               hideLabel
               size="small"
-              value={value.poBoxAddress}
+              defaultValue={value.poBoxAddress}
               onChange={(event) => updateValueProperty('poBoxAddress', event.currentTarget.value)}
             />
           </Table.DataCell>
@@ -87,7 +90,7 @@ const RecipientRow = ({ recipient }: { recipient: Partial<Recipient> }) => {
               label="Postnr."
               hideLabel
               size="small"
-              value={value.postalCode}
+              defaultValue={value.postalCode}
               onChange={(event) => updateValueProperty('postalCode', event.currentTarget.value)}
             />
           </Table.DataCell>
@@ -96,7 +99,7 @@ const RecipientRow = ({ recipient }: { recipient: Partial<Recipient> }) => {
               label="Poststed"
               hideLabel
               size="small"
-              value={value.postalName}
+              defaultValue={value.postalName}
               onChange={(event) => updateValueProperty('postalName', event.currentTarget.value)}
             />
           </Table.DataCell>
@@ -106,9 +109,14 @@ const RecipientRow = ({ recipient }: { recipient: Partial<Recipient> }) => {
             <HStack gap="4" justify="end">
               <Button
                 size="small"
-                onClick={() => {
+                loading={isSaving}
+                onClick={async () => {
                   console.log(value);
-                  setViewState('display');
+                  setIsSaving(true);
+                  // FIXME
+                  const result = await saveRecipient(value as Recipient);
+                  setIsSaving(false);
+                  if (result) setViewState('display');
                 }}
               >
                 Lagre

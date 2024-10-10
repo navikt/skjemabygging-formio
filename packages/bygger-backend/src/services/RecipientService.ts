@@ -23,4 +23,22 @@ export class RecipientService {
     });
     return response.data as Recipient;
   }
+
+  async post(recipient: Recipient): Promise<Recipient> {
+    const response = await fetchWithErrorHandling(`${this.formsApiUrl}${this.recipientsUrl}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(recipient),
+    });
+    return response.data as Recipient;
+  }
+
+  async put(recipientId: string, recipient: Recipient): Promise<Recipient> {
+    const response = await fetchWithErrorHandling(`${this.formsApiUrl}${this.recipientsUrl}/${recipientId}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(recipient),
+    });
+    return response.data as Recipient;
+  }
 }

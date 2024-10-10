@@ -20,8 +20,29 @@ const get: RequestHandler = async (req, res, next) => {
   }
 };
 
+const post: RequestHandler = async (req, res, next) => {
+  try {
+    const recipient = await recipientService.post(req.body);
+    res.json(recipient);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const put: RequestHandler = async (req, res, next) => {
+  const { recipientId } = req.params;
+  try {
+    const recipient = await recipientService.put(recipientId, req.body);
+    res.json(recipient);
+  } catch (error) {
+    next(error);
+  }
+};
+
 const recipients = {
   getAll,
   get,
+  post,
+  put,
 };
 export default recipients;

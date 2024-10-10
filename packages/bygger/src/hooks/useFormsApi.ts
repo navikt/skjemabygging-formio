@@ -16,8 +16,29 @@ const useFormsApi = () => {
     }
   };
 
+  const postRecipient = async (recipient: Recipient): Promise<Recipient | undefined> => {
+    try {
+      return await http.post<Recipient>('/api/recipients', recipient);
+    } catch (error) {
+      const message = (error as Error)?.message;
+      feedbackEmit.error(`Feil ved oppretting av ny mottaker. ${message}`);
+    }
+  };
+
+  const putRecipient = async (recipient: Recipient): Promise<Recipient | undefined> => {
+    const { recipientId, ...updatedRecipient } = recipient;
+    try {
+      return await http.put<Recipient>(`/api/recipients/${recipientId}`, updatedRecipient);
+    } catch (error) {
+      const message = (error as Error)?.message;
+      feedbackEmit.error(`Feil ved oppdatering av mottaker. ${message}`);
+    }
+  };
+
   const recipientsApi = {
     getAll: getAllRecipients,
+    post: postRecipient,
+    put: putRecipient,
   };
 
   return {
