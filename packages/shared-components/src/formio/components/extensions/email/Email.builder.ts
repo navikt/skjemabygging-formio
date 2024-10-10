@@ -4,13 +4,9 @@ const emailBuilder = () => {
   const schema = Email.schema();
 
   return {
-    title: 'E-post',
+    title: schema.label,
     schema: {
       ...schema,
-      autocomplete: 'email',
-      inputType: 'email',
-      spellcheck: false,
-      validateOn: 'blur',
       validate: {
         required: true,
       },

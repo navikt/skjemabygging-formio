@@ -24,8 +24,20 @@ class Maalgruppe extends BaseComponent {
     return maalgruppeBuilder();
   }
 
+  init() {
+    super.init();
+    this.initPrefill();
+  }
+
+  initPrefill() {
+    if (this.isSubmissionDigital() && this.component?.prefillKey && this.component?.prefillValue) {
+      // Call parent setValue so ignore prefillKey block on local setValue.
+      super.setValue(this.component?.prefillValue);
+    }
+  }
+
   calculateMaalgruppeValue(): SubmissionMaalgruppe {
-    const prefilledMaalgruppe = (this.data?.maalgruppe?.prefilled || this.component?.defaultValue) as SendInnMaalgruppe;
+    const prefilledMaalgruppe = (this.data?.maalgruppe?.prefilled || this.component?.prefillValue) as SendInnMaalgruppe;
 
     return {
       calculated: { maalgruppetype: findSelectedMaalgruppe(this.root?.data || {}) || 'ANNET' },

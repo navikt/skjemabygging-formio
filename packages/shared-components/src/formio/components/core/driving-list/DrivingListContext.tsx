@@ -4,7 +4,6 @@ import { createContext, useContext } from 'react';
 interface DrivingListContextContextType {
   values: DrivingListSubmission;
   updateValues: (value: DrivingListValues) => void;
-  getComponentError: (elementId: string) => string | undefined;
 }
 
 interface DrivingListProviderProps extends DrivingListContextContextType {

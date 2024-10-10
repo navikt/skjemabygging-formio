@@ -1,12 +1,13 @@
+import FirstName from './FirstName';
+
 const firstNameBuilder = (keyPostfix = '') => {
+  const schema = FirstName.schema();
+
   return {
-    title: 'Fornavn',
+    title: schema.label,
     schema: {
-      label: 'Fornavn',
-      type: 'textfield',
+      ...schema,
       key: `fornavn${keyPostfix}`,
-      autocomplete: 'given-name',
-      validateOn: 'blur',
       validate: {
         required: true,
       },

@@ -1,6 +1,7 @@
 {
   "sokerFornavn": "Ola",
   "sokerEtternavn": "Nordmann",
+  "sokerIdentifikasjonsnummer": "08842748500",
   "sokerMaalgruppe": {
     "gyldighetsperiode": {
       "fom": "2024-01-01",

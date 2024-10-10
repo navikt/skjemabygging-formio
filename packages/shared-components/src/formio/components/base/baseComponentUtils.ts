@@ -30,7 +30,9 @@ const isRequired = (component?: Component) => {
 };
 
 const isReadOnly = (component?: Component, options?: ReactComponentType['options']) => {
-  return component?.readOnly || options?.readOnly;
+  return (
+    component?.readOnly || options?.readOnly || (component?.key === 'key' && options?.editComponent?.protectedApiKey)
+  );
 };
 
 const baseComponentUtils = {

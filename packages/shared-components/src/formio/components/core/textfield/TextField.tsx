@@ -26,6 +26,22 @@ class TextField extends BaseComponent {
     return textFieldBuilder();
   }
 
+  init() {
+    super.init();
+    this.initPrefill();
+  }
+
+  initPrefill() {
+    if (this.hasPrefill()) {
+      // Call parent setValue so ignore prefillKey block on local setValue.
+      super.setValue(this.component?.prefillValue);
+    }
+  }
+
+  getReadOnly() {
+    return this.hasPrefill() || super.getReadOnly();
+  }
+
   getValue() {
     return super.getValue() ?? '';
   }
@@ -43,6 +59,10 @@ class TextField extends BaseComponent {
   }
 
   checkComponentValidity(data, dirty, row, options = {}) {
+    if (this.getReadOnly()) {
+      return true;
+    }
+
     const validity = super.checkComponentValidity(data, dirty, row, options);
 
     if (validity) {
@@ -67,6 +87,13 @@ class TextField extends BaseComponent {
       if (!containsDigitsOnly) {
         return this.translateWithLabel(TEXTS.validering.digitsOnly);
       }
+    }
+  }
+
+  setValue(value: any) {
+    // If prefillKey is set, never set the value, not even from previously saved submissions.
+    if (!this.hasPrefill()) {
+      super.setValue(value);
     }
   }
 

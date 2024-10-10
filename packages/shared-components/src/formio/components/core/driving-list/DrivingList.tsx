@@ -56,9 +56,7 @@ class DrivingList extends BaseComponent {
     this.removeAllErrors();
     const componentData = this.getValue() as DrivingListSubmission;
 
-    const submissionMethod = this.getAppConfig()?.submissionMethod;
-
-    if (submissionMethod === 'paper') {
+    if (this.isSubmissionPaper()) {
       const parkingSelected = componentData?.parking !== undefined && componentData?.parking !== null;
       const dateSelected = !!componentData?.selectedDate;
       const allSelected = !!componentData?.selectedDate && parkingSelected;
@@ -74,7 +72,7 @@ class DrivingList extends BaseComponent {
       if (allSelected && componentData.dates?.length === 0) {
         this.addErrorOfType('dates', 'required');
       }
-    } else if (submissionMethod === 'digital') {
+    } else if (this.isSubmissionDigital()) {
       if (!componentData?.selectedVedtaksId) {
         this.addErrorOfType('activityRadio', 'required');
       }
@@ -90,7 +88,7 @@ class DrivingList extends BaseComponent {
         });
         this.addError(message, `dates:${date.date}:parking`);
       }
-      if (Number(date.parking) > 100 && this.getAppConfig().submissionMethod === 'digital') {
+      if (Number(date.parking) > 100 && this.isSubmissionDigital()) {
         this.addError(this.translate(TEXTS.validering.parkingExpensesAboveHundred), `dates:${date.date}:parking`);
       }
     });
@@ -112,11 +110,7 @@ class DrivingList extends BaseComponent {
     // TODO: Delete DrivingListProvider and use prop drilling instead
     element.render(
       <ComponentUtilsProvider component={this}>
-        <DrivingListProvider
-          updateValues={this.updateValues.bind(this)}
-          values={this.getValue()}
-          getComponentError={this.getComponentError.bind(this)}
-        >
+        <DrivingListProvider updateValues={this.updateValues.bind(this)} values={this.getValue()}>
           <NavDrivingList />
         </DrivingListProvider>
       </ComponentUtilsProvider>,

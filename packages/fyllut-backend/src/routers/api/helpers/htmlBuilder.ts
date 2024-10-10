@@ -153,7 +153,7 @@ const attachment = (component: SummaryAttachment) => {
 };
 
 const address = (component: SummaryAddress) =>
-  `<div class="spm">${component.label}</div><div class="svar">: ${component.value.address}</div>`;
+  `<div class="spm">${component.label}</div><div class="svar">: ${component.value}</div>`;
 
 const activity = (component: SummaryActivity) =>
   `<div class="spm">${component.label}</div><div class="svar">: ${component.value.text}</div>`;

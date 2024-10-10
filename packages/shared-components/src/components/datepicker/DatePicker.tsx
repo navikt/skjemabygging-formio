@@ -6,7 +6,7 @@ import { useComponentUtils } from '../../context/component/componentUtilsContext
 import { validateDate } from './dateValidation';
 
 interface NavDatePickerProps {
-  id: string;
+  id?: string;
   required?: boolean;
   onChange: (val: string) => void;
   value: string;

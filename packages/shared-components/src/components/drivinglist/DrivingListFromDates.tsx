@@ -24,8 +24,8 @@ const useDrivinglistStyles = makeStyles({
 });
 
 const DrivingListFromDates = () => {
-  const { values, updateValues, getComponentError } = useDrivingList();
-  const { translate, addRef } = useComponentUtils();
+  const { values, updateValues } = useDrivingList();
+  const { translate, addRef, getComponentError } = useComponentUtils();
 
   const styles = useDrivinglistStyles();
 

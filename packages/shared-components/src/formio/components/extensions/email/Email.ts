@@ -10,6 +10,9 @@ class Email extends TextField {
       label: 'E-post',
       type: 'email',
       key: 'epost',
+      autocomplete: 'email',
+      inputType: 'email',
+      spellcheck: false,
     });
   }
 

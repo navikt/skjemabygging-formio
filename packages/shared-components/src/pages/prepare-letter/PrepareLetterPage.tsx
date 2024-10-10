@@ -13,7 +13,7 @@ import LoadingComponent from '../../components/loading/LoadingComponent';
 import { useAppConfig } from '../../context/config/configContext';
 import { useLanguages } from '../../context/languages';
 import { scrollToAndSetFocus } from '../../util/focus-management/focus-management';
-import { getVedleggsFelterSomSkalSendes } from '../../util/forsteside/forsteside';
+import { getAttachments } from '../../util/forsteside/forstesideUtils';
 import makeStyles from '../../util/styles/jss/jss';
 
 const compareEnheter = (enhetA, enhetB) => enhetA.navn.localeCompare(enhetB.navn, 'nb');
@@ -80,7 +80,7 @@ export function PrepareLetterPage({ form, submission, translations, formUrl }: P
     return <LoadingComponent />;
   }
 
-  const attachments = getVedleggsFelterSomSkalSendes(submission.data, form);
+  const attachments = getAttachments(submission.data, form);
   const hasAttachments = attachments.length > 0;
 
   return (

@@ -151,7 +151,7 @@ describe('Amplitude', () => {
         cy.get('dt').eq(4).should('contain.text', 'Din fødselsdato (dd.mm.åååå)');
         cy.get('dd').eq(4).should('contain.text', '10.05.1995');
         cy.get('dt').eq(5).should('contain.text', 'Folkeregistrert adresse');
-        cy.get('dd').eq(5).should('contain.text', 'Testveien 1C, 1234 Plassen, NOR');
+        cy.get('dd').eq(5).should('contain.text', 'Testveien 1C, 1234 Plassen');
         cy.get('dt').eq(6).should('contain.text', 'Bor du i Norge?');
         cy.get('dd').eq(6).should('contain.text', 'Ja');
         cy.get('dt').eq(7).should('contain.text', 'Er kontaktadressen din en vegadresse eller postboksadresse?');

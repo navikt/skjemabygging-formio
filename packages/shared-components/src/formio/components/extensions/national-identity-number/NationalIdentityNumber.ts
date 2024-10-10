@@ -1,8 +1,8 @@
+import { validateNationalIdentityNumber } from '../../../../components/indentity/NationalIdentityNumberValidator';
 import BaseComponent from '../../base/BaseComponent';
 import TextField from '../../core/textfield/TextField';
 import nationalIdentityNumberBuilder from './NationalIdentityNumber.builder';
 import nationalIdentityNumberForm from './NationalIdentityNumber.form';
-import { validateNationalIdentityNumber } from './NationalIdentityNumberValidator';
 
 export default class NationalIdentityNumber extends TextField {
   static schema() {

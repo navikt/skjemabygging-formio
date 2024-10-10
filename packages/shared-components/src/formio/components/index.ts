@@ -27,12 +27,15 @@ import CountrySelect from './extensions/country-select/CountrySelect';
 import CurrencySelect from './extensions/currency-select/CurrencySelect';
 import Currency from './extensions/currency/Currency';
 import Email from './extensions/email/Email';
+import FirstName from './extensions/first-name/FirstName';
 import IBAN from './extensions/iban/IBAN';
+import Identity from './extensions/identity/Identity';
 import NationalIdentityNumber from './extensions/national-identity-number/NationalIdentityNumber';
 import Number from './extensions/number/Number';
 import OrganizationNumber from './extensions/organization-number/OrganizationNumber';
 import Password from './extensions/password/Password';
 import PhoneNumber from './extensions/phone-number/PhoneNumber';
+import Surname from './extensions/surname/Surname';
 import Year from './extensions/year/Year';
 
 const customComponents = {
@@ -42,6 +45,7 @@ const customComponents = {
   maalgruppe: Maalgruppe,
   alertstripe: Alert,
   fnrfield: NationalIdentityNumber,
+  identity: Identity,
   orgNr: OrganizationNumber,
   bankAccount: AccountNumber,
   htmlelement: HtmlElement,
@@ -72,5 +76,7 @@ const customComponents = {
   monthPicker: MonthPicker,
   password: Password,
   year: Year,
+  firstName: FirstName,
+  surname: Surname,
 };
 export default customComponents;

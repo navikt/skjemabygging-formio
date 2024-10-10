@@ -33,8 +33,8 @@ const useDrivinglistStyles = makeStyles({
 });
 
 const DrivingListFromActivities = ({ activities }: Props) => {
-  const { values, updateValues, getComponentError } = useDrivingList();
-  const { translate, locale, addRef } = useComponentUtils();
+  const { values, updateValues } = useDrivingList();
+  const { translate, locale, addRef, getComponentError } = useComponentUtils();
 
   const styles = useDrivinglistStyles();
 

@@ -22,8 +22,8 @@ const useDrivingPeriodStyles = makeStyles({
 });
 
 const DrivingPeriod = ({ periodFrom, periodTo, hasParking, dailyRate, betalingsplan }: DrivingPeriodProps) => {
-  const { values, updateValues, getComponentError } = useDrivingList();
-  const { translate, locale, addRef } = useComponentUtils();
+  const { values, updateValues } = useDrivingList();
+  const { translate, locale, addRef, getComponentError } = useComponentUtils();
 
   const styles = useDrivingPeriodStyles();
 

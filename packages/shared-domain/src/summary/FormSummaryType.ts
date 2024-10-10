@@ -35,12 +35,8 @@ export interface SummarySelectboxes extends Omit<SummaryField, 'type' | 'value'>
   value: string[];
 }
 
-export interface SummaryAddress extends Omit<SummaryField, 'type' | 'value'> {
+export interface SummaryAddress extends Omit<SummaryField, 'type'> {
   type: 'navAddress';
-  value: {
-    address: string;
-    linkText: string;
-  };
 }
 
 export interface SummaryActivity extends Omit<SummaryField, 'type' | 'value'> {

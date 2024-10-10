@@ -4,27 +4,26 @@ import { forwardRef, ReactNode } from 'react';
 import { useComponentUtils } from '../../context/component/componentUtilsContext';
 
 interface Props {
-  id: string;
+  id?: string;
   legend: ReactNode;
-  description: ReactNode;
+  description?: ReactNode;
   value?: any;
   values: ComponentValue[];
   error: ReactNode;
   onChange: (value: any) => void;
-  reactResolve?: () => void;
   className: string;
   readOnly?: boolean;
 }
 
 const Radio = forwardRef<HTMLFieldSetElement, Props>(
-  ({ id, legend, description, value, values, error, onChange, reactResolve, className, readOnly }: Props, ref) => {
-    const { addRef, translate, focusHandler, blurHandler } = useComponentUtils();
+  ({ id, legend, description, value, values, error, onChange, className, readOnly }: Props, ref) => {
+    const { addRef, translate, focusHandler, blurHandler, reactResolve } = useComponentUtils();
 
     return (
       <AkselRadioGroup
         id={id}
         legend={legend}
-        value={value}
+        defaultValue={value}
         onChange={onChange}
         ref={ref}
         description={description}

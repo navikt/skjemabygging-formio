@@ -21,7 +21,7 @@ describe('calculateMaalgruppeValue function', () => {
         aktivitet: {},
       },
       component: {
-        defaultValue: prefilled,
+        prefillValue: prefilled,
       },
     };
     const result = maalgruppe.calculateMaalgruppeValue.call(testData);
@@ -40,7 +40,7 @@ describe('calculateMaalgruppeValue function', () => {
         },
       },
       component: {
-        defaultValue: prefilled,
+        prefillValue: prefilled,
       },
     };
     const result = maalgruppe.calculateMaalgruppeValue.call(testData);
