@@ -9,7 +9,7 @@ const yourInformationPanelBuilder = () => {
       key: 'personopplysninger',
       input: false,
       theme: 'default',
-      components: [yourInformationBuilder()],
+      components: [yourInformationBuilder().schema],
     },
   };
 };

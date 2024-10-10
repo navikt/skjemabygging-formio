@@ -107,9 +107,9 @@ export interface ComponentValue {
 export interface Component {
   id?: string;
   navId?: string;
-  key?: string;
-  label?: string;
-  type?: string;
+  key: string;
+  label: string;
+  type: string;
   content?: string;
   calculateValue?: string;
   allowCalculateOverride?: boolean;
