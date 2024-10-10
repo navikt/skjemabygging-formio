@@ -16,6 +16,7 @@ class FirstName extends TextField {
   static editForm() {
     return firstNameForm();
   }
+
   static get builderInfo() {
     return firstNameBuilder();
   }

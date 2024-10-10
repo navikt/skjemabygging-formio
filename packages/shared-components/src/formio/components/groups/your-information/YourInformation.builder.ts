@@ -10,21 +10,25 @@ const yourInformationBuilder = () => {
       type: 'container',
       key: 'dineOpplysninger',
       label: 'Dine opplysninger',
+      protectedApiKey: true,
       components: [
         {
           ...firstNameBuilder().schema,
           prefill: true,
           prefillKey: 'sokerFornavn',
+          protectedApiKey: true,
         },
         {
           ...surnameBuilder().schema,
           prefill: true,
           prefillKey: 'sokerEtternavn',
+          protectedApiKey: true,
         },
         {
           ...identityBuilder().schema,
           prefill: true,
           prefillKey: 'sokerIdentifikasjonsnummer',
+          protectedApiKey: true,
         },
         {
           ...addressBuilder().schema,
@@ -32,6 +36,7 @@ const yourInformationBuilder = () => {
           prefillKey: 'sokerAdresser',
           customConditional:
             'show = row.identitet.harDuFodselsnummer === "nei" || (row.identitet.identitetsnummer && !row.identitet.harDuFodselsnummer)',
+          protectedApiKey: true,
         },
         {
           label: 'Gyldig fra (dd.mm.åååå)',
@@ -47,6 +52,7 @@ const yourInformationBuilder = () => {
           },
           customConditional:
             'show = row.adresse.borDuINorge === "nei" || (row.adresse.borDuINorge === "ja" && row.adresse.vegadresseEllerPostboksadresse)',
+          protectedApiKey: true,
         },
         {
           label: 'Gyldig til (dd.mm.åååå)',
@@ -59,6 +65,7 @@ const yourInformationBuilder = () => {
           mayBeEqual: false,
           customConditional:
             'show = row.adresse.borDuINorge === "nei" || (row.adresse.borDuINorge === "ja" && row.adresse.vegadresseEllerPostboksadresse)',
+          protectedApiKey: true,
         },
         {
           label: 'Alertstripe',
