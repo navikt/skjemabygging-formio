@@ -107,9 +107,9 @@ export interface ComponentValue {
 export interface Component {
   id?: string;
   navId?: string;
-  key: string;
-  label: string;
-  type: string;
+  key?: string;
+  label?: string;
+  type?: string;
   content?: string;
   calculateValue?: string;
   allowCalculateOverride?: boolean;
@@ -200,6 +200,7 @@ export interface Component {
   addressPriority?: 'bostedsadresse' | 'oppholdsadresse' | 'kontaktadresse';
   addressType?: AddressType;
   prefillValue?: string | object;
+  protectedApiKey?: boolean;
 }
 
 export type AddressType = 'NORWEGIAN_ADDRESS' | 'POST_OFFICE_BOX' | 'FOREIGN_ADDRESS';

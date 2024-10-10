@@ -12,6 +12,9 @@ interface Props {
   labelOptions?: LabelOptions;
 }
 
+/**
+ * For use with Aksel component. Use <ComponentLabel> if you want a general label for your custom component with styling.
+ */
 const Label = ({ component, editFields, labelOptions }: Props) => {
   const { translate } = useComponentUtils();
 

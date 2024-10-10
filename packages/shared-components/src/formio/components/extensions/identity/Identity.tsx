@@ -41,7 +41,7 @@ export default class Identity extends BaseComponent {
   }
 
   initPrefill() {
-    if (this.isSubmissionDigital() && this.component?.prefillKey && this.component?.prefillValue) {
+    if (this.hasPrefill()) {
       // Call parent setValue so ignore prefillKey block on local setValue.
       super.setValue({
         identitetsnummer: this.component?.prefillValue,
@@ -50,7 +50,7 @@ export default class Identity extends BaseComponent {
   }
 
   getReadOnly() {
-    return this.havePrefill() || super.getReadOnly();
+    return this.hasPrefill() || super.getReadOnly();
   }
 
   get errors() {

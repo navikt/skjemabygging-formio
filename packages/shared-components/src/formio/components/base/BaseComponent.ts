@@ -165,7 +165,7 @@ class BaseComponent extends FormioReactComponent {
     return this.getAppConfig()?.submissionMethod === 'digital';
   }
 
-  havePrefill(): boolean {
+  hasPrefill(): boolean {
     return (this.isSubmissionDigital() && this.component?.prefillKey && !!this.component?.prefillValue) ?? false;
   }
 

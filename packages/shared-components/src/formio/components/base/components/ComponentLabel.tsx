@@ -11,6 +11,9 @@ interface Props {
   labelOptions?: LabelOptions;
 }
 
+/**
+ * Use this if you want a general label for your custom component. Use <Label> if you are using this in Aksel component.
+ */
 const ComponentLabel = ({ component, editFields, labelIsHidden, labelOptions }: Props) => {
   return (
     <>

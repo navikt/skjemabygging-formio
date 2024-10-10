@@ -32,14 +32,14 @@ class TextField extends BaseComponent {
   }
 
   initPrefill() {
-    if (this.havePrefill()) {
+    if (this.hasPrefill()) {
       // Call parent setValue so ignore prefillKey block on local setValue.
       super.setValue(this.component?.prefillValue);
     }
   }
 
   getReadOnly() {
-    return this.havePrefill() || super.getReadOnly();
+    return this.hasPrefill() || super.getReadOnly();
   }
 
   getValue() {
@@ -92,7 +92,7 @@ class TextField extends BaseComponent {
 
   setValue(value: any) {
     // If prefillKey is set, never set the value, not even from previously saved submissions.
-    if (!this.havePrefill()) {
+    if (!this.hasPrefill()) {
       super.setValue(value);
     }
   }
