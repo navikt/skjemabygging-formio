@@ -437,6 +437,10 @@ function handleIdentity(component, submission, formSummaryObject, parentContaine
   const componentKey = createComponentKey(parentContainerKey, key);
   const submissionValue = FormioUtils.getValue(submission, componentKey);
 
+  if (!submissionValue || (!submissionValue.identitetsnummer && !submissionValue.fodselsdato)) {
+    return [...formSummaryObject];
+  }
+
   return [
     ...formSummaryObject,
     {

@@ -49,6 +49,36 @@ describe('Your information', () => {
         cy.findByRole('textbox', { name: 'Fornavn' }).should('have.value', 'Ola');
         cy.findByRole('textbox', { name: 'Etternavn' }).should('have.value', 'Nordmann');
       });
+
+      it('Should not have any validation messages on summary page when using prefill', () => {
+        cy.findByRole('textbox', { name: 'Fornavn' }).should('have.value', 'Ola');
+        cy.findByRole('textbox', { name: 'Etternavn' }).should('have.value', 'Nordmann');
+        cy.clickSaveAndContinue();
+
+        cy.findByRole('textbox', { name: 'Fornavn' }).should('have.value', 'Ola');
+        cy.findByRole('textbox', { name: 'Etternavn' }).should('have.value', 'Nordmann');
+        cy.clickSaveAndContinue();
+
+        cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
+
+        cy.get('dl')
+          .eq(0)
+          .within(() => {
+            cy.get('dd').eq(0).should('contain.text', 'Ola');
+            cy.get('dd').eq(1).should('contain.text', 'Nordmann');
+            cy.get('dd').eq(2).should('contain.text', '08842748500');
+            cy.get('dd').eq(3).should('contain.text', 'Testveien 1C, 1234 Plassen');
+          });
+
+        cy.get('dl')
+          .eq(1)
+          .within(() => {
+            cy.get('dd').eq(0).should('contain.text', 'Ola');
+            cy.get('dd').eq(1).should('contain.text', 'Nordmann');
+          });
+
+        cy.get('.navds-alert').filter(':visible').should('have.length', 0);
+      });
     });
 
     describe('Existing application', () => {

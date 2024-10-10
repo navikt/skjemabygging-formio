@@ -166,7 +166,7 @@ class BaseComponent extends FormioReactComponent {
   }
 
   hasPrefill(): boolean {
-    return (this.isSubmissionDigital() && this.component?.prefillKey && !!this.component?.prefillValue) ?? false;
+    return (this.isSubmissionDigital() && !!this.component?.prefillKey && !!this.component?.prefillValue) ?? false;
   }
 
   // elementId is used to focus to the correct element when clicking on error summary
