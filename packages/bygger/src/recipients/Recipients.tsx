@@ -1,4 +1,4 @@
-import { VStack } from '@navikt/ds-react';
+import { Button, VStack } from '@navikt/ds-react';
 import { SkeletonList } from '@navikt/skjemadigitalisering-shared-components';
 import RowLayout from '../components/layout/RowLayout';
 import SidebarLayout from '../components/layout/SidebarLayout';
@@ -7,7 +7,7 @@ import { useRecipients } from '../context/recipients/RecipientsContext';
 import RecipientTable from './RecipientTable';
 
 const Recipients = () => {
-  const { isReady, recipients } = useRecipients();
+  const { isReady, recipients, newRecipient, addNewRecipient } = useRecipients();
 
   if (!isReady) {
     return (
@@ -31,9 +31,9 @@ const Recipients = () => {
             {/*<Button onClick={onPublish} loading={publishing} size="small">*/}
             {/*  Publiser mottaksadresser*/}
             {/*</Button>*/}
-            {/*<Button variant="secondary" onClick={() => addNewRecipient()} type="button" size="small">
+            <Button variant="secondary" onClick={addNewRecipient} type="button" size="small" disabled={!!newRecipient}>
               Legg til ny
-            </Button>*/}
+            </Button>
             <UserFeedback />
           </VStack>
         </SidebarLayout>

@@ -5,34 +5,50 @@ import useFormsApi from '../../hooks/useFormsApi';
 interface RecipientsContextValues {
   isReady: boolean;
   recipients: Recipient[];
+  newRecipient?: Partial<Recipient>;
+  addNewRecipient: () => void;
 }
 
-const defaultValue = {
+const defaultContextValue = {
   isReady: false,
   recipients: [],
+  addNewRecipient: () => {},
 };
 
-const RecipientsContext = createContext<RecipientsContextValues>(defaultValue);
+interface RecipientState {
+  isReady: boolean;
+  recipients: Recipient[];
+  new?: Partial<Recipient>;
+}
+
+const RecipientsContext = createContext<RecipientsContextValues>(defaultContextValue);
 
 const RecipientsProvider = ({ children }: { children: ReactNode }) => {
   const { recipientsApi } = useFormsApi();
-  const [isReady, setIsReady] = useState(defaultValue.isReady);
-  const [recipients, setRecipients] = useState<Recipient[]>(defaultValue.recipients);
+  const [recipientState, setRecipientState] = useState<RecipientState>({ isReady: false, recipients: [] });
 
   const loadRecipients = useCallback(async (): Promise<void> => {
     const recipients = await recipientsApi.getAll();
-    setRecipients(recipients ?? []);
+    setRecipientState((state) => ({ ...state, recipients: recipients ?? [] }));
   }, [recipientsApi]);
 
   useEffect(() => {
-    if (!isReady) {
-      loadRecipients().then(() => setIsReady(true));
+    if (!recipientState.isReady) {
+      loadRecipients().then(() => setRecipientState((state) => ({ ...state, isReady: true })));
     }
-  }, [isReady, loadRecipients]);
+  }, [recipientState.isReady, loadRecipients]);
+
+  const addNewRecipient = () => {
+    if (recipientState.new === undefined) {
+      setRecipientState((state) => ({ ...state, new: { recipientId: 'new' } }));
+    }
+  };
 
   const value = {
-    isReady,
-    recipients,
+    isReady: recipientState.isReady,
+    recipients: recipientState.recipients,
+    newRecipient: recipientState.new,
+    addNewRecipient,
   };
   return <RecipientsContext.Provider value={value}>{children}</RecipientsContext.Provider>;
 };
