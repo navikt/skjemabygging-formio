@@ -116,7 +116,7 @@ function formatValue(component, value, translate, form, language) {
       return addressComponents.join(', ');
     }
     case 'identity': {
-      return value?.harDuFodselsnummer === 'ja' ? value?.identitetsnummer : dateUtils.toLocaleDate(value?.fodselsdato);
+      return value?.identitetsnummer ? value?.identitetsnummer : dateUtils.toLocaleDate(value?.fodselsdato);
     }
     case 'drivinglist':
       return {
@@ -440,10 +440,9 @@ function handleIdentity(component, submission, formSummaryObject, parentContaine
   return [
     ...formSummaryObject,
     {
-      label:
-        submissionValue?.harDuFodselsnummer === 'ja'
-          ? translate(TEXTS.statiske.identity.identityNumber)
-          : translate(TEXTS.statiske.identity.yourBirthdate),
+      label: submissionValue?.identitetsnummer
+        ? translate(TEXTS.statiske.identity.identityNumber)
+        : translate(TEXTS.statiske.identity.yourBirthdate),
       key: componentKey,
       type,
       value: formatValue(component, submissionValue, translate, form, language),
