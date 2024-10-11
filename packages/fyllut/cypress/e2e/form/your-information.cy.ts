@@ -77,7 +77,7 @@ describe('Your information', () => {
             cy.get('dd').eq(1).should('contain.text', 'Nordmann');
           });
 
-        cy.get('.navds-alert').filter(':visible').should('have.length', 0);
+        cy.get('.navds-alert').should('have.length', 0);
       });
     });
 
