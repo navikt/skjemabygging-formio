@@ -7,6 +7,7 @@ interface RecipientsContextValues {
   recipients: Recipient[];
   newRecipient?: Partial<Recipient>;
   addNewRecipient: () => void;
+  cancelNewRecipient: () => void;
   saveRecipient: (recipient: Recipient) => Promise<Recipient | undefined>;
 }
 
@@ -14,6 +15,7 @@ const defaultContextValue = {
   isReady: false,
   recipients: [],
   addNewRecipient: () => {},
+  cancelNewRecipient: () => {},
   saveRecipient: (_recipient) => Promise.reject(),
 };
 
@@ -44,13 +46,11 @@ const RecipientsProvider = ({ children }: { children: ReactNode }) => {
     if (changedRecipient.recipientId === 'new') {
       const { recipientId, ...newRecipient } = changedRecipient;
       const recipient = await recipientsApi.post(newRecipient);
-      console.log('Result', recipient);
       if (recipient) {
         setRecipientState((state) => ({ ...state, recipients: [...state.recipients, recipient], new: undefined }));
       }
       return recipient;
     }
-
     const recipient = await recipientsApi.put(changedRecipient);
     if (recipient) {
       setRecipientState((state) => {
@@ -71,11 +71,16 @@ const RecipientsProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const cancelNewRecipient = () => {
+    setRecipientState((state) => ({ ...state, new: undefined }));
+  };
+
   const value = {
     isReady: recipientState.isReady,
     recipients: recipientState.recipients,
     newRecipient: recipientState.new,
     addNewRecipient,
+    cancelNewRecipient,
     saveRecipient,
   };
   return <RecipientsContext.Provider value={value}>{children}</RecipientsContext.Provider>;

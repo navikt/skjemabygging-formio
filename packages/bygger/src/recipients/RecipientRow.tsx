@@ -1,13 +1,16 @@
 import { PencilIcon } from '@navikt/aksel-icons';
-import { Button, HStack, Table, TextField } from '@navikt/ds-react';
+import { Button, Table } from '@navikt/ds-react';
 import { makeStyles } from '@navikt/skjemadigitalisering-shared-components';
 import { Recipient } from '@navikt/skjemadigitalisering-shared-domain';
-import { useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useRecipients } from '../context/recipients/RecipientsContext';
+import RecipientButtonRow from './RecipientButtonRow';
+import RecipientInput from './RecipientInput';
 
 const useStyles = makeStyles({
   editRow: {
     border: 0,
+    verticalAlign: 'baseline',
     '& .navds-form-field': {
       paddingTop: '8px',
     },
@@ -21,17 +24,67 @@ const useStyles = makeStyles({
 });
 
 type ViewState = 'display' | 'editing';
+type ValidationErrors = {
+  name?: string;
+  poBoxAddress?: string;
+  postalCode?: string;
+  postalName?: string;
+};
+
+const LABELS = {
+  name: 'Enhetsnavn',
+  poBoxAddress: 'Postboksadresse',
+  postalCode: 'Postnr.',
+  postalName: 'Poststed',
+};
 
 const RecipientRow = ({ recipient }: { recipient: Partial<Recipient> }) => {
-  const { saveRecipient } = useRecipients();
+  const { saveRecipient, cancelNewRecipient } = useRecipients();
   const { recipientId } = recipient;
   const [viewState, setViewState] = useState<ViewState>(recipientId === 'new' ? 'editing' : 'display');
-  const [isSaving, setIsSaving] = useState<boolean>(false);
   const [value, setValue] = useState(recipient);
+  const [showErrors, setShowErrors] = useState(false);
   const styles = useStyles();
 
   const updateValueProperty = (key: keyof Recipient, value: string) => {
     setValue((currentValue) => ({ ...currentValue, [key]: value }));
+  };
+
+  const validationErrors: ValidationErrors = useMemo(() => {
+    const required = 'Du må fylle ut';
+    return {
+      name: value.name ? undefined : `${required} ${LABELS.name}`,
+      poBoxAddress: value.poBoxAddress ? undefined : `${required} ${LABELS.poBoxAddress}`,
+      postalCode: value.postalCode ? undefined : `${required} ${LABELS.postalCode}`,
+      postalName: value.postalName ? undefined : `${required} ${LABELS.postalName}`,
+    };
+  }, [value.name, value.poBoxAddress, value.postalCode, value.postalName]);
+
+  const isValid = useCallback(
+    (recipient: Partial<Recipient>): recipient is Recipient =>
+      !Object.values(validationErrors).some((value) => !!value),
+    [validationErrors],
+  );
+
+  const onSave = async () => {
+    if (!isValid(value)) {
+      setShowErrors(true);
+      return;
+    }
+
+    const result = await saveRecipient(value);
+    if (result) {
+      setViewState('display');
+    }
+  };
+
+  const cancelEditing = () => {
+    if (recipientId === 'new') {
+      cancelNewRecipient();
+    } else {
+      setValue(recipient);
+      setViewState('display');
+    }
   };
 
   if (viewState === 'display') {
@@ -68,75 +121,39 @@ const RecipientRow = ({ recipient }: { recipient: Partial<Recipient> }) => {
       <>
         <Table.Row shadeOnHover={false}>
           <Table.DataCell className={`${styles.editRow} ${styles.columnLarge}`}>
-            <TextField
-              label="Enhetsnavn"
-              hideLabel
-              size="small"
+            <RecipientInput
+              label={LABELS.name}
               defaultValue={value.name}
-              onChange={(event) => updateValueProperty('name', event.currentTarget.value)}
+              error={showErrors && validationErrors.name}
+              onChange={(value) => updateValueProperty('name', value)}
             />
           </Table.DataCell>
           <Table.DataCell className={`${styles.editRow} ${styles.columnLarge}`}>
-            <TextField
-              label="Postboksadresse"
-              hideLabel
-              size="small"
+            <RecipientInput
+              label={LABELS.poBoxAddress}
               defaultValue={value.poBoxAddress}
-              onChange={(event) => updateValueProperty('poBoxAddress', event.currentTarget.value)}
+              error={showErrors && validationErrors.poBoxAddress}
+              onChange={(value) => updateValueProperty('poBoxAddress', value)}
             />
           </Table.DataCell>
           <Table.DataCell className={`${styles.editRow} ${styles.columnSmall}`}>
-            <TextField
-              label="Postnr."
-              hideLabel
-              size="small"
+            <RecipientInput
+              label={LABELS.postalCode}
               defaultValue={value.postalCode}
-              onChange={(event) => updateValueProperty('postalCode', event.currentTarget.value)}
+              error={showErrors && validationErrors.postalCode}
+              onChange={(value) => updateValueProperty('postalCode', value)}
             />
           </Table.DataCell>
           <Table.DataCell className={styles.editRow} colSpan={2}>
-            <TextField
-              label="Poststed"
-              hideLabel
-              size="small"
+            <RecipientInput
+              label={LABELS.postalName}
               defaultValue={value.postalName}
-              onChange={(event) => updateValueProperty('postalName', event.currentTarget.value)}
+              error={showErrors && validationErrors.postalName}
+              onChange={(value) => updateValueProperty('postalName', value)}
             />
           </Table.DataCell>
         </Table.Row>
-        <Table.Row shadeOnHover={false}>
-          <Table.DataCell colSpan={5}>
-            <HStack gap="4" justify="end">
-              <Button
-                size="small"
-                loading={isSaving}
-                onClick={async () => {
-                  console.log(value);
-                  setIsSaving(true);
-                  // FIXME
-                  const result = await saveRecipient(value as Recipient);
-                  setIsSaving(false);
-                  if (result) setViewState('display');
-                }}
-              >
-                Lagre
-              </Button>
-              <Button
-                size="small"
-                variant="tertiary"
-                onClick={() => {
-                  setValue(recipient);
-                  setViewState('display');
-                }}
-              >
-                Avbryt
-              </Button>
-              <Button size="small" variant="danger">
-                Slett
-              </Button>
-            </HStack>
-          </Table.DataCell>
-        </Table.Row>
+        <RecipientButtonRow isNew={recipientId === 'new'} onSave={onSave} onCancel={cancelEditing} />
       </>
     );
   }
