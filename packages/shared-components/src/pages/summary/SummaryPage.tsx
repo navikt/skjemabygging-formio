@@ -96,6 +96,10 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
       const panelValidations = validateWizardPanels(instance, form, submission);
       setPanelValidationList(panelValidations);
       instance.destroy(true);
+      const formioSummary = document.getElementById('formio-summary-hidden');
+      if (formioSummary) {
+        formioSummary.innerHTML = '';
+      }
     };
     if (isMellomlagringAvailable && submission.data) {
       initializePanelValidation();
