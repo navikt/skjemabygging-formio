@@ -210,6 +210,32 @@ describe('form', () => {
       ]);
     });
 
+    it('should exclude attachment values correctly when "enabled" prop is not defined', () => {
+      const attachmentValues: AttachmentSettingValues = {
+        leggerVedNaa: { enabled: true },
+        ettersender: {},
+        nav: {
+          enabled: true,
+          additionalDocumentation: { enabled: true, label: 'docLabel', description: 'docDescription' },
+        },
+      };
+
+      const result = mapAttachmentValues(translate, testForm, attachmentValues);
+
+      expect(result).toStrictEqual([
+        {
+          key: 'leggerVedNaa',
+          description: 'Jeg legger det ved dette skjemaet',
+        },
+        {
+          key: 'nav',
+          description: 'Jeg ønsker at NAV innhenter denne dokumentasjonen',
+          additionalDocumentationLabel: 'docLabel',
+          additionalDocumentationDescription: 'docDescription',
+        },
+      ]);
+    });
+
     it('should include deadlineWarning if showDeadline is true and ettersendelsesfrist is defined', () => {
       const attachmentValues: AttachmentSettingValues = {
         leggerVedNaa: { enabled: true, showDeadline: true },

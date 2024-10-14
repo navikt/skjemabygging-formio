@@ -78,7 +78,7 @@ const mapAttachmentValues = (
 
   return Object.entries(attachmentValues)
     .map(([key, value]) => {
-      if (value.enabled === false) return null;
+      if (value.enabled !== true) return null;
 
       const data = value as AttachmentSettingValue;
       const attachmentKey = key as keyof AttachmentSettingValues;
