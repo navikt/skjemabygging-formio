@@ -63,12 +63,12 @@ spec:
   azure:
     application:
       enabled: true
-      tenant: nav.no
       allowAllUsers: false
       claims:
         groups:
-          - id: 1d12af59-d953-4f85-9f65-d8cbf6672deb
-          - id: 0c0e4023-5fd3-4cfe-8b40-3b98645bb08f
+        {{#each azure.ad_groups}}
+            - id: "{{this.id}}"
+        {{/each}}
         extra:
           - NAVident
     sidecar:
