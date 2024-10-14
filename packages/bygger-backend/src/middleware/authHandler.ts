@@ -6,7 +6,6 @@ import config from '../config';
 import { logger } from '../logging/logger';
 import { AzureAdTokenPayload, User } from '../types/custom';
 import { getDevUser } from '../util/devUser';
-import { adGroups } from './azureAd';
 
 function toExpiredDateString(exp?: number) {
   if (exp) {
@@ -62,12 +61,13 @@ const authHandler = async (req: Request, res: Response, next: NextFunction) => {
       return res.sendStatus(401);
     }
 
+    const { adGroups } = config.formsApi;
     logger.info(`Validation of jwt token succeeded (expires ${toExpiredDateString(tokenPayload.exp)})`);
     req.getUser = () => ({
       name: tokenPayload.name,
       preferredUsername: tokenPayload.preferred_username,
       NAVident: tokenPayload.NAVident,
-      isAdmin: tokenPayload.groups?.includes(adGroups.ADMINISTRATOR) || false,
+      isAdmin: tokenPayload.groups?.includes(adGroups.admin) || false,
     });
   }
   next();

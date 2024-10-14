@@ -36,6 +36,10 @@ export type FyllutConfig = {
 
 export type FormsApiConfig = {
   url: string;
+  adGroups: {
+    user: string;
+    admin: string;
+  };
 };
 
 export type PusherConfig = {

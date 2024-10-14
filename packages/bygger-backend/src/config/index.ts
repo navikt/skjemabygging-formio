@@ -91,6 +91,10 @@ const config: ConfigType = {
   },
   formsApi: {
     url: env('FORMS_API_URL', devFormsApi.url),
+    adGroups: {
+      user: env('FORMS_API_AD_GROUP_USER', devFormsApi.adGroups.user),
+      admin: env('FORMS_API_AD_GROUP_ADMIN', devFormsApi.adGroups.admin),
+    },
   },
   pusher: {
     cluster: env('PUSHER_CLUSTER', devPusher.cluster),

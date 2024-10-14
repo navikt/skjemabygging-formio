@@ -41,6 +41,10 @@ export const devFyllut: Partial<FyllutConfig> = {
 
 export const devFormsApi: Partial<FormsApiConfig> = {
   url: 'https://forms-api.intern.dev.nav.no',
+  adGroups: {
+    user: '1d12af59-d953-4f85-9f65-d8cbf6672deb',
+    admin: '0c0e4023-5fd3-4cfe-8b40-3b98645bb08f',
+  },
 };
 
 export const devPusher: Partial<PusherConfig> = {
