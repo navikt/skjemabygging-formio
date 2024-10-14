@@ -4,6 +4,7 @@ import {
   devAzure,
   devEnabledFeatures,
   devFormio,
+  devFormsApi,
   devFyllut,
   devGithub,
   devGithubApp,
@@ -87,6 +88,9 @@ const config: ConfigType = {
   fyllut: {
     baseUrl: env('FYLLUT_BASE_URL', devFyllut.baseUrl),
     skjemadelingslenkeUrl: 'https://skjemadelingslenke.ekstern.dev.nav.no/fyllut',
+  },
+  formsApi: {
+    url: env('FORMS_API_URL', devFormsApi.url),
   },
   pusher: {
     cluster: env('PUSHER_CLUSTER', devPusher.cluster),

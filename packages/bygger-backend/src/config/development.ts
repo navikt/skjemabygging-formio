@@ -1,6 +1,7 @@
 import {
   AzureConfig,
   FormioConfig,
+  FormsApiConfig,
   FyllutConfig,
   GithubAppConfig,
   PublishRepoConfig,
@@ -36,6 +37,10 @@ export const prodFormio: Pick<FormioConfig, 'apiService' | 'projectName'> = {
 
 export const devFyllut: Partial<FyllutConfig> = {
   baseUrl: 'https://skjemadelingslenke.ekstern.dev.nav.no/fyllut',
+};
+
+export const devFormsApi: Partial<FormsApiConfig> = {
+  url: 'https://forms-api.intern.dev.nav.no',
 };
 
 export const devPusher: Partial<PusherConfig> = {

@@ -13,7 +13,7 @@ const prodFormioApiServiceUrl = getFormioApiProdServiceUrl();
 
 const formioService = new FormioService(formioApiServiceUrl);
 
-const recipientService = new RecipientService('http://localhost:8082');
+const recipientService = new RecipientService(config.formsApi.url);
 
 const backendInstance = new Backend(config, formioService);
 
