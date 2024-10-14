@@ -52,6 +52,12 @@ spec:
       value: http://formio-api
     - name: FORMIO_PROJECT_NAME
       value: jvcemxwcpghcqjn
+    - name: FORMS_API_URL
+      value: http://forms-api.fyllut-sendinn
+    {{#each azure.ad_groups}}
+    - name: "FORMS_API_AD_GROUP_{{this.type}}"
+      value: "{{this.id}}"
+    {{/each}}
     {{#each environmentVars}}
     - name: {{this.name}}
       value: {{this.value}}
@@ -84,6 +90,8 @@ spec:
           namespace: {{this.namespace}}
           cluster: {{this.cluster}}
       {{/each}}
+      - application: forms-api
+        namespace: fyllut-sendinn
       external:
         - host: formio-api-server.ekstern.dev.nav.no
         - host: api.github.com
