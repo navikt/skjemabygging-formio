@@ -39,7 +39,7 @@ export const devFyllut: Partial<FyllutConfig> = {
   baseUrl: 'https://skjemadelingslenke.ekstern.dev.nav.no/fyllut',
 };
 
-export const devFormsApi: Partial<FormsApiConfig> = {
+export const devFormsApi: FormsApiConfig = {
   url: 'https://forms-api.intern.dev.nav.no',
   adGroups: {
     user: '1d12af59-d953-4f85-9f65-d8cbf6672deb',
