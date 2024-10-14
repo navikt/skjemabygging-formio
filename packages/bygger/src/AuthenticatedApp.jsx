@@ -5,7 +5,7 @@ import ImportFormsPage from './import/ImportFormsPage';
 import BulkPublishPage from './migration/BulkPublishPage';
 import MigrationRouter from './migration/MigrationRouter';
 import MottaksadresserPage from './mottaksadresser/MottaksadresserPage';
-import RecipientsPage from './recipients/recipientsPage';
+import RecipientsPage from './recipients/RecipientsPage';
 import ReportsPage from './reports/ReportsPage';
 import TranslationsRouter from './translations/TranslationsRouter';
 
