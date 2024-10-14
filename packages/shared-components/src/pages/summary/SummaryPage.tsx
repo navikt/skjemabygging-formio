@@ -1,6 +1,12 @@
 import { ExclamationmarkTriangleFillIcon } from '@navikt/aksel-icons';
 import { Alert, BodyShort, ConfirmationPanel, Heading } from '@navikt/ds-react';
-import { DeclarationType, NavFormType, Submission, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  DeclarationType,
+  NavFormType,
+  navFormUtils,
+  Submission,
+  TEXTS,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import { Form as FormioForm } from 'formiojs';
 import { useEffect, useRef, useState } from 'react';
 import EditAnswersButton from '../../components/button/navigation/edit-answers/EditAnswersButton';
@@ -10,6 +16,7 @@ import FormSummary from '../../components/summary/form/FormSummary';
 import SummaryPageNavigation from '../../components/summary/navigation/SummaryPageNavigation';
 import { useAppConfig } from '../../context/config/configContext';
 import { useLanguages } from '../../context/languages';
+import { usePrefillData } from '../../context/prefill-data/PrefillDataContext';
 import { useSendInn } from '../../context/sendInn/sendInnContext';
 import { SANITIZE_CONFIG } from '../../formio/form-builder-options/sanitizeConfig';
 import Styles from '../../styles';
@@ -64,6 +71,7 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
   const styles = useStyles();
   const { declarationType, declarationText } = form.properties;
   const [declaration, setDeclaration] = useState<boolean | undefined>(undefined);
+  const { prefillData } = usePrefillData();
 
   const [panelValidationList, setPanelValidationList] = useState<PanelValidation[] | undefined>();
 
@@ -80,11 +88,18 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
       const submissionCopy = JSON.parse(JSON.stringify(submission));
       const instance = await formio.ready;
       await instance.setSubmission(submissionCopy);
+      if (instance && prefillData) {
+        instance.form = navFormUtils.prefillForm(instance.form, prefillData);
+      }
       instance.checkData(submissionCopy.data, [], undefined);
 
       const panelValidations = validateWizardPanels(instance, form, submission);
       setPanelValidationList(panelValidations);
       instance.destroy(true);
+      const formioSummary = document.getElementById('formio-summary-hidden');
+      if (formioSummary) {
+        formioSummary.innerHTML = '';
+      }
     };
     if (isMellomlagringAvailable && submission.data) {
       initializePanelValidation();

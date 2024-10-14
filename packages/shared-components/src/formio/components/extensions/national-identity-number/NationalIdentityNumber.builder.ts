@@ -7,7 +7,6 @@ const nationalIdentityNumberBuilder = (keyPostfix: string = '') => {
     schema: {
       ...schema,
       key: `${schema.key}${keyPostfix}`,
-      validateOn: 'blur',
       validate: {
         required: true,
       },

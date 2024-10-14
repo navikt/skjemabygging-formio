@@ -14,7 +14,7 @@ interface AttachmentSettingValues {
 }
 
 interface AttachmentSettingValue {
-  enabled: boolean;
+  enabled?: boolean;
   showDeadline?: boolean;
   additionalDocumentation?: {
     enabled: boolean;

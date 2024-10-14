@@ -1,25 +1,8 @@
-interface Address {
-  gyldigFraOgMed?: string;
-  gyldigTilOgMed?: string;
+import Address from '../address/address';
 
-  adresse?: string;
-  postnummer?: string;
-  bySted?: string; // poststed for norske adresser
-  landkode: string;
-  co?: string;
-  postboks?: string;
-
-  // only for foreign addresses
-  bygning?: string;
-  region?: string;
-}
-
-interface SubmissionAddress {
-  sokerAdresser?: {
-    bostedsadresse?: Address;
-    oppholdsadresser?: Address[];
-    kontaktadresser?: Address[];
-  };
+interface SubmissionAddress extends Address {
+  borDuINorge?: string;
+  vegadresseEllerPostboksadresse?: string;
 }
 
 export default SubmissionAddress;

@@ -1,4 +1,5 @@
 import { AccordionSettingValue, AccordionSettingValues } from './accordion';
+import Address from './address/address';
 import attachmentUtils, {
   AttachmentSettingValue,
   AttachmentSettingValues,
@@ -11,6 +12,7 @@ import configUtils from './config';
 import type { ConfigType } from './config/types';
 import { Enhet, Enhetstype, supportedEnhetstyper } from './enhet';
 import {
+  AddressType,
   Attachment,
   AttachmentType,
   Component,
@@ -60,6 +62,7 @@ import type { FrontendLoggerConfigType, LogLevel } from './logging/types';
 import migrationUtils, { MigrationLevel } from './migration';
 import { Operator } from './migration/operator';
 import type { Mottaksadresse, MottaksadresseData } from './mottaksadresse';
+import PrefillAddress from './prefill/prefillAddress';
 import type { Recipient } from './recipient/Recipient';
 import type { ReportDefinition } from './reports';
 import type { FormioResource, ResourceName } from './resource';
@@ -76,8 +79,11 @@ import {
   VedtakBetalingsplan,
 } from './sendinn/activity';
 import { SubmissionActivity } from './submission/activity';
+import SubmissionAddress from './submission/address';
 import { DrivingListPeriod, DrivingListSubmission, DrivingListValues } from './submission/drivingList';
+import SubmissionIdentity from './submission/identity';
 import { SubmissionMaalgruppe } from './submission/maalgruppe';
+import SubmissionDefault from './submission/submission';
 import {
   SummaryActivity,
   SummaryAddress,
@@ -145,6 +151,8 @@ export {
 export type {
   AccordionSettingValue,
   AccordionSettingValues,
+  Address,
+  AddressType,
   AktivitetPeriode,
   AktivitetVedtaksinformasjon,
   Attachment,
@@ -198,6 +206,7 @@ export type {
   NewFormSignatureType,
   Operator,
   Panel,
+  PrefillAddress,
   PrefillData,
   PrefillKey,
   Recipient,
@@ -210,8 +219,11 @@ export type {
   SendInnMaalgruppe,
   Submission,
   SubmissionActivity,
+  SubmissionAddress,
   SubmissionAttachmentValue,
   SubmissionData,
+  SubmissionDefault,
+  SubmissionIdentity,
   SubmissionMaalgruppe,
   SubmissionMethod,
   SummaryActivity,

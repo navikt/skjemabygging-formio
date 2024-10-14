@@ -120,7 +120,7 @@
       <div class="description">{{ctx.t(ctx.component.description)}}</div>
     {% } %}
     {% ctx.rows.forEach(function(row, index) { %}
-      <div class="navds-fieldset__content" ref="{{ctx.datagridKey}}-row">
+      <div class="navds-fieldset__content navds-fieldset__content--background-color" ref="{{ctx.datagridKey}}-row">
         {% if (ctx.component.rowTitle) { %}
           <legend class="navds-fieldset__legend-formio-template">{{ctx.t(ctx.component.rowTitle)}}</legend>
         {% } %}

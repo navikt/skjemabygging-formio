@@ -6,5 +6,5 @@ const { veiledning, dineOpplysninger, vedleggpanel } = FormBuilderOptions.builde
 export const defaultFormFields = (): Partial<Component>[] => [
   veiledning.schema,
   dineOpplysninger.schema,
-  vedleggpanel.schema,
+  vedleggpanel.schema as Component,
 ];
