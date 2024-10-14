@@ -13,7 +13,7 @@ const formTestMellomlagring = require('../data/formio-api/test-mellomlagring.jso
 const formTestMellomlagringV2 = require('../data/formio-api/test-mellomlagring-v2.json');
 const formSelectV1 = require('../data/formio-api/form-select-v1.json');
 const formSelectV2 = require('../data/formio-api/form-select-v2.json');
-const formTestPrefillData = require('../data/formio-api/prefill-data.json');
+const formYourInformation = require('../data/formio-api/your-information.json');
 const translationsCypress101 = require('../data/formio-api/cypress101-translation.json');
 const translationsConditionalXmas = require('../data/formio-api/conditionalxmas-translation.json');
 const translationsCustomComps = require('../data/formio-api/custom-components-translations.json');
@@ -50,7 +50,7 @@ const allForms = [
   { form: formNavdatepicker, translations: undefined },
   { form: formSubmissionMethod, translations: translationsSubmissionMethod },
   { form: formTestMellomlagring, formV2: formTestMellomlagringV2, translations: undefined },
-  { form: formTestPrefillData, translations: undefined },
+  { form: formYourInformation, translations: undefined },
   { form: formSelectV1, formV2: formSelectV2, translations: undefined },
   { form: formActivities, translations: undefined },
   { form: formDatagridConditional, translations: undefined },

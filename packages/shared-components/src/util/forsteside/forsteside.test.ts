@@ -1,14 +1,12 @@
-import { ForstesideRequestBody, Mottaksadresse, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import {
-  genererAdresse,
-  genererDokumentlisteFoersteside,
-  genererFoerstesideData,
-  genererMottaksadresse,
-  genererPersonalia,
-  genererSkjemaTittel,
-  genererVedleggsListe,
-  getVedleggsFelterSomSkalSendes,
-} from './forsteside';
+  ForstesideRequestBody,
+  Mottaksadresse,
+  NavFormType,
+  SubmissionDefault,
+} from '@navikt/skjemadigitalisering-shared-domain';
+import { genererFoerstesideData } from './forsteside';
+import { genererAdresse, genererPersonalia } from './forstesideDepricatedUtils';
+import { getAttachmentLabels, getAttachments, getAttachmentTitles, getRecipients, getTitle } from './forstesideUtils';
 
 const genererVedleggComponent = (key, label, vedleggskode, vedleggstittel) => ({
   label,
@@ -59,7 +57,9 @@ const formMedVedlegg = {
 describe('forsteside', () => {
   describe('genererPersonalia', () => {
     it('returns bruker if we have fodselsNummer', () => {
-      const actual = genererPersonalia('12345678911');
+      const actual = genererPersonalia({
+        fodselsnummerDNummerSoker: '12345678911',
+      });
       expect(actual).toEqual({
         bruker: {
           brukerId: '12345678911',
@@ -69,12 +69,13 @@ describe('forsteside', () => {
     });
 
     it('returns ukjentBruker if we do not have fodselsNummer', () => {
-      const actual = genererPersonalia(undefined, {
-        navn: 'Test Testesen',
-        adresse: 'Testveien 1',
-        postnr: '1234',
-        sted: 'Oslo',
-        land: 'Norge',
+      const actual = genererPersonalia({
+        fornavnSoker: 'Test',
+        etternavnSoker: 'Testesen',
+        gateadresseSoker: 'Testveien 1',
+        postnummerSoker: '1234',
+        poststedSoker: 'Oslo',
+        landSoker: 'Norge',
       });
       expect(actual).toEqual({
         ukjentBrukerPersoninfo: 'Test Testesen, Testveien 1, 1234 Oslo, Norge.',
@@ -82,22 +83,20 @@ describe('forsteside', () => {
     });
 
     it('throws error is both fodselsNummer and address is missing', () => {
-      expect(() => genererPersonalia(undefined, undefined)).toThrowError(
-        'User needs to submit either fodselsNummer or address',
-      );
+      expect(() => genererPersonalia(undefined)).toThrowError('User needs to submit either fodselsNummer or address');
     });
   });
 
   describe('genererSkjemaTittel', () => {
     it('generates correct skjemaTittel', () => {
-      const actual = genererSkjemaTittel('Registreringsskjema for tilskudd til utdanning', 'NAV 76-07.10');
+      const actual = getTitle('Registreringsskjema for tilskudd til utdanning', 'NAV 76-07.10');
       expect(actual).toBe('NAV 76-07.10 Registreringsskjema for tilskudd til utdanning');
     });
   });
 
   describe('getVedleggsFelterSomSkalSendes', () => {
     it('adds all vedlegg which are set as leggerVedNaa', () => {
-      const actual = getVedleggsFelterSomSkalSendes(
+      const actual = getAttachments(
         {
           vedleggQ7: 'leggerVedNaa',
           vedleggO9: 'leggerVedNaa',
@@ -108,7 +107,7 @@ describe('forsteside', () => {
     });
 
     it('does not add vedlegg which should not be submitted now', () => {
-      const actual = getVedleggsFelterSomSkalSendes(
+      const actual = getAttachments(
         {
           vedleggQ7: 'levertTidligere',
           vedleggO9: 'ettersender',
@@ -119,7 +118,7 @@ describe('forsteside', () => {
     });
 
     it('handles several vedlegg with the same vedleggskode', () => {
-      const actual = getVedleggsFelterSomSkalSendes(
+      const actual = getAttachments(
         {
           vedlegg1: 'leggerVedNaa',
           vedlegg2: 'leggerVedNaa',
@@ -138,7 +137,7 @@ describe('forsteside', () => {
 
     describe('handles new attachment type', () => {
       it('onlye leggerVedNaa should be included', () => {
-        const actual = getVedleggsFelterSomSkalSendes(
+        const actual = getAttachments(
           {
             vedlegg1: {
               key: 'ettersender',
@@ -181,7 +180,7 @@ describe('forsteside', () => {
 
   describe('genererVedleggsListe', () => {
     it('generates correct vedleggsListe', () => {
-      const actual = genererVedleggsListe(formMedVedlegg, { vedleggQ7: 'leggerVedNaa', vedleggO9: 'leggerVedNaa' });
+      const actual = getAttachmentTitles(formMedVedlegg, { vedleggQ7: 'leggerVedNaa', vedleggO9: 'leggerVedNaa' });
       expect(actual).toEqual([
         'Bekreftelse fra studiested/skole',
         'Dokumentasjon av utgifter i forbindelse med utdanning',
@@ -189,27 +188,18 @@ describe('forsteside', () => {
     });
 
     it('handles correctly when no vedlegg will be submitted', () => {
-      const actual = genererVedleggsListe(formMedVedlegg, { vedleggQ7: 'ettersender' });
+      const actual = getAttachmentTitles(formMedVedlegg, { vedleggQ7: 'ettersender' });
       expect(actual).toEqual([]);
     });
   });
 
   describe('genererDokumentListeFoersteside', () => {
     it('generates correct dokumentListeFoersteside', () => {
-      const actual = genererDokumentlisteFoersteside(
-        'Registreringsskjema for tilskudd til utdanning',
-        'NAV 76-07.10',
-        formMedVedlegg,
-        {
-          vedleggQ7: 'leggerVedNaa',
-          vedleggO9: 'leggerVedNaa',
-        },
-      );
-      expect(actual).toEqual([
-        'NAV 76-07.10 Registreringsskjema for tilskudd til utdanning',
-        'Skriftlig bekreftelse på studieplass',
-        'Faktura fra utdanningsinstitusjon',
-      ]);
+      const actual = getAttachmentLabels(formMedVedlegg, {
+        vedleggQ7: 'leggerVedNaa',
+        vedleggO9: 'leggerVedNaa',
+      });
+      expect(actual).toEqual(['Skriftlig bekreftelse på studieplass', 'Faktura fra utdanningsinstitusjon']);
     });
   });
 
@@ -267,12 +257,12 @@ describe('forsteside', () => {
 
   describe('genererMottaksAdresse', () => {
     it('returns default netsPostboks if neither mottaksadresseId or enhet is provided', () => {
-      expect(genererMottaksadresse(undefined, [])).toStrictEqual({ netsPostboks: '1400' });
+      expect(getRecipients(undefined, [])).toStrictEqual({ netsPostboks: '1400' });
     });
 
     it('finds and returns the correct mottaksadresse when mottaksadresseId and mottaksadresser is provided', () => {
       expect(
-        genererMottaksadresse('002', [
+        getRecipients('002', [
           { _id: '001', data: { adresselinje1: 'Gate 1', postnummer: '0001', poststed: 'By' } },
           {
             _id: '002',
@@ -299,14 +289,14 @@ describe('forsteside', () => {
 
     it("returns default netsPostboks if mottaksadresseId doesn't match any of the provided mottaksadresse", () => {
       expect(
-        genererMottaksadresse('123', [
+        getRecipients('123', [
           { _id: '001', data: { adresselinje1: 'Gate 1', postnummer: '0001', poststed: 'By' } },
         ] as Mottaksadresse[]),
       ).toStrictEqual({ netsPostboks: '1400' });
     });
 
     it('returns enhetsnummer and default netsPostboks if mottaksadresseId is undefined and enhetsnummer is provided', () => {
-      expect(genererMottaksadresse(undefined, [], '123')).toStrictEqual({ enhetsnummer: '123', netsPostboks: '1400' });
+      expect(getRecipients(undefined, [], '123')).toStrictEqual({ enhetsnummer: '123', netsPostboks: '1400' });
     });
   });
 
@@ -362,7 +352,7 @@ describe('forsteside', () => {
 
     describe('Språkkode', () => {
       const defaultForm = { properties: { skjemanummer: 'TST 10.11-12' }, components: [] };
-      const defaultSubmission = {};
+      const defaultSubmission = {} as SubmissionDefault;
 
       it('Bokmål brukes dersom språk ikke er valgt', () => {
         const forstesideRequest = genererFoerstesideData(defaultForm, defaultSubmission, undefined);

@@ -20,13 +20,11 @@ function createComponentKeyWithNavId(component) {
   return `${component.key}-${component.navId}`;
 }
 
-function formatPostnummerOgBySted(bostedsadresse) {
-  if (bostedsadresse?.postnummer) {
-    return bostedsadresse.bySted
-      ? `${bostedsadresse?.postnummer} ${bostedsadresse?.bySted}`
-      : bostedsadresse.postnummer;
+function formatPostnummerOgBySted(address) {
+  if (address?.postnummer) {
+    return address.bySted ? `${address?.postnummer} ${address?.bySted}` : address.postnummer;
   }
-  return bostedsadresse?.bySted;
+  return address?.bySted;
 }
 
 function formatValue(component, value, translate, form, language) {
@@ -106,23 +104,19 @@ function formatValue(component, value, translate, form, language) {
     case 'attachment':
       return attachmentUtils.mapToAttachmentSummary({ translate, value, component, form });
     case 'navAddress': {
-      const bostedsadresse = value?.bostedsadresse;
-
       const addressComponents = [
-        bostedsadresse?.co ? `c/o ${bostedsadresse.co}` : undefined,
-        bostedsadresse?.adresse,
-        bostedsadresse?.bygning,
-        bostedsadresse?.postboks,
-        formatPostnummerOgBySted(bostedsadresse),
-        bostedsadresse?.region,
-        bostedsadresse?.landkode,
+        value?.co ? `c/o ${value.co}` : undefined,
+        value?.adresse,
+        value?.bygning,
+        value?.postboks,
+        formatPostnummerOgBySted(value),
+        value?.region,
+        value?.land,
       ].filter(Boolean);
-      const address = addressComponents.join(', ');
-
-      return {
-        address,
-        linkText: translate(TEXTS.statiske.address.skatteetatenLink),
-      };
+      return addressComponents.join(', ');
+    }
+    case 'identity': {
+      return value?.identitetsnummer ? value?.identitetsnummer : dateUtils.toLocaleDate(value?.fodselsdato);
     }
     case 'drivinglist':
       return {
@@ -438,6 +432,28 @@ function handleImage(component, formSummaryObject, parentContainerKey, translate
   return [...formSummaryObject];
 }
 
+function handleIdentity(component, submission, formSummaryObject, parentContainerKey, translate, form, language) {
+  const { key, type } = component;
+  const componentKey = createComponentKey(parentContainerKey, key);
+  const submissionValue = FormioUtils.getValue(submission, componentKey);
+
+  if (!submissionValue || (!submissionValue.identitetsnummer && !submissionValue.fodselsdato)) {
+    return [...formSummaryObject];
+  }
+
+  return [
+    ...formSummaryObject,
+    {
+      label: submissionValue?.identitetsnummer
+        ? translate(TEXTS.statiske.identity.identityNumber)
+        : translate(TEXTS.statiske.identity.yourBirthdate),
+      key: componentKey,
+      type,
+      value: formatValue(component, submissionValue, translate, form, language),
+    },
+  ];
+}
+
 function handleAmountWithCurrencySelector(component, submission, formSummaryObject, parentContainerKey, translate) {
   if (!submission.data) {
     return formSummaryObject;
@@ -578,6 +594,8 @@ function handleComponent(
           language,
         );
       }
+    case 'identity':
+      return handleIdentity(component, submission, formSummaryObject, parentContainerKey, translate, form, language);
     default:
       return handleField(component, submission, formSummaryObject, parentContainerKey, translate, form, language);
   }

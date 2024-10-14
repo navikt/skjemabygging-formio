@@ -168,7 +168,7 @@ const NavForm = ({ language = 'nb-NO', i18n = i18nData, ...props }) => {
       });
     }
     if (formio && prefillData) {
-      appConfig.logger?.debug('prefill data and set form', { formioId: formio?.id });
+      appConfig.logger?.debug('prefill data and set form', { formioId: formio?.id, prefillData });
       formio.form = navFormUtils.prefillForm(formio.form, prefillData);
     }
   }, [props.submission, formio, prefillData]);

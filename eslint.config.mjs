@@ -101,6 +101,7 @@ export default tseslint.config(
     files: ['**/mocks/**'],
     rules: {
       '@typescript-eslint/no-var-requires': 'off',
+      '@typescript-eslint/no-require-imports': 'off',
     },
   },
   {
