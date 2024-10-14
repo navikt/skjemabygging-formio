@@ -67,7 +67,7 @@ spec:
       claims:
         groups:
         {{#each azure.ad_groups}}
-            - id: "{{this.id}}"
+          - id: "{{this.id}}"
         {{/each}}
         extra:
           - NAVident
