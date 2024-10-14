@@ -39,10 +39,21 @@ const put: RequestHandler = async (req, res, next) => {
   }
 };
 
+const deleteRecipient: RequestHandler = async (req, res, next) => {
+  const { recipientId } = req.params;
+  try {
+    await recipientService.delete(recipientId);
+    res.end();
+  } catch (error) {
+    next(error);
+  }
+};
+
 const recipients = {
   getAll,
   get,
   post,
   put,
+  deleteRecipient,
 };
 export default recipients;

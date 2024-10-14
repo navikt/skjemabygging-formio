@@ -9,6 +9,7 @@ interface RecipientsContextValues {
   addNewRecipient: () => void;
   cancelNewRecipient: () => void;
   saveRecipient: (recipient: Recipient) => Promise<Recipient | undefined>;
+  deleteRecipient: (recipientId?: string) => Promise<void>;
 }
 
 const defaultContextValue = {
@@ -17,6 +18,7 @@ const defaultContextValue = {
   addNewRecipient: () => {},
   cancelNewRecipient: () => {},
   saveRecipient: (_recipient) => Promise.reject(),
+  deleteRecipient: (_recipientId) => Promise.reject(),
 };
 
 interface RecipientState {
@@ -65,6 +67,13 @@ const RecipientsProvider = ({ children }: { children: ReactNode }) => {
     return recipient;
   };
 
+  const deleteRecipient = async (recipientId?: string) => {
+    if (recipientId && recipientId !== 'new') {
+      await recipientsApi.delete(recipientId);
+      await loadRecipients();
+    }
+  };
+
   const addNewRecipient = () => {
     if (recipientState.new === undefined) {
       setRecipientState((state) => ({ ...state, new: { recipientId: 'new' } }));
@@ -82,6 +91,7 @@ const RecipientsProvider = ({ children }: { children: ReactNode }) => {
     addNewRecipient,
     cancelNewRecipient,
     saveRecipient,
+    deleteRecipient,
   };
   return <RecipientsContext.Provider value={value}>{children}</RecipientsContext.Provider>;
 };

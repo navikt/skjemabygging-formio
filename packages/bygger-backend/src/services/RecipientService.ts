@@ -41,4 +41,11 @@ export class RecipientService {
     });
     return response.data as Recipient;
   }
+
+  async delete(recipientId: string): Promise<void> {
+    await fetchWithErrorHandling(`${this.formsApiUrl}${this.recipientsUrl}/${recipientId}`, {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
 }

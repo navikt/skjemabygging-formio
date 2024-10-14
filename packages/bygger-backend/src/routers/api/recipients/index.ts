@@ -7,5 +7,6 @@ recipientsRouter.get('/', recipients.getAll);
 recipientsRouter.get('/:recipientId', recipients.get);
 recipientsRouter.post('/', recipients.post);
 recipientsRouter.put('/:recipientId', recipients.put);
+recipientsRouter.delete('/:recipientId', recipients.deleteRecipient);
 
 export default recipientsRouter;

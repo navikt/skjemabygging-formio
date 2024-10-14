@@ -35,10 +35,20 @@ const useFormsApi = () => {
     }
   };
 
+  const deleteRecipient = async (recipientId: string): Promise<void> => {
+    try {
+      return await http.delete(`/api/recipients/${recipientId}`);
+    } catch (error) {
+      const message = (error as Error)?.message;
+      feedbackEmit.error(`Feil ved sletting av mottaker. ${message}`);
+    }
+  };
+
   const recipientsApi = {
     getAll: getAllRecipients,
     post: postRecipient,
     put: putRecipient,
+    delete: deleteRecipient,
   };
 
   return {

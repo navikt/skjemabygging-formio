@@ -3,12 +3,13 @@ import { useState } from 'react';
 
 interface Props {
   isNew: boolean;
-  onSave: () => void;
+  onSave: () => Promise<void>;
+  onDelete: () => Promise<void>;
   onCancel: () => void;
 }
 
-const RecipientButtonRow = ({ isNew, onSave, onCancel }: Props) => {
-  const [isSaving, setIsSaving] = useState(false);
+const RecipientButtonRow = ({ isNew, onSave, onCancel, onDelete }: Props) => {
+  const [state, setState] = useState({ isSaving: false, isDeleting: false });
 
   return (
     <Table.Row shadeOnHover={false}>
@@ -16,11 +17,11 @@ const RecipientButtonRow = ({ isNew, onSave, onCancel }: Props) => {
         <HStack gap="4" justify="end">
           <Button
             size="small"
-            loading={isSaving}
+            loading={state.isSaving}
             onClick={async () => {
-              setIsSaving(true);
-              onSave();
-              setIsSaving(false);
+              setState((state) => ({ ...state, isSaving: true }));
+              await onSave();
+              setState((state) => ({ ...state, isSaving: false }));
             }}
           >
             Lagre
@@ -29,7 +30,16 @@ const RecipientButtonRow = ({ isNew, onSave, onCancel }: Props) => {
             Avbryt
           </Button>
           {!isNew && (
-            <Button size="small" variant="danger">
+            <Button
+              size="small"
+              variant="danger"
+              loading={state.isDeleting}
+              onClick={async () => {
+                setState((state) => ({ ...state, isDeleting: true }));
+                await onDelete();
+                setState((state) => ({ ...state, isDeleting: false }));
+              }}
+            >
               Slett
             </Button>
           )}

@@ -38,7 +38,7 @@ const LABELS = {
 };
 
 const RecipientRow = ({ recipient }: { recipient: Partial<Recipient> }) => {
-  const { saveRecipient, cancelNewRecipient } = useRecipients();
+  const { saveRecipient, deleteRecipient, cancelNewRecipient } = useRecipients();
   const { recipientId } = recipient;
   const [value, setValue] = useState(recipient);
   const [uiState, setUiState] = useState({ editing: recipientId === 'new', showErrors: false });
@@ -71,6 +71,12 @@ const RecipientRow = ({ recipient }: { recipient: Partial<Recipient> }) => {
     if (result) {
       setUiState({ editing: false, showErrors: false });
     }
+  };
+
+  const onDelete = async () => {
+    console.log('On delete start');
+    await deleteRecipient(recipientId);
+    console.log('On delete end');
   };
 
   const cancelEditing = () => {
@@ -119,7 +125,12 @@ const RecipientRow = ({ recipient }: { recipient: Partial<Recipient> }) => {
             />
           </Table.DataCell>
         </Table.Row>
-        <RecipientButtonRow isNew={recipientId === 'new'} onSave={onSave} onCancel={cancelEditing} />
+        <RecipientButtonRow
+          isNew={recipientId === 'new'}
+          onSave={onSave}
+          onDelete={onDelete}
+          onCancel={cancelEditing}
+        />
       </>
     );
   }
