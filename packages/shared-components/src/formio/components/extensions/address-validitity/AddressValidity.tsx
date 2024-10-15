@@ -25,12 +25,6 @@ export default class AddressValidity extends BaseComponent {
     return addressValidityBuilder();
   }
 
-  /*
-  handleChange(value: AddressDomain) {
-    super.handleChange(value);
-    this.rerender();
-  }*/
-
   get errors() {
     return this.componentErrors;
   }
@@ -43,6 +37,7 @@ export default class AddressValidity extends BaseComponent {
     }
 
     const address = this.getValue() ?? ({} as AddressDomain);
+    console.log('address', address);
     const fromErrorMessage = validateDate(
       {
         required: this.isRequired(),
@@ -76,6 +71,11 @@ export default class AddressValidity extends BaseComponent {
     this.rerender();
 
     return this.componentErrors.length === 0;
+  }
+
+  handleChange(value: AddressDomain) {
+    super.handleChange(value);
+    this.rerender();
   }
 
   renderReact(element) {

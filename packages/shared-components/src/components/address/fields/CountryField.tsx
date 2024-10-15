@@ -12,10 +12,11 @@ const CountryField = ({ label, required = false }: Props) => {
 
   return (
     <AddressTextField
-      type="gyldigFraOgMed"
-      label={label ?? TEXTS.statiske.address.poBox}
-      value={address?.postboks}
+      type="land"
+      label={label ?? TEXTS.statiske.address.country}
+      value={address?.land}
       required={required}
+      autoComplete="country-name"
     ></AddressTextField>
   );
 };
