@@ -22,9 +22,6 @@ const get: RequestHandler = async (req, res, next) => {
 
 const post: RequestHandler = async (req, res, next) => {
   const accessToken = req.headers.AzureAccessToken as string;
-  if (!accessToken) {
-    next(new Error('No access token provided'));
-  }
   try {
     const recipient = await recipientService.post(req.body, accessToken);
     res.json(recipient);
@@ -36,9 +33,6 @@ const post: RequestHandler = async (req, res, next) => {
 const put: RequestHandler = async (req, res, next) => {
   const { recipientId } = req.params;
   const accessToken = req.headers.AzureAccessToken as string;
-  if (!accessToken) {
-    next(new Error('No access token provided'));
-  }
   try {
     const recipient = await recipientService.put(recipientId, req.body, accessToken);
     res.json(recipient);
@@ -50,9 +44,6 @@ const put: RequestHandler = async (req, res, next) => {
 const deleteRecipient: RequestHandler = async (req, res, next) => {
   const { recipientId } = req.params;
   const accessToken = req.headers.AzureAccessToken as string;
-  if (!accessToken) {
-    next(new Error('No access token provided'));
-  }
   try {
     await recipientService.delete(recipientId, accessToken);
     res.end();
