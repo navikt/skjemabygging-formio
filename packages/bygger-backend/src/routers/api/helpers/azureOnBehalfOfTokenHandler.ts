@@ -23,7 +23,7 @@ const azureOnBehalfOfTokenHandler = (scope: string) => async (req: Request, res:
       }),
     });
     const json: { access_token: string } = await toJsonOrThrowError('Feil ved autentisering')(response);
-    req.headers.AzureAccessToken = json.access_token;
+    req.headers.Authorization = json.access_token;
     next();
   } catch (error: any) {
     if (error.http_response_body) {
