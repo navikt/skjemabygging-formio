@@ -23,6 +23,7 @@ import NavSelect from './core/select/Select';
 import TextArea from './core/textarea/TextArea';
 import TextField from './core/textfield/TextField';
 import AccountNumber from './extensions/account-number/AccountNumber';
+import AddressValidity from './extensions/address-validitity/AddressValidity';
 import CountrySelect from './extensions/country-select/CountrySelect';
 import CurrencySelect from './extensions/currency-select/CurrencySelect';
 import Currency from './extensions/currency/Currency';
@@ -73,6 +74,7 @@ const customComponents = {
   attachment: DefaultAttachment,
   accordion: Accordion,
   navAddress: Address,
+  addressValidity: AddressValidity,
   monthPicker: MonthPicker,
   password: Password,
   year: Year,

@@ -1,4 +1,5 @@
 import addressBuilder from '../../core/address/Address.builder';
+import addressValidityBuilder from '../../extensions/address-validitity/AddressValidity.builder';
 import firstNameBuilder from '../../extensions/first-name/FirstName.builder';
 import identityBuilder from '../../extensions/identity/Identity.builder';
 import surnameBuilder from '../../extensions/surname/Surname.builder';
@@ -39,30 +40,7 @@ const yourInformationBuilder = () => {
           protectedApiKey: true,
         },
         {
-          label: 'Gyldig fra (dd.mm.åååå)',
-          key: 'gyldigFraDatoDdMmAaaa',
-          type: 'navDatepicker',
-          description:
-            'Fra hvilken dato skal denne adressen brukes? Du kan sette denne datoen maks 1 år tilbake i tid.',
-          mayBeEqual: false,
-          earliestAllowedDate: -365,
-          latestAllowedDate: 365,
-          validate: {
-            required: true,
-          },
-          customConditional:
-            'show = row.adresse.borDuINorge === "nei" || (row.adresse.borDuINorge === "ja" && row.adresse.vegadresseEllerPostboksadresse)',
-          protectedApiKey: true,
-        },
-        {
-          label: 'Gyldig til (dd.mm.åååå)',
-          key: 'gyldigTilDatoDdMmAaaa',
-          type: 'navDatepicker',
-          description:
-            'Du velger selv hvor lenge adressen skal være gyldig, maksimalt 1 år. Etter 1 år må du endre eller forlenge adressen.',
-          beforeDateInputKey: 'dineOpplysninger.gyldigFraDatoDdMmAaaa',
-          latestAllowedDate: 365,
-          mayBeEqual: false,
+          ...addressValidityBuilder().schema,
           customConditional:
             'show = row.adresse.borDuINorge === "nei" || (row.adresse.borDuINorge === "ja" && row.adresse.vegadresseEllerPostboksadresse)',
           protectedApiKey: true,

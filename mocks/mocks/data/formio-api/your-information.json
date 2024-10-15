@@ -68,6 +68,7 @@
           "label": "Dine opplysninger",
           "key": "dineOpplysninger",
           "type": "container",
+          "protectedApiKey": true,
           "components": [
             {
               "input": true,
@@ -80,7 +81,8 @@
               "type": "firstName",
               "prefill": true,
               "prefillKey": "sokerFornavn",
-              "navId": "e10pw5"
+              "protectedApiKey": true,
+              "navId": "e56pvdb"
             },
             {
               "input": true,
@@ -93,7 +95,8 @@
               "type": "surname",
               "prefill": true,
               "prefillKey": "sokerEtternavn",
-              "navId": "e00ptx"
+              "protectedApiKey": true,
+              "navId": "egmcrk"
             },
             {
               "input": true,
@@ -103,7 +106,8 @@
               "type": "identity",
               "prefill": true,
               "prefillKey": "sokerIdentifikasjonsnummer",
-              "navId": "e6908q6"
+              "protectedApiKey": true,
+              "navId": "eokkp6w"
             },
             {
               "input": true,
@@ -117,46 +121,29 @@
               "prefill": true,
               "prefillKey": "sokerAdresser",
               "customConditional": "show = row.identitet.harDuFodselsnummer === \"nei\" || (row.identitet.identitetsnummer && !row.identitet.harDuFodselsnummer)",
-              "navId": "eoeicaq"
+              "protectedApiKey": true,
+              "navId": "ey04ctq"
             },
             {
-              "label": "Fra hvilken dato skal denne adressen brukes (dd.mm.åååå)?",
-              "key": "gyldigFraDatoDdMmAaaa",
-              "type": "navDatepicker",
-              "mayBeEqual": false,
-              "earliestAllowedDate": -365,
-              "latestAllowedDate": 365,
+              "input": true,
+              "key": "adresseVarighet",
+              "tableView": false,
+              "label": "Adresse varighet",
               "validate": {
                 "required": true
               },
+              "type": "addressValidity",
               "customConditional": "show = row.adresse.borDuINorge === \"nei\" || (row.adresse.borDuINorge === \"ja\" && row.adresse.vegadresseEllerPostboksadresse)",
-              "navId": "ecj34e",
-              "input": true,
-              "tableView": false
-            },
-            {
-              "label": "Til hvilken dato skal denne adressen brukes (dd.mm.åååå)?",
-              "key": "gyldigTilDatoDdMmAaaa",
-              "type": "navDatepicker",
-              "description": "Du velger selv hvor lenge adressen skal være gyldig, maksimalt 1 år. Etter 1 år må du endre eller forlenge adressen.",
-              "beforeDateInputKey": "dineOpplysninger.gyldigFraDatoDdMmAaaa",
-              "latestAllowedDate": 365,
-              "mayBeEqual": false,
-              "validate": {
-                "required": true
-              },
-              "customConditional": "show = row.adresse.borDuINorge === \"nei\" || (row.adresse.borDuINorge === \"ja\" && row.adresse.vegadresseEllerPostboksadresse)",
-              "navId": "es7fkdg",
-              "input": true,
-              "tableView": false
+              "protectedApiKey": true,
+              "navId": "etcz9op"
             },
             {
               "label": "Alertstripe",
-              "content": "<p>Nav sender svar på søknad og annen kommunikasjon til din folkeregistrerte adresse. Du kan <a href=\"https://www.skatteetaten.no/person/folkeregister/flytte/endre-postadresse/\" target=\"_blank\" rel=\"noopener noreferrer\"> sjekke og endre din folkeregistrerte adresse på skatteetatens nettsider (åpnes i ny fane)</a>.</p>",
+              "content": "<p>Nav sender svar på søknad og annen kommunikasjon til din folkeregistrerte adresse. Du kan <a href=\"https://www.skatteetaten.no/person/folkeregister/flytte/endre-postadresse/\" target=\"_blank\" rel=\"noopener noreferrer\">sjekke og endre din folkeregistrerte adresse på skatteetatens nettsider (åpnes i ny fane)</a>.</p>",
               "key": "alertstripe",
               "type": "alertstripe",
               "customConditional": "show = row.identitet.harDuFodselsnummer === \"ja\"",
-              "navId": "ebcd4ko",
+              "navId": "e0zm4ww",
               "input": false,
               "tableView": false
             },
@@ -166,12 +153,12 @@
               "key": "alertstripePrefill",
               "type": "alertstripe",
               "customConditional": "show = row.identitet.identitetsnummer && !row.identitet.harDuFodselsnummer",
-              "navId": "eoprqin",
+              "navId": "esvtah",
               "input": false,
               "tableView": false
             }
           ],
-          "navId": "ejt8mfe",
+          "navId": "ei3mct",
           "input": true,
           "tableView": false
         }
