@@ -9,17 +9,24 @@ const { clientId, clientSecret, azureOpenidTokenEndpoint } = config;
 
 const azureOnBehalfOfTokenHandler = (scope: string) => async (req: Request, res: Response, next: NextFunction) => {
   const accessToken = req.get('Authorization');
+  if (!accessToken) {
+    logger.error(`Authorization header does not exist`, req.headers);
+  }
+  if (accessToken?.startsWith('Bearer')) {
+    logger.error('Starts with Bearer', accessToken);
+  }
+
   try {
     const response = await fetch(azureOpenidTokenEndpoint, {
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       method: 'POST',
       body: qs.stringify({
-        assertion: accessToken,
+        assertion: accessToken?.replace('Bearer', '').trim(),
         client_id: clientId,
         client_secret: clientSecret,
         grant_type: 'urn:ietf:params:oauth:grant-type:jwt-bearer',
         requested_token_use: 'on_behalf_of',
-        scope: `api://${scope}/.default`, //<cluster>.<namespace>.<other-api-app-name>
+        scope: `api://${scope}/.default`,
       }),
     });
     const json: { access_token: string } = await toJsonOrThrowError('Feil ved autentisering')(response);
