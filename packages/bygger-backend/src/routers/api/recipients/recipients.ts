@@ -21,8 +21,9 @@ const get: RequestHandler = async (req, res, next) => {
 };
 
 const post: RequestHandler = async (req, res, next) => {
+  const accessToken = req.get('AzureAccessToken');
   try {
-    const recipient = await recipientService.post(req.body);
+    const recipient = await recipientService.post(req.body, accessToken);
     res.json(recipient);
   } catch (error) {
     next(error);
@@ -31,8 +32,9 @@ const post: RequestHandler = async (req, res, next) => {
 
 const put: RequestHandler = async (req, res, next) => {
   const { recipientId } = req.params;
+  const accessToken = req.get('AzureAccessToken');
   try {
-    const recipient = await recipientService.put(recipientId, req.body);
+    const recipient = await recipientService.put(recipientId, req.body, accessToken);
     res.json(recipient);
   } catch (error) {
     next(error);
@@ -41,8 +43,9 @@ const put: RequestHandler = async (req, res, next) => {
 
 const deleteRecipient: RequestHandler = async (req, res, next) => {
   const { recipientId } = req.params;
+  const accessToken = req.get('AzureAccessToken');
   try {
-    await recipientService.delete(recipientId);
+    await recipientService.delete(recipientId, accessToken);
     res.end();
   } catch (error) {
     next(error);

@@ -24,28 +24,37 @@ export class RecipientService {
     return response.data as Recipient;
   }
 
-  async post(recipient: Recipient): Promise<Recipient> {
+  async post(recipient: Recipient, accessToken?: string): Promise<Recipient> {
     const response = await fetchWithErrorHandling(`${this.formsApiUrl}${this.recipientsUrl}`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        ...(accessToken && { Authorization: `Bearer ${accessToken}` }),
+      },
       body: JSON.stringify(recipient),
     });
     return response.data as Recipient;
   }
 
-  async put(recipientId: string, recipient: Recipient): Promise<Recipient> {
+  async put(recipientId: string, recipient: Recipient, accessToken?: string): Promise<Recipient> {
     const response = await fetchWithErrorHandling(`${this.formsApiUrl}${this.recipientsUrl}/${recipientId}`, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        ...(accessToken && { Authorization: `Bearer ${accessToken}` }),
+      },
       body: JSON.stringify(recipient),
     });
     return response.data as Recipient;
   }
 
-  async delete(recipientId: string): Promise<void> {
+  async delete(recipientId: string, accessToken?: string): Promise<void> {
     await fetchWithErrorHandling(`${this.formsApiUrl}${this.recipientsUrl}/${recipientId}`, {
       method: 'DELETE',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        ...(accessToken && { Authorization: `Bearer ${accessToken}` }),
+      },
     });
   }
 }
