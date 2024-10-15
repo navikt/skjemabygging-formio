@@ -8,13 +8,7 @@ import { toJsonOrThrowError } from '../../../../../fyllut-backend/src/utils/erro
 const { clientId, clientSecret, azureOpenidTokenEndpoint } = config;
 
 const azureOnBehalfOfTokenHandler = (scope: string) => async (req: Request, res: Response, next: NextFunction) => {
-  const accessToken = req.get('Authorization');
-  if (!accessToken) {
-    logger.error(`Authorization header does not exist`, req.headers);
-  }
-  if (accessToken?.startsWith('Bearer')) {
-    logger.error('Starts with Bearer', accessToken);
-  }
+  const accessToken = req.get('Authorization')?.replace('Bearer', '').trim();
 
   try {
     const response = await fetch(azureOpenidTokenEndpoint, {
