@@ -1,11 +1,6 @@
 import SubmissionAddress from './address';
 import SubmissionIdentity from './identity';
 
-interface SubmissionDefault {
-  [key: string]: any;
-  dineOpplysninger?: SubmissionYourInformation;
-}
-
 interface SubmissionYourInformation {
   fornavn?: string;
   etternavn?: string;
@@ -13,4 +8,4 @@ interface SubmissionYourInformation {
   adresse?: SubmissionAddress;
 }
 
-export default SubmissionDefault;
+export default SubmissionYourInformation;

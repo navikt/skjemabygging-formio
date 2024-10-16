@@ -3,6 +3,7 @@ import editFormProperties from './editFormProperties';
 import editFormProperty from './editFormProperty';
 import editFormVedleggskode from './editFormVedleggskode';
 import editFormVedleggstittel from './editFormVedleggstittel';
+import editFormYourInformation from './editFormYourInformation';
 
 const editFormApi = {
   key: editFormKey,
@@ -10,6 +11,7 @@ const editFormApi = {
   property: editFormProperty,
   vedleggskode: editFormVedleggskode,
   vedleggstittel: editFormVedleggstittel,
+  yourInformation: editFormYourInformation,
 };
 
 export default editFormApi;
