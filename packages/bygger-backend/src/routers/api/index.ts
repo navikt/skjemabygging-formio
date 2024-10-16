@@ -9,8 +9,7 @@ import formDiff from './formDiff';
 import formsRouter from './forms';
 import globalTranslationsRouter from './global-translations';
 import apiErrorHandler from './helpers/apiErrorHandler';
-import authorizedPublisher from './helpers/authorizedPublisher';
-import azureOnBehalfOfTokenHandler from './helpers/azureOnBehalfOfTokenHandler';
+import authHandlers from './helpers/authHandlers';
 import importRouter from './import';
 import log from './log';
 import migrate from './migrate';
@@ -26,6 +25,7 @@ import temakoder from './temakoder';
 import unpublishForm from './unpublish-form';
 
 const apiRouter = express.Router();
+const { authorizedPublisher, formsApiAuthHandler } = authHandlers;
 
 apiRouter.get('/config', config);
 apiRouter.put('/publish/:formPath', authorizedPublisher, deprecatedPublishForm);
@@ -44,7 +44,7 @@ apiRouter.get('/migrate/preview/:formPath', migratePreview);
 apiRouter.post('/migrate/update', authorizedPublisher, migrateUpdate);
 apiRouter.get('/form/:formPath/diff', formDiff);
 apiRouter.use('/forms', formsRouter);
-apiRouter.use('/recipients', azureOnBehalfOfTokenHandler('dev-gcp.fyllut-sendinn.forms-api'), recipientsRouter);
+apiRouter.use('/recipients', formsApiAuthHandler, recipientsRouter);
 apiRouter.use('/import', importRouter);
 apiRouter.use('/global-translations', authorizedPublisher, globalTranslationsRouter);
 apiRouter.post('/log/:level', rateLimiter(60000, 60), log);
