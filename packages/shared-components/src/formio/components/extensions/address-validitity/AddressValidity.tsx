@@ -13,6 +13,7 @@ export default class AddressValidity extends BaseComponent {
       label: 'Adresse varighet',
       type: 'addressValidity',
       key: 'adresseVarighet',
+      fieldSize: 'input--s',
       hideLabel: true,
     });
   }
@@ -37,7 +38,6 @@ export default class AddressValidity extends BaseComponent {
     }
 
     const address = this.getValue() ?? ({} as AddressDomain);
-    console.log('address', address);
     const fromErrorMessage = validateDate(
       {
         required: this.isRequired(),

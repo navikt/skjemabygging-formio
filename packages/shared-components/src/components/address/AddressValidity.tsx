@@ -14,7 +14,6 @@ interface Props {
   readOnly?: boolean;
   required?: boolean;
   className?: string;
-  addressTypeChoice?: boolean;
 }
 
 export type SubmissionAddressType = keyof SubmissionAddress;
