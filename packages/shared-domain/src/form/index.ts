@@ -201,7 +201,7 @@ export interface Component {
   addressType?: AddressType;
   prefillValue?: string | object;
   protectedApiKey?: boolean;
-  yourInformation?: boolean;
+  isYourInformation?: boolean;
 }
 
 export type AddressType = 'NORWEGIAN_ADDRESS' | 'POST_OFFICE_BOX' | 'FOREIGN_ADDRESS';

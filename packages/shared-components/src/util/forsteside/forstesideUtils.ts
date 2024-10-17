@@ -63,7 +63,7 @@ const getFirstYourInformation = (
 ): SubmissionYourInformation | undefined => {
   const yourInformationForm = navFormUtils
     .flattenComponents(form.components)
-    .find((component) => component.yourInformation && submission[component.key]);
+    .find((component) => component.isYourInformation && submission[component.key]);
 
   if (yourInformationForm) {
     return submission[yourInformationForm.key] as SubmissionYourInformation;
