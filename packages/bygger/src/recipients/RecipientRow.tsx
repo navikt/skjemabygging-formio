@@ -1,48 +1,21 @@
-import { PencilIcon } from '@navikt/aksel-icons';
-import { Button, Table } from '@navikt/ds-react';
-import { makeStyles } from '@navikt/skjemadigitalisering-shared-components';
 import { Recipient } from '@navikt/skjemadigitalisering-shared-domain';
 import { useMemo, useState } from 'react';
 import { useRecipients } from '../context/recipients/RecipientsContext';
-import RecipientButtonRow from './RecipientButtonRow';
-import RecipientInput from './RecipientInput';
+import RecipientDisplayRow from './RecipientDisplayRow';
+import RecipientEditRow from './RecipientEditRow';
 import { LABELS } from './texts';
-
-const useStyles = makeStyles({
-  editRow: {
-    border: 0,
-    verticalAlign: 'baseline',
-    '& .navds-form-field': {
-      paddingTop: '8px',
-    },
-  },
-  columnSmall: {
-    width: '4rem',
-  },
-  columnLarge: {
-    width: '18rem',
-  },
-});
-
-type ValidationErrors = {
-  name?: string;
-  poBoxAddress?: string;
-  postalCode?: string;
-  postalName?: string;
-};
 
 const RecipientRow = ({ recipient }: { recipient: Partial<Recipient> }) => {
   const { saveRecipient, deleteRecipient, cancelNewRecipient } = useRecipients();
   const { recipientId } = recipient;
   const [value, setValue] = useState(recipient);
-  const [uiState, setUiState] = useState({ editing: recipientId === 'new', showErrors: false });
-  const styles = useStyles();
+  const [uiState, setUiState] = useState({ editing: recipientId === undefined, showErrors: false });
 
   const updateValueProperty = (key: keyof Recipient, value: string) => {
     setValue((currentValue) => ({ ...currentValue, [key]: value }));
   };
 
-  const validationErrors: ValidationErrors = useMemo(() => {
+  const validationErrors = useMemo(() => {
     const required = 'Du må fylle ut';
     return {
       name: value.name ? undefined : `${required} ${LABELS.name}`,
@@ -72,86 +45,26 @@ const RecipientRow = ({ recipient }: { recipient: Partial<Recipient> }) => {
   };
 
   const cancelEditing = () => {
-    if (recipientId === 'new') {
-      cancelNewRecipient();
-    } else {
+    if (recipientId) {
       setValue(recipient);
       setUiState({ editing: false, showErrors: false });
+    } else {
+      cancelNewRecipient();
     }
   };
 
-  if (uiState.editing) {
-    return (
-      <>
-        <Table.Row shadeOnHover={false}>
-          <Table.DataCell className={`${styles.editRow} ${styles.columnLarge}`}>
-            <RecipientInput
-              label={LABELS.name}
-              defaultValue={value.name}
-              error={uiState.showErrors && validationErrors.name}
-              onChange={(value) => updateValueProperty('name', value)}
-            />
-          </Table.DataCell>
-          <Table.DataCell className={`${styles.editRow} ${styles.columnLarge}`}>
-            <RecipientInput
-              label={LABELS.poBoxAddress}
-              defaultValue={value.poBoxAddress}
-              error={uiState.showErrors && validationErrors.poBoxAddress}
-              onChange={(value) => updateValueProperty('poBoxAddress', value)}
-            />
-          </Table.DataCell>
-          <Table.DataCell className={`${styles.editRow} ${styles.columnSmall}`}>
-            <RecipientInput
-              label={LABELS.postalCode}
-              defaultValue={value.postalCode}
-              error={uiState.showErrors && validationErrors.postalCode}
-              onChange={(value) => updateValueProperty('postalCode', value)}
-            />
-          </Table.DataCell>
-          <Table.DataCell className={styles.editRow} colSpan={2}>
-            <RecipientInput
-              label={LABELS.postalName}
-              defaultValue={value.postalName}
-              error={uiState.showErrors && validationErrors.postalName}
-              onChange={(value) => updateValueProperty('postalName', value)}
-            />
-          </Table.DataCell>
-        </Table.Row>
-        <RecipientButtonRow
-          isNew={recipientId === 'new'}
-          onSave={onSave}
-          onDelete={onDelete}
-          onCancel={cancelEditing}
-        />
-      </>
-    );
-  }
-
-  return (
-    <Table.Row shadeOnHover={false}>
-      <Table.HeaderCell className={styles.columnLarge} textSize="small" scope="row">
-        {value.name}
-      </Table.HeaderCell>
-      <Table.DataCell className={styles.columnLarge} textSize="small">
-        {value.poBoxAddress}
-      </Table.DataCell>
-      <Table.DataCell className={styles.columnSmall} textSize="small">
-        {value.postalCode}
-      </Table.DataCell>
-      <Table.DataCell textSize="small">{value.postalName}</Table.DataCell>
-      <Table.DataCell align="right">
-        {
-          <Button
-            icon={<PencilIcon aria-hidden />}
-            onClick={() => setUiState((state) => ({ ...state, editing: true }))}
-            variant="tertiary"
-            type="button"
-          >
-            Endre
-          </Button>
-        }
-      </Table.DataCell>
-    </Table.Row>
+  return uiState.editing ? (
+    <RecipientEditRow
+      isNew={recipientId === undefined}
+      value={value}
+      onSave={onSave}
+      onDelete={onDelete}
+      onCancel={cancelEditing}
+      errors={uiState.showErrors ? validationErrors : undefined}
+      updateValueProperty={updateValueProperty}
+    />
+  ) : (
+    <RecipientDisplayRow value={value} changeMode={() => setUiState((state) => ({ ...state, editing: true }))} />
   );
 };
 

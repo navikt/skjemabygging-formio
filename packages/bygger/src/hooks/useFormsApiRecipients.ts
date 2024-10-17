@@ -2,12 +2,12 @@ import { http as baseHttp, useAppConfig } from '@navikt/skjemadigitalisering-sha
 import { Recipient } from '@navikt/skjemadigitalisering-shared-domain';
 import { useFeedbackEmit } from '../context/notifications/FeedbackContext';
 
-const useFormsApi = () => {
+const useFormsApiRecipients = () => {
   const feedbackEmit = useFeedbackEmit();
   const appConfig = useAppConfig();
   const http = appConfig.http ?? baseHttp;
 
-  const getAllRecipients = async (): Promise<Recipient[] | undefined> => {
+  const getAll = async (): Promise<Recipient[] | undefined> => {
     try {
       return await http.get<Recipient[]>('/api/recipients');
     } catch (error) {
@@ -16,7 +16,7 @@ const useFormsApi = () => {
     }
   };
 
-  const postRecipient = async (recipient: Recipient): Promise<Recipient | undefined> => {
+  const post = async (recipient: Recipient): Promise<Recipient | undefined> => {
     try {
       return await http.post<Recipient>('/api/recipients', recipient);
     } catch (error) {
@@ -25,13 +25,21 @@ const useFormsApi = () => {
     }
   };
 
-  const putRecipient = async (recipient: Recipient): Promise<Recipient | undefined> => {
+  const put = async (recipient: Recipient): Promise<Recipient | undefined> => {
     const { recipientId, ...updatedRecipient } = recipient;
     try {
       return await http.put<Recipient>(`/api/recipients/${recipientId}`, updatedRecipient);
     } catch (error) {
       const message = (error as Error)?.message;
       feedbackEmit.error(`Feil ved oppdatering av mottaker. ${message}`);
+    }
+  };
+
+  const save = async (recipient: Recipient): Promise<Recipient | undefined> => {
+    if (recipient.recipientId === undefined) {
+      return await post(recipient);
+    } else {
+      return await put(recipient);
     }
   };
 
@@ -44,15 +52,12 @@ const useFormsApi = () => {
     }
   };
 
-  const recipientsApi = {
-    getAll: getAllRecipients,
-    post: postRecipient,
-    put: putRecipient,
-    delete: deleteRecipient,
-  };
-
   return {
-    recipientsApi,
+    getAll,
+    post,
+    put,
+    save,
+    deleteRecipient,
   };
 };
-export default useFormsApi;
+export default useFormsApiRecipients;
