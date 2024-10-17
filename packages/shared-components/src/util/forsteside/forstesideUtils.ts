@@ -1,9 +1,9 @@
 import {
+  ForstesideRecipientAddress,
   KjentBruker,
-  Mottaksadresse,
-  MottaksadresseData,
   NavFormType,
   navFormUtils,
+  Recipient,
   SubmissionAttachmentValue,
   SubmissionDefault,
   UkjentBruker,
@@ -90,13 +90,20 @@ const parseLanguage = (language: string) => {
 
 const getRecipients = (
   id?: string,
-  recipients?: Mottaksadresse[],
+  recipients?: Recipient[],
   unitNumber?: string,
-): { adresse: MottaksadresseData } | { enhetsnummer?: string; netsPostboks: string } => {
+): { adresse: ForstesideRecipientAddress } | { enhetsnummer?: string; netsPostboks: string } => {
   if (id && recipients) {
-    const recipient = recipients.find((a) => a._id === id);
+    const recipient = recipients.find((r) => r.recipientId === id);
     if (recipient) {
-      return { adresse: { ...recipient.data } };
+      return {
+        adresse: {
+          adresselinje1: recipient.name,
+          adresselinje2: recipient.poBoxAddress,
+          postnummer: recipient.postalCode,
+          poststed: recipient.postalName,
+        },
+      };
     }
   }
   if (unitNumber) {

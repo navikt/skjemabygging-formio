@@ -101,6 +101,8 @@ spec:
       value: {{pdl-token-scope-cluster}}
     - name: AMPLITUDE_API_ENDPOINT
       value: "https://amplitude.nav.no/collect-auto"
+    - name: FORMS_API_URL
+      value: {{forms-api-url "http://forms-api.fyllut-sendinn"}}
     {{#each environmentVars}}
     - name: {{this.name}}
       value: {{this.value}}

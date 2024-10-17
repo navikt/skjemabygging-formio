@@ -40,7 +40,7 @@ import {
   SubmissionMethod,
   UsageContext,
 } from './form';
-import { ForstesideRequestBody, KjentBruker, UkjentBruker } from './forsteside';
+import { ForstesideRecipientAddress, ForstesideRequestBody, KjentBruker, UkjentBruker } from './forsteside';
 import languagesUtil from './languages/languagesUtil';
 import type {
   FormioTranslation,
@@ -182,6 +182,7 @@ export type {
   FormioTranslationMap,
   FormioTranslationPayload,
   FormsResponseForm,
+  ForstesideRecipientAddress,
   ForstesideRequestBody,
   FrontendLoggerConfigType,
   FyllutState,
