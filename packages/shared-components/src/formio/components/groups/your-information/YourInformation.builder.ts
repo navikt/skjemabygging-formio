@@ -11,7 +11,7 @@ const yourInformationBuilder = () => {
       type: 'container',
       key: 'dineOpplysninger',
       label: 'Dine opplysninger',
-      protectedApiKey: true,
+      yourInformation: true,
       components: [
         {
           ...firstNameBuilder().schema,

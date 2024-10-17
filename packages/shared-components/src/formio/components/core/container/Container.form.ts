@@ -14,6 +14,7 @@ const containerForm = () => {
     ]),
     api([
       editFormApi.key(),
+      editFormApi.yourInformation(),
     ]),
     conditional([
       editFormConditional.simpleConditional(),
