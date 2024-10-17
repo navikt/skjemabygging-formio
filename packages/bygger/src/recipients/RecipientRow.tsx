@@ -6,6 +6,7 @@ import { useMemo, useState } from 'react';
 import { useRecipients } from '../context/recipients/RecipientsContext';
 import RecipientButtonRow from './RecipientButtonRow';
 import RecipientInput from './RecipientInput';
+import { LABELS } from './texts';
 
 const useStyles = makeStyles({
   editRow: {
@@ -28,13 +29,6 @@ type ValidationErrors = {
   poBoxAddress?: string;
   postalCode?: string;
   postalName?: string;
-};
-
-const LABELS = {
-  name: 'Enhetsnavn',
-  poBoxAddress: 'Postboksadresse',
-  postalCode: 'Postnr.',
-  postalName: 'Poststed',
 };
 
 const RecipientRow = ({ recipient }: { recipient: Partial<Recipient> }) => {
@@ -74,9 +68,7 @@ const RecipientRow = ({ recipient }: { recipient: Partial<Recipient> }) => {
   };
 
   const onDelete = async () => {
-    console.log('On delete start');
     await deleteRecipient(recipientId);
-    console.log('On delete end');
   };
 
   const cancelEditing = () => {
