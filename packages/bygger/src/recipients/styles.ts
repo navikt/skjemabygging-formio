@@ -5,7 +5,7 @@ const useRecipientStyles = makeStyles({
     border: 0,
     verticalAlign: 'baseline',
     '& .navds-form-field': {
-      paddingTop: '8px',
+      paddingTop: '0.5rem',
     },
   },
   columnSmall: {
