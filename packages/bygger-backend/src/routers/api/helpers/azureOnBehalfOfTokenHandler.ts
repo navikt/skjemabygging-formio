@@ -5,10 +5,15 @@ import { config } from '../../../../../fyllut-backend/src/config/config';
 import { logger } from '../../../../../fyllut-backend/src/logger';
 import { toJsonOrThrowError } from '../../../../../fyllut-backend/src/utils/errorHandling';
 
-const { clientId, clientSecret, azureOpenidTokenEndpoint } = config;
+const { clientId, clientSecret, azureOpenidTokenEndpoint, isDevelopment } = config;
 
 const azureOnBehalfOfTokenHandler = (scope: string) => async (req: Request, res: Response, next: NextFunction) => {
   const accessToken = req.get('Authorization')?.replace('Bearer ', '');
+
+  if (isDevelopment) {
+    logger.info(`Skipping Azure access token fetch (scope='${scope}')`);
+    return next();
+  }
 
   try {
     const response = await fetch(azureOpenidTokenEndpoint, {
