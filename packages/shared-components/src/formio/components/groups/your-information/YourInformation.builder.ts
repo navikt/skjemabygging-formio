@@ -10,7 +10,7 @@ const yourInformationBuilder = () => {
       type: 'container',
       key: 'dineOpplysninger',
       label: 'Dine opplysninger',
-      isYourInformation: true,
+      yourInformation: true,
       components: [
         {
           ...firstNameBuilder().schema,

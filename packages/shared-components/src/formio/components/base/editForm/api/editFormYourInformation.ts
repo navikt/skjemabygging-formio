@@ -3,10 +3,10 @@ import { Component } from '@navikt/skjemadigitalisering-shared-domain';
 const editFormYourInformation = (): Component => {
   return {
     type: 'navCheckbox',
-    key: 'isYourInformation',
+    key: 'yourInformation',
     readOnly: true,
     label: 'Brukes som avsender på førsteside',
-    customConditional: 'show = row.isYourInformation',
+    customConditional: 'show = row.yourInformation',
     additionalDescriptionLabel: 'Hva innebærer dette?',
     additionalDescriptionText:
       'Innholdet i denne beholderen brukes som avsender på førstesiden. ' +

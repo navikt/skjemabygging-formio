@@ -102,7 +102,7 @@ describe('forsteside', () => {
         {
           type: 'container',
           key: 'dineOpplysninger',
-          isYourInformation: true,
+          yourInformation: true,
         },
         {
           type: 'container',
@@ -111,7 +111,7 @@ describe('forsteside', () => {
         {
           type: 'container',
           key: 'dineOpplysninger2',
-          isYourInformation: true,
+          yourInformation: true,
         },
       ] as Component[],
     } as unknown as NavFormType;
@@ -152,7 +152,7 @@ describe('forsteside', () => {
       });
     });
 
-    it('returns user if we have identitynumber on second container with isYourInformation', () => {
+    it('returns user if we have identitynumber on second container with yourInformation', () => {
       const data = getUserData(defaultForm, {
         dineOpplysninger2: {
           identitet: {
