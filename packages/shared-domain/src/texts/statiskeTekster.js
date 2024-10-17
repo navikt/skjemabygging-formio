@@ -197,6 +197,12 @@ export const statiske = {
     poAddress: 'Postboksadresse',
     building: 'Bygning',
     region: 'Region',
+    validFrom: 'Gyldig fra (dd.mm.åååå)',
+    validFromDescription:
+      'Fra hvilken dato skal denne adressen brukes? Du kan sette denne datoen maks 1 år tilbake i tid.',
+    validTo: 'Gyldig til (dd.mm.åååå)',
+    validToDescription:
+      'Du velger selv hvor lenge adressen skal være gyldig, maksimalt 1 år. Etter 1 år må du endre eller forlenge adressen.',
   },
   identity: {
     doYouHaveIdentityNumber: 'Har du norsk fødselsnummer eller d-nummer?',
