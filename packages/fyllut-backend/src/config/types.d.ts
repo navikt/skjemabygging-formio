@@ -59,6 +59,7 @@ export type DefaultConfig = {
   noDecorator?: boolean;
   amplitude: AmplitudeConfig;
   frontendLoggerConfig: FrontendLoggerConfigType;
+  formsApiUrl: string;
 };
 
 export type ConfigType = DefaultConfig & {

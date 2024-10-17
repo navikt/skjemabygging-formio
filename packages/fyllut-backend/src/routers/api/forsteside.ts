@@ -1,11 +1,10 @@
-import { ForstesideRequestBody, Mottaksadresse } from '@navikt/skjemadigitalisering-shared-domain';
+import { ForstesideRequestBody } from '@navikt/skjemadigitalisering-shared-domain';
 import { NextFunction, Request, Response } from 'express';
 import correlator from 'express-correlation-id';
 import fetch, { BodyInit, HeadersInit } from 'node-fetch';
 import { config } from '../../config/config';
 import { logger } from '../../logger';
 import { responseToError } from '../../utils/errorHandling.js';
-import { loadMottaksadresser } from './mottaksadresser';
 
 const { skjemabyggingProxyUrl } = config;
 
@@ -24,27 +23,6 @@ const forsteside = {
 };
 
 const validateForstesideRequest = async (forsteside: ForstesideRequestBody) => {
-  if (forsteside.tema && !forsteside.adresse) {
-    const mottaksadresser: Mottaksadresse[] = await loadMottaksadresser();
-    const addresses = mottaksadresser
-      .map((mottaksadresse) => mottaksadresse.data)
-      .filter((mottaksadresseData) => mottaksadresseData.temakoder?.includes(forsteside.tema));
-
-    if (addresses.length > 0) {
-      forsteside.adresse = {
-        adresselinje1: addresses[0].adresselinje1,
-        adresselinje2: addresses[0].adresselinje2,
-        adresselinje3: addresses[0].adresselinje3,
-        postnummer: addresses[0].postnummer,
-        poststed: addresses[0].poststed,
-      };
-
-      if (addresses.length > 1) {
-        logger.warn(`Multiple addresses setup with theme: ${forsteside.tema}`);
-      }
-    }
-  }
-
   if (!forsteside.adresse && !forsteside.netsPostboks) {
     forsteside.netsPostboks = '1400';
   }
