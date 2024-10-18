@@ -104,11 +104,16 @@ export interface ComponentValue {
   description?: string;
 }
 
+export interface CustomLabels {
+  [key: string]: string;
+}
+
 export interface Component {
   id?: string;
   navId?: string;
   key: string;
   label: string;
+  customLabels?: CustomLabels;
   type: string;
   content?: string;
   calculateValue?: string;

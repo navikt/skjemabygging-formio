@@ -1,4 +1,4 @@
-import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { dateUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useComponentUtils } from '../../../context/component/componentUtilsContext';
 import DatePicker from '../../datepicker/DatePicker';
 import { useIdentity } from '../identityContext';
@@ -24,6 +24,8 @@ const BirthDateField = () => {
       inputRef={(ref) => addRef(refId, ref)}
       error={getComponentError(refId)}
       value={nationalIdentity?.fodselsdato ?? ''}
+      fromDate="1900"
+      toDate={dateUtils.toSubmissionDate()}
     />
   );
 };

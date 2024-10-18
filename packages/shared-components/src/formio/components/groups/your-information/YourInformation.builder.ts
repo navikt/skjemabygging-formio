@@ -1,3 +1,4 @@
+import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import addressBuilder from '../../core/address/Address.builder';
 import addressValidityBuilder from '../../extensions/address-validitity/AddressValidity.builder';
 import firstNameBuilder from '../../extensions/first-name/FirstName.builder';
@@ -30,6 +31,9 @@ const yourInformationBuilder = () => {
           prefill: true,
           prefillKey: 'sokerIdentifikasjonsnummer',
           protectedApiKey: true,
+          customLabels: {
+            doYouHaveIdentityNumber: TEXTS.statiske.identity.doYouHaveIdentityNumber,
+          },
         },
         {
           ...addressBuilder().schema,
@@ -38,6 +42,9 @@ const yourInformationBuilder = () => {
           customConditional:
             'show = row.identitet.harDuFodselsnummer === "nei" || (row.identitet.identitetsnummer && !row.identitet.harDuFodselsnummer)',
           protectedApiKey: true,
+          customLabels: {
+            livesInNorway: TEXTS.statiske.address.livesInNorway,
+          },
         },
         {
           ...addressValidityBuilder().schema,

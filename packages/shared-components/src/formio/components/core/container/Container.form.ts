@@ -9,12 +9,12 @@ const containerForm = () => {
   // prettier-ignore
   return createTabs(
     display([
+      editFormDisplay.yourInformation(),
       editFormDisplay.label(),
       editFormDisplay.hideLabel(),
     ]),
     api([
       editFormApi.key(),
-      editFormApi.yourInformation(),
     ]),
     conditional([
       editFormConditional.simpleConditional(),

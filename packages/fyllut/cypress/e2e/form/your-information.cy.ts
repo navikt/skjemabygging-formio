@@ -155,7 +155,7 @@ describe('Your information', () => {
         );
         cy.get('.navds-alert').should('have.length', 0);
         cy.findByRole('textbox', { name: 'Fødselsnummer eller d-nummer' }).should('not.exist');
-        cy.findByRole('textbox', { name: /Din fødselsdato/ }).type('01.01.1980');
+        cy.findByRole('textbox', { name: /Fødselsdato/ }).type('01.01.1980');
         cy.findByRole('group', { name: 'Bor du i Norge?' }).within(($radio) => cy.findByLabelText('Nei').check());
 
         cy.findByRole('textbox', { name: /^C\/O/ }).type('Til denne personen');
@@ -180,7 +180,7 @@ describe('Your information', () => {
         );
         cy.get('.navds-alert').should('have.length', 0);
         cy.findByRole('textbox', { name: 'Fødselsnummer eller d-nummer' }).should('not.exist');
-        cy.findByRole('textbox', { name: /Din fødselsdato/ }).type('01.01.1980');
+        cy.findByRole('textbox', { name: /Fødselsdato/ }).type('01.01.1980');
         cy.findByRole('group', { name: 'Bor du i Norge?' }).within(($radio) => cy.findByLabelText('Ja').check());
 
         cy.findByRole('group', { name: 'Er kontaktadressen din en vegadresse eller postboksadresse?' }).within(
@@ -209,7 +209,7 @@ describe('Your information', () => {
         );
         cy.get('.navds-alert').should('have.length', 0);
         cy.findByRole('textbox', { name: 'Fødselsnummer eller d-nummer' }).should('not.exist');
-        cy.findByRole('textbox', { name: /Din fødselsdato/ }).type('01.01.1980');
+        cy.findByRole('textbox', { name: /Fødselsdato/ }).type('01.01.1980');
         cy.findByRole('group', { name: 'Bor du i Norge?' }).within(($radio) => cy.findByLabelText('Ja').check());
 
         cy.findByRole('group', { name: 'Er kontaktadressen din en vegadresse eller postboksadresse?' }).within(
