@@ -13,7 +13,7 @@ const editFormYourInformation = (): Component => {
       'siden de er påkrevd for å sette korrekt avsender. ' +
       'Hvis det er flere beholdere i skjemaet med denne verdien satt, ' +
       'vil man bruke den første man finner med utfylt data, ' +
-      'så det anbefales og ikke ha mer enn en synlig beholder med denne verdien i hvert skjema',
+      'så det anbefales og ikke ha mer enn en synlig beholder med denne verdien i hvert skjema.',
   };
 };
 

@@ -6,18 +6,19 @@ import editFormDisplay from '../../base/editForm/display';
 import editFormTabs from '../../base/editForm/editFormTabs';
 
 const identityForm = () => {
-  const { api, data, conditional, createTabs } = editFormTabs;
+  const { display, api, data, conditional, createTabs } = editFormTabs;
 
   // prettier-ignore
   return createTabs(
-    data([
-      editFormData.prefillKey({prefillKey: 'sokerIdentifikasjonsnummer'}),
+    display([
       editFormDisplay.customLabels({
         key: 'doYouHaveIdentityNumber',
         label: 'Ledetekst',
         value: TEXTS.statiske.identity.doYouHaveIdentityNumber,
-        customConditional: 'show = row.prefillKey === "sokerIdentifikasjonsnummer"',
       }),
+    ]),
+    data([
+      editFormData.prefillKey({prefillKey: 'sokerIdentifikasjonsnummer'}),
     ]),
     api([
       editFormApi.key(),
