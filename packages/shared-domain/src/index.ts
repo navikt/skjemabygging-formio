@@ -63,6 +63,7 @@ import migrationUtils, { MigrationLevel } from './migration';
 import { Operator } from './migration/operator';
 import type { Mottaksadresse, MottaksadresseData } from './mottaksadresse';
 import PrefillAddress from './prefill/prefillAddress';
+import type { Recipient } from './recipient/Recipient';
 import type { ReportDefinition } from './reports';
 import type { FormioResource, ResourceName } from './resource';
 import type {
@@ -208,6 +209,7 @@ export type {
   PrefillAddress,
   PrefillData,
   PrefillKey,
+  Recipient,
   ReportDefinition,
   ResourceAccess,
   ResourceContent,
