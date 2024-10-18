@@ -28,7 +28,7 @@ const editFormAddressPrefill = (options: PropertyOptions): Component => {
       },
     ],
     validate: {
-      required: true,
+      required: false,
     },
     clearOnHide: true,
     customConditional: options.customConditional,

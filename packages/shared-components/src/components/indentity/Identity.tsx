@@ -1,4 +1,4 @@
-import { SubmissionIdentity } from '@navikt/skjemadigitalisering-shared-domain';
+import { CustomLabels, SubmissionIdentity } from '@navikt/skjemadigitalisering-shared-domain';
 import BirthDateField from './fields/BirthDateField';
 import DoYouHaveIdentityNumberRadio from './fields/DoYouHaveIdentityNumberRadio';
 import IdentityNumberField from './fields/IdentityNumberField';
@@ -12,9 +12,10 @@ interface Props {
   required?: boolean;
   className?: string;
   identity: SubmissionIdentity;
+  customLabels?: CustomLabels;
 }
 
-const Identity = ({ readOnly, required, onChange, identity, className }: Props) => {
+const Identity = ({ readOnly, required, onChange, identity, className, customLabels }: Props) => {
   return (
     <IdentityProvider
       nationalIdentity={identity}
@@ -27,7 +28,7 @@ const Identity = ({ readOnly, required, onChange, identity, className }: Props) 
         <IdentityNumberField />
       ) : (
         <>
-          <DoYouHaveIdentityNumberRadio />
+          <DoYouHaveIdentityNumberRadio label={customLabels?.doYouHaveIdentityNumber} />
           {identity?.harDuFodselsnummer !== undefined &&
             (identity?.harDuFodselsnummer === 'ja' ? <IdentityNumberField /> : <BirthDateField />)}
         </>

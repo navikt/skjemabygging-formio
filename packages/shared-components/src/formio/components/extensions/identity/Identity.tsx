@@ -137,6 +137,7 @@ export default class Identity extends BaseComponent {
           className={this.getClassName()}
           readOnly={this.getReadOnly()}
           required={this.isRequired()}
+          customLabels={this.getCustomLabels()}
         />
       </ComponentUtilsProvider>,
     );

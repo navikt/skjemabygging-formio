@@ -29,7 +29,7 @@ const AddressDatePicker = ({ type, label, description, value, required = false, 
   }
 
   return (
-    <div className="form-group">
+    <div className={`form-group ${className}`}>
       <DatePicker
         onChange={(val) => onChange(type, val)}
         value={value ?? ''}
@@ -38,7 +38,6 @@ const AddressDatePicker = ({ type, label, description, value, required = false, 
         inputRef={(ref) => addRef(type, ref)}
         error={getComponentError(type)}
         readOnly={readOnly}
-        className={className}
         fromDate={fromDate}
         toDate={toDate}
       />

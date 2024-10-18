@@ -1,6 +1,7 @@
 import {
   Address as AddressDomain,
   AddressType as AddressTypeDomain,
+  CustomLabels,
   SubmissionAddress,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { AddressProvider } from './addressContext';
@@ -17,11 +18,21 @@ interface Props {
   required?: boolean;
   className?: string;
   addressTypeChoice?: boolean;
+  customLabels?: CustomLabels;
 }
 
 export type SubmissionAddressType = keyof SubmissionAddress;
 
-const Address = ({ addressType, address, readOnly, required, className, onChange, addressTypeChoice }: Props) => {
+const Address = ({
+  addressType,
+  address,
+  readOnly,
+  required,
+  className,
+  onChange,
+  addressTypeChoice,
+  customLabels,
+}: Props) => {
   const getAddress = () => {
     if (
       addressType === 'NORWEGIAN_ADDRESS' ||
@@ -53,7 +64,13 @@ const Address = ({ addressType, address, readOnly, required, className, onChange
 
   return (
     <>
-      {addressTypeChoice && <AddressTypeChoice values={address as SubmissionAddress} onChange={handleChange} />}
+      {addressTypeChoice && (
+        <AddressTypeChoice
+          values={address as SubmissionAddress}
+          onChange={handleChange}
+          label={customLabels?.livesInNorway}
+        />
+      )}
       {showAddress() && (
         <AddressProvider
           address={address}

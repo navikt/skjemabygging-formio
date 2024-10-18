@@ -1,4 +1,4 @@
-import { Component, ComponentError } from '@navikt/skjemadigitalisering-shared-domain';
+import { Component, ComponentError, CustomLabels } from '@navikt/skjemadigitalisering-shared-domain';
 import Field from 'formiojs/components/_classes/field/Field';
 import FormioUtils from 'formiojs/utils';
 import { TFunction, TOptions } from 'i18next';
@@ -117,6 +117,13 @@ class BaseComponent extends FormioReactComponent {
    */
   getSpellCheck() {
     return this.component?.spellCheck;
+  }
+
+  /**
+   * Get error custom for component renderReact()
+   */
+  getCustomLabels(): CustomLabels | undefined {
+    return this.component?.customLabels;
   }
 
   /**
