@@ -69,6 +69,7 @@ export default tseslint.config(
           ignoreRestSiblings: true,
           argsIgnorePattern: '^[_$].*',
           varsIgnorePattern: '^[_$].*',
+          caughtErrorsIgnorePattern: '^[_$].*',
         },
       ],
 

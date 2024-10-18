@@ -6,6 +6,7 @@ interface Props {
   open: boolean;
   onClose: () => void;
   onConfirm: () => Promise<void> | void;
+  width?: 'small' | 'medium';
   exitUrl?: string;
   confirmType?: 'primary' | 'danger';
   texts: {

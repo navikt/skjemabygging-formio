@@ -9,6 +9,7 @@ const ConfirmDelingslenkeModal = () => {
   return (
     <ConfirmationModal
       open={open}
+      width={'small'}
       onClose={onClose}
       onConfirm={onClose}
       texts={{
