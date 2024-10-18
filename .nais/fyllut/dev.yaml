@@ -37,6 +37,9 @@ accessPolicy:
       - application: nav-dekoratoren
         namespace: personbruker
         cluster: dev-gcp
+      - application: forms-api
+        namespace: fyllut-sendinn
+        cluster: dev-gcp
     external:
       - host: skjemabygging-proxy.dev-fss-pub.nais.io
       - host: formio-api.intern.dev.nav.no

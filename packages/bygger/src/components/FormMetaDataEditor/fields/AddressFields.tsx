@@ -1,7 +1,7 @@
-import { Alert, Link, Select } from '@navikt/ds-react';
-import { MottaksadresseData, NavFormSettingsDiff, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
+import { Link, Select } from '@navikt/ds-react';
+import { NavFormSettingsDiff, NavFormType, Recipient } from '@navikt/skjemadigitalisering-shared-domain';
 import { Link as ReactRouterLink } from 'react-router-dom';
-import useMottaksadresser from '../../../hooks/useMottaksadresser';
+import { useRecipients } from '../../../context/recipients/RecipientsContext';
 import LabelWithDiff from '../LabelWithDiff';
 import { UpdateFormFunction } from '../utils/utils';
 
@@ -15,17 +15,10 @@ const AddressFields = ({ onChange, diff, form }: AddressFieldsProps) => {
   const innsending = form.properties.innsending || 'PAPIR_OG_DIGITAL';
   const mottaksadresseId = form.properties.mottaksadresseId;
   const isLockedForm = form.properties.isLockedForm;
-  const { mottaksadresser, ready: isMottaksAdresserReady, errorMessage: mottaksadresseError } = useMottaksadresser();
+  const { isReady: isMottaksAdresserReady, recipients } = useRecipients();
 
-  const toAddressString = (address: MottaksadresseData) => {
-    const linjer = [address.adresselinje1];
-    if (address.adresselinje2) {
-      linjer.push(address.adresselinje2);
-    }
-    if (address.adresselinje3) {
-      linjer.push(address.adresselinje3);
-    }
-    return `${linjer.join(', ')}, ${address.postnummer} ${address.poststed}`;
+  const toAddressString = (recipient: Recipient) => {
+    return `${recipient.name}, ${recipient.poBoxAddress}, ${recipient.postalCode} ${recipient.postalName}`;
   };
 
   return (
@@ -53,21 +46,16 @@ const AddressFields = ({ onChange, diff, form }: AddressFieldsProps) => {
             <option value="">
               {mottaksadresseId && !isMottaksAdresserReady ? `Mottaksadresse-id: ${mottaksadresseId}` : 'Standard'}
             </option>
-            {mottaksadresser.map((adresse) => (
-              <option value={adresse._id} key={adresse._id}>
-                {toAddressString(adresse.data)}
+            {recipients.map((recipient) => (
+              <option value={recipient.recipientId} key={recipient.recipientId}>
+                {toAddressString(recipient)}
               </option>
             ))}
           </Select>
-          {mottaksadresseError && (
-            <Alert variant="error" size="small">
-              {mottaksadresseError}
-            </Alert>
-          )}
         </div>
       )}
       <div className="mb">
-        <Link as={ReactRouterLink} to="/mottaksadresser">
+        <Link as={ReactRouterLink} to="/mottakere">
           Rediger mottaksadresser
         </Link>
       </div>

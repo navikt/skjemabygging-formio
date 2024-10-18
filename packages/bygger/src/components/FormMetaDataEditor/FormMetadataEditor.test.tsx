@@ -6,18 +6,17 @@ import React from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import form from '../../../example_data/Form.json';
 import featureToggles from '../../../test/featureToggles';
-import mockMottaksadresser from '../../fakeBackend/mock-mottaksadresser';
+import mockRecipients from '../../fakeBackend/mock-recipients';
 import { CreationFormMetadataEditor, FormMetadataEditor } from './FormMetadataEditor';
 import { UpdateFormFunction } from './utils/utils';
 
 const testform = form as unknown as NavFormType;
 
-vi.mock('../../hooks/useMottaksadresser', () => {
+vi.mock('../../context/recipients/RecipientsContext', () => {
   return {
-    default: () => ({
-      ready: true,
-      mottaksadresser: mockMottaksadresser,
-      errorMessage: undefined,
+    useRecipients: () => ({
+      isReady: true,
+      recipients: mockRecipients,
     }),
   };
 });

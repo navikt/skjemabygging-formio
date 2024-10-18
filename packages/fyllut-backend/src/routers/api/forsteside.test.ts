@@ -59,15 +59,6 @@ describe('[endpoint] forsteside', () => {
   });
 
   describe('validateForstesideRequest', () => {
-    it('Find address if no address and theme is set on existing address', async () => {
-      const body = await validateForstesideRequest({
-        tema: 'HJE',
-      } as ForstesideRequestBody);
-
-      expect(body.netsPostboks).toBeUndefined();
-      expect(body.adresse).toBeDefined();
-    });
-
     it('If theme is set not on existing address, use default netsPostboks', async () => {
       const body = await validateForstesideRequest({
         tema: 'HJR',

@@ -1,0 +1,123 @@
+[
+  {
+    "recipientId": "6173f82ea9a3430003fac933",
+    "name": "NAV Skanning sykmelding del A ",
+    "poBoxAddress": "Postboks 1411 Sentrum  ",
+    "postalCode": "0109",
+    "postalName": "Oslo",
+    "createdAt": "2021-10-23T13:55:26.568+02:00",
+    "createdBy": "IMPORT",
+    "changedAt": "2021-10-25T19:14:21.371+02:00",
+    "changedBy": "IMPORT"
+  },
+  {
+    "recipientId": "6177bea68e0d00000370f2ef",
+    "name": "NAV Pensjon",
+    "poBoxAddress": "Postboks 6600 Etterstad",
+    "postalCode": "0607",
+    "postalName": "Oslo",
+    "createdAt": "2021-10-26T10:39:02.454+02:00",
+    "createdBy": "IMPORT",
+    "changedAt": "2021-10-26T10:39:02.455+02:00",
+    "changedBy": "IMPORT"
+  },
+  {
+    "recipientId": "61af4b3a1127300003cb8d31",
+    "name": "NAV Familie- og pensjonsytelser Oslo 2",
+    "poBoxAddress": "Postboks 6600 Etterstad",
+    "postalCode": "0607",
+    "postalName": "Oslo",
+    "createdAt": "2021-12-07T12:53:30.409+01:00",
+    "createdBy": "IMPORT",
+    "changedAt": "2021-12-07T12:53:30.41+01:00",
+    "changedBy": "IMPORT"
+  },
+  {
+    "recipientId": "61c09f91ec962a0003c65014",
+    "name": "NAV Skanning bidrag",
+    "poBoxAddress": "PB 6215 Etterstad",
+    "postalCode": "0603",
+    "postalName": "Oslo",
+    "createdAt": "2021-12-20T16:21:53.673+01:00",
+    "createdBy": "IMPORT",
+    "changedAt": "2021-12-20T16:21:53.685+01:00",
+    "changedBy": "IMPORT"
+  },
+  {
+    "recipientId": "6246de1afd03d2caeeda2825",
+    "name": "NAV Arbeid og ytelser lønnsgaranti",
+    "poBoxAddress": "Postboks 6683 St. Olavs Plass",
+    "postalCode": "0129",
+    "postalName": "Oslo",
+    "createdAt": "2022-04-01T13:12:26.434+02:00",
+    "createdBy": "IMPORT",
+    "changedAt": "2022-04-01T13:12:26.438+02:00",
+    "changedBy": "IMPORT"
+  },
+  {
+    "recipientId": "62bc3f3f4a6e0d0bbc83bf30",
+    "name": "NAV Økonomi pensjon",
+    "poBoxAddress": "Postboks 6600 Etterstad",
+    "postalCode": "0607",
+    "postalName": "Oslo",
+    "createdAt": "2022-06-29T14:02:07.432+02:00",
+    "createdBy": "IMPORT",
+    "changedAt": "2022-06-29T14:02:07.433+02:00",
+    "changedBy": "IMPORT"
+  },
+  {
+    "recipientId": "6536331ef0f518e1e5cf0a30",
+    "name": "NAV skanning",
+    "poBoxAddress": "Postboks 1402",
+    "postalCode": "0109",
+    "postalName": "Oslo",
+    "createdAt": "2023-10-23T10:47:26.101+02:00",
+    "createdBy": "IMPORT",
+    "changedAt": "2023-10-23T10:47:26.103+02:00",
+    "changedBy": "IMPORT"
+  },
+  {
+    "recipientId": "65aa418f3ad9b63ae4a0d5a9",
+    "name": "NAV Registerforvaltning - Tipsmottaket",
+    "poBoxAddress": "Postboks 4330",
+    "postalCode": "2308",
+    "postalName": "Hamar",
+    "createdAt": "2024-01-19T10:31:59.353+01:00",
+    "createdBy": "IMPORT",
+    "changedAt": "2024-01-19T10:31:59.355+01:00",
+    "changedBy": "IMPORT"
+  },
+  {
+    "recipientId": "6173f7e7a9a3430003fac931",
+    "name": "NAV Økonomi Stønad",
+    "poBoxAddress": "Postboks 354",
+    "postalCode": "8601",
+    "postalName": "MO I RANA",
+    "createdAt": "2021-10-23T13:54:15.537+02:00",
+    "createdBy": "IMPORT",
+    "changedAt": "2024-10-16T12:18:09.155434+02:00",
+    "changedBy": "Lars Olav Torvik"
+  },
+  {
+    "recipientId": "90ead851-04e1-4f64-83e7-2e45a93a649d",
+    "name": "NAV Test 3",
+    "poBoxAddress": "Postboks 3",
+    "postalCode": "0591",
+    "postalName": "Oslo",
+    "createdAt": "2024-10-10T21:10:51.218632+02:00",
+    "createdBy": "Ann Katrin Gagnat",
+    "changedAt": "2024-10-16T13:51:04.336741+02:00",
+    "changedBy": "Ann Katrin Gagnat"
+  },
+  {
+    "recipientId": "6177c7998e0d00000370f2f1",
+    "name": "NAV Registerforvaltning 2",
+    "poBoxAddress": "Tipsmottaket",
+    "postalCode": "2308",
+    "postalName": "Hamar",
+    "createdAt": "2021-10-26T11:17:13.075+02:00",
+    "createdBy": "IMPORT",
+    "changedAt": "2024-10-18T10:29:09.889821+02:00",
+    "changedBy": "Ann Katrin Gagnat"
+  }
+]
