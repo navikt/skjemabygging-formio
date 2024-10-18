@@ -2,6 +2,7 @@ import { Table } from '@navikt/ds-react';
 import { Recipient } from '@navikt/skjemadigitalisering-shared-domain';
 import { useRecipients } from '../context/recipients/RecipientsContext';
 import RecipientRow from './RecipientRow';
+import { LABELS } from './texts';
 
 interface Props {
   recipients: Recipient[];
@@ -14,10 +15,10 @@ const RecipientTable = ({ recipients }: Props) => {
     <Table size="small">
       <Table.Header>
         <Table.Row>
-          <Table.HeaderCell scope="col">Enhetsnavn</Table.HeaderCell>
-          <Table.HeaderCell scope="col">Postboksadresse</Table.HeaderCell>
-          <Table.HeaderCell scope="col">Postnr.</Table.HeaderCell>
-          <Table.HeaderCell scope="col">Poststed</Table.HeaderCell>
+          <Table.HeaderCell scope="col">{LABELS.name}</Table.HeaderCell>
+          <Table.HeaderCell scope="col">{LABELS.poBoxAddress}</Table.HeaderCell>
+          <Table.HeaderCell scope="col">{LABELS.postalCode}</Table.HeaderCell>
+          <Table.HeaderCell scope="col">{LABELS.postalName}</Table.HeaderCell>
           <Table.HeaderCell scope="col"></Table.HeaderCell>
         </Table.Row>
       </Table.Header>

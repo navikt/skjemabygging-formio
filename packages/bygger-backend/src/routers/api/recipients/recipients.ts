@@ -24,7 +24,7 @@ const post: RequestHandler = async (req, res, next) => {
   const accessToken = req.headers.AzureAccessToken as string;
   try {
     const recipient = await recipientService.post(req.body, accessToken);
-    res.json(recipient);
+    res.status(201).json(recipient);
   } catch (error) {
     next(error);
   }
@@ -46,7 +46,7 @@ const deleteRecipient: RequestHandler = async (req, res, next) => {
   const accessToken = req.headers.AzureAccessToken as string;
   try {
     await recipientService.delete(recipientId, accessToken);
-    res.end();
+    res.status(204).send();
   } catch (error) {
     next(error);
   }

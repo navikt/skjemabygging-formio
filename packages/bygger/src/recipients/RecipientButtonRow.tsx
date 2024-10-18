@@ -18,6 +18,7 @@ const RecipientButtonRow = ({ isNew, onSave, onCancel, onDelete }: Props) => {
           <Button
             size="small"
             loading={state.isSaving}
+            disabled={state.isDeleting}
             onClick={async () => {
               setState((state) => ({ ...state, isSaving: true }));
               await onSave();
@@ -26,7 +27,7 @@ const RecipientButtonRow = ({ isNew, onSave, onCancel, onDelete }: Props) => {
           >
             Lagre
           </Button>
-          <Button size="small" variant="tertiary" onClick={onCancel}>
+          <Button size="small" variant="tertiary" disabled={state.isSaving || state.isDeleting} onClick={onCancel}>
             Avbryt
           </Button>
           {!isNew && (
@@ -34,6 +35,7 @@ const RecipientButtonRow = ({ isNew, onSave, onCancel, onDelete }: Props) => {
               size="small"
               variant="danger"
               loading={state.isDeleting}
+              disabled={state.isSaving}
               onClick={async () => {
                 setState((state) => ({ ...state, isDeleting: true }));
                 await onDelete();

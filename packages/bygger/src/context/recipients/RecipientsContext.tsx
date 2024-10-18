@@ -1,6 +1,6 @@
 import { Recipient } from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, ReactNode, useCallback, useContext, useEffect, useState } from 'react';
-import useFormsApi from '../../hooks/useFormsApi';
+import useFormsApiRecipients from '../../hooks/useFormsApiRecipients';
 
 interface RecipientsContextValues {
   isReady: boolean;
@@ -30,7 +30,7 @@ interface RecipientState {
 const RecipientsContext = createContext<RecipientsContextValues>(defaultContextValue);
 
 const RecipientsProvider = ({ children }: { children: ReactNode }) => {
-  const { recipientsApi } = useFormsApi();
+  const recipientsApi = useFormsApiRecipients();
   const [recipientState, setRecipientState] = useState<RecipientState>({ isReady: false, recipients: [] });
 
   const loadRecipients = useCallback(async (): Promise<void> => {
@@ -45,38 +45,24 @@ const RecipientsProvider = ({ children }: { children: ReactNode }) => {
   }, [recipientState.isReady, loadRecipients]);
 
   const saveRecipient = async (changedRecipient: Recipient) => {
-    if (changedRecipient.recipientId === 'new') {
-      const { recipientId, ...newRecipient } = changedRecipient;
-      const recipient = await recipientsApi.post(newRecipient);
-      if (recipient) {
-        setRecipientState((state) => ({ ...state, recipients: [...state.recipients, recipient], new: undefined }));
-      }
-      return recipient;
+    const result = await recipientsApi.save(changedRecipient);
+    if (result) {
+      setRecipientState((state) => ({ ...state, new: undefined }));
+      await loadRecipients();
     }
-    const recipient = await recipientsApi.put(changedRecipient);
-    if (recipient) {
-      setRecipientState((state) => {
-        const indexOfExisting = state.recipients.findIndex(
-          (existing) => existing.recipientId === recipient.recipientId,
-        );
-        const newRecipients = [...state.recipients];
-        newRecipients[indexOfExisting] = recipient;
-        return { ...state, recipients: newRecipients };
-      });
-    }
-    return recipient;
+    return result;
   };
 
   const deleteRecipient = async (recipientId?: string) => {
-    if (recipientId && recipientId !== 'new') {
-      await recipientsApi.delete(recipientId);
+    if (recipientId) {
+      await recipientsApi.deleteRecipient(recipientId);
       await loadRecipients();
     }
   };
 
   const addNewRecipient = () => {
     if (recipientState.new === undefined) {
-      setRecipientState((state) => ({ ...state, new: { recipientId: 'new' } }));
+      setRecipientState((state) => ({ ...state, new: {} }));
     }
   };
 

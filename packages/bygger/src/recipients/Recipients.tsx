@@ -28,9 +28,6 @@ const Recipients = () => {
       right={
         <SidebarLayout noScroll={true}>
           <VStack gap="1">
-            {/*<Button onClick={onPublish} loading={publishing} size="small">*/}
-            {/*  Publiser mottaksadresser*/}
-            {/*</Button>*/}
             <Button variant="secondary" onClick={addNewRecipient} type="button" size="small" disabled={!!newRecipient}>
               Legg til ny
             </Button>
