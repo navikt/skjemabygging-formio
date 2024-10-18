@@ -8,6 +8,7 @@ import RowLayout from '../../components/layout/RowLayout';
 import Title from '../../components/layout/Title';
 import TitleRowLayout from '../../components/layout/TitleRowLayout';
 import { useForm } from '../../context/form/FormContext';
+import RecipientsProvider from '../../context/recipients/RecipientsContext';
 import PublishModalComponents from '../publish/PublishModalComponents';
 import FormSettingsSidebar from './FormSettingsSidebar';
 
@@ -67,7 +68,9 @@ export function FormSettingsPage({ form }: FormSettingsPageProps) {
           />
         }
       >
-        <FormMetadataEditor form={form} onChange={changeForm} errors={errors} />
+        <RecipientsProvider>
+          <FormMetadataEditor form={form} onChange={changeForm} errors={errors} />
+        </RecipientsProvider>
       </RowLayout>
       <PublishModalComponents
         form={form}
