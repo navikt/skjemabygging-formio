@@ -20,18 +20,17 @@ class CountrySelect extends NavSelect {
   }
 
   init() {
-    if (this.component?.dataSrc === 'url') {
-      this.component.dataSrc = 'values';
-    }
-
     if (this.component) {
+      // Force CountrySelect to always use dataSrc = 'values' and set the norwegian countries as values.
+      // This component do not allow user to set their own custom values or use dataSrc = 'url'.
+      this.component.dataSrc = 'values';
       this.component.data = {
         values: getCountries('nb'),
       };
-    }
 
-    if (this.component?.ignoreNorway) {
-      this.ignoreOptions = ['NO'];
+      if (this.component.ignoreNorway) {
+        this.ignoreOptions = ['NO'];
+      }
     }
     super.init({ skipOnlyAvailableItems: true });
   }
