@@ -27,7 +27,6 @@
     "express-correlation-id": "^3.0.1",
     "express-rate-limit": "^7.4.1",
     "glob": "^11.0.0",
-    "i18n-iso-countries": "^7.12.0",
     "jose": "^5.9.3",
     "jsonwebtoken": "^9.0.2",
     "luxon": "^3.5.0",

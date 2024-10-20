@@ -1,3 +1,4 @@
+import { getCountries } from '../../../../util/countries/countries';
 import NavSelect from '../../core/select/Select';
 import countrySelectBuilder from './CountrySelect.builder';
 import countrySelectForm from './CountrySelect.form';
@@ -9,10 +10,7 @@ class CountrySelect extends NavSelect {
       label: 'Velg land',
       type: 'landvelger',
       key: 'landvelger',
-      data: {
-        url: 'https://www.nav.no/fyllut/countries?lang=nb',
-      },
-      dataSrc: 'url',
+      dataSrc: 'values',
       disableLimit: true,
       validate: {
         required: true,
@@ -22,6 +20,16 @@ class CountrySelect extends NavSelect {
   }
 
   init() {
+    if (this.component?.dataSrc === 'url') {
+      this.component.dataSrc = 'values';
+    }
+
+    if (this.component) {
+      this.component.data = {
+        values: getCountries('nb'),
+      };
+    }
+
     if (this.component?.ignoreNorway) {
       this.ignoreOptions = ['NO'];
     }

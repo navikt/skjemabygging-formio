@@ -97,6 +97,12 @@ export type FormPropertiesPublishing = Pick<
 >;
 
 type ComponentDataSrc = 'values' | 'url' | 'json' | 'custom' | 'resource';
+export interface ComponentData {
+  values?: ComponentValue[];
+  url?: string;
+  custom?: any;
+}
+
 export type AttachmentType = 'default' | 'other';
 export interface ComponentValue {
   value: string;
@@ -113,7 +119,7 @@ export interface Component {
   content?: string;
   calculateValue?: string;
   allowCalculateOverride?: boolean;
-  data?: any;
+  data?: ComponentData;
   dataSrc?: ComponentDataSrc;
   validate?: ComponentValidate;
   conditional?: ComponentConditional;
