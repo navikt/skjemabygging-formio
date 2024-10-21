@@ -6,16 +6,17 @@ import { SubmissionAddressType } from './Address';
 interface Props {
   onChange: (type: SubmissionAddressType, value: string) => void;
   values: SubmissionAddress;
+  label?: string;
 }
 
-const AddressTypeChoice = ({ onChange, values }: Props) => {
+const AddressTypeChoice = ({ onChange, values, label }: Props) => {
   const { translate, getComponentError, addRef } = useComponentUtils();
 
   return (
     <>
       <Radio
         className="form-group"
-        legend={translate(TEXTS.statiske.address.livesInNorway)}
+        legend={translate(label ?? TEXTS.statiske.address.livesInNorway)}
         value={values?.borDuINorge ?? ''}
         values={[
           {
