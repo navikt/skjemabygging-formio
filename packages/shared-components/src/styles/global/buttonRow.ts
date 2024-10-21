@@ -6,7 +6,7 @@ const buttonRow = {
     gap: 'var(--a-spacing-5)',
     flexWrap: 'wrap',
     marginBottom: 'var(--a-spacing-5)',
-    '& button, & a': {
+    '> button, & a': {
       flexGrow: 1,
       minWidth: '12rem',
       maxWidth: '18.75rem',

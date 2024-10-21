@@ -72,6 +72,7 @@ const PublishModalComponents = ({
       />
       <ConfirmationModal
         open={userMessageModal}
+        width={'small'}
         onClose={() => setUserMessageModal(false)}
         onConfirm={() => setUserMessageModal(false)}
         texts={{
