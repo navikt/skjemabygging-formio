@@ -52,6 +52,7 @@ const ReactSelectWrapper = ({
   const ref = useRef<Select>(null);
   useEffect(() => {
     if (ref.current) inputRef(ref.current);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ref.current]);
 
   return (
@@ -156,37 +157,39 @@ class NavSelect extends BaseComponent {
       this.itemsLoaded = new Promise((resolve) => {
         this.itemsLoadedResolve = resolve;
       });
-      const dataUrl = component.data.url;
-      this.isLoading = true;
-      http
-        .get<any[]>(dataUrl)
-        .then((data) => {
-          const { valueProperty, labelProperty } = component;
+      const dataUrl = component.data?.url;
+      if (dataUrl) {
+        this.isLoading = true;
+        http
+          .get<any[]>(dataUrl)
+          .then((data) => {
+            const { valueProperty, labelProperty } = component;
 
-          this.selectOptions = data
-            .map((obj) => {
-              if (!(this.ignoreOptions ?? []).includes(obj[labelProperty || 'value'])) {
-                return {
-                  label: obj[labelProperty || 'label'],
-                  value: obj[valueProperty || 'value'],
-                };
-              }
-            })
-            .filter(Boolean);
-        })
-        .catch((err) => {
-          this.emit('componentError', {
-            component,
-            message: err.toString(),
+            this.selectOptions = data
+              .map((obj) => {
+                if (!(this.ignoreOptions ?? []).includes(obj[labelProperty || 'value'])) {
+                  return {
+                    label: obj[labelProperty || 'label'],
+                    value: obj[valueProperty || 'value'],
+                  };
+                }
+              })
+              .filter(Boolean);
+          })
+          .catch((err) => {
+            this.emit('componentError', {
+              component,
+              message: err.toString(),
+            });
+            console.warn(`Unable to load resources for ${this.key} (dataUrl=${dataUrl})`);
+          })
+          .finally(() => {
+            this.isLoading = false;
+            this.loadFinished = true;
+            this.itemsLoadedResolve?.();
+            this.rerender();
           });
-          console.warn(`Unable to load resources for ${this.key} (dataUrl=${dataUrl})`);
-        })
-        .finally(() => {
-          this.isLoading = false;
-          this.loadFinished = true;
-          this.itemsLoadedResolve?.();
-          this.rerender();
-        });
+      }
     }
   }
 

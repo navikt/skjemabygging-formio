@@ -363,40 +363,23 @@ describe('useFormioTranslations', () => {
       );
     });
 
-    it('fetches country names for Norwegian Bokmål', async () => {
-      await waitFor(() => expect(translations).toBeDefined());
-      expect(fetchSpy).toHaveBeenCalledTimes(3);
-      expect(fetchSpy.mock.calls[1][0]).toEqual(`${DEFAULT_PROJECT_URL}/api/countries?lang=nb`);
-    });
-
-    it('fetches country names for all other languages in translations', async () => {
-      await waitFor(() => expect(translations).toBeDefined());
-      expect(fetchSpy).toHaveBeenCalledTimes(3);
-      expect(fetchSpy.mock.calls[2][0]).toEqual(`${DEFAULT_PROJECT_URL}/api/countries?lang=en`);
-    });
-
-    it('makes no extra fetch calls', async () => {
-      await waitFor(() => expect(translations).toBeDefined());
-      expect(fetchSpy).toHaveBeenCalledTimes(3);
-    });
-
     it('maps translations and countries', async () => {
       expect.assertions(2);
       await waitFor(() => expect(translations).toBeDefined());
       await expect(translations).resolves.toStrictEqual({
         'nb-NO': {
-          translations: {
+          translations: expect.objectContaining({
             Sverige: { value: 'Sverige', scope: 'component-countryName' },
             Norge: { value: 'Norge', scope: 'component-countryName' },
-          },
+          }),
         },
         en: {
           id: undefined,
-          translations: {
+          translations: expect.objectContaining({
             ja: { value: 'yes', scope: 'global' },
             Norge: { value: 'Norway', scope: 'component-countryName' },
             Sverige: { value: 'Sweden', scope: 'component-countryName' },
-          },
+          }),
         },
       });
     });

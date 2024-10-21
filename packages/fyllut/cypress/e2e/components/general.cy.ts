@@ -18,7 +18,6 @@ describe('React components', () => {
         cy.visit('/fyllut/customcomps/dineopplysninger?sub=paper');
         cy.defaultWaits();
         cy.wait('@getCurrencies');
-        cy.wait('@getCountries');
         cy.wait('@getGlobalTranslations');
       });
 
@@ -118,7 +117,6 @@ describe('React components', () => {
         cy.defaultInterceptsMellomlagring();
         cy.wait('@createMellomlagring');
         cy.wait('@getCurrencies');
-        cy.wait('@getCountries');
       });
 
       it('make sure components keep their values after going to summary page', () => {
@@ -156,7 +154,6 @@ describe('React components', () => {
         cy.findByRole('link', { name: 'Rediger dine opplysninger' }).click();
         // Expect requests since we navigate back from summary page
         cy.wait('@getCurrencies');
-        cy.wait('@getCountries');
         cy.findByRole('heading', { name: 'Dine opplysninger' }).should('exist');
         cy.findByRole('button', { name: 'Lagre og fortsett' }).should('be.visible');
 

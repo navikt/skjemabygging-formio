@@ -23,6 +23,7 @@ import FormBuilderSchemas from './formio/form-builder-options/schemas';
 import './formio/overrides';
 import FyllUtRouter from './pages/FyllUtRouter';
 import Styles from './styles';
+import { getCountries } from './util/countries/countries';
 import * as formUtils from './util/form/form.js';
 import NavFormioJs from './util/formio/formiojs';
 import StructuredHtml from './util/html/StructuredHtml/StructuredHtml';
@@ -43,12 +44,21 @@ export {
   ErrorPage,
   FormBuilderOptions,
   FormBuilderSchemas,
+  formUtils,
   FyllUtRouter,
+  getCountries,
+  guid,
+  htmlConverter,
+  http,
+  i18nData,
   InnerHtml,
   LanguageSelector,
   LanguagesProvider,
   LoadingComponent,
+  makeStyles,
+  mapTranslationsToFormioI18nObject,
   Modal,
+  navCssVariables,
   NavForm,
   NavFormioJs,
   SkeletonList,
@@ -56,14 +66,6 @@ export {
   StructuredHtmlElement,
   StructuredHtmlText,
   Styles,
-  formUtils,
-  guid,
-  htmlConverter,
-  http,
-  i18nData,
-  makeStyles,
-  mapTranslationsToFormioI18nObject,
-  navCssVariables,
   url,
   useAppConfig,
   useCurrentLanguage,

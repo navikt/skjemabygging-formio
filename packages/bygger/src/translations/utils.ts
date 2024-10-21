@@ -230,7 +230,7 @@ const getFormTexts = (form?: NavFormType, withInputType = false): TextObjectType
             key === 'attachmentValues' ||
             key === 'customLabels'
           ) {
-            return component[key]
+            return (component[key] as any)
               .filter((value) => !!value)
               .map((value) => textObject(withInputType, value)) as TextObjectType;
           }

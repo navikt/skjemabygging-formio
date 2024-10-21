@@ -9,7 +9,6 @@ describe('Translations', () => {
     beforeEach(() => {
       cy.intercept('GET', '/api/forms/tst123456', { fixture: 'form123456.json' }).as('getForm');
       cy.intercept('GET', '/api/published-forms/tst123456', { statusCode: 404 }).as('getPublishedForm');
-      cy.intercept('GET', '/api/countries?*', { fixture: 'getCountriesLangNb.json' }).as('getCountriesLangNb');
     });
 
     describe('when loading of translations succeeds', () => {
@@ -142,7 +141,6 @@ describe('Translations', () => {
     beforeEach(() => {
       cy.intercept('GET', '/api/forms/tekstblokk123', { fixture: 'tekstblokk123.json' }).as('getForm');
       cy.intercept('GET', '/api/published-forms/tekstblokk123', { statusCode: 404 }).as('getPublishedForm');
-      cy.intercept('GET', '/api/countries?*', { fixture: 'getCountriesLangNb.json' }).as('getCountriesLangNb');
       cy.intercept('GET', /language\/submission?.*/, { fixture: 'tekstblokk123Translations.json' }).as(
         'getTranslations',
       );

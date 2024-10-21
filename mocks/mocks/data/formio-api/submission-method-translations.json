@@ -2,8 +2,8 @@
   "_id": "submethodbug",
   "scope": "local",
   "form": "bug101010",
-  "language": "en",
   "data": {
+    "language": "en",
     "i18n": {
       "Gjenskaper bug": "Reproducing bug",
       "Denne søknaden fyller du ut for å søke om det du trenger.": "Fill out this form to apply for what you need.",

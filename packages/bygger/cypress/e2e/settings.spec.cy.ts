@@ -25,7 +25,6 @@ describe('FormSettingsPage', () => {
     cy.intercept('GET', '/mottaksadresse/submission', { fixture: 'mottakadresse.json' }).as('getMottakAdresse');
     cy.intercept('GET', /language\/submission?.*/, { fixture: 'globalTranslations.json' }).as('getTranslations');
     cy.intercept('GET', '/api/temakoder', { fixture: 'temakoder.json' }).as('getTemaKoder');
-    cy.intercept('GET', '/api/countries?*', { fixture: 'getCountriesLangNb.json' }).as('getCountriesLangNb');
     cy.visit('forms/cypresssettings/settings');
   });
 
