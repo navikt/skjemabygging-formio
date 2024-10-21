@@ -118,6 +118,12 @@ function formatValue(component, value, translate, form, language) {
     case 'identity': {
       return value?.identitetsnummer ? value?.identitetsnummer : dateUtils.toLocaleDate(value?.fodselsdato);
     }
+    case 'addressValidity': {
+      return {
+        validFrom: value?.gyldigFraOgMed ? dateUtils.toLocaleDate(value?.gyldigFraOgMed) : undefined,
+        validTo: value?.gyldigTilOgMed ? dateUtils.toLocaleDate(value?.gyldigTilOgMed) : undefined,
+      };
+    }
     case 'drivinglist':
       return {
         description: translate(TEXTS.statiske.drivingList.summaryDescription),
@@ -454,6 +460,47 @@ function handleIdentity(component, submission, formSummaryObject, parentContaine
   ];
 }
 
+function handleAddressValidity(
+  component,
+  submission,
+  formSummaryObject,
+  parentContainerKey,
+  translate,
+  form,
+  language,
+) {
+  const { key, type } = component;
+  const componentKey = createComponentKey(parentContainerKey, key);
+  const submissionValue = FormioUtils.getValue(submission, componentKey);
+
+  if (!submissionValue || (!submissionValue.gyldigFraOgMed && !submissionValue.gyldigFraOgMed)) {
+    return [...formSummaryObject];
+  }
+
+  const formattedValue = formatValue(component, submissionValue, translate, form, language);
+
+  const returnValues = [
+    ...formSummaryObject,
+    {
+      label: translate(TEXTS.statiske.address.validFrom),
+      key: `${componentKey}-from`,
+      type,
+      value: formattedValue.validFrom,
+    },
+  ];
+
+  if (formattedValue.validTo) {
+    returnValues.push({
+      label: translate(TEXTS.statiske.address.validTo),
+      key: `${componentKey}-to`,
+      type,
+      value: formattedValue.validTo,
+    });
+  }
+
+  return returnValues;
+}
+
 function handleAmountWithCurrencySelector(component, submission, formSummaryObject, parentContainerKey, translate) {
   if (!submission.data) {
     return formSummaryObject;
@@ -596,6 +643,16 @@ function handleComponent(
       }
     case 'identity':
       return handleIdentity(component, submission, formSummaryObject, parentContainerKey, translate, form, language);
+    case 'addressValidity':
+      return handleAddressValidity(
+        component,
+        submission,
+        formSummaryObject,
+        parentContainerKey,
+        translate,
+        form,
+        language,
+      );
     default:
       return handleField(component, submission, formSummaryObject, parentContainerKey, translate, form, language);
   }
