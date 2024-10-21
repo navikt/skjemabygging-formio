@@ -12,6 +12,7 @@ import {
   AttachmentSettingValue,
   AttachmentSettingValues,
   Component,
+  CustomLabels,
   FormioTranslationMap,
   Language,
   NavFormType,
@@ -121,6 +122,7 @@ const getTranslatablePropertiesFromForm = (form: NavFormType) =>
         content,
         title,
         label,
+        customLabels,
         hideLabel,
         html,
         type,
@@ -140,6 +142,7 @@ const getTranslatablePropertiesFromForm = (form: NavFormType) =>
       }) => ({
         title,
         label: getLabel(label, type, !!hideLabel),
+        customLabels: getCustomLabels(customLabels),
         html,
         values: values ? values.map((value) => value.label) : undefined,
         content: getContent(content),
@@ -179,6 +182,16 @@ const getAccordionTexts = (accordionValues?: AccordionSettingValues): undefined 
   });
 };
 
+const getCustomLabels = (customLabels?: CustomLabels): undefined | string[] => {
+  if (!customLabels) {
+    return undefined;
+  }
+
+  return Object.entries(customLabels).map(([_key, customLabel]) => {
+    return customLabel;
+  });
+};
+
 const getAttachmentTexts = (attachmentValues?: AttachmentSettingValues): undefined | string[] => {
   if (!attachmentValues) {
     return undefined;
@@ -210,7 +223,13 @@ const getFormTexts = (form?: NavFormType, withInputType = false): TextObjectType
       Object.keys(component)
         .filter((key) => component[key] !== undefined)
         .flatMap((key) => {
-          if (key === 'values' || key === 'data' || key === 'accordionValues' || key === 'attachmentValues') {
+          if (
+            key === 'values' ||
+            key === 'data' ||
+            key === 'accordionValues' ||
+            key === 'attachmentValues' ||
+            key === 'customLabels'
+          ) {
             return (component[key] as any)
               .filter((value) => !!value)
               .map((value) => textObject(withInputType, value)) as TextObjectType;

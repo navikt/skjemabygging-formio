@@ -207,6 +207,6 @@ export const statiske = {
   identity: {
     doYouHaveIdentityNumber: 'Har du norsk fødselsnummer eller d-nummer?',
     identityNumber: 'Fødselsnummer eller d-nummer',
-    yourBirthdate: 'Din fødselsdato (dd.mm.åååå)',
+    yourBirthdate: 'Fødselsdato (dd.mm.åååå)',
   },
 };
