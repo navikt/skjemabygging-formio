@@ -37,6 +37,8 @@ const optionalEnv = (name: string): string | undefined => {
 };
 
 const naisClusterName = env('NAIS_CLUSTER_NAME') as 'dev-gcp' | 'prod-gcp' | undefined;
+const isProduction = nodeEnv === 'production';
+const isDevelopment = nodeEnv === 'development';
 
 const config: ConfigType = {
   azure: {
@@ -95,6 +97,7 @@ const config: ConfigType = {
       user: env('FORMS_API_AD_GROUP_USER', devFormsApi.adGroups.user),
       admin: env('FORMS_API_AD_GROUP_ADMIN', devFormsApi.adGroups.admin),
     },
+    devToken: isDevelopment ? optionalEnv('FORMS_API_ACCESS_TOKEN') : undefined,
   },
   pusher: {
     cluster: env('PUSHER_CLUSTER', devPusher.cluster),
@@ -104,8 +107,8 @@ const config: ConfigType = {
   },
   nodeEnv,
   port: parseInt(process.env.PORT || '8080'),
-  isProduction: nodeEnv === 'production',
-  isDevelopment: nodeEnv === 'development',
+  isProduction,
+  isDevelopment,
   featureToggles: featureUtils.toFeatureToggles(env('ENABLED_FEATURES', devEnabledFeatures)),
   naisClusterName,
   frontendLoggerConfig: configUtils.loadJsonFromEnv('BYGGER_FRONTEND_LOGCONFIG'),
