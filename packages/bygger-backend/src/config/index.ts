@@ -4,6 +4,7 @@ import {
   devAzure,
   devEnabledFeatures,
   devFormio,
+  devFormsApi,
   devFyllut,
   devGithub,
   devGithubApp,
@@ -36,6 +37,8 @@ const optionalEnv = (name: string): string | undefined => {
 };
 
 const naisClusterName = env('NAIS_CLUSTER_NAME') as 'dev-gcp' | 'prod-gcp' | undefined;
+const isProduction = nodeEnv === 'production';
+const isDevelopment = nodeEnv === 'development';
 
 const config: ConfigType = {
   azure: {
@@ -88,6 +91,14 @@ const config: ConfigType = {
     baseUrl: env('FYLLUT_BASE_URL', devFyllut.baseUrl),
     skjemadelingslenkeUrl: 'https://skjemadelingslenke.ekstern.dev.nav.no/fyllut',
   },
+  formsApi: {
+    url: env('FORMS_API_URL', devFormsApi.url),
+    adGroups: {
+      user: env('FORMS_API_AD_GROUP_USER', devFormsApi.adGroups.user),
+      admin: env('FORMS_API_AD_GROUP_ADMIN', devFormsApi.adGroups.admin),
+    },
+    devToken: isDevelopment ? optionalEnv('FORMS_API_ACCESS_TOKEN') : undefined,
+  },
   pusher: {
     cluster: env('PUSHER_CLUSTER', devPusher.cluster),
     key: env('PUSHER_KEY'),
@@ -96,8 +107,8 @@ const config: ConfigType = {
   },
   nodeEnv,
   port: parseInt(process.env.PORT || '8080'),
-  isProduction: nodeEnv === 'production',
-  isDevelopment: nodeEnv === 'development',
+  isProduction,
+  isDevelopment,
   featureToggles: featureUtils.toFeatureToggles(env('ENABLED_FEATURES', devEnabledFeatures)),
   naisClusterName,
   frontendLoggerConfig: configUtils.loadJsonFromEnv('BYGGER_FRONTEND_LOGCONFIG'),

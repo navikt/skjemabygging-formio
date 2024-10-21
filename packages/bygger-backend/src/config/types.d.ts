@@ -34,6 +34,15 @@ export type FyllutConfig = {
   skjemadelingslenkeUrl: string;
 };
 
+export type FormsApiConfig = {
+  url: string;
+  adGroups: {
+    user: string;
+    admin: string;
+  };
+  devToken?: string;
+};
+
 export type PusherConfig = {
   cluster: string;
   key: string;
@@ -58,6 +67,7 @@ export type ConfigType = {
   formio: FormioConfig;
   prodFormio?: Pick<FormioConfig, 'apiService' | 'projectName'>;
   fyllut: FyllutConfig;
+  formsApi: FormsApiConfig;
   pusher: PusherConfig;
   githubApp: GithubAppConfig;
   gitSha: string;

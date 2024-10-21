@@ -1,6 +1,7 @@
 import {
   AzureConfig,
   FormioConfig,
+  FormsApiConfig,
   FyllutConfig,
   GithubAppConfig,
   PublishRepoConfig,
@@ -36,6 +37,14 @@ export const prodFormio: Pick<FormioConfig, 'apiService' | 'projectName'> = {
 
 export const devFyllut: Partial<FyllutConfig> = {
   baseUrl: 'https://skjemadelingslenke.ekstern.dev.nav.no/fyllut',
+};
+
+export const devFormsApi: FormsApiConfig = {
+  url: 'https://forms-api.intern.dev.nav.no',
+  adGroups: {
+    user: 'b7012a89-90b9-4215-b7dc-988b929216e9',
+    admin: '5398ed9e-bb41-43f5-9434-120b0116953c',
+  },
 };
 
 export const devPusher: Partial<PusherConfig> = {

@@ -98,6 +98,18 @@ til url til den lokale instansen av innsending-api i miljøvariabelen `SEND_INN_
 
     SEND_INN_HOST=http://127.0.0.1:9064
 
+## Kjøre Bygger lokalt med integrasjon mot forms-api
+
+For kontinuerlig utvikling mot forms-api er det best å hente ned og kjøre https://github.com/navikt/forms-api lokalt.
+Sett miljøvariabelen `FORMS_API_URL` i byggeren sin `.env`-fil til riktig port på localhost. F.eks:
+
+    FORMS_API_URL=http://localhost:8082
+
+Alternativt kan du bruke [azure-token-generator](https://azure-token-generator.intern.dev.nav.no/api/obo?aud=dev-gcp:fyllut-sendinn:forms-api) (krever trygdeetaten-bruker) til å generere et midlertidig access token for å nå forms-api i preprod. Merk at tokenet kun er gyldig en begrenset periode. Legg til følgende miljøvariabler for å få tilgang.
+
+    FORMS_API_URL=https://forms-api.intern.dev.nav.no
+    FORMS_API_ACCESS_TOKEN=<access-token> // Bruk access_token fra responsen til azure-token-generator
+
 ## Teste publisering av skjema på lokal maskin
 
 Byggeren er konfigurert med default-verdier lokalt som sørger for at eventuelle publiseringer blir gjort mot en
