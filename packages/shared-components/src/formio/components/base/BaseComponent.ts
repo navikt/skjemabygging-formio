@@ -120,7 +120,7 @@ class BaseComponent extends FormioReactComponent {
   }
 
   /**
-   * Get error custom for component renderReact()
+   * Get custom labels for for use in custom components.
    */
   getCustomLabels(): CustomLabels | undefined {
     return this.component?.customLabels;
