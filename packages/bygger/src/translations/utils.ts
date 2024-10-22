@@ -89,6 +89,9 @@ const extractTextsFromProperties = (props: NavFormType['properties']): TextObjec
   return array;
 };
 
+const getValues = (values?: Array<{ label: string; value: string; description?: string }>) =>
+  values ? values.flatMap(({ label, description }) => [label, description]) : undefined;
+
 const getContent = (content: string | undefined): string | undefined => {
   if (content) {
     // Formio.js runs code that changes the original text before translating,
@@ -144,7 +147,7 @@ const getTranslatablePropertiesFromForm = (form: NavFormType) =>
         label: getLabel(label, type, !!hideLabel),
         customLabels: getCustomLabels(customLabels),
         html,
-        values: values ? values.map((value) => value.label) : undefined,
+        values: getValues(values),
         content: getContent(content),
         legend,
         description: getTextFromComponentProperty(description),
