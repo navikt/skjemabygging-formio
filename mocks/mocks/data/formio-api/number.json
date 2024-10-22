@@ -444,7 +444,7 @@
       "calculateServer": false,
       "widget": null,
       "attributes": {},
-      "validateOn": "change",
+      "validateOn": "blur",
       "validate": {
         "required": false,
         "custom": "",
@@ -899,7 +899,7 @@
       "calculateServer": false,
       "widget": null,
       "attributes": {},
-      "validateOn": "change",
+      "validateOn": "blur",
       "validate": {
         "required": false,
         "custom": "",
