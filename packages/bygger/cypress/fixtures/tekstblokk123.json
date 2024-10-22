@@ -64,7 +64,7 @@
           "input": false,
           "tableView": false,
           "hideLabel": false,
-          "validateOn": "change",
+          "validateOn": "blur",
           "navId": "e7t09qp",
           "id": "ezuxe8",
           "placeholder": "",
@@ -366,7 +366,7 @@
       "calculateValue": "",
       "calculateServer": false,
       "widget": null,
-      "validateOn": "change",
+      "validateOn": "blur",
       "validate": {
         "required": false,
         "custom": "",
