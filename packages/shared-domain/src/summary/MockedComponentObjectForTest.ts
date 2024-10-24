@@ -50,14 +50,30 @@ const createDummyLandvelger = (label = 'Land', navId: string = createNavId()): C
     navId,
   }) as Component;
 
-type RadioPanelOption = {
+type LabelValuePair = {
   label: string;
   value: string;
+  description?: string;
 };
+
+const createDummyFlervalg = (
+  label = 'Flervalg',
+  values: LabelValuePair[] = [
+    { label: 'Valg 1', value: 'valg1' },
+    { label: 'Valg 2', value: 'valg2' },
+  ],
+  navId: string = createNavId(),
+): Component => ({
+  label,
+  key: keyFromLabel(label),
+  type: 'flervalg',
+  values,
+  navId,
+});
 
 const createDummyRadioPanel = (
   label = 'RadioPanel',
-  values: RadioPanelOption[] = [
+  values: LabelValuePair[] = [
     { label: 'NO-label', value: 'no' },
     { label: 'YES-label', value: 'yes' },
   ],
@@ -114,7 +130,7 @@ const createDummyAttachment = (
 
 const createDummyRadioPanelWithNumberValues = (
   label = 'RadioPanelWithNumberValues',
-  values: RadioPanelOption[] = [
+  values: LabelValuePair[] = [
     { label: '30-label', value: '30' },
     { label: '40-label', value: '40' },
   ],
@@ -130,7 +146,7 @@ const createDummyRadioPanelWithNumberValues = (
 
 const createDummySelectboxes = (
   label = 'Selectboxes',
-  values: RadioPanelOption[] = [
+  values: LabelValuePair[] = [
     { label: 'Milk', value: 'milk' },
     { label: 'Bread', value: 'bread' },
     { label: 'Juice', value: 'juice' },
@@ -397,5 +413,6 @@ const mockedComponentObjectForTest = {
   createDummyAmountWithCurrency,
   createDummyBankAccountField,
   createDummyOrgNrField,
+  createDummyFlervalg,
 };
 export default mockedComponentObjectForTest;

@@ -15,6 +15,7 @@ const {
   createDummyContentElement,
   createDummyDataGrid,
   createDummyEmail,
+  createDummyFlervalg,
   createDummyHTMLElement,
   createDummyNavSkjemagruppe,
   createDummyRadioPanel,
@@ -348,6 +349,39 @@ describe('utils', () => {
         { text: 'Ettersending description', type: 'text' },
         { text: TEXTS.statiske.attachment.harIkke, type: 'text' },
         { text: 'Har ikke label', type: 'text' },
+      ]);
+    });
+
+    it('Test components with value descriptions (Flervalg and Radio)', () => {
+      const actual = getFormTexts(
+        createFormObject([
+          createPanelObject('Panel med komponenter som har flere beskrivelser', [
+            createDummyRadioPanel('Radio med beskrivelser av verdiene', [
+              { label: 'Ja', value: 'ja', description: 'Beskrivelse av ja' },
+              { label: 'Kanskje', value: 'kanskje', description: 'Beskrivelse av kanskje' },
+              { label: 'Uten beskrivelse', value: 'utenbeskrivelse' },
+            ]),
+            createDummyFlervalg('Flervalg med beskrivelser av verdiene', [
+              { label: 'Lett valg', value: 'lettvalg', description: 'Beskrivelse av lett valg' },
+              { label: 'Vanskelig valg', value: 'vanskelig valg', description: 'Beskrivelse av vanskelig valg' },
+            ]),
+          ]),
+        ]),
+      );
+      expect(actual).toEqual([
+        { text: 'Test form' },
+        { text: 'Panel med komponenter som har flere beskrivelser' },
+        { text: 'Radio med beskrivelser av verdiene' },
+        { text: 'Ja' },
+        { text: 'Beskrivelse av ja' },
+        { text: 'Kanskje' },
+        { text: 'Beskrivelse av kanskje' },
+        { text: 'Uten beskrivelse' },
+        { text: 'Flervalg med beskrivelser av verdiene' },
+        { text: 'Lett valg' },
+        { text: 'Beskrivelse av lett valg' },
+        { text: 'Vanskelig valg' },
+        { text: 'Beskrivelse av vanskelig valg' },
       ]);
     });
 
