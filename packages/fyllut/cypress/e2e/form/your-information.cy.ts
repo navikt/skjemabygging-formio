@@ -183,8 +183,8 @@ describe('Your information', () => {
         cy.findByRole('textbox', { name: /Fødselsdato/ }).type('01.01.1980');
         cy.findByRole('group', { name: 'Bor du i Norge?' }).within(($radio) => cy.findByLabelText('Ja').check());
 
-        cy.findByRole('group', { name: 'Er kontaktadressen din en vegadresse eller postboksadresse?' }).within(
-          ($radio) => cy.findByLabelText('Vegadresse').check(),
+        cy.findByRole('group', { name: 'Er kontaktadressen en vegadresse eller postboksadresse?' }).within(($radio) =>
+          cy.findByLabelText('Vegadresse').check(),
         );
 
         cy.findByRole('textbox', { name: /^C\/O/ }).type('Til denne personen');
@@ -212,8 +212,8 @@ describe('Your information', () => {
         cy.findByRole('textbox', { name: /Fødselsdato/ }).type('01.01.1980');
         cy.findByRole('group', { name: 'Bor du i Norge?' }).within(($radio) => cy.findByLabelText('Ja').check());
 
-        cy.findByRole('group', { name: 'Er kontaktadressen din en vegadresse eller postboksadresse?' }).within(
-          ($radio) => cy.findByLabelText('Postboksadresse').check(),
+        cy.findByRole('group', { name: 'Er kontaktadressen en vegadresse eller postboksadresse?' }).within(($radio) =>
+          cy.findByLabelText('Postboksadresse').check(),
         );
 
         cy.findByRole('textbox', { name: /^C\/O/ }).type('Til denne personen');
