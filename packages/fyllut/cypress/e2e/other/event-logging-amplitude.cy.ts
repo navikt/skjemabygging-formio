@@ -73,13 +73,13 @@ describe('Amplitude', () => {
       });
     cy.checkLogToAmplitude('skjemaspørsmål besvart', { spørsmål: 'Bor du i Norge?' });
 
-    cy.findByRole('group', { name: 'Er kontaktadressen din en vegadresse eller postboksadresse?' })
+    cy.findByRole('group', { name: 'Er kontaktadressen en vegadresse eller postboksadresse?' })
       .should('exist')
       .within(() => {
         cy.findByLabelText('Vegadresse').should('exist').check();
       });
     cy.checkLogToAmplitude('skjemaspørsmål besvart', {
-      spørsmål: 'Er kontaktadressen din en vegadresse eller postboksadresse?',
+      spørsmål: 'Er kontaktadressen en vegadresse eller postboksadresse?',
     });
 
     cy.findByRole('textbox', { name: 'Vegadresse' }).should('exist').type('Kirkegata 1');
@@ -154,7 +154,7 @@ describe('Amplitude', () => {
         cy.get('dd').eq(5).should('contain.text', 'Testveien 1C, 1234 Plassen');
         cy.get('dt').eq(6).should('contain.text', 'Bor du i Norge?');
         cy.get('dd').eq(6).should('contain.text', 'Ja');
-        cy.get('dt').eq(7).should('contain.text', 'Er kontaktadressen din en vegadresse eller postboksadresse?');
+        cy.get('dt').eq(7).should('contain.text', 'Er kontaktadressen en vegadresse eller postboksadresse?');
         cy.get('dd').eq(7).should('contain.text', 'Vegadresse');
         cy.get('dt').eq(8).should('contain.text', 'Kontaktadresse');
         cy.get('dt').eq(9).should('contain.text', 'Vegadresse');

@@ -184,7 +184,7 @@ export const statiske = {
   },
   address: {
     livesInNorway: 'Bor du i Norge?',
-    yourContactAddress: 'Er kontaktadressen din en vegadresse eller postboksadresse?',
+    yourContactAddress: 'Er kontaktadressen en vegadresse eller postboksadresse?',
     skatteetatenLink: 'Endre folkeregistrert adresse på Skatteetatens nettsider (åpnes i ny fane)',
     streetAddress: 'Vegadresse',
     streetAddressLong: 'Vegnavn og husnummer, eller postboks',
