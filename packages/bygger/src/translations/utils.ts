@@ -89,7 +89,7 @@ const extractTextsFromProperties = (props: NavFormType['properties']): TextObjec
   return array;
 };
 
-const getValues = (values?: Array<{ label: string; value: string; description?: string }>) =>
+const getLabelsAndDescriptions = (values?: Array<{ label: string; value: string; description?: string }>) =>
   values ? values.flatMap(({ label, description }) => [label, description]) : undefined;
 
 const getContent = (content: string | undefined): string | undefined => {
@@ -147,7 +147,7 @@ const getTranslatablePropertiesFromForm = (form: NavFormType) =>
         label: getLabel(label, type, !!hideLabel),
         customLabels: getCustomLabels(customLabels),
         html,
-        values: getValues(values),
+        values: getLabelsAndDescriptions(values),
         content: getContent(content),
         legend,
         description: getTextFromComponentProperty(description),
