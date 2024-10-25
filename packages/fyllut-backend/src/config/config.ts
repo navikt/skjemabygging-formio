@@ -113,6 +113,7 @@ const localDevelopmentConfig: DefaultConfig = {
   },
   amplitude,
   frontendLoggerConfig,
+  formsApiUrl: process.env.FORMS_API_URL || 'https://forms-api.intern.dev.nav.no',
 };
 
 const defaultConfig: DefaultConfig = {
@@ -138,6 +139,7 @@ const defaultConfig: DefaultConfig = {
   idporten,
   amplitude,
   frontendLoggerConfig,
+  formsApiUrl: process.env.FORMS_API_URL!,
 };
 
 const config: ConfigType = {

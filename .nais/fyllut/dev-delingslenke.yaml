@@ -10,6 +10,7 @@ skjemabygging-proxy-client-id: 95170319-b4d7-4190-8271-118ed19bafbf
 skjemabygging-proxy-url: https://skjemabygging-proxy.dev-fss-pub.nais.io
 send-inn-token-x-client-id: dev-gcp:team-soknad:innsending-api
 send-inn-host: http://innsending-api.team-soknad
+forms-api-url: https://forms-api.nav.no
 kodeverk:
   url: https://kodeverk-api.nav.no
   scope: dev-gcp.team-rocket.kodeverk-api
@@ -49,3 +50,4 @@ accessPolicy:
       - host: skjemabygging-proxy.dev-fss-pub.nais.io
       - host: formio-api.intern.dev.nav.no
       - host: kodeverk-api.nav.no
+      - host: forms-api.nav.no

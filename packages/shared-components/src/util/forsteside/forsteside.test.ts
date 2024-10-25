@@ -1,8 +1,8 @@
 import {
   Component,
   ForstesideRequestBody,
-  Mottaksadresse,
   NavFormType,
+  Recipient,
   SubmissionData,
   SubmissionYourInformation,
 } from '@navikt/skjemadigitalisering-shared-domain';
@@ -345,24 +345,20 @@ describe('forsteside', () => {
     it('finds and returns the correct mottaksadresse when mottaksadresseId and mottaksadresser is provided', () => {
       expect(
         getRecipients('002', [
-          { _id: '001', data: { adresselinje1: 'Gate 1', postnummer: '0001', poststed: 'By' } },
+          { recipientId: '001', name: 'Gate 1', poBoxAddress: 'PB 123', postalCode: '0001', postalName: 'By' },
           {
-            _id: '002',
-            data: {
-              adresselinje1: 'Gate 2',
-              adresselinje2: 'postboks 2',
-              adresselinje3: 'c/o',
-              postnummer: '0002',
-              poststed: 'By',
-            },
+            recipientId: '002',
+            name: 'Gate 2',
+            poBoxAddress: 'postboks 2',
+            postalCode: '0002',
+            postalName: 'By',
           },
-          { _id: '003', data: { adresselinje1: 'Gate 3', postnummer: '0003', poststed: 'By' } },
-        ] as Mottaksadresse[]),
+          { recipientId: '003', name: 'Gate 3', poBoxAddress: 'PB 321', postalCode: '0003', postalName: 'By' },
+        ] as Recipient[]),
       ).toStrictEqual({
         adresse: {
           adresselinje1: 'Gate 2',
           adresselinje2: 'postboks 2',
-          adresselinje3: 'c/o',
           postnummer: '0002',
           poststed: 'By',
         },
@@ -372,8 +368,8 @@ describe('forsteside', () => {
     it("returns default netsPostboks if mottaksadresseId doesn't match any of the provided mottaksadresse", () => {
       expect(
         getRecipients('123', [
-          { _id: '001', data: { adresselinje1: 'Gate 1', postnummer: '0001', poststed: 'By' } },
-        ] as Mottaksadresse[]),
+          { recipientId: '001', name: 'Gate 1', poBoxAddress: 'PB 1', postalCode: '0001', postalName: 'By' },
+        ] as Recipient[]),
       ).toStrictEqual({ netsPostboks: '1400' });
     });
 
