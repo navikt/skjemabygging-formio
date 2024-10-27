@@ -184,7 +184,7 @@ export const statiske = {
   },
   address: {
     livesInNorway: 'Bor du i Norge?',
-    yourContactAddress: 'Er kontaktadressen din en vegadresse eller postboksadresse?',
+    yourContactAddress: 'Er kontaktadressen en vegadresse eller postboksadresse?',
     skatteetatenLink: 'Endre folkeregistrert adresse på Skatteetatens nettsider (åpnes i ny fane)',
     streetAddress: 'Vegadresse',
     streetAddressLong: 'Vegnavn og husnummer, eller postboks',
@@ -197,10 +197,16 @@ export const statiske = {
     poAddress: 'Postboksadresse',
     building: 'Bygning',
     region: 'Region',
+    validFrom: 'Gyldig fra (dd.mm.åååå)',
+    validFromDescription:
+      'Fra hvilken dato skal denne adressen brukes? Du kan sette denne datoen maks 1 år tilbake i tid.',
+    validTo: 'Gyldig til (dd.mm.åååå)',
+    validToDescription:
+      'Du velger selv hvor lenge adressen skal være gyldig, maksimalt 1 år. Etter 1 år må du endre eller forlenge adressen.',
   },
   identity: {
     doYouHaveIdentityNumber: 'Har du norsk fødselsnummer eller d-nummer?',
     identityNumber: 'Fødselsnummer eller d-nummer',
-    yourBirthdate: 'Din fødselsdato (dd.mm.åååå)',
+    yourBirthdate: 'Fødselsdato (dd.mm.åååå)',
   },
 };

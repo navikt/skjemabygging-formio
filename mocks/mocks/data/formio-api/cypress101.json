@@ -51,7 +51,7 @@
           "calculateServer": false,
           "widget": null,
           "attributes": {},
-          "validateOn": "change",
+          "validateOn": "blur",
           "validate": {
             "required": false,
             "custom": "",
@@ -115,7 +115,7 @@
       "calculateServer": false,
       "widget": null,
       "attributes": {},
-      "validateOn": "change",
+      "validateOn": "blur",
       "validate": {
         "required": false,
         "custom": "",
@@ -772,7 +772,7 @@
           "calculateServer": false,
           "widget": null,
           "attributes": {},
-          "validateOn": "change",
+          "validateOn": "blur",
           "validate": {
             "required": false,
             "custom": "",
@@ -900,7 +900,7 @@
           "id": "alert-i18n2"
         },
         {
-          "label": "Er kontaktadressen din en vegadresse eller postboksadresse?",
+          "label": "Er kontaktadressen en vegadresse eller postboksadresse?",
           "key": "vegadresseEllerPostboksadresse",
           "type": "radiopanel",
           "input": true,
@@ -1343,7 +1343,7 @@
               "calculateServer": false,
               "widget": null,
               "attributes": {},
-              "validateOn": "change",
+              "validateOn": "blur",
               "validate": {
                 "required": false,
                 "custom": "",
@@ -1541,7 +1541,7 @@
           "calculateServer": false,
           "widget": null,
           "attributes": {},
-          "validateOn": "change",
+          "validateOn": "blur",
           "validate": {
             "required": false,
             "custom": "",
@@ -1933,7 +1933,7 @@
               "calculateServer": false,
               "widget": null,
               "attributes": {},
-              "validateOn": "change",
+              "validateOn": "blur",
               "validate": {
                 "required": false,
                 "custom": "",
@@ -2131,7 +2131,7 @@
           "calculateServer": false,
           "widget": null,
           "attributes": {},
-          "validateOn": "change",
+          "validateOn": "blur",
           "validate": {
             "required": false,
             "custom": "",
@@ -2760,7 +2760,7 @@
               "calculateServer": false,
               "widget": null,
               "attributes": {},
-              "validateOn": "change",
+              "validateOn": "blur",
               "validate": {
                 "required": false,
                 "custom": "",
@@ -2957,7 +2957,7 @@
           "calculateServer": false,
           "widget": null,
           "attributes": {},
-          "validateOn": "change",
+          "validateOn": "blur",
           "validate": {
             "required": false,
             "custom": "",
@@ -3052,7 +3052,7 @@
       "calculateServer": false,
       "widget": null,
       "attributes": {},
-      "validateOn": "change",
+      "validateOn": "blur",
       "validate": {
         "required": false,
         "custom": "",
@@ -3156,7 +3156,7 @@
           "calculateServer": false,
           "widget": null,
           "attributes": {},
-          "validateOn": "change",
+          "validateOn": "blur",
           "conditional": {
             "show": null,
             "when": null,
@@ -3211,7 +3211,7 @@
       "calculateServer": false,
       "widget": null,
       "attributes": {},
-      "validateOn": "change",
+      "validateOn": "blur",
       "validate": {
         "required": false,
         "custom": "",

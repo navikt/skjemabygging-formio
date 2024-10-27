@@ -8,7 +8,6 @@ import activeTasks from './active-tasks';
 import { initApiConfig } from './api-helper';
 import commonCodes from './common-codes';
 import config from './config';
-import countries from './countries.js';
 import enhetsliste from './enhetsliste.js';
 import exstream from './exstream';
 import form from './form';
@@ -33,7 +32,6 @@ const { azureSkjemabyggingProxy, azurePdl, kodeverkToken, tokenxPdl, tokenxSendI
 
 apiRouter.all('*', idportenAuthHandler, envQualifier);
 apiRouter.get('/config', config.get);
-apiRouter.get('/countries', countries.get);
 apiRouter.get('/enhetsliste', enhetsliste.get);
 apiRouter.get('/forms', tryCatch(forms.get));
 apiRouter.get('/forms/:formPath', tryCatch(form.get));

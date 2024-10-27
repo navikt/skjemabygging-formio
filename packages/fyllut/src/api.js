@@ -1,10 +1,11 @@
+import { getCountries } from '@navikt/skjemadigitalisering-shared-components';
 import { localizationUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import httpFyllut from './util/httpFyllut';
 
-const { getLanguageCodeAsIso639_1, zipCountryNames } = localizationUtils;
+const { zipCountryNames } = localizationUtils;
 
 const loadCountryNames = async (locale) => {
-  return httpFyllut.get(`/fyllut/api/countries?lang=${getLanguageCodeAsIso639_1(locale)}`);
+  return getCountries(locale);
 };
 
 const loadGlobalTranslations = async (languageCode) => {

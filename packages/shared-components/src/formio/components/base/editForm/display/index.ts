@@ -7,6 +7,7 @@ import editFormBackgroundColor from './editFormBackgroundColor';
 import editFormButtonText from './editFormButtonText';
 import editFormContent from './editFormContent';
 import editFormContentForPdf from './editFormContentForPdf';
+import editFormCustomLabels from './editFormCustomLabels';
 import editFormDescription from './editFormDescription';
 import editFormDisabled from './editFormDisabled';
 import editFormFieldSizeField from './editFormFieldSize';
@@ -24,6 +25,7 @@ import editFormSpellCheck from './editFormSpellCheck';
 import editFormTextDisplay from './editFormTextDisplay';
 import editFormTitle from './editFormTitle';
 import editFormTitleSizeField from './editFormTitleSize';
+import editFormYourInformation from './editFormYourInformation';
 import editShowYearPicker from './editShowYearPicker';
 import editFormAltText from './image/editFormAltText';
 import editFormImage from './image/editFormImage';
@@ -62,6 +64,8 @@ const editFormDisplay = {
   titleSize: editFormTitleSizeField,
   inputType: editFormInputType,
   backgroundColor: editFormBackgroundColor,
+  yourInformation: editFormYourInformation,
+  customLabels: editFormCustomLabels,
 };
 
 export default editFormDisplay;

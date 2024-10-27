@@ -4,7 +4,11 @@ import { useComponentUtils } from '../../../context/component/componentUtilsCont
 import Radio from '../../radio/Radio';
 import { useIdentity } from '../identityContext';
 
-const DoYouHaveIdentityNumberRadio = () => {
+interface Props {
+  label?: string;
+}
+
+const DoYouHaveIdentityNumberRadio = ({ label }: Props) => {
   const { translate, addRef, getComponentError } = useComponentUtils();
   const { nationalIdentity, onChange, className, readOnly } = useIdentity();
 
@@ -18,7 +22,7 @@ const DoYouHaveIdentityNumberRadio = () => {
 
   return (
     <Radio
-      legend={translate(TEXTS.statiske.identity.doYouHaveIdentityNumber)}
+      legend={translate(label ?? TEXTS.statiske.identity.doYouHaveIdentityNumber)}
       value={nationalIdentity?.harDuFodselsnummer}
       values={[
         {

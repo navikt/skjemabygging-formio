@@ -1,6 +1,6 @@
 import { FormioResource } from '../resource';
 
-export type Language = 'nb-NO' | 'nn-NO' | 'en' | 'pl';
+export type Language = 'nb-NO' | 'nn-NO' | 'en';
 export type TranslationScope = 'global' | 'local' | 'component-countryName';
 export type TranslationTag = 'skjematekster' | 'grensesnitt' | 'statiske-tekster' | 'validering';
 export type I18nTranslationMap = Record<string, string>;

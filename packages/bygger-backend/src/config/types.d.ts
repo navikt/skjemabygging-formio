@@ -40,6 +40,7 @@ export type FormsApiConfig = {
     user: string;
     admin: string;
   };
+  devToken?: string;
 };
 
 export type PusherConfig = {

@@ -17,6 +17,7 @@ import {
   AttachmentType,
   Component,
   ComponentValue,
+  CustomLabels,
   DeclarationType,
   DisplayType,
   FormPropertiesPublishing,
@@ -83,7 +84,7 @@ import SubmissionAddress from './submission/address';
 import { DrivingListPeriod, DrivingListSubmission, DrivingListValues } from './submission/drivingList';
 import SubmissionIdentity from './submission/identity';
 import { SubmissionMaalgruppe } from './submission/maalgruppe';
-import SubmissionDefault from './submission/submission';
+import SubmissionYourInformation from './submission/yourInformation';
 import {
   SummaryActivity,
   SummaryAddress,
@@ -164,6 +165,7 @@ export type {
   ComponentError,
   ComponentValue,
   ConfigType,
+  CustomLabels,
   DependencyType,
   DisplayType,
   DrivingListPeriod,
@@ -223,10 +225,10 @@ export type {
   SubmissionAddress,
   SubmissionAttachmentValue,
   SubmissionData,
-  SubmissionDefault,
   SubmissionIdentity,
   SubmissionMaalgruppe,
   SubmissionMethod,
+  SubmissionYourInformation,
   SummaryActivity,
   SummaryAddress,
   SummaryAttachment,

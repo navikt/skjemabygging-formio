@@ -5,7 +5,6 @@ describe('Form Builder', () => {
   beforeEach(() => {
     cy.intercept('GET', '/api/config', { fixture: 'config.json' }).as('getConfig');
     cy.intercept('GET', /language\/submission?.*/, { fixture: 'globalTranslations.json' }).as('getTranslations');
-    cy.intercept('GET', '/api/countries*', { fixture: 'getCountriesLangNb.json' }).as('getCountriesLangNb');
     cy.intercept('GET', '/api/temakoder', { fixture: 'temakoder.json' }).as('getTemaKoder');
   });
 
@@ -18,7 +17,6 @@ describe('Form Builder', () => {
       cy.wait('@getConfig');
       cy.wait('@getForm');
       cy.wait('@getPublishedForm');
-      cy.wait('@getCountriesLangNb');
     });
 
     it('Trims properties "vedleggskode" and "vedleggstittel" before save', () => {
@@ -97,7 +95,6 @@ describe('Form Builder', () => {
       cy.wait('@getConfig');
       cy.wait('@getForm');
       cy.wait('@getPublishedForm');
-      cy.wait('@getCountriesLangNb');
     });
 
     it('Select box values', () => {

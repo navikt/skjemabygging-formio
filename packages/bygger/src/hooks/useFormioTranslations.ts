@@ -1,15 +1,15 @@
-import { NavFormioJs, useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
+import { getCountries, NavFormioJs, useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
 import {
   FormioTranslationMap,
   FormioTranslationPayload,
   I18nTranslationMap,
   Language,
+  languagesUtil,
+  localizationUtils,
   ScopedTranslationMap,
   TEXTS,
   TranslationScope,
   TranslationTag,
-  languagesUtil,
-  localizationUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { useCallback } from 'react';
 import { languagesInNorwegian } from '../context/i18n';
@@ -17,7 +17,7 @@ import { combineTranslationResources } from '../context/i18n/translationsMapper'
 import { useFeedbackEmit } from '../context/notifications/FeedbackContext';
 import { getTranslationKeysForAllPredefinedTexts, tags } from '../translations/global/utils';
 
-const { getLanguageCodeAsIso639_1, zipCountryNames } = localizationUtils;
+const { zipCountryNames } = localizationUtils;
 
 type Country = { label: string; value: string };
 
@@ -74,6 +74,7 @@ export const useFormioTranslations = (serverURL, formio) => {
         throw err;
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [formio.projectUrl],
   );
 
@@ -113,10 +114,11 @@ export const useFormioTranslations = (serverURL, formio) => {
             'Publiseringen inneholdt ingen endringer og ble avsluttet (nytt bygg av Fyllut ble ikke trigget)',
           );
         }
-      } catch (error) {
+      } catch (_error) {
         feedbackEmit.error('Publisering feilet');
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [loadGlobalTranslations, feedbackEmit],
   );
 
@@ -151,15 +153,13 @@ export const useFormioTranslations = (serverURL, formio) => {
         throw err;
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [formio.projectUrl],
   );
 
-  const loadCountryNames = useCallback(
-    async (locale: Language): Promise<Country[]> => {
-      return http!.get(`${serverURL}/api/countries?lang=${getLanguageCodeAsIso639_1(locale)}`);
-    },
-    [http, serverURL],
-  );
+  const loadCountryNames = useCallback(async (locale: Language): Promise<Country[]> => {
+    return getCountries(locale);
+  }, []);
 
   const loadAndInsertCountryNames = useCallback(
     async (translations: FormioTranslationMap): Promise<FormioTranslationMap | object> => {
@@ -228,6 +228,7 @@ export const useFormioTranslations = (serverURL, formio) => {
         return { deleted: false, errorMessage: err.message };
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [formio.projectUrl, feedbackEmit],
   );
 
@@ -262,6 +263,7 @@ export const useFormioTranslations = (serverURL, formio) => {
           'x-jwt-token': NavFormioJs.Formio.getToken(),
         },
       ),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [formio.projectUrl],
   );
 
@@ -327,6 +329,7 @@ export const useFormioTranslations = (serverURL, formio) => {
         }
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [createTranslationSubmission, updateTranslationSubmission, feedbackEmit],
   );
 
@@ -406,7 +409,7 @@ export const useFormioTranslations = (serverURL, formio) => {
           `Globale oversettelser for ${languagesInNorwegian[languageCode]} er kopiert fra produksjon.`,
         );
         return Promise.resolve();
-      } catch (err) {
+      } catch (_err) {
         feedbackEmit.error(
           `Feil oppstod ved forsøk på å kopiere globale oversettelser for ${languagesInNorwegian[languageCode]} fra produksjon.`,
         );

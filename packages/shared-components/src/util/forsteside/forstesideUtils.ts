@@ -5,7 +5,8 @@ import {
   navFormUtils,
   Recipient,
   SubmissionAttachmentValue,
-  SubmissionDefault,
+  SubmissionData,
+  SubmissionYourInformation,
   UkjentBruker,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { genererPersonalia } from './forstesideDepricatedUtils';
@@ -20,26 +21,28 @@ const addressLine = (text?: string, prefix: string = ', ') => {
   return `${prefix}${text}`;
 };
 
-const getUserData = (submission: SubmissionDefault): BrukerInfo => {
-  if (!submission.dineOpplysninger) {
+const getUserData = (form: NavFormType, submission: SubmissionData): BrukerInfo => {
+  const yourInformation = getFirstYourInformation(form, submission);
+
+  if (!yourInformation) {
     // Denne er for å støtte gamle formatet på dine opplysninger.
     // Når alle skjemaer er skrevet om til nytt format kan denne fjernes.
     return genererPersonalia(submission);
   }
 
-  if (submission.dineOpplysninger?.identitet?.identitetsnummer) {
+  if (yourInformation.identitet?.identitetsnummer) {
     return {
       bruker: {
-        brukerId: submission.dineOpplysninger?.identitet.identitetsnummer,
+        brukerId: yourInformation.identitet.identitetsnummer,
         brukerType: 'PERSON',
       },
     };
-  } else if (submission.dineOpplysninger?.adresse) {
-    const address = submission.dineOpplysninger?.adresse;
+  } else if (yourInformation.adresse) {
+    const address = yourInformation.adresse;
     return {
       ukjentBrukerPersoninfo:
-        addressLine(submission.dineOpplysninger?.fornavn, '') +
-        addressLine(submission.dineOpplysninger?.etternavn, ' ') +
+        addressLine(yourInformation.fornavn, '') +
+        addressLine(yourInformation.etternavn, ' ') +
         addressLine(address.co, ', c/o ') +
         addressLine(address.postboks, ', Postboks ') +
         addressLine(address.adresse) +
@@ -54,15 +57,28 @@ const getUserData = (submission: SubmissionDefault): BrukerInfo => {
   }
 };
 
-const getAttachmentTitles = (form: NavFormType, submission: SubmissionDefault): string[] => {
+const getFirstYourInformation = (
+  form: NavFormType,
+  submission: SubmissionData,
+): SubmissionYourInformation | undefined => {
+  const yourInformationForm = navFormUtils
+    .flattenComponents(form.components)
+    .find((component) => component.yourInformation && submission[component.key]);
+
+  if (yourInformationForm) {
+    return submission[yourInformationForm.key] as SubmissionYourInformation;
+  }
+};
+
+const getAttachmentTitles = (form: NavFormType, submission: SubmissionData): string[] => {
   return getAttachments(submission, form).map((component) => component.properties!.vedleggstittel!);
 };
 
-const getAttachmentLabels = (form: NavFormType, submission: SubmissionDefault): string[] => {
+const getAttachmentLabels = (form: NavFormType, submission: SubmissionData): string[] => {
   return getAttachments(submission, form).map((component) => component.label);
 };
 
-const getAttachments = (submission: SubmissionDefault, form: NavFormType) => {
+const getAttachments = (submission: SubmissionData, form: NavFormType) => {
   return navFormUtils
     .flattenComponents(form.components)
     .filter((component) => component.properties && !!component.properties.vedleggskode)

@@ -155,7 +155,7 @@ describe('Your information', () => {
         );
         cy.get('.navds-alert').should('have.length', 0);
         cy.findByRole('textbox', { name: 'Fødselsnummer eller d-nummer' }).should('not.exist');
-        cy.findByRole('textbox', { name: /Din fødselsdato/ }).type('01.01.1980');
+        cy.findByRole('textbox', { name: /Fødselsdato/ }).type('01.01.1980');
         cy.findByRole('group', { name: 'Bor du i Norge?' }).within(($radio) => cy.findByLabelText('Nei').check());
 
         cy.findByRole('textbox', { name: /^C\/O/ }).type('Til denne personen');
@@ -165,12 +165,10 @@ describe('Your information', () => {
         cy.findByRole('textbox', { name: /^By \/ stedsnavn/ }).type('Plassen');
         cy.findByRole('textbox', { name: /^Region/ }).type('Øst');
         cy.findByRole('textbox', { name: /^Land/ }).type('Sverige');
-        cy.findByRole('textbox', { name: /^Fra hvilken dato skal denne adressen brukes/ }).type(
+        cy.findByRole('textbox', { name: /^Gyldig fra/ }).type(
           DateTime.now().minus({ days: 300 }).toFormat(dateUtils.inputFormat),
         );
-        cy.findByRole('textbox', { name: /^Til hvilken dato skal denne adressen brukes/ }).type(
-          DateTime.now().toFormat(dateUtils.inputFormat),
-        );
+        cy.findByRole('textbox', { name: /^Gyldig til/ }).type(DateTime.now().toFormat(dateUtils.inputFormat));
 
         cy.clickNextStep();
         cy.findByRole('heading', { name: 'Navn' }).should('exist');
@@ -182,21 +180,19 @@ describe('Your information', () => {
         );
         cy.get('.navds-alert').should('have.length', 0);
         cy.findByRole('textbox', { name: 'Fødselsnummer eller d-nummer' }).should('not.exist');
-        cy.findByRole('textbox', { name: /Din fødselsdato/ }).type('01.01.1980');
+        cy.findByRole('textbox', { name: /Fødselsdato/ }).type('01.01.1980');
         cy.findByRole('group', { name: 'Bor du i Norge?' }).within(($radio) => cy.findByLabelText('Ja').check());
 
-        cy.findByRole('group', { name: 'Er kontaktadressen din en vegadresse eller postboksadresse?' }).within(
-          ($radio) => cy.findByLabelText('Vegadresse').check(),
+        cy.findByRole('group', { name: 'Er kontaktadressen en vegadresse eller postboksadresse?' }).within(($radio) =>
+          cy.findByLabelText('Vegadresse').check(),
         );
 
         cy.findByRole('textbox', { name: /^C\/O/ }).type('Til denne personen');
         cy.findByRole('textbox', { name: 'Vegadresse' }).type('Testveien 1C');
         cy.findByRole('textbox', { name: 'Postnummer' }).type('1234');
         cy.findByRole('textbox', { name: 'Poststed' }).type('Plassen');
-        cy.findByRole('textbox', { name: /^Fra hvilken dato skal denne adressen brukes/ }).type(
-          DateTime.now().toFormat(dateUtils.inputFormat),
-        );
-        cy.findByRole('textbox', { name: /^Til hvilken dato skal denne adressen brukes/ }).type(
+        cy.findByRole('textbox', { name: /^Gyldig fra/ }).type(DateTime.now().toFormat(dateUtils.inputFormat));
+        cy.findByRole('textbox', { name: /^Gyldig til/ }).type(
           DateTime.now().plus({ days: 1 }).toFormat(dateUtils.inputFormat),
         );
 
@@ -213,21 +209,19 @@ describe('Your information', () => {
         );
         cy.get('.navds-alert').should('have.length', 0);
         cy.findByRole('textbox', { name: 'Fødselsnummer eller d-nummer' }).should('not.exist');
-        cy.findByRole('textbox', { name: /Din fødselsdato/ }).type('01.01.1980');
+        cy.findByRole('textbox', { name: /Fødselsdato/ }).type('01.01.1980');
         cy.findByRole('group', { name: 'Bor du i Norge?' }).within(($radio) => cy.findByLabelText('Ja').check());
 
-        cy.findByRole('group', { name: 'Er kontaktadressen din en vegadresse eller postboksadresse?' }).within(
-          ($radio) => cy.findByLabelText('Postboksadresse').check(),
+        cy.findByRole('group', { name: 'Er kontaktadressen en vegadresse eller postboksadresse?' }).within(($radio) =>
+          cy.findByLabelText('Postboksadresse').check(),
         );
 
         cy.findByRole('textbox', { name: /^C\/O/ }).type('Til denne personen');
         cy.findByRole('textbox', { name: 'Postboks' }).type('Postboksen');
         cy.findByRole('textbox', { name: 'Postnummer' }).type('1234');
         cy.findByRole('textbox', { name: 'Poststed' }).type('Plassen');
-        cy.findByRole('textbox', { name: /^Fra hvilken dato skal denne adressen brukes/ }).type(
-          DateTime.now().toFormat(dateUtils.inputFormat),
-        );
-        cy.findByRole('textbox', { name: /^Til hvilken dato skal denne adressen brukes/ }).type(
+        cy.findByRole('textbox', { name: /^Gyldig fra/ }).type(DateTime.now().toFormat(dateUtils.inputFormat));
+        cy.findByRole('textbox', { name: /^Gyldig til/ }).type(
           DateTime.now().plus({ days: 300 }).toFormat(dateUtils.inputFormat),
         );
 

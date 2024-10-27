@@ -211,6 +211,7 @@ class Address extends BaseComponent {
           addressTypeChoice={this.showAddressTypeChoice()}
           className={this.getClassName()}
           required={this.isRequired()}
+          customLabels={this.getCustomLabels()}
         />
       </ComponentUtilsProvider>,
     );

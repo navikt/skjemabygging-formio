@@ -1,6 +1,6 @@
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useAddress } from '../addressContext';
-import AddressField from './AddressField';
+import AddressTextField from './AddressTextField';
 
 interface Props {
   label?: string;
@@ -11,13 +11,13 @@ const StreetAddressField = ({ label, required = false }: Props) => {
   const { address } = useAddress();
 
   return (
-    <AddressField
+    <AddressTextField
       type="adresse"
       label={label ?? TEXTS.statiske.address.streetAddress}
       value={address?.adresse}
       required={required}
       autoComplete="street-address"
-    ></AddressField>
+    ></AddressTextField>
   );
 };
 

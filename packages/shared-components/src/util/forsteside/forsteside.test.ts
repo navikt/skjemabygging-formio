@@ -1,12 +1,21 @@
 import {
+  Component,
   ForstesideRequestBody,
   NavFormType,
   Recipient,
-  SubmissionDefault,
+  SubmissionData,
+  SubmissionYourInformation,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { genererFoerstesideData } from './forsteside';
 import { genererAdresse, genererPersonalia } from './forstesideDepricatedUtils';
-import { getAttachmentLabels, getAttachments, getAttachmentTitles, getRecipients, getTitle } from './forstesideUtils';
+import {
+  getAttachmentLabels,
+  getAttachments,
+  getAttachmentTitles,
+  getRecipients,
+  getTitle,
+  getUserData,
+} from './forstesideUtils';
 
 const genererVedleggComponent = (key, label, vedleggskode, vedleggstittel) => ({
   label,
@@ -84,6 +93,79 @@ describe('forsteside', () => {
 
     it('throws error is both fodselsNummer and address is missing', () => {
       expect(() => genererPersonalia(undefined)).toThrowError('User needs to submit either fodselsNummer or address');
+    });
+  });
+
+  describe('getUserData', () => {
+    const defaultForm = {
+      components: [
+        {
+          type: 'container',
+          key: 'dineOpplysninger',
+          yourInformation: true,
+        },
+        {
+          type: 'container',
+          key: 'ikkeDineOpplysninger',
+        },
+        {
+          type: 'container',
+          key: 'dineOpplysninger2',
+          yourInformation: true,
+        },
+      ] as Component[],
+    } as unknown as NavFormType;
+
+    it('returns user if we have identitynumber', () => {
+      const data = getUserData(defaultForm, {
+        dineOpplysninger: {
+          identitet: {
+            identitetsnummer: '12345678911',
+          },
+        } as SubmissionYourInformation,
+      } as SubmissionData);
+      expect(data).toEqual({
+        bruker: {
+          brukerId: '12345678911',
+          brukerType: 'PERSON',
+        },
+      });
+    });
+
+    it('returns ukjentBruker if we do not have identitynumber', () => {
+      const data = getUserData(defaultForm, {
+        dineOpplysninger: {
+          fornavn: 'Test',
+          etternavn: 'Testesen',
+          identitet: {
+            fodselsdato: '2000-01-01',
+          },
+          adresse: {
+            adresse: 'Testveien 1',
+            postnummer: '1234',
+            bySted: 'Oslo',
+          },
+        } as SubmissionYourInformation,
+      } as SubmissionData);
+      expect(data).toEqual({
+        ukjentBrukerPersoninfo: 'Test Testesen, Testveien 1, 1234 Oslo, Norge',
+      });
+    });
+
+    it('returns user if we have identitynumber on second container with yourInformation', () => {
+      const data = getUserData(defaultForm, {
+        dineOpplysninger2: {
+          identitet: {
+            identitetsnummer: '12345678911',
+          },
+        } as SubmissionYourInformation,
+      } as SubmissionData);
+      expect(data).toEqual({
+        bruker: {
+          brukerId: '12345678911',
+          brukerType: 'PERSON',
+        },
+      });
     });
   });
 
@@ -302,9 +384,10 @@ describe('forsteside', () => {
       properties: {
         skjemanummer: 'WIP 12.34-56',
         tema: 'BIL',
+        mellomlagringDurationDays: '',
       },
       components: [],
-    };
+    } as unknown as NavFormType;
 
     it('correctly generates foersteside data', () => {
       const actual = genererFoerstesideData(
@@ -347,8 +430,8 @@ describe('forsteside', () => {
     });
 
     describe('Språkkode', () => {
-      const defaultForm = { properties: { skjemanummer: 'TST 10.11-12' }, components: [] };
-      const defaultSubmission = {} as SubmissionDefault;
+      const defaultForm = { properties: { skjemanummer: 'TST 10.11-12' }, components: [] } as unknown as NavFormType;
+      const defaultSubmission = {} as SubmissionData;
 
       it('Bokmål brukes dersom språk ikke er valgt', () => {
         const forstesideRequest = genererFoerstesideData(defaultForm, defaultSubmission, undefined);

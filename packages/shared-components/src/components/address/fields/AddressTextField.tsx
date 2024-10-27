@@ -6,18 +6,19 @@ import { useAddress } from '../addressContext';
 interface Props {
   type: SubmissionAddressType;
   label: string;
+  description?: string;
   value?: string;
   required?: boolean;
   children?: React.ReactNode;
   autoComplete?: string;
 }
 
-const AddressField = ({ type, label, value, required = false, children, autoComplete }: Props) => {
+const AddressTextField = ({ type, label, value, required = false, children, autoComplete }: Props) => {
   const { onChange, readOnly, className } = useAddress();
   const { translate, addRef, getComponentError } = useComponentUtils();
 
-  const translateLabel = (label: string) => {
-    return required || readOnly ? translate(label) : `${translate(label)} (${translate('valgfritt')})`;
+  const translateLabel = (text: string) => {
+    return required || readOnly ? translate(text) : `${translate(text)} (${translate('valgfritt')})`;
   };
 
   if (readOnly && !value) {
@@ -41,4 +42,4 @@ const AddressField = ({ type, label, value, required = false, children, autoComp
   );
 };
 
-export default AddressField;
+export default AddressTextField;

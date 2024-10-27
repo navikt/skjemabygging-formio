@@ -97,6 +97,12 @@ export type FormPropertiesPublishing = Pick<
 >;
 
 type ComponentDataSrc = 'values' | 'url' | 'json' | 'custom' | 'resource';
+export interface ComponentData {
+  values?: ComponentValue[];
+  url?: string;
+  custom?: any;
+}
+
 export type AttachmentType = 'default' | 'other';
 export interface ComponentValue {
   value: string;
@@ -104,16 +110,21 @@ export interface ComponentValue {
   description?: string;
 }
 
+export interface CustomLabels {
+  [key: string]: string;
+}
+
 export interface Component {
   id?: string;
   navId?: string;
   key: string;
   label: string;
+  customLabels?: CustomLabels;
   type: string;
   content?: string;
   calculateValue?: string;
   allowCalculateOverride?: boolean;
-  data?: any;
+  data?: ComponentData;
   dataSrc?: ComponentDataSrc;
   validate?: ComponentValidate;
   conditional?: ComponentConditional;
@@ -201,6 +212,7 @@ export interface Component {
   addressType?: AddressType;
   prefillValue?: string | object;
   protectedApiKey?: boolean;
+  yourInformation?: boolean;
 }
 
 export type AddressType = 'NORWEGIAN_ADDRESS' | 'POST_OFFICE_BOX' | 'FOREIGN_ADDRESS';
