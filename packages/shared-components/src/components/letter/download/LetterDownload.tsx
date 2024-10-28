@@ -1,10 +1,8 @@
 import { BodyShort, Button, Heading } from '@navikt/ds-react';
 import { Enhet, NavFormType, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useState } from 'react';
-import { fetchRecipients } from '../../../api/recipients/fetchRecipients';
 import { useAmplitude } from '../../../context/amplitude';
 import { useLanguages } from '../../../context/languages';
-import { genererFoerstesideData } from '../../../util/forsteside/forsteside';
 import { lastNedFilBase64 } from '../../../util/pdf/pdf';
 import DownloadPdfButton from '../../button/download-pdf/DownloadPdfButton';
 import AlertStripeHttpError from '../../error/alert-stripe/AlertStripeHttpError';
@@ -21,8 +19,7 @@ class CorrelationIdError extends Error {
 }
 
 async function lastNedFoersteside(form, submission, fyllutBaseURL, language, enhetNummer) {
-  const recipients = enhetNummer ? [] : await fetchRecipients(fyllutBaseURL);
-  const body = genererFoerstesideData(form, submission.data, language, recipients, enhetNummer);
+  const body = { form, submission: submission.data, language, enhetNummer };
   return fetch(`${fyllutBaseURL}/api/foersteside`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },

@@ -1,4 +1,4 @@
-import { ForstesideRequestBody } from '@navikt/skjemadigitalisering-shared-domain';
+import { ForstesideRequestBody, forstesideUtils, Recipient } from '@navikt/skjemadigitalisering-shared-domain';
 import { NextFunction, Request, Response } from 'express';
 import correlator from 'express-correlation-id';
 import fetch, { BodyInit, HeadersInit } from 'node-fetch';
@@ -11,7 +11,25 @@ const { skjemabyggingProxyUrl } = config;
 const forsteside = {
   post: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const forsteside = await validateForstesideRequest(req.body);
+      const { form, submission, language, enhetNummer } = req.body;
+      const recipientsResponse = await fetch(`${config.formsApiUrl}/v1/recipients`, {
+        method: 'GET',
+        headers: {
+          'x-correlation-id': correlator.getId() as string,
+        },
+      });
+      if (!recipientsResponse.ok) {
+        next(new Error('Failed to fetch recipients'));
+      }
+      const recipients = (await recipientsResponse.json()) as Recipient[] | undefined;
+      const forstesideBody = forstesideUtils.genererFoerstesideData(
+        form,
+        submission,
+        language,
+        recipients,
+        enhetNummer,
+      );
+      const forsteside = await validateForstesideRequest(forstesideBody);
       const response = await forstesideRequest(req, JSON.stringify(forsteside));
       logForsteside(req.body, response);
       res.contentType('application/json');
