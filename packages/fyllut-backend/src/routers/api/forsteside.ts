@@ -4,6 +4,7 @@ import correlator from 'express-correlation-id';
 import fetch, { BodyInit, HeadersInit } from 'node-fetch';
 import { config } from '../../config/config';
 import { logger } from '../../logger';
+import { base64Decode } from '../../utils/base64';
 import { responseToError } from '../../utils/errorHandling.js';
 
 const { skjemabyggingProxyUrl } = config;
@@ -12,6 +13,9 @@ const forsteside = {
   post: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { form, submission, language, enhetNummer } = req.body;
+      const formParsed = JSON.parse(form);
+      const submissionParsed = JSON.parse(submission);
+
       const recipientsResponse = await fetch(`${config.formsApiUrl}/v1/recipients`, {
         method: 'GET',
         headers: {
@@ -21,19 +25,23 @@ const forsteside = {
       if (!recipientsResponse.ok) {
         next(new Error('Failed to fetch recipients'));
       }
+
       const recipients = (await recipientsResponse.json()) as Recipient[] | undefined;
       const forstesideBody = forstesideUtils.genererFoerstesideData(
-        form,
-        submission,
+        formParsed,
+        submissionParsed,
         language,
         recipients,
         enhetNummer,
       );
       const forsteside = await validateForstesideRequest(forstesideBody);
-      const response = await forstesideRequest(req, JSON.stringify(forsteside));
+      const response: any = await forstesideRequest(req, JSON.stringify(forsteside));
       logForsteside(req.body, response);
-      res.contentType('application/json');
-      res.send(response);
+
+      const fileName = encodeURIComponent(`Førstesideark_${formParsed.path}.pdf`);
+      res.contentType('application/pdf');
+      res.setHeader('Content-Disposition', `inline; filename=${fileName}`);
+      res.send(base64Decode(response.foersteside));
     } catch (e) {
       next(e);
     }
@@ -76,7 +84,7 @@ const forstesideRequest = async (req: Request, body?: BodyInit) => {
   });
 
   if (response.ok) {
-    return response.text();
+    return response.json();
   }
 
   throw await responseToError(response, 'Feil ved generering av førsteside', true);
@@ -84,7 +92,7 @@ const forstesideRequest = async (req: Request, body?: BodyInit) => {
 
 const logForsteside = (forsteside: ForstesideRequestBody, response: any) => {
   logger.info('Download frontpage', {
-    loepenummer: JSON.parse(response).loepenummer,
+    loepenummer: response.loepenummer,
     navSkjemaId: forsteside.navSkjemaId,
     tema: forsteside.tema,
     enhetsnummer: forsteside.enhetsnummer,

@@ -1,44 +1,10 @@
-import { BodyShort, Button, Heading } from '@navikt/ds-react';
+import { BodyShort, Heading } from '@navikt/ds-react';
 import { Enhet, NavFormType, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useState } from 'react';
 import { useAmplitude } from '../../../context/amplitude';
 import { useLanguages } from '../../../context/languages';
-import { lastNedFilBase64 } from '../../../util/pdf/pdf';
 import DownloadPdfButton from '../../button/download-pdf/DownloadPdfButton';
-import AlertStripeHttpError from '../../error/alert-stripe/AlertStripeHttpError';
 import EnhetSelector from '../../select/enhet/EnhetSelector';
-
-class CorrelationIdError extends Error {
-  correlationId: string;
-
-  constructor(message: string, correlationId: string) {
-    super(message);
-    this.correlationId = correlationId;
-    Error.captureStackTrace(this, this.constructor);
-  }
-}
-
-async function lastNedFoersteside(form, submission, fyllutBaseURL, language, enhetNummer) {
-  const body = { form, submission: submission.data, language, enhetNummer };
-  return fetch(`${fyllutBaseURL}/api/foersteside`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
-  })
-    .then(async (response) => {
-      if (response.ok) {
-        return response;
-      } else {
-        const errorResponse = await response.json();
-        throw new CorrelationIdError(errorResponse.message, errorResponse.correlation_id);
-      }
-    })
-    .then((response) => response.json())
-    .then((json) => json.foersteside)
-    .then((base64EncodedPdf) => {
-      lastNedFilBase64(base64EncodedPdf, 'Førstesideark', 'pdf');
-    });
-}
 
 interface Props {
   index: number;
@@ -54,10 +20,8 @@ const LetterDownload = ({ form, index, submission, enhetsListe, fyllutBaseURL, t
   const [selectedEnhetNummer, setSelectedEnhetNummer] = useState<string | null>(null);
   const [isRequiredEnhetMissing, setIsRequiredEnhetMissing] = useState(false);
   const [hasDownloadedFoersteside, setHasDownloadedFoersteside] = useState(false);
-  const [foerstesideError, setFoerstesideError] = useState(undefined);
-  const [foerstesideLoading, setFoerstesideLoading] = useState(false);
   const [hasDownloadedPDF, setHasDownloadedPDF] = useState(false);
-  const { loggSkjemaFullfort, loggSkjemaInnsendingFeilet, loggDokumentLastetNed } = useAmplitude();
+  const { loggSkjemaFullfort, loggDokumentLastetNed } = useAmplitude();
   const { currentLanguage } = useLanguages();
 
   useEffect(() => {
@@ -83,42 +47,36 @@ const LetterDownload = ({ form, index, submission, enhetsListe, fyllutBaseURL, t
         }}
         error={isRequiredEnhetMissing ? translate(TEXTS.statiske.prepareLetterPage.entityNotSelectedError) : undefined}
       />
-      <div className="mb-4">
-        <Button
-          onClick={() => {
-            if (form.properties.enhetMaVelgesVedPapirInnsending && !selectedEnhetNummer) {
-              setIsRequiredEnhetMissing(true);
-            } else {
-              setFoerstesideError(undefined);
-              setFoerstesideLoading(true);
-              lastNedFoersteside(form, submission, fyllutBaseURL, currentLanguage, selectedEnhetNummer)
-                .then(() => {
-                  loggDokumentLastetNed(`førsteside ${form.properties.skjemanummer}`);
-                  setHasDownloadedFoersteside(true);
-                })
-                .catch((error) => {
-                  loggSkjemaInnsendingFeilet();
-                  setFoerstesideError(error);
-                })
-                .finally(() => setFoerstesideLoading(false));
-            }
-          }}
-          loading={foerstesideLoading}
-        >
-          {translate(TEXTS.grensesnitt.prepareLetterPage.downloadCoverPage)}
-        </Button>
-      </div>
-      {foerstesideError && <AlertStripeHttpError error={foerstesideError} />}
+
       <DownloadPdfButton
-        form={form}
-        submission={submission}
+        id={`forsteside-${form.path}`}
+        values={{
+          form: JSON.stringify(form),
+          submission: JSON.stringify(submission),
+          language: currentLanguage,
+          enhetNummer: selectedEnhetNummer ?? undefined,
+        }}
+        actionUrl={`${fyllutBaseURL}/api/foersteside`}
+        label={translate(TEXTS.grensesnitt.prepareLetterPage.downloadCoverPage)}
+        onClick={() => {
+          loggDokumentLastetNed(`førsteside ${form.properties.skjemanummer}`);
+          setHasDownloadedFoersteside(true);
+        }}
+      />
+      <DownloadPdfButton
+        id={`soknad-${form.path}`}
+        values={{
+          form: JSON.stringify(form),
+          submission: JSON.stringify(submission),
+          translations: JSON.stringify(currentLanguage !== 'nb-NO' ? translations[currentLanguage] : {}),
+          language: currentLanguage,
+        }}
         actionUrl={`${fyllutBaseURL}/api/pdf/convert`}
         label={translate(form.properties.downloadPdfButtonText || TEXTS.grensesnitt.downloadApplication)}
         onClick={() => {
           loggDokumentLastetNed(`${form.properties.skjemanummer}`);
           setHasDownloadedPDF(true);
         }}
-        translations={translations}
       />
     </section>
   );
