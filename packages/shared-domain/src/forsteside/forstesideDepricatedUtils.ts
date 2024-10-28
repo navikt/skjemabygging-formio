@@ -1,4 +1,4 @@
-import { KjentBruker, UkjentBruker } from '@navikt/skjemadigitalisering-shared-domain';
+import { KjentBruker, UkjentBruker } from './index';
 
 type BrukerInfo = KjentBruker | UkjentBruker;
 

@@ -1,3 +1,14 @@
+import {
+  genererFoerstesideData,
+  getAttachmentLabels,
+  getAttachments,
+  getAttachmentTitles,
+  getRecipients,
+  getTitle,
+  getUserData,
+  parseLanguage,
+} from './forstesideUtils';
+
 type ForstesideType = 'SKJEMA' | 'ETTERSENDELSE';
 
 interface Bruker {
@@ -36,3 +47,16 @@ export interface ForstesideRecipientAddress {
   postnummer: string;
   poststed: string;
 }
+
+const forstesideUtils = {
+  genererFoerstesideData,
+  getAttachmentLabels,
+  getAttachments,
+  getAttachmentTitles,
+  getRecipients,
+  getTitle,
+  getUserData,
+  parseLanguage,
+};
+
+export default forstesideUtils;

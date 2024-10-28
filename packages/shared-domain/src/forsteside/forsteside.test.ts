@@ -1,21 +1,17 @@
+import { Component, NavFormType, SubmissionData } from '../form';
+import { Recipient } from '../recipient/Recipient';
+import SubmissionYourInformation from '../submission/yourInformation';
+import { genererAdresse, genererPersonalia } from './forstesideDepricatedUtils';
 import {
-  Component,
-  ForstesideRequestBody,
-  NavFormType,
-  Recipient,
-  SubmissionData,
-  SubmissionYourInformation,
-} from '@navikt/skjemadigitalisering-shared-domain';
-import { genererAdresse, genererPersonalia } from '../../../../shared-domain/src/forsteside/forstesideDepricatedUtils';
-import {
+  genererFoerstesideData,
   getAttachmentLabels,
   getAttachments,
   getAttachmentTitles,
   getRecipients,
   getTitle,
   getUserData,
-} from '../../../../shared-domain/src/forsteside/forstesideUtils';
-import { genererFoerstesideData } from './forsteside';
+} from './forstesideUtils';
+import { ForstesideRequestBody } from './index';
 
 const genererVedleggComponent = (key, label, vedleggskode, vedleggstittel) => ({
   label,

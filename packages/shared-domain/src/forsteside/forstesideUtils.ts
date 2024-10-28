@@ -1,14 +1,14 @@
+import { NavFormType, SubmissionData } from '../form';
 import {
   ForstesideRecipientAddress,
+  ForstesideRequestBody,
   KjentBruker,
-  NavFormType,
   navFormUtils,
   Recipient,
   SubmissionAttachmentValue,
-  SubmissionData,
-  SubmissionYourInformation,
   UkjentBruker,
-} from '@navikt/skjemadigitalisering-shared-domain';
+} from '../index';
+import SubmissionYourInformation from '../submission/yourInformation';
 import { genererPersonalia } from './forstesideDepricatedUtils';
 
 type BrukerInfo = KjentBruker | UkjentBruker;
@@ -131,7 +131,36 @@ const getRecipients = (
   return { netsPostboks: '1400' };
 };
 
+const genererFoerstesideData = (
+  form: NavFormType,
+  submission: SubmissionData,
+  language = 'nb-NO',
+  recipients: Recipient[] = [],
+  unitNumber?: string,
+): ForstesideRequestBody => {
+  const {
+    properties: { skjemanummer, tema, mottaksadresseId },
+    title,
+  } = form;
+
+  const formTitle = getTitle(title, skjemanummer);
+
+  return {
+    ...getUserData(form, submission),
+    foerstesidetype: 'SKJEMA',
+    navSkjemaId: skjemanummer,
+    spraakkode: parseLanguage(language),
+    overskriftstittel: formTitle,
+    arkivtittel: formTitle,
+    tema,
+    vedleggsliste: getAttachmentTitles(form, submission),
+    dokumentlisteFoersteside: [formTitle, ...getAttachmentLabels(form, submission)],
+    ...getRecipients(mottaksadresseId, recipients, unitNumber),
+  };
+};
+
 export {
+  genererFoerstesideData,
   getAttachmentLabels,
   getAttachments,
   getAttachmentTitles,
