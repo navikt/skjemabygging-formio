@@ -1,5 +1,3 @@
-import { MottaksadresseData } from '../mottaksadresse';
-
 type ForstesideType = 'SKJEMA' | 'ETTERSENDELSE';
 
 interface Bruker {
@@ -25,8 +23,16 @@ export interface ForstesideRequestBody {
   vedleggsliste: string[];
   dokumentlisteFoersteside: string[];
   netsPostboks?: string;
-  adresse?: MottaksadresseData;
+  adresse?: ForstesideRecipientAddress;
   bruker?: Bruker;
   ukjentBrukerPersoninfo?: string;
   enhetsnummer?: string;
+}
+
+export interface ForstesideRecipientAddress {
+  adresselinje1: string;
+  adresselinje2?: string;
+  adresselinje3?: string;
+  postnummer: string;
+  poststed: string;
 }

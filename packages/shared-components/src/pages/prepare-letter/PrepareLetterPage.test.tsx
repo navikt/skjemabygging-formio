@@ -114,7 +114,7 @@ describe('PrepareLetterPage', () => {
     //@ts-expect-error
     fetchMock.mockImplementation((url) => {
       const urlString = url as string;
-      if (urlString.endsWith('/mottaksadresser')) {
+      if (urlString.endsWith('/recipients')) {
         return Promise.resolve(new Response(JSON.stringify([]), RESPONSE_HEADERS));
       }
       if (urlString.endsWith('/api/foersteside')) {

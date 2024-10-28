@@ -42,6 +42,9 @@ accessPolicy:
       - application: kodeverk-api
         namespace: team-rocket
         cluster: prod-gcp
+      - application: forms-api
+        namespace: fyllut-sendinn
+        cluster: prod-gcp
     external:
       - host: skjemabygging-proxy.prod-fss-pub.nais.io
       - host: formio-api.intern.nav.no

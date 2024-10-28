@@ -1,7 +1,7 @@
 import {
   ForstesideRequestBody,
-  Mottaksadresse,
   NavFormType,
+  Recipient,
   SubmissionData,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import {
@@ -17,7 +17,7 @@ const genererFoerstesideData = (
   form: NavFormType,
   submission: SubmissionData,
   language = 'nb-NO',
-  recipients: Mottaksadresse[] = [],
+  recipients: Recipient[] = [],
   unitNumber?: string,
 ): ForstesideRequestBody => {
   const {
