@@ -6,8 +6,7 @@ import {
   SubmissionData,
   SubmissionYourInformation,
 } from '@navikt/skjemadigitalisering-shared-domain';
-import { genererFoerstesideData } from './forsteside';
-import { genererAdresse, genererPersonalia } from './forstesideDepricatedUtils';
+import { genererAdresse, genererPersonalia } from '../../../../shared-domain/src/forsteside/forstesideDepricatedUtils';
 import {
   getAttachmentLabels,
   getAttachments,
@@ -15,7 +14,8 @@ import {
   getRecipients,
   getTitle,
   getUserData,
-} from './forstesideUtils';
+} from '../../../../shared-domain/src/forsteside/forstesideUtils';
+import { genererFoerstesideData } from './forsteside';
 
 const genererVedleggComponent = (key, label, vedleggskode, vedleggstittel) => ({
   label,
