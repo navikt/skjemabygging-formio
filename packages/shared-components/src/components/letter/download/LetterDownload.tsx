@@ -54,13 +54,18 @@ const LetterDownload = ({ form, index, submission, enhetsListe, fyllutBaseURL, t
           form: JSON.stringify(form),
           submission: JSON.stringify(submission),
           language: currentLanguage,
-          enhetNummer: selectedEnhetNummer ?? undefined,
+          enhetNummer: selectedEnhetNummer,
         }}
         actionUrl={`${fyllutBaseURL}/api/foersteside`}
         label={translate(TEXTS.grensesnitt.prepareLetterPage.downloadCoverPage)}
-        onClick={() => {
-          loggDokumentLastetNed(`førsteside ${form.properties.skjemanummer}`);
-          setHasDownloadedFoersteside(true);
+        onSubmit={(event) => {
+          if (enhetsListe.length > 0 && !selectedEnhetNummer) {
+            event.preventDefault();
+            setIsRequiredEnhetMissing(true);
+          } else {
+            loggDokumentLastetNed(`førsteside ${form.properties.skjemanummer}`);
+            setHasDownloadedFoersteside(true);
+          }
         }}
       />
       <DownloadPdfButton
@@ -73,7 +78,7 @@ const LetterDownload = ({ form, index, submission, enhetsListe, fyllutBaseURL, t
         }}
         actionUrl={`${fyllutBaseURL}/api/pdf/convert`}
         label={translate(form.properties.downloadPdfButtonText || TEXTS.grensesnitt.downloadApplication)}
-        onClick={() => {
+        onSubmit={() => {
           loggDokumentLastetNed(`${form.properties.skjemanummer}`);
           setHasDownloadedPDF(true);
         }}
