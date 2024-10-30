@@ -6,16 +6,18 @@ interface Props {
   actionUrl: string;
   label: string;
   onSubmit: FormEventHandler<HTMLFormElement>;
+  submissionMethod?: string;
 }
 
-const DownloadPdfButton = ({ id, values, actionUrl, label, onSubmit }: Props) => {
+const DownloadPdfButton = ({ id, values, actionUrl, label, onSubmit, submissionMethod = 'paper' }: Props) => {
   return (
     <>
       <form id={id} action={actionUrl} onSubmit={onSubmit} method="post" acceptCharset="utf-8" target="_blank" hidden>
-        {Object.entries(values).map(([key, value]) => (
-          <input hidden readOnly={true} type="text" name={key} key={key} value={value ?? ''} />
-        ))}
-        <input type="text" name="submissionMethod" value="paper" readOnly={true} />
+        {values &&
+          Object.entries(values).map(([key, value]) => (
+            <input hidden readOnly={true} type="text" name={key} key={key} value={value ?? ''} />
+          ))}
+        <input type="text" name="submissionMethod" value={submissionMethod} readOnly={true} />
       </form>
       <div className="mb-4">
         <input

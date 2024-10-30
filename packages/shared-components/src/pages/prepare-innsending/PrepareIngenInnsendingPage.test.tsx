@@ -66,12 +66,13 @@ describe('PrepareIngenInnsendingPage', () => {
     expect(submitCalls).toHaveLength(1);
 
     const form = submitCalls[0].target as HTMLFormElement;
-    const submissionInput = form.elements[0] as HTMLInputElement;
-    expect(submissionInput.name).toBe('submission');
 
-    const formInput = form.elements[1] as HTMLInputElement;
+    const formInput = form.elements[0] as HTMLInputElement;
     expect(formInput.name).toBe('form');
     const formInputValueJson = JSON.parse(formInput.value);
     expect(formInputValueJson.title).toEqual(testForm.title);
+
+    const submissionInput = form.elements[1] as HTMLInputElement;
+    expect(submissionInput.name).toBe('submission');
   });
 });

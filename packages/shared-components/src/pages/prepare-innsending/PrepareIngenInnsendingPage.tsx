@@ -41,13 +41,16 @@ export function PrepareIngenInnsendingPage({ form, submission, translations, for
             </Heading>
             <BodyShort className="mb">{translate(form.properties.innsendingForklaring)}</BodyShort>
             <DownloadPdfButton
-              form={form}
-              submission={submission}
+              id={`soknad-${form.path}`}
+              values={{
+                form: JSON.stringify(form),
+                submission: JSON.stringify(submission),
+                translations: JSON.stringify(translations),
+              }}
               actionUrl={`${fyllutBaseURL}/api/pdf/convert`}
               label={translate(form.properties.downloadPdfButtonText || TEXTS.grensesnitt.downloadApplication)}
-              onClick={() => loggSkjemaFullfort()}
-              translations={translations}
-              submissionMethod={'ingen'}
+              onSubmit={() => loggSkjemaFullfort()}
+              submissionMethod="ingen"
             />
           </div>
           <NavigateButtonComponent translate={translate} goBackUrl={`${formUrl}/oppsummering`} />
