@@ -114,7 +114,7 @@ export const useFormioTranslations = (serverURL, formio) => {
             'Publiseringen inneholdt ingen endringer og ble avsluttet (nytt bygg av Fyllut ble ikke trigget)',
           );
         }
-      } catch (error) {
+      } catch (_error) {
         feedbackEmit.error('Publisering feilet');
       }
     },
@@ -409,7 +409,7 @@ export const useFormioTranslations = (serverURL, formio) => {
           `Globale oversettelser for ${languagesInNorwegian[languageCode]} er kopiert fra produksjon.`,
         );
         return Promise.resolve();
-      } catch (err) {
+      } catch (_err) {
         feedbackEmit.error(
           `Feil oppstod ved forsøk på å kopiere globale oversettelser for ${languagesInNorwegian[languageCode]} fra produksjon.`,
         );

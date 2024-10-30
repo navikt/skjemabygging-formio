@@ -1,5 +1,5 @@
 import { System } from '@navikt/ds-icons';
-import { Dropdown, InternalHeader, Tag } from '@navikt/ds-react';
+import { Dropdown, InternalHeader } from '@navikt/ds-react';
 import useUnsavedChangesModal from '../../../hooks/useUnsavedChangesModal';
 import { AdminMenuLink } from './AdminMenuLink';
 
@@ -33,17 +33,9 @@ const AdminMenu = ({ showImport = false }) => {
               </AdminMenuLink>
             </Dropdown.Menu.GroupedList.Item>
             <Dropdown.Menu.GroupedList.Item>
-              <AdminMenuLink showUnsavedChangesModal={showUnsavedChangesModal} to="/mottaksadresser">
-                Rediger mottaksadresser
-              </AdminMenuLink>
-            </Dropdown.Menu.GroupedList.Item>
-            <Dropdown.Menu.GroupedList.Item>
               <AdminMenuLink showUnsavedChangesModal={showUnsavedChangesModal} to="/mottakere">
                 Mottakere
               </AdminMenuLink>
-              <Tag size={'small'} variant={'warning'}>
-                Beta
-              </Tag>
             </Dropdown.Menu.GroupedList.Item>
 
             <Dropdown.Menu.GroupedList.Item>
