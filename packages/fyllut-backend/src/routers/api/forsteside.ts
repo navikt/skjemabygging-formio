@@ -21,7 +21,8 @@ const forsteside = {
       const formParsed = JSON.parse(form);
       const submissionParsed = JSON.parse(submission);
 
-      const recipients = await getRecipients(formParsed.properties);
+      const recipients = await getRecipients(formParsed?.properties);
+
       const forstesideBody = forstesideUtils.genererFoerstesideData(
         formParsed,
         submissionParsed,
@@ -30,9 +31,8 @@ const forsteside = {
         enhetNummer,
       );
 
-      //TODO: Fjern validateForstesideRequest?
-      const forsteside = await validateForstesideRequest(forstesideBody);
-      const response: any = await forstesideRequest(req, JSON.stringify(forsteside));
+      // const forsteside = await validateForstesideRequest(forstesideBody);
+      const response: any = await forstesideRequest(req, JSON.stringify(forstesideBody));
       logForsteside(req.body, response);
 
       const fileName = encodeURIComponent(`Førstesideark_${formParsed.path}.pdf`);
