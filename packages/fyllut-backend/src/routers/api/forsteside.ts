@@ -1,4 +1,9 @@
-import { ForstesideRequestBody, forstesideUtils, Recipient } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  FormPropertiesType,
+  ForstesideRequestBody,
+  forstesideUtils,
+  Recipient,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import { NextFunction, Request, Response } from 'express';
 import correlator from 'express-correlation-id';
 import fetch, { BodyInit, HeadersInit } from 'node-fetch';
@@ -7,7 +12,7 @@ import { logger } from '../../logger';
 import { base64Decode } from '../../utils/base64';
 import { responseToError } from '../../utils/errorHandling.js';
 
-const { skjemabyggingProxyUrl } = config;
+const { skjemabyggingProxyUrl, formsApiUrl } = config;
 
 const forsteside = {
   post: async (req: Request, res: Response, next: NextFunction) => {
@@ -16,17 +21,7 @@ const forsteside = {
       const formParsed = JSON.parse(form);
       const submissionParsed = JSON.parse(submission);
 
-      const recipientsResponse = await fetch(`${config.formsApiUrl}/v1/recipients`, {
-        method: 'GET',
-        headers: {
-          'x-correlation-id': correlator.getId() as string,
-        },
-      });
-      if (!recipientsResponse.ok) {
-        next(new Error('Failed to fetch recipients'));
-      }
-
-      const recipients = (await recipientsResponse.json()) as Recipient[] | undefined;
+      const recipients = await getRecipients(formParsed.properties);
       const forstesideBody = forstesideUtils.genererFoerstesideData(
         formParsed,
         submissionParsed,
@@ -34,6 +29,8 @@ const forsteside = {
         recipients,
         enhetNummer,
       );
+
+      //TODO: Fjern validateForstesideRequest?
       const forsteside = await validateForstesideRequest(forstesideBody);
       const response: any = await forstesideRequest(req, JSON.stringify(forsteside));
       logForsteside(req.body, response);
@@ -46,6 +43,22 @@ const forsteside = {
       next(e);
     }
   },
+};
+
+const getRecipients = async (formProperties: FormPropertiesType): Promise<Recipient[] | undefined> => {
+  if (formProperties.mottaksadresseId) {
+    const recipientsResponse = await fetch(`${formsApiUrl}/v1/recipients`, {
+      method: 'GET',
+      headers: {
+        'x-correlation-id': correlator.getId() as string,
+      },
+    });
+    if (!recipientsResponse.ok) {
+      throw new Error('Failed to fetch recipients');
+    }
+
+    return (await recipientsResponse.json()) as Recipient[] | undefined;
+  }
 };
 
 const validateForstesideRequest = async (forsteside: ForstesideRequestBody) => {

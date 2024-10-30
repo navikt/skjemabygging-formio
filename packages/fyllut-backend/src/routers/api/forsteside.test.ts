@@ -1,11 +1,11 @@
-import { ForstesideRequestBody } from '@navikt/skjemadigitalisering-shared-domain';
+import { ForstesideRequestBody, forstesideUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import nock from 'nock';
 import { config } from '../../config/config';
 import { mockNext, mockRequest, mockResponse } from '../../test/requestTestHelpers';
 import forsteside, { validateForstesideRequest } from './forsteside';
 import * as mottaksadresser from './mottaksadresser';
 
-const { skjemabyggingProxyUrl } = config;
+const { skjemabyggingProxyUrl, formsApiUrl } = config;
 
 const addresses = [
   {
@@ -34,9 +34,21 @@ const addresses = [
 describe('[endpoint] forsteside', () => {
   beforeAll(() => {
     vi.spyOn(mottaksadresser, 'loadMottaksadresser').mockImplementation(async () => addresses);
+    vi.spyOn(forstesideUtils, 'genererFoerstesideData').mockImplementation(
+      () =>
+        ({
+          foerstesidetype: 'ETTERSENDELSE',
+          navSkjemaId: 'NAV 10.10.10',
+          spraakkode: 'NB',
+          overskriftstittel: 'Tittel',
+          arkivtittel: 'Tittel',
+          tema: 'HJE',
+        }) as ForstesideRequestBody,
+    );
   });
 
   it('Create front page', async () => {
+    const recipientsMock = nock(formsApiUrl).get('/v1/recipients').reply(200, []);
     const generateFileMock = nock(skjemabyggingProxyUrl!).post('/foersteside').reply(200, '{}');
 
     const req = mockRequest({
@@ -44,17 +56,14 @@ describe('[endpoint] forsteside', () => {
         AzureAccessToken: '',
       },
       body: {
-        foerstesidetype: 'ETTERSENDELSE',
-        navSkjemaId: 'NAV 10.10.10',
-        spraakkode: 'NB',
-        overskriftstittel: 'Tittel',
-        arkivtittel: 'Tittel',
-        tema: 'HJE',
+        form: JSON.stringify({ properties: { mottaksadresseId: 'mottaksadresseId' } }),
+        submission: '{}',
       },
     });
 
     await forsteside.post(req, mockResponse(), mockNext());
 
+    expect(recipientsMock.isDone()).toBe(true);
     expect(generateFileMock.isDone()).toBe(true);
   });
 
