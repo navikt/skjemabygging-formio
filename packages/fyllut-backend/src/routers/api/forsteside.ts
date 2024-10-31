@@ -17,15 +17,15 @@ const { skjemabyggingProxyUrl, formsApiUrl } = config;
 const forsteside = {
   post: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { form, submission, language, enhetNummer } = req.body;
+      const { form, submissionData, language, enhetNummer } = req.body;
       const formParsed = JSON.parse(form);
-      const submissionParsed = JSON.parse(submission);
+      const submissionDataParsed = JSON.parse(submissionData);
 
       const recipients = await getRecipients(formParsed?.properties);
 
       const forstesideBody = forstesideUtils.genererFoerstesideData(
         formParsed,
-        submissionParsed,
+        submissionDataParsed,
         language,
         recipients,
         enhetNummer,

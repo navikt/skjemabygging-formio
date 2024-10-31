@@ -52,7 +52,7 @@ const LetterDownload = ({ form, index, submission, enhetsListe, fyllutBaseURL, t
         id={`forsteside-${form.path}`}
         values={{
           form: JSON.stringify(form),
-          submission: JSON.stringify(submission),
+          submissionData: JSON.stringify(submission.data),
           language: currentLanguage,
           enhetNummer: selectedEnhetNummer,
         }}
