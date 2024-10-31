@@ -210,7 +210,7 @@ describe('app', () => {
       .post('/foersteside')
       .reply(400, 'Validering av ident feilet. brukerId=110550, brukerType=PERSON. Kunne ikke opprette førsteside.');
 
-    const foerstesideBody = { form: JSON.stringify({ properties: {} }), submission: '{}' };
+    const foerstesideBody = { form: JSON.stringify({ properties: {} }), submissionData: '{}' };
     const res = await request(createApp())
       .post('/fyllut/api/foersteside')
       .send(foerstesideBody)

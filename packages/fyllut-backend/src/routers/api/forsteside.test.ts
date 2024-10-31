@@ -57,7 +57,7 @@ describe('[endpoint] forsteside', () => {
       },
       body: {
         form: JSON.stringify({ properties: { mottaksadresseId: 'mottaksadresseId' } }),
-        submission: '{}',
+        submissionData: '{}',
       },
     });
 
