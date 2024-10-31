@@ -157,7 +157,7 @@ describe('PrepareLetterPage', () => {
       expect(submitCalls).toHaveLength(1);
       const submitted = submitCalls[0].target as HTMLFormElement;
       expect((submitted.elements[0] as HTMLInputElement).name).toBe('form');
-      expect((submitted.elements[1] as HTMLInputElement).name).toBe('submission');
+      expect((submitted.elements[1] as HTMLInputElement).name).toBe('submissionData');
     });
 
     it('Laster ikke ned førsteside pdf dersom enhet ikke er valgt, og viser feilmelding i stedet', async () => {
