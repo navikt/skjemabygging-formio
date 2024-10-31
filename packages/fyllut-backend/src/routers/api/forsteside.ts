@@ -31,7 +31,6 @@ const forsteside = {
         enhetNummer,
       );
 
-      // const forsteside = await validateForstesideRequest(forstesideBody);
       const response: any = await forstesideRequest(req, JSON.stringify(forstesideBody));
       logForsteside(req.body, response);
 
@@ -59,30 +58,6 @@ const getRecipients = async (formProperties: FormPropertiesType): Promise<Recipi
 
     return (await recipientsResponse.json()) as Recipient[] | undefined;
   }
-};
-
-const validateForstesideRequest = async (forsteside: ForstesideRequestBody) => {
-  if (!forsteside.adresse && !forsteside.netsPostboks) {
-    forsteside.netsPostboks = '1400';
-  }
-
-  if (forsteside.spraakkode && forsteside.spraakkode.match(/-/)) {
-    switch (forsteside.spraakkode) {
-      case 'nn-NO':
-        forsteside.spraakkode = 'NN';
-        break;
-      case 'nb-NO':
-        forsteside.spraakkode = 'NB';
-        break;
-      default:
-        forsteside.spraakkode = 'EN';
-        break;
-    }
-  } else if (forsteside.spraakkode) {
-    forsteside.spraakkode = forsteside.spraakkode.toUpperCase();
-  }
-
-  return forsteside;
 };
 
 const forstesideRequest = async (req: Request, body?: BodyInit) => {
@@ -114,5 +89,3 @@ const logForsteside = (forsteside: ForstesideRequestBody, response: any) => {
 };
 
 export default forsteside;
-
-export { validateForstesideRequest };
