@@ -124,7 +124,7 @@ export const statiske = {
   declaration: {
     header: 'Erklæring',
     defaultText: 'Jeg bekrefter at opplysningene er riktige.',
-    standardCheckboxLabel: 'Jeg vil svare så godt jeg kan på spørsmålene i søknaden.',
+    standardCheckboxLabel: 'Jeg bekrefter at jeg vil svare så riktig som jeg kan.',
     standardCheckboxDescription:
       '<p>Det er viktig at du gir oss riktige opplysninger slik at vi kan behandle saken din. <a target="_blank" rel="noopener noreferrer" href="https://www.nav.no/endringer">Les mer om viktigheten av å gi riktige opplysninger (åpnes i ny fane)</a>.</p>',
   },
