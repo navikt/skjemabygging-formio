@@ -1,63 +1,53 @@
-import {
-  FormPropertiesType,
-  ForstesideRequestBody,
-  forstesideUtils,
-  Recipient,
-} from '@navikt/skjemadigitalisering-shared-domain';
+import { ForstesideRequestBody } from '@navikt/skjemadigitalisering-shared-domain';
 import { NextFunction, Request, Response } from 'express';
 import correlator from 'express-correlation-id';
 import fetch, { BodyInit, HeadersInit } from 'node-fetch';
 import { config } from '../../config/config';
 import { logger } from '../../logger';
-import { base64Decode } from '../../utils/base64';
 import { responseToError } from '../../utils/errorHandling.js';
 
-const { skjemabyggingProxyUrl, formsApiUrl } = config;
+const { skjemabyggingProxyUrl } = config;
 
+/*
+ * TODO: This version of forsteside is deprecated. When all consumers have changed to /v2/forsteside we can remove this file
+ **/
 const forsteside = {
   post: async (req: Request, res: Response, next: NextFunction) => {
+    console.log('forsteside body', req.body);
     try {
-      const { form, submissionData, language, enhetNummer } = req.body;
-      const formParsed = JSON.parse(form);
-      const submissionDataParsed = JSON.parse(submissionData);
-
-      const recipients = await getRecipients(formParsed?.properties);
-
-      const forstesideBody = forstesideUtils.genererFoerstesideData(
-        formParsed,
-        submissionDataParsed,
-        language,
-        recipients,
-        enhetNummer,
-      );
-
-      const response: any = await forstesideRequest(req, JSON.stringify(forstesideBody));
+      const forsteside = await validateForstesideRequest(req.body);
+      const response = await forstesideRequest(req, JSON.stringify(forsteside));
       logForsteside(req.body, response);
-
-      const fileName = encodeURIComponent(`Førstesideark_${formParsed.path}.pdf`);
-      res.contentType('application/pdf');
-      res.setHeader('Content-Disposition', `inline; filename=${fileName}`);
-      res.send(base64Decode(response.foersteside));
+      res.contentType('application/json');
+      res.send(response);
     } catch (e) {
       next(e);
     }
   },
 };
 
-const getRecipients = async (formProperties: FormPropertiesType): Promise<Recipient[] | undefined> => {
-  if (formProperties.mottaksadresseId) {
-    const recipientsResponse = await fetch(`${formsApiUrl}/v1/recipients`, {
-      method: 'GET',
-      headers: {
-        'x-correlation-id': correlator.getId() as string,
-      },
-    });
-    if (!recipientsResponse.ok) {
-      throw new Error('Failed to fetch recipients');
-    }
-
-    return (await recipientsResponse.json()) as Recipient[] | undefined;
+const validateForstesideRequest = async (forsteside: ForstesideRequestBody) => {
+  if (!forsteside.adresse && !forsteside.netsPostboks) {
+    forsteside.netsPostboks = '1400';
   }
+
+  if (forsteside.spraakkode && forsteside.spraakkode.match(/-/)) {
+    switch (forsteside.spraakkode) {
+      case 'nn-NO':
+        forsteside.spraakkode = 'NN';
+        break;
+      case 'nb-NO':
+        forsteside.spraakkode = 'NB';
+        break;
+      default:
+        forsteside.spraakkode = 'EN';
+        break;
+    }
+  } else if (forsteside.spraakkode) {
+    forsteside.spraakkode = forsteside.spraakkode.toUpperCase();
+  }
+
+  return forsteside;
 };
 
 const forstesideRequest = async (req: Request, body?: BodyInit) => {
@@ -72,7 +62,7 @@ const forstesideRequest = async (req: Request, body?: BodyInit) => {
   });
 
   if (response.ok) {
-    return response.json();
+    return response.text();
   }
 
   throw await responseToError(response, 'Feil ved generering av førsteside', true);
@@ -80,7 +70,7 @@ const forstesideRequest = async (req: Request, body?: BodyInit) => {
 
 const logForsteside = (forsteside: ForstesideRequestBody, response: any) => {
   logger.info('Download frontpage', {
-    loepenummer: response.loepenummer,
+    loepenummer: JSON.parse(response).loepenummer,
     navSkjemaId: forsteside.navSkjemaId,
     tema: forsteside.tema,
     enhetsnummer: forsteside.enhetsnummer,
@@ -89,3 +79,5 @@ const logForsteside = (forsteside: ForstesideRequestBody, response: any) => {
 };
 
 export default forsteside;
+
+export { validateForstesideRequest };

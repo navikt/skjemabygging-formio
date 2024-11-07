@@ -212,7 +212,7 @@ describe('app', () => {
 
     const foerstesideBody = { form: JSON.stringify({ properties: {} }), submissionData: '{}' };
     const res = await request(createApp())
-      .post('/fyllut/api/foersteside')
+      .post('/fyllut/api/v2/foersteside')
       .send(foerstesideBody)
       .expect('Content-Type', /json/)
       .expect(500);
