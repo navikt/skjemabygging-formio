@@ -13,7 +13,6 @@ const { skjemabyggingProxyUrl } = config;
  **/
 const forsteside = {
   post: async (req: Request, res: Response, next: NextFunction) => {
-    console.log('forsteside body', req.body);
     try {
       const forsteside = await validateForstesideRequest(req.body);
       const response = await forstesideRequest(req, JSON.stringify(forsteside));
