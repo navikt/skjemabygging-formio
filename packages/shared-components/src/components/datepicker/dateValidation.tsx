@@ -9,18 +9,20 @@ interface DateValidationObject {
 }
 
 const validateDate = (dateValidationObject: DateValidationObject, translate): string | undefined => {
+  const label = translate(dateValidationObject.label);
+
   if ((dateValidationObject.value ?? '') === '') {
     if (dateValidationObject.required) {
-      return translate('required', { field: dateValidationObject.label });
+      return translate('required', { field: label });
     }
   } else if (!dateUtils.isValid(dateValidationObject.value, 'submission')) {
-    return translate('invalid_date', { field: dateValidationObject.label });
+    return translate('invalid_date', { field: label });
   } else if (
     dateValidationObject.fromDate &&
     dateUtils.isBeforeDate(dateValidationObject.value, dateValidationObject.fromDate)
   ) {
     return translate('minDate', {
-      field: dateValidationObject.label,
+      field: label,
       minDate: dateUtils.toLocaleDate(dateValidationObject.fromDate),
     });
   } else if (
@@ -28,7 +30,7 @@ const validateDate = (dateValidationObject: DateValidationObject, translate): st
     dateUtils.isBeforeDate(dateValidationObject.toDate, dateValidationObject.value)
   ) {
     return translate('maxDate', {
-      field: dateValidationObject.label,
+      field: label,
       maxDate: dateUtils.toLocaleDate(dateValidationObject.toDate),
     });
   }
