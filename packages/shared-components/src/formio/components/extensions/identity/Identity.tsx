@@ -85,20 +85,20 @@ export default class Identity extends BaseComponent {
       );
 
       if (errorMessage) {
-        this.addIdentityError(TEXTS.statiske.identity.identityNumber, 'identitetsnummer');
+        this.addIdentityError(errorMessage, 'identitetsnummer');
       }
     } else if (identity.fodselsdato) {
       const errorMessage = validateDate(
         {
           required: this.isRequired(),
           value: identity.fodselsdato,
-          label: this.getLabel(),
+          label: TEXTS.statiske.identity.yourBirthdate,
         },
         this.translate.bind(this),
       );
 
       if (errorMessage) {
-        this.addIdentityError(TEXTS.statiske.identity.yourBirthdate, 'fodselsdato');
+        this.addIdentityError(errorMessage, 'fodselsdato');
       }
     }
 
