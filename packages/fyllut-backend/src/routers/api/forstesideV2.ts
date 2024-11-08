@@ -10,7 +10,8 @@ import fetch, { BodyInit, HeadersInit } from 'node-fetch';
 import { config } from '../../config/config';
 import { logger } from '../../logger';
 import { base64Decode } from '../../utils/base64';
-import { responseToError } from '../../utils/errorHandling.js';
+import { htmlResponseError, responseToError } from '../../utils/errorHandling.js';
+import { logErrorWithStacktrace } from '../../utils/errors';
 
 const { skjemabyggingProxyUrl, formsApiUrl } = config;
 
@@ -39,7 +40,9 @@ const forstesideV2 = {
       res.setHeader('Content-Disposition', `inline; filename=${fileName}`);
       res.send(base64Decode(response.foersteside));
     } catch (e) {
-      next(e);
+      logErrorWithStacktrace(e as Error);
+      const forstesideError = htmlResponseError('Generering av førstesideark feilet');
+      next(forstesideError);
     }
   },
 };
