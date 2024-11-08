@@ -17,7 +17,6 @@ const { skjemabyggingProxyUrl, formsApiUrl } = config;
 const forstesideV2 = {
   post: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      console.log('forstesideV2 body', req.body);
       const { form, submissionData, language, enhetNummer } = req.body;
       const formParsed = JSON.parse(form);
       const submissionDataParsed = JSON.parse(submissionData);

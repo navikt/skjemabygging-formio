@@ -5,22 +5,28 @@ import fetch, { BodyInit, HeadersInit } from 'node-fetch';
 import { config } from '../../config/config';
 import { logger } from '../../logger';
 import { responseToError } from '../../utils/errorHandling.js';
+import forstesideV2 from './forstesideV2';
 
 const { skjemabyggingProxyUrl } = config;
 
 /*
- * TODO: This version of forsteside is deprecated. When all consumers have changed to /v2/forsteside we can remove this file
+ * TODO: This version of forsteside is deprecated. When all consumers have implemented version 2
+ *  we can remove the version parameter and make forstesideV2 (renamed) the running version
  **/
 const forsteside = {
   post: async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const forsteside = await validateForstesideRequest(req.body);
-      const response = await forstesideRequest(req, JSON.stringify(forsteside));
-      logForsteside(req.body, response);
-      res.contentType('application/json');
-      res.send(response);
-    } catch (e) {
-      next(e);
+    if (req.body.version === 'v2') {
+      await forstesideV2.post(req, res, next);
+    } else {
+      try {
+        const forsteside = await validateForstesideRequest(req.body);
+        const response = await forstesideRequest(req, JSON.stringify(forsteside));
+        logForsteside(req.body, response);
+        res.contentType('application/json');
+        res.send(response);
+      } catch (e) {
+        next(e);
+      }
     }
   },
 };

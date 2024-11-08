@@ -114,7 +114,7 @@ describe('PrepareLetterPage', () => {
       if (urlString.endsWith('/recipients')) {
         return Promise.resolve(new Response(JSON.stringify([]), RESPONSE_HEADERS));
       }
-      if (urlString.endsWith('/api/v2/foersteside')) {
+      if (urlString.endsWith('/api/foersteside')) {
         return Promise.resolve(new Response(JSON.stringify(forstesideMock), RESPONSE_HEADERS));
       }
       if (urlString.endsWith('/api/enhetsliste')) {

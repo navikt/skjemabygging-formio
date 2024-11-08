@@ -55,8 +55,9 @@ const LetterDownload = ({ form, index, submission, enhetsListe, fyllutBaseURL, t
           submissionData: JSON.stringify(submission.data),
           language: currentLanguage,
           enhetNummer: selectedEnhetNummer,
+          version: 'v2',
         }}
-        actionUrl={`${fyllutBaseURL}/api/v2/foersteside`}
+        actionUrl={`${fyllutBaseURL}/api/foersteside`}
         label={translate(TEXTS.grensesnitt.prepareLetterPage.downloadCoverPage)}
         onSubmit={(event) => {
           if (enhetsListe.length > 0 && !selectedEnhetNummer) {
