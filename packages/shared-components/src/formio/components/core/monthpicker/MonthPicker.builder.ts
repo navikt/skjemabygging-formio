@@ -3,7 +3,7 @@ import MonthPicker from './MonthPicker';
 const monthPickerBuilder = () => {
   const schema = MonthPicker.schema();
   return {
-    title: schema.label,
+    title: 'Månedsvelger',
     schema: {
       ...schema,
       validateOn: 'blur',
