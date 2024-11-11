@@ -2,6 +2,7 @@ import { Heading } from '@navikt/ds-react';
 import { Enhet, NavFormType, Submission, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
+import { getAttachments } from '../../../../shared-domain/src/forsteside/forstesideUtils';
 import { fetchEnhetsliste, isEnhetSupported } from '../../api/enhetsliste/fetchEnhetsliste';
 import NavigateButtonComponent from '../../components/button/navigation/pages/NavigateButtonComponent';
 import ErrorPage from '../../components/error/page/ErrorPage';
@@ -13,7 +14,6 @@ import LoadingComponent from '../../components/loading/LoadingComponent';
 import { useAppConfig } from '../../context/config/configContext';
 import { useLanguages } from '../../context/languages';
 import { scrollToAndSetFocus } from '../../util/focus-management/focus-management';
-import { getAttachments } from '../../util/forsteside/forstesideUtils';
 import makeStyles from '../../util/styles/jss/jss';
 
 const compareEnheter = (enhetA, enhetB) => enhetA.navn.localeCompare(enhetB.navn, 'nb');

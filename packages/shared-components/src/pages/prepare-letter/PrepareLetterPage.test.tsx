@@ -8,18 +8,15 @@ import {
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
-import { Mock } from 'vitest';
 import forstesideMock from '../../../test/test-data/forsteside/forsteside-mock';
 import { AppConfigProvider } from '../../context/config/configContext';
-import pdf from '../../util/pdf/pdf';
 import { PrepareLetterPage } from './PrepareLetterPage';
 
 vi.mock('../../context/languages', () => ({
   useLanguages: () => ({ translate: (text) => text }),
 }));
-
-vi.mock('../../util/pdf/pdf');
 
 vi.mock('../../components/letter/ux-signals/LetterUXSignals', () => {
   return {
@@ -134,35 +131,44 @@ describe('PrepareLetterPage', () => {
   });
 
   describe('Førsteside-knapp', () => {
-    let pdfDownloads: any[] = [];
+    let submitCalls: React.SyntheticEvent<HTMLFormElement>[] = [];
+
+    const submitEventListener = (event) => {
+      event.preventDefault();
+      submitCalls.push(event);
+    };
+
+    beforeAll(() => {
+      window.addEventListener('submit', submitEventListener);
+    });
+
+    afterAll(() => {
+      window.removeEventListener('submit', submitEventListener);
+    });
 
     beforeEach(() => {
-      pdfDownloads = [];
-
-      (pdf.lastNedFilBase64 as Mock).mockImplementation((base64, tittel, filtype) => {
-        pdfDownloads.push({ base64, tittel, filtype });
-      });
+      submitCalls = [];
     });
 
     it('Laster ned pdf for førsteside', async () => {
       renderPrepareLetterPage();
 
       await userEvent.click(screen.getByRole('button', { name: 'Last ned førsteside' }));
-      await waitFor(() => expect(pdf.lastNedFilBase64).toHaveBeenCalledTimes(1));
-      expect(pdfDownloads).toHaveLength(1);
-      expect(pdfDownloads[0].tittel).toBe('Førstesideark');
-      expect(pdfDownloads[0].filtype).toBe('pdf');
+      expect(submitCalls).toHaveLength(1);
+      const submitted = submitCalls[0].target as HTMLFormElement;
+      expect((submitted.elements[0] as HTMLInputElement).name).toBe('form');
+      expect((submitted.elements[1] as HTMLInputElement).name).toBe('submissionData');
     });
 
-    it('Laster ikke ned pdf dersom enhet ikke er valgt, og viser feilmelding i stedet', async () => {
+    it('Laster ikke ned førsteside pdf dersom enhet ikke er valgt, og viser feilmelding i stedet', async () => {
       const form = formWithProperties({
         enhetMaVelgesVedPapirInnsending: true,
       });
       renderPrepareLetterPage(form);
 
       await userEvent.click(await screen.findByRole('button', { name: 'Last ned førsteside' }));
+      expect(submitCalls).toHaveLength(1);
       expect(await screen.findByText(TEXTS.statiske.prepareLetterPage.entityNotSelectedError)).toBeInTheDocument();
-      expect(pdfDownloads).toHaveLength(0);
     });
   });
 
