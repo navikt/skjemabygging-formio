@@ -154,7 +154,7 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
   addMessages(messages) {
     // TODO: Fjern dette når navSelect bruker komponent fra aksel, og error kan håndteres direkte av komponenten.
     //  Behold addMessages som en tom funksjon
-    if (['navSelect', 'landvelger', 'valutavelger'].includes(this.component?.type ?? '')) {
+    if (['navSelect', 'valutavelger'].includes(this.component?.type ?? '')) {
       super.addMessages(messages);
     }
   }
