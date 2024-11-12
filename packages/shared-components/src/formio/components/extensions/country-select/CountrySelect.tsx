@@ -40,7 +40,7 @@ class CountrySelect extends BaseComponent {
           onChange={this.handleChange.bind(this)}
           label={<Label component={this.component} editFields={this.getEditFields()} />}
           description={<Description component={this.component} />}
-          className={this.getClassName()}
+          fieldSize={this.getFieldSize()}
           readOnly={this.getReadOnly()}
           error={this.getError()}
           ignoreOptions={this.getIgnoreOptions()}

@@ -1,4 +1,4 @@
-import { ComponentValue } from '@navikt/skjemadigitalisering-shared-domain';
+import { ComponentValue, FieldSize } from '@navikt/skjemadigitalisering-shared-domain';
 import { forwardRef, ReactNode, useEffect, useState } from 'react';
 import { getCountries } from '../../../util/countries/countries';
 import ComboSelect from '../ComboSelect';
@@ -6,17 +6,18 @@ import ComboSelect from '../ComboSelect';
 interface Props {
   id: string;
   label: ReactNode;
-  description: ReactNode;
-  className: string;
-  value?: any;
+  description?: ReactNode;
+  className?: string;
+  value?: ComponentValue;
   readOnly?: boolean;
   onChange: (value: any) => void;
-  error: ReactNode;
-  ignoreOptions: string[];
+  error?: ReactNode;
+  ignoreOptions?: string[];
+  fieldSize?: FieldSize;
 }
 
 const CountrySelect = forwardRef<HTMLInputElement | HTMLSelectElement, Props>(
-  ({ id, label, value, description, className, readOnly, onChange, error, ignoreOptions }, ref) => {
+  ({ id, label, value, description, className, readOnly, onChange, error, ignoreOptions, fieldSize }, ref) => {
     const [countries, setCountries] = useState<ComponentValue[]>();
 
     useEffect(() => {
@@ -39,6 +40,7 @@ const CountrySelect = forwardRef<HTMLInputElement | HTMLSelectElement, Props>(
         readOnly={readOnly}
         error={error}
         ignoreOptions={ignoreOptions}
+        fieldSize={fieldSize}
       />
     );
   },

@@ -11,6 +11,7 @@ import { ComponentError } from './component';
 import configUtils from './config';
 import type { ConfigType } from './config/types';
 import { Enhet, Enhetstype, supportedEnhetstyper } from './enhet';
+import type { FieldSize } from './field-size';
 import {
   AddressType,
   Attachment,
@@ -180,6 +181,7 @@ export type {
   Enhet,
   Enhetstype,
   FeatureTogglesMap,
+  FieldSize,
   FormPropertiesPublishing,
   FormPropertiesType,
   FormSignaturesType,
