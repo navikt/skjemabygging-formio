@@ -19,7 +19,10 @@ interface Props {
 
 const Combobox = forwardRef<HTMLInputElement, Props>(
   ({ id, label, value, options = [], description, className, readOnly, onChange, error, fieldSize }: Props, ref) => {
-    const styles = useComponentStyle(fieldSize, '& .navds-combobox__wrapper');
+    const styles = useComponentStyle({
+      fieldSize,
+      cssPath: '& .navds-combobox__wrapper',
+    });
     const handleChange = (selectedValue: string, selected: boolean) => {
       if (selected && selectedValue) {
         onChange({

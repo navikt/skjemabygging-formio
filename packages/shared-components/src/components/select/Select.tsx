@@ -19,7 +19,10 @@ interface Props {
 
 const Select = forwardRef<HTMLSelectElement, Props>(
   ({ id, label, value, options = [], description, className, readOnly, onChange, error, fieldSize }: Props, ref) => {
-    const styles = useComponentStyle(fieldSize, '& .navds-select__container');
+    const styles = useComponentStyle({
+      fieldSize,
+      cssPath: '& .navds-select__container',
+    });
     const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
       const selectedValue = event.currentTarget.value;
       if (selectedValue) {

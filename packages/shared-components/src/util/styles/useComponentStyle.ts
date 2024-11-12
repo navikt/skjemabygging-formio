@@ -1,15 +1,19 @@
 import { FieldSize } from '@navikt/skjemadigitalisering-shared-domain';
 import makeStyles from '../../util/styles/jss/jss';
 
+interface Options {
+  fieldSize?: FieldSize;
+  cssPath?: string;
+}
+
 /**
  * Create default styles to use in our components.
  *
- * @param fieldSize
- * @param cssPath   Example: '& input' or '& .someClassName'
+ * @param options Example of options.fieldSize: '& input' or '& .someClassName'
  */
-const useComponentStyle = (fieldSize?: FieldSize, cssPath?: string) => {
+const useComponentStyle = (options: Options) => {
   const getFieldSizeCss = () => {
-    switch (fieldSize) {
+    switch (options.fieldSize) {
       case 'xxsmall':
         return {
           width: '35px',
@@ -49,9 +53,9 @@ const useComponentStyle = (fieldSize?: FieldSize, cssPath?: string) => {
   const useStyles = makeStyles({
     fieldSize: () => {
       const css = getFieldSizeCss();
-      if (cssPath && css) {
+      if (options.cssPath && css) {
         return {
-          [cssPath]: css,
+          [options.cssPath]: css,
         };
       }
 

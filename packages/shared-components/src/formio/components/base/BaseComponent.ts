@@ -80,7 +80,7 @@ class BaseComponent extends FormioReactComponent {
   }
 
   /**
-   * Get the fieldsize.
+   * Get the correct FieldSize for useComponentStyles
    */
   getFieldSize(): FieldSize | undefined {
     switch (this.component?.fieldSize) {
