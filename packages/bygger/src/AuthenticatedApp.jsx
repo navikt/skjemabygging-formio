@@ -4,9 +4,9 @@ import { FormsRouter } from './Forms';
 import ImportFormsPage from './import/ImportFormsPage';
 import BulkPublishPage from './migration/BulkPublishPage';
 import MigrationRouter from './migration/MigrationRouter';
+import TranslationsRouter from './old_translations/TranslationsRouter';
 import RecipientsPage from './recipients/RecipientsPage';
 import ReportsPage from './reports/ReportsPage';
-import TranslationsRouter from './translations/TranslationsRouter';
 
 function AuthenticatedApp({ serverURL, formio }) {
   return (
