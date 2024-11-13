@@ -21,7 +21,7 @@ const Select = forwardRef<HTMLSelectElement, Props>(
   ({ id, label, value, options = [], description, className, readOnly, onChange, error, fieldSize }: Props, ref) => {
     const styles = useComponentStyle({
       fieldSize,
-      cssPath: '& .navds-select__container',
+      cssSelector: '& .navds-select__container',
     });
     const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
       const selectedValue = event.currentTarget.value;
@@ -31,7 +31,8 @@ const Select = forwardRef<HTMLSelectElement, Props>(
           label: options?.find((option) => option.value === selectedValue)?.label,
         });
       } else {
-        onChange(undefined);
+        // Cant set to undefined or null since Formio ignore the value in updateValue, so we have to use empty string.
+        onChange('');
       }
     };
 
@@ -40,7 +41,7 @@ const Select = forwardRef<HTMLSelectElement, Props>(
         id={id}
         ref={ref}
         label={label}
-        defaultValue={value?.value}
+        value={value?.value}
         description={description}
         onChange={handleChange}
         className={classNames(styles.fieldSize, className)}

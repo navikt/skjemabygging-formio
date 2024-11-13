@@ -3,7 +3,7 @@ import makeStyles from '../../util/styles/jss/jss';
 
 interface Options {
   fieldSize?: FieldSize;
-  cssPath?: string;
+  cssSelector?: string;
 }
 
 /**
@@ -53,9 +53,9 @@ const useComponentStyle = (options: Options) => {
   const useStyles = makeStyles({
     fieldSize: () => {
       const css = getFieldSizeCss();
-      if (options.cssPath && css) {
+      if (options.cssSelector && css) {
         return {
-          [options.cssPath]: css,
+          [options.cssSelector]: css,
         };
       }
 

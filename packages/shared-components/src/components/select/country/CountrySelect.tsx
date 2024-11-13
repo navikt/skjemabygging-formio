@@ -1,7 +1,7 @@
 import { ComponentValue, FieldSize } from '@navikt/skjemadigitalisering-shared-domain';
-import { forwardRef, ReactNode, useEffect, useState } from 'react';
+import { forwardRef, ReactNode } from 'react';
 import { getCountries } from '../../../util/countries/countries';
-import ComboSelect from '../ComboSelect';
+import Combobox from '../Combobox';
 
 interface Props {
   id: string;
@@ -16,24 +16,15 @@ interface Props {
   fieldSize?: FieldSize;
 }
 
-const CountrySelect = forwardRef<HTMLInputElement | HTMLSelectElement, Props>(
+const CountrySelect = forwardRef<HTMLInputElement, Props>(
   ({ id, label, value, description, className, readOnly, onChange, error, ignoreOptions, fieldSize }, ref) => {
-    const [countries, setCountries] = useState<ComponentValue[]>();
-
-    useEffect(() => {
-      // Get Norwegian countries no matter what language is selected,
-      // so the translator translate them normally with Norwegian langauge as key.
-      setCountries(getCountries('nb'));
-      //setCountries(getCountries('nb').splice(0, 5));
-    }, []);
-
     return (
-      <ComboSelect
+      <Combobox
         id={id}
         ref={ref}
         label={label}
         value={value}
-        options={countries}
+        options={getCountries('nb')}
         description={description}
         onChange={onChange}
         className={className}

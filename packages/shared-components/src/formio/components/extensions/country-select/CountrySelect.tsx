@@ -1,3 +1,4 @@
+import { Address as AddressDomain } from '@navikt/skjemadigitalisering-shared-domain';
 import NavCountrySelect from '../../../../components/select/country/CountrySelect';
 import { ComponentUtilsProvider } from '../../../../context/component/componentUtilsContext';
 import BaseComponent from '../../base/BaseComponent';
@@ -28,6 +29,11 @@ class CountrySelect extends BaseComponent {
 
   static get builderInfo() {
     return countrySelectBuilder();
+  }
+
+  handleChange(value: AddressDomain) {
+    super.handleChange(value);
+    this.rerender();
   }
 
   renderReact(element) {
