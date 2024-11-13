@@ -1,8 +1,8 @@
 import { AppConfigProvider } from '@navikt/skjemadigitalisering-shared-components';
 import { getNodeText, render, renderHook, screen, waitFor } from '@testing-library/react';
 import { useEffect, useState } from 'react';
-import { FeedbackEmitContext } from '../context/notifications/FeedbackContext.js';
-import { useFormioForms } from './useFormioForms.js';
+import { FeedbackEmitContext } from '../context/notifications/FeedbackContext';
+import { useFormioForms } from './useFormioForms';
 
 const RESPONSE_HEADERS_OK = {
   headers: {
