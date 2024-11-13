@@ -1,6 +1,6 @@
 import { Route, Routes } from 'react-router-dom';
-import { useFormioForms } from '../api/useFormioForms.js';
-import { useFormioTranslations } from '../api/useFormioTranslations.js';
+import { useFormioForms } from '../api/useFormioForms';
+import { useFormioTranslations } from '../api/useFormioTranslations';
 import NewTranslation from './NewTranslation';
 import { TranslationsByFormRoute } from './TranslationsByFormRoute.tsx';
 import GlobalTranslationsPage from './global/GlobalTranslationsPage';

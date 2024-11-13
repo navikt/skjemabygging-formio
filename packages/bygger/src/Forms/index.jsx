@@ -1,7 +1,7 @@
 import { useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
 import { Route, Routes } from 'react-router-dom';
-import { useFormioForms } from '../api/useFormioForms.js';
-import { useFormioTranslations } from '../api/useFormioTranslations.js';
+import { useFormioForms } from '../api/useFormioForms';
+import { useFormioTranslations } from '../api/useFormioTranslations';
 import FormProvider from '../context/form/FormContext';
 import { FormPage } from './FormPage';
 import NewFormPage from './NewFormPage';
