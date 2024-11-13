@@ -1,10 +1,10 @@
 import { ErrorPage, LoadingComponent, makeStyles } from '@navikt/skjemadigitalisering-shared-components';
 import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useState } from 'react';
+import { useFormioForms } from '../api/useFormioForms';
 import { AppLayout } from '../components/AppLayout';
 import UserFeedback from '../components/UserFeedback';
 import Column from '../components/layout/Column';
-import { useFormioForms } from '../hooks/useFormioForms';
 import BulkPublishPanel from './components/BulkPublishPanel';
 
 const useStyles = makeStyles({

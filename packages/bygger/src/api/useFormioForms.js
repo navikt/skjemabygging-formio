@@ -1,6 +1,6 @@
 import { NavFormioJs, useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
 import { useCallback } from 'react';
-import { useFeedbackEmit } from '../context/notifications/FeedbackContext';
+import { useFeedbackEmit } from '../context/notifications/FeedbackContext.js';
 
 export const useFormioForms = () => {
   const feedbackEmit = useFeedbackEmit();

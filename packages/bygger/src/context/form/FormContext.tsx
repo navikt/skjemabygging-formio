@@ -8,7 +8,7 @@ import { createContext, ReactNode, useCallback, useContext, useEffect, useReduce
 import { useBeforeUnload, useParams } from 'react-router-dom';
 import { loadPublishedForm } from '../../Forms/diffing/publishedForm';
 import formPageReducer, { FormReducerState } from '../../Forms/formPageReducer';
-import { useFormioForms } from '../../hooks/useFormioForms';
+import { useFormioForms } from '../../api/useFormioForms';
 
 interface Props {
   featureToggles: FeatureTogglesMap;

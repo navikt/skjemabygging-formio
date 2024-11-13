@@ -1,6 +1,6 @@
 import { Recipient } from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, ReactNode, useCallback, useContext, useEffect, useState } from 'react';
-import useFormsApiRecipients from '../../hooks/useFormsApiRecipients';
+import useFormsApiRecipients from '../../api/useFormsApiRecipients';
 
 interface RecipientsContextValues {
   isReady: boolean;

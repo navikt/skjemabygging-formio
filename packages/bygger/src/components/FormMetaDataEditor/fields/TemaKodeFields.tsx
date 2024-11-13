@@ -1,6 +1,6 @@
 import { Alert, Select } from '@navikt/ds-react';
 import { NavFormSettingsDiff, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
-import useTemaKoder from '../../../hooks/useTemaKoder';
+import useTemaKoder from '../../../api/useTemaKoder';
 import LabelWithDiff from '../LabelWithDiff';
 import { FormMetadataError, UpdateFormFunction } from '../utils/utils';
 
