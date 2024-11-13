@@ -110,6 +110,7 @@ import MockedComponentObjectForTest from './summary/MockedComponentObjectForTest
 import formSummaryUtil from './summary/formSummaryUtil';
 import { TextSize, TextSizeShort } from './text';
 import TEXTS from './texts';
+import { FormsApiGlobalTranslation } from './translations/GlobalTranslation';
 import currencyUtils from './utils/currencyUtils';
 import dateUtils from './utils/date';
 import featureUtils, { FeatureTogglesMap } from './utils/featureUtils';
@@ -189,6 +190,7 @@ export type {
   FormioTranslationData,
   FormioTranslationMap,
   FormioTranslationPayload,
+  FormsApiGlobalTranslation,
   FormsResponseForm,
   ForstesideRecipientAddress,
   ForstesideRequestBody,
