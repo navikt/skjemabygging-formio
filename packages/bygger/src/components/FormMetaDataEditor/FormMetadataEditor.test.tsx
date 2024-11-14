@@ -20,7 +20,7 @@ vi.mock('../../context/recipients/RecipientsContext', () => {
     }),
   };
 });
-vi.mock('../../hooks/useTemaKoder', () => {
+vi.mock('../../api/useTemaKoder', () => {
   return {
     default: () => ({
       ready: true,
