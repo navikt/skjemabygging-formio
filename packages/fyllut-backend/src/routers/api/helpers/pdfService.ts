@@ -116,7 +116,17 @@ export const createPdfFromHtml = async (
   if (response.ok) {
     const json: any = await response.json();
     if (!json.data?.result?.[0]?.content) {
-      throw synchronousResponseToError('Feil i responsdata fra Exstream', json, response.status, response.url, true);
+      if (json.data?.id) {
+        throw synchronousResponseToError(
+          `Feil i responsdata fra Exstream på id "${json.data?.id}"`,
+          json,
+          response.status,
+          response.url,
+          true,
+        );
+      } else {
+        throw synchronousResponseToError('Feil i responsdata fra Exstream', json, response.status, response.url, true);
+      }
     }
     return json.data.result[0].content;
   }
