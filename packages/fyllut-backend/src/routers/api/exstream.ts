@@ -32,13 +32,18 @@ const exstream = {
   post: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { form, submission, submissionMethod, translations, language } = parseBody(req);
+      const languageCode = localizationUtils.getLanguageCodeAsIso639_1(language);
+
+      // FIXME: Bug in frontend for ingen innsending produced errors from exstream
+      //  because of missing language code and wrong translation object
+      //  remove the checks on submissionMethod === ingen
       const pdf = await createPdf(
         req.headers.AzureAccessToken as string,
         form,
         submission,
         submissionMethod,
-        translations,
-        localizationUtils.getLanguageCodeAsIso639_1(language),
+        submissionMethod === 'ingen' ? {} : translations,
+        submissionMethod === 'ingen' ? 'nb' : languageCode,
       );
       res.contentType(pdf.contentType);
       res.send(base64Decode(pdf.data));
