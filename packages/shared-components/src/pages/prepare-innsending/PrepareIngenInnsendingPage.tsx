@@ -30,6 +30,7 @@ export function PrepareIngenInnsendingPage({ form, submission, translations, for
   const { translate } = useLanguages();
   const { loggSkjemaFullfort } = useAmplitude();
   const styles = useStyles();
+  const { currentLanguage } = useLanguages();
 
   return (
     <div className={styles.content}>
@@ -45,8 +46,8 @@ export function PrepareIngenInnsendingPage({ form, submission, translations, for
               values={{
                 form: JSON.stringify(form),
                 submission: JSON.stringify(submission),
-                translations: JSON.stringify(translations),
-                language: 'nb-NO',
+                translations: JSON.stringify(currentLanguage !== 'nb-NO' ? translations[currentLanguage] : {}),
+                language: currentLanguage,
               }}
               actionUrl={`${fyllutBaseURL}/api/pdf/convert`}
               label={translate(form.properties.downloadPdfButtonText || TEXTS.grensesnitt.downloadApplication)}
