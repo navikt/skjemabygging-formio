@@ -46,6 +46,7 @@ export function PrepareIngenInnsendingPage({ form, submission, translations, for
                 form: JSON.stringify(form),
                 submission: JSON.stringify(submission),
                 translations: JSON.stringify(translations),
+                language: 'nb-NO',
               }}
               actionUrl={`${fyllutBaseURL}/api/pdf/convert`}
               label={translate(form.properties.downloadPdfButtonText || TEXTS.grensesnitt.downloadApplication)}
