@@ -210,6 +210,7 @@ class Address extends BaseComponent {
           readOnly={this.getReadOnly()}
           addressTypeChoice={this.showAddressTypeChoice()}
           className={this.getClassName()}
+          fieldSize={this.getFieldSize()}
           required={this.isRequired()}
           customLabels={this.getCustomLabels()}
         />

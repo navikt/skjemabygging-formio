@@ -5,11 +5,11 @@ import { forwardRef, ReactNode, useEffect, useState } from 'react';
 import useComponentStyle from '../../util/styles/useComponentStyle';
 
 interface Props {
-  id: string;
+  id?: string;
   label: ReactNode;
   description?: ReactNode;
   className?: string;
-  value?: ComponentValue;
+  value?: ComponentValue | string;
   options?: ComponentValue[];
   readOnly?: boolean;
   onChange: (value: any) => void;
@@ -58,12 +58,29 @@ const Combobox = forwardRef<HTMLInputElement, Props>(
       }
     };
 
+    const getSelectedOptions = () => {
+      if (value) {
+        if (typeof value === 'string') {
+          const selectedValue = options?.find((option) => option.value == value);
+          if (selectedValue) {
+            return [selectedValue];
+          } else {
+            return [];
+          }
+        }
+
+        return [value];
+      }
+
+      return [];
+    };
+
     return (
       <UNSAFE_Combobox
         id={id}
         ref={ref}
         label={label}
-        selectedOptions={value ? [value] : []}
+        selectedOptions={getSelectedOptions()}
         options={filteredOptions}
         description={description}
         onToggleSelected={handleChange}

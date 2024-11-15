@@ -4,11 +4,11 @@ import { getCountries } from '../../../util/countries/countries';
 import Combobox from '../Combobox';
 
 interface Props {
-  id: string;
+  id?: string;
   label: ReactNode;
   description?: ReactNode;
   className?: string;
-  value?: ComponentValue;
+  value?: ComponentValue | string;
   readOnly?: boolean;
   onChange: (value: any) => void;
   error?: ReactNode;

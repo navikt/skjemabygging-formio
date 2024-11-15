@@ -1,4 +1,4 @@
-import { Address } from '@navikt/skjemadigitalisering-shared-domain';
+import { Address, FieldSize } from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, useContext } from 'react';
 import { SubmissionAddressType } from './Address';
 
@@ -9,6 +9,7 @@ interface AddressContextType {
   required?: boolean;
   label?: string;
   className?: string;
+  fieldSize?: FieldSize;
 }
 
 interface AddressProviderProps extends AddressContextType {
@@ -25,9 +26,10 @@ export const AddressProvider = ({
   required,
   label,
   className,
+  fieldSize,
 }: AddressProviderProps) => {
   return (
-    <AddressContext.Provider value={{ onChange, address, readOnly, required, label, className }}>
+    <AddressContext.Provider value={{ onChange, address, readOnly, required, label, className, fieldSize }}>
       {children}
     </AddressContext.Provider>
   );

@@ -1,3 +1,5 @@
+import { ComponentValue } from '../form';
+
 interface Address {
   gyldigFraOgMed?: string;
   gyldigTilOgMed?: string;
@@ -6,7 +8,7 @@ interface Address {
   postnummer?: string;
   bySted?: string; // poststed for norske adresser
   landkode: string;
-  land: string;
+  land: ComponentValue;
   co?: string;
   postboks?: string;
 
