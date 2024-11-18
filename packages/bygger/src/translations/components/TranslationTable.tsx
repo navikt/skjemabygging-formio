@@ -3,6 +3,7 @@ import { SkeletonList } from '@navikt/skjemadigitalisering-shared-components';
 import { useParams } from 'react-router-dom';
 import { useGlobalTranslations } from '../../context/translations/GlobalTranslationsContext';
 import TranslationRow from './TranslationRow';
+import useTranslationTableStyles from './styles';
 
 const columns = [
   { key: 'nb-NO', label: 'Bokmål' },
@@ -13,6 +14,7 @@ const columns = [
 const TranslationTable = () => {
   const { tag } = useParams();
   const { translationsPerTag } = useGlobalTranslations();
+  const styles = useTranslationTableStyles();
 
   if (!tag || !translationsPerTag) {
     return <SkeletonList size={20} />;
@@ -23,7 +25,7 @@ const TranslationTable = () => {
       <Table.Header>
         <Table.Row>
           {columns.map((column) => (
-            <Table.HeaderCell key={column.key} scope="col">
+            <Table.HeaderCell className={styles.column} key={column.key} scope="col">
               {column.label}
             </Table.HeaderCell>
           ))}
@@ -31,7 +33,7 @@ const TranslationTable = () => {
       </Table.Header>
       <Table.Body>
         {translationsPerTag[tag].map((row) => (
-          <TranslationRow key={row.id} translation={row} />
+          <TranslationRow key={row.key} canEditNB={tag === 'skjematekster'} translation={row} />
         ))}
       </Table.Body>
     </Table>

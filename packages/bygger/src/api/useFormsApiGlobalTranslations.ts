@@ -13,7 +13,7 @@ const useFormsApiGlobalTranslations = () => {
       return await http.get<FormsApiGlobalTranslation[]>(baseUrl);
     } catch (error) {
       const message = (error as Error)?.message;
-      feedbackEmit.error(`Feil ved henting av mottakere. ${message}`);
+      feedbackEmit.error(`Feil ved henting av globale oversettelser. ${message}`);
     }
   };
 

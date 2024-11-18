@@ -1,16 +1,48 @@
 import { Table } from '@navikt/ds-react';
-import { Translation } from './TranslationTable';
+import { FormsApiGlobalTranslation } from '@navikt/skjemadigitalisering-shared-domain';
+import TranslationInput from './TranslationInput';
+import useTranslationTableStyles from './styles';
 
 interface Props {
-  translation: Translation;
+  translation: FormsApiGlobalTranslation;
+  canEditNB?: boolean;
 }
 
-const TranslationRow = ({ translation }: Props) => {
+const TranslationRow = ({ translation, canEditNB = false }: Props) => {
+  const styles = useTranslationTableStyles();
+  const handleChange = (property: 'nb' | 'nn' | 'en', value: string) => {
+    console.log('onChange', { ...translation, [property]: value });
+  };
+
   return (
     <Table.Row>
-      <Table.HeaderCell scope="row">{translation.nb}</Table.HeaderCell>
-      <Table.DataCell>{translation.nn}</Table.DataCell>
-      <Table.DataCell>{translation.en}</Table.DataCell>
+      {canEditNB ? (
+        <Table.DataCell className={styles.column}>
+          <TranslationInput
+            label={'Bokmål'}
+            defaultValue={translation.nb}
+            onChange={(event) => handleChange('nb', event.currentTarget.value)}
+          />
+        </Table.DataCell>
+      ) : (
+        <Table.HeaderCell className={styles.column} scope="row">
+          {translation.nb}
+        </Table.HeaderCell>
+      )}
+      <Table.DataCell className={styles.column}>
+        <TranslationInput
+          label={'Nynorsk'}
+          defaultValue={translation.nn}
+          onChange={(event) => handleChange('nn', event.currentTarget.value)}
+        />
+      </Table.DataCell>
+      <Table.DataCell className={styles.column}>
+        <TranslationInput
+          label={'Engelsk'}
+          defaultValue={translation.en}
+          onChange={(event) => handleChange('en', event.currentTarget.value)}
+        />
+      </Table.DataCell>
     </Table.Row>
   );
 };
