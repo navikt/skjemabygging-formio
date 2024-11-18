@@ -8,6 +8,7 @@ import {
 } from '@navikt/skjemadigitalisering-shared-domain';
 import NavAddress, { SubmissionAddressType } from '../../../../components/address/Address';
 import { ComponentUtilsProvider } from '../../../../context/component/componentUtilsContext';
+import { getCountryObject } from '../../../../util/countries/countries';
 import BaseComponent from '../../base/BaseComponent';
 import ComponentLabel from '../../base/components/ComponentLabel';
 import addressBuilder from './Address.builder';
@@ -39,24 +40,31 @@ class Address extends BaseComponent {
   initAddress() {
     if (this.isSubmissionDigital() && this.component?.prefillKey && this.component?.prefillValue) {
       const prefillAddresses = this.component?.prefillValue as PrefillAddress;
+      let prefillAddress: AddressDomain;
       if (this.component?.addressPriority === 'oppholdsadresse') {
-        super.setValue(
+        prefillAddress =
           this.getOppholdsadresse(prefillAddresses) ??
-            this.getKontaktadresse(prefillAddresses) ??
-            this.getBostedsadresse(prefillAddresses),
-        );
-      } else if (this.component?.addressPriority === 'kontaktadresse') {
-        super.setValue(
           this.getKontaktadresse(prefillAddresses) ??
-            this.getBostedsadresse(prefillAddresses) ??
-            this.getOppholdsadresse(prefillAddresses),
-        );
-      } else {
-        super.setValue(
+          this.getBostedsadresse(prefillAddresses);
+      } else if (this.component?.addressPriority === 'kontaktadresse') {
+        prefillAddress =
+          this.getKontaktadresse(prefillAddresses) ??
           this.getBostedsadresse(prefillAddresses) ??
-            this.getOppholdsadresse(prefillAddresses) ??
-            this.getKontaktadresse(prefillAddresses),
-        );
+          this.getOppholdsadresse(prefillAddresses);
+      } else {
+        prefillAddress =
+          this.getBostedsadresse(prefillAddresses) ??
+          this.getOppholdsadresse(prefillAddresses) ??
+          this.getKontaktadresse(prefillAddresses);
+      }
+
+      if (prefillAddress.landkode) {
+        super.setValue({
+          ...prefillAddress,
+          land: getCountryObject(prefillAddress.landkode),
+        });
+      } else {
+        this.setValue(prefillAddress);
       }
     }
   }

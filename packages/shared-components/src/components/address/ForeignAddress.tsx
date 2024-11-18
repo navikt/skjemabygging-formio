@@ -1,5 +1,4 @@
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import countries from 'i18n-iso-countries';
 import { useComponentUtils } from '../../context/component/componentUtilsContext';
 import CountrySelect from '../select/country/CountrySelect';
 import { useAddress } from './addressContext';
@@ -14,18 +13,6 @@ const ForeignAddress = () => {
   const { translate, addRef, getComponentError } = useComponentUtils();
   const { required, onChange, address, fieldSize, readOnly } = useAddress();
 
-  const getValue = () => {
-    if (address?.land) {
-      return address?.land;
-    } else if (address?.landkode) {
-      if (address.landkode.length === 3) {
-        return countries.alpha3ToAlpha2(address.landkode);
-      } else {
-        return address.landkode;
-      }
-    }
-  };
-
   return (
     <>
       <CoField />
@@ -37,7 +24,7 @@ const ForeignAddress = () => {
       <CountrySelect
         label={translate(TEXTS.statiske.address.country)}
         onChange={(country) => onChange('land', country)}
-        value={getValue()}
+        value={address?.land}
         fieldSize={fieldSize}
         ref={(ref) => addRef('address:land', ref)}
         error={getComponentError('address:land')}

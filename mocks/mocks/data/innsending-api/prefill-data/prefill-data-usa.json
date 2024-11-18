@@ -1,0 +1,18 @@
+{
+  "sokerFornavn": "John",
+  "sokerEtternavn": "Doe",
+  "sokerIdentifikasjonsnummer": "06882549354",
+  "sokerAdresser": {
+    "bostedsadresse": {
+      "gyldigFraOgMed": "2023-05-31",
+      "coAdressenavn": "Google San Francisco",
+      "adresse": "The Landmark Building, 1 Market St",
+      "postnummer": "94105",
+      "bySted": "San Francisco",
+      "regionDistriktOmraade": "California",
+      "landkode": "USA"
+    },
+    "oppholdsadresser": [],
+    "kontaktadresser": []
+  }
+}
