@@ -28,4 +28,13 @@ const getCountries = (lang: 'en' | 'nn' | 'nn-NO' | 'nb' | 'nb-NO' = 'nb') => {
     .sort((a, b) => compareAscending(a.label.toUpperCase(), b.label.toUpperCase(), lang));
 };
 
-export { getCountries };
+/**
+ * Convert from three digit country code to two digit.
+ *
+ * @param countryCode
+ */
+const alpha3ToAlpha2 = (countryCode: string) => {
+  return countries.alpha3ToAlpha2(countryCode);
+};
+
+export { alpha3ToAlpha2, getCountries };
