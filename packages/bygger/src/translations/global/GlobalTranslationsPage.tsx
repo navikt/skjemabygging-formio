@@ -4,6 +4,7 @@ import RowLayout from '../../components/layout/RowLayout';
 import SidebarLayout from '../../components/layout/SidebarLayout';
 import Title from '../../components/layout/Title';
 import TitleRowLayout from '../../components/layout/TitleRowLayout';
+import EditTranslationsProvider from '../../context/translations/EditTranslationsContext';
 import GlobalTranslationsProvider from '../../context/translations/GlobalTranslationsContext';
 import ButtonColumn from '../components/ButtonColumn';
 import TranslationTable from '../components/TranslationTable';
@@ -24,15 +25,17 @@ const GlobalTranslationsPage = () => {
         <Title>{titles[tag]}</Title>
       </TitleRowLayout>
       <GlobalTranslationsProvider>
-        <RowLayout
-          right={
-            <SidebarLayout noScroll={true}>
-              <ButtonColumn />
-            </SidebarLayout>
-          }
-        >
-          <TranslationTable />
-        </RowLayout>
+        <EditTranslationsProvider>
+          <RowLayout
+            right={
+              <SidebarLayout noScroll={true}>
+                <ButtonColumn />
+              </SidebarLayout>
+            }
+          >
+            <TranslationTable />
+          </RowLayout>
+        </EditTranslationsProvider>
       </GlobalTranslationsProvider>
     </AppLayout>
   );

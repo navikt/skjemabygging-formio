@@ -17,8 +17,30 @@ const useFormsApiGlobalTranslations = () => {
     }
   };
 
+  const put = async (translation: FormsApiGlobalTranslation): Promise<FormsApiGlobalTranslation | undefined> => {
+    try {
+      const { id, revision, nb = null, nn = null, en = null } = translation;
+      return await http.put<FormsApiGlobalTranslation>(`${baseUrl}/${id}`, { revision, nb, nn, en });
+    } catch (error) {
+      const message = (error as Error)?.message;
+      feedbackEmit.error(`Feil ved oppdatering av global oversettelse med nøkkel ${translation.key}. ${message}`);
+    }
+  };
+
+  const post = async (translation: FormsApiGlobalTranslation): Promise<FormsApiGlobalTranslation | undefined> => {
+    try {
+      const { key, tag, nb = null, nn = null, en = null } = translation;
+      return await http.post<FormsApiGlobalTranslation>(baseUrl, { key, tag, nb, nn, en });
+    } catch (error) {
+      const message = (error as Error)?.message;
+      feedbackEmit.error(`Feil ved oppretting av global oversettelse med nøkkel ${translation.key}. ${message}`);
+    }
+  };
+
   return {
     get,
+    put,
+    post,
   };
 };
 

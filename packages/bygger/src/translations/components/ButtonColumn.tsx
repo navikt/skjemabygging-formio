@@ -1,16 +1,27 @@
 import { Button, VStack } from '@navikt/ds-react';
+import { useState } from 'react';
 import UserFeedback from '../../components/UserFeedback';
+import { useEditTranslations } from '../../context/translations/EditTranslationsContext';
 
 const ButtonColumn = () => {
+  const [isSaving, setIsSaving] = useState(false);
+  const { saveChanges } = useEditTranslations();
+
+  const onSave = async () => {
+    setIsSaving(true);
+    await saveChanges();
+    setIsSaving(false);
+  };
+
   return (
     <VStack gap="4">
-      <Button onClick={() => {}} type="button" size="small">
+      <Button loading={isSaving} onClick={onSave} type="button" size="small">
         Lagre
       </Button>
-      <Button variant="secondary" onClick={() => {}} type="button" size="small">
+      <Button variant="secondary" disabled={isSaving} onClick={() => {}} type="button" size="small">
         Publisér
       </Button>
-      <Button variant="tertiary" onClick={() => {}} type="button" size="small">
+      <Button variant="tertiary" disabled={isSaving} onClick={() => {}} type="button" size="small">
         Eksporter
       </Button>
       <UserFeedback />

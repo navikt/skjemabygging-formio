@@ -6,36 +6,60 @@ import { generateAndPopulateTag } from '../../translations/utils/editGlobalTrans
 type TranslationsPerTag = Record<TranslationTag, FormsApiGlobalTranslation[]>;
 interface GlobalTranslationsContextValue {
   translationsPerTag: TranslationsPerTag;
+  storedTranslations: Record<string, FormsApiGlobalTranslation>;
+  saveTranslations: (
+    translations: FormsApiGlobalTranslation[],
+  ) => Promise<Array<FormsApiGlobalTranslation | undefined>>;
 }
 
 const defaultValue = {
   translationsPerTag: { skjematekster: [], grensesnitt: [], 'statiske-tekster': [], validering: [] },
+  storedTranslations: {},
+  saveTranslations: (_translations: FormsApiGlobalTranslation[]) => Promise.resolve([]),
 };
 
 const GlobalTranslationsContext = createContext<GlobalTranslationsContextValue>(defaultValue);
 
 const GlobalTranslationsProvider = ({ children }) => {
-  const [formsApiState, setFormsApiState] = useState<{ status: 'init' | 'done'; data?: FormsApiGlobalTranslation[] }>({
+  const [formsApiState, setFormsApiState] = useState<{
+    status: 'init' | 'ready' | 'saving';
+    data?: FormsApiGlobalTranslation[];
+  }>({
     status: 'init',
   });
   const translationsApi = useFormsApiGlobalTranslations();
 
   const loadTranslations = useCallback(async () => {
-    if (formsApiState.status === 'init') {
-      const data = await translationsApi.get();
-      setFormsApiState({ status: 'done', data });
-    }
-  }, [formsApiState.status, translationsApi]);
+    const data = await translationsApi.get();
+    setFormsApiState({ status: 'ready', data });
+  }, [translationsApi]);
 
   useEffect(() => {
-    loadTranslations();
-  }, [loadTranslations]);
+    if (formsApiState.status === 'init') {
+      loadTranslations();
+    }
+  }, [formsApiState.status, loadTranslations]);
+
+  const saveTranslations = async (
+    translations: FormsApiGlobalTranslation[],
+  ): Promise<Array<FormsApiGlobalTranslation | undefined>> => {
+    setFormsApiState((state) => ({ ...state, status: 'saving' }));
+    const result = await Promise.all(
+      translations.map((translation) => {
+        if (translation.id) {
+          return translationsApi.put(translation);
+        } else {
+          return translationsApi.post(translation);
+        }
+      }),
+    );
+    await loadTranslations();
+    return result;
+  };
 
   const storedTranslationsMap = useMemo<Record<string, FormsApiGlobalTranslation>>(() => {
     return (formsApiState.data ?? []).reduce((acc, translation) => ({ ...acc, [translation.key]: translation }), {});
   }, [formsApiState.data]);
-
-  console.log('storedTranslationsMap', storedTranslationsMap);
 
   const translationsPerTag: TranslationsPerTag = useMemo(() => {
     const { common, grensesnitt, statiske, pdfStatiske, validering } = TEXTS;
@@ -67,7 +91,7 @@ const GlobalTranslationsProvider = ({ children }) => {
     };
   }, [formsApiState.data, storedTranslationsMap]);
 
-  const value = { translationsPerTag };
+  const value = { translationsPerTag, storedTranslations: storedTranslationsMap, saveTranslations };
   return <GlobalTranslationsContext.Provider value={value}>{children}</GlobalTranslationsContext.Provider>;
 };
 
