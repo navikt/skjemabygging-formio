@@ -8,11 +8,12 @@ interface Props {
   error: ReactNode;
   values?: ComponentValue[];
   value?: any;
+  className?: string;
   onChange: (value: any) => void;
 }
 
 const SingleSelect = forwardRef<HTMLFieldSetElement, Props>(
-  ({ values = [], value, title, description, error, onChange }: Props, ref) => {
+  ({ values = [], value, title, description, error, className, onChange }: Props, ref) => {
     const handleChange = (values) => {
       onChange(Array.isArray(values) ? values[0] : values);
     };
@@ -25,6 +26,7 @@ const SingleSelect = forwardRef<HTMLFieldSetElement, Props>(
           description={description}
           error={error}
           onChange={handleChange}
+          className={className}
           value={value ? [value] : []}
           ref={ref}
         >
@@ -38,6 +40,7 @@ const SingleSelect = forwardRef<HTMLFieldSetElement, Props>(
           description={description}
           error={error}
           onChange={handleChange}
+          className={className}
           value={value}
           ref={ref}
           tabIndex={-1}
