@@ -15,4 +15,8 @@ const generateAndPopulateTag = (
   });
 };
 
-export { generateAndPopulateTag };
+const getInputHeightInRows = (value?: string, rowSizeInCharacters: number = 35): number => {
+  return Math.floor((value ?? '').length / rowSizeInCharacters) + 1;
+};
+
+export { generateAndPopulateTag, getInputHeightInRows };
