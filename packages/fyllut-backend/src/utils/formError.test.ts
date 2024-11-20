@@ -36,7 +36,7 @@ describe('formError', () => {
       (logger.info as Mock).mockClear();
     });
 
-    it('calls logger.warn when path is similar to a NAV form number', () => {
+    it('calls logger.warn when path is similar to a Nav form number', () => {
       logFormNotFound('nav123456.asdfaw3asdf');
       expect(logger.warn).toHaveBeenCalled();
     });

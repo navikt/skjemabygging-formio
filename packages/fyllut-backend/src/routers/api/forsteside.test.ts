@@ -11,7 +11,7 @@ const addresses = [
   {
     _id: '6246de1afd03d2caeeda2825',
     data: {
-      adresselinje1: 'NAV Arbeid og ytelser lønnsgaranti',
+      adresselinje1: 'Nav Arbeid og ytelser lønnsgaranti',
       adresselinje2: 'Postboks 6683 St. Olavs Plass',
       adresselinje3: '',
       postnummer: '0129',
@@ -22,7 +22,7 @@ const addresses = [
   {
     _id: '61c09f91ec962a0003c65014',
     data: {
-      adresselinje1: 'NAV Skanning bidrag',
+      adresselinje1: 'Nav Skanning bidrag',
       adresselinje2: 'PB 6215 Etterstad',
       adresselinje3: '',
       postnummer: '0603',

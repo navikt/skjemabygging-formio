@@ -43,8 +43,8 @@ export const FormPageWrapper = () => {
     return function cleanup() {
       document.title = 'Fyll ut skjema - www.nav.no';
       setHeaderProp(metaPropOgTitle, 'Fyll ut skjema - www.nav.no');
-      setHeaderProp(metaNameDescr, 'NAV søknadsskjema');
-      setHeaderProp(metaNameOgDescr, 'NAV søknadsskjema');
+      setHeaderProp(metaNameDescr, 'Nav søknadsskjema');
+      setHeaderProp(metaNameOgDescr, 'Nav søknadsskjema');
     };
   }, [form]);
 

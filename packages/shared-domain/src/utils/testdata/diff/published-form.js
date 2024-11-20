@@ -617,7 +617,7 @@ const form = {
             {
               value: 'ettersender',
               label:
-                'Jeg ettersender dokumentasjonen senere (jeg er klar over at NAV ikke kan behandle søknaden før jeg har levert dokumentasjonen)',
+                'Jeg ettersender dokumentasjonen senere (jeg er klar over at Nav ikke kan behandle søknaden før jeg har levert dokumentasjonen)',
               shortcut: '',
             },
             { value: 'levertTidligere', label: 'Jeg har levert denne dokumentasjonen tidligere', shortcut: '' },

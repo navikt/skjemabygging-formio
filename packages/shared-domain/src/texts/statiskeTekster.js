@@ -20,10 +20,10 @@ export const statiske = {
     requiredFields: 'Felt som ikke er obligatoriske er merket med: (valgfritt).',
     autoSaveBold: 'Vi lagrer et utkast av skjemaet automatisk hver gang du går til neste steg.',
     autoSave:
-      'Du finner utkastet på Min side. NAV kan ikke se informasjonen i utkastet. Du må trykke på “Send til NAV” for at NAV skal motta skjemaet/søknaden.',
+      'Du finner utkastet på Min side. Nav kan ikke se informasjonen i utkastet. Du må trykke på “Send til Nav” for at Nav skal motta skjemaet/søknaden.',
     notSaveBold: 'Du kan ikke lagre skjemaet underveis.',
     notSave:
-      'Informasjonen du fyller ut i skjemaet sendes ikke til NAV før du har fullført hele skjemaet og sendt det inn. Hvis du lukker vinduet eller nettleseren vil all informasjon du har fylt ut forsvinne.',
+      'Informasjonen du fyller ut i skjemaet sendes ikke til Nav før du har fullført hele skjemaet og sendt det inn. Hvis du lukker vinduet eller nettleseren vil all informasjon du har fylt ut forsvinne.',
     publicComputerBold: 'Bruk av offentlig PC:',
     publicComputer:
       'Hvis du fyller ut skjemaet på en offentlig PC, for eksempel på et bibliotek, er det viktig at du lukker nettleseren når du er ferdig. Dette vil forhindre at uvedkommende får tak i opplysningene du har fylt ut i skjemaet.',
@@ -104,17 +104,17 @@ export const statiske = {
   },
   prepareLetterPage: {
     subTitle: 'Søknaden er ikke sendt ennå',
-    chooseEntity: 'Velg hvilken NAV-enhet som skal motta innsendingen',
+    chooseEntity: 'Velg hvilken Nav-enhet som skal motta innsendingen',
     selectEntityDefault: 'Velg enhet',
     entityNotSelectedError: 'Førsteside kan ikke genereres før du har valgt enhet',
     entityFetchError: 'En feil har oppstått. Vi kunne ikke laste enheter. Beklager ulempen, prøv igjen senere.',
     firstSectionTitle: 'Last ned og skriv ut dokumentene',
     firstDescription:
-      'Førstesidearket inneholder viktig informasjon om hvilken enhet i NAV som skal motta dokumentene, og hvilken adresse de skal sendes til.',
+      'Førstesidearket inneholder viktig informasjon om hvilken enhet i Nav som skal motta dokumentene, og hvilken adresse de skal sendes til.',
     attachmentSectionTitleAttachTo: 'Legg ved',
     attachmentSectionTitleTheseAttachments: 'disse vedleggene',
     attachmentSectionTitleThisAttachment: 'dette vedlegget',
-    sendInPapirSectionTitle: 'Send det hele til NAV i posten',
+    sendInPapirSectionTitle: 'Send det hele til Nav i posten',
     SendInPapirSectionInstruction: 'Følg instruksjonene på førstesidearket for å sende dokumentene i posten.',
     sendInPapirSectionAttachTo: 'Husk å legge ved',
     sendInPapirSectionAttachments: 'vedleggene',
@@ -135,7 +135,7 @@ export const statiske = {
     levertTidligere: 'Jeg har levert denne dokumentasjonen tidligere',
     harIkke: 'Jeg har ikke denne dokumentasjonen',
     andre: 'Sendes inn av andre (for eksempel lege, arbeidsgiver)',
-    nav: 'Jeg ønsker at NAV innhenter denne dokumentasjonen',
+    nav: 'Jeg ønsker at Nav innhenter denne dokumentasjonen',
     deadline:
       'Hvis vi ikke har mottatt dette vedlegget innen {{deadline}} dager blir saken behandlet med de opplysningene som foreligger.',
   },
@@ -163,7 +163,7 @@ export const statiske = {
     periodInfoElement4: 'ikke levere kjøreliste for perioder frem i tid',
     noVedtakHeading: 'Vi har ikke registert at du har vedtak om stønad til daglig reise med bruk av egen bil',
     noVedtak:
-      'Du må søke om tilleggsstønad og motta vedtak før du kan sende inn liste over utgifter til daglig reise med bruk av egen bil. Ta kontakt med NAV på telefon 55 55 33 33 hvis du mener du allerede har vedtak.',
+      'Du må søke om tilleggsstønad og motta vedtak før du kan sende inn liste over utgifter til daglig reise med bruk av egen bil. Ta kontakt med Nav på telefon 55 55 33 33 hvis du mener du allerede har vedtak.',
     previousDrivingList: 'Perioder du tidligere har fått refundert reiseutgifter for',
     addPeriod: 'Legg til periode',
     removePeriod: 'Fjern periode',

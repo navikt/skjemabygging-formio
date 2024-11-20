@@ -5,7 +5,7 @@ There are several ways we can modify the set of components available in the Form
 -   Change the template of an existing component in the `packages/shared-components/src/template/templates/navdesign` folder.
 -   Modify an existing Form.io component, like adding or removing options for TextField or overriding some of its functions.
 -   Extend an existing Form.io component, e.g. Fodselsnummer, which extends TextField.
--   Create a new component that uses React, e.g. by importing a NAV Design System React component, like RadioPanelGruppe.
+-   Create a new component that uses React, e.g. by importing a Nav Design System React component, like RadioPanelGruppe.
 
 Ideally, we would like to do a lot more of React-based custom components using the design system directly.
 That would make it far easier to upgrade when the design system makes changes.
@@ -165,11 +165,11 @@ In some cases, like where we create some specific standard-components, like `add
 So far, we have struggled making custom React-based components. We do it using FormioReactComponent, but it does not work correctly.
 Values are not loaded correctly when navgating back to the wizard from the summary page, there are warnings about memory leaks, etc.
 
-As such, we prefer not to create these types of components at this time, although that would be the end goal: We want to use NAV Design System components directly.
+As such, we prefer not to create these types of components at this time, although that would be the end goal: We want to use Nav Design System components directly.
 
 #### FormioReactComponent
 
 To render React-based components, we have FormioReactComponent. This is a custom renderer that wraps React-components.
-The React component will need a wrapper that extends FormioReactComponent, and then render the actual React component, e.g. a NAV Design System component.
+The React component will need a wrapper that extends FormioReactComponent, and then render the actual React component, e.g. a Nav Design System component.
 
 Changes to FormioReactComponent should normally be limited to bugfixes making sure these custom components are rendered/updated as they should, but changes to all such components can also be added here.

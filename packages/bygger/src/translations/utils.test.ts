@@ -266,7 +266,7 @@ describe('utils', () => {
                 createDummyAlertstripe('Alertstripe', 'Alertstrip with content', 'show content in Pdf'),
                 createDummyHTMLElement(
                   'HTML element',
-                  '<h3>Eventuell utbetaling av AAP</h3> Du kan bare ha ett kontonummer registrert hos NAV. Du kan enkelt <a href="https://www.nav.no/soknader/nb/person/diverse/endre-opplysninger-om-bankkontonummer#papirsoknader" target="_blank"> endre hvilket kontonummer vi benytter (åpnes i ny fane)</a>. <br/>',
+                  '<h3>Eventuell utbetaling av AAP</h3> Du kan bare ha ett kontonummer registrert hos Nav. Du kan enkelt <a href="https://www.nav.no/soknader/nb/person/diverse/endre-opplysninger-om-bankkontonummer#papirsoknader" target="_blank"> endre hvilket kontonummer vi benytter (åpnes i ny fane)</a>. <br/>',
                 ),
                 createDummyHTMLElement(
                   'HTML element',
@@ -292,7 +292,7 @@ describe('utils', () => {
         { text: 'Alertstrip with content', type: 'text' },
         { text: 'show content in Pdf', type: 'text' },
         {
-          text: '<h3>Eventuell utbetaling av AAP</h3> Du kan bare ha ett kontonummer registrert hos NAV. Du kan enkelt <a href="https://www.nav.no/soknader/nb/person/diverse/endre-opplysninger-om-bankkontonummer#papirsoknader" target="_blank"> endre hvilket kontonummer vi benytter (åpnes i ny fane)</a>. <br/>',
+          text: '<h3>Eventuell utbetaling av AAP</h3> Du kan bare ha ett kontonummer registrert hos Nav. Du kan enkelt <a href="https://www.nav.no/soknader/nb/person/diverse/endre-opplysninger-om-bankkontonummer#papirsoknader" target="_blank"> endre hvilket kontonummer vi benytter (åpnes i ny fane)</a>. <br/>',
           type: 'textarea',
         },
         { text: '<h3>Eventuell utbetaling av AAP</h3>', type: 'text' },
@@ -565,7 +565,7 @@ describe('utils', () => {
               label: 'Alertstripe',
               type: 'alertstripe',
               content:
-                '<p>NAV sender svar.\n<br>\nSe <a href="https://www.nav.no/person/" target="_blank">link</a>.</p>',
+                '<p>Nav sender svar.\n<br>\nSe <a href="https://www.nav.no/person/" target="_blank">link</a>.</p>',
             },
           ],
         },
@@ -578,9 +578,9 @@ describe('utils', () => {
       en: {
         translations: {
           Veiledning: { value: 'Guidance', scope: 'global' },
-          '<p>NAV sender svar.\n<br>\nSe <a href="https://www.nav.no/person/" target="_blank">link</a>.</p>': {
+          '<p>Nav sender svar.\n<br>\nSe <a href="https://www.nav.no/person/" target="_blank">link</a>.</p>': {
             value:
-              '<p>NAV sends answers.\n<br>\nSee <a href="https://www.nav.no/person/" target="_blank">link</a>.</p>',
+              '<p>Nav sends answers.\n<br>\nSee <a href="https://www.nav.no/person/" target="_blank">link</a>.</p>',
             scope: 'global',
           },
         },
@@ -588,8 +588,8 @@ describe('utils', () => {
       'nn-NO': {
         translations: {
           Veiledning: { value: 'Rettleiing', scope: 'global' },
-          '<p>NAV sender svar.\n<br>\nSe <a href="https://www.nav.no/person/" target="_blank">link</a>.</p>': {
-            value: '<p>NAV sender svar.\n<br>\nSjå <a href="https://www.nav.no/person/" target="_blank">lenke</a>.</p>',
+          '<p>Nav sender svar.\n<br>\nSe <a href="https://www.nav.no/person/" target="_blank">link</a>.</p>': {
+            value: '<p>Nav sender svar.\n<br>\nSjå <a href="https://www.nav.no/person/" target="_blank">lenke</a>.</p>',
             scope: 'global',
           },
         },
@@ -604,9 +604,9 @@ describe('utils', () => {
       expect(eksport[0].en).toBe('Guidance (Global Tekst)');
       expect(eksport[0]['nn-NO']).toBe('Rettleiing (Global Tekst)');
 
-      expect(eksport[1].text).toEqual('NAV sender svar. <br> Se [link](https://www.nav.no/person/).');
-      expect(eksport[1].en).toEqual('NAV sends answers. <br> See [link](https://www.nav.no/person/).');
-      expect(eksport[1]['nn-NO']).toEqual('NAV sender svar. <br> Sjå [lenke](https://www.nav.no/person/).');
+      expect(eksport[1].text).toEqual('Nav sender svar. <br> Se [link](https://www.nav.no/person/).');
+      expect(eksport[1].en).toEqual('Nav sends answers. <br> See [link](https://www.nav.no/person/).');
+      expect(eksport[1]['nn-NO']).toEqual('Nav sender svar. <br> Sjå [lenke](https://www.nav.no/person/).');
     });
   });
 
