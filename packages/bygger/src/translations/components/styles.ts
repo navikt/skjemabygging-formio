@@ -2,7 +2,7 @@ import { makeStyles } from '@navikt/skjemadigitalisering-shared-components';
 
 const useTranslationTableStyles = makeStyles({
   column: {
-    // width: '100%',
+    width: '12rem',
     maxWidth: '12rem',
   },
 });

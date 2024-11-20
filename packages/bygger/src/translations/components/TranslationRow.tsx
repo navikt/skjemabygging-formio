@@ -7,10 +7,9 @@ import useTranslationTableStyles from './styles';
 
 interface Props {
   translation: FormsApiGlobalTranslation;
-  canEditNB?: boolean;
 }
 
-const TranslationRow = ({ translation, canEditNB = false }: Props) => {
+const TranslationRow = ({ translation }: Props) => {
   const { onTranslationChange } = useEditTranslations();
   const styles = useTranslationTableStyles();
 
@@ -23,20 +22,9 @@ const TranslationRow = ({ translation, canEditNB = false }: Props) => {
 
   return (
     <Table.Row>
-      {canEditNB ? (
-        <Table.DataCell className={styles.column}>
-          <TranslationInput
-            label={'Bokmål'}
-            defaultValue={translation.nb}
-            minRows={rows}
-            onChange={(event) => handleChange('nb', event.currentTarget.value)}
-          />
-        </Table.DataCell>
-      ) : (
-        <Table.HeaderCell className={styles.column} scope="row">
-          {translation.nb}
-        </Table.HeaderCell>
-      )}
+      <Table.HeaderCell className={styles.column} scope="row">
+        {translation.nb}
+      </Table.HeaderCell>
       <Table.DataCell className={styles.column}>
         <TranslationInput
           label={'Nynorsk'}

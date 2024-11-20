@@ -33,7 +33,7 @@ const TranslationTable = () => {
       </Table.Header>
       <Table.Body>
         {translationsPerTag[tag].map((row) => (
-          <TranslationRow key={row.key} canEditNB={tag === 'skjematekster'} translation={row} />
+          <TranslationRow key={row.key} translation={row} />
         ))}
       </Table.Body>
     </Table>
