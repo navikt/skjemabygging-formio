@@ -89,6 +89,7 @@ const DatePicker = ({
         label={label}
         description={description}
         className={className}
+        onFocus={() => {}}
         onBlur={(e) => {
           // Since we have problem listening on empty value on inputProps.value
           // we need to trigger onChange on blur when there is an empty value.
