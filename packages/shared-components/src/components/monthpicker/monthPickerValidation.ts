@@ -10,7 +10,8 @@ interface ValidationOptions {
 }
 
 const validateDate = (date: string | undefined, options: ValidationOptions): string | undefined => {
-  const { label, translate, required, minYear, maxYear } = options;
+  const { translate, required, minYear, maxYear } = options;
+  const label = translate(options.label);
 
   if (!date && required) {
     return translate('required', { field: label });
