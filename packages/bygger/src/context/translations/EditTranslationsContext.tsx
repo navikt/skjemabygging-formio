@@ -1,10 +1,11 @@
 import { FormsApiGlobalTranslation } from '@navikt/skjemadigitalisering-shared-domain';
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useReducer } from 'react';
 import { useGlobalTranslations } from './GlobalTranslationsContext';
+import reducer, { TranslationError } from './editTranslationsReducer/reducer';
+import { getTranslationsForSaving, hasNewTranslationData } from './editTranslationsReducer/selectors';
 
 //TODO: move me
 export type TranslationLang = 'nb' | 'nn' | 'en';
-type TranslationError = { type: 'MISSING_KEY_VALIDATION'; key: string; isNewTranslation?: boolean };
 
 interface EditTranslationsContextValue {
   updateTranslation: (original: FormsApiGlobalTranslation, property: TranslationLang, value: string) => void;
@@ -32,9 +33,12 @@ const defaultValue = {
 const EditTranslationsContext = createContext<EditTranslationsContextValue>(defaultValue);
 
 const EditTranslationsProvider = ({ children }) => {
-  const [changes, setChanges] = useState<Record<string, FormsApiGlobalTranslation>>();
-  const [newTranslation, setNewTranslation] = useState<FormsApiGlobalTranslation>(defaultNewSkjemateksterTranslation);
-  const [errors, setErrors] = useState<TranslationError[]>([]);
+  const [state, dispatch] = useReducer(reducer, {
+    errors: [],
+    state: 'INIT',
+    new: defaultNewSkjemateksterTranslation,
+    changes: {},
+  });
   const { storedTranslations, saveTranslations } = useGlobalTranslations();
 
   const updateTranslation = (
@@ -42,34 +46,23 @@ const EditTranslationsProvider = ({ children }) => {
     property: TranslationLang,
     value: string,
   ) => {
-    setChanges((current) => {
-      const { key } = originalTranslation;
-      const storedTranslation = storedTranslations[key];
-      if ((storedTranslation?.[property] ?? '') === value) {
-        return current;
-      }
-      console.log('setChange', current, { originalTranslation, property, value });
-      const existingChange = current?.[key];
-      return {
-        ...current,
-        [key]: { ...originalTranslation, ...existingChange, [property]: value },
-      };
-    });
+    const { key } = originalTranslation;
+    const storedValue = storedTranslations[key]?.[property];
+    const currentChange = state.changes[key]?.[property];
+    const currentValue = currentChange ?? storedValue;
+    if ((currentValue ?? '') === value) {
+      return;
+    }
+    dispatch({ type: 'UPDATE', payload: { original: originalTranslation, property, value } });
   };
 
   const updateNewTranslation = (property: TranslationLang, value: string) => {
-    setNewTranslation((current) => {
-      if ((current?.[property] ?? '') === value) {
-        return current;
-      }
-      if (property === 'nb') {
-        return { ...current, key: value, [property]: value };
-      }
-      return { ...current, [property]: value };
-    });
+    const currentValue = state.new[property];
+    if ((currentValue ?? '') === value) {
+      return;
+    }
+    dispatch({ type: 'UPDATE_NEW', payload: { property, value } });
   };
-
-  console.log(changes);
 
   const validate = (
     translation: FormsApiGlobalTranslation,
@@ -81,22 +74,26 @@ const EditTranslationsProvider = ({ children }) => {
   };
 
   const saveChanges = async () => {
-    const newTranslationHasData = !!(newTranslation.nb || newTranslation.nn || newTranslation.en);
-    const validationError = newTranslationHasData ? validate(newTranslation, true) : undefined;
-    console.log('validationError', validationError);
+    const newTranslationHasData = hasNewTranslationData(state);
+    const validationError = newTranslationHasData ? validate(state.new, true) : undefined;
     if (validationError) {
-      setErrors([validationError]);
+      dispatch({ type: 'VALIDATION_ERROR', payload: { errors: [validationError] } });
     } else {
-      setErrors([]);
-      const updates = newTranslationHasData ? { ...changes, [newTranslation.key]: newTranslation } : changes;
+      dispatch({ type: 'CLEAR_ERRORS' });
+      const updates = getTranslationsForSaving(state);
       const result = await saveTranslations(Object.values(updates ?? {}));
       console.log('saveChanges', result);
-      setChanges({});
-      setNewTranslation(defaultNewSkjemateksterTranslation);
+      dispatch({ type: 'SAVED', payload: { defaultNew: defaultNewSkjemateksterTranslation } });
     }
   };
 
-  const value = { updateTranslation, errors, newTranslation, updateNewTranslation, saveChanges };
+  const value = {
+    updateTranslation,
+    errors: state.errors,
+    newTranslation: state.new,
+    updateNewTranslation,
+    saveChanges,
+  };
 
   return <EditTranslationsContext.Provider value={value}>{children}</EditTranslationsContext.Provider>;
 };
