@@ -4,7 +4,7 @@ const useTranslationTableStyles = makeStyles({
   column: {
     width: '12rem',
     maxWidth: '12rem',
-    alignContent: 'start',
+    alignContent: 'baseline',
   },
 });
 

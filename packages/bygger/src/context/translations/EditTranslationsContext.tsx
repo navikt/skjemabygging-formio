@@ -10,7 +10,7 @@ interface EditTranslationsContextValue {
   updateTranslation: (original: FormsApiGlobalTranslation, property: TranslationLang, value: string) => void;
   errors: TranslationError[];
   newTranslation: FormsApiGlobalTranslation;
-  updateNewTranslation: (property: TranslationLang | 'key', value: string) => void;
+  updateNewTranslation: (property: TranslationLang, value: string) => void;
   saveChanges: () => Promise<void>;
 }
 
@@ -57,7 +57,7 @@ const EditTranslationsProvider = ({ children }) => {
     });
   };
 
-  const updateNewTranslation = (property: TranslationLang | 'key', value: string) => {
+  const updateNewTranslation = (property: TranslationLang, value: string) => {
     setNewTranslation((current) => {
       if ((current?.[property] ?? '') === value) {
         return current;

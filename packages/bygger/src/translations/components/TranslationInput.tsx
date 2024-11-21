@@ -21,7 +21,7 @@ const TranslationInput = ({ label, defaultValue, minRows, onChange }: Props) => 
       />
     );
   }
-  return <TextField label={label} hideLabel size="small" defaultValue={defaultValue} onBlur={onChange} />;
+  return <TextField label={label} hideLabel defaultValue={defaultValue} onBlur={onChange} />;
 };
 
 export default TranslationInput;

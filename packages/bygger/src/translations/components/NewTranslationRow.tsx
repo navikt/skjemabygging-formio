@@ -17,7 +17,6 @@ const NewTranslationRow = () => {
       <Table.DataCell className={styles.column}>
         <TextField
           hideLabel
-          size="small"
           label={'Bokmål'}
           value={newTranslation.nb}
           onChange={(event) => handleChange('nb', event.currentTarget.value)}
@@ -27,7 +26,6 @@ const NewTranslationRow = () => {
       <Table.DataCell className={styles.column}>
         <TextField
           hideLabel
-          size="small"
           label={'Nynorsk'}
           value={newTranslation.nn}
           onChange={(event) => handleChange('nn', event.currentTarget.value)}
@@ -36,7 +34,6 @@ const NewTranslationRow = () => {
       <Table.DataCell className={styles.column}>
         <TextField
           hideLabel
-          size="small"
           label={'Engelsk'}
           value={newTranslation.en}
           onChange={(event) => handleChange('en', event.currentTarget.value)}
