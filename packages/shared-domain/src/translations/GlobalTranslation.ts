@@ -1,7 +1,7 @@
 import { TranslationTag } from '../languages/types';
 
 type FormsApiTranslation = {
-  id: number;
+  id?: number;
   key: string;
   revision?: number;
   nb?: string;

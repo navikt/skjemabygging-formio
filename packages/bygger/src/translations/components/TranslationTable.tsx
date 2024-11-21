@@ -3,6 +3,7 @@ import { listSort, SkeletonList } from '@navikt/skjemadigitalisering-shared-comp
 import { useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useGlobalTranslations } from '../../context/translations/GlobalTranslationsContext';
+import NewTranslationRow from './NewTranslationRow';
 import TranslationRow from './TranslationRow';
 import useTranslationTableStyles from './styles';
 
@@ -51,6 +52,7 @@ const TranslationTable = () => {
         </Table.Row>
       </Table.Header>
       <Table.Body>
+        {tag === 'skjematekster' && <NewTranslationRow />}
         {sortedTranslationRows.map((row) => (
           <TranslationRow key={row.key} translation={row} />
         ))}
