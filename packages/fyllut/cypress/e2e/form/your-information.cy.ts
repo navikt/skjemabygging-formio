@@ -23,61 +23,99 @@ describe('Your information', () => {
 
   describe('Digital', () => {
     describe('New application', () => {
-      beforeEach(() => {
-        cy.visit('/fyllut/your-information?sub=digital');
-        cy.defaultWaits();
-        cy.clickStart();
-        cy.wait('@getPrefillData');
-        cy.wait('@createMellomlagring');
-        cy.findByRole('heading', { name: 'Dine opplysninger' }).should('exist');
+      describe('Lives in Norway', () => {
+        beforeEach(() => {
+          cy.visit('/fyllut/your-information?sub=digital');
+          cy.defaultWaits();
+          cy.clickStart();
+          cy.wait('@getPrefillData');
+          cy.wait('@createMellomlagring');
+          cy.findByRole('heading', { name: 'Dine opplysninger' }).should('exist');
+        });
+
+        it('Should prefill data for new application on the first page (name)', () => {
+          cy.findByRole('textbox', { name: 'Fornavn' }).should('have.value', 'Ola');
+          cy.findByRole('textbox', { name: 'Etternavn' }).should('have.value', 'Nordmann');
+          cy.findByRole('textbox', { name: 'Fødselsnummer eller d-nummer' }).should('have.value', '08842748500');
+          cy.findByRole('textbox', { name: 'Vegadresse' }).should('have.value', 'Testveien 1C');
+          cy.findByRole('textbox', { name: 'Postnummer' }).should('have.value', '1234');
+          cy.findByRole('textbox', { name: 'Poststed' }).should('have.value', 'Plassen');
+          cy.get('.navds-alert').should('have.length', 1);
+        });
+
+        it('Should prefill data for new application on the second page (name)', () => {
+          cy.clickSaveAndContinue();
+
+          cy.findByRole('heading', { name: 'Navn' }).should('exist');
+          cy.findByRole('textbox', { name: 'Fornavn' }).should('have.value', 'Ola');
+          cy.findByRole('textbox', { name: 'Etternavn' }).should('have.value', 'Nordmann');
+        });
+
+        it('Should not have any validation messages on summary page when using prefill', () => {
+          cy.findByRole('textbox', { name: 'Fornavn' }).should('have.value', 'Ola');
+          cy.findByRole('textbox', { name: 'Etternavn' }).should('have.value', 'Nordmann');
+          cy.clickSaveAndContinue();
+
+          cy.findByRole('textbox', { name: 'Fornavn' }).should('have.value', 'Ola');
+          cy.findByRole('textbox', { name: 'Etternavn' }).should('have.value', 'Nordmann');
+          cy.clickSaveAndContinue();
+
+          cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
+
+          cy.get('dl')
+            .eq(0)
+            .within(() => {
+              cy.get('dd').eq(0).should('contain.text', 'Ola');
+              cy.get('dd').eq(1).should('contain.text', 'Nordmann');
+              cy.get('dd').eq(2).should('contain.text', '08842748500');
+              cy.get('dd').eq(3).should('contain.text', 'Testveien 1C, 1234 Plassen');
+            });
+
+          cy.get('dl')
+            .eq(1)
+            .within(() => {
+              cy.get('dd').eq(0).should('contain.text', 'Ola');
+              cy.get('dd').eq(1).should('contain.text', 'Nordmann');
+            });
+
+          cy.get('.navds-alert').should('have.length', 0);
+        });
       });
 
-      it('Should prefill data for new application on the first page (name)', () => {
-        cy.findByRole('textbox', { name: 'Fornavn' }).should('have.value', 'Ola');
-        cy.findByRole('textbox', { name: 'Etternavn' }).should('have.value', 'Nordmann');
-        cy.findByRole('textbox', { name: 'Fødselsnummer eller d-nummer' }).should('have.value', '08842748500');
-        cy.findByRole('textbox', { name: 'Vegadresse' }).should('have.value', 'Testveien 1C');
-        cy.findByRole('textbox', { name: 'Postnummer' }).should('have.value', '1234');
-        cy.findByRole('textbox', { name: 'Poststed' }).should('have.value', 'Plassen');
-        cy.get('.navds-alert').should('have.length', 1);
-      });
+      describe('Lives in USA', () => {
+        beforeEach(() => {
+          cy.mocksUseRouteVariant('get-prefill-data:success-usa');
+          cy.visit('/fyllut/your-information?sub=digital');
+          cy.defaultWaits();
+          cy.clickStart();
+          cy.wait('@getPrefillData');
+          cy.wait('@createMellomlagring');
+          cy.findByRole('heading', { name: 'Dine opplysninger' }).should('exist');
+        });
 
-      it('Should prefill data for new application on the second page (name)', () => {
-        cy.clickSaveAndContinue();
+        it('Lives abroad', () => {
+          cy.findByRole('group', { name: 'Bor du i Norge?' }).should('not.exist');
+          cy.findByRole('textbox', { name: 'Fornavn' }).should('have.value', 'John');
+          cy.findByRole('textbox', { name: 'Etternavn' }).should('have.value', 'Doe');
+          cy.findByRole('textbox', { name: 'Fødselsnummer eller d-nummer' }).should('have.value', '06882549354');
+          cy.findByRole('textbox', { name: 'Vegnavn og husnummer, eller postboks' }).should(
+            'have.value',
+            'The Landmark Building, 1 Market St',
+          );
+          cy.findByRole('textbox', { name: 'Postnummer' }).should('have.value', '94105');
+          cy.findByRole('textbox', { name: 'By / stedsnavn' }).should('have.value', 'San Francisco');
+          cy.findByRole('combobox', { name: /Land/ }).get('p').contains('USA');
 
-        cy.findByRole('heading', { name: 'Navn' }).should('exist');
-        cy.findByRole('textbox', { name: 'Fornavn' }).should('have.value', 'Ola');
-        cy.findByRole('textbox', { name: 'Etternavn' }).should('have.value', 'Nordmann');
-      });
+          cy.clickSaveAndContinue();
+          cy.clickSaveAndContinue();
 
-      it('Should not have any validation messages on summary page when using prefill', () => {
-        cy.findByRole('textbox', { name: 'Fornavn' }).should('have.value', 'Ola');
-        cy.findByRole('textbox', { name: 'Etternavn' }).should('have.value', 'Nordmann');
-        cy.clickSaveAndContinue();
-
-        cy.findByRole('textbox', { name: 'Fornavn' }).should('have.value', 'Ola');
-        cy.findByRole('textbox', { name: 'Etternavn' }).should('have.value', 'Nordmann');
-        cy.clickSaveAndContinue();
-
-        cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
-
-        cy.get('dl')
-          .eq(0)
-          .within(() => {
-            cy.get('dd').eq(0).should('contain.text', 'Ola');
-            cy.get('dd').eq(1).should('contain.text', 'Nordmann');
-            cy.get('dd').eq(2).should('contain.text', '08842748500');
-            cy.get('dd').eq(3).should('contain.text', 'Testveien 1C, 1234 Plassen');
-          });
-
-        cy.get('dl')
-          .eq(1)
-          .within(() => {
-            cy.get('dd').eq(0).should('contain.text', 'Ola');
-            cy.get('dd').eq(1).should('contain.text', 'Nordmann');
-          });
-
-        cy.get('.navds-alert').should('have.length', 0);
+          cy.get('dl')
+            .eq(0)
+            .within(() => {
+              cy.get('dt').eq(3).should('contain.text', 'Adresse');
+              cy.get('dd').eq(3).should('contain.text', 'The Landmark Building, 1 Market St, 94105 San Francisco, USA');
+            });
+        });
       });
     });
 
@@ -164,7 +202,7 @@ describe('Your information', () => {
         cy.findByRole('textbox', { name: /^Postnummer/ }).type('1234');
         cy.findByRole('textbox', { name: /^By \/ stedsnavn/ }).type('Plassen');
         cy.findByRole('textbox', { name: /^Region/ }).type('Øst');
-        cy.findByRole('textbox', { name: /^Land/ }).type('Sverige');
+        cy.findByRole('combobox', { name: /^Land/ }).type('Sverige{downArrow}{enter}');
         cy.findByRole('textbox', { name: /^Gyldig fra/ }).type(
           DateTime.now().minus({ days: 300 }).toFormat(dateUtils.inputFormat),
         );

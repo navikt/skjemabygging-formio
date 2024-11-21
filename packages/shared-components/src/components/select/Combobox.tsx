@@ -5,7 +5,7 @@ import { forwardRef, ReactNode, useEffect, useState } from 'react';
 import useComponentStyle from '../../util/styles/useComponentStyle';
 
 interface Props {
-  id: string;
+  id?: string;
   label: ReactNode;
   description?: ReactNode;
   className?: string;
@@ -71,6 +71,7 @@ const Combobox = forwardRef<HTMLInputElement, Props>(
         readOnly={readOnly}
         error={error}
         isMultiSelect={false}
+        shouldAutocomplete={true}
       />
     );
   },

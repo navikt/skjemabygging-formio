@@ -2,6 +2,7 @@ import {
   Address as AddressDomain,
   AddressType as AddressTypeDomain,
   CustomLabels,
+  FieldSize,
   SubmissionAddress,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { AddressProvider } from './addressContext';
@@ -19,6 +20,7 @@ interface Props {
   className?: string;
   addressTypeChoice?: boolean;
   customLabels?: CustomLabels;
+  fieldSize?: FieldSize;
 }
 
 export type SubmissionAddressType = keyof SubmissionAddress;
@@ -32,6 +34,7 @@ const Address = ({
   onChange,
   addressTypeChoice,
   customLabels,
+  fieldSize,
 }: Props) => {
   const getAddress = () => {
     if (
@@ -77,6 +80,7 @@ const Address = ({
           readOnly={readOnly}
           required={required}
           className={className}
+          fieldSize={fieldSize}
           onChange={handleChange}
         >
           {getAddress()}
