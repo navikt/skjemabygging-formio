@@ -1,6 +1,7 @@
 import { http as baseHttp, useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
 import { FormsApiGlobalTranslation } from '@navikt/skjemadigitalisering-shared-domain';
 import { useFeedbackEmit } from '../context/notifications/FeedbackContext';
+import { TranslationError } from '../context/translations/editTranslationsReducer/reducer';
 
 const useFormsApiGlobalTranslations = () => {
   const feedbackEmit = useFeedbackEmit();
@@ -17,23 +18,33 @@ const useFormsApiGlobalTranslations = () => {
     }
   };
 
-  const put = async (translation: FormsApiGlobalTranslation): Promise<FormsApiGlobalTranslation | undefined> => {
+  const put = async (translation: FormsApiGlobalTranslation): Promise<FormsApiGlobalTranslation | TranslationError> => {
     try {
       const { id, revision, nb = null, nn = null, en = null } = translation;
       return await http.put<FormsApiGlobalTranslation>(`${baseUrl}/${id}`, { revision, nb, nn, en });
-    } catch (error) {
+    } catch (error: any) {
+      if (error?.status === 409) {
+        return { type: 'CONFLICT', key: translation.key };
+      }
       const message = (error as Error)?.message;
       feedbackEmit.error(`Feil ved oppdatering av global oversettelse med nøkkel ${translation.key}. ${message}`);
+      return { type: 'OTHER_HTTP', key: translation.key };
     }
   };
 
-  const post = async (translation: FormsApiGlobalTranslation): Promise<FormsApiGlobalTranslation | undefined> => {
+  const post = async (
+    translation: FormsApiGlobalTranslation,
+  ): Promise<FormsApiGlobalTranslation | TranslationError> => {
     try {
       const { key, tag, nb = null, nn = null, en = null } = translation;
       return await http.post<FormsApiGlobalTranslation>(baseUrl, { key, tag, nb, nn, en });
-    } catch (error) {
+    } catch (error: any) {
+      if (error?.status === 409) {
+        return { type: 'CONFLICT', key: translation.key };
+      }
       const message = (error as Error)?.message;
       feedbackEmit.error(`Feil ved oppretting av global oversettelse med nøkkel ${translation.key}. ${message}`);
+      return { type: 'OTHER_HTTP', key: translation.key };
     }
   };
 

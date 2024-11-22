@@ -2,14 +2,16 @@ import { FormsApiGlobalTranslation, TEXTS, TranslationTag } from '@navikt/skjema
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import useFormsApiGlobalTranslations from '../../api/useFormsApiGlobalTranslations';
 import { generateAndPopulateTag } from '../../translations/utils/editGlobalTranslationsUtils';
+import { TranslationError, translationErrorTypes } from './editTranslationsReducer/reducer';
+
+const isTranslationError = (translationOrError: unknown): translationOrError is TranslationError =>
+  translationErrorTypes.includes((translationOrError as TranslationError)?.type);
 
 type TranslationsPerTag = Record<TranslationTag, FormsApiGlobalTranslation[]>;
 interface GlobalTranslationsContextValue {
   translationsPerTag: TranslationsPerTag;
   storedTranslations: Record<string, FormsApiGlobalTranslation>;
-  saveTranslations: (
-    translations: FormsApiGlobalTranslation[],
-  ) => Promise<Array<FormsApiGlobalTranslation | undefined>>;
+  saveTranslations: (translations: FormsApiGlobalTranslation[]) => Promise<Array<TranslationError>>;
 }
 
 const defaultValue = {
@@ -40,11 +42,9 @@ const GlobalTranslationsProvider = ({ children }) => {
     }
   }, [formsApiState.status, loadTranslations]);
 
-  const saveTranslations = async (
-    translations: FormsApiGlobalTranslation[],
-  ): Promise<Array<FormsApiGlobalTranslation | undefined>> => {
+  const saveTranslations = async (translations: FormsApiGlobalTranslation[]): Promise<Array<TranslationError>> => {
     setFormsApiState((state) => ({ ...state, status: 'saving' }));
-    const result = await Promise.all(
+    const results = await Promise.all(
       translations.map((translation) => {
         if (translation.id) {
           return translationsApi.put(translation);
@@ -54,7 +54,7 @@ const GlobalTranslationsProvider = ({ children }) => {
       }),
     );
     await loadTranslations();
-    return result;
+    return results.filter(isTranslationError);
   };
 
   const storedTranslationsMap = useMemo<Record<string, FormsApiGlobalTranslation>>(() => {

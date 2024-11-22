@@ -1,5 +1,6 @@
 import { FormsApiGlobalTranslation } from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, useContext, useReducer } from 'react';
+import { useFeedbackEmit } from '../notifications/FeedbackContext';
 import { useGlobalTranslations } from './GlobalTranslationsContext';
 import reducer, { TranslationError } from './editTranslationsReducer/reducer';
 import { getTranslationsForSaving, hasNewTranslationData } from './editTranslationsReducer/selectors';
@@ -40,6 +41,7 @@ const EditTranslationsProvider = ({ children }) => {
     changes: {},
   });
   const { storedTranslations, saveTranslations } = useGlobalTranslations();
+  const feedbackEmit = useFeedbackEmit();
 
   const updateTranslation = (
     originalTranslation: FormsApiGlobalTranslation,
@@ -82,8 +84,26 @@ const EditTranslationsProvider = ({ children }) => {
       dispatch({ type: 'CLEAR_ERRORS' });
       const updates = getTranslationsForSaving(state);
       const result = await saveTranslations(Object.values(updates ?? {}));
-      console.log('saveChanges', result);
-      dispatch({ type: 'SAVED', payload: { defaultNew: defaultNewSkjemateksterTranslation } });
+      dispatch({ type: 'SAVED', payload: { defaultNew: defaultNewSkjemateksterTranslation, errors: result } });
+
+      //TODO: move
+      const conflictErrors = result.filter((error) => error.type === 'CONFLICT');
+      if (conflictErrors.length > 0) {
+        const message =
+          conflictErrors.length === 1
+            ? `1 oversettelse ble ikke lagret fordi en nyere versjon allerede eksisterer`
+            : `${conflictErrors.length} oversettelser ble ikke lagret fordi en nyere versjon allerede eksisterer`;
+        feedbackEmit.error(message);
+      }
+      //TODO: move + bedre feilmelding
+      const otherErrors = result.filter((error) => error.type === 'OTHER_HTTP');
+      if (otherErrors.length > 0) {
+        const message =
+          otherErrors.length === 1
+            ? `1 oversettelse ble ikke lagret på grunn av en teknisk feil`
+            : `${otherErrors.length} oversettelser ble ikke lagret på grunn av en teknisk feil`;
+        feedbackEmit.error(message);
+      }
     }
   };
 

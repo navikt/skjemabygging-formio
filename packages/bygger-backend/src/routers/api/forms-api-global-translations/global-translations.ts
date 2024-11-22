@@ -1,6 +1,8 @@
 import { FormsApiGlobalTranslation } from '@navikt/skjemadigitalisering-shared-domain';
 import { RequestHandler } from 'express';
+import { HttpError as OldHttpError } from '../../../fetchUtils';
 import { globalTranslationsService } from '../../../services';
+import { HttpError } from '../helpers/errors';
 
 const get: RequestHandler = async (req, res, next) => {
   try {
@@ -17,7 +19,11 @@ const post: RequestHandler = async (req, res, next) => {
     const translation = await globalTranslationsService.post(req.body, accessToken);
     res.status(201).json(translation);
   } catch (error) {
-    next(error);
+    if (error instanceof OldHttpError) {
+      next(new HttpError(error.message, error.response.status));
+    } else {
+      next(error);
+    }
   }
 };
 
@@ -30,7 +36,11 @@ const put: RequestHandler = async (req, res, next) => {
     const translation = await globalTranslationsService.put(id, body, revision!, accessToken);
     res.json(translation);
   } catch (error) {
-    next(error);
+    if (error instanceof OldHttpError) {
+      next(new HttpError(error.message, error.response.status));
+    } else {
+      next(error);
+    }
   }
 };
 
