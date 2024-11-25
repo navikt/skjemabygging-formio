@@ -28,6 +28,7 @@ const ForeignAddress = () => {
         fieldSize={fieldSize}
         ref={(ref) => addRef('address:land', ref)}
         error={getComponentError('address:land')}
+        ignoreOptions={['NO']}
         readOnly={readOnly}
       />
     </>
