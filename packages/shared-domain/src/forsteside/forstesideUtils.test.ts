@@ -19,7 +19,7 @@ const genererVedleggComponent = (key, label, vedleggskode, vedleggstittel) => ({
     { label: 'Jeg legger det ved denne søknaden (anbefalt)', value: 'leggerVedNaa', shortcut: '' },
     {
       label:
-        'Jeg ettersender dokumentasjonen senere (jeg er klar over at NAV ikke kan behandle søknaden før jeg har levert dokumentasjonen)',
+        'Jeg ettersender dokumentasjonen senere (jeg er klar over at Nav ikke kan behandle søknaden før jeg har levert dokumentasjonen)',
       value: 'ettersender',
       shortcut: '',
     },

@@ -43,7 +43,7 @@ export const grensesnitt = {
     cancel: 'Nei, fortsett utfylling',
   },
   submitToNavPrompt: {
-    open: 'Send til NAV',
+    open: 'Send til Nav',
     body: 'Er du sikker på at du vil sende søknaden nå?',
     confirm: 'Ja, send søknaden',
     cancel: 'Avbryt',

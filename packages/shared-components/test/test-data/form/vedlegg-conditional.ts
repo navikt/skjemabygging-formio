@@ -25,7 +25,7 @@ const form = {
           className: '',
           attrs: [{ attr: '', value: '' }],
           content:
-            'Dette skjemaet skal du fylle ut når du skal søke om sykepenger fra NAV. Du skal kun fylle ut og sende inn dette skjemaet én gang. \r\nHvis du sender inn nye sykepengekrav (forlengelser) skal du ikke fylle ut skjemaet.<br><br>\r\nHvis du er friskmeldt i mer enn seksten dager, skal nytt skjema sendes inn til NAV. <br><br>\r\n\r\nHvis du i løpet av de siste fire årene har startet næringsvirksomhet, \r\neller fått en varig endring av arbeidssituasjonen/virksomheten, må du dokumentere dette.',
+            'Dette skjemaet skal du fylle ut når du skal søke om sykepenger fra Nav. Du skal kun fylle ut og sende inn dette skjemaet én gang. \r\nHvis du sender inn nye sykepengekrav (forlengelser) skal du ikke fylle ut skjemaet.<br><br>\r\nHvis du er friskmeldt i mer enn seksten dager, skal nytt skjema sendes inn til Nav. <br><br>\r\n\r\nHvis du i løpet av de siste fire årene har startet næringsvirksomhet, \r\neller fått en varig endring av arbeidssituasjonen/virksomheten, må du dokumentere dette.',
           refreshOnChange: false,
           customClass: '',
           hidden: false,
@@ -494,7 +494,7 @@ const form = {
         {
           label: 'Alertstripe',
           content:
-            'NAV sender svar på søknad og annen kommunikasjon til din folkeregistrerte adresse. \n<br>\nDu kan <a href="https://www.skatteetaten.no/person/folkeregister/flytte/endre-postadresse/" target="_blank">sjekke og endre din folkeregistrerte adresse på skatteetatens nettsider (åpnes i et nytt vindu).</a>\nHvis du ønsker å motta kommunikasjon fra NAV på en annen adresse enn din folkeregistrerte adresse, kan du bruke lenken ovenfor til å oppgi en postadresse i Folkeregisteret.\nDu finner også papirskjema for å endre postadresse på samme siden hos Skatteetaten.',
+            'Nav sender svar på søknad og annen kommunikasjon til din folkeregistrerte adresse. \n<br>\nDu kan <a href="https://www.skatteetaten.no/person/folkeregister/flytte/endre-postadresse/" target="_blank">sjekke og endre din folkeregistrerte adresse på skatteetatens nettsider (åpnes i et nytt vindu).</a>\nHvis du ønsker å motta kommunikasjon fra Nav på en annen adresse enn din folkeregistrerte adresse, kan du bruke lenken ovenfor til å oppgi en postadresse i Folkeregisteret.\nDu finner også papirskjema for å endre postadresse på samme siden hos Skatteetaten.',
           key: 'alertstripe',
           type: 'alertstripe',
           alerttype: 'info',
@@ -2489,7 +2489,7 @@ const form = {
       components: [
         {
           label:
-            'Jeg plikter å gi de opplysninger og levere de dokumentene som er nødvendige for at NAV skal kunne vurdere mine rettigheter.',
+            'Jeg plikter å gi de opplysninger og levere de dokumentene som er nødvendige for at Nav skal kunne vurdere mine rettigheter.',
           defaultValue: false,
           validate: {
             required: true,
@@ -2548,7 +2548,7 @@ const form = {
         },
         {
           label:
-            'Jeg har gjort meg kjent med min plikt til å informere NAV om endringer som kan ha betydning for sykepengene jeg får utbetalt.',
+            'Jeg har gjort meg kjent med min plikt til å informere Nav om endringer som kan ha betydning for sykepengene jeg får utbetalt.',
           validate: {
             required: true,
             custom: '',
@@ -4500,7 +4500,7 @@ const form = {
       lazyLoad: false,
       components: [
         {
-          label: 'Har du andre opplysninger du mener er viktige når NAV skal fastsette sykepengegrunnlaget ditt?',
+          label: 'Har du andre opplysninger du mener er viktige når Nav skal fastsette sykepengegrunnlaget ditt?',
           descriptionPosition: '',
           labelWidth: '',
           labelMargin: '',
@@ -4851,7 +4851,7 @@ const form = {
             {
               value: 'ettersender',
               label:
-                'Jeg ettersender dokumentasjonen senere (jeg er klar over at NAV ikke kan behandle søknaden før jeg har levert dokumentasjonen)',
+                'Jeg ettersender dokumentasjonen senere (jeg er klar over at Nav ikke kan behandle søknaden før jeg har levert dokumentasjonen)',
               shortcut: '',
             },
             { value: 'levertTidligere', label: 'Jeg har levert denne dokumentasjonen tidligere', shortcut: '' },
@@ -4921,7 +4921,7 @@ const form = {
             {
               value: 'ettersender',
               label:
-                'Jeg ettersender dokumentasjonen senere (jeg er klar over at NAV ikke kan behandle søknaden før jeg har levert dokumentasjonen)',
+                'Jeg ettersender dokumentasjonen senere (jeg er klar over at Nav ikke kan behandle søknaden før jeg har levert dokumentasjonen)',
               shortcut: '',
             },
             { value: 'levertTidligere', label: 'Jeg har levert denne dokumentasjonen tidligere', shortcut: '' },
@@ -4991,7 +4991,7 @@ const form = {
             {
               value: 'ettersender',
               label:
-                'Jeg ettersender dokumentasjonen senere (jeg er klar over at NAV ikke kan behandle søknaden før jeg har levert dokumentasjonen)',
+                'Jeg ettersender dokumentasjonen senere (jeg er klar over at Nav ikke kan behandle søknaden før jeg har levert dokumentasjonen)',
               shortcut: '',
             },
             { value: 'levertTidligere', label: 'Jeg har levert denne dokumentasjonen tidligere', shortcut: '' },

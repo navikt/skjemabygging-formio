@@ -1,6 +1,6 @@
 # The MIT License
 
-Copyright 2020 NAV (Arbeids- og velferdsdirektoratet) - The Norwegian Labour and Welfare Administration
+Copyright 2020 Nav (Arbeids- og velferdsdirektoratet) - The Norwegian Labour and Welfare Administration
 
 The contents of the template folder is based on https://github.com/formio/semantic, see [ORIGINAL_LICENSE](./template/ORIGINAL_LICENSE)
 

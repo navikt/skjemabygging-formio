@@ -57,7 +57,7 @@ describe('Setup dev server', () => {
         expect(res.headers['set-cookie'][0]).toContain('fyllut-dev-access=true');
       });
 
-      it('redirects to form if query param formPath exists when NAV ip', async () => {
+      it('redirects to form if query param formPath exists when Nav ip', async () => {
         const res = await request(createApp(SETUP_DEV))
           .get('/fyllut/test/login?formPath=nav123456')
           .set('X-Forwarded-For', IP_NAV)

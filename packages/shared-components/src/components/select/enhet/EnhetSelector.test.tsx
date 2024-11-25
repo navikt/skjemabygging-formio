@@ -10,10 +10,10 @@ vi.mock('../../../context/languages/hooks/useLanguageCodeFromURL', () => {
 });
 const mockOnSelectEnhet = vi.fn();
 const mockEnhetsListe = [
-  { enhetNr: '1', navn: 'NAV abc' },
-  { enhetNr: '2', navn: 'NAV def' },
-  { enhetNr: '3', navn: 'NAV ghi' },
-  { enhetNr: '4', navn: 'NAV jkl' },
+  { enhetNr: '1', navn: 'Nav abc' },
+  { enhetNr: '2', navn: 'Nav def' },
+  { enhetNr: '3', navn: 'Nav ghi' },
+  { enhetNr: '4', navn: 'Nav jkl' },
 ];
 
 describe('EnhetSelector', () => {
@@ -31,7 +31,7 @@ describe('EnhetSelector', () => {
       const DOWN_ARROW = { keyCode: 40 };
       const enhetSelector = screen.getByText(TEXTS.statiske.prepareLetterPage.selectEntityDefault);
       fireEvent.keyDown(enhetSelector, DOWN_ARROW);
-      await waitFor(() => expect(screen.getByText('NAV abc')).toBeTruthy());
+      await waitFor(() => expect(screen.getByText('Nav abc')).toBeTruthy());
     });
 
     // Dynamically generated tests are exceptions to this rule: https://github.com/lo1tuma/eslint-plugin-mocha/blob/main/docs/rules/no-setup-in-describe.md
@@ -41,7 +41,7 @@ describe('EnhetSelector', () => {
     });
 
     it('returns the selected enhet when selected', () => {
-      fireEvent.click(screen.getByText('NAV ghi'));
+      fireEvent.click(screen.getByText('Nav ghi'));
       expect(mockOnSelectEnhet).toHaveBeenCalledTimes(1);
       expect(mockOnSelectEnhet).toHaveBeenCalledWith('3');
     });

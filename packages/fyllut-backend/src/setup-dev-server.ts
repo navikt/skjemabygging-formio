@@ -5,7 +5,7 @@ import { logger } from './logger';
 
 const DEV_ACCESS_COOKIE = 'fyllut-dev-access';
 
-// 155.55.* is NAVs public IP range. Also includes the private IP range used by our
+// 155.55.* is Navs public IP range. Also includes the private IP range used by our
 // internal network (10.*), and localhost. Takes the IPv6 prefix ::ffff: into account.
 const isNavIp = (ip: string) => /^(::ffff:)?(155\.55\.|10\.|127\.)/.test(ip);
 const isFormPath = (value: string) => /^\w*$/.test(value);

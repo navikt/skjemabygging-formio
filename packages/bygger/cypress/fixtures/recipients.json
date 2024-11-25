@@ -1,7 +1,7 @@
 [
   {
     "recipientId": "6173f82ea9a3430003fac933",
-    "name": "NAV Skanning sykmelding del A ",
+    "name": "Nav Skanning sykmelding del A ",
     "poBoxAddress": "Postboks 1411 Sentrum  ",
     "postalCode": "0109",
     "postalName": "Oslo",
@@ -12,7 +12,7 @@
   },
   {
     "recipientId": "6177bea68e0d00000370f2ef",
-    "name": "NAV Pensjon",
+    "name": "Nav Pensjon",
     "poBoxAddress": "Postboks 6600 Etterstad",
     "postalCode": "0607",
     "postalName": "Oslo",
@@ -23,7 +23,7 @@
   },
   {
     "recipientId": "61af4b3a1127300003cb8d31",
-    "name": "NAV Familie- og pensjonsytelser Oslo 2",
+    "name": "Nav Familie- og pensjonsytelser Oslo 2",
     "poBoxAddress": "Postboks 6600 Etterstad",
     "postalCode": "0607",
     "postalName": "Oslo",
@@ -34,7 +34,7 @@
   },
   {
     "recipientId": "61c09f91ec962a0003c65014",
-    "name": "NAV Skanning bidrag",
+    "name": "Nav Skanning bidrag",
     "poBoxAddress": "PB 6215 Etterstad",
     "postalCode": "0603",
     "postalName": "Oslo",
@@ -45,7 +45,7 @@
   },
   {
     "recipientId": "6246de1afd03d2caeeda2825",
-    "name": "NAV Arbeid og ytelser lønnsgaranti",
+    "name": "Nav Arbeid og ytelser lønnsgaranti",
     "poBoxAddress": "Postboks 6683 St. Olavs Plass",
     "postalCode": "0129",
     "postalName": "Oslo",
@@ -56,7 +56,7 @@
   },
   {
     "recipientId": "62bc3f3f4a6e0d0bbc83bf30",
-    "name": "NAV Økonomi pensjon",
+    "name": "Nav Økonomi pensjon",
     "poBoxAddress": "Postboks 6600 Etterstad",
     "postalCode": "0607",
     "postalName": "Oslo",
@@ -67,7 +67,7 @@
   },
   {
     "recipientId": "6536331ef0f518e1e5cf0a30",
-    "name": "NAV skanning",
+    "name": "Nav skanning",
     "poBoxAddress": "Postboks 1402",
     "postalCode": "0109",
     "postalName": "Oslo",
@@ -78,7 +78,7 @@
   },
   {
     "recipientId": "65aa418f3ad9b63ae4a0d5a9",
-    "name": "NAV Registerforvaltning - Tipsmottaket",
+    "name": "Nav Registerforvaltning - Tipsmottaket",
     "poBoxAddress": "Postboks 4330",
     "postalCode": "2308",
     "postalName": "Hamar",
@@ -89,7 +89,7 @@
   },
   {
     "recipientId": "6173f7e7a9a3430003fac931",
-    "name": "NAV Økonomi Stønad",
+    "name": "Nav Økonomi Stønad",
     "poBoxAddress": "Postboks 354",
     "postalCode": "8601",
     "postalName": "MO I RANA",
@@ -100,7 +100,7 @@
   },
   {
     "recipientId": "90ead851-04e1-4f64-83e7-2e45a93a649d",
-    "name": "NAV Test 3",
+    "name": "Nav Test 3",
     "poBoxAddress": "Postboks 3",
     "postalCode": "0591",
     "postalName": "Oslo",
@@ -111,7 +111,7 @@
   },
   {
     "recipientId": "6177c7998e0d00000370f2f1",
-    "name": "NAV Registerforvaltning 2",
+    "name": "Nav Registerforvaltning 2",
     "poBoxAddress": "Tipsmottaket",
     "postalCode": "2308",
     "postalName": "Hamar",

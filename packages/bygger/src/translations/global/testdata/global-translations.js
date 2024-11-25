@@ -164,10 +164,10 @@ const translations = {
               'Please check that all your answers are correct. If you find something that needs to be corrected, press "{{editAnswers}}" at the bottom of this page. If all the answers are correct, proceed to step 2.',
             scope: 'global',
           },
-        'Førstesidearket inneholder viktig informasjon om hvilken enhet i NAV som skal motta dokumentene, og hvilken adresse de skal sendes til.':
+        'Førstesidearket inneholder viktig informasjon om hvilken enhet i Nav som skal motta dokumentene, og hvilken adresse de skal sendes til.':
           {
             value:
-              'The cover sheet contains important information about the NAV unit that will receive the documents and the address to which the documents should be sent.',
+              'The cover sheet contains important information about the Nav unit that will receive the documents and the address to which the documents should be sent.',
             scope: 'global',
           },
         'Legg ved': {
@@ -182,8 +182,8 @@ const translations = {
           value: 'the following document',
           scope: 'global',
         },
-        'Send det hele til NAV i posten': {
-          value: 'Send it all to NAV in the mail',
+        'Send det hele til Nav i posten': {
+          value: 'Send it all to Nav in the mail',
           scope: 'global',
         },
         'Følg instruksjonene på førstesidearket for å sende dokumentene i posten.': {
@@ -228,14 +228,14 @@ const translations = {
           value: 'You need to save the application (PDF) on your device so that you can easily find it again.',
           scope: 'global',
         },
-        'Etter at du har lastet ned og lagret søknaden din, må du laste den opp til NAV. Følg veiledningen i punkt 2 lenger ned på denne siden.':
+        'Etter at du har lastet ned og lagret søknaden din, må du laste den opp til Nav. Følg veiledningen i punkt 2 lenger ned på denne siden.':
           {
             value:
-              'After you have downloaded and saved your application, you must upload it to NAV. Follow the instructions in point 2 further down this page.',
+              'After you have downloaded and saved your application, you must upload it to Nav. Follow the instructions in point 2 further down this page.',
             scope: 'global',
           },
-        '2. Last opp søknaden din til NAV': {
-          value: '2. Upload your application to NAV',
+        '2. Last opp søknaden din til Nav': {
+          value: '2. Upload your application to Nav',
           scope: 'global',
         },
         'Når du klikker på «Gå videre» åpnes det en ny side (krever innlogging) der du skal laste opp søknaden din.': {
@@ -259,10 +259,10 @@ const translations = {
           value: 'Click "Finn filen" and upload the application that you saved on your device.',
           scope: 'global',
         },
-        'Deretter må du laste opp eventuelle vedlegg. Trykk på «Bekreft» for å gå videre til innsending av søknaden. Trykk på knappen «Send til NAV» nederst på siden for å sende inn søknaden din.':
+        'Deretter må du laste opp eventuelle vedlegg. Trykk på «Bekreft» for å gå videre til innsending av søknaden. Trykk på knappen «Send til Nav» nederst på siden for å sende inn søknaden din.':
           {
             value:
-              'Then you need to upload any attachments. Click on "Bekreft" to proceed to submitting the application. Click the "Send til NAV" button at the bottom of the page to submit your application.',
+              'Then you need to upload any attachments. Click on "Bekreft" to proceed to submitting the application. Click the "Send til Nav" button at the bottom of the page to submit your application.',
             scope: 'global',
           },
         'Du må bekrefte at du har lest instruksjonene over før du kan gå videre.': {
@@ -300,11 +300,11 @@ const translations = {
             scope: 'global',
           },
         'Velg enhet som skal behandle saken din': {
-          value: 'Select the NAV unit that will process your case',
+          value: 'Select the Nav unit that will process your case',
           scope: 'global',
         },
         'Du må velge enheten som skal behandle saken din': {
-          value: 'You must select the NAV unit that will process your case',
+          value: 'You must select the Nav unit that will process your case',
           scope: 'global',
         },
         'Velg enhet': {
@@ -312,22 +312,22 @@ const translations = {
           scope: 'global',
         },
         'Førsteside kan ikke genereres før du har valgt enhet': {
-          value: 'The cover sheet cannot be generated until you have selected the NAV unit that will process your case',
+          value: 'The cover sheet cannot be generated until you have selected the Nav unit that will process your case',
           scope: 'global',
         },
         'En feil har oppstått. Vi kunne ikke laste enheter. Beklager ulempen, prøv igjen senere.': {
           value:
-            'An error has occured. We could not load the NAV units. Sorry for the inconvenience, please try again later.',
+            'An error has occured. We could not load the Nav units. Sorry for the inconvenience, please try again later.',
           scope: 'global',
         },
         'Klikk på «{{downloadApplication}}». Da åpnes det ferdig utfylte dokumentet i en ny fane i nettleseren. ': {
           value: 'Click "{{downloadApplication}}". This will open the completed document in a new tab in the browser.',
           scope: 'global',
         },
-        'Etter at du har lastet ned og lagret dokumentet, må du laste det opp til NAV. Følg veiledningen i punkt 2 lenger ned på denne siden.':
+        'Etter at du har lastet ned og lagret dokumentet, må du laste det opp til Nav. Følg veiledningen i punkt 2 lenger ned på denne siden.':
           {
             value:
-              'After you have downloaded and saved the document, you must upload it to NAV. Follow the instructions in point 2 below.',
+              'After you have downloaded and saved the document, you must upload it to Nav. Follow the instructions in point 2 below.',
             scope: 'global',
           },
         'Når du klikker på «Gå videre» åpnes det en ny side (krever innlogging) der du skal laste opp dokumentet.': {
@@ -335,8 +335,8 @@ const translations = {
             'When you click on "Proceed", a new page will open (requires login) where you can upload the document.',
           scope: 'global',
         },
-        '2. Last opp dokumentet til NAV': {
-          value: '2. Upload the document to NAV',
+        '2. Last opp dokumentet til Nav': {
+          value: '2. Upload the document to Nav',
           scope: 'global',
         },
         'På neste side laster du opp dokumentet slik:': {
@@ -347,10 +347,10 @@ const translations = {
           value: 'Press "Finn filen" and upload the document that you saved to your device.',
           scope: 'global',
         },
-        'Deretter må du laste opp eventuelle vedlegg. Trykk på «Bekreft» for å gå videre til innsending av dokumentene. Trykk på knappen «Send til NAV» nederst på siden for å sende dokumentene til NAV.':
+        'Deretter må du laste opp eventuelle vedlegg. Trykk på «Bekreft» for å gå videre til innsending av dokumentene. Trykk på knappen «Send til Nav» nederst på siden for å sende dokumentene til Nav.':
           {
             value:
-              'Then you need to upload any attachments. Press "Bekreft" to proceed to submitting the documents. Press the "Send til NAV" button at the bottom of the page to send the documents to NAV.',
+              'Then you need to upload any attachments. Press "Bekreft" to proceed to submitting the documents. Press the "Send til Nav" button at the bottom of the page to send the documents to Nav.',
             scope: 'global',
           },
         'Du må laste ned det utfylte dokumentet før du kan gå videre.': {
@@ -422,10 +422,10 @@ const translations = {
           value: "It's not possible to save the form before it's finished.",
           scope: 'global',
         },
-        'Informasjonen du fyller inn i skjemaet sendes ikke til NAV før du har fullført hele søknaden og sendt den inn. Hvis du lukker vinduet / nettleseren vil all informasjon du har fylt ut forsvinne.':
+        'Informasjonen du fyller inn i skjemaet sendes ikke til Nav før du har fullført hele søknaden og sendt den inn. Hvis du lukker vinduet / nettleseren vil all informasjon du har fylt ut forsvinne.':
           {
             value:
-              'The information you fill in the form is not sent to NAV until you have completed the entire application and submitted it. If you close the window / browser, all the information you have filled in will be deleted.',
+              'The information you fill in the form is not sent to Nav until you have completed the entire application and submitted it. If you close the window / browser, all the information you have filled in will be deleted.',
             scope: 'global',
           },
         'Bruk av offentlig PC:': {
@@ -450,10 +450,10 @@ const translations = {
           value: 'The form cannot be saved before you are finished.',
           scope: 'global',
         },
-        'Informasjonen du fyller inn i skjemaet sendes ikke til NAV før du har fullført hele skjemaet og sendt det inn. Hvis du lukker vinduet / nettleseren vil all informasjon du har fylt ut forsvinne.':
+        'Informasjonen du fyller inn i skjemaet sendes ikke til Nav før du har fullført hele skjemaet og sendt det inn. Hvis du lukker vinduet / nettleseren vil all informasjon du har fylt ut forsvinne.':
           {
             value:
-              'The information you fill in the form is not sent to NAV until you have completed the entire form and submitted it. If you close the window / browser, all the information you have filled in will disappear.',
+              'The information you fill in the form is not sent to Nav until you have completed the entire form and submitted it. If you close the window / browser, all the information you have filled in will disappear.',
             scope: 'global',
           },
         'Du må fylle ut skjemaet digitalt, og deretter sende det i posten.': {
@@ -648,10 +648,10 @@ const translations = {
           value: 'Last ned og skriv ut dokumenta til saka di',
           scope: 'global',
         },
-        'Førstesidearket inneholder viktig informasjon om hvilken enhet i NAV som skal motta dokumentene, og hvilken adresse de skal sendes til.':
+        'Førstesidearket inneholder viktig informasjon om hvilken enhet i Nav som skal motta dokumentene, og hvilken adresse de skal sendes til.':
           {
             value:
-              'Førstesidearket inneheld viktig informasjon om kva eining i NAV som skal motta dokumenta, og kva adresse dei skal sendast til.',
+              'Førstesidearket inneheld viktig informasjon om kva eining i Nav som skal motta dokumenta, og kva adresse dei skal sendast til.',
             scope: 'global',
           },
         'Legg ved': {
@@ -666,8 +666,8 @@ const translations = {
           value: 'dette vedlegget',
           scope: 'global',
         },
-        'Send det hele til NAV i posten': {
-          value: 'Send det heile til NAV i posten',
+        'Send det hele til Nav i posten': {
+          value: 'Send det heile til Nav i posten',
           scope: 'global',
         },
         'Følg instruksjonene på førstesidearket for å sende dokumentene i posten.': {
@@ -711,14 +711,14 @@ const translations = {
           value: 'Du må lagre søknaden (PDF) på eininga di slik at du enkelt kan finne ho igjen.',
           scope: 'global',
         },
-        'Etter at du har lastet ned og lagret søknaden din, må du laste den opp til NAV. Følg veiledningen i punkt 2 lenger ned på denne siden.':
+        'Etter at du har lastet ned og lagret søknaden din, må du laste den opp til Nav. Følg veiledningen i punkt 2 lenger ned på denne siden.':
           {
             value:
-              'Etter at du har lasta ned og lagra søknaden din, må du laste han opp til NAV. Følg rettleiinga i punkt 2 lengre ned på denne sida.',
+              'Etter at du har lasta ned og lagra søknaden din, må du laste han opp til Nav. Følg rettleiinga i punkt 2 lengre ned på denne sida.',
             scope: 'global',
           },
-        '2. Last opp søknaden din til NAV': {
-          value: '2. Last opp søknaden din til NAV',
+        '2. Last opp søknaden din til Nav': {
+          value: '2. Last opp søknaden din til Nav',
           scope: 'global',
         },
         'Når du klikker på «Gå videre» åpnes det en ny side (krever innlogging) der du skal laste opp søknaden din.': {
@@ -742,10 +742,10 @@ const translations = {
           value: 'Trykk på «Finn fila» og last opp søknaden som du lagra på eininga di.',
           scope: 'global',
         },
-        'Deretter må du laste opp eventuelle vedlegg. Trykk på «Bekreft» for å gå videre til innsending av søknaden. Trykk på knappen «Send til NAV» nederst på siden for å sende inn søknaden din.':
+        'Deretter må du laste opp eventuelle vedlegg. Trykk på «Bekreft» for å gå videre til innsending av søknaden. Trykk på knappen «Send til Nav» nederst på siden for å sende inn søknaden din.':
           {
             value:
-              'Deretter må du laste opp eventuelle vedlegg. Trykk på «Bekreft» for å gå vidare til innsending av søknaden. Trykk på knappen «Send til NAV» nedst på sida for å sende inn søknaden din.',
+              'Deretter må du laste opp eventuelle vedlegg. Trykk på «Bekreft» for å gå vidare til innsending av søknaden. Trykk på knappen «Send til Nav» nedst på sida for å sende inn søknaden din.',
             scope: 'global',
           },
         'Du må bekrefte at du har lest instruksjonene over før du kan gå videre.': {
@@ -807,14 +807,14 @@ const translations = {
             'Klikk på «{{downloadApplication}}». Då blir det ferdig utfylte dokumentet opna i ei ny fane i nettlesaren.',
           scope: 'global',
         },
-        'Etter at du har lastet ned og lagret dokumentet, må du laste det opp til NAV. Følg veiledningen i punkt 2 lenger ned på denne siden.':
+        'Etter at du har lastet ned og lagret dokumentet, må du laste det opp til Nav. Følg veiledningen i punkt 2 lenger ned på denne siden.':
           {
             value:
-              'Etter at du har lasta ned og lagra dokumentet, må du laste det opp til NAV. Følg rettleiinga i punkt 2 lengre ned på denne sida.',
+              'Etter at du har lasta ned og lagra dokumentet, må du laste det opp til Nav. Følg rettleiinga i punkt 2 lengre ned på denne sida.',
             scope: 'global',
           },
-        '2. Last opp dokumentet til NAV': {
-          value: '2. Last opp dokumentet til NAV',
+        '2. Last opp dokumentet til Nav': {
+          value: '2. Last opp dokumentet til Nav',
           scope: 'global',
         },
         'Når du klikker på «Gå videre» åpnes det en ny side (krever innlogging) der du skal laste opp dokumentet.': {
@@ -830,10 +830,10 @@ const translations = {
           value: 'Trykk på «Finn fila» og last opp dokumentet som du lagra på eininga di.',
           scope: 'global',
         },
-        'Deretter må du laste opp eventuelle vedlegg. Trykk på «Bekreft» for å gå videre til innsending av dokumentene. Trykk på knappen «Send til NAV» nederst på siden for å sende dokumentene til NAV.':
+        'Deretter må du laste opp eventuelle vedlegg. Trykk på «Bekreft» for å gå videre til innsending av dokumentene. Trykk på knappen «Send til Nav» nederst på siden for å sende dokumentene til Nav.':
           {
             value:
-              'Deretter må du laste opp eventuelle vedlegg. Trykk på «Bekreft» for å gå vidare til innsending av dokumenta. Trykk på knappen «Send til NAV» nedst på sida for å senda dokumenta til NAV.',
+              'Deretter må du laste opp eventuelle vedlegg. Trykk på «Bekreft» for å gå vidare til innsending av dokumenta. Trykk på knappen «Send til Nav» nedst på sida for å senda dokumenta til Nav.',
             scope: 'global',
           },
         'Du må laste ned det utfylte dokumentet før du kan gå videre.': {
@@ -904,10 +904,10 @@ const translations = {
           value: 'Du kan ikkje lagra søknaden undervegs.',
           scope: 'global',
         },
-        'Informasjonen du fyller inn i skjemaet sendes ikke til NAV før du har fullført hele søknaden og sendt den inn. Hvis du lukker vinduet / nettleseren vil all informasjon du har fylt ut forsvinne.':
+        'Informasjonen du fyller inn i skjemaet sendes ikke til Nav før du har fullført hele søknaden og sendt den inn. Hvis du lukker vinduet / nettleseren vil all informasjon du har fylt ut forsvinne.':
           {
             value:
-              'Informasjonen du fyller inn i skjemaet blir ikkje sendt til NAV før du har fullført heile søknaden og sendt den inn. Viss du lukkar vindauget / nettlesaren vil all informasjon du har fylt ut forsvinna.',
+              'Informasjonen du fyller inn i skjemaet blir ikkje sendt til Nav før du har fullført heile søknaden og sendt den inn. Viss du lukkar vindauget / nettlesaren vil all informasjon du har fylt ut forsvinna.',
             scope: 'global',
           },
         'Bruk av offentlig PC:': {
@@ -932,10 +932,10 @@ const translations = {
           value: 'Du kan ikkje lagre skjemaet undervegs.',
           scope: 'global',
         },
-        'Informasjonen du fyller inn i skjemaet sendes ikke til NAV før du har fullført hele skjemaet og sendt det inn. Hvis du lukker vinduet / nettleseren vil all informasjon du har fylt ut forsvinne.':
+        'Informasjonen du fyller inn i skjemaet sendes ikke til Nav før du har fullført hele skjemaet og sendt det inn. Hvis du lukker vinduet / nettleseren vil all informasjon du har fylt ut forsvinne.':
           {
             value:
-              'Informasjonen du fyller inn i skjemaet blir ikkje sendt til NAV før du har fullført heile skjemaet og sendt det inn. Viss du lukker vindauget / nettlesaren vil all informasjon du har fylt ut forsvinne.',
+              'Informasjonen du fyller inn i skjemaet blir ikkje sendt til Nav før du har fullført heile skjemaet og sendt det inn. Viss du lukker vindauget / nettlesaren vil all informasjon du har fylt ut forsvinne.',
             scope: 'global',
           },
         'Du må fylle ut skjemaet digitalt, og deretter sende det i posten.': {
