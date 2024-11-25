@@ -8,9 +8,8 @@ const { clientId, kodeverk } = config;
 
 const commonCodes = {
   getArchiveSubjects: async (req: Request, res: Response, next: NextFunction) => {
-    // As of 15.07.2022. Different languageCode like nn or en just results in same term,
-    // so no need to support req.query.languageCode
-    const languageCode = 'nb';
+    const acceptLanguage = req.header('accept-language');
+    const languageCode: string = acceptLanguage || 'nb';
 
     try {
       // Alle temakoder ligger i Arkivtemaer, men vi har fått laget eget kodeverk for oss som heter TemaIFyllUt
@@ -27,7 +26,7 @@ const commonCodes = {
   },
 
   getCurrencies: async (req: Request, res: Response, next: NextFunction) => {
-    // As of 15.07.2022. Different languageCode like nn or en just results in same term,
+    // As of 25.11.2024. Different languageCode like nn or en just results in same term,
     // so no need to support req.query.languageCode
     const languageCode = 'nb';
     const mostUsedCurr: { label: string; value: string }[] = [];
