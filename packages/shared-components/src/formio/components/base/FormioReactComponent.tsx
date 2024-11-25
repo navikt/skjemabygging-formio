@@ -2,6 +2,7 @@ import { ReactComponent } from '@formio/react';
 import { ComponentError, SubmissionData } from '@navikt/skjemadigitalisering-shared-domain';
 import { createRoot } from 'react-dom/client';
 import Ready from '../../../util/form/ready';
+import baseComponentUtils from './baseComponentUtils';
 import createComponentLogger, { ComponentLogger } from './createComponentLogger';
 import { blurHandler, focusHandler } from './focus-helpers';
 import { IReactComponent } from './index';
@@ -36,6 +37,8 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
   }
 
   setReactInstance(element, autoResolve: boolean = true) {
+    this.addRef(baseComponentUtils.getId(this.component), element);
+
     this.reactInstance = element;
     this.addFocusBlurEvents(element);
     if (autoResolve) {
@@ -156,17 +159,6 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
     //  Behold addMessages som en tom funksjon
     if (['navSelect', 'valutavelger'].includes(this.component?.type ?? '')) {
       super.addMessages(messages);
-    }
-  }
-
-  /**
-   * Set error
-   */
-  override setCustomValidity(messages: string | string[], dirty?: boolean, external?: boolean) {
-    const previousErrorMessage = this.error?.message;
-    super.setCustomValidity(messages, dirty, external);
-    if (this.error?.message !== previousErrorMessage) {
-      this.rerender();
     }
   }
 

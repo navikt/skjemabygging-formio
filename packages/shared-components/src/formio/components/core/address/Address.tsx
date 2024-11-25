@@ -138,10 +138,6 @@ class Address extends BaseComponent {
     }
   }
 
-  get errors() {
-    return this.componentErrors;
-  }
-
   checkComponentValidity(data, dirty, row, _options = {}) {
     this.removeAllErrors();
 

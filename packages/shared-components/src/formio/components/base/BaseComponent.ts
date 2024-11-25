@@ -151,13 +151,6 @@ class BaseComponent extends FormioReactComponent {
   }
 
   /**
-   * Get error custom for component renderReact()
-   */
-  getError() {
-    return this.error?.message;
-  }
-
-  /**
    * Get whether user is logged in or not for custom component renderReact()
    */
   getIsLoggedIn() {
@@ -200,11 +193,35 @@ class BaseComponent extends FormioReactComponent {
     return (this.isSubmissionDigital() && !!this.component?.prefillKey && !!this.component?.prefillValue) ?? false;
   }
 
-  // elementId is used to focus to the correct element when clicking on error summary
-  // Message is the error message that is shown in the error summary
+  /**
+   * elementId is used to focus to the correct element when clicking on error summary
+   * Message is the error message that is shown in the error summary
+   */
   addError(message: string, elementId?: string) {
-    this.logger.debug('addError', { errorMessage: message });
-    this.componentErrors.push(this.createError(message, elementId));
+    if (this.showErrorMessages()) {
+      this.logger.debug('addError', { errorMessage: message });
+      this.componentErrors.push(this.createError(message, elementId));
+    }
+  }
+
+  get errors() {
+    return this.componentErrors;
+  }
+
+  override setCustomValidity(messages: string | ComponentError[], _dirty?: boolean, _external?: boolean) {
+    this.removeAllErrors();
+
+    if (messages) {
+      if (Array.isArray(messages)) {
+        messages.forEach((componentError: ComponentError) => {
+          this.addError(componentError.message, this.getId());
+        });
+      } else {
+        this.addError(messages, this.getId());
+      }
+    }
+
+    this.rerender();
   }
 
   createError(message: string, elementId?: string): ComponentError {
@@ -220,10 +237,16 @@ class BaseComponent extends FormioReactComponent {
     this.componentErrors = [];
   }
 
+  getError() {
+    return this.getComponentError(this.getId());
+  }
+
   getComponentError(elementId: string) {
-    if (!this.pristine) {
-      return this.componentErrors.find((error) => error.elementId === elementId)?.message;
-    }
+    return this.componentErrors.find((error) => error.elementId === elementId)?.message;
+  }
+
+  showErrorMessages() {
+    return this.root.currentPage?.showErrormessages || this.root.submitted;
   }
 }
 
