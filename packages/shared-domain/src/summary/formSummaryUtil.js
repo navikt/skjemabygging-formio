@@ -111,7 +111,7 @@ function formatValue(component, value, translate, form, language) {
         value?.postboks,
         formatPostnummerOgBySted(value),
         value?.region,
-        value?.land,
+        value?.land?.label,
       ].filter(Boolean);
       return addressComponents.join(', ');
     }

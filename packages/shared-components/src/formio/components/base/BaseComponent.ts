@@ -1,4 +1,4 @@
-import { Component, ComponentError, CustomLabels } from '@navikt/skjemadigitalisering-shared-domain';
+import { Component, ComponentError, CustomLabels, FieldSize } from '@navikt/skjemadigitalisering-shared-domain';
 import Field from 'formiojs/components/_classes/field/Field';
 import FormioUtils from 'formiojs/utils';
 import { TFunction, TOptions } from 'i18next';
@@ -70,11 +70,35 @@ class BaseComponent extends FormioReactComponent {
   }
 
   /**
+   * @deprecated Use getFieldSize instead.
+   *
    * Get class name for custom component renderReact()
    */
   getClassName() {
     // TODO: Remove nav-new and nav- prefix for fieldsize when all components are Aksel
     return this.component?.fieldSize ? `nav-${this.component?.fieldSize} nav-new` : 'nav-new';
+  }
+
+  /**
+   * Get the correct FieldSize for useComponentStyles
+   */
+  getFieldSize(): FieldSize | undefined {
+    switch (this.component?.fieldSize) {
+      case 'input--xxs':
+        return 'xxsmall';
+      case 'input--xs':
+        return 'xsmall';
+      case 'input--s':
+        return 'small';
+      case 'input--m':
+        return 'medium';
+      case 'input--l':
+        return 'large';
+      case 'input--xl':
+        return 'xlarge';
+      case 'input--xxl':
+        return 'xxlarge';
+    }
   }
 
   /**

@@ -18,13 +18,10 @@ const countrySelectForm = (componentType: string) => {
     ]),
     data([
       editFormIgnoreNorway(),
-      editFormData.dataValues(),
       editFormData.defaultValue(componentType),
     ]),
     validation([
       editFormValidation.required(),
-      editFormValidation.customValidation(),
-      editFormValidation.customError(),
     ]),
     api([
       editFormApi.key(),

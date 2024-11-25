@@ -50,7 +50,7 @@ const getUserData = (form: NavFormType, submission: SubmissionData): BrukerInfo 
         addressLine(address.postnummer) +
         addressLine(address.bySted, ' ') +
         addressLine(address.region) +
-        addressLine(address.land ?? 'Norge'),
+        addressLine(address.land?.label ?? 'Norge'),
     };
   } else {
     throw Error('User needs to submit either identification number or address');
