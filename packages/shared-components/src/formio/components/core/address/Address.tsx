@@ -142,7 +142,7 @@ class Address extends BaseComponent {
     return this.componentErrors;
   }
 
-  checkValidity(data, dirty, row) {
+  checkComponentValidity(data, dirty, row, _options = {}) {
     this.removeAllErrors();
 
     if (this.shouldSkipValidation(data, dirty, row) || this.getReadOnly()) {

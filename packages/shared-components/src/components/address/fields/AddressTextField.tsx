@@ -15,7 +15,7 @@ interface Props {
 
 const AddressTextField = ({ type, label, value, required = false, children, autoComplete }: Props) => {
   const { onChange, readOnly, className } = useAddress();
-  const { translate, addRef, getComponentError } = useComponentUtils();
+  const { translate, addRef, getComponentError, focusHandler, blurHandler } = useComponentUtils();
 
   const translateLabel = (text: string) => {
     return required || readOnly ? translate(text) : `${translate(text)} (${translate('valgfritt')})`;
@@ -31,6 +31,8 @@ const AddressTextField = ({ type, label, value, required = false, children, auto
         onChange={(event) => onChange(type, event.currentTarget.value)}
         defaultValue={value}
         label={translateLabel(label)}
+        onFocus={focusHandler(`address:${type}`)}
+        onBlur={blurHandler(`address:${type}`)}
         ref={(ref) => addRef(`address:${type}`, ref)}
         error={getComponentError(`address:${type}`)}
         readOnly={readOnly}

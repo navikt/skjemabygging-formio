@@ -45,6 +45,7 @@ interface ReactComponentType {
   visible: any | boolean;
   hideLabel: boolean;
   dirty: boolean;
+  pristine: boolean;
   error?: {
     message: string;
   } | null;

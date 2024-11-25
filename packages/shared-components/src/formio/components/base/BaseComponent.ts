@@ -221,7 +221,9 @@ class BaseComponent extends FormioReactComponent {
   }
 
   getComponentError(elementId: string) {
-    return this.componentErrors.find((error) => error.elementId === elementId)?.message;
+    if (!this.pristine) {
+      return this.componentErrors.find((error) => error.elementId === elementId)?.message;
+    }
   }
 }
 
