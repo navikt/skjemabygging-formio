@@ -213,10 +213,14 @@ class BaseComponent extends FormioReactComponent {
 
     if (messages) {
       if (Array.isArray(messages)) {
+        if (messages.length > 1) {
+          this.logger.info(`Should never get more then one message, got ${messages.length}.`, { messages });
+        }
         messages.forEach((componentError: ComponentError) => {
           this.addError(componentError.message, this.getId());
         });
       } else {
+        this.logger.debug('Got not array ', { messages });
         this.addError(messages, this.getId());
       }
     }
@@ -246,7 +250,7 @@ class BaseComponent extends FormioReactComponent {
   }
 
   showErrorMessages() {
-    return this.root.currentPage?.showErrormessages || this.root.submitted;
+    return this.root.currentPage?.nextPageClicked || this.root.submitted;
   }
 }
 

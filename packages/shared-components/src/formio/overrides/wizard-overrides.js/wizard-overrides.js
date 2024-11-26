@@ -214,7 +214,7 @@ Wizard.prototype.attachHeader = function () {
 
   // Copy of nextPage() from formio.js/src/Wizard.js, but without custom emit and scroll to errors
   const validateAndGoToNextPage = (emitPage) => {
-    this.currentPage.showErrormessages = true;
+    this.currentPage.nextPageClicked = true;
 
     if (this.options.readOnly) {
       return this.beforePage(true).then(() => {
