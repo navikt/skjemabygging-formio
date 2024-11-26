@@ -11,6 +11,7 @@ type TranslationsPerTag = Record<TranslationTag, FormsApiGlobalTranslation[]>;
 interface GlobalTranslationsContextValue {
   translationsPerTag: TranslationsPerTag;
   storedTranslations: Record<string, FormsApiGlobalTranslation>;
+  loadTranslations: () => Promise<void>;
   saveTranslations: (translations: FormsApiGlobalTranslation[]) => Promise<Array<TranslationError>>;
   createNewTranslation: (translation: FormsApiGlobalTranslation) => Promise<TranslationError | undefined>;
 }
@@ -18,6 +19,7 @@ interface GlobalTranslationsContextValue {
 const defaultValue: GlobalTranslationsContextValue = {
   translationsPerTag: { skjematekster: [], grensesnitt: [], 'statiske-tekster': [], validering: [] },
   storedTranslations: {},
+  loadTranslations: () => Promise.resolve(),
   saveTranslations: () => Promise.resolve([]),
   createNewTranslation: () => Promise.resolve(undefined),
 };
@@ -55,7 +57,6 @@ const GlobalTranslationsProvider = ({ children }) => {
         }
       }),
     );
-    await loadTranslations();
     return results.filter(isTranslationError);
   };
 
@@ -106,6 +107,7 @@ const GlobalTranslationsProvider = ({ children }) => {
   const value = {
     translationsPerTag,
     storedTranslations: storedTranslationsMap,
+    loadTranslations,
     saveTranslations,
     createNewTranslation,
   };

@@ -42,7 +42,7 @@ const EditTranslationsProvider = ({ children }) => {
     new: defaultNewSkjemateksterTranslation,
     changes: {},
   });
-  const { storedTranslations, saveTranslations, createNewTranslation } = useGlobalTranslations();
+  const { storedTranslations, loadTranslations, saveTranslations, createNewTranslation } = useGlobalTranslations();
   const feedbackEmit = useFeedbackEmit();
 
   const updateTranslation = (
@@ -86,6 +86,7 @@ const EditTranslationsProvider = ({ children }) => {
       dispatch({ type: 'CLEAR_ERRORS' });
       const result = await saveTranslations(getTranslationsForSaving(state));
       const resultNew = newTranslationHasData ? await createNewTranslation(state.new) : undefined;
+      await loadTranslations();
       const errors = [...result, ...(resultNew ? [resultNew] : [])];
       dispatch({ type: 'SAVED', payload: { defaultNew: defaultNewSkjemateksterTranslation, errors } });
 
