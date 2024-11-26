@@ -1,22 +1,10 @@
-import { FormsApiGlobalTranslation, TEXTS, TranslationTag } from '@navikt/skjemadigitalisering-shared-domain';
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { FormsApiGlobalTranslation, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { createContext, useCallback, useEffect, useMemo, useState } from 'react';
 import useFormsApiGlobalTranslations from '../../api/useFormsApiGlobalTranslations';
 import { generateAndPopulateTag } from '../../translations/utils/editGlobalTranslationsUtils';
-import { TranslationError, translationErrorTypes } from './editTranslationsReducer/reducer';
+import { isTranslationError, TranslationError, TranslationsContextValue, TranslationsPerTag } from './types';
 
-const isTranslationError = (translationOrError: unknown): translationOrError is TranslationError =>
-  translationErrorTypes.includes((translationOrError as TranslationError)?.type);
-
-type TranslationsPerTag = Record<TranslationTag, FormsApiGlobalTranslation[]>;
-interface GlobalTranslationsContextValue {
-  translationsPerTag: TranslationsPerTag;
-  storedTranslations: Record<string, FormsApiGlobalTranslation>;
-  loadTranslations: () => Promise<void>;
-  saveTranslations: (translations: FormsApiGlobalTranslation[]) => Promise<Array<TranslationError>>;
-  createNewTranslation: (translation: FormsApiGlobalTranslation) => Promise<TranslationError | undefined>;
-}
-
-const defaultValue: GlobalTranslationsContextValue = {
+const defaultValue: TranslationsContextValue = {
   translationsPerTag: { skjematekster: [], grensesnitt: [], 'statiske-tekster': [], validering: [] },
   storedTranslations: {},
   loadTranslations: () => Promise.resolve(),
@@ -24,7 +12,7 @@ const defaultValue: GlobalTranslationsContextValue = {
   createNewTranslation: () => Promise.resolve(undefined),
 };
 
-const GlobalTranslationsContext = createContext<GlobalTranslationsContextValue>(defaultValue);
+const GlobalTranslationsContext = createContext<TranslationsContextValue>(defaultValue);
 
 const GlobalTranslationsProvider = ({ children }) => {
   const [formsApiState, setFormsApiState] = useState<{
@@ -114,5 +102,5 @@ const GlobalTranslationsProvider = ({ children }) => {
   return <GlobalTranslationsContext.Provider value={value}>{children}</GlobalTranslationsContext.Provider>;
 };
 
-export const useGlobalTranslations = () => useContext(GlobalTranslationsContext);
+export { GlobalTranslationsContext };
 export default GlobalTranslationsProvider;

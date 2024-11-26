@@ -1,8 +1,8 @@
 import { SortState, Table } from '@navikt/ds-react';
 import { listSort, SkeletonList } from '@navikt/skjemadigitalisering-shared-components';
-import { useMemo, useState } from 'react';
+import { useContext, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { useGlobalTranslations } from '../../context/translations/GlobalTranslationsContext';
+import { GlobalTranslationsContext } from '../../context/translations/GlobalTranslationsContext';
 import NewTranslationRow from './NewTranslationRow';
 import TranslationRow from './TranslationRow';
 import useTranslationTableStyles from './styles';
@@ -16,8 +16,8 @@ const columns = [
 const TranslationTable = () => {
   const [sortState, setSortState] = useState<SortState>();
   const { tag } = useParams();
-  const { translationsPerTag } = useGlobalTranslations();
   const styles = useTranslationTableStyles();
+  const { translationsPerTag } = useContext(GlobalTranslationsContext);
 
   const handleSort = (sortKey: string) => {
     setSortState((currentState) => {

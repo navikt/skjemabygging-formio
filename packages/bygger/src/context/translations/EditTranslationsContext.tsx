@@ -1,10 +1,14 @@
 import { FormsApiGlobalTranslation } from '@navikt/skjemadigitalisering-shared-domain';
-import { createContext, useContext, useReducer } from 'react';
+import { Context, createContext, ReactNode, useContext, useReducer } from 'react';
 import { useFeedbackEmit } from '../notifications/FeedbackContext';
-import { useGlobalTranslations } from './GlobalTranslationsContext';
-import reducer, { State, TranslationError } from './editTranslationsReducer/reducer';
+import reducer, { State } from './editTranslationsReducer/reducer';
 import { getTranslationsForSaving, hasNewTranslationData } from './editTranslationsReducer/selectors';
+import { TranslationError, TranslationsContextValue } from './types';
 
+interface Props {
+  context: Context<TranslationsContextValue>;
+  children: ReactNode;
+}
 //TODO: move me
 export type TranslationLang = 'nb' | 'nn' | 'en';
 
@@ -35,14 +39,14 @@ const defaultValue: EditTranslationsContextValue = {
 
 const EditTranslationsContext = createContext<EditTranslationsContextValue>(defaultValue);
 
-const EditTranslationsProvider = ({ children }) => {
+const EditTranslationsProvider = ({ context, children }: Props) => {
   const [state, dispatch] = useReducer(reducer, {
     errors: [],
     state: 'INIT',
     new: defaultNewSkjemateksterTranslation,
     changes: {},
   });
-  const { storedTranslations, loadTranslations, saveTranslations, createNewTranslation } = useGlobalTranslations();
+  const { storedTranslations, loadTranslations, saveTranslations, createNewTranslation } = useContext(context);
   const feedbackEmit = useFeedbackEmit();
 
   const updateTranslation = (

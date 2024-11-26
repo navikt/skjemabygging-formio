@@ -1,13 +1,7 @@
 import { FormsApiGlobalTranslation } from '@navikt/skjemadigitalisering-shared-domain';
 import { TranslationLang } from '../EditTranslationsContext';
+import { TranslationError } from '../types';
 
-//TODO move
-export const translationErrorTypes = ['MISSING_KEY_VALIDATION', 'CONFLICT', 'OTHER_HTTP'] as const;
-export type TranslationError = {
-  type: (typeof translationErrorTypes)[number];
-  key: string;
-  isNewTranslation?: boolean;
-};
 export interface State {
   changes: Record<string, FormsApiGlobalTranslation>;
   new: FormsApiGlobalTranslation;
