@@ -228,20 +228,32 @@ class NavSelect extends BaseComponent {
   renderReact(element) {
     const component = this.component!;
     return element.render(
-      <ReactSelectWrapper
-        component={component}
-        options={this.translateOptionLabels(this.selectOptions)}
-        label={this.translate(component.label)}
-        value={this.translateOptionLabel(this.getValue())}
-        ariaLiveMessages={this.translateAriaLiveMessages(ariaLiveMessages)}
-        screenReaderStatus={({ count }: { count: number }) =>
-          this.translate(SELECT_TEXTS.numberOfAvailableOptions, { count })
-        }
-        loadingMessage={() => this.translate(TEXTS.statiske.loading)}
-        onChange={(value) => this.handleChange(value)}
-        inputRef={(ref) => this.setReactInstance(ref)}
-        isLoading={this.isLoading}
-      />,
+      <>
+        <ReactSelectWrapper
+          component={component}
+          options={this.translateOptionLabels(this.selectOptions)}
+          label={this.translate(component.label)}
+          value={this.translateOptionLabel(this.getValue())}
+          ariaLiveMessages={this.translateAriaLiveMessages(ariaLiveMessages)}
+          screenReaderStatus={({ count }: { count: number }) =>
+            this.translate(SELECT_TEXTS.numberOfAvailableOptions, { count })
+          }
+          loadingMessage={() => this.translate(TEXTS.statiske.loading)}
+          onChange={(value) => this.handleChange(value)}
+          inputRef={(ref) => this.setReactInstance(ref)}
+          isLoading={this.isLoading}
+        />
+        {this.getError() && (
+          <div
+            className="navds-form-field__error"
+            id="textField-error-r26"
+            aria-relevant="additions removals"
+            aria-live="polite"
+          >
+            <p className="navds-error-message navds-label">{this.getError()}</p>
+          </div>
+        )}
+      </>,
     );
   }
 }

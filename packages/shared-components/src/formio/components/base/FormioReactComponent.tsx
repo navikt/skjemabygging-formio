@@ -150,19 +150,6 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
   }
 
   /**
-   * Add message render the error messages Form.io template.
-   *
-   * If the component have error message suppport, we would like to use that instead of the template in Form.io.
-   */
-  addMessages(messages) {
-    // TODO: Fjern dette når navSelect bruker komponent fra aksel, og error kan håndteres direkte av komponenten.
-    //  Behold addMessages som en tom funksjon
-    if (['navSelect', 'valutavelger'].includes(this.component?.type ?? '')) {
-      super.addMessages(messages);
-    }
-  }
-
-  /**
    * @return Currently focused component.
    */
   getFocusedComponent() {
