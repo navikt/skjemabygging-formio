@@ -41,7 +41,7 @@ const TranslationTable = () => {
   }
 
   return (
-    <Table zebraStripes sort={sortState} onSortChange={handleSort}>
+    <Table sort={sortState} onSortChange={handleSort}>
       <Table.Header>
         <Table.Row>
           {columns.map((column) => (

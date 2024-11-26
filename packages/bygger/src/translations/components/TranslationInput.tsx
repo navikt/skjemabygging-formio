@@ -6,9 +6,10 @@ interface Props {
   defaultValue?: string;
   minRows: number;
   onChange: FocusEventHandler<HTMLInputElement | HTMLTextAreaElement>;
+  error?: string;
 }
 
-const TranslationInput = ({ label, defaultValue, minRows, onChange }: Props) => {
+const TranslationInput = ({ label, defaultValue, minRows, onChange, error }: Props) => {
   if (minRows > 2) {
     return (
       <Textarea
@@ -18,10 +19,11 @@ const TranslationInput = ({ label, defaultValue, minRows, onChange }: Props) => 
         resize="vertical"
         defaultValue={defaultValue}
         onBlur={onChange}
+        error={error}
       />
     );
   }
-  return <TextField label={label} hideLabel defaultValue={defaultValue} onBlur={onChange} />;
+  return <TextField label={label} hideLabel defaultValue={defaultValue} onBlur={onChange} error={error} />;
 };
 
 export default TranslationInput;

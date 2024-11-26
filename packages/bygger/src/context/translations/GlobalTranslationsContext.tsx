@@ -12,12 +12,14 @@ interface GlobalTranslationsContextValue {
   translationsPerTag: TranslationsPerTag;
   storedTranslations: Record<string, FormsApiGlobalTranslation>;
   saveTranslations: (translations: FormsApiGlobalTranslation[]) => Promise<Array<TranslationError>>;
+  createNewTranslation: (translation: FormsApiGlobalTranslation) => Promise<TranslationError | undefined>;
 }
 
-const defaultValue = {
+const defaultValue: GlobalTranslationsContextValue = {
   translationsPerTag: { skjematekster: [], grensesnitt: [], 'statiske-tekster': [], validering: [] },
   storedTranslations: {},
-  saveTranslations: (_translations: FormsApiGlobalTranslation[]) => Promise.resolve([]),
+  saveTranslations: () => Promise.resolve([]),
+  createNewTranslation: () => Promise.resolve(undefined),
 };
 
 const GlobalTranslationsContext = createContext<GlobalTranslationsContextValue>(defaultValue);
@@ -57,6 +59,16 @@ const GlobalTranslationsProvider = ({ children }) => {
     return results.filter(isTranslationError);
   };
 
+  const createNewTranslation = async (
+    translation: FormsApiGlobalTranslation,
+  ): Promise<TranslationError | undefined> => {
+    setFormsApiState((state) => ({ ...state, status: 'saving' }));
+    const result = await translationsApi.post(translation);
+    if (isTranslationError(result)) {
+      return { ...result, isNewTranslation: true };
+    }
+  };
+
   const storedTranslationsMap = useMemo<Record<string, FormsApiGlobalTranslation>>(() => {
     return (formsApiState.data ?? []).reduce((acc, translation) => ({ ...acc, [translation.key]: translation }), {});
   }, [formsApiState.data]);
@@ -91,7 +103,12 @@ const GlobalTranslationsProvider = ({ children }) => {
     };
   }, [formsApiState.data, storedTranslationsMap]);
 
-  const value = { translationsPerTag, storedTranslations: storedTranslationsMap, saveTranslations };
+  const value = {
+    translationsPerTag,
+    storedTranslations: storedTranslationsMap,
+    saveTranslations,
+    createNewTranslation,
+  };
   return <GlobalTranslationsContext.Provider value={value}>{children}</GlobalTranslationsContext.Provider>;
 };
 

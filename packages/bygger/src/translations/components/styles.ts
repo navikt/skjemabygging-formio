@@ -6,6 +6,9 @@ const useTranslationTableStyles = makeStyles({
     maxWidth: '12rem',
     alignContent: 'baseline',
   },
+  clickableRow: {
+    cursor: 'pointer',
+  },
 });
 
 export default useTranslationTableStyles;

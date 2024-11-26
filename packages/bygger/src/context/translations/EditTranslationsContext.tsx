@@ -2,7 +2,7 @@ import { FormsApiGlobalTranslation } from '@navikt/skjemadigitalisering-shared-d
 import { createContext, useContext, useReducer } from 'react';
 import { useFeedbackEmit } from '../notifications/FeedbackContext';
 import { useGlobalTranslations } from './GlobalTranslationsContext';
-import reducer, { TranslationError } from './editTranslationsReducer/reducer';
+import reducer, { State, TranslationError } from './editTranslationsReducer/reducer';
 import { getTranslationsForSaving, hasNewTranslationData } from './editTranslationsReducer/selectors';
 
 //TODO: move me
@@ -12,6 +12,7 @@ interface EditTranslationsContextValue {
   updateTranslation: (original: FormsApiGlobalTranslation, property: TranslationLang, value: string) => void;
   errors: TranslationError[];
   newTranslation: FormsApiGlobalTranslation;
+  editState: State['state'];
   updateNewTranslation: (property: TranslationLang, value: string) => void;
   saveChanges: () => Promise<void>;
 }
@@ -23,10 +24,11 @@ const defaultNewSkjemateksterTranslation: FormsApiGlobalTranslation = {
   nn: '',
   en: '',
 };
-const defaultValue = {
+const defaultValue: EditTranslationsContextValue = {
   updateTranslation: () => {},
   errors: [],
   newTranslation: defaultNewSkjemateksterTranslation,
+  editState: 'INIT',
   updateNewTranslation: () => {},
   saveChanges: () => Promise.resolve(),
 };
@@ -40,7 +42,7 @@ const EditTranslationsProvider = ({ children }) => {
     new: defaultNewSkjemateksterTranslation,
     changes: {},
   });
-  const { storedTranslations, saveTranslations } = useGlobalTranslations();
+  const { storedTranslations, saveTranslations, createNewTranslation } = useGlobalTranslations();
   const feedbackEmit = useFeedbackEmit();
 
   const updateTranslation = (
@@ -82,17 +84,18 @@ const EditTranslationsProvider = ({ children }) => {
       dispatch({ type: 'VALIDATION_ERROR', payload: { errors: [validationError] } });
     } else {
       dispatch({ type: 'CLEAR_ERRORS' });
-      const updates = getTranslationsForSaving(state);
-      const result = await saveTranslations(Object.values(updates ?? {}));
-      dispatch({ type: 'SAVED', payload: { defaultNew: defaultNewSkjemateksterTranslation, errors: result } });
+      const result = await saveTranslations(getTranslationsForSaving(state));
+      const resultNew = newTranslationHasData ? await createNewTranslation(state.new) : undefined;
+      const errors = [...result, ...(resultNew ? [resultNew] : [])];
+      dispatch({ type: 'SAVED', payload: { defaultNew: defaultNewSkjemateksterTranslation, errors } });
 
       //TODO: move
       const conflictErrors = result.filter((error) => error.type === 'CONFLICT');
       if (conflictErrors.length > 0) {
         const message =
           conflictErrors.length === 1
-            ? `1 oversettelse ble ikke lagret fordi en nyere versjon allerede eksisterer`
-            : `${conflictErrors.length} oversettelser ble ikke lagret fordi en nyere versjon allerede eksisterer`;
+            ? `1 oversettelse ble ikke lagret fordi en nyere versjon allerede eksisterer. Last siden på nytt for å endre oversettelsen.`
+            : `${conflictErrors.length} oversettelser ble ikke lagret fordi en nyere versjon allerede eksisterer. Last siden på nytt for å endre oversettelsene.`;
         feedbackEmit.error(message);
       }
       //TODO: move + bedre feilmelding
@@ -100,8 +103,8 @@ const EditTranslationsProvider = ({ children }) => {
       if (otherErrors.length > 0) {
         const message =
           otherErrors.length === 1
-            ? `1 oversettelse ble ikke lagret på grunn av en teknisk feil`
-            : `${otherErrors.length} oversettelser ble ikke lagret på grunn av en teknisk feil`;
+            ? `1 oversettelse ble ikke lagret på grunn av en teknisk feil. Last siden på nytt for å endre oversettelsen.`
+            : `${otherErrors.length} oversettelser ble ikke lagret på grunn av en teknisk feil. Last siden på nytt for å endre oversettelsene.`;
         feedbackEmit.error(message);
       }
     }
@@ -111,6 +114,7 @@ const EditTranslationsProvider = ({ children }) => {
     updateTranslation,
     errors: state.errors,
     newTranslation: state.new,
+    editState: state.state,
     updateNewTranslation,
     saveChanges,
   };
