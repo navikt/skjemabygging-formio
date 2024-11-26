@@ -4,7 +4,7 @@ type SortDirection = SortState['direction'];
 
 const getLocaleComparator = (property?: string, direction?: SortDirection) => (a, b) => {
   if (!property || !direction) {
-    return 1;
+    return -1;
   }
   const valueA = `${a[property] ?? ''}`.trim();
   const valueB = `${b[property] ?? ''}`.trim();
