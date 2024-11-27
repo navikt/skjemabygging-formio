@@ -220,11 +220,9 @@ class BaseComponent extends FormioReactComponent {
           this.addError(componentError.message, this.getId());
         });
       } else {
-        this.logger.debug('Got not array ', { messages });
         this.addError(messages, this.getId());
       }
     }
-
     this.rerender();
   }
 
@@ -249,8 +247,16 @@ class BaseComponent extends FormioReactComponent {
     return this.componentErrors.find((error) => error.elementId === elementId)?.message;
   }
 
+  /**
+   * nextPageClicked: When user click next page in Fyllut (except last page)
+   * submitted: When user click next page in Fyllut (last page)
+   * builderMode: When user is in the regular form builder
+   * editFormDialog: When user have open a form dialog in the form builder
+   */
   showErrorMessages() {
-    return this.root.currentPage?.nextPageClicked || this.root.submitted;
+    return (
+      this.root.currentPage?.nextPageClicked || this.root.submitted || this.builderMode || this.root.editFormDialog
+    );
   }
 }
 

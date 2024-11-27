@@ -56,6 +56,8 @@ class WebformBuilder extends NavFormioJs.Builders.builders.webform {
 
     super.editComponent(component, parent, isNew, isJsonEdit, original, flags);
 
+    this.editForm.editFormDialog = true;
+
     if (isJsonEdit) {
       this.editForm.form = {
         ...this.editForm.form,

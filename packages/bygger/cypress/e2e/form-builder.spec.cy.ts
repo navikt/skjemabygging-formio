@@ -173,8 +173,11 @@ describe('Form Builder', () => {
         cy.get('[data-testid="editorSaveButton"]').click();
       });
 
+      // This error comes from Component.highlightInvalidComponents in Formio
       it('should show error message stating duplicate API key', () => {
-        cy.findByText('API Key is not unique: personopplysninger').should('exist');
+        // We get one error message on TextField and one from formio in Panel.
+        // The Panel component uses old templates, that is the reason the error is not correct format.
+        cy.findAllByText('API Key is not unique: personopplysninger').should('have.length', 2);
       });
 
       it('should not remove panel when changing components key to something else', () => {
