@@ -77,6 +77,8 @@ describe('DrivingList', () => {
 
       // Should fill out form
       cy.clickNextStep();
+      cy.findByRole('textbox', { name: DATE_PICKER_LABEL }).should('exist');
+      cy.findByRole('group', { name: 'Skal du registrere parkering?' }).should('exist');
       cy.get('[data-cy=error-summary]')
         .should('exist')
         .within(() => {
