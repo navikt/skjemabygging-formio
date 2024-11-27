@@ -23,8 +23,8 @@ import {
   FormPropertiesPublishing,
   FormPropertiesType,
   FormSignaturesType,
-  FormType,
   FormsResponseForm,
+  FormType,
   FyllutState,
   InnsendingType,
   InputMode,
@@ -110,7 +110,11 @@ import MockedComponentObjectForTest from './summary/MockedComponentObjectForTest
 import formSummaryUtil from './summary/formSummaryUtil';
 import { TextSize, TextSizeShort } from './text';
 import TEXTS from './texts';
-import { FormsApiGlobalTranslation } from './translations/GlobalTranslation';
+import {
+  FormsApiFormTranslation,
+  FormsApiGlobalTranslation,
+  FormsApiTranslation,
+} from './translations/FormsApiTranslation';
 import currencyUtils from './utils/currencyUtils';
 import dateUtils from './utils/date';
 import featureUtils, { FeatureTogglesMap } from './utils/featureUtils';
@@ -128,14 +132,11 @@ import translationUtils from './utils/translation';
 import validatorUtils from './utils/validatorUtils';
 
 export {
-  DeclarationType,
-  MockedComponentObjectForTest,
-  PrefillType,
-  TEXTS,
   attachmentUtils,
   configUtils,
   currencyUtils,
   dateUtils,
+  DeclarationType,
   featureUtils,
   formDiffingTool,
   formSummaryUtil,
@@ -145,14 +146,17 @@ export {
   localizationUtils,
   loggingUtils,
   migrationUtils,
-  navFormUtils,
+  MockedComponentObjectForTest,
   navFormioUtils,
+  navFormUtils,
   numberUtils,
   objectUtils,
   paginationUtils,
+  PrefillType,
   signatureUtils,
   stringUtils,
   supportedEnhetstyper,
+  TEXTS,
   translationUtils,
   validatorUtils,
 };
@@ -181,17 +185,19 @@ export type {
   Enhet,
   Enhetstype,
   FeatureTogglesMap,
-  FormPropertiesPublishing,
-  FormPropertiesType,
-  FormSignaturesType,
-  FormType,
   FormioResource,
   FormioTranslation,
   FormioTranslationData,
   FormioTranslationMap,
   FormioTranslationPayload,
+  FormPropertiesPublishing,
+  FormPropertiesType,
+  FormsApiFormTranslation,
   FormsApiGlobalTranslation,
+  FormsApiTranslation,
+  FormSignaturesType,
   FormsResponseForm,
+  FormType,
   ForstesideRecipientAddress,
   ForstesideRequestBody,
   FrontendLoggerConfigType,

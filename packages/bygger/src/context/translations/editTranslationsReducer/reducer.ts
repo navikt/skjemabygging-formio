@@ -1,17 +1,17 @@
-import { FormsApiGlobalTranslation } from '@navikt/skjemadigitalisering-shared-domain';
+import { FormsApiTranslation } from '@navikt/skjemadigitalisering-shared-domain';
 import { TranslationLang } from '../EditTranslationsContext';
 import { TranslationError } from '../types';
 
 export interface State {
-  changes: Record<string, FormsApiGlobalTranslation>;
-  new: FormsApiGlobalTranslation;
+  changes: Record<string, FormsApiTranslation>;
+  new: FormsApiTranslation;
   errors: TranslationError[];
   state: 'INIT' | 'EDITING' | 'SAVED';
 }
 
 type UpdateAction = {
   type: 'UPDATE';
-  payload: { original: FormsApiGlobalTranslation; property: TranslationLang; value: string };
+  payload: { original: FormsApiTranslation; property: TranslationLang; value: string };
 };
 type UpdateNewAction = {
   type: 'UPDATE_NEW';
@@ -19,24 +19,24 @@ type UpdateNewAction = {
 };
 type ValidationErrorAction = { type: 'VALIDATION_ERROR'; payload: { errors: TranslationError[] } };
 type ClearErrorsAction = { type: 'CLEAR_ERRORS' };
-type SavedAction = { type: 'SAVED'; payload: { defaultNew: FormsApiGlobalTranslation; errors: TranslationError[] } };
+type SavedAction = { type: 'SAVED'; payload: { defaultNew: FormsApiTranslation; errors: TranslationError[] } };
 
 type Action = UpdateAction | UpdateNewAction | ValidationErrorAction | ClearErrorsAction | SavedAction;
 
 const getUpdatedChanges = (
   state: State,
   args: {
-    original: FormsApiGlobalTranslation;
+    original: FormsApiTranslation;
     property: TranslationLang;
     value: string;
   },
-): Record<string, FormsApiGlobalTranslation> => {
+): Record<string, FormsApiTranslation> => {
   const { original, property, value } = args;
   const existingChange = state.changes[original.key];
   return { ...state.changes, [original.key]: { ...original, ...existingChange, [property]: value } };
 };
 
-const getUpdatedNew = (state: State, args: { property: TranslationLang; value: string }): FormsApiGlobalTranslation => {
+const getUpdatedNew = (state: State, args: { property: TranslationLang; value: string }): FormsApiTranslation => {
   const { property, value } = args;
   if (property === 'nb') {
     return { ...state.new, key: value, [property]: value };
@@ -59,7 +59,7 @@ const getResetChanges = (state: State, args: { errors: TranslationError[] }) => 
   );
 };
 
-const getResetNew = (state: State, args: { defaultNew: FormsApiGlobalTranslation; errors: TranslationError[] }) => {
+const getResetNew = (state: State, args: { defaultNew: FormsApiTranslation; errors: TranslationError[] }) => {
   if (args.errors.some((error) => error.key === state.new.key)) {
     return state.new;
   }

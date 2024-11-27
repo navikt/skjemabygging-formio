@@ -1,7 +1,7 @@
 import { http as baseHttp, useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
 import { FormsApiGlobalTranslation } from '@navikt/skjemadigitalisering-shared-domain';
 import { useFeedbackEmit } from '../context/notifications/FeedbackContext';
-import { TranslationError } from '../context/translations/editTranslationsReducer/reducer';
+import { TranslationError } from '../context/translations/types';
 
 const useFormsApiGlobalTranslations = () => {
   const feedbackEmit = useFeedbackEmit();

@@ -1,4 +1,4 @@
-import { FormsApiGlobalTranslation } from '@navikt/skjemadigitalisering-shared-domain';
+import { FormsApiTranslation } from '@navikt/skjemadigitalisering-shared-domain';
 import { Context, createContext, ReactNode, useContext, useReducer } from 'react';
 import { useFeedbackEmit } from '../notifications/FeedbackContext';
 import reducer, { State } from './editTranslationsReducer/reducer';
@@ -13,15 +13,15 @@ interface Props {
 export type TranslationLang = 'nb' | 'nn' | 'en';
 
 interface EditTranslationsContextValue {
-  updateTranslation: (original: FormsApiGlobalTranslation, property: TranslationLang, value: string) => void;
+  updateTranslation: (original: FormsApiTranslation, property: TranslationLang, value: string) => void;
   errors: TranslationError[];
-  newTranslation: FormsApiGlobalTranslation;
+  newTranslation: FormsApiTranslation;
   editState: State['state'];
   updateNewTranslation: (property: TranslationLang, value: string) => void;
   saveChanges: () => Promise<void>;
 }
 
-const defaultNewSkjemateksterTranslation: FormsApiGlobalTranslation = {
+const defaultNewSkjemateksterTranslation: FormsApiTranslation = {
   key: '',
   tag: 'skjematekster',
   nb: '',
@@ -49,11 +49,7 @@ const EditTranslationsProvider = ({ context, children }: Props) => {
   const { storedTranslations, loadTranslations, saveTranslations, createNewTranslation } = useContext(context);
   const feedbackEmit = useFeedbackEmit();
 
-  const updateTranslation = (
-    originalTranslation: FormsApiGlobalTranslation,
-    property: TranslationLang,
-    value: string,
-  ) => {
+  const updateTranslation = (originalTranslation: FormsApiTranslation, property: TranslationLang, value: string) => {
     const { key } = originalTranslation;
     const storedValue = storedTranslations[key]?.[property];
     const currentChange = state.changes[key]?.[property];
@@ -73,7 +69,7 @@ const EditTranslationsProvider = ({ context, children }: Props) => {
   };
 
   const validate = (
-    translation: FormsApiGlobalTranslation,
+    translation: FormsApiTranslation,
     isNewTranslation: boolean = false,
   ): TranslationError | undefined => {
     if (!translation.key) {

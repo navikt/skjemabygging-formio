@@ -5,11 +5,14 @@ import { useContext, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { GlobalTranslationsContext } from '../../context/translations/GlobalTranslationsContext';
 import TranslationTable from '../components/TranslationTable';
+import { generateAndPopulateTags } from '../utils/editGlobalTranslationsUtils';
 
 const GlobalTranslationsTable = () => {
   const [sortState, setSortState] = useState<SortState>();
   const { tag } = useParams();
-  const { translationsPerTag } = useContext(GlobalTranslationsContext);
+  const { storedTranslations } = useContext(GlobalTranslationsContext);
+
+  const translationsPerTag = useMemo(() => generateAndPopulateTags(storedTranslations), [storedTranslations]);
 
   const handleSort = (sortKey: string) => {
     setSortState((currentState) => {

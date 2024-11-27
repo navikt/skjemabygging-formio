@@ -1,11 +1,9 @@
-import { FormsApiGlobalTranslation, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { FormsApiGlobalTranslation } from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, useCallback, useEffect, useMemo, useState } from 'react';
 import useFormsApiGlobalTranslations from '../../api/useFormsApiGlobalTranslations';
-import { generateAndPopulateTag } from '../../translations/utils/editGlobalTranslationsUtils';
-import { isTranslationError, TranslationError, TranslationsContextValue, TranslationsPerTag } from './types';
+import { isTranslationError, TranslationError, TranslationsContextValue } from './types';
 
 const defaultValue: TranslationsContextValue = {
-  translationsPerTag: { skjematekster: [], grensesnitt: [], 'statiske-tekster': [], validering: [] },
   storedTranslations: {},
   loadTranslations: () => Promise.resolve(),
   saveTranslations: () => Promise.resolve([]),
@@ -62,38 +60,7 @@ const GlobalTranslationsProvider = ({ children }) => {
     return (formsApiState.data ?? []).reduce((acc, translation) => ({ ...acc, [translation.key]: translation }), {});
   }, [formsApiState.data]);
 
-  const translationsPerTag: TranslationsPerTag = useMemo(() => {
-    const { common, grensesnitt, statiske, pdfStatiske, validering } = TEXTS;
-    // const flattenedTexts = flattenTextsForEditPanel(grensesnitt);
-    // console.log('flattenedTexts', flattenedTexts);
-    // const predefined = getAllPredefinedOriginalTexts();
-    // console.log('predefined', predefined);
-    // const translationKeys = getTranslationKeysForAllPredefinedTexts();
-    // console.log('translationKeys', translationKeys);
-
-    // const grensesnittTranslations = objectUtils.flattenToArray(grensesnitt, ([entryKey, value], parentKey) => {
-    //   const key = objectUtils.concatKeys(entryKey, parentKey);
-    //   const stored = storedTranslationsMap?.[key];
-    //   if (stored && stored.tag === 'grensesnitt') {
-    //     return { nb: value, ...stored };
-    //   }
-    //   return { key, nb: value, tag: 'grensesnitt' };
-    // });
-
-    return {
-      skjematekster: (formsApiState.data ?? []).filter((translation) => translation.tag === 'skjematekster'),
-      grensesnitt: generateAndPopulateTag('grensesnitt', { ...common, ...grensesnitt }, storedTranslationsMap),
-      'statiske-tekster': generateAndPopulateTag(
-        'statiske-tekster',
-        { ...statiske, pdfStatiske },
-        storedTranslationsMap,
-      ),
-      validering: generateAndPopulateTag('validering', { validering }, storedTranslationsMap),
-    };
-  }, [formsApiState.data, storedTranslationsMap]);
-
   const value = {
-    translationsPerTag,
     storedTranslations: storedTranslationsMap,
     loadTranslations,
     saveTranslations,
