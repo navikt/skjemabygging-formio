@@ -2,6 +2,7 @@ import cookieParser from 'cookie-parser';
 import { Express, NextFunction, Request, Response, Router } from 'express';
 import { ConfigType } from './config/types';
 import { logger } from './logger';
+import { QueryParamSub } from './types/custom';
 
 const DEV_ACCESS_COOKIE = 'fyllut-dev-access';
 
@@ -25,10 +26,12 @@ export const setupDevServer = (expressApp: Express, fyllutRouter: Router, config
   fyllutRouter.get('/test/login', (req: Request, res: Response) => {
     logger.debug('Dev access requested');
     const formPath = req.query.formPath as string;
+    const sub = req.query.sub as QueryParamSub;
     if (formPath) {
       if (isFormPath(formPath)) {
         res.cookie(DEV_ACCESS_COOKIE, true, { maxAge: 1000 * 3600 * 24 });
-        return res.redirect(302, `${config.fyllutPath}/${formPath}`);
+        const queryString = sub ? `?sub=${sub}` : '';
+        return res.redirect(302, `${config.fyllutPath}/${formPath}${queryString}`);
       } else {
         logger.warn(`Invalid formPath when requesting dev access: ${formPath}`);
         return res.sendStatus(400);
