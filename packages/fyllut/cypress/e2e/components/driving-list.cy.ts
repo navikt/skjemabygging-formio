@@ -24,7 +24,6 @@ describe('DrivingList', () => {
     cy.defaultIntercepts();
     cy.defaultInterceptsMellomlagring();
     cy.defaultInterceptsExternal();
-    cy.mocksRestoreRouteVariants();
   });
 
   after(() => {
@@ -80,7 +79,8 @@ describe('DrivingList', () => {
       cy.findByRole('group', { name: 'Skal du registrere parkering?' }).should('exist');
       cy.clickNextStep();
 
-      cy.get('[data-cy=error-summary]')
+      // Unstable test. Try and solve this with dirty timeout...
+      cy.get('[data-cy=error-summary]', { timeout: 1000 })
         .should('exist')
         .within(() => {
           cy.findByRole('link', { name: `Du må fylle ut: ${DATE_PICKER_LABEL}` })
