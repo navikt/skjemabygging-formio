@@ -1,8 +1,6 @@
 import { SortState, Table } from '@navikt/ds-react';
-import { listSort, SkeletonList } from '@navikt/skjemadigitalisering-shared-components';
-import { useContext, useMemo, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { GlobalTranslationsContext } from '../../context/translations/GlobalTranslationsContext';
+import { SkeletonList } from '@navikt/skjemadigitalisering-shared-components';
+import { FormsApiGlobalTranslation } from '@navikt/skjemadigitalisering-shared-domain';
 import NewTranslationRow from './NewTranslationRow';
 import TranslationRow from './TranslationRow';
 import useTranslationTableStyles from './styles';
@@ -13,30 +11,17 @@ const columns = [
   { key: 'en', label: 'Engelsk' },
 ];
 
-const TranslationTable = () => {
-  const [sortState, setSortState] = useState<SortState>();
-  const { tag } = useParams();
+interface Props {
+  rows?: FormsApiGlobalTranslation[];
+  sortState?: SortState;
+  handleSort: (sortKey: string) => void;
+  addNewRow: boolean;
+}
+
+const TranslationTable = ({ rows, sortState, handleSort, addNewRow }: Props) => {
   const styles = useTranslationTableStyles();
-  const { translationsPerTag } = useContext(GlobalTranslationsContext);
 
-  const handleSort = (sortKey: string) => {
-    setSortState((currentState) => {
-      if (!currentState || sortKey !== currentState.orderBy) {
-        return { orderBy: sortKey, direction: 'ascending' };
-      } else {
-        return currentState.direction === 'ascending' ? { orderBy: sortKey, direction: 'descending' } : undefined;
-      }
-    });
-  };
-
-  const sortedTranslationRows = useMemo(() => {
-    if (!tag || !translationsPerTag) {
-      return undefined;
-    }
-    return translationsPerTag[tag].slice().sort(listSort.getLocaleComparator(sortState?.orderBy, sortState?.direction));
-  }, [sortState, tag, translationsPerTag]);
-
-  if (sortedTranslationRows === undefined) {
+  if (!rows) {
     return <SkeletonList size={20} />;
   }
 
@@ -52,8 +37,8 @@ const TranslationTable = () => {
         </Table.Row>
       </Table.Header>
       <Table.Body>
-        {tag === 'skjematekster' && <NewTranslationRow />}
-        {sortedTranslationRows.map((row) => (
+        {addNewRow && <NewTranslationRow />}
+        {rows.map((row) => (
           <TranslationRow key={row.key} translation={row} />
         ))}
       </Table.Body>

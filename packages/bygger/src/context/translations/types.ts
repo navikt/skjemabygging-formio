@@ -21,4 +21,5 @@ interface TranslationsContextValue {
   createNewTranslation: (translation: FormsApiGlobalTranslation) => Promise<TranslationError | undefined>;
 }
 
-export { isTranslationError, TranslationError, translationErrorTypes, TranslationsContextValue, TranslationsPerTag };
+export { isTranslationError, translationErrorTypes };
+export type { TranslationError, TranslationsContextValue, TranslationsPerTag };

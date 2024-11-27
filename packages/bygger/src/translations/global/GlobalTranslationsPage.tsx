@@ -9,7 +9,7 @@ import GlobalTranslationsProvider, {
   GlobalTranslationsContext,
 } from '../../context/translations/GlobalTranslationsContext';
 import ButtonColumn from '../components/ButtonColumn';
-import TranslationTable from '../components/TranslationTable';
+import GlobalTranslationsTable from './GlobalTranslationsTable';
 
 const titles = {
   skjematekster: 'Globale skjematekster',
@@ -35,7 +35,7 @@ const GlobalTranslationsPage = () => {
               </SidebarLayout>
             }
           >
-            <TranslationTable />
+            <GlobalTranslationsTable />
           </RowLayout>
         </EditTranslationsProvider>
       </GlobalTranslationsProvider>
