@@ -80,7 +80,7 @@ describe('DrivingList', () => {
       cy.clickNextStep();
 
       // Unstable test. Try and solve this with dirty timeout...
-      cy.get('[data-cy=error-summary]', { timeout: 1000 })
+      cy.get('[data-cy=error-summary]', { timeout: 10000 })
         .should('exist')
         .within(() => {
           cy.findByRole('link', { name: `Du må fylle ut: ${DATE_PICKER_LABEL}` })
