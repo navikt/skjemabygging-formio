@@ -29,44 +29,6 @@ describe('DrivingList', () => {
       cy.defaultIntercepts();
     });
 
-    it('should fill out form and show data in summary', () => {
-      cy.visit(`/fyllut/testdrivinglist?sub=paper`);
-      cy.defaultWaits();
-      cy.clickStart();
-
-      cy.findByRole('textbox', { name: DATE_PICKER_LABEL }).should('exist').type('15.05.2023{esc}');
-      cy.findByRole('group', { name: PARKING_LABEL })
-        .should('exist')
-        .within(() => {
-          cy.findAllByRole('radio').should('have.length', 2);
-          cy.findByRole('radio', { name: 'Ja' }).should('exist').check();
-        });
-
-      cy.findByRole('button', { name: '15. mai 2023 - 21. mai 2023' }).click();
-
-      cy.findByRole('group', { name: DAY_PICKER_LABEL_WITH_PARKING })
-        .should('exist')
-        .within(() => {
-          cy.findAllByRole('checkbox').should('have.length', 7);
-          cy.findByRole('checkbox', { name: 'mandag 15. mai 2023' }).should('exist').check();
-          cy.findByRole('checkbox', { name: 'søndag 21. mai 2023' }).should('exist').check();
-          cy.findAllByRole('textbox', { name: PARKING_EXPENSES_LABEL }).eq(0).should('exist').type('100');
-        });
-
-      cy.clickNextStep();
-
-      // Summary
-      cy.get('dl')
-        .first()
-        .within(() => {
-          cy.get('dt').eq(0).should('contain.text', 'Legg til kjøreliste for en eller flere perioder');
-
-          cy.findAllByRole('listitem').should('have.length', 2);
-          cy.findByText('mandag 15. mai 2023, parkeringsutgift: 100 kr').should('exist');
-          cy.findByText('søndag 21. mai 2023').should('exist');
-        });
-    });
-
     it('should show errors', () => {
       cy.visit(`/fyllut/testdrivinglist?sub=paper`);
       cy.defaultWaits();
@@ -110,6 +72,44 @@ describe('DrivingList', () => {
       cy.findByRole('textbox', { name: PARKING_EXPENSES_LABEL }).should('exist').type('101');
       cy.clickNextStep();
       cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
+    });
+
+    it('should fill out form and show data in summary', () => {
+      cy.visit(`/fyllut/testdrivinglist?sub=paper`);
+      cy.defaultWaits();
+      cy.clickStart();
+
+      cy.findByRole('textbox', { name: DATE_PICKER_LABEL }).should('exist').type('15.05.2023{esc}');
+      cy.findByRole('group', { name: PARKING_LABEL })
+        .should('exist')
+        .within(() => {
+          cy.findAllByRole('radio').should('have.length', 2);
+          cy.findByRole('radio', { name: 'Ja' }).should('exist').check();
+        });
+
+      cy.findByRole('button', { name: '15. mai 2023 - 21. mai 2023' }).click();
+
+      cy.findByRole('group', { name: DAY_PICKER_LABEL_WITH_PARKING })
+        .should('exist')
+        .within(() => {
+          cy.findAllByRole('checkbox').should('have.length', 7);
+          cy.findByRole('checkbox', { name: 'mandag 15. mai 2023' }).should('exist').check();
+          cy.findByRole('checkbox', { name: 'søndag 21. mai 2023' }).should('exist').check();
+          cy.findAllByRole('textbox', { name: PARKING_EXPENSES_LABEL }).eq(0).should('exist').type('100');
+        });
+
+      cy.clickNextStep();
+
+      // Summary
+      cy.get('dl')
+        .first()
+        .within(() => {
+          cy.get('dt').eq(0).should('contain.text', 'Legg til kjøreliste for en eller flere perioder');
+
+          cy.findAllByRole('listitem').should('have.length', 2);
+          cy.findByText('mandag 15. mai 2023, parkeringsutgift: 100 kr').should('exist');
+          cy.findByText('søndag 21. mai 2023').should('exist');
+        });
     });
 
     it('should add and remove periods', () => {
