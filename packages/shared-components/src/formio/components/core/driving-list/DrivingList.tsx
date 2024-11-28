@@ -99,7 +99,7 @@ class DrivingList extends BaseComponent {
   }
 
   renderReact(element) {
-    // TODO: Delete DrivingListProvider and use prop drilling instead
+    // TODO: Delete DrivingListProvider and use prop drilling instead.
     element.render(
       <ComponentUtilsProvider component={this}>
         <DrivingListProvider updateValues={this.updateValues.bind(this)} values={this.getValue()}>
