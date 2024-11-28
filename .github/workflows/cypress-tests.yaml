@@ -40,7 +40,7 @@ jobs:
         if: failure()
         with:
           name: cypress-screenshots
-          path: cypress/screenshots
+          path:  /home/runner/work/skjemabygging-formio/skjemabygging-formio/packages/fyllut/cypress/screenshots/*
 
 
   cypress-run-bygger:
