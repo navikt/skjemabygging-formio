@@ -20,10 +20,6 @@ describe('DrivingList', () => {
     cy.configMocksServer();
   });
 
-  after(() => {
-    cy.mocksRestoreRouteVariants();
-  });
-
   describe('paper', () => {
     beforeEach(() => {
       cy.defaultIntercepts();
@@ -40,8 +36,9 @@ describe('DrivingList', () => {
       cy.clickNextStep();
 
       // Unstable test. Try and solve this with dirty timeout...
-      cy.get('[data-cy=error-summary]', { timeout: 10000 })
+      cy.findByRole('heading', { name: 'For å gå videre må du rette opp følgende:' })
         .should('exist')
+        .parent()
         .within(() => {
           cy.findByRole('link', { name: `Du må fylle ut: ${DATE_PICKER_LABEL}` })
             .should('exist')
@@ -57,8 +54,9 @@ describe('DrivingList', () => {
       cy.findByRole('textbox', { name: PARKING_EXPENSES_LABEL }).clear();
       cy.findByRole('textbox', { name: PARKING_EXPENSES_LABEL }).type('text');
       cy.clickNextStep();
-      cy.get('[data-cy=error-summary]')
+      cy.findByRole('heading', { name: 'For å gå videre må du rette opp følgende:' })
         .should('exist')
+        .parent()
         .within(() => {
           cy.findByRole('link', { name: 'Parkeringsutgiftene for 15.05.2023 må være et gyldig beløp' })
             .should('exist')
@@ -66,7 +64,7 @@ describe('DrivingList', () => {
         });
 
       cy.findByRole('textbox', { name: PARKING_EXPENSES_LABEL }).should('have.focus').type('{selectall}78');
-      cy.get('[data-cy=error-summary]').should('not.exist');
+      cy.findByRole('heading', { name: 'For å gå videre må du rette opp følgende:' }).should('not.exist');
 
       // Parking expenses should not show even with value over 100
       cy.findByRole('textbox', { name: PARKING_EXPENSES_LABEL }).should('exist').type('101');
@@ -139,13 +137,10 @@ describe('DrivingList', () => {
 
   describe('digital', () => {
     beforeEach(() => {
+      cy.mocksRestoreRouteVariants();
       cy.defaultInterceptsMellomlagring();
       cy.defaultInterceptsExternal();
       cy.defaultIntercepts();
-    });
-
-    afterEach(() => {
-      cy.mocksRestoreRouteVariants();
     });
 
     it('should fill out form and show data in summary', () => {
