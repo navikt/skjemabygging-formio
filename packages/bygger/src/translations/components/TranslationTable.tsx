@@ -1,6 +1,7 @@
 import { SortState, Table } from '@navikt/ds-react';
-import { SkeletonList } from '@navikt/skjemadigitalisering-shared-components';
-import { FormsApiGlobalTranslation } from '@navikt/skjemadigitalisering-shared-domain';
+import { listSort, SkeletonList } from '@navikt/skjemadigitalisering-shared-components';
+import { FormsApiTranslation } from '@navikt/skjemadigitalisering-shared-domain';
+import { useMemo, useState } from 'react';
 import NewTranslationRow from './NewTranslationRow';
 import TranslationRow from './TranslationRow';
 import useTranslationTableStyles from './styles';
@@ -12,16 +13,30 @@ const columns = [
 ];
 
 interface Props {
-  rows?: FormsApiGlobalTranslation[];
-  sortState?: SortState;
-  handleSort: (sortKey: string) => void;
-  addNewRow: boolean;
+  rows: FormsApiTranslation[] | undefined;
+  addNewRow?: boolean;
+  reverseDefaultOrder?: boolean;
 }
 
-const TranslationTable = ({ rows, sortState, handleSort, addNewRow }: Props) => {
+const TranslationTable = ({ rows, addNewRow = false }: Props) => {
+  const [sortState, setSortState] = useState<SortState>();
   const styles = useTranslationTableStyles();
 
-  if (!rows) {
+  const handleSort = (sortKey: string) => {
+    setSortState((currentState) => {
+      if (!currentState || sortKey !== currentState.orderBy) {
+        return { orderBy: sortKey, direction: 'ascending' };
+      } else {
+        return currentState.direction === 'ascending' ? { orderBy: sortKey, direction: 'descending' } : undefined;
+      }
+    });
+  };
+
+  const sortedRows = useMemo<FormsApiTranslation[] | undefined>(() => {
+    return rows?.slice().sort(listSort.getLocaleComparator(sortState?.orderBy, sortState?.direction, addNewRow));
+  }, [rows, sortState?.orderBy, sortState?.direction, addNewRow]);
+
+  if (!sortedRows) {
     return <SkeletonList size={20} />;
   }
 
@@ -38,7 +53,7 @@ const TranslationTable = ({ rows, sortState, handleSort, addNewRow }: Props) => 
       </Table.Header>
       <Table.Body>
         {addNewRow && <NewTranslationRow />}
-        {rows.map((row) => (
+        {sortedRows.map((row) => (
           <TranslationRow key={row.key} translation={row} />
         ))}
       </Table.Body>

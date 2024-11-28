@@ -1,13 +1,13 @@
 import { Table } from '@navikt/ds-react';
-import { FormsApiGlobalTranslation } from '@navikt/skjemadigitalisering-shared-domain';
+import { FormsApiTranslation } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useMemo, useState } from 'react';
 import { TranslationLang, useEditTranslations } from '../../context/translations/EditTranslationsContext';
-import { getInputHeightInRows } from '../utils/editGlobalTranslationsUtils';
+import { getInputHeightInRows } from '../utils/translationsUtils';
 import TranslationInput from './TranslationInput';
 import useTranslationTableStyles from './styles';
 
 interface Props {
-  translation: FormsApiGlobalTranslation;
+  translation: FormsApiTranslation;
 }
 
 const TranslationRow = ({ translation }: Props) => {
@@ -19,8 +19,6 @@ const TranslationRow = ({ translation }: Props) => {
     () => errors.find((error) => !error.isNewTranslation && error.key === translation.key),
     [errors, translation.key],
   );
-
-  console.log(!!error, error?.type === 'CONFLICT', error);
 
   useEffect(() => {
     if (editState === 'SAVED' && !error) {
@@ -36,7 +34,6 @@ const TranslationRow = ({ translation }: Props) => {
 
   const handleChange = (property: TranslationLang, value: string) => {
     updateTranslation(translation, property, value);
-    console.log('onChange', { ...translation, [property]: value });
   };
 
   return (

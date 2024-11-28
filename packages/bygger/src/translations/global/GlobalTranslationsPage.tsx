@@ -1,3 +1,5 @@
+import { FormsApiGlobalTranslation } from '@navikt/skjemadigitalisering-shared-domain';
+import { useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { AppLayout } from '../../components/AppLayout';
 import RowLayout from '../../components/layout/RowLayout';
@@ -5,11 +7,10 @@ import SidebarLayout from '../../components/layout/SidebarLayout';
 import Title from '../../components/layout/Title';
 import TitleRowLayout from '../../components/layout/TitleRowLayout';
 import EditTranslationsProvider from '../../context/translations/EditTranslationsContext';
-import GlobalTranslationsProvider, {
-  GlobalTranslationsContext,
-} from '../../context/translations/GlobalTranslationsContext';
+import { GlobalTranslationsContext, useGlobalTranslations } from '../../context/translations/GlobalTranslationsContext';
 import ButtonColumn from '../components/ButtonColumn';
-import GlobalTranslationsTable from './GlobalTranslationsTable';
+import TranslationTable from '../components/TranslationTable';
+import { generateAndPopulateTags } from '../utils/editGlobalTranslationsUtils';
 
 const titles = {
   skjematekster: 'Globale skjematekster',
@@ -20,25 +21,27 @@ const titles = {
 
 const GlobalTranslationsPage = () => {
   const { tag = '' } = useParams();
+  const { storedTranslations } = useGlobalTranslations();
+
+  const translationsPerTag = useMemo(() => generateAndPopulateTags(storedTranslations), [storedTranslations]);
+  const rows: FormsApiGlobalTranslation[] | undefined = tag ? translationsPerTag?.[tag] : undefined;
 
   return (
     <AppLayout navBarProps={{ translationMenu: true }}>
       <TitleRowLayout>
         <Title>{titles[tag]}</Title>
       </TitleRowLayout>
-      <GlobalTranslationsProvider>
-        <EditTranslationsProvider context={GlobalTranslationsContext}>
-          <RowLayout
-            right={
-              <SidebarLayout noScroll={true}>
-                <ButtonColumn />
-              </SidebarLayout>
-            }
-          >
-            <GlobalTranslationsTable />
-          </RowLayout>
-        </EditTranslationsProvider>
-      </GlobalTranslationsProvider>
+      <EditTranslationsProvider context={GlobalTranslationsContext}>
+        <RowLayout
+          right={
+            <SidebarLayout noScroll={true}>
+              <ButtonColumn />
+            </SidebarLayout>
+          }
+        >
+          <TranslationTable rows={rows} addNewRow={tag === 'skjematekster'} />
+        </RowLayout>
+      </EditTranslationsProvider>
     </AppLayout>
   );
 };

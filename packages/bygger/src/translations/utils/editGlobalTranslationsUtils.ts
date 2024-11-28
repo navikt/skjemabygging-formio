@@ -4,10 +4,11 @@ import {
   TEXTS,
   TranslationTag,
 } from '@navikt/skjemadigitalisering-shared-domain';
+import { removeDuplicatesAfterFirstMatch } from './translationsUtils';
 
 const generateAndPopulateTag = (
   tagName: TranslationTag,
-  textObject,
+  textObject: object,
   storedTranslationsMap: Record<string, FormsApiGlobalTranslation>,
 ) => {
   return objectUtils
@@ -22,7 +23,9 @@ const generateAndPopulateTag = (
     .filter(removeDuplicatesAfterFirstMatch);
 };
 
-const generateAndPopulateTags = (translationsMap: Record<string, FormsApiGlobalTranslation>) => {
+const generateAndPopulateTags = (
+  translationsMap: Record<string, FormsApiGlobalTranslation>,
+): Record<'skjematekster' | 'grensesnitt' | 'statiske-tekster' | 'validering', FormsApiGlobalTranslation[]> => {
   const { common, grensesnitt, statiske, pdfStatiske, validering } = TEXTS;
   return {
     skjematekster: Object.values(translationsMap).filter((translation) => translation.tag === 'skjematekster'),
@@ -32,11 +35,4 @@ const generateAndPopulateTags = (translationsMap: Record<string, FormsApiGlobalT
   };
 };
 
-const removeDuplicatesAfterFirstMatch = ({ key }, index, all) =>
-  !key || index === all.findIndex((translation) => translation.key === key);
-
-const getInputHeightInRows = (value?: string, rowSizeInCharacters: number = 35): number => {
-  return Math.floor((value ?? '').length / rowSizeInCharacters) + 1;
-};
-
-export { generateAndPopulateTags, getInputHeightInRows };
+export { generateAndPopulateTags };

@@ -12,7 +12,7 @@ type FormsApiTranslationCore = {
 };
 
 type FormsApiGlobalTranslation = FormsApiTranslationCore & { tag: TranslationTag };
-type FormsApiFormTranslation = FormsApiTranslationCore & { globalTranslationId: number };
+type FormsApiFormTranslation = FormsApiTranslationCore & { globalTranslationId?: number };
 type FormsApiTranslation = FormsApiGlobalTranslation | FormsApiFormTranslation;
 
 export type { FormsApiFormTranslation, FormsApiGlobalTranslation, FormsApiTranslation };

@@ -18,20 +18,6 @@ const useFormsApiGlobalTranslations = () => {
     }
   };
 
-  const put = async (translation: FormsApiGlobalTranslation): Promise<FormsApiGlobalTranslation | TranslationError> => {
-    try {
-      const { id, revision, nb = null, nn = null, en = null } = translation;
-      return await http.put<FormsApiGlobalTranslation>(`${baseUrl}/${id}`, { revision, nb, nn, en });
-    } catch (error: any) {
-      if (error?.status === 409) {
-        return { type: 'CONFLICT', key: translation.key };
-      }
-      const message = (error as Error)?.message;
-      feedbackEmit.error(`Feil ved oppdatering av global oversettelse med nøkkel ${translation.key}. ${message}`);
-      return { type: 'OTHER_HTTP', key: translation.key };
-    }
-  };
-
   const post = async (
     translation: FormsApiGlobalTranslation,
   ): Promise<FormsApiGlobalTranslation | TranslationError> => {
@@ -48,10 +34,24 @@ const useFormsApiGlobalTranslations = () => {
     }
   };
 
+  const put = async (translation: FormsApiGlobalTranslation): Promise<FormsApiGlobalTranslation | TranslationError> => {
+    try {
+      const { id, revision, nb = null, nn = null, en = null } = translation;
+      return await http.put<FormsApiGlobalTranslation>(`${baseUrl}/${id}`, { revision, nb, nn, en });
+    } catch (error: any) {
+      if (error?.status === 409) {
+        return { type: 'CONFLICT', key: translation.key };
+      }
+      const message = (error as Error)?.message;
+      feedbackEmit.error(`Feil ved oppdatering av global oversettelse med nøkkel ${translation.key}. ${message}`);
+      return { type: 'OTHER_HTTP', key: translation.key };
+    }
+  };
+
   return {
     get,
-    put,
     post,
+    put,
   };
 };
 
