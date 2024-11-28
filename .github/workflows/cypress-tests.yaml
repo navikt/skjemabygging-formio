@@ -35,6 +35,13 @@ jobs:
           config: video=false
         env:
           FYLLUT_BACKEND_LOGLEVEL: ${{ runner.debug == '1' && 'debug' || 'error' }}
+      - name: Upload screenshots
+        uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: cypress-screenshots
+          path: cypress/screenshots
+
 
   cypress-run-bygger:
     runs-on: ubuntu-latest-8-cores
