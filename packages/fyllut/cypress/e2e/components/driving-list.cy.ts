@@ -20,15 +20,15 @@ describe('DrivingList', () => {
     cy.configMocksServer();
   });
 
-  beforeEach(() => {
-    cy.defaultIntercepts();
-  });
-
   after(() => {
     cy.mocksRestoreRouteVariants();
   });
 
   describe('paper', () => {
+    beforeEach(() => {
+      cy.defaultIntercepts();
+    });
+
     it('should fill out form and show data in summary', () => {
       cy.visit(`/fyllut/testdrivinglist?sub=paper`);
       cy.defaultWaits();
@@ -141,6 +141,7 @@ describe('DrivingList', () => {
     beforeEach(() => {
       cy.defaultInterceptsMellomlagring();
       cy.defaultInterceptsExternal();
+      cy.defaultIntercepts();
     });
 
     afterEach(() => {
