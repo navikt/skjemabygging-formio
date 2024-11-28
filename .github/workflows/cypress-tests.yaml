@@ -40,7 +40,7 @@ jobs:
         if: failure()
         with:
           name: cypress-screenshots
-          path:  ./../packages/fyllut/cypress/screenshots/*
+          path:  ${{ github.workspace }}/packages/fyllut/cypress/screenshots/*
 
 
   cypress-run-bygger:
