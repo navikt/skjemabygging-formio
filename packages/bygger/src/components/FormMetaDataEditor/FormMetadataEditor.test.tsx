@@ -304,7 +304,7 @@ describe('FormMetadataEditor', () => {
     describe('Innstilling for valg av enhet ved papirinnsending', () => {
       const expectedCheckboxName = 'Bruker må velge enhet ved innsending på papir';
       const editFormMetadataEditor = (form: NavFormType, onChange: UpdateFormFunction) => (
-        <AppConfigProvider featureToggles={{ ...featureToggles, enableEnhetsListe: true }}>
+        <AppConfigProvider featureToggles={featureToggles}>
           <FormMetadataEditor form={form} onChange={onChange} />
         </AppConfigProvider>
       );

@@ -58,13 +58,15 @@ class Address extends BaseComponent {
           this.getKontaktadresse(prefillAddresses);
       }
 
-      if (prefillAddress.landkode) {
-        super.setValue({
-          ...prefillAddress,
-          land: getCountryObject(prefillAddress.landkode),
-        });
-      } else {
-        this.setValue(prefillAddress);
+      if (prefillAddress) {
+        if (prefillAddress.landkode) {
+          super.setValue({
+            ...prefillAddress,
+            land: getCountryObject(prefillAddress.landkode),
+          });
+        } else {
+          this.setValue(prefillAddress);
+        }
       }
     }
   }

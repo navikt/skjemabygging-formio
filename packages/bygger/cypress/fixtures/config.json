@@ -5,7 +5,6 @@
   "user": { "name": "Test", "preferredUsername": "test@nav.no", "NAVident": "K100", "isAdmin": true },
   "featureToggles": {
     "enableTranslations": true,
-    "enableEnhetsListe": true,
     "enableDiff": true
   }
 }
