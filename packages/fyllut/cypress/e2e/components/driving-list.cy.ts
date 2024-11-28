@@ -22,8 +22,6 @@ describe('DrivingList', () => {
 
   beforeEach(() => {
     cy.defaultIntercepts();
-    cy.defaultInterceptsMellomlagring();
-    cy.defaultInterceptsExternal();
   });
 
   after(() => {
@@ -140,11 +138,21 @@ describe('DrivingList', () => {
   });
 
   describe('digital', () => {
+    beforeEach(() => {
+      cy.defaultInterceptsMellomlagring();
+      cy.defaultInterceptsExternal();
+    });
+
+    afterEach(() => {
+      cy.mocksRestoreRouteVariants();
+    });
+
     it('should fill out form and show data in summary', () => {
       cy.visit(`/fyllut/testdrivinglist?sub=digital`);
       cy.defaultWaits();
       cy.clickStart();
       cy.wait('@getActivities');
+      cy.wait('@createMellomlagring');
 
       cy.findByRole('group', { name: ACTIVITIES_LABEL })
         .should('exist')
@@ -204,10 +212,11 @@ describe('DrivingList', () => {
     });
 
     it('should fill out mellomlagret values', () => {
-      cy.visit(`/fyllut/testdrivinglist/veiledning?sub=digital&innsendingsId=8495201b-71fd-4a95-82f8-d224d32237e5`);
       cy.mocksUseRouteVariant('get-soknad:success-driving-list');
+      cy.visit(`/fyllut/testdrivinglist/veiledning?sub=digital&innsendingsId=8495201b-71fd-4a95-82f8-d224d32237e5`);
       cy.defaultWaits();
       cy.wait('@getActivities');
+      cy.wait('@getMellomlagring');
 
       cy.findByRole('radio', { name: 'Arbeidstrening: 01. januar 2024 - 31. august 2024' }).should('be.checked');
 
@@ -223,10 +232,11 @@ describe('DrivingList', () => {
     });
 
     it('should load driving list without dates', () => {
-      cy.visit(`/fyllut/testdrivinglist/veiledning?sub=digital&innsendingsId=a66e8932-ce2a-41c1-932b-716fc487813b`);
       cy.mocksUseRouteVariant('get-soknad:success-driving-list-no-dates');
+      cy.visit(`/fyllut/testdrivinglist/veiledning?sub=digital&innsendingsId=a66e8932-ce2a-41c1-932b-716fc487813b`);
       cy.defaultWaits();
       cy.wait('@getActivities');
+      cy.wait('@getMellomlagring');
 
       cy.findByRole('radio', { name: 'Arbeidstrening: 01. januar 2024 - 31. august 2024' }).should('be.checked');
 
@@ -244,6 +254,7 @@ describe('DrivingList', () => {
       cy.visit(`/fyllut/testdrivinglist/veiledning?sub=digital`);
       cy.defaultWaits();
       cy.wait('@getActivities');
+      cy.wait('@createMellomlagring');
 
       cy.findByRole('radio', { name: 'Arbeidstrening: 01. januar 2099 - 31. august 2099' }).check();
 
@@ -263,6 +274,7 @@ describe('DrivingList', () => {
 
       cy.clickStart();
       cy.wait('@getActivities');
+      cy.wait('@createMellomlagring');
 
       cy.clickSaveAndContinue();
       cy.get('[data-cy=error-summary]')
@@ -298,11 +310,12 @@ describe('DrivingList', () => {
     });
 
     it('should render alert when there are no activities and error when trying to continue', () => {
+      cy.mocksUseRouteVariant('get-activities:success-empty');
       cy.visit(`/fyllut/testdrivinglist?sub=digital`);
       cy.defaultWaits();
-      cy.mocksUseRouteVariant('get-activities:success-empty');
       cy.clickStart();
       cy.wait('@getActivities');
+      cy.wait('@createMellomlagring');
 
       cy.get('.navds-alert').within(() => {
         cy.findByText(TEXTS.statiske.drivingList.noVedtakHeading).should('exist');
