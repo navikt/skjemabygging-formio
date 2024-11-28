@@ -36,11 +36,11 @@ jobs:
         env:
           FYLLUT_BACKEND_LOGLEVEL: ${{ runner.debug == '1' && 'debug' || 'error' }}
       - name: Upload screenshots
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: cypress-screenshots
-          path:  /home/runner/work/skjemabygging-formio/skjemabygging-formio/packages/fyllut/cypress/screenshots/*
+          path:  ./../packages/fyllut/cypress/screenshots/*
 
 
   cypress-run-bygger:
