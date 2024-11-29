@@ -35,7 +35,7 @@ describe('DrivingList', () => {
       cy.findByRole('group', { name: 'Skal du registrere parkering?' }).should('exist');
       cy.clickNextStep();
 
-      cy.findByRole('heading', { name: 'For å gå videre må du rette opp følgende:', timeout: 10000 })
+      cy.findByRole('heading', { name: 'For å gå videre må du rette opp følgende:' })
         .should('exist')
         .parent()
         .within(() => {
@@ -53,7 +53,7 @@ describe('DrivingList', () => {
       cy.findByRole('textbox', { name: PARKING_EXPENSES_LABEL }).clear();
       cy.findByRole('textbox', { name: PARKING_EXPENSES_LABEL }).type('text');
       cy.clickNextStep();
-      cy.findByRole('heading', { name: 'For å gå videre må du rette opp følgende:', timeout: 10000 })
+      cy.findByRole('heading', { name: 'For å gå videre må du rette opp følgende:' })
         .should('exist')
         .parent()
         .within(() => {
