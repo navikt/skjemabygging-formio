@@ -21,7 +21,7 @@ const titles = {
 
 const GlobalTranslationsPage = () => {
   const { tag = '' } = useParams();
-  const { storedTranslations } = useGlobalTranslations();
+  const { storedTranslations, isReady } = useGlobalTranslations();
 
   const translationsPerTag = useMemo(() => generateAndPopulateTags(storedTranslations), [storedTranslations]);
   const rows: FormsApiGlobalTranslation[] | undefined = tag ? translationsPerTag?.[tag] : undefined;
@@ -39,7 +39,7 @@ const GlobalTranslationsPage = () => {
             </SidebarLayout>
           }
         >
-          <TranslationTable rows={rows} addNewRow={tag === 'skjematekster'} />
+          <TranslationTable rows={rows} loading={!isReady} addNewRow={tag === 'skjematekster'} />
         </RowLayout>
       </EditTranslationsProvider>
     </AppLayout>

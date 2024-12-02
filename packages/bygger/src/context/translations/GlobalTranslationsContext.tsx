@@ -5,6 +5,7 @@ import { isTranslationError, TranslationError, TranslationsContextValue } from '
 
 const defaultValue: TranslationsContextValue<FormsApiGlobalTranslation> = {
   storedTranslations: {},
+  isReady: false,
   loadTranslations: () => Promise.resolve(),
   saveTranslations: () => Promise.resolve([]),
   createNewTranslation: () => Promise.resolve(undefined),
@@ -62,6 +63,7 @@ const GlobalTranslationsProvider = ({ children }) => {
   const value = {
     storedTranslations: storedTranslationsMap,
     loadTranslations,
+    isReady: formsApiState.isReady,
     saveTranslations,
     createNewTranslation,
   };

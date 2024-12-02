@@ -13,6 +13,7 @@ const isTranslationError = (translationOrError: unknown): translationOrError is 
 
 interface TranslationsContextValue<Translation extends FormsApiTranslation> {
   storedTranslations: Record<string, Translation>;
+  isReady: boolean;
   loadTranslations: () => Promise<void>;
   saveTranslations: (translations: Translation[]) => Promise<Array<TranslationError>>;
   createNewTranslation?: (translation: Translation) => Promise<TranslationError | undefined>;

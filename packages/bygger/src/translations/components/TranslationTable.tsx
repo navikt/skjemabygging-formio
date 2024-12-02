@@ -14,11 +14,11 @@ const columns = [
 
 interface Props {
   rows: FormsApiTranslation[] | undefined;
+  loading?: boolean;
   addNewRow?: boolean;
-  reverseDefaultOrder?: boolean;
 }
 
-const TranslationTable = ({ rows, addNewRow = false }: Props) => {
+const TranslationTable = ({ rows, loading = false, addNewRow = false }: Props) => {
   const [sortState, setSortState] = useState<SortState>();
   const styles = useTranslationTableStyles();
 
@@ -36,8 +36,8 @@ const TranslationTable = ({ rows, addNewRow = false }: Props) => {
     return rows?.slice().sort(listSort.getLocaleComparator(sortState?.orderBy, sortState?.direction, addNewRow));
   }, [rows, sortState?.orderBy, sortState?.direction, addNewRow]);
 
-  if (!sortedRows) {
-    return <SkeletonList size={20} />;
+  if (loading || !sortedRows) {
+    return <SkeletonList size={10} height={60} />;
   }
 
   return (
