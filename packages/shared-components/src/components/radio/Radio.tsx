@@ -23,7 +23,7 @@ const Radio = forwardRef<HTMLFieldSetElement, Props>(
       <AkselRadioGroup
         id={id}
         legend={legend}
-        defaultValue={value}
+        value={value}
         onChange={onChange}
         ref={ref}
         description={description}
