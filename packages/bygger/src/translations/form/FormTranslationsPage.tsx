@@ -7,6 +7,7 @@ import Title from '../../components/layout/Title';
 import TitleRowLayout from '../../components/layout/TitleRowLayout';
 import EditTranslationsProvider from '../../context/translations/EditTranslationsContext';
 import { FormTranslationsContext, useFormTranslations } from '../../context/translations/FormTranslationsContext';
+import { useGlobalTranslations } from '../../context/translations/GlobalTranslationsContext';
 import ButtonColumn from '../components/ButtonColumn';
 import TranslationTable from '../components/TranslationTable';
 import { generateAndPopulateTranslationsForForm } from '../utils/editFormTranslationsUtils';
@@ -16,10 +17,11 @@ interface Props {
 }
 
 const FormTranslationsPage = ({ form }: Props) => {
-  const { storedTranslations } = useFormTranslations();
+  const { storedTranslations, isReady: isTranslationsReady } = useFormTranslations();
+  const { storedTranslations: globalTranslations, isReady: isGlobalTranslationsReady } = useGlobalTranslations();
   const rows: FormsApiFormTranslation[] = useMemo(
-    () => generateAndPopulateTranslationsForForm(form, storedTranslations),
-    [form, storedTranslations],
+    () => generateAndPopulateTranslationsForForm(form, storedTranslations, globalTranslations),
+    [form, globalTranslations, storedTranslations],
   );
 
   return (
@@ -37,7 +39,7 @@ const FormTranslationsPage = ({ form }: Props) => {
             </SidebarLayout>
           }
         >
-          <TranslationTable rows={rows} />
+          <TranslationTable rows={rows} loading={!isTranslationsReady || !isGlobalTranslationsReady} />
         </RowLayout>
       </EditTranslationsProvider>
     </AppLayout>

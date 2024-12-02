@@ -9,6 +9,9 @@ const useTranslationTableStyles = makeStyles({
   clickableRow: {
     cursor: 'pointer',
   },
+  displayCellIcon: {
+    verticalAlign: 'text-top',
+  },
 });
 
 export default useTranslationTableStyles;

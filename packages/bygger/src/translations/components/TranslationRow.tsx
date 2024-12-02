@@ -1,5 +1,6 @@
+import { PadlockLockedIcon } from '@navikt/aksel-icons';
 import { Table } from '@navikt/ds-react';
-import { FormsApiTranslation } from '@navikt/skjemadigitalisering-shared-domain';
+import { FormsApiTranslation, formsApiTranslations } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useMemo, useState } from 'react';
 import { TranslationLang, useEditTranslations } from '../../context/translations/EditTranslationsContext';
 import { getInputHeightInRows } from '../utils/translationsUtils';
@@ -36,6 +37,8 @@ const TranslationRow = ({ translation }: Props) => {
     updateTranslation(translation, property, value);
   };
 
+  const hasGlobalOverride = formsApiTranslations.isFormTranslation(translation) && translation.globalTranslationId;
+
   return (
     <Table.Row className={isEditing ? '' : styles.clickableRow} onClick={handleRowClick}>
       <Table.HeaderCell className={styles.column} scope="row">
@@ -51,7 +54,16 @@ const TranslationRow = ({ translation }: Props) => {
             onChange={(event) => handleChange('nn', event.currentTarget.value)}
           />
         ) : (
-          translation.nn
+          <>
+            {hasGlobalOverride && (
+              <PadlockLockedIcon
+                className={styles.displayCellIcon}
+                title="Globalt overstyrt oversettelse"
+                fontSize="1.5rem"
+              />
+            )}
+            {translation.nn}
+          </>
         )}
       </Table.DataCell>
       <Table.DataCell className={styles.column}>
@@ -64,7 +76,16 @@ const TranslationRow = ({ translation }: Props) => {
             onChange={(event) => handleChange('en', event.currentTarget.value)}
           />
         ) : (
-          translation.en
+          <>
+            {hasGlobalOverride && (
+              <PadlockLockedIcon
+                className={styles.displayCellIcon}
+                title="Globalt overstyrt oversettelse"
+                fontSize="1.5rem"
+              />
+            )}
+            {translation.en}
+          </>
         )}
       </Table.DataCell>
     </Table.Row>

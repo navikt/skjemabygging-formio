@@ -3,6 +3,7 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import { useForm } from '../context/form/FormContext';
 import I18nStateProvider from '../context/i18n/I18nContext';
 import FormTranslationsProvider from '../context/translations/FormTranslationsContext';
+import GlobalTranslationsProvider from '../context/translations/GlobalTranslationsContext';
 import FormTranslationsPage from '../translations/form/FormTranslationsPage';
 import EditFormPage from './edit/EditFormPage';
 import FormError from './error/FormError';
@@ -40,7 +41,9 @@ export const FormPage = ({ loadTranslations }) => {
           path={'/oversettelser'}
           element={
             <FormTranslationsProvider formPath={formState.form.path}>
-              <FormTranslationsPage form={formState.form} />
+              <GlobalTranslationsProvider>
+                <FormTranslationsPage form={formState.form} />
+              </GlobalTranslationsProvider>
             </FormTranslationsProvider>
           }
         />

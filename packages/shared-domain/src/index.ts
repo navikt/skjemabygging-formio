@@ -114,6 +114,7 @@ import {
   FormsApiFormTranslation,
   FormsApiGlobalTranslation,
   FormsApiTranslation,
+  formsApiTranslations,
 } from './translations/FormsApiTranslation';
 import currencyUtils from './utils/currencyUtils';
 import dateUtils from './utils/date';
@@ -139,6 +140,7 @@ export {
   DeclarationType,
   featureUtils,
   formDiffingTool,
+  formsApiTranslations,
   formSummaryUtil,
   forstesideUtils,
   guid,
