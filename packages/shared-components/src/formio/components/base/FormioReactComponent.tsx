@@ -153,7 +153,7 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
    * Add message render the error messages Form.io template.
    */
   addMessages(messages) {
-    this.logger.info('Trying to addMessages with Formio.io old template. Should use new error messages instead', {
+    this.logger.warn('Trying to addMessages with Formio.io old template. Should use new error messages instead', {
       messages,
     });
   }
