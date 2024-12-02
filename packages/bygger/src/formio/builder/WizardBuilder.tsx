@@ -87,6 +87,8 @@ class WizardBuilder extends NavFormioJs.Builders.builders.wizard {
 
     super.editComponent(component, parent, isNew, isJsonEdit, original, flags);
 
+    this.editForm.editFormDialog = true;
+
     if (isJsonEdit) {
       this.editForm.form = {
         ...this.editForm.form,

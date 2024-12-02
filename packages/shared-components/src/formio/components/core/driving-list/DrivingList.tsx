@@ -34,16 +34,7 @@ class DrivingList extends BaseComponent {
 
   onValueChange(value) {
     super.handleChange(value);
-
-    // If next button has been clicked (submitted), check the whole form for errors
-    if (this.root.submitted) {
-      this.checkValidity();
-    } else {
-      this.rerender();
-    }
-  }
-  override get errors() {
-    return this.componentErrors;
+    this.rerender();
   }
 
   addErrorOfType(metadataId: DrivingListMetadataId, errorType: DrivingListErrorType) {
@@ -52,8 +43,13 @@ class DrivingList extends BaseComponent {
     }
   }
 
-  override checkValidity(): boolean {
+  checkComponentValidity(data, dirty, row, _options = {}) {
     this.removeAllErrors();
+
+    if (this.shouldSkipValidation(data, dirty, row)) {
+      return true;
+    }
+
     const componentData = this.getValue() as DrivingListSubmission;
 
     if (this.isSubmissionPaper()) {
@@ -95,11 +91,7 @@ class DrivingList extends BaseComponent {
 
     this.rerender();
 
-    if (this.componentErrors.length > 0) {
-      return false;
-    }
-
-    return true;
+    return this.componentErrors.length === 0;
   }
 
   updateValues(multipleValues: DrivingListValues) {
@@ -107,7 +99,7 @@ class DrivingList extends BaseComponent {
   }
 
   renderReact(element) {
-    // TODO: Delete DrivingListProvider and use prop drilling instead
+    // TODO: Delete DrivingListProvider and use prop drilling instead.
     element.render(
       <ComponentUtilsProvider component={this}>
         <DrivingListProvider updateValues={this.updateValues.bind(this)} values={this.getValue()}>

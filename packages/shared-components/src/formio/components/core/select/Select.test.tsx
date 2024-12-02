@@ -119,7 +119,7 @@ describe('NavSelect', () => {
 
     const nextButton = screen.getByRole('button', { name: 'Neste steg' });
     expect(nextButton).toBeInTheDocument();
-    nextButton.click();
+    await userEvent.click(nextButton);
 
     const errorMessages = await screen.findAllByText('Du må fylle ut: Velg frukt');
     expect(errorMessages).toHaveLength(1); // nedenfor input-feltet

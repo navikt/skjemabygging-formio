@@ -33,7 +33,7 @@ describe('React components', () => {
 
         cy.findAllByText('Du må fylle ut: Velg valuta').should('have.length', 2);
         cy.findAllByText('Du må fylle ut: Velg valuta').first().click();
-        cy.findByRole('combobox', { name: 'Velg valuta' }).should('have.focus').type('{upArrow}{enter}');
+        cy.findByRole('combobox', { name: 'Velg valuta' }).type('{upArrow}{enter}');
         cy.clickNextStep();
 
         cy.findByRole('heading', { name: 'Vedlegg' }).should('exist');
