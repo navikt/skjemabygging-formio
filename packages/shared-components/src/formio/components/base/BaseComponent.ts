@@ -214,7 +214,7 @@ class BaseComponent extends FormioReactComponent {
     if (messages) {
       if (Array.isArray(messages)) {
         if (messages.length > 1) {
-          this.logger.info(`Should never get more then one message, got ${messages.length}.`, { messages });
+          this.logger.warn(`Should never get more then one message, got ${messages.length}.`, { messages });
         }
         messages.forEach((componentError: ComponentError) => {
           this.addError(componentError.message, this.getId());
