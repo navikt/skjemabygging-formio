@@ -24,6 +24,7 @@ const activitesFuture = require('../data/innsending-api/activities/activities-fu
 const prefillData = require('../data/innsending-api/prefill-data/prefill-data.json');
 const prefillDataUsa = require('../data/innsending-api/prefill-data/prefill-data-usa.json');
 const mellomlagringSelectBoxes = require('../data/innsending-api/select-boxes/mellomlagring-select-boxes.json');
+const mellomlagringRadio = require('../data/innsending-api/radio/mellomlagring-radio.json');
 const mellomlagringMonthPicker = require('../data/innsending-api/month-picker/mellomlagring-month-picker.json');
 
 const objectToByteArray = (obj) => Array.from(new TextEncoder().encode(JSON.stringify(obj)));
@@ -225,6 +226,14 @@ module.exports = [
         options: {
           status: 200,
           body: convertToInnsendingApiResponse(mellomlagringSelectBoxes),
+        },
+      },
+      {
+        id: 'success-radio',
+        type: 'json',
+        options: {
+          status: 200,
+          body: convertToInnsendingApiResponse(mellomlagringRadio),
         },
       },
       {
