@@ -19,10 +19,19 @@ interface Props {
 const FormTranslationsPage = ({ form }: Props) => {
   const { storedTranslations, isReady: isTranslationsReady } = useFormTranslations();
   const { storedTranslations: globalTranslations, isReady: isGlobalTranslationsReady } = useGlobalTranslations();
+
   const rows: FormsApiFormTranslation[] = useMemo(
     () => generateAndPopulateTranslationsForForm(form, storedTranslations, globalTranslations),
     [form, globalTranslations, storedTranslations],
   );
+
+  const initialChanges = useMemo(() => {
+    if (isTranslationsReady && isGlobalTranslationsReady) {
+      return rows
+        .map((row) => (row.globalTranslationId && !storedTranslations[row.key]?.globalTranslationId ? row : undefined))
+        .filter((value) => !!value);
+    }
+  }, [isGlobalTranslationsReady, isTranslationsReady, rows, storedTranslations]);
 
   return (
     <AppLayout navBarProps={{ formMenu: true, formPath: form.path }}>
@@ -31,7 +40,7 @@ const FormTranslationsPage = ({ form }: Props) => {
           {form.properties.skjemanummer}, {form.name}
         </Title>
       </TitleRowLayout>
-      <EditTranslationsProvider context={FormTranslationsContext}>
+      <EditTranslationsProvider context={FormTranslationsContext} initialChanges={initialChanges}>
         <RowLayout
           right={
             <SidebarLayout noScroll>
@@ -39,7 +48,7 @@ const FormTranslationsPage = ({ form }: Props) => {
             </SidebarLayout>
           }
         >
-          <TranslationTable rows={rows} loading={!isTranslationsReady || !isGlobalTranslationsReady} />
+          <TranslationTable rows={rows} loading={!initialChanges} />
         </RowLayout>
       </EditTranslationsProvider>
     </AppLayout>

@@ -16,7 +16,7 @@ interface TranslationsContextValue<Translation extends FormsApiTranslation> {
   isReady: boolean;
   loadTranslations: () => Promise<void>;
   saveTranslations: (translations: Translation[]) => Promise<Array<TranslationError>>;
-  createNewTranslation?: (translation: Translation) => Promise<TranslationError | undefined>;
+  createNewTranslation?: (translation: FormsApiTranslation) => Promise<TranslationError | undefined>;
 }
 
 export { isTranslationError, translationErrorTypes };

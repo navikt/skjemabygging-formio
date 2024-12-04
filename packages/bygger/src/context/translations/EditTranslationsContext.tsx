@@ -1,12 +1,13 @@
-import { FormsApiTranslation } from '@navikt/skjemadigitalisering-shared-domain';
-import { Context, createContext, ReactNode, useContext, useReducer } from 'react';
+import { FormsApiTranslation, formsApiTranslations } from '@navikt/skjemadigitalisering-shared-domain';
+import { Context, createContext, ReactNode, useContext, useEffect, useReducer } from 'react';
 import { useFeedbackEmit } from '../notifications/FeedbackContext';
-import reducer, { State } from './editTranslationsReducer/reducer';
+import reducer, { Status } from './editTranslationsReducer/reducer';
 import { getTranslationsForSaving, hasNewTranslationData } from './editTranslationsReducer/selectors';
 import { TranslationError, TranslationsContextValue } from './types';
 
-interface Props {
-  context: Context<TranslationsContextValue>;
+interface Props<Translation extends FormsApiTranslation> {
+  context: Context<TranslationsContextValue<Translation>>;
+  initialChanges?: Translation[];
   children: ReactNode;
 }
 //TODO: move me
@@ -16,7 +17,7 @@ interface EditTranslationsContextValue {
   updateTranslation: (original: FormsApiTranslation, property: TranslationLang, value: string) => void;
   errors: TranslationError[];
   newTranslation: FormsApiTranslation;
-  editState: State['state'];
+  editState: Status;
   updateNewTranslation: (property: TranslationLang, value: string) => void;
   saveChanges: () => Promise<void>;
 }
@@ -39,8 +40,12 @@ const defaultValue: EditTranslationsContextValue = {
 
 const EditTranslationsContext = createContext<EditTranslationsContextValue>(defaultValue);
 
-const EditTranslationsProvider = ({ context, children }: Props) => {
-  const [state, dispatch] = useReducer(reducer, {
+const EditTranslationsProvider = <Translation extends FormsApiTranslation>({
+  context,
+  initialChanges,
+  children,
+}: Props<Translation>) => {
+  const [state, dispatch] = useReducer(reducer<Translation>, {
     errors: [],
     state: 'INIT',
     new: defaultNewSkjemateksterTranslation,
@@ -49,15 +54,29 @@ const EditTranslationsProvider = ({ context, children }: Props) => {
   const { storedTranslations, loadTranslations, saveTranslations, createNewTranslation } = useContext(context);
   const feedbackEmit = useFeedbackEmit();
 
-  const updateTranslation = (originalTranslation: FormsApiTranslation, property: TranslationLang, value: string) => {
-    const { key } = originalTranslation;
+  useEffect(() => {
+    if (initialChanges && state.state === 'INIT') {
+      dispatch({ type: 'INITIALIZE', payload: { initialChanges } });
+    }
+  }, [initialChanges, state.state]);
+
+  const updateTranslation = <Translation extends FormsApiTranslation>(
+    original: Translation,
+    property: TranslationLang,
+    value: string,
+  ) => {
+    const { key } = original;
     const storedValue = storedTranslations[key]?.[property];
     const currentChange = state.changes[key]?.[property];
     const currentValue = currentChange ?? storedValue;
     if ((currentValue ?? '') === value) {
       return;
     }
-    dispatch({ type: 'UPDATE', payload: { original: originalTranslation, property, value } });
+    const originalValue = original[property];
+    if (formsApiTranslations.isFormTranslation(original) && originalValue !== value) {
+      delete original.globalTranslationId;
+    }
+    dispatch({ type: 'UPDATE', payload: { original, property, value } });
   };
 
   const updateNewTranslation = (property: TranslationLang, value: string) => {
@@ -85,7 +104,7 @@ const EditTranslationsProvider = ({ context, children }: Props) => {
     } else {
       dispatch({ type: 'CLEAR_ERRORS' });
       const result = await saveTranslations(getTranslationsForSaving(state));
-      const resultNew = newTranslationHasData ? await createNewTranslation(state.new) : undefined;
+      const resultNew = newTranslationHasData ? await createNewTranslation?.(state.new) : undefined;
       await loadTranslations();
       const errors = [...result, ...(resultNew ? [resultNew] : [])];
       dispatch({ type: 'SAVED', payload: { defaultNew: defaultNewSkjemateksterTranslation, errors } });

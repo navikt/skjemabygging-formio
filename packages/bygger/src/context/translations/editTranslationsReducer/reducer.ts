@@ -2,13 +2,18 @@ import { FormsApiTranslation } from '@navikt/skjemadigitalisering-shared-domain'
 import { TranslationLang } from '../EditTranslationsContext';
 import { TranslationError } from '../types';
 
-export interface State {
-  changes: Record<string, FormsApiTranslation>;
+type Status = 'INIT' | 'EDITING' | 'SAVED';
+interface State<Translation> {
+  changes: Record<string, Translation>;
   new: FormsApiTranslation;
   errors: TranslationError[];
-  state: 'INIT' | 'EDITING' | 'SAVED';
+  state: Status;
 }
 
+type InitializeAction = {
+  type: 'INITIALIZE';
+  payload: { initialChanges: FormsApiTranslation[] };
+};
 type UpdateAction = {
   type: 'UPDATE';
   payload: { original: FormsApiTranslation; property: TranslationLang; value: string };
@@ -21,22 +26,31 @@ type ValidationErrorAction = { type: 'VALIDATION_ERROR'; payload: { errors: Tran
 type ClearErrorsAction = { type: 'CLEAR_ERRORS' };
 type SavedAction = { type: 'SAVED'; payload: { defaultNew: FormsApiTranslation; errors: TranslationError[] } };
 
-type Action = UpdateAction | UpdateNewAction | ValidationErrorAction | ClearErrorsAction | SavedAction;
+type Action =
+  | InitializeAction
+  | UpdateAction
+  | UpdateNewAction
+  | ValidationErrorAction
+  | ClearErrorsAction
+  | SavedAction;
 
-const getUpdatedChanges = (
-  state: State,
+const getUpdatedChanges = <Translation>(
+  state: State<Translation>,
   args: {
     original: FormsApiTranslation;
     property: TranslationLang;
     value: string;
   },
-): Record<string, FormsApiTranslation> => {
+): Record<string, Translation> => {
   const { original, property, value } = args;
   const existingChange = state.changes[original.key];
   return { ...state.changes, [original.key]: { ...original, ...existingChange, [property]: value } };
 };
 
-const getUpdatedNew = (state: State, args: { property: TranslationLang; value: string }): FormsApiTranslation => {
+const getUpdatedNew = <Translation>(
+  state: State<Translation>,
+  args: { property: TranslationLang; value: string },
+): FormsApiTranslation => {
   const { property, value } = args;
   if (property === 'nb') {
     return { ...state.new, key: value, [property]: value };
@@ -44,11 +58,14 @@ const getUpdatedNew = (state: State, args: { property: TranslationLang; value: s
   return { ...state.new, [property]: value };
 };
 
-const getErrors = (state: State, args: { errors: TranslationError[] }) => {
+const getErrors = <Translation>(state: State<Translation>, args: { errors: TranslationError[] }) => {
   return [...state.errors, ...args.errors];
 };
 
-const getResetChanges = (state: State, args: { errors: TranslationError[] }) => {
+const getResetChanges = <Translation extends FormsApiTranslation>(
+  state: State<Translation>,
+  args: { errors: TranslationError[] },
+) => {
   if (args.errors.length === 0) {
     return {};
   }
@@ -59,15 +76,28 @@ const getResetChanges = (state: State, args: { errors: TranslationError[] }) => 
   );
 };
 
-const getResetNew = (state: State, args: { defaultNew: FormsApiTranslation; errors: TranslationError[] }) => {
+const getResetNew = <Translation extends FormsApiTranslation>(
+  state: State<Translation>,
+  args: { defaultNew: FormsApiTranslation; errors: TranslationError[] },
+): FormsApiTranslation => {
   if (args.errors.some((error) => error.key === state.new.key)) {
     return state.new;
   }
   return args.defaultNew;
 };
 
-const reducer = (state: State, action: Action): State => {
+const generateMap = <Translation extends FormsApiTranslation>(values: Translation[]) =>
+  values.reduce((acc, value) => ({ ...acc, [value.key]: value }), {});
+
+const reducer = <Translation extends FormsApiTranslation>(
+  state: State<Translation>,
+  action: Action,
+): State<Translation> => {
   switch (action.type) {
+    case 'INITIALIZE':
+      return Object.keys(state.changes).length === 0
+        ? { ...state, changes: generateMap(action.payload.initialChanges) }
+        : state;
     case 'UPDATE':
       return { ...state, changes: getUpdatedChanges(state, action.payload), state: 'EDITING' };
     case 'UPDATE_NEW':
@@ -89,4 +119,5 @@ const reducer = (state: State, action: Action): State => {
   }
 };
 
+export type { State, Status };
 export default reducer;

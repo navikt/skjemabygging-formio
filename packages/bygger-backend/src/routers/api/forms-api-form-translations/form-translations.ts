@@ -17,9 +17,10 @@ const get: RequestHandler = async (req, res, next) => {
 const post: RequestHandler = async (req, res, next) => {
   const { formPath } = req.params;
   const accessToken = req.headers.AzureAccessToken as string;
-  console.log('POST', formPath, req.body);
+  const { key, nb, nn, en, globalTranslationId } = req.body as FormsApiFormTranslation;
+  const body = globalTranslationId ? { key, globalTranslationId } : { key, nb, nn, en };
   try {
-    const translation = await formTranslationsService.post(formPath, req.body, accessToken);
+    const translation = await formTranslationsService.post(formPath, body, accessToken);
     console.log(translation);
     res.status(201).json(translation);
   } catch (error) {
@@ -35,7 +36,7 @@ const put: RequestHandler = async (req, res, next) => {
   const { formPath, id } = req.params;
   const { revision, nb, nn, en, globalTranslationId } = req.body as FormsApiFormTranslation;
   const accessToken = req.headers.AzureAccessToken as string;
-  const body = { nb, nn, en, globalTranslationId };
+  const body = globalTranslationId ? { globalTranslationId } : { nb, nn, en };
   try {
     const translation = await formTranslationsService.put(formPath, id, body, revision!, accessToken);
     res.json(translation);

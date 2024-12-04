@@ -30,7 +30,7 @@ export default class FormTranslationsService {
 
   async post(
     formPath: string,
-    translation: FormsApiFormTranslation,
+    translation: Pick<FormsApiFormTranslation, 'key' | 'nb' | 'nn' | 'en' | 'globalTranslationId'>,
     accessToken?: string,
   ): Promise<FormsApiFormTranslation> {
     const response = await fetchWithErrorHandling(
