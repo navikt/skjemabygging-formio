@@ -227,7 +227,12 @@ class BaseComponent extends FormioReactComponent {
   }
 
   setComponentValidity(messages, dirty, silentCheck) {
-    if (messages.length && (!silentCheck || this.error) && this.showErrorMessages()) {
+    if (
+      messages.length &&
+      (!silentCheck || this.error) &&
+      this.showErrorMessages() &&
+      (!this.isEmpty(this.defaultValue) || dirty || !this.pristine)
+    ) {
       this.setCustomValidity(messages, dirty);
     } else {
       this.setCustomValidity('');
