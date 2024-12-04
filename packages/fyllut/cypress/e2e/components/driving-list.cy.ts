@@ -329,7 +329,6 @@ describe('DrivingList', () => {
       cy.mocksUseRouteVariant('get-activities:success-empty');
       cy.visit(`/fyllut/testdrivinglist/oppsummering?sub=digital&innsendingsId=a66e8932-ce2a-41c1-932b-716fc487813b`);
       cy.defaultWaits();
-      cy.wait('@getActivities');
       cy.wait('@getMellomlagring');
 
       cy.get('.navds-alert').should('exist');
