@@ -227,12 +227,7 @@ class BaseComponent extends FormioReactComponent {
   }
 
   setComponentValidity(messages, dirty, silentCheck) {
-    if (
-      messages.length &&
-      (!silentCheck || this.error) &&
-      this.showErrorMessages() &&
-      (!this.isEmpty(this.defaultValue) || dirty || !this.pristine)
-    ) {
+    if (messages.length && (!silentCheck || this.error) && this.showErrorMessages()) {
       this.setCustomValidity(messages, dirty);
     } else {
       this.setCustomValidity('');
@@ -273,7 +268,7 @@ class BaseComponent extends FormioReactComponent {
       (this.root.currentPage?.nextPageClicked && baseComponentUtils.isCurrentPanel(this)) ||
       this.root.submitted ||
       this.builderMode ||
-      this.root.editFormDialog
+      (this.root.editFormDialog && (!this.isEmpty(this.defaultValue) || !this.pristine))
     );
   }
 }
