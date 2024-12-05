@@ -53,10 +53,6 @@ export default class Identity extends BaseComponent {
     return this.hasPrefill() || super.getReadOnly();
   }
 
-  get errors() {
-    return this.componentErrors;
-  }
-
   checkValidity(data, dirty, row) {
     this.removeAllErrors();
 

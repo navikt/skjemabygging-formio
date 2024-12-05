@@ -126,11 +126,11 @@ class Address extends BaseComponent {
   }
 
   getReadOnly(): boolean {
-    return !!this.component?.prefillKey && this.isSubmissionDigital();
+    return this.hasPrefill() || super.getReadOnly();
   }
 
   showAddressTypeChoice(): boolean {
-    return this.hasPrefill() || super.getReadOnly();
+    return !!this.component?.prefillKey && this.isSubmissionPaper();
   }
 
   setValue(value: any) {
