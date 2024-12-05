@@ -130,7 +130,7 @@ class Address extends BaseComponent {
   }
 
   showAddressTypeChoice(): boolean {
-    return !!this.component?.prefillKey && this.isSubmissionPaper();
+    return this.hasPrefill() || super.getReadOnly();
   }
 
   setValue(value: any) {
