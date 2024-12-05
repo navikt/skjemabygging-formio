@@ -1,5 +1,5 @@
 import { System } from '@navikt/ds-icons';
-import { Dropdown, InternalHeader } from '@navikt/ds-react';
+import { Dropdown, InternalHeader, Tag } from '@navikt/ds-react';
 import useUnsavedChangesModal from '../../../hooks/useUnsavedChangesModal';
 import { AdminMenuLink } from './AdminMenuLink';
 
@@ -50,6 +50,14 @@ const AdminMenu = ({ showImport = false }) => {
                 </AdminMenuLink>
               </Dropdown.Menu.GroupedList.Item>
             )}
+            <Dropdown.Menu.GroupedList.Item>
+              <AdminMenuLink showUnsavedChangesModal={showUnsavedChangesModal} to="/oversettelser">
+                Globale Oversettelser{' '}
+                <Tag variant={'warning-moderate'} size={'xsmall'}>
+                  Beta
+                </Tag>
+              </AdminMenuLink>
+            </Dropdown.Menu.GroupedList.Item>
           </Dropdown.Menu.GroupedList>
         </Dropdown.Menu>
       </Dropdown>

@@ -227,7 +227,7 @@ const GlobalTranslationsPage = ({
     <>
       <AppLayout
         navBarProps={{
-          translationMenu: true,
+          oldTranslationsMeny: true,
         }}
       >
         <TitleRowLayout

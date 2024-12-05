@@ -1,21 +1,24 @@
+import { useLanguageCodeFromURL } from '@navikt/skjemadigitalisering-shared-components';
 import { MenuLink } from './MenuLink';
 
-export const TranslationsMenu = () => {
+export const TranslationsMenu = ({ path }: { path?: string }) => {
+  const currentLanguage = useLanguageCodeFromURL();
+  const basePath = path ? path : `/translations/global/${currentLanguage}`;
   return (
     <>
-      <MenuLink to={`/oversettelser/skjematekster`} dataKey={'skjematekster'} noIconStyling={true}>
+      <MenuLink to={`${basePath}/skjematekster`} dataKey={'skjematekster'} noIconStyling={true}>
         Skjematekster
       </MenuLink>
 
-      <MenuLink to={`/oversettelser/grensesnitt`} dataKey={'grensesnitt'} noIconStyling={true}>
+      <MenuLink to={`${basePath}/grensesnitt`} dataKey={'grensesnitt'} noIconStyling={true}>
         Grensesnitt
       </MenuLink>
 
-      <MenuLink to={`/oversettelser/statiske-tekster`} dataKey={'statiske-tekster'} noIconStyling={true}>
+      <MenuLink to={`${basePath}/statiske-tekster`} dataKey={'statiske-tekster'} noIconStyling={true}>
         Statiske tekster
       </MenuLink>
 
-      <MenuLink to={`/oversettelser/validering`} dataKey={'validering'} noIconStyling={true}>
+      <MenuLink to={`${basePath}/validering`} dataKey={'validering'} noIconStyling={true}>
         Validering
       </MenuLink>
     </>
