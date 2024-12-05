@@ -1,4 +1,8 @@
-import { FormsApiTranslation, formsApiTranslations } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  FormsApiGlobalTranslation,
+  FormsApiTranslation,
+  formsApiTranslations,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import { Context, createContext, ReactNode, useContext, useEffect, useReducer } from 'react';
 import { useFeedbackEmit } from '../notifications/FeedbackContext';
 import reducer, { Status } from './editTranslationsReducer/reducer';
@@ -16,13 +20,13 @@ export type TranslationLang = 'nb' | 'nn' | 'en';
 interface EditTranslationsContextValue {
   updateTranslation: (original: FormsApiTranslation, property: TranslationLang, value: string) => void;
   errors: TranslationError[];
-  newTranslation: FormsApiTranslation;
+  newTranslation: FormsApiGlobalTranslation;
   editState: Status;
   updateNewTranslation: (property: TranslationLang, value: string) => void;
   saveChanges: () => Promise<void>;
 }
 
-const defaultNewSkjemateksterTranslation: FormsApiTranslation = {
+const defaultNewSkjemateksterTranslation: FormsApiGlobalTranslation = {
   key: '',
   tag: 'skjematekster',
   nb: '',

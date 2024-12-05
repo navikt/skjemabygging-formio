@@ -1,11 +1,11 @@
-import { FormsApiTranslation } from '@navikt/skjemadigitalisering-shared-domain';
+import { FormsApiGlobalTranslation, FormsApiTranslation } from '@navikt/skjemadigitalisering-shared-domain';
 import { TranslationLang } from '../EditTranslationsContext';
 import { TranslationError } from '../types';
 
 type Status = 'INIT' | 'EDITING' | 'SAVED';
 interface State<Translation> {
   changes: Record<string, Translation>;
-  new: FormsApiTranslation;
+  new: FormsApiGlobalTranslation;
   errors: TranslationError[];
   state: Status;
 }
@@ -24,7 +24,7 @@ type UpdateNewAction = {
 };
 type ValidationErrorAction = { type: 'VALIDATION_ERROR'; payload: { errors: TranslationError[] } };
 type ClearErrorsAction = { type: 'CLEAR_ERRORS' };
-type SavedAction = { type: 'SAVED'; payload: { defaultNew: FormsApiTranslation; errors: TranslationError[] } };
+type SavedAction = { type: 'SAVED'; payload: { defaultNew: FormsApiGlobalTranslation; errors: TranslationError[] } };
 
 type Action =
   | InitializeAction
@@ -50,7 +50,7 @@ const getUpdatedChanges = <Translation>(
 const getUpdatedNew = <Translation>(
   state: State<Translation>,
   args: { property: TranslationLang; value: string },
-): FormsApiTranslation => {
+): FormsApiGlobalTranslation => {
   const { property, value } = args;
   if (property === 'nb') {
     return { ...state.new, key: value, [property]: value };
@@ -78,8 +78,8 @@ const getResetChanges = <Translation extends FormsApiTranslation>(
 
 const getResetNew = <Translation extends FormsApiTranslation>(
   state: State<Translation>,
-  args: { defaultNew: FormsApiTranslation; errors: TranslationError[] },
-): FormsApiTranslation => {
+  args: { defaultNew: FormsApiGlobalTranslation; errors: TranslationError[] },
+): FormsApiGlobalTranslation => {
   if (args.errors.some((error) => error.key === state.new.key)) {
     return state.new;
   }

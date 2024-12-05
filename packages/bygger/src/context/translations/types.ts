@@ -1,4 +1,4 @@
-import { FormsApiTranslation } from '@navikt/skjemadigitalisering-shared-domain';
+import { FormsApiGlobalTranslation, FormsApiTranslation } from '@navikt/skjemadigitalisering-shared-domain';
 
 //TODO move
 const translationErrorTypes = ['MISSING_KEY_VALIDATION', 'CONFLICT', 'OTHER_HTTP'] as const;
@@ -16,7 +16,7 @@ interface TranslationsContextValue<Translation extends FormsApiTranslation> {
   isReady: boolean;
   loadTranslations: () => Promise<void>;
   saveTranslations: (translations: Translation[]) => Promise<Array<TranslationError>>;
-  createNewTranslation?: (translation: FormsApiTranslation) => Promise<TranslationError | undefined>;
+  createNewTranslation?: (translation: FormsApiGlobalTranslation) => Promise<TranslationError | undefined>;
 }
 
 export { isTranslationError, translationErrorTypes };
