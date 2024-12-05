@@ -13,6 +13,7 @@ const findFirstInputWithValidationError = (wizardComponent, data): Component | u
   wizardComponent.root.submitted = true;
   const valid = wizardComponent.checkValidity(data);
   if (!valid && wizardComponent.component.input) {
+    console.log(wizardComponent);
     return wizardComponent.component;
   }
 
