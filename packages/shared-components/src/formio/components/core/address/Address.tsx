@@ -176,8 +176,6 @@ class Address extends BaseComponent {
       this.rerender();
     }
 
-    console.log(this.component?.label, this.componentErrors.length, this.componentErrors);
-
     return this.componentErrors.length === 0;
   }
 

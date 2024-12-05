@@ -198,7 +198,6 @@ class BaseComponent extends FormioReactComponent {
    * Message is the error message that is shown in the error summary
    */
   addError(message: string, elementId?: string) {
-    console.log('addError', this.component?.label, message, elementId);
     if (message && this.showErrorMessages()) {
       this.logger.debug('addError', { errorMessage: message });
       this.componentErrors.push(this.createError(message, elementId));
@@ -265,7 +264,6 @@ class BaseComponent extends FormioReactComponent {
    * editFormDialog: When user have open a form dialog in the form builder
    */
   showErrorMessages() {
-    console.log(this.component?.label, this.componentErrors, this.root.submitted);
     return (
       (this.root.currentPage?.nextPageClicked && baseComponentUtils.isCurrentPanel(this)) ||
       this.root.submitted ||
