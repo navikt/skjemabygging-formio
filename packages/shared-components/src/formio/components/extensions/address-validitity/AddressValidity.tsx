@@ -26,10 +26,6 @@ export default class AddressValidity extends BaseComponent {
     return addressValidityBuilder();
   }
 
-  get errors() {
-    return this.componentErrors;
-  }
-
   checkValidity(data, dirty, row) {
     this.removeAllErrors();
 
