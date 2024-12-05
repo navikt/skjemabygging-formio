@@ -17,7 +17,7 @@ const MOCK_PREDEFINED_TEXTS_I18N_PL = {
   Forrige: 'Poprzedni',
   Neste: 'Następny',
 };
-vi.mock('../translations/global/utils', () => ({
+vi.mock('../old_translations/global/utils', () => ({
   getTranslationKeysForAllPredefinedTexts: () => Object.keys(MOCK_PREDEFINED_TEXTS_I18N_EN),
   tags: { VALIDERING: 'validering', GRENSESNITT: 'grensesnitt' },
 }));
