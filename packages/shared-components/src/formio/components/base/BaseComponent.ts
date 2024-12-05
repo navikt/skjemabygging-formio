@@ -264,6 +264,7 @@ class BaseComponent extends FormioReactComponent {
    * editFormDialog: When user have open a form dialog in the form builder
    */
   showErrorMessages() {
+    console.log(this.component?.label, this.componentErrors, this.root.submitted);
     return (
       (this.root.currentPage?.nextPageClicked && baseComponentUtils.isCurrentPanel(this)) ||
       this.root.submitted ||
