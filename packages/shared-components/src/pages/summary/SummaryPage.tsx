@@ -94,8 +94,6 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
       instance.checkData(submissionCopy.data, [], undefined);
 
       const panelValidations = validateWizardPanels(instance, form, submission);
-
-      console.log('panelValidations', panelValidations);
       setPanelValidationList(panelValidations);
       instance.destroy(true);
       const formioSummary = document.getElementById('formio-summary-hidden');
