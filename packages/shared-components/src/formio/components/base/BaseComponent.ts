@@ -190,7 +190,7 @@ class BaseComponent extends FormioReactComponent {
   }
 
   hasPrefill(): boolean {
-    return (this.isSubmissionDigital() && !!this.component?.prefillKey && !!this.component?.prefillValue) ?? false;
+    return (this.isSubmissionDigital() && !!this.component?.prefillKey) ?? false;
   }
 
   /**
