@@ -16,7 +16,7 @@ const LetterUXSignals = ({ id, demo = false }: Props) => {
   const classes = useStyles();
   useEffect(() => {
     const script = document.createElement('script');
-    script.src = 'https://uxsignals-frontend.uxsignals.app.iterate.no/embed.js';
+    script.src = 'https://widget.uxsignals.com/embed.js';
     script.type = 'module';
     document.body.appendChild(script);
 
