@@ -6,7 +6,6 @@ import {
   Submission,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { NextFunction, Request, Response } from 'express';
-import { base64Decode } from '../../utils/base64';
 import { htmlResponseError } from '../../utils/errorHandling';
 import { logErrorWithStacktrace } from '../../utils/errors';
 import { createPdf } from './helpers/pdfService';
@@ -28,7 +27,7 @@ const parseBody = (
   return { form, submission, submissionMethod, translations, language };
 };
 
-const exstream = {
+const gotenberg = {
   post: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { form, submission, submissionMethod, translations, language } = parseBody(req);
@@ -42,8 +41,9 @@ const exstream = {
         translations,
         languageCode,
       );
-      res.contentType(pdf.contentType);
-      res.send(base64Decode(pdf.data));
+
+      res.setHeader('Content-Type', 'application/pdf');
+      res.status(200).send(Buffer.from(new Uint8Array(pdf)));
     } catch (e) {
       logErrorWithStacktrace(e as Error);
       const createPdfError = htmlResponseError('Generering av PDF feilet');
@@ -52,4 +52,4 @@ const exstream = {
   },
 };
 
-export default exstream;
+export default gotenberg;

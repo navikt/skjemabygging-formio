@@ -79,6 +79,7 @@ const localDevelopmentConfig: DefaultConfig = {
   decoratorUrl: 'https://www.nav.no/dekoratoren?simple=true',
   skjemabyggingProxyUrl: process.env.SKJEMABYGGING_PROXY_URL || 'https://skjemabygging-proxy.dev-fss-pub.nais.io',
   skjemabyggingProxyClientId: '95170319-b4d7-4190-8271-118ed19bafbf',
+  gotenbergUrl: process.env.GOTENBERG_URL || 'https://upload-convert-to-pdf.fyllut-sendinn',
   azureOpenidTokenEndpoint:
     process.env.AZURE_OPENID_CONFIG_TOKEN_ENDPOINT ||
     'https://login.microsoftonline.com/966ac572-f5b7-4bbe-aa88-c76419c0f851/oauth2/v2.0/token',
@@ -125,6 +126,7 @@ const defaultConfig: DefaultConfig = {
   decoratorUrl: process.env.DECORATOR_URL!,
   skjemabyggingProxyUrl: process.env.SKJEMABYGGING_PROXY_URL!,
   skjemabyggingProxyClientId: process.env.SKJEMABYGGING_PROXY_CLIENT_ID!,
+  gotenbergUrl: process.env.GOTENBERG_URL!,
   azureOpenidTokenEndpoint: process.env.AZURE_OPENID_CONFIG_TOKEN_ENDPOINT!,
   clientId: process.env.AZURE_APP_CLIENT_ID!,
   skjemaDir: process.env.SKJEMA_DIR!,

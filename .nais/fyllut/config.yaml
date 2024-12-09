@@ -87,6 +87,8 @@ spec:
       value: {{skjemabygging-proxy-url}}
     - name: SKJEMABYGGING_PROXY_CLIENT_ID
       value: {{skjemabygging-proxy-client-id}}
+    - name: GOTENBERG_URL
+      value: {{gotenberg-url}}
     - name: SEND_INN_TOKEN_X_CLIENT_ID
       value: {{send-inn-token-x-client-id}}
     - name: SEND_INN_HOST
