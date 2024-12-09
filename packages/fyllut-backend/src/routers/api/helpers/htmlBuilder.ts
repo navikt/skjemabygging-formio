@@ -73,14 +73,18 @@ p {margin: 0}
 .alt {margin-bottom: 5px; font-family: "Courier New", sans-serif; font-style: italic;}
 .innrykk {margin: 0px 0px 10px 20px;}
 .underskrift {margin-bottom: 30px;}
+.navlogored {height: 16px;float: left;margin: 4px auto 2px auto;}
 </style>`;
 
 const body = (formSummaryObject: SummaryPanel[], confirmation?: string, signatures?: string) => `
 <body>
+${navlogo}
 ${formSummaryObject.map(section).join('')}
 ${confirmation || ''}
 ${signatures || ''}
 </body>`;
+
+const navlogo: string = `<img xmlns="http://www.w3.org/2000/svg " src="Nav-logo.svg" alt="NAV logo" class="navlogored" x="0" height="16px"/>`;
 
 const section = (formSection: SummaryPanel) => `
 <h2>${formSection.label}</h2>

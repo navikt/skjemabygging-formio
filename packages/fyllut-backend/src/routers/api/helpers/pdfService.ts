@@ -6,15 +6,15 @@ import {
   translationUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import correlator from 'express-correlation-id';
+import FormData from 'form-data';
+import { readFileSync } from 'fs';
+import path from 'path';
 import { config } from '../../../config/config';
 import { logger } from '../../../logger';
 import { appMetrics } from '../../../services';
-import { base64Decode, base64Encode } from '../../../utils/base64';
-import { responseToError, synchronousResponseToError } from '../../../utils/errorHandling';
+import { synchronousResponseToError } from '../../../utils/errorHandling';
 import fetchWithRetry, { HeadersInit } from '../../../utils/fetchWithRetry';
 import { createHtmlFromSubmission } from './htmlBuilder';
-
-const { skjemabyggingProxyUrl, gitVersion } = config;
 
 export const createPdfAsByteArray = async (
   accessToken: string,
@@ -24,11 +24,51 @@ export const createPdfAsByteArray = async (
   translations: I18nTranslationMap,
   language: string,
 ) => {
-  const pdf = await createPdf(accessToken, form, submission, submissionMethod, translations, language);
-  return Array.from(base64Decode(pdf.data) ?? []);
+  return await createPdfFromGotenberg(accessToken, form, submission, submissionMethod, translations, language);
 };
 
 export const createPdf = async (
+  accessToken: string,
+  form: NavFormType,
+  submission: Submission,
+  submissionMethod: string,
+  translations: I18nTranslationMap,
+  language: string,
+) => {
+  const pdf = await createPdfFromGotenberg(accessToken, form, submission, submissionMethod, translations, language);
+  return Buffer.from(new Uint8Array(pdf));
+};
+
+const footer: string =
+  '<html>\n' +
+  '<head>\n' +
+  '    <style>\n' +
+  '    body {\n' +
+  '        font-size: 9px;\n' +
+  '\t    margin-top: 24px;\n' +
+  '\t\tmargin-left: 0px;\n' +
+  '    }\n' +
+  '\t.left {\n' +
+  '\t\ttext-align: left;\n' +
+  '\t\tfloat:left;\n' +
+  '\t}\n' +
+  '\t.right {\n' +
+  '\t\ttext-align: right;\n' +
+  '\t\tfloat: right;\n' +
+  '\t}\n' +
+  '    </style>\n' +
+  '</head>\n' +
+  '<body>\n' +
+  '<p class="left"><span>Generert 16. Nov 2024 kl 14:30: </span></p>\n' +
+  '<p class="right"><span class="pageNumber"></span> av <span class="totalPages"></span></p>\n' +
+  '</body>\n' +
+  '</html>';
+
+const filePath = path.join(process.cwd(), '/icons/nav-logo.svg');
+
+const navIcon = readFileSync(filePath, { encoding: 'utf-8', flag: 'r' });
+
+export const createPdfFromGotenberg = async (
   accessToken: string,
   form: NavFormType,
   submission: Submission,
@@ -48,88 +88,81 @@ export const createPdf = async (
   if (!html || Object.keys(html).length === 0) {
     throw Error('Missing HTML for generating PDF.');
   }
-  const { fodselsnummerDNummerSoker } = submission.data;
+  //const { fodselsnummerDNummerSoker } = submission.data;
   appMetrics.exstreamPdfRequestsCounter.inc();
   let errorOccurred = false;
   const stopMetricRequestDuration = appMetrics.outgoingRequestDuration.startTimer({
-    service: 'exstream',
-    method: 'createPdf',
+    service: 'gotenberg',
+    method: 'createPdfFromGotenberg',
   });
+  const assets = {};
+  const options = { pdfa: true, pdfua: true };
+  const gotenbergUrl = config.gotenbergUrl;
   try {
-    return await createPdfFromHtml(
-      accessToken,
-      translate(form.title),
-      form.properties.skjemanummer,
-      language,
-      html,
-      (fodselsnummerDNummerSoker as string | undefined) || '—',
-    );
+    return await createPdfCallingGotenberg(accessToken, gotenbergUrl, html, assets, options);
   } catch (e) {
     errorOccurred = true;
     appMetrics.exstreamPdfFailuresCounter.inc();
     throw e;
   } finally {
     const durationSeconds = stopMetricRequestDuration({ error: String(errorOccurred) });
-    logger.info(`Request to exstream pdf service completed after ${durationSeconds} seconds`, {
+    logger.info(`Request to gotenberg pdf service completed after ${durationSeconds} seconds`, {
       error: errorOccurred,
       durationSeconds,
     });
   }
 };
 
-export const createPdfFromHtml = async (
+const createPdfCallingGotenberg = async (
   azureAccessToken: string,
-  title: string,
-  skjemanummer: string,
-  language: string,
+  gotenbergUrl: string,
   html: string,
-  pid: string,
-) => {
-  const response = await fetchWithRetry(`${skjemabyggingProxyUrl}/exstream`, {
-    retry: 3,
-    headers: {
-      Authorization: `Bearer ${azureAccessToken}`,
-      'x-correlation-id': correlator.getId(),
-      'Content-Type': 'application/json',
-    } as HeadersInit,
-    method: 'POST',
-    body: JSON.stringify({
-      content: {
-        contentType: 'application/json',
-        data: base64Encode(
-          JSON.stringify({
-            dokumentTittel: title,
-            spraakkode: language,
-            blankettnr: skjemanummer,
-            brukersFnr: pid,
-            skjemaversjon: gitVersion,
-            html: base64Encode(html),
-          }),
-        ),
-        async: 'true',
-      },
-      RETURNFORMAT: 'PDF',
-      RETURNDATA: 'TRUE',
-    }),
-  });
+  assets: { [filename: string]: string },
+  options: { pdfa: boolean; pdfua: boolean },
+): Promise<any> => {
+  const formData = new FormData();
 
-  if (response.ok) {
-    const json: any = await response.json();
-    if (!json.data?.result?.[0]?.content) {
-      if (json.data?.id) {
-        throw synchronousResponseToError(
-          `Feil i responsdata fra Exstream på id "${json.data?.id}"`,
-          json,
-          response.status,
-          response.url,
-          true,
-        );
-      } else {
-        throw synchronousResponseToError('Feil i responsdata fra Exstream', json, response.status, response.url, true);
-      }
-    }
-    return json.data.result[0].content;
+  // Add the main HTML content
+  formData.append('files', Buffer.from(html), 'index.html');
+  formData.append('files', Buffer.from(footer), 'footer.html');
+  if (navIcon != null) {
+    formData.append('files', Buffer.from(navIcon), 'Nav-logo.svg');
   }
 
-  throw await responseToError(response, 'Feil ved generering av PDF hos Exstream', true);
+  // Add optional assets like logos, footers, etc.
+  for (const [filename, content] of Object.entries(assets)) {
+    formData.append('files', Buffer.from(content), filename);
+  }
+
+  // Add Gotenberg-specific options
+  formData.append('pdfa', options.pdfa ? 'PDF/A-1b' : '');
+  formData.append('pdfua', options.pdfua ? 'true' : '');
+  formData.append('skipNetworkIdleEvent', 'false');
+
+  // Send the request to Gotenberg
+  const gotenbergResponse = await fetchWithRetry(`${gotenbergUrl}/forms/chromium/convert/html`, {
+    retry: 3,
+    headers: {
+      ...formData.getHeaders(),
+      //Authorization: `Bearer ${azureAccessToken}`,
+      'x-correlation-id': correlator.getId(),
+    } as HeadersInit,
+    method: 'POST',
+    body: formData,
+  });
+
+  if (!gotenbergResponse.ok) {
+    const errorText = await gotenbergResponse.text();
+    console.error('Gotenberg error response:', errorText);
+    throw synchronousResponseToError(
+      `Feil i responsdata fra Gotenberg på id "${correlator.getId()}"`,
+      errorText,
+      gotenbergResponse.status,
+      gotenbergResponse.url,
+      true,
+    );
+  }
+
+  const pdfBuffer = gotenbergResponse.arrayBuffer();
+  return pdfBuffer;
 };
