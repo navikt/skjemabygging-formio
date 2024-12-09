@@ -324,5 +324,17 @@ describe('DrivingList', () => {
           cy.findByRole('link', { name: `Du må fylle ut: ${ACTIVITIES_LABEL}` }).should('exist');
         });
     });
+
+    it('should render alert when there are no activities and the user go directly to summary page url', () => {
+      cy.mocksUseRouteVariant('get-activities:success-empty');
+      cy.visit(`/fyllut/testdrivinglist/oppsummering?sub=digital&innsendingsId=a66e8932-ce2a-41c1-932b-716fc487813b`);
+      cy.defaultWaits();
+      cy.wait('@getMellomlagring');
+
+      cy.get('.navds-alert').should('exist');
+
+      cy.findAllByRole('link', { name: 'Fortsett utfylling' }).should('have.length', 2);
+      cy.findByRole('link', { name: 'Send til Nav' }).should('not.exist');
+    });
   });
 });

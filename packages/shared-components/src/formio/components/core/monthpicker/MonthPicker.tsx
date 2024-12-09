@@ -32,10 +32,6 @@ class MonthPicker extends BaseComponent {
     this.rerender();
   }
 
-  override get errors() {
-    return this.componentErrors;
-  }
-
   override checkValidity(data?: SubmissionData, dirty?: boolean, row?: SubmissionData): boolean {
     this.removeAllErrors();
 
