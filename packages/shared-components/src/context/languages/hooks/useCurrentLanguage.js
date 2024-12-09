@@ -1,21 +1,21 @@
+import { localizationUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useRef, useState } from 'react';
 
 const defaultLanguage = 'nb-NO';
 
 const useCurrentLanguage = (languageCodeFromUrl, translations) => {
-  const initialLanguage = useRef(
-    Object.keys(translations).indexOf(languageCodeFromUrl) !== -1 ? languageCodeFromUrl : defaultLanguage,
-  );
+  const language = localizationUtils.getLanguageFromIso639_1(languageCodeFromUrl);
+  const initialLanguage = useRef(Object.keys(translations).indexOf(language) !== -1 ? language : defaultLanguage);
 
   const [currentLanguage, setCurrentLanguage] = useState(initialLanguage.current);
 
   useEffect(() => {
-    if (languageCodeFromUrl) {
-      setCurrentLanguage(languageCodeFromUrl);
+    if (language) {
+      setCurrentLanguage(language);
     } else {
       setCurrentLanguage(initialLanguage.current);
     }
-  }, [languageCodeFromUrl]);
+  }, [language]);
 
   useEffect(() => {
     document.documentElement.lang = currentLanguage;

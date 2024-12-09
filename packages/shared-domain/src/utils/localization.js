@@ -9,6 +9,17 @@ const getLanguageCodeAsIso639_1 = (locale) => {
   }
 };
 
+const getLanguageFromIso639_1 = (locale) => {
+  switch (locale) {
+    case 'nn':
+      return 'nn-NO';
+    case 'nb':
+      return 'nb-NO';
+    default:
+      return locale;
+  }
+};
+
 const zipCountryNames = (keyNames, valueNames, mapToValue = (value) => value) => {
   if (keyNames.length !== valueNames.length) {
     return {};
@@ -26,6 +37,7 @@ const zipCountryNames = (keyNames, valueNames, mapToValue = (value) => value) =>
 
 const localizationUtils = {
   getLanguageCodeAsIso639_1,
+  getLanguageFromIso639_1,
   zipCountryNames,
 };
 export default localizationUtils;

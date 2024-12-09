@@ -30,6 +30,7 @@
     "@navikt/ds-icons": "^3.4.3",
     "@navikt/ds-react": "^7.1.2",
     "@navikt/fnrvalidator": "^2.1.2",
+    "@navikt/nav-dekoratoren-moduler": "^2.1.6",
     "@navikt/skjemadigitalisering-shared-domain": "1.0.0",
     "@types/dompurify": "^3.0.5",
     "classnames": "2.5.1",

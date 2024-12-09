@@ -1,15 +1,19 @@
-import { useParams, useSearchParams } from 'react-router-dom';
+import { useLocation, useParams, useSearchParams } from 'react-router-dom';
 
 const useLanguageCodeFromURL = () => {
   // Language code in skjemabygger URL
   const { languageCode } = useParams();
+  const location = useLocation();
 
-  // Language code as URL parameter in FyllUt
+  // Language code in fyllut URL
+  const languageMatch = location.pathname.match(/\/(\w{2}$)/);
+
+  // Language code as URL parameter in FyllUt (depricated)
   const [searchParams] = useSearchParams();
   const langQueryParam = searchParams.get('lang');
 
-  // Return either language code found
-  return langQueryParam || languageCode;
+  // Return language code found
+  return languageMatch?.[1] || langQueryParam || languageCode;
 };
 
 export default useLanguageCodeFromURL;

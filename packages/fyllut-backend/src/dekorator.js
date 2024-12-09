@@ -6,7 +6,7 @@ import { getFyllutUrl } from './utils/url';
 
 const { naisClusterName } = config;
 
-const getDecorator = async (redirect) => {
+const getDecorator = async (redirectToUrl) => {
   /**
    * https://github.com/navikt/nav-dekoratoren
    */
@@ -17,11 +17,28 @@ const getDecorator = async (redirect) => {
   return fetchDecoratorHtml({
     env: naisClusterName === NaisCluster.PROD ? 'prod' : 'dev',
     params: {
-      redirectToUrl: redirect,
+      redirectToUrl,
       level: 'Level4',
       simple: true,
       urlLookupTable: false,
       logoutWarning: true,
+      availableLanguages: [
+        {
+          locale: 'nb',
+          url: `${redirectToUrl}/nb`,
+          handleInApp: true,
+        },
+        {
+          locale: 'nn',
+          url: `${redirectToUrl}/nn`,
+          handleInApp: true,
+        },
+        {
+          locale: 'en',
+          url: `${redirectToUrl}/en`,
+          handleInApp: true,
+        },
+      ],
     },
   });
 };
