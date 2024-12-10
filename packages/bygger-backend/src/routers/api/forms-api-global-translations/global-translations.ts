@@ -15,8 +15,10 @@ const get: RequestHandler = async (req, res, next) => {
 
 const post: RequestHandler = async (req, res, next) => {
   const accessToken = req.headers.AzureAccessToken as string;
+  const { key, tag, nb, nn, en } = req.body as FormsApiGlobalTranslation;
+  const body = { key, tag, nb, nn, en };
   try {
-    const translation = await globalTranslationsService.post(req.body, accessToken);
+    const translation = await globalTranslationsService.post(body, accessToken);
     res.status(201).json(translation);
   } catch (error) {
     if (error instanceof OldHttpError) {

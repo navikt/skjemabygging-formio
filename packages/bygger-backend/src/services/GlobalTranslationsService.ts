@@ -25,7 +25,10 @@ export default class GlobalTranslationsService {
     return response.data as FormsApiGlobalTranslation[];
   }
 
-  async post(translation: FormsApiGlobalTranslation, accessToken?: string): Promise<FormsApiGlobalTranslation> {
+  async post(
+    translation: Pick<FormsApiGlobalTranslation, 'key' | 'tag' | 'nb' | 'nn' | 'en'>,
+    accessToken?: string,
+  ): Promise<FormsApiGlobalTranslation> {
     const response = await fetchWithErrorHandling(`${this.formsApiUrl}${this.globalTranslationsPath}`, {
       method: 'POST',
       headers: this.createHeaders(accessToken),
