@@ -27,6 +27,10 @@ class Email extends TextField {
     return 'email';
   }
 
+  override handleChange(value: string) {
+    super.handleChange(value ? value.trim() : value);
+  }
+
   init() {
     super.init();
     this.validators.push('email');
