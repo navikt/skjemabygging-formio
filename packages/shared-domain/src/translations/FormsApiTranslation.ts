@@ -1,12 +1,12 @@
 import { TranslationTag } from '../languages/types';
 
+type TranslationLang = 'nb' | 'nn' | 'en';
 type FormsApiTranslationCore = {
+  [key in TranslationLang]?: string;
+} & {
   id?: number;
   key: string;
   revision?: number;
-  nb?: string;
-  nn?: string;
-  en?: string;
   changedAt?: string;
   changedBy?: string;
 };
@@ -23,4 +23,4 @@ const isFormTranslation = (translation: FormsApiTranslation): translation is For
 
 const formsApiTranslations = { isFormTranslation, isGlobalTranslation };
 export { formsApiTranslations };
-export type { FormsApiFormTranslation, FormsApiGlobalTranslation, FormsApiTranslation };
+export type { FormsApiFormTranslation, FormsApiGlobalTranslation, FormsApiTranslation, TranslationLang };

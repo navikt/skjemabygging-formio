@@ -1,8 +1,8 @@
 import { PadlockLockedIcon } from '@navikt/aksel-icons';
 import { Table } from '@navikt/ds-react';
-import { FormsApiTranslation, formsApiTranslations } from '@navikt/skjemadigitalisering-shared-domain';
+import { FormsApiTranslation, formsApiTranslations, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useMemo, useState } from 'react';
-import { TranslationLang, useEditTranslations } from '../../context/translations/EditTranslationsContext';
+import { useEditTranslations } from '../../context/translations/EditTranslationsContext';
 import { getInputHeightInRows } from '../utils/translationsUtils';
 import TranslationInput from './TranslationInput';
 import useTranslationTableStyles from './styles';

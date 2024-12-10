@@ -9,7 +9,7 @@ const NewTranslationRow = () => {
   const missingKeyErrorMessage = errors.some(
     (error) => error.isNewTranslation && error.type === 'MISSING_KEY_VALIDATION',
   )
-    ? 'Ny oversettelse kan ikke lagres uten bokmålstekst'
+    ? 'Legg til bokmålstekst for å opprette ny oversettelse'
     : undefined;
   const conflictErrorMessage = errors.some((error) => error.key === newTranslation.key && error.type === 'CONFLICT')
     ? 'Det finnes allerede en global oversettelse med denne bokmålsteksten'

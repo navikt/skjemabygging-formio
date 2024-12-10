@@ -1,5 +1,8 @@
-import { FormsApiGlobalTranslation, FormsApiTranslation } from '@navikt/skjemadigitalisering-shared-domain';
-import { TranslationLang } from '../EditTranslationsContext';
+import {
+  FormsApiGlobalTranslation,
+  FormsApiTranslation,
+  TranslationLang,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import { TranslationError } from '../types';
 
 type Status = 'INIT' | 'EDITING' | 'SAVED';

@@ -115,6 +115,7 @@ import {
   FormsApiGlobalTranslation,
   FormsApiTranslation,
   formsApiTranslations,
+  TranslationLang,
 } from './translations/FormsApiTranslation';
 import currencyUtils from './utils/currencyUtils';
 import dateUtils from './utils/date';
@@ -261,6 +262,7 @@ export type {
   SummarySubmissionValue,
   TextSize,
   TextSizeShort,
+  TranslationLang,
   TranslationResource,
   TranslationScope,
   TranslationTag,

@@ -2,6 +2,7 @@ import {
   FormsApiGlobalTranslation,
   FormsApiTranslation,
   formsApiTranslations,
+  TranslationLang,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { Context, createContext, ReactNode, useContext, useEffect, useReducer } from 'react';
 import { useFeedbackEmit } from '../notifications/FeedbackContext';
@@ -14,8 +15,6 @@ interface Props<Translation extends FormsApiTranslation> {
   initialChanges?: Translation[];
   children: ReactNode;
 }
-//TODO: move me
-export type TranslationLang = 'nb' | 'nn' | 'en';
 
 interface EditTranslationsContextValue {
   updateTranslation: (original: FormsApiTranslation, property: TranslationLang, value: string) => void;
