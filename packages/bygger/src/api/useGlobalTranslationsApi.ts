@@ -7,11 +7,11 @@ const useGlobalTranslationsApi = () => {
   const feedbackEmit = useFeedbackEmit();
   const appConfig = useAppConfig();
   const http = appConfig.http ?? baseHttp;
-  const baseUrl = '/api/forms-api/global-translations';
+  const basePath = '/api/translations';
 
   const get = async (): Promise<FormsApiGlobalTranslation[] | undefined> => {
     try {
-      return await http.get<FormsApiGlobalTranslation[]>(baseUrl);
+      return await http.get<FormsApiGlobalTranslation[]>(basePath);
     } catch (error) {
       const message = (error as Error)?.message;
       feedbackEmit.error(`Feil ved henting av globale oversettelser. ${message}`);
@@ -23,7 +23,7 @@ const useGlobalTranslationsApi = () => {
   ): Promise<FormsApiGlobalTranslation | TranslationError> => {
     try {
       const { key, tag, nb = null, nn = null, en = null } = translation;
-      return await http.post<FormsApiGlobalTranslation>(baseUrl, { key, tag, nb, nn, en });
+      return await http.post<FormsApiGlobalTranslation>(basePath, { key, tag, nb, nn, en });
     } catch (error: any) {
       if (error?.status === 409) {
         return { type: 'CONFLICT', key: translation.key };
@@ -37,7 +37,7 @@ const useGlobalTranslationsApi = () => {
   const put = async (translation: FormsApiGlobalTranslation): Promise<FormsApiGlobalTranslation | TranslationError> => {
     try {
       const { id, revision, nb = null, nn = null, en = null } = translation;
-      return await http.put<FormsApiGlobalTranslation>(`${baseUrl}/${id}`, { revision, nb, nn, en });
+      return await http.put<FormsApiGlobalTranslation>(`${basePath}/${id}`, { revision, nb, nn, en });
     } catch (error: any) {
       if (error?.status === 409) {
         return { type: 'CONFLICT', key: translation.key };

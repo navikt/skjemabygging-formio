@@ -7,11 +7,11 @@ const useFormTranslationsApi = () => {
   const feedbackEmit = useFeedbackEmit();
   const appConfig = useAppConfig();
   const http = appConfig.http ?? baseHttp;
-  const baseUrl = '/api/forms-api/translations';
+  const getPath = (formPath: string) => `/api/forms/${formPath}/translations`;
 
   const get = async (formPath: string): Promise<FormsApiFormTranslation[] | undefined> => {
     try {
-      return await http.get<FormsApiFormTranslation[]>(`${baseUrl}/${formPath}`);
+      return await http.get<FormsApiFormTranslation[]>(getPath(formPath));
     } catch (error) {
       const message = (error as Error)?.message;
       feedbackEmit.error(`Feil ved henting av oversettelser ${message}`);
@@ -24,7 +24,7 @@ const useFormTranslationsApi = () => {
   ): Promise<FormsApiFormTranslation | TranslationError> => {
     try {
       const { key, nb = null, nn = null, en = null, globalTranslationId } = translation;
-      return await http.post<FormsApiFormTranslation>(`${baseUrl}/${formPath}`, {
+      return await http.post<FormsApiFormTranslation>(getPath(formPath), {
         key,
         nb,
         nn,
@@ -49,7 +49,7 @@ const useFormTranslationsApi = () => {
   ): Promise<FormsApiFormTranslation | TranslationError> => {
     try {
       const { id, revision, nb = null, nn = null, en = null, globalTranslationId } = translation;
-      return await http.put<FormsApiFormTranslation>(`${baseUrl}/${formPath}/${id}`, {
+      return await http.put<FormsApiFormTranslation>(`${getPath(formPath)}/${id}`, {
         revision,
         nb,
         nn,

@@ -3,8 +3,8 @@ import formTranslations from './form-translations';
 
 const formsApiFormTranslationsRouter = Router();
 
-formsApiFormTranslationsRouter.get('/:formPath', formTranslations.get);
-formsApiFormTranslationsRouter.post('/:formPath', formTranslations.post);
-formsApiFormTranslationsRouter.put('/:formPath/:id', formTranslations.put);
+formsApiFormTranslationsRouter.get('/', formTranslations.get);
+formsApiFormTranslationsRouter.post('/', formTranslations.post);
+formsApiFormTranslationsRouter.put('/:id', formTranslations.put);
 
 export default formsApiFormTranslationsRouter;

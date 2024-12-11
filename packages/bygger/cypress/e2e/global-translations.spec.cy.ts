@@ -3,7 +3,7 @@ import { expect } from 'chai';
 describe('Global translations', () => {
   beforeEach(() => {
     cy.intercept('GET', '/api/config', { fixture: 'config.json' }).as('getConfig');
-    cy.intercept('GET', '/api/forms-api/global-translations', { fixture: 'formsApiGlobalTranslations.json' }).as(
+    cy.intercept('GET', '/api/translations', { fixture: 'formsApiGlobalTranslations.json' }).as(
       'getGlobalTranslations',
     );
     cy.visit('/oversettelser');
@@ -12,7 +12,7 @@ describe('Global translations', () => {
 
   describe('Skjematekster', () => {
     it('adds new translation', () => {
-      cy.intercept('POST', '/api/forms-api/global-translations', (req) => {
+      cy.intercept('POST', '/api/translations', (req) => {
         expect(req.body).to.deep.equal({
           key: 'Ny tekst',
           nb: 'Ny tekst',
@@ -42,7 +42,7 @@ describe('Global translations', () => {
     });
 
     it('displays error message if new translation has existing key', () => {
-      cy.intercept('POST', '/api/forms-api/global-translations', (req) => {
+      cy.intercept('POST', '/api/translations', (req) => {
         req.reply(409, req.body);
       }).as('postGlobalTranslation');
       cy.findByRole('textbox', { name: 'Bokmål' }).type('Abc');
@@ -57,7 +57,7 @@ describe('Global translations', () => {
     });
 
     it('edits existing and adds new translation', () => {
-      cy.intercept('POST', '/api/forms-api/global-translations', (req) => {
+      cy.intercept('POST', '/api/translations', (req) => {
         expect(req.body).to.deep.equal({
           key: 'Test',
           nb: 'Test',
@@ -67,7 +67,7 @@ describe('Global translations', () => {
         });
         req.reply(201, req.body);
       }).as('postGlobalTranslation');
-      cy.intercept('PUT', '/api/forms-api/global-translations/4', (req) => {
+      cy.intercept('PUT', '/api/translations/4', (req) => {
         expect(req.body).to.deep.equal({
           nb: 'Hei',
           nn: 'Hei',
@@ -76,7 +76,7 @@ describe('Global translations', () => {
         });
         req.reply(200, req.body);
       }).as('putGlobalTranslation4');
-      cy.intercept('PUT', '/api/forms-api/global-translations/2', (req) => {
+      cy.intercept('PUT', '/api/translations/2', (req) => {
         console.log(JSON.stringify(req.body));
         expect(req.body).to.deep.equal({
           nb: 'Nyere',
@@ -104,10 +104,10 @@ describe('Global translations', () => {
     });
 
     it('keeps translations open if they were not successful in saving', () => {
-      cy.intercept('PUT', '/api/forms-api/global-translations/4', (req) => {
+      cy.intercept('PUT', '/api/translations/4', (req) => {
         req.reply(200, req.body);
       }).as('putGlobalTranslation4');
-      cy.intercept('PUT', '/api/forms-api/global-translations/2', (req) => {
+      cy.intercept('PUT', '/api/translations/2', (req) => {
         req.reply(409, req.body);
       }).as('putGlobalTranslation2');
       cy.get('tr').eq(2).click();
