@@ -265,7 +265,7 @@ class BaseComponent extends FormioReactComponent {
    */
   showErrorMessages() {
     return (
-      (this.root.currentPage?.nextPageClicked && baseComponentUtils.isCurrentPanel(this)) ||
+      (this.root.currentPage?.nextPageClicked && baseComponentUtils.isOnCurrentPage(this)) ||
       this.root.submitted ||
       this.builderMode ||
       (this.root.editFormDialog && (!this.isEmpty(this.defaultValue) || !this.pristine))

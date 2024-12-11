@@ -43,7 +43,7 @@ const getParentPanel = (component: ReactComponentType) => {
   return component.parent?.type === 'components' ? component.parent : getParentPanel(component.parent);
 };
 
-const isCurrentPanel = (component: ReactComponentType) => {
+const isOnCurrentPage = (component: ReactComponentType) => {
   return component.root.currentPage?.id === getParentPanel(component)?.id;
 };
 
@@ -54,6 +54,6 @@ const baseComponentUtils = {
   getEditFields,
   isRequired,
   isReadOnly,
-  isCurrentPanel,
+  isOnCurrentPage,
 };
 export default baseComponentUtils;
