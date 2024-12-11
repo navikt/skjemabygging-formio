@@ -1,6 +1,6 @@
 import { FormsApiFormTranslation } from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import useFormsApiFormTranslation from '../../api/useFormsApiFormTranslation';
+import useFormTranslationsApi from '../../api/useFormTranslationsApi';
 import { isTranslationError, TranslationError, TranslationsContextValue } from './types';
 
 interface Props {
@@ -19,7 +19,7 @@ const FormTranslationsContext = createContext<TranslationsContextValue<FormsApiF
 
 const FormTranslationsProvider = ({ children, formPath }: Props) => {
   const [state, setState] = useState<{ isReady: boolean; data?: FormsApiFormTranslation[] }>({ isReady: false });
-  const translationsApi = useFormsApiFormTranslation();
+  const translationsApi = useFormTranslationsApi();
 
   const loadTranslations = useCallback(async () => {
     const data = await translationsApi.get(formPath);

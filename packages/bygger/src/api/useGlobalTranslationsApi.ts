@@ -3,7 +3,7 @@ import { FormsApiGlobalTranslation } from '@navikt/skjemadigitalisering-shared-d
 import { useFeedbackEmit } from '../context/notifications/FeedbackContext';
 import { TranslationError } from '../context/translations/types';
 
-const useFormsApiGlobalTranslations = () => {
+const useGlobalTranslationsApi = () => {
   const feedbackEmit = useFeedbackEmit();
   const appConfig = useAppConfig();
   const http = appConfig.http ?? baseHttp;
@@ -55,4 +55,4 @@ const useFormsApiGlobalTranslations = () => {
   };
 };
 
-export default useFormsApiGlobalTranslations;
+export default useGlobalTranslationsApi;

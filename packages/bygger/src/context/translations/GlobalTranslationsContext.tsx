@@ -1,6 +1,6 @@
 import { FormsApiGlobalTranslation } from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import useFormsApiGlobalTranslations from '../../api/useFormsApiGlobalTranslations';
+import useGlobalTranslationsApi from '../../api/useGlobalTranslationsApi';
 import { isTranslationError, TranslationError, TranslationsContextValue } from './types';
 
 const defaultValue: TranslationsContextValue<FormsApiGlobalTranslation> = {
@@ -20,7 +20,7 @@ const GlobalTranslationsProvider = ({ children }) => {
   }>({
     isReady: false,
   });
-  const translationsApi = useFormsApiGlobalTranslations();
+  const translationsApi = useGlobalTranslationsApi();
 
   const loadTranslations = useCallback(async () => {
     const data = await translationsApi.get();
