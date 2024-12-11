@@ -21,7 +21,6 @@ const post: RequestHandler = async (req, res, next) => {
   const body = globalTranslationId ? { key, globalTranslationId } : { key, nb, nn, en };
   try {
     const translation = await formTranslationsService.post(formPath, body, accessToken);
-    console.log(translation);
     res.status(201).json(translation);
   } catch (error) {
     if (error instanceof OldHttpError) {

@@ -17,11 +17,11 @@ interface Props<Translation extends FormsApiTranslation> {
 }
 
 interface EditTranslationsContextValue {
-  updateTranslation: (original: FormsApiTranslation, property: TranslationLang, value: string) => void;
+  updateTranslation: (original: FormsApiTranslation, lang: TranslationLang, value: string) => void;
   errors: TranslationError[];
   newTranslation: FormsApiGlobalTranslation;
   editState: Status;
-  updateNewTranslation: (property: TranslationLang, value: string) => void;
+  updateNewTranslation: (lang: TranslationLang, value: string) => void;
   saveChanges: () => Promise<void>;
 }
 
@@ -65,29 +65,33 @@ const EditTranslationsProvider = <Translation extends FormsApiTranslation>({
 
   const updateTranslation = <Translation extends FormsApiTranslation>(
     original: Translation,
-    property: TranslationLang,
+    lang: TranslationLang,
     value: string,
   ) => {
     const { key } = original;
-    const storedValue = storedTranslations[key]?.[property];
-    const currentChange = state.changes[key]?.[property];
+    const storedValue = storedTranslations[key]?.[lang];
+    const currentChange = state.changes[key]?.[lang];
     const currentValue = currentChange ?? storedValue;
     if ((currentValue ?? '') === value) {
       return;
     }
-    const originalValue = original[property];
+
+    const originalValue = original[lang];
     if (formsApiTranslations.isFormTranslation(original) && originalValue !== value) {
       delete original.globalTranslationId;
+      const { globalTranslationId, ...originalWithoutGlobal } = original;
+      dispatch({ type: 'UPDATE', payload: { original: originalWithoutGlobal, lang, value } });
+    } else {
+      dispatch({ type: 'UPDATE', payload: { original, lang, value } });
     }
-    dispatch({ type: 'UPDATE', payload: { original, property, value } });
   };
 
-  const updateNewTranslation = (property: TranslationLang, value: string) => {
-    const currentValue = state.new[property];
+  const updateNewTranslation = (lang: TranslationLang, value: string) => {
+    const currentValue = state.new[lang];
     if ((currentValue ?? '') === value) {
       return;
     }
-    dispatch({ type: 'UPDATE_NEW', payload: { property, value } });
+    dispatch({ type: 'UPDATE_NEW', payload: { lang, value } });
   };
 
   const validate = (

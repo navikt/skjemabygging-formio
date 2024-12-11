@@ -3,7 +3,7 @@ import { useState } from 'react';
 import UserFeedback from '../../components/UserFeedback';
 import { useEditTranslations } from '../../context/translations/EditTranslationsContext';
 
-const ButtonColumn = () => {
+const TranslationButtonColumn = () => {
   const [isSaving, setIsSaving] = useState(false);
   const { saveChanges } = useEditTranslations();
 
@@ -28,4 +28,4 @@ const ButtonColumn = () => {
     </VStack>
   );
 };
-export default ButtonColumn;
+export default TranslationButtonColumn;

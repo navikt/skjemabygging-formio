@@ -8,7 +8,7 @@ import TitleRowLayout from '../../components/layout/TitleRowLayout';
 import EditTranslationsProvider from '../../context/translations/EditTranslationsContext';
 import { FormTranslationsContext, useFormTranslations } from '../../context/translations/FormTranslationsContext';
 import { useGlobalTranslations } from '../../context/translations/GlobalTranslationsContext';
-import ButtonColumn from '../components/ButtonColumn';
+import TranslationButtonColumn from '../components/TranslationButtonColumn';
 import TranslationTable from '../components/TranslationTable';
 import { generateAndPopulateTranslationsForForm } from '../utils/editFormTranslationsUtils';
 
@@ -37,14 +37,14 @@ const FormTranslationsPage = ({ form }: Props) => {
     <AppLayout navBarProps={{ formMenu: true, formPath: form.path }}>
       <TitleRowLayout>
         <Title>
-          {form.properties.skjemanummer}, {form.name}
+          {form.properties.skjemanummer}, {form.title}
         </Title>
       </TitleRowLayout>
       <EditTranslationsProvider context={FormTranslationsContext} initialChanges={initialChanges}>
         <RowLayout
           right={
             <SidebarLayout noScroll>
-              <ButtonColumn />
+              <TranslationButtonColumn />
             </SidebarLayout>
           }
         >

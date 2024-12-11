@@ -19,11 +19,11 @@ type InitializeAction = {
 };
 type UpdateAction = {
   type: 'UPDATE';
-  payload: { original: FormsApiTranslation; property: TranslationLang; value: string };
+  payload: { original: FormsApiTranslation; lang: TranslationLang; value: string };
 };
 type UpdateNewAction = {
   type: 'UPDATE_NEW';
-  payload: { property: TranslationLang; value: string };
+  payload: { lang: TranslationLang; value: string };
 };
 type ValidationErrorAction = { type: 'VALIDATION_ERROR'; payload: { errors: TranslationError[] } };
 type ClearErrorsAction = { type: 'CLEAR_ERRORS' };
@@ -41,24 +41,24 @@ const getUpdatedChanges = <Translation>(
   state: State<Translation>,
   args: {
     original: FormsApiTranslation;
-    property: TranslationLang;
+    lang: TranslationLang;
     value: string;
   },
 ): Record<string, Translation> => {
-  const { original, property, value } = args;
+  const { original, lang, value } = args;
   const existingChange = state.changes[original.key];
-  return { ...state.changes, [original.key]: { ...original, ...existingChange, [property]: value } };
+  return { ...state.changes, [original.key]: { ...original, ...existingChange, [lang]: value } };
 };
 
 const getUpdatedNew = <Translation>(
   state: State<Translation>,
-  args: { property: TranslationLang; value: string },
+  args: { lang: TranslationLang; value: string },
 ): FormsApiGlobalTranslation => {
-  const { property, value } = args;
-  if (property === 'nb') {
-    return { ...state.new, key: value, [property]: value };
+  const { lang, value } = args;
+  if (lang === 'nb') {
+    return { ...state.new, key: value, [lang]: value };
   }
-  return { ...state.new, [property]: value };
+  return { ...state.new, [lang]: value };
 };
 
 const getErrors = <Translation>(state: State<Translation>, args: { errors: TranslationError[] }) => {
