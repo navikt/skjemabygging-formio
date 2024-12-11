@@ -14,7 +14,7 @@ const ConfirmDelingslenkeModal = () => {
       onConfirm={onClose}
       texts={{
         title: 'Forhåndsvisning',
-        body: 'Dette er kun en forhåndsvisning av skjemaet og skal IKKE brukes til å sende søknader til NAV.',
+        body: 'Dette er kun en forhåndsvisning av skjemaet og skal IKKE brukes til å sende søknader til Nav.',
         confirm: 'Ok',
       }}
     />

@@ -50,12 +50,12 @@ const RESPONSE_HEADERS_ERROR = {
 };
 
 const mockEnhetsListe = [
-  { enhetId: 1, navn: 'NAV-ENHET YTA', type: 'YTA', enhetNr: '001' },
-  { enhetId: 2, navn: 'NAV-ENHET LOKAL', type: 'LOKAL', enhetNr: '002' },
-  { enhetId: 3, navn: 'NAV-ENHET ARK', type: 'ARK', enhetNr: '003' },
-  { enhetId: 4, navn: 'NAV-ENHET FPY', type: 'FPY', enhetNr: '004' },
-  { enhetId: 5, navn: 'NAV-ENHET INTRO', type: 'INTRO', enhetNr: '005' },
-  { enhetId: 6, navn: 'NAV-ENHET ALS', type: 'ALS', enhetNr: '006' },
+  { enhetId: 1, navn: 'Nav-ENHET YTA', type: 'YTA', enhetNr: '001' },
+  { enhetId: 2, navn: 'Nav-ENHET LOKAL', type: 'LOKAL', enhetNr: '002' },
+  { enhetId: 3, navn: 'Nav-ENHET ARK', type: 'ARK', enhetNr: '003' },
+  { enhetId: 4, navn: 'Nav-ENHET FPY', type: 'FPY', enhetNr: '004' },
+  { enhetId: 5, navn: 'Nav-ENHET INTRO', type: 'INTRO', enhetNr: '005' },
+  { enhetId: 6, navn: 'Nav-ENHET ALS', type: 'ALS', enhetNr: '006' },
 ];
 
 const defaultForm = {
@@ -197,9 +197,9 @@ describe('PrepareLetterPage', () => {
         const enhetSelector = screen.getByText(TEXTS.statiske.prepareLetterPage.selectEntityDefault);
         fireEvent.keyDown(enhetSelector, DOWN_ARROW);
 
-        const options = screen.getAllByText(/^NAV-ENHET/).map((element) => element.textContent);
+        const options = screen.getAllByText(/^Nav-ENHET/).map((element) => element.textContent);
         expect(options).toHaveLength(3);
-        expect(options).toEqual(['NAV-ENHET ALS', 'NAV-ENHET ARK', 'NAV-ENHET LOKAL']);
+        expect(options).toEqual(['Nav-ENHET ALS', 'Nav-ENHET ARK', 'Nav-ENHET LOKAL']);
       });
     });
 
@@ -236,7 +236,7 @@ describe('PrepareLetterPage', () => {
         const enhetSelector = screen.getByText(TEXTS.statiske.prepareLetterPage.selectEntityDefault);
         fireEvent.keyDown(enhetSelector, DOWN_ARROW);
 
-        const enhetSelectList = screen.queryAllByText(/^NAV-ENHET/);
+        const enhetSelectList = screen.queryAllByText(/^Nav-ENHET/);
         expect(enhetSelectList).toHaveLength(6);
       });
 
@@ -274,7 +274,7 @@ describe('PrepareLetterPage', () => {
       });
 
       it('select list is not renderes', () => {
-        const enhetSelectList = screen.queryAllByText(/^NAV-ENHET/);
+        const enhetSelectList = screen.queryAllByText(/^Nav-ENHET/);
         expect(enhetSelectList).toHaveLength(0);
       });
 
@@ -296,7 +296,7 @@ describe('PrepareLetterPage', () => {
         expect(enhetSelector).toBeDefined();
         fireEvent.keyDown(enhetSelector, DOWN_ARROW);
 
-        const enhetSelectList = screen.getAllByText(/^NAV-ENHET/);
+        const enhetSelectList = screen.getAllByText(/^Nav-ENHET/);
         expect(enhetSelectList).toHaveLength(6);
       },
     );

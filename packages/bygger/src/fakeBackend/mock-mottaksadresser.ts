@@ -4,7 +4,7 @@ const mottaksadresser: Mottaksadresse[] = [
   {
     _id: '1',
     data: {
-      adresselinje1: 'NAV alternativ skanning',
+      adresselinje1: 'Nav alternativ skanning',
       adresselinje2: 'Postboks 3',
       postnummer: '0591',
       poststed: 'Oslo',
@@ -14,7 +14,7 @@ const mottaksadresser: Mottaksadresse[] = [
   {
     _id: '2',
     data: {
-      adresselinje1: 'NAV skanning Molde',
+      adresselinje1: 'Nav skanning Molde',
       adresselinje2: 'Storgata 1',
       postnummer: '6400',
       poststed: 'Molde',

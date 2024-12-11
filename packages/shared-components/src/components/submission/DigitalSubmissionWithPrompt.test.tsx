@@ -25,11 +25,11 @@ describe('DigitalSubmissionWithPrompt', () => {
     );
   });
 
-  it('renders "Send to NAV"-button', () => {
+  it('renders "Send to Nav"-button', () => {
     expect(screen.getByRole('button', { name: TEXTS.grensesnitt.submitToNavPrompt.open })).toBeInTheDocument();
   });
 
-  it('renders modal with "DigitalSubmissionButton" when "Send to NAV" is clicked', () => {
+  it('renders modal with "DigitalSubmissionButton" when "Send to Nav" is clicked', () => {
     fireEvent.click(screen.getByRole('button', { name: TEXTS.grensesnitt.submitToNavPrompt.open }));
     expect(screen.getByRole('button', { name: TEXTS.grensesnitt.submitToNavPrompt.confirm })).toBeInTheDocument();
   });

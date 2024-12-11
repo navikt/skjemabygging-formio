@@ -92,7 +92,7 @@ describe('formsListUtils', () => {
   describe('sortByFormNumber', () => {
     const list = [nav02, noneStandard02, nav03, noneStandard01, nav01];
 
-    it('places standard NAV form numbers first on ascending sort', () => {
+    it('places standard Nav form numbers first on ascending sort', () => {
       const sorted = sortedForms(list, {
         orderBy: 'number',
         direction: 'ascending',
@@ -101,7 +101,7 @@ describe('formsListUtils', () => {
       expect(sorted).toStrictEqual([nav01, nav02, nav03, noneStandard01, noneStandard02]);
     });
 
-    it('places standard NAV form numbers last on descending sort', () => {
+    it('places standard Nav form numbers last on descending sort', () => {
       const sorted = sortedForms(list, {
         orderBy: 'number',
         direction: 'descending',

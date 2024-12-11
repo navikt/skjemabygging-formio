@@ -127,7 +127,7 @@ describe('SummaryPageNavigation', () => {
       expect(router.state.location.pathname).toBe('/testform/send-i-posten');
     });
 
-    it('innsending=KUN_DIGITAL - rendrer knapp for direkte innsending til NAV', async () => {
+    it('innsending=KUN_DIGITAL - rendrer knapp for direkte innsending til Nav', async () => {
       const form = formWithProperties({ innsending: 'KUN_DIGITAL' });
       const appConfigProps = { app: 'bygger' } as AppConfigContextType;
       const { buttons } = await renderSummaryPageNavigation({ form }, appConfigProps);

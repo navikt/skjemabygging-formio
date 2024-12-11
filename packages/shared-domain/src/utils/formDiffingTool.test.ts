@@ -149,7 +149,7 @@ describe('formDiffingTool', () => {
           ...publishedProperties,
           signatures: {
             signature2:
-              'NAV-enhet som erklærer at bedriften er godkjent som tiltaksarrangør for VTA i ordinær virksomhet for ovennevnte person',
+              'Nav-enhet som erklærer at bedriften er godkjent som tiltaksarrangør for VTA i ordinær virksomhet for ovennevnte person',
             signature1: 'For Bedrift',
           },
         },
@@ -163,7 +163,7 @@ describe('formDiffingTool', () => {
             {
               key: '2',
               label:
-                'NAV-enhet som erklærer at bedriften er godkjent som tiltaksarrangør for VTA i ordinær virksomhet for ovennevnte person',
+                'Nav-enhet som erklærer at bedriften er godkjent som tiltaksarrangør for VTA i ordinær virksomhet for ovennevnte person',
             },
             { key: '3' },
           ],

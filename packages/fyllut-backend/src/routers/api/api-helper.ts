@@ -8,7 +8,7 @@ const initApiConfig = () => {
   return {
     azureSkjemabyggingProxy: azureAccessTokenHandler(skjemabyggingProxyClientId!),
     azurePdl: azureAccessTokenHandler(`${pdlTokenScopeCluster}.pdl.pdl-api`),
-    kodeverkToken: azureAccessTokenHandler(kodeverk.scope!),
+    kodeverkToken: azureAccessTokenHandler(kodeverk.scope!, true),
     tokenxSendInn: tokenxHandler(sendInnConfig?.tokenxClientId),
     tokenxPdl: tokenxHandler(`${pdlTokenScopeCluster}:pdl:pdl-api`),
   };

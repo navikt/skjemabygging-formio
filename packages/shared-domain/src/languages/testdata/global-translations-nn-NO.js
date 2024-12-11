@@ -17,16 +17,16 @@ const nnNO = {
           value: 'Last ned og skriv ut dokumenta til saka di.',
           scope: 'global',
         },
-        'Førstesidearket inneholder viktig informasjon om hvilken enhet i NAV som skal motta dokumentene, og hvilken adresse de skal sendes til.':
+        'Førstesidearket inneholder viktig informasjon om hvilken enhet i Nav som skal motta dokumentene, og hvilken adresse de skal sendes til.':
           {
             value:
-              'Førstesidearket inneheld viktig informasjon om kva eining i NAV som skal motta dokumenta, og kva adresse dei skal sendast til.',
+              'Førstesidearket inneheld viktig informasjon om kva eining i Nav som skal motta dokumenta, og kva adresse dei skal sendast til.',
             scope: 'global',
           },
         'Legg ved': { value: 'Legg ved', scope: 'global' },
         'disse vedleggene': { value: 'desse vedlagga', scope: 'global' },
         'dette vedlegget': { value: 'dette vedlegget', scope: 'global' },
-        'Send det hele til NAV i posten': { value: 'Send det heile til NAV i posten', scope: 'global' },
+        'Send det hele til Nav i posten': { value: 'Send det heile til Nav i posten', scope: 'global' },
         'Følg instruksjonene på førstesidearket for å sende dokumentene i posten.': {
           value: 'Følg instruksjonane på førstesidearket for å sende dokumenta i posten',
           scope: 'global',
@@ -53,13 +53,13 @@ const nnNO = {
           value: 'Du må lagre søknaden (PDF) på eininga di slik at du enkelt kan finne ho igjen.',
           scope: 'global',
         },
-        'Etter at du har lastet ned og lagret søknaden din, må du laste den opp til NAV. Følg veiledningen i punkt 2 lenger ned på denne siden.':
+        'Etter at du har lastet ned og lagret søknaden din, må du laste den opp til Nav. Følg veiledningen i punkt 2 lenger ned på denne siden.':
           {
             value:
-              'Etter at du har lasta ned og lagra søknaden din, må du laste han opp til NAV. Følg rettleiinga i punkt 2 lengre ned på denne sida.',
+              'Etter at du har lasta ned og lagra søknaden din, må du laste han opp til Nav. Følg rettleiinga i punkt 2 lengre ned på denne sida.',
             scope: 'global',
           },
-        '2. Last opp søknaden din til NAV': { value: '2. Last opp søknaden din til NAV', scope: 'global' },
+        '2. Last opp søknaden din til Nav': { value: '2. Last opp søknaden din til Nav', scope: 'global' },
         'Når du klikker på «Gå videre» åpnes det en ny side (krever innlogging) der du skal laste opp søknaden din.': {
           value:
             'Når du klikkar på «Gå vidare» blir det opna ei ny side (krev innlogging) der du skal laste opp søknaden din.',
@@ -78,10 +78,10 @@ const nnNO = {
           value: 'Trykk på «Finn fila» og last opp søknaden som du lagra på eininga di.',
           scope: 'global',
         },
-        'Deretter må du laste opp eventuelle vedlegg. Trykk på «Bekreft» for å gå videre til innsending av søknaden. Trykk på knappen «Send til NAV» nederst på siden for å sende inn søknaden din.':
+        'Deretter må du laste opp eventuelle vedlegg. Trykk på «Bekreft» for å gå videre til innsending av søknaden. Trykk på knappen «Send til Nav» nederst på siden for å sende inn søknaden din.':
           {
             value:
-              'Deretter må du laste opp eventuelle vedlegg. Trykk på «Bekreft» for å gå vidare til innsending av søknaden. Trykk på knappen «Send til NAV» nedst på sida for å sende inn søknaden din.',
+              'Deretter må du laste opp eventuelle vedlegg. Trykk på «Bekreft» for å gå vidare til innsending av søknaden. Trykk på knappen «Send til Nav» nedst på sida for å sende inn søknaden din.',
             scope: 'global',
           },
         'Du må bekrefte at du har lest instruksjonene over før du kan gå videre.': {
@@ -242,10 +242,10 @@ const nnNO = {
           value: 'Vi treng følgjande dokumentasjon for å behandla søknaden din: <p></p>',
           scope: 'global',
         },
-        'Jeg ettersender dokumentasjonen senere (jeg er klar over at NAV ikke kan behandle søknaden før jeg har levert dokumentasjonen)':
+        'Jeg ettersender dokumentasjonen senere (jeg er klar over at Nav ikke kan behandle søknaden før jeg har levert dokumentasjonen)':
           {
             value:
-              'Eg ettersender dokumentasjonen seinare (eg er klar over at NAV ikkje kan behandla søknaden før eg har levert dokumentasjonen)',
+              'Eg ettersender dokumentasjonen seinare (eg er klar over at Nav ikkje kan behandla søknaden før eg har levert dokumentasjonen)',
             scope: 'global',
           },
         Grunnstønad: { value: 'Grunnstønad', scope: 'global' },

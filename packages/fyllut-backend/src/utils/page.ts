@@ -6,7 +6,7 @@ import { QueryParamSub } from '../types/custom';
 const defaultMeta = {
   ROBOTS: 'noindex',
   PAGE_TITLE: 'Fyll ut skjema - www.nav.no',
-  PAGE_DESCRIPTION: 'NAV søknadsskjema',
+  PAGE_DESCRIPTION: 'Nav søknadsskjema',
 };
 
 export const getDefaultPageMeta = () => ({ ...defaultMeta });

@@ -79,6 +79,7 @@ const Attachment = forwardRef<HTMLFieldSetElement, Props>(
           error={error}
           onChange={handleAttachmentChange}
           ref={ref}
+          className="mb-4"
         />
         {additionalDocumentation?.enabled && (
           <Textarea

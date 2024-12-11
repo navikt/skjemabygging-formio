@@ -1,6 +1,5 @@
 const featureToggles = {
   enableTranslations: true,
-  enableEnhetsListe: true,
   enableDiff: false,
 };
 

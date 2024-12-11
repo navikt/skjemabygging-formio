@@ -274,7 +274,7 @@ describe('FormMetadataEditor', () => {
         it('Viser valgt mottaksadresse med formattering', async () => {
           const form: NavFormType = formMedProps({ mottaksadresseId: '1' });
           render(<FormMetadataEditor form={form} onChange={mockOnChange} />);
-          expect(screen.getByDisplayValue('NAV alternativ skanning, Postboks 3, 0591 Oslo')).toBeTruthy();
+          expect(screen.getByDisplayValue('Nav alternativ skanning, Postboks 3, 0591 Oslo')).toBeTruthy();
         });
       });
 
@@ -304,7 +304,7 @@ describe('FormMetadataEditor', () => {
     describe('Innstilling for valg av enhet ved papirinnsending', () => {
       const expectedCheckboxName = 'Bruker må velge enhet ved innsending på papir';
       const editFormMetadataEditor = (form: NavFormType, onChange: UpdateFormFunction) => (
-        <AppConfigProvider featureToggles={{ ...featureToggles, enableEnhetsListe: true }}>
+        <AppConfigProvider featureToggles={featureToggles}>
           <FormMetadataEditor form={form} onChange={onChange} />
         </AppConfigProvider>
       );

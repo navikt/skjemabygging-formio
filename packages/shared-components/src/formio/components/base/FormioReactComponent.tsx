@@ -2,6 +2,7 @@ import { ReactComponent } from '@formio/react';
 import { ComponentError, SubmissionData } from '@navikt/skjemadigitalisering-shared-domain';
 import { createRoot } from 'react-dom/client';
 import Ready from '../../../util/form/ready';
+import baseComponentUtils from './baseComponentUtils';
 import createComponentLogger, { ComponentLogger } from './createComponentLogger';
 import { blurHandler, focusHandler } from './focus-helpers';
 import { IReactComponent } from './index';
@@ -36,6 +37,8 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
   }
 
   setReactInstance(element, autoResolve: boolean = true) {
+    this.addRef(baseComponentUtils.getId(this.component), element);
+
     this.reactInstance = element;
     this.addFocusBlurEvents(element);
     if (autoResolve) {
@@ -148,26 +151,11 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
 
   /**
    * Add message render the error messages Form.io template.
-   *
-   * If the component have error message suppport, we would like to use that instead of the template in Form.io.
    */
   addMessages(messages) {
-    // TODO: Fjern dette når navSelect bruker komponent fra aksel, og error kan håndteres direkte av komponenten.
-    //  Behold addMessages som en tom funksjon
-    if (['navSelect', 'landvelger', 'valutavelger'].includes(this.component?.type ?? '')) {
-      super.addMessages(messages);
-    }
-  }
-
-  /**
-   * Set error
-   */
-  override setCustomValidity(messages: string | string[], dirty?: boolean, external?: boolean) {
-    const previousErrorMessage = this.error?.message;
-    super.setCustomValidity(messages, dirty, external);
-    if (this.error?.message !== previousErrorMessage) {
-      this.rerender();
-    }
+    this.logger.info('Trying to addMessages with Formio.io old template. Should use new error messages instead', {
+      messages,
+    });
   }
 
   /**

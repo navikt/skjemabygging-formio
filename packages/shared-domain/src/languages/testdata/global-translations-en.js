@@ -86,16 +86,16 @@ const en = {
               'Please check that all your answers are correct. If you find something that needs to be corrected, press "{{editAnswers}}" at the bottom of this page. If all the answers are correct, proceed to step 2.',
             scope: 'global',
           },
-        'Førstesidearket inneholder viktig informasjon om hvilken enhet i NAV som skal motta dokumentene, og hvilken adresse de skal sendes til.':
+        'Førstesidearket inneholder viktig informasjon om hvilken enhet i Nav som skal motta dokumentene, og hvilken adresse de skal sendes til.':
           {
             value:
-              'The cover sheet contains important information about the NAV unit that will receive the documents and the address to which the documents should be sent.',
+              'The cover sheet contains important information about the Nav unit that will receive the documents and the address to which the documents should be sent.',
             scope: 'global',
           },
         'Legg ved': { value: 'Attach', scope: 'global' },
         'disse vedleggene': { value: 'these attachments', scope: 'global' },
         'dette vedlegget': { value: 'this attachment', scope: 'global' },
-        'Send det hele til NAV i posten': { value: 'Send it all to NAV in the mail', scope: 'global' },
+        'Send det hele til Nav i posten': { value: 'Send it all to Nav in the mail', scope: 'global' },
         'Følg instruksjonene på førstesidearket for å sende dokumentene i posten.': {
           value: 'Follow the instructions on the cover sheet  to send the documents in the mail.',
           scope: 'global',
@@ -123,13 +123,13 @@ const en = {
           value: 'You need to save the application (PDF) on your device so that you can easily find it again.',
           scope: 'global',
         },
-        'Etter at du har lastet ned og lagret søknaden din, må du laste den opp til NAV. Følg veiledningen i punkt 2 lenger ned på denne siden.':
+        'Etter at du har lastet ned og lagret søknaden din, må du laste den opp til Nav. Følg veiledningen i punkt 2 lenger ned på denne siden.':
           {
             value:
-              'After you have downloaded and saved your application, you must upload it to NAV. Follow the instructions in point 2 further down this page.',
+              'After you have downloaded and saved your application, you must upload it to Nav. Follow the instructions in point 2 further down this page.',
             scope: 'global',
           },
-        '2. Last opp søknaden din til NAV': { value: '2. Upload your application to NAV', scope: 'global' },
+        '2. Last opp søknaden din til Nav': { value: '2. Upload your application to Nav', scope: 'global' },
         'Når du klikker på «Gå videre» åpnes det en ny side (krever innlogging) der du skal laste opp søknaden din.': {
           value:
             'When you click on "Proceed", a new page will open (login required) where you will upload your application.',
@@ -148,10 +148,10 @@ const en = {
           value: 'Click "Finn filen" and upload the application that you saved on your device.',
           scope: 'global',
         },
-        'Deretter må du laste opp eventuelle vedlegg. Trykk på «Bekreft» for å gå videre til innsending av søknaden. Trykk på knappen «Send til NAV» nederst på siden for å sende inn søknaden din.':
+        'Deretter må du laste opp eventuelle vedlegg. Trykk på «Bekreft» for å gå videre til innsending av søknaden. Trykk på knappen «Send til Nav» nederst på siden for å sende inn søknaden din.':
           {
             value:
-              'Then you need to upload any attachments. Click on "Bekreft" to proceed to submitting the application. Click the "Send til NAV" button at the bottom of the page to submit your application.',
+              'Then you need to upload any attachments. Click on "Bekreft" to proceed to submitting the application. Click the "Send til Nav" button at the bottom of the page to submit your application.',
             scope: 'global',
           },
         'Du må bekrefte at du har lest instruksjonene over før du kan gå videre.': {

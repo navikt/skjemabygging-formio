@@ -23,6 +23,7 @@ describe('Datagrid', () => {
       cy.visit('/fyllut/datagridReact?sub=digital');
       cy.defaultWaits();
       cy.clickStart();
+      cy.wait('@createMellomlagring');
       cy.findByRole('checkbox', { name: 'Avkryssingsboks inni datagrid (valgfritt)' }).check();
       cy.findByRole('textbox', { name: 'Dato inni datagrid' }).type('15.01.2022');
       cy.findByRole('combobox', { name: 'Nedtrekksmeny inni datagrid' }).type('F{enter}');
@@ -30,6 +31,7 @@ describe('Datagrid', () => {
       cy.findByRole('textbox', { name: 'Tekstområde inni datagrid' }).type('Lorem Ipsum');
       cy.findByRole('textbox', { name: 'Tekstfelt inni datagrid' }).type('Hund');
       cy.clickSaveAndContinue();
+      cy.wait('@updateMellomlagring');
       cy.findByRoleWhenAttached('heading', { level: 2, name: 'Oppsummering' }).should('exist');
       cy.findByRoleWhenAttached('link', { name: TEXTS.grensesnitt.summaryPage.editAnswers }).should('exist').click();
 

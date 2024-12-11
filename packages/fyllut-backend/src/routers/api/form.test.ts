@@ -127,7 +127,7 @@ describe('form', () => {
           expect(attachmentValues).toStrictEqual([
             {
               key: 'nav',
-              description: 'Jeg ønsker at NAV innhenter denne dokumentasjonen',
+              description: 'Jeg ønsker at Nav innhenter denne dokumentasjonen',
               additionalDocumentationLabel: 'Nav label',
               additionalDocumentationDescription: 'Nav description',
             },
@@ -203,7 +203,7 @@ describe('form', () => {
         },
         {
           key: 'nav',
-          description: 'Jeg ønsker at NAV innhenter denne dokumentasjonen',
+          description: 'Jeg ønsker at Nav innhenter denne dokumentasjonen',
           additionalDocumentationLabel: 'docLabel',
           additionalDocumentationDescription: 'docDescription',
         },
@@ -229,7 +229,7 @@ describe('form', () => {
         },
         {
           key: 'nav',
-          description: 'Jeg ønsker at NAV innhenter denne dokumentasjonen',
+          description: 'Jeg ønsker at Nav innhenter denne dokumentasjonen',
           additionalDocumentationLabel: 'docLabel',
           additionalDocumentationDescription: 'docDescription',
         },

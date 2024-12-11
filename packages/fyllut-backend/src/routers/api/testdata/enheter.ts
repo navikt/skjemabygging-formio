@@ -22,7 +22,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000617,
-    navn: 'NAV Familie- og pensjonsytelser Utland',
+    navn: 'Nav Familie- og pensjonsytelser Utland',
     enhetNr: '0001',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -41,7 +41,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000618,
-    navn: 'NAV Pensjon Viken',
+    navn: 'Nav Pensjon Viken',
     enhetNr: '0003',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -60,7 +60,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000001,
-    navn: 'NAV Halden-Aremark',
+    navn: 'Nav Halden-Aremark',
     enhetNr: '0101',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -79,7 +79,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000002,
-    navn: 'NAV Moss',
+    navn: 'Nav Moss',
     enhetNr: '0104',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -98,7 +98,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000003,
-    navn: 'NAV Sarpsborg',
+    navn: 'Nav Sarpsborg',
     enhetNr: '0105',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -117,7 +117,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000004,
-    navn: 'NAV Fredrikstad',
+    navn: 'Nav Fredrikstad',
     enhetNr: '0106',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -136,7 +136,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000005,
-    navn: 'NAV Hvaler',
+    navn: 'Nav Hvaler',
     enhetNr: '0111',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -155,7 +155,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000007,
-    navn: 'NAV Skiptvet Marker',
+    navn: 'Nav Skiptvet Marker',
     enhetNr: '0119',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -174,7 +174,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000011,
-    navn: 'NAV Indre Østfold',
+    navn: 'Nav Indre Østfold',
     enhetNr: '0124',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -193,7 +193,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000014,
-    navn: 'NAV Rakkestad',
+    navn: 'Nav Rakkestad',
     enhetNr: '0128',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -212,7 +212,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000015,
-    navn: 'NAV Råde',
+    navn: 'Nav Råde',
     enhetNr: '0135',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -231,7 +231,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000017,
-    navn: 'NAV Våler',
+    navn: 'Nav Våler',
     enhetNr: '0137',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -250,7 +250,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000020,
-    navn: 'NAV Øst-Viken',
+    navn: 'Nav Øst-Viken',
     enhetNr: '0200',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -269,7 +269,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000021,
-    navn: 'NAV Vestby',
+    navn: 'Nav Vestby',
     enhetNr: '0211',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -288,7 +288,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000022,
-    navn: 'NAV Nordre Follo',
+    navn: 'Nav Nordre Follo',
     enhetNr: '0213',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -307,7 +307,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000023,
-    navn: 'NAV Ås',
+    navn: 'Nav Ås',
     enhetNr: '0214',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -326,7 +326,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000024,
-    navn: 'NAV Frogn',
+    navn: 'Nav Frogn',
     enhetNr: '0215',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -345,7 +345,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000025,
-    navn: 'NAV Nesodden',
+    navn: 'Nav Nesodden',
     enhetNr: '0216',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -364,7 +364,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000027,
-    navn: 'NAV Bærum',
+    navn: 'Nav Bærum',
     enhetNr: '0219',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -383,7 +383,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000028,
-    navn: 'NAV Asker',
+    navn: 'Nav Asker',
     enhetNr: '0220',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -402,7 +402,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000029,
-    navn: 'NAV Aurskog-Høland',
+    navn: 'Nav Aurskog-Høland',
     enhetNr: '0221',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -421,7 +421,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000032,
-    navn: 'NAV Rælingen',
+    navn: 'Nav Rælingen',
     enhetNr: '0228',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -440,7 +440,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000033,
-    navn: 'NAV Enebakk',
+    navn: 'Nav Enebakk',
     enhetNr: '0229',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -459,7 +459,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000034,
-    navn: 'NAV Lørenskog',
+    navn: 'Nav Lørenskog',
     enhetNr: '0230',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -478,7 +478,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000035,
-    navn: 'NAV Lillestrøm',
+    navn: 'Nav Lillestrøm',
     enhetNr: '0231',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -497,7 +497,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000036,
-    navn: 'NAV Nittedal',
+    navn: 'Nav Nittedal',
     enhetNr: '0233',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -516,7 +516,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000038,
-    navn: 'NAV Ullensaker',
+    navn: 'Nav Ullensaker',
     enhetNr: '0235',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -535,7 +535,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000039,
-    navn: 'NAV Nes i Akershus',
+    navn: 'Nav Nes i Akershus',
     enhetNr: '0236',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -554,7 +554,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000040,
-    navn: 'NAV Eidsvoll Hurdal',
+    navn: 'Nav Eidsvoll Hurdal',
     enhetNr: '0237',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -573,7 +573,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000041,
-    navn: 'NAV Nannestad Gjerdrum',
+    navn: 'Nav Nannestad Gjerdrum',
     enhetNr: '0238',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -592,7 +592,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100006195,
-    navn: 'NAV egne ansatte Øst-Viken',
+    navn: 'Nav egne ansatte Øst-Viken',
     enhetNr: '0283',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -611,7 +611,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100009199,
-    navn: 'NAV Midt-Viken oppfølgingsteam',
+    navn: 'Nav Midt-Viken oppfølgingsteam',
     enhetNr: '0284',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -630,7 +630,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100010395,
-    navn: 'Rekrutteringsteamet for NAV Nedre Romerike',
+    navn: 'Rekrutteringsteamet for Nav Nedre Romerike',
     enhetNr: '0286',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -649,7 +649,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000696,
-    navn: 'NAV Tiltak Øst-Viken',
+    navn: 'Nav Tiltak Øst-Viken',
     enhetNr: '0287',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -668,7 +668,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100002996,
-    navn: 'NAV Arbeidslivssenter Øst-Viken',
+    navn: 'Nav Arbeidslivssenter Øst-Viken',
     enhetNr: '0291',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -687,7 +687,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100004395,
-    navn: 'NAV Dokumentsenter Øst-Viken',
+    navn: 'Nav Dokumentsenter Øst-Viken',
     enhetNr: '0293',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -706,7 +706,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100002995,
-    navn: 'NAV Arbeidsrådgivning Øst-Viken',
+    navn: 'Nav Arbeidsrådgivning Øst-Viken',
     enhetNr: '0296',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -725,7 +725,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000045,
-    navn: 'NAV Oslo',
+    navn: 'Nav Oslo',
     enhetNr: '0300',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -744,7 +744,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000046,
-    navn: 'NAV Frogner',
+    navn: 'Nav Frogner',
     enhetNr: '0312',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -763,7 +763,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000047,
-    navn: 'NAV St. Hanshaugen',
+    navn: 'Nav St. Hanshaugen',
     enhetNr: '0313',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -782,7 +782,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000048,
-    navn: 'NAV Sagene',
+    navn: 'Nav Sagene',
     enhetNr: '0314',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -801,7 +801,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000049,
-    navn: 'NAV Grünerløkka',
+    navn: 'Nav Grünerløkka',
     enhetNr: '0315',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -820,7 +820,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000050,
-    navn: 'NAV Gamle Oslo',
+    navn: 'Nav Gamle Oslo',
     enhetNr: '0316',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -839,7 +839,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000051,
-    navn: 'NAV Nordstrand',
+    navn: 'Nav Nordstrand',
     enhetNr: '0318',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -858,7 +858,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000052,
-    navn: 'NAV Søndre Nordstrand',
+    navn: 'Nav Søndre Nordstrand',
     enhetNr: '0319',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -877,7 +877,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000053,
-    navn: 'NAV Østensjø',
+    navn: 'Nav Østensjø',
     enhetNr: '0321',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -896,7 +896,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000054,
-    navn: 'NAV Alna',
+    navn: 'Nav Alna',
     enhetNr: '0326',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -915,7 +915,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000055,
-    navn: 'NAV Stovner',
+    navn: 'Nav Stovner',
     enhetNr: '0327',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -934,7 +934,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000056,
-    navn: 'NAV Grorud',
+    navn: 'Nav Grorud',
     enhetNr: '0328',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -953,7 +953,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000057,
-    navn: 'NAV Bjerke',
+    navn: 'Nav Bjerke',
     enhetNr: '0330',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -972,7 +972,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000058,
-    navn: 'NAV Nordre Aker',
+    navn: 'Nav Nordre Aker',
     enhetNr: '0331',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -991,7 +991,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000059,
-    navn: 'NAV Vestre Aker',
+    navn: 'Nav Vestre Aker',
     enhetNr: '0334',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -1010,7 +1010,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000060,
-    navn: 'NAV Ullern',
+    navn: 'Nav Ullern',
     enhetNr: '0335',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -1029,7 +1029,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100006196,
-    navn: 'NAV egne ansatte Oslo',
+    navn: 'Nav egne ansatte Oslo',
     enhetNr: '0383',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -1048,7 +1048,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000709,
-    navn: 'NAV Tiltak Oslo',
+    navn: 'Nav Tiltak Oslo',
     enhetNr: '0387',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -1067,7 +1067,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000737,
-    navn: 'NAV Arbeidslivssenter Oslo',
+    navn: 'Nav Arbeidslivssenter Oslo',
     enhetNr: '0391',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -1086,7 +1086,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100004195,
-    navn: 'NAV Oppfølging utland',
+    navn: 'Nav Oppfølging utland',
     enhetNr: '0393',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -1105,7 +1105,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100009195,
-    navn: 'NAV Serviceenhet Oslo',
+    navn: 'Nav Serviceenhet Oslo',
     enhetNr: '0394',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -1124,7 +1124,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000736,
-    navn: 'NAV Arbeid og helse Oslo',
+    navn: 'Nav Arbeid og helse Oslo',
     enhetNr: '0396',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -1143,7 +1143,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000062,
-    navn: 'NAV Innlandet',
+    navn: 'Nav Innlandet',
     enhetNr: '0400',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -1162,7 +1162,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000063,
-    navn: 'NAV Kongsvinger',
+    navn: 'Nav Kongsvinger',
     enhetNr: '0402',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -1181,7 +1181,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000064,
-    navn: 'NAV Hamar',
+    navn: 'Nav Hamar',
     enhetNr: '0403',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -1200,7 +1200,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000065,
-    navn: 'NAV Ringsaker',
+    navn: 'Nav Ringsaker',
     enhetNr: '0412',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -1219,7 +1219,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000066,
-    navn: 'NAV Løten',
+    navn: 'Nav Løten',
     enhetNr: '0415',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -1238,7 +1238,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000067,
-    navn: 'NAV Stange',
+    navn: 'Nav Stange',
     enhetNr: '0417',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -1257,7 +1257,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000069,
-    navn: 'NAV Odal',
+    navn: 'Nav Odal',
     enhetNr: '0419',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -1276,7 +1276,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000070,
-    navn: 'NAV Eidskog',
+    navn: 'Nav Eidskog',
     enhetNr: '0420',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -1295,7 +1295,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000071,
-    navn: 'NAV Grue',
+    navn: 'Nav Grue',
     enhetNr: '0423',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -1314,7 +1314,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000072,
-    navn: 'NAV Åsnes',
+    navn: 'Nav Åsnes',
     enhetNr: '0425',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -1333,7 +1333,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000073,
-    navn: 'NAV Våler i Hedmark',
+    navn: 'Nav Våler i Hedmark',
     enhetNr: '0426',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -1352,7 +1352,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000074,
-    navn: 'NAV Elverum',
+    navn: 'Nav Elverum',
     enhetNr: '0427',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -1371,7 +1371,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000075,
-    navn: 'NAV Trysil',
+    navn: 'Nav Trysil',
     enhetNr: '0428',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -1390,7 +1390,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000076,
-    navn: 'NAV Åmot',
+    navn: 'Nav Åmot',
     enhetNr: '0429',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -1409,7 +1409,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000077,
-    navn: 'NAV Stor-Elvdal',
+    navn: 'Nav Stor-Elvdal',
     enhetNr: '0430',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -1428,7 +1428,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000079,
-    navn: 'NAV Engerdal',
+    navn: 'Nav Engerdal',
     enhetNr: '0434',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -1447,7 +1447,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000081,
-    navn: 'NAV Nord-Østerdal',
+    navn: 'Nav Nord-Østerdal',
     enhetNr: '0437',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -1466,7 +1466,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100008995,
-    navn: 'NAV Sykefraværssenter Hamarregionen',
+    navn: 'Nav Sykefraværssenter Hamarregionen',
     enhetNr: '0476',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -1485,7 +1485,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100006197,
-    navn: 'NAV egne ansatte Innlandet',
+    navn: 'Nav egne ansatte Innlandet',
     enhetNr: '0483',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -1504,7 +1504,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000087,
-    navn: 'NAV Arbeidslivssenter Innlandet',
+    navn: 'Nav Arbeidslivssenter Innlandet',
     enhetNr: '0491',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -1523,7 +1523,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100004597,
-    navn: 'NAV Rådgivende overleger Innlandet',
+    navn: 'Nav Rådgivende overleger Innlandet',
     enhetNr: '0492',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -1542,7 +1542,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000734,
-    navn: 'NAV Arbeidsrådgivning Innlandet',
+    navn: 'Nav Arbeidsrådgivning Innlandet',
     enhetNr: '0496',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -1561,7 +1561,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000089,
-    navn: 'NAV Lillehammer-Gausdal',
+    navn: 'Nav Lillehammer-Gausdal',
     enhetNr: '0501',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -1580,7 +1580,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000090,
-    navn: 'NAV Gjøvik',
+    navn: 'Nav Gjøvik',
     enhetNr: '0502',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -1599,7 +1599,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000091,
-    navn: 'NAV Lesja - Dovre',
+    navn: 'Nav Lesja - Dovre',
     enhetNr: '0511',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -1618,7 +1618,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000093,
-    navn: 'NAV Lom-Skjåk',
+    navn: 'Nav Lom-Skjåk',
     enhetNr: '0513',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -1637,7 +1637,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000095,
-    navn: 'NAV Vågå',
+    navn: 'Nav Vågå',
     enhetNr: '0515',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -1656,7 +1656,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000096,
-    navn: 'NAV Midt-Gudbrandsdal',
+    navn: 'Nav Midt-Gudbrandsdal',
     enhetNr: '0516',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -1675,7 +1675,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000097,
-    navn: 'NAV Sel',
+    navn: 'Nav Sel',
     enhetNr: '0517',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -1694,7 +1694,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000100,
-    navn: 'NAV Øyer',
+    navn: 'Nav Øyer',
     enhetNr: '0521',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -1713,7 +1713,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000102,
-    navn: 'NAV Østre Toten',
+    navn: 'Nav Østre Toten',
     enhetNr: '0528',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -1732,7 +1732,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000103,
-    navn: 'NAV Vestre Toten',
+    navn: 'Nav Vestre Toten',
     enhetNr: '0529',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -1751,7 +1751,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000104,
-    navn: 'NAV Jevnaker',
+    navn: 'Nav Jevnaker',
     enhetNr: '0532',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -1770,7 +1770,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000106,
-    navn: 'NAV Hadeland',
+    navn: 'Nav Hadeland',
     enhetNr: '0534',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -1789,7 +1789,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000107,
-    navn: 'NAV Søndre Land',
+    navn: 'Nav Søndre Land',
     enhetNr: '0536',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -1808,7 +1808,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000108,
-    navn: 'NAV Nordre Land',
+    navn: 'Nav Nordre Land',
     enhetNr: '0538',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -1827,7 +1827,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000111,
-    navn: 'NAV Valdres',
+    navn: 'Nav Valdres',
     enhetNr: '0542',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -1846,7 +1846,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000744,
-    navn: 'NAV Tiltak Innlandet',
+    navn: 'Nav Tiltak Innlandet',
     enhetNr: '0587',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -1865,7 +1865,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000116,
-    navn: 'NAV Vest-Viken',
+    navn: 'Nav Vest-Viken',
     enhetNr: '0600',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -1884,7 +1884,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000117,
-    navn: 'NAV Drammen',
+    navn: 'Nav Drammen',
     enhetNr: '0602',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -1903,7 +1903,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000118,
-    navn: 'NAV Kongsberg',
+    navn: 'Nav Kongsberg',
     enhetNr: '0604',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -1922,7 +1922,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000119,
-    navn: 'NAV Ringerike',
+    navn: 'Nav Ringerike',
     enhetNr: '0605',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -1941,7 +1941,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000120,
-    navn: 'NAV Hole',
+    navn: 'Nav Hole',
     enhetNr: '0612',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -1960,7 +1960,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000123,
-    navn: 'NAV Hallingdal',
+    navn: 'Nav Hallingdal',
     enhetNr: '0617',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -1979,7 +1979,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000129,
-    navn: 'NAV Midt-Buskerud',
+    navn: 'Nav Midt-Buskerud',
     enhetNr: '0623',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -1998,7 +1998,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000130,
-    navn: 'NAV Øvre Eiker',
+    navn: 'Nav Øvre Eiker',
     enhetNr: '0624',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -2017,7 +2017,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000132,
-    navn: 'NAV Lier',
+    navn: 'Nav Lier',
     enhetNr: '0626',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -2036,7 +2036,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000136,
-    navn: 'NAV Numedal',
+    navn: 'Nav Numedal',
     enhetNr: '0632',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -2055,7 +2055,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100006198,
-    navn: 'NAV egne ansatte Vest-Viken',
+    navn: 'Nav egne ansatte Vest-Viken',
     enhetNr: '0683',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -2074,7 +2074,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000710,
-    navn: 'NAV Forvaltningstjenester Vest-Viken',
+    navn: 'Nav Forvaltningstjenester Vest-Viken',
     enhetNr: '0687',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -2093,7 +2093,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000139,
-    navn: 'NAV Arbeidslivssenter Vest-Viken',
+    navn: 'Nav Arbeidslivssenter Vest-Viken',
     enhetNr: '0691',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -2112,7 +2112,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100004596,
-    navn: 'NAV Rådgivende overleger Vest-Viken',
+    navn: 'Nav Rådgivende overleger Vest-Viken',
     enhetNr: '0692',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -2131,7 +2131,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000718,
-    navn: 'NAV Arbeidsrådgivning Vest-Viken',
+    navn: 'Nav Arbeidsrådgivning Vest-Viken',
     enhetNr: '0696',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -2150,7 +2150,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000141,
-    navn: 'NAV Horten',
+    navn: 'Nav Horten',
     enhetNr: '0701',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -2169,7 +2169,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000143,
-    navn: 'NAV Tønsberg',
+    navn: 'Nav Tønsberg',
     enhetNr: '0704',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -2188,7 +2188,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100002395,
-    navn: 'NAV Sandefjord',
+    navn: 'Nav Sandefjord',
     enhetNr: '0710',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -2207,7 +2207,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000156,
-    navn: 'NAV Vestfold og Telemark',
+    navn: 'Nav Vestfold og Telemark',
     enhetNr: '0800',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -2227,7 +2227,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000157,
-    navn: 'NAV Porsgrunn',
+    navn: 'Nav Porsgrunn',
     enhetNr: '0805',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -2246,7 +2246,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000158,
-    navn: 'NAV Skien',
+    navn: 'Nav Skien',
     enhetNr: '0806',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -2265,7 +2265,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000159,
-    navn: 'NAV Notodden',
+    navn: 'Nav Notodden',
     enhetNr: '0807',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -2284,7 +2284,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000160,
-    navn: 'NAV Siljan',
+    navn: 'Nav Siljan',
     enhetNr: '0811',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -2303,7 +2303,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000161,
-    navn: 'NAV Bamble',
+    navn: 'Nav Bamble',
     enhetNr: '0814',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -2322,7 +2322,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000162,
-    navn: 'NAV Kragerø',
+    navn: 'Nav Kragerø',
     enhetNr: '0815',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -2341,7 +2341,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000163,
-    navn: 'NAV Drangedal',
+    navn: 'Nav Drangedal',
     enhetNr: '0817',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -2360,7 +2360,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000165,
-    navn: 'NAV Midt-Telemark',
+    navn: 'Nav Midt-Telemark',
     enhetNr: '0821',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -2379,7 +2379,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000167,
-    navn: 'NAV Tinn',
+    navn: 'Nav Tinn',
     enhetNr: '0826',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -2398,7 +2398,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000168,
-    navn: 'NAV Hjartdal',
+    navn: 'Nav Hjartdal',
     enhetNr: '0827',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -2417,7 +2417,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000173,
-    navn: 'NAV Vest-Telemark',
+    navn: 'Nav Vest-Telemark',
     enhetNr: '0833',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -2436,7 +2436,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100006199,
-    navn: 'NAV egne ansatte Vestfold og Telemark',
+    navn: 'Nav egne ansatte Vestfold og Telemark',
     enhetNr: '0883',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -2455,7 +2455,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000791,
-    navn: 'NAV Arbeid og helse Vestfold og Telemark',
+    navn: 'Nav Arbeid og helse Vestfold og Telemark',
     enhetNr: '0891',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -2474,7 +2474,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100003797,
-    navn: 'NAV Helse Vestfold og Telemark',
+    navn: 'Nav Helse Vestfold og Telemark',
     enhetNr: '0896',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -2493,7 +2493,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000177,
-    navn: 'NAV Risør',
+    navn: 'Nav Risør',
     enhetNr: '0901',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -2512,7 +2512,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000178,
-    navn: 'NAV Grimstad',
+    navn: 'Nav Grimstad',
     enhetNr: '0904',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -2531,7 +2531,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000179,
-    navn: 'NAV Arendal',
+    navn: 'Nav Arendal',
     enhetNr: '0906',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -2550,7 +2550,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000182,
-    navn: 'NAV Øst i Agder',
+    navn: 'Nav Øst i Agder',
     enhetNr: '0914',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -2569,7 +2569,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000184,
-    navn: 'NAV Lillesand',
+    navn: 'Nav Lillesand',
     enhetNr: '0926',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -2588,7 +2588,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000185,
-    navn: 'NAV Birkenes',
+    navn: 'Nav Birkenes',
     enhetNr: '0928',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -2607,7 +2607,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000186,
-    navn: 'NAV Åmli',
+    navn: 'Nav Åmli',
     enhetNr: '0929',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -2626,7 +2626,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000188,
-    navn: 'NAV Evje og Hornnes',
+    navn: 'Nav Evje og Hornnes',
     enhetNr: '0937',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -2645,7 +2645,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000193,
-    navn: 'NAV Agder',
+    navn: 'Nav Agder',
     enhetNr: '1000',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -2664,7 +2664,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000194,
-    navn: 'NAV Kristiansand',
+    navn: 'Nav Kristiansand',
     enhetNr: '1001',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -2683,7 +2683,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000195,
-    navn: 'NAV Lindesnes',
+    navn: 'Nav Lindesnes',
     enhetNr: '1002',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -2702,7 +2702,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000198,
-    navn: 'NAV Midt-Agder',
+    navn: 'Nav Midt-Agder',
     enhetNr: '1014',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -2721,7 +2721,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000206,
-    navn: 'NAV Hægebostad',
+    navn: 'Nav Hægebostad',
     enhetNr: '1034',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -2740,7 +2740,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000207,
-    navn: 'NAV Lister',
+    navn: 'Nav Lister',
     enhetNr: '1037',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -2759,7 +2759,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100006200,
-    navn: 'NAV egne ansatte Agder',
+    navn: 'Nav egne ansatte Agder',
     enhetNr: '1083',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -2778,7 +2778,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000732,
-    navn: 'NAV Intro Kristiansand',
+    navn: 'Nav Intro Kristiansand',
     enhetNr: '1084',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -2797,7 +2797,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100003195,
-    navn: 'NAV Tiltak Agder',
+    navn: 'Nav Tiltak Agder',
     enhetNr: '1087',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -2816,7 +2816,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000735,
-    navn: 'NAV Arbeidslivssenter Agder',
+    navn: 'Nav Arbeidslivssenter Agder',
     enhetNr: '1091',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -2835,7 +2835,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000739,
-    navn: 'NAV Spesialtjenester Agder',
+    navn: 'Nav Spesialtjenester Agder',
     enhetNr: '1096',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -2854,7 +2854,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000210,
-    navn: 'NAV Rogaland',
+    navn: 'Nav Rogaland',
     enhetNr: '1100',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -2873,7 +2873,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000211,
-    navn: 'NAV Dalane',
+    navn: 'Nav Dalane',
     enhetNr: '1101',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -2892,7 +2892,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000212,
-    navn: 'NAV Sandnes',
+    navn: 'Nav Sandnes',
     enhetNr: '1102',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -2911,7 +2911,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000213,
-    navn: 'NAV Haugesund-Utsira',
+    navn: 'Nav Haugesund-Utsira',
     enhetNr: '1106',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -2930,7 +2930,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000217,
-    navn: 'NAV Hå',
+    navn: 'Nav Hå',
     enhetNr: '1119',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -2949,7 +2949,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000218,
-    navn: 'NAV Klepp-Time',
+    navn: 'Nav Klepp-Time',
     enhetNr: '1120',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -2968,7 +2968,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000220,
-    navn: 'NAV Gjesdal',
+    navn: 'Nav Gjesdal',
     enhetNr: '1122',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -2987,7 +2987,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000221,
-    navn: 'NAV Sola',
+    navn: 'Nav Sola',
     enhetNr: '1124',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -3006,7 +3006,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000222,
-    navn: 'NAV Randaberg-Kvitsøy',
+    navn: 'Nav Randaberg-Kvitsøy',
     enhetNr: '1127',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -3025,7 +3025,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000224,
-    navn: 'NAV Strand',
+    navn: 'Nav Strand',
     enhetNr: '1130',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -3044,7 +3044,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000225,
-    navn: 'NAV Hjelmeland',
+    navn: 'Nav Hjelmeland',
     enhetNr: '1133',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -3063,7 +3063,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000226,
-    navn: 'NAV Suldal',
+    navn: 'Nav Suldal',
     enhetNr: '1134',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -3082,7 +3082,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000227,
-    navn: 'NAV Sauda',
+    navn: 'Nav Sauda',
     enhetNr: '1135',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -3101,7 +3101,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000232,
-    navn: 'NAV Tysvær',
+    navn: 'Nav Tysvær',
     enhetNr: '1146',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -3120,7 +3120,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000233,
-    navn: 'NAV Karmøy-Bokn',
+    navn: 'Nav Karmøy-Bokn',
     enhetNr: '1149',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -3139,7 +3139,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000235,
-    navn: 'NAV Vindafjord-Etne',
+    navn: 'Nav Vindafjord-Etne',
     enhetNr: '1160',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -3158,7 +3158,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000236,
-    navn: 'NAV Eiganes og Tasta',
+    navn: 'Nav Eiganes og Tasta',
     enhetNr: '1161',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -3177,7 +3177,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000237,
-    navn: 'NAV Hundvåg og Storhaug',
+    navn: 'Nav Hundvåg og Storhaug',
     enhetNr: '1162',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -3196,7 +3196,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000238,
-    navn: 'NAV Hillevåg og Hinna',
+    navn: 'Nav Hillevåg og Hinna',
     enhetNr: '1164',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -3215,7 +3215,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000239,
-    navn: 'NAV Madla',
+    navn: 'Nav Madla',
     enhetNr: '1165',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -3234,7 +3234,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100005995,
-    navn: 'NAV Rennesøy og Finnøy',
+    navn: 'Nav Rennesøy og Finnøy',
     enhetNr: '1169',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -3253,7 +3253,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100006201,
-    navn: 'NAV egne ansatte Rogaland',
+    navn: 'Nav egne ansatte Rogaland',
     enhetNr: '1183',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -3272,7 +3272,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000745,
-    navn: 'NAV Tiltak Rogaland',
+    navn: 'Nav Tiltak Rogaland',
     enhetNr: '1187',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -3291,7 +3291,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100001198,
-    navn: 'NAV Arbeidslivssenter Rogaland',
+    navn: 'Nav Arbeidslivssenter Rogaland',
     enhetNr: '1191',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -3310,7 +3310,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100009197,
-    navn: 'NAV Marked Nord-Rogaland',
+    navn: 'Nav Marked Nord-Rogaland',
     enhetNr: '1193',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -3329,7 +3329,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100009198,
-    navn: 'NAV Marked Sør-Rogaland',
+    navn: 'Nav Marked Sør-Rogaland',
     enhetNr: '1194',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -3348,7 +3348,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100010195,
-    navn: 'NAV IPS Rogaland',
+    navn: 'Nav IPS Rogaland',
     enhetNr: '1195',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -3367,7 +3367,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100001197,
-    navn: 'NAV Arbeidsrådgivning Rogaland',
+    navn: 'Nav Arbeidsrådgivning Rogaland',
     enhetNr: '1196',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -3386,7 +3386,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000243,
-    navn: 'NAV Vestland',
+    navn: 'Nav Vestland',
     enhetNr: '1200',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -3405,7 +3405,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000244,
-    navn: 'NAV Bergen sør',
+    navn: 'Nav Bergen sør',
     enhetNr: '1202',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -3424,7 +3424,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000245,
-    navn: 'NAV Bergen nord',
+    navn: 'Nav Bergen nord',
     enhetNr: '1203',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -3443,7 +3443,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000248,
-    navn: 'NAV Bergen vest',
+    navn: 'Nav Bergen vest',
     enhetNr: '1206',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -3462,7 +3462,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000249,
-    navn: 'NAV Årstad',
+    navn: 'Nav Årstad',
     enhetNr: '1208',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -3481,7 +3481,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000250,
-    navn: 'NAV Bergenhus',
+    navn: 'Nav Bergenhus',
     enhetNr: '1209',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -3500,7 +3500,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000253,
-    navn: 'NAV Sveio',
+    navn: 'Nav Sveio',
     enhetNr: '1216',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -3519,7 +3519,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000254,
-    navn: 'NAV Bømlo',
+    navn: 'Nav Bømlo',
     enhetNr: '1219',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -3538,7 +3538,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000255,
-    navn: 'NAV Stord',
+    navn: 'Nav Stord',
     enhetNr: '1221',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -3557,7 +3557,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000256,
-    navn: 'NAV Fitjar',
+    navn: 'Nav Fitjar',
     enhetNr: '1222',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -3576,7 +3576,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000257,
-    navn: 'NAV Tysnes',
+    navn: 'Nav Tysnes',
     enhetNr: '1223',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -3595,7 +3595,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000258,
-    navn: 'NAV Kvinnherad',
+    navn: 'Nav Kvinnherad',
     enhetNr: '1224',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -3614,7 +3614,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000260,
-    navn: 'NAV Ullensvang',
+    navn: 'Nav Ullensvang',
     enhetNr: '1228',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -3633,7 +3633,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000262,
-    navn: 'NAV Eidfjord',
+    navn: 'Nav Eidfjord',
     enhetNr: '1232',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -3652,7 +3652,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000263,
-    navn: 'NAV Ulvik',
+    navn: 'Nav Ulvik',
     enhetNr: '1233',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -3671,7 +3671,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000265,
-    navn: 'NAV Voss',
+    navn: 'Nav Voss',
     enhetNr: '1235',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -3690,7 +3690,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000266,
-    navn: 'NAV Kvam',
+    navn: 'Nav Kvam',
     enhetNr: '1238',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -3709,7 +3709,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000268,
-    navn: 'NAV Samnanger',
+    navn: 'Nav Samnanger',
     enhetNr: '1242',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -3728,7 +3728,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000269,
-    navn: 'NAV Bjørnafjorden',
+    navn: 'Nav Bjørnafjorden',
     enhetNr: '1243',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -3747,7 +3747,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000270,
-    navn: 'NAV Austevoll',
+    navn: 'Nav Austevoll',
     enhetNr: '1244',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -3766,7 +3766,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000272,
-    navn: 'NAV Øygarden',
+    navn: 'Nav Øygarden',
     enhetNr: '1246',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -3785,7 +3785,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000273,
-    navn: 'NAV Askøy',
+    navn: 'Nav Askøy',
     enhetNr: '1247',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -3804,7 +3804,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000274,
-    navn: 'NAV Vaksdal',
+    navn: 'Nav Vaksdal',
     enhetNr: '1251',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -3823,7 +3823,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000276,
-    navn: 'NAV Osterøy',
+    navn: 'Nav Osterøy',
     enhetNr: '1253',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -3842,7 +3842,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000280,
-    navn: 'NAV Alver',
+    navn: 'Nav Alver',
     enhetNr: '1263',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -3861,7 +3861,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000283,
-    navn: 'NAV Fensfjorden',
+    navn: 'Nav Fensfjorden',
     enhetNr: '1266',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -3880,7 +3880,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100006202,
-    navn: 'NAV egne ansatte Vestland',
+    navn: 'Nav egne ansatte Vestland',
     enhetNr: '1283',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -3899,7 +3899,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000746,
-    navn: 'NAV Tiltak Vestland',
+    navn: 'Nav Tiltak Vestland',
     enhetNr: '1287',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -3918,7 +3918,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100001196,
-    navn: 'NAV Arbeidslivssenter Vestland',
+    navn: 'Nav Arbeidslivssenter Vestland',
     enhetNr: '1291',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -3937,7 +3937,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100001195,
-    navn: 'NAV Arbeidsrådgivning Vestland',
+    navn: 'Nav Arbeidsrådgivning Vestland',
     enhetNr: '1296',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -3956,7 +3956,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000286,
-    navn: 'NAV Kinn',
+    navn: 'Nav Kinn',
     enhetNr: '1401',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -3975,7 +3975,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000288,
-    navn: 'NAV Solund',
+    navn: 'Nav Solund',
     enhetNr: '1412',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -3994,7 +3994,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000289,
-    navn: 'NAV Hyllestad',
+    navn: 'Nav Hyllestad',
     enhetNr: '1413',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -4013,7 +4013,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000290,
-    navn: 'NAV Høyanger',
+    navn: 'Nav Høyanger',
     enhetNr: '1416',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -4032,7 +4032,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000291,
-    navn: 'NAV Vik',
+    navn: 'Nav Vik',
     enhetNr: '1417',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -4051,7 +4051,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000294,
-    navn: 'NAV Sogndal',
+    navn: 'Nav Sogndal',
     enhetNr: '1420',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -4070,7 +4070,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000295,
-    navn: 'NAV Aurland',
+    navn: 'Nav Aurland',
     enhetNr: '1421',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -4089,7 +4089,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000296,
-    navn: 'NAV Lærdal',
+    navn: 'Nav Lærdal',
     enhetNr: '1422',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -4108,7 +4108,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000297,
-    navn: 'NAV Årdal',
+    navn: 'Nav Årdal',
     enhetNr: '1424',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -4127,7 +4127,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000298,
-    navn: 'NAV Luster',
+    navn: 'Nav Luster',
     enhetNr: '1426',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -4146,7 +4146,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000299,
-    navn: 'NAV Askvoll',
+    navn: 'Nav Askvoll',
     enhetNr: '1428',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -4165,7 +4165,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000300,
-    navn: 'NAV Fjaler',
+    navn: 'Nav Fjaler',
     enhetNr: '1429',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -4184,7 +4184,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000303,
-    navn: 'NAV Sunnfjord',
+    navn: 'Nav Sunnfjord',
     enhetNr: '1432',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -4203,7 +4203,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000305,
-    navn: 'NAV Bremanger',
+    navn: 'Nav Bremanger',
     enhetNr: '1438',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -4222,7 +4222,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000308,
-    navn: 'NAV Stad',
+    navn: 'Nav Stad',
     enhetNr: '1443',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -4241,7 +4241,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000310,
-    navn: 'NAV Gloppen',
+    navn: 'Nav Gloppen',
     enhetNr: '1445',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -4260,7 +4260,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000311,
-    navn: 'NAV Stryn',
+    navn: 'Nav Stryn',
     enhetNr: '1449',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -4279,7 +4279,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100009995,
-    navn: 'NAV Sjukefråværsavdeling region Sunnfjord',
+    navn: 'Nav Sjukefråværsavdeling region Sunnfjord',
     enhetNr: '1476',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -4298,7 +4298,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000314,
-    navn: 'NAV Møre og Romsdal',
+    navn: 'Nav Møre og Romsdal',
     enhetNr: '1500',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -4317,7 +4317,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000315,
-    navn: 'NAV Molde',
+    navn: 'Nav Molde',
     enhetNr: '1502',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -4336,7 +4336,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000317,
-    navn: 'NAV Ålesund',
+    navn: 'Nav Ålesund',
     enhetNr: '1504',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -4355,7 +4355,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000559,
-    navn: 'NAV Kristiansund',
+    navn: 'Nav Kristiansund',
     enhetNr: '1505',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -4374,7 +4374,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000320,
-    navn: 'NAV Herøy og Vanylven',
+    navn: 'Nav Herøy og Vanylven',
     enhetNr: '1515',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -4393,7 +4393,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000322,
-    navn: 'NAV Hareid - Ulstein - Sande',
+    navn: 'Nav Hareid - Ulstein - Sande',
     enhetNr: '1517',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -4412,7 +4412,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000324,
-    navn: 'NAV Ørsta Volda',
+    navn: 'Nav Ørsta Volda',
     enhetNr: '1520',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -4431,7 +4431,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000329,
-    navn: 'NAV Sykkylven - Stranda',
+    navn: 'Nav Sykkylven - Stranda',
     enhetNr: '1528',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -4450,7 +4450,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000331,
-    navn: 'NAV Sula',
+    navn: 'Nav Sula',
     enhetNr: '1531',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -4469,7 +4469,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000332,
-    navn: 'NAV Giske',
+    navn: 'Nav Giske',
     enhetNr: '1532',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -4488,7 +4488,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000334,
-    navn: 'NAV Vestnes',
+    navn: 'Nav Vestnes',
     enhetNr: '1535',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -4507,7 +4507,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000335,
-    navn: 'NAV Rauma',
+    navn: 'Nav Rauma',
     enhetNr: '1539',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -4526,7 +4526,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000339,
-    navn: 'NAV Aukra',
+    navn: 'Nav Aukra',
     enhetNr: '1547',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -4545,7 +4545,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000340,
-    navn: 'NAV Hustadvika',
+    navn: 'Nav Hustadvika',
     enhetNr: '1548',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -4564,7 +4564,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000342,
-    navn: 'NAV Averøy',
+    navn: 'Nav Averøy',
     enhetNr: '1554',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -4583,7 +4583,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000344,
-    navn: 'NAV Gjemnes',
+    navn: 'Nav Gjemnes',
     enhetNr: '1557',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -4602,7 +4602,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000346,
-    navn: 'NAV Indre Nordmøre',
+    navn: 'Nav Indre Nordmøre',
     enhetNr: '1563',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -4621,7 +4621,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000351,
-    navn: 'NAV Smøla',
+    navn: 'Nav Smøla',
     enhetNr: '1573',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -4640,7 +4640,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000352,
-    navn: 'NAV Aure',
+    navn: 'Nav Aure',
     enhetNr: '1576',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -4659,7 +4659,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100006203,
-    navn: 'NAV egne ansatte Møre og Romsdal',
+    navn: 'Nav egne ansatte Møre og Romsdal',
     enhetNr: '1583',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -4678,7 +4678,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100003800,
-    navn: 'NAV Arbeidslivssenter Møre og Romsdal',
+    navn: 'Nav Arbeidslivssenter Møre og Romsdal',
     enhetNr: '1591',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -4697,7 +4697,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000359,
-    navn: 'NAV Heim',
+    navn: 'Nav Heim',
     enhetNr: '1612',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -4716,7 +4716,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000362,
-    navn: 'NAV Hitra Frøya',
+    navn: 'Nav Hitra Frøya',
     enhetNr: '1620',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -4735,7 +4735,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000363,
-    navn: 'NAV Ørland',
+    navn: 'Nav Ørland',
     enhetNr: '1621',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -4754,7 +4754,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000367,
-    navn: 'NAV Nord-Fosen',
+    navn: 'Nav Nord-Fosen',
     enhetNr: '1630',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -4773,7 +4773,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000370,
-    navn: 'NAV Oppdal og Rennebu',
+    navn: 'Nav Oppdal og Rennebu',
     enhetNr: '1634',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -4792,7 +4792,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000373,
-    navn: 'NAV Orkland',
+    navn: 'Nav Orkland',
     enhetNr: '1638',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -4811,7 +4811,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000374,
-    navn: 'NAV Røros, Os og Holtålen',
+    navn: 'Nav Røros, Os og Holtålen',
     enhetNr: '1640',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -4830,7 +4830,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000376,
-    navn: 'NAV Midtre Gauldal',
+    navn: 'Nav Midtre Gauldal',
     enhetNr: '1648',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -4849,7 +4849,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000377,
-    navn: 'NAV Melhus',
+    navn: 'Nav Melhus',
     enhetNr: '1653',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -4868,7 +4868,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000378,
-    navn: 'NAV Skaun',
+    navn: 'Nav Skaun',
     enhetNr: '1657',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -4887,7 +4887,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000380,
-    navn: 'NAV Malvik',
+    navn: 'Nav Malvik',
     enhetNr: '1663',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -4906,7 +4906,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100006204,
-    navn: 'NAV egne ansatte Trøndelag',
+    navn: 'Nav egne ansatte Trøndelag',
     enhetNr: '1683',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -4925,7 +4925,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000386,
-    navn: 'NAV Inn-Trøndelag',
+    navn: 'Nav Inn-Trøndelag',
     enhetNr: '1702',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -4944,7 +4944,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000387,
-    navn: 'NAV Midtre Namdal',
+    navn: 'Nav Midtre Namdal',
     enhetNr: '1703',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -4963,7 +4963,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000392,
-    navn: 'NAV Levanger',
+    navn: 'Nav Levanger',
     enhetNr: '1719',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -4982,7 +4982,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000393,
-    navn: 'NAV Verdal',
+    navn: 'Nav Verdal',
     enhetNr: '1721',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -5001,7 +5001,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000402,
-    navn: 'NAV Indre Namdal',
+    navn: 'Nav Indre Namdal',
     enhetNr: '1742',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -5020,7 +5020,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000408,
-    navn: 'NAV Nærøysund',
+    navn: 'Nav Nærøysund',
     enhetNr: '1751',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -5039,7 +5039,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000995,
-    navn: 'NAV Værnes',
+    navn: 'Nav Værnes',
     enhetNr: '1783',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -5058,7 +5058,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000411,
-    navn: 'NAV Nordland',
+    navn: 'Nav Nordland',
     enhetNr: '1800',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -5077,7 +5077,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000412,
-    navn: 'NAV Bodø',
+    navn: 'Nav Bodø',
     enhetNr: '1804',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -5096,7 +5096,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000413,
-    navn: 'NAV Narvik',
+    navn: 'Nav Narvik',
     enhetNr: '1805',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -5115,7 +5115,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000416,
-    navn: 'NAV Sør-Helgeland',
+    navn: 'Nav Sør-Helgeland',
     enhetNr: '1813',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -5134,7 +5134,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000420,
-    navn: 'NAV Ytre Helgeland',
+    navn: 'Nav Ytre Helgeland',
     enhetNr: '1820',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -5153,7 +5153,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000422,
-    navn: 'NAV Vefsna',
+    navn: 'Nav Vefsna',
     enhetNr: '1824',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -5172,7 +5172,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000424,
-    navn: 'NAV Hattfjelldal',
+    navn: 'Nav Hattfjelldal',
     enhetNr: '1826',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -5191,7 +5191,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000426,
-    navn: 'NAV Nesna',
+    navn: 'Nav Nesna',
     enhetNr: '1828',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -5210,7 +5210,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000427,
-    navn: 'NAV Hemnes',
+    navn: 'Nav Hemnes',
     enhetNr: '1832',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -5229,7 +5229,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000428,
-    navn: 'NAV Rana',
+    navn: 'Nav Rana',
     enhetNr: '1833',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -5248,7 +5248,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000429,
-    navn: 'NAV Lurøy',
+    navn: 'Nav Lurøy',
     enhetNr: '1834',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -5267,7 +5267,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000431,
-    navn: 'NAV Rødøy',
+    navn: 'Nav Rødøy',
     enhetNr: '1836',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -5286,7 +5286,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000432,
-    navn: 'NAV Meløy',
+    navn: 'Nav Meløy',
     enhetNr: '1837',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -5305,7 +5305,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000433,
-    navn: 'NAV Gildeskål',
+    navn: 'Nav Gildeskål',
     enhetNr: '1838',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -5324,7 +5324,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000436,
-    navn: 'NAV Indre Salten',
+    navn: 'Nav Indre Salten',
     enhetNr: '1841',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -5343,7 +5343,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000438,
-    navn: 'NAV Steigen',
+    navn: 'Nav Steigen',
     enhetNr: '1848',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -5362,7 +5362,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000441,
-    navn: 'NAV Lødingen',
+    navn: 'Nav Lødingen',
     enhetNr: '1851',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -5381,7 +5381,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000445,
-    navn: 'NAV Røst',
+    navn: 'Nav Røst',
     enhetNr: '1856',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -5400,7 +5400,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000446,
-    navn: 'NAV Værøy',
+    navn: 'Nav Værøy',
     enhetNr: '1857',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -5419,7 +5419,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000448,
-    navn: 'NAV Lofoten',
+    navn: 'Nav Lofoten',
     enhetNr: '1860',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -5438,7 +5438,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000450,
-    navn: 'NAV Hadsel',
+    navn: 'Nav Hadsel',
     enhetNr: '1866',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -5457,7 +5457,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000451,
-    navn: 'NAV Bø',
+    navn: 'Nav Bø',
     enhetNr: '1867',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -5476,7 +5476,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000452,
-    navn: 'NAV Øksnes',
+    navn: 'Nav Øksnes',
     enhetNr: '1868',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -5495,7 +5495,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000453,
-    navn: 'NAV Sortland',
+    navn: 'Nav Sortland',
     enhetNr: '1870',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -5514,7 +5514,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000454,
-    navn: 'NAV Andøy',
+    navn: 'Nav Andøy',
     enhetNr: '1871',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -5533,7 +5533,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100006205,
-    navn: 'NAV egne ansatte Nordland',
+    navn: 'Nav egne ansatte Nordland',
     enhetNr: '1883',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -5552,7 +5552,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000705,
-    navn: 'NAV Arbeidslivssenter Nordland',
+    navn: 'Nav Arbeidslivssenter Nordland',
     enhetNr: '1891',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -5571,7 +5571,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000706,
-    navn: 'NAV Arbeidsrådgiving Nordland',
+    navn: 'Nav Arbeidsrådgiving Nordland',
     enhetNr: '1893',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -5590,7 +5590,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000458,
-    navn: 'NAV Troms og Finnmark',
+    navn: 'Nav Troms og Finnmark',
     enhetNr: '1900',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -5609,7 +5609,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000460,
-    navn: 'NAV Tromsø',
+    navn: 'Nav Tromsø',
     enhetNr: '1902',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -5628,7 +5628,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000741,
-    navn: 'NAV Sør-Troms',
+    navn: 'Nav Sør-Troms',
     enhetNr: '1903',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -5647,7 +5647,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000468,
-    navn: 'NAV Salangen-Lavangen-Dyrøy',
+    navn: 'Nav Salangen-Lavangen-Dyrøy',
     enhetNr: '1923',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -5666,7 +5666,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000469,
-    navn: 'NAV Målselv-Bardu',
+    navn: 'Nav Målselv-Bardu',
     enhetNr: '1924',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -5685,7 +5685,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000475,
-    navn: 'NAV Senja-Sørreisa',
+    navn: 'Nav Senja-Sørreisa',
     enhetNr: '1931',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -5704,7 +5704,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000476,
-    navn: 'NAV Balsfjord-Storfjord',
+    navn: 'Nav Balsfjord-Storfjord',
     enhetNr: '1933',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -5723,7 +5723,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000477,
-    navn: 'NAV Karlsøy',
+    navn: 'Nav Karlsøy',
     enhetNr: '1936',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -5742,7 +5742,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000478,
-    navn: 'NAV Lyngen',
+    navn: 'Nav Lyngen',
     enhetNr: '1938',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -5761,7 +5761,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000480,
-    navn: 'NAV Gáivuotna/Kåfjord',
+    navn: 'Nav Gáivuotna/Kåfjord',
     enhetNr: '1940',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -5780,7 +5780,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000481,
-    navn: 'NAV Skjervøy',
+    navn: 'Nav Skjervøy',
     enhetNr: '1941',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -5799,7 +5799,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000482,
-    navn: 'NAV Nordreisa',
+    navn: 'Nav Nordreisa',
     enhetNr: '1942',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -5818,7 +5818,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100006206,
-    navn: 'NAV egne ansatte Troms og Finnmark',
+    navn: 'Nav egne ansatte Troms og Finnmark',
     enhetNr: '1983',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -5837,7 +5837,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000714,
-    navn: 'NAV Tiltak Troms og Finnmark',
+    navn: 'Nav Tiltak Troms og Finnmark',
     enhetNr: '1987',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -5856,7 +5856,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000485,
-    navn: 'NAV Arbeidslivssenter Troms og Finnmark',
+    navn: 'Nav Arbeidslivssenter Troms og Finnmark',
     enhetNr: '1991',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -5875,7 +5875,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000487,
-    navn: 'NAV Vardø',
+    navn: 'Nav Vardø',
     enhetNr: '2002',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -5894,7 +5894,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000488,
-    navn: 'NAV Vadsø',
+    navn: 'Nav Vadsø',
     enhetNr: '2003',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -5913,7 +5913,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000489,
-    navn: 'NAV Hammerfest-Måsøy',
+    navn: 'Nav Hammerfest-Måsøy',
     enhetNr: '2004',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -5932,7 +5932,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000490,
-    navn: 'NAV Guovdageaidnu/Kautokeino',
+    navn: 'Nav Guovdageaidnu/Kautokeino',
     enhetNr: '2011',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -5951,7 +5951,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000491,
-    navn: 'NAV Alta-Kvænangen-Loppa',
+    navn: 'Nav Alta-Kvænangen-Loppa',
     enhetNr: '2012',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -5970,7 +5970,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000493,
-    navn: 'NAV Hasvik',
+    navn: 'Nav Hasvik',
     enhetNr: '2015',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -5989,7 +5989,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000496,
-    navn: 'NAV Nordkapp',
+    navn: 'Nav Nordkapp',
     enhetNr: '2019',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -6008,7 +6008,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000497,
-    navn: 'NAV Porsanger',
+    navn: 'Nav Porsanger',
     enhetNr: '2020',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -6027,7 +6027,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000498,
-    navn: 'NAV Karasjohka/Karasjok',
+    navn: 'Nav Karasjohka/Karasjok',
     enhetNr: '2021',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -6046,7 +6046,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000499,
-    navn: 'NAV Lebesby',
+    navn: 'Nav Lebesby',
     enhetNr: '2022',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -6065,7 +6065,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000500,
-    navn: 'NAV Gamvik',
+    navn: 'Nav Gamvik',
     enhetNr: '2023',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -6084,7 +6084,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000501,
-    navn: 'NAV Berlevåg',
+    navn: 'Nav Berlevåg',
     enhetNr: '2024',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -6103,7 +6103,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000502,
-    navn: 'NAV Deatnu/Tana',
+    navn: 'Nav Deatnu/Tana',
     enhetNr: '2025',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -6122,7 +6122,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000503,
-    navn: 'NAV Unjárga/Nesseby',
+    navn: 'Nav Unjárga/Nesseby',
     enhetNr: '2027',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -6141,7 +6141,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000504,
-    navn: 'NAV Båtsfjord',
+    navn: 'Nav Båtsfjord',
     enhetNr: '2028',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -6160,7 +6160,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000505,
-    navn: 'NAV Sør-Varanger',
+    navn: 'Nav Sør-Varanger',
     enhetNr: '2030',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -6179,7 +6179,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100003802,
-    navn: 'NAV Arbeidsrådgivningskontor  Troms og Finnmark',
+    navn: 'Nav Arbeidsrådgivningskontor  Troms og Finnmark',
     enhetNr: '2096',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -6217,7 +6217,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000509,
-    navn: 'NAV Vikafossen',
+    navn: 'Nav Vikafossen',
     enhetNr: '2103',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -6274,7 +6274,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000556,
-    navn: 'NAV Internrevisjon',
+    navn: 'Nav Internrevisjon',
     enhetNr: '2811',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -6350,7 +6350,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000630,
-    navn: 'NAV Kommunikasjonsavdelingen',
+    navn: 'Nav Kommunikasjonsavdelingen',
     enhetNr: '2823',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -6559,7 +6559,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000662,
-    navn: 'NAV Drift og Utvikling - Administrative tjenester',
+    navn: 'Nav Drift og Utvikling - Administrative tjenester',
     enhetNr: '2950',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -6578,7 +6578,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000561,
-    navn: 'NAV Økonomiteneste',
+    navn: 'Nav Økonomiteneste',
     enhetNr: '2960',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -6673,7 +6673,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000516,
-    navn: 'NAV Styringsenhet Kontaktsenter',
+    navn: 'Nav Styringsenhet Kontaktsenter',
     enhetNr: '4100',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -6692,7 +6692,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000517,
-    navn: 'NAV Kontaktsenter Øst-Viken',
+    navn: 'Nav Kontaktsenter Øst-Viken',
     enhetNr: '4101',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -6711,7 +6711,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000715,
-    navn: 'NAV Kontaktsenter Innlandet',
+    navn: 'Nav Kontaktsenter Innlandet',
     enhetNr: '4105',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -6730,7 +6730,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000722,
-    navn: 'NAV Kontaktsenter Oslo og Vest-Viken',
+    navn: 'Nav Kontaktsenter Oslo og Vest-Viken',
     enhetNr: '4106',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -6749,7 +6749,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000716,
-    navn: 'NAV Kontaktsenter Vestfold og Telemark',
+    navn: 'Nav Kontaktsenter Vestfold og Telemark',
     enhetNr: '4107',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -6768,7 +6768,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000723,
-    navn: 'NAV Kontaktsenter Agder',
+    navn: 'Nav Kontaktsenter Agder',
     enhetNr: '4110',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -6787,7 +6787,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000519,
-    navn: 'NAV Kontaktsenter Rogaland',
+    navn: 'Nav Kontaktsenter Rogaland',
     enhetNr: '4111',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -6806,7 +6806,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000520,
-    navn: 'NAV Kontaktsenter Vestland',
+    navn: 'Nav Kontaktsenter Vestland',
     enhetNr: '4112',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -6825,7 +6825,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000721,
-    navn: 'NAV Kontaktsenter Nord-Vestlandet',
+    navn: 'Nav Kontaktsenter Nord-Vestlandet',
     enhetNr: '4114',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -6844,7 +6844,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000726,
-    navn: 'NAV Kontaktsenter Trøndelag',
+    navn: 'Nav Kontaktsenter Trøndelag',
     enhetNr: '4116',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -6863,7 +6863,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000521,
-    navn: 'NAV Kontaktsenter Nordland Bodø',
+    navn: 'Nav Kontaktsenter Nordland Bodø',
     enhetNr: '4118',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -6882,7 +6882,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000724,
-    navn: 'NAV Kontaktsenter Troms og Finnmark',
+    navn: 'Nav Kontaktsenter Troms og Finnmark',
     enhetNr: '4119',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -6901,7 +6901,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100001996,
-    navn: 'NAV Kontaktsenter Nordland Mo',
+    navn: 'Nav Kontaktsenter Nordland Mo',
     enhetNr: '4121',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -6920,7 +6920,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000524,
-    navn: 'NAV Økonomi Stønad',
+    navn: 'Nav Økonomi Stønad',
     enhetNr: '4151',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -6939,7 +6939,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100005795,
-    navn: 'NAV Innsatsteam Økonomi',
+    navn: 'Nav Innsatsteam Økonomi',
     enhetNr: '4152',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -6996,7 +6996,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000525,
-    navn: 'NAV Klageinstans styringsenhet',
+    navn: 'Nav Klageinstans styringsenhet',
     enhetNr: '4200',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -7015,7 +7015,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000532,
-    navn: 'NAV Klageinstans sør',
+    navn: 'Nav Klageinstans sør',
     enhetNr: '4250',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -7034,7 +7034,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100003395,
-    navn: 'NAV Klageinstans - Tiltakspenger - Inn',
+    navn: 'Nav Klageinstans - Tiltakspenger - Inn',
     enhetNr: '4255',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -7053,7 +7053,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100003396,
-    navn: 'NAV Klageinstans - Tiltak',
+    navn: 'Nav Klageinstans - Tiltak',
     enhetNr: '4258',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -7072,7 +7072,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100003397,
-    navn: 'NAV Klageinstans - Arbeidsavklaringspenger - Inn',
+    navn: 'Nav Klageinstans - Arbeidsavklaringspenger - Inn',
     enhetNr: '4260',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -7091,7 +7091,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100003398,
-    navn: 'NAV Klageinstans - Dagpenger - Inn',
+    navn: 'Nav Klageinstans - Dagpenger - Inn',
     enhetNr: '4270',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -7110,7 +7110,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100004995,
-    navn: 'NAV Klageinstans Sakskostnader',
+    navn: 'Nav Klageinstans Sakskostnader',
     enhetNr: '4279',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -7129,7 +7129,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100003399,
-    navn: 'NAV Klageinstans - Tilleggsstønader - Inn',
+    navn: 'Nav Klageinstans - Tilleggsstønader - Inn',
     enhetNr: '4280',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -7148,7 +7148,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100007795,
-    navn: 'NAV Klageinstans - Uføretrygd - inn',
+    navn: 'Nav Klageinstans - Uføretrygd - inn',
     enhetNr: '4286',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -7167,7 +7167,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100009595,
-    navn: 'NAV Klageinstans - erstatning',
+    navn: 'Nav Klageinstans - erstatning',
     enhetNr: '4287',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -7186,7 +7186,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100005195,
-    navn: 'NAV Klageinstans Oslo og Akershus',
+    navn: 'Nav Klageinstans Oslo og Akershus',
     enhetNr: '4291',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -7205,7 +7205,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100005196,
-    navn: 'NAV Klageinstans Midt-Norge',
+    navn: 'Nav Klageinstans Midt-Norge',
     enhetNr: '4292',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -7224,7 +7224,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100005197,
-    navn: 'NAV Klageinstans øst',
+    navn: 'Nav Klageinstans øst',
     enhetNr: '4293',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -7243,7 +7243,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100005198,
-    navn: 'NAV Klageinstans vest',
+    navn: 'Nav Klageinstans vest',
     enhetNr: '4294',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -7262,7 +7262,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100005199,
-    navn: 'NAV Klageinstans nord',
+    navn: 'Nav Klageinstans nord',
     enhetNr: '4295',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -7281,7 +7281,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000708,
-    navn: 'NAV Id og fordeling',
+    navn: 'Nav Id og fordeling',
     enhetNr: '4303',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -7300,7 +7300,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000533,
-    navn: 'NAV Arbeid og ytelser styringsenhet',
+    navn: 'Nav Arbeid og ytelser styringsenhet',
     enhetNr: '4400',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -7319,7 +7319,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000769,
-    navn: 'NAV Arbeid og ytelser Sarpsborg',
+    navn: 'Nav Arbeid og ytelser Sarpsborg',
     enhetNr: '4401',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -7338,7 +7338,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000770,
-    navn: 'NAV Arbeid og ytelser Romerike',
+    navn: 'Nav Arbeid og ytelser Romerike',
     enhetNr: '4402',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -7357,7 +7357,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000771,
-    navn: 'NAV Arbeid og ytelser Kristiania',
+    navn: 'Nav Arbeid og ytelser Kristiania',
     enhetNr: '4403',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -7376,7 +7376,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000773,
-    navn: 'NAV Arbeid og ytelser Innlandet',
+    navn: 'Nav Arbeid og ytelser Innlandet',
     enhetNr: '4405',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -7395,7 +7395,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000775,
-    navn: 'NAV Arbeid og ytelser Tønsberg',
+    navn: 'Nav Arbeid og ytelser Tønsberg',
     enhetNr: '4407',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -7414,7 +7414,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000776,
-    navn: 'NAV Arbeid og ytelser Skien',
+    navn: 'Nav Arbeid og ytelser Skien',
     enhetNr: '4408',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -7433,7 +7433,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000778,
-    navn: 'NAV Arbeid og ytelser Sørlandet',
+    navn: 'Nav Arbeid og ytelser Sørlandet',
     enhetNr: '4410',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -7452,7 +7452,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000779,
-    navn: 'NAV Arbeid og ytelser Karmøy',
+    navn: 'Nav Arbeid og ytelser Karmøy',
     enhetNr: '4411',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -7471,7 +7471,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000782,
-    navn: 'NAV Arbeid og ytelser Molde',
+    navn: 'Nav Arbeid og ytelser Molde',
     enhetNr: '4415',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -7490,7 +7490,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000783,
-    navn: 'NAV Arbeid og ytelser Trondheim',
+    navn: 'Nav Arbeid og ytelser Trondheim',
     enhetNr: '4416',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -7509,7 +7509,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000785,
-    navn: 'NAV Arbeid og ytelser Fauske',
+    navn: 'Nav Arbeid og ytelser Fauske',
     enhetNr: '4418',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -7528,7 +7528,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000694,
-    navn: 'NAV Arbeid og ytelser lønnsgaranti',
+    navn: 'Nav Arbeid og ytelser lønnsgaranti',
     enhetNr: '4425',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -7547,7 +7547,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000707,
-    navn: 'NAV Arbeid og ytelser lønnsgaranti Vardø',
+    navn: 'Nav Arbeid og ytelser lønnsgaranti Vardø',
     enhetNr: '4426',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -7585,7 +7585,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100007395,
-    navn: 'NAV AY Grunn- og hjelpestønad',
+    navn: 'Nav AY Grunn- og hjelpestønad',
     enhetNr: '4461',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -7661,7 +7661,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100008795,
-    navn: 'NAV AY Inntektskompensasjon EØS',
+    navn: 'Nav AY Inntektskompensasjon EØS',
     enhetNr: '4473',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -7737,7 +7737,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100005395,
-    navn: 'NAV Innsatsteam forvaltning',
+    navn: 'Nav Innsatsteam forvaltning',
     enhetNr: '4477',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -7756,7 +7756,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100005595,
-    navn: 'NAV Innsatsteam lokal',
+    navn: 'Nav Innsatsteam lokal',
     enhetNr: '4478',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -7775,7 +7775,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100005596,
-    navn: 'NAV Innsatsteam klage',
+    navn: 'Nav Innsatsteam klage',
     enhetNr: '4479',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -7794,7 +7794,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000794,
-    navn: 'NAV Arbeid og ytelser rådgivende legetjeneste',
+    navn: 'Nav Arbeid og ytelser rådgivende legetjeneste',
     enhetNr: '4480',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -7813,7 +7813,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100006395,
-    navn: 'NAV Innsatsteam erstatning',
+    navn: 'Nav Innsatsteam erstatning',
     enhetNr: '4481',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -7832,7 +7832,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100006996,
-    navn: 'NAV Arbeid og ytelser Egne ansatte',
+    navn: 'Nav Arbeid og ytelser Egne ansatte',
     enhetNr: '4483',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -7851,7 +7851,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100007396,
-    navn: 'NAV AY Hjelpemidler',
+    navn: 'Nav AY Hjelpemidler',
     enhetNr: '4485',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -7870,7 +7870,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100007195,
-    navn: 'NAV Arbeid og ytelser lønnskompensasjon',
+    navn: 'Nav Arbeid og ytelser lønnskompensasjon',
     enhetNr: '4486',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -7889,7 +7889,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100007595,
-    navn: 'NAV AY sykdom i familien',
+    navn: 'Nav AY sykdom i familien',
     enhetNr: '4487',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -7908,7 +7908,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100007995,
-    navn: 'NAV AY Sykepenger',
+    navn: 'Nav AY Sykepenger',
     enhetNr: '4488',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -7927,7 +7927,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100008195,
-    navn: 'NAV AY Enslig forsørger',
+    navn: 'Nav AY Enslig forsørger',
     enhetNr: '4489',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -7965,7 +7965,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000627,
-    navn: 'NAV Kontroll Styringsenhet',
+    navn: 'Nav Kontroll Styringsenhet',
     enhetNr: '4500',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -7984,7 +7984,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000586,
-    navn: 'NAV Kontroll Øst',
+    navn: 'Nav Kontroll Øst',
     enhetNr: '4503',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -8003,7 +8003,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000574,
-    navn: 'NAV Kontroll Vest',
+    navn: 'Nav Kontroll Vest',
     enhetNr: '4511',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -8022,7 +8022,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000577,
-    navn: 'NAV Kontroll Nord',
+    navn: 'Nav Kontroll Nord',
     enhetNr: '4519',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -8041,7 +8041,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100001795,
-    navn: 'NAV Medlemskap og avgift',
+    navn: 'Nav Medlemskap og avgift',
     enhetNr: '4530',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -8060,7 +8060,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000729,
-    navn: 'NAV Registerforvaltning',
+    navn: 'Nav Registerforvaltning',
     enhetNr: '4534',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -8079,7 +8079,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000738,
-    navn: 'NAV Sentralt yrkessykdomskontor',
+    navn: 'Nav Sentralt yrkessykdomskontor',
     enhetNr: '4540',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -8098,7 +8098,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000625,
-    navn: 'NAV Kontroll analyse Oslo',
+    navn: 'Nav Kontroll analyse Oslo',
     enhetNr: '4550',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -8117,7 +8117,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000634,
-    navn: 'Styringsenheten for NAV Hjelpemidler og tilrettelegging',
+    navn: 'Styringsenheten for Nav Hjelpemidler og tilrettelegging',
     enhetNr: '4700',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -8136,7 +8136,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000635,
-    navn: 'NAV Hjelpemiddelsentral Øst-Viken',
+    navn: 'Nav Hjelpemiddelsentral Øst-Viken',
     enhetNr: '4701',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -8155,7 +8155,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000636,
-    navn: 'NAV Hjelpemiddelsentral Akershus',
+    navn: 'Nav Hjelpemiddelsentral Akershus',
     enhetNr: '4702',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -8174,7 +8174,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000637,
-    navn: 'NAV Hjelpemiddelsentral Oslo',
+    navn: 'Nav Hjelpemiddelsentral Oslo',
     enhetNr: '4703',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -8193,7 +8193,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000615,
-    navn: 'NAV Hjelpemiddelsentral Innlandet-Elverum',
+    navn: 'Nav Hjelpemiddelsentral Innlandet-Elverum',
     enhetNr: '4704',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -8212,7 +8212,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000588,
-    navn: 'NAV Hjelpemiddelsentral Innlandet-Gjøvik',
+    navn: 'Nav Hjelpemiddelsentral Innlandet-Gjøvik',
     enhetNr: '4705',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -8231,7 +8231,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000640,
-    navn: 'NAV Hjelpemiddelsentral Vest-Viken',
+    navn: 'Nav Hjelpemiddelsentral Vest-Viken',
     enhetNr: '4706',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -8250,7 +8250,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000641,
-    navn: 'NAV Hjelpemiddelsentral Vestfold og Telemark-Sandefjord',
+    navn: 'Nav Hjelpemiddelsentral Vestfold og Telemark-Sandefjord',
     enhetNr: '4707',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -8269,7 +8269,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000642,
-    navn: 'NAV Hjelpemiddelsentral Vestfold og Telemark-Skien',
+    navn: 'Nav Hjelpemiddelsentral Vestfold og Telemark-Skien',
     enhetNr: '4708',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -8288,7 +8288,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000644,
-    navn: 'NAV Hjelpemiddelsentral Agder',
+    navn: 'Nav Hjelpemiddelsentral Agder',
     enhetNr: '4710',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -8307,7 +8307,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000645,
-    navn: 'NAV Hjelpemiddelsentral Rogaland',
+    navn: 'Nav Hjelpemiddelsentral Rogaland',
     enhetNr: '4711',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -8326,7 +8326,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000646,
-    navn: 'NAV Hjelpemiddelsentral Vestland-Bergen',
+    navn: 'Nav Hjelpemiddelsentral Vestland-Bergen',
     enhetNr: '4712',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -8345,7 +8345,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000647,
-    navn: 'NAV Hjelpemiddelsentral Vestland-Førde',
+    navn: 'Nav Hjelpemiddelsentral Vestland-Førde',
     enhetNr: '4714',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -8364,7 +8364,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000648,
-    navn: 'NAV Hjelpemiddelsentral Møre og Romsdal',
+    navn: 'Nav Hjelpemiddelsentral Møre og Romsdal',
     enhetNr: '4715',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -8383,7 +8383,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000649,
-    navn: 'NAV Hjelpemiddelsentral Trøndelag',
+    navn: 'Nav Hjelpemiddelsentral Trøndelag',
     enhetNr: '4716',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -8402,7 +8402,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000651,
-    navn: 'NAV Hjelpemiddelsentral Nordland',
+    navn: 'Nav Hjelpemiddelsentral Nordland',
     enhetNr: '4718',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -8421,7 +8421,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000652,
-    navn: 'NAV Hjelpemiddelsentral Troms og Finnmark',
+    navn: 'Nav Hjelpemiddelsentral Troms og Finnmark',
     enhetNr: '4719',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -8440,7 +8440,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000611,
-    navn: 'NAV Familie- og pensjonsytelser styringsenhet',
+    navn: 'Nav Familie- og pensjonsytelser styringsenhet',
     enhetNr: '4800',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -8459,7 +8459,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000612,
-    navn: 'NAV Familie- og pensjonsytelser Oslo 2',
+    navn: 'Nav Familie- og pensjonsytelser Oslo 2',
     enhetNr: '4803',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -8478,7 +8478,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100001796,
-    navn: 'NAV Familie- og pensjonsytelser Drammen',
+    navn: 'Nav Familie- og pensjonsytelser Drammen',
     enhetNr: '4806',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -8497,7 +8497,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000609,
-    navn: 'NAV Familie- og pensjonsytelser Porsgrunn',
+    navn: 'Nav Familie- og pensjonsytelser Porsgrunn',
     enhetNr: '4808',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -8516,7 +8516,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100001798,
-    navn: 'NAV Familie- og pensjonsytelser Bergen',
+    navn: 'Nav Familie- og pensjonsytelser Bergen',
     enhetNr: '4812',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -8535,7 +8535,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000610,
-    navn: 'NAV Familie- og pensjonsytelser Ålesund',
+    navn: 'Nav Familie- og pensjonsytelser Ålesund',
     enhetNr: '4815',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -8554,7 +8554,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000589,
-    navn: 'NAV Familie- og pensjonsytelser Steinkjer',
+    navn: 'Nav Familie- og pensjonsytelser Steinkjer',
     enhetNr: '4817',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -8573,7 +8573,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000613,
-    navn: 'NAV Økonomi Pensjon',
+    navn: 'Nav Økonomi Pensjon',
     enhetNr: '4819',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -8592,7 +8592,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100001801,
-    navn: 'NAV Familie- og pensjonsytelser Vadsø',
+    navn: 'Nav Familie- og pensjonsytelser Vadsø',
     enhetNr: '4820',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -8611,7 +8611,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100001595,
-    navn: 'NAV Familie- og pensjonsytelser Oslo 1',
+    navn: 'Nav Familie- og pensjonsytelser Oslo 1',
     enhetNr: '4833',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -8630,7 +8630,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100001797,
-    navn: 'NAV Familie- og pensjonsytelser Stord',
+    navn: 'Nav Familie- og pensjonsytelser Stord',
     enhetNr: '4842',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -8649,7 +8649,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100001800,
-    navn: 'NAV Familie- og pensjonsytelser Tromsø',
+    navn: 'Nav Familie- og pensjonsytelser Tromsø',
     enhetNr: '4849',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -8668,7 +8668,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100001802,
-    navn: 'NAV Familie- og pensjonsytelser Farskap',
+    navn: 'Nav Familie- og pensjonsytelser Farskap',
     enhetNr: '4860',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -8687,7 +8687,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100002195,
-    navn: 'NAV Familie- og pensjonsytelser utland Ålesund',
+    navn: 'Nav Familie- og pensjonsytelser utland Ålesund',
     enhetNr: '4862',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -8706,7 +8706,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100006795,
-    navn: 'NAV Familie- og pensjonsytelser midlertidig enhet',
+    navn: 'Nav Familie- og pensjonsytelser midlertidig enhet',
     enhetNr: '4863',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -8725,7 +8725,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100006995,
-    navn: 'NAV Familie- og pensjonsytelser Bidrag utland',
+    navn: 'Nav Familie- og pensjonsytelser Bidrag utland',
     enhetNr: '4865',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -8744,7 +8744,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100009395,
-    navn: 'NAV Familie- og pensjonsytelser Egne ansatte',
+    navn: 'Nav Familie- og pensjonsytelser Egne ansatte',
     enhetNr: '4883',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -8763,7 +8763,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100003600,
-    navn: 'NAV Holmestrand',
+    navn: 'Nav Holmestrand',
     enhetNr: '5301',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -8782,7 +8782,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100003601,
-    navn: 'NAV Færder',
+    navn: 'Nav Færder',
     enhetNr: '5302',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -8801,7 +8801,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100003602,
-    navn: 'NAV Larvik',
+    navn: 'Nav Larvik',
     enhetNr: '5303',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -8820,7 +8820,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100003603,
-    navn: 'NAV Trøndelag',
+    navn: 'Nav Trøndelag',
     enhetNr: '5700',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -8839,7 +8839,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100003595,
-    navn: 'NAV Falkenborg',
+    navn: 'Nav Falkenborg',
     enhetNr: '5701',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -8858,7 +8858,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100003596,
-    navn: 'NAV Lerkendal',
+    navn: 'Nav Lerkendal',
     enhetNr: '5702',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -8877,7 +8877,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100003604,
-    navn: 'NAV Indre Fosen',
+    navn: 'Nav Indre Fosen',
     enhetNr: '5703',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -8896,7 +8896,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100003597,
-    navn: 'NAV Tiltak Trøndelag',
+    navn: 'Nav Tiltak Trøndelag',
     enhetNr: '5771',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -8915,7 +8915,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100003598,
-    navn: 'NAV Arbeidslivssenter Trøndelag',
+    navn: 'Nav Arbeidslivssenter Trøndelag',
     enhetNr: '5772',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -8934,7 +8934,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100003599,
-    navn: 'NAV Arbeidsrådgivningstjeneste Trøndelag',
+    navn: 'Nav Arbeidsrådgivningstjeneste Trøndelag',
     enhetNr: '5773',
     antallRessurser: 0,
     status: 'Aktiv',
@@ -8953,7 +8953,7 @@ const enheter: Enhet[] = [
   },
   {
     enhetId: 100000626,
-    navn: 'NAV Innkreving',
+    navn: 'Nav Innkreving',
     enhetNr: '9401',
     antallRessurser: 0,
     status: 'Aktiv',
