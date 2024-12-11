@@ -1,0 +1,54 @@
+[
+  {
+    "id": 1,
+    "key": "Ny",
+    "tag": "skjematekster",
+    "changedAt": "2024-12-05T14:39:27.512821+01:00",
+    "changedBy": "Testesen, Test",
+    "revision": 4,
+    "nb": "Ny",
+    "nn": "Ny",
+    "en": "New",
+    "publishedAt": null,
+    "publishedBy": null
+  },
+  {
+    "id": 2,
+    "key": "Nyere",
+    "tag": "skjematekster",
+    "changedAt": "2024-12-05T14:39:27.498692+01:00",
+    "changedBy": "Testesen, Test",
+    "revision": 3,
+    "nb": "Nyere",
+    "nn": "Nyare",
+    "en": "Newer",
+    "publishedAt": null,
+    "publishedBy": null
+  },
+  {
+    "id": 3,
+    "key": "Abc",
+    "tag": "skjematekster",
+    "changedAt": "2024-12-05T14:39:27.489663+01:00",
+    "changedBy": "Testesen, Test",
+    "revision": 4,
+    "nb": "Abc",
+    "nn": "Def",
+    "en": "Xyz",
+    "publishedAt": null,
+    "publishedBy": null
+  },
+  {
+    "id": 4,
+    "key": "Hei",
+    "tag": "skjematekster",
+    "changedAt": "2024-12-05T14:39:27.493745+01:00",
+    "changedBy": "Testesen, Test",
+    "revision": 6,
+    "nb": "Hei",
+    "nn": "",
+    "en": "Hello",
+    "publishedAt": null,
+    "publishedBy": null
+  }
+]

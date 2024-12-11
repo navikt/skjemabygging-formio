@@ -1,7 +1,7 @@
 import { Recipient } from '@navikt/skjemadigitalisering-shared-domain';
 import { fetchWithErrorHandling } from '../fetchUtils';
 
-export class RecipientService {
+export default class RecipientService {
   readonly formsApiUrl: string;
   readonly recipientsUrl: string;
 
