@@ -268,7 +268,7 @@ class BaseComponent extends FormioReactComponent {
       (this.root.currentPage?.nextPageClicked && baseComponentUtils.isOnCurrentPage(this)) ||
       this.root.submitted ||
       this.builderMode ||
-      (this.root.editFormDialog && (!this.isEmpty(this.defaultValue) || !this.pristine))
+      this.root.editFormDialogSaveClicked
     );
   }
 }
