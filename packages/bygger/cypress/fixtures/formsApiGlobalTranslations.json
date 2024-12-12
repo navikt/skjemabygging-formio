@@ -50,5 +50,44 @@
     "en": "Hello",
     "publishedAt": null,
     "publishedBy": null
+  },
+  {
+    "id": 5,
+    "key": "Ja",
+    "tag": "grensesnitt",
+    "changedAt": "2024-12-05T14:39:27.493745+01:00",
+    "changedBy": "Testesen, Test",
+    "revision": 2,
+    "nb": "Ja",
+    "nn": "Ja",
+    "en": "",
+    "publishedAt": null,
+    "publishedBy": null
+  },
+  {
+    "id": 6,
+    "key": "Nei",
+    "tag": "grensesnitt",
+    "changedAt": "2024-12-05T14:39:27.493745+01:00",
+    "changedBy": "Testesen, Test",
+    "revision": 1,
+    "nb": "Nei",
+    "nn": "Nei",
+    "en": "",
+    "publishedAt": null,
+    "publishedBy": null
+  },
+  {
+    "id": 7,
+    "key": "validering.error",
+    "tag": "validering",
+    "changedAt": "2024-12-12T13:03:19.063368+01:00",
+    "changedBy": "Testesen, Test",
+    "revision": 1,
+    "nb": "For å gå videre må du rette opp følgende:",
+    "nn": "For å gå vidare må du rette opp følgende:",
+    "en": null,
+    "publishedAt": null,
+    "publishedBy": null
   }
 ]

@@ -110,9 +110,9 @@ describe('Global translations', () => {
       cy.intercept('PUT', '/api/translations/2', (req) => {
         req.reply(409, req.body);
       }).as('putGlobalTranslation2');
-      cy.get('tr').eq(2).click();
+      cy.findByText('Hei').click();
       cy.findAllByRole('textbox', { name: 'Nynorsk' }).eq(1).type('Hei');
-      cy.get('tr').eq(4).click();
+      cy.findByText('Nyere').click();
       cy.findAllByRole('textbox', { name: 'Nynorsk' }).eq(2).type('{selectall}Gamal');
       cy.findAllByRole('textbox', { name: 'Engelsk' }).eq(2).type('{selectall}Old');
       cy.findByRole('button', { name: 'Lagre' }).focus();
@@ -124,6 +124,96 @@ describe('Global translations', () => {
       cy.findAllByRole('textbox', { name: 'Engelsk' }).eq(1).should('have.value', 'Old');
       cy.findAllByText('Kunne ikke lagres').should('have.length', 2);
       cy.wait('@getGlobalTranslations');
+    });
+  });
+
+  describe('Grensesnitt', () => {
+    it('updates new and existing translations', () => {
+      cy.intercept('POST', '/api/translations', (req) => {
+        expect(req.body).to.deep.equal({
+          key: 'valgfritt',
+          nb: 'valgfritt',
+          nn: 'valfritt',
+          en: null,
+          tag: 'grensesnitt',
+        });
+        req.reply(201, req.body);
+      }).as('postGlobalTranslation');
+      cy.intercept('PUT', '/api/translations/5', (req) => {
+        console.log(req.body);
+        expect(req.body).to.deep.equal({
+          nb: 'Ja',
+          nn: 'Yeah',
+          en: 'Yes',
+          revision: 2,
+        });
+        req.reply(200, req.body);
+      }).as('putGlobalTranslation5');
+      cy.intercept('PUT', '/api/translations/6', (req) => {
+        console.log(JSON.stringify(req.body));
+        expect(req.body).to.deep.equal({
+          nb: 'Nei',
+          nn: 'Nei',
+          en: 'No',
+          revision: 1,
+        });
+        req.reply(200, req.body);
+      }).as('putGlobalTranslation6');
+      cy.findByRole('link', { name: 'Grensesnitt' }).click();
+      cy.findByRole('heading', { name: 'Globale grensesnittekster' }).should('be.visible');
+      cy.findAllByText('Ja').eq(0).click();
+      cy.findAllByRole('textbox', { name: 'Nynorsk' }).eq(0).type('{selectall}Yeah');
+      cy.findAllByRole('textbox', { name: 'Engelsk' }).eq(0).type('Yes');
+      cy.findAllByText('Nei').eq(0).click();
+      cy.findAllByRole('textbox', { name: 'Engelsk' }).eq(1).type('No');
+      cy.findByText('valgfritt').click();
+      cy.findAllByRole('textbox', { name: 'Nynorsk' }).eq(2).type('valfritt');
+      cy.findByRole('button', { name: 'Lagre' }).focus();
+      cy.findByRole('button', { name: 'Lagre' }).click();
+      cy.wait('@putGlobalTranslation6');
+      cy.wait('@putGlobalTranslation5');
+      cy.wait('@postGlobalTranslation');
+    });
+  });
+
+  describe('Validering', () => {
+    it('updates new and existing translations', () => {
+      cy.intercept('POST', '/api/translations', (req) => {
+        expect(req.body).to.deep.equal({
+          key: 'validering.required',
+          nb: 'Du må fylle ut: {{field}}',
+          nn: 'Du må fylle ut: {{field}}',
+          en: 'You must fill in: {{field}}',
+          tag: 'validering',
+        });
+        req.reply(201, req.body);
+      }).as('postGlobalTranslation');
+      cy.intercept('PUT', '/api/translations/7', (req) => {
+        console.log(req.body);
+        expect(req.body).to.deep.equal({
+          nb: 'For å gå videre må du rette opp følgende:',
+          nn: 'Ny nynorsk tekst her',
+          en: 'To proceed you must correct the following errors:',
+          revision: 1,
+        });
+        req.reply(200, req.body);
+      }).as('putGlobalTranslation7');
+      cy.findByRole('link', { name: 'Validering' }).click();
+      cy.findByRole('heading', { name: 'Globale valideringstekster' }).should('be.visible');
+      cy.findByText('For å gå videre må du rette opp følgende:').click();
+      cy.findAllByRole('textbox', { name: 'Nynorsk' }).eq(0).type('{selectall}Ny nynorsk tekst her');
+      cy.findAllByRole('textbox', { name: 'Engelsk' }).eq(0).type('To proceed you must correct the following errors:');
+      cy.findByText('Du må fylle ut: {{field}}').click();
+      cy.findAllByRole('textbox', { name: 'Nynorsk' })
+        .eq(1)
+        .type('Du må fylle ut: {{field}}', { parseSpecialCharSequences: false });
+      cy.findAllByRole('textbox', { name: 'Engelsk' })
+        .eq(1)
+        .type('You must fill in: {{field}}', { parseSpecialCharSequences: false });
+      cy.findByRole('button', { name: 'Lagre' }).focus();
+      cy.findByRole('button', { name: 'Lagre' }).click();
+      cy.wait('@putGlobalTranslation7');
+      cy.wait('@postGlobalTranslation');
     });
   });
 });
