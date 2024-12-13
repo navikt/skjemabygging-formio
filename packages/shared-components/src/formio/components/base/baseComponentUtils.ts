@@ -35,6 +35,18 @@ const isReadOnly = (component?: Component, options?: ReactComponentType['options
   );
 };
 
+const getParentPanel = (component: ReactComponentType) => {
+  if (!component.parent) {
+    return;
+  }
+
+  return component.parent?.type === 'components' ? component.parent : getParentPanel(component.parent);
+};
+
+const isOnCurrentPage = (component: ReactComponentType) => {
+  return component.root.currentPage?.id === getParentPanel(component)?.id;
+};
+
 const baseComponentUtils = {
   getId,
   getLabel,
@@ -42,5 +54,6 @@ const baseComponentUtils = {
   getEditFields,
   isRequired,
   isReadOnly,
+  isOnCurrentPage,
 };
 export default baseComponentUtils;
