@@ -59,7 +59,7 @@ const FyllUtRouter = ({ form, translations }) => {
               <Route path="/nn" element={<IntroPage form={form} formUrl={formBaseUrl} />} />
               <Route path="/en" element={<IntroPage form={form} formUrl={formBaseUrl} />} />
               <Route
-                path={'/oppsummering'}
+                path={'/oppsummering/:languageCode?'}
                 element={
                   <SubmissionWrapper submission={submission} url={formBaseUrl}>
                     {(submissionObject) => (
@@ -69,7 +69,7 @@ const FyllUtRouter = ({ form, translations }) => {
                 }
               />
               <Route
-                path={'/send-i-posten'}
+                path={'/send-i-posten/:languageCode?'}
                 element={
                   <SubmissionWrapper submission={submission} url={formBaseUrl}>
                     {(submissionObject) => (
@@ -84,7 +84,7 @@ const FyllUtRouter = ({ form, translations }) => {
                 }
               />
               <Route
-                path={'/ingen-innsending'}
+                path={'/ingen-innsending/:languageCode?'}
                 element={
                   <SubmissionWrapper submission={submission} url={formBaseUrl}>
                     {(submissionObject) => (
@@ -98,7 +98,10 @@ const FyllUtRouter = ({ form, translations }) => {
                   </SubmissionWrapper>
                 }
               />
-              <Route path={'/paabegynt'} element={<ActiveTasksPage form={form} formUrl={formBaseUrl} />} />
+              <Route
+                path={'/paabegynt/:languageCode?'}
+                element={<ActiveTasksPage form={form} formUrl={formBaseUrl} />}
+              />
               <Route
                 path={'/:panelSlug/:languageCode?'}
                 element={

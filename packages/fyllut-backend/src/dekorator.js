@@ -6,7 +6,7 @@ import { getFyllutUrl } from './utils/url';
 
 const { naisClusterName } = config;
 
-const getDecorator = async (redirectToUrl) => {
+const getDecorator = async (redirectToUrl, language) => {
   /**
    * https://github.com/navikt/nav-dekoratoren
    */
@@ -22,6 +22,7 @@ const getDecorator = async (redirectToUrl) => {
       simple: true,
       urlLookupTable: false,
       logoutWarning: true,
+      language,
       availableLanguages: [
         {
           locale: 'nb',

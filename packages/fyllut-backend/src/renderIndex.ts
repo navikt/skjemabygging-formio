@@ -109,7 +109,7 @@ const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
       }
     }
 
-    const decoratorFragments = await getDecorator(createRedirectUrl(req, res));
+    const decoratorFragments = await getDecorator(createRedirectUrl(req, res), req.params[2]);
     res.status(httpStatusCode).render('index.html', {
       ...decoratorFragments,
       ...pageMeta,

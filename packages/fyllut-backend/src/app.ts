@@ -51,7 +51,7 @@ export const createApp = (setupDev: boolean = false) => {
   });
 
   // Match everything except internal, static and api
-  fyllutRouter.use(/^(?!.*\/(internal|static|api)\/).*$/, renderIndex);
+  fyllutRouter.use(/^(?!.*\/(internal|static|api)\/).*?(\/([a-z]{2}))?$/, renderIndex);
 
   app.use(config.fyllutPath, fyllutRouter);
 
