@@ -46,7 +46,7 @@ export const LanguagesProvider = ({ children, translations }) => {
         replace: true,
       });
     });
-  }, []);
+  }, [location, languageCodeFromUrl, navigate]);
 
   const translate = (originalText: string = '', params?: I18nTranslationReplacements): string => {
     return translationUtils.translateWithTextReplacements({
