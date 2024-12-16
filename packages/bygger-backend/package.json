@@ -49,6 +49,6 @@
     "@types/uuid": "^10.0.0",
     "memorystream": "^0.3.1",
     "nock": "^13.5.5",
-    "vite-plugin-node": "^3.1.0"
+    "vite-plugin-node": "^4.0.0"
   }
 }
