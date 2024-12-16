@@ -271,4 +271,50 @@ describe('Your information', () => {
       });
     });
   });
+
+  describe('Validation', () => {
+    describe('when english is chosen', () => {
+      beforeEach(() => {
+        cy.visit('/fyllut/your-information?sub=paper&lang=en');
+        cy.defaultWaits();
+        cy.clickStart();
+        cy.findByRole('heading', { name: 'Your personal information' }).should('exist');
+        cy.findByRole('textbox', { name: 'First name' }).type('Ola');
+        cy.findByRole('textbox', { name: 'Last name' }).type('Nordmann');
+      });
+
+      it('renders validation messages in error summary when no ssn', () => {
+        cy.findByRole('group', { name: 'Do you have a Norwegian national identification number or d number?' }).within(
+          () => cy.findByLabelText('No').check(),
+        );
+
+        cy.clickNextStep();
+        cy.get('[data-cy=error-summary]')
+          .should('exist')
+          .within(() => {
+            cy.findByRole('link', {
+              name: 'You must fill in: Date of birth (dd.mm.yyyy)',
+            }).should('exist');
+            cy.findByRole('link', {
+              name: 'You must fill in: Do you live in Norway?',
+            }).should('exist');
+          });
+      });
+
+      it('renders validation messages in error summary when ssn', () => {
+        cy.findByRole('group', { name: 'Do you have a Norwegian national identification number or d number?' }).within(
+          () => cy.findByLabelText('Yes').check(),
+        );
+
+        cy.clickNextStep();
+        cy.get('[data-cy=error-summary]')
+          .should('exist')
+          .within(() => {
+            cy.findByRole('link', {
+              name: 'You must fill in: Norwegian national identification number or d number',
+            }).should('exist');
+          });
+      });
+    });
+  });
 });

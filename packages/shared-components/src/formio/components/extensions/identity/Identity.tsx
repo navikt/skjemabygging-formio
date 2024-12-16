@@ -105,7 +105,7 @@ export default class Identity extends BaseComponent {
 
   validateRequiredField(identity: SubmissionIdentity, identityType: SubmissionIdentityType, label: string) {
     if (!identity[identityType]) {
-      this.addIdentityError(this.translate('required', { field: label }), identityType);
+      this.addIdentityError(this.translate('required', { field: this.translate(label) }), identityType);
     }
   }
 

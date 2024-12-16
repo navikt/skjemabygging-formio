@@ -182,7 +182,7 @@ class Address extends BaseComponent {
   validateRequiredField(address: SubmissionAddress, addressType: SubmissionAddressType, label: string) {
     if (!address[addressType]) {
       const elementId = `address:${addressType}`;
-      super.addError(this.translate('required', { field: label }), elementId);
+      super.addError(this.translate('required', { field: this.translate(label) }), elementId);
     }
   }
 

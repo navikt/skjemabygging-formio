@@ -1,0 +1,11 @@
+{
+  "_id": "1238912378123",
+  "scope": "local",
+  "form": "your-information",
+  "data": {
+    "language": "en",
+    "i18n": {
+      "Test dine opplysninger": "Test your information"
+    }
+  }
+}
