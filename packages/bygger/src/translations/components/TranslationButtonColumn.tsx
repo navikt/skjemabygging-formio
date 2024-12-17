@@ -8,9 +8,12 @@ const TranslationButtonColumn = () => {
   const { saveChanges } = useEditTranslations();
 
   const onSave = async () => {
-    setIsSaving(true);
-    await saveChanges();
-    setIsSaving(false);
+    try {
+      setIsSaving(true);
+      await saveChanges();
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
