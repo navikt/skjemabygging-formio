@@ -33,7 +33,7 @@ const sendInnUtfyltSoknad = {
         next(new Error(errorMessage));
         return;
       }
-
+      logger.warning('***** Skal konvertere søknad til PDF ******');
       const pdfByteArray = await createPdfAsByteArray(
         req.headers.AzureAccessToken as string,
         form,

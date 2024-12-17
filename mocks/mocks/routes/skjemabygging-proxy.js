@@ -1,7 +1,7 @@
 module.exports = [
   {
     id: 'post-exstream-pdf',
-    url: '/skjemabygging-proxy/exstream',
+    url: '/skjemabygging-proxy/gotenberg',
     method: 'POST',
     variants: [
       {
