@@ -50,7 +50,7 @@ const TranslationRow = ({ translation }: Props) => {
             label={'Nynorsk'}
             defaultValue={translation.nn}
             minRows={heightInRows}
-            error={error?.type === 'CONFLICT' ? 'Kunne ikke lagres' : undefined}
+            error={error?.message}
             onChange={(event) => handleChange('nn', event.currentTarget.value)}
           />
         ) : (
@@ -72,7 +72,7 @@ const TranslationRow = ({ translation }: Props) => {
             label={'Engelsk'}
             defaultValue={translation.en}
             minRows={heightInRows}
-            error={error?.type === 'CONFLICT' ? 'Kunne ikke lagres' : undefined}
+            error={error?.message}
             onChange={(event) => handleChange('en', event.currentTarget.value)}
           />
         ) : (

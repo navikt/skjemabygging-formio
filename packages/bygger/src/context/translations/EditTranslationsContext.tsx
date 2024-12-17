@@ -5,10 +5,17 @@ import {
   TranslationLang,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { Context, createContext, ReactNode, useContext, useEffect, useReducer } from 'react';
+import ApiError from '../../api/ApiError';
 import { useFeedbackEmit } from '../notifications/FeedbackContext';
 import reducer, { Status } from './editTranslationsReducer/reducer';
 import { getTranslationsForSaving, hasNewTranslationData } from './editTranslationsReducer/selectors';
-import { TranslationError, TranslationsContextValue } from './types';
+import { TranslationsContextValue } from './types';
+import {
+  getConflictAlertMessage,
+  getGeneralAlertMessage,
+  getTranslationHttpError,
+  TranslationError,
+} from './utils/errorUtils';
 
 interface Props<Translation extends FormsApiTranslation> {
   context: Context<TranslationsContextValue<Translation>>;
@@ -54,7 +61,7 @@ const EditTranslationsProvider = <Translation extends FormsApiTranslation>({
     new: defaultNewSkjemateksterTranslation,
     changes: {},
   });
-  const { storedTranslations, loadTranslations, saveTranslations, createNewTranslation } = useContext(context);
+  const { storedTranslations, loadTranslations, createNewTranslation, saveTranslation } = useContext(context);
   const feedbackEmit = useFeedbackEmit();
 
   useEffect(() => {
@@ -99,8 +106,37 @@ const EditTranslationsProvider = <Translation extends FormsApiTranslation>({
     isNewTranslation: boolean = false,
   ): TranslationError | undefined => {
     if (!translation.key) {
-      return { key: translation.key, type: 'MISSING_KEY_VALIDATION', isNewTranslation };
+      return {
+        key: translation.key,
+        type: 'MISSING_KEY_VALIDATION',
+        message: 'Legg til bokmålstekst for å opprette ny oversettelse',
+        isNewTranslation,
+      };
     }
+  };
+
+  const saveExistingTranslations = async (): Promise<{
+    responses: FormsApiTranslation[];
+    errors: TranslationError[];
+  }> => {
+    const func = async (translation: Translation) => {
+      try {
+        return { response: await saveTranslation(translation) };
+      } catch (error) {
+        if (error instanceof ApiError) {
+          return { error: getTranslationHttpError(error.httpStatus, translation) };
+        } else {
+          throw error;
+        }
+      }
+    };
+
+    const results = await Promise.all(getTranslationsForSaving(state).map(func));
+
+    return {
+      responses: results.flatMap((result) => (result.response ? result.response : [])),
+      errors: results.flatMap((result) => (result.error ? result.error : [])),
+    };
   };
 
   const saveChanges = async () => {
@@ -110,29 +146,31 @@ const EditTranslationsProvider = <Translation extends FormsApiTranslation>({
       dispatch({ type: 'VALIDATION_ERROR', payload: { errors: [validationError] } });
     } else {
       dispatch({ type: 'CLEAR_ERRORS' });
-      const result = await saveTranslations(getTranslationsForSaving(state));
-      const resultNew = newTranslationHasData ? await createNewTranslation?.(state.new) : undefined;
-      await loadTranslations();
-      const errors = [...result, ...(resultNew ? [resultNew] : [])];
-      dispatch({ type: 'SAVED', payload: { defaultNew: defaultNewSkjemateksterTranslation, errors } });
+      const { responses, errors } = await saveExistingTranslations();
 
-      //TODO: move
-      const conflictErrors = result.filter((error) => error.type === 'CONFLICT');
-      if (conflictErrors.length > 0) {
-        const message =
-          conflictErrors.length === 1
-            ? `1 oversettelse ble ikke lagret fordi en nyere versjon allerede eksisterer. Last siden på nytt for å endre oversettelsen.`
-            : `${conflictErrors.length} oversettelser ble ikke lagret fordi en nyere versjon allerede eksisterer. Last siden på nytt for å endre oversettelsene.`;
-        feedbackEmit.error(message);
+      if (newTranslationHasData && createNewTranslation) {
+        const newTranslationResult = await createNewTranslation(state.new);
+        if (newTranslationResult?.error) {
+          errors.push(newTranslationResult.error);
+        }
+        if (newTranslationResult?.response) {
+          responses.push(newTranslationResult.response);
+        }
       }
-      //TODO: move + bedre feilmelding
-      const otherErrors = result.filter((error) => error.type === 'OTHER_HTTP');
-      if (otherErrors.length > 0) {
-        const message =
-          otherErrors.length === 1
-            ? `1 oversettelse ble ikke lagret på grunn av en teknisk feil. Last siden på nytt for å endre oversettelsen.`
-            : `${otherErrors.length} oversettelser ble ikke lagret på grunn av en teknisk feil. Last siden på nytt for å endre oversettelsene.`;
-        feedbackEmit.error(message);
+
+      await loadTranslations();
+      dispatch({ type: 'SAVED', payload: { defaultNew: defaultNewSkjemateksterTranslation, errors } });
+      if (responses.length > 0) {
+        feedbackEmit.success(`${responses.length} oversettelser ble lagret.`);
+      }
+
+      const conflictAlertMessage = getConflictAlertMessage(errors);
+      const generalAlertMessage = getGeneralAlertMessage(errors);
+      if (conflictAlertMessage) {
+        feedbackEmit.error(conflictAlertMessage);
+      }
+      if (generalAlertMessage) {
+        feedbackEmit.error(generalAlertMessage);
       }
     }
   };

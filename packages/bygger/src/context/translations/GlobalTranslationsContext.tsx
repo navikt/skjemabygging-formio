@@ -1,14 +1,16 @@
 import { FormsApiGlobalTranslation } from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import ApiError from '../../api/ApiError';
 import useGlobalTranslationsApi from '../../api/useGlobalTranslationsApi';
-import { isTranslationError, TranslationError, TranslationsContextValue } from './types';
+import { TranslationsContextValue } from './types';
+import { getTranslationHttpError, TranslationError } from './utils/errorUtils';
 
 const defaultValue: TranslationsContextValue<FormsApiGlobalTranslation> = {
   storedTranslations: {},
   isReady: false,
   loadTranslations: () => Promise.resolve(),
-  saveTranslations: () => Promise.resolve([]),
-  createNewTranslation: () => Promise.resolve(undefined),
+  saveTranslation: () => Promise.reject(),
+  createNewTranslation: () => Promise.reject(),
 };
 
 const GlobalTranslationsContext = createContext<TranslationsContextValue<FormsApiGlobalTranslation>>(defaultValue);
@@ -33,25 +35,26 @@ const GlobalTranslationsProvider = ({ children }) => {
     }
   }, [formsApiState.isReady, loadTranslations]);
 
-  const saveTranslations = async (translations: FormsApiGlobalTranslation[]): Promise<Array<TranslationError>> => {
-    const results = await Promise.all(
-      translations.map((translation) => {
-        if (translation.id) {
-          return translationsApi.put(translation);
-        } else {
-          return translationsApi.post(translation);
-        }
-      }),
-    );
-    return results.filter(isTranslationError);
+  const saveTranslation = async (translation: FormsApiGlobalTranslation): Promise<FormsApiGlobalTranslation> => {
+    if (translation.id) {
+      return translationsApi.put(translation);
+    } else {
+      return translationsApi.post(translation);
+    }
   };
 
   const createNewTranslation = async (
     translation: FormsApiGlobalTranslation,
-  ): Promise<TranslationError | undefined> => {
-    const result = await translationsApi.post(translation);
-    if (isTranslationError(result)) {
-      return { ...result, isNewTranslation: true };
+  ): Promise<{ response?: FormsApiGlobalTranslation; error?: TranslationError }> => {
+    try {
+      const result = await translationsApi.post(translation);
+      return { response: result };
+    } catch (error) {
+      if (error instanceof ApiError) {
+        return { error: getTranslationHttpError(error.httpStatus, translation, true) };
+      } else {
+        throw error;
+      }
     }
   };
 
@@ -64,7 +67,7 @@ const GlobalTranslationsProvider = ({ children }) => {
     storedTranslations: storedTranslationsMap,
     loadTranslations,
     isReady: formsApiState.isReady,
-    saveTranslations,
+    saveTranslation,
     createNewTranslation,
   };
   return <GlobalTranslationsContext.Provider value={value}>{children}</GlobalTranslationsContext.Provider>;

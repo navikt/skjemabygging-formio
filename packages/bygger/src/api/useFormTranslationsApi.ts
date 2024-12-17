@@ -1,7 +1,7 @@
 import { http as baseHttp, useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
 import { FormsApiFormTranslation } from '@navikt/skjemadigitalisering-shared-domain';
 import { useFeedbackEmit } from '../context/notifications/FeedbackContext';
-import { TranslationError } from '../context/translations/types';
+import ApiError from './ApiError';
 
 const useFormTranslationsApi = () => {
   const feedbackEmit = useFeedbackEmit();
@@ -18,10 +18,7 @@ const useFormTranslationsApi = () => {
     }
   };
 
-  const post = async (
-    formPath: string,
-    translation: FormsApiFormTranslation,
-  ): Promise<FormsApiFormTranslation | TranslationError> => {
+  const post = async (formPath: string, translation: FormsApiFormTranslation): Promise<FormsApiFormTranslation> => {
     try {
       const { key, nb = null, nn = null, en = null, globalTranslationId } = translation;
       return await http.post<FormsApiFormTranslation>(getPath(formPath), {
@@ -32,21 +29,17 @@ const useFormTranslationsApi = () => {
         globalTranslationId,
       });
     } catch (error: any) {
-      if (error?.status === 409) {
-        return { type: 'CONFLICT', key: translation.key };
+      if (error?.status !== 409) {
+        const message = (error as Error)?.message;
+        feedbackEmit.error(
+          `Feil ved oppretting av oversettelse med nøkkel ${translation.key} for skjema ${formPath}. ${message}`,
+        );
       }
-      const message = (error as Error)?.message;
-      feedbackEmit.error(
-        `Feil ved oppretting av oversettelse med nøkkel ${translation.key} for skjema ${formPath}. ${message}`,
-      );
-      return { type: 'OTHER_HTTP', key: translation.key };
+      throw error?.status ? new ApiError(error?.status) : new Error(error);
     }
   };
 
-  const put = async (
-    formPath: string,
-    translation: FormsApiFormTranslation,
-  ): Promise<FormsApiFormTranslation | TranslationError> => {
+  const put = async (formPath: string, translation: FormsApiFormTranslation): Promise<FormsApiFormTranslation> => {
     try {
       const { id, revision, nb = null, nn = null, en = null, globalTranslationId } = translation;
       return await http.put<FormsApiFormTranslation>(`${getPath(formPath)}/${id}`, {
@@ -57,14 +50,13 @@ const useFormTranslationsApi = () => {
         globalTranslationId,
       });
     } catch (error: any) {
-      if (error?.status === 409) {
-        return { type: 'CONFLICT', key: translation.key };
+      if (error?.status !== 409) {
+        const message = (error as Error)?.message;
+        feedbackEmit.error(
+          `Feil ved oppdatering av oversettelse med nøkkel ${translation.key} for skjema ${formPath}. ${message}`,
+        );
       }
-      const message = (error as Error)?.message;
-      feedbackEmit.error(
-        `Feil ved oppdatering av oversettelse med nøkkel ${translation.key} for skjema ${formPath}. ${message}`,
-      );
-      return { type: 'OTHER_HTTP', key: translation.key };
+      throw error?.status ? new ApiError(error?.status) : new Error(error);
     }
   };
 

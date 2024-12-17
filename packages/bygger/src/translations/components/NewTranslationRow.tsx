@@ -6,14 +6,9 @@ const NewTranslationRow = () => {
   const { newTranslation, updateNewTranslation, errors } = useEditTranslations();
   const styles = useTranslationTableStyles();
 
-  const missingKeyErrorMessage = errors.some(
-    (error) => error.isNewTranslation && error.type === 'MISSING_KEY_VALIDATION',
-  )
-    ? 'Legg til bokmålstekst for å opprette ny oversettelse'
-    : undefined;
-  const conflictErrorMessage = errors.some((error) => error.key === newTranslation.key && error.type === 'CONFLICT')
-    ? 'Det finnes allerede en global oversettelse med denne bokmålsteksten'
-    : undefined;
+  const missingKeyError = errors.find((error) => error.isNewTranslation && error.type === 'MISSING_KEY_VALIDATION');
+
+  const error = errors.find((error) => error.key === newTranslation.key && error.type === 'CONFLICT');
 
   const handleChange = (property: 'nb' | 'nn' | 'en', value: string) => {
     updateNewTranslation(property, value);
@@ -27,7 +22,7 @@ const NewTranslationRow = () => {
           label={'Bokmål'}
           value={newTranslation.nb}
           onChange={(event) => handleChange('nb', event.currentTarget.value)}
-          error={missingKeyErrorMessage ?? conflictErrorMessage}
+          error={missingKeyError?.message ?? error?.message}
         />
       </Table.DataCell>
       <Table.DataCell className={styles.column}>

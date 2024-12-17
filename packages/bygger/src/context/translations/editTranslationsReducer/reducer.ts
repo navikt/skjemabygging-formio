@@ -3,7 +3,7 @@ import {
   FormsApiTranslation,
   TranslationLang,
 } from '@navikt/skjemadigitalisering-shared-domain';
-import { TranslationError } from '../types';
+import { TranslationError } from '../utils/errorUtils';
 
 type Status = 'INIT' | 'EDITING' | 'SAVED';
 interface State<Translation> {

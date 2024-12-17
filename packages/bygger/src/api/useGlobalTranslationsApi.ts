@@ -1,7 +1,7 @@
 import { http as baseHttp, useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
 import { FormsApiGlobalTranslation } from '@navikt/skjemadigitalisering-shared-domain';
 import { useFeedbackEmit } from '../context/notifications/FeedbackContext';
-import { TranslationError } from '../context/translations/types';
+import ApiError from './ApiError';
 
 const useGlobalTranslationsApi = () => {
   const feedbackEmit = useFeedbackEmit();
@@ -18,33 +18,29 @@ const useGlobalTranslationsApi = () => {
     }
   };
 
-  const post = async (
-    translation: FormsApiGlobalTranslation,
-  ): Promise<FormsApiGlobalTranslation | TranslationError> => {
+  const post = async (translation: FormsApiGlobalTranslation): Promise<FormsApiGlobalTranslation> => {
     try {
       const { key, tag, nb = null, nn = null, en = null } = translation;
       return await http.post<FormsApiGlobalTranslation>(basePath, { key, tag, nb, nn, en });
     } catch (error: any) {
-      if (error?.status === 409) {
-        return { type: 'CONFLICT', key: translation.key };
+      if (error?.status !== 409) {
+        const message = (error as Error)?.message;
+        feedbackEmit.error(`Feil ved oppretting av global oversettelse med nøkkel ${translation.key}. ${message}`);
       }
-      const message = (error as Error)?.message;
-      feedbackEmit.error(`Feil ved oppretting av global oversettelse med nøkkel ${translation.key}. ${message}`);
-      return { type: 'OTHER_HTTP', key: translation.key };
+      throw error?.status ? new ApiError(error?.status) : new Error(error);
     }
   };
 
-  const put = async (translation: FormsApiGlobalTranslation): Promise<FormsApiGlobalTranslation | TranslationError> => {
+  const put = async (translation: FormsApiGlobalTranslation): Promise<FormsApiGlobalTranslation> => {
     try {
       const { id, revision, nb = null, nn = null, en = null } = translation;
       return await http.put<FormsApiGlobalTranslation>(`${basePath}/${id}`, { revision, nb, nn, en });
     } catch (error: any) {
-      if (error?.status === 409) {
-        return { type: 'CONFLICT', key: translation.key };
+      if (error?.status !== 409) {
+        const message = (error as Error)?.message;
+        feedbackEmit.error(`Feil ved oppdatering av global oversettelse med nøkkel ${translation.key}. ${message}`);
       }
-      const message = (error as Error)?.message;
-      feedbackEmit.error(`Feil ved oppdatering av global oversettelse med nøkkel ${translation.key}. ${message}`);
-      return { type: 'OTHER_HTTP', key: translation.key };
+      throw error?.status ? new ApiError(error?.status) : new Error(error);
     }
   };
 
