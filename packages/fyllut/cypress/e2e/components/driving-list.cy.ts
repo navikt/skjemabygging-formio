@@ -20,18 +20,57 @@ describe('DrivingList', () => {
     cy.configMocksServer();
   });
 
-  beforeEach(() => {
-    cy.defaultIntercepts();
-    cy.defaultInterceptsMellomlagring();
-    cy.defaultInterceptsExternal();
-    cy.mocksRestoreRouteVariants();
-  });
-
-  after(() => {
-    cy.mocksRestoreRouteVariants();
-  });
-
   describe('paper', () => {
+    beforeEach(() => {
+      cy.defaultIntercepts();
+    });
+
+    it('should show errors', () => {
+      cy.visit(`/fyllut/testdrivinglist?sub=paper`);
+      cy.defaultWaits();
+      cy.clickStart();
+
+      // Should fill out form
+      cy.findByRole('textbox', { name: DATE_PICKER_LABEL }).should('exist');
+      cy.findByRole('group', { name: 'Skal du registrere parkering?' }).should('exist');
+      cy.clickNextStep();
+
+      cy.findByRole('heading', { name: 'For å gå videre må du rette opp følgende:' })
+        .should('exist')
+        .parent()
+        .within(() => {
+          cy.findByRole('link', { name: `Du må fylle ut: ${DATE_PICKER_LABEL}` })
+            .should('exist')
+            .click();
+        });
+
+      cy.findByRole('textbox', { name: DATE_PICKER_LABEL }).should('exist').type('15.05.2023{esc}');
+      cy.findByRole('radio', { name: 'Ja' }).should('exist').check();
+      cy.findByRole('button', { name: '15. mai 2023 - 21. mai 2023' }).click();
+      cy.findByRole('checkbox', { name: 'mandag 15. mai 2023' }).should('exist').check();
+
+      // Parking expenses should be a number
+      cy.findByRole('textbox', { name: PARKING_EXPENSES_LABEL }).clear();
+      cy.findByRole('textbox', { name: PARKING_EXPENSES_LABEL }).type('text');
+      cy.clickNextStep();
+      cy.findByRole('heading', { name: 'For å gå videre må du rette opp følgende:' })
+        .should('exist')
+        .parent()
+        .within(() => {
+          cy.findByRole('link', { name: 'Parkeringsutgiftene for 15.05.2023 må være et gyldig beløp' })
+            .should('exist')
+            .click();
+        });
+
+      cy.findByRole('textbox', { name: PARKING_EXPENSES_LABEL }).should('have.focus').type('{selectall}78');
+      cy.findByRole('heading', { name: 'For å gå videre må du rette opp følgende:' }).should('not.exist');
+
+      // Parking expenses should not show even with value over 100
+      cy.findByRole('textbox', { name: PARKING_EXPENSES_LABEL }).should('exist').type('101');
+      cy.clickNextStep();
+      cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
+    });
+
     it('should fill out form and show data in summary', () => {
       cy.visit(`/fyllut/testdrivinglist?sub=paper`);
       cy.defaultWaits();
@@ -70,47 +109,6 @@ describe('DrivingList', () => {
         });
     });
 
-    it('should show errors', () => {
-      cy.visit(`/fyllut/testdrivinglist?sub=paper`);
-      cy.defaultWaits();
-      cy.clickStart();
-
-      // Should fill out form
-      cy.clickNextStep();
-      cy.get('[data-cy=error-summary]')
-        .should('exist')
-        .within(() => {
-          cy.findByRole('link', { name: `Du må fylle ut: ${DATE_PICKER_LABEL}` })
-            .should('exist')
-            .click();
-        });
-
-      cy.findByRole('textbox', { name: DATE_PICKER_LABEL }).should('exist').type('15.05.2023{esc}');
-      cy.findByRole('radio', { name: 'Ja' }).should('exist').check();
-      cy.findByRole('button', { name: '15. mai 2023 - 21. mai 2023' }).click();
-      cy.findByRole('checkbox', { name: 'mandag 15. mai 2023' }).should('exist').check();
-
-      // Parking expenses should be a number
-      cy.findByRole('textbox', { name: PARKING_EXPENSES_LABEL }).clear();
-      cy.findByRole('textbox', { name: PARKING_EXPENSES_LABEL }).type('text');
-      cy.clickNextStep();
-      cy.get('[data-cy=error-summary]')
-        .should('exist')
-        .within(() => {
-          cy.findByRole('link', { name: 'Parkeringsutgiftene for 15.05.2023 må være et gyldig beløp' })
-            .should('exist')
-            .click();
-        });
-
-      cy.findByRole('textbox', { name: PARKING_EXPENSES_LABEL }).should('have.focus').type('{selectall}78');
-      cy.get('[data-cy=error-summary]').should('not.exist');
-
-      // Parking expenses should not show even with value over 100
-      cy.findByRole('textbox', { name: PARKING_EXPENSES_LABEL }).should('exist').type('101');
-      cy.clickNextStep();
-      cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
-    });
-
     it('should add and remove periods', () => {
       cy.visit(`/fyllut/testdrivinglist?sub=paper`);
       cy.defaultWaits();
@@ -137,11 +135,19 @@ describe('DrivingList', () => {
   });
 
   describe('digital', () => {
+    beforeEach(() => {
+      cy.mocksRestoreRouteVariants();
+      cy.defaultInterceptsMellomlagring();
+      cy.defaultInterceptsExternal();
+      cy.defaultIntercepts();
+    });
+
     it('should fill out form and show data in summary', () => {
       cy.visit(`/fyllut/testdrivinglist?sub=digital`);
       cy.defaultWaits();
       cy.clickStart();
       cy.wait('@getActivities');
+      cy.wait('@createMellomlagring');
 
       cy.findByRole('group', { name: ACTIVITIES_LABEL })
         .should('exist')
@@ -201,10 +207,11 @@ describe('DrivingList', () => {
     });
 
     it('should fill out mellomlagret values', () => {
-      cy.visit(`/fyllut/testdrivinglist/veiledning?sub=digital&innsendingsId=8495201b-71fd-4a95-82f8-d224d32237e5`);
       cy.mocksUseRouteVariant('get-soknad:success-driving-list');
+      cy.visit(`/fyllut/testdrivinglist/veiledning?sub=digital&innsendingsId=8495201b-71fd-4a95-82f8-d224d32237e5`);
       cy.defaultWaits();
       cy.wait('@getActivities');
+      cy.wait('@getMellomlagring');
 
       cy.findByRole('radio', { name: 'Arbeidstrening: 01. januar 2024 - 31. august 2024' }).should('be.checked');
 
@@ -220,10 +227,11 @@ describe('DrivingList', () => {
     });
 
     it('should load driving list without dates', () => {
-      cy.visit(`/fyllut/testdrivinglist/veiledning?sub=digital&innsendingsId=a66e8932-ce2a-41c1-932b-716fc487813b`);
       cy.mocksUseRouteVariant('get-soknad:success-driving-list-no-dates');
+      cy.visit(`/fyllut/testdrivinglist/veiledning?sub=digital&innsendingsId=a66e8932-ce2a-41c1-932b-716fc487813b`);
       cy.defaultWaits();
       cy.wait('@getActivities');
+      cy.wait('@getMellomlagring');
 
       cy.findByRole('radio', { name: 'Arbeidstrening: 01. januar 2024 - 31. august 2024' }).should('be.checked');
 
@@ -241,6 +249,7 @@ describe('DrivingList', () => {
       cy.visit(`/fyllut/testdrivinglist/veiledning?sub=digital`);
       cy.defaultWaits();
       cy.wait('@getActivities');
+      cy.wait('@createMellomlagring');
 
       cy.findByRole('radio', { name: 'Arbeidstrening: 01. januar 2099 - 31. august 2099' }).check();
 
@@ -260,6 +269,7 @@ describe('DrivingList', () => {
 
       cy.clickStart();
       cy.wait('@getActivities');
+      cy.wait('@createMellomlagring');
 
       cy.clickSaveAndContinue();
       cy.get('[data-cy=error-summary]')
@@ -295,11 +305,12 @@ describe('DrivingList', () => {
     });
 
     it('should render alert when there are no activities and error when trying to continue', () => {
+      cy.mocksUseRouteVariant('get-activities:success-empty');
       cy.visit(`/fyllut/testdrivinglist?sub=digital`);
       cy.defaultWaits();
-      cy.mocksUseRouteVariant('get-activities:success-empty');
       cy.clickStart();
       cy.wait('@getActivities');
+      cy.wait('@createMellomlagring');
 
       cy.get('.navds-alert').within(() => {
         cy.findByText(TEXTS.statiske.drivingList.noVedtakHeading).should('exist');
@@ -312,6 +323,18 @@ describe('DrivingList', () => {
         .within(() => {
           cy.findByRole('link', { name: `Du må fylle ut: ${ACTIVITIES_LABEL}` }).should('exist');
         });
+    });
+
+    it('should render alert when there are no activities and the user go directly to summary page url', () => {
+      cy.mocksUseRouteVariant('get-activities:success-empty');
+      cy.visit(`/fyllut/testdrivinglist/oppsummering?sub=digital&innsendingsId=a66e8932-ce2a-41c1-932b-716fc487813b`);
+      cy.defaultWaits();
+      cy.wait('@getMellomlagring');
+
+      cy.get('.navds-alert').should('exist');
+
+      cy.findAllByRole('link', { name: 'Fortsett utfylling' }).should('have.length', 2);
+      cy.findByRole('link', { name: 'Send til Nav' }).should('not.exist');
     });
   });
 });

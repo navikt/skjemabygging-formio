@@ -126,7 +126,7 @@ class Address extends BaseComponent {
   }
 
   getReadOnly(): boolean {
-    return !!this.component?.prefillKey && this.isSubmissionDigital();
+    return this.hasPrefill() || super.getReadOnly();
   }
 
   showAddressTypeChoice(): boolean {
@@ -140,11 +140,7 @@ class Address extends BaseComponent {
     }
   }
 
-  get errors() {
-    return this.componentErrors;
-  }
-
-  checkValidity(data, dirty, row) {
+  checkComponentValidity(data, dirty, row, _options = {}) {
     this.removeAllErrors();
 
     if (this.shouldSkipValidation(data, dirty, row) || this.getReadOnly()) {

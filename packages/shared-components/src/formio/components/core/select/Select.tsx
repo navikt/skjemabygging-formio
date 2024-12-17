@@ -1,7 +1,7 @@
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { Utils } from 'formiojs';
-import { useEffect, useRef, useState } from 'react';
-import ReactSelect, { OnChangeValue, components } from 'react-select';
+import { useEffect, useState } from 'react';
+import ReactSelect, { components, OnChangeValue } from 'react-select';
 import Select from 'react-select/base';
 import http from '../../../../api/util/http/http';
 import BaseComponent from '../../base/BaseComponent';
@@ -49,11 +49,6 @@ const ReactSelectWrapper = ({
   useEffect(() => {
     setSelectedOption(value);
   }, [value, options]);
-  const ref = useRef<Select>(null);
-  useEffect(() => {
-    if (ref.current) inputRef(ref.current);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ref.current]);
 
   return (
     <ReactSelect
@@ -69,7 +64,7 @@ const ReactSelectWrapper = ({
       required={component.validate.required}
       placeholder={component.placeholder}
       isLoading={isLoading}
-      ref={ref}
+      ref={inputRef}
       className={component.fieldSize || 'input--xxl'}
       styles={reactSelectStyles}
       isClearable={true}
@@ -228,20 +223,27 @@ class NavSelect extends BaseComponent {
   renderReact(element) {
     const component = this.component!;
     return element.render(
-      <ReactSelectWrapper
-        component={component}
-        options={this.translateOptionLabels(this.selectOptions)}
-        label={this.translate(component.label)}
-        value={this.translateOptionLabel(this.getValue())}
-        ariaLiveMessages={this.translateAriaLiveMessages(ariaLiveMessages)}
-        screenReaderStatus={({ count }: { count: number }) =>
-          this.translate(SELECT_TEXTS.numberOfAvailableOptions, { count })
-        }
-        loadingMessage={() => this.translate(TEXTS.statiske.loading)}
-        onChange={(value) => this.handleChange(value)}
-        inputRef={(ref) => this.setReactInstance(ref)}
-        isLoading={this.isLoading}
-      />,
+      <>
+        <ReactSelectWrapper
+          component={component}
+          options={this.translateOptionLabels(this.selectOptions)}
+          label={this.translate(component.label)}
+          value={this.translateOptionLabel(this.getValue())}
+          ariaLiveMessages={this.translateAriaLiveMessages(ariaLiveMessages)}
+          screenReaderStatus={({ count }: { count: number }) =>
+            this.translate(SELECT_TEXTS.numberOfAvailableOptions, { count })
+          }
+          loadingMessage={() => this.translate(TEXTS.statiske.loading)}
+          onChange={(value) => this.handleChange(value)}
+          inputRef={(ref) => this.setReactInstance(ref)}
+          isLoading={this.isLoading}
+        />
+        {this.getError() && (
+          <div className="navds-form-field__error" aria-live="polite">
+            <p className="navds-error-message navds-label">{this.getError()}</p>
+          </div>
+        )}
+      </>,
     );
   }
 }

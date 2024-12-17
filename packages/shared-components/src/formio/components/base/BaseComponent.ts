@@ -151,13 +151,6 @@ class BaseComponent extends FormioReactComponent {
   }
 
   /**
-   * Get error custom for component renderReact()
-   */
-  getError() {
-    return this.error?.message;
-  }
-
-  /**
    * Get whether user is logged in or not for custom component renderReact()
    */
   getIsLoggedIn() {
@@ -197,14 +190,50 @@ class BaseComponent extends FormioReactComponent {
   }
 
   hasPrefill(): boolean {
-    return (this.isSubmissionDigital() && !!this.component?.prefillKey && !!this.component?.prefillValue) ?? false;
+    return (this.isSubmissionDigital() && !!this.component?.prefillKey) ?? false;
   }
 
-  // elementId is used to focus to the correct element when clicking on error summary
-  // Message is the error message that is shown in the error summary
+  /**
+   * elementId is used to focus to the correct element when clicking on error summary
+   * Message is the error message that is shown in the error summary
+   */
   addError(message: string, elementId?: string) {
-    this.logger.debug('addError', { errorMessage: message });
-    this.componentErrors.push(this.createError(message, elementId));
+    if (message && this.showErrorMessages()) {
+      this.logger.debug('addError', { errorMessage: message });
+      this.componentErrors.push(this.createError(message, elementId));
+    }
+  }
+
+  get errors() {
+    return this.componentErrors;
+  }
+
+  override setCustomValidity(messages: string | ComponentError[], _dirty?: boolean, _external?: boolean) {
+    this.removeAllErrors();
+
+    if (messages) {
+      if (Array.isArray(messages)) {
+        if (messages.length > 1) {
+          this.logger.info(`Should never get more then one message, got ${messages.length}.`, { messages });
+        }
+        messages.forEach((componentError: ComponentError) => {
+          this.addError(componentError.message, this.getId());
+        });
+      } else {
+        this.addError(messages, this.getId());
+      }
+    }
+    this.rerender();
+  }
+
+  setComponentValidity(messages, dirty, silentCheck) {
+    if (messages.length && (!silentCheck || this.error) && this.showErrorMessages()) {
+      this.setCustomValidity(messages, dirty);
+    } else {
+      this.setCustomValidity('');
+    }
+
+    return this.componentErrors.length === 0;
   }
 
   createError(message: string, elementId?: string): ComponentError {
@@ -220,8 +249,27 @@ class BaseComponent extends FormioReactComponent {
     this.componentErrors = [];
   }
 
+  getError() {
+    return this.getComponentError(this.getId());
+  }
+
   getComponentError(elementId: string) {
     return this.componentErrors.find((error) => error.elementId === elementId)?.message;
+  }
+
+  /**
+   * nextPageClicked: When user click next page in Fyllut (except last page)
+   * submitted: When user click next page in Fyllut (last page)
+   * builderMode: When user is in the regular form builder
+   * editFormDialog: When user have open a form dialog in the form builder
+   */
+  showErrorMessages() {
+    return (
+      (this.root.currentPage?.nextPageClicked && baseComponentUtils.isOnCurrentPage(this)) ||
+      this.root.submitted ||
+      this.builderMode ||
+      this.root.editFormDialogSaveClicked
+    );
   }
 }
 

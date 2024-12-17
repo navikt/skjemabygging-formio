@@ -1,0 +1,35 @@
+{
+  "brukerId": "19876898104",
+  "skjemanr": "radio-test",
+  "tittel": "Radio test",
+  "tema": "AAP",
+  "spraak": "nb",
+  "hoveddokument": {},
+  "hoveddokumentVariant": {
+    "vedleggsnr": "radio-test",
+    "tittel": "Radio test",
+    "label": "Radio test",
+    "pakrevd": false,
+    "mimetype": "application/json",
+    "document": {
+      "language": "nb-NO",
+      "data": {
+        "data": {
+          "simple": "nei",
+          "withDescription": "first"
+        },
+        "metadata": {},
+        "state": "submitted"
+      }
+    }
+  },
+  "innsendingsId": "62a75280-2a85-4e56-9de2-84faa63a2111",
+  "status": "Opprettet",
+  "vedleggsListe": [],
+  "kanLasteOppAnnet": true,
+  "fristForEttersendelse": 14,
+  "endretDato": "2024-06-17T13:21:09.17675+02:00",
+  "skalSlettesDato": "2024-07-15T11:21:09.166405Z",
+  "skjemaPath": "radiotest",
+  "visningsType": "fyllUt"
+}

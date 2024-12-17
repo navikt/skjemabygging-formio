@@ -9,6 +9,8 @@ export type PanelValidation = {
 };
 
 const findFirstInputWithValidationError = (wizardComponent, data): Component | undefined => {
+  // Need to tell the Formio root component that the form has been submitted, to trigger validation.
+  wizardComponent.root.submitted = true;
   const valid = wizardComponent.checkValidity(data);
   if (!valid && wizardComponent.component.input) {
     return wizardComponent.component;

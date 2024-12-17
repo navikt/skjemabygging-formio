@@ -1,4 +1,4 @@
-import { Component, FormPropertiesType, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
+import { Component, ComponentError, FormPropertiesType, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import Select from 'react-select/base';
 import { AppConfigContextType } from '../../../context/config/configContext';
 interface IReactComponent {
@@ -45,6 +45,7 @@ interface ReactComponentType {
   visible: any | boolean;
   hideLabel: boolean;
   dirty: boolean;
+  pristine: boolean;
   error?: {
     message: string;
   } | null;
@@ -73,8 +74,10 @@ interface ReactComponentType {
   addMessages(messages): void;
   addFocusBlurEvents(element): void;
   labelIsHidden(): boolean;
-  setCustomValidity(messages: string | string[], dirty?: boolean, external?: boolean): void;
+  setCustomValidity(messages: string | string[] | ComponentError[], dirty?: boolean, external?: boolean): void;
   isEmpty(value?: any): boolean;
+  parent?: ReactComponentType;
+  type: string;
   // Element
   id?: any;
   emit(event: string, data: object): void;

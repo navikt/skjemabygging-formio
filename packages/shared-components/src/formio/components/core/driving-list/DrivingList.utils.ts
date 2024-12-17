@@ -66,5 +66,5 @@ export const showAddButton = (values?: DrivingListSubmission) => {
 };
 
 export const showRemoveButton = (values?: DrivingListSubmission) => {
-  return values?.periods?.length && values?.periods?.length > 1;
+  return values?.periods?.length ? values?.periods?.length > 1 : false;
 };
