@@ -3,11 +3,11 @@ import { useEffect, useRef, useState } from 'react';
 
 const defaultLanguage = 'nb-NO';
 
-const useCurrentLanguage = (languageCodeFromUrl, translations) => {
-  const language = localizationUtils.getLanguageFromIso639_1(languageCodeFromUrl);
+const useCurrentLanguage = (languageCode: string | undefined, translations: object) => {
+  const language = localizationUtils.getLanguageFromIso639_1(languageCode);
   const initialLanguage = useRef(Object.keys(translations).indexOf(language) !== -1 ? language : defaultLanguage);
 
-  const [currentLanguage, setCurrentLanguage] = useState(initialLanguage.current);
+  const [currentLanguage, setCurrentLanguage] = useState<string>(initialLanguage.current);
 
   useEffect(() => {
     if (language) {
@@ -21,7 +21,7 @@ const useCurrentLanguage = (languageCodeFromUrl, translations) => {
     document.documentElement.lang = currentLanguage;
   }, [currentLanguage]);
 
-  return { currentLanguage, initialLanguage };
+  return { currentLanguage, setCurrentLanguage };
 };
 
 export default useCurrentLanguage;

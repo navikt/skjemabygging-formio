@@ -17,7 +17,7 @@ const getDecorator = async (redirectToUrl, language) => {
   return fetchDecoratorHtml({
     env: naisClusterName === NaisCluster.PROD ? 'prod' : 'dev',
     params: {
-      redirectToUrl,
+      redirectToApp: true,
       level: 'Level4',
       simple: true,
       urlLookupTable: false,
@@ -26,17 +26,14 @@ const getDecorator = async (redirectToUrl, language) => {
       availableLanguages: [
         {
           locale: 'nb',
-          url: `${redirectToUrl}/nb`,
           handleInApp: true,
         },
         {
           locale: 'nn',
-          url: `${redirectToUrl}/nn`,
           handleInApp: true,
         },
         {
           locale: 'en',
-          url: `${redirectToUrl}/en`,
           handleInApp: true,
         },
       ],

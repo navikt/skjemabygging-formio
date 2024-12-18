@@ -1,36 +1,27 @@
 import { onLanguageSelect } from '@navikt/nav-dekoratoren-moduler';
 import { I18nTranslationReplacements, translationUtils } from '@navikt/skjemadigitalisering-shared-domain';
-import { createContext, useContext, useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { createContext, Dispatch, useContext, useEffect, useState } from 'react';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import useCurrentLanguage from './hooks/useCurrentLanguage';
-import useLanguageCodeFromURL from './hooks/useLanguageCodeFromURL';
 
 interface LanguageContextType {
   availableLanguages: string[];
   currentLanguage: string;
-  initialLanguage: string;
   translate: (originalText: string | undefined, params?: Record<string | number, any>) => string;
   translationsForNavForm: object;
+  setCurrentLanguage: Dispatch<string>;
 }
-
-type CurrentLanguageType = {
-  currentLanguage: string;
-  initialLanguage: string;
-};
 
 const LanguagesContext = createContext<LanguageContextType>({} as LanguageContextType);
 
-export const LanguagesProvider = ({ children, translations }) => {
+export const LanguagesProvider = ({ children, translations, languageCode = 'nb' }) => {
   const [availableLanguages, setAvailableLanguages] = useState<string[]>([]);
   const [translationsForNavForm, setTranslationsForNavForm] = useState<object>({});
   const location = useLocation();
   const navigate = useNavigate();
+  const params = useParams();
 
-  const languageCodeFromUrl: string = useLanguageCodeFromURL() ?? 'nb';
-  const { currentLanguage, initialLanguage } = useCurrentLanguage(
-    languageCodeFromUrl,
-    translations,
-  ) as unknown as CurrentLanguageType;
+  const { currentLanguage, setCurrentLanguage } = useCurrentLanguage(languageCode, translations);
 
   useEffect(() => {
     setAvailableLanguages(Object.keys(translations));
@@ -42,11 +33,12 @@ export const LanguagesProvider = ({ children, translations }) => {
 
   useEffect(() => {
     onLanguageSelect((language) => {
-      navigate(`${location.pathname.replace(`/${languageCodeFromUrl}`, '')}/${language.locale}${location.search}`, {
-        replace: true,
-      });
+      const locale = language.locale !== 'nb' ? `/${language.locale}` : '';
+      const rest = params['*'] ? `/${params['*']}` : '';
+
+      navigate(`${params.formPath}${locale}${rest}${location.search}`, { replace: true });
     });
-  }, [location, languageCodeFromUrl, navigate]);
+  }, [location, languageCode, navigate, params]);
 
   const translate = (originalText: string = '', params?: I18nTranslationReplacements): string => {
     return translationUtils.translateWithTextReplacements({
@@ -62,9 +54,9 @@ export const LanguagesProvider = ({ children, translations }) => {
       value={{
         availableLanguages,
         currentLanguage,
-        initialLanguage,
         translate,
         translationsForNavForm,
+        setCurrentLanguage,
       }}
     >
       {children}

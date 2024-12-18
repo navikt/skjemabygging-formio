@@ -7,6 +7,7 @@ import {
   makeStyles,
   Styles,
 } from '@navikt/skjemadigitalisering-shared-components';
+import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
@@ -19,7 +20,7 @@ const useStyles = makeStyles({
 });
 
 const MigrationFormPreview = () => {
-  const [form, setForm] = useState();
+  const [form, setForm] = useState<NavFormType>();
   const [error, setError] = useState<string>();
   const { formPath } = useParams();
   const { search } = useLocation();
@@ -54,7 +55,7 @@ const MigrationFormPreview = () => {
           Tilbake
         </Button>
       </div>
-      <FyllUtRouter form={form} translations={{}} />
+      <FyllUtRouter form={form!} translations={{}} />
     </div>
   );
 };

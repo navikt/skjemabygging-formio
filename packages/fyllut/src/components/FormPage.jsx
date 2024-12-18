@@ -5,6 +5,7 @@ import {
   LoadingComponent,
 } from '@navikt/skjemadigitalisering-shared-components';
 import { useEffect, useState } from 'react';
+import { Route, Routes } from 'react-router-dom';
 import { loadCountryNamesForLanguages, loadFormTranslations, loadGlobalTranslationsForLanguages } from '../api';
 
 function FormPage({ form }) {
@@ -44,7 +45,12 @@ function FormPage({ form }) {
 
   return (
     <AmplitudeProvider form={form}>
-      <FyllUtRouter form={form} translations={translation} />
+      <Routes>
+        <Route path="/nb/*" element={<FyllUtRouter form={form} translations={translation} languageCode="nb" />} />
+        <Route path="/nn/*" element={<FyllUtRouter form={form} translations={translation} languageCode="nn" />} />
+        <Route path="/en/*" element={<FyllUtRouter form={form} translations={translation} languageCode="en" />} />
+        <Route path="/*" element={<FyllUtRouter form={form} translations={translation} languageCode="nb" />} />
+      </Routes>
     </AmplitudeProvider>
   );
 }

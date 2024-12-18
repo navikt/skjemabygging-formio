@@ -6,7 +6,7 @@ const useLanguageCodeFromURL = () => {
   const location = useLocation();
 
   // Language code in fyllut URL
-  const languageMatch = location.pathname.match(/\/(\w{2}$)/);
+  const languageMatch = location.pathname.match(/\/(nb|nn|en)\//);
 
   // Language code as URL parameter in FyllUt (depricated)
   const [searchParams] = useSearchParams();

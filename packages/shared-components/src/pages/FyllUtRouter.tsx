@@ -1,4 +1,4 @@
-import { FyllutState, Submission } from '@navikt/skjemadigitalisering-shared-domain';
+import { FyllutState, I18nTranslations, NavFormType, Submission } from '@navikt/skjemadigitalisering-shared-domain';
 import { useState } from 'react';
 import { Route, Routes, useResolvedPath } from 'react-router-dom';
 import { FormTitle } from '../components/form/form-title/FormTitle';
@@ -25,7 +25,13 @@ const useStyles = makeStyles({
   },
 });
 
-const FyllUtRouter = ({ form, translations }) => {
+interface Props {
+  form: NavFormType;
+  translations: I18nTranslations;
+  languageCode?: string;
+}
+
+const FyllUtRouter = ({ form, translations, languageCode = 'nb' }: Props) => {
   const [submission, setSubmission] = useState<Submission | { fyllutState: FyllutState }>();
   const formBaseUrl = useResolvedPath('').pathname;
   const styles = useStyles();
@@ -40,7 +46,7 @@ const FyllUtRouter = ({ form, translations }) => {
   };
 
   return (
-    <LanguagesProvider translations={translations}>
+    <LanguagesProvider translations={translations} languageCode={languageCode}>
       <PrefillDataProvider form={form}>
         <SendInnProvider
           form={form}
@@ -55,11 +61,8 @@ const FyllUtRouter = ({ form, translations }) => {
           <div className={styles.container}>
             <Routes>
               <Route path="/" element={<IntroPage form={form} formUrl={formBaseUrl} />} />
-              <Route path="/nb" element={<IntroPage form={form} formUrl={formBaseUrl} />} />
-              <Route path="/nn" element={<IntroPage form={form} formUrl={formBaseUrl} />} />
-              <Route path="/en" element={<IntroPage form={form} formUrl={formBaseUrl} />} />
               <Route
-                path={'/oppsummering/:languageCode?'}
+                path={'/oppsummering'}
                 element={
                   <SubmissionWrapper submission={submission} url={formBaseUrl}>
                     {(submissionObject) => (
@@ -69,7 +72,7 @@ const FyllUtRouter = ({ form, translations }) => {
                 }
               />
               <Route
-                path={'/send-i-posten/:languageCode?'}
+                path={'/send-i-posten'}
                 element={
                   <SubmissionWrapper submission={submission} url={formBaseUrl}>
                     {(submissionObject) => (
@@ -84,7 +87,7 @@ const FyllUtRouter = ({ form, translations }) => {
                 }
               />
               <Route
-                path={'/ingen-innsending/:languageCode?'}
+                path={'/ingen-innsending'}
                 element={
                   <SubmissionWrapper submission={submission} url={formBaseUrl}>
                     {(submissionObject) => (
@@ -98,12 +101,9 @@ const FyllUtRouter = ({ form, translations }) => {
                   </SubmissionWrapper>
                 }
               />
+              <Route path={'/paabegynt'} element={<ActiveTasksPage form={form} formUrl={formBaseUrl} />} />
               <Route
-                path={'/paabegynt/:languageCode?'}
-                element={<ActiveTasksPage form={form} formUrl={formBaseUrl} />}
-              />
-              <Route
-                path={'/:panelSlug/:languageCode?'}
+                path={'/:panelSlug'}
                 element={
                   <FillInFormPage
                     form={form}
