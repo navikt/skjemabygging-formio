@@ -1,9 +1,7 @@
 import { FormsApiFormTranslation } from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import ApiError from '../../api/ApiError';
 import useFormTranslationsApi from '../../api/useFormTranslationsApi';
 import { TranslationsContextValue } from './types';
-import { getTranslationHttpError, isTranslationError, TranslationError } from './utils/errorUtils';
 
 interface Props {
   children: ReactNode;
@@ -14,7 +12,6 @@ const defaultValue: TranslationsContextValue<FormsApiFormTranslation> = {
   storedTranslations: {},
   isReady: false,
   loadTranslations: () => Promise.resolve(),
-  saveTranslations: () => Promise.resolve([]),
   saveTranslation: () => Promise.reject(),
 };
 
@@ -43,29 +40,6 @@ const FormTranslationsProvider = ({ children, formPath }: Props) => {
     }
   };
 
-  const saveTranslations = async (
-    translations: FormsApiFormTranslation[],
-  ): Promise<Array<{ response?: FormsApiFormTranslation; error?: TranslationError }>> => {
-    const results = await Promise.all(
-      translations.map((translation) => {
-        try {
-          if (translation.id) {
-            return translationsApi.put(formPath, translation);
-          } else {
-            return translationsApi.post(formPath, translation);
-          }
-        } catch (error) {
-          if (error instanceof ApiError) {
-            return getTranslationHttpError(error.httpStatus, translation);
-          } else {
-            throw error;
-          }
-        }
-      }),
-    );
-    return results.map((result) => (isTranslationError(result) ? { error: result } : { response: result }));
-  };
-
   const storedTranslations = useMemo<Record<string, FormsApiFormTranslation>>(
     () => (state.data ?? []).reduce((acc, translation) => ({ ...acc, [translation.key]: translation }), {}),
     [state.data],
@@ -75,7 +49,6 @@ const FormTranslationsProvider = ({ children, formPath }: Props) => {
     storedTranslations,
     isReady: state.isReady,
     loadTranslations,
-    saveTranslations,
     saveTranslation,
   };
 
