@@ -1,7 +1,7 @@
 import { onLanguageSelect } from '@navikt/nav-dekoratoren-moduler';
 import { I18nTranslationReplacements, translationUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, Dispatch, useContext, useEffect, useState } from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import useCurrentLanguage from './hooks/useCurrentLanguage';
 
 interface LanguageContextType {
@@ -17,9 +17,9 @@ const LanguagesContext = createContext<LanguageContextType>({} as LanguageContex
 export const LanguagesProvider = ({ children, translations, languageCode = 'nb' }) => {
   const [availableLanguages, setAvailableLanguages] = useState<string[]>([]);
   const [translationsForNavForm, setTranslationsForNavForm] = useState<object>({});
-  const location = useLocation();
   const navigate = useNavigate();
   const params = useParams();
+  const [searchParams] = useSearchParams();
 
   const { currentLanguage, setCurrentLanguage } = useCurrentLanguage(languageCode, translations);
 
@@ -35,10 +35,11 @@ export const LanguagesProvider = ({ children, translations, languageCode = 'nb' 
     onLanguageSelect((language) => {
       const locale = language.locale !== 'nb' ? `/${language.locale}` : '';
       const rest = params['*'] ? `/${params['*']}` : '';
+      const search = searchParams.size > 0 ? `?${searchParams.toString()}` : '';
 
-      navigate(`${params.formPath}${locale}${rest}${location.search}`, { replace: true });
+      navigate(`${params.formPath}${locale}${rest}${search}`, { replace: true });
     });
-  }, [location, languageCode, navigate, params]);
+  }, [searchParams, languageCode, navigate, params]);
 
   const translate = (originalText: string = '', params?: I18nTranslationReplacements): string => {
     return translationUtils.translateWithTextReplacements({
