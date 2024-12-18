@@ -37,7 +37,7 @@ export const LanguagesProvider = ({ children, translations, languageCode = 'nb' 
       const rest = params['*'] ? `/${params['*']}` : '';
       const search = searchParams.size > 0 ? `?${searchParams.toString()}` : '';
 
-      navigate(`${params.formPath}${locale}${rest}${search}`, { replace: true });
+      navigate(`/${params.formPath}${locale}${rest}${search}`, { replace: true });
     });
   }, [searchParams, languageCode, navigate, params]);
 
