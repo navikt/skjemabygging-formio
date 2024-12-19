@@ -2,10 +2,19 @@ import { FormsApiGlobalTranslation } from '@navikt/skjemadigitalisering-shared-d
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import ApiError from '../../api/ApiError';
 import useGlobalTranslationsApi from '../../api/useGlobalTranslationsApi';
-import { TranslationsContextValue } from './types';
 import { getTranslationHttpError, TranslationError } from './utils/errorUtils';
 
-const defaultValue: TranslationsContextValue<FormsApiGlobalTranslation> = {
+interface ContextValue {
+  storedTranslations: Record<string, FormsApiGlobalTranslation>;
+  isReady: boolean;
+  loadTranslations: () => Promise<void>;
+  saveTranslation: (translation: FormsApiGlobalTranslation) => Promise<FormsApiGlobalTranslation>;
+  createNewTranslation?: (
+    translation: FormsApiGlobalTranslation,
+  ) => Promise<{ response?: FormsApiGlobalTranslation; error?: TranslationError }>;
+}
+
+const defaultValue: ContextValue = {
   storedTranslations: {},
   isReady: false,
   loadTranslations: () => Promise.resolve(),
@@ -13,7 +22,7 @@ const defaultValue: TranslationsContextValue<FormsApiGlobalTranslation> = {
   createNewTranslation: () => Promise.reject(),
 };
 
-const GlobalTranslationsContext = createContext<TranslationsContextValue<FormsApiGlobalTranslation>>(defaultValue);
+const GlobalTranslationsContext = createContext<ContextValue>(defaultValue);
 
 const GlobalTranslationsProvider = ({ children }) => {
   const [state, setState] = useState<{

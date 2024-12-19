@@ -1,21 +1,27 @@
 import { FormsApiFormTranslation } from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import useFormTranslationsApi from '../../api/useFormTranslationsApi';
-import { TranslationsContextValue } from './types';
+
+interface ContextValue {
+  storedTranslations: Record<string, FormsApiFormTranslation>;
+  isReady: boolean;
+  loadTranslations: () => Promise<void>;
+  saveTranslation: (translation: FormsApiFormTranslation) => Promise<FormsApiFormTranslation>;
+}
 
 interface Props {
   children: ReactNode;
   formPath: string;
 }
 
-const defaultValue: TranslationsContextValue<FormsApiFormTranslation> = {
+const defaultValue: ContextValue = {
   storedTranslations: {},
   isReady: false,
   loadTranslations: () => Promise.resolve(),
   saveTranslation: () => Promise.reject(),
 };
 
-const FormTranslationsContext = createContext<TranslationsContextValue<FormsApiFormTranslation>>(defaultValue);
+const FormTranslationsContext = createContext<ContextValue>(defaultValue);
 
 const FormTranslationsProvider = ({ children, formPath }: Props) => {
   const [state, setState] = useState<{ isReady: boolean; data?: FormsApiFormTranslation[] }>({ isReady: false });
