@@ -12,6 +12,7 @@ export default defineConfig(({ mode }) => {
   ];
 
   if (mode !== 'production') {
+    // @ts-expect-error dev
     plugins.push(tsconfigPaths());
   }
 
