@@ -56,5 +56,5 @@ const FormTranslationsProvider = ({ children, formPath }: Props) => {
 };
 
 const useFormTranslations = () => useContext(FormTranslationsContext);
-export { FormTranslationsContext, useFormTranslations };
+export { useFormTranslations };
 export default FormTranslationsProvider;

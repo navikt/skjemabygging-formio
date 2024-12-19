@@ -5,8 +5,10 @@ import RowLayout from '../../components/layout/RowLayout';
 import SidebarLayout from '../../components/layout/SidebarLayout';
 import Title from '../../components/layout/Title';
 import TitleRowLayout from '../../components/layout/TitleRowLayout';
-import EditTranslationsProvider from '../../context/translations/EditTranslationsContext';
-import { FormTranslationsContext, useFormTranslations } from '../../context/translations/FormTranslationsContext';
+import EditFormTranslationsProvider, {
+  EditFormTranslationsContext,
+} from '../../context/translations/EditFormTranslationsContext';
+import { useFormTranslations } from '../../context/translations/FormTranslationsContext';
 import { useGlobalTranslations } from '../../context/translations/GlobalTranslationsContext';
 import TranslationButtonColumn from '../components/TranslationButtonColumn';
 import TranslationTable from '../components/TranslationTable';
@@ -40,17 +42,17 @@ const FormTranslationsPage = ({ form }: Props) => {
           {form.properties.skjemanummer}, {form.title}
         </Title>
       </TitleRowLayout>
-      <EditTranslationsProvider context={FormTranslationsContext} initialChanges={initialChanges}>
+      <EditFormTranslationsProvider initialChanges={initialChanges}>
         <RowLayout
           right={
             <SidebarLayout noScroll>
-              <TranslationButtonColumn />
+              <TranslationButtonColumn editContext={EditFormTranslationsContext} />
             </SidebarLayout>
           }
         >
-          <TranslationTable rows={rows} loading={!initialChanges} />
+          <TranslationTable rows={rows} loading={!initialChanges} editContext={EditFormTranslationsContext} />
         </RowLayout>
-      </EditTranslationsProvider>
+      </EditFormTranslationsProvider>
     </AppLayout>
   );
 };

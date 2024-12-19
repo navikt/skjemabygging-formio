@@ -1,19 +1,27 @@
 import { PadlockLockedIcon } from '@navikt/aksel-icons';
 import { Table } from '@navikt/ds-react';
-import { FormsApiTranslation, formsApiTranslations, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
-import { useEffect, useMemo, useState } from 'react';
-import { useEditTranslations } from '../../context/translations/EditTranslationsContext';
+import {
+  FormsApiFormTranslation,
+  formsApiTranslations,
+  TranslationLang,
+} from '@navikt/skjemadigitalisering-shared-domain';
+import { useContext, useEffect, useMemo, useState } from 'react';
+import { EditTranslationContext } from '../../context/translations/types';
 import { getInputHeightInRows } from '../utils/translationsUtils';
 import TranslationInput from './TranslationInput';
 import useTranslationTableStyles from './styles';
 
-interface Props {
-  translation: FormsApiTranslation;
+interface Props<Translation extends FormsApiFormTranslation> {
+  translation: Translation;
+  editContext: EditTranslationContext<Translation>;
 }
 
-const TranslationRow = ({ translation }: Props) => {
+const TranslationRow = <Translation extends FormsApiFormTranslation>({
+  translation,
+  editContext,
+}: Props<Translation>) => {
   const [isEditing, setIsEditing] = useState(false);
-  const { updateTranslation, errors, editState } = useEditTranslations();
+  const { updateTranslation, errors, editState } = useContext(editContext);
   const styles = useTranslationTableStyles();
   const heightInRows = getInputHeightInRows(translation.nb ?? '');
   const error = useMemo(

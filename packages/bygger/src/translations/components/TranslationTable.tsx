@@ -2,6 +2,7 @@ import { SortState, Table } from '@navikt/ds-react';
 import { listSort, SkeletonList } from '@navikt/skjemadigitalisering-shared-components';
 import { FormsApiTranslation } from '@navikt/skjemadigitalisering-shared-domain';
 import { useMemo, useState } from 'react';
+import { EditTranslationContext } from '../../context/translations/types';
 import NewTranslationRow from './NewTranslationRow';
 import TranslationRow from './TranslationRow';
 import useTranslationTableStyles from './styles';
@@ -12,13 +13,19 @@ const columns = [
   { key: 'en', label: 'Engelsk' },
 ];
 
-interface Props {
-  rows: FormsApiTranslation[] | undefined;
+interface Props<Translation extends FormsApiTranslation> {
+  rows: Translation[] | undefined;
+  editContext: EditTranslationContext<Translation>;
   loading?: boolean;
   addNewRow?: boolean;
 }
 
-const TranslationTable = ({ rows, loading = false, addNewRow = false }: Props) => {
+const TranslationTable = <Translation extends FormsApiTranslation>({
+  rows,
+  loading = false,
+  addNewRow = false,
+  editContext,
+}: Props<Translation>) => {
   const [sortState, setSortState] = useState<SortState>();
   const styles = useTranslationTableStyles();
 
@@ -32,7 +39,7 @@ const TranslationTable = ({ rows, loading = false, addNewRow = false }: Props) =
     });
   };
 
-  const sortedRows = useMemo<FormsApiTranslation[] | undefined>(() => {
+  const sortedRows = useMemo<Translation[] | undefined>(() => {
     return rows?.slice().sort(listSort.getLocaleComparator(sortState?.orderBy, sortState?.direction, addNewRow));
   }, [rows, sortState?.orderBy, sortState?.direction, addNewRow]);
 
@@ -54,7 +61,7 @@ const TranslationTable = ({ rows, loading = false, addNewRow = false }: Props) =
       <Table.Body>
         {addNewRow && <NewTranslationRow />}
         {sortedRows.map((row) => (
-          <TranslationRow key={row.key} translation={row} />
+          <TranslationRow key={row.key} translation={row} editContext={editContext} />
         ))}
       </Table.Body>
     </Table>

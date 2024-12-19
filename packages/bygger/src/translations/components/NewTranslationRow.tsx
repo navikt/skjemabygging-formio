@@ -1,14 +1,18 @@
 import { Table, TextField } from '@navikt/ds-react';
-import { useEditTranslations } from '../../context/translations/EditTranslationsContext';
+import { useEditGlobalTranslations } from '../../context/translations/EditGlobalTranslationsContext';
 import useTranslationTableStyles from './styles';
 
 const NewTranslationRow = () => {
-  const { newTranslation, updateNewTranslation, errors } = useEditTranslations();
+  const { newTranslation, updateNewTranslation, errors } = useEditGlobalTranslations();
   const styles = useTranslationTableStyles();
 
   const missingKeyError = errors.find((error) => error.isNewTranslation && error.type === 'MISSING_KEY_VALIDATION');
 
-  const error = errors.find((error) => error.key === newTranslation.key && error.type === 'CONFLICT');
+  const error = errors.find((error) => error.key === newTranslation?.key && error.type === 'CONFLICT');
+
+  if (!newTranslation || !updateNewTranslation) {
+    return <></>;
+  }
 
   const handleChange = (property: 'nb' | 'nn' | 'en', value: string) => {
     updateNewTranslation(property, value);

@@ -16,7 +16,7 @@ const defaultValue: TranslationsContextValue<FormsApiGlobalTranslation> = {
 const GlobalTranslationsContext = createContext<TranslationsContextValue<FormsApiGlobalTranslation>>(defaultValue);
 
 const GlobalTranslationsProvider = ({ children }) => {
-  const [formsApiState, setFormsApiState] = useState<{
+  const [state, setState] = useState<{
     isReady: boolean;
     data?: FormsApiGlobalTranslation[];
   }>({
@@ -26,14 +26,14 @@ const GlobalTranslationsProvider = ({ children }) => {
 
   const loadTranslations = useCallback(async () => {
     const data = await translationsApi.get();
-    setFormsApiState({ data, isReady: true });
+    setState({ data, isReady: true });
   }, [translationsApi]);
 
   useEffect(() => {
-    if (!formsApiState.isReady) {
+    if (!state.isReady) {
       loadTranslations();
     }
-  }, [formsApiState.isReady, loadTranslations]);
+  }, [state.isReady, loadTranslations]);
 
   const saveTranslation = async (translation: FormsApiGlobalTranslation): Promise<FormsApiGlobalTranslation> => {
     if (translation.id) {
@@ -59,14 +59,14 @@ const GlobalTranslationsProvider = ({ children }) => {
   };
 
   const storedTranslationsMap = useMemo<Record<string, FormsApiGlobalTranslation>>(
-    () => (formsApiState.data ?? []).reduce((acc, translation) => ({ ...acc, [translation.key]: translation }), {}),
-    [formsApiState.data],
+    () => (state.data ?? []).reduce((acc, translation) => ({ ...acc, [translation.key]: translation }), {}),
+    [state.data],
   );
 
   const value = {
     storedTranslations: storedTranslationsMap,
     loadTranslations,
-    isReady: formsApiState.isReady,
+    isReady: state.isReady,
     saveTranslation,
     createNewTranslation,
   };
@@ -75,5 +75,5 @@ const GlobalTranslationsProvider = ({ children }) => {
 
 const useGlobalTranslations = () => useContext(GlobalTranslationsContext);
 
-export { GlobalTranslationsContext, useGlobalTranslations };
+export { useGlobalTranslations };
 export default GlobalTranslationsProvider;

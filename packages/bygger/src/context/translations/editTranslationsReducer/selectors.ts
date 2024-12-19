@@ -1,10 +1,9 @@
 import { FormsApiTranslation } from '@navikt/skjemadigitalisering-shared-domain';
-import { State } from './reducer';
+import { GlobalTranslationState, State } from '.';
 
-const hasNewTranslationData = <Translation extends FormsApiTranslation>(state: State<Translation>) =>
-  !!(state.new.nb || state.new.nn || state.new.en);
+const hasNewTranslationData = (state: GlobalTranslationState) => !!(state.new.nb || state.new.nn || state.new.en);
 
-const getTranslationsForSaving = <Translation extends FormsApiTranslation>(state: State<Translation>): Translation[] =>
+const getTranslationsForSaving = <Translation extends FormsApiTranslation>(state: State): Translation[] =>
   Object.values(state.changes ?? {});
 
 export { getTranslationsForSaving, hasNewTranslationData };

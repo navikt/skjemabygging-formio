@@ -6,8 +6,10 @@ import RowLayout from '../../components/layout/RowLayout';
 import SidebarLayout from '../../components/layout/SidebarLayout';
 import Title from '../../components/layout/Title';
 import TitleRowLayout from '../../components/layout/TitleRowLayout';
-import EditTranslationsProvider from '../../context/translations/EditTranslationsContext';
-import { GlobalTranslationsContext, useGlobalTranslations } from '../../context/translations/GlobalTranslationsContext';
+import EditGlobalTranslationsProvider, {
+  EditGlobalTranslationsContext,
+} from '../../context/translations/EditGlobalTranslationsContext';
+import { useGlobalTranslations } from '../../context/translations/GlobalTranslationsContext';
 import TranslationButtonColumn from '../components/TranslationButtonColumn';
 import TranslationTable from '../components/TranslationTable';
 import { generateAndPopulateTags } from '../utils/editGlobalTranslationsUtils';
@@ -31,17 +33,22 @@ const GlobalTranslationsPage = () => {
       <TitleRowLayout>
         <Title>{titles[tag]}</Title>
       </TitleRowLayout>
-      <EditTranslationsProvider context={GlobalTranslationsContext}>
+      <EditGlobalTranslationsProvider>
         <RowLayout
           right={
             <SidebarLayout noScroll={true}>
-              <TranslationButtonColumn />
+              <TranslationButtonColumn editContext={EditGlobalTranslationsContext} />
             </SidebarLayout>
           }
         >
-          <TranslationTable rows={rows} loading={!isReady} addNewRow={tag === 'skjematekster'} />
+          <TranslationTable
+            rows={rows}
+            loading={!isReady}
+            addNewRow={tag === 'skjematekster'}
+            editContext={EditGlobalTranslationsContext}
+          />
         </RowLayout>
-      </EditTranslationsProvider>
+      </EditGlobalTranslationsProvider>
     </AppLayout>
   );
 };

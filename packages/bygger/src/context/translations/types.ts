@@ -1,4 +1,10 @@
-import { FormsApiGlobalTranslation, FormsApiTranslation } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  FormsApiGlobalTranslation,
+  FormsApiTranslation,
+  TranslationLang,
+} from '@navikt/skjemadigitalisering-shared-domain';
+import { Context } from 'react';
+import { Status } from './editTranslationsReducer/reducerUtils';
 import { TranslationError } from './utils/errorUtils';
 
 interface TranslationsContextValue<Translation extends FormsApiTranslation> {
@@ -11,4 +17,17 @@ interface TranslationsContextValue<Translation extends FormsApiTranslation> {
   ) => Promise<{ response?: Translation; error?: TranslationError }>;
 }
 
-export type { TranslationsContextValue };
+interface EditTranslationsContextValue<Translation extends FormsApiTranslation> {
+  updateTranslation: (original: Translation, lang: TranslationLang, value: string) => void;
+  errors: TranslationError[];
+  newTranslation?: Translation;
+  editState: Status;
+  updateNewTranslation?: (lang: TranslationLang, value: string) => void;
+  saveChanges: () => Promise<void>;
+}
+
+type EditTranslationContext<Translation extends FormsApiTranslation> = Context<
+  EditTranslationsContextValue<Translation>
+>;
+
+export type { EditTranslationContext, EditTranslationsContextValue, TranslationsContextValue };

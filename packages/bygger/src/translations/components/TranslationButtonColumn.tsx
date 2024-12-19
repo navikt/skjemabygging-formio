@@ -1,13 +1,18 @@
 import { Button, VStack } from '@navikt/ds-react';
-import { useState } from 'react';
+import { FormsApiTranslation } from '@navikt/skjemadigitalisering-shared-domain';
+import { useContext, useState } from 'react';
 import UserFeedback from '../../components/UserFeedback';
-import { useEditTranslations } from '../../context/translations/EditTranslationsContext';
+import { EditTranslationContext } from '../../context/translations/types';
 
-const TranslationButtonColumn = () => {
+interface Props<Translation extends FormsApiTranslation> {
+  editContext: EditTranslationContext<Translation>;
+}
+
+const TranslationButtonColumn = <Translation extends FormsApiTranslation>({ editContext }: Props<Translation>) => {
   const [isSaving, setIsSaving] = useState(false);
-  const { saveChanges } = useEditTranslations();
+  const { saveChanges } = useContext(editContext);
 
-  const onSave = async () => {
+  const handleSave = async () => {
     try {
       setIsSaving(true);
       await saveChanges();
@@ -18,7 +23,7 @@ const TranslationButtonColumn = () => {
 
   return (
     <VStack gap="4">
-      <Button loading={isSaving} onClick={onSave} type="button" size="small">
+      <Button loading={isSaving} onClick={handleSave} type="button" size="small">
         Lagre
       </Button>
       <Button variant="secondary" disabled={isSaving} onClick={() => {}} type="button" size="small">
