@@ -1,0 +1,24 @@
+[
+  {
+    "id": 1,
+    "key": "Ja",
+    "revision": 1,
+    "globalTranslationId": 5,
+    "nb": "Ja",
+    "nn": "Yeah",
+    "en": "",
+    "changedAt": null,
+    "changedBy": null
+  },
+  {
+    "id": 2,
+    "key": "Dine opplysninger",
+    "revision": 3,
+    "globalTranslationId": null,
+    "nb": "Dine opplysninger",
+    "nn": "",
+    "en": "Your info",
+    "changedAt": null,
+    "changedBy": null
+  }
+]

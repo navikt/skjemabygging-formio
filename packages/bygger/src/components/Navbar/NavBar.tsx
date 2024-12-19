@@ -17,9 +17,10 @@ export interface NavBarProps {
   formMenu?: boolean;
   formListMenu?: boolean;
   translationMenu?: boolean;
+  oldTranslationsMeny?: boolean;
 }
 
-export const NavBar = ({ formPath, formMenu, formListMenu, translationMenu }: NavBarProps) => {
+export const NavBar = ({ formPath, formMenu, formListMenu, translationMenu, oldTranslationsMeny }: NavBarProps) => {
   const { userData } = useAuth();
   const { config } = useAppConfig();
   const styles = useNavBarStyles();
@@ -41,7 +42,8 @@ export const NavBar = ({ formPath, formMenu, formListMenu, translationMenu }: Na
         <div className={styles.navBarLinks}>
           {formMenu && <FormMenu formPath={formPath} />}
           {formListMenu && <ListMenu />}
-          {translationMenu && <TranslationsMenu />}
+          {translationMenu && <TranslationsMenu path={'/oversettelser'} />}
+          {oldTranslationsMeny && <TranslationsMenu />}
         </div>
         <div className={styles.headerMenus}>
           <NotificationDropdown />

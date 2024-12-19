@@ -2,6 +2,9 @@ import { useCallback } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { useForm } from '../context/form/FormContext';
 import I18nStateProvider from '../context/i18n/I18nContext';
+import FormTranslationsProvider from '../context/translations/FormTranslationsContext';
+import GlobalTranslationsProvider from '../context/translations/GlobalTranslationsContext';
+import FormTranslationsPage from '../translations/form/FormTranslationsPage';
 import EditFormPage from './edit/EditFormPage';
 import FormError from './error/FormError';
 import { FormSettingsPage } from './settings/FormSettingsPage';
@@ -34,6 +37,16 @@ export const FormPage = ({ loadTranslations }) => {
         <Route path={'/edit'} element={<EditFormPage form={formState.form} />} />
         <Route path={'/view/*'} element={<TestFormPage form={formState.form} />} />
         <Route path={'/settings'} element={<FormSettingsPage form={formState.form} />} />
+        <Route
+          path={'/oversettelser'}
+          element={
+            <FormTranslationsProvider formPath={formState.form.path}>
+              <GlobalTranslationsProvider>
+                <FormTranslationsPage form={formState.form} />
+              </GlobalTranslationsProvider>
+            </FormTranslationsProvider>
+          }
+        />
         <Route path="/" element={<Navigate to={'edit'} replace />} />
       </Routes>
     </I18nStateProvider>
