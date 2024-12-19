@@ -48,7 +48,7 @@ const EditFormTranslationsProvider = ({ initialChanges, children }: Props) => {
 
     const originalValue = original[lang];
 
-    if (originalValue === value) {
+    if (originalValue !== value) {
       const { globalTranslationId, ...originalWithoutGlobal } = original;
       dispatch({ type: 'UPDATE', payload: { original: originalWithoutGlobal, lang, value } });
     }
