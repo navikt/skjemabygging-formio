@@ -48,6 +48,7 @@ accessPolicy:
         cluster: prod-gcp
       - application: upload-convert-to-pdf
         namespace: fyllut-sendinn
+        cluster: prod-gcp
     external:
       - host: skjemabygging-proxy.prod-fss-pub.nais.io
       - host: formio-api.intern.nav.no

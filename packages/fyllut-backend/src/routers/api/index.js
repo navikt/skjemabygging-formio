@@ -47,7 +47,7 @@ apiRouter.post('/send-inn/soknad', tokenxSendInn, sendInnSoknad.post);
 apiRouter.put('/send-inn/soknad', tokenxSendInn, sendInnSoknad.put);
 apiRouter.put('/send-inn/utfyltsoknad', azureSkjemabyggingProxy, tokenxSendInn, sendInnUtfyltSoknad.put);
 apiRouter.get('/common-codes/archive-subjects', kodeverkToken, commonCodes.getArchiveSubjects);
-apiRouter.post('/pdf/convert', azureSkjemabyggingProxy, gotenberg.post);
+apiRouter.post('/pdf/convert', gotenberg.post);
 apiRouter.get('/common-codes/currencies', kodeverkToken, commonCodes.getCurrencies);
 apiRouter.post('/log/:level', rateLimiter(60000, 60), log.post);
 apiRouter.get('/health/status', status.get);

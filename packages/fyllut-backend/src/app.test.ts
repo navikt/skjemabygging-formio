@@ -253,7 +253,7 @@ describe('app', () => {
       .post(extractPath(azureTokenEndpoint))
       .reply(200, { access_token: 'azure-access-token' });
     const skjemabyggingproxyScope = nock(process.env.SKJEMABYGGING_PROXY_URL as string)
-      .post('/exstream')
+      .post('/gotenberg')
       .reply(200, { data: { result: [{ content: { data: '' } }] } });
     const tokenxWellKnownScope = nock(extractHost(tokenxConfig?.wellKnownUrl))
       .get(extractPath(tokenxConfig?.wellKnownUrl))

@@ -74,6 +74,8 @@ p {margin: 0}
 .innrykk {margin: 0px 0px 10px 20px;}
 .underskrift {margin-bottom: 30px;}
 .navlogored {height: 16px;float: left;margin: 4px auto 2px auto;}
+@page {size: a4 portrait;margin-bottom:56px;}
+section {page-break-after: always;  break-after: page;}
 </style>`;
 
 const body = (formSummaryObject: SummaryPanel[], confirmation?: string, signatures?: string) => `
@@ -84,7 +86,7 @@ ${confirmation || ''}
 ${signatures || ''}
 </body>`;
 
-const navlogo: string = `<img xmlns="http://www.w3.org/2000/svg " src="Nav-logo.svg" alt="NAV logo" class="navlogored" x="0" height="16px"/>`;
+const navlogo: string = `<img xmlns="http://www.w3.org/2000/svg " src="nav-logo.svg" alt="NAV logo" class="navlogored" x="0" height="16px"/>`;
 
 const section = (formSection: SummaryPanel) => `
 <h2>${formSection.label}</h2>

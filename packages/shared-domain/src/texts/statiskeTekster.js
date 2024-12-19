@@ -216,4 +216,12 @@ export const statiske = {
     identityNumber: 'Fødselsnummer eller d-nummer',
     yourBirthdate: 'Fødselsdato (dd.mm.åååå)',
   },
+  footer: {
+    userIdLabel: 'F.nr',
+    createdDatelabel: 'Opprettet',
+    schemaNumberLabel: 'Skjemanummer',
+    versionLabel: 'Versjon',
+    pageLabel: 'Side',
+    ofLabel: 'av',
+  },
 };

@@ -9,11 +9,12 @@ import correlator from 'express-correlation-id';
 import FormData from 'form-data';
 import { readFileSync } from 'fs';
 import path from 'path';
-import { config } from '../../../config/config';
+import { config, defaultConfig } from '../../../config/config';
 import { logger } from '../../../logger';
 import { appMetrics } from '../../../services';
 import { synchronousResponseToError } from '../../../utils/errorHandling';
 import fetchWithRetry, { HeadersInit } from '../../../utils/fetchWithRetry';
+import { generateFooterHtml } from './footerBuilder';
 import { createHtmlFromSubmission } from './htmlBuilder';
 
 export const createPdfAsByteArray = async (
@@ -39,31 +40,6 @@ export const createPdf = async (
   return Buffer.from(new Uint8Array(pdf));
 };
 
-const footer: string =
-  '<html>\n' +
-  '<head>\n' +
-  '    <style>\n' +
-  '    body {\n' +
-  '        font-size: 9px;\n' +
-  '\t    margin-top: 24px;\n' +
-  '\t\tmargin-left: 0px;\n' +
-  '    }\n' +
-  '\t.left {\n' +
-  '\t\ttext-align: left;\n' +
-  '\t\tfloat:left;\n' +
-  '\t}\n' +
-  '\t.right {\n' +
-  '\t\ttext-align: right;\n' +
-  '\t\tfloat: right;\n' +
-  '\t}\n' +
-  '    </style>\n' +
-  '</head>\n' +
-  '<body>\n' +
-  '<p class="left"><span>Generert 16. Nov 2024 kl 14:30: </span></p>\n' +
-  '<p class="right"><span class="pageNumber"></span> av <span class="totalPages"></span></p>\n' +
-  '</body>\n' +
-  '</html>';
-
 const filePath = path.join(process.cwd(), '/icons/nav-logo.svg');
 
 const navIcon = readFileSync(filePath, { encoding: 'utf-8', flag: 'r' });
@@ -88,7 +64,15 @@ export const createPdfFromGotenberg = async (
   if (!html || Object.keys(html).length === 0) {
     throw Error('Missing HTML for generating PDF.');
   }
-  //const { fodselsnummerDNummerSoker } = submission.data;
+  const { fodselsnummerDNummerSoker } = submission.data;
+  const footerHtml = await generateFooterHtml(
+    (fodselsnummerDNummerSoker as string | undefined) || '—',
+    defaultConfig.gitVersion,
+    form.properties.skjemanummer,
+    language,
+    translate,
+  );
+
   appMetrics.exstreamPdfRequestsCounter.inc();
   let errorOccurred = false;
   const stopMetricRequestDuration = appMetrics.outgoingRequestDuration.startTimer({
@@ -99,7 +83,7 @@ export const createPdfFromGotenberg = async (
   const options = { pdfa: true, pdfua: true };
   const gotenbergUrl = config.gotenbergUrl;
   try {
-    return await createPdfCallingGotenberg(accessToken, gotenbergUrl, html, assets, options);
+    return await createPdfCallingGotenberg(accessToken, gotenbergUrl, html, footerHtml, assets, options);
   } catch (e) {
     errorOccurred = true;
     appMetrics.exstreamPdfFailuresCounter.inc();
@@ -117,6 +101,7 @@ const createPdfCallingGotenberg = async (
   azureAccessToken: string,
   gotenbergUrl: string,
   html: string,
+  footer: string,
   assets: { [filename: string]: string },
   options: { pdfa: boolean; pdfua: boolean },
 ): Promise<any> => {
@@ -126,7 +111,7 @@ const createPdfCallingGotenberg = async (
   formData.append('files', Buffer.from(html), 'index.html');
   formData.append('files', Buffer.from(footer), 'footer.html');
   if (navIcon != null) {
-    formData.append('files', Buffer.from(navIcon), 'Nav-logo.svg');
+    formData.append('files', Buffer.from(navIcon), 'nav-logo.svg');
   }
 
   // Add optional assets like logos, footers, etc.
@@ -153,7 +138,6 @@ const createPdfCallingGotenberg = async (
 
   if (!gotenbergResponse.ok) {
     const errorText = await gotenbergResponse.text();
-    console.error('Gotenberg error response:', errorText);
     throw synchronousResponseToError(
       `Feil i responsdata fra Gotenberg på id "${correlator.getId()}"`,
       errorText,
