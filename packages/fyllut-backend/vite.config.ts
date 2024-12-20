@@ -8,6 +8,7 @@ export default defineConfig(({ mode }) => {
     ...VitePluginNode({
       adapter: 'express',
       appPath: './src/server.js',
+      outputFormat: 'module',
     }),
   ];
 
