@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import formTranslations from './form-translations';
 
-const formsApiFormTranslationsRouter = Router();
+const formsApiFormTranslationsRouter = Router({ mergeParams: true });
 
 formsApiFormTranslationsRouter.get('/', formTranslations.get);
 formsApiFormTranslationsRouter.post('/', formTranslations.post);
