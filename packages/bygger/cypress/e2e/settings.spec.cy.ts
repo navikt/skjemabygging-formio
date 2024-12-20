@@ -1,5 +1,4 @@
 import { expect } from 'chai';
-import * as form from '../fixtures/getForm.json';
 
 const submitData = {
   title: 'Cypress test for settings page',
@@ -17,14 +16,7 @@ const submitData = {
 
 describe('FormSettingsPage', () => {
   beforeEach(() => {
-    cy.intercept('GET', '/api/config', { fixture: 'config.json' }).as('getConfig');
-    cy.intercept('GET', '/api/forms/cypresssettings', {
-      fixture: 'getForm.json',
-    }).as('getForm');
-    cy.intercept('GET', '/api/published-forms/*', { statusCode: 404 }).as('getPublishedForm');
-    cy.intercept('GET', '/api/recipients', { fixture: 'recipients.json' }).as('getRecipients');
-    cy.intercept('GET', /language\/submission?.*/, { fixture: 'globalTranslations.json' }).as('getTranslations');
-    cy.intercept('GET', '/api/temakoder', { fixture: 'temakoder.json' }).as('getTemaKoder');
+    cy.intercept('GET', '/api/temakoder').as('getTemaKoder');
     cy.visit('forms/cypresssettings/settings');
   });
 
@@ -32,8 +24,7 @@ describe('FormSettingsPage', () => {
     const lockedFormReason = 'Test reason for locking';
     cy.intercept('PUT', '/api/forms/cypresssettings/form-settings', (req) => {
       expect(req.body).to.deep.equal({ isLockedForm: true, lockedFormReason });
-
-      req.reply({ ...form, properties: { ...form.properties, ...req.body } });
+      req.headers['Bygger-Formio-Token'] = '12345';
     }).as('configUpdate');
 
     cy.findByRole('button', { name: 'Lås for redigering' }).click();
@@ -63,7 +54,7 @@ describe('FormSettingsPage', () => {
       expect(req.body.properties.ettersending).to.include(submitData.ettersending);
       expect(req.body.properties.signatures[0].label).to.include(submitData.signatureLabel);
       expect(req.body.properties.signatures[0].description).to.include(submitData.signatureDescription);
-      req.reply(req.body);
+      req.headers['Bygger-Formio-Token'] = '12345';
     });
 
     cy.findByRole('textbox', { name: 'Tittel' }).focus();

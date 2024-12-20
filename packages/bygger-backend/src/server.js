@@ -11,6 +11,10 @@ import internalRouter from './routers/internal';
 import notificationsRouter from './routers/notifications';
 import './util/errorToJson';
 
+if (process.env.API_MOCKING === 'true') {
+  import('./mocks');
+}
+
 const app = express();
 
 app.use(`/${config.formio.projectName}`, formioProxyRouter);

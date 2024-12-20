@@ -3,14 +3,14 @@ import { expect } from 'chai';
 
 describe('Form Builder', () => {
   beforeEach(() => {
-    cy.intercept('GET', '/api/config', { fixture: 'config.json' }).as('getConfig');
-    cy.intercept('GET', /language\/submission?.*/, { fixture: 'globalTranslations.json' }).as('getTranslations');
-    cy.intercept('GET', '/api/temakoder', { fixture: 'temakoder.json' }).as('getTemaKoder');
+    cy.intercept('GET', '/api/config').as('getConfig');
+    cy.intercept('GET', /language\/submission?.*/).as('getTranslations');
+    cy.intercept('GET', '/api/temakoder').as('getTemaKoder');
   });
 
   describe('Diff form', () => {
     beforeEach(() => {
-      cy.intercept('GET', '/api/forms/tst123456', { fixture: 'form123456.json' }).as('getForm');
+      cy.intercept('GET', '/api/forms/tst123456').as('getForm');
       cy.intercept('GET', '/api/published-forms/tst123456', { statusCode: 404 }).as('getPublishedForm');
 
       cy.visit('forms/tst123456');
@@ -26,7 +26,7 @@ describe('Form Builder', () => {
           .find((comp) => comp.key === 'annenDokumentasjon');
         expect(vedlegg.properties.vedleggskode).to.equal('T2');
         expect(vedlegg.properties.vedleggstittel).to.equal('Last opp annen dokumentasjon');
-        req.reply(200, req.body);
+        req.headers['Bygger-Formio-Token'] = '12345';
       }).as('putForm');
 
       cy.findByRole('link', { name: 'Vedlegg' }).click();
@@ -48,7 +48,7 @@ describe('Form Builder', () => {
             .flattenComponents<Component>(req.body.components)
             .find((comp) => comp.key === 'fornavnSoker');
           expect(fodselsdato.label).to.equal('Fornavn');
-          req.reply(200, req.body);
+          req.headers['Bygger-Formio-Token'] = '12345';
         }).as('putForm');
 
         cy.openEditComponentModal(cy.findByRole('textbox', { name: 'Fornavn2' }));
@@ -66,7 +66,7 @@ describe('Form Builder', () => {
             .flattenComponents<Component>(req.body.components)
             .find((comp) => comp.key === 'fodselsdatoDdMmAaaaSoker');
           expect(fodselsdato.label).to.equal('Din fødselsdato');
-          req.reply(200, req.body);
+          req.headers['Bygger-Formio-Token'] = '12345';
         }).as('putForm');
 
         cy.openEditComponentModal(cy.findByRole('textbox', { name: 'Din fødselsdato (dd.mm.åååå)' }));
@@ -88,8 +88,8 @@ describe('Form Builder', () => {
     const addAnotherName = 'Legg til';
 
     beforeEach(() => {
-      cy.intercept('GET', '/api/forms/multi', { fixture: 'formMultiValues.json' }).as('getForm');
-      cy.intercept('GET', '/api/published-forms/multi', { statusCode: 404 }).as('getPublishedForm');
+      cy.intercept('GET', '/api/forms/multi').as('getForm');
+      cy.intercept('GET', '/api/published-forms/multi').as('getPublishedForm');
 
       cy.visit('forms/multi');
       cy.wait('@getConfig');
@@ -157,8 +157,8 @@ describe('Form Builder', () => {
 
   describe('Duplicate component keys', () => {
     beforeEach(() => {
-      cy.intercept('GET', '/api/forms/cypresssettings', { fixture: 'getForm.json' }).as('getForm');
-      cy.intercept('GET', '/api/published-forms/*', { statusCode: 404 }).as('getPublishedForm');
+      cy.intercept('GET', '/api/forms/cypresssettings').as('getForm');
+      cy.intercept('GET', '/api/published-forms/*').as('getPublishedForm');
       cy.visit('forms/cypresssettings');
     });
 

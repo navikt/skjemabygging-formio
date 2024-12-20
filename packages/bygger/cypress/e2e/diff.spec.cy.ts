@@ -1,18 +1,16 @@
 describe('Diff', () => {
   beforeEach(() => {
-    cy.intercept('GET', '/api/config', { fixture: 'config.json' }).as('getConfig');
-    cy.intercept('GET', '/api/forms/dif123456', { fixture: 'form123456.json' }).as('getForm');
-    cy.intercept('GET', '/api/published-forms/dif123456', { fixture: 'form123456-published.json' }).as(
-      'getPublishedForm',
-    );
-    cy.intercept('GET', '/api/recipients', { fixture: 'recipients.json' }).as('getRecipients');
-    cy.intercept('GET', /language\/submission?.*/, { fixture: 'globalTranslations.json' }).as('getTranslations');
-    cy.intercept('GET', '/api/temakoder', { fixture: 'temakoder.json' }).as('getTemaKoder');
+    cy.intercept('GET', '/api/config').as('getConfig');
+    cy.intercept('GET', '/api/forms/tst123456').as('getForm');
+    cy.intercept('GET', '/api/published-forms/tst123456').as('getPublishedForm');
+    cy.intercept('GET', '/api/recipients').as('getRecipients');
+    cy.intercept('GET', /language\/submission?.*/).as('getTranslations');
+    cy.intercept('GET', '/api/temakoder').as('getTemaKoder');
   });
 
   describe('Settings page', () => {
     beforeEach(() => {
-      cy.visit('forms/dif123456/settings');
+      cy.visit('forms/tst123456/settings');
       cy.wait('@getConfig');
       cy.wait('@getForm');
       cy.wait('@getPublishedForm');
@@ -48,7 +46,7 @@ describe('Diff', () => {
 
   describe('Form builder page', () => {
     beforeEach(() => {
-      cy.visit('forms/dif123456/edit');
+      cy.visit('forms/tst123456/edit');
       cy.wait('@getConfig');
       cy.wait('@getForm');
       cy.wait('@getPublishedForm');

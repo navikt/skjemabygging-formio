@@ -8,7 +8,7 @@
   "scripts": {
     "start": "cross-env-shell NODE_ENV=development vite",
     "build": "tsc && vite build",
-    "preview": "cross-env-shell NODE_ENV=development BYGGER_BUILD_DIR=\"../../bygger/dist\" PORT=3000 \"cd dist && node server.mjs\"",
+    "preview": "cross-env-shell NODE_ENV=development API_MOCKING=true BYGGER_BUILD_DIR=\"../../bygger/dist\" PORT=3000 \"cd dist && node server.mjs\"",
     "check-types": "tsc",
     "clean": "rimraf dist coverage node_modules",
     "test": "vitest --run",
@@ -48,6 +48,7 @@
     "@types/node-jose": "^1.1.13",
     "@types/uuid": "^10.0.0",
     "memorystream": "^0.3.1",
+    "msw": "^2.7.0",
     "nock": "^13.5.5",
     "vite-plugin-node": "^4.0.0"
   }

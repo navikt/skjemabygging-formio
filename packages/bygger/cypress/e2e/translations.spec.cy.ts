@@ -1,19 +1,14 @@
 import { expect } from 'chai';
 
 describe('Translations', () => {
-  beforeEach(() => {
-    cy.intercept('GET', '/api/config', { fixture: 'config.json' }).as('getConfig');
-  });
-
   describe('Form translations', () => {
     beforeEach(() => {
-      cy.intercept('GET', '/api/forms/tst123456', { fixture: 'form123456.json' }).as('getForm');
-      cy.intercept('GET', '/api/published-forms/tst123456', { statusCode: 404 }).as('getPublishedForm');
+      cy.intercept('GET', '/api/forms/tst123456').as('getForm');
     });
 
     describe('when loading of translations succeeds', () => {
       beforeEach(() => {
-        cy.intercept('GET', /language\/submission?.*/, { fixture: 'globalTranslations.json' }).as('getTranslations');
+        cy.intercept('GET', /language\/submission?.*/).as('getTranslations');
 
         cy.visit('/forms/tst123456');
         cy.wait('@getForm');
@@ -31,9 +26,7 @@ describe('Translations', () => {
 
     describe('when loading of translations fails', () => {
       beforeEach(() => {
-        cy.intercept('GET', /language\/submission?.*/, { statusCode: 500, body: 'Failed to load translations' }).as(
-          'getTranslationsFailure',
-        );
+        cy.intercept('GET', /language\/submission?.*/, { statusCode: 500 }).as('getTranslationsFailure');
 
         cy.visit('/forms/tst123456');
         cy.wait('@getForm');
@@ -50,19 +43,19 @@ describe('Translations', () => {
   });
 
   describe('Global translations', () => {
-    beforeEach(() => {
-      cy.intercept('GET', /\/api\/forms\\?.+/, { body: [] }).as('getForms');
-    });
-
     describe('when loading of global translations succeeds', () => {
       beforeEach(() => {
-        cy.intercept('GET', /language\/submission?.*/, { fixture: 'globalTranslations.json' }).as('getTranslations');
+        cy.intercept('GET', /language\/submission?.*/).as('getTranslations');
+        cy.intercept('GET', /form?.*/).as('getForms');
         cy.visit('/');
+        cy.wait('@getForms');
       });
 
       it('shows translated texts for chosen language', () => {
         cy.findByRole('button', { name: 'Åpne meny' }).click();
         cy.findByRole('link', { name: 'Globale Oversettelser' }).click();
+        cy.wait('@getTranslations');
+
         cy.findByRole('heading', { name: 'Norsk nynorsk' }).should('exist');
         cy.findByDisplayValue('Annan dokumentasjon');
         cy.findByRole('button', { name: 'Norsk nynorsk' }).click();
@@ -74,9 +67,7 @@ describe('Translations', () => {
 
     describe('when loading of global translations fails', () => {
       beforeEach(() => {
-        cy.intercept('GET', /language\/submission?.*/, { statusCode: 500, body: 'Failed to load translations' }).as(
-          'getTranslationsFailure',
-        );
+        cy.intercept('GET', /language\/submission?.*/, { statusCode: 500 }).as('getTranslationsFailure');
         cy.visit('/');
       });
 
@@ -139,11 +130,8 @@ describe('Translations', () => {
       '<h3>Tekstblokk med mye formatering og manglende oversettelse</h3><p>Dette er avsnitt 1</p><p>Her er et avsnitt <a target="_blank" rel="noopener noreferrer" href="https://www.vg.no">med lenke til VG</a>. Denne er så lang at den bør få et tekstområde, altså en sånn stor boks hvor man kan skrive inn masse tekst. Her kommer en liste:</p><ul><li>Ta oppvasken</li><li>Handle <a target="_blank" rel="noopener noreferrer" href="https://www.coop.no/"><strong>matvarer</strong></a>, og <strong>vurder</strong> å <a target="_blank" rel="noopener noreferrer" href="https://www.zalando.no">kjøpe <strong>nye</strong> klær</a>.</li></ul><p>Nytt avsnitt. Ny liste (numerert denne gangen):</p><ol><li>Første prioritet</li><li>Også viktig, men ikke så viktig</li><li>Kan utsettes</li><li>Trengs egentlig ikke å gjøres</li></ol>';
 
     beforeEach(() => {
-      cy.intercept('GET', '/api/forms/tekstblokk123', { fixture: 'tekstblokk123.json' }).as('getForm');
-      cy.intercept('GET', '/api/published-forms/tekstblokk123', { statusCode: 404 }).as('getPublishedForm');
-      cy.intercept('GET', /language\/submission?.*/, { fixture: 'tekstblokk123Translations.json' }).as(
-        'getTranslations',
-      );
+      cy.intercept('GET', '/api/forms/tekstblokk123').as('getForm');
+      cy.intercept('GET', /language\/submission?.*/).as('getTranslations');
       cy.intercept('PUT', /language\/submission?.*/).as('updateTranslations');
 
       cy.visit('/forms/tekstblokk123');

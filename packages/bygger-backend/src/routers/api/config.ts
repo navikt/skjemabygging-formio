@@ -5,8 +5,8 @@ import { ByggerRequest } from '../../types';
 import { getByggerUrl } from '../../util/url';
 
 const config = (req: ByggerRequest, res: Response) => {
-  const user = appConfig.isDevelopment ? undefined : req.getUser?.();
-  if (user) {
+  const user = req.getUser();
+  if (user && !appConfig.isDevelopment) {
     res.header('Bygger-Formio-Token', createFormioJwt(user));
   }
   res.json({
