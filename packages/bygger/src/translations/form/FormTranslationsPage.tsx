@@ -10,8 +10,8 @@ import EditFormTranslationsProvider, {
 } from '../../context/translations/EditFormTranslationsContext';
 import { useFormTranslations } from '../../context/translations/FormTranslationsContext';
 import { useGlobalTranslations } from '../../context/translations/GlobalTranslationsContext';
-import TranslationButtonColumn from '../components/TranslationButtonColumn';
 import TranslationTable from '../components/TranslationTable';
+import GlobalTranslationButtonsColumn from '../global/GlobalTranslationButtonsColumn';
 import { generateAndPopulateTranslationsForForm } from '../utils/editFormTranslationsUtils';
 
 interface Props {
@@ -46,7 +46,7 @@ const FormTranslationsPage = ({ form }: Props) => {
         <RowLayout
           right={
             <SidebarLayout noScroll>
-              <TranslationButtonColumn editContext={EditFormTranslationsContext} />
+              <GlobalTranslationButtonsColumn editContext={EditFormTranslationsContext} />
             </SidebarLayout>
           }
         >

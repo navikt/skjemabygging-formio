@@ -1,16 +1,11 @@
 import { Button, VStack } from '@navikt/ds-react';
-import { FormsApiTranslation } from '@navikt/skjemadigitalisering-shared-domain';
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import UserFeedback from '../../components/UserFeedback';
-import { EditTranslationContext } from '../../context/translations/types';
+import { useEditGlobalTranslations } from '../../context/translations/EditGlobalTranslationsContext';
 
-interface Props<Translation extends FormsApiTranslation> {
-  editContext: EditTranslationContext<Translation>;
-}
-
-const TranslationButtonColumn = <Translation extends FormsApiTranslation>({ editContext }: Props<Translation>) => {
+const GlobalTranslationButtonsColumn = () => {
   const [isSaving, setIsSaving] = useState(false);
-  const { saveChanges } = useContext(editContext);
+  const { saveChanges } = useEditGlobalTranslations();
 
   const handleSave = async () => {
     try {
@@ -36,4 +31,4 @@ const TranslationButtonColumn = <Translation extends FormsApiTranslation>({ edit
     </VStack>
   );
 };
-export default TranslationButtonColumn;
+export default GlobalTranslationButtonsColumn;

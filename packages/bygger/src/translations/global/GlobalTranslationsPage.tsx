@@ -10,9 +10,9 @@ import EditGlobalTranslationsProvider, {
   EditGlobalTranslationsContext,
 } from '../../context/translations/EditGlobalTranslationsContext';
 import { useGlobalTranslations } from '../../context/translations/GlobalTranslationsContext';
-import TranslationButtonColumn from '../components/TranslationButtonColumn';
 import TranslationTable from '../components/TranslationTable';
 import { generateAndPopulateTags } from '../utils/editGlobalTranslationsUtils';
+import GlobalTranslationButtonsColumn from './GlobalTranslationButtonsColumn';
 
 const titles = {
   skjematekster: 'Globale skjematekster',
@@ -37,7 +37,7 @@ const GlobalTranslationsPage = () => {
         <RowLayout
           right={
             <SidebarLayout noScroll={true}>
-              <TranslationButtonColumn editContext={EditGlobalTranslationsContext} />
+              <GlobalTranslationButtonsColumn editContext={EditGlobalTranslationsContext} />
             </SidebarLayout>
           }
         >
