@@ -43,9 +43,16 @@ export async function fetchWithErrorHandling(url: RequestInfo, options: RequestI
       data: null,
     };
   }
+  if (res.headers.get('content-type') === 'application/json') {
+    return {
+      status: 'OK',
+      data: await res.json(),
+    };
+  }
+
   return {
     status: 'OK',
-    data: await res.json(),
+    data: null,
   };
 }
 

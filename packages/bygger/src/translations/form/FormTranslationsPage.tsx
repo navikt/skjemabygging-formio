@@ -11,8 +11,8 @@ import EditFormTranslationsProvider, {
 import { useFormTranslations } from '../../context/translations/FormTranslationsContext';
 import { useGlobalTranslations } from '../../context/translations/GlobalTranslationsContext';
 import TranslationTable from '../components/TranslationTable';
-import GlobalTranslationButtonsColumn from '../global/GlobalTranslationButtonsColumn';
 import { generateAndPopulateTranslationsForForm } from '../utils/editFormTranslationsUtils';
+import FormTranslationButtonsColumn from './FormTranslationButtonsColumn';
 
 interface Props {
   form: NavFormType;
@@ -46,7 +46,7 @@ const FormTranslationsPage = ({ form }: Props) => {
         <RowLayout
           right={
             <SidebarLayout noScroll>
-              <GlobalTranslationButtonsColumn editContext={EditFormTranslationsContext} />
+              <FormTranslationButtonsColumn />
             </SidebarLayout>
           }
         >

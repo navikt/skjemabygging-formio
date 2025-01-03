@@ -37,7 +37,7 @@ const GlobalTranslationsPage = () => {
         <RowLayout
           right={
             <SidebarLayout noScroll={true}>
-              <GlobalTranslationButtonsColumn editContext={EditGlobalTranslationsContext} />
+              <GlobalTranslationButtonsColumn />
             </SidebarLayout>
           }
         >

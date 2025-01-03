@@ -44,10 +44,21 @@ const useGlobalTranslationsApi = () => {
     }
   };
 
+  const publish = async () => {
+    try {
+      return await http.post(`${basePath}/publish`, {});
+    } catch (error: any) {
+      const message = (error as Error)?.message;
+      feedbackEmit.error(`Feil ved publisering. ${message}`);
+      throw error;
+    }
+  };
+
   return {
     get,
     post,
     put,
+    publish,
   };
 };
 

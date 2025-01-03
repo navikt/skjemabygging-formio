@@ -34,6 +34,12 @@ const createGlobalTranslationService = (formsApiUrl: string): GlobalTranslationS
       });
       return response.data as FormsApiGlobalTranslation;
     },
+    publish: async (accessToken: string) => {
+      await fetch(`${formsApiUrl}${globalTranslationsPath}/publish`, {
+        method: 'POST',
+        headers: createHeaders(accessToken),
+      });
+    },
   };
 };
 

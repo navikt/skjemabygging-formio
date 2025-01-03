@@ -26,6 +26,7 @@ type GlobalTranslationService = {
     revision: number,
     accessToken: string,
   ) => Promise<FormsApiGlobalTranslation>;
+  publish: (accessToken: string) => Promise<void>;
 };
 
 export type {

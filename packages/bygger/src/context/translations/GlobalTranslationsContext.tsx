@@ -9,9 +9,10 @@ interface ContextValue {
   isReady: boolean;
   loadTranslations: () => Promise<void>;
   saveTranslation: (translation: FormsApiGlobalTranslation) => Promise<FormsApiGlobalTranslation>;
-  createNewTranslation?: (
+  createNewTranslation: (
     translation: FormsApiGlobalTranslation,
   ) => Promise<{ response?: FormsApiGlobalTranslation; error?: TranslationError }>;
+  publish: () => Promise<void>;
 }
 
 const defaultValue: ContextValue = {
@@ -20,6 +21,7 @@ const defaultValue: ContextValue = {
   loadTranslations: () => Promise.resolve(),
   saveTranslation: () => Promise.reject(),
   createNewTranslation: () => Promise.reject(),
+  publish: () => Promise.reject(),
 };
 
 const GlobalTranslationsContext = createContext<ContextValue>(defaultValue);
@@ -67,6 +69,10 @@ const GlobalTranslationsProvider = ({ children }) => {
     }
   };
 
+  const publish = async () => {
+    await translationsApi.publish();
+  };
+
   const storedTranslationsMap = useMemo<Record<string, FormsApiGlobalTranslation>>(
     () => (state.data ?? []).reduce((acc, translation) => ({ ...acc, [translation.key]: translation }), {}),
     [state.data],
@@ -78,6 +84,7 @@ const GlobalTranslationsProvider = ({ children }) => {
     isReady: state.isReady,
     saveTranslation,
     createNewTranslation,
+    publish,
   };
   return <GlobalTranslationsContext.Provider value={value}>{children}</GlobalTranslationsContext.Provider>;
 };
