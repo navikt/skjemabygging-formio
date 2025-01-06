@@ -4,13 +4,7 @@ import path from 'path';
 
 const filePath = path.join(process.cwd(), '/src/routers/api/helpers/footer-template.html');
 
-export async function generateFooterHtml(
-  userId,
-  schemaVersion,
-  skjemanummer,
-  language,
-  translate: (text: string) => string,
-) {
+export function generateFooterHtml(userId, schemaVersion, skjemanummer, language, translate: (text: string) => string) {
   let footerHtml = readFileSync(filePath, { encoding: 'utf-8', flag: 'r' });
 
   const creationDate = new Date().toLocaleString();

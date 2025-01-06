@@ -15,6 +15,7 @@ export default defineConfig({
       TOKEN_X_WELL_KNOWN_URL: 'http://127.0.0.1:3300/tokenx/.well-known',
       AMPLITUDE_API_ENDPOINT: 'http://127.0.0.1:3300/amplitude/collect-auto',
       BASE_URL: 'http://localhost:3001',
+      GOTENBERG_URL: 'http://127.0.0.1:3000',
     },
   },
 });

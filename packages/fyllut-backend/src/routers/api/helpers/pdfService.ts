@@ -13,7 +13,8 @@ import { config, defaultConfig } from '../../../config/config';
 import { logger } from '../../../logger';
 import { appMetrics } from '../../../services';
 import { synchronousResponseToError } from '../../../utils/errorHandling';
-import fetchWithRetry, { HeadersInit } from '../../../utils/fetchWithRetry';
+//import fetchWithRetry, { HeadersInit } from '../../../utils/fetchWithRetry';
+import fetch from 'node-fetch';
 import { generateFooterHtml } from './footerBuilder';
 import { createHtmlFromSubmission } from './htmlBuilder';
 
@@ -65,7 +66,7 @@ export const createPdfFromGotenberg = async (
     throw Error('Missing HTML for generating PDF.');
   }
   const { fodselsnummerDNummerSoker } = submission.data;
-  const footerHtml = await generateFooterHtml(
+  const footerHtml = generateFooterHtml(
     (fodselsnummerDNummerSoker as string | undefined) || '—',
     defaultConfig.gitVersion,
     form.properties.skjemanummer,
@@ -125,6 +126,7 @@ const createPdfCallingGotenberg = async (
   formData.append('skipNetworkIdleEvent', 'false');
 
   // Send the request to Gotenberg
+  /*
   const gotenbergResponse = await fetchWithRetry(`${gotenbergUrl}/forms/chromium/convert/html`, {
     retry: 3,
     headers: {
@@ -133,6 +135,17 @@ const createPdfCallingGotenberg = async (
       'x-correlation-id': correlator.getId(),
     } as HeadersInit,
     method: 'POST',
+    body: formData,
+  });
+*/
+
+  const gotenbergResponse = await fetch(`${gotenbergUrl}/forms/chromium/convert/html`, {
+    method: 'POST',
+    headers: {
+      ...formData.getHeaders(),
+      //Authorization: `Bearer ${azureAccessToken}`,
+      'x-correlation-id': correlator.getId(),
+    } as HeadersInit,
     body: formData,
   });
 
