@@ -58,7 +58,7 @@ const publish: RequestHandler = async (req, res, next) => {
     const translations = await globalTranslationsService.get();
     const { en, 'nn-NO': nn }: GlobalTranslationsResourceContent = mapGlobalToFormioFormat(translations);
     const resultEnglish = await backendInstance.publishResource('global-translations-en', { en });
-    const resultNynorsk = await backendInstance.publishResource('global-translations-nn', { 'nn-NO': nn });
+    const resultNynorsk = await backendInstance.publishResource('global-translations-nn-NO', { 'nn-NO': nn });
 
     console.log(resultEnglish);
     console.log(resultNynorsk);
