@@ -43,7 +43,7 @@ export async function fetchWithErrorHandling(url: RequestInfo, options: RequestI
       data: null,
     };
   }
-  if (res.headers.get('content-type') === 'application/json') {
+  if (res.headers.get('content-type')?.includes('application/json')) {
     return {
       status: 'OK',
       data: await res.json(),
