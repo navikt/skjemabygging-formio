@@ -108,7 +108,6 @@ function renderPrepareLetterPage(form = defaultForm, config = defaultConfig) {
 
 describe('PrepareLetterPage', () => {
   beforeEach(() => {
-    //@ts-expect-error
     fetchMock.mockImplementation((url) => {
       const urlString = url as string;
       if (urlString.endsWith('/recipients')) {
@@ -207,7 +206,6 @@ describe('PrepareLetterPage', () => {
       const SKJEMANUMMER = 'NAV 12.34-56';
 
       beforeEach(async () => {
-        //@ts-expect-error
         fetchMock.mockImplementation((url) => {
           const urlString = url as string;
           if (urlString.endsWith('/api/enhetsliste')) {
@@ -260,7 +258,6 @@ describe('PrepareLetterPage', () => {
 
     describe('When fetching of enhetsliste fails', () => {
       beforeEach(async () => {
-        //@ts-expect-error
         fetchMock.mockImplementation((url) => {
           const urlString = url as string;
           if (urlString.endsWith('/api/enhetsliste')) {
