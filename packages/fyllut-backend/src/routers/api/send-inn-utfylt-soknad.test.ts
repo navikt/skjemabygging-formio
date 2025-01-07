@@ -27,7 +27,7 @@ describe('[endpoint] send-inn/utfyltsoknad', () => {
   };
 
   it('returns 201 and location header if success', async () => {
-    const skjemabyggingproxyScope = nock(process.env.SKJEMABYGGING_PROXY_URL!)
+    const skjemabyggingproxyScope = nock(process.env.GOTENBERG_URL!)
       .post('/gotenberg')
       .reply(200, { data: { result: [{ content: { data: '' } }] } });
     const sendInnNockScope = nock(sendInnConfig.host)
@@ -49,7 +49,7 @@ describe('[endpoint] send-inn/utfyltsoknad', () => {
   });
 
   it('calls next if SendInn returns error', async () => {
-    const skjemabyggingproxyScope = nock(process.env.SKJEMABYGGING_PROXY_URL!)
+    const skjemabyggingproxyScope = nock(process.env.GOTENBERG_URL!)
       .post('/gotenberg')
       .reply(200, { data: { result: [{ content: { data: '' } }] } });
     const sendInnNockScope = nock(sendInnConfig.host)
@@ -71,9 +71,7 @@ describe('[endpoint] send-inn/utfyltsoknad', () => {
   });
 
   it('calls next if exstream returns error', async () => {
-    const skjemabyggingproxyScope = nock(process.env.SKJEMABYGGING_PROXY_URL!)
-      .post('/gotenberg')
-      .reply(500, 'error body');
+    const skjemabyggingproxyScope = nock(process.env.GOTENBERG_URL!).post('/gotenberg').reply(500, 'error body');
     const req = mockRequestWithPidAndTokenX({ body: defaultBody });
     const res = mockResponse();
     const next = vi.fn();

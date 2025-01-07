@@ -232,7 +232,6 @@ describe('app', () => {
 
     const innsendingsId = '65ed0008-ec72-4c90-8b44-165d3c265da0';
     const sendInnLocation = 'http://www.unittest.nav.no/sendInn/123';
-    const azureTokenEndpoint = process.env.AZURE_OPENID_CONFIG_TOKEN_ENDPOINT!;
     const tokenxEndpoint = 'http://tokenx-unittest.nav.no/token';
     const applicationData = {
       form: {
@@ -249,10 +248,7 @@ describe('app', () => {
       innsendingsId,
     };
 
-    const azureOpenidScope = nock(extractHost(azureTokenEndpoint))
-      .post(extractPath(azureTokenEndpoint))
-      .reply(200, { access_token: 'azure-access-token' });
-    const skjemabyggingproxyScope = nock(process.env.SKJEMABYGGING_PROXY_URL as string)
+    const skjemabyggingproxyScope = nock(process.env.GOTENBERG_URL as string)
       .post('/gotenberg')
       .reply(200, { data: { result: [{ content: { data: '' } }] } });
     const tokenxWellKnownScope = nock(extractHost(tokenxConfig?.wellKnownUrl))
@@ -273,7 +269,6 @@ describe('app', () => {
     expect(res.status).toBe(201);
     expect(res.headers['location']).toMatch(sendInnLocation);
 
-    azureOpenidScope.done();
     skjemabyggingproxyScope.done();
     tokenxWellKnownScope.done();
     tokenEndpointNockScope.done();
