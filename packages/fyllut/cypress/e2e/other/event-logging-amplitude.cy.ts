@@ -8,6 +8,8 @@
 
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 
+const thisYear = new Date().getFullYear();
+
 describe('Amplitude', () => {
   before(() => {
     cy.configMocksServer();
@@ -99,14 +101,14 @@ describe('Amplitude', () => {
 
     cy.findByRole('textbox', { name: 'Fra hvilken dato skal denne adressen brukes (dd.mm.åååå)?' })
       .should('exist')
-      .type('01.01.2020');
+      .type(`01.01.${thisYear}`);
     cy.findByRole('textbox', { name: 'Fra hvilken dato skal denne adressen brukes (dd.mm.åååå)?' }).blur();
 
     cy.checkLogToAmplitude('skjemaspørsmål besvart', {
       spørsmål: 'Fra hvilken dato skal denne adressen brukes (dd.mm.åååå)?',
     });
 
-    cy.findByRole('textbox', { name: 'Velg måned' }).type('01.2020{esc}');
+    cy.findByRole('textbox', { name: 'Velg måned' }).type(`01.${thisYear}{esc}`);
     cy.checkLogToAmplitude('skjemaspørsmål besvart', { spørsmål: 'Velg måned' });
 
     // Step 2 -> Oppsummering
@@ -164,9 +166,9 @@ describe('Amplitude', () => {
         cy.get('dt').eq(11).should('contain.text', 'Poststed');
         cy.get('dd').eq(11).should('contain.text', 'Nesvik');
         cy.get('dt').eq(12).should('contain.text', 'Fra hvilken dato skal denne adressen brukes (dd.mm.åååå)?');
-        cy.get('dd').eq(12).should('contain.text', '01.01.2020');
+        cy.get('dd').eq(12).should('contain.text', `01.01.${thisYear}`);
         cy.get('dt').eq(13).should('contain.text', 'Velg måned');
-        cy.get('dd').eq(13).should('contain.text', 'Januar 2020');
+        cy.get('dd').eq(13).should('contain.text', `Januar ${thisYear}`);
       });
 
     // First attempt is intercepted and fails, so we can test "innsending feilet"
