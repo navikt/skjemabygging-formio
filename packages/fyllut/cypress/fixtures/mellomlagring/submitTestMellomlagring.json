@@ -2434,5 +2434,27 @@
       "formioId": "e3dw1sg"
     }
   ],
-  "otherDocumentation": true
+  "otherDocumentation": true,
+  "summaryPanels": [
+    {
+      "key": "gave",
+      "type": "panel",
+      "components": [
+        {
+          "key": "onskerDuAFaGavenInnpakket",
+          "type": "radiopanel"
+        }
+      ]
+    },
+    {
+      "key": "levering",
+      "type": "panel",
+      "components": [
+        {
+          "key": "hvordanOnskerDuAMottaPakken",
+          "type": "navSelect"
+        }
+      ]
+    }
+  ]
 }
