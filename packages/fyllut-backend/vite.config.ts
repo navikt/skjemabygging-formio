@@ -8,10 +8,12 @@ export default defineConfig(({ mode }) => {
     ...VitePluginNode({
       adapter: 'express',
       appPath: './src/server.js',
+      outputFormat: 'module',
     }),
   ];
 
   if (mode !== 'production') {
+    // @ts-expect-error dev
     plugins.push(tsconfigPaths());
   }
 
