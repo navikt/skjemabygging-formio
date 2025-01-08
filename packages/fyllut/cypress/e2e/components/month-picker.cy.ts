@@ -5,6 +5,10 @@
 import { expect } from 'chai';
 
 describe('Month picker', () => {
+  beforeEach(() => {
+    cy.clock(new Date('2024-08-01'), ['Date']);
+  });
+
   before(() => {
     cy.configMocksServer();
   });
