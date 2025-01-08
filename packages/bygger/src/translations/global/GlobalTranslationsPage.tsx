@@ -1,5 +1,4 @@
 import { FormsApiGlobalTranslation } from '@navikt/skjemadigitalisering-shared-domain';
-import { useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { AppLayout } from '../../components/AppLayout';
 import RowLayout from '../../components/layout/RowLayout';
@@ -11,7 +10,6 @@ import EditGlobalTranslationsProvider, {
 } from '../../context/translations/EditGlobalTranslationsContext';
 import { useGlobalTranslations } from '../../context/translations/GlobalTranslationsContext';
 import TranslationTable from '../components/TranslationTable';
-import { generateAndPopulateTags } from '../utils/editGlobalTranslationsUtils';
 import GlobalTranslationButtonsColumn from './GlobalTranslationButtonsColumn';
 
 const titles = {
@@ -23,9 +21,8 @@ const titles = {
 
 const GlobalTranslationsPage = () => {
   const { tag = 'skjematekster' } = useParams();
-  const { storedTranslations, isReady } = useGlobalTranslations();
+  const { translationsPerTag, isReady } = useGlobalTranslations();
 
-  const translationsPerTag = useMemo(() => generateAndPopulateTags(storedTranslations), [storedTranslations]);
   const rows: FormsApiGlobalTranslation[] | undefined = translationsPerTag?.[tag];
 
   return (
