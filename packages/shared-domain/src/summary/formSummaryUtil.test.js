@@ -521,7 +521,7 @@ describe('form summary', () => {
           '',
           mockedTranslate,
         );
-        expect(actual[0].value).toEqual('kr 2 512,39'.replaceAll(' ', '\u00A0'));
+        expect(actual[0].value).toEqual('2 512,39 kr'.replaceAll(' ', '\u00A0'));
       });
     });
 
@@ -534,7 +534,7 @@ describe('form summary', () => {
           '',
           mockedTranslate,
         );
-        expect(actual[0].value).toEqual('NOK 2 512,39'.replaceAll(' ', '\u00A0'));
+        expect(actual[0].value).toEqual('2 512,39 NOK'.replaceAll(' ', '\u00A0'));
       });
 
       it("should not add anything if belop isn't filled", () => {
