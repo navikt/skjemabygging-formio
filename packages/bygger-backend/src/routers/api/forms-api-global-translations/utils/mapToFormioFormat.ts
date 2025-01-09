@@ -1,43 +1,26 @@
 import {
-  FormsApiGlobalTranslation,
   GlobalTranslationsResourceContent,
+  PublishedTranslations,
   TranslationResource,
 } from '@navikt/skjemadigitalisering-shared-domain';
 
-const mapGlobalToFormioFormat = (translations: FormsApiGlobalTranslation[]): GlobalTranslationsResourceContent => {
-  const initTags = { skjematekster: {}, grensesnitt: {}, validering: {}, 'statiske-tekster': {} };
-  const accumulated = translations.reduce(
-    (acc, { key, en, nn, tag }) => {
-      const resultEn = { value: en, scope: 'global' };
-      const resultNn = { value: nn, scope: 'global' };
-      return {
-        ...acc,
-        en: { ...acc.en, [tag]: { ...acc.en[tag], [key]: resultEn } },
-        nn: { ...acc.nn, [tag]: { ...acc.nn[tag], [key]: resultNn } },
-      };
-    },
-    { en: { ...initTags }, nn: { ...initTags } },
-  );
-  const resourceDefaults: Pick<TranslationResource, 'id' | 'name' | 'scope'> = {
+const mapGlobalToFormioFormat = ({ translations }: PublishedTranslations): GlobalTranslationsResourceContent => {
+  const resourceDefaults: Pick<TranslationResource, 'id' | 'name' | 'scope' | 'tag'> = {
     id: '',
     name: 'global',
     scope: 'global',
+    tag: 'dummy-tag',
   };
-
+  const populateWithScope = (
+    translationRecord: Record<string, string>,
+  ): Record<string, { value: string; scope: 'global' }> =>
+    Object.entries(translationRecord)?.reduce(
+      (acc, [key, value]) => ({ ...acc, [key]: { value, scope: 'global' } }),
+      {},
+    );
   return {
-    en: [
-      { ...resourceDefaults, tag: 'skjematekster', translations: accumulated.en.skjematekster },
-      { ...resourceDefaults, tag: 'grensesnitt', translations: accumulated.en.grensesnitt },
-      { ...resourceDefaults, tag: 'validering', translations: accumulated.en.validering },
-      { ...resourceDefaults, tag: 'statiske-tekster', translations: accumulated.en['statiske-tekster'] },
-    ],
-    'nn-NO': [
-      { ...resourceDefaults, tag: 'skjematekster', translations: accumulated.nn.skjematekster },
-      { ...resourceDefaults, tag: 'grensesnitt', translations: accumulated.nn.grensesnitt },
-      { ...resourceDefaults, tag: 'validering', translations: accumulated.nn.validering },
-      { ...resourceDefaults, tag: 'statiske-tekster', translations: accumulated.nn['statiske-tekster'] },
-    ],
-    'nb-NO': [],
+    en: [{ ...resourceDefaults, translations: populateWithScope(translations.en ?? {}) }],
+    'nn-NO': [{ ...resourceDefaults, translations: populateWithScope(translations.nn ?? {}) }],
   };
 };
 

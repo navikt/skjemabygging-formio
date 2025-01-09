@@ -1,4 +1,8 @@
-import { FormsApiFormTranslation, FormsApiGlobalTranslation } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  FormsApiFormTranslation,
+  FormsApiGlobalTranslation,
+  PublishedTranslations,
+} from '@navikt/skjemadigitalisering-shared-domain';
 
 type FormTranslationPostBody = Pick<FormsApiFormTranslation, 'key' | 'nb' | 'nn' | 'en' | 'globalTranslationId'>;
 type FormTranslationPutBody = Pick<FormsApiFormTranslation, 'nb' | 'nn' | 'en' | 'globalTranslationId'>;
@@ -27,6 +31,7 @@ type GlobalTranslationService = {
     accessToken: string,
   ) => Promise<FormsApiGlobalTranslation>;
   publish: (accessToken: string) => Promise<void>;
+  getPublished: (languageCodes: Array<'nn' | 'en'>, accessCode: string) => Promise<PublishedTranslations>;
 };
 
 export type {

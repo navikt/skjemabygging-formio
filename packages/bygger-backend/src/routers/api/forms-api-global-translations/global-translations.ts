@@ -55,13 +55,11 @@ const publish: RequestHandler = async (req, res, next) => {
     const accessToken = req.headers.AzureAccessToken as string;
     await globalTranslationsService.publish(accessToken);
 
-    const translations = await globalTranslationsService.get();
-    const { en, 'nn-NO': nn }: GlobalTranslationsResourceContent = mapGlobalToFormioFormat(translations);
-    const resultEnglish = await backendInstance.publishResource('global-translations-en', { en });
-    const resultNynorsk = await backendInstance.publishResource('global-translations-nn-NO', { 'nn-NO': nn });
+    const publishedTranslations = await globalTranslationsService.getPublished(['nn', 'en'], accessToken);
+    const { en, 'nn-NO': nn }: GlobalTranslationsResourceContent = mapGlobalToFormioFormat(publishedTranslations);
 
-    console.log(resultEnglish);
-    console.log(resultNynorsk);
+    await backendInstance.publishResource('global-translations-en', { en });
+    await backendInstance.publishResource('global-translations-nn-NO', { 'nn-NO': nn });
 
     res.sendStatus(201);
   } catch (error) {
