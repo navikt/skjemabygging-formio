@@ -15,7 +15,7 @@ import { useCallback } from 'react';
 import { languagesInNorwegian } from '../context/i18n';
 import { combineTranslationResources } from '../context/i18n/translationsMapper';
 import { useFeedbackEmit } from '../context/notifications/FeedbackContext';
-import { getTranslationKeysForAllPredefinedTexts, tags } from '../translations/global/utils';
+import { getTranslationKeysForAllPredefinedTexts, tags } from '../old_translations/global/utils';
 
 const { zipCountryNames } = localizationUtils;
 
