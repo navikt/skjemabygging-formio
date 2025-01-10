@@ -190,7 +190,7 @@ class BaseComponent extends FormioReactComponent {
   }
 
   hasPrefill(): boolean {
-    return (this.isSubmissionDigital() && !!this.component?.prefillKey && !!this.component?.prefillValue) ?? false;
+    return (this.isSubmissionDigital() && !!this.component?.prefillKey) ?? false;
   }
 
   /**
@@ -198,7 +198,7 @@ class BaseComponent extends FormioReactComponent {
    * Message is the error message that is shown in the error summary
    */
   addError(message: string, elementId?: string) {
-    if (this.showErrorMessages()) {
+    if (message && this.showErrorMessages()) {
       this.logger.debug('addError', { errorMessage: message });
       this.componentErrors.push(this.createError(message, elementId));
     }
@@ -224,6 +224,16 @@ class BaseComponent extends FormioReactComponent {
       }
     }
     this.rerender();
+  }
+
+  setComponentValidity(messages, dirty, silentCheck) {
+    if (messages.length && (!silentCheck || this.error) && this.showErrorMessages()) {
+      this.setCustomValidity(messages, dirty);
+    } else {
+      this.setCustomValidity('');
+    }
+
+    return this.componentErrors.length === 0;
   }
 
   createError(message: string, elementId?: string): ComponentError {
@@ -255,7 +265,10 @@ class BaseComponent extends FormioReactComponent {
    */
   showErrorMessages() {
     return (
-      this.root.currentPage?.nextPageClicked || this.root.submitted || this.builderMode || this.root.editFormDialog
+      (this.root.currentPage?.nextPageClicked && baseComponentUtils.isOnCurrentPage(this)) ||
+      this.root.submitted ||
+      this.builderMode ||
+      this.root.editFormDialogSaveClicked
     );
   }
 }

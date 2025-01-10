@@ -35,10 +35,6 @@ class Activities extends BaseComponent {
     return activitiesBuilder();
   }
 
-  override get errors() {
-    return this.componentErrors;
-  }
-
   override getError(): string | undefined {
     const error = this.componentErrors[0];
     if (error) return error.message;

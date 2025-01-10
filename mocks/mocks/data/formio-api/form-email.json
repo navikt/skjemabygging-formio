@@ -1,0 +1,657 @@
+{
+  "_id": "6746f7aa0f784bb05c2dcf19",
+  "title": "Basic form",
+  "name": "eml123456",
+  "path": "eml123456",
+  "type": "form",
+  "display": "wizard",
+  "tags": [
+    "nav-skjema",
+    ""
+  ],
+  "components": [
+    {
+      "title": "Veiledning",
+      "type": "panel",
+      "input": false,
+      "key": "veiledning",
+      "theme": "default",
+      "components": [
+        {
+          "description": "",
+          "validate": {
+            "required": true,
+            "custom": "",
+            "customPrivate": false,
+            "strictDateValidation": false,
+            "multiple": false,
+            "unique": false
+          },
+          "errors": "",
+          "conditional": {
+            "show": null,
+            "when": null,
+            "eq": ""
+          },
+          "customConditional": "",
+          "label": "E-post",
+          "key": "epost",
+          "input": true,
+          "placeholder": "",
+          "prefix": "",
+          "customClass": "",
+          "suffix": "",
+          "multiple": false,
+          "defaultValue": null,
+          "protected": false,
+          "unique": false,
+          "persistent": true,
+          "hidden": false,
+          "clearOnHide": true,
+          "refreshOn": "",
+          "redrawOn": "",
+          "tableView": false,
+          "modalEdit": false,
+          "dataGridLabel": false,
+          "labelPosition": "top",
+          "errorLabel": "",
+          "tooltip": "",
+          "hideLabel": false,
+          "tabindex": "",
+          "disabled": false,
+          "autofocus": false,
+          "dbIndex": false,
+          "customDefaultValue": "",
+          "calculateValue": "",
+          "calculateServer": false,
+          "widget": null,
+          "attributes": {},
+          "validateOn": "blur",
+          "overlay": {
+            "style": "",
+            "left": "",
+            "top": "",
+            "width": "",
+            "height": ""
+          },
+          "allowCalculateOverride": false,
+          "encrypted": false,
+          "showCharCount": false,
+          "showWordCount": false,
+          "properties": {},
+          "allowMultipleMasks": false,
+          "addons": [],
+          "fieldSize": "input--xxl",
+          "type": "email",
+          "autocomplete": "email",
+          "inputType": "email",
+          "spellcheck": false,
+          "navId": "er31w9l",
+          "id": "eutithe"
+        }
+      ],
+      "navId": "egshi9",
+      "id": "e2g4jol",
+      "placeholder": "",
+      "prefix": "",
+      "customClass": "",
+      "suffix": "",
+      "multiple": false,
+      "defaultValue": null,
+      "protected": false,
+      "unique": false,
+      "persistent": false,
+      "hidden": false,
+      "clearOnHide": false,
+      "refreshOn": "",
+      "redrawOn": "",
+      "tableView": false,
+      "modalEdit": false,
+      "label": "Panel",
+      "dataGridLabel": false,
+      "labelPosition": "top",
+      "description": "",
+      "errorLabel": "",
+      "tooltip": "",
+      "hideLabel": false,
+      "tabindex": "",
+      "disabled": false,
+      "autofocus": false,
+      "dbIndex": false,
+      "customDefaultValue": "",
+      "calculateValue": "",
+      "calculateServer": false,
+      "widget": null,
+      "attributes": {},
+      "validateOn": "change",
+      "validate": {
+        "required": false,
+        "custom": "",
+        "customPrivate": false,
+        "strictDateValidation": false,
+        "multiple": false,
+        "unique": false
+      },
+      "conditional": {
+        "show": null,
+        "when": null,
+        "eq": ""
+      },
+      "overlay": {
+        "style": "",
+        "left": "",
+        "top": "",
+        "width": "",
+        "height": ""
+      },
+      "allowCalculateOverride": false,
+      "encrypted": false,
+      "showCharCount": false,
+      "showWordCount": false,
+      "properties": {},
+      "allowMultipleMasks": false,
+      "addons": [],
+      "tree": false,
+      "lazyLoad": false,
+      "breadcrumb": "default"
+    },
+    {
+      "title": "Vedlegg",
+      "type": "panel",
+      "key": "vedlegg",
+      "input": false,
+      "theme": "default",
+      "isAttachmentPanel": true,
+      "components": [
+        {
+          "label": "Annen dokumentasjon",
+          "description": "Har du noen annen dokumentasjon du ønsker å legge ved?",
+          "type": "attachment",
+          "key": "annenDokumentasjon",
+          "dataSrc": "values",
+          "validate": {
+            "required": true,
+            "custom": "",
+            "customPrivate": false,
+            "strictDateValidation": false,
+            "multiple": false,
+            "unique": false
+          },
+          "properties": {
+            "vedleggstittel": "Annet",
+            "vedleggskode": "N6"
+          },
+          "attachmentType": "other",
+          "attachmentValues": {
+            "leggerVedNaa": {
+              "enabled": true
+            },
+            "nei": {
+              "enabled": true
+            }
+          },
+          "navId": "e8iezp",
+          "id": "ev2vzcq",
+          "input": true,
+          "placeholder": "",
+          "prefix": "",
+          "customClass": "",
+          "suffix": "",
+          "multiple": false,
+          "defaultValue": null,
+          "protected": false,
+          "unique": false,
+          "persistent": true,
+          "hidden": false,
+          "clearOnHide": true,
+          "refreshOn": "",
+          "redrawOn": "",
+          "tableView": false,
+          "modalEdit": false,
+          "dataGridLabel": false,
+          "labelPosition": "top",
+          "errorLabel": "",
+          "tooltip": "",
+          "hideLabel": false,
+          "tabindex": "",
+          "disabled": false,
+          "autofocus": false,
+          "dbIndex": false,
+          "customDefaultValue": "",
+          "calculateValue": "",
+          "calculateServer": false,
+          "widget": null,
+          "attributes": {},
+          "validateOn": "blur",
+          "conditional": {
+            "show": null,
+            "when": null,
+            "eq": ""
+          },
+          "overlay": {
+            "style": "",
+            "left": "",
+            "top": "",
+            "width": "",
+            "height": ""
+          },
+          "allowCalculateOverride": false,
+          "encrypted": false,
+          "showCharCount": false,
+          "showWordCount": false,
+          "allowMultipleMasks": false,
+          "addons": [],
+          "fieldSize": "input--xxl"
+        },
+        {
+          "description": "",
+          "additionalDescriptionText": "",
+          "attachmentValues": {
+            "leggerVedNaa": {
+              "enabled": true,
+              "additionalDocumentation": {
+                "enabled": false
+              }
+            },
+            "ettersender": {
+              "enabled": true,
+              "additionalDocumentation": {
+                "enabled": false
+              },
+              "showDeadline": false
+            },
+            "levertTidligere": {
+              "enabled": true,
+              "additionalDocumentation": {
+                "enabled": false
+              }
+            },
+            "harIkke": {
+              "additionalDocumentation": {},
+              "enabled": false
+            },
+            "andre": {
+              "additionalDocumentation": {},
+              "enabled": false
+            },
+            "nav": {
+              "additionalDocumentation": {},
+              "enabled": false
+            }
+          },
+          "conditional": {
+            "show": null,
+            "when": null,
+            "eq": ""
+          },
+          "customConditional": "",
+          "label": "Husleiekontrakt",
+          "additionalDescriptionLabel": "",
+          "key": "husleiekontrakt",
+          "input": true,
+          "placeholder": "",
+          "prefix": "",
+          "customClass": "",
+          "suffix": "",
+          "multiple": false,
+          "defaultValue": null,
+          "protected": false,
+          "unique": false,
+          "persistent": true,
+          "hidden": false,
+          "clearOnHide": true,
+          "refreshOn": "",
+          "redrawOn": "",
+          "tableView": false,
+          "modalEdit": false,
+          "dataGridLabel": false,
+          "labelPosition": "top",
+          "errorLabel": "",
+          "tooltip": "",
+          "hideLabel": false,
+          "tabindex": "",
+          "disabled": false,
+          "autofocus": false,
+          "dbIndex": false,
+          "customDefaultValue": "",
+          "calculateValue": "",
+          "calculateServer": false,
+          "widget": null,
+          "attributes": {},
+          "validateOn": "blur",
+          "validate": {
+            "required": true,
+            "custom": "",
+            "customPrivate": false,
+            "strictDateValidation": false,
+            "multiple": false,
+            "unique": false
+          },
+          "overlay": {
+            "style": "",
+            "left": "",
+            "top": "",
+            "width": "",
+            "height": ""
+          },
+          "allowCalculateOverride": false,
+          "encrypted": false,
+          "showCharCount": false,
+          "showWordCount": false,
+          "properties": {
+            "vedleggstittel": "Husleiekontrakt",
+            "vedleggskode": "H1"
+          },
+          "allowMultipleMasks": false,
+          "addons": [],
+          "fieldSize": "input--xxl",
+          "type": "attachment",
+          "dataSrc": "values",
+          "attachmentType": "default",
+          "id": "evwpt0g",
+          "navId": "eq47zw8"
+        },
+        {
+          "description": "",
+          "additionalDescriptionText": "",
+          "attachmentValues": {
+            "leggerVedNaa": {
+              "enabled": true,
+              "additionalDocumentation": {
+                "enabled": false
+              }
+            },
+            "ettersender": {
+              "enabled": true,
+              "additionalDocumentation": {
+                "enabled": false
+              },
+              "showDeadline": false
+            },
+            "levertTidligere": {
+              "enabled": true,
+              "additionalDocumentation": {
+                "enabled": false
+              }
+            },
+            "harIkke": {
+              "additionalDocumentation": {},
+              "enabled": false
+            },
+            "andre": {
+              "additionalDocumentation": {},
+              "enabled": false
+            },
+            "nav": {
+              "additionalDocumentation": {},
+              "enabled": false
+            }
+          },
+          "conditional": {
+            "show": null,
+            "when": null,
+            "eq": ""
+          },
+          "customConditional": "",
+          "label": "Veterinærutgifter",
+          "additionalDescriptionLabel": "",
+          "key": "veterinaerutgifter",
+          "input": true,
+          "placeholder": "",
+          "prefix": "",
+          "customClass": "",
+          "suffix": "",
+          "multiple": false,
+          "defaultValue": null,
+          "protected": false,
+          "unique": false,
+          "persistent": true,
+          "hidden": false,
+          "clearOnHide": true,
+          "refreshOn": "",
+          "redrawOn": "",
+          "tableView": false,
+          "modalEdit": false,
+          "dataGridLabel": false,
+          "labelPosition": "top",
+          "errorLabel": "",
+          "tooltip": "",
+          "hideLabel": false,
+          "tabindex": "",
+          "disabled": false,
+          "autofocus": false,
+          "dbIndex": false,
+          "customDefaultValue": "",
+          "calculateValue": "",
+          "calculateServer": false,
+          "widget": null,
+          "attributes": {},
+          "validateOn": "blur",
+          "validate": {
+            "required": true,
+            "custom": "",
+            "customPrivate": false,
+            "strictDateValidation": false,
+            "multiple": false,
+            "unique": false
+          },
+          "overlay": {
+            "style": "",
+            "left": "",
+            "top": "",
+            "width": "",
+            "height": ""
+          },
+          "allowCalculateOverride": false,
+          "encrypted": false,
+          "showCharCount": false,
+          "showWordCount": false,
+          "properties": {
+            "vedleggstittel": "Vererinærutgifter",
+            "vedleggskode": "V1"
+          },
+          "allowMultipleMasks": false,
+          "addons": [],
+          "fieldSize": "input--xxl",
+          "type": "attachment",
+          "dataSrc": "values",
+          "attachmentType": "default",
+          "id": "e69138i",
+          "navId": "eh55slv"
+        },
+        {
+          "description": "",
+          "additionalDescriptionText": "",
+          "attachmentValues": {
+            "leggerVedNaa": {
+              "enabled": true,
+              "additionalDocumentation": {
+                "enabled": false
+              }
+            },
+            "ettersender": {
+              "enabled": true,
+              "additionalDocumentation": {
+                "enabled": false
+              },
+              "showDeadline": false
+            },
+            "levertTidligere": {
+              "enabled": true,
+              "additionalDocumentation": {
+                "enabled": false
+              }
+            },
+            "harIkke": {
+              "additionalDocumentation": {},
+              "enabled": false
+            },
+            "andre": {
+              "additionalDocumentation": {},
+              "enabled": false
+            },
+            "nav": {
+              "additionalDocumentation": {},
+              "enabled": false
+            }
+          },
+          "conditional": {
+            "show": null,
+            "when": null,
+            "eq": ""
+          },
+          "customConditional": "",
+          "label": "Vitnemål",
+          "additionalDescriptionLabel": "",
+          "key": "vitnemal",
+          "input": true,
+          "placeholder": "",
+          "prefix": "",
+          "customClass": "",
+          "suffix": "",
+          "multiple": false,
+          "defaultValue": null,
+          "protected": false,
+          "unique": false,
+          "persistent": true,
+          "hidden": false,
+          "clearOnHide": true,
+          "refreshOn": "",
+          "redrawOn": "",
+          "tableView": false,
+          "modalEdit": false,
+          "dataGridLabel": false,
+          "labelPosition": "top",
+          "errorLabel": "",
+          "tooltip": "",
+          "hideLabel": false,
+          "tabindex": "",
+          "disabled": false,
+          "autofocus": false,
+          "dbIndex": false,
+          "customDefaultValue": "",
+          "calculateValue": "",
+          "calculateServer": false,
+          "widget": null,
+          "attributes": {},
+          "validateOn": "blur",
+          "validate": {
+            "required": true,
+            "custom": "",
+            "customPrivate": false,
+            "strictDateValidation": false,
+            "multiple": false,
+            "unique": false
+          },
+          "overlay": {
+            "style": "",
+            "left": "",
+            "top": "",
+            "width": "",
+            "height": ""
+          },
+          "allowCalculateOverride": false,
+          "encrypted": false,
+          "showCharCount": false,
+          "showWordCount": false,
+          "properties": {
+            "vedleggstittel": "Vitnemål",
+            "vedleggskode": "V2"
+          },
+          "allowMultipleMasks": false,
+          "addons": [],
+          "fieldSize": "input--xxl",
+          "type": "attachment",
+          "dataSrc": "values",
+          "attachmentType": "default",
+          "id": "ezme9l",
+          "navId": "evp5cac"
+        }
+      ],
+      "navId": "eiq1d35",
+      "id": "exw02x",
+      "placeholder": "",
+      "prefix": "",
+      "customClass": "",
+      "suffix": "",
+      "multiple": false,
+      "defaultValue": null,
+      "protected": false,
+      "unique": false,
+      "persistent": false,
+      "hidden": false,
+      "clearOnHide": false,
+      "refreshOn": "",
+      "redrawOn": "",
+      "tableView": false,
+      "modalEdit": false,
+      "label": "Panel",
+      "dataGridLabel": false,
+      "labelPosition": "top",
+      "description": "",
+      "errorLabel": "",
+      "tooltip": "",
+      "hideLabel": false,
+      "tabindex": "",
+      "disabled": false,
+      "autofocus": false,
+      "dbIndex": false,
+      "customDefaultValue": "",
+      "calculateValue": "",
+      "calculateServer": false,
+      "widget": null,
+      "attributes": {},
+      "validateOn": "change",
+      "validate": {
+        "required": false,
+        "custom": "",
+        "customPrivate": false,
+        "strictDateValidation": false,
+        "multiple": false,
+        "unique": false
+      },
+      "conditional": {
+        "show": null,
+        "when": null,
+        "eq": ""
+      },
+      "overlay": {
+        "style": "",
+        "left": "",
+        "top": "",
+        "width": "",
+        "height": ""
+      },
+      "allowCalculateOverride": false,
+      "encrypted": false,
+      "showCharCount": false,
+      "showWordCount": false,
+      "properties": {},
+      "allowMultipleMasks": false,
+      "addons": [],
+      "tree": false,
+      "lazyLoad": false,
+      "breadcrumb": "default"
+    }
+  ],
+  "properties": {
+    "skjemanummer": "TST 10-11.12",
+    "tema": "SYK",
+    "innsending": "PAPIR_OG_DIGITAL",
+    "ettersending": "PAPIR_OG_DIGITAL",
+    "signatures": [
+      {
+        "label": "",
+        "description": "",
+        "key": "ca32653c-2777-4e82-9aac-0211bcb7b0ae"
+      }
+    ],
+    "ettersendelsesfrist": "12",
+    "mellomlagringDurationDays": "28",
+    "modified": "2024-12-10T07:54:08.466Z",
+    "modifiedBy": "Test Testesen"
+  },
+  "created": "2024-11-27T10:42:50.265Z",
+  "modified": "2024-12-10T07:54:08.802Z",
+  "machineName": "jvcemxwcpghcqjn:eml123456"
+}
