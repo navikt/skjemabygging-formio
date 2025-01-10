@@ -1,5 +1,6 @@
 import { PadlockLockedIcon } from '@navikt/aksel-icons';
 import { Table } from '@navikt/ds-react';
+import { htmlConverter } from '@navikt/skjemadigitalisering-shared-components';
 import {
   FormsApiFormTranslation,
   formsApiTranslations,
@@ -57,9 +58,12 @@ const TranslationRow = <Translation extends FormsApiFormTranslation>({
           <TranslationInput
             label={'Nynorsk'}
             defaultValue={translation.nn}
+            isHtml={htmlConverter.isHtmlString(translation.nb ?? '')}
             minRows={heightInRows}
             error={error?.message}
-            onChange={(event) => handleChange('nn', event.currentTarget.value)}
+            onChange={(value) => {
+              handleChange('nn', value);
+            }}
           />
         ) : (
           <>
@@ -79,9 +83,10 @@ const TranslationRow = <Translation extends FormsApiFormTranslation>({
           <TranslationInput
             label={'Engelsk'}
             defaultValue={translation.en}
+            isHtml={htmlConverter.isHtmlString(translation.nb ?? '')}
             minRows={heightInRows}
             error={error?.message}
-            onChange={(event) => handleChange('en', event.currentTarget.value)}
+            onChange={(value) => handleChange('en', value)}
           />
         ) : (
           <>
