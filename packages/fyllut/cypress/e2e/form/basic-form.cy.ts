@@ -3,6 +3,8 @@
  */
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 
+const thisYear = new Date().getFullYear();
+
 describe('Basic form', () => {
   beforeEach(() => {
     cy.defaultIntercepts();
@@ -26,30 +28,32 @@ describe('Basic form', () => {
     cy.findByRole('textbox', { name: 'Fornavn' }).should('exist').type('Kari');
     cy.findByRole('textbox', { name: 'Etternavn' }).should('exist').type('Norman');
 
-    // Radio panel is currently not reachable by role. Additionally {force: true} is needed here because
-    // the input is overlapping with the label element, which makes cypress assume it's not interactable
-    cy.get('.navds-radio-group')
-      .first()
+    cy.findByRole('group', { name: 'Har du norsk fødselsnummer eller D-nummer?' })
       .should('exist')
-      .within(($radio) => cy.findByLabelText('Nei').should('exist').check({ force: true }));
+      .within(() => {
+        cy.findByLabelText('Nei').should('exist').check();
+      });
 
     cy.findByRole('textbox', { name: 'Din fødselsdato (dd.mm.åååå)' }).should('exist').type('10.05.1995');
-    cy.get('.navds-radio-group')
-      .eq(1)
+    cy.findByRole('group', { name: 'Bor du i Norge?' })
       .should('exist')
-      .within(($radio) => cy.findByLabelText('Ja').should('exist').check({ force: true }));
+      .within(() => {
+        cy.findByLabelText('Ja').should('exist').check();
+      });
 
-    cy.get('.navds-radio-group')
-      .eq(2)
+    cy.findByRole('group', { name: 'Er kontaktadressen en vegadresse eller postboksadresse?' })
       .should('exist')
-      .within(($radio) => cy.findByLabelText('Vegadresse').should('exist').check({ force: true }));
+      .within(() => {
+        cy.findByLabelText('Vegadresse').should('exist').check();
+      });
+
     cy.findByRole('textbox', { name: 'Vegadresse' }).should('exist').type('Kirkegata 1');
     cy.findByRole('textbox', { name: 'Postnummer' }).should('exist').type('1234');
     cy.findByRole('textbox', { name: 'Poststed' }).should('exist').type('Nesvik');
     cy.findByRole('textbox', { name: 'Fra hvilken dato skal denne adressen brukes (dd.mm.åååå)?' })
       .should('exist')
-      .type('01.01.2020');
-    cy.findByRole('textbox', { name: 'Velg måned' }).should('exist').type('01.2020');
+      .type(`01.01.${thisYear}`);
+    cy.findByRole('textbox', { name: 'Velg måned' }).should('exist').type(`01.${thisYear}`);
 
     if (expectVedleggspanel) {
       // Steg 2 -> Steg 3

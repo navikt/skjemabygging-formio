@@ -5,6 +5,10 @@
 import { expect } from 'chai';
 
 describe('Month picker', () => {
+  beforeEach(() => {
+    cy.clock(new Date('2024-08-01'), ['Date']);
+  });
+
   before(() => {
     cy.configMocksServer();
   });
@@ -109,15 +113,15 @@ describe('Month picker', () => {
       cy.findByRole('textbox', { name: 'Relative monthPicker (with today as base) (valgfritt)' })
         .parent()
         .within(() => cy.findByRole('button', { name: 'Åpne månedsvelger' }).click());
-      cy.findByRole('combobox', { name: 'velg år' }).shouldBeVisible();
-      cy.findByRole('combobox', { name: 'velg år' }).should('have.value', '2024');
+      cy.findByRole('combobox', { name: 'År' }).shouldBeVisible();
+      cy.findByRole('combobox', { name: 'År' }).should('have.value', '2024');
     });
 
     it('opens dialog on a year inside the allowed range', () => {
       cy.findByRole('textbox', { name: 'MonthPicker with range in the past (valgfritt)' })
         .parent()
         .within(() => cy.findByRole('button', { name: 'Åpne månedsvelger' }).click());
-      cy.findByRole('combobox', { name: 'velg år' }).should('have.value', '2003');
+      cy.findByRole('combobox', { name: 'År' }).should('have.value', '2003');
     });
   });
 
