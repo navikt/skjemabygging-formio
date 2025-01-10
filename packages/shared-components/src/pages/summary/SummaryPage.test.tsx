@@ -93,7 +93,7 @@ describe('SummaryPage', () => {
       expect(confirmCheckbox).toBeInTheDocument();
       await userEvent.click(buttons.gaVidereKnapp);
       expect(confirmCheckbox).toHaveAttribute('aria-invalid', 'true');
-      expect(confirmCheckbox).toHaveAttribute('aria-checked', 'false');
+      expect(confirmCheckbox).not.toBeChecked();
       expect(router.state.location.pathname).not.toBe('/testform/send-i-posten');
     });
   });

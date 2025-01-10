@@ -56,8 +56,6 @@ class WebformBuilder extends NavFormioJs.Builders.builders.webform {
 
     super.editComponent(component, parent, isNew, isJsonEdit, original, flags);
 
-    this.editForm.editFormDialog = true;
-
     if (isJsonEdit) {
       this.editForm.form = {
         ...this.editForm.form,
@@ -90,6 +88,23 @@ class WebformBuilder extends NavFormioJs.Builders.builders.webform {
         NavFormioJs.Components.components[component.type],
       );
     }
+
+    const saveButtons = this.componentEdit.querySelectorAll('[ref="saveButton"]');
+    saveButtons.forEach((saveButton) => {
+      this.editForm.removeEventListener(saveButton, 'click');
+      this.editForm.addEventListener(saveButton, 'click', (event) => {
+        event.preventDefault();
+        // Need to set editFormDialogSaveClicked, to not trigger any error messages before user have tried to save.
+        this.editForm.editFormDialogSaveClicked = true;
+        if (!this.editForm.checkValidity(this.editForm.data, true, this.editForm.data)) {
+          this.editForm.setPristine(false);
+          this.editForm.showErrors();
+          return false;
+        }
+        this.saved = true;
+        this.saveComponent(component, parent, isNew, original);
+      });
+    });
   }
 
   destroy(...args) {

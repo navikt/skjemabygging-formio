@@ -14,11 +14,12 @@ const formTestMellomlagringV2 = require('../data/formio-api/test-mellomlagring-v
 const formSelectV1 = require('../data/formio-api/form-select-v1.json');
 const formSelectV2 = require('../data/formio-api/form-select-v2.json');
 const formYourInformation = require('../data/formio-api/your-information.json');
+const formYourInformationTranslations = require('../data/formio-api/your-information-translations.json');
 const translationsCypress101 = require('../data/formio-api/cypress101-translation.json');
 const translationsConditionalXmas = require('../data/formio-api/conditionalxmas-translation.json');
 const translationsCustomComps = require('../data/formio-api/custom-components-translations.json');
 const translationsSubmissionMethod = require('../data/formio-api/submission-method-translations.json');
-const globalTranslationsEn = require('../data/formio-api/global-translation.json');
+const globalTranslations = require('../data/formio-api/global-translation.json');
 const formCustomCompsAlert = require('../data/formio-api/custom-components-alert.json');
 const formActivities = require('../data/formio-api/activities.json');
 const formDatagridConditional = require('../data/formio-api/datagrid-conditional.json');
@@ -35,6 +36,7 @@ const hiddenConditionalForm = require('../data/formio-api/hidden-conditional.jso
 const radioForm = require('../data/formio-api/radio.json');
 const selectBoxesForm = require('../data/formio-api/select-boxes.json');
 const monthPickerForm = require('../data/formio-api/month-picker.json');
+const emailForm = require('../data/formio-api/form-email.json');
 
 const allForms = [
   { form: formCypress101, translations: translationsCypress101 },
@@ -50,7 +52,7 @@ const allForms = [
   { form: formNavdatepicker, translations: undefined },
   { form: formSubmissionMethod, translations: translationsSubmissionMethod },
   { form: formTestMellomlagring, formV2: formTestMellomlagringV2, translations: undefined },
-  { form: formYourInformation, translations: undefined },
+  { form: formYourInformation, translations: formYourInformationTranslations },
   { form: formSelectV1, formV2: formSelectV2, translations: undefined },
   { form: formActivities, translations: undefined },
   { form: formDatagridConditional, translations: undefined },
@@ -67,6 +69,7 @@ const allForms = [
   { form: radioForm, translations: undefined },
   { form: selectBoxesForm, translations: undefined },
   { form: monthPickerForm, translations: undefined },
+  { form: emailForm, translations: undefined },
 ];
 
 const findTestdata = (formPath) => allForms.find((testdata) => testdata.form.path === formPath);
@@ -143,7 +146,7 @@ module.exports = [
             if (dataName === 'global') {
               res.status(200);
               res.contentType('application/json; charset=UTF-8');
-              res.send([globalTranslationsEn]);
+              res.send(globalTranslations);
             } else if (formPath) {
               const testdata = findTestdata(formPath);
               if (testdata?.translations) {

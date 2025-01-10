@@ -192,7 +192,14 @@ export const statiske = {
     postalName: 'Poststed',
     location: 'By / stedsnavn',
     country: 'Land',
-    co: 'C/O',
+    co: {
+      label: 'C/O',
+      readMore: {
+        header: 'Hva er C/O?',
+        content:
+          'C/O brukes hvis ditt navn ikke står på den postkassen som posten er adressert til. Du oppgir da navnet på "eieren" av postkassen, som kan være navnet på en person eller et firma.',
+      },
+    },
     poBox: 'Postboks',
     poAddress: 'Postboksadresse',
     building: 'Bygning',
