@@ -33,7 +33,7 @@ const WysiwygEditor = ({ defaultValue = '', onBlur }: Props) => {
         value={htmlValue}
         onChange={handleChange}
         onBlur={handleBlur}
-        containerProps={{ style: { resize: 'vertical', backgroundColor: 'white' } }}
+        containerProps={{ style: { resize: 'vertical', backgroundColor: 'white', minHeight: 'min-content' } }}
       >
         <Toolbar>
           <TextTypeDropdown />
