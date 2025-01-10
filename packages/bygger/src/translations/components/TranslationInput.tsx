@@ -1,16 +1,6 @@
 import { Textarea, TextField } from '@navikt/ds-react';
-import { FocusEvent, useState } from 'react';
-import {
-  BtnBold,
-  BtnBulletList,
-  BtnClearFormatting,
-  BtnLink,
-  BtnNumberedList,
-  createDropdown,
-  Editor,
-  EditorProvider,
-  Toolbar,
-} from 'react-simple-wysiwyg';
+import { FocusEvent } from 'react';
+import WysiwygEditor from '../../components/wysiwyg/WysiwygEditor';
 
 interface Props {
   label: string;
@@ -21,51 +11,13 @@ interface Props {
   error?: string;
 }
 
-const CustomTextTypeDropdown = createDropdown('Skrifttype', [
-  ['Uten formatering', 'formatBlock', 'DIV'],
-  ['Avsnitt', 'formatBlock', 'P'],
-  ['Overskrift', 'formatBlock', 'H3'],
-  ['Underoverskrift', 'formatBlock', 'H4'],
-]);
-
 const TranslationInput = ({ label, defaultValue, isHtml, minRows, onChange, error }: Props) => {
-  const [htmlValue, setHtmlValue] = useState(defaultValue ?? '');
-
-  console.log('htmlValue', htmlValue);
-  const handleHtmlChange = (event) => {
-    console.log('handleHtmlChange', event);
-    setHtmlValue(event.target.value);
-  };
-
-  const handleHtmlBlur = () => {
-    onChange(htmlValue);
-  };
-
   const handleBlur = (event: FocusEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-    console.log(event);
     onChange(event.currentTarget.value);
   };
 
   if (isHtml) {
-    return (
-      <EditorProvider>
-        <Editor
-          value={htmlValue}
-          onChange={handleHtmlChange}
-          onBlur={handleHtmlBlur}
-          containerProps={{ style: { resize: 'vertical', backgroundColor: 'white' } }}
-        >
-          <Toolbar>
-            <CustomTextTypeDropdown />
-            <BtnBold />
-            <BtnLink />
-            <BtnBulletList />
-            <BtnNumberedList />
-            <BtnClearFormatting />
-          </Toolbar>
-        </Editor>
-      </EditorProvider>
-    );
+    return <WysiwygEditor onBlur={onChange} defaultValue={defaultValue} />;
   }
   if (minRows > 2) {
     return (
