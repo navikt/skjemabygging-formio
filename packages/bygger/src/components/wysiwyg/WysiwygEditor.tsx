@@ -3,12 +3,12 @@ import {
   BtnBold,
   BtnBulletList,
   BtnClearFormatting,
-  BtnLink,
   BtnNumberedList,
   Editor,
   EditorProvider,
   Toolbar,
 } from 'react-simple-wysiwyg';
+import LinkButton from './LinkButton';
 import TextTypeDropdown from './TextTypeDropdown';
 
 interface Props {
@@ -38,7 +38,7 @@ const WysiwygEditor = ({ defaultValue = '', onBlur }: Props) => {
         <Toolbar>
           <TextTypeDropdown />
           <BtnBold />
-          <BtnLink />
+          <LinkButton />
           <BtnBulletList />
           <BtnNumberedList />
           <BtnClearFormatting />
