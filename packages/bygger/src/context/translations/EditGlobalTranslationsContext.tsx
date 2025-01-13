@@ -33,7 +33,7 @@ const EditGlobalTranslationsContext =
 const EditGlobalTranslationsProvider = ({ initialChanges, children }: Props) => {
   const [state, dispatch] = useReducer(editGlobalTranslationsReducer, {
     errors: [],
-    state: 'INIT',
+    status: 'INIT',
     new: createDefaultGlobalTranslation(),
     changes: {},
   });
@@ -41,10 +41,10 @@ const EditGlobalTranslationsProvider = ({ initialChanges, children }: Props) => 
   const feedbackEmit = useFeedbackEmit();
 
   useEffect(() => {
-    if (initialChanges && state.state === 'INIT') {
+    if (initialChanges && state.status === 'INIT') {
       dispatch({ type: 'INITIALIZE', payload: { initialChanges } });
     }
-  }, [initialChanges, state.state]);
+  }, [initialChanges, state.status]);
 
   const updateTranslation = (original: FormsApiGlobalTranslation, lang: TranslationLang, value: string) => {
     const { key } = original;
@@ -86,7 +86,7 @@ const EditGlobalTranslationsProvider = ({ initialChanges, children }: Props) => 
     if (validationError) {
       dispatch({ type: 'VALIDATION_ERROR', payload: { errors: [validationError] } });
     } else {
-      dispatch({ type: 'CLEAR_ERRORS' });
+      dispatch({ type: 'SAVE_STARTED' });
       const { responses, errors } = await saveEachTranslation(
         getTranslationsForSaving<FormsApiGlobalTranslation>(state),
         saveTranslation,
@@ -103,7 +103,7 @@ const EditGlobalTranslationsProvider = ({ initialChanges, children }: Props) => 
       }
 
       await loadTranslations();
-      dispatch({ type: 'SAVED', payload: { errors } });
+      dispatch({ type: 'SAVE_FINISHED', payload: { errors } });
       if (responses.length > 0) {
         feedbackEmit.success(`${responses.length} oversettelser ble lagret.`);
       }
@@ -123,7 +123,7 @@ const EditGlobalTranslationsProvider = ({ initialChanges, children }: Props) => 
     updateTranslation,
     errors: state.errors,
     newTranslation: state.new,
-    editState: state.state,
+    editState: state.status,
     updateNewTranslation,
     saveChanges,
   };

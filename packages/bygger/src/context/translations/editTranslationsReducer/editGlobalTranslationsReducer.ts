@@ -1,13 +1,13 @@
 import { FormsApiGlobalTranslation, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
 import { TranslationError } from '../utils/errorUtils';
 import {
-  ClearErrorsAction,
   createDefaultGlobalTranslation,
   generateMap,
   getErrors,
   getResetChanges,
   InitializeAction,
-  SavedAction,
+  SaveFinishedAction,
+  SaveStartedAction,
   Status,
   UpdateAction,
 } from './reducerUtils';
@@ -16,7 +16,7 @@ type GlobalTranslationState = {
   changes: Record<string, FormsApiGlobalTranslation>;
   new: FormsApiGlobalTranslation;
   errors: TranslationError[];
-  state: Status;
+  status: Status;
 };
 
 type UpdateNewAction = {
@@ -30,8 +30,8 @@ type GlobalTranslationAction =
   | UpdateAction<FormsApiGlobalTranslation>
   | UpdateNewAction
   | ValidationErrorAction
-  | ClearErrorsAction
-  | SavedAction;
+  | SaveStartedAction
+  | SaveFinishedAction;
 
 const getUpdatedGlobalTranslationChanges = (
   state: GlobalTranslationState,
@@ -73,20 +73,20 @@ const editGlobalTranlationReducer = (
         ? { ...state, changes: generateMap(action.payload.initialChanges) }
         : state;
     case 'UPDATE':
-      return { ...state, changes: getUpdatedGlobalTranslationChanges(state, action.payload), state: 'EDITING' };
+      return { ...state, changes: getUpdatedGlobalTranslationChanges(state, action.payload), status: 'EDITING' };
     case 'UPDATE_NEW':
-      return { ...state, new: getUpdatedNew(state, action.payload), state: 'EDITING' };
+      return { ...state, new: getUpdatedNew(state, action.payload), status: 'EDITING' };
     case 'VALIDATION_ERROR':
       return { ...state, errors: action.payload.errors };
-    case 'CLEAR_ERRORS':
+    case 'SAVE_STARTED':
       return { ...state, errors: [] };
-    case 'SAVED':
+    case 'SAVE_FINISHED':
       return {
         ...state,
         changes: getResetChanges(state, action.payload),
         new: getResetNew(state, action.payload),
         errors: getErrors(state, action.payload),
-        state: 'SAVED',
+        status: 'SAVED',
       };
     default:
       throw new Error();

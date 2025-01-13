@@ -1,12 +1,12 @@
 import { FormsApiFormTranslation, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
 import { TranslationError } from '../utils/errorUtils';
 import {
-  ClearErrorsAction,
   generateMap,
   getErrors,
   getResetChanges,
   InitializeAction,
-  SavedAction,
+  SaveFinishedAction,
+  SaveStartedAction,
   Status,
   UpdateAction,
 } from './reducerUtils';
@@ -14,10 +14,14 @@ import {
 type FormTranslationState = {
   changes: Record<string, FormsApiFormTranslation>;
   errors: TranslationError[];
-  state: Status;
+  status: Status;
 };
 
-type FormTranslationAction = InitializeAction | UpdateAction<FormsApiFormTranslation> | ClearErrorsAction | SavedAction;
+type FormTranslationAction =
+  | InitializeAction
+  | UpdateAction<FormsApiFormTranslation>
+  | SaveStartedAction
+  | SaveFinishedAction;
 
 const getUpdatedFormTranslationChanges = (
   state: FormTranslationState,
@@ -38,15 +42,15 @@ const editFormTranslationsReducer = (
         ? { ...state, changes: generateMap(action.payload.initialChanges) }
         : state;
     case 'UPDATE':
-      return { ...state, changes: getUpdatedFormTranslationChanges(state, action.payload), state: 'EDITING' };
-    case 'CLEAR_ERRORS':
-      return { ...state, errors: [] };
-    case 'SAVED':
+      return { ...state, changes: getUpdatedFormTranslationChanges(state, action.payload), status: 'EDITING' };
+    case 'SAVE_STARTED':
+      return { ...state, errors: [], status: 'SAVING' };
+    case 'SAVE_FINISHED':
       return {
         ...state,
         changes: getResetChanges(state, action.payload),
         errors: getErrors(state, action.payload),
-        state: 'SAVED',
+        status: 'SAVED',
       };
     default:
       throw new Error();

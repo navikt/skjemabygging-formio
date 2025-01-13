@@ -25,17 +25,17 @@ const EditFormTranslationsContext = createContext<EditTranslationsContextValue<F
 const EditFormTranslationsProvider = ({ initialChanges, children }: Props) => {
   const [state, dispatch] = useReducer(editFormTranslationsReducer, {
     errors: [],
-    state: 'INIT',
+    status: 'INIT',
     changes: {},
   });
   const { storedTranslations, saveTranslation, loadTranslations } = useFormTranslations();
   const feedbackEmit = useFeedbackEmit();
 
   useEffect(() => {
-    if (initialChanges && state.state === 'INIT') {
+    if (initialChanges && state.status === 'INIT') {
       dispatch({ type: 'INITIALIZE', payload: { initialChanges } });
     }
-  }, [initialChanges, state.state]);
+  }, [initialChanges, state.status]);
 
   const updateTranslation = (original: FormsApiFormTranslation, lang: TranslationLang, value: string) => {
     const { key } = original;
@@ -55,14 +55,14 @@ const EditFormTranslationsProvider = ({ initialChanges, children }: Props) => {
   };
 
   const saveChanges = async () => {
-    dispatch({ type: 'CLEAR_ERRORS' });
+    dispatch({ type: 'SAVE_STARTED' });
     const { responses, errors } = await saveEachTranslation(
       getTranslationsForSaving<FormsApiFormTranslation>(state),
       saveTranslation,
     );
 
     await loadTranslations();
-    dispatch({ type: 'SAVED', payload: { errors } });
+    dispatch({ type: 'SAVE_FINISHED', payload: { errors } });
     if (responses.length > 0) {
       feedbackEmit.success(`${responses.length} oversettelser ble lagret.`);
     }
@@ -81,7 +81,7 @@ const EditFormTranslationsProvider = ({ initialChanges, children }: Props) => {
     storedTranslations,
     updateTranslation,
     errors: state.errors,
-    editState: state.state,
+    editState: state.status,
     saveChanges,
   };
 
