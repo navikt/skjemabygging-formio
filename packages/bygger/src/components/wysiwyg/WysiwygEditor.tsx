@@ -1,3 +1,4 @@
+import { htmlConverter } from '@navikt/skjemadigitalisering-shared-components';
 import { useState } from 'react';
 import {
   BtnBold,
@@ -24,7 +25,7 @@ const WysiwygEditor = ({ defaultValue = '', onBlur }: Props) => {
   };
 
   const handleBlur = () => {
-    onBlur(htmlValue);
+    onBlur(htmlConverter.sanitizeHtmlString(htmlValue, { FORBID_ATTR: ['style'] }));
   };
 
   return (
