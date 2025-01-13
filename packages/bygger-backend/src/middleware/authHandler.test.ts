@@ -1,8 +1,17 @@
-import nock from 'nock';
+import { jwtVerify } from 'jose';
 import jose from 'node-jose';
+import { Mock } from 'vitest';
 import { createMockJwt, generateJwk, mockRequest, mockResponse } from '../test/testHelpers';
 import { ByggerRequest } from '../types';
 import authHandler from './authHandler';
+
+vi.mock('jose', async () => {
+  const actual = await vi.importActual('jose');
+  return {
+    ...actual,
+    jwtVerify: vi.fn().mockReturnValue({}),
+  };
+});
 
 const byggerAzureClientId = process.env.AZURE_APP_CLIENT_ID!;
 const byggerAzureIssuer = process.env.AZURE_OPENID_CONFIG_ISSUER!;
@@ -17,9 +26,6 @@ describe('authHandler', () => {
   let key: jose.JWK.Key;
   beforeAll(async () => {
     key = await generateJwk();
-    nock('https://login.unittest.no')
-      .get('/tenant-id/discovery/v2.0/keys')
-      .reply(200, { keys: [key.toJSON(false)] });
   });
 
   afterAll(() => {
@@ -27,14 +33,13 @@ describe('authHandler', () => {
   });
 
   it('rejects request when authorization header is missing', async () => {
-    console.error = vi.fn();
-    console.log = vi.fn();
     const req = mockRequest({}) as ByggerRequest;
     const res = mockResponse();
     const next = vi.fn();
     await authHandler(req, res, next);
     expect(next).not.toHaveBeenCalled();
     expect(res.sendStatus).toHaveBeenCalledWith(401);
+    expect(jwtVerify as Mock).not.toHaveBeenCalled();
   });
 
   it('rejects request when jwt is (soon) expired', async () => {
@@ -61,12 +66,14 @@ describe('authHandler', () => {
   });
 
   it('parses jwt and puts user info on request', async () => {
+    (jwtVerify as Mock).mockReturnValue({ payload: defaultPayload });
     const req = mockRequest({
       headers: { Authorization: `Bearer ${await createMockJwt(defaultPayload, key)}` },
     }) as ByggerRequest;
     const res = mockResponse();
     const next = vi.fn();
     await authHandler(req, res, next);
+    expect(jwtVerify as Mock).toHaveBeenCalled();
     expect(res.sendStatus).not.toHaveBeenCalled();
     expect(next).toHaveBeenCalledTimes(1);
     const user = req.getUser?.();

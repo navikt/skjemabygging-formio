@@ -12,7 +12,7 @@ function extractFormPath(nameRegex: string | null) {
 
 const getTranslations = async ({ request }) => {
   const url = new URL(request.url);
-  const globalTranslations = await loadTranslations('globalTranslations');
+  const globalTranslations = (await loadTranslations('globalTranslations')) || [];
 
   const nameRegex = url.searchParams.get('data.name__regex');
   const formPath = extractFormPath(nameRegex);

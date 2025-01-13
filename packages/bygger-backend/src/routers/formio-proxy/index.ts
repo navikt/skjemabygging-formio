@@ -5,9 +5,6 @@ import { getFormioApiServiceUrl } from '../../util/formio';
 
 const formioProjectUrl = getFormioApiServiceUrl();
 const proxy = httpProxy.createProxyServer({});
-// proxy.on('proxyRes', function (proxyRes, _req, _res) {
-//   proxyRes.headers['access-control-allow-origin'] = '*'
-// });
 
 const formioProxyRouter = express.Router();
 

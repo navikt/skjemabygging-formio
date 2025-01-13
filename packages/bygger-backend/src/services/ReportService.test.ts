@@ -1,10 +1,12 @@
 import { Component, FormPropertiesType, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import MemoryStream from 'memorystream';
-import nock from 'nock';
 import { ComponentProperties } from '../../../shared-domain/src/form';
+import { MswUtils } from '../mocks/utils/mswUtils';
 import { getFormioApiServiceUrl } from '../util/formio';
 import ReportService from './ReportService';
 import { formioService } from './index';
+
+const mswUtils = global.mswUtils as MswUtils;
 
 describe('ReportService', () => {
   let reportService: ReportService;
@@ -14,8 +16,7 @@ describe('ReportService', () => {
   });
 
   afterEach(() => {
-    nock.abortPendingRequests();
-    nock.cleanAll();
+    mswUtils.clear();
   });
 
   it('returns list containing report metadata', () => {
@@ -42,19 +43,10 @@ describe('ReportService', () => {
   describe('Reports', () => {
     const CSV_HEADER_LINE = 'skjemanummer;skjematittel;språk\n';
 
-    let nockScope: nock.Scope;
-
-    afterEach(() => {
-      expect(nockScope.isDone()).toBe(true);
-    });
-
     const createWritableStream = () => new MemoryStream(undefined, { readable: false });
 
-    const setupNock = (publishedForms: Partial<NavFormType>[]) => {
-      nockScope = nock(getFormioApiServiceUrl())
-        .get(/\/form\?.*$/)
-        .times(1)
-        .reply(200, publishedForms);
+    const setupMock = (publishedForms: Partial<NavFormType>[]) => {
+      mswUtils.mock(getFormioApiServiceUrl()).get('/form').reply(200, publishedForms);
     };
 
     function parseReport(content: string) {
@@ -84,7 +76,7 @@ describe('ReportService', () => {
               } as FormPropertiesType,
             },
           ];
-          setupNock(publishedForms);
+          setupMock(publishedForms);
           const writableStream = createWritableStream();
           await reportService.generate('all-forms-summary', writableStream);
           const report = parseReport(writableStream.toString());
@@ -104,7 +96,7 @@ describe('ReportService', () => {
               } as FormPropertiesType,
             },
           ];
-          setupNock(publishedForms);
+          setupMock(publishedForms);
           const writableStream = createWritableStream();
           await reportService.generate('all-forms-summary', writableStream);
           const report = parseReport(writableStream.toString());
@@ -124,7 +116,7 @@ describe('ReportService', () => {
               } as FormPropertiesType,
             },
           ];
-          setupNock(publishedForms);
+          setupMock(publishedForms);
           const writableStream = createWritableStream();
           await reportService.generate('all-forms-summary', writableStream);
           const report = parseReport(writableStream.toString());
@@ -149,7 +141,7 @@ describe('ReportService', () => {
               } as FormPropertiesType,
             },
           ];
-          setupNock(publishedForms);
+          setupMock(publishedForms);
           const writableStream = createWritableStream();
           await reportService.generate('all-forms-summary', writableStream);
           const report = parseReport(writableStream.toString());
@@ -170,7 +162,7 @@ describe('ReportService', () => {
               } as FormPropertiesType,
             },
           ];
-          setupNock(publishedForms);
+          setupMock(publishedForms);
           const writableStream = createWritableStream();
           await reportService.generate('all-forms-summary', writableStream);
           const report = parseReport(writableStream.toString());
@@ -190,7 +182,7 @@ describe('ReportService', () => {
               } as FormPropertiesType,
             },
           ];
-          setupNock(publishedForms);
+          setupMock(publishedForms);
           const writableStream = createWritableStream();
           await reportService.generate('all-forms-summary', writableStream);
           const report = parseReport(writableStream.toString());
@@ -232,7 +224,7 @@ describe('ReportService', () => {
             } as FormPropertiesType,
           },
         ];
-        setupNock(publishedForms);
+        setupMock(publishedForms);
 
         const writableStream = createWritableStream();
         await reportService.generate('forms-published-languages', writableStream);
@@ -304,7 +296,7 @@ describe('ReportService', () => {
             } as FormPropertiesType,
           },
         ];
-        setupNock(publishedForms);
+        setupMock(publishedForms);
 
         const writableStream = createWritableStream();
         await reportService.generate('all-forms-summary', writableStream);
@@ -415,7 +407,7 @@ describe('ReportService', () => {
             } as FormPropertiesType,
           },
         ];
-        setupNock(publishedForms);
+        setupMock(publishedForms);
 
         const writableStream = createWritableStream();
         await reportService.generate('all-forms-summary', writableStream);
@@ -474,7 +466,7 @@ describe('ReportService', () => {
             } as FormPropertiesType,
           },
         ];
-        setupNock(publishedForms);
+        setupMock(publishedForms);
 
         const writableStream = createWritableStream();
         await reportService.generate('forms-published-languages', writableStream);
@@ -486,7 +478,7 @@ describe('ReportService', () => {
         const writableStream = createWritableStream();
         try {
           await reportService.generate('unknown-report-id', writableStream);
-        } catch (err) {
+        } catch (_err) {
           errorCatched = true;
         }
         expect(errorCatched).toBe(true);
@@ -543,7 +535,7 @@ describe('ReportService', () => {
             } as FormPropertiesType,
           },
         ];
-        setupNock(publishedForms);
+        setupMock(publishedForms);
 
         const writableStream = createWritableStream();
         await reportService.generate('all-forms-and-attachments', writableStream);

@@ -1,11 +1,16 @@
-import nock from 'nock';
+import { MswUtils } from '../../../mocks/utils/mswUtils';
 import { mockRequest, mockResponse } from '../../../test/testHelpers';
 import { getFormioApiServiceUrl } from '../../../util/formio';
 import authorizedPublisher from './authorizedPublisher';
 
 const projectUrl = getFormioApiServiceUrl();
+const mswUtils = global.mswUtils as MswUtils;
 
 describe('authorizedPublisher', () => {
+  afterEach(() => {
+    mswUtils.clear();
+  });
+
   beforeAll(() => {
     vi.spyOn(console, 'error').mockImplementation(() => {});
   });
@@ -15,7 +20,7 @@ describe('authorizedPublisher', () => {
   });
 
   it('Accepts formio token in body', async () => {
-    nock(projectUrl).get('/current').reply(204);
+    mswUtils.mock(projectUrl).get('/current').reply(204);
     const req = mockRequest({
       body: {
         token: 'valid-formio-token',
@@ -29,7 +34,7 @@ describe('authorizedPublisher', () => {
   });
 
   it('Accepts formio token in header', async () => {
-    nock(projectUrl).get('/current').reply(204);
+    mswUtils.mock(projectUrl).get('/current').reply(204);
     const req = mockRequest({
       headers: {
         'Bygger-Formio-Token': 'valid-formio-token',
@@ -61,7 +66,7 @@ describe('authorizedPublisher', () => {
   });
 
   it('Rejects request when formio token is invalid, with 401', async () => {
-    nock(projectUrl).get('/current').reply(401);
+    mswUtils.mock(projectUrl).get('/current').reply(401);
     const req = mockRequest({
       body: {
         token: 'invalid-formio-token',
@@ -77,7 +82,7 @@ describe('authorizedPublisher', () => {
   });
 
   it('Rejects request when formio token is invalid, with 400', async () => {
-    nock(projectUrl).get('/current').reply(400);
+    mswUtils.mock(projectUrl).get('/current').reply(400);
     const req = mockRequest({
       body: {
         token: 'invalid-formio-token',

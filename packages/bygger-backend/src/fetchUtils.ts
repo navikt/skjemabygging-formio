@@ -1,4 +1,3 @@
-import fetch, { RequestInfo, RequestInit, Response } from 'node-fetch';
 import { logger } from './logging/logger';
 
 export class HttpError extends Error {
@@ -20,7 +19,7 @@ export async function fetchWithErrorHandling(url: RequestInfo, options: RequestI
   const method = options.method || 'GET';
   let res: Response;
   try {
-    res = await fetch(url, options);
+    res = await fetch(url, { ...options, method });
   } catch (err: any) {
     const { message, stack, ...errDetails } = err;
     const logMeta = { errorMessage: message, stack, ...errDetails, url, method };

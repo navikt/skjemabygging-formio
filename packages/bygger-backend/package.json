@@ -8,7 +8,7 @@
   "scripts": {
     "start": "cross-env-shell NODE_ENV=development vite",
     "build": "tsc && vite build",
-    "preview": "cross-env-shell NODE_ENV=development API_MOCKING=true BYGGER_BUILD_DIR=\"../../bygger/dist\" PORT=3000 \"cd dist && node server.mjs\"",
+    "preview": "cross-env-shell NODE_ENV=development API_MOCKING=true MOCKS_BASE_DIR=\"../../src/mocks\" BYGGER_BUILD_DIR=\"../../bygger/dist\" PORT=3000 \"cd dist && node server.mjs\"",
     "check-types": "tsc",
     "clean": "rimraf dist coverage node_modules",
     "test": "vitest --run",
@@ -29,7 +29,6 @@
     "jose": "^5.9.6",
     "jsonwebtoken": "^9.0.2",
     "luxon": "^3.5.0",
-    "node-fetch": "^3.3.2",
     "node-jose": "^2.2.0",
     "pusher": "^5.2.0",
     "uuid": "^10.0.0",
@@ -44,12 +43,10 @@
     "@types/luxon": "^3.4.2",
     "@types/memorystream": "^0.3.4",
     "@types/node": "^22.10.5",
-    "@types/node-fetch": "^2.6.12",
     "@types/node-jose": "^1.1.13",
     "@types/uuid": "^10.0.0",
     "memorystream": "^0.3.1",
     "msw": "^2.7.0",
-    "nock": "^13.5.6",
     "vite-plugin-node": "^4.0.0"
   }
 }

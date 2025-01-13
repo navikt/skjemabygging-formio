@@ -1,7 +1,7 @@
 import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
-import nock from 'nock';
 import { MockInstance } from 'vitest';
 import { Backend } from '../Backend';
+import { MswUtils } from '../mocks/utils/mswUtils';
 import { getFormioApiServiceUrl } from '../util/formio';
 import PublisherService from './PublisherService';
 import { formioService } from './index';
@@ -9,33 +9,23 @@ import { formioService } from './index';
 const opts = { userName: 'todd', formioToken: 'valid-formio-token' };
 
 const FORMIO_API_SERVICE_URL = getFormioApiServiceUrl();
+const mswUtils = global.mswUtils as MswUtils;
 
 describe('PublisherService', () => {
   let publisherService: PublisherService;
-
   let backendMock: Backend;
 
   afterEach(() => {
-    nock.abortPendingRequests();
-    nock.cleanAll();
+    mswUtils.clear();
   });
 
   describe('publishForm', () => {
     describe('when publishing succeeds', () => {
       const testForm = { _id: '1', properties: {} } as NavFormType;
-      let nockScope: nock.Scope;
 
       beforeEach(() => {
         backendMock = { publishForm: () => 'git-commit-hash' } as unknown as Backend;
         publisherService = new PublisherService(formioService, backendMock);
-        nockScope = nock(FORMIO_API_SERVICE_URL)
-          .put(/\/form\/(\d*)$/)
-          .times(1)
-          .reply((uri, requestBody) => [200, requestBody]);
-      });
-
-      afterEach(() => {
-        expect(nockScope.isDone()).toBe(true);
       });
 
       it('adds properties modified and published', async () => {
@@ -89,11 +79,8 @@ describe('PublisherService', () => {
 
     describe('when publishing fails', () => {
       let formioServiceSpy: MockInstance;
-      let nockScope: nock.Scope;
-      let formioApiRequestBodies: NavFormType[];
 
       beforeEach(() => {
-        formioApiRequestBodies = [];
         backendMock = {
           publishForm: () => {
             throw new Error('Commit failed');
@@ -101,18 +88,10 @@ describe('PublisherService', () => {
         } as unknown as Backend;
         publisherService = new PublisherService(formioService, backendMock);
         formioServiceSpy = vi.spyOn(formioService, 'saveForm');
-        nockScope = nock(FORMIO_API_SERVICE_URL)
-          .put(/\/form\/(\d*)$/)
-          .times(2)
-          .reply((uri, requestBody) => {
-            formioApiRequestBodies.push(requestBody as NavFormType);
-            return [200, requestBody];
-          });
       });
 
       afterEach(() => {
         formioServiceSpy.mockClear();
-        expect(nockScope.isDone()).toBe(true);
       });
 
       it('form properties are reverted when publish fails', async () => {
@@ -128,9 +107,10 @@ describe('PublisherService', () => {
         expect(errorThrown).toBe(true);
         expect(formioServiceSpy).toHaveBeenCalledTimes(2);
 
-        expect(formioApiRequestBodies).toHaveLength(2);
+        const formioApiRequests = mswUtils.calls();
+        expect(formioApiRequests).toHaveLength(2);
 
-        const formPropsBeforePublish = formioApiRequestBodies[0].properties;
+        const formPropsBeforePublish = formioApiRequests[0].body.properties;
         const modifiedAtPublish = formPropsBeforePublish.modified;
         const modifiedByAtPublish = formPropsBeforePublish.modifiedBy;
 
@@ -140,7 +120,7 @@ describe('PublisherService', () => {
         expect(modifiedByAtPublish).toEqual(opts.userName);
         expect(formPropsBeforePublish.publishedLanguages).toEqual(['en']);
 
-        const formPropsRollback = formioApiRequestBodies[1].properties;
+        const formPropsRollback = formioApiRequests[1].body.properties;
         const modifiedAtRollback = formPropsRollback.modified;
         const modifiedByAtRollback = formPropsRollback.modifiedBy;
 
@@ -157,19 +137,10 @@ describe('PublisherService', () => {
   describe('unpublishForm', () => {
     describe('when unpublish succeeds', () => {
       const testGitSha = '123456789A987654321';
-      let nockScope: nock.Scope;
 
       beforeEach(() => {
         backendMock = { unpublishForm: () => testGitSha } as unknown as Backend;
         publisherService = new PublisherService(formioService, backendMock);
-        nockScope = nock(FORMIO_API_SERVICE_URL)
-          .put(/\/form\/(\d*)$/)
-          .times(1)
-          .reply((uri, requestBody) => [200, requestBody]);
-      });
-
-      afterEach(() => {
-        expect(nockScope.isDone()).toBe(true);
       });
 
       it('sets unpublish props and unsets published props', async () => {
@@ -188,28 +159,13 @@ describe('PublisherService', () => {
     });
 
     describe('when unpublish fails', () => {
-      let nockScope: nock.Scope;
-      let formioApiRequestBodies: NavFormType[];
-
       beforeEach(() => {
-        formioApiRequestBodies = [];
         backendMock = {
           unpublishForm: () => {
             throw new Error('Commit failed');
           },
         } as unknown as Backend;
         publisherService = new PublisherService(formioService, backendMock);
-        nockScope = nock(FORMIO_API_SERVICE_URL)
-          .put(/\/form\/(\d*)$/)
-          .times(2)
-          .reply((uri, requestBody) => {
-            formioApiRequestBodies.push(requestBody as NavFormType);
-            return [200, requestBody];
-          });
-      });
-
-      afterEach(() => {
-        expect(nockScope.isDone()).toBe(true);
       });
 
       it('properties are rolled back', async () => {
@@ -227,9 +183,10 @@ describe('PublisherService', () => {
         }
 
         expect(errorThrown).toBe(true);
-        expect(formioApiRequestBodies).toHaveLength(2);
+        const formioApiRequests = mswUtils.calls();
+        expect(formioApiRequests).toHaveLength(2);
 
-        const { properties } = formioApiRequestBodies[1];
+        const { properties } = formioApiRequests[1].body;
         expect(properties.published).toEqual(testForm.properties.published);
         expect(properties.publishedBy).toEqual(testForm.properties.publishedBy);
         expect(properties.unpublished).toBeUndefined();
@@ -261,24 +218,10 @@ describe('PublisherService', () => {
 
     describe('when bulk publishing succeeds', () => {
       const testGitSha = '123456789A987654321';
-      let nockScope: nock.Scope;
-      let formioApiRequestBodies: NavFormType[];
 
       beforeEach(() => {
-        formioApiRequestBodies = [];
         backendMock = { publishForms: () => testGitSha } as unknown as Backend;
         publisherService = new PublisherService(formioService, backendMock);
-        nockScope = nock(FORMIO_API_SERVICE_URL)
-          .put(/\/form\/(\d*)$/)
-          .times(3)
-          .reply((uri, requestBody) => {
-            formioApiRequestBodies.push(requestBody as NavFormType);
-            return [200, requestBody];
-          });
-      });
-
-      afterEach(() => {
-        expect(nockScope.isDone()).toBe(true);
       });
 
       it('returns git sha for bulk publish commit', async () => {
@@ -289,23 +232,24 @@ describe('PublisherService', () => {
       it('adds properties modified and published with same value', async () => {
         await publisherService.publishForms(testForms, opts);
 
-        expect(formioApiRequestBodies).toHaveLength(3);
+        const formioApiRequests = mswUtils.calls();
+        expect(formioApiRequests).toHaveLength(3);
 
-        const form1Props = formioApiRequestBodies[0].properties;
+        const form1Props = formioApiRequests[0].body.properties;
         const form1Published = form1Props.published;
         expect(form1Published).toBeDefined();
         expect(form1Props.publishedBy).toEqual(opts.userName);
         expect(form1Props.modified).toBeDefined();
         expect(form1Props.modifiedBy).toEqual(opts.userName);
 
-        const form2Props = formioApiRequestBodies[1].properties;
+        const form2Props = formioApiRequests[1].body.properties;
         const form2Published = form2Props.published;
         expect(form2Published).toBeDefined();
         expect(form2Props.publishedBy).toEqual(opts.userName);
         expect(form2Props.modified).toBeDefined();
         expect(form2Props.modifiedBy).toEqual(opts.userName);
 
-        const form3Props = formioApiRequestBodies[2].properties;
+        const form3Props = formioApiRequests[2].body.properties;
         const form3Published = form3Props.published;
         expect(form3Published).toBeDefined();
 
@@ -315,42 +259,29 @@ describe('PublisherService', () => {
 
       it('does not modify publishedLanguages property', async () => {
         await publisherService.publishForms(testForms, opts);
-        expect(formioApiRequestBodies).toHaveLength(3);
+        const formioApiRequests = mswUtils.calls();
+        expect(formioApiRequests).toHaveLength(3);
 
-        const form1Props = formioApiRequestBodies[0].properties;
+        const form1Props = formioApiRequests[0].body.properties;
         expect(form1Props.publishedLanguages).toEqual(['en']);
 
-        const form2Props = formioApiRequestBodies[1].properties;
+        const form2Props = formioApiRequests[1].body.properties;
         expect(form2Props.publishedLanguages).toEqual([]);
 
-        const form3Props = formioApiRequestBodies[2].properties;
+        const form3Props = formioApiRequests[2].body.properties;
         expect(form3Props.publishedLanguages).toBeUndefined();
       });
     });
 
     describe('when publishing fails', () => {
-      let nockScope: nock.Scope;
-      let formioApiRequestBodies: NavFormType[];
-
       beforeEach(() => {
-        formioApiRequestBodies = [];
+        // formioApiRequestBodies = [];
         backendMock = {
           publishForms: () => {
             throw new Error('Commit failed');
           },
         } as unknown as Backend;
         publisherService = new PublisherService(formioService, backendMock);
-        nockScope = nock(FORMIO_API_SERVICE_URL)
-          .put(/\/form\/(\d*)$/)
-          .times(6) // 3 before publish, and 3 after publish fails
-          .reply((uri, requestBody) => {
-            formioApiRequestBodies.push(requestBody as NavFormType);
-            return [200, requestBody];
-          });
-      });
-
-      afterEach(() => {
-        expect(nockScope.isDone()).toBe(true);
       });
 
       it('properties are rolled back', async () => {
@@ -362,11 +293,12 @@ describe('PublisherService', () => {
           expect(error.message).toBe('Bulk-publisering feilet');
         }
         expect(errorThrown).toBe(true);
-        expect(formioApiRequestBodies).toHaveLength(6);
+        const formioApiRequests = mswUtils.calls();
+        expect(formioApiRequests).toHaveLength(6);
 
-        const form1Props = formioApiRequestBodies[0].properties;
-        const form2Props = formioApiRequestBodies[1].properties;
-        const form3Props = formioApiRequestBodies[2].properties;
+        const form1Props = formioApiRequests[0].body.properties;
+        const form2Props = formioApiRequests[1].body.properties;
+        const form3Props = formioApiRequests[2].body.properties;
 
         expect(form1Props.modified).toBeDefined();
         expect(form1Props.modifiedBy).toEqual(opts.userName);
@@ -379,9 +311,9 @@ describe('PublisherService', () => {
         expect(form3Props.published).toBeDefined();
         expect(form3Props.unpublished).toBeUndefined();
 
-        const form1PropsRollback = formioApiRequestBodies[3].properties;
-        const form2PropsRollback = formioApiRequestBodies[4].properties;
-        const form3PropsRollback = formioApiRequestBodies[5].properties;
+        const form1PropsRollback = formioApiRequests[3].body.properties;
+        const form2PropsRollback = formioApiRequests[4].body.properties;
+        const form3PropsRollback = formioApiRequests[5].body.properties;
 
         expect(form1PropsRollback.modified).not.toEqual(form1Props.modified);
         expect(form1PropsRollback.modifiedBy).toEqual(opts.userName);
@@ -399,38 +331,11 @@ describe('PublisherService', () => {
     });
 
     describe('when formio update props fails', () => {
-      let nockScope: nock.Scope;
-      let formioApiRequestBodies: NavFormType[];
-
       beforeEach(() => {
-        formioApiRequestBodies = [];
         backendMock = { publishForms: () => '123456789' } as unknown as Backend;
         publisherService = new PublisherService(formioService, backendMock);
-        const formEndpoint = /\/form\/(\d*)$/;
-        nockScope = nock(FORMIO_API_SERVICE_URL)
-          .put(formEndpoint)
-          .times(2) // <-- formio update props succeeds on first two forms
-          .reply((uri, requestBody) => {
-            formioApiRequestBodies.push(requestBody as NavFormType);
-            return [200, requestBody];
-          });
-        nockScope = nock(FORMIO_API_SERVICE_URL)
-          .put(formEndpoint)
-          .reply((uri, requestBody) => {
-            formioApiRequestBodies.push(requestBody as NavFormType);
-            return [500, 'Internal server error']; // <-- formio update props fails on third form
-          });
-        nockScope = nock(FORMIO_API_SERVICE_URL)
-          .put(formEndpoint)
-          .times(2) // <-- expecting rollback of the two first forms
-          .reply((uri, requestBody) => {
-            formioApiRequestBodies.push(requestBody as NavFormType);
-            return [200, requestBody];
-          });
-      });
-
-      afterEach(() => {
-        expect(nockScope.isDone()).toBe(true);
+        // formio update props fails on third form:
+        mswUtils.mock(FORMIO_API_SERVICE_URL).put(`/form/${testForms[2]._id}`).reply(500);
       });
 
       it('properties are rolled back', async () => {
@@ -442,11 +347,12 @@ describe('PublisherService', () => {
           expect(error.message).toBe('Bulk-publisering feilet');
         }
         expect(errorThrown).toBe(true);
-        expect(formioApiRequestBodies).toHaveLength(5);
+        const formioApiRequests = mswUtils.calls();
+        expect(formioApiRequests).toHaveLength(5);
 
-        const form1Props = formioApiRequestBodies[0].properties;
-        const form2Props = formioApiRequestBodies[1].properties;
-        const form3Props = formioApiRequestBodies[2].properties;
+        const form1Props = formioApiRequests[0].body.properties;
+        const form2Props = formioApiRequests[1].body.properties;
+        const form3Props = formioApiRequests[2].body.properties;
 
         expect(form1Props.modified).toBeDefined();
         expect(form1Props.modifiedBy).toEqual(opts.userName);
@@ -459,8 +365,8 @@ describe('PublisherService', () => {
         expect(form3Props.published).toBeDefined();
         expect(form3Props.unpublished).toBeUndefined();
 
-        const form1PropsRollback = formioApiRequestBodies[3].properties;
-        const form2PropsRollback = formioApiRequestBodies[4].properties;
+        const form1PropsRollback = formioApiRequests[3].body.properties;
+        const form2PropsRollback = formioApiRequests[4].body.properties;
 
         expect(form1PropsRollback.modified).not.toEqual(form1Props.modified);
         expect(form1PropsRollback.modifiedBy).toEqual(opts.userName);

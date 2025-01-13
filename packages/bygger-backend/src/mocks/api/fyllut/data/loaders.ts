@@ -1,5 +1,5 @@
 import { fileLoader } from '../../../utils/file';
 
-const dataDir = `${import.meta.dirname}`;
+const dataDir = 'api/fyllut/data';
 
 export const loadData = fileLoader(dataDir);

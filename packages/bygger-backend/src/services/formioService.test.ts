@@ -1,11 +1,16 @@
 import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
-import nock from 'nock';
+import { MswUtils } from '../mocks/utils/mswUtils';
 import { getFormioApiServiceUrl } from '../util/formio';
 import { formioService } from './index';
 
 const FORMIO_API_SERVICE_URL = getFormioApiServiceUrl();
+const mswUtils = global.mswUtils as MswUtils;
 
 describe('FormioService', () => {
+  afterEach(() => {
+    mswUtils.clear();
+  });
+
   describe('saveForm', () => {
     describe('props modified and modifiedBy', () => {
       const form: NavFormType = {
@@ -36,16 +41,6 @@ describe('FormioService', () => {
           },
         ],
       } as NavFormType;
-
-      beforeEach(() => {
-        nock(FORMIO_API_SERVICE_URL)
-          .put(/\/form\/(\d*)$/)
-          .reply((uri, requestBody) => [200, requestBody]);
-      });
-
-      afterEach(() => {
-        nock.cleanAll();
-      });
 
       it('are updated with new values', async () => {
         const savedForm = await formioService.saveForm(form, 'formio-token', 'tore');
@@ -83,21 +78,20 @@ describe('FormioService', () => {
     });
 
     describe('http error from formio api', () => {
+      const FORM_ID = '1';
+
       beforeEach(() => {
-        nock(FORMIO_API_SERVICE_URL)
-          .put(/\/form\/(\d*)$/)
-          .reply(500);
+        mswUtils.mock(FORMIO_API_SERVICE_URL).put(`/form/${FORM_ID}`).reply(500);
         vi.spyOn(console, 'error').mockImplementation(() => {});
       });
 
       afterEach(() => {
-        nock.cleanAll();
         vi.restoreAllMocks();
       });
 
       it('is thrown as an error', async () => {
         const form: NavFormType = {
-          _id: '1',
+          _id: FORM_ID,
           properties: {},
         } as NavFormType;
         let error;
@@ -113,17 +107,6 @@ describe('FormioService', () => {
   });
 
   describe('saveForms', () => {
-    beforeEach(() => {
-      nock(FORMIO_API_SERVICE_URL)
-        .put(/\/form\/(\d*)$/)
-        .times(2)
-        .reply((uri, requestBody) => [200, requestBody]);
-    });
-
-    afterEach(() => {
-      nock.cleanAll();
-    });
-
     it('uses same modified and modifiedBy on all forms', async () => {
       const forms = [
         { _id: '1', properties: { modified: '2022-06-28T10:03:15.634Z' } } as NavFormType,
@@ -131,19 +114,16 @@ describe('FormioService', () => {
       ];
       const savedForms = await formioService.saveForms(forms, 'formio-token', 'jenny');
       expect(savedForms).toHaveLength(2);
-      expect(savedForms[0].properties.modified).toEqual(savedForms[1].properties.modified);
+      const formModified1 = savedForms[0].properties.modified;
+      const formModified2 = savedForms[1].properties.modified;
+      expect(formModified1).toBeDefined();
+      expect(formModified2).toBeDefined();
+      expect(formModified1).toEqual(formModified2);
     });
   });
 
   describe('createNewForm', () => {
-    afterEach(() => {
-      nock.cleanAll();
-    });
-
     it('sets default properties', async () => {
-      nock(FORMIO_API_SERVICE_URL)
-        .post('/form')
-        .reply((uri, requestBody) => [200, requestBody]);
       const skjemanummer = 'NAV 01-00.00';
       const savedForm = await formioService.createNewForm(skjemanummer, 'formio-token');
       expect(savedForm._id).toBeUndefined();
