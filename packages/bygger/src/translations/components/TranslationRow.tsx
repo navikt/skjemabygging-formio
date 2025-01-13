@@ -51,9 +51,15 @@ const TranslationRow = <Translation extends FormsApiFormTranslation>({
 
   return (
     <Table.Row className={isEditing ? '' : styles.clickableRow} onClick={handleRowClick}>
-      <Table.HeaderCell className={styles.column} scope="row">
-        {isHtml ? <InnerHtml content={translation.nb ?? ''} /> : translation.nb}
-      </Table.HeaderCell>
+      {isHtml ? (
+        <Table.DataCell className={styles.column}>
+          <InnerHtml content={translation.nb ?? ''} />
+        </Table.DataCell>
+      ) : (
+        <Table.HeaderCell className={styles.column} scope="row">
+          {translation.nb}
+        </Table.HeaderCell>
+      )}
       <Table.DataCell className={styles.column}>
         {isEditing ? (
           <TranslationInput
