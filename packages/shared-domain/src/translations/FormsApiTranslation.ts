@@ -14,6 +14,11 @@ type FormsApiTranslationCore = {
 type FormsApiGlobalTranslation = FormsApiTranslationCore & { tag: TranslationTag };
 type FormsApiFormTranslation = FormsApiTranslationCore & { globalTranslationId?: number };
 type FormsApiTranslation = FormsApiGlobalTranslation | FormsApiFormTranslation;
+type PublishedTranslations = {
+  publishedAt: string;
+  publishedBy: string;
+  translations: { nn?: Record<string, string>; en?: Record<string, string> };
+};
 
 const isGlobalTranslation = (translation: FormsApiTranslation): translation is FormsApiGlobalTranslation =>
   !!(translation as FormsApiGlobalTranslation).tag;
@@ -23,4 +28,10 @@ const isFormTranslation = (translation: FormsApiTranslation): translation is For
 
 const formsApiTranslations = { isFormTranslation, isGlobalTranslation };
 export { formsApiTranslations };
-export type { FormsApiFormTranslation, FormsApiGlobalTranslation, FormsApiTranslation, TranslationLang };
+export type {
+  FormsApiFormTranslation,
+  FormsApiGlobalTranslation,
+  FormsApiTranslation,
+  PublishedTranslations,
+  TranslationLang,
+};
