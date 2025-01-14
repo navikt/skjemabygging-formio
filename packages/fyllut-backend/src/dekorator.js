@@ -2,11 +2,10 @@ import { fetchDecoratorHtml } from '@navikt/nav-dekoratoren-moduler/ssr';
 import { config } from './config/config';
 import { NaisCluster } from './config/nais-cluster';
 import { logger } from './logger';
-import { getFyllutUrl } from './utils/url';
 
 const { naisClusterName } = config;
 
-const getDecorator = async (redirectToUrl, language) => {
+const getDecorator = async (language = []) => {
   /**
    * https://github.com/navikt/nav-dekoratoren
    */
@@ -41,13 +40,4 @@ const getDecorator = async (redirectToUrl, language) => {
   });
 };
 
-const createRedirectUrl = (req, res) => {
-  const formId = res.locals.formId;
-  const baseUrl = getFyllutUrl(req);
-  if (formId) {
-    return `${baseUrl}?form=${res.locals.formId}`;
-  }
-  return baseUrl;
-};
-
-export { createRedirectUrl, getDecorator };
+export { getDecorator };

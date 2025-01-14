@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from 'express';
 import { ParsedUrlQueryInput } from 'querystring';
 import url from 'url';
 import { config } from './config/config';
-import { createRedirectUrl, getDecorator } from './dekorator';
+import { getDecorator } from './dekorator';
 import { logger } from './logger';
 import { formService } from './services';
 import { QueryParamSub } from './types/custom';
@@ -109,7 +109,7 @@ const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
       }
     }
 
-    const decoratorFragments = await getDecorator(createRedirectUrl(req, res), req.params[2]);
+    const decoratorFragments = await getDecorator(req.params[2]);
     res.status(httpStatusCode).render('index.html', {
       ...decoratorFragments,
       ...pageMeta,
