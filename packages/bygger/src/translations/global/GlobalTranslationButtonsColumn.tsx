@@ -3,6 +3,7 @@ import { useState } from 'react';
 import UserFeedback from '../../components/UserFeedback';
 import { useEditGlobalTranslations } from '../../context/translations/EditGlobalTranslationsContext';
 import { useGlobalTranslations } from '../../context/translations/GlobalTranslationsContext';
+import ExportGlobalTranslationsButton from '../components/ExportGlobalTranslationsButton';
 
 const GlobalTranslationButtonsColumn = () => {
   const [isProcessing, setIsProcessing] = useState<'SAVING' | 'PUBLISHING'>();
@@ -49,9 +50,8 @@ const GlobalTranslationButtonsColumn = () => {
       >
         Publisér
       </Button>
-      <Button variant="tertiary" disabled={!!isProcessing} onClick={() => {}} type="button" size="small">
-        Eksporter
-      </Button>
+      <ExportGlobalTranslationsButton language={'nn'}>{'Eksporter nynorsk'}</ExportGlobalTranslationsButton>
+      <ExportGlobalTranslationsButton language={'en'}>{'Eksporter engelsk'}</ExportGlobalTranslationsButton>
       <UserFeedback />
     </VStack>
   );
