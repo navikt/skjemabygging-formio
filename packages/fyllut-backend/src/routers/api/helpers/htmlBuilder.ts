@@ -34,7 +34,7 @@ const createHtmlFromSubmission = (
   lang: string = 'nb',
   summaryPanels?: SummaryPanel[],
 ) => {
-  // Backward compatibility: If summary panels are not provided from the frontend, use formSummaryUtil to create them
+  // TODO remove backward compatibility: If summary panels are not provided from the frontend, use formSummaryUtil to create them
   const summary: SummaryPanel[] =
     summaryPanels ?? formSummaryUtil.createFormSummaryPanels(form, submission, translate, true, lang);
   const confirmation = createConfirmationSection(form, translate);
