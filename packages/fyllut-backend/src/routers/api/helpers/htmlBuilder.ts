@@ -32,14 +32,11 @@ const createHtmlFromSubmission = (
   submissionMethod: string,
   translate: (text: string) => string,
   lang: string = 'nb',
+  summaryPanels?: SummaryPanel[],
 ) => {
-  const symmaryPanels: SummaryPanel[] = formSummaryUtil.createFormSummaryPanels(
-    form,
-    submission,
-    translate,
-    true,
-    lang,
-  );
+  // TODO remove backward compatibility: If summary panels are not provided from the frontend, use formSummaryUtil to create them
+  const summary: SummaryPanel[] =
+    summaryPanels ?? formSummaryUtil.createFormSummaryPanels(form, submission, translate, true, lang);
   const confirmation = createConfirmationSection(form, translate);
   const signatures = signatureSection(form.properties, submissionMethod, translate);
 
@@ -47,7 +44,7 @@ const createHtmlFromSubmission = (
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="${lang}" lang="${lang}">
 ${head(translate(form.title))}
-${body(symmaryPanels, confirmation, signatures)}
+${body(summary, confirmation, signatures)}
 </html>`;
 };
 

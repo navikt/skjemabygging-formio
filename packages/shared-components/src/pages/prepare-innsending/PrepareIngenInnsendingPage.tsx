@@ -1,5 +1,5 @@
 import { BodyShort, Heading } from '@navikt/ds-react';
-import { Submission, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { formSummaryUtil, Submission, SummaryPanel, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect } from 'react';
 import DownloadPdfButton from '../../components/button/download-pdf/DownloadPdfButton';
 import NavigateButtonComponent from '../../components/button/navigation/pages/NavigateButtonComponent';
@@ -23,6 +23,10 @@ const useStyles = makeStyles({
     flexDirection: 'column',
   },
 });
+
+const createSummaryPanels = (form, submission, translate, lang): SummaryPanel[] => {
+  return formSummaryUtil.createFormSummaryPanels(form, submission, translate, true, lang);
+};
 
 export function PrepareIngenInnsendingPage({ form, submission, translations, formUrl }: Props) {
   useEffect(() => scrollToAndSetFocus('main', 'start'), []);
@@ -48,6 +52,7 @@ export function PrepareIngenInnsendingPage({ form, submission, translations, for
                 submission: JSON.stringify(submission),
                 translations: JSON.stringify(currentLanguage !== 'nb-NO' ? translations[currentLanguage] : {}),
                 language: currentLanguage,
+                summaryPanels: JSON.stringify(createSummaryPanels(form, submission, translate, currentLanguage)),
               }}
               actionUrl={`${fyllutBaseURL}/api/pdf/convert`}
               label={translate(form.properties.downloadPdfButtonText || TEXTS.grensesnitt.downloadApplication)}

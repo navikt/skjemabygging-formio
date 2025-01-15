@@ -194,8 +194,8 @@ describe('Mellomlagring', () => {
             cy.submitMellomlagring((req) => {
               const { submission: bodySubmission, ...bodyRest } = req.body;
               const { submission: fixtureSubmission, ...fixtureRest } = fixture;
-              expect(bodySubmission.data).to.deep.eq(fixtureSubmission.data);
-              expect(bodyRest).to.deep.eq(fixtureRest);
+              expect(bodySubmission.data, 'Submission in request body').to.deep.eq(fixtureSubmission.data);
+              expect(bodyRest, 'Request body (excluding submission)').to.deep.eq(fixtureRest);
             });
           });
         });
