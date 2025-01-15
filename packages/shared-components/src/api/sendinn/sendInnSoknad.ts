@@ -1,11 +1,4 @@
-import {
-  formSummaryUtil,
-  I18nTranslationMap,
-  Language,
-  NavFormType,
-  Submission,
-  SummaryPanel,
-} from '@navikt/skjemadigitalisering-shared-domain';
+import { I18nTranslationMap, Language, NavFormType, Submission } from '@navikt/skjemadigitalisering-shared-domain';
 import { AppConfigContextType } from '../../context/config/configContext';
 import { getRelevantAttachments, hasOtherDocumentation } from '../../util/attachment/attachmentsUtil';
 
@@ -78,15 +71,6 @@ export const updateSoknad = async (
   }
 };
 
-const createSummaryPanels = (
-  form: NavFormType,
-  submission: Submission,
-  translations: I18nTranslationMap,
-  lang: string,
-): SummaryPanel[] => {
-  return formSummaryUtil.createFormSummaryPanels(form, submission, (key: string) => translations[key], true, lang);
-};
-
 export const updateUtfyltSoknad = async (
   appConfig: AppConfigContextType,
   form: NavFormType,
@@ -112,7 +96,6 @@ export const updateUtfyltSoknad = async (
         submissionMethod,
         attachments,
         otherDocumentation,
-        summaryPanels: createSummaryPanels(form, submission, translation, language),
       },
       {},
       { setRedirectLocation },

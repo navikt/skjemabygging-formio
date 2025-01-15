@@ -1,12 +1,5 @@
 import { BodyShort, Heading } from '@navikt/ds-react';
-import {
-  Enhet,
-  formSummaryUtil,
-  NavFormType,
-  Submission,
-  SummaryPanel,
-  TEXTS,
-} from '@navikt/skjemadigitalisering-shared-domain';
+import { Enhet, NavFormType, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useState } from 'react';
 import { useAmplitude } from '../../../context/amplitude';
 import { useLanguages } from '../../../context/languages';
@@ -22,10 +15,6 @@ interface Props {
   translate: any;
   translations: any;
 }
-
-const createSummaryPanels = (form: NavFormType, submission: Submission, translate, lang: string): SummaryPanel[] => {
-  return formSummaryUtil.createFormSummaryPanels(form, submission, translate, true, lang);
-};
 
 const LetterDownload = ({ form, index, submission, enhetsListe, fyllutBaseURL, translate, translations }: Props) => {
   const [selectedEnhetNummer, setSelectedEnhetNummer] = useState<string | null>(null);
@@ -87,7 +76,6 @@ const LetterDownload = ({ form, index, submission, enhetsListe, fyllutBaseURL, t
           submission: JSON.stringify(submission),
           translations: JSON.stringify(currentLanguage !== 'nb-NO' ? translations[currentLanguage] : {}),
           language: currentLanguage,
-          summaryPanels: JSON.stringify(createSummaryPanels(form, submission, translate, currentLanguage)),
         }}
         actionUrl={`${fyllutBaseURL}/api/pdf/convert`}
         label={translate(form.properties.downloadPdfButtonText || TEXTS.grensesnitt.downloadApplication)}

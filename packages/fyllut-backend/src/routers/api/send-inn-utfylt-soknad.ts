@@ -19,7 +19,7 @@ const sendInnUtfyltSoknad = {
       const fyllutUrl = getFyllutUrl(req);
       const envQualifier = req.getEnvQualifier();
 
-      const { form, submission, submissionMethod, translation, language, innsendingsId, summaryPanels } = req.body;
+      const { form, submission, submissionMethod, translation, language, innsendingsId } = req.body;
       if (!req.headers.AzureAccessToken) {
         logger.error('Azure access token is missing. Unable to generate pdf');
       }
@@ -41,7 +41,6 @@ const sendInnUtfyltSoknad = {
         submissionMethod,
         translation,
         localizationUtils.getLanguageCodeAsIso639_1(language),
-        summaryPanels,
       );
 
       const body = assembleSendInnSoknadBody(req.body, idportenPid, fyllutUrl, pdfByteArray);

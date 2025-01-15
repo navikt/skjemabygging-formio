@@ -4,7 +4,6 @@ import {
   localizationUtils,
   NavFormType,
   Submission,
-  SummaryPanel,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { NextFunction, Request, Response } from 'express';
 import { base64Decode } from '../../utils/base64';
@@ -20,21 +19,19 @@ const parseBody = (
   submissionMethod: string;
   translations: I18nTranslationMap;
   language: Language;
-  summaryPanels: SummaryPanel[];
 } => {
   const submission = JSON.parse(req.body.submission);
   const submissionMethod = req.body.submissionMethod;
   const form = JSON.parse(req.body.form);
   const translations = JSON.parse(req.body.translations);
-  const summaryPanels = req.body.summaryPanels ? JSON.parse(req.body.summaryPanels) : undefined;
   const language = req.body.language;
-  return { form, submission, submissionMethod, translations, language, summaryPanels };
+  return { form, submission, submissionMethod, translations, language };
 };
 
 const exstream = {
   post: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { form, submission, submissionMethod, translations, language, summaryPanels } = parseBody(req);
+      const { form, submission, submissionMethod, translations, language } = parseBody(req);
       const languageCode = localizationUtils.getLanguageCodeAsIso639_1(language);
 
       const pdf = await createPdf(
@@ -44,7 +41,6 @@ const exstream = {
         submissionMethod,
         translations,
         languageCode,
-        summaryPanels,
       );
       res.contentType(pdf.contentType);
       res.send(base64Decode(pdf.data));
