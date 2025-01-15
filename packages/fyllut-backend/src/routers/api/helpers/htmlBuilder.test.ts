@@ -1,6 +1,5 @@
 import {
   FormPropertiesType,
-  formSummaryUtil,
   NavFormType,
   Submission,
   SummaryComponent,
@@ -56,22 +55,7 @@ describe('htmlBuilder', () => {
     let html: string;
 
     beforeEach(() => {
-      const submission = { data: {} };
-      const summaryPanels = formSummaryUtil.createFormSummaryPanels(
-        formWithTitle,
-        submission,
-        mockTranslate,
-        true,
-        undefined,
-      );
-      html = createHtmlFromSubmission(
-        formWithTitle,
-        submission as Submission,
-        'digital',
-        mockTranslate,
-        undefined,
-        summaryPanels,
-      );
+      html = createHtmlFromSubmission(formWithTitle, { data: {} } as Submission, 'digital', mockTranslate);
     });
 
     it('creates a html document with the forms title', () => {
@@ -90,48 +74,12 @@ describe('htmlBuilder', () => {
         conditionalsSubmission as unknown as Submission,
         'digital',
         mockTranslate,
-        undefined,
-        formSummaryUtil.createFormSummaryPanels(
-          conditionalsForm,
-          conditionalsSubmission,
-          mockTranslate,
-          true,
-          undefined,
-        ),
-      );
-      expect(html).toContain('tekst som skal vises');
-    });
-
-    it('[Backward compatibility] should generate summary panels in backend if summaryPanels is missing', () => {
-      html = createHtmlFromSubmission(
-        conditionalsForm as unknown as NavFormType,
-        conditionalsSubmission as unknown as Submission,
-        'digital',
-        mockTranslate,
-        undefined,
-        undefined,
       );
       expect(html).toContain('tekst som skal vises');
     });
 
     it('sets the language from parameter', () => {
-      const submission = { data: {} };
-      const language = 'nn';
-      const summaryPanels = formSummaryUtil.createFormSummaryPanels(
-        formWithTitle,
-        submission,
-        mockTranslate,
-        true,
-        language,
-      );
-      html = createHtmlFromSubmission(
-        formWithTitle,
-        submission as Submission,
-        'digital',
-        mockTranslate,
-        language,
-        summaryPanels,
-      );
+      html = createHtmlFromSubmission(formWithTitle, { data: {} } as Submission, 'digital', mockTranslate, 'nn');
       expect(html).toContain('xml:lang="nn"');
       expect(html).toContain('lang="nn"');
     });

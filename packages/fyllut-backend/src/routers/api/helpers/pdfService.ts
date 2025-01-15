@@ -3,7 +3,6 @@ import {
   I18nTranslationReplacements,
   NavFormType,
   Submission,
-  SummaryPanel,
   translationUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import correlator from 'express-correlation-id';
@@ -24,9 +23,8 @@ export const createPdfAsByteArray = async (
   submissionMethod: string,
   translations: I18nTranslationMap,
   language: string,
-  summaryPanels: SummaryPanel[],
 ) => {
-  const pdf = await createPdf(accessToken, form, submission, submissionMethod, translations, language, summaryPanels);
+  const pdf = await createPdf(accessToken, form, submission, submissionMethod, translations, language);
   return Array.from(base64Decode(pdf.data) ?? []);
 };
 
@@ -37,7 +35,6 @@ export const createPdf = async (
   submissionMethod: string,
   translations: I18nTranslationMap,
   language: string,
-  summaryPanels?: SummaryPanel[],
 ) => {
   const translate = (text: string, textReplacements?: I18nTranslationReplacements) =>
     translationUtils.translateWithTextReplacements({
@@ -47,7 +44,7 @@ export const createPdf = async (
       currentLanguage: language,
     });
 
-  const html = createHtmlFromSubmission(form, submission, submissionMethod, translate, language, summaryPanels);
+  const html = createHtmlFromSubmission(form, submission, submissionMethod, translate, language);
   if (!html || Object.keys(html).length === 0) {
     throw Error('Missing HTML for generating PDF.');
   }
