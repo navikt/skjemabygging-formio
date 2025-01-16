@@ -22,17 +22,25 @@ const TranslationInput = ({ label, defaultValue, isHtml, minRows, onChange, erro
   if (minRows > 2) {
     return (
       <Textarea
+        className={error ? 'navds-textarea--error' : ''}
         label={label}
         hideLabel
         minRows={minRows}
         resize="vertical"
         defaultValue={defaultValue}
         onBlur={handleBlur}
-        error={error}
       />
     );
   }
-  return <TextField label={label} hideLabel defaultValue={defaultValue} onBlur={handleBlur} error={error} />;
+  return (
+    <TextField
+      className={error ? 'navds-text-field--error' : ''}
+      label={label}
+      hideLabel
+      defaultValue={defaultValue}
+      onBlur={handleBlur}
+    />
+  );
 };
 
 export default TranslationInput;

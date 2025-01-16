@@ -1,4 +1,4 @@
-import { FormsApiFormTranslation, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
+import { FormsApiFormTranslation, stringUtils, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, ReactNode, useEffect, useReducer } from 'react';
 import { useFeedbackEmit } from '../notifications/FeedbackContext';
 import { editFormTranslationsReducer } from './editTranslationsReducer';
@@ -6,6 +6,7 @@ import { getTranslationsForSaving } from './editTranslationsReducer/selectors';
 import { useFormTranslations } from './FormTranslationsContext';
 import { EditTranslationsContextValue } from './types';
 import { getConflictAlertMessage, getGeneralAlertMessage } from './utils/errorUtils';
+import { validateTranslations } from './utils/inputValidation';
 import { saveEachTranslation } from './utils/utils';
 
 interface Props {
@@ -55,25 +56,33 @@ const EditFormTranslationsProvider = ({ initialChanges, children }: Props) => {
   };
 
   const saveChanges = async () => {
-    dispatch({ type: 'SAVE_STARTED' });
-    const { responses, errors } = await saveEachTranslation(
-      getTranslationsForSaving<FormsApiFormTranslation>(state),
-      saveTranslation,
-    );
+    const translations = getTranslationsForSaving<FormsApiFormTranslation>(state);
+    const validationErrors = validateTranslations(translations);
 
-    await loadTranslations();
-    dispatch({ type: 'SAVE_FINISHED', payload: { errors } });
-    if (responses.length > 0) {
-      feedbackEmit.success(`${responses.length} oversettelser ble lagret.`);
-    }
+    if (validationErrors.length > 0) {
+      console.log(validationErrors);
+      dispatch({ type: 'VALIDATION_ERROR', payload: { errors: validationErrors } });
+      validationErrors.forEach((error) =>
+        feedbackEmit.error(`${stringUtils.truncate(error.key, 50)}: ${error.message}`),
+      );
+    } else {
+      dispatch({ type: 'SAVE_STARTED' });
+      const { responses, errors } = await saveEachTranslation(translations, saveTranslation);
 
-    const conflictAlertMessage = getConflictAlertMessage(errors);
-    const generalAlertMessage = getGeneralAlertMessage(errors);
-    if (conflictAlertMessage) {
-      feedbackEmit.error(conflictAlertMessage);
-    }
-    if (generalAlertMessage) {
-      feedbackEmit.error(generalAlertMessage);
+      await loadTranslations();
+      dispatch({ type: 'SAVE_FINISHED', payload: { errors } });
+      if (responses.length > 0) {
+        feedbackEmit.success(`${responses.length} oversettelser ble lagret.`);
+      }
+
+      const conflictAlertMessage = getConflictAlertMessage(errors);
+      const generalAlertMessage = getGeneralAlertMessage(errors);
+      if (conflictAlertMessage) {
+        feedbackEmit.error(conflictAlertMessage);
+      }
+      if (generalAlertMessage) {
+        feedbackEmit.error(generalAlertMessage);
+      }
     }
   };
 

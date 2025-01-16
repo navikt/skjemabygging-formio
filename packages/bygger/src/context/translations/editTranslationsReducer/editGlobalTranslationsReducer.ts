@@ -10,6 +10,7 @@ import {
   SaveStartedAction,
   Status,
   UpdateAction,
+  ValidationErrorAction,
 } from './reducerUtils';
 
 type GlobalTranslationState = {
@@ -23,7 +24,6 @@ type UpdateNewAction = {
   type: 'UPDATE_NEW';
   payload: { lang: TranslationLang; value: string };
 };
-type ValidationErrorAction = { type: 'VALIDATION_ERROR'; payload: { errors: TranslationError[] } };
 
 type GlobalTranslationAction =
   | InitializeAction
