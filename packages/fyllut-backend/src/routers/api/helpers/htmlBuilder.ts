@@ -67,7 +67,7 @@ h4 {margin: 4px auto 2px auto}
 p {margin: 0}
 .svar {margin-bottom: 5px; font-family: "Courier New", sans-serif;}
 .label {font-weight: bold;}
-.alert {margin-bottom: 5px;}
+.html {margin-bottom: 5px;}
 .row-label {margin-bottom: 2px; font-family: "Arial", sans-serif; font-weight: bold; text-decoration: underline}
 .row {margin: 12px 0 24px 0;}
 .alt {margin-bottom: 5px; font-family: "Courier New", sans-serif; font-style: italic;}
@@ -146,7 +146,7 @@ const attachment = (component: SummaryAttachment) => {
     html += `<div class="spm">${component.value.additionalDocumentationLabel}</div><div class="svar">: ${component.value.additionalDocumentation}</div>`;
   }
   if (component.value.deadlineWarning) {
-    html += `<div class="alert">${component.value.deadlineWarning}</div>`;
+    html += `<div class="html">${component.value.deadlineWarning}</div>`;
   }
 
   return html;
@@ -175,7 +175,7 @@ const html = (component: SummaryField) => {
   if (component.label) {
     return field(component);
   }
-  return `<div>${component.value}</div>`;
+  return `<div class="html">${component.value}</div>`;
 };
 
 const img = (component: SummaryImage) => `
