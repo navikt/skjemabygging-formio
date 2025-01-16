@@ -1,3 +1,4 @@
+import { htmlConverter } from '@navikt/skjemadigitalisering-shared-components';
 import { FormsApiGlobalTranslation, stringUtils, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, ReactNode, useContext, useEffect, useReducer } from 'react';
 import { useFeedbackEmit } from '../notifications/FeedbackContext';
@@ -72,13 +73,13 @@ const EditGlobalTranslationsProvider = ({ initialChanges, children }: Props) => 
       ...validateTranslations(translations),
     ];
     if (validationErrors.length > 0) {
-      console.log(validationErrors);
       dispatch({ type: 'VALIDATION_ERROR', payload: { errors: validationErrors } });
-      validationErrors.forEach((error) =>
+      validationErrors.forEach((error) => {
+        const key = htmlConverter.isHtmlString(error.key) ? htmlConverter.extractTextContent(error.key) : error.key;
         feedbackEmit.error(
-          `${error?.isNewTranslation ? 'Ny oversettelse' : stringUtils.truncate(error.key, 50)}: ${error.message}`,
-        ),
-      );
+          `${error?.isNewTranslation ? 'Ny oversettelse' : stringUtils.truncate(key, 50)}: ${error.message}`,
+        );
+      });
     } else {
       dispatch({ type: 'SAVE_STARTED' });
       const { responses, errors } = await saveEachTranslation(translations, saveTranslation);

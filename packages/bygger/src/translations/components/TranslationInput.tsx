@@ -17,7 +17,7 @@ const TranslationInput = ({ label, defaultValue, isHtml, minRows, onChange, erro
   };
 
   if (isHtml) {
-    return <WysiwygEditor onBlur={onChange} defaultValue={defaultValue} />;
+    return <WysiwygEditor onBlur={onChange} defaultValue={defaultValue} error={error} />;
   }
   if (minRows > 2) {
     return (
