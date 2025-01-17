@@ -50,6 +50,8 @@ export async function fetchWithErrorHandling(url: RequestInfo, options: RequestI
     };
   }
 
+  const logMeta = { status: res.status, method };
+  logger.warn(`Fetch ${method} ${url}: Unexpected content-type "${res.headers.get('content-type')}"`, logMeta);
   return {
     status: 'OK',
     data: null,

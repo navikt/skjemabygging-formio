@@ -94,9 +94,7 @@ const GlobalTranslationsProvider = ({ children }) => {
       feedbackEmit.error(getMissingGlobalTranslationsErrorMessage(tagsWithMissingTranslations));
     } else {
       await translationsApi.publish();
-      feedbackEmit.success(
-        'Publisering av globale oversettelser fullført. Endringene vil bli synlige på nav.no/fyllut om noen minutter.',
-      );
+      await loadTranslations();
     }
   };
 

@@ -23,7 +23,7 @@ const post: RequestHandler = async (req, res, next) => {
   const body = { key, tag, nb, nn, en };
   try {
     const translation = await globalTranslationsService.post(body, accessToken);
-    res.status(201).json(translation);
+    res.status(204).json(translation);
   } catch (error) {
     if (error instanceof OldHttpError) {
       next(new HttpError(error.message, error.response.status));

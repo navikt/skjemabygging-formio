@@ -7,7 +7,7 @@ import { useGlobalTranslations } from '../../context/translations/GlobalTranslat
 const GlobalTranslationButtonsColumn = () => {
   const [isProcessing, setIsProcessing] = useState<'SAVING' | 'PUBLISHING'>();
   const { saveChanges } = useEditGlobalTranslations();
-  const { publish, loadTranslations } = useGlobalTranslations();
+  const { publish } = useGlobalTranslations();
 
   const handleSave = async () => {
     try {
@@ -19,13 +19,9 @@ const GlobalTranslationButtonsColumn = () => {
   };
 
   const handlePublish = async () => {
-    try {
-      setIsProcessing('PUBLISHING');
-      await publish();
-      await loadTranslations();
-    } finally {
-      setIsProcessing(undefined);
-    }
+    setIsProcessing('PUBLISHING');
+    await publish();
+    setIsProcessing(undefined);
   };
 
   return (
