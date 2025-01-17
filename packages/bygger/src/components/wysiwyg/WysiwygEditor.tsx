@@ -17,15 +17,22 @@ interface Props {
   onBlur: (value: string) => void;
 }
 
-const WysiwygEditor = ({ defaultValue = '', onBlur }: Props) => {
-  const [htmlValue, setHtmlValue] = useState(defaultValue);
+const WysiwygEditor = ({ defaultValue, onBlur }: Props) => {
+  const [htmlValue, setHtmlValue] = useState(defaultValue ?? '');
 
   const handleChange = (event) => {
-    setHtmlValue(event.target.value);
+    const value = event.target.value;
+    // make sure that non-html strings are wrapped in a <p>-tag.
+    if (htmlConverter.isHtmlString(value)) {
+      setHtmlValue(value);
+    } else {
+      setHtmlValue(`<p>${value}</p>`);
+    }
   };
 
   const handleBlur = () => {
-    onBlur(htmlConverter.sanitizeHtmlString(htmlValue, { FORBID_ATTR: ['style'] }));
+    const sanitized = htmlConverter.sanitizeHtmlString(htmlValue, { FORBID_ATTR: ['style'] });
+    onBlur(sanitized);
   };
 
   return (
