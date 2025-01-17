@@ -36,7 +36,7 @@ describe('Global translations', () => {
       cy.findByRole('textbox', { name: 'Nynorsk' }).type('Ny tekst (nynorsk)');
       cy.findByRole('textbox', { name: 'Engelsk' }).type('New text');
       cy.findByRole('button', { name: 'Lagre' }).click();
-      cy.findByText('Legg til bokmålstekst for å opprette ny oversettelse');
+      cy.findByText('Ny oversettelse: Legg til bokmålstekst for å opprette ny oversettelse').should('be.visible');
       cy.findByRole('textbox', { name: 'Nynorsk' }).should('have.value', 'Ny tekst (nynorsk)');
       cy.findByRole('textbox', { name: 'Engelsk' }).should('have.value', 'New text');
     });
@@ -50,7 +50,9 @@ describe('Global translations', () => {
       cy.findByRole('textbox', { name: 'Engelsk' }).type('Abc');
       cy.findByRole('button', { name: 'Lagre' }).click();
       cy.wait('@postGlobalTranslation');
-      cy.findByText('Det eksisterer allerede en global oversettelse med denne bokmålsteksten');
+      cy.findByText(
+        '1 oversettelse ble ikke lagret fordi en nyere versjon allerede eksisterer. Last siden på nytt for å endre oversettelsen.',
+      ).should('be.visible');
       cy.findByRole('textbox', { name: 'Bokmål' }).should('have.value', 'Abc');
       cy.findByRole('textbox', { name: 'Nynorsk' }).should('have.value', 'Abc');
       cy.findByRole('textbox', { name: 'Engelsk' }).should('have.value', 'Abc');
@@ -122,7 +124,9 @@ describe('Global translations', () => {
       cy.findAllByRole('textbox').should('have.length', 5);
       cy.findAllByRole('textbox', { name: 'Nynorsk' }).eq(1).should('have.value', 'Gamal');
       cy.findAllByRole('textbox', { name: 'Engelsk' }).eq(1).should('have.value', 'Old');
-      cy.findAllByText('Det oppsto en konflikt. Last siden på nytt for å endre').should('have.length', 2);
+      cy.findByText(
+        '1 oversettelse ble ikke lagret fordi en nyere versjon allerede eksisterer. Last siden på nytt for å endre oversettelsen.',
+      ).should('be.visible');
       cy.wait('@getGlobalTranslations');
     });
   });
