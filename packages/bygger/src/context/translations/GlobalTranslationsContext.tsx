@@ -2,29 +2,42 @@ import { FormsApiGlobalTranslation } from '@navikt/skjemadigitalisering-shared-d
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import ApiError from '../../api/ApiError';
 import useGlobalTranslationsApi from '../../api/useGlobalTranslationsApi';
+import { useFeedbackEmit } from '../notifications/FeedbackContext';
 import { getTranslationHttpError, TranslationError } from './utils/errorUtils';
+import {
+  generateAndPopulateTags,
+  getMissingGlobalTranslationsErrorMessage,
+  getTagsWithIncompleteTranslations,
+  GlobalTranslationTag,
+} from './utils/globalTranslationsUtils';
 
 interface ContextValue {
   storedTranslations: Record<string, FormsApiGlobalTranslation>;
+  translationsPerTag: Record<GlobalTranslationTag, FormsApiGlobalTranslation[]>;
   isReady: boolean;
   loadTranslations: () => Promise<void>;
   saveTranslation: (translation: FormsApiGlobalTranslation) => Promise<FormsApiGlobalTranslation>;
-  createNewTranslation?: (
+  createNewTranslation: (
     translation: FormsApiGlobalTranslation,
   ) => Promise<{ response?: FormsApiGlobalTranslation; error?: TranslationError }>;
+  publish: () => Promise<void>;
 }
 
 const defaultValue: ContextValue = {
   storedTranslations: {},
+  translationsPerTag: { skjematekster: [], grensesnitt: [], 'statiske-tekster': [], validering: [] },
   isReady: false,
   loadTranslations: () => Promise.resolve(),
   saveTranslation: () => Promise.reject(),
   createNewTranslation: () => Promise.reject(),
+  publish: () => Promise.reject(),
 };
 
 const GlobalTranslationsContext = createContext<ContextValue>(defaultValue);
 
 const GlobalTranslationsProvider = ({ children }) => {
+  const feedbackEmit = useFeedbackEmit();
+
   const [state, setState] = useState<{
     isReady: boolean;
     data?: FormsApiGlobalTranslation[];
@@ -43,6 +56,13 @@ const GlobalTranslationsProvider = ({ children }) => {
       loadTranslations();
     }
   }, [state.isReady, loadTranslations]);
+
+  const storedTranslationsMap = useMemo<Record<string, FormsApiGlobalTranslation>>(
+    () => (state.data ?? []).reduce((acc, translation) => ({ ...acc, [translation.key]: translation }), {}),
+    [state.data],
+  );
+
+  const translationsPerTag = useMemo(() => generateAndPopulateTags(storedTranslationsMap), [storedTranslationsMap]);
 
   const saveTranslation = async (translation: FormsApiGlobalTranslation): Promise<FormsApiGlobalTranslation> => {
     if (translation.id) {
@@ -67,17 +87,25 @@ const GlobalTranslationsProvider = ({ children }) => {
     }
   };
 
-  const storedTranslationsMap = useMemo<Record<string, FormsApiGlobalTranslation>>(
-    () => (state.data ?? []).reduce((acc, translation) => ({ ...acc, [translation.key]: translation }), {}),
-    [state.data],
-  );
+  const publish = async () => {
+    const tagsWithMissingTranslations = getTagsWithIncompleteTranslations(translationsPerTag);
+
+    if (tagsWithMissingTranslations.length > 0) {
+      feedbackEmit.error(getMissingGlobalTranslationsErrorMessage(tagsWithMissingTranslations));
+    } else {
+      await translationsApi.publish();
+      await loadTranslations();
+    }
+  };
 
   const value = {
     storedTranslations: storedTranslationsMap,
+    translationsPerTag,
     loadTranslations,
     isReady: state.isReady,
     saveTranslation,
     createNewTranslation,
+    publish,
   };
   return <GlobalTranslationsContext.Provider value={value}>{children}</GlobalTranslationsContext.Provider>;
 };

@@ -1,6 +1,6 @@
 import { htmlConverter } from '@navikt/skjemadigitalisering-shared-components';
 import { FormsApiFormTranslation, stringUtils, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
-import { createContext, ReactNode, useEffect, useReducer } from 'react';
+import { createContext, ReactNode, useContext, useEffect, useReducer } from 'react';
 import { useFeedbackEmit } from '../notifications/FeedbackContext';
 import { editFormTranslationsReducer } from './editTranslationsReducer';
 import { getTranslationsForSaving } from './editTranslationsReducer/selectors';
@@ -98,5 +98,7 @@ const EditFormTranslationsProvider = ({ initialChanges, children }: Props) => {
   return <EditFormTranslationsContext.Provider value={value}>{children}</EditFormTranslationsContext.Provider>;
 };
 
-export { EditFormTranslationsContext };
+const useEditFormTranslations = () => useContext(EditFormTranslationsContext);
+
+export { EditFormTranslationsContext, useEditFormTranslations };
 export default EditFormTranslationsProvider;

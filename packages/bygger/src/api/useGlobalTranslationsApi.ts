@@ -44,10 +44,23 @@ const useGlobalTranslationsApi = () => {
     }
   };
 
+  const publish = async () => {
+    try {
+      await http.post(`${basePath}/publish`, {});
+      feedbackEmit.success(
+        'Publisering av globale oversettelser fullført. Endringene vil bli synlige på nav.no/fyllut om noen minutter.',
+      );
+    } catch (error: any) {
+      const message = (error as Error)?.message;
+      feedbackEmit.error(`Feil ved publisering. ${message}`);
+    }
+  };
+
   return {
     get,
     post,
     put,
+    publish,
   };
 };
 
