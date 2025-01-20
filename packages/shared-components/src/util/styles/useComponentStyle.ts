@@ -37,13 +37,11 @@ const useComponentStyle = (options: Options) => {
       case 'xlarge':
         return {
           width: '100%',
-          minWidth: '300px',
           maxWidth: '350px',
         };
       case 'xxlarge':
         return {
           width: '100%',
-          minWidth: '300px',
           maxWidth: '420px',
         };
       default:
