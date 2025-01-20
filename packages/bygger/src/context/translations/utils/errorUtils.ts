@@ -1,6 +1,11 @@
 import { FormsApiTranslation } from '@navikt/skjemadigitalisering-shared-domain';
 
-const translationErrorTypes = ['MISSING_KEY_VALIDATION', 'CONFLICT', 'OTHER_HTTP'] as const;
+const translationErrorTypes = [
+  'MISSING_KEY_VALIDATION',
+  'INPUT_TOO_LONG_VALIDATION',
+  'CONFLICT',
+  'OTHER_HTTP',
+] as const;
 type TranslationError = {
   type: (typeof translationErrorTypes)[number];
   message: string;

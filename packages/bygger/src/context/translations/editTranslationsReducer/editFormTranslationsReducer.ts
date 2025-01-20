@@ -9,6 +9,7 @@ import {
   SaveStartedAction,
   Status,
   UpdateAction,
+  ValidationErrorAction,
 } from './reducerUtils';
 
 type FormTranslationState = {
@@ -20,6 +21,7 @@ type FormTranslationState = {
 type FormTranslationAction =
   | InitializeAction
   | UpdateAction<FormsApiFormTranslation>
+  | ValidationErrorAction
   | SaveStartedAction
   | SaveFinishedAction;
 
@@ -43,6 +45,8 @@ const editFormTranslationsReducer = (
         : state;
     case 'UPDATE':
       return { ...state, changes: getUpdatedFormTranslationChanges(state, action.payload), status: 'EDITING' };
+    case 'VALIDATION_ERROR':
+      return { ...state, errors: action.payload.errors };
     case 'SAVE_STARTED':
       return { ...state, errors: [], status: 'SAVING' };
     case 'SAVE_FINISHED':

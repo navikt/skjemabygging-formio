@@ -1,8 +1,5 @@
-import {
-  FormsApiGlobalTranslation,
-  FormsApiTranslation,
-  TranslationLang,
-} from '@navikt/skjemadigitalisering-shared-domain';
+import { htmlConverter } from '@navikt/skjemadigitalisering-shared-components';
+import { FormsApiGlobalTranslation, stringUtils, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, ReactNode, useContext, useEffect, useReducer } from 'react';
 import { useFeedbackEmit } from '../notifications/FeedbackContext';
 import { editGlobalTranslationsReducer } from './editTranslationsReducer';
@@ -11,6 +8,7 @@ import { getTranslationsForSaving, hasNewTranslationData } from './editTranslati
 import { useGlobalTranslations } from './GlobalTranslationsContext';
 import { EditTranslationsContextValue } from './types';
 import { getConflictAlertMessage, getGeneralAlertMessage, TranslationError } from './utils/errorUtils';
+import { validate, validateTranslations } from './utils/inputValidation';
 import { saveEachTranslation } from './utils/utils';
 
 interface Props {
@@ -66,31 +64,25 @@ const EditGlobalTranslationsProvider = ({ initialChanges, children }: Props) => 
     dispatch({ type: 'UPDATE_NEW', payload: { lang, value } });
   };
 
-  const validate = (
-    translation: FormsApiTranslation,
-    isNewTranslation: boolean = false,
-  ): TranslationError | undefined => {
-    if (!translation.key) {
-      return {
-        key: translation.key,
-        type: 'MISSING_KEY_VALIDATION',
-        message: 'Legg til bokmålstekst for å opprette ny oversettelse',
-        isNewTranslation,
-      };
-    }
-  };
-
   const saveChanges = async () => {
     const newTranslationHasData = hasNewTranslationData(state);
-    const validationError = newTranslationHasData ? validate(state.new, true) : undefined;
-    if (validationError) {
-      dispatch({ type: 'VALIDATION_ERROR', payload: { errors: [validationError] } });
+    const newTranslationValidationError = newTranslationHasData && validate(state.new, true);
+    const translations = getTranslationsForSaving<FormsApiGlobalTranslation>(state);
+    const validationErrors: TranslationError[] = [
+      ...(newTranslationValidationError ? [newTranslationValidationError] : []),
+      ...validateTranslations(translations),
+    ];
+    if (validationErrors.length > 0) {
+      dispatch({ type: 'VALIDATION_ERROR', payload: { errors: validationErrors } });
+      validationErrors.forEach((error) => {
+        const key = htmlConverter.isHtmlString(error.key) ? htmlConverter.extractTextContent(error.key) : error.key;
+        feedbackEmit.error(
+          `${error?.isNewTranslation ? 'Ny oversettelse' : stringUtils.truncate(key, 50)}: ${error.message}`,
+        );
+      });
     } else {
       dispatch({ type: 'SAVE_STARTED' });
-      const { responses, errors } = await saveEachTranslation(
-        getTranslationsForSaving<FormsApiGlobalTranslation>(state),
-        saveTranslation,
-      );
+      const { responses, errors } = await saveEachTranslation(translations, saveTranslation);
 
       if (newTranslationHasData && createNewTranslation) {
         const newTranslationResult = await createNewTranslation(state.new);
