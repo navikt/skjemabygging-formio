@@ -88,6 +88,18 @@ const editFormAttachment = (): Component[] => {
           defaultValue: forceEnabled,
           readOnly: readOnly,
           label,
+          validate: {
+            custom:
+              'valid = (' +
+              'data.attachmentValues?.leggerVedNaa?.enabled !== true && ' +
+              'data.attachmentValues?.ettersender?.enabled !== true && ' +
+              'data.attachmentValues?.nei?.enabled !== true && ' +
+              'data.attachmentValues?.levertTidligere?.enabled !== true && ' +
+              'data.attachmentValues?.harIkke?.enabled !== true && ' +
+              'data.attachmentValues?.andre?.enabled !== true && ' +
+              'data.attachmentValues?.nav?.enabled !== true' +
+              ') ? "Du må minimum velge ett innsendingsalternativ" : true',
+          },
         },
         {
           type: 'fieldset',
