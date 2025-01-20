@@ -116,6 +116,7 @@ import {
   FormsApiGlobalTranslation,
   FormsApiTranslation,
   formsApiTranslations,
+  PublishedTranslations,
   TranslationLang,
 } from './translations/FormsApiTranslation';
 import currencyUtils from './utils/currencyUtils';
@@ -231,6 +232,7 @@ export type {
   PrefillAddress,
   PrefillData,
   PrefillKey,
+  PublishedTranslations,
   Recipient,
   ReportDefinition,
   ResourceAccess,
