@@ -125,8 +125,9 @@ const createPdfCallingGotenberg = async (
   formData.append('pdfua', options.pdfua ? 'true' : '');
   formData.append('skipNetworkIdleEvent', 'false');
 
-  // Send the request to Gotenberg
-  /*
+  try {
+    // Send the request to Gotenberg
+    /*
   const gotenbergResponse = await fetchWithRetry(`${gotenbergUrl}/forms/chromium/convert/html`, {
     retry: 3,
     headers: {
@@ -138,28 +139,32 @@ const createPdfCallingGotenberg = async (
     body: formData,
   });
 */
+    //, 'content-type': 'multipart/form-data'
+    const gotenbergResponse = await fetch(`${gotenbergUrl}/forms/chromium/convert/html`, {
+      method: 'POST',
+      headers: {
+        ...formData.getHeaders(),
+        //'x-correlation-id': correlator.getId(),
+        accept: 'application/pdf, application/text',
+      } as HeadersInit,
+      body: formData,
+    });
 
-  const gotenbergResponse = await fetch(`${gotenbergUrl}/forms/chromium/convert/html`, {
-    method: 'POST',
-    headers: {
-      ...formData.getHeaders(),
-      //Authorization: `Bearer ${azureAccessToken}`,
-      'x-correlation-id': correlator.getId(),
-    } as HeadersInit,
-    body: formData,
-  });
+    if (!gotenbergResponse.ok) {
+      const errorText = await gotenbergResponse.text();
+      throw synchronousResponseToError(
+        `Feil i responsdata fra Gotenberg på id "${correlator.getId()}"`,
+        errorText,
+        gotenbergResponse.status,
+        gotenbergResponse.url,
+        true,
+      );
+    }
 
-  if (!gotenbergResponse.ok) {
-    const errorText = await gotenbergResponse.text();
-    throw synchronousResponseToError(
-      `Feil i responsdata fra Gotenberg på id "${correlator.getId()}"`,
-      errorText,
-      gotenbergResponse.status,
-      gotenbergResponse.url,
-      true,
-    );
+    const pdfBuffer = gotenbergResponse.arrayBuffer();
+    return pdfBuffer;
+  } catch (e) {
+    logger.error(`Request to gotenberg pdf service failed with  ${e}`);
+    throw e;
   }
-
-  const pdfBuffer = gotenbergResponse.arrayBuffer();
-  return pdfBuffer;
 };

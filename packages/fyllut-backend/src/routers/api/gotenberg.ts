@@ -43,7 +43,7 @@ const gotenberg = {
       );
 
       res.setHeader('Content-Type', 'application/pdf');
-      res.status(200).send(Buffer.from(new Uint8Array(pdf)));
+      res.send(Buffer.from(new Uint8Array(pdf)));
     } catch (e) {
       logErrorWithStacktrace(e as Error);
       const createPdfError = htmlResponseError('Generering av PDF feilet');
