@@ -1,5 +1,6 @@
 import { PadlockLockedIcon } from '@navikt/aksel-icons';
 import { Table } from '@navikt/ds-react';
+import { htmlConverter, InnerHtml } from '@navikt/skjemadigitalisering-shared-components';
 import {
   FormsApiFormTranslation,
   formsApiTranslations,
@@ -45,21 +46,31 @@ const TranslationRow = <Translation extends FormsApiFormTranslation>({
     updateTranslation(translation, property, value);
   };
 
+  const isHtml = htmlConverter.isHtmlString(translation.nb ?? '');
   const hasGlobalOverride = formsApiTranslations.isFormTranslation(translation) && translation.globalTranslationId;
 
   return (
     <Table.Row className={isEditing ? '' : styles.clickableRow} onClick={handleRowClick}>
-      <Table.HeaderCell className={styles.column} scope="row">
-        {translation.nb}
-      </Table.HeaderCell>
+      {isHtml ? (
+        <Table.DataCell className={styles.column}>
+          <InnerHtml content={translation.nb ?? ''} />
+        </Table.DataCell>
+      ) : (
+        <Table.HeaderCell className={styles.column} scope="row">
+          {translation.nb}
+        </Table.HeaderCell>
+      )}
       <Table.DataCell className={styles.column}>
         {isEditing ? (
           <TranslationInput
             label={'Nynorsk'}
             defaultValue={translation.nn}
+            isHtml={isHtml}
             minRows={heightInRows}
             error={error?.message}
-            onChange={(event) => handleChange('nn', event.currentTarget.value)}
+            onChange={(value) => {
+              handleChange('nn', value);
+            }}
           />
         ) : (
           <>
@@ -70,7 +81,7 @@ const TranslationRow = <Translation extends FormsApiFormTranslation>({
                 fontSize="1.5rem"
               />
             )}
-            {translation.nn}
+            {isHtml ? <InnerHtml content={translation.nn ?? ''} /> : translation.nn}
           </>
         )}
       </Table.DataCell>
@@ -79,9 +90,10 @@ const TranslationRow = <Translation extends FormsApiFormTranslation>({
           <TranslationInput
             label={'Engelsk'}
             defaultValue={translation.en}
+            isHtml={htmlConverter.isHtmlString(translation.nb ?? '')}
             minRows={heightInRows}
             error={error?.message}
-            onChange={(event) => handleChange('en', event.currentTarget.value)}
+            onChange={(value) => handleChange('en', value)}
           />
         ) : (
           <>
@@ -92,7 +104,7 @@ const TranslationRow = <Translation extends FormsApiFormTranslation>({
                 fontSize="1.5rem"
               />
             )}
-            {translation.en}
+            {isHtml ? <InnerHtml content={translation.en ?? ''} /> : translation.en}
           </>
         )}
       </Table.DataCell>

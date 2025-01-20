@@ -1,15 +1,24 @@
-import { TextField, Textarea } from '@navikt/ds-react';
-import { FocusEventHandler } from 'react';
+import { Textarea, TextField } from '@navikt/ds-react';
+import { FocusEvent } from 'react';
+import WysiwygEditor from '../../components/wysiwyg/WysiwygEditor';
 
 interface Props {
   label: string;
   defaultValue?: string;
+  isHtml: boolean;
   minRows: number;
-  onChange: FocusEventHandler<HTMLInputElement | HTMLTextAreaElement>;
+  onChange: (value: string) => void;
   error?: string;
 }
 
-const TranslationInput = ({ label, defaultValue, minRows, onChange, error }: Props) => {
+const TranslationInput = ({ label, defaultValue, isHtml, minRows, onChange, error }: Props) => {
+  const handleBlur = (event: FocusEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+    onChange(event.currentTarget.value);
+  };
+
+  if (isHtml) {
+    return <WysiwygEditor onBlur={onChange} defaultValue={defaultValue} />;
+  }
   if (minRows > 2) {
     return (
       <Textarea
@@ -18,12 +27,12 @@ const TranslationInput = ({ label, defaultValue, minRows, onChange, error }: Pro
         minRows={minRows}
         resize="vertical"
         defaultValue={defaultValue}
-        onBlur={onChange}
+        onBlur={handleBlur}
         error={error}
       />
     );
   }
-  return <TextField label={label} hideLabel defaultValue={defaultValue} onBlur={onChange} error={error} />;
+  return <TextField label={label} hideLabel defaultValue={defaultValue} onBlur={handleBlur} error={error} />;
 };
 
 export default TranslationInput;

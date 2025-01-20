@@ -7,7 +7,7 @@ import {
 import { TranslationError } from '../utils/errorUtils';
 import { State } from './index';
 
-type Status = 'INIT' | 'EDITING' | 'SAVED';
+type Status = 'INIT' | 'EDITING' | 'SAVING' | 'SAVED';
 
 type InitializeAction = {
   type: 'INITIALIZE';
@@ -17,8 +17,8 @@ type UpdateAction<Translation> = {
   type: 'UPDATE';
   payload: { original: Translation; lang: TranslationLang; value: string };
 };
-type ClearErrorsAction = { type: 'CLEAR_ERRORS' };
-type SavedAction = { type: 'SAVED'; payload: { errors: TranslationError[] } };
+type SaveStartedAction = { type: 'SAVE_STARTED' };
+type SaveFinishedAction = { type: 'SAVE_FINISHED'; payload: { errors: TranslationError[] } };
 
 const createDefaultGlobalTranslation = (tag: TranslationTag = 'skjematekster'): FormsApiGlobalTranslation => ({
   key: '',
@@ -47,4 +47,4 @@ const generateMap = <Translation extends FormsApiTranslation>(values: Translatio
   values.reduce((acc, value) => ({ ...acc, [value.key]: value }), {});
 
 export { createDefaultGlobalTranslation, generateMap, getErrors, getResetChanges };
-export type { ClearErrorsAction, InitializeAction, SavedAction, Status, UpdateAction };
+export type { InitializeAction, SaveFinishedAction, SaveStartedAction, Status, UpdateAction };
