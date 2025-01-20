@@ -36,17 +36,24 @@ interface Props {
   error?: string | boolean;
 }
 
-const WysiwygEditor = ({ defaultValue = '', onBlur, error }: Props) => {
-  const [htmlValue, setHtmlValue] = useState(defaultValue);
+const WysiwygEditor = ({ defaultValue, onBlur, error }: Props) => {
+  const [htmlValue, setHtmlValue] = useState(defaultValue ?? '');
 
   const styles = useStyles();
 
   const handleChange = (event) => {
-    setHtmlValue(event.target.value);
+    const value = event.target.value;
+    // make sure that non-html strings are wrapped in a <p>-tag.
+    if (htmlConverter.isHtmlString(value)) {
+      setHtmlValue(value);
+    } else {
+      setHtmlValue(`<p>${value}</p>`);
+    }
   };
 
   const handleBlur = () => {
-    onBlur(htmlConverter.sanitizeHtmlString(htmlValue, { FORBID_ATTR: ['style'] }));
+    const sanitized = htmlConverter.sanitizeHtmlString(htmlValue, { FORBID_ATTR: ['style'] });
+    onBlur(sanitized);
   };
 
   return (
