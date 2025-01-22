@@ -15,7 +15,7 @@ const DownloadPdfButton = ({ id, values, actionUrl, label, onSubmit, submissionM
       <form id={id} action={actionUrl} onSubmit={onSubmit} method="post" acceptCharset="utf-8" target="_blank" hidden>
         {values &&
           Object.entries(values).map(([key, value]) => (
-            <input hidden readOnly={true} type="text" name={key} key={key} value={value ?? ''} />
+            <textarea hidden readOnly={true} name={key} key={key} value={value ?? ''} />
           ))}
         <input type="text" name="submissionMethod" value={submissionMethod} readOnly={true} />
       </form>
