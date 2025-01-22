@@ -1,0 +1,10 @@
+<div data-cy="error-summary" class="navds-error-summary navds-error-summary--medium" tabindex="-1">
+  <h2 tabindex="-1" class="navds-error-summary__heading navds-heading navds-heading--small">For å gå videre må du rette opp følgende:</h2>
+  <ul class="navds-error-summary__list navds-body-short navds-body-short--medium">
+    {% ctx.errors.forEach(function(err) { %}
+    <li>
+      {{ err.message }}
+    </li>
+    {% }) %}
+  </ul>
+</div>

@@ -321,13 +321,8 @@ Wizard.prototype.onChange = function (flags, changed, modified, changes) {
   }
 };
 
-/**
- * We take full control of the error summary, so this function does not invoke the original
- * showErrors in Webform.
- * @returns errors
- */
-Wizard.prototype.showErrors = function () {
-  const errs = this.getComponents()
+const getErrors = (components) => {
+  return components
     .reduce((errors, comp) => errors.concat(comp.errors || []), [])
     .filter((err) => err.level !== 'hidden')
     .map((err) => {
@@ -337,8 +332,24 @@ Wizard.prototype.showErrors = function () {
         elementId: err.elementId,
       };
     });
+};
+
+/**
+ * We take full control of the error summary, so this function does not invoke the original
+ * showErrors in Webform.
+ * @returns errors
+ */
+Wizard.prototype.showErrors = function () {
+  const errs = getErrors(this.getComponents());
   this.hasErrors = errs.length > 0;
   this.emit('showErrors', errs);
+  return errs;
+};
+
+WebForm.prototype.showErrors = function () {
+  const errs = getErrors(this.getComponents());
+  const errorsList = this.renderTemplate('errorsList', { errors: errs });
+  this.root.setAlert('danger', errorsList);
   return errs;
 };
 
