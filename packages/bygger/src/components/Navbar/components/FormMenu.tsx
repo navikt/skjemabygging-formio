@@ -1,4 +1,6 @@
+import { LanguageIcon } from '@navikt/aksel-icons';
 import { EditFilled, EyeFilled, GlobeFilled, SettingsFilled } from '@navikt/ds-icons';
+import { Tag } from '@navikt/ds-react';
 import { useLanguageCodeFromURL } from '@navikt/skjemadigitalisering-shared-components';
 import useUnsavedChangesModal from '../../../hooks/useUnsavedChangesModal';
 import { MenuLink } from './MenuLink';
@@ -35,6 +37,16 @@ export const FormMenu = ({ formPath }) => {
       >
         <GlobeFilled fontSize={'1.5rem'} role="presentation" />
         <span>Språk</span>
+      </MenuLink>
+
+      <MenuLink to={`/forms/${formPath}/oversettelser`} noIconStyling={false}>
+        <LanguageIcon fontSize={'1.5rem'} role="presentation" />
+        <span>
+          Oversettelser{' '}
+          <Tag variant={'warning-moderate'} size={'xsmall'}>
+            Beta
+          </Tag>
+        </span>
       </MenuLink>
 
       {unsavedChangesModalContent}

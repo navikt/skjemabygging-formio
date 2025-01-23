@@ -1,7 +1,7 @@
 import { i18nData, mapTranslationsToFormioI18nObject } from '@navikt/skjemadigitalisering-shared-components';
 import { FormioTranslationMap, Language, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import React, { createContext, useContext, useEffect, useReducer } from 'react';
-import { getFormTexts } from '../../translations/utils';
+import { getFormTexts } from '../../old_translations/utils';
 import i18nReducer, { I18nAction, I18nState } from './i18nReducer';
 
 export const getAvailableLanguages = (translations: FormioTranslationMap) => Object.keys(translations) as Language[];
@@ -26,7 +26,7 @@ const loadTranslationsAndInitState = async (
   try {
     const translations = await loadTranslations();
     dispatch({ type: 'init', payload: translations });
-  } catch (e) {
+  } catch (_e) {
     dispatch({ type: 'error' });
   }
 };
