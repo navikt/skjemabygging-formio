@@ -350,6 +350,10 @@ WebForm.prototype.showErrors = function () {
   const errs = getErrors(this.getComponents());
   const errorsList = this.renderTemplate('errorsList', { errors: errs });
   this.root.setAlert('danger', errorsList);
+  const element = document.getElementById('error-summary');
+  if (element) {
+    element.focus();
+  }
   return errs;
 };
 
