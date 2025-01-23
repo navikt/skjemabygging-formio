@@ -34,6 +34,7 @@ function mockResponse(): MockedResponse {
     contentType: vi.fn(),
     status: vi.fn(),
     sendStatus: vi.fn(),
+    setHeader: vi.fn(),
     header: vi.fn(),
   } as unknown as MockedResponse;
 }
