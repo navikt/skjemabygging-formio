@@ -44,6 +44,7 @@
   },
   "devDependencies": {
     "@testing-library/react": "^16.0.1",
-    "lodash.template": "^4.5.0"
+    "lodash.template": "^4.5.0",
+    "vite-plugin-static-copy": "^2.2.0"
   }
 }

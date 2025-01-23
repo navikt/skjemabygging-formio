@@ -1,6 +1,7 @@
 /// <reference types="vitest" />
 import { defineConfig, PluginOption } from 'vite';
 import { VitePluginNode } from 'vite-plugin-node';
+import { viteStaticCopy } from 'vite-plugin-static-copy';
 import tsconfigPaths from 'vite-tsconfig-paths';
 
 export default defineConfig(({ mode }) => {
@@ -8,6 +9,14 @@ export default defineConfig(({ mode }) => {
     ...VitePluginNode({
       adapter: 'express',
       appPath: './src/server.js',
+    }),
+    viteStaticCopy({
+      targets: [
+        {
+          src: './icons/nav-logo.svg', // src folder
+          dest: './icons/nav-logo.svg', // Destination folder in `dist`
+        },
+      ],
     }),
   ];
 

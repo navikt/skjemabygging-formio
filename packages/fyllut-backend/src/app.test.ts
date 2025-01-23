@@ -224,7 +224,7 @@ describe('app', () => {
     skjemabyggingproxyScope.done();
   });
 
-  it('Performs TokenX exchange and retrieves pdf from exstream before calling SendInn', async () => {
+  it('Performs TokenX exchange and retrieves pdf from Gotenberg before calling SendInn', async () => {
     const key = await generateJwk();
     nock('https://testoidc.unittest.no')
       .get('/idporten-oidc-provider/jwk')
@@ -247,10 +247,11 @@ describe('app', () => {
       submissionMethod: 'digital',
       innsendingsId,
     };
-
+    const mockSuccessResponse = new Uint8Array([37, 80, 68, 70, 45]);
+    console.log(process.env.GOTENBERG_URL as string);
     const skjemabyggingproxyScope = nock(process.env.GOTENBERG_URL as string)
-      .post('/gotenberg')
-      .reply(200, { data: { result: [{ content: { data: '' } }] } });
+      .post('/forms/chromium/convert/html')
+      .reply(200, mockSuccessResponse);
     const tokenxWellKnownScope = nock(extractHost(tokenxConfig?.wellKnownUrl))
       .get(extractPath(tokenxConfig?.wellKnownUrl))
       .reply(200, { token_endpoint: tokenxEndpoint });

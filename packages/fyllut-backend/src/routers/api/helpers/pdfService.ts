@@ -13,8 +13,8 @@ import { config, defaultConfig } from '../../../config/config';
 import { logger } from '../../../logger';
 import { appMetrics } from '../../../services';
 import { synchronousResponseToError } from '../../../utils/errorHandling';
-//import fetchWithRetry, { HeadersInit } from '../../../utils/fetchWithRetry';
-import fetch from 'node-fetch';
+//import fetch from 'node-fetch';
+import fetchWithRetry from '../../../utils/fetchWithRetry';
 import { generateFooterHtml } from './footerBuilder';
 import { createHtmlFromSubmission } from './htmlBuilder';
 
@@ -42,6 +42,7 @@ export const createPdf = async (
 };
 
 const filePath = path.join(process.cwd(), '', '/icons/nav-logo.svg');
+//const filePath = '../../../../public/icons/nav-logo.svg';
 
 const navIcon = readFileSync(filePath, { encoding: 'utf-8', flag: 'r' });
 
@@ -125,30 +126,33 @@ const createPdfCallingGotenberg = async (
   formData.append('pdfua', options.pdfua ? 'true' : '');
   formData.append('skipNetworkIdleEvent', 'false');
 
+  console.log(`${gotenbergUrl}/forms/chromium/convert/html`);
+
   try {
     // Send the request to Gotenberg
+    const gotenbergResponse = await fetchWithRetry(`${gotenbergUrl}/forms/chromium/convert/html`, {
+      retry: 3,
+      headers: {
+        ...formData.getHeaders(),
+        //Authorization: `Bearer ${azureAccessToken}`,
+        contentType: 'multipart/form-data',
+        accept: 'application/pdf, text/plain',
+      } as HeadersInit,
+      method: 'POST',
+      body: formData,
+    });
+
     /*
-  const gotenbergResponse = await fetchWithRetry(`${gotenbergUrl}/forms/chromium/convert/html`, {
-    retry: 3,
-    headers: {
-      ...formData.getHeaders(),
-      //Authorization: `Bearer ${azureAccessToken}`,
-      'x-correlation-id': correlator.getId(),
-    } as HeadersInit,
-    method: 'POST',
-    body: formData,
-  });
-*/
-    //, 'content-type': 'multipart/form-data'
     const gotenbergResponse = await fetch(`${gotenbergUrl}/forms/chromium/convert/html`, {
       method: 'POST',
       headers: {
         ...formData.getHeaders(),
-        //'x-correlation-id': correlator.getId(),
-        accept: 'application/pdf, application/text',
+        contentType: 'multipart/form-data',
+        accept: 'application/pdf, text/plain',
       } as HeadersInit,
       body: formData,
     });
+*/
 
     if (!gotenbergResponse.ok) {
       const errorText = await gotenbergResponse.text();

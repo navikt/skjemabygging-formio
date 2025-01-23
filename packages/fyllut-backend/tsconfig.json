@@ -6,5 +6,7 @@
       "@navikt/skjemadigitalisering-shared-domain": ["../shared-domain/src"]
     }
   },
-  "include": ["src", "icons"]
+  "include": ["src",
+    "icons"
+  ]
 }
