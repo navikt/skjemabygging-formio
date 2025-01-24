@@ -1,7 +1,7 @@
 import { Alert, Fieldset, Textarea, TextField } from '@navikt/ds-react';
 import { useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
 import { formDiffingTool, NavFormType, TEXTS, UsageContext } from '@navikt/skjemadigitalisering-shared-domain';
-import { useForm } from '../../context/form/FormContext';
+import { useForm } from '../../context/old_form/FormContext';
 import AddressFields from './fields/AddressFields';
 import BasicFields from './fields/BasicFields';
 import DeclarationFields from './fields/DeclarationFields';

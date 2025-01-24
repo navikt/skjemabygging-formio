@@ -1,7 +1,7 @@
 import { FormsApiGlobalTranslation, PublishedTranslations } from '@navikt/skjemadigitalisering-shared-domain';
 import { fetchWithErrorHandling } from '../../fetchUtils';
+import { createHeaders } from '../utils/formsApiUtils';
 import { GlobalTranslationPostBody, GlobalTranslationPutBody, GlobalTranslationService } from './types';
-import { createHeaders } from './utils';
 
 const createGlobalTranslationService = (formsApiUrl: string): GlobalTranslationService => {
   const globalTranslationsPath = '/v1/global-translations';

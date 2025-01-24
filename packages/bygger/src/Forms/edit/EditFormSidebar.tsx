@@ -5,7 +5,7 @@ import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import ButtonWithSpinner from '../../components/ButtonWithSpinner';
 import SidebarLayout from '../../components/layout/SidebarLayout';
 import UserFeedback from '../../components/UserFeedback';
-import { useForm } from '../../context/form/FormContext';
+import { useForm } from '../../context/old_form/FormContext';
 import LockedFormModal from '../lockedFormModal/LockedFormModal';
 import PublishModalComponents from '../publish/PublishModalComponents';
 import FormStatusPanel from '../status/FormStatusPanel';

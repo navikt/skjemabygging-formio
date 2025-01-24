@@ -1,8 +1,8 @@
 import { ConfirmationModal } from '@navikt/skjemadigitalisering-shared-components';
 import { I18nTranslations, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useState } from 'react';
-import { useForm } from '../../context/form/FormContext';
 import { useI18nState } from '../../context/i18n';
+import { useForm } from '../../context/old_form/FormContext';
 
 interface Props {
   form: NavFormType;

@@ -2,7 +2,7 @@ import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import cloneDeep from 'lodash.clonedeep';
 
 type FormReducerAction = 'form-loaded' | 'form-not-found' | 'form-changed' | 'form-saved' | 'form-error';
-type Status = 'LOADING' | 'FINISHED LOADING' | 'FORM NOT FOUND' | 'ERROR';
+type Status = 'INITIAL LOADING' | 'FINISHED LOADING' | 'FORM NOT FOUND' | 'ERROR';
 export type FormReducerActionType = { type: FormReducerAction; form?: NavFormType; publishedForm?: NavFormType };
 
 export interface FormReducerState {

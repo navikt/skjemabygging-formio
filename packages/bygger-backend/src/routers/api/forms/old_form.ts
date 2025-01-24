@@ -63,11 +63,11 @@ const copyFromProd: RequestHandler = async (req, res, next) => {
   }
 };
 
-const form = {
+const old_form = {
   get,
   put,
   putFormSettings,
   copyFromProd,
 };
 
-export default form;
+export default old_form;

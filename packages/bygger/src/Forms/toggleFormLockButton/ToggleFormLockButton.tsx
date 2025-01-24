@@ -1,7 +1,7 @@
 import { BodyShort, Button, Textarea } from '@navikt/ds-react';
 import { Modal } from '@navikt/skjemadigitalisering-shared-components';
 import { useState } from 'react';
-import { useForm } from '../../context/form/FormContext';
+import { useForm } from '../../context/old_form/FormContext';
 
 interface Props {
   isLockedForm?: boolean;

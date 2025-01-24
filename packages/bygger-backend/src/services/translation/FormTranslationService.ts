@@ -1,7 +1,7 @@
 import { FormsApiFormTranslation } from '@navikt/skjemadigitalisering-shared-domain';
 import { fetchWithErrorHandling } from '../../fetchUtils';
+import { createHeaders } from '../utils/formsApiUtils';
 import { FormTranslationPostBody, FormTranslationPutBody, FormTranslationService } from './types';
-import { createHeaders } from './utils';
 
 const createFormTranslationsService = (formsApiUrl: string): FormTranslationService => {
   const formsApiTranslationsUrl = `${formsApiUrl}/v1/forms`;

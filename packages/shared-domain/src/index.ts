@@ -42,6 +42,7 @@ import {
   SubmissionMethod,
   UsageContext,
 } from './form';
+import { Form } from './forms-api-form';
 import forstesideUtils, {
   ForstesideRecipientAddress,
   ForstesideRequestBody,
@@ -191,6 +192,7 @@ export type {
   Enhetstype,
   FeatureTogglesMap,
   FieldSize,
+  Form,
   FormioResource,
   FormioTranslation,
   FormioTranslationData,

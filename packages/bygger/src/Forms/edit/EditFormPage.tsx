@@ -7,7 +7,7 @@ import Title from '../../components/layout/Title';
 import TitleRowLayout from '../../components/layout/TitleRowLayout';
 import NavFormBuilder from '../../components/NavFormBuilder';
 import SkjemaVisningSelect from '../../components/SkjemaVisningSelect';
-import { useForm } from '../../context/form/FormContext';
+import { useForm } from '../../context/old_form/FormContext';
 import beforeSaveComponentSettings from '../formBuilderHooks/beforeSaveComponentSettings';
 import EditFormSidebar from './EditFormSidebar';
 
