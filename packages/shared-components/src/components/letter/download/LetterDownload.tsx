@@ -49,6 +49,12 @@ const LetterDownload = ({ form, index, submission, enhetsListe, fyllutBaseURL, t
         }}
         actionUrl={`${fyllutBaseURL}/api/foersteside`}
         label={translate(TEXTS.grensesnitt.prepareLetterPage.downloadCoverPage)}
+        onSubmit={(event) => {
+          if (enhetsListe.length > 0 && !selectedEnhetNummer) {
+            event.preventDefault();
+            setIsRequiredEnhetMissing(true);
+          }
+        }}
       />
       <DownloadPdfButton
         id={`soknad-${form.path}`}
