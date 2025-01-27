@@ -3,12 +3,10 @@ import { Alert, Button, Heading } from '@navikt/ds-react';
 import { InnsendingType, NavFormType, Submission, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { useAmplitude } from '../../../context/amplitude';
 import { useAppConfig } from '../../../context/config/configContext';
 import { useLanguages } from '../../../context/languages';
 import { useSendInn } from '../../../context/sendInn/sendInnContext';
 import { hasRelevantAttachments } from '../../../util/attachment/attachmentsUtil';
-import { getPanels } from '../../../util/form/form';
 import { PanelValidation } from '../../../util/form/panel-validation/panelValidation';
 import makeStyles from '../../../util/styles/jss/jss';
 import urlUtils from '../../../util/url/url';
@@ -37,7 +35,6 @@ const useStyles = makeStyles({
 const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList, isValid }: Props) => {
   const { submissionMethod, app } = useAppConfig();
   const { search } = useLocation();
-  const { loggSkjemaStegFullfort, loggSkjemaInnsendingFeilet, loggNavigering } = useAmplitude();
   const { translate } = useLanguages();
   const { mellomlagringError, isMellomlagringActive } = useSendInn();
   const [error, setError] = useState<Error>();
@@ -50,20 +47,6 @@ const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList,
     !!panelValidationList && panelValidationList.every((panelValidation) => !panelValidation.hasValidationErrors);
 
   const exitUrl = urlUtils.getExitUrl(window.location.href);
-
-  const onClickPapirOrIngenInnsending = (e, path) => {
-    if (!isValid(e)) {
-      return;
-    }
-    loggNavigering({
-      lenkeTekst: translate(TEXTS.grensesnitt.moveForward),
-      destinasjon: `${formUrl}/${path}`,
-    });
-    loggSkjemaStegFullfort({
-      steg: getPanels(form.components).length + 1,
-      skjemastegNokkel: 'oppsummering',
-    });
-  };
 
   return (
     <>
@@ -99,11 +82,7 @@ const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList,
           {(submissionMethod === 'paper' ||
             innsending === 'KUN_PAPIR' ||
             (app === 'bygger' && innsending === 'PAPIR_OG_DIGITAL')) && (
-            <LinkButton
-              buttonVariant="primary"
-              onClick={(e) => onClickPapirOrIngenInnsending(e, 'send-i-posten')}
-              to={{ pathname: `${formUrl}/send-i-posten`, search }}
-            >
+            <LinkButton buttonVariant="primary" to={{ pathname: `${formUrl}/send-i-posten`, search }}>
               <span aria-live="polite" className="navds-body-short font-bold">
                 {translate(TEXTS.grensesnitt.moveForward)}
               </span>
@@ -121,7 +100,6 @@ const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList,
                 isValid={isValid}
                 onError={(err) => {
                   setError(err);
-                  loggSkjemaInnsendingFeilet();
                 }}
               >
                 {translate(
@@ -134,17 +112,12 @@ const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList,
                 isValid={isValid}
                 onError={(err) => {
                   setError(err);
-                  loggSkjemaInnsendingFeilet();
                 }}
               />
             ))}
 
           {innsending === 'INGEN' && (
-            <LinkButton
-              buttonVariant="primary"
-              onClick={(e) => onClickPapirOrIngenInnsending(e, 'ingen-innsending')}
-              to={{ pathname: `${formUrl}/ingen-innsending`, search }}
-            >
+            <LinkButton buttonVariant="primary" to={{ pathname: `${formUrl}/ingen-innsending`, search }}>
               <span aria-live="polite" className="navds-body-short font-bold">
                 {translate(TEXTS.grensesnitt.moveForward)}
               </span>
@@ -167,12 +140,7 @@ const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList,
       <ConfirmationModal
         open={isCancelModalOpen}
         onClose={() => setIsCancelModalOpen(false)}
-        onConfirm={() => {
-          loggNavigering({
-            lenkeTekst: translate(TEXTS.grensesnitt.navigation.cancelAndDiscard),
-            destinasjon: exitUrl,
-          });
-        }}
+        onConfirm={() => {}}
         confirmType={'danger'}
         texts={TEXTS.grensesnitt.confirmDiscardPrompt}
         exitUrl={exitUrl}

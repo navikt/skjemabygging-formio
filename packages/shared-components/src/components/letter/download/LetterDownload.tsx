@@ -1,7 +1,6 @@
 import { BodyShort, Heading } from '@navikt/ds-react';
 import { Enhet, NavFormType, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { useEffect, useState } from 'react';
-import { useAmplitude } from '../../../context/amplitude';
+import { useState } from 'react';
 import { useLanguages } from '../../../context/languages';
 import DownloadPdfButton from '../../button/download-pdf/DownloadPdfButton';
 import EnhetSelector from '../../select/enhet/EnhetSelector';
@@ -19,16 +18,7 @@ interface Props {
 const LetterDownload = ({ form, index, submission, enhetsListe, fyllutBaseURL, translate, translations }: Props) => {
   const [selectedEnhetNummer, setSelectedEnhetNummer] = useState<string | null>(null);
   const [isRequiredEnhetMissing, setIsRequiredEnhetMissing] = useState(false);
-  const [hasDownloadedFoersteside, setHasDownloadedFoersteside] = useState(false);
-  const [hasDownloadedPDF, setHasDownloadedPDF] = useState(false);
-  const { loggSkjemaFullfort, loggDokumentLastetNed } = useAmplitude();
   const { currentLanguage } = useLanguages();
-
-  useEffect(() => {
-    if (hasDownloadedFoersteside && hasDownloadedPDF) {
-      loggSkjemaFullfort();
-    }
-  }, [hasDownloadedFoersteside, hasDownloadedPDF, loggSkjemaFullfort]);
 
   return (
     <section
@@ -59,15 +49,6 @@ const LetterDownload = ({ form, index, submission, enhetsListe, fyllutBaseURL, t
         }}
         actionUrl={`${fyllutBaseURL}/api/foersteside`}
         label={translate(TEXTS.grensesnitt.prepareLetterPage.downloadCoverPage)}
-        onSubmit={(event) => {
-          if (enhetsListe.length > 0 && !selectedEnhetNummer) {
-            event.preventDefault();
-            setIsRequiredEnhetMissing(true);
-          } else {
-            loggDokumentLastetNed(`førsteside ${form.properties.skjemanummer}`);
-            setHasDownloadedFoersteside(true);
-          }
-        }}
       />
       <DownloadPdfButton
         id={`soknad-${form.path}`}
@@ -79,10 +60,6 @@ const LetterDownload = ({ form, index, submission, enhetsListe, fyllutBaseURL, t
         }}
         actionUrl={`${fyllutBaseURL}/api/pdf/convert`}
         label={translate(form.properties.downloadPdfButtonText || TEXTS.grensesnitt.downloadApplication)}
-        onSubmit={() => {
-          loggDokumentLastetNed(`${form.properties.skjemanummer}`);
-          setHasDownloadedPDF(true);
-        }}
       />
     </section>
   );

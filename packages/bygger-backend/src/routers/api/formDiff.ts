@@ -13,7 +13,7 @@ const formDiff = async (req: Request, res: Response, next: NextFunction) => {
       if (!publishedForm) {
         return notFound(next);
       }
-    } catch (e) {
+    } catch (_e) {
       return notFound(next);
     }
 

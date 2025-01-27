@@ -1,18 +1,15 @@
-import { FormEventHandler } from 'react';
-
 interface Props {
   id: string;
   values: Record<string, string | null>;
   actionUrl: string;
   label: string;
-  onSubmit: FormEventHandler<HTMLFormElement>;
   submissionMethod?: string;
 }
 
-const DownloadPdfButton = ({ id, values, actionUrl, label, onSubmit, submissionMethod = 'paper' }: Props) => {
+const DownloadPdfButton = ({ id, values, actionUrl, label, submissionMethod = 'paper' }: Props) => {
   return (
     <>
-      <form id={id} action={actionUrl} onSubmit={onSubmit} method="post" acceptCharset="utf-8" target="_blank" hidden>
+      <form id={id} action={actionUrl} method="post" acceptCharset="utf-8" target="_blank" hidden>
         {values &&
           Object.entries(values).map(([key, value]) => (
             <textarea hidden readOnly={true} name={key} key={key} value={value ?? ''} />

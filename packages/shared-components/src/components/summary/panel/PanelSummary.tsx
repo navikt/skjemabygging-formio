@@ -2,7 +2,6 @@ import { ExclamationmarkTriangleFillIcon } from '@navikt/aksel-icons';
 import { Accordion, Link } from '@navikt/ds-react';
 import { SummaryPanel, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { Link as ReactRouterLink, useLocation } from 'react-router-dom';
-import { useAmplitude } from '../../../context/amplitude';
 import { useLanguages } from '../../../context/languages';
 import makeStyles from '../../../util/styles/jss/jss';
 import ComponentSummary from '../component/ComponentSummary';
@@ -29,7 +28,6 @@ const panelStyles = makeStyles({
 });
 
 const PanelSummary = ({ component, formUrl, hasValidationErrors }: Props) => {
-  const { loggNavigering } = useAmplitude();
   const { translate } = useLanguages();
   const { search } = useLocation();
   const { link, headerIcon, accordionHeader } = panelStyles();
@@ -53,12 +51,7 @@ const PanelSummary = ({ component, formUrl, hasValidationErrors }: Props) => {
             </div>
           </Accordion.Header>
           <Accordion.Content>
-            <Link
-              as={ReactRouterLink}
-              to={{ pathname: `${formUrl}/${key}`, search }}
-              className={link}
-              onClick={(e) => loggNavigering({ lenkeTekst: panelLinkText, destinasjon: e.view.document.location.href })}
-            >
+            <Link as={ReactRouterLink} to={{ pathname: `${formUrl}/${key}`, search }} className={link}>
               <span>{panelLinkText}</span>
             </Link>
             <dl>
