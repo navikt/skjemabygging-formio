@@ -82,7 +82,11 @@ const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList,
           {(submissionMethod === 'paper' ||
             innsending === 'KUN_PAPIR' ||
             (app === 'bygger' && innsending === 'PAPIR_OG_DIGITAL')) && (
-            <LinkButton buttonVariant="primary" to={{ pathname: `${formUrl}/send-i-posten`, search }}>
+            <LinkButton
+              buttonVariant="primary"
+              onClick={(e) => !isValid(e)}
+              to={{ pathname: `${formUrl}/send-i-posten`, search }}
+            >
               <span aria-live="polite" className="navds-body-short font-bold">
                 {translate(TEXTS.grensesnitt.moveForward)}
               </span>
@@ -117,7 +121,11 @@ const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList,
             ))}
 
           {innsending === 'INGEN' && (
-            <LinkButton buttonVariant="primary" to={{ pathname: `${formUrl}/ingen-innsending`, search }}>
+            <LinkButton
+              buttonVariant="primary"
+              onClick={(e) => !isValid(e)}
+              to={{ pathname: `${formUrl}/ingen-innsending`, search }}
+            >
               <span aria-live="polite" className="navds-body-short font-bold">
                 {translate(TEXTS.grensesnitt.moveForward)}
               </span>
