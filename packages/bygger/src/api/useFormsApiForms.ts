@@ -15,23 +15,11 @@ const mapFormToNavForm = (form: Form): NavFormType => {
 };
 
 const mapNavFormToForm = (form: NavFormType): Form => {
-  const {
-    id,
-    revision,
-    skjemanummer,
-    path,
-    title,
-    components,
-    properties,
-    createdAt,
-    createdBy,
-    changedAt,
-    changedBy,
-  } = form;
+  const { id, revision, path, title, components, properties, createdAt, createdBy, changedAt, changedBy } = form;
   return {
     id,
     revision,
-    skjemanummer: skjemanummer ?? properties.skjemanummer,
+    skjemanummer: properties.skjemanummer,
     path,
     title,
     components,

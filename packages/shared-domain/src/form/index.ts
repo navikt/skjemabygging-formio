@@ -278,7 +278,7 @@ export interface NavFormType {
   // TODO: Temporary. Applied from forms-api Form
   id?: number;
   revision?: number;
-  skjemanummer: string;
+  // skjemanummer: string;
   createdAt?: string;
   createdBy?: string;
   changedAt?: string;

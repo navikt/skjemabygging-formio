@@ -30,7 +30,7 @@ const renderNewFormPage = (formio: { saveForm: () => void }, config: Partial<Con
     <FeedbackProvider>
       <MemoryRouter>
         <AppConfigProvider featureToggles={featureToggles} config={config}>
-          <NewFormPage formio={formio} />
+          <NewFormPage />
         </AppConfigProvider>
       </MemoryRouter>
     </FeedbackProvider>,
