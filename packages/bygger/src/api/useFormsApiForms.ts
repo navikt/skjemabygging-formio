@@ -34,46 +34,59 @@ const mapNavFormToForm = (form: NavFormType): Form => {
 const useFormsApiForms = () => {
   const feedbackEmit = useFeedbackEmit();
   const appConfig = useAppConfig();
+  const { logger } = appConfig;
   const http = appConfig.http ?? baseHttp;
   const baseUrl = '/api/forms';
 
-  const getAll = async (): Promise<NavFormType[] | undefined> => {
+  const getAll = async (): Promise<NavFormType[]> => {
     try {
+      logger?.info(`Fetching all forms from ${baseUrl}`);
       return (await http.get<Form[]>(baseUrl)).map(mapFormToNavForm);
     } catch (error) {
       const message = (error as Error)?.message;
+      logger?.error(`Failed to fetch forms from ${baseUrl}`, { message });
       feedbackEmit.error(`Feil ved henting av skjemaer. ${message}`);
+      throw error;
     }
   };
 
   const get = async (path: string): Promise<NavFormType | undefined> => {
+    const url = `${baseUrl}/${path}`;
     try {
-      return mapFormToNavForm(await http.get<Form>(`${baseUrl}/${path}`));
+      logger?.info(`Fetching form from ${url}`);
+      return mapFormToNavForm(await http.get<Form>(url));
     } catch (error) {
       const message = (error as Error)?.message;
+      logger?.error(`Failed to fetch form from ${url}`, { message });
       feedbackEmit.error(`Feil ved henting av skjema. ${message}`);
     }
   };
 
   const post = async (form: NavFormType): Promise<NavFormType | undefined> => {
     try {
+      logger?.info(`Creating new form: ${baseUrl}`);
       const mapped = mapNavFormToForm(form);
-      console.log('create', baseUrl, mapped);
       const result = await http.post<Form>(baseUrl, mapped);
-      console.log('result', result);
+      logger?.info(`Successfully created form with id ${result.id} and path ${result.path}`);
       return mapFormToNavForm(result);
     } catch (error) {
       const message = (error as Error)?.message;
+      logger?.error(`Failed to create form: ${baseUrl}`, { message });
       feedbackEmit.error(`Feil ved oppretting av skjema. ${message}`);
     }
   };
 
   const put = async (form: NavFormType): Promise<NavFormType | undefined> => {
     const { path } = form;
+    const url = `${baseUrl}/${path}`;
     try {
-      return mapFormToNavForm(await http.put<Form>(`${baseUrl}/${path}`, mapNavFormToForm(form)));
+      logger?.info(`Updating form with id ${form.id}: ${url}`);
+      const result = await http.put<Form>(url, mapNavFormToForm(form));
+      logger?.info(`Successfully updated form with id ${form.id}: ${url}`);
+      return mapFormToNavForm(result);
     } catch (error) {
       const message = (error as Error)?.message;
+      logger?.error(`Failed to update form: ${url}`, { message });
       feedbackEmit.error(`Feil ved oppdatering av skjema. ${message}`);
     }
   };

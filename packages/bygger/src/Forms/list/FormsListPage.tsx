@@ -1,29 +1,26 @@
-import { SkeletonList, useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
+import { SkeletonList } from '@navikt/skjemadigitalisering-shared-components';
 import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import { useCallback, useEffect, useState } from 'react';
+import useForms from '../../api/useForms';
 import { AppLayout } from '../../components/AppLayout';
 import RowLayout from '../../components/layout/RowLayout';
 import { determineStatus } from '../status/FormStatus';
 import FormError from './../error/FormError';
 import { FormListType, FormsList } from './FormsList';
 
-interface FormsListPageProps {
-  loadFormsList: () => Promise<NavFormType[]>;
-}
-
-const FormsListPage = ({ loadFormsList }: FormsListPageProps) => {
+const FormsListPage = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [forms, setForms] = useState<FormListType[]>();
-  const { logger } = useAppConfig();
+  const { loadFormsList } = useForms();
 
   const loadForms = useCallback(async () => {
-    try {
-      const navForms = await loadFormsList();
-      setForms(navForms.map(mapNavForm));
-    } catch (e) {
-      logger?.error('Could not load forms.');
-    } finally {
-      setLoading(false);
+    if (loading) {
+      try {
+        const navForms = await loadFormsList();
+        setForms(navForms.map(mapNavForm));
+      } finally {
+        setLoading(false);
+      }
     }
   }, [loadFormsList]);
 
