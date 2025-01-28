@@ -2,6 +2,8 @@ const getLanguageCodeAsIso639_1 = (locale) => {
   switch (locale) {
     case 'nn-NO':
       return 'nn';
+    case 'NO':
+    case 'no':
     case 'nb-NO':
       return 'nb';
     default:
