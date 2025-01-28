@@ -3,7 +3,6 @@ import { Button, Stepper } from '@navikt/ds-react';
 import { NavFormType, Submission, TEXTS, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { useMemo, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { useAmplitude } from '../../../context/amplitude';
 import { useAppConfig } from '../../../context/config/configContext';
 import { useLanguages } from '../../../context/languages';
 
@@ -19,7 +18,6 @@ const FormStepper = ({ form, submission, formUrl }: FormStepperProps) => {
   const { search, pathname } = useLocation();
   const { translate } = useLanguages();
   const [isOpen, setIsOpen] = useState(false);
-  const { loggNavigering } = useAmplitude();
   const formSteps = useMemo(() => {
     return navFormUtils
       .getActivePanelsFromForm(form, submission, submissionMethod)
@@ -70,18 +68,7 @@ const FormStepper = ({ form, submission, formUrl }: FormStepperProps) => {
           )}
           <Stepper activeStep={formSteps.length + 1}>
             {formSteps.map((step) => (
-              <Stepper.Step
-                to={`${step.url}${search}`}
-                as={Link}
-                key={step.url}
-                completed
-                onClick={() => {
-                  loggNavigering({
-                    lenkeTekst: translate(step.label),
-                    destinasjon: step.url,
-                  });
-                }}
-              >
+              <Stepper.Step to={`${step.url}${search}`} as={Link} key={step.url} completed>
                 {translate(step.label)}
               </Stepper.Step>
             ))}
