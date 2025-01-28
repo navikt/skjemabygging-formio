@@ -34,6 +34,10 @@ const sendInnUtfyltSoknad = {
         return;
       }
 
+      if (!['nb-NO', 'nn-NO', 'en'].includes(language)) {
+        logger.warn(`Language code "${language}" is not supported. Language code will be defaulted to "nb".`);
+      }
+
       const pdfByteArray = await createPdfAsByteArray(
         req.headers.AzureAccessToken as string,
         form,
