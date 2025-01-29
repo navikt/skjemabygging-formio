@@ -13,6 +13,15 @@ interface UserData {
   };
 }
 
+interface SessionData {
+  active: boolean;
+  created_at: string;
+  ends_at: string;
+  ends_in_seconds: number;
+  timeout_at: string;
+  timeout_in_seconds: number;
+}
+
 interface ContextProps {
   userData?: UserData;
   login?: (user: UserData) => void;
@@ -51,8 +60,8 @@ function AuthProvider(props) {
   };
   const session = async () => {
     const { origin } = window.location;
-    return httpBygger.get(`${origin}/oauth2/session`).then((res) => {
-      return res;
+    return httpBygger.get<{ session: SessionData }>(`${origin}/oauth2/session`).then((res) => {
+      return res?.session;
     });
   };
   return <AuthContext.Provider value={{ userData, login, logout, session }} {...props} />;
