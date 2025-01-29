@@ -1,5 +1,6 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
+import { useAuth } from '../context/auth-context';
 import { useForm } from '../context/form/FormContext';
 import I18nStateProvider from '../context/i18n/I18nContext';
 import EditFormPage from './edit/EditFormPage';
@@ -10,6 +11,18 @@ import { TestFormPage } from './TestFormPage';
 
 export const FormPage = ({ loadTranslations }) => {
   const { formState } = useForm();
+  const { session } = useAuth();
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const sessionData = await session();
+        console.log(sessionData);
+      } catch (_e) {
+        // Just ignore if we cant get sessions, since this is just use to give the user timeout feedback
+      }
+    })();
+  }, [session]);
 
   const loadTranslationsForFormPath = useCallback(
     () => loadTranslations(formState.form?.path),

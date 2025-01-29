@@ -1,6 +1,7 @@
 import { NavFormioJs } from '@navikt/skjemadigitalisering-shared-components';
 import React, { MouseEventHandler, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import httpBygger from '../util/httpBygger';
 
 interface UserData {
   name?: string;
@@ -16,6 +17,7 @@ interface ContextProps {
   userData?: UserData;
   login?: (user: UserData) => void;
   logout?: MouseEventHandler<HTMLAnchorElement> | undefined;
+  session?: () => object;
 }
 
 const enforceUserName = (formioUser: UserData) => {
@@ -47,7 +49,13 @@ function AuthProvider(props) {
       window.location.replace(`${origin}/oauth2/logout`);
     }
   };
-  return <AuthContext.Provider value={{ userData, login, logout }} {...props} />;
+  const session = async () => {
+    const { origin } = window.location;
+    return httpBygger.get(`${origin}/oauth2/session`).then((res) => {
+      return res;
+    });
+  };
+  return <AuthContext.Provider value={{ userData, login, logout, session }} {...props} />;
 }
 const useAuth = () => React.useContext(AuthContext);
 
