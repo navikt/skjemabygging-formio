@@ -1,7 +1,5 @@
 import { ConfirmationModal } from '@navikt/skjemadigitalisering-shared-components';
-import { I18nTranslations, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
-import { useEffect, useState } from 'react';
-import { useI18nState } from '../../context/i18n';
+import { localizationUtils, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import { useForm } from '../../context/old_form/FormContext';
 
 interface Props {
@@ -11,32 +9,33 @@ interface Props {
   publishLanguageCodeList: string[];
 }
 
-const getCompleteLocalTranslationsForNavForm = (
-  localTranslationsForNavForm: I18nTranslations,
-  publishLanguageCodeList: string[],
-): I18nTranslations => {
-  return Object.keys(localTranslationsForNavForm).reduce((translations: object, languageCode: string) => {
-    if (publishLanguageCodeList.indexOf(languageCode) >= 0) {
-      return { ...translations, [languageCode]: localTranslationsForNavForm[languageCode] };
-    } else return { ...translations };
-  }, {});
-};
+// const getCompleteLocalTranslationsForNavForm = (
+//   localTranslationsForNavForm: I18nTranslations,
+//   publishLanguageCodeList: string[],
+// ): I18nTranslations => {
+//   return Object.keys(localTranslationsForNavForm).reduce((translations: object, languageCode: string) => {
+//     if (publishLanguageCodeList.indexOf(languageCode) >= 0) {
+//       return { ...translations, [languageCode]: localTranslationsForNavForm[languageCode] };
+//     } else return { ...translations };
+//   }, {});
+// };
 
 const ConfirmPublishModal = ({ open, onClose, form, publishLanguageCodeList }: Props) => {
   const { publishForm } = useForm();
-  const { localTranslationsForNavForm } = useI18nState();
-  const [completeLocalTranslationsForNavForm, setCompleteLocalTranslationsForNavForm] = useState<I18nTranslations>({});
-
-  useEffect(() => {
-    setCompleteLocalTranslationsForNavForm(
-      getCompleteLocalTranslationsForNavForm(localTranslationsForNavForm, publishLanguageCodeList),
-    );
-  }, [publishLanguageCodeList, localTranslationsForNavForm]);
+  // const { localTranslationsForNavForm } = useI18nState();
+  // const [completeLocalTranslationsForNavForm, setCompleteLocalTranslationsForNavForm] = useState<I18nTranslations>({});
+  //
+  // useEffect(() => {
+  //   setCompleteLocalTranslationsForNavForm(
+  //     getCompleteLocalTranslationsForNavForm(localTranslationsForNavForm, publishLanguageCodeList),
+  //   );
+  // }, [publishLanguageCodeList, localTranslationsForNavForm]);
+  const languageCodes = publishLanguageCodeList.map(localizationUtils.getLanguageCodeAsIso639_1);
 
   return (
     <ConfirmationModal
       open={open}
-      onConfirm={() => publishForm(form, completeLocalTranslationsForNavForm)}
+      onConfirm={() => publishForm(form, languageCodes)}
       onClose={onClose}
       texts={{
         title: 'Publiseringsadvarsel',

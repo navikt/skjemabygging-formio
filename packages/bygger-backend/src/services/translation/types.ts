@@ -2,6 +2,7 @@ import {
   FormsApiFormTranslation,
   FormsApiGlobalTranslation,
   PublishedTranslations,
+  TranslationLang,
 } from '@navikt/skjemadigitalisering-shared-domain';
 
 type FormTranslationPostBody = Pick<FormsApiFormTranslation, 'key' | 'nb' | 'nn' | 'en' | 'globalTranslationId'>;
@@ -31,7 +32,7 @@ type GlobalTranslationService = {
     accessToken: string,
   ) => Promise<FormsApiGlobalTranslation>;
   publish: (accessToken: string) => Promise<void>;
-  getPublished: (languageCodes: Array<'nn' | 'en'>, accessCode: string) => Promise<PublishedTranslations>;
+  getPublished: (languageCodes: TranslationLang[], accessCode: string) => Promise<PublishedTranslations>;
 };
 
 export type {

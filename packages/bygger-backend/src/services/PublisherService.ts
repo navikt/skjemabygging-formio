@@ -1,42 +1,39 @@
-import {
-  dateUtils,
-  FormPropertiesPublishing,
-  I18nTranslations,
-  NavFormType,
-} from '@navikt/skjemadigitalisering-shared-domain';
+import { I18nTranslations, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import { Backend } from '../Backend';
 import { logger } from '../logging/logger';
 import { ApiError } from '../routers/api/helpers/errors';
 import { FormioService } from './formioService';
 
-interface Opts {
-  userName: string;
-  formioToken: string;
-}
+// interface Opts {
+//   userName: string;
+//   formioToken: string;
+// }
 
 class PublisherService {
-  private readonly formioService: FormioService;
+  // private readonly formioService: FormioService;
   private readonly backend: Backend;
 
-  constructor(formioService: FormioService, backend: Backend) {
-    this.formioService = formioService;
+  constructor(_formioService: FormioService, backend: Backend) {
+    // this.formioService = formioService;
     this.backend = backend;
   }
 
-  async publishForm(form: NavFormType, translations: I18nTranslations | undefined, opts: Opts) {
-    const { userName, formioToken } = opts || {};
-    let formWithPublishProps: NavFormType | undefined;
+  async publishForm(form: NavFormType, translations: I18nTranslations | undefined, _opts) {
+    // const { userName } = opts || {};
+    // let formWithPublishProps: NavFormType | undefined;
     try {
-      const publishedLanguages = translations ? Object.keys(translations) : undefined;
-      const now = dateUtils.getIso8601String();
-      const formProps = createPublishProps(now, userName, publishedLanguages);
-      logger.debug('Save form before publishing', { formPath: form.path, ...formProps });
-      formWithPublishProps = await this.formioService.saveForm(form, formioToken, userName, formProps);
-      const publishResult = await this.backend.publishForm(formWithPublishProps, translations, form.path);
-      return { changed: !!publishResult, form: formWithPublishProps };
+      // const publishedLanguages = translations ? Object.keys(translations) : undefined;
+      // const now = dateUtils.getIso8601String();
+      // const formProps = createPublishProps(now, userName, publishedLanguages);
+      // logger.debug('Save form before publishing', { formPath: form.path, ...formProps });
+      // formWithPublishProps = await this.formioService.saveForm(form, formioToken, userName, formProps);
+      const publishResult = await this.backend.publishForm(form, translations, form.path);
+      return { changed: !!publishResult, form };
     } catch (error) {
-      logger.error('Error occurred while trying to publish form', { error, formPath: form.path });
-      if (formWithPublishProps) {
+      logger.error(`Error occurred while trying to publish form with path ${form.path}`, {
+        error,
+      });
+      /*      if (formWithPublishProps) {
         logger.debug('Rolling back props since publishing failed', { formPath: form.path });
         const rollbackFormProps = createRollbackProps(form);
         try {
@@ -47,33 +44,38 @@ class PublisherService {
             errorMessage: innerError.message,
           });
         }
-      }
+      }*/
       throw new ApiError('Publisering feilet', true, error as Error);
     }
   }
 
-  async unpublishForm(form: NavFormType, opts: Opts) {
-    const { userName, formioToken } = opts || {};
-    const now = dateUtils.getIso8601String();
+  async unpublishForm(form: NavFormType, _opts) {
+    // const { userName, formioToken } = opts || {};
+    // const now = dateUtils.getIso8601String();
 
-    let formWithUnpublishProps;
+    // let formWithUnpublishProps;
     try {
-      const formProps = createUnpublishProps(now, userName);
-      formWithUnpublishProps = await this.formioService.saveForm(form, formioToken, userName, formProps);
+      // const formProps = createUnpublishProps(now, userName);
+      // formWithUnpublishProps = await this.formioService.saveForm(form, formioToken, userName, formProps);
       const gitSha = await this.backend.unpublishForm(form.path);
-      return { changed: !!gitSha, form: formWithUnpublishProps };
+      return { changed: !!gitSha, form };
     } catch (error) {
-      if (formWithUnpublishProps) {
-        logger.debug('Rolling back props since unpublishing failed', { formPath: form.path });
-        const rollbackFormProps = createRollbackProps(form);
-        await this.formioService.saveForm(formWithUnpublishProps, formioToken, userName, rollbackFormProps);
-      }
+      // if (formWithUnpublishProps) {
+      //   logger.debug('Rolling back props since unpublishing failed', { formPath: form.path });
+      //   const rollbackFormProps = createRollbackProps(form);
+      //   await this.formioService.saveForm(formWithUnpublishProps, formioToken, userName, rollbackFormProps);
+      // }
       throw new ApiError('Avpublisering feilet', true, error as Error);
     }
   }
 
-  async publishForms(forms: NavFormType[], opts: Opts) {
-    const now = dateUtils.getIso8601String();
+  async publishForms(forms: NavFormType[], _opts) {
+    try {
+      return await this.backend.publishForms(forms);
+    } catch (error) {
+      throw new ApiError('Bulk-publisering feilet', true, error as Error);
+    }
+    /*const now = dateUtils.getIso8601String();
     const { userName, formioToken } = opts || {};
 
     const publications: Publication[] = [];
@@ -142,11 +144,11 @@ class PublisherService {
       }
       throw new ApiError('Bulk-publisering feilet', true, error as Error);
     }
-    return gitSha;
+    return gitSha;*/
   }
 }
 
-const createPublishProps = (
+/*const createPublishProps = (
   now: string,
   userName: string,
   publishedLanguages?: string[] | undefined,
@@ -184,6 +186,6 @@ const createRollbackProps = (originalForm: NavFormType): FormPropertiesPublishin
 interface Publication {
   originalForm: NavFormType;
   formWithPublishProps: NavFormType;
-}
+}*/
 
 export default PublisherService;

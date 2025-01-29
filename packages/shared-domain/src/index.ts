@@ -125,6 +125,7 @@ import dateUtils from './utils/date';
 import featureUtils, { FeatureTogglesMap } from './utils/featureUtils';
 import formDiffingTool, { NavFormSettingsDiff } from './utils/formDiffingTool';
 import navFormioUtils from './utils/formio';
+import formioFormsApiUtils from './utils/formio-forms-api/formioFormsApiUtils';
 import { guid } from './utils/guid';
 import localizationUtils from './utils/localization';
 import navFormUtils, { DependencyType } from './utils/navFormUtils';
@@ -144,6 +145,7 @@ export {
   DeclarationType,
   featureUtils,
   formDiffingTool,
+  formioFormsApiUtils,
   formsApiTranslations,
   formSummaryUtil,
   forstesideUtils,

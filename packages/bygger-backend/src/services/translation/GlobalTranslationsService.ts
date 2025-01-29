@@ -1,4 +1,8 @@
-import { FormsApiGlobalTranslation, PublishedTranslations } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  FormsApiGlobalTranslation,
+  PublishedTranslations,
+  TranslationLang,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import { fetchWithErrorHandling } from '../../fetchUtils';
 import { createHeaders } from '../utils/formsApiUtils';
 import { GlobalTranslationPostBody, GlobalTranslationPutBody, GlobalTranslationService } from './types';
@@ -41,7 +45,7 @@ const createGlobalTranslationService = (formsApiUrl: string): GlobalTranslationS
         headers: createHeaders(accessToken),
       });
     },
-    getPublished: async (languageCodes: Array<'nn' | 'en'>, accessToken: string): Promise<PublishedTranslations> => {
+    getPublished: async (languageCodes: TranslationLang[], accessToken: string): Promise<PublishedTranslations> => {
       const searchParams = new URLSearchParams({ languageCodes: languageCodes.toString() });
       const response = await fetchWithErrorHandling(
         `${formsApiUrl}${publishedGlobalTranslationsPath}?${searchParams}`,

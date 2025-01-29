@@ -1,11 +1,11 @@
-import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
+import { NavFormType, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
 import useFormsApiForms from './useFormsApiForms';
 
 /**
  * Temporary. Created to replace formio. Should be replaced by new FormContexts
  * */
 const useForms = () => {
-  const { getAll, get, put, post } = useFormsApiForms();
+  const { getAll, get, put, post, publish } = useFormsApiForms();
 
   const createForm = async (form: NavFormType) => {
     return await post(form);
@@ -15,7 +15,9 @@ const useForms = () => {
     return await put(form);
   };
 
-  const onPublish = (_form, _translations) => {};
+  const onPublish = async (form: NavFormType, languages: TranslationLang[]) => {
+    return await publish(form, languages);
+  };
 
   const onUnpublish = (_form) => {};
 

@@ -1,8 +1,8 @@
 import {
   FeatureTogglesMap,
   FormPropertiesType,
-  I18nTranslations,
   NavFormType,
+  TranslationLang,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, ReactNode, useCallback, useContext, useEffect, useReducer } from 'react';
 import { useBeforeUnload, useParams } from 'react-router-dom';
@@ -18,7 +18,7 @@ interface ContextValue {
   formState: FormReducerState;
   changeForm: (form: NavFormType) => void;
   saveForm: (form: NavFormType) => Promise<NavFormType | void>;
-  publishForm: (form: NavFormType, translations: I18nTranslations) => Promise<void>;
+  publishForm: (form: NavFormType, selectedLanguages: TranslationLang[]) => Promise<void>;
   unpublishForm: () => Promise<void>;
   copyFormFromProduction: () => Promise<void>;
   changeFormSettings: (properties: Partial<FormPropertiesType>) => Promise<void>;
@@ -102,8 +102,8 @@ const FormProvider = ({ featureToggles, children }: Props) => {
   /**
    * @deprecated
    */
-  const publishForm = async (form: NavFormType, translations: I18nTranslations) => {
-    await onPublish(form, translations);
+  const publishForm = async (form: NavFormType, selectedLanguages: TranslationLang[]) => {
+    await onPublish(form, selectedLanguages);
     // const savedForm = await onPublish(form, translations);
     // await loadPublishedForm(formPath)
     //   .then((publishedForm) => dispatch({ type: 'form-saved', form: savedForm, publishedForm }))

@@ -11,13 +11,12 @@ const createFormsService = (formsApiUrl: string) => {
     return response.data as Form[];
   };
 
-  const get = async (id: string): Promise<Form> => {
-    const response = await fetchWithErrorHandling(`${formsUrl}/${id}`, { headers: createHeaders() });
+  const get = async (formPath: string): Promise<Form> => {
+    const response = await fetchWithErrorHandling(`${formsUrl}/${formPath}`, { headers: createHeaders() });
     return response.data as Form;
   };
 
   const post = async (body: FormPostBody, accessToken: string): Promise<Form> => {
-    console.log('formsService', body);
     const response = await fetchWithErrorHandling(formsUrl, {
       method: 'POST',
       headers: createHeaders(accessToken),
@@ -26,8 +25,8 @@ const createFormsService = (formsApiUrl: string) => {
     return response.data as Form;
   };
 
-  const put = async (id: string, body: FormPutBody, revision: number, accessToken: string) => {
-    const response = await fetchWithErrorHandling(`${formsUrl}/${id}`, {
+  const put = async (formPath: string, body: FormPutBody, revision: number, accessToken: string) => {
+    const response = await fetchWithErrorHandling(`${formsUrl}/${formPath}`, {
       method: 'PUT',
       headers: createHeaders(accessToken, revision),
       body: JSON.stringify(body),
