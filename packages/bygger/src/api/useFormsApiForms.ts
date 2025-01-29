@@ -9,10 +9,11 @@ const useFormsApiForms = () => {
   const http = appConfig.http ?? baseHttp;
   const baseUrl = '/api/forms';
 
-  const getAll = async (): Promise<NavFormType[]> => {
+  const getAll = async (select?: string): Promise<Form[]> => {
     try {
-      logger?.info(`Fetching all forms from ${baseUrl}`);
-      return (await http.get<Form[]>(baseUrl)).map(formioFormsApiUtils.mapFormToNavForm);
+      const url = select ? `${baseUrl}?${new URLSearchParams({ select })}` : baseUrl;
+      logger?.info(`Fetching all forms from ${url}`);
+      return await http.get<Form[]>(url);
     } catch (error) {
       const message = (error as Error)?.message;
       logger?.error(`Failed to fetch forms from ${baseUrl}`, { message });

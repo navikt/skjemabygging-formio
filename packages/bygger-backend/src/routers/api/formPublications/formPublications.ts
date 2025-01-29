@@ -42,7 +42,10 @@ const post: RequestHandler = async (req, res, next) => {
     );
     console.log(languageCodes, translations);
     const formioTranslations = Object.fromEntries(
-      Object.entries(translations).map(([key, values]) => [mapLanguageCodeToFormioFormat(key), values]),
+      Object.entries(translations).map(([key, values]) => [
+        mapLanguageCodeToFormioFormat(key as TranslationLang),
+        values,
+      ]),
     );
     const formioForm = formioFormsApiUtils.mapFormToNavForm(form);
     console.log(formioTranslations);

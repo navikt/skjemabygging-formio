@@ -1,5 +1,5 @@
 import { SkeletonList } from '@navikt/skjemadigitalisering-shared-components';
-import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form } from '@navikt/skjemadigitalisering-shared-domain';
 import { useCallback, useEffect, useState } from 'react';
 import useForms from '../../api/useForms';
 import { AppLayout } from '../../components/AppLayout';
@@ -16,23 +16,23 @@ const FormsListPage = () => {
   const loadForms = useCallback(async () => {
     if (loading) {
       try {
-        const navForms = await loadFormsList();
+        const navForms = await loadFormsList('title,path,properties,changedAt');
         setForms(navForms.map(mapNavForm));
       } finally {
         setLoading(false);
       }
     }
-  }, [loadFormsList]);
+  }, [loadFormsList, loading]);
 
-  const mapNavForm = (navForm: NavFormType): FormListType => {
+  const mapNavForm = (form: Form): FormListType => {
     return {
-      id: navForm._id ?? '',
-      modified: navForm.properties.modified ?? navForm.modified ?? '',
-      title: navForm.title?.trim(),
-      path: navForm.path,
-      number: navForm.properties?.skjemanummer?.trim(),
-      status: determineStatus(navForm.properties),
-      locked: !!navForm.properties.isLockedForm,
+      id: `${form.id}`,
+      modified: form.changedAt ?? form.properties.modified ?? '',
+      title: form.title?.trim(),
+      path: form.path,
+      number: form.properties?.skjemanummer?.trim(),
+      status: determineStatus(form.properties),
+      locked: !!form.properties.isLockedForm,
     };
   };
 

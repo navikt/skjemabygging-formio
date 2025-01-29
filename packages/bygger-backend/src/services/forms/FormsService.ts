@@ -6,8 +6,11 @@ import { FormPostBody, FormPutBody } from './types';
 const createFormsService = (formsApiUrl: string) => {
   const formsUrl = `${formsApiUrl}/v1/forms`;
 
-  const getAll = async (): Promise<Form[]> => {
-    const response = await fetchWithErrorHandling(formsUrl, { headers: createHeaders() });
+  const getAll = async (select?: string): Promise<Form[]> => {
+    const search = select ? new URLSearchParams({ select }) : '';
+    const url = `${formsUrl}?${search}`;
+    console.log('getAll', url);
+    const response = await fetchWithErrorHandling(url, { headers: createHeaders() });
     return response.data as Form[];
   };
 
