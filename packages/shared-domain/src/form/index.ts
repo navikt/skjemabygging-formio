@@ -213,6 +213,7 @@ export interface Component {
   prefillValue?: string | object;
   protectedApiKey?: boolean;
   yourInformation?: boolean;
+  widthPercent?: string;
 }
 
 export type AddressType = 'NORWEGIAN_ADDRESS' | 'POST_OFFICE_BOX' | 'FOREIGN_ADDRESS';
