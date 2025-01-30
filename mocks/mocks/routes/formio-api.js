@@ -37,6 +37,8 @@ const radioForm = require('../data/formio-api/radio.json');
 const selectBoxesForm = require('../data/formio-api/select-boxes.json');
 const monthPickerForm = require('../data/formio-api/month-picker.json');
 const emailForm = require('../data/formio-api/form-email.json');
+const nav111221b = require('../data/formio-api/nav111221b.json');
+const nav111221bTranslations = require('../data/formio-api/nav111221b-translations.json');
 
 const allForms = [
   { form: formCypress101, translations: translationsCypress101 },
@@ -70,6 +72,7 @@ const allForms = [
   { form: selectBoxesForm, translations: undefined },
   { form: monthPickerForm, translations: undefined },
   { form: emailForm, translations: undefined },
+  { form: nav111221b, translations: nav111221bTranslations },
 ];
 
 const findTestdata = (formPath) => allForms.find((testdata) => testdata.form.path === formPath);
