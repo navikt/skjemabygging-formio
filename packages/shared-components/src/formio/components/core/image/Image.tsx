@@ -40,7 +40,7 @@ export class Image extends BaseComponent {
               className="img-component"
               src={this.component?.image[0].url}
               style={{ width: this.getWidth() }}
-              alt={this.component?.image[0].alt}
+              alt={this.component?.altText}
             />
             {this.component?.description && (
               <InnerHtml content={this.translate(this.component?.description)} className="img-description" />
