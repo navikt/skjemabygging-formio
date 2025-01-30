@@ -9,8 +9,8 @@ import { useGlobalTranslations } from '../context/translations/GlobalTranslation
 
 // TODO: move
 type FormioFormatLang = 'nb-NO' | 'nn-NO' | 'en';
+const formioFormatToStandard = (lang: string): string => lang.substring(0, 2);
 const mapFormsApiTranslationsToI18n = (translations: FormsApiTranslation[]): I18nTranslations => {
-  const formioFormatToStandard = (lang: string): string => lang.substring(0, 2);
   const initial: I18nTranslations = { 'nb-NO': {}, 'nn-NO': {}, en: {} };
 
   const nbCountryNames = Object.fromEntries(getCountries('nb').map(({ label, value }) => [value, label]));
@@ -18,6 +18,7 @@ const mapFormsApiTranslationsToI18n = (translations: FormsApiTranslation[]): I18
   return translations.reduce<I18nTranslations>((acc, translation) => {
     return Object.fromEntries(
       Object.entries(acc)
+        // Legg til oversettelser fra forms-api
         .map(([language, values]): [string, I18nTranslationMap] => {
           const formsApiValueForLanguage = translation[formioFormatToStandard(language)];
           if (formsApiValueForLanguage) {
@@ -26,6 +27,7 @@ const mapFormsApiTranslationsToI18n = (translations: FormsApiTranslation[]): I18
             return [language, values];
           }
         })
+        // Legg til oversettelser fra i18n-iso-countries
         .map(([language, values]) => [
           language,
           {
