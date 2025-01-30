@@ -1,9 +1,4 @@
-import {
-  AmplitudeProvider,
-  FyllUtRouter,
-  i18nData,
-  LoadingComponent,
-} from '@navikt/skjemadigitalisering-shared-components';
+import { FyllUtRouter, i18nData, LoadingComponent } from '@navikt/skjemadigitalisering-shared-components';
 import { useEffect, useState } from 'react';
 import { loadCountryNamesForLanguages, loadFormTranslations, loadGlobalTranslationsForLanguages } from '../api';
 
@@ -42,11 +37,7 @@ function FormPage({ form }) {
     return <LoadingComponent />;
   }
 
-  return (
-    <AmplitudeProvider form={form}>
-      <FyllUtRouter form={form} translations={translation} />
-    </AmplitudeProvider>
-  );
+  return <FyllUtRouter form={form} translations={translation} />;
 }
 
 export default FormPage;

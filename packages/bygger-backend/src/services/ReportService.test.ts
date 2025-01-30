@@ -486,7 +486,7 @@ describe('ReportService', () => {
         const writableStream = createWritableStream();
         try {
           await reportService.generate('unknown-report-id', writableStream);
-        } catch (err) {
+        } catch (_err) {
           errorCatched = true;
         }
         expect(errorCatched).toBe(true);

@@ -9,15 +9,14 @@ import {
 import React, { createContext, useCallback, useContext, useEffect, useReducer, useState } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import {
-  SendInnSoknadResponse,
   createSoknad,
   deleteSoknad,
   getSoknad,
+  SendInnSoknadResponse,
   soknadAlreadyExists,
   updateSoknad,
   updateUtfyltSoknad,
 } from '../../api/sendinn/sendInnSoknad';
-import { useAmplitude } from '../amplitude';
 import { useAppConfig } from '../config/configContext';
 import { mellomlagringReducer } from './reducer/mellomlagringReducer';
 import { getSubmissionWithFyllutState, transformSubmissionBeforeSubmitting } from './utils/utils';
@@ -58,7 +57,6 @@ const SendInnProvider = ({
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const { loggSkjemaFullfort, loggSkjemaInnsendingFeilet } = useAmplitude();
 
   const isMellomlagringAvailable = app === 'fyllut' && submissionMethod === 'digital';
   // isMellomlagringReady is true if we either have successfully fetched or created mellomlagring, or if mellomlagring is not enabled
@@ -268,14 +266,11 @@ const SendInnProvider = ({
         setRedirectLocation,
       );
       logger?.info(`${innsendingsId}: Mellomlagring was submitted`);
-      await loggSkjemaFullfort();
       if (redirectLocation) {
         window.location.href = redirectLocation;
       }
       return response;
     } catch (submitError: any) {
-      loggSkjemaInnsendingFeilet();
-
       if (submitError.status === 404) {
         dispatchFyllutMellomlagring({ type: 'error', error: 'SUBMIT_FAILED_NOT_FOUND' });
       } else {
