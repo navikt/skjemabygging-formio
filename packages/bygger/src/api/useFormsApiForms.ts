@@ -34,10 +34,10 @@ const useFormsApiForms = () => {
     }
   };
 
-  const post = async (form: NavFormType): Promise<NavFormType | undefined> => {
+  const post = async (formioForm: NavFormType): Promise<NavFormType | undefined> => {
     try {
       logger?.info(`Creating new form: ${baseUrl}`);
-      const mapped = formioFormsApiUtils.mapNavFormToForm(form);
+      const mapped = formioFormsApiUtils.mapNavFormToForm(formioForm);
       const result = await http.post<Form>(baseUrl, mapped);
       logger?.info(`Successfully created form with id ${result.id} and path ${result.path}`);
       return formioFormsApiUtils.mapFormToNavForm(result);
@@ -48,12 +48,13 @@ const useFormsApiForms = () => {
     }
   };
 
-  const put = async (form: NavFormType): Promise<NavFormType | undefined> => {
+  const put = async (formioForm: NavFormType): Promise<NavFormType | undefined> => {
+    const form = formioFormsApiUtils.mapNavFormToForm(formioForm);
     const { path } = form;
     const url = `${baseUrl}/${path}`;
     try {
       logger?.info(`Updating form with id ${form.id}: ${url}`);
-      const result = await http.put<Form>(url, formioFormsApiUtils.mapNavFormToForm(form));
+      const result = await http.put<Form>(url, form);
       logger?.info(`Successfully updated form with id ${form.id}: ${url}`);
       return formioFormsApiUtils.mapFormToNavForm(result);
     } catch (error) {
@@ -63,8 +64,8 @@ const useFormsApiForms = () => {
     }
   };
 
-  const publish = async (form: NavFormType, languages: TranslationLang[]) => {
-    const { path, revision } = form;
+  const publish = async (formioForm: NavFormType, languages: TranslationLang[]) => {
+    const { path, revision } = formioFormsApiUtils.mapNavFormToForm(formioForm);
     console.log('Publish', { path, revision, languages });
     const searchParams = new URLSearchParams({ languageCodes: languages.toString(), revision: revision!.toString() });
     const url = `/api/form-publications/${path}?${searchParams}`;

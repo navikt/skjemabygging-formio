@@ -1,14 +1,12 @@
 import { useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
 import { Route, Routes } from 'react-router-dom';
-import { useFormioTranslations } from '../api/useFormioTranslations';
 import FormProvider from '../context/old_form/FormContext';
 import { FormPage } from './FormPage';
 import NewFormPage from './NewFormPage';
 import FormsListPage from './list/FormsListPage';
 
-export const FormsRouter = ({ formio, serverURL }) => {
+export const FormsRouter = ({ formio }) => {
   const { featureToggles } = useAppConfig();
-  const { loadTranslationsForEditPage } = useFormioTranslations(serverURL, formio);
 
   return (
     <Routes>
@@ -18,7 +16,7 @@ export const FormsRouter = ({ formio, serverURL }) => {
         path={'/:formPath/*'}
         element={
           <FormProvider featureToggles={featureToggles}>
-            <FormPage loadTranslations={loadTranslationsForEditPage} />
+            <FormPage />
           </FormProvider>
         }
       />

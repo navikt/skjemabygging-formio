@@ -1,6 +1,4 @@
-import { useCallback } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
-import I18nStateProvider from '../context/i18n/I18nContext';
 import { useForm } from '../context/old_form/FormContext';
 import FormTranslationsProvider from '../context/translations/FormTranslationsContext';
 import GlobalTranslationsProvider from '../context/translations/GlobalTranslationsContext';
@@ -11,13 +9,8 @@ import { FormSettingsPage } from './settings/FormSettingsPage';
 import FormSkeleton from './skeleton/FormSkeleton';
 import { TestFormPage } from './TestFormPage';
 
-export const FormPage = ({ loadTranslations }) => {
+export const FormPage = () => {
   const { formState } = useForm();
-
-  const loadTranslationsForFormPath = useCallback(
-    () => loadTranslations(formState.form?.path),
-    [loadTranslations, formState.form?.path],
-  );
 
   if (formState.status === 'LOADING') {
     return <FormSkeleton leftSidebar={true} rightSidebar={true} />;
@@ -32,23 +25,18 @@ export const FormPage = ({ loadTranslations }) => {
   }
 
   return (
-    <I18nStateProvider loadTranslations={loadTranslationsForFormPath} form={formState.form}>
-      <Routes>
-        <Route path={'/edit'} element={<EditFormPage form={formState.form} />} />
-        <Route path={'/view/*'} element={<TestFormPage form={formState.form} />} />
-        <Route path={'/settings'} element={<FormSettingsPage form={formState.form} />} />
-        <Route
-          path={'/oversettelser'}
-          element={
-            <FormTranslationsProvider formPath={formState.form.path}>
-              <GlobalTranslationsProvider>
-                <FormTranslationsPage form={formState.form} />
-              </GlobalTranslationsProvider>
-            </FormTranslationsProvider>
-          }
-        />
-        <Route path="/" element={<Navigate to={'edit'} replace />} />
-      </Routes>
-    </I18nStateProvider>
+    // <I18nStateProvider loadTranslations={loadTranslationsForFormPath} form={formState.form}>
+    <FormTranslationsProvider formPath={formState.form.path}>
+      <GlobalTranslationsProvider>
+        <Routes>
+          <Route path={'/edit'} element={<EditFormPage form={formState.form} />} />
+          <Route path={'/view/*'} element={<TestFormPage form={formState.form} />} />
+          <Route path={'/settings'} element={<FormSettingsPage form={formState.form} />} />
+          <Route path={'/oversettelser'} element={<FormTranslationsPage form={formState.form} />} />
+          <Route path="/" element={<Navigate to={'edit'} replace />} />
+        </Routes>
+      </GlobalTranslationsProvider>
+    </FormTranslationsProvider>
+    // </I18nStateProvider>
   );
 };
