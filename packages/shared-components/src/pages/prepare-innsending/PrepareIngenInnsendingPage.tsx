@@ -3,7 +3,6 @@ import { Submission, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect } from 'react';
 import DownloadPdfButton from '../../components/button/download-pdf/DownloadPdfButton';
 import NavigateButtonComponent from '../../components/button/navigation/pages/NavigateButtonComponent';
-import { useAmplitude } from '../../context/amplitude';
 import { useAppConfig } from '../../context/config/configContext';
 import { useLanguages } from '../../context/languages';
 import { scrollToAndSetFocus } from '../../util/focus-management/focus-management';
@@ -28,7 +27,6 @@ export function PrepareIngenInnsendingPage({ form, submission, translations, for
   useEffect(() => scrollToAndSetFocus('main', 'start'), []);
   const { fyllutBaseURL } = useAppConfig();
   const { translate } = useLanguages();
-  const { loggSkjemaFullfort } = useAmplitude();
   const styles = useStyles();
   const { currentLanguage } = useLanguages();
 
@@ -51,7 +49,6 @@ export function PrepareIngenInnsendingPage({ form, submission, translations, for
               }}
               actionUrl={`${fyllutBaseURL}/api/pdf/convert`}
               label={translate(form.properties.downloadPdfButtonText || TEXTS.grensesnitt.downloadApplication)}
-              onSubmit={() => loggSkjemaFullfort()}
               submissionMethod="ingen"
             />
           </div>

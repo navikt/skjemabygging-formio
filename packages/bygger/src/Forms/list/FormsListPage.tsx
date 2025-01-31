@@ -1,4 +1,4 @@
-import { SkeletonList } from '@navikt/skjemadigitalisering-shared-components';
+import { SkeletonList, useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
 import { Form } from '@navikt/skjemadigitalisering-shared-domain';
 import { useCallback, useEffect, useState } from 'react';
 import useForms from '../../api/useForms';
@@ -11,6 +11,7 @@ import { FormListType, FormsList } from './FormsList';
 const FormsListPage = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [forms, setForms] = useState<FormListType[]>();
+  const { logger } = useAppConfig();
   const { loadFormsList } = useForms();
 
   const loadForms = useCallback(async () => {
@@ -18,11 +19,13 @@ const FormsListPage = () => {
       try {
         const navForms = await loadFormsList('title,path,properties,changedAt');
         setForms(navForms.map(mapNavForm));
+      } catch (_e) {
+        logger?.error('Could not load forms.');
       } finally {
         setLoading(false);
       }
     }
-  }, [loadFormsList, loading]);
+  }, [loadFormsList, logger, loading]);
 
   const mapNavForm = (form: Form): FormListType => {
     return {

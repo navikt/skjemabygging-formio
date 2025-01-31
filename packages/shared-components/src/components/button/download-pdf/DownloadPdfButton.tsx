@@ -5,7 +5,7 @@ interface Props {
   values: Record<string, string | null>;
   actionUrl: string;
   label: string;
-  onSubmit: FormEventHandler<HTMLFormElement>;
+  onSubmit?: FormEventHandler<HTMLFormElement>;
   submissionMethod?: string;
 }
 

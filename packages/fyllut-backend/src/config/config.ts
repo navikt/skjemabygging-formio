@@ -2,15 +2,7 @@ import { FrontendLoggerConfigType, configUtils, featureUtils } from '@navikt/skj
 import dotenv from 'dotenv';
 import { logger } from '../logger';
 import { NaisCluster } from './nais-cluster.js';
-import {
-  AmplitudeConfig,
-  ConfigType,
-  DefaultConfig,
-  IdportenConfig,
-  SendInnConfig,
-  ServiceConfig,
-  TokenxConfig,
-} from './types';
+import { ConfigType, DefaultConfig, IdportenConfig, SendInnConfig, ServiceConfig, TokenxConfig } from './types';
 
 const { DOTENV_FILE } = process.env;
 if (DOTENV_FILE) {
@@ -25,11 +17,6 @@ const tokenx: TokenxConfig = {
   privateJwk: process.env.TOKEN_X_PRIVATE_JWK!,
   fyllutClientId: process.env.TOKEN_X_CLIENT_ID!,
   wellKnownUrl: process.env.TOKEN_X_WELL_KNOWN_URL!,
-};
-
-const amplitude: AmplitudeConfig = {
-  apiEndpoint: process.env.AMPLITUDE_API_ENDPOINT ?? '',
-  disableBatch: process.env.AMPLITUDE_DISABLE_BATCH === 'true',
 };
 
 const frontendLoggerConfig: FrontendLoggerConfigType = configUtils.loadJsonFromEnv('FYLLUT_FRONTEND_LOGCONFIG');
@@ -111,7 +98,6 @@ const localDevelopmentConfig: DefaultConfig = {
     ...norg2,
     url: norg2.url || 'https://norg2.dev.intern.nav.no',
   },
-  amplitude,
   frontendLoggerConfig,
   formsApiUrl: process.env.FORMS_API_URL || 'https://forms-api.intern.dev.nav.no',
 };
@@ -137,7 +123,6 @@ const defaultConfig: DefaultConfig = {
   kodeverk,
   norg2,
   idporten,
-  amplitude,
   frontendLoggerConfig,
   formsApiUrl: process.env.FORMS_API_URL!,
 };

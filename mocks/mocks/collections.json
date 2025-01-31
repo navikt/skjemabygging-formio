@@ -2,7 +2,6 @@
   {
     "id": "fyllut-base",
     "routes": [
-      "amplitude:success",
       "get-form:success",
       "get-translations:success",
       "post-azure-openid-token:success",

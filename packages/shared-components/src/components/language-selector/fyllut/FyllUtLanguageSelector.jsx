@@ -1,5 +1,4 @@
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { useAmplitude } from '../../../context/amplitude/index';
 import { useLanguages } from '../../../context/languages/index';
 import LanguageSelector from '../LanguageSelector';
 
@@ -11,7 +10,6 @@ export const languagesInOriginalLanguage = {
 };
 
 const FyllUtLanguageSelector = () => {
-  const { loggSpraakValg } = useAmplitude();
   const { currentLanguage, availableLanguages, translate } = useLanguages();
   if (availableLanguages.length === 0) {
     return null;
@@ -30,7 +28,6 @@ const FyllUtLanguageSelector = () => {
         languageCode,
         optionLabel: languagesInOriginalLanguage[languageCode],
         href: `?${params.toString()}`,
-        onClick: () => loggSpraakValg(languageCode),
       };
     });
 

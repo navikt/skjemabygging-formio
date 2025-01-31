@@ -13,8 +13,10 @@ describe('logCleaning', () => {
   describe('clean', () => {
     it('replaces certain keys which value should not appear in logs', () => {
       const cleaned = clean(logStatement1);
-      expect(JSON.stringify(cleaned)).not.toContain('Bearer 123456789');
-      expect(JSON.stringify(cleaned)).not.toContain('Complete-azure-access-token');
+      expect(JSON.stringify(cleaned)).not.toContain('Bearer 123456789'); // Authorization
+      expect(JSON.stringify(cleaned)).not.toContain('Complete-azure-access-token'); // AzureAccessToken
+      expect(JSON.stringify(cleaned)).not.toContain('127.0.0.101'); // x-client-ip
+      expect(JSON.stringify(cleaned)).not.toContain('_ga='); // Cookie
     });
 
     it('is case-insensitive', () => {
