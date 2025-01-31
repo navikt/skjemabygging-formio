@@ -1,5 +1,5 @@
 import {
-  i18nData,
+  i18nUtils,
   LanguageSelector,
   makeStyles,
   useCurrentLanguage,
@@ -27,8 +27,8 @@ const FormBuilderLanguageSelector = ({
   languageSelectorLabel,
   tag,
 }: FormBuilderLanguageSelectorProps) => {
-  const { currentLanguage } = useCurrentLanguage(useLanguageCodeFromURL(), i18nData);
-  const supportedLanguageLists = (Object.keys(i18nData) as Language[]).filter(
+  const { currentLanguage } = useCurrentLanguage(useLanguageCodeFromURL(), i18nUtils.initialData);
+  const supportedLanguageLists = (Object.keys(i18nUtils.initialData) as Language[]).filter(
     (languageCode) => languageCode !== 'nb-NO',
   );
 

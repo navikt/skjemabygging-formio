@@ -1,8 +1,9 @@
 import { Alert, Checkbox, CheckboxGroup, Heading } from '@navikt/ds-react';
-import { ConfirmationModal, makeStyles } from '@navikt/skjemadigitalisering-shared-components';
+import { ConfirmationModal, i18nUtils, makeStyles } from '@navikt/skjemadigitalisering-shared-components';
 import { FormPropertiesType, I18nTranslations, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useState } from 'react';
-import { languagesInNorwegian, useI18nState } from '../../context/i18n';
+import { languagesInNorwegian } from '../../context/i18n';
+import { useFormTranslations } from '../../context/translations/FormTranslationsContext';
 import { getFormTexts } from '../../old_translations/utils';
 import FormStatus, { determineStatus } from '../status/FormStatus';
 import { allLanguagesInNorwegian } from '../status/PublishedLanguages';
@@ -52,7 +53,7 @@ export const getCompleteTranslationLanguageCodeList = (
 };
 
 const PublishSettingsModal = ({ open, onClose, onConfirm, form }: Props) => {
-  const { translationsForNavForm } = useI18nState();
+  const { translations } = useFormTranslations();
   const [allFormOriginalTexts, setAllFormOriginalTexts] = useState<string[]>([]);
   const [completeTranslationLanguageCodeList, setCompleteTranslationLanguageCodeList] = useState<string[]>([]);
   const [checkedLanguages, setCheckedLanguages] = useState<string[]>([]);
@@ -67,10 +68,11 @@ const PublishSettingsModal = ({ open, onClose, onConfirm, form }: Props) => {
   }, [form]);
 
   useEffect(() => {
-    const completeTranslations = getCompleteTranslationLanguageCodeList(allFormOriginalTexts, translationsForNavForm);
+    const i18n = i18nUtils.mapFormsApiTranslationsToI18n(translations);
+    const completeTranslations = getCompleteTranslationLanguageCodeList(allFormOriginalTexts, i18n);
     setCompleteTranslationLanguageCodeList(completeTranslations);
     setCheckedLanguages([...completeTranslations, 'nb-NO']);
-  }, [allFormOriginalTexts, translationsForNavForm]);
+  }, [allFormOriginalTexts, translations]);
 
   const PublishStatusPanel = ({ formProperties }: { formProperties: FormPropertiesType }) => {
     const statusPanelStyles = useStatusPanelStyles();

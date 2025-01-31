@@ -1,4 +1,4 @@
-import { i18nData, mapTranslationsToFormioI18nObject } from '@navikt/skjemadigitalisering-shared-components';
+import { i18nUtils, mapTranslationsToFormioI18nObject } from '@navikt/skjemadigitalisering-shared-components';
 import { FormioTranslationMap, Language, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import React, { createContext, useContext, useEffect, useReducer } from 'react';
 import { getFormTexts } from '../../old_translations/utils';
@@ -53,7 +53,7 @@ function I18nStateProvider({ children, loadTranslations, form }: I18nStateProvid
       ...translationsAsI18n,
       'nb-NO': {
         ...translationsAsI18n['nb-NO'],
-        ...i18nData['nb-NO'],
+        ...i18nUtils.initialData['nb-NO'],
         ...formTextsForNbNOAsI18n,
       },
     };

@@ -12,7 +12,7 @@ import { TestFormPage } from './TestFormPage';
 export const FormPage = () => {
   const { formState } = useForm();
 
-  if (formState.status === 'LOADING') {
+  if (formState.status === 'INITIAL LOADING') {
     return <FormSkeleton leftSidebar={true} rightSidebar={true} />;
   }
 

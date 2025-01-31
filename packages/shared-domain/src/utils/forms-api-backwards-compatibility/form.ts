@@ -30,9 +30,4 @@ const mapNavFormToForm = (form: NavFormType): Form => {
   };
 };
 
-const formioFormsApiUtils = {
-  mapFormToNavForm,
-  mapNavFormToForm,
-};
-
-export default formioFormsApiUtils;
+export { mapFormToNavForm, mapNavFormToForm };

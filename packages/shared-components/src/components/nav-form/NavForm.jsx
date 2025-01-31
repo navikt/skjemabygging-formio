@@ -30,14 +30,14 @@ import { useAppConfig } from '../../context/config/configContext';
 import { usePrefillData } from '../../context/prefill-data/PrefillDataContext';
 import { SANITIZE_CONFIG } from '../../formio/form-builder-options/sanitizeConfig';
 import Styles from '../../styles';
+import i18nUtils from '../../util/i18n';
 import makeStyles from '../../util/styles/jss/jss';
-import i18nData from '../../util/translation/i18nData';
 
 const useStyles = makeStyles({
   '@global': Styles.form,
 });
 
-const NavForm = ({ language = 'nb-NO', i18n = i18nData, ...props }) => {
+const NavForm = ({ language = 'nb-NO', i18n = i18nUtils.initialData, ...props }) => {
   let instance;
   let createPromise;
   let element;
