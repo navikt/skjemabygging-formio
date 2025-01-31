@@ -34,6 +34,7 @@ const log = {
         host: 'localhost:8081',
         Authorization: 'Bearer 123456789',
         AzureAccessToken: 'Complete-azure-access-token',
+        'x-client-ip': '127.0.0.101',
       },
       body: { bytes: 528 },
     },

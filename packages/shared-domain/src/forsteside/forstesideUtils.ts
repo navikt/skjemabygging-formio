@@ -7,8 +7,8 @@ import {
   Recipient,
   SubmissionAttachmentValue,
   UkjentBruker,
+  yourInformationUtils,
 } from '../index';
-import SubmissionYourInformation from '../submission/yourInformation';
 import { genererPersonalia } from './forstesideDepricatedUtils';
 
 type BrukerInfo = KjentBruker | UkjentBruker;
@@ -22,7 +22,7 @@ const addressLine = (text?: string, prefix: string = ', ') => {
 };
 
 const getUserData = (form: NavFormType, submission: SubmissionData): BrukerInfo => {
-  const yourInformation = getFirstYourInformation(form, submission);
+  const yourInformation = yourInformationUtils.getYourInformation(form, submission);
 
   if (!yourInformation) {
     // Denne er for å støtte gamle formatet på dine opplysninger.
@@ -54,19 +54,6 @@ const getUserData = (form: NavFormType, submission: SubmissionData): BrukerInfo 
     };
   } else {
     throw Error('User needs to submit either identification number or address');
-  }
-};
-
-const getFirstYourInformation = (
-  form: NavFormType,
-  submission: SubmissionData,
-): SubmissionYourInformation | undefined => {
-  const yourInformationForm = navFormUtils
-    .flattenComponents(form.components)
-    .find((component) => component.yourInformation && submission[component.key]);
-
-  if (yourInformationForm) {
-    return submission[yourInformationForm.key] as SubmissionYourInformation;
   }
 };
 

@@ -20,12 +20,12 @@ const FormsListPage = ({ loadFormsList }: FormsListPageProps) => {
     try {
       const navForms = await loadFormsList();
       setForms(navForms.map(mapNavForm));
-    } catch (e) {
+    } catch (_e) {
       logger?.error('Could not load forms.');
     } finally {
       setLoading(false);
     }
-  }, [loadFormsList]);
+  }, [loadFormsList, logger]);
 
   const mapNavForm = (navForm: NavFormType): FormListType => {
     return {

@@ -2,7 +2,6 @@ import { ArrowRightIcon } from '@navikt/aksel-icons';
 import { Button, ButtonProps } from '@navikt/ds-react';
 import { Submission, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useState } from 'react';
-import { useAmplitude } from '../../../../context/amplitude';
 import { useAppConfig } from '../../../../context/config/configContext';
 import { useLanguages } from '../../../../context/languages';
 import { useSendInn } from '../../../../context/sendInn/sendInnContext';
@@ -24,7 +23,6 @@ const DigitalSubmissionButton = ({
   children,
   withIcon = false,
 }: Props) => {
-  const { loggNavigering } = useAmplitude();
   const { app } = useAppConfig();
   const { translate } = useLanguages();
   const { submitSoknad } = useSendInn();
@@ -46,7 +44,6 @@ const DigitalSubmissionButton = ({
 
     try {
       setLoading(true);
-      loggNavigering({ lenkeTekst: children, destinasjon: '/sendinn' });
       await submitSoknad(submission);
     } catch (err: any) {
       onError(err);

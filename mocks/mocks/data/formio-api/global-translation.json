@@ -80,5 +80,24 @@
         "fodselsnummerDNummer": "Dette er ikke et gyldig fødselsnummer eller D-nummer"
       }
     }
+  },
+  {
+    "_id": "global-nn-skjematekster",
+    "data": {
+      "name": "global",
+      "scope": "global",
+      "tag": "skjematekster",
+      "language": "nn-NO",
+      "i18n": {
+        "Fornavn": "Fornamn",
+        "Etternavn": "Etternamn",
+        "Dine opplysninger": "Dine opplysningar",
+        "Har du norsk fødselsnummer eller d-nummer?": "Har du norsk fødselsnummer eller d-nummer?",
+        "Fødselsdato (dd.mm.åååå)": "Fødselsdatoen din (dd.mm.åååå)",
+        "required": "Du må fylle ut: {{field}}",
+        "Du må fylle ut: {{field}}": "Du må fylle ut: {{field}}",
+        "Oppsummering": "Oppsummering"
+      }
+    }
   }
 ]

@@ -4,6 +4,7 @@ import {
   NavFormType,
   Submission,
   translationUtils,
+  yourInformationUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import correlator from 'express-correlation-id';
 import { config } from '../../../config/config';
@@ -48,7 +49,19 @@ export const createPdf = async (
   if (!html || Object.keys(html).length === 0) {
     throw Error('Missing HTML for generating PDF.');
   }
-  const { fodselsnummerDNummerSoker } = submission.data;
+
+  const yourInformation = yourInformationUtils.getYourInformation(form, submission.data);
+
+  let identityNumber: string;
+  if (yourInformation?.identitet?.identitetsnummer) {
+    identityNumber = yourInformation.identitet.identitetsnummer;
+  } else if (submission.data.fodselsnummerDNummerSoker) {
+    // This is the old format of the object, which is still used in some forms.
+    identityNumber = submission.data.fodselsnummerDNummerSoker as string;
+  } else {
+    identityNumber = '—';
+  }
+
   appMetrics.exstreamPdfRequestsCounter.inc();
   let errorOccurred = false;
   const stopMetricRequestDuration = appMetrics.outgoingRequestDuration.startTimer({
@@ -62,7 +75,7 @@ export const createPdf = async (
       form.properties.skjemanummer,
       language,
       html,
-      (fodselsnummerDNummerSoker as string | undefined) || '—',
+      identityNumber,
     );
   } catch (e) {
     errorOccurred = true;
