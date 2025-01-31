@@ -1,11 +1,12 @@
 import { GlobalTranslationMap } from '@navikt/skjemadigitalisering-shared-domain';
-import { useEffect, useState } from 'react';
+import { ReactElement, useEffect, useState } from 'react';
 import { CSVLink } from 'react-csv';
 import { getAllPredefinedOriginalTexts, transformGlobalTranslationsToCsvData } from './utils';
 
 interface Props {
   allGlobalTranslations: GlobalTranslationMap;
   languageCode: string;
+  children?: ReactElement | string;
 }
 
 interface CsvData {
@@ -18,7 +19,7 @@ interface CsvHeader {
   key: string;
 }
 
-const GlobalCsvLink = ({ allGlobalTranslations, languageCode }: Props) => {
+const GlobalCsvLink = ({ allGlobalTranslations, languageCode, children }: Props) => {
   const [csvData, setCsvData] = useState<CsvData[]>([]);
   const [csvHeaders, setCsvHeaders] = useState<CsvHeader[]>([]);
 
@@ -42,7 +43,7 @@ const GlobalCsvLink = ({ allGlobalTranslations, languageCode }: Props) => {
       separator=";"
       enclosingCharacter='"'
     >
-      Eksporter
+      {children ? children : 'Eksporter'}
     </CSVLink>
   );
 };

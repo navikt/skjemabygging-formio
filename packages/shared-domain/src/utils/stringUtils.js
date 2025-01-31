@@ -32,9 +32,14 @@ export const addPrefixOrPostfix = (originalText, prefix = '', postfix = '') => {
   }
 };
 
+export const truncate = (text, boundary) => {
+  return text.length > boundary ? `${text.slice(0, boundary - 1)}...` : text;
+};
+
 const stringUtils = {
   camelCase,
   toPascalCase,
   addPrefixOrPostfix,
+  truncate,
 };
 export default stringUtils;

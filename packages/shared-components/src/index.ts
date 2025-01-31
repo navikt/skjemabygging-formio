@@ -29,6 +29,7 @@ import StructuredHtml from './util/html/StructuredHtml/StructuredHtml';
 import StructuredHtmlElement from './util/html/StructuredHtml/StructuredHtmlElement';
 import StructuredHtmlText from './util/html/StructuredHtml/StructuredHtmlText';
 import htmlConverter, { HtmlAsJsonElement, HtmlAsJsonTextElement } from './util/html/converters';
+import listSort from './util/list/sort';
 import makeStyles from './util/styles/jss/jss';
 import { navCssVariables } from './util/styles/nav-css/navCssVariables';
 import i18nData from './util/translation/i18nData';
@@ -52,6 +53,7 @@ export {
   InnerHtml,
   LanguageSelector,
   LanguagesProvider,
+  listSort,
   LoadingComponent,
   makeStyles,
   mapTranslationsToFormioI18nObject,

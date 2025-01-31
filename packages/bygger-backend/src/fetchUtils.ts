@@ -43,9 +43,18 @@ export async function fetchWithErrorHandling(url: RequestInfo, options: RequestI
       data: null,
     };
   }
+  if (res.headers.get('content-type')?.includes('application/json')) {
+    return {
+      status: 'OK',
+      data: await res.json(),
+    };
+  }
+
+  const logMeta = { status: res.status, method };
+  logger.warn(`Fetch ${method} ${url}: Unexpected content-type "${res.headers.get('content-type')}"`, logMeta);
   return {
     status: 'OK',
-    data: await res.json(),
+    data: null,
   };
 }
 
