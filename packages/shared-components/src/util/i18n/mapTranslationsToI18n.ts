@@ -24,7 +24,7 @@ const populateLanguages = (translations: I18nTranslations): I18nTranslations => 
 const mapFormsApiTranslationsToI18n = (
   translations: FormsApiTranslation[],
   includeCountryNames: boolean = false,
-  initial: I18nTranslations = i18nData,
+  initial: I18nTranslations = i18nData as I18nTranslations,
 ): I18nTranslations => {
   const i18nTranslations = translations.reduce<I18nTranslations>((acc, translation) => {
     return Object.fromEntries(
