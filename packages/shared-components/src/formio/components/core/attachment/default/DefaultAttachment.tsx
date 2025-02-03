@@ -24,6 +24,32 @@ class DefaultAttachment extends BaseComponent {
     return defaultAttachmentBuilder();
   }
 
+  /**
+   * If the component has values, we need to convert them to attachmentValues
+   *
+   * When we no longer need to support the old attachments with type radiopanel
+   * and have none with type attachment and values, we can remove this.
+   */
+  init() {
+    super.init();
+
+    if (!this.component?.attachmentValues && this.component?.values) {
+      this.component.attachmentValues = {};
+      for (const objectValue of this.component.values) {
+        if (
+          objectValue.value === 'leggerVedNaa' ||
+          objectValue.value === 'ettersender' ||
+          objectValue.value === 'levertTidligere' ||
+          objectValue.value === 'nei'
+        ) {
+          this.component.attachmentValues[objectValue.value] = {
+            enabled: !!objectValue.value,
+          };
+        }
+      }
+    }
+  }
+
   getAttachmentValues() {
     return this.component?.attachmentValues ? this.component?.attachmentValues : this.component?.values;
   }
