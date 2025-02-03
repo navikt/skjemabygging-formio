@@ -33,20 +33,34 @@ class DefaultAttachment extends BaseComponent {
   init() {
     super.init();
 
-    if (!this.component?.attachmentValues && this.component?.values) {
-      this.component.attachmentValues = {};
-      for (const objectValue of this.component.values) {
-        if (
-          objectValue.value === 'leggerVedNaa' ||
-          objectValue.value === 'ettersender' ||
-          objectValue.value === 'levertTidligere' ||
-          objectValue.value === 'nei'
-        ) {
-          this.component.attachmentValues[objectValue.value] = {
-            enabled: !!objectValue.value,
-          };
+    if (this.builderMode && !this.component?.attachmentValues && this.component?.values) {
+      if (!this.component?.attachmentType) {
+        this.component.attachmentType = this.component?.otherDocumentation ? 'other' : 'default';
+      }
+
+      if (this.component.attachmentType === 'other') {
+        this.component.attachmentValues = {
+          leggerVedNaa: { enabled: true },
+          nei: { enabled: true },
+        };
+      } else {
+        this.component.attachmentValues = {};
+        for (const objectValue of this.component.values) {
+          if (
+            objectValue.value === 'leggerVedNaa' ||
+            objectValue.value === 'ettersender' ||
+            objectValue.value === 'levertTidligere' ||
+            objectValue.value === 'nei'
+          ) {
+            this.component.attachmentValues[objectValue.value] = {
+              enabled: !!objectValue.value,
+            };
+          }
         }
       }
+
+      this.component.otherDocumentation = undefined;
+      this.component.values = undefined;
     }
   }
 
