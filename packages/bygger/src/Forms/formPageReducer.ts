@@ -1,18 +1,20 @@
-import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, formioFormsApiUtils, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import cloneDeep from 'lodash.clonedeep';
 
 type FormReducerAction = 'form-loaded' | 'form-not-found' | 'form-changed' | 'form-saved' | 'form-error';
 type Status = 'INITIAL LOADING' | 'FINISHED LOADING' | 'FORM NOT FOUND' | 'ERROR';
-export type FormReducerActionType = { type: FormReducerAction; form?: NavFormType; publishedForm?: NavFormType };
+export type FormReducerActionType = { type: FormReducerAction; form?: Form; publishedForm?: NavFormType };
 
 export interface FormReducerState {
   status: Status;
-  dbForm?: NavFormType;
-  form?: NavFormType;
+  dbForm?: Form;
+  form?: Form;
+  formioForm?: NavFormType;
   publishedForm?: NavFormType | null;
 }
 
 const formPageReducer = (state: FormReducerState, action: FormReducerActionType): FormReducerState => {
+  console.log('formPageReducer', action.form);
   const formClone = cloneDeep(action.form);
   switch (action.type) {
     case 'form-loaded':
@@ -21,6 +23,7 @@ const formPageReducer = (state: FormReducerState, action: FormReducerActionType)
         status: 'FINISHED LOADING',
         dbForm: formClone,
         form: formClone,
+        formioForm: formioFormsApiUtils.mapFormToNavForm(formClone), // TODO: temp
         publishedForm: action.publishedForm || state.publishedForm,
       };
     case 'form-changed':
@@ -28,6 +31,7 @@ const formPageReducer = (state: FormReducerState, action: FormReducerActionType)
         ...state,
         dbForm: state.dbForm,
         form: formClone,
+        formioForm: formioFormsApiUtils.mapFormToNavForm(formClone), // TODO: temp
       };
     case 'form-not-found':
       return {

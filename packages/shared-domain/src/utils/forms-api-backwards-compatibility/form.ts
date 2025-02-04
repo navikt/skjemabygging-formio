@@ -14,7 +14,21 @@ const mapFormToNavForm = (form: Form): NavFormType => {
 };
 
 const mapNavFormToForm = (form: NavFormType): Form => {
-  const { id, revision, path, title, components, properties, createdAt, createdBy, changedAt, changedBy } = form;
+  //TODO: move forms-api-properties to context?
+  const {
+    id,
+    revision,
+    path,
+    title,
+    components,
+    properties,
+    createdAt,
+    createdBy,
+    changedAt,
+    changedBy,
+    publishedAt,
+    publishedBy,
+  } = form;
   return {
     id,
     revision,
@@ -27,6 +41,8 @@ const mapNavFormToForm = (form: NavFormType): Form => {
     createdBy,
     changedAt,
     changedBy,
+    publishedAt,
+    publishedBy,
   };
 };
 

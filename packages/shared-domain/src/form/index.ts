@@ -283,6 +283,8 @@ export interface NavFormType {
   createdBy?: string;
   changedAt?: string;
   changedBy?: string;
+  publishedAt?: string;
+  publishedBy?: string;
 }
 
 export interface FormsResponseForm extends Pick<NavFormType, '_id' | 'title' | 'path' | 'modified'> {

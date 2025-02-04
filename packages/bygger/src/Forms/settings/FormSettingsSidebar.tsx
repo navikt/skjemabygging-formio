@@ -2,7 +2,7 @@ import { PadlockLockedIcon } from '@navikt/aksel-icons';
 import { Button, VStack } from '@navikt/ds-react';
 
 import { useAppConfig, useModal } from '@navikt/skjemadigitalisering-shared-components';
-import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form } from '@navikt/skjemadigitalisering-shared-domain';
 import ButtonWithSpinner from '../../components/ButtonWithSpinner';
 import SidebarLayout from '../../components/layout/SidebarLayout';
 import UserFeedback from '../../components/UserFeedback';
@@ -13,8 +13,8 @@ import ToggleFormLockButton from '../toggleFormLockButton/ToggleFormLockButton';
 import UnpublishButton from '../unpublish/UnpublishButton';
 
 interface FormSettingsPageProps {
-  form: NavFormType;
-  validateAndSave: (form: NavFormType) => void;
+  form: Form;
+  validateAndSave: (form: Form) => void;
   setOpenPublishSettingModal: (open: boolean) => void;
 }
 
@@ -59,7 +59,7 @@ const FormSettingsSidebar = ({ form, validateAndSave, setOpenPublishSettingModal
         )}
         <ToggleFormLockButton isLockedForm={isLockedForm} lockedFormReason={lockedFormReason} />
         <UserFeedback />
-        <FormStatusPanel publishProperties={form.properties} />
+        <FormStatusPanel form={form} />
       </VStack>
       <LockedFormModal open={lockedFormModal} onClose={() => setLockedFormModal(false)} form={form} />
     </SidebarLayout>

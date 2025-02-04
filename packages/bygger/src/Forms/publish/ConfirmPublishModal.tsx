@@ -1,9 +1,9 @@
 import { ConfirmationModal } from '@navikt/skjemadigitalisering-shared-components';
-import { localizationUtils, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, localizationUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { useForm } from '../../context/old_form/FormContext';
 
 interface Props {
-  form: NavFormType;
+  form: Form;
   open: boolean;
   onClose: () => void;
   publishLanguageCodeList: string[];

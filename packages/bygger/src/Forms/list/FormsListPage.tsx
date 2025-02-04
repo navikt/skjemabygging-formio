@@ -28,13 +28,15 @@ const FormsListPage = () => {
   }, [loadFormsList, logger, loading]);
 
   const mapNavForm = (form: Form): FormListType => {
+    // console.log(form);
+    // console.log('status', determineStatus(form.properties));
     return {
       id: `${form.id}`,
       modified: form.changedAt ?? form.properties.modified ?? '',
       title: form.title?.trim(),
       path: form.path,
       number: form.properties?.skjemanummer?.trim(),
-      status: determineStatus(form.properties),
+      status: determineStatus(form),
       locked: !!form.properties.isLockedForm,
     };
   };

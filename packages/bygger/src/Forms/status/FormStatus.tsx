@@ -1,20 +1,24 @@
+import { Form } from '@navikt/skjemadigitalisering-shared-domain';
 import classNames from 'classnames';
 import moment from 'moment';
 import FormStatusIndicator from './FormStatusIndicator';
 import { useStatusStyles } from './styles';
-import { PublishStatusProperties, Status, StreetLightSize } from './types';
+import { Status, StreetLightSize } from './types';
 
-export function determineStatus(publishProperties: PublishStatusProperties): Status {
-  const { modified, published, isTestForm, unpublished } = publishProperties;
-  const modifiedDate = moment(modified);
+export function determineStatus(form: Form): Status {
+  const { changedAt, publishedAt, properties } = form;
+  const { isTestForm, unpublished } = properties ?? {};
+  const modifiedDate = moment(changedAt);
   const unpublishedDate = unpublished !== undefined ? moment(unpublished) : undefined;
 
+  // console.log('determineStatus', { changedAt, publishedAt, properties, isTestForm, unpublished });
+  // console.log(changedAt, publishedAt, moment(changedAt).isAfter(moment(publishedAt)));
   if (isTestForm) {
     return 'TESTFORM';
   }
 
-  if (modified && published) {
-    if (moment(modified).isAfter(moment(published))) {
+  if (changedAt && publishedAt) {
+    if (moment(changedAt).isAfter(moment(publishedAt))) {
       return 'PENDING';
     }
     return 'PUBLISHED';
@@ -22,7 +26,7 @@ export function determineStatus(publishProperties: PublishStatusProperties): Sta
 
   if (unpublishedDate?.isSameOrAfter(modifiedDate)) {
     return 'UNPUBLISHED';
-  } else if (modified) {
+  } else if (changedAt) {
     return 'DRAFT';
   }
 
@@ -36,6 +40,7 @@ type FormStatusProps = {
 };
 
 const FormStatus = ({ status, size, iconOnly = false }: FormStatusProps) => {
+  console.log('FormStatus', status);
   const styles = useStatusStyles({});
   const statusTexts: Record<Status, string> = {
     PUBLISHED: 'Publisert',

@@ -1,6 +1,6 @@
 import { Alert, Checkbox, CheckboxGroup, Heading } from '@navikt/ds-react';
 import { ConfirmationModal, i18nUtils, makeStyles } from '@navikt/skjemadigitalisering-shared-components';
-import { FormPropertiesType, I18nTranslations, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, FormPropertiesType, I18nTranslations } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useState } from 'react';
 import { languagesInNorwegian } from '../../context/i18n';
 import { useFormTranslations } from '../../context/translations/FormTranslationsContext';
@@ -25,7 +25,7 @@ const useStatusPanelStyles = makeStyles({
 });
 
 interface Props {
-  form: NavFormType;
+  form: Form;
   open: boolean;
   onClose: () => void;
   onConfirm: (languageCodes: string[]) => void;
@@ -90,7 +90,7 @@ const PublishSettingsModal = ({ open, onClose, onConfirm, form }: Props) => {
         <tbody>
           <tr>
             <td>
-              <FormStatus status={determineStatus(formProperties)} size="large" />
+              <FormStatus status={determineStatus(form)} size="large" />
             </td>
             <td>
               {formProperties.published && (

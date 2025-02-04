@@ -1,7 +1,7 @@
 import {
   FeatureTogglesMap,
+  Form,
   FormPropertiesType,
-  NavFormType,
   TranslationLang,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, ReactNode, useCallback, useContext, useEffect, useReducer } from 'react';
@@ -16,9 +16,9 @@ interface Props {
 
 interface ContextValue {
   formState: FormReducerState;
-  changeForm: (form: NavFormType) => void;
-  saveForm: (form: NavFormType) => Promise<NavFormType | void>;
-  publishForm: (form: NavFormType, selectedLanguages: TranslationLang[]) => Promise<void>;
+  changeForm: (form: Form) => void;
+  saveForm: (form: Form) => Promise<Form | void>;
+  publishForm: (form: Form, selectedLanguages: TranslationLang[]) => Promise<void>;
   unpublishForm: () => Promise<void>;
   copyFormFromProduction: () => Promise<void>;
   changeFormSettings: (properties: Partial<FormPropertiesType>) => Promise<void>;
@@ -79,13 +79,13 @@ const FormProvider = ({ featureToggles, children }: Props) => {
     }, [formPath]),
   );
 
-  const changeForm = useCallback((changedForm: NavFormType) => {
+  const changeForm = useCallback((changedForm: Form) => {
     sessionStorage.setItem(changedForm.path, JSON.stringify({ changed: true }));
     console.log('changeForm', changedForm);
     dispatch({ type: 'form-changed', form: changedForm });
   }, []);
 
-  const saveForm = async (form: NavFormType) => {
+  const saveForm = async (form: Form) => {
     console.log('saveForm', state);
     console.log('save input', form);
     const savedForm = await onSave(form);
@@ -102,7 +102,7 @@ const FormProvider = ({ featureToggles, children }: Props) => {
   /**
    * @deprecated
    */
-  const publishForm = async (form: NavFormType, selectedLanguages: TranslationLang[]) => {
+  const publishForm = async (form: Form, selectedLanguages: TranslationLang[]) => {
     await onPublish(form, selectedLanguages);
     // const savedForm = await onPublish(form, translations);
     // await loadPublishedForm(formPath)

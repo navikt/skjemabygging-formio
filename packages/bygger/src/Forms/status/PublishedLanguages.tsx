@@ -15,7 +15,7 @@ interface Props {
 
 const PublishedLanguages = ({ publishProperties }: Props) => {
   const styles = useStatusStyles({});
-  if (publishProperties.published && publishProperties.publishedLanguages) {
+  if (publishProperties.publishedAt && publishProperties.publishedLanguages) {
     const sortedLanguageCodes = [...publishProperties.publishedLanguages, langCodeBokmal].sort();
     return (
       <div className={styles.panelItem}>
