@@ -15,10 +15,10 @@ Settings.defaultZone = 'Europe/Oslo';
 
 fetch('/api/config')
   .then((res) => {
-    const token = res.headers.get('Bygger-Formio-Token');
-    if (token) {
-      localStorage.setItem('formioToken', token);
-    }
+    // const token = res.headers.get('Bygger-Formio-Token');
+    // if (token) {
+    //   localStorage.setItem('formioToken', token);
+    // }
     return res.json();
   })
   .then((config) => renderReact(config));
@@ -38,7 +38,7 @@ const renderReact = (config) => {
           http={httpBygger}
         >
           <AuthProvider user={config.user}>
-            <App projectURL={config.formioProjectUrl} serverURL={config.fyllutBaseUrl} />
+            <App serverURL={config.fyllutBaseUrl} />
           </AuthProvider>
         </AppConfigProvider>
       </BrowserRouter>

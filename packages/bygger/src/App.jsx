@@ -18,14 +18,14 @@ const useStyles = makeStyles({
   },
 });
 
-function App({ projectURL, serverURL }) {
-  NavFormioJs.Formio.setBaseUrl(projectURL);
+function App({ serverURL }) {
+  // NavFormioJs.Formio.setBaseUrl(projectURL);
   const styles = useStyles();
   const { userData } = useAuth();
-  const formio = useMemo(() => new NavFormioJs.Formio(projectURL), [projectURL]);
+  const formio = useMemo(() => new NavFormioJs.Formio(''), []);
   const contentFunc = userData
     ? () => <AuthenticatedApp serverURL={serverURL} formio={formio} />
-    : () => <UnauthenticatedApp projectURL={projectURL} />;
+    : () => <UnauthenticatedApp />;
 
   return (
     <FeedbackProvider>
