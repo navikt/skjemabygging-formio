@@ -14,7 +14,6 @@ export interface FormReducerState {
 }
 
 const formPageReducer = (state: FormReducerState, action: FormReducerActionType): FormReducerState => {
-  console.log('formPageReducer', action.form);
   const formClone = cloneDeep(action.form);
   switch (action.type) {
     case 'form-loaded':

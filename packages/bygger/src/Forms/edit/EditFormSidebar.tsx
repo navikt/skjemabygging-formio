@@ -20,7 +20,6 @@ const EditFormSidebar = ({ form }: EditFormSidebarProps) => {
   const [lockedFormModal, setLockedFormModal] = useModal();
   const { saveForm } = useForm();
 
-  console.log('Form', form);
   const {
     properties: { isLockedForm },
   } = form;
@@ -58,7 +57,7 @@ const EditFormSidebar = ({ form }: EditFormSidebarProps) => {
         </Button>
         <UnpublishButton form={form} />
         <UserFeedback />
-        <FormStatusPanel form={form} />
+        <FormStatusPanel formStatusProperties={form} />
 
         <PublishModalComponents
           form={form}

@@ -5,10 +5,11 @@ import { useEffect, useState } from 'react';
 import { languagesInNorwegian } from '../../context/i18n';
 import { useFormTranslations } from '../../context/translations/FormTranslationsContext';
 import { getFormTexts } from '../../old_translations/utils';
-import FormStatus, { determineStatus } from '../status/FormStatus';
+import FormStatus from '../status/FormStatus';
 import { allLanguagesInNorwegian } from '../status/PublishedLanguages';
 import Timestamp from '../status/Timestamp';
 import { useStatusStyles } from '../status/styles';
+import { determineStatusFromForm } from '../status/utils';
 
 const useStatusPanelStyles = makeStyles({
   table: {
@@ -90,7 +91,7 @@ const PublishSettingsModal = ({ open, onClose, onConfirm, form }: Props) => {
         <tbody>
           <tr>
             <td>
-              <FormStatus status={determineStatus(form)} size="large" />
+              <FormStatus status={determineStatusFromForm(form)} size="large" />
             </td>
             <td>
               {formProperties.published && (

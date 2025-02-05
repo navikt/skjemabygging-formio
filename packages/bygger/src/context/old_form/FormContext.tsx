@@ -68,7 +68,7 @@ const FormProvider = ({ featureToggles, children }: Props) => {
           }
         });
     }
-  }, [loadForm, formPath, featureToggles.enableDiff]);
+  }, [loadForm, formPath, featureToggles.enableDiff, state.status]);
 
   // Clear session storage on refresh
   useBeforeUnload(
@@ -81,13 +81,10 @@ const FormProvider = ({ featureToggles, children }: Props) => {
 
   const changeForm = useCallback((changedForm: Form) => {
     sessionStorage.setItem(changedForm.path, JSON.stringify({ changed: true }));
-    console.log('changeForm', changedForm);
     dispatch({ type: 'form-changed', form: changedForm });
   }, []);
 
   const saveForm = async (form: Form) => {
-    console.log('saveForm', state);
-    console.log('save input', form);
     const savedForm = await onSave(form);
     if (formPath) {
       sessionStorage.removeItem(formPath);

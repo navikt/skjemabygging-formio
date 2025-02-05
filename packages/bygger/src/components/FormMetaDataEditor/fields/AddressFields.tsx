@@ -1,5 +1,5 @@
 import { Link, Select } from '@navikt/ds-react';
-import { NavFormSettingsDiff, NavFormType, Recipient } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, NavFormSettingsDiff, Recipient } from '@navikt/skjemadigitalisering-shared-domain';
 import { Link as ReactRouterLink } from 'react-router-dom';
 import { useRecipients } from '../../../context/recipients/RecipientsContext';
 import LabelWithDiff from '../LabelWithDiff';
@@ -8,7 +8,7 @@ import { UpdateFormFunction } from '../utils/utils';
 export interface AddressFieldsProps {
   onChange: UpdateFormFunction;
   diff: NavFormSettingsDiff;
-  form: NavFormType;
+  form: Form;
 }
 
 const AddressFields = ({ onChange, diff, form }: AddressFieldsProps) => {

@@ -1,9 +1,9 @@
 import { TextField } from '@navikt/ds-react';
 import {
+  Form,
   FormPropertiesType,
   InnsendingType,
   NavFormSettingsDiff,
-  NavFormType,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import React, { useCallback } from 'react';
 import LabelWithDiff from '../LabelWithDiff';
@@ -13,11 +13,11 @@ import { FormMetadataError, UpdateFormFunction } from '../utils/utils';
 interface Props {
   onChange: UpdateFormFunction;
   diff: NavFormSettingsDiff;
-  form: NavFormType;
+  form: Form;
   errors?: FormMetadataError;
 }
 
-const mergeProps = (form: NavFormType, props: Partial<FormPropertiesType>): NavFormType => ({
+const mergeProps = (form: Form, props: Partial<FormPropertiesType>): Form => ({
   ...form,
   properties: {
     ...form.properties,
@@ -29,7 +29,7 @@ const UxSignalsFields = ({ onChange, diff, form, errors }: Props) => {
   const { uxSignalsId, uxSignalsInnsending, isLockedForm } = form.properties;
 
   const idChangeHandler = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>, form: NavFormType) => {
+    (event: React.ChangeEvent<HTMLInputElement>, form: Form) => {
       const id = event.target.value?.trim();
       onChange(
         mergeProps(form, {
@@ -42,7 +42,7 @@ const UxSignalsFields = ({ onChange, diff, form, errors }: Props) => {
   );
 
   const innsendingChangeHandler = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>, form: NavFormType) => {
+    (event: React.ChangeEvent<HTMLInputElement>, form: Form) => {
       const innsending: InnsendingType = event.target.value as InnsendingType;
       onChange(
         mergeProps(form, {

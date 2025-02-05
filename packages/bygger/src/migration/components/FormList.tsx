@@ -2,7 +2,8 @@ import { BodyShort, Heading, Table } from '@navikt/ds-react';
 import { makeStyles } from '@navikt/skjemadigitalisering-shared-components';
 import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import { FormMigrationLogData } from '../../../types/migration';
-import FormStatus, { determineStatus } from '../../Forms/status/FormStatus';
+import FormStatus from '../../Forms/status/FormStatus';
+import { determineStatus } from '../../Forms/status/utils';
 
 const useStyles = makeStyles({
   container: {

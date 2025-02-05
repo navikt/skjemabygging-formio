@@ -59,7 +59,7 @@ const FormSettingsSidebar = ({ form, validateAndSave, setOpenPublishSettingModal
         )}
         <ToggleFormLockButton isLockedForm={isLockedForm} lockedFormReason={lockedFormReason} />
         <UserFeedback />
-        <FormStatusPanel form={form} />
+        <FormStatusPanel formStatusProperties={form} />
       </VStack>
       <LockedFormModal open={lockedFormModal} onClose={() => setLockedFormModal(false)} form={form} />
     </SidebarLayout>

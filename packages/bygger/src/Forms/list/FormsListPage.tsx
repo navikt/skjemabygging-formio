@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from 'react';
 import useForms from '../../api/useForms';
 import { AppLayout } from '../../components/AppLayout';
 import RowLayout from '../../components/layout/RowLayout';
-import { determineStatus } from '../status/FormStatus';
+import { determineStatusFromForm } from '../status/utils';
 import FormError from './../error/FormError';
 import { FormListType, FormsList } from './FormsList';
 
@@ -17,7 +17,7 @@ const FormsListPage = () => {
   const loadForms = useCallback(async () => {
     if (loading) {
       try {
-        const navForms = await loadFormsList('title,path,properties,changedAt');
+        const navForms = await loadFormsList('title,path,properties,changedAt,publishedAt');
         setForms(navForms.map(mapNavForm));
       } catch (_e) {
         logger?.error('Could not load forms.');
@@ -36,7 +36,7 @@ const FormsListPage = () => {
       title: form.title?.trim(),
       path: form.path,
       number: form.properties?.skjemanummer?.trim(),
-      status: determineStatus(form),
+      status: determineStatusFromForm(form),
       locked: !!form.properties.isLockedForm,
     };
   };

@@ -1,19 +1,19 @@
-import { dateUtils, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
+import { dateUtils, Form } from '@navikt/skjemadigitalisering-shared-domain';
 import { fireEvent, render, screen } from '@testing-library/react';
 import UnpublishButton from './UnpublishButton';
 
 describe('UnpublishButton', () => {
-  const renderButton = (form?: NavFormType) => {
+  const renderButton = (form?: Form) => {
     if (!form) {
       form = {
         properties: { published: dateUtils.getIso8601String() },
-      } as NavFormType;
+      } as Form;
     }
     render(<UnpublishButton form={form} />);
   };
 
   it('do not render button if not published', () => {
-    renderButton({ properties: {} } as NavFormType);
+    renderButton({ properties: {} } as Form);
     expect(screen.queryByRole('button')).not.toBeInTheDocument();
   });
 
@@ -24,7 +24,7 @@ describe('UnpublishButton', () => {
   });
 
   it('renders button with lock', async () => {
-    renderButton({ properties: { published: dateUtils.getIso8601String(), isLockedForm: true } } as NavFormType);
+    renderButton({ properties: { published: dateUtils.getIso8601String(), isLockedForm: true } } as Form);
     expect(await screen.findByRole('button')).toBeInTheDocument();
     expect(screen.getByTitle('Skjemaet er låst')).toBeInTheDocument();
   });

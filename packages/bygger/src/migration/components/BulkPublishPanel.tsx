@@ -1,8 +1,9 @@
 import { Alert, BodyShort, Button, Checkbox, Heading, Panel, Table } from '@navikt/ds-react';
-import { ConfirmationModal, NavFormioJs, makeStyles } from '@navikt/skjemadigitalisering-shared-components';
-import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
+import { ConfirmationModal, makeStyles, NavFormioJs } from '@navikt/skjemadigitalisering-shared-components';
+import { formioFormsApiUtils, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useReducer, useState } from 'react';
-import FormStatus, { determineStatus } from '../../Forms/status/FormStatus';
+import FormStatus from '../../Forms/status/FormStatus';
+import { determineStatusFromForm } from '../../Forms/status/utils';
 import { bulkPublish } from '../api';
 import FormList from './FormList';
 
@@ -49,7 +50,7 @@ const BulkPublishPanel = ({ forms }: Props) => {
     dispatch({
       type: 'init',
       payload: forms.filter((form) => {
-        const status = determineStatus(form.properties);
+        const status = determineStatusFromForm(formioFormsApiUtils.mapNavFormToForm(form));
         return status === 'PENDING' || status === 'PUBLISHED';
       }),
     });
@@ -99,7 +100,12 @@ const BulkPublishPanel = ({ forms }: Props) => {
                     <Table.HeaderCell scope="row">{form.properties.skjemanummer}</Table.HeaderCell>
                     <Table.DataCell>{form.name ?? form.title}</Table.DataCell>
                     <Table.DataCell>
-                      {<FormStatus status={determineStatus(form.properties)} size={'small'} />}
+                      {
+                        <FormStatus
+                          status={determineStatusFromForm(formioFormsApiUtils.mapNavFormToForm(form))}
+                          size={'small'}
+                        />
+                      }
                     </Table.DataCell>
                     <Table.DataCell className={styles.checkBoxCell}>
                       {

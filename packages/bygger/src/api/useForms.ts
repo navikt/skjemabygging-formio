@@ -1,4 +1,4 @@
-import { Form, NavFormType, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
 import useFormsApiForms from './useFormsApiForms';
 
 /**
@@ -7,7 +7,7 @@ import useFormsApiForms from './useFormsApiForms';
 const useForms = () => {
   const { getAll, get, put, post, publish } = useFormsApiForms();
 
-  const createForm = async (form: NavFormType) => {
+  const createForm = async (form: Form) => {
     return await post(form);
   };
 

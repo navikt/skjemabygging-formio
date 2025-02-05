@@ -1,12 +1,12 @@
 import { TextField } from '@navikt/ds-react';
-import { NavFormSettingsDiff, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, NavFormSettingsDiff } from '@navikt/skjemadigitalisering-shared-domain';
 import LabelWithDiff from '../LabelWithDiff';
 import { FormMetadataError, UpdateFormFunction } from '../utils/utils';
 
 export interface MellomlagringDurationProps {
   onChange: UpdateFormFunction;
   diff: NavFormSettingsDiff;
-  form: NavFormType;
+  form: Form;
   errors?: FormMetadataError;
 }
 

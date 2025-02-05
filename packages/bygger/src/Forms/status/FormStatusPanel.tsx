@@ -1,24 +1,24 @@
 import { Box, Label } from '@navikt/ds-react';
-import { Form } from '@navikt/skjemadigitalisering-shared-domain';
-import FormStatus, { determineStatus } from './FormStatus';
+import FormStatus from './FormStatus';
 import PublishedLanguages from './PublishedLanguages';
 import Timestamp from './Timestamp';
 import ToggleDiffButton from './ToggleDiffButton';
 import { useStatusStyles } from './styles';
+import { FormStatusProperties } from './types';
+import { determineStatus } from './utils';
 
 interface Props {
-  form: Form;
+  formStatusProperties: FormStatusProperties;
   spacing?: 'default' | 'small';
   hideToggleDiffButton?: boolean;
 }
 
-const FormStatusPanel = ({ form, spacing, hideToggleDiffButton = false }: Props) => {
+const FormStatusPanel = ({ formStatusProperties, spacing, hideToggleDiffButton = false }: Props) => {
   // console.log('publishProperties', publishProperties);
   const styles = useStatusStyles({ spacing } as Jss.Theme);
   // const { modified, modifiedBy, published, publishedBy, unpublished, unpublishedBy } = publishProperties;
-  const { changedAt, changedBy, publishedAt, publishedBy, properties } = form;
+  const { changedAt, changedBy, publishedAt, publishedBy, properties } = formStatusProperties;
   const { unpublished, unpublishedBy, publishedLanguages } = properties ?? {};
-  console.log('FormStatusPanel', form);
 
   const LabeledTimeAndUser = ({
     label,
@@ -47,7 +47,7 @@ const FormStatusPanel = ({ form, spacing, hideToggleDiffButton = false }: Props)
       <div className={styles.panelItem}>
         <Label>Status:</Label>
         <div className={styles.sidePanelFormStatusContainer}>
-          <FormStatus status={determineStatus(form)} size="large" />
+          <FormStatus status={determineStatus(formStatusProperties)} size="large" />
         </div>
         {!hideToggleDiffButton && publishedAt && <ToggleDiffButton className={styles.toggleDiffButton} />}
       </div>

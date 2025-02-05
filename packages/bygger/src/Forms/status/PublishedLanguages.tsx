@@ -1,7 +1,7 @@
 import { Label } from '@navikt/ds-react';
 import { languagesInNorwegian } from '../../context/i18n';
 import { useStatusStyles } from './styles';
-import { PublishProperties } from './types';
+import { FormStatusProperties } from './types';
 
 const langCodeBokmal = 'nb-NO';
 export const allLanguagesInNorwegian = {
@@ -10,7 +10,7 @@ export const allLanguagesInNorwegian = {
 };
 
 interface Props {
-  publishProperties: PublishProperties;
+  publishProperties: FormStatusProperties;
 }
 
 const PublishedLanguages = ({ publishProperties }: Props) => {

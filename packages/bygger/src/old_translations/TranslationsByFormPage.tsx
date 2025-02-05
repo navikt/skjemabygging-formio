@@ -1,6 +1,6 @@
 import { VStack } from '@navikt/ds-react';
 import { LoadingComponent } from '@navikt/skjemadigitalisering-shared-components';
-import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useMemo, useState } from 'react';
 import { CSVLink } from 'react-csv';
 import { useParams } from 'react-router-dom';
@@ -24,7 +24,7 @@ interface TranslationsByFormPageProps {
 
 const TranslationsByFormPage = ({ loadForm, saveTranslation }: TranslationsByFormPageProps) => {
   const { formPath, languageCode = '' } = useParams();
-  const [form, setForm] = useState<NavFormType>();
+  const [form, setForm] = useState<Form>();
   const [status, setStatus] = useState('LOADING');
   const { translations, status: translationStatus } = useI18nState();
   const languages = useMemo(() => getAvailableLanguages(translations), [translations]);
