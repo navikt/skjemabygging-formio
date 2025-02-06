@@ -82,11 +82,12 @@ jobs:
           identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
           project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
           image_suffix: fyllut-base-dev # base image for dev
-          dockerfile: ./docker/Dockerfile.fyllut-base
-          docker_context: ./packages
           build_args: |
             git_sha=${{ github.sha }}
+          dockerfile: ./docker/Dockerfile.fyllut-base
+          docker_context: ./packages
           pull: true
+          tag: ${{ github.sha }}
     outputs:
       image: ${{ steps.docker-build-push-fyllut.outputs.image }}
 
