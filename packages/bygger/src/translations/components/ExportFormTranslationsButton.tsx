@@ -1,7 +1,7 @@
 import {
+  Form,
   FormioTranslation,
   FormioTranslationMap,
-  NavFormType,
   TranslationLang,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { useMemo } from 'react';
@@ -11,7 +11,7 @@ import { getTextsAndTranslationsForForm, getTextsAndTranslationsHeaders } from '
 import { mapFormsApiTranslationsToScopedTranslationMap } from '../utils/translationsUtils';
 
 interface Props {
-  form: NavFormType;
+  form: Form;
 }
 
 const ExportFormTranslationsButton = ({ form }: Props) => {
