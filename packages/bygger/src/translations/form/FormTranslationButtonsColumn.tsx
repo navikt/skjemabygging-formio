@@ -1,9 +1,15 @@
 import { Button, VStack } from '@navikt/ds-react';
+import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import { useState } from 'react';
 import UserFeedback from '../../components/UserFeedback';
 import { useEditFormTranslations } from '../../context/translations/EditFormTranslationsContext';
+import ExportFormTranslationsButton from '../components/ExportFormTranslationsButton';
 
-const FormTranslationButtonsColumn = () => {
+interface Props {
+  form: NavFormType;
+}
+
+const FormTranslationButtonsColumn = ({ form }: Props) => {
   const [isSaving, setIsSaving] = useState(false);
   const { saveChanges } = useEditFormTranslations();
 
@@ -21,9 +27,7 @@ const FormTranslationButtonsColumn = () => {
       <Button loading={isSaving} onClick={handleSave} type="button" size="small">
         Lagre
       </Button>
-      <Button variant="tertiary" disabled={isSaving} onClick={() => {}} type="button" size="small">
-        Eksporter
-      </Button>
+      <ExportFormTranslationsButton form={form} />
       <UserFeedback />
     </VStack>
   );
