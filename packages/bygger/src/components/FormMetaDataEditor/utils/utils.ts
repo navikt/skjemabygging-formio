@@ -20,14 +20,14 @@ export const validateFormMetadata = (form: Form, usageContext: UsageContext) => 
   if (!form.title) {
     errors.title = 'Du må oppgi skjematittel';
   }
-  if (!form.properties.skjemanummer) {
+  if (!form.skjemanummer) {
     errors.skjemanummer = 'Du må oppgi skjemanummer';
   }
   if (!form.properties.tema) {
     errors.tema = 'Du må velge ett tema';
   }
 
-  if (form.properties.skjemanummer.length > 20) {
+  if (form.skjemanummer.length > 20) {
     errors.skjemanummer = 'Skjemanummeret kan ikke være lengre enn 20 tegn';
   }
 

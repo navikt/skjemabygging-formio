@@ -14,7 +14,7 @@ export interface BasicFieldsProps {
 }
 
 const BasicFields = ({ onChange, diff, form, errors, usageContext }: BasicFieldsProps) => {
-  const skjemanummer = form.properties.skjemanummer;
+  const skjemanummer = form.skjemanummer;
   const isLockedForm = form.properties.isLockedForm;
 
   const title = form.title;
@@ -37,7 +37,7 @@ const BasicFields = ({ onChange, diff, form, errors, usageContext }: BasicFields
         value={skjemanummer}
         readOnly={usageContext === 'edit'}
         onChange={(event) =>
-          onChange({ ...form, properties: { ...form.properties, skjemanummer: event.target.value } })
+          onChange({ ...form, skjemanummer: event.target.value, properties: { ...form.properties } })
         }
         error={errors?.skjemanummer}
       />

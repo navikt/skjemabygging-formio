@@ -68,21 +68,22 @@ const NewFormPage = () => {
   const setForm = (form: Form) => {
     const newForm = cloneDeep(form);
     setState((oldState) => {
-      if (oldState.form.properties.skjemanummer !== newForm.properties.skjemanummer) {
-        newForm.name = stringUtils.camelCase(newForm.properties.skjemanummer);
-        newForm.path = navFormUtils.toFormPath(newForm.properties.skjemanummer);
+      if (oldState.form.skjemanummer !== newForm.skjemanummer) {
+        newForm.name = stringUtils.camelCase(newForm.skjemanummer);
+        newForm.path = navFormUtils.toFormPath(newForm.skjemanummer);
       }
       return { form: newForm };
     });
   };
-  const validateAndSave = async (form: Form) => {
-    const updatedErrors = validateFormMetadata(form, 'create');
-    const trimmedFormNumber = state.form.properties.skjemanummer.trim();
+  const validateAndSave = async () => {
+    const updatedErrors = validateFormMetadata(state.form, 'create');
+    const trimmedFormNumber = state.form.skjemanummer.trim();
     if (isFormMetadataValid(updatedErrors)) {
       setErrors({});
       try {
         const createdForm = await createForm({
           ...state.form,
+          skjemanummer: trimmedFormNumber,
           properties: {
             ...state.form.properties,
             skjemanummer: trimmedFormNumber,
@@ -127,10 +128,6 @@ const NewFormPage = () => {
     }
   };
 
-  const onCreate = () => {
-    validateAndSave(state.form);
-  };
-
   return (
     <AppLayout>
       <TitleRowLayout>
@@ -140,7 +137,7 @@ const NewFormPage = () => {
         right={
           <SidebarLayout noScroll={true}>
             <VStack gap="1">
-              <Button onClick={onCreate} size="small">
+              <Button onClick={validateAndSave} size="small">
                 Opprett
               </Button>
               <UserFeedback />
