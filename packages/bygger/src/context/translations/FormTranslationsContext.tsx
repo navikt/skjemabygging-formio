@@ -58,7 +58,6 @@ const FormTranslationsProvider = ({ children, formPath }: Props) => {
   const value = {
     translations: state.data ?? [],
     storedTranslations,
-    translations: state.data ?? [],
     isReady: state.isReady,
     loadTranslations,
     saveTranslation,
