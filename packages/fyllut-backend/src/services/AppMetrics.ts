@@ -16,14 +16,14 @@ class AppMetrics {
 
     this._exstreamPdfRequestsCounter = new Counter({
       name: 'fyllut_exstream_pdf_requests_total',
-      help: 'Number of exstream pdf requests',
+      help: 'Number of Gotenberg pdf requests',
       labelNames: [],
       registers: [this._register],
     });
 
     this._exstreamPdfFailuresCounter = new Counter({
       name: 'fyllut_exstream_pdf_failures_total',
-      help: 'Number of exstream pdf requests which failed',
+      help: 'Number of Gotenberg pdf requests which failed',
       labelNames: [],
       registers: [this._register],
     });
@@ -35,8 +35,8 @@ class AppMetrics {
       buckets: [0.7, 0.8, 0.9, 1.0, 1.2, 1.5, 2.0, 5.0, 15.0],
       registers: [this._register],
     });
-    this._outgoingRequestDuration.zero({ service: 'exstream', method: 'createPdf', error: 'false' });
-    this._outgoingRequestDuration.zero({ service: 'exstream', method: 'createPdf', error: 'true' });
+    this._outgoingRequestDuration.zero({ service: 'gotenberg', method: 'createPdf', error: 'false' });
+    this._outgoingRequestDuration.zero({ service: 'gotenberg', method: 'createPdf', error: 'true' });
 
     this._expressJsonBodyParserDuration = new Histogram({
       name: 'fyllut_express_json_body_parser_seconds',

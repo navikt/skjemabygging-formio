@@ -13,63 +13,47 @@ const defaultBody = {
 };
 const mockSuccessResponse = new Uint8Array([37, 80, 68, 70, 45]); // A minimal valid PDF file header
 
+/*
+const hexToString = hex => {
+  let str = '';
+  for (let i = 0; i < hex.length; i += 2)
+    str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
+  return str;
+}
+*/
+
 describe('gotenberg', () => {
   afterEach(() => {
     expect(nock.isDone()).toBe(true);
   });
 
   it('decodes and sends the pdf on success', async () => {
-    //TEST
-    /*
-    const { skjemabyggingProxyUrl } = config;
-    const generateFileMock = nock(skjemabyggingProxyUrl!).post('/foersteside').reply(200, {});
-    const req1 = mockRequest({
-      headers: {
-        AzureAccessToken: '',
-        'Accept': 'application/pdf, text/plain'
-      },
-      body: {
-        foerstesidetype: 'ETTERSENDELSE',
-        navSkjemaId: 'NAV 10.10.10',
-        spraakkode: 'NB',
-        overskriftstittel: 'Tittel',
-        arkivtittel: 'Tittel',
-        tema: 'HJE',
-      },
-    });
-
-    await forsteside.post(req1, mockResponse(), mockNext());
-
-    expect(generateFileMock.isDone()).toBe(true);
-*/
-
     //, 'Content-Disposition': 'attachment; filename=\"index.html\"'
-    // , { 'accept': 'application/pdf, text/plain', 'content-type': 'multipart/form-data'}
     const url = config.gotenbergUrl;
-    console.log(`${url}/forms/chromium/convert/html`);
-    const gotenbergScope = nock(url!).post('/forms/chromium/convert/html').reply(200, mockSuccessResponse);
+    //const url = config.gotenbergUrl;
+    const uri = '/forms/chromium/convert/html';
 
-    /*
-    const gotenbergScope = nock(url)
-      .post('/forms/chromium/convert/html')
-      .reply(200, 'mockSuccessResponse')
-    ;
-*/
+    console.log(`${url}${uri}`);
+    const gotenbergScope = nock(`${url}` as string)
+      .post(`${uri}`)
+      .matchHeader('Content-Type', 'multipart/form-data')
+      .reply(200, mockSuccessResponse);
+
     nock.recorder.rec();
     console.log(gotenbergScope.activeMocks());
-    /*
- //TEST
+
+    // Test
     try {
-      const response = await fetch(`${url}/forms/chromium/convert/html`, {
+      const response = await fetch(`${url}${uri}`, {
         method: 'POST',
-        //body: JSON.stringify({data: 'test'}),
         //headers: { 'Accept': 'application/pdf, text/plain', 'Content-Type': 'multipart/form-data' },
+        body: JSON.stringify(defaultBody),
       });
       console.log(response.status);
     } catch (e) {
       console.error(e);
     }
-*/
+    // end test
 
     const req = mockRequest({ headers: {}, body: defaultBody });
     const res = mockResponse();

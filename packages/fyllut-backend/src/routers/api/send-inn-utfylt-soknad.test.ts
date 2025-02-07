@@ -70,7 +70,7 @@ describe('[endpoint] send-inn/utfyltsoknad', () => {
     expect(sendInnNockScope.isDone()).toBe(true);
   });
 
-  it('calls next if exstream returns error', async () => {
+  it('calls next if gotenberg returns error', async () => {
     const skjemabyggingproxyScope = nock(process.env.GOTENBERG_URL!).post('/gotenberg').reply(500, 'error body');
     const req = mockRequestWithPidAndTokenX({ body: defaultBody });
     const res = mockResponse();
@@ -80,7 +80,7 @@ describe('[endpoint] send-inn/utfyltsoknad', () => {
     expect(next).toHaveBeenCalledTimes(1);
     const error: any = next.mock.calls[0][0];
     expect(error.functional).toBe(true);
-    expect(error.message).toBe('Feil ved generering av PDF hos Exstream');
+    expect(error.message).toBe('Feil ved generering av PDF hos Gotenberg');
     expect(res.sendStatus).not.toHaveBeenCalled();
     expect(res.header).not.toHaveBeenCalled();
     expect(skjemabyggingproxyScope.isDone()).toBe(true);

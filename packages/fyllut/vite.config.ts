@@ -69,6 +69,7 @@ export default defineConfig(({ mode }) => {
       dedupe: ['react-router-dom', '@navikt/ds-react', '@navikt/ds-icons'],
     },
     plugins,
+    assetsInclude: ['icons/*'],
     test: {
       globals: true,
       environment: 'jsdom',
