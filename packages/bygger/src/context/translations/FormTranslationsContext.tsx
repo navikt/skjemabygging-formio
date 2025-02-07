@@ -3,7 +3,6 @@ import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, 
 import useFormTranslationsApi from '../../api/useFormTranslationsApi';
 
 interface ContextValue {
-  translations: FormsApiFormTranslation[];
   storedTranslations: Record<string, FormsApiFormTranslation>;
   translations: FormsApiFormTranslation[];
   isReady: boolean;
@@ -19,7 +18,6 @@ interface Props {
 const defaultValue: ContextValue = {
   translations: [],
   storedTranslations: {},
-  translations: [],
   isReady: false,
   loadTranslations: () => Promise.resolve(),
   saveTranslation: () => Promise.reject(),
