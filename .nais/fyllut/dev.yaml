@@ -1,7 +1,7 @@
 app-name: skjemautfylling
 ingresses:
-  - "https://www.intern.dev.nav.no/fyllut"
-  - "https://www.ansatt.dev.nav.no/fyllut"
+  - "https://fyllut.intern.dev.nav.no/fyllut"
+  - "https://fyllut.ansatt.dev.nav.no/fyllut"
 replicas-min: 2
 replicas-max: 4
 enabled-features: ""
