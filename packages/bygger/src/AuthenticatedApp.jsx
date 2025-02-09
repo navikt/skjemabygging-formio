@@ -5,7 +5,6 @@ import { FormsRouter } from './Forms';
 import ImportFormsPage from './import/ImportFormsPage';
 import BulkPublishPage from './migration/BulkPublishPage';
 import MigrationRouter from './migration/MigrationRouter';
-import TranslationsRouter from './old_translations/TranslationsRouter';
 import RecipientsPage from './recipients/RecipientsPage';
 import ReportsPage from './reports/ReportsPage';
 import GlobalTranslationsPage from './translations/global/GlobalTranslationsPage';
@@ -15,7 +14,6 @@ function AuthenticatedApp({ serverURL, formio }) {
     <>
       <Routes>
         <Route path="/forms/*" element={<FormsRouter formio={formio} serverURL={serverURL} />} />
-        <Route path="/translations/*" element={<TranslationsRouter formio={formio} serverURL={serverURL} />} />
         <Route
           path="/oversettelser/:tag"
           element={

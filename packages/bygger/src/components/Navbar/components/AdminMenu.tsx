@@ -15,11 +15,11 @@ const AdminMenu = ({ showImport = false }) => {
         <Dropdown.Menu>
           <Dropdown.Menu.GroupedList>
             <Dropdown.Menu.GroupedList.Item>
-              <AdminMenuLink
-                showUnsavedChangesModal={showUnsavedChangesModal}
-                to="/translations/global/nn-NO/skjematekster"
-              >
-                Globale Oversettelser
+              <AdminMenuLink showUnsavedChangesModal={showUnsavedChangesModal} to="/oversettelser">
+                Globale Oversettelser{' '}
+                <Tag variant={'warning-moderate'} size={'xsmall'}>
+                  Beta
+                </Tag>
               </AdminMenuLink>
             </Dropdown.Menu.GroupedList.Item>
             <Dropdown.Menu.GroupedList.Item>
@@ -50,14 +50,6 @@ const AdminMenu = ({ showImport = false }) => {
                 </AdminMenuLink>
               </Dropdown.Menu.GroupedList.Item>
             )}
-            <Dropdown.Menu.GroupedList.Item>
-              <AdminMenuLink showUnsavedChangesModal={showUnsavedChangesModal} to="/oversettelser">
-                Globale Oversettelser{' '}
-                <Tag variant={'warning-moderate'} size={'xsmall'}>
-                  Beta
-                </Tag>
-              </AdminMenuLink>
-            </Dropdown.Menu.GroupedList.Item>
           </Dropdown.Menu.GroupedList>
         </Dropdown.Menu>
       </Dropdown>

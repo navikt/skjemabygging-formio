@@ -1,12 +1,10 @@
 import { LanguageIcon } from '@navikt/aksel-icons';
-import { EditFilled, EyeFilled, GlobeFilled, SettingsFilled } from '@navikt/ds-icons';
+import { EditFilled, EyeFilled, SettingsFilled } from '@navikt/ds-icons';
 import { Tag } from '@navikt/ds-react';
-import { useLanguageCodeFromURL } from '@navikt/skjemadigitalisering-shared-components';
 import useUnsavedChangesModal from '../../../hooks/useUnsavedChangesModal';
 import { MenuLink } from './MenuLink';
 
 export const FormMenu = ({ formPath }) => {
-  const currentLanguage = useLanguageCodeFromURL();
   const { unsavedChangesModalContent, showUnsavedChangesModal } = useUnsavedChangesModal();
 
   return (
@@ -27,19 +25,14 @@ export const FormMenu = ({ formPath }) => {
       </MenuLink>
 
       <MenuLink
-        to={`/translations/${formPath}${currentLanguage ? `/${currentLanguage}` : ''}`}
+        to={`/forms/${formPath}/oversettelser`}
         noIconStyling={false}
         onClick={(e) =>
           showUnsavedChangesModal(e, {
-            redirectTo: `/translations/${formPath}${currentLanguage ? `/${currentLanguage}` : ''}`,
+            redirectTo: `/forms/${formPath}/oversettelser`,
           })
         }
       >
-        <GlobeFilled fontSize={'1.5rem'} role="presentation" />
-        <span>Språk</span>
-      </MenuLink>
-
-      <MenuLink to={`/forms/${formPath}/oversettelser`} noIconStyling={false}>
         <LanguageIcon fontSize={'1.5rem'} role="presentation" />
         <span>
           Oversettelser{' '}
