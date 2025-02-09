@@ -25,7 +25,6 @@ export const FormPage = () => {
   }
 
   return (
-    // <I18nStateProvider loadTranslations={loadTranslationsForFormPath} form={formState.form}>
     <FormTranslationsProvider formPath={formState.form.path}>
       <GlobalTranslationsProvider>
         <Routes>
@@ -37,6 +36,5 @@ export const FormPage = () => {
         </Routes>
       </GlobalTranslationsProvider>
     </FormTranslationsProvider>
-    // </I18nStateProvider>
   );
 };

@@ -1,5 +1,5 @@
 import { Label } from '@navikt/ds-react';
-import { languagesInNorwegian } from '../../context/i18n';
+import languagesInNorwegian from '../../old_translations/languagesInNorwegian';
 import { useStatusStyles } from './styles';
 import { FormStatusProperties } from './types';
 

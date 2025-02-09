@@ -7,6 +7,10 @@ import useFormsApiForms from './useFormsApiForms';
 const useForms = () => {
   const { getAll, get, put, post, publish } = useFormsApiForms();
 
+  const loadFormsList = async () => {
+    return await getAll('title,path,properties,changedAt,publishedAt');
+  };
+
   const createForm = async (form: Form) => {
     return await post(form);
   };
@@ -27,7 +31,8 @@ const useForms = () => {
 
   return {
     loadForm: get,
-    loadFormsList: getAll,
+    loadForms: getAll,
+    loadFormsList,
     createForm,
     onSave,
     onPublish,

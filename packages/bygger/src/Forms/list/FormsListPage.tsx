@@ -17,8 +17,8 @@ const FormsListPage = () => {
   const loadForms = useCallback(async () => {
     if (loading) {
       try {
-        const navForms = await loadFormsList('title,path,properties,changedAt,publishedAt');
-        setForms(navForms.map(mapNavForm));
+        const forms = await loadFormsList();
+        setForms(forms.map(mapFormToFormListType));
       } catch (_e) {
         logger?.error('Could not load forms.');
       } finally {
@@ -27,9 +27,7 @@ const FormsListPage = () => {
     }
   }, [loadFormsList, logger, loading]);
 
-  const mapNavForm = (form: Form): FormListType => {
-    // console.log(form);
-    // console.log('status', determineStatus(form.properties));
+  const mapFormToFormListType = (form: Form): FormListType => {
     return {
       id: `${form.id}`,
       modified: form.changedAt ?? form.properties.modified ?? '',
