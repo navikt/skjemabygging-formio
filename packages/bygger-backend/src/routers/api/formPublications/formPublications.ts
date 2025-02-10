@@ -27,8 +27,6 @@ const post: RequestHandler = async (req, res, next) => {
   const { languageCodes, revision } = req.query; // TODO
   const accessToken = req.headers.AzureAccessToken as string;
 
-  console.log('POST form publications', formPath, languageCodes, revision);
-
   try {
     const form = await formPublicationsService.post(
       formPath,
@@ -40,7 +38,6 @@ const post: RequestHandler = async (req, res, next) => {
       formPath,
       languageCodes as TranslationLang[],
     );
-    console.log(languageCodes, translations);
     const formioTranslations = Object.fromEntries(
       Object.entries(translations).map(([key, values]) => [
         mapLanguageCodeToFormioFormat(key as TranslationLang),
@@ -48,7 +45,6 @@ const post: RequestHandler = async (req, res, next) => {
       ]),
     );
     const formioForm = index.mapFormToNavForm(form);
-    console.log(formioTranslations);
 
     req.body = { form: formioForm, translations: formioTranslations };
     next();

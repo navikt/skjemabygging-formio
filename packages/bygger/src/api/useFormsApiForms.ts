@@ -66,7 +66,6 @@ const useFormsApiForms = () => {
 
   const publish = async (formioForm: NavFormType, languages: TranslationLang[]) => {
     const { path, revision } = index.mapNavFormToForm(formioForm);
-    console.log('Publish', { path, revision, languages });
     const searchParams = new URLSearchParams({ languageCodes: languages.toString(), revision: revision!.toString() });
     const url = `/api/form-publications/${path}?${searchParams}`;
     try {

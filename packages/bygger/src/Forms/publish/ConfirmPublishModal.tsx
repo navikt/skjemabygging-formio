@@ -9,27 +9,8 @@ interface Props {
   publishLanguageCodeList: string[];
 }
 
-// const getCompleteLocalTranslationsForNavForm = (
-//   localTranslationsForNavForm: I18nTranslations,
-//   publishLanguageCodeList: string[],
-// ): I18nTranslations => {
-//   return Object.keys(localTranslationsForNavForm).reduce((translations: object, languageCode: string) => {
-//     if (publishLanguageCodeList.indexOf(languageCode) >= 0) {
-//       return { ...translations, [languageCode]: localTranslationsForNavForm[languageCode] };
-//     } else return { ...translations };
-//   }, {});
-// };
-
 const ConfirmPublishModal = ({ open, onClose, form, publishLanguageCodeList }: Props) => {
   const { publishForm } = useForm();
-  // const { localTranslationsForNavForm } = useI18nState();
-  // const [completeLocalTranslationsForNavForm, setCompleteLocalTranslationsForNavForm] = useState<I18nTranslations>({});
-  //
-  // useEffect(() => {
-  //   setCompleteLocalTranslationsForNavForm(
-  //     getCompleteLocalTranslationsForNavForm(localTranslationsForNavForm, publishLanguageCodeList),
-  //   );
-  // }, [publishLanguageCodeList, localTranslationsForNavForm]);
   const languageCodes = publishLanguageCodeList.map(localizationUtils.getLanguageCodeAsIso639_1);
 
   return (

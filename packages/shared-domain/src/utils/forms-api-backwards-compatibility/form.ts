@@ -10,6 +10,7 @@ const mapFormToNavForm = (form: Form): NavFormType => {
     name: title,
     type: 'form',
     ...form,
+    properties: { ...form.properties, skjemanummer: form.skjemanummer },
   };
 };
 
