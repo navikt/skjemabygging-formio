@@ -6,11 +6,6 @@ describe('Form Metadata Validation', () => {
 
   beforeEach(() => {
     sampleForm = {
-      // _id: 'id',
-      // type: 'form',
-      // tags: ['common', 'nav-skjema'],
-      // display: 'form',
-      // name: 'Sample Form',
       skjemanummer: 'NAV 12-13.14',
       title: 'Sample Title',
       path: 'sample-path',

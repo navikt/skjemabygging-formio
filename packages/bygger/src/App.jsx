@@ -19,7 +19,6 @@ const useStyles = makeStyles({
 });
 
 function App({ serverURL }) {
-  // NavFormioJs.Formio.setBaseUrl(projectURL);
   const styles = useStyles();
   const { userData } = useAuth();
   const formio = useMemo(() => new NavFormioJs.Formio(''), []);

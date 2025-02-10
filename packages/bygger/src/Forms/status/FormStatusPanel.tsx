@@ -14,9 +14,7 @@ interface Props {
 }
 
 const FormStatusPanel = ({ formStatusProperties, spacing, hideToggleDiffButton = false }: Props) => {
-  // console.log('publishProperties', publishProperties);
   const styles = useStatusStyles({ spacing } as Jss.Theme);
-  // const { modified, modifiedBy, published, publishedBy, unpublished, unpublishedBy } = publishProperties;
   const { changedAt, changedBy, publishedAt, publishedBy, properties } = formStatusProperties;
   const { unpublished, unpublishedBy, publishedLanguages } = properties ?? {};
 

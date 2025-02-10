@@ -41,16 +41,6 @@ const EditFormPage = ({ form }: EditFormPageProps) => {
     appConfig,
   };
 
-  // const handleChange = useCallback(
-  //   (changedForm: NavFormType) =>
-  //     changeForm({
-  //       ...changedForm,
-  //       modified: form.modified,
-  //       properties: { ...changedForm.properties, modified: form.properties.modified },
-  //     }),
-  //   [form.changedAt, form.properties.modified, changeForm],
-  // );
-
   const handleChange = useCallback(
     (changedForm: NavFormType) => changeForm(formioFormsApiUtils.mapNavFormToForm(changedForm)),
     [changeForm],

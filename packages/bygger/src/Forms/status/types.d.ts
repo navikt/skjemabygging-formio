@@ -10,7 +10,3 @@ export type FormStatusEvents = Pick<Form, 'createdAt' | 'changedAt' | 'published
 export type FormStatusProperties = FormStatusEvents &
   Pick<Form, 'createdBy' | 'changedBy' | 'publishedBy'> &
   Pick<FormPropertiesType | 'unpublishedBy' | 'publishedLanguages'>;
-//
-// export type FormStatusProperties = Pick<Form, 'changedAt' | 'changedBy' | 'publishedAt' | 'publishedBy'> & {
-//   properties: Pick<FormPropertiesType, 'unpublished' | 'unpublishedBy' | 'publishedLanguages'>;
-// };

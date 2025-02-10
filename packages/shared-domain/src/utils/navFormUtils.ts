@@ -319,10 +319,6 @@ const isNone = (type: 'innsending' | 'ettersending', form: NavFormType) => {
 };
 
 const createDefaultForm = (config): Form => ({
-  // tags: ['nav-skjema', ''],
-  // type: 'form',
-  // display: 'wizard',
-  // name: '',
   title: '',
   skjemanummer: '',
   path: '',

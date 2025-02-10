@@ -1,5 +1,5 @@
 import { http as baseHttp, useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
-import { Form, formioFormsApiUtils, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
 import { useFeedbackEmit } from '../context/notifications/FeedbackContext';
 
 const useFormsApiForms = () => {
@@ -48,7 +48,6 @@ const useFormsApiForms = () => {
   };
 
   const put = async (form: Form): Promise<Form | undefined> => {
-    // const form = formioFormsApiUtils.mapNavFormToForm(form);
     const { path } = form;
     const url = `${baseUrl}/${path}`;
     try {
@@ -74,7 +73,7 @@ const useFormsApiForms = () => {
     try {
       const result = await http.post<Form>(url, {});
       feedbackEmit.success('Satt i gang publisering, dette kan ta noen minutter.');
-      return formioFormsApiUtils.mapFormToNavForm(result);
+      return result;
     } catch (error) {
       const message = (error as Error)?.message;
       feedbackEmit.error(`Publisering av skjema feilet. ${message}`);

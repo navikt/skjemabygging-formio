@@ -48,7 +48,6 @@ function AuthProvider(props) {
   const logout = async () => {
     try {
       setUserData(null);
-      // await NavFormioJs.Formio.logout();
     } finally {
       const { origin } = window.location;
       window.location.replace(`${origin}/oauth2/logout`);

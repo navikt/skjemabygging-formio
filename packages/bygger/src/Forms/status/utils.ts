@@ -7,8 +7,6 @@ const determineStatus = (formStatusProperties: FormStatusEvents): Status => {
   const modifiedDate = moment(changedAt);
   const unpublishedDate = unpublished !== undefined ? moment(unpublished) : undefined;
 
-  // console.log('determineStatus', { changedAt, publishedAt, properties, isTestForm, unpublished });
-  // console.log(changedAt, publishedAt, moment(changedAt).isAfter(moment(publishedAt)));
   if (isTestForm) {
     return 'TESTFORM';
   }
