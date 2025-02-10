@@ -1,6 +1,5 @@
 import { LanguageIcon } from '@navikt/aksel-icons';
 import { EditFilled, EyeFilled, SettingsFilled } from '@navikt/ds-icons';
-import { Tag } from '@navikt/ds-react';
 import useUnsavedChangesModal from '../../../hooks/useUnsavedChangesModal';
 import { MenuLink } from './MenuLink';
 
@@ -34,12 +33,7 @@ export const FormMenu = ({ formPath }) => {
         }
       >
         <LanguageIcon fontSize={'1.5rem'} role="presentation" />
-        <span>
-          Oversettelser{' '}
-          <Tag variant={'warning-moderate'} size={'xsmall'}>
-            Beta
-          </Tag>
-        </span>
+        <span>Oversettelser</span>
       </MenuLink>
 
       {unsavedChangesModalContent}
