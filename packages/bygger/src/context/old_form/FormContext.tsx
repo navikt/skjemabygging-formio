@@ -16,6 +16,7 @@ interface Props {
 
 interface ContextValue {
   formState: FormReducerState;
+  resetForm: () => void;
   changeForm: (form: Form) => void;
   saveForm: (form: Form) => Promise<Form | void>;
   publishForm: (form: Form, selectedLanguages: TranslationLang[]) => Promise<void>;
@@ -28,6 +29,7 @@ const initialState: FormReducerState = { status: 'INITIAL LOADING' };
 
 const FormContext = createContext<ContextValue>({
   formState: initialState,
+  resetForm: () => {},
   changeForm: (_form) => {},
   saveForm: async (_form) => {},
   publishForm: async (_form, _translations) => {},
@@ -83,6 +85,13 @@ const FormProvider = ({ featureToggles, children }: Props) => {
     sessionStorage.setItem(changedForm.path, JSON.stringify({ changed: true }));
     dispatch({ type: 'form-changed', form: changedForm });
   }, []);
+
+  const resetForm = () => {
+    if (formPath) {
+      sessionStorage.removeItem(formPath);
+    }
+    dispatch({ type: 'form-reset' });
+  };
 
   const saveForm = async (form: Form) => {
     const savedForm = await onSave(form);
@@ -146,6 +155,7 @@ const FormProvider = ({ featureToggles, children }: Props) => {
 
   const value = {
     formState: state,
+    resetForm,
     changeForm,
     saveForm,
     publishForm,
