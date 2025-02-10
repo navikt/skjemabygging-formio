@@ -2,6 +2,7 @@ import { GlobalTranslationMap, TranslationResource, TranslationTag } from '@navi
 import { ReactElement, useMemo } from 'react';
 import { useGlobalTranslations } from '../../context/translations/GlobalTranslationsContext';
 import GlobalCsvLink from '../../old_translations/global/GlobalCsvLink';
+import { mapFormsApiTranslationsToScopedTranslationMap } from '../utils/translationsUtils';
 
 interface Props {
   language: 'en' | 'nn';
@@ -17,13 +18,7 @@ const ExportGlobalTranslationsButton = ({ language, children }: Props) => {
       name: tag,
       scope: 'global',
       tag: tag as TranslationTag,
-      translations: translations.reduce(
-        (acc, { key, nb, ...translation }) => ({
-          ...acc,
-          [nb ?? key]: { value: translation[language], scope: 'global' },
-        }),
-        {},
-      ),
+      translations: mapFormsApiTranslationsToScopedTranslationMap(translations, language),
     }));
     return { [language]: resources };
   }, [language, translationsPerTag]);

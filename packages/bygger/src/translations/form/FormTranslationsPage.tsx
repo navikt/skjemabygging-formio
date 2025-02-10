@@ -46,7 +46,7 @@ const FormTranslationsPage = ({ form }: Props) => {
         <RowLayout
           right={
             <SidebarLayout noScroll>
-              <FormTranslationButtonsColumn />
+              <FormTranslationButtonsColumn form={form} />
             </SidebarLayout>
           }
         >
