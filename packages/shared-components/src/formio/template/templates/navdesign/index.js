@@ -16,7 +16,6 @@ import field from './field';
 import file from './file';
 import html from './html';
 import iconClass from './iconClass';
-import image from './image';
 import input from './input';
 import label from './label';
 import message from './message';
@@ -64,7 +63,6 @@ export default {
   file,
   html,
   input,
-  image,
   label,
   message,
   multipleMasksInput,
