@@ -4,6 +4,7 @@ import useFormTranslationsApi from '../../api/useFormTranslationsApi';
 
 interface ContextValue {
   storedTranslations: Record<string, FormsApiFormTranslation>;
+  translations: FormsApiFormTranslation[];
   isReady: boolean;
   loadTranslations: () => Promise<void>;
   saveTranslation: (translation: FormsApiFormTranslation) => Promise<FormsApiFormTranslation>;
@@ -16,6 +17,7 @@ interface Props {
 
 const defaultValue: ContextValue = {
   storedTranslations: {},
+  translations: [],
   isReady: false,
   loadTranslations: () => Promise.resolve(),
   saveTranslation: () => Promise.reject(),
@@ -53,6 +55,7 @@ const FormTranslationsProvider = ({ children, formPath }: Props) => {
 
   const value = {
     storedTranslations,
+    translations: state.data ?? [],
     isReady: state.isReady,
     loadTranslations,
     saveTranslation,
