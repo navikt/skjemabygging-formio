@@ -27,7 +27,7 @@ describe('PublisherService', () => {
 
       beforeEach(() => {
         backendMock = { publishForm: () => 'git-commit-hash' } as unknown as Backend;
-        publisherService = new PublisherService(formioService, backendMock);
+        publisherService = new PublisherService(backendMock);
         nockScope = nock(FORMIO_API_SERVICE_URL)
           .put(/\/form\/(\d*)$/)
           .times(1)
@@ -40,7 +40,7 @@ describe('PublisherService', () => {
 
       it('adds properties modified and published', async () => {
         const translations = {};
-        const { changed, form } = await publisherService.publishForm(testForm, translations, opts);
+        const { changed, form } = await publisherService.publishForm(testForm, translations);
         expect(changed).toBe(true);
         expect(form.properties.modified).toBeDefined();
         expect(form.properties.modifiedBy).toBe('todd');
@@ -57,7 +57,7 @@ describe('PublisherService', () => {
               publishedLanguages: [] as string[],
             },
           } as NavFormType;
-          const { form } = await publisherService.publishForm(testFormWithNoPublishedLanguages, translations, opts);
+          const { form } = await publisherService.publishForm(testFormWithNoPublishedLanguages, translations);
           expect(form.properties.publishedLanguages).toEqual(['en', 'nn-NO']);
         });
 
@@ -69,7 +69,7 @@ describe('PublisherService', () => {
             },
           } as NavFormType;
           const translations = {};
-          const { form } = await publisherService.publishForm(testFormWithPublishedLanguages, translations, opts);
+          const { form } = await publisherService.publishForm(testFormWithPublishedLanguages, translations);
           expect(form.properties.publishedLanguages).toEqual([]);
         });
 
@@ -81,7 +81,7 @@ describe('PublisherService', () => {
             },
           } as NavFormType;
           const translations = undefined;
-          const { form } = await publisherService.publishForm(testFormWithPublishedLanguages, translations, opts);
+          const { form } = await publisherService.publishForm(testFormWithPublishedLanguages, translations);
           expect(form.properties.publishedLanguages).toEqual(['en']);
         });
       });
@@ -99,7 +99,7 @@ describe('PublisherService', () => {
             throw new Error('Commit failed');
           },
         } as unknown as Backend;
-        publisherService = new PublisherService(formioService, backendMock);
+        publisherService = new PublisherService(backendMock);
         formioServiceSpy = vi.spyOn(formioService, 'saveForm');
         nockScope = nock(FORMIO_API_SERVICE_URL)
           .put(/\/form\/(\d*)$/)
@@ -120,7 +120,7 @@ describe('PublisherService', () => {
         const form: NavFormType = { _id: '2', properties: {} } as NavFormType;
         let errorThrown = false;
         try {
-          await publisherService.publishForm(form, translations, opts);
+          await publisherService.publishForm(form, translations);
         } catch (error: any) {
           errorThrown = true;
           expect(error.message).toBe('Publisering feilet');
@@ -161,7 +161,7 @@ describe('PublisherService', () => {
 
       beforeEach(() => {
         backendMock = { unpublishForm: () => testGitSha } as unknown as Backend;
-        publisherService = new PublisherService(formioService, backendMock);
+        publisherService = new PublisherService(backendMock);
         nockScope = nock(FORMIO_API_SERVICE_URL)
           .put(/\/form\/(\d*)$/)
           .times(1)
@@ -177,7 +177,7 @@ describe('PublisherService', () => {
           _id: '1',
           properties: { published: '2022-07-28T10:00:10.325Z', publishedBy: 'ernie' },
         } as NavFormType;
-        const { changed, form } = await publisherService.unpublishForm(testForm, opts);
+        const { changed, form } = await publisherService.unpublishForm(testForm);
         expect(changed).toBe(true);
         const { properties } = form;
         expect(properties.published).toBeUndefined();
@@ -198,7 +198,7 @@ describe('PublisherService', () => {
             throw new Error('Commit failed');
           },
         } as unknown as Backend;
-        publisherService = new PublisherService(formioService, backendMock);
+        publisherService = new PublisherService(backendMock);
         nockScope = nock(FORMIO_API_SERVICE_URL)
           .put(/\/form\/(\d*)$/)
           .times(2)
@@ -220,7 +220,7 @@ describe('PublisherService', () => {
         let errorThrown;
 
         try {
-          await publisherService.unpublishForm(testForm, opts);
+          await publisherService.unpublishForm(testForm);
         } catch (error: any) {
           errorThrown = true;
           expect(error.message).toBe('Avpublisering feilet');
@@ -267,7 +267,7 @@ describe('PublisherService', () => {
       beforeEach(() => {
         formioApiRequestBodies = [];
         backendMock = { publishForms: () => testGitSha } as unknown as Backend;
-        publisherService = new PublisherService(formioService, backendMock);
+        publisherService = new PublisherService(backendMock);
         nockScope = nock(FORMIO_API_SERVICE_URL)
           .put(/\/form\/(\d*)$/)
           .times(3)
@@ -282,12 +282,12 @@ describe('PublisherService', () => {
       });
 
       it('returns git sha for bulk publish commit', async () => {
-        const gitSha = await publisherService.publishForms(testForms, opts);
+        const gitSha = await publisherService.publishForms(testForms);
         expect(gitSha).toEqual(testGitSha);
       });
 
       it('adds properties modified and published with same value', async () => {
-        await publisherService.publishForms(testForms, opts);
+        await publisherService.publishForms(testForms);
 
         expect(formioApiRequestBodies).toHaveLength(3);
 
@@ -314,7 +314,7 @@ describe('PublisherService', () => {
       });
 
       it('does not modify publishedLanguages property', async () => {
-        await publisherService.publishForms(testForms, opts);
+        await publisherService.publishForms(testForms);
         expect(formioApiRequestBodies).toHaveLength(3);
 
         const form1Props = formioApiRequestBodies[0].properties;
@@ -339,7 +339,7 @@ describe('PublisherService', () => {
             throw new Error('Commit failed');
           },
         } as unknown as Backend;
-        publisherService = new PublisherService(formioService, backendMock);
+        publisherService = new PublisherService(backendMock);
         nockScope = nock(FORMIO_API_SERVICE_URL)
           .put(/\/form\/(\d*)$/)
           .times(6) // 3 before publish, and 3 after publish fails
@@ -356,7 +356,7 @@ describe('PublisherService', () => {
       it('properties are rolled back', async () => {
         let errorThrown = false;
         try {
-          await publisherService.publishForms(testForms, opts);
+          await publisherService.publishForms(testForms);
         } catch (error: any) {
           errorThrown = true;
           expect(error.message).toBe('Bulk-publisering feilet');
@@ -405,7 +405,7 @@ describe('PublisherService', () => {
       beforeEach(() => {
         formioApiRequestBodies = [];
         backendMock = { publishForms: () => '123456789' } as unknown as Backend;
-        publisherService = new PublisherService(formioService, backendMock);
+        publisherService = new PublisherService(backendMock);
         const formEndpoint = /\/form\/(\d*)$/;
         nockScope = nock(FORMIO_API_SERVICE_URL)
           .put(formEndpoint)
@@ -436,7 +436,7 @@ describe('PublisherService', () => {
       it('properties are rolled back', async () => {
         let errorThrown = false;
         try {
-          await publisherService.publishForms(testForms, opts);
+          await publisherService.publishForms(testForms);
         } catch (error: any) {
           errorThrown = true;
           expect(error.message).toBe('Bulk-publisering feilet');

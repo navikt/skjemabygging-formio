@@ -21,7 +21,7 @@ const recipientService = new RecipientService(config.formsApi.url);
 
 const backendInstance = new Backend(config, formioService);
 
-const publisherService = new PublisherService(formioService, backendInstance);
+const publisherService = new PublisherService(backendInstance);
 
 const reportService = new ReportService(formioService);
 
