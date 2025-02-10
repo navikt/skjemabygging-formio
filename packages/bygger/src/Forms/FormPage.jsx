@@ -31,7 +31,7 @@ export const FormPage = () => {
           <Route path={'/edit'} element={<EditFormPage form={formState.form} />} />
           <Route path={'/view/*'} element={<TestFormPage form={formState.formioForm} />} />
           <Route path={'/settings'} element={<FormSettingsPage form={formState.form} />} />
-          <Route path={'/oversettelser'} element={<FormTranslationsPage form={formState.formioForm} />} />
+          <Route path={'/oversettelser'} element={<FormTranslationsPage form={formState.form} />} />
           <Route path="/" element={<Navigate to={'edit'} replace />} />
         </Routes>
       </GlobalTranslationsProvider>
