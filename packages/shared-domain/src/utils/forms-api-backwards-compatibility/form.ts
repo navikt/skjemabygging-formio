@@ -10,11 +10,11 @@ const mapFormToNavForm = (form: Form): NavFormType => {
     name: title,
     type: 'form',
     ...form,
+    properties: { ...form.properties, skjemanummer: form.skjemanummer },
   };
 };
 
 const mapNavFormToForm = (form: NavFormType): Form => {
-  //TODO: move forms-api-properties to context?
   const {
     id,
     revision,

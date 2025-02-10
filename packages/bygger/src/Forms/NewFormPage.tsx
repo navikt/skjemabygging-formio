@@ -89,25 +89,6 @@ const NewFormPage = () => {
             skjemanummer: trimmedFormNumber,
           },
         });
-        // const toRoleIds = getRoleMapper(config?.formioRoleIds as FormioRoleIds);
-        // const createdForm = await formio.saveForm({
-        //   ...state.form,
-        //   properties: {
-        //     ...state.form.properties,
-        //     skjemanummer: trimmedFormNumber,
-        //   },
-        //   access: [
-        //     {
-        //       type: 'read_all',
-        //       roles: toRoleIds('everyone'),
-        //     },
-        //     {
-        //       type: 'update_all',
-        //       roles: toRoleIds('administrator', 'authenticated'),
-        //     },
-        //   ],
-        // });
-        console.log('created', createdForm);
         if (!createdForm) {
           throw Error('Oppretting returnerte ingenting');
         }
@@ -116,7 +97,6 @@ const NewFormPage = () => {
         navigate(`/forms/${createdForm.path}/edit`);
         return createdForm;
       } catch (e: any) {
-        console.error(e);
         if (e instanceof FormioRoleError) {
           feedbackEmit.error('Opprettelse av skjema feilet');
           return;

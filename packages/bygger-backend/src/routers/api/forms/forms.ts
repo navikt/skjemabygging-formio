@@ -6,7 +6,6 @@ import { HttpError } from '../helpers/errors';
 
 const getAll: RequestHandler = async (req, res, next) => {
   const { select } = req.query;
-  console.log('select', select, select?.toString());
   try {
     const allForms = await formsService.getAll(select?.toString());
     res.json(allForms);

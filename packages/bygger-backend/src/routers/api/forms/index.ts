@@ -7,8 +7,6 @@ import old_form from './old_form';
 const formsRouter = express.Router();
 const { authorizedPublisher, formsApiAuthHandler } = authHandlers;
 
-// formsRouter.get('/:formPath', old_form.get);
-// formsRouter.put('/:formPath', authorizedPublisher, old_form.put);
 formsRouter.put('/:formPath/overwrite-with-prod', authorizedPublisher, old_form.copyFromProd);
 formsRouter.put('/:formPath/form-settings', authorizedPublisher, old_form.putFormSettings);
 
