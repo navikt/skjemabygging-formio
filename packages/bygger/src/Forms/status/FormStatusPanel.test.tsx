@@ -1,23 +1,20 @@
 import { AppConfigProvider } from '@navikt/skjemadigitalisering-shared-components';
-import { Form, FormPropertiesType } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form } from '@navikt/skjemadigitalisering-shared-domain';
 import { render, screen } from '@testing-library/react';
 import moment from 'moment';
 import FormStatusPanel from './FormStatusPanel';
 import { allLanguagesInNorwegian } from './PublishedLanguages';
-
-type PartialForm = Pick<Form, 'changedAt' | 'changedBy' | 'publishedAt' | 'publishedBy'> & {
-  properties?: Pick<FormPropertiesType, 'isTestForm' | 'unpublished'>;
-};
+import { FormStatusProperties } from './types';
 
 const now = moment().toISOString();
 const earlier = moment(now).subtract('1', 'day').toISOString();
 
 describe('FormStatusPanel', () => {
   describe('When form has changedAt date and no publish date', () => {
-    const form: PartialForm = { changedAt: now, changedBy: 'Jenny' };
+    const form: FormStatusProperties = { changedAt: now, changedBy: 'Jenny' };
 
     beforeEach(() => {
-      render(<FormStatusPanel formStatusProperties={form as Form} />);
+      render(<FormStatusPanel formStatusProperties={form} />);
     });
 
     it("displays the 'Utkast' status", () => {
@@ -38,7 +35,7 @@ describe('FormStatusPanel', () => {
   });
 
   describe('When form has published date that is the same as changedAt date', () => {
-    const properties: PartialForm = { changedAt: now, publishedAt: now, publishedBy: 'Jonny' };
+    const properties: FormStatusProperties = { changedAt: now, publishedAt: now, publishedBy: 'Jonny' };
 
     beforeEach(() => {
       render(<FormStatusPanel formStatusProperties={properties as Form} />);
@@ -62,7 +59,7 @@ describe('FormStatusPanel', () => {
   });
 
   describe('When form has published date earlier than changedAt date', () => {
-    const properties: PartialForm = { changedAt: now, publishedAt: earlier };
+    const properties: FormStatusProperties = { changedAt: now, publishedAt: earlier };
 
     beforeEach(() => {
       render(<FormStatusPanel formStatusProperties={properties as Form} />);
@@ -100,7 +97,7 @@ describe('FormStatusPanel', () => {
   });
 
   describe('When form is unpublished and changedAt date is same as or before unpublished date', () => {
-    const properties: PartialForm = { changedAt: now, properties: { unpublished: now } };
+    const properties: FormStatusProperties = { changedAt: now, properties: { unpublished: now } };
 
     beforeEach(() => {
       render(<FormStatusPanel formStatusProperties={properties as Form} />);
@@ -112,7 +109,7 @@ describe('FormStatusPanel', () => {
   });
 
   describe('When form is unpublished and changedAt date is after unpublished date', () => {
-    const properties: PartialForm = { changedAt: now, properties: { unpublished: earlier } };
+    const properties: FormStatusProperties = { changedAt: now, properties: { unpublished: earlier } };
 
     beforeEach(() => {
       render(<FormStatusPanel formStatusProperties={properties as Form} />);
@@ -197,7 +194,7 @@ describe('FormStatusPanel', () => {
     describe('feature toggle enableDiff is true', () => {
       describe('form is published', () => {
         it("button text is 'Skjul' when diffOn is true", () => {
-          const form: PartialForm = { changedAt: now, publishedAt: earlier };
+          const form: FormStatusProperties = { changedAt: now, publishedAt: earlier };
           render(
             <AppConfigProvider featureToggles={{ enableDiff: true }} diffOn={true} setDiffOn={setDiffOn}>
               <FormStatusPanel formStatusProperties={form as Form} />
@@ -207,7 +204,7 @@ describe('FormStatusPanel', () => {
         });
 
         it("button text is 'Vis' when diffOn is false", () => {
-          const form: PartialForm = { changedAt: now, publishedAt: earlier };
+          const form: FormStatusProperties = { changedAt: now, publishedAt: earlier };
           render(
             <AppConfigProvider featureToggles={{ enableDiff: true }} diffOn={false} setDiffOn={setDiffOn}>
               <FormStatusPanel formStatusProperties={form as Form} />
@@ -219,7 +216,7 @@ describe('FormStatusPanel', () => {
 
       describe('form is not published', () => {
         it('is not visible when form is not published', () => {
-          const properties: PartialForm = { changedAt: earlier, publishedAt: undefined };
+          const properties: FormStatusProperties = { changedAt: earlier, publishedAt: undefined };
           render(
             <AppConfigProvider featureToggles={{ enableDiff: true }} diffOn={true} setDiffOn={setDiffOn}>
               <FormStatusPanel formStatusProperties={properties as Form} />
@@ -231,7 +228,7 @@ describe('FormStatusPanel', () => {
     });
 
     it('feature toggle enableDiff is false', () => {
-      const properties: PartialForm = { changedAt: now, publishedAt: earlier };
+      const properties: FormStatusProperties = { changedAt: now, publishedAt: earlier };
       render(
         <AppConfigProvider featureToggles={{ enableDiff: false }} diffOn={true} setDiffOn={setDiffOn}>
           <FormStatusPanel formStatusProperties={properties as Form} />

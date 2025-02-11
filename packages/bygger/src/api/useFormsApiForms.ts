@@ -64,7 +64,7 @@ const useFormsApiForms = () => {
 
   const publish = async (form: Form, languages: TranslationLang[]) => {
     const { path, revision } = form;
-    const languageCodes = languages.length > 0 ? languages.toString() : 'nb';
+    const languageCodes = languages.toString();
     const searchParams = new URLSearchParams({
       languageCodes,
       revision: revision!.toString(),

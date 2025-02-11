@@ -105,9 +105,6 @@ const FormProvider = ({ featureToggles, children }: Props) => {
     return form;
   };
 
-  /**
-   * @deprecated
-   */
   const publishForm = async (form: Form, selectedLanguages: TranslationLang[]) => {
     await onPublish(form, selectedLanguages);
     // const savedForm = await onPublish(form, translations);
