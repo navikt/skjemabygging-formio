@@ -1,9 +1,9 @@
 import { BodyShort } from '@navikt/ds-react';
 import { ConfirmationModal } from '@navikt/skjemadigitalisering-shared-components';
-import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form } from '@navikt/skjemadigitalisering-shared-domain';
 
 interface Props {
-  form: NavFormType;
+  form: Form;
   open: boolean;
   onClose: () => void;
 }

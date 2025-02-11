@@ -1,10 +1,12 @@
-import { FormPropertiesType } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, FormPropertiesType } from '@navikt/skjemadigitalisering-shared-domain';
 
 export type Status = 'PENDING' | 'DRAFT' | 'PUBLISHED' | 'UNKNOWN' | 'TESTFORM' | 'UNPUBLISHED';
 
 export type StreetLightSize = 'small' | 'large';
 
-export type PublishStatusProperties = Pick<FormPropertiesType, 'modified' | 'published' | 'isTestForm' | 'unpublished'>;
+export type FormStatusEvents = Pick<Form, 'createdAt' | 'changedAt' | 'publishedAt'> &
+  Pick<FormPropertiesType, 'isTestForm' | 'unpublished'>;
 
-export type PublishProperties = PublishStatusProperties &
-  Pick<FormPropertiesType, 'modifiedBy' | 'publishedBy' | 'unpublishedBy' | 'publishedLanguages'>;
+export type FormStatusProperties = FormStatusEvents &
+  Pick<Form, 'createdBy' | 'changedBy' | 'publishedBy'> &
+  Pick<FormPropertiesType | 'unpublishedBy' | 'publishedLanguages'>;

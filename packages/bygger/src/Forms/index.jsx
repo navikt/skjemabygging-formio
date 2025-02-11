@@ -5,13 +5,13 @@ import { FormPage } from './FormPage';
 import NewFormPage from './NewFormPage';
 import FormsListPage from './list/FormsListPage';
 
-export const FormsRouter = ({ formio }) => {
+export const FormsRouter = () => {
   const { featureToggles } = useAppConfig();
 
   return (
     <Routes>
       <Route path="/" element={<FormsListPage />} />
-      <Route path={'/new'} element={<NewFormPage formio={formio} />} />
+      <Route path={'/new'} element={<NewFormPage />} />
       <Route
         path={'/:formPath/*'}
         element={

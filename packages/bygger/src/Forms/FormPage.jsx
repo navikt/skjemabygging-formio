@@ -25,18 +25,16 @@ export const FormPage = () => {
   }
 
   return (
-    // <I18nStateProvider loadTranslations={loadTranslationsForFormPath} form={formState.form}>
     <FormTranslationsProvider formPath={formState.form.path}>
       <GlobalTranslationsProvider>
         <Routes>
           <Route path={'/edit'} element={<EditFormPage form={formState.form} />} />
-          <Route path={'/view/*'} element={<TestFormPage form={formState.form} />} />
+          <Route path={'/view/*'} element={<TestFormPage form={formState.formioForm} />} />
           <Route path={'/settings'} element={<FormSettingsPage form={formState.form} />} />
           <Route path={'/oversettelser'} element={<FormTranslationsPage form={formState.form} />} />
           <Route path="/" element={<Navigate to={'edit'} replace />} />
         </Routes>
       </GlobalTranslationsProvider>
     </FormTranslationsProvider>
-    // </I18nStateProvider>
   );
 };

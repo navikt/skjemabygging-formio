@@ -12,6 +12,8 @@ type Form = {
   createdBy?: string;
   changedAt?: string;
   changedBy?: string;
+  publishedAt?: string;
+  publishedBy?: string;
 };
 
 export type { Form };

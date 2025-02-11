@@ -1,5 +1,5 @@
 import { useAppConfig, useModal } from '@navikt/skjemadigitalisering-shared-components';
-import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form } from '@navikt/skjemadigitalisering-shared-domain';
 import { useState } from 'react';
 import { AppLayout } from '../../components/AppLayout';
 import { FormMetadataEditor } from '../../components/FormMetaDataEditor/FormMetadataEditor';
@@ -13,7 +13,7 @@ import PublishModalComponents from '../publish/PublishModalComponents';
 import FormSettingsSidebar from './FormSettingsSidebar';
 
 interface FormSettingsPageProps {
-  form: NavFormType;
+  form: Form;
 }
 
 export function FormSettingsPage({ form }: FormSettingsPageProps) {
@@ -29,14 +29,14 @@ export function FormSettingsPage({ form }: FormSettingsPageProps) {
   const { config } = useAppConfig();
 
   // Set default properties if they are not set
-  const setDefaultProperties = (form: NavFormType) => {
+  const setDefaultProperties = (form: Form) => {
     if (!form.properties.mellomlagringDurationDays) {
       form.properties.mellomlagringDurationDays = (config?.mellomlagringDurationDays as string) ?? '28';
     }
     return form;
   };
 
-  const validateAndSave = async (form: NavFormType) => {
+  const validateAndSave = async (form: Form) => {
     const updatedForm = setDefaultProperties(form);
     const updatedErrors = validateFormMetadata(updatedForm, 'edit');
     if (isFormMetadataValid(updatedErrors)) {

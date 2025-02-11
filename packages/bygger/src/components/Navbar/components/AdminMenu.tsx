@@ -1,5 +1,5 @@
 import { System } from '@navikt/ds-icons';
-import { Dropdown, InternalHeader, Tag } from '@navikt/ds-react';
+import { Dropdown, InternalHeader } from '@navikt/ds-react';
 import useUnsavedChangesModal from '../../../hooks/useUnsavedChangesModal';
 import { AdminMenuLink } from './AdminMenuLink';
 
@@ -15,20 +15,17 @@ const AdminMenu = ({ showImport = false }) => {
         <Dropdown.Menu>
           <Dropdown.Menu.GroupedList>
             <Dropdown.Menu.GroupedList.Item>
-              <AdminMenuLink
-                showUnsavedChangesModal={showUnsavedChangesModal}
-                to="/translations/global/nn-NO/skjematekster"
-              >
+              <AdminMenuLink showUnsavedChangesModal={showUnsavedChangesModal} to="/oversettelser">
                 Globale Oversettelser
               </AdminMenuLink>
             </Dropdown.Menu.GroupedList.Item>
             <Dropdown.Menu.GroupedList.Item>
-              <AdminMenuLink showUnsavedChangesModal={showUnsavedChangesModal} to="/migrering">
+              <AdminMenuLink showUnsavedChangesModal={showUnsavedChangesModal} to="/migrering" disabled>
                 Migrering
               </AdminMenuLink>
             </Dropdown.Menu.GroupedList.Item>
             <Dropdown.Menu.GroupedList.Item>
-              <AdminMenuLink showUnsavedChangesModal={showUnsavedChangesModal} to="/bulk-publisering">
+              <AdminMenuLink showUnsavedChangesModal={showUnsavedChangesModal} to="/bulk-publisering" disabled>
                 Bulkpublisering
               </AdminMenuLink>
             </Dropdown.Menu.GroupedList.Item>
@@ -39,25 +36,17 @@ const AdminMenu = ({ showImport = false }) => {
             </Dropdown.Menu.GroupedList.Item>
 
             <Dropdown.Menu.GroupedList.Item>
-              <AdminMenuLink showUnsavedChangesModal={showUnsavedChangesModal} to="/rapporter">
+              <AdminMenuLink showUnsavedChangesModal={showUnsavedChangesModal} to="/rapporter" disabled>
                 Rapporter
               </AdminMenuLink>
             </Dropdown.Menu.GroupedList.Item>
             {showImport && (
               <Dropdown.Menu.GroupedList.Item>
-                <AdminMenuLink showUnsavedChangesModal={showUnsavedChangesModal} to="/import/skjema">
+                <AdminMenuLink showUnsavedChangesModal={showUnsavedChangesModal} to="/import/skjema" disabled>
                   Importer
                 </AdminMenuLink>
               </Dropdown.Menu.GroupedList.Item>
             )}
-            <Dropdown.Menu.GroupedList.Item>
-              <AdminMenuLink showUnsavedChangesModal={showUnsavedChangesModal} to="/oversettelser">
-                Globale Oversettelser{' '}
-                <Tag variant={'warning-moderate'} size={'xsmall'}>
-                  Beta
-                </Tag>
-              </AdminMenuLink>
-            </Dropdown.Menu.GroupedList.Item>
           </Dropdown.Menu.GroupedList>
         </Dropdown.Menu>
       </Dropdown>

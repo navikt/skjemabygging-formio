@@ -4,7 +4,6 @@ import { publisherService } from '../../services';
 import { BadRequest } from './helpers/errors';
 
 const publishForm = async (req: Request, res: Response, next: NextFunction) => {
-  // const formioToken = req.getFormioToken();
   const userName = req.getUser().name;
   const { formPath } = req.params;
   const { form, translations } = req.body;
@@ -18,7 +17,7 @@ const publishForm = async (req: Request, res: Response, next: NextFunction) => {
   logger.info('Attempting to publish form', logMeta);
 
   try {
-    const result = await publisherService.publishForm(form, translations, { userName });
+    const result = await publisherService.publishForm(form, translations);
     const logMessage: string = result.changed ? 'Form is published' : 'Form has not been changed, publish aborted';
     logger.info(logMessage, logMeta);
     res.json(result);

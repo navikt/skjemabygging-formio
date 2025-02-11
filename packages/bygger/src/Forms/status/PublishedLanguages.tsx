@@ -1,7 +1,7 @@
 import { Label } from '@navikt/ds-react';
-import { languagesInNorwegian } from '../../context/i18n';
+import languagesInNorwegian from '../../old_translations/languagesInNorwegian';
 import { useStatusStyles } from './styles';
-import { PublishProperties } from './types';
+import { FormStatusProperties } from './types';
 
 const langCodeBokmal = 'nb-NO';
 export const allLanguagesInNorwegian = {
@@ -10,12 +10,12 @@ export const allLanguagesInNorwegian = {
 };
 
 interface Props {
-  publishProperties: PublishProperties;
+  publishProperties: FormStatusProperties;
 }
 
 const PublishedLanguages = ({ publishProperties }: Props) => {
   const styles = useStatusStyles({});
-  if (publishProperties.published && publishProperties.publishedLanguages) {
+  if (publishProperties.publishedAt && publishProperties.publishedLanguages) {
     const sortedLanguageCodes = [...publishProperties.publishedLanguages, langCodeBokmal].sort();
     return (
       <div className={styles.panelItem}>

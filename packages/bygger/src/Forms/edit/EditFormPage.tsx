@@ -1,6 +1,6 @@
 import { FormBuilderOptions, makeStyles, useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
-import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
-import { useCallback } from 'react';
+import { Form, formioFormsApiUtils, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
+import { useCallback, useMemo, useState } from 'react';
 import { AppLayout } from '../../components/AppLayout';
 import RowLayout from '../../components/layout/RowLayout';
 import Title from '../../components/layout/Title';
@@ -18,7 +18,7 @@ const useStyles = makeStyles({
 });
 
 interface EditFormPageProps {
-  form: NavFormType;
+  form: Form;
 }
 
 const EditFormPage = ({ form }: EditFormPageProps) => {
@@ -31,6 +31,7 @@ const EditFormPage = ({ form }: EditFormPageProps) => {
     properties: { skjemanummer, isLockedForm },
   } = form;
 
+  const [view, setView] = useState('wizard');
   const appConfig = useAppConfig();
   const styles = useStyles();
   const formBuilderOptions = {
@@ -41,13 +42,13 @@ const EditFormPage = ({ form }: EditFormPageProps) => {
   };
 
   const handleChange = useCallback(
-    (changedForm: NavFormType) =>
-      changeForm({
-        ...changedForm,
-        modified: form.modified,
-        properties: { ...changedForm.properties, modified: form.properties.modified },
-      }),
-    [form.modified, form.properties.modified, changeForm],
+    (changedForm: NavFormType) => changeForm(formioFormsApiUtils.mapNavFormToForm(changedForm)),
+    [changeForm],
+  );
+
+  const formioForm: NavFormType = useMemo(
+    () => ({ ...formioFormsApiUtils.mapFormToNavForm(form), view }),
+    [form, view],
   );
 
   return (
@@ -58,7 +59,7 @@ const EditFormPage = ({ form }: EditFormPageProps) => {
           formPath: form.path,
         }}
       >
-        <TitleRowLayout left={<SkjemaVisningSelect form={form} onChange={handleChange} />}>
+        <TitleRowLayout left={<SkjemaVisningSelect onChange={setView} />}>
           <Title subTitle={skjemanummer} lockedForm={isLockedForm}>
             {title}
           </Title>
@@ -66,7 +67,7 @@ const EditFormPage = ({ form }: EditFormPageProps) => {
         <RowLayout fullWidth={true} right={<EditFormSidebar form={form} />}>
           <NavFormBuilder
             className={styles.formBuilder}
-            form={form}
+            form={formioForm}
             onChange={handleChange}
             formBuilderOptions={formBuilderOptions}
           />

@@ -1,20 +1,22 @@
 import { Box, Label } from '@navikt/ds-react';
-import FormStatus, { determineStatus } from './FormStatus';
+import FormStatus from './FormStatus';
 import PublishedLanguages from './PublishedLanguages';
 import Timestamp from './Timestamp';
 import ToggleDiffButton from './ToggleDiffButton';
 import { useStatusStyles } from './styles';
-import { PublishProperties } from './types';
+import { FormStatusProperties } from './types';
+import { determineStatus } from './utils';
 
 interface Props {
-  publishProperties: PublishProperties;
+  formStatusProperties: FormStatusProperties;
   spacing?: 'default' | 'small';
   hideToggleDiffButton?: boolean;
 }
 
-const FormStatusPanel = ({ publishProperties, spacing, hideToggleDiffButton = false }: Props) => {
+const FormStatusPanel = ({ formStatusProperties, spacing, hideToggleDiffButton = false }: Props) => {
   const styles = useStatusStyles({ spacing } as Jss.Theme);
-  const { modified, modifiedBy, published, publishedBy, unpublished, unpublishedBy } = publishProperties;
+  const { changedAt, changedBy, publishedAt, publishedBy, properties } = formStatusProperties;
+  const { unpublished, unpublishedBy, publishedLanguages } = properties ?? {};
 
   const LabeledTimeAndUser = ({
     label,
@@ -43,14 +45,14 @@ const FormStatusPanel = ({ publishProperties, spacing, hideToggleDiffButton = fa
       <div className={styles.panelItem}>
         <Label>Status:</Label>
         <div className={styles.sidePanelFormStatusContainer}>
-          <FormStatus status={determineStatus(publishProperties)} size="large" />
+          <FormStatus status={determineStatus(formStatusProperties)} size="large" />
         </div>
-        {!hideToggleDiffButton && published && <ToggleDiffButton className={styles.toggleDiffButton} />}
+        {!hideToggleDiffButton && publishedAt && <ToggleDiffButton className={styles.toggleDiffButton} />}
       </div>
-      <LabeledTimeAndUser label="Sist lagret:" timestamp={modified} userName={modifiedBy} />
-      <LabeledTimeAndUser label="Sist publisert:" timestamp={published} userName={publishedBy} />
+      <LabeledTimeAndUser label="Sist lagret:" timestamp={changedAt} userName={changedBy} />
+      <LabeledTimeAndUser label="Sist publisert:" timestamp={publishedAt} userName={publishedBy} />
       <LabeledTimeAndUser label="Avpublisert:" timestamp={unpublished} userName={unpublishedBy} />
-      <PublishedLanguages publishProperties={publishProperties} />
+      <PublishedLanguages publishProperties={{ publishedAt, publishedLanguages }} />
     </Box>
   );
 };

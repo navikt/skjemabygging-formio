@@ -13,6 +13,7 @@ import {
   AttachmentSettingValues,
   Component,
   CustomLabels,
+  Form,
   FormioTranslationMap,
   Language,
   NavFormType,
@@ -116,7 +117,7 @@ const getLabel = (label: string, type: string, hideLabel: boolean) => {
   return label;
 };
 
-const getTranslatablePropertiesFromForm = (form: NavFormType) =>
+const getTranslatablePropertiesFromForm = (form: Form) =>
   navFormUtils
     .flattenComponents(form.components)
     .filter((component) => component.type !== 'hidden')
@@ -209,7 +210,7 @@ const getAttachmentTexts = (attachmentValues?: AttachmentSettingValues): undefin
   });
 };
 
-const getFormTexts = (form?: NavFormType, withInputType = false): TextObjectType[] => {
+const getFormTexts = (form?: Form, withInputType = false): TextObjectType[] => {
   if (!form) {
     return [];
   }
@@ -332,7 +333,7 @@ const createTranslationsHtmlRows = (
   return [];
 };
 
-const getTextsAndTranslationsForForm = (form: NavFormType, translations: FormioTranslationMap): CsvRow[] => {
+const getTextsAndTranslationsForForm = (form: Form, translations: FormioTranslationMap): CsvRow[] => {
   const textComponents = getFormTexts(form, false);
   let textIndex = 0;
   return textComponents.flatMap((textComponent) => {

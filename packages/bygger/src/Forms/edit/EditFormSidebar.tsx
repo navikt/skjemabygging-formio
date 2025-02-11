@@ -1,7 +1,7 @@
 import { PadlockLockedIcon } from '@navikt/aksel-icons';
 import { Button, VStack } from '@navikt/ds-react';
 import { useModal } from '@navikt/skjemadigitalisering-shared-components';
-import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form } from '@navikt/skjemadigitalisering-shared-domain';
 import ButtonWithSpinner from '../../components/ButtonWithSpinner';
 import SidebarLayout from '../../components/layout/SidebarLayout';
 import UserFeedback from '../../components/UserFeedback';
@@ -12,7 +12,7 @@ import FormStatusPanel from '../status/FormStatusPanel';
 import UnpublishButton from '../unpublish/UnpublishButton';
 
 interface EditFormSidebarProps {
-  form: NavFormType;
+  form: Form;
 }
 
 const EditFormSidebar = ({ form }: EditFormSidebarProps) => {
@@ -57,7 +57,7 @@ const EditFormSidebar = ({ form }: EditFormSidebarProps) => {
         </Button>
         <UnpublishButton form={form} />
         <UserFeedback />
-        <FormStatusPanel publishProperties={form.properties} />
+        <FormStatusPanel formStatusProperties={form} />
 
         <PublishModalComponents
           form={form}

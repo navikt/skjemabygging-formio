@@ -1,16 +1,12 @@
-import { NavFormType, UsageContext } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, UsageContext } from '@navikt/skjemadigitalisering-shared-domain';
 import { isFormMetadataValid, validateFormMetadata } from './utils';
 
 describe('Form Metadata Validation', () => {
-  let sampleForm: NavFormType;
+  let sampleForm: Form;
 
   beforeEach(() => {
     sampleForm = {
-      _id: 'id',
-      type: 'form',
-      tags: ['common', 'nav-skjema'],
-      display: 'form',
-      name: 'Sample Form',
+      skjemanummer: 'NAV 12-13.14',
       title: 'Sample Title',
       path: 'sample-path',
       properties: {

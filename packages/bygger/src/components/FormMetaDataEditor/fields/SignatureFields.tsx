@@ -1,7 +1,7 @@
 import { Button, Checkbox } from '@navikt/ds-react';
 import {
+  Form,
   NavFormSettingsDiff,
-  NavFormType,
   NewFormSignatureType,
   signatureUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
@@ -12,7 +12,7 @@ import { UpdateFormFunction } from '../utils/utils';
 export interface SignatureFieldsProps {
   onChange: UpdateFormFunction;
   diff: NavFormSettingsDiff;
-  form: NavFormType;
+  form: Form;
 }
 
 const SignatureFields = ({ onChange, diff, form }: SignatureFieldsProps) => {

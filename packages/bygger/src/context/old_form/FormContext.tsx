@@ -1,7 +1,7 @@
 import {
   FeatureTogglesMap,
+  Form,
   FormPropertiesType,
-  NavFormType,
   TranslationLang,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, ReactNode, useCallback, useContext, useEffect, useReducer } from 'react';
@@ -16,9 +16,10 @@ interface Props {
 
 interface ContextValue {
   formState: FormReducerState;
-  changeForm: (form: NavFormType) => void;
-  saveForm: (form: NavFormType) => Promise<NavFormType | void>;
-  publishForm: (form: NavFormType, selectedLanguages: TranslationLang[]) => Promise<void>;
+  resetForm: () => void;
+  changeForm: (form: Form) => void;
+  saveForm: (form: Form) => Promise<Form | void>;
+  publishForm: (form: Form, selectedLanguages: TranslationLang[]) => Promise<void>;
   unpublishForm: () => Promise<void>;
   copyFormFromProduction: () => Promise<void>;
   changeFormSettings: (properties: Partial<FormPropertiesType>) => Promise<void>;
@@ -28,6 +29,7 @@ const initialState: FormReducerState = { status: 'INITIAL LOADING' };
 
 const FormContext = createContext<ContextValue>({
   formState: initialState,
+  resetForm: () => {},
   changeForm: (_form) => {},
   saveForm: async (_form) => {},
   publishForm: async (_form, _translations) => {},
@@ -68,7 +70,7 @@ const FormProvider = ({ featureToggles, children }: Props) => {
           }
         });
     }
-  }, [loadForm, formPath, featureToggles.enableDiff]);
+  }, [loadForm, formPath, featureToggles.enableDiff, state.status]);
 
   // Clear session storage on refresh
   useBeforeUnload(
@@ -79,15 +81,19 @@ const FormProvider = ({ featureToggles, children }: Props) => {
     }, [formPath]),
   );
 
-  const changeForm = useCallback((changedForm: NavFormType) => {
+  const changeForm = useCallback((changedForm: Form) => {
     sessionStorage.setItem(changedForm.path, JSON.stringify({ changed: true }));
-    console.log('changeForm', changedForm);
     dispatch({ type: 'form-changed', form: changedForm });
   }, []);
 
-  const saveForm = async (form: NavFormType) => {
-    console.log('saveForm', state);
-    console.log('save input', form);
+  const resetForm = () => {
+    if (formPath) {
+      sessionStorage.removeItem(formPath);
+    }
+    dispatch({ type: 'form-reset' });
+  };
+
+  const saveForm = async (form: Form) => {
     const savedForm = await onSave(form);
     if (formPath) {
       sessionStorage.removeItem(formPath);
@@ -99,10 +105,7 @@ const FormProvider = ({ featureToggles, children }: Props) => {
     return form;
   };
 
-  /**
-   * @deprecated
-   */
-  const publishForm = async (form: NavFormType, selectedLanguages: TranslationLang[]) => {
+  const publishForm = async (form: Form, selectedLanguages: TranslationLang[]) => {
     await onPublish(form, selectedLanguages);
     // const savedForm = await onPublish(form, translations);
     // await loadPublishedForm(formPath)
@@ -149,6 +152,7 @@ const FormProvider = ({ featureToggles, children }: Props) => {
 
   const value = {
     formState: state,
+    resetForm,
     changeForm,
     saveForm,
     publishForm,

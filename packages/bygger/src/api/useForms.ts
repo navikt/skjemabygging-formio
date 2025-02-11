@@ -1,4 +1,4 @@
-import { NavFormType, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
 import useFormsApiForms from './useFormsApiForms';
 
 /**
@@ -7,15 +7,19 @@ import useFormsApiForms from './useFormsApiForms';
 const useForms = () => {
   const { getAll, get, put, post, publish } = useFormsApiForms();
 
-  const createForm = async (form: NavFormType) => {
+  const loadFormsList = async () => {
+    return await getAll('title,path,properties,changedAt,publishedAt');
+  };
+
+  const createForm = async (form: Form) => {
     return await post(form);
   };
 
-  const onSave = async (form: NavFormType) => {
+  const onSave = async (form: Form) => {
     return await put(form);
   };
 
-  const onPublish = async (form: NavFormType, languages: TranslationLang[]) => {
+  const onPublish = async (form: Form, languages: TranslationLang[]) => {
     return await publish(form, languages);
   };
 
@@ -27,7 +31,8 @@ const useForms = () => {
 
   return {
     loadForm: get,
-    loadFormsList: getAll,
+    loadForms: getAll,
+    loadFormsList,
     createForm,
     onSave,
     onPublish,

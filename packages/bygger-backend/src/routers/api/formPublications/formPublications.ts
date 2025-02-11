@@ -1,4 +1,4 @@
-import { index, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
+import { formioFormsApiUtils, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
 import { RequestHandler } from 'express';
 import { formPublicationsService } from '../../../services';
 import { mapLanguageCodeToFormioFormat } from './utils';
@@ -44,7 +44,7 @@ const post: RequestHandler = async (req, res, next) => {
         values,
       ]),
     );
-    const formioForm = index.mapFormToNavForm(form);
+    const formioForm = formioFormsApiUtils.mapFormToNavForm(form);
 
     req.body = { form: formioForm, translations: formioTranslations };
     next();

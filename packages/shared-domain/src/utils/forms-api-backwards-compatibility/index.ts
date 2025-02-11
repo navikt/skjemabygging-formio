@@ -1,8 +1,8 @@
 import { mapFormToNavForm, mapNavFormToForm } from './form';
 
-const index = {
+const formioFormsApiUtils = {
   mapFormToNavForm,
   mapNavFormToForm,
 };
 
-export default index;
+export default formioFormsApiUtils;

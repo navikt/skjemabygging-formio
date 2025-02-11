@@ -1,5 +1,5 @@
 import { Component, FormPropertiesType, NavFormType, NewFormSignatureType } from '../form';
-import { navFormUtils } from '../index';
+import { Form, navFormUtils } from '../index';
 
 enum DiffStatus {
   NEW = 'Ny',
@@ -73,22 +73,19 @@ const toSignaturesDiff = (arrayDiff: any): SignaturesDiff | undefined => {
 export type NavFormSettingsDiff = {
   [key in keyof FormPropertiesType]?: object;
 } & { errorMessage?: string; title?: string };
-const generateNavFormSettingsDiff = (
-  originalForm: NavFormType | undefined,
-  navForm: NavFormType,
-): NavFormSettingsDiff => {
+const generateNavFormSettingsDiff = (originalForm: NavFormType | undefined, form: Form): NavFormSettingsDiff => {
   try {
     if (!originalForm) {
       return {};
     }
-    const propsDiff = generateObjectDiff(originalForm.properties, navForm.properties);
+    const propsDiff = generateObjectDiff(originalForm.properties, form.properties);
     let signaturesDiff;
     if (propsDiff.diff?.signatures) {
       signaturesDiff = toSignaturesDiff(propsDiff.diff?.signatures);
     }
     return {
-      ...(originalForm.title !== navForm.title && {
-        title: { ...generatePrimitiveDiff(originalForm.title, navForm.title) },
+      ...(originalForm.title !== form.title && {
+        title: { ...generatePrimitiveDiff(originalForm.title, form.title) },
       }),
       ...(propsDiff.status === DiffStatus.CHANGED && { ...propsDiff.diff }),
       signatures: signaturesDiff,
