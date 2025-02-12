@@ -188,12 +188,12 @@ _Eierene_ av gruppene kan legge til nye medlemmer.
 
 En oversikt over gruppenes id'er vil dessuten ligge i koden for bygger backend såfremt de faktisk er i bruk:
 
--   [azureAd.ts](https://github.com/navikt/skjemabygging-formio/tree/master/packages/bygger-backend/src/middleware/azureAd.ts)
+- [azureAd.ts](https://github.com/navikt/skjemabygging-formio/tree/master/packages/bygger-backend/src/middleware/azureAd.ts)
 
 ### Opprette Formio-bruker for lokal utvikling
 
--   Logg inn på https://formio-api.intern.dev.nav.no med brukernavn og passord fra Google Secrets
--   Velg `Nav Skjemabase` -> `User` -> `Use` og skriv inn ønsket brukernavn/passord
+- Logg inn på https://formio-api.intern.dev.nav.no med brukernavn og passord fra Google Secrets
+- Velg `Nav Skjemabase` -> `User` -> `Use` og skriv inn ønsket brukernavn/passord
 
 ### Fyllut
 
@@ -238,3 +238,7 @@ Spørsmål knyttet til koden eller prosjektet kan stilles som issues her på Git
 ## For Nav-ansatte
 
 Interne henvendelser kan sendes via Slack i kanalen #team-fyllut-sendinn
+
+## Kode generert av GitHub Copilot
+
+Dette repoet bruker GitHub Copilot til å generere kode.

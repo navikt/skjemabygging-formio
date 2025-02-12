@@ -14,17 +14,12 @@ import {
   SummaryDataGridRow,
   SummaryField,
   SummaryFieldset,
-  SummaryImage,
   SummaryPanel,
   SummarySelectboxes,
   TEXTS,
 } from '@navikt/skjemadigitalisering-shared-domain';
 
 type TranslateFunction = (text: string) => string;
-const calcImageWidth = (widthInPercentage: number) => {
-  const MAX_WIDTH = 500;
-  return (MAX_WIDTH * widthInPercentage) / 100;
-};
 
 const createHtmlFromSubmission = (
   form: NavFormType,
@@ -101,8 +96,6 @@ const sectionContent = (components: SummaryComponent[], level: number): string =
           return datagridRow(component, level);
         case 'selectboxes':
           return multipleAnswers(component);
-        case 'image':
-          return img(component);
         case 'alertstripe':
         case 'htmlelement':
           return html(component);
@@ -177,14 +170,6 @@ const html = (component: SummaryField) => {
   }
   return `<div class="html">${component.value}</div>`;
 };
-
-const img = (component: SummaryImage) => `
-<div>
-<div class="spm">${component.label}</div>
-<img src="${component.value}" alt="${component.alt}" width="${calcImageWidth(component.widthPercent)}"/>
-<div class="alt">${component.alt}</div>
-</div>
-`;
 
 const multipleAnswers = (component: SummarySelectboxes) => `
 <div class="spm">${component.label}</div>

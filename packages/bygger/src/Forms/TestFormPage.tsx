@@ -1,5 +1,5 @@
 import { Skeleton } from '@navikt/ds-react';
-import { FyllUtRouter, i18nUtils, SkeletonList, useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
+import { FyllUtRouter, i18nUtils, SkeletonList } from '@navikt/skjemadigitalisering-shared-components';
 import { useMemo } from 'react';
 import { AppLayout } from '../components/AppLayout';
 import RowLayout from '../components/layout/RowLayout';
@@ -7,7 +7,6 @@ import { useFormTranslations } from '../context/translations/FormTranslationsCon
 import { useGlobalTranslations } from '../context/translations/GlobalTranslationsContext';
 
 export function TestFormPage({ form }) {
-  const { featureToggles } = useAppConfig();
   const { isReady: formTranslationIsReady, translations: formTranslations } = useFormTranslations();
   const { isReady: globalTranslationIsReady, translations: globalTranslations } = useGlobalTranslations();
 
@@ -34,7 +33,7 @@ export function TestFormPage({ form }) {
         formPath: form.path,
       }}
     >
-      <FyllUtRouter form={form} translations={featureToggles?.enableTranslations && i18n} />
+      <FyllUtRouter form={form} translations={i18n} />
     </AppLayout>
   );
 }
