@@ -42,7 +42,7 @@ const AdminMenu = ({ showImport = false }) => {
             </Dropdown.Menu.GroupedList.Item>
             {showImport && (
               <Dropdown.Menu.GroupedList.Item>
-                <AdminMenuLink showUnsavedChangesModal={showUnsavedChangesModal} to="/import/skjema" disabled>
+                <AdminMenuLink showUnsavedChangesModal={showUnsavedChangesModal} to="/import/skjema">
                   Importer
                 </AdminMenuLink>
               </Dropdown.Menu.GroupedList.Item>

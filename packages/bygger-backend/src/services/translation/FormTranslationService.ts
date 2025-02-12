@@ -44,6 +44,17 @@ const createFormTranslationsService = (formsApiUrl: string): FormTranslationServ
       );
       return response.data as FormsApiFormTranslation;
     },
+
+    delete: async (formPath: string, id: number, accessToken: string): Promise<string> => {
+      const response = await fetchWithErrorHandling(
+        `${formsApiTranslationsUrl}/${formPath}/${translationsPath}/${id}`,
+        {
+          method: 'DELETE',
+          headers: createHeaders(accessToken),
+        },
+      );
+      return response.status;
+    },
   };
 };
 

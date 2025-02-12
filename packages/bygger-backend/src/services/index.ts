@@ -1,6 +1,6 @@
 import { Backend } from '../Backend';
 import config from '../config';
-import { getFormioApiProdServiceUrl, getFormioApiServiceUrl } from '../util/formio';
+import { getFormioApiServiceUrl } from '../util/formio';
 import { createCopyService } from './copy/CopyService';
 import { FormioService } from './formioService';
 import createFormPublicationsService from './formPublications/FormPublicationsService';
@@ -13,7 +13,6 @@ import createFormTranslationsService from './translation/FormTranslationService'
 import createGlobalTranslationService from './translation/GlobalTranslationsService';
 
 const formioApiServiceUrl = getFormioApiServiceUrl();
-const prodFormioApiServiceUrl = getFormioApiProdServiceUrl();
 
 const formioService = new FormioService(formioApiServiceUrl);
 
@@ -35,8 +34,16 @@ const formsService = createFormsService(config.formsApi.url);
 
 const formPublicationsService = createFormPublicationsService(config.formsApi.url);
 
-const copyService = prodFormioApiServiceUrl
-  ? createCopyService(new FormioService(prodFormioApiServiceUrl), formioService)
+const prodFormsApiUrl = config.prodFormsApi?.url;
+const copyService = prodFormsApiUrl
+  ? createCopyService(
+      createFormsService(prodFormsApiUrl),
+      formsService,
+      createFormTranslationsService(prodFormsApiUrl),
+      formTranslationsService,
+      createGlobalTranslationService(prodFormsApiUrl),
+      globalTranslationsService,
+    )
   : null;
 
 export {
