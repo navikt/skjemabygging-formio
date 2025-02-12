@@ -15,8 +15,7 @@ interface Props {
 
 const FormStatusPanel = ({ formStatusProperties, spacing, hideToggleDiffButton = false }: Props) => {
   const styles = useStatusStyles({ spacing } as Jss.Theme);
-  const { changedAt, changedBy, publishedAt, publishedBy, properties } = formStatusProperties;
-  const { unpublished, unpublishedBy, publishedLanguages } = properties ?? {};
+  const { changedAt, changedBy, publishedAt, publishedBy, publishedLanguages, status } = formStatusProperties;
 
   const LabeledTimeAndUser = ({
     label,
@@ -50,9 +49,17 @@ const FormStatusPanel = ({ formStatusProperties, spacing, hideToggleDiffButton =
         {!hideToggleDiffButton && publishedAt && <ToggleDiffButton className={styles.toggleDiffButton} />}
       </div>
       <LabeledTimeAndUser label="Sist lagret:" timestamp={changedAt} userName={changedBy} />
-      <LabeledTimeAndUser label="Sist publisert:" timestamp={publishedAt} userName={publishedBy} />
-      <LabeledTimeAndUser label="Avpublisert:" timestamp={unpublished} userName={unpublishedBy} />
-      <PublishedLanguages publishProperties={{ publishedAt, publishedLanguages }} />
+      <LabeledTimeAndUser
+        label="Sist publisert:"
+        timestamp={status !== 'unpublished' ? publishedAt : undefined}
+        userName={publishedBy}
+      />
+      <LabeledTimeAndUser
+        label="Avpublisert:"
+        timestamp={status === 'unpublished' ? publishedAt : undefined}
+        userName={publishedBy}
+      />
+      <PublishedLanguages publishedLanguages={publishedLanguages} />
     </Box>
   );
 };

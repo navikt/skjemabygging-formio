@@ -1,22 +1,19 @@
 import { Label } from '@navikt/ds-react';
-import languagesInNorwegian from '../../old_translations/languagesInNorwegian';
+import { Form } from '@navikt/skjemadigitalisering-shared-domain';
 import { useStatusStyles } from './styles';
-import { FormStatusProperties } from './types';
 
-const langCodeBokmal = 'nb-NO';
 export const allLanguagesInNorwegian = {
-  ...languagesInNorwegian,
-  [langCodeBokmal]: 'Norsk bokmål',
+  nb: 'Norsk bokmål',
+  nn: 'Norsk nynorsk',
+  en: 'Engelsk',
 };
 
-interface Props {
-  publishProperties: FormStatusProperties;
-}
+type Props = Pick<Form, 'publishedLanguages'>;
 
-const PublishedLanguages = ({ publishProperties }: Props) => {
+const PublishedLanguages = ({ publishedLanguages }: Props) => {
   const styles = useStatusStyles({});
-  if (publishProperties.publishedAt && publishProperties.publishedLanguages) {
-    const sortedLanguageCodes = [...publishProperties.publishedLanguages, langCodeBokmal].sort();
+  if (publishedLanguages) {
+    const sortedLanguageCodes = [...publishedLanguages].sort();
     return (
       <div className={styles.panelItem}>
         <Label>Publiserte språk:</Label>

@@ -1,36 +1,31 @@
 import { Form } from '@navikt/skjemadigitalisering-shared-domain';
-import moment from 'moment/moment';
 import { FormStatusEvents, Status } from './types';
 
 const determineStatus = (formStatusProperties: FormStatusEvents): Status => {
-  const { changedAt, publishedAt, isTestForm, unpublished } = formStatusProperties;
-  const modifiedDate = moment(changedAt);
-  const unpublishedDate = unpublished !== undefined ? moment(unpublished) : undefined;
+  const { isTestForm, status } = formStatusProperties;
 
   if (isTestForm) {
     return 'TESTFORM';
   }
 
-  if (changedAt && publishedAt) {
-    if (moment(changedAt).isAfter(moment(publishedAt))) {
+  switch (status) {
+    case 'draft':
+      return 'DRAFT';
+    case 'published':
+      return 'PUBLISHED';
+    case 'pending':
       return 'PENDING';
-    }
-    return 'PUBLISHED';
+    case 'unpublished':
+      return 'UNPUBLISHED';
+    default:
+      return 'UNKNOWN';
   }
-
-  if (unpublishedDate?.isSameOrAfter(modifiedDate)) {
-    return 'UNPUBLISHED';
-  } else if (changedAt) {
-    return 'DRAFT';
-  }
-
-  return 'UNKNOWN';
 };
 
 const determineStatusFromForm = (form: Form) => {
-  const { changedAt, publishedAt, properties } = form;
-  const { isTestForm, unpublished } = properties ?? {};
-  return determineStatus({ changedAt, publishedAt, isTestForm, unpublished });
+  const { changedAt, publishedAt, properties, status } = form;
+  const { isTestForm } = properties ?? {};
+  return determineStatus({ changedAt, publishedAt, isTestForm, status });
 };
 
 export { determineStatus, determineStatusFromForm };
