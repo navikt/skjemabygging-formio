@@ -40,9 +40,14 @@ const useFormsApiForms = () => {
       const result = await http.post<Form>(baseUrl, form);
       logger?.info(`Successfully created form with id ${result.id} and path ${result.path}`);
       return result;
-    } catch (error) {
-      const message = (error as Error)?.message;
+    } catch (error: any) {
+      const message = error?.message;
+      const status = error?.status;
       logger?.error(`Failed to create form: ${baseUrl}`, { message });
+      if (status === 409) {
+        feedbackEmit.error('Skjemanummer er allerede i bruk. Velg et annet skjemanummer.');
+        return;
+      }
       feedbackEmit.error(`Feil ved oppretting av skjema. ${message}`);
     }
   };

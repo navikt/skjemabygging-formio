@@ -1,7 +1,7 @@
 import express from 'express';
 import authHandlers from '../helpers/authHandlers';
 import publishForm from '../publish-form';
-import formPublications from './formPublications';
+import formPublications from './form-publications';
 
 const formPublicationsRouter = express.Router();
 const { formsApiAuthHandler } = authHandlers;
