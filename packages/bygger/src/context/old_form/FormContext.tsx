@@ -1,9 +1,4 @@
-import {
-  FeatureTogglesMap,
-  Form,
-  FormPropertiesType,
-  TranslationLang,
-} from '@navikt/skjemadigitalisering-shared-domain';
+import { FeatureTogglesMap, Form, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, ReactNode, useCallback, useContext, useEffect, useReducer } from 'react';
 import { useBeforeUnload, useParams } from 'react-router-dom';
 import formPageReducer, { FormReducerState } from '../../Forms/formPageReducer';
@@ -22,7 +17,6 @@ interface ContextValue {
   publishForm: (form: Form, selectedLanguages: TranslationLang[]) => Promise<void>;
   unpublishForm: () => Promise<void>;
   copyFormFromProduction: () => Promise<void>;
-  changeFormSettings: (properties: Partial<FormPropertiesType>) => Promise<void>;
 }
 
 const initialState: FormReducerState = { status: 'INITIAL LOADING' };
@@ -35,7 +29,6 @@ const FormContext = createContext<ContextValue>({
   publishForm: async (_form, _translations) => {},
   unpublishForm: async () => {},
   copyFormFromProduction: async () => {},
-  changeFormSettings: async (_properties) => {},
 });
 
 /**
@@ -43,7 +36,7 @@ const FormContext = createContext<ContextValue>({
  */
 const FormProvider = ({ featureToggles, children }: Props) => {
   const { formPath } = useParams();
-  const { loadForm, onSave, onPublish, onUnpublish, onCopyFromProd, onUpdateFormSettings } = useForms();
+  const { loadForm, onSave, onPublish, onUnpublish, onCopyFromProd } = useForms();
   const [state, dispatch] = useReducer(formPageReducer, initialState, (state) => state);
 
   useEffect(() => {
@@ -141,15 +134,6 @@ const FormProvider = ({ featureToggles, children }: Props) => {
     // }
   };
 
-  /**
-   * @deprecated
-   */
-  const changeFormSettings = async (properties: Partial<FormPropertiesType>) => {
-    await onUpdateFormSettings(formPath, properties);
-    // const toggledLockedForm = await onUpdateFormSettings(formPath, properties);
-    // dispatch({ type: 'form-changed', form: toggledLockedForm });
-  };
-
   const value = {
     formState: state,
     resetForm,
@@ -158,7 +142,6 @@ const FormProvider = ({ featureToggles, children }: Props) => {
     publishForm,
     unpublishForm,
     copyFormFromProduction,
-    changeFormSettings,
   };
 
   return <FormContext.Provider value={value}>{children}</FormContext.Provider>;

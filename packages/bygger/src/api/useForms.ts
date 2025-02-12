@@ -27,8 +27,6 @@ const useForms = () => {
 
   const onCopyFromProd = (_form) => {};
 
-  const onUpdateFormSettings = (_path, _properties) => {};
-
   return {
     loadForm: get,
     loadForms: getAll,
@@ -38,7 +36,6 @@ const useForms = () => {
     onPublish,
     onUnpublish,
     onCopyFromProd,
-    onUpdateFormSettings,
   };
 };
 

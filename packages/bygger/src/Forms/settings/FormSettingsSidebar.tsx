@@ -2,7 +2,7 @@ import { PadlockLockedIcon } from '@navikt/aksel-icons';
 import { Button, VStack } from '@navikt/ds-react';
 
 import { useAppConfig, useModal } from '@navikt/skjemadigitalisering-shared-components';
-import { Form } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, FormPropertiesType } from '@navikt/skjemadigitalisering-shared-domain';
 import ButtonWithSpinner from '../../components/ButtonWithSpinner';
 import SidebarLayout from '../../components/layout/SidebarLayout';
 import UserFeedback from '../../components/UserFeedback';
@@ -14,7 +14,7 @@ import UnpublishButton from '../unpublish/UnpublishButton';
 
 interface FormSettingsPageProps {
   form: Form;
-  validateAndSave: (form: Form) => void;
+  validateAndSave: (form: Form) => Promise<void>;
   setOpenPublishSettingModal: (open: boolean) => void;
 }
 
@@ -30,6 +30,10 @@ const FormSettingsSidebar = ({ form, validateAndSave, setOpenPublishSettingModal
     } else {
       whenUnlocked();
     }
+  };
+
+  const updateProperties = async (properties: Partial<FormPropertiesType>) => {
+    await validateAndSave({ ...form, properties: { ...form.properties, ...properties } });
   };
 
   return (
@@ -57,7 +61,11 @@ const FormSettingsSidebar = ({ form, validateAndSave, setOpenPublishSettingModal
             Kopier fra produksjon
           </ButtonWithSpinner>
         )}
-        <ToggleFormLockButton isLockedForm={isLockedForm} lockedFormReason={lockedFormReason} />
+        <ToggleFormLockButton
+          isLockedForm={isLockedForm}
+          lockedFormReason={lockedFormReason}
+          onChange={updateProperties}
+        />
         <UserFeedback />
         <FormStatusPanel formStatusProperties={form} />
       </VStack>
