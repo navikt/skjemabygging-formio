@@ -1,6 +1,7 @@
-import { htmlConverter } from '@navikt/skjemadigitalisering-shared-components';
+import { htmlConverter, useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
 import { FormsApiGlobalTranslation, stringUtils, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, ReactNode, useContext, useEffect, useReducer } from 'react';
+import { overwriteGlobalTranslations } from '../../import/api';
 import { useFeedbackEmit } from '../notifications/FeedbackContext';
 import { editGlobalTranslationsReducer } from './editTranslationsReducer';
 import { createDefaultGlobalTranslation } from './editTranslationsReducer/reducerUtils';
@@ -23,6 +24,7 @@ const defaultValue: EditTranslationsContextValue<FormsApiGlobalTranslation> = {
   editState: 'INIT',
   updateNewTranslation: () => {},
   saveChanges: () => Promise.resolve(),
+  importFromProduction: () => Promise.resolve(),
 };
 
 const EditGlobalTranslationsContext =
@@ -37,6 +39,7 @@ const EditGlobalTranslationsProvider = ({ initialChanges, children }: Props) => 
   });
   const { storedTranslations, loadTranslations, createNewTranslation, saveTranslation } = useGlobalTranslations();
   const feedbackEmit = useFeedbackEmit();
+  const { config } = useAppConfig();
 
   useEffect(() => {
     if (initialChanges && state.status === 'INIT') {
@@ -111,6 +114,18 @@ const EditGlobalTranslationsProvider = ({ initialChanges, children }: Props) => 
     }
   };
 
+  const importFromProduction = async () => {
+    if (!config?.isProdGcp) {
+      try {
+        await overwriteGlobalTranslations();
+        await loadTranslations();
+        feedbackEmit.success(`Globale oversettelser er nå kopiert fra produksjon.`);
+      } catch (_err) {
+        feedbackEmit.error('Feil ved kopiering fra produksjon');
+      }
+    }
+  };
+
   const value = {
     updateTranslation,
     errors: state.errors,
@@ -118,6 +133,7 @@ const EditGlobalTranslationsProvider = ({ initialChanges, children }: Props) => 
     editState: state.status,
     updateNewTranslation,
     saveChanges,
+    importFromProduction,
   };
 
   return <EditGlobalTranslationsContext.Provider value={value}>{children}</EditGlobalTranslationsContext.Provider>;

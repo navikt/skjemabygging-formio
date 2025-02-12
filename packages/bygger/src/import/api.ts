@@ -9,9 +9,14 @@ export const overwriteForm = async (formPath: string): Promise<Form> => {
   return await httpBygger.put<Form>(`/api/import/forms/${formPath}`, {});
 };
 
+export const overwriteGlobalTranslations = async (): Promise<void> => {
+  return await httpBygger.put<void>('/api/import/global-translations', {});
+};
+
 const api = {
   getFormsInProduction,
   overwriteForm,
+  overwriteGlobalTranslations,
 };
 
 export default api;
