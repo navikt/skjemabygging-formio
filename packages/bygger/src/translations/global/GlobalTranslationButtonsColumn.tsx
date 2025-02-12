@@ -1,4 +1,5 @@
 import { Button, VStack } from '@navikt/ds-react';
+import { useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
 import { useState } from 'react';
 import UserFeedback from '../../components/UserFeedback';
 import { useEditGlobalTranslations } from '../../context/translations/EditGlobalTranslationsContext';
@@ -6,9 +7,10 @@ import { useGlobalTranslations } from '../../context/translations/GlobalTranslat
 import ExportGlobalTranslationsButton from '../components/ExportGlobalTranslationsButton';
 
 const GlobalTranslationButtonsColumn = () => {
-  const [isProcessing, setIsProcessing] = useState<'SAVING' | 'PUBLISHING'>();
-  const { saveChanges } = useEditGlobalTranslations();
+  const [isProcessing, setIsProcessing] = useState<'SAVING' | 'PUBLISHING' | 'IMPORTING'>();
+  const { saveChanges, importFromProduction } = useEditGlobalTranslations();
   const { publish } = useGlobalTranslations();
+  const { config } = useAppConfig();
 
   const handleSave = async () => {
     try {
@@ -25,11 +27,17 @@ const GlobalTranslationButtonsColumn = () => {
     setIsProcessing(undefined);
   };
 
+  const handleImport = async () => {
+    setIsProcessing('IMPORTING');
+    await importFromProduction();
+    setIsProcessing(undefined);
+  };
+
   return (
     <VStack gap="4">
       <Button
         loading={isProcessing === 'SAVING'}
-        disabled={isProcessing === 'PUBLISHING'}
+        disabled={!!isProcessing}
         onClick={handleSave}
         type="button"
         size="small"
@@ -39,15 +47,27 @@ const GlobalTranslationButtonsColumn = () => {
       <Button
         variant="secondary"
         loading={isProcessing === 'PUBLISHING'}
-        disabled={isProcessing === 'SAVING'}
+        disabled={!!isProcessing}
         onClick={handlePublish}
         type="button"
         size="small"
       >
         Publisér
       </Button>
-      <ExportGlobalTranslationsButton language={'nn'}>{'Eksporter nynorsk'}</ExportGlobalTranslationsButton>
-      <ExportGlobalTranslationsButton language={'en'}>{'Eksporter engelsk'}</ExportGlobalTranslationsButton>
+      <ExportGlobalTranslationsButton language="nn">Eksporter nynorsk</ExportGlobalTranslationsButton>
+      <ExportGlobalTranslationsButton language="en">Eksporter engelsk</ExportGlobalTranslationsButton>
+      {!config?.isProdGcp && (
+        <Button
+          variant="tertiary"
+          loading={isProcessing === 'IMPORTING'}
+          disabled={!!isProcessing}
+          onClick={handleImport}
+          type="button"
+          size="small"
+        >
+          Kopier fra produksjon
+        </Button>
+      )}
       <UserFeedback />
     </VStack>
   );

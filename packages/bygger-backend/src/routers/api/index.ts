@@ -6,7 +6,6 @@ import deprecatedPublishForm from './deprecated-publish-form';
 import deprecatedUnpublishForm from './deprecated-unpublish-form';
 import enhetsliste from './enhetsliste';
 import formDiff from './formDiff';
-import formioGlobalTranslationsRouter from './formio-global-translations';
 import formPublicationsRouter from './formPublications';
 import formsRouter from './forms';
 import formsApiGlobalTranslationsRouter from './forms-api-global-translations';
@@ -49,8 +48,7 @@ apiRouter.use('/forms', formsRouter);
 apiRouter.use('/form-publications', formPublicationsRouter);
 apiRouter.use('/recipients', formsApiAuthHandler, recipientsRouter);
 apiRouter.use('/translations', formsApiAuthHandler, formsApiGlobalTranslationsRouter);
-apiRouter.use('/import', importRouter);
-apiRouter.use('/global-translations', authorizedPublisher, formioGlobalTranslationsRouter);
+apiRouter.use('/import', formsApiAuthHandler, importRouter);
 apiRouter.post('/log/:level', rateLimiter(60000, 60), log);
 
 apiRouter.use(apiErrorHandler);

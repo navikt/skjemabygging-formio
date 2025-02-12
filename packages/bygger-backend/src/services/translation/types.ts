@@ -20,6 +20,7 @@ type FormTranslationService = {
     revision: number,
     accessToken: string,
   ) => Promise<FormsApiFormTranslation>;
+  delete: (formPath: string, id: number, accessToken: string) => Promise<string>;
 };
 
 type GlobalTranslationService = {
