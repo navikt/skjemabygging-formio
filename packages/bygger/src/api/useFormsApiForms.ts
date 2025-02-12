@@ -69,6 +69,18 @@ const useFormsApiForms = () => {
     }
   };
 
+  const getPublished = async (formPath: string): Promise<Form | undefined> => {
+    const url = `/api/form-publications/${formPath}`;
+    try {
+      logger?.info(`Fetching published form from ${url}`);
+      return await http.get<Form>(url);
+    } catch (error) {
+      const message = (error as Error)?.message;
+      logger?.error(`Failed to fetch published form from ${url}`, { message });
+      feedbackEmit.error(`Feil ved henting av publisert skjema. ${message}`);
+    }
+  };
+
   const publish = async (form: Form, languages: TranslationLang[]) => {
     const { path, revision } = form;
     const languageCodes = languages.toString();
@@ -93,6 +105,7 @@ const useFormsApiForms = () => {
     post,
     put,
     publish,
+    getPublished,
   };
 };
 

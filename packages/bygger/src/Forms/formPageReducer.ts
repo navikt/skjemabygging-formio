@@ -3,14 +3,14 @@ import cloneDeep from 'lodash.clonedeep';
 
 type FormReducerAction = 'form-loaded' | 'form-not-found' | 'form-changed' | 'form-saved' | 'form-error' | 'form-reset';
 type Status = 'INITIAL LOADING' | 'FINISHED LOADING' | 'FORM NOT FOUND' | 'ERROR';
-export type FormReducerActionType = { type: FormReducerAction; form?: Form; publishedForm?: NavFormType };
+export type FormReducerActionType = { type: FormReducerAction; form?: Form; publishedForm?: Form };
 
 export interface FormReducerState {
   status: Status;
   dbForm?: Form;
   form?: Form;
   formioForm?: NavFormType;
-  publishedForm?: NavFormType | null;
+  publishedForm?: Form | null;
 }
 
 const formPageReducer = (state: FormReducerState, action: FormReducerActionType): FormReducerState => {
