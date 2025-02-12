@@ -41,7 +41,7 @@ export function FormSettingsPage({ form }: FormSettingsPageProps) {
     const updatedErrors = validateFormMetadata(updatedForm, 'edit');
     if (isFormMetadataValid(updatedErrors)) {
       setErrors({});
-      saveForm(updatedForm);
+      await saveForm(updatedForm);
     } else {
       setErrors(updatedErrors);
     }

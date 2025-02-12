@@ -39,10 +39,16 @@ const useFormsApiForms = () => {
       logger?.info(`Creating new form: ${baseUrl}`);
       const result = await http.post<Form>(baseUrl, form);
       logger?.info(`Successfully created form with id ${result.id} and path ${result.path}`);
+      feedbackEmit.success(`Opprettet skjema ${form.title}`);
       return result;
-    } catch (error) {
-      const message = (error as Error)?.message;
+    } catch (error: any) {
+      const message = error?.message;
+      const status = error?.status;
       logger?.error(`Failed to create form: ${baseUrl}`, { message });
+      if (status === 409) {
+        feedbackEmit.error('Skjemanummer er allerede i bruk. Velg et annet skjemanummer.');
+        return;
+      }
       feedbackEmit.error(`Feil ved oppretting av skjema. ${message}`);
     }
   };
@@ -54,6 +60,7 @@ const useFormsApiForms = () => {
       logger?.info(`Updating form with id ${form.id}: ${url}`);
       const result = await http.put<Form>(url, form);
       logger?.info(`Successfully updated form with id ${form.id}: ${url}`);
+      feedbackEmit.success(`Lagret skjema ${form.title}`);
       return result;
     } catch (error) {
       const message = (error as Error)?.message;

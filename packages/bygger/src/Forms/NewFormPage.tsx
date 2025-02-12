@@ -80,28 +80,19 @@ const NewFormPage = () => {
     const trimmedFormNumber = state.form.skjemanummer.trim();
     if (isFormMetadataValid(updatedErrors)) {
       setErrors({});
-      try {
-        const createdForm = await createForm({
-          ...state.form,
+      const createdForm = await createForm({
+        ...state.form,
+        skjemanummer: trimmedFormNumber,
+        properties: {
+          ...state.form.properties,
           skjemanummer: trimmedFormNumber,
-          properties: {
-            ...state.form.properties,
-            skjemanummer: trimmedFormNumber,
-          },
-        });
-        if (!createdForm) {
-          throw Error('Oppretting returnerte ingenting');
-        }
+        },
+      });
 
+      if (createdForm) {
         feedbackEmit.success(`Opprettet skjemaet ${createdForm.title}`);
         navigate(`/forms/${createdForm.path}/edit`);
         return createdForm;
-      } catch (e: any) {
-        if (e instanceof FormioRoleError) {
-          feedbackEmit.error('Opprettelse av skjema feilet');
-          return;
-        }
-        feedbackEmit.error('Det valgte skjema-nummeret er allerede i bruk.');
       }
     } else {
       setErrors(updatedErrors);

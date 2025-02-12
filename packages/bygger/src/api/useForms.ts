@@ -8,7 +8,7 @@ const useForms = () => {
   const { getAll, get, put, post, publish } = useFormsApiForms();
 
   const loadFormsList = async () => {
-    return await getAll('title,path,properties,skjemanummer,changedAt,publishedAt,status');
+    return await getAll('title,path,skjemanummer,properties,changedAt,publishedAt,status');
   };
 
   const createForm = async (form: Form) => {

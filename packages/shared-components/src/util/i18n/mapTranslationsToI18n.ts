@@ -6,7 +6,7 @@ type FormioFormatLang = 'nb-NO' | 'nn-NO' | 'en';
 
 const formioFormatToStandard = (lang: string): string => lang.substring(0, 2);
 
-const populateLanguages = (translations: I18nTranslations): I18nTranslations => {
+const populateCountries = (translations: I18nTranslations): I18nTranslations => {
   const nbCountryNames = Object.fromEntries(getCountries('nb').map(({ label, value }) => [value, label]));
   return Object.fromEntries(
     Object.entries(translations).map(([language, values]) => [
@@ -39,7 +39,7 @@ const mapFormsApiTranslationsToI18n = (
     );
   }, initial);
   if (includeCountryNames) {
-    return populateLanguages(i18nTranslations);
+    return populateCountries(i18nTranslations);
   }
   return i18nTranslations;
 };

@@ -1,5 +1,5 @@
 import { FormBuilderOptions, makeStyles, useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
-import { Form, formioFormsApiUtils, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
+import { DisplayType, Form, formioFormsApiUtils, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import { useCallback, useMemo, useState } from 'react';
 import { AppLayout } from '../../components/AppLayout';
 import RowLayout from '../../components/layout/RowLayout';
@@ -31,7 +31,7 @@ const EditFormPage = ({ form }: EditFormPageProps) => {
     properties: { skjemanummer, isLockedForm },
   } = form;
 
-  const [view, setView] = useState('wizard');
+  const [display, setDisplay] = useState<DisplayType>('wizard');
   const appConfig = useAppConfig();
   const styles = useStyles();
   const formBuilderOptions = {
@@ -47,8 +47,8 @@ const EditFormPage = ({ form }: EditFormPageProps) => {
   );
 
   const formioForm: NavFormType = useMemo(
-    () => ({ ...formioFormsApiUtils.mapFormToNavForm(form), view }),
-    [form, view],
+    () => ({ ...formioFormsApiUtils.mapFormToNavForm(form), display }),
+    [form, display],
   );
 
   return (
@@ -59,7 +59,7 @@ const EditFormPage = ({ form }: EditFormPageProps) => {
           formPath: form.path,
         }}
       >
-        <TitleRowLayout left={<SkjemaVisningSelect onChange={setView} />}>
+        <TitleRowLayout left={<SkjemaVisningSelect onChange={setDisplay} />}>
           <Title subTitle={skjemanummer} lockedForm={isLockedForm}>
             {title}
           </Title>
