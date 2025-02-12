@@ -33,7 +33,7 @@ const FormsListPage = () => {
       modified: form.changedAt ?? form.properties.modified ?? '',
       title: form.title?.trim(),
       path: form.path,
-      number: form.properties?.skjemanummer?.trim(),
+      number: form?.skjemanummer?.trim(),
       status: determineStatusFromForm(form),
       locked: !!form.properties.isLockedForm,
     };
