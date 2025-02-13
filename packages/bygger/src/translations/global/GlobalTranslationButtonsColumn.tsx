@@ -39,7 +39,7 @@ const GlobalTranslationButtonsColumn = () => {
         loading={isProcessing === 'SAVING'}
         disabled={!!isProcessing}
         onClick={handleSave}
-        type="button"
+        type="submit"
         size="small"
       >
         Lagre

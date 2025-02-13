@@ -24,7 +24,7 @@ const FormTranslationButtonsColumn = ({ form }: Props) => {
 
   return (
     <VStack gap="4">
-      <Button loading={isSaving} onClick={handleSave} type="button" size="small">
+      <Button loading={isSaving} onClick={handleSave} type="submit" size="small">
         Lagre
       </Button>
       <ExportFormTranslationsButton form={form} />
