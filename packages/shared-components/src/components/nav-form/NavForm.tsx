@@ -95,8 +95,10 @@ const NavForm = ({ language = 'nb-NO', i18n = i18nData, ...props }) => {
     appConfig.logger?.trace(`formio event '${event}'`, { formioId: formio?.id, eventArgs: args });
     if (event.startsWith('formio.')) {
       const funcName = `on${event.charAt(7).toUpperCase()}${event.slice(8)}`;
+      //console.log(funcName);
       // eslint-disable-next-line no-prototype-builtins
       if (props.hasOwnProperty(funcName) && typeof props[funcName] === 'function') {
+        console.log(funcName, props[funcName]);
         props[funcName](...args);
       }
     }

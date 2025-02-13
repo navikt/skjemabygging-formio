@@ -2,7 +2,7 @@ import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { setupNavFormio } from '../../../test/navform-render';
 import { AppConfigProvider } from '../../context/config/configContext';
-import NavForm from './NavForm';
+import NavForm from './NavForm.js';
 
 const testFormWithStandardAndReactComponents = {
   title: 'Testskjema med vanilla og React componenter',
