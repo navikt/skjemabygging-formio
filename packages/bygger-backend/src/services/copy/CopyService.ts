@@ -28,7 +28,12 @@ export const createCopyService = (
       throw new ApiError('Fant ikke skjemaet som skulle kopieres', true);
     }
 
-    const targetForm = await formsServiceTarget.get(formPath);
+    let targetForm: Form | undefined = undefined;
+    try {
+      targetForm = await formsServiceTarget.get(formPath);
+    } catch (err: any) {
+      logger.info(`Could not fetch target form: ${err.message}`);
+    }
     let savedForm: Form | undefined;
     if (!targetForm) {
       const createFormRequest = {
