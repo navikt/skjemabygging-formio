@@ -1,6 +1,6 @@
 import { Component, FormPropertiesType } from '../form';
 
-type FormStatus = 'draft' | 'published' | 'pending' | 'unpublished';
+type FormStatus = 'draft' | 'published' | 'pending' | 'unpublished' | 'unknown';
 
 type Form = {
   id?: number;
@@ -16,7 +16,8 @@ type Form = {
   changedBy?: string;
   publishedAt?: string;
   publishedBy?: string;
+  publishedLanguages?: string[];
   status?: FormStatus;
 };
 
-export type { Form };
+export type { Form, FormStatus };

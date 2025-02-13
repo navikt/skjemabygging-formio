@@ -11,7 +11,7 @@ const earlier = moment(now).subtract('1', 'day').toISOString();
 
 describe('FormStatusPanel', () => {
   describe('When form has changedAt date and no publish date', () => {
-    const form: FormStatusProperties = { changedAt: now, changedBy: 'Jenny' };
+    const form: FormStatusProperties = { changedAt: now, changedBy: 'Jenny', status: 'draft' };
 
     beforeEach(() => {
       render(<FormStatusPanel formStatusProperties={form} />);
@@ -35,7 +35,12 @@ describe('FormStatusPanel', () => {
   });
 
   describe('When form has published date that is the same as changedAt date', () => {
-    const properties: FormStatusProperties = { changedAt: now, publishedAt: now, publishedBy: 'Jonny' };
+    const properties: FormStatusProperties = {
+      changedAt: now,
+      publishedAt: now,
+      publishedBy: 'Jonny',
+      status: 'published',
+    };
 
     beforeEach(() => {
       render(<FormStatusPanel formStatusProperties={properties as Form} />);
@@ -59,10 +64,10 @@ describe('FormStatusPanel', () => {
   });
 
   describe('When form has published date earlier than changedAt date', () => {
-    const properties: FormStatusProperties = { changedAt: now, publishedAt: earlier };
+    const properties: FormStatusProperties = { changedAt: now, publishedAt: earlier, status: 'pending' };
 
     beforeEach(() => {
-      render(<FormStatusPanel formStatusProperties={properties as Form} />);
+      render(<FormStatusPanel formStatusProperties={properties as FormStatusProperties} />);
     });
 
     it("displays the 'Upubliserte endringer' status", () => {
@@ -80,7 +85,7 @@ describe('FormStatusPanel', () => {
 
   describe('When form has no changedAt date and no published date', () => {
     beforeEach(() => {
-      render(<FormStatusPanel formStatusProperties={{} as Form} />);
+      render(<FormStatusPanel formStatusProperties={{} as FormStatusProperties} />);
     });
 
     it("displays the 'Ukjent status' status", () => {
@@ -97,7 +102,7 @@ describe('FormStatusPanel', () => {
   });
 
   describe('When form is unpublished and changedAt date is same as or before unpublished date', () => {
-    const properties: FormStatusProperties = { changedAt: now, properties: { unpublished: now } };
+    const properties: FormStatusProperties = { changedAt: now, publishedAt: now, status: 'unpublished' };
 
     beforeEach(() => {
       render(<FormStatusPanel formStatusProperties={properties as Form} />);
@@ -109,18 +114,26 @@ describe('FormStatusPanel', () => {
   });
 
   describe('When form is unpublished and changedAt date is after unpublished date', () => {
-    const properties: FormStatusProperties = { changedAt: now, properties: { unpublished: earlier } };
+    const properties: FormStatusProperties = { changedAt: now, publishedAt: earlier, status: 'unpublished' };
 
     beforeEach(() => {
       render(<FormStatusPanel formStatusProperties={properties as Form} />);
     });
 
     it('changedAt (date) is after unpublisheddate', () => {
-      expect(screen.getByText('Utkast')).toBeInTheDocument();
+      expect(screen.getByText('Avpublisert')).toBeInTheDocument();
+    });
+
+    it("displays 'Sist lagret'", () => {
+      expect(screen.getByText('Sist lagret:')).toBeInTheDocument();
+    });
+
+    it("does not display 'Sist publisert'", () => {
+      expect(screen.queryByText('Sist publisert:')).not.toBeInTheDocument();
     });
   });
 
-  describe('Prop publishedLanguages (array)', () => {
+  describe('PublishedLanguages (array)', () => {
     it('displays nothing if form is not publised', () => {
       render(<FormStatusPanel formStatusProperties={{} as Form} />);
       expect(screen.queryByText('Publiserte språk:')).not.toBeInTheDocument();
@@ -129,37 +142,20 @@ describe('FormStatusPanel', () => {
     it('displays nothing if publishedLanguages is undefined', () => {
       const form = {
         publishedAt: now,
-        properties: {
-          publishedLanguages: undefined,
-        },
-      } as Form;
+        publishedLanguages: undefined,
+      } as FormStatusProperties;
       render(<FormStatusPanel formStatusProperties={form} />);
       expect(screen.queryByText('Publiserte språk:')).not.toBeInTheDocument();
     });
 
-    it('displays bokmål if publishedLanguages is empty', () => {
+    it('displays all published languages', () => {
+      const publishedLanguages = ['en', 'nn', 'nb'];
       const form = {
         publishedAt: now,
-        properties: {
-          publishedLanguages: [] as string[],
-        },
-      } as Form;
+        publishedLanguages,
+      } as FormStatusProperties;
       render(<FormStatusPanel formStatusProperties={form} />);
       expect(screen.queryByText('Publiserte språk:')).toBeInTheDocument();
-      expect(screen.queryByText(allLanguagesInNorwegian['nb-NO'])).toBeInTheDocument();
-    });
-
-    it('displays all published languages + bokmål', () => {
-      const publishedLanguages = ['en', 'nn-NO'];
-      const form = {
-        publishedAt: now,
-        properties: {
-          publishedLanguages,
-        },
-      } as Form;
-      render(<FormStatusPanel formStatusProperties={form} />);
-      expect(screen.queryByText('Publiserte språk:')).toBeInTheDocument();
-      expect(screen.queryByText(allLanguagesInNorwegian['nb-NO'])).toBeInTheDocument();
       publishedLanguages.forEach((langCode) => {
         expect(screen.queryByText(allLanguagesInNorwegian[langCode])).toBeInTheDocument();
       });
@@ -170,10 +166,8 @@ describe('FormStatusPanel', () => {
     const form = {
       changedAt: now,
       publishedAt: earlier,
-      properties: {
-        isTestForm: true,
-      },
-    } as Form;
+      isTestForm: true,
+    } as FormStatusProperties;
 
     beforeEach(() => {
       render(<FormStatusPanel formStatusProperties={form} />);
@@ -197,7 +191,7 @@ describe('FormStatusPanel', () => {
           const form: FormStatusProperties = { changedAt: now, publishedAt: earlier };
           render(
             <AppConfigProvider featureToggles={{ enableDiff: true }} diffOn={true} setDiffOn={setDiffOn}>
-              <FormStatusPanel formStatusProperties={form as Form} />
+              <FormStatusPanel formStatusProperties={form as FormStatusProperties} />
             </AppConfigProvider>,
           );
           expect(screen.queryByRole('button', { name: 'Skjul endringer' })).toBeInTheDocument();
@@ -207,7 +201,7 @@ describe('FormStatusPanel', () => {
           const form: FormStatusProperties = { changedAt: now, publishedAt: earlier };
           render(
             <AppConfigProvider featureToggles={{ enableDiff: true }} diffOn={false} setDiffOn={setDiffOn}>
-              <FormStatusPanel formStatusProperties={form as Form} />
+              <FormStatusPanel formStatusProperties={form as FormStatusProperties} />
             </AppConfigProvider>,
           );
           expect(screen.queryByRole('button', { name: 'Vis endringer' })).toBeInTheDocument();
@@ -219,7 +213,7 @@ describe('FormStatusPanel', () => {
           const properties: FormStatusProperties = { changedAt: earlier, publishedAt: undefined };
           render(
             <AppConfigProvider featureToggles={{ enableDiff: true }} diffOn={true} setDiffOn={setDiffOn}>
-              <FormStatusPanel formStatusProperties={properties as Form} />
+              <FormStatusPanel formStatusProperties={properties as FormStatusProperties} />
             </AppConfigProvider>,
           );
           expect(screen.queryByRole('button', { name: 'Skjul endringer' })).not.toBeInTheDocument();
@@ -231,7 +225,7 @@ describe('FormStatusPanel', () => {
       const properties: FormStatusProperties = { changedAt: now, publishedAt: earlier };
       render(
         <AppConfigProvider featureToggles={{ enableDiff: false }} diffOn={true} setDiffOn={setDiffOn}>
-          <FormStatusPanel formStatusProperties={properties as Form} />
+          <FormStatusPanel formStatusProperties={properties as FormStatusProperties} />
         </AppConfigProvider>,
       );
       expect(screen.queryByRole('button', { name: 'Skjul endringer' })).not.toBeInTheDocument();

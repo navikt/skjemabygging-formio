@@ -4,9 +4,8 @@ export type Status = 'PENDING' | 'DRAFT' | 'PUBLISHED' | 'UNKNOWN' | 'TESTFORM' 
 
 export type StreetLightSize = 'small' | 'large';
 
-export type FormStatusEvents = Pick<Form, 'createdAt' | 'changedAt' | 'publishedAt'> &
-  Pick<FormPropertiesType, 'isTestForm' | 'unpublished'>;
+export type FormStatusEvents = Pick<Form, 'createdAt' | 'changedAt' | 'publishedAt' | 'status'> &
+  Pick<FormPropertiesType, 'isTestForm'>;
 
 export type FormStatusProperties = FormStatusEvents &
-  Pick<Form, 'createdBy' | 'changedBy' | 'publishedBy'> &
-  Pick<FormPropertiesType | 'unpublishedBy' | 'publishedLanguages'>;
+  Pick<Form, 'createdBy' | 'changedBy' | 'publishedBy' | 'publishedLanguages'>;
