@@ -1,12 +1,12 @@
 import { Alert, Select } from '@navikt/ds-react';
-import { Form, NavFormSettingsDiff } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, FormSettingsDiff } from '@navikt/skjemadigitalisering-shared-domain';
 import useTemaKoder from '../../../api/useTemaKoder';
 import LabelWithDiff from '../LabelWithDiff';
 import { FormMetadataError, UpdateFormFunction } from '../utils/utils';
 
 export interface TemaKodeFieldsProps {
   onChange: UpdateFormFunction;
-  diff: NavFormSettingsDiff;
+  diff: FormSettingsDiff;
   form: Form;
   errors?: FormMetadataError;
 }
