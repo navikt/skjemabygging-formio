@@ -41,6 +41,7 @@ import {
   SubmissionData,
   SubmissionMethod,
   UsageContext,
+  Wizard,
 } from './form';
 import forstesideUtils, {
   ForstesideRecipientAddress,
@@ -261,4 +262,5 @@ export type {
   UkjentBruker,
   UsageContext,
   VedtakBetalingsplan,
+  Wizard,
 };

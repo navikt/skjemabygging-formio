@@ -327,6 +327,21 @@ export interface Submission {
   };
   state?: string;
   fyllutState?: FyllutState;
+  changed?: {
+    flags?: {
+      fromBlur?: boolean;
+    };
+  };
+}
+
+export interface Wizard {
+  id: string;
+  form: NavFormType;
+  formUrl: string;
+  language: string;
+  submission: Submission;
+  src: string;
+  url: string;
 }
 
 export type UsageContext = 'create' | 'edit';
