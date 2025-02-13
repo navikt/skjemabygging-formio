@@ -54,7 +54,8 @@ const WysiwygEditor = ({ defaultValue, onBlur, error, autoFocus }: Props) => {
 
   const handleBlur = () => {
     const sanitized = htmlConverter.sanitizeHtmlString(htmlValue, { FORBID_ATTR: ['style'] });
-    onBlur(sanitized);
+    const trimmed = htmlConverter.extractTextContent(sanitized).trim() === '' ? '' : sanitized;
+    onBlur(trimmed);
   };
 
   return (
