@@ -26,10 +26,10 @@ describe('formDiffingTool', () => {
     } as FormPropertiesType;
 
     const title = 'Søknad om penger';
-    const publishedForm: NavFormType = {
+    const publishedForm: Form = {
       title,
       properties: publishedProperties,
-    } as NavFormType;
+    } as Form;
 
     it('reports diff on form title', () => {
       const testform = {
