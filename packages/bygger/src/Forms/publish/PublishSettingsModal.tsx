@@ -73,7 +73,7 @@ const PublishSettingsModal = ({ open, onClose, onConfirm, form }: Props) => {
     const sanitizedCompleteTranslations = completeTranslations
       .map((langCode) => (langCode.length > 2 ? langCode.substring(0, 2) : langCode))
       .filter(skipBokmal);
-    setCompleteTranslationLanguageCodeList(sanitizedCompleteTranslations);
+    setCompleteTranslationLanguageCodeList([...sanitizedCompleteTranslations, 'nb']);
     setCheckedLanguages([...sanitizedCompleteTranslations, 'nb']);
   }, [allFormOriginalTexts, translations]);
 

@@ -135,7 +135,7 @@ describe('PublishSettingsModal', () => {
     ).toBeInTheDocument();
   });
 
-  it('publish will send en-languageCode if the English checkbox is checked', async () => {
+  it('publish will send en-languageCode if the English checkbox is checked, and "nb" (default)', async () => {
     const oldForm = createFormObject(
       [createPanelObject('Personinformasjon', [createDummyRadioPanel('Bor du i Norge?')])],
       'Veiledning',
@@ -155,7 +155,7 @@ describe('PublishSettingsModal', () => {
     expect(screen.queryByRole('checkbox', { name: 'Norsk nynorsk (NN)' })).not.toBeInTheDocument();
     await userEvent.click(screen.getByRole('button', { name: 'Publiser' }));
     expect(mockedOnPublish).toBeCalled();
-    expect(mockedOnPublish.mock.calls[0][0]).toEqual(['en']);
+    expect(mockedOnPublish.mock.calls[0][0]).toEqual(['en', 'nb']);
   });
 
   it('publishes all checked languages', async () => {
@@ -176,10 +176,10 @@ describe('PublishSettingsModal', () => {
     expect(screen.queryByRole('checkbox', { name: 'Engelsk (EN)' })).toBeChecked();
     await userEvent.click(screen.getByRole('button', { name: 'Publiser' }));
     expect(mockedOnPublish).toBeCalled();
-    expect(mockedOnPublish.mock.calls[0][0]).toEqual(['nn', 'en']);
+    expect(mockedOnPublish.mock.calls[0][0]).toEqual(['nn', 'en', 'nb']);
   });
 
-  it('onPublish will send empty array when the English checkbox is checked off', async () => {
+  it('onPublish will send only "nb" (default) when the English checkbox is checked off', async () => {
     const oldForm = createFormObject(
       [createPanelObject('Personinformasjon', [createDummyRadioPanel('Bor du i Norge?')])],
       'Veiledning',
@@ -200,7 +200,7 @@ describe('PublishSettingsModal', () => {
     await userEvent.click(await screen.findByRole('checkbox', { name: 'Engelsk (EN)' }));
     await userEvent.click(screen.getByRole('button', { name: 'Publiser' }));
     expect(mockedOnPublish).toBeCalled();
-    expect(mockedOnPublish.mock.calls[0][0]).toEqual([]);
+    expect(mockedOnPublish.mock.calls[0][0]).toEqual(['nb']);
   });
 
   describe('getCompleteTranslationLanguageCodeList', () => {
