@@ -4569,7 +4569,6 @@
           ],
           "altText": "nav",
           "description": "nav",
-          "showInPdf": true,
           "widthPercent": 20,
           "label": "Bilde",
           "type": "image",
