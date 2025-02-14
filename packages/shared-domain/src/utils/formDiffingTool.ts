@@ -70,16 +70,16 @@ const toSignaturesDiff = (arrayDiff: any): SignaturesDiff | undefined => {
   return diff;
 };
 
-export type NavFormSettingsDiff = {
+export type FormSettingsDiff = {
   [key in keyof FormPropertiesType]?: object;
 } & { errorMessage?: string; title?: string };
-const generateNavFormSettingsDiff = (originalForm: NavFormType | undefined, form: Form): NavFormSettingsDiff => {
+const generateNavFormSettingsDiff = (originalForm: Form | undefined, form: Form): FormSettingsDiff => {
   try {
     if (!originalForm) {
       return {};
     }
     const propsDiff = generateObjectDiff(originalForm.properties, form.properties);
-    let signaturesDiff;
+    let signaturesDiff: SignaturesDiff | undefined;
     if (propsDiff.diff?.signatures) {
       signaturesDiff = toSignaturesDiff(propsDiff.diff?.signatures);
     }

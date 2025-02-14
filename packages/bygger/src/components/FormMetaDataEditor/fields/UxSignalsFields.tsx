@@ -1,10 +1,5 @@
 import { TextField } from '@navikt/ds-react';
-import {
-  Form,
-  FormPropertiesType,
-  InnsendingType,
-  NavFormSettingsDiff,
-} from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, FormPropertiesType, FormSettingsDiff, InnsendingType } from '@navikt/skjemadigitalisering-shared-domain';
 import React, { useCallback } from 'react';
 import LabelWithDiff from '../LabelWithDiff';
 import SubmissionTypeSelect from '../SubmissionTypeSelect';
@@ -12,7 +7,7 @@ import { FormMetadataError, UpdateFormFunction } from '../utils/utils';
 
 interface Props {
   onChange: UpdateFormFunction;
-  diff: NavFormSettingsDiff;
+  diff: FormSettingsDiff;
   form: Form;
   errors?: FormMetadataError;
 }

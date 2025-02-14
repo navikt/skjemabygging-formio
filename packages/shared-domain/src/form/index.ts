@@ -286,6 +286,8 @@ export interface NavFormType {
   changedBy?: string;
   publishedAt?: string;
   publishedBy?: string;
+  publishedLanguages?: string[];
+  status?: string;
 }
 
 export interface FormsResponseForm extends Pick<NavFormType, '_id' | 'title' | 'path' | 'modified'> {

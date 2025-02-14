@@ -39,19 +39,21 @@ const FormTranslationsPage = ({ form }: Props) => {
     <AppLayout navBarProps={{ formMenu: true, formPath: form.path }}>
       <TitleRowLayout>
         <Title>
-          {form.properties.skjemanummer}, {form.title}
+          {form.skjemanummer}, {form.title}
         </Title>
       </TitleRowLayout>
       <EditFormTranslationsProvider initialChanges={initialChanges}>
-        <RowLayout
-          right={
-            <SidebarLayout noScroll>
-              <FormTranslationButtonsColumn form={form} />
-            </SidebarLayout>
-          }
-        >
-          <TranslationTable rows={rows} loading={!initialChanges} editContext={EditFormTranslationsContext} />
-        </RowLayout>
+        <form>
+          <RowLayout
+            right={
+              <SidebarLayout noScroll>
+                <FormTranslationButtonsColumn form={form} />
+              </SidebarLayout>
+            }
+          >
+            <TranslationTable rows={rows} loading={!initialChanges} editContext={EditFormTranslationsContext} />
+          </RowLayout>
+        </form>
       </EditFormTranslationsProvider>
     </AppLayout>
   );

@@ -40,23 +40,24 @@ const FormContext = createContext<ContextValue>({
  */
 const FormProvider = ({ featureToggles, children }: Props) => {
   const { formPath } = useParams();
-  const { loadForm, onSave, onLockForm, onUnlockForm, onPublish, onUnpublish, onCopyFromProd } = useForms();
+  const { loadForm, onSave, onLockForm, onUnlockForm, onPublish, onUnpublish, onCopyFromProd, getPublished } =
+    useForms();
   const [state, dispatch] = useReducer(formPageReducer, initialState, (state) => state);
 
   useEffect(() => {
     if (formPath && state.status === 'INITIAL LOADING') {
       loadForm(formPath)
         .then((form) => {
-          // if (featureToggles.enableDiff) {
-          //   loadPublishedForm(formPath)
-          //     .then((publishedForm) => dispatch({ type: 'form-loaded', form, publishedForm }))
-          //     .catch(() => {
-          //       console.debug('Failed to load published form');
-          //       dispatch({ type: 'form-loaded', form });
-          //     });
-          // } else {
-          //   dispatch({ type: 'form-loaded', form });
-          // }
+          if (featureToggles.enableDiff && ['published', 'pending'].includes(form?.status ?? '')) {
+            getPublished(formPath)
+              .then((publishedForm) => dispatch({ type: 'form-loaded', form, publishedForm }))
+              .catch(() => {
+                console.debug('Failed to load published form');
+                dispatch({ type: 'form-loaded', form });
+              });
+          } else {
+            dispatch({ type: 'form-loaded', form });
+          }
           dispatch({ type: 'form-loaded', form });
         })
         .catch((e) => {
@@ -67,7 +68,7 @@ const FormProvider = ({ featureToggles, children }: Props) => {
           }
         });
     }
-  }, [loadForm, formPath, featureToggles.enableDiff, state.status]);
+  }, [loadForm, formPath, featureToggles.enableDiff, state.status, getPublished]);
 
   // Clear session storage on refresh
   useBeforeUnload(

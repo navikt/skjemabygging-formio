@@ -6,8 +6,16 @@ describe('localization', () => {
       expect(localizationUtils.getLanguageCodeAsIso639_1('nn-NO')).toBe('nn');
     });
 
+    it('maps nn to nn', () => {
+      expect(localizationUtils.getLanguageCodeAsIso639_1('nn')).toBe('nn');
+    });
+
     it('maps nb-NO to nb', () => {
       expect(localizationUtils.getLanguageCodeAsIso639_1('nb-NO')).toBe('nb');
+    });
+
+    it('maps nb to nb', () => {
+      expect(localizationUtils.getLanguageCodeAsIso639_1('nb')).toBe('nb');
     });
 
     it('maps en to en', () => {

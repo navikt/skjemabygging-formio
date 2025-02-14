@@ -63,6 +63,7 @@ const TranslationRow = <Translation extends FormsApiFormTranslation>({
       <Table.DataCell className={styles.column}>
         {isEditing ? (
           <TranslationInput
+            autoFocus
             label={'Nynorsk'}
             defaultValue={translation.nn}
             isHtml={isHtml}

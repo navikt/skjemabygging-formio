@@ -1,5 +1,5 @@
 import { NavFormType } from '../../form';
-import { Form } from '../../forms-api-form';
+import { Form, FormStatus } from '../../forms-api-form';
 
 const mapFormToNavForm = (form: Form): NavFormType => {
   const { title } = form;
@@ -10,7 +10,11 @@ const mapFormToNavForm = (form: Form): NavFormType => {
     name: title,
     type: 'form',
     ...form,
-    properties: { ...form.properties, skjemanummer: form.skjemanummer },
+    properties: {
+      ...form.properties,
+      skjemanummer: form.skjemanummer,
+      publishedLanguages: form.publishedLanguages,
+    },
   };
 };
 
@@ -28,6 +32,8 @@ const mapNavFormToForm = (form: NavFormType): Form => {
     changedBy,
     publishedAt,
     publishedBy,
+    publishedLanguages,
+    status,
   } = form;
   return {
     id,
@@ -43,6 +49,8 @@ const mapNavFormToForm = (form: NavFormType): Form => {
     changedBy,
     publishedAt,
     publishedBy,
+    publishedLanguages,
+    status: status as FormStatus,
   };
 };
 
