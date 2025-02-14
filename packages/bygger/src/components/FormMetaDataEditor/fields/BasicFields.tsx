@@ -15,7 +15,7 @@ export interface BasicFieldsProps {
 
 const BasicFields = ({ onChange, diff, form, errors, usageContext }: BasicFieldsProps) => {
   const skjemanummer = form.skjemanummer;
-  const isLockedForm = form.properties.isLockedForm;
+  const isLockedForm = !!form.lock;
 
   const title = form.title;
 

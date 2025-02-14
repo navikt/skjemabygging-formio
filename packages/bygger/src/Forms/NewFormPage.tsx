@@ -19,37 +19,6 @@ interface State {
   form: Form;
 }
 
-interface FormioRoleIds {
-  administrator: string;
-  authenticated: string;
-  everyone: string;
-}
-
-type RoleTitle = keyof FormioRoleIds;
-
-type RolesCreator = (...titles: RoleTitle[]) => string[];
-
-class FormioRoleError extends Error {
-  constructor(message: string) {
-    super(message);
-  }
-}
-
-export const getRoleMapper =
-  (formioRoleIds: FormioRoleIds): RolesCreator =>
-  (...roleTitles: RoleTitle[]): string[] => {
-    return roleTitles.map((title) => {
-      if (!formioRoleIds) {
-        throw new FormioRoleError('Formio role ids are not present in config');
-      }
-      const roleId = formioRoleIds[title];
-      if (!roleId) {
-        throw new FormioRoleError(`Unknown role with title '${title}'`);
-      }
-      return roleId;
-    });
-  };
-
 const NewFormPage = () => {
   const { config } = useAppConfig();
   const { createForm } = useForms();

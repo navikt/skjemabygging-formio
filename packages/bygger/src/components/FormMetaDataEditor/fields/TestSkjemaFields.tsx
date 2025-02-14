@@ -23,7 +23,7 @@ const useStyles = makeStyles({
 
 const TestSkjemaFields = ({ onChange, form }: TestSkjemaFieldsProps) => {
   const isTestForm = form.properties.isTestForm;
-  const isLockedForm = form.properties.isLockedForm;
+  const isLockedForm = !!form.lock;
   const path = form.path;
 
   const styles = useStyles();

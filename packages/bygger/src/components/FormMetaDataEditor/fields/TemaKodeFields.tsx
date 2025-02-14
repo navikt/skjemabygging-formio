@@ -14,7 +14,7 @@ export interface TemaKodeFieldsProps {
 const TemaKodeFields = ({ onChange, diff, form, errors }: TemaKodeFieldsProps) => {
   const { temaKoder, ready: isTemaKoderReady, errorMessage: temaKoderError } = useTemaKoder();
   const tema = form.properties.tema;
-  const isLockedForm = form.properties.isLockedForm;
+  const isLockedForm = !!form.lock;
 
   return (
     <>

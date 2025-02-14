@@ -12,7 +12,7 @@ const EnhetFields = ({ onChange, form }: EnhetFieldsProps) => {
   const mottaksadresseId = form.properties.mottaksadresseId;
   const enhetMaVelgesVedPapirInnsending = form.properties.enhetMaVelgesVedPapirInnsending;
   const enhetstyper = form.properties.enhetstyper;
-  const isLockedForm = form.properties.isLockedForm;
+  const isLockedForm = !!form.lock;
 
   return (
     <>

@@ -14,7 +14,7 @@ export interface AddressFieldsProps {
 const AddressFields = ({ onChange, diff, form }: AddressFieldsProps) => {
   const innsending = form.properties.innsending || 'PAPIR_OG_DIGITAL';
   const mottaksadresseId = form.properties.mottaksadresseId;
-  const isLockedForm = form.properties.isLockedForm;
+  const isLockedForm = !!form.lock;
   const { isReady: isMottaksAdresserReady, recipients } = useRecipients();
 
   const toAddressString = (recipient: Recipient) => {

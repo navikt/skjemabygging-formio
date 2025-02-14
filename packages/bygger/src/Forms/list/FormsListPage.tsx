@@ -35,7 +35,7 @@ const FormsListPage = () => {
       path: form.path,
       number: form.skjemanummer.trim(),
       status: determineStatusFromForm(form),
-      locked: !!form.properties.isLockedForm,
+      locked: !!form.lock,
     };
   };
 
