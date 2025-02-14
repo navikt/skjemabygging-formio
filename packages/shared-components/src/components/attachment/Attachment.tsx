@@ -1,11 +1,12 @@
 import { Alert, Textarea } from '@navikt/ds-react';
 import {
   AttachmentSettingValues,
+  attachmentUtils,
   ComponentValue,
   SubmissionAttachmentValue,
   TEXTS,
 } from '@navikt/skjemadigitalisering-shared-domain';
-import { ChangeEvent, ReactNode, forwardRef } from 'react';
+import { ChangeEvent, forwardRef, ReactNode } from 'react';
 import SingleSelect from '../single-select/SingleSelect';
 
 interface Props {
@@ -31,9 +32,10 @@ const Attachment = forwardRef<HTMLFieldSetElement, Props>(
         if (Array.isArray(attachmentValues)) {
           return attachmentValues;
         } else if (typeof attachmentValues === 'object') {
-          return Object.entries(attachmentValues)
-            .map(([key, values]) => {
-              if (!values.enabled) {
+          return attachmentUtils.attachmentSettingKeys
+            .map((key) => {
+              const values = attachmentValues[key];
+              if (!values?.enabled) {
                 return undefined;
               } else {
                 return {

@@ -2,16 +2,17 @@ import { TFunction } from 'i18next';
 import { Component, NavFormType } from '../form';
 import TEXTS from '../texts';
 
+const attachmentSettingKeys = [
+  'leggerVedNaa',
+  'ettersender',
+  'nei',
+  'levertTidligere',
+  'harIkke',
+  'andre',
+  'nav',
+] as const;
 // Saved in form
-interface AttachmentSettingValues {
-  leggerVedNaa?: AttachmentSettingValue;
-  ettersender?: AttachmentSettingValue;
-  nei?: AttachmentSettingValue;
-  levertTidligere?: AttachmentSettingValue;
-  harIkke?: AttachmentSettingValue;
-  andre?: AttachmentSettingValue;
-  nav?: AttachmentSettingValue;
-}
+type AttachmentSettingValues = Partial<Record<(typeof attachmentSettingKeys)[number], AttachmentSettingValue>>;
 
 interface AttachmentSettingValue {
   enabled?: boolean;
@@ -74,6 +75,7 @@ const mapToAttachmentSummary = ({
 };
 
 const attachmentUtils = {
+  attachmentSettingKeys,
   mapToAttachmentSummary,
 };
 
