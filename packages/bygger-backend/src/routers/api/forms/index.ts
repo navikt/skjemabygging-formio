@@ -10,6 +10,8 @@ formsRouter.get('/', forms.getAll);
 formsRouter.get('/:formPath', forms.get);
 formsRouter.post('/', formsApiAuthHandler, forms.post);
 formsRouter.put('/:formPath', formsApiAuthHandler, forms.put);
+formsRouter.post('/:formPath/lock', formsApiAuthHandler, forms.postLockForm);
+formsRouter.delete('/:formPath/lock', formsApiAuthHandler, forms.deleteLockForm);
 formsRouter.use('/:formPath/translations', formsApiAuthHandler, formsApiFormTranslationsRouter);
 
 export default formsRouter;

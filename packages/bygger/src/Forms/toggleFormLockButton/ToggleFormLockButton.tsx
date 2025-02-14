@@ -1,15 +1,15 @@
 import { BodyShort, Button, Textarea } from '@navikt/ds-react';
 import { Modal } from '@navikt/skjemadigitalisering-shared-components';
-import { FormPropertiesType } from '@navikt/skjemadigitalisering-shared-domain';
 import { useState } from 'react';
+import { useForm } from '../../context/old_form/FormContext';
 
 interface Props {
   isLockedForm?: boolean;
   lockedFormReason?: string;
-  onChange: (properties: Partial<FormPropertiesType>) => Promise<void>;
 }
 
-const ToggleFormLockButton = ({ isLockedForm, lockedFormReason, onChange }: Props) => {
+const ToggleFormLockButton = ({ isLockedForm, lockedFormReason }: Props) => {
+  const { lockForm, unlockForm } = useForm();
   const [lockedFormState, setLockedFormState] = useState<{
     reasonValue: string;
     error?: string;
@@ -29,14 +29,20 @@ const ToggleFormLockButton = ({ isLockedForm, lockedFormReason, onChange }: Prop
   const onClickConfirm = async () => {
     if (!isLockedForm && !lockedFormState.reasonValue) {
       setLockedFormState((state) => ({ ...state, error: 'Du må oppgi en grunn til at skjemaet skal låses' }));
-    } else {
-      setLockedFormState(({ error, ...rest }) => ({
-        ...rest,
-        isLoading: true,
-      }));
-      await onChange({ isLockedForm: !isLockedForm, lockedFormReason: lockedFormState.reasonValue });
-      setLockedFormState((state) => ({ ...state, isLoading: false, isModalOpen: false }));
+      return;
     }
+    setLockedFormState(({ error, ...rest }) => ({
+      ...rest,
+      isLoading: true,
+    }));
+
+    if (isLockedForm) {
+      await unlockForm();
+    } else {
+      await lockForm(lockedFormState.reasonValue);
+    }
+
+    setLockedFormState((state) => ({ ...state, isLoading: false, isModalOpen: false }));
   };
 
   const showModal = (open: boolean) => {

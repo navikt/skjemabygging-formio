@@ -14,6 +14,8 @@ interface ContextValue {
   resetForm: () => void;
   changeForm: (form: Form) => void;
   saveForm: (form: Form) => Promise<Form | void>;
+  lockForm: (reason: string) => Promise<void>;
+  unlockForm: () => Promise<void>;
   publishForm: (form: Form, selectedLanguages: TranslationLang[]) => Promise<void>;
   unpublishForm: () => Promise<void>;
   copyFormFromProduction: () => Promise<void>;
@@ -26,6 +28,8 @@ const FormContext = createContext<ContextValue>({
   resetForm: () => {},
   changeForm: (_form) => {},
   saveForm: async (_form) => {},
+  lockForm: async (_reason: string) => Promise.reject(),
+  unlockForm: async () => Promise.reject(),
   publishForm: async (_form, _translations) => {},
   unpublishForm: async () => {},
   copyFormFromProduction: async () => {},
@@ -36,7 +40,7 @@ const FormContext = createContext<ContextValue>({
  */
 const FormProvider = ({ featureToggles, children }: Props) => {
   const { formPath } = useParams();
-  const { loadForm, onSave, onPublish, onUnpublish, onCopyFromProd } = useForms();
+  const { loadForm, onSave, onLockForm, onUnlockForm, onPublish, onUnpublish, onCopyFromProd } = useForms();
   const [state, dispatch] = useReducer(formPageReducer, initialState, (state) => state);
 
   useEffect(() => {
@@ -98,6 +102,24 @@ const FormProvider = ({ featureToggles, children }: Props) => {
     return form;
   };
 
+  const lockForm = async (reason: string) => {
+    if (formPath) {
+      const result = await onLockForm(formPath, reason);
+      if (result) {
+        dispatch({ type: 'form-saved', form: result });
+      }
+    }
+  };
+
+  const unlockForm = async () => {
+    if (formPath) {
+      const result = await onUnlockForm(formPath);
+      if (result) {
+        dispatch({ type: 'form-saved', form: result });
+      }
+    }
+  };
+
   const publishForm = async (form: Form, selectedLanguages: TranslationLang[]) => {
     await onPublish(form, selectedLanguages);
     // const savedForm = await onPublish(form, translations);
@@ -139,6 +161,8 @@ const FormProvider = ({ featureToggles, children }: Props) => {
     resetForm,
     changeForm,
     saveForm,
+    lockForm,
+    unlockForm,
     publishForm,
     unpublishForm,
     copyFormFromProduction,
