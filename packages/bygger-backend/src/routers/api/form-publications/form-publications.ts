@@ -46,7 +46,7 @@ const post: RequestHandler = async (req, res, next) => {
     );
     const formioForm = formioFormsApiUtils.mapFormToNavForm(form);
 
-    req.body = { form: formioForm, translations: formioTranslations };
+    req.body = { form: formioForm, translations: formioTranslations, formsApiForm: form };
     next();
   } catch (error) {
     next(error);

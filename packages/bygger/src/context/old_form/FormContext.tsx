@@ -122,14 +122,10 @@ const FormProvider = ({ featureToggles, children }: Props) => {
   };
 
   const publishForm = async (form: Form, selectedLanguages: TranslationLang[]) => {
-    await onPublish(form, selectedLanguages);
-    // const savedForm = await onPublish(form, translations);
-    // await loadPublishedForm(formPath)
-    //   .then((publishedForm) => dispatch({ type: 'form-saved', form: savedForm, publishedForm }))
-    //   .catch(() => {
-    //     console.debug('Publish completed: Failed to load published form');
-    //     dispatch({ type: 'form-saved', form: savedForm });
-    //   });
+    const publishedForm = await onPublish(form, selectedLanguages);
+    if (publishedForm) {
+      dispatch({ type: 'form-saved', form: publishedForm, publishedForm });
+    }
   };
 
   /**
