@@ -5,8 +5,8 @@
         {% if (!ctx.disabled) { %}
           <div class="col-md-1"></div>
         {% } %}
-        <div class="col-md-{% if (ctx.self.hasTypes) { %}7{% } else { %}9{% } %}"><strong>{{ctx.t('File Name')}}</strong></div>
-        <div class="col-md-2"><strong>{{ctx.t('Size')}}</strong></div>
+        <div class="col-md-{% if (ctx.self.hasTypes) { %}7{% } else { %}9{% } %}"><strong>{{ctx.t('Filnavn')}}</strong></div>
+        <div class="col-md-2"><strong>{{ctx.t('Størrelse')}}</strong></div>
         {% if (ctx.self.hasTypes) { %}
           <div class="col-md-2"><strong>{{ctx.t('Type')}}</strong></div>
         {% } %}
@@ -23,7 +23,7 @@
               {{file.originalName || file.name}}
             {% } else { %}
               <a href="{{file.url || '#'}}" target="_blank" ref="fileLink" rel="noopener noreferrer">
-                <span class="sr-only">{{ctx.t('Press to open ')}}</span>{{file.originalName || file.name}}
+                <span class="sr-only">{{ctx.t('Trykk for å åpne ')}}</span>{{file.originalName || file.name}}
               </a>
             {% } %}
           </div>
@@ -59,37 +59,21 @@
   </div>
 {% } %}
 {% if (!ctx.disabled && (ctx.component.multiple || !ctx.files.length)) { %}
-  {% if (ctx.self.useWebViewCamera) { %}
-    <div class="fileSelector">
-      <button class="btn btn-primary" type="button" ref="galleryButton"><i class="fa fa-book"></i> {{ctx.t('Gallery')}}</button>
-      <button class="btn btn-primary" type="button" ref="cameraButton"><i class="fa fa-camera"></i> {{ctx.t('Camera')}}</button>
+  <div class="fileSelector" ref="fileDrop" {{ctx.fileDropHidden ?'hidden' : ''}}>
+    <i class="{{ctx.iconClass('cloud-upload')}}"></i>
+      {{ctx.t('Dra filer for å laste opp eller ')}}
+      <a href="#" ref="fileBrowse" class="browse">
+        {{ctx.t('velg fil')}}
+        <span class="sr-only">
+          {{ctx.t('Browse for å laste opp fil for ' + ctx.component.label + '. ' +
+          (ctx.component.description ? ctx.component.description + '. ' : '') +
+          ((!ctx.component.filePattern || ctx.component.filePattern === '*') ? 'Alle filtyper er tillatt' : ctx.t('Tillatte filtyper: ') + ctx.component.filePattern))}}
+        </span>
+      </a>
+    <div ref="fileProcessingLoader" class="loader-wrapper">
+      <div class="loader text-center"></div>
     </div>
-  {% } else if (!ctx.self.cameraMode) { %}
-    <div class="fileSelector" ref="fileDrop" {{ctx.fileDropHidden ?'hidden' : ''}}>
-      <i class="{{ctx.iconClass('cloud-upload')}}"></i> {{ctx.t('Drop files to attach,')}}
-        {% if (ctx.self.imageUpload && ctx.component.webcam) { %}
-          <a href="#" ref="toggleCameraMode"><i class="fa fa-camera"></i> {{ctx.t('use camera')}}</a>
-        {% } %}
-        {{ctx.t('or')}}
-        <a href="#" ref="fileBrowse" class="browse">
-          {{ctx.t('browse')}}
-          <span class="sr-only">
-            {{ctx.t('Browse to attach file for ' + ctx.component.label + '. ' +
-            (ctx.component.description ? ctx.component.description + '. ' : '') +
-            ((!ctx.component.filePattern || ctx.component.filePattern === '*') ? 'Any file types are allowed' : ctx.t('Allowed file types: ') + ctx.component.filePattern))}}
-          </span>
-        </a>
-      <div ref="fileProcessingLoader" class="loader-wrapper">
-        <div class="loader text-center"></div>
-      </div>
-    </div>
-  {% } else { %}
-    <div class="video-container">
-      <video class="video" autoplay="true" ref="videoPlayer" tabindex="-1"></video>
-    </div>
-    <button class="btn btn-primary" type="button" ref="takePictureButton"><i class="fa fa-camera"></i> {{ctx.t('Take Picture')}}</button>
-    <button class="btn btn-primary" type="button" ref="toggleCameraMode">{{ctx.t('Switch to file upload')}}</button>
-  {% } %}
+  </div>
 {% } %}
 {% ctx.statuses.forEach(function(status) { %}
   <div class="file {{ctx.statuses.status === 'error' ? ' has-error' : ''}}">

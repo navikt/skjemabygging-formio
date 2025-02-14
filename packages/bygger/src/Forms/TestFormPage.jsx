@@ -1,9 +1,8 @@
-import { FyllUtRouter, useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
+import { FyllUtRouter } from '@navikt/skjemadigitalisering-shared-components';
 import { AppLayout } from '../components/AppLayout';
 import { useI18nState } from '../context/i18n/I18nContext';
 
 export function TestFormPage({ form }) {
-  const { featureToggles } = useAppConfig();
   const { translationsForNavForm } = useI18nState();
 
   return (
@@ -13,7 +12,7 @@ export function TestFormPage({ form }) {
         formPath: form.path,
       }}
     >
-      <FyllUtRouter form={form} translations={featureToggles.enableTranslations && translationsForNavForm} />
+      <FyllUtRouter form={form} translations={translationsForNavForm} />
     </AppLayout>
   );
 }
