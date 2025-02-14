@@ -90,9 +90,9 @@ const useFormsApiForms = () => {
     });
     const url = `/api/form-publications/${path}?${searchParams}`;
     try {
-      const result = await http.post<Form>(url, {});
+      const result = await http.post<{ form: Form; changed: boolean }>(url, {});
       feedbackEmit.success('Satt i gang publisering, dette kan ta noen minutter.');
-      return result;
+      return result.form;
     } catch (error) {
       const message = (error as Error)?.message;
       feedbackEmit.error(`Publisering av skjema feilet. ${message}`);

@@ -6,7 +6,7 @@ import { BadRequest } from './helpers/errors';
 const publishForm = async (req: Request, res: Response, next: NextFunction) => {
   const userName = req.getUser().name;
   const { formPath } = req.params;
-  const { form, translations } = req.body;
+  const { form, translations, formsApiForm } = req.body;
 
   if (formPath !== form.path) {
     next(new BadRequest('Path mismatch attempting to publish form'));
@@ -20,7 +20,7 @@ const publishForm = async (req: Request, res: Response, next: NextFunction) => {
     const result = await publisherService.publishForm(form, translations);
     const logMessage: string = result.changed ? 'Form is published' : 'Form has not been changed, publish aborted';
     logger.info(logMessage, logMeta);
-    res.json(result);
+    res.json({ changed: result.changed, form: formsApiForm });
   } catch (error) {
     logger.error('Failed to publish form', logMeta);
     next(error);
