@@ -361,7 +361,7 @@ function handleSelectboxes(component, submission, formSummaryObject, parentConta
     ...formSummaryObject,
     {
       label: translate(label),
-      key,
+      key: componentKey,
       type,
       value,
     },
