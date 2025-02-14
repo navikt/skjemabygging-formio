@@ -11,7 +11,6 @@ import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useRef, useS
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import ConfirmationModal from '../../components/modal/confirmation/ConfirmationModal';
 import NavForm from '../../components/nav-form/NavForm';
-import { useAmplitude } from '../../context/amplitude';
 import { useAppConfig } from '../../context/config/configContext';
 import { useLanguages } from '../../context/languages';
 import { useSendInn } from '../../context/sendInn/sendInnContext';
@@ -34,13 +33,6 @@ interface FillInFormPageProps {
 
 export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: FillInFormPageProps) => {
   const navigate = useNavigate();
-  const {
-    loggSkjemaApnet,
-    loggSkjemaSporsmalBesvart,
-    loggSkjemaStegFullfort,
-    loggSkjemaValideringFeilet,
-    loggNavigering,
-  } = useAmplitude();
   const { submissionMethod } = useAppConfig();
   const [formForRendering, setFormForRendering] = useState<NavFormType>();
   const {
@@ -118,34 +110,16 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: Fil
         updateMellomlagring(submission);
         setSubmission(submission);
       }
-      loggNavigering({
-        lenkeTekst: translate(TEXTS.grensesnitt.navigation.next),
-        destinasjon: `${formUrl}/${currentPanels?.[page]}`,
-      });
-      loggSkjemaStegFullfort({ steg: page, skjemastegNokkel: currentPanels?.[page - 1] || '' });
       onNextOrPreviousPage(page, currentPanels);
     },
-    [
-      formUrl,
-      isMellomlagringActive,
-      updateMellomlagring,
-      loggNavigering,
-      loggSkjemaStegFullfort,
-      onNextOrPreviousPage,
-      setSubmission,
-      translate,
-    ],
+    [formUrl, isMellomlagringActive, updateMellomlagring, onNextOrPreviousPage, setSubmission, translate],
   );
 
   const onPreviousPage = useCallback(
     ({ page, currentPanels }) => {
-      loggNavigering({
-        lenkeTekst: translate(TEXTS.grensesnitt.navigation.previous),
-        destinasjon: `${formUrl}/${currentPanels?.[page - 2]}`,
-      });
       onNextOrPreviousPage(page, currentPanels);
     },
-    [formUrl, loggNavigering, onNextOrPreviousPage, translate],
+    [formUrl, onNextOrPreviousPage, translate],
   );
 
   const onCancel = useCallback(
@@ -166,10 +140,9 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: Fil
 
   const onWizardPageSelected = useCallback(
     (panel) => {
-      loggNavigering({ lenkeTekst: translate(panel.component.title), destinasjon: `${formUrl}/${panel.path}` });
       updatePanelUrl(panel.path);
     },
-    [formUrl, loggNavigering, updatePanelUrl, translate],
+    [formUrl, updatePanelUrl, translate],
   );
 
   const onFormReady = useCallback(
@@ -217,65 +190,27 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: Fil
         updateMellomlagring(submission);
       }
       setSubmission(submission);
-      loggNavigering({
-        lenkeTekst: translate(TEXTS.grensesnitt.navigation.submit),
-        destinasjon: `${formUrl}/oppsummering`,
-      });
-      // We need to get location data from window, since this function runs inside formio
-      const skjemastegNokkel = window.location.pathname.split(`${formUrl}/`)[1];
-      loggSkjemaStegFullfort({
-        steg: form.components.findIndex((panel) => panel.key === skjemastegNokkel) + 1,
-        skjemastegNokkel,
-      });
+
       // We need to get location data from window, since this function runs inside formio
       navigate({ pathname: `${formUrl}/oppsummering`, search: window.location.search });
     },
-    [
-      form.components,
-      formUrl,
-      isMellomlagringActive,
-      loggNavigering,
-      loggSkjemaStegFullfort,
-      navigate,
-      setSubmission,
-      translate,
-      updateMellomlagring,
-    ],
+    [form.components, formUrl, isMellomlagringActive, navigate, setSubmission, translate, updateMellomlagring],
   );
 
-  const onValidationError = useCallback(() => {
-    loggSkjemaValideringFeilet();
-  }, [loggSkjemaValideringFeilet]);
-
   const onConfirmCancel = useCallback(async () => {
-    const logNavigation = (lenkeTekst) =>
-      loggNavigering({
-        lenkeTekst,
-        destinasjon: exitUrl,
-      });
-
     switch (showModal) {
       case 'save':
-        logNavigation(translate(TEXTS.grensesnitt.navigation.saveDraft));
         await updateMellomlagring(submission as Submission);
         break;
       case 'delete':
-        logNavigation(translate(TEXTS.grensesnitt.navigation.saveDraft));
         await deleteMellomlagring();
         break;
-      case 'discard':
-      default:
-        logNavigation(translate(TEXTS.grensesnitt.navigation.cancel));
     }
-  }, [deleteMellomlagring, exitUrl, loggNavigering, showModal, submission, translate, updateMellomlagring]);
+  }, [deleteMellomlagring, exitUrl, showModal, submission, translate, updateMellomlagring]);
 
   useEffect(() => {
     setFormForRendering(submissionMethod === 'digital' ? navFormUtils.removeVedleggspanel(form) : form);
   }, [form, submissionMethod]);
-
-  useEffect(() => {
-    loggSkjemaApnet(submissionMethod);
-  }, [loggSkjemaApnet, submissionMethod]);
 
   useEffect(() => {
     if (isMellomlagringAvailable) {
@@ -343,8 +278,6 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: Fil
         language={currentLanguage}
         i18n={translationsForNavForm}
         submission={submission}
-        onComponentChange={loggSkjemaSporsmalBesvart}
-        onError={onValidationError}
         onSubmit={onSubmit}
         onNextPage={onNextPage}
         onPrevPage={onPreviousPage}

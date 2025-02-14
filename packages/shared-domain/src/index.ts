@@ -102,7 +102,6 @@ import {
   SummaryField,
   SummaryFieldset,
   SummaryFieldsetType,
-  SummaryImage,
   SummaryPanel,
   SummarySelectboxes,
   SummarySubmissionValue,
@@ -126,6 +125,7 @@ import signatureUtils from './utils/signatureUtils';
 import stringUtils from './utils/stringUtils';
 import translationUtils from './utils/translation';
 import validatorUtils from './utils/validatorUtils';
+import yourInformationUtils from './utils/yourInformationUtils';
 
 export {
   DeclarationType,
@@ -155,6 +155,7 @@ export {
   supportedEnhetstyper,
   translationUtils,
   validatorUtils,
+  yourInformationUtils,
 };
 export type {
   AccordionSettingValue,
@@ -247,7 +248,6 @@ export type {
   SummaryField,
   SummaryFieldset,
   SummaryFieldsetType,
-  SummaryImage,
   SummaryPanel,
   SummarySelectboxes,
   SummarySubmissionValue,

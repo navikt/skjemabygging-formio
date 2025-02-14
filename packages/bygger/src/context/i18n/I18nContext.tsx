@@ -26,7 +26,7 @@ const loadTranslationsAndInitState = async (
   try {
     const translations = await loadTranslations();
     dispatch({ type: 'init', payload: translations });
-  } catch (e) {
+  } catch (_e) {
     dispatch({ type: 'error' });
   }
 };

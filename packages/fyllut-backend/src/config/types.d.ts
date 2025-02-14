@@ -6,11 +6,6 @@ export type TokenxConfig = {
   wellKnownUrl: string;
 };
 
-export type AmplitudeConfig = {
-  apiEndpoint: string;
-  disableBatch: boolean;
-};
-
 export type SendInnConfig = {
   host: string;
   tokenxClientId: string;
@@ -57,7 +52,6 @@ export type DefaultConfig = {
   mockIdportenJwt?: string;
   noFormValidation?: boolean;
   noDecorator?: boolean;
-  amplitude: AmplitudeConfig;
   frontendLoggerConfig: FrontendLoggerConfigType;
   formsApiUrl: string;
 };

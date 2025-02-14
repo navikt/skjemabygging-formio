@@ -12,7 +12,6 @@ import Modal from './components/modal/Modal';
 import ConfirmationModal from './components/modal/confirmation/ConfirmationModal';
 import useModal from './components/modal/useModal';
 import NavForm from './components/nav-form/NavForm';
-import AmplitudeProvider from './context/amplitude';
 import { AppConfigProvider, useAppConfig } from './context/config/configContext';
 import { LanguagesProvider, useLanguages } from './context/languages';
 import useCurrentLanguage from './context/languages/hooks/useCurrentLanguage';
@@ -38,7 +37,6 @@ import url from './util/url/url';
 jss.setup(preset());
 
 export {
-  AmplitudeProvider,
   AppConfigProvider,
   ConfirmationModal,
   ErrorPage,

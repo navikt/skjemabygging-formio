@@ -165,27 +165,9 @@ describe('form summary', () => {
     });
 
     describe('image', () => {
-      it('is correctly added with image url as value and altText', () => {
+      it('do not add images', () => {
         const actual = handleComponent(createDummyImage(), {}, [], '', (value) => value);
-        expect(actual).toEqual([
-          {
-            label: 'Bilde',
-            key: 'bilde',
-            type: 'image',
-            value: 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEBLAEsAAD/4QBGRXhpZ...',
-            alt: 'Bilde beskrivelse',
-            widthPercent: 100,
-          },
-        ]);
-      });
-
-      it('translates label and img alt', () => {
-        const actual = handleComponent(createDummyImage(), {}, [], '', mockedTranslate);
-        const expectedResult = { label: actual[0].label, alt: actual[0].alt };
-        expect(expectedResult).toEqual({
-          label: 'Image',
-          alt: 'Image description',
-        });
+        expect(actual).toEqual([]);
       });
     });
 
@@ -687,21 +669,6 @@ describe('form summary', () => {
               key: 'simpleemail',
               type: 'email',
               value: 'simpleemail-value',
-            },
-          ],
-        },
-        {
-          label: 'Panel with image component',
-          key: 'panelwithimagecomponent',
-          type: 'panel',
-          components: [
-            {
-              label: 'Simple Image',
-              key: 'simpleimage',
-              type: 'image',
-              value: 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEBLAEsAAD/4QBGRXhpZ...',
-              alt: 'Image description',
-              widthPercent: 100,
             },
           ],
         },

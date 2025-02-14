@@ -36,7 +36,7 @@ describe('httpFyllut', () => {
 
     try {
       await httpFyllut.get('https://www.nav.no');
-    } catch (e) {
+    } catch (_e) {
       expect(replace).toHaveBeenCalledTimes(1);
     }
 

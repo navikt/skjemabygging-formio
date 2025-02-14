@@ -13,7 +13,6 @@ export default defineConfig({
       FORMIO_PROJECT_URL: 'http://127.0.0.1:3300/formio-api',
       SEND_INN_HOST: 'http://127.0.0.1:3300/send-inn',
       TOKEN_X_WELL_KNOWN_URL: 'http://127.0.0.1:3300/tokenx/.well-known',
-      AMPLITUDE_API_ENDPOINT: 'http://127.0.0.1:3300/amplitude/collect-auto',
       BASE_URL: 'http://localhost:3001',
     },
   },

@@ -2,10 +2,13 @@ const getLanguageCodeAsIso639_1 = (locale) => {
   switch (locale) {
     case 'nn-NO':
       return 'nn';
+    case 'en':
+      return 'en';
+    case 'NO':
+    case 'no':
     case 'nb-NO':
-      return 'nb';
     default:
-      return locale;
+      return 'nb';
   }
 };
 

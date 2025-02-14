@@ -11,11 +11,11 @@ import cssClasses from './cssClasses';
 import datagrid from './datagrid';
 import day from './day';
 import dialog from './dialog';
+import errorsList from './errorsList';
 import field from './field';
 import file from './file';
 import html from './html';
 import iconClass from './iconClass';
-import image from './image';
 import input from './input';
 import label from './label';
 import message from './message';
@@ -58,11 +58,11 @@ export default {
   datagrid,
   day,
   dialog,
+  errorsList,
   field,
   file,
   html,
   input,
-  image,
   label,
   message,
   multipleMasksInput,
