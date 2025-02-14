@@ -13,7 +13,6 @@ import SidebarLayout from '../components/layout/SidebarLayout';
 import Title from '../components/layout/Title';
 import TitleRowLayout from '../components/layout/TitleRowLayout';
 import UserFeedback from '../components/UserFeedback';
-import { useFeedbackEmit } from '../context/notifications/FeedbackContext';
 import { defaultFormFields } from './DefaultForm';
 
 interface State {
@@ -53,7 +52,6 @@ export const getRoleMapper =
 
 const NewFormPage = () => {
   const { config } = useAppConfig();
-  const feedbackEmit = useFeedbackEmit();
   const { createForm } = useForms();
   const navigate = useNavigate();
   const [state, setState] = useState<State>({
@@ -90,7 +88,6 @@ const NewFormPage = () => {
       });
 
       if (createdForm) {
-        feedbackEmit.success(`Opprettet skjemaet ${createdForm.title}`);
         navigate(`/forms/${createdForm.path}/edit`);
         return createdForm;
       }
