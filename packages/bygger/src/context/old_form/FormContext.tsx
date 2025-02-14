@@ -108,7 +108,7 @@ const FormProvider = ({ featureToggles, children }: Props) => {
   const publishForm = async (form: Form, selectedLanguages: TranslationLang[]) => {
     const publishedForm = await onPublish(form, selectedLanguages);
     if (publishedForm) {
-      dispatch({ type: 'form-saved', form: publishedForm });
+      dispatch({ type: 'form-saved', form: publishedForm, publishedForm });
     }
   };
 
