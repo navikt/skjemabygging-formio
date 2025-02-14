@@ -21,7 +21,8 @@ const mergeProps = (form: Form, props: Partial<FormPropertiesType>): Form => ({
 });
 
 const UxSignalsFields = ({ onChange, diff, form, errors }: Props) => {
-  const { uxSignalsId, uxSignalsInnsending, isLockedForm } = form.properties;
+  const { uxSignalsId, uxSignalsInnsending } = form.properties;
+  const isLockedForm = !!form.lock;
 
   const idChangeHandler = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>, form: Form) => {

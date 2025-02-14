@@ -69,6 +69,36 @@ const useFormsApiForms = () => {
     }
   };
 
+  const postLockForm = async (formPath: string, reason: string) => {
+    const url = `/api/forms/${formPath}/lock`;
+    try {
+      logger?.info(`Locking form with path ${formPath}: ${url}`);
+      const result = await http.post<Form>(url, { reason });
+      logger?.info(`Successfully locked form with path ${formPath}: ${url}`);
+      feedbackEmit.success(`Skjemaet ble låst for redigering`);
+      return result;
+    } catch (error) {
+      const message = (error as Error)?.message;
+      logger?.error(`Failed to lock form: ${url}`, { message });
+      feedbackEmit.error(`Feil ved låsing av skjema. ${message}`);
+    }
+  };
+
+  const deleteLockForm = async (formPath: string) => {
+    const url = `/api/forms/${formPath}/lock`;
+    try {
+      logger?.info(`Unlocking form with path ${formPath}: ${url}`);
+      const result = await http.delete<Form>(url);
+      logger?.info(`Successfully unlocked form with path ${formPath}: ${url}`);
+      feedbackEmit.success(`Skjemaet ble åpnet for redigering`);
+      return result;
+    } catch (error) {
+      const message = (error as Error)?.message;
+      logger?.error(`Failed to unlock form: ${url}`, { message });
+      feedbackEmit.error(`Feil ved opplåsing av skjema. ${message}`);
+    }
+  };
+
   const getPublished = async (formPath: string): Promise<Form | undefined> => {
     const url = `/api/form-publications/${formPath}`;
     try {
@@ -104,6 +134,8 @@ const useFormsApiForms = () => {
     get,
     post,
     put,
+    postLockForm,
+    deleteLockForm,
     publish,
     getPublished,
   };

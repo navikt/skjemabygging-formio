@@ -24,7 +24,7 @@ describe('UnpublishButton', () => {
   });
 
   it('renders button with lock', async () => {
-    renderButton({ properties: { published: dateUtils.getIso8601String(), isLockedForm: true } } as Form);
+    renderButton({ properties: { published: dateUtils.getIso8601String() }, lock: { reason: 'Derfor' } } as Form);
     expect(await screen.findByRole('button')).toBeInTheDocument();
     expect(screen.getByTitle('Skjemaet er låst')).toBeInTheDocument();
   });

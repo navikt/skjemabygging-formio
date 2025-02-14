@@ -27,8 +27,9 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext, errors }: Basic
   const diff =
     diffOn && formState.publishedForm ? formDiffingTool.generateNavFormSettingsDiff(formState.publishedForm, form) : {};
   const {
-    properties: { downloadPdfButtonText, descriptionOfSignatures, isLockedForm },
+    properties: { downloadPdfButtonText, descriptionOfSignatures },
   } = form;
+  const isLockedForm = !!form.lock;
 
   const basicFields = () => (
     <BasicFields onChange={onChange} diff={diff} form={form} errors={errors} usageContext={usageContext} />

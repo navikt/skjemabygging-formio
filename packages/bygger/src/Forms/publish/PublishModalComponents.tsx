@@ -27,7 +27,7 @@ const PublishModalComponents = ({
   const [userMessageModal, setUserMessageModal] = useModal();
   const [lockedFormModal, setLockedFormModal] = useModal();
   const [selectedLanguageCodeList, setSelectedLanguageCodeList] = useState<string[]>([]);
-  const isLockedForm = form.properties.isLockedForm;
+  const isLockedForm = !!form.lock;
 
   useEffect(() => {
     if (openPublishSettingModal) {

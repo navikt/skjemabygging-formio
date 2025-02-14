@@ -14,7 +14,7 @@ import UnpublishButton from '../unpublish/UnpublishButton';
 
 interface FormSettingsPageProps {
   form: Form;
-  validateAndSave: (form: Form) => void;
+  validateAndSave: (form: Form) => Promise<void>;
   setOpenPublishSettingModal: (open: boolean) => void;
 }
 
@@ -22,7 +22,8 @@ const FormSettingsSidebar = ({ form, validateAndSave, setOpenPublishSettingModal
   const { config } = useAppConfig();
   const { copyFormFromProduction } = useForm();
   const [lockedFormModal, setLockedFormModal] = useModal();
-  const { isLockedForm, lockedFormReason } = form.properties;
+  const isLockedForm = !!form.lock;
+  const lockedFormReason = form.lock?.reason;
 
   const doIfUnlocked = (whenUnlocked: () => void): void => {
     if (isLockedForm) {

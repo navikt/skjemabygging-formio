@@ -22,7 +22,7 @@ export function FormSettingsPage({ form }: FormSettingsPageProps) {
     title,
     properties: { skjemanummer },
   } = form;
-  const isLockedForm = form.properties.isLockedForm;
+  const isLockedForm = !!form.lock;
   const [openPublishSettingModal, setOpenPublishSettingModal] = useModal();
 
   const [errors, setErrors] = useState({});

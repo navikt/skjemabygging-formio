@@ -18,7 +18,7 @@ export interface SignatureFieldsProps {
 const SignatureFields = ({ onChange, diff, form }: SignatureFieldsProps) => {
   const signatures = form.properties.signatures || [];
   const descriptionOfSignaturesPositionUnder = form.properties.descriptionOfSignaturesPositionUnder || false;
-  const isLockedForm = form.properties.isLockedForm;
+  const isLockedForm = !!form.lock;
 
   const addExistingSignature = (newSignature: NewFormSignatureType, index: number) =>
     onChange({
