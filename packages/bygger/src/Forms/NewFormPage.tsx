@@ -80,19 +80,24 @@ const NewFormPage = () => {
     const trimmedFormNumber = state.form.skjemanummer.trim();
     if (isFormMetadataValid(updatedErrors)) {
       setErrors({});
-      const createdForm = await createForm({
-        ...state.form,
-        skjemanummer: trimmedFormNumber,
-        properties: {
-          ...state.form.properties,
+      try {
+        const createdForm = await createForm({
+          ...state.form,
           skjemanummer: trimmedFormNumber,
-        },
-      });
+          properties: {
+            ...state.form.properties,
+            skjemanummer: trimmedFormNumber,
+          },
+        });
 
-      if (createdForm) {
-        feedbackEmit.success(`Opprettet skjemaet ${createdForm.title}`);
-        navigate(`/forms/${createdForm.path}/edit`);
-        return createdForm;
+        if (createdForm) {
+          feedbackEmit.success(`Opprettet skjemaet ${createdForm.title}`);
+          navigate(`/forms/${createdForm.path}/edit`);
+          return createdForm;
+        }
+      } catch (err) {
+        console.error(err);
+        feedbackEmit.error('Opprettelse av skjema feilet');
       }
     } else {
       setErrors(updatedErrors);

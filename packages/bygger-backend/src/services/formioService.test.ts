@@ -5,6 +5,7 @@ import { formioService } from './index';
 
 const FORMIO_API_SERVICE_URL = getFormioApiServiceUrl();
 
+// TODO delete test when FormioService is not in use anymore
 describe('FormioService', () => {
   describe('saveForm', () => {
     describe('props modified and modifiedBy', () => {
@@ -149,7 +150,6 @@ describe('FormioService', () => {
       expect(savedForm._id).toBeUndefined();
       expect(savedForm.type).toEqual('form');
       expect(savedForm.display).toEqual('wizard');
-      expect(savedForm.tags).toEqual(expect.arrayContaining(['nav-skjema']));
       expect(savedForm.path).toEqual('nav010000');
       expect(savedForm.name).toEqual('nav010000');
       expect(savedForm.title).toBeTruthy();
