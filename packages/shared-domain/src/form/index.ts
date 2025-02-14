@@ -313,7 +313,7 @@ export interface FyllutState {
 }
 
 export interface Submission {
-  data: SubmissionData;
+  data?: SubmissionData;
   metadata?: {
     selectedData: any;
     timezone: string;
@@ -334,14 +334,19 @@ export interface Submission {
   };
 }
 
-export interface Wizard {
+export interface Webform {
   id: string;
-  form: NavFormType;
-  formUrl: string;
-  language: string;
-  submission: Submission;
-  src: string;
-  url: string;
+  form?: NavFormType;
+  formUrl?: string;
+  language?: string;
+  submission?: Submission;
+  setSubmission: (submission: Submission) => Promise<void>;
+  src?: string;
+  url?: string;
+  onAny?: any;
+  destroy: (deleteFromGlobal: boolean) => void;
+  focusOnComponent: (args: any) => void;
+  redrawNavigation: () => void;
 }
 
 export type UsageContext = 'create' | 'edit';

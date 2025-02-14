@@ -278,18 +278,20 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: Fil
         language={currentLanguage}
         i18n={translationsForNavForm}
         submission={submission}
-        onSubmit={onSubmit}
-        onNextPage={onNextPage}
-        onPrevPage={onPreviousPage}
-        onCancel={onCancel}
-        onSave={onSave}
-        formReady={onFormReady}
         submissionReady={goToPanelFromUrlParam}
-        onWizardPageSelected={onWizardPageSelected}
-        onShowErrors={onShowErrors}
-        onErrorSummaryFocus={onErrorSummaryFocus}
+        formReady={onFormReady}
         fyllutEvents={fyllutEvents}
         className="nav-form"
+        events={{
+          onSubmit,
+          onNextPage,
+          onPrevPage: onPreviousPage,
+          onCancel,
+          onSave,
+          onWizardPageSelected,
+          onShowErrors,
+          onErrorSummaryFocus,
+        }}
       />
       <ConfirmationModal
         open={!!showModal}

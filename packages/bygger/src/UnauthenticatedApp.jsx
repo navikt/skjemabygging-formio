@@ -18,7 +18,13 @@ const UnauthenticatedApp = ({ projectURL }) => {
     <AppLayout>
       <PageWrapper>
         {config?.isDevelopment ? (
-          <NavForm className={styles.navForm} src={`${projectURL}/user/login`} onSubmitDone={(user) => login(user)} />
+          <NavForm
+            className={styles.navForm}
+            src={`${projectURL}/user/login`}
+            events={{
+              onSubmitDone: (user) => login(user),
+            }}
+          />
         ) : (
           <div>Vennligst vent, du logges ut...</div>
         )}
