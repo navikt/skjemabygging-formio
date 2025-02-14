@@ -96,8 +96,8 @@ const BulkPublishPanel = ({ forms }: Props) => {
             <Table.Body>
               {forms.map((form, i) => {
                 return (
-                  <Table.Row key={i + form.properties.skjemanummer}>
-                    <Table.HeaderCell scope="row">{form.properties.skjemanummer}</Table.HeaderCell>
+                  <Table.Row key={i + form.skjemanummer}>
+                    <Table.HeaderCell scope="row">{form.skjemanummer}</Table.HeaderCell>
                     <Table.DataCell>{form.title}</Table.DataCell>
                     <Table.DataCell>
                       {<FormStatus status={determineStatusFromForm(form)} size={'small'} />}

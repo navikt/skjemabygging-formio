@@ -14,7 +14,7 @@ const RESPONSE_HEADERS_ERROR = {
   status: 500,
 };
 
-const FORM_REGEX = /\/api\/forms\/(.+)\/overwrite-with-prod$/;
+const FORM_REGEX = /\/api\/import\/forms\/(.+)$/;
 export const mockImplementation = (url) => {
   const stringUrl = url as string;
   if (FORM_REGEX.test(stringUrl)) {

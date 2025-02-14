@@ -34,6 +34,11 @@ const MOTTAKSADRESSE_REGEX = /http.*\/mottaksadresse$/;
 const TEMAKODER_REGEX = /http.*\/api\/temakoder/;
 const FORM_DIFF = /http.*\/form\/.*\/diff/;
 
+const FORMS_API_ALL_FORMS_REGEX = /\/api\/forms\?select=(.+)?/;
+const FORMS_API_TRANSLATIONS = /\/api\/translations?/;
+const FORMS_API_FORM_TRANSLATIONS = /\/api\/forms\/(.+)\/translations?/;
+const LOG_INFO_REGEX = /http.*\/api\/log\/info?/;
+
 export const DEFAULT_PROJECT_URL = 'http://myproject.example.org';
 
 const defaultParams = {
@@ -45,17 +50,40 @@ type FetchOptions = {
   method?: 'GET' | 'POST' | 'PUT' | 'OPTIONS' | 'DELETE';
 };
 
+const toFormsApiForm = (formioForm: any) => ({
+  id: formioForm._id,
+  path: formioForm.path,
+  title: formioForm.title,
+  skjemanummer: formioForm.properties.skjemanummer,
+  properties: { ...formioForm.properties },
+  modified: formioForm.modified,
+  components: [...formioForm.components],
+  status: 'draft',
+});
+
 const createMockImplementation =
   ({ projectUrl } = defaultParams) =>
   (url, options: FetchOptions = {}) => {
     if (projectUrl === url) {
       return Promise.resolve(new Response(JSON.stringify({ builder: {} }), RESPONSE_HEADERS));
     }
+    if (LOG_INFO_REGEX.test(url)) {
+      return Promise.resolve(new Response(JSON.stringify({}), RESPONSE_HEADERS));
+    }
+    if (FORMS_API_ALL_FORMS_REGEX.test(url)) {
+      return Promise.resolve(new Response(JSON.stringify([toFormsApiForm(testForm)]), RESPONSE_HEADERS));
+    }
+    if (FORMS_API_TRANSLATIONS.test(url)) {
+      return Promise.resolve(new Response(JSON.stringify([]), RESPONSE_HEADERS));
+    }
+    if (FORMS_API_FORM_TRANSLATIONS.test(url)) {
+      return Promise.resolve(new Response(JSON.stringify([]), RESPONSE_HEADERS));
+    }
     if (USER_LOGIN_REGEX.test(url)) {
       return Promise.resolve(new Response(JSON.stringify(loginForm), RESPONSE_HEADERS));
     }
     if (BYGGER_BACKEND_FORM_REGEX.test(url)) {
-      return Promise.resolve(new Response(JSON.stringify(testForm), RESPONSE_HEADERS));
+      return Promise.resolve(new Response(JSON.stringify(toFormsApiForm(testForm)), RESPONSE_HEADERS));
     }
     if (ALL_FORMS_REGEX.test(url)) {
       return Promise.resolve(new Response(JSON.stringify([testForm]), RESPONSE_HEADERS));

@@ -68,7 +68,7 @@ describe('Form Metadata Validation', () => {
   it('should validate skjemanummer length for a new form', () => {
     const usageContext: UsageContext = 'create';
     // Skjemanummer with length greater than 20
-    sampleForm.properties.skjemanummer = '123456789012345678901';
+    sampleForm.skjemanummer = '123456789012345678901';
 
     const errors = validateFormMetadata(sampleForm, usageContext);
 

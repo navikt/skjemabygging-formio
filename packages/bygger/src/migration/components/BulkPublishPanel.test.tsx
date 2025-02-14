@@ -32,6 +32,7 @@ const form: Form = {
   skjemanummer: 'skjemanummer',
   components: [],
   properties,
+  status: 'draft',
 };
 
 const testForm1: Form = {
@@ -40,6 +41,7 @@ const testForm1: Form = {
   title: 'Form 1',
   skjemanummer: '001',
   properties: { ...properties, ...published },
+  status: 'published',
 };
 const testForm2: Form = {
   ...form,
@@ -47,6 +49,7 @@ const testForm2: Form = {
   title: 'Form 2',
   skjemanummer: '002',
   properties: { ...properties, ...pending },
+  status: 'pending',
 };
 const testForm3: Form = { ...form, path: 'form3', title: 'Form 3', skjemanummer: '003', properties: { ...properties } };
 const bulkPublish = vi.fn();
