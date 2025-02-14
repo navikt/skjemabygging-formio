@@ -48,8 +48,8 @@ const TranslationTable = <Translation extends FormsApiTranslation>({
   }
 
   return (
-    <Table sort={sortState} onSortChange={handleSort}>
-      <Table.Header>
+    <Table className={styles.table} sort={sortState} onSortChange={handleSort}>
+      <Table.Header className={styles.header}>
         <Table.Row>
           {columns.map((column) => (
             <Table.ColumnHeader sortable sortKey={column.key} className={styles.column} key={column.key} scope="col">
