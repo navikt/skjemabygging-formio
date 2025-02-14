@@ -37,11 +37,30 @@ const createFormsService = (formsApiUrl: string): FormsService => {
     return response.data as Form;
   };
 
+  const postLockForm = async (formPath: string, reason: string, accessToken: string): Promise<Form> => {
+    const response = await fetchWithErrorHandling(`${formsUrl}/${formPath}/lock`, {
+      method: 'POST',
+      headers: createHeaders(accessToken),
+      body: JSON.stringify({ reason }),
+    });
+    return response.data as Form;
+  };
+
+  const deleteLockForm = async (formPath: string, accessToken: string): Promise<Form> => {
+    const response = await fetchWithErrorHandling(`${formsUrl}/${formPath}/lock`, {
+      method: 'DELETE',
+      headers: createHeaders(accessToken),
+    });
+    return response.data as Form;
+  };
+
   return {
     getAll,
     get,
     post,
     put,
+    postLockForm,
+    deleteLockForm,
     formsUrl,
   };
 };

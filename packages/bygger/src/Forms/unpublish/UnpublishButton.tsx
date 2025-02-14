@@ -18,7 +18,7 @@ const UnpublishButton = ({ form }: UnpublishButtonProps) => {
   const [openConfirmModal, setOpenConfirmModal] = useModal();
   const [lockedFormModal, setLockedFormModal] = useModal();
   const { unpublishForm } = useForm();
-  const isLockedForm = form.properties.isLockedForm;
+  const isLockedForm = !!form.lock;
   const styles = useStyles();
 
   return (

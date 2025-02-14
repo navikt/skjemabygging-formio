@@ -16,7 +16,7 @@ const SubmissionFields = ({ onChange, diff, form, errors }: SubmissionFieldsProp
   const ettersending = form.properties.ettersending;
   const ettersendelsesfrist = form.properties.ettersendelsesfrist;
   const hideUserTypes = form.properties.hideUserTypes;
-  const isLockedForm = form.properties.isLockedForm;
+  const isLockedForm = !!form.lock;
 
   return (
     <>

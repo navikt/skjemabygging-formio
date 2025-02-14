@@ -13,47 +13,14 @@ import SidebarLayout from '../components/layout/SidebarLayout';
 import Title from '../components/layout/Title';
 import TitleRowLayout from '../components/layout/TitleRowLayout';
 import UserFeedback from '../components/UserFeedback';
-import { useFeedbackEmit } from '../context/notifications/FeedbackContext';
 import { defaultFormFields } from './DefaultForm';
 
 interface State {
   form: Form;
 }
 
-interface FormioRoleIds {
-  administrator: string;
-  authenticated: string;
-  everyone: string;
-}
-
-type RoleTitle = keyof FormioRoleIds;
-
-type RolesCreator = (...titles: RoleTitle[]) => string[];
-
-class FormioRoleError extends Error {
-  constructor(message: string) {
-    super(message);
-  }
-}
-
-export const getRoleMapper =
-  (formioRoleIds: FormioRoleIds): RolesCreator =>
-  (...roleTitles: RoleTitle[]): string[] => {
-    return roleTitles.map((title) => {
-      if (!formioRoleIds) {
-        throw new FormioRoleError('Formio role ids are not present in config');
-      }
-      const roleId = formioRoleIds[title];
-      if (!roleId) {
-        throw new FormioRoleError(`Unknown role with title '${title}'`);
-      }
-      return roleId;
-    });
-  };
-
 const NewFormPage = () => {
   const { config } = useAppConfig();
-  const feedbackEmit = useFeedbackEmit();
   const { createForm } = useForms();
   const navigate = useNavigate();
   const [state, setState] = useState<State>({
@@ -80,24 +47,18 @@ const NewFormPage = () => {
     const trimmedFormNumber = state.form.skjemanummer.trim();
     if (isFormMetadataValid(updatedErrors)) {
       setErrors({});
-      try {
-        const createdForm = await createForm({
-          ...state.form,
+      const createdForm = await createForm({
+        ...state.form,
+        skjemanummer: trimmedFormNumber,
+        properties: {
+          ...state.form.properties,
           skjemanummer: trimmedFormNumber,
-          properties: {
-            ...state.form.properties,
-            skjemanummer: trimmedFormNumber,
-          },
-        });
+        },
+      });
 
-        if (createdForm) {
-          feedbackEmit.success(`Opprettet skjemaet ${createdForm.title}`);
-          navigate(`/forms/${createdForm.path}/edit`);
-          return createdForm;
-        }
-      } catch (err) {
-        console.error(err);
-        feedbackEmit.error('Opprettelse av skjema feilet');
+      if (createdForm) {
+        navigate(`/forms/${createdForm.path}/edit`);
+        return createdForm;
       }
     } else {
       setErrors(updatedErrors);

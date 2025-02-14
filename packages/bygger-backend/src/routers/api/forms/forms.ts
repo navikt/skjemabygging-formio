@@ -57,11 +57,44 @@ const put: RequestHandler = async (req, res, next) => {
   }
 };
 
+const postLockForm: RequestHandler = async (req, res, next) => {
+  const accessToken = req.headers.AzureAccessToken as string;
+  const { formPath } = req.params;
+  const { reason } = req.body;
+  try {
+    const form = await formsService.postLockForm(formPath, reason, accessToken);
+    res.json(form);
+  } catch (error) {
+    if (error instanceof OldHttpError) {
+      next(new HttpError(error.message, error.response.status));
+    } else {
+      next(error);
+    }
+  }
+};
+
+const deleteLockForm: RequestHandler = async (req, res, next) => {
+  const accessToken = req.headers.AzureAccessToken as string;
+  const { formPath } = req.params;
+  try {
+    const form = await formsService.deleteLockForm(formPath, accessToken);
+    res.json(form);
+  } catch (error) {
+    if (error instanceof OldHttpError) {
+      next(new HttpError(error.message, error.response.status));
+    } else {
+      next(error);
+    }
+  }
+};
+
 const forms = {
   getAll,
   get,
   post,
   put,
+  postLockForm,
+  deleteLockForm,
 };
 
 export default forms;

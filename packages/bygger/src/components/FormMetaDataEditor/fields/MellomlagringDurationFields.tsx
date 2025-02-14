@@ -12,7 +12,7 @@ export interface MellomlagringDurationProps {
 
 const MellomlagrinDurationFields = ({ onChange, diff, form, errors }: MellomlagringDurationProps) => {
   const mellomlagringDurationDays = form.properties.mellomlagringDurationDays;
-  const isLockedForm = form.properties.isLockedForm;
+  const isLockedForm = !!form.lock;
 
   return (
     <>

@@ -28,8 +28,9 @@ const EditFormPage = ({ form }: EditFormPageProps) => {
   } = useForm();
   const {
     title,
-    properties: { skjemanummer, isLockedForm },
+    properties: { skjemanummer },
   } = form;
+  const isLockedForm = !!form.lock;
 
   const [display, setDisplay] = useState<DisplayType>('wizard');
   const appConfig = useAppConfig();

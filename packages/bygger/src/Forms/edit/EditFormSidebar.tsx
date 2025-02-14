@@ -20,9 +20,7 @@ const EditFormSidebar = ({ form }: EditFormSidebarProps) => {
   const [lockedFormModal, setLockedFormModal] = useModal();
   const { saveForm } = useForm();
 
-  const {
-    properties: { isLockedForm },
-  } = form;
+  const isLockedForm = !!form.lock;
 
   return (
     <SidebarLayout noScroll={true}>

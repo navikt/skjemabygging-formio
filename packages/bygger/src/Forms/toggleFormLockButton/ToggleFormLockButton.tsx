@@ -9,6 +9,7 @@ interface Props {
 }
 
 const ToggleFormLockButton = ({ isLockedForm, lockedFormReason }: Props) => {
+  const { lockForm, unlockForm } = useForm();
   const [lockedFormState, setLockedFormState] = useState<{
     reasonValue: string;
     error?: string;
@@ -19,7 +20,6 @@ const ToggleFormLockButton = ({ isLockedForm, lockedFormReason }: Props) => {
     isLoading: false,
     isModalOpen: false,
   });
-  const { changeFormSettings } = useForm();
 
   const modalTitle = isLockedForm ? 'Låse opp skjemaet' : 'Lås skjemaet for redigering';
   const unlockFormBody = 'Er du sikker på at du vil låse opp skjemaet?';
@@ -29,14 +29,20 @@ const ToggleFormLockButton = ({ isLockedForm, lockedFormReason }: Props) => {
   const onClickConfirm = async () => {
     if (!isLockedForm && !lockedFormState.reasonValue) {
       setLockedFormState((state) => ({ ...state, error: 'Du må oppgi en grunn til at skjemaet skal låses' }));
-    } else {
-      setLockedFormState(({ error, ...rest }) => ({
-        ...rest,
-        isLoading: true,
-      }));
-      await changeFormSettings({ isLockedForm: !isLockedForm, lockedFormReason: lockedFormState.reasonValue });
-      setLockedFormState((state) => ({ ...state, isLoading: false, isModalOpen: false }));
+      return;
     }
+    setLockedFormState(({ error, ...rest }) => ({
+      ...rest,
+      isLoading: true,
+    }));
+
+    if (isLockedForm) {
+      await unlockForm();
+    } else {
+      await lockForm(lockedFormState.reasonValue);
+    }
+
+    setLockedFormState((state) => ({ ...state, isLoading: false, isModalOpen: false }));
   };
 
   const showModal = (open: boolean) => {

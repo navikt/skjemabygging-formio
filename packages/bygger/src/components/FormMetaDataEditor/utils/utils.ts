@@ -31,7 +31,7 @@ export const validateFormMetadata = (form: Form, usageContext: UsageContext) => 
     errors.skjemanummer = 'Skjemanummeret kan ikke være lengre enn 20 tegn';
   }
 
-  if (form.properties.isLockedForm && !form.properties.lockedFormReason) {
+  if (!!form.lock && !form.lock.reason) {
     errors.lockedFormReason = 'Du må oppgi en grunn for at skjemaet er låst';
   }
 

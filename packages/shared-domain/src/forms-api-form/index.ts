@@ -2,6 +2,12 @@ import { Component, FormPropertiesType } from '../form';
 
 type FormStatus = 'draft' | 'published' | 'pending' | 'unpublished' | 'unknown';
 
+type FormLock = {
+  reason: string;
+  lockedBy: string;
+  lockedAt: string;
+};
+
 type Form = {
   id?: number;
   revision?: number;
@@ -18,6 +24,7 @@ type Form = {
   publishedBy?: string;
   publishedLanguages?: string[];
   status?: FormStatus;
+  lock?: FormLock;
 };
 
 export type { Form, FormStatus };

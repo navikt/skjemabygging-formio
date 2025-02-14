@@ -12,7 +12,7 @@ export interface DeclarationFieldsProps {
 
 const DeclarationFields = ({ onChange, diff, form, errors }: DeclarationFieldsProps) => {
   const declarationText = form.properties.declarationText;
-  const isLockedForm = form.properties.isLockedForm;
+  const isLockedForm = !!form.lock;
 
   return (
     <>

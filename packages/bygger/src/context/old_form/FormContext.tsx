@@ -1,9 +1,4 @@
-import {
-  FeatureTogglesMap,
-  Form,
-  FormPropertiesType,
-  TranslationLang,
-} from '@navikt/skjemadigitalisering-shared-domain';
+import { FeatureTogglesMap, Form, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, ReactNode, useCallback, useContext, useEffect, useReducer } from 'react';
 import { useBeforeUnload, useParams } from 'react-router-dom';
 import formPageReducer, { FormReducerState } from '../../Forms/formPageReducer';
@@ -19,10 +14,11 @@ interface ContextValue {
   resetForm: () => void;
   changeForm: (form: Form) => void;
   saveForm: (form: Form) => Promise<Form | void>;
+  lockForm: (reason: string) => Promise<void>;
+  unlockForm: () => Promise<void>;
   publishForm: (form: Form, selectedLanguages: TranslationLang[]) => Promise<void>;
   unpublishForm: () => Promise<void>;
   copyFormFromProduction: () => Promise<void>;
-  changeFormSettings: (properties: Partial<FormPropertiesType>) => Promise<void>;
 }
 
 const initialState: FormReducerState = { status: 'INITIAL LOADING' };
@@ -32,10 +28,11 @@ const FormContext = createContext<ContextValue>({
   resetForm: () => {},
   changeForm: (_form) => {},
   saveForm: async (_form) => {},
+  lockForm: async (_reason: string) => Promise.reject(),
+  unlockForm: async () => Promise.reject(),
   publishForm: async (_form, _translations) => {},
   unpublishForm: async () => {},
   copyFormFromProduction: async () => {},
-  changeFormSettings: async (_properties) => {},
 });
 
 /**
@@ -43,7 +40,8 @@ const FormContext = createContext<ContextValue>({
  */
 const FormProvider = ({ featureToggles, children }: Props) => {
   const { formPath } = useParams();
-  const { loadForm, onSave, onPublish, onUnpublish, onCopyFromProd, onUpdateFormSettings, getPublished } = useForms();
+  const { loadForm, onSave, onLockForm, onUnlockForm, onPublish, onUnpublish, onCopyFromProd, getPublished } =
+    useForms();
   const [state, dispatch] = useReducer(formPageReducer, initialState, (state) => state);
 
   useEffect(() => {
@@ -105,10 +103,28 @@ const FormProvider = ({ featureToggles, children }: Props) => {
     return form;
   };
 
+  const lockForm = async (reason: string) => {
+    if (formPath) {
+      const result = await onLockForm(formPath, reason);
+      if (result) {
+        dispatch({ type: 'form-saved', form: result });
+      }
+    }
+  };
+
+  const unlockForm = async () => {
+    if (formPath) {
+      const result = await onUnlockForm(formPath);
+      if (result) {
+        dispatch({ type: 'form-saved', form: result });
+      }
+    }
+  };
+
   const publishForm = async (form: Form, selectedLanguages: TranslationLang[]) => {
     const publishedForm = await onPublish(form, selectedLanguages);
     if (publishedForm) {
-      dispatch({ type: 'form-saved', form: publishedForm });
+      dispatch({ type: 'form-saved', form: publishedForm, publishedForm });
     }
   };
 
@@ -137,24 +153,16 @@ const FormProvider = ({ featureToggles, children }: Props) => {
     // }
   };
 
-  /**
-   * @deprecated
-   */
-  const changeFormSettings = async (properties: Partial<FormPropertiesType>) => {
-    await onUpdateFormSettings(formPath, properties);
-    // const toggledLockedForm = await onUpdateFormSettings(formPath, properties);
-    // dispatch({ type: 'form-changed', form: toggledLockedForm });
-  };
-
   const value = {
     formState: state,
     resetForm,
     changeForm,
     saveForm,
+    lockForm,
+    unlockForm,
     publishForm,
     unpublishForm,
     copyFormFromProduction,
-    changeFormSettings,
   };
 
   return <FormContext.Provider value={value}>{children}</FormContext.Provider>;
