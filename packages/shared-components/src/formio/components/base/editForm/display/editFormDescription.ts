@@ -6,6 +6,9 @@ const editFormDescription = (): Component => {
     ...editFormWysiwygEditor(false),
     key: 'description',
     label: 'Beskrivelse',
+    validate: {
+      maxLength: 4000,
+    },
   };
 };
 
