@@ -51,7 +51,7 @@
     "i18next": "^23.15.2",
     "lodash.merge": "^4.6.2",
     "lodash.template": "^4.5.0",
-    "nock": "^13.5.6",
+    "nock": "^14.0.0",
     "power-assert": "^1.6.1"
   }
 }
