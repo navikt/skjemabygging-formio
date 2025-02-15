@@ -16,8 +16,8 @@ interface Props {
 }
 
 const defaultValue: ContextValue = {
-  storedTranslations: {},
   translations: [],
+  storedTranslations: {},
   isReady: false,
   loadTranslations: () => Promise.resolve(),
   saveTranslation: () => Promise.reject(),
@@ -54,8 +54,8 @@ const FormTranslationsProvider = ({ children, formPath }: Props) => {
   );
 
   const value = {
-    storedTranslations,
     translations: state.data ?? [],
+    storedTranslations,
     isReady: state.isReady,
     loadTranslations,
     saveTranslation,

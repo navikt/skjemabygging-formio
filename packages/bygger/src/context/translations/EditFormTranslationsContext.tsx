@@ -20,6 +20,7 @@ const defaultValue: EditTranslationsContextValue<FormsApiFormTranslation> = {
   errors: [],
   editState: 'INIT',
   saveChanges: () => Promise.resolve(),
+  importFromProduction: () => Promise.reject(),
 };
 
 const EditFormTranslationsContext = createContext<EditTranslationsContextValue<FormsApiFormTranslation>>(defaultValue);
@@ -93,6 +94,7 @@ const EditFormTranslationsProvider = ({ initialChanges, children }: Props) => {
     errors: state.errors,
     editState: state.status,
     saveChanges,
+    importFromProduction: () => Promise.reject(),
   };
 
   return <EditFormTranslationsContext.Provider value={value}>{children}</EditFormTranslationsContext.Provider>;

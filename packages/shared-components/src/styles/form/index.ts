@@ -1,4 +1,3 @@
-import ckEditor from '../global/ckEditor';
 import alert from './alert';
 import builderComponents from './builderComponents';
 import button from './button';
@@ -31,7 +30,6 @@ const form = {
     ...builderComponents,
     ...button,
     ...choices,
-    ...ckEditor,
     ...datagrid,
     ...datepicker,
     ...day,

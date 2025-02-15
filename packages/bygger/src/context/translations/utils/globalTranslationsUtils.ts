@@ -16,8 +16,8 @@ const generateAndPopulateTag = (
   storedTranslationsMap: Record<string, FormsApiGlobalTranslation>,
 ) => {
   return objectUtils
-    .flattenToArray(textObject, ([entryKey, value], parentKey) => {
-      const key = tagName === 'validering' ? objectUtils.concatKeys(entryKey, parentKey) : value;
+    .flattenToArray(textObject, ([entryKey, value]) => {
+      const key = tagName === 'validering' ? entryKey : value;
       const stored = storedTranslationsMap?.[key];
       if (stored && stored.tag === tagName) {
         return { nb: value, ...stored };

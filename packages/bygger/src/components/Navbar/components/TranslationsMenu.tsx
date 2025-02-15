@@ -1,9 +1,7 @@
-import { useLanguageCodeFromURL } from '@navikt/skjemadigitalisering-shared-components';
 import { MenuLink } from './MenuLink';
 
-export const TranslationsMenu = ({ path }: { path?: string }) => {
-  const currentLanguage = useLanguageCodeFromURL();
-  const basePath = path ? path : `/translations/global/${currentLanguage}`;
+export const TranslationsMenu = () => {
+  const basePath = '/oversettelser';
   return (
     <>
       <MenuLink to={`${basePath}/skjematekster`} dataKey={'skjematekster'} noIconStyling={true}>

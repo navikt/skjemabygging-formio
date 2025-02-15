@@ -8,6 +8,7 @@ const editFormContent = (): Component => {
     label: 'Innhold',
     validate: {
       required: true,
+      maxLength: 4000,
     },
   };
 };

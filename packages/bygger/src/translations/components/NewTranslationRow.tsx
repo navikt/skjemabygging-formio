@@ -21,6 +21,7 @@ const NewTranslationRow = () => {
     <Table.Row>
       <Table.DataCell className={styles.column}>
         <TextField
+          autoFocus
           className={missingKeyError || error ? 'navds-text-field--error' : ''}
           hideLabel
           label={'Bokmål'}

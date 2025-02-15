@@ -7,16 +7,27 @@ interface Props {
   children: React.ReactNode;
   to: string;
   showUnsavedChangesModal: (event: React.MouseEvent, { redirectTo }: { redirectTo: string }) => void;
+  disabled?: boolean;
 }
 
 const useStyles = makeStyles({
   adminLink: {
     width: '100%',
   },
+  disabledAdminLink: {
+    width: '100%',
+    color: 'var(--a-text-default)',
+    cursor: 'not-allowed',
+  },
 });
 
-export const AdminMenuLink = ({ children, to, showUnsavedChangesModal }: Props) => {
+export const AdminMenuLink = ({ children, to, showUnsavedChangesModal, disabled = false }: Props) => {
   const styles = useStyles();
+
+  if (disabled) {
+    return <div className={styles.disabledAdminLink}>{children}</div>;
+  }
+
   return (
     <>
       <Link

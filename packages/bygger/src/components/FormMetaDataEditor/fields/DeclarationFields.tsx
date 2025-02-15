@@ -1,18 +1,18 @@
 import { Textarea, ToggleGroup } from '@navikt/ds-react';
-import { DeclarationType, NavFormSettingsDiff, NavFormType, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { DeclarationType, Form, FormSettingsDiff, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import LabelWithDiff from '../LabelWithDiff';
 import { FormMetadataError, UpdateFormFunction } from '../utils/utils';
 
 export interface DeclarationFieldsProps {
   onChange: UpdateFormFunction;
-  diff: NavFormSettingsDiff;
-  form: NavFormType;
+  diff: FormSettingsDiff;
+  form: Form;
   errors?: FormMetadataError;
 }
 
 const DeclarationFields = ({ onChange, diff, form, errors }: DeclarationFieldsProps) => {
   const declarationText = form.properties.declarationText;
-  const isLockedForm = form.properties.isLockedForm;
+  const isLockedForm = !!form.lock;
 
   return (
     <>

@@ -1,5 +1,6 @@
 import {
   dateUtils,
+  formioFormsApiUtils,
   FormioResource,
   FormioTranslationPayload,
   FormPropertiesPublishing,
@@ -33,7 +34,7 @@ export class FormioService {
 
   async createNewForm(skjemanummer: string, userToken: string) {
     const trimmedSkjemanummer = skjemanummer.trim();
-    const defaultForm = navFormUtils.createDefaultForm(config);
+    const defaultForm = formioFormsApiUtils.mapFormToNavForm(navFormUtils.createDefaultForm(config));
     const form: NavFormType = {
       ...defaultForm,
       title: 'Skjematittel',

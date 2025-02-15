@@ -4,6 +4,8 @@ import { NaisCluster } from '../config/nais-cluster';
 import { EnvQualifier, EnvQualifierType } from '../types/env';
 
 const envQualifierMap = {
+  'fyllut.ansatt.dev.nav.no': EnvQualifier.preprodAltAnsatt,
+  'fyllut.intern.dev.nav.no': EnvQualifier.preprodAltIntern,
   'fyllut-preprod.ansatt.dev.nav.no': EnvQualifier.preprodAnsatt,
   'fyllut-preprod-alt.ansatt.dev.nav.no': EnvQualifier.preprodAltAnsatt,
   'fyllut-preprod.intern.dev.nav.no': EnvQualifier.preprodIntern,

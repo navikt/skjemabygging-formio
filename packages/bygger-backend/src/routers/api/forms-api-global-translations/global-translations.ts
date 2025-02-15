@@ -1,4 +1,5 @@
 import {
+  formioFormsApiUtils,
   FormsApiGlobalTranslation,
   GlobalTranslationsResourceContent,
 } from '@navikt/skjemadigitalisering-shared-domain';
@@ -6,7 +7,6 @@ import { RequestHandler } from 'express';
 import { HttpError as OldHttpError } from '../../../fetchUtils';
 import { backendInstance, globalTranslationsService } from '../../../services';
 import { HttpError } from '../helpers/errors';
-import { mapGlobalToFormioFormat } from './utils/mapToFormioFormat';
 
 const get: RequestHandler = async (req, res, next) => {
   try {
@@ -56,7 +56,8 @@ const publish: RequestHandler = async (req, res, next) => {
     await globalTranslationsService.publish(accessToken);
 
     const publishedTranslations = await globalTranslationsService.getPublished(['nn', 'en'], accessToken);
-    const { en, 'nn-NO': nn }: GlobalTranslationsResourceContent = mapGlobalToFormioFormat(publishedTranslations);
+    const { en, 'nn-NO': nn }: GlobalTranslationsResourceContent =
+      formioFormsApiUtils.mapPublishedGlobalTranslationsToFormioFormat(publishedTranslations);
 
     await backendInstance.publishResource('global-translations-en', { en });
     await backendInstance.publishResource('global-translations-nn-NO', { 'nn-NO': nn });

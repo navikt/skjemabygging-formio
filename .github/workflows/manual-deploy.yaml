@@ -49,28 +49,10 @@ jobs:
             git_sha=${{ github.sha }}
           dockerfile: ./docker/Dockerfile.bygger
           docker_context: ./packages
-
     outputs:
       image: ${{ steps.docker-build-push-bygger.outputs.image }}
 
-  deploy-bygger-to-preprod:
-    name: 'Deploy bygger to preprod'
-    needs: [package-and-push-bygger]
-    if: ${{ !failure() && !cancelled() }}
-    runs-on: ubuntu-latest
-    permissions:
-      id-token: 'write'
-    steps:
-      - uses: 'actions/checkout@v4'
-      - name: 'Deploy to preprod'
-        uses: 'nais/deploy/actions/deploy@v2'
-        env:
-          CLUSTER: 'dev-gcp'
-          RESOURCE: './.nais/bygger/nais.yaml'
-          VARS: './.nais/bygger/${{ github.event.inputs.environment }}.yaml'
-          VAR: image=${{ needs.package-and-push-bygger.outputs.image }}
-
-  package-and-push-fyllut:
+  package-and-push-fyllut-base:
     name: 'Package fyllut'
     runs-on: ubuntu-latest-8-cores
     permissions:
@@ -99,18 +81,36 @@ jobs:
           team: skjemadigitalisering
           identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
           project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
-          image_suffix: fyllut-${{ inputs.environment }}
-          dockerfile: ./docker/Dockerfile.fyllut-base
-          docker_context: ./packages
+          image_suffix: fyllut-base-dev # base image for dev
           build_args: |
             git_sha=${{ github.sha }}
+          dockerfile: ./docker/Dockerfile.fyllut-base
+          docker_context: ./packages
           pull: true
+          tag: ${{ github.sha }}
     outputs:
       image: ${{ steps.docker-build-push-fyllut.outputs.image }}
 
+  deploy-bygger-to-preprod:
+    name: 'Deploy bygger to preprod'
+    needs: [package-and-push-bygger, package-and-push-fyllut-base]
+    if: ${{ !failure() && !cancelled() }}
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: 'write'
+    steps:
+      - uses: 'actions/checkout@v4'
+      - name: 'Deploy to preprod'
+        uses: 'nais/deploy/actions/deploy@v2'
+        env:
+          CLUSTER: 'dev-gcp'
+          RESOURCE: './.nais/bygger/nais.yaml'
+          VARS: './.nais/bygger/${{ github.event.inputs.environment }}.yaml'
+          VAR: image=${{ needs.package-and-push-bygger.outputs.image }}
+
   deploy-fyllut-to-preprod:
     name: 'Deploy fyllut to preprod'
-    needs: [package-and-push-fyllut]
+    needs: [package-and-push-bygger, package-and-push-fyllut-base]
     if: ${{ !failure() && !cancelled() }}
     runs-on: ubuntu-latest
     permissions:
@@ -123,4 +123,4 @@ jobs:
           CLUSTER: 'dev-gcp'
           RESOURCE: './.nais/fyllut/config.yaml'
           VARS: './.nais/fyllut/${{ github.event.inputs.environment }}.yaml'
-          VAR: image=${{ needs.package-and-push-fyllut.outputs.image }}
+          VAR: image=${{ needs.package-and-push-fyllut-base.outputs.image }}

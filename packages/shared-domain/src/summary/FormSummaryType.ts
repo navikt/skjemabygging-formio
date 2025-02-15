@@ -49,13 +49,6 @@ export interface SummaryDrivingList extends Omit<SummaryField, 'type' | 'value'>
   value: { description: string; dates: { text: string; key: string }[] };
 }
 
-export interface SummaryImage extends Omit<SummaryField, 'type'> {
-  type: 'image';
-  value: string;
-  alt: string;
-  widthPercent: number;
-}
-
 export interface SummaryFieldset {
   label: string;
   key: string;
@@ -88,7 +81,6 @@ export type SummaryComponent = (
   | SummaryDataGrid
   | SummaryDataGridRow
   | SummarySelectboxes
-  | SummaryImage
   | SummaryActivity
   | SummaryAttachment
   | SummaryDrivingList

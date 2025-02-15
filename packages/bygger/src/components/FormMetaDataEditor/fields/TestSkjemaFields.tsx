@@ -1,5 +1,5 @@
 import { Button, Checkbox } from '@navikt/ds-react';
-import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form } from '@navikt/skjemadigitalisering-shared-domain';
 import { UpdateFormFunction } from '../utils/utils';
 
 import { Copy } from '@navikt/ds-icons';
@@ -8,7 +8,7 @@ import copy from '../../../util/copy';
 
 export interface TestSkjemaFieldsProps {
   onChange: UpdateFormFunction;
-  form: NavFormType;
+  form: Form;
 }
 
 const useStyles = makeStyles({
@@ -23,7 +23,7 @@ const useStyles = makeStyles({
 
 const TestSkjemaFields = ({ onChange, form }: TestSkjemaFieldsProps) => {
   const isTestForm = form.properties.isTestForm;
-  const isLockedForm = form.properties.isLockedForm;
+  const isLockedForm = !!form.lock;
   const path = form.path;
 
   const styles = useStyles();

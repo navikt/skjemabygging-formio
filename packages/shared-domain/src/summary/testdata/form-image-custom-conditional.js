@@ -60,7 +60,6 @@ const imgForm = {
       ],
       altText: 'img alt text',
       description: 'img description',
-      showInPdf: true,
       widthPercent: 100,
       key: 'image1',
       navId: 'sdh82sz',

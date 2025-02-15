@@ -1,5 +1,5 @@
 import { TextField } from '@navikt/ds-react';
-import { NavFormSettingsDiff, NavFormType, UsageContext } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, FormSettingsDiff, UsageContext } from '@navikt/skjemadigitalisering-shared-domain';
 import LabelWithDiff from '../LabelWithDiff';
 import { FormMetadataError, UpdateFormFunction } from '../utils/utils';
 import TemaKodeFields from './TemaKodeFields';
@@ -7,15 +7,15 @@ import TestSkjemaFields from './TestSkjemaFields';
 
 export interface BasicFieldsProps {
   onChange: UpdateFormFunction;
-  diff: NavFormSettingsDiff;
-  form: NavFormType;
+  diff: FormSettingsDiff;
+  form: Form;
   errors?: FormMetadataError;
   usageContext: UsageContext;
 }
 
 const BasicFields = ({ onChange, diff, form, errors, usageContext }: BasicFieldsProps) => {
-  const skjemanummer = form.properties.skjemanummer;
-  const isLockedForm = form.properties.isLockedForm;
+  const skjemanummer = form.skjemanummer;
+  const isLockedForm = !!form.lock;
 
   const title = form.title;
 
@@ -37,7 +37,7 @@ const BasicFields = ({ onChange, diff, form, errors, usageContext }: BasicFields
         value={skjemanummer}
         readOnly={usageContext === 'edit'}
         onChange={(event) =>
-          onChange({ ...form, properties: { ...form.properties, skjemanummer: event.target.value } })
+          onChange({ ...form, skjemanummer: event.target.value, properties: { ...form.properties } })
         }
         error={errors?.skjemanummer}
       />

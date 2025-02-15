@@ -1,4 +1,4 @@
-import { FormsApiFormTranslation, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, FormsApiFormTranslation } from '@navikt/skjemadigitalisering-shared-domain';
 import { useMemo } from 'react';
 import { AppLayout } from '../../components/AppLayout';
 import RowLayout from '../../components/layout/RowLayout';
@@ -15,7 +15,7 @@ import { generateAndPopulateTranslationsForForm } from '../utils/editFormTransla
 import FormTranslationButtonsColumn from './FormTranslationButtonsColumn';
 
 interface Props {
-  form: NavFormType;
+  form: Form;
 }
 
 const FormTranslationsPage = ({ form }: Props) => {
@@ -39,19 +39,21 @@ const FormTranslationsPage = ({ form }: Props) => {
     <AppLayout navBarProps={{ formMenu: true, formPath: form.path }}>
       <TitleRowLayout>
         <Title>
-          {form.properties.skjemanummer}, {form.title}
+          {form.skjemanummer}, {form.title}
         </Title>
       </TitleRowLayout>
       <EditFormTranslationsProvider initialChanges={initialChanges}>
-        <RowLayout
-          right={
-            <SidebarLayout noScroll>
-              <FormTranslationButtonsColumn form={form} />
-            </SidebarLayout>
-          }
-        >
-          <TranslationTable rows={rows} loading={!initialChanges} editContext={EditFormTranslationsContext} />
-        </RowLayout>
+        <form>
+          <RowLayout
+            right={
+              <SidebarLayout noScroll>
+                <FormTranslationButtonsColumn form={form} />
+              </SidebarLayout>
+            }
+          >
+            <TranslationTable rows={rows} loading={!initialChanges} editContext={EditFormTranslationsContext} />
+          </RowLayout>
+        </form>
       </EditFormTranslationsProvider>
     </AppLayout>
   );

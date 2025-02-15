@@ -1,18 +1,18 @@
 import { TextField } from '@navikt/ds-react';
-import { NavFormSettingsDiff, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, FormSettingsDiff } from '@navikt/skjemadigitalisering-shared-domain';
 import LabelWithDiff from '../LabelWithDiff';
 import { FormMetadataError, UpdateFormFunction } from '../utils/utils';
 
 export interface MellomlagringDurationProps {
   onChange: UpdateFormFunction;
-  diff: NavFormSettingsDiff;
-  form: NavFormType;
+  diff: FormSettingsDiff;
+  form: Form;
   errors?: FormMetadataError;
 }
 
 const MellomlagrinDurationFields = ({ onChange, diff, form, errors }: MellomlagringDurationProps) => {
   const mellomlagringDurationDays = form.properties.mellomlagringDurationDays;
-  const isLockedForm = form.properties.isLockedForm;
+  const isLockedForm = !!form.lock;
 
   return (
     <>

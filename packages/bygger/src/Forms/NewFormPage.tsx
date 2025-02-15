@@ -1,9 +1,10 @@
 import { Button, VStack } from '@navikt/ds-react';
 import { useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
-import { Component, NavFormType, navFormUtils, stringUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { Component, Form, navFormUtils, stringUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import cloneDeep from 'lodash.clonedeep';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import useForms from '../api/useForms';
 import { AppLayout } from '../components/AppLayout';
 import { CreationFormMetadataEditor } from '../components/FormMetaDataEditor/FormMetadataEditor';
 import { isFormMetadataValid, validateFormMetadata } from '../components/FormMetaDataEditor/utils/utils';
@@ -12,51 +13,15 @@ import SidebarLayout from '../components/layout/SidebarLayout';
 import Title from '../components/layout/Title';
 import TitleRowLayout from '../components/layout/TitleRowLayout';
 import UserFeedback from '../components/UserFeedback';
-import { useFeedbackEmit } from '../context/notifications/FeedbackContext';
 import { defaultFormFields } from './DefaultForm';
 
-interface Props {
-  formio: any;
-}
-
 interface State {
-  form: NavFormType;
+  form: Form;
 }
 
-interface FormioRoleIds {
-  administrator: string;
-  authenticated: string;
-  everyone: string;
-}
-
-type RoleTitle = keyof FormioRoleIds;
-
-type RolesCreator = (...titles: RoleTitle[]) => string[];
-
-class FormioRoleError extends Error {
-  constructor(message: string) {
-    super(message);
-  }
-}
-
-export const getRoleMapper =
-  (formioRoleIds: FormioRoleIds): RolesCreator =>
-  (...roleTitles: RoleTitle[]): string[] => {
-    return roleTitles.map((title) => {
-      if (!formioRoleIds) {
-        throw new FormioRoleError('Formio role ids are not present in config');
-      }
-      const roleId = formioRoleIds[title];
-      if (!roleId) {
-        throw new FormioRoleError(`Unknown role with title '${title}'`);
-      }
-      return roleId;
-    });
-  };
-
-const NewFormPage: React.FC<Props> = ({ formio }): React.ReactElement => {
+const NewFormPage = () => {
   const { config } = useAppConfig();
-  const feedbackEmit = useFeedbackEmit();
+  const { createForm } = useForms();
   const navigate = useNavigate();
   const [state, setState] = useState<State>({
     form: {
@@ -67,58 +32,37 @@ const NewFormPage: React.FC<Props> = ({ formio }): React.ReactElement => {
 
   const [errors, setErrors] = useState({});
 
-  const setForm = (form: NavFormType) => {
+  const setForm = (form: Form) => {
     const newForm = cloneDeep(form);
     setState((oldState) => {
-      if (oldState.form.properties.skjemanummer !== newForm.properties.skjemanummer) {
-        newForm.name = stringUtils.camelCase(newForm.properties.skjemanummer);
-        newForm.path = navFormUtils.toFormPath(newForm.properties.skjemanummer);
+      if (oldState.form.skjemanummer !== newForm.skjemanummer) {
+        newForm.name = stringUtils.camelCase(newForm.skjemanummer);
+        newForm.path = navFormUtils.toFormPath(newForm.skjemanummer);
       }
       return { form: newForm };
     });
   };
-  const validateAndSave = async (form: NavFormType) => {
-    const updatedErrors = validateFormMetadata(form, 'create');
-    const trimmedFormNumber = state.form.properties.skjemanummer.trim();
+  const validateAndSave = async () => {
+    const updatedErrors = validateFormMetadata(state.form, 'create');
+    const trimmedFormNumber = state.form.skjemanummer.trim();
     if (isFormMetadataValid(updatedErrors)) {
       setErrors({});
-      try {
-        const toRoleIds = getRoleMapper(config?.formioRoleIds as FormioRoleIds);
-        const createdForm = await formio.saveForm({
-          ...state.form,
-          properties: {
-            ...state.form.properties,
-            skjemanummer: trimmedFormNumber,
-          },
-          access: [
-            {
-              type: 'read_all',
-              roles: toRoleIds('everyone'),
-            },
-            {
-              type: 'update_all',
-              roles: toRoleIds('administrator', 'authenticated'),
-            },
-          ],
-        });
-        feedbackEmit.success(`Opprettet skjemaet ${form.title}`);
-        navigate(`/forms/${form.path}/edit`);
+      const createdForm = await createForm({
+        ...state.form,
+        skjemanummer: trimmedFormNumber,
+        properties: {
+          ...state.form.properties,
+          skjemanummer: trimmedFormNumber,
+        },
+      });
+
+      if (createdForm) {
+        navigate(`/forms/${createdForm.path}/edit`);
         return createdForm;
-      } catch (e: any) {
-        console.error(e);
-        if (e instanceof FormioRoleError) {
-          feedbackEmit.error('Opprettelse av skjema feilet');
-          return;
-        }
-        feedbackEmit.error('Det valgte skjema-nummeret er allerede i bruk.');
       }
     } else {
       setErrors(updatedErrors);
     }
-  };
-
-  const onCreate = () => {
-    validateAndSave(state.form);
   };
 
   return (
@@ -130,7 +74,7 @@ const NewFormPage: React.FC<Props> = ({ formio }): React.ReactElement => {
         right={
           <SidebarLayout noScroll={true}>
             <VStack gap="1">
-              <Button onClick={onCreate} size="small">
+              <Button onClick={validateAndSave} size="small">
                 Opprett
               </Button>
               <UserFeedback />

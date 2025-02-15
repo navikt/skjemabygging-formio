@@ -12,6 +12,7 @@ import {
 } from './utils/globalTranslationsUtils';
 
 interface ContextValue {
+  translations: FormsApiGlobalTranslation[];
   storedTranslations: Record<string, FormsApiGlobalTranslation>;
   translationsPerTag: Record<GlobalTranslationTag, FormsApiGlobalTranslation[]>;
   isReady: boolean;
@@ -24,6 +25,7 @@ interface ContextValue {
 }
 
 const defaultValue: ContextValue = {
+  translations: [],
   storedTranslations: {},
   translationsPerTag: { skjematekster: [], grensesnitt: [], 'statiske-tekster': [], validering: [] },
   isReady: false,
@@ -99,6 +101,7 @@ const GlobalTranslationsProvider = ({ children }) => {
   };
 
   const value = {
+    translations: state.data ?? [],
     storedTranslations: storedTranslationsMap,
     translationsPerTag,
     loadTranslations,

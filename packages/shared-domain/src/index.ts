@@ -42,6 +42,7 @@ import {
   SubmissionMethod,
   UsageContext,
 } from './form';
+import { Form } from './forms-api-form';
 import forstesideUtils, {
   ForstesideRecipientAddress,
   ForstesideRequestBody,
@@ -102,7 +103,6 @@ import {
   SummaryField,
   SummaryFieldset,
   SummaryFieldsetType,
-  SummaryImage,
   SummaryPanel,
   SummarySelectboxes,
   SummarySubmissionValue,
@@ -122,8 +122,9 @@ import {
 import currencyUtils from './utils/currencyUtils';
 import dateUtils from './utils/date';
 import featureUtils, { FeatureTogglesMap } from './utils/featureUtils';
-import formDiffingTool, { NavFormSettingsDiff } from './utils/formDiffingTool';
+import formDiffingTool, { FormSettingsDiff } from './utils/formDiffingTool';
 import navFormioUtils from './utils/formio';
+import formioFormsApiUtils from './utils/forms-api-backwards-compatibility';
 import { guid } from './utils/guid';
 import localizationUtils from './utils/localization';
 import navFormUtils, { DependencyType } from './utils/navFormUtils';
@@ -144,6 +145,7 @@ export {
   DeclarationType,
   featureUtils,
   formDiffingTool,
+  formioFormsApiUtils,
   formsApiTranslations,
   formSummaryUtil,
   forstesideUtils,
@@ -193,6 +195,7 @@ export type {
   Enhetstype,
   FeatureTogglesMap,
   FieldSize,
+  Form,
   FormioResource,
   FormioTranslation,
   FormioTranslationData,
@@ -203,6 +206,7 @@ export type {
   FormsApiFormTranslation,
   FormsApiGlobalTranslation,
   FormsApiTranslation,
+  FormSettingsDiff,
   FormSignaturesType,
   FormsResponseForm,
   FormType,
@@ -226,7 +230,6 @@ export type {
   Mottaksadresse,
   MottaksadresseData,
   MottaksadresserResourceContent,
-  NavFormSettingsDiff,
   NavFormType,
   NewFormSignatureType,
   Operator,
@@ -262,7 +265,6 @@ export type {
   SummaryField,
   SummaryFieldset,
   SummaryFieldsetType,
-  SummaryImage,
   SummaryPanel,
   SummarySelectboxes,
   SummarySubmissionValue,

@@ -1,8 +1,4 @@
-import {
-  FormsApiFormTranslation,
-  FormsApiGlobalTranslation,
-  NavFormType,
-} from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, FormsApiFormTranslation, FormsApiGlobalTranslation } from '@navikt/skjemadigitalisering-shared-domain';
 import { getFormTexts } from '../../old_translations/utils';
 
 const populateFromStoredTranslations = (text: string, storedTranslations: Record<string, FormsApiFormTranslation>) => {
@@ -28,7 +24,7 @@ const checkForGlobalOverride = (
 };
 
 const generateAndPopulateTranslationsForForm = (
-  form: NavFormType,
+  form: Form,
   storedTranslations: Record<string, FormsApiFormTranslation>,
   globalTranslations: Record<string, FormsApiGlobalTranslation>,
 ): FormsApiFormTranslation[] => {

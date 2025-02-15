@@ -1,33 +1,7 @@
 import classNames from 'classnames';
-import moment from 'moment';
 import FormStatusIndicator from './FormStatusIndicator';
 import { useStatusStyles } from './styles';
-import { PublishStatusProperties, Status, StreetLightSize } from './types';
-
-export function determineStatus(publishProperties: PublishStatusProperties): Status {
-  const { modified, published, isTestForm, unpublished } = publishProperties;
-  const modifiedDate = moment(modified);
-  const unpublishedDate = unpublished !== undefined ? moment(unpublished) : undefined;
-
-  if (isTestForm) {
-    return 'TESTFORM';
-  }
-
-  if (modified && published) {
-    if (moment(modified).isAfter(moment(published))) {
-      return 'PENDING';
-    }
-    return 'PUBLISHED';
-  }
-
-  if (unpublishedDate?.isSameOrAfter(modifiedDate)) {
-    return 'UNPUBLISHED';
-  } else if (modified) {
-    return 'DRAFT';
-  }
-
-  return 'UNKNOWN';
-}
+import { Status, StreetLightSize } from './types';
 
 type FormStatusProps = {
   status: Status;

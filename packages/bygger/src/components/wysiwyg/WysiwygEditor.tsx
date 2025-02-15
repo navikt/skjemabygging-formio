@@ -34,9 +34,10 @@ interface Props {
   defaultValue?: string;
   onBlur: (value: string) => void;
   error?: string | boolean;
+  autoFocus?: boolean;
 }
 
-const WysiwygEditor = ({ defaultValue, onBlur, error }: Props) => {
+const WysiwygEditor = ({ defaultValue, onBlur, error, autoFocus }: Props) => {
   const [htmlValue, setHtmlValue] = useState(defaultValue ?? '');
 
   const styles = useStyles();
@@ -53,12 +54,14 @@ const WysiwygEditor = ({ defaultValue, onBlur, error }: Props) => {
 
   const handleBlur = () => {
     const sanitized = htmlConverter.sanitizeHtmlString(htmlValue, { FORBID_ATTR: ['style'] });
-    onBlur(sanitized);
+    const trimmed = htmlConverter.extractTextContent(sanitized).trim() === '' ? '' : sanitized;
+    onBlur(trimmed);
   };
 
   return (
     <EditorProvider>
       <Editor
+        autoFocus={autoFocus}
         value={htmlValue}
         onChange={handleChange}
         onBlur={handleBlur}

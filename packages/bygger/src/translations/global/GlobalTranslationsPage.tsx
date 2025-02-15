@@ -31,20 +31,22 @@ const GlobalTranslationsPage = () => {
         <Title>{titles[tag]}</Title>
       </TitleRowLayout>
       <EditGlobalTranslationsProvider>
-        <RowLayout
-          right={
-            <SidebarLayout noScroll={true}>
-              <GlobalTranslationButtonsColumn />
-            </SidebarLayout>
-          }
-        >
-          <TranslationTable
-            rows={rows}
-            loading={!isReady}
-            addNewRow={tag === 'skjematekster'}
-            editContext={EditGlobalTranslationsContext}
-          />
-        </RowLayout>
+        <form>
+          <RowLayout
+            right={
+              <SidebarLayout noScroll={true}>
+                <GlobalTranslationButtonsColumn />
+              </SidebarLayout>
+            }
+          >
+            <TranslationTable
+              rows={rows}
+              loading={!isReady}
+              addNewRow={tag === 'skjematekster'}
+              editContext={EditGlobalTranslationsContext}
+            />
+          </RowLayout>
+        </form>
       </EditGlobalTranslationsProvider>
     </AppLayout>
   );
