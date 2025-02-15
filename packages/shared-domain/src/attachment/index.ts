@@ -11,6 +11,7 @@ const attachmentSettingKeys = [
   'andre',
   'nav',
 ] as const;
+
 // Saved in form
 type AttachmentSettingValues = Partial<Record<(typeof attachmentSettingKeys)[number], AttachmentSettingValue>>;
 

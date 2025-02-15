@@ -32,6 +32,7 @@ const Attachment = forwardRef<HTMLFieldSetElement, Props>(
         if (Array.isArray(attachmentValues)) {
           return attachmentValues;
         } else if (typeof attachmentValues === 'object') {
+          // map over attachmentSettingKeys to ensure a fixed order
           return attachmentUtils.attachmentSettingKeys
             .map((key) => {
               const values = attachmentValues[key];
