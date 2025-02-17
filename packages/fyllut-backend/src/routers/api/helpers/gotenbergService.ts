@@ -43,8 +43,7 @@ export const buildHtmlAndCreatePdf = async (
   return Buffer.from(new Uint8Array(pdf));
 };
 
-const filePath = path.join(process.cwd(), '', '/icons/nav-logo.svg');
-//const filePath = '../../../../public/icons/nav-logo.svg';
+const filePath = path.join(process.cwd(), 'dist', '/icons/nav-logo.svg');
 
 const navIcon = readFileSync(filePath, { encoding: 'utf-8', flag: 'r' });
 
