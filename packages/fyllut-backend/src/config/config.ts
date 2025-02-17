@@ -65,6 +65,7 @@ const localDevelopmentConfig: DefaultConfig = {
   forstesideUrl: 'https://www.nav.no/soknader/api/forsteside',
   decoratorUrl: 'https://www.nav.no/dekoratoren?simple=true',
   skjemabyggingProxyUrl: process.env.SKJEMABYGGING_PROXY_URL || 'https://skjemabygging-proxy.dev-fss-pub.nais.io',
+  gotenbergUrl: process.env.GOTENBERG_URL || 'https://convert-to-pdf.intern.dev.nav.no',
   skjemabyggingProxyClientId: '95170319-b4d7-4190-8271-118ed19bafbf',
   azureOpenidTokenEndpoint:
     process.env.AZURE_OPENID_CONFIG_TOKEN_ENDPOINT ||
@@ -111,6 +112,7 @@ const defaultConfig: DefaultConfig = {
   decoratorUrl: process.env.DECORATOR_URL!,
   skjemabyggingProxyUrl: process.env.SKJEMABYGGING_PROXY_URL!,
   skjemabyggingProxyClientId: process.env.SKJEMABYGGING_PROXY_CLIENT_ID!,
+  gotenbergUrl: process.env.GOTENBERG_URL!,
   azureOpenidTokenEndpoint: process.env.AZURE_OPENID_CONFIG_TOKEN_ENDPOINT!,
   clientId: process.env.AZURE_APP_CLIENT_ID!,
   skjemaDir: process.env.SKJEMA_DIR!,

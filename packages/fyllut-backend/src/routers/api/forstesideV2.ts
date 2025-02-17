@@ -12,15 +12,21 @@ import { logger } from '../../logger';
 import { base64Decode } from '../../utils/base64';
 import { htmlResponseError, responseToError } from '../../utils/errorHandling.js';
 import { logErrorWithStacktrace } from '../../utils/errors';
+import { getPdf } from './exstream';
+import { mergeFiles } from './helpers/gotenbergService';
+//import { writeFileSync } from "node:fs";
+//import path from "path";
 
 const { skjemabyggingProxyUrl, formsApiUrl } = config;
-
+//const filePath = path.join(process.cwd(), '/src/routers/api/merged-test.pdf');
 const forstesideV2 = {
   post: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { form, submissionData, language, enhetNummer } = req.body;
       const formParsed = JSON.parse(form);
       const submissionDataParsed = JSON.parse(submissionData);
+
+      logger.info('Skal kalle getRecipients');
 
       const recipients = await getRecipients(formParsed?.properties);
 
@@ -32,16 +38,47 @@ const forstesideV2 = {
         enhetNummer,
       );
 
-      const response: any = await forstesideRequest(req, JSON.stringify(forstesideBody));
-      logForsteside(req.body, response);
+      const forstesideResponse: any = await forstesideRequest(req, JSON.stringify(forstesideBody));
+      logForsteside(req.body, forstesideResponse);
+
+      const forstesidePdf = base64Decode(forstesideResponse.foersteside);
+
+      const soknadResponse: any = await getPdf(req);
+
+      const soknadPdf = base64Decode(soknadResponse.data);
+
+      if (soknadPdf === undefined || forstesidePdf === undefined) {
+        throw htmlResponseError('Generering av førstesideark eller søknads PDF feilet');
+      }
+
+      const documents = [forstesidePdf, soknadPdf];
+
+      const mergedFile = await mergeFiles(
+        forstesideBody.navSkjemaId,
+        forstesideBody.overskriftstittel,
+        forstesideBody.spraakkode,
+        documents,
+        { pdfa: true, pdfua: true },
+      );
+
+      //For PDF inspection
+      /*
+      writeFileSync(filePath, Buffer.from(mergedFile), {
+        flag: "w"
+      });
+*/
 
       const fileName = encodeURIComponent(`Førstesideark_${formParsed.path}.pdf`);
+
       res.contentType('application/pdf');
       res.setHeader('Content-Disposition', `inline; filename=${fileName}`);
-      res.send(base64Decode(response.foersteside));
+
+      res.send(Buffer.from(new Uint8Array(mergedFile)));
+      logger.info(`3. Returnert mergedFile`);
     } catch (e) {
+      console.log(e);
       logErrorWithStacktrace(e as Error);
-      const forstesideError = htmlResponseError('Generering av førstesideark feilet');
+      const forstesideError = htmlResponseError('Generering av førstesideark eller soknads PDF feilet');
       next(forstesideError);
     }
   },

@@ -18,6 +18,7 @@ const mockResponse = () => {
     json: vi.fn(),
     sendStatus: vi.fn(),
     header: vi.fn(),
+    setHeader: vi.fn(),
     contentType: vi.fn(),
     send: vi.fn(),
   } as any as Response;

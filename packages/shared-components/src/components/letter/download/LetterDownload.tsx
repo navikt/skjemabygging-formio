@@ -43,6 +43,10 @@ const LetterDownload = ({ form, index, submission, enhetsListe, fyllutBaseURL, t
         values={{
           form: JSON.stringify(form),
           submissionData: JSON.stringify(submission.data),
+
+          submission: JSON.stringify(submission),
+          translations: JSON.stringify(currentLanguage !== 'nb-NO' ? translations[currentLanguage] : {}),
+
           language: currentLanguage,
           enhetNummer: selectedEnhetNummer,
           version: 'v2',

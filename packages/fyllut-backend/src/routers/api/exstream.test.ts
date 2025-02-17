@@ -1,6 +1,8 @@
+import { readFileSync } from 'fs';
 import nock from 'nock';
+import path from 'path';
 import { mockRequest, mockResponse } from '../../test/testHelpers';
-import { base64Decode } from '../../utils/base64';
+import { base64Decode, base64Encode } from '../../utils/base64';
 import exstream from './exstream';
 
 const formTitle = 'testskjema';
@@ -12,11 +14,16 @@ const defaultBody = {
   language: 'nb-NO',
 };
 
+const filePath = path.join(process.cwd(), '/src/routers/api/test.pdf');
+
 describe('exstream', () => {
   it('decodes and sends the pdf on success', async () => {
+    const testPdf = readFileSync(filePath, { encoding: 'utf-8', flag: 'r' });
+    const encodedPdf = base64Encode(testPdf);
+
     const skjemabyggingproxyScope = nock(process.env.SKJEMABYGGING_PROXY_URL as string)
       .post('/exstream')
-      .reply(200, { data: { result: [{ content: { data: 'base64EncodedPDFstring' } }] } });
+      .reply(200, { data: { result: [{ content: { data: encodedPdf } }] } });
     const req = mockRequest({ headers: { AzureAccessToken: 'azure-access-token' }, body: defaultBody });
     const res = mockResponse();
     const next = vi.fn();

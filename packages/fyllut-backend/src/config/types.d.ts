@@ -38,6 +38,7 @@ export type DefaultConfig = {
   decoratorUrl: string;
   skjemabyggingProxyUrl: string;
   skjemabyggingProxyClientId: string;
+  gotenbergUrl: string;
   azureOpenidTokenEndpoint: string;
   clientId: string;
   skjemaDir?: string;
