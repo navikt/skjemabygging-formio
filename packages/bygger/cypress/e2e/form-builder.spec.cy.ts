@@ -8,9 +8,7 @@ describe('Form Builder', () => {
     cy.intercept('GET', '/api/temakoder', { fixture: 'temakoder.json' }).as('getTemaKoder');
   });
 
-  // TODO FORMS-API unable to stabilize these tests
-  // eslint-disable-next-line mocha/no-skipped-tests
-  describe.skip('Diff form', () => {
+  describe('Diff form', () => {
     beforeEach(() => {
       cy.intercept('GET', '/api/forms/tst123456', { fixture: 'form123456.json' }).as('getForm');
       cy.intercept('GET', '/api/form-publications/tst123456', { fixture: 'form123456.json' }).as('getPublishedForm');
