@@ -1,20 +1,24 @@
 describe('Diff', () => {
   beforeEach(() => {
     cy.intercept('GET', '/api/config', { fixture: 'config.json' }).as('getConfig');
-    cy.intercept('GET', '/api/forms/dif123456', { fixture: 'form123456.json' }).as('getForm');
-    cy.intercept('GET', '/api/published-forms/dif123456', { fixture: 'form123456-published.json' }).as(
+    cy.intercept('GET', '/api/forms/tst123456', { fixture: 'form123456.json' }).as('getForm');
+    cy.intercept('GET', '/api/forms/tst123456/translations', { fixture: 'form123456-translations.json' }).as(
+      'getFormTranslations',
+    );
+    cy.intercept('GET', '/api/form-publications/tst123456', { fixture: 'form123456-published.json' }).as(
       'getPublishedForm',
     );
     cy.intercept('GET', '/api/recipients', { fixture: 'recipients.json' }).as('getRecipients');
-    cy.intercept('GET', /language\/submission?.*/, { fixture: 'globalTranslations.json' }).as('getTranslations');
+    cy.intercept('GET', '/api/translations', { fixture: 'globalTranslations.json' }).as('getTranslations');
     cy.intercept('GET', '/api/temakoder', { fixture: 'temakoder.json' }).as('getTemaKoder');
   });
 
   describe('Settings page', () => {
     beforeEach(() => {
-      cy.visit('forms/dif123456/settings');
+      cy.visit('forms/tst123456/settings');
       cy.wait('@getConfig');
       cy.wait('@getForm');
+      cy.wait('@getFormTranslations');
       cy.wait('@getPublishedForm');
       cy.wait('@getRecipients');
       cy.wait('@getTemaKoder');
@@ -48,9 +52,10 @@ describe('Diff', () => {
 
   describe('Form builder page', () => {
     beforeEach(() => {
-      cy.visit('forms/dif123456/edit');
+      cy.visit('forms/tst123456/edit');
       cy.wait('@getConfig');
       cy.wait('@getForm');
+      cy.wait('@getFormTranslations');
       cy.wait('@getPublishedForm');
       cy.wait('@getTranslations');
     });
@@ -111,7 +116,7 @@ describe('Diff', () => {
 
     describe('Edit component modal', () => {
       it("Shows changes for text component :: label 'Fornavn' -> 'Fornavn2'", () => {
-        cy.findByRole('textbox', { name: 'Fornavn2 Endring' }).should('be.visible');
+        cy.findByRole('textbox', { name: 'Fornavn2 Endring', timeout: 10000 }).should('be.visible');
         cy.openEditComponentModal(cy.findByRole('textbox', { name: 'Fornavn2 Endring' }));
 
         cy.findByLabelText('Endringer')
@@ -123,7 +128,8 @@ describe('Diff', () => {
       });
 
       it('Shows changes for skjemagruppe :: legend changed and component deleted', () => {
-        cy.openEditComponentModal(cy.findByText('Kontaktadresse2'));
+        cy.openEditComponentModal(cy.findByText('Slettede elementer')); // <-- legend Kontaktadresse2
+        // cy.openEditComponentModal(cy.findByText('Kontaktadresse2'));
 
         cy.findByLabelText('Endringer')
           .should('exist')
@@ -142,6 +148,7 @@ describe('Diff', () => {
       });
 
       it('Shows no changes for skjemagruppe', () => {
+        cy.findByLabelText('Bygning (valgfritt)').should('exist'); // wait for label inside kontaktadresse...
         cy.openEditComponentModal(cy.findAllByText('Utenlandsk kontaktadresse').first());
 
         cy.findByLabelText('Endringer').should('not.exist');
