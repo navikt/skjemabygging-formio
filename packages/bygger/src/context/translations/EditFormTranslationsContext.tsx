@@ -5,8 +5,7 @@ import { useFeedbackEmit } from '../notifications/FeedbackContext';
 import { editFormTranslationsReducer } from './editTranslationsReducer';
 import { getTranslationsForSaving } from './editTranslationsReducer/selectors';
 import { useFormTranslations } from './FormTranslationsContext';
-import { EditTranslationsContextValue } from './types';
-import { getConflictAlertMessage, getGeneralAlertMessage } from './utils/errorUtils';
+import { getConflictAlertMessage, getGeneralAlertMessage, TranslationError } from './utils/errorUtils';
 import { validateTranslations } from './utils/inputValidation';
 import { saveEachTranslation } from './utils/utils';
 
@@ -15,15 +14,21 @@ interface Props {
   children: ReactNode;
 }
 
-const defaultValue: EditTranslationsContextValue<FormsApiFormTranslation> = {
+type EditFormTranslationsContextValue = {
+  updateTranslation: (original: FormsApiFormTranslation, lang: TranslationLang, value: string) => void;
+  errors: TranslationError[];
+  editState: string;
+  saveChanges: () => Promise<void>;
+};
+
+const defaultValue: EditFormTranslationsContextValue = {
   updateTranslation: () => {},
   errors: [],
   editState: 'INIT',
   saveChanges: () => Promise.resolve(),
-  importFromProduction: () => Promise.reject(),
 };
 
-const EditFormTranslationsContext = createContext<EditTranslationsContextValue<FormsApiFormTranslation>>(defaultValue);
+const EditFormTranslationsContext = createContext<EditFormTranslationsContextValue>(defaultValue);
 
 const EditFormTranslationsProvider = ({ initialChanges, children }: Props) => {
   const [state, dispatch] = useReducer(editFormTranslationsReducer, {
@@ -94,7 +99,6 @@ const EditFormTranslationsProvider = ({ initialChanges, children }: Props) => {
     errors: state.errors,
     editState: state.status,
     saveChanges,
-    importFromProduction: () => Promise.reject(),
   };
 
   return <EditFormTranslationsContext.Provider value={value}>{children}</EditFormTranslationsContext.Provider>;

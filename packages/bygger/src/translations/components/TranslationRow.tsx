@@ -1,28 +1,27 @@
 import { PadlockLockedIcon } from '@navikt/aksel-icons';
 import { Table } from '@navikt/ds-react';
 import { htmlConverter, InnerHtml } from '@navikt/skjemadigitalisering-shared-components';
-import {
-  FormsApiFormTranslation,
-  formsApiTranslations,
-  TranslationLang,
-} from '@navikt/skjemadigitalisering-shared-domain';
-import { useContext, useEffect, useMemo, useState } from 'react';
-import { EditTranslationContext } from '../../context/translations/types';
+import { FormsApiTranslation, formsApiTranslations, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
+import { useEffect, useMemo, useState } from 'react';
+import { TranslationError } from '../../context/translations/utils/errorUtils';
 import { getInputHeightInRows } from '../utils/translationsUtils';
 import TranslationInput from './TranslationInput';
 import useTranslationTableStyles from './styles';
 
-interface Props<Translation extends FormsApiFormTranslation> {
+interface Props<Translation extends FormsApiTranslation> {
   translation: Translation;
-  editContext: EditTranslationContext<Translation>;
+  updateTranslation: (original: Translation, lang: TranslationLang, value: string) => void;
+  errors: TranslationError[];
+  editState: any;
 }
 
-const TranslationRow = <Translation extends FormsApiFormTranslation>({
+const TranslationRow = <Translation extends FormsApiTranslation>({
   translation,
-  editContext,
+  updateTranslation,
+  errors,
+  editState,
 }: Props<Translation>) => {
   const [isEditing, setIsEditing] = useState(false);
-  const { updateTranslation, errors, editState } = useContext(editContext);
   const styles = useTranslationTableStyles();
   const heightInRows = getInputHeightInRows(translation.nb ?? '');
   const error = useMemo(

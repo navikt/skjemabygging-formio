@@ -5,12 +5,10 @@ import RowLayout from '../../components/layout/RowLayout';
 import SidebarLayout from '../../components/layout/SidebarLayout';
 import Title from '../../components/layout/Title';
 import TitleRowLayout from '../../components/layout/TitleRowLayout';
-import EditGlobalTranslationsProvider, {
-  EditGlobalTranslationsContext,
-} from '../../context/translations/EditGlobalTranslationsContext';
+import EditGlobalTranslationsProvider from '../../context/translations/EditGlobalTranslationsContext';
 import { useGlobalTranslations } from '../../context/translations/GlobalTranslationsContext';
-import TranslationTable from '../components/TranslationTable';
 import GlobalTranslationButtonsColumn from './GlobalTranslationButtonsColumn';
+import GlobalTranslationsTable from './GlobalTranslationsTable';
 
 const titles = {
   skjematekster: 'Globale skjematekster',
@@ -23,7 +21,7 @@ const GlobalTranslationsPage = () => {
   const { tag = 'skjematekster' } = useParams();
   const { translationsPerTag, isReady } = useGlobalTranslations();
 
-  const rows: FormsApiGlobalTranslation[] | undefined = translationsPerTag?.[tag];
+  const translations: FormsApiGlobalTranslation[] | undefined = translationsPerTag?.[tag];
 
   return (
     <AppLayout navBarProps={{ translationMenu: true }}>
@@ -39,11 +37,10 @@ const GlobalTranslationsPage = () => {
               </SidebarLayout>
             }
           >
-            <TranslationTable
-              rows={rows}
-              loading={!isReady}
+            <GlobalTranslationsTable
+              translations={translations}
               addNewRow={tag === 'skjematekster'}
-              editContext={EditGlobalTranslationsContext}
+              loading={!isReady}
             />
           </RowLayout>
         </form>
