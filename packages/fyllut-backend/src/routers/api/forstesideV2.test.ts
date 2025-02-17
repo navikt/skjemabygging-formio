@@ -35,7 +35,7 @@ const addresses = [
 const formTitle = 'testskjema';
 const filePathForsteside = path.join(process.cwd(), '/src/routers/api/test-forsteside.pdf');
 const filePathSoknad = path.join(process.cwd(), '/src/routers/api/test-skjema.pdf');
-//const filePathMerged = path.join(process.cwd(), '/src/routers/api/merged.pdf');
+const filePathMerged = path.join(process.cwd(), '/src/routers/api/merged.pdf');
 
 describe('[endpoint] forsteside', () => {
   beforeAll(() => {
@@ -56,7 +56,7 @@ describe('[endpoint] forsteside', () => {
   it('Create front page', async () => {
     const forstesidePdf = readFileSync(filePathForsteside);
     const soknadPdf = readFileSync(filePathSoknad);
-    //const mergedPdf = readFileSync(filePathMerged);
+    const mergedPdf = readFileSync(filePathMerged);
     const encodedForstesidedPdf = forstesidePdf.toString('base64');
     const encodedSoknadPdf = soknadPdf.toString('base64');
 
@@ -68,13 +68,11 @@ describe('[endpoint] forsteside', () => {
       .post('/exstream')
       .reply(200, { data: { result: [{ content: { data: encodedSoknadPdf } }] } });
 
-    /*
     const mergePdfScope = nock(process.env.GOTENBERG_URL as string)
       .intercept('/forms/pdfengines/merge', 'POST', (body) => {
         return body != null;
       })
-      .reply(200, mergedPdf, {"content-type": "application/pdf"});
-*/
+      .reply(200, mergedPdf, { 'content-type': 'application/pdf' });
 
     const req = mockRequest({
       headers: {
@@ -99,6 +97,6 @@ describe('[endpoint] forsteside', () => {
     expect(recipientsMock.isDone()).toBe(true);
     expect(generateFileMock.isDone()).toBe(true);
     expect(skjemabyggingproxyScope.isDone()).toBe(true);
-    //    expect(mergePdfScope.isDone()).toBe(true);
+    expect(mergePdfScope.isDone()).toBe(true);
   }, 10000);
 });

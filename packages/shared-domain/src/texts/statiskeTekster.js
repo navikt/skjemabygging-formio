@@ -6,6 +6,14 @@ export const statiske = {
       url: 'https://www.nav.no/minside',
     },
   },
+  footer: {
+    userIdLabel: 'F.nr',
+    createdDatelabel: 'Opprettet',
+    schemaNumberLabel: 'Skjemanummer',
+    versionLabel: 'Versjon',
+    pageLabel: 'Side',
+    ofLabel: 'av',
+  },
   introPage: {
     title: 'Vær oppmerksom på dette før du begynner å fylle ut skjemaet',
     paperDescriptionBold: 'Du må fylle ut skjemaet digitalt, og så sende det i posten.',

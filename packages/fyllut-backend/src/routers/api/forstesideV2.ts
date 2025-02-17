@@ -66,7 +66,7 @@ const forstesideV2 = {
       writeFileSync(filePath, Buffer.from(mergedFile), {
         flag: "w"
       });
-*/
+      */
 
       const fileName = encodeURIComponent(`Førstesideark_${formParsed.path}.pdf`);
 

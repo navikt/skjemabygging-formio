@@ -16,7 +16,7 @@ describe('footerBuilder', () => {
       expect(footer).toContain(userId);
       expect(footer).toContain(schemaVersion);
       expect(footer).toContain(skjemanummer);
-      expect(footer).toContain('<span>F.nr: ' + userId + '</span>');
+      expect(footer).toContain('<span>F.nr: 12345678901</span>');
       expect(footer).toContain('<span>Opprettet: ');
       expect(footer).toContain('<span>Skjemanummer: ' + skjemanummer + '</span>');
       expect(footer).toContain('<span>Versjon: ' + schemaVersion + '</span>');
