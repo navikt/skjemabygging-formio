@@ -9,19 +9,19 @@ const unpublishForm = async (req: Request, res: Response, next: NextFunction) =>
   const { formsApiForm } = req.body;
 
   if (formPath !== formsApiForm.path) {
-    next(new BadRequest('Path mismatch attempting to publish form'));
+    next(new BadRequest('Path mismatch attempting to unpublish form'));
     return;
   }
 
   const logMeta = { formPath, userName };
-  logger.info('Attempting to unpublish form', logMeta);
+  logger.info('Attempting to unpublish form (github)', logMeta);
 
   try {
     const result = await publisherService.unpublishForm(formPath);
-    logger.info('Form is unpublished', logMeta);
+    logger.info('Form is unpublished (github)', logMeta);
     res.json({ changed: result.changed, form: formsApiForm });
   } catch (error) {
-    logger.error('Failed to unpublish form', logMeta);
+    logger.error('Failed to unpublish form (github)', logMeta);
     next(error);
   }
 };
