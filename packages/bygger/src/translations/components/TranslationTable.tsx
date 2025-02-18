@@ -37,7 +37,13 @@ const TranslationTable = ({
       <Table.Header className={styles.header}>
         <Table.Row>
           {columns.map((column) => (
-            <Table.ColumnHeader sortable sortKey={column.key} className={styles.column} key={column.key} scope="col">
+            <Table.ColumnHeader
+              sortable={!!onSortChange}
+              sortKey={column.key}
+              className={styles.column}
+              key={column.key}
+              scope="col"
+            >
               {column.label}
             </Table.ColumnHeader>
           ))}
