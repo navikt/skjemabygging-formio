@@ -4,12 +4,12 @@ import TranslationTable from './TranslationTable';
 import UnusedTranslationRow from './UnusedTranslationRow';
 
 interface Props {
-  translations: FormsApiTranslation[];
+  translations?: FormsApiTranslation[];
   onRemove: (id: number) => Promise<void>;
 }
 
 const UnusedTranslations = ({ translations, onRemove }: Props) => {
-  if (translations.length === 0) {
+  if (!translations || translations.length === 0) {
     return <></>;
   }
 

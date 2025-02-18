@@ -56,11 +56,21 @@ const useGlobalTranslationsApi = () => {
     }
   };
 
+  const deleteTranslation = async (id: number) => {
+    try {
+      await http.delete(`${basePath}/${id}`);
+    } catch (error: any) {
+      const message = (error as Error)?.message;
+      feedbackEmit.error(`Feil ved sletting av global oversettelse med id ${id}. ${message}`);
+    }
+  };
+
   return {
     get,
     post,
     put,
     publish,
+    delete: deleteTranslation,
   };
 };
 
