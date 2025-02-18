@@ -60,10 +60,20 @@ const useFormTranslationsApi = () => {
     }
   };
 
+  const deleteTranslation = async (formPath: string, id: number) => {
+    try {
+      await http.delete(`${getPath(formPath)}/${id}`);
+    } catch (error) {
+      const message = (error as Error)?.message;
+      feedbackEmit.error(`Feil ved sletting av oversettelse med id ${id} for skjema ${formPath}. ${message}`);
+    }
+  };
+
   return {
     get,
     post,
     put,
+    delete: deleteTranslation,
   };
 };
 

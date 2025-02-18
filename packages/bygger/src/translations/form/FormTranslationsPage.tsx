@@ -8,6 +8,8 @@ import TitleRowLayout from '../../components/layout/TitleRowLayout';
 import EditFormTranslationsProvider from '../../context/translations/EditFormTranslationsContext';
 import { useFormTranslations } from '../../context/translations/FormTranslationsContext';
 import { useGlobalTranslations } from '../../context/translations/GlobalTranslationsContext';
+import TranslationTable from '../components/TranslationTable';
+import UnusedTranslationRow from '../components/UnusedTranslationRow';
 import { generateAndPopulateTranslationsForForm } from '../utils/editFormTranslationsUtils';
 import FormTranslationButtonsColumn from './FormTranslationButtonsColumn';
 import FormTranslationsTable from './FormTranslationsTable';
@@ -17,13 +19,19 @@ interface Props {
 }
 
 const FormTranslationsPage = ({ form }: Props) => {
-  const { storedTranslations, isReady: isTranslationsReady } = useFormTranslations();
+  const { storedTranslations, isReady: isTranslationsReady, deleteTranslation } = useFormTranslations();
   const { storedTranslations: globalTranslations, isReady: isGlobalTranslationsReady } = useGlobalTranslations();
 
   const translations: FormsApiFormTranslation[] = useMemo(
     () => generateAndPopulateTranslationsForForm(form, storedTranslations, globalTranslations),
     [form, globalTranslations, storedTranslations],
   );
+
+  const unusedTranslations = useMemo(() => {
+    return Object.values(storedTranslations).filter(
+      (storedTranslation) => !translations.some((translation) => translation.key === storedTranslation.key),
+    );
+  }, [storedTranslations, translations]);
 
   const initialChanges = useMemo(() => {
     if (isTranslationsReady && isGlobalTranslationsReady) {
@@ -49,6 +57,11 @@ const FormTranslationsPage = ({ form }: Props) => {
               </SidebarLayout>
             }
           >
+            <TranslationTable actionColumn={{ key: 'deleteButton', label: '' }} loading={!unusedTranslations}>
+              {unusedTranslations.map((translation) => (
+                <UnusedTranslationRow key={translation.key} translation={translation} onRemove={deleteTranslation} />
+              ))}
+            </TranslationTable>
             <FormTranslationsTable translations={translations} loading={!initialChanges} />
           </RowLayout>
         </form>

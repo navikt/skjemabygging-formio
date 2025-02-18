@@ -16,6 +16,10 @@ const useTranslationTableStyles = makeStyles({
     alignContent: 'baseline',
     overflowWrap: 'break-word',
   },
+  actionColumn: {
+    width: '4rem',
+    maxWidth: '4rem',
+  },
   clickableRow: {
     cursor: 'pointer',
   },

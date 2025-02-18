@@ -32,6 +32,7 @@ type GlobalTranslationService = {
     revision: number,
     accessToken: string,
   ) => Promise<FormsApiGlobalTranslation>;
+  delete: (id: string, accessToken: string) => Promise<void>;
   publish: (accessToken: string) => Promise<void>;
   getPublished: (languageCodes: TranslationLang[], accessCode: string) => Promise<PublishedTranslations>;
 };

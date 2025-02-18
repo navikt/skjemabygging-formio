@@ -3,20 +3,29 @@ import { SkeletonList } from '@navikt/skjemadigitalisering-shared-components';
 import { ReactNode } from 'react';
 import useTranslationTableStyles from './styles';
 
-const columns = [
+const defaultColumns = [
   { key: 'nb', label: 'Bokmål' },
   { key: 'nn', label: 'Nynorsk' },
   { key: 'en', label: 'Engelsk' },
 ];
 
 interface Props {
-  sort: SortState | undefined;
-  onSortChange: (sortkey: string) => void;
+  columns?: { key: string; label: string }[];
+  actionColumn?: { key: string; label: string };
+  sort?: SortState;
+  onSortChange?: (sortkey: string) => void;
   loading?: boolean;
   children?: ReactNode[];
 }
 
-const TranslationTable = ({ sort, onSortChange, loading = false, children }: Props) => {
+const TranslationTable = ({
+  columns = defaultColumns,
+  actionColumn,
+  sort,
+  onSortChange,
+  loading = false,
+  children,
+}: Props) => {
   const styles = useTranslationTableStyles();
 
   if (loading) {
@@ -32,6 +41,11 @@ const TranslationTable = ({ sort, onSortChange, loading = false, children }: Pro
               {column.label}
             </Table.ColumnHeader>
           ))}
+          {actionColumn && (
+            <Table.ColumnHeader className={styles.actionColumn} key={actionColumn.key} scope="col">
+              {actionColumn.label}
+            </Table.ColumnHeader>
+          )}
         </Table.Row>
       </Table.Header>
       <Table.Body>{children}</Table.Body>
