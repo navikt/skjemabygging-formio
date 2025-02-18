@@ -8,8 +8,7 @@ import TitleRowLayout from '../../components/layout/TitleRowLayout';
 import EditFormTranslationsProvider from '../../context/translations/EditFormTranslationsContext';
 import { useFormTranslations } from '../../context/translations/FormTranslationsContext';
 import { useGlobalTranslations } from '../../context/translations/GlobalTranslationsContext';
-import TranslationTable from '../components/TranslationTable';
-import UnusedTranslationRow from '../components/UnusedTranslationRow';
+import UnusedTranslations from '../components/UnusedTranslations';
 import { generateAndPopulateTranslationsForForm } from '../utils/editFormTranslationsUtils';
 import FormTranslationButtonsColumn from './FormTranslationButtonsColumn';
 import FormTranslationsTable from './FormTranslationsTable';
@@ -57,11 +56,7 @@ const FormTranslationsPage = ({ form }: Props) => {
               </SidebarLayout>
             }
           >
-            <TranslationTable actionColumn={{ key: 'deleteButton', label: '' }} loading={!unusedTranslations}>
-              {unusedTranslations.map((translation) => (
-                <UnusedTranslationRow key={translation.key} translation={translation} onRemove={deleteTranslation} />
-              ))}
-            </TranslationTable>
+            <UnusedTranslations translations={unusedTranslations} onRemove={deleteTranslation} />
             <FormTranslationsTable translations={translations} loading={!initialChanges} />
           </RowLayout>
         </form>
