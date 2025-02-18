@@ -1,11 +1,7 @@
 {
-  "_id": "d2013f55d7df9f000380739b",
-  "type": "form",
-  "tags": [
-    "nav-skjema",
-    ""
-  ],
-  "owner": "61fa3db790dab10003260065",
+  "id": 125,
+  "skjemanummer": "multi",
+  "tema": "HJE",
   "components": [
     {
       "title": "Test",
@@ -335,7 +331,6 @@
     }
   ],
   "display": "wizard",
-  "name": "multi",
   "title": "Test multi values",
   "path": "multi",
   "properties": {
@@ -358,27 +353,9 @@
     "isTestForm": false,
     "prefill": []
   },
-  "access": [
-    {
-      "type": "read_all",
-      "roles": [
-        "000000000000000000000000"
-      ]
-    },
-    {
-      "type": "update_all",
-      "roles": [
-        "628ca77305690db58c974d04",
-        "628ca77305690db58c974d09"
-      ]
-    }
-  ],
-  "submissionAccess": [],
-  "created": "2022-02-07T15:31:33.410Z",
-  "modified": "2024-01-05T09:18:06.415Z",
-  "machineName": "formMultiValues",
-  "project": "628ca77305690db58c974cfd",
-  "_vid": 0,
-  "revisions": "",
-  "submissionRevisions": ""
+  "createdAt": "2022-02-07T15:31:33.410Z",
+  "changedAt": "2024-01-05T09:18:06.202Z",
+  "publishedLanguages": [],
+  "revision": 1,
+  "status": "draft"
 }

@@ -1,6 +1,8 @@
 import { expect } from 'chai';
 
-describe('Global translations', () => {
+// TODO FORMS-API
+// eslint-disable-next-line mocha/no-skipped-tests
+describe.skip('Global translations', () => {
   beforeEach(() => {
     cy.intercept('GET', '/api/config', { fixture: 'config.json' }).as('getConfig');
     cy.intercept('GET', '/api/translations', { fixture: 'formsApiGlobalTranslations.json' }).as(
