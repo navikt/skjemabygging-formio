@@ -9,7 +9,6 @@ const createFormsService = (formsApiUrl: string): FormsService => {
   const getAll = async (select?: string): Promise<Form[]> => {
     const search = select ? new URLSearchParams({ select }) : '';
     const url = `${formsUrl}?${search}`;
-    console.log('getAll', url);
     const response = await fetchWithErrorHandling(url, { headers: createHeaders() });
     return response.data as Form[];
   };
