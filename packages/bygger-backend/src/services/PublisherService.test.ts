@@ -67,11 +67,11 @@ describe('PublisherService', () => {
       it('returns the form', async () => {
         const testForm = {
           _id: '1',
+          path: 'nav123456',
           properties: { published: '2022-07-28T10:00:10.325Z', publishedBy: 'ernie' },
         } as NavFormType;
-        const { changed, form } = await publisherService.unpublishForm(testForm);
+        const { changed } = await publisherService.unpublishForm(testForm.path);
         expect(changed).toBe(true);
-        expect(form).toBeDefined();
       });
     });
 
@@ -88,12 +88,13 @@ describe('PublisherService', () => {
       it('an error is thrown', async () => {
         const testForm = {
           _id: '1',
+          path: 'nav123456',
           properties: { published: '2022-07-28T10:00:10.325Z', publishedBy: 'ernie' },
         } as NavFormType;
         let errorThrown;
 
         try {
-          await publisherService.unpublishForm(testForm);
+          await publisherService.unpublishForm(testForm.path);
         } catch (error: any) {
           errorThrown = true;
           expect(error.message).toBe('Avpublisering feilet');
