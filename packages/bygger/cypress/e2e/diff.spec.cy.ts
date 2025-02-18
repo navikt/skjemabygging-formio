@@ -128,8 +128,8 @@ describe('Diff', () => {
       });
 
       it('Shows changes for skjemagruppe :: legend changed and component deleted', () => {
-        cy.openEditComponentModal(cy.findByText('Slettede elementer')); // <-- legend Kontaktadresse2
-        // cy.openEditComponentModal(cy.findByText('Kontaktadresse2'));
+        cy.findByText('Slettede elementer').should('exist'); // <-- ligger ved legend Kontaktadresse2
+        cy.openEditComponentModal(cy.findByText('Kontaktadresse2'));
 
         cy.findByLabelText('Endringer')
           .should('exist')
