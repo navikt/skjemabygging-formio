@@ -12,7 +12,7 @@ const useFormsApiForms = () => {
   const getAll = async (select?: string): Promise<Form[]> => {
     try {
       const url = select ? `${baseUrl}?${new URLSearchParams({ select })}` : baseUrl;
-      logger?.info(`Fetching all forms from ${url}`);
+      logger?.debug(`Fetching all forms from ${url}`);
       return await http.get<Form[]>(url);
     } catch (error) {
       const message = (error as Error)?.message;
@@ -25,7 +25,7 @@ const useFormsApiForms = () => {
   const get = async (path: string): Promise<Form | undefined> => {
     const url = `${baseUrl}/${path}`;
     try {
-      logger?.info(`Fetching form from ${url}`);
+      logger?.debug(`Fetching form from ${url}`);
       return await http.get<Form>(url);
     } catch (error) {
       const message = (error as Error)?.message;
@@ -36,9 +36,9 @@ const useFormsApiForms = () => {
 
   const post = async (form: Form): Promise<Form | undefined> => {
     try {
-      logger?.info(`Creating new form: ${baseUrl}`);
+      logger?.debug(`Creating new form: ${baseUrl}`);
       const result = await http.post<Form>(baseUrl, form);
-      logger?.info(`Successfully created form with id ${result.id} and path ${result.path}`);
+      logger?.debug(`Successfully created form with id ${result.id} and path ${result.path}`);
       feedbackEmit.success(`Opprettet skjema ${form.title}`);
       return result;
     } catch (error: any) {
@@ -57,9 +57,9 @@ const useFormsApiForms = () => {
     const { path } = form;
     const url = `${baseUrl}/${path}`;
     try {
-      logger?.info(`Updating form with id ${form.id}: ${url}`);
+      logger?.debug(`Updating form with id ${form.id}: ${url}`);
       const result = await http.put<Form>(url, form);
-      logger?.info(`Successfully updated form with id ${form.id}: ${url}`);
+      logger?.debug(`Successfully updated form with id ${form.id}: ${url}`);
       feedbackEmit.success(`Lagret skjema ${form.title}`);
       return result;
     } catch (error) {
@@ -72,9 +72,9 @@ const useFormsApiForms = () => {
   const postLockForm = async (formPath: string, reason: string) => {
     const url = `/api/forms/${formPath}/lock`;
     try {
-      logger?.info(`Locking form with path ${formPath}: ${url}`);
+      logger?.debug(`Locking form with path ${formPath}: ${url}`);
       const result = await http.post<Form>(url, { reason });
-      logger?.info(`Successfully locked form with path ${formPath}: ${url}`);
+      logger?.debug(`Successfully locked form with path ${formPath}: ${url}`);
       feedbackEmit.success(`Skjemaet ble låst for redigering`);
       return result;
     } catch (error) {
@@ -87,9 +87,9 @@ const useFormsApiForms = () => {
   const deleteLockForm = async (formPath: string) => {
     const url = `/api/forms/${formPath}/lock`;
     try {
-      logger?.info(`Unlocking form with path ${formPath}: ${url}`);
+      logger?.debug(`Unlocking form with path ${formPath}: ${url}`);
       const result = await http.delete<Form>(url);
-      logger?.info(`Successfully unlocked form with path ${formPath}: ${url}`);
+      logger?.debug(`Successfully unlocked form with path ${formPath}: ${url}`);
       feedbackEmit.success(`Skjemaet ble åpnet for redigering`);
       return result;
     } catch (error) {
@@ -102,7 +102,7 @@ const useFormsApiForms = () => {
   const getPublished = async (formPath: string): Promise<Form | undefined> => {
     const url = `/api/form-publications/${formPath}`;
     try {
-      logger?.info(`Fetching published form from ${url}`);
+      logger?.debug(`Fetching published form from ${url}`);
       return await http.get<Form>(url);
     } catch (error) {
       const message = (error as Error)?.message;
