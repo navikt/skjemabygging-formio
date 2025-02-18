@@ -53,7 +53,7 @@ const deleteTranslation: RequestHandler = async (req, res, next) => {
   const accessToken = req.headers.AzureAccessToken as string;
   try {
     await formTranslationsService.delete(formPath, parseInt(id), accessToken);
-    res.status(204).end();
+    res.sendStatus(204);
   } catch (error) {
     next(error);
   }

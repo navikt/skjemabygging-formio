@@ -52,7 +52,10 @@ const FormTranslationsProvider = ({ children, formPath }: Props) => {
 
   const deleteTranslation = async (id: number) => {
     await translationsApi.delete(formPath, id);
-    await loadTranslations();
+    setState((current) => ({
+      ...current,
+      data: current.data?.filter((translation) => translation.id !== id),
+    }));
   };
 
   const storedTranslations = useMemo<Record<string, FormsApiFormTranslation>>(
