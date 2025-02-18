@@ -70,3 +70,9 @@ jobs:
           command: yarn cypress:bygger
           config: video=false
           config-file: cypress.config.ts
+      - name: Upload screenshots
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: cypress-bygger-screenshots
+          path:  ${{ github.workspace }}/packages/bygger/cypress/screenshots/*
