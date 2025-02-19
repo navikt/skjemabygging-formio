@@ -72,11 +72,45 @@ const vedleggBekreftelseBostedsadresse = {
   customConditional: '',
 };
 
+const vedleggAnnenDokumentasjon = {
+  label: 'Annen dokumentasjon',
+  description: 'Har du annen dokumentasjon du ønsker å legge ved?',
+  additionalDescription: false,
+  validate: {
+    required: true,
+    onlyAvailableItems: false,
+  },
+  key: 'annenDokumentasjon',
+  properties: {
+    vedleggstittel: 'Annet',
+    vedleggskode: 'N6',
+  },
+  type: 'attachment',
+  optionsLabelPosition: 'right',
+  inline: false,
+  tableView: false,
+  input: true,
+  isAttachmentPanel: false,
+  navId: 'eud0gda',
+  inputType: 'radio',
+  fieldSet: false,
+  attachmentType: 'other',
+  attachmentValues: {
+    leggerVedNaa: {
+      enabled: true,
+    },
+    nei: {
+      enabled: true,
+    },
+  },
+};
+
 export {
   borDuINorgeRadiopanel,
   defaultVedleggValues,
   panelForsteSide,
   panelVedleggsliste,
   radiopanelJaNei,
+  vedleggAnnenDokumentasjon,
   vedleggBekreftelseBostedsadresse,
 };
