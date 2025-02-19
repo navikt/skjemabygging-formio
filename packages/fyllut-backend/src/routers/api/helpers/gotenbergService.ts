@@ -43,8 +43,7 @@ export const buildHtmlAndCreatePdf = async (
   return Buffer.from(new Uint8Array(pdf));
 };
 
-const filePath = path.join(process.cwd(), 'dist', '/icons/nav-logo.svg');
-
+const filePath = path.join(process.cwd(), '/src/routers/api/helpers/nav-icon.svg');
 const navIcon = readFileSync(filePath, { encoding: 'utf-8', flag: 'r' });
 
 export const buildHtmlAndConvertToPdf = async (
