@@ -50,6 +50,21 @@ const put: RequestHandler = async (req, res, next) => {
   }
 };
 
+const deleteTranslation = async (req, res, next) => {
+  const { id } = req.params;
+  const accessToken = req.headers.AzureAccessToken as string;
+  try {
+    await globalTranslationsService.delete(id, accessToken);
+    res.sendStatus(204);
+  } catch (error) {
+    if (error instanceof OldHttpError) {
+      next(new HttpError(error.message, error.response.status));
+    } else {
+      next(error);
+    }
+  }
+};
+
 const publish: RequestHandler = async (req, res, next) => {
   try {
     const accessToken = req.headers.AzureAccessToken as string;
@@ -77,5 +92,6 @@ const globalTranslations = {
   post,
   put,
   publish,
+  delete: deleteTranslation,
 };
 export default globalTranslations;

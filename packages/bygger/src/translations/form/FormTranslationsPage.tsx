@@ -5,35 +5,40 @@ import RowLayout from '../../components/layout/RowLayout';
 import SidebarLayout from '../../components/layout/SidebarLayout';
 import Title from '../../components/layout/Title';
 import TitleRowLayout from '../../components/layout/TitleRowLayout';
-import EditFormTranslationsProvider, {
-  EditFormTranslationsContext,
-} from '../../context/translations/EditFormTranslationsContext';
+import EditFormTranslationsProvider from '../../context/translations/EditFormTranslationsContext';
 import { useFormTranslations } from '../../context/translations/FormTranslationsContext';
 import { useGlobalTranslations } from '../../context/translations/GlobalTranslationsContext';
-import TranslationTable from '../components/TranslationTable';
+import UnusedTranslations from '../components/UnusedTranslations';
 import { generateAndPopulateTranslationsForForm } from '../utils/editFormTranslationsUtils';
 import FormTranslationButtonsColumn from './FormTranslationButtonsColumn';
+import FormTranslationsTable from './FormTranslationsTable';
 
 interface Props {
   form: Form;
 }
 
 const FormTranslationsPage = ({ form }: Props) => {
-  const { storedTranslations, isReady: isTranslationsReady } = useFormTranslations();
+  const { storedTranslations, isReady: isTranslationsReady, deleteTranslation } = useFormTranslations();
   const { storedTranslations: globalTranslations, isReady: isGlobalTranslationsReady } = useGlobalTranslations();
 
-  const rows: FormsApiFormTranslation[] = useMemo(
+  const translations: FormsApiFormTranslation[] = useMemo(
     () => generateAndPopulateTranslationsForForm(form, storedTranslations, globalTranslations),
     [form, globalTranslations, storedTranslations],
   );
 
+  const unusedTranslations = useMemo(() => {
+    return Object.values(storedTranslations).filter(
+      (storedTranslation) => !translations.some((translation) => translation.key === storedTranslation.key),
+    );
+  }, [storedTranslations, translations]);
+
   const initialChanges = useMemo(() => {
     if (isTranslationsReady && isGlobalTranslationsReady) {
-      return rows
+      return translations
         .map((row) => (row.globalTranslationId && !storedTranslations[row.key]?.globalTranslationId ? row : undefined))
         .filter((value) => !!value);
     }
-  }, [isGlobalTranslationsReady, isTranslationsReady, rows, storedTranslations]);
+  }, [isGlobalTranslationsReady, isTranslationsReady, translations, storedTranslations]);
 
   return (
     <AppLayout navBarProps={{ formMenu: true, formPath: form.path }}>
@@ -51,7 +56,8 @@ const FormTranslationsPage = ({ form }: Props) => {
               </SidebarLayout>
             }
           >
-            <TranslationTable rows={rows} loading={!initialChanges} editContext={EditFormTranslationsContext} />
+            <UnusedTranslations translations={unusedTranslations} onRemove={deleteTranslation} />
+            <FormTranslationsTable translations={translations} loading={!initialChanges} />
           </RowLayout>
         </form>
       </EditFormTranslationsProvider>

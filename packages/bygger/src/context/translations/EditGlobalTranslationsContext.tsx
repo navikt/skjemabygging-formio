@@ -4,10 +4,9 @@ import { createContext, ReactNode, useContext, useEffect, useReducer } from 'rea
 import { overwriteGlobalTranslations } from '../../import/api';
 import { useFeedbackEmit } from '../notifications/FeedbackContext';
 import { editGlobalTranslationsReducer } from './editTranslationsReducer';
-import { createDefaultGlobalTranslation } from './editTranslationsReducer/reducerUtils';
+import { createDefaultGlobalTranslation, Status } from './editTranslationsReducer/reducerUtils';
 import { getTranslationsForSaving, hasNewTranslationData } from './editTranslationsReducer/selectors';
 import { useGlobalTranslations } from './GlobalTranslationsContext';
-import { EditTranslationsContextValue } from './types';
 import { getConflictAlertMessage, getGeneralAlertMessage, TranslationError } from './utils/errorUtils';
 import { validate, validateTranslations } from './utils/inputValidation';
 import { saveEachTranslation } from './utils/utils';
@@ -17,7 +16,17 @@ interface Props {
   children: ReactNode;
 }
 
-const defaultValue: EditTranslationsContextValue<FormsApiGlobalTranslation> = {
+type EditGlobalTranslationsContextValue = {
+  updateTranslation: (original: FormsApiGlobalTranslation, lang: TranslationLang, value: string) => void;
+  errors: TranslationError[];
+  newTranslation: FormsApiGlobalTranslation;
+  editState: Status;
+  updateNewTranslation: (lang: TranslationLang, value: string) => void;
+  saveChanges: () => Promise<void>;
+  importFromProduction: () => Promise<void>;
+};
+
+const defaultValue: EditGlobalTranslationsContextValue = {
   updateTranslation: () => {},
   errors: [],
   newTranslation: createDefaultGlobalTranslation(),
@@ -27,8 +36,7 @@ const defaultValue: EditTranslationsContextValue<FormsApiGlobalTranslation> = {
   importFromProduction: () => Promise.resolve(),
 };
 
-const EditGlobalTranslationsContext =
-  createContext<EditTranslationsContextValue<FormsApiGlobalTranslation>>(defaultValue);
+const EditGlobalTranslationsContext = createContext<EditGlobalTranslationsContextValue>(defaultValue);
 
 const EditGlobalTranslationsProvider = ({ initialChanges, children }: Props) => {
   const [state, dispatch] = useReducer(editGlobalTranslationsReducer, {

@@ -8,6 +8,7 @@ interface ContextValue {
   isReady: boolean;
   loadTranslations: () => Promise<void>;
   saveTranslation: (translation: FormsApiFormTranslation) => Promise<FormsApiFormTranslation>;
+  deleteTranslation: (id: number) => Promise<void>;
 }
 
 interface Props {
@@ -21,6 +22,7 @@ const defaultValue: ContextValue = {
   isReady: false,
   loadTranslations: () => Promise.resolve(),
   saveTranslation: () => Promise.reject(),
+  deleteTranslation: () => Promise.reject(),
 };
 
 const FormTranslationsContext = createContext<ContextValue>(defaultValue);
@@ -48,6 +50,16 @@ const FormTranslationsProvider = ({ children, formPath }: Props) => {
     }
   };
 
+  const deleteTranslation = async (id: number) => {
+    const result = await translationsApi.delete(formPath, id);
+    if (result) {
+      setState((current) => ({
+        ...current,
+        data: current.data?.filter((translation) => translation.id !== id),
+      }));
+    }
+  };
+
   const storedTranslations = useMemo<Record<string, FormsApiFormTranslation>>(
     () => (state.data ?? []).reduce((acc, translation) => ({ ...acc, [translation.key]: translation }), {}),
     [state.data],
@@ -59,6 +71,7 @@ const FormTranslationsProvider = ({ children, formPath }: Props) => {
     isReady: state.isReady,
     loadTranslations,
     saveTranslation,
+    deleteTranslation,
   };
 
   return <FormTranslationsContext.Provider value={value}>{children}</FormTranslationsContext.Provider>;

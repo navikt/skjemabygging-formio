@@ -1,28 +1,27 @@
-import { PadlockLockedIcon } from '@navikt/aksel-icons';
 import { Table } from '@navikt/ds-react';
 import { htmlConverter, InnerHtml } from '@navikt/skjemadigitalisering-shared-components';
-import {
-  FormsApiFormTranslation,
-  formsApiTranslations,
-  TranslationLang,
-} from '@navikt/skjemadigitalisering-shared-domain';
-import { useContext, useEffect, useMemo, useState } from 'react';
-import { EditTranslationContext } from '../../context/translations/types';
+import { FormsApiTranslation, formsApiTranslations, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
+import { useEffect, useMemo, useState } from 'react';
+import { TranslationError } from '../../context/translations/utils/errorUtils';
 import { getInputHeightInRows } from '../utils/translationsUtils';
-import TranslationInput from './TranslationInput';
 import useTranslationTableStyles from './styles';
+import TranslationDisplayCell from './TranslationDisplayCell';
+import TranslationInput from './TranslationInput';
 
-interface Props<Translation extends FormsApiFormTranslation> {
+interface Props<Translation extends FormsApiTranslation> {
   translation: Translation;
-  editContext: EditTranslationContext<Translation>;
+  updateTranslation: (original: Translation, lang: TranslationLang, value: string) => void;
+  errors: TranslationError[];
+  editState: any;
 }
 
-const TranslationRow = <Translation extends FormsApiFormTranslation>({
+const TranslationRow = <Translation extends FormsApiTranslation>({
   translation,
-  editContext,
+  updateTranslation,
+  errors,
+  editState,
 }: Props<Translation>) => {
   const [isEditing, setIsEditing] = useState(false);
-  const { updateTranslation, errors, editState } = useContext(editContext);
   const styles = useTranslationTableStyles();
   const heightInRows = getInputHeightInRows(translation.nb ?? '');
   const error = useMemo(
@@ -47,7 +46,7 @@ const TranslationRow = <Translation extends FormsApiFormTranslation>({
   };
 
   const isHtml = htmlConverter.isHtmlString(translation.nb ?? '');
-  const hasGlobalOverride = formsApiTranslations.isFormTranslation(translation) && translation.globalTranslationId;
+  const hasGlobalOverride = formsApiTranslations.isFormTranslation(translation) && !!translation.globalTranslationId;
 
   return (
     <Table.Row className={isEditing ? '' : styles.clickableRow} onClick={handleRowClick}>
@@ -60,55 +59,38 @@ const TranslationRow = <Translation extends FormsApiFormTranslation>({
           {translation.nb}
         </Table.HeaderCell>
       )}
-      <Table.DataCell className={styles.column}>
-        {isEditing ? (
-          <TranslationInput
-            autoFocus
-            label={'Nynorsk'}
-            defaultValue={translation.nn}
-            isHtml={isHtml}
-            minRows={heightInRows}
-            error={error?.message}
-            onChange={(value) => {
-              handleChange('nn', value);
-            }}
-          />
-        ) : (
-          <>
-            {hasGlobalOverride && (
-              <PadlockLockedIcon
-                className={styles.displayCellIcon}
-                title="Globalt overstyrt oversettelse"
-                fontSize="1.5rem"
-              />
-            )}
-            {isHtml ? <InnerHtml content={translation.nn ?? ''} /> : translation.nn}
-          </>
-        )}
-      </Table.DataCell>
-      <Table.DataCell className={styles.column}>
-        {isEditing ? (
-          <TranslationInput
-            label={'Engelsk'}
-            defaultValue={translation.en}
-            isHtml={htmlConverter.isHtmlString(translation.nb ?? '')}
-            minRows={heightInRows}
-            error={error?.message}
-            onChange={(value) => handleChange('en', value)}
-          />
-        ) : (
-          <>
-            {hasGlobalOverride && (
-              <PadlockLockedIcon
-                className={styles.displayCellIcon}
-                title="Globalt overstyrt oversettelse"
-                fontSize="1.5rem"
-              />
-            )}
-            {isHtml ? <InnerHtml content={translation.en ?? ''} /> : translation.en}
-          </>
-        )}
-      </Table.DataCell>
+      {isEditing ? (
+        <>
+          <Table.DataCell className={styles.column}>
+            <TranslationInput
+              autoFocus
+              label={'Nynorsk'}
+              defaultValue={translation.nn}
+              isHtml={isHtml}
+              minRows={heightInRows}
+              error={error?.message}
+              onChange={(value) => {
+                handleChange('nn', value);
+              }}
+            />
+          </Table.DataCell>
+          <Table.DataCell className={styles.column}>
+            <TranslationInput
+              label={'Engelsk'}
+              defaultValue={translation.en}
+              isHtml={htmlConverter.isHtmlString(translation.nb ?? '')}
+              minRows={heightInRows}
+              error={error?.message}
+              onChange={(value) => handleChange('en', value)}
+            />
+          </Table.DataCell>
+        </>
+      ) : (
+        <>
+          <TranslationDisplayCell hasGlobalOverride={hasGlobalOverride} text={translation.nn} />
+          <TranslationDisplayCell hasGlobalOverride={hasGlobalOverride} text={translation.en} />
+        </>
+      )}
     </Table.Row>
   );
 };
