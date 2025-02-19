@@ -9,16 +9,18 @@ const publishForm = async (req: Request, res: Response, next: NextFunction) => {
   const { form, translations, formsApiForm } = req.body;
 
   if (formPath !== form.path) {
-    next(new BadRequest('Path mismatch attempting to publish form'));
+    next(new BadRequest('Path mismatch attempting to publish form (github)'));
     return;
   }
 
   const logMeta = { formPath, userName };
-  logger.info('Attempting to publish form', logMeta);
+  logger.info('Attempting to publish form (github)', logMeta);
 
   try {
     const result = await publisherService.publishForm(form, translations);
-    const logMessage: string = result.changed ? 'Form is published' : 'Form has not been changed, publish aborted';
+    const logMessage: string = result.changed
+      ? 'Form is published (github)'
+      : 'Form has not been changed, publish aborted (github)';
     logger.info(logMessage, logMeta);
     res.json({ changed: result.changed, form: formsApiForm });
   } catch (error) {
