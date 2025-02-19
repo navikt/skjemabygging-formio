@@ -127,18 +127,13 @@ const FormProvider = ({ featureToggles, children }: Props) => {
     }
   };
 
-  /**
-   * @deprecated
-   */
   const unpublishForm = async () => {
-    await onUnpublish(state.form);
-    // const savedForm = await onUnpublish(state.form);
-    // await loadPublishedForm(formPath)
-    //   .then((publishedForm) => dispatch({ type: 'form-saved', form: savedForm, publishedForm }))
-    //   .catch(() => {
-    //     console.debug('Unpublish completed: Failed to load published form');
-    //     dispatch({ type: 'form-saved', form: savedForm });
-    //   });
+    if (formPath) {
+      const unpublishedForm = await onUnpublish(formPath);
+      if (unpublishedForm) {
+        dispatch({ type: 'form-saved', form: unpublishedForm });
+      }
+    }
   };
 
   /**

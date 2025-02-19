@@ -23,7 +23,7 @@ const UnpublishButton = ({ form }: UnpublishButtonProps) => {
 
   return (
     <>
-      {form.properties?.published && (
+      {['published', 'pending'].includes(form?.status ?? '') && (
         <>
           <Button
             variant="tertiary"

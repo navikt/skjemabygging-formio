@@ -22,10 +22,10 @@ class PublisherService {
     }
   }
 
-  async unpublishForm(form: NavFormType) {
+  async unpublishForm(formPath: string) {
     try {
-      const gitSha = await this.backend.unpublishForm(form.path);
-      return { changed: !!gitSha, form };
+      const gitSha = await this.backend.unpublishForm(formPath);
+      return { changed: !!gitSha };
     } catch (error) {
       throw new ApiError('Avpublisering feilet', true, error as Error);
     }

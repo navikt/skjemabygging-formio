@@ -129,6 +129,18 @@ const useFormsApiForms = () => {
     }
   };
 
+  const unpublish = async (formPath: string) => {
+    const url = `/api/form-publications/${formPath}`;
+    try {
+      const result = await http.delete<{ form: Form; changed: boolean }>(url, {});
+      feedbackEmit.success('Satt i gang avpublisering, dette kan ta noen minutter.');
+      return result.form;
+    } catch (error) {
+      const message = (error as Error)?.message;
+      feedbackEmit.error(`Avpublisering av skjema feilet. ${message}`);
+    }
+  };
+
   return {
     getAll,
     get,
@@ -137,6 +149,7 @@ const useFormsApiForms = () => {
     postLockForm,
     deleteLockForm,
     publish,
+    unpublish,
     getPublished,
   };
 };

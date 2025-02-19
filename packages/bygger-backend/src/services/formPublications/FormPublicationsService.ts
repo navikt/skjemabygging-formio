@@ -29,6 +29,13 @@ const createFormPublicationsService = (formsApiUrl: string) => {
     return response.data as Form;
   };
 
+  const unpublish = async (formPath: string, accessToken: string): Promise<void> => {
+    await fetchWithErrorHandling(`${url}/${formPath}`, {
+      method: 'DELETE',
+      headers: createHeaders(accessToken),
+    });
+  };
+
   const getTranslations = async (formPath: string, languages: TranslationLang[]): Promise<PublishedTranslations> => {
     const searchParams = new URLSearchParams({ languageCodes: languages.toString() });
     const response = await fetchWithErrorHandling(`${url}/${formPath}/translations?${searchParams}`, {
@@ -41,6 +48,7 @@ const createFormPublicationsService = (formsApiUrl: string) => {
     getAll,
     get,
     post,
+    unpublish,
     getTranslations,
   };
 };
