@@ -32,6 +32,7 @@ const parseBody = (
 export const getPdf = async (req: Request) => {
   const { form, submission, submissionMethod, translations, language } = parseBody(req);
 
+  logger.info(`GetPdf: with submission set = ${submission != undefined}`);
   if (!['nb-NO', 'nn-NO', 'en'].includes(language)) {
     logger.warn(`Language code "${language}" is not supported. Language code will be defaulted to "nb".`);
   }
