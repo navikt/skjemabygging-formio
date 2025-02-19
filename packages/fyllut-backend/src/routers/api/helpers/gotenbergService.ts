@@ -7,8 +7,8 @@ import {
 } from '@navikt/skjemadigitalisering-shared-domain';
 import correlator from 'express-correlation-id';
 import FormData from 'form-data';
-import { readFileSync } from 'fs';
-import path from 'path';
+//import { readFileSync } from 'fs';
+//import path from 'path';
 import { config } from '../../../config/config';
 import { logger } from '../../../logger';
 import { appMetrics } from '../../../services';
@@ -43,8 +43,11 @@ export const buildHtmlAndCreatePdf = async (
   return Buffer.from(new Uint8Array(pdf));
 };
 
+/* Feiler ved deploy: Error: ENOENT: no such file or directory, open '/home/runner/work/skjemabygging-formio/skjemabygging-formio/packages/fyllut-backend/dist/src/routers/api/helpers/nav-icon.svg'
 const filePath = path.join(process.cwd(), '/src/routers/api/helpers/nav-icon.svg');
 const navIcon = readFileSync(filePath, { encoding: 'utf-8', flag: 'r' });
+*/
+const navIcon = undefined;
 
 export const buildHtmlAndConvertToPdf = async (
   accessToken: string,
