@@ -143,8 +143,9 @@ describe('NavForm', () => {
       });
       const textField = await screen.findByLabelText('Fornavn');
       expect(textField).toBeInTheDocument();
-      expect(textField).toHaveValue('Donald');
-
+      await waitFor(() => {
+        expect(textField).toHaveValue('Donald');
+      });
       const datepicker = await screen.findByLabelText('Dato (dd.mm.åååå)');
       expect(datepicker).toBeInTheDocument();
       await waitFor(() => {

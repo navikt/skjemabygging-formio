@@ -58,7 +58,6 @@ const FormProvider = ({ featureToggles, children }: Props) => {
           } else {
             dispatch({ type: 'form-loaded', form });
           }
-          dispatch({ type: 'form-loaded', form });
         })
         .catch((e) => {
           if (e.message === 'Not Found') {

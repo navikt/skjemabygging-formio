@@ -1,12 +1,9 @@
 {
-  "_id": "hg378gh38hgr833",
+  "id": 124,
   "title": "Cypress test for settings page",
-  "name": "cypressSettings",
   "path": "cypresssettings",
-  "type": "form",
-  "display": "wizard",
-  "tags": ["nav-skjema", ""],
-  "owner": "2345yu3tg3ygew8",
+  "tema": "CYPRESSTEST",
+  "skjemanummer": "cypress-settings",
   "components": [
     {
       "title": "Veiledning",
@@ -357,17 +354,11 @@
     "downloadPdfButtonText": "Test",
     "descriptionOfSignatures": "Test Instructions"
   },
-  "project": "project1",
-  "revisions": "",
-  "_vid": 0,
-  "access": [
-    {
-      "type": "read_all",
-      "roles": ["role1", "role2"]
-    }
-  ],
-  "submissionAccess": [],
-  "created": "2022-09-19T08:26:26.936Z",
-  "modified": "2022-09-22T10:39:44.218Z",
-  "machineName": "machine:cypressSettings"
+  "createdAt": "2022-09-19T08:26:26.936Z",
+  "createdBy": "test@nav.no",
+  "changedAt": "2022-09-22T10:39:44.218Z",
+  "changedBy": "test@nav.no",
+  "revision": 1,
+  "publishedLanguages": [],
+  "status": "draft"
 }
