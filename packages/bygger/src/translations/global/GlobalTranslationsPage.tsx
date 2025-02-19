@@ -50,7 +50,11 @@ const GlobalTranslationsPage = () => {
             }
           >
             {tag !== 'skjematekster' && (
-              <UnusedTranslations translations={unusedTranslations} onRemove={deleteTranslation} />
+              <UnusedTranslations
+                translations={unusedTranslations}
+                onRemove={deleteTranslation}
+                showKeys={tag === 'validering'}
+              />
             )}
             <GlobalTranslationsTable
               translations={translations}

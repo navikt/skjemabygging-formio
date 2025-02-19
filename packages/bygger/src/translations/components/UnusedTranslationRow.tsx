@@ -1,22 +1,29 @@
 import { Button, Table } from '@navikt/ds-react';
-import { formsApiTranslations } from '@navikt/skjemadigitalisering-shared-domain';
+import { FormsApiTranslation, formsApiTranslations } from '@navikt/skjemadigitalisering-shared-domain';
 import { useState } from 'react';
 import TranslationDisplayCell from './TranslationDisplayCell';
 import useTranslationTableStyles from './styles';
 
-const UnusedTranslationRow = ({ translation, onRemove }) => {
+interface Props {
+  translation: FormsApiTranslation;
+  onRemove: (id: number) => Promise<void>;
+  showKey?: boolean;
+}
+
+const UnusedTranslationRow = ({ translation, onRemove, showKey = false }: Props) => {
   const [loading, setLoading] = useState(false);
   const styles = useTranslationTableStyles();
   const hasGlobalOverride = formsApiTranslations.isFormTranslation(translation) && !!translation.globalTranslationId;
 
   const handleRemove = async () => {
     setLoading(true);
-    await onRemove(translation.id);
+    await onRemove(translation.id!);
     setLoading(false);
   };
 
   return (
     <Table.Row shadeOnHover={false}>
+      {showKey && <TranslationDisplayCell text={translation.key} />}
       <TranslationDisplayCell text={translation.nb} />
       <TranslationDisplayCell text={translation.nn} hasGlobalOverride={hasGlobalOverride} />
       <TranslationDisplayCell text={translation.en} hasGlobalOverride={hasGlobalOverride} />

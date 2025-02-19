@@ -59,4 +59,5 @@ const TranslationTable = ({
   );
 };
 
+export { defaultColumns };
 export default TranslationTable;
