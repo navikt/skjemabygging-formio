@@ -32,7 +32,9 @@ describe('Email', () => {
       cy.get('[data-cy=error-summary]')
         .should('exist')
         .within(() => {
-          cy.findByRole('link', { name: 'E-post må være en gyldig epost-adresse (for eksempel navn@eksempel.no)' }).should('exist');
+          cy.findByRole('link', {
+            name: 'E-post må være en gyldig epost-adresse (for eksempel navn@eksempel.no)',
+          }).should('exist');
         });
     });
 
@@ -52,7 +54,9 @@ describe('Email', () => {
       cy.get('[data-cy=error-summary]')
         .should('exist')
         .within(() => {
-          cy.findByRole('link', { name: 'E-post må være en gyldig epost-adresse (for eksempel navn@eksempel.no)' }).should('exist').click();
+          cy.findByRole('link', { name: 'E-post må være en gyldig epost-adresse (for eksempel navn@eksempel.no)' })
+            .should('exist')
+            .click();
         });
 
       cy.findByRole('textbox', { name: 'E-post' }).should('exist').should('have.focus').type('.no');
