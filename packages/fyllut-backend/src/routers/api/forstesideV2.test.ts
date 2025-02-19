@@ -35,7 +35,7 @@ const addresses = [
 const formTitle = 'testskjema';
 const filePathForsteside = path.join(process.cwd(), '/src/routers/api/test-forsteside.pdf');
 const filePathSoknad = path.join(process.cwd(), '/src/routers/api/test-skjema.pdf');
-const filePathMerged = path.join(process.cwd(), '/src/routers/api/merged.pdf');
+const filePathMerged = path.join(process.cwd(), '/src/routers/api/test-merged.pdf');
 
 describe('[endpoint] forsteside', () => {
   beforeAll(() => {

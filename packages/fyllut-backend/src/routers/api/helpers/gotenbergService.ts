@@ -183,7 +183,7 @@ const applyMetadata = async (
   ) => {
   const formData = new FormData();
 
-  formData.append("file", Buffer.from(new Uint8Array(pdfBuffer)), "merged.pdf");
+  formData.append("file", Buffer.from(new Uint8Array(pdfBuffer)), "test-merged.pdf");
   formData.append("metadata", JSON.stringify(metadata));
   formData.append('pdfa', options.pdfa ? 'PDF/A-1b' : '');
   formData.append('pdfua', options.pdfua ? 'true' : '');

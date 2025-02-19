@@ -18,7 +18,7 @@ import { mergeFiles } from './helpers/gotenbergService';
 //import path from "path";
 
 const { skjemabyggingProxyUrl, formsApiUrl } = config;
-//const filePath = path.join(process.cwd(), '/src/routers/api/merged-test.pdf');
+//const filePath = path.join(process.cwd(), '/src/routers/api/merged.pdf');
 const forstesideV2 = {
   post: async (req: Request, res: Response, next: NextFunction) => {
     try {
