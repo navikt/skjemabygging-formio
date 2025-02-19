@@ -92,11 +92,13 @@ const GlobalTranslationsProvider = ({ children }) => {
   };
 
   const deleteTranslation = async (id: number) => {
-    await translationsApi.delete(id);
-    setState((current) => ({
-      ...current,
-      data: current.data?.filter((translation) => translation.id !== id),
-    }));
+    const result = await translationsApi.delete(id);
+    if (result) {
+      setState((current) => ({
+        ...current,
+        data: current.data?.filter((translation) => translation.id !== id),
+      }));
+    }
   };
 
   const publish = async () => {

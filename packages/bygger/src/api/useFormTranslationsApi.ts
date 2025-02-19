@@ -64,9 +64,11 @@ const useFormTranslationsApi = () => {
     try {
       await http.delete(`${getPath(formPath)}/${id}`);
       feedbackEmit.success(`Oversettelse med id ${id} for skjema ${formPath} ble slettet`);
+      return true;
     } catch (error) {
       const message = (error as Error)?.message;
       feedbackEmit.error(`Feil ved sletting av oversettelse med id ${id} for skjema ${formPath}. ${message}`);
+      return false;
     }
   };
 

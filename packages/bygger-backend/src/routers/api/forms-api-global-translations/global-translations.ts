@@ -55,9 +55,13 @@ const deleteTranslation = async (req, res, next) => {
   const accessToken = req.headers.AzureAccessToken as string;
   try {
     await globalTranslationsService.delete(id, accessToken);
-    res.status(204).end();
+    res.sendStatus(204);
   } catch (error) {
-    next(error);
+    if (error instanceof OldHttpError) {
+      next(new HttpError(error.message, error.response.status));
+    } else {
+      next(error);
+    }
   }
 };
 

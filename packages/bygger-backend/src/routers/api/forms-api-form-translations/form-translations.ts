@@ -55,7 +55,11 @@ const deleteTranslation: RequestHandler = async (req, res, next) => {
     await formTranslationsService.delete(formPath, parseInt(id), accessToken);
     res.sendStatus(204);
   } catch (error) {
-    next(error);
+    if (error instanceof OldHttpError) {
+      next(new HttpError(error.message, error.response.status));
+    } else {
+      next(error);
+    }
   }
 };
 
