@@ -3,12 +3,12 @@ import { FormsResponseForm } from '../../../../shared-domain/src/form';
 import { formService } from '../../services';
 
 const mapForm = (form): FormsResponseForm => ({
-  _id: form._id,
+  _id: form.id ? String(form.id) : form._id,
   title: form.title,
   path: form.path,
-  modified: form.modified,
+  modified: form.publishedAt ?? form.modified,
   properties: {
-    skjemanummer: form.properties.skjemanummer,
+    skjemanummer: form.skjemanummer ?? form.properties.skjemanummer,
     innsending: form.properties.innsending,
     ettersending: form.properties.ettersending,
   },
