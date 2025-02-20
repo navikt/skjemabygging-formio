@@ -1,4 +1,4 @@
-import { NavFormType, SubmissionData, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { Component, NavFormType, SubmissionData, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import FormioUtils from 'formiojs/utils';
 import UtilsOverrides from '../../formio/overrides/utils-overrides/utils-overrides';
 
@@ -16,7 +16,9 @@ interface Attachment {
 const getRelevantAttachments = (form: NavFormType, submissionData: SubmissionData): Attachment[] => {
   return navFormUtils
     .flattenComponents(form.components)
-    .filter((component) => component.properties && !!component.properties.vedleggskode && !component.otherDocumentation)
+    .filter(
+      (component) => component.properties && !!component.properties.vedleggskode && !isOtherDocumentation(component),
+    )
     .map(sanitize)
     .filter((comp) => FormioUtils.checkCondition(comp, undefined, submissionData, form))
     .map((comp) => ({
@@ -41,8 +43,12 @@ const hasOtherDocumentation = (form, submissionData) => {
     .flattenComponents(form.components)
     .map(sanitize)
     .filter((comp) => FormioUtils.checkCondition(comp, undefined, submissionData, form))
-    .some((component) => component.otherDocumentation || component.attachmentType === 'other');
+    .some((component) => isOtherDocumentation(component));
   // TODO: Remove otherDocumentation from component when all attachments have attachmentType set
+};
+
+const isOtherDocumentation = (component: Component): boolean => {
+  return component.otherDocumentation || component.attachmentType === 'other';
 };
 
 const sanitize = (component) => {
