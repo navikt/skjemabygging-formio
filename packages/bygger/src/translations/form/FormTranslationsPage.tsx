@@ -48,7 +48,7 @@ const FormTranslationsPage = ({ form }: Props) => {
         </Title>
       </TitleRowLayout>
       <EditFormTranslationsProvider initialChanges={initialChanges}>
-        <form>
+        <form onSubmit={(event) => event.preventDefault()}>
           <RowLayout
             right={
               <SidebarLayout noScroll>

@@ -41,7 +41,7 @@ const GlobalTranslationsPage = () => {
         <Title>{titles[tag]}</Title>
       </TitleRowLayout>
       <EditGlobalTranslationsProvider>
-        <form>
+        <form onSubmit={(event) => event.preventDefault()}>
           <RowLayout
             right={
               <SidebarLayout noScroll={true}>
