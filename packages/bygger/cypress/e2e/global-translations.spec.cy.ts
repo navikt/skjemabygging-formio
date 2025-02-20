@@ -1,8 +1,6 @@
 import { expect } from 'chai';
 
-// TODO FORMS-API
-// eslint-disable-next-line mocha/no-skipped-tests
-describe.skip('Global translations', () => {
+describe('Global translations', () => {
   beforeEach(() => {
     cy.intercept('GET', '/api/config', { fixture: 'config.json' }).as('getConfig');
     cy.intercept('GET', '/api/translations', { fixture: 'formsApiGlobalTranslations.json' }).as(
@@ -186,7 +184,7 @@ describe.skip('Global translations', () => {
     it('updates new and existing translations', () => {
       cy.intercept('POST', '/api/translations', (req) => {
         expect(req.body).to.deep.equal({
-          key: 'validering.required',
+          key: 'required',
           nb: 'Du må fylle ut: {{field}}',
           nn: 'Du må fylle ut: {{field}}',
           en: 'You must fill in: {{field}}',
