@@ -30,6 +30,7 @@ const parseBody = (
 };
 
 export const getPdf = async (req: Request) => {
+  logger.info('GetPdf: start');
   const { form, submission, submissionMethod, translations, language } = parseBody(req);
 
   logger.info(`GetPdf: with submission set = ${submission != undefined}`);

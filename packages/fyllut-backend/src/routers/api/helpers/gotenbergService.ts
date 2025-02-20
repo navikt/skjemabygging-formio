@@ -18,7 +18,7 @@ import fetchWithRetry from '../../../utils/fetchWithRetry';
 import { generateFooterHtml } from './footerBuilder';
 import { createHtmlFromSubmission } from './htmlBuilder';
 
-const gotenbergUrl = config.gotenbergUrl;
+const { gotenbergUrl } = config;
 
 export const createPdfAsByteArray = async (
   accessToken: string,
@@ -193,7 +193,7 @@ const applyMetadata = async (
 */
 
 const callGotenberg = async (route: string, formData: FormData): Promise<any> => {
-  console.log(`${gotenbergUrl}${route}`);
+  console.log(`Calling Gotenberg with url = ${gotenbergUrl}${route}`);
 
   try {
     // Send the request to Gotenberg
