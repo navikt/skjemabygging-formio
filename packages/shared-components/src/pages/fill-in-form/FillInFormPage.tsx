@@ -112,14 +112,14 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: Fil
       }
       onNextOrPreviousPage(page, currentPanels);
     },
-    [formUrl, isMellomlagringActive, updateMellomlagring, onNextOrPreviousPage, setSubmission, translate],
+    [isMellomlagringActive, updateMellomlagring, onNextOrPreviousPage, setSubmission],
   );
 
   const onPreviousPage = useCallback(
     ({ page, currentPanels }) => {
       onNextOrPreviousPage(page, currentPanels);
     },
-    [formUrl, onNextOrPreviousPage, translate],
+    [onNextOrPreviousPage],
   );
 
   const onCancel = useCallback(
@@ -142,7 +142,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: Fil
     (panel) => {
       updatePanelUrl(panel.path);
     },
-    [formUrl, updatePanelUrl, translate],
+    [updatePanelUrl],
   );
 
   const onFormReady = useCallback(
@@ -194,7 +194,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: Fil
       // We need to get location data from window, since this function runs inside formio
       navigate({ pathname: `${formUrl}/oppsummering`, search: window.location.search });
     },
-    [form.components, formUrl, isMellomlagringActive, navigate, setSubmission, translate, updateMellomlagring],
+    [formUrl, isMellomlagringActive, navigate, setSubmission, updateMellomlagring],
   );
 
   const onConfirmCancel = useCallback(async () => {
@@ -277,7 +277,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: Fil
         form={formForRendering}
         language={currentLanguage}
         i18n={translationsForNavForm}
-        submission={submission}
+        submission={submission as Submission}
         submissionReady={goToPanelFromUrlParam}
         formReady={onFormReady}
         fyllutEvents={fyllutEvents}

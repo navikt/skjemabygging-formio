@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import { Attachment, Component, FormsResponseForm, NavFormType, Panel, PrefillData, Submission } from '../form';
+import { Attachment, Component, FormsResponseForm, NavFormType, Panel, Submission } from '../form';
 import { formSummaryUtil } from '../index';
 import FormioUtils from '../utils/formio/FormioUtils';
 import { camelCase } from './stringUtils';
@@ -114,18 +114,6 @@ const findByNavId = (navId: string, components: Component[]): Component | undefi
 
 const findComponentsByProperty = (property: string, form: NavFormType): Component[] => {
   return flattenComponents(form.components).filter((component) => !!component[property]);
-};
-
-const prefillForm = (navForm: NavFormType, prefillData: PrefillData) => {
-  const formCopy = JSON.parse(JSON.stringify(navForm));
-
-  FormioUtils.eachComponent(formCopy.components, (component: Component) => {
-    if (component.prefillKey && prefillData[component.prefillKey]) {
-      component.prefillValue = prefillData[component.prefillKey];
-    }
-  });
-
-  return formCopy;
 };
 
 export type DependencyType = 'conditional' | 'validation' | 'calculateValue';
@@ -377,7 +365,6 @@ const navFormUtils = {
   isAttachment,
   isNone,
   isEqual,
-  prefillForm,
   createDefaultForm,
   replaceDuplicateNavIds,
 };

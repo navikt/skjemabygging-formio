@@ -313,7 +313,7 @@ export interface FyllutState {
 }
 
 export interface Submission {
-  data?: SubmissionData;
+  data: SubmissionData;
   metadata?: {
     selectedData: any;
     timezone: string;
@@ -347,6 +347,7 @@ export interface Webform {
   destroy: (deleteFromGlobal: boolean) => void;
   focusOnComponent: (args: any) => void;
   redrawNavigation: () => void;
+  checkData: (data: SubmissionData, flags: any[], row: any) => void;
 }
 
 export type UsageContext = 'create' | 'edit';
