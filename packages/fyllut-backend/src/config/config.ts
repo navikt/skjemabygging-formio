@@ -60,7 +60,8 @@ function loadFormioApiServiceUrl() {
 
 const localDevelopmentConfig: DefaultConfig = {
   gitVersion: 'local',
-  useFormioApi: true,
+  useFormioApi: process.env.FORMS_SOURCE === 'formioapi',
+  useFormsApiStaging: !process.env.FORMS_SOURCE || process.env.FORMS_SOURCE === 'formsapi-staging',
   formioApiServiceUrl: loadFormioApiServiceUrl() || 'https://formio-api.intern.dev.nav.no/jvcemxwcpghcqjn',
   forstesideUrl: 'https://www.nav.no/soknader/api/forsteside',
   decoratorUrl: 'https://www.nav.no/dekoratoren?simple=true',
@@ -106,6 +107,7 @@ const defaultConfig: DefaultConfig = {
   sentryDsn: process.env.VITE_SENTRY_DSN!,
   gitVersion: process.env.GIT_SHA!,
   useFormioApi: process.env.FORMS_SOURCE === 'formioapi',
+  useFormsApiStaging: process.env.FORMS_SOURCE === 'formsapi-staging',
   formioApiServiceUrl: loadFormioApiServiceUrl(),
   forstesideUrl: process.env.FOERSTESIDE_URL!,
   decoratorUrl: process.env.DECORATOR_URL!,
@@ -143,7 +145,7 @@ const config: ConfigType = {
 };
 
 const checkConfigConsistency = (config: ConfigType, logError = logger.error, exit = process.exit) => {
-  const { useFormioApi, naisClusterName, formioApiServiceUrl } = config;
+  const { useFormioApi, useFormsApiStaging, naisClusterName, formioApiServiceUrl, formsApiUrl } = config;
   if (useFormioApi) {
     if (naisClusterName === NaisCluster.PROD) {
       logError(`Invalid configuration: FormioApi is not allowed in ${naisClusterName}`);
@@ -151,6 +153,16 @@ const checkConfigConsistency = (config: ConfigType, logError = logger.error, exi
     }
     if (!formioApiServiceUrl) {
       logError('Invalid configuration: Formio api service url is required when using FormioApi');
+      exit(1);
+    }
+  }
+  if (useFormsApiStaging) {
+    if (naisClusterName === NaisCluster.PROD) {
+      logError(`Invalid configuration: FormsApi staging is not allowed in ${naisClusterName}`);
+      exit(1);
+    }
+    if (!formsApiUrl) {
+      logError('Invalid configuration: Forms api url is required when using FormsApi staging');
       exit(1);
     }
   }
