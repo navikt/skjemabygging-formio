@@ -14,7 +14,7 @@ describe('config', () => {
 
   test('FormioApi er ikke tillatt i prod', () => {
     const config = {
-      useFormioApi: true,
+      useFormioMockApi: true,
       naisClusterName: NaisCluster.PROD,
     } as ConfigType;
     checkConfigConsistency(config, logError, exit as any);
@@ -34,7 +34,7 @@ describe('config', () => {
 
   test('SkjemaUrl er påkrevd når FormioApi skal brukes i dev', () => {
     const config = {
-      useFormioApi: true,
+      useFormioMockApi: true,
       naisClusterName: NaisCluster.DEV,
     } as ConfigType;
     checkConfigConsistency(config, logError, exit as any);
@@ -54,7 +54,7 @@ describe('config', () => {
 
   test('FormioApi er tillatt i dev', () => {
     const config = {
-      useFormioApi: true,
+      useFormioMockApi: true,
       naisClusterName: NaisCluster.DEV,
       formioApiServiceUrl: 'https://form.io',
     } as ConfigType;

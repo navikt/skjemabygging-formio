@@ -32,7 +32,7 @@ export type IdportenConfig = {
 export type DefaultConfig = {
   gitVersion: string;
   sentryDsn?: string;
-  useFormioApi: boolean;
+  useFormioMockApi: boolean;
   useFormsApiStaging: boolean;
   formioApiServiceUrl?: string;
   forstesideUrl: string;
