@@ -1,8 +1,9 @@
+import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { setupNavFormio } from '../../../test/navform-render';
 import { AppConfigProvider } from '../../context/config/configContext';
-import NavForm from './NavForm.js';
+import NavForm from './NavForm';
 
 const testFormWithStandardAndReactComponents = {
   title: 'Testskjema med vanilla og React componenter',
@@ -69,7 +70,7 @@ const testskjemaForOversettelser = {
       },
     },
   ],
-};
+} as NavFormType;
 
 describe('NavForm', () => {
   beforeAll(setupNavFormio);
@@ -146,7 +147,6 @@ describe('NavForm', () => {
       expect(textField).toHaveValue('Donald');
 
       const datepicker = await screen.findByLabelText('Dato (dd.mm.åååå)');
-      expect(datepicker).toBeInTheDocument();
       await waitFor(() => {
         expect(datepicker).toHaveValue('01.01.2000');
       });
