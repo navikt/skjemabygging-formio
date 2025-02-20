@@ -37,7 +37,7 @@ export const validateFormMetadata = (form: NavFormType, usageContext: UsageConte
 
   // Some fields are only required in edit mode
   if (usageContext === 'edit') {
-    if (!form.properties.innsending) {
+    if (!form.properties.innsending?.length) {
       errors.innsending = 'Du må velge innsendingstype';
     }
     if (!form.properties.ettersending) {

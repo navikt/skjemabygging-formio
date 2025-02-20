@@ -3,6 +3,7 @@ import { InnsendingType, NavFormSettingsDiff, NavFormType } from '@navikt/skjema
 import LabelWithDiff from '../LabelWithDiff';
 import SubmissionTypeSelect from '../SubmissionTypeSelect';
 import { FormMetadataError, UpdateFormFunction } from '../utils/utils';
+import { SubmissionTypeCheckbox } from './SubmissionTypeCheckbox';
 
 export interface SubmissionFieldsProps {
   onChange: UpdateFormFunction;
@@ -20,16 +21,19 @@ const SubmissionFields = ({ onChange, diff, form, errors }: SubmissionFieldsProp
 
   return (
     <>
-      <SubmissionTypeSelect
+      <SubmissionTypeCheckbox
         name="form-innsending"
         label={<LabelWithDiff label="Innsending" diff={!!diff.innsending} />}
-        value={innsending}
+        value={innsending || []}
         error={errors?.innsending}
         readonly={isLockedForm}
         onChange={(event) =>
           onChange({
             ...form,
-            properties: { ...form.properties, innsending: event.target.value as InnsendingType },
+            properties: {
+              ...form.properties,
+              innsending: [...(form.properties.innsending || []), event.target.value] as InnsendingType[],
+            },
           })
         }
       />
@@ -48,26 +52,27 @@ const SubmissionFields = ({ onChange, diff, form, errors }: SubmissionFieldsProp
         }
       />
 
-      {!!ettersending && ettersending !== 'INGEN' && (
-        <TextField
-          onWheel={(e) => e.currentTarget.blur()} // disable scroll wheel on number input
-          className="mb"
-          label={<LabelWithDiff label="Ettersendelsesfrist (dager)" diff={!!diff.ettersendelsesfrist} />}
-          type="number"
-          id="ettersendelsesfrist"
-          value={ettersendelsesfrist || ''}
-          readOnly={isLockedForm}
-          onChange={(event) =>
-            onChange({
-              ...form,
-              properties: { ...form.properties, ettersendelsesfrist: event.target.value },
-            })
-          }
-          placeholder={'Standard (14 dager)'}
-        />
-      )}
+      {!!ettersending &&
+        ettersending !== 'INGEN' && ( // TODO skriv om
+          <TextField
+            onWheel={(e) => e.currentTarget.blur()} // disable scroll wheel on number input
+            className="mb"
+            label={<LabelWithDiff label="Ettersendelsesfrist (dager)" diff={!!diff.ettersendelsesfrist} />}
+            type="number"
+            id="ettersendelsesfrist"
+            value={ettersendelsesfrist || ''}
+            readOnly={isLockedForm}
+            onChange={(event) =>
+              onChange({
+                ...form,
+                properties: { ...form.properties, ettersendelsesfrist: event.target.value },
+              })
+            }
+            placeholder={'Standard (14 dager)'}
+          />
+        )}
 
-      {innsending === 'INGEN' && (
+      {innsending === 'INGEN' && ( // TODO skrive om sjekk
         <>
           <TextField
             className="mb"
