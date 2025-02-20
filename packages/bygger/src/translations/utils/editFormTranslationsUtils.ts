@@ -1,3 +1,4 @@
+import { getCountries } from '@navikt/skjemadigitalisering-shared-components';
 import { Form, FormsApiFormTranslation, FormsApiGlobalTranslation } from '@navikt/skjemadigitalisering-shared-domain';
 import { getFormTexts } from '../../old_translations/utils';
 
@@ -29,11 +30,14 @@ const generateAndPopulateTranslationsForForm = (
   globalTranslations: Record<string, FormsApiGlobalTranslation>,
 ): FormsApiFormTranslation[] => {
   const textObjects = getFormTexts(form, false);
+  const countries = getCountries('nb');
 
-  return textObjects.map(({ text }) => {
-    const populatedTranslation = populateFromStoredTranslations(text, storedTranslations);
-    return checkForGlobalOverride(populatedTranslation, globalTranslations);
-  });
+  return textObjects
+    .filter(({ text }) => !countries.some((country) => country.label === text))
+    .map(({ text }) => {
+      const populatedTranslation = populateFromStoredTranslations(text, storedTranslations);
+      return checkForGlobalOverride(populatedTranslation, globalTranslations);
+    });
 };
 
 export { generateAndPopulateTranslationsForForm };
