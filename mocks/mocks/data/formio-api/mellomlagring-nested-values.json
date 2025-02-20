@@ -26137,7 +26137,7 @@
   "properties": {
     "skjemanummer": "NAV 02-08.05",
     "tema": "MED",
-    "innsending": "PAPIR_OG_DIGITAL",
+    "submissionTypes": ["PAPER", "DIGITAL"],
     "signatures": [
       {
         "label": "Søker",

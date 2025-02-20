@@ -67,7 +67,7 @@ const originalForm: NavFormType = {
   properties: {
     skjemanummer: 'Test Form',
     tema: 'BIL',
-    innsending: 'KUN_DIGITAL',
+    submissionTypes: ['DIGITAL'],
   },
 } as NavFormType;
 

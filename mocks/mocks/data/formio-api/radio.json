@@ -422,7 +422,7 @@
   "properties": {
     "skjemanummer": "radio-test",
     "tema": "AAP",
-    "innsending": "PAPIR_OG_DIGITAL",
+    "submissionTypes": ["PAPER", "DIGITAL"],
     "ettersending": "PAPIR_OG_DIGITAL",
     "signatures": [
       {

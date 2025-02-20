@@ -1,5 +1,5 @@
 import { GuidePanel, Heading, Radio, RadioGroup } from '@navikt/ds-react';
-import { NavFormType, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { NavFormType, submissionTypesUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useState } from 'react';
 import { useHref, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import http from '../../api/util/http/http';
@@ -7,14 +7,17 @@ import LinkButton from '../../components/link-button/LinkButton';
 import { useLanguages } from '../../context/languages';
 import { useAppConfig } from '../../index';
 import { getPanelSlug } from '../../util/form/form';
+
 export interface Props {
   form: NavFormType;
   formUrl: string;
 }
 
+const { isDigitalSubmission, isPaperSubmission, isNoneSubmission, isPaperSubmissionOnly } = submissionTypesUtils;
+
 const supportsPapirOgDigital = (form: NavFormType) => {
-  const { innsending } = form.properties;
-  return !innsending || innsending === 'PAPIR_OG_DIGITAL';
+  const { submissionTypes } = form.properties;
+  return isDigitalSubmission(submissionTypes) && isPaperSubmission(submissionTypes);
 };
 
 export function IntroPage({ form, formUrl }: Props) {
@@ -34,6 +37,7 @@ export function IntroPage({ form, formUrl }: Props) {
   const [selectedSubmissionMethod, setSelectedSubmissionMethod] = useState<string | undefined>(submissionMethod);
   const firstPanelSlug = getPanelSlug(form, 0);
   const basePath = useHref('/');
+  const { submissionTypes } = form.properties;
 
   useEffect(() => {
     if (selectedSubmissionMethod) {
@@ -50,17 +54,17 @@ export function IntroPage({ form, formUrl }: Props) {
         setSaveDataBullet(TEXTS.statiske.introPage.autoSave);
       }
     } else {
-      if (form.properties?.innsending === 'KUN_PAPIR') {
+      if (isPaperSubmissionOnly(submissionTypes)) {
         setDescriptionBold(TEXTS.statiske.introPage.paperDescriptionBold);
         setDescription(TEXTS.statiske.introPage.paperDescription);
         setSaveDataBulletBold(TEXTS.statiske.introPage.notSaveBold);
         setSaveDataBullet(TEXTS.statiske.introPage.notSave);
-      } else if (form.properties?.innsending === 'PAPIR_OG_DIGITAL') {
+      } else if (isPaperSubmission(submissionTypes) && isDigitalSubmission(submissionTypes)) {
         setDescriptionBold(TEXTS.statiske.introPage.paperAndDigitalDescriptionBold);
         setDescription(TEXTS.statiske.introPage.paperAndDigitalDescription);
         setSaveDataBulletBold(undefined);
         setSaveDataBullet(undefined);
-      } else if (form.properties?.innsending === 'INGEN') {
+      } else if (isNoneSubmission(submissionTypes)) {
         setDescriptionBold(TEXTS.statiske.introPage.noSubmissionDescriptionBold);
         setDescription(TEXTS.statiske.introPage.noSubmissionDescription);
         setSaveDataBulletBold(TEXTS.statiske.introPage.notSaveBold);
@@ -71,7 +75,7 @@ export function IntroPage({ form, formUrl }: Props) {
         setSaveDataBullet(TEXTS.statiske.introPage.autoSave);
       }
     }
-  }, [form.properties?.innsending, search, selectedSubmissionMethod]);
+  }, [submissionTypes, search, selectedSubmissionMethod]);
 
   useEffect(() => {
     setMustSelectSubmissionMethod(!submissionMethod && supportsPapirOgDigital(form));

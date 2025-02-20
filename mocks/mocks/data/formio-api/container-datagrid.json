@@ -606,7 +606,7 @@
   "properties": {
     "skjemanummer": "containerDatagrid123",
     "tema": "GEN",
-    "innsending": "PAPIR_OG_DIGITAL",
+    "submissionTypes": ["PAPER", "DIGITAL"],
     "ettersending": "PAPIR_OG_DIGITAL",
     "signatures": [
       {
