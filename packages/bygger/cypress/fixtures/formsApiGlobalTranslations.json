@@ -79,7 +79,7 @@
   },
   {
     "id": 7,
-    "key": "validering.error",
+    "key": "error",
     "tag": "validering",
     "changedAt": "2024-12-12T13:03:19.063368+01:00",
     "changedBy": "Testesen, Test",

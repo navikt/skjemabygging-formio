@@ -1,5 +1,5 @@
 import { Textarea, TextField } from '@navikt/ds-react';
-import { FocusEvent } from 'react';
+import { ChangeEvent } from 'react';
 import WysiwygEditor from '../../components/wysiwyg/WysiwygEditor';
 
 interface Props {
@@ -13,7 +13,7 @@ interface Props {
 }
 
 const TranslationInput = ({ label, defaultValue, isHtml, minRows, onChange, error, autoFocus }: Props) => {
-  const handleBlur = (event: FocusEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+  const handleChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     onChange(event.currentTarget.value);
   };
 
@@ -30,7 +30,7 @@ const TranslationInput = ({ label, defaultValue, isHtml, minRows, onChange, erro
         minRows={minRows}
         resize="vertical"
         defaultValue={defaultValue}
-        onBlur={handleBlur}
+        onChange={handleChange}
       />
     );
   }
@@ -41,7 +41,7 @@ const TranslationInput = ({ label, defaultValue, isHtml, minRows, onChange, erro
       label={label}
       hideLabel
       defaultValue={defaultValue}
-      onBlur={handleBlur}
+      onChange={handleChange}
     />
   );
 };

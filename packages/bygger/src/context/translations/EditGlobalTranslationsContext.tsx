@@ -8,7 +8,7 @@ import { createDefaultGlobalTranslation, Status } from './editTranslationsReduce
 import { getTranslationsForSaving, hasNewTranslationData } from './editTranslationsReducer/selectors';
 import { useGlobalTranslations } from './GlobalTranslationsContext';
 import { getConflictAlertMessage, getGeneralAlertMessage, TranslationError } from './utils/errorUtils';
-import { validate, validateTranslations } from './utils/inputValidation';
+import { validateGlobalTranslations, validateNewGlobalTranslation } from './utils/inputValidation';
 import { saveEachTranslation } from './utils/utils';
 
 interface Props {
@@ -77,11 +77,11 @@ const EditGlobalTranslationsProvider = ({ initialChanges, children }: Props) => 
 
   const saveChanges = async () => {
     const newTranslationHasData = hasNewTranslationData(state);
-    const newTranslationValidationError = newTranslationHasData && validate(state.new, true);
+    const newTranslationValidationError = newTranslationHasData && validateNewGlobalTranslation(state.new);
     const translations = getTranslationsForSaving<FormsApiGlobalTranslation>(state);
     const validationErrors: TranslationError[] = [
       ...(newTranslationValidationError ? [newTranslationValidationError] : []),
-      ...validateTranslations(translations),
+      ...validateGlobalTranslations(translations),
     ];
     if (validationErrors.length > 0) {
       dispatch({ type: 'VALIDATION_ERROR', payload: { errors: validationErrors } });

@@ -6,7 +6,7 @@ import { editFormTranslationsReducer } from './editTranslationsReducer';
 import { getTranslationsForSaving } from './editTranslationsReducer/selectors';
 import { useFormTranslations } from './FormTranslationsContext';
 import { getConflictAlertMessage, getGeneralAlertMessage, TranslationError } from './utils/errorUtils';
-import { validateTranslations } from './utils/inputValidation';
+import { validateFormTranslations } from './utils/inputValidation';
 import { saveEachTranslation } from './utils/utils';
 
 interface Props {
@@ -64,7 +64,7 @@ const EditFormTranslationsProvider = ({ initialChanges, children }: Props) => {
 
   const saveChanges = async () => {
     const translations = getTranslationsForSaving<FormsApiFormTranslation>(state);
-    const validationErrors = validateTranslations(translations);
+    const validationErrors = validateFormTranslations(translations);
 
     if (validationErrors.length > 0) {
       dispatch({ type: 'VALIDATION_ERROR', payload: { errors: validationErrors } });
