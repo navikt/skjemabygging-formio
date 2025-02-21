@@ -23,7 +23,6 @@ class FormService {
       const list: Form[] = (await fetchFromApi(
         `${formsApiUrl}/v1/forms?select=id,path,skjemanummer,title,changedAt,properties`,
       )) as Form[];
-      console.log(`Forms: ${JSON.stringify(list)}`);
       forms = list.map((f) => formioFormsApiUtils.mapFormToNavForm(f));
     } else if (useFormioMockApi) {
       const select = '_id,title,path,modified,properties.skjemanummer,properties.innsending,properties.ettersending';
