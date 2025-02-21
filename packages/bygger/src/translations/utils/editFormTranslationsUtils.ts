@@ -32,12 +32,16 @@ const generateAndPopulateTranslationsForForm = (
   const textObjects = getFormTexts(form, false);
   const countries = getCountries('nb');
 
-  return textObjects
-    .filter(({ text }) => !countries.some((country) => country.label === text))
-    .map(({ text }) => {
-      const populatedTranslation = populateFromStoredTranslations(text, storedTranslations);
-      return checkForGlobalOverride(populatedTranslation, globalTranslations);
-    });
+  return (
+    textObjects
+      // We filter out any country names to avoid having to maintain their translations
+      // All country names on 'nn' and 'en' are added from a third party package when we build the i18n object in FyllUt
+      .filter(({ text }) => !countries.some((country) => country.label === text))
+      .map(({ text }) => {
+        const populatedTranslation = populateFromStoredTranslations(text, storedTranslations);
+        return checkForGlobalOverride(populatedTranslation, globalTranslations);
+      })
+  );
 };
 
 export { generateAndPopulateTranslationsForForm };
