@@ -3,6 +3,7 @@ import { Attachment, Component, FormsResponseForm, NavFormType, Panel, PrefillDa
 import { formSummaryUtil } from '../index';
 import FormioUtils from '../utils/formio/FormioUtils';
 import { camelCase } from './stringUtils';
+import { isDigitalSubmission, isPaperSubmission } from './submissionTypeUtils';
 
 export const toFormPath = (text: string) => camelCase(text).toLowerCase();
 
@@ -233,9 +234,9 @@ export const isSubmissionMethodAllowed = (submissionMethod: string, form: NavFor
   const { innsending } = form.properties;
   switch (submissionMethod) {
     case 'digital':
-      return !innsending || innsending === 'PAPIR_OG_DIGITAL' || innsending === 'KUN_DIGITAL';
+      return !innsending || isDigitalSubmission(innsending);
     case 'paper':
-      return !innsending || innsending === 'PAPIR_OG_DIGITAL' || innsending === 'KUN_PAPIR';
+      return !innsending || isPaperSubmission(innsending);
   }
   return false;
 };
@@ -328,7 +329,7 @@ const createDefaultForm = (config): NavFormType => ({
   properties: {
     skjemanummer: '',
     tema: '',
-    innsending: 'PAPIR_OG_DIGITAL',
+    innsending: ['PAPIR_OG_DIGITAL'],
     ettersending: 'PAPIR_OG_DIGITAL',
     signatures: [{ label: '', description: '', key: uuidv4() }],
     ettersendelsesfrist: '14',

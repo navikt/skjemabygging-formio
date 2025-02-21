@@ -123,6 +123,7 @@ import objectUtils from './utils/objectUtils';
 import paginationUtils from './utils/pagination';
 import signatureUtils from './utils/signatureUtils';
 import stringUtils from './utils/stringUtils';
+import { isDigitalSubmission, isPaperSubmission } from './utils/submissionTypeUtils';
 import translationUtils from './utils/translation';
 import validatorUtils from './utils/validatorUtils';
 import yourInformationUtils from './utils/yourInformationUtils';
@@ -141,6 +142,8 @@ export {
   formSummaryUtil,
   forstesideUtils,
   guid,
+  isDigitalSubmission,
+  isPaperSubmission,
   languagesUtil,
   localizationUtils,
   loggingUtils,

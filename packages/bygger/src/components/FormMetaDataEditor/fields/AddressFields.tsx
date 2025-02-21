@@ -1,5 +1,10 @@
 import { Link, Select } from '@navikt/ds-react';
-import { NavFormSettingsDiff, NavFormType, Recipient } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  isPaperSubmission,
+  NavFormSettingsDiff,
+  NavFormType,
+  Recipient,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import { Link as ReactRouterLink } from 'react-router-dom';
 import { useRecipients } from '../../../context/recipients/RecipientsContext';
 import LabelWithDiff from '../LabelWithDiff';
@@ -12,7 +17,7 @@ export interface AddressFieldsProps {
 }
 
 const AddressFields = ({ onChange, diff, form }: AddressFieldsProps) => {
-  const innsending = form.properties.innsending || 'PAPIR_OG_DIGITAL';
+  const innsending = form.properties.innsending || ['PAPIR_OG_DIGITAL'];
   const mottaksadresseId = form.properties.mottaksadresseId;
   const isLockedForm = form.properties.isLockedForm;
   const { isReady: isMottaksAdresserReady, recipients } = useRecipients();
@@ -23,7 +28,7 @@ const AddressFields = ({ onChange, diff, form }: AddressFieldsProps) => {
 
   return (
     <>
-      {(innsending === 'KUN_PAPIR' || innsending === 'PAPIR_OG_DIGITAL') && (
+      {isPaperSubmission(innsending) && (
         <div>
           <Select
             className="mb-4"

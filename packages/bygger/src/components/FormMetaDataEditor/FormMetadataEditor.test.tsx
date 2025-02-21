@@ -51,7 +51,7 @@ const defaultForm: NavFormType = {
   components: [],
   properties: {
     skjemanummer: 'TST 12.34-56',
-    innsending: 'PAPIR_OG_DIGITAL',
+    innsending: ['PAPIR_OG_DIGITAL'],
     tema: 'BIL',
     enhetMaVelgesVedPapirInnsending: false,
     enhetstyper: [],
@@ -129,7 +129,7 @@ describe('FormMetadataEditor', () => {
           ...defaultForm,
           properties: {
             ...defaultForm.properties,
-            innsending: 'INGEN',
+            innsending: ['INGEN'],
           },
         };
         const { rerender } = render(<FormMetadataEditor form={form} onChange={mockOnChange} />);
@@ -150,7 +150,7 @@ describe('FormMetadataEditor', () => {
         ...defaultForm,
         properties: {
           ...defaultForm.properties,
-          innsending: 'PAPIR_OG_DIGITAL',
+          innsending: ['PAPIR_OG_DIGITAL'],
         },
       };
       const { rerender } = render(<FormMetadataEditor form={form} onChange={mockOnChange} />);
@@ -242,25 +242,25 @@ describe('FormMetadataEditor', () => {
     describe('Mottaksadresse', () => {
       describe('Dropdown med mottaksadresser', () => {
         it('Vises ikke når innsending=INGEN', async () => {
-          const form: NavFormType = formMedProps({ innsending: 'INGEN' });
+          const form: NavFormType = formMedProps({ innsending: ['INGEN'] });
           render(<FormMetadataEditor form={form} onChange={mockOnChange} />);
           expect(screen.queryByLabelText('Mottaksadresse')).toBeFalsy();
         });
 
         it('Vises ikke når innsending=KUN_DIGITAL', async () => {
-          const form: NavFormType = formMedProps({ innsending: 'KUN_DIGITAL' });
+          const form: NavFormType = formMedProps({ innsending: ['KUN_DIGITAL'] });
           render(<FormMetadataEditor form={form} onChange={mockOnChange} />);
           expect(screen.queryByLabelText('Mottaksadresse')).toBeFalsy();
         });
 
         it('Vises når innsending=KUN_PAPIR', async () => {
-          const form: NavFormType = formMedProps({ innsending: 'KUN_PAPIR' });
+          const form: NavFormType = formMedProps({ innsending: ['KUN_PAPIR'] });
           render(<FormMetadataEditor form={form} onChange={mockOnChange} />);
           expect(screen.queryByLabelText('Mottaksadresse')).toBeTruthy();
         });
 
         it('Vises når innsending=PAPIR_OG_DIGITAL', async () => {
-          const form: NavFormType = formMedProps({ innsending: 'PAPIR_OG_DIGITAL' });
+          const form: NavFormType = formMedProps({ innsending: ['PAPIR_OG_DIGITAL'] });
           render(<FormMetadataEditor form={form} onChange={mockOnChange} />);
           expect(screen.queryByLabelText('Mottaksadresse')).toBeTruthy();
         });
@@ -311,7 +311,7 @@ describe('FormMetadataEditor', () => {
 
       it('Vises når innsending=KUN_PAPIR', async () => {
         const form: NavFormType = formMedProps({
-          innsending: 'KUN_PAPIR',
+          innsending: ['KUN_PAPIR'],
           mottaksadresseId: undefined,
         });
         render(editFormMetadataEditor(form, mockOnChange));
@@ -319,19 +319,19 @@ describe('FormMetadataEditor', () => {
       });
 
       it('Vises når innsending=PAPIR_OG_DIGITAL', async () => {
-        const form: NavFormType = formMedProps({ innsending: 'PAPIR_OG_DIGITAL' });
+        const form: NavFormType = formMedProps({ innsending: ['PAPIR_OG_DIGITAL'] });
         render(editFormMetadataEditor(form, mockOnChange));
         expect(screen.queryByRole('checkbox', { name: expectedCheckboxName })).toBeTruthy();
       });
 
       it('Vises ikke når innsending=INGEN', async () => {
-        const form: NavFormType = formMedProps({ innsending: 'INGEN' });
+        const form: NavFormType = formMedProps({ innsending: ['INGEN'] });
         render(editFormMetadataEditor(form, mockOnChange));
         expect(screen.queryByRole('checkbox', { name: expectedCheckboxName })).toBeFalsy();
       });
 
       it('Vises ikke når innsending=KUN_DIGITAL', async () => {
-        const form: NavFormType = formMedProps({ innsending: 'KUN_DIGITAL' });
+        const form: NavFormType = formMedProps({ innsending: ['KUN_DIGITAL'] });
         render(editFormMetadataEditor(form, mockOnChange));
         expect(screen.queryByRole('checkbox', { name: expectedCheckboxName })).toBeFalsy();
       });

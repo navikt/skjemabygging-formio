@@ -1,8 +1,8 @@
-import { Checkbox, TextField, Textarea } from '@navikt/ds-react';
+import { Checkbox, Textarea, TextField } from '@navikt/ds-react';
 import { InnsendingType, NavFormSettingsDiff, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import LabelWithDiff from '../LabelWithDiff';
 import SubmissionTypeSelect from '../SubmissionTypeSelect';
-import { FormMetadataError, UpdateFormFunction } from '../utils/utils';
+import { ensureValueIsSubmissionArray, FormMetadataError, UpdateFormFunction } from '../utils/utils';
 import { SubmissionTypeCheckbox } from './SubmissionTypeCheckbox';
 
 export interface SubmissionFieldsProps {
@@ -13,7 +13,7 @@ export interface SubmissionFieldsProps {
 }
 
 const SubmissionFields = ({ onChange, diff, form, errors }: SubmissionFieldsProps) => {
-  const innsending = form.properties.innsending;
+  const innsending = ensureValueIsSubmissionArray(form.properties.innsending || []);
   const ettersending = form.properties.ettersending;
   const ettersendelsesfrist = form.properties.ettersendelsesfrist;
   const hideUserTypes = form.properties.hideUserTypes;
@@ -24,7 +24,7 @@ const SubmissionFields = ({ onChange, diff, form, errors }: SubmissionFieldsProp
       <SubmissionTypeCheckbox
         name="form-innsending"
         label={<LabelWithDiff label="Innsending" diff={!!diff.innsending} />}
-        value={innsending || []}
+        value={innsending}
         error={errors?.innsending}
         readonly={isLockedForm}
         onChange={(event) =>
@@ -32,7 +32,7 @@ const SubmissionFields = ({ onChange, diff, form, errors }: SubmissionFieldsProp
             ...form,
             properties: {
               ...form.properties,
-              innsending: [...(form.properties.innsending || []), event.target.value] as InnsendingType[],
+              innsending: [...event],
             },
           })
         }
@@ -52,27 +52,26 @@ const SubmissionFields = ({ onChange, diff, form, errors }: SubmissionFieldsProp
         }
       />
 
-      {!!ettersending &&
-        ettersending !== 'INGEN' && ( // TODO skriv om
-          <TextField
-            onWheel={(e) => e.currentTarget.blur()} // disable scroll wheel on number input
-            className="mb"
-            label={<LabelWithDiff label="Ettersendelsesfrist (dager)" diff={!!diff.ettersendelsesfrist} />}
-            type="number"
-            id="ettersendelsesfrist"
-            value={ettersendelsesfrist || ''}
-            readOnly={isLockedForm}
-            onChange={(event) =>
-              onChange({
-                ...form,
-                properties: { ...form.properties, ettersendelsesfrist: event.target.value },
-              })
-            }
-            placeholder={'Standard (14 dager)'}
-          />
-        )}
+      {!!ettersending && ettersending !== 'INGEN' && (
+        <TextField
+          onWheel={(e) => e.currentTarget.blur()} // disable scroll wheel on number input
+          className="mb"
+          label={<LabelWithDiff label="Ettersendelsesfrist (dager)" diff={!!diff.ettersendelsesfrist} />}
+          type="number"
+          id="ettersendelsesfrist"
+          value={ettersendelsesfrist || ''}
+          readOnly={isLockedForm}
+          onChange={(event) =>
+            onChange({
+              ...form,
+              properties: { ...form.properties, ettersendelsesfrist: event.target.value },
+            })
+          }
+          placeholder={'Standard (14 dager)'}
+        />
+      )}
 
-      {innsending === 'INGEN' && ( // TODO skrive om sjekk
+      {innsending?.includes('INGEN') && (
         <>
           <TextField
             className="mb"

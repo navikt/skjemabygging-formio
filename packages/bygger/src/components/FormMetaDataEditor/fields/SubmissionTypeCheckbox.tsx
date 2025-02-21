@@ -9,33 +9,26 @@ interface Props {
   error?: any;
   onChange: (event: any) => void;
   excluded?: InnsendingType[];
-  showDefaultCheckbox?: boolean;
   readonly?: boolean;
 }
 
-export const SubmissionTypeCheckbox = ({
-  name,
-  label,
-  // value,
-  onChange,
-  error,
-  excluded,
-  // showDefaultCheckbox = true,
-  readonly,
-}: Props) => {
+export const SubmissionTypeCheckbox = ({ name, label, value, onChange, error, excluded, readonly }: Props) => {
   const include = useCallback((type: InnsendingType) => !excluded?.includes(type), [excluded]);
+
   return (
     <CheckboxGroup
       className="mb"
       legend={label}
       name={name}
       id={name}
-      // value={value}
-      onChange={onChange}
+      value={value}
+      onChange={(e) => {
+        console.log(e);
+        onChange(e);
+      }}
       error={error}
       readOnly={readonly}
     >
-      {/*{showDefaultCheckbox && <Checkbox value="">Velg innsendingstype</Checkbox>}*/}
       {include('PAPIR_OG_DIGITAL') && <Checkbox value="PAPIR_OG_DIGITAL">Papir og digital</Checkbox>}
       {include('KUN_PAPIR') && <Checkbox value="KUN_PAPIR">Kun papir</Checkbox>}
       {include('KUN_DIGITAL') && <Checkbox value="KUN_DIGITAL">Kun digital</Checkbox>}

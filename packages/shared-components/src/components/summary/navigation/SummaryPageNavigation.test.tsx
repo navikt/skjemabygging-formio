@@ -100,7 +100,7 @@ describe('SummaryPageNavigation', () => {
     });
 
     it('når skjemaets innsendingstype er PAPIR_OG_DIGITAL, rendres knapp for å gå videre til send-i-posten', async () => {
-      const form = formWithProperties({ innsending: 'PAPIR_OG_DIGITAL' });
+      const form = formWithProperties({ innsending: ['PAPIR_OG_DIGITAL'] });
       const { router, buttons } = await renderSummaryPageNavigation({ form }, { submissionMethod: 'paper' });
       expectKnapperForRedigerSvarEllerGaVidere(buttons);
       await userEvent.click(buttons.gaVidereKnapp);
@@ -110,7 +110,7 @@ describe('SummaryPageNavigation', () => {
 
   describe("Forhåndvisning i 'bygger' bruker papir-løpet uansett innsending", () => {
     it('innsending=PAPIR_OG_DIGITAL, submissionMethod=paper', async () => {
-      const form = formWithProperties({ innsending: 'PAPIR_OG_DIGITAL' });
+      const form = formWithProperties({ innsending: ['PAPIR_OG_DIGITAL'] });
       const appConfigProps = { submissionMethod: 'paper', app: 'bygger' } as AppConfigContextType;
       const { router, buttons } = await renderSummaryPageNavigation({ form }, appConfigProps);
       expectKnapperForRedigerSvarEllerGaVidere(buttons);
@@ -119,7 +119,7 @@ describe('SummaryPageNavigation', () => {
     });
 
     it('innsending=PAPIR_OG_DIGITAL, submissionMethod=digital', async () => {
-      const form = formWithProperties({ innsending: 'PAPIR_OG_DIGITAL' });
+      const form = formWithProperties({ innsending: ['PAPIR_OG_DIGITAL'] });
       const appConfigProps = { submissionMethod: 'digital', app: 'bygger' } as AppConfigContextType;
       const { router, buttons } = await renderSummaryPageNavigation({ form }, appConfigProps);
       expectKnapperForRedigerSvarEllerGaVidere(buttons);
@@ -128,14 +128,14 @@ describe('SummaryPageNavigation', () => {
     });
 
     it('innsending=KUN_DIGITAL - rendrer knapp for direkte innsending til Nav', async () => {
-      const form = formWithProperties({ innsending: 'KUN_DIGITAL' });
+      const form = formWithProperties({ innsending: ['KUN_DIGITAL'] });
       const appConfigProps = { app: 'bygger' } as AppConfigContextType;
       const { buttons } = await renderSummaryPageNavigation({ form }, appConfigProps);
       expectKnapperForRedigerSvarEllerSendTilNav(buttons);
     });
 
     it('innsending=KUN_PAPIR', async () => {
-      const form = formWithProperties({ innsending: 'KUN_PAPIR' });
+      const form = formWithProperties({ innsending: ['KUN_PAPIR'] });
       const appConfigProps = { app: 'bygger' } as AppConfigContextType;
       const { router, buttons } = await renderSummaryPageNavigation({ form }, appConfigProps);
       expectKnapperForRedigerSvarEllerGaVidere(buttons);
@@ -146,7 +146,7 @@ describe('SummaryPageNavigation', () => {
 
   describe('Form med kun papir-innsending', () => {
     it('Rendrer form med innsending=KUN_PAPIR', async () => {
-      const form = formWithProperties({ innsending: 'KUN_PAPIR' });
+      const form = formWithProperties({ innsending: ['KUN_PAPIR'] });
       const { buttons, router } = await renderSummaryPageNavigation({ form });
       expectKnapperForRedigerSvarEllerGaVidere(buttons);
       await userEvent.click(buttons.gaVidereKnapp);
@@ -169,7 +169,7 @@ describe('SummaryPageNavigation', () => {
         })
         .put('/api/send-inn/utfyltsoknad')
         .reply(201, {}, { Location: 'https://www.unittest.nav.no/send-inn/123' });
-      const form = formWithProperties({ innsending: 'KUN_DIGITAL' }, defaultFormWithAttachment);
+      const form = formWithProperties({ innsending: ['KUN_DIGITAL'] }, defaultFormWithAttachment);
       const { buttons } = await renderSummaryPageNavigation({ form }, { baseUrl: basePath });
       expectKnapperForRedigerSvarEllerGaVidere(buttons);
 
@@ -194,7 +194,7 @@ describe('SummaryPageNavigation', () => {
         })
         .put('/api/send-inn/utfyltsoknad')
         .reply(201, {}, { Location: 'https://www.unittest.nav.no/send-inn/123' });
-      const form = formWithProperties({ innsending: 'KUN_DIGITAL' });
+      const form = formWithProperties({ innsending: ['KUN_DIGITAL'] });
       const { buttons } = await renderSummaryPageNavigation({ form }, { baseUrl: basePath });
       expectKnapperForRedigerSvarEllerSendTilNav(buttons);
 
@@ -209,7 +209,7 @@ describe('SummaryPageNavigation', () => {
 
   describe('Form med ingen innsending', () => {
     it('Rendrer form med innsending=INGEN', async () => {
-      const form = formWithProperties({ innsending: 'INGEN' });
+      const form = formWithProperties({ innsending: ['INGEN'] });
       const { router, buttons } = await renderSummaryPageNavigation({ form });
       expectKnapperForRedigerSvarEllerGaVidere(buttons);
 
@@ -234,7 +234,7 @@ describe('SummaryPageNavigation', () => {
           })
           .put('/api/send-inn/utfyltsoknad')
           .reply(201, {}, { Location: 'https://www.unittest.nav.no/send-inn/123' });
-        const form = formWithProperties({ innsending: 'PAPIR_OG_DIGITAL' });
+        const form = formWithProperties({ innsending: ['PAPIR_OG_DIGITAL'] });
         const { buttons } = await renderSummaryPageNavigation(
           {
             form,
@@ -256,7 +256,7 @@ describe('SummaryPageNavigation', () => {
       });
 
       it('hides next-button if validation of soknad is not complete', async () => {
-        const form = formWithProperties({ innsending: 'PAPIR_OG_DIGITAL' });
+        const form = formWithProperties({ innsending: ['PAPIR_OG_DIGITAL'] });
         const { buttons } = await renderSummaryPageNavigation(
           {
             form,
@@ -272,7 +272,7 @@ describe('SummaryPageNavigation', () => {
       });
 
       it('hides next-button if validation of soknad contains validation errors', async () => {
-        const form = formWithProperties({ innsending: 'PAPIR_OG_DIGITAL' });
+        const form = formWithProperties({ innsending: ['PAPIR_OG_DIGITAL'] });
         const { buttons } = await renderSummaryPageNavigation(
           {
             form,
@@ -289,7 +289,7 @@ describe('SummaryPageNavigation', () => {
     });
 
     it('renders next-button when method=paper', async () => {
-      const form = formWithProperties({ innsending: 'PAPIR_OG_DIGITAL' });
+      const form = formWithProperties({ innsending: ['PAPIR_OG_DIGITAL'] });
       const { router, buttons } = await renderSummaryPageNavigation({ form }, { submissionMethod: 'paper' });
       expectKnapperForRedigerSvarEllerGaVidere(buttons);
 

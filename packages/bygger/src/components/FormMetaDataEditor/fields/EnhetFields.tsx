@@ -1,4 +1,4 @@
-import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
+import { isPaperSubmission, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import EnhetSettings from '../EnhetSettings';
 import { UpdateFormFunction } from '../utils/utils';
 
@@ -8,7 +8,7 @@ export interface EnhetFieldsProps {
 }
 
 const EnhetFields = ({ onChange, form }: EnhetFieldsProps) => {
-  const innsending = form.properties.innsending || 'PAPIR_OG_DIGITAL';
+  const innsending = form.properties.innsending || ['PAPIR_OG_DIGITAL'];
   const mottaksadresseId = form.properties.mottaksadresseId;
   const enhetMaVelgesVedPapirInnsending = form.properties.enhetMaVelgesVedPapirInnsending;
   const enhetstyper = form.properties.enhetstyper;
@@ -16,7 +16,7 @@ const EnhetFields = ({ onChange, form }: EnhetFieldsProps) => {
 
   return (
     <>
-      {(innsending === 'KUN_PAPIR' || innsending === 'PAPIR_OG_DIGITAL') && !mottaksadresseId && (
+      {isPaperSubmission(innsending) && !mottaksadresseId && (
         <div className="mb">
           <EnhetSettings
             enhetMaVelges={!!enhetMaVelgesVedPapirInnsending}
