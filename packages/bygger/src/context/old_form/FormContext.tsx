@@ -136,15 +136,13 @@ const FormProvider = ({ featureToggles, children }: Props) => {
     }
   };
 
-  /**
-   * @deprecated
-   */
   const copyFormFromProduction = async () => {
-    await onCopyFromProd(formPath);
-    // const savedForm = await onCopyFromProd(formPath);
-    // if (!savedForm.error) {
-    //   dispatch({ type: 'form-saved', form: savedForm });
-    // }
+    if (formPath) {
+      const savedForm = await onCopyFromProd(formPath);
+      if (savedForm) {
+        dispatch({ type: 'form-saved', form: savedForm });
+      }
+    }
   };
 
   const value = {

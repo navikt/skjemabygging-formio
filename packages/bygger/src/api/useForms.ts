@@ -5,7 +5,8 @@ import useFormsApiForms from './useFormsApiForms';
  * Temporary. Created to replace formio. Should be replaced by new FormContexts
  * */
 const useForms = () => {
-  const { getAll, get, put, post, postLockForm, deleteLockForm, publish, unpublish, getPublished } = useFormsApiForms();
+  const { getAll, get, put, post, postLockForm, deleteLockForm, publish, unpublish, getPublished, copyFromProd } =
+    useFormsApiForms();
 
   const loadFormsList = async () => {
     return await getAll('title,path,skjemanummer,properties,changedAt,publishedAt,status,lock');
@@ -27,7 +28,9 @@ const useForms = () => {
     return await unpublish(formPath);
   };
 
-  const onCopyFromProd = (_form) => {};
+  const onCopyFromProd = async (formPath: string) => {
+    return await copyFromProd(formPath);
+  };
 
   return {
     loadForm: get,

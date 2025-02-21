@@ -21,7 +21,7 @@ const LockedFormModal = ({ form, open, onClose }: Props) => {
       children={
         <>
           <BodyShort className="mb-4">{form.lock?.reason}</BodyShort>
-          <BodyShort>{'Gå til instillinger for å låse opp skjemaet.'}</BodyShort>
+          <BodyShort>{'Gå til innstillinger for å låse opp skjemaet.'}</BodyShort>
         </>
       }
     />

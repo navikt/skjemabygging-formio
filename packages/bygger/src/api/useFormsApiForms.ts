@@ -1,6 +1,7 @@
 import { http as baseHttp, useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
 import { Form, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
 import { useFeedbackEmit } from '../context/notifications/FeedbackContext';
+import { overwriteForm } from '../import/api';
 
 const useFormsApiForms = () => {
   const feedbackEmit = useFeedbackEmit();
@@ -141,6 +142,18 @@ const useFormsApiForms = () => {
     }
   };
 
+  const copyFromProd = async (formPath: string): Promise<Form | undefined> => {
+    try {
+      const form = await overwriteForm(formPath);
+      feedbackEmit.success('Skjemaet er kopiert fra produksjon.');
+      return form;
+    } catch (error) {
+      const message = (error as Error)?.message;
+      feedbackEmit.error(`Kopiering fra produksjon feilet. ${message}`);
+      return undefined;
+    }
+  };
+
   return {
     getAll,
     get,
@@ -151,6 +164,7 @@ const useFormsApiForms = () => {
     publish,
     unpublish,
     getPublished,
+    copyFromProd,
   };
 };
 
