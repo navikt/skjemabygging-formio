@@ -68,6 +68,7 @@ export type ConfigType = {
   prodFormio?: Pick<FormioConfig, 'apiService' | 'projectName'>;
   fyllut: FyllutConfig;
   formsApi: FormsApiConfig;
+  prodFormsApi?: Pick<FormsApiConfig, 'url'>;
   pusher: PusherConfig;
   githubApp: GithubAppConfig;
   gitSha: string;

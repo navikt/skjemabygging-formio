@@ -23,7 +23,7 @@ export const createApp = (setupDev: boolean = false) => {
 
   app.use(expressJsonMetricHandler(express.json({ limit: '50mb' })));
   app.use(express.urlencoded({ extended: true, limit: '50mb' }));
-  app.use(correlator());
+  app.use(correlator() as any);
   app.use(cors());
   app.set('views', buildDirectory);
   app.set('view engine', 'mustache');

@@ -56,11 +56,31 @@ const useGlobalTranslationsApi = () => {
     }
   };
 
+  const deleteTranslation = async (id: number) => {
+    try {
+      await http.delete(`${basePath}/${id}`);
+      feedbackEmit.success(`Global oversettelse med id ${id} ble slettet`);
+      return true;
+    } catch (error: any) {
+      const status = error?.status;
+      const message = (error as Error)?.message;
+      if (status === 409) {
+        feedbackEmit.error(
+          `Kan ikke slette global oversettelse med id ${id} fordi den er i bruk av et eller flere skjemaer.`,
+        );
+      } else {
+        feedbackEmit.error(`Feil ved sletting av global oversettelse med id ${id}. ${message}`);
+      }
+      return false;
+    }
+  };
+
   return {
     get,
     post,
     put,
     publish,
+    delete: deleteTranslation,
   };
 };
 

@@ -1,22 +1,22 @@
 export const validering = {
   // Generelle feilmeldinger
   error: 'For å gå videre må du rette opp følgende:',
-  invalid_email: '{{field}} må være en gyldig epost-adresse.',
-  invalid_regex: '{{field}} passer ikke til uttrykket {{regex}}.',
-  mask: 'Dette er ikke et gyldig {{field}}.',
-  maxLength: '{{field}} kan maksimalt ha {{length}} tegn.',
-  minLength: '{{field}} må ha minst {{length}} tegn.',
+  invalid_email: '{{field}} må være en gyldig epost-adresse (for eksempel navn@eksempel.no)',
+  invalid_regex: '{{field}} passer ikke til uttrykket {{regex}}',
+  mask: 'Dette er ikke et gyldig {{field}}',
+  maxLength: '{{field}} kan ikke ha mer enn {{length}} tegn',
+  minLength: '{{field}} må ha minst {{length}} tegn',
   pattern: '{{field}} stemmer ikke med {{pattern}}',
   required: 'Du må fylle ut: {{field}}',
-  valueIsNotAvailable: '{{field}} er en ugyldig verdi.',
+  valueIsNotAvailable: 'Du har oppgitt en ugyldig verdi i {{field}}',
 
   // Tekstfelt
-  digitsOnly: '{{field}} kan bare inneholde siffer fra 0 til 9',
+  digitsOnly: '{{field}} kan bare inneholde tall',
 
   // Dato / tid
   invalid_date: '{{field}} er ikke en gyldig dato.',
   invalid_day: '{{field}} er ikke en gyldig dag.',
-  maxDate: 'Datoen kan ikke være senere {{maxDate}}',
+  maxDate: 'Datoen kan ikke være senere enn {{maxDate}}',
   minDate: 'Datoen kan ikke være tidligere enn {{minDate}}',
   maxYear: '{{field}} kan ikke være senere enn {{maxYear}}',
   minYear: '{{field}} kan ikke være før {{minYear}}',
@@ -29,13 +29,13 @@ export const validering = {
   invalidIBAN: 'Oppgitt IBAN er ugyldig. Sjekk at du har tastet riktig.',
 
   // national identity number
-  fodselsnummerDNummer: 'Dette er ikke et gyldig fødselsnummer eller D-nummer',
+  fodselsnummerDNummer: 'Dette er ikke et gyldig fødselsnummer eller d-nummer (11 siffer)',
 
   // org
-  orgNrCustomError: 'Dette er ikke et gyldig organisasjonsnummer',
+  orgNrCustomError: 'Dette er ikke et gyldig organisasjonsnummer. Sjekk at du har tastet riktig.',
 
   // accountNumber
-  accountNumberCustomError: 'Dette er ikke et gyldig kontonummer',
+  accountNumberCustomError: 'Dette er ikke et gyldig kontonummer. Sjekk at du har tastet riktig.',
 
   // driving list
   validParkingExpenses: 'Parkeringsutgiftene for {{dato}} må være et gyldig beløp',

@@ -1,25 +1,9 @@
 {
+  "id": 123,
   "title": "Skjema for testing av diff",
-  "name": "tst123456",
   "path": "tst123456",
-  "type": "form",
-  "display": "wizard",
-  "tags": [
-    "nav-skjema",
-    ""
-  ],
-  "access": [
-    {
-      "type": "read_all",
-      "roles": [
-        "628ca77305690db58c974d04",
-        "628ca77305690db58c974d09",
-        "628ca77305690db58c974d0e"
-      ]
-    }
-  ],
-  "submissionAccess": [],
-  "owner": "63a1877b3fc74cc275a517a5",
+  "skjemanummer": "TST-123456",
+  "tema": "DAG",
   "components": [
     {
       "title": "Dine opplysninger",
@@ -3405,11 +3389,12 @@
     "publishedBy": "testbruker@nav.no",
     "publishedLanguages": []
   },
-  "_id": "63c7abd51578ad48a6dc00cc",
-  "created": "2023-01-18T08:20:37.867Z",
-  "modified": "2023-01-19T13:39:48.427Z",
-  "machineName": "jvcemxwcpghcqjn:tst123456",
-  "project": "628ca77305690db58c974cfd",
-  "revisions": "",
-  "_vid": 0
+  "createdAt": "2023-01-18T08:20:37.867Z",
+  "changedAt": "2023-01-19T13:39:47.380Z",
+  "modifiedBy": "testbruker@nav.no",
+  "publishedAt": "2023-01-19T13:39:47.380Z",
+  "publishedBy": "testbruker@nav.no",
+  "revision": 1,
+  "publishedLanguages": ["nb"],
+  "status": "published"
 }

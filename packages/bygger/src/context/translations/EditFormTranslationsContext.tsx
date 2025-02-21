@@ -5,9 +5,8 @@ import { useFeedbackEmit } from '../notifications/FeedbackContext';
 import { editFormTranslationsReducer } from './editTranslationsReducer';
 import { getTranslationsForSaving } from './editTranslationsReducer/selectors';
 import { useFormTranslations } from './FormTranslationsContext';
-import { EditTranslationsContextValue } from './types';
-import { getConflictAlertMessage, getGeneralAlertMessage } from './utils/errorUtils';
-import { validateTranslations } from './utils/inputValidation';
+import { getConflictAlertMessage, getGeneralAlertMessage, TranslationError } from './utils/errorUtils';
+import { validateFormTranslations } from './utils/inputValidation';
 import { saveEachTranslation } from './utils/utils';
 
 interface Props {
@@ -15,14 +14,21 @@ interface Props {
   children: ReactNode;
 }
 
-const defaultValue: EditTranslationsContextValue<FormsApiFormTranslation> = {
+type EditFormTranslationsContextValue = {
+  updateTranslation: (original: FormsApiFormTranslation, lang: TranslationLang, value: string) => void;
+  errors: TranslationError[];
+  editState: string;
+  saveChanges: () => Promise<void>;
+};
+
+const defaultValue: EditFormTranslationsContextValue = {
   updateTranslation: () => {},
   errors: [],
   editState: 'INIT',
   saveChanges: () => Promise.resolve(),
 };
 
-const EditFormTranslationsContext = createContext<EditTranslationsContextValue<FormsApiFormTranslation>>(defaultValue);
+const EditFormTranslationsContext = createContext<EditFormTranslationsContextValue>(defaultValue);
 
 const EditFormTranslationsProvider = ({ initialChanges, children }: Props) => {
   const [state, dispatch] = useReducer(editFormTranslationsReducer, {
@@ -58,7 +64,7 @@ const EditFormTranslationsProvider = ({ initialChanges, children }: Props) => {
 
   const saveChanges = async () => {
     const translations = getTranslationsForSaving<FormsApiFormTranslation>(state);
-    const validationErrors = validateTranslations(translations);
+    const validationErrors = validateFormTranslations(translations);
 
     if (validationErrors.length > 0) {
       dispatch({ type: 'VALIDATION_ERROR', payload: { errors: validationErrors } });
@@ -100,5 +106,5 @@ const EditFormTranslationsProvider = ({ initialChanges, children }: Props) => {
 
 const useEditFormTranslations = () => useContext(EditFormTranslationsContext);
 
-export { EditFormTranslationsContext, useEditFormTranslations };
+export { useEditFormTranslations };
 export default EditFormTranslationsProvider;

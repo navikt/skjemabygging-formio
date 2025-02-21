@@ -27,10 +27,6 @@ import editFormTitle from './editFormTitle';
 import editFormTitleSizeField from './editFormTitleSize';
 import editFormYourInformation from './editFormYourInformation';
 import editShowYearPicker from './editShowYearPicker';
-import editFormAltText from './image/editFormAltText';
-import editFormImage from './image/editFormImage';
-import editFormShowInPdf from './image/editFormShowInPdf';
-import editFormWidthPercent from './image/editFormWidthPercentt';
 
 const editFormDisplay = {
   additionalDescription: editFormAdditionalDescription,
@@ -53,10 +49,6 @@ const editFormDisplay = {
   inline: editFormInline,
   addAnother: editFormAddAnother,
   removeAnother: editFormRemoveAnother,
-  altText: editFormAltText,
-  image: editFormImage,
-  showInPdf: editFormShowInPdf,
-  widthPercent: editFormWidthPercent,
   rowTitle: editFormRowTitle,
   textDisplay: editFormTextDisplay,
   hidden: editFormHidden,

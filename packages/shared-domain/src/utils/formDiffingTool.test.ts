@@ -1,5 +1,5 @@
 import { Component, FormPropertiesType, NavFormType } from '../form';
-import { navFormUtils } from '../index';
+import { Form, navFormUtils } from '../index';
 import tool, { DiffStatus, generateNavFormDiff } from './formDiffingTool';
 import testdataPublishedForm from './testdata/diff/published-form';
 import form from './testdata/nav100750';
@@ -25,16 +25,17 @@ describe('formDiffingTool', () => {
       ],
     } as FormPropertiesType;
 
-    const publishedForm: NavFormType = {
-      title: 'Søknad om penger',
+    const title = 'Søknad om penger';
+    const publishedForm: Form = {
+      title,
       properties: publishedProperties,
-    } as NavFormType;
+    } as Form;
 
     it('reports diff on form title', () => {
       const testform = {
-        ...publishedForm,
+        properties: { ...publishedForm.properties },
         title: 'Søknad om servicehund',
-      } as NavFormType;
+      } as Form;
       const diff = tool.generateNavFormSettingsDiff(publishedForm, testform);
       expect(diff).toEqual({
         title: {
@@ -47,12 +48,12 @@ describe('formDiffingTool', () => {
 
     it('reports diff on tema', () => {
       const testform = {
-        ...publishedForm,
+        title,
         properties: {
           ...publishedProperties,
           tema: 'YRK',
         },
-      } as NavFormType;
+      } as Form;
       const diff = tool.generateNavFormSettingsDiff(publishedForm, testform);
       expect(diff).toEqual({
         tema: {
@@ -66,7 +67,7 @@ describe('formDiffingTool', () => {
     describe('signatures', () => {
       it('reports diff on signatures', () => {
         const testform = {
-          ...publishedForm,
+          title,
           properties: {
             ...publishedProperties,
             signatures: [
@@ -82,7 +83,7 @@ describe('formDiffingTool', () => {
               },
             ],
           },
-        } as NavFormType;
+        } as Form;
         const diff = tool.generateNavFormSettingsDiff(publishedForm, testform);
         expect(diff).toEqual({
           signatures: {
@@ -110,7 +111,7 @@ describe('formDiffingTool', () => {
 
       it('reports diff only on new signature', () => {
         const testform = {
-          ...publishedForm,
+          title,
           properties: {
             ...publishedProperties,
             signatures: [
@@ -126,7 +127,7 @@ describe('formDiffingTool', () => {
               },
             ],
           },
-        } as NavFormType;
+        } as Form;
         const diff = tool.generateNavFormSettingsDiff(publishedForm, testform);
         expect(diff).toEqual({
           signatures: {
@@ -155,7 +156,7 @@ describe('formDiffingTool', () => {
         },
       };
       const testform = {
-        ...publishedFormWithOldSignatures,
+        title,
         properties: {
           ...publishedFormWithOldSignatures.properties,
           signatures: [
@@ -168,7 +169,7 @@ describe('formDiffingTool', () => {
             { key: '3' },
           ],
         },
-      } as NavFormType;
+      } as Form;
       const diff = tool.generateNavFormSettingsDiff(publishedFormWithOldSignatures, testform);
       expect(diff).toEqual({
         signatures: undefined,

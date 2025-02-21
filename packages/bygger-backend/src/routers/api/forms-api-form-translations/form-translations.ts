@@ -48,9 +48,25 @@ const put: RequestHandler = async (req, res, next) => {
   }
 };
 
+const deleteTranslation: RequestHandler = async (req, res, next) => {
+  const { formPath, id } = req.params;
+  const accessToken = req.headers.AzureAccessToken as string;
+  try {
+    await formTranslationsService.delete(formPath, parseInt(id), accessToken);
+    res.sendStatus(204);
+  } catch (error) {
+    if (error instanceof OldHttpError) {
+      next(new HttpError(error.message, error.response.status));
+    } else {
+      next(error);
+    }
+  }
+};
+
 const formTranslations = {
   get,
   post,
   put,
+  delete: deleteTranslation,
 };
 export default formTranslations;

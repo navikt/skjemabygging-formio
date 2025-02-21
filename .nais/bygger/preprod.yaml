@@ -38,6 +38,8 @@ environmentVars:
     value: http://formio-enterprise-server
   - name: FORMIO_PROJECT_NAME_PROD
     value: jvcemxwcpghcqjn
+  - name: FORMS_API_URL_PROD
+    value: https://forms-api.nav.no
 azure:
   ad_groups:
     - id: b7012a89-90b9-4215-b7dc-988b929216e9

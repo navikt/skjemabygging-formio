@@ -10,6 +10,7 @@ const formContainerDatagrid = require('../data/formio-api/container-datagrid.jso
 const formNavdatepicker = require('../data/formio-api/navdatepicker.json');
 const formSubmissionMethod = require('../data/formio-api/submission-method.json');
 const formTestMellomlagring = require('../data/formio-api/test-mellomlagring.json');
+const formTestMellomlagringNested = require('../data/formio-api/mellomlagring-nested-values.json');
 const formTestMellomlagringV2 = require('../data/formio-api/test-mellomlagring-v2.json');
 const formSelectV1 = require('../data/formio-api/form-select-v1.json');
 const formSelectV2 = require('../data/formio-api/form-select-v2.json');
@@ -55,6 +56,7 @@ const allForms = [
   { form: formSubmissionMethod, translations: translationsSubmissionMethod },
   { form: formTestMellomlagring, formV2: formTestMellomlagringV2, translations: undefined },
   { form: formYourInformation, translations: formYourInformationTranslations },
+  { form: formTestMellomlagringNested, translations: formYourInformationTranslations },
   { form: formSelectV1, formV2: formSelectV2, translations: undefined },
   { form: formActivities, translations: undefined },
   { form: formDatagridConditional, translations: undefined },

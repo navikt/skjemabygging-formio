@@ -50,8 +50,8 @@ export class GitHubRepo {
       log: {
         debug: () => {},
         info: () => {},
-        warn: logger.warn,
-        error: logger.error,
+        warn: logger.warn.bind(logger),
+        error: logger.error.bind(logger),
       },
     });
   }

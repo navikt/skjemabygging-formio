@@ -47,6 +47,10 @@ export const devFormsApi: FormsApiConfig = {
   },
 };
 
+export const prodFormsApi: Pick<FormsApiConfig, 'url'> = {
+  url: 'https://forms-api.nav.no',
+};
+
 export const devPusher: Partial<PusherConfig> = {
   cluster: 'eu',
 };

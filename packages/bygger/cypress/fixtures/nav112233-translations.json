@@ -1,0 +1,191 @@
+[
+  {
+    "id": 14148,
+    "key": "AK tester publisering",
+    "revision": 1,
+    "nb": "AK tester publisering",
+    "nn": "AK testar publisering",
+    "changedAt": "2025-02-13T22:22:34.437+01",
+    "changedBy": "Ann Katrin Gagnat"
+  },
+  {
+    "id": 14136,
+    "key": "Annen dokumentasjon",
+    "revision": 1,
+    "globalTranslationId": 659,
+    "nb": "Annen dokumentasjon",
+    "nn": "Annan dokumentasjon",
+    "en": "Other documentation",
+    "changedAt": "2025-02-13T21:40:22.707+01",
+    "changedBy": "Ann Katrin Gagnat"
+  },
+  {
+    "id": 14140,
+    "key": "Bor du i Norge?",
+    "revision": 1,
+    "globalTranslationId": 838,
+    "nb": "Bor du i Norge?",
+    "nn": "Bur du i Noreg?",
+    "en": "Do you live in Norway?",
+    "changedAt": "2025-02-13T21:40:22.756+01",
+    "changedBy": "Ann Katrin Gagnat"
+  },
+  {
+    "id": 14134,
+    "key": "Dine opplysninger",
+    "revision": 1,
+    "globalTranslationId": 666,
+    "nb": "Dine opplysninger",
+    "nn": "Opplysningane dine",
+    "en": "Your personal information",
+    "changedAt": "2025-02-13T21:40:22.668+01",
+    "changedBy": "Ann Katrin Gagnat"
+  },
+  {
+    "id": 14142,
+    "key": "Etternavn",
+    "revision": 1,
+    "globalTranslationId": 673,
+    "nb": "Etternavn",
+    "nn": "Etternamn",
+    "en": "Last name",
+    "changedAt": "2025-02-13T21:40:22.818+01",
+    "changedBy": "Ann Katrin Gagnat"
+  },
+  {
+    "id": 14141,
+    "key": "Fornavn",
+    "revision": 1,
+    "globalTranslationId": 674,
+    "nb": "Fornavn",
+    "nn": "Fornamn",
+    "en": "First name",
+    "changedAt": "2025-02-13T21:40:22.756+01",
+    "changedBy": "Ann Katrin Gagnat"
+  },
+  {
+    "id": 14138,
+    "key": "Har du noen annen dokumentasjon du ønsker å legge ved?",
+    "revision": 1,
+    "globalTranslationId": 681,
+    "nb": "Har du noen annen dokumentasjon du ønsker å legge ved?",
+    "nn": "Har du nokon annan dokumentasjon som du ønsker å legge ved?",
+    "en": "Do you have any other documentation you would like to submit?",
+    "changedAt": "2025-02-13T21:40:22.737+01",
+    "changedBy": "Ann Katrin Gagnat"
+  },
+  {
+    "id": 14145,
+    "key": "Har du norsk fødselsnummer eller d-nummer?",
+    "revision": 1,
+    "globalTranslationId": 891,
+    "nb": "Har du norsk fødselsnummer eller d-nummer?",
+    "nn": "Har du norsk fødselsnummer eller d-nummer?",
+    "en": "Do you have a Norwegian national identification number or d number?",
+    "changedAt": "2025-02-13T21:40:22.856+01",
+    "changedBy": "Ann Katrin Gagnat"
+  },
+  {
+    "id": 14147,
+    "key": "Her skal det stå en veiledningstekst for søknaden",
+    "revision": 1,
+    "nb": "Her skal det stå en veiledningstekst for søknaden",
+    "nn": "Her skal det stå ein veiledningstekst for søknaden",
+    "changedAt": "2025-02-13T22:22:34.329+01",
+    "changedBy": "Ann Katrin Gagnat"
+  },
+  {
+    "id": 14225,
+    "key": "Inputmelding",
+    "revision": 1,
+    "nb": "Inputmelding",
+    "nn": "Inputmelding",
+    "changedAt": "2025-02-14T14:47:32.756+01",
+    "changedBy": "Ann Katrin Gagnat"
+  },
+  {
+    "id": 14146,
+    "key": "Jeg legger det ved dette skjemaet",
+    "revision": 1,
+    "globalTranslationId": 912,
+    "nb": "Jeg legger det ved dette skjemaet",
+    "nn": "Eg legg det ved dette skjemaet",
+    "en": "I am attaching it to this form",
+    "changedAt": "2025-02-13T21:40:22.870+01",
+    "changedBy": "Ann Katrin Gagnat"
+  },
+  {
+    "id": 14144,
+    "key": "Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved",
+    "revision": 1,
+    "globalTranslationId": 927,
+    "nb": "Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved",
+    "nn": "Nei, eg har ingen ekstra dokumentasjon eg vil legge ved",
+    "en": "No, I have no additional documentation to attach",
+    "changedAt": "2025-02-13T21:40:22.836+01",
+    "changedBy": "Ann Katrin Gagnat"
+  },
+  {
+    "id": 14143,
+    "key": "<p>Adressen er hentet fra Folkeregisteret. Du kan <a href=\"https://www.skatteetaten.no/person/folkeregister/flytte/endre-postadresse/\" target=\"_blank\" rel=\"noopener noreferrer\"> endre adressen på Skatteetatens nettsider (åpnes i ny fane)</a>.</p>",
+    "revision": 1,
+    "globalTranslationId": 654,
+    "nb": "<p>Adressen er hentet fra Folkeregisteret. Du kan <a href=\"https://www.skatteetaten.no/person/folkeregister/flytte/endre-postadresse/\" target=\"_blank\" rel=\"noopener noreferrer\"> endre adressen på Skatteetatens nettsider (åpnes i ny fane)</a>.</p>",
+    "nn": "<p>Adressa er henta frå Folkeregisteret. Du kan <a href=\"https://www.skatteetaten.no/person/folkeregister/flytte/endre-postadresse/\" target=\"_blank\" rel=\"noopener noreferrer\"> endre adressa på nettstaden til Skatteetaten (blir opna i ny fane)</a>.</p>",
+    "en": "<p>The address is taken from the National Population Register. You can <a href=\"https://www.skatteetaten.no/en/person/national-registry/moving/changed-postal-address/\" target=\"_blank\" rel=\"noopener noreferrer\"> change the address on the Norwegian Tax Administration's website (opens in a new tab )</a>.</p>",
+    "changedAt": "2025-02-13T21:40:22.823+01",
+    "changedBy": "Ann Katrin Gagnat"
+  },
+  {
+    "id": 14271,
+    "key": "<p>Dette er en søknad for testing</p>",
+    "revision": 1,
+    "nb": "<p>Dette er en søknad for testing</p>",
+    "nn": "<p>Dette er ein søknad for testing</p>",
+    "en": "<p>This is an application for testing</p>",
+    "changedAt": "2025-02-18T10:38:53.290+01",
+    "changedBy": "Ann Katrin Gagnat"
+  },
+  {
+    "id": 14137,
+    "key": "<p>Nav sender svar på søknad og annen kommunikasjon til din folkeregistrerte adresse. Du kan <a href=\"https://www.skatteetaten.no/person/folkeregister/flytte/endre-postadresse/\" target=\"_blank\" rel=\"noopener noreferrer\">sjekke og endre din folkeregistrerte adresse på Skatteetatens nettsider (åpnes i ny fane)</a>.</p>",
+    "revision": 1,
+    "globalTranslationId": 657,
+    "nb": "<p>Nav sender svar på søknad og annen kommunikasjon til din folkeregistrerte adresse. Du kan <a href=\"https://www.skatteetaten.no/person/folkeregister/flytte/endre-postadresse/\" target=\"_blank\" rel=\"noopener noreferrer\">sjekke og endre din folkeregistrerte adresse på Skatteetatens nettsider (åpnes i ny fane)</a>.</p>",
+    "nn": "<p>Nav sender svar på søknaden og annan kommunikasjon til den folkeregistrerte adressa di. Du kan <a href= \"https://www.skatteetaten.no/nn/person/folkeregister/flytte/endre-postadresse/\" target=\"_blank\" rel=\"noopener noreferrer\">sjekke og endre adressa i Folkeregisteret på nettstaden til Skatteetaten (blir opna i ny fane)</a>.</p>",
+    "en": "<p>Nav sends answers to applications and other communication to your registered address. You can <a href=\"https://www.skatteetaten.no/en/person/national-registry/moving/changed-postal-address/\" target=\"_blank\" rel=\"noopener noreferrer\">check and change your registered address on the Norwegian Tax Administration's website (opens in a new tab) </a>.</p>",
+    "changedAt": "2025-02-13T21:40:22.737+01",
+    "changedBy": "Ann Katrin Gagnat"
+  },
+  {
+    "id": 14139,
+    "key": "Vedlegg",
+    "revision": 1,
+    "globalTranslationId": 726,
+    "nb": "Vedlegg",
+    "nn": "Vedlegg",
+    "en": "Attachments",
+    "changedAt": "2025-02-13T21:40:22.755+01",
+    "changedBy": "Ann Katrin Gagnat"
+  },
+  {
+    "id": 14135,
+    "key": "Veiledning",
+    "revision": 1,
+    "globalTranslationId": 728,
+    "nb": "Veiledning",
+    "nn": "Rettleiing",
+    "en": "Guidance",
+    "changedAt": "2025-02-13T21:40:22.699+01",
+    "changedBy": "Ann Katrin Gagnat"
+  },
+  {
+    "id": 14224,
+    "key": "Veiledning C",
+    "revision": 1,
+    "nb": "Veiledning C",
+    "nn": "Veiledning C",
+    "changedAt": "2025-02-14T14:47:32.655+01",
+    "changedBy": "Ann Katrin Gagnat"
+  }
+]

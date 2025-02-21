@@ -1,6 +1,6 @@
-import { DeclarationType, NavFormType, UsageContext, numberUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { DeclarationType, Form, UsageContext, numberUtils } from '@navikt/skjemadigitalisering-shared-domain';
 
-export type UpdateFormFunction = (form: NavFormType) => void;
+export type UpdateFormFunction = (form: Form) => void;
 export type FormMetadataErrorKeys =
   | 'title'
   | 'skjemanummer'
@@ -14,24 +14,24 @@ export type FormMetadataErrorKeys =
   | 'mellomlagringDurationDays';
 export type FormMetadataError = Partial<{ [key in FormMetadataErrorKeys]: string }>;
 
-export const validateFormMetadata = (form: NavFormType, usageContext: UsageContext) => {
+export const validateFormMetadata = (form: Form, usageContext: UsageContext) => {
   const errors: FormMetadataError = {};
 
   if (!form.title) {
     errors.title = 'Du må oppgi skjematittel';
   }
-  if (!form.properties.skjemanummer) {
+  if (!form.skjemanummer) {
     errors.skjemanummer = 'Du må oppgi skjemanummer';
   }
   if (!form.properties.tema) {
     errors.tema = 'Du må velge ett tema';
   }
 
-  if (form.properties.skjemanummer.length > 20) {
+  if (form.skjemanummer.length > 20) {
     errors.skjemanummer = 'Skjemanummeret kan ikke være lengre enn 20 tegn';
   }
 
-  if (form.properties.isLockedForm && !form.properties.lockedFormReason) {
+  if (!!form.lock && !form.lock.reason) {
     errors.lockedFormReason = 'Du må oppgi en grunn for at skjemaet er låst';
   }
 

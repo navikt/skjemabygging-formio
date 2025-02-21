@@ -1,4 +1,5 @@
 import {
+  formioFormsApiUtils,
   FormsApiGlobalTranslation,
   GlobalTranslationsResourceContent,
 } from '@navikt/skjemadigitalisering-shared-domain';
@@ -6,7 +7,6 @@ import { RequestHandler } from 'express';
 import { HttpError as OldHttpError } from '../../../fetchUtils';
 import { backendInstance, globalTranslationsService } from '../../../services';
 import { HttpError } from '../helpers/errors';
-import { mapGlobalToFormioFormat } from './utils/mapToFormioFormat';
 
 const get: RequestHandler = async (req, res, next) => {
   try {
@@ -50,13 +50,29 @@ const put: RequestHandler = async (req, res, next) => {
   }
 };
 
+const deleteTranslation = async (req, res, next) => {
+  const { id } = req.params;
+  const accessToken = req.headers.AzureAccessToken as string;
+  try {
+    await globalTranslationsService.delete(id, accessToken);
+    res.sendStatus(204);
+  } catch (error) {
+    if (error instanceof OldHttpError) {
+      next(new HttpError(error.message, error.response.status));
+    } else {
+      next(error);
+    }
+  }
+};
+
 const publish: RequestHandler = async (req, res, next) => {
   try {
     const accessToken = req.headers.AzureAccessToken as string;
     await globalTranslationsService.publish(accessToken);
 
     const publishedTranslations = await globalTranslationsService.getPublished(['nn', 'en'], accessToken);
-    const { en, 'nn-NO': nn }: GlobalTranslationsResourceContent = mapGlobalToFormioFormat(publishedTranslations);
+    const { en, 'nn-NO': nn }: GlobalTranslationsResourceContent =
+      formioFormsApiUtils.mapPublishedGlobalTranslationsToFormioFormat(publishedTranslations);
 
     await backendInstance.publishResource('global-translations-en', { en });
     await backendInstance.publishResource('global-translations-nn-NO', { 'nn-NO': nn });
@@ -76,5 +92,6 @@ const globalTranslations = {
   post,
   put,
   publish,
+  delete: deleteTranslation,
 };
 export default globalTranslations;

@@ -1,6 +1,7 @@
 import { ConfirmationModal } from '@navikt/skjemadigitalisering-shared-components';
 import { useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useForm } from '../context/old_form/FormContext';
 
 interface FormChanged {
   changed: boolean;
@@ -9,6 +10,7 @@ interface FormChanged {
 const useUnsavedChangesModal = () => {
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [redirectTo, setRedirectTo] = useState<string | undefined>(undefined);
+  const { resetForm } = useForm();
 
   const navigate = useNavigate();
   const { formPath } = useParams();
@@ -34,9 +36,7 @@ const useUnsavedChangesModal = () => {
         open={openModal}
         onClose={() => setOpenModal(false)}
         onConfirm={() => {
-          if (formPath) {
-            sessionStorage.removeItem(formPath);
-          }
+          resetForm();
           setOpenModal(false);
           if (redirectTo) navigate(redirectTo);
         }}
@@ -49,7 +49,7 @@ const useUnsavedChangesModal = () => {
         }}
       />
     );
-  }, [formPath, redirectTo, navigate, openModal]);
+  }, [openModal, resetForm, redirectTo, navigate]);
 
   return {
     unsavedChangesModalContent: modalContent,

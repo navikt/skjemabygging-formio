@@ -14,7 +14,7 @@ describe('config', () => {
 
   test('FormioApi er ikke tillatt i prod', () => {
     const config = {
-      useFormioApi: true,
+      useFormioMockApi: true,
       naisClusterName: NaisCluster.PROD,
     } as ConfigType;
     checkConfigConsistency(config, logError, exit as any);
@@ -22,9 +22,19 @@ describe('config', () => {
     expect(exit).toBeCalledWith(1);
   });
 
+  test('FormsApi staging er ikke tillatt i prod', () => {
+    const config = {
+      useFormsApiStaging: true,
+      naisClusterName: NaisCluster.PROD,
+    } as ConfigType;
+    checkConfigConsistency(config, logError, exit as any);
+    expect(logError).toBeCalledWith('Invalid configuration: FormsApi staging is not allowed in prod-gcp');
+    expect(exit).toBeCalledWith(1);
+  });
+
   test('SkjemaUrl er påkrevd når FormioApi skal brukes i dev', () => {
     const config = {
-      useFormioApi: true,
+      useFormioMockApi: true,
       naisClusterName: NaisCluster.DEV,
     } as ConfigType;
     checkConfigConsistency(config, logError, exit as any);
@@ -32,11 +42,32 @@ describe('config', () => {
     expect(exit).toBeCalledWith(1);
   });
 
+  test('Forms API url er påkrevd når FormsApi staging skal brukes i dev', () => {
+    const config = {
+      useFormsApiStaging: true,
+      naisClusterName: NaisCluster.DEV,
+    } as ConfigType;
+    checkConfigConsistency(config, logError, exit as any);
+    expect(logError).toBeCalledWith('Invalid configuration: Forms api url is required when using FormsApi staging');
+    expect(exit).toBeCalledWith(1);
+  });
+
   test('FormioApi er tillatt i dev', () => {
     const config = {
-      useFormioApi: true,
+      useFormioMockApi: true,
       naisClusterName: NaisCluster.DEV,
       formioApiServiceUrl: 'https://form.io',
+    } as ConfigType;
+    checkConfigConsistency(config, logError, exit as any);
+    expect(logError).not.toBeCalled();
+    expect(exit).not.toBeCalled();
+  });
+
+  test('FormsApi staging er tillatt i dev', () => {
+    const config = {
+      useFormsApiStaging: true,
+      naisClusterName: NaisCluster.DEV,
+      formsApiUrl: 'https://forms-api.no',
     } as ConfigType;
     checkConfigConsistency(config, logError, exit as any);
     expect(logError).not.toBeCalled();

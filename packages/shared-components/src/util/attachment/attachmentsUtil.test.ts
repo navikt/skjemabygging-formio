@@ -3,6 +3,7 @@ import {
   borDuINorgeRadiopanel,
   panelForsteSide,
   panelVedleggsliste,
+  vedleggAnnenDokumentasjon,
   vedleggBekreftelseBostedsadresse,
 } from '../../../test/test-data/form/defaultFormElements';
 import vedleggConditional from '../../../test/test-data/form/vedlegg-conditional';
@@ -176,6 +177,42 @@ describe('attachmentUtil', () => {
       const submissionData = { [borDuINorgeRadiopanel.key]: 'nei' };
       const attachments = hasOtherDocumentation(form, submissionData);
       expect(attachments).toBe(true);
+    });
+  });
+
+  describe('Test if attachments have the property attachmentType="other" set and take into account conditions', () => {
+    const form = {
+      components: [
+        {
+          ...panelVedleggsliste,
+          components: [
+            {
+              ...vedleggAnnenDokumentasjon,
+            },
+            {
+              ...vedleggBekreftelseBostedsadresse,
+              customConditional: `show = data.ukjentpanel.svar === "nei" || data.${borDuINorgeRadiopanelKey} === "nei"`,
+            },
+          ],
+        },
+      ],
+    } as unknown as NavFormType;
+
+    it('does not return attachment which is not relevant', () => {
+      const submissionData = { [borDuINorgeRadiopanel.key]: 'ja' };
+      const otherDocumentation = hasOtherDocumentation(form, submissionData);
+      expect(otherDocumentation).toBe(true);
+      const attachments = getRelevantAttachments(form, submissionData);
+      expect(attachments).toHaveLength(0);
+    });
+
+    it('does return attachment which is relevant', () => {
+      const submissionData = { [borDuINorgeRadiopanel.key]: 'nei' };
+      const otherDocumentation = hasOtherDocumentation(form, submissionData);
+      expect(otherDocumentation).toBe(true);
+      const attachments = getRelevantAttachments(form, submissionData);
+      expect(attachments).toHaveLength(1);
+      expect(attachments[0].label).toEqual(vedleggBekreftelseBostedsadresse.label);
     });
   });
 });

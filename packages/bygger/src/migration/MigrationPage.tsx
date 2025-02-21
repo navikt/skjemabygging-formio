@@ -1,6 +1,11 @@
 import { Button, Heading, Pagination, ToggleGroup } from '@navikt/ds-react';
 import { makeStyles, NavFormioJs } from '@navikt/skjemadigitalisering-shared-components';
-import { MigrationLevel, NavFormType, paginationUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  formioFormsApiUtils,
+  MigrationLevel,
+  NavFormType,
+  paginationUtils,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useMemo, useReducer, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { FormMigrationLogData } from '../../types/migration';
@@ -275,7 +280,9 @@ const MigrationPage = () => {
           </div>
         </form>
 
-        {migratedForms.length > 0 && <BulkPublishPanel forms={migratedForms} />}
+        {migratedForms.length > 0 && (
+          <BulkPublishPanel forms={migratedForms.map(formioFormsApiUtils.mapNavFormToForm)} />
+        )}
 
         {dryRunSearchResults && (
           <>

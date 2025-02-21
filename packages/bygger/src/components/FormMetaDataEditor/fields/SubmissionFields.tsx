@@ -1,13 +1,13 @@
 import { Checkbox, TextField, Textarea } from '@navikt/ds-react';
-import { InnsendingType, NavFormSettingsDiff, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, FormSettingsDiff, InnsendingType } from '@navikt/skjemadigitalisering-shared-domain';
 import LabelWithDiff from '../LabelWithDiff';
 import SubmissionTypeSelect from '../SubmissionTypeSelect';
 import { FormMetadataError, UpdateFormFunction } from '../utils/utils';
 
 export interface SubmissionFieldsProps {
   onChange: UpdateFormFunction;
-  diff: NavFormSettingsDiff;
-  form: NavFormType;
+  diff: FormSettingsDiff;
+  form: Form;
   errors?: FormMetadataError;
 }
 
@@ -16,7 +16,7 @@ const SubmissionFields = ({ onChange, diff, form, errors }: SubmissionFieldsProp
   const ettersending = form.properties.ettersending;
   const ettersendelsesfrist = form.properties.ettersendelsesfrist;
   const hideUserTypes = form.properties.hideUserTypes;
-  const isLockedForm = form.properties.isLockedForm;
+  const isLockedForm = !!form.lock;
 
   return (
     <>

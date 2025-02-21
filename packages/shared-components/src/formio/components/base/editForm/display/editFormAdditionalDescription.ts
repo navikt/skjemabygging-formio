@@ -16,6 +16,7 @@ const editFormAdditionalDescription = (): Component => {
           required: false,
           custom:
             'valid = (!input && data.additionalDescriptionLabel) ? "Utvidet beskrivelse er påkrevd, når man har lenketekst": true;',
+          maxLength: 4000,
         },
       },
       {

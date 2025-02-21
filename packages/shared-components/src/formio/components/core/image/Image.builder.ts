@@ -6,7 +6,6 @@ const imageBuilder = () => {
     title: schema.label,
     schema: {
       ...schema,
-      validateOn: 'blur',
       validate: {
         required: true,
       },

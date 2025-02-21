@@ -1,8 +1,5 @@
-import {
-  FormsApiFormTranslation,
-  FormsApiGlobalTranslation,
-  NavFormType,
-} from '@navikt/skjemadigitalisering-shared-domain';
+import { getCountries } from '@navikt/skjemadigitalisering-shared-components';
+import { Form, FormsApiFormTranslation, FormsApiGlobalTranslation } from '@navikt/skjemadigitalisering-shared-domain';
 import { getFormTexts } from '../../old_translations/utils';
 
 const populateFromStoredTranslations = (text: string, storedTranslations: Record<string, FormsApiFormTranslation>) => {
@@ -28,16 +25,23 @@ const checkForGlobalOverride = (
 };
 
 const generateAndPopulateTranslationsForForm = (
-  form: NavFormType,
+  form: Form,
   storedTranslations: Record<string, FormsApiFormTranslation>,
   globalTranslations: Record<string, FormsApiGlobalTranslation>,
 ): FormsApiFormTranslation[] => {
   const textObjects = getFormTexts(form, false);
+  const countries = getCountries('nb');
 
-  return textObjects.map(({ text }) => {
-    const populatedTranslation = populateFromStoredTranslations(text, storedTranslations);
-    return checkForGlobalOverride(populatedTranslation, globalTranslations);
-  });
+  return (
+    textObjects
+      // We filter out any country names to avoid having to maintain their translations
+      // All country names on 'nn' and 'en' are added from a third party package when we build the i18n object in FyllUt
+      .filter(({ text }) => !countries.some((country) => country.label === text))
+      .map(({ text }) => {
+        const populatedTranslation = populateFromStoredTranslations(text, storedTranslations);
+        return checkForGlobalOverride(populatedTranslation, globalTranslations);
+      })
+  );
 };
 
 export { generateAndPopulateTranslationsForForm };

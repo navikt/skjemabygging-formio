@@ -5,6 +5,8 @@ const container123Complete = require('../data/innsending-api/mellomlagring/conta
 const containerDatagrid123Complete = require('../data/innsending-api/mellomlagring/containerDatagrid123/complete.json');
 const mellomlagringValidExtraValues = require('../data/innsending-api/mellomlagring/getTestMellomlagring-valid-extra-values.json');
 const prefillDataNames = require('../data/innsending-api/prefill-data/prefill-data-names.json');
+const mellomlagringNestedValuesNorwegianBusiness = require('../data/innsending-api/mellomlagring/mellomlagring-nested-values-norwegian-business.json');
+const mellomlagringNestedValuesForeignBusiness = require('../data/innsending-api/mellomlagring/mellomlagring-nested-values-foreign-business.json');
 const activities = require('../data/innsending-api/activities/activities.json');
 const activitiesMultiple = require('../data/innsending-api/activities/activities-multiple.json');
 const paabegyntMellomlagringOgInnsendt = require('../data/innsending-api/active-tasks/mellomlagringOgEttersending.json');
@@ -170,6 +172,22 @@ module.exports = [
         options: {
           status: 200,
           body: convertToInnsendingApiResponse(prefillDataNames),
+        },
+      },
+      {
+        id: 'success-mellomlagring-nested-norwegian-business',
+        type: 'json',
+        options: {
+          status: 200,
+          body: convertToInnsendingApiResponse(mellomlagringNestedValuesNorwegianBusiness),
+        },
+      },
+      {
+        id: 'success-mellomlagring-nested-foreign-business',
+        type: 'json',
+        options: {
+          status: 200,
+          body: convertToInnsendingApiResponse(mellomlagringNestedValuesForeignBusiness),
         },
       },
       {

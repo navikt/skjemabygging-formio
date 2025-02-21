@@ -14,7 +14,7 @@ const isFormPath = (value: string) => /^\w*$/.test(value);
 export const setupDevServer = (expressApp: Express, fyllutRouter: Router, config: ConfigType) => {
   logger.info('Server setup dev');
 
-  // Trust proxy IP headers, to ensure we get the actual req.ip for the client
+  // Trust proxy IP headers, to ensure we get the actaual req.ip for the client
   expressApp.set('trust proxy', true);
 
   expressApp.all('*', (req: Request, res: Response, next: NextFunction) => {
@@ -42,7 +42,7 @@ export const setupDevServer = (expressApp: Express, fyllutRouter: Router, config
   });
 
   expressApp.all(/^(?!.*\/(test\/login|api)).*$/, cookieParser(), (req: Request, res: Response, next: NextFunction) => {
-    if (isNavIp(req.ip) || req.cookies[DEV_ACCESS_COOKIE]) {
+    if (isNavIp(req.ip || '') || req.cookies[DEV_ACCESS_COOKIE]) {
       logger.debug('Dev access is valid');
       return next();
     } else {

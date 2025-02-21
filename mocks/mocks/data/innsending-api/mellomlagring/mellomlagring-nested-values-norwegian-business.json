@@ -1,0 +1,130 @@
+{
+  "brukerId": "18907299828",
+  "skjemanr": "NAV 02-08.05",
+  "tittel": "Søknad om medlemskap i folketrygden under opphold utenfor EØS",
+  "tema": "MED",
+  "spraak": "nb",
+  "hoveddokument": {
+    "vedleggsnr": "NAV 02-08.05",
+    "tittel": "Søknad om medlemskap i folketrygden under opphold utenfor EØS",
+    "label": "Søknad om medlemskap i folketrygden under opphold utenfor EØS",
+    "pakrevd": true,
+    "mimetype": "application/pdf"
+  },
+  "hoveddokumentVariant": {
+    "vedleggsnr": "NAV 02-08.05",
+    "tittel": "Søknad om medlemskap i folketrygden under opphold utenfor EØS",
+    "label": "Søknad om medlemskap i folketrygden under opphold utenfor EØS",
+    "pakrevd": false,
+    "mimetype": "application/json",
+    "document": {
+      "language": "nb-NO",
+      "data": {
+        "data": {
+          "oppholdetErPermanent": false,
+          "jegBekrefterAtOpplysningeneErKorrekteOgErKjentMedAtNavKanInnhenteOpplysningerSomErNodvendigeForAVurdereSoknaden": true,
+          "fyllerDuUtSoknadenPaVegneAvAndreEnnDegSelv": "nei",
+          "fornavnSoker": "fghgf",
+          "etternavnSoker": "fghgfh",
+          "harDuNorskFodselsnummerEllerDNummer": "ja",
+          "fodselsnummerDNummerSoker": "18907299828",
+          "telefonnummer": "99999999",
+          "hvilketLandSkalDuTil": {
+            "value": "AL",
+            "label": "Albania"
+          },
+          "fraDatoDdMmAaaa": "2025-02-13",
+          "tilDatoDdMmAaaa": "2025-02-21",
+          "harDuOppholdtDegIUtlandetDeSisteFemArene": "nei",
+          "hvilkenTrygdedekningSokerDuOm": "helsedelen",
+          "sokerDuITilleggOmRettTilSykepengerOgForeldrepenger": "ja",
+          "skalDuArbeideEllerDriveNaeringIUtlandet": "ja",
+          "hvaErDinArbeidssituasjonIPerioden1": {
+            "lonnsmottaker": true,
+            "selvstendigNaeringsdrivende": false,
+            "auPairPraktikantEllerArbeidVedSidenAvStudier": false,
+            "annet": false
+          },
+          "hvilkenStillingHarDu": "dfgdfgfd",
+          "sokerDuForBarnUnder18ArSomSkalVaereMedTilUtlandet": "nei",
+          "harDuEktefellePartnerSamboerSomOgsaSkalTilUtlandetOgSenderEgenSoknad": "nei",
+          "harDuNoenFlereOpplysningerTilSoknaden": "nei",
+          "lonnsmottaker2": {
+            "erDuSendtUtAvEnNorskArbeidsgiverForAJobbeIUtlandet": "nei",
+            "skalDuJobbeForEnNorskEllerUtenlandskArbeidsgiver": "norsk"
+          },
+          "arbeidssteder": [
+            {
+              "hvorSkalDuUtforeArbeidet": "paLand",
+              "firmanavn": "fdgfdg",
+              "adresse": "dfgdfg",
+              "postnummer1": "7777",
+              "poststed": "fdgdfgdfg",
+              "region": "dfgdfg",
+              "land": {
+                "value": "DZ",
+                "label": "Algerie"
+              },
+              "skalDuJobbeUtelukkendePaHjemmekontor": "nei",
+              "arbeiderDuIEnRotasjonsordning": "nei"
+            }
+          ],
+          "norskArbeidsgiver": {
+            "virksomhetensNavn": "dfgdfgfg",
+            "orgNr": "931999087",
+            "jegVetIkkeHvaVirksomhetsnummeretEr": false
+          },
+          "betalerDuSkattTilNorge": "ja",
+          "hvilkenVirksomhetFarDuInntektenFra": {
+            "norskVirksomhet": true,
+            "utenlandskVirksomhet": false
+          },
+          "mottarDuITilleggPensjonOffentligeEllerPrivate": "nei",
+          "harDuAndreArbeidsinntekter": "nei",
+          "onskerDuAtNoenAndreSkalMottaOgBetaleFakturaForTrygdeavgiftForDeg": "nei",
+          "norskVirksomhet": {
+            "stipend": {
+              "angiSum": 800,
+              "hvemUtbetalerStipendet": "Lånekassa",
+              "mottarDuUtenlandstillegg": "nei",
+              "mottarDuNaturalytelser": "nei"
+            },
+            "hvaMottarDu": {
+              "lonn": false,
+              "stipend": true
+            }
+          }
+        },
+        "metadata": {
+          "timezone": "Europe/Oslo",
+          "offset": 60,
+          "origin": "https://skjemadelingslenke.ekstern.dev.nav.no",
+          "referrer": "https://skjemadelingslenke.ekstern.dev.nav.no/fyllut/nav020805",
+          "browserName": "Netscape",
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36",
+          "pathName": "/fyllut/nav020805/erklaeringFraSoker",
+          "onLine": true
+        },
+        "state": "submitted",
+        "_vnote": ""
+      }
+    }
+  },
+  "innsendingsId": "a212cb83-e1da-4134-a228-2809eede2b00",
+  "status": "Opprettet",
+  "vedleggsListe": [
+    {
+      "vedleggsnr": "N6",
+      "tittel": "rtyrty",
+      "label": "rtyrty",
+      "pakrevd": false,
+      "beskrivelse": ""
+    }
+  ],
+  "kanLasteOppAnnet": true,
+  "fristForEttersendelse": 14,
+  "endretDato": "2025-02-14T12:42:34.307126+01:00",
+  "skalSlettesDato": "2025-03-14T11:42:34.296042Z",
+  "skjemaPath": "nav020805",
+  "visningsType": "fyllUt"
+}

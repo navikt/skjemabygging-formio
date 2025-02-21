@@ -90,7 +90,7 @@ const MigrationDryRunResults = ({
                   Inkluder i migrering
                 </Checkbox>
               )}
-              <FormStatusPanel publishProperties={result} spacing={'small'} hideToggleDiffButton />
+              <FormStatusPanel formStatusProperties={result} spacing={'small'} hideToggleDiffButton />
             </div>
           </li>
         );

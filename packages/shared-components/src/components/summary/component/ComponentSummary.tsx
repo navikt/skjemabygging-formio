@@ -14,7 +14,6 @@ import DataGridSummary from '../datagrid/DataGridSummary';
 import DrivingListSummary from '../drivingList/DrivingListSummary';
 import SummaryField from '../field/SummaryField';
 import FieldsetSummary from '../fieldset/FieldsetSummary';
-import ImageSummary from '../image/ImageSummary';
 import PanelSummary from '../panel/PanelSummary';
 import SelectBoxesSummary from '../select-boxes/SelectBoxesSummary';
 
@@ -46,8 +45,6 @@ const ComponentSummary = ({ components, formUrl = '', panelValidationList = [] }
               return <DataGridSummary key={key} component={comp} formUrl={formUrl} />;
             case 'selectboxes':
               return <SelectBoxesSummary key={key} component={comp} />;
-            case 'image':
-              return <ImageSummary key={key} component={comp} />;
             case 'htmlelement':
             case 'alertstripe':
               return <SummaryField key={key} component={comp as SummaryFieldType} html={true} />;

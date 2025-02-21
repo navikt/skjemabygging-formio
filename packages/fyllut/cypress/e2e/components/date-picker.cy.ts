@@ -5,7 +5,7 @@ import { dateUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { Settings } from 'luxon';
 
 const validateionBefore = (date: string) => `Datoen kan ikke være tidligere enn ${date}`;
-const validationAfter = (date: string) => `Datoen kan ikke være senere ${date}`;
+const validationAfter = (date: string) => `Datoen kan ikke være senere enn ${date}`;
 
 const EARLIEST_RELATIVE = -10;
 const LATEST_RELATIVE = 5;

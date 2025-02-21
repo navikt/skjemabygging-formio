@@ -184,7 +184,7 @@ describe('Global translations', () => {
     it('updates new and existing translations', () => {
       cy.intercept('POST', '/api/translations', (req) => {
         expect(req.body).to.deep.equal({
-          key: 'validering.required',
+          key: 'required',
           nb: 'Du må fylle ut: {{field}}',
           nn: 'Du må fylle ut: {{field}}',
           en: 'You must fill in: {{field}}',

@@ -1,7 +1,7 @@
 import { Skeleton, Table, UNSAFE_Combobox } from '@navikt/ds-react';
 import { ComboboxOption } from '@navikt/ds-react/esm/form/combobox/types';
 import { makeStyles } from '@navikt/skjemadigitalisering-shared-components';
-import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form } from '@navikt/skjemadigitalisering-shared-domain';
 import { useCallback, useEffect, useState } from 'react';
 import { AppLayout } from '../components/AppLayout';
 import ButtonWithSpinner from '../components/ButtonWithSpinner';
@@ -17,14 +17,13 @@ export const useStyles = makeStyles({
   },
 });
 
-type Result = Pick<NavFormType, 'path' | 'title'> & {
-  skjemanummer: string;
+type Result = Pick<Form, 'path' | 'title' | 'skjemanummer'> & {
   status: 'ok' | 'feilet';
 };
 
 const ImportFormsPage = () => {
   const styles = useStyles();
-  const [forms, setForms] = useState<NavFormType[]>([]);
+  const [forms, setForms] = useState<Form[]>([]);
   const [formsErrorMessage, setFormsErrorMessage] = useState<string | undefined>(undefined);
   const [options, setOptions] = useState<ComboboxOption[]>([]);
   const [filteredOptions, setFilteredOptions] = useState<ComboboxOption[]>([]);
@@ -63,14 +62,14 @@ const ImportFormsPage = () => {
           api
             .overwriteForm(path)
             .then((form) => {
-              return { path, title: form.title, skjemanummer: form.properties.skjemanummer, status: 'ok' } as Result;
+              return { path, title: form.title, skjemanummer: form.skjemanummer, status: 'ok' } as Result;
             })
             .catch((_err) => {
               const form = forms.find((f) => f.path === path);
               return {
                 path,
                 title: form?.title ?? '?',
-                skjemanummer: form?.properties.skjemanummer ?? '?',
+                skjemanummer: form?.skjemanummer ?? '?',
                 status: 'feilet',
               } as Result;
             }),

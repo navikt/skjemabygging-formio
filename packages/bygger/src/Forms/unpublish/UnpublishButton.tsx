@@ -1,11 +1,11 @@
 import { PadlockLockedIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
 import { ConfirmationModal, makeStyles, useModal } from '@navikt/skjemadigitalisering-shared-components';
-import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
-import { useForm } from '../../context/form/FormContext';
+import { Form } from '@navikt/skjemadigitalisering-shared-domain';
+import { useForm } from '../../context/old_form/FormContext';
 import LockedFormModal from '../lockedFormModal/LockedFormModal';
 interface UnpublishButtonProps {
-  form: NavFormType;
+  form: Form;
 }
 
 const useStyles = makeStyles({
@@ -18,12 +18,12 @@ const UnpublishButton = ({ form }: UnpublishButtonProps) => {
   const [openConfirmModal, setOpenConfirmModal] = useModal();
   const [lockedFormModal, setLockedFormModal] = useModal();
   const { unpublishForm } = useForm();
-  const isLockedForm = form.properties.isLockedForm;
+  const isLockedForm = !!form.lock;
   const styles = useStyles();
 
   return (
     <>
-      {form.properties?.published && (
+      {['published', 'pending'].includes(form?.status ?? '') && (
         <>
           <Button
             variant="tertiary"

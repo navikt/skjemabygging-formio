@@ -1,37 +1,27 @@
-import { MockedComponentObjectForTest } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, FormPropertiesType, MockedComponentObjectForTest } from '@navikt/skjemadigitalisering-shared-domain';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import PublishSettingsModal, { getCompleteTranslationLanguageCodeList } from './PublishSettingsModal';
 
-const { createDummyRadioPanel, createFormObject, createPanelObject, createFormPropertiesObject } =
-  MockedComponentObjectForTest;
+const { createDummyRadioPanel, createFormObject, createPanelObject } = MockedComponentObjectForTest;
 
-vi.mock('../../context/i18n/index', () => {
-  const languagesInNorwegian = {
-    'nn-NO': 'Norsk nynorsk',
-    en: 'Engelsk',
-    pl: 'Polsk',
-  };
-
-  const mockTranslationsForNavForm = {
-    en: {
-      'Bor du i Norge?': 'Do you live in Norway?',
-      Veiledning: 'Guidance',
-      'NO-label': 'no',
-      'YES-label': 'yes',
-      'Dine opplysninger': 'Your information',
-      Personinformasjon: 'Personal information',
-      'Hei verden': 'Hello world',
-      'Hei panel': 'Hello panel',
-    },
-    'nn-NO': { 'YES-label': 'yes', 'Hei verden': 'Hei verda', 'Hei panel': 'Hei panel' },
-  };
+vi.mock('../../context/translations/FormTranslationsContext', () => {
+  const mockTranslations = [
+    { key: 'Skjematittel', en: 'Form title', nn: 'Skjematittel' },
+    { key: 'Bor du i Norge?', en: 'Do you live in Norway?' },
+    { key: 'Veiledning', en: 'Guidance' },
+    { key: 'NO-label', en: 'no' },
+    { key: 'YES-label', en: 'yes', nn: 'yes' },
+    { key: 'Dine opplysninger', en: 'Your information' },
+    { key: 'Personinformasjon', en: 'Personal information' },
+    { key: 'Hei verden', en: 'Hello world', nn: 'Hei verda' },
+    { key: 'Hei panel', en: 'Hello panel', nn: 'Hei panel' },
+  ];
   const mockUseI18nState = () => ({
-    translationsForNavForm: mockTranslationsForNavForm,
+    translations: mockTranslations,
   });
   return {
-    useI18nState: mockUseI18nState,
-    languagesInNorwegian,
+    useFormTranslations: mockUseI18nState,
   };
 });
 
@@ -45,42 +35,76 @@ describe('PublishSettingsModal', () => {
   };
 
   it('renders disabled checkbox for Norsk bokmål', () => {
-    const form = createFormObject([createPanelObject('test', [createDummyRadioPanel('Bor du i Sverige?')])]);
+    const oldForm = createFormObject([createPanelObject('test', [createDummyRadioPanel('Bor du i Sverige?')])]);
+    const form: Form = {
+      path: 'nav123456',
+      title: 'Skjematittel',
+      skjemanummer: 'NAV 12-34.56',
+      publishedLanguages: ['nn'],
+      components: oldForm.components,
+      properties: {} as FormPropertiesType,
+      status: 'published',
+    };
     renderPublishSettingsModal(form);
-    expect(screen.queryByRole('checkbox', { name: 'Norsk bokmål (NB-NO)' })).toBeInTheDocument();
-    expect(screen.queryByRole('checkbox', { name: 'Norsk bokmål (NB-NO)' })).toBeChecked();
-    expect(screen.queryByRole('checkbox', { name: 'Norsk bokmål (NB-NO)' })).toBeDisabled();
+    expect(screen.queryByRole('checkbox', { name: 'Norsk bokmål (NB)' })).toBeInTheDocument();
+    expect(screen.queryByRole('checkbox', { name: 'Norsk bokmål (NB)' })).toBeChecked();
+    expect(screen.queryByRole('checkbox', { name: 'Norsk bokmål (NB)' })).toBeDisabled();
   });
 
   it('renders checked checkbox for language with complete translation', async () => {
-    const form = createFormObject(
+    const oldForm = createFormObject(
       [createPanelObject('Dine opplysninger', [createDummyRadioPanel('Bor du i Norge?')])],
       'Veiledning',
     );
+    const form: Form = {
+      path: 'nav123456',
+      title: 'Skjematittel',
+      skjemanummer: 'NAV 12-34.56',
+      // publishedLanguages: ['nn'],
+      components: oldForm.components,
+      properties: {} as FormPropertiesType,
+      status: 'draft',
+    };
     renderPublishSettingsModal(form);
     expect(screen.queryByRole('checkbox', { name: 'Engelsk (EN)' })).toBeInTheDocument();
     expect(screen.queryByRole('checkbox', { name: 'Engelsk (EN)' })).toBeChecked();
-    expect(screen.queryByRole('checkbox', { name: 'Norsk nynorsk (NN-NO)' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('checkbox', { name: 'Norsk nynorsk (NN)' })).not.toBeInTheDocument();
   });
 
   it('renders disabled checkbox for previously published language when current translation is incomplete', async () => {
-    const form = createFormObject(
+    const oldForm = createFormObject(
       [createPanelObject('Dine opplysninger', [createDummyRadioPanel('Bor du i Norge?')])],
       'Veiledning',
-      createFormPropertiesObject({ publishedLanguages: ['nn-NO'] }),
     );
+    const form: Form = {
+      path: 'nav123456',
+      title: 'Skjematittel',
+      skjemanummer: 'NAV 12-34.56',
+      publishedLanguages: ['nn'],
+      components: oldForm.components,
+      properties: {} as FormPropertiesType,
+      status: 'published',
+    };
     renderPublishSettingsModal(form);
-    expect(screen.queryByRole('checkbox', { name: 'Norsk nynorsk (NN-NO)' })).toBeInTheDocument();
-    expect(screen.queryByRole('checkbox', { name: 'Norsk nynorsk (NN-NO)' })).toBeDisabled();
-    expect(screen.queryByRole('checkbox', { name: 'Norsk nynorsk (NN-NO)' })).not.toBeChecked();
+    expect(screen.queryByRole('checkbox', { name: 'Norsk nynorsk (NN)' })).toBeInTheDocument();
+    expect(screen.queryByRole('checkbox', { name: 'Norsk nynorsk (NN)' })).toBeDisabled();
+    expect(screen.queryByRole('checkbox', { name: 'Norsk nynorsk (NN)' })).not.toBeChecked();
   });
 
   it('displays a warning when checkbox for previously published translation is unchecked', async () => {
-    const form = createFormObject(
+    const oldForm = createFormObject(
       [createPanelObject('Dine opplysninger', [createDummyRadioPanel('Bor du i Norge?')])],
       'Veiledning',
-      createFormPropertiesObject({ publishedLanguages: ['en'] }),
     );
+    const form: Form = {
+      path: 'nav123456',
+      title: 'Skjematittel',
+      skjemanummer: 'NAV 12-34.56',
+      publishedLanguages: ['en'],
+      components: oldForm.components,
+      properties: {} as FormPropertiesType,
+      status: 'published',
+    };
     renderPublishSettingsModal(form);
     expect(
       screen.queryByText('OBS! Engelsk (EN) vil bli avpublisert hvis du publiserer med disse innstillingene.'),
@@ -92,56 +116,91 @@ describe('PublishSettingsModal', () => {
   });
 
   it('displays a warning when previously published translation currently is incomplete', () => {
-    const form = createFormObject(
+    const oldForm = createFormObject(
       [createPanelObject('Dine opplysninger', [createDummyRadioPanel('Bor du i Norge?')])],
       'Veiledning',
-      createFormPropertiesObject({ publishedLanguages: ['nn-NO'] }),
     );
+    const form: Form = {
+      path: 'nav123456',
+      title: 'Skjematittel',
+      skjemanummer: 'NAV 12-34.56',
+      components: oldForm.components,
+      properties: {} as FormPropertiesType,
+      publishedLanguages: ['nn'],
+      status: 'published',
+    };
     renderPublishSettingsModal(form);
     expect(
-      screen.queryByText('OBS! Norsk nynorsk (NN-NO) vil bli avpublisert hvis du publiserer med disse innstillingene.'),
+      screen.queryByText('OBS! Norsk nynorsk (NN) vil bli avpublisert hvis du publiserer med disse innstillingene.'),
     ).toBeInTheDocument();
   });
 
-  it('publish will send en-languageCode if the English checkbox is checked', async () => {
-    const form = createFormObject(
+  it('publish will send en-languageCode if the English checkbox is checked, and "nb" (default)', async () => {
+    const oldForm = createFormObject(
       [createPanelObject('Personinformasjon', [createDummyRadioPanel('Bor du i Norge?')])],
       'Veiledning',
     );
+    const form: Form = {
+      path: 'nav123456',
+      title: 'Skjematittel',
+      skjemanummer: 'NAV 12-34.56',
+      publishedLanguages: ['en'],
+      components: oldForm.components,
+      properties: {} as FormPropertiesType,
+      status: 'published',
+    };
     renderPublishSettingsModal(form);
     const englishCheckbox = await screen.findByRole('checkbox', { name: 'Engelsk (EN)' });
     expect(englishCheckbox).toBeTruthy();
-    expect(screen.queryByRole('checkbox', { name: 'Norsk nynorsk (NN-NO)' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('checkbox', { name: 'Norsk nynorsk (NN)' })).not.toBeInTheDocument();
     await userEvent.click(screen.getByRole('button', { name: 'Publiser' }));
     expect(mockedOnPublish).toBeCalled();
-    expect(mockedOnPublish.mock.calls[0][0]).toEqual(['en']);
+    expect(mockedOnPublish.mock.calls[0][0]).toEqual(['en', 'nb']);
   });
 
   it('publishes all checked languages', async () => {
-    const form = createFormObject([createPanelObject('Hei panel')], 'Hei verden');
+    const oldForm = createFormObject([createPanelObject('Hei panel')], 'Hei verden');
+    const form: Form = {
+      path: 'nav123456',
+      title: 'Skjematittel',
+      skjemanummer: 'NAV 12-34.56',
+      publishedLanguages: ['nn', 'nb', 'en'],
+      components: oldForm.components,
+      properties: {} as FormPropertiesType,
+      status: 'published',
+    };
     renderPublishSettingsModal(form);
-    expect(screen.queryByRole('checkbox', { name: 'Norsk nynorsk (NN-NO)' })).toBeInTheDocument();
-    expect(screen.queryByRole('checkbox', { name: 'Norsk nynorsk (NN-NO)' })).toBeChecked();
+    expect(screen.queryByRole('checkbox', { name: 'Norsk nynorsk (NN)' })).toBeInTheDocument();
+    expect(screen.queryByRole('checkbox', { name: 'Norsk nynorsk (NN)' })).toBeChecked();
     expect(screen.queryByRole('checkbox', { name: 'Engelsk (EN)' })).toBeInTheDocument();
     expect(screen.queryByRole('checkbox', { name: 'Engelsk (EN)' })).toBeChecked();
     await userEvent.click(screen.getByRole('button', { name: 'Publiser' }));
     expect(mockedOnPublish).toBeCalled();
-    expect(mockedOnPublish.mock.calls[0][0]).toEqual(['en', 'nn-NO']);
+    expect(mockedOnPublish.mock.calls[0][0]).toEqual(['nn', 'en', 'nb']);
   });
 
-  it('onPublish will send empty array when the English checkbox is checked off', async () => {
-    const form = createFormObject(
+  it('onPublish will send only "nb" (default) when the English checkbox is checked off', async () => {
+    const oldForm = createFormObject(
       [createPanelObject('Personinformasjon', [createDummyRadioPanel('Bor du i Norge?')])],
       'Veiledning',
     );
+    const form: Form = {
+      path: 'nav123456',
+      title: 'Skjematittel',
+      skjemanummer: 'NAV 12-34.56',
+      publishedLanguages: ['en'],
+      components: oldForm.components,
+      properties: {} as FormPropertiesType,
+      status: 'published',
+    };
     renderPublishSettingsModal(form);
     const englishCheckbox = await screen.findByRole('checkbox', { name: 'Engelsk (EN)' });
     expect(englishCheckbox).toBeTruthy();
-    expect(screen.queryByRole('checkbox', { name: 'Norsk nynorsk (NN-NO)' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('checkbox', { name: 'Norsk nynorsk (NN)' })).not.toBeInTheDocument();
     await userEvent.click(await screen.findByRole('checkbox', { name: 'Engelsk (EN)' }));
     await userEvent.click(screen.getByRole('button', { name: 'Publiser' }));
     expect(mockedOnPublish).toBeCalled();
-    expect(mockedOnPublish.mock.calls[0][0]).toEqual([]);
+    expect(mockedOnPublish.mock.calls[0][0]).toEqual(['nb']);
   });
 
   describe('getCompleteTranslationLanguageCodeList', () => {

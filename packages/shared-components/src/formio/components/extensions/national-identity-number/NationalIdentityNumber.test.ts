@@ -37,7 +37,7 @@ describe('Fodselsnummer', () => {
 
   describe('validering', () => {
     const expectedInvalid = {
-      message: 'Dette er ikke et gyldig fødselsnummer eller D-nummer',
+      message: 'Dette er ikke et gyldig fødselsnummer eller d-nummer (11 siffer)',
       level: 'error',
       path: 'fodselsnummerDNummer',
       elementId: undefined,

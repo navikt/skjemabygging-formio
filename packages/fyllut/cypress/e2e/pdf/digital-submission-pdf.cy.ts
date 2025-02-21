@@ -20,7 +20,7 @@ describe('Pdf when digital submission', () => {
       cy.mocksUseRouteVariant('post-exstream-pdf:verify-nav111221b-nb');
       cy.mocksUseRouteVariant('get-activities:success');
       cy.submitMellomlagring((req) => {
-        expect(req.body.attachments).to.have.length(1);
+        expect(req.body.attachments).to.have.length(0);
         expect(req.body.otherDocumentation).to.eq(true);
       });
 
@@ -115,7 +115,7 @@ describe('Pdf when digital submission', () => {
       cy.mocksUseRouteVariant('post-exstream-pdf:verify-nav111221b-nn');
       cy.mocksUseRouteVariant('get-activities:success');
       cy.submitMellomlagring((req) => {
-        expect(req.body.attachments).to.have.length(1);
+        expect(req.body.attachments).to.have.length(0);
         expect(req.body.otherDocumentation).to.eq(true);
       });
 

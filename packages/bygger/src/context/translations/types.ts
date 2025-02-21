@@ -10,6 +10,7 @@ interface EditTranslationsContextValue<Translation extends FormsApiTranslation> 
   editState: Status;
   updateNewTranslation?: (lang: TranslationLang, value: string) => void;
   saveChanges: () => Promise<void>;
+  importFromProduction: () => Promise<void>;
 }
 
 type EditTranslationContext<Translation extends FormsApiTranslation> = Context<

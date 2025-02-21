@@ -1,4 +1,4 @@
-import { AppConfigProvider, LanguagesProvider, NavFormioJs } from '@navikt/skjemadigitalisering-shared-components';
+import { AppConfigProvider, LanguagesProvider } from '@navikt/skjemadigitalisering-shared-components';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
@@ -9,16 +9,11 @@ import { AuthContext } from '../context/auth-context';
 import FeedbackProvider from '../context/notifications/FeedbackContext';
 
 describe('FormsRouter', () => {
-  let formioFetch;
-
   beforeAll(() => {
-    formioFetch = vi.spyOn(NavFormioJs.Formio, 'fetch');
-    formioFetch.mockImplementation(createMockImplementation());
     fetchMock.mockImplementation(createMockImplementation());
   });
 
   afterEach(() => {
-    formioFetch.mockClear();
     fetchMock.mockClear();
   });
 
@@ -34,10 +29,7 @@ describe('FormsRouter', () => {
           <FeedbackProvider>
             <AppConfigProvider featureToggles={featureToggles} baseUrl={DEFAULT_PROJECT_URL}>
               <LanguagesProvider translations={{}}>
-                <AuthenticatedApp
-                  formio={new NavFormioJs.Formio(DEFAULT_PROJECT_URL)}
-                  serverURL={DEFAULT_PROJECT_URL}
-                />
+                <AuthenticatedApp serverURL={DEFAULT_PROJECT_URL} />
               </LanguagesProvider>
             </AppConfigProvider>
           </FeedbackProvider>

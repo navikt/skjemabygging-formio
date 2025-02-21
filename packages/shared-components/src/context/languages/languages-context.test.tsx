@@ -1,3 +1,4 @@
+import { I18nTranslations } from '@navikt/skjemadigitalisering-shared-domain';
 import { render, screen } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { LanguagesProvider, useLanguages } from './languages-context';
@@ -20,7 +21,7 @@ const defaultTranslations = {};
 
 type ParamsMap = { [key: string]: string | undefined };
 type TestComponentInput = { text: string; params?: ParamsMap };
-const renderTestComponent = ({ text, params }: TestComponentInput, translations: object) => {
+const renderTestComponent = ({ text, params }: TestComponentInput, translations: I18nTranslations) => {
   render(
     <BrowserRouter>
       <LanguagesProvider translations={translations || defaultTranslations}>

@@ -21,19 +21,24 @@ describe('FormSettingsPage', () => {
     cy.intercept('GET', '/api/forms/cypresssettings', {
       fixture: 'getForm.json',
     }).as('getForm');
-    cy.intercept('GET', '/api/published-forms/*', { statusCode: 404 }).as('getPublishedForm');
+    cy.intercept('GET', '/api/forms/cypresssettings/translations', { body: [] }).as('getFormTranslations');
+    cy.intercept('GET', '/api/form-publications/*', { statusCode: 404 }).as('getPublishedForm');
     cy.intercept('GET', '/api/recipients', { fixture: 'recipients.json' }).as('getRecipients');
-    cy.intercept('GET', /language\/submission?.*/, { fixture: 'globalTranslations.json' }).as('getTranslations');
+    cy.intercept('GET', '/api/translations', { fixture: 'globalTranslations.json' }).as('getTranslations');
     cy.intercept('GET', '/api/temakoder', { fixture: 'temakoder.json' }).as('getTemaKoder');
     cy.visit('forms/cypresssettings/settings');
   });
 
   it('Locks form', () => {
     const lockedFormReason = 'Test reason for locking';
-    cy.intercept('PUT', '/api/forms/cypresssettings/form-settings', (req) => {
-      expect(req.body).to.deep.equal({ isLockedForm: true, lockedFormReason });
+    cy.intercept('POST', '/api/forms/cypresssettings/lock', (req) => {
+      expect(req.body.reason).to.equal(lockedFormReason);
 
-      req.reply({ ...form, properties: { ...form.properties, ...req.body } });
+      req.reply({
+        ...form,
+        properties: { ...form.properties, ...req.body },
+        lock: { reason: lockedFormReason, createdAt: '2025-01-19T13:39:47.380Z', createdBy: 'testuser' },
+      });
     }).as('configUpdate');
 
     cy.findByRole('button', { name: 'Lås for redigering' }).click();

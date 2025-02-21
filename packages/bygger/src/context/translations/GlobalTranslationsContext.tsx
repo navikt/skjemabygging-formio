@@ -12,6 +12,7 @@ import {
 } from './utils/globalTranslationsUtils';
 
 interface ContextValue {
+  translations: FormsApiGlobalTranslation[];
   storedTranslations: Record<string, FormsApiGlobalTranslation>;
   translationsPerTag: Record<GlobalTranslationTag, FormsApiGlobalTranslation[]>;
   isReady: boolean;
@@ -20,16 +21,19 @@ interface ContextValue {
   createNewTranslation: (
     translation: FormsApiGlobalTranslation,
   ) => Promise<{ response?: FormsApiGlobalTranslation; error?: TranslationError }>;
+  deleteTranslation: (id: number) => Promise<void>;
   publish: () => Promise<void>;
 }
 
 const defaultValue: ContextValue = {
+  translations: [],
   storedTranslations: {},
   translationsPerTag: { skjematekster: [], grensesnitt: [], 'statiske-tekster': [], validering: [] },
   isReady: false,
   loadTranslations: () => Promise.resolve(),
   saveTranslation: () => Promise.reject(),
   createNewTranslation: () => Promise.reject(),
+  deleteTranslation: () => Promise.reject(),
   publish: () => Promise.reject(),
 };
 
@@ -87,6 +91,16 @@ const GlobalTranslationsProvider = ({ children }) => {
     }
   };
 
+  const deleteTranslation = async (id: number) => {
+    const result = await translationsApi.delete(id);
+    if (result) {
+      setState((current) => ({
+        ...current,
+        data: current.data?.filter((translation) => translation.id !== id),
+      }));
+    }
+  };
+
   const publish = async () => {
     const tagsWithMissingTranslations = getTagsWithIncompleteTranslations(translationsPerTag);
 
@@ -99,12 +113,14 @@ const GlobalTranslationsProvider = ({ children }) => {
   };
 
   const value = {
+    translations: state.data ?? [],
     storedTranslations: storedTranslationsMap,
     translationsPerTag,
     loadTranslations,
     isReady: state.isReady,
     saveTranslation,
     createNewTranslation,
+    deleteTranslation,
     publish,
   };
   return <GlobalTranslationsContext.Provider value={value}>{children}</GlobalTranslationsContext.Provider>;

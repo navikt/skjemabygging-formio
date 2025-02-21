@@ -1,12 +1,12 @@
 import { Button, VStack } from '@navikt/ds-react';
-import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form } from '@navikt/skjemadigitalisering-shared-domain';
 import { useState } from 'react';
 import UserFeedback from '../../components/UserFeedback';
 import { useEditFormTranslations } from '../../context/translations/EditFormTranslationsContext';
 import ExportFormTranslationsButton from '../components/ExportFormTranslationsButton';
 
 interface Props {
-  form: NavFormType;
+  form: Form;
 }
 
 const FormTranslationButtonsColumn = ({ form }: Props) => {
@@ -24,7 +24,7 @@ const FormTranslationButtonsColumn = ({ form }: Props) => {
 
   return (
     <VStack gap="4">
-      <Button loading={isSaving} onClick={handleSave} type="button" size="small">
+      <Button loading={isSaving} onClick={handleSave} type="submit" size="small">
         Lagre
       </Button>
       <ExportFormTranslationsButton form={form} />

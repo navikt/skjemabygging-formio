@@ -1,7 +1,8 @@
-import fs from 'fs';
 import { glob } from 'glob';
 import fetch from 'node-fetch';
+import fs from 'node:fs';
 import { logger } from '../logger.js';
+import { toJsonOrThrowError } from './errorHandling';
 
 const readFile = async (filepath) => {
   const filehandle = await fs.promises.open(filepath, 'r');
@@ -34,17 +35,9 @@ const loadAllJsonFilesFromDirectory = async (dir) => {
   return [];
 };
 
-const fetchFromFormioApi = async (url) => {
-  if (url) {
-    const response = await fetch(url, { method: 'GET' });
-    if (response.ok) {
-      return await response.json();
-    }
-    const contentType = response.headers.get('content-type');
-    const errorResponseBody = contentType?.includes('application/json') ? await response.json() : await response.text();
-    logger.warn(`Failed to retrieve forms from ${url}`, { errorResponseBody });
-  }
-  return [];
+const fetchFromApi = async (url) => {
+  const response = await fetch(url, { method: 'GET' });
+  return await toJsonOrThrowError(`Failed to retrieve data from ${url}`)(response);
 };
 
-export { fetchFromFormioApi, loadAllJsonFilesFromDirectory, loadFileFromDirectory };
+export { fetchFromApi, loadAllJsonFilesFromDirectory, loadFileFromDirectory };
