@@ -1,4 +1,10 @@
-import { DeclarationType, NavFormType, UsageContext, numberUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  DeclarationType,
+  InnsendingType,
+  NavFormType,
+  UsageContext,
+  numberUtils,
+} from '@navikt/skjemadigitalisering-shared-domain';
 
 export type UpdateFormFunction = (form: NavFormType) => void;
 export type FormMetadataErrorKeys =
@@ -55,3 +61,10 @@ export const validateFormMetadata = (form: NavFormType, usageContext: UsageConte
 };
 
 export const isFormMetadataValid = (errors) => Object.keys(errors).length === 0;
+
+export const ensureValueIsSubmissionArray = (submissionTypes: InnsendingType[] | InnsendingType): InnsendingType[] => {
+  if (Array.isArray(submissionTypes)) {
+    return submissionTypes;
+  }
+  return [submissionTypes] as InnsendingType[];
+};
