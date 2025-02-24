@@ -1,26 +1,27 @@
 import { NextFunction, Request, Response } from 'express';
 import { logger } from '../../logging/logger';
-import { formioService, publisherService } from '../../services';
-import { NotFoundError } from './helpers/errors';
+import { publisherService } from '../../services';
+import { BadRequest } from './helpers/errors';
 
 const unpublishForm = async (req: Request, res: Response, next: NextFunction) => {
-  const formioToken = req.getFormioToken();
   const userName = req.getUser().name;
   const { formPath } = req.params;
+  const { formsApiForm } = req.body;
+
+  if (formPath !== formsApiForm.path) {
+    next(new BadRequest('Path mismatch attempting to unpublish form'));
+    return;
+  }
 
   const logMeta = { formPath, userName };
-  logger.info('Attempting to unpublish form', logMeta);
+  logger.info('Attempting to unpublish form (github)', logMeta);
 
   try {
-    const form = await formioService.getForm(formPath);
-    if (!form) {
-      return next(new NotFoundError(`Did not find form with path ${formPath}`));
-    }
-    const result = await publisherService.unpublishForm(form, { formioToken, userName });
-    logger.info('Form is unpublished', logMeta);
-    res.json(result);
+    const result = await publisherService.unpublishForm(formPath);
+    logger.info('Form is unpublished (github)', logMeta);
+    res.json({ changed: result.changed, form: formsApiForm });
   } catch (error) {
-    logger.error('Failed to unpublish form', logMeta);
+    logger.error('Failed to unpublish form (github)', logMeta);
     next(error);
   }
 };

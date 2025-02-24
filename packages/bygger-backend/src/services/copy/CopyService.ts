@@ -1,111 +1,130 @@
-import { FormioTranslationPayload, Language } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form } from '@navikt/skjemadigitalisering-shared-domain';
 import { logger } from '../../logging/logger';
 import { ApiError } from '../../routers/api/helpers/errors';
-import { FormioService } from '../formioService';
+import { FormsService } from '../forms/types';
+import { FormTranslationService, GlobalTranslationService } from '../translation/types';
 import { CopyService } from './types';
 
 export const createCopyService = (
-  formioServiceSource: FormioService,
-  formioServiceTarget: FormioService,
+  formsServiceSource: FormsService,
+  formsServiceTarget: FormsService,
+  formTranslationServiceSource: FormTranslationService,
+  formTranslationServiceTarget: FormTranslationService,
+  globalTranslationServiceSource: GlobalTranslationService,
+  globalTranslationServiceTarget: GlobalTranslationService,
 ): CopyService => ({
   form: async (formPath, token, username) => {
     const logMeta = {
       formPath,
       username,
-      source: formioServiceSource.projectUrl,
-      target: formioServiceTarget.projectUrl,
+      source: formsServiceSource.formsUrl,
+      target: formsServiceTarget.formsUrl,
     };
     logger.info(`Will overwrite form ${formPath} with data from source...`, logMeta);
 
-    const sourceForm = await formioServiceSource.getForm(formPath);
+    const sourceForm = await formsServiceSource.get(formPath);
     if (!sourceForm) {
       logger.info(`Form ${formPath} not found in source`, logMeta);
       throw new ApiError('Fant ikke skjemaet som skulle kopieres', true);
     }
 
-    let targetForm = await formioServiceTarget.getForm(formPath);
-    if (!targetForm) {
-      targetForm = await formioServiceTarget.createNewForm(sourceForm.properties.skjemanummer, token);
+    let targetForm: Form | undefined = undefined;
+    try {
+      targetForm = await formsServiceTarget.get(formPath);
+    } catch (err: any) {
+      logger.info(`Could not fetch target form: ${err.message}`);
     }
-    targetForm.title = sourceForm.title;
-    targetForm.properties = sourceForm.properties;
-    targetForm.components = sourceForm.components;
-    const savedForm = await formioServiceTarget.saveForm(targetForm, token, username, sourceForm.properties);
+    let savedForm: Form | undefined;
+    if (!targetForm) {
+      const createFormRequest = {
+        skjemanummer: sourceForm.properties.skjemanummer,
+        title: sourceForm.title,
+        components: sourceForm.components,
+        properties: sourceForm.properties,
+      };
+      savedForm = await formsServiceTarget.post(createFormRequest, token);
+    } else {
+      const updateFormRequest = {
+        title: sourceForm.title,
+        components: sourceForm.components,
+        properties: sourceForm.properties,
+      };
+      savedForm = await formsServiceTarget.put(formPath, updateFormRequest, targetForm.revision!, token);
+    }
     logger.info(`Form ${formPath} copied to target`, logMeta);
 
-    const sourceTranslations = await formioServiceSource.getTranslations(formPath);
+    const targetTranslations = await formTranslationServiceTarget.get(formPath);
+    const sourceTranslations = (await formTranslationServiceSource.get(formPath)).filter((t) => !t.globalTranslationId);
     logger.debug(`Found ${sourceTranslations.length} translation objects for form ${formPath} in source`, {
       ...logMeta,
-      sourceTranslationIds: sourceTranslations.map((t) => t._id),
+      sourceTranslationIds: sourceTranslations.map((t) => t.id),
     });
-    await formioServiceTarget.deleteTranslations(formPath, token);
 
     if (sourceTranslations.length > 0) {
       logger.info(`Will overwrite translations for form ${formPath} with data from source...`, logMeta);
-      const languageForm = await formioServiceTarget.getForm('language', 'resource');
-      if (languageForm) {
-        const translations = sourceTranslations.map((t) => {
-          return {
-            data: t.data,
-            form: languageForm._id,
-            project: targetForm.project,
+      for (const sourceTranslation of sourceTranslations) {
+        const target = targetTranslations.find((t) => t.key === sourceTranslation.key);
+        if (target) {
+          const body = {
+            nb: sourceTranslation.nb,
+            nn: sourceTranslation.nn,
+            en: sourceTranslation.en,
+            // TODO try to link to global if sourceTranslation.globalTranslationId exists?
           };
-        }) as FormioTranslationPayload[];
-        const savedTranslations = await formioServiceTarget.saveTranslations(translations, token);
-        logger.info(`Translations for form ${formPath} copied to target`, {
-          ...logMeta,
-          targetTranslationIds: savedTranslations.map((t) => t._id),
-        });
-      } else {
-        logger.warn(
-          `Unable to locate form 'language' in target when trying to copy translations for form ${formPath}`,
-          logMeta,
-        );
+          await formTranslationServiceTarget.put(formPath, String(target.id), body, target.revision!, token);
+        } else {
+          const body = {
+            key: sourceTranslation.key,
+            nb: sourceTranslation.nb,
+            nn: sourceTranslation.nn,
+            en: sourceTranslation.en,
+            // TODO try to link to global if sourceTranslation.globalTranslationId exists?
+          };
+          await formTranslationServiceTarget.post(formPath, body, token);
+        }
       }
     } else {
-      logger.info(`No translations for form ${formPath} found in source`);
+      logger.info(`No translations for form ${formPath} found in source`, logMeta);
+    }
+    const obsoleteTargetTranslations = targetTranslations.filter(
+      (t) => !sourceTranslations.some((st) => st.key === t.key),
+    );
+    for (const translation of obsoleteTargetTranslations) {
+      await formTranslationServiceTarget.delete(formPath, translation.id!, token);
     }
     return savedForm;
   },
-  globalTranslations: async (language: Language, token: string) => {
-    const sourceTranslations = await formioServiceSource.getGlobalTranslations(language);
-    const targetTranslations = await formioServiceTarget.getGlobalTranslations(language);
-    const languageForm = await formioServiceTarget.getForm('language', 'resource');
-
-    if (languageForm) {
-      if (targetTranslations.length) {
-        logger.info(`Deleting global translations for ${language} in target`, {
-          targetTranslationsIds: targetTranslations.map((t) => t._id),
-          language,
-        });
-        await Promise.all(targetTranslations.map((t) => formioServiceTarget.deleteTranslation(t._id!, token)));
+  globalTranslations: async (token: string) => {
+    const sourceTranslations = await globalTranslationServiceSource.get();
+    const targetTranslations = await globalTranslationServiceTarget.get();
+    for (const sourceTranslation of sourceTranslations) {
+      const targetTranslation = targetTranslations.find((t) => t.key === sourceTranslation.key);
+      if (targetTranslation) {
+        const body = {
+          nb: sourceTranslation.nb,
+          nn: sourceTranslation.nn,
+          en: sourceTranslation.en,
+        };
+        await globalTranslationServiceTarget.put(
+          String(targetTranslation.id!),
+          body,
+          targetTranslation.revision!,
+          token,
+        );
+      } else {
+        const body = {
+          key: sourceTranslation.key,
+          tag: sourceTranslation.tag,
+          nb: sourceTranslation.nb,
+          nn: sourceTranslation.nn,
+          en: sourceTranslation.en,
+        };
+        await globalTranslationServiceTarget.post(body, token);
       }
-      const savedTranslations = await Promise.all(
-        sourceTranslations.map((t) =>
-          formioServiceTarget.saveTranslation(
-            {
-              data: t.data,
-              form: languageForm._id!,
-              project: languageForm.project,
-            },
-            token,
-          ),
-        ),
-      );
-      logger.info(`Global translations for ${language} copied to target`, {
-        sourceTranslationsIds: sourceTranslations.map((t) => t._id),
-        targetTranslationsIds: savedTranslations.map((t) => t._id),
-        language,
-      });
-    } else {
-      logger.warn(`Unable to locate form 'language' in target when trying to copy global translations ${language}`, {
-        source: formioServiceSource.projectUrl,
-        target: formioServiceTarget.projectUrl,
-      });
-      throw new ApiError('Could not find form "language" in target', false);
     }
+    // TODO Should we also delete global translations in target which does not exist in source?
   },
   getSourceForms: async () => {
-    return await formioServiceSource.getAllForms(1000, true, 'path,title,properties.skjemanummer');
+    return await formsServiceSource.getAll('path,title,skjemanummer');
   },
 });

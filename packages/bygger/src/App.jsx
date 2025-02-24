@@ -1,6 +1,5 @@
 import '@navikt/ds-css';
-import { NavFormioJs, Styles, makeStyles } from '@navikt/skjemadigitalisering-shared-components';
-import { useMemo } from 'react';
+import { Styles, makeStyles } from '@navikt/skjemadigitalisering-shared-components';
 import AuthenticatedApp from './AuthenticatedApp';
 import UnauthenticatedApp from './UnauthenticatedApp';
 import { useAuth } from './context/auth-context';
@@ -18,14 +17,10 @@ const useStyles = makeStyles({
   },
 });
 
-function App({ projectURL, serverURL }) {
-  NavFormioJs.Formio.setBaseUrl(projectURL);
+function App({ serverURL }) {
   const styles = useStyles();
   const { userData } = useAuth();
-  const formio = useMemo(() => new NavFormioJs.Formio(projectURL), [projectURL]);
-  const contentFunc = userData
-    ? () => <AuthenticatedApp serverURL={serverURL} formio={formio} />
-    : () => <UnauthenticatedApp projectURL={projectURL} />;
+  const contentFunc = userData ? () => <AuthenticatedApp serverURL={serverURL} /> : () => <UnauthenticatedApp />;
 
   return (
     <FeedbackProvider>

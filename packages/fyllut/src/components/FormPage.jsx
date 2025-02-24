@@ -1,4 +1,4 @@
-import { FyllUtRouter, i18nData, LoadingComponent } from '@navikt/skjemadigitalisering-shared-components';
+import { FyllUtRouter, i18nUtils, LoadingComponent } from '@navikt/skjemadigitalisering-shared-components';
 import { useEffect, useState } from 'react';
 import { loadCountryNamesForLanguages, loadFormTranslations, loadGlobalTranslationsForLanguages } from '../api';
 
@@ -22,7 +22,7 @@ function FormPage({ form }) {
             ...localTranslationsForForm[lang],
           },
         }),
-        { 'nb-NO': i18nData['nb-NO'] },
+        { 'nb-NO': i18nUtils.initialData['nb-NO'] },
       );
     }
     fetchTranslations().then((completeI18n) => {

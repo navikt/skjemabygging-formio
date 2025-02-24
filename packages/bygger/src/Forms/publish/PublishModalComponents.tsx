@@ -1,17 +1,17 @@
 import { ConfirmationModal, useModal } from '@navikt/skjemadigitalisering-shared-components';
-import { NavFormType, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useState } from 'react';
 import LockedFormModal from '../lockedFormModal/LockedFormModal';
 import ConfirmPublishModal from './ConfirmPublishModal';
 import PublishSettingsModal from './PublishSettingsModal';
 
 interface PublishModalComponentsProps {
-  form: NavFormType;
+  form: Form;
   openPublishSettingModal: boolean;
   setOpenPublishSettingModal: (open: boolean) => void;
 }
 
-const validateAttachments = (form: NavFormType) =>
+const validateAttachments = (form: Form) =>
   navFormUtils
     .flattenComponents(form.components)
     .filter(navFormUtils.isAttachment)
@@ -27,7 +27,7 @@ const PublishModalComponents = ({
   const [userMessageModal, setUserMessageModal] = useModal();
   const [lockedFormModal, setLockedFormModal] = useModal();
   const [selectedLanguageCodeList, setSelectedLanguageCodeList] = useState<string[]>([]);
-  const isLockedForm = form.properties.isLockedForm;
+  const isLockedForm = !!form.lock;
 
   useEffect(() => {
     if (openPublishSettingModal) {

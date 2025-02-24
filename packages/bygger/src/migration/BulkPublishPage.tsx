@@ -1,7 +1,7 @@
 import { ErrorPage, LoadingComponent, makeStyles } from '@navikt/skjemadigitalisering-shared-components';
-import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useState } from 'react';
-import { useFormioForms } from '../api/useFormioForms';
+import useForms from '../api/useForms';
 import { AppLayout } from '../components/AppLayout';
 import UserFeedback from '../components/UserFeedback';
 import Column from '../components/layout/Column';
@@ -26,14 +26,14 @@ const useStyles = makeStyles({
 
 type Status = 'LOADING' | 'FORMS NOT FOUND' | 'FINISHED LOADING';
 const BulkPublishPage = () => {
-  const [forms, setForms] = useState<NavFormType[]>();
+  const [forms, setForms] = useState<Form[]>();
   const [status, setStatus] = useState<Status>('LOADING');
-  const { loadFormsList } = useFormioForms();
+  const { loadFormsList } = useForms();
   const styles = useStyles();
 
   useEffect(() => {
     loadFormsList()
-      .then((forms: NavFormType[]) => {
+      .then((forms: Form[]) => {
         setForms(forms);
         setStatus('FINISHED LOADING');
       })

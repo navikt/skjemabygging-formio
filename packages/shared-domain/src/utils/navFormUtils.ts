@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import { Attachment, Component, FormsResponseForm, NavFormType, Panel, PrefillData, Submission } from '../form';
-import { formSummaryUtil } from '../index';
+import { Form, formSummaryUtil } from '../index';
 import FormioUtils from '../utils/formio/FormioUtils';
 import { camelCase } from './stringUtils';
 import { isDigitalSubmission, isPaperSubmission } from './submissionTypeUtils';
@@ -319,12 +319,9 @@ const isNone = (type: 'innsending' | 'ettersending', form: NavFormType) => {
   return form.properties[type] === 'INGEN';
 };
 
-const createDefaultForm = (config): NavFormType => ({
-  tags: ['nav-skjema', ''],
-  type: 'form',
-  display: 'wizard',
-  name: '',
+const createDefaultForm = (config): Form => ({
   title: '',
+  skjemanummer: '',
   path: '',
   properties: {
     skjemanummer: '',

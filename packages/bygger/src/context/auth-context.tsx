@@ -1,4 +1,4 @@
-import { NavFormioJs } from '@navikt/skjemadigitalisering-shared-components';
+import { useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
 import React, { MouseEventHandler, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -29,9 +29,16 @@ const enforceUserName = (formioUser: UserData) => {
   return formioUser;
 };
 
+const devUser: UserData = {
+  name: 'Testbruker',
+  isAdmin: true,
+  data: { email: 'test@testesen.no' },
+};
+
 const AuthContext = React.createContext<ContextProps>({});
 function AuthProvider(props) {
-  const [userData, setUserData] = useState(props.user || enforceUserName(NavFormioJs.Formio.getUser()));
+  const { config } = useAppConfig();
+  const [userData, setUserData] = useState(props.user || (config?.isDevelopment && devUser));
   const navigate = useNavigate();
 
   const login = (user: UserData) => {
@@ -41,7 +48,6 @@ function AuthProvider(props) {
   const logout = async () => {
     try {
       setUserData(null);
-      await NavFormioJs.Formio.logout();
     } finally {
       const { origin } = window.location;
       window.location.replace(`${origin}/oauth2/logout`);
