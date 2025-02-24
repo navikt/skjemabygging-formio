@@ -27,12 +27,10 @@
             "required": true
           },
           "attachmentValues": {
-            "leggerVedNaa": {
+            "nei": {
               "enabled": true,
               "additionalDocumentation": {
-                "enabled": true,
-                "label": "Ledetekst tilleggsinformasjon",
-                "description": "Beskrivelse av krav til tilleggsinformasjon"
+                "enabled": false
               }
             },
             "ettersender": {
@@ -42,10 +40,12 @@
                 "enabled": false
               }
             },
-            "nei": {
+            "leggerVedNaa": {
               "enabled": true,
               "additionalDocumentation": {
-                "enabled": false
+                "enabled": true,
+                "label": "Ledetekst tilleggsinformasjon",
+                "description": "Beskrivelse av krav til tilleggsinformasjon"
               }
             }
           },

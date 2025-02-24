@@ -1,18 +1,18 @@
 import { PadlockLockedIcon } from '@navikt/aksel-icons';
 import { Button, VStack } from '@navikt/ds-react';
 import { useModal } from '@navikt/skjemadigitalisering-shared-components';
-import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form } from '@navikt/skjemadigitalisering-shared-domain';
 import ButtonWithSpinner from '../../components/ButtonWithSpinner';
 import SidebarLayout from '../../components/layout/SidebarLayout';
 import UserFeedback from '../../components/UserFeedback';
-import { useForm } from '../../context/form/FormContext';
+import { useForm } from '../../context/old_form/FormContext';
 import LockedFormModal from '../lockedFormModal/LockedFormModal';
 import PublishModalComponents from '../publish/PublishModalComponents';
 import FormStatusPanel from '../status/FormStatusPanel';
 import UnpublishButton from '../unpublish/UnpublishButton';
 
 interface EditFormSidebarProps {
-  form: NavFormType;
+  form: Form;
 }
 
 const EditFormSidebar = ({ form }: EditFormSidebarProps) => {
@@ -20,9 +20,7 @@ const EditFormSidebar = ({ form }: EditFormSidebarProps) => {
   const [lockedFormModal, setLockedFormModal] = useModal();
   const { saveForm } = useForm();
 
-  const {
-    properties: { isLockedForm },
-  } = form;
+  const isLockedForm = !!form.lock;
 
   return (
     <SidebarLayout noScroll={true}>
@@ -57,7 +55,7 @@ const EditFormSidebar = ({ form }: EditFormSidebarProps) => {
         </Button>
         <UnpublishButton form={form} />
         <UserFeedback />
-        <FormStatusPanel publishProperties={form.properties} />
+        <FormStatusPanel formStatusProperties={form} />
 
         <PublishModalComponents
           form={form}

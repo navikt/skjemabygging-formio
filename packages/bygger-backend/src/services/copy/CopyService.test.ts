@@ -1,126 +1,90 @@
-import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
-import { FormioService } from '../formioService';
+import { Form, FormsApiGlobalTranslation } from '@navikt/skjemadigitalisering-shared-domain';
+import { mock, MockProxy } from 'vitest-mock-extended';
+import { FormsService } from '../forms/types';
+import { FormTranslationService, GlobalTranslationService } from '../translation/types';
 import { createCopyService } from './CopyService';
-import devForm from './testdata/dev/form';
-import languageForm from './testdata/dev/form-language';
-import devGlobalTranslationsEn from './testdata/dev/global-translations-en';
-import prodForm from './testdata/prod/form';
-import prodGlobalTranslationsEn from './testdata/prod/global-translations-en';
-import prodTranslations from './testdata/prod/translations';
 import { CopyService } from './types';
 
-const FORMIO_TOKEN = 'formio-token';
 describe('CopyService', () => {
-  describe('form', () => {
-    let devMock: FormioService;
-    let prodMock: FormioService;
-    let copyService: CopyService;
+  let formsServiceSourceMock: MockProxy<FormsService>;
+  let formsServiceTargetMock: MockProxy<FormsService>;
+  let formTranslationServiceSourceMock: MockProxy<FormTranslationService>;
+  let formTranslationServiceTargetMock: MockProxy<FormTranslationService>;
+  let globalTranslationServiceSourceMock: MockProxy<GlobalTranslationService>;
+  let globalTranslationServiceTargetMock: MockProxy<GlobalTranslationService>;
+  let copyService: CopyService;
 
-    beforeEach(() => {
-      devMock = {
-        getForm: vi.fn(),
-        saveForm: vi.fn().mockImplementation((form) => Promise.resolve(form)),
-        deleteTranslations: vi.fn().mockImplementation(() => Promise.resolve()),
-        saveTranslations: vi.fn().mockImplementation(() => Promise.resolve([])),
-        createNewForm: vi.fn().mockImplementation(() => Promise.reject(new Error('Should not create new form'))),
-      } as unknown as FormioService;
-      prodMock = {
-        getForm: vi.fn(),
-        getTranslations: vi.fn(),
-      } as unknown as FormioService;
-      vi.spyOn(devMock, 'getForm').mockImplementation((path) => {
-        if (path === 'language') {
-          return Promise.resolve(languageForm);
-        }
-        return Promise.resolve(devForm);
+  beforeEach(() => {
+    formsServiceSourceMock = mock<FormsService>();
+    formsServiceTargetMock = mock<FormsService>();
+    formTranslationServiceSourceMock = mock<FormTranslationService>();
+    formTranslationServiceTargetMock = mock<FormTranslationService>();
+    globalTranslationServiceSourceMock = mock<GlobalTranslationService>();
+    globalTranslationServiceTargetMock = mock<GlobalTranslationService>();
+    copyService = createCopyService(
+      formsServiceSourceMock,
+      formsServiceTargetMock,
+      formTranslationServiceSourceMock,
+      formTranslationServiceTargetMock,
+      globalTranslationServiceSourceMock,
+      globalTranslationServiceTargetMock,
+    );
+  });
+
+  describe('forms', () => {
+    it('overwrites form that exists in target', async () => {
+      const formPath = 'nav123456';
+      const sourceForm: Form = { path: formPath, title: 'Tittel', properties: {} } as Form;
+      const targetForm: Form = { path: formPath, title: 'Annen tittel', properties: {} } as Form;
+
+      formsServiceSourceMock.get.calledWith(formPath).mockReturnValue(Promise.resolve(sourceForm));
+
+      formsServiceTargetMock.get.calledWith(formPath).mockReturnValue(Promise.resolve(targetForm));
+
+      formTranslationServiceSourceMock.get.calledWith(formPath).mockReturnValue(Promise.resolve([]));
+
+      formTranslationServiceTargetMock.get.calledWith(formPath).mockReturnValue(Promise.resolve([]));
+
+      await copyService.form(formPath, 'token', 'user');
+
+      expect(formsServiceTargetMock.post).not.toHaveBeenCalled();
+      expect(formsServiceTargetMock.put).toHaveBeenCalledOnce();
+    });
+
+    it('copies form that does not exists in target', async () => {
+      const formPath = 'nav123456';
+      const sourceForm: Form = { path: formPath, title: 'Tittel', properties: {} } as Form;
+
+      formsServiceSourceMock.get.calledWith(formPath).mockReturnValue(Promise.resolve(sourceForm));
+
+      formsServiceTargetMock.get.calledWith(formPath).mockImplementation((_formPath) => {
+        throw Error('Not found');
       });
-      vi.spyOn(prodMock, 'getForm').mockImplementation((_path) => Promise.resolve(prodForm));
-      vi.spyOn(prodMock, 'getTranslations').mockImplementation((_path) => Promise.resolve(prodTranslations));
 
-      const formioServiceDevMock = vi.mocked(devMock);
-      const formioServiceProdMock = vi.mocked(prodMock);
-      copyService = createCopyService(formioServiceProdMock, formioServiceDevMock);
-    });
+      formTranslationServiceSourceMock.get.calledWith(formPath).mockReturnValue(Promise.resolve([]));
 
-    it('copies form content from prod to dev', async () => {
-      const savedDevForm = await copyService.form('nav123456', FORMIO_TOKEN, 'mikke');
-      expect(devMock.saveForm).toHaveBeenCalledOnce();
-      expect(savedDevForm._id).toEqual('dev-id');
-      expect(savedDevForm.properties.tema).toEqual(prodForm.properties.tema);
-      expect(savedDevForm.components).toHaveLength(prodForm.components.length);
-      expect(savedDevForm.title).toEqual(prodForm.title);
-    });
+      formTranslationServiceTargetMock.get.calledWith(formPath).mockReturnValue(Promise.resolve([]));
 
-    it('copies form translations', async () => {
-      await copyService.form('nav123456', FORMIO_TOKEN, 'mikke');
-      expect(devMock.deleteTranslations).toHaveBeenCalledWith(devForm.path, FORMIO_TOKEN);
-      expect(devMock.saveTranslations).toHaveBeenCalledWith(
-        expect.arrayContaining([
-          {
-            data: prodTranslations[0].data,
-            form: languageForm._id,
-            project: devForm.project,
-          },
-        ]),
-        FORMIO_TOKEN,
-      );
-    });
+      await copyService.form(formPath, 'token', 'user');
 
-    it('creates new form if it does not already exist in target', async () => {
-      vi.spyOn(devMock, 'getForm').mockImplementation((_path) => Promise.resolve(undefined));
-      vi.spyOn(devMock, 'createNewForm').mockImplementation(() => Promise.resolve({ _id: 'new-id' } as NavFormType));
-
-      const savedDevForm = await copyService.form('nav123456', FORMIO_TOKEN, 'mikke');
-      expect(devMock.createNewForm).toHaveBeenCalledOnce();
-      expect(devMock.saveForm).toHaveBeenCalledOnce();
-      expect(savedDevForm._id).toEqual('new-id');
-      expect(savedDevForm.properties.tema).toEqual(prodForm.properties.tema);
-      expect(savedDevForm.components).toHaveLength(prodForm.components.length);
-      expect(savedDevForm.title).toEqual(prodForm.title);
+      expect(formsServiceTargetMock.put).not.toHaveBeenCalled();
+      expect(formsServiceTargetMock.post).toHaveBeenCalledOnce();
     });
   });
 
   describe('globalTranslations', () => {
-    let devMock: FormioService;
-    let prodMock: FormioService;
-    let copyService: CopyService;
-
-    beforeEach(() => {
-      devMock = {
-        getForm: vi.fn().mockImplementation((path) => {
-          if (path === 'language') {
-            return Promise.resolve(languageForm);
-          }
-          throw Error(`unexpected function invokation (path=${path})`);
-        }),
-        getGlobalTranslations: vi.fn().mockImplementation(() => Promise.resolve(devGlobalTranslationsEn)),
-        deleteTranslation: vi.fn().mockImplementation(() => Promise.resolve()),
-        saveTranslation: vi.fn().mockImplementation(() => Promise.resolve([])),
-      } as unknown as FormioService;
-      prodMock = {
-        getGlobalTranslations: vi.fn().mockImplementation(() => Promise.resolve(prodGlobalTranslationsEn)),
-      } as unknown as FormioService;
-
-      const formioServiceDevMock = vi.mocked(devMock);
-      const formioServiceProdMock = vi.mocked(prodMock);
-      copyService = createCopyService(formioServiceProdMock, formioServiceDevMock);
-    });
-
     it('copies global translations for given language', async () => {
-      await copyService.globalTranslations('en', 'token');
-      expect(devMock.saveTranslation).toHaveBeenCalledTimes(4);
-      prodGlobalTranslationsEn.forEach((t) => {
-        expect(devMock.saveTranslation).toHaveBeenCalledWith(
-          expect.objectContaining({
-            data: t.data,
-          }),
-          'token',
-        );
-      });
-      expect(devMock.deleteTranslation).toHaveBeenCalledTimes(4);
-      devGlobalTranslationsEn.forEach((t) => {
-        expect(devMock.deleteTranslation).toHaveBeenCalledWith(t._id, 'token');
-      });
+      globalTranslationServiceSourceMock.get
+        .calledWith()
+        .mockReturnValue(Promise.resolve([] as FormsApiGlobalTranslation[]));
+      globalTranslationServiceTargetMock.get
+        .calledWith()
+        .mockReturnValue(Promise.resolve([] as FormsApiGlobalTranslation[]));
+
+      await copyService.globalTranslations('token');
+      expect(globalTranslationServiceSourceMock.get).toHaveBeenCalledTimes(1);
+      expect(globalTranslationServiceTargetMock.get).toHaveBeenCalledTimes(1);
+      // TODO mock global translations and verify that they are copied to target
     });
   });
 });

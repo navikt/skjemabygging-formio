@@ -1,10 +1,10 @@
-import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form } from '@navikt/skjemadigitalisering-shared-domain';
 import EnhetSettings from '../EnhetSettings';
 import { UpdateFormFunction } from '../utils/utils';
 
 export interface EnhetFieldsProps {
   onChange: UpdateFormFunction;
-  form: NavFormType;
+  form: Form;
 }
 
 const EnhetFields = ({ onChange, form }: EnhetFieldsProps) => {
@@ -12,7 +12,7 @@ const EnhetFields = ({ onChange, form }: EnhetFieldsProps) => {
   const mottaksadresseId = form.properties.mottaksadresseId;
   const enhetMaVelgesVedPapirInnsending = form.properties.enhetMaVelgesVedPapirInnsending;
   const enhetstyper = form.properties.enhetstyper;
-  const isLockedForm = form.properties.isLockedForm;
+  const isLockedForm = !!form.lock;
 
   return (
     <>

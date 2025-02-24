@@ -1,7 +1,7 @@
 import { Button, Checkbox } from '@navikt/ds-react';
 import {
-  NavFormSettingsDiff,
-  NavFormType,
+  Form,
+  FormSettingsDiff,
   NewFormSignatureType,
   signatureUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
@@ -11,14 +11,14 @@ import { UpdateFormFunction } from '../utils/utils';
 
 export interface SignatureFieldsProps {
   onChange: UpdateFormFunction;
-  diff: NavFormSettingsDiff;
-  form: NavFormType;
+  diff: FormSettingsDiff;
+  form: Form;
 }
 
 const SignatureFields = ({ onChange, diff, form }: SignatureFieldsProps) => {
   const signatures = form.properties.signatures || [];
   const descriptionOfSignaturesPositionUnder = form.properties.descriptionOfSignaturesPositionUnder || false;
-  const isLockedForm = form.properties.isLockedForm;
+  const isLockedForm = !!form.lock;
 
   const addExistingSignature = (newSignature: NewFormSignatureType, index: number) =>
     onChange({
