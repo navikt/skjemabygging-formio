@@ -15,7 +15,7 @@ send-inn-host: http://innsending-api.team-soknad
 kodeverk:
   url: https://kodeverk-api.nav.no
   scope: dev-gcp.team-rocket.kodeverk-api
-forms-source: "formioapi"
+forms-source: "formsapi-staging"
 environmentVars:
   - name: FORMIO_API_SERVICE
     value: http://formio-api

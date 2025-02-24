@@ -2,19 +2,19 @@ import { PadlockLockedIcon } from '@navikt/aksel-icons';
 import { Button, VStack } from '@navikt/ds-react';
 
 import { useAppConfig, useModal } from '@navikt/skjemadigitalisering-shared-components';
-import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form } from '@navikt/skjemadigitalisering-shared-domain';
 import ButtonWithSpinner from '../../components/ButtonWithSpinner';
 import SidebarLayout from '../../components/layout/SidebarLayout';
 import UserFeedback from '../../components/UserFeedback';
-import { useForm } from '../../context/form/FormContext';
+import { useForm } from '../../context/old_form/FormContext';
 import LockedFormModal from '../lockedFormModal/LockedFormModal';
 import FormStatusPanel from '../status/FormStatusPanel';
 import ToggleFormLockButton from '../toggleFormLockButton/ToggleFormLockButton';
 import UnpublishButton from '../unpublish/UnpublishButton';
 
 interface FormSettingsPageProps {
-  form: NavFormType;
-  validateAndSave: (form: NavFormType) => void;
+  form: Form;
+  validateAndSave: (form: Form) => Promise<void>;
   setOpenPublishSettingModal: (open: boolean) => void;
 }
 
@@ -22,7 +22,8 @@ const FormSettingsSidebar = ({ form, validateAndSave, setOpenPublishSettingModal
   const { config } = useAppConfig();
   const { copyFormFromProduction } = useForm();
   const [lockedFormModal, setLockedFormModal] = useModal();
-  const { isLockedForm, lockedFormReason } = form.properties;
+  const isLockedForm = !!form.lock;
+  const lockedFormReason = form.lock?.reason;
 
   const doIfUnlocked = (whenUnlocked: () => void): void => {
     if (isLockedForm) {
@@ -59,7 +60,7 @@ const FormSettingsSidebar = ({ form, validateAndSave, setOpenPublishSettingModal
         )}
         <ToggleFormLockButton isLockedForm={isLockedForm} lockedFormReason={lockedFormReason} />
         <UserFeedback />
-        <FormStatusPanel publishProperties={form.properties} />
+        <FormStatusPanel formStatusProperties={form} />
       </VStack>
       <LockedFormModal open={lockedFormModal} onClose={() => setLockedFormModal(false)} form={form} />
     </SidebarLayout>

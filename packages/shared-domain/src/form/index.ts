@@ -275,6 +275,19 @@ export interface NavFormType {
   components: Component[];
   access?: ResourceAccess[];
   project?: string;
+
+  // TODO: Temporary. Applied from forms-api Form
+  id?: number;
+  revision?: number;
+  // skjemanummer: string;
+  createdAt?: string;
+  createdBy?: string;
+  changedAt?: string;
+  changedBy?: string;
+  publishedAt?: string;
+  publishedBy?: string;
+  publishedLanguages?: string[];
+  status?: string;
 }
 
 export interface FormsResponseForm extends Pick<NavFormType, '_id' | 'title' | 'path' | 'modified'> {

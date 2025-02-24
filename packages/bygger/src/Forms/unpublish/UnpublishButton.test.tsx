@@ -1,36 +1,41 @@
-import { dateUtils, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form } from '@navikt/skjemadigitalisering-shared-domain';
 import { fireEvent, render, screen } from '@testing-library/react';
 import UnpublishButton from './UnpublishButton';
 
 describe('UnpublishButton', () => {
-  const renderButton = (form?: NavFormType) => {
+  const renderButton = (form?: Form) => {
     if (!form) {
       form = {
-        properties: { published: dateUtils.getIso8601String() },
-      } as NavFormType;
+        status: 'published',
+      } as Form;
     }
     render(<UnpublishButton form={form} />);
   };
 
-  it('do not render button if not published', () => {
-    renderButton({ properties: {} } as NavFormType);
+  it('is not rendered if form is not published', () => {
+    renderButton({ status: 'draft' } as Form);
     expect(screen.queryByRole('button')).not.toBeInTheDocument();
   });
 
-  it('renders button', async () => {
-    renderButton();
+  it('is rendered when form is published', async () => {
+    renderButton({ status: 'published' } as Form);
     expect(await screen.findByRole('button')).toBeInTheDocument();
     expect(screen.queryByTitle('Skjemaet er låst')).not.toBeInTheDocument();
   });
 
-  it('renders button with lock', async () => {
-    renderButton({ properties: { published: dateUtils.getIso8601String(), isLockedForm: true } } as NavFormType);
+  it('is rendered when form status is pending', async () => {
+    renderButton({ status: 'pending' } as Form);
+    expect(await screen.findByRole('button')).toBeInTheDocument();
+  });
+
+  it('is rendered with lock when form is locked', async () => {
+    renderButton({ status: 'published', lock: { reason: 'Derfor' } } as Form);
     expect(await screen.findByRole('button')).toBeInTheDocument();
     expect(screen.getByTitle('Skjemaet er låst')).toBeInTheDocument();
   });
 
-  it('click button', async () => {
-    renderButton();
+  it('opens modal on click', async () => {
+    renderButton({ status: 'published' } as Form);
     const button = await screen.findByRole('button');
     expect(button).toBeInTheDocument();
     fireEvent.click(button);

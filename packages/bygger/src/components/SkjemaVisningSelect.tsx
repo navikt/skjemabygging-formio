@@ -1,11 +1,9 @@
 import { ToggleGroup } from '@navikt/ds-react';
 import { makeStyles } from '@navikt/skjemadigitalisering-shared-components';
-import { DisplayType, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
-import { UpdateFormFunction } from './FormMetaDataEditor/utils/utils';
+import { DisplayType } from '@navikt/skjemadigitalisering-shared-domain';
 
 interface Props {
-  form: NavFormType;
-  onChange: UpdateFormFunction;
+  onChange: (value: DisplayType) => void;
 }
 
 const useStyles = makeStyles({
@@ -14,15 +12,14 @@ const useStyles = makeStyles({
   },
 });
 
-const SkjemaVisningSelect = ({ form, onChange }: Props) => {
-  const { display } = form;
+const SkjemaVisningSelect = ({ onChange }: Props) => {
   const styles = useStyles();
 
   return (
     <ToggleGroup
       className={styles.toggleGroup}
-      defaultValue={display}
-      onChange={(value) => onChange({ ...form, display: value as DisplayType })}
+      defaultValue={'wizard'}
+      onChange={(value) => onChange(value as DisplayType)}
       size="small"
     >
       <ToggleGroup.Item value="wizard">Veiviser</ToggleGroup.Item>

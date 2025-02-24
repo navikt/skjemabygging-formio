@@ -1,9 +1,9 @@
 import { BodyShort } from '@navikt/ds-react';
 import { ConfirmationModal } from '@navikt/skjemadigitalisering-shared-components';
-import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form } from '@navikt/skjemadigitalisering-shared-domain';
 
 interface Props {
-  form: NavFormType;
+  form: Form;
   open: boolean;
   onClose: () => void;
 }
@@ -20,7 +20,7 @@ const LockedFormModal = ({ form, open, onClose }: Props) => {
       }}
       children={
         <>
-          <BodyShort className="mb-4">{form.properties.lockedFormReason}</BodyShort>
+          <BodyShort className="mb-4">{form.lock?.reason}</BodyShort>
           <BodyShort>{'Gå til instillinger for å låse opp skjemaet.'}</BodyShort>
         </>
       }

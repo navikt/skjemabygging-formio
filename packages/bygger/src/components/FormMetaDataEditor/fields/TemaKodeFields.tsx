@@ -1,20 +1,20 @@
 import { Alert, Select } from '@navikt/ds-react';
-import { NavFormSettingsDiff, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, FormSettingsDiff } from '@navikt/skjemadigitalisering-shared-domain';
 import useTemaKoder from '../../../api/useTemaKoder';
 import LabelWithDiff from '../LabelWithDiff';
 import { FormMetadataError, UpdateFormFunction } from '../utils/utils';
 
 export interface TemaKodeFieldsProps {
   onChange: UpdateFormFunction;
-  diff: NavFormSettingsDiff;
-  form: NavFormType;
+  diff: FormSettingsDiff;
+  form: Form;
   errors?: FormMetadataError;
 }
 
 const TemaKodeFields = ({ onChange, diff, form, errors }: TemaKodeFieldsProps) => {
   const { temaKoder, ready: isTemaKoderReady, errorMessage: temaKoderError } = useTemaKoder();
   const tema = form.properties.tema;
-  const isLockedForm = form.properties.isLockedForm;
+  const isLockedForm = !!form.lock;
 
   return (
     <>
