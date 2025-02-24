@@ -22,10 +22,7 @@ export const SubmissionTypeCheckbox = ({ name, label, value, onChange, error, ex
       name={name}
       id={name}
       value={value}
-      onChange={(e) => {
-        console.log(e);
-        onChange(e);
-      }}
+      onChange={onChange}
       error={error}
       readOnly={readonly}
     >

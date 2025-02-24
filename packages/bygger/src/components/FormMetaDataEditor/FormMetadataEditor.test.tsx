@@ -115,11 +115,12 @@ describe('FormMetadataEditor', () => {
       it('Viser input for forklaring når innsending settes til INGEN', async () => {
         const { rerender } = render(<FormMetadataEditor form={defaultForm} onChange={mockOnChange} />);
         expect(screen.queryByLabelText('Forklaring til innsending')).toBeNull();
-        await userEvent.selectOptions(screen.getByLabelText('Innsending'), 'INGEN');
+        const checkbox = screen.getByRole('checkbox', { name: 'Ingen' });
+        await userEvent.click(checkbox);
 
         expect(mockOnChange).toHaveBeenCalled();
         const updatedForm = mockOnChange.mock.calls[0][0] as Form;
-        expect(updatedForm.properties.innsending).toBe('INGEN');
+        expect(updatedForm.properties.innsending).toStrictEqual(['PAPIR_OG_DIGITAL', 'INGEN']);
 
         rerender(<FormMetadataEditor form={updatedForm} onChange={mockOnChange} />);
         expect(screen.queryByLabelText('Forklaring til innsending')).not.toBeNull();
@@ -135,11 +136,20 @@ describe('FormMetadataEditor', () => {
         };
         const { rerender } = render(<FormMetadataEditor form={form} onChange={mockOnChange} />);
         expect(screen.queryByLabelText('Forklaring til innsending')).not.toBeNull();
-        await userEvent.selectOptions(screen.getByLabelText('Innsending'), 'KUN_PAPIR');
+        const kunPapirCheckbox = screen.getByRole('checkbox', { name: 'Kun papir' });
+        await userEvent.click(kunPapirCheckbox);
+        expect(kunPapirCheckbox).not.toBeChecked();
 
-        expect(mockOnChange).toHaveBeenCalled();
+        const ingenCheckbox = screen.getByRole('checkbox', { name: 'Ingen' });
+        expect(ingenCheckbox).toBeChecked();
+
+        await userEvent.click(ingenCheckbox);
+        await userEvent.click(ingenCheckbox);
+        await waitFor(() => expect(ingenCheckbox).not.toBeChecked());
+
+        await expect(mockOnChange).toHaveBeenCalled();
         const updatedForm = mockOnChange.mock.calls[0][0] as Form;
-        expect(updatedForm.properties.innsending).toBe('KUN_PAPIR');
+        expect(updatedForm.properties.innsending).toStrictEqual(['KUN_PAPIR']);
 
         rerender(<FormMetadataEditor form={updatedForm} onChange={mockOnChange} />);
         expect(screen.queryByLabelText('Forklaring til innsending')).toBeNull();
