@@ -106,5 +106,5 @@ const EditFormTranslationsProvider = ({ initialChanges, children }: Props) => {
 
 const useEditFormTranslations = () => useContext(EditFormTranslationsContext);
 
-export { EditFormTranslationsContext, useEditFormTranslations };
+export { useEditFormTranslations };
 export default EditFormTranslationsProvider;
