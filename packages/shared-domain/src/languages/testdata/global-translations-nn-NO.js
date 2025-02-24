@@ -175,7 +175,7 @@ const nnNO = {
         'Rediger søknaden': { value: 'Rediger søknaden', scope: 'global' },
         'Send i posten': { value: 'Send i posten', scope: 'global' },
         'Til digital innsending': { value: 'Til digital innsending', scope: 'global' },
-        'Last ned førsteside': { value: 'Last ned førsteside', scope: 'global' },
+        'Last ned førsteside og søknad': { value: 'Last ned førsteside og søknad', scope: 'global' },
         'Jeg har lest instruksjonene.': { value: 'Eg har lese rettleiinga.', scope: 'global' },
         valgfritt: { value: 'valfritt', scope: 'global' },
         Januar: { value: 'Januar', scope: 'global' },

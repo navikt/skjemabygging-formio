@@ -22,13 +22,10 @@ const { skjemabyggingProxyUrl, formsApiUrl } = config;
 const forstesideV2 = {
   post: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      logger.info('ForstesideV2');
-      const { form, submissionData, language, enhetNummer } = req.body;
+      const { form, submission, language, enhetNummer } = req.body;
       const formParsed = JSON.parse(form);
-      const submissionDataParsed = JSON.parse(submissionData);
-
-      logger.info('Skal kalle getRecipients');
-
+      const submissionParsed = JSON.parse(submission);
+      const submissionDataParsed = submissionParsed.data;
       const recipients = await getRecipients(formParsed?.properties);
 
       const forstesideBody = forstesideUtils.genererFoerstesideData(
@@ -44,7 +41,6 @@ const forstesideV2 = {
 
       const forstesidePdf = base64Decode(forstesideResponse.foersteside);
 
-      logger.info('Skal kall getPdf');
       const soknadResponse: any = await getPdf(req);
 
       const soknadPdf = base64Decode(soknadResponse.data);

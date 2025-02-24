@@ -104,6 +104,7 @@ export const buildHtmlAndConvertToPdf = async (
   }
 };
 
+// Sette opp formdata med html og footer for å generere PDF v.hj.a Gotenberg.
 const createPdfFromHtml = async (
   html: string,
   footer: string,
@@ -132,6 +133,7 @@ const createPdfFromHtml = async (
   return await callGotenberg('/forms/chromium/convert/html', formData);
 };
 
+// Sette opp formdata til å merge en liste av PDFer
 export const mergeFiles = async (
   schema: string,
   title: string,
@@ -192,6 +194,7 @@ const applyMetadata = async (
 };
 */
 
+// Generisk metode for kall til mot Gotenberg gitt rute og preparert FormData
 const callGotenberg = async (route: string, formData: FormData): Promise<any> => {
   console.log(`Calling Gotenberg with url = ${gotenbergUrl}${route}`);
 

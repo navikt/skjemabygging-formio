@@ -42,7 +42,6 @@ const LetterDownload = ({ form, index, submission, enhetsListe, fyllutBaseURL, t
         id={`forsteside-${form.path}`}
         values={{
           form: JSON.stringify(form),
-          submissionData: JSON.stringify(submission.data),
 
           submission: JSON.stringify(submission),
           translations: JSON.stringify(currentLanguage !== 'nb-NO' ? translations[currentLanguage] : {}),
@@ -59,17 +58,6 @@ const LetterDownload = ({ form, index, submission, enhetsListe, fyllutBaseURL, t
             setIsRequiredEnhetMissing(true);
           }
         }}
-      />
-      <DownloadPdfButton
-        id={`soknad-${form.path}`}
-        values={{
-          form: JSON.stringify(form),
-          submission: JSON.stringify(submission),
-          translations: JSON.stringify(currentLanguage !== 'nb-NO' ? translations[currentLanguage] : {}),
-          language: currentLanguage,
-        }}
-        actionUrl={`${fyllutBaseURL}/api/pdf/convert`}
-        label={translate(form.properties.downloadPdfButtonText || TEXTS.grensesnitt.downloadApplication)}
       />
     </section>
   );

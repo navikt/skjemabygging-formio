@@ -32,6 +32,7 @@ const addresses = [
     },
   },
 ];
+
 const formTitle = 'testskjema';
 const filePathForsteside = path.join(process.cwd(), '/src/routers/api/test-forsteside.pdf');
 const filePathSoknad = path.join(process.cwd(), '/src/routers/api/test-skjema.pdf');
@@ -84,7 +85,6 @@ describe('[endpoint] forsteside', () => {
           components: [],
           properties: { mottaksadresseId: 'mottaksadresseId', path: '12345', skjemanummer: 'NAV 12.34-56' },
         }),
-        submissionData: '{}',
         submissionMethod: 'paper',
         language: 'nb-NO',
         submission: JSON.stringify({ data: {} }),
