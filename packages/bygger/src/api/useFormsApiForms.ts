@@ -62,9 +62,14 @@ const useFormsApiForms = () => {
       logger?.debug(`Successfully updated form with id ${form.id}: ${url}`);
       feedbackEmit.success(`Lagret skjema ${form.title}`);
       return result;
-    } catch (error) {
-      const message = (error as Error)?.message;
+    } catch (error: any) {
+      const message = error?.message;
+      const status = error?.status;
       logger?.error(`Failed to update form: ${url}`, { message });
+      if (status === 409) {
+        feedbackEmit.error('Skjemaet kan ikke oppdateres akkurat nå. Du kan prøve å laste siden på nytt.');
+        return;
+      }
       feedbackEmit.error(`Feil ved oppdatering av skjema. ${message}`);
     }
   };
