@@ -1,16 +1,18 @@
-import { Component, FormPropertiesType, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
+import { Component, Form, FormPropertiesType, PublishedTranslations } from '@navikt/skjemadigitalisering-shared-domain';
 import MemoryStream from 'memorystream';
 import nock from 'nock';
 import { ComponentProperties } from '../../../shared-domain/src/form';
-import { getFormioApiServiceUrl } from '../util/formio';
+import config from '../config';
 import ReportService from './ReportService';
-import { formioService } from './index';
+import { formPublicationsService, formsService } from './index';
+
+const { formsApi } = config;
 
 describe('ReportService', () => {
   let reportService: ReportService;
 
   beforeEach(() => {
-    reportService = new ReportService(formioService);
+    reportService = new ReportService(formsService, formPublicationsService);
   });
 
   afterEach(() => {
@@ -42,19 +44,35 @@ describe('ReportService', () => {
   describe('Reports', () => {
     const CSV_HEADER_LINE = 'skjemanummer;skjematittel;språk\n';
 
-    let nockScope: nock.Scope;
-
-    afterEach(() => {
-      expect(nockScope.isDone()).toBe(true);
-    });
-
     const createWritableStream = () => new MemoryStream(undefined, { readable: false });
 
-    const setupNock = (publishedForms: Partial<NavFormType>[]) => {
-      nockScope = nock(getFormioApiServiceUrl())
-        .get(/\/form\?.*$/)
+    const setupNock = (publishedForms: Partial<Form>[]) => {
+      nock(formsApi.url)
+        .get(/\/v1\/forms\?.*$/)
         .times(1)
         .reply(200, publishedForms);
+      nock(formsApi.url)
+        .get(/\/v1\/form-publications$/)
+        .times(1)
+        .reply(200, publishedForms);
+      for (const form of publishedForms) {
+        nock(formsApi.url).get(`/v1/forms/${form.path}`).reply(200, form);
+        const publishedTranslations: PublishedTranslations = {
+          publishedAt: form.publishedAt ?? '2025-01-28T10:00:10.325Z',
+          publishedBy: 'TEST',
+          translations:
+            form.publishedLanguages?.reduce((acc, cur) => {
+              return {
+                ...acc,
+                [cur]: {},
+              };
+            }, {}) || {},
+        };
+        nock(formsApi.url)
+          .get(/\/v1\/form-publications\/(.+)\/translations\?.*/)
+          .times(1)
+          .reply(200, publishedTranslations);
+      }
     };
 
     function parseReport(content: string) {
@@ -78,6 +96,8 @@ describe('ReportService', () => {
             {
               title: 'Testskjema1',
               components: [],
+              skjemanummer: 'TEST1',
+              path: 'test1',
               properties: {
                 skjemanummer: 'TEST1',
                 signatures: undefined,
@@ -98,6 +118,8 @@ describe('ReportService', () => {
             {
               title: 'Testskjema1',
               components: [],
+              skjemanummer: 'TEST1',
+              path: 'test1',
               properties: {
                 skjemanummer: 'TEST1',
                 signatures: [{ label: '' }],
@@ -118,6 +140,8 @@ describe('ReportService', () => {
             {
               title: 'Testskjema1',
               components: [],
+              skjemanummer: 'TEST1',
+              path: 'test1',
               properties: {
                 skjemanummer: 'TEST1',
                 signatures: [{ label: 'Lege' }, { label: 'Verge' }, { label: 'Søker' }],
@@ -142,12 +166,17 @@ describe('ReportService', () => {
             {
               title: 'Testskjema1',
               components: [],
+              skjemanummer: 'TEST1',
+              path: 'test1',
+              changedAt: '2022-07-28T10:00:10.325Z',
+              publishedAt: '2022-07-28T10:00:10.325Z',
+              status: 'published',
               properties: {
                 skjemanummer: 'TEST1',
                 published: '2022-07-28T10:00:10.325Z',
                 modified: '2022-07-28T10:00:10.325Z',
               } as FormPropertiesType,
-            },
+            } as Form,
           ];
           setupNock(publishedForms);
           const writableStream = createWritableStream();
@@ -163,12 +192,17 @@ describe('ReportService', () => {
             {
               title: 'Testskjema1',
               components: [],
+              skjemanummer: 'TEST1',
+              path: 'test1',
+              changedAt: '2022-07-28T11:00:05.254Z',
+              publishedAt: '2022-07-28T10:00:10.325Z',
+              status: 'pending',
               properties: {
                 skjemanummer: 'TEST1',
                 published: '2022-07-28T10:00:10.325Z',
                 modified: '2022-07-28T11:00:05.254Z',
               } as FormPropertiesType,
-            },
+            } as Form,
           ];
           setupNock(publishedForms);
           const writableStream = createWritableStream();
@@ -184,11 +218,15 @@ describe('ReportService', () => {
             {
               title: 'Testskjema1',
               components: [],
+              skjemanummer: 'TEST1',
+              path: 'test1',
+              changedAt: '2022-07-28T11:00:05.254Z',
+              status: 'draft',
               properties: {
                 skjemanummer: 'TEST1',
                 modified: '2022-07-28T11:00:05.254Z',
               } as FormPropertiesType,
-            },
+            } as Form,
           ];
           setupNock(publishedForms);
           const writableStream = createWritableStream();
@@ -207,37 +245,44 @@ describe('ReportService', () => {
           {
             title: 'Testskjema1',
             components: [],
+            skjemanummer: 'TEST1',
+            path: 'test1',
+            publishedAt: '2022-07-28T10:00:10.325Z',
+            publishedLanguages: ['nb', 'en', 'nn'],
+            status: 'published',
             properties: {
               skjemanummer: 'TEST1',
-              published: '2022-07-28T10:00:10.325Z',
-              publishedLanguages: ['en', 'nn-NO'],
             } as FormPropertiesType,
-          },
+          } as Form,
           {
             title: 'Testskjema2',
             components: [],
+            skjemanummer: 'TEST2',
+            path: 'test2',
+            publishedAt: '2022-07-28T10:00:10.325Z',
+            publishedLanguages: ['nb', 'en'],
+            status: 'published',
             properties: {
               skjemanummer: 'TEST2',
-              published: '2022-07-28T10:00:10.325Z',
-              publishedLanguages: ['en'],
             } as FormPropertiesType,
-          },
+          } as Form,
           {
             title: 'Testskjema3',
             components: [],
-            properties: {
-              skjemanummer: 'TEST3',
-              published: '2022-07-28T10:00:10.325Z',
-              publishedLanguages: undefined,
-            } as FormPropertiesType,
-          },
+            skjemanummer: 'TEST3',
+            path: 'test3',
+            publishedAt: '2022-07-28T10:00:10.325Z',
+            publishedLanguages: ['nb'],
+            status: 'published',
+            properties: {} as FormPropertiesType,
+          } as Form,
         ];
         setupNock(publishedForms);
 
         const writableStream = createWritableStream();
         await reportService.generate('forms-published-languages', writableStream);
         expect(writableStream.toString()).toEqual(
-          CSV_HEADER_LINE + 'TEST1;Testskjema1;en,nn-NO\nTEST2;Testskjema2;en\nTEST3;Testskjema3;\n',
+          CSV_HEADER_LINE + 'TEST1;Testskjema1;nb,en,nn\nTEST2;Testskjema2;nb,en\nTEST3;Testskjema3;nb\n',
         );
       });
 
@@ -249,6 +294,9 @@ describe('ReportService', () => {
         const publishedForms = [
           {
             title: 'Testskjema1',
+            skjemanummer: 'TEST1',
+            path: 'test1',
+            status: 'published',
             components: [
               {
                 type: 'panel',
@@ -272,23 +320,21 @@ describe('ReportService', () => {
                 ] as Component[],
               },
             ] as Component[],
-            properties: {
-              skjemanummer: 'TEST1',
-              published: '2022-07-28T10:00:10.325Z',
-              publishedLanguages: ['en', 'nn-NO'],
-            } as FormPropertiesType,
-          },
+            properties: {} as FormPropertiesType,
+          } as Form,
           {
             title: 'Testskjema2',
             components: [],
-            properties: {
-              skjemanummer: 'TEST2',
-              published: '2022-07-28T10:00:10.325Z',
-              publishedLanguages: ['en'],
-            } as FormPropertiesType,
-          },
+            skjemanummer: 'TEST2',
+            path: 'test2',
+            status: 'published',
+            properties: {} as FormPropertiesType,
+          } as Form,
           {
             title: 'Testskjema3',
+            skjemanummer: 'TEST3',
+            path: 'test3',
+            status: 'published',
             components: [
               {
                 type: 'panel',
@@ -297,12 +343,8 @@ describe('ReportService', () => {
                 components: [] as Component[],
               },
             ] as Component[],
-            properties: {
-              skjemanummer: 'TEST3',
-              published: '2022-07-28T10:00:10.325Z',
-              publishedLanguages: undefined,
-            } as FormPropertiesType,
-          },
+            properties: {} as FormPropertiesType,
+          } as Form,
         ];
         setupNock(publishedForms);
 
@@ -337,7 +379,9 @@ describe('ReportService', () => {
         const publishedForms = [
           {
             title: 'Testskjema1',
+            skjemanummer: 'TEST1',
             path: 'test1',
+            status: 'published',
             components: [
               {
                 type: 'panel',
@@ -367,10 +411,12 @@ describe('ReportService', () => {
               innsending: 'PAPIR_OG_DIGITAL',
               ettersending: 'PAPIR_OG_DIGITAL',
             } as FormPropertiesType,
-          },
+          } as Form,
           {
             title: 'Testskjema2',
+            skjemanummer: 'TEST2',
             path: 'test2',
+            status: 'published',
             components: [],
             properties: {
               skjemanummer: 'TEST2',
@@ -379,10 +425,12 @@ describe('ReportService', () => {
               innsending: 'INGEN',
               ettersending: 'KUN_PAPIR',
             } as FormPropertiesType,
-          },
+          } as Form,
           {
             title: 'Testskjema3',
+            skjemanummer: 'TEST3',
             path: 'test3',
+            status: 'published',
             components: [
               {
                 type: 'panel',
@@ -413,7 +461,7 @@ describe('ReportService', () => {
               innsending: 'KUN_PAPIR',
               ettersending: 'KUN_PAPIR',
             } as FormPropertiesType,
-          },
+          } as Form,
         ];
         setupNock(publishedForms);
 
@@ -457,28 +505,31 @@ describe('ReportService', () => {
           {
             title: 'Testskjema1',
             components: [],
-            properties: {
-              skjemanummer: 'TEST1',
-              published: '2022-07-28T10:00:10.325Z',
-              publishedLanguages: ['en', 'nn-NO'],
-            } as FormPropertiesType,
-          },
+            skjemanummer: 'TEST1',
+            path: 'test1',
+            status: 'published',
+            publishedLanguages: ['en', 'nn'],
+            publishedAt: '2022-07-28T10:00:10.325Z',
+            properties: {} as FormPropertiesType,
+          } as Form,
           {
             title: 'Testskjema2',
             components: [],
+            skjemanummer: 'TEST2',
+            path: 'test2',
+            status: 'published',
+            publishedLanguages: ['en'],
+            publishedAt: '2022-07-28T10:00:10.325Z',
             properties: {
-              skjemanummer: 'TEST2',
-              published: '2022-07-28T10:00:10.325Z',
-              publishedLanguages: ['en'],
               isTestForm: true, // <- testform
             } as FormPropertiesType,
-          },
+          } as Form,
         ];
         setupNock(publishedForms);
 
         const writableStream = createWritableStream();
         await reportService.generate('forms-published-languages', writableStream);
-        expect(writableStream.toString()).toEqual(CSV_HEADER_LINE + 'TEST1;Testskjema1;en,nn-NO\n');
+        expect(writableStream.toString()).toEqual(CSV_HEADER_LINE + 'TEST1;Testskjema1;en,nn\n');
       });
 
       it('fails if unknown report', async () => {
@@ -504,7 +555,9 @@ describe('ReportService', () => {
         const publishedForms = [
           {
             title: 'Testskjema1',
+            skjemanummer: 'TEST1',
             path: 'test1',
+            status: 'published',
             components: [
               {
                 type: 'panel',
@@ -533,15 +586,17 @@ describe('ReportService', () => {
             properties: {
               skjemanummer: 'TEST1',
             } as FormPropertiesType,
-          },
+          } as Form,
           {
             title: 'Testskjema2',
+            skjemanummer: 'TEST2',
             path: 'test2',
+            status: 'published',
             components: [],
             properties: {
               skjemanummer: 'TEST2',
             } as FormPropertiesType,
-          },
+          } as Form,
         ];
         setupNock(publishedForms);
 
