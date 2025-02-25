@@ -549,15 +549,12 @@ describe('utils', () => {
     });
   });
 
-  // TODO FORMS-API fix this test
-  // seems like panel label 'Veiledning' is missing from getTextsAndTranslationsForForm response
-  // Not sure if it as an actual bug, or problem with the test data
-  // eslint-disable-next-line mocha/no-skipped-tests
-  describe.skip('Skjema med globale oversettelser som inneholder linjeskift', () => {
+  describe('Skjema med globale oversettelser som inneholder linjeskift', () => {
     it('fjerner linjeskift i tekster som skal eksporteres', () => {
       const testform = createFormsApiFormObject([
         {
-          label: 'Veiledning',
+          title: 'Veiledning',
+          label: 'Panel',
           type: 'panel',
           key: 'panel',
           components: [
@@ -597,15 +594,17 @@ describe('utils', () => {
         },
       };
       const eksport = getTextsAndTranslationsForForm(testform, testtranslations);
-      expect(eksport).toHaveLength(2);
+      expect(eksport).toHaveLength(3);
 
-      expect(eksport[0].text).toBe('Veiledning');
-      expect(eksport[0].en).toBe('Guidance (Global Tekst)');
-      expect(eksport[0]['nn-NO']).toBe('Rettleiing (Global Tekst)');
+      expect(eksport[0].text).toBe('Test form');
 
-      expect(eksport[1].text).toEqual('Nav sender svar. <br> Se [link](https://www.nav.no/person/).');
-      expect(eksport[1].en).toEqual('Nav sends answers. <br> See [link](https://www.nav.no/person/).');
-      expect(eksport[1]['nn-NO']).toEqual('Nav sender svar. <br> Sjå [lenke](https://www.nav.no/person/).');
+      expect(eksport[1].text).toBe('Veiledning');
+      expect(eksport[1].en).toBe('Guidance (Global Tekst)');
+      expect(eksport[1]['nn-NO']).toBe('Rettleiing (Global Tekst)');
+
+      expect(eksport[2].text).toEqual('Nav sender svar. <br> Se [link](https://www.nav.no/person/).');
+      expect(eksport[2].en).toEqual('Nav sends answers. <br> See [link](https://www.nav.no/person/).');
+      expect(eksport[2]['nn-NO']).toEqual('Nav sender svar. <br> Sjå [lenke](https://www.nav.no/person/).');
     });
   });
 
