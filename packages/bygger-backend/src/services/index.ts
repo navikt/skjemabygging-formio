@@ -22,8 +22,6 @@ const backendInstance = new Backend(config, formioService);
 
 const publisherService = new PublisherService(backendInstance);
 
-const reportService = new ReportService(formioService);
-
 const pusherService = new PusherService();
 
 const formTranslationsService = createFormTranslationsService(config.formsApi.url);
@@ -33,6 +31,8 @@ const globalTranslationsService = createGlobalTranslationService(config.formsApi
 const formsService = createFormsService(config.formsApi.url);
 
 const formPublicationsService = createFormPublicationsService(config.formsApi.url);
+
+const reportService = new ReportService(formsService, formPublicationsService);
 
 const prodFormsApiUrl = config.prodFormsApi?.url;
 const copyService = prodFormsApiUrl

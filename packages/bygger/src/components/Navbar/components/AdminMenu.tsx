@@ -36,7 +36,7 @@ const AdminMenu = ({ showImport = false }) => {
             </Dropdown.Menu.GroupedList.Item>
 
             <Dropdown.Menu.GroupedList.Item>
-              <AdminMenuLink showUnsavedChangesModal={showUnsavedChangesModal} to="/rapporter" disabled>
+              <AdminMenuLink showUnsavedChangesModal={showUnsavedChangesModal} to="/rapporter">
                 Rapporter
               </AdminMenuLink>
             </Dropdown.Menu.GroupedList.Item>

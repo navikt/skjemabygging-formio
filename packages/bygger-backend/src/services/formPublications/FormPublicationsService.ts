@@ -1,8 +1,9 @@
 import { Form, PublishedTranslations, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
 import { fetchWithErrorHandling } from '../../fetchUtils';
 import { createHeaders } from '../utils/formsApiUtils';
+import { FormPublicationsService } from './types';
 
-const createFormPublicationsService = (formsApiUrl: string) => {
+const createFormPublicationsService = (formsApiUrl: string): FormPublicationsService => {
   const url = `${formsApiUrl}/v1/form-publications`;
 
   const getAll = async (): Promise<Form[]> => {
