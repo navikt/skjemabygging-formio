@@ -304,14 +304,14 @@ describe('ReportService', () => {
                 title: 'Vedlegg',
                 components: [
                   {
-                    values: [{ value: 'leggerVedNaa' }],
+                    type: 'attachment',
                     properties: {
                       vedleggstittel: 'Annet',
                       vedleggskode: 'N6',
                     } as ComponentProperties,
                   },
                   {
-                    values: [{ value: 'leggerVedNaa' }],
+                    type: 'attachment',
                     properties: {
                       vedleggstittel: 'Uttalelse fra fagpersonell',
                       vedleggskode: 'L8',
@@ -389,13 +389,14 @@ describe('ReportService', () => {
                 title: 'Vedlegg',
                 components: [
                   {
-                    values: [{ value: 'leggerVedNaa' }],
+                    type: 'attachment',
                     properties: {
                       vedleggstittel: 'Annet',
                       vedleggskode: 'N6',
                     } as ComponentProperties,
                   },
                   {
+                    type: 'attachment',
                     properties: {
                       vedleggstittel: 'Uttalelse fra fagpersonell',
                       vedleggskode: 'L8',
@@ -438,14 +439,14 @@ describe('ReportService', () => {
                 title: 'Vedlegg',
                 components: [
                   {
-                    values: [{ value: 'leggerVedNaa' }],
+                    type: 'attachment',
                     properties: {
                       vedleggstittel: 'Annet',
                       vedleggskode: 'N6',
                     } as ComponentProperties,
                   },
                   {
-                    values: [{ value: 'leggerVedNaa' }],
+                    type: 'attachment',
                     properties: {
                       vedleggstittel: 'Uttalelse fra fagpersonell',
                       vedleggskode: 'L8',
@@ -566,7 +567,7 @@ describe('ReportService', () => {
                 components: [
                   {
                     label: 'Annen dokumentasjon',
-                    values: [{ value: 'leggerVedNaa' }],
+                    type: 'attachment',
                     properties: {
                       vedleggstittel: 'Annet',
                       vedleggskode: 'N6',
@@ -574,7 +575,7 @@ describe('ReportService', () => {
                   },
                   {
                     label: 'Uttalelse fra fagpersonell',
-                    values: [{ value: 'leggerVedNaa' }],
+                    type: 'attachment',
                     properties: {
                       vedleggstittel: 'Uttalelse fra fagpersonell',
                       vedleggskode: 'L8',
