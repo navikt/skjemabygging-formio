@@ -66,7 +66,7 @@ class ReportService {
 
   private async generateAllFormsAndAttachments(writableStream: Writable) {
     const columns = ['skjemanummer', 'skjematittel', 'vedleggstittel', 'vedleggskode', 'label'];
-    const allFormsCompact = (await this.formsService.getAll('title,skjemanummer,properties')).filter(notTestForm);
+    const allFormsCompact = (await this.formsService.getAll('path,title,skjemanummer,properties')).filter(notTestForm);
     const stringifier = stringify({ header: true, columns, delimiter: ';' });
     stringifier.pipe(writableStream);
     for (const formCompact of allFormsCompact) {
