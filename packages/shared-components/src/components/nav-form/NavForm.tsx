@@ -1,5 +1,6 @@
 import { ComponentError, NavFormType, Submission, Webform } from '@navikt/skjemadigitalisering-shared-domain';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { useAppConfig } from '../../context/config/configContext';
 import { usePrefillData } from '../../context/prefill-data/PrefillDataContext';
 import Styles from '../../styles';
@@ -43,8 +44,6 @@ interface Props {
   i18n?: any;
   language?: string;
   fyllutEvents?: any;
-  formReady?: (formioInstance: any) => void;
-  submissionReady?: (formioInstance: any) => void;
   events?: EventProps;
 }
 
@@ -58,9 +57,7 @@ const NavForm = ({
   language = 'nb-NO',
   i18n = i18nData,
   fyllutEvents,
-  formReady,
   submission,
-  submissionReady,
   className,
   events,
 }: Props) => {
@@ -69,26 +66,7 @@ const NavForm = ({
   const { prefillData } = usePrefillData();
   const appConfig = useAppConfig();
   const ref = useRef(null);
-
-  const onAnyEvent = useCallback(
-    (event: string, ...args: any[]) => {
-      appConfig.logger?.trace(`formio event '${event}'`, { webformId: webform?.id, eventArgs: args });
-      if (event.startsWith('formio.')) {
-        const funcName = `on${event.charAt(7).toUpperCase()}${event.slice(8)}`;
-        console.log(`formio event '${event}'`, { webformId: webform?.id, eventArgs: args, id: funcName });
-        if (events && funcName in events) {
-          events[funcName](...args);
-        }
-      }
-
-      // TODO: Is this needed?
-      // Repopulating form from submission after navigating back to form from another context (e.g. Summary page)
-      if (submissionReady && event === 'formio.change' && args?.some((arg) => arg?.fromSubmission)) {
-        submissionReady(webform);
-      }
-    },
-    [webform, appConfig.logger, submissionReady],
-  );
+  const { panelSlug } = useParams();
 
   const createForm = useCallback(
     async (srcOrForm: NavFormType | string) => {
@@ -97,68 +75,84 @@ const NavForm = ({
           language,
           i18n,
           appConfig,
+          submission: submission ? JSON.parse(JSON.stringify(submission)) : undefined,
         });
 
         appConfig.logger?.debug('Form ready', { newWebformId: newWebform.id, oldWebformId: webform?.id });
 
         // TODO: Is this needed?
+        if (webform) {
+          //webform?.destroy(true);
+        }
+
+        // TODO: Is this needed?
         if (!newWebform.src && !src) {
-          newWebform.src = src;
+          //newWebform.src = src;
         }
 
         // TODO: Is this needed?
         if (!newWebform.url && !url) {
-          newWebform.url = url;
+          //newWebform.url = url;
         }
 
         // TODO: Is this needed?
         if (!newWebform.form && !form) {
-          newWebform.form = form;
+          //newWebform.form = form;
         }
 
         setWebform(newWebform);
-
-        newWebform.onAny(onAnyEvent);
-
-        if (submission) {
-          await newWebform.setSubmission(JSON.parse(JSON.stringify(submission)));
-        }
-
-        if (formReady) {
-          formReady(newWebform);
-        }
       }
     },
-    [appConfig, webform?.id, src, language, i18n, form, url, onAnyEvent, submission, formReady],
+    [appConfig, webform, language, i18n, src, url, form, submission],
   );
 
   useEffect(() => {
-    if (webform) {
-      fyllutEvents?.on('focusOnComponent', (args) => webform.focusOnComponent(args));
-      return () => fyllutEvents?.removeListener('focusOnComponent');
-    }
-  }, [fyllutEvents, webform]);
-
-  useEffect(() => {
-    if (Object.keys(i18n).length !== 0 && !webform) {
-      appConfig.logger?.debug('Create new webform/wizard');
-      if (form) {
-        createForm(form);
-      } else if (src) {
-        createForm(src);
+    (async () => {
+      if (webform) {
+        webform.onAny((event: string, ...args: any[]) => {
+          appConfig.logger?.trace(`Formio event '${event}'`, { webformId: webform?.id, eventArgs: args });
+          if (event.startsWith('formio.')) {
+            const funcName = `on${event.charAt(7).toUpperCase()}${event.slice(8)}`;
+            if (events && funcName in events) {
+              events[funcName](...args);
+            }
+          }
+        });
       }
-    }
-  }, [appConfig.logger, i18n, createForm, webform, src, form, language]);
+    })();
 
-  useEffect(
-    () => () => {
+    return () => {
       if (webform) {
         appConfig.logger?.debug('Destroy formio on unmount', { webformId: webform.id });
         webform.destroy(true);
       }
-    },
-    [appConfig.logger, webform],
-  );
+    };
+    // Do not want to include events in the dependency array
+    // eslint-disable-next-line
+  }, [appConfig.logger, webform]);
+
+  useEffect(() => {
+    if (webform && panelSlug && webform.currentPanel?.key !== panelSlug) {
+      const panelIndex = webform.currentPanels.indexOf(panelSlug);
+      appConfig.logger?.trace(`Update new slug ${panelSlug}`);
+      if (panelIndex >= 0) {
+        webform.setPage(panelIndex);
+      } else {
+        webform.setPage(0);
+      }
+    }
+  }, [appConfig.logger, webform, panelSlug]);
+
+  useEffect(() => {
+    if (webform) {
+      appConfig.logger?.trace('Setup focusOnComponent');
+      fyllutEvents?.on('focusOnComponent', (args) => webform.focusOnComponent(args));
+      return () => {
+        appConfig.logger?.debug('Remove focusOnComponent');
+        fyllutEvents?.removeListener('focusOnComponent');
+      };
+    }
+  }, [appConfig.logger, webform, fyllutEvents]);
 
   useEffect(() => {
     if (webform) {
@@ -169,30 +163,26 @@ const NavForm = ({
 
   useEffect(() => {
     if (webform) {
-      if (submission) {
-        const updateSubmission = async () => {
-          appConfig.logger?.debug('Set submission', { webformId: webform?.id });
-          await webform.setSubmission(JSON.parse(JSON.stringify(submission)));
-
-          if (submission?.fyllutState) {
-            webform.redrawNavigation();
-          }
-        };
-
-        updateSubmission();
-      }
-    }
-  }, [submission, webform, appConfig.logger]);
-
-  useEffect(() => {
-    if (webform) {
       appConfig.logger?.debug('Prefill data and set form if prefill data exist', {
         webformId: webform?.id,
         prefillData,
       });
       NavFormBuilder.prefillForm(webform, prefillData);
     }
-  }, [prefillData, webform, appConfig.logger]);
+  }, [appConfig.logger, webform, prefillData]);
+
+  useEffect(() => {
+    (async () => {
+      if (Object.keys(i18n).length !== 0 && !webform) {
+        appConfig.logger?.debug('Create new webform/wizard');
+        if (form) {
+          await createForm(form);
+        } else if (src) {
+          await createForm(src);
+        }
+      }
+    })();
+  }, [appConfig.logger, i18n, createForm, webform, src, form]);
 
   return <div className={className} data-testid="formMountElement" ref={ref} />;
 };

@@ -367,3 +367,16 @@ Wizard.prototype.onSubmissionError = function (error) {
   setTimeout(() => this.emit('errorSummaryFocus'), 0);
   return result;
 };
+
+const originalInit = Wizard.prototype.init;
+Wizard.prototype.init = function () {
+  // Workaround to load submission on init in order to avoid flickering
+  // Is fixed in 5.x, https://github.com/formio/formio.js/pull/4580
+  if (this.options?.submission) {
+    this._submission = this.options.submission;
+    this._data = this.options.submission.data;
+  } else {
+    this._submission = this._submission || { data: {} };
+  }
+  return originalInit.call(this);
+};

@@ -1,4 +1,4 @@
-import { Component, NavFormType, Webform } from '@navikt/skjemadigitalisering-shared-domain';
+import { Component, NavFormType, Submission, Webform } from '@navikt/skjemadigitalisering-shared-domain';
 import EventEmitter from 'eventemitter2';
 import { Formio, Utils } from 'formiojs';
 import { SANITIZE_CONFIG } from '../../formio/form-builder-options/sanitizeConfig';
@@ -9,6 +9,7 @@ interface CreateOptions {
   i18n?: any;
   sanitizeConfig?: any;
   events?: any;
+  submission?: Submission;
 }
 
 const create = async (

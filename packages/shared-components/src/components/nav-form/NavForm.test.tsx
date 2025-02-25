@@ -140,7 +140,9 @@ describe('NavForm', () => {
             iban: 'GB33BUKB20201555555555',
           },
         },
-        onSubmit: mockedOnSubmit,
+        events: {
+          onSubmit: mockedOnSubmit,
+        },
       });
       const textField = await screen.findByLabelText('Fornavn');
       expect(textField).toBeInTheDocument();
