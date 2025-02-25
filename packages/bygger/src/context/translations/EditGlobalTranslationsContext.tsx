@@ -149,5 +149,5 @@ const EditGlobalTranslationsProvider = ({ initialChanges, children }: Props) => 
 
 const useEditGlobalTranslations = () => useContext(EditGlobalTranslationsContext);
 
-export { EditGlobalTranslationsContext, useEditGlobalTranslations };
+export { useEditGlobalTranslations };
 export default EditGlobalTranslationsProvider;
