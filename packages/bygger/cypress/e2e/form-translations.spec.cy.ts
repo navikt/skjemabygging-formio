@@ -19,6 +19,11 @@ describe('Form translations', () => {
     cy.wait('@getGlobalTranslations');
   });
 
+  it('does not update translations if no changes', () => {
+    cy.findByRole('button', { name: 'Lagre' }).click();
+    cy.findByText('Ingen endringer oppdaget. Oversettelser ble ikke lagret.').should('be.visible');
+  });
+
   it('updates existing translation, adds new translation and adds global override', () => {
     cy.intercept('POST', '/api/forms/tst123456/translations', (req) => req.reply(201, req.body)).as('postTranslation');
     cy.intercept('PUT', '/api/forms/tst123456/translations/2', (req) => req.reply(200, req.body)).as('putTranslation2');

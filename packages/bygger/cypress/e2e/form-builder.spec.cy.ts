@@ -60,6 +60,7 @@ describe('Form Builder', () => {
         cy.get('[data-testid="editorSaveButton"]').click();
         cy.findByRole('button', { name: 'Lagre' }).click();
         cy.wait('@putForm');
+        cy.findByText('Lagret skjema Skjema for testing av diff').should('be.visible');
       });
     });
 
@@ -78,6 +79,7 @@ describe('Form Builder', () => {
         cy.get('[data-testid="editorSaveButton"]').click();
         cy.findByRole('button', { name: 'Lagre' }).click();
         cy.wait('@putForm');
+        cy.findByText('Lagret skjema Skjema for testing av diff').should('be.visible');
       });
     });
   });

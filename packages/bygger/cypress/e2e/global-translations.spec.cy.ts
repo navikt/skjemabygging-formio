@@ -11,6 +11,11 @@ describe('Global translations', () => {
   });
 
   describe('Skjematekster', () => {
+    it('does not update translations if no changes', () => {
+      cy.findByRole('button', { name: 'Lagre' }).click();
+      cy.findByText('Ingen endringer oppdaget. Oversettelser ble ikke lagret.').should('be.visible');
+    });
+
     it('adds new translation', () => {
       cy.intercept('POST', '/api/translations', (req) => {
         expect(req.body).to.deep.equal({
