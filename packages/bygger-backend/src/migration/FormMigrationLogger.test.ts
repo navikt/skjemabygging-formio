@@ -23,8 +23,11 @@ describe('FormMigrationLogger', () => {
 
   describe('getLog', () => {
     it('contains title, path and key properties from the form', () => {
-      const { name, path, title, properties } = formWithSimpleConditionalToRadio;
-      expect(logger.getLog()).toEqual(expect.objectContaining({ name, path, title, ...properties }));
+      const { name, path, title, publishedAt, publishedBy, status, properties } = formWithSimpleConditionalToRadio;
+      const { isTestForm, skjemanummer } = properties;
+      expect(logger.getLog()).toEqual(
+        expect.objectContaining({ name, path, title, publishedAt, publishedBy, status, isTestForm, skjemanummer }),
+      );
     });
 
     describe('When all entries contains identical original and new components', () => {
