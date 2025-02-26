@@ -41,7 +41,7 @@ const FormStatusPanel = ({ formStatusProperties, spacing, hideToggleDiffButton =
 
   return (
     <Box className={styles.container}>
-      <div className={styles.panelItem}>
+      <div className={styles.panelItem} data-cy="form-status">
         <Label>Status:</Label>
         <div className={styles.sidePanelFormStatusContainer}>
           <FormStatus status={determineStatus(formStatusProperties)} size="large" />
