@@ -22,6 +22,7 @@ module.exports = {
     },
   },
   server: {
+    host: 'localhost',
     port: 3300,
     cors: {},
     jsonBodyParser: {},
