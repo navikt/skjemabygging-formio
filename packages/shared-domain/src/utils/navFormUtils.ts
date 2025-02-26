@@ -231,12 +231,12 @@ export const removeVedleggspanel = (form: NavFormType) => {
 };
 
 export const isSubmissionMethodAllowed = (submissionMethod: string, form: NavFormType | FormsResponseForm): boolean => {
-  const { innsending } = form.properties;
+  const { submissionTypes } = form.properties;
   switch (submissionMethod) {
     case 'digital':
-      return !innsending || isDigitalSubmission(innsending);
+      return !submissionTypes || isDigitalSubmission(submissionTypes);
     case 'paper':
-      return !innsending || isPaperSubmission(innsending);
+      return !submissionTypes || isPaperSubmission(submissionTypes);
   }
   return false;
 };
@@ -326,7 +326,7 @@ const createDefaultForm = (config): Form => ({
   properties: {
     skjemanummer: '',
     tema: '',
-    innsending: ['PAPIR_OG_DIGITAL'],
+    submissionTypes: ['PAPER', 'DIGITAL'],
     ettersending: 'PAPIR_OG_DIGITAL',
     signatures: [{ label: '', description: '', key: uuidv4() }],
     ettersendelsesfrist: '14',

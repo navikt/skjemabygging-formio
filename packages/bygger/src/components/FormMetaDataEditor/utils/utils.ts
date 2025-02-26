@@ -1,17 +1,11 @@
-import {
-  DeclarationType,
-  Form,
-  InnsendingType,
-  UsageContext,
-  numberUtils,
-} from '@navikt/skjemadigitalisering-shared-domain';
+import { DeclarationType, Form, UsageContext, numberUtils } from '@navikt/skjemadigitalisering-shared-domain';
 
 export type UpdateFormFunction = (form: Form) => void;
 export type FormMetadataErrorKeys =
   | 'title'
   | 'skjemanummer'
   | 'tema'
-  | 'innsending'
+  | 'submissionTypes'
   | 'ettersending'
   | 'lockedFormReason'
   | 'declarationText'
@@ -43,9 +37,6 @@ export const validateFormMetadata = (form: Form, usageContext: UsageContext) => 
 
   // Some fields are only required in edit mode
   if (usageContext === 'edit') {
-    if (!form.properties.innsending?.length) {
-      errors.innsending = 'Du må velge innsendingstype';
-    }
     if (!form.properties.ettersending) {
       errors.ettersending = 'Du må velge innsendingstype for ettersending';
     }
@@ -61,10 +52,3 @@ export const validateFormMetadata = (form: Form, usageContext: UsageContext) => 
 };
 
 export const isFormMetadataValid = (errors) => Object.keys(errors).length === 0;
-
-export const ensureValueIsSubmissionArray = (submissionTypes: InnsendingType[] | InnsendingType): InnsendingType[] => {
-  if (Array.isArray(submissionTypes)) {
-    return submissionTypes;
-  }
-  return [submissionTypes] as InnsendingType[];
-};

@@ -1,4 +1,4 @@
-import { Component, forstesideUtils, InnsendingType, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
+import { Component, forstesideUtils, NavFormType, SubmissionType } from '@navikt/skjemadigitalisering-shared-domain';
 import nock from 'nock';
 import request from 'supertest';
 import { createApp } from './app';
@@ -14,12 +14,12 @@ const { sendInnConfig, tokenx: tokenxConfig, formioApiServiceUrl } = config;
 
 describe('app', () => {
   describe('index.html', () => {
-    function createFormDefinition(innsending?: InnsendingType) {
+    function createFormDefinition(submissionTypes?: SubmissionType[]) {
       return {
         title: 'Søknad om testhund',
         path: 'testform001',
         properties: {
-          innsending: innsending,
+          submissionTypes,
         },
         components: [] as Component[],
       } as NavFormType;
@@ -76,10 +76,10 @@ describe('app', () => {
       });
     });
 
-    describe("Form property 'innsending'", () => {
-      describe('innsending KUN_PAPIR', () => {
+    describe("Form property 'submissionTypes'", () => {
+      describe('submissionTypes [PAPER]', () => {
         it('renders index.html when query param sub is missing', async () => {
-          const testform001 = createFormDefinition('KUN_PAPIR');
+          const testform001 = createFormDefinition(['PAPER']);
           nock(formioApiServiceUrl!).get('/form?type=form&tags=nav-skjema&path=testform001').reply(200, [testform001]);
 
           const res = await request(createApp()).get('/fyllut/testform001?lang=en').expect(302);
@@ -87,7 +87,7 @@ describe('app', () => {
         });
 
         it('renders index.html when query param sub is paper', async () => {
-          const testform001 = createFormDefinition('KUN_PAPIR');
+          const testform001 = createFormDefinition(['PAPER']);
           nock(formioApiServiceUrl!).get('/form?type=form&tags=nav-skjema&path=testform001').reply(200, [testform001]);
 
           const res = await request(createApp()).get('/fyllut/testform001?sub=paper').expect(200);
@@ -95,9 +95,9 @@ describe('app', () => {
         });
       });
 
-      describe('innsending KUN_DIGITAL', () => {
+      describe('submissionTypes KUN_DIGITAL', () => {
         it('redirects with query param sub=digital when it is missing', async () => {
-          const testform001 = createFormDefinition('KUN_DIGITAL');
+          const testform001 = createFormDefinition(['DIGITAL']);
           nock(formioApiServiceUrl!).get('/form?type=form&tags=nav-skjema&path=testform001').reply(200, [testform001]);
 
           const res = await request(createApp()).get('/fyllut/testform001?lang=en').expect(302);
@@ -105,7 +105,7 @@ describe('app', () => {
         });
 
         it('renders index.html when query param sub is digital', async () => {
-          const testform001 = createFormDefinition('KUN_DIGITAL');
+          const testform001 = createFormDefinition(['DIGITAL']);
           nock(formioApiServiceUrl!).get('/form?type=form&tags=nav-skjema&path=testform001').reply(200, [testform001]);
 
           const res = await request(createApp()).get('/fyllut/testform001?sub=digital').expect(200);
@@ -113,9 +113,9 @@ describe('app', () => {
         });
       });
 
-      describe('innsending INGEN', () => {
+      describe('submissionTypes []', () => {
         it('redirects without query param sub if paper', async () => {
-          const testform001 = createFormDefinition('INGEN');
+          const testform001 = createFormDefinition([]);
           nock(formioApiServiceUrl!).get('/form?type=form&tags=nav-skjema&path=testform001').reply(200, [testform001]);
 
           const res = await request(createApp()).get('/fyllut/testform001?lang=en&sub=paper').expect(302);
@@ -125,7 +125,7 @@ describe('app', () => {
 
       describe('invalid query param sub', () => {
         it('redirects without query param sub if blabla', async () => {
-          const testform001 = createFormDefinition('KUN_PAPIR');
+          const testform001 = createFormDefinition(['PAPER']);
           nock(formioApiServiceUrl!).get('/form?type=form&tags=nav-skjema&path=testform001').reply(200, [testform001]);
 
           const res = await request(createApp()).get('/fyllut/testform001?lang=en&sub=blabla').expect(302);
@@ -135,10 +135,10 @@ describe('app', () => {
 
       // Dynamically generated tests are exceptions to this rule: https://github.com/lo1tuma/eslint-plugin-mocha/blob/main/docs/rules/no-setup-in-describe.md
       // eslint-disable-next-line mocha/no-setup-in-describe
-      describe.each(['PAPIR_OG_DIGITAL', undefined])('innsending %s', (innsending) => {
+      describe.each(['PAPIR_OG_DIGITAL', undefined])('submissionTypes %s', (submissionTypes) => {
         describe('query param sub is missing', () => {
           it('redirects to intropage and keeps other query params', async () => {
-            const testform001 = createFormDefinition(innsending as InnsendingType);
+            const testform001 = createFormDefinition(submissionTypes as SubmissionType[]);
             nock(formioApiServiceUrl!)
               .get('/form?type=form&tags=nav-skjema&path=testform001')
               .reply(200, [testform001]);
@@ -148,7 +148,7 @@ describe('app', () => {
           });
 
           it('does not redirect when intropage is requested (avoiding circular redirects)', async () => {
-            const testform001 = createFormDefinition(innsending as InnsendingType);
+            const testform001 = createFormDefinition(submissionTypes as SubmissionType[]);
             nock(formioApiServiceUrl!)
               .get('/form?type=form&tags=nav-skjema&path=testform001')
               .reply(200, [testform001]);
@@ -160,7 +160,7 @@ describe('app', () => {
 
         describe('query param sub is present', () => {
           it('does not redirect to intropage when sub=digital', async () => {
-            const testform001 = createFormDefinition(innsending as InnsendingType);
+            const testform001 = createFormDefinition(submissionTypes as SubmissionType[]);
             nock(formioApiServiceUrl!)
               .get('/form?type=form&tags=nav-skjema&path=testform001')
               .reply(200, [testform001]);
@@ -170,7 +170,7 @@ describe('app', () => {
           });
 
           it('does not redirect to intropage when sub=paper', async () => {
-            const testform001 = createFormDefinition(innsending as InnsendingType);
+            const testform001 = createFormDefinition(submissionTypes as SubmissionType[]);
             nock(formioApiServiceUrl!)
               .get('/form?type=form&tags=nav-skjema&path=testform001')
               .reply(200, [testform001]);

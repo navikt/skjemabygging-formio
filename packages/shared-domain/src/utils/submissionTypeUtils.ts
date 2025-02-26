@@ -1,9 +1,17 @@
-import { InnsendingType } from '../form';
+import { SubmissionType } from '../form';
 
-export function isDigitalSubmission(submissionTypes: InnsendingType[] | InnsendingType): boolean {
-  return submissionTypes.includes('KUN_DIGITAL') || submissionTypes.includes('PAPIR_OG_DIGITAL');
+export function isDigitalSubmission(submissionTypes: SubmissionType[]): boolean {
+  return submissionTypes.includes('DIGITAL');
 }
 
-export function isPaperSubmission(submissionTypes: InnsendingType[] | InnsendingType): boolean {
-  return submissionTypes.includes('PAPIR_OG_DIGITAL') || submissionTypes.includes('KUN_PAPIR');
+export function isPaperSubmission(submissionTypes: SubmissionType[]): boolean {
+  return submissionTypes.includes('PAPER');
+}
+
+export function isPaperSubmissionOnly(submissionTypes: SubmissionType[]): boolean {
+  return submissionTypes.includes('PAPER') && !submissionTypes.includes('DIGITAL');
+}
+
+export function isNoneSubmission(submissionTypes: SubmissionType[]): boolean {
+  return !submissionTypes.length;
 }

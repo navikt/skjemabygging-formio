@@ -6,6 +6,7 @@ import { TextSize } from '../text';
 export type DisplayType = 'wizard' | 'form';
 export type FormType = 'form' | 'resource';
 export type InnsendingType = 'PAPIR_OG_DIGITAL' | 'KUN_PAPIR' | 'KUN_DIGITAL' | 'INGEN';
+export type SubmissionType = 'PAPER' | 'DIGITAL'; // TODO ikke required
 export type SubmissionMethod = 'paper' | 'digital';
 
 export enum DeclarationType {
@@ -64,7 +65,7 @@ export interface FormPropertiesType {
   unpublished?: string;
   unpublishedBy?: string;
   downloadPdfButtonText?: string;
-  innsending?: InnsendingType[] | InnsendingType;
+  submissionTypes: SubmissionType[];
   ettersending?: InnsendingType;
   ettersendelsesfrist?: string;
   innsendingForklaring?: string;
@@ -89,6 +90,10 @@ export interface FormPropertiesType {
   uxSignalsInnsending?: InnsendingType;
   hideUserTypes?: boolean;
   mellomlagringDurationDays: string;
+}
+
+export interface FormAPIProperties extends FormPropertiesType {
+  innsending?: InnsendingType;
 }
 
 export type FormPropertiesPublishing = Pick<
@@ -261,6 +266,10 @@ export interface ResourceAccess {
   roles: string[];
 }
 
+export interface NavFormAPIType extends NavFormType {
+  properties: FormAPIProperties;
+}
+
 export interface NavFormType {
   _id?: string;
   tags: string[];
@@ -291,7 +300,7 @@ export interface NavFormType {
 }
 
 export interface FormsResponseForm extends Pick<NavFormType, '_id' | 'title' | 'path' | 'modified'> {
-  properties: Pick<FormPropertiesType, 'skjemanummer' | 'innsending' | 'ettersending'>;
+  properties: Pick<FormPropertiesType, 'skjemanummer' | 'ettersending' | 'submissionTypes'>;
 }
 
 export type SubmissionData = Record<string, string | number | boolean | any[] | object>;

@@ -30,6 +30,7 @@ import {
   InnsendingType,
   InputMode,
   MellomlagringError,
+  NavFormAPIType,
   NavFormType,
   NewFormSignatureType,
   Panel,
@@ -40,6 +41,7 @@ import {
   Submission,
   SubmissionData,
   SubmissionMethod,
+  SubmissionType,
   UsageContext,
 } from './form';
 import { Form } from './forms-api-form';
@@ -133,7 +135,12 @@ import objectUtils from './utils/objectUtils';
 import paginationUtils from './utils/pagination';
 import signatureUtils from './utils/signatureUtils';
 import stringUtils from './utils/stringUtils';
-import { isDigitalSubmission, isPaperSubmission } from './utils/submissionTypeUtils';
+import {
+  isDigitalSubmission,
+  isNoneSubmission,
+  isPaperSubmission,
+  isPaperSubmissionOnly,
+} from './utils/submissionTypeUtils';
 import translationUtils from './utils/translation';
 import validatorUtils from './utils/validatorUtils';
 import yourInformationUtils from './utils/yourInformationUtils';
@@ -152,7 +159,9 @@ export {
   forstesideUtils,
   guid,
   isDigitalSubmission,
+  isNoneSubmission,
   isPaperSubmission,
+  isPaperSubmissionOnly,
   languagesUtil,
   localizationUtils,
   loggingUtils,
@@ -233,6 +242,7 @@ export type {
   Mottaksadresse,
   MottaksadresseData,
   MottaksadresserResourceContent,
+  NavFormAPIType,
   NavFormType,
   NewFormSignatureType,
   Operator,
@@ -257,6 +267,7 @@ export type {
   SubmissionIdentity,
   SubmissionMaalgruppe,
   SubmissionMethod,
+  SubmissionType,
   SubmissionYourInformation,
   SummaryActivity,
   SummaryAddress,

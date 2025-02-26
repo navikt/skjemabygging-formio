@@ -8,7 +8,7 @@ export interface EnhetFieldsProps {
 }
 
 const EnhetFields = ({ onChange, form }: EnhetFieldsProps) => {
-  const innsending = form.properties.innsending || ['PAPIR_OG_DIGITAL'];
+  const submissionTypes = form.properties.submissionTypes;
   const mottaksadresseId = form.properties.mottaksadresseId;
   const enhetMaVelgesVedPapirInnsending = form.properties.enhetMaVelgesVedPapirInnsending;
   const enhetstyper = form.properties.enhetstyper;
@@ -16,7 +16,7 @@ const EnhetFields = ({ onChange, form }: EnhetFieldsProps) => {
 
   return (
     <>
-      {isPaperSubmission(innsending) && !mottaksadresseId && (
+      {isPaperSubmission(submissionTypes) && !mottaksadresseId && (
         <div className="mb">
           <EnhetSettings
             enhetMaVelges={!!enhetMaVelgesVedPapirInnsending}

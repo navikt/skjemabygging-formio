@@ -2,7 +2,7 @@ import { Checkbox, Textarea, TextField } from '@navikt/ds-react';
 import { Form, FormSettingsDiff, InnsendingType } from '@navikt/skjemadigitalisering-shared-domain';
 import LabelWithDiff from '../LabelWithDiff';
 import SubmissionTypeSelect from '../SubmissionTypeSelect';
-import { ensureValueIsSubmissionArray, FormMetadataError, UpdateFormFunction } from '../utils/utils';
+import { FormMetadataError, UpdateFormFunction } from '../utils/utils';
 import { SubmissionTypeCheckbox } from './SubmissionTypeCheckbox';
 
 export interface SubmissionFieldsProps {
@@ -13,7 +13,7 @@ export interface SubmissionFieldsProps {
 }
 
 const SubmissionFields = ({ onChange, diff, form, errors }: SubmissionFieldsProps) => {
-  const innsending = ensureValueIsSubmissionArray(form.properties.innsending || []);
+  const submissionTypes = form.properties.submissionTypes;
   const ettersending = form.properties.ettersending;
   const ettersendelsesfrist = form.properties.ettersendelsesfrist;
   const hideUserTypes = form.properties.hideUserTypes;
@@ -23,16 +23,16 @@ const SubmissionFields = ({ onChange, diff, form, errors }: SubmissionFieldsProp
     <>
       <SubmissionTypeCheckbox
         name="form-innsending"
-        label={<LabelWithDiff label="Innsending" diff={!!diff.innsending} />}
-        value={innsending}
-        error={errors?.innsending}
+        label={<LabelWithDiff label="Innsending" diff={!!diff.submissionTypes} />}
+        value={submissionTypes}
+        error={errors?.submissionTypes}
         readonly={isLockedForm}
-        onChange={(event) =>
+        onChange={(data) =>
           onChange({
             ...form,
             properties: {
               ...form.properties,
-              innsending: [...event],
+              submissionTypes: [...data],
             },
           })
         }
@@ -71,7 +71,7 @@ const SubmissionFields = ({ onChange, diff, form, errors }: SubmissionFieldsProp
         />
       )}
 
-      {innsending?.includes('INGEN') && (
+      {!submissionTypes?.length && (
         <>
           <TextField
             className="mb"
