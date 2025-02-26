@@ -1,4 +1,4 @@
-import { render, waitFor } from '@testing-library/react';
+import { act, render } from '@testing-library/react';
 import { Formio } from 'formiojs';
 import { AppConfigProvider, NavForm } from '../src';
 
@@ -15,9 +15,8 @@ const NavFormForTest = (props) => {
 };
 
 const renderNavForm = async (props) => {
-  const formReady = vi.fn();
-  const renderReturn = render(<NavFormForTest {...props} formReady={formReady} />);
-  await waitFor(() => expect(formReady).toHaveBeenCalledTimes(1));
+  const renderReturn = await act(async () => render(<NavFormForTest {...props} />));
+
   return { ...renderReturn, NavFormForTest };
 };
 
