@@ -1,4 +1,4 @@
-import { formioFormsApiUtils, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, formioFormsApiUtils, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import { NextFunction, Response } from 'express';
 import { migrateForms } from '../../migration/migrationScripts';
 import { formsService } from '../../services';
@@ -25,7 +25,7 @@ const migrateUpdate = async (req: ByggerRequest, res: Response, next: NextFuncti
       include,
       migrationLevel,
     );
-    const migratedFormsData: NavFormType[] = [];
+    const migratedFormsData: Form[] = [];
     for (const navForm of migratedForms) {
       const body: FormPutBody = {
         title: navForm.title,
@@ -33,7 +33,7 @@ const migrateUpdate = async (req: ByggerRequest, res: Response, next: NextFuncti
         properties: navForm.properties,
       };
       const formsApiForm = await formsService.put(navForm.path, body, navForm.revision!, accessToken);
-      migratedFormsData.push(formioFormsApiUtils.mapFormToNavForm(formsApiForm));
+      migratedFormsData.push(formsApiForm);
     }
     res.send(migratedFormsData);
   } catch (error) {
