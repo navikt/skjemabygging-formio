@@ -63,4 +63,27 @@ describe('Form translations', () => {
     );
     cy.findAllByRole('textbox').should('have.length', 0);
   });
+
+  it('shows unused translations', () => {
+    cy.intercept('DELETE', '/api/forms/tst123456/translations/3', (req) => req.reply(204)).as('deleteTranslation3');
+    cy.intercept('DELETE', '/api/forms/tst123456/translations/5', (req) => req.reply(204)).as('deleteTranslation5');
+
+    cy.findByRole('button', { name: 'Se alle ubrukte oversettelser (3)' }).click();
+    cy.findAllByText('Ubrukte oversettelser').should('not.be.empty');
+    cy.findByText('Abc').should('be.visible');
+    cy.findByText('Def').should('be.visible');
+    cy.findByText('Xyz').should('be.visible');
+    cy.findByText('Hallo').should('be.visible');
+
+    cy.findAllByRole('button', { name: 'Slett' }).first().click();
+    cy.findAllByRole('button', { name: 'Slett' }).last().click();
+    cy.wait(['@deleteTranslation3', '@deleteTranslation5']);
+
+    cy.findByText('Oversettelse med id 3 for skjema tst123456 ble slettet').should('be.visible');
+    cy.findByText('Ubrukt oversettelse').should('not.exist');
+    cy.findByText('Oversettelse med id 5 for skjema tst123456 ble slettet').should('be.visible');
+    cy.findByText('Hallo').should('not.exist');
+    cy.findByText('Abc').should('be.visible');
+    cy.findByRole('button', { name: 'Se alle ubrukte oversettelser (1)' }).should('exist');
+  });
 });
