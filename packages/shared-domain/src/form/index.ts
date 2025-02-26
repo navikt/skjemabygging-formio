@@ -349,6 +349,9 @@ export interface Webform {
   focusOnComponent: (args: any) => void;
   redrawNavigation: () => void;
   checkData: (data: SubmissionData, flags: any[], row: any) => void;
+  currentPanel: Component;
+  currentPanels: string[];
+  setPage: (index: number) => void;
 }
 
 export type UsageContext = 'create' | 'edit';
