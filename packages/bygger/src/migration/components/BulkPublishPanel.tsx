@@ -1,4 +1,4 @@
-import { Alert, BodyShort, Button, Checkbox, Heading, Panel, Table } from '@navikt/ds-react';
+import { Alert, BodyShort, Box, Button, Checkbox, Heading, Table } from '@navikt/ds-react';
 import { ConfirmationModal, makeStyles, NavFormioJs } from '@navikt/skjemadigitalisering-shared-components';
 import { Form } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useReducer, useState } from 'react';
@@ -62,19 +62,16 @@ const BulkPublishPanel = ({ forms }: Props) => {
 
   const willBePublished = forms.filter((form) => state[form.path]);
   const willNotBePublished = forms.filter((form) => !state[form.path]);
-
   return (
     <>
-      <Panel className="mb">
+      <Box padding="4" borderRadius="small">
         <Heading level="3" size="medium">
           Skjemaer som er klare for publisering
         </Heading>
         <BodyShort>Her kan du velge skjemaer du ønsker å publisere samlet</BodyShort>
         <Alert variant="warning">
-          <p>
-            Merk at oversettelser ikke migreres, eller publiseres. Hvis du har gjort endringer som vil påvirke
-            oversettelser, for eksempel "label", bør du kontrollere skjemaoversettelser før du publiserer.
-          </p>
+          Merk at oversettelser ikke migreres, eller publiseres. Hvis du har gjort endringer som vil påvirke
+          oversettelser, for eksempel "label", bør du kontrollere skjemaoversettelser før du publiserer.
         </Alert>
         <form
           onSubmit={(event) => {
@@ -124,9 +121,12 @@ const BulkPublishPanel = ({ forms }: Props) => {
               })}
             </Table.Body>
           </Table>
-          <Button>Publiser nå</Button>
+          <Alert variant="warning" className="mb">
+            Bulk-publisering er deaktivert inntil videre.
+          </Alert>
+          <Button disabled>Publiser nå</Button>
         </form>
-      </Panel>
+      </Box>
       <ConfirmationModal
         open={isModalOpen}
         onClose={() => setIsModalOpen(false)}
