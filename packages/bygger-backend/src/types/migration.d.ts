@@ -1,4 +1,4 @@
-import { DependencyType, FormPropertiesType, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
+import { DependencyType, Form, FormPropertiesType, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 // se duplikat: bygger/types/migration.d.ts
 
 export type ParsedInput = number | string | boolean | null | object | Array;
@@ -46,19 +46,19 @@ export interface Dependencies {
 }
 
 export interface FormMigrationLogData
-  extends Pick<
-      FormPropertiesType,
+  extends Pick<FormPropertiesType, 'isTestForm'>,
+    Pick<
+      Form,
+      | 'title'
+      | 'path'
       | 'skjemanummer'
-      | 'modified'
-      | 'modifiedBy'
-      | 'published'
+      | 'changedAt'
+      | 'changedBy'
+      | 'publishedAt'
       | 'publishedBy'
-      | 'unpublishedBy'
-      | 'isTestForm'
-      | 'unpublished'
       | 'publishedLanguages'
     >,
-    Pick<NavFormType, 'name' | 'title' | 'path'> {
+    Pick<NavFormType, 'name' | 'status'> {
   found: number;
   changed: number;
   diff: FormMigrationDiff[];
