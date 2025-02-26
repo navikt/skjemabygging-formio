@@ -1,5 +1,5 @@
 import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
-import { render, screen, waitFor } from '@testing-library/react';
+import { act, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { setupNavFormio } from '../../../test/navform-render';
 import { AppConfigProvider } from '../../context/config/configContext';
@@ -76,10 +76,12 @@ describe('NavForm', () => {
   beforeAll(setupNavFormio);
 
   const renderNavForm = async (props) => {
-    return render(
-      <AppConfigProvider>
-        <NavForm {...props} />
-      </AppConfigProvider>,
+    return await act(async () =>
+      render(
+        <AppConfigProvider>
+          <NavForm {...props} />
+        </AppConfigProvider>,
+      ),
     );
   };
 
