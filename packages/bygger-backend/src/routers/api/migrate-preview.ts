@@ -1,7 +1,7 @@
-import { MigrationLevel } from '@navikt/skjemadigitalisering-shared-domain';
+import { formioFormsApiUtils, MigrationLevel } from '@navikt/skjemadigitalisering-shared-domain';
 import { NextFunction, Request, Response } from 'express';
 import { previewForm } from '../../migration/migrationScripts';
-import { formioService } from '../../services';
+import { formsService } from '../../services';
 
 const migratePreview = async (req: Request, res: Response, next: NextFunction) => {
   const formSearchFilters: object = JSON.parse((req.query['formSearchFilters'] as string) || '{}');
@@ -11,7 +11,8 @@ const migratePreview = async (req: Request, res: Response, next: NextFunction) =
   const migrationLevel: MigrationLevel = req.query['migrationLevel'] as MigrationLevel;
   try {
     const { formPath } = req.params;
-    const form = await formioService.getForm(formPath);
+    const form = formioFormsApiUtils.mapFormToNavForm(await formsService.get(formPath));
+
     const formForPreview = await previewForm(
       formSearchFilters,
       searchFilters,
