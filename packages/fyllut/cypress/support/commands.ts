@@ -101,6 +101,7 @@ Cypress.Commands.add('defaultWaits', () => {
 
 Cypress.Commands.add('configMocksServer', () => {
   cy.mocksConfigClient({
+    host: 'localhost',
     port: 3310,
   });
   return cy;

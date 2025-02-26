@@ -7,6 +7,7 @@ module.exports = {
   plugins: {
     proxyRoutesHandler: {},
     adminApi: {
+      host: 'localhost',
       port: 3310,
       https: {},
     },
