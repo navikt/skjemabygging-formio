@@ -207,11 +207,9 @@ describe('Mellomlagring', () => {
           cy.wait('@getMellomlagringValid');
           cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
           cy.findByText('Ønsker du å få gaven innpakket').should('exist');
-          cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.saveAndContinue }).should('exist').click();
+          cy.clickSaveAndContinue();
           cy.wait('@submitMellomlagring');
-          cy.origin(Cypress.env('SEND_INN_FRONTEND'), () => {
-            cy.contains('Send Inn Frontend');
-          });
+          cy.verifySendInnRedirect();
         });
 
         it('retrieves mellomlagring and lets you navigate to first empty panel', () => {
@@ -338,7 +336,7 @@ describe('Mellomlagring', () => {
           cy.wait('@getMellomlagringValid');
           cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
           cy.findByText('Ønsker du å få gaven innpakket').should('exist');
-          cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.saveAndContinue }).click();
+          cy.clickSaveAndContinue();
           cy.wait('@submitMellomlagring');
         });
       });

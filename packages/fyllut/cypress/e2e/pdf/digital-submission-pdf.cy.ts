@@ -108,9 +108,7 @@ describe('Pdf when digital submission', () => {
       cy.clickSaveAndContinue();
       // When failure, see mocks/routes/skjemabygging-proxy.js where the html content is verified (id='verify-nav111221b-nb')
       cy.wait('@submitMellomlagring');
-      cy.origin(Cypress.env('SEND_INN_FRONTEND'), () => {
-        cy.contains('Send Inn Frontend');
-      });
+      cy.verifySendInnRedirect();
     });
 
     it('nynorsk', () => {
@@ -205,9 +203,7 @@ describe('Pdf when digital submission', () => {
       cy.clickSaveAndContinue();
       // When failure, see mocks/routes/skjemabygging-proxy.js where the html content is verified (id='verify-nav111221b-nn')
       cy.wait('@submitMellomlagring');
-      cy.origin(Cypress.env('SEND_INN_FRONTEND'), () => {
-        cy.contains('Send Inn Frontend');
-      });
+      cy.verifySendInnRedirect();
     });
   });
 });

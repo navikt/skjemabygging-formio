@@ -149,9 +149,7 @@ describe('Activities', () => {
       // Submit
       cy.clickSaveAndContinue();
       cy.wait('@submitMellomlagring');
-      cy.origin(Cypress.env('SEND_INN_FRONTEND'), () => {
-        cy.contains('Send Inn Frontend');
-      });
+      cy.verifySendInnRedirect();
     });
 
     describe('saved application', () => {
@@ -204,9 +202,7 @@ describe('Activities', () => {
           // Submit
           cy.clickSaveAndContinue();
           cy.wait('@submitMellomlagring');
-          cy.origin(Cypress.env('SEND_INN_FRONTEND'), () => {
-            cy.contains('Send Inn Frontend');
-          });
+          cy.verifySendInnRedirect();
         });
 
         it('should allow user to change chosen activity and update selected maalgruppe to reflect that', () => {
@@ -250,9 +246,7 @@ describe('Activities', () => {
           // Submit
           cy.clickSaveAndContinue();
           cy.wait('@submitMellomlagring');
-          cy.origin(Cypress.env('SEND_INN_FRONTEND'), () => {
-            cy.contains('Send Inn Frontend');
-          });
+          cy.verifySendInnRedirect();
         });
       });
     });
@@ -329,9 +323,7 @@ describe('Activities', () => {
       // Submit
       cy.clickSaveAndContinue();
       cy.wait('@submitMellomlagring');
-      cy.origin(Cypress.env('SEND_INN_FRONTEND'), () => {
-        cy.contains('Send Inn Frontend');
-      });
+      cy.verifySendInnRedirect();
     });
 
     it('should default to ANNET for maalgruppe', () => {
@@ -367,9 +359,7 @@ describe('Activities', () => {
       // Submit
       cy.clickSaveAndContinue();
       cy.wait('@submitMellomlagring');
-      cy.origin(Cypress.env('SEND_INN_FRONTEND'), () => {
-        cy.contains('Send Inn Frontend');
-      });
+      cy.verifySendInnRedirect();
     });
   });
 
