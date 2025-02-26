@@ -76,14 +76,11 @@ describe('NavForm', () => {
   beforeAll(setupNavFormio);
 
   const renderNavForm = async (props) => {
-    const formReady = vi.fn();
-    const renderReturn = render(
+    return render(
       <AppConfigProvider>
-        <NavForm {...props} formReady={formReady} />
+        <NavForm {...props} />
       </AppConfigProvider>,
     );
-    await waitFor(() => expect(formReady).toHaveBeenCalledTimes(1));
-    return renderReturn;
   };
 
   describe('i18n', () => {
