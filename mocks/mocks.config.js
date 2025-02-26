@@ -7,6 +7,7 @@ module.exports = {
   plugins: {
     proxyRoutesHandler: {},
     adminApi: {
+      host: 'localhost',
       port: 3310,
       https: {},
     },
@@ -22,6 +23,7 @@ module.exports = {
     },
   },
   server: {
+    host: 'localhost',
     port: 3300,
     cors: {},
     jsonBodyParser: {},
