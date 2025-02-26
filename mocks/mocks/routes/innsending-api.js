@@ -366,7 +366,7 @@ module.exports = [
           status: 302,
           body: {},
           headers: {
-            Location: 'http://localhost:3300/send-inn-frontend',
+            Location: 'http://127.0.0.1:3300/send-inn-frontend',
           },
         },
       },

@@ -207,9 +207,12 @@ describe('Mellomlagring', () => {
           cy.wait('@getMellomlagringValid');
           cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
           cy.findByText('Ønsker du å få gaven innpakket').should('exist');
+          cy.url().should('include', 'testmellomlagring');
           cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.saveAndContinue }).should('exist').click();
           cy.wait('@submitMellomlagring');
-          cy.url().should('not.include', 'testmellomlagring').should('include', '/send-inn-frontend');
+          cy.origin(Cypress.env('SEND_INN_FRONTEND'), () => {
+            cy.contains('Send Inn Frontend');
+          });
         });
 
         it('retrieves mellomlagring and lets you navigate to first empty panel', () => {
