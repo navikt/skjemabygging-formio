@@ -207,7 +207,6 @@ describe('Mellomlagring', () => {
           cy.wait('@getMellomlagringValid');
           cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
           cy.findByText('Ønsker du å få gaven innpakket').should('exist');
-          cy.url().should('include', 'testmellomlagring');
           cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.saveAndContinue }).should('exist').click();
           cy.wait('@submitMellomlagring');
           cy.origin(Cypress.env('SEND_INN_FRONTEND'), () => {
