@@ -20,5 +20,38 @@
     "en": "Your info",
     "changedAt": null,
     "changedBy": null
+  },
+  {
+    "id": 3,
+    "key": "Ubrukt oversettelse",
+    "revision": 1,
+    "globalTranslationId": 8,
+    "nb": "Gammel tekst",
+    "nn": "Gammel tekst",
+    "en": "Old text",
+    "changedAt": null,
+    "changedBy": null
+  },
+  {
+    "id": 4,
+    "key": "Abc",
+    "revision": 4,
+    "globalTranslationId": 3,
+    "nb": "Abc",
+    "nn": "Def",
+    "en": "Xyz",
+    "changedAt": null,
+    "changedBy": null
+  },
+  {
+    "id": 5,
+    "key": "Hallo",
+    "revision": 6,
+    "globalTranslationId": null,
+    "nb": "Hallo",
+    "nn": "",
+    "en": "Hello",
+    "changedAt": null,
+    "changedBy": null
   }
 ]
