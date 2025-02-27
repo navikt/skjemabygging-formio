@@ -146,6 +146,44 @@ describe('Mellomlagring', () => {
       cy.url().should('equal', `${Cypress.env('BASE_URL')}/fyllut/testmellomlagring`);
     });
 
+    it('lets you delete mellomlagring', () => {
+      cy.mocksUseRouteVariant('delete-soknad:failure');
+
+      cy.visit(
+        '/fyllut/testmellomlagring/gave?sub=digital&innsendingsId=8e3c3621-76d7-4ebd-90d4-34448ebcccc3&lang=nb-NO',
+      );
+      cy.defaultWaits();
+      cy.wait('@getMellomlagringValid');
+      cy.findByRole('heading', { name: 'Gave', level: 2 }).should('be.visible');
+      testMellomlagringConfirmationModal(
+        TEXTS.grensesnitt.navigation.cancelAndDelete,
+        TEXTS.grensesnitt.confirmDeletePrompt,
+      );
+      cy.wait('@deleteMellomlagring');
+      cy.findByText(TEXTS.statiske.mellomlagringError.delete.message).should('be.visible');
+    });
+
+    it('lets you save mellomlagring before cancelling', () => {
+      cy.mocksUseRouteVariant('put-soknad:failure');
+
+      cy.visit(
+        `/fyllut/testmellomlagring/gave?sub=digital&innsendingsId=f99dc639-add1-468f-b4bb-961cdfd1e599&lang=nb-NO`,
+      );
+      cy.defaultWaits();
+      cy.wait('@getMellomlagringForInnsendingWithUpdateError');
+      cy.findByRole('heading', { name: 'Gave', level: 2 }).should('be.visible');
+
+      cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.saveDraft }).click();
+      const body = TEXTS.grensesnitt.confirmSavePrompt.body.replace('{{date}}', '10.01.2024').trim();
+      cy.findByText(body).should('be.visible');
+      cy.findByRole('button', { name: TEXTS.grensesnitt.confirmSavePrompt.cancel }).click();
+      cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.saveDraft }).click();
+      cy.findByRole('button', { name: TEXTS.grensesnitt.confirmSavePrompt.confirm }).click();
+
+      cy.wait('@updateMellomlagring');
+      cy.findByText(TEXTS.statiske.mellomlagringError.update.message).should('be.visible');
+    });
+
     describe('When starting on the summary page', () => {
       it('redirects to start page if url does not contain "innsendingsId"', () => {
         cy.visit('/fyllut/testmellomlagring/oppsummering?sub=digital&lang=nb-NO');

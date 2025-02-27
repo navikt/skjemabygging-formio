@@ -81,7 +81,7 @@ const NavForm = ({
           submission: submission ? JSON.parse(JSON.stringify(submission)) : undefined,
         });
 
-        appConfig.logger?.debug('Form ready', { newWebformId: newWebform.id, oldWebformId: webform?.id });
+        appConfig.logger?.debug('Form ready', { newWebformId: newWebform.id, oldWebformId: webform?.id, language });
 
         setWebform(newWebform);
       }
@@ -123,7 +123,7 @@ const NavForm = ({
   useEffect(() => {
     if (webform && panelSlug && webform.currentPanel?.key !== panelSlug) {
       const panelIndex = webform.currentPanels.indexOf(panelSlug);
-      appConfig.logger?.trace(`Update new slug ${panelSlug}`);
+      appConfig.logger?.trace(`Update new slug: ${panelSlug}`);
       if (panelIndex >= 0) {
         webform.setPage(panelIndex);
       } else {
@@ -150,7 +150,7 @@ const NavForm = ({
    * Update form when the user change language
    */
   useEffect(() => {
-    if (webform) {
+    if (webform && webform?.language !== language) {
       appConfig.logger?.debug('Set language', { webformId: webform?.id, language });
       webform.language = language;
     }
@@ -171,12 +171,24 @@ const NavForm = ({
 
   /**
    * This is needed to refresh the last saved status and error message from mellomlagring.
-   * If we move buttons, error message and the save status to React, this can be removed.
    */
   useEffect(() => {
     (async () => {
       if (webform && submission) {
-        webform.submission = JSON.parse(JSON.stringify(submission));
+        appConfig.logger?.debug('Set submission', {
+          webformId: webform?.id,
+          submission,
+        });
+        await webform.setSubmission(JSON.parse(JSON.stringify(submission)));
+
+        if (
+          submission?.fyllutState &&
+          (submission?.fyllutState?.mellomlagring?.savedDate !==
+            webform._submission?.fyllutState.mellomlagring?.savedDate ||
+            submission?.fyllutState?.mellomlagring?.error !== webform._submission?.fyllutState.mellomlagring?.error)
+        ) {
+          await webform.redraw();
+        }
       }
     })();
   }, [appConfig.logger, webform, submission]);
