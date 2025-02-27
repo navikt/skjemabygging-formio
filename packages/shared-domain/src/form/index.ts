@@ -65,6 +65,7 @@ export interface FormPropertiesType {
   unpublished?: string;
   unpublishedBy?: string;
   downloadPdfButtonText?: string;
+  innsending?: InnsendingType;
   submissionTypes: SubmissionType[];
   ettersending?: InnsendingType;
   ettersendelsesfrist?: string;
@@ -300,7 +301,7 @@ export interface NavFormType {
 }
 
 export interface FormsResponseForm extends Pick<NavFormType, '_id' | 'title' | 'path' | 'modified'> {
-  properties: Pick<FormPropertiesType, 'skjemanummer' | 'ettersending' | 'submissionTypes'>;
+  properties: Pick<FormAPIProperties, 'skjemanummer' | 'ettersending' | 'submissionTypes'>;
 }
 
 export type SubmissionData = Record<string, string | number | boolean | any[] | object>;

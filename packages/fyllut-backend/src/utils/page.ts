@@ -1,4 +1,4 @@
-import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
+import { isDigitalSubmission, isPaperSubmissionOnly, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import { QueryParamSub } from '../types/custom';
 
 const defaultMeta = {
@@ -9,9 +9,10 @@ const defaultMeta = {
 export const getDefaultPageMeta = () => ({ ...defaultMeta });
 
 export const getQueryParamSub = (form: NavFormType): QueryParamSub => {
-  if (form.properties.innsending === 'KUN_PAPIR') {
+  const { submissionTypes } = form.properties;
+  if (isPaperSubmissionOnly(submissionTypes)) {
     return 'paper';
-  } else if (form.properties.innsending === 'KUN_DIGITAL') {
+  } else if (isDigitalSubmission(submissionTypes)) {
     return 'digital';
   }
   return undefined;

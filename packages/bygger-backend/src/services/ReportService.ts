@@ -1,4 +1,10 @@
-import { NavFormType, ReportDefinition, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  NavFormType,
+  ReportDefinition,
+  isNoneSubmission,
+  isPaperSubmissionOnly,
+  navFormUtils,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import { stringify } from 'csv-stringify';
 import { DateTime } from 'luxon';
 import { Writable } from 'stream';
@@ -112,7 +118,7 @@ class ReportService {
       'upubliserte endringer',
       'sist endret',
       'endret av',
-      'innsending',
+      'submissionTypes',
       'ettersending',
       'signaturfelt',
       'path',
@@ -138,7 +144,9 @@ class ReportService {
       const attachmentNames = attachments.map((attachment) => attachment.vedleggstittel).join(',');
 
       const { title, properties, path } = form;
-      const { published, publishedBy, modified, modifiedBy, innsending, tema, signatures, ettersending } = properties;
+      const { published, publishedBy, modified, modifiedBy, submissionTypes, tema, signatures, ettersending } =
+        properties;
+      console.log(submissionTypes);
 
       const baseInnsendingUrl =
         config.naisClusterName === 'prod-gcp'
@@ -149,9 +157,9 @@ class ReportService {
           ? `https://www.nav.no/fyllut-ettersending/${form.path}`
           : `https://fyllut-ettersending.intern.dev.nav.no/fyllut-ettersending/${form.path}`;
 
-      const paperInnsendingUrl = navFormUtils.isNone('innsending', form)
+      const paperInnsendingUrl = isNoneSubmission(submissionTypes)
         ? `${baseInnsendingUrl}`
-        : navFormUtils.isPaper('innsending', form)
+        : isPaperSubmissionOnly(submissionTypes)
           ? `${baseInnsendingUrl}?sub=paper`
           : undefined;
 
@@ -178,7 +186,7 @@ class ReportService {
         unpublishedChanges,
         modified,
         modifiedBy,
-        innsending,
+        submissionTypes,
         ettersending,
         numberOfSignatures,
         path,

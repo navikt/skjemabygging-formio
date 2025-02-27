@@ -1,11 +1,11 @@
-import { Form, formioFormsApiUtils, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, formioFormsApiUtils, NavFormAPIType } from '@navikt/skjemadigitalisering-shared-domain';
 import { config } from '../config/config';
 import { fetchFromApi, loadAllJsonFilesFromDirectory, loadFileFromDirectory } from '../utils/forms';
 
 const { useFormioMockApi, useFormsApiStaging, skjemaDir, formioApiServiceUrl, formsApiUrl } = config;
 
 class FormService {
-  async loadForm(formPath: string): Promise<NavFormType | null | undefined> {
+  async loadForm(formPath: string): Promise<NavFormAPIType | null | undefined> {
     if (useFormsApiStaging) {
       const form: Form = (await fetchFromApi(`${formsApiUrl}/v1/forms/${formPath}`)) as Form;
       return form ? formioFormsApiUtils.mapFormToNavForm(form) : null;

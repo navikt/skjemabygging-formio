@@ -14,7 +14,7 @@ const { sendInnConfig, tokenx: tokenxConfig, formioApiServiceUrl } = config;
 
 describe('app', () => {
   describe('index.html', () => {
-    function createFormDefinition(submissionTypes?: SubmissionType[]) {
+    function createFormDefinition(submissionTypes: SubmissionType[]) {
       return {
         title: 'Søknad om testhund',
         path: 'testform001',
@@ -136,9 +136,10 @@ describe('app', () => {
       // Dynamically generated tests are exceptions to this rule: https://github.com/lo1tuma/eslint-plugin-mocha/blob/main/docs/rules/no-setup-in-describe.md
       // eslint-disable-next-line mocha/no-setup-in-describe
       describe.each(['PAPIR_OG_DIGITAL', undefined])('submissionTypes %s', (submissionTypes) => {
+        // const submissionType = ['PAPER', 'DIGITAL']
         describe('query param sub is missing', () => {
           it('redirects to intropage and keeps other query params', async () => {
-            const testform001 = createFormDefinition(submissionTypes as SubmissionType[]);
+            const testform001 = createFormDefinition(submissionTypes as unknown as SubmissionType[]);
             nock(formioApiServiceUrl!)
               .get('/form?type=form&tags=nav-skjema&path=testform001')
               .reply(200, [testform001]);
@@ -148,7 +149,7 @@ describe('app', () => {
           });
 
           it('does not redirect when intropage is requested (avoiding circular redirects)', async () => {
-            const testform001 = createFormDefinition(submissionTypes as SubmissionType[]);
+            const testform001 = createFormDefinition(submissionTypes as unknown as SubmissionType[]);
             nock(formioApiServiceUrl!)
               .get('/form?type=form&tags=nav-skjema&path=testform001')
               .reply(200, [testform001]);
@@ -160,7 +161,7 @@ describe('app', () => {
 
         describe('query param sub is present', () => {
           it('does not redirect to intropage when sub=digital', async () => {
-            const testform001 = createFormDefinition(submissionTypes as SubmissionType[]);
+            const testform001 = createFormDefinition(submissionTypes as unknown as SubmissionType[]);
             nock(formioApiServiceUrl!)
               .get('/form?type=form&tags=nav-skjema&path=testform001')
               .reply(200, [testform001]);
@@ -170,7 +171,7 @@ describe('app', () => {
           });
 
           it('does not redirect to intropage when sub=paper', async () => {
-            const testform001 = createFormDefinition(submissionTypes as SubmissionType[]);
+            const testform001 = createFormDefinition(submissionTypes as unknown as SubmissionType[]);
             nock(formioApiServiceUrl!)
               .get('/form?type=form&tags=nav-skjema&path=testform001')
               .reply(200, [testform001]);

@@ -332,7 +332,7 @@ describe('form', () => {
         title: 'Test Title',
         path: '/test-path',
         properties: {
-          innsending: 'PAPIR_OG_DIGITAL',
+          submissionTypes: ['PAPER', 'DIGITAL'],
           ettersendelsesfrist: '12',
           skjemanummer: '',
           tema: '',

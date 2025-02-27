@@ -12,18 +12,16 @@ export interface AddressFieldsProps {
 }
 
 const AddressFields = ({ onChange, diff, form }: AddressFieldsProps) => {
-  const innsending = form.properties.innsending || ['PAPIR_OG_DIGITAL'];
-  const mottaksadresseId = form.properties.mottaksadresseId;
+  const { submissionTypes, mottaksadresseId } = form.properties;
   const isLockedForm = !!form.lock;
   const { isReady: isMottaksAdresserReady, recipients } = useRecipients();
 
   const toAddressString = (recipient: Recipient) => {
     return `${recipient.name}, ${recipient.poBoxAddress}, ${recipient.postalCode} ${recipient.postalName}`;
   };
-
   return (
     <>
-      {isPaperSubmission(innsending) && (
+      {isPaperSubmission(submissionTypes) && (
         <div>
           <Select
             className="mb-4"
