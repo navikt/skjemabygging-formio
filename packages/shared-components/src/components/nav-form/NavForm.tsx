@@ -169,7 +169,7 @@ const NavForm = ({
         webformId: webform?.id,
         prefillData,
       });
-      webform.form = NavFormBuilder.prefillForm(webform, prefillData);
+      NavFormBuilder.prefillForm(webform, prefillData);
     }
   }, [appConfig.logger, webform, prefillData]);
 

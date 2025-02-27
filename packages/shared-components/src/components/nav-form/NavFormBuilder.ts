@@ -43,7 +43,7 @@ const prefillForm = (webform: Webform, prefillData: any) => {
       }
     });
 
-    return webformCopy;
+    webform.form = webformCopy;
   }
 };
 
