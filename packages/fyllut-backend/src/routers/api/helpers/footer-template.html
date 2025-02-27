@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        .footer {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 90%;
+            margin-left: 64px;
+            margin-right: 64px;
+            border-top: 1px solid #ccc;
+        }
+        .line1 {
+            display: flex;
+            justify-content: space-between;
+            margin-top:6px;
+        }
+        .line2 {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        body {
+            font-family: "Arial";
+            font-size: 10px;
+            margin: auto 24px;
+        }
+
+    </style>
+</head>
+<body>
+<div class="footer">
+    <div class="line1">
+        <span>{{userIdLabel}}: {{USER_ID}}</span>
+        <span>{{createdLabel}}: {{CREATION_DATE}}</span>
+    </div>
+
+    <div class="line2">
+        <span>{{schemaNumberLabel}}: {{SCHEMA_NUMBER}}</span>
+        <span>{{versionLabel}}: {{SCHEMA_VERSION}}</span>
+        <div><span>{{pageLabel}} </span><span class="pageNumber"></span><span> {{ofLabel}} </span><span class="totalPages"></span></div>
+    </div>
+</div>
+</body>
+</html>
