@@ -365,6 +365,9 @@ export interface Webform {
   currentPanel: Component;
   currentPanels: string[];
   setPage: (index: number) => void;
+  redraw: () => Promise<void>;
+  submissionReady: Promise<void>;
+  _submission: any;
 }
 
 export type UsageContext = 'create' | 'edit';

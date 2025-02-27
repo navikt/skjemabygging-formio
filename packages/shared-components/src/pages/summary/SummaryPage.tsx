@@ -73,9 +73,8 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
 
       const webform = await NavFormBuilder.create(document.getElementById('formio-summary-hidden')!, form, {
         appConfig,
+        submission: submissionCopy,
       });
-
-      await webform.setSubmission(submissionCopy);
 
       NavFormBuilder.prefillForm(webform, prefillData);
 
@@ -94,7 +93,7 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
     } else {
       setPanelValidationList([]);
     }
-  }, [isMellomlagringAvailable, form, submission, appConfig]);
+  }, [isMellomlagringAvailable, form, submission, appConfig, prefillData]);
 
   useEffect(() => scrollToAndSetFocus('main', 'start'), []);
   const declarationRef = useRef<HTMLInputElement>(null);

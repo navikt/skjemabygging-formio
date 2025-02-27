@@ -39,7 +39,6 @@ interface Props {
   className?: string;
   form?: NavFormType;
   src?: string;
-  url?: string;
   submission?: Submission;
   i18n?: any;
   language?: string;
@@ -53,7 +52,6 @@ interface Props {
 const NavForm = ({
   form,
   src,
-  url,
   language = 'nb-NO',
   i18n = i18nUtils.initialData,
   fyllutEvents,
@@ -70,6 +68,9 @@ const NavForm = ({
   // This param is used to avoid creating two formio instances in React.StrictMode
   let webformStart = false;
 
+  /**
+   * Create a new instance of a formio Webform
+   */
   const createForm = useCallback(
     async (srcOrForm?: NavFormType | string) => {
       if (ref?.current && srcOrForm) {
@@ -82,32 +83,15 @@ const NavForm = ({
 
         appConfig.logger?.debug('Form ready', { newWebformId: newWebform.id, oldWebformId: webform?.id });
 
-        // TODO: Is this needed?
-        if (webform) {
-          //webform?.destroy(true);
-        }
-
-        // TODO: Is this needed?
-        if (!newWebform.src && !src) {
-          //newWebform.src = src;
-        }
-
-        // TODO: Is this needed?
-        if (!newWebform.url && !url) {
-          //newWebform.url = url;
-        }
-
-        // TODO: Is this needed?
-        if (!newWebform.form && !form) {
-          //newWebform.form = form;
-        }
-
         setWebform(newWebform);
       }
     },
-    [appConfig, webform, language, i18n, src, url, form, submission],
+    [appConfig, webform, language, i18n, submission],
   );
 
+  /**
+   * Handle events from formio and destroy the webform instance on unmount.
+   */
   useEffect(() => {
     (async () => {
       if (webform) {
@@ -133,6 +117,9 @@ const NavForm = ({
     // eslint-disable-next-line
   }, [appConfig.logger, webform]);
 
+  /**
+   * Set the correct formio page based on url changes (panelSlug)
+   */
   useEffect(() => {
     if (webform && panelSlug && webform.currentPanel?.key !== panelSlug) {
       const panelIndex = webform.currentPanels.indexOf(panelSlug);
@@ -145,6 +132,9 @@ const NavForm = ({
     }
   }, [appConfig.logger, webform, panelSlug]);
 
+  /**
+   * Handle focusOnComponent
+   */
   useEffect(() => {
     if (webform) {
       appConfig.logger?.trace('Setup focusOnComponent');
@@ -156,6 +146,9 @@ const NavForm = ({
     }
   }, [appConfig.logger, webform, fyllutEvents]);
 
+  /**
+   * Update form when the user change language
+   */
   useEffect(() => {
     if (webform) {
       appConfig.logger?.debug('Set language', { webformId: webform?.id, language });
@@ -163,6 +156,9 @@ const NavForm = ({
     }
   }, [appConfig.logger, webform, language]);
 
+  /**
+   * Prefill the form with data
+   */
   useEffect(() => {
     if (webform) {
       appConfig.logger?.debug('Prefill data and set form if prefill data exist', {
@@ -173,6 +169,21 @@ const NavForm = ({
     }
   }, [appConfig.logger, webform, prefillData]);
 
+  /**
+   * This is needed to refresh the last saved status and error message from mellomlagring.
+   * If we move buttons, error message and the save status to React, this can be removed.
+   */
+  useEffect(() => {
+    (async () => {
+      if (webform && submission) {
+        webform.submission = JSON.parse(JSON.stringify(submission));
+      }
+    })();
+  }, [appConfig.logger, webform, submission]);
+
+  /**
+   * Initialize the form
+   */
   useEffect(() => {
     (async () => {
       if (Object.keys(i18n).length !== 0 && !webform && !webformStart) {

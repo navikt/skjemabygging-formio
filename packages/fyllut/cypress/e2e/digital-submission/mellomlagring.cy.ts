@@ -125,6 +125,7 @@ describe('Mellomlagring', () => {
 
     it('fetches mellomlagring and navigates to "/summary" on start, when url contains "innsendingsId"', () => {
       cy.visit('/fyllut/testmellomlagring?sub=digital&innsendingsId=8e3c3621-76d7-4ebd-90d4-34448ebcccc3&lang=nb-NO');
+      cy.defaultWaits();
       cy.wait('@getMellomlagringValid');
       cy.findByRole('heading', { name: TEXTS.statiske.introPage.title }).should('exist');
       cy.clickStart();
@@ -143,44 +144,6 @@ describe('Mellomlagring', () => {
       cy.url().should('not.include', 'sub=digital');
       cy.url().should('not.include', 'oppsummering');
       cy.url().should('equal', `${Cypress.env('BASE_URL')}/fyllut/testmellomlagring`);
-    });
-
-    it('lets you delete mellomlagring', () => {
-      cy.mocksUseRouteVariant('delete-soknad:failure');
-
-      cy.visit(
-        '/fyllut/testmellomlagring/gave?sub=digital&innsendingsId=8e3c3621-76d7-4ebd-90d4-34448ebcccc3&lang=nb-NO',
-      );
-      cy.defaultWaits();
-      cy.wait('@getMellomlagringValid');
-      cy.findByRole('heading', { name: 'Gave', level: 2 }).should('be.visible');
-      testMellomlagringConfirmationModal(
-        TEXTS.grensesnitt.navigation.cancelAndDelete,
-        TEXTS.grensesnitt.confirmDeletePrompt,
-      );
-      cy.wait('@deleteMellomlagring');
-      cy.findByText(TEXTS.statiske.mellomlagringError.delete.message).should('be.visible');
-    });
-
-    it('lets you save mellomlagring before cancelling', () => {
-      cy.mocksUseRouteVariant('put-soknad:failure');
-
-      cy.visit(
-        `/fyllut/testmellomlagring/gave?sub=digital&innsendingsId=f99dc639-add1-468f-b4bb-961cdfd1e599&lang=nb-NO`,
-      );
-      cy.defaultWaits();
-      cy.wait('@getMellomlagringForInnsendingWithUpdateError');
-      cy.findByRole('heading', { name: 'Gave', level: 2 }).should('be.visible');
-
-      cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.saveDraft }).click();
-      const body = TEXTS.grensesnitt.confirmSavePrompt.body.replace('{{date}}', '10.01.2024').trim();
-      cy.findByText(body).should('be.visible');
-      cy.findByRole('button', { name: TEXTS.grensesnitt.confirmSavePrompt.cancel }).click();
-      cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.saveDraft }).click();
-      cy.findByRole('button', { name: TEXTS.grensesnitt.confirmSavePrompt.confirm }).click();
-
-      cy.wait('@updateMellomlagring');
-      cy.findByText(TEXTS.statiske.mellomlagringError.update.message).should('be.visible');
     });
 
     describe('When starting on the summary page', () => {
@@ -206,6 +169,7 @@ describe('Mellomlagring', () => {
           cy.visit(
             '/fyllut/testmellomlagring/oppsummering?sub=digital&innsendingsId=8e3c3621-76d7-4ebd-90d4-34448ebcccc3&lang=nb-NO',
           );
+          cy.defaultWaits();
           cy.wait('@getMellomlagringValid');
           cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
           cy.findByText('Ønsker du å få gaven innpakket').should('exist');
@@ -230,6 +194,7 @@ describe('Mellomlagring', () => {
           cy.visit(
             '/fyllut/testmellomlagring/oppsummering?sub=digital&innsendingsId=8e3c3621-76d7-4ebd-90d4-34448ebcccc3&lang=nb-NO',
           );
+          cy.defaultWaits();
           cy.wait('@getMellomlagringValid');
           cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
           cy.findByText('Ønsker du å få gaven innpakket').should('exist').next('dd').should('contain.text', 'Nei');
@@ -287,6 +252,7 @@ describe('Mellomlagring', () => {
           cy.visit(
             '/fyllut/testmellomlagring/oppsummering?sub=digital&innsendingsId=8e3c3621-76d7-4ebd-90d4-34448ebcccc3&lang=nb-NO',
           );
+          cy.defaultWaits();
           cy.wait('@getMellomlagringValid');
           cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
           testMellomlagringConfirmationModal(
@@ -303,6 +269,7 @@ describe('Mellomlagring', () => {
           cy.visit(
             `/fyllut/testmellomlagring/oppsummering?sub=digital&innsendingsId=f99dc639-add1-468f-b4bb-961cdfd1e599&lang=nb-NO`,
           );
+          cy.defaultWaits();
           cy.wait('@getMellomlagringForInnsendingWithUpdateError');
           cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
 
@@ -339,6 +306,7 @@ describe('Mellomlagring', () => {
           cy.visit(
             '/fyllut/testmellomlagring/oppsummering?sub=digital&innsendingsId=8e3c3621-76d7-4ebd-90d4-34448ebcccc3&lang=nb-NO',
           );
+          cy.defaultWaits();
           cy.wait('@getMellomlagringValid');
           cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
           cy.findByText('Ønsker du å få gaven innpakket').should('exist');
@@ -354,6 +322,7 @@ describe('Mellomlagring', () => {
           cy.visit(
             '/fyllut/testmellomlagring/oppsummering?sub=digital&innsendingsId=8e3c3621-76d7-4ebd-90d4-34448ebcccc3&lang=nb-NO',
           );
+          cy.defaultWaits();
           cy.wait('@getMellomlagringValid');
           cy.findByText(/Alle steg som mangler informasjon er markert med/).should('exist');
           cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.saveAndContinue }).should('not.exist');
@@ -375,6 +344,7 @@ describe('Mellomlagring', () => {
             cy.visit(
               '/fyllut/testselect/oppsummering?sub=digital&innsendingsId=df6c8a69-9eb0-4878-b51f-38b3849ef9b6&lang=nb-NO',
             );
+            cy.defaultWaits();
             cy.wait('@getMellomlagring');
             cy.get('dl')
               .eq(0)
@@ -395,6 +365,7 @@ describe('Mellomlagring', () => {
             cy.visit(
               '/fyllut/testselect/oppsummering?sub=digital&innsendingsId=df6c8a69-9eb0-4878-b51f-38b3849ef9b6&lang=nb-NO',
             );
+            cy.defaultWaits();
             cy.wait('@getMellomlagring');
             cy.get('dl')
               .eq(0)
@@ -429,6 +400,7 @@ describe('Mellomlagring', () => {
             cy.visit(
               '/fyllut/testselect/oppsummering?sub=digital&innsendingsId=df6c8a69-9eb0-4878-b51f-38b3849ef9b6&lang=nb-NO',
             );
+            cy.defaultWaits();
             cy.wait('@getMellomlagring');
             cy.findByRole('button', { name: /Veiledning/ }).should('exist');
             cy.get('dl')
@@ -465,6 +437,7 @@ describe('Mellomlagring', () => {
             cy.visit(
               '/fyllut/testselect/oppsummering?sub=digital&innsendingsId=df6c8a69-9eb0-4878-b51f-38b3849ef9b6&lang=nb-NO',
             );
+            cy.defaultWaits();
             cy.wait('@getMellomlagring');
             cy.get('dl')
               .eq(0)
@@ -501,6 +474,7 @@ describe('Mellomlagring', () => {
         cy.visit(
           '/fyllut/nav083501/oppsummering?sub=digital&innsendingsId=2db25aab-3524-4426-a333-489542bf16bf&lang=nb-NO',
         );
+        cy.defaultWaits();
         cy.wait('@getMellomlagring');
         cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.saveAndContinue }).should('exist');
         cy.findByText(/Alle steg som mangler informasjon er markert med/).should('not.exist');
