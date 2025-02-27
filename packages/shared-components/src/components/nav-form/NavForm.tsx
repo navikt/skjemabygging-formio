@@ -3,9 +3,9 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useAppConfig } from '../../context/config/configContext';
 import { usePrefillData } from '../../context/prefill-data/PrefillDataContext';
+import { i18nUtils } from '../../index';
 import Styles from '../../styles';
 import makeStyles from '../../util/styles/jss/jss';
-import i18nData from '../../util/translation/i18nData';
 import NavFormBuilder from './NavFormBuilder';
 
 const useStyles = makeStyles({
@@ -55,7 +55,7 @@ const NavForm = ({
   src,
   url,
   language = 'nb-NO',
-  i18n = i18nData,
+  i18n = i18nUtils.initialData,
   fyllutEvents,
   submission,
   className,

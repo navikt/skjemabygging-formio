@@ -241,6 +241,9 @@ describe('Mellomlagring', () => {
               cy.findByLabelText('Ja').click();
               cy.findByLabelText('Ja').should('be.checked');
             });
+
+          cy.findByRole('group', { name: 'Farge' }).should('exist');
+
           cy.clickSaveAndContinue();
           cy.get('@updateMellomlagringSpy').should('not.have.been.called');
 
