@@ -66,30 +66,36 @@ const EditFormTranslationsProvider = ({ initialChanges, children }: Props) => {
     const translations = getTranslationsForSaving<FormsApiFormTranslation>(state);
     const validationErrors = validateFormTranslations(translations);
 
+    if (translations.length === 0) {
+      feedbackEmit.success('Ingen endringer oppdaget. Oversettelser ble ikke lagret.');
+      return;
+    }
+
     if (validationErrors.length > 0) {
       dispatch({ type: 'VALIDATION_ERROR', payload: { errors: validationErrors } });
       validationErrors.forEach((error) => {
         const key = htmlConverter.isHtmlString(error.key) ? htmlConverter.extractTextContent(error.key) : error.key;
         feedbackEmit.error(`${stringUtils.truncate(key, 50)}: ${error.message}`);
       });
-    } else {
-      dispatch({ type: 'SAVE_STARTED' });
-      const { responses, errors } = await saveEachTranslation(translations, saveTranslation);
+      return;
+    }
 
-      await loadTranslations();
-      dispatch({ type: 'SAVE_FINISHED', payload: { errors } });
-      if (responses.length > 0) {
-        feedbackEmit.success(`${responses.length} oversettelser ble lagret.`);
-      }
+    dispatch({ type: 'SAVE_STARTED' });
+    const { responses, errors } = await saveEachTranslation(translations, saveTranslation);
 
-      const conflictAlertMessage = getConflictAlertMessage(errors);
-      const generalAlertMessage = getGeneralAlertMessage(errors);
-      if (conflictAlertMessage) {
-        feedbackEmit.error(conflictAlertMessage);
-      }
-      if (generalAlertMessage) {
-        feedbackEmit.error(generalAlertMessage);
-      }
+    await loadTranslations();
+    dispatch({ type: 'SAVE_FINISHED', payload: { errors } });
+    if (responses.length > 0) {
+      feedbackEmit.success(`${responses.length} oversettelser ble lagret.`);
+    }
+
+    const conflictAlertMessage = getConflictAlertMessage(errors);
+    const generalAlertMessage = getGeneralAlertMessage(errors);
+    if (conflictAlertMessage) {
+      feedbackEmit.error(conflictAlertMessage);
+    }
+    if (generalAlertMessage) {
+      feedbackEmit.error(generalAlertMessage);
     }
   };
 

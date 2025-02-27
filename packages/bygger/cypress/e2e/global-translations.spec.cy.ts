@@ -11,6 +11,11 @@ describe('Global translations', () => {
   });
 
   describe('Skjematekster', () => {
+    it('does not update translations if no changes', () => {
+      cy.findByRole('button', { name: 'Lagre' }).click();
+      cy.findByText('Ingen endringer oppdaget. Oversettelser ble ikke lagret.').should('be.visible');
+    });
+
     it('adds new translation', () => {
       cy.intercept('POST', '/api/translations', (req) => {
         expect(req.body).to.deep.equal({
@@ -154,7 +159,6 @@ describe('Global translations', () => {
         req.reply(200, req.body);
       }).as('putGlobalTranslation5');
       cy.intercept('PUT', '/api/translations/6', (req) => {
-        console.log(JSON.stringify(req.body));
         expect(req.body).to.deep.equal({
           nb: 'Nei',
           nn: 'Nei',
@@ -172,11 +176,36 @@ describe('Global translations', () => {
       cy.findAllByRole('textbox', { name: 'Engelsk' }).eq(1).type('No');
       cy.findByText('valgfritt').click();
       cy.findAllByRole('textbox', { name: 'Nynorsk' }).eq(2).type('valfritt');
-      cy.findByRole('button', { name: 'Lagre' }).focus();
       cy.findByRole('button', { name: 'Lagre' }).click();
       cy.wait('@putGlobalTranslation6');
       cy.wait('@putGlobalTranslation5');
       cy.wait('@postGlobalTranslation');
+    });
+
+    it('shows unused translations', () => {
+      cy.intercept('DELETE', '/api/translations/8', (req) => {
+        req.reply(204);
+      }).as('deleteGlobalTranslation8');
+      cy.intercept('DELETE', '/api/translations/10', (req) => {
+        req.reply(204);
+      }).as('deleteGlobalTranslation10');
+
+      cy.findByRole('link', { name: 'Grensesnitt' }).click();
+      cy.findByRole('heading', { name: 'Globale grensesnittekster' }).should('be.visible');
+
+      cy.findByRole('button', { name: 'Se alle ubrukte oversettelser (3)' }).click();
+      cy.findAllByText('Ubrukt oversettelse').should('not.be.empty');
+      cy.findAllByText('Gammel tekst').should('not.be.empty');
+
+      cy.findAllByRole('button', { name: 'Slett' }).first().click();
+      cy.findAllByRole('button', { name: 'Slett' }).last().click();
+
+      cy.wait(['@deleteGlobalTranslation8', '@deleteGlobalTranslation10']);
+      cy.findByText('Global oversettelse med id 8 ble slettet').should('be.visible');
+      cy.findByText('Ubrukt oversettelse').should('not.exist');
+      cy.findByText('Global oversettelse med id 10 ble slettet').should('be.visible');
+      cy.findByText('Gammel tekst').should('not.exist');
+      cy.findByRole('button', { name: 'Se alle ubrukte oversettelser (1)' }).should('exist');
     });
   });
 
