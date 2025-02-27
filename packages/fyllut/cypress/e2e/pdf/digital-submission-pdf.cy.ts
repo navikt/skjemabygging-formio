@@ -43,21 +43,15 @@ describe('Pdf when digital submission', () => {
       cy.findByRole('button', { name: 'Lagre og fortsett' }).click();
 
       cy.findByRole('heading', { name: 'Reiseperiode' }).shouldBeVisible();
-      cy.findByRole('textbox', { name: /Startdato.*/ })
-        .should('exist')
-        .type('02.01.2024');
-      cy.findByRole('textbox', { name: /Sluttdato.*/ })
-        .should('exist')
-        .type('31.01.2024');
+      cy.findByRole('textbox', { name: /Startdato.*/ }).type('02.01.2024');
+      cy.findByRole('textbox', { name: /Sluttdato.*/ }).type('31.01.2024');
       cy.findByRole('textbox', { name: 'Hvor mange reisedager har du per uke?' }).should('exist').type('3');
       cy.findByRole('button', { name: 'Lagre og fortsett' }).click();
 
       cy.findByRole('heading', { name: 'Reiseavstand' }).shouldBeVisible();
-      cy.findByRole('group', { name: 'Har du en reisevei på seks kilometer eller mer?' })
-        .should('exist')
-        .within(() => {
-          cy.findByRole('radio', { name: 'Ja' }).should('exist').click();
-        });
+      cy.findByRole('group', { name: 'Har du en reisevei på seks kilometer eller mer?' }).within(() => {
+        cy.findByRole('radio', { name: 'Ja' }).click();
+      });
       cy.findByRole('textbox', { name: 'Hvor lang reisevei har du?' }).should('exist').type('12');
       cy.findByRole('textbox', { name: 'Gateadresse' }).should('exist').type('Veien 1');
       cy.findByRole('textbox', { name: 'Postnummer' }).should('exist').type('1234');
@@ -66,11 +60,9 @@ describe('Pdf when digital submission', () => {
       cy.findByRole('button', { name: 'Lagre og fortsett' }).click();
 
       cy.findByRole('heading', { name: 'Transportbehov' }).shouldBeVisible();
-      cy.findByRole('group', { name: 'Kan du reise kollektivt?' })
-        .should('exist')
-        .within(() => {
-          cy.findByRole('radio', { name: 'Nei' }).should('exist').click();
-        });
+      cy.findByRole('group', { name: 'Kan du reise kollektivt?' }).within(() => {
+        cy.findByRole('radio', { name: 'Nei' }).click();
+      });
       cy.findByRole('group', { name: 'Hva er hovedårsaken til at du ikke kan reise kollektivt?' })
         .should('exist')
         .within(() => {
@@ -138,21 +130,15 @@ describe('Pdf when digital submission', () => {
       cy.findByRole('button', { name: 'Lagre og fortsett' }).click();
 
       cy.findByRole('heading', { name: 'Reiseperiode' }).shouldBeVisible();
-      cy.findByRole('textbox', { name: /Startdato.*/ })
-        .should('exist')
-        .type('02.01.2024');
-      cy.findByRole('textbox', { name: /Sluttdato.*/ })
-        .should('exist')
-        .type('31.01.2024');
+      cy.findByRole('textbox', { name: /Startdato.*/ }).type('02.01.2024');
+      cy.findByRole('textbox', { name: /Sluttdato.*/ }).type('31.01.2024');
       cy.findByRole('textbox', { name: 'Kor mange reisedagar har du per veke?' }).should('exist').type('3');
       cy.findByRole('button', { name: 'Lagre og fortsett' }).click();
 
       cy.findByRole('heading', { name: 'Reiseavstand' }).shouldBeVisible();
-      cy.findByRole('group', { name: 'Har du ein reiseveg på seks kilometer eller meir?' })
-        .should('exist')
-        .within(() => {
-          cy.findByRole('radio', { name: 'Ja' }).should('exist').click();
-        });
+      cy.findByRole('group', { name: 'Har du ein reiseveg på seks kilometer eller meir?' }).within(() => {
+        cy.findByRole('radio', { name: 'Ja' }).click();
+      });
       cy.findByRole('textbox', { name: 'Kor lang reiseveg har du?' }).should('exist').type('12');
       cy.findByRole('textbox', { name: 'Gateadresse' }).should('exist').type('Veien 1');
       cy.findByRole('textbox', { name: 'Postnummer' }).should('exist').type('1234');
@@ -161,11 +147,9 @@ describe('Pdf when digital submission', () => {
       cy.findByRole('button', { name: 'Lagre og fortsett' }).click();
 
       cy.findByRole('heading', { name: 'Transportbehov' }).shouldBeVisible();
-      cy.findByRole('group', { name: 'Kan du reisa kollektivt?' })
-        .should('exist')
-        .within(() => {
-          cy.findByRole('radio', { name: 'Nei' }).should('exist').click();
-        });
+      cy.findByRole('group', { name: 'Kan du reisa kollektivt?' }).within(() => {
+        cy.findByRole('radio', { name: 'Nei' }).click();
+      });
       cy.findByRole('group', { name: 'Kva er hovudårsaka til at du ikkje kan reisa kollektivt?' })
         .should('exist')
         .within(() => {
