@@ -77,7 +77,7 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
 
       await webform.setSubmission(submissionCopy);
 
-      NavFormBuilder.prefillForm(webform, prefillData);
+      webform.form = NavFormBuilder.prefillForm(webform, prefillData);
 
       webform.checkData(submissionCopy.data, [], undefined);
 

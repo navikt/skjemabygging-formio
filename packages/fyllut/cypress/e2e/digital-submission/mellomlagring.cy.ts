@@ -151,6 +151,7 @@ describe('Mellomlagring', () => {
       cy.visit(
         '/fyllut/testmellomlagring/gave?sub=digital&innsendingsId=8e3c3621-76d7-4ebd-90d4-34448ebcccc3&lang=nb-NO',
       );
+      cy.defaultWaits();
       cy.wait('@getMellomlagringValid');
       cy.findByRole('heading', { name: 'Gave', level: 2 }).should('be.visible');
       testMellomlagringConfirmationModal(
@@ -167,6 +168,7 @@ describe('Mellomlagring', () => {
       cy.visit(
         `/fyllut/testmellomlagring/gave?sub=digital&innsendingsId=f99dc639-add1-468f-b4bb-961cdfd1e599&lang=nb-NO`,
       );
+      cy.defaultWaits();
       cy.wait('@getMellomlagringForInnsendingWithUpdateError');
       cy.findByRole('heading', { name: 'Gave', level: 2 }).should('be.visible');
 
@@ -216,6 +218,7 @@ describe('Mellomlagring', () => {
           cy.visit(
             '/fyllut/testmellomlagring/oppsummering?sub=digital&innsendingsId=8e3c3621-76d7-4ebd-90d4-34448ebcccc3&lang=nb-NO',
           );
+          cy.defaultWaits();
           cy.wait('@getMellomlagringValid');
           cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
           cy.findByRole('link', { name: TEXTS.grensesnitt.summaryPage.editAnswers }).should('exist').click();
