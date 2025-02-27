@@ -1,0 +1,93 @@
+[
+  {
+    "id": 1,
+    "key": "Ny",
+    "tag": "skjematekster",
+    "changedAt": "2024-12-05T14:39:27.512821+01:00",
+    "changedBy": "Testesen, Test",
+    "revision": 4,
+    "nb": "Ny",
+    "nn": "Ny",
+    "en": "New",
+    "publishedAt": null,
+    "publishedBy": null
+  },
+  {
+    "id": 2,
+    "key": "Nyere",
+    "tag": "skjematekster",
+    "changedAt": "2024-12-05T14:39:27.498692+01:00",
+    "changedBy": "Testesen, Test",
+    "revision": 3,
+    "nb": "Nyere",
+    "nn": "Nyare",
+    "en": "Newer",
+    "publishedAt": null,
+    "publishedBy": null
+  },
+  {
+    "id": 3,
+    "key": "Abc",
+    "tag": "skjematekster",
+    "changedAt": "2024-12-05T14:39:27.489663+01:00",
+    "changedBy": "Testesen, Test",
+    "revision": 4,
+    "nb": "Abc",
+    "nn": "Def",
+    "en": "Xyz",
+    "publishedAt": null,
+    "publishedBy": null
+  },
+  {
+    "id": 4,
+    "key": "Hei",
+    "tag": "skjematekster",
+    "changedAt": "2024-12-05T14:39:27.493745+01:00",
+    "changedBy": "Testesen, Test",
+    "revision": 6,
+    "nb": "Hei",
+    "nn": "",
+    "en": "Hello",
+    "publishedAt": null,
+    "publishedBy": null
+  },
+  {
+    "id": 5,
+    "key": "Ja",
+    "tag": "grensesnitt",
+    "changedAt": "2024-12-05T14:39:27.493745+01:00",
+    "changedBy": "Testesen, Test",
+    "revision": 2,
+    "nb": "Ja",
+    "nn": "Ja",
+    "en": "",
+    "publishedAt": null,
+    "publishedBy": null
+  },
+  {
+    "id": 6,
+    "key": "Nei",
+    "tag": "grensesnitt",
+    "changedAt": "2024-12-05T14:39:27.493745+01:00",
+    "changedBy": "Testesen, Test",
+    "revision": 1,
+    "nb": "Nei",
+    "nn": "Nei",
+    "en": "",
+    "publishedAt": null,
+    "publishedBy": null
+  },
+  {
+    "id": 7,
+    "key": "error",
+    "tag": "validering",
+    "changedAt": "2024-12-12T13:03:19.063368+01:00",
+    "changedBy": "Testesen, Test",
+    "revision": 1,
+    "nb": "For å gå videre må du rette opp følgende:",
+    "nn": "For å gå vidare må du rette opp følgende:",
+    "en": "",
+    "publishedAt": null,
+    "publishedBy": null
+  }
+]

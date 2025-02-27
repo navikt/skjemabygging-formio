@@ -18,6 +18,17 @@ describe('Attachment', () => {
     textarea: 'Ledetekst tilleggsinformasjon',
   };
 
+  it('lists attachment values in pre-defined order', () => {
+    cy.findByRole('group', { name: TITLE.attachment })
+      .should('exist')
+      .within(() => {
+        cy.get('input').should('have.length', 3);
+        cy.get('input').eq(0).should('have.value', 'leggerVedNaa');
+        cy.get('input').eq(1).should('have.value', 'ettersender');
+        cy.get('input').eq(2).should('have.value', 'nei');
+      });
+  });
+
   it('check different attachment settings', () => {
     cy.findByRole('textbox', { name: TITLE.textarea }).should('not.exist');
 

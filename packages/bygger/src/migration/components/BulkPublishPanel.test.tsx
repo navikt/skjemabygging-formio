@@ -1,4 +1,4 @@
-import { FormPropertiesType, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, FormPropertiesType } from '@navikt/skjemadigitalisering-shared-domain';
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import * as api from '../api';
 import BulkPublishPanel from './BulkPublishPanel';
@@ -26,30 +26,32 @@ const properties: FormPropertiesType = {
   },
   mellomlagringDurationDays: '28',
 };
-const form: NavFormType = {
+const form: Form = {
   title: 'Form title',
-  name: 'formName',
   path: 'formPath',
-  type: 'form',
-  display: 'wizard',
-  tags: ['nav-skjema', ''],
+  skjemanummer: 'skjemanummer',
   components: [],
   properties,
+  status: 'draft',
 };
 
-const testForm1 = {
+const testForm1: Form = {
   ...form,
   path: 'form1',
-  name: 'Form 1',
-  properties: { ...properties, ...published, skjemanummer: '001' },
+  title: 'Form 1',
+  skjemanummer: '001',
+  properties: { ...properties, ...published },
+  status: 'published',
 };
-const testForm2 = {
+const testForm2: Form = {
   ...form,
   path: 'form2',
-  name: 'Form 2',
-  properties: { ...properties, ...pending, skjemanummer: '002' },
+  title: 'Form 2',
+  skjemanummer: '002',
+  properties: { ...properties, ...pending },
+  status: 'pending',
 };
-const testForm3 = { ...form, path: 'form3', name: 'Form 3', properties: { ...properties, skjemanummer: '003' } };
+const testForm3: Form = { ...form, path: 'form3', title: 'Form 3', skjemanummer: '003', properties: { ...properties } };
 const bulkPublish = vi.fn();
 
 describe('BulkPublishPanel', () => {

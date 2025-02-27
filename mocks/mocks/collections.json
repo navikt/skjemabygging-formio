@@ -13,8 +13,6 @@
       "get-active-tasks:success",
       "put-soknad:success",
       "get-soknad:success-1",
-      "get-soknad:success-mellomlagring-nested-norwegian-business",
-      "get-soknad:success-mellomlagring-nested-foreign-business",
       "delete-soknad:success",
       "put-utfylt-soknad:success",
       "send-inn-frontend:available",

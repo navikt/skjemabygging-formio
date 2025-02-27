@@ -216,9 +216,7 @@ Docker-image bygges og startes lokalt på følgende måte:
     # image: fyllut-base
     docker build --tag fyllut-base -f ./docker/Dockerfile.fyllut-base --build-arg git_sha=local ./packages
     docker run \
-       -e FORMS_SOURCE=formioapi \
-       -e FORMIO_API_SERVICE=https://formio-api.intern.dev.nav.no \
-       -e FORMIO_PROJECT_NAME=jvcemxwcpghcqjn \
+       -e FORMS_SOURCE=formsapi-staging \
        -e FORMS_API_URL=https://forms-api.intern.dev.nav.no \
        -e NAIS_CLUSTER_NAME=dev-gcp \
        -p 8080:8080 fyllut-base

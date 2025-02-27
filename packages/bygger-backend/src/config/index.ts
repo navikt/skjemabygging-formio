@@ -11,6 +11,7 @@ import {
   devPusher,
   devSkjemabyggingProxy,
   prodFormio,
+  prodFormsApi,
 } from './development';
 import { ConfigType, NodeEnv } from './types';
 
@@ -99,6 +100,12 @@ const config: ConfigType = {
     },
     devToken: isDevelopment ? optionalEnv('FORMS_API_ACCESS_TOKEN') : undefined,
   },
+  prodFormsApi:
+    naisClusterName !== 'prod-gcp'
+      ? {
+          url: env('FORMS_API_URL_PROD', prodFormsApi.url),
+        }
+      : undefined,
   pusher: {
     cluster: env('PUSHER_CLUSTER', devPusher.cluster),
     key: env('PUSHER_KEY'),

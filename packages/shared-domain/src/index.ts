@@ -24,8 +24,8 @@ import {
   FormPropertiesPublishing,
   FormPropertiesType,
   FormSignaturesType,
-  FormType,
   FormsResponseForm,
+  FormType,
   FyllutState,
   InnsendingType,
   InputMode,
@@ -43,6 +43,7 @@ import {
   UsageContext,
   Webform,
 } from './form';
+import { Form } from './forms-api-form';
 import forstesideUtils, {
   ForstesideRecipientAddress,
   ForstesideRequestBody,
@@ -111,11 +112,20 @@ import MockedComponentObjectForTest from './summary/MockedComponentObjectForTest
 import formSummaryUtil from './summary/formSummaryUtil';
 import { TextSize, TextSizeShort } from './text';
 import TEXTS from './texts';
+import {
+  FormsApiFormTranslation,
+  FormsApiGlobalTranslation,
+  FormsApiTranslation,
+  formsApiTranslations,
+  PublishedTranslations,
+  TranslationLang,
+} from './translations/FormsApiTranslation';
 import currencyUtils from './utils/currencyUtils';
 import dateUtils from './utils/date';
 import featureUtils, { FeatureTogglesMap } from './utils/featureUtils';
-import formDiffingTool, { NavFormSettingsDiff } from './utils/formDiffingTool';
+import formDiffingTool, { FormSettingsDiff } from './utils/formDiffingTool';
 import navFormioUtils from './utils/formio';
+import formioFormsApiUtils from './utils/forms-api-backwards-compatibility';
 import { guid } from './utils/guid';
 import localizationUtils from './utils/localization';
 import navFormUtils, { DependencyType } from './utils/navFormUtils';
@@ -129,16 +139,15 @@ import validatorUtils from './utils/validatorUtils';
 import yourInformationUtils from './utils/yourInformationUtils';
 
 export {
-  DeclarationType,
-  MockedComponentObjectForTest,
-  PrefillType,
-  TEXTS,
   attachmentUtils,
   configUtils,
   currencyUtils,
   dateUtils,
+  DeclarationType,
   featureUtils,
   formDiffingTool,
+  formioFormsApiUtils,
+  formsApiTranslations,
   formSummaryUtil,
   forstesideUtils,
   guid,
@@ -146,14 +155,17 @@ export {
   localizationUtils,
   loggingUtils,
   migrationUtils,
-  navFormUtils,
+  MockedComponentObjectForTest,
   navFormioUtils,
+  navFormUtils,
   numberUtils,
   objectUtils,
   paginationUtils,
+  PrefillType,
   signatureUtils,
   stringUtils,
   supportedEnhetstyper,
+  TEXTS,
   translationUtils,
   validatorUtils,
   yourInformationUtils,
@@ -184,16 +196,21 @@ export type {
   Enhetstype,
   FeatureTogglesMap,
   FieldSize,
-  FormPropertiesPublishing,
-  FormPropertiesType,
-  FormSignaturesType,
-  FormType,
+  Form,
   FormioResource,
   FormioTranslation,
   FormioTranslationData,
   FormioTranslationMap,
   FormioTranslationPayload,
+  FormPropertiesPublishing,
+  FormPropertiesType,
+  FormsApiFormTranslation,
+  FormsApiGlobalTranslation,
+  FormsApiTranslation,
+  FormSettingsDiff,
+  FormSignaturesType,
   FormsResponseForm,
+  FormType,
   ForstesideRecipientAddress,
   ForstesideRequestBody,
   FrontendLoggerConfigType,
@@ -214,7 +231,6 @@ export type {
   Mottaksadresse,
   MottaksadresseData,
   MottaksadresserResourceContent,
-  NavFormSettingsDiff,
   NavFormType,
   NewFormSignatureType,
   Operator,
@@ -222,6 +238,7 @@ export type {
   PrefillAddress,
   PrefillData,
   PrefillKey,
+  PublishedTranslations,
   Recipient,
   ReportDefinition,
   ResourceAccess,
@@ -254,6 +271,7 @@ export type {
   SummarySubmissionValue,
   TextSize,
   TextSizeShort,
+  TranslationLang,
   TranslationResource,
   TranslationScope,
   TranslationTag,

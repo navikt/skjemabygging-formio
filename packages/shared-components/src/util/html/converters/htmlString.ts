@@ -10,6 +10,12 @@ type SanitizeOptions = Omit<DOMPurify.Config, 'RETURN_DOM_FRAGMENT' | 'RETURN_DO
  */
 const isHtmlString = (text: string) => /<(?!br\s*\/?)[^>]+>/gm.test(text);
 
+const extractTextContent = (htmlString: string) => {
+  const div = document.createElement('div');
+  div.innerHTML = htmlString;
+  return div.textContent ?? div.innerText;
+};
+
 /*
  * Sanitize happens twice because of a known issue with dompurify that reverses the order of attributes
  * See: https://github.com/cure53/DOMPurify/issues/276
@@ -40,4 +46,4 @@ const json2HtmlString = (jsonElement: HtmlAsJsonElement | HtmlAsJsonTextElement)
   }
 };
 
-export { htmlString2Json, isHtmlString, json2HtmlString, sanitizeHtmlString };
+export { extractTextContent, htmlString2Json, isHtmlString, json2HtmlString, sanitizeHtmlString };
