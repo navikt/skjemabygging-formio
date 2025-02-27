@@ -67,10 +67,12 @@ const NavForm = ({
   const appConfig = useAppConfig();
   const ref = useRef(null);
   const { panelSlug } = useParams();
+  // This param is used to avoid creating two formio instances in React.StrictMode
+  let webformStart = false;
 
   const createForm = useCallback(
-    async (srcOrForm: NavFormType | string) => {
-      if (ref?.current) {
+    async (srcOrForm?: NavFormType | string) => {
+      if (ref?.current && srcOrForm) {
         const newWebform = await NavFormBuilder.create(ref.current, srcOrForm, {
           language,
           i18n,
@@ -173,13 +175,10 @@ const NavForm = ({
 
   useEffect(() => {
     (async () => {
-      if (Object.keys(i18n).length !== 0 && !webform) {
-        appConfig.logger?.debug('Create new webform/wizard');
-        if (form) {
-          await createForm(form);
-        } else if (src) {
-          await createForm(src);
-        }
+      if (Object.keys(i18n).length !== 0 && !webform && !webformStart) {
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        webformStart = true;
+        await createForm(form || src);
       }
     })();
   }, [appConfig.logger, i18n, createForm, webform, src, form]);

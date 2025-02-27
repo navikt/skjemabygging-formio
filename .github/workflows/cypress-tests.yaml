@@ -45,6 +45,7 @@ jobs:
         with:
           name: cypress-screenshots
           path:  ${{ github.workspace }}/packages/fyllut/cypress/screenshots/*
+          compression-level: 0
 
 
   cypress-run-bygger:
