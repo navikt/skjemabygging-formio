@@ -324,6 +324,7 @@ export interface FyllutState {
     deletionDate?: string;
     error?: MellomlagringError;
   };
+  changedAt?: number;
 }
 
 export interface Submission {
@@ -367,7 +368,6 @@ export interface Webform {
   setPage: (index: number) => void;
   redraw: () => Promise<void>;
   submissionReady: Promise<void>;
-  _submission: any;
 }
 
 export type UsageContext = 'create' | 'edit';

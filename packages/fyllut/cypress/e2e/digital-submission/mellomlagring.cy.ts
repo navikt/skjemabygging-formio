@@ -226,8 +226,7 @@ describe('Mellomlagring', () => {
           cy.findByRole('link', { name: TEXTS.grensesnitt.summaryPage.editAnswers }).should('exist').click();
           cy.url().should('include', '/valgfrieOpplysninger');
           cy.findByRole('textbox', { name: 'Hva drakk du til frokost (valgfritt)' }).should('exist');
-          // TODO: Include again
-          //cy.findByRole('textbox', { name: 'Hva drakk du til frokost (valgfritt)' }).should('have.focus');
+          cy.findByRole('textbox', { name: 'Hva drakk du til frokost (valgfritt)' }).should('have.focus');
         });
 
         it('lets you edit and update submission data', () => {

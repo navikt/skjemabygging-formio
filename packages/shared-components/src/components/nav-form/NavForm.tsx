@@ -180,9 +180,11 @@ const NavForm = ({
           submission,
         });
         await webform.setSubmission(JSON.parse(JSON.stringify(submission)));
-        await webform.submissionReady;
 
-        await webform.redraw();
+        if (submission.fyllutState?.changedAt !== webform.submission?.fyllutState?.changedAt) {
+          await webform.submissionReady;
+          await webform.redraw();
+        }
       }
     })();
   }, [appConfig.logger, webform, submission]);
