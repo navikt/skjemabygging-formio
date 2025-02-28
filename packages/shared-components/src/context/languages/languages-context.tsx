@@ -1,5 +1,9 @@
-import { I18nTranslationReplacements, translationUtils } from '@navikt/skjemadigitalisering-shared-domain';
-import { createContext, useContext, useEffect, useState } from 'react';
+import {
+  I18nTranslationReplacements,
+  I18nTranslations,
+  translationUtils,
+} from '@navikt/skjemadigitalisering-shared-domain';
+import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
 import useCurrentLanguage from './hooks/useCurrentLanguage';
 import useLanguageCodeFromURL from './hooks/useLanguageCodeFromURL';
 
@@ -11,6 +15,11 @@ interface LanguageContextType {
   translationsForNavForm: object;
 }
 
+interface Props {
+  translations: I18nTranslations;
+  children: ReactNode;
+}
+
 type CurrentLanguageType = {
   currentLanguage: string;
   initialLanguage: string;
@@ -18,7 +27,7 @@ type CurrentLanguageType = {
 
 const LanguagesContext = createContext<LanguageContextType>({} as LanguageContextType);
 
-export const LanguagesProvider = ({ children, translations }) => {
+export const LanguagesProvider = ({ children, translations }: Props) => {
   const [availableLanguages, setAvailableLanguages] = useState<string[]>([]);
   const [translationsForNavForm, setTranslationsForNavForm] = useState<object>({});
 

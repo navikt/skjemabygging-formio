@@ -22,7 +22,9 @@ describe('NationalIdentityNumber', () => {
     cy.get('[data-cy=error-summary]')
       .should('exist')
       .within(() => {
-        cy.findByRole('link', { name: 'Dette er ikke et gyldig fødselsnummer eller D-nummer' }).should('exist');
+        cy.findByRole('link', { name: 'Dette er ikke et gyldig fødselsnummer eller d-nummer (11 siffer)' }).should(
+          'exist',
+        );
       });
   });
 
@@ -33,7 +35,9 @@ describe('NationalIdentityNumber', () => {
     cy.get('[data-cy=error-summary]')
       .should('exist')
       .within(() => {
-        cy.findByRole('link', { name: 'Dette er ikke et gyldig fødselsnummer eller D-nummer' }).should('not.exist');
+        cy.findByRole('link', { name: 'Dette er ikke et gyldig fødselsnummer eller d-nummer (11 siffer)' }).should(
+          'not.exist',
+        );
       });
   });
 
@@ -52,7 +56,9 @@ describe('NationalIdentityNumber', () => {
       cy.get('[data-cy=error-summary]')
         .should('exist')
         .within(() => {
-          cy.findByRole('link', { name: 'Dette er ikke et gyldig fødselsnummer eller D-nummer' }).should('exist');
+          cy.findByRole('link', { name: 'Dette er ikke et gyldig fødselsnummer eller d-nummer (11 siffer)' }).should(
+            'exist',
+          );
         });
     });
   });

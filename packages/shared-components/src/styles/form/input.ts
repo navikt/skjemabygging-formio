@@ -16,12 +16,10 @@ const input = {
   },
   '& .input--xl, & .nav-input--xl input, & .nav-input--xl select, & .nav-input--xl textarea': {
     width: '100%',
-    minWidth: '300px',
     maxWidth: '350px',
   },
   '& .input--xxl, & .nav-input--xxl input, & .nav-input--xxl select, & .nav-input--xxl textarea': {
     width: '100%',
-    minWidth: '300px',
     maxWidth: '420px',
   },
 };

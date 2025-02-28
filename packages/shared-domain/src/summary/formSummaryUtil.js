@@ -361,7 +361,7 @@ function handleSelectboxes(component, submission, formSummaryObject, parentConta
     ...formSummaryObject,
     {
       label: translate(label),
-      key,
+      key: componentKey,
       type,
       value,
     },
@@ -415,27 +415,6 @@ function handleHtmlElement(component, formSummaryObject, parentContainerKey, tra
     }
   }
   return formSummaryObject;
-}
-
-function handleImage(component, formSummaryObject, parentContainerKey, translate) {
-  const { key, label, type, image, altText, widthPercent, showInPdf } = component;
-  const componentKey = createComponentKey(parentContainerKey, key);
-  if (image.length > 0 && image[0].url) {
-    return [
-      ...formSummaryObject,
-      {
-        label: translate(label),
-        key: componentKey,
-        type,
-        value: image[0].url,
-        alt: translate(altText),
-        widthPercent,
-        showInPdf,
-      },
-    ];
-  }
-
-  return [...formSummaryObject];
 }
 
 function handleIdentity(component, submission, formSummaryObject, parentContainerKey, translate, form, language) {
@@ -618,7 +597,7 @@ function handleComponent(
         language,
       );
     case 'image':
-      return handleImage(component, formSummaryObject, parentContainerKey, translate);
+      return formSummaryObject;
     case 'row':
       if (component.isAmountWithCurrencySelector) {
         return handleAmountWithCurrencySelector(

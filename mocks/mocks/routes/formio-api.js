@@ -10,6 +10,7 @@ const formContainerDatagrid = require('../data/formio-api/container-datagrid.jso
 const formNavdatepicker = require('../data/formio-api/navdatepicker.json');
 const formSubmissionMethod = require('../data/formio-api/submission-method.json');
 const formTestMellomlagring = require('../data/formio-api/test-mellomlagring.json');
+const formTestMellomlagringNested = require('../data/formio-api/mellomlagring-nested-values.json');
 const formTestMellomlagringV2 = require('../data/formio-api/test-mellomlagring-v2.json');
 const formSelectV1 = require('../data/formio-api/form-select-v1.json');
 const formSelectV2 = require('../data/formio-api/form-select-v2.json');
@@ -37,6 +38,8 @@ const radioForm = require('../data/formio-api/radio.json');
 const selectBoxesForm = require('../data/formio-api/select-boxes.json');
 const monthPickerForm = require('../data/formio-api/month-picker.json');
 const emailForm = require('../data/formio-api/form-email.json');
+const nav111221b = require('../data/formio-api/nav111221b.json');
+const nav111221bTranslations = require('../data/formio-api/nav111221b-translations.json');
 
 const allForms = [
   { form: formCypress101, translations: translationsCypress101 },
@@ -53,6 +56,7 @@ const allForms = [
   { form: formSubmissionMethod, translations: translationsSubmissionMethod },
   { form: formTestMellomlagring, formV2: formTestMellomlagringV2, translations: undefined },
   { form: formYourInformation, translations: formYourInformationTranslations },
+  { form: formTestMellomlagringNested, translations: formYourInformationTranslations },
   { form: formSelectV1, formV2: formSelectV2, translations: undefined },
   { form: formActivities, translations: undefined },
   { form: formDatagridConditional, translations: undefined },
@@ -70,6 +74,7 @@ const allForms = [
   { form: selectBoxesForm, translations: undefined },
   { form: monthPickerForm, translations: undefined },
   { form: emailForm, translations: undefined },
+  { form: nav111221b, translations: nav111221bTranslations },
 ];
 
 const findTestdata = (formPath) => allForms.find((testdata) => testdata.form.path === formPath);

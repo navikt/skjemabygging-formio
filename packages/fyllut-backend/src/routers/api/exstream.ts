@@ -6,6 +6,7 @@ import {
   Submission,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { NextFunction, Request, Response } from 'express';
+import { logger } from '../../logger';
 import { base64Decode } from '../../utils/base64';
 import { htmlResponseError } from '../../utils/errorHandling';
 import { logErrorWithStacktrace } from '../../utils/errors';
@@ -32,6 +33,11 @@ const exstream = {
   post: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { form, submission, submissionMethod, translations, language } = parseBody(req);
+
+      if (!['nb-NO', 'nn-NO', 'en'].includes(language)) {
+        logger.warn(`Language code "${language}" is not supported. Language code will be defaulted to "nb".`);
+      }
+
       const languageCode = localizationUtils.getLanguageCodeAsIso639_1(language);
 
       const pdf = await createPdf(

@@ -1,41 +1,41 @@
 import { SkeletonList, useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
-import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form } from '@navikt/skjemadigitalisering-shared-domain';
 import { useCallback, useEffect, useState } from 'react';
+import useForms from '../../api/useForms';
 import { AppLayout } from '../../components/AppLayout';
 import RowLayout from '../../components/layout/RowLayout';
-import { determineStatus } from '../status/FormStatus';
+import { determineStatusFromForm } from '../status/utils';
 import FormError from './../error/FormError';
 import { FormListType, FormsList } from './FormsList';
 
-interface FormsListPageProps {
-  loadFormsList: () => Promise<NavFormType[]>;
-}
-
-const FormsListPage = ({ loadFormsList }: FormsListPageProps) => {
+const FormsListPage = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [forms, setForms] = useState<FormListType[]>();
   const { logger } = useAppConfig();
+  const { loadFormsList } = useForms();
 
   const loadForms = useCallback(async () => {
-    try {
-      const navForms = await loadFormsList();
-      setForms(navForms.map(mapNavForm));
-    } catch (e) {
-      logger?.error('Could not load forms.');
-    } finally {
-      setLoading(false);
+    if (loading) {
+      try {
+        const forms = await loadFormsList();
+        setForms(forms.map(mapFormToFormListType));
+      } catch (_e) {
+        logger?.error('Could not load forms.');
+      } finally {
+        setLoading(false);
+      }
     }
-  }, [loadFormsList]);
+  }, [loadFormsList, logger, loading]);
 
-  const mapNavForm = (navForm: NavFormType): FormListType => {
+  const mapFormToFormListType = (form: Form): FormListType => {
     return {
-      id: navForm._id ?? '',
-      modified: navForm.properties.modified ?? navForm.modified ?? '',
-      title: navForm.title?.trim(),
-      path: navForm.path,
-      number: navForm.properties?.skjemanummer?.trim(),
-      status: determineStatus(navForm.properties),
-      locked: !!navForm.properties.isLockedForm,
+      id: `${form.id}`,
+      modified: form.changedAt ?? form.properties.modified ?? '',
+      title: form.title?.trim(),
+      path: form.path,
+      number: form.skjemanummer.trim(),
+      status: determineStatusFromForm(form),
+      locked: !!form.lock,
     };
   };
 

@@ -21,7 +21,7 @@ declare global {
 
       clickStart(): Chainable<JQuery<HTMLElement>>;
 
-      checkLogToAmplitude(eventType: string, properties?: object): Chainable<JQuery<HTMLElement>>;
+      verifySendInnRedirect(): Chainable<JQuery<HTMLElement>>;
 
       defaultIntercepts(): Cypress.Chainable<JQuery<HTMLElement>>;
 

@@ -1,5 +1,7 @@
 import { AttachmentSettingValues } from '../attachment';
 import type { Component, ComponentProperties, FormPropertiesType, NavFormType } from '../form';
+import { Form } from '../forms-api-form';
+import { formioFormsApiUtils } from '../index';
 import FormioUtils from '../utils/formio/FormioUtils';
 
 const keyFromLabel = (label = '') => label.toLowerCase().replace(/\s/gi, '');
@@ -327,6 +329,13 @@ const createFormObject = (
     navId,
   }) as unknown as NavFormType;
 
+const createFormsApiFormObject = (
+  panels: Component[] = [],
+  title: string = 'Test form',
+  properties: Partial<FormPropertiesType> = {},
+  navId?: string,
+): Form => formioFormsApiUtils.mapNavFormToForm(createFormObject(panels, title, properties, navId));
+
 const createDummyCurrencyField = (currency = 'NOK', label = 'Penger', navId: string = createNavId()): Component =>
   ({
     label,
@@ -403,6 +412,7 @@ const mockedComponentObjectForTest = {
   createDummyDataGrid,
   createPanelObject,
   createFormObject,
+  createFormsApiFormObject,
   createFormPropertiesObject,
   createDummyDayComponent,
   createDummySelectComponent,

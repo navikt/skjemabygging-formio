@@ -10,7 +10,6 @@
 
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import '@testing-library/cypress/add-commands';
-import { expect } from 'chai';
 import 'cypress-wait-until';
 import { CyHttpMessages } from 'cypress/types/net-stubbing';
 
@@ -61,27 +60,13 @@ Cypress.Commands.add('clickStart', () => {
   return cy.findByRoleWhenAttached('link', { name: TEXTS.grensesnitt.introPage.start }).click();
 });
 
-Cypress.Commands.add('checkLogToAmplitude', (eventType: string, properties) => {
-  return cy
-    .wait('@amplitudeLogging')
-    .its('request.body')
-    .then((body) => {
-      expect(body.events).to.have.length(1);
-      return body.events[0];
-    })
-    .then((event) => {
-      expect(event.event_type).to.equal(eventType);
-      if (properties && Object.keys(properties).length > 0) {
-        const propertyKeys = Object.keys(properties);
-        propertyKeys.forEach((key) =>
-          expect(event.event_properties?.[key]).to.equal(properties[key], `Assertion for amplitude key: "${key}"`),
-        );
-      }
-    });
+Cypress.Commands.add('verifySendInnRedirect', () => {
+  return cy.origin(Cypress.env('SEND_INN_FRONTEND'), () => {
+    cy.contains('Send Inn Frontend');
+  });
 });
 
 Cypress.Commands.add('defaultIntercepts', () => {
-  cy.intercept('POST', '/amplitude/collect-auto').as('amplitudeLogging');
   cy.intercept('POST', '/fyllut/api/log*', { body: 'ok' }).as('logger');
   cy.intercept('GET', '/fyllut/api/config*').as('getConfig');
   cy.intercept('GET', '/fyllut/api/global-translations/*').as('getGlobalTranslations');

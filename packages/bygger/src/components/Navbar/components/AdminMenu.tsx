@@ -15,20 +15,17 @@ const AdminMenu = ({ showImport = false }) => {
         <Dropdown.Menu>
           <Dropdown.Menu.GroupedList>
             <Dropdown.Menu.GroupedList.Item>
-              <AdminMenuLink
-                showUnsavedChangesModal={showUnsavedChangesModal}
-                to="/translations/global/nn-NO/skjematekster"
-              >
+              <AdminMenuLink showUnsavedChangesModal={showUnsavedChangesModal} to="/oversettelser">
                 Globale Oversettelser
               </AdminMenuLink>
             </Dropdown.Menu.GroupedList.Item>
             <Dropdown.Menu.GroupedList.Item>
-              <AdminMenuLink showUnsavedChangesModal={showUnsavedChangesModal} to="/migrering">
+              <AdminMenuLink showUnsavedChangesModal={showUnsavedChangesModal} to="/migrering" disabled>
                 Migrering
               </AdminMenuLink>
             </Dropdown.Menu.GroupedList.Item>
             <Dropdown.Menu.GroupedList.Item>
-              <AdminMenuLink showUnsavedChangesModal={showUnsavedChangesModal} to="/bulk-publisering">
+              <AdminMenuLink showUnsavedChangesModal={showUnsavedChangesModal} to="/bulk-publisering" disabled>
                 Bulkpublisering
               </AdminMenuLink>
             </Dropdown.Menu.GroupedList.Item>

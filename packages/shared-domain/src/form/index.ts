@@ -213,6 +213,7 @@ export interface Component {
   prefillValue?: string | object;
   protectedApiKey?: boolean;
   yourInformation?: boolean;
+  widthPercent?: number;
 }
 
 export type AddressType = 'NORWEGIAN_ADDRESS' | 'POST_OFFICE_BOX' | 'FOREIGN_ADDRESS';
@@ -274,6 +275,19 @@ export interface NavFormType {
   components: Component[];
   access?: ResourceAccess[];
   project?: string;
+
+  // TODO: Temporary. Applied from forms-api Form
+  id?: number;
+  revision?: number;
+  // skjemanummer: string;
+  createdAt?: string;
+  createdBy?: string;
+  changedAt?: string;
+  changedBy?: string;
+  publishedAt?: string;
+  publishedBy?: string;
+  publishedLanguages?: string[];
+  status?: string;
 }
 
 export interface FormsResponseForm extends Pick<NavFormType, '_id' | 'title' | 'path' | 'modified'> {

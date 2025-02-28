@@ -12,7 +12,6 @@ import Modal from './components/modal/Modal';
 import ConfirmationModal from './components/modal/confirmation/ConfirmationModal';
 import useModal from './components/modal/useModal';
 import NavForm from './components/nav-form/NavForm';
-import AmplitudeProvider from './context/amplitude';
 import { AppConfigProvider, useAppConfig } from './context/config/configContext';
 import { LanguagesProvider, useLanguages } from './context/languages';
 import useCurrentLanguage from './context/languages/hooks/useCurrentLanguage';
@@ -30,15 +29,15 @@ import StructuredHtml from './util/html/StructuredHtml/StructuredHtml';
 import StructuredHtmlElement from './util/html/StructuredHtml/StructuredHtmlElement';
 import StructuredHtmlText from './util/html/StructuredHtml/StructuredHtmlText';
 import htmlConverter, { HtmlAsJsonElement, HtmlAsJsonTextElement } from './util/html/converters';
+import i18nUtils from './util/i18n';
+import listSort from './util/list/sort';
 import makeStyles from './util/styles/jss/jss';
 import { navCssVariables } from './util/styles/nav-css/navCssVariables';
-import i18nData from './util/translation/i18nData';
 import url from './util/url/url';
 
 jss.setup(preset());
 
 export {
-  AmplitudeProvider,
   AppConfigProvider,
   ConfirmationModal,
   ErrorPage,
@@ -50,10 +49,11 @@ export {
   guid,
   htmlConverter,
   http,
-  i18nData,
+  i18nUtils,
   InnerHtml,
   LanguageSelector,
   LanguagesProvider,
+  listSort,
   LoadingComponent,
   makeStyles,
   mapTranslationsToFormioI18nObject,
