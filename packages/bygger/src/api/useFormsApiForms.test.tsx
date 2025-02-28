@@ -5,9 +5,13 @@ import { Mock, vi } from 'vitest';
 import { useFeedbackEmit } from '../context/notifications/FeedbackContext';
 import useFormsApiForms from './useFormsApiForms';
 
-vi.mock('@navikt/skjemadigitalisering-shared-components', () => ({
-  useAppConfig: vi.fn(),
-}));
+vi.mock(import('@navikt/skjemadigitalisering-shared-components'), async (importOriginal) => {
+  const actual = await importOriginal();
+  return {
+    ...actual,
+    useAppConfig: vi.fn(),
+  };
+});
 
 vi.mock('../context/notifications/FeedbackContext', () => ({
   useFeedbackEmit: vi.fn(),
