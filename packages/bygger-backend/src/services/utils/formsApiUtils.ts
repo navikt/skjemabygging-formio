@@ -11,7 +11,7 @@ const createHeaders = (accessToken?: string, revisionId?: number) => {
   };
 };
 
-export const mapForm = (form: Form): Form => {
+export const removeInnsendingFromForm = (form: Form): Form => {
   const formProperties = (({ innsending, ...rest }) => rest)(form.properties);
   return {
     ...form,

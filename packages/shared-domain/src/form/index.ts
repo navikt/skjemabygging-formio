@@ -267,10 +267,6 @@ export interface ResourceAccess {
   roles: string[];
 }
 
-export interface NavFormAPIType extends NavFormType {
-  properties: FormAPIProperties;
-}
-
 export interface NavFormType {
   _id?: string;
   tags: string[];

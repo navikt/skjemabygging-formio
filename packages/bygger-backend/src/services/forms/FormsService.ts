@@ -1,7 +1,7 @@
 import { Form } from '@navikt/skjemadigitalisering-shared-domain';
 import { fetchWithErrorHandling } from '../../fetchUtils';
 import { logger } from '../../logging/logger';
-import { createHeaders, mapForm } from '../utils/formsApiUtils';
+import { createHeaders, removeInnsendingFromForm } from '../utils/formsApiUtils';
 import { FormPostBody, FormPutBody, FormsService } from './types';
 
 const createFormsService = (formsApiUrl: string): FormsService => {
@@ -16,7 +16,7 @@ const createFormsService = (formsApiUrl: string): FormsService => {
 
   const get = async (formPath: string): Promise<Form> => {
     const response = await fetchWithErrorHandling(`${formsUrl}/${formPath}`, { headers: createHeaders() });
-    return mapForm(response.data as Form) as Form;
+    return removeInnsendingFromForm(response.data as Form) as Form;
   };
 
   const post = async (body: FormPostBody, accessToken: string): Promise<Form> => {

@@ -81,7 +81,8 @@ describe('ReportService', () => {
               properties: {
                 skjemanummer: 'TEST1',
                 signatures: undefined,
-              } as FormPropertiesType,
+                submissionTypes: [],
+              } as unknown as FormPropertiesType,
             },
           ];
           setupNock(publishedForms);
@@ -101,7 +102,8 @@ describe('ReportService', () => {
               properties: {
                 skjemanummer: 'TEST1',
                 signatures: [{ label: '' }],
-              } as FormPropertiesType,
+                submissionTypes: [],
+              } as unknown as FormPropertiesType,
             },
           ];
           setupNock(publishedForms);
@@ -121,7 +123,8 @@ describe('ReportService', () => {
               properties: {
                 skjemanummer: 'TEST1',
                 signatures: [{ label: 'Lege' }, { label: 'Verge' }, { label: 'Søker' }],
-              } as FormPropertiesType,
+                submissionTypes: [],
+              } as unknown as FormPropertiesType,
             },
           ];
           setupNock(publishedForms);
@@ -146,7 +149,8 @@ describe('ReportService', () => {
                 skjemanummer: 'TEST1',
                 published: '2022-07-28T10:00:10.325Z',
                 modified: '2022-07-28T10:00:10.325Z',
-              } as FormPropertiesType,
+                submissionTypes: [],
+              } as unknown as FormPropertiesType,
             },
           ];
           setupNock(publishedForms);
@@ -167,7 +171,8 @@ describe('ReportService', () => {
                 skjemanummer: 'TEST1',
                 published: '2022-07-28T10:00:10.325Z',
                 modified: '2022-07-28T11:00:05.254Z',
-              } as FormPropertiesType,
+                submissionTypes: [],
+              } as unknown as FormPropertiesType,
             },
           ];
           setupNock(publishedForms);
@@ -187,7 +192,8 @@ describe('ReportService', () => {
               properties: {
                 skjemanummer: 'TEST1',
                 modified: '2022-07-28T11:00:05.254Z',
-              } as FormPropertiesType,
+                submissionTypes: [],
+              } as unknown as FormPropertiesType,
             },
           ];
           setupNock(publishedForms);
@@ -211,7 +217,8 @@ describe('ReportService', () => {
               skjemanummer: 'TEST1',
               published: '2022-07-28T10:00:10.325Z',
               publishedLanguages: ['en', 'nn-NO'],
-            } as FormPropertiesType,
+              submissionTypes: [],
+            } as unknown as FormPropertiesType,
           },
           {
             title: 'Testskjema2',
@@ -220,7 +227,8 @@ describe('ReportService', () => {
               skjemanummer: 'TEST2',
               published: '2022-07-28T10:00:10.325Z',
               publishedLanguages: ['en'],
-            } as FormPropertiesType,
+              submissionTypes: [],
+            } as unknown as FormPropertiesType,
           },
           {
             title: 'Testskjema3',
@@ -229,7 +237,8 @@ describe('ReportService', () => {
               skjemanummer: 'TEST3',
               published: '2022-07-28T10:00:10.325Z',
               publishedLanguages: undefined,
-            } as FormPropertiesType,
+              submissionTypes: [],
+            } as unknown as FormPropertiesType,
           },
         ];
         setupNock(publishedForms);
@@ -276,7 +285,8 @@ describe('ReportService', () => {
               skjemanummer: 'TEST1',
               published: '2022-07-28T10:00:10.325Z',
               publishedLanguages: ['en', 'nn-NO'],
-            } as FormPropertiesType,
+              submissionTypes: [],
+            } as unknown as FormPropertiesType,
           },
           {
             title: 'Testskjema2',
@@ -285,7 +295,8 @@ describe('ReportService', () => {
               skjemanummer: 'TEST2',
               published: '2022-07-28T10:00:10.325Z',
               publishedLanguages: ['en'],
-            } as FormPropertiesType,
+              submissionTypes: [],
+            } as unknown as FormPropertiesType,
           },
           {
             title: 'Testskjema3',
@@ -301,7 +312,8 @@ describe('ReportService', () => {
               skjemanummer: 'TEST3',
               published: '2022-07-28T10:00:10.325Z',
               publishedLanguages: undefined,
-            } as FormPropertiesType,
+              submissionTypes: [],
+            } as unknown as FormPropertiesType,
           },
         ];
         setupNock(publishedForms);
@@ -471,7 +483,8 @@ describe('ReportService', () => {
               published: '2022-07-28T10:00:10.325Z',
               publishedLanguages: ['en'],
               isTestForm: true, // <- testform
-            } as FormPropertiesType,
+              submissionTypes: [],
+            } as unknown as FormPropertiesType,
           },
         ];
         setupNock(publishedForms);

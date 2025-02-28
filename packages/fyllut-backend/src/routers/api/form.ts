@@ -2,13 +2,10 @@ import {
   AttachmentSettingValue,
   AttachmentSettingValues,
   I18nTranslationReplacements,
-  InnsendingType,
   LimitedFormAttachment,
-  NavFormAPIType,
   NavFormType,
-  navFormUtils,
-  SubmissionType,
   TEXTS,
+  navFormUtils,
   translationUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { Request, Response } from 'express';
@@ -40,37 +37,11 @@ const form = {
 
       return res.json(mapLimitedForm(form, translate));
     }
-    return res.json(mapForm(form));
+    return res.json(form);
   },
 };
 
-export const mapForm = (form: NavFormAPIType) => {
-  const formProperties = (({ innsending, ...rest }) => rest)(form.properties);
-  return {
-    ...form,
-    properties: {
-      ...formProperties,
-      submissionTypes: form.properties.submissionTypes ?? mapInnsendingToSubmissionTypes(form.properties.innsending),
-    },
-  };
-};
-
-export const mapInnsendingToSubmissionTypes = (innsending?: InnsendingType): SubmissionType[] => {
-  if (!innsending) return [];
-
-  switch (innsending) {
-    case 'PAPIR_OG_DIGITAL':
-      return ['PAPER', 'DIGITAL'];
-    case 'KUN_PAPIR':
-      return ['PAPER'];
-    case 'KUN_DIGITAL':
-      return ['DIGITAL'];
-    default:
-      return [];
-  }
-};
-
-const mapLimitedForm = (form: NavFormAPIType, translate: TranslateFunction) => {
+const mapLimitedForm = (form: NavFormType, translate: TranslateFunction) => {
   return {
     _id: form._id,
     title: translate(form.title),
@@ -79,7 +50,7 @@ const mapLimitedForm = (form: NavFormAPIType, translate: TranslateFunction) => {
     properties: {
       skjemanummer: form.properties.skjemanummer,
       tema: form.properties.tema,
-      submissionTypes: form.properties.submissionTypes ?? mapInnsendingToSubmissionTypes(form.properties.innsending),
+      innsending: form.properties.innsending,
       ettersending: form.properties.ettersending,
       enhetstyper: form.properties.enhetstyper,
       enhetMaVelgesVedPapirInnsending: form.properties.enhetMaVelgesVedPapirInnsending,

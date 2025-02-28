@@ -1,9 +1,9 @@
 import {
-  NavFormType,
-  ReportDefinition,
   isNoneSubmission,
-  isPaperSubmissionOnly,
+  isPaperSubmission,
+  NavFormType,
   navFormUtils,
+  ReportDefinition,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { stringify } from 'csv-stringify';
 import { DateTime } from 'luxon';
@@ -146,7 +146,6 @@ class ReportService {
       const { title, properties, path } = form;
       const { published, publishedBy, modified, modifiedBy, submissionTypes, tema, signatures, ettersending } =
         properties;
-      console.log(submissionTypes);
 
       const baseInnsendingUrl =
         config.naisClusterName === 'prod-gcp'
@@ -159,7 +158,7 @@ class ReportService {
 
       const paperInnsendingUrl = isNoneSubmission(submissionTypes)
         ? `${baseInnsendingUrl}`
-        : isPaperSubmissionOnly(submissionTypes)
+        : isPaperSubmission(submissionTypes)
           ? `${baseInnsendingUrl}?sub=paper`
           : undefined;
 

@@ -1,7 +1,7 @@
-import { NavFormAPIType } from '../../form';
+import { NavFormType } from '../../form';
 import { Form, FormStatus } from '../../forms-api-form';
 
-const mapFormToNavForm = (form: Form): NavFormAPIType => {
+const mapFormToNavForm = (form: Form): NavFormType => {
   const { title } = form;
 
   return {
@@ -18,7 +18,7 @@ const mapFormToNavForm = (form: Form): NavFormAPIType => {
   };
 };
 
-const mapNavFormToForm = (form: NavFormAPIType): Form => {
+const mapNavFormToForm = (form: NavFormType): Form => {
   const {
     id,
     revision,

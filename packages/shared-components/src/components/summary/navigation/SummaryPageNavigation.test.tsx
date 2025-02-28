@@ -94,7 +94,6 @@ describe('SummaryPageNavigation', () => {
     it('når skjemaets submissionTypes type er PAPIR_OG_DIGITAL, rendres knapp for å gå videre til send-i-posten', async () => {
       const form = formWithProperties({ submissionTypes: ['PAPER', 'DIGITAL'] });
       const { router, buttons } = await renderSummaryPageNavigation({ form }, { submissionMethod: 'paper' });
-      screen.debug();
 
       expectKnapperForRedigerSvarEllerGaVidere(buttons);
       await userEvent.click(buttons.gaVidereKnapp);

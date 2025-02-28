@@ -30,7 +30,6 @@ import {
   InnsendingType,
   InputMode,
   MellomlagringError,
-  NavFormAPIType,
   NavFormType,
   NewFormSignatureType,
   Panel,
@@ -137,6 +136,7 @@ import signatureUtils from './utils/signatureUtils';
 import stringUtils from './utils/stringUtils';
 import {
   isDigitalSubmission,
+  isDigitalSubmissionOnly,
   isNoneSubmission,
   isPaperSubmission,
   isPaperSubmissionOnly,
@@ -159,6 +159,7 @@ export {
   forstesideUtils,
   guid,
   isDigitalSubmission,
+  isDigitalSubmissionOnly,
   isNoneSubmission,
   isPaperSubmission,
   isPaperSubmissionOnly,
@@ -242,7 +243,6 @@ export type {
   Mottaksadresse,
   MottaksadresseData,
   MottaksadresserResourceContent,
-  NavFormAPIType,
   NavFormType,
   NewFormSignatureType,
   Operator,
