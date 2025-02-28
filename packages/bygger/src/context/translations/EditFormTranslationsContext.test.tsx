@@ -9,10 +9,8 @@ const mocks = vi.hoisted(() => ({
   loadTranslations: vi.fn(),
   originalTranslation: { id: 42, revision: 2, key: 'original', nb: 'original' },
 }));
-vi.mock(import('./FormTranslationsContext'), async (importOriginal) => {
-  const original = await importOriginal();
+vi.mock('./FormTranslationsContext', () => {
   return {
-    ...original,
     useFormTranslations: () => ({
       storedTranslations: { original: mocks.originalTranslation },
       saveTranslation: mocks.saveTranslation,

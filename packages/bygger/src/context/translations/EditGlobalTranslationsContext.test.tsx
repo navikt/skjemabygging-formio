@@ -16,10 +16,8 @@ const mocks = vi.hoisted(() => ({
     nb: 'original',
   } as FormsApiGlobalTranslation,
 }));
-vi.mock(import('./GlobalTranslationsContext'), async (importOriginal) => {
-  const original = await importOriginal();
+vi.mock('./GlobalTranslationsContext', () => {
   return {
-    ...original,
     useGlobalTranslations: () => ({
       storedTranslations: { original: mocks.originalTranslation },
       saveTranslation: mocks.saveTranslation,
