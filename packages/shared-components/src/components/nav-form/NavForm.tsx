@@ -81,7 +81,12 @@ const NavForm = ({
           submission: submission ? JSON.parse(JSON.stringify(submission)) : undefined,
         });
 
-        appConfig.logger?.debug('Form ready', { newWebformId: newWebform.id, oldWebformId: webform?.id, language });
+        appConfig.logger?.debug('Form ready', {
+          newWebformId: newWebform.id,
+          oldWebformId: webform?.id,
+          language,
+          submission,
+        });
 
         setWebform(newWebform);
       }
@@ -160,7 +165,7 @@ const NavForm = ({
    * Prefill the form with data
    */
   useEffect(() => {
-    if (webform) {
+    if (webform?.form && prefillData && Object.keys(prefillData).length > 0) {
       appConfig.logger?.debug('Prefill data and set form if prefill data exist', {
         webformId: webform?.id,
         prefillData,
@@ -170,7 +175,7 @@ const NavForm = ({
   }, [appConfig.logger, webform, prefillData]);
 
   /**
-   * This is needed to refresh the last saved status and error message from mellomlagring.
+   * Update submission
    */
   useEffect(() => {
     (async () => {
@@ -179,12 +184,7 @@ const NavForm = ({
           webformId: webform?.id,
           submission,
         });
-        const changed = submission.fyllutState?.changedAt !== webform.submission?.fyllutState?.changedAt;
         await webform.setSubmission(JSON.parse(JSON.stringify(submission)));
-
-        if (changed) {
-          await webform.redraw();
-        }
       }
     })();
   }, [appConfig.logger, webform, submission]);

@@ -21,7 +21,7 @@ interface ReactComponentType {
   updateValue(value, flags?: object): any;
   setReactInstance(element): void;
   resetValue(): void;
-  setValue(value: any): void;
+  setValue(value: any, flags?: any): void;
   // Field
   render(element: any): any;
   // Component
