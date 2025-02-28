@@ -102,6 +102,11 @@ export default class DatePicker extends BaseComponent {
     getComponentsWithDateInputKey(this).map((component) => component.rerender?.());
   }
 
+  setValue(value: string) {
+    super.setValue(value);
+    this.rerender();
+  }
+
   override renderReact(element) {
     return element.render(
       <ComponentUtilsProvider component={this}>

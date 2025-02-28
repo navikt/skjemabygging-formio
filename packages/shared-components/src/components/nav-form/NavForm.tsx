@@ -179,10 +179,10 @@ const NavForm = ({
           webformId: webform?.id,
           submission,
         });
+        const changed = submission.fyllutState?.changedAt !== webform.submission?.fyllutState?.changedAt;
         await webform.setSubmission(JSON.parse(JSON.stringify(submission)));
 
-        if (submission.fyllutState?.changedAt !== webform.submission?.fyllutState?.changedAt) {
-          await webform.submissionReady;
+        if (changed) {
           await webform.redraw();
         }
       }
