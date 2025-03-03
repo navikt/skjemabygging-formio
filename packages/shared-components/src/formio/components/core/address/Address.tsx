@@ -1,4 +1,3 @@
-import { Alert } from '@navikt/ds-react';
 import {
   Address as AddressDomain,
   AddressType,
@@ -186,15 +185,6 @@ class Address extends BaseComponent {
     }
   }
 
-  showMissingAddressWarning() {
-    return (
-      this.isSubmissionDigital() &&
-      !this.getAppConfig()?.config?.isProdGcp &&
-      !this.getValue() &&
-      !!this.component?.prefillKey
-    );
-  }
-
   renderReact(element) {
     element.render(
       <ComponentUtilsProvider component={this}>
@@ -203,12 +193,6 @@ class Address extends BaseComponent {
           editFields={this.getEditFields()}
           labelIsHidden={this.labelIsHidden()}
         />
-        {this.showMissingAddressWarning() && (
-          <Alert variant="warning" className="mb-4">
-            Vi fant ikke noen adresse på denne testbrukeren. Legg inn adresse på brukeren i Dolly, eller bruk en annen
-            testbruker som har registrert adresse. (denne meldingen vises ikke i produksjon).
-          </Alert>
-        )}
         <NavAddress
           onChange={this.handleChange.bind(this)}
           addressType={this.getAddressType()}
