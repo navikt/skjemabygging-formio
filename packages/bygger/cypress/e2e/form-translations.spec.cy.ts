@@ -21,6 +21,9 @@ describe('Form translations', () => {
 
   it('does not update translations if no changes', () => {
     cy.findByRole('button', { name: 'Lagre' }).click();
+    // FIXME: Just for debugging
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(1000);
     cy.findByText('Ingen endringer oppdaget. Oversettelser ble ikke lagret.').should('be.visible');
   });
 
