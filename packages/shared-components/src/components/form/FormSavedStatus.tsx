@@ -1,5 +1,5 @@
 import { BodyShort } from '@navikt/ds-react';
-import { Submission } from '@navikt/skjemadigitalisering-shared-domain';
+import { Submission, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useLanguages } from '../../context/languages';
 
 interface Props {
@@ -14,7 +14,7 @@ const FormError = ({ submission }: Props) => {
   }
   return (
     <BodyShort as="div" size="small" textColor="subtle" className="mb-4">
-      {translate('Sist lagret')} {submission?.fyllutState?.mellomlagring?.savedDate}
+      {translate(TEXTS.grensesnitt.mostRecentSave)} {submission?.fyllutState?.mellomlagring?.savedDate}
     </BodyShort>
   );
 };

@@ -146,8 +146,7 @@ describe('Mellomlagring', () => {
       cy.url().should('equal', `${Cypress.env('BASE_URL')}/fyllut/testmellomlagring`);
     });
 
-    // eslint-disable-next-line
-    it.skip('lets you delete mellomlagring', () => {
+    it('lets you delete mellomlagring', () => {
       cy.mocksUseRouteVariant('delete-soknad:failure');
 
       cy.visit(
@@ -164,8 +163,7 @@ describe('Mellomlagring', () => {
       cy.findByText(TEXTS.statiske.mellomlagringError.delete.message).should('be.visible');
     });
 
-    // eslint-disable-next-line
-    it.skip('lets you save mellomlagring before cancelling', () => {
+    it('lets you save mellomlagring before cancelling', () => {
       cy.mocksUseRouteVariant('put-soknad:failure');
 
       cy.visit(
@@ -218,8 +216,7 @@ describe('Mellomlagring', () => {
           cy.verifySendInnRedirect();
         });
 
-        // eslint-disable-next-line
-        it.skip('retrieves mellomlagring and lets you navigate to first empty panel', () => {
+        it('retrieves mellomlagring and lets you navigate to first empty panel', () => {
           cy.visit(
             '/fyllut/testmellomlagring/oppsummering?sub=digital&innsendingsId=8e3c3621-76d7-4ebd-90d4-34448ebcccc3&lang=nb-NO',
           );

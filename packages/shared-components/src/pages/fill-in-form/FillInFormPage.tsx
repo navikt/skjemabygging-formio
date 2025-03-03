@@ -8,6 +8,8 @@ import {
 import EventEmitter from 'eventemitter3';
 import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import FormError from '../../components/form/FormError';
+import FormSavedStatus from '../../components/form/FormSavedStatus';
 import ConfirmationModal from '../../components/modal/confirmation/ConfirmationModal';
 import NavForm from '../../components/nav-form/NavForm';
 import { useAppConfig } from '../../context/config/configContext';
@@ -17,9 +19,7 @@ import { KeyOrFocusComponentId } from '../../formio/overrides/wizard-overrides.j
 import { LoadingComponent } from '../../index';
 import { scrollToAndSetFocus } from '../../util/focus-management/focus-management';
 import urlUtils from '../../util/url/url';
-import FormError from './FormError';
 import FormErrorSummary from './FormErrorSummary';
-import FormSavedStatus from './FormSavedStatus';
 
 type ModalType = 'save' | 'delete' | 'discard';
 type FyllutEvent = 'focusOnComponent';
@@ -253,7 +253,9 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: Fil
         }}
       />
       <FormSavedStatus submission={submission} />
-      <FormError submission={submission} />
+      <div className="fyllut-layout">
+        <FormError error={submission?.fyllutState?.mellomlagring?.error} />
+      </div>
       <ConfirmationModal
         open={!!showModal}
         onClose={() => setShowModal(undefined)}
