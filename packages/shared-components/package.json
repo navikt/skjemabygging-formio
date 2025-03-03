@@ -25,9 +25,9 @@
   },
   "dependencies": {
     "@formio/react": "5.3.0",
-    "@navikt/ds-css": "^7.10.0",
+    "@navikt/ds-css": "^7.14.3",
     "@navikt/ds-icons": "^3.4.3",
-    "@navikt/ds-react": "^7.10.0",
+    "@navikt/ds-react": "^7.14.3",
     "@navikt/fnrvalidator": "^2.1.5",
     "@navikt/skjemadigitalisering-shared-domain": "1.0.0",
     "@types/dompurify": "^3.2.0",
