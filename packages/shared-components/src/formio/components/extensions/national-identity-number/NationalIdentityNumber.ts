@@ -1,4 +1,4 @@
-import { validateNationalIdentityNumber } from '../../../../components/indentity/NationalIdentityNumberValidator';
+import { validateNationalIdentityNumber } from '../../../../components/identity/NationalIdentityNumberValidator';
 import BaseComponent from '../../base/BaseComponent';
 import TextField from '../../core/textfield/TextField';
 import nationalIdentityNumberBuilder from './NationalIdentityNumber.builder';
