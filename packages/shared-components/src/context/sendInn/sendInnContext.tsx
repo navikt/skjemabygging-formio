@@ -93,10 +93,7 @@ const SendInnProvider = ({
 
   useEffect(() => {
     if (fyllutMellomlagringState) {
-      onFyllutStateChange({
-        mellomlagring: fyllutMellomlagringState,
-        changedAt: Date.now(),
-      });
+      onFyllutStateChange({ mellomlagring: fyllutMellomlagringState });
     }
   }, [fyllutMellomlagringState]);
 
