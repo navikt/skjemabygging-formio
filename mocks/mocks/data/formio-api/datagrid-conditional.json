@@ -1117,7 +1117,7 @@
   "properties": {
     "skjemanummer": "dg123456",
     "tema": "ENF",
-    "innsending": "PAPIR_OG_DIGITAL",
+    "submissionTypes": ["PAPER", "DIGITAL"],
     "ettersending": "PAPIR_OG_DIGITAL",
     "signatures": [
       {

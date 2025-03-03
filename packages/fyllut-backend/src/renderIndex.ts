@@ -95,6 +95,7 @@ const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
           logger.info('Submission method is not allowed', { qpSub, formPath, submissionTypes });
 
           const validSubmissionMethod = qpSub === 'digital' || qpSub === 'paper';
+          console.log(isNoneSubmission(submissionTypes));
           if (!validSubmissionMethod || isNoneSubmission(submissionTypes)) {
             const targetUrl = `${config.fyllutPath}/${formPath}`;
             return res.redirect(

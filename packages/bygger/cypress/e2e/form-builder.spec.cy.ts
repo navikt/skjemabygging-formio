@@ -20,6 +20,7 @@ describe('Form Builder', () => {
       cy.wait('@getConfig');
       cy.wait('@getForm');
       cy.wait('@getFormTranslations');
+      cy.wait('@getTranslations');
       cy.wait('@getPublishedForm');
     });
 
@@ -174,6 +175,7 @@ describe('Form Builder', () => {
       cy.wait('@getConfig');
       cy.wait('@getCypressForm');
       cy.wait('@getCypressFormTranslations');
+      cy.wait('@getTranslations');
     });
 
     describe('component with same API key as panel', () => {

@@ -336,7 +336,7 @@
   "properties": {
     "skjemanummer": "multi",
     "tema": "HJE",
-    "innsending": "PAPIR_OG_DIGITAL",
+    "submissionTypes": ["PAPER", "DIGITAL"],
     "hasLabeledSignatures": false,
     "signatures": [],
     "enhetMaVelgesVedPapirInnsending": true,
