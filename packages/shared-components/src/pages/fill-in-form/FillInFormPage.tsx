@@ -17,7 +17,9 @@ import { KeyOrFocusComponentId } from '../../formio/overrides/wizard-overrides.j
 import { LoadingComponent } from '../../index';
 import { scrollToAndSetFocus } from '../../util/focus-management/focus-management';
 import urlUtils from '../../util/url/url';
+import FormError from './FormError';
 import FormErrorSummary from './FormErrorSummary';
+import FormSavedStatus from './FormSavedStatus';
 
 type ModalType = 'save' | 'delete' | 'discard';
 type FyllutEvent = 'focusOnComponent';
@@ -250,6 +252,8 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: Fil
           onErrorSummaryFocus,
         }}
       />
+      <FormSavedStatus submission={submission} />
+      <FormError submission={submission} />
       <ConfirmationModal
         open={!!showModal}
         onClose={() => setShowModal(undefined)}
