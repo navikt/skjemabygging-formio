@@ -14,16 +14,15 @@ describe('Form translations', () => {
       'getGlobalTranslations',
     );
     cy.visit('/forms/tst123456/oversettelser');
+    cy.wait('@getConfig');
     cy.wait('@getForm');
+    cy.wait('@getPublishedForm');
     cy.wait('@getFormTranslations');
     cy.wait('@getGlobalTranslations');
   });
 
   it('does not update translations if no changes', () => {
     cy.findByRole('button', { name: 'Lagre' }).click();
-    // FIXME: Just for debugging
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(1000);
     cy.findByText('Ingen endringer oppdaget. Oversettelser ble ikke lagret.').should('be.visible');
   });
 
