@@ -60,6 +60,12 @@ Cypress.Commands.add('clickStart', () => {
   return cy.findByRoleWhenAttached('link', { name: TEXTS.grensesnitt.introPage.start }).click();
 });
 
+Cypress.Commands.add('verifySendInnRedirect', () => {
+  return cy.origin(Cypress.env('SEND_INN_FRONTEND'), () => {
+    cy.contains('Send Inn Frontend');
+  });
+});
+
 Cypress.Commands.add('defaultIntercepts', () => {
   cy.intercept('POST', '/fyllut/api/log*', { body: 'ok' }).as('logger');
   cy.intercept('GET', '/fyllut/api/config*').as('getConfig');
