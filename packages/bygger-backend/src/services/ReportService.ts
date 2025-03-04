@@ -2,9 +2,8 @@ import {
   Form,
   ReportDefinition,
   formioFormsApiUtils,
-  isNoneSubmission,
-  isPaperSubmission,
   navFormUtils,
+  submissionTypesUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { stringify } from 'csv-stringify';
 import { Writable } from 'stream';
@@ -153,9 +152,9 @@ class ReportService {
           ? `https://www.nav.no/fyllut-ettersending/${form.path}`
           : `https://fyllut-ettersending.intern.dev.nav.no/fyllut-ettersending/${form.path}`;
 
-      const paperInnsendingUrl = isNoneSubmission(submissionTypes)
+      const paperInnsendingUrl = submissionTypesUtils.isNoneSubmission(submissionTypes)
         ? `${baseInnsendingUrl}`
-        : isPaperSubmission(submissionTypes)
+        : submissionTypesUtils.isPaperSubmission(submissionTypes)
           ? `${baseInnsendingUrl}?sub=paper`
           : undefined;
 

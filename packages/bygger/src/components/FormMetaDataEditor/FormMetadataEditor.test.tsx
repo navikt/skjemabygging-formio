@@ -127,7 +127,9 @@ describe('FormMetadataEditor', () => {
 
         expect(mockOnChange).toHaveBeenCalled();
         const updatedForm = mockOnChange.mock.calls[0][0] as Form;
-        expect(updatedForm.properties.submissionTypes).toStrictEqual([]);
+        await waitFor(() => {
+          expect(updatedForm.properties.submissionTypes).toStrictEqual([]);
+        });
 
         rerender(<FormMetadataEditor form={updatedForm} onChange={mockOnChange} />);
         expect(screen.queryByLabelText('Forklaring til innsending')).not.toBeNull();

@@ -1,21 +1,31 @@
 import { SubmissionType } from '../form';
 
-export function isDigitalSubmission(submissionTypes: SubmissionType[]): boolean {
+function isDigitalSubmission(submissionTypes: SubmissionType[]): boolean {
   return submissionTypes.includes('DIGITAL');
 }
 
-export function isDigitalSubmissionOnly(submissionTypes: SubmissionType[]): boolean {
+function isDigitalSubmissionOnly(submissionTypes: SubmissionType[]): boolean {
   return !submissionTypes.includes('PAPER') && submissionTypes.includes('DIGITAL');
 }
 
-export function isPaperSubmission(submissionTypes: SubmissionType[]): boolean {
+function isPaperSubmission(submissionTypes: SubmissionType[]): boolean {
   return submissionTypes.includes('PAPER');
 }
 
-export function isPaperSubmissionOnly(submissionTypes: SubmissionType[]): boolean {
+function isPaperSubmissionOnly(submissionTypes: SubmissionType[]): boolean {
   return submissionTypes.includes('PAPER') && !submissionTypes.includes('DIGITAL');
 }
 
-export function isNoneSubmission(submissionTypes: SubmissionType[]): boolean {
+function isNoneSubmission(submissionTypes: SubmissionType[]): boolean {
   return !submissionTypes?.length;
 }
+
+const submissionTypesUtils = {
+  isDigitalSubmissionOnly,
+  isDigitalSubmission,
+  isNoneSubmission,
+  isPaperSubmission,
+  isPaperSubmissionOnly,
+};
+
+export default submissionTypesUtils;
