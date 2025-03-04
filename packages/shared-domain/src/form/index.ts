@@ -66,7 +66,7 @@ export interface FormPropertiesType {
   unpublishedBy?: string;
   downloadPdfButtonText?: string;
   innsending?: InnsendingType;
-  submissionTypes: SubmissionType[];
+  submissionTypes?: SubmissionType[] | [];
   ettersending?: InnsendingType;
   ettersendelsesfrist?: string;
   innsendingForklaring?: string;
@@ -90,7 +90,7 @@ export interface FormPropertiesType {
   uxSignalsId?: string;
   uxSignalsInnsending?: InnsendingType;
   hideUserTypes?: boolean;
-  mellomlagringDurationDays: string;
+  mellomlagringDurationDays?: string;
 }
 
 export interface FormAPIProperties extends FormPropertiesType {

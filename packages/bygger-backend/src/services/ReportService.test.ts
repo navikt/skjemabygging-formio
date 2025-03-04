@@ -407,25 +407,28 @@ describe('ReportService', () => {
             ] as Component[],
             properties: {
               skjemanummer: 'TEST1',
+              tema: 'HJE',
               published: '2022-07-28T10:00:10.325Z',
               publishedLanguages: ['en', 'nn-NO'],
-              innsending: 'PAPIR_OG_DIGITAL',
+              submissionTypes: ['DIGITAL', 'PAPER'],
               ettersending: 'PAPIR_OG_DIGITAL',
-            } as FormPropertiesType,
+            },
           } as Form,
           {
             title: 'Testskjema2',
             skjemanummer: 'TEST2',
+            tema: 'HJE',
             path: 'test2',
             status: 'published',
             components: [],
             properties: {
               skjemanummer: 'TEST2',
+              tema: 'HJE',
               published: '2022-07-28T10:00:10.325Z',
               publishedLanguages: ['en'],
-              innsending: 'INGEN',
+              submissionTypes: [],
               ettersending: 'KUN_PAPIR',
-            } as FormPropertiesType,
+            },
           } as Form,
           {
             title: 'Testskjema3',
@@ -457,11 +460,12 @@ describe('ReportService', () => {
             ] as Component[],
             properties: {
               skjemanummer: 'TEST3',
+              tema: 'HJE',
               published: '2022-07-28T10:00:10.325Z',
               publishedLanguages: undefined,
-              innsending: 'KUN_PAPIR',
+              submissionTypes: ['PAPER'],
               ettersending: 'KUN_PAPIR',
-            } as FormPropertiesType,
+            },
           } as Form,
         ];
         setupNock(publishedForms);
