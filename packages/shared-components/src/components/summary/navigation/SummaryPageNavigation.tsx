@@ -1,14 +1,6 @@
 import { ArrowRightIcon } from '@navikt/aksel-icons';
 import { Alert, Button, Heading } from '@navikt/ds-react';
-import {
-  isDigitalSubmission,
-  isNoneSubmission,
-  isPaperSubmission,
-  isPaperSubmissionOnly,
-  NavFormType,
-  Submission,
-  TEXTS,
-} from '@navikt/skjemadigitalisering-shared-domain';
+import { NavFormType, Submission, TEXTS, submissionTypesUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useAppConfig } from '../../../context/config/configContext';
@@ -48,14 +40,14 @@ const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList,
   const [error, setError] = useState<Error>();
   const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
 
-  const submissionTypes = form.properties.submissionTypes || [];
+  const submissionTypes = form.properties.submissionTypes;
   const styles = useStyles();
   const hasAttachments = hasRelevantAttachments(form, submission?.data ?? {});
   const canSubmit =
     !!panelValidationList && panelValidationList.every((panelValidation) => !panelValidation.hasValidationErrors);
   const sendIPosten =
-    (isPaperSubmission(submissionTypes) && (submissionMethod === 'paper' || app === 'bygger')) ||
-    isPaperSubmissionOnly(submissionTypes);
+    (submissionTypesUtils.isPaperSubmission(submissionTypes) && (submissionMethod === 'paper' || app === 'bygger')) ||
+    submissionTypesUtils.isPaperSubmission(submissionTypes);
 
   const exitUrl = urlUtils.getExitUrl(window.location.href);
 
@@ -105,7 +97,7 @@ const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList,
             </LinkButton>
           )}
           {canSubmit &&
-            (submissionMethod === 'digital' || isDigitalSubmission(submissionTypes)) &&
+            (submissionMethod === 'digital' || submissionTypesUtils.isDigitalSubmissionOnly(submissionTypes)) &&
             (hasAttachments ? (
               <DigitalSubmissionButton
                 withIcon
@@ -129,7 +121,7 @@ const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList,
               />
             ))}
 
-          {isNoneSubmission(submissionTypes) && (
+          {submissionTypesUtils.isNoneSubmission(submissionTypes) && (
             <LinkButton
               buttonVariant="primary"
               onClick={(e) => !isValid(e)}

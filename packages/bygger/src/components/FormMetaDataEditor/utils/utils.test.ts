@@ -54,7 +54,7 @@ describe('Form Metadata Validation', () => {
   it('should handle errors for an edit form', () => {
     const usageContext: UsageContext = 'edit';
 
-    sampleForm.properties.submissionTypes = []; // Missing innsending
+    sampleForm.properties.submissionTypes = []; // Missing submissionTypes
     sampleForm.properties.ettersending = undefined; // Missing ettersending
 
     const errors = validateFormMetadata(sampleForm, usageContext);

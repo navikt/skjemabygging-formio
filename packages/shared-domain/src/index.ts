@@ -134,13 +134,7 @@ import objectUtils from './utils/objectUtils';
 import paginationUtils from './utils/pagination';
 import signatureUtils from './utils/signatureUtils';
 import stringUtils from './utils/stringUtils';
-import {
-  isDigitalSubmission,
-  isDigitalSubmissionOnly,
-  isNoneSubmission,
-  isPaperSubmission,
-  isPaperSubmissionOnly,
-} from './utils/submissionTypeUtils';
+import submissionTypesUtils from './utils/submissionTypeUtils';
 import translationUtils from './utils/translation';
 import validatorUtils from './utils/validatorUtils';
 import yourInformationUtils from './utils/yourInformationUtils';
@@ -158,11 +152,6 @@ export {
   formSummaryUtil,
   forstesideUtils,
   guid,
-  isDigitalSubmission,
-  isDigitalSubmissionOnly,
-  isNoneSubmission,
-  isPaperSubmission,
-  isPaperSubmissionOnly,
   languagesUtil,
   localizationUtils,
   loggingUtils,
@@ -176,6 +165,7 @@ export {
   PrefillType,
   signatureUtils,
   stringUtils,
+  submissionTypesUtils,
   supportedEnhetstyper,
   TEXTS,
   translationUtils,

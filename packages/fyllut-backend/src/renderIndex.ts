@@ -1,10 +1,4 @@
-import {
-  isDigitalSubmission,
-  isNoneSubmission,
-  isPaperSubmission,
-  isPaperSubmissionOnly,
-  navFormUtils,
-} from '@navikt/skjemadigitalisering-shared-domain';
+import { navFormUtils, submissionTypesUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { NextFunction, Request, Response } from 'express';
 import { ParsedUrlQueryInput } from 'querystring';
 import url from 'url';
@@ -54,8 +48,11 @@ const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
       const form = await formService.loadForm(formPath);
       if (form && form.properties) {
         const { submissionTypes } = form.properties;
+        const isPaperAndDigitalSubmission =
+          submissionTypesUtils.isPaperSubmission(submissionTypes) &&
+          submissionTypesUtils.isDigitalSubmission(submissionTypes);
         if (!qpSub) {
-          if (!submissionTypes || (isPaperSubmission(submissionTypes) && isDigitalSubmission(submissionTypes))) {
+          if (!submissionTypes || isPaperAndDigitalSubmission) {
             logger.info('Submission query param is missing', { formPath });
             const targetUrl = `${config.fyllutPath}/${formPath}`;
             if (req.baseUrl !== targetUrl) {
@@ -68,7 +65,7 @@ const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
                 }),
               );
             }
-          } else if (isDigitalSubmission(submissionTypes)) {
+          } else if (submissionTypesUtils.isDigitalSubmissionOnly(submissionTypes)) {
             const targetUrl = `${config.fyllutPath}/${formPath}`;
             return res.redirect(
               url.format({
@@ -79,7 +76,7 @@ const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
                 },
               }),
             );
-          } else if (isPaperSubmissionOnly(submissionTypes)) {
+          } else if (submissionTypesUtils.isPaperSubmissionOnly(submissionTypes)) {
             const targetUrl = `${config.fyllutPath}/${formPath}`;
             return res.redirect(
               url.format({
@@ -95,8 +92,7 @@ const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
           logger.info('Submission method is not allowed', { qpSub, formPath, submissionTypes });
 
           const validSubmissionMethod = qpSub === 'digital' || qpSub === 'paper';
-          console.log(isNoneSubmission(submissionTypes));
-          if (!validSubmissionMethod || isNoneSubmission(submissionTypes)) {
+          if (!validSubmissionMethod || submissionTypesUtils.isNoneSubmission(submissionTypes)) {
             const targetUrl = `${config.fyllutPath}/${formPath}`;
             return res.redirect(
               url.format({

@@ -1,9 +1,9 @@
 import { v4 as uuidv4 } from 'uuid';
 import { Attachment, Component, FormsResponseForm, NavFormType, Panel, PrefillData, Submission } from '../form';
-import { Form, formSummaryUtil } from '../index';
+import { Form, formSummaryUtil, submissionTypesUtils } from '../index';
 import FormioUtils from '../utils/formio/FormioUtils';
 import { camelCase } from './stringUtils';
-import { isDigitalSubmission, isPaperSubmission } from './submissionTypeUtils';
+import submissionTypeUtils from './submissionTypeUtils';
 
 export const toFormPath = (text: string) => camelCase(text).toLowerCase();
 
@@ -234,9 +234,9 @@ export const isSubmissionMethodAllowed = (submissionMethod: string, form: NavFor
   const { submissionTypes } = form.properties;
   switch (submissionMethod) {
     case 'digital':
-      return !submissionTypes || isDigitalSubmission(submissionTypes);
+      return !submissionTypes || submissionTypesUtils.isDigitalSubmission(submissionTypes);
     case 'paper':
-      return !submissionTypes || isPaperSubmission(submissionTypes);
+      return !submissionTypes || submissionTypeUtils.isPaperSubmission(submissionTypes);
   }
   return false;
 };

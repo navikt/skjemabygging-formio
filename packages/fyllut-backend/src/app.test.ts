@@ -135,16 +135,15 @@ describe('app', () => {
 
       // Dynamically generated tests are exceptions to this rule: https://github.com/lo1tuma/eslint-plugin-mocha/blob/main/docs/rules/no-setup-in-describe.md
       // eslint-disable-next-line mocha/no-setup-in-describe
-      describe.each(['["PAPER", "DIGITAL"]', '[]'])('submissionTypes %s', (submissionTypes) => {
+      describe.each(['["PAPER", "DIGITAL"]', []])('submissionTypes %s', (submissionTypes) => {
         describe('query param sub is missing', () => {
           it('redirects to intropage and keeps other query params', async () => {
-            console.log(submissionTypes);
             const testform001 = createFormDefinition(submissionTypes as unknown as SubmissionType[]);
             nock(formioApiServiceUrl!)
               .get('/form?type=form&tags=nav-skjema&path=testform001')
               .reply(200, [testform001]);
 
-            const res = await request(createApp()).get('/fyllut/testform001/panel1?lang=en').expect(200);
+            const res = await request(createApp()).get('/fyllut/testform001/panel1?lang=en').expect(302);
             expect(res.get('location')).toBe('/fyllut/testform001?lang=en');
           });
 
