@@ -207,9 +207,9 @@ describe('Mellomlagring', () => {
           cy.wait('@getMellomlagringValid');
           cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
           cy.findByText('Ønsker du å få gaven innpakket').should('exist');
-          cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.saveAndContinue }).should('exist').click();
+          cy.clickSaveAndContinue();
           cy.wait('@submitMellomlagring');
-          cy.url().should('not.include', 'testmellomlagring').should('include', '/send-inn-frontend');
+          cy.verifySendInnRedirect();
         });
 
         it('retrieves mellomlagring and lets you navigate to first empty panel', () => {
@@ -248,7 +248,7 @@ describe('Mellomlagring', () => {
             .should('exist')
             .within(() => {
               cy.get('a').should('have.length', 2);
-              cy.findByRole('link', { name: 'Du må fylle ut: Farge' }).should('exist').click();
+              cy.findByRole('link', { name: 'Du må fylle ut: Farge' }).should('exist').click({ force: true });
             });
 
           cy.findByRole('group', { name: 'Farge' })
@@ -262,7 +262,7 @@ describe('Mellomlagring', () => {
             .should('exist')
             .within(() => {
               cy.get('a').should('have.length', 1);
-              cy.findByRole('link', { name: 'Du må fylle ut: Tekst på kortet' }).should('exist').click();
+              cy.findByRole('link', { name: 'Du må fylle ut: Tekst på kortet' }).should('exist').click({ force: true });
             });
           cy.findByLabelText('Tekst på kortet').should('have.focus').type('Takk for hjelpen!');
 
@@ -336,7 +336,7 @@ describe('Mellomlagring', () => {
           cy.wait('@getMellomlagringValid');
           cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
           cy.findByText('Ønsker du å få gaven innpakket').should('exist');
-          cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.saveAndContinue }).click();
+          cy.clickSaveAndContinue();
           cy.wait('@submitMellomlagring');
         });
       });

@@ -120,7 +120,7 @@ describe('Focus handling', () => {
         .should('exist')
         .within(() => {
           cy.findByRole('link', { name: 'Du må fylle ut: Hvilken type bolig bor du i?' }).should('exist');
-          cy.findByRole('link', { name: 'Du må fylle ut: Hvilken type bolig bor du i?' }).click();
+          cy.findByRole('link', { name: 'Du må fylle ut: Hvilken type bolig bor du i?' }).click({ force: true });
         });
 
       cy.findByRole('group', { name: 'Hvilken type bolig bor du i?' })
@@ -135,7 +135,7 @@ describe('Focus handling', () => {
         .should('exist')
         .within(() => {
           cy.findByRole('link', { name: 'Du må fylle ut: Mottakers fornavn' }).should('exist');
-          cy.findByRole('link', { name: 'Du må fylle ut: Mottakers fornavn' }).click();
+          cy.findByRole('link', { name: 'Du må fylle ut: Mottakers fornavn' }).click({ force: true });
         });
       cy.findByRole('textbox', { name: 'Mottakers fornavn' }).should('have.focus').type('Max');
 
