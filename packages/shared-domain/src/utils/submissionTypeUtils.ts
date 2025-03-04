@@ -17,5 +17,5 @@ export function isPaperSubmissionOnly(submissionTypes: SubmissionType[]): boolea
 }
 
 export function isNoneSubmission(submissionTypes: SubmissionType[]): boolean {
-  return !submissionTypes.length;
+  return !submissionTypes?.length;
 }

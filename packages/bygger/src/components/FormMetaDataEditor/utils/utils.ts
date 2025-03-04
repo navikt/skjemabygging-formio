@@ -43,7 +43,10 @@ export const validateFormMetadata = (form: Form, usageContext: UsageContext) => 
     if (form.properties.declarationType === DeclarationType.custom && !form.properties.declarationText) {
       errors.declarationText = 'Du må lage en tilpasset erklæringstekst';
     }
-    if (!numberUtils.isValidInteger(form.properties.mellomlagringDurationDays)) {
+    if (
+      !form.properties.mellomlagringDurationDays ||
+      !numberUtils.isValidInteger(form.properties.mellomlagringDurationDays)
+    ) {
       errors.mellomlagringDurationDays = 'Mellomlagringstiden må være et heltall';
     }
   }
