@@ -1,7 +1,7 @@
 import { Alert, BodyShort, Box, Button, Checkbox, Heading, Table } from '@navikt/ds-react';
 import { ConfirmationModal, makeStyles, NavFormioJs } from '@navikt/skjemadigitalisering-shared-components';
 import { Form } from '@navikt/skjemadigitalisering-shared-domain';
-import { useEffect, useReducer, useState } from 'react';
+import { useReducer, useState } from 'react';
 import FormStatus from '../../Forms/status/FormStatus';
 import { determineStatusFromForm } from '../../Forms/status/utils';
 import { bulkPublish } from '../api';
@@ -46,18 +46,10 @@ const BulkPublishPanel = ({ forms }: Props) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [state, dispatch] = useReducer(reducer, {});
 
-  useEffect(() => {
-    dispatch({
-      type: 'init',
-      payload: forms.filter((form) => {
-        const status = determineStatusFromForm(form);
-        return status === 'PENDING' || status === 'PUBLISHED';
-      }),
+  const onBulkPublish = async (formPaths: string[]) => {
+    await bulkPublish(NavFormioJs.Formio.getToken(), { formPaths }).then((responseBody) => {
+      console.log(`Bulk publish result: ${JSON.stringify(responseBody)}`);
     });
-  }, [forms]);
-
-  const onBulkPublish = async (formPaths) => {
-    await bulkPublish(NavFormioJs.Formio.getToken(), { formPaths });
   };
 
   const willBePublished = forms.filter((form) => state[form.path]);
@@ -97,7 +89,7 @@ const BulkPublishPanel = ({ forms }: Props) => {
                     <Table.HeaderCell scope="row">{form.skjemanummer}</Table.HeaderCell>
                     <Table.DataCell>{form.title}</Table.DataCell>
                     <Table.DataCell>
-                      {<FormStatus status={determineStatusFromForm(form)} size={'small'} />}
+                      <FormStatus status={determineStatusFromForm(form)} size={'small'} />
                     </Table.DataCell>
                     <Table.DataCell className={styles.checkBoxCell}>
                       {
@@ -105,11 +97,8 @@ const BulkPublishPanel = ({ forms }: Props) => {
                           hideLabel
                           checked={state[form.path] || false}
                           onChange={(event) => {
-                            if (event.target.checked) {
-                              dispatch({ type: 'check', payload: form.path });
-                            } else {
-                              dispatch({ type: 'uncheck', payload: form.path });
-                            }
+                            const type = event.target.checked ? 'check' : 'uncheck';
+                            dispatch({ type, payload: form.path });
                           }}
                         >
                           {form.title}
@@ -121,10 +110,7 @@ const BulkPublishPanel = ({ forms }: Props) => {
               })}
             </Table.Body>
           </Table>
-          <Alert variant="warning" className="mb">
-            Bulk-publisering er deaktivert inntil videre.
-          </Alert>
-          <Button disabled>Publiser nå</Button>
+          <Button>Publiser nå</Button>
         </form>
       </Box>
       <ConfirmationModal
