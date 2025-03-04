@@ -66,7 +66,7 @@ export interface FormPropertiesType {
   unpublishedBy?: string;
   downloadPdfButtonText?: string;
   innsending?: InnsendingType;
-  submissionTypes?: SubmissionType[] | [];
+  submissionTypes: SubmissionType[];
   ettersending?: InnsendingType;
   ettersendelsesfrist?: string;
   innsendingForklaring?: string;
