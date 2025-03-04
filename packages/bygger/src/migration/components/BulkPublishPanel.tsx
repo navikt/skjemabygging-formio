@@ -27,6 +27,22 @@ function reducer(state: State, action: Action) {
   }
 }
 
+type StatusState = Record<string, 'ok' | 'error'>;
+type PublishStatus = { form: Pick<Form, 'path'>; status: 'ok' | 'error' };
+type StatusAction = { type: 'init'; payload: PublishStatus[] };
+function initStatus(list: PublishStatus[]): StatusState {
+  return list.reduce((acc, publishStatus) => ({ ...acc, [publishStatus.form.path]: publishStatus.status }), {});
+}
+
+function statusReducer(_state: StatusState, action: StatusAction) {
+  switch (action.type) {
+    case 'init':
+      return initStatus(action.payload);
+    default:
+      throw new Error();
+  }
+}
+
 const useStyles = makeStyles({
   table: {
     marginTop: '2rem',
@@ -45,10 +61,12 @@ const BulkPublishPanel = ({ forms }: Props) => {
   const styles = useStyles();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [state, dispatch] = useReducer(reducer, {});
+  const [statusState, dispatchStatus] = useReducer(statusReducer, {});
 
   const onBulkPublish = async (formPaths: string[]) => {
-    await bulkPublish(NavFormioJs.Formio.getToken(), { formPaths }).then((responseBody) => {
+    return await bulkPublish(NavFormioJs.Formio.getToken(), { formPaths }).then((responseBody) => {
       console.log(`Bulk publish result: ${JSON.stringify(responseBody)}`);
+      return responseBody;
     });
   };
 
@@ -80,6 +98,9 @@ const BulkPublishPanel = ({ forms }: Props) => {
                 <Table.HeaderCell scope="col" className={styles.checkBoxCell}>
                   Skal publiseres
                 </Table.HeaderCell>
+                <Table.HeaderCell scope="col" className={styles.checkBoxCell}>
+                  Publisert?
+                </Table.HeaderCell>
               </Table.Row>
             </Table.Header>
             <Table.Body>
@@ -105,6 +126,7 @@ const BulkPublishPanel = ({ forms }: Props) => {
                         </Checkbox>
                       }
                     </Table.DataCell>
+                    <Table.DataCell>{statusState[form.path]}</Table.DataCell>
                   </Table.Row>
                 );
               })}
@@ -117,7 +139,10 @@ const BulkPublishPanel = ({ forms }: Props) => {
         open={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onConfirm={async () => {
-          await onBulkPublish(Object.entries(state).flatMap(([path, selected]) => (selected ? [path] : [])));
+          const responseBody = await onBulkPublish(
+            Object.entries(state).flatMap(([path, selected]) => (selected ? [path] : [])),
+          );
+          dispatchStatus({ type: 'init', payload: responseBody.bulkPublicationResult });
         }}
         texts={{
           title: 'Bekreft publisering',
