@@ -144,7 +144,7 @@ describe('app', () => {
               .get('/form?type=form&tags=nav-skjema&path=testform001')
               .reply(200, [testform001]);
 
-            const res = await request(createApp()).get('/fyllut/testform001/panel1?lang=en').expect(302);
+            const res = await request(createApp()).get('/fyllut/testform001/panel1?lang=en').expect(200);
             expect(res.get('location')).toBe('/fyllut/testform001?lang=en');
           });
 
