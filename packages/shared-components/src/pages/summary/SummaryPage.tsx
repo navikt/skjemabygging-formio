@@ -4,7 +4,7 @@ import { DeclarationType, NavFormType, Submission, TEXTS } from '@navikt/skjemad
 import { useEffect, useRef, useState } from 'react';
 import EditAnswersButton from '../../components/button/navigation/edit-answers/EditAnswersButton';
 import FormStepper from '../../components/form/form-stepper/FormStepper';
-import NavFormBuilder from '../../components/nav-form/NavFormBuilder';
+import NavFormHelper from '../../components/nav-form/NavFormHelper';
 import FormSummary from '../../components/summary/form/FormSummary';
 import SummaryPageNavigation from '../../components/summary/navigation/SummaryPageNavigation';
 import { useAppConfig } from '../../context/config/configContext';
@@ -71,12 +71,12 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
     const initializePanelValidation = async () => {
       const submissionCopy = JSON.parse(JSON.stringify(submission));
 
-      const webform = await NavFormBuilder.create(document.getElementById('formio-summary-hidden')!, form, {
+      const webform = await NavFormHelper.create(document.getElementById('formio-summary-hidden')!, form, {
         appConfig,
         submission: submissionCopy,
       });
 
-      NavFormBuilder.prefillForm(webform, prefillData);
+      webform.form = NavFormHelper.prefillForm(webform.form, prefillData);
 
       webform.checkData(submissionCopy.data, [], undefined);
 

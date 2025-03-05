@@ -6,7 +6,7 @@ import { usePrefillData } from '../../context/prefill-data/PrefillDataContext';
 import { i18nUtils } from '../../index';
 import Styles from '../../styles';
 import makeStyles from '../../util/styles/jss/jss';
-import NavFormBuilder from './NavFormBuilder';
+import NavFormHelper from './NavFormHelper';
 
 const useStyles = makeStyles({
   '@global': Styles.form,
@@ -74,7 +74,7 @@ const NavForm = ({
   const createForm = useCallback(
     async (srcOrForm?: NavFormType | string) => {
       if (ref?.current && srcOrForm) {
-        const newWebform = await NavFormBuilder.create(ref.current, srcOrForm, {
+        const newWebform = await NavFormHelper.create(ref.current, srcOrForm, {
           language,
           i18n,
           appConfig,
@@ -170,7 +170,7 @@ const NavForm = ({
         webformId: webform?.id,
         prefillData,
       });
-      NavFormBuilder.prefillForm(webform, prefillData);
+      webform.form = NavFormHelper.prefillForm(webform.form, prefillData);
     }
   }, [appConfig.logger, webform, prefillData]);
 

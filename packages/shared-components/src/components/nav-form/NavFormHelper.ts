@@ -33,23 +33,25 @@ const create = async (
   return formPromise;
 };
 
-const prefillForm = (webform: Webform, prefillData: any) => {
-  if (webform?.form && prefillData && Object.keys(prefillData).length > 0) {
-    const webformCopy = JSON.parse(JSON.stringify(webform.form));
+const prefillForm = (form?: NavFormType, prefillData?: any) => {
+  if (form && prefillData && Object.keys(prefillData).length > 0) {
+    const formCopy = JSON.parse(JSON.stringify(form));
 
-    Utils.eachComponent(webformCopy.components, (component: Component) => {
+    Utils.eachComponent(formCopy.components, (component: Component) => {
       if (component.prefillKey && prefillData[component.prefillKey]) {
         component.prefillValue = prefillData[component.prefillKey];
       }
     });
 
-    webform.form = webformCopy;
+    return formCopy;
   }
+
+  return form;
 };
 
-const NavFormBuilder = {
+const NavFormHelper = {
   create,
   prefillForm,
 };
 
-export default NavFormBuilder;
+export default NavFormHelper;

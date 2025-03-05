@@ -324,7 +324,6 @@ export interface FyllutState {
     deletionDate?: string;
     error?: MellomlagringError;
   };
-  changedAt?: number;
 }
 
 export interface Submission {
@@ -342,11 +341,6 @@ export interface Submission {
   };
   state?: string;
   fyllutState?: FyllutState;
-  changed?: {
-    flags?: {
-      fromBlur?: boolean;
-    };
-  };
 }
 
 export interface Webform {
