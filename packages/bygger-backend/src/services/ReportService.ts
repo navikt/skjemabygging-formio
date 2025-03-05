@@ -1,9 +1,9 @@
-import { NavFormType, ReportDefinition, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, ReportDefinition, formioFormsApiUtils, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { stringify } from 'csv-stringify';
-import { DateTime } from 'luxon';
 import { Writable } from 'stream';
 import config from '../config';
-import { FormioService } from './formioService';
+import { FormPublicationsService } from './formPublications/types';
+import { FormsService } from './forms/types';
 
 const ReportMap: Record<string, ReportDefinition> = {
   FORMS_PUBLISHED_LANGUAGES: {
@@ -32,13 +32,15 @@ const ReportMap: Record<string, ReportDefinition> = {
   },
 };
 
-const notTestForm = (form: NavFormType) => !form.properties.isTestForm;
+const notTestForm = (form: Form) => !form.properties.isTestForm;
 
 class ReportService {
-  private readonly formioService: FormioService;
+  private readonly formsService: FormsService;
+  private readonly formPublicationsService: FormPublicationsService;
 
-  constructor(formioService: FormioService) {
-    this.formioService = formioService;
+  constructor(formsService: FormsService, formPublicationsService: FormPublicationsService) {
+    this.formsService = formsService;
+    this.formPublicationsService = formPublicationsService;
   }
 
   async generate(reportId: string, writableStream: Writable) {
@@ -64,41 +66,36 @@ class ReportService {
 
   private async generateAllFormsAndAttachments(writableStream: Writable) {
     const columns = ['skjemanummer', 'skjematittel', 'vedleggstittel', 'vedleggskode', 'label'];
-    const allForms = await this.formioService.getAllForms(
-      undefined,
-      true,
-      'title,path,properties,components.type,components.isAttachmentPanel,components.components.properties,components.components.label,components.components.values',
-    );
+    const allFormsCompact = (await this.formsService.getAll('path,title,skjemanummer,properties')).filter(notTestForm);
     const stringifier = stringify({ header: true, columns, delimiter: ';' });
     stringifier.pipe(writableStream);
-    allForms.filter(notTestForm).forEach((form) => {
+    for (const formCompact of allFormsCompact) {
+      const formsApiForm = await this.formsService.get(formCompact.path);
+      const form = formioFormsApiUtils.mapFormToNavForm(formsApiForm);
       const attachments = navFormUtils.getAttachmentProperties(form);
 
-      const { title, properties } = form;
+      const { title, skjemanummer } = formCompact;
 
       attachments.forEach((attachment) => {
-        stringifier.write([
-          properties.skjemanummer,
-          title,
-          attachment.vedleggstittel,
-          attachment.vedleggskode,
-          attachment?.label,
-        ]);
+        stringifier.write([skjemanummer, title, attachment.vedleggstittel, attachment.vedleggskode, attachment?.label]);
       });
-    });
+    }
     stringifier.end();
   }
 
   private async generateFormsPublishedLanguage(writableStream: Writable) {
     const columns = ['skjemanummer', 'skjematittel', 'språk'];
-    const publishedForms = await this.formioService.getPublishedForms('title,properties');
+    const publishedForms = await this.formPublicationsService.getAll();
+
     const stringifier = stringify({ header: true, columns, delimiter: ';' });
     stringifier.pipe(writableStream);
-    publishedForms.filter(notTestForm).forEach((form) => {
-      const { title, properties } = form;
-      const publishedLanguages = properties.publishedLanguages?.join(',') || '';
-      stringifier.write([properties.skjemanummer, title, publishedLanguages]);
-    });
+    const publicForms: Form[] = publishedForms.filter(notTestForm);
+    for (const form of publicForms) {
+      const { title, path, skjemanummer } = form;
+      const translationPublication = await this.formPublicationsService.getTranslations(path, ['nb', 'nn', 'en']);
+      const publishedLanguages = Object.keys(translationPublication.translations);
+      stringifier.write([skjemanummer, title, publishedLanguages.join(',') || '']);
+    }
     stringifier.end();
   }
 
@@ -124,21 +121,21 @@ class ReportService {
       'ettersendingsurl',
       'ettersendingsurl (papir)',
     ];
-    const allForms = await this.formioService.getAllForms(
-      undefined,
-      true,
-      'title,path,properties,components.type,components.isAttachmentPanel,components.components.properties,components.components.values',
-    );
+    const allFormsCompact = (
+      await this.formsService.getAll('title,path,properties,status,changedAt,changedBy,publishedAt,publishedBy')
+    ).filter(notTestForm);
     const stringifier = stringify({ header: true, columns, delimiter: ';' });
     stringifier.pipe(writableStream);
-    allForms.filter(notTestForm).forEach((form) => {
+    for (const formCompact of allFormsCompact) {
+      const formsApiForm = await this.formsService.get(formCompact.path);
+      const form = formioFormsApiUtils.mapFormToNavForm(formsApiForm);
       const hasAttachment = navFormUtils.hasAttachment(form);
       const attachments = navFormUtils.getAttachmentProperties(form);
       const numberOfAttachments = attachments.length;
       const attachmentNames = attachments.map((attachment) => attachment.vedleggstittel).join(',');
 
-      const { title, properties, path } = form;
-      const { published, publishedBy, modified, modifiedBy, innsending, tema, signatures, ettersending } = properties;
+      const { title, path, properties, status, changedAt, changedBy, publishedAt, publishedBy } = formCompact;
+      const { innsending, tema, signatures, ettersending } = properties;
 
       const baseInnsendingUrl =
         config.naisClusterName === 'prod-gcp'
@@ -159,25 +156,24 @@ class ReportService {
       const paperEttersendingUrl =
         navFormUtils.isPaper('ettersending', form) && hasAttachment ? `${baseEttersendingUrl}?sub=paper` : undefined;
 
-      let unpublishedChanges: string = '';
-      if (modified && published) {
-        const modifiedDate = DateTime.fromISO(modified);
-        const publishedDate = DateTime.fromISO(published);
-        const interval = publishedDate.until(modifiedDate);
-        if (interval.isValid) {
-          unpublishedChanges = interval.isEmpty() ? 'nei' : 'ja';
-        }
+      const isPublished = ['published', 'pending'].includes(status!);
+
+      let unpublishedChanges = '';
+      if (status === 'pending') {
+        unpublishedChanges = 'ja';
+      } else if (status === 'published') {
+        unpublishedChanges = 'nei';
       }
       const numberOfSignatures = signatures?.length || 1;
       stringifier.write([
         properties.skjemanummer,
         title,
         tema,
-        published,
-        publishedBy,
+        isPublished ? publishedAt : undefined,
+        isPublished ? publishedBy : undefined,
         unpublishedChanges,
-        modified,
-        modifiedBy,
+        changedAt,
+        changedBy,
         innsending,
         ettersending,
         numberOfSignatures,
@@ -190,20 +186,24 @@ class ReportService {
         ettersendingUrl || '',
         paperEttersendingUrl || '',
       ]);
-    });
+    }
     stringifier.end();
   }
 
   private async generateUnpublishedForms(writableStream: Writable) {
     const columns = ['skjemanummer', 'skjematittel', 'avpublisert', 'avpublisert av'];
-    const publishedForms = await this.formioService.getUnpublishedForms('title,properties');
+    const allFormsCompact = await this.formsService.getAll(
+      'skjemanummer,title,status,publishedAt,publishedBy,properties',
+    );
+    const unpublishedForms = allFormsCompact.filter(
+      (form) => !form.properties.isTestForm && form.status === 'unpublished',
+    );
     const stringifier = stringify({ header: true, columns, delimiter: ';' });
     stringifier.pipe(writableStream);
-    publishedForms.filter(notTestForm).forEach((form) => {
-      const { title, properties } = form;
-      const { unpublished, unpublishedBy } = properties;
-      stringifier.write([properties.skjemanummer, title, unpublished, unpublishedBy]);
-    });
+    for (const form of unpublishedForms) {
+      const { title, skjemanummer, publishedAt, publishedBy } = form;
+      stringifier.write([skjemanummer, title, publishedAt, publishedBy]);
+    }
     stringifier.end();
   }
 }

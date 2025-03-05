@@ -1,7 +1,7 @@
 import { SubmissionIdentity, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { validateDate } from '../../../../components/datepicker/dateValidation';
-import NavIdentity, { SubmissionIdentityType } from '../../../../components/indentity/Identity';
-import { validateNationalIdentityNumber } from '../../../../components/indentity/NationalIdentityNumberValidator';
+import NavIdentity, { SubmissionIdentityType } from '../../../../components/identity/Identity';
+import { validateNationalIdentityNumber } from '../../../../components/identity/NationalIdentityNumberValidator';
 import { ComponentUtilsProvider } from '../../../../context/component/componentUtilsContext';
 import BaseComponent from '../../base/BaseComponent';
 import ComponentLabel from '../../base/components/ComponentLabel';

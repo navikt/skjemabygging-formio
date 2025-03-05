@@ -20,7 +20,7 @@ const AdminMenu = ({ showImport = false }) => {
               </AdminMenuLink>
             </Dropdown.Menu.GroupedList.Item>
             <Dropdown.Menu.GroupedList.Item>
-              <AdminMenuLink showUnsavedChangesModal={showUnsavedChangesModal} to="/migrering" disabled>
+              <AdminMenuLink showUnsavedChangesModal={showUnsavedChangesModal} to="/migrering">
                 Migrering
               </AdminMenuLink>
             </Dropdown.Menu.GroupedList.Item>
@@ -36,7 +36,7 @@ const AdminMenu = ({ showImport = false }) => {
             </Dropdown.Menu.GroupedList.Item>
 
             <Dropdown.Menu.GroupedList.Item>
-              <AdminMenuLink showUnsavedChangesModal={showUnsavedChangesModal} to="/rapporter" disabled>
+              <AdminMenuLink showUnsavedChangesModal={showUnsavedChangesModal} to="/rapporter">
                 Rapporter
               </AdminMenuLink>
             </Dropdown.Menu.GroupedList.Item>
