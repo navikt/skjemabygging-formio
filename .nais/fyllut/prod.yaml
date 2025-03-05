@@ -8,6 +8,7 @@ foersteside-url: https://www.nav.no/soknader/api/forsteside
 dekorator-url: https://www.nav.no/dekoratoren?simple=true
 skjemabygging-proxy-client-id: 031863f2-9881-44af-ace5-6b5ab52afeb1
 skjemabygging-proxy-url: https://skjemabygging-proxy.prod-fss-pub.nais.io
+gotenberg-url: http://upload-convert-to-pdf.fyllut-sendinn
 send-inn-token-x-client-id: prod-gcp:team-soknad:innsending-api
 send-inn-host: http://innsending-api.team-soknad
 kodeverk:
@@ -32,6 +33,9 @@ accessPolicy:
         cluster: prod-fss
       - application: innsending-api
         namespace: team-soknad
+        cluster: prod-gcp
+      - application: upload-convert-to-pdf
+        namespace: fyllut-sendinn
         cluster: prod-gcp
       - application: pdl-api
         namespace: pdl
