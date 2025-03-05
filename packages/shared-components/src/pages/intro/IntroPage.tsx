@@ -13,11 +13,11 @@ export interface Props {
   formUrl: string;
 }
 
-const { isDigitalSubmission, isPaperSubmission, isNoneSubmission, isPaperSubmissionOnly } = submissionTypesUtils;
-
 const supportsPapirOgDigital = (form: NavFormType) => {
   const { submissionTypes } = form.properties;
-  return isDigitalSubmission(submissionTypes) && isPaperSubmission(submissionTypes);
+  return (
+    submissionTypesUtils.isDigitalSubmission(submissionTypes) && submissionTypesUtils.isPaperSubmission(submissionTypes)
+  );
 };
 
 export function IntroPage({ form, formUrl }: Props) {
@@ -54,17 +54,20 @@ export function IntroPage({ form, formUrl }: Props) {
         setSaveDataBullet(TEXTS.statiske.introPage.autoSave);
       }
     } else {
-      if (isPaperSubmissionOnly(submissionTypes)) {
+      if (submissionTypesUtils.isPaperSubmissionOnly(submissionTypes)) {
         setDescriptionBold(TEXTS.statiske.introPage.paperDescriptionBold);
         setDescription(TEXTS.statiske.introPage.paperDescription);
         setSaveDataBulletBold(TEXTS.statiske.introPage.notSaveBold);
         setSaveDataBullet(TEXTS.statiske.introPage.notSave);
-      } else if (isPaperSubmission(submissionTypes) && isDigitalSubmission(submissionTypes)) {
+      } else if (
+        submissionTypesUtils.isPaperSubmission(submissionTypes) &&
+        submissionTypesUtils.isDigitalSubmission(submissionTypes)
+      ) {
         setDescriptionBold(TEXTS.statiske.introPage.paperAndDigitalDescriptionBold);
         setDescription(TEXTS.statiske.introPage.paperAndDigitalDescription);
         setSaveDataBulletBold(undefined);
         setSaveDataBullet(undefined);
-      } else if (isNoneSubmission(submissionTypes)) {
+      } else if (submissionTypesUtils.isNoneSubmission(submissionTypes)) {
         setDescriptionBold(TEXTS.statiske.introPage.noSubmissionDescriptionBold);
         setDescription(TEXTS.statiske.introPage.noSubmissionDescription);
         setSaveDataBulletBold(TEXTS.statiske.introPage.notSaveBold);

@@ -5,8 +5,6 @@ import FormioUtils from '../utils/formio/FormioUtils';
 import { camelCase } from './stringUtils';
 import submissionTypeUtils from './submissionTypeUtils';
 
-const { isPaperSubmission, isDigitalSubmission } = submissionTypesUtils;
-
 export const toFormPath = (text: string) => camelCase(text).toLowerCase();
 
 export const formMatcherPredicate = (pathFromUrl: string) => (form: NavFormType) => {
@@ -235,7 +233,9 @@ export const removeVedleggspanel = (form: NavFormType) => {
 export const isSubmissionMethodAllowed = (submissionMethod: string, form: NavFormType | FormsResponseForm): boolean => {
   const { submissionTypes } = form.properties;
   const isDigitalAndPaperSubmission =
-    submissionTypes && isPaperSubmission(submissionTypes) && isDigitalSubmission(submissionTypes);
+    submissionTypes &&
+    submissionTypesUtils.isPaperSubmission(submissionTypes) &&
+    submissionTypesUtils.isDigitalSubmission(submissionTypes);
 
   switch (submissionMethod) {
     case 'digital':
