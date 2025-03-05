@@ -19,7 +19,6 @@ export interface SubmissionFieldsProps {
 
 const SubmissionFields = ({ onChange, diff, form, errors }: SubmissionFieldsProps) => {
   const { submissionTypes, ettersending, ettersendelsesfrist, hideUserTypes } = form.properties;
-  const { isNoneSubmission } = submissionTypesUtils;
   const isLockedForm = !!form.lock;
 
   return (
@@ -74,7 +73,7 @@ const SubmissionFields = ({ onChange, diff, form, errors }: SubmissionFieldsProp
         />
       )}
 
-      {isNoneSubmission(submissionTypes) && (
+      {submissionTypesUtils.isNoneSubmission(submissionTypes) && (
         <>
           <TextField
             className="mb"

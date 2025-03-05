@@ -9,33 +9,34 @@ export interface EnhetFieldsProps {
 
 const EnhetFields = ({ onChange, form }: EnhetFieldsProps) => {
   const { submissionTypes, mottaksadresseId, enhetMaVelgesVedPapirInnsending, enhetstyper } = form.properties;
-  const { isPaperSubmission, isDigitalSubmissionOnly } = submissionTypesUtils;
   const isLockedForm = !!form.lock;
 
   return (
     <>
-      {isPaperSubmission(submissionTypes) && !isDigitalSubmissionOnly(submissionTypes) && !mottaksadresseId && (
-        <div className="mb">
-          <EnhetSettings
-            enhetMaVelges={!!enhetMaVelgesVedPapirInnsending}
-            selectedEnhetstyper={enhetstyper}
-            readOnly={isLockedForm}
-            onChangeEnhetMaVelges={(selected) =>
-              onChange({
-                ...form,
-                properties: {
-                  ...form.properties,
-                  enhetMaVelgesVedPapirInnsending: selected,
-                  enhetstyper: selected ? form.properties.enhetstyper : undefined,
-                },
-              })
-            }
-            onChangeEnhetstyper={(enhetstyper) =>
-              onChange({ ...form, properties: { ...form.properties, enhetstyper } })
-            }
-          />
-        </div>
-      )}
+      {submissionTypesUtils.isPaperSubmission(submissionTypes) &&
+        !submissionTypesUtils.isDigitalSubmissionOnly(submissionTypes) &&
+        !mottaksadresseId && (
+          <div className="mb">
+            <EnhetSettings
+              enhetMaVelges={!!enhetMaVelgesVedPapirInnsending}
+              selectedEnhetstyper={enhetstyper}
+              readOnly={isLockedForm}
+              onChangeEnhetMaVelges={(selected) =>
+                onChange({
+                  ...form,
+                  properties: {
+                    ...form.properties,
+                    enhetMaVelgesVedPapirInnsending: selected,
+                    enhetstyper: selected ? form.properties.enhetstyper : undefined,
+                  },
+                })
+              }
+              onChangeEnhetstyper={(enhetstyper) =>
+                onChange({ ...form, properties: { ...form.properties, enhetstyper } })
+              }
+            />
+          </div>
+        )}
     </>
   );
 };

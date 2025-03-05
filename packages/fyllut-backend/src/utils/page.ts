@@ -10,10 +10,9 @@ export const getDefaultPageMeta = () => ({ ...defaultMeta });
 
 export const getQueryParamSub = (form: NavFormType): QueryParamSub => {
   const { submissionTypes } = form.properties;
-  const { isPaperSubmissionOnly, isDigitalSubmissionOnly } = submissionTypesUtils;
-  if (isPaperSubmissionOnly(submissionTypes)) {
+  if (submissionTypesUtils.isPaperSubmissionOnly(submissionTypes)) {
     return 'paper';
-  } else if (isDigitalSubmissionOnly(submissionTypes)) {
+  } else if (submissionTypesUtils.isDigitalSubmissionOnly(submissionTypes)) {
     return 'digital';
   }
   return undefined;
