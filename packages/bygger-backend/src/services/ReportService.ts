@@ -142,6 +142,7 @@ class ReportService {
 
       const { title, path, properties, status, changedAt, changedBy, publishedAt, publishedBy } = formCompact;
       const { submissionTypes, tema, signatures, ettersending } = properties;
+      const { isNoneSubmission, isPaperSubmission } = submissionTypesUtils;
 
       const baseInnsendingUrl =
         config.naisClusterName === 'prod-gcp'
@@ -152,9 +153,9 @@ class ReportService {
           ? `https://www.nav.no/fyllut-ettersending/${form.path}`
           : `https://fyllut-ettersending.intern.dev.nav.no/fyllut-ettersending/${form.path}`;
 
-      const paperInnsendingUrl = submissionTypesUtils.isNoneSubmission(submissionTypes)
+      const paperInnsendingUrl = isNoneSubmission(submissionTypes)
         ? `${baseInnsendingUrl}`
-        : submissionTypesUtils.isPaperSubmission(submissionTypes)
+        : isPaperSubmission(submissionTypes)
           ? `${baseInnsendingUrl}?sub=paper`
           : undefined;
 

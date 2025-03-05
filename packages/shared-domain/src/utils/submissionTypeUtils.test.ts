@@ -1,93 +1,96 @@
 import { submissionTypesUtils } from '../index';
 
+const { isDigitalSubmissionOnly, isPaperSubmissionOnly, isDigitalSubmission, isPaperSubmission, isNoneSubmission } =
+  submissionTypesUtils;
+
 describe('Submission type utils', () => {
   describe('isDigitalSubmission', () => {
     it('should return true when submissionTypes contains DIGITAL', () => {
-      expect(submissionTypesUtils.isDigitalSubmission(['DIGITAL'])).toBeTruthy();
+      expect(isDigitalSubmission(['DIGITAL'])).toBeTruthy();
     });
 
     it('should return true when submissionTypes contains PAPER and DIGITAL', () => {
-      expect(submissionTypesUtils.isDigitalSubmission(['PAPER', 'DIGITAL'])).toBeTruthy();
+      expect(isDigitalSubmission(['PAPER', 'DIGITAL'])).toBeTruthy();
     });
 
     it('should return false when submissionTypes contains only PAPER', () => {
-      expect(submissionTypesUtils.isDigitalSubmission(['PAPER'])).toBeFalsy();
+      expect(isDigitalSubmission(['PAPER'])).toBeFalsy();
     });
 
     it('should return false when submissionTypes is an empty list', () => {
-      expect(submissionTypesUtils.isDigitalSubmission([])).toBeFalsy();
+      expect(isDigitalSubmission([])).toBeFalsy();
     });
   });
 
   describe('isDigitalSubmissionOnly', () => {
     it('should return true when submissionTypes contains only DIGITAL', () => {
-      expect(submissionTypesUtils.isDigitalSubmissionOnly(['DIGITAL'])).toBeTruthy();
+      expect(isDigitalSubmissionOnly(['DIGITAL'])).toBeTruthy();
     });
 
     it('should return false when submissionTypes contains both DIGITAL and PAPER', () => {
-      expect(submissionTypesUtils.isDigitalSubmissionOnly(['PAPER', 'DIGITAL'])).toBeFalsy();
+      expect(isDigitalSubmissionOnly(['PAPER', 'DIGITAL'])).toBeFalsy();
     });
 
     it('should return false when submissionTypes contains only PAPER', () => {
-      expect(submissionTypesUtils.isDigitalSubmissionOnly(['PAPER'])).toBeFalsy();
+      expect(isDigitalSubmissionOnly(['PAPER'])).toBeFalsy();
     });
 
     it('should return false when submissionTypes is an empty list', () => {
-      expect(submissionTypesUtils.isDigitalSubmissionOnly([])).toBeFalsy();
+      expect(isDigitalSubmissionOnly([])).toBeFalsy();
     });
   });
 
   describe('isPaperSubmission', () => {
     it('should return true when submissionTypes contains PAPER', () => {
-      expect(submissionTypesUtils.isPaperSubmission(['PAPER'])).toBeTruthy();
+      expect(isPaperSubmission(['PAPER'])).toBeTruthy();
     });
 
     it('should return true when submissionTypes contains PAPER and DIGITAL', () => {
-      expect(submissionTypesUtils.isPaperSubmission(['PAPER', 'DIGITAL'])).toBeTruthy();
+      expect(isPaperSubmission(['PAPER', 'DIGITAL'])).toBeTruthy();
     });
 
     it('should return false when submissionTypes contains only DIGITAL', () => {
-      expect(submissionTypesUtils.isPaperSubmission(['DIGITAL'])).toBeFalsy();
+      expect(isPaperSubmission(['DIGITAL'])).toBeFalsy();
     });
 
     it('should return false when submissionTypes is an empty list', () => {
-      expect(submissionTypesUtils.isPaperSubmission([])).toBeFalsy();
+      expect(isPaperSubmission([])).toBeFalsy();
     });
   });
 
   describe('isPaperSubmissionOnly', () => {
     it('should return true when submissionTypes contains only PAPER', () => {
-      expect(submissionTypesUtils.isPaperSubmissionOnly(['PAPER'])).toBeTruthy();
+      expect(isPaperSubmissionOnly(['PAPER'])).toBeTruthy();
     });
 
     it('should return false when submissionTypes contains both PAPER and DIGITAL', () => {
-      expect(submissionTypesUtils.isPaperSubmissionOnly(['PAPER', 'DIGITAL'])).toBeFalsy();
+      expect(isPaperSubmissionOnly(['PAPER', 'DIGITAL'])).toBeFalsy();
     });
 
     it('should return false when submissionTypes contains only DIGITAL', () => {
-      expect(submissionTypesUtils.isPaperSubmissionOnly(['DIGITAL'])).toBeFalsy();
+      expect(isPaperSubmissionOnly(['DIGITAL'])).toBeFalsy();
     });
 
     it('should return false when submissionTypes is an empty list', () => {
-      expect(submissionTypesUtils.isPaperSubmissionOnly([])).toBeFalsy();
+      expect(isPaperSubmissionOnly([])).toBeFalsy();
     });
   });
 
   describe('isNoneSubmission', () => {
     it('should return true when submissionTypes is an empty list', () => {
-      expect(submissionTypesUtils.isNoneSubmission([])).toBeTruthy();
+      expect(isNoneSubmission([])).toBeTruthy();
     });
 
     it('should return false when submissionTypes contains DIGITAL', () => {
-      expect(submissionTypesUtils.isNoneSubmission(['DIGITAL'])).toBeFalsy();
+      expect(isNoneSubmission(['DIGITAL'])).toBeFalsy();
     });
 
     it('should return false when submissionTypes contains PAPER', () => {
-      expect(submissionTypesUtils.isNoneSubmission(['PAPER'])).toBeFalsy();
+      expect(isNoneSubmission(['PAPER'])).toBeFalsy();
     });
 
     it('should return false when submissionTypes contains both PAPER and DIGITAL', () => {
-      expect(submissionTypesUtils.isNoneSubmission(['PAPER', 'DIGITAL'])).toBeFalsy();
+      expect(isNoneSubmission(['PAPER', 'DIGITAL'])).toBeFalsy();
     });
   });
 });

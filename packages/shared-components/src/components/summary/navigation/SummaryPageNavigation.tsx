@@ -41,13 +41,15 @@ const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList,
   const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
 
   const submissionTypes = form.properties.submissionTypes;
+  const { isNoneSubmission } = submissionTypesUtils;
   const styles = useStyles();
   const hasAttachments = hasRelevantAttachments(form, submission?.data ?? {});
   const canSubmit =
     !!panelValidationList && panelValidationList.every((panelValidation) => !panelValidation.hasValidationErrors);
+  const { isPaperSubmission, isPaperSubmissionOnly, isDigitalSubmissionOnly } = submissionTypesUtils;
   const sendIPosten =
-    (submissionTypesUtils.isPaperSubmission(submissionTypes) && (submissionMethod === 'paper' || app === 'bygger')) ||
-    submissionTypesUtils.isPaperSubmission(submissionTypes);
+    (isPaperSubmission(submissionTypes) && (submissionMethod === 'paper' || app === 'bygger')) ||
+    isPaperSubmissionOnly(submissionTypes);
 
   const exitUrl = urlUtils.getExitUrl(window.location.href);
 
@@ -97,7 +99,7 @@ const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList,
             </LinkButton>
           )}
           {canSubmit &&
-            (submissionMethod === 'digital' || submissionTypesUtils.isDigitalSubmissionOnly(submissionTypes)) &&
+            (submissionMethod === 'digital' || isDigitalSubmissionOnly(submissionTypes)) &&
             (hasAttachments ? (
               <DigitalSubmissionButton
                 withIcon
@@ -121,7 +123,7 @@ const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList,
               />
             ))}
 
-          {submissionTypesUtils.isNoneSubmission(submissionTypes) && (
+          {isNoneSubmission(submissionTypes) && (
             <LinkButton
               buttonVariant="primary"
               onClick={(e) => !isValid(e)}

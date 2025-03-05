@@ -14,7 +14,7 @@ const { sendInnConfig, tokenx: tokenxConfig, formioApiServiceUrl } = config;
 
 describe('app', () => {
   describe('index.html', () => {
-    function createFormDefinition(submissionTypes: SubmissionType[]) {
+    function createFormDefinition(submissionTypes?: SubmissionType[]) {
       return {
         title: 'Søknad om testhund',
         path: 'testform001',
@@ -95,7 +95,7 @@ describe('app', () => {
         });
       });
 
-      describe('submissionTypes KUN_DIGITAL', () => {
+      describe('submissionTypes [DIGITAL]', () => {
         it('redirects with query param sub=digital when it is missing', async () => {
           const testform001 = createFormDefinition(['DIGITAL']);
           nock(formioApiServiceUrl!).get('/form?type=form&tags=nav-skjema&path=testform001').reply(200, [testform001]);
@@ -133,55 +133,58 @@ describe('app', () => {
         });
       });
 
-      // Dynamically generated tests are exceptions to this rule: https://github.com/lo1tuma/eslint-plugin-mocha/blob/main/docs/rules/no-setup-in-describe.md
-      // eslint-disable-next-line mocha/no-setup-in-describe
-      describe.each(['["PAPER", "DIGITAL"]', []])('submissionTypes %s', (submissionTypes) => {
-        describe('query param sub is missing', () => {
-          it('redirects to intropage and keeps other query params', async () => {
-            const testform001 = createFormDefinition(submissionTypes as unknown as SubmissionType[]);
-            nock(formioApiServiceUrl!)
-              .get('/form?type=form&tags=nav-skjema&path=testform001')
-              .reply(200, [testform001]);
+      describe('query param sub is missing', () => {
+        const testform001 = {
+          title: 'Søknad om testhund',
+          path: 'testform001',
+          properties: {
+            submissionTypes: ['PAPER', 'DIGITAL'],
+          },
+          components: [] as Component[],
+        };
 
-            const res = await request(createApp()).get('/fyllut/testform001/panel1?lang=en').expect(302);
-            expect(res.get('location')).toBe('/fyllut/testform001?lang=en');
-          });
+        it('redirects to intropage and keeps other query params', async () => {
+          nock(formioApiServiceUrl!).get('/form?type=form&tags=nav-skjema&path=testform001').reply(200, [testform001]);
 
-          it('does not redirect when intropage is requested (avoiding circular redirects)', async () => {
-            const testform001 = createFormDefinition(submissionTypes as unknown as SubmissionType[]);
-            nock(formioApiServiceUrl!)
-              .get('/form?type=form&tags=nav-skjema&path=testform001')
-              .reply(200, [testform001]);
-
-            const res = await request(createApp()).get('/fyllut/testform001').expect(200);
-            expect(res.get('location')).toBeUndefined();
-          });
+          const res = await request(createApp()).get('/fyllut/testform001/panel1?lang=en').expect(302);
+          expect(res.get('location')).toBe('/fyllut/testform001?lang=en');
         });
 
-        describe('query param sub is present', () => {
-          it('does not redirect to intropage when sub=digital', async () => {
-            const testform001 = createFormDefinition(submissionTypes as unknown as SubmissionType[]);
-            nock(formioApiServiceUrl!)
-              .get('/form?type=form&tags=nav-skjema&path=testform001')
-              .reply(200, [testform001]);
+        it('does not redirect when intropage is requested (avoiding circular redirects)', async () => {
+          nock(formioApiServiceUrl!).get('/form?type=form&tags=nav-skjema&path=testform001').reply(200, [testform001]);
 
-            const res = await request(createApp()).get('/fyllut/testform001/panel1?lang=en&sub=digital').expect(200);
-            expect(res.get('location')).toBeUndefined();
-          });
+          const res = await request(createApp()).get('/fyllut/testform001').expect(200);
+          expect(res.get('location')).toBeUndefined();
+        });
+      });
 
-          it('does not redirect to intropage when sub=paper', async () => {
-            const testform001 = createFormDefinition(submissionTypes as unknown as SubmissionType[]);
-            nock(formioApiServiceUrl!)
-              .get('/form?type=form&tags=nav-skjema&path=testform001')
-              .reply(200, [testform001]);
+      describe('query param sub is present', () => {
+        const testform001 = {
+          title: 'Søknad om testhund',
+          path: 'testform001',
+          properties: {
+            submissionTypes: ['PAPER', 'DIGITAL'],
+          },
+          components: [] as Component[],
+        };
 
-            const res = await request(createApp()).get('/fyllut/testform001/panel1?lang=en&sub=paper').expect(200);
-            expect(res.get('location')).toBeUndefined();
-          });
+        it('does not redirect to intropage when sub=digital', async () => {
+          nock(formioApiServiceUrl!).get('/form?type=form&tags=nav-skjema&path=testform001').reply(200, [testform001]);
+
+          const res = await request(createApp()).get('/fyllut/testform001/panel1?lang=en&sub=digital').expect(200);
+          expect(res.get('location')).toBeUndefined();
+        });
+
+        it('does not redirect to intropage when sub=paper', async () => {
+          nock(formioApiServiceUrl!).get('/form?type=form&tags=nav-skjema&path=testform001').reply(200, [testform001]);
+
+          const res = await request(createApp()).get('/fyllut/testform001/panel1?lang=en&sub=paper').expect(200);
+          expect(res.get('location')).toBeUndefined();
         });
       });
     });
   });
+  // });
 
   it('Fetches config', async () => {
     await request(createApp())

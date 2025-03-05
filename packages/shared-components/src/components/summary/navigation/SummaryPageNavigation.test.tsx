@@ -73,7 +73,10 @@ const renderSummaryPageNavigation = async (
     </AppConfigProvider>,
   );
 
-  await screen.getByRole('navigation');
+  await waitFor(() => {
+    screen.getByRole('navigation');
+  });
+
   return { router, buttons: getButtons(screen) };
 };
 
