@@ -52,7 +52,7 @@ const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
           submissionTypesUtils.isPaperSubmission(submissionTypes) &&
           submissionTypesUtils.isDigitalSubmission(submissionTypes);
         if (!qpSub) {
-          if (submissionTypesUtils.isNoneSubmission(submissionTypes) || isPaperAndDigitalSubmission) {
+          if (isPaperAndDigitalSubmission) {
             logger.info('Submission query param is missing', { formPath });
             const targetUrl = `${config.fyllutPath}/${formPath}`;
             if (req.baseUrl !== targetUrl) {

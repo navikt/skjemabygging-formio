@@ -17,7 +17,7 @@ function isPaperSubmissionOnly(submissionTypes: SubmissionType[]): boolean {
 }
 
 function isNoneSubmission(submissionTypes: SubmissionType[]): boolean {
-  return !submissionTypes?.length;
+  return !submissionTypes.length;
 }
 
 const submissionTypesUtils = {

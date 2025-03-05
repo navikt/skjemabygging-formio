@@ -1,4 +1,4 @@
-import { mapFormToNavForm, mapNavFormToForm, removeInnsendingFromForm } from './form';
+import { mapFormToNavForm, mapInnsendingToSubmissionTypes, mapNavFormToForm, removeInnsendingFromForm } from './form';
 import { mapPublishedGlobalTranslationsToFormioFormat } from './translations';
 
 const formioFormsApiUtils = {
@@ -6,6 +6,7 @@ const formioFormsApiUtils = {
   mapNavFormToForm,
   mapPublishedGlobalTranslationsToFormioFormat,
   removeInnsendingFromForm,
+  mapInnsendingToSubmissionTypes,
 };
 
 export default formioFormsApiUtils;

@@ -24,7 +24,7 @@ const SubmissionFields = ({ onChange, diff, form, errors }: SubmissionFieldsProp
   return (
     <>
       <SubmissionTypeCheckbox
-        name="form-innsending"
+        name="form-submissionType"
         label={<LabelWithDiff label="Innsending" diff={!!diff.submissionTypes} />}
         value={submissionTypes}
         error={errors?.submissionTypes}

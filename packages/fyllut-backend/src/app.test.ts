@@ -184,7 +184,6 @@ describe('app', () => {
       });
     });
   });
-  // });
 
   it('Fetches config', async () => {
     await request(createApp())
