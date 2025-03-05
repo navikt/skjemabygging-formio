@@ -83,30 +83,19 @@ class FormMigrationLogger {
   }
 
   getLog(): FormMigrationLogData {
-    const {
-      skjemanummer,
-      modified,
-      modifiedBy,
-      published,
-      publishedBy,
-      isTestForm,
-      unpublished,
-      unpublishedBy,
-      publishedLanguages,
-    } = this.form.properties;
+    const { skjemanummer, isTestForm } = this.form.properties;
     return {
       skjemanummer,
-      modified,
-      modifiedBy,
-      published,
-      publishedBy,
-      unpublished,
-      unpublishedBy,
       isTestForm,
-      publishedLanguages,
+      publishedLanguages: this.form.publishedLanguages,
       name: this.form.name,
       title: this.form.title,
       path: this.form.path,
+      status: this.form.status,
+      changedAt: this.form.changedAt,
+      changedBy: this.form.changedBy,
+      publishedAt: this.form.publishedAt,
+      publishedBy: this.form.publishedBy,
       found: this.getSize(),
       changed: this.affectedComponents.reduce((acc, curr) => acc + (curr.changed ? 1 : 0), 0),
       diff: this.affectedComponents.map((affected) => affected.diff).filter((diff) => Object.keys(diff).length > 0),

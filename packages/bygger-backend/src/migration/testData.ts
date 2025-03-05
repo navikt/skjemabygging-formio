@@ -144,6 +144,12 @@ const formWithSimpleConditionalToRadio = {
   name: 'formWithSimpleConditionalToRadio',
   path: 'formWithSimpleConditionalToRadio',
   title: 'Form with simple conditional to radio',
+  changedAt: '2022-11-17T13:12:38.825Z',
+  changedBy: 'user@company.com',
+  publishedAt: '2022-11-17T13:12:38.825Z',
+  publishedBy: 'user@company.com',
+  publishedLanguages: ['en'],
+  status: 'published',
   properties: {
     skjemanummer: 'formWithSimpleConditionalToRadio',
     ...generalProperties,
