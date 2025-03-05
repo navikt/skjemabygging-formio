@@ -37,7 +37,6 @@ export const createPdf = async (
   translations: I18nTranslationMap,
   language: string,
 ) => {
-  logger.info('createPdf: Start');
   const translate = (text: string, textReplacements?: I18nTranslationReplacements) =>
     translationUtils.translateWithTextReplacements({
       translations,
