@@ -15,6 +15,7 @@ import {
   CustomLabels,
   Form,
   FormioTranslationMap,
+  htmlUtils,
   Language,
   NavFormType,
   navFormUtils,
@@ -95,9 +96,7 @@ const getLabelsAndDescriptions = (values?: Array<{ label: string; value: string;
 
 const getContent = (content: string | undefined): string | undefined => {
   if (content) {
-    // Formio.js runs code that changes the original text before translating,
-    // and to avoid mismatch in translation object keys we need to do the same.
-    // @ts-expect-error
+    // @ts-expect-error Formio.js runs code that changes the original text before translating, and to avoid mismatch in translation object keys we need to do the same.
     return NavFormioJs.Utils.translateHTMLTemplate(content, (text) => text);
   }
   return content;
@@ -337,10 +336,10 @@ const getTextsAndTranslationsForForm = (form: Form, translations: FormioTranslat
   const textComponents = getFormTexts(form, false);
   let textIndex = 0;
   return textComponents.flatMap((textComponent) => {
-    if (htmlConverter.isHtmlString(textComponent.text)) {
+    if (htmlUtils.isHtmlString(textComponent.text)) {
       const htmlTranslations = Object.entries(translations).reduce((acc, [lang, translation]) => {
         const translationValue = translation.translations[textComponent.text]?.value ?? '';
-        if (!htmlConverter.isHtmlString(translationValue)) {
+        if (!htmlUtils.isHtmlString(translationValue)) {
           return acc;
         }
         const translationAsJson = new StructuredHtmlElement(translationValue, {

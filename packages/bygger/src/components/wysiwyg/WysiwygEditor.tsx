@@ -1,4 +1,5 @@
 import { htmlConverter, makeStyles } from '@navikt/skjemadigitalisering-shared-components';
+import { htmlUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import classNames from 'classnames';
 import { useState } from 'react';
 import {
@@ -45,7 +46,7 @@ const WysiwygEditor = ({ defaultValue, onBlur, error, autoFocus }: Props) => {
   const handleChange = (event) => {
     const value = event.target.value;
     // make sure that non-html strings are wrapped in a <p>-tag.
-    if (htmlConverter.isHtmlString(value)) {
+    if (htmlUtils.isHtmlString(value)) {
       setHtmlValue(value);
     } else {
       setHtmlValue(`<p>${value}</p>`);

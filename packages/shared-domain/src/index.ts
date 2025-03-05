@@ -126,6 +126,7 @@ import formDiffingTool, { FormSettingsDiff } from './utils/formDiffingTool';
 import navFormioUtils from './utils/formio';
 import formioFormsApiUtils from './utils/forms-api-backwards-compatibility';
 import { guid } from './utils/guid';
+import htmlUtils from './utils/htmlUtils';
 import localizationUtils from './utils/localization';
 import navFormUtils, { DependencyType } from './utils/navFormUtils';
 import numberUtils from './utils/numberUtils';
@@ -150,6 +151,7 @@ export {
   formSummaryUtil,
   forstesideUtils,
   guid,
+  htmlUtils,
   languagesUtil,
   localizationUtils,
   loggingUtils,
