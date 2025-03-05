@@ -3248,7 +3248,7 @@
   "properties": {
     "skjemanummer": "cypress-101",
     "tema": "xxx",
-    "innsending": "PAPIR_OG_DIGITAL",
+    "submissionTypes": ["PAPER", "DIGITAL"],
     "hasLabeledSignatures": false,
     "signatures": {
       "signature1": "",

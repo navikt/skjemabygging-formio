@@ -588,7 +588,7 @@
   ],
   "properties": {
     "tema": "FUL",
-    "innsending": "PAPIR_OG_DIGITAL",
+    "submissionTypes": ["PAPER", "DIGITAL"],
     "signatures": [
       {
         "key": "170eed85-26a8-4b6f-a7cf-bfb5c8848754",
