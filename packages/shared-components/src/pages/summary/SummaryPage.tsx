@@ -1,24 +1,16 @@
 import { ExclamationmarkTriangleFillIcon } from '@navikt/aksel-icons';
 import { Alert, BodyShort, ConfirmationPanel, Heading } from '@navikt/ds-react';
-import {
-  DeclarationType,
-  NavFormType,
-  navFormUtils,
-  Submission,
-  TEXTS,
-} from '@navikt/skjemadigitalisering-shared-domain';
-import { Form as FormioForm } from 'formiojs';
+import { DeclarationType, NavFormType, Submission, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useRef, useState } from 'react';
 import EditAnswersButton from '../../components/button/navigation/edit-answers/EditAnswersButton';
 import FormStepper from '../../components/form/form-stepper/FormStepper';
-import NavForm from '../../components/nav-form/NavForm';
+import NavFormHelper from '../../components/nav-form/NavFormHelper';
 import FormSummary from '../../components/summary/form/FormSummary';
 import SummaryPageNavigation from '../../components/summary/navigation/SummaryPageNavigation';
 import { useAppConfig } from '../../context/config/configContext';
 import { useLanguages } from '../../context/languages';
 import { usePrefillData } from '../../context/prefill-data/PrefillDataContext';
 import { useSendInn } from '../../context/sendInn/sendInnContext';
-import { SANITIZE_CONFIG } from '../../formio/form-builder-options/sanitizeConfig';
 import Styles from '../../styles';
 import { scrollToAndSetFocus } from '../../util/focus-management/focus-management';
 import { PanelValidation, validateWizardPanels } from '../../util/form/panel-validation/panelValidation';
@@ -77,25 +69,20 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
 
   useEffect(() => {
     const initializePanelValidation = async () => {
-      const formio = new FormioForm(document.getElementById('formio-summary-hidden'), form, {
-        language: 'nb-NO',
-        i18n: {},
-        sanitizeConfig: SANITIZE_CONFIG,
-        events: NavForm.getDefaultEmitter(),
+      const submissionCopy = JSON.parse(JSON.stringify(submission));
+
+      const webform = await NavFormHelper.create(document.getElementById('formio-summary-hidden')!, form, {
         appConfig,
+        submission: submissionCopy,
       });
 
-      const submissionCopy = JSON.parse(JSON.stringify(submission));
-      const instance = await formio.ready;
-      await instance.setSubmission(submissionCopy);
-      if (instance && prefillData) {
-        instance.form = navFormUtils.prefillForm(instance.form, prefillData);
-      }
-      instance.checkData(submissionCopy.data, [], undefined);
+      webform.form = NavFormHelper.prefillForm(webform.form, prefillData);
 
-      const panelValidations = validateWizardPanels(instance, form, submission);
+      webform.checkData(submissionCopy.data, [], undefined);
+
+      const panelValidations = validateWizardPanels(webform, form, submission);
       setPanelValidationList(panelValidations);
-      instance.destroy(true);
+      webform.destroy(true);
       const formioSummary = document.getElementById('formio-summary-hidden');
       if (formioSummary) {
         formioSummary.innerHTML = '';
@@ -106,7 +93,7 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
     } else {
       setPanelValidationList([]);
     }
-  }, [isMellomlagringAvailable, form, submission, appConfig]);
+  }, [isMellomlagringAvailable, form, submission, appConfig, prefillData]);
 
   useEffect(() => scrollToAndSetFocus('main', 'start'), []);
   const declarationRef = useRef<HTMLInputElement>(null);

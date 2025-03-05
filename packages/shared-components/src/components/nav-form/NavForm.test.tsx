@@ -1,4 +1,5 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
+import { act, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { setupNavFormio } from '../../../test/navform-render';
 import { AppConfigProvider } from '../../context/config/configContext';
@@ -69,20 +70,19 @@ const testskjemaForOversettelser = {
       },
     },
   ],
-};
+} as NavFormType;
 
 describe('NavForm', () => {
   beforeAll(setupNavFormio);
 
   const renderNavForm = async (props) => {
-    const formReady = vi.fn();
-    const renderReturn = render(
-      <AppConfigProvider>
-        <NavForm {...props} formReady={formReady} />
-      </AppConfigProvider>,
+    return await act(async () =>
+      render(
+        <AppConfigProvider>
+          <NavForm {...props} />
+        </AppConfigProvider>,
+      ),
     );
-    await waitFor(() => expect(formReady).toHaveBeenCalledTimes(1));
-    return renderReturn;
   };
 
   describe('i18n', () => {
@@ -139,7 +139,9 @@ describe('NavForm', () => {
             iban: 'GB33BUKB20201555555555',
           },
         },
-        onSubmit: mockedOnSubmit,
+        events: {
+          onSubmit: mockedOnSubmit,
+        },
       });
       const textField = await screen.findByLabelText('Fornavn');
       expect(textField).toBeInTheDocument();
@@ -147,7 +149,6 @@ describe('NavForm', () => {
         expect(textField).toHaveValue('Donald');
       });
       const datepicker = await screen.findByLabelText('Dato (dd.mm.åååå)');
-      expect(datepicker).toBeInTheDocument();
       await waitFor(() => {
         expect(datepicker).toHaveValue('01.01.2000');
       });
