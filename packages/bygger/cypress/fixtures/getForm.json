@@ -2,7 +2,6 @@
   "id": 124,
   "title": "Cypress test for settings page",
   "path": "cypresssettings",
-  "tema": "CYPRESSTEST",
   "skjemanummer": "cypress-settings",
   "components": [
     {
