@@ -1,4 +1,4 @@
-import { Form, InnsendingType, SubmissionType } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, formioFormsApiUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import correlator from 'express-correlation-id';
 import { v4 as uuid } from 'uuid';
 
@@ -17,24 +17,11 @@ export const removeInnsendingFromForm = (form: Form): Form => {
     ...form,
     properties: {
       ...formProperties,
-      submissionTypes: form.properties.submissionTypes ?? mapInnsendingToSubmissionTypes(form.properties.innsending),
+      submissionTypes:
+        form.properties.submissionTypes ??
+        formioFormsApiUtils.mapInnsendingToSubmissionTypes(form.properties.innsending),
     },
   };
-};
-
-export const mapInnsendingToSubmissionTypes = (innsending?: InnsendingType): SubmissionType[] => {
-  if (!innsending) return [];
-
-  switch (innsending) {
-    case 'PAPIR_OG_DIGITAL':
-      return ['PAPER', 'DIGITAL'];
-    case 'KUN_PAPIR':
-      return ['PAPER'];
-    case 'KUN_DIGITAL':
-      return ['DIGITAL'];
-    default:
-      return [];
-  }
 };
 
 export { createHeaders };

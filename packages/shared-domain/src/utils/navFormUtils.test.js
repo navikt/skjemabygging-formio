@@ -701,20 +701,6 @@ describe('navFormUtils', () => {
         expect(allowed).toBe(false);
       });
     });
-
-    describe('innsending=undefined', () => {
-      it('paper is allowed', () => {
-        const testform = createTestForm(undefined);
-        const allowed = isSubmissionMethodAllowed('paper', testform);
-        expect(allowed).toBe(true);
-      });
-
-      it('digital is allowed', () => {
-        const testform = createTestForm(undefined);
-        const allowed = isSubmissionMethodAllowed('digital', testform);
-        expect(allowed).toBe(true);
-      });
-    });
   });
 
   describe('isEqual', () => {

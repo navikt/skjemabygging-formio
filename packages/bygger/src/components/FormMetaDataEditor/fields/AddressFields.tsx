@@ -21,38 +21,37 @@ const AddressFields = ({ onChange, diff, form }: AddressFieldsProps) => {
   };
   return (
     <>
-      {submissionTypesUtils.isPaperSubmission(submissionTypes) &&
-        !submissionTypesUtils.isDigitalSubmissionOnly(submissionTypes) && (
-          <div>
-            <Select
-              className="mb-4"
-              label={<LabelWithDiff label="Mottaksadresse" diff={!!diff.mottaksadresseId} />}
-              name="form-mottaksadresse"
-              id="form-mottaksadresse"
-              value={mottaksadresseId}
-              disabled={!isMottaksAdresserReady || isLockedForm}
-              onChange={(event) =>
-                onChange({
-                  ...form,
-                  properties: {
-                    ...form.properties,
-                    mottaksadresseId: event.target.value || undefined,
-                    enhetMaVelgesVedPapirInnsending: false,
-                  },
-                })
-              }
-            >
-              <option value="">
-                {mottaksadresseId && !isMottaksAdresserReady ? `Mottaksadresse-id: ${mottaksadresseId}` : 'Standard'}
+      {submissionTypesUtils.isPaperSubmission(submissionTypes) && (
+        <div>
+          <Select
+            className="mb-4"
+            label={<LabelWithDiff label="Mottaksadresse" diff={!!diff.mottaksadresseId} />}
+            name="form-mottaksadresse"
+            id="form-mottaksadresse"
+            value={mottaksadresseId}
+            disabled={!isMottaksAdresserReady || isLockedForm}
+            onChange={(event) =>
+              onChange({
+                ...form,
+                properties: {
+                  ...form.properties,
+                  mottaksadresseId: event.target.value || undefined,
+                  enhetMaVelgesVedPapirInnsending: false,
+                },
+              })
+            }
+          >
+            <option value="">
+              {mottaksadresseId && !isMottaksAdresserReady ? `Mottaksadresse-id: ${mottaksadresseId}` : 'Standard'}
+            </option>
+            {recipients.map((recipient) => (
+              <option value={recipient.recipientId} key={recipient.recipientId}>
+                {toAddressString(recipient)}
               </option>
-              {recipients.map((recipient) => (
-                <option value={recipient.recipientId} key={recipient.recipientId}>
-                  {toAddressString(recipient)}
-                </option>
-              ))}
-            </Select>
-          </div>
-        )}
+            ))}
+          </Select>
+        </div>
+      )}
       <div className="mb">
         <Link as={ReactRouterLink} to="/mottakere">
           Rediger mottaksadresser

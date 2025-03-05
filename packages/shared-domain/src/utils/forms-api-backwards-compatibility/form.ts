@@ -80,4 +80,4 @@ const mapNavFormToForm = (form: NavFormType): Form => {
   };
 };
 
-export { mapFormToNavForm, mapNavFormToForm, removeInnsendingFromForm };
+export { mapFormToNavForm, mapInnsendingToSubmissionTypes, mapNavFormToForm, removeInnsendingFromForm };

@@ -233,7 +233,6 @@ export const removeVedleggspanel = (form: NavFormType) => {
 export const isSubmissionMethodAllowed = (submissionMethod: string, form: NavFormType | FormsResponseForm): boolean => {
   const { submissionTypes } = form.properties;
   const isDigitalAndPaperSubmission =
-    submissionTypes &&
     submissionTypesUtils.isPaperSubmission(submissionTypes) &&
     submissionTypesUtils.isDigitalSubmission(submissionTypes);
 

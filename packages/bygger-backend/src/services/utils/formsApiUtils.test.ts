@@ -1,22 +1,25 @@
-import { Form } from '@navikt/skjemadigitalisering-shared-domain';
-import { mapInnsendingToSubmissionTypes, removeInnsendingFromForm } from './formsApiUtils';
+import { Form, formioFormsApiUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { removeInnsendingFromForm } from './formsApiUtils';
 
 describe('formsApiUtils', () => {
-  describe('mapInnsendingToSubmissionTypes', () => {
+  describe('formioFormsApiUtils.mapInnsendingToSubmissionTypes', () => {
     it('should return [PAPER, DIGITAL] when innsending is PAPIR_OG_DIGITAL', () => {
-      expect(mapInnsendingToSubmissionTypes('PAPIR_OG_DIGITAL')).toStrictEqual(['PAPER', 'DIGITAL']);
+      expect(formioFormsApiUtils.mapInnsendingToSubmissionTypes('PAPIR_OG_DIGITAL')).toStrictEqual([
+        'PAPER',
+        'DIGITAL',
+      ]);
     });
 
     it('should return [PAPER] when innsending is KUN_PAPIR', () => {
-      expect(mapInnsendingToSubmissionTypes('KUN_PAPIR')).toStrictEqual(['PAPER']);
+      expect(formioFormsApiUtils.mapInnsendingToSubmissionTypes('KUN_PAPIR')).toStrictEqual(['PAPER']);
     });
 
     it('should return [DIGITAL] when innsending is KUN_DIGITAL', () => {
-      expect(mapInnsendingToSubmissionTypes('KUN_DIGITAL')).toStrictEqual(['DIGITAL']);
+      expect(formioFormsApiUtils.mapInnsendingToSubmissionTypes('KUN_DIGITAL')).toStrictEqual(['DIGITAL']);
     });
 
     it('should return an empty array when innsending is undefined', () => {
-      expect(mapInnsendingToSubmissionTypes(undefined)).toStrictEqual([]);
+      expect(formioFormsApiUtils.mapInnsendingToSubmissionTypes(undefined)).toStrictEqual([]);
     });
   });
 
@@ -30,7 +33,7 @@ describe('formsApiUtils', () => {
         title: 'Test Title',
         path: '/test-path',
         properties: {
-          submissionTypes: ['PAPER', 'DIGITAL'],
+          innsending: 'PAPIR_OG_DIGITAL',
           ettersendelsesfrist: '12',
           skjemanummer: '',
           tema: '',
