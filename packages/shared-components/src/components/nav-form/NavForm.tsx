@@ -66,7 +66,7 @@ const NavForm = ({
   const ref = useRef(null);
   const { panelSlug } = useParams();
   // This param is used to avoid creating two formio instances in React.StrictMode
-  let webformStart = false;
+  const webformStartRef = useRef(false);
 
   /**
    * Create a new instance of a formio Webform
@@ -194,9 +194,8 @@ const NavForm = ({
    */
   useEffect(() => {
     (async () => {
-      if (Object.keys(i18n).length !== 0 && !webform && !webformStart) {
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        webformStart = true;
+      if (Object.keys(i18n).length !== 0 && !webform && !webformStartRef.current) {
+        webformStartRef.current = true;
         await createForm(form || src);
       }
     })();
