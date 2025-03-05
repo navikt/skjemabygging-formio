@@ -2,12 +2,11 @@ import { MigrationLevel } from '@navikt/skjemadigitalisering-shared-domain';
 import { MigrationOptions } from '../../types/migration';
 import { createUrlParams } from './utils';
 
-async function postJson(url, bodyAsJSON, token) {
+async function postJson(url, bodyAsJSON) {
   const result = await fetch(url, {
     method: 'POST',
     headers: {
       'content-type': 'application/json',
-      'Bygger-Formio-Token': token,
     },
     body: JSON.stringify(bodyAsJSON),
   });
@@ -52,18 +51,18 @@ export async function runMigrationDryRun(
   }
 }
 
-export async function runMigrationWithUpdate(token, payload) {
+export async function runMigrationWithUpdate(payload) {
   try {
-    return postJson('/api/migrate/update', { payload }, token);
+    return postJson('/api/migrate/update', { payload });
   } catch (error) {
     console.error(error);
     return [];
   }
 }
 
-export async function bulkPublish(token, payload) {
+export async function bulkPublish(payload) {
   try {
-    return postJson('/api/form-publications', { payload }, token);
+    return postJson('/api/form-publications', { payload });
   } catch (error) {
     console.error(error);
     throw error;

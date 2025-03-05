@@ -1,6 +1,5 @@
 import {
   AzureConfig,
-  FormioConfig,
   FormsApiConfig,
   FyllutConfig,
   GithubAppConfig,
@@ -18,21 +17,6 @@ export const devAzure: Partial<AzureConfig> = {
 export const devSkjemabyggingProxy: Partial<SkjemabyggingProxyConfig> = {
   url: 'https://skjemabygging-proxy.dev-fss-pub.nais.io',
   clientId: '95170319-b4d7-4190-8271-118ed19bafbf',
-};
-
-export const devFormio: Partial<FormioConfig> = {
-  apiService: 'https://formio-api.intern.dev.nav.no',
-  projectName: 'jvcemxwcpghcqjn',
-  roleIds: {
-    administrator: '628ca77305690db58c974d04',
-    authenticated: '628ca77305690db58c974d09',
-    everyone: '000000000000000000000000',
-  },
-};
-
-export const prodFormio: Pick<FormioConfig, 'apiService' | 'projectName'> = {
-  apiService: 'https://formio-api-server.ekstern.dev.nav.no',
-  projectName: 'jvcemxwcpghcqjn',
 };
 
 export const devFyllut: Partial<FyllutConfig> = {
