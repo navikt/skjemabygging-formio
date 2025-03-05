@@ -266,7 +266,7 @@ describe('MigrationPage', () => {
               include: ['form3'],
             },
           }),
-          headers: { 'Bygger-Formio-Token': '', 'content-type': 'application/json' },
+          headers: { 'content-type': 'application/json' },
           method: 'POST',
         });
       });
