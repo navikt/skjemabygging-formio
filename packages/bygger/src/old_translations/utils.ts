@@ -1,4 +1,5 @@
 import {
+  getCountries,
   HtmlAsJsonElement,
   HtmlAsJsonTextElement,
   htmlConverter,
@@ -22,7 +23,7 @@ import {
   TEXTS,
 } from '@navikt/skjemadigitalisering-shared-domain';
 
-type TextObjectType = { text: string; type?: InputType };
+type TextObjectType = { text: string };
 type InputType = 'text' | 'textarea';
 type CsvRow = {
   type: 'tekst' | 'html';
@@ -168,11 +169,9 @@ const getTranslatablePropertiesFromForm = (form: Form) =>
 const withoutDuplicatedComponents = (textObject: TextObjectType, index: number, currentComponents: TextObjectType[]) =>
   index === currentComponents.findIndex((currentComponent) => currentComponent.text === textObject.text);
 
-const textObject = (withInputType: boolean, value: string): TextObjectType => {
-  const type = withInputType ? getInputType(value) : undefined;
+const textObject = (value: string): TextObjectType => {
   return {
     text: value,
-    ...(type && { type }),
   };
 };
 
@@ -210,7 +209,7 @@ const getAttachmentTexts = (attachmentValues?: AttachmentSettingValues): undefin
   });
 };
 
-const getFormTexts = (form?: Form, withInputType = false): TextObjectType[] => {
+const getFormTexts = (form?: Form): TextObjectType[] => {
   if (!form) {
     return [];
   }
@@ -236,13 +235,18 @@ const getFormTexts = (form?: Form, withInputType = false): TextObjectType[] => {
           ) {
             return (component[key] as any)
               .filter((value) => !!value)
-              .map((value) => textObject(withInputType, value)) as TextObjectType;
+              .map((value) => textObject(value)) as TextObjectType;
           }
-          return textObject(withInputType, component[key]);
+          return textObject(component[key]);
         }),
     )
     .concat(extractTextsFromProperties(form.properties))
     .filter((component, index, currentComponents) => withoutDuplicatedComponents(component, index, currentComponents));
+};
+
+const getFormTextsWithoutCountryNames = (form: Form) => {
+  const countries = getCountries('nb');
+  return getFormTexts(form).filter(({ text }) => !countries.some((country) => country.label === text));
 };
 
 const removeLineBreaks = (text?: string) => (text ? text.replace(/(\r\n|\n|\r)/gm, ' ') : text);
@@ -334,7 +338,7 @@ const createTranslationsHtmlRows = (
 };
 
 const getTextsAndTranslationsForForm = (form: Form, translations: FormioTranslationMap): CsvRow[] => {
-  const textComponents = getFormTexts(form, false);
+  const textComponents = getFormTexts(form);
   let textIndex = 0;
   return textComponents.flatMap((textComponent) => {
     if (htmlConverter.isHtmlString(textComponent.text)) {
@@ -381,7 +385,7 @@ const getTextsAndTranslationsHeaders = (translations: FormioTranslationMap) => {
 };
 
 export {
-  getFormTexts,
+  getFormTextsWithoutCountryNames,
   getInputType,
   getTextsAndTranslationsForForm,
   getTextsAndTranslationsHeaders,
