@@ -84,9 +84,3 @@ jobs:
         with:
           name: cypress-bygger-screenshots
           path:  ${{ github.workspace }}/packages/bygger/cypress/screenshots/*
-      - name: Upload videos
-        uses: actions/upload-artifact@v4
-        if: failure()
-        with:
-          name: cypress-videos
-          path:  ${{ github.workspace }}/packages/bygger/cypress/videos/*
