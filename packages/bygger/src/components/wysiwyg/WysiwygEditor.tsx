@@ -1,4 +1,4 @@
-import { htmlConverter, makeStyles } from '@navikt/skjemadigitalisering-shared-components';
+import { makeStyles } from '@navikt/skjemadigitalisering-shared-components';
 import { htmlUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import classNames from 'classnames';
 import { useState } from 'react';
@@ -54,8 +54,8 @@ const WysiwygEditor = ({ defaultValue, onBlur, error, autoFocus }: Props) => {
   };
 
   const handleBlur = () => {
-    const sanitized = htmlConverter.sanitizeHtmlString(htmlValue, { FORBID_ATTR: ['style'] });
-    const withNoEmptyTags = htmlConverter.removeEmptyTags(sanitized);
+    const sanitized = htmlUtils.sanitizeHtmlString(htmlValue, { FORBID_ATTR: ['style'] });
+    const withNoEmptyTags = htmlUtils.removeEmptyTags(sanitized);
     const trimmed = htmlUtils.extractTextContent(withNoEmptyTags).trim() === '' ? '' : withNoEmptyTags;
     onBlur(trimmed);
   };
