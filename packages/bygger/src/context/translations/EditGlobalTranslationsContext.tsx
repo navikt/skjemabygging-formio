@@ -1,5 +1,10 @@
-import { htmlUtils, useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
-import { FormsApiGlobalTranslation, stringUtils, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
+import { useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
+import {
+  FormsApiGlobalTranslation,
+  htmlUtils,
+  stringUtils,
+  TranslationLang,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, ReactNode, useContext, useEffect, useReducer } from 'react';
 import { overwriteGlobalTranslations } from '../../import/api';
 import { useFeedbackEmit } from '../notifications/FeedbackContext';

@@ -55,7 +55,8 @@ const WysiwygEditor = ({ defaultValue, onBlur, error, autoFocus }: Props) => {
 
   const handleBlur = () => {
     const sanitized = htmlConverter.sanitizeHtmlString(htmlValue, { FORBID_ATTR: ['style'] });
-    const trimmed = htmlConverter.extractTextContent(sanitized).trim() === '' ? '' : sanitized;
+    const withNoEmptyTags = htmlConverter.removeEmptyTags(sanitized);
+    const trimmed = htmlUtils.extractTextContent(withNoEmptyTags).trim() === '' ? '' : withNoEmptyTags;
     onBlur(trimmed);
   };
 
