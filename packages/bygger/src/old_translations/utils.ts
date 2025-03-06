@@ -1,4 +1,5 @@
 import {
+  getCountries,
   HtmlAsJsonElement,
   HtmlAsJsonTextElement,
   htmlConverter,
@@ -22,7 +23,6 @@ import {
   TEXTS,
 } from '@navikt/skjemadigitalisering-shared-domain';
 
-type TextObjectType = { text: string; type?: InputType };
 type InputType = 'text' | 'textarea';
 type CsvRow = {
   type: 'tekst' | 'html';
@@ -38,52 +38,30 @@ const getInputType = (value: string): InputType => {
 
 const getTextFromComponentProperty = (property: string | undefined) => (property !== '' ? property : undefined);
 
-const extractTextsFromProperties = (props: NavFormType['properties']): TextObjectType[] => {
-  const array: { text: string; type: InputType }[] = [];
+const extractTextsFromProperties = (props: NavFormType['properties']): string[] => {
+  const array: string[] = [];
   if (props?.innsendingOverskrift) {
-    array.push({
-      text: props.innsendingOverskrift,
-      type: getInputType(props.innsendingOverskrift),
-    });
+    array.push(props.innsendingOverskrift);
   }
   if (props?.innsendingForklaring) {
-    array.push({
-      text: props.innsendingForklaring,
-      type: getInputType(props.innsendingForklaring),
-    });
+    array.push(props.innsendingForklaring);
   }
   if (props?.declarationText) {
-    array.push({
-      text: props.declarationText,
-      type: getInputType(props.declarationText),
-    });
+    array.push(props.declarationText);
   }
   if (props?.downloadPdfButtonText) {
-    array.push({
-      text: props.downloadPdfButtonText,
-      type: getInputType(props.downloadPdfButtonText),
-    });
+    array.push(props.downloadPdfButtonText);
   }
   if (props?.descriptionOfSignatures) {
-    array.push({
-      text: props.descriptionOfSignatures,
-      type: getInputType(props.descriptionOfSignatures),
-    });
+    array.push(props.descriptionOfSignatures);
   }
   if (props?.signatures) {
     signatureUtils.mapBackwardCompatibleSignatures(props.signatures).forEach((signature) => {
       if (signature.label) {
-        array.push({
-          text: signature.label,
-          type: getInputType(signature.label),
-        });
+        array.push(signature.label);
       }
-
       if (signature.description) {
-        array.push({
-          text: signature.description,
-          type: getInputType(signature.description),
-        });
+        array.push(signature.description);
       }
     });
   }
@@ -165,16 +143,8 @@ const getTranslatablePropertiesFromForm = (form: Form) =>
       }),
     );
 
-const withoutDuplicatedComponents = (textObject: TextObjectType, index: number, currentComponents: TextObjectType[]) =>
-  index === currentComponents.findIndex((currentComponent) => currentComponent.text === textObject.text);
-
-const textObject = (withInputType: boolean, value: string): TextObjectType => {
-  const type = withInputType ? getInputType(value) : undefined;
-  return {
-    text: value,
-    ...(type && { type }),
-  };
-};
+const withoutDuplicatedComponents = (text: string, index: number, currentTexts: string[]) =>
+  index === currentTexts.findIndex((currentText) => currentText === text);
 
 const getAccordionTexts = (accordionValues?: AccordionSettingValues): undefined | string[] => {
   if (!accordionValues) {
@@ -210,7 +180,7 @@ const getAttachmentTexts = (attachmentValues?: AttachmentSettingValues): undefin
   });
 };
 
-const getFormTexts = (form?: Form, withInputType = false): TextObjectType[] => {
+const getFormTexts = (form?: Form): string[] => {
   if (!form) {
     return [];
   }
@@ -234,15 +204,20 @@ const getFormTexts = (form?: Form, withInputType = false): TextObjectType[] => {
             key === 'attachmentValues' ||
             key === 'customLabels'
           ) {
-            return (component[key] as any)
-              .filter((value) => !!value)
-              .map((value) => textObject(withInputType, value)) as TextObjectType;
+            return (component[key] as any).filter((value) => !!value).map((value) => `${value}`);
           }
-          return textObject(withInputType, component[key]);
+          return component[key];
         }),
     )
     .concat(extractTextsFromProperties(form.properties))
     .filter((component, index, currentComponents) => withoutDuplicatedComponents(component, index, currentComponents));
+};
+
+const getFormTextsWithoutCountryNames = (form: Form) => {
+  // We filter out any country names to avoid having to maintain their translations
+  // All country names on 'nn' and 'en' are added from a third party package when we build the i18n object in FyllUt)
+  const countries = getCountries('nb');
+  return getFormTexts(form).filter((text) => !countries.some((country) => country.label === text));
 };
 
 const removeLineBreaks = (text?: string) => (text ? text.replace(/(\r\n|\n|\r)/gm, ' ') : text);
@@ -334,12 +309,12 @@ const createTranslationsHtmlRows = (
 };
 
 const getTextsAndTranslationsForForm = (form: Form, translations: FormioTranslationMap): CsvRow[] => {
-  const textComponents = getFormTexts(form, false);
+  const formTexts = getFormTextsWithoutCountryNames(form);
   let textIndex = 0;
-  return textComponents.flatMap((textComponent) => {
-    if (htmlConverter.isHtmlString(textComponent.text)) {
+  return formTexts.flatMap((text) => {
+    if (htmlConverter.isHtmlString(text)) {
       const htmlTranslations = Object.entries(translations).reduce((acc, [lang, translation]) => {
-        const translationValue = translation.translations[textComponent.text]?.value ?? '';
+        const translationValue = translation.translations[text]?.value ?? '';
         if (!htmlConverter.isHtmlString(translationValue)) {
           return acc;
         }
@@ -348,15 +323,15 @@ const getTextsAndTranslationsForForm = (form: Form, translations: FormioTranslat
         }).toJson({ getMarkdown: true });
         return {
           ...acc,
-          [lang]: { translations: { ...translation.translations[textComponent.text], value: translationAsJson } },
+          [lang]: { translations: { ...translation.translations[text], value: translationAsJson } },
         };
       }, {});
-      const htmlText = new StructuredHtmlElement(textComponent.text, {
+      const htmlText = new StructuredHtmlElement(text, {
         skipConversionWithin: htmlConverter.defaultLeaves,
       }).toJson({ getMarkdown: true });
       return createTranslationsHtmlRows(htmlText, htmlTranslations, `${++textIndex}`.padStart(3, '0'));
     } else {
-      return createTranslationsTextRow(textComponent.text, translations, `${++textIndex}`.padStart(3, '0'));
+      return createTranslationsTextRow(text, translations, `${++textIndex}`.padStart(3, '0'));
     }
   });
 };
@@ -381,7 +356,7 @@ const getTextsAndTranslationsHeaders = (translations: FormioTranslationMap) => {
 };
 
 export {
-  getFormTexts,
+  getFormTextsWithoutCountryNames,
   getInputType,
   getTextsAndTranslationsForForm,
   getTextsAndTranslationsHeaders,
