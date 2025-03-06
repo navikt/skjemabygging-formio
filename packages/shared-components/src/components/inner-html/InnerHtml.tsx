@@ -1,5 +1,5 @@
-import { htmlUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import React from 'react';
+import htmlUtils from '../../util/html/htmlUtils';
 
 interface Props {
   tag?: string;

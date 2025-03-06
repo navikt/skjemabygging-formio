@@ -2,6 +2,7 @@ import {
   HtmlAsJsonElement,
   HtmlAsJsonTextElement,
   htmlConverter,
+  htmlUtils,
   NavFormioJs,
   StructuredHtmlElement,
 } from '@navikt/skjemadigitalisering-shared-components';
@@ -15,7 +16,6 @@ import {
   CustomLabels,
   Form,
   FormioTranslationMap,
-  htmlUtils,
   Language,
   NavFormType,
   navFormUtils,

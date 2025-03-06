@@ -1,11 +1,6 @@
 import { Table } from '@navikt/ds-react';
-import { InnerHtml } from '@navikt/skjemadigitalisering-shared-components';
-import {
-  FormsApiTranslation,
-  formsApiTranslations,
-  htmlUtils,
-  TranslationLang,
-} from '@navikt/skjemadigitalisering-shared-domain';
+import { htmlUtils, InnerHtml } from '@navikt/skjemadigitalisering-shared-components';
+import { FormsApiTranslation, formsApiTranslations, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useMemo, useState } from 'react';
 import { TranslationError } from '../../context/translations/utils/errorUtils';
 import { getInputHeightInRows } from '../utils/translationsUtils';

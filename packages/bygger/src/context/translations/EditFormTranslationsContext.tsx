@@ -1,9 +1,5 @@
-import {
-  FormsApiFormTranslation,
-  htmlUtils,
-  stringUtils,
-  TranslationLang,
-} from '@navikt/skjemadigitalisering-shared-domain';
+import { htmlUtils } from '@navikt/skjemadigitalisering-shared-components';
+import { FormsApiFormTranslation, stringUtils, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, ReactNode, useContext, useEffect, useReducer } from 'react';
 import { useFeedbackEmit } from '../notifications/FeedbackContext';
 import { editFormTranslationsReducer } from './editTranslationsReducer';

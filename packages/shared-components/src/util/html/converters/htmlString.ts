@@ -1,4 +1,4 @@
-import { htmlUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import htmlUtils from '../htmlUtils';
 import { HtmlAsJsonElement, HtmlAsJsonTextElement } from './htmlAsJson';
 import { fromElement, toNode } from './htmlNode';
 

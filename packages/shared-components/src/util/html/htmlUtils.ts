@@ -32,17 +32,17 @@ const sanitizeHtmlString = (htmlString: string, options?: SanitizeOptions): stri
   return DOMPurify.sanitize(DOMPurify.sanitize(htmlString, sanitizeOptions), sanitizeOptions);
 };
 
-// const removeTags = (htmlString: string, tag: string): string => {
-//   const div = document.createElement('div');
-//   div.innerHTML = htmlString;
-//   div.querySelectorAll(tag).forEach((element) => {
-//     while (element.firstChild) {
-//       element.parentNode?.insertBefore(element.firstChild, element);
-//     }
-//     element.remove();
-//   });
-//   return div.innerHTML;
-// };
+const removeTags = (htmlString: string, tag: string): string => {
+  const div = document.createElement('div');
+  div.innerHTML = htmlString;
+  div.querySelectorAll(tag).forEach((element) => {
+    while (element.firstChild) {
+      element.parentNode?.insertBefore(element.firstChild, element);
+    }
+    element.remove();
+  });
+  return div.innerHTML;
+};
 
-const htmlUtils = { isHtmlString, extractTextContent, removeEmptyTags, sanitizeHtmlString };
+const htmlUtils = { isHtmlString, extractTextContent, removeEmptyTags, sanitizeHtmlString, removeTags };
 export default htmlUtils;

@@ -1,5 +1,4 @@
-import { makeStyles } from '@navikt/skjemadigitalisering-shared-components';
-import { htmlUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { htmlUtils, makeStyles } from '@navikt/skjemadigitalisering-shared-components';
 import classNames from 'classnames';
 import { useState } from 'react';
 import {
@@ -43,6 +42,8 @@ const WysiwygEditor = ({ defaultValue, onBlur, error, autoFocus }: Props) => {
 
   const styles = useStyles();
 
+  const { sanitizeHtmlString, removeEmptyTags, removeTags, extractTextContent } = htmlUtils;
+
   const handleChange = (event) => {
     const value = event.target.value;
     // make sure that non-html strings are wrapped in a <p>-tag.
@@ -54,9 +55,10 @@ const WysiwygEditor = ({ defaultValue, onBlur, error, autoFocus }: Props) => {
   };
 
   const handleBlur = () => {
-    const sanitized = htmlUtils.sanitizeHtmlString(htmlValue, { FORBID_ATTR: ['style'] });
-    const withNoEmptyTags = htmlUtils.removeEmptyTags(sanitized);
-    const trimmed = htmlUtils.extractTextContent(withNoEmptyTags).trim() === '' ? '' : withNoEmptyTags;
+    const removeSpans = (html: string) => removeTags(html, 'span');
+    const sanitizedHtmlString = removeSpans(removeEmptyTags(sanitizeHtmlString(htmlValue, { FORBID_ATTR: ['style'] })));
+
+    const trimmed = extractTextContent(sanitizedHtmlString).trim() === '' ? '' : sanitizedHtmlString;
     onBlur(trimmed);
   };
 

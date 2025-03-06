@@ -38,4 +38,30 @@ describe('htmlUtils', () => {
       ).toBe('Hello List item 1link');
     });
   });
+
+  describe('removeEmptyTags', () => {
+    it('removes empty tags', () => {
+      expect(htmlUtils.removeEmptyTags('<p></p>')).toBe('');
+      expect(htmlUtils.removeEmptyTags('<p>hello</p>')).toBe('<p>hello</p>');
+      expect(htmlUtils.removeEmptyTags('<p>hello <b></b></p>')).toBe('<p>hello </p>');
+      expect(htmlUtils.removeEmptyTags('<p>hello <b>world</b></p>')).toBe('<p>hello <b>world</b></p>');
+      expect(htmlUtils.removeEmptyTags('<p>hello <b>world</b> <a href="www.url.no">link</a></p>')).toBe(
+        '<p>hello <b>world</b> <a href="www.url.no">link</a></p>',
+      );
+      expect(
+        htmlUtils.removeEmptyTags(
+          '<div><h3>Hello </h3><ol><li>List item 1</li><li><a href="www.url.no" target="_blank" rel="noopener noreferrer">link</a></li></ol></div>',
+        ),
+      ).toBe(
+        '<div><h3>Hello </h3><ol><li>List item 1</li><li><a href="www.url.no" target="_blank" rel="noopener noreferrer">link</a></li></ol></div>',
+      );
+    });
+
+    it('does not remove self-closing tags br or hr', () => {
+      expect(htmlUtils.removeEmptyTags('<p><br></p>')).toBe('<p><br></p>');
+      expect(htmlUtils.removeEmptyTags('<p>hello <br><b></b></p>')).toBe('<p>hello <br/></p>');
+      expect(htmlUtils.removeEmptyTags('<p><hr></p>')).toBe('<p><hr></p>');
+      expect(htmlUtils.removeEmptyTags('<p>hello <hr><b></b></p>')).toBe('<p>hello <hr/></p>');
+    });
+  });
 });
