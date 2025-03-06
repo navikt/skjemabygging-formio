@@ -32,7 +32,7 @@ const generateAndPopulateTranslationsForForm = (
   // All country names on 'nn' and 'en' are added from a third party package when we build the i18n object in FyllUt)
   const textObjects = getFormTextsWithoutCountryNames(form);
 
-  return textObjects.map(({ text }) => {
+  return textObjects.map((text) => {
     const populatedTranslation = populateFromStoredTranslations(text, storedTranslations);
     return checkForGlobalOverride(populatedTranslation, globalTranslations);
   });
