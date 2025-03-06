@@ -1,8 +1,9 @@
 import { v4 as uuidv4 } from 'uuid';
 import { Attachment, Component, FormsResponseForm, NavFormType, Panel, PrefillData, Submission } from '../form';
-import { Form, formSummaryUtil } from '../index';
+import { Form, formSummaryUtil, submissionTypesUtils } from '../index';
 import FormioUtils from '../utils/formio/FormioUtils';
 import { camelCase } from './stringUtils';
+import submissionTypeUtils from './submissionTypeUtils';
 
 export const toFormPath = (text: string) => camelCase(text).toLowerCase();
 
@@ -230,12 +231,20 @@ export const removeVedleggspanel = (form: NavFormType) => {
 };
 
 export const isSubmissionMethodAllowed = (submissionMethod: string, form: NavFormType | FormsResponseForm): boolean => {
-  const { innsending } = form.properties;
+  const { submissionTypes } = form.properties;
+  const isDigitalAndPaperSubmission =
+    submissionTypesUtils.isPaperSubmission(submissionTypes) &&
+    submissionTypesUtils.isDigitalSubmission(submissionTypes);
+
   switch (submissionMethod) {
     case 'digital':
-      return !innsending || innsending === 'PAPIR_OG_DIGITAL' || innsending === 'KUN_DIGITAL';
+      return (
+        !submissionTypes || isDigitalAndPaperSubmission || submissionTypeUtils.isDigitalSubmissionOnly(submissionTypes)
+      );
     case 'paper':
-      return !innsending || innsending === 'PAPIR_OG_DIGITAL' || innsending === 'KUN_PAPIR';
+      return (
+        !submissionTypes || isDigitalAndPaperSubmission || submissionTypeUtils.isPaperSubmissionOnly(submissionTypes)
+      );
   }
   return false;
 };
@@ -325,7 +334,7 @@ const createDefaultForm = (config): Form => ({
   properties: {
     skjemanummer: '',
     tema: '',
-    innsending: 'PAPIR_OG_DIGITAL',
+    submissionTypes: ['PAPER', 'DIGITAL'],
     ettersending: 'PAPIR_OG_DIGITAL',
     signatures: [{ label: '', description: '', key: uuidv4() }],
     ettersendelsesfrist: '14',

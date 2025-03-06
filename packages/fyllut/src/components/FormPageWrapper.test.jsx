@@ -58,7 +58,9 @@ describe('FormPageWrapper', () => {
       title: 'New form',
       modified: '2021-11-30T14:10:21.487Z',
       components: [],
-      properties: {},
+      properties: {
+        submissionTypes: [],
+      },
     };
     fetchMock.mockImplementation((url) => {
       console.log(url);
@@ -91,7 +93,7 @@ describe('FormPageWrapper', () => {
       modified: '2021-11-30T14:10:21.487Z',
       components: [],
       properties: {
-        innsending: 'KUN_PAPIR',
+        submissionTypes: ['PAPER'],
       },
     };
 

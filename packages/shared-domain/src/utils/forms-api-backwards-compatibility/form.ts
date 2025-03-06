@@ -1,4 +1,4 @@
-import { NavFormType } from '../../form';
+import { InnsendingType, NavFormType, SubmissionType } from '../../form';
 import { Form, FormStatus } from '../../forms-api-form';
 
 const mapFormToNavForm = (form: Form): NavFormType => {
@@ -14,6 +14,32 @@ const mapFormToNavForm = (form: Form): NavFormType => {
       ...form.properties,
       skjemanummer: form.skjemanummer,
       publishedLanguages: form.publishedLanguages,
+    },
+  };
+};
+
+const mapInnsendingToSubmissionTypes = (innsending?: InnsendingType): SubmissionType[] => {
+  if (!innsending) return [];
+
+  switch (innsending) {
+    case 'PAPIR_OG_DIGITAL':
+      return ['PAPER', 'DIGITAL'];
+    case 'KUN_PAPIR':
+      return ['PAPER'];
+    case 'KUN_DIGITAL':
+      return ['DIGITAL'];
+    default:
+      return [];
+  }
+};
+
+const removeInnsendingFromForm = (form: NavFormType): NavFormType => {
+  const formProperties = (({ innsending, ...rest }) => rest)(form.properties);
+  return {
+    ...form,
+    properties: {
+      ...formProperties,
+      submissionTypes: form.properties.submissionTypes ?? mapInnsendingToSubmissionTypes(form.properties.innsending),
     },
   };
 };
@@ -54,4 +80,4 @@ const mapNavFormToForm = (form: NavFormType): Form => {
   };
 };
 
-export { mapFormToNavForm, mapNavFormToForm };
+export { mapFormToNavForm, mapInnsendingToSubmissionTypes, mapNavFormToForm, removeInnsendingFromForm };
