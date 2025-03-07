@@ -20,6 +20,7 @@ accessPolicy:
         cluster: dev-gcp
     external:
       - host: skjemabygging-proxy.dev-fss-pub.nais.io
+      - host: forms-api.nav.no
 secrets:
   - bygger-pusher-dev
   - github-app-installation
