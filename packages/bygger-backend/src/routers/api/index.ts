@@ -42,7 +42,7 @@ apiRouter.get('/temakoder', temakoder);
 apiRouter.use('/reports', reportsRouter);
 apiRouter.get('/migrate', migrate);
 apiRouter.get('/migrate/preview/:formPath', migratePreview);
-apiRouter.post('/migrate/update', authorizedPublisher, migrateUpdate);
+apiRouter.post('/migrate/update', formsApiAuthHandler, migrateUpdate);
 apiRouter.get('/form/:formPath/diff', formDiff);
 apiRouter.use('/forms', formsRouter);
 apiRouter.use('/form-publications', formPublicationsRouter);

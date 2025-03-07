@@ -3,7 +3,7 @@ import { ConfirmationModal, i18nUtils, makeStyles } from '@navikt/skjemadigitali
 import { Form, I18nTranslations } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useState } from 'react';
 import { useFormTranslations } from '../../context/translations/FormTranslationsContext';
-import { getFormTexts } from '../../old_translations/utils';
+import { getFormTextsWithoutCountryNames } from '../../old_translations/utils';
 import FormStatus from '../status/FormStatus';
 import { allLanguagesInNorwegian } from '../status/PublishedLanguages';
 import Timestamp from '../status/Timestamp';
@@ -60,10 +60,9 @@ const PublishSettingsModal = ({ open, onClose, onConfirm, form }: Props) => {
 
   useEffect(() => {
     setAllFormOriginalTexts(
-      getFormTexts(form).reduce((allTexts, texts) => {
-        const { text } = texts;
+      getFormTextsWithoutCountryNames(form).reduce<string[]>((allTexts, text) => {
         return [...allTexts, text];
-      }, [] as string[]),
+      }, []),
     );
   }, [form]);
 

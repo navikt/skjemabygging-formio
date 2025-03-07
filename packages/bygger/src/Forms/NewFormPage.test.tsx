@@ -75,24 +75,4 @@ describe('NewFormPage', () => {
       title: 'Et testskjema',
     });
   });
-
-  // TODO FORMS-API delete or fix?
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('should handle exception from saveForm, with message to user', async () => {
-    createFormMock.mockImplementation(() => Promise.reject(new Error('Form.io feil')));
-    console.error = vi.fn();
-    renderNewFormPage();
-
-    await screen.findByText('Opprett nytt skjema');
-    await userEvent.type(screen.getByLabelText('Skjemanummer'), 'NAV 10-20.30 ');
-    await userEvent.type(screen.getByLabelText('Tittel'), 'Et testskjema');
-    await userEvent.selectOptions(screen.getByLabelText('Tema'), 'ABC');
-    await userEvent.click(screen.getByRole('button', { name: 'Opprett' }));
-
-    expect(createFormMock).toHaveBeenCalledTimes(1);
-
-    await waitFor(() => expect(console.error).toHaveBeenCalledTimes(1));
-
-    expect(await screen.findByText('Opprettelse av skjema feilet')).toBeInTheDocument();
-  });
 });
