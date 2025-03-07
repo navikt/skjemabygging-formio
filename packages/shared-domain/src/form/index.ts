@@ -343,4 +343,25 @@ export interface Submission {
   fyllutState?: FyllutState;
 }
 
+export interface Webform {
+  id: string;
+  form?: NavFormType;
+  formUrl?: string;
+  language?: string;
+  submission?: Submission;
+  setSubmission: (submission: Submission) => Promise<void>;
+  src?: string;
+  url?: string;
+  onAny?: any;
+  destroy: (deleteFromGlobal: boolean) => void;
+  focusOnComponent: (args: any) => void;
+  redrawNavigation: () => void;
+  checkData: (data: SubmissionData, flags: any[], row: any) => void;
+  currentPanel: Component;
+  currentPanels: string[];
+  setPage: (index: number) => void;
+  redraw: () => Promise<void>;
+  submissionReady: Promise<void>;
+}
+
 export type UsageContext = 'create' | 'edit';
