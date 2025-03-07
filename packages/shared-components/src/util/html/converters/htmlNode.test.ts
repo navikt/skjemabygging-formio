@@ -58,7 +58,7 @@ describe('htmlNode', () => {
       });
     });
 
-    it('generates json and keeps non-accepted tags in text content', () => {
+    it('supports span elements', () => {
       expect(
         fromNode(
           ElementNode('P', [
@@ -74,7 +74,46 @@ describe('htmlNode', () => {
             type: 'TextElement',
           },
           {
-            textContent: '<span><strong>Fet skrift</strong></span>',
+            attributes: [],
+            children: [
+              {
+                attributes: [],
+                children: [
+                  {
+                    textContent: 'Fet skrift',
+                    type: 'TextElement',
+                  },
+                ],
+                tagName: 'STRONG',
+                type: 'Element',
+              },
+            ],
+            tagName: 'SPAN',
+            type: 'Element',
+          },
+        ],
+        tagName: 'P',
+        type: 'Element',
+      });
+    });
+
+    it('generates json and keeps non-accepted tags in text content', () => {
+      expect(
+        fromNode(
+          ElementNode('P', [
+            TextNode('Avsnitt med '),
+            ElementNode('PRE', [ElementNode('STRONG', [TextNode('Fet skrift')])]),
+          ]),
+        ),
+      ).toEqual({
+        attributes: [],
+        children: [
+          {
+            textContent: 'Avsnitt med ',
+            type: 'TextElement',
+          },
+          {
+            textContent: '<pre><strong>Fet skrift</strong></pre>',
             type: 'TextElement',
           },
         ],
