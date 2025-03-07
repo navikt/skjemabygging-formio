@@ -55,8 +55,10 @@ const WysiwygEditor = ({ defaultValue, onBlur, error, autoFocus }: Props) => {
   };
 
   const handleBlur = () => {
-    const removeSpans = (html: string) => removeTags(html, 'span');
-    const sanitizedHtmlString = removeSpans(removeEmptyTags(sanitizeHtmlString(htmlValue, { FORBID_ATTR: ['style'] })));
+    const removeUnwantedTags = (html: string) => removeTags(html, ['font', 'div']);
+    const sanitizedHtmlString = removeUnwantedTags(
+      removeEmptyTags(sanitizeHtmlString(htmlValue, { FORBID_ATTR: ['style'] })),
+    );
 
     const trimmed = extractTextContent(sanitizedHtmlString).trim() === '' ? '' : sanitizedHtmlString;
     onBlur(trimmed);

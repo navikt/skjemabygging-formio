@@ -114,5 +114,15 @@ describe('htmlUtils', () => {
         '<p>hello <b>world</b></p><p>foo</p><p>bar</p>',
       );
     });
+
+    it('removes multiple tags', () => {
+      expect(htmlUtils.removeTags('<p>hello <b>world</b></p>', ['p', 'b'])).toBe('hello world');
+      expect(htmlUtils.removeTags('<p>hello <b>world</b> <a href="www.url.no">link</a></p>', ['p', 'b'])).toBe(
+        'hello world <a href="www.url.no">link</a>',
+      );
+      expect(htmlUtils.removeTags('<div><p>hello</p><span>world</span></div>', ['div', 'span'])).toBe(
+        '<p>hello</p>world',
+      );
+    });
   });
 });

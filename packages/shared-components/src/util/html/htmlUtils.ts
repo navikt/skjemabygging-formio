@@ -32,10 +32,11 @@ const sanitizeHtmlString = (htmlString: string, options?: SanitizeOptions): stri
   return DOMPurify.sanitize(DOMPurify.sanitize(htmlString, sanitizeOptions), sanitizeOptions);
 };
 
-const removeTags = (htmlString: string, tag: string): string => {
+const removeTags = (htmlString: string, tag: string | string[]): string => {
+  const tagSelector = typeof tag === 'string' ? tag : tag.join(',');
   const div = document.createElement('div');
   div.innerHTML = htmlString;
-  div.querySelectorAll(tag).forEach((element) => {
+  div.querySelectorAll(tagSelector).forEach((element) => {
     while (element.firstChild) {
       element.parentNode?.insertBefore(element.firstChild, element);
     }
