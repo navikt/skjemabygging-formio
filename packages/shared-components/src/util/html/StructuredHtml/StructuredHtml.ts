@@ -11,7 +11,7 @@ type StructuredHtmlOptions = {
   withEmptyTextContent?: boolean;
 };
 
-type ToJsonOptions = { getMarkdown?: boolean; noTextContent?: boolean };
+type ToJsonOptions = { getMarkdown?: boolean; noTextContent?: boolean; skipEmptyTags?: boolean };
 
 abstract class StructuredHtml {
   parent?: StructuredHtmlElement;

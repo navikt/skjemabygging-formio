@@ -74,6 +74,9 @@ const htmlNode2Markdown = (node: Element | ChildNode): string => {
         const url = element.getAttribute('href');
         return linkText || url ? `[${linkText}](${url})` : '';
       }
+      case 'SPAN': {
+        return Array.from(element.childNodes, htmlNode2Markdown).join('');
+      }
       default:
         if (isAcceptedTag(element.tagName)) {
           const textContent = Array.from(element.childNodes, htmlNode2Markdown).join('');

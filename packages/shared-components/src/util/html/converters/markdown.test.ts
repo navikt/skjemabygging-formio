@@ -109,11 +109,27 @@ describe('markdown', () => {
             Element('H2', [TextNode('Overskrift med '), Element('A', [TextNode('Lenke')], 'www.url.no')]),
             Element('EM', [TextNode('listeElement med kursiv skrift')]),
             Element('BR', []),
+            Element('DETAILS', [Element('B', [TextNode('fet skrift')])]),
+          ]),
+        ),
+      ).toBe(
+        '<p>**fet skrift**<h2>Overskrift med <a href="www.url.no">Lenke</a></h2><em>listeElement med kursiv skrift</em><br><details><b>fet skrift</b></details></p>',
+      );
+    });
+
+    it('handles spans when converting children to markdown', () => {
+      expect(
+        htmlNode2Markdown(
+          Element('P', [
+            Element('B', [TextNode('fet skrift')]),
+            Element('H2', [TextNode('Overskrift med '), Element('A', [TextNode('Lenke')], 'www.url.no')]),
+            Element('EM', [TextNode('listeElement med kursiv skrift')]),
+            Element('BR', []),
             Element('SPAN', [Element('B', [TextNode('fet skrift')])]),
           ]),
         ),
       ).toBe(
-        '<p>**fet skrift**<h2>Overskrift med <a href="www.url.no">Lenke</a></h2><em>listeElement med kursiv skrift</em><br><span><b>fet skrift</b></span></p>',
+        '<p>**fet skrift**<h2>Overskrift med <a href="www.url.no">Lenke</a></h2><em>listeElement med kursiv skrift</em><br>**fet skrift**</p>',
       );
     });
   });

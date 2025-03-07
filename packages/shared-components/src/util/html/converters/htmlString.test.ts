@@ -1,5 +1,5 @@
 import { expect } from 'vitest';
-import { htmlString2Json, isHtmlString, json2HtmlString } from './htmlString';
+import { htmlString2Json, json2HtmlString } from './htmlString';
 import { jsonElement, jsonTextElement } from './test/testUtils';
 
 const json = jsonElement('DIV', [
@@ -21,26 +21,6 @@ const json = jsonElement('DIV', [
 ]);
 
 describe('htmlString conversion', () => {
-  describe('isHtmlString', () => {
-    it('returns true if string contains an opening tag', () => {
-      expect(isHtmlString('bla bla <a>hello')).toBe(true);
-      expect(isHtmlString('bla bla <a href="www.url.no">hello')).toBe(true);
-      expect(isHtmlString('bla bla <a href="www.url.no" target="_blank" rel="noopener noreferrer">hello')).toBe(true);
-    });
-
-    it('returns false if the only tag is a <br>', () => {
-      expect(isHtmlString('bla bla <br>hello')).toBe(false);
-    });
-
-    it('returns true if it contains an allowed tag in addition to a <br>', () => {
-      expect(isHtmlString('bla <a> bla <br>hello')).toBe(true);
-    });
-
-    it('does not match when string contains a < with no closing >', () => {
-      expect(isHtmlString('bla bla <a hello')).toBe(false);
-    });
-  });
-
   describe('htmlString <-> json', () => {
     const htmlString =
       '<h3>Overskrift</h3><p>Avsnitt med <b>fet skrift</b></p><ol><li><a href="www.url.no" target="_blank">Punkt 1 med lenke</a></li><li>Punkt 2</li></ol>';

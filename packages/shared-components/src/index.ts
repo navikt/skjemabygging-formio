@@ -29,6 +29,7 @@ import StructuredHtml from './util/html/StructuredHtml/StructuredHtml';
 import StructuredHtmlElement from './util/html/StructuredHtml/StructuredHtmlElement';
 import StructuredHtmlText from './util/html/StructuredHtml/StructuredHtmlText';
 import htmlConverter, { HtmlAsJsonElement, HtmlAsJsonTextElement } from './util/html/converters';
+import htmlUtils from './util/html/htmlUtils';
 import i18nUtils from './util/i18n';
 import listSort from './util/list/sort';
 import makeStyles from './util/styles/jss/jss';
@@ -48,6 +49,7 @@ export {
   getCountries,
   guid,
   htmlConverter,
+  htmlUtils,
   http,
   i18nUtils,
   InnerHtml,
