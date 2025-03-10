@@ -14,8 +14,8 @@ describe('formDiffingTool', () => {
     const publishedProperties: FormPropertiesType = {
       isTestForm: true,
       tema: 'BIL',
-      innsending: 'PAPIR_OG_DIGITAL',
       skjemanummer: 'NAV 12.13-14',
+      submissionTypes: ['PAPER', 'DIGITAL'],
       signatures: [
         {
           key: '12790e44-15da-40b4-8168-a5afaf6f92b7',

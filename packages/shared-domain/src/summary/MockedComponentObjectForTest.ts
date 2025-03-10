@@ -308,6 +308,7 @@ const dummyFormProperties: FormPropertiesType = {
   skjemanummer: '',
   tema: '',
   mellomlagringDurationDays: '28',
+  submissionTypes: [],
 };
 
 const createFormPropertiesObject = (partialFormProperties: Partial<FormPropertiesType> = {}) => ({

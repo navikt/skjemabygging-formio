@@ -6,6 +6,7 @@ import { TextSize } from '../text';
 export type DisplayType = 'wizard' | 'form';
 export type FormType = 'form' | 'resource';
 export type InnsendingType = 'PAPIR_OG_DIGITAL' | 'KUN_PAPIR' | 'KUN_DIGITAL' | 'INGEN';
+export type SubmissionType = 'PAPER' | 'DIGITAL';
 export type SubmissionMethod = 'paper' | 'digital';
 
 export enum DeclarationType {
@@ -65,6 +66,7 @@ export interface FormPropertiesType {
   unpublishedBy?: string;
   downloadPdfButtonText?: string;
   innsending?: InnsendingType;
+  submissionTypes: SubmissionType[];
   ettersending?: InnsendingType;
   ettersendelsesfrist?: string;
   innsendingForklaring?: string;
@@ -88,7 +90,7 @@ export interface FormPropertiesType {
   uxSignalsId?: string;
   uxSignalsInnsending?: InnsendingType;
   hideUserTypes?: boolean;
-  mellomlagringDurationDays: string;
+  mellomlagringDurationDays?: string;
 }
 
 export type FormPropertiesPublishing = Pick<
@@ -291,7 +293,7 @@ export interface NavFormType {
 }
 
 export interface FormsResponseForm extends Pick<NavFormType, '_id' | 'title' | 'path' | 'modified'> {
-  properties: Pick<FormPropertiesType, 'skjemanummer' | 'innsending' | 'ettersending'>;
+  properties: Pick<FormPropertiesType, 'skjemanummer' | 'ettersending' | 'submissionTypes'>;
 }
 
 export type SubmissionData = Record<string, string | number | boolean | any[] | object>;

@@ -10,6 +10,7 @@ describe('Form Metadata Validation', () => {
       title: 'Sample Title',
       path: 'sample-path',
       properties: {
+        submissionTypes: [],
         skjemanummer: 'NAV 12-13.14',
         tema: 'AAP',
         mellomlagringDurationDays: '28',
@@ -29,7 +30,7 @@ describe('Form Metadata Validation', () => {
   it('should validate form metadata for an edit form', () => {
     const usageContext: UsageContext = 'edit';
     // Set properties that are required for edit mode
-    sampleForm.properties.innsending = 'KUN_DIGITAL';
+    sampleForm.properties.submissionTypes = ['DIGITAL'];
     sampleForm.properties.ettersending = 'KUN_PAPIR';
 
     const errors = validateFormMetadata(sampleForm, usageContext);
@@ -53,13 +54,12 @@ describe('Form Metadata Validation', () => {
   it('should handle errors for an edit form', () => {
     const usageContext: UsageContext = 'edit';
 
-    sampleForm.properties.innsending = undefined; // Missing innsending
+    sampleForm.properties.submissionTypes = []; // Missing submissionTypes
     sampleForm.properties.ettersending = undefined; // Missing ettersending
 
     const errors = validateFormMetadata(sampleForm, usageContext);
 
     expect(errors).toEqual({
-      innsending: 'Du må velge innsendingstype',
       ettersending: 'Du må velge innsendingstype for ettersending',
     });
     expect(isFormMetadataValid(errors)).toBe(false);
@@ -81,7 +81,7 @@ describe('Form Metadata Validation', () => {
   it('should show error for non-integer mellomlagringDurationDays', () => {
     const usageContext: UsageContext = 'edit';
     sampleForm.properties.mellomlagringDurationDays = '28.3';
-    sampleForm.properties.innsending = 'KUN_DIGITAL';
+    sampleForm.properties.submissionTypes = ['DIGITAL'];
     sampleForm.properties.ettersending = 'KUN_PAPIR';
 
     const errors = validateFormMetadata(sampleForm, usageContext);
@@ -95,7 +95,7 @@ describe('Form Metadata Validation', () => {
   it('should handle valid mellomlagringDurationDays', () => {
     const usageContext: UsageContext = 'edit';
     sampleForm.properties.mellomlagringDurationDays = '30';
-    sampleForm.properties.innsending = 'KUN_DIGITAL';
+    sampleForm.properties.submissionTypes = ['DIGITAL'];
     sampleForm.properties.ettersending = 'KUN_PAPIR';
 
     const errors = validateFormMetadata(sampleForm, usageContext);
