@@ -182,7 +182,7 @@ const en = {
         'Rediger søknaden': { value: 'Edit application', scope: 'global' },
         'Send i posten': { value: 'Submit by mail', scope: 'global' },
         'Til digital innsending': { value: 'To digital submission', scope: 'global' },
-        'Last ned førsteside': { value: 'Download cover sheet', scope: 'global' },
+        'Last ned førsteside og søknad': { value: 'Download cover sheet and applicaton', scope: 'global' },
         'Jeg har lest instruksjonene.': { value: 'I have read the instructions.', scope: 'global' },
         Ja: { value: 'Yes', scope: 'global' },
         Nei: { value: 'No', scope: 'global' },
