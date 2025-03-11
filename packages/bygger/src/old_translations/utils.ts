@@ -8,6 +8,7 @@ import {
   Component,
   CustomLabels,
   Form,
+  FormsApiFormTranslation,
   FormsApiTranslation,
   formsApiTranslations,
   NavFormType,
@@ -230,13 +231,18 @@ const createRow = (
   en?: string,
   type: 'tekst' | 'html' = 'tekst',
   isGlobal?: boolean,
-): CsvRow => ({
-  type,
-  order,
-  text: sanitizeForCsv(nb)!,
-  nn: sanitizeForCsv(nn)?.concat(isGlobal ? ' (Global Tekst)' : ''),
-  en: sanitizeForCsv(en)?.concat(isGlobal ? ' (Global Tekst)' : ''),
-});
+): CsvRow => {
+  const sanitizedNN = sanitizeForCsv(nn)?.concat(isGlobal ? ' (Global Tekst)' : '');
+  const sanitizedEN = sanitizeForCsv(en)?.concat(isGlobal ? ' (Global Tekst)' : '');
+
+  return {
+    type,
+    order,
+    text: sanitizeForCsv(nb)!,
+    ...(sanitizedNN ? { nn: sanitizedNN } : {}),
+    ...(sanitizedEN ? { en: sanitizedEN } : {}),
+  };
+};
 
 const createTranslationsTextRow = (
   order: string,
@@ -269,10 +275,9 @@ const createTranslationsHtmlRows = (
   });
 };
 
-const getRowsForExport = (form: Form, translations: FormsApiTranslation[]): CsvRow[] => {
-  const formTexts = getFormTextsWithoutCountryNames(form);
+const getRowsForExport = (texts: string[], translations: FormsApiTranslation[]): CsvRow[] => {
   let textIndex = 0;
-  return formTexts.flatMap((text) => {
+  return texts.flatMap((text) => {
     const translation = translations.find((translation) => translation.key === text);
     if (htmlUtils.isHtmlString(text)) {
       const htmlTranslations = {
@@ -285,6 +290,11 @@ const getRowsForExport = (form: Form, translations: FormsApiTranslation[]): CsvR
       return createTranslationsTextRow(`${++textIndex}`.padStart(3, '0'), text, translation);
     }
   });
+};
+
+const getRowsForExportFromForm = (form: Form, translations: FormsApiFormTranslation[]) => {
+  const formTexts = getFormTextsWithoutCountryNames(form);
+  return getRowsForExport(formTexts, translations);
 };
 
 const getHeadersForExport = (translations: FormsApiTranslation[]) => {
@@ -304,6 +314,7 @@ export {
   getHeadersForExport,
   getInputType,
   getRowsForExport,
+  getRowsForExportFromForm,
   sanitizeForCsv,
   withoutDuplicatedComponents,
 };
