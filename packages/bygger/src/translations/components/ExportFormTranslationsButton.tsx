@@ -1,14 +1,7 @@
-import {
-  Form,
-  FormioTranslation,
-  FormioTranslationMap,
-  TranslationLang,
-} from '@navikt/skjemadigitalisering-shared-domain';
-import { useMemo } from 'react';
+import { Form } from '@navikt/skjemadigitalisering-shared-domain';
 import { CSVLink } from 'react-csv';
 import { useFormTranslations } from '../../context/translations/FormTranslationsContext';
-import { getTextsAndTranslationsForForm, getTextsAndTranslationsHeaders } from '../../old_translations/utils';
-import { mapFormsApiTranslationsToScopedTranslationMap } from '../utils/translationsUtils';
+import { getHeadersForExport, getRowsForExport } from '../../old_translations/utils';
 
 interface Props {
   form: Form;
@@ -18,26 +11,13 @@ const ExportFormTranslationsButton = ({ form }: Props) => {
   const { title, path } = form;
   const { translations } = useFormTranslations();
 
-  const translationsFormioFormat: FormioTranslationMap = useMemo(() => {
-    const languageCodes: TranslationLang[] = ['nn', 'en'];
-    return Object.fromEntries(
-      languageCodes.map((language) => {
-        const formioTranslation: FormioTranslation = {
-          id: 'id',
-          translations: mapFormsApiTranslationsToScopedTranslationMap(translations, language),
-        };
-        return [language, formioTranslation];
-      }),
-    );
-  }, [translations]);
-
   return (
     <CSVLink
-      data={getTextsAndTranslationsForForm(form, translationsFormioFormat)}
+      data={getRowsForExport(form, translations)}
       filename={`${title}(${path})_Oversettelser.csv`}
       className="navds-button navds-button--tertiary navds-button--small navds-label navds-label--small"
       separator={';'}
-      headers={getTextsAndTranslationsHeaders(translationsFormioFormat)}
+      headers={getHeadersForExport(translations)}
       enclosingCharacter={'"'}
     >
       Eksporter

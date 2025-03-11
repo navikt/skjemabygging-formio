@@ -1,9 +1,5 @@
 import { FormioTranslationMap, MockedComponentObjectForTest, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import {
-  getFormTextsWithoutCountryNames,
-  getTextsAndTranslationsForForm,
-  getTextsAndTranslationsHeaders,
-} from './utils';
+import { getFormTextsWithoutCountryNames, getHeadersForExport, getRowsForExport } from './utils';
 
 const {
   createDummyAttachment,
@@ -512,7 +508,7 @@ describe('utils', () => {
     };
 
     it('Test form with translations', () => {
-      const actual = getTextsAndTranslationsForForm(form, translations);
+      const actual = getRowsForExport(form, translations);
       expect(actual).toEqual([
         { order: '001', type: 'tekst', text: 'test' },
         { order: '002', type: 'tekst', text: 'Introduksjon' },
@@ -572,7 +568,7 @@ describe('utils', () => {
           },
         },
       };
-      const eksport = getTextsAndTranslationsForForm(testform, testtranslations);
+      const eksport = getRowsForExport(testform, testtranslations);
       expect(eksport).toHaveLength(3);
 
       expect(eksport[0].text).toBe('Test form');
@@ -589,7 +585,7 @@ describe('utils', () => {
 
   describe('testGetCSVfileHeaders', () => {
     it('Test headers with only origin form text', () => {
-      const actual = getTextsAndTranslationsHeaders([] as FormioTranslationMap);
+      const actual = getHeadersForExport([] as FormioTranslationMap);
       expect(actual).toEqual([
         { key: 'type', label: 'Type' },
         { key: 'order', label: 'Rekkefølge' },
@@ -598,7 +594,7 @@ describe('utils', () => {
     });
 
     it('Test headers with origin form text and language code', () => {
-      const actual = getTextsAndTranslationsHeaders({ en: {}, 'nn-NO': {} } as FormioTranslationMap);
+      const actual = getHeadersForExport({ en: {}, 'nn-NO': {} } as FormioTranslationMap);
       expect(actual).toEqual([
         { key: 'type', label: 'Type' },
         { key: 'order', label: 'Rekkefølge' },

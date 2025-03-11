@@ -1,4 +1,5 @@
 import DOMPurify from 'dompurify';
+import { htmlNode2Markdown } from './converters/markdown';
 
 type SanitizeOptions = Omit<DOMPurify.Config, 'RETURN_DOM_FRAGMENT' | 'RETURN_DOM'>;
 
@@ -45,5 +46,14 @@ const removeTags = (htmlString: string, tag: string | string[]): string => {
   return div.innerHTML;
 };
 
-const htmlUtils = { isHtmlString, extractTextContent, removeEmptyTags, sanitizeHtmlString, removeTags };
+const getTexts = (htmlString: string): string[] => {
+  const tags = ['p', 'li', 'h3', 'h4'];
+  const div = document.createElement('div');
+  div.innerHTML = htmlString;
+  return Array.from(div.querySelectorAll(tags.join(','))).map((element) => {
+    return Array.from(element.childNodes, htmlNode2Markdown).join('');
+  });
+};
+
+const htmlUtils = { isHtmlString, extractTextContent, removeEmptyTags, sanitizeHtmlString, removeTags, getTexts };
 export default htmlUtils;
