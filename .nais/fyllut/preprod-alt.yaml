@@ -10,6 +10,7 @@ dekorator-url: https://www.nav.no/dekoratoren?simple=true
 skjemabygging-proxy-client-id: 95170319-b4d7-4190-8271-118ed19bafbf
 skjemabygging-proxy-url: https://skjemabygging-proxy.dev-fss-pub.nais.io
 gotenberg-url: http://upload-convert-to-pdf.fyllut-sendinn
+gotenberg-url-en: http://upload-convert-to-pdf-en.fyllut-sendinn
 send-inn-token-x-client-id: dev-gcp:team-soknad:innsending-api
 send-inn-host: http://innsending-api.team-soknad
 kodeverk:
