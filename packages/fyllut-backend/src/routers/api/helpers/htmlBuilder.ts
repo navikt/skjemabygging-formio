@@ -178,8 +178,9 @@ ${component.value.map((val) => `<div class="svar">: ${val}</div>`).join('')}`;
 const signature = ({ label, description, _key }: NewFormSignatureType, translate: TranslateFunction) => `
 <h3>${translate(label)}</h3>
 <div class="underskrift">${description ? translate(description) : ''}</div>
-<div class="underskrift">${translate(TEXTS.pdfStatiske.placeAndDate)} _________________________________________</div>
-<div class="underskrift">${translate(TEXTS.pdfStatiske.signature)} _________________________________________</div>`;
+<div class="underskrift">${translate(TEXTS.pdfStatiske.placeAndDate)} ___________________________________________________</div>
+<div class="underskrift">${translate(TEXTS.pdfStatiske.signature)} ____________________________________________________</div>
+<div class="underskrift">${translate(TEXTS.pdfStatiske.signatureName)} ________________________________________</div>`;
 
 const signatureSection = (
   formProperties: FormPropertiesType,
