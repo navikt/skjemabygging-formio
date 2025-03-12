@@ -18,6 +18,7 @@ const testForm: NavFormType = {
   title: 'Test Title',
   path: '/test-path',
   properties: {
+    submissionTypes: ['PAPER', 'DIGITAL'],
     ettersendelsesfrist: '12',
     skjemanummer: '',
     tema: '',

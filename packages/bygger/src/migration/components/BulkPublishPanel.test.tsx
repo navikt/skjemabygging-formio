@@ -16,7 +16,7 @@ const pending = {
 const properties: FormPropertiesType = {
   skjemanummer: 'skjemanummer',
   tema: 'tema',
-  innsending: 'PAPIR_OG_DIGITAL',
+  submissionTypes: ['PAPER', 'DIGITAL'],
   signatures: {
     signature1: '',
     signature2: '',

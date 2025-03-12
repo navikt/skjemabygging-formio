@@ -5723,7 +5723,7 @@
   "properties": {
     "skjemanummer": "cypress-axe",
     "tema": "",
-    "innsending": "KUN_PAPIR",
+    "submissionTypes": ["PAPER"],
     "hasLabeledSignatures": false,
     "signatures": {
       "signature1": "",
