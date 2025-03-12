@@ -38,7 +38,7 @@ const useStyles = makeStyles({
 
 export function PrepareLetterPage({ form, submission, translations, formUrl }: Props) {
   useEffect(() => scrollToAndSetFocus('main', 'start'), []);
-  const { fyllutBaseURL, baseUrl, logger, config } = useAppConfig();
+  const { baseUrl, logger, config } = useAppConfig();
   const { translate } = useLanguages();
   const [enhetsListe, setEnhetsListe] = useState<Enhet[]>([]);
   const [enhetsListeError, setEnhetsListeError] = useState(false);
@@ -95,8 +95,6 @@ export function PrepareLetterPage({ form, submission, translations, formUrl }: P
             form={form}
             submission={submission}
             enhetsListe={enhetsListe}
-            fyllutBaseURL={fyllutBaseURL}
-            translate={translate}
             translations={translations}
           />
           {hasAttachments && <LetterAddAttachment index={2} vedleggSomSkalSendes={attachments} translate={translate} />}

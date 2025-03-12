@@ -114,7 +114,7 @@ export const statiske = {
     subTitle: 'Søknaden er ikke sendt ennå',
     chooseEntity: 'Velg hvilken Nav-enhet som skal motta innsendingen',
     selectEntityDefault: 'Velg enhet',
-    entityNotSelectedError: 'Førsteside kan ikke genereres før du har valgt enhet',
+    entityNotSelectedError: 'Søknaden kan ikke lastes ned før du har valgt enhet',
     entityFetchError: 'En feil har oppstått. Vi kunne ikke laste enheter. Beklager ulempen, prøv igjen senere.',
     firstSectionTitle: 'Last ned og skriv ut dokumentene',
     firstDescription:

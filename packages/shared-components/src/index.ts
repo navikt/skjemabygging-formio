@@ -3,6 +3,7 @@ import jss from 'jss';
 import preset from 'jss-preset-default';
 import type { FetchHeader, FetchOptions } from './api/util/http/http';
 import http from './api/util/http/http';
+import ButtonWithSpinner from './components/button/ButtonWithSpinner';
 import ErrorPage from './components/error/page/ErrorPage';
 import InnerHtml from './components/inner-html/InnerHtml';
 import LanguageSelector from './components/language-selector/LanguageSelector';
@@ -39,6 +40,7 @@ jss.setup(preset());
 
 export {
   AppConfigProvider,
+  ButtonWithSpinner,
   ConfirmationModal,
   ErrorPage,
   FormBuilderOptions,

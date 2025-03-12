@@ -1,4 +1,4 @@
-import { NavFormType, SubmissionData } from '../form';
+import { NavFormType, Submission, SubmissionData } from '../form';
 import {
   ForstesideRecipientAddress,
   ForstesideRequestBody,
@@ -120,7 +120,7 @@ const getRecipients = (
 
 const genererFoerstesideData = (
   form: NavFormType,
-  submission: SubmissionData,
+  submission: Submission,
   language = 'nb-NO',
   recipients: Recipient[] = [],
   unitNumber?: string,
@@ -133,15 +133,15 @@ const genererFoerstesideData = (
   const formTitle = getTitle(title, skjemanummer);
 
   return {
-    ...getUserData(form, submission),
+    ...getUserData(form, submission.data),
     foerstesidetype: 'SKJEMA',
     navSkjemaId: skjemanummer,
     spraakkode: parseLanguage(language),
     overskriftstittel: formTitle,
     arkivtittel: formTitle,
     tema,
-    vedleggsliste: getAttachmentTitles(form, submission),
-    dokumentlisteFoersteside: [formTitle, ...getAttachmentLabels(form, submission)],
+    vedleggsliste: getAttachmentTitles(form, submission.data),
+    dokumentlisteFoersteside: [formTitle, ...getAttachmentLabels(form, submission.data)],
     ...getRecipients(mottaksadresseId, recipients, unitNumber),
   };
 };

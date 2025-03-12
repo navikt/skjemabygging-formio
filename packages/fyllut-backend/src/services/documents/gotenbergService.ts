@@ -1,9 +1,9 @@
 import correlator from 'express-correlation-id';
 import FormData from 'form-data';
-import { config } from '../../../config/config';
-import { logger } from '../../../logger';
-import { synchronousResponseToError } from '../../../utils/errorHandling';
-import fetchWithRetry from '../../../utils/fetchWithRetry';
+import { config } from '../../config/config';
+import { logger } from '../../logger';
+import { synchronousResponseToError } from '../../utils/errorHandling';
+import fetchWithRetry from '../../utils/fetchWithRetry';
 
 const { gotenbergUrl } = config;
 
