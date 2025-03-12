@@ -4,7 +4,8 @@ import {
   MockedComponentObjectForTest,
   TEXTS,
 } from '@navikt/skjemadigitalisering-shared-domain';
-import { getFormTextsWithoutCountryNames, getHeadersForExport, getRowsForExportFromForm } from './utils';
+import { getHeadersForExport, getRowsForExportFromForm } from './exportTranslationsUtils';
+import { getFormTextsWithoutCountryNames } from './formTextsUtils';
 
 const {
   createDummyAttachment,

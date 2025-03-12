@@ -1,4 +1,4 @@
-import { getCountries, htmlUtils, NavFormioJs } from '@navikt/skjemadigitalisering-shared-components';
+import { getCountries, NavFormioJs } from '@navikt/skjemadigitalisering-shared-components';
 
 import {
   AccordionSettingValue,
@@ -8,32 +8,15 @@ import {
   Component,
   CustomLabels,
   Form,
-  FormsApiFormTranslation,
-  FormsApiTranslation,
-  formsApiTranslations,
-  NavFormType,
+  FormPropertiesType,
   navFormUtils,
   signatureUtils,
   TEXTS,
-  TranslationLang,
 } from '@navikt/skjemadigitalisering-shared-domain';
-
-type InputType = 'text' | 'textarea';
-type CsvRow = {
-  type: 'tekst' | 'html';
-  order: string;
-  text: string;
-} & {
-  [key in TranslationLang]?: string;
-};
-
-const getInputType = (value: string): InputType => {
-  return value?.length < 80 ? 'text' : 'textarea';
-};
 
 const getTextFromComponentProperty = (property: string | undefined) => (property !== '' ? property : undefined);
 
-const extractTextsFromProperties = (props: NavFormType['properties']): string[] => {
+const extractTextsFromProperties = (props: FormPropertiesType): string[] => {
   const array: string[] = [];
   if (props?.innsendingOverskrift) {
     array.push(props.innsendingOverskrift);
@@ -213,109 +196,4 @@ const getFormTextsWithoutCountryNames = (form: Form) => {
   return getFormTexts(form).filter((text) => !countries.some((country) => country.label === text));
 };
 
-const removeLineBreaks = (text?: string) => (text ? text.replace(/(\r\n|\n|\r)/gm, ' ') : text);
-
-const escapeQuote = (text?: string) => {
-  if (typeof text === 'string' && text.includes('"')) {
-    return text.replace(/"/g, '""');
-  }
-  return text;
-};
-
-const sanitizeForCsv = (text?: string) => escapeQuote(removeLineBreaks(text));
-
-const createRow = (
-  order: string,
-  nb: string,
-  nn?: string,
-  en?: string,
-  type: 'tekst' | 'html' = 'tekst',
-  isGlobal?: boolean,
-): CsvRow => {
-  const sanitizedNN = sanitizeForCsv(nn)?.concat(isGlobal ? ' (Global Tekst)' : '');
-  const sanitizedEN = sanitizeForCsv(en)?.concat(isGlobal ? ' (Global Tekst)' : '');
-
-  return {
-    type,
-    order,
-    text: sanitizeForCsv(nb)!,
-    ...(sanitizedNN ? { nn: sanitizedNN } : {}),
-    ...(sanitizedEN ? { en: sanitizedEN } : {}),
-  };
-};
-
-const createTranslationsTextRow = (
-  order: string,
-  text: string,
-  translation?: FormsApiTranslation,
-  type: 'tekst' | 'html' = 'tekst',
-): CsvRow => {
-  if (!translation) {
-    return createRow(order, text, undefined, undefined, type);
-  }
-
-  const isGlobal = formsApiTranslations.isFormTranslation(translation) && !!translation.globalTranslationId;
-  return createRow(order, text, translation.nn, translation.en, type, isGlobal);
-};
-
-const createTranslationsHtmlRows = (
-  order: string,
-  htmlStrings: string[],
-  translations: { nn: string[]; en: string[] },
-  htmlOrder: number = 0,
-): CsvRow[] => {
-  return htmlStrings.map((text, index) => {
-    return createRow(
-      `${order}-${String(++htmlOrder).padStart(3, '0')}`,
-      text,
-      translations.nn[index],
-      translations.en[index],
-      'html',
-    );
-  });
-};
-
-const getRowsForExport = (texts: string[], translations: FormsApiTranslation[]): CsvRow[] => {
-  let textIndex = 0;
-  return texts.flatMap((text) => {
-    const translation = translations.find((translation) => translation.key === text);
-    if (htmlUtils.isHtmlString(text)) {
-      const htmlTranslations = {
-        nn: translation?.nn ? htmlUtils.getTexts(translation.nn) : [],
-        en: translation?.en ? htmlUtils.getTexts(translation.en) : [],
-      };
-      const htmlStrings = htmlUtils.getTexts(text);
-      return createTranslationsHtmlRows(`${++textIndex}`.padStart(3, '0'), htmlStrings, htmlTranslations);
-    } else {
-      return createTranslationsTextRow(`${++textIndex}`.padStart(3, '0'), text, translation);
-    }
-  });
-};
-
-const getRowsForExportFromForm = (form: Form, translations: FormsApiFormTranslation[]) => {
-  const formTexts = getFormTextsWithoutCountryNames(form);
-  return getRowsForExport(formTexts, translations);
-};
-
-const getHeadersForExport = (translations: FormsApiTranslation[]) => {
-  const hasNynorsk = translations.some((translation) => !!translation.nn);
-  const hasEnglish = translations.some((translation) => !!translation.en);
-  return [
-    { label: 'Type', key: 'type' },
-    { label: 'Rekkefølge', key: 'order' },
-    { label: 'Skjematekster', key: 'text' },
-    ...(hasNynorsk ? [{ label: 'Nynorsk', key: 'nn' }] : []),
-    ...(hasEnglish ? [{ label: 'Engelsk', key: 'en' }] : []),
-  ];
-};
-
-export {
-  getFormTextsWithoutCountryNames,
-  getHeadersForExport,
-  getInputType,
-  getRowsForExport,
-  getRowsForExportFromForm,
-  sanitizeForCsv,
-  withoutDuplicatedComponents,
-};
-export type { InputType };
+export { getFormTextsWithoutCountryNames };

@@ -3,7 +3,7 @@ import { ConfirmationModal, i18nUtils, makeStyles } from '@navikt/skjemadigitali
 import { Form, I18nTranslations } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useState } from 'react';
 import { useFormTranslations } from '../../context/translations/FormTranslationsContext';
-import { getFormTextsWithoutCountryNames } from '../../old_translations/utils';
+import { getFormTextsWithoutCountryNames } from '../../translations/utils/formTextsUtils';
 import FormStatus from '../status/FormStatus';
 import { allLanguagesInNorwegian } from '../status/PublishedLanguages';
 import Timestamp from '../status/Timestamp';

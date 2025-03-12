@@ -1,13 +1,11 @@
 import { CSVLink } from 'react-csv';
 import { useGlobalTranslations } from '../../context/translations/GlobalTranslationsContext';
-import { getTranslationKeysForAllPredefinedTexts } from '../../old_translations/global/utils';
-import { getHeadersForExport, getRowsForExport } from '../../old_translations/utils';
+import { getHeadersForExport, getRowsForExportFromGlobalTexts } from '../utils/exportTranslationsUtils';
 
 const ExportGlobalTranslationsButton = () => {
   const { translations } = useGlobalTranslations();
 
-  const texts = getTranslationKeysForAllPredefinedTexts();
-  const data = getRowsForExport(texts, translations);
+  const data = getRowsForExportFromGlobalTexts(translations);
   const headers = getHeadersForExport(translations);
 
   return (
