@@ -50,9 +50,9 @@ const formatPDFDate = (date: Date) => {
 };
 
 // Generisk metode for kall til mot Gotenberg gitt rute og preparert FormData
-export const callGotenberg = async (language: string, route: string, formData: FormData): Promise<any> => {
+export const callGotenberg = async (language: string = 'no', route: string, formData: FormData): Promise<any> => {
   const url = language.toLowerCase().startsWith('en') ? gotenbergUrlEn : gotenbergUrl;
-  console.log(`Calling Gotenberg with url = ${url}/${route}`);
+  console.log(`Calling Gotenberg with url = ${url}${route}`);
 
   try {
     // Send the request to Gotenberg

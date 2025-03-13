@@ -27,11 +27,16 @@ const createPdf = async (props: CreatePdfProps) => {
 
   const body = forstesideUtils.genererFoerstesideData(form, submission, language, recipients, unitNumber);
 
-  const response = await createRequest(accessToken, JSON.stringify(body));
+  const response = await createPdfRequest(accessToken, JSON.stringify(body));
 
   log(body, response);
 
-  return response;
+  return {
+    ...(response as object),
+    navSkjemaId: body.navSkjemaId,
+    overskriftstittel: body.overskriftstittel,
+    spraakkode: body.spraakkode,
+  };
 };
 
 const getRecipients = async (formProperties: FormPropertiesType): Promise<Recipient[] | undefined> => {
@@ -52,7 +57,7 @@ const getRecipients = async (formProperties: FormPropertiesType): Promise<Recipi
   }
 };
 
-const createRequest = async (accessToken: string, body?: BodyInit) => {
+const createPdfRequest = async (accessToken: string, body?: BodyInit) => {
   const { skjemabyggingProxyUrl } = config;
 
   const response = await fetch(`${skjemabyggingProxyUrl}/foersteside`, {

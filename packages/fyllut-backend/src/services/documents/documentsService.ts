@@ -5,37 +5,14 @@ import applicationService from './applicationService';
 import frontPageService from './frontPageService';
 import { mergeFiles } from './gotenbergService';
 
-interface FrontPageProps {
+interface FrontPageAndApplicationProps {
   accessToken: string;
   form: NavFormType;
+  submissionMethod: string;
   submission: Submission;
   language: string;
-  unitNumber: string;
-}
-
-const frontPage = async (props: FrontPageProps) => {
-  const { accessToken, form, submission, language, unitNumber } = props;
-
-  const frontPageResponse: any = frontPageService.createPdf({
-    accessToken,
-    form,
-    submission,
-    language,
-    unitNumber,
-  });
-
-  const frontPagePdf = base64Decode(frontPageResponse.foersteside);
-
-  if (frontPagePdf === undefined) {
-    throw htmlResponseError('Generering av førstesideark feilet');
-  }
-
-  return Buffer.from(new Uint8Array(frontPagePdf));
-};
-
-interface FrontPageAndApplicationProps extends FrontPageProps {
   translations: I18nTranslationMap;
-  submissionMethod: string;
+  unitNumber: string;
 }
 
 const frontPageAndApplication = async (props: FrontPageAndApplicationProps) => {
@@ -51,6 +28,10 @@ const frontPageAndApplication = async (props: FrontPageAndApplicationProps) => {
 
   const frontPagePdf = base64Decode(frontPageResponse.foersteside);
 
+  if (frontPagePdf === undefined) {
+    throw htmlResponseError('Generering av førstesideark PDF feilet');
+  }
+
   const applicationResponse: any = await applicationService.createPdf(
     accessToken,
     form,
@@ -62,8 +43,8 @@ const frontPageAndApplication = async (props: FrontPageAndApplicationProps) => {
 
   const applicationPdf = base64Decode(applicationResponse.data);
 
-  if (applicationPdf === undefined || frontPagePdf === undefined) {
-    throw htmlResponseError('Generering av førstesideark eller søknads PDF feilet');
+  if (applicationPdf === undefined) {
+    throw htmlResponseError('Generering av søknads PDF feilet');
   }
 
   const documents = [frontPagePdf, applicationPdf];
@@ -80,7 +61,6 @@ const frontPageAndApplication = async (props: FrontPageAndApplicationProps) => {
 };
 
 const documentsService = {
-  frontPage,
   frontPageAndApplication,
 };
 

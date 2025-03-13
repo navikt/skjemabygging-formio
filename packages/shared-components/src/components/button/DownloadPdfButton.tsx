@@ -31,8 +31,10 @@ const DownloadPdfButton = ({
       const response: Blob = await http.post(actionUrl, values, {
         Accept: http.MimeType.PDF,
       });
-
       const url = window.URL.createObjectURL(response);
+      if (!url) {
+        throw new Error('Could not create PDF url');
+      }
       const a = document.createElement('a');
       a.href = url;
       a.download = fileName;

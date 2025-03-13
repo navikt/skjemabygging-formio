@@ -56,7 +56,7 @@ const DownloadApplicationButton = ({
           enhetNummer,
           submissionMethod: submissionMethod ?? 'paper',
         }}
-        actionUrl={`${fyllutBaseURL}/api/documents/front-page`}
+        actionUrl={`${fyllutBaseURL}/api/documents/front-page-and-application`}
         isValid={isValid}
         onSuccess={onSuccess}
         onError={onError}
