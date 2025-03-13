@@ -5,7 +5,7 @@ import { logger } from '../../logger';
 import { synchronousResponseToError } from '../../utils/errorHandling';
 import fetchWithRetry from '../../utils/fetchWithRetry';
 
-const { gotenbergUrl } = config;
+const { gotenbergUrl, gotenbergUrlEn } = config;
 
 // Sette opp formdata til å merge en liste av PDFer
 export const mergeFiles = async (
@@ -42,7 +42,7 @@ export const mergeFiles = async (
 
   // Hvordan sette språk? En engelsk og en norsk Gotenberg installasjon?
   logger.info(`Skal kalle Gotenberg for å merge filer`);
-  return await callGotenberg('/forms/pdfengines/merge', formData);
+  return await callGotenberg(language, '/forms/pdfengines/merge', formData);
 };
 
 const formatPDFDate = (date: Date) => {
@@ -50,12 +50,13 @@ const formatPDFDate = (date: Date) => {
 };
 
 // Generisk metode for kall til mot Gotenberg gitt rute og preparert FormData
-export const callGotenberg = async (route: string, formData: FormData): Promise<any> => {
-  console.log(`Calling Gotenberg with url = ${gotenbergUrl}${route}`);
+export const callGotenberg = async (language: string, route: string, formData: FormData): Promise<any> => {
+  const url = language.toLowerCase().startsWith('en') ? gotenbergUrlEn : gotenbergUrl;
+  console.log(`Calling Gotenberg with url = ${url}/${route}`);
 
   try {
     // Send the request to Gotenberg
-    const gotenbergResponse = await fetchWithRetry(`${gotenbergUrl}${route}`, {
+    const gotenbergResponse = await fetchWithRetry(`${url}${route}`, {
       retry: 1,
       headers: {
         accept: 'application/pdf, text/plain',
