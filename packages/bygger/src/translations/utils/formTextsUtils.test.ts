@@ -4,7 +4,7 @@ import {
   MockedComponentObjectForTest,
   TEXTS,
 } from '@navikt/skjemadigitalisering-shared-domain';
-import { getHeadersForExport, getRowsForExportFromForm } from './exportTranslationsUtils';
+import { getHeadersForExport, getRowsForExportFromForm } from './exportUtils';
 import { getFormTextsWithoutCountryNames } from './formTextsUtils';
 
 const {

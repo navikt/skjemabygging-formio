@@ -1,6 +1,6 @@
 import { CSVLink } from 'react-csv';
 import { useGlobalTranslations } from '../../context/translations/GlobalTranslationsContext';
-import { getHeadersForExport, getRowsForExportFromGlobalTexts } from '../utils/exportTranslationsUtils';
+import { getHeadersForExport, getRowsForExportFromGlobalTexts } from '../utils/exportUtils';
 
 const ExportGlobalTranslationsButton = () => {
   const { translations } = useGlobalTranslations();

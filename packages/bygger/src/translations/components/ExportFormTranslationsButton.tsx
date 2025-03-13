@@ -1,7 +1,7 @@
 import { Form } from '@navikt/skjemadigitalisering-shared-domain';
 import { CSVLink } from 'react-csv';
 import { useFormTranslations } from '../../context/translations/FormTranslationsContext';
-import { getHeadersForExport, getRowsForExportFromForm } from '../utils/exportTranslationsUtils';
+import { getHeadersForExport, getRowsForExportFromForm } from '../utils/exportUtils';
 
 interface Props {
   form: Form;

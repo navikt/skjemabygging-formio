@@ -35,9 +35,11 @@ const getRowsForExport = (texts: string[], translations: FormsApiTranslation[]):
   return texts.flatMap((text) => {
     const translation = translations.find((translation) => translation.key === text);
     if (htmlUtils.isHtmlString(text)) {
+      const nn = translation?.nn ? htmlUtils.getTexts(translation.nn) : [];
+      const en = translation?.en ? htmlUtils.getTexts(translation.en) : [];
       const htmlTranslations = {
-        nn: translation?.nn ? htmlUtils.getTexts(translation.nn) : [],
-        en: translation?.en ? htmlUtils.getTexts(translation.en) : [],
+        nn: nn.filter((text) => text.trim().length > 0),
+        en: en.filter((text) => text.trim().length > 0),
       };
       const htmlStrings = htmlUtils.getTexts(text);
       return createTranslationsHtmlRows(`${++textIndex}`.padStart(3, '0'), htmlStrings, htmlTranslations);
