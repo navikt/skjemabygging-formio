@@ -5,14 +5,15 @@
  * The arrays acceptedTags and defaultLeafs may need to be changed if we redefine what tags are allowed in the ckeditor,
  * otherwise tags may appear as plain text where we are using these converters
  * */
-const acceptedTags = ['P', 'H3', 'H4', 'LI', 'OL', 'UL'] as const;
+const defaultLeafTags = ['P', 'H3', 'H4', 'LI'] as const;
+const acceptedTags = [...defaultLeafTags, 'OL', 'UL'] as const;
 type AcceptedTag = (typeof acceptedTags)[number];
 
 const isAcceptedTag = (tag: string): tag is AcceptedTag => {
   return ([...acceptedTags] as string[]).includes(tag);
 };
 
-const htmlNode2Markdown = (node: Element | ChildNode): string => {
+const generateMarkdown = (node: Element | ChildNode): string => {
   if (node.nodeType === Node.TEXT_NODE) {
     return node.textContent ?? '';
   } else if (node.nodeType === Node.ELEMENT_NODE) {
@@ -21,20 +22,20 @@ const htmlNode2Markdown = (node: Element | ChildNode): string => {
     switch (element.tagName) {
       case 'STRONG':
       case 'B': {
-        const boldText = Array.from(element.childNodes, htmlNode2Markdown).join('');
+        const boldText = Array.from(element.childNodes, generateMarkdown).join('');
         return boldText ? `**${boldText}**` : '';
       }
       case 'A': {
-        const linkText = Array.from(element.childNodes, htmlNode2Markdown).join('');
+        const linkText = Array.from(element.childNodes, generateMarkdown).join('');
         const url = element.getAttribute('href');
         return linkText || url ? `[${linkText}](${url})` : '';
       }
       case 'SPAN': {
-        return Array.from(element.childNodes, htmlNode2Markdown).join('');
+        return Array.from(element.childNodes, generateMarkdown).join('');
       }
       default:
         if (isAcceptedTag(element.tagName)) {
-          const textContent = Array.from(element.childNodes, htmlNode2Markdown).join('');
+          const textContent = Array.from(element.childNodes, generateMarkdown).join('');
           return `<${element.tagName.toLowerCase()}>${textContent}</${element.tagName.toLowerCase()}>`;
         }
         return element.outerHTML;
@@ -43,4 +44,4 @@ const htmlNode2Markdown = (node: Element | ChildNode): string => {
   return '';
 };
 
-export { htmlNode2Markdown };
+export { defaultLeafTags, generateMarkdown };

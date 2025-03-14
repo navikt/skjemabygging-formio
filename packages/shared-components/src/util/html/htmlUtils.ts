@@ -1,5 +1,5 @@
 import DOMPurify from 'dompurify';
-import { htmlNode2Markdown } from './markdown';
+import { defaultLeafTags, generateMarkdown } from './markdown';
 
 type SanitizeOptions = Omit<DOMPurify.Config, 'RETURN_DOM_FRAGMENT' | 'RETURN_DOM'>;
 
@@ -47,11 +47,10 @@ const removeTags = (htmlString: string, tag: string | string[]): string => {
 };
 
 const getTexts = (htmlString: string): string[] => {
-  const tags = ['p', 'li', 'h3', 'h4'];
   const div = document.createElement('div');
   div.innerHTML = htmlString;
-  return Array.from(div.querySelectorAll(tags.join(','))).map((element) => {
-    return Array.from(element.childNodes, htmlNode2Markdown).join('');
+  return Array.from(div.querySelectorAll(defaultLeafTags.join(',').toLowerCase())).map((element) => {
+    return Array.from(element.childNodes, generateMarkdown).join('');
   });
 };
 
