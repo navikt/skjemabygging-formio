@@ -42,9 +42,9 @@ const EnhetSelector = ({ enhetsliste = [], onSelectEnhet, error }: EnhetSelector
         }}
       />
       {error && (
-        <div id="enhetSelectError">
-          <p className="typo-feilmelding">{error}</p>
-        </div>
+        <p id="enhetSelectError" className="navds-error-message navds-label">
+          {error}
+        </p>
       )}
     </div>
   );

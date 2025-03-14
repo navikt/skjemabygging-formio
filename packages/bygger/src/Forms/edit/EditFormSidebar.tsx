@@ -1,8 +1,7 @@
 import { PadlockLockedIcon } from '@navikt/aksel-icons';
 import { Button, VStack } from '@navikt/ds-react';
-import { useModal } from '@navikt/skjemadigitalisering-shared-components';
+import { ButtonWithSpinner, useModal } from '@navikt/skjemadigitalisering-shared-components';
 import { Form } from '@navikt/skjemadigitalisering-shared-domain';
-import ButtonWithSpinner from '../../components/ButtonWithSpinner';
 import SidebarLayout from '../../components/layout/SidebarLayout';
 import UserFeedback from '../../components/UserFeedback';
 import { useForm } from '../../context/old_form/FormContext';

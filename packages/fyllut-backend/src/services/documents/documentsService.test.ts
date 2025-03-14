@@ -4,8 +4,9 @@ import nock from 'nock';
 import path from 'path';
 import { config } from '../../config/config';
 import { mockNext, mockRequest, mockResponse } from '../../test/requestTestHelpers';
-import forstesideAndSoknad from './forsteside-soknad';
-import * as mottaksadresser from './mottaksadresser';
+
+import documents from '../../routers/api/documents/documents';
+import * as mottaksadresser from '../../routers/api/mottaksadresser';
 
 const { skjemabyggingProxyUrl, formsApiUrl } = config;
 
@@ -34,11 +35,11 @@ const addresses = [
 ];
 
 const formTitle = 'testskjema';
-const filePathForsteside = path.join(process.cwd(), '/src/routers/api/test-forsteside.pdf');
-const filePathSoknad = path.join(process.cwd(), '/src/routers/api/test-skjema.pdf');
-const filePathMerged = path.join(process.cwd(), '/src/routers/api/test-merged.pdf');
+const filePathForsteside = path.join(process.cwd(), '/src/services/documents/testdata/test-forsteside.pdf');
+const filePathSoknad = path.join(process.cwd(), '/src/services/documents/testdata/test-skjema.pdf');
+const filePathMerged = path.join(process.cwd(), '/src/services/documents/testdata/test-merged.pdf');
 
-describe('[endpoint] forsteside', () => {
+describe('[endpoint] documents', () => {
   beforeAll(() => {
     vi.spyOn(mottaksadresser, 'loadMottaksadresser').mockImplementation(async () => addresses);
     vi.spyOn(forstesideUtils, 'genererFoerstesideData').mockImplementation(
@@ -54,7 +55,7 @@ describe('[endpoint] forsteside', () => {
     );
   });
 
-  it('Create front page', async () => {
+  it('Create front page and application', async () => {
     const forstesidePdf = readFileSync(filePathForsteside);
     const soknadPdf = readFileSync(filePathSoknad);
     const mergedPdf = readFileSync(filePathMerged);
@@ -92,7 +93,7 @@ describe('[endpoint] forsteside', () => {
       },
     });
 
-    await forstesideAndSoknad.post(req, mockResponse(), mockNext());
+    await documents.frontPageAndApplication(req, mockResponse(), mockNext());
 
     expect(recipientsMock.isDone()).toBe(true);
     expect(generateFileMock.isDone()).toBe(true);
