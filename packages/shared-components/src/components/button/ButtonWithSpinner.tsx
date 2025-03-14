@@ -15,18 +15,9 @@ interface Props {
     | 'tertiary-neutral'
     | 'danger';
   size?: 'medium' | 'small' | 'xsmall';
-  download?: boolean;
 }
 
-const ButtonWithSpinner = ({
-  children,
-  className,
-  onClick,
-  variant = 'primary',
-  size = 'medium',
-  icon,
-  download,
-}: Props) => {
+const ButtonWithSpinner = ({ children, className, onClick, variant = 'primary', size = 'medium', icon }: Props) => {
   const [isSaving, setIsSaving] = useState(false);
   async function onClickWithSpinner() {
     setIsSaving(true);
@@ -44,8 +35,6 @@ const ButtonWithSpinner = ({
       loading={isSaving}
       size={size}
       icon={icon}
-      download={download}
-      as={'a'}
     >
       {children}
     </Button>

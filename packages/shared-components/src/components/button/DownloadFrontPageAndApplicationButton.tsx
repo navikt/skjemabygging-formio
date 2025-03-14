@@ -18,7 +18,7 @@ interface Props {
 
 type DownloadState = 'succes' | 'error';
 
-const DownloadApplicationButton = ({
+const DownloadFrontPageAndApplicationButton = ({
   formPath,
   form,
   submission,
@@ -32,6 +32,10 @@ const DownloadApplicationButton = ({
   const { fyllutBaseURL } = useAppConfig();
   const { currentLanguage } = useLanguages();
   const [downloadState, setDownloadState] = useState<DownloadState>();
+
+  const onClick = () => {
+    setDownloadState(undefined);
+  };
 
   const onSuccess = () => {
     setDownloadState('succes');
@@ -60,6 +64,7 @@ const DownloadApplicationButton = ({
         isValid={isValid}
         onSuccess={onSuccess}
         onError={onError}
+        onClick={onClick}
       >
         {children}
       </DownloadPdfButton>
@@ -81,4 +86,4 @@ const DownloadApplicationButton = ({
   );
 };
 
-export default DownloadApplicationButton;
+export default DownloadFrontPageAndApplicationButton;

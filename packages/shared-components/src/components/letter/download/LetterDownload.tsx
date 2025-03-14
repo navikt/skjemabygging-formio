@@ -2,7 +2,7 @@ import { BodyShort, Heading } from '@navikt/ds-react';
 import { Enhet, NavFormType, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useState } from 'react';
 import { useLanguages } from '../../../context/languages';
-import DownloadApplicationButton from '../../button/DownloadApplicationButton';
+import DownloadFrontPageAndApplicationButton from '../../button/DownloadFrontPageAndApplicationButton';
 import EnhetSelector from '../../select/enhet/EnhetSelector';
 
 interface Props {
@@ -36,7 +36,7 @@ const LetterDownload = ({ form, index, submission, enhetsListe, translations }: 
         error={isRequiredEnhetMissing ? translate(TEXTS.statiske.prepareLetterPage.entityNotSelectedError) : undefined}
       />
 
-      <DownloadApplicationButton
+      <DownloadFrontPageAndApplicationButton
         formPath={form.path}
         form={form}
         submission={submission}
@@ -51,7 +51,7 @@ const LetterDownload = ({ form, index, submission, enhetsListe, translations }: 
         }}
       >
         {translate(TEXTS.grensesnitt.prepareLetterPage.downloadCoverPage)}
-      </DownloadApplicationButton>
+      </DownloadFrontPageAndApplicationButton>
     </section>
   );
 };

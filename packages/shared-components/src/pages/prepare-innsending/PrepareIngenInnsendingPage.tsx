@@ -1,7 +1,7 @@
 import { BodyShort, Heading } from '@navikt/ds-react';
 import { Submission, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect } from 'react';
-import DownloadApplicationButton from '../../components/button/DownloadApplicationButton';
+import DownloadFrontPageAndApplicationButton from '../../components/button/DownloadFrontPageAndApplicationButton';
 import NavigateButtonComponent from '../../components/button/navigation/pages/NavigateButtonComponent';
 import { useLanguages } from '../../context/languages';
 import { scrollToAndSetFocus } from '../../util/focus-management/focus-management';
@@ -36,7 +36,7 @@ export function PrepareIngenInnsendingPage({ form, submission, translations, for
               {translate(form.properties.innsendingOverskrift)}
             </Heading>
             <BodyShort className="mb">{translate(form.properties.innsendingForklaring)}</BodyShort>
-            <DownloadApplicationButton
+            <DownloadFrontPageAndApplicationButton
               formPath={form.path}
               form={form}
               submission={submission}
@@ -44,7 +44,7 @@ export function PrepareIngenInnsendingPage({ form, submission, translations, for
               submissionMethod={'ingen'}
             >
               {translate(form.properties.downloadPdfButtonText || TEXTS.grensesnitt.downloadApplication)}
-            </DownloadApplicationButton>
+            </DownloadFrontPageAndApplicationButton>
           </div>
           <NavigateButtonComponent translate={translate} goBackUrl={`${formUrl}/oppsummering`} />
         </section>

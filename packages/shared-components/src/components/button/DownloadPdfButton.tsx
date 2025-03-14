@@ -1,11 +1,13 @@
-import React from 'react';
-import { ButtonWithSpinner, http } from '../../index';
+import { Button } from '@navikt/ds-react';
+import React, { useState } from 'react';
+import { http } from '../../index';
 
 interface Props {
   fileName: string;
   values: Record<string, string | undefined>;
   actionUrl: string;
   isValid?: () => boolean;
+  onClick?: () => void;
   onSuccess?: () => void;
   onError?: () => void;
   className?: string;
@@ -18,14 +20,22 @@ const DownloadPdfButton = ({
   actionUrl,
   className,
   isValid,
+  onClick,
   onSuccess,
   onError,
   children,
 }: Props) => {
-  const download = async () => {
-    if (isValid && !isValid()) {
+  const [downloading, setDownloading] = useState<boolean>(false);
+
+  const clickDownload = async () => {
+    if ((isValid && !isValid()) || downloading) {
       return;
     }
+
+    if (onClick) {
+      onClick();
+    }
+    setDownloading(true);
 
     try {
       const response: Blob = await http.post(actionUrl, values, {
@@ -47,13 +57,23 @@ const DownloadPdfButton = ({
       if (onError) {
         onError();
       }
+    } finally {
+      setDownloading(false);
     }
   };
 
   return (
-    <ButtonWithSpinner onClick={download} className={className} download>
+    <Button
+      className={className}
+      variant="primary"
+      onClick={clickDownload}
+      loading={downloading}
+      size="medium"
+      download
+      as="a"
+    >
       {children}
-    </ButtonWithSpinner>
+    </Button>
   );
 };
 
