@@ -18,7 +18,7 @@ describe('page (util)', () => {
     it('returns sub=paper', () => {
       const form = {
         properties: {
-          innsending: 'KUN_PAPIR',
+          submissionTypes: ['PAPER'],
         },
       } as NavFormType;
       const sub = getQueryParamSub(form);
@@ -28,7 +28,7 @@ describe('page (util)', () => {
     it('returns sub=digital', () => {
       const form = {
         properties: {
-          innsending: 'KUN_DIGITAL',
+          submissionTypes: ['DIGITAL'],
         },
       } as NavFormType;
       const sub = getQueryParamSub(form);
@@ -38,7 +38,7 @@ describe('page (util)', () => {
     it('returns undefined when both digital and paper are allowed', () => {
       const form = {
         properties: {
-          innsending: 'PAPIR_OG_DIGITAL',
+          submissionTypes: ['PAPER', 'DIGITAL'],
         },
       } as NavFormType;
       const sub = getQueryParamSub(form);
@@ -48,9 +48,9 @@ describe('page (util)', () => {
     it('returns undefined when there is no submission allowed', () => {
       const form = {
         properties: {
-          innsending: 'INGEN',
+          submissionTypes: [],
         },
-      } as NavFormType;
+      } as unknown as NavFormType;
       const sub = getQueryParamSub(form);
       expect(sub).toBeUndefined();
     });

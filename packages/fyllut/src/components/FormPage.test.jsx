@@ -14,7 +14,9 @@ const form = {
   title: 'Testskjema',
   path: 'testskjema',
   components: [{ type: 'panel', key: 'veiledning' }],
-  properties: {},
+  properties: {
+    submissionTypes: [],
+  },
 };
 
 const translations = {

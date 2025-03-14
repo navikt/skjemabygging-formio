@@ -101,7 +101,8 @@ describe('ReportService', () => {
               properties: {
                 skjemanummer: 'TEST1',
                 signatures: undefined,
-              } as FormPropertiesType,
+                submissionTypes: [],
+              } as unknown as FormPropertiesType,
             },
           ];
           setupNock(publishedForms);
@@ -123,7 +124,8 @@ describe('ReportService', () => {
               properties: {
                 skjemanummer: 'TEST1',
                 signatures: [{ label: '' }],
-              } as FormPropertiesType,
+                submissionTypes: [],
+              } as unknown as FormPropertiesType,
             },
           ];
           setupNock(publishedForms);
@@ -145,7 +147,8 @@ describe('ReportService', () => {
               properties: {
                 skjemanummer: 'TEST1',
                 signatures: [{ label: 'Lege' }, { label: 'Verge' }, { label: 'Søker' }],
-              } as FormPropertiesType,
+                submissionTypes: [],
+              } as unknown as FormPropertiesType,
             },
           ];
           setupNock(publishedForms);
@@ -175,7 +178,8 @@ describe('ReportService', () => {
                 skjemanummer: 'TEST1',
                 published: '2022-07-28T10:00:10.325Z',
                 modified: '2022-07-28T10:00:10.325Z',
-              } as FormPropertiesType,
+                submissionTypes: [],
+              } as unknown as FormPropertiesType,
             } as Form,
           ];
           setupNock(publishedForms);
@@ -201,7 +205,8 @@ describe('ReportService', () => {
                 skjemanummer: 'TEST1',
                 published: '2022-07-28T10:00:10.325Z',
                 modified: '2022-07-28T11:00:05.254Z',
-              } as FormPropertiesType,
+                submissionTypes: [],
+              } as unknown as FormPropertiesType,
             } as Form,
           ];
           setupNock(publishedForms);
@@ -225,7 +230,8 @@ describe('ReportService', () => {
               properties: {
                 skjemanummer: 'TEST1',
                 modified: '2022-07-28T11:00:05.254Z',
-              } as FormPropertiesType,
+                submissionTypes: [],
+              } as unknown as FormPropertiesType,
             } as Form,
           ];
           setupNock(publishedForms);
@@ -252,7 +258,8 @@ describe('ReportService', () => {
             status: 'published',
             properties: {
               skjemanummer: 'TEST1',
-            } as FormPropertiesType,
+              submissionTypes: [],
+            } as unknown as FormPropertiesType,
           } as Form,
           {
             title: 'Testskjema2',
@@ -264,7 +271,8 @@ describe('ReportService', () => {
             status: 'published',
             properties: {
               skjemanummer: 'TEST2',
-            } as FormPropertiesType,
+              submissionTypes: [],
+            } as unknown as FormPropertiesType,
           } as Form,
           {
             title: 'Testskjema3',
@@ -274,7 +282,9 @@ describe('ReportService', () => {
             publishedAt: '2022-07-28T10:00:10.325Z',
             publishedLanguages: ['nb'],
             status: 'published',
-            properties: {} as FormPropertiesType,
+            properties: {
+              submissionTypes: [],
+            } as unknown as FormPropertiesType,
           } as Form,
         ];
         setupNock(publishedForms);
@@ -320,7 +330,9 @@ describe('ReportService', () => {
                 ] as Component[],
               },
             ] as Component[],
-            properties: {} as FormPropertiesType,
+            properties: {
+              submissionTypes: [],
+            } as unknown as FormPropertiesType,
           } as Form,
           {
             title: 'Testskjema2',
@@ -328,7 +340,9 @@ describe('ReportService', () => {
             skjemanummer: 'TEST2',
             path: 'test2',
             status: 'published',
-            properties: {} as FormPropertiesType,
+            properties: {
+              submissionTypes: [],
+            } as unknown as FormPropertiesType,
           } as Form,
           {
             title: 'Testskjema3',
@@ -343,7 +357,9 @@ describe('ReportService', () => {
                 components: [] as Component[],
               },
             ] as Component[],
-            properties: {} as FormPropertiesType,
+            properties: {
+              submissionTypes: [],
+            } as unknown as FormPropertiesType,
           } as Form,
         ];
         setupNock(publishedForms);
@@ -407,25 +423,28 @@ describe('ReportService', () => {
             ] as Component[],
             properties: {
               skjemanummer: 'TEST1',
+              tema: 'HJE',
               published: '2022-07-28T10:00:10.325Z',
               publishedLanguages: ['en', 'nn-NO'],
-              innsending: 'PAPIR_OG_DIGITAL',
+              submissionTypes: ['DIGITAL', 'PAPER'],
               ettersending: 'PAPIR_OG_DIGITAL',
-            } as FormPropertiesType,
+            },
           } as Form,
           {
             title: 'Testskjema2',
             skjemanummer: 'TEST2',
+            tema: 'HJE',
             path: 'test2',
             status: 'published',
             components: [],
             properties: {
               skjemanummer: 'TEST2',
+              tema: 'HJE',
               published: '2022-07-28T10:00:10.325Z',
               publishedLanguages: ['en'],
-              innsending: 'INGEN',
+              submissionTypes: [],
               ettersending: 'KUN_PAPIR',
-            } as FormPropertiesType,
+            },
           } as Form,
           {
             title: 'Testskjema3',
@@ -457,11 +476,12 @@ describe('ReportService', () => {
             ] as Component[],
             properties: {
               skjemanummer: 'TEST3',
+              tema: 'HJE',
               published: '2022-07-28T10:00:10.325Z',
               publishedLanguages: undefined,
-              innsending: 'KUN_PAPIR',
+              submissionTypes: ['PAPER'],
               ettersending: 'KUN_PAPIR',
-            } as FormPropertiesType,
+            },
           } as Form,
         ];
         setupNock(publishedForms);

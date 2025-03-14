@@ -380,7 +380,7 @@ describe('utils', () => {
           'Testskjema',
           createFormPropertiesObject({
             skjemanummer: 'TST 12.13-14',
-            innsending: 'INGEN',
+            submissionTypes: [],
             innsendingOverskrift: 'Gi det til pasienten',
             innsendingForklaring: 'Skriv ut skjemaet',
           }),
@@ -396,7 +396,7 @@ describe('utils', () => {
           'Testskjema',
           createFormPropertiesObject({
             skjemanummer: 'TST 12.13-14',
-            innsending: 'KUN_PAPIR',
+            submissionTypes: ['PAPER'],
             downloadPdfButtonText: 'Last ned pdf',
           }),
         ),
@@ -411,7 +411,7 @@ describe('utils', () => {
           'Testskjema',
           createFormPropertiesObject({
             skjemanummer: 'TST 12.13-14',
-            innsending: 'KUN_PAPIR',
+            submissionTypes: ['PAPER'],
             descriptionOfSignatures: 'En lengre beskrivelse av hva man signerer på',
             signatures: {
               signature1: 'Arbeidstaker',

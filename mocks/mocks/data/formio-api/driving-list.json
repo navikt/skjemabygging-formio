@@ -165,7 +165,7 @@
   "properties": {
     "skjemanummer": "test-driving-list",
     "tema": "BIL",
-    "innsending": "PAPIR_OG_DIGITAL",
+    "submissionTypes": ["PAPER", "DIGITAL"],
     "ettersending": "PAPIR_OG_DIGITAL",
     "signatures": [
       {
