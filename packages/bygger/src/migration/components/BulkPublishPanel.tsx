@@ -1,7 +1,7 @@
 import { Alert, BodyShort, Box, Button, Checkbox, Heading, Table } from '@navikt/ds-react';
 import { ConfirmationModal, makeStyles, NavFormioJs } from '@navikt/skjemadigitalisering-shared-components';
 import { Form } from '@navikt/skjemadigitalisering-shared-domain';
-import { useEffect, useReducer, useState } from 'react';
+import { useReducer, useState } from 'react';
 import FormStatus from '../../Forms/status/FormStatus';
 import { determineStatusFromForm } from '../../Forms/status/utils';
 import { bulkPublish } from '../api';
@@ -27,6 +27,22 @@ function reducer(state: State, action: Action) {
   }
 }
 
+type StatusState = Record<string, 'ok' | 'error'>;
+type PublishStatus = { form: Pick<Form, 'path'>; status: 'ok' | 'error' };
+type StatusAction = { type: 'init'; payload: PublishStatus[] };
+function initStatus(list: PublishStatus[]): StatusState {
+  return list.reduce((acc, publishStatus) => ({ ...acc, [publishStatus.form.path]: publishStatus.status }), {});
+}
+
+function statusReducer(_state: StatusState, action: StatusAction) {
+  switch (action.type) {
+    case 'init':
+      return initStatus(action.payload);
+    default:
+      throw new Error();
+  }
+}
+
 const useStyles = makeStyles({
   table: {
     marginTop: '2rem',
@@ -45,19 +61,13 @@ const BulkPublishPanel = ({ forms }: Props) => {
   const styles = useStyles();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [state, dispatch] = useReducer(reducer, {});
+  const [statusState, dispatchStatus] = useReducer(statusReducer, {});
 
-  useEffect(() => {
-    dispatch({
-      type: 'init',
-      payload: forms.filter((form) => {
-        const status = determineStatusFromForm(form);
-        return status === 'PENDING' || status === 'PUBLISHED';
-      }),
+  const onBulkPublish = async (formPaths: string[]) => {
+    return await bulkPublish(NavFormioJs.Formio.getToken(), { formPaths }).then((responseBody) => {
+      console.log(`Bulk publish result: ${JSON.stringify(responseBody)}`);
+      return responseBody;
     });
-  }, [forms]);
-
-  const onBulkPublish = async (formPaths) => {
-    await bulkPublish(NavFormioJs.Formio.getToken(), { formPaths });
   };
 
   const willBePublished = forms.filter((form) => state[form.path]);
@@ -88,6 +98,9 @@ const BulkPublishPanel = ({ forms }: Props) => {
                 <Table.HeaderCell scope="col" className={styles.checkBoxCell}>
                   Skal publiseres
                 </Table.HeaderCell>
+                <Table.HeaderCell scope="col" className={styles.checkBoxCell}>
+                  Publisert?
+                </Table.HeaderCell>
               </Table.Row>
             </Table.Header>
             <Table.Body>
@@ -97,7 +110,7 @@ const BulkPublishPanel = ({ forms }: Props) => {
                     <Table.HeaderCell scope="row">{form.skjemanummer}</Table.HeaderCell>
                     <Table.DataCell>{form.title}</Table.DataCell>
                     <Table.DataCell>
-                      {<FormStatus status={determineStatusFromForm(form)} size={'small'} />}
+                      <FormStatus status={determineStatusFromForm(form)} size={'small'} />
                     </Table.DataCell>
                     <Table.DataCell className={styles.checkBoxCell}>
                       {
@@ -105,33 +118,31 @@ const BulkPublishPanel = ({ forms }: Props) => {
                           hideLabel
                           checked={state[form.path] || false}
                           onChange={(event) => {
-                            if (event.target.checked) {
-                              dispatch({ type: 'check', payload: form.path });
-                            } else {
-                              dispatch({ type: 'uncheck', payload: form.path });
-                            }
+                            const type = event.target.checked ? 'check' : 'uncheck';
+                            dispatch({ type, payload: form.path });
                           }}
                         >
                           {form.title}
                         </Checkbox>
                       }
                     </Table.DataCell>
+                    <Table.DataCell>{statusState[form.path]}</Table.DataCell>
                   </Table.Row>
                 );
               })}
             </Table.Body>
           </Table>
-          <Alert variant="warning" className="mb">
-            Bulk-publisering er deaktivert inntil videre.
-          </Alert>
-          <Button disabled>Publiser nå</Button>
+          <Button>Publiser nå</Button>
         </form>
       </Box>
       <ConfirmationModal
         open={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onConfirm={async () => {
-          await onBulkPublish(Object.entries(state).flatMap(([path, selected]) => (selected ? [path] : [])));
+          const responseBody = await onBulkPublish(
+            Object.entries(state).flatMap(([path, selected]) => (selected ? [path] : [])),
+          );
+          dispatchStatus({ type: 'init', payload: responseBody.bulkPublicationResult });
         }}
         texts={{
           title: 'Bekreft publisering',

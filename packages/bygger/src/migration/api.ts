@@ -63,7 +63,7 @@ export async function runMigrationWithUpdate(token, payload) {
 
 export async function bulkPublish(token, payload) {
   try {
-    return postJson('/api/published-forms', { payload }, token);
+    return postJson('/api/form-publications', { payload }, token);
   } catch (error) {
     console.error(error);
     throw error;
