@@ -1,5 +1,5 @@
 import DOMPurify from 'dompurify';
-import { htmlNode2Markdown } from './converters/markdown';
+import { htmlNode2Markdown } from './markdown';
 
 type SanitizeOptions = Omit<DOMPurify.Config, 'RETURN_DOM_FRAGMENT' | 'RETURN_DOM'>;
 
