@@ -410,7 +410,7 @@
     "modifiedBy": "magnus.roed.hestvik@nav.no",
     "publishedBy": "Hestvik, Magnus Røed",
     "publishedLanguages": [],
-    "ettersending": "PAPIR_OG_DIGITAL",
+    "additionalSubmissionTypes": ["PAPER", "DIGITAL"],
     "prefill": []
   },
   "access": [

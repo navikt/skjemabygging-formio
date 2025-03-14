@@ -309,6 +309,7 @@ const dummyFormProperties: FormPropertiesType = {
   tema: '',
   mellomlagringDurationDays: '28',
   submissionTypes: [],
+  additionalSubmissionTypes: [],
 };
 
 const createFormPropertiesObject = (partialFormProperties: Partial<FormPropertiesType> = {}) => ({
