@@ -85,10 +85,10 @@ const createRow = (
   nn?: string,
   en?: string,
   type: 'tekst' | 'html' = 'tekst',
-  isGlobal?: boolean,
+  markAsGlobal?: boolean,
 ): CsvRow => {
-  const sanitizedNN = sanitizeForCsv(nn)?.concat(isGlobal ? ' (Global Tekst)' : '');
-  const sanitizedEN = sanitizeForCsv(en)?.concat(isGlobal ? ' (Global Tekst)' : '');
+  const sanitizedNN = sanitizeForCsv(nn)?.concat(markAsGlobal ? ' (Global Tekst)' : '');
+  const sanitizedEN = sanitizeForCsv(en)?.concat(markAsGlobal ? ' (Global Tekst)' : '');
 
   return {
     type,
@@ -109,8 +109,8 @@ const createTranslationsTextRow = (
     return createRow(order, text, undefined, undefined, type);
   }
 
-  const isGlobal = formsApiTranslations.isFormTranslation(translation) && !!translation.globalTranslationId;
-  return createRow(order, text, translation.nn, translation.en, type, isGlobal);
+  const markAsGlobal = formsApiTranslations.isFormTranslation(translation) && !!translation.globalTranslationId;
+  return createRow(order, text, translation.nn, translation.en, type, markAsGlobal);
 };
 
 const createTranslationsHtmlRows = (
