@@ -1,9 +1,11 @@
-import { FormioTranslationMap, MockedComponentObjectForTest, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import {
-  getFormTextsWithoutCountryNames,
-  getTextsAndTranslationsForForm,
-  getTextsAndTranslationsHeaders,
-} from './utils';
+  FormsApiFormTranslation,
+  FormsApiTranslation,
+  MockedComponentObjectForTest,
+  TEXTS,
+} from '@navikt/skjemadigitalisering-shared-domain';
+import { getHeadersForExport, getRowsForExportFromForm } from './exportUtils';
+import { getFormTextsWithoutCountryNames } from './formTextsUtils';
 
 const {
   createDummyAttachment,
@@ -497,27 +499,32 @@ describe('utils', () => {
   });
 
   describe('testGetTextsAndTranslationsForForm', () => {
-    const translations: FormioTranslationMap = {
-      en: {
-        id: '123',
-        translations: {
-          Ja: { value: 'Yes', scope: 'global' },
-          '<p>Test linjeskift linux\nwindows\r\napple\r</p>': {
-            value: '<p>Test Line break linux\nwindows\r\napple\r</p>',
-            scope: 'local',
-          },
-        },
+    const translations: FormsApiFormTranslation[] = [
+      {
+        key: 'Ja',
+        globalTranslationId: 1,
+        nb: 'Ja',
+        en: 'Yes',
       },
-      'nn-NO': { id: '2345', translations: { Jeg: { value: 'Eg', scope: 'local' } } },
-    };
+      {
+        key: 'Jeg',
+        nb: 'Jeg',
+        nn: 'Eg',
+      },
+      {
+        key: '<p>Test linjeskift linux\nwindows\r\napple\r</p>',
+        nb: '<p>Test linjeskift linux\nwindows\r\napple\r</p>',
+        en: '<p>Test Line break linux\nwindows\r\napple\r</p>',
+      },
+    ];
 
     it('Test form with translations', () => {
-      const actual = getTextsAndTranslationsForForm(form, translations);
+      const actual = getRowsForExportFromForm(form, translations);
       expect(actual).toEqual([
         { order: '001', type: 'tekst', text: 'test' },
         { order: '002', type: 'tekst', text: 'Introduksjon' },
         { order: '003', type: 'tekst', text: 'Ja', en: 'Yes (Global Tekst)' },
-        { order: '004', type: 'tekst', text: 'Jeg', 'nn-NO': 'Eg' },
+        { order: '004', type: 'tekst', text: 'Jeg', nn: 'Eg' },
         {
           order: '005-001',
           type: 'html',
@@ -547,49 +554,39 @@ describe('utils', () => {
           ],
         },
       ]);
-      const testtranslations: FormioTranslationMap = {
-        'nb-NO': {
-          translations: {},
+      const testtranslations: FormsApiTranslation[] = [
+        {
+          key: 'Veiledning',
+          globalTranslationId: 13,
+          nb: 'Veiledning',
+          nn: 'Rettleiing',
+          en: 'Guidance',
         },
-        en: {
-          translations: {
-            Veiledning: { value: 'Guidance', scope: 'global' },
-            '<p>Nav sender svar.\n<br>\nSe <a href="https://www.nav.no/person/" target="_blank">link</a>.</p>': {
-              value:
-                '<p>Nav sends answers.\n<br>\nSee <a href="https://www.nav.no/person/" target="_blank">link</a>.</p>',
-              scope: 'global',
-            },
-          },
+        {
+          key: '<p>Nav sender svar.\n<br>\nSe <a href="https://www.nav.no/person/" target="_blank">link</a>.</p>',
+          nb: '<p>Nav sender svar.\n<br>\nSe <a href="https://www.nav.no/person/" target="_blank">link</a>.</p>',
+          nn: '<p>Nav sender svar.\n<br>\nSjå <a href="https://www.nav.no/person/" target="_blank">lenke</a>.</p>',
+          en: '<p>Nav sends answers.\n<br>\nSee <a href="https://www.nav.no/person/" target="_blank">link</a>.</p>',
         },
-        'nn-NO': {
-          translations: {
-            Veiledning: { value: 'Rettleiing', scope: 'global' },
-            '<p>Nav sender svar.\n<br>\nSe <a href="https://www.nav.no/person/" target="_blank">link</a>.</p>': {
-              value:
-                '<p>Nav sender svar.\n<br>\nSjå <a href="https://www.nav.no/person/" target="_blank">lenke</a>.</p>',
-              scope: 'global',
-            },
-          },
-        },
-      };
-      const eksport = getTextsAndTranslationsForForm(testform, testtranslations);
+      ];
+      const eksport = getRowsForExportFromForm(testform, testtranslations);
       expect(eksport).toHaveLength(3);
 
       expect(eksport[0].text).toBe('Test form');
 
       expect(eksport[1].text).toBe('Veiledning');
       expect(eksport[1].en).toBe('Guidance (Global Tekst)');
-      expect(eksport[1]['nn-NO']).toBe('Rettleiing (Global Tekst)');
+      expect(eksport[1].nn).toBe('Rettleiing (Global Tekst)');
 
       expect(eksport[2].text).toEqual('Nav sender svar. <br> Se [link](https://www.nav.no/person/).');
       expect(eksport[2].en).toEqual('Nav sends answers. <br> See [link](https://www.nav.no/person/).');
-      expect(eksport[2]['nn-NO']).toEqual('Nav sender svar. <br> Sjå [lenke](https://www.nav.no/person/).');
+      expect(eksport[2].nn).toEqual('Nav sender svar. <br> Sjå [lenke](https://www.nav.no/person/).');
     });
   });
 
   describe('testGetCSVfileHeaders', () => {
     it('Test headers with only origin form text', () => {
-      const actual = getTextsAndTranslationsHeaders([] as FormioTranslationMap);
+      const actual = getHeadersForExport([]);
       expect(actual).toEqual([
         { key: 'type', label: 'Type' },
         { key: 'order', label: 'Rekkefølge' },
@@ -598,13 +595,16 @@ describe('utils', () => {
     });
 
     it('Test headers with origin form text and language code', () => {
-      const actual = getTextsAndTranslationsHeaders({ en: {}, 'nn-NO': {} } as FormioTranslationMap);
+      const actual = getHeadersForExport([
+        { key: 'text 1', nb: 'text 1', nn: 'text 1' },
+        { key: 'text 2', nb: 'text 2', en: 'text 2' },
+      ]);
       expect(actual).toEqual([
         { key: 'type', label: 'Type' },
         { key: 'order', label: 'Rekkefølge' },
         { key: 'text', label: 'Skjematekster' },
-        { key: 'en', label: 'EN' },
-        { key: 'nn-NO', label: 'NN-NO' },
+        { key: 'nn', label: 'Nynorsk' },
+        { key: 'en', label: 'Engelsk' },
       ]);
     });
   });

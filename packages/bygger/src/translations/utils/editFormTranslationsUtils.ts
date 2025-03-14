@@ -1,5 +1,5 @@
 import { Form, FormsApiFormTranslation, FormsApiGlobalTranslation } from '@navikt/skjemadigitalisering-shared-domain';
-import { getFormTextsWithoutCountryNames } from '../../old_translations/utils';
+import { getFormTextsWithoutCountryNames } from './formTextsUtils';
 
 const populateFromStoredTranslations = (text: string, storedTranslations: Record<string, FormsApiFormTranslation>) => {
   const stored = storedTranslations?.[text];

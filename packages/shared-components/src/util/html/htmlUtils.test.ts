@@ -125,4 +125,33 @@ describe('htmlUtils', () => {
       );
     });
   });
+
+  describe('getTexts', () => {
+    it('returns text content of tags', () => {
+      expect(htmlUtils.getTexts('<p>hello world</p>')).toEqual(['hello world']);
+      expect(htmlUtils.getTexts('<p>hello</p><p>world</p>')).toEqual(['hello', 'world']);
+      expect(htmlUtils.getTexts('<p>List:</p><ol><li>Item 1</li><li>Item 2</li></ol>')).toEqual([
+        'List:',
+        'Item 1',
+        'Item 2',
+      ]);
+      expect(htmlUtils.getTexts('<ol><li>"Første punkt "<b>har fet skrift</b>" og normal skrift"</li></ol>')).toEqual([
+        '"Første punkt "**har fet skrift**" og normal skrift"',
+      ]);
+    });
+
+    it('transforms b- and a-tags to markdown', () => {
+      expect(htmlUtils.getTexts('<p>hello <b>world</b> <a href="www.url.no">link</a></p>')).toEqual([
+        'hello **world** [link](www.url.no)',
+      ]);
+      expect(htmlUtils.getTexts('<p>hello <span><b>world</b> <a href="www.url.no">link</a></span></p>')).toEqual([
+        'hello **world** [link](www.url.no)',
+      ]);
+      expect(
+        htmlUtils.getTexts(
+          '<div><p>List:</p><ol><li>Item <b>with bold</b> and normal text</li><li>Item <a href="www.url.no">with link</a></li></ol></div>',
+        ),
+      ).toEqual(['List:', 'Item **with bold** and normal text', 'Item [with link](www.url.no)']);
+    });
+  });
 });
