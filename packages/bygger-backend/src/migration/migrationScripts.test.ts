@@ -142,7 +142,7 @@ describe('Migration scripts', () => {
           ...originalForm,
           properties: {
             ...originalForm.properties,
-            submissionTypes: ['DIGITAL'],
+            innsending: 'KUN_DIGITAL',
             ettersending: undefined,
           },
         };
@@ -175,7 +175,7 @@ describe('Migration scripts', () => {
           ...originalForm,
           properties: {
             ...originalForm.properties,
-            submissionTypes: ['DIGITAL'],
+            innsending: 'KUN_DIGITAL',
             ettersending: 'KUN_DIGITAL',
           },
         };
@@ -340,7 +340,7 @@ describe('Migration scripts', () => {
           properties: {
             ...originalForm.properties,
             skjemanummer: 'Form1',
-            submissionTypes: ['DIGITAL'],
+            innsending: 'KUN_DIGITAL',
             ettersending: undefined,
           },
         };
@@ -350,7 +350,7 @@ describe('Migration scripts', () => {
           properties: {
             ...originalForm.properties,
             skjemanummer: 'Form2',
-            submissionTypes: ['DIGITAL'],
+            innsending: 'KUN_DIGITAL',
             ettersending: 'KUN_DIGITAL',
           },
         };

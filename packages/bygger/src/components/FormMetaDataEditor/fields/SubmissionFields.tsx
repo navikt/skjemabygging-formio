@@ -1,12 +1,6 @@
 import { Checkbox, Textarea, TextField } from '@navikt/ds-react';
-import {
-  Form,
-  FormSettingsDiff,
-  InnsendingType,
-  submissionTypesUtils,
-} from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, FormSettingsDiff, submissionTypesUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import LabelWithDiff from '../LabelWithDiff';
-import SubmissionTypeSelect from '../SubmissionTypeSelect';
 import { FormMetadataError, UpdateFormFunction } from '../utils/utils';
 import { SubmissionTypeCheckbox } from './SubmissionTypeCheckbox';
 
@@ -18,7 +12,7 @@ export interface SubmissionFieldsProps {
 }
 
 const SubmissionFields = ({ onChange, diff, form, errors }: SubmissionFieldsProps) => {
-  const { submissionTypes, ettersending, ettersendelsesfrist, hideUserTypes } = form.properties;
+  const { submissionTypes, additionalSubmissionTypes, ettersendelsesfrist, hideUserTypes } = form.properties;
   const isLockedForm = !!form.lock;
 
   return (
@@ -40,21 +34,24 @@ const SubmissionFields = ({ onChange, diff, form, errors }: SubmissionFieldsProp
         }
       />
 
-      <SubmissionTypeSelect
-        name="form-ettersending"
-        label={<LabelWithDiff label="Ettersending" diff={!!diff.ettersending} />}
-        value={ettersending}
-        error={errors?.ettersending}
+      <SubmissionTypeCheckbox
+        name="form-additionalSubmissionTypes"
+        label={<LabelWithDiff label="Ettersending" diff={!!diff.additionalSubmissionTypes} />}
+        value={additionalSubmissionTypes}
+        error={errors?.additionalSubmissionTypes}
         readonly={isLockedForm}
-        onChange={(event) =>
+        onChange={(data) =>
           onChange({
             ...form,
-            properties: { ...form.properties, ettersending: event.target.value as InnsendingType },
+            properties: {
+              ...form.properties,
+              additionalSubmissionTypes: [...data],
+            },
           })
         }
       />
 
-      {!!ettersending && ettersending !== 'INGEN' && (
+      {!!additionalSubmissionTypes && !submissionTypesUtils.isNoneSubmission(additionalSubmissionTypes) && (
         <TextField
           onWheel={(e) => e.currentTarget.blur()} // disable scroll wheel on number input
           className="mb"
@@ -113,7 +110,7 @@ const SubmissionFields = ({ onChange, diff, form, errors }: SubmissionFieldsProp
           })
         }
       >
-        {'Skjul valg for hvem innsendingen gjelder i ettersendingsløsningen'}
+        {'Skjul valg for hvem innsendingen gjelder i ettersending∫'}
       </Checkbox>
     </>
   );

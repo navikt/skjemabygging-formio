@@ -18,10 +18,10 @@ const mapFormToNavForm = (form: Form): NavFormType => {
   };
 };
 
-const mapInnsendingToSubmissionTypes = (innsending?: InnsendingType): SubmissionType[] => {
-  if (!innsending) return [];
+const mapInnsendingTypeToSubmissionTypes = (innsendingType?: InnsendingType): SubmissionType[] => {
+  if (!innsendingType) return [];
 
-  switch (innsending) {
+  switch (innsendingType) {
     case 'PAPIR_OG_DIGITAL':
       return ['PAPER', 'DIGITAL'];
     case 'KUN_PAPIR':
@@ -34,12 +34,15 @@ const mapInnsendingToSubmissionTypes = (innsending?: InnsendingType): Submission
 };
 
 const removeInnsendingFromForm = (form: NavFormType): NavFormType => {
-  const formProperties = (({ innsending, ...rest }) => rest)(form.properties);
+  const formProperties = (({ innsending, ettersending, ...rest }) => rest)(form.properties);
   return {
     ...form,
     properties: {
       ...formProperties,
-      submissionTypes: form.properties.submissionTypes ?? mapInnsendingToSubmissionTypes(form.properties.innsending),
+      submissionTypes:
+        form.properties.submissionTypes ?? mapInnsendingTypeToSubmissionTypes(form.properties.innsending),
+      additionalSubmissionTypes:
+        form.properties.additionalSubmissionTypes ?? mapInnsendingTypeToSubmissionTypes(form.properties.ettersending),
     },
   };
 };
@@ -80,4 +83,4 @@ const mapNavFormToForm = (form: NavFormType): Form => {
   };
 };
 
-export { mapFormToNavForm, mapInnsendingToSubmissionTypes, mapNavFormToForm, removeInnsendingFromForm };
+export { mapFormToNavForm, mapInnsendingTypeToSubmissionTypes, mapNavFormToForm, removeInnsendingFromForm };

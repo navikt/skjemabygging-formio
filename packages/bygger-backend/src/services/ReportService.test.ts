@@ -102,6 +102,7 @@ describe('ReportService', () => {
                 skjemanummer: 'TEST1',
                 signatures: undefined,
                 submissionTypes: [],
+                additionalSubmissionTypes: [],
               } as unknown as FormPropertiesType,
             },
           ];
@@ -125,6 +126,7 @@ describe('ReportService', () => {
                 skjemanummer: 'TEST1',
                 signatures: [{ label: '' }],
                 submissionTypes: [],
+                additionalSubmissionTypes: [],
               } as unknown as FormPropertiesType,
             },
           ];
@@ -148,6 +150,7 @@ describe('ReportService', () => {
                 skjemanummer: 'TEST1',
                 signatures: [{ label: 'Lege' }, { label: 'Verge' }, { label: 'Søker' }],
                 submissionTypes: [],
+                additionalSubmissionTypes: [],
               } as unknown as FormPropertiesType,
             },
           ];
@@ -179,6 +182,7 @@ describe('ReportService', () => {
                 published: '2022-07-28T10:00:10.325Z',
                 modified: '2022-07-28T10:00:10.325Z',
                 submissionTypes: [],
+                additionalSubmissionTypes: [],
               } as unknown as FormPropertiesType,
             } as Form,
           ];
@@ -206,6 +210,7 @@ describe('ReportService', () => {
                 published: '2022-07-28T10:00:10.325Z',
                 modified: '2022-07-28T11:00:05.254Z',
                 submissionTypes: [],
+                additionalSubmissionTypes: [],
               } as unknown as FormPropertiesType,
             } as Form,
           ];
@@ -231,6 +236,7 @@ describe('ReportService', () => {
                 skjemanummer: 'TEST1',
                 modified: '2022-07-28T11:00:05.254Z',
                 submissionTypes: [],
+                additionalSubmissionTypes: [],
               } as unknown as FormPropertiesType,
             } as Form,
           ];
@@ -332,6 +338,7 @@ describe('ReportService', () => {
             ] as Component[],
             properties: {
               submissionTypes: [],
+              additionalSubmissionTypes: [],
             } as unknown as FormPropertiesType,
           } as Form,
           {
@@ -342,6 +349,7 @@ describe('ReportService', () => {
             status: 'published',
             properties: {
               submissionTypes: [],
+              additionalSubmissionTypes: [],
             } as unknown as FormPropertiesType,
           } as Form,
           {
@@ -359,6 +367,7 @@ describe('ReportService', () => {
             ] as Component[],
             properties: {
               submissionTypes: [],
+              additionalSubmissionTypes: [],
             } as unknown as FormPropertiesType,
           } as Form,
         ];
@@ -427,7 +436,7 @@ describe('ReportService', () => {
               published: '2022-07-28T10:00:10.325Z',
               publishedLanguages: ['en', 'nn-NO'],
               submissionTypes: ['DIGITAL', 'PAPER'],
-              ettersending: 'PAPIR_OG_DIGITAL',
+              additionalSubmissionTypes: ['DIGITAL', 'PAPER'],
             },
           } as Form,
           {
@@ -443,7 +452,7 @@ describe('ReportService', () => {
               published: '2022-07-28T10:00:10.325Z',
               publishedLanguages: ['en'],
               submissionTypes: [],
-              ettersending: 'KUN_PAPIR',
+              additionalSubmissionTypes: ['PAPER'],
             },
           } as Form,
           {
@@ -480,7 +489,7 @@ describe('ReportService', () => {
               published: '2022-07-28T10:00:10.325Z',
               publishedLanguages: undefined,
               submissionTypes: ['PAPER'],
-              ettersending: 'KUN_PAPIR',
+              additionalSubmissionTypes: ['PAPER'],
             },
           } as Form,
         ];

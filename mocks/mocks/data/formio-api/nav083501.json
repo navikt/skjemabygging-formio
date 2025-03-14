@@ -6324,7 +6324,7 @@
     "published": "2024-01-08T08:33:50.638Z",
     "publishedBy": "Rosseland, Rune",
     "publishedLanguages": [],
-    "ettersending": "PAPIR_OG_DIGITAL"
+    "additionalSubmissionTypes": ["PAPER", "DIGITAL"]
   },
   "access": [
     {

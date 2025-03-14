@@ -638,7 +638,7 @@
     "skjemanummer": "TST 10-11.12",
     "tema": "SYK",
     "submissionTypes": ["PAPER", "DIGITAL"],
-    "ettersending": "PAPIR_OG_DIGITAL",
+    "additionalSubmissionTypes": ["PAPER", "DIGITAL"],
     "signatures": [
       {
         "label": "",

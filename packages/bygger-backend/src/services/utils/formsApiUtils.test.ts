@@ -2,24 +2,24 @@ import { Form, formioFormsApiUtils } from '@navikt/skjemadigitalisering-shared-d
 import { removeInnsendingFromForm } from './formsApiUtils';
 
 describe('formsApiUtils', () => {
-  describe('formioFormsApiUtils.mapInnsendingToSubmissionTypes', () => {
+  describe('formioFormsApiUtils.mapInnsendingTypeToSubmissionTypes', () => {
     it('should return [PAPER, DIGITAL] when innsending is PAPIR_OG_DIGITAL', () => {
-      expect(formioFormsApiUtils.mapInnsendingToSubmissionTypes('PAPIR_OG_DIGITAL')).toStrictEqual([
+      expect(formioFormsApiUtils.mapInnsendingTypeToSubmissionTypes('PAPIR_OG_DIGITAL')).toStrictEqual([
         'PAPER',
         'DIGITAL',
       ]);
     });
 
     it('should return [PAPER] when innsending is KUN_PAPIR', () => {
-      expect(formioFormsApiUtils.mapInnsendingToSubmissionTypes('KUN_PAPIR')).toStrictEqual(['PAPER']);
+      expect(formioFormsApiUtils.mapInnsendingTypeToSubmissionTypes('KUN_PAPIR')).toStrictEqual(['PAPER']);
     });
 
     it('should return [DIGITAL] when innsending is KUN_DIGITAL', () => {
-      expect(formioFormsApiUtils.mapInnsendingToSubmissionTypes('KUN_DIGITAL')).toStrictEqual(['DIGITAL']);
+      expect(formioFormsApiUtils.mapInnsendingTypeToSubmissionTypes('KUN_DIGITAL')).toStrictEqual(['DIGITAL']);
     });
 
     it('should return an empty array when innsending is undefined', () => {
-      expect(formioFormsApiUtils.mapInnsendingToSubmissionTypes(undefined)).toStrictEqual([]);
+      expect(formioFormsApiUtils.mapInnsendingTypeToSubmissionTypes(undefined)).toStrictEqual([]);
     });
   });
 
