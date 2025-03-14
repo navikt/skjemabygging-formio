@@ -21,7 +21,7 @@ describe('FormsService', () => {
   let formsService;
   const accessToken = 'test-token';
   const form: Form = {
-    properties: { submissionTypes: [] } as unknown as FormPropertiesType,
+    properties: { submissionTypes: [], additionalSubmissionTypes: [] } as unknown as FormPropertiesType,
     id: 1,
     path: 'test-form',
     title: 'Test Form',
