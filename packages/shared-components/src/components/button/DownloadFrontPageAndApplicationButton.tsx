@@ -1,12 +1,11 @@
 import { Alert } from '@navikt/ds-react';
-import { NavFormType, Submission } from '@navikt/skjemadigitalisering-shared-domain';
+import { dateUtils, NavFormType, Submission } from '@navikt/skjemadigitalisering-shared-domain';
 import React, { useState } from 'react';
 import { useAppConfig } from '../../context/config/configContext';
 import { useLanguages } from '../../context/languages';
 import DownloadPdfButton from './DownloadPdfButton';
 
 interface Props {
-  formPath: string;
   form: NavFormType;
   submission: Submission;
   translations: any;
@@ -19,7 +18,6 @@ interface Props {
 type DownloadState = 'succes' | 'error';
 
 const DownloadFrontPageAndApplicationButton = ({
-  formPath,
   form,
   submission,
   translations,
@@ -45,7 +43,7 @@ const DownloadFrontPageAndApplicationButton = ({
     setDownloadState('error');
   };
 
-  const fileName = `soknad-${formPath}.pdf`;
+  const fileName = `${form.path}-${dateUtils.toLocaleDate().replace(/\./g, '')}.pdf`;
 
   return (
     <>

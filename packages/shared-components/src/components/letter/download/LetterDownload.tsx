@@ -37,7 +37,6 @@ const LetterDownload = ({ form, index, submission, enhetsListe, translations }: 
       />
 
       <DownloadFrontPageAndApplicationButton
-        formPath={form.path}
         form={form}
         submission={submission}
         enhetNummer={selectedEnhetNummer ?? undefined}

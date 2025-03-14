@@ -37,7 +37,6 @@ export function PrepareIngenInnsendingPage({ form, submission, translations, for
             </Heading>
             <BodyShort className="mb">{translate(form.properties.innsendingForklaring)}</BodyShort>
             <DownloadFrontPageAndApplicationButton
-              formPath={form.path}
               form={form}
               submission={submission}
               translations={translations}

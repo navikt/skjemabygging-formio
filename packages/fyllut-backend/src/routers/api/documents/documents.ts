@@ -19,7 +19,7 @@ const frontPageAndApplication: RequestHandler = async (req, res, next) => {
       translations,
     });
     res.contentType('application/pdf');
-    res.setHeader('Content-Disposition', `inline; filename=${encodeURIComponent(`søknad-${formParsed.path}.pdf`)}`);
+    res.setHeader('Content-Disposition', `inline; filename=${encodeURIComponent(`${formParsed.path}.pdf`)}`);
     res.send(fileBuffer);
   } catch (e) {
     logErrorWithStacktrace(e as Error);
