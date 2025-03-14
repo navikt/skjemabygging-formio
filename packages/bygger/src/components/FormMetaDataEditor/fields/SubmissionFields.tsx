@@ -51,7 +51,7 @@ const SubmissionFields = ({ onChange, diff, form, errors }: SubmissionFieldsProp
         }
       />
 
-      {!!additionalSubmissionTypes && !submissionTypesUtils.isNoneSubmission(additionalSubmissionTypes) && (
+      {!submissionTypesUtils.isNoneSubmission(additionalSubmissionTypes) && (
         <TextField
           onWheel={(e) => e.currentTarget.blur()} // disable scroll wheel on number input
           className="mb"
@@ -110,7 +110,7 @@ const SubmissionFields = ({ onChange, diff, form, errors }: SubmissionFieldsProp
           })
         }
       >
-        {'Skjul valg for hvem innsendingen gjelder i ettersending∫'}
+        {'Skjul valg for hvem innsendingen gjelder i ettersendingsløsningen'}
       </Checkbox>
     </>
   );
