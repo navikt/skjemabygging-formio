@@ -6,11 +6,11 @@ import { BulkPublicationResult } from '../../services/formPublications/types';
 
 const publishForms = async (req: Request, res: Response, _next: NextFunction) => {
   const { bulkPublicationResult } = req.body as { bulkPublicationResult: BulkPublicationResult };
-  const result = bulkPublicationResult.filter((r) => r.status === 'ok');
-  const skipResult = bulkPublicationResult.filter((r) => r.status !== 'ok');
+  const successResult = bulkPublicationResult.filter((r) => r.status === 'ok');
+  const failureResult = bulkPublicationResult.filter((r) => r.status !== 'ok');
 
-  const publishedFormPaths = result.map((r) => r.form.path);
-  const skippedFormPaths = skipResult.map((r) => r.form.path);
+  const publishedFormPaths = successResult.map((r) => r.form.path);
+  const skippedFormPaths = failureResult.map((r) => r.form.path);
   const logMeta = { formPaths: publishedFormPaths, numberOfForms: publishedFormPaths.length, skippedFormPaths };
   logger.info(`Attempting to publish ${publishedFormPaths.length} forms (github)`, logMeta);
   try {
