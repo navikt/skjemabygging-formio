@@ -1,0 +1,7 @@
+[
+  {
+    "filePath": "packages/bygger-backend/.env",
+    "name": "FORMS_API_ACCESS_TOKEN",
+    "url": "https://azure-token-generator.intern.dev.nav.no/api/obo?aud=dev-gcp:fyllut-sendinn:forms-api"
+  }
+]

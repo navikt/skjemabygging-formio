@@ -668,7 +668,7 @@
   "properties": {
     "skjemanummer": "testingalert",
     "tema": "AGR",
-    "innsending": "PAPIR_OG_DIGITAL",
+    "submissionTypes": ["PAPER", "DIGITAL"],
     "ettersending": "PAPIR_OG_DIGITAL",
     "signatures": [
       {

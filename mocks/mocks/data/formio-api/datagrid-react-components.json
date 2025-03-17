@@ -644,7 +644,7 @@
   "properties": {
     "skjemanummer": "datagrid-react",
     "tema": "DAG",
-    "innsending": "PAPIR_OG_DIGITAL",
+    "submissionTypes": ["PAPER", "DIGITAL"],
     "ettersending": "PAPIR_OG_DIGITAL",
     "signatures": [
       {

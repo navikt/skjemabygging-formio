@@ -2374,7 +2374,7 @@
     "properties": {
       "skjemanummer": "test-mellomlagring",
       "tema": "BAR",
-      "innsending": "PAPIR_OG_DIGITAL",
+      "submissionTypes": ["PAPER", "DIGITAL"],
       "signatures": [
         {
           "label": "",

@@ -58,7 +58,6 @@ describe('Fodselsnummer', () => {
     it('fails validation for invalid fnr', () => {
       fnrComp.setValue('13097248023');
       fnrComp.checkComponentValidity();
-      console.log(mockedSetComponentValidity.mock.calls[0][0]);
       expect(mockedSetComponentValidity.mock.calls[0][0]).toEqual([expectedInvalid]);
     });
 

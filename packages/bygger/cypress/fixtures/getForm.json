@@ -2,7 +2,6 @@
   "id": 124,
   "title": "Cypress test for settings page",
   "path": "cypresssettings",
-  "tema": "CYPRESSTEST",
   "skjemanummer": "cypress-settings",
   "components": [
     {
@@ -339,7 +338,7 @@
   "properties": {
     "skjemanummer": "cypress-settings",
     "tema": "CYPRESSTEST",
-    "innsending": "PAPIR_OG_DIGITAL",
+    "submissionTypes": ["PAPER", "DIGITAL"],
     "ettersending": "PAPIR_OG_DIGITAL",
     "signatures": [
       {
