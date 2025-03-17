@@ -17,7 +17,7 @@ interface Props {
 
 type DownloadState = 'succes' | 'error';
 
-const DownloadFrontPageAndApplicationButton = ({
+const DownloadCoverPageAndApplicationButton = ({
   form,
   submission,
   translations,
@@ -43,7 +43,7 @@ const DownloadFrontPageAndApplicationButton = ({
     setDownloadState('error');
   };
 
-  const fileName = `${form.path}-${dateUtils.toLocaleDate().replace(/\./g, '')}.pdf`;
+  const fileName = `${form.title.toLowerCase().replace(/\s+/g, '-')}-${dateUtils.toLocaleDate().replace(/\./g, '')}.pdf`;
 
   return (
     <>
@@ -84,4 +84,4 @@ const DownloadFrontPageAndApplicationButton = ({
   );
 };
 
-export default DownloadFrontPageAndApplicationButton;
+export default DownloadCoverPageAndApplicationButton;

@@ -5,6 +5,6 @@ import documents from './documents';
 const documentsRouter = express.Router();
 const { azureSkjemabyggingProxy } = initApiConfig();
 
-documentsRouter.post('/front-page-and-application', azureSkjemabyggingProxy, documents.frontPageAndApplication);
+documentsRouter.post('/front-page-and-application', azureSkjemabyggingProxy, documents.coverPageAndApplication);
 
 export default documentsRouter;

@@ -78,7 +78,7 @@ const createPdfRequest = async (accessToken: string, body?: BodyInit) => {
 };
 
 const log = (forsteside: ForstesideRequestBody, response: any) => {
-  logger.info('Download frontpage', {
+  logger.info('Download cover page', {
     loepenummer: response.loepenummer,
     navSkjemaId: forsteside.navSkjemaId,
     tema: forsteside.tema,
@@ -87,8 +87,8 @@ const log = (forsteside: ForstesideRequestBody, response: any) => {
   });
 };
 
-const frontPageService = {
+const coverPageService = {
   createPdf,
 };
 
-export default frontPageService;
+export default coverPageService;

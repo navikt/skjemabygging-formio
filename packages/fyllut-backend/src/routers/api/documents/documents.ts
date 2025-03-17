@@ -3,13 +3,13 @@ import documentsService from '../../../services/documents/documentsService';
 import { htmlResponseError } from '../../../utils/errorHandling';
 import { logErrorWithStacktrace } from '../../../utils/errors';
 
-const frontPageAndApplication: RequestHandler = async (req, res, next) => {
+const coverPageAndApplication: RequestHandler = async (req, res, next) => {
   try {
     const { form, submission, language, enhetNummer, submissionMethod, translations } = req.body;
     const formParsed = JSON.parse(form);
     const submissionParsed = JSON.parse(submission);
 
-    const fileBuffer = await documentsService.frontPageAndApplication({
+    const fileBuffer = await documentsService.coverPageAndApplication({
       form: formParsed,
       submission: submissionParsed,
       language,
@@ -28,7 +28,7 @@ const frontPageAndApplication: RequestHandler = async (req, res, next) => {
 };
 
 const documents = {
-  frontPageAndApplication,
+  coverPageAndApplication,
 };
 
 export default documents;

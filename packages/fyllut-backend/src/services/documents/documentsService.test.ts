@@ -93,7 +93,7 @@ describe('[endpoint] documents', () => {
       },
     });
 
-    await documents.frontPageAndApplication(req, mockResponse(), mockNext());
+    await documents.coverPageAndApplication(req, mockResponse(), mockNext());
 
     expect(recipientsMock.isDone()).toBe(true);
     expect(generateFileMock.isDone()).toBe(true);

@@ -2,10 +2,10 @@ import { I18nTranslationMap, NavFormType, Submission } from '@navikt/skjemadigit
 import { base64Decode } from '../../utils/base64';
 import { htmlResponseError } from '../../utils/errorHandling';
 import applicationService from './applicationService';
-import frontPageService from './frontPageService';
+import coverPageService from './coverPageService';
 import { mergeFiles } from './gotenbergService';
 
-interface FrontPageAndApplicationProps {
+interface CoverPageAndApplicationProps {
   accessToken: string;
   form: NavFormType;
   submissionMethod: string;
@@ -15,10 +15,10 @@ interface FrontPageAndApplicationProps {
   unitNumber: string;
 }
 
-const frontPageAndApplication = async (props: FrontPageAndApplicationProps) => {
+const coverPageAndApplication = async (props: CoverPageAndApplicationProps) => {
   const { accessToken, form, submission, language, unitNumber, translations, submissionMethod } = props;
 
-  const frontPageResponse: any = await frontPageService.createPdf({
+  const coverPageResponse: any = await coverPageService.createPdf({
     accessToken,
     form,
     submission,
@@ -26,9 +26,9 @@ const frontPageAndApplication = async (props: FrontPageAndApplicationProps) => {
     unitNumber,
   });
 
-  const frontPagePdf = base64Decode(frontPageResponse.foersteside);
+  const coverPagePdf = base64Decode(coverPageResponse.foersteside);
 
-  if (frontPagePdf === undefined) {
+  if (coverPagePdf === undefined) {
     throw htmlResponseError('Generering av førstesideark PDF feilet');
   }
 
@@ -47,12 +47,12 @@ const frontPageAndApplication = async (props: FrontPageAndApplicationProps) => {
     throw htmlResponseError('Generering av søknads PDF feilet');
   }
 
-  const documents = [frontPagePdf, applicationPdf];
+  const documents = [coverPagePdf, applicationPdf];
 
   const mergedFile = await mergeFiles(
-    frontPageResponse.navSkjemaId,
-    frontPageResponse.overskriftstittel,
-    frontPageResponse.spraakkode,
+    coverPageResponse.navSkjemaId,
+    coverPageResponse.overskriftstittel,
+    coverPageResponse.spraakkode,
     documents,
     { pdfa: true, pdfua: true },
   );
@@ -61,7 +61,7 @@ const frontPageAndApplication = async (props: FrontPageAndApplicationProps) => {
 };
 
 const documentsService = {
-  frontPageAndApplication,
+  coverPageAndApplication,
 };
 
 export default documentsService;
