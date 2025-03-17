@@ -104,7 +104,7 @@ describe('BulkPublishPanel', () => {
       it('bulk publishes selected forms when bulk publish is confirmed', async () => {
         fireEvent.click(screen.getByRole('button', { name: 'Bekreft publisering' }));
         await waitFor(() => expect(bulkPublish).toHaveBeenCalledTimes(1));
-        expect(bulkPublish).toHaveBeenCalledWith('', { formPaths: ['form1', 'form3'] });
+        expect(bulkPublish).toHaveBeenCalledWith({ formPaths: ['form1', 'form3'] });
       });
     });
   });
