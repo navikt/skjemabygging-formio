@@ -30,6 +30,7 @@ function reducer(state: State, action: Action) {
 type StatusState = Record<string, 'ok' | 'error'>;
 type PublishStatus = { form: Pick<Form, 'path'>; status: 'ok' | 'error' };
 type StatusAction = { type: 'init'; payload: PublishStatus[] };
+
 function initStatus(list: PublishStatus[]): StatusState {
   return list.reduce((acc, publishStatus) => ({ ...acc, [publishStatus.form.path]: publishStatus.status }), {});
 }
@@ -60,14 +61,12 @@ interface Props {
 const BulkPublishPanel = ({ forms }: Props) => {
   const styles = useStyles();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
   const [state, dispatch] = useReducer(reducer, {});
   const [statusState, dispatchStatus] = useReducer(statusReducer, {});
 
   const onBulkPublish = async (formPaths: string[]) => {
-    return await bulkPublish(NavFormioJs.Formio.getToken(), { formPaths }).then((responseBody) => {
-      console.log(`Bulk publish result: ${JSON.stringify(responseBody)}`);
-      return responseBody;
-    });
+    return await bulkPublish(NavFormioJs.Formio.getToken(), { formPaths });
   };
 
   const willBePublished = forms.filter((form) => state[form.path]);
@@ -86,6 +85,7 @@ const BulkPublishPanel = ({ forms }: Props) => {
         <form
           onSubmit={(event) => {
             event.preventDefault();
+            setErrorMessage(undefined);
             setIsModalOpen(true);
           }}
         >
@@ -133,6 +133,7 @@ const BulkPublishPanel = ({ forms }: Props) => {
             </Table.Body>
           </Table>
           <Button>Publiser nå</Button>
+          {errorMessage && <Alert variant="error">{errorMessage}</Alert>}
         </form>
       </Box>
       <ConfirmationModal
@@ -142,7 +143,11 @@ const BulkPublishPanel = ({ forms }: Props) => {
           const responseBody = await onBulkPublish(
             Object.entries(state).flatMap(([path, selected]) => (selected ? [path] : [])),
           );
-          dispatchStatus({ type: 'init', payload: responseBody.bulkPublicationResult });
+          if (!responseBody.githubCommit) {
+            setErrorMessage('Feil ved publisering til Github');
+          } else {
+            dispatchStatus({ type: 'init', payload: responseBody.bulkPublicationResult });
+          }
         }}
         texts={{
           title: 'Bekreft publisering',
