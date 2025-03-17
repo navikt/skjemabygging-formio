@@ -394,7 +394,7 @@
   "properties": {
     "skjemanummer": "tekstblokk-123",
     "tema": "GRU",
-    "innsending": "PAPIR_OG_DIGITAL",
+    "submissionTypes": ["PAPER", "DIGITAL"],
     "hasLabeledSignatures": true,
     "signatures": {
       "signature1": "Søker",

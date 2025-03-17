@@ -1,4 +1,4 @@
-import { htmlConverter, useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
+import { htmlUtils, useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
 import { FormsApiGlobalTranslation, stringUtils, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, ReactNode, useContext, useEffect, useReducer } from 'react';
 import { overwriteGlobalTranslations } from '../../import/api';
@@ -83,42 +83,49 @@ const EditGlobalTranslationsProvider = ({ initialChanges, children }: Props) => 
       ...(newTranslationValidationError ? [newTranslationValidationError] : []),
       ...validateGlobalTranslations(translations),
     ];
+
+    if (translations.length === 0 && !newTranslationHasData) {
+      feedbackEmit.success('Ingen endringer oppdaget. Oversettelser ble ikke lagret.');
+      return;
+    }
+
     if (validationErrors.length > 0) {
       dispatch({ type: 'VALIDATION_ERROR', payload: { errors: validationErrors } });
       validationErrors.forEach((error) => {
-        const key = htmlConverter.isHtmlString(error.key) ? htmlConverter.extractTextContent(error.key) : error.key;
+        const key = htmlUtils.isHtmlString(error.key) ? htmlUtils.extractTextContent(error.key) : error.key;
         feedbackEmit.error(
           `${error?.isNewTranslation ? 'Ny oversettelse' : stringUtils.truncate(key, 50)}: ${error.message}`,
         );
       });
-    } else {
-      dispatch({ type: 'SAVE_STARTED' });
-      const { responses, errors } = await saveEachTranslation(translations, saveTranslation);
+      return;
+    }
 
-      if (newTranslationHasData && createNewTranslation) {
-        const newTranslationResult = await createNewTranslation(state.new);
-        if (newTranslationResult?.error) {
-          errors.push(newTranslationResult.error);
-        }
-        if (newTranslationResult?.response) {
-          responses.push(newTranslationResult.response);
-        }
-      }
+    dispatch({ type: 'SAVE_STARTED' });
+    const { responses, errors } = await saveEachTranslation(translations, saveTranslation);
 
-      await loadTranslations();
-      dispatch({ type: 'SAVE_FINISHED', payload: { errors } });
-      if (responses.length > 0) {
-        feedbackEmit.success(`${responses.length} oversettelser ble lagret.`);
+    if (newTranslationHasData && createNewTranslation) {
+      const newTranslationResult = await createNewTranslation(state.new);
+      if (newTranslationResult?.error) {
+        errors.push(newTranslationResult.error);
       }
+      if (newTranslationResult?.response) {
+        responses.push(newTranslationResult.response);
+      }
+    }
 
-      const conflictAlertMessage = getConflictAlertMessage(errors);
-      const generalAlertMessage = getGeneralAlertMessage(errors);
-      if (conflictAlertMessage) {
-        feedbackEmit.error(conflictAlertMessage);
-      }
-      if (generalAlertMessage) {
-        feedbackEmit.error(generalAlertMessage);
-      }
+    await loadTranslations();
+    if (responses.length > 0) {
+      feedbackEmit.success(`${responses.length} oversettelser ble lagret.`);
+    }
+    dispatch({ type: 'SAVE_FINISHED', payload: { errors } });
+
+    const conflictAlertMessage = getConflictAlertMessage(errors);
+    const generalAlertMessage = getGeneralAlertMessage(errors);
+    if (conflictAlertMessage) {
+      feedbackEmit.error(conflictAlertMessage);
+    }
+    if (generalAlertMessage) {
+      feedbackEmit.error(generalAlertMessage);
     }
   };
 

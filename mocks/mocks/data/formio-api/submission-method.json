@@ -849,7 +849,7 @@
   "properties": {
     "skjemanummer": "BUG 10.10-10",
     "tema": "BUG",
-    "innsending": "PAPIR_OG_DIGITAL",
+    "submissionTypes": ["PAPER", "DIGITAL"],
     "signatures": [
       {
         "label": "",

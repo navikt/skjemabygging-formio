@@ -2,7 +2,7 @@ import { formioFormsApiUtils, TranslationLang } from '@navikt/skjemadigitaliseri
 import { RequestHandler } from 'express';
 import { logger } from '../../../logging/logger';
 import { formPublicationsService, formsService } from '../../../services';
-import { FormPublicationId } from '../../../services/formPublications/types';
+import { FormPublication } from '../../../services/formPublications/types';
 import { BadRequest } from '../helpers/errors';
 import { mapLanguageCodeToFormioFormat } from './utils';
 
@@ -69,15 +69,17 @@ const postBulk: RequestHandler = async (req, res, next) => {
 
   try {
     const allForms = await formsService.getAll('path,revision');
-    const formPublicationIds: FormPublicationId[] = allForms
+    const formPublications: FormPublication[] = allForms
       .filter((form) => formPaths.includes(form.path))
       .map((form) => ({ path: form.path, revision: form.revision! }));
-    logger.info(`Bulk-publishing ${formPublicationIds.length}...`, { formPaths });
+    logger.info(`Bulk-publishing ${formPublications.length}...`, { formPaths });
 
-    const bulkPublicationResult = await formPublicationsService.postAll(formPublicationIds, accessToken);
+    const bulkPublicationResult = await formPublicationsService.postAll(formPublications, accessToken);
     const successCounter = bulkPublicationResult.filter((r) => r.status === 'ok');
     const failureCounter = bulkPublicationResult.filter((r) => r.status !== 'ok');
-    logger.info(`Published ${successCounter} forms (failed: ${failureCounter})`, { bulkPublicationResult });
+    logger.info(`Published ${successCounter.length} forms (failed: ${failureCounter.length})`, {
+      bulkPublicationResult,
+    });
 
     req.body = { bulkPublicationResult };
     next();

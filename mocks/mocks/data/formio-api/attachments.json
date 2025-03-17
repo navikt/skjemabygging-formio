@@ -221,7 +221,7 @@
   "properties": {
     "skjemanummer": "ATT-123",
     "tema": "CYP",
-    "innsending": "PAPIR_OG_DIGITAL",
+    "submissionTypes": ["PAPER", "DIGITAL"],
     "hasLabeledSignatures": false,
     "modified": "2022-12-08T12:09:17.108Z",
     "enhetMaVelgesVedPapirInnsending": false,

@@ -1,9 +1,9 @@
 import { Form, PublishedTranslations, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
 
-export type FormPublicationId = Pick<Form, 'path' | 'revision'>;
+export type FormPublication = Pick<Form, 'path' | 'revision'>;
 
 export interface FormPublicationResult {
-  form: FormPublicationId;
+  form: FormPublication;
   status: 'ok' | 'error';
   message?: string;
   githubOk?: boolean;
@@ -14,7 +14,7 @@ interface FormPublicationsService {
   getAll: () => Promise<Form[]>;
   get: (formPath: string) => Promise<Form>;
   post: (formPath: string, languages: TranslationLang[], revision: number, accessToken: string) => Promise<Form>;
-  postAll: (formPaths: FormPublicationId[], accessToken: string) => Promise<BulkPublicationResult>;
+  postAll: (formPublications: FormPublication[], accessToken: string) => Promise<BulkPublicationResult>;
   unpublish: (formPath: string, accessToken: string) => Promise<void>;
   getTranslations: (formPath: string, languages: TranslationLang[]) => Promise<PublishedTranslations>;
 }

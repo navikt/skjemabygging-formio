@@ -20,6 +20,7 @@ describe('Form Builder', () => {
       cy.wait('@getConfig');
       cy.wait('@getForm');
       cy.wait('@getFormTranslations');
+      cy.wait('@getTranslations');
       cy.wait('@getPublishedForm');
     });
 
@@ -60,6 +61,7 @@ describe('Form Builder', () => {
         cy.get('[data-testid="editorSaveButton"]').click();
         cy.findByRole('button', { name: 'Lagre' }).click();
         cy.wait('@putForm');
+        cy.findByText('Lagret skjema Skjema for testing av diff').should('be.visible');
       });
     });
 
@@ -78,6 +80,7 @@ describe('Form Builder', () => {
         cy.get('[data-testid="editorSaveButton"]').click();
         cy.findByRole('button', { name: 'Lagre' }).click();
         cy.wait('@putForm');
+        cy.findByText('Lagret skjema Skjema for testing av diff').should('be.visible');
       });
     });
   });
@@ -161,9 +164,7 @@ describe('Form Builder', () => {
     // TODO: Add test for radio group when it gets the new data values.
   });
 
-  // TODO FORMS-API Seems like some rerender makes this test fail
-  // eslint-disable-next-line mocha/no-skipped-tests
-  describe.skip('Duplicate component keys', () => {
+  describe('Duplicate component keys', () => {
     beforeEach(() => {
       cy.intercept('GET', '/api/forms/cypresssettings', { fixture: 'getForm.json' }).as('getCypressForm');
       cy.intercept('GET', '/api/forms/cypresssettings/translations', { fixture: 'form123456-translations.json' }).as(
@@ -174,6 +175,7 @@ describe('Form Builder', () => {
       cy.wait('@getConfig');
       cy.wait('@getCypressForm');
       cy.wait('@getCypressFormTranslations');
+      cy.wait('@getTranslations');
     });
 
     describe('component with same API key as panel', () => {

@@ -1,7 +1,7 @@
 import { Form, PublishedTranslations, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
 import { fetchWithErrorHandling } from '../../fetchUtils';
 import { createHeaders } from '../utils/formsApiUtils';
-import { BulkPublicationResult, FormPublicationId, FormPublicationResult, FormPublicationsService } from './types';
+import { BulkPublicationResult, FormPublication, FormPublicationResult, FormPublicationsService } from './types';
 
 const createFormPublicationsService = (formsApiUrl: string): FormPublicationsService => {
   const url = `${formsApiUrl}/v1/form-publications`;
@@ -32,9 +32,9 @@ const createFormPublicationsService = (formsApiUrl: string): FormPublicationsSer
     return response.data as Form;
   };
 
-  const postAll = async (forms: FormPublicationId[], accessToken: string): Promise<BulkPublicationResult> => {
+  const postAll = async (formPublication: FormPublication[], accessToken: string): Promise<BulkPublicationResult> => {
     const result: FormPublicationResult[] = [];
-    for (const form of forms) {
+    for (const form of formPublication) {
       try {
         const publishedForm = await post(form.path, undefined, form.revision!, accessToken);
         result.push({
