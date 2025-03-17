@@ -64,24 +64,22 @@ describe('BulkPublishPanel', () => {
     bulkPublish.mockClear();
   });
 
-  it('checkboxes for pending and published forms are initially checked', () => {
-    expect(screen.getByRole('checkbox', { name: 'Form 1', checked: true })).toBeDefined();
-    expect(screen.getByRole('checkbox', { name: 'Form 2', checked: true })).toBeDefined();
+  it('no form is initially checked', () => {
+    expect(screen.getByRole('checkbox', { name: 'Form 1', checked: false })).toBeDefined();
+    expect(screen.getByRole('checkbox', { name: 'Form 2', checked: false })).toBeDefined();
     expect(screen.getByRole('checkbox', { name: 'Form 3', checked: false })).toBeDefined();
   });
 
-  describe('When a form is unchecked', () => {
+  describe('When a form is checked', () => {
     beforeEach(() => {
-      fireEvent.click(screen.getByRole('checkbox', { name: 'Form 2' }));
+      fireEvent.click(screen.getByRole('checkbox', { name: 'Form 1' }));
     });
 
     it('unselects one form', () => {
-      expect(screen.getByRole('checkbox', { name: 'Form 2' })).not.toBeChecked();
+      expect(screen.getByRole('checkbox', { name: 'Form 1' })).toBeChecked();
     });
 
-    // TODO forms-api remove skip when bulk publishing is implemented
-    // eslint-disable-next-line mocha/no-skipped-tests
-    describe.skip('When modal button is clicked', () => {
+    describe('When modal button is clicked', () => {
       beforeEach(() => {
         fireEvent.click(screen.getByRole('checkbox', { name: 'Form 3' }));
         const button = screen.getByRole('button');

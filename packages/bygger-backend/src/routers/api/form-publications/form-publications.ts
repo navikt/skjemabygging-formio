@@ -1,6 +1,9 @@
 import { formioFormsApiUtils, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
 import { RequestHandler } from 'express';
+import { logger } from '../../../logging/logger';
 import { formPublicationsService, formsService } from '../../../services';
+import { FormPublication } from '../../../services/formPublications/types';
+import { BadRequest } from '../helpers/errors';
 import { mapLanguageCodeToFormioFormat } from './utils';
 
 const getAll: RequestHandler = async (req, res, next) => {
@@ -28,12 +31,14 @@ const post: RequestHandler = async (req, res, next) => {
   const accessToken = req.headers.AzureAccessToken as string;
 
   try {
+    logger.info(`Publishing form ${formPath}...`);
     const form = await formPublicationsService.post(
       formPath,
       languageCodes as TranslationLang[],
       parseInt(revision as string),
       accessToken,
     );
+    logger.info(`Form ${formPath} published successfully`);
     const { translations } = await formPublicationsService.getTranslations(
       formPath,
       languageCodes as TranslationLang[],
@@ -47,6 +52,36 @@ const post: RequestHandler = async (req, res, next) => {
     const formioForm = formioFormsApiUtils.mapFormToNavForm(form);
 
     req.body = { form: formioForm, translations: formioTranslations, formsApiForm: form };
+    next();
+  } catch (error) {
+    next(error);
+  }
+};
+
+const postBulk: RequestHandler = async (req, res, next) => {
+  const { formPaths } = req.body.payload;
+  const accessToken = req.headers.AzureAccessToken as string;
+
+  if (!Array.isArray(formPaths) || formPaths.length === 0) {
+    next(new BadRequest('Request is missing formPaths'));
+    return;
+  }
+
+  try {
+    const allForms = await formsService.getAll('path,revision');
+    const formPublications: FormPublication[] = allForms
+      .filter((form) => formPaths.includes(form.path))
+      .map((form) => ({ path: form.path, revision: form.revision! }));
+    logger.info(`Bulk-publishing ${formPublications.length}...`, { formPaths });
+
+    const bulkPublicationResult = await formPublicationsService.postAll(formPublications, accessToken);
+    const successCounter = bulkPublicationResult.filter((r) => r.status === 'ok');
+    const failureCounter = bulkPublicationResult.filter((r) => r.status !== 'ok');
+    logger.info(`Published ${successCounter.length} forms (failed: ${failureCounter.length})`, {
+      bulkPublicationResult,
+    });
+
+    req.body = { bulkPublicationResult };
     next();
   } catch (error) {
     next(error);
@@ -77,6 +112,6 @@ const getTranslations = async (req, res, next) => {
   }
 };
 
-const formPublications = { getAll, get, post, delete: unpublish, getTranslations };
+const formPublications = { getAll, get, post, postBulk, delete: unpublish, getTranslations };
 
 export default formPublications;

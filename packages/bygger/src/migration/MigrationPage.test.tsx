@@ -17,8 +17,8 @@ describe('MigrationPage', () => {
 
   const defaultdryRunResponse: FormMigrationLogData = {
     skjemanummer: 'form',
-    name: 'Skjema',
-    title: 'title',
+    title: 'Skjema',
+    name: 'form',
     path: 'form',
     found: 0,
     changed: 0,
@@ -26,9 +26,33 @@ describe('MigrationPage', () => {
     diff: [{ key: '1', label: 'label', id: '123', property: { _ORIGINAL: 'original value', _NEW: 'new value' } }],
   };
   const dryRunResponse: DryRunResults = {
-    form1: { ...defaultdryRunResponse, skjemanummer: 'form1', path: 'form1', name: 'Skjema 1', found: 2, changed: 1 },
-    form2: { ...defaultdryRunResponse, skjemanummer: 'form2', path: 'form2', name: 'Skjema 2', found: 1, changed: 0 },
-    form3: { ...defaultdryRunResponse, skjemanummer: 'form3', path: 'form3', name: 'Skjema 3', found: 3, changed: 2 },
+    form1: {
+      ...defaultdryRunResponse,
+      skjemanummer: 'form1',
+      path: 'form1',
+      name: 'form1',
+      title: 'Skjema 1',
+      found: 2,
+      changed: 1,
+    },
+    form2: {
+      ...defaultdryRunResponse,
+      skjemanummer: 'form2',
+      path: 'form2',
+      name: 'form2',
+      title: 'Skjema 2',
+      found: 1,
+      changed: 0,
+    },
+    form3: {
+      ...defaultdryRunResponse,
+      skjemanummer: 'form3',
+      path: 'form3',
+      name: 'form3',
+      title: 'Skjema 3',
+      found: 3,
+      changed: 2,
+    },
   };
 
   const wrapper = ({ children }) => (
