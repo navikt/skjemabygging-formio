@@ -29,25 +29,30 @@ const parseBody = (
   return { form, submission, submissionMethod, translations, language };
 };
 
+export const getPdf = async (req: Request) => {
+  const { form, submission, submissionMethod, translations, language } = parseBody(req);
+
+  if (!['nb-NO', 'nn-NO', 'en'].includes(language)) {
+    logger.warn(`Language code "${language}" is not supported. Language code will be defaulted to "nb".`);
+  }
+
+  const languageCode = localizationUtils.getLanguageCodeAsIso639_1(language);
+
+  return await createPdf(
+    req.headers.AzureAccessToken as string,
+    form,
+    submission,
+    submissionMethod,
+    translations,
+    languageCode,
+  );
+};
+
 const exstream = {
   post: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { form, submission, submissionMethod, translations, language } = parseBody(req);
+      const pdf = await getPdf(req);
 
-      if (!['nb-NO', 'nn-NO', 'en'].includes(language)) {
-        logger.warn(`Language code "${language}" is not supported. Language code will be defaulted to "nb".`);
-      }
-
-      const languageCode = localizationUtils.getLanguageCodeAsIso639_1(language);
-
-      const pdf = await createPdf(
-        req.headers.AzureAccessToken as string,
-        form,
-        submission,
-        submissionMethod,
-        translations,
-        languageCode,
-      );
       res.contentType(pdf.contentType);
       res.send(base64Decode(pdf.data));
     } catch (e) {

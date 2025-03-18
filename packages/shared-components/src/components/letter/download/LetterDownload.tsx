@@ -42,12 +42,15 @@ const LetterDownload = ({ form, index, submission, enhetsListe, fyllutBaseURL, t
         id={`forsteside-${form.path}`}
         values={{
           form: JSON.stringify(form),
-          submissionData: JSON.stringify(submission.data),
+
+          submission: JSON.stringify(submission),
+          translations: JSON.stringify(currentLanguage !== 'nb-NO' ? translations[currentLanguage] : {}),
+
           language: currentLanguage,
           enhetNummer: selectedEnhetNummer,
-          version: 'v2',
+          version: 'v3',
         }}
-        actionUrl={`${fyllutBaseURL}/api/foersteside`}
+        actionUrl={`${fyllutBaseURL}/api/foersteside-soknad`}
         label={translate(TEXTS.grensesnitt.prepareLetterPage.downloadCoverPage)}
         onSubmit={(event) => {
           if (enhetsListe.length > 0 && !selectedEnhetNummer) {
@@ -55,17 +58,6 @@ const LetterDownload = ({ form, index, submission, enhetsListe, fyllutBaseURL, t
             setIsRequiredEnhetMissing(true);
           }
         }}
-      />
-      <DownloadPdfButton
-        id={`soknad-${form.path}`}
-        values={{
-          form: JSON.stringify(form),
-          submission: JSON.stringify(submission),
-          translations: JSON.stringify(currentLanguage !== 'nb-NO' ? translations[currentLanguage] : {}),
-          language: currentLanguage,
-        }}
-        actionUrl={`${fyllutBaseURL}/api/pdf/convert`}
-        label={translate(form.properties.downloadPdfButtonText || TEXTS.grensesnitt.downloadApplication)}
       />
     </section>
   );
