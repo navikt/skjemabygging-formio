@@ -1118,7 +1118,7 @@
     "skjemanummer": "dg123456",
     "tema": "ENF",
     "submissionTypes": ["PAPER", "DIGITAL"],
-    "additionalSubmissionTypes": ["PAPER", "DIGITAL"],
+    "subsequentSubmissionTypes": ["PAPER", "DIGITAL"],
     "signatures": [
       {
         "label": "",

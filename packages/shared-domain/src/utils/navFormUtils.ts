@@ -317,7 +317,7 @@ const createDefaultForm = (config): Form => ({
     skjemanummer: '',
     tema: '',
     submissionTypes: ['PAPER', 'DIGITAL'],
-    additionalSubmissionTypes: ['PAPER', 'DIGITAL'],
+    subsequentSubmissionTypes: ['PAPER', 'DIGITAL'],
     signatures: [{ label: '', description: '', key: uuidv4() }],
     ettersendelsesfrist: '14',
     mellomlagringDurationDays: (config?.mellomlagringDurationDays as string) ?? '28',

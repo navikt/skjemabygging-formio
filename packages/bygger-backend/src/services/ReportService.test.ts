@@ -102,7 +102,7 @@ describe('ReportService', () => {
                 skjemanummer: 'TEST1',
                 signatures: undefined,
                 submissionTypes: [],
-                additionalSubmissionTypes: [],
+                subsequentSubmissionTypes: [],
               } as unknown as FormPropertiesType,
             },
           ];
@@ -126,7 +126,7 @@ describe('ReportService', () => {
                 skjemanummer: 'TEST1',
                 signatures: [{ label: '' }],
                 submissionTypes: [],
-                additionalSubmissionTypes: [],
+                subsequentSubmissionTypes: [],
               } as unknown as FormPropertiesType,
             },
           ];
@@ -150,7 +150,7 @@ describe('ReportService', () => {
                 skjemanummer: 'TEST1',
                 signatures: [{ label: 'Lege' }, { label: 'Verge' }, { label: 'Søker' }],
                 submissionTypes: [],
-                additionalSubmissionTypes: [],
+                subsequentSubmissionTypes: [],
               } as unknown as FormPropertiesType,
             },
           ];
@@ -182,7 +182,7 @@ describe('ReportService', () => {
                 published: '2022-07-28T10:00:10.325Z',
                 modified: '2022-07-28T10:00:10.325Z',
                 submissionTypes: [],
-                additionalSubmissionTypes: [],
+                subsequentSubmissionTypes: [],
               } as unknown as FormPropertiesType,
             } as Form,
           ];
@@ -210,7 +210,7 @@ describe('ReportService', () => {
                 published: '2022-07-28T10:00:10.325Z',
                 modified: '2022-07-28T11:00:05.254Z',
                 submissionTypes: [],
-                additionalSubmissionTypes: [],
+                subsequentSubmissionTypes: [],
               } as unknown as FormPropertiesType,
             } as Form,
           ];
@@ -236,7 +236,7 @@ describe('ReportService', () => {
                 skjemanummer: 'TEST1',
                 modified: '2022-07-28T11:00:05.254Z',
                 submissionTypes: [],
-                additionalSubmissionTypes: [],
+                subsequentSubmissionTypes: [],
               } as unknown as FormPropertiesType,
             } as Form,
           ];
@@ -338,7 +338,7 @@ describe('ReportService', () => {
             ] as Component[],
             properties: {
               submissionTypes: [],
-              additionalSubmissionTypes: [],
+              subsequentSubmissionTypes: [],
             } as unknown as FormPropertiesType,
           } as Form,
           {
@@ -349,7 +349,7 @@ describe('ReportService', () => {
             status: 'published',
             properties: {
               submissionTypes: [],
-              additionalSubmissionTypes: [],
+              subsequentSubmissionTypes: [],
             } as unknown as FormPropertiesType,
           } as Form,
           {
@@ -367,7 +367,7 @@ describe('ReportService', () => {
             ] as Component[],
             properties: {
               submissionTypes: [],
-              additionalSubmissionTypes: [],
+              subsequentSubmissionTypes: [],
             } as unknown as FormPropertiesType,
           } as Form,
         ];
@@ -436,7 +436,7 @@ describe('ReportService', () => {
               published: '2022-07-28T10:00:10.325Z',
               publishedLanguages: ['en', 'nn-NO'],
               submissionTypes: ['DIGITAL', 'PAPER'],
-              additionalSubmissionTypes: ['DIGITAL', 'PAPER'],
+              subsequentSubmissionTypes: ['DIGITAL', 'PAPER'],
             },
           } as Form,
           {
@@ -452,7 +452,7 @@ describe('ReportService', () => {
               published: '2022-07-28T10:00:10.325Z',
               publishedLanguages: ['en'],
               submissionTypes: [],
-              additionalSubmissionTypes: ['PAPER'],
+              subsequentSubmissionTypes: ['PAPER'],
             },
           } as Form,
           {
@@ -489,7 +489,7 @@ describe('ReportService', () => {
               published: '2022-07-28T10:00:10.325Z',
               publishedLanguages: undefined,
               submissionTypes: ['PAPER'],
-              additionalSubmissionTypes: ['PAPER'],
+              subsequentSubmissionTypes: ['PAPER'],
             },
           } as Form,
         ];

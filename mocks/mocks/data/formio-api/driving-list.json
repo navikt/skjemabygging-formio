@@ -166,7 +166,7 @@
     "skjemanummer": "test-driving-list",
     "tema": "BIL",
     "submissionTypes": ["PAPER", "DIGITAL"],
-    "additionalSubmissionTypes": ["PAPER", "DIGITAL"],
+    "subsequentSubmissionTypes": ["PAPER", "DIGITAL"],
     "signatures": [
       {
         "label": "",

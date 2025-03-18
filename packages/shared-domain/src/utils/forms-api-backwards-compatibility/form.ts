@@ -41,8 +41,8 @@ const removeInnsendingFromForm = (form: NavFormType): NavFormType => {
       ...formProperties,
       submissionTypes:
         form.properties.submissionTypes ?? mapInnsendingTypeToSubmissionTypes(form.properties.innsending),
-      additionalSubmissionTypes:
-        form.properties.additionalSubmissionTypes ?? mapInnsendingTypeToSubmissionTypes(form.properties.ettersending),
+      subsequentSubmissionTypes:
+        form.properties.subsequentSubmissionTypes ?? mapInnsendingTypeToSubmissionTypes(form.properties.ettersending),
     },
   };
 };

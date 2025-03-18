@@ -1,5 +1,5 @@
 import { Form, formioFormsApiUtils } from '@navikt/skjemadigitalisering-shared-domain';
-import { removeInnsendingFromForm } from './formsApiUtils';
+import { removeInnsendingTypeFromForm } from './formsApiUtils';
 
 describe('formsApiUtils', () => {
   describe('formioFormsApiUtils.mapInnsendingTypeToSubmissionTypes', () => {
@@ -24,7 +24,7 @@ describe('formsApiUtils', () => {
   });
 
   describe('removeInnsendingFromForm', () => {
-    it('should not return innsending and submissionTypes should be [PAPER, DIGITAL]', () => {
+    it('should remove innsending and ettersending, and set both submissionTypes and subsequentSubmissionTypes to [PAPER, DIGITAL]', () => {
       const form = {
         tags: [],
         type: 'test',
@@ -34,6 +34,7 @@ describe('formsApiUtils', () => {
         path: '/test-path',
         properties: {
           innsending: 'PAPIR_OG_DIGITAL',
+          ettersending: 'PAPIR_OG_DIGITAL',
           ettersendelsesfrist: '12',
           skjemanummer: '',
           tema: '',
@@ -41,13 +42,16 @@ describe('formsApiUtils', () => {
         },
         components: [],
       } as unknown as Form;
-      const data = removeInnsendingFromForm(form);
+      const data = removeInnsendingTypeFromForm(form);
       expect(data).not.toHaveProperty('properties.innsending');
+      expect(data).not.toHaveProperty('properties.ettersending');
       expect(data).toHaveProperty('properties.submissionTypes');
+      expect(data).toHaveProperty('properties.subsequentSubmissionTypes');
       expect(data.properties.submissionTypes).toEqual(['PAPER', 'DIGITAL']);
+      expect(data.properties.subsequentSubmissionTypes).toEqual(['PAPER', 'DIGITAL']);
     });
 
-    it('should return submissionType when exists', () => {
+    it('should keep existing submissionTypes and subsequentSubmissionTypes unchanged when already defined', () => {
       const form = {
         tags: [],
         type: 'test',
@@ -57,6 +61,7 @@ describe('formsApiUtils', () => {
         path: '/test-path',
         properties: {
           submissionTypes: ['PAPER'],
+          subsequentSubmissionTypes: ['PAPER', 'DIGITAL'],
           ettersendelsesfrist: '12',
           skjemanummer: '',
           tema: '',
@@ -64,10 +69,13 @@ describe('formsApiUtils', () => {
         },
         components: [],
       } as unknown as Form;
-      const data = removeInnsendingFromForm(form);
+      const data = removeInnsendingTypeFromForm(form);
       expect(data).not.toHaveProperty('properties.innsending');
+      expect(data).not.toHaveProperty('properties.ettersending');
       expect(data).toHaveProperty('properties.submissionTypes');
+      expect(data).toHaveProperty('properties.subsequentSubmissionTypes');
       expect(data.properties.submissionTypes).toEqual(['PAPER']);
+      expect(data.properties.subsequentSubmissionTypes).toEqual(['PAPER', 'DIGITAL']);
     });
   });
 });

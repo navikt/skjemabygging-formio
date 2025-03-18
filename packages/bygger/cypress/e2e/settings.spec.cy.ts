@@ -7,7 +7,7 @@ const submitData = {
   tema: 'BIL',
   downloadPdfButtonText: 'DownloadPDFBtnTest',
   submissionTypes: ['PAPER', 'DIGITAL'],
-  additionalSubmissionTypes: ['PAPER', 'DIGITAL'],
+  subsequentSubmissionTypes: ['PAPER', 'DIGITAL'],
   descriptionOfSignatures: 'Test Instructions',
   signatureLabel: 'Test account',
   signatureDescription: 'Instruction from test...',
@@ -65,7 +65,7 @@ describe('FormSettingsPage', () => {
       expect(req.body.properties.skjemanummer).to.include(submitData.skjemanummer);
       expect(req.body.properties.descriptionOfSignatures).to.include(submitData.descriptionOfSignatures);
       expect(req.body.properties.submissionTypes).to.deep.include.members(submitData.submissionTypes);
-      expect(req.body.properties.additionalSubmissionTypes).to.deep.members(submitData.additionalSubmissionTypes);
+      expect(req.body.properties.subsequentSubmissionTypes).to.deep.members(submitData.subsequentSubmissionTypes);
       expect(req.body.properties.signatures[0].label).to.include(submitData.signatureLabel);
       expect(req.body.properties.signatures[0].description).to.include(submitData.signatureDescription);
       req.reply(req.body);
@@ -85,7 +85,7 @@ describe('FormSettingsPage', () => {
       cy.get(`input[type="checkbox"][value="${type}"]`).check({ force: true });
     });
 
-    submitData.additionalSubmissionTypes.forEach((type) => {
+    submitData.subsequentSubmissionTypes.forEach((type) => {
       cy.get(`input[type="checkbox"][value="${type}"]`).check({ force: true });
     });
 

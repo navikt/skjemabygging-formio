@@ -6,7 +6,7 @@ export type FormMetadataErrorKeys =
   | 'skjemanummer'
   | 'tema'
   | 'submissionTypes'
-  | 'additionalSubmissionTypes'
+  | 'subsequentSubmissionTypes'
   | 'lockedFormReason'
   | 'declarationText'
   | 'uxSignalsId'

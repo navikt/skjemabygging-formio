@@ -11,7 +11,7 @@ const createHeaders = (accessToken?: string, revisionId?: number) => {
   };
 };
 
-export const removeInnsendingFromForm = (form: Form): Form => {
+export const removeInnsendingTypeFromForm = (form: Form): Form => {
   const formProperties = (({ innsending, ettersending, ...rest }) => rest)(form.properties);
   return {
     ...form,
@@ -20,8 +20,8 @@ export const removeInnsendingFromForm = (form: Form): Form => {
       submissionTypes:
         form.properties.submissionTypes ??
         formioFormsApiUtils.mapInnsendingTypeToSubmissionTypes(form.properties.innsending),
-      additionalSubmissionTypes:
-        form.properties.additionalSubmissionTypes ??
+      subsequentSubmissionTypes:
+        form.properties.subsequentSubmissionTypes ??
         formioFormsApiUtils.mapInnsendingTypeToSubmissionTypes(form.properties.ettersending),
     },
   };

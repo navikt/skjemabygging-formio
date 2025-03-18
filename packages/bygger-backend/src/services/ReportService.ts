@@ -116,7 +116,7 @@ class ReportService {
       'sist endret',
       'endret av',
       'submissionTypes',
-      'additionalSubmissionTypes',
+      'subsequentSubmissionTypes',
       'signaturfelt',
       'path',
       'har vedlegg',
@@ -141,7 +141,7 @@ class ReportService {
       const attachmentNames = attachments.map((attachment) => attachment.vedleggstittel).join(',');
 
       const { title, path, properties, status, changedAt, changedBy, publishedAt, publishedBy } = formCompact;
-      const { submissionTypes, tema, signatures, additionalSubmissionTypes } = properties;
+      const { submissionTypes, tema, signatures, subsequentSubmissionTypes } = properties;
 
       const baseInnsendingUrl =
         config.naisClusterName === 'prod-gcp'
@@ -160,7 +160,7 @@ class ReportService {
 
       const ettersendingUrl = hasAttachment ? baseEttersendingUrl : undefined;
       const paperEttersendingUrl =
-        submissionTypesUtils.isPaperSubmission(additionalSubmissionTypes) && hasAttachment
+        submissionTypesUtils.isPaperSubmission(subsequentSubmissionTypes) && hasAttachment
           ? `${baseEttersendingUrl}?sub=paper`
           : undefined;
 
@@ -183,7 +183,7 @@ class ReportService {
         changedAt,
         changedBy,
         submissionTypes,
-        additionalSubmissionTypes,
+        subsequentSubmissionTypes,
         numberOfSignatures,
         path,
         hasAttachment ? 'ja' : 'nei',

@@ -12,7 +12,7 @@ export interface SubmissionFieldsProps {
 }
 
 const SubmissionFields = ({ onChange, diff, form, errors }: SubmissionFieldsProps) => {
-  const { submissionTypes, additionalSubmissionTypes, ettersendelsesfrist, hideUserTypes } = form.properties;
+  const { submissionTypes, subsequentSubmissionTypes, ettersendelsesfrist, hideUserTypes } = form.properties;
   const isLockedForm = !!form.lock;
 
   return (
@@ -35,23 +35,23 @@ const SubmissionFields = ({ onChange, diff, form, errors }: SubmissionFieldsProp
       />
 
       <SubmissionTypeCheckbox
-        name="form-additionalSubmissionTypes"
-        label={<LabelWithDiff label="Ettersending" diff={!!diff.additionalSubmissionTypes} />}
-        value={additionalSubmissionTypes}
-        error={errors?.additionalSubmissionTypes}
+        name="form-subsequentSubmissionTypes"
+        label={<LabelWithDiff label="Ettersending" diff={!!diff.subsequentSubmissionTypes} />}
+        value={subsequentSubmissionTypes}
+        error={errors?.subsequentSubmissionTypes}
         readonly={isLockedForm}
         onChange={(data) =>
           onChange({
             ...form,
             properties: {
               ...form.properties,
-              additionalSubmissionTypes: [...data],
+              subsequentSubmissionTypes: [...data],
             },
           })
         }
       />
 
-      {!submissionTypesUtils.isNoneSubmission(additionalSubmissionTypes) && (
+      {!submissionTypesUtils.isNoneSubmission(subsequentSubmissionTypes) && (
         <TextField
           onWheel={(e) => e.currentTarget.blur()} // disable scroll wheel on number input
           className="mb"

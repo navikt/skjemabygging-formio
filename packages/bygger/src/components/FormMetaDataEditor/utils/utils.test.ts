@@ -11,7 +11,7 @@ describe('Form Metadata Validation', () => {
       path: 'sample-path',
       properties: {
         submissionTypes: [],
-        additionalSubmissionTypes: [],
+        subsequentSubmissionTypes: [],
         skjemanummer: 'NAV 12-13.14',
         tema: 'AAP',
         mellomlagringDurationDays: '28',
@@ -32,7 +32,7 @@ describe('Form Metadata Validation', () => {
     const usageContext: UsageContext = 'edit';
     // Set properties that are required for edit mode
     sampleForm.properties.submissionTypes = ['DIGITAL'];
-    sampleForm.properties.additionalSubmissionTypes = ['PAPER'];
+    sampleForm.properties.subsequentSubmissionTypes = ['PAPER'];
 
     const errors = validateFormMetadata(sampleForm, usageContext);
 
@@ -69,7 +69,7 @@ describe('Form Metadata Validation', () => {
     const usageContext: UsageContext = 'edit';
     sampleForm.properties.mellomlagringDurationDays = '28.3';
     sampleForm.properties.submissionTypes = ['DIGITAL'];
-    sampleForm.properties.additionalSubmissionTypes = ['PAPER'];
+    sampleForm.properties.subsequentSubmissionTypes = ['PAPER'];
 
     const errors = validateFormMetadata(sampleForm, usageContext);
 
@@ -83,7 +83,7 @@ describe('Form Metadata Validation', () => {
     const usageContext: UsageContext = 'edit';
     sampleForm.properties.mellomlagringDurationDays = '30';
     sampleForm.properties.submissionTypes = ['DIGITAL'];
-    sampleForm.properties.additionalSubmissionTypes = ['PAPER'];
+    sampleForm.properties.subsequentSubmissionTypes = ['PAPER'];
 
     const errors = validateFormMetadata(sampleForm, usageContext);
 

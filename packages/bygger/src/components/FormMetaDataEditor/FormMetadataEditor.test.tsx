@@ -53,7 +53,7 @@ const defaultForm: Form = {
   properties: {
     skjemanummer: 'TST 12.34-56',
     submissionTypes: ['PAPER', 'DIGITAL'],
-    additionalSubmissionTypes: ['PAPER', 'DIGITAL'],
+    subsequentSubmissionTypes: ['PAPER', 'DIGITAL'],
     tema: 'BIL',
     enhetMaVelgesVedPapirInnsending: false,
     enhetstyper: [],
@@ -222,7 +222,7 @@ describe('FormMetadataEditor', () => {
 
     describe('Ettersendelsesfrist', () => {
       it('lagres i properties', async () => {
-        const form = formMedProps({ ettersendelsesfrist: undefined, additionalSubmissionTypes: ['DIGITAL'] });
+        const form = formMedProps({ ettersendelsesfrist: undefined, subsequentSubmissionTypes: ['DIGITAL'] });
 
         render(<FormMetadataEditor form={form} onChange={mockOnChange} />);
         const input = screen.getByLabelText('Ettersendelsesfrist (dager)');
@@ -235,7 +235,7 @@ describe('FormMetadataEditor', () => {
       });
 
       it('nullstilles i properties', async () => {
-        const form = formMedProps({ ettersendelsesfrist: '42', additionalSubmissionTypes: ['DIGITAL'] });
+        const form = formMedProps({ ettersendelsesfrist: '42', subsequentSubmissionTypes: ['DIGITAL'] });
         render(<FormMetadataEditor form={form} onChange={mockOnChange} />);
         const input = screen.getByLabelText('Ettersendelsesfrist (dager)');
         await userEvent.clear(input);
@@ -248,7 +248,7 @@ describe('FormMetadataEditor', () => {
 
     describe('mellomlagringDurationDays', () => {
       it('is saved in properties', async () => {
-        const form = formMedProps({ mellomlagringDurationDays: undefined, additionalSubmissionTypes: ['DIGITAL'] });
+        const form = formMedProps({ mellomlagringDurationDays: undefined, subsequentSubmissionTypes: ['DIGITAL'] });
 
         render(<FormMetadataEditor form={form} onChange={mockOnChange} />);
         const input = screen.getByLabelText('Mellomlagringstid (dager)');

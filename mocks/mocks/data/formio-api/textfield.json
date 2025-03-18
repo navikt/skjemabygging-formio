@@ -264,7 +264,7 @@
     "skjemanummer": "test-tekstfelt",
     "tema": "GEN",
     "submissionTypes": ["PAPER", "DIGITAL"],
-    "additionalSubmissionTypes": ["PAPER", "DIGITAL"],
+    "subsequentSubmissionTypes": ["PAPER", "DIGITAL"],
     "signatures": [
       {
         "label": "",

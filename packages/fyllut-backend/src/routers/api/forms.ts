@@ -10,7 +10,7 @@ const mapForm = (form): FormsResponseForm => ({
   properties: {
     skjemanummer: form.skjemanummer ?? form.properties.skjemanummer,
     submissionTypes: form.properties.submissionTypes,
-    additionalSubmissionTypes: form.properties.additionalSubmissionTypes,
+    subsequentSubmissionTypes: form.properties.subsequentSubmissionTypes,
   },
 });
 

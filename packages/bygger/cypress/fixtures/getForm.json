@@ -339,7 +339,7 @@
     "skjemanummer": "cypress-settings",
     "tema": "CYPRESSTEST",
     "submissionTypes": ["PAPER", "DIGITAL"],
-    "additionalSubmissionTypes": ["PAPER", "DIGITAL"],
+    "subsequentSubmissionTypes": ["PAPER", "DIGITAL"],
     "signatures": [
       {
         "label": "Lege",

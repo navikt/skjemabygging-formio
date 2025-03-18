@@ -347,7 +347,7 @@
     "modifiedBy": "test@nav.no",
     "publishedLanguages": [],
     "descriptionOfSignaturesPositionUnder": true,
-    "additionalSubmissionTypes": [],
+    "subsequentSubmissionTypes": [],
     "declarationType": "default",
     "downloadPdfButtonText": "ab",
     "isTestForm": false,

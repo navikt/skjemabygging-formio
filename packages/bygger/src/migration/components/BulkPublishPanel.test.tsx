@@ -17,7 +17,7 @@ const properties: FormPropertiesType = {
   skjemanummer: 'skjemanummer',
   tema: 'tema',
   submissionTypes: ['PAPER', 'DIGITAL'],
-  additionalSubmissionTypes: ['PAPER', 'DIGITAL'],
+  subsequentSubmissionTypes: ['PAPER', 'DIGITAL'],
   signatures: {
     signature1: '',
     signature2: '',
