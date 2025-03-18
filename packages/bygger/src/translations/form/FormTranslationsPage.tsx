@@ -34,9 +34,9 @@ const FormTranslationsPage = ({ form }: Props) => {
 
   const initialChanges = useMemo(() => {
     if (isTranslationsReady && isGlobalTranslationsReady) {
-      return translations
-        .map((row) => (row.globalTranslationId && !storedTranslations[row.key]?.globalTranslationId ? row : undefined))
-        .filter((value) => !!value);
+      return translations.filter(
+        (translation) => translation.globalTranslationId && !storedTranslations[translation.key]?.globalTranslationId,
+      );
     }
   }, [isGlobalTranslationsReady, isTranslationsReady, translations, storedTranslations]);
 
