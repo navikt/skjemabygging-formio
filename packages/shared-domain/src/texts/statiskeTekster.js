@@ -128,7 +128,7 @@ export const statiske = {
     SendInPapirSectionInstruction:
       'Første side i skjema må legges øverst i innsendingen. Den inneholder informasjon om hvilken adresse du skal sende dokumentene til. ',
     downloadSuccess:
-      'Nedlastingen er ferdig. Filen ligger i mappen for nedlastinger på enheten din og heter: ${fileName}',
+      'Nedlastingen er ferdig. Filen ligger i mappen for nedlastinger på enheten din og heter: {{fileName}}',
     downloadError: 'Det skjedde en feil ved nedlasting av søknaden. Vennligst prøv igjen.',
   },
   declaration: {

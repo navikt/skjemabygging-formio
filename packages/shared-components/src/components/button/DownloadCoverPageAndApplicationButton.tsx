@@ -1,9 +1,10 @@
 import { Alert } from '@navikt/ds-react';
-import { dateUtils, NavFormType, Submission } from '@navikt/skjemadigitalisering-shared-domain';
+import { dateUtils, NavFormType, Submission, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import React, { useState } from 'react';
 import { useAppConfig } from '../../context/config/configContext';
 import { useLanguages } from '../../context/languages';
 import DownloadPdfButton from './DownloadPdfButton';
+import { sanitizeFileName } from './downloadUtil';
 
 interface Props {
   form: NavFormType;
@@ -15,7 +16,7 @@ interface Props {
   children: React.ReactNode;
 }
 
-type DownloadState = 'succes' | 'error';
+type DownloadState = 'success' | 'error';
 
 const DownloadCoverPageAndApplicationButton = ({
   form,
@@ -36,14 +37,14 @@ const DownloadCoverPageAndApplicationButton = ({
   };
 
   const onSuccess = () => {
-    setDownloadState('succes');
+    setDownloadState('success');
   };
 
   const onError = () => {
     setDownloadState('error');
   };
 
-  const fileName = `${form.title.toLowerCase().replace(/\s+/g, '-')}-${dateUtils.toLocaleDate().replace(/\./g, '')}.pdf`;
+  const fileName = `${sanitizeFileName(form.title)}-${dateUtils.toLocaleDate().replace(/\./g, '')}.pdf`;
 
   return (
     <>
@@ -67,18 +68,12 @@ const DownloadCoverPageAndApplicationButton = ({
         {children}
       </DownloadPdfButton>
 
-      {downloadState === 'succes' && (
-        <Alert variant="info">
-          {translate(
-            `Søknaden din er lastet ned med navnet ${fileName} og ligger i mappen for nedlastninger på enheten din.`,
-          )}
-        </Alert>
+      {downloadState === 'success' && (
+        <Alert variant="info">{translate(TEXTS.statiske.prepareLetterPage.downloadSuccess, { fileName })}</Alert>
       )}
 
       {downloadState === 'error' && (
-        <Alert variant="error">
-          {translate('Det skjedde en feil ved nedlasting av søknaden. Vennligst prøv igjen senere.')}
-        </Alert>
+        <Alert variant="error">{translate(TEXTS.statiske.prepareLetterPage.downloadError)}</Alert>
       )}
     </>
   );
