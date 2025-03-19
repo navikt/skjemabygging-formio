@@ -361,5 +361,8 @@
   "created": "2020-04-30T14:19:08.140Z",
   "modified": "2020-05-04T15:09:00.692Z",
   "machineName": "kxzxmneixaglyxf:debugSkjema",
-  "properties": { "skjemanummer": "NAV 12-13.14" }
+  "properties": {
+    "skjemanummer": "NAV 12-13.14",
+    "submissionTypes": []
+  }
 }

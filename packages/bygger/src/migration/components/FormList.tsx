@@ -11,10 +11,6 @@ const useStyles = makeStyles({
   },
 });
 
-const isForm = (element: FormMigrationLogData | Form): element is Form => {
-  return !!element['properties'];
-};
-
 export const FormList = ({
   heading,
   listElements,
@@ -41,16 +37,13 @@ export const FormList = ({
           </Table.Header>
           <Table.Body>
             {listElements.map((element, i) => {
-              const skjemanummer = isForm(element) ? element.properties.skjemanummer : element.skjemanummer;
+              const skjemanummer = element.skjemanummer;
               return (
                 <Table.Row key={i + skjemanummer}>
                   <Table.HeaderCell scope="row">{skjemanummer}</Table.HeaderCell>
-                  <Table.DataCell>{element.name ?? element.title}</Table.DataCell>
+                  <Table.DataCell>{element.title}</Table.DataCell>
                   <Table.DataCell>
-                    <FormStatus
-                      status={determineStatus(isForm(element) ? element.properties : element)}
-                      size={'small'}
-                    />
+                    <FormStatus status={determineStatus(element)} size={'small'} />
                   </Table.DataCell>
                 </Table.Row>
               );

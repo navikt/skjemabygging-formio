@@ -1,5 +1,5 @@
 import { Table } from '@navikt/ds-react';
-import { htmlConverter, InnerHtml } from '@navikt/skjemadigitalisering-shared-components';
+import { htmlUtils, InnerHtml } from '@navikt/skjemadigitalisering-shared-components';
 import { FormsApiTranslation, formsApiTranslations, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useMemo, useState } from 'react';
 import { TranslationError } from '../../context/translations/utils/errorUtils';
@@ -45,7 +45,7 @@ const TranslationRow = <Translation extends FormsApiTranslation>({
     updateTranslation(translation, property, value);
   };
 
-  const isHtml = htmlConverter.isHtmlString(translation.nb ?? '');
+  const isHtml = htmlUtils.isHtmlString(translation.nb ?? '');
   const hasGlobalOverride = formsApiTranslations.isFormTranslation(translation) && !!translation.globalTranslationId;
 
   return (
@@ -78,7 +78,7 @@ const TranslationRow = <Translation extends FormsApiTranslation>({
             <TranslationInput
               label={'Engelsk'}
               defaultValue={translation.en}
-              isHtml={htmlConverter.isHtmlString(translation.nb ?? '')}
+              isHtml={htmlUtils.isHtmlString(translation.nb ?? '')}
               minRows={heightInRows}
               error={error?.message}
               onChange={(value) => handleChange('en', value)}

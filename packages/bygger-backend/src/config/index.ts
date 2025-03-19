@@ -3,14 +3,12 @@ import dotenv from 'dotenv';
 import {
   devAzure,
   devEnabledFeatures,
-  devFormio,
   devFormsApi,
   devFyllut,
   devGithub,
   devGithubApp,
   devPusher,
   devSkjemabyggingProxy,
-  prodFormio,
   prodFormsApi,
 } from './development';
 import { ConfigType, NodeEnv } from './types';
@@ -67,27 +65,6 @@ const config: ConfigType = {
     clientSecret: env('GITHUB_CLIENT_SECRET'),
     installationId: env('GITHUB_APP_INSTALLATION_ID'),
   },
-  formio: {
-    apiService: env('FORMIO_API_SERVICE', devFormio.apiService),
-    projectName: env('FORMIO_PROJECT_NAME', devFormio.projectName),
-    projectId: env('FORMIO_PROJECT_ID'),
-    roleIds: {
-      administrator: env('FORMIO_ROLE_ID_ADMINISTRATOR', devFormio.roleIds?.administrator),
-      authenticated: env('FORMIO_ROLE_ID_AUTHENTICATED', devFormio.roleIds?.authenticated),
-      everyone: env('FORMIO_ROLE_ID_EVERYONE', devFormio.roleIds?.everyone),
-    },
-    formIds: {
-      userResource: env('FORMIO_FORM_ID_USER'),
-    },
-    jwtSecret: env('FORMIO_JWT_SECRET'),
-  },
-  prodFormio:
-    naisClusterName !== 'prod-gcp'
-      ? {
-          apiService: env('FORMIO_API_SERVICE_PROD', prodFormio.apiService),
-          projectName: env('FORMIO_PROJECT_NAME_PROD', prodFormio.projectName),
-        }
-      : undefined,
   fyllut: {
     baseUrl: env('FYLLUT_BASE_URL', devFyllut.baseUrl),
     skjemadelingslenkeUrl: 'https://skjemadelingslenke.ekstern.dev.nav.no/fyllut',

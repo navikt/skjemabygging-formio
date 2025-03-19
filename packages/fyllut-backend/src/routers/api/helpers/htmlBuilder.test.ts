@@ -273,8 +273,9 @@ describe('htmlBuilder', () => {
 
 <h3></h3>
 <div class="underskrift"></div>
-<div class="underskrift">Sted og dato _________________________________________</div>
-<div class="underskrift">Underskrift _________________________________________</div>
+<div class="underskrift">Sted og dato ___________________________________________________</div>
+<div class="underskrift">Underskrift ____________________________________________________</div>
+<div class="underskrift">Navn med blokkbokstaver ________________________________________</div>
 `;
 
     it('adds a singel signature when form contains the old format', () => {
@@ -305,14 +306,16 @@ describe('htmlBuilder', () => {
       expect(element).toContain(`
 <h3>Søker</h3>
 <div class="underskrift">Beskrivelse</div>
-<div class="underskrift">Sted og dato _________________________________________</div>
-<div class="underskrift">Underskrift _________________________________________</div>`);
+<div class="underskrift">Sted og dato ___________________________________________________</div>
+<div class="underskrift">Underskrift ____________________________________________________</div>
+<div class="underskrift">Navn med blokkbokstaver ________________________________________</div>`);
 
       expect(element).toContain(`
 <h3>Arbeidsgiver</h3>
 <div class="underskrift"></div>
-<div class="underskrift">Sted og dato _________________________________________</div>
-<div class="underskrift">Underskrift _________________________________________</div>`);
+<div class="underskrift">Sted og dato ___________________________________________________</div>
+<div class="underskrift">Underskrift ____________________________________________________</div>
+<div class="underskrift">Navn med blokkbokstaver ________________________________________</div>`);
     });
 
     it('adds description of signatures', () => {
