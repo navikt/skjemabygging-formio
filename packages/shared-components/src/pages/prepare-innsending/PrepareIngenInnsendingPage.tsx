@@ -31,12 +31,13 @@ export function PrepareIngenInnsendingPage({ form, submission, translations, for
     <div className={styles.content}>
       <section id="maincontent" className="fyllut-layout" tabIndex={-1}>
         <section className="main-col" aria-label={translate(form.properties.innsendingOverskrift)}>
-          <div className="wizard-page">
-            <Heading level="3" size="medium" spacing>
-              {translate(form.properties.innsendingOverskrift)}
-            </Heading>
-            <BodyShort className="mb">{translate(form.properties.innsendingForklaring)}</BodyShort>
+          <Heading level="3" size="medium" spacing>
+            {translate(form.properties.innsendingOverskrift)}
+          </Heading>
+          <BodyShort className="mb">{translate(form.properties.innsendingForklaring)}</BodyShort>
+          <div className="mb-4">
             <DownloadCoverPageAndApplicationButton
+              type="application"
               form={form}
               submission={submission}
               translations={translations}

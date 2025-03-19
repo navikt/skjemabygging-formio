@@ -5,13 +5,37 @@ import applicationService from './applicationService';
 import coverPageService from './coverPageService';
 import { mergeFiles } from './gotenbergService';
 
-interface CoverPageAndApplicationProps {
+interface ApplicationProps {
   accessToken: string;
   form: NavFormType;
   submissionMethod: string;
   submission: Submission;
   language: string;
   translations: I18nTranslationMap;
+}
+
+const application = async (props: CoverPageAndApplicationProps) => {
+  const { accessToken, form, submission, language, translations, submissionMethod } = props;
+
+  const applicationResponse: any = await applicationService.createPdf(
+    accessToken,
+    form,
+    submission,
+    submissionMethod,
+    translations,
+    language,
+  );
+
+  const applicationPdf = base64Decode(applicationResponse.data);
+
+  if (applicationPdf === undefined) {
+    throw htmlResponseError('Generering av søknads PDF feilet');
+  }
+
+  return Buffer.from(applicationPdf);
+};
+
+interface CoverPageAndApplicationProps extends ApplicationProps {
   unitNumber: string;
 }
 
@@ -61,6 +85,7 @@ const coverPageAndApplication = async (props: CoverPageAndApplicationProps) => {
 };
 
 const documentsService = {
+  application,
   coverPageAndApplication,
 };
 
