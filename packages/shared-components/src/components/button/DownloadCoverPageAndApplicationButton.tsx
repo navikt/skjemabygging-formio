@@ -7,6 +7,7 @@ import DownloadPdfButton from './DownloadPdfButton';
 import { sanitizeFileName } from './downloadUtil';
 
 interface Props {
+  type?: 'application' | 'coverPageAndApplication';
   form: NavFormType;
   submission: Submission;
   translations: any;
@@ -19,6 +20,7 @@ interface Props {
 type DownloadState = 'success' | 'error';
 
 const DownloadCoverPageAndApplicationButton = ({
+  type = 'coverPageAndApplication',
   form,
   submission,
   translations,
@@ -44,7 +46,9 @@ const DownloadCoverPageAndApplicationButton = ({
     setDownloadState('error');
   };
 
-  const fileName = `${sanitizeFileName(form.title)}-${dateUtils.toLocaleDate().replace(/\./g, '')}.pdf`;
+  const fileName = `${sanitizeFileName(translate(form.title))}-${dateUtils.toLocaleDate().replace(/\./g, '')}.pdf`;
+
+  const actionUrl = `${fyllutBaseURL}/api/documents${type === 'application' ? '/application' : '/front-page-and-application'}`;
 
   return (
     <>
@@ -59,7 +63,7 @@ const DownloadCoverPageAndApplicationButton = ({
           enhetNummer,
           submissionMethod: submissionMethod ?? 'paper',
         }}
-        actionUrl={`${fyllutBaseURL}/api/documents/front-page-and-application`}
+        actionUrl={actionUrl}
         isValid={isValid}
         onSuccess={onSuccess}
         onError={onError}
