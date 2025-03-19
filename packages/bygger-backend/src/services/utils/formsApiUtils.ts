@@ -11,6 +11,10 @@ const createHeaders = (accessToken?: string, revisionId?: number) => {
   };
 };
 
+/**
+ *
+ * Metoden er implementert kun for å støtte bakoverkompatibilitet og skal fjernes ved migrering
+ */
 export const removeInnsendingTypeFromForm = (form: Form): Form => {
   const formProperties = (({ innsending, ettersending, ...rest }) => rest)(form.properties);
   return {

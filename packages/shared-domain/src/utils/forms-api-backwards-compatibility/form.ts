@@ -18,6 +18,10 @@ const mapFormToNavForm = (form: Form): NavFormType => {
   };
 };
 
+/**
+ *
+ * Metoden er implementert kun for å støtte bakoverkompatibilitet og skal fjernes ved migrering
+ */
 const mapInnsendingTypeToSubmissionTypes = (innsendingType?: InnsendingType): SubmissionType[] => {
   if (!innsendingType) return [];
 
@@ -33,6 +37,10 @@ const mapInnsendingTypeToSubmissionTypes = (innsendingType?: InnsendingType): Su
   }
 };
 
+/**
+ *
+ * Metoden er implementert kun for å støtte bakoverkompatibilitet og skal fjernes ved migrering
+ */
 const removeInnsendingFromForm = (form: NavFormType): NavFormType => {
   const formProperties = (({ innsending, ettersending, ...rest }) => rest)(form.properties);
   return {

@@ -50,6 +50,7 @@ const mapLimitedForm = (form: NavFormType, translate: TranslateFunction) => {
     properties: {
       skjemanummer: form.properties.skjemanummer,
       tema: form.properties.tema,
+      innsending: form.properties.innsending,
       submissionTypes: form.properties.submissionTypes,
       ettersending: form.properties.ettersending,
       subsequentSubmissionTypes: form.properties.subsequentSubmissionTypes,

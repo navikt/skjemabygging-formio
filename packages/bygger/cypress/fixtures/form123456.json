@@ -3375,7 +3375,7 @@
     "skjemanummer": "TST-123456",
     "tema": "DAG",
     "submissionTypes": ["PAPER", "DIGITAL"],
-    "subsequentSubmissionTypes": [],
+    "subsequentSubmissionTypes": ["PAPER", "DIGITAL"],
     "signatures": [
       {
         "label": "Lege",

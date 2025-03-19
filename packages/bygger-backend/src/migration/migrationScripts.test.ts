@@ -143,7 +143,7 @@ describe('Migration scripts', () => {
           properties: {
             ...originalForm.properties,
             submissionTypes: ['DIGITAL'],
-            subsequentSubmissionTypes: [],
+            subsequentSubmissionTypes: ['PAPER', 'DIGITAL'],
           },
         };
         const { migratedForm: actual } = migrateForm(
@@ -341,7 +341,7 @@ describe('Migration scripts', () => {
             ...originalForm.properties,
             skjemanummer: 'Form1',
             submissionTypes: ['DIGITAL'],
-            subsequentSubmissionTypes: [],
+            subsequentSubmissionTypes: ['PAPER', 'DIGITAL'],
           },
         };
 

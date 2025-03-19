@@ -5,6 +5,10 @@ import { TextSize } from '../text';
 
 export type DisplayType = 'wizard' | 'form';
 export type FormType = 'form' | 'resource';
+/**
+ *
+ * InnsendingType skal fjernes ved migrering
+ */
 export type InnsendingType = 'PAPIR_OG_DIGITAL' | 'KUN_PAPIR' | 'KUN_DIGITAL' | 'INGEN';
 export type SubmissionType = 'PAPER' | 'DIGITAL';
 export type SubmissionMethod = 'paper' | 'digital';
@@ -293,8 +297,15 @@ export interface NavFormType {
   status?: string;
 }
 
+/**
+ *
+ * Fjern ettersending ved migrering
+ */
 export interface FormsResponseForm extends Pick<NavFormType, '_id' | 'title' | 'path' | 'modified'> {
-  properties: Pick<FormPropertiesType, 'skjemanummer' | 'subsequentSubmissionTypes' | 'submissionTypes'>;
+  properties: Pick<
+    FormPropertiesType,
+    'skjemanummer' | 'ettersending' | 'subsequentSubmissionTypes' | 'submissionTypes'
+  >;
 }
 
 export type SubmissionData = Record<string, string | number | boolean | any[] | object>;
