@@ -6,7 +6,8 @@ import { navCssVariables } from '../../../util/styles/nav-css/navCssVariables';
 
 const useStyles = makeStyles({
   enhetsliste: {
-    maxWidth: '20rem',
+    width: '100%',
+    maxWidth: '350px',
   },
 });
 
@@ -26,7 +27,7 @@ const EnhetSelector = ({ enhetsliste = [], onSelectEnhet, error }: EnhetSelector
 
   const options = enhetsliste.map((enhet) => ({ label: enhet.navn, value: enhet.enhetNr }));
   return (
-    <div className="mb-4">
+    <div className="mb-4 navds-form-field">
       <label htmlFor="enhetSelect" className="navds-label">
         {translate(TEXTS.statiske.prepareLetterPage.chooseEntity)}
       </label>

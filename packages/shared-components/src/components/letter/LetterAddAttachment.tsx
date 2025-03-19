@@ -1,14 +1,16 @@
 import { Heading } from '@navikt/ds-react';
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { useLanguages } from '../../context/languages';
 
 interface Props {
   index: number;
-  vedleggSomSkalSendes: any[];
-  translate: any;
+  attachments: any[];
 }
 
-const LetterAddAttachment = ({ index, vedleggSomSkalSendes, translate }: Props) => {
-  const skalSendeFlereVedlegg = vedleggSomSkalSendes.length > 1;
+const LetterAddAttachment = ({ index, attachments }: Props) => {
+  const { translate } = useLanguages();
+
+  const skalSendeFlereVedlegg = attachments.length > 1;
   const attachmentSectionTitle = translate(TEXTS.statiske.prepareLetterPage.attachmentSectionTitleAttachTo)
     .concat(' ')
     .concat(
@@ -22,7 +24,7 @@ const LetterAddAttachment = ({ index, vedleggSomSkalSendes, translate }: Props) 
         {`${index}. ${attachmentSectionTitle}`}
       </Heading>
       <ul>
-        {vedleggSomSkalSendes.map((vedlegg) => (
+        {attachments.map((vedlegg) => (
           <li key={vedlegg.key}>{translate(vedlegg.label)}</li>
         ))}
       </ul>

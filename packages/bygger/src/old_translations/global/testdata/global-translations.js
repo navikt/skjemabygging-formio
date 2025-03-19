@@ -154,7 +154,7 @@ const translations = {
           value: 'Summary',
           scope: 'global',
         },
-        'Last ned og skriv ut dokumentene til saken din': {
+        'Last ned skjema': {
           value: 'Download and print the documents for your case',
           scope: 'global',
         },
@@ -164,12 +164,11 @@ const translations = {
               'Please check that all your answers are correct. If you find something that needs to be corrected, press "{{editAnswers}}" at the bottom of this page. If all the answers are correct, proceed to step 2.',
             scope: 'global',
           },
-        'Førstesidearket inneholder viktig informasjon om hvilken enhet i Nav som skal motta dokumentene, og hvilken adresse de skal sendes til.':
-          {
-            value:
-              'The cover sheet contains important information about the Nav unit that will receive the documents and the address to which the documents should be sent.',
-            scope: 'global',
-          },
+        'Gjør følgende for å sende det til Nav:': {
+          value:
+            'The cover sheet contains important information about the Nav unit that will receive the documents and the address to which the documents should be sent.',
+          scope: 'global',
+        },
         'Legg ved': {
           value: 'Attach',
           scope: 'global',
@@ -182,14 +181,15 @@ const translations = {
           value: 'the following document',
           scope: 'global',
         },
-        'Send det hele til Nav i posten': {
+        'Send utskrift til Nav i posten': {
           value: 'Send it all to Nav in the mail',
           scope: 'global',
         },
-        'Følg instruksjonene på førstesidearket for å sende dokumentene i posten.': {
-          value: 'Follow the instructions on the cover sheet  to send the documents in the mail.',
-          scope: 'global',
-        },
+        'Første side i skjema må legges øverst i innsendingen. Den inneholder informasjon om hvilken adresse du skal sende dokumentene til. ':
+          {
+            value: 'Follow the instructions on the cover sheet  to send the documents in the mail.',
+            scope: 'global',
+          },
         'Husk å legge ved': {
           value: 'Remember to include',
           scope: 'global',
@@ -524,7 +524,7 @@ const translations = {
           value: 'To digital submission',
           scope: 'global',
         },
-        'Last ned førsteside': {
+        'Last ned skjema': {
           value: 'Download cover sheet',
           scope: 'global',
         },
@@ -644,16 +644,15 @@ const translations = {
               'Vennlegast sjekk at alle svara dine er riktige. Viss du finn noko som må korrigerast trykkar du på «{{editAnswers}}» på botnen av denne sida. Viss alle svara er riktige går du vidare til steg 2.',
             scope: 'global',
           },
-        'Last ned og skriv ut dokumentene til saken din': {
+        'Last ned skjema': {
           value: 'Last ned og skriv ut dokumenta til saka di',
           scope: 'global',
         },
-        'Førstesidearket inneholder viktig informasjon om hvilken enhet i Nav som skal motta dokumentene, og hvilken adresse de skal sendes til.':
-          {
-            value:
-              'Førstesidearket inneheld viktig informasjon om kva eining i Nav som skal motta dokumenta, og kva adresse dei skal sendast til.',
-            scope: 'global',
-          },
+        'Gjør følgende for å sende det til Nav:': {
+          value:
+            'Førstesidearket inneheld viktig informasjon om kva eining i Nav som skal motta dokumenta, og kva adresse dei skal sendast til.',
+          scope: 'global',
+        },
         'Legg ved': {
           value: 'Legg ved',
           scope: 'global',
@@ -666,14 +665,15 @@ const translations = {
           value: 'dette vedlegget',
           scope: 'global',
         },
-        'Send det hele til Nav i posten': {
+        'Send utskrift til Nav i posten': {
           value: 'Send det heile til Nav i posten',
           scope: 'global',
         },
-        'Følg instruksjonene på førstesidearket for å sende dokumentene i posten.': {
-          value: 'Følg instruksjonane på førstesidearket for å sende dokumenta i posten.',
-          scope: 'global',
-        },
+        'Første side i skjema må legges øverst i innsendingen. Den inneholder informasjon om hvilken adresse du skal sende dokumentene til. ':
+          {
+            value: 'Følg instruksjonane på førstesidearket for å sende dokumenta i posten.',
+            scope: 'global',
+          },
         'Husk å legge ved': {
           value: 'Hugs å legge ved',
           scope: 'global',
@@ -1130,8 +1130,8 @@ const translations = {
           value: 'Til digital innsending',
           scope: 'global',
         },
-        'Last ned førsteside': {
-          value: 'Last ned førsteside',
+        'Last ned skjema': {
+          value: 'Last ned skjema',
           scope: 'global',
         },
         'Jeg har lest instruksjonene.': {

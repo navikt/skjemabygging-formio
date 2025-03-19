@@ -45,7 +45,7 @@ export function PrepareIngenInnsendingPage({ form, submission, translations, for
               {translate(form.properties.downloadPdfButtonText || TEXTS.grensesnitt.downloadApplication)}
             </DownloadCoverPageAndApplicationButton>
           </div>
-          <NavigateButtonComponent translate={translate} goBackUrl={`${formUrl}/oppsummering`} />
+          <NavigateButtonComponent goBackUrl={`${formUrl}/oppsummering`} />
         </section>
       </section>
     </div>

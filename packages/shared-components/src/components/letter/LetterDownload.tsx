@@ -1,9 +1,9 @@
 import { BodyShort, Heading } from '@navikt/ds-react';
 import { Enhet, NavFormType, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useState } from 'react';
-import { useLanguages } from '../../../context/languages';
-import DownloadCoverPageAndApplicationButton from '../../button/DownloadCoverPageAndApplicationButton';
-import EnhetSelector from '../../select/enhet/EnhetSelector';
+import { useLanguages } from '../../context/languages';
+import DownloadCoverPageAndApplicationButton from '../button/DownloadCoverPageAndApplicationButton';
+import EnhetSelector from '../select/enhet/EnhetSelector';
 
 interface Props {
   index: number;
@@ -23,10 +23,10 @@ const LetterDownload = ({ form, index, submission, enhetsListe, translations }: 
       className="wizard-page"
       aria-label={`${index}. ${translate(TEXTS.statiske.prepareLetterPage.firstSectionTitle)}`}
     >
+      <BodyShort className="mb-4">{translate(TEXTS.statiske.prepareLetterPage.firstDescription)}</BodyShort>
       <Heading level="3" size="medium" spacing>
         {`${index}. ${translate(TEXTS.statiske.prepareLetterPage.firstSectionTitle)}`}
       </Heading>
-      <BodyShort className="mb-4">{translate(TEXTS.statiske.prepareLetterPage.firstDescription)}</BodyShort>
       <EnhetSelector
         enhetsliste={enhetsListe}
         onSelectEnhet={(enhetNummer) => {

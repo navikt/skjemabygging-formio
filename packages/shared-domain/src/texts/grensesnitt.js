@@ -63,7 +63,7 @@ export const grensesnitt = {
     editAnswers: 'Fortsett utfylling',
   },
   prepareLetterPage: {
-    downloadCoverPage: 'Last ned førsteside og søknad',
+    downloadCoverPage: 'Last ned skjema',
   },
   stepper: {
     toggleText: 'Steg {{currentStep}} av {{totalSteps}}',
