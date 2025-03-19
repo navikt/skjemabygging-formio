@@ -19,6 +19,7 @@ accessPolicy:
         cluster: prod-fss
     external:
       - host: skjemabygging-proxy.prod-fss-pub.nais.io
+      - host: skjemadelingslenke.ekstern.dev.nav.no
 secrets:
   - bygger-pusher
   - github-app-installation
