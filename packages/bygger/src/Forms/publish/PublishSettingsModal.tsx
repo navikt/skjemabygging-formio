@@ -71,9 +71,9 @@ const PublishSettingsModal = ({ open, onClose, onConfirm, form, unsavedGlobalTra
 
   useEffect(() => {
     const i18n = i18nUtils.mapFormsApiTranslationsToI18n([...formTranslations]);
-    const skipWhenCheckingForCompleteTranslations = unsavedGlobalTranslations.map((translation) => translation.key);
+    const unsavedGlobalTranslationKeys = unsavedGlobalTranslations.map((translation) => translation.key);
     const originalTextsExcludingUnsavedGlobalTranslations = allFormOriginalTexts.filter(
-      (text) => !skipWhenCheckingForCompleteTranslations.includes(text),
+      (text) => !unsavedGlobalTranslationKeys.includes(text),
     );
 
     const completeTranslations = getCompleteTranslationLanguageCodeList(

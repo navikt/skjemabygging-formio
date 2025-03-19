@@ -3,7 +3,7 @@ import { Form, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useMemo, useState } from 'react';
 import { useFormTranslations } from '../../context/translations/FormTranslationsContext';
 import { useGlobalTranslations } from '../../context/translations/GlobalTranslationsContext';
-import { generateAndPopulateTranslationsForForm } from '../../translations/utils/editFormTranslationsUtils';
+import { generateUnsavedGlobalTranslations } from '../../translations/utils/editFormTranslationsUtils';
 import LockedFormModal from '../lockedFormModal/LockedFormModal';
 import ConfirmPublishModal from './ConfirmPublishModal';
 import PublishSettingsModal from './PublishSettingsModal';
@@ -61,9 +61,7 @@ const PublishModalComponents = ({
   const unsavedGlobalTranslations = useMemo(
     () =>
       isFormTranslationsReady && isGlobalTranslationsReady
-        ? generateAndPopulateTranslationsForForm(form, {}, globalTranslations).filter(
-            (translation) => !formTranslations[translation.nb ?? translation.key],
-          )
+        ? generateUnsavedGlobalTranslations(form, formTranslations, globalTranslations)
         : [],
     [form, formTranslations, globalTranslations, isFormTranslationsReady, isGlobalTranslationsReady],
   );
