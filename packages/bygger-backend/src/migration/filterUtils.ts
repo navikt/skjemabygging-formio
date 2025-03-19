@@ -21,7 +21,7 @@ function parseFiltersFromParam(filtersFromParam: object): Filter[] {
 }
 
 function getPropertyFromTarget(comp: any, properties: string[]): string | undefined {
-  if (properties.length > 1) {
+  if (properties.length > 1 && comp[properties[0]]) {
     return getPropertyFromTarget(comp[properties[0]], properties.slice(1));
   }
   return comp && comp[properties[0]];

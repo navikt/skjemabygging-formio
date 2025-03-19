@@ -3,6 +3,7 @@ import {
   componentWithAdvancedConditionalToRadio,
   componentWithSimpleConditionalToRadio,
   formWithSimpleConditionalToRadio,
+  originalOtherDocumentationAttachmentComponent,
   originalTextFieldComponent,
 } from './testData';
 
@@ -68,6 +69,18 @@ describe('filterUtils', () => {
           { key: 'validateOn', value: 'blur' },
         ]),
       ).toBe(false);
+    });
+
+    it('handles nested properties with three levels', () => {
+      expect(
+        targetMatchesFilters(originalOtherDocumentationAttachmentComponent, [
+          {
+            key: 'attachmentValues.leggerVedNaa.enabled',
+            value: null,
+            operator: 'exists',
+          },
+        ]),
+      ).toBe(true);
     });
 
     describe('With operators', () => {
