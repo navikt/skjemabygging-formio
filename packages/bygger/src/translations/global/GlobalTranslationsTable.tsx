@@ -6,6 +6,7 @@ import { useEditGlobalTranslations } from '../../context/translations/EditGlobal
 import NewTranslationRow from '../components/NewTranslationRow';
 import TranslationRow from '../components/TranslationRow';
 import TranslationTable from '../components/TranslationTable';
+import { useStickyStyles } from '../components/styles';
 
 interface Props {
   translations: FormsApiGlobalTranslation[] | undefined;
@@ -17,6 +18,7 @@ const GlobalTranslationsTable = ({ translations, addNewRow, loading = false }: P
   const [isFilterChecked, setIsFilterChecked] = useState(false);
   const [sortState, setSortState] = useState<SortState>();
   const { updateTranslation, errors, editState } = useEditGlobalTranslations();
+  const stickyStyles = useStickyStyles();
 
   const handleSort = (sortKey: string) => {
     setSortState((currentState) => {
@@ -40,10 +42,17 @@ const GlobalTranslationsTable = ({ translations, addNewRow, loading = false }: P
 
   return (
     <>
-      <Switch checked={isFilterChecked} onChange={(event) => setIsFilterChecked(event.target.checked)}>
-        Vis kun manglende oversettelser
-      </Switch>
-      <TranslationTable loading={loading || !sortedRows} sort={sortState} onSortChange={handleSort}>
+      <div className={stickyStyles.filterRow}>
+        <Switch checked={isFilterChecked} onChange={(event) => setIsFilterChecked(event.target.checked)}>
+          Vis kun manglende oversettelser
+        </Switch>
+      </div>
+      <TranslationTable
+        loading={loading || !sortedRows}
+        sort={sortState}
+        onSortChange={handleSort}
+        stickyHeaderClassname={stickyStyles.mainTable}
+      >
         {addNewRow && <NewTranslationRow />}
         {sortedRows?.map((row) => (
           <TranslationRow
