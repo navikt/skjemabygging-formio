@@ -1,4 +1,4 @@
-import { SortState } from '@navikt/ds-react';
+import { SortState, Switch } from '@navikt/ds-react';
 import { listSort } from '@navikt/skjemadigitalisering-shared-components';
 import { FormsApiGlobalTranslation } from '@navikt/skjemadigitalisering-shared-domain';
 import { useMemo, useState } from 'react';
@@ -14,6 +14,7 @@ interface Props {
 }
 
 const GlobalTranslationsTable = ({ translations, addNewRow, loading = false }: Props) => {
+  const [isFilterChecked, setIsFilterChecked] = useState(false);
   const [sortState, setSortState] = useState<SortState>();
   const { updateTranslation, errors, editState } = useEditGlobalTranslations();
 
@@ -27,25 +28,34 @@ const GlobalTranslationsTable = ({ translations, addNewRow, loading = false }: P
     });
   };
 
+  const filteredRows = useMemo<FormsApiGlobalTranslation[] | undefined>(() => {
+    return isFilterChecked ? translations?.filter((row) => !row.nn || !row.en) : translations;
+  }, [isFilterChecked, translations]);
+
   const sortedRows = useMemo<FormsApiGlobalTranslation[] | undefined>(() => {
-    return translations
+    return filteredRows
       ?.slice()
       .sort(listSort.getLocaleComparator(sortState?.orderBy, sortState?.direction, addNewRow));
-  }, [translations, sortState?.orderBy, sortState?.direction, addNewRow]);
+  }, [filteredRows, sortState?.orderBy, sortState?.direction, addNewRow]);
 
   return (
-    <TranslationTable loading={loading || !sortedRows} sort={sortState} onSortChange={handleSort}>
-      {addNewRow && <NewTranslationRow />}
-      {sortedRows?.map((row) => (
-        <TranslationRow
-          key={row.key}
-          translation={row}
-          updateTranslation={updateTranslation}
-          errors={errors}
-          editState={editState}
-        />
-      ))}
-    </TranslationTable>
+    <>
+      <Switch checked={isFilterChecked} onChange={(event) => setIsFilterChecked(event.target.checked)}>
+        Vis kun manglende oversettelser
+      </Switch>
+      <TranslationTable loading={loading || !sortedRows} sort={sortState} onSortChange={handleSort}>
+        {addNewRow && <NewTranslationRow />}
+        {sortedRows?.map((row) => (
+          <TranslationRow
+            key={row.key}
+            translation={row}
+            updateTranslation={updateTranslation}
+            errors={errors}
+            editState={editState}
+          />
+        ))}
+      </TranslationTable>
+    </>
   );
 };
 
