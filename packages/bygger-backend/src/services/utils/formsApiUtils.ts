@@ -26,7 +26,7 @@ export const removeInnsendingTypeFromForm = (form: Form): Form => {
         formioFormsApiUtils.mapInnsendingTypeToSubmissionTypes(form.properties.innsending),
       subsequentSubmissionTypes:
         form.properties.subsequentSubmissionTypes ??
-        formioFormsApiUtils.mapInnsendingTypeToSubmissionTypes(form.properties.ettersending),
+        formioFormsApiUtils.mapEttersendingTypeToSubmissionTypes(form.properties.ettersending),
     },
   };
 };

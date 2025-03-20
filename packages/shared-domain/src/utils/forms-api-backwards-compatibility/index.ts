@@ -1,4 +1,5 @@
 import {
+  mapEttersendingTypeToSubmissionTypes,
   mapFormToNavForm,
   mapInnsendingTypeToSubmissionTypes,
   mapNavFormToForm,
@@ -12,6 +13,7 @@ const formioFormsApiUtils = {
   mapPublishedGlobalTranslationsToFormioFormat,
   removeInnsendingFromForm,
   mapInnsendingTypeToSubmissionTypes,
+  mapEttersendingTypeToSubmissionTypes,
 };
 
 export default formioFormsApiUtils;

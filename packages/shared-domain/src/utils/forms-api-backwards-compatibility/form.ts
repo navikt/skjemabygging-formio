@@ -37,12 +37,27 @@ const mapInnsendingTypeToSubmissionTypes = (innsendingType?: InnsendingType): Su
   }
 };
 
+const mapEttersendingTypeToSubmissionTypes = (ettersending?: InnsendingType): SubmissionType[] => {
+  if (!ettersending) return ['PAPER', 'DIGITAL'];
+
+  switch (ettersending) {
+    case 'PAPIR_OG_DIGITAL':
+      return ['PAPER', 'DIGITAL'];
+    case 'KUN_PAPIR':
+      return ['PAPER'];
+    case 'KUN_DIGITAL':
+      return ['DIGITAL'];
+    default:
+      return [];
+  }
+};
+
 /**
  *
  * Metoden er implementert kun for å støtte bakoverkompatibilitet og skal fjernes ved migrering
  */
 const removeInnsendingFromForm = (form: NavFormType): NavFormType => {
-  const formProperties = (({ innsending, ettersending, ...rest }) => rest)(form.properties);
+  const formProperties = (({ innsending, ...rest }) => rest)(form.properties);
   return {
     ...form,
     properties: {
@@ -50,7 +65,7 @@ const removeInnsendingFromForm = (form: NavFormType): NavFormType => {
       submissionTypes:
         form.properties.submissionTypes ?? mapInnsendingTypeToSubmissionTypes(form.properties.innsending),
       subsequentSubmissionTypes:
-        form.properties.subsequentSubmissionTypes ?? mapInnsendingTypeToSubmissionTypes(form.properties.ettersending),
+        form.properties.subsequentSubmissionTypes ?? mapEttersendingTypeToSubmissionTypes(form.properties.ettersending),
     },
   };
 };
@@ -91,4 +106,10 @@ const mapNavFormToForm = (form: NavFormType): Form => {
   };
 };
 
-export { mapFormToNavForm, mapInnsendingTypeToSubmissionTypes, mapNavFormToForm, removeInnsendingFromForm };
+export {
+  mapEttersendingTypeToSubmissionTypes,
+  mapFormToNavForm,
+  mapInnsendingTypeToSubmissionTypes,
+  mapNavFormToForm,
+  removeInnsendingFromForm,
+};
