@@ -1,25 +1,25 @@
+import { Component } from '@navikt/skjemadigitalisering-shared-domain';
 import { componentHasDependencyMatchingFilters, getPropertyFromTarget, targetMatchesFilters } from './filterUtils';
 import {
   componentWithAdvancedConditionalToRadio,
   componentWithSimpleConditionalToRadio,
   formWithSimpleConditionalToRadio,
+  originalOtherDocumentationAttachmentComponent,
   originalTextFieldComponent,
 } from './testData';
 
 describe('filterUtils', () => {
   describe('getPropertyFromComponent', () => {
     it('gets the value of a property in the object as a string', () => {
-      const actual = getPropertyFromTarget({ value: 'the value' }, ['value']);
+      const actual = getPropertyFromTarget({ value: 'the value' } as unknown as Component, ['value']);
       expect(actual).toBe('the value');
     });
 
     it('gets properties from nested objects', () => {
-      const actual = getPropertyFromTarget({ firstLevel: { secondLevel: { thirdLevel: { value: 'the value' } } } }, [
-        'firstLevel',
-        'secondLevel',
-        'thirdLevel',
-        'value',
-      ]);
+      const actual = getPropertyFromTarget(
+        { firstLevel: { secondLevel: { thirdLevel: { value: 'the value' } } } } as unknown as Component,
+        ['firstLevel', 'secondLevel', 'thirdLevel', 'value'],
+      );
       expect(actual).toBe('the value');
     });
   });
@@ -68,6 +68,18 @@ describe('filterUtils', () => {
           { key: 'validateOn', value: 'blur' },
         ]),
       ).toBe(false);
+    });
+
+    it('handles nested properties with three levels', () => {
+      expect(
+        targetMatchesFilters(originalOtherDocumentationAttachmentComponent, [
+          {
+            key: 'attachmentValues.leggerVedNaa.enabled',
+            value: null,
+            operator: 'exists',
+          },
+        ]),
+      ).toBe(true);
     });
 
     describe('With operators', () => {
