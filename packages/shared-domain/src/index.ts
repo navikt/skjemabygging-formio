@@ -40,6 +40,7 @@ import {
   Submission,
   SubmissionData,
   SubmissionMethod,
+  SubmissionType,
   UsageContext,
 } from './form';
 import { Form } from './forms-api-form';
@@ -55,7 +56,6 @@ import type {
   FormioTranslationData,
   FormioTranslationMap,
   FormioTranslationPayload,
-  GlobalTranslationMap,
   I18nTranslationMap,
   I18nTranslationReplacements,
   I18nTranslations,
@@ -133,6 +133,7 @@ import objectUtils from './utils/objectUtils';
 import paginationUtils from './utils/pagination';
 import signatureUtils from './utils/signatureUtils';
 import stringUtils from './utils/stringUtils';
+import submissionTypesUtils from './utils/submissionTypeUtils';
 import translationUtils from './utils/translation';
 import validatorUtils from './utils/validatorUtils';
 import yourInformationUtils from './utils/yourInformationUtils';
@@ -163,6 +164,7 @@ export {
   PrefillType,
   signatureUtils,
   stringUtils,
+  submissionTypesUtils,
   supportedEnhetstyper,
   TEXTS,
   translationUtils,
@@ -214,7 +216,6 @@ export type {
   ForstesideRequestBody,
   FrontendLoggerConfigType,
   FyllutState,
-  GlobalTranslationMap,
   GlobalTranslationsResourceContent,
   I18nTranslationMap,
   I18nTranslationReplacements,
@@ -254,6 +255,7 @@ export type {
   SubmissionIdentity,
   SubmissionMaalgruppe,
   SubmissionMethod,
+  SubmissionType,
   SubmissionYourInformation,
   SummaryActivity,
   SummaryAddress,

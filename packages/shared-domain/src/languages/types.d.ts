@@ -40,7 +40,3 @@ export interface FormioTranslationData {
 export interface FormioTranslationPayload extends FormioResource {
   data: FormioTranslationData;
 }
-
-export type GlobalTranslationMap = {
-  [key in Language]?: TranslationResource[];
-};

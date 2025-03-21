@@ -13,7 +13,6 @@ import {
   performChangesOnSeparateBranch,
   pushFilesAndUpdateMonorepoRefCallback,
 } from './repoUtils.js';
-import { FormioService } from './services/formioService';
 
 const BULK_PUBLISH_REGEXP = /^\[bulk-publisering\] (\d+) skjemaer publisert, monorepo ref: (.*)$/;
 const PUBLISH_REGEXP = /^\[publisering\] skjema "(.*)", monorepo ref: (.*)$/;
@@ -21,11 +20,9 @@ const UNPUBLISH_REGEXP = /^\[avpublisering\] skjema (.*), monorepo ref: (.*)$/;
 
 export class Backend {
   private readonly config: ConfigType;
-  private readonly formioService: FormioService;
 
-  constructor(config: ConfigType, formioService: FormioService) {
+  constructor(config: ConfigType) {
     this.config = config;
-    this.formioService = formioService;
   }
 
   private async createGitHubRepo() {
@@ -125,11 +122,6 @@ export class Backend {
       pushFilesAndUpdateMonorepoRefCallback([resourceFile], this.config.gitSha),
       `[resources] publiserer ${resourceName}, monorepo ref: ${this.config.gitSha}`,
     );
-  }
-
-  async bulkPublishForms(formPaths: string[]) {
-    const forms: any = await this.formioService.getForms(formPaths);
-    return this.publishForms(forms);
   }
 
   async publishForms(forms: NavFormType[]) {

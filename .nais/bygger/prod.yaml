@@ -17,13 +17,10 @@ accessPolicy:
       - application: skjemabygging-proxy
         namespace: skjemadigitalisering
         cluster: prod-fss
-      - application: formio-api
-        namespace: skjemadigitalisering
-        cluster: prod-gcp
     external:
       - host: skjemabygging-proxy.prod-fss-pub.nais.io
+      - host: skjemadelingslenke.ekstern.dev.nav.no
 secrets:
-  - formio-server-access
   - bygger-pusher
   - github-app-installation
 environmentVars: []

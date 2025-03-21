@@ -20,7 +20,7 @@ const dbEntity = {
       'Rediger søknaden': 'Edit application',
       'Send i posten': 'Submit by mail',
       'Til digital innsending': 'To digital submission',
-      'Last ned førsteside og søknad': 'Download cover sheet and application',
+      'Last ned skjema': 'Download cover sheet and application',
       'Jeg har lest instruksjonene.': 'I have read the instructions.',
       Ja: 'Yes',
       Nei: 'No',

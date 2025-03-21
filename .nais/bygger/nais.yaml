@@ -48,10 +48,6 @@ spec:
       value: {{skjemabygging-proxy-url}}
     - name: SKJEMABYGGING_PROXY_CLIENT_ID
       value: {{skjemabygging-proxy-client-id}}
-    - name: FORMIO_API_SERVICE
-      value: http://formio-api
-    - name: FORMIO_PROJECT_NAME
-      value: jvcemxwcpghcqjn
     - name: FORMS_API_URL
       value: http://forms-api.fyllut-sendinn
     {{#each environmentVars}}
@@ -93,9 +89,7 @@ spec:
           cluster: {{this.cluster}}
       {{/each}}
       external:
-        - host: formio-api-server.ekstern.dev.nav.no
         - host: api.github.com
-        - host: formio-api.nav.no
         - host: api-eu.pusher.com
       {{#each accessPolicy.outbound.external}}
         - host: {{this.host}}

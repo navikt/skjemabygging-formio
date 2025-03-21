@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { FlattenedJWSInput, JWSHeaderParameters, createRemoteJWKSet, jwtVerify } from 'jose';
 import { GetKeyFunction } from 'jose/dist/types/types';
-import jwt from 'jsonwebtoken';
 import config from '../config';
 import { logger } from '../logging/logger';
 import { AzureAdTokenPayload, User } from '../types/custom';
@@ -71,27 +70,6 @@ const authHandler = async (req: Request, res: Response, next: NextFunction) => {
     });
   }
   next();
-};
-
-export const createFormioJwt = (user: User) => {
-  const { formio } = config;
-  const tokenPayload = {
-    external: true,
-    form: {
-      _id: formio.formIds.userResource,
-    },
-    project: {
-      _id: formio.projectId,
-    },
-    user: {
-      _id: user.NAVident,
-      data: {
-        name: user.name,
-      },
-      roles: [formio.roleIds.authenticated],
-    },
-  };
-  return jwt.sign(tokenPayload, formio.jwtSecret, { expiresIn: '9h' });
 };
 
 export default authHandler;

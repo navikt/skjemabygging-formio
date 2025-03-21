@@ -1,8 +1,14 @@
-import { Checkbox, TextField, Textarea } from '@navikt/ds-react';
-import { Form, FormSettingsDiff, InnsendingType } from '@navikt/skjemadigitalisering-shared-domain';
+import { Checkbox, Textarea, TextField } from '@navikt/ds-react';
+import {
+  Form,
+  FormSettingsDiff,
+  InnsendingType,
+  submissionTypesUtils,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import LabelWithDiff from '../LabelWithDiff';
 import SubmissionTypeSelect from '../SubmissionTypeSelect';
 import { FormMetadataError, UpdateFormFunction } from '../utils/utils';
+import { SubmissionTypeCheckbox } from './SubmissionTypeCheckbox';
 
 export interface SubmissionFieldsProps {
   onChange: UpdateFormFunction;
@@ -12,24 +18,24 @@ export interface SubmissionFieldsProps {
 }
 
 const SubmissionFields = ({ onChange, diff, form, errors }: SubmissionFieldsProps) => {
-  const innsending = form.properties.innsending;
-  const ettersending = form.properties.ettersending;
-  const ettersendelsesfrist = form.properties.ettersendelsesfrist;
-  const hideUserTypes = form.properties.hideUserTypes;
+  const { submissionTypes, ettersending, ettersendelsesfrist, hideUserTypes } = form.properties;
   const isLockedForm = !!form.lock;
 
   return (
     <>
-      <SubmissionTypeSelect
-        name="form-innsending"
-        label={<LabelWithDiff label="Innsending" diff={!!diff.innsending} />}
-        value={innsending}
-        error={errors?.innsending}
+      <SubmissionTypeCheckbox
+        name="form-submissionType"
+        label={<LabelWithDiff label="Innsending" diff={!!diff.submissionTypes} />}
+        value={submissionTypes}
+        error={errors?.submissionTypes}
         readonly={isLockedForm}
-        onChange={(event) =>
+        onChange={(data) =>
           onChange({
             ...form,
-            properties: { ...form.properties, innsending: event.target.value as InnsendingType },
+            properties: {
+              ...form.properties,
+              submissionTypes: [...data],
+            },
           })
         }
       />
@@ -67,7 +73,7 @@ const SubmissionFields = ({ onChange, diff, form, errors }: SubmissionFieldsProp
         />
       )}
 
-      {innsending === 'INGEN' && (
+      {submissionTypesUtils.isNoneSubmission(submissionTypes) && (
         <>
           <TextField
             className="mb"

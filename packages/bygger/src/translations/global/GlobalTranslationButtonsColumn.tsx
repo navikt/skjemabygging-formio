@@ -54,8 +54,7 @@ const GlobalTranslationButtonsColumn = () => {
       >
         Publisér
       </Button>
-      <ExportGlobalTranslationsButton language="nn">Eksporter nynorsk</ExportGlobalTranslationsButton>
-      <ExportGlobalTranslationsButton language="en">Eksporter engelsk</ExportGlobalTranslationsButton>
+      <ExportGlobalTranslationsButton />
       {!config?.isProdGcp && (
         <Button
           variant="tertiary"

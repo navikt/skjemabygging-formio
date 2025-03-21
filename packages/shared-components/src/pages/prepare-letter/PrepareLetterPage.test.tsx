@@ -152,7 +152,7 @@ describe('PrepareLetterPage', () => {
     it('Laster ned pdf for førsteside', async () => {
       renderPrepareLetterPage();
 
-      await userEvent.click(screen.getByRole('button', { name: 'Last ned førsteside og søknad' }));
+      await userEvent.click(screen.getByRole('button', { name: 'Last ned skjema' }));
       expect(submitCalls).toHaveLength(1);
       const submitted = submitCalls[0].target as HTMLFormElement;
       expect((submitted.elements[0] as HTMLInputElement).name).toBe('form');
@@ -165,7 +165,7 @@ describe('PrepareLetterPage', () => {
       });
       renderPrepareLetterPage(form);
 
-      await userEvent.click(await screen.findByRole('button', { name: 'Last ned førsteside og søknad' }));
+      await userEvent.click(await screen.findByRole('button', { name: 'Last ned skjema' }));
       expect(submitCalls).toHaveLength(1);
       expect(await screen.findByText(TEXTS.statiske.prepareLetterPage.entityNotSelectedError)).toBeInTheDocument();
     });

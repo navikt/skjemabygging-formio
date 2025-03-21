@@ -1,6 +1,6 @@
 import { PadlockLockedIcon } from '@navikt/aksel-icons';
 import { Table } from '@navikt/ds-react';
-import { htmlConverter, InnerHtml } from '@navikt/skjemadigitalisering-shared-components';
+import { InnerHtml, htmlUtils } from '@navikt/skjemadigitalisering-shared-components';
 import useTranslationTableStyles from './styles';
 
 interface Props {
@@ -11,7 +11,7 @@ interface Props {
 const TranslationDisplayCell = ({ text, hasGlobalOverride = false }: Props) => {
   const styles = useTranslationTableStyles();
 
-  const isHtml = htmlConverter.isHtmlString(text ?? '');
+  const isHtml = htmlUtils.isHtmlString(text ?? '');
 
   return (
     <Table.DataCell className={styles.column}>

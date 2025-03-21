@@ -82,7 +82,7 @@ const forstesideRequest = async (req: Request, body?: BodyInit) => {
 };
 
 const logForsteside = (forsteside: ForstesideRequestBody, response: any) => {
-  logger.info('Download frontpage', {
+  logger.info('Download cover page', {
     loepenummer: response.loepenummer,
     navSkjemaId: forsteside.navSkjemaId,
     tema: forsteside.tema,
