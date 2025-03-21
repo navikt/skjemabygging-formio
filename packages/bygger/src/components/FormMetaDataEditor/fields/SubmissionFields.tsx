@@ -1,12 +1,6 @@
 import { Checkbox, Textarea, TextField } from '@navikt/ds-react';
-import {
-  Form,
-  FormSettingsDiff,
-  InnsendingType,
-  submissionTypesUtils,
-} from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, FormSettingsDiff, submissionTypesUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import LabelWithDiff from '../LabelWithDiff';
-import SubmissionTypeSelect from '../SubmissionTypeSelect';
 import { FormMetadataError, UpdateFormFunction } from '../utils/utils';
 import { SubmissionTypeCheckbox } from './SubmissionTypeCheckbox';
 
@@ -18,7 +12,7 @@ export interface SubmissionFieldsProps {
 }
 
 const SubmissionFields = ({ onChange, diff, form, errors }: SubmissionFieldsProps) => {
-  const { submissionTypes, ettersending, ettersendelsesfrist, hideUserTypes } = form.properties;
+  const { submissionTypes, subsequentSubmissionTypes, ettersendelsesfrist, hideUserTypes } = form.properties;
   const isLockedForm = !!form.lock;
 
   return (
@@ -40,21 +34,24 @@ const SubmissionFields = ({ onChange, diff, form, errors }: SubmissionFieldsProp
         }
       />
 
-      <SubmissionTypeSelect
-        name="form-ettersending"
-        label={<LabelWithDiff label="Ettersending" diff={!!diff.ettersending} />}
-        value={ettersending}
-        error={errors?.ettersending}
+      <SubmissionTypeCheckbox
+        name="form-subsequentSubmissionTypes"
+        label={<LabelWithDiff label="Ettersending" diff={!!diff.subsequentSubmissionTypes} />}
+        value={subsequentSubmissionTypes}
+        error={errors?.subsequentSubmissionTypes}
         readonly={isLockedForm}
-        onChange={(event) =>
+        onChange={(data) =>
           onChange({
             ...form,
-            properties: { ...form.properties, ettersending: event.target.value as InnsendingType },
+            properties: {
+              ...form.properties,
+              subsequentSubmissionTypes: [...data],
+            },
           })
         }
       />
 
-      {!!ettersending && ettersending !== 'INGEN' && (
+      {!submissionTypesUtils.isNoneSubmission(subsequentSubmissionTypes) && (
         <TextField
           onWheel={(e) => e.currentTarget.blur()} // disable scroll wheel on number input
           className="mb"
