@@ -76,7 +76,7 @@ const coverPageAndApplication = async (props: CoverPageAndApplicationProps) => {
   const mergedFile = await mergeFiles(
     coverPageResponse.navSkjemaId,
     coverPageResponse.overskriftstittel,
-    coverPageResponse.spraakkode,
+    language,
     documents,
     { pdfa: true, pdfua: true },
   );

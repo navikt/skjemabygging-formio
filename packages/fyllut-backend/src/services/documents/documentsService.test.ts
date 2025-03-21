@@ -100,4 +100,62 @@ describe('[endpoint] documents', () => {
     expect(skjemabyggingproxyScope.isDone()).toBe(true);
     expect(mergePdfScope.isDone()).toBe(true);
   }, 10000);
+
+  it('Create front page and application  - english', async () => {
+    vi.spyOn(forstesideUtils, 'genererFoerstesideData').mockImplementation(
+      () =>
+        ({
+          foerstesidetype: 'ETTERSENDELSE',
+          navSkjemaId: 'NAV 10.10.10',
+          spraakkode: 'en',
+          overskriftstittel: 'Tittel',
+          arkivtittel: 'Tittel',
+          tema: 'HJE',
+        }) as ForstesideRequestBody,
+    );
+
+    const forstesidePdf = readFileSync(filePathForsteside);
+    const soknadPdf = readFileSync(filePathSoknad);
+    const mergedPdf = readFileSync(filePathMerged);
+    const encodedForstesidedPdf = forstesidePdf.toString('base64');
+    const encodedSoknadPdf = soknadPdf.toString('base64');
+
+    const recipientsMock = nock(formsApiUrl).get('/v1/recipients').reply(200, []);
+    const generateFileMock = nock(skjemabyggingProxyUrl!)
+      .post('/foersteside')
+      .reply(200, { foersteside: encodedForstesidedPdf });
+    const skjemabyggingproxyScope = nock(process.env.SKJEMABYGGING_PROXY_URL as string)
+      .post('/exstream')
+      .reply(200, { data: { result: [{ content: { data: encodedSoknadPdf } }] } });
+
+    const mergePdfScope = nock(process.env.GOTENBERG_URL_EN as string)
+      .intercept('/forms/pdfengines/merge', 'POST', (body) => {
+        return body != null;
+      })
+      .reply(200, mergedPdf, { 'content-type': 'application/pdf' });
+
+    const req = mockRequest({
+      headers: {
+        AzureAccessToken: '',
+      },
+      body: {
+        form: JSON.stringify({
+          title: formTitle,
+          components: [],
+          properties: { mottaksadresseId: 'mottaksadresseId', path: '12345', skjemanummer: 'NAV 12.34-56' },
+        }),
+        submissionMethod: 'paper',
+        language: 'EN',
+        submission: JSON.stringify({ data: {} }),
+        translations: JSON.stringify({}),
+      },
+    });
+
+    await documents.coverPageAndApplication(req, mockResponse(), mockNext());
+
+    expect(recipientsMock.isDone()).toBe(true);
+    expect(generateFileMock.isDone()).toBe(true);
+    expect(skjemabyggingproxyScope.isDone()).toBe(true);
+    expect(mergePdfScope.isDone()).toBe(true);
+  }, 10000);
 });

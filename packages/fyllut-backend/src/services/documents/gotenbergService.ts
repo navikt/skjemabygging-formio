@@ -23,6 +23,7 @@ export const mergeFiles = async (
       formData.append('files', buffer, `file${index}.pdf`);
     }
   });
+  formData.append('merge', 'true');
   // Add Gotenberg-specific options
   formData.append('pdfa', options.pdfa ? 'PDF/A-2b' : '');
   formData.append('pdfua', options.pdfua ? 'true' : '');
@@ -42,7 +43,7 @@ export const mergeFiles = async (
 
   // Hvordan sette språk? En engelsk og en norsk Gotenberg installasjon?
   logger.info(`Skal kalle Gotenberg for å merge filer`);
-  return await callGotenberg(language, '/forms/pdfengines/merge', formData);
+  return await callGotenberg(language, '/forms/libreoffice/convert', formData);
 };
 
 const formatPDFDate = (date: Date) => {

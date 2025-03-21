@@ -42,14 +42,16 @@ const createPdf = async (
     logger.warn(`Language code "${language}" is not supported. Language code will be defaulted to "nb".`);
   }
 
-  language = localizationUtils.getLanguageCodeAsIso639_1(language);
+  console.log(`Language "${language}" requested`);
+  const languageCode = localizationUtils.getLanguageCodeAsIso639_1(language.toLowerCase());
+  console.log(`LanguageCode "${languageCode}" to use`);
 
   const translate = (text: string, textReplacements?: I18nTranslationReplacements) =>
     translationUtils.translateWithTextReplacements({
       translations,
       originalText: text,
       params: textReplacements,
-      currentLanguage: language,
+      currentLanguage: languageCode,
     });
 
   const html = createHtmlFromSubmission(form, submission, submissionMethod, translate, language);
