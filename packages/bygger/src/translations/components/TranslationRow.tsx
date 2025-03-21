@@ -4,9 +4,9 @@ import { FormsApiTranslation, formsApiTranslations, TranslationLang } from '@nav
 import { useEffect, useMemo, useState } from 'react';
 import { TranslationError } from '../../context/translations/utils/errorUtils';
 import { getInputHeightInRows } from '../utils/translationsUtils';
-import useTranslationTableStyles from './styles';
 import TranslationDisplayCell from './TranslationDisplayCell';
 import TranslationInput from './TranslationInput';
+import { useTranslationTableStyles } from './styles';
 
 interface Props<Translation extends FormsApiTranslation> {
   translation: Translation;

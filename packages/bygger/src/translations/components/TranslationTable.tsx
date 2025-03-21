@@ -1,7 +1,7 @@
 import { SortState, Table } from '@navikt/ds-react';
 import { SkeletonList } from '@navikt/skjemadigitalisering-shared-components';
 import { ReactNode } from 'react';
-import useTranslationTableStyles from './styles';
+import { useTranslationTableStyles } from './styles';
 
 const defaultColumns = [
   { key: 'nb', label: 'Bokmål' },
@@ -15,6 +15,7 @@ interface Props {
   sort?: SortState;
   onSortChange?: (sortkey: string) => void;
   loading?: boolean;
+  stickyHeaderClassname?: string;
   children?: ReactNode[];
 }
 
@@ -24,6 +25,7 @@ const TranslationTable = ({
   sort,
   onSortChange,
   loading = false,
+  stickyHeaderClassname,
   children,
 }: Props) => {
   const styles = useTranslationTableStyles();
@@ -34,7 +36,7 @@ const TranslationTable = ({
 
   return (
     <Table className={styles.table} sort={sort} onSortChange={onSortChange}>
-      <Table.Header className={styles.header}>
+      <Table.Header className={stickyHeaderClassname}>
         <Table.Row>
           {columns.map((column) => (
             <Table.ColumnHeader
