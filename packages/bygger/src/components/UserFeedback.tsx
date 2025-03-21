@@ -1,6 +1,6 @@
 import { makeStyles } from '@navikt/skjemadigitalisering-shared-components';
 import { useFeedbackMessages } from '../context/notifications/FeedbackContext';
-import { Message } from '../hooks/useMessageQueue';
+import { Message } from '../context/notifications/messageQueueReducer';
 import { ErrorAlert, SuccessAlert, WarningAlert } from './MessageAlerts';
 
 const useStyles = makeStyles({
@@ -15,24 +15,25 @@ const useStyles = makeStyles({
 });
 
 const UserFeedback = () => {
-  const feedbackMessages = useFeedbackMessages();
+  const { messages, clearMessage } = useFeedbackMessages();
   const style = useStyles();
 
   const renderUserFeedback = (message: Message) => {
+    const removeMessage = () => clearMessage(message.id);
     switch (message.type) {
       case 'success':
-        setTimeout(() => message.clear(), 5000);
+        setTimeout(removeMessage, 5000);
         return <SuccessAlert key={message.id} message={message} />;
       case 'warning':
-        return <WarningAlert key={message.id} message={message} />;
+        return <WarningAlert key={message.id} message={message} clearMessage={removeMessage} />;
       case 'error':
-        return <ErrorAlert key={message.id} message={message} />;
+        return <ErrorAlert key={message.id} message={message} clearMessage={removeMessage} />;
     }
   };
 
   return (
     <aside className={style.alertstripe} aria-live="polite">
-      {feedbackMessages.map(renderUserFeedback)}
+      {messages.map(renderUserFeedback)}
     </aside>
   );
 };
