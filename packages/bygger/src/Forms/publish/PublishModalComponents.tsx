@@ -1,6 +1,9 @@
 import { ConfirmationModal, useModal } from '@navikt/skjemadigitalisering-shared-components';
 import { Form, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { useFormTranslations } from '../../context/translations/FormTranslationsContext';
+import { useGlobalTranslations } from '../../context/translations/GlobalTranslationsContext';
+import { generateUnsavedGlobalTranslations } from '../../translations/utils/editFormTranslationsUtils';
 import LockedFormModal from '../lockedFormModal/LockedFormModal';
 import ConfirmPublishModal from './ConfirmPublishModal';
 import PublishSettingsModal from './PublishSettingsModal';
@@ -27,6 +30,8 @@ const PublishModalComponents = ({
   const [userMessageModal, setUserMessageModal] = useModal();
   const [lockedFormModal, setLockedFormModal] = useModal();
   const [selectedLanguageCodeList, setSelectedLanguageCodeList] = useState<string[]>([]);
+  const { storedTranslations: globalTranslations, isReady: isFormTranslationsReady } = useGlobalTranslations();
+  const { storedTranslations: formTranslations, isReady: isGlobalTranslationsReady } = useFormTranslations();
   const isLockedForm = !!form.lock;
 
   useEffect(() => {
@@ -53,6 +58,14 @@ const PublishModalComponents = ({
     setLockedFormModal,
   ]);
 
+  const unsavedGlobalTranslations = useMemo(
+    () =>
+      isFormTranslationsReady && isGlobalTranslationsReady
+        ? generateUnsavedGlobalTranslations(form, formTranslations, globalTranslations)
+        : [],
+    [form, formTranslations, globalTranslations, isFormTranslationsReady, isGlobalTranslationsReady],
+  );
+
   return (
     <>
       <PublishSettingsModal
@@ -63,12 +76,14 @@ const PublishModalComponents = ({
           setSelectedLanguageCodeList(languageCodes);
         }}
         form={form}
+        unsavedGlobalTranslations={unsavedGlobalTranslations}
       />
       <ConfirmPublishModal
         open={openConfirmPublishModal}
         onClose={() => setOpenConfirmPublishModal(false)}
         form={form}
         publishLanguageCodeList={selectedLanguageCodeList}
+        unsavedGlobalTranslations={unsavedGlobalTranslations}
       />
       <ConfirmationModal
         open={userMessageModal}

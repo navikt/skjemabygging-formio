@@ -9,7 +9,10 @@ import EditFormTranslationsProvider from '../../context/translations/EditFormTra
 import { useFormTranslations } from '../../context/translations/FormTranslationsContext';
 import { useGlobalTranslations } from '../../context/translations/GlobalTranslationsContext';
 import UnusedTranslations from '../components/UnusedTranslations';
-import { generateAndPopulateTranslationsForForm } from '../utils/editFormTranslationsUtils';
+import {
+  generateAndPopulateTranslationsForForm,
+  generateUnsavedGlobalTranslations,
+} from '../utils/editFormTranslationsUtils';
 import FormTranslationButtonsColumn from './FormTranslationButtonsColumn';
 import FormTranslationsTable from './FormTranslationsTable';
 
@@ -21,24 +24,22 @@ const FormTranslationsPage = ({ form }: Props) => {
   const { storedTranslations, isReady: isTranslationsReady, deleteTranslation } = useFormTranslations();
   const { storedTranslations: globalTranslations, isReady: isGlobalTranslationsReady } = useGlobalTranslations();
 
-  const translations: FormsApiFormTranslation[] = useMemo(
+  const generatedTranslations: FormsApiFormTranslation[] = useMemo(
     () => generateAndPopulateTranslationsForForm(form, storedTranslations, globalTranslations),
     [form, globalTranslations, storedTranslations],
   );
 
   const unusedTranslations = useMemo(() => {
     return Object.values(storedTranslations).filter(
-      (storedTranslation) => !translations.some((translation) => translation.key === storedTranslation.key),
+      (storedTranslation) => !generatedTranslations.some((translation) => translation.key === storedTranslation.key),
     );
-  }, [storedTranslations, translations]);
+  }, [storedTranslations, generatedTranslations]);
 
   const initialChanges = useMemo(() => {
     if (isTranslationsReady && isGlobalTranslationsReady) {
-      return translations
-        .map((row) => (row.globalTranslationId && !storedTranslations[row.key]?.globalTranslationId ? row : undefined))
-        .filter((value) => !!value);
+      return generateUnsavedGlobalTranslations(form, storedTranslations, globalTranslations);
     }
-  }, [isGlobalTranslationsReady, isTranslationsReady, translations, storedTranslations]);
+  }, [isTranslationsReady, isGlobalTranslationsReady, form, storedTranslations, globalTranslations]);
 
   return (
     <AppLayout navBarProps={{ formMenu: true, formPath: form.path }}>
@@ -57,7 +58,7 @@ const FormTranslationsPage = ({ form }: Props) => {
             }
           >
             <UnusedTranslations translations={unusedTranslations} onRemove={deleteTranslation} />
-            <FormTranslationsTable translations={translations} loading={!initialChanges} />
+            <FormTranslationsTable translations={generatedTranslations} loading={!initialChanges} />
           </RowLayout>
         </form>
       </EditFormTranslationsProvider>

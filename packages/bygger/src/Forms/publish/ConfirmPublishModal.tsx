@@ -1,22 +1,44 @@
 import { ConfirmationModal } from '@navikt/skjemadigitalisering-shared-components';
-import { Form, localizationUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, FormsApiFormTranslation, localizationUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { useFeedbackEmit } from '../../context/notifications/FeedbackContext';
 import { useForm } from '../../context/old_form/FormContext';
+import { useFormTranslations } from '../../context/translations/FormTranslationsContext';
 
 interface Props {
   form: Form;
   open: boolean;
   onClose: () => void;
   publishLanguageCodeList: string[];
+  unsavedGlobalTranslations: FormsApiFormTranslation[];
 }
 
-const ConfirmPublishModal = ({ open, onClose, form, publishLanguageCodeList }: Props) => {
+const ConfirmPublishModal = ({ open, onClose, form, publishLanguageCodeList, unsavedGlobalTranslations }: Props) => {
   const { publishForm } = useForm();
+  const { saveTranslation, loadTranslations } = useFormTranslations();
+  const feedbackEmit = useFeedbackEmit();
+
   const languageCodes = publishLanguageCodeList.map(localizationUtils.getLanguageCodeAsIso639_1);
+
+  const handlePublish = async () => {
+    if (unsavedGlobalTranslations.length > 0) {
+      try {
+        await Promise.all(unsavedGlobalTranslations.map(saveTranslation));
+        await loadTranslations();
+      } catch (error) {
+        const message = (error as Error)?.message;
+        feedbackEmit.error(
+          `Autolagring av oversettelser feilet. Prøv å laste siden på nytt og forsøk å publisere på nytt. ${message}`,
+        );
+        return;
+      }
+    }
+    await publishForm(form, languageCodes);
+  };
 
   return (
     <ConfirmationModal
       open={open}
-      onConfirm={() => publishForm(form, languageCodes)}
+      onConfirm={handlePublish}
       onClose={onClose}
       texts={{
         title: 'Publiseringsadvarsel',

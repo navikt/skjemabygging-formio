@@ -57,7 +57,7 @@ const ConfirmationModal = (props: Props) => {
           {translateIfAvailable(texts.confirm)}
         </Button>
         {texts.cancel && (
-          <Button variant="tertiary" onClick={props.onClose}>
+          <Button variant="tertiary" onClick={props.onClose} disabled={isLoading}>
             {translateIfAvailable(texts.cancel)}
           </Button>
         )}

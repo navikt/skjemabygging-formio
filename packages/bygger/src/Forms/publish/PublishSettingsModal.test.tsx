@@ -31,7 +31,15 @@ describe('PublishSettingsModal', () => {
   const renderPublishSettingsModal = (form) => {
     mockedCloseModal = vi.fn();
     mockedOnPublish = vi.fn();
-    render(<PublishSettingsModal open={true} onClose={mockedCloseModal} onConfirm={mockedOnPublish} form={form} />);
+    render(
+      <PublishSettingsModal
+        open={true}
+        onClose={mockedCloseModal}
+        onConfirm={mockedOnPublish}
+        form={form}
+        unsavedGlobalTranslations={[]}
+      />,
+    );
   };
 
   it('renders disabled checkbox for Norsk bokmål', () => {

@@ -38,4 +38,14 @@ const generateAndPopulateTranslationsForForm = (
   });
 };
 
-export { generateAndPopulateTranslationsForForm };
+const generateUnsavedGlobalTranslations = (
+  form: Form,
+  storedTranslations: Record<string, FormsApiFormTranslation>,
+  globalTranslations: Record<string, FormsApiGlobalTranslation>,
+) => {
+  return generateAndPopulateTranslationsForForm(form, {}, globalTranslations).filter(
+    (translation) => translation.globalTranslationId && !storedTranslations[translation.nb ?? translation.key],
+  );
+};
+
+export { generateAndPopulateTranslationsForForm, generateUnsavedGlobalTranslations };
