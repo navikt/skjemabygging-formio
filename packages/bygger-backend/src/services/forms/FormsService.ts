@@ -11,7 +11,7 @@ const createFormsService = (formsApiUrl: string): FormsService => {
     const search = select ? new URLSearchParams({ select }) : '';
     const url = `${formsUrl}?${search}`;
     const response = await fetchWithErrorHandling(url, { headers: createHeaders() });
-    return response.data as Form[];
+    return (response.data as Form[]).map(removeInnsendingFromForm);
   };
 
   const get = async (formPath: string): Promise<Form> => {
