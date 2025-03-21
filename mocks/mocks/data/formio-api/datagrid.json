@@ -570,7 +570,7 @@
     "skjemanummer": "datagrid-123",
     "tema": "DAG",
     "submissionTypes": ["PAPER", "DIGITAL"],
-    "ettersending": "PAPIR_OG_DIGITAL",
+    "subsequentSubmissionTypes": ["PAPER", "DIGITAL"],
     "signatures": [
       {
         "label": "",

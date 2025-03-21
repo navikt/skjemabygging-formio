@@ -823,7 +823,7 @@
     "skjemanummer": "NAVDATEPICKER",
     "tema": "ERS",
     "submissionTypes": ["PAPER", "DIGITAL"],
-    "ettersending": "PAPIR_OG_DIGITAL",
+    "subsequentSubmissionTypes": ["PAPER", "DIGITAL"],
     "signatures": [
       {
         "label": "",

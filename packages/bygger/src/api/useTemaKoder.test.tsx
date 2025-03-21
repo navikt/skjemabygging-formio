@@ -21,8 +21,10 @@ describe('useTemaKoder', () => {
 
   it('returns ready: false and empty temakoder initially', async () => {
     const { result } = renderHook(() => useTemaKoder(), { wrapper: appConfig });
-    expect(result.current.ready).toBe(false);
-    expect(result.current.temaKoder).toEqual([]);
+    await waitFor(() => {
+      expect(result.current.ready).toBe(false);
+      expect(result.current.temaKoder).toEqual([]);
+    });
   });
 
   it('fetches temakoder and returns them when ready', async () => {

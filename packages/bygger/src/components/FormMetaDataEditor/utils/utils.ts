@@ -6,7 +6,7 @@ export type FormMetadataErrorKeys =
   | 'skjemanummer'
   | 'tema'
   | 'submissionTypes'
-  | 'ettersending'
+  | 'subsequentSubmissionTypes'
   | 'lockedFormReason'
   | 'declarationText'
   | 'uxSignalsId'
@@ -37,9 +37,6 @@ export const validateFormMetadata = (form: Form, usageContext: UsageContext) => 
 
   // Some fields are only required in edit mode
   if (usageContext === 'edit') {
-    if (!form.properties.ettersending) {
-      errors.ettersending = 'Du må velge innsendingstype for ettersending';
-    }
     if (form.properties.declarationType === DeclarationType.custom && !form.properties.declarationText) {
       errors.declarationText = 'Du må lage en tilpasset erklæringstekst';
     }

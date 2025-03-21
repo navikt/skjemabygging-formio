@@ -30,6 +30,7 @@
     "preview:bygger": "yarn workspace @navikt/bygger-backend preview",
     "preview:fyllut": "yarn workspace @navikt/fyllut-backend preview",
     "test": "concurrently \"yarn workspace @navikt/bygger-frontend test\" \"yarn workspace @navikt/bygger-backend test\" \"yarn workspace @navikt/fyllut-frontend test\" \"yarn workspace @navikt/fyllut-backend test\" \"yarn workspace @navikt/skjemadigitalisering-shared-domain test\" \"yarn workspace @navikt/skjemadigitalisering-shared-components test\"",
+    "test:nowarnings": "NODE_OPTIONS=--no-warnings yarn test",
     "test:bygger": "concurrently \"yarn workspace @navikt/bygger-frontend test\" \"yarn workspace @navikt/bygger-backend test\"",
     "test:fyllut": "concurrently \"yarn workspace @navikt/fyllut-frontend test\" \"yarn workspace @navikt/fyllut-backend test\"",
     "test:shared-domain": "yarn workspace @navikt/skjemadigitalisering-shared-domain test",
