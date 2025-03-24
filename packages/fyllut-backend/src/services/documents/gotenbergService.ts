@@ -23,6 +23,7 @@ export const mergeFiles = async (
       formData.append('files', buffer, `file${index}.pdf`);
     }
   });
+
   formData.append('merge', 'true');
   // Add Gotenberg-specific options
   formData.append('pdfa', options.pdfa ? 'PDF/A-2b' : '');
@@ -41,8 +42,7 @@ export const mergeFiles = async (
   };
   formData.append('metadata', `${JSON.stringify(metadata)}`);
 
-  // Hvordan sette språk? En engelsk og en norsk Gotenberg installasjon?
-  logger.info(`Skal kalle Gotenberg for å merge filer`);
+  logger.info('Skal kalle Gotenberg for å merge filer');
   return await callGotenberg(language, '/forms/libreoffice/convert', formData);
 };
 
@@ -53,7 +53,7 @@ const formatPDFDate = (date: Date) => {
 // Generisk metode for kall til mot Gotenberg gitt rute og preparert FormData
 export const callGotenberg = async (language: string = 'no', route: string, formData: FormData): Promise<any> => {
   const url = language.toLowerCase().startsWith('en') ? gotenbergUrlEn : gotenbergUrl;
-  console.log(`Calling Gotenberg with url = ${url}${route}`);
+  logger.debug(`Calling Gotenberg with url = ${url}${route}`);
 
   try {
     // Send the request to Gotenberg
@@ -68,7 +68,6 @@ export const callGotenberg = async (language: string = 'no', route: string, form
     });
 
     if (!gotenbergResponse.ok) {
-      console.log(`Response fra Gotenberg feilet`);
       const errorText = await gotenbergResponse.text();
       throw synchronousResponseToError(
         `Feil i responsdata fra Gotenberg på id "${correlator.getId()}"`,
@@ -79,9 +78,7 @@ export const callGotenberg = async (language: string = 'no', route: string, form
       );
     }
 
-    const pdfBuffer = await gotenbergResponse.arrayBuffer();
-    console.log(`Returnerer fra callGotenberg`);
-    return pdfBuffer;
+    return await gotenbergResponse.arrayBuffer();
   } catch (e) {
     logger.error(`Request to gotenberg pdf service failed with  ${e}`);
     throw e;

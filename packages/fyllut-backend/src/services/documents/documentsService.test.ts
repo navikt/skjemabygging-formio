@@ -71,7 +71,7 @@ describe('[endpoint] documents', () => {
       .reply(200, { data: { result: [{ content: { data: encodedSoknadPdf } }] } });
 
     const mergePdfScope = nock(process.env.GOTENBERG_URL as string)
-      .intercept('/forms/pdfengines/merge', 'POST', (body) => {
+      .intercept('/forms/libreoffice/convert', 'POST', (body) => {
         return body != null;
       })
       .reply(200, mergedPdf, { 'content-type': 'application/pdf' });
@@ -129,7 +129,8 @@ describe('[endpoint] documents', () => {
       .reply(200, { data: { result: [{ content: { data: encodedSoknadPdf } }] } });
 
     const mergePdfScope = nock(process.env.GOTENBERG_URL_EN as string)
-      .intercept('/forms/pdfengines/merge', 'POST', (body) => {
+      .intercept('/forms/libreoffice/convert', 'POST', (body) => {
+        console.log('TEST', body);
         return body != null;
       })
       .reply(200, mergedPdf, { 'content-type': 'application/pdf' });
