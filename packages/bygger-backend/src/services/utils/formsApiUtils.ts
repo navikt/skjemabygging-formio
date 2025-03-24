@@ -11,15 +11,22 @@ const createHeaders = (accessToken?: string, revisionId?: number) => {
   };
 };
 
-export const removeInnsendingFromForm = (form: Form): Form => {
-  const formProperties = (({ innsending, ...rest }) => rest)(form.properties);
+/**
+ *
+ * Metoden er implementert kun for å støtte bakoverkompatibilitet og skal fjernes ved migrering
+ */
+export const removeInnsendingTypeFromForm = (form: Form): Form => {
+  const formProperties = (({ innsending, ettersending, ...rest }) => rest)(form.properties);
   return {
     ...form,
     properties: {
       ...formProperties,
       submissionTypes:
         form.properties.submissionTypes ??
-        formioFormsApiUtils.mapInnsendingToSubmissionTypes(form.properties.innsending),
+        formioFormsApiUtils.mapInnsendingTypeToSubmissionTypes(form.properties.innsending),
+      subsequentSubmissionTypes:
+        form.properties.subsequentSubmissionTypes ??
+        formioFormsApiUtils.mapEttersendingTypeToSubmissionTypes(form.properties.ettersending),
     },
   };
 };

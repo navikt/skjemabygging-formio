@@ -7059,7 +7059,7 @@
     "skjemanummer": "NAV 11-12.21B",
     "tema": "TSO",
     "submissionTypes": ["PAPER", "DIGITAL"],
-    "ettersending": "PAPIR_OG_DIGITAL",
+    "subsequentSubmissionTypes": ["PAPER", "DIGITAL"],
     "signatures": [
       {
         "label": "",

@@ -363,6 +363,7 @@
   "machineName": "kxzxmneixaglyxf:debugSkjema",
   "properties": {
     "skjemanummer": "NAV 12-13.14",
-    "submissionTypes": []
+    "submissionTypes": [],
+    "subsequentSubmissionTypes": []
   }
 }

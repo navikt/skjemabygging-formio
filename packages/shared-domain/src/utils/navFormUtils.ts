@@ -309,24 +309,6 @@ const getAttachmentProperties = (form: NavFormType): Attachment[] => {
 const isAttachment = (comp: Component) =>
   comp.type === 'attachment' || comp.values?.some((v) => v.value === 'leggerVedNaa');
 
-const isDigital = (type: 'innsending' | 'ettersending', form: NavFormType) => {
-  // If field is empty, it defaults to PAPIR_OG_DIGITAL
-  if (!form.properties[type]) return true;
-
-  return form.properties[type] === 'KUN_DIGITAL' || form.properties[type] === 'PAPIR_OG_DIGITAL';
-};
-
-const isPaper = (type: 'innsending' | 'ettersending', form: NavFormType) => {
-  // If field is empty, it defaults to PAPIR_OG_DIGITAL
-  if (!form.properties[type]) return true;
-
-  return form.properties[type] === 'KUN_PAPIR' || form.properties[type] === 'PAPIR_OG_DIGITAL';
-};
-
-const isNone = (type: 'innsending' | 'ettersending', form: NavFormType) => {
-  return form.properties[type] === 'INGEN';
-};
-
 const createDefaultForm = (config): Form => ({
   title: '',
   skjemanummer: '',
@@ -335,7 +317,7 @@ const createDefaultForm = (config): Form => ({
     skjemanummer: '',
     tema: '',
     submissionTypes: ['PAPER', 'DIGITAL'],
-    ettersending: 'PAPIR_OG_DIGITAL',
+    subsequentSubmissionTypes: ['PAPER', 'DIGITAL'],
     signatures: [{ label: '', description: '', key: uuidv4() }],
     ettersendelsesfrist: '14',
     mellomlagringDurationDays: (config?.mellomlagringDurationDays as string) ?? '28',
@@ -378,10 +360,7 @@ const navFormUtils = {
   getAttachmentPanel,
   hasAttachment,
   getAttachmentProperties,
-  isDigital,
-  isPaper,
   isAttachment,
-  isNone,
   isEqual,
   prefillForm,
   createDefaultForm,

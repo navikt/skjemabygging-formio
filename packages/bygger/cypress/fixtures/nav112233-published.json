@@ -596,7 +596,7 @@
         "description": ""
       }
     ],
-    "ettersending": "PAPIR_OG_DIGITAL",
+    "subsequentSubmissionTypes": ["PAPER", "DIGITAL"],
     "skjemanummer": "NAV 11-22.33",
     "ettersendelsesfrist": "14",
     "mellomlagringDurationDays": "28"

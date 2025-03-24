@@ -1,8 +1,8 @@
 import {
   Form,
-  ReportDefinition,
   formioFormsApiUtils,
   navFormUtils,
+  ReportDefinition,
   submissionTypesUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { stringify } from 'csv-stringify';
@@ -116,7 +116,7 @@ class ReportService {
       'sist endret',
       'endret av',
       'submissionTypes',
-      'ettersending',
+      'subsequentSubmissionTypes',
       'signaturfelt',
       'path',
       'har vedlegg',
@@ -141,7 +141,7 @@ class ReportService {
       const attachmentNames = attachments.map((attachment) => attachment.vedleggstittel).join(',');
 
       const { title, path, properties, status, changedAt, changedBy, publishedAt, publishedBy } = formCompact;
-      const { submissionTypes, tema, signatures, ettersending } = properties;
+      const { submissionTypes, tema, signatures, subsequentSubmissionTypes } = properties;
 
       const baseInnsendingUrl =
         config.naisClusterName === 'prod-gcp'
@@ -160,7 +160,9 @@ class ReportService {
 
       const ettersendingUrl = hasAttachment ? baseEttersendingUrl : undefined;
       const paperEttersendingUrl =
-        navFormUtils.isPaper('ettersending', form) && hasAttachment ? `${baseEttersendingUrl}?sub=paper` : undefined;
+        submissionTypesUtils.isPaperSubmission(subsequentSubmissionTypes) && hasAttachment
+          ? `${baseEttersendingUrl}?sub=paper`
+          : undefined;
 
       const isPublished = ['published', 'pending'].includes(status!);
 
@@ -181,7 +183,7 @@ class ReportService {
         changedAt,
         changedBy,
         submissionTypes,
-        ettersending,
+        subsequentSubmissionTypes,
         numberOfSignatures,
         path,
         hasAttachment ? 'ja' : 'nei',
