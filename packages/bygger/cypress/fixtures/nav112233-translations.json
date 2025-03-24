@@ -42,28 +42,6 @@
     "changedBy": "Ann Katrin Gagnat"
   },
   {
-    "id": 14142,
-    "key": "Etternavn",
-    "revision": 1,
-    "globalTranslationId": 673,
-    "nb": "Etternavn",
-    "nn": "Etternamn",
-    "en": "Last name",
-    "changedAt": "2025-02-13T21:40:22.818+01",
-    "changedBy": "Ann Katrin Gagnat"
-  },
-  {
-    "id": 14141,
-    "key": "Fornavn",
-    "revision": 1,
-    "globalTranslationId": 674,
-    "nb": "Fornavn",
-    "nn": "Fornamn",
-    "en": "First name",
-    "changedAt": "2025-02-13T21:40:22.756+01",
-    "changedBy": "Ann Katrin Gagnat"
-  },
-  {
     "id": 14138,
     "key": "Har du noen annen dokumentasjon du ønsker å legge ved?",
     "revision": 1,
