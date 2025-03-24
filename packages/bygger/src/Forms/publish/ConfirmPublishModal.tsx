@@ -23,6 +23,7 @@ const ConfirmPublishModal = ({ open, onClose, form, publishLanguageCodeList, uns
     if (unsavedGlobalTranslations.length > 0) {
       try {
         await Promise.all(unsavedGlobalTranslations.map(saveTranslation));
+        // Load translations to be in sync in case the user navigates to the translations page
         await loadTranslations();
       } catch (error) {
         const message = (error as Error)?.message;
