@@ -4,7 +4,6 @@ import React, { useState } from 'react';
 import { useAppConfig } from '../../context/config/configContext';
 import { useLanguages } from '../../context/languages';
 import DownloadPdfButton from './DownloadPdfButton';
-import { sanitizeFileName } from './downloadUtil';
 
 interface Props {
   type?: 'application' | 'coverPageAndApplication';
@@ -46,7 +45,7 @@ const DownloadCoverPageAndApplicationButton = ({
     setDownloadState('error');
   };
 
-  const fileName = `${sanitizeFileName(translate(form.title))}-${dateUtils.toLocaleDate().replace(/\./g, '')}.pdf`;
+  const fileName = `${form.path}-${dateUtils.toLocaleDate().replace(/\./g, '')}.pdf`;
 
   const actionUrl = `${fyllutBaseURL}/api/documents${type === 'application' ? '/application' : '/front-page-and-application'}`;
 
