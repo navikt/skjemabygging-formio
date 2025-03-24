@@ -8,7 +8,6 @@ import {
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
 import forstesideMock from '../../../test/test-data/forsteside/forsteside-mock';
 import { AppConfigProvider } from '../../context/config/configContext';
@@ -39,6 +38,12 @@ const RESPONSE_HEADERS = {
 const RESPONSE_HEADERS_PLAIN_TEXT = {
   headers: {
     'content-type': 'text/plain',
+  },
+  status: 200,
+};
+const RESPONSE_HEADERS_PDF = {
+  headers: {
+    'content-type': 'application/pdf',
   },
   status: 200,
 };
@@ -96,10 +101,10 @@ const defaultConfig = {
   NAIS_CLUSTER_NAME: 'dev-gcp',
 };
 
-function renderPrepareLetterPage(form = defaultForm, config = defaultConfig) {
+function renderPrepareLetterPage(form = defaultForm, config = defaultConfig, fyllutBaseURL?: string) {
   render(
     <MemoryRouter>
-      <AppConfigProvider config={config}>
+      <AppConfigProvider config={config} fyllutBaseURL={fyllutBaseURL}>
         <PrepareLetterPage form={form} submission={defaultSubmission} translations={DEFAULT_TRANSLATIONS} formUrl="/" />
       </AppConfigProvider>
     </MemoryRouter>,
@@ -119,6 +124,9 @@ describe('PrepareLetterPage', () => {
       if (urlString.endsWith('/api/enhetsliste')) {
         return Promise.resolve(new Response(JSON.stringify(mockEnhetsListe), RESPONSE_HEADERS));
       }
+      if (urlString.endsWith('/api/documents/cover-page-and-application')) {
+        return Promise.resolve(new Response(undefined, RESPONSE_HEADERS_PDF));
+      }
 
       console.error(`Manglende testoppsett: Ukjent url ${urlString}`);
       return Promise.reject<Response>();
@@ -129,34 +137,15 @@ describe('PrepareLetterPage', () => {
     fetchMock.mockClear();
   });
 
-  describe('Førsteside-knapp', () => {
-    let submitCalls: React.SyntheticEvent<HTMLFormElement>[] = [];
+  describe('Download button', () => {
+    it('Download cover page and application', async () => {
+      const fyllutBaseURL = 'http://127.0.0.1/fyllut';
 
-    const submitEventListener = (event) => {
-      event.preventDefault();
-      submitCalls.push(event);
-    };
+      renderPrepareLetterPage(undefined, undefined, fyllutBaseURL);
 
-    beforeAll(() => {
-      window.addEventListener('submit', submitEventListener);
-    });
+      await userEvent.click(screen.getByRole('button', { name: TEXTS.grensesnitt.downloadApplication }));
 
-    afterAll(() => {
-      window.removeEventListener('submit', submitEventListener);
-    });
-
-    beforeEach(() => {
-      submitCalls = [];
-    });
-
-    it('Laster ned pdf for førsteside', async () => {
-      renderPrepareLetterPage();
-
-      await userEvent.click(screen.getByRole('button', { name: 'Last ned skjema' }));
-      expect(submitCalls).toHaveLength(1);
-      const submitted = submitCalls[0].target as HTMLFormElement;
-      expect((submitted.elements[0] as HTMLInputElement).name).toBe('form');
-      expect((submitted.elements[1] as HTMLInputElement).name).toBe('submission');
+      expect(fetchMock).toHaveBeenCalledTimes(1);
     });
 
     it('Laster ikke ned førsteside pdf dersom enhet ikke er valgt, og viser feilmelding i stedet', async () => {
@@ -165,8 +154,8 @@ describe('PrepareLetterPage', () => {
       });
       renderPrepareLetterPage(form);
 
-      await userEvent.click(await screen.findByRole('button', { name: 'Last ned skjema' }));
-      expect(submitCalls).toHaveLength(1);
+      await userEvent.click(screen.getByRole('button', { name: TEXTS.grensesnitt.downloadApplication }));
+
       expect(await screen.findByText(TEXTS.statiske.prepareLetterPage.entityNotSelectedError)).toBeInTheDocument();
     });
   });
@@ -214,7 +203,7 @@ describe('PrepareLetterPage', () => {
           if (urlString.endsWith('/api/log/error')) {
             return Promise.resolve(new Response('OK', RESPONSE_HEADERS_PLAIN_TEXT));
           }
-          console.error(`Manglende testoppsett: Ukjent url ${urlString}`);
+          console.error(`Manglende testoppsett1: Ukjent url ${urlString}`);
           return Promise.reject<Response>();
         });
         const GAMMEL_TYPE = 'GAMMEL_TYPE' as Enhetstype;

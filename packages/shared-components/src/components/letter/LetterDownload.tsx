@@ -49,7 +49,7 @@ const LetterDownload = ({ form, index, submission, enhetsListe, translations }: 
           return true;
         }}
       >
-        {translate(TEXTS.grensesnitt.prepareLetterPage.downloadCoverPage)}
+        {translate(TEXTS.grensesnitt.downloadApplication)}
       </DownloadCoverPageAndApplicationButton>
     </section>
   );

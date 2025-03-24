@@ -47,7 +47,7 @@ const DownloadCoverPageAndApplicationButton = ({
 
   const fileName = `${form.path}-${dateUtils.toLocaleDate().replace(/\./g, '')}.pdf`;
 
-  const actionUrl = `${fyllutBaseURL}/api/documents${type === 'application' ? '/application' : '/front-page-and-application'}`;
+  const actionUrl = `${fyllutBaseURL}/api/documents${type === 'application' ? '/application' : '/cover-page-and-application'}`;
 
   return (
     <>
