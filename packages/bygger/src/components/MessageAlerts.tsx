@@ -1,10 +1,11 @@
 import { Close } from '@navikt/ds-icons';
 import { Alert, BodyShort, Button } from '@navikt/ds-react';
 import { makeStyles, navCssVariables } from '@navikt/skjemadigitalisering-shared-components';
-import { Message } from '../hooks/useMessageQueue';
+import { Message } from '../context/notifications/messageQueueReducer';
 
 interface AlertProps {
   message: Message;
+  clearMessage?: () => void;
 }
 
 const useStyles = makeStyles({
@@ -36,7 +37,7 @@ export const SuccessAlert = ({ message }: AlertProps) => {
   );
 };
 
-export const ErrorAlert = ({ message }: AlertProps) => {
+export const ErrorAlert = ({ message, clearMessage }: AlertProps) => {
   const styles = useStyles();
   return (
     <Alert variant="error" className={styles.alert}>
@@ -45,7 +46,7 @@ export const ErrorAlert = ({ message }: AlertProps) => {
         <Button
           variant="tertiary"
           icon={<Close aria-hidden />}
-          onClick={() => message.clear()}
+          onClick={clearMessage}
           type="button"
           aria-label="Lukk feilmelding"
         />
@@ -54,7 +55,7 @@ export const ErrorAlert = ({ message }: AlertProps) => {
   );
 };
 
-export const WarningAlert = ({ message }: AlertProps) => {
+export const WarningAlert = ({ message, clearMessage }: AlertProps) => {
   const styles = useStyles();
   return (
     <Alert variant="warning" className={styles.alert}>
@@ -63,7 +64,7 @@ export const WarningAlert = ({ message }: AlertProps) => {
         <Button
           variant="tertiary"
           icon={<Close aria-hidden />}
-          onClick={() => message.clear()}
+          onClick={clearMessage}
           type="button"
           aria-label="Lukk advarsel"
         />
