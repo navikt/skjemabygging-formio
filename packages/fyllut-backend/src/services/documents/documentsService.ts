@@ -1,4 +1,11 @@
-import { I18nTranslationMap, NavFormType, Submission } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  I18nTranslationMap,
+  I18nTranslationReplacements,
+  localizationUtils,
+  NavFormType,
+  Submission,
+  translationUtils,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import { base64Decode } from '../../utils/base64';
 import { htmlResponseError } from '../../utils/errorHandling';
 import applicationService from './applicationService';
@@ -22,7 +29,7 @@ const application = async (props: CoverPageAndApplicationProps) => {
     form,
     submission,
     submissionMethod,
-    translations,
+    createTranslate(translations, language),
     language,
   );
 
@@ -46,6 +53,7 @@ const coverPageAndApplication = async (props: CoverPageAndApplicationProps) => {
     accessToken,
     form,
     submission,
+    translate: createTranslate(translations, language),
     language,
     unitNumber,
   });
@@ -61,7 +69,7 @@ const coverPageAndApplication = async (props: CoverPageAndApplicationProps) => {
     form,
     submission,
     submissionMethod,
-    translations,
+    createTranslate(translations, language),
     language,
   );
 
@@ -82,6 +90,18 @@ const coverPageAndApplication = async (props: CoverPageAndApplicationProps) => {
   );
 
   return Buffer.from(new Uint8Array(mergedFile));
+};
+
+const createTranslate = (translations: I18nTranslationMap, language: string) => {
+  const languageCode = localizationUtils.getLanguageCodeAsIso639_1(language.toLowerCase());
+
+  return (text: string, textReplacements?: I18nTranslationReplacements) =>
+    translationUtils.translateWithTextReplacements({
+      translations,
+      originalText: text,
+      params: textReplacements,
+      currentLanguage: languageCode,
+    });
 };
 
 const documentsService = {

@@ -2,6 +2,7 @@ import { NavFormType, Submission, SubmissionData } from '../form';
 import {
   ForstesideRecipientAddress,
   ForstesideRequestBody,
+  I18nTranslationReplacements,
   KjentBruker,
   navFormUtils,
   Recipient,
@@ -61,8 +62,14 @@ const getAttachmentTitles = (form: NavFormType, submission: SubmissionData): str
   return getAttachments(submission, form).map((component) => component.properties!.vedleggstittel!);
 };
 
-const getAttachmentLabels = (form: NavFormType, submission: SubmissionData): string[] => {
-  return getAttachments(submission, form).map((component) => component.label);
+const getAttachmentLabels = (
+  form: NavFormType,
+  submission: SubmissionData,
+  translate?: (text: string, textReplacements?: I18nTranslationReplacements) => string,
+): string[] => {
+  return getAttachments(submission, form).map((component) =>
+    translate ? translate(component.label) : component.label,
+  );
 };
 
 const getAttachments = (submission: SubmissionData, form: NavFormType) => {
@@ -124,13 +131,14 @@ const genererFoerstesideData = (
   language = 'nb-NO',
   recipients: Recipient[] = [],
   unitNumber?: string,
+  translate?: (text: string, textReplacements?: I18nTranslationReplacements) => string,
 ): ForstesideRequestBody => {
   const {
     properties: { skjemanummer, tema, mottaksadresseId },
     title,
   } = form;
 
-  const formTitle = getTitle(title, skjemanummer);
+  const formTitle = getTitle(translate ? translate(title) : title, skjemanummer);
 
   return {
     ...getUserData(form, submission.data),
@@ -141,7 +149,7 @@ const genererFoerstesideData = (
     arkivtittel: formTitle,
     tema,
     vedleggsliste: getAttachmentTitles(form, submission.data),
-    dokumentlisteFoersteside: [formTitle, ...getAttachmentLabels(form, submission.data)],
+    dokumentlisteFoersteside: [formTitle, ...getAttachmentLabels(form, submission.data, translate)],
     ...getRecipients(mottaksadresseId, recipients, unitNumber),
   };
 };

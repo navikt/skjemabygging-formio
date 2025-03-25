@@ -1,10 +1,7 @@
 import {
-  I18nTranslationMap,
   I18nTranslationReplacements,
-  localizationUtils,
   NavFormType,
   Submission,
-  translationUtils,
   yourInformationUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import correlator from 'express-correlation-id';
@@ -23,10 +20,10 @@ const createPdfAsByteArray = async (
   form: NavFormType,
   submission: Submission,
   submissionMethod: string,
-  translations: I18nTranslationMap,
+  translate: (text: string, textReplacements?: I18nTranslationReplacements) => string,
   language: string,
 ) => {
-  const pdf = await createPdf(accessToken, form, submission, submissionMethod, translations, language);
+  const pdf = await createPdf(accessToken, form, submission, submissionMethod, translate, language);
   return Array.from(base64Decode(pdf.data) ?? []);
 };
 
@@ -35,22 +32,12 @@ const createPdf = async (
   form: NavFormType,
   submission: Submission,
   submissionMethod: string,
-  translations: I18nTranslationMap,
+  translate: (text: string, textReplacements?: I18nTranslationReplacements) => string,
   language: string,
 ) => {
   if (!['nb-NO', 'nn-NO', 'en'].includes(language)) {
     logger.warn(`Language code "${language}" is not supported. Language code will be defaulted to "nb".`);
   }
-
-  const languageCode = localizationUtils.getLanguageCodeAsIso639_1(language.toLowerCase());
-
-  const translate = (text: string, textReplacements?: I18nTranslationReplacements) =>
-    translationUtils.translateWithTextReplacements({
-      translations,
-      originalText: text,
-      params: textReplacements,
-      currentLanguage: languageCode,
-    });
 
   const html = createHtmlFromSubmission(form, submission, submissionMethod, translate, language);
   if (!html || Object.keys(html).length === 0) {

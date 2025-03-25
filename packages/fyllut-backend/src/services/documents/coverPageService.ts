@@ -2,6 +2,7 @@ import {
   FormPropertiesType,
   ForstesideRequestBody,
   forstesideUtils,
+  I18nTranslationReplacements,
   NavFormType,
   Recipient,
   Submission,
@@ -16,16 +17,17 @@ interface CreatePdfProps {
   accessToken: string;
   form: NavFormType;
   submission: Submission;
+  translate: (text: string, textReplacements?: I18nTranslationReplacements) => string;
   language: string;
   unitNumber?: string;
 }
 
 const createPdf = async (props: CreatePdfProps) => {
-  const { accessToken, form, submission, language = 'nb-NO', unitNumber } = props;
+  const { accessToken, form, submission, language = 'nb-NO', unitNumber, translate } = props;
 
   const recipients = (await getRecipients(form?.properties)) ?? [];
 
-  const body = forstesideUtils.genererFoerstesideData(form, submission, language, recipients, unitNumber);
+  const body = forstesideUtils.genererFoerstesideData(form, submission, language, recipients, unitNumber, translate);
 
   const response = await createPdfRequest(accessToken, JSON.stringify(body));
 
