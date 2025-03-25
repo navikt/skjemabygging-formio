@@ -7,6 +7,7 @@ const application: RequestHandler = async (req, res, next) => {
     const { form, submission, language, enhetNummer, submissionMethod, translations } = req.body;
     const formParsed = JSON.parse(form);
     const submissionParsed = JSON.parse(submission);
+    const translationsParsed = JSON.parse(translations);
 
     const fileBuffer = await documentsService.application({
       form: formParsed,
@@ -15,7 +16,7 @@ const application: RequestHandler = async (req, res, next) => {
       unitNumber: enhetNummer,
       accessToken: req.headers.AzureAccessToken as string,
       submissionMethod,
-      translations,
+      translations: translationsParsed,
     });
     res.contentType('application/pdf');
     res.setHeader('Content-Disposition', `inline; filename=${encodeURIComponent(`${formParsed.path}.pdf`)}`);
@@ -31,6 +32,7 @@ const coverPageAndApplication: RequestHandler = async (req, res, next) => {
     const { form, submission, language, enhetNummer, submissionMethod, translations } = req.body;
     const formParsed = JSON.parse(form);
     const submissionParsed = JSON.parse(submission);
+    const translationsParsed = JSON.parse(translations);
 
     const fileBuffer = await documentsService.coverPageAndApplication({
       form: formParsed,
@@ -39,7 +41,7 @@ const coverPageAndApplication: RequestHandler = async (req, res, next) => {
       unitNumber: enhetNummer,
       accessToken: req.headers.AzureAccessToken as string,
       submissionMethod,
-      translations,
+      translations: translationsParsed,
     });
     res.contentType('application/pdf');
     res.setHeader('Content-Disposition', `inline; filename=${encodeURIComponent(`${formParsed.path}.pdf`)}`);

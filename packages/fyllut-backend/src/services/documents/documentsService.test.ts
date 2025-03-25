@@ -130,7 +130,6 @@ describe('[endpoint] documents', () => {
 
     const mergePdfScope = nock(process.env.GOTENBERG_URL_EN as string)
       .intercept('/forms/libreoffice/convert', 'POST', (body) => {
-        console.log('TEST', body);
         return body != null;
       })
       .reply(200, mergedPdf, { 'content-type': 'application/pdf' });

@@ -42,9 +42,7 @@ const createPdf = async (
     logger.warn(`Language code "${language}" is not supported. Language code will be defaulted to "nb".`);
   }
 
-  console.log(`Language "${language}" requested`);
   const languageCode = localizationUtils.getLanguageCodeAsIso639_1(language.toLowerCase());
-  console.log(`LanguageCode "${languageCode}" to use`);
 
   const translate = (text: string, textReplacements?: I18nTranslationReplacements) =>
     translationUtils.translateWithTextReplacements({

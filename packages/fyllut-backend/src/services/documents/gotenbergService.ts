@@ -42,7 +42,6 @@ export const mergeFiles = async (
   };
   formData.append('metadata', `${JSON.stringify(metadata)}`);
 
-  logger.info('Skal kalle Gotenberg for å merge filer');
   return await callGotenberg(language, '/forms/libreoffice/convert', formData);
 };
 

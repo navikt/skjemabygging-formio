@@ -203,7 +203,7 @@ describe('PrepareLetterPage', () => {
           if (urlString.endsWith('/api/log/error')) {
             return Promise.resolve(new Response('OK', RESPONSE_HEADERS_PLAIN_TEXT));
           }
-          console.error(`Manglende testoppsett1: Ukjent url ${urlString}`);
+          console.error(`Manglende testoppsett: Ukjent url ${urlString}`);
           return Promise.reject<Response>();
         });
         const GAMMEL_TYPE = 'GAMMEL_TYPE' as Enhetstype;
