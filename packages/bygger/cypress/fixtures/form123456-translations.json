@@ -53,5 +53,71 @@
     "en": "Hello",
     "changedAt": null,
     "changedBy": null
+  },
+  {
+    "id": 6,
+    "key": "Bor du i Norge?",
+    "revision": 1,
+    "globalTranslationId": null,
+    "nb": "Bor du i Norge?",
+    "nn": "Bor du i Noreg?",
+    "en": "Do you live in Norway?",
+    "changedAt": null,
+    "changedBy": null
+  },
+  {
+    "id": 7,
+    "key": "Nav sender svar på søknad og annen kommunikasjon til din folkeregistrerte adresse. \n<br>\nDu kan <a href=\"https://www.skatteetaten.no/person/folkeregister/flytte/endre-postadresse/\" target=\"_blank\">sjekke og endre din folkeregistrerte adresse på skatteetatens nettsider (åpnes i et nytt vindu).</a>\nHvis du ønsker å motta kommunikasjon fra Nav på en annen adresse enn din folkeregistrerte adresse, kan du bruke lenken ovenfor til å oppgi en postadresse i Folkeregisteret.\nDu finner også papirskjema for å endre postadresse på samme siden hos Skatteetaten.",
+    "revision": 4,
+    "globalTranslationId": null,
+    "nb": "Nav sender svar på søknad og annen kommunikasjon til din folkeregistrerte adresse. \n<br>\nDu kan <a href=\"https://www.skatteetaten.no/person/folkeregister/flytte/endre-postadresse/\" target=\"_blank\">sjekke og endre din folkeregistrerte adresse på skatteetatens nettsider (åpnes i et nytt vindu).</a>\nHvis du ønsker å motta kommunikasjon fra Nav på en annen adresse enn din folkeregistrerte adresse, kan du bruke lenken ovenfor til å oppgi en postadresse i Folkeregisteret.\nDu finner også papirskjema for å endre postadresse på samme siden hos Skatteetaten.",
+    "nn": "Nav sender svar på søknad og annen kommunikasjon til din folkeregistrerte adresse. \n<br>\nDu kan <a href=\"https://www.skatteetaten.no/person/folkeregister/flytte/endre-postadresse/\" target=\"_blank\">sjekke og endre din folkeregistrerte adresse på skatteetatens nettsider (åpnes i et nytt vindu).</a>\nHvis du ønsker å motta kommunikasjon fra Nav på en annen adresse enn din folkeregistrerte adresse, kan du bruke lenken ovenfor til å oppgi en postadresse i Folkeregisteret.\nDu finner også papirskjema for å endre postadresse på samme siden hos Skatteetaten.",
+    "en": "",
+    "changedAt": null,
+    "changedBy": null
+  },
+  {
+    "id": 8,
+    "key": "Gitar",
+    "revision": 2,
+    "globalTranslationId": null,
+    "nb": "Gitar",
+    "nn": "Gitar (nn)",
+    "en": "Guitar",
+    "changedAt": null,
+    "changedBy": null
+  },
+  {
+    "id": 9,
+    "key": "Trommer",
+    "revision": 1,
+    "globalTranslationId": null,
+    "nb": "Trommer",
+    "nn": "Trommer (nn)",
+    "en": "Drums",
+    "changedAt": null,
+    "changedBy": null
+  },
+  {
+    "id": 10,
+    "key": "Trekkspill",
+    "revision": 1,
+    "globalTranslationId": null,
+    "nb": "Trekkspill",
+    "nn": "Trekkspel",
+    "en": "Accordion",
+    "changedAt": null,
+    "changedBy": null
+  },
+  {
+    "id": 11,
+    "key": "Piano",
+    "revision": 1,
+    "globalTranslationId": null,
+    "nb": "Piano",
+    "nn": "Piano (nn)",
+    "en": "Piano (en)",
+    "changedAt": null,
+    "changedBy": null
   }
 ]

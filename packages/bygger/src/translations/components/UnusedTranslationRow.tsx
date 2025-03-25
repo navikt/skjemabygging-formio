@@ -2,7 +2,7 @@ import { Button, Table } from '@navikt/ds-react';
 import { FormsApiTranslation, formsApiTranslations } from '@navikt/skjemadigitalisering-shared-domain';
 import { useState } from 'react';
 import TranslationDisplayCell from './TranslationDisplayCell';
-import useTranslationTableStyles from './styles';
+import { useTranslationTableStyles } from './styles';
 
 interface Props {
   translation: FormsApiTranslation;
