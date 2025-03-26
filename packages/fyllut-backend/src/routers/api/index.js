@@ -18,6 +18,7 @@ import log from './log';
 import mottaksadresser from './mottaksadresser.js';
 import pdl from './pdl';
 import recipients from './recipients';
+import registerDataRouter from './register-data/register-data';
 import sendInnSoknad from './send-inn-soknad';
 import sendInnUtfyltSoknad from './send-inn-utfylt-soknad';
 import activities from './send-inn/activities/send-inn-activities';
@@ -53,6 +54,7 @@ apiRouter.post('/log/:level', rateLimiter(60000, 60), log.post);
 apiRouter.get('/health/status', status.get);
 apiRouter.get('/send-inn/prefill-data', tokenxSendInn, prefillData.get);
 apiRouter.get('/send-inn/activities', tokenxSendInn, activities.get);
+apiRouter.use('/register-data', registerDataRouter);
 
 if (featureToggles.enablePdl) {
   apiRouter.get('/pdl/person/:id', tokenxPdl, pdl.person);
