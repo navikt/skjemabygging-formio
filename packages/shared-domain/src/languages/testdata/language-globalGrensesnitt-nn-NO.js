@@ -22,7 +22,7 @@ const dbEntity = {
       'Rediger søknaden': 'Rediger søknaden',
       'Send i posten': 'Send i posten',
       'Til digital innsending': 'Til digital innsending',
-      'Last ned førsteside': 'Last ned førsteside',
+      'Last ned skjema': 'Last ned skjema',
       'Jeg har lest instruksjonene.': 'Eg har lese rettleiinga.',
       valgfritt: 'valfritt',
       Januar: 'Januar',

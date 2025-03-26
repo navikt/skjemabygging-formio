@@ -21,7 +21,7 @@ export const grensesnitt = {
   languageSelector: {
     ariaLabel: 'Velg språk',
   },
-  downloadApplication: 'Last ned søknaden',
+  downloadApplication: 'Last ned skjema',
   goBack: 'Gå tilbake',
   moveForward: 'Gå videre',
   confirmSavePrompt: {
@@ -61,9 +61,6 @@ export const grensesnitt = {
   summaryPage: {
     edit: 'Rediger',
     editAnswers: 'Fortsett utfylling',
-  },
-  prepareLetterPage: {
-    downloadCoverPage: 'Last ned førsteside',
   },
   stepper: {
     toggleText: 'Steg {{currentStep}} av {{totalSteps}}',

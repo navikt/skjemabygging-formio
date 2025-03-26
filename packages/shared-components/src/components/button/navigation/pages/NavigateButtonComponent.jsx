@@ -1,11 +1,13 @@
 import { ArrowLeftIcon } from '@navikt/aksel-icons';
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useLocation } from 'react-router-dom';
+import { useLanguages } from '../../../../context/languages/index.js';
 import LinkButton from '../../../link-button/LinkButton';
 import CancelButton from '../cancel/CancelButton';
 
-const NavigateButtonComponent = ({ goBackUrl, translate }) => {
+const NavigateButtonComponent = ({ goBackUrl }) => {
   const { search } = useLocation();
+  const { translate } = useLanguages();
 
   return (
     <nav>

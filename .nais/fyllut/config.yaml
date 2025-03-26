@@ -8,6 +8,8 @@ metadata:
     team: skjemadigitalisering
   annotations:
     nginx.ingress.kubernetes.io/proxy-body-size: "50M"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "120"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "120"
     nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
 spec:
   image: {{image}}
@@ -87,6 +89,10 @@ spec:
       value: {{skjemabygging-proxy-url}}
     - name: SKJEMABYGGING_PROXY_CLIENT_ID
       value: {{skjemabygging-proxy-client-id}}
+    - name: GOTENBERG_URL
+      value: {{gotenberg-url}}
+    - name: GOTENBERG_URL_EN
+      value: {{gotenberg-url-en}}
     - name: SEND_INN_TOKEN_X_CLIENT_ID
       value: {{send-inn-token-x-client-id}}
     - name: SEND_INN_HOST

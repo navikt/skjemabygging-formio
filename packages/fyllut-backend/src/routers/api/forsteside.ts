@@ -10,8 +10,9 @@ import forstesideV2 from './forstesideV2';
 const { skjemabyggingProxyUrl } = config;
 
 /*
- * TODO: This version of forsteside is deprecated. When all consumers have implemented version 2
- *  we can remove the version parameter and make forstesideV2 (renamed) the running version
+ * TODO: This version of forsteside is deprecated.
+ * v2 is can be removed, but the default version is used by fyllut-ettersending
+ * @deprecated
  **/
 const forsteside = {
   post: async (req: Request, res: Response, next: NextFunction) => {
@@ -74,7 +75,7 @@ const forstesideRequest = async (req: Request, body?: BodyInit) => {
 };
 
 const logForsteside = (forsteside: ForstesideRequestBody, response: any) => {
-  logger.info('Download frontpage', {
+  logger.info('Download cover page', {
     loepenummer: JSON.parse(response).loepenummer,
     navSkjemaId: forsteside.navSkjemaId,
     tema: forsteside.tema,

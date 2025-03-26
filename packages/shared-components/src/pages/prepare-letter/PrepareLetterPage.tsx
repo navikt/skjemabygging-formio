@@ -6,9 +6,10 @@ import { getAttachments } from '../../../../shared-domain/src/forsteside/forstes
 import { fetchEnhetsliste, isEnhetSupported } from '../../api/enhetsliste/fetchEnhetsliste';
 import NavigateButtonComponent from '../../components/button/navigation/pages/NavigateButtonComponent';
 import ErrorPage from '../../components/error/page/ErrorPage';
-import LetterAddAttachment from '../../components/letter/add-attachment/LetterAddAttachment';
-import LetterDownload from '../../components/letter/download/LetterDownload';
-import LetterInTheMail from '../../components/letter/in-the-mail/LetterInTheMail';
+import LetterAddAttachment from '../../components/letter/LetterAddAttachment';
+import LetterDownload from '../../components/letter/LetterDownload';
+import LetterInTheMail from '../../components/letter/LetterInTheMail';
+import LetterPrint from '../../components/letter/LetterPrint';
 import LetterUXSignals from '../../components/letter/ux-signals/LetterUXSignals';
 import LoadingComponent from '../../components/loading/LoadingComponent';
 import { useAppConfig } from '../../context/config/configContext';
@@ -38,7 +39,7 @@ const useStyles = makeStyles({
 
 export function PrepareLetterPage({ form, submission, translations, formUrl }: Props) {
   useEffect(() => scrollToAndSetFocus('main', 'start'), []);
-  const { fyllutBaseURL, baseUrl, logger, config } = useAppConfig();
+  const { baseUrl, logger, config } = useAppConfig();
   const { translate } = useLanguages();
   const [enhetsListe, setEnhetsListe] = useState<Enhet[]>([]);
   const [enhetsListeError, setEnhetsListeError] = useState(false);
@@ -95,13 +96,12 @@ export function PrepareLetterPage({ form, submission, translations, formUrl }: P
             form={form}
             submission={submission}
             enhetsListe={enhetsListe}
-            fyllutBaseURL={fyllutBaseURL}
-            translate={translate}
             translations={translations}
           />
-          {hasAttachments && <LetterAddAttachment index={2} vedleggSomSkalSendes={attachments} translate={translate} />}
-          <LetterInTheMail index={hasAttachments ? 3 : 2} vedleggSomSkalSendes={attachments} translate={translate} />
-          <NavigateButtonComponent translate={translate} goBackUrl={`${formUrl}/oppsummering`} />
+          <LetterPrint index={2} />
+          {hasAttachments && <LetterAddAttachment index={3} attachments={attachments} />}
+          <LetterInTheMail index={hasAttachments ? 4 : 3} attachments={attachments} />
+          <NavigateButtonComponent goBackUrl={`${formUrl}/oppsummering`} />
           {includeUxSignals && <LetterUXSignals id={uxSignalsId} demo={config?.NAIS_CLUSTER_NAME !== 'prod-gcp'} />}
         </section>
       </section>
