@@ -23,6 +23,10 @@ class Komponenten extends BaseComponent {
     return komponentenBuilder();
   }
 
+  get emptyValue() {
+    return [];
+  }
+
   changeHandler(selectedCheckboxes: string[]) {
     super.handleChange(selectedCheckboxes);
     this.rerender();
@@ -32,7 +36,6 @@ class Komponenten extends BaseComponent {
     return element.render(
       <ComponentUtilsProvider component={this}>
         <ReactKomponenten
-          id={this.getId()}
           label={<Label component={this.component} editFields={this.getEditFields()} />}
           description={<Description component={this.component} />}
           value={this.getValue()}
