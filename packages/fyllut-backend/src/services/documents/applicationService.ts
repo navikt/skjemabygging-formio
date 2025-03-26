@@ -124,6 +124,8 @@ const createPdfFromHtml = async (
     const json: any = await response.json();
     if (!json.data?.result?.[0]?.content) {
       if (json.data?.id) {
+        logger.info(json); // TODO: Remove
+        logger.info(JSON.stringify(json)); // TODO: Remove
         throw synchronousResponseToError(
           `Feil i responsdata fra Exstream på id "${json.data?.id}"`,
           json,
