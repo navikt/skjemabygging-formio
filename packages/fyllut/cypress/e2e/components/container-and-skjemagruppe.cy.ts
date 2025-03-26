@@ -2,7 +2,7 @@
  * Tests that fields inside containers are displayed on the summary page and populated with stored values
  */
 
-describe('Container/Beholder', () => {
+describe('Container/Beholder og skjemagruppe', () => {
   before(() => {
     cy.configMocksServer();
   });
@@ -48,6 +48,27 @@ describe('Container/Beholder', () => {
       cy.findByRole('heading', { name: 'Vis beholdere' });
       cy.findByRole('textbox', { name: 'Ytre tekstfelt (valgfritt)' }).should('have.value', 'Jeg er ytterst');
       cy.findByRole('textbox', { name: 'Indre tekstfelt (valgfritt)' }).should('have.value', 'Jeg er innerst');
+    });
+  });
+
+  describe('Nested skjemagruppe and container/beholder', () => {
+    it('validates all textfields in nested containers and skjemagruppe', () => {
+      cy.visit('/fyllut/testskjemagruppe/skjemagrupper?sub=paper');
+      cy.defaultWaits();
+      cy.findByRole('textbox', { name: 'Tekstfelt inni skjemagruppe' }).should('be.visible');
+      cy.findByRole('textbox', { name: 'Tekstfelt inni skjemagruppe inni skjemagruppe' }).should('be.visible');
+      cy.findByRole('textbox', { name: 'Tekstfelt inni skjemagruppe inni container' }).should('be.visible');
+      cy.findByRole('textbox', { name: 'Tekstfelt inni container inni skjemagruppe' }).should('be.visible');
+      cy.clickNextStep();
+      cy.get('[data-cy=error-summary]').should('exist');
+      cy.get('[data-cy=error-summary]').within(() => {
+        cy.findByRole('link', { name: 'Du må fylle ut: Tekstfelt inni skjemagruppe' }).should('exist');
+        cy.findByRole('link', { name: 'Du må fylle ut: Tekstfelt inni skjemagruppe inni skjemagruppe' }).should(
+          'exist',
+        );
+        cy.findByRole('link', { name: 'Du må fylle ut: Tekstfelt inni skjemagruppe inni container' }).should('exist');
+        cy.findByRole('link', { name: 'Du må fylle ut: Tekstfelt inni container inni skjemagruppe' }).should('exist');
+      });
     });
   });
 });
