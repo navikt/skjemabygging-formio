@@ -49,29 +49,30 @@ interface CoverPageAndApplicationProps extends ApplicationProps {
 const coverPageAndApplication = async (props: CoverPageAndApplicationProps) => {
   const { accessToken, form, submission, language, unitNumber, translations, submissionMethod } = props;
 
-  const coverPageResponse: any = await coverPageService.createPdf({
-    accessToken,
-    form,
-    submission,
-    translate: createTranslate(translations, language),
-    language,
-    unitNumber,
-  });
+  const [coverPageResponse, applicationResponse] = await Promise.all([
+    coverPageService.createPdf({
+      accessToken,
+      form,
+      submission,
+      translate: createTranslate(translations, language),
+      language,
+      unitNumber,
+    }),
+    applicationService.createPdf(
+      accessToken,
+      form,
+      submission,
+      submissionMethod,
+      createTranslate(translations, language),
+      language,
+    ),
+  ]);
 
   const coverPagePdf = base64Decode(coverPageResponse.foersteside);
 
   if (coverPagePdf === undefined) {
     throw htmlResponseError('Generering av førstesideark PDF feilet');
   }
-
-  const applicationResponse: any = await applicationService.createPdf(
-    accessToken,
-    form,
-    submission,
-    submissionMethod,
-    createTranslate(translations, language),
-    language,
-  );
 
   const applicationPdf = base64Decode(applicationResponse.data);
 

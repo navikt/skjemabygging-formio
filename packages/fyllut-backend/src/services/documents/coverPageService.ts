@@ -22,7 +22,7 @@ interface CreatePdfProps {
   unitNumber?: string;
 }
 
-const createPdf = async (props: CreatePdfProps) => {
+const createPdf = async (props: CreatePdfProps): Promise<any> => {
   const { accessToken, form, submission, language = 'nb-NO', unitNumber, translate } = props;
 
   const recipients = (await getRecipients(form?.properties)) ?? [];
