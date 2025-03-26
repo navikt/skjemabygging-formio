@@ -1,4 +1,4 @@
-import { Checkbox, CheckboxGroup } from '@navikt/ds-react';
+import ReactKomponenten from '../../../../components/komponenten/ReactKomponenten';
 import { ComponentUtilsProvider } from '../../../../context/component/componentUtilsContext';
 import BaseComponent from '../../base/BaseComponent';
 import Description from '../../base/components/Description';
@@ -11,7 +11,7 @@ class Komponenten extends BaseComponent {
     return BaseComponent.schema({
       label: 'Komponenten',
       type: 'komponenten',
-      key: 'Komponenten',
+      key: 'komponenten',
     });
   }
 
@@ -23,51 +23,23 @@ class Komponenten extends BaseComponent {
     return komponentenBuilder();
   }
 
-  get emptyValue() {
-    return false;
-  }
-
   changeHandler(selectedCheckboxes: string[]) {
-    // There is always either 0 or 1 checkbox selected
-    const isChecked = selectedCheckboxes.length > 0;
-    super.handleChange(isChecked);
+    super.handleChange(selectedCheckboxes);
     this.rerender();
   }
 
-  getDataValues() {
-    return [{ value: '', label: '' }];
-  }
-
-  // Aksel component value is an array
-  convertToArray(values: Record<string, boolean>): string[] {
-    if (!values) return [];
-    return Object.entries(values)
-      .filter(([, value]) => value === true)
-      .map(([key]) => key);
-  }
-
   renderReact(element) {
-    const componentValue = this.convertToArray(this.getValue());
-    const values = this.getDataValues();
     return element.render(
       <ComponentUtilsProvider component={this}>
-        <CheckboxGroup
-          legend={<Label component={this.component} editFields={this.getEditFields()} />}
+        <ReactKomponenten
+          id={this.getId()}
+          label={<Label component={this.component} editFields={this.getEditFields()} />}
           description={<Description component={this.component} />}
-          value={componentValue}
+          value={this.getValue()}
           onChange={(value) => this.changeHandler(value)}
-          ref={(ref) => this.setReactInstance(ref)}
           className={this.getClassName()}
-          readOnly={this.getReadOnly()}
           error={this.getError()}
-          tabIndex={-1}
-        >
-          {values.map((obj, index) => (
-            <Checkbox key={obj.value} value={obj.value} description={this.getValueDescription(index)}>
-              {this.translate(obj.label)}
-            </Checkbox>
-          ))}
-        </CheckboxGroup>
+        />
       </ComponentUtilsProvider>,
     );
   }
