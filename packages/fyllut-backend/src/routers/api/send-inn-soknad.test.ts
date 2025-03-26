@@ -1,15 +1,18 @@
 import nock from 'nock';
 import { config } from '../../config/config';
 import { mockRequest, MockRequestParams, mockResponse } from '../../test/testHelpers';
+import { EnvQualifier, EnvQualifierType } from '../../types/env';
 import sendInnSoknad from './send-inn-soknad';
 import { decodedResponseBody, innsendingsId, requestBody, sendInnResponseBody } from './testdata/mellomlagring';
 
 const { sendInnConfig } = config;
 
-const mockRequestWithPidAndTokenX = ({ headers = {}, body, params = {} }: MockRequestParams) => {
+type MockSendInnRequestParams = MockRequestParams & { envQualifier?: EnvQualifierType };
+const mockRequestWithSendInnData = ({ headers = {}, body, params = {}, envQualifier }: MockSendInnRequestParams) => {
   const req = mockRequest({ headers, body, params });
   req.getIdportenPid = () => '12345678911';
   req.getTokenxAccessToken = () => 'tokenx-access-token-for-unittest';
+  req.getEnvQualifier = () => envQualifier;
   return req;
 };
 
@@ -24,7 +27,7 @@ describe('[endpoint] send-inn/soknad', () => {
       const sendInnNockScope = nock(sendInnConfig.host)
         .get(`${sendInnConfig.paths.soknad}/${innsendingsId}`)
         .reply(200, sendInnResponseBody);
-      const req = mockRequestWithPidAndTokenX({
+      const req = mockRequestWithSendInnData({
         headers: { AzureAccessToken: 'azure-access-token' },
         body: requestBody,
         params: { innsendingsId },
@@ -39,7 +42,7 @@ describe('[endpoint] send-inn/soknad', () => {
     });
 
     it('returns with 404 if innsendingsId is invalid', async () => {
-      const req = mockRequestWithPidAndTokenX({
+      const req = mockRequestWithSendInnData({
         headers: { AzureAccessToken: 'azure-access-token' },
         body: requestBody,
         params: { innsendingsId: '1234-fake-innsendingsId' },
@@ -54,7 +57,7 @@ describe('[endpoint] send-inn/soknad', () => {
       const sendInnNockScope = nock(sendInnConfig.host)
         .get(`${sendInnConfig.paths.soknad}/${innsendingsId}`)
         .reply(500, 'error body');
-      const req = mockRequestWithPidAndTokenX({
+      const req = mockRequestWithSendInnData({
         body: requestBody,
         params: { innsendingsId },
       });
@@ -74,7 +77,7 @@ describe('[endpoint] send-inn/soknad', () => {
       const sendInnNockScope = nock(sendInnConfig.host)
         .get(`${sendInnConfig.paths.soknad}/${innsendingsId}`)
         .reply(404, 'error body');
-      const req = mockRequestWithPidAndTokenX({
+      const req = mockRequestWithSendInnData({
         body: requestBody,
         params: { innsendingsId },
       });
@@ -109,7 +112,7 @@ describe('[endpoint] send-inn/soknad', () => {
       const sendInnNockScope = nock(sendInnConfig.host)
         .post(sendInnConfig.paths.soknad)
         .reply(201, sendInnResponseBody);
-      const req = mockRequestWithPidAndTokenX({
+      const req = mockRequestWithSendInnData({
         headers: { AzureAccessToken: 'azure-access-token' },
         body: requestBody,
       });
@@ -122,9 +125,28 @@ describe('[endpoint] send-inn/soknad', () => {
       expect(sendInnNockScope.isDone()).toBe(true);
     });
 
+    it('includes header Nav-Env-Qualifier if specified', async () => {
+      const sendInnNockScope = nock(sendInnConfig.host)
+        .post(sendInnConfig.paths.soknad)
+        .matchHeader('Nav-Env-Qualifier', EnvQualifier.preprodAltAnsatt)
+        .reply(201, sendInnResponseBody);
+      const req = mockRequestWithSendInnData({
+        headers: { AzureAccessToken: 'azure-access-token' },
+        body: requestBody,
+        envQualifier: EnvQualifier.preprodAltAnsatt,
+      });
+      const res = mockResponse();
+      const next = vi.fn();
+      await sendInnSoknad.post(req, res, next);
+
+      expect(sendInnNockScope.isDone()).toBe(true);
+      expect(res.json).toHaveBeenCalledWith(sendInnResponseBody);
+      expect(next).not.toHaveBeenCalled();
+    });
+
     it('calls next if SendInn returns error', async () => {
       const sendInnNockScope = nock(sendInnConfig.host).post(sendInnConfig.paths.soknad).reply(500, 'error body');
-      const req = mockRequestWithPidAndTokenX({ body: requestBody });
+      const req = mockRequestWithSendInnData({ body: requestBody });
       const res = mockResponse();
       const next = vi.fn();
       await sendInnSoknad.post(req, res, next);
@@ -173,7 +195,7 @@ describe('[endpoint] send-inn/soknad', () => {
       const sendInnNockScope = nock(sendInnConfig.host)
         .put(`${sendInnConfig.paths.soknad}/${innsendingsId}`)
         .reply(200, requestBodyWithInnsendingsId);
-      const req = mockRequestWithPidAndTokenX({
+      const req = mockRequestWithSendInnData({
         headers: { AzureAccessToken: 'azure-access-token' },
         body: requestBodyWithInnsendingsId,
       });
@@ -190,7 +212,7 @@ describe('[endpoint] send-inn/soknad', () => {
       const sendInnNockScope = nock(sendInnConfig.host)
         .put(`${sendInnConfig.paths.soknad}/${innsendingsId}`)
         .reply(500, 'error body');
-      const req = mockRequestWithPidAndTokenX({ body: requestBodyWithInnsendingsId });
+      const req = mockRequestWithSendInnData({ body: requestBodyWithInnsendingsId });
       const res = mockResponse();
       const next = vi.fn();
       await sendInnSoknad.put(req, res, next);
@@ -239,7 +261,7 @@ describe('[endpoint] send-inn/soknad', () => {
       const sendInnNockScope = nock(sendInnConfig.host)
         .delete(`${sendInnConfig.paths.soknad}/${innsendingsId}`)
         .reply(200, { status: 'OK' });
-      const req = mockRequestWithPidAndTokenX({
+      const req = mockRequestWithSendInnData({
         headers: { AzureAccessToken: 'azure-access-token' },
         body: requestBody,
         params: { innsendingsId },
@@ -254,7 +276,7 @@ describe('[endpoint] send-inn/soknad', () => {
     });
 
     it('returns with error if innsendingsId is invalid', async () => {
-      const req = mockRequestWithPidAndTokenX({
+      const req = mockRequestWithSendInnData({
         headers: { AzureAccessToken: 'azure-access-token' },
         body: requestBody,
         params: { innsendingsId: '1234-fake-innsendingsId' },
@@ -274,7 +296,7 @@ describe('[endpoint] send-inn/soknad', () => {
       const sendInnNockScope = nock(sendInnConfig.host)
         .delete(`${sendInnConfig.paths.soknad}/${innsendingsId}`)
         .reply(500, 'error body');
-      const req = mockRequestWithPidAndTokenX({
+      const req = mockRequestWithSendInnData({
         body: requestBody,
         params: { innsendingsId },
       });

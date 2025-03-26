@@ -82,12 +82,14 @@ const sendInnSoknad = {
       const fyllutUrl = getFyllutUrl(req);
       const body = assembleSendInnSoknadBody(req.body, idportenPid, fyllutUrl, null);
       const forceCreateParam = req.query?.forceMellomlagring ? '?force=true' : '';
+      const envQualifier = req.getEnvQualifier();
 
       const sendInnResponse = await fetch(`${sendInnConfig.host}${sendInnConfig.paths.soknad}${forceCreateParam}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${tokenxAccessToken}`,
+          ...(envQualifier && { 'Nav-Env-Qualifier': envQualifier }),
         },
         body: JSON.stringify(body),
       });
