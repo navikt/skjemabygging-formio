@@ -21,7 +21,7 @@ interface Props {
 }
 
 const FormTranslationsPage = ({ form }: Props) => {
-  const { storedTranslations, isReady: isTranslationsReady, deleteTranslation } = useFormTranslations();
+  const { storedTranslations, isReady: isTranslationsReady, lastSave, deleteTranslation } = useFormTranslations();
   const { storedTranslations: globalTranslations, isReady: isGlobalTranslationsReady } = useGlobalTranslations();
 
   const generatedTranslations: FormsApiFormTranslation[] = useMemo(
@@ -53,7 +53,7 @@ const FormTranslationsPage = ({ form }: Props) => {
           <RowLayout
             right={
               <SidebarLayout noScroll>
-                <FormTranslationButtonsColumn form={form} />
+                <FormTranslationButtonsColumn form={form} lastSave={lastSave} />
               </SidebarLayout>
             }
           >

@@ -26,7 +26,17 @@ const isGlobalTranslation = (translation: FormsApiTranslation): translation is F
 const isFormTranslation = (translation: FormsApiTranslation): translation is FormsApiFormTranslation =>
   !isGlobalTranslation(translation);
 
-const formsApiTranslations = { isFormTranslation, isGlobalTranslation };
+const findMostRecentlyChanged = <T extends FormsApiTranslationCore>(data: T[] | undefined): T | undefined => {
+  if (!data || data.length === 0) return undefined;
+  return data.reduce((prev, curr) => {
+    if (!prev?.changedAt || (curr.changedAt && curr.changedAt > prev.changedAt)) {
+      return curr;
+    }
+    return prev;
+  });
+};
+
+const formsApiTranslations = { isFormTranslation, isGlobalTranslation, findMostRecentlyChanged };
 export { formsApiTranslations };
 export type {
   FormsApiFormTranslation,

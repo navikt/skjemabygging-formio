@@ -1,10 +1,13 @@
 import { FormsApiFormTranslation } from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import useFormTranslationsApi from '../../api/useFormTranslationsApi';
+import { TimestampEvent } from '../../Forms/status/types';
+import { findLastSaveTimestamp } from './utils/utils';
 
 interface ContextValue {
   storedTranslations: Record<string, FormsApiFormTranslation>;
   translations: FormsApiFormTranslation[];
+  lastSave: TimestampEvent | undefined;
   isReady: boolean;
   loadTranslations: () => Promise<void>;
   saveTranslation: (translation: FormsApiFormTranslation) => Promise<FormsApiFormTranslation>;
@@ -20,6 +23,7 @@ const defaultValue: ContextValue = {
   translations: [],
   storedTranslations: {},
   isReady: false,
+  lastSave: undefined,
   loadTranslations: () => Promise.resolve(),
   saveTranslation: () => Promise.reject(),
   deleteTranslation: () => Promise.reject(),
@@ -27,13 +31,15 @@ const defaultValue: ContextValue = {
 
 const FormTranslationsContext = createContext<ContextValue>(defaultValue);
 
+type State = { isReady: boolean; data?: FormsApiFormTranslation[]; lastSave?: TimestampEvent | undefined };
+
 const FormTranslationsProvider = ({ children, formPath }: Props) => {
-  const [state, setState] = useState<{ isReady: boolean; data?: FormsApiFormTranslation[] }>({ isReady: false });
+  const [state, setState] = useState<State>({ isReady: false });
   const translationsApi = useFormTranslationsApi();
 
   const loadTranslations = useCallback(async () => {
     const data = await translationsApi.get(formPath);
-    setState({ data, isReady: true });
+    setState({ data, isReady: true, lastSave: findLastSaveTimestamp(data) });
   }, [formPath, translationsApi]);
 
   useEffect(() => {
@@ -69,6 +75,7 @@ const FormTranslationsProvider = ({ children, formPath }: Props) => {
     translations: state.data ?? [],
     storedTranslations,
     isReady: state.isReady,
+    lastSave: state.lastSave,
     loadTranslations,
     saveTranslation,
     deleteTranslation,

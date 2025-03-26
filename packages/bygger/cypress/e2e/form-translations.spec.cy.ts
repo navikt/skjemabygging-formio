@@ -10,6 +10,24 @@ describe('Form translations', () => {
     cy.intercept('GET', '/api/forms/tst123456/translations', { fixture: 'form123456-translations.json' }).as(
       'getFormTranslations',
     );
+    cy.intercept('GET', '/api/translations', { fixture: 'formsApiGlobalTranslations.json' }).as(
+      'getGlobalTranslations',
+    );
+  });
+
+  describe('When there are saved form translations', () => {
+    beforeEach(() => {
+      cy.visit('/forms/tst123456/oversettelser');
+      cy.wait('@getConfig');
+      cy.wait('@getForm');
+      cy.wait('@getPublishedForm');
+      cy.wait('@getFormTranslations');
+      cy.wait('@getGlobalTranslations');
+    });
+
+    it('shows timestamp when translations were last saved', () => {
+      cy.findByText('Sist lagret:').should('exist').next('p').should('contain', '28.02.25, kl. 12.55');
+    });
   });
 
   describe('When there are no unsaved global translations translations', () => {
@@ -31,9 +49,6 @@ describe('Form translations', () => {
 
   describe('When there are unsaved global translations', () => {
     beforeEach(() => {
-      cy.intercept('GET', '/api/translations', { fixture: 'formsApiGlobalTranslations.json' }).as(
-        'getGlobalTranslations',
-      );
       cy.visit('/forms/tst123456/oversettelser');
       cy.wait('@getConfig');
       cy.wait('@getForm');
