@@ -1,5 +1,6 @@
 import {
   I18nTranslationReplacements,
+  localizationUtils,
   NavFormType,
   Submission,
   yourInformationUtils,
@@ -92,6 +93,15 @@ const createPdfFromHtml = async (
   html: string,
   pid: string,
 ) => {
+  const languageCode = localizationUtils.getLanguageCodeAsIso639_1(language);
+
+  logger.debug('Create pdf with exstream', {
+    dokumentTittel: title,
+    spraakkode: languageCode,
+    blankettnr: skjemanummer,
+    skjemaversjon: gitVersion,
+  });
+
   const response = await fetchWithRetry(`${skjemabyggingProxyUrl}/exstream`, {
     retry: 3,
     headers: {
@@ -106,7 +116,7 @@ const createPdfFromHtml = async (
         data: base64Encode(
           JSON.stringify({
             dokumentTittel: title,
-            spraakkode: language,
+            spraakkode: languageCode,
             blankettnr: skjemanummer,
             brukersFnr: pid,
             skjemaversjon: gitVersion,
@@ -124,8 +134,6 @@ const createPdfFromHtml = async (
     const json: any = await response.json();
     if (!json.data?.result?.[0]?.content) {
       if (json.data?.id) {
-        logger.info(json); // TODO: Remove
-        logger.info(JSON.stringify(json)); // TODO: Remove
         throw synchronousResponseToError(
           `Feil i responsdata fra Exstream på id "${json.data?.id}"`,
           json,
