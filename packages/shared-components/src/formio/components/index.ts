@@ -13,6 +13,7 @@ import DrivingList from './core/driving-list/DrivingList';
 import FormGroup from './core/form-group/FormGroup';
 import HtmlElement from './core/html-element/HtmlElement';
 import Image from './core/image/Image';
+import Komponenten from './core/komponenten/Komponenten';
 import Maalgruppe from './core/maalgruppe/Maalgruppe';
 import MonthPicker from './core/monthpicker/MonthPicker';
 import Panel from './core/panel/Panel';
@@ -80,5 +81,6 @@ const customComponents = {
   year: Year,
   firstName: FirstName,
   surname: Surname,
+  komponenten: Komponenten,
 };
 export default customComponents;
