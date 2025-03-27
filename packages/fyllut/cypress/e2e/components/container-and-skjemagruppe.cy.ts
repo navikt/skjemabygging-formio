@@ -70,5 +70,40 @@ describe('Container/Beholder og skjemagruppe', () => {
         cy.findByRole('link', { name: 'Du må fylle ut: Tekstfelt inni container inni skjemagruppe' }).should('exist');
       });
     });
+
+    it('populates all textfields in nested containers and skjemagruppe after navigating from summary', () => {
+      cy.visit('/fyllut/testskjemagruppe/skjemagrupper?sub=paper');
+      cy.defaultWaits();
+      cy.findByRole('textbox', { name: 'Tekstfelt inni skjemagruppe' }).type('Apple');
+      cy.findByRole('textbox', { name: 'Tekstfelt inni skjemagruppe inni skjemagruppe' }).type('Banana');
+      cy.findByRole('textbox', { name: 'Tekstfelt inni skjemagruppe inni container' }).type('Cherry');
+      cy.findByRole('textbox', { name: 'Tekstfelt inni container inni skjemagruppe' }).type('Strawberry');
+      cy.clickNextStep();
+      cy.findByRole('group', { name: 'Annen dokumentasjon' }).within(() => {
+        cy.findByLabelText('Jeg legger det ved dette skjemaet').check();
+      });
+      cy.clickNextStep();
+      cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
+      cy.get('dl')
+        .first()
+        .within(() => {
+          cy.get('dd').eq(1).should('contain.text', 'Apple');
+          cy.get('dd').eq(3).should('contain.text', 'Banana');
+          cy.get('dd').eq(5).should('contain.text', 'Cherry');
+          cy.get('dd').eq(7).should('contain.text', 'Strawberry');
+        });
+      cy.findByRole('link', { name: 'Fortsett utfylling' }).click();
+      cy.findByRole('heading', { name: 'Skjemagrupper' }).should('exist');
+      cy.findByRole('textbox', { name: 'Tekstfelt inni skjemagruppe' }).should('have.value', 'Apple');
+      cy.findByRole('textbox', { name: 'Tekstfelt inni skjemagruppe inni skjemagruppe' }).should(
+        'have.value',
+        'Banana',
+      );
+      cy.findByRole('textbox', { name: 'Tekstfelt inni skjemagruppe inni container' }).should('have.value', 'Cherry');
+      cy.findByRole('textbox', { name: 'Tekstfelt inni container inni skjemagruppe' }).should(
+        'have.value',
+        'Strawberry',
+      );
+    });
   });
 });
