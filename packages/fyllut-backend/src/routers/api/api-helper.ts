@@ -11,6 +11,8 @@ const initApiConfig = () => {
     kodeverkToken: azureAccessTokenHandler(kodeverk.scope!, true),
     tokenxSendInn: tokenxHandler(sendInnConfig?.tokenxClientId),
     tokenxPdl: tokenxHandler(`${pdlTokenScopeCluster}:pdl:pdl-api`),
+    //TODO Ikke en faktisk token-x client-id. Byttes ut når tjenesten er på plass
+    tokenxTilleggsstonader: tokenxHandler('dev-gcp:tilleggsstonader:tilleggsstonader-api'),
   };
 };
 

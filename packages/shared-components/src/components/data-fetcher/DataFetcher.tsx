@@ -1,4 +1,5 @@
 import { Checkbox, CheckboxGroup } from '@navikt/ds-react';
+import { Activity } from '@navikt/skjemadigitalisering-shared-domain';
 import { forwardRef, ReactNode, useEffect, useState } from 'react';
 import { getActivities } from '../../api/register-data/activities';
 import { useComponentUtils } from '../../context/component/componentUtilsContext';
@@ -13,14 +14,11 @@ interface Props {
   error?: ReactNode;
 }
 
-type Activities = { label: string; value: string; description?: string };
-type RegisterData = Activities;
-
 const DataFetcher = forwardRef<HTMLFieldSetElement, Props>(
   ({ label, value, description, className, onChange, error }, ref) => {
-    const [data, setData] = useState<RegisterData[]>();
+    const [data, setData] = useState<Activity[]>();
     const [loading, setLoading] = useState(false);
-    const { translate, appConfig } = useComponentUtils();
+    const { appConfig } = useComponentUtils();
 
     useEffect(() => {
       const fetchData = async () => {
@@ -53,15 +51,15 @@ const DataFetcher = forwardRef<HTMLFieldSetElement, Props>(
       <CheckboxGroup
         legend={label}
         description={description}
-        defaultValue={value}
+        value={value}
         onChange={onChange}
         ref={ref}
         className={className}
         error={error}
       >
-        {data.map((obj) => (
-          <Checkbox key={obj.value} value={obj.value} description={obj?.description}>
-            {translate(obj.label)}
+        {data.map(({ id, tekst }) => (
+          <Checkbox key={id} value={id}>
+            {tekst}
           </Checkbox>
         ))}
       </CheckboxGroup>
