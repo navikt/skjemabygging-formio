@@ -1,4 +1,5 @@
 import { TranslationTag } from '../languages/types';
+import dateUtils from '../utils/date';
 
 type TranslationLang = 'nb' | 'nn' | 'en';
 type FormsApiTranslationCore = {
@@ -29,7 +30,7 @@ const isFormTranslation = (translation: FormsApiTranslation): translation is For
 const findMostRecentlyChanged = <T extends FormsApiTranslationCore>(data: T[] | undefined): T | undefined => {
   if (!data || data.length === 0) return undefined;
   return data.reduce((prev, curr) => {
-    if (!prev?.changedAt || (curr.changedAt && curr.changedAt > prev.changedAt)) {
+    if (!prev?.changedAt || (curr.changedAt && dateUtils.isAfter(curr.changedAt, prev.changedAt))) {
       return curr;
     }
     return prev;
