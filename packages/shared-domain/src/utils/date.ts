@@ -41,7 +41,8 @@ const validMonthInputFormats = ['MM.yyyy', 'MM/yyyy', 'MM-yyyy', 'MM yyyy', 'MMM
 const submissionFormatMonth = 'yyyy-MM';
 const inputFormatMonthLong = 'MMMM yyyy';
 
-const toLocaleDateAndTime = (date: string, locale = 'no') => new Date(date).toLocaleString(locale, dateAndTimeFormat);
+const toLocaleDateAndTime = (date: string, locale = 'no') =>
+  DateTime.fromISO(date).setLocale(locale).toLocaleString(dateAndTimeFormat);
 
 const toLocaleDate = (date: string, locale = 'no') => {
   return DateTime.fromISO(date).setLocale(locale).toLocaleString(dateFormat);

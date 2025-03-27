@@ -1,0 +1,162 @@
+[
+  {
+    "id": 1,
+    "skjemanummer": "NAV 04-01.04",
+    "path": "nav040104",
+    "title": "Søknad om dagpenger ved permittering",
+    "properties": {
+      "tema": "DAG",
+      "prefill": [],
+      "signatures": [
+        {
+          "key": "e76dc98f-789c-41b9-8d0c-22886aab35cb",
+          "label": "",
+          "description": ""
+        }
+      ],
+      "skjemanummer": "NAV 04-01.04",
+      "submissionTypes": [
+        "PAPER"
+      ],
+      "publishedLanguages": [
+        "nn",
+        "en",
+        "nb"
+      ],
+      "mellomlagringDurationDays": "28",
+      "subsequentSubmissionTypes": [
+        "PAPER"
+      ]
+    },
+    "changedAt": "2025-03-24T07:25:11.880+01",
+    "publishedAt": "2025-03-24T10:42:19.088+01",
+    "status": "published"
+  },
+  {
+    "id": 2,
+    "skjemanummer": "NAV 07-02.08",
+    "path": "nav070208",
+    "title": "Søknad om gravferdsstønad og båretransport",
+    "properties": {
+      "tema": "GRA",
+      "signatures": [
+        {
+          "key": "d52aa5e1-1f50-4260-ad20-712d3c7b9f48",
+          "label": "Søker",
+          "description": ""
+        }
+      ],
+      "skjemanummer": "NAV 07-02.08",
+      "submissionTypes": [
+        "PAPER",
+        "DIGITAL"
+      ],
+      "publishedLanguages": [
+        "nb"
+      ],
+      "mellomlagringDurationDays": "28",
+      "subsequentSubmissionTypes": [
+        "PAPER",
+        "DIGITAL"
+      ]
+    },
+    "changedAt": "2025-03-26T15:28:16.420+01",
+    "publishedAt": "2024-10-11T09:55:26.324+02",
+    "status": "pending"
+  },
+  {
+    "id": 3,
+    "skjemanummer": "NAV 54-00.06",
+    "path": "nav540006",
+    "title": "Søknad om barnebidrag etter fylte 18 år",
+    "properties": {
+      "tema": "BID",
+      "signatures": [
+        {
+          "key": "21faf746-be62-40a4-a342-1f34430b75ef",
+          "label": "",
+          "description": ""
+        }
+      ],
+      "skjemanummer": "NAV 54-00.06",
+      "submissionTypes": [
+        "PAPER",
+        "DIGITAL"
+      ],
+      "publishedLanguages": [
+        "nn",
+        "en",
+        "nb"
+      ],
+      "ettersendelsesfrist": "21",
+      "mellomlagringDurationDays": "28",
+      "subsequentSubmissionTypes": [
+        "PAPER",
+        "DIGITAL"
+      ]
+    },
+    "changedAt": "2025-03-24T10:22:27.940+01",
+    "publishedAt": "2025-03-26T13:20:11.025+01",
+    "status": "published"
+  },
+  {
+    "id": 4,
+    "skjemanummer": "NAV 08-36.06",
+    "path": "nav083606",
+    "title": "Si opp forsikring - Sykepenger",
+    "properties": {
+      "tema": "FOS",
+      "signatures": [
+        {
+          "key": "f92c4e55-cf4a-4ca0-87d2-8f55ceb8c584",
+          "label": "",
+          "description": ""
+        }
+      ],
+      "skjemanummer": "NAV 08-36.06",
+      "submissionTypes": [
+        "DIGITAL"
+      ],
+      "ettersendelsesfrist": "14",
+      "downloadPdfButtonText": "Last ned oppsigelsen",
+      "mellomlagringDurationDays": "28",
+      "subsequentSubmissionTypes": []
+    },
+    "changedAt": "2025-03-24T10:27:32.216+01",
+    "status": "draft"
+  },
+  {
+    "id": 155,
+    "skjemanummer": "NAV 16-01.05",
+    "path": "nav160105",
+    "title": "Søknad om ytelser til tidligere familiepleier",
+    "properties": {
+      "tema": "PEN",
+      "signatures": {
+        "signature1": "",
+        "signature2": "",
+        "signature3": "",
+        "signature4": "",
+        "signature5": ""
+      },
+      "skjemanummer": "NAV 16-01.05",
+      "submissionTypes": [
+        "PAPER"
+      ],
+      "publishedLanguages": [],
+      "hasLabeledSignatures": false,
+      "subsequentSubmissionTypes": [
+        "PAPER"
+      ],
+      "enhetMaVelgesVedPapirInnsending": false
+    },
+    "changedAt": "2025-03-25T12:43:36.405+01",
+    "publishedAt": "2023-12-01T14:11:11.102+01",
+    "status": "unpublished",
+    "lock": {
+      "createdAt": "2025-03-25T11:43:49.243Z",
+      "createdBy": "Haslund, Christian",
+      "reason": "“Skjemaet er avpublisert. Det skal ikke gjøres endringer.”"
+    }
+  }
+]

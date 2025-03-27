@@ -11,6 +11,58 @@ describe('date.ts', () => {
     });
   });
 
+  describe('toLocaleDateAndTime', () => {
+    describe('date with five fractional second digits', () => {
+      it('should format date and time correctly for locale nb', () => {
+        const date = '2020-06-24T10:00:00.625417+02:00';
+        const formattedDate = dateUtils.toLocaleDateAndTime(date, 'nb');
+        expect(formattedDate).toBe('24.06.2020, 10:00');
+      });
+
+      it('should format date and time correctly for locale en', () => {
+        const date = '2020-06-24T10:00:00.625417+02:00';
+        const formattedDate = dateUtils.toLocaleDateAndTime(date, 'en');
+        expect(formattedDate).toBe('06/24/2020, 10:00 AM');
+      });
+
+      it('should format utc date and time correctly for locale en', () => {
+        const date = '2020-06-24T10:00:00.625417Z';
+        const formattedDate = dateUtils.toLocaleDateAndTime(date, 'en');
+        expect(formattedDate).toBe('06/24/2020, 12:00 PM');
+      });
+
+      it('should format utc date and time correctly for locale nb', () => {
+        const date = '2020-06-24T10:00:00.625417Z';
+        const formattedDate = dateUtils.toLocaleDateAndTime(date, 'nb');
+        expect(formattedDate).toBe('24.06.2020, 12:00');
+      });
+    });
+
+    it('should format date and time correctly for default locale', () => {
+      const date = '2024-03-01T13:00:00.000+01';
+      const formattedDate = dateUtils.toLocaleDateAndTime(date);
+      expect(formattedDate).toBe('01.03.2024, 13:00');
+    });
+
+    it('should format utc date and time correctly for default locale', () => {
+      const date = '2024-03-01T12:00:00.000Z';
+      const formattedDate = dateUtils.toLocaleDateAndTime(date);
+      expect(formattedDate).toBe('01.03.2024, 13:00');
+    });
+
+    it('should format utc date and time correctly for specified locale', () => {
+      const date = '2024-03-01T15:12:22.000Z';
+      const formattedDate = dateUtils.toLocaleDateAndTime(date, 'en');
+      expect(formattedDate).toBe('03/01/2024, 04:12 PM');
+    });
+
+    it('should return "Invalid DateTime" for invalid date', () => {
+      const date = 'invalid-date';
+      const formattedDate = dateUtils.toLocaleDateAndTime(date);
+      expect(formattedDate).toBe('Invalid DateTime');
+    });
+  });
+
   describe('generateWeeklyPeriods function', () => {
     it('should return an empty array if no date is provided', () => {
       const result = generateWeeklyPeriods();
