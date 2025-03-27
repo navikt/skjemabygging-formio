@@ -1,26 +1,26 @@
-import ReactKomponenten from '../../../../components/komponenten/ReactKomponenten';
+import NavDataFetcher from '../../../../components/data-fetcher/DataFetcher';
 import { ComponentUtilsProvider } from '../../../../context/component/componentUtilsContext';
 import BaseComponent from '../../base/BaseComponent';
 import Description from '../../base/components/Description';
 import Label from '../../base/components/Label';
-import komponentenBuilder from './Komponenten.builder';
-import komponentenForm from './Komponenten.form';
+import dataFetcherBuilder from './DataFetcher.builder';
+import dataFetcherForm from './DataFetcher.form';
 
-class Komponenten extends BaseComponent {
+class DataFetcher extends BaseComponent {
   static schema() {
     return BaseComponent.schema({
-      label: 'Komponenten',
-      type: 'komponenten',
-      key: 'komponenten',
+      label: 'Aktivitetsvelger',
+      type: 'dataFetcher',
+      key: 'dataFetcher',
     });
   }
 
   static editForm() {
-    return komponentenForm();
+    return dataFetcherForm();
   }
 
   static get builderInfo() {
-    return komponentenBuilder();
+    return dataFetcherBuilder();
   }
 
   get emptyValue() {
@@ -35,7 +35,7 @@ class Komponenten extends BaseComponent {
   renderReact(element) {
     return element.render(
       <ComponentUtilsProvider component={this}>
-        <ReactKomponenten
+        <NavDataFetcher
           label={<Label component={this.component} editFields={this.getEditFields()} />}
           description={<Description component={this.component} />}
           value={this.getValue()}
@@ -48,4 +48,4 @@ class Komponenten extends BaseComponent {
   }
 }
 
-export default Komponenten;
+export default DataFetcher;

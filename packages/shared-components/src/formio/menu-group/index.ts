@@ -2,6 +2,7 @@ import attachmentGroup from './attachmentGroup';
 import basicGroup from './basicGroup';
 import currencyAndAccountGroup from './currencyAndAccountGroup';
 import dateAndTimeGroup from './dateAndTimeGroup';
+import fagsystemGroup from './fagsystemGroup';
 import layoutGroup from './layoutGroup';
 import organizationGroup from './organizationGroup';
 import otherGroup from './otherGroup';
@@ -20,6 +21,7 @@ const menuGroup = {
   currencyAndAccountGroup,
   organizationGroup,
   dateAndTimeGroup,
+  fagsystemGroup,
   layoutGroup,
   panelsGroup,
   otherGroup,
