@@ -16,7 +16,7 @@ interface Props {
 type Activities = { label: string; value: string; description?: string };
 type RegisterData = Activities;
 
-const ReactKomponenten = forwardRef<HTMLFieldSetElement, Props>(
+const DataFetcher = forwardRef<HTMLFieldSetElement, Props>(
   ({ label, value, description, className, onChange, error }, ref) => {
     const [data, setData] = useState<RegisterData[]>();
     const [loading, setLoading] = useState(false);
@@ -69,4 +69,4 @@ const ReactKomponenten = forwardRef<HTMLFieldSetElement, Props>(
   },
 );
 
-export default ReactKomponenten;
+export default DataFetcher;

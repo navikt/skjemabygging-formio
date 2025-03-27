@@ -4,7 +4,7 @@ import editFormDisplay from '../../base/editForm/display';
 import editFormTabs from '../../base/editForm/editFormTabs';
 import editFormValidation from '../../base/editForm/validation';
 
-const komponentenForm = () => {
+const dataFetcherForm = () => {
   const { api, conditional, createTabs, display, validation } = editFormTabs;
 
   // prettier-ignore
@@ -30,4 +30,4 @@ const komponentenForm = () => {
   );
 };
 
-export default komponentenForm;
+export default dataFetcherForm;
