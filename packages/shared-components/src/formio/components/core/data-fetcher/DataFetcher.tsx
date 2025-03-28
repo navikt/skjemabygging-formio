@@ -3,7 +3,6 @@ import { ComponentUtilsProvider } from '../../../../context/component/componentU
 import BaseComponent from '../../base/BaseComponent';
 import Description from '../../base/components/Description';
 import Label from '../../base/components/Label';
-import { getSelectedValuesAsList } from '../../utils';
 import dataFetcherBuilder from './DataFetcher.builder';
 import dataFetcherForm from './DataFetcher.form';
 
@@ -39,9 +38,27 @@ class DataFetcher extends BaseComponent {
     return !Object.values(value).some(Boolean);
   }
 
+  getDataFromMetadata() {
+    const componentKey = this.component?.key;
+    return componentKey ? this.root.submission.metadata?.dataFetcher?.[componentKey] : undefined;
+  }
+
+  setMetadata(data: any) {
+    const componentKey = this.component?.key;
+    const submission = this.root.submission;
+    if (!submission.metadata) {
+      submission.metadata = {};
+    }
+    if (!submission.metadata.dataFetcher) {
+      submission.metadata.dataFetcher = {};
+    }
+    if (componentKey && !submission.metadata.dataFetcher[componentKey]) {
+      submission.metadata.dataFetcher[componentKey] = data;
+    }
+    this.rerender();
+  }
+
   renderReact(element) {
-    const componentValue = getSelectedValuesAsList(this.getValue());
-    console.log(componentValue);
     return element.render(
       <ComponentUtilsProvider component={this}>
         <NavDataFetcher
@@ -57,6 +74,8 @@ class DataFetcher extends BaseComponent {
           }}
           className={this.getClassName()}
           error={this.getError()}
+          dataFetcherData={this.getDataFromMetadata()}
+          setMetadata={(metaData) => this.setMetadata(metaData)}
         />
       </ComponentUtilsProvider>,
     );
