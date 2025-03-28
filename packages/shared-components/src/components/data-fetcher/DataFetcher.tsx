@@ -3,14 +3,15 @@ import { Activity } from '@navikt/skjemadigitalisering-shared-domain';
 import { forwardRef, ReactNode, useEffect, useState } from 'react';
 import { getActivities } from '../../api/register-data/activities';
 import { useComponentUtils } from '../../context/component/componentUtilsContext';
+import { getSelectedValuesAsList, getSelectedValuesMap } from '../../formio/components/utils';
 import { SkeletonList } from '../../index';
 
 interface Props {
   label: ReactNode;
   description?: ReactNode;
   className?: string;
-  value?: string[];
-  onChange: (value: any) => void;
+  value?: Record<string, boolean>;
+  onChange: (value: Record<string, boolean>) => void;
   error?: ReactNode;
 }
 
@@ -51,15 +52,15 @@ const DataFetcher = forwardRef<HTMLFieldSetElement, Props>(
       <CheckboxGroup
         legend={label}
         description={description}
-        value={value}
-        onChange={onChange}
+        value={getSelectedValuesAsList(value)}
+        onChange={(values) => onChange(getSelectedValuesMap(data, values))}
         ref={ref}
         className={className}
         error={error}
       >
-        {data.map(({ id, tekst }) => (
-          <Checkbox key={id} value={id}>
-            {tekst}
+        {data.map(({ value, label }) => (
+          <Checkbox key={value} value={value}>
+            {label}
           </Checkbox>
         ))}
       </CheckboxGroup>

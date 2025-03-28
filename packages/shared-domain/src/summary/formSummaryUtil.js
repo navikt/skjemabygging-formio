@@ -347,6 +347,29 @@ function handleFieldSet(
   ];
 }
 
+const handleDataFetcher = (component, submission, formSummaryObject, parentContainerKey, translate) => {
+  const { key, label, type } = component;
+  const componentKey = createComponentKey(parentContainerKey, key);
+  const submissionValue = FormioUtils.getValue(submission, componentKey) ?? {};
+  const selected = Object.entries(submissionValue)
+    .filter(([_, value]) => value)
+    .map(([key]) => key);
+
+  if (selected.length === 0) {
+    return formSummaryObject;
+  }
+
+  return [
+    ...formSummaryObject,
+    {
+      label: translate(label),
+      key: componentKey,
+      type,
+      value: selected,
+    },
+  ];
+};
+
 function handleSelectboxes(component, submission, formSummaryObject, parentContainerKey, translate) {
   const { key, label, type, values } = component;
   const componentKey = createComponentKey(parentContainerKey, key);
@@ -579,6 +602,8 @@ function handleComponent(
       );
     case 'datagrid':
       return handleDataGrid(component, submission, formSummaryObject, parentContainerKey, translate, form, language);
+    case 'dataFetcher':
+      return handleDataFetcher(component, submission, formSummaryObject, parentContainerKey, translate);
     case 'selectboxes':
       return handleSelectboxes(component, submission, formSummaryObject, parentContainerKey, translate);
     case 'navCheckbox':

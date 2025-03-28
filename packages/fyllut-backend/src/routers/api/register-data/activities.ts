@@ -1,6 +1,6 @@
-import { Activity } from '@navikt/skjemadigitalisering-shared-domain';
 import { Request, Response } from 'express';
 import { getTokenxAccessToken } from '../../../security/tokenHelper';
+import { mapActivityResponse } from './utils';
 
 const dummyData = {
   alternativ: [
@@ -9,12 +9,13 @@ const dummyData = {
     { tekst: 'Activity 3', id: 'activity3' },
   ],
 };
+
 // GET <xx>/aktiviteter?lang=NB/NN/EN -> selv om vi kun har 1 språk nu
 const activities = {
-  get: async (_req: Request, res: Response) => {
+  get: async (req: Request, res: Response) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const tokenXAccessToken = getTokenxAccessToken(_req);
-    return res.json(dummyData.alternativ as Activity[]);
+    const tokenXAccessToken = getTokenxAccessToken(req);
+    return res.json(mapActivityResponse(dummyData));
   },
 };
 
