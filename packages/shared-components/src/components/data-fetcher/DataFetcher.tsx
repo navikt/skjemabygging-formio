@@ -1,10 +1,11 @@
 import { Checkbox, CheckboxGroup } from '@navikt/ds-react';
 import { Activity } from '@navikt/skjemadigitalisering-shared-domain';
-import { forwardRef, ReactNode, useEffect, useState } from 'react';
+import { forwardRef, ReactNode, useCallback, useEffect, useState } from 'react';
 import { getActivities } from '../../api/register-data/activities';
 import { useComponentUtils } from '../../context/component/componentUtilsContext';
 import { getSelectedValuesAsList, getSelectedValuesMap } from '../../formio/components/utils';
 import { SkeletonList } from '../../index';
+import previewData from './preview-data.json';
 
 interface Props {
   label: ReactNode;
@@ -20,25 +21,27 @@ const DataFetcher = forwardRef<HTMLFieldSetElement, Props>(
     const [data, setData] = useState<Activity[]>();
     const [loading, setLoading] = useState(false);
     const { appConfig } = useComponentUtils();
+    const isPreviewMode = appConfig.app === 'bygger';
 
-    useEffect(() => {
-      const fetchData = async () => {
-        try {
-          setLoading(true);
-          const result = await getActivities(appConfig);
-          if (result) {
-            setData(result);
-          }
-        } catch (ex) {
-          console.error(ex);
-        } finally {
-          setLoading(false);
-        }
-      };
-      if (appConfig.app === 'fyllut' && !data && !loading) {
-        fetchData();
+    const fetchData = useCallback(async () => {
+      setLoading(true);
+      try {
+        const result = await getActivities(appConfig);
+        setData(result);
+      } catch (error) {
+        console.error('Failed to fetch activities:', error);
+      } finally {
+        setLoading(false);
       }
     }, [appConfig]);
+
+    useEffect(() => {
+      if (isPreviewMode) {
+        setData(previewData);
+      } else if (appConfig.app === 'fyllut' && !data && !loading) {
+        fetchData();
+      }
+    }, [appConfig, isPreviewMode, fetchData, data, loading]);
 
     if (loading) {
       return <SkeletonList size={3} height={'4rem'} />;
@@ -67,5 +70,4 @@ const DataFetcher = forwardRef<HTMLFieldSetElement, Props>(
     );
   },
 );
-
 export default DataFetcher;
