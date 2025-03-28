@@ -103,7 +103,9 @@ const FormsList = ({ forms }: FormsListPageProps) => {
                   {form.locked && <PadlockLockedIcon title="Skjemaet er låst" className={styles.padlockIcon} />}
                 </Table.DataCell>
                 <Table.DataCell className={styles.modifiedColumn}>
-                  {dateUtils.toLocaleDate(form.modified)}
+                  <span title={`${dateUtils.toLocaleDateAndTime(form.modified)}`}>
+                    {dateUtils.toLocaleDate(form.modified)}
+                  </span>
                 </Table.DataCell>
                 <Table.DataCell className={styles.statusColumn}>
                   <FormStatus status={form.status} size="small" iconOnly={true} />

@@ -1,5 +1,5 @@
 import { SkeletonList, useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
-import { Form } from '@navikt/skjemadigitalisering-shared-domain';
+import { dateUtils, Form } from '@navikt/skjemadigitalisering-shared-domain';
 import { useCallback, useEffect, useState } from 'react';
 import useForms from '../../api/useForms';
 import { AppLayout } from '../../components/AppLayout';
@@ -28,9 +28,13 @@ const FormsListPage = () => {
   }, [loadFormsList, logger, loading]);
 
   const mapFormToFormListType = (form: Form): FormListType => {
+    const modified =
+      form.publishedAt && form.changedAt && dateUtils.isAfter(form.publishedAt, form.changedAt)
+        ? form.publishedAt
+        : form.changedAt;
     return {
       id: `${form.id}`,
-      modified: form.changedAt ?? form.properties.modified ?? '',
+      modified: modified || '',
       title: form.title?.trim(),
       path: form.path,
       number: form.skjemanummer.trim(),
