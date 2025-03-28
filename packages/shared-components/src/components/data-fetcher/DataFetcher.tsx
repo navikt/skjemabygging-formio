@@ -6,6 +6,11 @@ import { useComponentUtils } from '../../context/component/componentUtilsContext
 import { getSelectedValuesAsList, getSelectedValuesMap } from '../../formio/components/utils';
 import { SkeletonList } from '../../index';
 
+type DataFetcherData = {
+  data?: Activity[];
+  fetchError?: boolean;
+};
+
 interface Props {
   label: ReactNode;
   description?: ReactNode;
@@ -13,13 +18,17 @@ interface Props {
   value?: Record<string, boolean>;
   onChange: (value: Record<string, boolean>) => void;
   error?: ReactNode;
+  setMetadata: (data: DataFetcherData) => void;
+  dataFetcherData?: DataFetcherData;
 }
 
 const DataFetcher = forwardRef<HTMLFieldSetElement, Props>(
-  ({ label, value, description, className, onChange, error }, ref) => {
-    const [data, setData] = useState<Activity[]>();
+  ({ label, value, description, className, onChange, error, dataFetcherData, setMetadata }, ref) => {
     const [loading, setLoading] = useState(false);
+    const [done, setDone] = useState(false);
     const { appConfig } = useComponentUtils();
+    const data = dataFetcherData?.data;
+    const fetchError = dataFetcherData?.fetchError;
 
     useEffect(() => {
       const fetchData = async () => {
@@ -27,18 +36,20 @@ const DataFetcher = forwardRef<HTMLFieldSetElement, Props>(
           setLoading(true);
           const result = await getActivities(appConfig);
           if (result) {
-            setData(result);
+            setMetadata({ data: result });
           }
-        } catch (ex) {
-          console.error(ex);
+        } catch (error) {
+          console.error(error);
+          setMetadata({ fetchError: true });
         } finally {
           setLoading(false);
+          setDone(true);
         }
       };
-      if (appConfig.app === 'fyllut' && !data && !loading) {
+      if (appConfig.app === 'fyllut' && !done && !data && !fetchError && !loading) {
         fetchData();
       }
-    }, [appConfig]);
+    }, [appConfig, data, fetchError, loading, setMetadata]);
 
     if (loading) {
       return <SkeletonList size={3} height={'4rem'} />;

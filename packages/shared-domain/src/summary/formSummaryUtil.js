@@ -349,11 +349,14 @@ function handleFieldSet(
 
 const handleDataFetcher = (component, submission, formSummaryObject, parentContainerKey, translate) => {
   const { key, label, type } = component;
+  const dataValues = Object.fromEntries(
+    (submission.metadata?.dataFetcher?.[key]?.data ?? []).map(({ label, value }) => [value, label]),
+  );
   const componentKey = createComponentKey(parentContainerKey, key);
   const submissionValue = FormioUtils.getValue(submission, componentKey) ?? {};
   const selected = Object.entries(submissionValue)
     .filter(([_, value]) => value)
-    .map(([key]) => key);
+    .map(([key]) => dataValues[key] ?? key);
 
   if (selected.length === 0) {
     return formSummaryObject;
