@@ -1,5 +1,10 @@
-import { FormsApiTranslation } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  FormsApiFormTranslation,
+  FormsApiTranslation,
+  formsApiTranslations,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import ApiError from '../../../api/ApiError';
+import { TimestampEvent } from '../../../Forms/status/types';
 import { getTranslationHttpError, TranslationError } from './errorUtils';
 
 const saveEachTranslation = async <Translation extends FormsApiTranslation>(
@@ -29,4 +34,9 @@ const saveEachTranslation = async <Translation extends FormsApiTranslation>(
   };
 };
 
-export { saveEachTranslation };
+const findLastSaveTimestamp = (translations: FormsApiFormTranslation[] | undefined): TimestampEvent | undefined => {
+  const translation = formsApiTranslations.findMostRecentlyChanged(translations);
+  return translation?.changedAt ? { timestamp: translation.changedAt, userName: translation.changedBy } : undefined;
+};
+
+export { findLastSaveTimestamp, saveEachTranslation };

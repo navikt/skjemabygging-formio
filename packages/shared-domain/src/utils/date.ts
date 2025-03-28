@@ -214,6 +214,15 @@ const isAfterDate = (date1: string, date2: string) => {
   return DateTime.fromISO(date1).startOf('day') > DateTime.fromISO(date2).startOf('day');
 };
 
+const isAfter = (date1: string, date2: string) => {
+  const d1 = DateTime.fromISO(date1);
+  const d2 = DateTime.fromISO(date2);
+  if (d1.isValid && d2.isValid) {
+    return d1 > d2;
+  }
+  return d1.isValid;
+};
+
 const dateUtils = {
   getIso8601String,
   toLocaleDateAndTime,
@@ -234,6 +243,7 @@ const dateUtils = {
   toSubmissionDateMonth,
   startOfYear,
   endOfYear,
+  isAfter,
   isAfterDate,
   isValidMonthSubmission,
   toJSDateFromMonthSubmission,

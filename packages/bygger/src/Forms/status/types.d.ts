@@ -9,3 +9,5 @@ export type FormStatusEvents = Pick<Form, 'createdAt' | 'changedAt' | 'published
 
 export type FormStatusProperties = FormStatusEvents &
   Pick<Form, 'createdBy' | 'changedBy' | 'publishedBy' | 'publishedLanguages'>;
+
+export type TimestampEvent = { timestamp: string; userName: string | undefined };
