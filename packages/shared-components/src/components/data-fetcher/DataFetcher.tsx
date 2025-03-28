@@ -1,10 +1,11 @@
 import { Checkbox, CheckboxGroup } from '@navikt/ds-react';
 import { Activity } from '@navikt/skjemadigitalisering-shared-domain';
-import { forwardRef, ReactNode, useEffect, useState } from 'react';
+import { forwardRef, ReactNode, useCallback, useEffect, useState } from 'react';
 import { getActivities } from '../../api/register-data/activities';
 import { useComponentUtils } from '../../context/component/componentUtilsContext';
 import { getSelectedValuesAsList, getSelectedValuesMap } from '../../formio/components/utils';
 import { SkeletonList } from '../../index';
+import previewData from './preview-data.json';
 
 type DataFetcherData = {
   data?: Activity[];
@@ -29,27 +30,31 @@ const DataFetcher = forwardRef<HTMLFieldSetElement, Props>(
     const { appConfig } = useComponentUtils();
     const data = dataFetcherData?.data;
     const fetchError = dataFetcherData?.fetchError;
+    const isPreviewMode = appConfig.app === 'bygger';
+
+    const fetchData = useCallback(async () => {
+      try {
+        setLoading(true);
+        const result = await getActivities(appConfig);
+        if (result) {
+          setMetadata({ data: result });
+        }
+      } catch (error) {
+        console.error('Failed to fetch activities:', error);
+        setMetadata({ fetchError: true });
+      } finally {
+        setLoading(false);
+        setDone(true);
+      }
+    }, [appConfig]);
 
     useEffect(() => {
-      const fetchData = async () => {
-        try {
-          setLoading(true);
-          const result = await getActivities(appConfig);
-          if (result) {
-            setMetadata({ data: result });
-          }
-        } catch (error) {
-          console.error(error);
-          setMetadata({ fetchError: true });
-        } finally {
-          setLoading(false);
-          setDone(true);
-        }
-      };
-      if (appConfig.app === 'fyllut' && !done && !data && !fetchError && !loading) {
+      if (isPreviewMode) {
+        setMetadata({ data: previewData });
+      } else if (appConfig.app === 'fyllut' && !data && !loading) {
         fetchData();
       }
-    }, [appConfig, data, fetchError, loading, setMetadata]);
+    }, [appConfig, isPreviewMode, fetchData, fetchError, setMetadata, data, loading]);
 
     if (loading) {
       return <SkeletonList size={3} height={'4rem'} />;
@@ -78,5 +83,4 @@ const DataFetcher = forwardRef<HTMLFieldSetElement, Props>(
     );
   },
 );
-
 export default DataFetcher;
