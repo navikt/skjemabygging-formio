@@ -10,6 +10,7 @@ import {
   SummaryAddress,
   SummaryAttachment,
   SummaryComponent,
+  SummaryDataFetcher,
   SummaryDataGrid,
   SummaryDataGridRow,
   SummaryField,
@@ -94,6 +95,7 @@ const sectionContent = (components: SummaryComponent[], level: number): string =
           return subsection(component, level);
         case 'datagrid-row':
           return datagridRow(component, level);
+        case 'dataFetcher':
         case 'selectboxes':
           return multipleAnswers(component);
         case 'alertstripe':
@@ -171,7 +173,7 @@ const html = (component: SummaryField) => {
   return `<div class="html">${component.value}</div>`;
 };
 
-const multipleAnswers = (component: SummarySelectboxes) => `
+const multipleAnswers = (component: SummarySelectboxes | SummaryDataFetcher) => `
 <div class="spm">${component.label}</div>
 ${component.value.map((val) => `<div class="svar">: ${val}</div>`).join('')}`;
 

@@ -1,4 +1,4 @@
 export interface Activity {
-  id: string;
-  tekst: string;
+  value: string;
+  label: string;
 }
