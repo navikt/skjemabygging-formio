@@ -569,8 +569,8 @@
   "properties": {
     "skjemanummer": "datagrid-123",
     "tema": "DAG",
-    "innsending": "PAPIR_OG_DIGITAL",
-    "ettersending": "PAPIR_OG_DIGITAL",
+    "submissionTypes": ["PAPER", "DIGITAL"],
+    "subsequentSubmissionTypes": ["PAPER", "DIGITAL"],
     "signatures": [
       {
         "label": "",

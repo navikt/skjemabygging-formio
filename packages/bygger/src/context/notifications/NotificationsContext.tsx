@@ -1,7 +1,7 @@
 import { useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
 import Pusher from 'pusher-js';
-import React, { createContext, useContext, useEffect, useMemo } from 'react';
-import useMessageQueue, { Message } from '../../hooks/useMessageQueue';
+import React, { createContext, useContext, useEffect, useMemo, useReducer } from 'react';
+import messageQueueReducer, { Message } from './messageQueueReducer';
 
 export const CHANNEL = 'fyllut-deployment';
 export const EVENT = { success: 'success', failure: 'failure' };
@@ -22,17 +22,17 @@ const createPusher = (config) => {
 };
 
 const PusherNotificationsProvider = ({ children }: { children: React.ReactElement }) => {
-  const [messages, messageQueue] = useMessageQueue();
+  const [messages, dispatch] = useReducer(messageQueueReducer, []);
   const { config } = useAppConfig();
   const pusher = useMemo(() => createPusher(config), [config]);
 
   useEffect(() => {
     const fyllutDeploymentChannel = pusher.subscribe(CHANNEL);
     fyllutDeploymentChannel.bind(EVENT.success, ({ title, message }) =>
-      messageQueue.push({ title, message, type: 'success' }),
+      dispatch({ type: 'ADD_MESSAGE', payload: { title, message, type: 'success' } }),
     );
     fyllutDeploymentChannel.bind(EVENT.failure, ({ title, message }) =>
-      messageQueue.push({ title, message, type: 'error' }),
+      dispatch({ type: 'ADD_MESSAGE', payload: { title, message, type: 'error' } }),
     );
     return () => {
       fyllutDeploymentChannel.unbind(EVENT.success);
@@ -40,11 +40,13 @@ const PusherNotificationsProvider = ({ children }: { children: React.ReactElemen
       pusher.unsubscribe(CHANNEL);
       pusher.disconnect();
     };
-  }, [pusher, messageQueue]);
+  }, [pusher]);
+
+  const clearAll = () => dispatch({ type: 'CLEAR_ALL' });
 
   const value = {
     messages,
-    clearAll: () => messageQueue.clearAll(),
+    clearAll,
   };
 
   return <PusherNotificationContext.Provider value={value}>{children}</PusherNotificationContext.Provider>;

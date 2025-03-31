@@ -20,15 +20,6 @@ export type PublishRepoConfig = {
   base: string;
 };
 
-export type FormioConfig = {
-  apiService: string;
-  projectName: string;
-  projectId: string;
-  roleIds: Record<string, string>;
-  formIds: Record<string, string>;
-  jwtSecret: string;
-};
-
 export type FyllutConfig = {
   baseUrl: string;
   skjemadelingslenkeUrl: string;
@@ -64,8 +55,6 @@ export type ConfigType = {
   azure: AzureConfig;
   skjemabyggingProxy: SkjemabyggingProxyConfig;
   publishRepo: PublishRepoConfig;
-  formio: FormioConfig;
-  prodFormio?: Pick<FormioConfig, 'apiService' | 'projectName'>;
   fyllut: FyllutConfig;
   formsApi: FormsApiConfig;
   prodFormsApi?: Pick<FormsApiConfig, 'url'>;

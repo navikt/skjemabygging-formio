@@ -263,8 +263,8 @@
   "properties": {
     "skjemanummer": "test-tekstfelt",
     "tema": "GEN",
-    "innsending": "PAPIR_OG_DIGITAL",
-    "ettersending": "PAPIR_OG_DIGITAL",
+    "submissionTypes": ["PAPER", "DIGITAL"],
+    "subsequentSubmissionTypes": ["PAPER", "DIGITAL"],
     "signatures": [
       {
         "label": "",

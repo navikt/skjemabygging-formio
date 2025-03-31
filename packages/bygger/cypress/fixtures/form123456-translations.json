@@ -7,8 +7,8 @@
     "nb": "Ja",
     "nn": "Yeah",
     "en": "",
-    "changedAt": null,
-    "changedBy": null
+    "changedAt": "2025-02-14T08:23:45.123+01",
+    "changedBy": "Test Testesen"
   },
   {
     "id": 2,
@@ -18,8 +18,8 @@
     "nb": "Dine opplysninger",
     "nn": "",
     "en": "Your info",
-    "changedAt": null,
-    "changedBy": null
+    "changedAt": "2025-02-18T14:56:32.456+01",
+    "changedBy": "Test Testesen"
   },
   {
     "id": 3,
@@ -29,8 +29,8 @@
     "nb": "Gammel tekst",
     "nn": "Gammel tekst",
     "en": "Old text",
-    "changedAt": null,
-    "changedBy": null
+    "changedAt": "2023-02-22T19:12:47.789+01",
+    "changedBy": "Test Testesen"
   },
   {
     "id": 4,
@@ -40,8 +40,8 @@
     "nb": "Abc",
     "nn": "Def",
     "en": "Xyz",
-    "changedAt": null,
-    "changedBy": null
+    "changedAt": "2025-02-24T12:42:28.620+01",
+    "changedBy": "Test Testesen"
   },
   {
     "id": 5,
@@ -53,5 +53,71 @@
     "en": "Hello",
     "changedAt": null,
     "changedBy": null
+  },
+  {
+    "id": 6,
+    "key": "Bor du i Norge?",
+    "revision": 1,
+    "globalTranslationId": null,
+    "nb": "Bor du i Norge?",
+    "nn": "Bor du i Noreg?",
+    "en": "Do you live in Norway?",
+    "changedAt": "2025-02-24T12:55:02.001+01",
+    "changedBy": "Sjekk Sjekkesen"
+  },
+  {
+    "id": 7,
+    "key": "Nav sender svar på søknad og annen kommunikasjon til din folkeregistrerte adresse. \n<br>\nDu kan <a href=\"https://www.skatteetaten.no/person/folkeregister/flytte/endre-postadresse/\" target=\"_blank\">sjekke og endre din folkeregistrerte adresse på skatteetatens nettsider (åpnes i et nytt vindu).</a>\nHvis du ønsker å motta kommunikasjon fra Nav på en annen adresse enn din folkeregistrerte adresse, kan du bruke lenken ovenfor til å oppgi en postadresse i Folkeregisteret.\nDu finner også papirskjema for å endre postadresse på samme siden hos Skatteetaten.",
+    "revision": 4,
+    "globalTranslationId": null,
+    "nb": "Nav sender svar på søknad og annen kommunikasjon til din folkeregistrerte adresse. \n<br>\nDu kan <a href=\"https://www.skatteetaten.no/person/folkeregister/flytte/endre-postadresse/\" target=\"_blank\">sjekke og endre din folkeregistrerte adresse på skatteetatens nettsider (åpnes i et nytt vindu).</a>\nHvis du ønsker å motta kommunikasjon fra Nav på en annen adresse enn din folkeregistrerte adresse, kan du bruke lenken ovenfor til å oppgi en postadresse i Folkeregisteret.\nDu finner også papirskjema for å endre postadresse på samme siden hos Skatteetaten.",
+    "nn": "Nav sender svar på søknad og annen kommunikasjon til din folkeregistrerte adresse. \n<br>\nDu kan <a href=\"https://www.skatteetaten.no/person/folkeregister/flytte/endre-postadresse/\" target=\"_blank\">sjekke og endre din folkeregistrerte adresse på skatteetatens nettsider (åpnes i et nytt vindu).</a>\nHvis du ønsker å motta kommunikasjon fra Nav på en annen adresse enn din folkeregistrerte adresse, kan du bruke lenken ovenfor til å oppgi en postadresse i Folkeregisteret.\nDu finner også papirskjema for å endre postadresse på samme siden hos Skatteetaten.",
+    "en": "",
+    "changedAt": "2025-02-24T12:55:02.001+01",
+    "changedBy": "Sjekk Sjekkesen"
+  },
+  {
+    "id": 8,
+    "key": "Gitar",
+    "revision": 2,
+    "globalTranslationId": null,
+    "nb": "Gitar",
+    "nn": "Gitar (nn)",
+    "en": "Guitar",
+    "changedAt": "2025-02-24T12:42:28.620+01",
+    "changedBy": "Sjekk Sjekkesen"
+  },
+  {
+    "id": 9,
+    "key": "Trommer",
+    "revision": 1,
+    "globalTranslationId": null,
+    "nb": "Trommer",
+    "nn": "Trommer (nn)",
+    "en": "Drums",
+    "changedAt": null,
+    "changedBy": null
+  },
+  {
+    "id": 10,
+    "key": "Trekkspill",
+    "revision": 1,
+    "globalTranslationId": null,
+    "nb": "Trekkspill",
+    "nn": "Trekkspel",
+    "en": "Accordion",
+    "changedAt": "2025-02-24T12:42:28.620+01",
+    "changedBy": "Sjekk Sjekkesen"
+  },
+  {
+    "id": 11,
+    "key": "Piano",
+    "revision": 1,
+    "globalTranslationId": null,
+    "nb": "Piano",
+    "nn": "Piano (nn)",
+    "en": "Piano (en)",
+    "changedAt": "2025-02-28T12:55:02.001+01",
+    "changedBy": "Sjekk Sjekkesen"
   }
 ]

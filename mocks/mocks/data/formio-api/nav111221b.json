@@ -7058,8 +7058,8 @@
   "properties": {
     "skjemanummer": "NAV 11-12.21B",
     "tema": "TSO",
-    "innsending": "PAPIR_OG_DIGITAL",
-    "ettersending": "PAPIR_OG_DIGITAL",
+    "submissionTypes": ["PAPER", "DIGITAL"],
+    "subsequentSubmissionTypes": ["PAPER", "DIGITAL"],
     "signatures": [
       {
         "label": "",

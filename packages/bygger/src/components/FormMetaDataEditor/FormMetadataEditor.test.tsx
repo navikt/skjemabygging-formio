@@ -52,7 +52,8 @@ const defaultForm: Form = {
   components: [],
   properties: {
     skjemanummer: 'TST 12.34-56',
-    innsending: 'PAPIR_OG_DIGITAL',
+    submissionTypes: ['PAPER', 'DIGITAL'],
+    subsequentSubmissionTypes: ['PAPER', 'DIGITAL'],
     tema: 'BIL',
     enhetMaVelgesVedPapirInnsending: false,
     enhetstyper: [],
@@ -112,58 +113,78 @@ describe('FormMetadataEditor', () => {
     });
 
     describe('Forklaring til innsending', () => {
-      it('Viser input for forklaring når innsending settes til INGEN', async () => {
-        const { rerender } = render(<FormMetadataEditor form={defaultForm} onChange={mockOnChange} />);
-        expect(screen.queryByLabelText('Forklaring til innsending')).toBeNull();
-        await userEvent.selectOptions(screen.getByLabelText('Innsending'), 'INGEN');
+      it('Viser input for forklaring når submissionTypes settes til []', async () => {
+        const form: Form = {
+          ...defaultForm,
+          properties: {
+            ...defaultForm.properties,
+            submissionTypes: ['DIGITAL'],
+          },
+        };
+        const { rerender } = render(<FormMetadataEditor form={form} onChange={mockOnChange} />);
+
+        const digitalCheckboxes = screen.getAllByRole('checkbox', { name: /Digital/i });
+        const digitalInnsending = digitalCheckboxes[0];
+
+        await userEvent.click(digitalInnsending);
 
         expect(mockOnChange).toHaveBeenCalled();
         const updatedForm = mockOnChange.mock.calls[0][0] as Form;
-        expect(updatedForm.properties.innsending).toBe('INGEN');
+        await waitFor(() => {
+          expect(updatedForm.properties.submissionTypes).toStrictEqual([]);
+        });
 
         rerender(<FormMetadataEditor form={updatedForm} onChange={mockOnChange} />);
         expect(screen.queryByLabelText('Forklaring til innsending')).not.toBeNull();
       });
 
-      it('Input for forklaring til innsending skjules når man velger noe annet enn INGEN', async () => {
+      it('Input for forklaring til innsending skjules når man velger en', async () => {
         const form: Form = {
           ...defaultForm,
           properties: {
             ...defaultForm.properties,
-            innsending: 'INGEN',
+            submissionTypes: [],
           },
         };
         const { rerender } = render(<FormMetadataEditor form={form} onChange={mockOnChange} />);
         expect(screen.queryByLabelText('Forklaring til innsending')).not.toBeNull();
-        await userEvent.selectOptions(screen.getByLabelText('Innsending'), 'KUN_PAPIR');
 
-        expect(mockOnChange).toHaveBeenCalled();
+        const papirCheckboxes = screen.getAllByRole('checkbox', { name: /Papir/i });
+        const papirInnsending = papirCheckboxes[0];
+
+        await userEvent.click(papirInnsending);
+
+        await expect(mockOnChange).toHaveBeenCalled();
+
         const updatedForm = mockOnChange.mock.calls[0][0] as Form;
-        expect(updatedForm.properties.innsending).toBe('KUN_PAPIR');
+        expect(updatedForm.properties.submissionTypes).toStrictEqual(['PAPER']);
 
         rerender(<FormMetadataEditor form={updatedForm} onChange={mockOnChange} />);
         expect(screen.queryByLabelText('Forklaring til innsending')).toBeNull();
       });
     });
 
-    it('Valg av innsending=KUN_PAPIR', async () => {
+    it('Valg av submissionTypes=[PAPER]', async () => {
       const form: Form = {
         ...defaultForm,
         properties: {
           ...defaultForm.properties,
-          innsending: 'PAPIR_OG_DIGITAL',
+          submissionTypes: [],
         },
       };
       const { rerender } = render(<FormMetadataEditor form={form} onChange={mockOnChange} />);
-      expect(screen.queryByLabelText('Forklaring til innsending')).toBeNull();
-      await userEvent.selectOptions(screen.getByLabelText('Innsending'), 'KUN_PAPIR');
+      expect(screen.queryByLabelText('Forklaring til innsending')).not.toBeNull();
+      const papirCheckboxes = screen.getAllByRole('checkbox', { name: /Papir/i });
+      const papirInnsending = papirCheckboxes[0];
+
+      await userEvent.click(papirInnsending);
 
       expect(mockOnChange).toHaveBeenCalled();
       const updatedForm = mockOnChange.mock.calls[0][0] as Form;
-      expect(updatedForm.properties.innsending).toBe('KUN_PAPIR');
+      expect(updatedForm.properties.submissionTypes).toStrictEqual(['PAPER']);
 
       rerender(<FormMetadataEditor form={updatedForm} onChange={mockOnChange} />);
-      expect(screen.queryByLabelText('Forklaring til innsending')).toBeNull();
+      expect(screen.queryByLabelText('Forklaring til submissionTypes')).toBeNull();
     });
 
     describe('Egendefinert tekst på knapp for nedlasting av pdf', () => {
@@ -201,7 +222,7 @@ describe('FormMetadataEditor', () => {
 
     describe('Ettersendelsesfrist', () => {
       it('lagres i properties', async () => {
-        const form = formMedProps({ ettersendelsesfrist: undefined, ettersending: 'KUN_DIGITAL' });
+        const form = formMedProps({ ettersendelsesfrist: undefined, subsequentSubmissionTypes: ['DIGITAL'] });
 
         render(<FormMetadataEditor form={form} onChange={mockOnChange} />);
         const input = screen.getByLabelText('Ettersendelsesfrist (dager)');
@@ -214,7 +235,7 @@ describe('FormMetadataEditor', () => {
       });
 
       it('nullstilles i properties', async () => {
-        const form = formMedProps({ ettersendelsesfrist: '42', ettersending: 'KUN_DIGITAL' });
+        const form = formMedProps({ ettersendelsesfrist: '42', subsequentSubmissionTypes: ['DIGITAL'] });
         render(<FormMetadataEditor form={form} onChange={mockOnChange} />);
         const input = screen.getByLabelText('Ettersendelsesfrist (dager)');
         await userEvent.clear(input);
@@ -227,7 +248,7 @@ describe('FormMetadataEditor', () => {
 
     describe('mellomlagringDurationDays', () => {
       it('is saved in properties', async () => {
-        const form = formMedProps({ mellomlagringDurationDays: undefined, ettersending: 'KUN_DIGITAL' });
+        const form = formMedProps({ mellomlagringDurationDays: undefined, subsequentSubmissionTypes: ['DIGITAL'] });
 
         render(<FormMetadataEditor form={form} onChange={mockOnChange} />);
         const input = screen.getByLabelText('Mellomlagringstid (dager)');
@@ -242,32 +263,26 @@ describe('FormMetadataEditor', () => {
 
     describe('Mottaksadresse', () => {
       describe('Dropdown med mottaksadresser', () => {
-        it('Vises ikke når innsending=INGEN', async () => {
-          const form: Form = formMedProps({ innsending: 'INGEN' });
+        it('Vises ikke når submissionTypes=INGEN', async () => {
+          const form: Form = formMedProps({ submissionTypes: [] });
           render(<FormMetadataEditor form={form} onChange={mockOnChange} />);
           expect(screen.queryByLabelText('Mottaksadresse')).toBeFalsy();
         });
 
-        it('Vises ikke når innsending=KUN_DIGITAL', async () => {
-          const form: Form = formMedProps({ innsending: 'KUN_DIGITAL' });
+        it('Vises ikke når submissionTypes=KUN_DIGITAL', async () => {
+          const form: Form = formMedProps({ submissionTypes: ['DIGITAL'] });
           render(<FormMetadataEditor form={form} onChange={mockOnChange} />);
           expect(screen.queryByLabelText('Mottaksadresse')).toBeFalsy();
         });
 
-        it('Vises når innsending=KUN_PAPIR', async () => {
-          const form: Form = formMedProps({ innsending: 'KUN_PAPIR' });
+        it('Vises når submissionTypes=[PAPER]', async () => {
+          const form: Form = formMedProps({ submissionTypes: ['PAPER'] });
           render(<FormMetadataEditor form={form} onChange={mockOnChange} />);
           expect(screen.queryByLabelText('Mottaksadresse')).toBeTruthy();
         });
 
-        it('Vises når innsending=PAPIR_OG_DIGITAL', async () => {
-          const form: Form = formMedProps({ innsending: 'PAPIR_OG_DIGITAL' });
-          render(<FormMetadataEditor form={form} onChange={mockOnChange} />);
-          expect(screen.queryByLabelText('Mottaksadresse')).toBeTruthy();
-        });
-
-        it('Vises når innsending=undefined', async () => {
-          const form: Form = formMedProps({ innsending: undefined });
+        it('Vises når submissionTypes=[PAPER, DIGITAL]', async () => {
+          const form: Form = formMedProps({ submissionTypes: ['PAPER', 'DIGITAL'] });
           render(<FormMetadataEditor form={form} onChange={mockOnChange} />);
           expect(screen.queryByLabelText('Mottaksadresse')).toBeTruthy();
         });
@@ -310,29 +325,29 @@ describe('FormMetadataEditor', () => {
         </AppConfigProvider>
       );
 
-      it('Vises når innsending=KUN_PAPIR', async () => {
+      it('Vises når submissionTypes=PAPER', async () => {
         const form: Form = formMedProps({
-          innsending: 'KUN_PAPIR',
+          submissionTypes: ['PAPER'],
           mottaksadresseId: undefined,
         });
         render(editFormMetadataEditor(form, mockOnChange));
         expect(screen.queryByRole('checkbox', { name: expectedCheckboxName })).toBeTruthy();
       });
 
-      it('Vises når innsending=PAPIR_OG_DIGITAL', async () => {
-        const form: Form = formMedProps({ innsending: 'PAPIR_OG_DIGITAL' });
+      it('Vises når submissionTypes=[PAPER, DIGITAL]', async () => {
+        const form: Form = formMedProps({ submissionTypes: ['PAPER', 'DIGITAL'] });
         render(editFormMetadataEditor(form, mockOnChange));
         expect(screen.queryByRole('checkbox', { name: expectedCheckboxName })).toBeTruthy();
       });
 
-      it('Vises ikke når innsending=INGEN', async () => {
-        const form: Form = formMedProps({ innsending: 'INGEN' });
+      it('Vises ikke når submissionTypes=[]', async () => {
+        const form: Form = formMedProps({ submissionTypes: [] });
         render(editFormMetadataEditor(form, mockOnChange));
         expect(screen.queryByRole('checkbox', { name: expectedCheckboxName })).toBeFalsy();
       });
 
-      it('Vises ikke når innsending=KUN_DIGITAL', async () => {
-        const form: Form = formMedProps({ innsending: 'KUN_DIGITAL' });
+      it('Vises ikke når submissionTypes=DIGITAL', async () => {
+        const form: Form = formMedProps({ submissionTypes: ['DIGITAL'] });
         render(editFormMetadataEditor(form, mockOnChange));
         expect(screen.queryByRole('checkbox', { name: expectedCheckboxName })).toBeFalsy();
       });
@@ -385,7 +400,7 @@ describe('FormMetadataEditor', () => {
         });
         render(editFormMetadataEditor(form, mockOnChange));
         const checkboxes = screen.getAllByRole('checkbox', { checked: true });
-        expect(checkboxes).toHaveLength(4);
+        expect(checkboxes).toHaveLength(8);
       });
 
       it('fjerner valgt enhet ved klikk', async () => {
@@ -564,7 +579,7 @@ describe('FormMetadataEditor', () => {
           ({ rerender } = render(<FormMetadataEditor form={form} onChange={mockOnChange} />));
         });
 
-        it('sets innsendingstype to its default value when id is provided', async () => {
+        it('sets submissionTypesstype to its default value when id is provided', async () => {
           const input = screen.getByRole('textbox', { name: LABEL_ID });
           await userEvent.click(input);
           await userEvent.paste('abcd-1234');
@@ -591,7 +606,7 @@ describe('FormMetadataEditor', () => {
           );
         });
 
-        it('does not display innsending combobox before id is provided', async () => {
+        it('does not display submissionTypes combobox before id is provided', async () => {
           expect(screen.queryByRole('combobox', { name: LABEL_INNSENDING })).not.toBeInTheDocument();
 
           const input = screen.getByRole('textbox', { name: LABEL_ID });
@@ -610,7 +625,7 @@ describe('FormMetadataEditor', () => {
         });
       });
 
-      describe('Form with both id and innsending in properties', () => {
+      describe('Form with both id and submissionTypes in properties', () => {
         beforeEach(() => {
           const uxProps: Partial<FormPropertiesType> = {
             uxSignalsId: '123',
@@ -626,7 +641,7 @@ describe('FormMetadataEditor', () => {
           expect(screen.getByRole('combobox', { name: LABEL_INNSENDING })).toHaveValue('PAPIR_OG_DIGITAL');
         });
 
-        it('also clears innsendingstype when id is cleared', async () => {
+        it('also clears submissionTypesstype when id is cleared', async () => {
           const idInput = screen.getByRole('textbox', { name: LABEL_ID });
           await userEvent.clear(idInput);
           expect(mockOnChange).toHaveBeenCalled();

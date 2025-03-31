@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { RouterProvider, createMemoryRouter } from 'react-router-dom';
 import { setupNavFormio } from '../../test/navform-render';
@@ -82,14 +82,16 @@ describe('FyllUtRouter', () => {
   });
 
   describe('Submission method', () => {
-    it('Renders vedleggspanel when submission method is undefined', () => {
+    it('Renders vedleggspanel when submission method is undefined', async () => {
       renderFyllUtRouter({ form, translationsForNavForm }, { submissionMethod: undefined });
-      expect(screen.queryByRole('heading', { name: form.title })).toBeInTheDocument();
-      const stepperToggle = screen.queryByRole('button', { name: 'Steg 1 av 2' });
-      if (stepperToggle) {
-        stepperToggle.click();
-      }
-      expect(screen.queryByRole('link', { name: 'Vedleggsliste' })).toBeInTheDocument();
+      await waitFor(async () => {
+        expect(screen.queryByRole('heading', { name: form.title })).toBeInTheDocument();
+        const stepperToggle = screen.queryByRole('button', { name: 'Steg 1 av 2' });
+        if (stepperToggle) {
+          stepperToggle.click();
+        }
+        expect(screen.queryByRole('link', { name: 'Vedleggsliste' })).toBeInTheDocument();
+      });
     });
 
     it('Renders vedleggspanel when submission method is paper', () => {

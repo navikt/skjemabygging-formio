@@ -25,10 +25,7 @@ import Styles from './styles';
 import { getCountries } from './util/countries/countries';
 import * as formUtils from './util/form/form.js';
 import NavFormioJs from './util/formio/formiojs';
-import StructuredHtml from './util/html/StructuredHtml/StructuredHtml';
-import StructuredHtmlElement from './util/html/StructuredHtml/StructuredHtmlElement';
-import StructuredHtmlText from './util/html/StructuredHtml/StructuredHtmlText';
-import htmlConverter, { HtmlAsJsonElement, HtmlAsJsonTextElement } from './util/html/converters';
+import htmlUtils from './util/html/htmlUtils';
 import i18nUtils from './util/i18n';
 import listSort from './util/list/sort';
 import makeStyles from './util/styles/jss/jss';
@@ -47,7 +44,7 @@ export {
   FyllUtRouter,
   getCountries,
   guid,
-  htmlConverter,
+  htmlUtils,
   http,
   i18nUtils,
   InnerHtml,
@@ -62,9 +59,6 @@ export {
   NavForm,
   NavFormioJs,
   SkeletonList,
-  StructuredHtml,
-  StructuredHtmlElement,
-  StructuredHtmlText,
   Styles,
   url,
   useAppConfig,
@@ -73,4 +67,4 @@ export {
   useLanguages,
   useModal,
 };
-export type { FetchHeader, FetchOptions, HtmlAsJsonElement, HtmlAsJsonTextElement };
+export type { FetchHeader, FetchOptions };

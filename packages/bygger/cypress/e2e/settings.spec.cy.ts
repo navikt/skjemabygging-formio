@@ -6,8 +6,8 @@ const submitData = {
   skjemanummer: 'cypress-settings',
   tema: 'BIL',
   downloadPdfButtonText: 'DownloadPDFBtnTest',
-  innsending: 'PAPIR_OG_DIGITAL',
-  ettersending: 'PAPIR_OG_DIGITAL',
+  submissionTypes: ['PAPER', 'DIGITAL'],
+  subsequentSubmissionTypes: ['PAPER', 'DIGITAL'],
   descriptionOfSignatures: 'Test Instructions',
   signatureLabel: 'Test account',
   signatureDescription: 'Instruction from test...',
@@ -64,8 +64,8 @@ describe('FormSettingsPage', () => {
       expect(req.body.title).to.include(submitData.title);
       expect(req.body.properties.skjemanummer).to.include(submitData.skjemanummer);
       expect(req.body.properties.descriptionOfSignatures).to.include(submitData.descriptionOfSignatures);
-      expect(req.body.properties.innsending).to.include(submitData.innsending);
-      expect(req.body.properties.ettersending).to.include(submitData.ettersending);
+      expect(req.body.properties.submissionTypes).to.deep.include.members(submitData.submissionTypes);
+      expect(req.body.properties.subsequentSubmissionTypes).to.deep.members(submitData.subsequentSubmissionTypes);
       expect(req.body.properties.signatures[0].label).to.include(submitData.signatureLabel);
       expect(req.body.properties.signatures[0].description).to.include(submitData.signatureDescription);
       req.reply(req.body);
@@ -81,8 +81,13 @@ describe('FormSettingsPage', () => {
     cy.findByRole('textbox', { name: 'Tekst på knapp for nedlasting av pdf' }).clear();
     cy.findByRole('textbox', { name: 'Tekst på knapp for nedlasting av pdf' }).type(submitData.downloadPdfButtonText);
 
-    cy.findByRole('combobox', { name: 'Innsending' }).select(submitData.innsending);
-    cy.findByRole('combobox', { name: 'Ettersending' }).select(submitData.ettersending);
+    submitData.submissionTypes.forEach((type) => {
+      cy.get(`input[type="checkbox"][value="${type}"]`).check({ force: true });
+    });
+
+    submitData.subsequentSubmissionTypes.forEach((type) => {
+      cy.get(`input[type="checkbox"][value="${type}"]`).check({ force: true });
+    });
 
     cy.findByRole('spinbutton', { name: 'Mellomlagringstid (dager)' }).focus();
     cy.findByRole('spinbutton', { name: 'Mellomlagringstid (dager)' }).clear();

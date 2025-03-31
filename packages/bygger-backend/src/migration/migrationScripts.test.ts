@@ -142,8 +142,8 @@ describe('Migration scripts', () => {
           ...originalForm,
           properties: {
             ...originalForm.properties,
-            innsending: 'KUN_DIGITAL',
-            ettersending: undefined,
+            submissionTypes: ['DIGITAL'],
+            subsequentSubmissionTypes: ['PAPER', 'DIGITAL'],
           },
         };
         const { migratedForm: actual } = migrateForm(
@@ -175,7 +175,7 @@ describe('Migration scripts', () => {
           ...originalForm,
           properties: {
             ...originalForm.properties,
-            innsending: 'KUN_DIGITAL',
+            submissionTypes: ['DIGITAL'],
             ettersending: 'KUN_DIGITAL',
           },
         };
@@ -340,8 +340,8 @@ describe('Migration scripts', () => {
           properties: {
             ...originalForm.properties,
             skjemanummer: 'Form1',
-            innsending: 'KUN_DIGITAL',
-            ettersending: undefined,
+            submissionTypes: ['DIGITAL'],
+            subsequentSubmissionTypes: ['PAPER', 'DIGITAL'],
           },
         };
 
@@ -350,7 +350,7 @@ describe('Migration scripts', () => {
           properties: {
             ...originalForm.properties,
             skjemanummer: 'Form2',
-            innsending: 'KUN_DIGITAL',
+            submissionTypes: ['DIGITAL'],
             ettersending: 'KUN_DIGITAL',
           },
         };

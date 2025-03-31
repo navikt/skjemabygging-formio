@@ -1,4 +1,10 @@
-import { Form, ReportDefinition, formioFormsApiUtils, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  Form,
+  formioFormsApiUtils,
+  navFormUtils,
+  ReportDefinition,
+  submissionTypesUtils,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import { stringify } from 'csv-stringify';
 import { Writable } from 'stream';
 import config from '../config';
@@ -109,8 +115,8 @@ class ReportService {
       'upubliserte endringer',
       'sist endret',
       'endret av',
-      'innsending',
-      'ettersending',
+      'submissionTypes',
+      'subsequentSubmissionTypes',
       'signaturfelt',
       'path',
       'har vedlegg',
@@ -135,7 +141,7 @@ class ReportService {
       const attachmentNames = attachments.map((attachment) => attachment.vedleggstittel).join(',');
 
       const { title, path, properties, status, changedAt, changedBy, publishedAt, publishedBy } = formCompact;
-      const { innsending, tema, signatures, ettersending } = properties;
+      const { submissionTypes, tema, signatures, subsequentSubmissionTypes } = properties;
 
       const baseInnsendingUrl =
         config.naisClusterName === 'prod-gcp'
@@ -146,15 +152,17 @@ class ReportService {
           ? `https://www.nav.no/fyllut-ettersending/${form.path}`
           : `https://fyllut-ettersending.intern.dev.nav.no/fyllut-ettersending/${form.path}`;
 
-      const paperInnsendingUrl = navFormUtils.isNone('innsending', form)
+      const paperInnsendingUrl = submissionTypesUtils.isNoneSubmission(submissionTypes)
         ? `${baseInnsendingUrl}`
-        : navFormUtils.isPaper('innsending', form)
+        : submissionTypesUtils.isPaperSubmission(submissionTypes)
           ? `${baseInnsendingUrl}?sub=paper`
           : undefined;
 
       const ettersendingUrl = hasAttachment ? baseEttersendingUrl : undefined;
       const paperEttersendingUrl =
-        navFormUtils.isPaper('ettersending', form) && hasAttachment ? `${baseEttersendingUrl}?sub=paper` : undefined;
+        submissionTypesUtils.isPaperSubmission(subsequentSubmissionTypes) && hasAttachment
+          ? `${baseEttersendingUrl}?sub=paper`
+          : undefined;
 
       const isPublished = ['published', 'pending'].includes(status!);
 
@@ -174,8 +182,8 @@ class ReportService {
         unpublishedChanges,
         changedAt,
         changedBy,
-        innsending,
-        ettersending,
+        submissionTypes,
+        subsequentSubmissionTypes,
         numberOfSignatures,
         path,
         hasAttachment ? 'ja' : 'nei',

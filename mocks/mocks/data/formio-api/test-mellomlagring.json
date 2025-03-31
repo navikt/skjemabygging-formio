@@ -2372,7 +2372,7 @@
   "properties": {
     "skjemanummer": "test-mellomlagring",
     "tema": "BAR",
-    "innsending": "PAPIR_OG_DIGITAL",
+    "submissionTypes": ["PAPER", "DIGITAL"],
     "signatures": [
       {
         "label": "",
@@ -2383,7 +2383,7 @@
     "isTestForm": true,
     "modified": "2023-08-30T12:17:45.811Z",
     "modifiedBy": "magnus.roed.hestvik@nav.no",
-    "ettersending": "PAPIR_OG_DIGITAL"
+    "subsequentSubmissionTypes": ["PAPER", "DIGITAL"]
   },
   "project": "628ca77305690db58c974cfd",
   "revisions": "",

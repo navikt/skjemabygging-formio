@@ -8,16 +8,20 @@ vi.mock('../../fetchUtils', () => ({
   fetchWithErrorHandling: vi.fn(),
 }));
 
-vi.mock('../utils/formsApiUtils', () => ({
-  createHeaders: vi.fn(),
-}));
+vi.mock(import('../utils/formsApiUtils'), async (importOriginal) => {
+  const actual = await importOriginal();
+  return {
+    ...actual,
+    createHeaders: vi.fn(),
+  };
+});
 
 describe('FormsService', () => {
   const formsApiUrl = 'http://example.com';
   let formsService;
   const accessToken = 'test-token';
   const form: Form = {
-    properties: {} as FormPropertiesType,
+    properties: { submissionTypes: [], subsequentSubmissionTypes: [] } as unknown as FormPropertiesType,
     id: 1,
     path: 'test-form',
     title: 'Test Form',

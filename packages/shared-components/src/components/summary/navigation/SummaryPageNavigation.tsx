@@ -1,6 +1,6 @@
 import { ArrowRightIcon } from '@navikt/aksel-icons';
-import { Alert, Button } from '@navikt/ds-react';
-import { InnsendingType, NavFormType, Submission, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { Alert, Button, Heading } from '@navikt/ds-react';
+import { NavFormType, Submission, TEXTS, submissionTypesUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useAppConfig } from '../../../context/config/configContext';
@@ -8,12 +8,11 @@ import { useLanguages } from '../../../context/languages';
 import { useSendInn } from '../../../context/sendInn/sendInnContext';
 import { hasRelevantAttachments } from '../../../util/attachment/attachmentsUtil';
 import { PanelValidation } from '../../../util/form/panel-validation/panelValidation';
+import makeStyles from '../../../util/styles/jss/jss';
 import urlUtils from '../../../util/url/url';
 import DigitalSubmissionButton from '../../button/navigation/digital-submission/DigitalSubmissionButton';
 import EditAnswersButton from '../../button/navigation/edit-answers/EditAnswersButton';
 import SaveAndDeleteButtons from '../../button/navigation/save-and-delete/SaveAndDeleteButtons';
-import FormError from '../../form/FormError';
-import FormSavedStatus from '../../form/FormSavedStatus';
 import LinkButton from '../../link-button/LinkButton';
 import ConfirmationModal from '../../modal/confirmation/ConfirmationModal';
 import DigitalSubmissionWithPrompt from '../../submission/DigitalSubmissionWithPrompt';
@@ -26,6 +25,13 @@ export interface Props {
   isValid: (e: React.MouseEvent<HTMLElement>) => boolean;
 }
 
+const useStyles = makeStyles({
+  navigationDetail: {
+    display: 'flex',
+    justifyContent: 'center',
+  },
+});
+
 const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList, isValid }: Props) => {
   const { submissionMethod, app } = useAppConfig();
   const { search } = useLocation();
@@ -34,30 +40,49 @@ const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList,
   const [error, setError] = useState<Error>();
   const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
 
-  const innsending: InnsendingType = form.properties.innsending || 'PAPIR_OG_DIGITAL';
+  const submissionTypes = form.properties.submissionTypes;
+  const styles = useStyles();
   const hasAttachments = hasRelevantAttachments(form, submission?.data ?? {});
   const canSubmit =
     !!panelValidationList && panelValidationList.every((panelValidation) => !panelValidation.hasValidationErrors);
+  const sendIPosten =
+    (submissionTypesUtils.isPaperSubmission(submissionTypes) && (submissionMethod === 'paper' || app === 'bygger')) ||
+    submissionTypesUtils.isPaperSubmissionOnly(submissionTypes);
 
   const exitUrl = urlUtils.getExitUrl(window.location.href);
 
   return (
     <>
-      <FormError error={mellomlagringError} />
-
+      {mellomlagringError && (
+        <Alert variant="error" className="mb">
+          <Heading size="small" level="4">
+            {translate(mellomlagringError.title)}
+          </Heading>
+          {mellomlagringError.linkText && (
+            <p>
+              {translate(mellomlagringError.messageStart)}
+              <a href={translate(mellomlagringError.url)}>{translate(mellomlagringError.linkText)}</a>
+              {translate(mellomlagringError.messageEnd)}
+            </p>
+          )}
+          {translate(mellomlagringError.message, mellomlagringError?.messageParams)}
+        </Alert>
+      )}
       {error && (
         <Alert variant="error" className="mb" data-testid="error-message">
           {error.message}
         </Alert>
       )}
 
-      <FormSavedStatus submission={submission} />
+      {submission?.fyllutState?.mellomlagring?.savedDate && (
+        <p
+          className={styles.navigationDetail}
+        >{`${TEXTS.grensesnitt.mostRecentSave} ${submission.fyllutState?.mellomlagring?.savedDate}`}</p>
+      )}
 
       <nav>
         <div className="button-row">
-          {(submissionMethod === 'paper' ||
-            innsending === 'KUN_PAPIR' ||
-            (app === 'bygger' && innsending === 'PAPIR_OG_DIGITAL')) && (
+          {sendIPosten && (
             <LinkButton
               buttonVariant="primary"
               onClick={(e) => !isValid(e)}
@@ -72,7 +97,7 @@ const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList,
             </LinkButton>
           )}
           {canSubmit &&
-            (submissionMethod === 'digital' || innsending === 'KUN_DIGITAL') &&
+            (submissionMethod === 'digital' || submissionTypesUtils.isDigitalSubmissionOnly(submissionTypes)) &&
             (hasAttachments ? (
               <DigitalSubmissionButton
                 withIcon
@@ -96,7 +121,7 @@ const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList,
               />
             ))}
 
-          {innsending === 'INGEN' && (
+          {submissionTypesUtils.isNoneSubmission(submissionTypes) && (
             <LinkButton
               buttonVariant="primary"
               onClick={(e) => !isValid(e)}

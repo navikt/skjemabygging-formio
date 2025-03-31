@@ -1,9 +1,10 @@
 import { Alert, Checkbox, CheckboxGroup, Heading } from '@navikt/ds-react';
 import { ConfirmationModal, i18nUtils, makeStyles } from '@navikt/skjemadigitalisering-shared-components';
-import { Form, I18nTranslations } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, FormsApiFormTranslation, I18nTranslations } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useState } from 'react';
 import { useFormTranslations } from '../../context/translations/FormTranslationsContext';
-import { getFormTexts } from '../../old_translations/utils';
+import { useGlobalTranslations } from '../../context/translations/GlobalTranslationsContext';
+import { getFormTextsWithoutCountryNames } from '../../translations/utils/formTextsUtils';
 import FormStatus from '../status/FormStatus';
 import { allLanguagesInNorwegian } from '../status/PublishedLanguages';
 import Timestamp from '../status/Timestamp';
@@ -29,6 +30,7 @@ interface Props {
   open: boolean;
   onClose: () => void;
   onConfirm: (languageCodes: string[]) => void;
+  unsavedGlobalTranslations: FormsApiFormTranslation[];
 }
 
 export const getCompleteTranslationLanguageCodeList = (
@@ -52,30 +54,39 @@ export const getCompleteTranslationLanguageCodeList = (
   return completeTranslationList;
 };
 
-const PublishSettingsModal = ({ open, onClose, onConfirm, form }: Props) => {
-  const { translations } = useFormTranslations();
+const PublishSettingsModal = ({ open, onClose, onConfirm, form, unsavedGlobalTranslations }: Props) => {
+  const { translations: formTranslations } = useFormTranslations();
+  const { translations: globalTranslations } = useGlobalTranslations();
   const [allFormOriginalTexts, setAllFormOriginalTexts] = useState<string[]>([]);
   const [completeTranslationLanguageCodeList, setCompleteTranslationLanguageCodeList] = useState<string[]>([]);
   const [checkedLanguages, setCheckedLanguages] = useState<string[]>([]);
 
   useEffect(() => {
     setAllFormOriginalTexts(
-      getFormTexts(form).reduce((allTexts, texts) => {
-        const { text } = texts;
+      getFormTextsWithoutCountryNames(form).reduce<string[]>((allTexts, text) => {
         return [...allTexts, text];
-      }, [] as string[]),
+      }, []),
     );
   }, [form]);
 
   useEffect(() => {
-    const i18n = i18nUtils.mapFormsApiTranslationsToI18n(translations);
-    const completeTranslations = getCompleteTranslationLanguageCodeList(allFormOriginalTexts, i18n);
+    const i18n = i18nUtils.mapFormsApiTranslationsToI18n([...formTranslations]);
+    const unsavedGlobalTranslationKeys = unsavedGlobalTranslations.map((translation) => translation.key);
+    const originalTextsExcludingUnsavedGlobalTranslations = allFormOriginalTexts.filter(
+      (text) => !unsavedGlobalTranslationKeys.includes(text),
+    );
+
+    const completeTranslations = getCompleteTranslationLanguageCodeList(
+      originalTextsExcludingUnsavedGlobalTranslations,
+      i18n,
+    );
+
     const sanitizedCompleteTranslations = completeTranslations
       .map((langCode) => (langCode.length > 2 ? langCode.substring(0, 2) : langCode))
       .filter(skipBokmal);
     setCompleteTranslationLanguageCodeList([...sanitizedCompleteTranslations, 'nb']);
     setCheckedLanguages([...sanitizedCompleteTranslations, 'nb']);
-  }, [allFormOriginalTexts, translations]);
+  }, [allFormOriginalTexts, formTranslations, globalTranslations, unsavedGlobalTranslations]);
 
   const PublishStatusPanel = ({ form }: { form: Form }) => {
     const statusPanelStyles = useStatusPanelStyles();

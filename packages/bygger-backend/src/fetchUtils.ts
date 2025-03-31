@@ -3,11 +3,13 @@ import { logger } from './logging/logger';
 
 export class HttpError extends Error {
   readonly response: Response;
+  readonly bodyErrorMessage?: string;
 
-  constructor(fetchResponse: Response) {
+  constructor(fetchResponse: Response, bodyErrorMessage?: string) {
     super(`${fetchResponse.status} ${fetchResponse.statusText} fetching: ${fetchResponse.url}`);
     this.name = this.constructor.name;
     this.response = fetchResponse;
+    this.bodyErrorMessage = bodyErrorMessage;
   }
 }
 

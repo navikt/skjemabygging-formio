@@ -67,7 +67,7 @@ const renderSummaryPage = async (
 describe('SummaryPage', () => {
   describe('ConfirmationPanel', () => {
     it('Ikke vis bekreftelse', async () => {
-      const form = formWithProperties({ innsending: 'PAPIR_OG_DIGITAL', declarationType: DeclarationType.none });
+      const form = formWithProperties({ submissionTypes: ['PAPER', 'DIGITAL'], declarationType: DeclarationType.none });
       const { buttons, router } = await renderSummaryPage({ form }, { submissionMethod: 'paper' });
       const confirmCheckbox = screen.queryByRole('checkbox', { name: TEXTS.statiske.declaration.defaultText });
       expect(confirmCheckbox).not.toBeInTheDocument();
@@ -76,7 +76,7 @@ describe('SummaryPage', () => {
     });
 
     it('Bekreft dataene dine', async () => {
-      const form = formWithProperties({ innsending: 'KUN_PAPIR', declarationType: DeclarationType.default });
+      const form = formWithProperties({ submissionTypes: ['PAPER'], declarationType: DeclarationType.default });
       const { buttons, router } = await renderSummaryPage({ form }, { submissionMethod: 'paper' });
       const confirmCheckbox = screen.queryByRole('checkbox', { name: TEXTS.statiske.declaration.defaultText });
       expect(confirmCheckbox).toBeInTheDocument();
@@ -87,7 +87,10 @@ describe('SummaryPage', () => {
     });
 
     it('Ikke gå videre, uten å bekrefte dataene', async () => {
-      const form = formWithProperties({ innsending: 'PAPIR_OG_DIGITAL', declarationType: DeclarationType.default });
+      const form = formWithProperties({
+        submissionTypes: ['PAPER', 'DIGITAL'],
+        declarationType: DeclarationType.default,
+      });
       const { buttons, router } = await renderSummaryPage({ form }, { submissionMethod: 'paper' });
       const confirmCheckbox = screen.queryByRole('checkbox', { name: TEXTS.statiske.declaration.defaultText });
       expect(confirmCheckbox).toBeInTheDocument();

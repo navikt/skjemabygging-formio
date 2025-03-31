@@ -1,7 +1,7 @@
 import { Form, PublishedTranslations, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
 import { fetchWithErrorHandling } from '../../fetchUtils';
 import { createHeaders } from '../utils/formsApiUtils';
-import { FormPublicationsService } from './types';
+import { BulkPublicationResult, FormPublication, FormPublicationResult, FormPublicationsService } from './types';
 
 const createFormPublicationsService = (formsApiUrl: string): FormPublicationsService => {
   const url = `${formsApiUrl}/v1/form-publications`;
@@ -18,16 +18,39 @@ const createFormPublicationsService = (formsApiUrl: string): FormPublicationsSer
 
   const post = async (
     formPath: string,
-    languages: TranslationLang[],
+    languages: TranslationLang[] | undefined,
     revision: number,
     accessToken: string,
   ): Promise<Form> => {
-    const searchParams = new URLSearchParams({ languageCodes: languages.toString() });
+    const searchParams = new URLSearchParams(
+      languages ? { languageCodes: languages.toString() } : { skipTranslations: 'true' },
+    );
     const response = await fetchWithErrorHandling(`${url}/${formPath}?${searchParams}`, {
       method: 'POST',
       headers: createHeaders(accessToken, revision),
     });
     return response.data as Form;
+  };
+
+  const postAll = async (formPublication: FormPublication[], accessToken: string): Promise<BulkPublicationResult> => {
+    const result: FormPublicationResult[] = [];
+    for (const form of formPublication) {
+      try {
+        const publishedForm = await post(form.path, undefined, form.revision!, accessToken);
+        result.push({
+          form: { path: publishedForm.path, revision: publishedForm.revision! },
+          status: 'ok',
+        });
+      } catch (err: any) {
+        const errorMessage = err.bodyErrorMessage || err.response.statusText || 'Ukjent feil';
+        result.push({
+          form: { path: form.path, revision: form.revision! },
+          status: 'error',
+          message: errorMessage,
+        });
+      }
+    }
+    return Promise.resolve(result);
   };
 
   const unpublish = async (formPath: string, accessToken: string): Promise<void> => {
@@ -49,6 +72,7 @@ const createFormPublicationsService = (formsApiUrl: string): FormPublicationsSer
     getAll,
     get,
     post,
+    postAll,
     unpublish,
     getTranslations,
   };

@@ -268,4 +268,76 @@ describe('date.ts', () => {
       });
     });
   });
+
+  describe('isAfter', () => {
+    describe('when date is valid', () => {
+      it('should return true if date is slightly after the second date in different time zones', () => {
+        const date1 = '2023-03-01T11:00:00.001+01:00'; // UTC+1
+        const date2 = '2023-03-01T10:00:00.000Z'; // UTC
+        expect(dateUtils.isAfter(date1, date2)).toBe(true);
+      });
+
+      it('should return false if date is before the second date in different time zones', () => {
+        const date1 = '2023-03-01T08:00:00+01:00'; // UTC+1
+        const date2 = '2023-03-01T10:00:00Z'; // UTC
+        expect(dateUtils.isAfter(date1, date2)).toBe(false);
+      });
+
+      it('should return false if the dates are the same but in different time zones', () => {
+        const date1 = '2023-03-01T10:00:00+01:00'; // UTC+1
+        const date2 = '2023-03-01T09:00:00Z'; // UTC
+        expect(dateUtils.isAfter(date1, date2)).toBe(false);
+      });
+
+      it('should return true when compared to date in different time zone', () => {
+        const date1 = '2023-03-01T09:30:00.165Z'; // UTC
+        const date2 = '2023-03-01T10:00:00.123+01:00'; // UTC+1
+        expect(dateUtils.isAfter(date1, date2)).toBe(true);
+      });
+
+      it('should return true if it is after the second date with different timestamps', () => {
+        const date1 = '2023-03-01T12:00:00Z';
+        const date2 = '2023-03-01T11:59:59Z';
+        expect(dateUtils.isAfter(date1, date2)).toBe(true);
+      });
+
+      it('should return false if it is before the second date with different timestamps', () => {
+        const date1 = '2023-03-01T11:59:59Z';
+        const date2 = '2023-03-01T12:00:00Z';
+        expect(dateUtils.isAfter(date1, date2)).toBe(false);
+      });
+
+      it('should return true when compared to invalid date', () => {
+        const date1 = '2023-03-01T11:59:59Z';
+        const date2Invalid = '2023-02-99T12:00:00Z';
+        expect(dateUtils.isAfter(date1, date2Invalid)).toBe(true);
+      });
+
+      it('should return true when compared to empty date string', () => {
+        const date1 = '2023-03-01T11:59:59Z';
+        const date2Invalid = '';
+        expect(dateUtils.isAfter(date1, date2Invalid)).toBe(true);
+      });
+    });
+
+    describe('when date is invalid', () => {
+      it('should return false when compared to valid date', () => {
+        const date1Invalid = '2023-03-99T12:00:00Z';
+        const date2 = '2023-03-01T11:59:59Z';
+        expect(dateUtils.isAfter(date1Invalid, date2)).toBe(false);
+      });
+
+      it('should return false when compared to invalid date', () => {
+        const date1Invalid = '2023-03-99T12:00:00Z';
+        const date2Invalid = '2023-99-01T11:59:59Z';
+        expect(dateUtils.isAfter(date1Invalid, date2Invalid)).toBe(false);
+      });
+
+      it('should return false when compared to empty date string', () => {
+        const date1Invalid = '2023-03-99T12:00:00Z';
+        const date2Invalid = '';
+        expect(dateUtils.isAfter(date1Invalid, date2Invalid)).toBe(false);
+      });
+    });
+  });
 });
