@@ -31,6 +31,7 @@ const DataFetcher = forwardRef<HTMLFieldSetElement, Props>(
     const data = dataFetcherData?.data;
     const fetchError = dataFetcherData?.fetchError;
     const isPreviewMode = appConfig.app === 'bygger';
+    const isFyllut = appConfig.app === 'fyllut';
 
     const fetchData = useCallback(async () => {
       try {
@@ -46,15 +47,15 @@ const DataFetcher = forwardRef<HTMLFieldSetElement, Props>(
         setLoading(false);
         setDone(true);
       }
-    }, [appConfig]);
+    }, [appConfig, setMetadata]);
 
     useEffect(() => {
       if (isPreviewMode) {
         setMetadata({ data: previewData });
-      } else if (appConfig.app === 'fyllut' && !data && !loading) {
+      } else if (isFyllut && !done && !data && !fetchError && !loading) {
         fetchData();
       }
-    }, [appConfig, isPreviewMode, fetchData, fetchError, setMetadata, data, loading]);
+    }, [appConfig, isPreviewMode, fetchData, fetchError, setMetadata, data, loading, isFyllut, done]);
 
     if (loading) {
       return <SkeletonList size={3} height={'4rem'} />;
