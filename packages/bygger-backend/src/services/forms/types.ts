@@ -4,7 +4,7 @@ type FormPostBody = Pick<Form, 'skjemanummer' | 'title' | 'components' | 'proper
 type FormPutBody = Pick<Form, 'title' | 'components' | 'properties'>;
 
 interface FormsService {
-  getAll: (select?: string) => Promise<Form[]>;
+  getAll: (select?: string) => Promise<Array<Partial<Form>>>;
   get: (formPath: string) => Promise<Form>;
   post: (body: FormPostBody, accessToken: string) => Promise<Form>;
   put: (formPath: string, body: FormPutBody, revision: number, accessToken: string) => Promise<Form>;
