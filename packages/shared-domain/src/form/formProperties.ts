@@ -20,8 +20,6 @@ export interface FormPropertiesType {
   downloadPdfButtonText?: string;
   submissionTypes: SubmissionType[];
   subsequentSubmissionTypes: SubmissionType[];
-  innsending?: InnsendingType;
-  ettersending?: InnsendingType;
   ettersendelsesfrist?: string;
   innsendingForklaring?: string;
   innsendingOverskrift?: string;

@@ -610,7 +610,7 @@ const form = {
   properties: {
     skjemanummer: 'TEST-AK-002',
     tema: 'BIL',
-    innsending: 'PAPIR_OG_DIGITAL',
+    submissionTypes: ['PAPER', 'DIGITAL'],
     signatures: [
       {
         label: '',

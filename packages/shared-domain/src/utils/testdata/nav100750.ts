@@ -4263,7 +4263,7 @@ const form: any = {
     tema: 'HJE',
     published: '2022-04-29T08:13:33.878Z',
     modified: '2022-04-29T08:13:33.878Z',
-    innsending: 'PAPIR_OG_DIGITAL',
+    submissionTypes: ['PAPER', 'DIGITAL'],
   },
   access: [
     {

@@ -132,10 +132,10 @@ describe('Migration scripts', () => {
     describe('can migrate form properties', () => {
       it('sets prop when not exists', () => {
         const formSearchFiltersFromParam = {
-          'properties.ettersending__n_exists': true,
+          'properties.subsequentSubmissionTypes__n_exists': true,
         };
         const propsEditOptions = {
-          'properties.ettersending': 'PAPIR_OG_DIGITAL',
+          'properties.subsequentSubmissionTypes': ['PAPER', 'DIGITAL'],
         };
 
         const original: NavFormType = {
@@ -158,17 +158,17 @@ describe('Migration scripts', () => {
           ...original,
           properties: {
             ...original.properties,
-            ettersending: 'PAPIR_OG_DIGITAL',
+            subsequentSubmissionTypes: ['PAPER', 'DIGITAL'],
           },
         });
       });
 
       it('does not change prop which exists', () => {
         const formSearchFiltersFromParam = {
-          'properties.ettersending__n_exists': true,
+          'properties.subsequentSubmissionTypes__n_exists': true,
         };
         const propsEditOptions = {
-          'properties.ettersending': 'PAPIR_OG_DIGITAL',
+          'properties.subsequentSubmissionTypes': ['PAPER', 'DIGITAL'],
         };
 
         const original: NavFormType = {
@@ -176,7 +176,7 @@ describe('Migration scripts', () => {
           properties: {
             ...originalForm.properties,
             submissionTypes: ['DIGITAL'],
-            ettersending: 'KUN_DIGITAL',
+            subsequentSubmissionTypes: ['DIGITAL'],
           },
         };
         const { migratedForm: actual } = migrateForm(
@@ -323,63 +323,6 @@ describe('Migration scripts', () => {
           expect.objectContaining({ path: 'formWithAdvancedConditionalToRadio' }),
           expect.objectContaining({ path: 'formWithSimpleConditionalToCheckbox' }),
         ]);
-      });
-    });
-
-    describe('When migration level is form', () => {
-      it('only generates log with forms where props were migrated', async () => {
-        const formSearchFiltersFromParam = {
-          'properties.ettersending__n_exists': true,
-        };
-        const propsEditOptions = {
-          'properties.ettersending': 'PAPIR_OG_DIGITAL',
-        };
-
-        const originalForm1: NavFormType = {
-          ...originalForm,
-          properties: {
-            ...originalForm.properties,
-            skjemanummer: 'Form1',
-            submissionTypes: ['DIGITAL'],
-            subsequentSubmissionTypes: ['PAPER', 'DIGITAL'],
-          },
-        };
-
-        const originalForm2: NavFormType = {
-          ...originalForm,
-          properties: {
-            ...originalForm.properties,
-            skjemanummer: 'Form2',
-            submissionTypes: ['DIGITAL'],
-            ettersending: 'KUN_DIGITAL',
-          },
-        };
-        const { migratedForms, log } = await migrateForms(
-          formSearchFiltersFromParam,
-          {},
-          {},
-          propsEditOptions,
-          [originalForm1, originalForm2],
-          [],
-          'form',
-        );
-        expect(migratedForms).toHaveLength(1);
-        const logElement1 = log[originalForm1.properties.skjemanummer];
-        expect(logElement1).toEqual(
-          expect.objectContaining({
-            found: 1,
-            changed: 1,
-            skjemanummer: 'Form1',
-            diff: [
-              {
-                properties: {
-                  ettersending_NEW: 'PAPIR_OG_DIGITAL',
-                  ettersending_ORIGINAL: undefined,
-                },
-              },
-            ],
-          }),
-        );
       });
     });
   });

@@ -2971,7 +2971,7 @@ const publishedForm = {
   properties: {
     skjemanummer: 'TST-123456',
     tema: 'DAG',
-    innsending: 'PAPIR_OG_DIGITAL',
+    submissionTypes: ['PAPER', 'DIGITAL'],
     signatures: [
       {
         label: 'Lege',
