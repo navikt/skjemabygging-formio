@@ -76,7 +76,7 @@ const en = {
       tag: 'statiske-tekster',
       translations: {
         Oppsummering: { value: 'Summary', scope: 'global' },
-        'Last ned og skriv ut dokumentene til saken din': {
+        'Last ned skjema': {
           value: 'Download and print the documents for your case',
           scope: 'global',
         },
@@ -86,20 +86,20 @@ const en = {
               'Please check that all your answers are correct. If you find something that needs to be corrected, press "{{editAnswers}}" at the bottom of this page. If all the answers are correct, proceed to step 2.',
             scope: 'global',
           },
-        'Førstesidearket inneholder viktig informasjon om hvilken enhet i Nav som skal motta dokumentene, og hvilken adresse de skal sendes til.':
-          {
-            value:
-              'The cover sheet contains important information about the Nav unit that will receive the documents and the address to which the documents should be sent.',
-            scope: 'global',
-          },
+        'Gjør følgende for å sende det til Nav:': {
+          value:
+            'The cover sheet contains important information about the Nav unit that will receive the documents and the address to which the documents should be sent.',
+          scope: 'global',
+        },
         'Legg ved': { value: 'Attach', scope: 'global' },
         'disse vedleggene': { value: 'these attachments', scope: 'global' },
         'dette vedlegget': { value: 'this attachment', scope: 'global' },
-        'Send det hele til Nav i posten': { value: 'Send it all to Nav in the mail', scope: 'global' },
-        'Følg instruksjonene på førstesidearket for å sende dokumentene i posten.': {
-          value: 'Follow the instructions on the cover sheet  to send the documents in the mail.',
-          scope: 'global',
-        },
+        'Send utskrift til Nav i posten': { value: 'Send it all to Nav in the mail', scope: 'global' },
+        'Første side i skjema må legges øverst i innsendingen. Den inneholder informasjon om hvilken adresse du skal sende dokumentene til. ':
+          {
+            value: 'Follow the instructions on the cover sheet  to send the documents in the mail.',
+            scope: 'global',
+          },
         'Husk å legge ved': { value: 'Remember to attach', scope: 'global' },
         vedleggene: { value: 'attachments', scope: 'global' },
         vedlegget: { value: 'attachement', scope: 'global' },
@@ -182,7 +182,7 @@ const en = {
         'Rediger søknaden': { value: 'Edit application', scope: 'global' },
         'Send i posten': { value: 'Submit by mail', scope: 'global' },
         'Til digital innsending': { value: 'To digital submission', scope: 'global' },
-        'Last ned førsteside': { value: 'Download cover sheet', scope: 'global' },
+        'Last ned skjema': { value: 'Download cover sheet and applicaton', scope: 'global' },
         'Jeg har lest instruksjonene.': { value: 'I have read the instructions.', scope: 'global' },
         Ja: { value: 'Yes', scope: 'global' },
         Nei: { value: 'No', scope: 'global' },

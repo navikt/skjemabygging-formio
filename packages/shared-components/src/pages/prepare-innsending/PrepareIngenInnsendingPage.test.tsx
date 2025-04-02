@@ -1,30 +1,18 @@
 import { Submission, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import React from 'react';
+import nock from 'nock';
 import { MemoryRouter } from 'react-router-dom';
+import { AppConfigProvider } from '../../context/config/configContext';
 import { PrepareIngenInnsendingPage } from './PrepareIngenInnsendingPage';
 
 vi.mock('../../context/languages', () => ({
   useLanguages: () => ({ translate: (text) => text }),
 }));
 
+const fyllutBaseURL = 'http://www.unittest.nav.no/fyllut';
+
 describe('PrepareIngenInnsendingPage', () => {
-  let submitCalls: React.SyntheticEvent<HTMLFormElement>[] = [];
-
-  const submitEventListener = (event) => {
-    event.preventDefault();
-    submitCalls.push(event);
-  };
-
-  beforeAll(() => {
-    window.addEventListener('submit', submitEventListener);
-  });
-
-  afterAll(() => {
-    window.removeEventListener('submit', submitEventListener);
-  });
-
   const testForm = {
     title: 'Mitt testskjema',
     path: 'testskjema',
@@ -42,16 +30,22 @@ describe('PrepareIngenInnsendingPage', () => {
   };
 
   beforeEach(() => {
-    submitCalls = [];
+    const config = {
+      fyllutBaseURL,
+    };
+
     render(
-      <MemoryRouter initialEntries={[`/forms/${testForm.path}/ingen-innsending`]}>
-        <PrepareIngenInnsendingPage
-          form={testForm}
-          submission={{} as Submission}
-          formUrl="/testskjema"
-          translations={{}}
-        />
-      </MemoryRouter>,
+      <AppConfigProvider {...config}>
+        <MemoryRouter initialEntries={[`/forms/${testForm.path}/ingen-innsending`]}>
+          <PrepareIngenInnsendingPage
+            form={testForm}
+            submission={{} as Submission}
+            formUrl="/testskjema"
+            translations={{}}
+          />
+        </MemoryRouter>
+        ,
+      </AppConfigProvider>,
     );
   });
 
@@ -61,18 +55,11 @@ describe('PrepareIngenInnsendingPage', () => {
   });
 
   test('Nedlasting av pdf', async () => {
+    const scope = nock(fyllutBaseURL).post('/api/documents/application').reply(200);
+
     const lastNedSoknadKnapp = screen.getByRole('button', { name: TEXTS.grensesnitt.downloadApplication });
     await userEvent.click(lastNedSoknadKnapp);
-    expect(submitCalls).toHaveLength(1);
 
-    const form = submitCalls[0].target as HTMLFormElement;
-
-    const formInput = form.elements[0] as HTMLInputElement;
-    expect(formInput.name).toBe('form');
-    const formInputValueJson = JSON.parse(formInput.value);
-    expect(formInputValueJson.title).toEqual(testForm.title);
-
-    const submissionInput = form.elements[1] as HTMLInputElement;
-    expect(submissionInput.name).toBe('submission');
+    expect(scope.isDone()).toBe(true);
   });
 });

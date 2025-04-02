@@ -18,13 +18,15 @@ interface Props {
 }
 
 const ButtonWithSpinner = ({ children, className, onClick, variant = 'primary', size = 'medium', icon }: Props) => {
-  const [isSaving, setIsSaving] = useState(false);
+  const [processing, setProcessing] = useState(false);
   async function onClickWithSpinner() {
-    setIsSaving(true);
-    try {
-      await onClick();
-    } finally {
-      setIsSaving(false);
+    if (!processing) {
+      setProcessing(true);
+      try {
+        await onClick();
+      } finally {
+        setProcessing(false);
+      }
     }
   }
   return (
@@ -32,7 +34,7 @@ const ButtonWithSpinner = ({ children, className, onClick, variant = 'primary', 
       className={className}
       variant={variant}
       onClick={onClickWithSpinner}
-      loading={isSaving}
+      loading={processing}
       size={size}
       icon={icon}
     >

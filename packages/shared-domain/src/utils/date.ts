@@ -44,8 +44,12 @@ const inputFormatMonthLong = 'MMMM yyyy';
 const toLocaleDateAndTime = (date: string, locale = 'no') =>
   DateTime.fromISO(date).setLocale(locale).toLocaleString(dateAndTimeFormat);
 
-const toLocaleDate = (date: string, locale = 'no') => {
-  return DateTime.fromISO(date).setLocale(locale).toLocaleString(dateFormat);
+const toLocaleDate = (date?: string, locale = 'no') => {
+  if (date) {
+    return DateTime.fromISO(date).setLocale(locale).toLocaleString(dateFormat);
+  } else {
+    return DateTime.now().setLocale(locale).toLocaleString(dateFormat);
+  }
 };
 
 const toWeekdayAndDate = (date: string, locale = 'no') => {

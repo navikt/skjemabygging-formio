@@ -11,7 +11,7 @@ import globalErrorHandler from './middleware/globalErrorHandler.js';
 import httpRequestLogger from './middleware/httpRequestLogger.js';
 import { stripTrailingSlash } from './middleware/stripTrailingSlash';
 import renderIndex from './renderIndex';
-import apiRouter from './routers/api/index.js';
+import apiRouter from './routers/api/index';
 import internalRouter from './routers/internal/index.js';
 import { setupDevServer } from './setup-dev-server';
 

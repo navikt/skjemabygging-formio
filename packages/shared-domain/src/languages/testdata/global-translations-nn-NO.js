@@ -13,24 +13,24 @@ const nnNO = {
               'Vennlegast sjekk at alle svara dine er riktige. Viss du finn noko som må korrigerast trykkar du på «{{editAnswers}}» på botnen av denne sida. Viss alle svara er riktige går du vidare til steig 2.',
             scope: 'global',
           },
-        'Last ned og skriv ut dokumentene til saken din': {
+        'Last ned skjema': {
           value: 'Last ned og skriv ut dokumenta til saka di.',
           scope: 'global',
         },
-        'Førstesidearket inneholder viktig informasjon om hvilken enhet i Nav som skal motta dokumentene, og hvilken adresse de skal sendes til.':
-          {
-            value:
-              'Førstesidearket inneheld viktig informasjon om kva eining i Nav som skal motta dokumenta, og kva adresse dei skal sendast til.',
-            scope: 'global',
-          },
+        'Gjør følgende for å sende det til Nav:': {
+          value:
+            'Førstesidearket inneheld viktig informasjon om kva eining i Nav som skal motta dokumenta, og kva adresse dei skal sendast til.',
+          scope: 'global',
+        },
         'Legg ved': { value: 'Legg ved', scope: 'global' },
         'disse vedleggene': { value: 'desse vedlagga', scope: 'global' },
         'dette vedlegget': { value: 'dette vedlegget', scope: 'global' },
-        'Send det hele til Nav i posten': { value: 'Send det heile til Nav i posten', scope: 'global' },
-        'Følg instruksjonene på førstesidearket for å sende dokumentene i posten.': {
-          value: 'Følg instruksjonane på førstesidearket for å sende dokumenta i posten',
-          scope: 'global',
-        },
+        'Send utskrift til Nav i posten': { value: 'Send det heile til Nav i posten', scope: 'global' },
+        'Første side i skjema må legges øverst i innsendingen. Den inneholder informasjon om hvilken adresse du skal sende dokumentene til. ':
+          {
+            value: 'Følg instruksjonane på førstesidearket for å sende dokumenta i posten',
+            scope: 'global',
+          },
         'Husk å legge ved': { value: 'Hugs å legge ved', scope: 'global' },
         vedleggene: { value: 'vedlegga', scope: 'global' },
         vedlegget: { value: 'vedlegget', scope: 'global' },
@@ -175,7 +175,7 @@ const nnNO = {
         'Rediger søknaden': { value: 'Rediger søknaden', scope: 'global' },
         'Send i posten': { value: 'Send i posten', scope: 'global' },
         'Til digital innsending': { value: 'Til digital innsending', scope: 'global' },
-        'Last ned førsteside': { value: 'Last ned førsteside', scope: 'global' },
+        'Last ned skjema': { value: 'Last ned skjema', scope: 'global' },
         'Jeg har lest instruksjonene.': { value: 'Eg har lese rettleiinga.', scope: 'global' },
         valgfritt: { value: 'valfritt', scope: 'global' },
         Januar: { value: 'Januar', scope: 'global' },
