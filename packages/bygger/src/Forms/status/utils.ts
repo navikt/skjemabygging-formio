@@ -1,8 +1,23 @@
 import { Form } from '@navikt/skjemadigitalisering-shared-domain';
+import { FormMigrationLogData } from '../../../types/migration';
 import { FormStatusEvents, Status } from './types';
 
-const determineStatus = (formStatusProperties: FormStatusEvents): Status => {
-  const { isTestForm, status } = formStatusProperties;
+const getStatusProperties = (formElement: Form | FormMigrationLogData | FormStatusEvents): FormStatusEvents => {
+  let isTestForm;
+  if ('properties' in formElement) {
+    const { properties } = formElement as Form;
+    isTestForm = properties?.isTestForm;
+  }
+  if ('isTestForm' in formElement) {
+    isTestForm = formElement.isTestForm;
+  }
+  const { status } = formElement;
+
+  return { status, isTestForm };
+};
+
+const determineStatus = (formElement: FormStatusEvents | Form | FormMigrationLogData): Status => {
+  const { isTestForm, status } = getStatusProperties(formElement);
 
   if (isTestForm) {
     return 'TESTFORM';

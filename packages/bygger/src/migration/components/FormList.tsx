@@ -36,7 +36,7 @@ export const FormList = ({
             </Table.Row>
           </Table.Header>
           <Table.Body>
-            {listElements.map((element, i) => {
+            {listElements.map((element: FormMigrationLogData | Form, i) => {
               const skjemanummer = element.skjemanummer;
               return (
                 <Table.Row key={i + skjemanummer}>
