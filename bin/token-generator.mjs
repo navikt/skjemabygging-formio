@@ -9,11 +9,12 @@ const COLOR_GREEN = '\x1b[32m';
 const COLOR_ORANGE = '\x1b[33m';
 const COLOR_RESET = '\x1b[0m';
 
-const ICON_CLOCK = '\u23F0';
+const ICON_CHECK = '\u2705';
+const ICON_ERROR = '\u274C';
 
 function readLineFromStdin() {
   return new Promise((resolve) => {
-    const rl = createInterface({ input: process.stdin });
+    const rl = createInterface({ input: process.stdin, terminal: true });
     rl.on('line', (line) => {
       resolve(line.trim());
       rl.close();
@@ -28,7 +29,7 @@ function getExp(accessToken) {
     const expiryTimestamp = decodedPayload.exp;
     return new Date(expiryTimestamp * 1000).toISOString();
   } catch (_err) {
-    return '<unknown>';
+    return undefined;
   }
 }
 
@@ -36,6 +37,11 @@ for (const env of jsonConfig) {
   process.stdout.write(`Visit ${env.url}\n`);
   process.stdout.write(`${COLOR_ORANGE}Paste access_token:${COLOR_RESET} `);
   const accessToken = await readLineFromStdin();
+  const expiresAt = getExp(accessToken);
+  if (!expiresAt) {
+    process.stdout.write(`${env.name} ${ICON_ERROR} invalid token\n`);
+    continue;
+  }
 
   const envContent = fs.readFileSync(path.join(root, env.filePath), { encoding: 'utf-8', flag: 'r' });
   const lines = envContent.split('\n');
@@ -61,7 +67,7 @@ for (const env of jsonConfig) {
     lines.push(tokenLine);
   }
 
-  process.stdout.write(`• Token ${env.name} expires at ${getExp(accessToken)} ${ICON_CLOCK} \n`);
+  process.stdout.write(`${env.name} ${ICON_CHECK} (expires at ${expiresAt})\n`);
 
   const newEnvContent = lines.join('\n');
   fs.writeFileSync(path.join(root, env.filePath), newEnvContent);
