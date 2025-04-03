@@ -1,6 +1,5 @@
 import { Component, ComponentError, CustomLabels, FieldSize } from '@navikt/skjemadigitalisering-shared-domain';
 import Field from 'formiojs/components/_classes/field/Field';
-import FormioUtils from 'formiojs/utils';
 import { TFunction, TOptions } from 'i18next';
 import FormioReactComponent from './FormioReactComponent';
 import baseComponentUtils from './baseComponentUtils';
@@ -27,13 +26,6 @@ class BaseComponent extends FormioReactComponent {
       validateOn: 'blur',
       ...values,
     });
-  }
-
-  /**
-   * Get id for custom component renderReact()
-   */
-  getId() {
-    return baseComponentUtils.getId(this.component);
   }
 
   /**
@@ -194,12 +186,16 @@ class BaseComponent extends FormioReactComponent {
   }
 
   /**
-   * elementId is used to focus to the correct element when clicking on error summary
-   * Message is the error message that is shown in the error summary
+   * Adds error to this component. If the error is related to a specific element inside the formio component
+   * (i.e. inside a custom composite component with multiple input fields) elementId must be provided.
+   * If an elementId is not provided, the link in the error summary will on click give focus to the main component.
+   *
+   * @param message is the error message that is shown in the error summary
+   * @param elementId is only needed if the error concerns a specific input field inside a custom component
    */
   addError(message: string, elementId?: string) {
     if (message && this.showErrorMessages()) {
-      this.logger.debug('addError', { errorMessage: message });
+      this.logger.debug('addError', { errorMessage: message, elementId });
       this.componentErrors.push(this.createError(message, elementId));
     }
   }
@@ -217,10 +213,10 @@ class BaseComponent extends FormioReactComponent {
           this.logger.info(`Should never get more then one message, got ${messages.length}.`, { messages });
         }
         messages.forEach((componentError: ComponentError) => {
-          this.addError(componentError.message, this.getId());
+          this.addError(componentError.message);
         });
       } else {
-        this.addError(messages, this.getId());
+        this.addError(messages);
       }
     }
     this.rerender();
@@ -236,11 +232,20 @@ class BaseComponent extends FormioReactComponent {
     return this.componentErrors.length === 0;
   }
 
+  /**
+   * Create error object for the component. The component path is used to identify the formio component.
+   * ElementId is only needed if the error concerns a specific input field inside a custom component.
+   *
+   * @param message the error message
+   * @param elementId the id of the element inside the component that caused the error
+   */
   createError(message: string, elementId?: string): ComponentError {
+    const path = this.path!;
+    this.logger.debug(`createError`, { path, elementId });
     return {
       message,
       level: 'error',
-      path: FormioUtils.getComponentPath(this.component),
+      path,
       elementId,
     };
   }
@@ -250,10 +255,10 @@ class BaseComponent extends FormioReactComponent {
   }
 
   getError() {
-    return this.getComponentError(this.getId());
+    return this.getComponentError();
   }
 
-  getComponentError(elementId: string) {
+  getComponentError(elementId?: string) {
     return this.componentErrors.find((error) => error.elementId === elementId)?.message;
   }
 
