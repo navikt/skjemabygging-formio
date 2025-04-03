@@ -51,7 +51,7 @@ const DataFetcher = forwardRef<HTMLFieldSetElement, Props>(
     }, [appConfig, setMetadata]);
 
     useEffect(() => {
-      if (isPreviewMode) {
+      if (isPreviewMode && !data) {
         setMetadata({ data: previewData });
       } else if (isFyllut && !done && !data && !fetchError && !loading) {
         fetchData();
