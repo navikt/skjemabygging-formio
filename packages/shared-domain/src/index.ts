@@ -41,6 +41,7 @@ import {
   SubmissionMethod,
   SubmissionType,
   UsageContext,
+  Webform,
 } from './form';
 import { Form } from './forms-api-form';
 import forstesideUtils, {
@@ -281,4 +282,5 @@ export type {
   UkjentBruker,
   UsageContext,
   VedtakBetalingsplan,
+  Webform,
 };
