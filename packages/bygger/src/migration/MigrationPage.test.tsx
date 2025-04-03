@@ -180,14 +180,14 @@ describe('MigrationPage', () => {
         within(screen.getByRole('radiogroup', { name: 'Migreringsnivå' })).getByRole('radio', { name: 'Skjema' }),
       );
       setMigrateOptionInput('form-search-filters', 0, 'properties.tema', 'BIL');
-      setMigrateOptionInput('edit-options', 0, 'properties.innsending', 'PAPIR_OG_DIGITAL');
+      setMigrateOptionInput('edit-options', 0, 'properties.submissionTypes', ['PAPER', 'DIGITAL']);
       clickAddButton('edit-options');
       setMigrateOptionInput('edit-options', 1, 'prop2', 'new value');
       fireEvent.click(screen.getByRole('button', { name: 'Simuler og kontroller migrering' }));
       await waitFor(() => expect(fetchSpy).toHaveBeenCalled());
       expect(fetchSpy).toHaveBeenCalledTimes(1);
       expect(fetchSpy).toHaveBeenCalledWith(
-        '/api/migrate?formSearchFilters={"properties.tema":"BIL"}&editOptions={"properties.innsending":"PAPIR_OG_DIGITAL","prop2":"new value"}&migrationLevel=form',
+        '/api/migrate?formSearchFilters={"properties.tema":"BIL"}&editOptions={"properties.submissionTypes":"PAPER,DIGITAL","prop2":"new value"}&migrationLevel=form',
         expectedGetOptions,
       );
     });

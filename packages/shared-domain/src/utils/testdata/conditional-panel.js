@@ -439,7 +439,7 @@ const form = {
   properties: {
     skjemanummer: 'WIP 10-11.16',
     tema: 'CON',
-    innsending: 'PAPIR_OG_DIGITAL',
+    submissionTypes: ['PAPER', 'DIGITAL'],
     hasLabeledSignatures: false,
     signatures: { signature1: '', signature2: '', signature3: '', signature4: '', signature5: '' },
   },

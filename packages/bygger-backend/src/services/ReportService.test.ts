@@ -507,7 +507,7 @@ describe('ReportService', () => {
         const fyllutBaseUrl = 'https://fyllut-preprod.intern.dev.nav.no/fyllut';
         const ettersendingBaseUrl = 'https://fyllut-ettersending.intern.dev.nav.no/fyllut-ettersending';
 
-        // innsending: PAPIR_OG_DIGITAL, ettersending: PAPIR_OG_DIGITAL, 1 attachment
+        // submissionTypes: ['PAPER', 'DIGITAL'], subsequentSubmissionTypes: ['PAPER', 'DIGITAL'], 1 attachment
         expect(formFields1[report.getHeaderIndex(HEADER_INNSENDING)]).toBe(`${fyllutBaseUrl}/test1`);
         expect(formFields1[report.getHeaderIndex(HEADER_INNSENDING_PAPER)]).toBe(`${fyllutBaseUrl}/test1?sub=paper`);
         expect(formFields1[report.getHeaderIndex(HEADER_ETTERSENDING)]).toBe(`${ettersendingBaseUrl}/test1`);
@@ -515,13 +515,13 @@ describe('ReportService', () => {
           `${ettersendingBaseUrl}/test1?sub=paper`,
         );
 
-        // innsending: INGEN, ettersending: KUN_PAPIR, 0 attachments
+        // submissionTypes: [], subsequentSubmissionTypes: ['PAPER'], 0 attachments
         expect(formFields2[report.getHeaderIndex(HEADER_INNSENDING)]).toBe(`${fyllutBaseUrl}/test2`);
         expect(formFields2[report.getHeaderIndex(HEADER_INNSENDING_PAPER)]).toBe(`${fyllutBaseUrl}/test2`);
         expect(formFields2[report.getHeaderIndex(HEADER_ETTERSENDING)]).toBe(``); // no attachments
         expect(formFields2[report.getHeaderIndex(HEADER_ETTERSENDING_PAPER)]).toBe(``);
 
-        // innsending: KUN_PAPIR, ettersending: KUN_PAPIR, 1 attachments
+        // submissionTypes: ['PAPER'], subsequentSubmissionTypes: ['PAPER'], 1 attachments
         expect(formFields3[report.getHeaderIndex(HEADER_INNSENDING)]).toBe(`${fyllutBaseUrl}/test3`);
         expect(formFields3[report.getHeaderIndex(HEADER_INNSENDING_PAPER)]).toBe(`${fyllutBaseUrl}/test3?sub=paper`);
         expect(formFields3[report.getHeaderIndex(HEADER_ETTERSENDING)]).toBe(`${ettersendingBaseUrl}/test3`);
