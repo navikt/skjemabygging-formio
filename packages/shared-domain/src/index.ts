@@ -96,6 +96,7 @@ import {
   SummaryAddress,
   SummaryAttachment,
   SummaryComponent,
+  SummaryDataFetcher,
   SummaryDataGrid,
   SummaryDataGridRow,
   SummaryDrivingList,
@@ -110,6 +111,7 @@ import MockedComponentObjectForTest from './summary/MockedComponentObjectForTest
 import formSummaryUtil from './summary/formSummaryUtil';
 import { TextSize, TextSizeShort } from './text';
 import TEXTS from './texts';
+import { Activity } from './tilleggsstonader/activity';
 import {
   FormsApiFormTranslation,
   FormsApiGlobalTranslation,
@@ -173,6 +175,7 @@ export {
 export type {
   AccordionSettingValue,
   AccordionSettingValues,
+  Activity,
   Address,
   AddressType,
   AktivitetPeriode,
@@ -259,6 +262,7 @@ export type {
   SummaryAddress,
   SummaryAttachment,
   SummaryComponent,
+  SummaryDataFetcher,
   SummaryDataGrid,
   SummaryDataGridRow,
   SummaryDrivingList,
