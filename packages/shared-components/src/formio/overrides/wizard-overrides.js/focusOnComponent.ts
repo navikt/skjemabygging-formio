@@ -27,8 +27,6 @@ const focusOnComponent = (wizard) => (keyOrFocusComponentId: KeyOrFocusComponent
 
   if (page && page !== wizard.currentPage) {
     return wizard.setPage(pageIndex).then(() => {
-      wizard.checkValidity(wizard.submission.data, true, wizard.submission.data);
-      wizard.showErrors();
       const component = wizard.getComponent(key);
       if (component) {
         component.focus({ elementId });
