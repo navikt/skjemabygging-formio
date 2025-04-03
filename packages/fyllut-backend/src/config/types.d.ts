@@ -18,6 +18,14 @@ export type SendInnConfig = {
   };
 };
 
+export type TilleggsstonaderConfig = {
+  host: string;
+  tokenxClientId: string;
+  paths: {
+    activities: string;
+  };
+};
+
 export type ServiceConfig = {
   url: string;
   scope?: string;
@@ -48,6 +56,7 @@ export type DefaultConfig = {
   translationDir?: string;
   tokenx: TokenxConfig;
   sendInnConfig: SendInnConfig;
+  tilleggsstonaderConfig: TilleggsstonaderConfig;
   kodeverk: ServiceConfig;
   norg2: ServiceConfig;
   idporten: IdportenConfig;

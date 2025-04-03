@@ -1,21 +1,40 @@
-import { Request, Response } from 'express';
+import { Activity } from '@navikt/skjemadigitalisering-shared-domain';
+import { NextFunction, Request, Response } from 'express';
+import fetch from 'node-fetch';
+import { config } from '../../../config/config';
+import { logger } from '../../../logger';
 import { getTokenxAccessToken } from '../../../security/tokenHelper';
-import { mapActivityResponse } from './utils';
+import { responseToError } from '../../../utils/errorHandling';
 
-const dummyData = {
-  alternativ: [
-    { tekst: 'Activity 1', id: 'activity1' },
-    { tekst: 'Activity 2', id: 'activity2' },
-    { tekst: 'Activity 3', id: 'activity3' },
-  ],
-};
+const { tilleggsstonaderConfig } = config;
 
-// GET <xx>/aktiviteter?lang=NB/NN/EN -> selv om vi kun har 1 språk nu
 const activities = {
-  get: async (req: Request, res: Response) => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const tokenXAccessToken = getTokenxAccessToken(req);
-    return res.json(mapActivityResponse(dummyData));
+  get: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const tokenxAccessToken = getTokenxAccessToken(req);
+      const activitiesResponse = await fetch(
+        `${tilleggsstonaderConfig.host}${tilleggsstonaderConfig.paths.activities}?stønadstype=BOUTGIFTER`,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${tokenxAccessToken}`,
+          },
+        },
+      );
+
+      logger.info(`Hentet aktiviteter fra Tilleggsstonader med status ${activitiesResponse.status}`);
+
+      if (activitiesResponse.ok) {
+        res.status(activitiesResponse.status);
+        res.json((await activitiesResponse.json()) as Activity[]);
+      } else {
+        logger.debug('Failed to get activities from Tilleggsstonader');
+        next(await responseToError(activitiesResponse, 'Feil ved kall til Tilleggsstonader for aktiviteter', true));
+      }
+    } catch (err) {
+      next(err);
+    }
   },
 };
 
