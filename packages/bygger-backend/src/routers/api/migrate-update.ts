@@ -11,7 +11,7 @@ const migrateUpdate = async (req: ByggerRequest, res: Response, next: NextFuncti
   const accessToken = req.headers.AzureAccessToken as string;
   try {
     const allForms: NavFormType[] = [];
-    const allFormsApiForms = await formsService.getAll('path');
+    const allFormsApiForms = await formsService.getAll<Pick<Form, 'path'>>('path');
     for (const form of allFormsApiForms) {
       const formsApiForm = await formsService.get(form.path);
       allForms.push(formioFormsApiUtils.mapFormToNavForm(formsApiForm));

@@ -1,4 +1,4 @@
-import { formioFormsApiUtils, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, formioFormsApiUtils, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
 import { RequestHandler } from 'express';
 import { logger } from '../../../logging/logger';
 import { formPublicationsService, formsService } from '../../../services';
@@ -68,10 +68,10 @@ const postBulk: RequestHandler = async (req, res, next) => {
   }
 
   try {
-    const allForms = await formsService.getAll('path,revision');
+    const allForms = await formsService.getAll<Pick<Form, 'path' | 'revision'>>('path,revision');
     const formPublications: FormPublication[] = allForms
       .filter((form) => formPaths.includes(form.path))
-      .map((form) => ({ path: form.path, revision: form.revision! }));
+      .map((form) => ({ path: form.path, revision: form.revision }));
     logger.info(`Bulk-publishing ${formPublications.length}...`, { formPaths });
 
     const bulkPublicationResult = await formPublicationsService.postAll(formPublications, accessToken);

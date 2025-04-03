@@ -1,4 +1,4 @@
-import { Form, formioFormsApiUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, formioFormsApiUtils, FormPropertiesType } from '@navikt/skjemadigitalisering-shared-domain';
 import correlator from 'express-correlation-id';
 import { v4 as uuid } from 'uuid';
 
@@ -15,8 +15,12 @@ const createHeaders = (accessToken?: string, revisionId?: number) => {
  *
  * Metoden er implementert kun for å støtte bakoverkompatibilitet og skal fjernes ved migrering
  */
-export const removeInnsendingTypeFromForm = (form: Form): Form => {
-  const formProperties = (({ innsending, ettersending, ...rest }) => rest)(form.properties);
+export const removeInnsendingTypeFromForm = <T extends Partial<Form>>(form: T): T => {
+  if (!form.properties) {
+    return form;
+  }
+
+  const formProperties: FormPropertiesType = (({ innsending, ettersending, ...rest }) => rest)(form.properties);
   return {
     ...form,
     properties: {
