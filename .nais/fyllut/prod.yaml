@@ -12,7 +12,7 @@ gotenberg-url: http://upload-convert-to-pdf.fyllut-sendinn
 gotenberg-url-en: http://upload-convert-to-pdf-en.fyllut-sendinn
 send-inn-token-x-client-id: prod-gcp:team-soknad:innsending-api
 send-inn-host: http://innsending-api.team-soknad
-tilleggsstonader-token-x-client-id: dev-gcp:tilleggsstonader:tilleggsstonader-integrasjoner
+tilleggsstonader-token-x-client-id: prod-gcp:tilleggsstonader:tilleggsstonader-integrasjoner
 tilleggsstonader-integrasjoner-host: http://tilleggsstonader-integrasjoner.tilleggsstonader
 kodeverk:
   url: http://kodeverk-api.team-rocket
