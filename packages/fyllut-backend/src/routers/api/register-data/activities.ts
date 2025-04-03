@@ -1,4 +1,3 @@
-import { Activity } from '@navikt/skjemadigitalisering-shared-domain';
 import { NextFunction, Request, Response } from 'express';
 import fetch from 'node-fetch';
 import { ParsedUrlQueryInput } from 'querystring';
@@ -7,6 +6,7 @@ import { config } from '../../../config/config';
 import { logger } from '../../../logger';
 import { getTokenxAccessToken } from '../../../security/tokenHelper';
 import { responseToError } from '../../../utils/errorHandling';
+import { ActivityResponse, mapActivityResponse } from './utils';
 
 const { tilleggsstonaderConfig } = config;
 
@@ -32,7 +32,7 @@ const activities = {
 
       if (activitiesResponse.ok) {
         res.status(activitiesResponse.status);
-        res.json((await activitiesResponse.json()) as Activity[]);
+        res.json(mapActivityResponse((await activitiesResponse.json()) as ActivityResponse));
       } else {
         logger.debug('Failed to get activities from Tilleggsstonader');
         next(await responseToError(activitiesResponse, 'Feil ved kall til Tilleggsstonader for aktiviteter', true));
