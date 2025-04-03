@@ -64,7 +64,7 @@ class DataFetcher extends BaseComponent {
         <NavDataFetcher
           label={
             <>
-              <Label component={this.component} editFields={this.getEditFields()} /> OBS! Skal ikke publiseres
+              <Label component={this.component} editFields={this.getEditFields()} /> (OBS! Skal ikke publiseres)
             </>
           }
           description={<Description component={this.component} />}
