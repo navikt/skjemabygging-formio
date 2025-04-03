@@ -7,11 +7,11 @@ import { FormPostBody, FormPutBody, FormsService } from './types';
 const createFormsService = (formsApiUrl: string): FormsService => {
   const formsUrl = `${formsApiUrl}/v1/forms`;
 
-  const getAll = async (select?: string): Promise<Array<Partial<Form>>> => {
+  const getAll = async <T extends Partial<Form>>(select?: string): Promise<Array<T>> => {
     const search = select ? new URLSearchParams({ select }) : '';
     const url = `${formsUrl}?${search}`;
     const response = await fetchWithErrorHandling(url, { headers: createHeaders() });
-    return (response.data as Partial<Form>[]).map(removeInnsendingTypeFromForm);
+    return (response.data as T[]).map(removeInnsendingTypeFromForm);
   };
 
   const get = async (formPath: string): Promise<Form> => {

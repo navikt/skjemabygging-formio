@@ -15,7 +15,7 @@ const createHeaders = (accessToken?: string, revisionId?: number) => {
  *
  * Metoden er implementert kun for å støtte bakoverkompatibilitet og skal fjernes ved migrering
  */
-export const removeInnsendingTypeFromForm = (form: Partial<Form>): Partial<Form> => {
+export const removeInnsendingTypeFromForm = <T extends Partial<Form>>(form: T): T => {
   if (!form.properties) {
     return form;
   }
