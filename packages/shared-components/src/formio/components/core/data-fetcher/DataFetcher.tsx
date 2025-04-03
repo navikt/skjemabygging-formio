@@ -73,6 +73,7 @@ class DataFetcher extends BaseComponent {
             this.changeHandler(value);
           }}
           className={this.getClassName()}
+          queryParams={this.component?.queryParams}
           error={this.getError()}
           dataFetcherData={this.getDataFromMetadata()}
           setMetadata={(metaData) => this.setMetadata(metaData)}

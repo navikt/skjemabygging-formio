@@ -1,6 +1,8 @@
 import { Activity } from '@navikt/skjemadigitalisering-shared-domain';
 import { NextFunction, Request, Response } from 'express';
 import fetch from 'node-fetch';
+import { ParsedUrlQueryInput } from 'querystring';
+import url from 'url';
 import { config } from '../../../config/config';
 import { logger } from '../../../logger';
 import { getTokenxAccessToken } from '../../../security/tokenHelper';
@@ -13,7 +15,10 @@ const activities = {
     try {
       const tokenxAccessToken = getTokenxAccessToken(req);
       const activitiesResponse = await fetch(
-        `${tilleggsstonaderConfig.host}${tilleggsstonaderConfig.paths.activities}?stønadstype=BOUTGIFTER`,
+        url.format({
+          pathname: `${tilleggsstonaderConfig.host}${tilleggsstonaderConfig.paths.activities}`,
+          query: req.query as ParsedUrlQueryInput,
+        }),
         {
           method: 'GET',
           headers: {

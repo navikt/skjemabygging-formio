@@ -18,13 +18,14 @@ interface Props {
   className?: string;
   value?: Record<string, boolean>;
   onChange: (value: Record<string, boolean>) => void;
+  queryParams?: Record<string, string>;
   error?: ReactNode;
   setMetadata: (data: DataFetcherData) => void;
   dataFetcherData?: DataFetcherData;
 }
 
 const DataFetcher = forwardRef<HTMLFieldSetElement, Props>(
-  ({ label, value, description, className, onChange, error, dataFetcherData, setMetadata }, ref) => {
+  ({ label, value, description, className, onChange, queryParams, error, dataFetcherData, setMetadata }, ref) => {
     const [loading, setLoading] = useState(false);
     const [done, setDone] = useState(false);
     const { appConfig } = useComponentUtils();
@@ -36,7 +37,7 @@ const DataFetcher = forwardRef<HTMLFieldSetElement, Props>(
     const fetchData = useCallback(async () => {
       try {
         setLoading(true);
-        const result = await getActivities(appConfig);
+        const result = await getActivities(appConfig, queryParams);
         if (result) {
           setMetadata({ data: result });
         }

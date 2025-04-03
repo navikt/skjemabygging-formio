@@ -124,6 +124,8 @@ export interface Component {
   protectedApiKey?: boolean;
   yourInformation?: boolean;
   widthPercent?: number;
+  // DataFetcher
+  queryParams?: Record<string, string>;
 }
 
 export interface ComponentProperties {
