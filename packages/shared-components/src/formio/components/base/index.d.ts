@@ -76,6 +76,7 @@ interface ReactComponentType {
   labelIsHidden(): boolean;
   setCustomValidity(messages: string | string[] | ComponentError[], dirty?: boolean, external?: boolean): void;
   isEmpty(value?: any): boolean;
+  triggerChange(flags?: any): boolean;
   parent?: ReactComponentType;
   type: string;
   // Element
