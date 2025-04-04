@@ -29,8 +29,8 @@ const AddressTypeChoice = ({ onChange, values, label }: Props) => {
           },
         ]}
         onChange={(value) => onChange('borDuINorge', value)}
-        ref={(ref) => addRef('borDuINorge', ref)}
-        error={getComponentError('borDuINorge')}
+        ref={(ref) => addRef('address:borDuINorge', ref)}
+        error={getComponentError('address:borDuINorge')}
       />
       {values?.borDuINorge === 'ja' && (
         <Radio
@@ -48,8 +48,8 @@ const AddressTypeChoice = ({ onChange, values, label }: Props) => {
             },
           ]}
           onChange={(value) => onChange('vegadresseEllerPostboksadresse', value)}
-          ref={(ref) => addRef('vegadresseEllerPostboksadresse', ref)}
-          error={getComponentError('vegadresseEllerPostboksadresse')}
+          ref={(ref) => addRef('address:vegadresseEllerPostboksadresse', ref)}
+          error={getComponentError('address:vegadresseEllerPostboksadresse')}
         />
       )}
     </>
