@@ -7,6 +7,15 @@ import fetchWithRetry from '../../utils/fetchWithRetry';
 
 const { gotenbergUrl, gotenbergUrlEn } = config;
 
+const pagePropertiesA4PageAndMarging: { key: string; value: number }[] = [
+  { key: 'paperWidth', value: 8.2 },
+  { key: 'paperHeight', value: 11.69 },
+  { key: 'marginBottom', value: 0.39 },
+  { key: 'marginTop', value: 0.39 },
+  { key: 'marginLeft', value: 0.39 },
+  { key: 'marginRight', value: 0.39 },
+];
+
 // Sette opp formdata til å merge en liste av PDFer
 export const mergeFiles = async (
   schema: string,
@@ -22,6 +31,10 @@ export const mergeFiles = async (
     if (buffer != undefined && index != undefined) {
       formData.append('files', buffer, `file${index}.pdf`);
     }
+  });
+
+  pagePropertiesA4PageAndMarging.forEach((it) => {
+    formData.append(it.key, it.value);
   });
 
   formData.append('merge', 'true');
