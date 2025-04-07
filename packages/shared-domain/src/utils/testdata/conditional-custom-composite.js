@@ -404,7 +404,7 @@ const form = {
   properties: {
     skjemanummer: 'conditionalcustomcomposite',
     tema: 'FAR',
-    innsending: 'PAPIR_OG_DIGITAL',
+    submissionTypes: ['PAPER', 'DIGITAL'],
     isTestForm: true,
     modified: '2023-03-22T08:51:47.268Z',
     modifiedBy: 'testBruker',

@@ -921,7 +921,10 @@
         "description": ""
       }
     ],
-    "ettersending": "PAPIR_OG_DIGITAL",
+    "subsequentSubmissionTypes": [
+      "PAPER",
+      "DIGITAL"
+    ],
     "skjemanummer": "test-skjemagruppe",
     "submissionTypes": [
       "PAPER",
