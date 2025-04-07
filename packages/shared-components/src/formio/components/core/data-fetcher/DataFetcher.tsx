@@ -55,6 +55,7 @@ class DataFetcher extends BaseComponent {
     if (componentKey && !submission.metadata.dataFetcher[componentKey]) {
       submission.metadata.dataFetcher[componentKey] = data;
     }
+    this.triggerChange();
     this.rerender();
   }
 

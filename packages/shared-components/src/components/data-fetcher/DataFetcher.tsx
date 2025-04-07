@@ -41,17 +41,16 @@ const DataFetcher = forwardRef<HTMLFieldSetElement, Props>(
         if (result) {
           setMetadata({ data: result });
         }
-      } catch (error) {
-        console.error('Failed to fetch activities:', error);
+      } catch (_error) {
         setMetadata({ fetchError: true });
       } finally {
         setLoading(false);
         setDone(true);
       }
-    }, [appConfig, setMetadata]);
+    }, [appConfig, queryParams, setMetadata]);
 
     useEffect(() => {
-      if (isPreviewMode) {
+      if (isPreviewMode && !data) {
         setMetadata({ data: previewData });
       } else if (isFyllut && !done && !data && !fetchError && !loading) {
         fetchData();
@@ -62,7 +61,7 @@ const DataFetcher = forwardRef<HTMLFieldSetElement, Props>(
       return <SkeletonList size={3} height={'4rem'} />;
     }
 
-    if (!data) {
+    if (!data || !data.length) {
       return <></>;
     }
 
