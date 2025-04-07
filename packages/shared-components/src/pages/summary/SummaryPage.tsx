@@ -177,7 +177,13 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
           />
         </div>
         <div className="right-col">
-          <FormStepper form={form} formUrl={formUrl} submission={submission} />
+          <FormStepper
+            form={form}
+            formUrl={formUrl}
+            submission={submission}
+            activeStep={'oppsummering'}
+            completed={true}
+          />
         </div>
       </section>
     </div>
