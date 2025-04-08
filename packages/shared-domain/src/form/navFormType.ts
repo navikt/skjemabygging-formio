@@ -37,5 +37,8 @@ export interface ResourceAccess {
 }
 
 export interface FormsResponseForm extends Pick<NavFormType, '_id' | 'title' | 'path' | 'modified'> {
-  properties: Pick<FormPropertiesType, 'skjemanummer' | 'subsequentSubmissionTypes' | 'submissionTypes'>;
+  properties: Pick<
+    FormPropertiesType,
+    'skjemanummer' | 'ettersending' | 'subsequentSubmissionTypes' | 'submissionTypes'
+  >;
 }

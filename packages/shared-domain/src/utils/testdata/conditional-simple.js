@@ -270,7 +270,7 @@ const form = {
   properties: {
     skjemanummer: 'WIP 10-11.16',
     tema: 'CON',
-    submissionTypes: ['PAPER', 'DIGITAL'],
+    innsending: 'PAPIR_OG_DIGITAL',
     hasLabeledSignatures: false,
     signatures: {
       signature1: '',

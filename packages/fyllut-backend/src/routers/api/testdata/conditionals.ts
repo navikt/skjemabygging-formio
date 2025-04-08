@@ -470,8 +470,8 @@ export const conditionalsForm = {
   properties: {
     skjemanummer: 'test-duplicate-key',
     tema: 'AAP',
-    submissionTypes: ['PAPER', 'DIGITAL'],
-    subsequentSubmissionTypes: ['PAPER', 'DIGITAL'],
+    innsending: 'PAPIR_OG_DIGITAL',
+    ettersending: 'PAPIR_OG_DIGITAL',
     signatures: [
       {
         label: '',

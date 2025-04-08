@@ -888,7 +888,7 @@ const form = {
   properties: {
     skjemanummer: 'WIP 10-11.15',
     tema: 'NED',
-    submissionTypes: ['PAPER', 'DIGITAL'],
+    innsending: 'PAPIR_OG_DIGITAL',
     hasLabeledSignatures: false,
     signatures: {
       signature1: '',

@@ -22,7 +22,7 @@ describe('PrepareIngenInnsendingPage', () => {
     display: 'wizard',
     properties: {
       skjemanummer: '',
-      submissionTypes: [],
+      innsending: 'INGEN',
       innsendingOverskrift: 'Skriv ut skjemaet',
       innsendingForklaring: 'Gi det til pasienten',
     },

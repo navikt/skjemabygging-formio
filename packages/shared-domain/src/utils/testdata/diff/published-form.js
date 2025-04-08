@@ -737,7 +737,7 @@ const form = {
   properties: {
     skjemanummer: 'TEST-AK-001',
     tema: 'TEST',
-    submissionTypes: ['PAPER', 'DIGITAL'],
+    innsending: 'PAPIR_OG_DIGITAL',
     hasLabeledSignatures: false,
     modified: '2023-01-10T14:03:22.381Z',
     enhetMaVelgesVedPapirInnsending: true,

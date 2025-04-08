@@ -8,12 +8,12 @@ class FormService {
   async loadForm(formPath: string): Promise<NavFormType | null | undefined> {
     if (useFormsApiStaging) {
       const form: Form = (await fetchFromApi(`${formsApiUrl}/v1/forms/${formPath}`)) as Form;
-      return form ? formioFormsApiUtils.mapFormToNavForm(form) : null;
+      return form ? formioFormsApiUtils.removeInnsendingFromForm(formioFormsApiUtils.mapFormToNavForm(form)) : null;
     } else if (useFormioMockApi) {
       const forms: any = await fetchFromApi(`${formioApiServiceUrl}/form?type=form&tags=nav-skjema&path=${formPath}`);
-      return forms.length > 0 ? forms[0] : null;
+      return forms.length > 0 ? formioFormsApiUtils.removeInnsendingFromForm(forms[0]) : null;
     } else {
-      return await loadFileFromDirectory(skjemaDir, formPath, undefined);
+      return formioFormsApiUtils.removeInnsendingFromForm(await loadFileFromDirectory(skjemaDir, formPath, undefined));
     }
   }
 
@@ -31,7 +31,7 @@ class FormService {
       forms = await loadAllJsonFilesFromDirectory(skjemaDir);
     }
 
-    return forms.map((form: NavFormType) => form);
+    return forms.map((form: NavFormType) => formioFormsApiUtils.removeInnsendingFromForm(form));
   }
 }
 
