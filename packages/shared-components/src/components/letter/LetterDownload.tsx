@@ -22,7 +22,7 @@ const LetterDownload = ({ form, index, submission, enhetsListe, translations }: 
     <section className="wizard-page" aria-label={`${index}. ${translate(TEXTS.grensesnitt.downloadApplication)}`}>
       <BodyShort className="mb-4">{translate(TEXTS.statiske.prepareLetterPage.firstDescription)}</BodyShort>
       <Heading level="3" size="medium" spacing>
-        {`${index}. ${TEXTS.grensesnitt.downloadApplication}`}
+        {`${index}. ${translate(TEXTS.grensesnitt.downloadApplication)}`}
       </Heading>
       <EnhetSelector
         enhetsliste={enhetsListe}
