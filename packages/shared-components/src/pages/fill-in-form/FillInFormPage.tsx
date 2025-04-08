@@ -1,5 +1,6 @@
 import {
   ComponentError,
+  FyllutState,
   NavFormType,
   navFormUtils,
   Submission,
@@ -8,8 +9,7 @@ import {
 import EventEmitter from 'eventemitter3';
 import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import FormError from '../../components/form/FormError';
-import FormSavedStatus from '../../components/form/FormSavedStatus';
+import FormStepper from '../../components/form/form-stepper/FormStepper';
 import ConfirmationModal from '../../components/modal/confirmation/ConfirmationModal';
 import NavForm from '../../components/nav-form/NavForm';
 import { useAppConfig } from '../../context/config/configContext';
@@ -27,7 +27,7 @@ type FyllutEvent = 'focusOnComponent';
 interface FillInFormPageProps {
   form: NavFormType;
   submission?: Submission;
-  setSubmission: Dispatch<SetStateAction<Submission | undefined>>;
+  setSubmission: Dispatch<SetStateAction<Submission | { fyllutState: FyllutState } | undefined>>;
   formUrl: string;
 }
 
@@ -165,6 +165,15 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: Fil
     [formUrl, isMellomlagringActive, navigate, setSubmission, updateMellomlagring],
   );
 
+  const onChange = useCallback((changedSubmission: Submission) => {
+    if (changedSubmission.changed?.flags?.fromBlur) {
+      setSubmission({
+        ...submission,
+        data: changedSubmission.data,
+      });
+    }
+  }, []);
+
   const onConfirmCancel = useCallback(async () => {
     switch (showModal) {
       case 'save':
@@ -227,34 +236,36 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: Fil
   }
 
   return (
-    <div>
-      <FormErrorSummary
-        heading={translate(TEXTS.validering.error)}
-        errors={errors}
-        focusOnComponent={focusOnComponent}
-        ref={(ref) => (errorSummaryRef.current = ref)}
-      />
-      <NavForm
-        form={formForRendering}
-        language={currentLanguage}
-        i18n={translationsForNavForm}
-        submission={submission}
-        fyllutEvents={fyllutEvents}
-        className="nav-form"
-        events={{
-          onSubmit,
-          onNextPage,
-          onPrevPage,
-          onCancel,
-          onSave,
-          onWizardPageSelected,
-          onShowErrors,
-          onErrorSummaryFocus,
-        }}
-      />
-      <FormSavedStatus submission={submission} />
-      <div className="fyllut-layout">
-        <FormError error={submission?.fyllutState?.mellomlagring?.error} />
+    <div className="fyllut-layout">
+      <div>
+        <FormErrorSummary
+          heading={translate(TEXTS.validering.error)}
+          errors={errors}
+          focusOnComponent={focusOnComponent}
+          ref={(ref) => (errorSummaryRef.current = ref)}
+        />
+        <NavForm
+          form={formForRendering}
+          language={currentLanguage}
+          i18n={translationsForNavForm}
+          submission={submission}
+          fyllutEvents={fyllutEvents}
+          className="nav-form"
+          events={{
+            onSubmit,
+            onNextPage,
+            onPrevPage,
+            onCancel,
+            onChange,
+            onSave,
+            onWizardPageSelected,
+            onShowErrors,
+            onErrorSummaryFocus,
+          }}
+        />
+      </div>
+      <div>
+        <FormStepper form={formForRendering} formUrl={formUrl} completed={true} setSubmission={setSubmission} />
       </div>
       <ConfirmationModal
         open={!!showModal}

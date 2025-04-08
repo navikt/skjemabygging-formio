@@ -13,6 +13,11 @@ export interface Submission {
     pathName: string;
     onLine: boolean;
   };
+  changed?: {
+    flags?: {
+      [key: string]: boolean;
+    };
+  };
   state?: string;
   fyllutState?: FyllutState;
 }
