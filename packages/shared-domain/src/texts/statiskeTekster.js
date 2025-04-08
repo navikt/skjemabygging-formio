@@ -116,7 +116,6 @@ export const statiske = {
     selectEntityDefault: 'Velg enhet',
     entityNotSelectedError: 'Søknaden kan ikke lastes ned før du har valgt enhet',
     entityFetchError: 'En feil har oppstått. Vi kunne ikke laste enheter. Beklager ulempen, prøv igjen senere.',
-    firstSectionTitle: 'Last ned skjema',
     firstDescription: 'Gjør følgende for å sende det til Nav:',
     printFormTitle: 'Skriv ut og signér skjemaet',
     printFormDescription: 'Du må signere til slutt i skjemaet.',
