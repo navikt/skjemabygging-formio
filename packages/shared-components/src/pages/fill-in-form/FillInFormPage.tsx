@@ -1,6 +1,5 @@
 import {
   ComponentError,
-  FyllutState,
   NavFormType,
   navFormUtils,
   Submission,
@@ -27,7 +26,7 @@ type FyllutEvent = 'focusOnComponent';
 interface FillInFormPageProps {
   form: NavFormType;
   submission?: Submission;
-  setSubmission: Dispatch<SetStateAction<Submission | { fyllutState: FyllutState } | undefined>>;
+  setSubmission: Dispatch<SetStateAction<Submission | undefined>>;
   formUrl: string;
 }
 
@@ -165,14 +164,17 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: Fil
     [formUrl, isMellomlagringActive, navigate, setSubmission, updateMellomlagring],
   );
 
-  const onChange = useCallback((changedSubmission: Submission) => {
-    if (changedSubmission.changed?.flags?.fromBlur) {
-      setSubmission({
-        ...submission,
-        data: changedSubmission.data,
-      });
-    }
-  }, []);
+  const onChange = useCallback(
+    (changedSubmission: Submission) => {
+      if (changedSubmission.changed?.flags?.fromBlur) {
+        setSubmission({
+          ...submission,
+          data: changedSubmission.data,
+        });
+      }
+    },
+    [setSubmission, submission],
+  );
 
   const onConfirmCancel = useCallback(async () => {
     switch (showModal) {
