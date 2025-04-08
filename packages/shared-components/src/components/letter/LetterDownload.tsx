@@ -19,13 +19,10 @@ const LetterDownload = ({ form, index, submission, enhetsListe, translations }: 
   const [isRequiredEnhetMissing, setIsRequiredEnhetMissing] = useState(false);
 
   return (
-    <section
-      className="wizard-page"
-      aria-label={`${index}. ${translate(TEXTS.statiske.prepareLetterPage.firstSectionTitle)}`}
-    >
+    <section className="wizard-page" aria-label={`${index}. ${translate(TEXTS.grensesnitt.downloadApplication)}`}>
       <BodyShort className="mb-4">{translate(TEXTS.statiske.prepareLetterPage.firstDescription)}</BodyShort>
       <Heading level="3" size="medium" spacing>
-        {`${index}. ${translate(TEXTS.statiske.prepareLetterPage.firstSectionTitle)}`}
+        {`${index}. ${TEXTS.grensesnitt.downloadApplication}`}
       </Heading>
       <EnhetSelector
         enhetsliste={enhetsListe}
