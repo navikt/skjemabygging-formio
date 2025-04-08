@@ -43,6 +43,10 @@ class DataFetcher extends BaseComponent {
     return componentKey ? this.root.submission.metadata?.dataFetcher?.[componentKey] : undefined;
   }
 
+  setShowAdditionalDescription(value: boolean) {
+    this.showAdditionalDescription = value;
+  }
+
   setMetadata(data: any) {
     const componentKey = this.component?.key;
     const submission = this.root.submission;
@@ -56,7 +60,7 @@ class DataFetcher extends BaseComponent {
       submission.metadata.dataFetcher[componentKey] = data;
     }
     this.triggerChange();
-    this.rerender();
+    this.redraw();
   }
 
   renderReact(element) {
@@ -78,6 +82,7 @@ class DataFetcher extends BaseComponent {
           error={this.getError()}
           dataFetcherData={this.getDataFromMetadata()}
           setMetadata={(metaData) => this.setMetadata(metaData)}
+          setShowAdditionalDescription={(value) => this.setShowAdditionalDescription(value)}
         />
       </ComponentUtilsProvider>,
     );

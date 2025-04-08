@@ -21,11 +21,26 @@ interface Props {
   queryParams?: Record<string, string>;
   error?: ReactNode;
   setMetadata: (data: DataFetcherData) => void;
+  setShowAdditionalDescription: (value: boolean) => void;
   dataFetcherData?: DataFetcherData;
 }
 
 const DataFetcher = forwardRef<HTMLFieldSetElement, Props>(
-  ({ label, value, description, className, onChange, queryParams, error, dataFetcherData, setMetadata }, ref) => {
+  (
+    {
+      label,
+      value,
+      description,
+      className,
+      onChange,
+      queryParams,
+      error,
+      dataFetcherData,
+      setMetadata,
+      setShowAdditionalDescription,
+    },
+    ref,
+  ) => {
     const [loading, setLoading] = useState(false);
     const [done, setDone] = useState(false);
     const { appConfig } = useComponentUtils();
@@ -39,23 +54,38 @@ const DataFetcher = forwardRef<HTMLFieldSetElement, Props>(
         setLoading(true);
         const result = await getActivities(appConfig, queryParams);
         if (result) {
+          setShowAdditionalDescription(result.length > 0);
           setMetadata({ data: result });
         }
-      } catch (_error) {
+      } catch (error) {
+        console.error('Failed to fetch activities:', error);
+        setShowAdditionalDescription(false);
         setMetadata({ fetchError: true });
       } finally {
         setLoading(false);
         setDone(true);
       }
-    }, [appConfig, queryParams, setMetadata]);
+    }, [appConfig, queryParams, setMetadata, setShowAdditionalDescription]);
 
     useEffect(() => {
       if (isPreviewMode && !data) {
+        setShowAdditionalDescription(previewData.length > 0);
         setMetadata({ data: previewData });
       } else if (isFyllut && !done && !data && !fetchError && !loading) {
         fetchData();
       }
-    }, [appConfig, isPreviewMode, fetchData, fetchError, setMetadata, data, loading, isFyllut, done]);
+    }, [
+      appConfig,
+      isPreviewMode,
+      fetchData,
+      fetchError,
+      setMetadata,
+      data,
+      loading,
+      isFyllut,
+      done,
+      setShowAdditionalDescription,
+    ]);
 
     if (loading) {
       return <SkeletonList size={3} height={'4rem'} />;
