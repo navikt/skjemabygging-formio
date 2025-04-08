@@ -1,23 +1,23 @@
 import { SubmissionType } from '../form';
 
 function isDigitalSubmission(submissionTypes: SubmissionType[]): boolean {
-  return submissionTypes.includes('DIGITAL');
+  return submissionTypes?.includes('DIGITAL');
 }
 
 function isDigitalSubmissionOnly(submissionTypes: SubmissionType[]): boolean {
-  return !submissionTypes.includes('PAPER') && submissionTypes.includes('DIGITAL');
+  return !submissionTypes?.includes('PAPER') && submissionTypes.includes('DIGITAL');
 }
 
 function isPaperSubmission(submissionTypes: SubmissionType[]): boolean {
-  return submissionTypes.includes('PAPER');
+  return submissionTypes?.includes('PAPER');
 }
 
 function isPaperSubmissionOnly(submissionTypes: SubmissionType[]): boolean {
-  return submissionTypes.includes('PAPER') && !submissionTypes.includes('DIGITAL');
+  return submissionTypes?.includes('PAPER') && !submissionTypes.includes('DIGITAL');
 }
 
 function isNoneSubmission(submissionTypes: SubmissionType[]): boolean {
-  return !submissionTypes.length;
+  return !submissionTypes?.length;
 }
 
 const submissionTypesUtils = {
