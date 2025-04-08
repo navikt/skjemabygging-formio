@@ -568,5 +568,44 @@ describe('utils-overrides', () => {
       expect(UtilsOverrides.dataFetcher('aktiviteter', submission).failure).toBe(true);
       expect(UtilsOverrides.dataFetcher('aktiviteter', submission).empty).toBe(undefined);
     });
+
+    describe('selected', () => {
+      it('returns true if any item with matches input, false otherwise', () => {
+        let submission = {
+          data: {
+            aktivitetsvelger: { 1: true, 2: false },
+          },
+          metadata: {
+            dataFetcher: {
+              aktivitetsvelger: {
+                data: [
+                  { value: 1, label: 'Aktivitet 1', type: 'BOSTOTTE' },
+                  { value: 2, label: 'Aktivitet 2', type: 'TILTAK' },
+                ],
+              },
+            },
+          },
+        };
+        expect(UtilsOverrides.dataFetcher('aktivitetsvelger', submission).selected({ type: 'BOSTOTTE' })).toBe(true);
+        expect(UtilsOverrides.dataFetcher('aktivitetsvelger', submission).selected({ type: 'TILTAK' })).toBe(false);
+      });
+
+      it('returns undefined if API fetch failed', () => {
+        let submission = {
+          data: {
+            aktivitetsvelger: { 1: true, 2: false },
+          },
+          metadata: {
+            dataFetcher: {
+              aktivitetsvelger: { fetchError: true },
+            },
+          },
+        };
+        expect(UtilsOverrides.dataFetcher('aktivitetsvelger', submission).selected({ type: 'BOSTOTTE' })).toBe(
+          undefined,
+        );
+        expect(UtilsOverrides.dataFetcher('aktivitetsvelger', submission).selected({ type: 'TILTAK' })).toBe(undefined);
+      });
+    });
   });
 });
