@@ -3,7 +3,7 @@ import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 export const defaultFormProperties = {
   skjemanummer: 'NAV 10-11.13',
   tema: 'BIL',
-  submissionTypes: [],
+  innsending: undefined,
   hasLabeledSignatures: false,
   signatures: undefined,
 };

@@ -110,8 +110,8 @@ export const requestBody = {
     properties: {
       skjemanummer: 'NAV 99-99.99',
       tema: 'AGR',
-      submissionTypes: ['PAPER', 'DIGITAL'],
-      subsequentSubmissionTypes: ['PAPER', 'DIGITAL'],
+      innsending: 'PAPIR_OG_DIGITAL',
+      ettersending: 'PAPIR_OG_DIGITAL',
     },
   },
   submission: { data: { fornavnSoker: 'Kalle', etternavnSoker: 'Hansen' } },

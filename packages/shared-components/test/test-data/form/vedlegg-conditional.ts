@@ -5166,7 +5166,7 @@ const form = {
   properties: {
     skjemanummer: 'NAV 08-35.01',
     tema: 'SYK',
-    submissionTypes: ['PAPER', 'DIGITAL'],
+    innsending: 'PAPIR_OG_DIGITAL',
     hasLabeledSignatures: false,
     modified: '2022-11-11T08:16:10.495Z',
     modifiedBy: 'Rosseland, Rune',

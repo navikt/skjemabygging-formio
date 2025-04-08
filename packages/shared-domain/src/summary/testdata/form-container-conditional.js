@@ -657,7 +657,7 @@ const form = {
   properties: {
     skjemanummer: 'TEST-AK-002',
     tema: 'BIL',
-    submissionTypes: ['PAPER', 'DIGITAL'],
+    innsending: 'PAPIR_OG_DIGITAL',
     signatures: [{ label: '', description: '', key: 'addf238d-814c-48dd-9167-fb8f06aee95d' }],
     modified: '2022-09-05T07:58:12.346Z',
     modifiedBy: 'ann.katrin.gagnat@nav.no',
