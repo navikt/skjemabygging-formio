@@ -40,13 +40,12 @@ module.exports = [
         },
       },
       {
-        id: 'failure',
+        id: 'error',
         type: 'json',
         options: {
           status: 500,
           body: {
-            correlation_id: '314f1bcc-44da-4f74-b264-28311e32dcff',
-            message: 'Feil ved kall til Tilleggsstonader for aktiviteter',
+            message: 'Internal server error',
           },
         },
       },

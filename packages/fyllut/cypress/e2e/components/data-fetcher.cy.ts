@@ -10,14 +10,9 @@ describe('Data fetcher', () => {
   });
 
   describe('Rendering', () => {
-    beforeEach(() => {
-      cy.defaultIntercepts();
-      cy.visit('/fyllut/datafetchertest/arbeidsrettetaktivitet?sub=digital');
-      cy.defaultWaits();
-      cy.mocksRestoreRouteVariants();
-    });
-
     it('should render component data exists', () => {
+      cy.mocksUseRouteVariant('get-register-data-activities:success');
+      cy.visit('/fyllut/datafetchertest/arbeidsrettetaktivitet?sub=digital');
       cy.findByRole('group', { name: LABEL_AKTIVITETSVELGER })
         .should('exist')
         .within(() => {
@@ -27,11 +22,14 @@ describe('Data fetcher', () => {
 
     it('should not render component when data is empty', () => {
       cy.mocksUseRouteVariant('get-register-data-activities:success-empty');
+      cy.visit('/fyllut/datafetchertest/arbeidsrettetaktivitet?sub=digital');
       cy.findByRole('group', { name: LABEL_AKTIVITETSVELGER }).should('not.exist');
+      cy.get('.navds-alert--warning').contains('Ingen aktiviteter ble hentet');
     });
 
     it('should not render component when backend fails', () => {
-      cy.mocksUseRouteVariant('get-register-data-activities:failure');
+      cy.mocksUseRouteVariant('get-register-data-activities:error');
+      cy.visit('/fyllut/datafetchertest/arbeidsrettetaktivitet?sub=digital');
       cy.findByRole('group', { name: LABEL_AKTIVITETSVELGER }).should('not.exist');
       cy.get('.navds-alert--error').contains('Kall for å hente aktiviteter feilet');
     });
