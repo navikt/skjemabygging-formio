@@ -6,8 +6,6 @@ import {
   Submission,
   translationUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
-import { writeFileSync } from 'node:fs';
-import path from 'node:path';
 import { base64Decode } from '../../utils/base64';
 import { htmlResponseError } from '../../utils/errorHandling';
 import applicationService from './applicationService';
@@ -81,9 +79,6 @@ const coverPageAndApplication = async (props: CoverPageAndApplicationProps) => {
   if (applicationPdf === undefined) {
     throw htmlResponseError('Generering av søknads PDF feilet');
   }
-
-  const root = process.cwd();
-  writeFileSync(path.join(root, '/tmp/soknad.pdf'), applicationPdf);
 
   const documents = [coverPagePdf, applicationPdf];
 
