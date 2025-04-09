@@ -1,4 +1,6 @@
 describe('Data fetcher', () => {
+  const LABEL_AKTIVITETSVELGER = 'Aktivitetsvelger (OBS! Skal ikke publiseres)';
+
   before(() => {
     cy.configMocksServer();
   });
@@ -11,7 +13,7 @@ describe('Data fetcher', () => {
     it('should render component data exists', () => {
       cy.mocksUseRouteVariant('get-register-data-activities:success');
       cy.visit('/fyllut/datafetchertest/arbeidsrettetaktivitet?sub=digital');
-      cy.findByRole('group', { name: 'Aktivitetsvelger (OBS! Skal ikke publiseres)' })
+      cy.findByRole('group', { name: LABEL_AKTIVITETSVELGER })
         .should('exist')
         .within(() => {
           cy.findAllByRole('checkbox').should('have.length', 3);
@@ -21,14 +23,14 @@ describe('Data fetcher', () => {
     it('should not render component when data is empty', () => {
       cy.mocksUseRouteVariant('get-register-data-activities:success-empty');
       cy.visit('/fyllut/datafetchertest/arbeidsrettetaktivitet?sub=digital');
-      cy.findByRole('group', { name: 'Aktivitetsvelger (OBS! Skal ikke publiseres)' }).should('not.exist');
+      cy.findByRole('group', { name: LABEL_AKTIVITETSVELGER }).should('not.exist');
       cy.get('.navds-alert--warning').contains('Ingen aktiviteter ble hentet');
     });
 
     it('should not render component when backend fails', () => {
       cy.mocksUseRouteVariant('get-register-data-activities:error');
       cy.visit('/fyllut/datafetchertest/arbeidsrettetaktivitet?sub=digital');
-      cy.findByRole('group', { name: 'Aktivitetsvelger (OBS! Skal ikke publiseres)' }).should('not.exist');
+      cy.findByRole('group', { name: LABEL_AKTIVITETSVELGER }).should('not.exist');
       cy.get('.navds-alert--error').contains('Kall for å hente aktiviteter feilet');
     });
   });
@@ -42,6 +44,33 @@ describe('Data fetcher', () => {
       cy.visit('/fyllut/datafetchertest/arbeidsrettetaktivitet?sub=digital');
       cy.clickSaveAndContinue();
       cy.findByRole('link', { name: `Du må fylle ut: Aktivitetsvelger` }).should('exist');
+    });
+
+    it('should not display validation error when data is empty', () => {
+      cy.mocksUseRouteVariant('get-register-data-activities:success-empty');
+      cy.visit('/fyllut/datafetchertest/arbeidsrettetaktivitet?sub=digital');
+      cy.clickSaveAndContinue();
+      cy.findByRole('link', { name: `Du må fylle ut: Aktivitetsvelger` }).should('not.exist');
+      cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
+    });
+  });
+
+  describe('Conditionals', () => {
+    beforeEach(() => {
+      cy.mocksRestoreRouteVariants();
+      cy.defaultIntercepts();
+      cy.visit('/fyllut/datafetchertest/arbeidsrettetaktivitet?sub=digital');
+      cy.defaultWaits();
+    });
+
+    it('should show component with conditional referring to chosed item', () => {
+      cy.get('.navds-alert--info').should('not.exist');
+      cy.findByRole('group', { name: LABEL_AKTIVITETSVELGER })
+        .should('exist')
+        .within(() => {
+          cy.findByRole('checkbox', { name: 'Aktivitet 3' }).should('exist').check();
+        });
+      cy.get('.navds-alert--info').contains('Du har valgt aktivitet med type TILTAK');
     });
   });
 });
