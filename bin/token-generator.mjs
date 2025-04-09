@@ -70,7 +70,7 @@ for (const env of jsonConfig) {
   process.stdout.write(`${env.name} ${ICON_CHECK} (expires at ${expiresAt})\n`);
 
   const newEnvContent = lines.join('\n');
-  fs.writeFileSync(path.join(root, env.filePath), newEnvContent);
+  fs.writeFileSync(path.join(root, '/tmp'), newEnvContent);
 }
 
 process.stdout.write(`${COLOR_GREEN}Token ready, remember to restart dev server${COLOR_RESET} \n`);

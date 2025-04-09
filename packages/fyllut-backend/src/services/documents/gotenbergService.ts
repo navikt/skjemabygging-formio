@@ -6,15 +6,7 @@ import { synchronousResponseToError } from '../../utils/errorHandling';
 import fetchWithRetry from '../../utils/fetchWithRetry';
 
 const { gotenbergUrl, gotenbergUrlEn } = config;
-
-const pagePropertiesA4PageAndMarging: { key: string; value: number }[] = [
-  { key: 'paperWidth', value: 8.2 },
-  { key: 'paperHeight', value: 11.69 },
-  { key: 'marginBottom', value: 0.39 },
-  { key: 'marginTop', value: 0.39 },
-  { key: 'marginLeft', value: 0.39 },
-  { key: 'marginRight', value: 0.39 },
-];
+const useLibreOfficeRoute = false;
 
 // Sette opp formdata til å merge en liste av PDFer
 export const mergeFiles = async (
@@ -33,14 +25,12 @@ export const mergeFiles = async (
     }
   });
 
-  pagePropertiesA4PageAndMarging.forEach((it) => {
-    formData.append(it.key, it.value);
-  });
-
-  formData.append('merge', 'true');
-  // Add Gotenberg-specific options
-  formData.append('pdfa', options.pdfa ? 'PDF/A-2b' : '');
-  formData.append('pdfua', options.pdfua ? 'true' : '');
+  if (options.pdfa) {
+    formData.append('pdfa', 'PDF/A-2b');
+  }
+  if (options.pdfua) {
+    formData.append('pdfua', 'true');
+  }
   formData.append('skipNetworkIdleEvent', 'false');
 
   const date = new Date();
@@ -48,14 +38,19 @@ export const mergeFiles = async (
   const metadata = {
     Author: 'Nav',
     Creator: 'Nav',
+    Title: title,
     Subject: schema,
     CreationDate: formattedDate,
     ModDate: formattedDate,
-    Title: title,
   };
   formData.append('metadata', `${JSON.stringify(metadata)}`);
 
-  return await callGotenberg(language, '/forms/libreoffice/convert', formData);
+  if (useLibreOfficeRoute) {
+    formData.append('merge', 'true');
+    return await callGotenberg(language, '/forms/libreOffice/convert', formData);
+  } else {
+    return await callGotenberg(language, '/forms/pdfengines/merge', formData);
+  }
 };
 
 const formatPDFDate = (date: Date) => {
