@@ -405,7 +405,7 @@
           "isInline": false,
           "tableView": false,
           "textDisplay": "form",
-          "customConditional": "console.log('vis alert TILTAK')\nshow = utils.dataFetcher('aktivitetsvelger', submission).selected({type: 'TILTAK'})",
+          "customConditional": "show = utils.dataFetcher('aktivitetsvelger', submission).selected({type: 'TILTAK'})",
           "placeholder": "",
           "prefix": "",
           "customClass": "",
