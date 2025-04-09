@@ -190,6 +190,26 @@ const getBirthDateFromFnr = (fnr) => {
   return moment(birthDateStr, 'DDMMYYYY');
 };
 
+const dataFetcher = (key, submission) => {
+  const userData = submission?.data?.[key];
+  const apiResult = submission?.metadata?.dataFetcher?.[key];
+  const fetchSuccess = Array.isArray(apiResult?.data);
+  const fetchFailure = !!apiResult?.fetchError;
+  const fetchDone = fetchSuccess || fetchFailure;
+  return {
+    fetchDone,
+    empty: fetchSuccess ? apiResult?.data?.length === 0 : undefined,
+    success: fetchDone ? fetchSuccess : undefined,
+    failure: fetchDone ? fetchFailure : undefined,
+    selected: (matcher) =>
+      fetchSuccess
+        ? apiResult.data
+            .filter((item) => userData[item.value])
+            .some((item) => Object.keys(matcher).some((matcherProp) => item[matcherProp] === matcher[matcherProp]))
+        : undefined,
+  };
+};
+
 /**
  * This is a helper function for developers to easily access submission data from browser console
  */
@@ -215,6 +235,7 @@ const UtilsOverrides = {
   isBornBeforeYear,
   isAgeBetween,
   getAge,
+  dataFetcher,
   data,
 };
 

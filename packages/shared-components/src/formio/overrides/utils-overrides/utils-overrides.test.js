@@ -83,6 +83,13 @@ describe('utils-overrides', () => {
         expect(UtilsOverrides.sanitizeJavaScriptCode(inputWithUtilsFunctionCall)).toBe('valid = utils.fun(input)');
       });
 
+      it('does not add null checks for utils.dataFetcher', () => {
+        const inputWithUtilsFunctionCall = "show = utils.dataFetcher('aktivitetsvelger', submission).empty";
+        expect(UtilsOverrides.sanitizeJavaScriptCode(inputWithUtilsFunctionCall)).toBe(
+          "show = utils.dataFetcher('aktivitetsvelger', submission).empty",
+        );
+      });
+
       it('does not add null checks for functions on lodash', () => {
         const inputWithLodashFunctionCall = 'valid = _.fun(input)';
         expect(UtilsOverrides.sanitizeJavaScriptCode(inputWithLodashFunctionCall)).toBe('valid = _.fun(input)');
@@ -502,6 +509,103 @@ describe('utils-overrides', () => {
       expect(UtilsOverrides.isAgeBetween([18, 58], 'fnr', submission, pointInTime('01.05.2015'))).toBe(false);
       expect(UtilsOverrides.isAgeBetween([18, 58], 'dato', submission, pointInTime('30.04.2015'))).toBe(true);
       expect(UtilsOverrides.isAgeBetween([18, 58], 'dato', submission, pointInTime('01.05.2015'))).toBe(false);
+    });
+  });
+
+  describe('dataFetcher', () => {
+    it('handles undefined submission', () => {
+      let dataFetcher = UtilsOverrides.dataFetcher('aktiviteter', undefined);
+      expect(dataFetcher.fetchDone).toBe(false);
+      expect(dataFetcher.empty).toBe(undefined);
+      expect(dataFetcher.success).toBe(undefined);
+      expect(dataFetcher.failure).toBe(undefined);
+    });
+
+    it('handles empty submission', () => {
+      let dataFetcher = UtilsOverrides.dataFetcher('aktiviteter', {});
+      expect(dataFetcher.fetchDone).toBe(false);
+      expect(dataFetcher.empty).toBe(undefined);
+      expect(dataFetcher.success).toBe(undefined);
+      expect(dataFetcher.failure).toBe(undefined);
+    });
+
+    it('handles undefined metadata', () => {
+      let dataFetcher = UtilsOverrides.dataFetcher('aktiviteter', { metadata: undefined });
+      expect(dataFetcher.fetchDone).toBe(false);
+      expect(dataFetcher.empty).toBe(undefined);
+      expect(dataFetcher.success).toBe(undefined);
+      expect(dataFetcher.failure).toBe(undefined);
+    });
+
+    it('handles empty metadata', () => {
+      let dataFetcher = UtilsOverrides.dataFetcher('aktiviteter', { metadata: {} });
+      expect(dataFetcher.fetchDone).toBe(false);
+      expect(dataFetcher.empty).toBe(undefined);
+      expect(dataFetcher.success).toBe(undefined);
+      expect(dataFetcher.failure).toBe(undefined);
+    });
+
+    it('handles empty array from dataFetcher API', () => {
+      let submission = { metadata: { dataFetcher: { aktiviteter: { data: [] } } } };
+      expect(UtilsOverrides.dataFetcher('aktiviteter', submission).fetchDone).toBe(true);
+      expect(UtilsOverrides.dataFetcher('aktiviteter', submission).success).toBe(true);
+      expect(UtilsOverrides.dataFetcher('aktiviteter', submission).failure).toBe(false);
+      expect(UtilsOverrides.dataFetcher('aktiviteter', submission).empty).toBe(true);
+    });
+
+    it('handles populated array from dataFetcher API', () => {
+      let submission = { metadata: { dataFetcher: { aktiviteter: { data: [{ label: 'Test', value: 1 }] } } } };
+      expect(UtilsOverrides.dataFetcher('aktiviteter', submission).fetchDone).toBe(true);
+      expect(UtilsOverrides.dataFetcher('aktiviteter', submission).success).toBe(true);
+      expect(UtilsOverrides.dataFetcher('aktiviteter', submission).failure).toBe(false);
+      expect(UtilsOverrides.dataFetcher('aktiviteter', submission).empty).toBe(false);
+    });
+
+    it('handles dataFetcher API failure', () => {
+      let submission = { metadata: { dataFetcher: { aktiviteter: { fetchError: true } } } };
+      expect(UtilsOverrides.dataFetcher('aktiviteter', submission).fetchDone).toBe(true);
+      expect(UtilsOverrides.dataFetcher('aktiviteter', submission).success).toBe(false);
+      expect(UtilsOverrides.dataFetcher('aktiviteter', submission).failure).toBe(true);
+      expect(UtilsOverrides.dataFetcher('aktiviteter', submission).empty).toBe(undefined);
+    });
+
+    describe('selected', () => {
+      it('returns true if any item with matches input, false otherwise', () => {
+        let submission = {
+          data: {
+            aktivitetsvelger: { 1: true, 2: false },
+          },
+          metadata: {
+            dataFetcher: {
+              aktivitetsvelger: {
+                data: [
+                  { value: 1, label: 'Aktivitet 1', type: 'BOSTOTTE' },
+                  { value: 2, label: 'Aktivitet 2', type: 'TILTAK' },
+                ],
+              },
+            },
+          },
+        };
+        expect(UtilsOverrides.dataFetcher('aktivitetsvelger', submission).selected({ type: 'BOSTOTTE' })).toBe(true);
+        expect(UtilsOverrides.dataFetcher('aktivitetsvelger', submission).selected({ type: 'TILTAK' })).toBe(false);
+      });
+
+      it('returns undefined if API fetch failed', () => {
+        let submission = {
+          data: {
+            aktivitetsvelger: { 1: true, 2: false },
+          },
+          metadata: {
+            dataFetcher: {
+              aktivitetsvelger: { fetchError: true },
+            },
+          },
+        };
+        expect(UtilsOverrides.dataFetcher('aktivitetsvelger', submission).selected({ type: 'BOSTOTTE' })).toBe(
+          undefined,
+        );
+        expect(UtilsOverrides.dataFetcher('aktivitetsvelger', submission).selected({ type: 'TILTAK' })).toBe(undefined);
+      });
     });
   });
 });

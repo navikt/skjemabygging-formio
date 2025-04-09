@@ -116,7 +116,6 @@ export const statiske = {
     selectEntityDefault: 'Velg enhet',
     entityNotSelectedError: 'Søknaden kan ikke lastes ned før du har valgt enhet',
     entityFetchError: 'En feil har oppstått. Vi kunne ikke laste enheter. Beklager ulempen, prøv igjen senere.',
-    firstSectionTitle: 'Last ned skjema',
     firstDescription: 'Gjør følgende for å sende det til Nav:',
     printFormTitle: 'Skriv ut og signér skjemaet',
     printFormDescription: 'Du må signere til slutt i skjemaet.',
@@ -150,8 +149,8 @@ export const statiske = {
       'Hvis vi ikke har mottatt dette vedlegget innen {{deadline}} dager blir saken behandlet med de opplysningene som foreligger.',
   },
   activities: {
-    label: 'Velg hvilken aktivitet du vil søke om stønad for',
-    defaultActivity: 'Jeg får ikke opp noen aktiviteter her som stemmer med det jeg vil søke om',
+    label: 'Hvilken aktivitet søker du om støtte i forbindelse med?',
+    defaultActivity: 'Ingen relevant aktivitet registrert på meg',
     error: 'Det oppstod en feil ved henting av aktiviteter.',
     errorContinue: 'Det oppstod en feil ved henting av aktiviteter. Du kan fortsatt gå videre uten å velge aktivitet',
     yourActivities: 'Dine aktiviteter',
