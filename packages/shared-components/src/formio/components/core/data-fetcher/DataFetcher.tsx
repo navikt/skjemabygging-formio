@@ -1,3 +1,4 @@
+import { SubmissionData } from '@navikt/skjemadigitalisering-shared-domain';
 import NavDataFetcher from '../../../../components/data-fetcher/DataFetcher';
 import { ComponentUtilsProvider } from '../../../../context/component/componentUtilsContext';
 import BaseComponent from '../../base/BaseComponent';
@@ -61,6 +62,10 @@ class DataFetcher extends BaseComponent {
     }
     this.triggerChange();
     this.redraw();
+  }
+
+  shouldSkipValidation(data?: SubmissionData, dirty?: boolean, row?: SubmissionData): boolean {
+    return this.getDataFromMetadata()?.data?.length === 0 || super.shouldSkipValidation(data, dirty, row);
   }
 
   renderReact(element) {
