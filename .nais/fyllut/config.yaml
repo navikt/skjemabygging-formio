@@ -97,6 +97,10 @@ spec:
       value: {{send-inn-token-x-client-id}}
     - name: SEND_INN_HOST
       value: {{send-inn-host}}
+    - name: TILLEGGSSTONADER_TOKEN_X_CLIENT_ID
+      value: {{tilleggsstonader-token-x-client-id}}
+    - name: TILLEGGSSTONADER_HOST
+      value: {{tilleggsstonader-integrasjoner-host}}
     - name: KODEVERK_URL
       value: {{kodeverk.url}}
     - name: KODEVERK_SCOPE

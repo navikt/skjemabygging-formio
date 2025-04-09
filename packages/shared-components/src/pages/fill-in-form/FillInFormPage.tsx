@@ -1,6 +1,5 @@
 import {
   ComponentError,
-  FyllutState,
   NavFormType,
   navFormUtils,
   Submission,
@@ -8,7 +7,9 @@ import {
 } from '@navikt/skjemadigitalisering-shared-domain';
 import EventEmitter from 'eventemitter3';
 import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import FormError from '../../components/form/FormError';
+import FormSavedStatus from '../../components/form/FormSavedStatus';
 import ConfirmationModal from '../../components/modal/confirmation/ConfirmationModal';
 import NavForm from '../../components/nav-form/NavForm';
 import { useAppConfig } from '../../context/config/configContext';
@@ -17,7 +18,6 @@ import { useSendInn } from '../../context/sendInn/sendInnContext';
 import { KeyOrFocusComponentId } from '../../formio/overrides/wizard-overrides.js/focusOnComponent';
 import { LoadingComponent } from '../../index';
 import { scrollToAndSetFocus } from '../../util/focus-management/focus-management';
-import { getPanelSlug } from '../../util/form/form';
 import urlUtils from '../../util/url/url';
 import FormErrorSummary from './FormErrorSummary';
 
@@ -26,8 +26,8 @@ type FyllutEvent = 'focusOnComponent';
 
 interface FillInFormPageProps {
   form: NavFormType;
-  submission?: Submission | { fyllutState: FyllutState };
-  setSubmission: Dispatch<SetStateAction<Submission | { fyllutState: FyllutState } | undefined>>;
+  submission?: Submission;
+  setSubmission: Dispatch<SetStateAction<Submission | undefined>>;
   formUrl: string;
 }
 
@@ -46,9 +46,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: Fil
   } = useSendInn();
   const { currentLanguage, translationsForNavForm, translate } = useLanguages();
   const { hash } = useLocation();
-  const { panelSlug } = useParams();
   const mutationObserverRef = useRef<MutationObserver | undefined>(undefined);
-  const formioInstanceRef = useRef<any>();
   const [showModal, setShowModal] = useState<ModalType>();
   const [errors, setErrors] = useState<ComponentError[]>([]);
   const fyllutEvents = useMemo(() => new EventEmitter<FyllutEvent>(), []);
@@ -58,7 +56,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: Fil
   const deletionDate = submission?.fyllutState?.mellomlagring?.deletionDate ?? '';
 
   const updatePanelUrl = useCallback(
-    (panelPath) => {
+    (panelPath: string) => {
       // We need to get location data from window, since this function runs inside formio
       navigate({ pathname: `${formUrl}/${panelPath}`, search: window.location.search });
     },
@@ -70,28 +68,6 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: Fil
       fyllutEvents.emit('focusOnComponent', id);
     },
     [fyllutEvents],
-  );
-
-  const goToPanelFromUrlParam = useCallback(
-    (formioInstance) => {
-      // We need to get location data from window, since this function runs inside formio
-      // www.nav.no/fyllut/:form/:panel
-      const panelFromUrl = window.location.pathname.split('/')[3];
-      if (!panelFromUrl) {
-        const pathOfPanel = getPanelSlug(form, 0);
-        updatePanelUrl(pathOfPanel);
-      } else {
-        if (typeof formioInstance?.setPage === 'function') {
-          const panelIndex = formioInstance.currentPanels.indexOf(panelFromUrl);
-          if (panelIndex >= 0) {
-            formioInstance.setPage(panelIndex);
-          } else {
-            formioInstance.setPage(0);
-          }
-        }
-      }
-    },
-    [form, updatePanelUrl],
   );
 
   const onNextOrPreviousPage = useCallback(
@@ -112,14 +88,14 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: Fil
       }
       onNextOrPreviousPage(page, currentPanels);
     },
-    [formUrl, isMellomlagringActive, updateMellomlagring, onNextOrPreviousPage, setSubmission, translate],
+    [isMellomlagringActive, updateMellomlagring, onNextOrPreviousPage, setSubmission],
   );
 
-  const onPreviousPage = useCallback(
+  const onPrevPage = useCallback(
     ({ page, currentPanels }) => {
       onNextOrPreviousPage(page, currentPanels);
     },
-    [formUrl, onNextOrPreviousPage, translate],
+    [onNextOrPreviousPage],
   );
 
   const onCancel = useCallback(
@@ -142,15 +118,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: Fil
     (panel) => {
       updatePanelUrl(panel.path);
     },
-    [formUrl, updatePanelUrl, translate],
-  );
-
-  const onFormReady = useCallback(
-    (formioInstance) => {
-      formioInstanceRef.current = formioInstance;
-      goToPanelFromUrlParam(formioInstance);
-    },
-    [goToPanelFromUrlParam],
+    [updatePanelUrl],
   );
 
   const onShowErrors = useCallback(
@@ -194,7 +162,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: Fil
       // We need to get location data from window, since this function runs inside formio
       navigate({ pathname: `${formUrl}/oppsummering`, search: window.location.search });
     },
-    [form.components, formUrl, isMellomlagringActive, navigate, setSubmission, translate, updateMellomlagring],
+    [formUrl, isMellomlagringActive, navigate, setSubmission, updateMellomlagring],
   );
 
   const onConfirmCancel = useCallback(async () => {
@@ -206,7 +174,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: Fil
         await deleteMellomlagring();
         break;
     }
-  }, [deleteMellomlagring, exitUrl, showModal, submission, translate, updateMellomlagring]);
+  }, [deleteMellomlagring, showModal, submission, updateMellomlagring]);
 
   useEffect(() => {
     setFormForRendering(submissionMethod === 'digital' ? navFormUtils.removeVedleggspanel(form) : form);
@@ -246,13 +214,6 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: Fil
     }
   }, [hash]);
 
-  useEffect(() => {
-    const instance = formioInstanceRef.current;
-    if (instance && instance.currentPanel?.key !== panelSlug) {
-      goToPanelFromUrlParam(instance);
-    }
-  }, [panelSlug, goToPanelFromUrlParam]);
-
   if (!translationsForNavForm) {
     return null;
   }
@@ -278,19 +239,23 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: Fil
         language={currentLanguage}
         i18n={translationsForNavForm}
         submission={submission}
-        onSubmit={onSubmit}
-        onNextPage={onNextPage}
-        onPrevPage={onPreviousPage}
-        onCancel={onCancel}
-        onSave={onSave}
-        formReady={onFormReady}
-        submissionReady={goToPanelFromUrlParam}
-        onWizardPageSelected={onWizardPageSelected}
-        onShowErrors={onShowErrors}
-        onErrorSummaryFocus={onErrorSummaryFocus}
         fyllutEvents={fyllutEvents}
         className="nav-form"
+        events={{
+          onSubmit,
+          onNextPage,
+          onPrevPage,
+          onCancel,
+          onSave,
+          onWizardPageSelected,
+          onShowErrors,
+          onErrorSummaryFocus,
+        }}
       />
+      <FormSavedStatus submission={submission} />
+      <div className="fyllut-layout">
+        <FormError error={submission?.fyllutState?.mellomlagring?.error} />
+      </div>
       <ConfirmationModal
         open={!!showModal}
         onClose={() => setShowModal(undefined)}

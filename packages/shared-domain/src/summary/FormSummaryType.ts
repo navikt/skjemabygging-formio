@@ -35,6 +35,11 @@ export interface SummarySelectboxes extends Omit<SummaryField, 'type' | 'value'>
   value: string[];
 }
 
+export interface SummaryDataFetcher extends Omit<SummaryField, 'type' | 'value'> {
+  type: 'dataFetcher';
+  value: string[];
+}
+
 export interface SummaryAddress extends Omit<SummaryField, 'type'> {
   type: 'navAddress';
 }
@@ -85,6 +90,7 @@ export type SummaryComponent = (
   | SummaryAttachment
   | SummaryDrivingList
   | SummaryAddress
+  | SummaryDataFetcher
 ) & {
   hiddenInSummary?: boolean;
 };
