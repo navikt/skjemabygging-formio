@@ -21,12 +21,13 @@ interface ReactComponentType {
   updateValue(value, flags?: object): any;
   setReactInstance(element): void;
   resetValue(): void;
-  setValue(value: any): void;
+  setValue(value: any, flags?: any): void;
   // Field
   render(element: any): any;
   // Component
   key?: string;
   component?: Component;
+  showAdditionalDescription: boolean;
   path?: string;
   defaultValue?: any;
   dataValue?: any;
@@ -76,6 +77,7 @@ interface ReactComponentType {
   labelIsHidden(): boolean;
   setCustomValidity(messages: string | string[] | ComponentError[], dirty?: boolean, external?: boolean): void;
   isEmpty(value?: any): boolean;
+  triggerChange(flags?: any): boolean;
   parent?: ReactComponentType;
   type: string;
   // Element

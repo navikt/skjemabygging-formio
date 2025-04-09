@@ -1,7 +1,9 @@
 import { AccordionSettingValues } from '../accordion';
 import { AttachmentSettingValues } from '../attachment';
 import { TextSize } from '../text';
+import { NavFormType } from './navFormType';
 import { PrefillKey } from './prefill';
+import { Submission, SubmissionData } from './submission';
 
 export type AddressType = 'NORWEGIAN_ADDRESS' | 'POST_OFFICE_BOX' | 'FOREIGN_ADDRESS';
 export type InputMode = 'none' | 'text' | 'tel' | 'url' | 'email' | 'numeric' | 'decimal' | 'search';
@@ -124,6 +126,8 @@ export interface Component {
   protectedApiKey?: boolean;
   yourInformation?: boolean;
   widthPercent?: number;
+  // DataFetcher
+  queryParams?: Record<string, string>;
 }
 
 export interface ComponentProperties {
@@ -160,4 +164,25 @@ export interface ComponentValidate {
 export interface ComponentConditional {
   when?: string;
   json?: object;
+}
+
+export interface Webform {
+  id: string;
+  form?: NavFormType;
+  formUrl?: string;
+  language?: string;
+  submission?: Submission;
+  setSubmission: (submission: Submission) => Promise<void>;
+  src?: string;
+  url?: string;
+  onAny?: any;
+  destroy: (deleteFromGlobal: boolean) => void;
+  focusOnComponent: (args: any) => void;
+  redrawNavigation: () => void;
+  checkData: (data: SubmissionData, flags: any[], row: any) => void;
+  currentPanel: Component;
+  currentPanels: string[];
+  setPage: (index: number) => void;
+  redraw: () => Promise<void>;
+  submissionReady: Promise<void>;
 }

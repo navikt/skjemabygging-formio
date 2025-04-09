@@ -96,7 +96,7 @@ describe('Activities', () => {
       cy.visit(`/fyllut/testingactivities?sub=paper`);
       cy.defaultWaits();
       cy.clickStart();
-      cy.findByRole('group', { name: 'Velg hvilken aktivitet du vil søke om stønad for' }).should('not.exist');
+      cy.findByRole('group', { name: 'Hvilken aktivitet søker du om støtte i forbindelse med?' }).should('not.exist');
     });
   });
 
@@ -109,7 +109,7 @@ describe('Activities', () => {
       cy.clickStart();
       cy.wait('@getActivities');
 
-      cy.findByRole('group', { name: 'Velg hvilken aktivitet du vil søke om stønad for' })
+      cy.findByRole('group', { name: 'Hvilken aktivitet søker du om støtte i forbindelse med?' })
         .should('exist')
         .within(() => {
           cy.findAllByRole('radio').should('have.length', 2);
@@ -167,7 +167,7 @@ describe('Activities', () => {
           cy.wait('@getActivities');
 
           // Verify that activity from saved application is checked
-          cy.findByRole('group', { name: 'Velg hvilken aktivitet du vil søke om stønad for' })
+          cy.findByRole('group', { name: 'Hvilken aktivitet søker du om støtte i forbindelse med?' })
             .should('exist')
             .within(() => {
               cy.findByLabelText(defaultActivity.text).should('be.checked');
@@ -211,7 +211,7 @@ describe('Activities', () => {
           ) as SendInnAktivitet;
 
           // Select the activity from backend
-          cy.findByRole('group', { name: 'Velg hvilken aktivitet du vil søke om stønad for' })
+          cy.findByRole('group', { name: 'Hvilken aktivitet søker du om støtte i forbindelse med?' })
             .should('exist')
             .within(() => {
               cy.findByRole('radio', { name: /Avklaring/ })
@@ -282,7 +282,7 @@ describe('Activities', () => {
       cy.clickStart();
       cy.wait('@getActivities');
 
-      cy.findByRole('group', { name: 'Velg hvilken aktivitet du vil søke om stønad for' })
+      cy.findByRole('group', { name: 'Hvilken aktivitet søker du om støtte i forbindelse med?' })
         .should('exist')
         .within(() => {
           cy.findAllByRole('checkbox').should('have.length', 1);
@@ -372,7 +372,7 @@ describe('Activities', () => {
       cy.clickStart();
       cy.wait('@getActivities');
 
-      cy.contains('Velg hvilken aktivitet du vil søke om stønad for');
+      cy.contains('Hvilken aktivitet søker du om støtte i forbindelse med?');
       cy.findAllByRole('checkbox').should('have.length', 1);
       cy.findByRole('checkbox', { name: activityText }).should('not.exist');
       cy.findByRole('checkbox', { name: defaultActivity.text }).should('exist');

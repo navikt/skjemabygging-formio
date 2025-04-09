@@ -43,6 +43,7 @@ const ComponentSummary = ({ components, formUrl = '', panelValidationList = [] }
               return <FieldsetSummary key={key} component={comp} formUrl={formUrl} />;
             case 'datagrid':
               return <DataGridSummary key={key} component={comp} formUrl={formUrl} />;
+            case 'dataFetcher':
             case 'selectboxes':
               return <SelectBoxesSummary key={key} component={comp} />;
             case 'htmlelement':

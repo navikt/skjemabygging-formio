@@ -82,7 +82,7 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
     if (this.reactInstance) (this.reactInstance as HTMLInputElement).value = value;
   }
 
-  setValue(value: any) {
+  setValue(value: any, flags?: any) {
     if (this.reactInstance) {
       this.setValueOnReactInstance(value);
       this.shouldSetValue = false;
@@ -95,7 +95,7 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
     const changed = JSON.stringify(newValue) !== JSON.stringify(this.dataValue);
     this.dataValue = Array.isArray(newValue) ? [...newValue] : newValue;
 
-    if (changed) {
+    if (changed || flags?.fromSubmission) {
       this.rerender();
     }
   }

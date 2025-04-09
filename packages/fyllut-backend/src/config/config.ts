@@ -2,7 +2,15 @@ import { FrontendLoggerConfigType, configUtils, featureUtils } from '@navikt/skj
 import dotenv from 'dotenv';
 import { logger } from '../logger';
 import { NaisCluster } from './nais-cluster.js';
-import { ConfigType, DefaultConfig, IdportenConfig, SendInnConfig, ServiceConfig, TokenxConfig } from './types';
+import {
+  ConfigType,
+  DefaultConfig,
+  IdportenConfig,
+  SendInnConfig,
+  ServiceConfig,
+  TilleggsstonaderConfig,
+  TokenxConfig,
+} from './types';
 
 const { DOTENV_FILE } = process.env;
 if (DOTENV_FILE) {
@@ -37,6 +45,14 @@ const sendInnConfig: SendInnConfig = {
     utfyltSoknad: '/fyllUt/v1/utfyltSoknad',
     prefillData: '/fyllUt/v1/prefill-data',
     activities: '/fyllUt/v1/aktiviteter',
+  },
+};
+
+const tilleggsstonaderConfig: TilleggsstonaderConfig = {
+  host: process.env.TILLEGGSSTONADER_HOST!,
+  tokenxClientId: process.env.TILLEGGSSTONADER_TOKEN_X_CLIENT_ID!,
+  paths: {
+    activities: '/api/ekstern/aktivitet',
   },
 };
 
@@ -88,6 +104,12 @@ const localDevelopmentConfig: DefaultConfig = {
     host: sendInnConfig.host || 'https://innsending-api.intern.dev.nav.no',
     tokenxClientId: sendInnConfig.tokenxClientId || 'dev-gcp:soknad:send-inn',
   },
+  tilleggsstonaderConfig: {
+    // TODO løse lokal utvikling for tilleggsstonader
+    ...tilleggsstonaderConfig,
+    host: tilleggsstonaderConfig.host || '',
+    tokenxClientId: tilleggsstonaderConfig.tokenxClientId || '',
+  },
   idporten: {
     ...idporten,
     idportenJwksUri: idporten.idportenJwksUri || 'https://test.idporten.no/jwks.json',
@@ -126,6 +148,7 @@ const defaultConfig: DefaultConfig = {
   noDecorator: false,
   tokenx,
   sendInnConfig,
+  tilleggsstonaderConfig,
   kodeverk,
   norg2,
   idporten,
