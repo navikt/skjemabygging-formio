@@ -88,6 +88,7 @@ class DataFetcher extends BaseComponent {
           dataFetcherData={this.getDataFromMetadata()}
           setMetadata={(metaData) => this.setMetadata(metaData)}
           setShowAdditionalDescription={(value) => this.setShowAdditionalDescription(value)}
+          ref={(ref) => this.setReactInstance(ref)}
         />
       </ComponentUtilsProvider>,
     );

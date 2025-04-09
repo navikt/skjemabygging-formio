@@ -104,6 +104,7 @@ const DataFetcher = forwardRef<HTMLFieldSetElement, Props>(
         ref={ref}
         className={className}
         error={error}
+        tabIndex={-1}
       >
         {data.map(({ value, label }) => (
           <Checkbox key={value} value={value}>

@@ -43,7 +43,22 @@ describe('Data fetcher', () => {
     it('should display validation error', () => {
       cy.visit('/fyllut/datafetchertest/arbeidsrettetaktivitet?sub=digital');
       cy.clickSaveAndContinue();
-      cy.findByRole('link', { name: `Du må fylle ut: Aktivitetsvelger` }).should('exist');
+
+      cy.get('[data-cy=error-summary]')
+        .should('exist')
+        .within(() => {
+          cy.findByRole('link', { name: 'Du må fylle ut: Aktivitetsvelger' }).should('exist').click();
+        });
+
+      cy.findByRole('group', { name: LABEL_AKTIVITETSVELGER })
+        .should('exist')
+        .should('have.focus')
+        .within(() => {
+          cy.findByRole('checkbox', { name: 'Aktivitet 1' }).should('exist').check();
+        });
+      cy.get('[data-cy=error-summary]').should('not.exist');
+      cy.clickSaveAndContinue();
+      cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
     });
 
     it('should not display validation error when data is empty', () => {
