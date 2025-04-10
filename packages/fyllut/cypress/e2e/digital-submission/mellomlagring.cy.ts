@@ -28,6 +28,7 @@ describe('Mellomlagring', () => {
   });
 
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
     // Do not call cy.defaultInterceptsMellomlagring() like we usually do since we need to create an extra spy
     cy.intercept('POST', '/fyllut/api/send-inn/soknad*', cy.spy().as('createMellomlagringSpy')).as(

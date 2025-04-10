@@ -30,9 +30,8 @@ class Maalgruppe extends BaseComponent {
   }
 
   initPrefill() {
-    if (this.isSubmissionDigital() && this.component?.prefillKey && this.component?.prefillValue) {
-      // Call parent setValue so ignore prefillKey block on local setValue.
-      super.setValue(this.component?.prefillValue);
+    if (this.hasPrefill() && !this.getValue()) {
+      this.setValue(this.component?.prefillValue);
     }
   }
 
