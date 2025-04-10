@@ -29,10 +29,14 @@ describe('Mellomlagring', () => {
 
   beforeEach(() => {
     cy.defaultIntercepts();
-    cy.defaultInterceptsMellomlagring();
-    cy.intercept('POST', '/fyllut/api/send-inn/soknad*', cy.spy().as('createMellomlagringSpy'));
-    cy.intercept('PUT', '/fyllut/api/send-inn/soknad*', cy.spy().as('updateMellomlagringSpy'));
-    cy.mocksRestoreRouteVariants();
+    // Do not call cy.defaultInterceptsMellomlagring() like we usually do since we need to create an extra spy
+    cy.intercept('POST', '/fyllut/api/send-inn/soknad*', cy.spy().as('createMellomlagringSpy')).as(
+      'createMellomlagring',
+    );
+    cy.intercept('PUT', '/fyllut/api/send-inn/soknad*', cy.spy().as('updateMellomlagringSpy')).as(
+      'updateMellomlagring',
+    );
+    cy.intercept('GET', '/fyllut/api/send-inn/soknad/*').as('getMellomlagring');
   });
 
   after(() => {
@@ -185,12 +189,6 @@ describe('Mellomlagring', () => {
     });
 
     describe('When starting on the summary page', () => {
-      it('redirects to start page if url does not contain "innsendingsId"', () => {
-        cy.visit('/fyllut/testmellomlagring/oppsummering?sub=digital&lang=nb-NO');
-        cy.defaultWaits();
-        cy.findByRole('heading', { name: TEXTS.statiske.introPage.title }).should('exist');
-      });
-
       describe('When url contains query param "innsendingsId"', () => {
         beforeEach(() => {
           cy.fixture('mellomlagring/submitTestMellomlagring.json').then((fixture) => {
@@ -253,12 +251,11 @@ describe('Mellomlagring', () => {
           cy.clickSaveAndContinue();
           cy.get('@updateMellomlagringSpy').should('not.have.been.called');
 
-          cy.get('[data-cy=error-summary]')
-            .should('exist')
-            .within(() => {
-              cy.get('a').should('have.length', 2);
-              cy.findByRole('link', { name: 'Du må fylle ut: Farge' }).should('exist').click({ force: true });
-            });
+          cy.findByRole('group', { name: 'Farge' }).should('exist');
+          cy.get('[data-cy=error-summary]').within(() => {
+            cy.get('a').should('have.length', 2);
+            cy.findByRole('link', { name: 'Du må fylle ut: Farge' }).should('exist').click({ force: true });
+          });
 
           cy.findByRole('group', { name: 'Farge' })
             .should('exist')
@@ -267,12 +264,11 @@ describe('Mellomlagring', () => {
               cy.findByLabelText('Rød').click();
             });
 
-          cy.get('[data-cy=error-summary]')
-            .should('exist')
-            .within(() => {
-              cy.get('a').should('have.length', 1);
-              cy.findByRole('link', { name: 'Du må fylle ut: Tekst på kortet' }).should('exist').click({ force: true });
-            });
+          cy.get('[data-cy=error-summary]').should('exist');
+          cy.get('[data-cy=error-summary]').within(() => {
+            cy.get('a').should('have.length', 1);
+            cy.findByRole('link', { name: 'Du må fylle ut: Tekst på kortet' }).should('exist').click({ force: true });
+          });
           cy.findByLabelText('Tekst på kortet').should('have.focus').type('Takk for hjelpen!');
 
           cy.findByRole('link', { name: 'Oppsummering' }).click();

@@ -9,6 +9,8 @@ import EventEmitter from 'eventemitter3';
 import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import FormStepper from '../../components/form/form-stepper/FormStepper';
+import FormError from '../../components/form/FormError';
+import FormSavedStatus from '../../components/form/FormSavedStatus';
 import ConfirmationModal from '../../components/modal/confirmation/ConfirmationModal';
 import NavForm from '../../components/nav-form/NavForm';
 import { useAppConfig } from '../../context/config/configContext';
@@ -167,6 +169,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: Fil
   const onChange = useCallback(
     (changedSubmission: Submission) => {
       if (
+        changedSubmission?.data &&
         changedSubmission.changed?.component?.input &&
         (changedSubmission.changed.component?.inputType !== 'text' || changedSubmission.changed.flags?.fromBlur)
       ) {
@@ -268,6 +271,8 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: Fil
             onErrorSummaryFocus,
           }}
         />
+        <FormSavedStatus submission={submission} />
+        <FormError error={submission?.fyllutState?.mellomlagring?.error} />
       </div>
       <div>
         <FormStepper

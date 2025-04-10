@@ -78,7 +78,7 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
 
       webform.form = NavFormHelper.prefillForm(webform.form, prefillData);
 
-      webform.checkData(submissionCopy.data, [], undefined);
+      webform.checkData(submissionCopy?.data, [], undefined);
 
       const panelValidations = validateWizardPanels(webform, form, submission);
       setPanelValidationList(panelValidations);
@@ -88,7 +88,7 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
         formioSummary.innerHTML = '';
       }
     };
-    if (isMellomlagringAvailable && submission.data) {
+    if (isMellomlagringAvailable && submission?.data) {
       initializePanelValidation();
     } else {
       setPanelValidationList([]);
