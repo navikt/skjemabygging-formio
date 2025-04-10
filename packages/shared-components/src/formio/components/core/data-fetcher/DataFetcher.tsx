@@ -65,7 +65,8 @@ class DataFetcher extends BaseComponent {
   }
 
   shouldSkipValidation(data?: SubmissionData, dirty?: boolean, row?: SubmissionData): boolean {
-    return this.getDataFromMetadata()?.data?.length === 0 || super.shouldSkipValidation(data, dirty, row);
+    const metadata = this.getDataFromMetadata();
+    return metadata?.fetchDisabled || metadata?.data?.length === 0 || super.shouldSkipValidation(data, dirty, row);
   }
 
   renderReact(element) {

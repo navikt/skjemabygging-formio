@@ -10,6 +10,7 @@ import previewData from './preview-data.json';
 type DataFetcherData = {
   data?: Activity[];
   fetchError?: boolean;
+  fetchDisabled?: boolean;
 };
 
 interface Props {
@@ -46,8 +47,10 @@ const DataFetcher = forwardRef<HTMLFieldSetElement, Props>(
     const { appConfig } = useComponentUtils();
     const data = dataFetcherData?.data;
     const fetchError = dataFetcherData?.fetchError;
-    const isPreviewMode = appConfig.app === 'bygger';
+    const fetchDisabled = dataFetcherData?.fetchDisabled;
+    const isBygger = appConfig.app === 'bygger';
     const isFyllut = appConfig.app === 'fyllut';
+    const submissionMethodIsDigital = appConfig.submissionMethod === 'digital';
 
     const fetchData = useCallback(async () => {
       try {
@@ -68,17 +71,28 @@ const DataFetcher = forwardRef<HTMLFieldSetElement, Props>(
     }, [appConfig, queryParams, setMetadata, setShowAdditionalDescription]);
 
     useEffect(() => {
-      if (isPreviewMode && !data) {
-        setShowAdditionalDescription(previewData.length > 0);
-        setMetadata({ data: previewData });
-      } else if (isFyllut && !done && !data && !fetchError && !loading) {
-        fetchData();
+      if (isBygger) {
+        if (!data) {
+          setShowAdditionalDescription(previewData.length > 0);
+          setMetadata({ data: previewData });
+        }
+      } else if (isFyllut) {
+        if (submissionMethodIsDigital) {
+          if (!done && !data && !fetchError && !loading) {
+            fetchData();
+          }
+        } else if (!fetchDisabled) {
+          setShowAdditionalDescription(false);
+          setMetadata({ fetchDisabled: true });
+        }
       }
     }, [
       appConfig,
-      isPreviewMode,
+      isBygger,
       fetchData,
       fetchError,
+      fetchDisabled,
+      submissionMethodIsDigital,
       setMetadata,
       data,
       loading,
