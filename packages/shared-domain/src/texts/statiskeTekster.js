@@ -225,4 +225,7 @@ export const statiske = {
     identityNumber: 'Fødselsnummer eller d-nummer',
     yourBirthdate: 'Fødselsdato (dd.mm.åååå)',
   },
+  dataFetcher: {
+    other: 'Annet',
+  },
 };
