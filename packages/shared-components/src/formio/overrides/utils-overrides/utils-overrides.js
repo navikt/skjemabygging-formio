@@ -191,15 +191,22 @@ const getBirthDateFromFnr = (fnr) => {
 };
 
 const dataFetcher = (key, submission) => {
-  const result = submission?.metadata?.dataFetcher?.[key];
-  const isArray = Array.isArray(result?.data);
-  const fetchFailure = !!result?.fetchError;
-  const fetchDone = isArray || fetchFailure;
+  const userData = submission?.data?.[key];
+  const apiResult = submission?.metadata?.dataFetcher?.[key];
+  const fetchSuccess = Array.isArray(apiResult?.data);
+  const fetchFailure = !!apiResult?.fetchError;
+  const fetchDone = fetchSuccess || fetchFailure;
   return {
     fetchDone,
-    empty: isArray ? result?.data?.length === 0 : undefined,
-    success: fetchDone ? isArray : undefined,
+    empty: fetchSuccess ? apiResult?.data?.length === 0 : undefined,
+    success: fetchDone ? fetchSuccess : undefined,
     failure: fetchDone ? fetchFailure : undefined,
+    selected: (matcher) =>
+      fetchSuccess
+        ? apiResult.data
+            .filter((item) => userData[item.value])
+            .some((item) => Object.keys(matcher).some((matcherProp) => item[matcherProp] === matcher[matcherProp]))
+        : undefined,
   };
 };
 

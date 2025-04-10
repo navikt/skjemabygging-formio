@@ -1,3 +1,4 @@
+import { SubmissionData } from '@navikt/skjemadigitalisering-shared-domain';
 import NavDataFetcher from '../../../../components/data-fetcher/DataFetcher';
 import { ComponentUtilsProvider } from '../../../../context/component/componentUtilsContext';
 import BaseComponent from '../../base/BaseComponent';
@@ -43,6 +44,10 @@ class DataFetcher extends BaseComponent {
     return componentKey ? this.root.submission.metadata?.dataFetcher?.[componentKey] : undefined;
   }
 
+  setShowAdditionalDescription(value: boolean) {
+    this.showAdditionalDescription = value;
+  }
+
   setMetadata(data: any) {
     const componentKey = this.component?.key;
     const submission = this.root.submission;
@@ -56,7 +61,11 @@ class DataFetcher extends BaseComponent {
       submission.metadata.dataFetcher[componentKey] = data;
     }
     this.triggerChange();
-    this.rerender();
+    this.redraw();
+  }
+
+  shouldSkipValidation(data?: SubmissionData, dirty?: boolean, row?: SubmissionData): boolean {
+    return this.getDataFromMetadata()?.data?.length === 0 || super.shouldSkipValidation(data, dirty, row);
   }
 
   renderReact(element) {
@@ -78,6 +87,7 @@ class DataFetcher extends BaseComponent {
           error={this.getError()}
           dataFetcherData={this.getDataFromMetadata()}
           setMetadata={(metaData) => this.setMetadata(metaData)}
+          setShowAdditionalDescription={(value) => this.setShowAdditionalDescription(value)}
         />
       </ComponentUtilsProvider>,
     );
