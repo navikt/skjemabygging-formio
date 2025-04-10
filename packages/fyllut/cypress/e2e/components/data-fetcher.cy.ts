@@ -20,6 +20,17 @@ describe('Data fetcher', () => {
         });
     });
 
+    it('should render annet option when showOther is checked', () => {
+      cy.mocksUseRouteVariant('get-register-data-activities:success');
+      cy.visit('/fyllut/datafetcherannettest/arbeidsrettetaktivitet?sub=digital');
+      cy.findByRole('group', { name: LABEL_AKTIVITETSVELGER })
+        .should('exist')
+        .within(() => {
+          cy.findAllByRole('checkbox').should('have.length', 4);
+          cy.findByRole('checkbox', { name: 'Annet' }).should('exist');
+        });
+    });
+
     it('should not render component when data is empty', () => {
       cy.mocksUseRouteVariant('get-register-data-activities:success-empty');
       cy.visit('/fyllut/datafetchertest/arbeidsrettetaktivitet?sub=digital');
