@@ -524,6 +524,7 @@ describe('utils-overrides', () => {
     it('handles undefined submission', () => {
       const dataFetcher = UtilsOverrides.dataFetcher('aktiviteter', undefined);
       expect(dataFetcher.fetchDone).toBe(false);
+      expect(dataFetcher.ready).toBe(false);
       expect(dataFetcher.empty).toBe(undefined);
       expect(dataFetcher.success).toBe(undefined);
       expect(dataFetcher.failure).toBe(undefined);
@@ -533,6 +534,7 @@ describe('utils-overrides', () => {
     it('handles empty submission', () => {
       const dataFetcher = UtilsOverrides.dataFetcher('aktiviteter', {});
       expect(dataFetcher.fetchDone).toBe(false);
+      expect(dataFetcher.ready).toBe(false);
       expect(dataFetcher.empty).toBe(undefined);
       expect(dataFetcher.success).toBe(undefined);
       expect(dataFetcher.failure).toBe(undefined);
@@ -542,6 +544,7 @@ describe('utils-overrides', () => {
     it('handles undefined metadata', () => {
       const dataFetcher = UtilsOverrides.dataFetcher('aktiviteter', { metadata: undefined });
       expect(dataFetcher.fetchDone).toBe(false);
+      expect(dataFetcher.ready).toBe(false);
       expect(dataFetcher.empty).toBe(undefined);
       expect(dataFetcher.success).toBe(undefined);
       expect(dataFetcher.failure).toBe(undefined);
@@ -551,6 +554,7 @@ describe('utils-overrides', () => {
     it('handles empty metadata', () => {
       const dataFetcher = UtilsOverrides.dataFetcher('aktiviteter', { metadata: {} });
       expect(dataFetcher.fetchDone).toBe(false);
+      expect(dataFetcher.ready).toBe(false);
       expect(dataFetcher.empty).toBe(undefined);
       expect(dataFetcher.success).toBe(undefined);
       expect(dataFetcher.failure).toBe(undefined);
@@ -571,6 +575,7 @@ describe('utils-overrides', () => {
       const submission = { metadata: { dataFetcher: { aktiviteter: { data: [{ label: 'Test', value: 1 }] } } } };
       const dataFetcher = UtilsOverrides.dataFetcher('aktiviteter', submission);
       expect(dataFetcher.fetchDone).toBe(true);
+      expect(dataFetcher.ready).toBe(true);
       expect(dataFetcher.success).toBe(true);
       expect(dataFetcher.failure).toBe(false);
       expect(dataFetcher.empty).toBe(false);
@@ -581,6 +586,7 @@ describe('utils-overrides', () => {
       const submission = { metadata: { dataFetcher: { aktiviteter: { fetchError: true } } } };
       const dataFetcher = UtilsOverrides.dataFetcher('aktiviteter', submission);
       expect(dataFetcher.fetchDone).toBe(true);
+      expect(dataFetcher.ready).toBe(true);
       expect(dataFetcher.success).toBe(false);
       expect(dataFetcher.failure).toBe(true);
       expect(dataFetcher.empty).toBe(undefined);
@@ -592,6 +598,17 @@ describe('utils-overrides', () => {
       const dataFetcher = UtilsOverrides.dataFetcher('aktiviteter', submission);
       expect(dataFetcher.fetchDisabled).toBe(true);
       expect(dataFetcher.fetchDone).toBe(undefined);
+      expect(dataFetcher.success).toBe(undefined);
+      expect(dataFetcher.failure).toBe(undefined);
+      expect(dataFetcher.empty).toBe(undefined);
+    });
+
+    it('handles undefined component key', () => {
+      const submission = { metadata: { dataFetcher: { aktiviteter: { data: [{ label: 'Test', value: 1 }] } } } };
+      const dataFetcher = UtilsOverrides.dataFetcher(undefined, submission);
+      expect(dataFetcher.fetchDisabled).toBe(false);
+      expect(dataFetcher.fetchDone).toBe(false);
+      expect(dataFetcher.ready).toBe(false);
       expect(dataFetcher.success).toBe(undefined);
       expect(dataFetcher.failure).toBe(undefined);
       expect(dataFetcher.empty).toBe(undefined);
