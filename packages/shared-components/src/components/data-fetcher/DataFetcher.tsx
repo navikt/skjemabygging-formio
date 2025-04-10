@@ -23,6 +23,7 @@ interface Props {
   setMetadata: (data: DataFetcherData) => void;
   setShowAdditionalDescription: (value: boolean) => void;
   dataFetcherData?: DataFetcherData;
+  showAnnet?: boolean;
 }
 
 const DataFetcher = forwardRef<HTMLFieldSetElement, Props>(
@@ -38,6 +39,7 @@ const DataFetcher = forwardRef<HTMLFieldSetElement, Props>(
       dataFetcherData,
       setMetadata,
       setShowAdditionalDescription,
+      showAnnet,
     },
     ref,
   ) => {
@@ -48,6 +50,7 @@ const DataFetcher = forwardRef<HTMLFieldSetElement, Props>(
     const fetchError = dataFetcherData?.fetchError;
     const isPreviewMode = appConfig.app === 'bygger';
     const isFyllut = appConfig.app === 'fyllut';
+    const additionalData: Activity[] = [{ label: 'Annet', value: 'annet', type: 'ANNET' }];
 
     const fetchData = useCallback(async () => {
       try {
@@ -55,7 +58,7 @@ const DataFetcher = forwardRef<HTMLFieldSetElement, Props>(
         const result = await getActivities(appConfig, queryParams);
         if (result) {
           setShowAdditionalDescription(result.length > 0);
-          setMetadata({ data: result });
+          setMetadata({ data: [...result, ...(showAnnet ? additionalData : [])] });
         }
       } catch (error) {
         console.error('Failed to fetch activities:', error);
@@ -65,12 +68,14 @@ const DataFetcher = forwardRef<HTMLFieldSetElement, Props>(
         setLoading(false);
         setDone(true);
       }
-    }, [appConfig, queryParams, setMetadata, setShowAdditionalDescription]);
+    }, [additionalData, appConfig, queryParams, setMetadata, setShowAdditionalDescription, showAnnet]);
 
     useEffect(() => {
       if (isPreviewMode && !data) {
         setShowAdditionalDescription(previewData.length > 0);
-        setMetadata({ data: previewData });
+        setMetadata({
+          data: [...previewData, ...(showAnnet ? additionalData : [])],
+        });
       } else if (isFyllut && !done && !data && !fetchError && !loading) {
         fetchData();
       }
@@ -85,6 +90,8 @@ const DataFetcher = forwardRef<HTMLFieldSetElement, Props>(
       isFyllut,
       done,
       setShowAdditionalDescription,
+      showAnnet,
+      additionalData,
     ]);
 
     if (loading) {

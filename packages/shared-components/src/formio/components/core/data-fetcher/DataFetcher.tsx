@@ -68,6 +68,10 @@ class DataFetcher extends BaseComponent {
     return this.getDataFromMetadata()?.data?.length === 0 || super.shouldSkipValidation(data, dirty, row);
   }
 
+  getAdditionalOptions() {
+    return this.component?.showAnnet;
+  }
+
   renderReact(element) {
     return element.render(
       <ComponentUtilsProvider component={this}>
@@ -89,6 +93,7 @@ class DataFetcher extends BaseComponent {
           setMetadata={(metaData) => this.setMetadata(metaData)}
           setShowAdditionalDescription={(value) => this.setShowAdditionalDescription(value)}
           ref={(ref) => this.setReactInstance(ref)}
+          showAnnet={this.getAdditionalOptions()}
         />
       </ComponentUtilsProvider>,
     );

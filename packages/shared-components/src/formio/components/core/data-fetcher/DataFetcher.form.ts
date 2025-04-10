@@ -4,6 +4,7 @@ import editFormDisplay from '../../base/editForm/display';
 import editFormTabs from '../../base/editForm/editFormTabs';
 import editFormValidation from '../../base/editForm/validation';
 import editFormQueryParams from './edit-form/editFormQueryParams';
+import editFormShowAnnet from './edit-form/editFormShowAnnet';
 
 const dataFetcherForm = () => {
   const { api, conditional, createTabs, display, validation } = editFormTabs;
@@ -12,6 +13,7 @@ const dataFetcherForm = () => {
   return createTabs(
     display([
       editFormDisplay.label(),
+      editFormShowAnnet(),
       editFormDisplay.description(),
       editFormDisplay.additionalDescription(),
     ]),

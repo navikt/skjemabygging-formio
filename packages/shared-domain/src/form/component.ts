@@ -128,6 +128,7 @@ export interface Component {
   widthPercent?: number;
   // DataFetcher
   queryParams?: Record<string, string>;
+  showAnnet?: boolean;
 }
 
 export interface ComponentProperties {
