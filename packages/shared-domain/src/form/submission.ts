@@ -1,3 +1,4 @@
+import { Component } from './component';
 import { FyllutState } from './state';
 
 export interface Submission {
@@ -14,6 +15,7 @@ export interface Submission {
     onLine: boolean;
   };
   changed?: {
+    component?: Component;
     flags?: {
       [key: string]: boolean;
     };

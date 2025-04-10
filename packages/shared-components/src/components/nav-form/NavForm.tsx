@@ -175,21 +175,6 @@ const NavForm = ({
   }, [appConfig.logger, webform, prefillData]);
 
   /**
-   * Update submission
-   */
-  useEffect(() => {
-    (async () => {
-      if (webform && submission) {
-        appConfig.logger?.debug('Set submission', {
-          webformId: webform?.id,
-          submission,
-        });
-        await webform.setSubmission(JSON.parse(JSON.stringify(submission)));
-      }
-    })();
-  }, [appConfig.logger, webform, submission]);
-
-  /**
    * Initialize the form
    */
   useEffect(() => {

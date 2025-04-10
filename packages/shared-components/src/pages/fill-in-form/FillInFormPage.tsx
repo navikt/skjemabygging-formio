@@ -166,7 +166,10 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: Fil
 
   const onChange = useCallback(
     (changedSubmission: Submission) => {
-      if (changedSubmission.changed?.flags?.fromBlur) {
+      if (
+        changedSubmission.changed?.component?.input &&
+        (changedSubmission.changed.component?.inputType !== 'text' || changedSubmission.changed.flags?.fromBlur)
+      ) {
         setSubmission({
           ...submission,
           data: changedSubmission.data,
@@ -267,7 +270,13 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: Fil
         />
       </div>
       <div>
-        <FormStepper form={formForRendering} formUrl={formUrl} completed={true} setSubmission={setSubmission} />
+        <FormStepper
+          form={formForRendering}
+          formUrl={formUrl}
+          completed={true}
+          setSubmission={setSubmission}
+          submission={submission}
+        />
       </div>
       <ConfirmationModal
         open={!!showModal}
