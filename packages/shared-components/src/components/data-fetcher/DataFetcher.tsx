@@ -1,5 +1,5 @@
 import { Checkbox, CheckboxGroup } from '@navikt/ds-react';
-import { Activity } from '@navikt/skjemadigitalisering-shared-domain';
+import { Activity, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { forwardRef, ReactNode, useCallback, useEffect, useState } from 'react';
 import { getActivities } from '../../api/register-data/activities';
 import { useComponentUtils } from '../../context/component/componentUtilsContext';
@@ -23,7 +23,7 @@ interface Props {
   setMetadata: (data: DataFetcherData) => void;
   setShowAdditionalDescription: (value: boolean) => void;
   dataFetcherData?: DataFetcherData;
-  showAnnet?: boolean;
+  showOther?: boolean;
 }
 
 const DataFetcher = forwardRef<HTMLFieldSetElement, Props>(
@@ -39,7 +39,7 @@ const DataFetcher = forwardRef<HTMLFieldSetElement, Props>(
       dataFetcherData,
       setMetadata,
       setShowAdditionalDescription,
-      showAnnet,
+      showOther,
     },
     ref,
   ) => {
@@ -50,7 +50,12 @@ const DataFetcher = forwardRef<HTMLFieldSetElement, Props>(
     const fetchError = dataFetcherData?.fetchError;
     const isPreviewMode = appConfig.app === 'bygger';
     const isFyllut = appConfig.app === 'fyllut';
-    const additionalData: Activity[] = [{ label: 'Annet', value: 'annet', type: 'ANNET' }];
+    const otherData = [
+      {
+        label: TEXTS.statiske.dataFetcher.other,
+        value: TEXTS.statiske.dataFetcher.other.toLowerCase(),
+      },
+    ];
 
     const fetchData = useCallback(async () => {
       try {
@@ -58,7 +63,7 @@ const DataFetcher = forwardRef<HTMLFieldSetElement, Props>(
         const result = await getActivities(appConfig, queryParams);
         if (result) {
           setShowAdditionalDescription(result.length > 0);
-          setMetadata({ data: [...result, ...(showAnnet ? additionalData : [])] });
+          setMetadata({ data: [...result, ...(showOther ? (otherData as Activity[]) : [])] });
         }
       } catch (error) {
         console.error('Failed to fetch activities:', error);
@@ -68,13 +73,13 @@ const DataFetcher = forwardRef<HTMLFieldSetElement, Props>(
         setLoading(false);
         setDone(true);
       }
-    }, [additionalData, appConfig, queryParams, setMetadata, setShowAdditionalDescription, showAnnet]);
+    }, [otherData, appConfig, queryParams, setMetadata, setShowAdditionalDescription, showOther]);
 
     useEffect(() => {
       if (isPreviewMode && !data) {
         setShowAdditionalDescription(previewData.length > 0);
         setMetadata({
-          data: [...previewData, ...(showAnnet ? additionalData : [])],
+          data: [...previewData, ...(showOther ? (otherData as Activity[]) : [])],
         });
       } else if (isFyllut && !done && !data && !fetchError && !loading) {
         fetchData();
@@ -90,8 +95,8 @@ const DataFetcher = forwardRef<HTMLFieldSetElement, Props>(
       isFyllut,
       done,
       setShowAdditionalDescription,
-      showAnnet,
-      additionalData,
+      showOther,
+      otherData,
     ]);
 
     if (loading) {

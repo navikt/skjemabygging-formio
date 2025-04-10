@@ -1,12 +1,12 @@
 import { Component } from '@navikt/skjemadigitalisering-shared-domain';
 
-const editFormShowAnnet = (): Component => {
+const editFormShowOther = (): Component => {
   return {
     type: 'checkbox',
     label: 'Legg til annet',
-    key: 'showAnnet',
+    key: 'showOther',
     defaultValue: false,
   };
 };
 
-export default editFormShowAnnet;
+export default editFormShowOther;

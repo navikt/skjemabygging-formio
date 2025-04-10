@@ -93,7 +93,7 @@
           "modalEdit": false,
           "protected": false,
           "refreshOn": "",
-          "showAnnet": true,
+          "showOther": true,
           "tableView": false,
           "attributes": {},
           "errorLabel": "",

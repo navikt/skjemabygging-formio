@@ -20,7 +20,7 @@ describe('Data fetcher', () => {
         });
     });
 
-    it('should render annet option when showAnnet is checked', () => {
+    it('should render annet option when showOther is checked', () => {
       cy.mocksUseRouteVariant('get-register-data-activities:success');
       cy.visit('/fyllut/datafetcherannettest/arbeidsrettetaktivitet?sub=digital');
       cy.findByRole('group', { name: LABEL_AKTIVITETSVELGER })
