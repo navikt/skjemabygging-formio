@@ -3,6 +3,7 @@ import { makeStyles } from '@navikt/skjemadigitalisering-shared-components';
 import { Link as ReactRouterLink } from 'react-router-dom';
 import { FormMigrationLogData } from '../../../types/migration';
 import FormStatusPanel from '../../Forms/status/FormStatusPanel';
+import { toFormStatusProperties } from '../utils';
 import BreakingChangesWarning from './BreakingChangesWarning';
 import ComponentDependencies from './ComponentDependencies';
 
@@ -90,7 +91,11 @@ const MigrationDryRunResults = ({
                   Inkluder i migrering
                 </Checkbox>
               )}
-              <FormStatusPanel formStatusProperties={result} spacing={'small'} hideToggleDiffButton />
+              <FormStatusPanel
+                formStatusProperties={toFormStatusProperties(result)}
+                spacing={'small'}
+                hideToggleDiffButton
+              />
             </div>
           </li>
         );

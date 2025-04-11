@@ -1,25 +1,10 @@
 import { Form } from '@navikt/skjemadigitalisering-shared-domain';
-import { FormMigrationLogData } from '../../../types/migration';
-import { FormStatusEvents, Status } from './types';
+import { FormStatusProperties, Status } from './types';
 
-const getStatusProperties = (formElement: Form | FormMigrationLogData | FormStatusEvents): FormStatusEvents => {
-  let isTestForm;
-  if ('properties' in formElement) {
-    const { properties } = formElement as Form;
-    isTestForm = properties?.isTestForm;
-  }
-  if ('isTestForm' in formElement) {
-    isTestForm = formElement.isTestForm;
-  }
-  const { status } = formElement;
+const determineStatus = (formElement: FormStatusProperties): Status => {
+  const { properties, status } = formElement;
 
-  return { status, isTestForm };
-};
-
-const determineStatus = (formElement: FormStatusEvents | Form | FormMigrationLogData): Status => {
-  const { isTestForm, status } = getStatusProperties(formElement);
-
-  if (isTestForm) {
+  if (properties?.isTestForm) {
     return 'TESTFORM';
   }
 
@@ -39,8 +24,7 @@ const determineStatus = (formElement: FormStatusEvents | Form | FormMigrationLog
 
 const determineStatusFromForm = (form: Form) => {
   const { changedAt, publishedAt, properties, status } = form;
-  const { isTestForm } = properties ?? {};
-  return determineStatus({ changedAt, publishedAt, isTestForm, status });
+  return determineStatus({ changedAt, publishedAt, properties, status });
 };
 
 export { determineStatus, determineStatusFromForm };

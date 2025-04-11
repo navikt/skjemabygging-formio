@@ -4,6 +4,7 @@ import { Form } from '@navikt/skjemadigitalisering-shared-domain';
 import { FormMigrationLogData } from '../../../types/migration';
 import FormStatus from '../../Forms/status/FormStatus';
 import { determineStatus } from '../../Forms/status/utils';
+import { toFormStatusProperties } from '../utils';
 
 const useStyles = makeStyles({
   container: {
@@ -43,7 +44,7 @@ export const FormList = ({
                   <Table.HeaderCell scope="row">{skjemanummer}</Table.HeaderCell>
                   <Table.DataCell>{element.title}</Table.DataCell>
                   <Table.DataCell>
-                    <FormStatus status={determineStatus(element)} size={'small'} />
+                    <FormStatus status={determineStatus(toFormStatusProperties(element))} size={'small'} />
                   </Table.DataCell>
                 </Table.Row>
               );
