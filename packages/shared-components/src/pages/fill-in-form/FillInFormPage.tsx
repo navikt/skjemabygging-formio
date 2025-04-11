@@ -165,17 +165,14 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: Fil
     [formUrl, isMellomlagringActive, navigate, updateMellomlagring],
   );
 
-  const onComponentChange = useCallback(
-    (args: any) => {
-      if (args.flags.modified) {
-        setSubmission((oldSubmission) => ({
-          ...oldSubmission,
-          data: {
-            ...oldSubmission?.data,
-            [args.component.key]: args.value,
-          },
-        }));
-      }
+  const onChangeData = useCallback(
+    (changedSubmission: any) => {
+      setSubmission((oldSubmission) => ({
+        ...oldSubmission,
+        data: {
+          ...changedSubmission,
+        },
+      }));
     },
     [setSubmission],
   );
@@ -266,7 +263,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: Fil
             onWizardPageSelected,
             onShowErrors,
             onErrorSummaryFocus,
-            onComponentChange,
+            onChangeData,
           }}
         />
         <FormSavedStatus submission={submission} />
