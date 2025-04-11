@@ -65,7 +65,12 @@ class DataFetcher extends BaseComponent {
   }
 
   shouldSkipValidation(data?: SubmissionData, dirty?: boolean, row?: SubmissionData): boolean {
-    return this.getDataFromMetadata()?.data?.length === 0 || super.shouldSkipValidation(data, dirty, row);
+    const metadata = this.getDataFromMetadata();
+    return metadata?.fetchDisabled || metadata?.data?.length === 0 || super.shouldSkipValidation(data, dirty, row);
+  }
+
+  getShowOther() {
+    return this.component?.showOther;
   }
 
   renderReact(element) {
@@ -88,6 +93,8 @@ class DataFetcher extends BaseComponent {
           dataFetcherData={this.getDataFromMetadata()}
           setMetadata={(metaData) => this.setMetadata(metaData)}
           setShowAdditionalDescription={(value) => this.setShowAdditionalDescription(value)}
+          ref={(ref) => this.setReactInstance(ref)}
+          showOther={this.getShowOther()}
         />
       </ComponentUtilsProvider>,
     );
