@@ -22,6 +22,13 @@ interface Props {
   showOther?: boolean;
 }
 
+const otherData = [
+  {
+    label: TEXTS.statiske.dataFetcher.other,
+    value: TEXTS.statiske.dataFetcher.other.toLowerCase(),
+  },
+];
+
 const DataFetcher = forwardRef<HTMLFieldSetElement, Props>(
   (
     {
@@ -47,13 +54,7 @@ const DataFetcher = forwardRef<HTMLFieldSetElement, Props>(
     const fetchDisabled = dataFetcherData?.fetchDisabled;
     const isBygger = appConfig.app === 'bygger';
     const isFyllut = appConfig.app === 'fyllut';
-    const submissionMethodIsDigital = appConfig.submissionMethod === 'digital';
-    const otherData = [
-      {
-        label: TEXTS.statiske.dataFetcher.other,
-        value: TEXTS.statiske.dataFetcher.other.toLowerCase(),
-      },
-    ];
+    const isSubmissionMethodDigital = appConfig.submissionMethod === 'digital';
 
     const fetchData = useCallback(async () => {
       try {
@@ -71,7 +72,7 @@ const DataFetcher = forwardRef<HTMLFieldSetElement, Props>(
         setLoading(false);
         setDone(true);
       }
-    }, [otherData, appConfig, queryParams, setMetadata, setShowAdditionalDescription, showOther]);
+    }, [appConfig, queryParams, setMetadata, setShowAdditionalDescription, showOther]);
 
     useEffect(() => {
       if (isBygger) {
@@ -80,7 +81,7 @@ const DataFetcher = forwardRef<HTMLFieldSetElement, Props>(
           setMetadata({ data: [...previewData, ...(showOther ? (otherData as Activity[]) : [])] });
         }
       } else if (isFyllut) {
-        if (submissionMethodIsDigital) {
+        if (isSubmissionMethodDigital) {
           if (!done && !data && !fetchError && !loading) {
             fetchData();
           }
@@ -95,7 +96,7 @@ const DataFetcher = forwardRef<HTMLFieldSetElement, Props>(
       fetchData,
       fetchError,
       fetchDisabled,
-      submissionMethodIsDigital,
+      isSubmissionMethodDigital,
       setMetadata,
       data,
       loading,
@@ -103,7 +104,6 @@ const DataFetcher = forwardRef<HTMLFieldSetElement, Props>(
       done,
       setShowAdditionalDescription,
       showOther,
-      otherData,
     ]);
 
     if (loading) {
