@@ -32,7 +32,7 @@ describe('Pdf when digital submission', () => {
       cy.findByRole('heading', { name: 'Dine opplysninger' }).shouldBeVisible();
       cy.findByRole('button', { name: 'Lagre og fortsett' }).click();
 
-      cy.findByRole('group', { name: 'Velg hvilken aktivitet du vil søke om stønad for' })
+      cy.findByRole('group', { name: 'Hvilken aktivitet søker du om støtte i forbindelse med?' })
         .should('exist')
         .within(() => {
           cy.findAllByRole('radio').should('have.length', 2);
@@ -127,7 +127,7 @@ describe('Pdf when digital submission', () => {
       cy.findByRole('heading', { name: 'Dine opplysningar' }).shouldBeVisible();
       cy.findByRole('button', { name: 'Lagre og fortsett' }).click();
 
-      cy.findByRole('group', { name: 'Velg hvilken aktivitet du vil søke om stønad for' })
+      cy.findByRole('group', { name: 'Hvilken aktivitet søker du om støtte i forbindelse med?' })
         .should('exist')
         .within(() => {
           cy.findAllByRole('radio').should('have.length', 2);

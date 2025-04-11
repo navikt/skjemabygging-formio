@@ -6,6 +6,7 @@ import Alert from './core/alert/Alert';
 import DefaultAttachment from './core/attachment/default/DefaultAttachment';
 import Checkbox from './core/checkbox/Checkbox';
 import Container from './core/container/Container';
+import DataFetcher from './core/data-fetcher/DataFetcher';
 import DataGrid from './core/datagrid/DataGrid';
 import DatePicker from './core/datepicker/DatePicker';
 import Day from './core/day/Day';
@@ -80,5 +81,6 @@ const customComponents = {
   year: Year,
   firstName: FirstName,
   surname: Surname,
+  dataFetcher: DataFetcher,
 };
 export default customComponents;

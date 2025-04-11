@@ -5,10 +5,6 @@
 import { expect } from 'chai';
 
 describe('Month picker', () => {
-  beforeEach(() => {
-    cy.clock(new Date('2024-08-01'), ['Date']);
-  });
-
   before(() => {
     cy.configMocksServer();
   });
@@ -21,6 +17,7 @@ describe('Month picker', () => {
     beforeEach(() => {
       cy.defaultIntercepts();
       cy.visit('/fyllut/monthpickertest/veiledning?sub=paper');
+      cy.clock(new Date('2024-08-01'), ['Date']);
       cy.defaultWaits();
     });
 
@@ -139,7 +136,7 @@ describe('Month picker', () => {
 
       cy.clickSaveAndContinue();
 
-      cy.submitMellomlagring((req) => {
+      cy.submitMellomlagring(async (req) => {
         const {
           submission: { data },
         } = req.body;

@@ -6,6 +6,10 @@ og disse dataene vil så deployes sammen med fyllut.
 
 # Utvikling
 
+## Utvikling av nye Formio komponenter
+
+Se utfyllende dokumentasjon her: [Formio komponenter](packages/shared-components/src/formio/components/README.md)
+
 ## Installere pakker lokalt
 
 For å installere npm-pakker med @navikt-scope må man autentisere seg for registry `npm.pkg.github.com`,

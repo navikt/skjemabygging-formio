@@ -41,6 +41,8 @@ const emailForm = require('../data/formio-api/form-email.json');
 const nav111221b = require('../data/formio-api/nav111221b.json');
 const nav111221bTranslations = require('../data/formio-api/nav111221b-translations.json');
 const formSkjemagruppeTest = require('../data/formio-api/skjemagruppetest.json');
+const datafetcherForm = require('../data/formio-api/data-fetcher.json');
+const datafetcherAnnetForm = require('../data/formio-api/data-fetcher-annet.json');
 
 const allForms = [
   { form: formCypress101, translations: translationsCypress101 },
@@ -77,6 +79,8 @@ const allForms = [
   { form: emailForm, translations: undefined },
   { form: nav111221b, translations: nav111221bTranslations },
   { form: formSkjemagruppeTest, translations: undefined },
+  { form: datafetcherForm, translations: undefined },
+  { form: datafetcherAnnetForm, translations: undefined },
 ];
 
 const findTestdata = (formPath) => allForms.find((testdata) => testdata.form.path === formPath);

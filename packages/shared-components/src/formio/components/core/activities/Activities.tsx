@@ -21,7 +21,7 @@ class Activities extends BaseComponent {
 
   static schema() {
     return BaseComponent.schema({
-      label: 'Velg hvilken aktivitet du vil søke om stønad for',
+      label: 'Hvilken aktivitet søker du om støtte i forbindelse med?',
       type: 'activities',
       key: 'aktivitet',
     });
