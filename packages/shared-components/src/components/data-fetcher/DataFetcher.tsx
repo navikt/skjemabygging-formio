@@ -6,12 +6,7 @@ import { useComponentUtils } from '../../context/component/componentUtilsContext
 import { getSelectedValuesAsList, getSelectedValuesMap } from '../../formio/components/utils';
 import { SkeletonList } from '../../index';
 import previewData from './preview-data.json';
-
-type DataFetcherData = {
-  data?: Activity[];
-  fetchError?: boolean;
-  fetchDisabled?: boolean;
-};
+import { DataFetcherData } from './types';
 
 interface Props {
   label: ReactNode;
