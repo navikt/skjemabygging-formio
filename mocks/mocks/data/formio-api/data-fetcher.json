@@ -390,7 +390,7 @@
           "showWordCount": false,
           "calculateValue": "",
           "calculateServer": false,
-          "customConditional": "show = utils.dataFetcher('aktivitetsvelger', submission).empty",
+          "customConditional": "var dataFetcher = utils.dataFetcher('aktivitetsvelger', submission);\nshow = dataFetcher.fetchDisabled || dataFetcher.empty;",
           "allowMultipleMasks": false,
           "customDefaultValue": "",
           "allowCalculateOverride": false
@@ -537,6 +537,112 @@
       "attributes": {},
       "breadcrumb": "default",
       "components": [
+        {
+          "description": "<p><span>Hvis du har like utgifter hver måned, holder det å legge ved én faktura.</span></p>",
+          "attachmentValues": {
+            "leggerVedNaa": {
+              "enabled": true,
+              "additionalDocumentation": {
+                "enabled": false
+              }
+            },
+            "ettersender": {
+              "enabled": true,
+              "additionalDocumentation": {
+                "enabled": false
+              },
+              "showDeadline": false
+            },
+            "levertTidligere": {
+              "enabled": true,
+              "additionalDocumentation": {
+                "enabled": false
+              }
+            },
+            "harIkke": {
+              "additionalDocumentation": {},
+              "enabled": false
+            },
+            "andre": {
+              "additionalDocumentation": {},
+              "enabled": false
+            },
+            "nav": {
+              "additionalDocumentation": {},
+              "enabled": false
+            }
+          },
+          "customConditional": "show = utils.dataFetcher('aktivitetsvelger', submission).fetchDisabled;",
+          "label": "Faktura fra SFO",
+          "key": "fakturaFraSfo",
+          "input": true,
+          "tableView": false,
+          "validate": {
+            "required": true,
+            "custom": "",
+            "customPrivate": false,
+            "strictDateValidation": false,
+            "multiple": false,
+            "unique": false
+          },
+          "properties": {
+            "vedleggstittel": "Faktura fra SFO",
+            "vedleggskode": "F1"
+          },
+          "type": "attachment",
+          "attachmentType": "default",
+          "placeholder": "",
+          "prefix": "",
+          "customClass": "",
+          "suffix": "",
+          "multiple": false,
+          "defaultValue": null,
+          "protected": false,
+          "unique": false,
+          "persistent": true,
+          "hidden": false,
+          "clearOnHide": true,
+          "refreshOn": "",
+          "redrawOn": "",
+          "modalEdit": false,
+          "dataGridLabel": false,
+          "labelPosition": "top",
+          "errorLabel": "",
+          "tooltip": "",
+          "hideLabel": false,
+          "tabindex": "",
+          "disabled": false,
+          "autofocus": false,
+          "dbIndex": false,
+          "customDefaultValue": "",
+          "calculateValue": "",
+          "calculateServer": false,
+          "widget": null,
+          "attributes": {},
+          "validateOn": "blur",
+          "conditional": {
+            "show": null,
+            "when": null,
+            "eq": ""
+          },
+          "overlay": {
+            "style": "",
+            "left": "",
+            "top": "",
+            "width": "",
+            "height": ""
+          },
+          "allowCalculateOverride": false,
+          "encrypted": false,
+          "showCharCount": false,
+          "showWordCount": false,
+          "allowMultipleMasks": false,
+          "addons": [],
+          "fieldSize": "input--xxl",
+          "dataSrc": "values",
+          "id": "e0mom7s",
+          "keyModified": true
+        },
         {
           "id": "ejod5gl",
           "key": "annenDokumentasjon",
