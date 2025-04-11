@@ -52,7 +52,7 @@ const DataFetcher = forwardRef<HTMLFieldSetElement, Props>(
     const fetchDisabled = dataFetcherData?.fetchDisabled;
     const isBygger = appConfig.app === 'bygger';
     const isFyllut = appConfig.app === 'fyllut';
-    const submissionMethodIsDigital = appConfig.submissionMethod === 'digital';
+    const isSubmissionMethodDigital = appConfig.submissionMethod === 'digital';
     const otherData = [
       {
         label: TEXTS.statiske.dataFetcher.other,
@@ -85,7 +85,7 @@ const DataFetcher = forwardRef<HTMLFieldSetElement, Props>(
           setMetadata({ data: [...previewData, ...(showOther ? (otherData as Activity[]) : [])] });
         }
       } else if (isFyllut) {
-        if (submissionMethodIsDigital) {
+        if (isSubmissionMethodDigital) {
           if (!done && !data && !fetchError && !loading) {
             fetchData();
           }
@@ -100,7 +100,7 @@ const DataFetcher = forwardRef<HTMLFieldSetElement, Props>(
       fetchData,
       fetchError,
       fetchDisabled,
-      submissionMethodIsDigital,
+      isSubmissionMethodDigital,
       setMetadata,
       data,
       loading,
