@@ -30,6 +30,7 @@ class Maalgruppe extends BaseComponent {
   }
 
   initPrefill() {
+    // Usually we override with prefill value, but on målgruppe we need to keep the original value.
     if (this.hasPrefill() && !this.getValue()) {
       this.setValue(this.component?.prefillValue);
     }
