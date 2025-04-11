@@ -1,4 +1,10 @@
-import { ComponentError, NavFormType, Submission, Webform } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  Component,
+  ComponentError,
+  NavFormType,
+  Submission,
+  Webform,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useAppConfig } from '../../context/config/configContext';
@@ -14,7 +20,17 @@ const useStyles = makeStyles({
 
 interface EventProps {
   onCustomEvent?: () => void;
-  onComponentChange?: () => void;
+  onComponentChange?: ({
+    instance,
+    component,
+    value,
+    flags,
+  }: {
+    instance: any;
+    component: Component;
+    value: any;
+    flags: any;
+  }) => void;
   onSubmit?: (submission: any) => void;
   onSubmitDone?: () => void;
   onNextPage?: ({

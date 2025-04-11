@@ -158,28 +158,26 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: Fil
       if (isMellomlagringActive) {
         updateMellomlagring(submission);
       }
-      setSubmission(submission);
 
       // We need to get location data from window, since this function runs inside formio
       navigate({ pathname: `${formUrl}/oppsummering`, search: window.location.search });
     },
-    [formUrl, isMellomlagringActive, navigate, setSubmission, updateMellomlagring],
+    [formUrl, isMellomlagringActive, navigate, updateMellomlagring],
   );
 
-  const onChange = useCallback(
-    (changedSubmission: Submission) => {
-      if (
-        changedSubmission?.data &&
-        changedSubmission.changed?.component?.input &&
-        (changedSubmission.changed.component?.inputType !== 'text' || changedSubmission.changed.flags?.fromBlur)
-      ) {
-        setSubmission({
-          ...submission,
-          data: changedSubmission.data,
-        });
+  const onComponentChange = useCallback(
+    (args: any) => {
+      if (args.flags.modified) {
+        setSubmission((oldSubmission) => ({
+          ...oldSubmission,
+          data: {
+            ...oldSubmission?.data,
+            [args.component.key]: args.value,
+          },
+        }));
       }
     },
-    [setSubmission, submission],
+    [setSubmission],
   );
 
   const onConfirmCancel = useCallback(async () => {
@@ -264,11 +262,11 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: Fil
             onNextPage,
             onPrevPage,
             onCancel,
-            onChange,
             onSave,
             onWizardPageSelected,
             onShowErrors,
             onErrorSummaryFocus,
+            onComponentChange,
           }}
         />
         <FormSavedStatus submission={submission} />
