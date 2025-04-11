@@ -1,5 +1,13 @@
-import { guid, MigrationLevel, migrationUtils, Operator } from '@navikt/skjemadigitalisering-shared-domain';
-import { DryRunResults, MigrationMap, MigrationOption, MigrationOptions, ParsedInput } from '../../types/migration';
+import { Form, guid, MigrationLevel, migrationUtils, Operator } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  DryRunResults,
+  FormMigrationLogData,
+  MigrationMap,
+  MigrationOption,
+  MigrationOptions,
+  ParsedInput,
+} from '../../types/migration';
+import { FormStatusProperties } from '../Forms/status/types';
 
 const assembleUrlParams = (params: string[]) => {
   const filteredParams = params.filter((param) => param);
@@ -149,4 +157,22 @@ export const createEditOptions = (options: MigrationMap = {}): MigrationOptions 
 
 export const getMigrationLevelFromParams = (searchParams: URLSearchParams): MigrationLevel => {
   return (searchParams.get('migrationLevel') as MigrationLevel) || 'component';
+};
+
+// Ved omskriving av migreringsfunksjonaliteten bør vi ta sikte på å forbedre FormMigrationLogData-typen slik at vi ikke trenger spesialbehandling slik som denne funksjonen
+export const toFormStatusProperties = (formElement: FormMigrationLogData | Form): FormStatusProperties => {
+  const status = formElement.status as any;
+  let isTestForm: boolean | undefined;
+  if ('properties' in formElement) {
+    const { properties } = formElement as Form;
+    isTestForm = properties?.isTestForm;
+  } else {
+    isTestForm = formElement.isTestForm;
+  }
+  return {
+    status,
+    properties: {
+      isTestForm,
+    },
+  };
 };
