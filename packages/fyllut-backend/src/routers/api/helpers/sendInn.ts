@@ -48,7 +48,11 @@ const objectToByteArray = (obj: object) => Array.from(new TextEncoder().encode(J
 
 const byteArrayToObject = (byteArray?: Buffer) => JSON.parse(new TextDecoder().decode(byteArray));
 
-const sanitizeInnsendingsId = (innsendingsId: string) => innsendingsId.replace(/[./]/g, '');
+const sanitizeInnsendingsId = (innsendingsId: string) => {
+  if (!innsendingsId) return innsendingsId;
+
+  return innsendingsId.replace(/[./]/g, '');
+};
 
 const validateInnsendingsId = (innsendingsId: string | undefined, supplementaryMessage?: string) => {
   let errorMessage;

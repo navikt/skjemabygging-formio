@@ -33,6 +33,7 @@ describe('IBAN', () => {
   beforeEach(() => {
     ibanComp = new IBAN(undefined, {}, {});
     ibanComp.component.label = 'Label for IBAN';
+    ibanComp.path = 'iban';
     ibanComp.setValue('IBAN-value');
     vi.spyOn(IBAN.prototype, 'translate').mockImplementation(mockedTranslate as any);
     vi.spyOn(IBAN.prototype, 'setComponentValidity').mockImplementation(mockedSetComponentValidity as any);

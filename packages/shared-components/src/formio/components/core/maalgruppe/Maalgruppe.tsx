@@ -30,9 +30,9 @@ class Maalgruppe extends BaseComponent {
   }
 
   initPrefill() {
-    if (this.isSubmissionDigital() && this.component?.prefillKey && this.component?.prefillValue) {
-      // Call parent setValue so ignore prefillKey block on local setValue.
-      super.setValue(this.component?.prefillValue);
+    // Usually we override with prefill value, but on målgruppe we need to keep the original value.
+    if (this.hasPrefill() && !this.getValue()) {
+      this.setValue(this.component?.prefillValue);
     }
   }
 
