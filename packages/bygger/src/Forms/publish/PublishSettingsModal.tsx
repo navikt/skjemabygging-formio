@@ -154,6 +154,7 @@ const PublishSettingsModal = ({ open, onClose, onConfirm, form, unsavedGlobalTra
       texts={{
         title: 'Publiseringsinnstillinger',
         confirm: 'Publiser',
+        cancel: 'Avbryt publisering',
       }}
     >
       <PublishStatusPanel form={form} />
