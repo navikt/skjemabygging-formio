@@ -12,7 +12,6 @@ type FormStepperProps = {
   submission?: Submission;
   activeStep?: string;
   completed?: boolean;
-  setSubmission?: any;
 };
 
 const FormStepper = ({ form, submission, formUrl, activeStep, completed }: FormStepperProps) => {

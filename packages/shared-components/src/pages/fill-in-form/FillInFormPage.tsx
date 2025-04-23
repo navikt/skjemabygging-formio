@@ -3,6 +3,7 @@ import {
   NavFormType,
   navFormUtils,
   Submission,
+  SubmissionData,
   TEXTS,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import EventEmitter from 'eventemitter3';
@@ -85,11 +86,10 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: Fil
     ({ page, currentPanels, submission }) => {
       if (isMellomlagringActive) {
         updateMellomlagring(submission);
-        setSubmission(submission);
       }
       onNextOrPreviousPage(page, currentPanels);
     },
-    [isMellomlagringActive, updateMellomlagring, onNextOrPreviousPage, setSubmission],
+    [isMellomlagringActive, updateMellomlagring, onNextOrPreviousPage],
   );
 
   const onPrevPage = useCallback(
@@ -99,21 +99,13 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: Fil
     [onNextOrPreviousPage],
   );
 
-  const onCancel = useCallback(
-    ({ submission }) => {
-      setSubmission(submission);
-      setShowModal(isMellomlagringActive ? 'delete' : 'discard');
-    },
-    [isMellomlagringActive, setSubmission, setShowModal],
-  );
+  const onCancel = useCallback(() => {
+    setShowModal(isMellomlagringActive ? 'delete' : 'discard');
+  }, [isMellomlagringActive, setShowModal]);
 
-  const onSave = useCallback(
-    ({ submission }) => {
-      setSubmission(submission);
-      setShowModal('save');
-    },
-    [setSubmission, setShowModal],
-  );
+  const onSave = useCallback(() => {
+    setShowModal('save');
+  }, [setShowModal]);
 
   const onWizardPageSelected = useCallback(
     (panel) => {
@@ -165,12 +157,12 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: Fil
     [formUrl, isMellomlagringActive, navigate, updateMellomlagring],
   );
 
-  const onChangeData = useCallback(
-    (changedSubmission: any) => {
-      setSubmission((oldSubmission) => ({
-        ...oldSubmission,
+  const onHandleChange = useCallback(
+    (submissionData: SubmissionData) => {
+      setSubmission((prevSubmission) => ({
+        ...prevSubmission,
         data: {
-          ...changedSubmission,
+          ...submissionData,
         },
       }));
     },
@@ -263,20 +255,14 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: Fil
             onWizardPageSelected,
             onShowErrors,
             onErrorSummaryFocus,
-            onChangeData,
+            onHandleChange,
           }}
         />
         <FormSavedStatus submission={submission} />
         <FormError error={submission?.fyllutState?.mellomlagring?.error} />
       </div>
       <div>
-        <FormStepper
-          form={formForRendering}
-          formUrl={formUrl}
-          completed={true}
-          setSubmission={setSubmission}
-          submission={submission}
-        />
+        <FormStepper form={formForRendering} formUrl={formUrl} completed={true} submission={submission} />
       </div>
       <ConfirmationModal
         open={!!showModal}

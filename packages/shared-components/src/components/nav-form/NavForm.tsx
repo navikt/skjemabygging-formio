@@ -47,7 +47,7 @@ interface EventProps {
   onCancel?: ({ submission }: { submission: Submission }) => void;
   onSave?: ({ submission }: { submission: Submission }) => void;
   onChange?: (changedSubmission: Submission) => void;
-  onChangeData?: (submissionData?: SubmissionData) => void;
+  onHandleChange?: (submissionData: SubmissionData) => void;
   onWizardPageSelected?: (panel: { path: string }) => void;
   onShowErrors?: (errorsFromForm: ComponentError[]) => void;
   onErrorSummaryFocus?: () => void;
@@ -120,13 +120,9 @@ const NavForm = ({
       if (webform) {
         webform.onAny((event: string, ...args: any[]) => {
           appConfig.logger?.trace(`Formio event '${event}'`, { webformId: webform?.id, eventArgs: args });
+
           if (event.startsWith('formio.')) {
             const funcName = `on${event.charAt(7).toUpperCase()}${event.slice(8)}`;
-
-            if (events?.onChangeData && funcName === 'onComponentChange' && args[0]?.component?.input) {
-              events.onChangeData(webform.submission?.data);
-            }
-
             if (events && funcName in events) {
               events[funcName](...args);
             }

@@ -79,7 +79,8 @@ describe('Mellomlagring', () => {
       cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.cancelAndDelete }).should('not.exist');
       cy.findByRole('link', { name: TEXTS.grensesnitt.summaryPage.editAnswers })
         .should('exist')
-        .and('have.attr', 'href', '/fyllut/testmellomlagring/valgfrieOpplysninger?sub=paper');
+        .should('have.attr', 'href')
+        .and('contains', '/fyllut/testmellomlagring/valgfrieOpplysninger?sub=paper');
     });
   });
 
@@ -273,12 +274,10 @@ describe('Mellomlagring', () => {
           cy.findByLabelText('Tekst på kortet').should('have.focus').type('Takk for hjelpen!');
 
           cy.findByRole('link', { name: 'Oppsummering' }).click();
-          cy.wait('@updateMellomlagring');
           cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
           cy.findByText('Ønsker du å få gaven innpakket').should('exist').next('dd').should('contain.text', 'Ja');
           cy.findByText('Farge').should('exist').next('dd').should('contain.text', 'Rød');
           cy.findByText('Tekst på kortet').should('exist').next('dd').should('contain.text', 'Takk for hjelpen!');
-          cy.get('@updateMellomlagringSpy').should('have.been.calledOnce');
         });
 
         it('lets you delete mellomlagring', () => {

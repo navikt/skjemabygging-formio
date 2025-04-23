@@ -10,7 +10,6 @@ import SummaryPageNavigation from '../../components/summary/navigation/SummaryPa
 import { useAppConfig } from '../../context/config/configContext';
 import { useLanguages } from '../../context/languages';
 import { usePrefillData } from '../../context/prefill-data/PrefillDataContext';
-import { useSendInn } from '../../context/sendInn/sendInnContext';
 import Styles from '../../styles';
 import { scrollToAndSetFocus } from '../../util/focus-management/focus-management';
 import { PanelValidation, validateWizardPanels } from '../../util/form/panel-validation/panelValidation';
@@ -58,7 +57,6 @@ export interface Props {
 
 export function SummaryPage({ form, submission, formUrl }: Props) {
   const appConfig = useAppConfig();
-  const { isMellomlagringAvailable } = useSendInn();
   const { translate } = useLanguages();
   const styles = useStyles();
   const { declarationType, declarationText } = form.properties;
@@ -88,12 +86,12 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
         formioSummary.innerHTML = '';
       }
     };
-    if (isMellomlagringAvailable && submission?.data) {
+    if (submission?.data) {
       initializePanelValidation();
     } else {
       setPanelValidationList([]);
     }
-  }, [isMellomlagringAvailable, form, submission, appConfig, prefillData]);
+  }, [form, submission, appConfig, prefillData]);
 
   useEffect(() => scrollToAndSetFocus('main', 'start'), []);
   const declarationRef = useRef<HTMLInputElement>(null);
