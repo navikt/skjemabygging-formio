@@ -94,17 +94,17 @@ export const createVerdilister = (summaryPanels: SummaryPanel[]): VerdilisteElem
   });
 };
 
-const createVerdilisteElement = (component: SummaryComponent, level?: number): VerdilisteElement => {
+const createVerdilisteElement = (component: SummaryComponent): VerdilisteElement => {
   if (!component.hiddenInSummary) {
     switch (component.type) {
       case 'fieldset':
-        return sectionMap(component, level);
+        return sectionMap(component);
       case 'panel':
       case 'navSkjemagruppe':
       case 'datagrid':
-        return subSectionMap(component, level);
+        return subSectionMap(component);
       case 'datagrid-row':
-        return datagridRowMap(component, level);
+        return datagridRowMap(component);
       case 'dataFetcher':
       case 'selectboxes':
         return multipleAnswersMap(component);
