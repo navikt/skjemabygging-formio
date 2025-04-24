@@ -190,6 +190,20 @@ const getBirthDateFromFnr = (fnr) => {
   return moment(birthDateStr, 'DDMMYYYY');
 };
 
+const regexTest = (regex, value) => (Array.isArray(regex) ? regex.some((r) => r.test(value)) : regex.test(value));
+
+const getSelectedItems = (items, userData) => items.filter((item) => userData[item.value]);
+
+const getMatchingItems = (items, matcher) => {
+  return items.filter((item) =>
+    Object.keys(matcher).some((matcherProp) => {
+      return matcher[matcherProp].regex
+        ? regexTest(matcher[matcherProp].regex, item[matcherProp])
+        : item[matcherProp] === matcher[matcherProp];
+    }),
+  );
+};
+
 const dataFetcher = (key, submission) => {
   const userData = submission?.data?.[key];
   const apiResult = submission?.metadata?.dataFetcher?.[key];
@@ -204,12 +218,21 @@ const dataFetcher = (key, submission) => {
     empty: fetchSuccess ? apiResult?.data?.length === 0 : undefined,
     success: fetchDone ? fetchSuccess : undefined,
     failure: fetchDone ? fetchFailure : undefined,
-    selected: (matcher) =>
-      fetchSuccess
-        ? apiResult.data
-            .filter((item) => userData[item.value])
-            .some((item) => Object.keys(matcher).some((matcherProp) => item[matcherProp] === matcher[matcherProp]))
-        : undefined,
+    selected: (matcher) => {
+      if (fetchSuccess) {
+        const allSelectedItems = getSelectedItems(apiResult.data, userData);
+        if (typeof matcher === 'string') {
+          switch (matcher) {
+            case 'COUNT':
+              return allSelectedItems.filter((item) => item.value !== 'annet').length;
+            default:
+              return undefined;
+          }
+        }
+        return getMatchingItems(allSelectedItems, matcher).length > 0;
+      }
+      return undefined;
+    },
     apiResult,
   };
 };

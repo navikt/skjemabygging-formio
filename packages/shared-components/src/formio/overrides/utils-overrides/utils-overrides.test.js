@@ -615,38 +615,113 @@ describe('utils-overrides', () => {
     });
 
     describe('selected', () => {
-      it('returns true if any item with matches input, false otherwise', () => {
-        const submission = {
-          data: {
-            aktivitetsvelger: { 1: true, 2: false },
-          },
-          metadata: {
-            dataFetcher: {
-              aktivitetsvelger: {
-                data: [
-                  { value: 1, label: 'Aktivitet 1', type: 'BOSTOTTE', count: 43 },
-                  { value: 2, label: 'Aktivitet 2', type: 'TILTAK' },
-                  { value: 'annet', label: 'Annet' },
-                ],
+      describe('user has selected one item fetched from API', () => {
+        let dataFetcher;
+
+        beforeEach(() => {
+          const submission = {
+            data: {
+              aktivitetsvelger: { 1: true, 2: false, annet: false },
+            },
+            metadata: {
+              dataFetcher: {
+                aktivitetsvelger: {
+                  data: [
+                    { value: 1, label: 'Støtte til husleie', type: 'BOSTOTTE', count: 43 },
+                    { value: 2, label: 'Ordinær utdanning for enslige forsørgere mv', type: 'TILTAK' },
+                    { value: 'annet', label: 'Annet' },
+                  ],
+                },
               },
+            },
+          };
+          dataFetcher = UtilsOverrides.dataFetcher('aktivitetsvelger', submission);
+        });
+
+        it('returns true if any item with matches input, false otherwise', () => {
+          expect(dataFetcher.selected({ type: 'BOSTOTTE' })).toBe(true);
+          expect(dataFetcher.selected({ type: 'TILTAK' })).toBe(false);
+          expect(dataFetcher.selected({ count: 43 })).toBe(true);
+          expect(dataFetcher.selected({ count: 31 })).toBe(false);
+          expect(dataFetcher.selected({ value: 1 })).toBe(true);
+          expect(dataFetcher.selected({ value: 2 })).toBe(false);
+          expect(dataFetcher.selected({ value: 'annet' })).toBe(false);
+        });
+
+        describe('regex support', () => {
+          it('returns true when user has selected item matching regex, false otherwise', () => {
+            expect(dataFetcher.selected({ label: { regex: /^Støtte/ } })).toBe(true);
+            expect(dataFetcher.selected({ label: { regex: /.*husleie.*/ } })).toBe(true);
+            expect(dataFetcher.selected({ label: { regex: /^Ordinær/ } })).toBe(false);
+          });
+
+          it('supports array of regex, returning true if any match', () => {
+            expect(dataFetcher.selected({ label: { regex: [/^Ordinær/, /.*husleie.*/] } })).toBe(true);
+          });
+        });
+      });
+
+      describe('count', () => {
+        const metadata = {
+          dataFetcher: {
+            aktivitetsvelger: {
+              data: [
+                { value: 1, label: 'Støtte til husleie', type: 'BOSTOTTE', count: 43 },
+                { value: 2, label: 'Ordinær utdanning for enslige forsørgere mv', type: 'TILTAK' },
+                { value: 'annet', label: 'Annet' },
+              ],
             },
           },
         };
-        const dataFetcher = UtilsOverrides.dataFetcher('aktivitetsvelger', submission);
-        expect(dataFetcher.selected({ type: 'BOSTOTTE' })).toBe(true);
-        expect(dataFetcher.selected({ type: 'TILTAK' })).toBe(false);
-        expect(dataFetcher.selected({ count: 43 })).toBe(true);
-        expect(dataFetcher.selected({ count: 31 })).toBe(false);
-        expect(dataFetcher.selected({ value: 1 })).toBe(true);
-        expect(dataFetcher.selected({ value: 2 })).toBe(false);
-        expect(dataFetcher.selected({ value: 'annet' })).toBe(false);
+
+        it('counts the only selected item', () => {
+          const submission = {
+            data: {
+              aktivitetsvelger: { 1: true, 2: false, annet: false },
+            },
+            metadata,
+          };
+          const dataFetcher = UtilsOverrides.dataFetcher('aktivitetsvelger', submission);
+          expect(dataFetcher.selected('COUNT')).toBe(1);
+        });
+
+        it('counts two selected items', () => {
+          const submission = {
+            data: {
+              aktivitetsvelger: { 1: true, 2: true, annet: false },
+            },
+            metadata,
+          };
+          const dataFetcher = UtilsOverrides.dataFetcher('aktivitetsvelger', submission);
+          expect(dataFetcher.selected('COUNT')).toBe(2);
+        });
+
+        it('counts two selected items, skipping "annet"', () => {
+          const submission = {
+            data: {
+              aktivitetsvelger: { 1: true, 2: true, annet: true },
+            },
+            metadata,
+          };
+          const dataFetcher = UtilsOverrides.dataFetcher('aktivitetsvelger', submission);
+          expect(dataFetcher.selected('COUNT')).toBe(2);
+        });
+
+        it('skips "annet" when counting items', () => {
+          const submission = {
+            data: {
+              aktivitetsvelger: { 1: false, 2: false, annet: true },
+            },
+            metadata,
+          };
+          const dataFetcher = UtilsOverrides.dataFetcher('aktivitetsvelger', submission);
+          expect(dataFetcher.selected('COUNT')).toBe(0);
+        });
       });
 
       it('returns undefined if API fetch failed', () => {
         const submission = {
-          data: {
-            aktivitetsvelger: { 1: true, 2: false },
-          },
+          data: {},
           metadata: {
             dataFetcher: {
               aktivitetsvelger: { fetchError: true },
@@ -656,6 +731,7 @@ describe('utils-overrides', () => {
         const dataFetcher = UtilsOverrides.dataFetcher('aktivitetsvelger', submission);
         expect(dataFetcher.selected({ type: 'BOSTOTTE' })).toBe(undefined);
         expect(dataFetcher.selected({ type: 'TILTAK' })).toBe(undefined);
+        expect(dataFetcher.selected('COUNT')).toBe(undefined);
       });
     });
   });
