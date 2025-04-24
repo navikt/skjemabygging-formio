@@ -1,6 +1,6 @@
 import { ReadMore } from '@navikt/ds-react';
+import InnerHtml from '../../../../components/inner-html/InnerHtml';
 import { useComponentUtils } from '../../../../context/component/componentUtilsContext';
-import { InnerHtml } from '../../../../index';
 
 const AdditionalDescription = ({ component }) => {
   const { translate } = useComponentUtils();
