@@ -11,13 +11,13 @@ import { DataFetcherData } from './types';
 interface Props {
   label: ReactNode;
   description?: ReactNode;
+  additionalDescription?: ReactNode;
   className?: string;
   value?: Record<string, boolean>;
   onChange: (value: Record<string, boolean>) => void;
   queryParams?: Record<string, string>;
   error?: ReactNode;
   setMetadata: (data: DataFetcherData) => void;
-  setShowAdditionalDescription: (value: boolean) => void;
   dataFetcherData?: DataFetcherData;
   showOther?: boolean;
 }
@@ -35,13 +35,13 @@ const DataFetcher = forwardRef<HTMLFieldSetElement, Props>(
       label,
       value,
       description,
+      additionalDescription,
       className,
       onChange,
       queryParams,
       error,
       dataFetcherData,
       setMetadata,
-      setShowAdditionalDescription,
       showOther,
     },
     ref,
@@ -61,23 +61,20 @@ const DataFetcher = forwardRef<HTMLFieldSetElement, Props>(
         setLoading(true);
         const result = await getActivities(appConfig, queryParams);
         if (result) {
-          setShowAdditionalDescription(result.length > 0);
           setMetadata({ data: [...result, ...(showOther ? (otherData as Activity[]) : [])] });
         }
       } catch (error) {
         console.error('Failed to fetch activities:', error);
-        setShowAdditionalDescription(false);
         setMetadata({ fetchError: true });
       } finally {
         setLoading(false);
         setDone(true);
       }
-    }, [appConfig, queryParams, setMetadata, setShowAdditionalDescription, showOther]);
+    }, [appConfig, queryParams, setMetadata, showOther]);
 
     useEffect(() => {
       if (isBygger) {
         if (!data) {
-          setShowAdditionalDescription(previewData.length > 0);
           setMetadata({ data: [...previewData, ...(showOther ? (otherData as Activity[]) : [])] });
         }
       } else if (isFyllut) {
@@ -86,7 +83,6 @@ const DataFetcher = forwardRef<HTMLFieldSetElement, Props>(
             fetchData();
           }
         } else if (!fetchDisabled) {
-          setShowAdditionalDescription(false);
           setMetadata({ fetchDisabled: true });
         }
       }
@@ -102,7 +98,6 @@ const DataFetcher = forwardRef<HTMLFieldSetElement, Props>(
       loading,
       isFyllut,
       done,
-      setShowAdditionalDescription,
       showOther,
     ]);
 
@@ -115,22 +110,25 @@ const DataFetcher = forwardRef<HTMLFieldSetElement, Props>(
     }
 
     return (
-      <CheckboxGroup
-        legend={label}
-        description={description}
-        value={getSelectedValuesAsList(value)}
-        onChange={(values) => onChange(getSelectedValuesMap(data, values))}
-        ref={ref}
-        className={className}
-        error={error}
-        tabIndex={-1}
-      >
-        {data.map(({ value, label }) => (
-          <Checkbox key={value} value={value}>
-            {label}
-          </Checkbox>
-        ))}
-      </CheckboxGroup>
+      <>
+        <CheckboxGroup
+          legend={label}
+          description={description}
+          value={getSelectedValuesAsList(value)}
+          onChange={(values) => onChange(getSelectedValuesMap(data, values))}
+          ref={ref}
+          className={className}
+          error={error}
+          tabIndex={-1}
+        >
+          {data.map(({ value, label }) => (
+            <Checkbox key={value} value={value}>
+              {label}
+            </Checkbox>
+          ))}
+        </CheckboxGroup>
+        {additionalDescription}
+      </>
     );
   },
 );

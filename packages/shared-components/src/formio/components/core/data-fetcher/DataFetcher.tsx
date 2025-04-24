@@ -86,6 +86,7 @@ class DataFetcher extends BaseComponent {
             </>
           }
           description={<Description component={this.component} />}
+          additionalDescription={<AdditionalDescription component={this.component} />}
           value={this.getValue()}
           onChange={(value) => {
             this.changeHandler(value);
@@ -95,11 +96,9 @@ class DataFetcher extends BaseComponent {
           error={this.getError()}
           dataFetcherData={this.getDataFromMetadata()}
           setMetadata={(metaData) => this.setMetadata(metaData)}
-          setShowAdditionalDescription={(value) => this.setShowAdditionalDescription(value)}
           ref={(ref) => this.setReactInstance(ref)}
           showOther={this.getShowOther()}
         />
-        <AdditionalDescription component={this.component} />
       </ComponentUtilsProvider>,
     );
   }

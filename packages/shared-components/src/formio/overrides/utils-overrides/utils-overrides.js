@@ -3,35 +3,6 @@ import { formDiffingTool, navFormioUtils } from '@navikt/skjemadigitalisering-sh
 import { Formio, Utils } from 'formiojs';
 import moment from 'moment/moment';
 
-const additionalDescription = (ctx) => {
-  if (!ctx.component.additionalDescriptionLabel && !ctx.component.additionalDescriptionText) return '';
-
-  const descriptionId = `${ctx.component.id}-${ctx.component.key}-additional-description`;
-  const descriptionButtonId = `${ctx.component.id}-${ctx.component.key}-additional-button-content`;
-  const descriptionContentId = `${ctx.component.id}-${ctx.component.key}-additional-description-content`;
-
-  return `<div class="navds-read-more navds-read-more--medium" id="${descriptionId}">
-    <button type="button" class="navds-read-more__button navds-body-short" aria-expanded="true" id="${descriptionButtonId}" onclick="(() => {          
-      document.getElementById('${descriptionId}').classList.toggle('navds-read-more--open');          
-      document.getElementById('${descriptionContentId}').classList.toggle('navds-read-more__content--closed');
-      document.getElementById('${descriptionContentId}').setAttribute(
-        'aria-hidden', (!document.getElementById('${descriptionContentId}').getAttribute('aria-hidden')).toString()
-      );          
-      document.getElementById('${descriptionButtonId}').setAttribute(
-        'aria-expanded', (!document.getElementById('${descriptionButtonId}').getAttribute('aria-expanded')).toString()
-      );
-      })()">      
-      <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" focusable="false" role="img" class="navds-read-more__expand-icon" aria-hidden="true">
-        <path fill-rule="evenodd" clip-rule="evenodd" d="M5.97 9.47a.75.75 0 0 1 1.06 0L12 14.44l4.97-4.97a.75.75 0 1 1 1.06 1.06l-5.5 5.5a.75.75 0 0 1-1.06 0l-5.5-5.5a.75.75 0 0 1 0-1.06Z" fill="currentColor"></path>
-      </svg>
-      <span>${ctx.t(ctx.component.additionalDescriptionLabel)}</span>
-    </button>
-    <div class="navds-read-more__content navds-read-more__content--closed" id="${descriptionContentId}" aria-hidden="true">
-      ${ctx.t(ctx.component.additionalDescriptionText)}  
-    </div>
-  </div>`;
-};
-
 const translateHTMLTemplate = (template, translate) => {
   return translate(template);
 };
@@ -229,7 +200,6 @@ const data = () => {
 };
 
 const UtilsOverrides = {
-  additionalDescription,
   translateHTMLTemplate,
   evaluate,
   sanitize,
