@@ -1,5 +1,10 @@
-import React, { createContext, useContext, useEffect } from 'react';
-import useMessageQueue, { Message } from '../../hooks/useMessageQueue';
+import React, { createContext, useContext, useEffect, useMemo, useReducer } from 'react';
+import messageQueueReducer, { Message } from './messageQueueReducer';
+
+type FeedbackMessageContextValue = {
+  messages: Message[];
+  clearMessage: (id: string) => void;
+};
 
 const defaultEmit = (_message: string) => {};
 
@@ -8,31 +13,36 @@ export const FeedbackEmitContext = createContext({
   error: defaultEmit,
   warning: defaultEmit,
 });
-const FeedbackMessageContext = createContext<Message[]>([]);
+const FeedbackMessageContext = createContext<FeedbackMessageContextValue>({ messages: [], clearMessage: () => {} });
 
 const FeedbackProvider = ({ children }: { children: React.ReactElement }) => {
-  const [messages, messageQueue] = useMessageQueue();
+  const [messages, dispatch] = useReducer(messageQueueReducer, []);
 
   useEffect(() => {
     const callback = (error: PromiseRejectionEvent) => {
       if (error?.reason?.message) {
-        messageQueue.push({ message: error.reason.message, type: 'error' });
+        dispatch({ type: 'ADD_MESSAGE', payload: { message: error.reason.message, type: 'error' } });
       }
     };
     window.addEventListener('unhandledrejection', callback);
     return () => window.removeEventListener('unhandledrejection', callback);
-  }, [messageQueue]);
+  }, []);
 
-  const emit = {
-    success: (message: string) => messageQueue.push({ message, type: 'success' }),
-    warning: (message: string) => messageQueue.push({ message, type: 'warning' }),
-    error: (message: string) => messageQueue.push({ message, type: 'error' }),
-  };
+  const emit = useMemo(
+    () => ({
+      success: (message: string) => dispatch({ type: 'ADD_MESSAGE', payload: { message, type: 'success' } }),
+      warning: (message: string) => dispatch({ type: 'ADD_MESSAGE', payload: { message, type: 'warning' } }),
+      error: (message: string) => dispatch({ type: 'ADD_MESSAGE', payload: { message, type: 'error' } }),
+    }),
+    [],
+  );
+
+  const clearMessage = (id: string) => dispatch({ type: 'REMOVE_MESSAGE', payload: { id } });
 
   return (
-    <FeedbackEmitContext.Provider value={emit}>
-      <FeedbackMessageContext.Provider value={messages}>{children}</FeedbackMessageContext.Provider>
-    </FeedbackEmitContext.Provider>
+    <FeedbackMessageContext.Provider value={{ messages, clearMessage }}>
+      <FeedbackEmitContext.Provider value={emit}>{children}</FeedbackEmitContext.Provider>
+    </FeedbackMessageContext.Provider>
   );
 };
 

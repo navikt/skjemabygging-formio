@@ -37,13 +37,20 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
   }
 
   setReactInstance(element, autoResolve: boolean = true) {
-    this.addRef(baseComponentUtils.getId(this.component), element);
+    this.addRef(this.getId(), element);
 
     this.reactInstance = element;
     this.addFocusBlurEvents(element);
     if (autoResolve) {
       this.reactResolve();
     }
+  }
+
+  /**
+   * Get id for custom component renderReact()
+   */
+  getId() {
+    return baseComponentUtils.getId(this.component);
   }
 
   /**
@@ -75,7 +82,7 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
     if (this.reactInstance) (this.reactInstance as HTMLInputElement).value = value;
   }
 
-  setValue(value: any) {
+  setValue(value: any, flags?: any) {
     if (this.reactInstance) {
       this.setValueOnReactInstance(value);
       this.shouldSetValue = false;
@@ -88,7 +95,7 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
     const changed = JSON.stringify(newValue) !== JSON.stringify(this.dataValue);
     this.dataValue = Array.isArray(newValue) ? [...newValue] : newValue;
 
-    if (changed) {
+    if (changed || flags?.fromSubmission) {
       this.rerender();
     }
   }
@@ -138,6 +145,7 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
   }
 
   addRef(name: string, ref: HTMLElement | null) {
+    this.logger.debug('addRef', { name, action: ref ? 'add' : 'remove', path: this.path });
     if (ref) {
       this._reactRefs[name] = ref;
     } else {
@@ -216,9 +224,9 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
    * Used to set focus when clicking error summary, and when restoring focus after rerender.
    */
   focus(focusData: any = {}) {
-    this.logger.debug('focus', { focusData });
+    this.logger.debug('focus', { focusData, path: this.path });
     this.reactReady.then(() => {
-      this.logger.debug('focus reactReady', { focusData, reactInstanceExists: !!this.reactInstance });
+      this.logger.debug('focus reactReady', { focusData, path: this.path, reactInstanceExists: !!this.reactInstance });
       const { elementId } = focusData;
       if (elementId) {
         this.getRef(elementId)?.focus();

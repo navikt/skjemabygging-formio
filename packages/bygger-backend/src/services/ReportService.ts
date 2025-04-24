@@ -1,4 +1,10 @@
-import { Form, ReportDefinition, formioFormsApiUtils, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  Form,
+  formioFormsApiUtils,
+  navFormUtils,
+  ReportDefinition,
+  submissionTypesUtils,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import { stringify } from 'csv-stringify';
 import { Writable } from 'stream';
 import config from '../config';
@@ -32,7 +38,7 @@ const ReportMap: Record<string, ReportDefinition> = {
   },
 };
 
-const notTestForm = (form: Form) => !form.properties.isTestForm;
+const notTestForm = (form: Partial<Form>) => !form.properties?.isTestForm;
 
 class ReportService {
   private readonly formsService: FormsService;
@@ -66,7 +72,11 @@ class ReportService {
 
   private async generateAllFormsAndAttachments(writableStream: Writable) {
     const columns = ['skjemanummer', 'skjematittel', 'vedleggstittel', 'vedleggskode', 'label'];
-    const allFormsCompact = (await this.formsService.getAll('path,title,skjemanummer,properties')).filter(notTestForm);
+    const allFormsCompact = (
+      await this.formsService.getAll<Pick<Form, 'path' | 'title' | 'skjemanummer' | 'properties'>>(
+        'path,title,skjemanummer,properties',
+      )
+    ).filter(notTestForm);
     const stringifier = stringify({ header: true, columns, delimiter: ';' });
     stringifier.pipe(writableStream);
     for (const formCompact of allFormsCompact) {
@@ -109,8 +119,8 @@ class ReportService {
       'upubliserte endringer',
       'sist endret',
       'endret av',
-      'innsending',
-      'ettersending',
+      'submissionTypes',
+      'subsequentSubmissionTypes',
       'signaturfelt',
       'path',
       'har vedlegg',
@@ -121,8 +131,14 @@ class ReportService {
       'ettersendingsurl',
       'ettersendingsurl (papir)',
     ];
+    type CompactForm = Pick<
+      Form,
+      'title' | 'path' | 'properties' | 'status' | 'changedAt' | 'changedBy' | 'publishedAt' | 'publishedBy'
+    >;
     const allFormsCompact = (
-      await this.formsService.getAll('title,path,properties,status,changedAt,changedBy,publishedAt,publishedBy')
+      await this.formsService.getAll<CompactForm>(
+        'title,path,properties,status,changedAt,changedBy,publishedAt,publishedBy',
+      )
     ).filter(notTestForm);
     const stringifier = stringify({ header: true, columns, delimiter: ';' });
     stringifier.pipe(writableStream);
@@ -135,7 +151,7 @@ class ReportService {
       const attachmentNames = attachments.map((attachment) => attachment.vedleggstittel).join(',');
 
       const { title, path, properties, status, changedAt, changedBy, publishedAt, publishedBy } = formCompact;
-      const { innsending, tema, signatures, ettersending } = properties;
+      const { submissionTypes, tema, signatures, subsequentSubmissionTypes } = properties;
 
       const baseInnsendingUrl =
         config.naisClusterName === 'prod-gcp'
@@ -146,15 +162,17 @@ class ReportService {
           ? `https://www.nav.no/fyllut-ettersending/${form.path}`
           : `https://fyllut-ettersending.intern.dev.nav.no/fyllut-ettersending/${form.path}`;
 
-      const paperInnsendingUrl = navFormUtils.isNone('innsending', form)
+      const paperInnsendingUrl = submissionTypesUtils.isNoneSubmission(submissionTypes)
         ? `${baseInnsendingUrl}`
-        : navFormUtils.isPaper('innsending', form)
+        : submissionTypesUtils.isPaperSubmission(submissionTypes)
           ? `${baseInnsendingUrl}?sub=paper`
           : undefined;
 
       const ettersendingUrl = hasAttachment ? baseEttersendingUrl : undefined;
       const paperEttersendingUrl =
-        navFormUtils.isPaper('ettersending', form) && hasAttachment ? `${baseEttersendingUrl}?sub=paper` : undefined;
+        submissionTypesUtils.isPaperSubmission(subsequentSubmissionTypes) && hasAttachment
+          ? `${baseEttersendingUrl}?sub=paper`
+          : undefined;
 
       const isPublished = ['published', 'pending'].includes(status!);
 
@@ -174,8 +192,8 @@ class ReportService {
         unpublishedChanges,
         changedAt,
         changedBy,
-        innsending,
-        ettersending,
+        submissionTypes,
+        subsequentSubmissionTypes,
         numberOfSignatures,
         path,
         hasAttachment ? 'ja' : 'nei',
@@ -192,9 +210,9 @@ class ReportService {
 
   private async generateUnpublishedForms(writableStream: Writable) {
     const columns = ['skjemanummer', 'skjematittel', 'avpublisert', 'avpublisert av'];
-    const allFormsCompact = await this.formsService.getAll(
-      'skjemanummer,title,status,publishedAt,publishedBy,properties',
-    );
+    const allFormsCompact = await this.formsService.getAll<
+      Pick<Form, 'skjemanummer' | 'title' | 'status' | 'publishedAt' | 'publishedBy' | 'properties'>
+    >('skjemanummer,title,status,publishedAt,publishedBy,properties');
     const unpublishedForms = allFormsCompact.filter(
       (form) => !form.properties.isTestForm && form.status === 'unpublished',
     );

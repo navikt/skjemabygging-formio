@@ -1,7 +1,7 @@
 import { Box, Label } from '@navikt/ds-react';
 import FormStatus from './FormStatus';
+import LabeledTimeAndUser from './LabeledTimeAndUser';
 import PublishedLanguages from './PublishedLanguages';
-import Timestamp from './Timestamp';
 import ToggleDiffButton from './ToggleDiffButton';
 import { useStatusStyles } from './styles';
 import { FormStatusProperties } from './types';
@@ -17,31 +17,9 @@ const FormStatusPanel = ({ formStatusProperties, spacing, hideToggleDiffButton =
   const styles = useStatusStyles({ spacing } as Jss.Theme);
   const { changedAt, changedBy, publishedAt, publishedBy, publishedLanguages, status } = formStatusProperties;
 
-  const LabeledTimeAndUser = ({
-    label,
-    timestamp,
-    userName,
-  }: {
-    label: string;
-    timestamp?: string;
-    userName?: string;
-  }) => {
-    const styles = useStatusStyles({ spacing } as Jss.Theme);
-    if (!timestamp) {
-      return <></>;
-    }
-    return (
-      <div className={styles.panelItem}>
-        <Label>{label}</Label>
-        <Timestamp timestamp={timestamp} />
-        {userName && <p className={styles.rowText}>{userName}</p>}
-      </div>
-    );
-  };
-
   return (
     <Box className={styles.container}>
-      <div className={styles.panelItem}>
+      <div className={styles.panelItem} data-cy="form-status">
         <Label>Status:</Label>
         <div className={styles.sidePanelFormStatusContainer}>
           <FormStatus status={determineStatus(formStatusProperties)} size="large" />
@@ -53,11 +31,13 @@ const FormStatusPanel = ({ formStatusProperties, spacing, hideToggleDiffButton =
         label="Sist publisert:"
         timestamp={status !== 'unpublished' ? publishedAt : undefined}
         userName={publishedBy}
+        spacing={spacing}
       />
       <LabeledTimeAndUser
         label="Avpublisert:"
         timestamp={status === 'unpublished' ? publishedAt : undefined}
         userName={publishedBy}
+        spacing={spacing}
       />
       <PublishedLanguages publishedLanguages={publishedLanguages} />
     </Box>

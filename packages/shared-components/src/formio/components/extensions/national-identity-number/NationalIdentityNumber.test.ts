@@ -23,6 +23,7 @@ describe('Fodselsnummer', () => {
       },
       {},
     );
+    fnrComp.path = 'fodselsnummerDNummer';
     fnrComp.component.label = 'Label for Fnr';
     vi.spyOn(NationalIdenityNumber.prototype, 'translate').mockImplementation(mockedTranslate as any);
     vi.spyOn(NationalIdenityNumber.prototype, 'setComponentValidity').mockImplementation(
@@ -58,7 +59,6 @@ describe('Fodselsnummer', () => {
     it('fails validation for invalid fnr', () => {
       fnrComp.setValue('13097248023');
       fnrComp.checkComponentValidity();
-      console.log(mockedSetComponentValidity.mock.calls[0][0]);
       expect(mockedSetComponentValidity.mock.calls[0][0]).toEqual([expectedInvalid]);
     });
 

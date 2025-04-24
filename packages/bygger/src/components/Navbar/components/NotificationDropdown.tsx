@@ -24,7 +24,7 @@ const NotificationDropdown = () => {
       <InternalHeader.Button as={Dropdown.Toggle} aria-label="Notifikasjoner">
         <InformationFilled color={navCssVariables.navWarning} fontSize="1.5rem" role="presentation" />
       </InternalHeader.Button>
-      <Dropdown.Menu className={`${styles.notificationsMenu}`} onClose={() => clearAll()}>
+      <Dropdown.Menu className={`${styles.notificationsMenu}`} onClose={clearAll}>
         <Dropdown.Menu.List>
           {messages.map(({ title, message, type, id, created }) => (
             <Alert key={id} variant={type} className={styles.messagePanel}>

@@ -2,7 +2,15 @@ import { FrontendLoggerConfigType, configUtils, featureUtils } from '@navikt/skj
 import dotenv from 'dotenv';
 import { logger } from '../logger';
 import { NaisCluster } from './nais-cluster.js';
-import { ConfigType, DefaultConfig, IdportenConfig, SendInnConfig, ServiceConfig, TokenxConfig } from './types';
+import {
+  ConfigType,
+  DefaultConfig,
+  IdportenConfig,
+  SendInnConfig,
+  ServiceConfig,
+  TilleggsstonaderConfig,
+  TokenxConfig,
+} from './types';
 
 const { DOTENV_FILE } = process.env;
 if (DOTENV_FILE) {
@@ -40,6 +48,14 @@ const sendInnConfig: SendInnConfig = {
   },
 };
 
+const tilleggsstonaderConfig: TilleggsstonaderConfig = {
+  host: process.env.TILLEGGSSTONADER_HOST!,
+  tokenxClientId: process.env.TILLEGGSSTONADER_TOKEN_X_CLIENT_ID!,
+  paths: {
+    activities: '/api/ekstern/aktivitet',
+  },
+};
+
 const kodeverk: ServiceConfig = {
   url: process.env.KODEVERK_URL!,
   scope: process.env.KODEVERK_SCOPE!,
@@ -66,6 +82,8 @@ const localDevelopmentConfig: DefaultConfig = {
   forstesideUrl: 'https://www.nav.no/soknader/api/forsteside',
   decoratorUrl: 'https://www.nav.no/dekoratoren?simple=true',
   skjemabyggingProxyUrl: process.env.SKJEMABYGGING_PROXY_URL || 'https://skjemabygging-proxy.dev-fss-pub.nais.io',
+  gotenbergUrl: process.env.GOTENBERG_URL || 'https://convert-to-pdf.intern.dev.nav.no',
+  gotenbergUrlEn: process.env.GOTENBERG_URL_EN || 'https://convert-to-pdf-en.intern.dev.nav.no',
   skjemabyggingProxyClientId: '95170319-b4d7-4190-8271-118ed19bafbf',
   azureOpenidTokenEndpoint:
     process.env.AZURE_OPENID_CONFIG_TOKEN_ENDPOINT ||
@@ -85,6 +103,12 @@ const localDevelopmentConfig: DefaultConfig = {
     ...sendInnConfig,
     host: sendInnConfig.host || 'https://innsending-api.intern.dev.nav.no',
     tokenxClientId: sendInnConfig.tokenxClientId || 'dev-gcp:soknad:send-inn',
+  },
+  tilleggsstonaderConfig: {
+    // TODO løse lokal utvikling for tilleggsstonader
+    ...tilleggsstonaderConfig,
+    host: tilleggsstonaderConfig.host || '',
+    tokenxClientId: tilleggsstonaderConfig.tokenxClientId || '',
   },
   idporten: {
     ...idporten,
@@ -113,6 +137,8 @@ const defaultConfig: DefaultConfig = {
   decoratorUrl: process.env.DECORATOR_URL!,
   skjemabyggingProxyUrl: process.env.SKJEMABYGGING_PROXY_URL!,
   skjemabyggingProxyClientId: process.env.SKJEMABYGGING_PROXY_CLIENT_ID!,
+  gotenbergUrl: process.env.GOTENBERG_URL!,
+  gotenbergUrlEn: process.env.GOTENBERG_URL_EN!,
   azureOpenidTokenEndpoint: process.env.AZURE_OPENID_CONFIG_TOKEN_ENDPOINT!,
   clientId: process.env.AZURE_APP_CLIENT_ID!,
   skjemaDir: process.env.SKJEMA_DIR!,
@@ -122,6 +148,7 @@ const defaultConfig: DefaultConfig = {
   noDecorator: false,
   tokenx,
   sendInnConfig,
+  tilleggsstonaderConfig,
   kodeverk,
   norg2,
   idporten,
@@ -141,6 +168,7 @@ const config: ConfigType = {
   isDelingslenke: process.env.NAIS_APP_NAME === 'skjemautfylling-delingslenke',
   pdlTokenScopeCluster: process.env.PDL_TOKEN_SCOPE_CLUSTER!,
   backendLogLevel: process.env.FYLLUT_BACKEND_LOGLEVEL || (process.env.NODE_ENV === 'test' ? 'warning' : 'info'),
+  umamiWebsiteId: process.env.UMAMI_WEBSITE_ID,
   port: parseInt(process.env.PORT || '8080'),
 };
 

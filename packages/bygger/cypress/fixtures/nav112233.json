@@ -775,7 +775,7 @@
   ],
   "properties": {
     "tema": "FUL",
-    "innsending": "PAPIR_OG_DIGITAL",
+    "submissionTypes": ["PAPER", "DIGITAL"],
     "signatures": [
       {
         "key": "170eed85-26a8-4b6f-a7cf-bfb5c8848754",
@@ -783,7 +783,7 @@
         "description": ""
       }
     ],
-    "ettersending": "PAPIR_OG_DIGITAL",
+    "subsequentSubmissionTypes": ["PAPER", "DIGITAL"],
     "skjemanummer": "NAV 11-22.33",
     "ettersendelsesfrist": "14",
     "mellomlagringDurationDays": "28"
@@ -795,7 +795,7 @@
   "publishedAt": "2025-02-14T14:47:42.419+01",
   "publishedBy": "Test Testesen",
   "publishedLanguages": [
-    "nn",
+    "en",
     "nb"
   ],
   "status": "pending"

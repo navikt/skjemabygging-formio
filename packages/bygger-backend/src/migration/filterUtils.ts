@@ -20,11 +20,11 @@ function parseFiltersFromParam(filtersFromParam: object): Filter[] {
   });
 }
 
-function getPropertyFromTarget(comp: any, properties: string[]): string | undefined {
-  if (properties.length > 1) {
-    return getPropertyFromTarget(comp[properties[0]], properties.slice(1));
+function getPropertyFromTarget(component: Component | NavFormType, properties: string[]): string | undefined {
+  if (properties.length > 1 && component[properties[0]]) {
+    return getPropertyFromTarget(component[properties[0]], properties.slice(1));
   }
-  return comp && comp[properties[0]];
+  return component && component[properties[0]];
 }
 
 function targetMatchesFilters(target: Component | NavFormType, filters: Filter[]) {

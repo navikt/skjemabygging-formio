@@ -4,6 +4,7 @@ import { ComponentUtilsProvider } from '../../../../context/component/componentU
 import BaseComponent from '../../base/BaseComponent';
 import Description from '../../base/components/Description';
 import Label from '../../base/components/Label';
+import { getSelectedValuesAsList, getSelectedValuesMap } from '../../utils';
 import selectBoxesBuilder from './SelectBoxes.builder';
 import selectBoxesForm from './SelectBoxes.form';
 
@@ -24,18 +25,15 @@ class SelectBoxes extends BaseComponent {
     return selectBoxesBuilder();
   }
 
-  // Submission value is an object
+  // Map values from Aksel component (on format ['value1', 'value2']) to object (on format {value1: true, value2: true})
+  // We store the values as a map of selected values in submission data to simplify conditionals
   convertToObject(values: string[]): Record<string, boolean> {
-    const componentValues = this.component?.values ?? [];
-    return componentValues.reduce((acc, { value }) => ({ ...acc, [value]: values.includes(value) }), {});
+    return getSelectedValuesMap(this.component?.values ?? [], values);
   }
 
-  // Aksel component value is an array
+  // Map values from object (on format {value1: true, value2: true}) to array (on format ['value1', 'value2']) as expected by Aksel component
   convertToArray(values: Record<string, boolean>): string[] {
-    if (!values) return [];
-    return Object.entries(values)
-      .filter(([, value]) => value === true)
-      .map(([key]) => key);
+    return getSelectedValuesAsList(values);
   }
 
   changeHandler(values: string[]) {

@@ -1,7 +1,7 @@
-import { SummarySelectboxes } from '@navikt/skjemadigitalisering-shared-domain';
+import { SummaryDataFetcher, SummarySelectboxes } from '@navikt/skjemadigitalisering-shared-domain';
 
 interface Props {
-  component: SummarySelectboxes;
+  component: SummarySelectboxes | SummaryDataFetcher;
 }
 
 const SelectBoxesSummary = ({ component }: Props) => (

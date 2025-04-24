@@ -40,7 +40,7 @@ const getParentPanel = (component: ReactComponentType) => {
     return;
   }
 
-  return component.parent?.type === 'components' ? component.parent : getParentPanel(component.parent);
+  return component.parent?.component?.type === 'panel' ? component.parent : getParentPanel(component.parent);
 };
 
 const isOnCurrentPage = (component: ReactComponentType) => {

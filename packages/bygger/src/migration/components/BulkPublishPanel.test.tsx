@@ -16,7 +16,8 @@ const pending = {
 const properties: FormPropertiesType = {
   skjemanummer: 'skjemanummer',
   tema: 'tema',
-  innsending: 'PAPIR_OG_DIGITAL',
+  submissionTypes: ['PAPER', 'DIGITAL'],
+  subsequentSubmissionTypes: ['PAPER', 'DIGITAL'],
   signatures: {
     signature1: '',
     signature2: '',
@@ -64,19 +65,19 @@ describe('BulkPublishPanel', () => {
     bulkPublish.mockClear();
   });
 
-  it('checkboxes for pending and published forms are initially checked', () => {
-    expect(screen.getByRole('checkbox', { name: 'Form 1', checked: true })).toBeDefined();
-    expect(screen.getByRole('checkbox', { name: 'Form 2', checked: true })).toBeDefined();
+  it('no form is initially checked', () => {
+    expect(screen.getByRole('checkbox', { name: 'Form 1', checked: false })).toBeDefined();
+    expect(screen.getByRole('checkbox', { name: 'Form 2', checked: false })).toBeDefined();
     expect(screen.getByRole('checkbox', { name: 'Form 3', checked: false })).toBeDefined();
   });
 
-  describe('When a form is unchecked', () => {
+  describe('When a form is checked', () => {
     beforeEach(() => {
-      fireEvent.click(screen.getByRole('checkbox', { name: 'Form 2' }));
+      fireEvent.click(screen.getByRole('checkbox', { name: 'Form 1' }));
     });
 
     it('unselects one form', () => {
-      expect(screen.getByRole('checkbox', { name: 'Form 2' })).not.toBeChecked();
+      expect(screen.getByRole('checkbox', { name: 'Form 1' })).toBeChecked();
     });
 
     describe('When modal button is clicked', () => {
@@ -104,7 +105,7 @@ describe('BulkPublishPanel', () => {
       it('bulk publishes selected forms when bulk publish is confirmed', async () => {
         fireEvent.click(screen.getByRole('button', { name: 'Bekreft publisering' }));
         await waitFor(() => expect(bulkPublish).toHaveBeenCalledTimes(1));
-        expect(bulkPublish).toHaveBeenCalledWith('', { formPaths: ['form1', 'form3'] });
+        expect(bulkPublish).toHaveBeenCalledWith({ formPaths: ['form1', 'form3'] });
       });
     });
   });

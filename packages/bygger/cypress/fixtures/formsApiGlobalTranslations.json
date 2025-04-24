@@ -7,7 +7,7 @@
     "changedBy": "Testesen, Test",
     "revision": 4,
     "nb": "Ny",
-    "nn": "Ny",
+    "nn": "Ny (nn)",
     "en": "New",
     "publishedAt": null,
     "publishedBy": null
@@ -87,6 +87,45 @@
     "nb": "For å gå videre må du rette opp følgende:",
     "nn": "For å gå vidare må du rette opp følgende:",
     "en": "",
+    "publishedAt": null,
+    "publishedBy": null
+  },
+  {
+    "id": 8,
+    "key": "Ubrukt oversettelse",
+    "tag": "grensesnitt",
+    "changedAt": "2024-12-12T13:03:19.063368+01:00",
+    "changedBy": "Testesen, Test",
+    "revision": 1,
+    "nb": "Ubrukt oversettelse",
+    "nn": "Ubrukt oversettelse",
+    "en": "",
+    "publishedAt": null,
+    "publishedBy": null
+  },
+  {
+    "id": 9,
+    "key": "Denne er gått ut på dato",
+    "tag": "grensesnitt",
+    "changedAt": "2024-12-12T13:03:19.063368+01:00",
+    "changedBy": "Testesen, Test",
+    "revision": 1,
+    "nb": "Denne er gått ut på dato",
+    "nn": "Denne er gått ut på dato",
+    "en": "",
+    "publishedAt": null,
+    "publishedBy": null
+  },
+  {
+    "id": 10,
+    "key": "Gammel tekst",
+    "tag": "grensesnitt",
+    "changedAt": "2024-12-12T13:03:19.063368+01:00",
+    "changedBy": "Testesen, Test",
+    "revision": 1,
+    "nb": "Gammel tekst",
+    "nn": "Gammel tekst",
+    "en": "Old text",
     "publishedAt": null,
     "publishedBy": null
   }

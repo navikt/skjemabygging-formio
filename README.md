@@ -6,6 +6,10 @@ og disse dataene vil så deployes sammen med fyllut.
 
 # Utvikling
 
+## Utvikling av nye Formio komponenter
+
+Se utfyllende dokumentasjon her: [Formio komponenter](packages/shared-components/src/formio/components/README.md)
+
 ## Installere pakker lokalt
 
 For å installere npm-pakker med @navikt-scope må man autentisere seg for registry `npm.pkg.github.com`,
@@ -39,6 +43,7 @@ _(Les mer om bruk av Github npm registry i Nav her: https://github.com/navikt/fr
 | yarn check-types    | sjekker at typene er korrekte                                                |
 | yarn clean          | sletter node_modules / dist / build / coverage for alle pakker i monorepoet  |
 | yarn lint           | se etter problemer i koden                                                   |
+| yarn get-tokens     | henter tokens som brukes mot eksterne api'er ved kjøring lokalt              |
 
 ## Lokal konfigurasjon med dotenv
 
@@ -105,10 +110,12 @@ Sett miljøvariabelen `FORMS_API_URL` i byggeren sin `.env`-fil til riktig port 
 
     FORMS_API_URL=http://localhost:8082
 
-Alternativt kan du bruke [azure-token-generator](https://azure-token-generator.intern.dev.nav.no/api/obo?aud=dev-gcp:fyllut-sendinn:forms-api) (krever trygdeetaten-bruker) til å generere et midlertidig access token for å nå forms-api i preprod. Merk at tokenet kun er gyldig en begrenset periode. Legg til følgende miljøvariabler for å få tilgang.
+Alternativt kan du kjøre `yarn get-tokens` for å hente access token ved hjelp av
+[azure-token-generator](https://azure-token-generator.intern.dev.nav.no/api/obo?aud=dev-gcp:fyllut-sendinn:forms-api)
+(krever trygdeetaten-bruker). Merk at tokenet kun er gyldig en begrenset periode. Bruk følgende Forms API url:
 
     FORMS_API_URL=https://forms-api.intern.dev.nav.no
-    FORMS_API_ACCESS_TOKEN=<access-token> // Bruk access_token fra responsen til azure-token-generator
+    FORMS_API_ACCESS_TOKEN=<access-token> // Access token settes ved kjøring av yarn get-tokens
 
 ## Teste publisering av skjema på lokal maskin
 

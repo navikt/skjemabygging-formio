@@ -6,6 +6,44 @@ describe('Form Builder', () => {
     cy.intercept('GET', '/api/config', { fixture: 'config.json' }).as('getConfig');
     cy.intercept('GET', '/api/translations', { fixture: 'globalTranslations.json' }).as('getTranslations');
     cy.intercept('GET', '/api/temakoder', { fixture: 'temakoder.json' }).as('getTemaKoder');
+    cy.intercept('GET', /\/api\/forms\?select=.*/, { fixture: 'allForms.json' }).as('getAllForms');
+  });
+
+  describe('Form list', () => {
+    beforeEach(() => {
+      cy.visit('/forms');
+      cy.wait('@getConfig');
+      cy.wait('@getAllForms');
+    });
+
+    it('show all forms', () => {
+      cy.findAllByRole('link', { name: /^NAV.*/ }).should('have.length', 5);
+    });
+
+    describe('sort order', () => {
+      it('is default by changedAt or publishedAt (whichever is most recent)', () => {
+        const orderedLinkTexts = ['NAV 07-02.08', 'NAV 54-00.06', 'NAV 16-01.05', 'NAV 04-01.04', 'NAV 08-36.06'];
+        cy.findAllByRole('link', { name: /^NAV.*/ }).each((link, index) => {
+          cy.wrap(link).should('have.text', orderedLinkTexts[index]);
+        });
+      });
+
+      it('changes sort order to form skjemanr ascending or descending', () => {
+        // ascending on first click
+        cy.findByRole('button', { name: 'Skjemanr.' }).click();
+        const ascending = ['NAV 04-01.04', 'NAV 07-02.08', 'NAV 08-36.06', 'NAV 16-01.05', 'NAV 54-00.06'];
+        cy.findAllByRole('link', { name: /^NAV.*/ }).each((link, index) => {
+          cy.wrap(link).should('have.text', ascending[index]);
+        });
+
+        // descending on second click
+        cy.findByRole('button', { name: 'Skjemanr.' }).click();
+        const descending = ['NAV 54-00.06', 'NAV 16-01.05', 'NAV 08-36.06', 'NAV 07-02.08', 'NAV 04-01.04'];
+        cy.findAllByRole('link', { name: /^NAV.*/ }).each((link, index) => {
+          cy.wrap(link).should('have.text', descending[index]);
+        });
+      });
+    });
   });
 
   describe('Diff form', () => {
@@ -20,6 +58,7 @@ describe('Form Builder', () => {
       cy.wait('@getConfig');
       cy.wait('@getForm');
       cy.wait('@getFormTranslations');
+      cy.wait('@getTranslations');
       cy.wait('@getPublishedForm');
     });
 
@@ -60,6 +99,7 @@ describe('Form Builder', () => {
         cy.get('[data-testid="editorSaveButton"]').click();
         cy.findByRole('button', { name: 'Lagre' }).click();
         cy.wait('@putForm');
+        cy.findByText('Lagret skjema Skjema for testing av diff').should('be.visible');
       });
     });
 
@@ -78,6 +118,7 @@ describe('Form Builder', () => {
         cy.get('[data-testid="editorSaveButton"]').click();
         cy.findByRole('button', { name: 'Lagre' }).click();
         cy.wait('@putForm');
+        cy.findByText('Lagret skjema Skjema for testing av diff').should('be.visible');
       });
     });
   });
@@ -161,9 +202,7 @@ describe('Form Builder', () => {
     // TODO: Add test for radio group when it gets the new data values.
   });
 
-  // TODO FORMS-API Seems like some rerender makes this test fail
-  // eslint-disable-next-line mocha/no-skipped-tests
-  describe.skip('Duplicate component keys', () => {
+  describe('Duplicate component keys', () => {
     beforeEach(() => {
       cy.intercept('GET', '/api/forms/cypresssettings', { fixture: 'getForm.json' }).as('getCypressForm');
       cy.intercept('GET', '/api/forms/cypresssettings/translations', { fixture: 'form123456-translations.json' }).as(
@@ -174,6 +213,7 @@ describe('Form Builder', () => {
       cy.wait('@getConfig');
       cy.wait('@getCypressForm');
       cy.wait('@getCypressFormTranslations');
+      cy.wait('@getTranslations');
     });
 
     describe('component with same API key as panel', () => {

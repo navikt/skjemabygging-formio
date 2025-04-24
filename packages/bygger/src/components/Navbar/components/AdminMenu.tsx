@@ -20,12 +20,12 @@ const AdminMenu = ({ showImport = false }) => {
               </AdminMenuLink>
             </Dropdown.Menu.GroupedList.Item>
             <Dropdown.Menu.GroupedList.Item>
-              <AdminMenuLink showUnsavedChangesModal={showUnsavedChangesModal} to="/migrering" disabled>
+              <AdminMenuLink showUnsavedChangesModal={showUnsavedChangesModal} to="/migrering">
                 Migrering
               </AdminMenuLink>
             </Dropdown.Menu.GroupedList.Item>
             <Dropdown.Menu.GroupedList.Item>
-              <AdminMenuLink showUnsavedChangesModal={showUnsavedChangesModal} to="/bulk-publisering" disabled>
+              <AdminMenuLink showUnsavedChangesModal={showUnsavedChangesModal} to="/bulk-publisering">
                 Bulkpublisering
               </AdminMenuLink>
             </Dropdown.Menu.GroupedList.Item>

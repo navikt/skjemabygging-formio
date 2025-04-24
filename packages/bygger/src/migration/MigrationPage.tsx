@@ -1,11 +1,6 @@
 import { Button, Heading, Pagination, ToggleGroup } from '@navikt/ds-react';
-import { makeStyles, NavFormioJs } from '@navikt/skjemadigitalisering-shared-components';
-import {
-  formioFormsApiUtils,
-  MigrationLevel,
-  NavFormType,
-  paginationUtils,
-} from '@navikt/skjemadigitalisering-shared-domain';
+import { makeStyles } from '@navikt/skjemadigitalisering-shared-components';
+import { Form, MigrationLevel, paginationUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useMemo, useReducer, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { FormMigrationLogData } from '../../types/migration';
@@ -78,7 +73,7 @@ const MigrationPage = () => {
       numberOfComponentsChanged?: number;
     }>({});
   const [selectedToMigrate, setSelectedToMigrate] = useState<string[]>([]);
-  const [migratedForms, setMigratedForms] = useState<NavFormType[]>([]);
+  const [migratedForms, setMigratedForms] = useState<Form[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
 
   const MAX_ITEMS_PER_PAGE = 20;
@@ -137,7 +132,7 @@ const MigrationPage = () => {
   };
 
   const onConfirm = async () => {
-    const updatedForms = await runMigrationWithUpdate(NavFormioJs.Formio.getToken(), {
+    const updatedForms = await runMigrationWithUpdate({
       formSearchFilters: searchFiltersAsParams(formSearchFilters),
       searchFilters: searchFiltersAsParams(searchFilters),
       dependencyFilters: searchFiltersAsParams(dependencyFilters),
@@ -280,9 +275,7 @@ const MigrationPage = () => {
           </div>
         </form>
 
-        {migratedForms.length > 0 && (
-          <BulkPublishPanel forms={migratedForms.map(formioFormsApiUtils.mapNavFormToForm)} />
-        )}
+        {migratedForms.length > 0 && <BulkPublishPanel forms={migratedForms} />}
 
         {dryRunSearchResults && (
           <>

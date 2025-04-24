@@ -6,6 +6,14 @@ export const statiske = {
       url: 'https://www.nav.no/minside',
     },
   },
+  footer: {
+    userIdLabel: 'F.nr',
+    createdDatelabel: 'Opprettet',
+    schemaNumberLabel: 'Skjemanummer',
+    versionLabel: 'Versjon',
+    pageLabel: 'Side',
+    ofLabel: 'av',
+  },
   introPage: {
     title: 'Vær oppmerksom på dette før du begynner å fylle ut skjemaet',
     paperDescriptionBold: 'Du må fylle ut skjemaet digitalt, og så sende det i posten.',
@@ -103,23 +111,24 @@ export const statiske = {
       'Hvis du velger digital innsending må du laste ned skjemaet i neste steg og laste det opp igjen etter innlogging.',
   },
   prepareLetterPage: {
-    subTitle: 'Søknaden er ikke sendt ennå',
+    subTitle: 'Skjemaet er ikke sendt ennå',
     chooseEntity: 'Velg hvilken Nav-enhet som skal motta innsendingen',
     selectEntityDefault: 'Velg enhet',
-    entityNotSelectedError: 'Førsteside kan ikke genereres før du har valgt enhet',
+    entityNotSelectedError: 'Søknaden kan ikke lastes ned før du har valgt enhet',
     entityFetchError: 'En feil har oppstått. Vi kunne ikke laste enheter. Beklager ulempen, prøv igjen senere.',
-    firstSectionTitle: 'Last ned og skriv ut dokumentene',
-    firstDescription:
-      'Førstesidearket inneholder viktig informasjon om hvilken enhet i Nav som skal motta dokumentene, og hvilken adresse de skal sendes til.',
+    firstDescription: 'Gjør følgende for å sende det til Nav:',
+    printFormTitle: 'Skriv ut og signér skjemaet',
+    printFormDescription: 'Du må signere til slutt i skjemaet.',
     attachmentSectionTitleAttachTo: 'Legg ved',
     attachmentSectionTitleTheseAttachments: 'disse vedleggene',
     attachmentSectionTitleThisAttachment: 'dette vedlegget',
-    sendInPapirSectionTitle: 'Send det hele til Nav i posten',
-    SendInPapirSectionInstruction: 'Følg instruksjonene på førstesidearket for å sende dokumentene i posten.',
-    sendInPapirSectionAttachTo: 'Husk å legge ved',
-    sendInPapirSectionAttachments: 'vedleggene',
-    sendInPapirSectionAttachment: 'vedlegget',
-    sendInPapirSection: 'som nevnt i punkt 2 over.',
+    sendInPapirSectionTitle: 'Send utskrift til Nav i posten',
+    sendInPapirSectionTitleWithAttachment: 'Send utskrift og vedlegg til Nav i posten',
+    SendInPapirSectionInstruction:
+      'Første side i skjema må legges øverst i innsendingen. Den inneholder informasjon om hvilken adresse du skal sende dokumentene til. ',
+    downloadSuccess:
+      'Nedlastingen er ferdig. Filen ligger i mappen for nedlastinger på enheten din og heter: {{fileName}}',
+    downloadError: 'Det skjedde en feil ved nedlasting av søknaden. Vennligst prøv igjen.',
   },
   declaration: {
     header: 'Erklæring',
@@ -140,8 +149,8 @@ export const statiske = {
       'Hvis vi ikke har mottatt dette vedlegget innen {{deadline}} dager blir saken behandlet med de opplysningene som foreligger.',
   },
   activities: {
-    label: 'Velg hvilken aktivitet du vil søke om stønad for',
-    defaultActivity: 'Jeg får ikke opp noen aktiviteter her som stemmer med det jeg vil søke om',
+    label: 'Hvilken aktivitet søker du om støtte i forbindelse med?',
+    defaultActivity: 'Ingen relevant aktivitet registrert på meg',
     error: 'Det oppstod en feil ved henting av aktiviteter.',
     errorContinue: 'Det oppstod en feil ved henting av aktiviteter. Du kan fortsatt gå videre uten å velge aktivitet',
     yourActivities: 'Dine aktiviteter',
@@ -215,5 +224,8 @@ export const statiske = {
     doYouHaveIdentityNumber: 'Har du norsk fødselsnummer eller d-nummer?',
     identityNumber: 'Fødselsnummer eller d-nummer',
     yourBirthdate: 'Fødselsdato (dd.mm.åååå)',
+  },
+  dataFetcher: {
+    other: 'Annet',
   },
 };

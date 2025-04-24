@@ -681,7 +681,7 @@
   "properties": {
     "skjemanummer": "test-magnus-007",
     "tema": "xxx",
-    "innsending": "KUN_DIGITAL",
+    "submissionTypes": ["DIGITAL"],
     "signatures": [
       {
         "label": "",

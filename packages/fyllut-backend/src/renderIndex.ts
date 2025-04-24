@@ -1,4 +1,4 @@
-import { navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { navFormUtils, submissionTypesUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { NextFunction, Request, Response } from 'express';
 import { ParsedUrlQueryInput } from 'querystring';
 import url from 'url';
@@ -47,9 +47,12 @@ const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
       logger.debug('Loading form...', { formPath });
       const form = await formService.loadForm(formPath);
       if (form && form.properties) {
-        const { innsending } = form.properties;
+        const { submissionTypes } = form.properties;
+        const isPaperAndDigitalSubmission =
+          submissionTypesUtils.isPaperSubmission(submissionTypes) &&
+          submissionTypesUtils.isDigitalSubmission(submissionTypes);
         if (!qpSub) {
-          if (!innsending || innsending === 'PAPIR_OG_DIGITAL') {
+          if (isPaperAndDigitalSubmission) {
             logger.info('Submission query param is missing', { formPath });
             const targetUrl = `${config.fyllutPath}/${formPath}`;
             if (req.baseUrl !== targetUrl) {
@@ -62,7 +65,7 @@ const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
                 }),
               );
             }
-          } else if (innsending === 'KUN_DIGITAL') {
+          } else if (submissionTypesUtils.isDigitalSubmissionOnly(submissionTypes)) {
             const targetUrl = `${config.fyllutPath}/${formPath}`;
             return res.redirect(
               url.format({
@@ -73,7 +76,7 @@ const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
                 },
               }),
             );
-          } else if (innsending === 'KUN_PAPIR') {
+          } else if (submissionTypesUtils.isPaperSubmissionOnly(submissionTypes)) {
             const targetUrl = `${config.fyllutPath}/${formPath}`;
             return res.redirect(
               url.format({
@@ -86,10 +89,10 @@ const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
             );
           }
         } else if (qpSub && !navFormUtils.isSubmissionMethodAllowed(qpSub, form)) {
-          logger.info('Submission method is not allowed', { qpSub, formPath, innsending });
+          logger.info('Submission method is not allowed', { qpSub, formPath, submissionTypes });
 
           const validSubmissionMethod = qpSub === 'digital' || qpSub === 'paper';
-          if (!validSubmissionMethod || innsending === 'INGEN') {
+          if (!validSubmissionMethod || submissionTypesUtils.isNoneSubmission(submissionTypes)) {
             const targetUrl = `${config.fyllutPath}/${formPath}`;
             return res.redirect(
               url.format({
@@ -113,6 +116,7 @@ const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
     res.status(httpStatusCode).render('index.html', {
       ...decoratorFragments,
       ...pageMeta,
+      ...(config.umamiWebsiteId && { umamiWebsiteId: config.umamiWebsiteId }),
     });
   } catch (cause: any) {
     next(new ErrorWithCause('Failed to return index file', cause));

@@ -1,14 +1,29 @@
 import { makeStyles } from '@navikt/skjemadigitalisering-shared-components';
 
+const sticky = {
+  position: 'sticky',
+  top: '0',
+  backgroundColor: 'var(--a-bg-default)',
+  zIndex: '10000',
+};
+const useStickyStyles = makeStyles({
+  filterRow: {
+    ...sticky,
+    top: '9.5rem',
+  },
+  unusedTranslations: {
+    ...sticky,
+    top: '8.5rem',
+  },
+  mainTable: {
+    ...sticky,
+    top: '12.5rem',
+  },
+});
+
 const useTranslationTableStyles = makeStyles({
   table: {
     marginBottom: '4rem',
-  },
-  header: {
-    position: 'sticky',
-    top: '8.5rem',
-    backgroundColor: 'var(--a-bg-default)',
-    zIndex: '10000',
   },
   column: {
     width: '12rem',
@@ -28,4 +43,4 @@ const useTranslationTableStyles = makeStyles({
   },
 });
 
-export default useTranslationTableStyles;
+export { useStickyStyles, useTranslationTableStyles };

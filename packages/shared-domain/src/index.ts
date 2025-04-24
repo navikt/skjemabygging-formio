@@ -25,7 +25,6 @@ import {
   FormPropertiesType,
   FormSignaturesType,
   FormsResponseForm,
-  FormType,
   FyllutState,
   InnsendingType,
   InputMode,
@@ -40,7 +39,9 @@ import {
   Submission,
   SubmissionData,
   SubmissionMethod,
+  SubmissionType,
   UsageContext,
+  Webform,
 } from './form';
 import { Form } from './forms-api-form';
 import forstesideUtils, {
@@ -55,7 +56,6 @@ import type {
   FormioTranslationData,
   FormioTranslationMap,
   FormioTranslationPayload,
-  GlobalTranslationMap,
   I18nTranslationMap,
   I18nTranslationReplacements,
   I18nTranslations,
@@ -97,6 +97,7 @@ import {
   SummaryAddress,
   SummaryAttachment,
   SummaryComponent,
+  SummaryDataFetcher,
   SummaryDataGrid,
   SummaryDataGridRow,
   SummaryDrivingList,
@@ -111,6 +112,7 @@ import MockedComponentObjectForTest from './summary/MockedComponentObjectForTest
 import formSummaryUtil from './summary/formSummaryUtil';
 import { TextSize, TextSizeShort } from './text';
 import TEXTS from './texts';
+import { Activity } from './tilleggsstonader/activity';
 import {
   FormsApiFormTranslation,
   FormsApiGlobalTranslation,
@@ -133,6 +135,7 @@ import objectUtils from './utils/objectUtils';
 import paginationUtils from './utils/pagination';
 import signatureUtils from './utils/signatureUtils';
 import stringUtils from './utils/stringUtils';
+import submissionTypesUtils from './utils/submissionTypeUtils';
 import translationUtils from './utils/translation';
 import validatorUtils from './utils/validatorUtils';
 import yourInformationUtils from './utils/yourInformationUtils';
@@ -163,6 +166,7 @@ export {
   PrefillType,
   signatureUtils,
   stringUtils,
+  submissionTypesUtils,
   supportedEnhetstyper,
   TEXTS,
   translationUtils,
@@ -172,6 +176,7 @@ export {
 export type {
   AccordionSettingValue,
   AccordionSettingValues,
+  Activity,
   Address,
   AddressType,
   AktivitetPeriode,
@@ -209,12 +214,10 @@ export type {
   FormSettingsDiff,
   FormSignaturesType,
   FormsResponseForm,
-  FormType,
   ForstesideRecipientAddress,
   ForstesideRequestBody,
   FrontendLoggerConfigType,
   FyllutState,
-  GlobalTranslationMap,
   GlobalTranslationsResourceContent,
   I18nTranslationMap,
   I18nTranslationReplacements,
@@ -254,11 +257,13 @@ export type {
   SubmissionIdentity,
   SubmissionMaalgruppe,
   SubmissionMethod,
+  SubmissionType,
   SubmissionYourInformation,
   SummaryActivity,
   SummaryAddress,
   SummaryAttachment,
   SummaryComponent,
+  SummaryDataFetcher,
   SummaryDataGrid,
   SummaryDataGridRow,
   SummaryDrivingList,
@@ -277,4 +282,5 @@ export type {
   UkjentBruker,
   UsageContext,
   VedtakBetalingsplan,
+  Webform,
 };

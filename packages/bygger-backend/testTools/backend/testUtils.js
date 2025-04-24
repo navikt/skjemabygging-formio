@@ -1,9 +1,6 @@
 import { Backend } from '../../src/Backend';
-import { FormioService } from '../../src/services/formioService';
 
 const { Response } = await vi.importActual('node-fetch');
-
-const FORMIO_API_SERVICE_URL = 'https://projectApi.example.com';
 
 export const configForTest = {
   publishRepo: {
@@ -22,7 +19,7 @@ export const configForTest = {
 };
 
 export const createBackendForTest = () => {
-  return new Backend(configForTest, new FormioService(FORMIO_API_SERVICE_URL));
+  return new Backend(configForTest);
 };
 
 export const jsonToPromise = (json) => Promise.resolve(new Response(JSON.stringify(json)));

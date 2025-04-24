@@ -61,13 +61,37 @@ const originalFodselsnummerComponent = {
   tableView: true,
 };
 
+const originalOtherDocumentationAttachmentComponent: Component = {
+  key: 'annenDokumentasjon',
+  type: 'attachment',
+  input: true,
+  label: 'Annen dokumentasjon',
+  validate: {
+    required: true,
+  },
+  properties: {
+    vedleggskode: 'N6',
+    vedleggstittel: 'Annet',
+  },
+  description: 'Har du noen annen dokumentasjon du ønsker å legge ved?',
+  attachmentType: 'other',
+  attachmentValues: {
+    nei: {
+      enabled: true,
+    },
+    leggerVedNaa: {
+      enabled: true,
+    },
+  },
+};
+
 const originalForm: NavFormType = {
   path: 'testform',
   components: [originalFodselsnummerComponent, originalTextFieldComponent],
   properties: {
     skjemanummer: 'Test Form',
     tema: 'BIL',
-    innsending: 'KUN_DIGITAL',
+    submissionTypes: ['DIGITAL'],
   },
 } as NavFormType;
 
@@ -144,6 +168,12 @@ const formWithSimpleConditionalToRadio = {
   name: 'formWithSimpleConditionalToRadio',
   path: 'formWithSimpleConditionalToRadio',
   title: 'Form with simple conditional to radio',
+  changedAt: '2022-11-17T13:12:38.825Z',
+  changedBy: 'user@company.com',
+  publishedAt: '2022-11-17T13:12:38.825Z',
+  publishedBy: 'user@company.com',
+  publishedLanguages: ['en'],
+  status: 'published',
   properties: {
     skjemanummer: 'formWithSimpleConditionalToRadio',
     ...generalProperties,
@@ -183,6 +213,7 @@ export {
   formWithSimpleConditionalToRadio,
   originalFodselsnummerComponent,
   originalForm,
+  originalOtherDocumentationAttachmentComponent,
   originalPanelComponent,
   originalSkjemaGruppeComponent,
   originalTextFieldComponent,

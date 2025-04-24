@@ -1,27 +1,31 @@
+import { formioFormsApiUtils, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import { NextFunction, Request, Response } from 'express';
 import { logger } from '../../logging/logger';
-import { formioService, publisherService } from '../../services';
-import { BadRequest } from './helpers/errors';
+import { formsService, publisherService } from '../../services';
+import { BulkPublicationResult } from '../../services/formPublications/types';
 
-const publishForms = async (req: Request, res: Response, next: NextFunction) => {
-  const userName = req.getUser().name;
-  const { formPaths } = req.body.payload;
+const publishForms = async (req: Request, res: Response, _next: NextFunction) => {
+  const { bulkPublicationResult } = req.body as { bulkPublicationResult: BulkPublicationResult };
+  const successResult = bulkPublicationResult.filter((r) => r.status === 'ok');
+  const failureResult = bulkPublicationResult.filter((r) => r.status !== 'ok');
 
-  if (!Array.isArray(formPaths) || formPaths.length === 0) {
-    next(new BadRequest('Request is missing formPaths'));
-    return;
-  }
-
-  const logMeta = { formPaths, numberOfForms: formPaths.length, userName };
-  logger.info('Attempting to publish forms', logMeta);
+  const publishedFormPaths = successResult.map((r) => r.form.path);
+  const skippedFormPaths = failureResult.map((r) => r.form.path);
+  const logMeta = { formPaths: publishedFormPaths, numberOfForms: publishedFormPaths.length, skippedFormPaths };
+  logger.info(`Attempting to publish ${publishedFormPaths.length} forms (github)`, logMeta);
   try {
-    const forms: any = await formioService.getForms(formPaths);
+    const forms: NavFormType[] = [];
+    for (const formPath of publishedFormPaths) {
+      const form = await formsService.get(formPath);
+      forms.push(formioFormsApiUtils.mapFormToNavForm(form));
+    }
     const gitSha = await publisherService.publishForms(forms);
-    logger.info('Forms are published', logMeta);
-    res.json({ changed: !!gitSha, gitSha });
-  } catch (error) {
-    logger.error('Failed to publish forms', logMeta);
-    next(error);
+    logger.info(`Published ${publishedFormPaths.length} forms (github)`);
+    res.json({ githubCommit: !!gitSha, bulkPublicationResult });
+  } catch (error: any) {
+    const { message, stack, ...errDetails } = error;
+    logger.error('Failed to publish forms (github)', { ...errDetails, stack, errorMessage: message });
+    res.json({ githubCommit: false, bulkPublicationResult });
   }
 };
 
