@@ -7,6 +7,7 @@ import BasicFields from './fields/BasicFields';
 import DeclarationFields from './fields/DeclarationFields';
 import EnhetFields from './fields/EnhetFields';
 import MellomlagrinDurationFields from './fields/MellomlagringDurationFields';
+import OnlyPrintFrontPageFields from './fields/OnlyPrintFrontPageFields';
 import SignatureFields from './fields/SignatureFields';
 import SubmissionFields from './fields/SubmissionFields';
 import UxSignalsFields from './fields/UxSignalsFields';
@@ -82,6 +83,8 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext, errors }: Basic
     </>
   );
 
+  const onlyPrintFrontPage = () => <OnlyPrintFrontPageFields onChange={onChange} form={form} />;
+
   const signatureFields = () => <SignatureFields onChange={onChange} diff={diff} form={form} />;
 
   const mellomlagringFields = () => (
@@ -101,6 +104,7 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext, errors }: Basic
           {submissionFields()}
           {addressFields()}
           {enhetFields()}
+          {onlyPrintFrontPage}
           {uxSignalsFields()}
           {mellomlagringFields()}
           {instructionFields()}

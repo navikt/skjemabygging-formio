@@ -74,6 +74,10 @@ const coverPageAndApplication = async (props: CoverPageAndApplicationProps) => {
     throw htmlResponseError('Generering av førstesideark PDF feilet');
   }
 
+  if (form.properties.printOnlyFrontpage) {
+    return Buffer.from(new Uint8Array(coverPagePdf));
+  }
+
   const applicationPdf = base64Decode(applicationResponse.data);
 
   if (applicationPdf === undefined) {
