@@ -61,7 +61,7 @@ const DataFetcher = forwardRef<HTMLFieldSetElement, Props>(
         setLoading(true);
         const result = await getActivities(appConfig, queryParams);
         if (result) {
-          setMetadata({ data: [...result, ...(showOther ? (otherData as Activity[]) : [])] });
+          setMetadata({ data: [...result, ...(showOther && result.length ? (otherData as Activity[]) : [])] });
         }
       } catch (error) {
         console.error('Failed to fetch activities:', error);

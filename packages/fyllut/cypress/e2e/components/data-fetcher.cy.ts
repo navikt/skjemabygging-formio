@@ -33,6 +33,13 @@ describe('Data fetcher', () => {
         });
     });
 
+    it('should not render annet option when showOther is checked and API returns empty list', () => {
+      cy.mocksUseRouteVariant('get-register-data-activities:success-empty');
+      cy.visit('/fyllut/datafetcherannettest/arbeidsrettetaktivitet?sub=digital');
+      cy.findByRole('group', { name: LABEL_AKTIVITETSVELGER }).should('not.exist');
+      cy.get('.navds-alert--warning').contains('Ingen aktiviteter ble hentet');
+    });
+
     it('should not render component when data is empty', () => {
       cy.mocksUseRouteVariant('get-register-data-activities:success-empty');
       cy.visit('/fyllut/datafetchertest/arbeidsrettetaktivitet?sub=digital');
