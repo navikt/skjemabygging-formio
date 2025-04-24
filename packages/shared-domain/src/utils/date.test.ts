@@ -11,6 +11,58 @@ describe('date.ts', () => {
     });
   });
 
+  describe('toLocaleDateAndTime', () => {
+    describe('date with five fractional second digits', () => {
+      it('should format date and time correctly for locale nb', () => {
+        const date = '2020-06-24T10:00:00.625417+02:00';
+        const formattedDate = dateUtils.toLocaleDateAndTime(date, 'nb');
+        expect(formattedDate).toBe('24.06.2020, 10:00');
+      });
+
+      it('should format date and time correctly for locale en', () => {
+        const date = '2020-06-24T10:00:00.625417+02:00';
+        const formattedDate = dateUtils.toLocaleDateAndTime(date, 'en');
+        expect(formattedDate).toBe('06/24/2020, 10:00 AM');
+      });
+
+      it('should format utc date and time correctly for locale en', () => {
+        const date = '2020-06-24T10:00:00.625417Z';
+        const formattedDate = dateUtils.toLocaleDateAndTime(date, 'en');
+        expect(formattedDate).toBe('06/24/2020, 12:00 PM');
+      });
+
+      it('should format utc date and time correctly for locale nb', () => {
+        const date = '2020-06-24T10:00:00.625417Z';
+        const formattedDate = dateUtils.toLocaleDateAndTime(date, 'nb');
+        expect(formattedDate).toBe('24.06.2020, 12:00');
+      });
+    });
+
+    it('should format date and time correctly for default locale', () => {
+      const date = '2024-03-01T13:00:00.000+01';
+      const formattedDate = dateUtils.toLocaleDateAndTime(date);
+      expect(formattedDate).toBe('01.03.2024, 13:00');
+    });
+
+    it('should format utc date and time correctly for default locale', () => {
+      const date = '2024-03-01T12:00:00.000Z';
+      const formattedDate = dateUtils.toLocaleDateAndTime(date);
+      expect(formattedDate).toBe('01.03.2024, 13:00');
+    });
+
+    it('should format utc date and time correctly for specified locale', () => {
+      const date = '2024-03-01T15:12:22.000Z';
+      const formattedDate = dateUtils.toLocaleDateAndTime(date, 'en');
+      expect(formattedDate).toBe('03/01/2024, 04:12 PM');
+    });
+
+    it('should return "Invalid DateTime" for invalid date', () => {
+      const date = 'invalid-date';
+      const formattedDate = dateUtils.toLocaleDateAndTime(date);
+      expect(formattedDate).toBe('Invalid DateTime');
+    });
+  });
+
   describe('generateWeeklyPeriods function', () => {
     it('should return an empty array if no date is provided', () => {
       const result = generateWeeklyPeriods();
@@ -265,6 +317,78 @@ describe('date.ts', () => {
             millisecond: 999,
           }).toISO(),
         );
+      });
+    });
+  });
+
+  describe('isAfter', () => {
+    describe('when date is valid', () => {
+      it('should return true if date is slightly after the second date in different time zones', () => {
+        const date1 = '2023-03-01T11:00:00.001+01:00'; // UTC+1
+        const date2 = '2023-03-01T10:00:00.000Z'; // UTC
+        expect(dateUtils.isAfter(date1, date2)).toBe(true);
+      });
+
+      it('should return false if date is before the second date in different time zones', () => {
+        const date1 = '2023-03-01T08:00:00+01:00'; // UTC+1
+        const date2 = '2023-03-01T10:00:00Z'; // UTC
+        expect(dateUtils.isAfter(date1, date2)).toBe(false);
+      });
+
+      it('should return false if the dates are the same but in different time zones', () => {
+        const date1 = '2023-03-01T10:00:00+01:00'; // UTC+1
+        const date2 = '2023-03-01T09:00:00Z'; // UTC
+        expect(dateUtils.isAfter(date1, date2)).toBe(false);
+      });
+
+      it('should return true when compared to date in different time zone', () => {
+        const date1 = '2023-03-01T09:30:00.165Z'; // UTC
+        const date2 = '2023-03-01T10:00:00.123+01:00'; // UTC+1
+        expect(dateUtils.isAfter(date1, date2)).toBe(true);
+      });
+
+      it('should return true if it is after the second date with different timestamps', () => {
+        const date1 = '2023-03-01T12:00:00Z';
+        const date2 = '2023-03-01T11:59:59Z';
+        expect(dateUtils.isAfter(date1, date2)).toBe(true);
+      });
+
+      it('should return false if it is before the second date with different timestamps', () => {
+        const date1 = '2023-03-01T11:59:59Z';
+        const date2 = '2023-03-01T12:00:00Z';
+        expect(dateUtils.isAfter(date1, date2)).toBe(false);
+      });
+
+      it('should return true when compared to invalid date', () => {
+        const date1 = '2023-03-01T11:59:59Z';
+        const date2Invalid = '2023-02-99T12:00:00Z';
+        expect(dateUtils.isAfter(date1, date2Invalid)).toBe(true);
+      });
+
+      it('should return true when compared to empty date string', () => {
+        const date1 = '2023-03-01T11:59:59Z';
+        const date2Invalid = '';
+        expect(dateUtils.isAfter(date1, date2Invalid)).toBe(true);
+      });
+    });
+
+    describe('when date is invalid', () => {
+      it('should return false when compared to valid date', () => {
+        const date1Invalid = '2023-03-99T12:00:00Z';
+        const date2 = '2023-03-01T11:59:59Z';
+        expect(dateUtils.isAfter(date1Invalid, date2)).toBe(false);
+      });
+
+      it('should return false when compared to invalid date', () => {
+        const date1Invalid = '2023-03-99T12:00:00Z';
+        const date2Invalid = '2023-99-01T11:59:59Z';
+        expect(dateUtils.isAfter(date1Invalid, date2Invalid)).toBe(false);
+      });
+
+      it('should return false when compared to empty date string', () => {
+        const date1Invalid = '2023-03-99T12:00:00Z';
+        const date2Invalid = '';
+        expect(dateUtils.isAfter(date1Invalid, date2Invalid)).toBe(false);
       });
     });
   });

@@ -26150,7 +26150,7 @@
     "published": "2025-02-06T11:04:44.706Z",
     "publishedBy": "Rosseland, Rune",
     "publishedLanguages": ["nn-NO", "en"],
-    "ettersending": "PAPIR_OG_DIGITAL"
+    "subsequentSubmissionTypes": ["PAPER", "DIGITAL"]
   },
   "project": "628ca77305690db58c974cfd",
   "revisions": "",

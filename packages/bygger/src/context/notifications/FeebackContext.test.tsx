@@ -55,17 +55,17 @@ describe('FeedbackContext', () => {
     });
 
     it('returns emitted messages in reverse order of when it was added', () => {
-      const messages = getLatest(onMessagesUpdated);
+      const { messages } = getLatest(onMessagesUpdated);
       expect(messages[0].message).toBe('Warning message');
       expect(messages[1].message).toBe('Error message');
       expect(messages[2].message).toBe('Success message');
     });
 
     it('returns an updated list when a message is removed', () => {
-      const messages = getLatest(onMessagesUpdated);
+      const { messages, clearMessage } = getLatest(onMessagesUpdated);
       expect(messages).toHaveLength(3);
-      act(() => messages[1].clear());
-      const updatedMessages = getLatest(onMessagesUpdated);
+      act(() => clearMessage(messages[1].id));
+      const { messages: updatedMessages } = getLatest(onMessagesUpdated);
       expect(updatedMessages).toHaveLength(2);
     });
   });

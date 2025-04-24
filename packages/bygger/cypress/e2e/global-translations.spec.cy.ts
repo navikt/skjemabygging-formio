@@ -11,6 +11,19 @@ describe('Global translations', () => {
   });
 
   describe('Skjematekster', () => {
+    it('filters on rows with missing translations', () => {
+      cy.findByText('Ny').should('be.visible');
+      cy.findByText('Nyere').should('be.visible');
+      cy.findByText('Abc').should('be.visible');
+      cy.findByText('Hei').should('be.visible');
+      cy.findByRole('checkbox', { name: 'Vis kun manglende oversettelser' }).should('exist');
+      cy.findByRole('checkbox', { name: 'Vis kun manglende oversettelser' }).click();
+      cy.findByText('Ny').should('not.exist');
+      cy.findByText('Nyere').should('not.exist');
+      cy.findByText('Abc').should('not.exist');
+      cy.findByText('Hei').should('be.visible');
+    });
+
     it('does not update translations if no changes', () => {
       cy.findByRole('button', { name: 'Lagre' }).click();
       cy.findByText('Ingen endringer oppdaget. Oversettelser ble ikke lagret.').should('be.visible');

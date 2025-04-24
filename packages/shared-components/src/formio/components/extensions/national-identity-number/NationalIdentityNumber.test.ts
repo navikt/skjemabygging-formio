@@ -23,6 +23,7 @@ describe('Fodselsnummer', () => {
       },
       {},
     );
+    fnrComp.path = 'fodselsnummerDNummer';
     fnrComp.component.label = 'Label for Fnr';
     vi.spyOn(NationalIdenityNumber.prototype, 'translate').mockImplementation(mockedTranslate as any);
     vi.spyOn(NationalIdenityNumber.prototype, 'setComponentValidity').mockImplementation(

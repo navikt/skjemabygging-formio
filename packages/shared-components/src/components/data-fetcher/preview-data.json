@@ -1,0 +1,18 @@
+[
+  {
+    "label": "Aktivitet 1",
+    "value": "activity1",
+    "type": "BOUTGIFTER"
+  },
+  {
+    "label": "Aktivitet 2",
+    "value": "activity2",
+    "type": "TILTAK"
+  },
+  {
+    "label": "Aktivitet 3",
+    "value": "activity3",
+    "type": "UTDANNING"
+  }
+]
+

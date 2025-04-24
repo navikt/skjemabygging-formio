@@ -1,5 +1,5 @@
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { act, render, screen, waitFor } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { setupNavFormio } from '../../../../../test/navform-render';
 import NavForm from '../../../../components/nav-form/NavForm';
@@ -73,14 +73,11 @@ describe('NavDatePicker', () => {
     };
 
     const renderNavForm = async (props) => {
-      const formReady = vi.fn();
-      const renderReturn = render(
+      return render(
         <AppConfigProvider dokumentinnsendingBaseURL={undefined} fyllutBaseURL={undefined}>
-          <NavForm {...props} formReady={formReady} />
+          <NavForm {...props} />
         </AppConfigProvider>,
       );
-      await waitFor(() => expect(formReady).toHaveBeenCalledTimes(1));
-      return renderReturn;
     };
 
     it('sets value to empty string when clearing value', async () => {

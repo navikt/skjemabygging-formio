@@ -10,9 +10,27 @@ describe('Form translations', () => {
     cy.intercept('GET', '/api/forms/tst123456/translations', { fixture: 'form123456-translations.json' }).as(
       'getFormTranslations',
     );
+    cy.intercept('GET', '/api/translations', { fixture: 'formsApiGlobalTranslations.json' }).as(
+      'getGlobalTranslations',
+    );
   });
 
-  describe('When there are no unsaved translations', () => {
+  describe('When there are saved form translations', () => {
+    beforeEach(() => {
+      cy.visit('/forms/tst123456/oversettelser');
+      cy.wait('@getConfig');
+      cy.wait('@getForm');
+      cy.wait('@getPublishedForm');
+      cy.wait('@getFormTranslations');
+      cy.wait('@getGlobalTranslations');
+    });
+
+    it('shows timestamp when translations were last saved', () => {
+      cy.findByText('Sist lagret:').should('exist').next('p').should('contain', '28.02.25, kl. 12.55');
+    });
+  });
+
+  describe('When there are no unsaved global translations translations', () => {
     beforeEach(() => {
       cy.intercept('GET', '/api/translations', (req) => req.reply([])).as('getGlobalTranslations');
       cy.visit('/forms/tst123456/oversettelser');
@@ -31,15 +49,29 @@ describe('Form translations', () => {
 
   describe('When there are unsaved global translations', () => {
     beforeEach(() => {
-      cy.intercept('GET', '/api/translations', { fixture: 'formsApiGlobalTranslations.json' }).as(
-        'getGlobalTranslations',
-      );
       cy.visit('/forms/tst123456/oversettelser');
       cy.wait('@getConfig');
       cy.wait('@getForm');
       cy.wait('@getPublishedForm');
       cy.wait('@getFormTranslations');
       cy.wait('@getGlobalTranslations');
+    });
+
+    it('filters translation rows with missing translations', () => {
+      cy.findByText('Gitar').should('be.visible');
+      cy.findByText('Trommer').should('be.visible');
+      cy.findByText('Piano').should('be.visible');
+      cy.findByText('Trekkspill').should('be.visible');
+      cy.findByRole('checkbox', { name: 'Vis kun manglende oversettelser' }).should('exist');
+      cy.findByRole('checkbox', { name: 'Vis kun manglende oversettelser' }).click();
+      cy.findByText('Gitar').should('not.exist');
+      cy.findByText('Trommer').should('not.exist');
+      cy.findByText('Piano').should('not.exist');
+      cy.findByText('Trekkspill').should('not.exist');
+
+      // Partial translations should not be filtered out
+      cy.findByText('Dine opplysninger').should('be.visible');
+      cy.findByText('Ja').should('be.visible');
     });
 
     it('updates existing translation, adds new translation and adds global override', () => {

@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import { Attachment, Component, FormsResponseForm, NavFormType, Panel, PrefillData, Submission } from '../form';
+import { Attachment, Component, FormsResponseForm, NavFormType, Panel, Submission } from '../form';
 import { Form, formSummaryUtil, submissionTypesUtils } from '../index';
 import FormioUtils from '../utils/formio/FormioUtils';
 import { camelCase } from './stringUtils';
@@ -115,18 +115,6 @@ const findByNavId = (navId: string, components: Component[]): Component | undefi
 
 const findComponentsByProperty = (property: string, form: NavFormType): Component[] => {
   return flattenComponents(form.components).filter((component) => !!component[property]);
-};
-
-const prefillForm = (navForm: NavFormType, prefillData: PrefillData) => {
-  const formCopy = JSON.parse(JSON.stringify(navForm));
-
-  FormioUtils.eachComponent(formCopy.components, (component: Component) => {
-    if (component.prefillKey && prefillData[component.prefillKey]) {
-      component.prefillValue = prefillData[component.prefillKey];
-    }
-  });
-
-  return formCopy;
 };
 
 export type DependencyType = 'conditional' | 'validation' | 'calculateValue';
@@ -309,24 +297,6 @@ const getAttachmentProperties = (form: NavFormType): Attachment[] => {
 const isAttachment = (comp: Component) =>
   comp.type === 'attachment' || comp.values?.some((v) => v.value === 'leggerVedNaa');
 
-const isDigital = (type: 'innsending' | 'ettersending', form: NavFormType) => {
-  // If field is empty, it defaults to PAPIR_OG_DIGITAL
-  if (!form.properties[type]) return true;
-
-  return form.properties[type] === 'KUN_DIGITAL' || form.properties[type] === 'PAPIR_OG_DIGITAL';
-};
-
-const isPaper = (type: 'innsending' | 'ettersending', form: NavFormType) => {
-  // If field is empty, it defaults to PAPIR_OG_DIGITAL
-  if (!form.properties[type]) return true;
-
-  return form.properties[type] === 'KUN_PAPIR' || form.properties[type] === 'PAPIR_OG_DIGITAL';
-};
-
-const isNone = (type: 'innsending' | 'ettersending', form: NavFormType) => {
-  return form.properties[type] === 'INGEN';
-};
-
 const createDefaultForm = (config): Form => ({
   title: '',
   skjemanummer: '',
@@ -335,7 +305,7 @@ const createDefaultForm = (config): Form => ({
     skjemanummer: '',
     tema: '',
     submissionTypes: ['PAPER', 'DIGITAL'],
-    ettersending: 'PAPIR_OG_DIGITAL',
+    subsequentSubmissionTypes: ['PAPER', 'DIGITAL'],
     signatures: [{ label: '', description: '', key: uuidv4() }],
     ettersendelsesfrist: '14',
     mellomlagringDurationDays: (config?.mellomlagringDurationDays as string) ?? '28',
@@ -378,12 +348,8 @@ const navFormUtils = {
   getAttachmentPanel,
   hasAttachment,
   getAttachmentProperties,
-  isDigital,
-  isPaper,
   isAttachment,
-  isNone,
   isEqual,
-  prefillForm,
   createDefaultForm,
   replaceDuplicateNavIds,
 };

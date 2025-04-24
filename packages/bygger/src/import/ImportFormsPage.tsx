@@ -1,10 +1,9 @@
 import { Skeleton, Table, UNSAFE_Combobox } from '@navikt/ds-react';
 import { ComboboxOption } from '@navikt/ds-react/esm/form/combobox/types';
-import { makeStyles } from '@navikt/skjemadigitalisering-shared-components';
+import { ButtonWithSpinner, makeStyles } from '@navikt/skjemadigitalisering-shared-components';
 import { Form } from '@navikt/skjemadigitalisering-shared-domain';
 import { useCallback, useEffect, useState } from 'react';
 import { AppLayout } from '../components/AppLayout';
-import ButtonWithSpinner from '../components/ButtonWithSpinner';
 import RowLayout from '../components/layout/RowLayout';
 import Title from '../components/layout/Title';
 import TitleRowLayout from '../components/layout/TitleRowLayout';

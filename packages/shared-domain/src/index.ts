@@ -25,7 +25,6 @@ import {
   FormPropertiesType,
   FormSignaturesType,
   FormsResponseForm,
-  FormType,
   FyllutState,
   InnsendingType,
   InputMode,
@@ -42,6 +41,7 @@ import {
   SubmissionMethod,
   SubmissionType,
   UsageContext,
+  Webform,
 } from './form';
 import { Form } from './forms-api-form';
 import forstesideUtils, {
@@ -97,6 +97,7 @@ import {
   SummaryAddress,
   SummaryAttachment,
   SummaryComponent,
+  SummaryDataFetcher,
   SummaryDataGrid,
   SummaryDataGridRow,
   SummaryDrivingList,
@@ -111,6 +112,7 @@ import MockedComponentObjectForTest from './summary/MockedComponentObjectForTest
 import formSummaryUtil from './summary/formSummaryUtil';
 import { TextSize, TextSizeShort } from './text';
 import TEXTS from './texts';
+import { Activity } from './tilleggsstonader/activity';
 import {
   FormsApiFormTranslation,
   FormsApiGlobalTranslation,
@@ -174,6 +176,7 @@ export {
 export type {
   AccordionSettingValue,
   AccordionSettingValues,
+  Activity,
   Address,
   AddressType,
   AktivitetPeriode,
@@ -211,7 +214,6 @@ export type {
   FormSettingsDiff,
   FormSignaturesType,
   FormsResponseForm,
-  FormType,
   ForstesideRecipientAddress,
   ForstesideRequestBody,
   FrontendLoggerConfigType,
@@ -261,6 +263,7 @@ export type {
   SummaryAddress,
   SummaryAttachment,
   SummaryComponent,
+  SummaryDataFetcher,
   SummaryDataGrid,
   SummaryDataGridRow,
   SummaryDrivingList,
@@ -279,4 +282,5 @@ export type {
   UkjentBruker,
   UsageContext,
   VedtakBetalingsplan,
+  Webform,
 };

@@ -26,7 +26,7 @@ const useStyles = makeStyles({
 });
 
 const FyllUtRouter = ({ form, translations }) => {
-  const [submission, setSubmission] = useState<Submission | { fyllutState: FyllutState }>();
+  const [submission, setSubmission] = useState<Submission>();
   const formBaseUrl = useResolvedPath('').pathname;
   const styles = useStyles();
 
@@ -35,7 +35,7 @@ const FyllUtRouter = ({ form, translations }) => {
       return {
         ...prevSubmission,
         fyllutState,
-      };
+      } as Submission;
     });
   };
 

@@ -1321,7 +1321,7 @@
               "redrawOn": "",
               "tableView": false,
               "modalEdit": false,
-              "label": "Velg hvilken aktivitet du vil søke om stønad for",
+              "label": "Hvilken aktivitet søker du om støtte i forbindelse med?",
               "dataGridLabel": false,
               "labelPosition": "top",
               "description": "",
@@ -7059,7 +7059,7 @@
     "skjemanummer": "NAV 11-12.21B",
     "tema": "TSO",
     "submissionTypes": ["PAPER", "DIGITAL"],
-    "ettersending": "PAPIR_OG_DIGITAL",
+    "subsequentSubmissionTypes": ["PAPER", "DIGITAL"],
     "signatures": [
       {
         "label": "",

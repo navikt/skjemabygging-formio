@@ -41,10 +41,15 @@ const validMonthInputFormats = ['MM.yyyy', 'MM/yyyy', 'MM-yyyy', 'MM yyyy', 'MMM
 const submissionFormatMonth = 'yyyy-MM';
 const inputFormatMonthLong = 'MMMM yyyy';
 
-const toLocaleDateAndTime = (date: string, locale = 'no') => new Date(date).toLocaleString(locale, dateAndTimeFormat);
+const toLocaleDateAndTime = (date: string, locale = 'no') =>
+  DateTime.fromISO(date).setLocale(locale).toLocaleString(dateAndTimeFormat);
 
-const toLocaleDate = (date: string, locale = 'no') => {
-  return DateTime.fromISO(date).setLocale(locale).toLocaleString(dateFormat);
+const toLocaleDate = (date?: string, locale = 'no') => {
+  if (date) {
+    return DateTime.fromISO(date).setLocale(locale).toLocaleString(dateFormat);
+  } else {
+    return DateTime.now().setLocale(locale).toLocaleString(dateFormat);
+  }
 };
 
 const toWeekdayAndDate = (date: string, locale = 'no') => {
@@ -214,6 +219,15 @@ const isAfterDate = (date1: string, date2: string) => {
   return DateTime.fromISO(date1).startOf('day') > DateTime.fromISO(date2).startOf('day');
 };
 
+const isAfter = (date1: string, date2: string) => {
+  const d1 = DateTime.fromISO(date1);
+  const d2 = DateTime.fromISO(date2);
+  if (d1.isValid && d2.isValid) {
+    return d1 > d2;
+  }
+  return d1.isValid;
+};
+
 const dateUtils = {
   getIso8601String,
   toLocaleDateAndTime,
@@ -234,6 +248,7 @@ const dateUtils = {
   toSubmissionDateMonth,
   startOfYear,
   endOfYear,
+  isAfter,
   isAfterDate,
   isValidMonthSubmission,
   toJSDateFromMonthSubmission,

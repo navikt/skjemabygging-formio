@@ -1,6 +1,6 @@
 import { Table, TextField } from '@navikt/ds-react';
 import { useEditGlobalTranslations } from '../../context/translations/EditGlobalTranslationsContext';
-import useTranslationTableStyles from './styles';
+import { useTranslationTableStyles } from './styles';
 
 const NewTranslationRow = () => {
   const { newTranslation, updateNewTranslation, errors } = useEditGlobalTranslations();

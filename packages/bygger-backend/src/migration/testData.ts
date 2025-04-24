@@ -61,6 +61,30 @@ const originalFodselsnummerComponent = {
   tableView: true,
 };
 
+const originalOtherDocumentationAttachmentComponent: Component = {
+  key: 'annenDokumentasjon',
+  type: 'attachment',
+  input: true,
+  label: 'Annen dokumentasjon',
+  validate: {
+    required: true,
+  },
+  properties: {
+    vedleggskode: 'N6',
+    vedleggstittel: 'Annet',
+  },
+  description: 'Har du noen annen dokumentasjon du ønsker å legge ved?',
+  attachmentType: 'other',
+  attachmentValues: {
+    nei: {
+      enabled: true,
+    },
+    leggerVedNaa: {
+      enabled: true,
+    },
+  },
+};
+
 const originalForm: NavFormType = {
   path: 'testform',
   components: [originalFodselsnummerComponent, originalTextFieldComponent],
@@ -189,6 +213,7 @@ export {
   formWithSimpleConditionalToRadio,
   originalFodselsnummerComponent,
   originalForm,
+  originalOtherDocumentationAttachmentComponent,
   originalPanelComponent,
   originalSkjemaGruppeComponent,
   originalTextFieldComponent,

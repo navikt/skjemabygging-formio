@@ -9,8 +9,12 @@ foersteside-url: https://www.nav.no/soknader/api/forsteside
 dekorator-url: https://www.nav.no/dekoratoren?simple=true
 skjemabygging-proxy-client-id: 95170319-b4d7-4190-8271-118ed19bafbf
 skjemabygging-proxy-url: https://skjemabygging-proxy.dev-fss-pub.nais.io
+gotenberg-url: http://upload-convert-to-pdf.fyllut-sendinn
+gotenberg-url-en: http://upload-convert-to-pdf-en.fyllut-sendinn
 send-inn-token-x-client-id: dev-gcp:team-soknad:innsending-api
 send-inn-host: http://innsending-api.team-soknad
+tilleggsstonader-token-x-client-id: dev-gcp:tilleggsstonader:tilleggsstonader-integrasjoner
+tilleggsstonader-integrasjoner-host: http://tilleggsstonader-integrasjoner.tilleggsstonader
 kodeverk:
   url: https://kodeverk-api.nav.no
   scope: dev-gcp.team-rocket.kodeverk-api
@@ -29,8 +33,17 @@ accessPolicy:
       - application: skjemabygging-proxy
         namespace: skjemadigitalisering
         cluster: dev-fss
+      - application: upload-convert-to-pdf
+        namespace: fyllut-sendinn
+        cluster: dev-gcp
+      - application: upload-convert-to-pdf-en
+        namespace: fyllut-sendinn
+        cluster: dev-gcp
       - application: innsending-api
         namespace: team-soknad
+        cluster: dev-gcp
+      - application: tilleggsstonader-integrasjoner
+        namespace: tilleggsstonader
         cluster: dev-gcp
       - application: pdl-api
         namespace: pdl

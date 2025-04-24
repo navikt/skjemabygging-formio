@@ -1,4 +1,4 @@
-import { MigrationLevel, NavFormType, formioFormsApiUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, MigrationLevel, NavFormType, formioFormsApiUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { NextFunction, Request, Response } from 'express';
 import { migrateForms } from '../../migration/migrationScripts';
 import { formsService } from '../../services';
@@ -13,7 +13,7 @@ const migrate = async (req: Request, res: Response, next: NextFunction) => {
     if (Object.keys({ ...formSearchFilters, ...searchFilters, ...dependencyFilters }).length === 0)
       throw new Error('Migreringen mangler søkefiltre');
     const allForms: NavFormType[] = [];
-    const allFormsApiForms = await formsService.getAll('path');
+    const allFormsApiForms = await formsService.getAll<Pick<Form, 'path'>>('path');
     for (const form of allFormsApiForms) {
       const formsApiForm = await formsService.get(form.path);
       allForms.push(formioFormsApiUtils.mapFormToNavForm(formsApiForm));
