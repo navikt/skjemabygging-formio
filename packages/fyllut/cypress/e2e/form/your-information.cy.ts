@@ -187,12 +187,18 @@ describe('Your information', () => {
     });
 
     describe('No social security number', () => {
-      it('Lives abroad', () => {
+      beforeEach(() => {
         cy.findByRole('group', { name: 'Har du norsk fødselsnummer eller d-nummer?' }).within(($radio) =>
           cy.findByLabelText('Nei').check(),
         );
+      });
+
+      it('Does not show alert nor input for ssn', () => {
         cy.get('.navds-alert').should('have.length', 0);
         cy.findByRole('textbox', { name: 'Fødselsnummer eller d-nummer' }).should('not.exist');
+      });
+
+      it('Lives abroad', () => {
         cy.findByRole('textbox', { name: /Fødselsdato/ }).type('01.01.1980');
         cy.findByRole('group', { name: 'Bor du i Norge?' }).within(($radio) => cy.findByLabelText('Nei').check());
 
@@ -213,11 +219,6 @@ describe('Your information', () => {
       });
 
       it('Lives in Norway with address', () => {
-        cy.findByRole('group', { name: 'Har du norsk fødselsnummer eller d-nummer?' }).within(($radio) =>
-          cy.findByLabelText('Nei').check(),
-        );
-        cy.get('.navds-alert').should('have.length', 0);
-        cy.findByRole('textbox', { name: 'Fødselsnummer eller d-nummer' }).should('not.exist');
         cy.findByRole('textbox', { name: /Fødselsdato/ }).type('01.01.1980');
         cy.findByRole('group', { name: 'Bor du i Norge?' }).within(($radio) => cy.findByLabelText('Ja').check());
 
@@ -242,11 +243,6 @@ describe('Your information', () => {
       });
 
       it('Lives in Norway with po address', () => {
-        cy.findByRole('group', { name: 'Har du norsk fødselsnummer eller d-nummer?' }).within(($radio) =>
-          cy.findByLabelText('Nei').check(),
-        );
-        cy.get('.navds-alert').should('have.length', 0);
-        cy.findByRole('textbox', { name: 'Fødselsnummer eller d-nummer' }).should('not.exist');
         cy.findByRole('textbox', { name: /Fødselsdato/ }).type('01.01.1980');
         cy.findByRole('group', { name: 'Bor du i Norge?' }).within(($radio) => cy.findByLabelText('Ja').check());
 
@@ -268,6 +264,87 @@ describe('Your information', () => {
 
         cy.clickNextStep();
         cy.findByRole('heading', { name: 'Navn' }).should('exist');
+      });
+
+      describe('Validation of Birth date and Lives in Norway', () => {
+        it('Shows validation messages near input', () => {
+          cy.clickNextStep();
+
+          cy.findByRole('textbox', { name: /Fødselsdato/ })
+            .should('exist')
+            .invoke('attr', 'aria-describedby')
+            .then((describedById) => {
+              cy.get(`#${describedById}`).should('have.text', 'Du må fylle ut: Fødselsdato (dd.mm.åååå)');
+            });
+
+          cy.findByRole('group', { name: 'Bor du i Norge?' })
+            .should('exist')
+            .within(() => {
+              cy.findByRole('radio', { name: 'Ja' })
+                .should('exist')
+                .should('not.be.checked')
+                .invoke('attr', 'aria-describedby')
+                .then((describedById) => {
+                  cy.get(`#${describedById}`).should('have.text', 'Du må fylle ut: Bor du i Norge?');
+                });
+            });
+        });
+
+        it('Shows message in error summary and focus input on click', () => {
+          cy.clickNextStep();
+
+          // eslint-disable-next-line cypress/no-unnecessary-waiting
+          cy.wait(100);
+          cy.get('[data-cy=error-summary]')
+            .should('exist')
+            .within(() => {
+              cy.findAllByRole('link', { name: /^Du må fylle ut: .*/ }).should('have.length', 2);
+              cy.findByRole('link', { name: 'Du må fylle ut: Bor du i Norge?' }).should('exist').click();
+            });
+          cy.findByRole('group', { name: 'Bor du i Norge?' }).should('have.focus');
+        });
+      });
+
+      describe('Validation of Street address or Po radio', () => {
+        beforeEach(() => {
+          cy.findByRole('textbox', { name: /Fødselsdato/ }).type('01.01.1980');
+          cy.findByRole('group', { name: 'Bor du i Norge?' }).within(($radio) => cy.findByLabelText('Ja').check());
+          cy.clickNextStep();
+        });
+
+        it('Shows validation message beneath radio', () => {
+          cy.findByRole('group', { name: 'Er kontaktadressen en vegadresse eller postboksadresse?' })
+            .should('exist')
+            .within(() => {
+              cy.findByRole('radio', { name: 'Postboksadresse' })
+                .should('exist')
+                .should('not.be.checked')
+                .invoke('attr', 'aria-describedby')
+                .then((describedById) => {
+                  cy.get(`#${describedById}`).should(
+                    'have.text',
+                    'Du må fylle ut: Er kontaktadressen en vegadresse eller postboksadresse?',
+                  );
+                });
+            });
+        });
+
+        it('Shows validation message in error summary and focus radio on click', () => {
+          // eslint-disable-next-line cypress/no-unnecessary-waiting
+          cy.wait(100);
+
+          cy.get('[data-cy=error-summary]')
+            .should('exist')
+            .within(() => {
+              cy.findAllByRole('link', { name: /^Du må fylle ut: .*/ }).should('have.length', 1);
+              cy.findByRole('link', { name: 'Du må fylle ut: Er kontaktadressen en vegadresse eller postboksadresse?' })
+                .should('exist')
+                .click();
+            });
+          cy.findByRole('group', { name: 'Er kontaktadressen en vegadresse eller postboksadresse?' }).should(
+            'have.focus',
+          );
+        });
       });
     });
   });
