@@ -8,13 +8,16 @@ import {
 import correlator from 'express-correlation-id';
 import { config } from '../../config/config';
 import { logger } from '../../logger';
+import { createFeltMapFromSubmission } from '../../routers/api/helpers/feltMapBuilder';
 import { createHtmlFromSubmission } from '../../routers/api/helpers/htmlBuilder';
 import { base64Decode, base64Encode } from '../../utils/base64';
 import { responseToError, synchronousResponseToError } from '../../utils/errorHandling';
 import fetchWithRetry, { HeadersInit } from '../../utils/fetchWithRetry';
 import { appMetrics } from '../index';
+//import {writeFileSync} from "node:fs";
+//import path from "path";
 
-const { skjemabyggingProxyUrl, gitVersion } = config;
+const { skjemabyggingProxyUrl, gitVersion, familiePdfGenerator } = config;
 
 const createPdfAsByteArray = async (
   accessToken: string,
@@ -151,9 +154,53 @@ const createPdfFromHtml = async (
   throw await responseToError(response, 'Feil ved generering av PDF hos Exstream', true);
 };
 
+const createPdfFromFieldMap = async (
+  accessToken: string,
+  form: NavFormType,
+  submission: Submission,
+  submissionMethod: string,
+  translate: (text: string, textReplacements?: I18nTranslationReplacements) => string,
+  language: string,
+) => {
+  if (!['nb-NO', 'nn-NO', 'en'].includes(language)) {
+    logger.warn(`Language code "${language}" is not supported. Language code will be defaulted to "nb".`);
+  }
+  //const feltMapString = createFeltMapFromSubmission(form, submission, submissionMethod, translate, language );
+
+  const response = await fetchWithRetry(`${familiePdfGenerator}/api/v1/pdf/opprett-pdf`, {
+    retry: 3,
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      'x-correlation-id': correlator.getId(),
+      'Content-Type': 'application/json',
+      accept: '*/*',
+    } as HeadersInit,
+    method: 'POST',
+    body: createFeltMapFromSubmission(form, submission, submissionMethod, translate, language),
+  });
+
+  if (response.ok) {
+    logger.info(`Request to familie pdf service completed`, {});
+
+    /*
+    const filePath = path.join(process.cwd(), `/src/${form.properties.skjemanummer}.pdf`);
+    writeFileSync(filePath, Buffer.from(await response.arrayBuffer()), {
+      flag: "w"
+    });
+*/
+
+    return Buffer.from(await response.arrayBuffer());
+  }
+
+  logger.error(`Request to familie pdf service failed`, {});
+
+  throw synchronousResponseToError('Feil ved generering av PDF via feltMap', {}, response.status, response.url, true);
+};
+
 const applicationService = {
   createPdf,
   createPdfAsByteArray,
+  createPdfFromFieldMap,
 };
 
 export default applicationService;

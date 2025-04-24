@@ -85,6 +85,7 @@ const localDevelopmentConfig: DefaultConfig = {
   gotenbergUrl: process.env.GOTENBERG_URL || 'https://convert-to-pdf.intern.dev.nav.no',
   gotenbergUrlEn: process.env.GOTENBERG_URL_EN || 'https://convert-to-pdf-en.intern.dev.nav.no',
   skjemabyggingProxyClientId: '95170319-b4d7-4190-8271-118ed19bafbf',
+  familiePdfGenerator: process.env.FAMILIE_PDF_GENERATOR || 'http://127.0.0.1:9060',
   azureOpenidTokenEndpoint:
     process.env.AZURE_OPENID_CONFIG_TOKEN_ENDPOINT ||
     'https://login.microsoftonline.com/966ac572-f5b7-4bbe-aa88-c76419c0f851/oauth2/v2.0/token',
@@ -137,6 +138,7 @@ const defaultConfig: DefaultConfig = {
   decoratorUrl: process.env.DECORATOR_URL!,
   skjemabyggingProxyUrl: process.env.SKJEMABYGGING_PROXY_URL!,
   skjemabyggingProxyClientId: process.env.SKJEMABYGGING_PROXY_CLIENT_ID!,
+  familiePdfGenerator: process.env.FAMILIE_PDF_GENERATOR!,
   gotenbergUrl: process.env.GOTENBERG_URL!,
   gotenbergUrlEn: process.env.GOTENBERG_URL_EN!,
   azureOpenidTokenEndpoint: process.env.AZURE_OPENID_CONFIG_TOKEN_ENDPOINT!,

@@ -39,7 +39,16 @@ const application = async (props: CoverPageAndApplicationProps) => {
     throw htmlResponseError('Generering av søknads PDF feilet');
   }
 
-  return Buffer.from(applicationPdf);
+  const pdfFromFieldMap = await applicationService.createPdfFromFieldMap(
+    accessToken,
+    form,
+    submission,
+    submissionMethod,
+    createTranslate(translations, language),
+    language,
+  );
+
+  return Buffer.from(pdfFromFieldMap);
 };
 
 interface CoverPageAndApplicationProps extends ApplicationProps {
@@ -80,7 +89,16 @@ const coverPageAndApplication = async (props: CoverPageAndApplicationProps) => {
     throw htmlResponseError('Generering av søknads PDF feilet');
   }
 
-  const documents = [coverPagePdf, applicationPdf];
+  const pdfFromFieldMap = await applicationService.createPdfFromFieldMap(
+    accessToken,
+    form,
+    submission,
+    submissionMethod,
+    createTranslate(translations, language),
+    language,
+  );
+
+  const documents = [coverPagePdf, pdfFromFieldMap];
 
   const mergedFile = await mergeFiles(
     coverPageResponse.navSkjemaId,

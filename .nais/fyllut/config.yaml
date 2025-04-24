@@ -89,6 +89,8 @@ spec:
       value: {{skjemabygging-proxy-url}}
     - name: SKJEMABYGGING_PROXY_CLIENT_ID
       value: {{skjemabygging-proxy-client-id}}
+    - name: FAMILIE_PDF_GENERATOR
+      value: {{familie-pdf-generator}}
     - name: GOTENBERG_URL
       value: {{gotenberg-url}}
     - name: GOTENBERG_URL_EN
