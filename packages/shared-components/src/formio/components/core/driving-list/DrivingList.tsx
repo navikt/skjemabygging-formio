@@ -2,6 +2,7 @@ import { dateUtils, DrivingListSubmission, DrivingListValues, TEXTS } from '@nav
 import NavDrivingList from '../../../../components/drivinglist/NavDrivingList';
 import { ComponentUtilsProvider } from '../../../../context/component/componentUtilsContext';
 import BaseComponent from '../../base/BaseComponent';
+import AdditionalDescription from '../../base/components/AdditionalDescription';
 import drivingListBuilder from './DrivingList.builder';
 import drivingListForm from './DrivingList.form';
 import {
@@ -104,6 +105,7 @@ class DrivingList extends BaseComponent {
       <ComponentUtilsProvider component={this}>
         <DrivingListProvider updateValues={this.updateValues.bind(this)} values={this.getValue()}>
           <NavDrivingList />
+          <AdditionalDescription component={this.component} />
         </DrivingListProvider>
       </ComponentUtilsProvider>,
     );

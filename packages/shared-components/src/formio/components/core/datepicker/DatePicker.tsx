@@ -2,6 +2,7 @@ import { dateUtils, numberUtils } from '@navikt/skjemadigitalisering-shared-doma
 import ReactDatePicker, { validateDate } from '../../../../components/datepicker/DatePicker';
 import { ComponentUtilsProvider } from '../../../../context/component/componentUtilsContext';
 import BaseComponent from '../../base/BaseComponent';
+import AdditionalDescription from '../../base/components/AdditionalDescription';
 import Description from '../../base/components/Description';
 import Label from '../../base/components/Label';
 import datePickerBuilder from './DatePicker.builder';
@@ -118,6 +119,7 @@ export default class DatePicker extends BaseComponent {
           fromDate={this.getFromDate()}
           toDate={this.getToDate()}
         />
+        <AdditionalDescription component={this.component} />
       </ComponentUtilsProvider>,
     );
   }

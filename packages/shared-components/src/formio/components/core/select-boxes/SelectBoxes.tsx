@@ -2,6 +2,7 @@ import { Checkbox, CheckboxGroup } from '@navikt/ds-react';
 import FormioSelectBoxes from 'formiojs/components/selectboxes/SelectBoxes';
 import { ComponentUtilsProvider } from '../../../../context/component/componentUtilsContext';
 import BaseComponent from '../../base/BaseComponent';
+import AdditionalDescription from '../../base/components/AdditionalDescription';
 import Description from '../../base/components/Description';
 import Label from '../../base/components/Label';
 import { getSelectedValuesAsList, getSelectedValuesMap } from '../../utils';
@@ -71,6 +72,7 @@ class SelectBoxes extends BaseComponent {
             </Checkbox>
           ))}
         </CheckboxGroup>
+        <AdditionalDescription component={this.component} />
       </ComponentUtilsProvider>,
     );
   }

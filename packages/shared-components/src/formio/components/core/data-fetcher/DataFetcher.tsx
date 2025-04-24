@@ -4,6 +4,7 @@ import { DataFetcherData } from '../../../../components/data-fetcher/types';
 import { ComponentUtilsProvider } from '../../../../context/component/componentUtilsContext';
 import utils from '../../../overrides/utils-overrides/utils-overrides';
 import BaseComponent from '../../base/BaseComponent';
+import AdditionalDescription from '../../base/components/AdditionalDescription';
 import Description from '../../base/components/Description';
 import Label from '../../base/components/Label';
 import dataFetcherBuilder from './DataFetcher.builder';
@@ -98,6 +99,7 @@ class DataFetcher extends BaseComponent {
           ref={(ref) => this.setReactInstance(ref)}
           showOther={this.getShowOther()}
         />
+        <AdditionalDescription component={this.component} />
       </ComponentUtilsProvider>,
     );
   }
