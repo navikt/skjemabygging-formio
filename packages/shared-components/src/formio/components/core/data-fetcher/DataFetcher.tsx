@@ -1,6 +1,8 @@
 import { SubmissionData } from '@navikt/skjemadigitalisering-shared-domain';
 import NavDataFetcher from '../../../../components/data-fetcher/DataFetcher';
+import { DataFetcherData } from '../../../../components/data-fetcher/types';
 import { ComponentUtilsProvider } from '../../../../context/component/componentUtilsContext';
+import utils from '../../../overrides/utils-overrides/utils-overrides';
 import BaseComponent from '../../base/BaseComponent';
 import Description from '../../base/components/Description';
 import Label from '../../base/components/Label';
@@ -39,16 +41,16 @@ class DataFetcher extends BaseComponent {
     return !Object.values(value).some(Boolean);
   }
 
-  getDataFromMetadata() {
-    const componentKey = this.component?.key;
-    return componentKey ? this.root.submission.metadata?.dataFetcher?.[componentKey] : undefined;
+  getDataFromMetadata(): DataFetcherData | undefined {
+    const metadata = utils.dataFetcher(this.component?.key, this.root.submission);
+    return metadata.ready ? metadata.apiResult : undefined;
   }
 
   setShowAdditionalDescription(value: boolean) {
     this.showAdditionalDescription = value;
   }
 
-  setMetadata(data: any) {
+  setMetadata(data: DataFetcherData) {
     const componentKey = this.component?.key;
     const submission = this.root.submission;
     if (!submission.metadata) {
@@ -65,7 +67,12 @@ class DataFetcher extends BaseComponent {
   }
 
   shouldSkipValidation(data?: SubmissionData, dirty?: boolean, row?: SubmissionData): boolean {
-    return this.getDataFromMetadata()?.data?.length === 0 || super.shouldSkipValidation(data, dirty, row);
+    const metadata = utils.dataFetcher(this.component?.key, this.root.submission);
+    return metadata.fetchDisabled || metadata.empty || super.shouldSkipValidation(data, dirty, row);
+  }
+
+  getShowOther() {
+    return this.component?.showOther;
   }
 
   renderReact(element) {
@@ -89,6 +96,7 @@ class DataFetcher extends BaseComponent {
           setMetadata={(metaData) => this.setMetadata(metaData)}
           setShowAdditionalDescription={(value) => this.setShowAdditionalDescription(value)}
           ref={(ref) => this.setReactInstance(ref)}
+          showOther={this.getShowOther()}
         />
       </ComponentUtilsProvider>,
     );

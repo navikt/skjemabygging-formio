@@ -31,7 +31,7 @@ const FormErrorSummary = forwardRef<HTMLDivElement, FormErrorSummaryProps>(
                 focusOnComponent({ path: error.path, elementId: error.elementId });
               }
             }}
-            key={`${error.path}${error.elementId && `-${error.elementId}`}`}
+            key={`${error.path}${error.elementId ? `-${error.elementId}` : ''}`}
           >
             {error.message}
           </ErrorSummary.Item>
