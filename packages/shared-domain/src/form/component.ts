@@ -185,4 +185,5 @@ export interface Webform {
   setPage: (index: number) => void;
   redraw: () => Promise<void>;
   submissionReady: Promise<void>;
+  _data: SubmissionData;
 }

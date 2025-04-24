@@ -103,6 +103,15 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
     this.emit('handleChange', { ...this.root._data });
   }
 
+  calculateComponentValue(data, flags, row) {
+    const value = super.calculateComponentValue(data, flags, row);
+    if (value !== false && this.root?._data) {
+      this.emit('handleChange', { ...this.root._data });
+    }
+
+    return value;
+  }
+
   /**
    * Will always hide component if hidden is true, regardless of other conditionals
    */

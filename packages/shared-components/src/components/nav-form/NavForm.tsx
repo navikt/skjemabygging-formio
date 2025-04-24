@@ -189,7 +189,15 @@ const NavForm = ({
         prefillData,
       });
       webform.form = NavFormHelper.prefillForm(webform.form, prefillData);
+
+      // Need to trigger a handle change event after prefilling form or else
+      // submission will not have correct initial state.
+      if (events?.onHandleChange) {
+        events.onHandleChange(webform._data);
+      }
     }
+    // Do not want to include events in the dependency array
+    // eslint-disable-next-line
   }, [appConfig.logger, webform, prefillData]);
 
   /**
