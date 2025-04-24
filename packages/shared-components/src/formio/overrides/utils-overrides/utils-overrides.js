@@ -225,6 +225,8 @@ const dataFetcher = (key, submission) => {
           switch (matcher) {
             case 'COUNT':
               return allSelectedItems.filter((item) => item.value !== 'annet').length;
+            case 'OTHER':
+              return allSelectedItems.some((item) => item.value === 'annet');
             default:
               return undefined;
           }

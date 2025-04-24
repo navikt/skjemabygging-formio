@@ -719,6 +719,41 @@ describe('utils-overrides', () => {
         });
       });
 
+      describe('other', () => {
+        const metadata = {
+          dataFetcher: {
+            aktivitetsvelger: {
+              data: [
+                { value: 1, label: 'Støtte til husleie', type: 'BOSTOTTE', count: 43 },
+                { value: 'annet', label: 'Annet' },
+              ],
+            },
+          },
+        };
+
+        it('returns false when "other" is not selected', () => {
+          const submission = {
+            data: {
+              aktivitetsvelger: { 1: true, annet: false },
+            },
+            metadata,
+          };
+          const dataFetcher = UtilsOverrides.dataFetcher('aktivitetsvelger', submission);
+          expect(dataFetcher.selected('OTHER')).toBe(false);
+        });
+
+        it('returns true when "other" is selected', () => {
+          const submission = {
+            data: {
+              aktivitetsvelger: { 1: true, annet: true },
+            },
+            metadata,
+          };
+          const dataFetcher = UtilsOverrides.dataFetcher('aktivitetsvelger', submission);
+          expect(dataFetcher.selected('OTHER')).toBe(true);
+        });
+      });
+
       it('returns undefined if API fetch failed', () => {
         const submission = {
           data: {},
