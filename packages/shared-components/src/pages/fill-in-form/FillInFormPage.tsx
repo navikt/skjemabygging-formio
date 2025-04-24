@@ -3,7 +3,6 @@ import {
   NavFormType,
   navFormUtils,
   Submission,
-  SubmissionData,
   TEXTS,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import EventEmitter from 'eventemitter3';
@@ -158,13 +157,8 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: Fil
   );
 
   const onHandleChange = useCallback(
-    (submissionData: SubmissionData) => {
-      setSubmission((prevSubmission) => ({
-        ...prevSubmission,
-        data: {
-          ...submissionData,
-        },
-      }));
+    (submission: Submission) => {
+      setSubmission(submission);
     },
     [setSubmission],
   );
