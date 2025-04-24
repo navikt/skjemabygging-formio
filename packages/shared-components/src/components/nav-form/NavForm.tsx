@@ -3,6 +3,7 @@ import {
   ComponentError,
   NavFormType,
   Submission,
+  SubmissionData,
   Webform,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -46,7 +47,7 @@ interface EventProps {
   onCancel?: ({ submission }: { submission: Submission }) => void;
   onSave?: ({ submission }: { submission: Submission }) => void;
   onChange?: (changedSubmission: Submission) => void;
-  onHandleChange?: (submission: Submission) => void;
+  onHandleChange?: (submissionData: SubmissionData) => void;
   onWizardPageSelected?: (panel: { path: string }) => void;
   onShowErrors?: (errorsFromForm: ComponentError[]) => void;
   onErrorSummaryFocus?: () => void;
@@ -119,7 +120,6 @@ const NavForm = ({
       if (webform) {
         webform.onAny((event: string, ...args: any[]) => {
           appConfig.logger?.trace(`Formio event '${event}'`, { webformId: webform?.id, eventArgs: args });
-
           if (event.startsWith('formio.')) {
             const funcName = `on${event.charAt(7).toUpperCase()}${event.slice(8)}`;
             if (events && funcName in events) {
