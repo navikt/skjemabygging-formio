@@ -57,9 +57,6 @@ describe('Conditional rendering', () => {
           cy.findByLabelText('Pinnekjøtt').check({ force: true });
         });
         cy.findByRole('link', { name: 'Pinnekjøtt' }).should('exist');
-        // Next page skips the pinnekjøtt panel if we do not have a short wait here
-        // eslint-disable-next-line cypress/no-unnecessary-waiting
-        cy.wait(100);
         cy.clickNextStep();
         cy.findByRole('checkbox', { name: 'Rotmos (valgfritt)' }).check({ force: true });
         cy.clickNextStep();
