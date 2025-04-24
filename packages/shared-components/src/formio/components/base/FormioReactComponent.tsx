@@ -100,13 +100,13 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
     // Consider removing if we are able to render datagrid in react
     this.shouldSetValue = false;
 
-    this.emit('handleChange', { ...this.root._data });
+    this.emit('submissionChanged', { ...this.root._data });
   }
 
   calculateComponentValue(data, flags, row) {
     const value = super.calculateComponentValue(data, flags, row);
     if (value !== false && this.root?._data) {
-      this.emit('handleChange', { ...this.root._data });
+      this.emit('submissionChanged', { ...this.root._data });
     }
 
     return value;

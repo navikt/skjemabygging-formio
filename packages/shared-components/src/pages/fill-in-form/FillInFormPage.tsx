@@ -157,7 +157,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: Fil
     [formUrl, isMellomlagringActive, navigate, updateMellomlagring],
   );
 
-  const onHandleChange = useCallback(
+  const onSubmissionChanged = useCallback(
     (submissionData: SubmissionData) => {
       setSubmission((prevSubmission) => ({
         ...prevSubmission,
@@ -255,7 +255,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: Fil
             onWizardPageSelected,
             onShowErrors,
             onErrorSummaryFocus,
-            onHandleChange,
+            onSubmissionChanged,
           }}
         />
         <FormSavedStatus submission={submission} />

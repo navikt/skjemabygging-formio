@@ -1,4 +1,3 @@
-import { Component } from './component';
 import { FyllutState } from './state';
 
 export interface Submission {
@@ -13,12 +12,6 @@ export interface Submission {
     userAgent: string;
     pathName: string;
     onLine: boolean;
-  };
-  changed?: {
-    component?: Component;
-    flags?: {
-      [key: string]: boolean;
-    };
   };
   state?: string;
   fyllutState?: FyllutState;

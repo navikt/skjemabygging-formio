@@ -67,7 +67,7 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
 
   useEffect(() => {
     const initializePanelValidation = async () => {
-      const submissionCopy = JSON.parse(JSON.stringify(submission));
+      const submissionCopy = JSON.parse(JSON.stringify(submission || {}));
 
       const webform = await NavFormHelper.create(document.getElementById('formio-summary-hidden')!, form, {
         appConfig,
@@ -86,11 +86,8 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
         formioSummary.innerHTML = '';
       }
     };
-    if (submission?.data) {
-      initializePanelValidation();
-    } else {
-      setPanelValidationList([]);
-    }
+
+    initializePanelValidation();
   }, [form, submission, appConfig, prefillData]);
 
   useEffect(() => scrollToAndSetFocus('main', 'start'), []);

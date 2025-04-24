@@ -1,5 +1,4 @@
 import {
-  Component,
   ComponentError,
   NavFormType,
   Submission,
@@ -21,17 +20,6 @@ const useStyles = makeStyles({
 
 interface EventProps {
   onCustomEvent?: () => void;
-  onComponentChange?: ({
-    instance,
-    component,
-    value,
-    flags,
-  }: {
-    instance: any;
-    component: Component;
-    value: any;
-    flags: any;
-  }) => void;
   onSubmit?: (submission: any) => void;
   onSubmitDone?: () => void;
   onNextPage?: ({
@@ -47,7 +35,7 @@ interface EventProps {
   onCancel?: ({ submission }: { submission: Submission }) => void;
   onSave?: ({ submission }: { submission: Submission }) => void;
   onChange?: (changedSubmission: Submission) => void;
-  onHandleChange?: (submissionData: SubmissionData) => void;
+  onSubmissionChanged?: (submissionData: SubmissionData) => void;
   onWizardPageSelected?: (panel: { path: string }) => void;
   onShowErrors?: (errorsFromForm: ComponentError[]) => void;
   onErrorSummaryFocus?: () => void;
@@ -192,8 +180,8 @@ const NavForm = ({
 
       // Need to trigger a handle change event after prefilling form or else
       // submission will not have correct initial state.
-      if (events?.onHandleChange) {
-        events.onHandleChange(webform._data);
+      if (events?.onSubmissionChanged) {
+        events.onSubmissionChanged(webform._data);
       }
     }
     // Do not want to include events in the dependency array
