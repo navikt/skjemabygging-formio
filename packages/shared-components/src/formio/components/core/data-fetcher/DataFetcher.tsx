@@ -4,6 +4,7 @@ import { DataFetcherData } from '../../../../components/data-fetcher/types';
 import { ComponentUtilsProvider } from '../../../../context/component/componentUtilsContext';
 import utils from '../../../overrides/utils-overrides/utils-overrides';
 import BaseComponent from '../../base/BaseComponent';
+import AdditionalDescription from '../../base/components/AdditionalDescription';
 import Description from '../../base/components/Description';
 import Label from '../../base/components/Label';
 import dataFetcherBuilder from './DataFetcher.builder';
@@ -46,10 +47,6 @@ class DataFetcher extends BaseComponent {
     return metadata.ready ? metadata.apiResult : undefined;
   }
 
-  setShowAdditionalDescription(value: boolean) {
-    this.showAdditionalDescription = value;
-  }
-
   setMetadata(data: DataFetcherData) {
     const componentKey = this.component?.key;
     const submission = this.root.submission;
@@ -85,6 +82,7 @@ class DataFetcher extends BaseComponent {
             </>
           }
           description={<Description component={this.component} />}
+          additionalDescription={<AdditionalDescription component={this.component} />}
           value={this.getValue()}
           onChange={(value) => {
             this.changeHandler(value);
@@ -94,7 +92,6 @@ class DataFetcher extends BaseComponent {
           error={this.getError()}
           dataFetcherData={this.getDataFromMetadata()}
           setMetadata={(metaData) => this.setMetadata(metaData)}
-          setShowAdditionalDescription={(value) => this.setShowAdditionalDescription(value)}
           ref={(ref) => this.setReactInstance(ref)}
           showOther={this.getShowOther()}
         />

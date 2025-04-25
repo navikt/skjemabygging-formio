@@ -1,6 +1,7 @@
 import NavAttachment from '../../../../../components/attachment/Attachment';
 import { ComponentUtilsProvider } from '../../../../../context/component/componentUtilsContext';
 import BaseComponent from '../../../base/BaseComponent';
+import AdditionalDescription from '../../../base/components/AdditionalDescription';
 import Description from '../../../base/components/Description';
 import Label from '../../../base/components/Label';
 import defaultAttachmentBuilder from './DefaultAttachment.builder';
@@ -87,6 +88,7 @@ class DefaultAttachment extends BaseComponent {
           translate={this.translate.bind(this)}
           ref={(ref) => this.setReactInstance(ref)}
         />
+        <AdditionalDescription component={this.component} />
       </ComponentUtilsProvider>,
     );
   }
