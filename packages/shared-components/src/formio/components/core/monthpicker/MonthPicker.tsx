@@ -5,6 +5,7 @@ import ReactMonthPicker from '../../../../components/monthpicker/MonthPicker';
 import { validateDate } from '../../../../components/monthpicker/monthPickerValidation';
 import { ComponentUtilsProvider } from '../../../../context/component/componentUtilsContext';
 import BaseComponent from '../../base/BaseComponent';
+import AdditionalDescription from '../../base/components/AdditionalDescription';
 import Description from '../../base/components/Description';
 import Label from '../../base/components/Label';
 import monthPickerBuilder from './MonthPicker.builder';
@@ -107,6 +108,7 @@ class MonthPicker extends BaseComponent {
           description={<Description component={this.component} />}
           inputRef={(ref) => this.setReactInstance(ref)}
         />
+        <AdditionalDescription component={this.component} />
       </ComponentUtilsProvider>,
     );
   }

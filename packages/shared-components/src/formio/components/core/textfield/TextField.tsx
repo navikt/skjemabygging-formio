@@ -2,6 +2,7 @@ import { TextField as NavTextField } from '@navikt/ds-react';
 import { InputMode, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { ComponentUtilsProvider } from '../../../../context/component/componentUtilsContext';
 import BaseComponent from '../../base/BaseComponent';
+import AdditionalDescription from '../../base/components/AdditionalDescription';
 import Description from '../../base/components/Description';
 import Label from '../../base/components/Label';
 import textFieldBuilder from './TextField.builder';
@@ -116,6 +117,7 @@ class TextField extends BaseComponent {
           inputMode={this.getInputMode()}
           type={this.isProtected() ? 'password' : 'text'}
         />
+        <AdditionalDescription component={this.component} />
       </ComponentUtilsProvider>,
     );
   }

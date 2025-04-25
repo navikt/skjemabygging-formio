@@ -166,7 +166,9 @@ describe('FormStatusPanel', () => {
     const form = {
       changedAt: now,
       publishedAt: earlier,
-      isTestForm: true,
+      properties: {
+        isTestForm: true,
+      },
     } as FormStatusProperties;
 
     beforeEach(() => {
