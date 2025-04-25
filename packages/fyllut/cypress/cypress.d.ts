@@ -10,7 +10,11 @@ declare global {
        * Can be used if you get issues with detached DOM element when you want to interact with an element retrieved by findByRole
        * @example cy.findByRoleWhenAttached('button', { name: "Submit" })
        */
-      findByRoleWhenAttached(role: ByRoleMatcher, options?: ByRoleOptions): Chainable<JQuery<HTMLElement>>;
+      findByRoleWhenAttached(
+        role: ByRoleMatcher,
+        options?: ByRoleOptions,
+        wait?: number,
+      ): Chainable<JQuery<HTMLElement>>;
 
       /**
        * Provided you are in the form wizard. Use this to click on the "Neste steg"-button.
