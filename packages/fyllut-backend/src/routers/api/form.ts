@@ -16,28 +16,38 @@ type TranslateFunction = (text: string, textReplacements?: I18nTranslationReplac
 const form = {
   get: async (req: Request, res: Response) => {
     const { type, lang } = req.query;
-    const form = await formService.loadForm(req.params.formPath);
 
-    if (!form || !form.properties) {
-      return res.sendStatus(404);
+    try {
+      const form = await formService.loadForm(req.params.formPath);
+
+      if (!form || !form.properties) {
+        return res.sendStatus(404);
+      }
+
+      const language = (lang ?? 'nb-NO') as string;
+
+      if (type === 'limited') {
+        const translations = await translationsService.getTranslationsForLanguage(form.path, language);
+
+        const translate = (text: string, textReplacements?: I18nTranslationReplacements) =>
+          translationUtils.translateWithTextReplacements({
+            translations,
+            originalText: text,
+            params: textReplacements,
+            currentLanguage: language,
+          });
+        return res.json(mapLimitedForm(form, translate));
+      }
+      return res.json(form);
+    } catch (e) {
+      // TODO: add type to e
+      // @ts-ignore
+      if (e.http_status === 404) {
+        return res.sendStatus(404);
+      }
+
+      return res.sendStatus(500);
     }
-
-    const language = (lang ?? 'nb-NO') as string;
-
-    if (type === 'limited') {
-      const translations = await translationsService.getTranslationsForLanguage(form.path, language);
-
-      const translate = (text: string, textReplacements?: I18nTranslationReplacements) =>
-        translationUtils.translateWithTextReplacements({
-          translations,
-          originalText: text,
-          params: textReplacements,
-          currentLanguage: language,
-        });
-
-      return res.json(mapLimitedForm(form, translate));
-    }
-    return res.json(form);
   },
 };
 
