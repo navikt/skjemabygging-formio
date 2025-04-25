@@ -190,16 +190,12 @@ const getBirthDateFromFnr = (fnr) => {
   return moment(birthDateStr, 'DDMMYYYY');
 };
 
-const regexTest = (regex, value) => (Array.isArray(regex) ? regex.some((r) => r.test(value)) : regex.test(value));
-
 const getSelectedItems = (items, userData) => items.filter((item) => userData[item.value]);
 
 const getMatchingItems = (items, matcher) => {
   return items.filter((item) =>
     Object.keys(matcher).some((matcherProp) => {
-      return matcher[matcherProp].regex
-        ? regexTest(matcher[matcherProp].regex, item[matcherProp])
-        : item[matcherProp] === matcher[matcherProp];
+      return item[matcherProp] === matcher[matcherProp];
     }),
   );
 };

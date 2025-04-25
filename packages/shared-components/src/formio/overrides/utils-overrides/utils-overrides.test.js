@@ -647,18 +647,6 @@ describe('utils-overrides', () => {
           expect(dataFetcher.selected({ value: 2 })).toBe(false);
           expect(dataFetcher.selected({ value: 'annet' })).toBe(false);
         });
-
-        describe('regex support', () => {
-          it('returns true when user has selected item matching regex, false otherwise', () => {
-            expect(dataFetcher.selected({ label: { regex: /^Støtte/ } })).toBe(true);
-            expect(dataFetcher.selected({ label: { regex: /.*husleie.*/ } })).toBe(true);
-            expect(dataFetcher.selected({ label: { regex: /^Ordinær/ } })).toBe(false);
-          });
-
-          it('supports array of regex, returning true if any match', () => {
-            expect(dataFetcher.selected({ label: { regex: [/^Ordinær/, /.*husleie.*/] } })).toBe(true);
-          });
-        });
       });
 
       describe('count', () => {
