@@ -5,7 +5,7 @@ import { useComponentUtils } from '../../../../context/component/componentUtilsC
 const AdditionalDescription = ({ component }) => {
   const { translate } = useComponentUtils();
   const { additionalDescriptionLabel, additionalDescriptionText } = component;
-  if (!additionalDescriptionLabel || !additionalDescriptionText) return undefined;
+  if (!additionalDescriptionLabel || !additionalDescriptionText) return null;
 
   return (
     <ReadMore header={translate(additionalDescriptionLabel)}>

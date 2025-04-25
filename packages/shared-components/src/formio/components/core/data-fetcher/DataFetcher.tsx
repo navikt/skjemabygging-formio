@@ -47,10 +47,6 @@ class DataFetcher extends BaseComponent {
     return metadata.ready ? metadata.apiResult : undefined;
   }
 
-  setShowAdditionalDescription(value: boolean) {
-    this.showAdditionalDescription = value;
-  }
-
   setMetadata(data: DataFetcherData) {
     const componentKey = this.component?.key;
     const submission = this.root.submission;
