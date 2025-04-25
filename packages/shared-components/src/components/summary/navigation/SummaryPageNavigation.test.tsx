@@ -179,6 +179,7 @@ describe('SummaryPageNavigation', () => {
       await waitFor(() => expect(windowLocation.href).toBe('https://www.unittest.nav.no/send-inn/123'));
       nock.isDone();
 
+      // @ts-expect-error Possible bug in typescript: https://github.com/microsoft/TypeScript/issues/61335
       window.location = originalWindowLocation;
     });
 
@@ -205,6 +206,8 @@ describe('SummaryPageNavigation', () => {
       await userEvent.click(screen.getByRole('button', { name: TEXTS.grensesnitt.submitToNavPrompt.confirm }));
       await waitFor(() => expect(windowLocation.href).toBe('https://www.unittest.nav.no/send-inn/123'));
       nock.isDone();
+
+      // @ts-expect-error Possible bug in typescript: https://github.com/microsoft/TypeScript/issues/61335
       window.location = originalWindowLocation;
     });
   });
@@ -256,6 +259,7 @@ describe('SummaryPageNavigation', () => {
         await waitFor(() => expect(windowLocation.href).toBe('https://www.unittest.nav.no/send-inn/123'));
         nock.isDone();
 
+        // @ts-expect-error Possible bug in typescript: https://github.com/microsoft/TypeScript/issues/61335
         window.location = originalWindowLocation;
       });
 

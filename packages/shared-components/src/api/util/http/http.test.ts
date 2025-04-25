@@ -139,6 +139,7 @@ describe('http requests', () => {
 
       afterEach(() => {
         nock.isDone();
+        // @ts-expect-error Possible bug in typescript: https://github.com/microsoft/TypeScript/issues/61335
         window.location = originalWindowLocation;
       });
 
