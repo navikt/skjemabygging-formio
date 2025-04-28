@@ -6,6 +6,8 @@ import {
   Submission,
   translationUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
+import { writeFileSync } from 'node:fs';
+import path from 'path';
 import { base64Decode } from '../../utils/base64';
 import { htmlResponseError } from '../../utils/errorHandling';
 import applicationService from './applicationService';
@@ -97,6 +99,11 @@ const coverPageAndApplication = async (props: CoverPageAndApplicationProps) => {
     createTranslate(translations, language),
     language,
   );
+
+  const filePath = path.join(process.cwd(), `/src/${form.properties.skjemanummer}.pdf`);
+  writeFileSync(filePath, pdfFromFieldMap, {
+    flag: 'w',
+  });
 
   const documents = [coverPagePdf, pdfFromFieldMap];
 

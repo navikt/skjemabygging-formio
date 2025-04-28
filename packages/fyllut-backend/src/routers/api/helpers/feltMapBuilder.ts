@@ -256,6 +256,12 @@ const signatureSection = (
       );
     });
 
+    if (verdilisteMap.length === 1 && (verdilisteMap[0].label === undefined || verdilisteMap[0].label === '')) {
+      return {
+        label: translatedSignature,
+        verdiliste: verdilisteMap[0].verdiliste,
+      };
+    }
     return {
       label: translatedSignature,
       verdiliste: [{ label: translatedDescriptionOfSignatures, verdi: '' }, ...verdilisteMap],
@@ -273,7 +279,7 @@ const lagSubVerdilisteElement = (
   translatedBlockSignature: string,
 ): VerdilisteElement => {
   const verdiListe: VerdilisteElement[] = [
-    { label: translatedDescription, verdi: '' },
+    { label: translatedDescription },
     { label: translatedPlaceDate, verdi: '___________________________________________________' },
     { label: translatedSignature, verdi: '___________________________________________________' },
     { label: translatedBlockSignature, verdi: '___________________________________________________' },

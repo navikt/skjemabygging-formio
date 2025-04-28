@@ -14,8 +14,6 @@ import { base64Decode, base64Encode } from '../../utils/base64';
 import { responseToError, synchronousResponseToError } from '../../utils/errorHandling';
 import fetchWithRetry, { HeadersInit } from '../../utils/fetchWithRetry';
 import { appMetrics } from '../index';
-//import {writeFileSync} from "node:fs";
-//import path from "path";
 
 const { skjemabyggingProxyUrl, gitVersion, familiePdfGenerator } = config;
 
@@ -181,13 +179,6 @@ const createPdfFromFieldMap = async (
 
   if (response.ok) {
     logger.info(`Request to familie pdf service completed`, {});
-
-    /*
-    const filePath = path.join(process.cwd(), `/src/${form.properties.skjemanummer}.pdf`);
-    writeFileSync(filePath, Buffer.from(await response.arrayBuffer()), {
-      flag: "w"
-    });
-*/
 
     return Buffer.from(await response.arrayBuffer());
   }
