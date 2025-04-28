@@ -2,6 +2,7 @@ import { Textarea as NavTextarea } from '@navikt/ds-react';
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { ComponentUtilsProvider } from '../../../../context/component/componentUtilsContext';
 import BaseComponent from '../../base/BaseComponent';
+import AdditionalDescription from '../../base/components/AdditionalDescription';
 import Description from '../../base/components/Description';
 import Label from '../../base/components/Label';
 import textAreaBuilder from './TextArea.builder';
@@ -65,6 +66,7 @@ class TextArea extends BaseComponent {
             counterTooMuch: this.translate(TRANSLATIONS.counterTooMuch),
           }}
         />
+        <AdditionalDescription component={this.component} />
       </ComponentUtilsProvider>,
     );
   }

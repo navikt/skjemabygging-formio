@@ -116,6 +116,7 @@ const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
     res.status(httpStatusCode).render('index.html', {
       ...decoratorFragments,
       ...pageMeta,
+      ...(config.umamiWebsiteId && { umamiWebsiteId: config.umamiWebsiteId }),
     });
   } catch (cause: any) {
     next(new ErrorWithCause('Failed to return index file', cause));

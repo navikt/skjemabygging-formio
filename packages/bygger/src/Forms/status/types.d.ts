@@ -4,10 +4,11 @@ export type Status = 'PENDING' | 'DRAFT' | 'PUBLISHED' | 'UNKNOWN' | 'TESTFORM' 
 
 export type StreetLightSize = 'small' | 'large';
 
-export type FormStatusEvents = Pick<Form, 'createdAt' | 'changedAt' | 'publishedAt' | 'status'> &
-  Pick<FormPropertiesType, 'isTestForm'>;
+type FormPropertiesIsTestForm = Pick<FormPropertiesType, 'isTestForm'>;
 
-export type FormStatusProperties = FormStatusEvents &
-  Pick<Form, 'createdBy' | 'changedBy' | 'publishedBy' | 'publishedLanguages'>;
+export type FormStatusProperties = Pick<
+  Form,
+  'changedAt' | 'changedBy' | 'publishedAt' | 'publishedBy' | 'publishedLanguages' | 'status'
+> & { properties?: FormPropertiesIsTestForm };
 
 export type TimestampEvent = { timestamp: string; userName: string | undefined };
