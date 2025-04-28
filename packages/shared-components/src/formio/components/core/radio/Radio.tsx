@@ -1,6 +1,7 @@
 import NavRadio from '../../../../components/radio/Radio';
 import { ComponentUtilsProvider } from '../../../../context/component/componentUtilsContext';
 import BaseComponent from '../../base/BaseComponent';
+import AdditionalDescription from '../../base/components/AdditionalDescription';
 import Description from '../../base/components/Description';
 import Label from '../../base/components/Label';
 import radioBuilder from './Radio.builder';
@@ -58,6 +59,7 @@ class Radio extends BaseComponent {
           readOnly={this.getReadOnly()}
           error={this.getError()}
         />
+        <AdditionalDescription component={this.component} />
       </ComponentUtilsProvider>,
     );
   }

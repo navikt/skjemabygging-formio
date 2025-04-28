@@ -98,19 +98,15 @@ describe('Templates', () => {
 
       const container = screen.getByText(description);
       expect(container).toBeInTheDocument();
-      expect(container).toHaveClass('navds-read-more__content--closed');
+      expect(container).not.toBeVisible();
 
       fireEvent.click(expandButton);
-      expect(container).not.toHaveClass('navds-read-more__content--closed');
+      expect(container).toBeVisible();
     };
 
     describe('Textarea', () => {
       it('Default description position', async () => {
         await testShowAndHideByType('textarea');
-      });
-
-      it('Description position above', async () => {
-        await testShowAndHideByType('textarea', 'above');
       });
     });
 
@@ -118,49 +114,23 @@ describe('Templates', () => {
       it('Default description position', async () => {
         await testShowAndHideByType('radiopanel');
       });
-
-      it('Description position above', async () => {
-        await testShowAndHideByType('radiopanel', 'above');
-      });
     });
 
     describe('Selectboxes', () => {
       it('Default description position', async () => {
         await testShowAndHideByType('selectboxes');
       });
-
-      it('Description position above', async () => {
-        await testShowAndHideByType('selectboxes', 'above');
-      });
     });
 
     describe('Checkbox', () => {
       it('Default description position', async () => {
-        await testShowAndHideByType('checkbox');
-      });
-
-      it('Description position above', async () => {
-        await testShowAndHideByType('checkbox', 'above');
-      });
-    });
-
-    describe('Field', () => {
-      it('Default description position', async () => {
-        await testShowAndHideByType('field');
-      });
-
-      it('Description position above', async () => {
-        await testShowAndHideByType('field', 'above');
+        await testShowAndHideByType('navCheckbox');
       });
     });
 
     describe('Number', () => {
       it('Default description position', async () => {
         await testShowAndHideByType('number');
-      });
-
-      it('Description position above', async () => {
-        await testShowAndHideByType('number', 'above');
       });
     });
   });

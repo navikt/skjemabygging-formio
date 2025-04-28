@@ -2,6 +2,7 @@ import { SendInnAktivitet, SubmissionActivity, TEXTS } from '@navikt/skjemadigit
 import NavActivities from '../../../../components/activities/NavActivities';
 import { ComponentUtilsProvider } from '../../../../context/component/componentUtilsContext';
 import BaseComponent from '../../base/BaseComponent';
+import AdditionalDescription from '../../base/components/AdditionalDescription';
 import Description from '../../base/components/Description';
 import DiffTag from '../../base/components/DiffTag';
 import Label from '../../base/components/Label';
@@ -95,6 +96,7 @@ class Activities extends BaseComponent {
           ref={(ref) => this.setReactInstance(ref)}
           shouldAutoSelectSingleActivity={false}
         />
+        <AdditionalDescription component={this.component} />
       </ComponentUtilsProvider>,
     );
   }

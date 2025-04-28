@@ -27,7 +27,6 @@ interface ReactComponentType {
   // Component
   key?: string;
   component?: Component;
-  showAdditionalDescription: boolean;
   path?: string;
   defaultValue?: any;
   dataValue?: any;

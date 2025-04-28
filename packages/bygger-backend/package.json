@@ -19,7 +19,7 @@
     "@octokit/auth-app": "^7.1.4",
     "@octokit/rest": "^21.1.0",
     "@octokit/webhooks-types": "^7.6.1",
-    "bcryptjs": "^2.4.3",
+    "bcryptjs": "^3.0.2",
     "csv-stringify": "^6.5.2",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
