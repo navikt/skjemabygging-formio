@@ -27,7 +27,7 @@
     "express-correlation-id": "^3.0.1",
     "express-rate-limit": "^7.5.0",
     "glob": "^11.0.1",
-    "jose": "^5.9.6",
+    "jose": "^6.0.10",
     "jsonwebtoken": "^9.0.2",
     "luxon": "^3.5.0",
     "morgan": "^1.10.0",
