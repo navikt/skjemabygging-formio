@@ -123,11 +123,9 @@ const sectionMap = (component): VerdilisteElement => {
   return {
     label: component.label ? component.label : '',
     verdi: null,
-    verdiliste: component
-      .filter((component) => !component.hiddenInSummary)
-      .components.map((comp): VerdilisteElement | null => {
-        return createVerdilisteElement(comp);
-      }),
+    verdiliste: component.components.map((comp): VerdilisteElement | null => {
+      return createVerdilisteElement(comp);
+    }),
     visningsVariant: null,
   };
 };
