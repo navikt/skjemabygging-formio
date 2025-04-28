@@ -33,9 +33,11 @@ const editFormVariablesTable = (additional?: string): Component => {
       "<tr><th>fetchDone</th><td><small><pre>utils.dataFetcher('aktiviteter', submission).fetchDone</pre></small></td><td>Returnerer <small>true</small> etter at kallet for å hente data er utført</td></tr>" +
       "<tr><th>success</th><td><small><pre>utils.dataFetcher('aktiviteter', submission).success</pre></small></td><td>Returnerer <small>true</small> dersom kallet for å hente data lyktes</td></tr>" +
       "<tr><th>failure</th><td><small><pre>utils.dataFetcher('aktiviteter', submission).failure</pre></small></td><td>Returnerer <small>true</small> dersom kallet for å hente data feilet</td></tr>" +
-      "<tr><th>empty</th><td><small><pre>utils.dataFetcher('aktiviteter', submission).empty</pre></small></td><td>Returnerer <small>true</small> dersom API returnerte tom liste</td></tr>" +
+      "<tr><th>empty</th><td><small><pre>utils.dataFetcher('aktiviteter', submission).empty</pre></small></td><td>Returnerer <small>true</small> dersom API returnerte tom liste. Returnerer <small>undefined</small> før data er klare.</td></tr>" +
       "<tr><th>fetchDisabled</th><td><small><pre>utils.dataFetcher('aktiviteter', submission).fetchDisabled</pre></small></td><td>Returnerer <small>true</small> dersom data ikke skal hentes (f.eks. når bruker har valgt papirinnsending)</td></tr>" +
-      "<tr><th>selected</th><td><small><pre>utils.dataFetcher('aktiviteter', submission).selected({count: 4})</pre></small><small><pre>utils.dataFetcher('aktiviteter', submission).selected({type: 'TILTAK'})</pre></small></td><td>Returnerer <small>true</small> dersom bruker har valgt et eller flere elementer med gitte kriterier</td></tr>" +
+      "<tr><th>selected (matcher)</th><td><small><pre>utils.dataFetcher('aktiviteter', submission).selected({antallBarn: 4})</pre></small><small><pre>utils.dataFetcher('aktiviteter', submission).selected({type: 'TILTAK'})</pre></small></td><td>Returnerer <small>true</small> dersom bruker har valgt et eller flere elementer med gitte kriterier. Returnerer <small>undefined</small> før data er klare.</td></tr>" +
+      "<tr><th>selected (count)</th><td><small><pre>utils.dataFetcher('aktiviteter', submission).selected('COUNT')</pre></small></td><td>Returnerer antall elementer som bruker har valgt (utenom 'annet'). Returnerer <small>undefined</small> før data er klare.</td></tr>" +
+      "<tr><th>selected (other)</th><td><small><pre>utils.dataFetcher('aktiviteter', submission).selected('OTHER')</pre></small></td><td>Returnerer <small>true</small> dersom bruker har valgt 'annet', <small>false</small> hvis ikke, og <small>undefined</small> før data er klare.</td></tr>" +
       '</table>' +
       '<br/>',
   };

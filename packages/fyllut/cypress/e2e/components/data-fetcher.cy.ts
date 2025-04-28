@@ -22,24 +22,6 @@ describe('Data fetcher', () => {
         });
     });
 
-    it('should render annet option when showOther is checked', () => {
-      cy.mocksUseRouteVariant('get-register-data-activities:success');
-      cy.visit('/fyllut/datafetcherannettest/arbeidsrettetaktivitet?sub=digital');
-      cy.findByRole('group', { name: LABEL_AKTIVITETSVELGER })
-        .should('exist')
-        .within(() => {
-          cy.findAllByRole('checkbox').should('have.length', 4);
-          cy.findByRole('checkbox', { name: 'Annet' }).should('exist');
-        });
-    });
-
-    it('should not render annet option when showOther is checked and API returns empty list', () => {
-      cy.mocksUseRouteVariant('get-register-data-activities:success-empty');
-      cy.visit('/fyllut/datafetcherannettest/arbeidsrettetaktivitet?sub=digital');
-      cy.findByRole('group', { name: LABEL_AKTIVITETSVELGER }).should('not.exist');
-      cy.get('.navds-alert--warning').contains('Ingen aktiviteter ble hentet');
-    });
-
     it('should not render component when data is empty', () => {
       cy.mocksUseRouteVariant('get-register-data-activities:success-empty');
       cy.visit('/fyllut/datafetchertest/arbeidsrettetaktivitet?sub=digital');
@@ -52,6 +34,37 @@ describe('Data fetcher', () => {
       cy.visit('/fyllut/datafetchertest/arbeidsrettetaktivitet?sub=digital');
       cy.findByRole('group', { name: LABEL_AKTIVITETSVELGER }).should('not.exist');
       cy.get('.navds-alert--error').contains('Kall for å hente aktiviteter feilet');
+    });
+  });
+
+  describe('Annet option', () => {
+    describe('When API returns list containing data', () => {
+      beforeEach(() => {
+        cy.mocksUseRouteVariant('get-register-data-activities:success');
+        cy.visit('/fyllut/datafetcherannettest/arbeidsrettetaktivitet?sub=digital');
+      });
+
+      it('renders annet option when showOther is checked', () => {
+        cy.findByRole('group', { name: LABEL_AKTIVITETSVELGER })
+          .should('exist')
+          .within(() => {
+            cy.findAllByRole('checkbox').should('have.length', 4);
+            cy.findByRole('checkbox', { name: 'Annet' }).should('exist');
+          });
+      });
+
+      it('selects annet option on click', () => {
+        cy.get('.navds-alert--warning').should('not.exist');
+        cy.findByRole('checkbox', { name: 'Annet' }).should('exist').check();
+        cy.get('.navds-alert--warning').contains('Du har valgt annen aktivitet');
+      });
+    });
+
+    it('should not render annet option when showOther is checked and API returns empty list', () => {
+      cy.mocksUseRouteVariant('get-register-data-activities:success-empty');
+      cy.visit('/fyllut/datafetcherannettest/arbeidsrettetaktivitet?sub=digital');
+      cy.findByRole('group', { name: LABEL_AKTIVITETSVELGER }).should('not.exist');
+      cy.get('.navds-alert--warning').contains('Ingen aktiviteter ble hentet');
     });
   });
 
@@ -98,7 +111,7 @@ describe('Data fetcher', () => {
       cy.defaultWaits();
     });
 
-    it('should show component with conditional referring to chosed item', () => {
+    it('should show component with conditional referring to checked item', () => {
       cy.get('.navds-alert--info').should('not.exist');
       cy.findByRole('group', { name: LABEL_AKTIVITETSVELGER })
         .should('exist')
