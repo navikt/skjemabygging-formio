@@ -35,7 +35,7 @@ export const createFeltMapFromSubmission = (
     true,
     lang,
   );
-  const confirmation = createConfirmationComponent(form, translate);
+  const confirmation = createConfirmationElement(form, translate);
   const signatures = signatureSection(form.properties, submissionMethod, translate);
   const title = translate(form.title);
 
@@ -59,33 +59,27 @@ export const createFeltMapFromSubmission = (
   return JSON.stringify(feltMap);
 };
 
-const createConfirmationComponent = (
+const createConfirmationElement = (
   form: NavFormType,
   translate: (text: string) => string,
-): SummaryPanel | undefined => {
+): VerdilisteElement | undefined => {
   if (
     form.properties.declarationType === DeclarationType.custom ||
     form.properties.declarationType === DeclarationType.default
   ) {
     return {
       label: translate(TEXTS.statiske.declaration.header),
-      components: [createTextFieldComponent(form, translate)],
-      type: 'panel',
-      key: '',
+      verdiliste: [
+        {
+          label:
+            form.properties.declarationType === DeclarationType.custom && form.properties.declarationText
+              ? translate(form.properties.declarationText)
+              : translate(TEXTS.statiske.declaration.defaultText),
+          verdi: translate(TEXTS.common.yes),
+        },
+      ],
     };
   }
-};
-
-const createTextFieldComponent = (form: NavFormType, translate: (text: string) => string): SummaryField => {
-  return {
-    label:
-      form.properties.declarationType === DeclarationType.custom && form.properties.declarationText
-        ? translate(form.properties.declarationText)
-        : translate(TEXTS.statiske.declaration.defaultText),
-    type: 'textfield',
-    key: '',
-    value: translate(TEXTS.common.yes),
-  };
 };
 
 export const createVerdilister = (summaryPanels: SummaryPanel[]): VerdilisteElement[] => {
