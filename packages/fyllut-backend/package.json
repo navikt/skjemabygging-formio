@@ -52,7 +52,7 @@
     "@types/node-fetch": "^2.6.12",
     "@types/node-jose": "^1.1.13",
     "@types/supertest": "^6.0.2",
-    "nock": "^14.0.1",
+    "nock": "^14.0.4",
     "supertest": "^7.1.0",
     "vite-plugin-node": "^4.0.0",
     "vite-plugin-static-copy": "^2.3.1"
