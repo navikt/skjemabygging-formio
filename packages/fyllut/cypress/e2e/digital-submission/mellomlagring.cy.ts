@@ -45,6 +45,12 @@ describe('Mellomlagring', () => {
   });
 
   describe('When submission method is "paper"', () => {
+    it('redirects to start page if url does not contain "innsendingsId"', () => {
+      cy.visit('/fyllut/testmellomlagring/oppsummering?sub=paper&lang=nb-NO');
+      cy.defaultWaits();
+      cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
+    });
+
     it('does not fetch or update mellomlagring', () => {
       cy.visit('/fyllut/testmellomlagring?sub=paper');
       cy.defaultWaits();

@@ -7,14 +7,12 @@ export const SubmissionWrapper = ({ submission, children, url }) => {
   const [searchParams] = useSearchParams();
   const innsendingsId = searchParams.get('innsendingsId');
 
-  const expectsSavedSubmissionFromMellomlagring = isMellomlagringAvailable && !!innsendingsId;
-
-  if (!submission) {
-    if (expectsSavedSubmissionFromMellomlagring) {
-      return <LoadingComponent />;
-    } else {
+  if (!submission && isMellomlagringAvailable) {
+    if (!innsendingsId) {
       searchParams.delete('innsendingsId');
       return <Navigate to={`${url}?${searchParams.toString()}`} />;
+    } else {
+      return <LoadingComponent />;
     }
   }
 
