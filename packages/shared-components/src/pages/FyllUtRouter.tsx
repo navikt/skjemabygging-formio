@@ -64,7 +64,7 @@ const FyllUtRouter = ({ form, translations }) => {
               <Route
                 path={'/oppsummering'}
                 element={
-                  <SubmissionWrapper submission={submission}>
+                  <SubmissionWrapper submission={submission} url={formBaseUrl}>
                     {(submissionObject) => (
                       <SummaryPage form={form} submission={submissionObject} formUrl={formBaseUrl} />
                     )}
@@ -74,7 +74,7 @@ const FyllUtRouter = ({ form, translations }) => {
               <Route
                 path={'/send-i-posten'}
                 element={
-                  <SubmissionWrapper submission={submission}>
+                  <SubmissionWrapper submission={submission} url={formBaseUrl}>
                     {(submissionObject) => (
                       <PrepareLetterPage
                         form={form}
@@ -89,7 +89,7 @@ const FyllUtRouter = ({ form, translations }) => {
               <Route
                 path={'/ingen-innsending'}
                 element={
-                  <SubmissionWrapper submission={submission}>
+                  <SubmissionWrapper submission={submission} url={formBaseUrl}>
                     {(submissionObject) => (
                       <PrepareIngenInnsendingPage
                         form={form}
