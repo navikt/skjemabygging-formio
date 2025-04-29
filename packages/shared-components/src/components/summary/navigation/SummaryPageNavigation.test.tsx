@@ -160,7 +160,7 @@ describe('SummaryPageNavigation', () => {
     it('sender skjema med vedlegg til send-inn', async () => {
       const basePath = 'https://www.unittest.nav.no/fyllut';
       const sendInnUrl = 'https://www.unittest.nav.no/sendInn';
-      const windowLocation = { href: basePath };
+      const windowLocation = { href: basePath, assign: vi.fn() };
       Object.defineProperty(window, 'location', {
         value: windowLocation,
         writable: true,
@@ -186,7 +186,7 @@ describe('SummaryPageNavigation', () => {
     it('ber om bekreftelse før den kaller send-inn når skjemaet er uten vedlegg', async () => {
       const basePath = 'https://www.unittest.nav.no/fyllut';
       const sendInnUrl = 'https://www.unittest.nav.no/sendInn';
-      const windowLocation = { href: basePath };
+      const windowLocation = { href: basePath, assign: vi.fn() };
       Object.defineProperty(window, 'location', {
         value: windowLocation,
         writable: true,
@@ -229,7 +229,7 @@ describe('SummaryPageNavigation', () => {
       it('renders next-button when no validation errors', async () => {
         const basePath = 'https://www.unittest.nav.no/fyllut';
         const sendInnUrl = 'https://www.unittest.nav.no/sendInn';
-        const windowLocation = { href: basePath };
+        const windowLocation = { href: basePath, assign: vi.fn() };
         Object.defineProperty(window, 'location', {
           value: windowLocation,
           writable: true,

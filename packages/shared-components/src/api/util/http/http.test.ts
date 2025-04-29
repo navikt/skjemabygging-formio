@@ -126,7 +126,7 @@ describe('http requests', () => {
       let windowLocation;
 
       beforeEach(() => {
-        windowLocation = { href: '' };
+        windowLocation = { href: '', assign: vi.fn() };
         Object.defineProperty(window, 'location', {
           value: windowLocation,
           writable: true,
