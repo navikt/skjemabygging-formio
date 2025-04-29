@@ -2,8 +2,8 @@ import '@navikt/ds-css';
 import { makeStyles, Styles } from '@navikt/skjemadigitalisering-shared-components';
 import { Route, Routes } from 'react-router-dom';
 import { AllForms } from './components/AllForms';
-import InternalServerError from './components/errors/InternalServerError';
 import { FormPageWrapper } from './components/FormPageWrapper';
+import { ErrorPageWrapper } from './components/errors/ErrorPageWrapper.js';
 
 const useStyles = makeStyles({
   '@global': Styles.global,
@@ -14,11 +14,12 @@ const useStyles = makeStyles({
 
 const App = () => {
   const styles = useStyles();
+
   return (
     <main className={styles.app}>
       <Routes>
         <Route path="/" element={<AllForms />} />
-        <Route path="/500" element={<InternalServerError />} />
+        <Route path="/500" element={<ErrorPageWrapper statusCode={500} />} />
         <Route path="/:formPath/*" element={<FormPageWrapper />} />
       </Routes>
     </main>
