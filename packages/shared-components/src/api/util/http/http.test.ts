@@ -126,7 +126,7 @@ describe('http requests', () => {
       let windowLocation;
 
       beforeEach(() => {
-        windowLocation = { href: '' };
+        windowLocation = { href: '', assign: vi.fn() };
         Object.defineProperty(window, 'location', {
           value: windowLocation,
           writable: true,
@@ -139,6 +139,7 @@ describe('http requests', () => {
 
       afterEach(() => {
         nock.isDone();
+        // @ts-expect-error Possible bug in typescript: https://github.com/microsoft/TypeScript/issues/61335
         window.location = originalWindowLocation;
       });
 

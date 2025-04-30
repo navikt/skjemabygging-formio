@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@navikt/skjemadigitalisering-shared-domain": "1.0.0",
-    "@octokit/auth-app": "^7.1.4",
+    "@octokit/auth-app": "^7.2.1",
     "@octokit/rest": "^21.1.0",
     "@octokit/webhooks-types": "^7.6.1",
     "bcryptjs": "^3.0.2",
@@ -26,12 +26,12 @@
     "express-correlation-id": "^3.0.1",
     "express-rate-limit": "^7.5.0",
     "http-proxy": "^1.18.1",
+    "luxon": "^3.6.1",
     "jose": "^6.0.10",
-    "luxon": "^3.5.0",
     "node-fetch": "^3.3.2",
     "node-jose": "^2.2.0",
     "pusher": "^5.2.0",
-    "uuid": "^11.0.5",
+    "uuid": "^11.1.0",
     "winston": "^3.17.0"
   },
   "devDependencies": {
@@ -40,7 +40,7 @@
     "@types/express-correlation-id": "^1.2.6",
     "@types/http-proxy": "^1.17.15",
     "@types/jsonwebtoken": "9.0.7",
-    "@types/luxon": "^3.4.2",
+    "@types/luxon": "^3.6.2",
     "@types/memorystream": "^0.3.4",
     "@types/node": "^22.13.0",
     "@types/node-fetch": "^2.6.12",
@@ -48,7 +48,7 @@
     "@types/uuid": "^10.0.0",
     "jsonwebtoken": "^9.0.2",
     "memorystream": "^0.3.1",
-    "nock": "^14",
+    "nock": "^14.0.4",
     "vite-plugin-node": "^4.0.0",
     "vitest-mock-extended": "^3.0.1"
   }

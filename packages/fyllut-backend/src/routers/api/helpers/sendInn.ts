@@ -1,6 +1,6 @@
 import { I18nTranslationMap, NavFormType, Submission } from '@navikt/skjemadigitalisering-shared-domain';
 import { logger } from '../../../logger';
-import { base64Encode } from '../../../utils/base64';
+import { base64EncodeByteArray } from '../../../utils/base64';
 
 interface HovedDokument {
   vedleggsnr: string;
@@ -97,14 +97,14 @@ const assembleSendInnSoknadBody = (
     ...dokumentMetaData,
     mimetype: 'application/pdf',
     pakrevd: true,
-    document: submissionPdfAsByteArray ? base64Encode(submissionPdfAsByteArray) : null,
+    document: submissionPdfAsByteArray ? base64EncodeByteArray(submissionPdfAsByteArray) : null,
   };
 
   const hoveddokumentVariant: HovedDokument = {
     ...dokumentMetaData,
     mimetype: 'application/json',
     pakrevd: false,
-    document: base64Encode(
+    document: base64EncodeByteArray(
       objectToByteArray({
         language: language || DEFAULT_LANGUAGE,
         data: submission,
