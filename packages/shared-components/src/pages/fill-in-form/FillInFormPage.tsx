@@ -262,7 +262,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: Fil
         <FormError error={submission?.fyllutState?.mellomlagring?.error} />
       </div>
       <div>
-        <FormStepper form={formForRendering} formUrl={formUrl} completed={true} submission={submission} />
+        <FormStepper form={formForRendering} formUrl={formUrl} submission={submission} />
       </div>
       <ConfirmationModal
         open={!!showModal}
