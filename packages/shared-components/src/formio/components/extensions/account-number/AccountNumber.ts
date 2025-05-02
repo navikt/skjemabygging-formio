@@ -1,4 +1,5 @@
-import { validatorUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { formatAccountNumber, removeAllSpaces, validatorUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { FocusEventHandler } from 'react';
 import BaseComponent from '../../base/BaseComponent';
 import TextField from '../../core/textfield/TextField';
 import accountNumberBuilder from './AccountNumber.builder';
@@ -29,6 +30,24 @@ class AccountNumber extends TextField {
     }
     const isValid = validatorUtils.isAccountNumber(accountNumber + '');
     return isValid ? true : 'accountNumberCustomError';
+  }
+
+  onBlur(): FocusEventHandler<HTMLInputElement> {
+    return (event: React.FocusEvent<HTMLInputElement>) => {
+      const value = formatAccountNumber(event.target.value);
+      if (value !== '') {
+        event.target.value = formatAccountNumber(value);
+      }
+    };
+  }
+
+  getDefaultValue(): string {
+    return formatAccountNumber(super.getDefaultValue());
+  }
+
+  handleChange(value: string) {
+    const formattedValue = removeAllSpaces(value);
+    super.handleChange(formattedValue);
   }
 }
 

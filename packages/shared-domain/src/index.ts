@@ -139,6 +139,7 @@ import submissionTypesUtils from './utils/submissionTypeUtils';
 import translationUtils from './utils/translation';
 import validatorUtils from './utils/validatorUtils';
 import yourInformationUtils from './utils/yourInformationUtils';
+export * from './utils/format-utils';
 
 export {
   attachmentUtils,

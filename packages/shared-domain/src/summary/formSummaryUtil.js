@@ -4,6 +4,7 @@ import attachmentUtils from '../attachment';
 import TEXTS from '../texts';
 import currencyUtils from '../utils/currencyUtils';
 import dateUtils from '../utils/date';
+import { bankAccountRegex, formatIBAN, orgNrRegex } from '../utils/format-utils.ts';
 import FormioUtils from '../utils/formio/FormioUtils';
 import sanitizeJavaScriptCode from '../utils/formio/sanitize-javascript-code';
 import numberUtils from '../utils/numberUtils';
@@ -80,7 +81,6 @@ function formatValue(component, value, translate, form, language) {
         integer: component.inputType === 'numeric',
       });
     case 'bankAccount': {
-      const bankAccountRegex = /^(\d{4})(\d{2})(\d{5})$/;
       const [bankAccountMatch, ...bankAccountGroups] =
         (typeof value === 'string' && value?.match(bankAccountRegex)) || [];
       if (bankAccountMatch) {
@@ -88,8 +88,10 @@ function formatValue(component, value, translate, form, language) {
       }
       return value;
     }
+    case 'iban': {
+      return formatIBAN(value);
+    }
     case 'orgNr': {
-      const orgNrRegex = /^(\d{3})(\d{3})(\d{3})$/;
       const [orgNrMatch, ...orgNrGroups] = (typeof value === 'string' && value?.match(orgNrRegex)) || [];
       if (orgNrMatch) {
         return orgNrGroups.join(' ');

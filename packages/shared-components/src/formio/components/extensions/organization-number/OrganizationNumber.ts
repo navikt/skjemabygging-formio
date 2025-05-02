@@ -1,4 +1,10 @@
-import { validatorUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  formatIBAN,
+  formatOrganizationNumber,
+  removeAllSpaces,
+  validatorUtils,
+} from '@navikt/skjemadigitalisering-shared-domain';
+import { FocusEventHandler } from 'react';
 import BaseComponent from '../../base/BaseComponent';
 import TextField from '../../core/textfield/TextField';
 import organizationNumberBuilder from './OrganizationNumber.builder';
@@ -18,6 +24,7 @@ class OrganizationNumber extends TextField {
   static editForm() {
     return organizationNumberForm();
   }
+
   static get builderInfo() {
     return organizationNumberBuilder();
   }
@@ -30,6 +37,24 @@ class OrganizationNumber extends TextField {
     // Force organizationNumber to string
     const isValid = validatorUtils.isOrganizationNumber(organizationNumber + '');
     return isValid ? true : 'orgNrCustomError';
+  }
+
+  onBlur(): FocusEventHandler<HTMLInputElement> {
+    return (event: React.FocusEvent<HTMLInputElement>) => {
+      const value = removeAllSpaces(event.target.value);
+      if (value !== '') {
+        event.target.value = formatOrganizationNumber(value);
+      }
+    };
+  }
+
+  getDefaultValue(): string {
+    return formatIBAN(super.getDefaultValue());
+  }
+
+  handleChange(value: string) {
+    const formattedValue = removeAllSpaces(value);
+    super.handleChange(formattedValue);
   }
 }
 

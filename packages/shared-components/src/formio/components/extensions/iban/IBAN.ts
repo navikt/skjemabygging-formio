@@ -1,3 +1,5 @@
+import { formatIBAN, removeAllSpaces } from '@navikt/skjemadigitalisering-shared-domain';
+import { FocusEventHandler } from 'react';
 import BaseComponent from '../../base/BaseComponent';
 import TextField from '../../core/textfield/TextField';
 import IBANBuilder from './IBAN.builder';
@@ -46,6 +48,24 @@ class IBAN extends TextField {
    */
   validateIban(_inputValue) {
     return true;
+  }
+
+  onBlur(): FocusEventHandler<HTMLInputElement> {
+    return (event: React.FocusEvent<HTMLInputElement>) => {
+      const value = removeAllSpaces(event.target.value);
+      if (value !== '') {
+        event.target.value = formatIBAN(value);
+      }
+    };
+  }
+
+  getDefaultValue(): string {
+    return formatIBAN(super.getDefaultValue());
+  }
+
+  handleChange(value: string) {
+    const formattedValue = removeAllSpaces(value);
+    super.handleChange(formattedValue);
   }
 }
 
