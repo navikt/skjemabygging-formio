@@ -47,4 +47,58 @@ describe('textfield', () => {
 
     cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
   });
+
+  it('formats IBAN to correct format on blur', () => {
+    const iban = 'NO1234567890123';
+    cy.findByRole('textbox', { name: 'IBAN' }).should('exist');
+    cy.findByRole('textbox', { name: 'IBAN' }).type(iban);
+    cy.focused().blur();
+    cy.findByRole('textbox', { name: 'IBAN' }).should('have.value', iban.replace(/(.{4})/g, '$1 ').trim());
+  });
+
+  it('formats national identity number to correct format on blur', () => {
+    const fnr = '12345678901';
+    cy.findByRole('textbox', { name: 'Fødselsnummer' }).should('exist');
+    cy.findByRole('textbox', { name: 'Fødselsnummer' }).type(fnr);
+    cy.focused().blur();
+    cy.findByRole('textbox', { name: 'Fødselsnummer' }).should('have.value', fnr.replace(/(.{6})(.{5})/, '$1 $2'));
+  });
+
+  it('formats organization number to correct format on blur', () => {
+    const orgnr = '123456789';
+    cy.findByRole('textbox', { name: 'Organisasjonsnummer' }).should('exist');
+    cy.findByRole('textbox', { name: 'Organisasjonsnummer' }).type(orgnr);
+    cy.focused().blur();
+    cy.findByRole('textbox', { name: 'Organisasjonsnummer' }).should(
+      'have.value',
+      orgnr.replace(/(.{3})(.{3})/, '$1 $2'),
+    );
+  });
+
+  it('formats account number to correct format on blur', () => {
+    const accountNumber = '12345678901';
+    cy.findByRole('textbox', { name: 'Kontonummer' }).should('exist');
+    cy.findByRole('textbox', { name: 'Kontonummer' }).type(accountNumber);
+    cy.focused().blur();
+    cy.findByRole('textbox', { name: 'Kontonummer' }).should(
+      'have.value',
+      accountNumber.replace(/(.{4})(.{2})/, '$1 $2'),
+    );
+  });
+
+  it('formats currency to correct format on blur', () => {
+    const currency = '12345678901';
+    cy.findByRole('textbox', { name: 'Beløp' }).should('exist');
+    cy.findByRole('textbox', { name: 'Beløp' }).type(currency);
+    cy.focused().blur();
+    cy.findByRole('textbox', { name: 'Beløp' }).should('have.value', currency.replace(/(.{1,3})(.{3})/, '$1 $2'));
+  });
+
+  it('formats currency with decimals to correct format on blur', () => {
+    const currency = '123456789.01';
+    cy.findByRole('textbox', { name: 'Beløp' }).should('exist');
+    cy.findByRole('textbox', { name: 'Beløp' }).type(currency);
+    cy.focused().blur();
+    cy.findByRole('textbox', { name: 'Beløp' }).should('have.value', currency.replace(/(.{1,3})(.{3})/, '$1 $2'));
+  });
 });

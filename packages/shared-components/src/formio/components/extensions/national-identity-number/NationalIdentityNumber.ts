@@ -1,3 +1,4 @@
+import { FocusEventHandler } from 'react';
 import { validateNationalIdentityNumber } from '../../../../components/identity/NationalIdentityNumberValidator';
 import BaseComponent from '../../base/BaseComponent';
 import TextField from '../../core/textfield/TextField';
@@ -5,6 +6,8 @@ import nationalIdentityNumberBuilder from './NationalIdentityNumber.builder';
 import nationalIdentityNumberForm from './NationalIdentityNumber.form';
 
 export default class NationalIdentityNumber extends TextField {
+  private originalValue: string | null = null;
+
   static schema() {
     return BaseComponent.schema({
       label: 'Fødselsnummer eller d-nummer',
@@ -53,5 +56,23 @@ export default class NationalIdentityNumber extends TextField {
    */
   validateFnrNew(_inputValue) {
     return true;
+  }
+
+  onBlur(): FocusEventHandler<HTMLInputElement> {
+    return (event: React.FocusEvent<HTMLInputElement>) => {
+      const value = event.target.value;
+      if (value) {
+        this.originalValue = value;
+        const formattedValue = this.formatNationalIdentityNumber(value);
+        this.setValue(formattedValue);
+      }
+    };
+  }
+
+  formatNationalIdentityNumber(value: string): string {
+    return value.replace(/(\d{6})(\d{5})/, '$1 $2');
+  }
+  getValue() {
+    return this.originalValue ?? super.getValue();
   }
 }

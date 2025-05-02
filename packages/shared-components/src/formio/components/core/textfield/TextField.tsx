@@ -1,5 +1,6 @@
 import { TextField as NavTextField } from '@navikt/ds-react';
 import { InputMode, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { FocusEventHandler } from 'react';
 import { ComponentUtilsProvider } from '../../../../context/component/componentUtilsContext';
 import BaseComponent from '../../base/BaseComponent';
 import AdditionalDescription from '../../base/components/AdditionalDescription';
@@ -49,6 +50,10 @@ class TextField extends BaseComponent {
 
   getInputMode(): InputMode {
     return 'text';
+  }
+
+  onBlur(): FocusEventHandler<HTMLInputElement> | undefined {
+    return undefined;
   }
 
   isProtected(): boolean {
@@ -102,6 +107,7 @@ class TextField extends BaseComponent {
     element.render(
       <ComponentUtilsProvider component={this}>
         <NavTextField
+          onBlur={this.onBlur()}
           id={this.getId()}
           defaultValue={this.getValue()}
           ref={(ref) => this.setReactInstance(ref)}

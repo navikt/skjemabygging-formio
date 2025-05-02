@@ -1,3 +1,4 @@
+import { FocusEventHandler } from 'react';
 import BaseComponent from '../../base/BaseComponent';
 import TextField from '../../core/textfield/TextField';
 import IBANBuilder from './IBAN.builder';
@@ -5,6 +6,8 @@ import ibanForm from './IBAN.form';
 import { validateIBAN } from './IBANValidator';
 
 class IBAN extends TextField {
+  private originalValue: string | null = null;
+
   static schema() {
     return BaseComponent.schema({
       label: 'IBAN',
@@ -46,6 +49,25 @@ class IBAN extends TextField {
    */
   validateIban(_inputValue) {
     return true;
+  }
+
+  onBlur(): FocusEventHandler<HTMLInputElement> {
+    return (event: React.FocusEvent<HTMLInputElement>) => {
+      const value = event.target.value;
+      if (value) {
+        this.originalValue = value;
+        const formattedValue = this.formatIBAN(value);
+        this.setValue(formattedValue);
+      }
+    };
+  }
+
+  formatIBAN(value: string): string {
+    return value.replace(/(.{4})/g, '$1 ').trim();
+  }
+
+  getValue() {
+    return this.originalValue ?? super.getValue();
   }
 }
 
