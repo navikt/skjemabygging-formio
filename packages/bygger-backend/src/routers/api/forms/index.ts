@@ -8,6 +8,7 @@ const { formsApiAuthHandler } = authHandlers;
 
 formsRouter.get('/', forms.getAll);
 formsRouter.get('/:formPath', forms.get);
+formsRouter.delete('/:formPath', forms.deleteForm);
 formsRouter.post('/', formsApiAuthHandler, forms.post);
 formsRouter.put('/:formPath', formsApiAuthHandler, forms.put);
 formsRouter.post('/:formPath/lock', formsApiAuthHandler, forms.postLockForm);

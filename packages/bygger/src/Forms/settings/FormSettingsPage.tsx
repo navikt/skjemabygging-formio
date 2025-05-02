@@ -9,6 +9,7 @@ import Title from '../../components/layout/Title';
 import TitleRowLayout from '../../components/layout/TitleRowLayout';
 import { useForm } from '../../context/old_form/FormContext';
 import RecipientsProvider from '../../context/recipients/RecipientsContext';
+import DeleteFormModal from '../delete/DeleteFormModal';
 import PublishModalComponents from '../publish/PublishModalComponents';
 import FormSettingsSidebar from './FormSettingsSidebar';
 
@@ -24,6 +25,7 @@ export function FormSettingsPage({ form }: FormSettingsPageProps) {
   } = form;
   const isLockedForm = !!form.lock;
   const [openPublishSettingModal, setOpenPublishSettingModal] = useModal();
+  const [openDeleteFormModal, setOpenDeleteFormModal] = useModal();
 
   const [errors, setErrors] = useState({});
   const { config } = useAppConfig();
@@ -65,6 +67,7 @@ export function FormSettingsPage({ form }: FormSettingsPageProps) {
             form={form}
             validateAndSave={validateAndSave}
             setOpenPublishSettingModal={setOpenPublishSettingModal}
+            setOpenDeleteFormModal={setOpenDeleteFormModal}
           />
         }
       >
@@ -76,6 +79,11 @@ export function FormSettingsPage({ form }: FormSettingsPageProps) {
         form={form}
         openPublishSettingModal={openPublishSettingModal}
         setOpenPublishSettingModal={setOpenPublishSettingModal}
+      />
+      <DeleteFormModal
+        form={form}
+        openDeleteFormModal={openDeleteFormModal}
+        setOpenDeleteFormModal={setOpenDeleteFormModal}
       />
     </AppLayout>
   );
