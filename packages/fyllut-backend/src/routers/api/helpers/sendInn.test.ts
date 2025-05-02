@@ -1,5 +1,5 @@
 import { NavFormType, Submission } from '@navikt/skjemadigitalisering-shared-domain';
-import { base64Decode, base64Encode } from '../../../utils/base64';
+import { base64Decode, base64EncodeByteArray } from '../../../utils/base64';
 import {
   Attachment,
   SendInnSoknadBody,
@@ -43,9 +43,9 @@ const requestBodyWithAttachments = {
 
 const idPortenPid = '123456789';
 const submissionPdfAsByteArray = [123, 234, 56];
-const submissionPdfAsBase64 = base64Encode(submissionPdfAsByteArray);
+const submissionPdfAsBase64 = base64EncodeByteArray(submissionPdfAsByteArray);
 
-const expectedSubmissionAsBase64 = base64Encode([
+const expectedSubmissionAsBase64 = base64EncodeByteArray([
   123, 34, 108, 97, 110, 103, 117, 97, 103, 101, 34, 58, 34, 110, 98, 45, 78, 79, 34, 44, 34, 100, 97, 116, 97, 34, 58,
   123, 34, 113, 34, 58, 34, 97, 34, 125, 125,
 ]);
@@ -229,7 +229,7 @@ describe('sendInn API helper', () => {
     });
 
     it('handles special characters when bytearray has been base64 encoded as well', () => {
-      const byteArrayBase64 = base64Encode(objectToByteArray(specialCharacters));
+      const byteArrayBase64 = base64EncodeByteArray(objectToByteArray(specialCharacters));
       expect(byteArrayToObject(base64Decode(byteArrayBase64))).toEqual(specialCharacters);
     });
   });
