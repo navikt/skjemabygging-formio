@@ -25,7 +25,7 @@ describe('Your information', () => {
     describe('New application', () => {
       describe('Lives in Norway', () => {
         beforeEach(() => {
-          cy.visit('/fyllut/your-information?sub=digital');
+          cy.visit('/fyllut/yourinformation?sub=digital');
           cy.defaultWaits();
           cy.clickStart();
           cy.wait('@getPrefillData');
@@ -85,7 +85,7 @@ describe('Your information', () => {
       describe('Lives in USA', () => {
         beforeEach(() => {
           cy.mocksUseRouteVariant('get-prefill-data:success-usa');
-          cy.visit('/fyllut/your-information?sub=digital');
+          cy.visit('/fyllut/yourinformation?sub=digital');
           cy.defaultWaits();
           cy.clickStart();
           cy.wait('@getPrefillData');
@@ -123,7 +123,7 @@ describe('Your information', () => {
       beforeEach(() => {
         cy.mocksUseRouteVariant('get-soknad:success-prefill-data');
 
-        cy.visit('/fyllut/your-information/side1?sub=digital&innsendingsId=d2f41ebc-ba98-4fc5-a195-29b098bf50a7');
+        cy.visit('/fyllut/yourinformation/side1?sub=digital&innsendingsId=d2f41ebc-ba98-4fc5-a195-29b098bf50a7');
         cy.defaultWaits();
         cy.wait('@getPrefillData');
       });
@@ -159,7 +159,7 @@ describe('Your information', () => {
 
   describe('Paper', () => {
     beforeEach(() => {
-      cy.visit('/fyllut/your-information?sub=paper');
+      cy.visit('/fyllut/yourinformation?sub=paper');
       cy.defaultWaits();
       cy.clickStart();
       cy.findByRole('heading', { name: 'Dine opplysninger' }).should('exist');
@@ -352,7 +352,7 @@ describe('Your information', () => {
   describe('Validation', () => {
     describe('when english is chosen', () => {
       beforeEach(() => {
-        cy.visit('/fyllut/your-information?sub=paper&lang=en');
+        cy.visit('/fyllut/yourinformation?sub=paper&lang=en');
         cy.defaultWaits();
         cy.clickStart();
         cy.findByRole('heading', { name: 'Your personal information' }).should('exist');
