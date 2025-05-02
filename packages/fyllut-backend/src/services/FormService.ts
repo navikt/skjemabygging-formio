@@ -6,6 +6,10 @@ const { useFormioMockApi, useFormsApiStaging, skjemaDir, formioApiServiceUrl, fo
 
 class FormService {
   async loadForm(formPath: string): Promise<NavFormType | null | undefined> {
+    if (!formPath.match(/^[a-z0-9]+$/)) {
+      return;
+    }
+
     if (useFormsApiStaging) {
       const form: Form = (await fetchFromApi(`${formsApiUrl}/v1/forms/${formPath}`)) as Form;
       return form ? formioFormsApiUtils.removeInnsendingFromForm(formioFormsApiUtils.mapFormToNavForm(form)) : null;
