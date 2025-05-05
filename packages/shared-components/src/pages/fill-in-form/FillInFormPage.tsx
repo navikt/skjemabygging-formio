@@ -3,11 +3,13 @@ import {
   NavFormType,
   navFormUtils,
   Submission,
+  SubmissionData,
   TEXTS,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import EventEmitter from 'eventemitter3';
 import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import FormStepper from '../../components/form/form-stepper/FormStepper';
 import FormError from '../../components/form/FormError';
 import FormSavedStatus from '../../components/form/FormSavedStatus';
 import ConfirmationModal from '../../components/modal/confirmation/ConfirmationModal';
@@ -84,11 +86,10 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: Fil
     ({ page, currentPanels, submission }) => {
       if (isMellomlagringActive) {
         updateMellomlagring(submission);
-        setSubmission(submission);
       }
       onNextOrPreviousPage(page, currentPanels);
     },
-    [isMellomlagringActive, updateMellomlagring, onNextOrPreviousPage, setSubmission],
+    [isMellomlagringActive, updateMellomlagring, onNextOrPreviousPage],
   );
 
   const onPrevPage = useCallback(
@@ -98,21 +99,13 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: Fil
     [onNextOrPreviousPage],
   );
 
-  const onCancel = useCallback(
-    ({ submission }) => {
-      setSubmission(submission);
-      setShowModal(isMellomlagringActive ? 'delete' : 'discard');
-    },
-    [isMellomlagringActive, setSubmission, setShowModal],
-  );
+  const onCancel = useCallback(() => {
+    setShowModal(isMellomlagringActive ? 'delete' : 'discard');
+  }, [isMellomlagringActive, setShowModal]);
 
-  const onSave = useCallback(
-    ({ submission }) => {
-      setSubmission(submission);
-      setShowModal('save');
-    },
-    [setSubmission, setShowModal],
-  );
+  const onSave = useCallback(() => {
+    setShowModal('save');
+  }, [setShowModal]);
 
   const onWizardPageSelected = useCallback(
     (panel) => {
@@ -157,12 +150,23 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: Fil
       if (isMellomlagringActive) {
         updateMellomlagring(submission);
       }
-      setSubmission(submission);
 
       // We need to get location data from window, since this function runs inside formio
       navigate({ pathname: `${formUrl}/oppsummering`, search: window.location.search });
     },
-    [formUrl, isMellomlagringActive, navigate, setSubmission, updateMellomlagring],
+    [formUrl, isMellomlagringActive, navigate, updateMellomlagring],
+  );
+
+  const onSubmissionChanged = useCallback(
+    (submissionData: SubmissionData) => {
+      setSubmission((prevSubmission) => ({
+        ...prevSubmission,
+        data: {
+          ...submissionData,
+        },
+      }));
+    },
+    [setSubmission],
   );
 
   const onConfirmCancel = useCallback(async () => {
@@ -227,34 +231,38 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: Fil
   }
 
   return (
-    <div>
-      <FormErrorSummary
-        heading={translate(TEXTS.validering.error)}
-        errors={errors}
-        focusOnComponent={focusOnComponent}
-        ref={(ref) => (errorSummaryRef.current = ref)}
-      />
-      <NavForm
-        form={formForRendering}
-        language={currentLanguage}
-        i18n={translationsForNavForm}
-        submission={submission}
-        fyllutEvents={fyllutEvents}
-        className="nav-form"
-        events={{
-          onSubmit,
-          onNextPage,
-          onPrevPage,
-          onCancel,
-          onSave,
-          onWizardPageSelected,
-          onShowErrors,
-          onErrorSummaryFocus,
-        }}
-      />
-      <FormSavedStatus submission={submission} />
-      <div className="fyllut-layout">
+    <div className="fyllut-layout">
+      <div>
+        <FormErrorSummary
+          heading={translate(TEXTS.validering.error)}
+          errors={errors}
+          focusOnComponent={focusOnComponent}
+          ref={(ref) => (errorSummaryRef.current = ref)}
+        />
+        <NavForm
+          form={formForRendering}
+          language={currentLanguage}
+          i18n={translationsForNavForm}
+          submission={submission}
+          fyllutEvents={fyllutEvents}
+          className="nav-form"
+          events={{
+            onSubmit,
+            onNextPage,
+            onPrevPage,
+            onCancel,
+            onSave,
+            onWizardPageSelected,
+            onShowErrors,
+            onErrorSummaryFocus,
+            onSubmissionChanged,
+          }}
+        />
+        <FormSavedStatus submission={submission} />
         <FormError error={submission?.fyllutState?.mellomlagring?.error} />
+      </div>
+      <div>
+        <FormStepper form={formForRendering} formUrl={formUrl} submission={submission} />
       </div>
       <ConfirmationModal
         open={!!showModal}

@@ -10,7 +10,6 @@ import SummaryPageNavigation from '../../components/summary/navigation/SummaryPa
 import { useAppConfig } from '../../context/config/configContext';
 import { useLanguages } from '../../context/languages';
 import { usePrefillData } from '../../context/prefill-data/PrefillDataContext';
-import { useSendInn } from '../../context/sendInn/sendInnContext';
 import Styles from '../../styles';
 import { scrollToAndSetFocus } from '../../util/focus-management/focus-management';
 import { PanelValidation, validateWizardPanels } from '../../util/form/panel-validation/panelValidation';
@@ -58,7 +57,6 @@ export interface Props {
 
 export function SummaryPage({ form, submission, formUrl }: Props) {
   const appConfig = useAppConfig();
-  const { isMellomlagringAvailable } = useSendInn();
   const { translate } = useLanguages();
   const styles = useStyles();
   const { declarationType, declarationText } = form.properties;
@@ -69,7 +67,7 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
 
   useEffect(() => {
     const initializePanelValidation = async () => {
-      const submissionCopy = JSON.parse(JSON.stringify(submission));
+      const submissionCopy = JSON.parse(JSON.stringify(submission || {}));
 
       const webform = await NavFormHelper.create(document.getElementById('formio-summary-hidden')!, form, {
         appConfig,
@@ -78,7 +76,7 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
 
       webform.form = NavFormHelper.prefillForm(webform.form, prefillData);
 
-      webform.checkData(submissionCopy.data, [], undefined);
+      webform.checkData(submissionCopy?.data, [], undefined);
 
       const panelValidations = validateWizardPanels(webform, form, submission);
       setPanelValidationList(panelValidations);
@@ -88,12 +86,9 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
         formioSummary.innerHTML = '';
       }
     };
-    if (isMellomlagringAvailable && submission.data) {
-      initializePanelValidation();
-    } else {
-      setPanelValidationList([]);
-    }
-  }, [isMellomlagringAvailable, form, submission, appConfig, prefillData]);
+
+    initializePanelValidation();
+  }, [form, submission, appConfig, prefillData]);
 
   useEffect(() => scrollToAndSetFocus('main', 'start'), []);
   const declarationRef = useRef<HTMLInputElement>(null);
@@ -177,7 +172,7 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
           />
         </div>
         <div className="right-col">
-          <FormStepper form={form} formUrl={formUrl} submission={submission} />
+          <FormStepper form={form} formUrl={formUrl} submission={submission} activeStep={'oppsummering'} />
         </div>
       </section>
     </div>

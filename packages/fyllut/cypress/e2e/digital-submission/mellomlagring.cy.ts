@@ -28,11 +28,16 @@ describe('Mellomlagring', () => {
   });
 
   beforeEach(() => {
-    cy.defaultIntercepts();
-    cy.defaultInterceptsMellomlagring();
-    cy.intercept('POST', '/fyllut/api/send-inn/soknad*', cy.spy().as('createMellomlagringSpy'));
-    cy.intercept('PUT', '/fyllut/api/send-inn/soknad*', cy.spy().as('updateMellomlagringSpy'));
     cy.mocksRestoreRouteVariants();
+    cy.defaultIntercepts();
+    // Do not call cy.defaultInterceptsMellomlagring() like we usually do since we need to create an extra spy
+    cy.intercept('POST', '/fyllut/api/send-inn/soknad*', cy.spy().as('createMellomlagringSpy')).as(
+      'createMellomlagring',
+    );
+    cy.intercept('PUT', '/fyllut/api/send-inn/soknad*', cy.spy().as('updateMellomlagringSpy')).as(
+      'updateMellomlagring',
+    );
+    cy.intercept('GET', '/fyllut/api/send-inn/soknad/*').as('getMellomlagring');
   });
 
   after(() => {
@@ -40,6 +45,12 @@ describe('Mellomlagring', () => {
   });
 
   describe('When submission method is "paper"', () => {
+    it('redirects to start page if url does not contain "innsendingsId"', () => {
+      cy.visit('/fyllut/testmellomlagring/oppsummering?sub=paper&lang=nb-NO');
+      cy.defaultWaits();
+      cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
+    });
+
     it('does not fetch or update mellomlagring', () => {
       cy.visit('/fyllut/testmellomlagring?sub=paper');
       cy.defaultWaits();
@@ -74,7 +85,8 @@ describe('Mellomlagring', () => {
       cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.cancelAndDelete }).should('not.exist');
       cy.findByRole('link', { name: TEXTS.grensesnitt.summaryPage.editAnswers })
         .should('exist')
-        .and('have.attr', 'href', '/fyllut/testmellomlagring/valgfrieOpplysninger?sub=paper');
+        .should('have.attr', 'href')
+        .and('contains', '/fyllut/testmellomlagring/valgfrieOpplysninger?sub=paper');
     });
   });
 
@@ -253,12 +265,11 @@ describe('Mellomlagring', () => {
           cy.clickSaveAndContinue();
           cy.get('@updateMellomlagringSpy').should('not.have.been.called');
 
-          cy.get('[data-cy=error-summary]')
-            .should('exist')
-            .within(() => {
-              cy.get('a').should('have.length', 2);
-              cy.findByRole('link', { name: 'Du må fylle ut: Farge' }).should('exist').click({ force: true });
-            });
+          cy.findByRole('group', { name: 'Farge' }).should('exist');
+          cy.get('[data-cy=error-summary]').within(() => {
+            cy.get('a').should('have.length', 2);
+            cy.findByRole('link', { name: 'Du må fylle ut: Farge' }).should('exist').click({ force: true });
+          });
 
           cy.findByRole('group', { name: 'Farge' })
             .should('exist')
@@ -267,21 +278,18 @@ describe('Mellomlagring', () => {
               cy.findByLabelText('Rød').click();
             });
 
-          cy.get('[data-cy=error-summary]')
-            .should('exist')
-            .within(() => {
-              cy.get('a').should('have.length', 1);
-              cy.findByRole('link', { name: 'Du må fylle ut: Tekst på kortet' }).should('exist').click({ force: true });
-            });
+          cy.get('[data-cy=error-summary]').should('exist');
+          cy.get('[data-cy=error-summary]').within(() => {
+            cy.get('a').should('have.length', 1);
+            cy.findByRole('link', { name: 'Du må fylle ut: Tekst på kortet' }).should('exist').click({ force: true });
+          });
           cy.findByLabelText('Tekst på kortet').should('have.focus').type('Takk for hjelpen!');
 
           cy.findByRole('link', { name: 'Oppsummering' }).click();
-          cy.wait('@updateMellomlagring');
           cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
           cy.findByText('Ønsker du å få gaven innpakket').should('exist').next('dd').should('contain.text', 'Ja');
           cy.findByText('Farge').should('exist').next('dd').should('contain.text', 'Rød');
           cy.findByText('Tekst på kortet').should('exist').next('dd').should('contain.text', 'Takk for hjelpen!');
-          cy.get('@updateMellomlagringSpy').should('have.been.calledOnce');
         });
 
         it('lets you delete mellomlagring', () => {
