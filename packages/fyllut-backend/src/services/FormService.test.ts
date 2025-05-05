@@ -10,7 +10,7 @@ describe('FormService', () => {
     fetchFromApiSpy.mockClear();
   });
 
-  it('Allow formatted formn umber as formpath', async () => {
+  it('Allow formatted form number as formpath', async () => {
     await formService.loadForm('nav101010');
     expect(fetchFromApiSpy).toBeCalled();
   });
