@@ -5,19 +5,21 @@ import { fetchFromApi, loadAllJsonFilesFromDirectory, loadFileFromDirectory } fr
 const { useFormioMockApi, useFormsApiStaging, skjemaDir, formioApiServiceUrl, formsApiUrl } = config;
 
 class FormService {
-  async loadForm(formPath: string): Promise<NavFormType | null | undefined> {
+  async loadForm(formPath: string): Promise<NavFormType | undefined> {
     if (!formPath.match(/^[a-z0-9]+$/)) {
       return;
     }
-
     if (useFormsApiStaging) {
       const form: Form = (await fetchFromApi(`${formsApiUrl}/v1/forms/${formPath}`)) as Form;
-      return form ? formioFormsApiUtils.removeInnsendingFromForm(formioFormsApiUtils.mapFormToNavForm(form)) : null;
+      return form
+        ? formioFormsApiUtils.removeInnsendingFromForm(formioFormsApiUtils.mapFormToNavForm(form))
+        : undefined;
     } else if (useFormioMockApi) {
       const forms: any = await fetchFromApi(`${formioApiServiceUrl}/form?type=form&tags=nav-skjema&path=${formPath}`);
-      return forms.length > 0 ? formioFormsApiUtils.removeInnsendingFromForm(forms[0]) : null;
+      return forms.length > 0 ? formioFormsApiUtils.removeInnsendingFromForm(forms[0]) : undefined;
     } else {
-      return formioFormsApiUtils.removeInnsendingFromForm(await loadFileFromDirectory(skjemaDir, formPath, undefined));
+      const form: NavFormType = await loadFileFromDirectory(skjemaDir, formPath, undefined);
+      return form ? formioFormsApiUtils.removeInnsendingFromForm(form) : undefined;
     }
   }
 
