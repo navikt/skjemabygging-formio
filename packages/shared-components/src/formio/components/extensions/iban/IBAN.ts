@@ -62,6 +62,18 @@ class IBAN extends TextField {
     };
   }
 
+  onFocus(): FocusEventHandler<HTMLInputElement> {
+    console.log('focus');
+    return (event: React.FocusEvent<HTMLInputElement>) => {
+      const value = event.target.value;
+      console.log(value);
+      if (value) {
+        this.originalValue = value;
+        this.setValue('hei');
+      }
+    };
+  }
+
   formatIBAN(value: string): string {
     return value.replace(/(.{4})/g, '$1 ').trim();
   }

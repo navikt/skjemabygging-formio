@@ -56,6 +56,10 @@ class TextField extends BaseComponent {
     return undefined;
   }
 
+  onFocus(): FocusEventHandler<HTMLInputElement> | undefined {
+    return undefined;
+  }
+
   isProtected(): boolean {
     return !!this.component?.protected;
   }
@@ -122,6 +126,7 @@ class TextField extends BaseComponent {
           error={this.getError()}
           inputMode={this.getInputMode()}
           type={this.isProtected() ? 'password' : 'text'}
+          onFocus={this.onFocus()}
         />
         <AdditionalDescription component={this.component} />
       </ComponentUtilsProvider>,
