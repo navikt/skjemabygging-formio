@@ -95,10 +95,11 @@ const createVerdilisteElement = (component: SummaryComponent): VerdilisteElement
         return sectionMap(component);
       case 'panel':
       case 'navSkjemagruppe':
-      case 'datagrid':
         return subSectionMap(component);
+      case 'datagrid':
+        return tableMap(component);
       case 'datagrid-row':
-        return datagridRowMap(component);
+        return datagridRowMap(component, 0);
       case 'dataFetcher':
       case 'selectboxes':
         return multipleAnswersMap(component);
@@ -133,7 +134,6 @@ const sectionMap = (component): VerdilisteElement => {
 const subSectionMap = (component): VerdilisteElement => {
   return {
     label: component.label ? component.label : '',
-    verdi: null,
     verdiliste: component.components.map((comp): VerdilisteElement | null => {
       return createVerdilisteElement(comp);
     }),
@@ -141,14 +141,26 @@ const subSectionMap = (component): VerdilisteElement => {
   };
 };
 
-const datagridRowMap = (component: SummaryDataGridRow): VerdilisteElement => {
+const tableMap = (component): VerdilisteElement => {
   return {
     label: component.label ? component.label : '',
-    verdi: null,
+    verdiliste: component.components.map((comp: SummaryDataGridRow, index: number): VerdilisteElement | null => {
+      logger.info(`TableMap ìndex= ${index + 1}`);
+      return datagridRowMap(comp, index + 1);
+    }),
+    //visningsVariant: 'TABELL',
+    visningsVariant: null,
+  };
+};
+
+const datagridRowMap = (component, index): VerdilisteElement => {
+  logger.info('RowMap ìndex=' + index);
+  return {
+    label: component.label ? component.label : '' + index,
     verdiliste: component.components.map((comp): VerdilisteElement => {
       return createVerdilisteElement(comp);
     }),
-    visningsVariant: 'TABELL',
+    visningsVariant: null,
   };
 };
 

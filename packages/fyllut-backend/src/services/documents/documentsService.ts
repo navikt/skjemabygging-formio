@@ -8,11 +8,12 @@ import {
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { writeFileSync } from 'node:fs';
 import path from 'path';
+import { logger } from '../../logger';
 import { base64Decode } from '../../utils/base64';
 import { htmlResponseError } from '../../utils/errorHandling';
 import applicationService from './applicationService';
 import coverPageService from './coverPageService';
-import { mergeFiles } from './gotenbergService';
+import { mergeFrontPageAndApplication } from './mergeFilesService';
 
 interface ApplicationProps {
   accessToken: string;
@@ -105,15 +106,18 @@ const coverPageAndApplication = async (props: CoverPageAndApplicationProps) => {
     flag: 'w',
   });
 
-  const documents = [coverPagePdf, pdfFromFieldMap];
-
-  const mergedFile = await mergeFiles(
-    coverPageResponse.navSkjemaId,
+  const mergedFile = await mergeFrontPageAndApplication(
+    accessToken,
     coverPageResponse.overskriftstittel,
     language,
-    documents,
-    { pdfa: true, pdfua: true },
+    coverPagePdf,
+    pdfFromFieldMap,
   );
+  logger.info(`Request to merge front page and application completed`, {});
+
+  if (mergedFile === undefined) {
+    throw htmlResponseError('Sammenslåing av forside og søknad feilet');
+  }
 
   return Buffer.from(new Uint8Array(mergedFile));
 };
