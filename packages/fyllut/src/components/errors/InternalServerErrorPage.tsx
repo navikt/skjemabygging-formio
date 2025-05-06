@@ -9,7 +9,6 @@ export function InternalServerErrorPage() {
   const { translate } = useLanguages();
   const [searchParams, setSearchParams] = useSearchParams();
   const [correlationId, setCorrelationId] = useState<string | undefined>();
-  const [historyLength, setHistoryLength] = useState<number | null>();
   const statusCode = '500';
 
   useEffect(() => {
@@ -18,9 +17,6 @@ export function InternalServerErrorPage() {
       setCorrelationId(correlationId);
       searchParams.delete('correlationId');
       setSearchParams(searchParams);
-    }
-    if (typeof window !== 'undefined') {
-      setHistoryLength(window.history.length);
     }
   }, [searchParams, setSearchParams]);
 
@@ -42,15 +38,11 @@ export function InternalServerErrorPage() {
                 <List>
                   <List.Item>
                     {`${translate(TEXTS.statiske.error.wait)} `}
-                    <Link href="#" onClick={() => location.reload()}>
-                      {translate(TEXTS.statiske.error.reloadPage)}
-                    </Link>
+                    <Link onClick={() => location.reload()}>{translate(TEXTS.statiske.error.reloadPage)}</Link>
                   </List.Item>
-                  {historyLength && historyLength > 1 && (
+                  {window.history.length > 1 && (
                     <List.Item>
-                      <Link href="#" onClick={() => history.back()}>
-                        {translate(TEXTS.statiske.error.goBack)}
-                      </Link>
+                      <Link onClick={() => history.back()}>{translate(TEXTS.statiske.error.goBack)}</Link>
                     </List.Item>
                   )}
                 </List>

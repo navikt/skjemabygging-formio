@@ -238,7 +238,7 @@ export const statiske = {
     goToFrontPage: 'Gå til forsiden',
     goToMyPage: 'Gå til Min side',
     contactUs:
-      'Hvis problemet vedvarer, <a href="https://nav.no/kontaktoss" target="_blank">kan du kontakte oss (åpnes i ny fane)</a>',
+      'Hvis problemet vedvarer, <a href="https://nav.no/kontaktoss" target="_blank" rel="noopener noreferrer">kan du kontakte oss (åpnes i ny fane)</a>',
     reportError: 'Meld gjerne fra om at lenken ikke virker',
     errorId: 'Feil-kode',
     statusCode: 'Statuskode',
