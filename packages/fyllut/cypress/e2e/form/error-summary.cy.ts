@@ -14,7 +14,7 @@ describe('Error summary', () => {
 
   describe('Panel "Dine opplysninger"', () => {
     beforeEach(() => {
-      cy.visit('/fyllut/errorSummaryFocus/personopplysninger?sub=paper');
+      cy.visit('/fyllut/errorsummaryfocus/personopplysninger?sub=paper');
       cy.defaultWaits();
     });
 
@@ -62,7 +62,7 @@ describe('Error summary', () => {
 
   describe('Panel with data grid', () => {
     beforeEach(() => {
-      cy.visit('/fyllut/errorSummaryFocus/tv?sub=paper');
+      cy.visit('/fyllut/errorsummaryfocus/tv?sub=paper');
       cy.defaultWaits();
       cy.clickNextStep();
     });
@@ -101,7 +101,7 @@ describe('Error summary', () => {
 
   describe('Panel with skjemagruppe', () => {
     beforeEach(() => {
-      cy.visit('/fyllut/errorSummaryFocus/brukerundersokelse?sub=paper');
+      cy.visit('/fyllut/errorsummaryfocus/brukerundersokelse?sub=paper');
       cy.defaultWaits();
       cy.findByRole('heading', { name: 'Brukerundersøkelse' }).should('exist');
       cy.clickNextStep();
@@ -122,7 +122,7 @@ describe('Error summary', () => {
 
   describe('Click on "next" button in last panel before summary renders the error summary', () => {
     beforeEach(() => {
-      cy.visit('/fyllut/errorSummaryFocus/vedlegg?sub=paper');
+      cy.visit('/fyllut/errorsummaryfocus/vedlegg?sub=paper');
       cy.defaultWaits();
       cy.clickNextStep(); // <- submit formio form
     });
