@@ -1,6 +1,6 @@
 import { FeatureTogglesMap, Form, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, ReactNode, useCallback, useContext, useEffect, useReducer } from 'react';
-import { useBeforeUnload, useParams } from 'react-router-dom';
+import { useBeforeUnload, useNavigate, useParams } from 'react-router-dom';
 import formPageReducer, { FormReducerState } from '../../Forms/formPageReducer';
 import useForms from '../../api/useForms';
 
@@ -18,6 +18,7 @@ interface ContextValue {
   unlockForm: () => Promise<void>;
   publishForm: (form: Form, selectedLanguages: TranslationLang[]) => Promise<void>;
   unpublishForm: () => Promise<void>;
+  deleteForm: (form: Form) => Promise<void>;
   copyFormFromProduction: () => Promise<void>;
 }
 
@@ -32,6 +33,7 @@ const FormContext = createContext<ContextValue>({
   unlockForm: async () => Promise.reject(),
   publishForm: async (_form, _translations) => {},
   unpublishForm: async () => {},
+  deleteForm: async (_form: Form) => Promise.reject(),
   copyFormFromProduction: async () => {},
 });
 
@@ -40,7 +42,8 @@ const FormContext = createContext<ContextValue>({
  */
 const FormProvider = ({ featureToggles, children }: Props) => {
   const { formPath } = useParams();
-  const { loadForm, onSave, onLockForm, onUnlockForm, onPublish, onUnpublish, onCopyFromProd, getPublished } =
+  const navigate = useNavigate();
+  const { loadForm, onSave, onLockForm, onUnlockForm, onPublish, onUnpublish, onDelete, onCopyFromProd, getPublished } =
     useForms();
   const [state, dispatch] = useReducer(formPageReducer, initialState, (state) => state);
 
@@ -77,6 +80,12 @@ const FormProvider = ({ featureToggles, children }: Props) => {
       }
     }, [formPath]),
   );
+
+  useEffect(() => {
+    if (state.status === 'FORM DELETED') {
+      navigate('/forms');
+    }
+  }, [state.status, navigate]);
 
   const changeForm = useCallback((changedForm: Form) => {
     sessionStorage.setItem(changedForm.path, JSON.stringify({ changed: true }));
@@ -136,6 +145,13 @@ const FormProvider = ({ featureToggles, children }: Props) => {
     }
   };
 
+  const deleteForm = async (form: Form) => {
+    const deleteResult = await onDelete(form);
+    if (deleteResult.success) {
+      dispatch({ type: 'form-deleted' });
+    }
+  };
+
   const copyFormFromProduction = async () => {
     if (formPath) {
       const savedForm = await onCopyFromProd(formPath);
@@ -154,6 +170,7 @@ const FormProvider = ({ featureToggles, children }: Props) => {
     unlockForm,
     publishForm,
     unpublishForm,
+    deleteForm,
     copyFormFromProduction,
   };
 

@@ -147,6 +147,25 @@ const useFormsApiForms = () => {
     }
   };
 
+  const deleteForm = async (form: Form) => {
+    const url = `/api/forms/${form.path}`;
+    try {
+      logger?.debug(`Delete form with path ${form.path}: ${url}`);
+      const searchParams = new URLSearchParams({
+        revision: form.revision!.toString(),
+      });
+      await http.delete(`${url}?${searchParams}`);
+      logger?.debug(`Successfully deleted form with path ${form.path}: ${url}`);
+      feedbackEmit.success(`Skjemaet ble slettet`);
+      return { success: true };
+    } catch (error) {
+      const message = (error as Error)?.message;
+      logger?.error(`Failed to unlock form: ${url}`, { message });
+      feedbackEmit.error(`Feil ved sletting av skjema. ${message}`);
+      return { success: false };
+    }
+  };
+
   const copyFromProd = async (formPath: string): Promise<Form | undefined> => {
     try {
       const form = await overwriteForm(formPath);
@@ -168,6 +187,7 @@ const useFormsApiForms = () => {
     deleteLockForm,
     publish,
     unpublish,
+    deleteForm,
     getPublished,
     copyFromProd,
   };
