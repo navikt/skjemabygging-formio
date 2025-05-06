@@ -57,15 +57,6 @@ const FormSettingsSidebar = ({
         >
           Publiser
         </Button>
-        <Button
-          variant="secondary"
-          onClick={() => doIfUnlocked(() => setOpenDeleteFormModal(true))}
-          type="button"
-          size="small"
-          icon={isLockedForm && <PadlockLockedIcon title="Skjemaet er låst" />}
-        >
-          Slett skjema
-        </Button>
         <UnpublishButton form={form} />
         {!config?.isProdGcp && (
           <ButtonWithSpinner variant="tertiary" onClick={copyFormFromProduction} size="small">
@@ -73,6 +64,15 @@ const FormSettingsSidebar = ({
           </ButtonWithSpinner>
         )}
         <ToggleFormLockButton isLockedForm={isLockedForm} lockedFormReason={lockedFormReason} />
+        <Button
+          variant="tertiary"
+          onClick={() => doIfUnlocked(() => setOpenDeleteFormModal(true))}
+          type="button"
+          size="small"
+          icon={isLockedForm && <PadlockLockedIcon title="Skjemaet er låst" />}
+        >
+          Slett skjema
+        </Button>
         <UserFeedback />
         <FormStatusPanel formStatusProperties={form} />
       </VStack>

@@ -36,6 +36,7 @@ const DeleteFormModal = ({ form, openDeleteFormModal, setOpenDeleteFormModal }: 
       open={openDeleteFormModal}
       onConfirm={handleDelete}
       onClose={closeModal}
+      confirmType="danger"
       texts={{
         title: 'Varsel om sletting',
         body: 'Er du sikker på at dette skjemaet skal slettes?',
