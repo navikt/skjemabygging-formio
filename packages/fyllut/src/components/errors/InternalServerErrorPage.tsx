@@ -1,5 +1,5 @@
 import { BodyShort, Box, Heading, Link, List, Page, VStack } from '@navikt/ds-react';
-import { InnerHtml, useLanguages } from '@navikt/skjemadigitalisering-shared-components';
+import { InnerHtml, useLanguageCodeFromURL, useLanguages } from '@navikt/skjemadigitalisering-shared-components';
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
@@ -7,6 +7,7 @@ import { PATHS } from '../../util/paths';
 
 export function InternalServerErrorPage() {
   const { translate } = useLanguages();
+  const locale = useLanguageCodeFromURL() ?? 'nb';
   const [searchParams, setSearchParams] = useSearchParams();
   const [correlationId, setCorrelationId] = useState<string | undefined>();
   const statusCode = '500';
@@ -46,7 +47,9 @@ export function InternalServerErrorPage() {
                     </List.Item>
                   )}
                   <List.Item>
-                    <Link href={PATHS.BASE_URL}>{translate(TEXTS.statiske.error.goToFrontPage).toLowerCase()}</Link>
+                    <Link href={PATHS.BASE_URL(locale)}>
+                      {translate(TEXTS.statiske.error.goToFrontPage).toLowerCase()}
+                    </Link>
                   </List.Item>
                 </List>
                 <InnerHtml content={translate(TEXTS.statiske.error.contactUs)} />

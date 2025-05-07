@@ -24,7 +24,7 @@ export function NotFoundPage() {
                 <BugIcon aria-hidden />
                 {translate(TEXTS.statiske.error.reportError)}
               </Link>
-              <Button as="a" href={PATHS.BASE_URL}>
+              <Button as="a" href={PATHS.BASE_URL(locale)}>
                 {translate(TEXTS.statiske.error.goToFrontPage)}
               </Button>
             </VStack>

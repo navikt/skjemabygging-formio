@@ -1,4 +1,4 @@
-import { NavFormType, navFormUtils, submissionTypesUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { navFormUtils, submissionTypesUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { NextFunction, Request, Response } from 'express';
 import { ParsedUrlQueryInput } from 'querystring';
 import url from 'url';
@@ -45,12 +45,7 @@ const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
     let httpStatusCode = 200;
     if (formPath && !config.noFormValidation) {
       logger.debug('Loading form...', { formPath });
-      let form: NavFormType | undefined;
-      try {
-        form = await formService.loadForm(formPath);
-      } catch (e) {
-        logger.error(e);
-      }
+      const form = await formService.loadForm(formPath);
       if (form && form.properties) {
         const { submissionTypes } = form.properties;
         const isPaperAndDigitalSubmission =

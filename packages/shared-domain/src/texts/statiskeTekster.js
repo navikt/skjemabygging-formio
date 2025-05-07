@@ -230,7 +230,7 @@ export const statiske = {
   },
   error: {
     notFoundTitle: 'Beklager, fant ikke siden',
-    serverErrorTitle: 'Beklager, en feil oppsto',
+    serverErrorTitle: 'Beklager, det oppsto en feil',
     notFoundMessage: 'Denne siden kan være slettet eller flyttet, eller det er en feil i lenken.',
     serverErrorMessage:
       'En teknisk feil på våre servere gjør at siden er utilgjengelig. Dette skyldes ikke noe du gjorde.',
