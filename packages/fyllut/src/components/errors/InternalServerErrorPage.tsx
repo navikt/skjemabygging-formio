@@ -1,4 +1,4 @@
-import { BodyShort, Box, Button, Heading, Link, List, Page, VStack } from '@navikt/ds-react';
+import { BodyShort, Box, Heading, Link, List, Page, VStack } from '@navikt/ds-react';
 import { InnerHtml, useLanguages } from '@navikt/skjemadigitalisering-shared-components';
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useState } from 'react';
@@ -45,18 +45,17 @@ export function InternalServerErrorPage() {
                       <Link onClick={() => history.back()}>{translate(TEXTS.statiske.error.goBack)}</Link>
                     </List.Item>
                   )}
+                  <List.Item>
+                    <Link href={PATHS.BASE_URL}>{translate(TEXTS.statiske.error.goToFrontPage).toLowerCase()}</Link>
+                  </List.Item>
                 </List>
                 <InnerHtml content={translate(TEXTS.statiske.error.contactUs)} />
               </div>
-
               {correlationId && (
                 <BodyShort size="small" textColor="subtle">
                   {`${translate(TEXTS.statiske.error.errorId)}: ${correlationId}`}
                 </BodyShort>
               )}
-              <Button as="a" href={PATHS.MY_PAGE}>
-                {translate(TEXTS.statiske.error.goToMyPage)}
-              </Button>
             </VStack>
           </VStack>
         </Box>

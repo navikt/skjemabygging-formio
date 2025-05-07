@@ -230,13 +230,11 @@ export const statiske = {
   },
   error: {
     notFoundTitle: 'Beklager, fant ikke siden',
-    serverErrorTitle: 'Beklager, noe gikk galt',
+    serverErrorTitle: 'Beklager, en feil oppsto',
     notFoundMessage: 'Denne siden kan være slettet eller flyttet, eller det er en feil i lenken.',
     serverErrorMessage:
       'En teknisk feil på våre servere gjør at siden er utilgjengelig. Dette skyldes ikke noe du gjorde.',
-    useSearch: 'Bruk gjerne søket eller menyen',
     goToFrontPage: 'Gå til forsiden',
-    goToMyPage: 'Gå til Min side',
     contactUs:
       'Hvis problemet vedvarer, <a href="https://nav.no/kontaktoss" target="_blank" rel="noopener noreferrer">kan du kontakte oss (åpnes i ny fane)</a>',
     reportError: 'Meld gjerne fra om at lenken ikke virker',
