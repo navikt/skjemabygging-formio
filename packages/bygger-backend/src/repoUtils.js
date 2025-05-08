@@ -16,6 +16,7 @@ async function pushFileToRepo(repo, branch, path, message, fileContentAsBase64) 
     areEqualWithoutWhiteSpaces(remoteFile.data.content, fileContentAsBase64)
   ) {
     // The file exists remotely, and is identical to the "local" file. Skip update.
+    logger.info(`Skipping update of ${path} on ${branch}, content is identical`);
     return Promise.resolve(undefined);
   }
 
@@ -33,7 +34,7 @@ export function pushFilesAndUpdateMonorepoRefCallback(files, newMonorepoGitSha) 
     const initialRef = await repo.getRef(branch);
     logger.info(`Perform ${files.length} change(s) on ${branch}, ref: ${initialRef}`);
     for (const file of files) {
-      logger.debug('Push file to repo', { branch, path: file.path, type: file.type, name: file.name });
+      logger.info('Push file to repo', { branch, path: file.path, type: file.type, name: file.name });
       await pushFileToRepo(
         repo,
         branch,
@@ -105,8 +106,8 @@ export async function performChangesOnSeparateBranch(repo, base, branch, perform
     }
   } finally {
     try {
-      await repo.deleteRef(branch);
-      logger.info(`Deleted branch ${branch}`);
+      // await repo.deleteRef(branch);
+      logger.info(`Keeping branch ${branch}`);
     } catch (error) {
       logger.error(`Failed to delete branch ${branch}`, error);
     }

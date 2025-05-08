@@ -13,7 +13,7 @@ const publishForm = async (req: Request, res: Response, next: NextFunction) => {
     return;
   }
 
-  const logMeta = { formPath, userName };
+  const logMeta = { formPath, userName, form };
   logger.info('Attempting to publish form (github)', logMeta);
 
   try {
