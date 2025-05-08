@@ -4,8 +4,8 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import httpFyllut from '../util/httpFyllut';
 import FormPage from './FormPage';
-import PageNotFound from './PageNotFound';
 import SubmissionMethodNotAllowed from './SubmissionMethodNotAllowed';
+import { ErrorPageWrapper } from './errors/ErrorPageWrapper';
 
 export const FormPageWrapper = () => {
   const { formPath } = useParams();
@@ -53,7 +53,7 @@ export const FormPageWrapper = () => {
   }
 
   if (status === 'FORM NOT FOUND' || !form) {
-    return <PageNotFound />;
+    return <ErrorPageWrapper statusCode={404} />;
   }
 
   if (submissionMethod && !navFormUtils.isSubmissionMethodAllowed(submissionMethod, form)) {
