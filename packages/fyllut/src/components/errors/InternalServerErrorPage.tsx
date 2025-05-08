@@ -56,7 +56,7 @@ export function InternalServerErrorPage() {
               </div>
               {correlationId && (
                 <BodyShort size="small" textColor="subtle">
-                  {`${translate(TEXTS.statiske.error.errorId)}: ${correlationId}`}
+                  {`${translate(TEXTS.statiske.error.errorId)} ${correlationId}`}
                 </BodyShort>
               )}
             </VStack>
