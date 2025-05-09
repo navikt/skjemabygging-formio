@@ -55,6 +55,15 @@ describe('Backend', () => {
 
     describe('When file content is different from the corresponding file in the repo', () => {
       beforeEach(async () => {
+        mockRepoGetFileIfItExists.mockReturnValueOnce({
+          data: { content: stringTobase64(JSON.stringify({ title: 'Form2' })), sha: 'existing-file-sha' },
+        });
+        mockRepoGetFileIfItExists.mockReturnValueOnce({
+          data: { content: stringTobase64(JSON.stringify({})), sha: 'existing-file-sha' },
+        });
+        mockRepoGetFileIfItExists.mockReturnValueOnce({
+          data: { content: stringTobase64('publish-repo-git-sha'), sha: 'existing-file-sha' },
+        });
         await backend.publishForm({ title: 'Form' }, { en: {} }, formPath);
       });
 
@@ -154,13 +163,19 @@ describe('Backend', () => {
 
     describe('when no changes are pushed', () => {
       beforeEach(async () => {
-        await backend.publishForm({ title: 'Form' }, { en: {} }, formPath);
+        const form = { title: 'Form' };
+        const translations = { en: {} };
+        mockRepoGetFileIfItExists.mockReturnValueOnce({
+          data: { content: stringTobase64(JSON.stringify(form)), sha: 'existing-file-sha' },
+        });
+        mockRepoGetFileIfItExists.mockReturnValueOnce({
+          data: { content: stringTobase64(JSON.stringify(translations)), sha: 'existing-file-sha' },
+        });
+        await backend.publishForm(form, translations, formPath);
       });
 
       it('does not update monorepo ref', () => {
-        expect(mockRepoCreateOrUpdateFileContents).toHaveBeenCalledTimes(2);
-        expect(mockRepoCreateOrUpdateFileContents.mock.calls[0][1]).toBe('forms/skjema.json');
-        expect(mockRepoCreateOrUpdateFileContents.mock.calls[1][1]).toBe('translations/skjema.json');
+        expect(mockRepoCreateOrUpdateFileContents).toHaveBeenCalledTimes(0);
       });
 
       it('does not merge the pull request', () => {
@@ -216,8 +231,11 @@ describe('Backend', () => {
       mockRepoGetRef.mockReturnValueOnce({ data: { object: { sha: 'resulting-sha-after-merge' } } });
     });
 
-    describe('When file already exists', () => {
+    describe('When file already exists, but has different contents', () => {
       beforeEach(async () => {
+        mockRepoGetFileIfItExists.mockReturnValueOnce({
+          data: { content: stringTobase64(JSON.stringify({ toggle: 'off' })), sha: 'existing-file-sha' },
+        });
         await backend.publishResource('settings', { toggle: 'on' });
       });
 
