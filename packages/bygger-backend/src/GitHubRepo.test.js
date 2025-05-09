@@ -55,20 +55,6 @@ describe('GitHubRepo', () => {
     });
   });
 
-  describe('hasBranchChanged', () => {
-    it('returns false, if ref sha is the same as the branch sha', async () => {
-      const ref = { data: { object: { sha: 'branch-sha' } } };
-      mockGetRef.mockReturnValueOnce({ data: { object: { sha: 'branch-sha' } } });
-      expect(await repo.hasBranchChanged(ref, 'branch')).toBe(false);
-    });
-
-    it('returns true, if ref sha is different from the branch sha', async () => {
-      const ref = { data: { object: { sha: 'ref-sha' } } };
-      mockGetRef.mockReturnValueOnce({ data: { object: { sha: 'branch-sha' } } });
-      expect(await repo.hasBranchChanged(ref, 'branch')).toBe(true);
-    });
-  });
-
   describe('createRef', () => {
     it('calls octokit.rest.git.createRef with ref: refs/heads/new-branch', () => {
       repo.createRef('new-branch');

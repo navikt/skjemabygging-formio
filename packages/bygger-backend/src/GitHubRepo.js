@@ -64,11 +64,6 @@ export class GitHubRepo {
     });
   }
 
-  async hasBranchChanged(ref, branch) {
-    const currentRef = await this.getRef(branch);
-    return currentRef.data.object.sha !== ref.data.object.sha;
-  }
-
   createRef(branch, sha) {
     return this.octokit.rest.git.createRef({
       owner: this.owner,
