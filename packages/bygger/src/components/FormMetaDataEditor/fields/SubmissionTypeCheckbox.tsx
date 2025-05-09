@@ -6,7 +6,7 @@ interface Props {
   label: any;
   value: SubmissionType[];
   error?: any;
-  onChange: (event: any) => void;
+  onChange: (value: any[]) => void;
   readonly?: boolean;
 }
 

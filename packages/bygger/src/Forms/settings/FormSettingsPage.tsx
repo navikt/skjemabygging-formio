@@ -32,8 +32,12 @@ export function FormSettingsPage({ form }: FormSettingsPageProps) {
 
   // Set default properties if they are not set
   const setDefaultProperties = (form: Form) => {
-    if (!form.properties.mellomlagringDurationDays) {
+    const { mellomlagringDurationDays, uxSignalsId, submissionTypes } = form.properties;
+    if (!mellomlagringDurationDays) {
       form.properties.mellomlagringDurationDays = (config?.mellomlagringDurationDays as string) ?? '28';
+    }
+    if (uxSignalsId && submissionTypes.length < 2) {
+      form.properties.uxSignalsSubmissionTypes = submissionTypes;
     }
     return form;
   };
