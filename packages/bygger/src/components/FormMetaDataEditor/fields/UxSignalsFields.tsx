@@ -1,9 +1,9 @@
 import { TextField } from '@navikt/ds-react';
-import { Form, FormPropertiesType, FormSettingsDiff, InnsendingType } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, FormPropertiesType, FormSettingsDiff, SubmissionType } from '@navikt/skjemadigitalisering-shared-domain';
 import React, { useCallback } from 'react';
 import LabelWithDiff from '../LabelWithDiff';
-import SubmissionTypeSelect from '../SubmissionTypeSelect';
 import { FormMetadataError, UpdateFormFunction } from '../utils/utils';
+import { SubmissionTypeCheckbox } from './SubmissionTypeCheckbox';
 
 interface Props {
   onChange: UpdateFormFunction;
@@ -12,37 +12,42 @@ interface Props {
   errors?: FormMetadataError;
 }
 
-const mergeProps = (form: Form, props: Partial<FormPropertiesType>): Form => ({
-  ...form,
-  properties: {
-    ...form.properties,
-    ...props,
-  },
-});
+const mergeProperties = (
+  form: Form,
+  props: Pick<FormPropertiesType, 'uxSignalsId' | 'uxSignalsSubmissionTypes'>,
+): Form => {
+  const { uxSignalsInnsending, ...originalProperties } = form.properties;
+  return {
+    ...form,
+    properties: {
+      ...originalProperties,
+      ...props,
+    },
+  };
+};
 
 const UxSignalsFields = ({ onChange, diff, form, errors }: Props) => {
-  const { uxSignalsId, uxSignalsInnsending } = form.properties;
+  const { uxSignalsId, uxSignalsSubmissionTypes, submissionTypes } = form.properties;
   const isLockedForm = !!form.lock;
 
   const idChangeHandler = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>, form: Form) => {
       const id = event.target.value?.trim();
       onChange(
-        mergeProps(form, {
+        mergeProperties(form, {
           uxSignalsId: id || undefined,
-          uxSignalsInnsending: id ? form.properties.uxSignalsInnsending || 'PAPIR_OG_DIGITAL' : undefined,
+          uxSignalsSubmissionTypes: id ? uxSignalsSubmissionTypes || submissionTypes : undefined,
         }),
       );
     },
-    [onChange],
+    [onChange, uxSignalsSubmissionTypes, submissionTypes],
   );
 
-  const innsendingChangeHandler = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>, form: Form) => {
-      const innsending: InnsendingType = event.target.value as InnsendingType;
+  const submissionTypesChangeHandler = useCallback(
+    (values: SubmissionType[], form: Form) => {
       onChange(
-        mergeProps(form, {
-          uxSignalsInnsending: innsending || undefined,
+        mergeProperties(form, {
+          uxSignalsSubmissionTypes: values,
         }),
       );
     },
@@ -60,15 +65,12 @@ const UxSignalsFields = ({ onChange, diff, form, errors }: Props) => {
         error={errors?.uxSignalsId}
         readOnly={isLockedForm}
       />
-      {uxSignalsId && (
-        <SubmissionTypeSelect
-          name="uxSignalsInnsending"
-          label={<LabelWithDiff label="UX signals skal vises for:" diff={!!diff.uxSignalsInnsending} />}
-          showDefaultOption={false}
-          value={uxSignalsInnsending || ''}
-          onChange={(event) => innsendingChangeHandler(event, form)}
-          excluded={['INGEN']}
-          error={errors?.uxSignalsInnsending}
+      {uxSignalsId && submissionTypes.length > 1 && (
+        <SubmissionTypeCheckbox
+          name="uxSignalsSubmissionTypes"
+          label={<LabelWithDiff label="UX signals skal vises for:" diff={!!diff.uxSignalsSubmissionTypes} />}
+          value={uxSignalsSubmissionTypes || []}
+          onChange={(values) => submissionTypesChangeHandler(values, form)}
           readonly={isLockedForm}
         />
       )}
