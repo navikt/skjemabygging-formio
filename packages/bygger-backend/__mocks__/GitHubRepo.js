@@ -9,9 +9,6 @@ export const mockRepoCreateOrUpdateFileContents = vi
   .mockReturnValue({ data: { commit: { sha: 'new-commit-sha' } } });
 export const mockRepoCreatePullRequest = vi.fn().mockReturnValue({ data: { number: 14 } });
 export const mockRepoMergePullRequest = vi.fn();
-export const mockRepoHasBranchChanged = vi
-  .fn()
-  .mockImplementation((ref, _branch) => mockRepoGetRef().data.object.sha !== ref.data.object.sha);
 
 export const GitHubRepo = vi.fn().mockImplementation(() => {
   return {
@@ -22,6 +19,5 @@ export const GitHubRepo = vi.fn().mockImplementation(() => {
     createOrUpdateFileContents: mockRepoCreateOrUpdateFileContents,
     createPullRequest: mockRepoCreatePullRequest,
     mergePullRequest: mockRepoMergePullRequest,
-    hasBranchChanged: mockRepoHasBranchChanged,
   };
 });

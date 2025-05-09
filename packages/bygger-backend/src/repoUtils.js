@@ -5,7 +5,18 @@ function areEqualWithoutWhiteSpaces(string1, string2) {
   return string1.replace(/\s/g, '') === string2.replace(/\s/g, '');
 }
 
+/**
+ * Push a file to a repository. Returns a promise that resolves to an object with a boolean property "changed",
+ * telling if the file was changed or not.
+ * @param repo
+ * @param branch
+ * @param path File path in the repository (e.g. 'forms/nav123456.json')
+ * @param message Commit message
+ * @param fileContentAsBase64 Content of the file as base64 string
+ * @returns {Promise<Awaited<{changed: boolean}>>}
+ */
 async function pushFileToRepo(repo, branch, path, message, fileContentAsBase64) {
+  logger.info('Push file to repo', { branch, path, message });
   const remoteFile = await repo.getFileIfItExists(branch, path);
   const sha = remoteFile && remoteFile.data && remoteFile.data.sha;
 
@@ -16,11 +27,13 @@ async function pushFileToRepo(repo, branch, path, message, fileContentAsBase64) 
     areEqualWithoutWhiteSpaces(remoteFile.data.content, fileContentAsBase64)
   ) {
     // The file exists remotely, and is identical to the "local" file. Skip update.
-    return Promise.resolve(undefined);
+    logger.info(`Skipping update of ${path} on ${branch}, content is identical`);
+    return Promise.resolve({ changed: false });
   }
 
-  const createResult = await repo.createOrUpdateFileContents(branch, path, message, fileContentAsBase64, sha);
-  return createResult.data.commit.sha;
+  await repo.createOrUpdateFileContents(branch, path, message, fileContentAsBase64, sha);
+  logger.info(`${path} is created or replaced on ${branch}`);
+  return Promise.resolve({ changed: true });
 }
 
 export function createFileForPushingToRepo(name, path, type, content) {
@@ -32,18 +45,20 @@ export function pushFilesAndUpdateMonorepoRefCallback(files, newMonorepoGitSha) 
     logger.debug(`Get ref for branch ${branch}`);
     const initialRef = await repo.getRef(branch);
     logger.info(`Perform ${files.length} change(s) on ${branch}, ref: ${initialRef}`);
-    for (const file of files) {
-      logger.debug('Push file to repo', { branch, path: file.path, type: file.type, name: file.name });
-      await pushFileToRepo(
-        repo,
-        branch,
-        file.path,
-        `${file.type} "${file.name}", monorepo ref: ${newMonorepoGitSha}`,
-        file.contentAsBase64,
-      );
-    }
+    const filePushResults = await Promise.all(
+      files.map((file) => {
+        return pushFileToRepo(
+          repo,
+          branch,
+          file.path,
+          `${file.type} "${file.name}", monorepo ref: ${newMonorepoGitSha}`,
+          file.contentAsBase64,
+        );
+      }),
+    );
+    const hasBranchChanged = filePushResults.some((result) => result.changed === true);
 
-    if (await repo.hasBranchChanged(initialRef, branch)) {
+    if (hasBranchChanged) {
       logger.info('Update monorepo ref', { newGitSha: newMonorepoGitSha, original: initialRef, branch });
       await pushFileToRepo(
         repo,
@@ -53,6 +68,7 @@ export function pushFilesAndUpdateMonorepoRefCallback(files, newMonorepoGitSha) 
         stringTobase64(newMonorepoGitSha),
       );
     }
+    return hasBranchChanged;
   };
 }
 
@@ -80,9 +96,9 @@ export async function performChangesOnSeparateBranch(repo, base, branch, perform
 
   let updatedBaseSha;
   try {
-    await performChanges(repo, branch);
+    const hasBranchChanged = await performChanges(repo, branch);
 
-    if (await repo.hasBranchChanged(baseRef, branch)) {
+    if (hasBranchChanged) {
       // Only create and merge pull request if the branch contains changes, compared to the base branch
       const pullRequest = await repo.createPullRequest('Automatic publishing job', branch, base);
       logger.info('Created pull-request', {

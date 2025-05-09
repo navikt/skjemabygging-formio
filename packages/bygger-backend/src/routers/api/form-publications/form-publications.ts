@@ -31,14 +31,14 @@ const post: RequestHandler = async (req, res, next) => {
   const accessToken = req.headers.AzureAccessToken as string;
 
   try {
-    logger.info(`Publishing form ${formPath}...`);
+    logger.info(`Publishing form ${formPath} (revision ${revision})...`);
     const form = await formPublicationsService.post(
       formPath,
       languageCodes as TranslationLang[],
       parseInt(revision as string),
       accessToken,
     );
-    logger.info(`Form ${formPath} published successfully`);
+    logger.info(`Form ${formPath} published successfully (revision ${revision})`);
     const { translations } = await formPublicationsService.getTranslations(
       formPath,
       languageCodes as TranslationLang[],

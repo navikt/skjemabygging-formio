@@ -6,7 +6,6 @@ import {
   mockRepoDeleteRef,
   mockRepoGetFileIfItExists,
   mockRepoGetRef,
-  mockRepoHasBranchChanged,
   mockRepoMergePullRequest,
 } from '../__mocks__/GitHubRepo';
 import { configForTest, createBackendForTest } from '../testTools/backend/testUtils.js';
@@ -30,7 +29,6 @@ describe('Backend', () => {
         getRef: mockRepoGetRef,
         createRef: mockRepoCreateRef,
         deleteRef: mockRepoDeleteRef,
-        hasBranchChanged: mockRepoHasBranchChanged,
         getFileIfItExists: mockRepoGetFileIfItExists,
         createOrUpdateFileContents: mockRepoCreateOrUpdateFileContents,
         createPullRequest: mockRepoCreatePullRequest,
@@ -46,7 +44,6 @@ describe('Backend', () => {
     mockRepoGetRef.mockClear();
     mockRepoCreateRef.mockClear();
     mockRepoDeleteRef.mockClear();
-    mockRepoHasBranchChanged.mockClear();
     mockRepoGetFileIfItExists.mockClear();
     mockRepoCreateOrUpdateFileContents.mockClear();
     mockRepoCreatePullRequest.mockClear();
