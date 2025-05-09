@@ -573,7 +573,7 @@ describe('FormMetadataEditor', () => {
         beforeEach(() => {
           const uxProps: Partial<FormPropertiesType> = {
             uxSignalsId: undefined,
-            uxSignalsInnsending: undefined,
+            uxSignalsSubmissionTypes: undefined,
           };
           const form = formMedProps(uxProps);
           ({ rerender } = render(<FormMetadataEditor form={form} onChange={mockOnChange} />));
@@ -588,7 +588,7 @@ describe('FormMetadataEditor', () => {
             expect.objectContaining({
               properties: expect.objectContaining({
                 uxSignalsId: 'abcd-1234',
-                uxSignalsInnsending: 'PAPIR_OG_DIGITAL',
+                uxSignalsSubmissionTypes: ['PAPER', 'DIGITAL'],
               }),
             }),
           );
@@ -601,13 +601,13 @@ describe('FormMetadataEditor', () => {
           expect(mockOnChange).toHaveBeenCalled();
           expect(mockOnChange).toHaveBeenLastCalledWith(
             expect.objectContaining({
-              properties: expect.objectContaining({ uxSignalsId: undefined, uxSignalsInnsending: undefined }),
+              properties: expect.objectContaining({ uxSignalsId: undefined, uxSignalsSubmissionTypes: undefined }),
             }),
           );
         });
 
-        it('does not display submissionTypes combobox before id is provided', async () => {
-          expect(screen.queryByRole('combobox', { name: LABEL_INNSENDING })).not.toBeInTheDocument();
+        it('does not display submissionTypes checkboxes before id is provided', async () => {
+          expect(screen.queryByRole('group', { name: LABEL_INNSENDING })).not.toBeInTheDocument();
 
           const input = screen.getByRole('textbox', { name: LABEL_ID });
           await userEvent.click(input);
@@ -619,57 +619,73 @@ describe('FormMetadataEditor', () => {
 
           rerender(<FormMetadataEditor form={updatedForm} onChange={mockOnChange} />);
 
-          const combobox = screen.queryByRole('combobox', { name: LABEL_INNSENDING });
-          expect(combobox).toBeInTheDocument();
-          expect(combobox).toHaveValue('PAPIR_OG_DIGITAL');
+          const checkboxGroup = screen.queryByRole('group', { name: LABEL_INNSENDING });
+          expect(checkboxGroup).toBeInTheDocument();
+          expect(within(checkboxGroup!).getByRole('checkbox', { name: 'Papir' })).toBeChecked();
+          expect(within(checkboxGroup!).getByRole('checkbox', { name: 'Digital' })).toBeChecked();
         });
       });
 
-      describe('Form with both id and submissionTypes in properties', () => {
+      describe('Form with both id and ux signals submissionTypes in properties', () => {
         beforeEach(() => {
           const uxProps: Partial<FormPropertiesType> = {
+            submissionTypes: ['DIGITAL', 'PAPER'],
             uxSignalsId: '123',
-            uxSignalsInnsending: 'PAPIR_OG_DIGITAL',
+            uxSignalsSubmissionTypes: ['PAPER', 'DIGITAL'],
           };
           const form = formMedProps(uxProps);
           render(<FormMetadataEditor form={form} onChange={mockOnChange} />);
         });
 
-        it('renders correct values', async () => {
+        it('renders correct checkboxes', async () => {
           const idInput = screen.getByRole('textbox', { name: LABEL_ID });
           expect(idInput).toHaveValue('123');
-          expect(screen.getByRole('combobox', { name: LABEL_INNSENDING })).toHaveValue('PAPIR_OG_DIGITAL');
+          expect(screen.getByRole('group', { name: LABEL_INNSENDING })).toBeVisible();
+          const checkBoxes = within(screen.getByRole('group', { name: LABEL_INNSENDING })).getAllByRole('checkbox');
+          expect(checkBoxes).toHaveLength(2);
+          expect(checkBoxes[0]).toBeChecked();
+          expect(checkBoxes[1]).toBeChecked();
         });
 
-        it('also clears submissionTypesstype when id is cleared', async () => {
+        it('also clears submissionTypes when id is cleared', async () => {
           const idInput = screen.getByRole('textbox', { name: LABEL_ID });
           await userEvent.clear(idInput);
           expect(mockOnChange).toHaveBeenCalled();
           expect(mockOnChange).toHaveBeenLastCalledWith(
             expect.objectContaining({
-              properties: expect.objectContaining({ uxSignalsId: undefined, uxSignalsInnsending: undefined }),
+              properties: expect.objectContaining({ uxSignalsId: undefined, uxSignalsSubmissionTypes: undefined }),
             }),
           );
         });
 
         it('selects another innsendingstype', async () => {
-          const combobox = screen.getByRole('combobox', { name: LABEL_INNSENDING });
-          await userEvent.selectOptions(combobox, 'KUN_PAPIR');
+          const checkboxGroup = screen.getByRole('group', { name: LABEL_INNSENDING });
+          expect(checkboxGroup).toBeVisible();
+          await userEvent.click(within(checkboxGroup).getByRole('checkbox', { name: 'Digital' }));
           expect(mockOnChange).toHaveBeenCalled();
           expect(mockOnChange).toHaveBeenLastCalledWith(
             expect.objectContaining({
-              properties: expect.objectContaining({ uxSignalsId: '123', uxSignalsInnsending: 'KUN_PAPIR' }),
+              properties: expect.objectContaining({ uxSignalsId: '123', uxSignalsSubmissionTypes: ['PAPER'] }),
             }),
           );
         });
+      });
 
-        it('only includes valid innsendingstype for UX signals', () => {
-          const combobox = screen.getByRole('combobox', { name: LABEL_INNSENDING });
-          const allOptions: HTMLOptionElement[] = within(combobox).getAllByRole('option');
-          expect(allOptions).toHaveLength(3);
-          allOptions.forEach((option) => {
-            expect(option.value).toMatch(/KUN_PAPIR|PAPIR_OG_DIGITAL|KUN_DIGITAL/);
-          });
+      describe('Form that only supports paper submission', () => {
+        beforeEach(() => {
+          const uxProps: Partial<FormPropertiesType> = {
+            submissionTypes: ['PAPER'],
+            uxSignalsId: '123',
+            uxSignalsSubmissionTypes: [],
+          };
+          const form = formMedProps(uxProps);
+          render(<FormMetadataEditor form={form} onChange={mockOnChange} />);
+        });
+
+        it('does not display ux signals submissionTypes checkboxes', () => {
+          const idInput = screen.getByRole('textbox', { name: LABEL_ID });
+          expect(idInput).toHaveValue('123');
+          expect(screen.queryByRole('group', { name: LABEL_INNSENDING })).toBeNull();
         });
       });
     });
