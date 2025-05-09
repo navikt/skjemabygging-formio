@@ -5,6 +5,7 @@ import {
   NavFormType,
   Submission,
   SubmissionType,
+  submissionTypesUtils,
   TEXTS,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import PropTypes from 'prop-types';
@@ -49,7 +50,9 @@ const submissionTypeIncludesPaperOrIsNoSubmission = (
   submissionTypes?: SubmissionType[],
 ) =>
   (deprecatedInnsendingsType && deprecatedInnsendingsType !== 'KUN_DIGITAL') ||
-  (submissionTypes && (submissionTypes.length === 0 || submissionTypes.includes('PAPER'))); //
+  (submissionTypes &&
+    (submissionTypesUtils.isNoneSubmission(submissionTypes) ||
+      submissionTypesUtils.isPaperSubmission(submissionTypes)));
 
 export function PrepareLetterPage({ form, submission, translations, formUrl }: Props) {
   useEffect(() => scrollToAndSetFocus('main', 'start'), []);

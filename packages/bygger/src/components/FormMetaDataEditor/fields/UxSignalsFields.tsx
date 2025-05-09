@@ -69,7 +69,7 @@ const UxSignalsFields = ({ onChange, diff, form, errors }: Props) => {
         <SubmissionTypeCheckbox
           name="uxSignalsSubmissionTypes"
           label={<LabelWithDiff label="UX signals skal vises for:" diff={!!diff.uxSignalsSubmissionTypes} />}
-          value={uxSignalsSubmissionTypes || []}
+          value={uxSignalsSubmissionTypes || ['PAPER', 'DIGITAL']}
           onChange={(values) => submissionTypesChangeHandler(values, form)}
           readonly={isLockedForm}
         />
