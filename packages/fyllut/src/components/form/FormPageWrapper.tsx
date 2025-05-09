@@ -2,10 +2,10 @@ import { LoadingComponent, useAppConfig } from '@navikt/skjemadigitalisering-sha
 import { NavFormType, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import httpFyllut from '../util/httpFyllut';
+import httpFyllut from '../../util/httpFyllut';
+import SubmissionMethodNotAllowed from '../SubmissionMethodNotAllowed';
+import { ErrorPageWrapper } from '../errors/ErrorPageWrapper';
 import FormPage from './FormPage';
-import SubmissionMethodNotAllowed from './SubmissionMethodNotAllowed';
-import { ErrorPageWrapper } from './errors/ErrorPageWrapper';
 
 export const FormPageWrapper = () => {
   const { formPath } = useParams();
