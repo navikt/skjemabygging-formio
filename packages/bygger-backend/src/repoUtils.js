@@ -16,7 +16,7 @@ function areEqualWithoutWhiteSpaces(string1, string2) {
  * @returns {Promise<Awaited<{changed: boolean}>>}
  */
 async function pushFileToRepo(repo, branch, path, message, fileContentAsBase64) {
-  logger.info('Push file to repo', { branch, path, message });
+  logger.info('Push file to repo', { branch, path, commitMessage: message });
   const remoteFile = await repo.getFileIfItExists(branch, path);
   const sha = remoteFile && remoteFile.data && remoteFile.data.sha;
 
@@ -77,14 +77,21 @@ async function deleteFile(repo, branch, path, message) {
   const sha = remoteFile?.data?.sha;
   if (sha) {
     await repo.deleteFile(branch, path, message, sha);
+    return { changed: true };
   }
+  return { changed: false };
 }
 
 export function deleteFilesAndUpdateMonorepoRefCallback(paths) {
   return async (repo, branch) => {
+    let changed = false;
     for (const path of paths) {
-      await deleteFile(repo, branch, path, `Delete "${path}"`);
+      const result = await deleteFile(repo, branch, path, `Delete "${path}"`);
+      if (result.changed) {
+        changed = true;
+      }
     }
+    return changed;
   };
 }
 
@@ -105,7 +112,7 @@ export async function performChangesOnSeparateBranch(repo, base, branch, perform
         pullRequest: pullRequest.data.number,
         baseRef,
         branch,
-        committMessage: mergeCommitMessage,
+        commitMessage: mergeCommitMessage,
       });
       await repo.mergePullRequest(pullRequest.data.number, mergeCommitMessage);
       const updatedBase = await repo.getRef(base);

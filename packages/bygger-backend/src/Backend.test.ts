@@ -3,6 +3,7 @@ import {
   mockRepoCreateOrUpdateFileContents,
   mockRepoCreatePullRequest,
   mockRepoCreateRef,
+  mockRepoDeleteFile,
   mockRepoDeleteRef,
   mockRepoGetFileIfItExists,
   mockRepoGetRef,
@@ -22,6 +23,15 @@ describe('Backend', () => {
   const formPath = 'skjema';
 
   beforeEach(() => {
+    (GitHubRepo as Mock).mockClear();
+    mockRepoGetRef.mockClear();
+    mockRepoCreateRef.mockClear();
+    mockRepoDeleteRef.mockClear();
+    mockRepoGetFileIfItExists.mockClear();
+    mockRepoCreateOrUpdateFileContents.mockClear();
+    mockRepoCreatePullRequest.mockClear();
+    mockRepoMergePullRequest.mockClear();
+    mockRepoDeleteFile.mockClear();
     backend = createBackendForTest();
     (GitHubRepo as Mock).mockImplementation(() => {
       return {
@@ -33,22 +43,12 @@ describe('Backend', () => {
         createOrUpdateFileContents: mockRepoCreateOrUpdateFileContents,
         createPullRequest: mockRepoCreatePullRequest,
         mergePullRequest: mockRepoMergePullRequest,
+        deleteFile: mockRepoDeleteFile,
       };
     });
   });
 
   let backend: any;
-
-  afterEach(() => {
-    (GitHubRepo as Mock).mockClear();
-    mockRepoGetRef.mockClear();
-    mockRepoCreateRef.mockClear();
-    mockRepoDeleteRef.mockClear();
-    mockRepoGetFileIfItExists.mockClear();
-    mockRepoCreateOrUpdateFileContents.mockClear();
-    mockRepoCreatePullRequest.mockClear();
-    mockRepoMergePullRequest.mockClear();
-  });
 
   describe('publishForm', () => {
     const expectedBranchName = 'publish-skjema--1234';
@@ -131,7 +131,6 @@ describe('Backend', () => {
       beforeEach(async () => {
         mockRepoGetRef.mockReturnValueOnce({ data: { object: { sha: 'original-sha-for-base-branch' } } });
         mockRepoGetRef.mockReturnValueOnce({ data: { object: { sha: 'different-sha-for-new-branch' } } });
-        mockRepoGetRef.mockReturnValueOnce({ data: { object: { sha: 'different-sha-after-pushing-files' } } });
         mockRepoGetRef.mockReturnValueOnce({ data: { object: { sha: 'resulting-sha-after-merge' } } });
         await backend.publishForm({ title: 'Form' }, { en: {} }, formPath);
       });
@@ -221,13 +220,35 @@ describe('Backend', () => {
     });
   });
 
+  describe('unpublishForm', () => {
+    it('merges pull request when form exists', async () => {
+      mockRepoGetFileIfItExists.mockReturnValue({
+        data: { content: stringTobase64(JSON.stringify({ title: 'Form2' })), sha: 'existing-file-sha' },
+      });
+      mockRepoGetFileIfItExists.mockReturnValue({
+        data: { content: stringTobase64(JSON.stringify({ en: {}, nn: {} })), sha: 'existing-file-sha' },
+      });
+      await backend.unpublishForm(formPath);
+      expect(mockRepoDeleteFile).toHaveBeenCalledTimes(2);
+      expect(mockRepoMergePullRequest).toHaveBeenCalledTimes(1);
+    });
+
+    it('skips merge of pull request when form does not exists', async () => {
+      mockRepoGetFileIfItExists.mockReturnValue({
+        data: { content: undefined },
+      });
+      await backend.unpublishForm(formPath);
+      expect(mockRepoDeleteFile).not.toHaveBeenCalled();
+      expect(mockRepoMergePullRequest).not.toHaveBeenCalled();
+    });
+  });
+
   describe('publishResource', () => {
     const expectedBranchName = 'publish-settings--1234';
 
     beforeEach(() => {
       mockRepoGetRef.mockReturnValueOnce({ data: { object: { sha: 'original-sha-for-base-branch' } } });
       mockRepoGetRef.mockReturnValueOnce({ data: { object: { sha: 'different-sha-for-new-branch' } } });
-      mockRepoGetRef.mockReturnValueOnce({ data: { object: { sha: 'different-sha-after-pushing-file' } } });
       mockRepoGetRef.mockReturnValueOnce({ data: { object: { sha: 'resulting-sha-after-merge' } } });
     });
 
