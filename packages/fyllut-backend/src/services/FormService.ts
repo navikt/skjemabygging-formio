@@ -1,23 +1,35 @@
 import { Form, formioFormsApiUtils, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import { config } from '../config/config';
+import { logger } from '../logger';
 import { fetchFromApi, loadAllJsonFilesFromDirectory, loadFileFromDirectory } from '../utils/forms';
 
 const { useFormioMockApi, useFormsApiStaging, skjemaDir, formioApiServiceUrl, formsApiUrl } = config;
 
 class FormService {
-  async loadForm(formPath: string): Promise<NavFormType | null | undefined> {
+  async loadForm(formPath: string): Promise<NavFormType | undefined> {
     if (!formPath.match(/^[a-z0-9]+$/)) {
       return;
     }
+    let form: NavFormType | Form | undefined;
+    try {
+      if (useFormsApiStaging) {
+        form = (await fetchFromApi(`${formsApiUrl}/v1/forms/${formPath}`)) as Form;
+        return formioFormsApiUtils.mapFormToNavForm(form);
+      } else if (useFormioMockApi) {
+        const forms: any = await fetchFromApi(`${formioApiServiceUrl}/form?type=form&tags=nav-skjema&path=${formPath}`);
+        return forms.length > 0 ? forms[0] : undefined;
+      } else {
+        return await loadFileFromDirectory(skjemaDir, formPath, undefined);
+      }
+    } catch (error) {
+      logger.error(`Failed to load form ${formPath}`, error as Error);
 
-    if (useFormsApiStaging) {
-      const form: Form = (await fetchFromApi(`${formsApiUrl}/v1/forms/${formPath}`)) as Form;
-      return form ? formioFormsApiUtils.mapFormToNavForm(form) : null;
-    } else if (useFormioMockApi) {
-      const forms: any = await fetchFromApi(`${formioApiServiceUrl}/form?type=form&tags=nav-skjema&path=${formPath}`);
-      return forms.length > 0 ? forms[0] : null;
-    } else {
-      return await loadFileFromDirectory(skjemaDir, formPath, undefined);
+      if (error instanceof Error) {
+        const statusCode = (error as any).http_status;
+        if (statusCode === 404) {
+          return undefined;
+        }
+      }
     }
   }
 

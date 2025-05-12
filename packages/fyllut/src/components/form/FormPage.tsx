@@ -1,13 +1,13 @@
 import { FyllUtRouter, i18nUtils, LoadingComponent } from '@navikt/skjemadigitalisering-shared-components';
 import { useEffect, useState } from 'react';
-import { loadCountryNamesForLanguages, loadFormTranslations, loadGlobalTranslationsForLanguages } from '../api';
+import { loadCountryNamesForLanguages, loadFormTranslations, loadGlobalTranslationsForLanguages } from '../../util/api';
 
 function FormPage({ form }) {
   const [translation, setTranslation] = useState({});
   const [ready, setReady] = useState(false);
   useEffect(() => {
     async function fetchTranslations() {
-      const localTranslationsForForm = await loadFormTranslations(form.path);
+      const localTranslationsForForm: any = await loadFormTranslations(form.path);
       const availableLanguages = Object.keys(localTranslationsForForm);
       const countryNameTranslations = await loadCountryNamesForLanguages(availableLanguages);
       const globalTranslations = await loadGlobalTranslationsForLanguages(availableLanguages);

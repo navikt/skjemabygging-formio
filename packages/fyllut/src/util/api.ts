@@ -1,6 +1,6 @@
 import { getCountries } from '@navikt/skjemadigitalisering-shared-components';
 import { localizationUtils } from '@navikt/skjemadigitalisering-shared-domain';
-import httpFyllut from './util/httpFyllut';
+import httpFyllut from './httpFyllut';
 
 const { zipCountryNames } = localizationUtils;
 
