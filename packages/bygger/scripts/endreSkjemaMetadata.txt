@@ -1,12 +1,12 @@
 
 Sjekk skjema:
-- scripts ./api.ts brukernavn 'passord'
+- scripts ./api.js brukernavn 'passord'
     GET <skjemaid> | jq .properties                 
 
 Lagre skjema lokalt:
-- ./api.ts brukernavn 'passord' GET <skjemid>
+- ./api.js brukernavn 'passord' GET <skjemid>
     > endreSkjema.json
 - Åpne fil med tekst editor og gjør endringer
 
 Last opp endret skjema:
-- cat ./endreSkjema.json | ./api.ts brukernavn 'passord' PUT skjemaID
+- cat ./endreSkjema.json | ./api.js brukernavn 'passord' PUT skjemaID

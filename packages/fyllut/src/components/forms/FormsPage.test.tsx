@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import { FormsPage } from './FormsPage';
+import { AllFormsPage } from './AllFormsPage';
 
 const RESPONSE_HEADERS = {
   headers: {
@@ -8,7 +8,7 @@ const RESPONSE_HEADERS = {
   },
 };
 
-describe('FormsPage', () => {
+describe('AllFormsPage', () => {
   beforeEach(() => {
     fetchMock.doMock();
   });
@@ -20,7 +20,7 @@ describe('FormsPage', () => {
 
     render(
       <MemoryRouter initialEntries={['/fyllut']}>
-        <FormsPage />
+        <AllFormsPage />
       </MemoryRouter>,
     );
 
@@ -51,7 +51,7 @@ describe('FormsPage', () => {
 
     render(
       <MemoryRouter initialEntries={['/fyllut']}>
-        <FormsPage />
+        <AllFormsPage />
       </MemoryRouter>,
     );
 

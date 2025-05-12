@@ -15,7 +15,7 @@ const useStyles = makeStyles({
   },
 });
 
-export const FormsPage = () => {
+export const AllFormsPage = () => {
   const [status, setStatus] = useState('LOADING');
   const [forms, setForms] = useState<FormsResponseForm[]>([]);
   const [searchParams] = useSearchParams();
