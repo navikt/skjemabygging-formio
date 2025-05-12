@@ -5,13 +5,34 @@ env:
   NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
-  build-fyllut:
+  setup-fyllut:
     runs-on: ubuntu-latest-8-cores
     permissions:
       contents: read
       packages: read
     outputs:
       cypress-folders: ${{ steps.generate-cypress-folders.outputs.cypress-folders }}
+    steps:
+      - name: 'Checkout'
+        uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.12.0'
+      - name: Generate list of folders containing cypress tests
+        id: generate-cypress-folders
+        run: |
+          echo cypress-folders=$(node bin/generate-folders.mjs packages/fyllut/cypress/e2e) >> "$GITHUB_OUTPUT"
+
+  cypress-run-fyllut:
+    runs-on: ubuntu-latest-8-cores
+    needs: [setup-fyllut]
+    permissions:
+      contents: read
+      packages: read
+    strategy:
+      fail-fast: false
+      matrix:
+        folder: ${{ fromJSON(needs.setup-fyllut.outputs.cypress-folders) }}
     steps:
       - name: 'Checkout'
         uses: actions/checkout@v4
@@ -30,46 +51,6 @@ jobs:
         run: yarn --frozen-lockfile
       - name: 'Build fyllut'
         run: yarn build:fyllut
-      - name: 'Upload fyllut application'
-        uses: actions/upload-artifact@v4
-        with:
-          name: application-fyllut-${{ github.run_number }}
-          retention-days: 1
-          path: |
-            node_modules
-            packages/fyllut/dist
-            packages/fyllut-backend/dist
-            packages/fyllut-backend/node_modules
-      - name: Generate list of folders containing cypress tests
-        id: generate-cypress-folders
-        run: |
-          echo cypress-folders=$(node bin/generate-folders.mjs packages/fyllut/cypress/e2e) >> "$GITHUB_OUTPUT"
-
-  cypress-run-fyllut:
-    runs-on: ubuntu-latest-8-cores
-    needs: [build-fyllut]
-    permissions:
-      contents: read
-      packages: read
-    strategy:
-      fail-fast: false
-      matrix:
-        folder: ${{ fromJSON(needs.build-fyllut.outputs.cypress-folders) }}
-    steps:
-      - name: 'Checkout'
-        uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
-        with:
-          name: application-fyllut-${{ github.run_number }}
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '22.12.0'
-          registry-url: https://npm.pkg.github.com/
-          scope: '@navikt'
-      - name: set timezone
-        uses: szenius/set-timezone@v2.0
-        with:
-          timezoneLinux: 'Europe/Oslo'
       - name: 'Run mock server'
         run: yarn mocks:fyllut:no-cli &
       - name: 'Cypress tests (fyllut)'
