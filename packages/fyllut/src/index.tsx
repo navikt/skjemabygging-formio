@@ -6,7 +6,7 @@ import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import App from './App';
 import ConfirmDelingslenkeModal from './components/ConfirmDelingslenkeModal';
-import getDokumentinnsendingBaseURL from './getDokumentinnsendingBaseURL';
+import getDokumentinnsendingBaseURL from './util/getDokumentinnsendingBaseURL';
 import httpFyllut from './util/httpFyllut';
 
 let featureToggles = {};

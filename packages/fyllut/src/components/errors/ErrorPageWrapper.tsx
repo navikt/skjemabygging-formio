@@ -1,6 +1,6 @@
 import { LanguagesProvider } from '@navikt/skjemadigitalisering-shared-components';
 import { useEffect, useState } from 'react';
-import { loadGlobalTranslationsForLanguages } from '../../api';
+import { loadGlobalTranslationsForLanguages } from '../../util/api';
 import { InternalServerErrorPage } from './InternalServerErrorPage';
 import { NotFoundPage } from './NotFoundPage';
 

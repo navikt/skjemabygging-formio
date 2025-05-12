@@ -1,10 +1,10 @@
 
 Sjekk skjema:
-- scripts ./api.js brukernavn 'passord' 
+- scripts ./api.js brukernavn 'passord'
     GET <skjemaid> | jq .properties                 
 
 Lagre skjema lokalt:
-- ./api.js brukernavn 'passord' GET <skjemid> 
+- ./api.js brukernavn 'passord' GET <skjemid>
     > endreSkjema.json
 - Åpne fil med tekst editor og gjør endringer
 
