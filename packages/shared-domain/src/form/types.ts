@@ -4,7 +4,7 @@ export type SubmissionMethod = 'paper' | 'digital';
 /**
  * Denne skal fjernes etter migrering
  */
-export type InnsendingType = 'PAPIR_OG_DIGITAL' | 'KUN_PAPIR' | 'KUN_DIGITAL' | 'INGEN';
+// export type InnsendingType = 'PAPIR_OG_DIGITAL' | 'KUN_PAPIR' | 'KUN_DIGITAL' | 'INGEN';
 
 export enum DeclarationType {
   none = 'none',
