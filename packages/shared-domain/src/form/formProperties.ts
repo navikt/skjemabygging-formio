@@ -39,7 +39,6 @@ export interface FormPropertiesType {
   descriptionOfSignaturesPositionUnder?: boolean;
   prefill?: PrefillKey[];
   uxSignalsId?: string;
-  uxSignalsInnsending?: InnsendingType;
   uxSignalsSubmissionTypes?: SubmissionType[];
   hideUserTypes?: boolean;
   mellomlagringDurationDays?: string;
