@@ -195,9 +195,12 @@ const dataFetcher = (key, submission) => {
   const apiResult = submission?.metadata?.dataFetcher?.[key];
   const fetchSuccess = Array.isArray(apiResult?.data);
   const fetchFailure = !!apiResult?.fetchError;
-  const fetchDone = fetchSuccess || fetchFailure;
+  const fetchDisabled = !!apiResult?.fetchDisabled;
+  const fetchDone = fetchDisabled ? undefined : fetchSuccess || fetchFailure;
   return {
     fetchDone,
+    fetchDisabled,
+    ready: fetchDone || fetchDisabled,
     empty: fetchSuccess ? apiResult?.data?.length === 0 : undefined,
     success: fetchDone ? fetchSuccess : undefined,
     failure: fetchDone ? fetchFailure : undefined,
@@ -207,6 +210,7 @@ const dataFetcher = (key, submission) => {
             .filter((item) => userData[item.value])
             .some((item) => Object.keys(matcher).some((matcherProp) => item[matcherProp] === matcher[matcherProp]))
         : undefined,
+    apiResult,
   };
 };
 

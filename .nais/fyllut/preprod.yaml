@@ -25,6 +25,8 @@ environmentVars:
     value: http://formio-api
   - name: FORMIO_PROJECT_NAME
     value: jvcemxwcpghcqjn
+  - name: UMAMI_WEBSITE_ID
+    value: a54a81e7-4c5e-4b82-a7a6-7af170f47ace
 azure:
   application:
     tenant: trygdeetaten.no
