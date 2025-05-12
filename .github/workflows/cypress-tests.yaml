@@ -5,10 +5,10 @@ env:
   NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
-  cypress-run-fyllut:
+  build-fyllut:
     runs-on: ubuntu-latest-8-cores
     permissions:
-      contents: 'read'
+      contents: read
       packages: read
     steps:
       - name: 'Checkout'
@@ -24,8 +24,47 @@ jobs:
           timezoneLinux: 'Europe/Oslo'
       - name: 'Install dependencies'
         run: yarn --frozen-lockfile
-      - name: 'Build application'
-        run: yarn build
+      - name: 'Build fyllut'
+        run: yarn build:fyllut
+      - name: 'Upload fyllut application'
+        uses: actions/upload-artifact@v4
+        with:
+          name: application-fyllut-${{ github.run_number }}
+          retention-days: 1
+          path: |
+            node_modules
+            packages/fyllut/dist
+            packages/fyllut-backend/dist
+            packages/fyllut-backend/node_modules
+      - name: Generate list of folders containing cypress tests
+        id: generate_folders
+        run: echo "CYPRESS_FOLDERS_FYLLUT=$(node bin/generate-folders.mjs packages/fyllut/cypress/e2e)" >> $GITHUB_ENV
+
+  cypress-run-fyllut:
+    runs-on: ubuntu-latest-8-cores
+    needs: [build-fyllut]
+    permissions:
+      contents: read
+      packages: read
+    strategy:
+      fail-fast: false
+      matrix:
+        folder: ${{ fromJSON(env.CYPRESS_FOLDERS_FYLLUT) }}
+    steps:
+      - name: 'Checkout'
+        uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: application-fyllut-${{ github.run_number }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.12.0'
+          registry-url: https://npm.pkg.github.com/
+          scope: '@navikt'
+      - name: set timezone
+        uses: szenius/set-timezone@v2.0
+        with:
+          timezoneLinux: 'Europe/Oslo'
       - name: 'Run mock server'
         run: yarn mocks:fyllut:no-cli &
       - name: 'Cypress tests (fyllut)'
@@ -35,7 +74,7 @@ jobs:
           start: yarn preview:fyllut
           wait-on: 'http://localhost:3001/fyllut/internal/isready'
           wait-on-timeout: 120
-          command: yarn cypress:fyllut
+          command: yarn cypress:fyllut --spec "${{ matrix.folder }}/**/*"
           config: video=false
         env:
           FYLLUT_BACKEND_LOGLEVEL: ${{ runner.debug == '1' && 'debug' || 'error' }}
