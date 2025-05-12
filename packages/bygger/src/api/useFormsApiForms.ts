@@ -156,7 +156,6 @@ const useFormsApiForms = () => {
       });
       await http.delete(`${url}?${searchParams}`);
       logger?.debug(`Successfully deleted form with path ${form.path}: ${url}`);
-      feedbackEmit.success(`Skjemaet ble slettet`);
       return { success: true };
     } catch (error) {
       const message = (error as Error)?.message;
