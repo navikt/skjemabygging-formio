@@ -3,7 +3,7 @@ import { FormsResponseForm } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import httpFyllut from '../../util/httpFyllut';
-import FormsRow from './FormsRow';
+import FormsPageRow from './FormsPageRow';
 
 const useStyles = makeStyles({
   maxContentWidth: {
@@ -15,7 +15,7 @@ const useStyles = makeStyles({
   },
 });
 
-export const AllFormsPage = () => {
+export const FormsPage = () => {
   const [status, setStatus] = useState('LOADING');
   const [forms, setForms] = useState<FormsResponseForm[]>([]);
   const [searchParams] = useSearchParams();
@@ -67,7 +67,7 @@ export const AllFormsPage = () => {
             {forms
               .sort((a, b) => (a.modified! < b.modified! ? 1 : -1))
               .map((form) => (
-                <FormsRow key={form._id} form={form} />
+                <FormsPageRow key={form._id} form={form} />
               ))}
           </tbody>
         </table>

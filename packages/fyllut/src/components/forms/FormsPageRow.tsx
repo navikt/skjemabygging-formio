@@ -13,7 +13,7 @@ const useStyles = makeStyles({
   },
 });
 
-const FormsRow = ({ form }: FormRowProps) => {
+const FormsPageRow = ({ form }: FormRowProps) => {
   const { config, baseUrl } = useAppConfig();
   const styles = useStyles();
   const paper = navFormUtils.isSubmissionMethodAllowed('paper', form);
@@ -59,4 +59,4 @@ const FormsRow = ({ form }: FormRowProps) => {
   );
 };
 
-export default FormsRow;
+export default FormsPageRow;
