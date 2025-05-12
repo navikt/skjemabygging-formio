@@ -10,6 +10,8 @@ jobs:
     permissions:
       contents: read
       packages: read
+    outputs:
+      cypress-folders: ${{ steps.generate-cypress-folders.outputs.cypress-folders }}
     steps:
       - name: 'Checkout'
         uses: actions/checkout@v4
@@ -37,7 +39,7 @@ jobs:
             packages/fyllut-backend/dist
             packages/fyllut-backend/node_modules
       - name: Generate list of folders containing cypress tests
-        id: cypress-folders
+        id: generate-cypress-folders
         run: |
           echo cypress-folders=$(node bin/generate-folders.mjs packages/fyllut/cypress/e2e) >> "$GITHUB_OUTPUT"
 
