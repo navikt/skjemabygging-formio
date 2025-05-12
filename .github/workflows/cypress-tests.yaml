@@ -37,8 +37,9 @@ jobs:
             packages/fyllut-backend/dist
             packages/fyllut-backend/node_modules
       - name: Generate list of folders containing cypress tests
-        id: generate_folders
-        run: echo "CYPRESS_FOLDERS_FYLLUT=$(node bin/generate-folders.mjs packages/fyllut/cypress/e2e)" >> $GITHUB_ENV
+        id: cypress-folders
+        run: |
+          echo cypress-folders=$(node bin/generate-folders.mjs packages/fyllut/cypress/e2e) >> "$GITHUB_OUTPUT"
 
   cypress-run-fyllut:
     runs-on: ubuntu-latest-8-cores
@@ -49,7 +50,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        folder: ${{ fromJSON(env.CYPRESS_FOLDERS_FYLLUT) }}
+        folder: ${{ fromJSON(needs.build-fyllut.outputs.cypress-folders) }}
     steps:
       - name: 'Checkout'
         uses: actions/checkout@v4
