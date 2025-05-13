@@ -62,7 +62,6 @@ jobs:
           wait-on: 'http://localhost:3001/fyllut/internal/isready'
           wait-on-timeout: 120
           command: yarn cypress:fyllut --spec cypress/e2e/${{ matrix.folder }}/**/*
-          config: video=false
         env:
           FYLLUT_BACKEND_LOGLEVEL: ${{ runner.debug == '1' && 'debug' || 'error' }}
       - name: Upload screenshots
@@ -104,8 +103,6 @@ jobs:
           wait-on: 'http://localhost:3000/internal/isready'
           wait-on-timeout: 120
           command: yarn cypress:bygger
-          config: video=false
-          config-file: cypress.config.ts
       - name: Upload screenshots
         uses: actions/upload-artifact@v4
         if: failure()
