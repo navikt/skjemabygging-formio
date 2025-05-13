@@ -8361,10 +8361,10 @@ vite-plugin-html@^3.2.2:
     node-html-parser "^5.3.3"
     pathe "^0.2.0"
 
-vite-plugin-node@^4.0.0:
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/vite-plugin-node/-/vite-plugin-node-4.0.0.tgz#5e73f4957e1eec586c40c809c1a6b41759d4c49c"
-  integrity sha512-KwINBvYBjNqYml/dSmBWJo2rSr+qrRbqbuuG5oNhu7+R3R5Rh9fibpslvr3LUwOjjkreIb9VId/37Rf7KL96qg==
+vite-plugin-node@^5.0.1:
+  version "5.0.1"
+  resolved "https://registry.yarnpkg.com/vite-plugin-node/-/vite-plugin-node-5.0.1.tgz#9d96383d2193d005ae0c0c5223372d0ebd094f00"
+  integrity sha512-xdR4UW1h2ZM1wBf4pjwzuty/mX6F/GViB8h1iqOpxr81pa5OuWb3IJghl66v4e7Srsi2p5o22n9G7G46FeZK9Q==
   dependencies:
     "@rollup/pluginutils" "^4.1.1"
     chalk "^4.1.2"
