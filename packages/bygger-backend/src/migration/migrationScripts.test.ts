@@ -1,4 +1,4 @@
-import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
+import { FormPropertiesType, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import { getEditScript, migrateForm, migrateForms } from './migrationScripts';
 import {
   formWithAdvancedConditionalToRadio,
@@ -11,6 +11,9 @@ import {
   originalTextFieldComponent,
 } from './testData';
 import mockedForm from './testdata/form';
+
+type FormPropertiesTypeExtended = FormPropertiesType & { ettersending?: string };
+type NavFormTypeExtended = NavFormType & { properties: FormPropertiesTypeExtended };
 
 const allForms: NavFormType[] = [
   { ...mockedForm, path: 'form1', properties: { ...mockedForm.properties, skjemanummer: 'form1' } },
@@ -171,7 +174,7 @@ describe('Migration scripts', () => {
           'properties.ettersending': 'PAPIR_OG_DIGITAL',
         };
 
-        const original: NavFormType = {
+        const original: NavFormTypeExtended = {
           ...originalForm,
           properties: {
             ...originalForm.properties,
@@ -345,7 +348,7 @@ describe('Migration scripts', () => {
           },
         };
 
-        const originalForm2: NavFormType = {
+        const originalForm2: NavFormTypeExtended = {
           ...originalForm,
           properties: {
             ...originalForm.properties,

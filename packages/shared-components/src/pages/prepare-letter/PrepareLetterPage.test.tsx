@@ -301,7 +301,6 @@ describe('PrepareLetterPage', () => {
       renderPrepareLetterPage(
         formWithProperties({
           uxSignalsId: undefined,
-          uxSignalsInnsending: undefined,
         }),
         DEV_CONFIG,
       );
@@ -316,7 +315,7 @@ describe('PrepareLetterPage', () => {
       renderPrepareLetterPage(
         formWithProperties({
           uxSignalsId: UX_SIGNALS_ID,
-          uxSignalsInnsending: 'PAPIR_OG_DIGITAL',
+          uxSignalsSubmissionTypes: ['PAPER', 'DIGITAL'],
         }),
         config,
       );
@@ -332,7 +331,7 @@ describe('PrepareLetterPage', () => {
       renderPrepareLetterPage(
         formWithProperties({
           uxSignalsId: UX_SIGNALS_ID,
-          uxSignalsInnsending: 'PAPIR_OG_DIGITAL',
+          uxSignalsSubmissionTypes: ['PAPER', 'DIGITAL'],
         }),
         PROD_CONFIG,
       );
@@ -346,7 +345,7 @@ describe('PrepareLetterPage', () => {
         renderPrepareLetterPage(
           formWithProperties({
             uxSignalsId: UX_SIGNALS_ID,
-            uxSignalsInnsending: 'KUN_PAPIR',
+            uxSignalsSubmissionTypes: ['PAPER'],
           }),
           DEV_CONFIG,
         );
@@ -358,7 +357,7 @@ describe('PrepareLetterPage', () => {
         renderPrepareLetterPage(
           formWithProperties({
             uxSignalsId: UX_SIGNALS_ID,
-            uxSignalsInnsending: 'PAPIR_OG_DIGITAL',
+            uxSignalsSubmissionTypes: ['PAPER', 'DIGITAL'],
           }),
           DEV_CONFIG,
         );
@@ -370,7 +369,7 @@ describe('PrepareLetterPage', () => {
         renderPrepareLetterPage(
           formWithProperties({
             uxSignalsId: UX_SIGNALS_ID,
-            uxSignalsInnsending: 'KUN_DIGITAL',
+            uxSignalsSubmissionTypes: ['DIGITAL'],
           }),
           DEV_CONFIG,
         );

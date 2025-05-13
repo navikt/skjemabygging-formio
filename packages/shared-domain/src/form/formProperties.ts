@@ -1,7 +1,7 @@
 import { Enhetstype } from '../enhet';
 import { PrefillKey } from './prefill';
 import { FormSignaturesType, NewFormSignatureType } from './signature';
-import { DeclarationType, InnsendingType, SubmissionType } from './types';
+import { DeclarationType, SubmissionType } from './types';
 
 /**
  * @property {SubmissionType[]} submissionTypes - Innsending.
@@ -20,8 +20,6 @@ export interface FormPropertiesType {
   downloadPdfButtonText?: string;
   submissionTypes: SubmissionType[];
   subsequentSubmissionTypes: SubmissionType[];
-  innsending?: InnsendingType;
-  ettersending?: InnsendingType;
   ettersendelsesfrist?: string;
   innsendingForklaring?: string;
   innsendingOverskrift?: string;
@@ -39,7 +37,6 @@ export interface FormPropertiesType {
   descriptionOfSignaturesPositionUnder?: boolean;
   prefill?: PrefillKey[];
   uxSignalsId?: string;
-  uxSignalsInnsending?: InnsendingType;
   uxSignalsSubmissionTypes?: SubmissionType[];
   hideUserTypes?: boolean;
   mellomlagringDurationDays?: string;
