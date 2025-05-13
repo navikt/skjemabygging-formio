@@ -6,7 +6,7 @@ function getFolders(basePath) {
   return fs
     .readdirSync(basePath, { withFileTypes: true })
     .filter((dirent) => dirent.isDirectory())
-    .map(({ name }) => `cypress/e2e/${name}`);
+    .map(({ name }) => name);
 }
 
 const folders = getFolders(basePath);

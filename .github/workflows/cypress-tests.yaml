@@ -24,6 +24,7 @@ jobs:
           echo cypress-folders=$(node bin/generate-folders.mjs packages/fyllut/cypress/e2e) >> "$GITHUB_OUTPUT"
 
   cypress-run-fyllut:
+    name: fyllut ${{ matrix.folder }}
     runs-on: ubuntu-latest-8-cores
     needs: [setup-fyllut]
     permissions:
@@ -60,7 +61,7 @@ jobs:
           start: yarn preview:fyllut
           wait-on: 'http://localhost:3001/fyllut/internal/isready'
           wait-on-timeout: 120
-          command: yarn cypress:fyllut --spec ${{ matrix.folder }}/**/*
+          command: yarn cypress:fyllut --spec cypress/e2e/${{ matrix.folder }}/**/*
           config: video=false
         env:
           FYLLUT_BACKEND_LOGLEVEL: ${{ runner.debug == '1' && 'debug' || 'error' }}
