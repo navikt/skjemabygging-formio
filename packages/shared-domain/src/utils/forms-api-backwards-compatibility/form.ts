@@ -18,21 +18,6 @@ const mapFormToNavForm = (form: Form): NavFormType => {
   };
 };
 
-// const mapEttersendingTypeToSubmissionTypes = (ettersending?: InnsendingType): SubmissionType[] => {
-//   if (!ettersending) return ['PAPER', 'DIGITAL'];
-//
-//   switch (ettersending) {
-//     case 'PAPIR_OG_DIGITAL':
-//       return ['PAPER', 'DIGITAL'];
-//     case 'KUN_PAPIR':
-//       return ['PAPER'];
-//     case 'KUN_DIGITAL':
-//       return ['DIGITAL'];
-//     default:
-//       return [];
-//   }
-// };
-
 const mapNavFormToForm = (form: NavFormType): Form => {
   const {
     id,
