@@ -1,4 +1,4 @@
-import { formatCurrency, removeAllSpaces } from '@navikt/skjemadigitalisering-shared-domain';
+import { formatNumber, removeAllSpaces, removeAllSpacesAndCommas } from '@navikt/skjemadigitalisering-shared-domain';
 import { FocusEventHandler } from 'react';
 import BaseComponent from '../../base/BaseComponent';
 import Number from '../number/Number';
@@ -28,21 +28,20 @@ class Currency extends Number {
   onBlur(): FocusEventHandler<HTMLInputElement> {
     const isInteger = this.getInputMode() === 'numeric';
     return (event: React.FocusEvent<HTMLInputElement>) => {
-      const value = removeAllSpaces(event.target.value);
+      const value = removeAllSpaces(event.currentTarget.value);
 
       if (value !== '') {
-        event.target.value = formatCurrency(value, isInteger);
+        super.setValueOnReactInstance(formatNumber(value, isInteger));
       }
     };
   }
 
-  getDefaultValue(): string {
-    return formatCurrency(super.getDefaultValue(), this.getInputMode() === 'numeric');
+  getDisplayValue(): string {
+    return formatNumber(super.getDisplayValue(), this.getInputMode() === 'numeric');
   }
 
   handleChange(value: string) {
-    const originalValue = removeAllSpaces(value);
-    super.handleChange(originalValue);
+    super.handleChange(removeAllSpacesAndCommas(value));
   }
 }
 

@@ -1,9 +1,4 @@
-import {
-  formatIBAN,
-  formatOrganizationNumber,
-  removeAllSpaces,
-  validatorUtils,
-} from '@navikt/skjemadigitalisering-shared-domain';
+import { formatOrganizationNumber, removeAllSpaces, validatorUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { FocusEventHandler } from 'react';
 import BaseComponent from '../../base/BaseComponent';
 import TextField from '../../core/textfield/TextField';
@@ -41,20 +36,19 @@ class OrganizationNumber extends TextField {
 
   onBlur(): FocusEventHandler<HTMLInputElement> {
     return (event: React.FocusEvent<HTMLInputElement>) => {
-      const value = removeAllSpaces(event.target.value);
+      const value = removeAllSpaces(event.currentTarget.value);
       if (value !== '') {
-        event.target.value = formatOrganizationNumber(value);
+        super.setValueOnReactInstance(formatOrganizationNumber(value));
       }
     };
   }
 
-  getDefaultValue(): string {
-    return formatIBAN(super.getDefaultValue());
+  getDisplayValue(): string {
+    return formatOrganizationNumber(super.getDisplayValue());
   }
 
   handleChange(value: string) {
-    const formattedValue = removeAllSpaces(value);
-    super.handleChange(formattedValue);
+    super.handleChange(removeAllSpaces(value));
   }
 }
 

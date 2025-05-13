@@ -5,6 +5,10 @@ export function removeAllSpaces(value: string): string {
   return value.replace(/\s+/g, '');
 }
 
+export function removeAllSpacesAndCommas(value: string): string {
+  return value.replace(/\s+/g, '').replace(/,/g, '');
+}
+
 export function formatIBAN(value: string): string {
   return value.replace(/(.{4})/g, '$1 ');
 }
@@ -13,7 +17,7 @@ export function formatAccountNumber(value: string): string {
   return value.replace(bankAccountRegex, '$1 $2 $3');
 }
 
-export function formatCurrency(value: string, isInteger: boolean): string {
+export function formatNumber(value: string, isInteger: boolean): string {
   if (value === undefined || value === null || value === '') {
     return '';
   }

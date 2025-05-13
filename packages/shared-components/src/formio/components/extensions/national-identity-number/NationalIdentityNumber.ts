@@ -1,4 +1,4 @@
-import { formatIBAN, formatNationalIdentityNumber, removeAllSpaces } from '@navikt/skjemadigitalisering-shared-domain';
+import { formatNationalIdentityNumber, removeAllSpaces } from '@navikt/skjemadigitalisering-shared-domain';
 import { FocusEventHandler } from 'react';
 import { validateNationalIdentityNumber } from '../../../../components/identity/NationalIdentityNumberValidator';
 import BaseComponent from '../../base/BaseComponent';
@@ -59,19 +59,18 @@ export default class NationalIdentityNumber extends TextField {
 
   onBlur(): FocusEventHandler<HTMLInputElement> {
     return (event: React.FocusEvent<HTMLInputElement>) => {
-      const value = removeAllSpaces(event.target.value);
+      const value = removeAllSpaces(event.currentTarget.value);
       if (value !== '') {
-        event.target.value = formatNationalIdentityNumber(value);
+        super.setValueOnReactInstance(formatNationalIdentityNumber(value));
       }
     };
   }
 
-  getDefaultValue(): string {
-    return formatIBAN(super.getDefaultValue());
+  getDisplayValue(): string {
+    return formatNationalIdentityNumber(super.getDisplayValue());
   }
 
   handleChange(value: string) {
-    const formattedValue = removeAllSpaces(value);
-    super.handleChange(formattedValue);
+    super.handleChange(removeAllSpaces(value));
   }
 }

@@ -1,8 +1,8 @@
 import {
   formatAccountNumber,
-  formatCurrency,
   formatIBAN,
   formatNationalIdentityNumber,
+  formatNumber,
   formatOrganizationNumber,
   removeAllSpaces,
 } from './format-utils';
@@ -34,18 +34,18 @@ describe('format-utils', () => {
 
   describe('formatCurrency', () => {
     it('should format a number as currency with two decimal places by default', () => {
-      expect(formatCurrency('1234.5', false)).toBe('1\u00A0234,50');
-      expect(formatCurrency('1234', false)).toBe('1\u00A0234,00');
+      expect(formatNumber('1234.5', false)).toBe('1\u00A0234,50');
+      expect(formatNumber('1234', false)).toBe('1\u00A0234,00');
     });
 
     it('should format a number as an integer when isInteger is true', () => {
-      expect(formatCurrency('1234.5', true)).toBe('1\u00A0235');
-      expect(formatCurrency('1234', true)).toBe('1\u00A0234');
+      expect(formatNumber('1234.5', true)).toBe('1\u00A0235');
+      expect(formatNumber('1234', true)).toBe('1\u00A0234');
     });
 
     it('should return the original value if it is not a valid number', () => {
-      expect(formatCurrency('invalid', false)).toBe('invalid');
-      expect(formatCurrency('', false)).toBe('');
+      expect(formatNumber('invalid', false)).toBe('invalid');
+      expect(formatNumber('', false)).toBe('');
     });
   });
 

@@ -4,7 +4,7 @@ import attachmentUtils from '../attachment';
 import TEXTS from '../texts';
 import currencyUtils from '../utils/currencyUtils';
 import dateUtils from '../utils/date';
-import { bankAccountRegex, formatIBAN, orgNrRegex } from '../utils/format-utils.ts';
+import { bankAccountRegex, formatIBAN, orgNrRegex } from '../utils/format-utils';
 import FormioUtils from '../utils/formio/FormioUtils';
 import sanitizeJavaScriptCode from '../utils/formio/sanitize-javascript-code';
 import numberUtils from '../utils/numberUtils';

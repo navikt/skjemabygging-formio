@@ -1,4 +1,12 @@
-import { InputMode, numberUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  formatNumber,
+  InputMode,
+  numberUtils,
+  removeAllSpaces,
+  removeAllSpacesAndCommas,
+  TEXTS,
+} from '@navikt/skjemadigitalisering-shared-domain';
+import { FocusEventHandler } from 'react';
 import BaseComponent from '../../base/BaseComponent';
 import TextField from '../../core/textfield/TextField';
 import numberBuilder from './Number.builder';
@@ -85,7 +93,7 @@ class Number extends TextField {
 
   handleChange(value: string) {
     if (value !== undefined) {
-      const dataValue = this.replaceCommasAndSpaces(value);
+      const dataValue = removeAllSpacesAndCommas(value);
       if (
         (this.getInputMode() === 'decimal' && numberUtils.isValidDecimal(dataValue)) ||
         (this.getInputMode() === 'numeric' && numberUtils.isValidInteger(dataValue))
@@ -112,8 +120,19 @@ class Number extends TextField {
     super.setValueOnReactInstance(numberUtils.toLocaleString(value, this.getNumberFormatOptions()));
   }
 
-  replaceCommasAndSpaces(value: string) {
-    return value?.replace(/,/g, '.').replace(/\s/g, '');
+  onBlur(): FocusEventHandler<HTMLInputElement> {
+    const isInteger = this.getInputMode() === 'numeric';
+    return (event: React.FocusEvent<HTMLInputElement>) => {
+      const value = removeAllSpaces(event.currentTarget.value);
+
+      if (value !== '') {
+        super.setValueOnReactInstance(formatNumber(value, isInteger));
+      }
+    };
+  }
+
+  getDisplayValue(): string {
+    return formatNumber(super.getDisplayValue(), this.getInputMode() === 'numeric');
   }
 }
 

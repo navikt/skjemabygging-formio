@@ -34,20 +34,19 @@ class AccountNumber extends TextField {
 
   onBlur(): FocusEventHandler<HTMLInputElement> {
     return (event: React.FocusEvent<HTMLInputElement>) => {
-      const value = formatAccountNumber(event.target.value);
+      const value = removeAllSpaces(event.currentTarget.value);
       if (value !== '') {
-        event.target.value = formatAccountNumber(value);
+        super.setValueOnReactInstance(formatAccountNumber(value));
       }
     };
   }
 
-  getDefaultValue(): string {
-    return formatAccountNumber(super.getDefaultValue());
+  getDisplayValue(): string {
+    return formatAccountNumber(super.getDisplayValue());
   }
 
   handleChange(value: string) {
-    const formattedValue = removeAllSpaces(value);
-    super.handleChange(formattedValue);
+    super.handleChange(removeAllSpaces(value));
   }
 }
 
