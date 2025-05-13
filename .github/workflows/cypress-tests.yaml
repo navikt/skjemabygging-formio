@@ -21,7 +21,7 @@ jobs:
       - name: Generate list of folders containing cypress tests
         id: generate-cypress-folders
         run: |
-          echo cypress-folders=$(node bin/generate-folders.mjs packages/fyllut/cypress/e2e) >> "$GITHUB_OUTPUT"
+          echo cypress-folders=$(node bin/get-folders.mjs packages/fyllut/cypress/e2e) >> "$GITHUB_OUTPUT"
 
   cypress-run-fyllut:
     name: fyllut ${{ matrix.folder }}
