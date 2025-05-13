@@ -28,21 +28,20 @@ class Currency extends Number {
   onBlur(): FocusEventHandler<HTMLInputElement> {
     const isInteger = this.getInputMode() === 'numeric';
     return (event: React.FocusEvent<HTMLInputElement>) => {
-      const value = removeAllSpaces(event.target.value);
+      const value = removeAllSpaces(event.currentTarget.value);
 
       if (value !== '') {
-        event.target.value = formatCurrency(value, isInteger);
+        super.setValueOnReactInstance(formatCurrency(value, isInteger));
       }
     };
   }
 
-  getDefaultValue(): string {
-    return formatCurrency(super.getDefaultValue(), this.getInputMode() === 'numeric');
+  getDisplayValue(): string {
+    return formatCurrency(super.getDisplayValue(), this.getInputMode() === 'numeric');
   }
 
   handleChange(value: string) {
-    const originalValue = removeAllSpaces(value);
-    super.handleChange(originalValue);
+    super.handleChange(removeAllSpaces(value));
   }
 }
 

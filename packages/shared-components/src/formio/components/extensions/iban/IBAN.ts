@@ -52,20 +52,19 @@ class IBAN extends TextField {
 
   onBlur(): FocusEventHandler<HTMLInputElement> {
     return (event: React.FocusEvent<HTMLInputElement>) => {
-      const value = removeAllSpaces(event.target.value);
+      const value = removeAllSpaces(event.currentTarget.value);
       if (value !== '') {
-        event.target.value = formatIBAN(value);
+        super.setValueOnReactInstance(formatIBAN(value));
       }
     };
   }
 
-  getDefaultValue(): string {
-    return formatIBAN(super.getDefaultValue());
+  getDisplayValue(): string {
+    return formatIBAN(super.getDisplayValue());
   }
 
   handleChange(value: string) {
-    const formattedValue = removeAllSpaces(value);
-    super.handleChange(formattedValue);
+    super.handleChange(removeAllSpaces(value));
   }
 }
 

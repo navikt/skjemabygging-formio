@@ -103,7 +103,7 @@ class TextField extends BaseComponent {
     }
   }
 
-  getDefaultValue() {
+  getDisplayValue() {
     return this.getValue();
   }
 
@@ -113,7 +113,7 @@ class TextField extends BaseComponent {
         <NavTextField
           onBlur={this.onBlur()}
           id={this.getId()}
-          defaultValue={this.getDefaultValue()}
+          defaultValue={this.getDisplayValue()}
           ref={(ref) => this.setReactInstance(ref)}
           onChange={(event) => this.handleChange(event.currentTarget.value)}
           label={<Label component={this.component} editFields={this.getEditFields()} />}
