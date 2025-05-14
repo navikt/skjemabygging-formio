@@ -1,4 +1,4 @@
-import { FormsApiGlobalTranslation, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
+import { FormsApiTranslation, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import ApiError from '../../api/ApiError';
 import EditGlobalTranslationsProvider, { useEditGlobalTranslations } from './EditGlobalTranslationsContext';
@@ -14,7 +14,7 @@ const mocks = vi.hoisted(() => ({
     tag: 'skjematekster',
     key: 'original',
     nb: 'original',
-  } as FormsApiGlobalTranslation,
+  } as FormsApiTranslation,
 }));
 vi.mock('./GlobalTranslationsContext', () => {
   return {
@@ -39,7 +39,7 @@ const TestComponent = ({
   updates = [],
   newTranslation = {},
 }: {
-  updates?: Array<[original: FormsApiGlobalTranslation, lang: TranslationLang, value: string]>;
+  updates?: Array<[original: FormsApiTranslation, lang: TranslationLang, value: string]>;
   newTranslation?: { nb?: string; nn?: string; en?: string };
 }) => {
   const { updateNewTranslation, updateTranslation, saveChanges, errors, editState } = useEditGlobalTranslations();

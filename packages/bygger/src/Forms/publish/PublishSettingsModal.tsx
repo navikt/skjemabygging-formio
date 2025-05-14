@@ -1,6 +1,6 @@
 import { Alert, Checkbox, CheckboxGroup, Heading } from '@navikt/ds-react';
 import { ConfirmationModal, i18nUtils, makeStyles } from '@navikt/skjemadigitalisering-shared-components';
-import { Form, FormsApiFormTranslation, I18nTranslations } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, FormsApiTranslation, I18nTranslations } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useState } from 'react';
 import { useFormTranslations } from '../../context/translations/FormTranslationsContext';
 import { useGlobalTranslations } from '../../context/translations/GlobalTranslationsContext';
@@ -30,7 +30,7 @@ interface Props {
   open: boolean;
   onClose: () => void;
   onConfirm: (languageCodes: string[]) => void;
-  unsavedGlobalTranslations: FormsApiFormTranslation[];
+  unsavedGlobalTranslations: FormsApiTranslation[];
 }
 
 export const getCompleteTranslationLanguageCodeList = (

@@ -114,8 +114,6 @@ import { TextSize, TextSizeShort } from './text';
 import TEXTS from './texts';
 import { Activity } from './tilleggsstonader/activity';
 import {
-  FormsApiFormTranslation,
-  FormsApiGlobalTranslation,
   FormsApiTranslation,
   formsApiTranslations,
   PublishedTranslations,
@@ -208,8 +206,6 @@ export type {
   FormioTranslationPayload,
   FormPropertiesPublishing,
   FormPropertiesType,
-  FormsApiFormTranslation,
-  FormsApiGlobalTranslation,
   FormsApiTranslation,
   FormSettingsDiff,
   FormSignaturesType,

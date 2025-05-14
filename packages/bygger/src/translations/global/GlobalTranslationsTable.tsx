@@ -1,6 +1,6 @@
 import { SortState, Switch } from '@navikt/ds-react';
 import { listSort } from '@navikt/skjemadigitalisering-shared-components';
-import { FormsApiGlobalTranslation } from '@navikt/skjemadigitalisering-shared-domain';
+import { FormsApiTranslation } from '@navikt/skjemadigitalisering-shared-domain';
 import { useMemo, useState } from 'react';
 import { useEditGlobalTranslations } from '../../context/translations/EditGlobalTranslationsContext';
 import NewTranslationRow from '../components/NewTranslationRow';
@@ -9,7 +9,7 @@ import TranslationTable from '../components/TranslationTable';
 import { useStickyStyles } from '../components/styles';
 
 interface Props {
-  translations: FormsApiGlobalTranslation[] | undefined;
+  translations: FormsApiTranslation[] | undefined;
   addNewRow: boolean;
   loading?: boolean;
 }
@@ -30,11 +30,11 @@ const GlobalTranslationsTable = ({ translations, addNewRow, loading = false }: P
     });
   };
 
-  const filteredRows = useMemo<FormsApiGlobalTranslation[] | undefined>(() => {
+  const filteredRows = useMemo<FormsApiTranslation[] | undefined>(() => {
     return isFilterChecked ? translations?.filter((row) => !row.nn || !row.en) : translations;
   }, [isFilterChecked, translations]);
 
-  const sortedRows = useMemo<FormsApiGlobalTranslation[] | undefined>(() => {
+  const sortedRows = useMemo<FormsApiTranslation[] | undefined>(() => {
     return filteredRows
       ?.slice()
       .sort(listSort.getLocaleComparator(sortState?.orderBy, sortState?.direction, addNewRow));

@@ -1,7 +1,6 @@
 import {
   FormioTranslationPayload,
-  FormsApiFormTranslation,
-  FormsApiGlobalTranslation,
+  FormsApiTranslation,
   I18nTranslations,
   Language,
   languagesUtil,
@@ -67,7 +66,7 @@ class TranslationsService {
       method: 'GET',
     });
     if (response.ok) {
-      const translationsForForm = (await response.json()) as FormsApiFormTranslation[];
+      const translationsForForm = (await response.json()) as FormsApiTranslation[];
       return translationsForForm
         .filter((t) => !t.globalTranslationId)
         .reduce(
@@ -116,7 +115,7 @@ class TranslationsService {
     const formsApiLang = toFormsApiLang(lang);
     const response = await fetch(`${formsApiUrl}/v1/global-translations`, { method: 'GET' });
     if (response.ok) {
-      const responseJson = (await response.json()) as FormsApiGlobalTranslation[];
+      const responseJson = (await response.json()) as FormsApiTranslation[];
       return responseJson.reduce(
         (acc, obj) => ({
           [lang]: {

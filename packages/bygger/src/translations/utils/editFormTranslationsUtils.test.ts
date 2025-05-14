@@ -1,9 +1,4 @@
-import {
-  Form,
-  FormsApiFormTranslation,
-  FormsApiGlobalTranslation,
-  MockedComponentObjectForTest,
-} from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, FormsApiTranslation, MockedComponentObjectForTest } from '@navikt/skjemadigitalisering-shared-domain';
 import { generateAndPopulateTranslationsForForm, generateUnsavedGlobalTranslations } from './editFormTranslationsUtils';
 
 const { createFormsApiFormObject, createPanelObject, createDummyTextfield, createDummySelectComponent } =
@@ -28,7 +23,7 @@ describe('editFormTranslationsUtils', () => {
     );
   });
 
-  const storedTranslations: Record<string, FormsApiFormTranslation> = {
+  const storedTranslations: Record<string, FormsApiTranslation> = {
     keyBasedTranslation: {
       key: 'keyBasedTranslation',
       nb: 'Nøkkelbasert oversettelse',
@@ -46,7 +41,7 @@ describe('editFormTranslationsUtils', () => {
     },
   };
 
-  const globalTranslations: Record<string, FormsApiGlobalTranslation> = {
+  const globalTranslations: Record<string, FormsApiTranslation> = {
     'Tekst med globalt overskrevet oversettelse': {
       id: 1,
       key: 'Tekst med globalt overskrevet oversettelse',
