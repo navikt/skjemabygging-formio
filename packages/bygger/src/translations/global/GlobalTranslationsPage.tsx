@@ -13,6 +13,7 @@ import GlobalTranslationButtonsColumn from './GlobalTranslationButtonsColumn';
 import GlobalTranslationsTable from './GlobalTranslationsTable';
 
 const titles = {
+  introPage: 'Introside',
   skjematekster: 'Globale skjematekster',
   grensesnitt: 'Globale grensesnittekster',
   'statiske-tekster': 'Globale statiske tekster',
@@ -58,6 +59,7 @@ const GlobalTranslationsPage = () => {
             )}
             <GlobalTranslationsTable
               translations={translations}
+              isKeyBased={tag === 'introside'}
               addNewRow={tag === 'skjematekster'}
               loading={!isReady}
             />
