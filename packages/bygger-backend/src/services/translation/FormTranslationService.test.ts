@@ -1,4 +1,4 @@
-import { FormsApiFormTranslation } from '@navikt/skjemadigitalisering-shared-domain';
+import { FormsApiTranslation } from '@navikt/skjemadigitalisering-shared-domain';
 import { Mock, vi } from 'vitest';
 import { fetchWithErrorHandling } from '../../fetchUtils';
 import { createHeaders } from '../utils/formsApiUtils';
@@ -17,7 +17,7 @@ describe('FormTranslationService', () => {
   let formTranslationsService;
   const formPath = 'test-form';
   const accessToken = 'test-token';
-  const translation: FormsApiFormTranslation = { id: 1, key: 'test', nb: 'Test' };
+  const translation: FormsApiTranslation = { id: 1, key: 'test', nb: 'Test' };
 
   beforeEach(() => {
     vi.clearAllMocks();

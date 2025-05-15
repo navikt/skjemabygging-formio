@@ -1,5 +1,5 @@
 import { Button, Table } from '@navikt/ds-react';
-import { FormsApiTranslation, formsApiTranslations } from '@navikt/skjemadigitalisering-shared-domain';
+import { FormsApiTranslation } from '@navikt/skjemadigitalisering-shared-domain';
 import { useState } from 'react';
 import TranslationDisplayCell from './TranslationDisplayCell';
 import { useTranslationTableStyles } from './styles';
@@ -13,7 +13,7 @@ interface Props {
 const UnusedTranslationRow = ({ translation, onRemove, showKey = false }: Props) => {
   const [loading, setLoading] = useState(false);
   const styles = useTranslationTableStyles();
-  const hasGlobalOverride = formsApiTranslations.isFormTranslation(translation) && !!translation.globalTranslationId;
+  const hasGlobalOverride = !!translation.globalTranslationId;
 
   const handleRemove = async () => {
     setLoading(true);

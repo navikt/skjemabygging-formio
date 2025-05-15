@@ -1,10 +1,7 @@
 import { htmlUtils } from '@navikt/skjemadigitalisering-shared-components';
 import {
   Form,
-  FormsApiFormTranslation,
-  FormsApiGlobalTranslation,
   FormsApiTranslation,
-  formsApiTranslations,
   objectUtils,
   TEXTS,
   TranslationLang,
@@ -49,12 +46,12 @@ const getRowsForExport = (texts: string[], translations: FormsApiTranslation[]):
   });
 };
 
-const getRowsForExportFromForm = (form: Form, translations: FormsApiFormTranslation[]) => {
+const getRowsForExportFromForm = (form: Form, translations: FormsApiTranslation[]) => {
   const formTexts = getFormTextsWithoutCountryNames(form);
   return getRowsForExport(formTexts, translations);
 };
 
-const getRowsForExportFromGlobalTexts = (translations: FormsApiGlobalTranslation[]) => {
+const getRowsForExportFromGlobalTexts = (translations: FormsApiTranslation[]) => {
   const texts = getTranslationKeysForAllPredefinedTexts();
   return getRowsForExport(texts, translations);
 };
@@ -109,7 +106,7 @@ const createTranslationsTextRow = (
     return createRow(order, text, undefined, undefined, type);
   }
 
-  const markAsGlobal = formsApiTranslations.isFormTranslation(translation) && !!translation.globalTranslationId;
+  const markAsGlobal = !!translation.globalTranslationId;
   return createRow(order, text, translation.nn, translation.en, type, markAsGlobal);
 };
 

@@ -1,4 +1,4 @@
-import { FormsApiGlobalTranslation, objectUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { FormsApiTranslation, objectUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { removeDuplicatesAfterFirstMatch } from '../../../translations/utils/translationsUtils';
 
 type GlobalTranslationTag = 'skjematekster' | 'grensesnitt' | 'statiske-tekster' | 'validering';
@@ -13,7 +13,7 @@ const TAG_TITLE: Record<GlobalTranslationTag, string> = {
 const generateAndPopulateTag = (
   tagName: GlobalTranslationTag,
   textObject: object,
-  storedTranslationsMap: Record<string, FormsApiGlobalTranslation>,
+  storedTranslationsMap: Record<string, FormsApiTranslation>,
 ) => {
   return objectUtils
     .flattenToArray(textObject, ([entryKey, value]) => {
@@ -28,8 +28,8 @@ const generateAndPopulateTag = (
 };
 
 const generateAndPopulateTags = (
-  translationsMap: Record<string, FormsApiGlobalTranslation>,
-): Record<GlobalTranslationTag, FormsApiGlobalTranslation[]> => {
+  translationsMap: Record<string, FormsApiTranslation>,
+): Record<GlobalTranslationTag, FormsApiTranslation[]> => {
   const { common, grensesnitt, statiske, pdfStatiske, validering } = TEXTS;
   return {
     skjematekster: Object.values(translationsMap).filter((translation) => translation.tag === 'skjematekster'),
@@ -40,7 +40,7 @@ const generateAndPopulateTags = (
 };
 
 const getTagsWithIncompleteTranslations = (
-  translationsPerTag: Record<GlobalTranslationTag, FormsApiGlobalTranslation[]>,
+  translationsPerTag: Record<GlobalTranslationTag, FormsApiTranslation[]>,
 ): GlobalTranslationTag[] => {
   return Object.keys(translationsPerTag).flatMap((tag) => {
     if (translationsPerTag[tag].some((translation) => !translation.nn || !translation.en)) {

@@ -1,8 +1,4 @@
-import {
-  FormsApiFormTranslation,
-  FormsApiGlobalTranslation,
-  FormsApiTranslation,
-} from '@navikt/skjemadigitalisering-shared-domain';
+import { FormsApiTranslation } from '@navikt/skjemadigitalisering-shared-domain';
 import { TranslationError } from './errorUtils';
 
 type Validator = (translation: FormsApiTranslation) => TranslationError | undefined;
@@ -39,7 +35,7 @@ const createMissingKeyValidator =
     }
   };
 
-const validateTranslation = (translation: FormsApiFormTranslation, validators: Validator[]) =>
+const validateTranslation = (translation: FormsApiTranslation, validators: Validator[]) =>
   validators.map((validator) => validator(translation)).find((error) => !!error);
 
 const validateTranslations = (translations: FormsApiTranslation[], validators: Validator[]): TranslationError[] =>
@@ -49,17 +45,17 @@ const validateTranslations = (translations: FormsApiTranslation[], validators: V
     })
     .filter((validationError) => !!validationError);
 
-const validateFormTranslations = (translations: FormsApiFormTranslation[]): TranslationError[] => {
+const validateFormTranslations = (translations: FormsApiTranslation[]): TranslationError[] => {
   const validators: Validator[] = [createInputTooLongValidator(MAX_INPUT_LENGTH_FORM_TRANSLATION)];
   return validateTranslations(translations, validators);
 };
 
-const validateGlobalTranslations = (translations: FormsApiGlobalTranslation[]): TranslationError[] => {
+const validateGlobalTranslations = (translations: FormsApiTranslation[]): TranslationError[] => {
   const validators: Validator[] = [createInputTooLongValidator(MAX_INPUT_LENGTH_GLOBAL_TRANSLATION)];
   return validateTranslations(translations, validators);
 };
 
-const validateNewGlobalTranslation = (translation: FormsApiGlobalTranslation): TranslationError | undefined => {
+const validateNewGlobalTranslation = (translation: FormsApiTranslation): TranslationError | undefined => {
   const validators: Validator[] = [
     createMissingKeyValidator(),
     createInputTooLongValidator(MAX_INPUT_LENGTH_GLOBAL_TRANSLATION, true),

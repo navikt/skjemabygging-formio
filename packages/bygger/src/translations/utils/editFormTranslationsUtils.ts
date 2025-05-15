@@ -1,7 +1,7 @@
-import { Form, FormsApiFormTranslation, FormsApiGlobalTranslation } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, FormsApiTranslation } from '@navikt/skjemadigitalisering-shared-domain';
 import { getFormTextsWithoutCountryNames } from './formTextsUtils';
 
-const populateFromStoredTranslations = (text: string, storedTranslations: Record<string, FormsApiFormTranslation>) => {
+const populateFromStoredTranslations = (text: string, storedTranslations: Record<string, FormsApiTranslation>) => {
   const stored = storedTranslations?.[text];
   if (stored && stored.globalTranslationId) {
     return stored;
@@ -12,8 +12,8 @@ const populateFromStoredTranslations = (text: string, storedTranslations: Record
 };
 
 const checkForGlobalOverride = (
-  translation: FormsApiFormTranslation,
-  globalTranslations: Record<string, FormsApiGlobalTranslation>,
+  translation: FormsApiTranslation,
+  globalTranslations: Record<string, FormsApiTranslation>,
 ) => {
   const global = globalTranslations[translation.key];
   if (global && !translation.nn && !translation.en) {
@@ -25,9 +25,9 @@ const checkForGlobalOverride = (
 
 const generateAndPopulateTranslationsForForm = (
   form: Form,
-  storedTranslations: Record<string, FormsApiFormTranslation>,
-  globalTranslations: Record<string, FormsApiGlobalTranslation>,
-): FormsApiFormTranslation[] => {
+  storedTranslations: Record<string, FormsApiTranslation>,
+  globalTranslations: Record<string, FormsApiTranslation>,
+): FormsApiTranslation[] => {
   // We filter out any country names to avoid having to maintain their translations
   // All country names on 'nn' and 'en' are added from a third party package when we build the i18n object in FyllUt)
   const textObjects = getFormTextsWithoutCountryNames(form);
@@ -40,8 +40,8 @@ const generateAndPopulateTranslationsForForm = (
 
 const generateUnsavedGlobalTranslations = (
   form: Form,
-  storedTranslations: Record<string, FormsApiFormTranslation>,
-  globalTranslations: Record<string, FormsApiGlobalTranslation>,
+  storedTranslations: Record<string, FormsApiTranslation>,
+  globalTranslations: Record<string, FormsApiTranslation>,
 ) => {
   return generateAndPopulateTranslationsForForm(form, {}, globalTranslations).filter(
     (translation) => translation.globalTranslationId && !storedTranslations[translation.nb ?? translation.key],

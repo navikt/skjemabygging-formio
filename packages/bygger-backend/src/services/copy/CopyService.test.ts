@@ -1,4 +1,4 @@
-import { Form, FormsApiGlobalTranslation } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, FormsApiTranslation } from '@navikt/skjemadigitalisering-shared-domain';
 import { mock, MockProxy } from 'vitest-mock-extended';
 import { FormsService } from '../forms/types';
 import { FormTranslationService, GlobalTranslationService } from '../translation/types';
@@ -74,12 +74,8 @@ describe('CopyService', () => {
 
   describe('globalTranslations', () => {
     it('copies global translations for given language', async () => {
-      globalTranslationServiceSourceMock.get
-        .calledWith()
-        .mockReturnValue(Promise.resolve([] as FormsApiGlobalTranslation[]));
-      globalTranslationServiceTargetMock.get
-        .calledWith()
-        .mockReturnValue(Promise.resolve([] as FormsApiGlobalTranslation[]));
+      globalTranslationServiceSourceMock.get.calledWith().mockReturnValue(Promise.resolve([] as FormsApiTranslation[]));
+      globalTranslationServiceTargetMock.get.calledWith().mockReturnValue(Promise.resolve([] as FormsApiTranslation[]));
 
       await copyService.globalTranslations('token');
       expect(globalTranslationServiceSourceMock.get).toHaveBeenCalledTimes(1);

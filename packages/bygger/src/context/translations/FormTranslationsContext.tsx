@@ -1,16 +1,16 @@
-import { FormsApiFormTranslation } from '@navikt/skjemadigitalisering-shared-domain';
+import { FormsApiTranslation } from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import useFormTranslationsApi from '../../api/useFormTranslationsApi';
 import { TimestampEvent } from '../../Forms/status/types';
 import { findLastSaveTimestamp } from './utils/utils';
 
 interface ContextValue {
-  storedTranslations: Record<string, FormsApiFormTranslation>;
-  translations: FormsApiFormTranslation[];
+  storedTranslations: Record<string, FormsApiTranslation>;
+  translations: FormsApiTranslation[];
   lastSave: TimestampEvent | undefined;
   isReady: boolean;
   loadTranslations: () => Promise<void>;
-  saveTranslation: (translation: FormsApiFormTranslation) => Promise<FormsApiFormTranslation>;
+  saveTranslation: (translation: FormsApiTranslation) => Promise<FormsApiTranslation>;
   deleteTranslation: (id: number) => Promise<void>;
 }
 
@@ -31,7 +31,7 @@ const defaultValue: ContextValue = {
 
 const FormTranslationsContext = createContext<ContextValue>(defaultValue);
 
-type State = { isReady: boolean; data?: FormsApiFormTranslation[]; lastSave?: TimestampEvent | undefined };
+type State = { isReady: boolean; data?: FormsApiTranslation[]; lastSave?: TimestampEvent | undefined };
 
 const FormTranslationsProvider = ({ children, formPath }: Props) => {
   const [state, setState] = useState<State>({ isReady: false });
@@ -48,7 +48,7 @@ const FormTranslationsProvider = ({ children, formPath }: Props) => {
     }
   }, [loadTranslations, state.isReady]);
 
-  const saveTranslation = async (translation: FormsApiFormTranslation): Promise<FormsApiFormTranslation> => {
+  const saveTranslation = async (translation: FormsApiTranslation): Promise<FormsApiTranslation> => {
     if (translation.id) {
       return translationsApi.put(formPath, translation);
     } else {
@@ -66,7 +66,7 @@ const FormTranslationsProvider = ({ children, formPath }: Props) => {
     }
   };
 
-  const storedTranslations = useMemo<Record<string, FormsApiFormTranslation>>(
+  const storedTranslations = useMemo<Record<string, FormsApiTranslation>>(
     () => (state.data ?? []).reduce((acc, translation) => ({ ...acc, [translation.key]: translation }), {}),
     [state.data],
   );

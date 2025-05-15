@@ -1,5 +1,5 @@
 import { htmlUtils, useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
-import { FormsApiGlobalTranslation, stringUtils, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
+import { FormsApiTranslation, stringUtils, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, ReactNode, useContext, useEffect, useReducer } from 'react';
 import { overwriteGlobalTranslations } from '../../import/api';
 import { useFeedbackEmit } from '../notifications/FeedbackContext';
@@ -12,14 +12,14 @@ import { validateGlobalTranslations, validateNewGlobalTranslation } from './util
 import { saveEachTranslation } from './utils/utils';
 
 interface Props {
-  initialChanges?: FormsApiGlobalTranslation[];
+  initialChanges?: FormsApiTranslation[];
   children: ReactNode;
 }
 
 type EditGlobalTranslationsContextValue = {
-  updateTranslation: (original: FormsApiGlobalTranslation, lang: TranslationLang, value: string) => void;
+  updateTranslation: (original: FormsApiTranslation, lang: TranslationLang, value: string) => void;
   errors: TranslationError[];
-  newTranslation: FormsApiGlobalTranslation;
+  newTranslation: FormsApiTranslation;
   editState: Status;
   updateNewTranslation: (lang: TranslationLang, value: string) => void;
   saveChanges: () => Promise<void>;
@@ -55,7 +55,7 @@ const EditGlobalTranslationsProvider = ({ initialChanges, children }: Props) => 
     }
   }, [initialChanges, state.status]);
 
-  const updateTranslation = (original: FormsApiGlobalTranslation, lang: TranslationLang, value: string) => {
+  const updateTranslation = (original: FormsApiTranslation, lang: TranslationLang, value: string) => {
     const { key } = original;
     const storedValue = storedTranslations[key]?.[lang];
     const currentChange = state.changes[key]?.[lang];
@@ -78,7 +78,7 @@ const EditGlobalTranslationsProvider = ({ initialChanges, children }: Props) => 
   const saveChanges = async () => {
     const newTranslationHasData = hasNewTranslationData(state);
     const newTranslationValidationError = newTranslationHasData && validateNewGlobalTranslation(state.new);
-    const translations = getTranslationsForSaving<FormsApiGlobalTranslation>(state);
+    const translations = getTranslationsForSaving(state);
     const validationErrors: TranslationError[] = [
       ...(newTranslationValidationError ? [newTranslationValidationError] : []),
       ...validateGlobalTranslations(translations),
