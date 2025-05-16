@@ -1,12 +1,11 @@
 import { Checkbox, CheckboxGroup } from '@navikt/ds-react';
-import { Activity, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { Activity, DataFetcherData, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { forwardRef, ReactNode, useCallback, useEffect, useState } from 'react';
 import { getActivities } from '../../api/register-data/activities';
 import { useComponentUtils } from '../../context/component/componentUtilsContext';
 import { getSelectedValuesAsList, getSelectedValuesMap } from '../../formio/components/utils';
 import { SkeletonList } from '../../index';
 import previewData from './preview-data.json';
-import { DataFetcherData } from './types';
 
 interface Props {
   label: ReactNode;
