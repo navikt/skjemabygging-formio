@@ -1,4 +1,5 @@
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { expect } from 'chai';
 
 describe('Data fetcher', () => {
   const LABEL_AKTIVITETSVELGER = 'Aktivitetsvelger (OBS! Skal ikke publiseres)';
@@ -191,6 +192,55 @@ describe('Data fetcher', () => {
 
       cy.clickNextStep();
       cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
+    });
+  });
+
+  describe('Summary page', () => {
+    describe('When API returns list containing data', () => {
+      beforeEach(() => {
+        cy.mocksUseRouteVariant('get-register-data-activities:success');
+        cy.visit('/fyllut/datafetchercontainer/aktivitetsoversikt?sub=digital');
+        cy.findByRole('group', { name: LABEL_AKTIVITETSVELGER })
+          .should('exist')
+          .within(() => {
+            cy.findByRole('checkbox', { name: 'Aktivitet 1' }).should('exist').check();
+          });
+        cy.clickSaveAndContinue();
+        cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
+      });
+
+      it('shows selected activity label', () => {
+        cy.findByRole('button', { name: 'Velg aktivitet' })
+          .should('exist')
+          .closest('div')
+          .within(() => {
+            cy.findAllByRole('listitem').should('have.length', 1).first().should('contain.text', 'Aktivitet 1');
+          });
+      });
+
+      it('allows user to edit selected activities', () => {
+        cy.findByRole('link', { name: 'Rediger velg aktivitet' }).should('exist').click();
+        cy.findByRole('group', { name: LABEL_AKTIVITETSVELGER })
+          .should('exist')
+          .within(() => {
+            cy.findByRole('checkbox', { name: 'Aktivitet 1' }).should('be.checked');
+            cy.findByRole('checkbox', { name: 'Aktivitet 2' }).should('not.be.checked');
+            cy.findByRole('checkbox', { name: 'Aktivitet 3' }).should('not.be.checked').check();
+          });
+        cy.clickSaveAndContinue();
+        cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
+
+        cy.findByRole('button', { name: 'Velg aktivitet' })
+          .should('exist')
+          .closest('div')
+          .within(() => {
+            cy.findAllByRole('listitem')
+              .should('have.length', 2)
+              .each((item, index) => {
+                expect(item.text()).to.equal(index === 0 ? 'Aktivitet 1' : 'Aktivitet 3');
+              });
+          });
+      });
     });
   });
 });

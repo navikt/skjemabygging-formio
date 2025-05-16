@@ -4,6 +4,7 @@ import {
   navFormUtils,
   Submission,
   SubmissionData,
+  SubmissionMetadata,
   TEXTS,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import EventEmitter from 'eventemitter3';
@@ -169,6 +170,21 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: Fil
     [setSubmission],
   );
 
+  const onSubmissionMetadataChanged = useCallback(
+    (submissionMetadata: SubmissionMetadata) => {
+      setSubmission((prevSubmission) => ({
+        ...prevSubmission,
+        data: {
+          ...prevSubmission?.data,
+        },
+        metadata: {
+          ...submissionMetadata,
+        },
+      }));
+    },
+    [setSubmission],
+  );
+
   const onConfirmCancel = useCallback(async () => {
     switch (showModal) {
       case 'save':
@@ -256,6 +272,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: Fil
             onShowErrors,
             onErrorSummaryFocus,
             onSubmissionChanged,
+            onSubmissionMetadataChanged,
           }}
         />
         <FormSavedStatus submission={submission} />

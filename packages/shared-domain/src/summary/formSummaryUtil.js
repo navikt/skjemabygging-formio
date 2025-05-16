@@ -3,6 +3,7 @@ import 'moment/locale/nb';
 import attachmentUtils from '../attachment';
 import TEXTS from '../texts';
 import currencyUtils from '../utils/currencyUtils';
+import { dataFetcher } from '../utils/data-fetcher/DataFetcherUtils';
 import dateUtils from '../utils/date';
 import FormioUtils from '../utils/formio/FormioUtils';
 import sanitizeJavaScriptCode from '../utils/formio/sanitize-javascript-code';
@@ -349,15 +350,12 @@ function handleFieldSet(
 
 const handleDataFetcher = (component, submission, formSummaryObject, parentContainerKey, translate) => {
   const { key, label, type } = component;
-  const dataValues = Object.fromEntries(
-    (submission.metadata?.dataFetcher?.[key]?.data ?? []).map(({ label, value }) => [value, label]),
-  );
   const componentKey = createComponentKey(parentContainerKey, key);
-  const submissionValue = FormioUtils.getValue(submission, componentKey) ?? {};
-  const selected = Object.entries(submissionValue)
-    .filter(([_, value]) => value)
-    .map(([key]) => dataValues[key] ?? key);
-
+  const fetcher = dataFetcher(componentKey, submission);
+  if (!fetcher.success) {
+    return formSummaryObject;
+  }
+  const selected = fetcher.getAllSelected().map((item) => item.label);
   if (selected.length === 0) {
     return formSummaryObject;
   }

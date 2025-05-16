@@ -3,6 +3,7 @@ import {
   NavFormType,
   Submission,
   SubmissionData,
+  SubmissionMetadata,
   Webform,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -36,6 +37,7 @@ interface EventProps {
   onSave?: ({ submission }: { submission: Submission }) => void;
   onChange?: (changedSubmission: Submission) => void;
   onSubmissionChanged?: (submissionData: SubmissionData) => void;
+  onSubmissionMetadataChanged?: (submissionMetadata: SubmissionMetadata) => void;
   onWizardPageSelected?: (panel: { path: string }) => void;
   onShowErrors?: (errorsFromForm: ComponentError[]) => void;
   onErrorSummaryFocus?: () => void;
