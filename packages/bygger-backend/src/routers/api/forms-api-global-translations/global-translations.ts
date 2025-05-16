@@ -1,6 +1,6 @@
 import {
   formioFormsApiUtils,
-  FormsApiGlobalTranslation,
+  FormsApiTranslation,
   GlobalTranslationsResourceContent,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { RequestHandler } from 'express';
@@ -19,7 +19,7 @@ const get: RequestHandler = async (req, res, next) => {
 
 const post: RequestHandler = async (req, res, next) => {
   const accessToken = req.headers.AzureAccessToken as string;
-  const { key, tag, nb, nn, en } = req.body as FormsApiGlobalTranslation;
+  const { key, tag, nb, nn, en } = req.body as FormsApiTranslation;
   const body = { key, tag, nb, nn, en };
   try {
     const translation = await globalTranslationsService.post(body, accessToken);
@@ -35,7 +35,7 @@ const post: RequestHandler = async (req, res, next) => {
 
 const put: RequestHandler = async (req, res, next) => {
   const { id } = req.params;
-  const { revision, nb, nn, en } = req.body as FormsApiGlobalTranslation;
+  const { revision, nb, nn, en } = req.body as FormsApiTranslation;
   const accessToken = req.headers.AzureAccessToken as string;
   const body = { nb, nn, en };
   try {

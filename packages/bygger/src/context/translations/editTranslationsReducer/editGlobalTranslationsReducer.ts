@@ -1,4 +1,4 @@
-import { FormsApiGlobalTranslation, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
+import { FormsApiTranslation, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
 import { TranslationError } from '../utils/errorUtils';
 import {
   createDefaultGlobalTranslation,
@@ -14,8 +14,8 @@ import {
 } from './reducerUtils';
 
 type GlobalTranslationState = {
-  changes: Record<string, FormsApiGlobalTranslation>;
-  new: FormsApiGlobalTranslation;
+  changes: Record<string, FormsApiTranslation>;
+  new: FormsApiTranslation;
   errors: TranslationError[];
   status: Status;
 };
@@ -27,7 +27,7 @@ type UpdateNewAction = {
 
 type GlobalTranslationAction =
   | InitializeAction
-  | UpdateAction<FormsApiGlobalTranslation>
+  | UpdateAction<FormsApiTranslation>
   | UpdateNewAction
   | ValidationErrorAction
   | SaveStartedAction
@@ -35,8 +35,8 @@ type GlobalTranslationAction =
 
 const getUpdatedGlobalTranslationChanges = (
   state: GlobalTranslationState,
-  args: { original: FormsApiGlobalTranslation; lang: TranslationLang; value: string },
-): Record<string, FormsApiGlobalTranslation> => {
+  args: { original: FormsApiTranslation; lang: TranslationLang; value: string },
+): Record<string, FormsApiTranslation> => {
   const { original, lang, value } = args;
   const existingChange = state.changes[original.key];
   return { ...state.changes, [original.key]: { ...original, ...existingChange, [lang]: value } };
@@ -45,7 +45,7 @@ const getUpdatedGlobalTranslationChanges = (
 const getUpdatedNew = (
   state: GlobalTranslationState,
   args: { lang: TranslationLang; value: string },
-): FormsApiGlobalTranslation => {
+): FormsApiTranslation => {
   const { lang, value } = args;
   if (lang === 'nb') {
     return { ...state.new, key: value, [lang]: value };
@@ -53,10 +53,7 @@ const getUpdatedNew = (
   return { ...state.new, [lang]: value };
 };
 
-const getResetNew = (
-  state: GlobalTranslationState,
-  args: { errors: TranslationError[] },
-): FormsApiGlobalTranslation => {
+const getResetNew = (state: GlobalTranslationState, args: { errors: TranslationError[] }): FormsApiTranslation => {
   if (args.errors.some((error) => error.key === state.new.key)) {
     return state.new;
   }

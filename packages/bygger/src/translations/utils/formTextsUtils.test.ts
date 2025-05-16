@@ -1,9 +1,4 @@
-import {
-  FormsApiFormTranslation,
-  FormsApiTranslation,
-  MockedComponentObjectForTest,
-  TEXTS,
-} from '@navikt/skjemadigitalisering-shared-domain';
+import { FormsApiTranslation, MockedComponentObjectForTest, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { getHeadersForExport, getRowsForExportFromForm } from './exportUtils';
 import { getFormTextsWithoutCountryNames } from './formTextsUtils';
 
@@ -499,7 +494,7 @@ describe('utils', () => {
   });
 
   describe('testGetTextsAndTranslationsForForm', () => {
-    const translations: FormsApiFormTranslation[] = [
+    const translations: FormsApiTranslation[] = [
       {
         key: 'Ja',
         globalTranslationId: 1,

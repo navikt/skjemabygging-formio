@@ -1,4 +1,4 @@
-import { FormsApiFormTranslation, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
+import { FormsApiTranslation, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import ApiError from '../../api/ApiError';
 import EditFormTranslationsProvider, { useEditFormTranslations } from './EditFormTranslationsContext';
@@ -30,7 +30,7 @@ vi.mock('../../notifications/FeedbackContext', () => {
 const TestComponent = ({
   updates = [],
 }: {
-  updates?: Array<[original: FormsApiFormTranslation, lang: TranslationLang, value: string]>;
+  updates?: Array<[original: FormsApiTranslation, lang: TranslationLang, value: string]>;
 }) => {
   const { updateTranslation, saveChanges, errors, editState } = useEditFormTranslations();
 

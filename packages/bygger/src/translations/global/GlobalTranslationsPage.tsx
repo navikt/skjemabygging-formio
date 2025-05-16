@@ -1,4 +1,4 @@
-import { FormsApiGlobalTranslation } from '@navikt/skjemadigitalisering-shared-domain';
+import { FormsApiTranslation } from '@navikt/skjemadigitalisering-shared-domain';
 import { useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { AppLayout } from '../../components/AppLayout';
@@ -23,7 +23,7 @@ const GlobalTranslationsPage = () => {
   const { tag = 'skjematekster' } = useParams();
   const { translationsPerTag, isReady, storedTranslations, deleteTranslation } = useGlobalTranslations();
 
-  const translations: FormsApiGlobalTranslation[] | undefined = translationsPerTag?.[tag];
+  const translations: FormsApiTranslation[] | undefined = translationsPerTag?.[tag];
 
   const unusedTranslations = useMemo(() => {
     if (translations) {

@@ -1,4 +1,4 @@
-import { FormsApiFormTranslation } from '@navikt/skjemadigitalisering-shared-domain';
+import { FormsApiTranslation } from '@navikt/skjemadigitalisering-shared-domain';
 import { RequestHandler } from 'express';
 import { HttpError as OldHttpError } from '../../../fetchUtils';
 import { formTranslationsService } from '../../../services';
@@ -17,7 +17,7 @@ const get: RequestHandler = async (req, res, next) => {
 const post: RequestHandler = async (req, res, next) => {
   const { formPath } = req.params;
   const accessToken = req.headers.AzureAccessToken as string;
-  const { key, nb, nn, en, globalTranslationId } = req.body as FormsApiFormTranslation;
+  const { key, nb, nn, en, globalTranslationId } = req.body as FormsApiTranslation;
   const body = globalTranslationId ? { key, globalTranslationId } : { key, nb, nn, en };
   try {
     const translation = await formTranslationsService.post(formPath, body, accessToken);
@@ -33,7 +33,7 @@ const post: RequestHandler = async (req, res, next) => {
 
 const put: RequestHandler = async (req, res, next) => {
   const { formPath, id } = req.params;
-  const { revision, nb, nn, en, globalTranslationId } = req.body as FormsApiFormTranslation;
+  const { revision, nb, nn, en, globalTranslationId } = req.body as FormsApiTranslation;
   const accessToken = req.headers.AzureAccessToken as string;
   const body = globalTranslationId ? { globalTranslationId } : { nb, nn, en };
   try {

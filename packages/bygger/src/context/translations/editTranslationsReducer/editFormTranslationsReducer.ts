@@ -1,4 +1,4 @@
-import { FormsApiFormTranslation, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
+import { FormsApiTranslation, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
 import { TranslationError } from '../utils/errorUtils';
 import {
   generateMap,
@@ -13,22 +13,22 @@ import {
 } from './reducerUtils';
 
 type FormTranslationState = {
-  changes: Record<string, FormsApiFormTranslation>;
+  changes: Record<string, FormsApiTranslation>;
   errors: TranslationError[];
   status: Status;
 };
 
 type FormTranslationAction =
   | InitializeAction
-  | UpdateAction<FormsApiFormTranslation>
+  | UpdateAction<FormsApiTranslation>
   | ValidationErrorAction
   | SaveStartedAction
   | SaveFinishedAction;
 
 const getUpdatedFormTranslationChanges = (
   state: FormTranslationState,
-  args: { original: FormsApiFormTranslation; lang: TranslationLang; value: string },
-): Record<string, FormsApiFormTranslation> => {
+  args: { original: FormsApiTranslation; lang: TranslationLang; value: string },
+): Record<string, FormsApiTranslation> => {
   const { original, lang, value } = args;
   const existingChange = state.changes[original.key];
   return { ...state.changes, [original.key]: { ...original, ...existingChange, [lang]: value } };

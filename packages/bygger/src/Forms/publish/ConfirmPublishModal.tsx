@@ -1,5 +1,5 @@
 import { ConfirmationModal } from '@navikt/skjemadigitalisering-shared-components';
-import { Form, FormsApiFormTranslation, localizationUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, FormsApiTranslation, localizationUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { useFeedbackEmit } from '../../context/notifications/FeedbackContext';
 import { useForm } from '../../context/old_form/FormContext';
 import { useFormTranslations } from '../../context/translations/FormTranslationsContext';
@@ -9,7 +9,7 @@ interface Props {
   open: boolean;
   onClose: () => void;
   publishLanguageCodeList: string[];
-  unsavedGlobalTranslations: FormsApiFormTranslation[];
+  unsavedGlobalTranslations: FormsApiTranslation[];
 }
 
 const ConfirmPublishModal = ({ open, onClose, form, publishLanguageCodeList, unsavedGlobalTranslations }: Props) => {
