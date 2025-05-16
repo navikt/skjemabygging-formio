@@ -171,9 +171,21 @@ const getMatchingItems = (items, matcher) => {
   );
 };
 
-const dataFetcher = (key, submission) => {
-  const userData = submission?.data?.[key];
-  const apiResult = submission?.metadata?.dataFetcher?.[key];
+/**
+ * This function is used to get a nested value from an object using a path,
+ * e.g., with obj being { foo: { bar: { baz: 42 } } }, ["foo","bar","baz"] will return 42,
+ * and ["foo","bar"] will return { baz: 42 }.
+ * @param pathElements a list of strings representing the path to the value
+ * @param obj
+ * @returns value on the given path
+ */
+const getNestedValue = (pathElements, obj) => pathElements.reduce((acc, key) => acc?.[key], obj);
+
+const dataFetcher = (componentPath, submission) => {
+  const pathElements = componentPath?.split('.') || [];
+  const userData = getNestedValue(pathElements, submission?.data);
+  const apiResult = getNestedValue(pathElements, submission?.metadata?.dataFetcher);
+
   const fetchSuccess = Array.isArray(apiResult?.data);
   const fetchFailure = !!apiResult?.fetchError;
   const fetchDisabled = !!apiResult?.fetchDisabled;
