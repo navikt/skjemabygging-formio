@@ -5,17 +5,43 @@ env:
   NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
-  cypress-run-fyllut:
+  setup-fyllut:
     runs-on: ubuntu-latest-8-cores
     permissions:
-      contents: 'read'
+      contents: read
       packages: read
+    outputs:
+      cypress-folders: ${{ steps.generate-cypress-folders.outputs.cypress-folders }}
     steps:
       - name: 'Checkout'
         uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '22.12.0'
+      - name: Generate list of folders containing cypress tests
+        id: generate-cypress-folders
+        run: |
+          echo cypress-folders=$(node bin/get-folders.mjs packages/fyllut/cypress/e2e) >> "$GITHUB_OUTPUT"
+
+  cypress-run-fyllut:
+    name: fyllut ${{ matrix.folder }}
+    runs-on: ubuntu-latest-8-cores
+    needs: [setup-fyllut]
+    permissions:
+      contents: read
+      packages: read
+    strategy:
+      fail-fast: false
+      matrix:
+        folder: ${{ fromJSON(needs.setup-fyllut.outputs.cypress-folders) }}
+    steps:
+      - name: 'Checkout'
+        uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.12.0'
+          cache: 'yarn'
+          cache-dependency-path: '**/yarn.lock'
           registry-url: https://npm.pkg.github.com/
           scope: '@navikt'
       - name: set timezone
@@ -24,8 +50,8 @@ jobs:
           timezoneLinux: 'Europe/Oslo'
       - name: 'Install dependencies'
         run: yarn --frozen-lockfile
-      - name: 'Build application'
-        run: yarn build
+      - name: 'Build fyllut'
+        run: yarn build:fyllut
       - name: 'Run mock server'
         run: yarn mocks:fyllut:no-cli &
       - name: 'Cypress tests (fyllut)'
@@ -35,8 +61,7 @@ jobs:
           start: yarn preview:fyllut
           wait-on: 'http://localhost:3001/fyllut/internal/isready'
           wait-on-timeout: 120
-          command: yarn cypress:fyllut
-          config: video=false
+          command: yarn cypress:fyllut --spec cypress/e2e/${{ matrix.folder }}/**/*
         env:
           FYLLUT_BACKEND_LOGLEVEL: ${{ runner.debug == '1' && 'debug' || 'error' }}
       - name: Upload screenshots
@@ -58,6 +83,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22.12.0'
+          cache: 'yarn'
+          cache-dependency-path: '**/yarn.lock'
           registry-url: https://npm.pkg.github.com/
           scope: '@navikt'
       - name: set timezone
@@ -66,8 +93,8 @@ jobs:
           timezoneLinux: 'Europe/Oslo'
       - name: 'Install dependencies'
         run: yarn --frozen-lockfile
-      - name: 'Build application'
-        run: yarn build
+      - name: 'Build bygger'
+        run: yarn build:bygger
       - name: 'Cypress tests (bygger)'
         uses: cypress-io/github-action@v6
         with:
@@ -76,8 +103,6 @@ jobs:
           wait-on: 'http://localhost:3000/internal/isready'
           wait-on-timeout: 120
           command: yarn cypress:bygger
-          config: video=false
-          config-file: cypress.config.ts
       - name: Upload screenshots
         uses: actions/upload-artifact@v4
         if: failure()
