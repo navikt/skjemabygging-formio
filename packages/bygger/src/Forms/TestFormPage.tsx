@@ -1,5 +1,6 @@
 import { Skeleton } from '@navikt/ds-react';
 import { FyllUtRouter, i18nUtils, SkeletonList } from '@navikt/skjemadigitalisering-shared-components';
+import { I18nTranslations } from '@navikt/skjemadigitalisering-shared-domain';
 import { useMemo } from 'react';
 import { AppLayout } from '../components/AppLayout';
 import RowLayout from '../components/layout/RowLayout';
@@ -12,7 +13,11 @@ export function TestFormPage({ form }) {
 
   const i18n = useMemo(() => {
     if (!(formTranslationIsReady && globalTranslationIsReady)) return undefined;
-    return i18nUtils.mapFormsApiTranslationsToI18n([...formTranslations, ...globalTranslations], true);
+    return i18nUtils.mapFormsApiTranslationsToI18n(
+      [...formTranslations, ...globalTranslations],
+      i18nUtils.initialData as I18nTranslations,
+      true,
+    );
   }, [formTranslationIsReady, formTranslations, globalTranslationIsReady, globalTranslations]);
 
   if (!(form && formTranslationIsReady && globalTranslationIsReady)) {

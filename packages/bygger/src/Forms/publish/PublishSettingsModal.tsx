@@ -70,7 +70,10 @@ const PublishSettingsModal = ({ open, onClose, onConfirm, form, unsavedGlobalTra
   }, [form]);
 
   useEffect(() => {
-    const i18n = i18nUtils.mapFormsApiTranslationsToI18n([...formTranslations]);
+    const i18n = i18nUtils.mapFormsApiTranslationsToI18n(
+      [...formTranslations],
+      i18nUtils.initialData as I18nTranslations,
+    );
     const unsavedGlobalTranslationKeys = unsavedGlobalTranslations.map((translation) => translation.key);
     const originalTextsExcludingUnsavedGlobalTranslations = allFormOriginalTexts.filter(
       (text) => !unsavedGlobalTranslationKeys.includes(text),

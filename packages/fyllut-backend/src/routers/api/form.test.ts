@@ -31,7 +31,7 @@ const testForm: NavFormType = {
 const translate = (text: string, textReplacements?: I18nTranslationReplacements) =>
   translationUtils.translateWithTextReplacements({
     translations: {},
-    originalText: text,
+    textOrKey: text,
     params: textReplacements,
     currentLanguage: 'nb-NO',
   });

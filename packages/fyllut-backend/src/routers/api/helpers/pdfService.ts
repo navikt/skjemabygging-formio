@@ -40,7 +40,7 @@ export const createPdf = async (
   const translate = (text: string, textReplacements?: I18nTranslationReplacements) =>
     translationUtils.translateWithTextReplacements({
       translations,
-      originalText: text,
+      textOrKey: text,
       params: textReplacements,
       currentLanguage: language,
     });

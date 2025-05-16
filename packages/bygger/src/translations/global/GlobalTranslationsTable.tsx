@@ -10,11 +10,12 @@ import { useStickyStyles } from '../components/styles';
 
 interface Props {
   translations: FormsApiTranslation[] | undefined;
+  isKeyBased: boolean;
   addNewRow: boolean;
   loading?: boolean;
 }
 
-const GlobalTranslationsTable = ({ translations, addNewRow, loading = false }: Props) => {
+const GlobalTranslationsTable = ({ translations, addNewRow, isKeyBased = false, loading = false }: Props) => {
   const [isFilterChecked, setIsFilterChecked] = useState(false);
   const [sortState, setSortState] = useState<SortState>();
   const { updateTranslation, errors, editState } = useEditGlobalTranslations();
@@ -60,6 +61,7 @@ const GlobalTranslationsTable = ({ translations, addNewRow, loading = false }: P
             translation={row}
             updateTranslation={updateTranslation}
             errors={errors}
+            isKeyBased={isKeyBased}
             editState={editState}
           />
         ))}

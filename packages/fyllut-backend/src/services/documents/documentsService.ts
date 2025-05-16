@@ -99,7 +99,7 @@ const createTranslate = (translations: I18nTranslationMap, language: string) => 
   return (text: string, textReplacements?: I18nTranslationReplacements) =>
     translationUtils.translateWithTextReplacements({
       translations,
-      originalText: text,
+      textOrKey: text,
       params: textReplacements,
       currentLanguage: languageCode,
     });

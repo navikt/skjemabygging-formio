@@ -1,16 +1,44 @@
-import { FormsApiTranslation, objectUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  externalStorageTexts,
+  FormsApiTranslation,
+  objectUtils,
+  TEXTS,
+  Tkey,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import { removeDuplicatesAfterFirstMatch } from '../../../translations/utils/translationsUtils';
 
-type GlobalTranslationTag = 'skjematekster' | 'grensesnitt' | 'statiske-tekster' | 'validering';
+type GlobalTranslationTag = 'introside' | 'skjematekster' | 'grensesnitt' | 'statiske-tekster' | 'validering';
 
 const TAG_TITLE: Record<GlobalTranslationTag, string> = {
+  introside: 'Introside',
   skjematekster: 'Globale skjematekster',
   grensesnitt: 'Globale grensesnittekster',
   'statiske-tekster': 'Globale statiske tekster',
   validering: 'Globale valideringstekster',
 };
 
-const generateAndPopulateTag = (
+const generateTranslation = (tagName: GlobalTranslationTag, stored: FormsApiTranslation, init: FormsApiTranslation) => {
+  const { key, nb, nn, en } = init;
+  if (stored && stored.tag === tagName) {
+    return { ...init, ...stored };
+  }
+  return { key, nb, nn, en, tag: tagName };
+};
+
+const populateTagFromInitValues = (
+  tagName,
+  keys: readonly Tkey[],
+  initValues: FormsApiTranslation[],
+  storedTranslationsMap: Record<string, FormsApiTranslation>,
+) => {
+  return keys.map((key) => {
+    const stored = storedTranslationsMap?.[key];
+    const init = initValues.find((translation) => translation.key === key);
+    return generateTranslation(tagName, stored, { ...init, key });
+  });
+};
+
+const populateTagFromTextObject = (
   tagName: GlobalTranslationTag,
   textObject: object,
   storedTranslationsMap: Record<string, FormsApiTranslation>,
@@ -19,10 +47,7 @@ const generateAndPopulateTag = (
     .flattenToArray(textObject, ([entryKey, value]) => {
       const key = tagName === 'validering' ? entryKey : value;
       const stored = storedTranslationsMap?.[key];
-      if (stored && stored.tag === tagName) {
-        return { nb: value, ...stored };
-      }
-      return { key, nb: value, tag: tagName };
+      return generateTranslation(tagName, stored, { key, nb: value });
     })
     .filter(removeDuplicatesAfterFirstMatch);
 };
@@ -31,11 +56,14 @@ const generateAndPopulateTags = (
   translationsMap: Record<string, FormsApiTranslation>,
 ): Record<GlobalTranslationTag, FormsApiTranslation[]> => {
   const { common, grensesnitt, statiske, pdfStatiske, validering } = TEXTS;
+  const { introside: introsideInit } = externalStorageTexts.initValues;
+  const { introside: introSideKeys } = externalStorageTexts.keys;
   return {
+    introside: populateTagFromInitValues('introside', introSideKeys, introsideInit, translationsMap),
     skjematekster: Object.values(translationsMap).filter((translation) => translation.tag === 'skjematekster'),
-    grensesnitt: generateAndPopulateTag('grensesnitt', { ...common, ...grensesnitt }, translationsMap),
-    'statiske-tekster': generateAndPopulateTag('statiske-tekster', { ...statiske, pdfStatiske }, translationsMap),
-    validering: generateAndPopulateTag('validering', { validering }, translationsMap),
+    grensesnitt: populateTagFromTextObject('grensesnitt', { ...common, ...grensesnitt }, translationsMap),
+    'statiske-tekster': populateTagFromTextObject('statiske-tekster', { ...statiske, pdfStatiske }, translationsMap),
+    validering: populateTagFromTextObject('validering', { validering }, translationsMap),
   };
 };
 

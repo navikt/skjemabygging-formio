@@ -4,6 +4,10 @@ export const TranslationsMenu = () => {
   const basePath = '/oversettelser';
   return (
     <>
+      <MenuLink to={`${basePath}/introside`} dataKey={'introside'} noIconStyling={true}>
+        Introside
+      </MenuLink>
+
       <MenuLink to={`${basePath}/skjematekster`} dataKey={'skjematekster'} noIconStyling={true}>
         Skjematekster
       </MenuLink>

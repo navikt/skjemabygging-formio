@@ -1,4 +1,4 @@
-import { Component, ComponentError, CustomLabels, FieldSize } from '@navikt/skjemadigitalisering-shared-domain';
+import { Component, ComponentError, CustomLabels, FieldSize, Tkey } from '@navikt/skjemadigitalisering-shared-domain';
 import Field from 'formiojs/components/_classes/field/Field';
 import { TFunction, TOptions } from 'i18next';
 import FormioReactComponent from './FormioReactComponent';
@@ -42,7 +42,7 @@ class BaseComponent extends FormioReactComponent {
     return super.t(...params);
   };
 
-  translate(key?: string, options: TOptions = {}): ReturnType<TFunction> {
+  translate(key?: string | Tkey, options: TOptions = {}): ReturnType<TFunction> {
     if (Object.keys(options).length === 0) {
       return super.t(key);
     }

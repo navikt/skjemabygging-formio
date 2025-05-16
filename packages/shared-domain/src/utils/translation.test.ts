@@ -26,7 +26,7 @@ describe('translation', () => {
       expect(
         translationUtils.translateWithTextReplacements({
           translations,
-          originalText: 'singleReplacement',
+          textOrKey: 'singleReplacement',
           params: textReplacements,
         }),
       ).toBe('You must fill in: replacedField');
@@ -36,7 +36,7 @@ describe('translation', () => {
       expect(
         translationUtils.translateWithTextReplacements({
           translations,
-          originalText: 'noReplacement',
+          textOrKey: 'noReplacement',
           params: textReplacements,
         }),
       ).toBe('No replacements');
@@ -46,7 +46,7 @@ describe('translation', () => {
       expect(
         translationUtils.translateWithTextReplacements({
           translations,
-          originalText: 'This text is not translated',
+          textOrKey: 'This text is not translated',
           params: textReplacements,
         }),
       ).toBe('This text is not translated');
@@ -55,7 +55,7 @@ describe('translation', () => {
     it('should handle multiple replacements in the same text', () => {
       const translatedText = translationUtils.translateWithTextReplacements({
         translations,
-        originalText: 'Replace {{field1}} and {{field2}}',
+        textOrKey: 'Replace {{field1}} and {{field2}}',
         params: textReplacements,
       });
       expect(translatedText).toBe('Replace replacedField and anotherReplacedField');
@@ -64,7 +64,7 @@ describe('translation', () => {
     it('should handle missing replacements gracefully', () => {
       const translatedText = translationUtils.translateWithTextReplacements({
         translations,
-        originalText: 'Replace {{field1}} and {{nonExistentField}}',
+        textOrKey: 'Replace {{field1}} and {{nonExistentField}}',
         params: textReplacements,
       });
       expect(translatedText).toBe('Replace replacedField and {{nonExistentField}}');
@@ -79,7 +79,7 @@ describe('translation', () => {
       expect(
         translationUtils.translateWithTextReplacements({
           translations,
-          originalText: 'singleReplacement',
+          textOrKey: 'singleReplacement',
           params: extraReplacements,
         }),
       ).toBe('You must fill in: replacedField');
@@ -91,7 +91,7 @@ describe('translation', () => {
       };
       const translatedText = translationUtils.translateWithTextReplacements({
         translations: translationsWithRepeatedPlaceholder,
-        originalText: 'repeatedPlaceholder',
+        textOrKey: 'repeatedPlaceholder',
         params: textReplacements,
       });
       expect(translatedText).toBe('Replace replacedField with replacedField');
@@ -103,7 +103,7 @@ describe('translation', () => {
       expect(
         translationUtils.translateWithTextReplacements({
           translations: translationsWithLanguageCode,
-          originalText: 'singleReplacement',
+          textOrKey: 'singleReplacement',
           params: textReplacements,
           currentLanguage: 'en',
         }),
@@ -112,7 +112,7 @@ describe('translation', () => {
       expect(
         translationUtils.translateWithTextReplacements({
           translations: translationsWithLanguageCode,
-          originalText: 'singleReplacement',
+          textOrKey: 'singleReplacement',
           params: textReplacements,
           currentLanguage: 'nb-NO',
         }),

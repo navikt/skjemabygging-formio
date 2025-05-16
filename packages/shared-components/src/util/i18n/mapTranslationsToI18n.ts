@@ -1,6 +1,5 @@
 import { FormsApiTranslation, I18nTranslationMap, I18nTranslations } from '@navikt/skjemadigitalisering-shared-domain';
 import { getCountries } from '../countries/countries';
-import i18nData from './i18nData';
 
 type FormioFormatLang = 'nb-NO' | 'nn-NO' | 'en';
 
@@ -23,8 +22,8 @@ const populateCountries = (translations: I18nTranslations): I18nTranslations => 
 
 const mapFormsApiTranslationsToI18n = (
   translations: FormsApiTranslation[],
+  initial: I18nTranslations = { 'nb-NO': {}, 'nn-NO': {}, en: {} },
   includeCountryNames: boolean = false,
-  initial: I18nTranslations = i18nData as I18nTranslations,
 ): I18nTranslations => {
   const i18nTranslations = translations.reduce<I18nTranslations>((acc, translation) => {
     return Object.fromEntries(
