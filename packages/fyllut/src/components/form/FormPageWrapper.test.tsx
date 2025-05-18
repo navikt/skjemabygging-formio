@@ -3,7 +3,7 @@ import { render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { vi } from 'vitest';
 import httpFyllut from '../../util/httpFyllut';
-import { FormPageWrapper } from './FormPageWrapper';
+import FormPageWrapper from './FormPageWrapper';
 
 const RESPONSE_HEADERS = {
   headers: {
