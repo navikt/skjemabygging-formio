@@ -5,8 +5,11 @@ import type { FetchHeader, FetchOptions } from './api/util/http/http';
 import http from './api/util/http/http';
 import ButtonWithSpinner from './components/button/ButtonWithSpinner';
 import ErrorPage from './components/error/page/ErrorPage';
+import { FormContainer } from './components/form/container/FormContainer';
+import { FormTitle } from './components/form/form-title/FormTitle';
 import InnerHtml from './components/inner-html/InnerHtml';
 import LanguageSelector from './components/language-selector/LanguageSelector';
+import LinkButton from './components/link-button/LinkButton';
 import LoadingComponent from './components/loading/LoadingComponent';
 import SkeletonList from './components/loading/SkeletonList';
 import Modal from './components/modal/Modal';
@@ -42,6 +45,8 @@ export {
   ErrorPage,
   FormBuilderOptions,
   FormBuilderSchemas,
+  FormContainer,
+  FormTitle,
   formUtils,
   FyllUtRouter,
   getCountries,
@@ -52,6 +57,7 @@ export {
   InnerHtml,
   LanguageSelector,
   LanguagesProvider,
+  LinkButton,
   listSort,
   LoadingComponent,
   makeStyles,

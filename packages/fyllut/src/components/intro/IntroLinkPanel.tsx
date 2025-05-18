@@ -1,0 +1,59 @@
+import { ArrowRightIcon } from '@navikt/aksel-icons';
+import { Link } from '@navikt/ds-react';
+import { makeStyles } from '@navikt/skjemadigitalisering-shared-components';
+import classNames from 'classnames';
+import React from 'react';
+
+interface Props {
+  onClick: () => void;
+  title: string;
+  description: string;
+  className?: string;
+  href?: string;
+}
+
+const useStyles = makeStyles({
+  container: {
+    borderRadius: '8px',
+    border: '1px solid var(--a-border-subtle)',
+    display: 'flex',
+    padding: 'var(--a-spacing-4)',
+    gap: 'var(--a-spacing-4)',
+    alignItems: 'center',
+    cursor: 'pointer',
+  },
+  content: {
+    flex: '1 1 auto',
+  },
+  description: {
+    margin: '0',
+  },
+  arrowIcon: {
+    color: 'var(--a-surface-action)',
+    flex: '0 0 auto',
+  },
+});
+
+const IntroLinkPanel = ({ onClick, title, description, className, href }: Props) => {
+  const styles = useStyles();
+
+  return (
+    <div className={classNames(styles.container, className)} onClick={onClick}>
+      <div className={styles.content}>
+        <Link
+          href={href ?? '#'}
+          onClick={(e: React.MouseEvent) => {
+            e.preventDefault();
+            onClick();
+          }}
+        >
+          {title}
+        </Link>
+        <p className={styles.description}>{description}</p>
+      </div>
+      <ArrowRightIcon title="a11y-title" fontSize="1.5rem" className={styles.arrowIcon} />
+    </div>
+  );
+};
+
+export default IntroLinkPanel;

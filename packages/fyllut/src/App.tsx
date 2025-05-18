@@ -2,7 +2,7 @@ import '@navikt/ds-css';
 import { makeStyles, Styles } from '@navikt/skjemadigitalisering-shared-components';
 import { Route, Routes } from 'react-router-dom';
 import { ErrorPageWrapper } from './components/errors/ErrorPageWrapper';
-import { FormPageWrapper } from './components/form/FormPageWrapper';
+import FormPageWrapper from './components/form/FormPageWrapper';
 import { FormsPage } from './components/forms/FormsPage';
 
 const useStyles = makeStyles({
