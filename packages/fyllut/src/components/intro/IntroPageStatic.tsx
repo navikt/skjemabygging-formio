@@ -48,7 +48,7 @@ const IntroPageStatic = () => {
       // important to reload page due to forced idporten login if sub=digital
       window.location.href = `${baseUrl}${startUrl}?${searchParams.toString()}`;
     } else {
-      navigate(startUrl);
+      navigate(`${startUrl}?${searchParams.toString()}`);
     }
   };
 

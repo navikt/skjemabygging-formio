@@ -1,4 +1,5 @@
-import { useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
+import { useAppConfig, useLanguages } from '@navikt/skjemadigitalisering-shared-components';
+import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useLocation, useSearchParams } from 'react-router-dom';
 import IntroLinkPanel from './IntroLinkPanel';
 import { IntroPageState, useIntroPage } from './IntroPageContext';
@@ -8,6 +9,7 @@ const SelectSubmissionType = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const location = useLocation();
   const { baseUrl } = useAppConfig();
+  const { translate } = useLanguages();
 
   const selectLinkPanel = (state: IntroPageState) => {
     setState(state);
@@ -32,15 +34,15 @@ const SelectSubmissionType = () => {
       <IntroLinkPanel
         onClick={() => selectLinkPanel(IntroPageState.DIGITAL)}
         href={`${baseUrl}${location.pathname}?sub=digital`}
-        title="Logg inn og send digitalt"
-        description="Det er enklest og raskest å søke digitalt."
+        title={translate(TEXTS.grensesnitt.introPage.sendDigital)}
+        description={translate(TEXTS.grensesnitt.introPage.sendDigitalDescription)}
         className="mb-4"
       />
       <IntroLinkPanel
         onClick={() => selectLinkPanel(IntroPageState.PAPER)}
         href={`${baseUrl}${location.pathname}?sub=paper`}
-        title="Fyll ut digitalt og send i posten"
-        description="Du fyller ut søknaden før du skriver den ut."
+        title={translate(TEXTS.grensesnitt.introPage.sendOnPaper)}
+        description={translate(TEXTS.grensesnitt.introPage.sendOnPaperDescription)}
       />
     </>
   );

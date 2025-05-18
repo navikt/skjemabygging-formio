@@ -20,7 +20,6 @@ describe('TranslationService', () => {
         Avslutt: 'Exit',
         'Bor du i Norge?': 'Do you live in Norway?',
         'E-post': 'E-mail',
-        'Laster...': 'Loading...',
         'Legg ved': 'Attach',
         Oppsummering: 'Summary',
         Organisasjonsnummer: 'Organisation number',
