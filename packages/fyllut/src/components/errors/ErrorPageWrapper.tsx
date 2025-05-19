@@ -1,10 +1,8 @@
 import { LanguagesProvider } from '@navikt/skjemadigitalisering-shared-components';
-import { useEffect, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { loadGlobalTranslationsForLanguages } from '../../util/api';
-import { InternalServerErrorPage } from './InternalServerErrorPage';
-import { NotFoundPage } from './NotFoundPage';
 
-export function ErrorPageWrapper({ statusCode }: { statusCode: number }) {
+export function ErrorPageWrapper({ children }: { children: ReactNode }) {
   const [translations, setTranslations] = useState({});
 
   const fetchTranslations = async () => {
@@ -16,9 +14,5 @@ export function ErrorPageWrapper({ statusCode }: { statusCode: number }) {
     fetchTranslations();
   }, []);
 
-  return (
-    <LanguagesProvider translations={translations}>
-      {statusCode === 404 ? <NotFoundPage /> : <InternalServerErrorPage />}
-    </LanguagesProvider>
-  );
+  return <LanguagesProvider translations={translations}>{children}</LanguagesProvider>;
 }

@@ -1,4 +1,4 @@
-const capitalize = (str: string) => str[0].toUpperCase() + str.slice(1);
+import stringUtils from './stringUtils';
 
 export type FeatureTogglesMap = {
   [key: string]: boolean;
@@ -12,7 +12,7 @@ const toFeatureToggles = (commaSeparatedFeatureNames: string | undefined | null)
       const splits = feature.split('=');
       const featureName = splits[0].trim();
       const enabled = splits.length === 1 || splits[1].trim() === 'true';
-      featureToggles[`enable${capitalize(featureName)}`] = enabled;
+      featureToggles[`enable${stringUtils.capitalize(featureName)}`] = enabled;
     });
   }
   return featureToggles;

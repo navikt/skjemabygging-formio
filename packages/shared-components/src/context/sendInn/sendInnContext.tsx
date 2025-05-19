@@ -57,6 +57,7 @@ const SendInnProvider = ({
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
+  const soknadNotFoundUrl = `${baseUrl}/ingen-soknad-funnet`;
 
   const isMellomlagringAvailable = app === 'fyllut' && submissionMethod === 'digital';
   // isMellomlagringReady is true if we either have successfully fetched or created mellomlagring, or if mellomlagring is not enabled
@@ -121,12 +122,15 @@ const SendInnProvider = ({
           setInitStatus('done');
         }
       } catch (error: any) {
-        // Redirect to start of schema if the application is not found. Want a full refresh here to not have to clear the existing state
-        if (error.status == 404) {
+        if (error.status === 404) {
+          logger?.info(
+            `${innsendingsIdFromParams}: Mellomlagring does not exist. Redirects to ${soknadNotFoundUrl}`,
+            error as Error,
+          );
           const formPath = pathname.split('/')[1];
           const url = formPath ? `${baseUrl}/${formPath}` : `${baseUrl}`;
-          logger?.info(`${innsendingsIdFromParams}: Mellomlagring does not exist. Redirects to ${url}`, error as Error);
-          window.location.assign(url);
+
+          navigate('/soknad-ikke-funnet', { state: { url } });
           return;
         }
         logger?.error(`${innsendingsIdFromParams}: Failed to retrieve mellomlagring`, error as Error);
