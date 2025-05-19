@@ -1,7 +1,6 @@
 import { Heading } from '@navikt/ds-react';
 import {
   Enhet,
-  InnsendingType,
   NavFormType,
   Submission,
   SubmissionType,
@@ -45,14 +44,9 @@ const useStyles = makeStyles({
   },
 });
 
-const submissionTypeIncludesPaperOrIsNoSubmission = (
-  deprecatedInnsendingsType?: InnsendingType,
-  submissionTypes?: SubmissionType[],
-) =>
-  (deprecatedInnsendingsType && deprecatedInnsendingsType !== 'KUN_DIGITAL') ||
-  (submissionTypes &&
-    (submissionTypesUtils.isNoneSubmission(submissionTypes) ||
-      submissionTypesUtils.isPaperSubmission(submissionTypes)));
+const submissionTypeIncludesPaperOrIsNoSubmission = (submissionTypes?: SubmissionType[]) =>
+  submissionTypes &&
+  (submissionTypesUtils.isNoneSubmission(submissionTypes) || submissionTypesUtils.isPaperSubmission(submissionTypes));
 
 export function PrepareLetterPage({ form, submission, translations, formUrl }: Props) {
   useEffect(() => scrollToAndSetFocus('main', 'start'), []);
@@ -64,16 +58,9 @@ export function PrepareLetterPage({ form, submission, translations, formUrl }: P
 
   const styles = useStyles();
 
-  const {
-    enhetMaVelgesVedPapirInnsending,
-    enhetstyper,
-    skjemanummer,
-    uxSignalsId,
-    uxSignalsInnsending,
-    uxSignalsSubmissionTypes,
-  } = form.properties;
-  const includeUxSignals =
-    !!uxSignalsId && submissionTypeIncludesPaperOrIsNoSubmission(uxSignalsInnsending, uxSignalsSubmissionTypes);
+  const { enhetMaVelgesVedPapirInnsending, enhetstyper, skjemanummer, uxSignalsId, uxSignalsSubmissionTypes } =
+    form.properties;
+  const includeUxSignals = !!uxSignalsId && submissionTypeIncludesPaperOrIsNoSubmission(uxSignalsSubmissionTypes);
 
   useEffect(() => {
     if (enhetMaVelgesVedPapirInnsending) {
