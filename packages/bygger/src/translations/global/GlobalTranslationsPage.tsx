@@ -28,7 +28,7 @@ const GlobalTranslationsPage = () => {
 
   const initialChanges = useMemo(() => {
     if (isReady) {
-      const translationsWithInitValues = translationsPerTag['introside'];
+      const translationsWithInitValues = translationsPerTag['introPage'];
       return Object.values(translationsWithInitValues).filter((translation) => {
         return !Object.keys(storedTranslations)?.includes(translation.key);
       });
@@ -68,7 +68,7 @@ const GlobalTranslationsPage = () => {
             )}
             <GlobalTranslationsTable
               translations={translations}
-              isKeyBased={tag === 'introside'}
+              isKeyBased={tag === 'introPage'}
               addNewRow={tag === 'skjematekster'}
               loading={!isReady}
             />

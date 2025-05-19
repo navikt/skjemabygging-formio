@@ -3,7 +3,7 @@ import { FormioResource } from '../resource';
 export type Language = 'nb-NO' | 'nn-NO' | 'en';
 export type TranslationScope = 'global' | 'local' | 'component-countryName';
 export type TranslationTag =
-  | 'introside'
+  | 'introPage'
   | 'skjematekster'
   | 'grensesnitt'
   | 'statiske-tekster'

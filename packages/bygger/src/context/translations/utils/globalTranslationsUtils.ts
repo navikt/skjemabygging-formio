@@ -7,17 +7,21 @@ import {
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { removeDuplicatesAfterFirstMatch } from '../../../translations/utils/translationsUtils';
 
-type GlobalTranslationTag = 'introside' | 'skjematekster' | 'grensesnitt' | 'statiske-tekster' | 'validering';
+type GlobalTranslationTag = 'introPage' | 'skjematekster' | 'grensesnitt' | 'statiske-tekster' | 'validering';
 
 const TAG_TITLE: Record<GlobalTranslationTag, string> = {
-  introside: 'Introside',
+  introPage: 'Introside',
   skjematekster: 'Globale skjematekster',
   grensesnitt: 'Globale grensesnittekster',
   'statiske-tekster': 'Globale statiske tekster',
   validering: 'Globale valideringstekster',
 };
 
-const generateTranslation = (tagName: GlobalTranslationTag, stored: FormsApiTranslation, init: FormsApiTranslation) => {
+const generateTranslation = (
+  tagName: GlobalTranslationTag,
+  stored: FormsApiTranslation,
+  init: FormsApiTranslation,
+): FormsApiTranslation => {
   const { key, nb, nn, en } = init;
   if (stored && stored.tag === tagName) {
     return { ...init, ...stored };
@@ -26,11 +30,11 @@ const generateTranslation = (tagName: GlobalTranslationTag, stored: FormsApiTran
 };
 
 const populateTagFromInitValues = (
-  tagName,
+  tagName: GlobalTranslationTag,
   keys: readonly Tkey[],
   initValues: FormsApiTranslation[],
   storedTranslationsMap: Record<string, FormsApiTranslation>,
-) => {
+): FormsApiTranslation[] => {
   return keys.map((key) => {
     const stored = storedTranslationsMap?.[key];
     const init = initValues.find((translation) => translation.key === key);
@@ -56,10 +60,10 @@ const generateAndPopulateTags = (
   translationsMap: Record<string, FormsApiTranslation>,
 ): Record<GlobalTranslationTag, FormsApiTranslation[]> => {
   const { common, grensesnitt, statiske, pdfStatiske, validering } = TEXTS;
-  const { introside: introsideInit } = externalStorageTexts.initValues;
-  const { introside: introSideKeys } = externalStorageTexts.keys;
+  const { introPage: introPageInit } = externalStorageTexts.initValues;
+  const { introPage: introPageKeys } = externalStorageTexts.keys;
   return {
-    introside: populateTagFromInitValues('introside', introSideKeys, introsideInit, translationsMap),
+    introPage: populateTagFromInitValues('introPage', introPageKeys, introPageInit, translationsMap),
     skjematekster: Object.values(translationsMap).filter((translation) => translation.tag === 'skjematekster'),
     grensesnitt: populateTagFromTextObject('grensesnitt', { ...common, ...grensesnitt }, translationsMap),
     'statiske-tekster': populateTagFromTextObject('statiske-tekster', { ...statiske, pdfStatiske }, translationsMap),

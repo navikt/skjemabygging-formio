@@ -4,7 +4,7 @@ export const TranslationsMenu = () => {
   const basePath = '/oversettelser';
   return (
     <>
-      <MenuLink to={`${basePath}/introside`} dataKey={'introside'} noIconStyling={true}>
+      <MenuLink to={`${basePath}/introPage`} dataKey={'introPage'} noIconStyling={true}>
         Introside
       </MenuLink>
 

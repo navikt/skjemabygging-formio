@@ -28,7 +28,7 @@ interface ContextValue {
 const defaultValue: ContextValue = {
   translations: [],
   storedTranslations: {},
-  translationsPerTag: { introside: [], skjematekster: [], grensesnitt: [], 'statiske-tekster': [], validering: [] },
+  translationsPerTag: { introPage: [], skjematekster: [], grensesnitt: [], 'statiske-tekster': [], validering: [] },
   isReady: false,
   loadTranslations: () => Promise.resolve(),
   saveTranslation: () => Promise.reject(),

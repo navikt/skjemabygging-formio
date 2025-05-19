@@ -1,11 +1,6 @@
-import { FormsApiTranslation } from '../../translations/FormsApiTranslation';
-import { IntroSideTkey } from './keys';
+import { KeyBasedFormsApiTranslation } from './index';
 
-type KeyBasedFormsApiTranslation<Key> = FormsApiTranslation & {
-  key: Key;
-};
-
-const introside: KeyBasedFormsApiTranslation<IntroSideTkey>[] = [
+const introPage: KeyBasedFormsApiTranslation[] = [
   {
     key: 'introPage.guidePanel.bodyText',
     nb: 'Velkommen til søknaden',
@@ -32,8 +27,4 @@ const introside: KeyBasedFormsApiTranslation<IntroSideTkey>[] = [
   },
 ];
 
-const initValues = {
-  introside,
-};
-
-export { initValues };
+export default introPage;

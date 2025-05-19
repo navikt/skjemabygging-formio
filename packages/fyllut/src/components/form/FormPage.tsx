@@ -12,7 +12,7 @@ function FormPage({ form }) {
       const availableLanguages = Object.keys(localTranslationsForForm);
       const countryNameTranslations = await loadCountryNamesForLanguages(availableLanguages);
       const initValuesForKeyBasedGlobalTranslations = i18nUtils.mapFormsApiTranslationsToI18n(
-        externalStorageTexts.initValues.introside,
+        externalStorageTexts.initValues.introPage,
       );
       const globalTranslations = await loadGlobalTranslationsForLanguages(availableLanguages);
 
