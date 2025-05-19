@@ -8,6 +8,7 @@ import {
 import fetch from 'node-fetch';
 import { ConfigType } from '../config/types';
 import { loadFileFromDirectory } from '../utils/forms';
+import { isValidPath } from '../utils/url';
 
 const toFyllutLang = (lang: string): Language => {
   switch (lang) {
@@ -48,7 +49,14 @@ class TranslationsService {
     this._config = config;
   }
 
+  private validateFormPath(formPath: string) {
+    if (!isValidPath(formPath)) {
+      throw new Error(`Invalid formPath: ${formPath}`);
+    }
+  }
+
   async fetchTranslationsFromFormioApi(formPath: string) {
+    this.validateFormPath(formPath);
     const { formioApiServiceUrl } = this._config;
     const response = await fetch(`${formioApiServiceUrl}/language/submission?data.form=${formPath}&limit=1000`, {
       method: 'GET',
@@ -62,6 +70,7 @@ class TranslationsService {
 
   async fetchTranslationsFromFormsApi(formPath: string): Promise<I18nTranslations> {
     const { formsApiUrl } = this._config;
+    this.validateFormPath(formPath);
     const response = await fetch(`${formsApiUrl}/v1/forms/${formPath}/translations`, {
       method: 'GET',
     });
@@ -133,6 +142,7 @@ class TranslationsService {
 
   async loadTranslation(formPath: string): Promise<I18nTranslations> {
     const { useFormsApiStaging, useFormioMockApi, translationDir } = this._config;
+    this.validateFormPath(formPath);
     if (useFormsApiStaging) {
       return this.fetchTranslationsFromFormsApi(formPath);
     }
@@ -153,6 +163,7 @@ class TranslationsService {
   }
 
   async getTranslationsForLanguage(formPath: string, lang: string): Promise<Record<string, string>> {
+    this.validateFormPath(formPath);
     const fyllutLang = toFyllutLang(lang);
     const formTranslations = (await this.loadTranslation(formPath))[fyllutLang];
     const globalTranslations = (await this.loadGlobalTranslations(fyllutLang))[fyllutLang];
