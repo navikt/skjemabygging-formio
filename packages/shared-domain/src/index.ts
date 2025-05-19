@@ -26,7 +26,6 @@ import {
   FormSignaturesType,
   FormsResponseForm,
   FyllutState,
-  InnsendingType,
   InputMode,
   MellomlagringError,
   NavFormType,
@@ -38,6 +37,7 @@ import {
   ResourceAccess,
   Submission,
   SubmissionData,
+  SubmissionMetadata,
   SubmissionMethod,
   SubmissionType,
   UsageContext,
@@ -121,6 +121,8 @@ import {
   TranslationLang,
 } from './translations/FormsApiTranslation';
 import currencyUtils from './utils/currencyUtils';
+import type { DataFetcherData, DataFetcherElement, DataFetcherUtil } from './utils/data-fetcher';
+import { dataFetcherUtils } from './utils/data-fetcher';
 import dateUtils from './utils/date';
 import featureUtils, { FeatureTogglesMap } from './utils/featureUtils';
 import formDiffingTool, { FormSettingsDiff } from './utils/formDiffingTool';
@@ -143,6 +145,7 @@ export {
   attachmentUtils,
   configUtils,
   currencyUtils,
+  dataFetcherUtils,
   dateUtils,
   DeclarationType,
   externalStorageTexts,
@@ -191,6 +194,9 @@ export type {
   ComponentValue,
   ConfigType,
   CustomLabels,
+  DataFetcherData,
+  DataFetcherElement,
+  DataFetcherUtil,
   DependencyType,
   DisplayType,
   DrivingListPeriod,
@@ -220,7 +226,6 @@ export type {
   I18nTranslationMap,
   I18nTranslationReplacements,
   I18nTranslations,
-  InnsendingType,
   InputMode,
   KjentBruker,
   Language,
@@ -254,6 +259,7 @@ export type {
   SubmissionData,
   SubmissionIdentity,
   SubmissionMaalgruppe,
+  SubmissionMetadata,
   SubmissionMethod,
   SubmissionType,
   SubmissionYourInformation,

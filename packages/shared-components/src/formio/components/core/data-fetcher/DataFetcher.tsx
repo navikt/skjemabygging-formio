@@ -1,6 +1,5 @@
-import { SubmissionData } from '@navikt/skjemadigitalisering-shared-domain';
+import { DataFetcherData, SubmissionData } from '@navikt/skjemadigitalisering-shared-domain';
 import NavDataFetcher from '../../../../components/data-fetcher/DataFetcher';
-import { DataFetcherData } from '../../../../components/data-fetcher/types';
 import { ComponentUtilsProvider } from '../../../../context/component/componentUtilsContext';
 import utils from '../../../overrides/utils-overrides/utils-overrides';
 import BaseComponent from '../../base/BaseComponent';
@@ -59,6 +58,7 @@ class DataFetcher extends BaseComponent {
     if (this.path && !utils.dataFetcher(this.path, submission).apiResult) {
       const metadataObject = createMetadataObject(this.path, data);
       Object.assign(submission.metadata.dataFetcher, metadataObject);
+      this.emit('submissionMetadataChanged', { ...submission.metadata });
     }
     this.triggerChange();
     this.redraw();

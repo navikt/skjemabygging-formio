@@ -50,5 +50,12 @@ describe('TranslationService', () => {
       const translationsForLanguage = await translationsService.getTranslationsForLanguage('nav123457', 'nn');
       expect(translationsForLanguage).toEqual({});
     });
+
+    it('fails when formPath is invalid', async () => {
+      const translationsService = new TranslationsService(testConfig);
+      await expect(translationsService.getTranslationsForLanguage('&$%', 'nn')).rejects.toThrow(
+        'Invalid formPath: &$%',
+      );
+    });
   });
 });
