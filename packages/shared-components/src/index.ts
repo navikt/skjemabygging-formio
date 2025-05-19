@@ -8,7 +8,6 @@ import ErrorPage from './components/error/page/ErrorPage';
 import { FormContainer } from './components/form/container/FormContainer';
 import { FormTitle } from './components/form/form-title/FormTitle';
 import InnerHtml from './components/inner-html/InnerHtml';
-import LanguageSelector from './components/language-selector/LanguageSelector';
 import LinkButton from './components/link-button/LinkButton';
 import LoadingComponent from './components/loading/LoadingComponent';
 import SkeletonList from './components/loading/SkeletonList';
@@ -17,7 +16,7 @@ import ConfirmationModal from './components/modal/confirmation/ConfirmationModal
 import useModal from './components/modal/useModal';
 import NavForm from './components/nav-form/NavForm';
 import { AppConfigProvider, useAppConfig } from './context/config/configContext';
-import { LanguagesProvider, useLanguages } from './context/languages';
+import { LanguageSelector, LanguagesProvider, useLanguages } from './context/languages';
 import useCurrentLanguage from './context/languages/hooks/useCurrentLanguage';
 import useLanguageCodeFromURL from './context/languages/hooks/useLanguageCodeFromURL';
 import { mapTranslationsToFormioI18nObject } from './context/languages/mapper/translationsMapper';

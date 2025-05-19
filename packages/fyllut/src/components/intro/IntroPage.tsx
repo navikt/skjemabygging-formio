@@ -1,4 +1,9 @@
-import { FormContainer, FormTitle, useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
+import {
+  FormContainer,
+  FormTitle,
+  LanguageSelector,
+  useAppConfig,
+} from '@navikt/skjemadigitalisering-shared-components';
 import { Form, formioFormsApiUtils, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
@@ -39,9 +44,20 @@ const IntroPage = () => {
   return (
     <IntroPageProvider form={form}>
       <FormTitle form={formioFormsApiUtils.mapFormToNavForm(form)} />
-      <FormContainer small={true}>
-        <SelectSubmissionType />
-        <IntroPageStatic />
+      <FormContainer>
+        <div className="fyllut-layout">
+          <div className="main-col"></div>
+          <div className="right-col">
+            <LanguageSelector />
+          </div>
+        </div>
+        <div className="fyllut-layout">
+          <div className="main-col">
+            <SelectSubmissionType />
+            <IntroPageStatic />
+          </div>
+          <div className="right-col"></div>
+        </div>
       </FormContainer>
     </IntroPageProvider>
   );
