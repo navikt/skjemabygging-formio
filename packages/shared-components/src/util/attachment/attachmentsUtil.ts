@@ -13,7 +13,7 @@ interface Attachment {
   vedleggskjema?: string;
 }
 
-const getRelevantAttachments = (form: NavFormType, submissionData: SubmissionData): Attachment[] => {
+const getRelevantAttachments = (form: NavFormType, submissionData?: SubmissionData): Attachment[] => {
   return navFormUtils
     .flattenComponents(form.components)
     .filter(
