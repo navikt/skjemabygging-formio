@@ -1,7 +1,7 @@
 import DataFetcher from './DataFetcher';
 
-const dataFetcherBuilder = () => {
-  const schema = DataFetcher.schema();
+const dataFetcherBuilder = (label?: string) => {
+  const schema = DataFetcher.schema(label);
   return {
     title: schema.label,
     schema: {

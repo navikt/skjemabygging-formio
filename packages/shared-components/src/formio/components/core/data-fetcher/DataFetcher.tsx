@@ -11,11 +11,11 @@ import dataFetcherForm from './DataFetcher.form';
 import { createMetadataObject } from './utils/submissionMetadataUtils';
 
 class DataFetcher extends BaseComponent {
-  static schema() {
+  static schema(label: string = 'Datahenter') {
     return BaseComponent.schema({
-      label: 'Aktivitetsvelger',
+      label,
       type: 'dataFetcher',
-      key: 'dataFetcher',
+      key: label.toLowerCase(),
     });
   }
 
