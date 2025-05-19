@@ -1,5 +1,6 @@
 import { AccordionSettingValues } from '../accordion';
 import { AttachmentSettingValues } from '../attachment';
+import { DataFetcherSourceId } from '../data-fetcher';
 import { TextSize } from '../text';
 import { NavFormType } from './navFormType';
 import { PrefillKey } from './prefill';
@@ -126,9 +127,12 @@ export interface Component {
   protectedApiKey?: boolean;
   yourInformation?: boolean;
   widthPercent?: number;
-  // DataFetcher
+}
+
+export interface DataFetcherComponent extends Component {
   queryParams?: Record<string, string>;
-  showOther?: boolean;
+  showOther: boolean;
+  dataFetcherSourceId: DataFetcherSourceId;
 }
 
 export interface ComponentProperties {

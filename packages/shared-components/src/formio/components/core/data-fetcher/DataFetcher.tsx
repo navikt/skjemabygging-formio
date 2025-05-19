@@ -1,4 +1,9 @@
-import { DataFetcherData, SubmissionData } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  DataFetcherComponent,
+  DataFetcherData,
+  DataFetcherSourceId,
+  SubmissionData,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import NavDataFetcher from '../../../../components/data-fetcher/DataFetcher';
 import { ComponentUtilsProvider } from '../../../../context/component/componentUtilsContext';
 import utils from '../../../overrides/utils-overrides/utils-overrides';
@@ -11,11 +16,12 @@ import dataFetcherForm from './DataFetcher.form';
 import { createMetadataObject } from './utils/submissionMetadataUtils';
 
 class DataFetcher extends BaseComponent {
-  static schema(label: string = 'Datahenter') {
+  static schema(dataFetcherSourceId: DataFetcherSourceId, label: string = 'Datahenter') {
     return BaseComponent.schema({
       label,
       type: 'dataFetcher',
       key: label.toLowerCase(),
+      dataFetcherSourceId,
     });
   }
 
@@ -24,7 +30,15 @@ class DataFetcher extends BaseComponent {
   }
 
   static get builderInfo() {
-    return dataFetcherBuilder();
+    return dataFetcherBuilder('Datahenter', 'none');
+  }
+
+  get component(): DataFetcherComponent {
+    return super.component as DataFetcherComponent;
+  }
+
+  set component(component: DataFetcherComponent) {
+    super.component = component;
   }
 
   changeHandler(value: Record<string, boolean>) {
@@ -74,6 +88,8 @@ class DataFetcher extends BaseComponent {
   }
 
   renderReact(element) {
+    // TODO: Remove 'activities' as default value when all components has dataFetcherSourceId
+    const dataFetcherSourceId = this.component?.dataFetcherSourceId || 'activities';
     return element.render(
       <ComponentUtilsProvider component={this}>
         <NavDataFetcher
@@ -95,6 +111,7 @@ class DataFetcher extends BaseComponent {
           setMetadata={(metaData) => this.setMetadata(metaData)}
           ref={(ref) => this.setReactInstance(ref)}
           showOther={this.getShowOther()}
+          dataFetcherSourceId={dataFetcherSourceId}
         />
       </ComponentUtilsProvider>,
     );

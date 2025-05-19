@@ -1,7 +1,8 @@
+import { DataFetcherSourceId } from '@navikt/skjemadigitalisering-shared-domain';
 import DataFetcher from './DataFetcher';
 
-const dataFetcherBuilder = (label?: string) => {
-  const schema = DataFetcher.schema(label);
+const dataFetcherBuilder = (label: string, dataFetcherSourceId: DataFetcherSourceId) => {
+  const schema = DataFetcher.schema(dataFetcherSourceId, label);
   return {
     title: schema.label,
     schema: {
