@@ -1,7 +1,7 @@
 import { FyllutState } from './state';
 
 export interface Submission {
-  data?: SubmissionData;
+  data: SubmissionData;
   metadata?: SubmissionMetadata;
   state?: string;
   fyllutState?: FyllutState;

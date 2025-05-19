@@ -174,6 +174,9 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: Fil
     (submissionMetadata: SubmissionMetadata) => {
       setSubmission((prevSubmission) => ({
         ...prevSubmission,
+        data: {
+          ...prevSubmission?.data,
+        },
         metadata: {
           ...submissionMetadata,
         },

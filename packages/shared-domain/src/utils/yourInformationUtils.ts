@@ -7,15 +7,13 @@ import SubmissionYourInformation from '../submission/yourInformation';
  * @param form
  * @param submission
  */
-const getYourInformation = (form: NavFormType, submission?: SubmissionData): SubmissionYourInformation | undefined => {
-  if (submission) {
-    const yourInformationForm = navFormUtils
-      .flattenComponents(form.components)
-      .find((component) => component.yourInformation && submission[component.key]);
+const getYourInformation = (form: NavFormType, submission: SubmissionData): SubmissionYourInformation | undefined => {
+  const yourInformationForm = navFormUtils
+    .flattenComponents(form.components)
+    .find((component) => component.yourInformation && submission[component.key]);
 
-    if (yourInformationForm) {
-      return submission[yourInformationForm.key] as SubmissionYourInformation;
-    }
+  if (yourInformationForm) {
+    return submission[yourInformationForm.key] as SubmissionYourInformation;
   }
 };
 
