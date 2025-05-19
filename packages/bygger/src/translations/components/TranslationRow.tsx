@@ -1,6 +1,6 @@
 import { Table } from '@navikt/ds-react';
 import { htmlUtils, InnerHtml } from '@navikt/skjemadigitalisering-shared-components';
-import { FormsApiTranslation, formsApiTranslations, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
+import { FormsApiTranslation, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useMemo, useState } from 'react';
 import { TranslationError } from '../../context/translations/utils/errorUtils';
 import { getInputHeightInRows } from '../utils/translationsUtils';
@@ -8,19 +8,14 @@ import TranslationDisplayCell from './TranslationDisplayCell';
 import TranslationInput from './TranslationInput';
 import { useTranslationTableStyles } from './styles';
 
-interface Props<Translation extends FormsApiTranslation> {
-  translation: Translation;
-  updateTranslation: (original: Translation, lang: TranslationLang, value: string) => void;
+interface Props {
+  translation: FormsApiTranslation;
+  updateTranslation: (original: FormsApiTranslation, lang: TranslationLang, value: string) => void;
   errors: TranslationError[];
   editState: any;
 }
 
-const TranslationRow = <Translation extends FormsApiTranslation>({
-  translation,
-  updateTranslation,
-  errors,
-  editState,
-}: Props<Translation>) => {
+const TranslationRow = ({ translation, updateTranslation, errors, editState }: Props) => {
   const [isEditing, setIsEditing] = useState(false);
   const styles = useTranslationTableStyles();
   const heightInRows = getInputHeightInRows(translation.nb ?? '');
@@ -46,7 +41,7 @@ const TranslationRow = <Translation extends FormsApiTranslation>({
   };
 
   const isHtml = htmlUtils.isHtmlString(translation.nb ?? '');
-  const hasGlobalOverride = formsApiTranslations.isFormTranslation(translation) && !!translation.globalTranslationId;
+  const hasGlobalOverride = !!translation.globalTranslationId;
 
   return (
     <Table.Row className={isEditing ? '' : styles.clickableRow} onClick={handleRowClick}>

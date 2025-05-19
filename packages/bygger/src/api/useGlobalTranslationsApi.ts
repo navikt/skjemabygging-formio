@@ -1,5 +1,5 @@
 import { http as baseHttp, useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
-import { FormsApiGlobalTranslation } from '@navikt/skjemadigitalisering-shared-domain';
+import { FormsApiTranslation } from '@navikt/skjemadigitalisering-shared-domain';
 import { useFeedbackEmit } from '../context/notifications/FeedbackContext';
 import ApiError from './ApiError';
 
@@ -9,19 +9,19 @@ const useGlobalTranslationsApi = () => {
   const http = appConfig.http ?? baseHttp;
   const basePath = '/api/translations';
 
-  const get = async (): Promise<FormsApiGlobalTranslation[] | undefined> => {
+  const get = async (): Promise<FormsApiTranslation[] | undefined> => {
     try {
-      return await http.get<FormsApiGlobalTranslation[]>(basePath);
+      return await http.get<FormsApiTranslation[]>(basePath);
     } catch (error) {
       const message = (error as Error)?.message;
       feedbackEmit.error(`Feil ved henting av globale oversettelser. ${message}`);
     }
   };
 
-  const post = async (translation: FormsApiGlobalTranslation): Promise<FormsApiGlobalTranslation> => {
+  const post = async (translation: FormsApiTranslation): Promise<FormsApiTranslation> => {
     try {
       const { key, tag, nb = null, nn = null, en = null } = translation;
-      return await http.post<FormsApiGlobalTranslation>(basePath, { key, tag, nb, nn, en });
+      return await http.post<FormsApiTranslation>(basePath, { key, tag, nb, nn, en });
     } catch (error: any) {
       if (error?.status !== 409) {
         const message = (error as Error)?.message;
@@ -31,10 +31,10 @@ const useGlobalTranslationsApi = () => {
     }
   };
 
-  const put = async (translation: FormsApiGlobalTranslation): Promise<FormsApiGlobalTranslation> => {
+  const put = async (translation: FormsApiTranslation): Promise<FormsApiTranslation> => {
     try {
       const { id, revision, nb = null, nn = null, en = null } = translation;
-      return await http.put<FormsApiGlobalTranslation>(`${basePath}/${id}`, { revision, nb, nn, en });
+      return await http.put<FormsApiTranslation>(`${basePath}/${id}`, { revision, nb, nn, en });
     } catch (error: any) {
       if (error?.status !== 409) {
         const message = (error as Error)?.message;

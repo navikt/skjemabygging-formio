@@ -1,4 +1,4 @@
-import { FormsApiFormTranslation } from '@navikt/skjemadigitalisering-shared-domain';
+import { FormsApiTranslation } from '@navikt/skjemadigitalisering-shared-domain';
 import { fetchWithErrorHandling } from '../../fetchUtils';
 import { createHeaders } from '../utils/formsApiUtils';
 import { FormTranslationPostBody, FormTranslationPutBody, FormTranslationService } from './types';
@@ -8,23 +8,23 @@ const createFormTranslationsService = (formsApiUrl: string): FormTranslationServ
   const translationsPath = 'translations';
 
   return {
-    get: async (formPath: string): Promise<FormsApiFormTranslation[]> => {
+    get: async (formPath: string): Promise<FormsApiTranslation[]> => {
       const response = await fetchWithErrorHandling(`${formsApiTranslationsUrl}/${formPath}/${translationsPath}`, {
         headers: createHeaders(),
       });
-      return response.data as FormsApiFormTranslation[];
+      return response.data as FormsApiTranslation[];
     },
     post: async (
       formPath: string,
       translation: FormTranslationPostBody,
       accessToken: string,
-    ): Promise<FormsApiFormTranslation> => {
+    ): Promise<FormsApiTranslation> => {
       const response = await fetchWithErrorHandling(`${formsApiTranslationsUrl}/${formPath}/${translationsPath}`, {
         method: 'POST',
         headers: createHeaders(accessToken),
         body: JSON.stringify(translation),
       });
-      return response.data as FormsApiFormTranslation;
+      return response.data as FormsApiTranslation;
     },
 
     put: async (
@@ -33,7 +33,7 @@ const createFormTranslationsService = (formsApiUrl: string): FormTranslationServ
       body: FormTranslationPutBody,
       revision: number,
       accessToken: string,
-    ): Promise<FormsApiFormTranslation> => {
+    ): Promise<FormsApiTranslation> => {
       const response = await fetchWithErrorHandling(
         `${formsApiTranslationsUrl}/${formPath}/${translationsPath}/${id}`,
         {
@@ -42,7 +42,7 @@ const createFormTranslationsService = (formsApiUrl: string): FormTranslationServ
           body: JSON.stringify(body),
         },
       );
-      return response.data as FormsApiFormTranslation;
+      return response.data as FormsApiTranslation;
     },
 
     delete: async (formPath: string, id: number, accessToken: string): Promise<string> => {

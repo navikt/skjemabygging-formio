@@ -757,5 +757,85 @@ describe('utils-overrides', () => {
         expect(dataFetcher.selected('COUNT')).toBe(undefined);
       });
     });
+
+    describe('dataFetcher inside container', () => {
+      describe('api successfully returns elements', () => {
+        let dataFetcher;
+
+        beforeEach(() => {
+          const submission = {
+            data: {
+              container: {
+                aktivitetsvelger: { 1: true, 2: false, annet: false },
+              },
+            },
+            metadata: {
+              dataFetcher: {
+                container: {
+                  aktivitetsvelger: {
+                    data: [
+                      { value: 1, label: 'Støtte til husleie', type: 'BOSTOTTE', count: 43 },
+                      { value: 2, label: 'Ordinær utdanning for enslige forsørgere mv', type: 'TILTAK' },
+                      { value: 'annet', label: 'Annet' },
+                    ],
+                  },
+                },
+              },
+            },
+          };
+          dataFetcher = UtilsOverrides.dataFetcher('container.aktivitetsvelger', submission);
+        });
+
+        it('supports select', () => {
+          expect(dataFetcher.selected({ type: 'BOSTOTTE' })).toBe(true);
+          expect(dataFetcher.selected({ type: 'TILTAK' })).toBe(false);
+        });
+
+        it('supports count', () => {
+          expect(dataFetcher.selected('COUNT')).toBe(1);
+        });
+
+        it('supports misc', () => {
+          expect(dataFetcher.fetchDone).toBe(true);
+          expect(dataFetcher.success).toBe(true);
+          expect(dataFetcher.failure).toBe(false);
+          expect(dataFetcher.empty).toBe(false);
+          expect(dataFetcher.fetchDisabled).toBe(false);
+        });
+      });
+
+      describe('api has not returned anything yet', () => {
+        let dataFetcher;
+
+        beforeEach(() => {
+          const submission = {
+            data: {
+              container: {
+                aktivitetsvelger: { 1: true, 2: false, annet: false },
+              },
+            },
+            metadata: {},
+          };
+          dataFetcher = UtilsOverrides.dataFetcher('container.aktivitetsvelger', submission);
+        });
+
+        it('supports select', () => {
+          expect(dataFetcher.selected({ type: 'BOSTOTTE' })).toBe(undefined);
+          expect(dataFetcher.selected({ type: 'TILTAK' })).toBe(undefined);
+        });
+
+        it('supports count', () => {
+          expect(dataFetcher.selected('COUNT')).toBe(undefined);
+        });
+
+        it('supports misc', () => {
+          expect(dataFetcher.fetchDone).toBe(false);
+          expect(dataFetcher.success).toBe(undefined);
+          expect(dataFetcher.failure).toBe(undefined);
+          expect(dataFetcher.empty).toBe(undefined);
+          expect(dataFetcher.fetchDisabled).toBe(false);
+        });
+      });
+    });
   });
 });
