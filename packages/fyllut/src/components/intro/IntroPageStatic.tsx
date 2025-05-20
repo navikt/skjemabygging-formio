@@ -88,7 +88,7 @@ const IntroPageStatic = () => {
         <LinkButton buttonVariant="primary" to={`${baseUrl}${startUrl}`} onClick={navigateToFormPage}>
           {translate(TEXTS.grensesnitt.introPage.start)}
         </LinkButton>
-        <button onClick={() => navigate(-1)} className="navds-button navds-button--tertiary">
+        <button onClick={() => navigate(-1)} className="navds-button navds-button--secondary">
           <span aria-live="polite" className="navds-body-short font-bold">
             {translate(TEXTS.grensesnitt.goBack)}
           </span>

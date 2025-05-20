@@ -1,6 +1,6 @@
 import { ArrowRightIcon } from '@navikt/aksel-icons';
 import { Link } from '@navikt/ds-react';
-import { makeStyles } from '@navikt/skjemadigitalisering-shared-components';
+import { makeStyles, useLanguages } from '@navikt/skjemadigitalisering-shared-components';
 import classNames from 'classnames';
 import React from 'react';
 
@@ -36,6 +36,7 @@ const useStyles = makeStyles({
 
 const IntroLinkPanel = ({ onClick, title, description, className, href }: Props) => {
   const styles = useStyles();
+  const { translate } = useLanguages();
 
   return (
     <div className={classNames(styles.container, className)} onClick={onClick}>
@@ -47,9 +48,9 @@ const IntroLinkPanel = ({ onClick, title, description, className, href }: Props)
             onClick();
           }}
         >
-          {title}
+          {translate(title)}
         </Link>
-        <p className={styles.description}>{description}</p>
+        <p className={styles.description}>{translate(description)}</p>
       </div>
       <ArrowRightIcon title="a11y-title" fontSize="1.5rem" className={styles.arrowIcon} />
     </div>
