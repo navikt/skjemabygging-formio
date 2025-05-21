@@ -1,6 +1,10 @@
 const dataFetcherSources = {
-  activities: 'activities',
-  none: 'none',
+  activities: {
+    description: 'Aktiviteter fra fagsystem',
+  },
+  none: {
+    description: '-',
+  },
 } as const;
 
 type DataFetcherSourceId = keyof typeof dataFetcherSources;

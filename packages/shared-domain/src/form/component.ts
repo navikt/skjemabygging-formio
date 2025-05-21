@@ -34,6 +34,7 @@ export interface Component {
   label: string;
   customLabels?: CustomLabels;
   type: string;
+  disabled?: boolean;
   content?: string;
   calculateValue?: string;
   allowCalculateOverride?: boolean;

@@ -30,7 +30,7 @@ class DataFetcher extends BaseComponent {
   }
 
   static get builderInfo() {
-    return dataFetcherBuilder('Datahenter', 'none');
+    return dataFetcherBuilder('Datahenter');
   }
 
   get component(): DataFetcherComponent {
