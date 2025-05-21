@@ -20,7 +20,11 @@ const useStyles = makeStyles({
   titleIconSvg: {
     position: 'absolute',
     left: '-100px',
-    top: '12px',
+    top: '7px',
+    '@media screen and (max-width: 1280px)': {
+      position: 'static',
+      marginBottom: 'var(--a-spacing-2)',
+    },
   },
 });
 

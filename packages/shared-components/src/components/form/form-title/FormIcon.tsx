@@ -20,70 +20,46 @@ const FormIcon = ({ title, className }: Props) => {
       <path
         d="M23.7672 5.508L30.1202 11.8434M1.5 33.75H34.5M26.4706 2.81211L10.5882 18.6506L9 26.5699L16.9412 24.986L32.8235 9.14751C34.5778 7.39804 34.5778 4.56158 32.8235 2.81211C31.0692 1.06263 28.2249 1.06263 26.4706 2.81211Z"
         stroke="#23262A"
-        stroke-width="2.25"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="2.25"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M56.25 44.25L63.75 44.25"
         stroke="#262626"
-        stroke-width="2.25"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="2.25"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M56.25 52.5L63.75 52.5"
         stroke="#262626"
-        stroke-width="2.25"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="2.25"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M56.25 60.75L63.75 60.75"
         stroke="#262626"
-        stroke-width="2.25"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="2.25"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
-      <path d="M48 52.5L51 52.5" stroke="#262626" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" />
-      <path d="M48 52.5L51 52.5" stroke="#262626" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" />
-      <path
-        d="M48 44.25L51 44.25"
-        stroke="#262626"
-        stroke-width="2.25"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-      />
-      <path
-        d="M48 44.25L51 44.25"
-        stroke="#262626"
-        stroke-width="2.25"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-      />
-      <path
-        d="M48 60.75L51 60.75"
-        stroke="#262626"
-        stroke-width="2.25"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-      />
-      <path
-        d="M48 60.75L51 60.75"
-        stroke="#262626"
-        stroke-width="2.25"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-      />
+      <path d="M48 52.5L51 52.5" stroke="#262626" strokeWidth="2.25" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M48 52.5L51 52.5" stroke="#262626" strokeWidth="2.25" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M48 44.25L51 44.25" stroke="#262626" strokeWidth="2.25" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M48 44.25L51 44.25" stroke="#262626" strokeWidth="2.25" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M48 60.75L51 60.75" stroke="#262626" strokeWidth="2.25" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M48 60.75L51 60.75" stroke="#262626" strokeWidth="2.25" strokeLinecap="round" strokeLinejoin="round" />
       <rect
         x="41.25"
         y="33"
         width="29.25"
         height="37.5"
         stroke="#262626"
-        stroke-width="2.25"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="2.25"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
   );
