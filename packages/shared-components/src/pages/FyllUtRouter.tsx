@@ -38,14 +38,9 @@ const FyllUtRouter = ({ form }) => {
         }}
         onFyllutStateChange={onFyllutStateChange}
       >
-        <FormTitle form={form} />
         <FormContainer>
-          <div className="fyllut-layout">
-            <div className="main-col"></div>
-            <div className="right-col">
-              <LanguageSelector />
-            </div>
-          </div>
+          <LanguageSelector />
+          <FormTitle form={form} />
           <Routes>
             <Route
               path={'/oppsummering'}

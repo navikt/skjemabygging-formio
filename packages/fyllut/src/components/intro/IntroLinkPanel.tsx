@@ -21,7 +21,12 @@ const useStyles = makeStyles({
     gap: 'var(--a-spacing-4)',
     alignItems: 'center',
     cursor: 'pointer',
+
+    '&:hover': {
+      backgroundColor: 'var(--a-surface-action-subtle)',
+    },
   },
+
   content: {
     flex: '1 1 auto',
   },
@@ -45,7 +50,6 @@ const IntroLinkPanel = ({ onClick, title, description, className, href }: Props)
           href={href ?? '#'}
           onClick={(e: React.MouseEvent) => {
             e.preventDefault();
-            onClick();
           }}
         >
           {translate(title)}

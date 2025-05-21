@@ -10,13 +10,13 @@ const useStyles = makeStyles({
   container: {
     margin: '0 auto',
     maxWidth: '960px',
-    padding: '2rem 0 0 0',
+    padding: 'var(--a-spacing-3) 0 0 0',
     '@media screen and (max-width: 960px)': {
-      padding: '1rem',
+      padding: 'var(--a-spacing-3) var(--a-spacing-4)',
     },
   },
   small: {
-    maxWidth: '640px',
+    maxWidth: '608px',
   },
 });
 

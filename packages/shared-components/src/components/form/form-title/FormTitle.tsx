@@ -11,7 +11,9 @@ export interface Props {
 }
 
 const useStyles = makeStyles({
-  titleHeader: {},
+  titleHeader: {
+    marginBottom: 'var(--a-spacing-10)',
+  },
   titleIcon: {
     position: 'relative',
     left: 0,

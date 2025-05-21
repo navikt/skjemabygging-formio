@@ -8,6 +8,7 @@ import { Form, formioFormsApiUtils, navFormUtils } from '@navikt/skjemadigitalis
 import { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import useFormsApiForms from '../../api/useFormsApiForms';
+import { ErrorPageWrapper } from '../errors/ErrorPageWrapper';
 import FormPageSkeleton from '../form/FormPageSkeleton';
 import SubmissionMethodNotAllowed from '../SubmissionMethodNotAllowed';
 import { IntroPageProvider } from './IntroPageContext';
@@ -19,12 +20,21 @@ const IntroPage = () => {
   const [form, setForm] = useState<Form>();
   const { get } = useFormsApiForms();
   const { submissionMethod } = useAppConfig();
+  const [loading, setLoading] = useState<boolean>(true);
 
   const loadForm = useCallback(async () => {
     if (!formPath) {
       return;
     }
-    setForm(await get(formPath)); // Fetch only properties and intro page data
+    setLoading(true);
+    try {
+      const formData = await get(formPath);
+      if (formData) {
+        setForm(await get(formPath)); // Fetch only properties and intro page data
+      }
+    } finally {
+      setLoading(false);
+    }
   }, [formPath, get]);
 
   useEffect(() => {
@@ -33,8 +43,12 @@ const IntroPage = () => {
     })();
   }, [formPath, loadForm]);
 
-  if (!form) {
+  if (loading) {
     return <FormPageSkeleton />;
+  }
+
+  if (!form) {
+    return <ErrorPageWrapper statusCode={404} />;
   }
 
   if (submissionMethod && !navFormUtils.isSubmissionMethodAllowed(submissionMethod, form)) {
@@ -43,23 +57,13 @@ const IntroPage = () => {
 
   return (
     <IntroPageProvider form={form}>
-      <FormContainer>
-        <div className="fyllut-layout">
-          <div className="main-col"></div>
-          <div className="right-col">
-            <LanguageSelector />
-          </div>
-        </div>
+      <FormContainer small={false}>
+        <LanguageSelector />
       </FormContainer>
-      <FormTitle form={formioFormsApiUtils.mapFormToNavForm(form)} />
-      <FormContainer>
-        <div className="fyllut-layout">
-          <div className="main-col">
-            <SelectSubmissionType />
-            <IntroPageStatic />
-          </div>
-          <div className="right-col"></div>
-        </div>
+      <FormContainer small={true}>
+        <FormTitle form={formioFormsApiUtils.mapFormToNavForm(form)} />
+        <SelectSubmissionType />
+        <IntroPageStatic />
       </FormContainer>
     </IntroPageProvider>
   );
