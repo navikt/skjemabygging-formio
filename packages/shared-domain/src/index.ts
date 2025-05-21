@@ -10,6 +10,8 @@ import attachmentUtils, {
 import { ComponentError } from './component';
 import configUtils from './config';
 import type { ConfigType } from './config/types';
+import type { DataFetcherSourceId } from './data-fetcher';
+import { dataFetcherSources } from './data-fetcher';
 import { Enhet, Enhetstype, supportedEnhetstyper } from './enhet';
 import type { FieldSize } from './field-size';
 import {
@@ -19,6 +21,7 @@ import {
   Component,
   ComponentValue,
   CustomLabels,
+  DataFetcherComponent,
   DeclarationType,
   DisplayType,
   FormPropertiesPublishing,
@@ -27,6 +30,7 @@ import {
   FormsResponseForm,
   FyllutState,
   InputMode,
+  IntroPage,
   MellomlagringError,
   NavFormType,
   NewFormSignatureType,
@@ -145,6 +149,7 @@ export {
   attachmentUtils,
   configUtils,
   currencyUtils,
+  dataFetcherSources,
   dataFetcherUtils,
   dateUtils,
   DeclarationType,
@@ -194,8 +199,10 @@ export type {
   ComponentValue,
   ConfigType,
   CustomLabels,
+  DataFetcherComponent,
   DataFetcherData,
   DataFetcherElement,
+  DataFetcherSourceId,
   DataFetcherUtil,
   DependencyType,
   DisplayType,
@@ -227,6 +234,7 @@ export type {
   I18nTranslationReplacements,
   I18nTranslations,
   InputMode,
+  IntroPage,
   KjentBruker,
   Language,
   LimitedFormAttachment,
