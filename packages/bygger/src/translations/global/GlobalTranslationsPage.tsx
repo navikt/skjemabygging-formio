@@ -27,13 +27,13 @@ const GlobalTranslationsPage = () => {
   const translations: FormsApiTranslation[] | undefined = translationsPerTag?.[tag];
 
   const initialChanges = useMemo(() => {
-    if (isReady) {
+    if (isReady && tag === 'introPage') {
       const translationsWithInitValues = translationsPerTag['introPage'];
       return Object.values(translationsWithInitValues).filter((translation) => {
         return !Object.keys(storedTranslations)?.includes(translation.key);
       });
     }
-  }, [isReady, storedTranslations, translationsPerTag]);
+  }, [isReady, storedTranslations, tag, translationsPerTag]);
 
   const unusedTranslations = useMemo(() => {
     if (translations) {
