@@ -1,4 +1,4 @@
-export interface IntroPage {
+interface IntroPage {
   enabled: boolean;
   introduction: string;
   importantInformation?: {
@@ -23,3 +23,5 @@ interface IntroPageSection {
   description?: string;
   bulletPoints?: string[];
 }
+
+export type { IntroPage };
