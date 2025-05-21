@@ -1,7 +1,12 @@
 import { Checkbox, CheckboxGroup } from '@navikt/ds-react';
-import { Activity, DataFetcherData, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  DataFetcherData,
+  DataFetcherElement,
+  DataFetcherSourceId,
+  TEXTS,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import { forwardRef, ReactNode, useCallback, useEffect, useState } from 'react';
-import { getActivities } from '../../api/register-data/activities';
+import { getRegisterData } from '../../api/register-data/registerDataApi';
 import { useComponentUtils } from '../../context/component/componentUtilsContext';
 import { getSelectedValuesAsList, getSelectedValuesMap } from '../../formio/components/utils';
 import { SkeletonList } from '../../index';
@@ -19,14 +24,13 @@ interface Props {
   setMetadata: (data: DataFetcherData) => void;
   dataFetcherData?: DataFetcherData;
   showOther?: boolean;
+  dataFetcherSourceId: DataFetcherSourceId;
 }
 
-const otherData = [
-  {
-    label: TEXTS.statiske.dataFetcher.other,
-    value: TEXTS.statiske.dataFetcher.other.toLowerCase(),
-  },
-];
+const otherOption: DataFetcherElement = {
+  label: TEXTS.statiske.dataFetcher.other,
+  value: TEXTS.statiske.dataFetcher.other.toLowerCase(),
+};
 
 const DataFetcher = forwardRef<HTMLFieldSetElement, Props>(
   (
@@ -42,6 +46,7 @@ const DataFetcher = forwardRef<HTMLFieldSetElement, Props>(
       dataFetcherData,
       setMetadata,
       showOther,
+      dataFetcherSourceId,
     },
     ref,
   ) => {
@@ -58,23 +63,23 @@ const DataFetcher = forwardRef<HTMLFieldSetElement, Props>(
     const fetchData = useCallback(async () => {
       try {
         setLoading(true);
-        const result = await getActivities(appConfig, queryParams);
+        const result = await getRegisterData<DataFetcherElement[]>(dataFetcherSourceId, appConfig, queryParams);
         if (result) {
-          setMetadata({ data: [...result, ...(showOther && result.length ? (otherData as Activity[]) : [])] });
+          setMetadata({ data: [...result, ...(showOther && result.length ? [otherOption] : [])] });
         }
       } catch (error) {
-        console.error('Failed to fetch activities:', error);
+        console.error('Failed to fetch register data:', error);
         setMetadata({ fetchError: true });
       } finally {
         setLoading(false);
         setDone(true);
       }
-    }, [appConfig, queryParams, setMetadata, showOther]);
+    }, [appConfig, queryParams, setMetadata, showOther, dataFetcherSourceId]);
 
     useEffect(() => {
       if (isBygger) {
         if (!data) {
-          setMetadata({ data: [...previewData, ...(showOther ? (otherData as Activity[]) : [])] });
+          setMetadata({ data: [...previewData, ...(showOther ? [otherOption] : [])] });
         }
       } else if (isFyllut) {
         if (isSubmissionMethodDigital) {

@@ -3,7 +3,7 @@ import dataFetcherBuilder from '../components/core/data-fetcher/DataFetcher.buil
 const fagsystemGroup = {
   title: 'Fagsystem (Beta)',
   components: {
-    activities: dataFetcherBuilder(),
+    activities: dataFetcherBuilder('Aktivitetsvelger', 'activities'),
   },
 };
 
