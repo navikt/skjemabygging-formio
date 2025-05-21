@@ -43,7 +43,6 @@ const IntroPage = () => {
 
   return (
     <IntroPageProvider form={form}>
-      <FormTitle form={formioFormsApiUtils.mapFormToNavForm(form)} />
       <FormContainer>
         <div className="fyllut-layout">
           <div className="main-col"></div>
@@ -51,6 +50,9 @@ const IntroPage = () => {
             <LanguageSelector />
           </div>
         </div>
+      </FormContainer>
+      <FormTitle form={formioFormsApiUtils.mapFormToNavForm(form)} />
+      <FormContainer>
         <div className="fyllut-layout">
           <div className="main-col">
             <SelectSubmissionType />

@@ -10,7 +10,7 @@ const useStyles = makeStyles({
   container: {
     margin: '0 auto',
     maxWidth: '960px',
-    padding: '2rem 0',
+    padding: '2rem 0 0 0',
     '@media screen and (max-width: 960px)': {
       padding: '1rem',
     },

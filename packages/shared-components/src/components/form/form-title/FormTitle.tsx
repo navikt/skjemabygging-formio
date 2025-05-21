@@ -1,30 +1,26 @@
-import { BodyShort, Heading } from '@navikt/ds-react';
+import { Heading, Tag } from '@navikt/ds-react';
 import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import { useLanguages } from '../../../context/languages';
 import makeStyles from '../../../util/styles/jss/jss';
+import { FormContainer } from '../container/FormContainer';
+import FormIcon from './FormIcon';
 
 export interface Props {
   form: NavFormType;
   className?: string;
 }
+
 const useStyles = makeStyles({
-  maxContentWidth: {
-    maxWidth: '960px',
-    margin: '0 auto',
+  titleHeader: {},
+  titleIcon: {
+    position: 'relative',
+    left: 0,
+    top: 0,
   },
-  titleHeader: {
-    padding: '1.5rem 0',
-    borderBottom: '4px solid #99c4dd',
-  },
-  formNumber: {
-    color: '#4F4F4F',
-    margin: '0.5rem 0 0 0',
-    fontSize: '0.875rem',
-  },
-  '@media screen and (max-width: 992px)': {
-    titleHeader: {
-      padding: '1rem',
-    },
+  titleIconSvg: {
+    position: 'absolute',
+    left: '-100px',
+    top: '12px',
   },
 });
 
@@ -34,12 +30,19 @@ export function FormTitle({ form }: Props) {
 
   return (
     <header className={styles.titleHeader}>
-      <div className={styles.maxContentWidth}>
+      <FormContainer>
+        <div className={styles.titleIcon}>
+          <FormIcon title="a11y-title" className={styles.titleIconSvg} />
+        </div>
         <Heading level="1" size="xlarge">
           {translate(form.title)}
         </Heading>
-        {form.properties && form.properties.skjemanummer && <BodyShort>{form.properties.skjemanummer}</BodyShort>}
-      </div>
+        {form.properties && form.properties.skjemanummer && (
+          <Tag variant="neutral-moderate" size="small">
+            {form.properties.skjemanummer}
+          </Tag>
+        )}
+      </FormContainer>
     </header>
   );
 }
