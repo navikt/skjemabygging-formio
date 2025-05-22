@@ -63,7 +63,7 @@ const GlobalTranslationsPage = () => {
               <UnusedTranslations
                 translations={unusedTranslations}
                 onRemove={deleteTranslation}
-                showKeys={tag === 'validering'}
+                showKeys={tag === 'validering' || tag === 'introPage'}
               />
             )}
             <GlobalTranslationsTable

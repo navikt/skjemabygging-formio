@@ -1,4 +1,4 @@
-import { Table } from '@navikt/ds-react';
+import { Alert, Table } from '@navikt/ds-react';
 import { htmlUtils } from '@navikt/skjemadigitalisering-shared-components';
 import { FormsApiTranslation, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useMemo, useState } from 'react';
@@ -63,6 +63,7 @@ const TranslationRow = ({ translation, updateTranslation, errors, editState, isK
                   handleChange('nb', value);
                 }}
               />
+              <div className={styles.inputAdditionalInfo}>{translation.key}</div>
             </Table.DataCell>
           ) : (
             <TranslationDisplayHeaderCell hasGlobalOverride={isKeyBased && hasGlobalOverride} text={translation.nb} />
@@ -93,9 +94,21 @@ const TranslationRow = ({ translation, updateTranslation, errors, editState, isK
         </>
       ) : (
         <>
-          <TranslationDisplayHeaderCell hasGlobalOverride={isKeyBased && hasGlobalOverride} text={translation.nb} />
-          <TranslationDisplayCell hasGlobalOverride={hasGlobalOverride} text={translation.nn} />
-          <TranslationDisplayCell hasGlobalOverride={hasGlobalOverride} text={translation.en} />
+          {translation.nb ? (
+            <>
+              <TranslationDisplayHeaderCell hasGlobalOverride={isKeyBased && hasGlobalOverride} text={translation.nb} />
+              <TranslationDisplayCell hasGlobalOverride={hasGlobalOverride} text={translation.nn} />
+              <TranslationDisplayCell hasGlobalOverride={hasGlobalOverride} text={translation.en} />
+            </>
+          ) : (
+            <Table.DataCell colSpan={3}>
+              <Alert
+                variant="warning"
+                size="small"
+                inline
+              >{`Bokmålstekst mangler for nøkkel: ${translation.key}`}</Alert>
+            </Table.DataCell>
+          )}
         </>
       )}
     </Table.Row>
