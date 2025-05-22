@@ -57,7 +57,7 @@ const SendInnProvider = ({
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const soknadNotFoundUrl = `${baseUrl}/ingen-soknad-funnet`;
+  const soknadNotFoundUrl = `${baseUrl}/soknad-ikke-funnet`;
 
   const isMellomlagringAvailable = app === 'fyllut' && submissionMethod === 'digital';
   // isMellomlagringReady is true if we either have successfully fetched or created mellomlagring, or if mellomlagring is not enabled
@@ -129,7 +129,6 @@ const SendInnProvider = ({
           );
           const formPath = pathname.split('/')[1];
           const url = formPath ? `${baseUrl}/${formPath}` : `${baseUrl}`;
-
           navigate('/soknad-ikke-funnet', { state: { url } });
           return;
         }

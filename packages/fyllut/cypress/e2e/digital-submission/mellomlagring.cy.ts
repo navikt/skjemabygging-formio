@@ -144,18 +144,17 @@ describe('Mellomlagring', () => {
       cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
     });
 
-    it('redirects to start of application if an application with the "innsendingsId" from the url is not found', () => {
+    it('redirects to form not found page when not found', () => {
       cy.mocksUseRouteVariant('get-soknad:not-found');
 
-      cy.visit(
-        '/fyllut/testmellomlagring/oppsummering?sub=digital&innsendingsId=8e3c3621-76d7-4ebd-90d4-34448ebcccc3&lang=nb-NO',
-      );
+      cy.visit(`/fyllut/testmellomlagring/oppsummering?sub=digital&innsendingsId=8e3c3621-76d7-4ebd-90d4-34448ebcccc3`);
       cy.defaultWaits();
       cy.wait('@getMellomlagringValid');
+      cy.debug();
       cy.url().should('not.include', '8e3c3621-76d7-4ebd-90d4-34448ebcccc3');
       cy.url().should('not.include', 'sub=digital');
       cy.url().should('not.include', 'oppsummering');
-      cy.url().should('equal', `${Cypress.env('BASE_URL')}/fyllut/testmellomlagring`);
+      cy.url().should('equal', `${Cypress.env('BASE_URL')}/fyllut/soknad-ikke-funnet`);
     });
 
     it('lets you delete mellomlagring', () => {
