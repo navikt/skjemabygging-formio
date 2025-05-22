@@ -127,7 +127,7 @@ class Number extends TextField {
         const value = removeAllSpaces(event.currentTarget.value);
 
         if (value !== '') {
-          this.setValueOnReactInstance(formatNumber(value, this.getInputMode() === 'numeric'));
+          super.setValueOnReactInstance(formatNumber(value, this.getInputMode() === 'numeric'));
         }
       };
     }
@@ -136,7 +136,7 @@ class Number extends TextField {
 
   getDisplayValue(): string {
     if (this.component?.type !== 'year') {
-      return formatNumber(super.getDisplayValue(), this.getInputMode() === 'numeric');
+      return formatNumber(super.getValue(), this.getInputMode() === 'numeric');
     }
     return super.getDisplayValue();
   }

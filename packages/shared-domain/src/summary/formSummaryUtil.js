@@ -1,13 +1,13 @@
 import moment from 'moment';
 import 'moment/locale/nb';
 import attachmentUtils from '../attachment';
+import { numberUtils } from '../index';
 import TEXTS from '../texts';
 import currencyUtils from '../utils/currencyUtils';
 import dateUtils from '../utils/date';
-import { bankAccountRegex, formatIBAN, orgNrRegex } from '../utils/format-utils';
+import { bankAccountRegex, formatIBAN, formatNationalIdentityNumber, orgNrRegex } from '../utils/format-utils';
 import FormioUtils from '../utils/formio/FormioUtils';
 import sanitizeJavaScriptCode from '../utils/formio/sanitize-javascript-code';
-import numberUtils from '../utils/numberUtils';
 import { addToMap } from '../utils/objectUtils';
 import { toPascalCase } from '../utils/stringUtils';
 
@@ -97,6 +97,9 @@ function formatValue(component, value, translate, form, language) {
         return orgNrGroups.join(' ');
       }
       return value;
+    }
+    case 'fnrfield': {
+      return formatNationalIdentityNumber(value);
     }
     case 'number': {
       const prefix = component.prefix ? `${component.prefix} ` : '';
