@@ -56,7 +56,7 @@ const IntroLinkPanel = ({ onClick, title, description, className, href }: Props)
         </Link>
         <p className={styles.description}>{translate(description)}</p>
       </div>
-      <ArrowRightIcon title="a11y-title" fontSize="1.5rem" className={styles.arrowIcon} />
+      <ArrowRightIcon aria-hidden="true" fontSize="1.5rem" className={styles.arrowIcon} />
     </div>
   );
 };
