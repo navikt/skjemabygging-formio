@@ -25,6 +25,7 @@
       "scope": "global",
       "tag": "statiske-tekster",
       "translations": {
+        "Laster...": { "value": "Loading...", "scope": "global" },
         "Legg ved": { "value": "Attach", "scope": "global" },
         "Oppsummering": { "value": "Summary", "scope": "global" }
       }
