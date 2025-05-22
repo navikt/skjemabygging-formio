@@ -5,6 +5,14 @@ export function removeAllSpaces(value: string): string {
   return value.replace(/\s+/g, '');
 }
 
+export function replaceCommaWithDot(value: string): string {
+  return value.replace(/,/g, '.');
+}
+
+export function removeAllSpacesAndReplaceCommaWithDot(value: string): string {
+  return value.replace(/\s+/g, '').replace(/,/g, '.');
+}
+
 export function removeAllSpacesAndCommas(value: string): string {
   return value.replace(/\s+/g, '').replace(/,/g, '');
 }

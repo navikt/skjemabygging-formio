@@ -93,12 +93,15 @@ class Number extends TextField {
 
   handleChange(value: string) {
     if (value !== undefined) {
-      const dataValue = removeAllSpacesAndCommas(value);
+      const normalizedValue = value?.toString().replace(',', '.') ?? value;
+      const dataValue = removeAllSpacesAndCommas(normalizedValue);
       if (
         (this.getInputMode() === 'decimal' && numberUtils.isValidDecimal(dataValue)) ||
         (this.getInputMode() === 'numeric' && numberUtils.isValidInteger(dataValue))
       ) {
-        return super.handleChange(parseFloat(dataValue));
+        const parsedValue = parseFloat(dataValue);
+        const formattedValue = this.getInputMode() === 'decimal' ? parsedValue.toFixed(2) : parsedValue.toString();
+        return super.handleChange(formattedValue);
       } else {
         return super.handleChange(dataValue);
       }
@@ -121,12 +124,11 @@ class Number extends TextField {
   }
 
   onBlur(): FocusEventHandler<HTMLInputElement> {
-    const isInteger = this.getInputMode() === 'numeric';
     return (event: React.FocusEvent<HTMLInputElement>) => {
       const value = removeAllSpaces(event.currentTarget.value);
 
       if (value !== '') {
-        super.setValueOnReactInstance(formatNumber(value, isInteger));
+        super.setValueOnReactInstance(formatNumber(value, this.getInputMode() === 'numeric'));
       }
     };
   }
