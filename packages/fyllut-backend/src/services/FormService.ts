@@ -27,7 +27,6 @@ class FormService {
 
       if (error instanceof Error) {
         const statusCode = (error as any).http_status;
-        // TODO sjekke om message inneholder illegalAction.applicationSentInOrDeleted
         if (statusCode === 404) {
           return undefined;
         }

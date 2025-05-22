@@ -150,7 +150,6 @@ describe('Mellomlagring', () => {
       cy.visit(`/fyllut/testmellomlagring/oppsummering?sub=digital&innsendingsId=8e3c3621-76d7-4ebd-90d4-34448ebcccc3`);
       cy.defaultWaits();
       cy.wait('@getMellomlagringValid');
-      cy.debug();
       cy.url().should('not.include', '8e3c3621-76d7-4ebd-90d4-34448ebcccc3');
       cy.url().should('not.include', 'sub=digital');
       cy.url().should('not.include', 'oppsummering');
