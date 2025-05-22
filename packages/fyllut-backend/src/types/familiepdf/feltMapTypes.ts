@@ -3,6 +3,7 @@ export interface FeltMap {
   verdiliste: VerdilisteElement[];
   pdfConfig: PdfConfig;
   skjemanummer?: string | null; // Optional and can be null
+  bunntekst: EkstraBunntekst | null;
 }
 
 export interface VerdilisteElement {
@@ -15,4 +16,12 @@ export interface VerdilisteElement {
 export interface PdfConfig {
   harInnholdsfortegnelse: boolean;
   språk: string;
+}
+
+export interface EkstraBunntekst {
+  upperleft: string | null;
+  lowerleft: string | null;
+  upperMiddle: string | null;
+  lowerMiddle: string | null;
+  upperRight: string | null;
 }

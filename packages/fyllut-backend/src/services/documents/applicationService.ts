@@ -15,7 +15,7 @@ import { responseToError, synchronousResponseToError } from '../../utils/errorHa
 import fetchWithRetry, { HeadersInit } from '../../utils/fetchWithRetry';
 import { appMetrics } from '../index';
 
-const { skjemabyggingProxyUrl, gitVersion, familiePdfGenerator } = config;
+const { skjemabyggingProxyUrl, gitVersion, familiePdfGeneratorUrl } = config;
 
 const createPdfAsByteArray = async (
   accessToken: string,
@@ -163,9 +163,20 @@ const createPdfFromFieldMap = async (
   if (!['nb-NO', 'nn-NO', 'en'].includes(language)) {
     logger.warn(`Language code "${language}" is not supported. Language code will be defaulted to "nb".`);
   }
-  //const feltMapString = createFeltMapFromSubmission(form, submission, submissionMethod, translate, language );
 
-  const response = await fetchWithRetry(`${familiePdfGenerator}/api/v1/pdf/opprett-pdf`, {
+  const yourInformation = yourInformationUtils.getYourInformation(form, submission.data);
+
+  let identityNumber: string;
+  if (yourInformation?.identitet?.identitetsnummer) {
+    identityNumber = yourInformation.identitet.identitetsnummer;
+  } else if (submission.data.fodselsnummerDNummerSoker) {
+    // This is the old format of the object, which is still used in some forms.
+    identityNumber = submission.data.fodselsnummerDNummerSoker as string;
+  } else {
+    identityNumber = '—';
+  }
+
+  const response = await fetchWithRetry(`${familiePdfGeneratorUrl}/api/v1/pdf/opprett-pdf`, {
     retry: 3,
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -174,7 +185,7 @@ const createPdfFromFieldMap = async (
       accept: '*/*',
     } as HeadersInit,
     method: 'POST',
-    body: createFeltMapFromSubmission(form, submission, submissionMethod, translate, language),
+    body: createFeltMapFromSubmission(form, submission, submissionMethod, translate, language, identityNumber),
   });
 
   if (response.ok) {

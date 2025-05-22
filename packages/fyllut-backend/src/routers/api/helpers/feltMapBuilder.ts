@@ -2,6 +2,7 @@ import {
   DeclarationType,
   FormPropertiesType,
   formSummaryUtil,
+  I18nTranslationReplacements,
   NavFormType,
   signatureUtils,
   Submission,
@@ -16,18 +17,32 @@ import {
   SummarySelectboxes,
   TEXTS,
 } from '@navikt/skjemadigitalisering-shared-domain';
+import { config } from '../../../config/config';
 import { logger } from '../../../logger';
-import { FeltMap, PdfConfig, VerdilisteElement } from '../../../types/familiepdf/feltMapTypes';
+import { EkstraBunntekst, FeltMap, PdfConfig, VerdilisteElement } from '../../../types/familiepdf/feltMapTypes';
 
 type TranslateFunction = (text: string) => string;
+
+const { gitVersion } = config;
 
 export const createFeltMapFromSubmission = (
   form: NavFormType,
   submission: Submission,
   submissionMethod: string,
-  translate: (text: string) => string,
+  translate: (text: string, textReplacements?: I18nTranslationReplacements) => string,
   lang: string = 'nb',
+  identityNumber: string = '-',
 ) => {
+  /*
+  const translate = (text: string, textReplacements?: I18nTranslationReplacements) =>
+    translationUtils.translateWithTextReplacements({
+      translations,
+      originalText: text,
+      params: textReplacements,
+      currentLanguage: lang,
+    });
+*/
+
   const symmaryPanels: SummaryPanel[] = formSummaryUtil.createFormSummaryPanels(
     form,
     submission,
@@ -47,12 +62,20 @@ export const createFeltMapFromSubmission = (
     verdiliste.push(signatures);
   }
 
+  const ekstraBunntekst: EkstraBunntekst = {
+    upperleft: translate(TEXTS.statiske.footer.userIdLabel) + `: ${identityNumber}`,
+    lowerleft: translate(TEXTS.statiske.footer.schemaNumberLabel) + `: ${form.properties.skjemanummer}`,
+    upperRight: null,
+    upperMiddle: translate(TEXTS.statiske.footer.createdDatelabel) + `: ${formatCurrentDateTime(lang)}`,
+    lowerMiddle: translate(TEXTS.statiske.footer.versionLabel) + `: ${gitVersion}`,
+  };
   const pdfConfig: PdfConfig = { harInnholdsfortegnelse: false, språk: lang };
   const feltMap: FeltMap = {
     label: title,
     pdfConfig: pdfConfig,
     skjemanummer: form.properties.skjemanummer,
     verdiliste,
+    bunntekst: ekstraBunntekst,
   };
 
   logger.info(`FeltMapString: ${JSON.stringify(feltMap)}`);
@@ -155,13 +178,17 @@ const tableMap = (component): VerdilisteElement => {
 
 const datagridRowMap = (component, index): VerdilisteElement => {
   logger.info('RowMap ìndex=' + index);
-  return {
-    label: component.label ? component.label : '' + index,
-    verdiliste: component.components.map((comp): VerdilisteElement => {
-      return createVerdilisteElement(comp);
-    }),
-    visningsVariant: null,
-  };
+  if (component.components) {
+    return {
+      label: component.label ? component.label : '' + index,
+      verdiliste: component.components.map((comp): VerdilisteElement => {
+        return createVerdilisteElement(comp);
+      }),
+      visningsVariant: null,
+    };
+  } else {
+    return createVerdilisteElement(component);
+  }
 };
 
 const multipleAnswersMap = (component: SummarySelectboxes | SummaryDataFetcher): VerdilisteElement => {
@@ -176,14 +203,11 @@ const multipleAnswersMap = (component: SummarySelectboxes | SummaryDataFetcher):
 };
 
 const htmlMap = (component: SummaryField): VerdilisteElement => {
-  if (component.type) {
-    return fieldMap(component);
-  }
   return {
-    label: '',
-    verdi: `${component.value}`,
+    label: component.value.toString(),
+    verdi: null,
     verdiliste: null,
-    visningsVariant: null,
+    visningsVariant: 'HTML',
   };
 };
 
@@ -217,6 +241,7 @@ const addressMap = (component: SummaryAddress): VerdilisteElement => {
 };
 
 const fieldMap = (component: SummaryField): VerdilisteElement => {
+  //logger.info('fieldMap =' + component.label);
   return {
     label: component.label,
     verdi: `${component.value}`,
@@ -283,11 +308,24 @@ const lagSubVerdilisteElement = (
   translatedBlockSignature: string,
 ): VerdilisteElement => {
   const verdiListe: VerdilisteElement[] = [
-    { label: translatedDescription },
-    { label: translatedPlaceDate, verdi: '___________________________________________________' },
-    { label: translatedSignature, verdi: '___________________________________________________' },
-    { label: translatedBlockSignature, verdi: '___________________________________________________' },
+    { label: translatedDescription, verdi: ' ' },
+    { label: translatedPlaceDate, verdi: ' ' },
+    { label: translatedSignature, verdi: ' ' },
+    { label: translatedBlockSignature, verdi: ' ' },
   ];
 
   return { label: translatedLabel, verdiliste: verdiListe };
 };
+
+function formatCurrentDateTime(language: string): string {
+  const now = new Date();
+
+  const day = now.getDate();
+  const month = now.toLocaleString(language, { month: 'long' }); // e.g. "May"
+  const year = now.getFullYear();
+
+  const hours = now.getHours().toString().padStart(2, '0');
+  const minutes = now.getMinutes().toString().padStart(2, '0');
+
+  return `${day} ${month} ${year}, kl ${hours}.${minutes}`;
+}

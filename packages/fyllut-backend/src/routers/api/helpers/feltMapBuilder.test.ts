@@ -9,7 +9,7 @@ import {
   SummaryPanel,
   SummarySubmissionValue,
 } from '@navikt/skjemadigitalisering-shared-domain';
-import { FeltMap } from '../../../types/familiepdf/feltMapTypes';
+import { EkstraBunntekst, FeltMap } from '../../../types/familiepdf/feltMapTypes';
 import { conditionalsForm, conditionalsSubmission } from '../testdata/conditionals';
 import { createFeltMapFromSubmission, createVerdilister } from './feltMapBuilder';
 
@@ -44,20 +44,13 @@ const createComponent = (
 
 const mockTranslate = (text: string) => text;
 const panels = [createPanel('Panel 1'), createPanel('Panel 2'), createPanel('Panel 3')];
-/*
-const activity: SummaryActivity = {
-  key: "aktiviter",
-  label: 'Velg hvilken aktivitet du vil søke om stønad for',
-  type: "activities",
-  value:  {
-    aktivitetId: "1",
-    periode: { fom: "2025-01-01", tom: "2025-06-30" },
-    text: "Arbeidstrening",
-    vedtaksId: "12345",
-    tema: "TSO"
-  }
-}
-*/
+const bunntekst: EkstraBunntekst = {
+  upperleft: 'Id: 12345678901',
+  upperMiddle: '12. Mai 2025, kl. 12:00:00',
+  upperRight: null,
+  lowerleft: 'skjemanr',
+  lowerMiddle: 'git version',
+};
 
 describe('feltMapBuilder', () => {
   describe('createfeltMapFromSubmission', () => {
@@ -105,6 +98,7 @@ describe('feltMapBuilder', () => {
         pdfConfig: { harInnholdsfortegnelse: false, språk: 'nb' },
         skjemanummer: 'NAV 11-12.15B',
         verdiliste: verdiliste,
+        bunntekst,
       };
 
       const feltMapString = JSON.stringify(feltMap);
@@ -122,6 +116,7 @@ describe('feltMapBuilder', () => {
         pdfConfig: { harInnholdsfortegnelse: false, språk: 'nb' },
         skjemanummer: 'NAV 11-12.15B',
         verdiliste: verdiliste,
+        bunntekst,
       };
 
       const feltMapString = JSON.stringify(feltMap);
@@ -143,6 +138,7 @@ describe('feltMapBuilder', () => {
           pdfConfig: { harInnholdsfortegnelse: false, språk: 'nb' },
           skjemanummer: 'NAV 11-12.15B',
           verdiliste: verdiliste,
+          bunntekst,
         };
 
         const feltMapString = JSON.stringify(feltMap);
@@ -166,6 +162,7 @@ describe('feltMapBuilder', () => {
           pdfConfig: { harInnholdsfortegnelse: false, språk: 'nb' },
           skjemanummer: 'NAV 11-12.15B',
           verdiliste: verdiliste,
+          bunntekst,
         };
         feltMapString = JSON.stringify(feltMap);
       });
@@ -189,6 +186,7 @@ describe('feltMapBuilder', () => {
             pdfConfig: { harInnholdsfortegnelse: false, språk: 'nb' },
             skjemanummer: 'NAV 11-12.15B',
             verdiliste: verdiliste,
+            bunntekst,
           };
           feltMapString = JSON.stringify(feltMap);
         });
@@ -224,6 +222,7 @@ describe('feltMapBuilder', () => {
             pdfConfig: { harInnholdsfortegnelse: false, språk: 'nb' },
             skjemanummer: 'NAV 11-12.15B',
             verdiliste: verdiliste,
+            bunntekst,
           };
           feltMapString = JSON.stringify(feltMap);
         });
