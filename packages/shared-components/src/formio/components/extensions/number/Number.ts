@@ -99,9 +99,7 @@ class Number extends TextField {
         (this.getInputMode() === 'decimal' && numberUtils.isValidDecimal(dataValue)) ||
         (this.getInputMode() === 'numeric' && numberUtils.isValidInteger(dataValue))
       ) {
-        const parsedValue = parseFloat(dataValue);
-        const formattedValue = this.getInputMode() === 'decimal' ? parsedValue.toFixed(2) : parsedValue.toString();
-        return super.handleChange(formattedValue);
+        return super.handleChange(parseFloat(dataValue));
       } else {
         return super.handleChange(dataValue);
       }
@@ -123,18 +121,24 @@ class Number extends TextField {
     super.setValueOnReactInstance(numberUtils.toLocaleString(value, this.getNumberFormatOptions()));
   }
 
-  onBlur(): FocusEventHandler<HTMLInputElement> {
-    return (event: React.FocusEvent<HTMLInputElement>) => {
-      const value = removeAllSpaces(event.currentTarget.value);
+  onBlur(): FocusEventHandler<HTMLInputElement> | undefined {
+    if (this.component?.type !== 'year') {
+      return (event: React.FocusEvent<HTMLInputElement>) => {
+        const value = removeAllSpaces(event.currentTarget.value);
 
-      if (value !== '') {
-        super.setValueOnReactInstance(formatNumber(value, this.getInputMode() === 'numeric'));
-      }
-    };
+        if (value !== '') {
+          this.setValueOnReactInstance(formatNumber(value, this.getInputMode() === 'numeric'));
+        }
+      };
+    }
+    return super.onBlur();
   }
 
   getDisplayValue(): string {
-    return formatNumber(super.getDisplayValue(), this.getInputMode() === 'numeric');
+    if (this.component?.type !== 'year') {
+      return formatNumber(super.getDisplayValue(), this.getInputMode() === 'numeric');
+    }
+    return super.getDisplayValue();
   }
 }
 
