@@ -10,6 +10,8 @@ import attachmentUtils, {
 import { ComponentError } from './component';
 import configUtils from './config';
 import type { ConfigType } from './config/types';
+import type { DataFetcherSourceId } from './data-fetcher';
+import { dataFetcherSources } from './data-fetcher';
 import { Enhet, Enhetstype, supportedEnhetstyper } from './enhet';
 import type { FieldSize } from './field-size';
 import {
@@ -19,6 +21,7 @@ import {
   Component,
   ComponentValue,
   CustomLabels,
+  DataFetcherComponent,
   DeclarationType,
   DisplayType,
   FormPropertiesPublishing,
@@ -26,8 +29,8 @@ import {
   FormSignaturesType,
   FormsResponseForm,
   FyllutState,
-  InnsendingType,
   InputMode,
+  IntroPage,
   MellomlagringError,
   NavFormType,
   NewFormSignatureType,
@@ -38,6 +41,7 @@ import {
   ResourceAccess,
   Submission,
   SubmissionData,
+  SubmissionMetadata,
   SubmissionMethod,
   SubmissionType,
   UsageContext,
@@ -120,6 +124,8 @@ import {
   TranslationLang,
 } from './translations/FormsApiTranslation';
 import currencyUtils from './utils/currencyUtils';
+import type { DataFetcherData, DataFetcherElement, DataFetcherUtil } from './utils/data-fetcher';
+import { dataFetcherUtils } from './utils/data-fetcher';
 import dateUtils from './utils/date';
 import featureUtils, { FeatureTogglesMap } from './utils/featureUtils';
 import formDiffingTool, { FormSettingsDiff } from './utils/formDiffingTool';
@@ -142,6 +148,8 @@ export {
   attachmentUtils,
   configUtils,
   currencyUtils,
+  dataFetcherSources,
+  dataFetcherUtils,
   dateUtils,
   DeclarationType,
   featureUtils,
@@ -189,6 +197,11 @@ export type {
   ComponentValue,
   ConfigType,
   CustomLabels,
+  DataFetcherComponent,
+  DataFetcherData,
+  DataFetcherElement,
+  DataFetcherSourceId,
+  DataFetcherUtil,
   DependencyType,
   DisplayType,
   DrivingListPeriod,
@@ -218,8 +231,8 @@ export type {
   I18nTranslationMap,
   I18nTranslationReplacements,
   I18nTranslations,
-  InnsendingType,
   InputMode,
+  IntroPage,
   KjentBruker,
   Language,
   LimitedFormAttachment,
@@ -252,6 +265,7 @@ export type {
   SubmissionData,
   SubmissionIdentity,
   SubmissionMaalgruppe,
+  SubmissionMetadata,
   SubmissionMethod,
   SubmissionType,
   SubmissionYourInformation,

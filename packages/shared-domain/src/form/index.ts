@@ -1,5 +1,6 @@
 export * from './component';
 export * from './formProperties';
+export * from './introPage';
 export * from './navFormType';
 export * from './prefill';
 export * from './signature';

@@ -16,11 +16,10 @@ const mergeProperties = (
   form: Form,
   props: Pick<FormPropertiesType, 'uxSignalsId' | 'uxSignalsSubmissionTypes'>,
 ): Form => {
-  const { uxSignalsInnsending, ...originalProperties } = form.properties;
   return {
     ...form,
     properties: {
-      ...originalProperties,
+      ...form.properties,
       ...props,
     },
   };
