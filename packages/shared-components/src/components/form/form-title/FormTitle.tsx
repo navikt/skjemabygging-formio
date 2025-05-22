@@ -38,7 +38,7 @@ export function FormTitle({ form }: Props) {
     <header className={styles.titleHeader}>
       <FormContainer>
         <div className={styles.titleIcon}>
-          <FormIcon title="a11y-title" className={styles.titleIconSvg} />
+          <FormIcon className={styles.titleIconSvg} />
         </div>
         <Heading level="1" size="xlarge">
           {translate(form.title)}

@@ -1,9 +1,8 @@
 export interface Props {
-  title: string;
   className?: string;
 }
 
-const FormIcon = ({ title, className }: Props) => {
+const FormIcon = ({ className }: Props) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -12,8 +11,8 @@ const FormIcon = ({ title, className }: Props) => {
       viewBox="0 0 72 72"
       fill="none"
       className={className}
+      aria-hidden="true"
     >
-      <title>{title}</title>
       <rect x="23.25" y="22.5" width="26.25" height="9" fill="#E6F0FF" />
       <rect x="23.25" y="36.75" width="26.25" height="9" fill="#E6F0FF" />
       <circle cx="36.75" cy="34.5" r="21" fill="#E6F0FF" />
