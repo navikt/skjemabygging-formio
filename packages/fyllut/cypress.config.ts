@@ -15,7 +15,7 @@ export default defineConfig({
       SEND_INN_FRONTEND: 'http://localhost:3300/send-inn-frontend',
       TOKEN_X_WELL_KNOWN_URL: 'http://127.0.0.1:3300/tokenx/.well-known',
       BASE_URL: 'http://localhost:3001',
-      FAMILIE_PDF_GENERATOR_URL: 'http://localhost:3001',
+      FAMILIE_PDF_GENERATOR_URL: 'http:///127.0.0.1:3300',
     },
   },
 });
