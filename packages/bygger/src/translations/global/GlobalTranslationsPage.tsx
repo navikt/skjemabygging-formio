@@ -13,6 +13,7 @@ import GlobalTranslationButtonsColumn from './GlobalTranslationButtonsColumn';
 import GlobalTranslationsTable from './GlobalTranslationsTable';
 
 const titles = {
+  introPage: 'Introside',
   skjematekster: 'Globale skjematekster',
   grensesnitt: 'Globale grensesnittekster',
   'statiske-tekster': 'Globale statiske tekster',
@@ -24,6 +25,15 @@ const GlobalTranslationsPage = () => {
   const { translationsPerTag, isReady, storedTranslations, deleteTranslation } = useGlobalTranslations();
 
   const translations: FormsApiTranslation[] | undefined = translationsPerTag?.[tag];
+
+  const initialChanges = useMemo(() => {
+    if (isReady && tag === 'introPage') {
+      const translationsWithInitValues = translationsPerTag['introPage'];
+      return Object.values(translationsWithInitValues).filter((translation) => {
+        return !Object.keys(storedTranslations)?.includes(translation.key);
+      });
+    }
+  }, [isReady, storedTranslations, tag, translationsPerTag]);
 
   const unusedTranslations = useMemo(() => {
     if (translations) {
@@ -40,7 +50,7 @@ const GlobalTranslationsPage = () => {
       <TitleRowLayout>
         <Title>{titles[tag]}</Title>
       </TitleRowLayout>
-      <EditGlobalTranslationsProvider>
+      <EditGlobalTranslationsProvider initialChanges={initialChanges}>
         <form onSubmit={(event) => event.preventDefault()}>
           <RowLayout
             right={
@@ -53,11 +63,12 @@ const GlobalTranslationsPage = () => {
               <UnusedTranslations
                 translations={unusedTranslations}
                 onRemove={deleteTranslation}
-                showKeys={tag === 'validering'}
+                showKeys={tag === 'validering' || tag === 'introPage'}
               />
             )}
             <GlobalTranslationsTable
               translations={translations}
+              isKeyBased={tag === 'introPage'}
               addNewRow={tag === 'skjematekster'}
               loading={!isReady}
             />

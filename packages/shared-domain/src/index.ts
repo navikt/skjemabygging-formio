@@ -117,6 +117,7 @@ import MockedComponentObjectForTest from './summary/MockedComponentObjectForTest
 import formSummaryUtil from './summary/formSummaryUtil';
 import { TextSize, TextSizeShort } from './text';
 import TEXTS from './texts';
+import externalStorageTexts, { Tkey } from './texts/externalStorage';
 import { Activity } from './tilleggsstonader/activity';
 import {
   FormsApiTranslation,
@@ -153,6 +154,7 @@ export {
   dataFetcherUtils,
   dateUtils,
   DeclarationType,
+  externalStorageTexts,
   featureUtils,
   formDiffingTool,
   formioFormsApiUtils,
@@ -287,6 +289,7 @@ export type {
   SummarySubmissionValue,
   TextSize,
   TextSizeShort,
+  Tkey,
   TranslationLang,
   TranslationResource,
   TranslationScope,

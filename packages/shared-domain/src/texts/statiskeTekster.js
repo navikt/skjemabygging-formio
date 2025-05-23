@@ -243,5 +243,11 @@ export const statiske = {
     wait: 'vente noen minutter og',
     reloadPage: 'laste siden på nytt',
     goBack: 'gå tilbake til forrige side',
+    goToMyPage: 'gå til Min side',
+    startNewForm: 'Start en ny søknad',
+    formNotFound: {
+      title: 'Søknaden du leter etter finnes ikke',
+      message: 'Dette kan skyldes at søknaden allerede er sendt inn eller avsluttet.',
+    },
   },
 };

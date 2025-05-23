@@ -2,7 +2,13 @@ import { FormioResource } from '../resource';
 
 export type Language = 'nb-NO' | 'nn-NO' | 'en';
 export type TranslationScope = 'global' | 'local' | 'component-countryName';
-export type TranslationTag = 'skjematekster' | 'grensesnitt' | 'statiske-tekster' | 'validering' | 'dummy-tag';
+export type TranslationTag =
+  | 'introPage'
+  | 'skjematekster'
+  | 'grensesnitt'
+  | 'statiske-tekster'
+  | 'validering'
+  | 'dummy-tag';
 export type I18nTranslationMap = Record<string, string>;
 export type I18nTranslationReplacements = Record<string | number, any>;
 export type I18nTranslations = Record<string, I18nTranslationMap>;
