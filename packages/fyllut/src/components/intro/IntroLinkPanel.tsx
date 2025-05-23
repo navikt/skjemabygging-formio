@@ -41,14 +41,6 @@ const useStyles = makeStyles({
     color: 'var(--a-surface-action)',
     flex: '0 0 auto',
   },
-  link: {
-    textDecoration: 'none',
-    '&:hover': {
-      /*textDecoration: 'underline',
-      textDecorationThickness: '2px',
-      textUnderlineOffset: '.15625rem',*/
-    },
-  },
 });
 
 const IntroLinkPanel = ({ onClick, title, description, className, href }: Props) => {
