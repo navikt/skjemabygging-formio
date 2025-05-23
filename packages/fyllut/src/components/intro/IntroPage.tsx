@@ -13,7 +13,7 @@ import {
 import { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import useFormsApiForms from '../../api/useFormsApiForms';
-import { ErrorPageWrapper } from '../errors/ErrorPageWrapper';
+import { NotFoundPage } from '../errors/NotFoundPage';
 import FormPageSkeleton from '../form/FormPageSkeleton';
 import SubmissionMethodNotAllowed from '../SubmissionMethodNotAllowed';
 import { IntroPageProvider } from './IntroPageContext';
@@ -114,7 +114,7 @@ const IntroPage = () => {
   }
 
   if (!form) {
-    return <ErrorPageWrapper statusCode={404} />;
+    return <NotFoundPage />;
   }
 
   if (submissionMethod && !navFormUtils.isSubmissionMethodAllowed(submissionMethod, form)) {

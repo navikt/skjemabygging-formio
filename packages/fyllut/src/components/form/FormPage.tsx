@@ -3,7 +3,7 @@ import { formioFormsApiUtils, NavFormType, navFormUtils } from '@navikt/skjemadi
 import { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import useFormsApiForms from '../../api/useFormsApiForms';
-import { ErrorPageWrapper } from '../errors/ErrorPageWrapper';
+import { NotFoundPage } from '../errors/NotFoundPage';
 import SubmissionMethodNotAllowed from '../SubmissionMethodNotAllowed';
 import FormPageSkeleton from './FormPageSkeleton';
 
@@ -63,7 +63,7 @@ const FormPage = () => {
   }
 
   if (!form) {
-    return <ErrorPageWrapper statusCode={404} />;
+    return <NotFoundPage />;
   }
 
   if (submissionMethod && !navFormUtils.isSubmissionMethodAllowed(submissionMethod, form)) {
