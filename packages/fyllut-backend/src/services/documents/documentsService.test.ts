@@ -8,7 +8,7 @@ import { mockNext, mockRequest, mockResponse } from '../../test/requestTestHelpe
 import documents from '../../routers/api/documents/documents';
 import * as mottaksadresser from '../../routers/api/mottaksadresser';
 
-const { skjemabyggingProxyUrl, formsApiUrl } = config;
+const { skjemabyggingProxyUrl, formsApiUrl, familiePdfGeneratorUrl, sendInnConfig } = config;
 
 const addresses = [
   {
@@ -66,12 +66,12 @@ describe('[endpoint] documents', () => {
     const generateFileMock = nock(skjemabyggingProxyUrl!)
       .post('/foersteside')
       .reply(200, { foersteside: encodedForstesidedPdf });
-    const skjemabyggingproxyScope = nock(process.env.SKJEMABYGGING_PROXY_URL as string)
-      .post('/exstream')
-      .reply(200, { data: { result: [{ content: { data: encodedSoknadPdf } }] } });
+    const skjemabyggingproxyScope = nock(familiePdfGeneratorUrl!)
+      .post('/api/v1/pdf/opprett-pdf')
+      .reply(200, encodedSoknadPdf);
 
-    const mergePdfScope = nock(process.env.GOTENBERG_URL as string)
-      .intercept('/forms/libreoffice/convert', 'POST', (body) => {
+    const mergePdfScope = nock(sendInnConfig.host!)
+      .intercept('/fyllUt/v1/merge-filer', 'POST', (body) => {
         return body != null;
       })
       .reply(200, mergedPdf, { 'content-type': 'application/pdf' });
@@ -124,12 +124,12 @@ describe('[endpoint] documents', () => {
     const generateFileMock = nock(skjemabyggingProxyUrl!)
       .post('/foersteside')
       .reply(200, { foersteside: encodedForstesidedPdf });
-    const skjemabyggingproxyScope = nock(process.env.SKJEMABYGGING_PROXY_URL as string)
-      .post('/exstream')
-      .reply(200, { data: { result: [{ content: { data: encodedSoknadPdf } }] } });
+    const skjemabyggingproxyScope = nock(familiePdfGeneratorUrl!)
+      .post('/api/v1/pdf/opprett-pdf')
+      .reply(200, encodedSoknadPdf);
 
-    const mergePdfScope = nock(process.env.GOTENBERG_URL_EN as string)
-      .intercept('/forms/libreoffice/convert', 'POST', (body) => {
+    const mergePdfScope = nock(sendInnConfig.host!)
+      .intercept('/fyllUt/v1/merge-filer', 'POST', (body) => {
         return body != null;
       })
       .reply(200, mergedPdf, { 'content-type': 'application/pdf' });
