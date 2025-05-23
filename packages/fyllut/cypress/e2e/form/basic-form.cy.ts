@@ -172,13 +172,13 @@ describe('Basic form', () => {
 
     describe('Fill in form', () => {
       it('select submission method paper - fill in - go to summary - edit form - navigate back to summary', () => {
-        cy.get('[type="radio"]').check('paper');
+        cy.findByRole('link', { name: TEXTS.grensesnitt.introPage.sendOnPaper }).click();
         cy.clickStart();
         fillInForm(true, 'paper');
       });
 
       it('select submission method digital - fill in - go to summary - edit form - navigate back to summary', () => {
-        cy.get('[type="radio"]').check('digital');
+        cy.findByRole('link', { name: TEXTS.grensesnitt.introPage.sendDigital }).click();
         cy.clickStart();
         cy.wait('@createMellomlagring');
         fillInForm(false, 'digital');

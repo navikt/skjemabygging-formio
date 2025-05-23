@@ -112,9 +112,9 @@ describe('React components', () => {
 
     describe('Fill in form and view summary, digital', () => {
       beforeEach(() => {
+        cy.defaultInterceptsMellomlagring();
         cy.visit('/fyllut/customcomps/dineopplysninger?sub=digital');
         cy.defaultWaits();
-        cy.defaultInterceptsMellomlagring();
         cy.wait('@createMellomlagring');
         cy.wait('@getCurrencies');
       });
