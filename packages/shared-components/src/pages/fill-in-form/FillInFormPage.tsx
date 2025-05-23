@@ -160,6 +160,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: Fil
 
   const onSubmissionChanged = useCallback(
     (submissionData: SubmissionData) => {
+      console.log('submissionData', submissionData);
       setSubmission((prevSubmission) => ({
         ...prevSubmission,
         data: {

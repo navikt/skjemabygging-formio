@@ -46,7 +46,6 @@ const toLocaleString = (value?: string | number, options: Intl.NumberFormatOptio
   if (Number.isNaN(number)) {
     return value;
   }
-
   return number.toLocaleString('no', options);
 };
 

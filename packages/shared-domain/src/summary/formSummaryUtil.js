@@ -1,13 +1,14 @@
 import moment from 'moment';
 import 'moment/locale/nb';
 import attachmentUtils from '../attachment';
+import { numberUtils } from '../index';
 import TEXTS from '../texts';
 import currencyUtils from '../utils/currencyUtils';
 import { dataFetcher } from '../utils/data-fetcher/DataFetcherUtils';
 import dateUtils from '../utils/date';
+import { bankAccountRegex, formatIBAN, formatNationalIdentityNumber, orgNrRegex } from '../utils/format-utils';
 import FormioUtils from '../utils/formio/FormioUtils';
 import sanitizeJavaScriptCode from '../utils/formio/sanitize-javascript-code';
-import numberUtils from '../utils/numberUtils';
 import { addToMap } from '../utils/objectUtils';
 import { toPascalCase } from '../utils/stringUtils';
 
@@ -81,7 +82,6 @@ function formatValue(component, value, translate, form, language) {
         integer: component.inputType === 'numeric',
       });
     case 'bankAccount': {
-      const bankAccountRegex = /^(\d{4})(\d{2})(\d{5})$/;
       const [bankAccountMatch, ...bankAccountGroups] =
         (typeof value === 'string' && value?.match(bankAccountRegex)) || [];
       if (bankAccountMatch) {
@@ -89,13 +89,18 @@ function formatValue(component, value, translate, form, language) {
       }
       return value;
     }
+    case 'iban': {
+      return formatIBAN(value);
+    }
     case 'orgNr': {
-      const orgNrRegex = /^(\d{3})(\d{3})(\d{3})$/;
       const [orgNrMatch, ...orgNrGroups] = (typeof value === 'string' && value?.match(orgNrRegex)) || [];
       if (orgNrMatch) {
         return orgNrGroups.join(' ');
       }
       return value;
+    }
+    case 'fnrfield': {
+      return formatNationalIdentityNumber(value);
     }
     case 'number': {
       const prefix = component.prefix ? `${component.prefix} ` : '';
