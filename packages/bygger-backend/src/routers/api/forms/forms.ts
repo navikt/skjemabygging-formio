@@ -57,6 +57,22 @@ const put: RequestHandler = async (req, res, next) => {
   }
 };
 
+const deleteForm: RequestHandler = async (req, res, next) => {
+  const accessToken = req.headers.AzureAccessToken as string;
+  const { formPath } = req.params;
+  const { revision } = req.query;
+  try {
+    await formsService.deleteForm(formPath, parseInt(revision as string), accessToken);
+    res.status(204).send();
+  } catch (error) {
+    if (error instanceof OldHttpError) {
+      next(new HttpError(error.message, error.response.status));
+    } else {
+      next(error);
+    }
+  }
+};
+
 const postLockForm: RequestHandler = async (req, res, next) => {
   const accessToken = req.headers.AzureAccessToken as string;
   const { formPath } = req.params;
@@ -93,6 +109,7 @@ const forms = {
   get,
   post,
   put,
+  deleteForm,
   postLockForm,
   deleteLockForm,
 };

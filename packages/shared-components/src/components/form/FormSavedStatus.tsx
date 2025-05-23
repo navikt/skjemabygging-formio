@@ -6,7 +6,7 @@ interface Props {
   submission?: Submission;
 }
 
-const FormError = ({ submission }: Props) => {
+const FormSavedStatus = ({ submission }: Props) => {
   const { translate } = useLanguages();
 
   if (!submission?.fyllutState?.mellomlagring?.savedDate) {
@@ -19,4 +19,4 @@ const FormError = ({ submission }: Props) => {
   );
 };
 
-export default FormError;
+export default FormSavedStatus;

@@ -1,9 +1,4 @@
-import {
-  FormsApiGlobalTranslation,
-  FormsApiTranslation,
-  TranslationLang,
-  TranslationTag,
-} from '@navikt/skjemadigitalisering-shared-domain';
+import { FormsApiTranslation, TranslationLang, TranslationTag } from '@navikt/skjemadigitalisering-shared-domain';
 import { TranslationError } from '../utils/errorUtils';
 import { State } from './index';
 
@@ -21,7 +16,7 @@ type ValidationErrorAction = { type: 'VALIDATION_ERROR'; payload: { errors: Tran
 type SaveStartedAction = { type: 'SAVE_STARTED' };
 type SaveFinishedAction = { type: 'SAVE_FINISHED'; payload: { errors: TranslationError[] } };
 
-const createDefaultGlobalTranslation = (tag: TranslationTag = 'skjematekster'): FormsApiGlobalTranslation => ({
+const createDefaultGlobalTranslation = (tag: TranslationTag = 'skjematekster'): FormsApiTranslation => ({
   key: '',
   tag,
   nb: '',

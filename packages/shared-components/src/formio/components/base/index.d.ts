@@ -19,6 +19,7 @@ interface ReactComponentType {
   detachReact(element): any;
   validate(data, dirty, rowData): boolean;
   updateValue(value, flags?: object): any;
+  calculateComponentValue(data, dirty, rowData): any;
   setReactInstance(element): void;
   resetValue(): void;
   setValue(value: any, flags?: any): void;
@@ -27,7 +28,6 @@ interface ReactComponentType {
   // Component
   key?: string;
   component?: Component;
-  showAdditionalDescription: boolean;
   path?: string;
   defaultValue?: any;
   dataValue?: any;

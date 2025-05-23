@@ -10,7 +10,6 @@ export type FormMetadataErrorKeys =
   | 'lockedFormReason'
   | 'declarationText'
   | 'uxSignalsId'
-  | 'uxSignalsInnsending'
   | 'mellomlagringDurationDays';
 export type FormMetadataError = Partial<{ [key in FormMetadataErrorKeys]: string }>;
 

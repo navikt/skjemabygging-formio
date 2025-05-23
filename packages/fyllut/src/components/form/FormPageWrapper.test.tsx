@@ -2,7 +2,7 @@ import { AppConfigProvider } from '@navikt/skjemadigitalisering-shared-component
 import { render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { vi } from 'vitest';
-import httpFyllut from '../util/httpFyllut';
+import httpFyllut from '../../util/httpFyllut';
 import { FormPageWrapper } from './FormPageWrapper';
 
 const RESPONSE_HEADERS = {
@@ -26,7 +26,7 @@ describe('FormPageWrapper', () => {
       if (url === '/fyllut/api/forms/unknownForm') {
         return Promise.resolve(new Response('', { status: 404 }));
       }
-      if (url.startsWith('/fyllut/api/translations')) {
+      if (typeof url === 'string' && url.startsWith('/fyllut/api/translations')) {
         return Promise.resolve(new Response(JSON.stringify({}), RESPONSE_HEADERS));
       }
       throw new Error('Unknown URL: ' + url);
@@ -47,7 +47,7 @@ describe('FormPageWrapper', () => {
         name: 'Laster...',
       }),
     ).toBeInTheDocument();
-    expect(await screen.findByRole('heading', { name: 'Fant ikke siden' })).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: 'Beklager, fant ikke siden' })).toBeInTheDocument();
     await waitFor(() => expect(document.title).toBe(''));
   });
 
@@ -67,7 +67,7 @@ describe('FormPageWrapper', () => {
       if (url === '/fyllut/api/forms/knownForm') {
         return Promise.resolve(new Response(JSON.stringify(mockedForm), RESPONSE_HEADERS));
       }
-      if (url.startsWith('/fyllut/api/translations')) {
+      if (typeof url === 'string' && url.startsWith('/fyllut/api/translations')) {
         return Promise.resolve(new Response(JSON.stringify({}), RESPONSE_HEADERS));
       }
       throw new Error('Unknown URL: ' + url);
@@ -102,7 +102,7 @@ describe('FormPageWrapper', () => {
         if (url === '/fyllut/api/forms/nav123456') {
           return Promise.resolve(new Response(JSON.stringify(mockedForm), RESPONSE_HEADERS));
         }
-        if (url.startsWith('/fyllut/api/translations')) {
+        if (typeof url === 'string' && url.startsWith('/fyllut/api/translations')) {
           return Promise.resolve(new Response(JSON.stringify({}), RESPONSE_HEADERS));
         }
         throw new Error('Unknown URL: ' + url);

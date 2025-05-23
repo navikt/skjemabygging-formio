@@ -41,6 +41,10 @@ describe('navFormUtils', () => {
       expect(toFormPath('NAV 10-13.76')).toBe('nav101376');
     });
 
+    it('should handle øæå', () => {
+      expect(toFormPath('ØÆÅ 10-13.76')).toBe('oaea101376');
+    });
+
     it('should create path from title (legacy)', () => {
       expect(
         toFormPath(

@@ -19,6 +19,7 @@ vi.mock('react-router-dom', async () => {
     ...actual,
     useRouteMatch: () => ({ url: '/forms/previous' }),
     useSearchParams: vi.fn().mockReturnValue([params, vi.fn()]),
+    useNavigate: () => vi.fn(),
   };
 });
 
@@ -160,7 +161,7 @@ describe('SummaryPageNavigation', () => {
     it('sender skjema med vedlegg til send-inn', async () => {
       const basePath = 'https://www.unittest.nav.no/fyllut';
       const sendInnUrl = 'https://www.unittest.nav.no/sendInn';
-      const windowLocation = { href: basePath };
+      const windowLocation = { href: basePath, assign: vi.fn() };
       Object.defineProperty(window, 'location', {
         value: windowLocation,
         writable: true,
@@ -179,13 +180,14 @@ describe('SummaryPageNavigation', () => {
       await waitFor(() => expect(windowLocation.href).toBe('https://www.unittest.nav.no/send-inn/123'));
       nock.isDone();
 
+      // @ts-expect-error Possible bug in typescript: https://github.com/microsoft/TypeScript/issues/61335
       window.location = originalWindowLocation;
     });
 
     it('ber om bekreftelse før den kaller send-inn når skjemaet er uten vedlegg', async () => {
       const basePath = 'https://www.unittest.nav.no/fyllut';
       const sendInnUrl = 'https://www.unittest.nav.no/sendInn';
-      const windowLocation = { href: basePath };
+      const windowLocation = { href: basePath, assign: vi.fn() };
       Object.defineProperty(window, 'location', {
         value: windowLocation,
         writable: true,
@@ -205,6 +207,8 @@ describe('SummaryPageNavigation', () => {
       await userEvent.click(screen.getByRole('button', { name: TEXTS.grensesnitt.submitToNavPrompt.confirm }));
       await waitFor(() => expect(windowLocation.href).toBe('https://www.unittest.nav.no/send-inn/123'));
       nock.isDone();
+
+      // @ts-expect-error Possible bug in typescript: https://github.com/microsoft/TypeScript/issues/61335
       window.location = originalWindowLocation;
     });
   });
@@ -226,7 +230,7 @@ describe('SummaryPageNavigation', () => {
       it('renders next-button when no validation errors', async () => {
         const basePath = 'https://www.unittest.nav.no/fyllut';
         const sendInnUrl = 'https://www.unittest.nav.no/sendInn';
-        const windowLocation = { href: basePath };
+        const windowLocation = { href: basePath, assign: vi.fn() };
         Object.defineProperty(window, 'location', {
           value: windowLocation,
           writable: true,
@@ -256,6 +260,7 @@ describe('SummaryPageNavigation', () => {
         await waitFor(() => expect(windowLocation.href).toBe('https://www.unittest.nav.no/send-inn/123'));
         nock.isDone();
 
+        // @ts-expect-error Possible bug in typescript: https://github.com/microsoft/TypeScript/issues/61335
         window.location = originalWindowLocation;
       });
 

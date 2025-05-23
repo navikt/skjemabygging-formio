@@ -2,6 +2,7 @@ import { Checkbox as AkselCheckbox, CheckboxGroup } from '@navikt/ds-react';
 import InnerHtml from '../../../../components/inner-html/InnerHtml';
 import { ComponentUtilsProvider } from '../../../../context/component/componentUtilsContext';
 import BaseComponent from '../../base/BaseComponent';
+import AdditionalDescription from '../../base/components/AdditionalDescription';
 import Label from '../../base/components/Label';
 import checkboxBuilder from './Checkbox.builder';
 import checkboxForm from './Checkbox.form';
@@ -56,6 +57,7 @@ class Checkbox extends BaseComponent {
             <Label component={this.component} editFields={this.getEditFields()} />
           </AkselCheckbox>
         </CheckboxGroup>
+        <AdditionalDescription component={this.component} />
       </ComponentUtilsProvider>,
     );
   }

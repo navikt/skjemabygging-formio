@@ -18,6 +18,10 @@ spec:
     autoInstrumentation:
       enabled: true
       runtime: nodejs
+    logging:
+      destinations:
+        - id: loki
+        - id: elastic
   azure:
     application:
       enabled: true

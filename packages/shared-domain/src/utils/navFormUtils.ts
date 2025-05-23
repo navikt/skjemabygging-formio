@@ -3,7 +3,6 @@ import { Attachment, Component, FormsResponseForm, NavFormType, Panel, Submissio
 import { Form, formSummaryUtil, submissionTypesUtils } from '../index';
 import FormioUtils from '../utils/formio/FormioUtils';
 import { camelCase } from './stringUtils';
-import submissionTypeUtils from './submissionTypeUtils';
 
 export const toFormPath = (text: string) => camelCase(text).toLowerCase();
 
@@ -227,11 +226,11 @@ export const isSubmissionMethodAllowed = (submissionMethod: string, form: NavFor
   switch (submissionMethod) {
     case 'digital':
       return (
-        !submissionTypes || isDigitalAndPaperSubmission || submissionTypeUtils.isDigitalSubmissionOnly(submissionTypes)
+        !submissionTypes || isDigitalAndPaperSubmission || submissionTypesUtils.isDigitalSubmissionOnly(submissionTypes)
       );
     case 'paper':
       return (
-        !submissionTypes || isDigitalAndPaperSubmission || submissionTypeUtils.isPaperSubmissionOnly(submissionTypes)
+        !submissionTypes || isDigitalAndPaperSubmission || submissionTypesUtils.isPaperSubmissionOnly(submissionTypes)
       );
   }
   return false;

@@ -1,9 +1,10 @@
 import '@navikt/ds-css';
 import { makeStyles, Styles } from '@navikt/skjemadigitalisering-shared-components';
 import { Route, Routes } from 'react-router-dom';
-import { AllForms } from './components/AllForms';
-import InternalServerError from './components/errors/InternalServerError';
-import { FormPageWrapper } from './components/FormPageWrapper';
+import { FormNotFoundPage } from './components/errors/FormNotFoundPage';
+import { InternalServerErrorPage } from './components/errors/InternalServerErrorPage';
+import { FormPageWrapper } from './components/form/FormPageWrapper';
+import { FormsPage } from './components/forms/FormsPage';
 
 const useStyles = makeStyles({
   '@global': Styles.global,
@@ -14,11 +15,13 @@ const useStyles = makeStyles({
 
 const App = () => {
   const styles = useStyles();
+
   return (
     <main className={styles.app}>
       <Routes>
-        <Route path="/" element={<AllForms />} />
-        <Route path="/500" element={<InternalServerError />} />
+        <Route path="/" element={<FormsPage />} />
+        <Route path="/500" element={<InternalServerErrorPage />} />
+        <Route path="/soknad-ikke-funnet" element={<FormNotFoundPage />} />
         <Route path="/:formPath/*" element={<FormPageWrapper />} />
       </Routes>
     </main>

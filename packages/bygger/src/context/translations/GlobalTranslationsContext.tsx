@@ -1,4 +1,4 @@
-import { FormsApiGlobalTranslation } from '@navikt/skjemadigitalisering-shared-domain';
+import { FormsApiTranslation } from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import ApiError from '../../api/ApiError';
 import useGlobalTranslationsApi from '../../api/useGlobalTranslationsApi';
@@ -12,15 +12,15 @@ import {
 } from './utils/globalTranslationsUtils';
 
 interface ContextValue {
-  translations: FormsApiGlobalTranslation[];
-  storedTranslations: Record<string, FormsApiGlobalTranslation>;
-  translationsPerTag: Record<GlobalTranslationTag, FormsApiGlobalTranslation[]>;
+  translations: FormsApiTranslation[];
+  storedTranslations: Record<string, FormsApiTranslation>;
+  translationsPerTag: Record<GlobalTranslationTag, FormsApiTranslation[]>;
   isReady: boolean;
   loadTranslations: () => Promise<void>;
-  saveTranslation: (translation: FormsApiGlobalTranslation) => Promise<FormsApiGlobalTranslation>;
+  saveTranslation: (translation: FormsApiTranslation) => Promise<FormsApiTranslation>;
   createNewTranslation: (
-    translation: FormsApiGlobalTranslation,
-  ) => Promise<{ response?: FormsApiGlobalTranslation; error?: TranslationError }>;
+    translation: FormsApiTranslation,
+  ) => Promise<{ response?: FormsApiTranslation; error?: TranslationError }>;
   deleteTranslation: (id: number) => Promise<void>;
   publish: () => Promise<void>;
 }
@@ -28,7 +28,7 @@ interface ContextValue {
 const defaultValue: ContextValue = {
   translations: [],
   storedTranslations: {},
-  translationsPerTag: { skjematekster: [], grensesnitt: [], 'statiske-tekster': [], validering: [] },
+  translationsPerTag: { introPage: [], skjematekster: [], grensesnitt: [], 'statiske-tekster': [], validering: [] },
   isReady: false,
   loadTranslations: () => Promise.resolve(),
   saveTranslation: () => Promise.reject(),
@@ -44,7 +44,7 @@ const GlobalTranslationsProvider = ({ children }) => {
 
   const [state, setState] = useState<{
     isReady: boolean;
-    data?: FormsApiGlobalTranslation[];
+    data?: FormsApiTranslation[];
   }>({
     isReady: false,
   });
@@ -61,14 +61,14 @@ const GlobalTranslationsProvider = ({ children }) => {
     }
   }, [state.isReady, loadTranslations]);
 
-  const storedTranslationsMap = useMemo<Record<string, FormsApiGlobalTranslation>>(
+  const storedTranslationsMap = useMemo<Record<string, FormsApiTranslation>>(
     () => (state.data ?? []).reduce((acc, translation) => ({ ...acc, [translation.key]: translation }), {}),
     [state.data],
   );
 
   const translationsPerTag = useMemo(() => generateAndPopulateTags(storedTranslationsMap), [storedTranslationsMap]);
 
-  const saveTranslation = async (translation: FormsApiGlobalTranslation): Promise<FormsApiGlobalTranslation> => {
+  const saveTranslation = async (translation: FormsApiTranslation): Promise<FormsApiTranslation> => {
     if (translation.id) {
       return translationsApi.put(translation);
     } else {
@@ -77,8 +77,8 @@ const GlobalTranslationsProvider = ({ children }) => {
   };
 
   const createNewTranslation = async (
-    translation: FormsApiGlobalTranslation,
-  ): Promise<{ response?: FormsApiGlobalTranslation; error?: TranslationError }> => {
+    translation: FormsApiTranslation,
+  ): Promise<{ response?: FormsApiTranslation; error?: TranslationError }> => {
     try {
       const result = await translationsApi.post(translation);
       return { response: result };

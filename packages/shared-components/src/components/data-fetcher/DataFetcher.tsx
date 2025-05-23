@@ -1,33 +1,36 @@
 import { Checkbox, CheckboxGroup } from '@navikt/ds-react';
-import { Activity, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  DataFetcherData,
+  DataFetcherElement,
+  DataFetcherSourceId,
+  TEXTS,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import { forwardRef, ReactNode, useCallback, useEffect, useState } from 'react';
-import { getActivities } from '../../api/register-data/activities';
+import { getRegisterData } from '../../api/register-data/registerDataApi';
 import { useComponentUtils } from '../../context/component/componentUtilsContext';
 import { getSelectedValuesAsList, getSelectedValuesMap } from '../../formio/components/utils';
 import { SkeletonList } from '../../index';
 import previewData from './preview-data.json';
-import { DataFetcherData } from './types';
 
 interface Props {
   label: ReactNode;
   description?: ReactNode;
+  additionalDescription?: ReactNode;
   className?: string;
   value?: Record<string, boolean>;
   onChange: (value: Record<string, boolean>) => void;
   queryParams?: Record<string, string>;
   error?: ReactNode;
   setMetadata: (data: DataFetcherData) => void;
-  setShowAdditionalDescription: (value: boolean) => void;
   dataFetcherData?: DataFetcherData;
   showOther?: boolean;
+  dataFetcherSourceId: DataFetcherSourceId;
 }
 
-const otherData = [
-  {
-    label: TEXTS.statiske.dataFetcher.other,
-    value: TEXTS.statiske.dataFetcher.other.toLowerCase(),
-  },
-];
+const otherOption: DataFetcherElement = {
+  label: TEXTS.statiske.dataFetcher.other,
+  value: TEXTS.statiske.dataFetcher.other.toLowerCase(),
+};
 
 const DataFetcher = forwardRef<HTMLFieldSetElement, Props>(
   (
@@ -35,14 +38,15 @@ const DataFetcher = forwardRef<HTMLFieldSetElement, Props>(
       label,
       value,
       description,
+      additionalDescription,
       className,
       onChange,
       queryParams,
       error,
       dataFetcherData,
       setMetadata,
-      setShowAdditionalDescription,
       showOther,
+      dataFetcherSourceId,
     },
     ref,
   ) => {
@@ -59,26 +63,23 @@ const DataFetcher = forwardRef<HTMLFieldSetElement, Props>(
     const fetchData = useCallback(async () => {
       try {
         setLoading(true);
-        const result = await getActivities(appConfig, queryParams);
+        const result = await getRegisterData<DataFetcherElement[]>(dataFetcherSourceId, appConfig, queryParams);
         if (result) {
-          setShowAdditionalDescription(result.length > 0);
-          setMetadata({ data: [...result, ...(showOther && result.length ? (otherData as Activity[]) : [])] });
+          setMetadata({ data: [...result, ...(showOther && result.length ? [otherOption] : [])] });
         }
       } catch (error) {
-        console.error('Failed to fetch activities:', error);
-        setShowAdditionalDescription(false);
+        console.error('Failed to fetch register data:', error);
         setMetadata({ fetchError: true });
       } finally {
         setLoading(false);
         setDone(true);
       }
-    }, [appConfig, queryParams, setMetadata, setShowAdditionalDescription, showOther]);
+    }, [appConfig, queryParams, setMetadata, showOther, dataFetcherSourceId]);
 
     useEffect(() => {
       if (isBygger) {
         if (!data) {
-          setShowAdditionalDescription(previewData.length > 0);
-          setMetadata({ data: [...previewData, ...(showOther ? (otherData as Activity[]) : [])] });
+          setMetadata({ data: [...previewData, ...(showOther ? [otherOption] : [])] });
         }
       } else if (isFyllut) {
         if (isSubmissionMethodDigital) {
@@ -86,7 +87,6 @@ const DataFetcher = forwardRef<HTMLFieldSetElement, Props>(
             fetchData();
           }
         } else if (!fetchDisabled) {
-          setShowAdditionalDescription(false);
           setMetadata({ fetchDisabled: true });
         }
       }
@@ -102,7 +102,6 @@ const DataFetcher = forwardRef<HTMLFieldSetElement, Props>(
       loading,
       isFyllut,
       done,
-      setShowAdditionalDescription,
       showOther,
     ]);
 
@@ -115,22 +114,25 @@ const DataFetcher = forwardRef<HTMLFieldSetElement, Props>(
     }
 
     return (
-      <CheckboxGroup
-        legend={label}
-        description={description}
-        value={getSelectedValuesAsList(value)}
-        onChange={(values) => onChange(getSelectedValuesMap(data, values))}
-        ref={ref}
-        className={className}
-        error={error}
-        tabIndex={-1}
-      >
-        {data.map(({ value, label }) => (
-          <Checkbox key={value} value={value}>
-            {label}
-          </Checkbox>
-        ))}
-      </CheckboxGroup>
+      <>
+        <CheckboxGroup
+          legend={label}
+          description={description}
+          value={getSelectedValuesAsList(value)}
+          onChange={(values) => onChange(getSelectedValuesMap(data, values))}
+          ref={ref}
+          className={className}
+          error={error}
+          tabIndex={-1}
+        >
+          {data.map(({ value, label }) => (
+            <Checkbox key={value} value={value}>
+              {label}
+            </Checkbox>
+          ))}
+        </CheckboxGroup>
+        {additionalDescription}
+      </>
     );
   },
 );

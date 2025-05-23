@@ -1,5 +1,5 @@
 import { htmlUtils } from '@navikt/skjemadigitalisering-shared-components';
-import { FormsApiFormTranslation, stringUtils, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
+import { FormsApiTranslation, stringUtils, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, ReactNode, useContext, useEffect, useReducer } from 'react';
 import { useFeedbackEmit } from '../notifications/FeedbackContext';
 import { editFormTranslationsReducer } from './editTranslationsReducer';
@@ -10,12 +10,12 @@ import { validateFormTranslations } from './utils/inputValidation';
 import { saveEachTranslation } from './utils/utils';
 
 interface Props {
-  initialChanges?: FormsApiFormTranslation[];
+  initialChanges?: FormsApiTranslation[];
   children: ReactNode;
 }
 
 type EditFormTranslationsContextValue = {
-  updateTranslation: (original: FormsApiFormTranslation, lang: TranslationLang, value: string) => void;
+  updateTranslation: (original: FormsApiTranslation, lang: TranslationLang, value: string) => void;
   errors: TranslationError[];
   editState: string;
   saveChanges: () => Promise<void>;
@@ -45,7 +45,7 @@ const EditFormTranslationsProvider = ({ initialChanges, children }: Props) => {
     }
   }, [initialChanges, state.status]);
 
-  const updateTranslation = (original: FormsApiFormTranslation, lang: TranslationLang, value: string) => {
+  const updateTranslation = (original: FormsApiTranslation, lang: TranslationLang, value: string) => {
     const { key } = original;
     const storedValue = storedTranslations[key]?.[lang];
     const currentChange = state.changes[key]?.[lang];
@@ -63,7 +63,7 @@ const EditFormTranslationsProvider = ({ initialChanges, children }: Props) => {
   };
 
   const saveChanges = async () => {
-    const translations = getTranslationsForSaving<FormsApiFormTranslation>(state);
+    const translations = getTranslationsForSaving(state);
     const validationErrors = validateFormTranslations(translations);
 
     if (translations.length === 0) {

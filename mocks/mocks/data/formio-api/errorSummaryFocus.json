@@ -2,7 +2,7 @@
   "id": 263,
   "revision": 9,
   "skjemanummer": "TST 01-04.25",
-  "path": "errorSummaryFocus",
+  "path": "errorsummaryfocus",
   "title": "Error summary focus test",
   "display": "wizard",
   "components": [

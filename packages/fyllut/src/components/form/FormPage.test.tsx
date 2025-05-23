@@ -46,10 +46,10 @@ describe('FormPage', () => {
         if (url === '/fyllut/api/translations/testskjema') {
           return Promise.resolve(new Response(JSON.stringify({}), RESPONSE_HEADERS));
         }
-        if (url.startsWith('/fyllut/api/countries')) {
+        if (typeof url === 'string' && url.startsWith('/fyllut/api/countries')) {
           return Promise.resolve(new Response(JSON.stringify([]), RESPONSE_HEADERS));
         }
-        if (url.startsWith('/fyllut/api/global-translations')) {
+        if (typeof url === 'string' && url.startsWith('/fyllut/api/global-translations')) {
           return Promise.resolve(new Response(JSON.stringify({}), RESPONSE_HEADERS));
         }
         return Promise.reject(new Error(`Ukjent url: ${url}`));
@@ -66,10 +66,10 @@ describe('FormPage', () => {
         if (url === '/fyllut/api/translations/testskjema') {
           return Promise.resolve(new Response(JSON.stringify(translations), RESPONSE_HEADERS));
         }
-        if (url.startsWith('/fyllut/api/countries')) {
+        if (typeof url === 'string' && url.startsWith('/fyllut/api/countries')) {
           return Promise.resolve(new Response(JSON.stringify([]), RESPONSE_HEADERS));
         }
-        if (url.startsWith('/fyllut/api/global-translations')) {
+        if (typeof url === 'string' && url.startsWith('/fyllut/api/global-translations')) {
           return Promise.resolve(new Response(JSON.stringify({}), RESPONSE_HEADERS));
         }
         return Promise.reject(new Error(`Ukjent url: ${url}`));

@@ -10,6 +10,8 @@ import attachmentUtils, {
 import { ComponentError } from './component';
 import configUtils from './config';
 import type { ConfigType } from './config/types';
+import type { DataFetcherSourceId } from './data-fetcher';
+import { dataFetcherSources } from './data-fetcher';
 import { Enhet, Enhetstype, supportedEnhetstyper } from './enhet';
 import type { FieldSize } from './field-size';
 import {
@@ -19,6 +21,7 @@ import {
   Component,
   ComponentValue,
   CustomLabels,
+  DataFetcherComponent,
   DeclarationType,
   DisplayType,
   FormPropertiesPublishing,
@@ -26,8 +29,8 @@ import {
   FormSignaturesType,
   FormsResponseForm,
   FyllutState,
-  InnsendingType,
   InputMode,
+  IntroPage,
   MellomlagringError,
   NavFormType,
   NewFormSignatureType,
@@ -38,6 +41,7 @@ import {
   ResourceAccess,
   Submission,
   SubmissionData,
+  SubmissionMetadata,
   SubmissionMethod,
   SubmissionType,
   UsageContext,
@@ -112,16 +116,17 @@ import MockedComponentObjectForTest from './summary/MockedComponentObjectForTest
 import formSummaryUtil from './summary/formSummaryUtil';
 import { TextSize, TextSizeShort } from './text';
 import TEXTS from './texts';
+import externalStorageTexts, { Tkey } from './texts/externalStorage';
 import { Activity } from './tilleggsstonader/activity';
 import {
-  FormsApiFormTranslation,
-  FormsApiGlobalTranslation,
   FormsApiTranslation,
   formsApiTranslations,
   PublishedTranslations,
   TranslationLang,
 } from './translations/FormsApiTranslation';
 import currencyUtils from './utils/currencyUtils';
+import type { DataFetcherData, DataFetcherElement, DataFetcherUtil } from './utils/data-fetcher';
+import { dataFetcherUtils } from './utils/data-fetcher';
 import dateUtils from './utils/date';
 import featureUtils, { FeatureTogglesMap } from './utils/featureUtils';
 import formDiffingTool, { FormSettingsDiff } from './utils/formDiffingTool';
@@ -135,7 +140,7 @@ import objectUtils from './utils/objectUtils';
 import paginationUtils from './utils/pagination';
 import signatureUtils from './utils/signatureUtils';
 import stringUtils from './utils/stringUtils';
-import submissionTypesUtils from './utils/submissionTypeUtils';
+import submissionTypesUtils from './utils/submissionTypesUtils';
 import translationUtils from './utils/translation';
 import validatorUtils from './utils/validatorUtils';
 import yourInformationUtils from './utils/yourInformationUtils';
@@ -144,8 +149,11 @@ export {
   attachmentUtils,
   configUtils,
   currencyUtils,
+  dataFetcherSources,
+  dataFetcherUtils,
   dateUtils,
   DeclarationType,
+  externalStorageTexts,
   featureUtils,
   formDiffingTool,
   formioFormsApiUtils,
@@ -191,6 +199,11 @@ export type {
   ComponentValue,
   ConfigType,
   CustomLabels,
+  DataFetcherComponent,
+  DataFetcherData,
+  DataFetcherElement,
+  DataFetcherSourceId,
+  DataFetcherUtil,
   DependencyType,
   DisplayType,
   DrivingListPeriod,
@@ -208,8 +221,6 @@ export type {
   FormioTranslationPayload,
   FormPropertiesPublishing,
   FormPropertiesType,
-  FormsApiFormTranslation,
-  FormsApiGlobalTranslation,
   FormsApiTranslation,
   FormSettingsDiff,
   FormSignaturesType,
@@ -222,8 +233,8 @@ export type {
   I18nTranslationMap,
   I18nTranslationReplacements,
   I18nTranslations,
-  InnsendingType,
   InputMode,
+  IntroPage,
   KjentBruker,
   Language,
   LimitedFormAttachment,
@@ -256,6 +267,7 @@ export type {
   SubmissionData,
   SubmissionIdentity,
   SubmissionMaalgruppe,
+  SubmissionMetadata,
   SubmissionMethod,
   SubmissionType,
   SubmissionYourInformation,
@@ -275,6 +287,7 @@ export type {
   SummarySubmissionValue,
   TextSize,
   TextSizeShort,
+  Tkey,
   TranslationLang,
   TranslationResource,
   TranslationScope,

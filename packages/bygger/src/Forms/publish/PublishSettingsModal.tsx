@@ -1,6 +1,6 @@
 import { Alert, Checkbox, CheckboxGroup, Heading } from '@navikt/ds-react';
 import { ConfirmationModal, i18nUtils, makeStyles } from '@navikt/skjemadigitalisering-shared-components';
-import { Form, FormsApiFormTranslation, I18nTranslations } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, FormsApiTranslation, I18nTranslations } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useState } from 'react';
 import { useFormTranslations } from '../../context/translations/FormTranslationsContext';
 import { useGlobalTranslations } from '../../context/translations/GlobalTranslationsContext';
@@ -30,7 +30,7 @@ interface Props {
   open: boolean;
   onClose: () => void;
   onConfirm: (languageCodes: string[]) => void;
-  unsavedGlobalTranslations: FormsApiFormTranslation[];
+  unsavedGlobalTranslations: FormsApiTranslation[];
 }
 
 export const getCompleteTranslationLanguageCodeList = (
@@ -70,7 +70,10 @@ const PublishSettingsModal = ({ open, onClose, onConfirm, form, unsavedGlobalTra
   }, [form]);
 
   useEffect(() => {
-    const i18n = i18nUtils.mapFormsApiTranslationsToI18n([...formTranslations]);
+    const i18n = i18nUtils.mapFormsApiTranslationsToI18n(
+      [...formTranslations],
+      i18nUtils.initialData as I18nTranslations,
+    );
     const unsavedGlobalTranslationKeys = unsavedGlobalTranslations.map((translation) => translation.key);
     const originalTextsExcludingUnsavedGlobalTranslations = allFormOriginalTexts.filter(
       (text) => !unsavedGlobalTranslationKeys.includes(text),

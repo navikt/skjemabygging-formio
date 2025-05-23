@@ -30,7 +30,7 @@ const form = {
       const translate = (text: string, textReplacements?: I18nTranslationReplacements) =>
         translationUtils.translateWithTextReplacements({
           translations,
-          originalText: text,
+          textOrKey: text,
           params: textReplacements,
           currentLanguage: language,
         });
@@ -51,12 +51,11 @@ const mapLimitedForm = (form: NavFormType, translate: TranslateFunction) => {
       skjemanummer: form.properties.skjemanummer,
       tema: form.properties.tema,
       submissionTypes: form.properties.submissionTypes,
-      ettersending: form.properties.ettersending,
       subsequentSubmissionTypes: form.properties.subsequentSubmissionTypes,
       enhetstyper: form.properties.enhetstyper,
       enhetMaVelgesVedPapirInnsending: form.properties.enhetMaVelgesVedPapirInnsending,
       uxSignalsId: form.properties.uxSignalsId,
-      uxSignalsInnsending: form.properties.uxSignalsInnsending,
+      uxSignalsSubmissionTypes: form.properties.uxSignalsSubmissionTypes,
       hideUserTypes: form.properties.hideUserTypes,
       publishedLanguages: form.properties.publishedLanguages ?? [],
     },

@@ -228,4 +228,27 @@ export const statiske = {
   dataFetcher: {
     other: 'Annet',
   },
+  error: {
+    notFoundTitle: 'Beklager, fant ikke siden',
+    serverErrorTitle: 'Beklager, det oppsto en feil',
+    notFoundMessage: 'Denne siden kan være slettet eller flyttet, eller det er en feil i lenken.',
+    serverErrorMessage:
+      'En teknisk feil på våre servere gjør at siden er utilgjengelig. Dette skyldes ikke noe du gjorde.',
+    goToFrontPage: 'Gå til forsiden',
+    contactUs:
+      'Hvis problemet vedvarer, <a href="https://nav.no/kontaktoss" target="_blank" rel="noopener noreferrer">kan du kontakte oss (åpnes i ny fane)</a>',
+    reportError: 'Meld gjerne fra om at lenken ikke virker',
+    errorId: 'Feil-id',
+    statusCode: 'Statuskode',
+    suggestions: 'Du kan prøve å',
+    wait: 'vente noen minutter og',
+    reloadPage: 'laste siden på nytt',
+    goBack: 'gå tilbake til forrige side',
+    goToMyPage: 'gå til Min side',
+    startNewForm: 'Start en ny søknad',
+    formNotFound: {
+      title: 'Søknaden du leter etter finnes ikke',
+      message: 'Dette kan skyldes at søknaden allerede er sendt inn eller avsluttet.',
+    },
+  },
 };

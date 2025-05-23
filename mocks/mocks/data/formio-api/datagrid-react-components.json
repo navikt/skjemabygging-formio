@@ -2,7 +2,7 @@
   "_id": "65c23bf8ea0fbdf2ad8362b2",
   "title": "Testskjema med datagrid og react-komponenter",
   "name": "datagridReact",
-  "path": "datagridReact",
+  "path": "datagridreact",
   "type": "form",
   "display": "wizard",
   "tags": [

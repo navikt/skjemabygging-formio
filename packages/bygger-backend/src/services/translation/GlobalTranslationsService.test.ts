@@ -1,5 +1,5 @@
 import {
-  FormsApiGlobalTranslation,
+  FormsApiTranslation,
   PublishedTranslations,
   TranslationLang,
 } from '@navikt/skjemadigitalisering-shared-domain';
@@ -20,7 +20,7 @@ describe('GlobalTranslationsService', () => {
   const formsApiUrl = 'http://example.com';
   let globalTranslationService;
   const accessToken = 'test-token';
-  const translation: FormsApiGlobalTranslation = { id: 1, key: 'Test', tag: 'skjematekster', nb: 'Test' };
+  const translation: FormsApiTranslation = { id: 1, key: 'Test', tag: 'skjematekster', nb: 'Test' };
 
   beforeEach(() => {
     vi.clearAllMocks();

@@ -16,6 +16,7 @@ describe('httpFyllut', () => {
     const headers = httpFyllut.getDefaultHeaders();
     expect(headers).toEqual({ 'Fyllut-Submission-Method': 'digital' });
 
+    // @ts-expect-error Possible bug in typescript: https://github.com/microsoft/TypeScript/issues/61335
     window.location = originalWindowLocation;
   });
 
@@ -40,6 +41,7 @@ describe('httpFyllut', () => {
       expect(replace).toHaveBeenCalledTimes(1);
     }
 
+    // @ts-expect-error Possible bug in typescript: https://github.com/microsoft/TypeScript/issues/61335
     window.location = originalWindowLocation;
   });
 });
