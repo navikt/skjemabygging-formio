@@ -24,9 +24,13 @@ const useStyles = makeStyles({
 
     '&:hover': {
       backgroundColor: 'var(--a-surface-action-subtle)',
+      '& a': {
+        textDecoration: 'underline',
+        textDecorationThickness: '2px',
+        textUnderlineOffset: '.15625rem',
+      },
     },
   },
-
   content: {
     flex: '1 1 auto',
   },
@@ -36,6 +40,14 @@ const useStyles = makeStyles({
   arrowIcon: {
     color: 'var(--a-surface-action)',
     flex: '0 0 auto',
+  },
+  link: {
+    textDecoration: 'none',
+    '&:hover': {
+      /*textDecoration: 'underline',
+      textDecorationThickness: '2px',
+      textUnderlineOffset: '.15625rem',*/
+    },
   },
 });
 
@@ -48,6 +60,7 @@ const IntroLinkPanel = ({ onClick, title, description, className, href }: Props)
       <div className={styles.content}>
         <Link
           href={href ?? '#'}
+          className={styles.link}
           onClick={(e: React.MouseEvent) => {
             e.preventDefault();
           }}

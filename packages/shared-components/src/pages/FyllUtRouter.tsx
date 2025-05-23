@@ -40,7 +40,7 @@ const FyllUtRouter = ({ form }) => {
       >
         <FormContainer>
           <LanguageSelector />
-          <FormTitle form={form} />
+          <FormTitle form={form} hideIconOnMobile={true} />
           <Routes>
             <Route
               path={'/oppsummering'}
