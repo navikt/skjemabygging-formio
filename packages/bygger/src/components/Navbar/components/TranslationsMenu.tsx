@@ -1,9 +1,18 @@
+import { useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
 import { MenuLink } from './MenuLink';
 
 export const TranslationsMenu = () => {
+  const { config } = useAppConfig();
   const basePath = '/oversettelser';
+  const isDevOrLocal = config?.naisClusterName !== 'prod-gcp';
   return (
     <>
+      {isDevOrLocal && (
+        <MenuLink to={`${basePath}/introPage`} dataKey={'introPage'} noIconStyling={true}>
+          Introside
+        </MenuLink>
+      )}
+
       <MenuLink to={`${basePath}/skjematekster`} dataKey={'skjematekster'} noIconStyling={true}>
         Skjematekster
       </MenuLink>

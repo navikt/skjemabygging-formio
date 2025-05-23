@@ -1,21 +1,23 @@
-import { Table } from '@navikt/ds-react';
-import { htmlUtils, InnerHtml } from '@navikt/skjemadigitalisering-shared-components';
+import { Alert, Table } from '@navikt/ds-react';
+import { htmlUtils } from '@navikt/skjemadigitalisering-shared-components';
 import { FormsApiTranslation, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useMemo, useState } from 'react';
 import { TranslationError } from '../../context/translations/utils/errorUtils';
 import { getInputHeightInRows } from '../utils/translationsUtils';
-import TranslationDisplayCell from './TranslationDisplayCell';
-import TranslationInput from './TranslationInput';
 import { useTranslationTableStyles } from './styles';
+import TranslationDisplayCell from './TranslationDisplayCell';
+import TranslationDisplayHeaderCell from './TranslationDisplayHeaderCell';
+import TranslationInput from './TranslationInput';
 
 interface Props {
   translation: FormsApiTranslation;
   updateTranslation: (original: FormsApiTranslation, lang: TranslationLang, value: string) => void;
   errors: TranslationError[];
   editState: any;
+  isKeyBased?: boolean;
 }
 
-const TranslationRow = ({ translation, updateTranslation, errors, editState }: Props) => {
+const TranslationRow = ({ translation, updateTranslation, errors, editState, isKeyBased }: Props) => {
   const [isEditing, setIsEditing] = useState(false);
   const styles = useTranslationTableStyles();
   const heightInRows = getInputHeightInRows(translation.nb ?? '');
@@ -40,25 +42,35 @@ const TranslationRow = ({ translation, updateTranslation, errors, editState }: P
     updateTranslation(translation, property, value);
   };
 
+  const autoFocus = isKeyBased ? 'nb' : 'nn';
   const isHtml = htmlUtils.isHtmlString(translation.nb ?? '');
   const hasGlobalOverride = !!translation.globalTranslationId;
 
   return (
     <Table.Row className={isEditing ? '' : styles.clickableRow} onClick={handleRowClick}>
-      {isHtml ? (
-        <Table.DataCell className={styles.column}>
-          <InnerHtml content={translation.nb ?? ''} />
-        </Table.DataCell>
-      ) : (
-        <Table.HeaderCell className={styles.column} scope="row">
-          {translation.nb}
-        </Table.HeaderCell>
-      )}
       {isEditing ? (
         <>
+          {isKeyBased ? (
+            <Table.DataCell className={styles.column}>
+              <TranslationInput
+                autoFocus={autoFocus === 'nb'}
+                label={'Bokmål'}
+                defaultValue={translation.nb}
+                isHtml={isHtml}
+                minRows={heightInRows}
+                error={error?.message}
+                onChange={(value) => {
+                  handleChange('nb', value);
+                }}
+              />
+              <div className={styles.inputAdditionalInfo}>{translation.key}</div>
+            </Table.DataCell>
+          ) : (
+            <TranslationDisplayHeaderCell hasGlobalOverride={isKeyBased && hasGlobalOverride} text={translation.nb} />
+          )}
           <Table.DataCell className={styles.column}>
             <TranslationInput
-              autoFocus
+              autoFocus={autoFocus === 'nn'}
               label={'Nynorsk'}
               defaultValue={translation.nn}
               isHtml={isHtml}
@@ -73,7 +85,7 @@ const TranslationRow = ({ translation, updateTranslation, errors, editState }: P
             <TranslationInput
               label={'Engelsk'}
               defaultValue={translation.en}
-              isHtml={htmlUtils.isHtmlString(translation.nb ?? '')}
+              isHtml={isHtml}
               minRows={heightInRows}
               error={error?.message}
               onChange={(value) => handleChange('en', value)}
@@ -82,8 +94,21 @@ const TranslationRow = ({ translation, updateTranslation, errors, editState }: P
         </>
       ) : (
         <>
-          <TranslationDisplayCell hasGlobalOverride={hasGlobalOverride} text={translation.nn} />
-          <TranslationDisplayCell hasGlobalOverride={hasGlobalOverride} text={translation.en} />
+          {translation.nb ? (
+            <>
+              <TranslationDisplayHeaderCell hasGlobalOverride={isKeyBased && hasGlobalOverride} text={translation.nb} />
+              <TranslationDisplayCell hasGlobalOverride={hasGlobalOverride} text={translation.nn} />
+              <TranslationDisplayCell hasGlobalOverride={hasGlobalOverride} text={translation.en} />
+            </>
+          ) : (
+            <Table.DataCell colSpan={3}>
+              <Alert
+                variant="warning"
+                size="small"
+                inline
+              >{`Bokmålstekst mangler for nøkkel: ${translation.key}`}</Alert>
+            </Table.DataCell>
+          )}
         </>
       )}
     </Table.Row>
