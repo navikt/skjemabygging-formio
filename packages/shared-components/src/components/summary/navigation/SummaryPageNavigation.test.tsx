@@ -19,6 +19,7 @@ vi.mock('react-router-dom', async () => {
     ...actual,
     useRouteMatch: () => ({ url: '/forms/previous' }),
     useSearchParams: vi.fn().mockReturnValue([params, vi.fn()]),
+    useNavigate: () => vi.fn(),
   };
 });
 
