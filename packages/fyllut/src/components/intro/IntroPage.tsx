@@ -98,6 +98,8 @@ const IntroPage = () => {
         // TODO: Delete
         //setForm(testData);
       }
+    } catch (_e) {
+      setForm(undefined);
     } finally {
       setLoading(false);
     }

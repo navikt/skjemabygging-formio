@@ -35,6 +35,7 @@ const IntroPageButtonRow = () => {
         iconPosition="right"
         as="a"
         onClick={navigateToFormPage}
+        role="link"
         {...{ href: `${formUrl}?${searchParams.toString()}` }}
       >
         {translate(TEXTS.grensesnitt.introPage.start)}
