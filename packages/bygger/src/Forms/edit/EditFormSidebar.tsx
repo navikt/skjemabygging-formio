@@ -29,6 +29,7 @@ const EditFormSidebar = ({ form }: EditFormSidebarProps) => {
             if (isLockedForm) {
               setLockedFormModal(true);
             } else {
+              console.log('saveForm', form);
               await saveForm(form);
             }
           }}
