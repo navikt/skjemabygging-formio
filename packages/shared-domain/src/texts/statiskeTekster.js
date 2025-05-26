@@ -237,7 +237,7 @@ export const statiske = {
     contactUs:
       'Hvis problemet vedvarer, <a href="https://nav.no/kontaktoss" target="_blank" rel="noopener noreferrer">kan du kontakte oss (åpnes i ny fane)</a>',
     reportError: 'Meld gjerne fra om at lenken ikke virker',
-    errorId: 'Feil-kode',
+    errorId: 'Feil-id',
     statusCode: 'Statuskode',
     suggestions: 'Du kan prøve å',
     wait: 'vente noen minutter og',

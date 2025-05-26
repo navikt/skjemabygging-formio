@@ -4,10 +4,9 @@ import { MenuLink } from './MenuLink';
 export const TranslationsMenu = () => {
   const { config } = useAppConfig();
   const basePath = '/oversettelser';
-  const isDevOrLocal = config?.naisClusterName !== 'prod-gcp';
   return (
     <>
-      {isDevOrLocal && (
+      {!config?.isProdGcp && (
         <MenuLink to={`${basePath}/introPage`} dataKey={'introPage'} noIconStyling={true}>
           Introside
         </MenuLink>
