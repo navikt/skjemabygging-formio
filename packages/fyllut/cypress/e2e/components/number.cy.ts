@@ -167,8 +167,8 @@ describe('number component', () => {
       cy.findByRoleWhenAttached('link', { name: 'Rediger desimaltall' }).should('exist');
       cy.findByRoleWhenAttached('link', { name: 'Rediger desimaltall' }).click();
       cy.findByRole('textbox', { name: /^Desimal 1/ }).should('exist');
-      cy.findByRole('textbox', { name: /^Desimal 1/ }).should('have.value', '10,1');
-      cy.findByRole('textbox', { name: /^Desimal 2/ }).should('have.value', '1\u00a0010,1');
+      cy.findByRole('textbox', { name: /^Desimal 1/ }).should('have.value', '10,10');
+      cy.findByRole('textbox', { name: /^Desimal 2/ }).should('have.value', '1\u00a0010,10');
     });
 
     it('check that all values are stored in submission as float', () => {
@@ -184,13 +184,13 @@ describe('number component', () => {
       cy.findByRoleWhenAttached('link', { name: 'Rediger desimaltall' }).click();
 
       cy.findByRole('textbox', { name: /^Desimal 1/ }).should('exist');
-      cy.findByRole('textbox', { name: /^Desimal 1/ }).should('have.value', '12');
-      cy.findByRole('textbox', { name: /^Desimal 2/ }).should('have.value', '1\u00a0000,1');
+      cy.findByRole('textbox', { name: /^Desimal 1/ }).should('have.value', '12,00');
+      cy.findByRole('textbox', { name: /^Desimal 2/ }).should('have.value', '1\u00a0000,10');
       cy.findByRole('textbox', { name: /^Desimalgrid/ }).should('have.value', '1\u00a0123\u00a0000,34');
 
       cy.intercept('PUT', '/fyllut/api/send-inn/soknad', (req) => {
         const { submission } = req.body;
-        expect(submission.data.desimal1).to.eq(12);
+        expect(submission.data.desimal1).to.eq(12.0);
         expect(submission.data.desimal2).to.eq(1000.1);
         expect(submission.data.datagrid2[0].desimal3).to.eq(1123000.34);
       }).as('submitMellomlagring');
