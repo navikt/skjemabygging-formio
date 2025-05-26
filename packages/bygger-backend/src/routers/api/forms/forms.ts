@@ -43,8 +43,8 @@ const post: RequestHandler = async (req, res, next) => {
 const put: RequestHandler = async (req, res, next) => {
   const accessToken = req.headers.AzureAccessToken as string;
   const { formPath } = req.params;
-  const { revision, title, properties, components } = req.body as Form;
-  const body = { title, properties, components };
+  const { revision, title, properties, components, introPage } = req.body as Form;
+  const body = { title, properties, components, introPage };
   try {
     const form = await formsService.put(formPath, body, revision!, accessToken);
     res.json(form);
