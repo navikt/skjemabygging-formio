@@ -170,7 +170,7 @@ describe('DrivingList', () => {
         });
 
       cy.findByRole('heading', { name: 'Perioder du tidligere har fått refundert reiseutgifter for' }).should('exist');
-      cy.findByText('01. januar 2024 - 07. januar 2024 (335 kr)').should('exist');
+      cy.findByText('01. januar 2024 - 07. januar 2024').should('exist');
 
       cy.findByRole('button', { name: '08. januar 2024 - 14. januar 2024' }).click();
       cy.findByRole('button', { name: '15. januar 2024 - 21. januar 2024' }).click();
