@@ -6,7 +6,6 @@
       "get-translations:success",
       "post-azure-openid-token:success",
       "get-kodeverk-currencies:success",
-      "post-exstream-pdf:success",
       "get-tokenx-endpoint:success",
       "post-tokenx:success",
       "post-soknad:success",
