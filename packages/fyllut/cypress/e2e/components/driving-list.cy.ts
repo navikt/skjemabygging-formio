@@ -162,11 +162,11 @@ describe('DrivingList', () => {
 
           cy.findByRole('heading', { name: 'Arbeidstrening' }).should('exist');
           cy.findByText('Periode: 01. januar 2024 - 31. august 2024').should('exist');
-          cy.findAllByText('Dagsats for parkeringsavgift: 67 kr').eq(0).should('exist');
+          cy.findAllByText('Dagsats uten parkeringsavgift: 67 kr').eq(0).should('exist');
 
           cy.findByRole('heading', { name: 'Avklaring' }).should('exist');
           cy.findByText('Periode: 01. februar 2024 - 31. mars 2024').should('exist');
-          cy.findAllByText('Dagsats for parkeringsavgift: 67 kr').eq(1).should('exist');
+          cy.findAllByText('Dagsats uten parkeringsavgift: 67 kr').eq(1).should('exist');
         });
 
       cy.findByRole('heading', { name: 'Perioder du tidligere har fått refundert reiseutgifter for' }).should('exist');
