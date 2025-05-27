@@ -18,7 +18,8 @@
       "send-inn-frontend:available",
       "get-prefill-data:success",
       "get-activities:success",
-      "get-register-data-activities:success"
+      "get-register-data-activities:success",
+      "post-familie-pdf:success"
     ]
   }
 ]
