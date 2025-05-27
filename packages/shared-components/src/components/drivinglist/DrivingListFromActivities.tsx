@@ -169,7 +169,7 @@ const DrivingListFromActivities = ({ activities }: Props) => {
                       return (
                         <li key={betalingsplan.betalingsplanId}>
                           <BodyShort size="medium">
-                            {`${dateUtils.toLocaleDateLongMonth(periodFrom, locale)} ${periodTo ? ' - ' + dateUtils.toLocaleDateLongMonth(periodTo, locale) : ''} (${betalingsplan.beloep} kr)`}
+                            {`${dateUtils.toLocaleDateLongMonth(periodFrom, locale)} ${periodTo ? ' - ' + dateUtils.toLocaleDateLongMonth(periodTo, locale) : ''}`}
                           </BodyShort>
                         </li>
                       );
