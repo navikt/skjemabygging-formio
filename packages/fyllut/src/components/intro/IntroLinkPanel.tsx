@@ -24,11 +24,6 @@ const useStyles = makeStyles({
 
     '&:hover': {
       backgroundColor: 'var(--a-surface-action-subtle)',
-      '& a': {
-        textDecoration: 'underline',
-        textDecorationThickness: '2px',
-        textUnderlineOffset: '.15625rem',
-      },
     },
   },
   content: {
@@ -40,6 +35,9 @@ const useStyles = makeStyles({
   arrowIcon: {
     color: 'var(--a-surface-action)',
     flex: '0 0 auto',
+  },
+  link: {
+    textDecoration: 'none',
   },
 });
 
