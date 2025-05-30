@@ -1,16 +1,8 @@
-import {
-  I18nTranslationMap,
-  Language,
-  localizationUtils,
-  NavFormType,
-  Submission,
-} from '@navikt/skjemadigitalisering-shared-domain';
+import { I18nTranslationMap, Language, NavFormType, Submission } from '@navikt/skjemadigitalisering-shared-domain';
 import { NextFunction, Request, Response } from 'express';
-import { logger } from '../../logger';
-import { base64Decode } from '../../utils/base64';
+import documentsService from '../../services/documents/documentsService';
 import { htmlResponseError } from '../../utils/errorHandling';
 import { logErrorWithStacktrace } from '../../utils/errors';
-import { createPdf } from './helpers/pdfService';
 
 const parseBody = (
   req: Request,
@@ -32,29 +24,27 @@ const parseBody = (
 export const getPdf = async (req: Request) => {
   const { form, submission, submissionMethod, translations, language } = parseBody(req);
 
-  if (!['nb-NO', 'nn-NO', 'en'].includes(language)) {
-    logger.warn(`Language code "${language}" is not supported. Language code will be defaulted to "nb".`);
-  }
-
-  const languageCode = localizationUtils.getLanguageCodeAsIso639_1(language);
-
-  return await createPdf(
-    req.headers.AzureAccessToken as string,
-    form,
-    submission,
+  return await documentsService.application({
+    form: form,
+    submission: submission,
+    language,
+    unitNumber: '',
+    accessToken: req.headers.AzureAccessToken as string,
     submissionMethod,
-    translations,
-    languageCode,
-  );
+    translations: translations,
+  });
 };
 
 const exstream = {
   post: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const pdf = await getPdf(req);
-
-      res.contentType(pdf.contentType);
-      res.send(base64Decode(pdf.data));
+      if (!pdf) {
+        const createPdfError = htmlResponseError('Generering av PDF feilet');
+        next(createPdfError);
+      }
+      res.contentType('application/pdf');
+      res.send(pdf);
     } catch (e) {
       logErrorWithStacktrace(e as Error);
       const createPdfError = htmlResponseError('Generering av PDF feilet');

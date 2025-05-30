@@ -6,11 +6,12 @@ import {
   Submission,
   translationUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
+import { logger } from '../../logger';
 import { base64Decode } from '../../utils/base64';
 import { htmlResponseError } from '../../utils/errorHandling';
 import applicationService from './applicationService';
 import coverPageService from './coverPageService';
-import { mergeFiles } from './gotenbergService';
+import { mergeFrontPageAndApplication } from './mergeFilesService';
 
 interface ApplicationProps {
   accessToken: string;
@@ -24,7 +25,7 @@ interface ApplicationProps {
 const application = async (props: CoverPageAndApplicationProps) => {
   const { accessToken, form, submission, language, translations, submissionMethod } = props;
 
-  const applicationResponse: any = await applicationService.createPdf(
+  const applicationPdf = await applicationService.createPdfFromFieldMap(
     accessToken,
     form,
     submission,
@@ -32,8 +33,6 @@ const application = async (props: CoverPageAndApplicationProps) => {
     createTranslate(translations, language),
     language,
   );
-
-  const applicationPdf = base64Decode(applicationResponse.data);
 
   if (applicationPdf === undefined) {
     throw htmlResponseError('Generering av søknads PDF feilet');
@@ -58,7 +57,7 @@ const coverPageAndApplication = async (props: CoverPageAndApplicationProps) => {
       language,
       unitNumber,
     }),
-    applicationService.createPdf(
+    applicationService.createPdfFromFieldMap(
       accessToken,
       form,
       submission,
@@ -74,21 +73,31 @@ const coverPageAndApplication = async (props: CoverPageAndApplicationProps) => {
     throw htmlResponseError('Generering av førstesideark PDF feilet');
   }
 
-  const applicationPdf = base64Decode(applicationResponse.data);
+  const applicationPdf = applicationResponse;
 
   if (applicationPdf === undefined) {
     throw htmlResponseError('Generering av søknads PDF feilet');
   }
 
-  const documents = [coverPagePdf, applicationPdf];
+  /* For test
+  const filePath = path.join(process.cwd(), `/src/${form.properties.skjemanummer}.pdf`);
+  writeFileSync(filePath, pdfFromFieldMap, {
+    flag: 'w',
+  });
+*/
 
-  const mergedFile = await mergeFiles(
-    coverPageResponse.navSkjemaId,
+  const mergedFile = await mergeFrontPageAndApplication(
+    accessToken,
     coverPageResponse.overskriftstittel,
     language,
-    documents,
-    { pdfa: true, pdfua: true },
+    coverPagePdf,
+    applicationPdf,
   );
+  logger.info(`Request to merge front page and application completed`, {});
+
+  if (mergedFile === undefined) {
+    throw htmlResponseError('Sammenslåing av forside og søknad feilet');
+  }
 
   return Buffer.from(new Uint8Array(mergedFile));
 };
