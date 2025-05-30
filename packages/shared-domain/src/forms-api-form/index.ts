@@ -16,7 +16,7 @@ type Form = {
   title: string;
   components: Component[];
   properties: FormPropertiesType;
-  introPage?: IntroPage;
+  introPage: IntroPage;
   createdAt?: string;
   createdBy?: string;
   changedAt?: string;

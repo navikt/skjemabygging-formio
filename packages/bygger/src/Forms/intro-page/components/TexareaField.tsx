@@ -14,12 +14,22 @@ type TexareaFieldProps = {
 };
 
 const useStyles = makeStyles({
+  container: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+  },
   deleteButton: {
     borderRadius: 'var(--a-border-radius-large)',
-    margin: 'var(--a-space-12) var(--a-space-16) var(--a-space-12) 0',
+    margin: '0 var(--a-space-12) 0 0',
   },
   textField: {
     padding: 'var(--a-space-12) var(--a-space-32) 0 0',
+    width: '100%',
+  },
+  textFieldWithDeleteButton: {
+    padding: 'var(--a-space-12) var(--a-space-12) 0 0',
+    width: '100%',
   },
   hidden: {
     display: 'none',
@@ -39,20 +49,24 @@ export function TexareaField({
 }: TexareaFieldProps) {
   const styles = useStyles();
   return (
-    <Box>
-      {showDeleteButton && (
-        <Button variant="tertiary" className={styles.deleteButton} onClick={onDelete}>
-          Slett
-        </Button>
-      )}
+    <Box className={styles.container}>
       <Textarea
         {...rest}
-        className={clsx(styles.textField, { [styles.hidden]: hidden })}
+        className={clsx({
+          [styles.textField]: !showDeleteButton,
+          [styles.textFieldWithDeleteButton]: showDeleteButton,
+          [styles.hidden]: hidden,
+        })}
         label={label}
         description={description}
         resize="vertical"
         onChange={() => onChange}
       />
+      {showDeleteButton && (
+        <Button variant="tertiary" className={styles.deleteButton} onClick={onDelete}>
+          Slett
+        </Button>
+      )}
     </Box>
   );
 }

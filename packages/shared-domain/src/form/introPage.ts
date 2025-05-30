@@ -1,11 +1,8 @@
 interface IntroPage {
   enabled: boolean;
   introduction: string;
-  importantInformation?: {
-    title?: string;
-    description?: string;
-  };
   sections: {
+    importantInformation?: IntroPageSection;
     scope?: IntroPageSection;
     outOfScope?: IntroPageSection;
     prerequisites: IntroPageSection;
