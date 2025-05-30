@@ -51,7 +51,11 @@ const populateTagFromTextObject = (
     .flattenToArray(textObject, ([entryKey, value]) => {
       const key = tagName === 'validering' ? entryKey : value;
       const stored = storedTranslationsMap?.[key];
-      return generateTranslation(tagName, stored, { key, nb: value });
+      if (!stored || stored.tag === tagName) {
+        // Do not populate if there already is a stored translation with a different tag
+        return generateTranslation(tagName, stored, { key, nb: value });
+      }
+      return [];
     })
     .filter(removeDuplicatesAfterFirstMatch);
 };
