@@ -1,7 +1,7 @@
 import { Box, Heading } from '@navikt/ds-react';
 import { Form } from '@navikt/skjemadigitalisering-shared-domain';
 import { UpdateFormFunction } from '../../../../components/FormMetaDataEditor/utils/utils';
-import { TexareaField } from '../TexareaField';
+import { TextareaField } from '../TextareaField';
 import { SectionWrapper } from './SectionWrapper';
 
 export function Introduction({ handleChange, form }: { handleChange: UpdateFormFunction; form: Form }) {
@@ -12,7 +12,7 @@ export function Introduction({ handleChange, form }: { handleChange: UpdateFormF
           <Heading level="3" size="small" spacing>
             Velkomstmelding
           </Heading>
-          <TexareaField
+          <TextareaField
             value={form.introPage.introduction}
             label="Velkomstmelding som hjelper bruker forstå at de bruker riktig skjema"
             description="Teksten skal være en kort, overordnet veiledning til søkeren som gir en komprimert forklaring av

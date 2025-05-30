@@ -4,7 +4,7 @@ import { Form } from '@navikt/skjemadigitalisering-shared-domain';
 import { useState } from 'react';
 import { UpdateFormFunction } from '../../../../components/FormMetaDataEditor/utils/utils';
 import { AddButton } from '../AddButton';
-import { TexareaField } from '../TexareaField';
+import { TextareaField } from '../TextareaField';
 import { SectionWrapper } from './SectionWrapper';
 
 const useStyles = makeStyles({
@@ -59,7 +59,7 @@ export function OutOfScope({ form, handleChange }: { form: Form; handleChange: U
               <AddButton label={'Legg til punktliste'} onClick={addBulletPoint} />
             </div>
 
-            <TexareaField
+            <TextareaField
               label="Ingress"
               onChange={() => setShowIngress(!showIngress)}
               hidden={!showIngress}
@@ -67,7 +67,7 @@ export function OutOfScope({ form, handleChange }: { form: Form; handleChange: U
               onDelete={() => setShowIngress(false)}
             />
 
-            <TexareaField
+            <TextareaField
               label="Kulepunkt"
               onChange={() => setShowBodyText(!showBodyText)}
               hidden={!showBodyText}

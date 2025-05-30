@@ -39,7 +39,26 @@ export function OptionalElement({ handleChange, form }: { handleChange: UpdateFo
           <Heading level="3" size="small" spacing>
             Valgfritt element
           </Heading>
-          <TextField label="Overskrift" value={form.introPage.sections.optional?.title} className={styles.textfield} />
+          <TextField
+            label="Overskrift"
+            defaultValue={form.introPage.sections.optional?.title}
+            className={styles.textfield}
+            onChange={(e) =>
+              handleChange({
+                ...form,
+                introPage: {
+                  ...form.introPage,
+                  sections: {
+                    ...form.introPage.sections,
+                    optional: {
+                      ...form.introPage.sections?.optional,
+                      title: e.target.value,
+                    },
+                  },
+                },
+              })
+            }
+          />
           <AddButton label={'Legg til ingress'} onClick={() => setShowIngress(!showIngress)} />
           <AddButton label={'Legg til punktliste'} onClick={() => setShowBulletList(!showBulletList)} />
           <AddButton label={'Legg til kulepunkt'} variant="tertiary" onClick={addBulletPoint} />

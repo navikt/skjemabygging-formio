@@ -3,7 +3,7 @@ import { Form } from '@navikt/skjemadigitalisering-shared-domain';
 import { useState } from 'react';
 import { UpdateFormFunction } from '../../../../components/FormMetaDataEditor/utils/utils';
 import { AddButton } from '../AddButton';
-import { TexareaField } from '../TexareaField';
+import { TextareaField } from '../TextareaField';
 import { SectionWrapper } from './SectionWrapper';
 
 type Props = {
@@ -100,7 +100,7 @@ export function AutomaticProcessing({ form, handleChange }: Props) {
           </Heading>
           {!showIngress && <AddButton label="Legg til ingress" onClick={addIngress} />}
           {showIngress && (
-            <TexareaField
+            <TextareaField
               label="Ingress"
               value={form.introPage.sections.automaticProcessing?.description || ''}
               onChange={handleIngressChange}
@@ -124,7 +124,7 @@ export function AutomaticProcessing({ form, handleChange }: Props) {
             />
           )}
           {bulletPoints.map((bullet, index) => (
-            <TexareaField
+            <TextareaField
               key={index}
               label={`Kulepunkt ${index + 1}`}
               value={bullet}

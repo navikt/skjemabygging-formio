@@ -3,7 +3,7 @@ import { Form } from '@navikt/skjemadigitalisering-shared-domain';
 import { useState } from 'react';
 import { UpdateFormFunction } from '../../../../components/FormMetaDataEditor/utils/utils';
 import { AddButton } from '../AddButton';
-import { TexareaField } from '../TexareaField';
+import { TextareaField } from '../TextareaField';
 import { SectionWrapper } from './SectionWrapper';
 
 export function DataDisclosure({ form, handleChange }: { form: Form; handleChange: UpdateFormFunction }) {
@@ -37,7 +37,7 @@ export function DataDisclosure({ form, handleChange }: { form: Form; handleChang
             <Radio value="scope1">Informasjon vi henter om deg</Radio>
             <Radio value="scope2">Informasjon vi henter</Radio>
           </RadioGroup>
-          <TexareaField
+          <TextareaField
             label="Kulepunkt"
             onChange={() => setShowBulletList(!showBulletList)}
             hidden={!showBulletList}

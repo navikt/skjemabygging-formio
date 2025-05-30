@@ -3,7 +3,7 @@ import { Form } from '@navikt/skjemadigitalisering-shared-domain';
 import { Fragment, useState } from 'react';
 import { UpdateFormFunction } from '../../../../components/FormMetaDataEditor/utils/utils';
 import { AddButton } from '../AddButton';
-import { TexareaField } from '../TexareaField';
+import { TextareaField } from '../TextareaField';
 import { SectionWrapper } from './SectionWrapper';
 
 export function Scope({ form, handleChange }: { form: Form; handleChange: UpdateFormFunction }) {
@@ -82,7 +82,7 @@ export function Scope({ form, handleChange }: { form: Form; handleChange: Update
               <AddButton label={'Legg til Punktliste'} variant="secondary" onClick={addBulletPoint} />
             )}
             {showIngress && (
-              <TexareaField
+              <TextareaField
                 value={form.introPage.sections.scope?.description || ''}
                 label="Ingress"
                 onChange={(value) =>
@@ -125,9 +125,9 @@ export function Scope({ form, handleChange }: { form: Form; handleChange: Update
             <>
               {form.introPage?.sections?.scope?.bulletPoints?.map((bullet, index) => (
                 <Fragment key={index}>
-                  <TexareaField
+                  <TextareaField
                     value={bullet}
-                    label={`Kulepunkt ${index + 1}`}
+                    label="Kulepunkt"
                     onChange={(value) => updateBulletPoint(index, value)}
                     showDeleteButton
                     onDelete={() => deleteBulletPoint(index)}

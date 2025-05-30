@@ -1,7 +1,7 @@
 import { PadlockLockedFillIcon } from '@navikt/aksel-icons';
 import { Checkbox, CheckboxGroup } from '@navikt/ds-react';
 import { makeStyles } from '@navikt/skjemadigitalisering-shared-components';
-import { Form } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, IntroPage } from '@navikt/skjemadigitalisering-shared-domain';
 import { UpdateFormFunction } from '../../../../components/FormMetaDataEditor/utils/utils';
 import { SectionWrapper } from './SectionWrapper';
 
@@ -11,7 +11,7 @@ const useStyles = makeStyles({
   },
 });
 
-type Key = keyof Form['introPage']['sections'] | 'selfDeclaration' | 'introduction';
+type Key = keyof IntroPage['sections'] | 'selfDeclaration' | 'introduction';
 type Section = {
   title: string;
   key: Key;
@@ -42,14 +42,14 @@ export function SectionsChecboxes({ form, onChange }: SectionsCheckboxesProps) {
 
   const defaultKeys = [
     ...sectionsOptions.filter((section) => section.isLocked).map((section) => section.key),
-    ...Object.keys(form.introPage.sections || {}).filter((key) => form.introPage.sections?.[key] !== undefined),
+    ...Object.keys(form?.introPage?.sections || {}).filter((key) => form?.introPage?.sections?.[key] !== undefined),
   ];
 
   const handleCheckboxChange = (key: Key, checked: boolean) => {
-    const updatedSections = { ...form.introPage.sections };
+    const updatedSections = { ...form?.introPage?.sections };
 
     if (checked) {
-      updatedSections[key] = updatedSections[key] || { title: '' };
+      updatedSections[key] = updatedSections[key] || {};
     } else {
       if (!sectionsOptions.find((section) => section.key === key)?.isLocked) {
         delete updatedSections[key];
@@ -59,7 +59,7 @@ export function SectionsChecboxes({ form, onChange }: SectionsCheckboxesProps) {
     onChange({
       ...form,
       introPage: {
-        ...form.introPage,
+        ...form?.introPage,
         sections: updatedSections,
       },
     });

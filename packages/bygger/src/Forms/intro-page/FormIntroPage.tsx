@@ -23,6 +23,8 @@ import { SelfDeclaration } from './components/sections/SelfDeclaration';
 export default function FormIntroPage({ form }: { form: Form }) {
   const { changeForm } = useForm();
 
+  console.log(form);
+
   const { sections, enabled } = form.introPage ?? {
     enabled: false,
     introduction: '',

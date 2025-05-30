@@ -2,7 +2,7 @@ import { Box, Heading, Radio, RadioGroup } from '@navikt/ds-react';
 import { Form } from '@navikt/skjemadigitalisering-shared-domain';
 import { UpdateFormFunction } from '../../../../components/FormMetaDataEditor/utils/utils';
 import { AddButton } from '../AddButton';
-import { TexareaField } from '../TexareaField';
+import { TextareaField } from '../TextareaField';
 import { SectionWrapper } from './SectionWrapper';
 
 export function Prerequisites({ form, handleChange }: { form: Form; handleChange: UpdateFormFunction }) {
@@ -92,7 +92,7 @@ export function Prerequisites({ form, handleChange }: { form: Form; handleChange
                 }
               />
             )}
-            <TexareaField
+            <TextareaField
               label="Ingress"
               onChange={(value) =>
                 handleChange({
@@ -128,7 +128,7 @@ export function Prerequisites({ form, handleChange }: { form: Form; handleChange
             />
           </Box>
           {form.introPage?.sections?.prerequisites?.bulletPoints?.map((bullet, index) => (
-            <TexareaField
+            <TextareaField
               key={index}
               label={`Kulepunkt ${index + 1}`}
               value={bullet}

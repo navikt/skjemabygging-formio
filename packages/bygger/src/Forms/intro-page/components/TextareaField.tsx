@@ -36,7 +36,7 @@ const useStyles = makeStyles({
   },
 });
 
-export function TexareaField({
+export function TextareaField({
   label,
   description,
   placeholder,
@@ -60,7 +60,7 @@ export function TexareaField({
         label={label}
         description={description}
         resize="vertical"
-        onChange={() => onChange}
+        onChange={(e) => onChange(e.target.value)}
       />
       {showDeleteButton && (
         <Button variant="tertiary" className={styles.deleteButton} onClick={onDelete}>
