@@ -6,10 +6,10 @@ module.exports = [
     variants: [
       {
         id: 'success',
-        type: 'application/pdf',
+        type: 'json',
         options: {
           status: 200,
-          body: ['pdf'],
+          body: { content: 'pdf' },
         },
       },
       {
@@ -26,8 +26,8 @@ module.exports = [
         options: {
           middleware: async (req, res) => {
             res.status(200);
-            res.contentType('application/pdf; charset=UTF-8');
-            res.send(['pdf']);
+            res.contentType('json; charset=UTF-8');
+            res.send({ content: 'pdf' });
           },
         },
       },
