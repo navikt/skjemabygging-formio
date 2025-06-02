@@ -42,11 +42,21 @@ const application = async (props: CoverPageAndApplicationProps) => {
 };
 
 interface CoverPageAndApplicationProps extends ApplicationProps {
+  pdfGeneratorAccessToken;
   unitNumber: string;
 }
 
 const coverPageAndApplication = async (props: CoverPageAndApplicationProps) => {
-  const { accessToken, form, submission, language, unitNumber, translations, submissionMethod } = props;
+  const {
+    accessToken,
+    pdfGeneratorAccessToken,
+    form,
+    submission,
+    language,
+    unitNumber,
+    translations,
+    submissionMethod,
+  } = props;
 
   const [coverPageResponse, applicationResponse] = await Promise.all([
     coverPageService.createPdf({
@@ -58,7 +68,7 @@ const coverPageAndApplication = async (props: CoverPageAndApplicationProps) => {
       unitNumber,
     }),
     applicationService.createPdfFromFieldMap(
-      accessToken,
+      pdfGeneratorAccessToken,
       form,
       submission,
       submissionMethod,

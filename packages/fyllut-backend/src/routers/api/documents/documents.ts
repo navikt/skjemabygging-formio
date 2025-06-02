@@ -14,7 +14,8 @@ const application: RequestHandler = async (req, res, next) => {
       submission: submissionParsed,
       language,
       unitNumber: enhetNummer,
-      accessToken: req.headers.AzureAccessToken as string,
+      accessToken: req.headers.AzurePdfGeneratorToken as string,
+      pdfGeneratorAccessToken: req.headers.AzurePdfGeneratorToken as string,
       submissionMethod,
       translations: translationsParsed,
     });
@@ -40,6 +41,7 @@ const coverPageAndApplication: RequestHandler = async (req, res, next) => {
       language,
       unitNumber: enhetNummer,
       accessToken: req.headers.AzureAccessToken as string,
+      pdfGeneratorAccessToken: req.headers.AzurePdfGeneratorToken as string,
       submissionMethod,
       translations: translationsParsed,
     });
@@ -65,6 +67,7 @@ const pdfFromFieldMap: RequestHandler = async (req, res, next) => {
       language,
       unitNumber: enhetNummer,
       accessToken: req.headers.AzureAccessToken as string,
+      pdfGeneratorAccessToken: req.headers.AzurePdfGeneratorToken as string,
       submissionMethod,
       translations: translationsParsed,
     });

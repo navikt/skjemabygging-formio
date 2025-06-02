@@ -12,6 +12,7 @@ const initApiConfig = () => {
     tokenxSendInn: tokenxHandler(sendInnConfig?.tokenxClientId),
     tokenxPdl: tokenxHandler(`${pdlTokenScopeCluster}:pdl:pdl-api`),
     tokenxTilleggsstonader: tokenxHandler(tilleggsstonaderConfig.tokenxClientId),
+    azurePdfGeneratorToken: azureAccessTokenHandler('dev-gcp:teamfamilie:familie-pdf'),
   };
 };
 
