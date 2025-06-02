@@ -1,7 +1,7 @@
 import { Box, Page, VStack } from '@navikt/ds-react';
 import { LanguagesProvider, makeStyles } from '@navikt/skjemadigitalisering-shared-components';
 import { ReactNode, useEffect, useState } from 'react';
-import { loadGlobalTranslationsForLanguages } from '../../util/api';
+import { loadGlobalTranslationsForLanguages } from '../../api/useTranslations';
 
 export function ErrorPageWrapper({ children }: { children: ReactNode }) {
   const [translations, setTranslations] = useState({});

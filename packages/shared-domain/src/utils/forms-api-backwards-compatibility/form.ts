@@ -12,7 +12,7 @@ const mapFormToNavForm = (form: Form): NavFormType => {
     ...form,
     properties: {
       ...form.properties,
-      skjemanummer: form.skjemanummer,
+      skjemanummer: form.skjemanummer ?? form.properties.skjemanummer,
       publishedLanguages: form.publishedLanguages,
     },
   };
