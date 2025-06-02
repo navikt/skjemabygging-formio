@@ -3,9 +3,9 @@ import React, { createContext, useCallback, useContext, useEffect, useState } fr
 import { useSearchParams } from 'react-router-dom';
 
 export enum IntroPageState {
-  NONE,
-  PAPER,
-  DIGITAL,
+  NONE = 'none',
+  PAPER = 'paper',
+  DIGITAL = 'digital',
 }
 
 interface IntroPageContextType {
@@ -31,6 +31,7 @@ export const IntroPageProvider = ({ children, form }: IntroPageProviderProps) =>
         return sub === 'paper' ? IntroPageState.PAPER : sub === 'digital' ? IntroPageState.DIGITAL : undefined;
       }
 
+      console.log(form.properties?.submissionTypes);
       if (form.properties?.submissionTypes) {
         if (submissionTypesUtils.isPaperSubmissionOnly(form.properties.submissionTypes)) {
           return IntroPageState.PAPER;

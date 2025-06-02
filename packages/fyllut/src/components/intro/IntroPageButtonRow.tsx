@@ -20,8 +20,9 @@ const IntroPageButtonRow = () => {
   const navigateToFormPage = (event) => {
     event.preventDefault();
     if (state === IntroPageState.DIGITAL || !submissionMethod) {
+      const searchParamsString = searchParams.toString();
       // Important to reload page due to forced idporten login if sub=digital or if you are missing submissionMethod in appConfig.
-      window.location.href = `${baseUrl}${startUrl}?${searchParams.toString()}`;
+      window.location.href = `${baseUrl}${startUrl}${searchParamsString ? `?${searchParamsString}` : ''}`;
     } else {
       navigate(`${startUrl}?${searchParams.toString()}`);
     }
