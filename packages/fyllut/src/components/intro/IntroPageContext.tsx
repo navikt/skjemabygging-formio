@@ -3,9 +3,9 @@ import React, { createContext, useCallback, useContext, useEffect, useState } fr
 import { useSearchParams } from 'react-router-dom';
 
 export enum IntroPageState {
-  NONE,
-  PAPER,
-  DIGITAL,
+  NONE = 'none',
+  PAPER = 'paper',
+  DIGITAL = 'digital',
 }
 
 interface IntroPageContextType {

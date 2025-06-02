@@ -45,7 +45,6 @@ export function formatNumber(value: string, isInteger: boolean): string {
 }
 
 export function formatNationalIdentityNumber(value: string): string {
-  console.log('verdi', value);
   return value.replace(/(\d{6})(\d{5})/, '$1 $2');
 }
 
