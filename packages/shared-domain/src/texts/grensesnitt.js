@@ -56,11 +56,6 @@ export const grensesnitt = {
     payAttentionTo: 'Vær oppmerksom på',
   },
   introPage: {
-    sendDigital: 'Logg inn og send digitalt',
-    sendDigitalDescription: 'Det er enklest og raskest å søke digitalt.',
-    sendOnPaper: 'Fyll ut digitalt og send i posten',
-    sendOnPaperDescription: 'Du fyller ut søknaden før du skriver den ut.',
-    selfDeclaration: 'Jeg bekrefter at jeg vil svare så riktig som jeg kan',
     start: 'Start',
   },
   summaryPage: {

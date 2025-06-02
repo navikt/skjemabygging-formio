@@ -5,7 +5,6 @@ import { setupNavFormio } from '../../test/navform-render';
 import { form, translationsForNavForm } from '../../test/test-data/form/skjema-med-oversettelser';
 import { languagesInOriginalLanguage } from '../components/language-selector/fyllut/FyllUtLanguageSelector';
 import { AppConfigProvider } from '../context/config/configContext';
-import { LanguagesProvider } from '../context/languages';
 import { getPanelSlug } from '../util/form/form';
 import FyllUtRouter from './FyllUtRouter';
 
@@ -36,11 +35,7 @@ describe('FyllUtRouter', () => {
       [
         {
           path: `${mockFormPath}/*`,
-          element: (
-            <LanguagesProvider translations={translationsForNavForm}>
-              <FyllUtRouter form={form} />
-            </LanguagesProvider>
-          ),
+          element: <FyllUtRouter form={form} translations={translationsForNavForm} />,
         },
       ],
       {

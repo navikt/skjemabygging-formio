@@ -5,14 +5,13 @@ import Select from './select/Select';
 
 const useLanguageSelectorStyling = makeStyles({
   languageToggleWrapper: {
+    marginBottom: '2rem',
     outline: 'none',
     position: 'relative',
-    display: 'flex',
-    justifyContent: 'flex-end',
+    width: 'min(230px, 100%)',
   },
   languageSelect: {
     position: 'relative',
-    width: '200px',
     '& .select-button': {
       width: '100%',
       display: 'grid',

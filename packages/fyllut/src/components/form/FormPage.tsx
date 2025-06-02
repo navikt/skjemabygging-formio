@@ -1,76 +1,48 @@
-import { FyllUtRouter, useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
-import { formioFormsApiUtils, NavFormType, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
-import { useCallback, useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import useFormsApiForms from '../../api/useFormsApiForms';
-import { NotFoundPage } from '../errors/NotFoundPage';
-import SubmissionMethodNotAllowed from '../SubmissionMethodNotAllowed';
-import FormPageSkeleton from './FormPageSkeleton';
+import { FyllUtRouter, i18nUtils, LoadingComponent } from '@navikt/skjemadigitalisering-shared-components';
+import { externalStorageTexts } from '@navikt/skjemadigitalisering-shared-domain';
+import { useEffect, useState } from 'react';
+import { loadCountryNamesForLanguages, loadFormTranslations, loadGlobalTranslationsForLanguages } from '../../util/api';
 
-const FormPage = () => {
-  const { formPath } = useParams();
-  const [form, setForm] = useState<NavFormType>();
-  const { get } = useFormsApiForms();
-  const { submissionMethod } = useAppConfig();
-  const [loading, setLoading] = useState<boolean>(true);
-
-  const loadForm = useCallback(async () => {
-    if (!formPath) {
-      return;
-    }
-    setLoading(true);
-    try {
-      const formData = await get(formPath);
-      if (formData) {
-        setForm(formioFormsApiUtils.mapFormToNavForm(formData));
-      }
-    } finally {
-      setLoading(false);
-    }
-  }, [formPath, get]);
-
+function FormPage({ form }) {
+  const [translation, setTranslation] = useState({});
+  const [ready, setReady] = useState(false);
   useEffect(() => {
-    (async () => {
-      await loadForm();
-    })();
-  }, [formPath, loadForm]);
+    async function fetchTranslations() {
+      const localTranslationsForForm: any = await loadFormTranslations(form.path);
+      const availableLanguages = Object.keys(localTranslationsForForm);
+      const countryNameTranslations = await loadCountryNamesForLanguages(availableLanguages);
+      const initValuesForKeyBasedGlobalTranslations = i18nUtils.mapFormsApiTranslationsToI18n(
+        externalStorageTexts.initValues.introPage,
+      );
+      const globalTranslations = await loadGlobalTranslationsForLanguages(availableLanguages);
 
-  useEffect(() => {
-    const metaPropOgTitle = document.querySelector('meta[property="og:title"]');
-    const metaNameDescr = document.querySelector('meta[name="description"]');
-    const metaNameOgDescr = document.querySelector('meta[property="og:description"]');
-    const setHeaderProp = function (headerObj, metaPropValue) {
-      headerObj?.setAttribute('content', metaPropValue);
-    };
-
-    if (form) {
-      if (form.title) {
-        document.title = `${form.title} | www.nav.no`;
-        setHeaderProp(metaPropOgTitle, `${form.title} | www.nav.no`);
-      }
+      return availableLanguages.reduce(
+        (accumulated, lang) => ({
+          ...accumulated,
+          [lang]: {
+            ...accumulated[lang],
+            ...countryNameTranslations[lang],
+            ...initValuesForKeyBasedGlobalTranslations[lang],
+            ...globalTranslations[lang],
+            ...localTranslationsForForm[lang],
+          },
+        }),
+        { 'nb-NO': i18nUtils.initialData['nb-NO'] },
+      );
     }
-
-    return function cleanup() {
-      document.title = 'Fyll ut skjema - www.nav.no';
-      setHeaderProp(metaPropOgTitle, 'Fyll ut skjema - www.nav.no');
-      setHeaderProp(metaNameDescr, 'Nav søknadsskjema');
-      setHeaderProp(metaNameOgDescr, 'Nav søknadsskjema');
-    };
+    fetchTranslations().then((completeI18n) => {
+      setReady(true);
+      if (Object.keys(completeI18n).length > 0) {
+        setTranslation(completeI18n);
+      }
+    });
   }, [form]);
 
-  if (loading) {
-    return <FormPageSkeleton />;
+  if (!ready) {
+    return <LoadingComponent />;
   }
 
-  if (!form) {
-    return <NotFoundPage />;
-  }
-
-  if (submissionMethod && !navFormUtils.isSubmissionMethodAllowed(submissionMethod, form)) {
-    return <SubmissionMethodNotAllowed submissionMethod={submissionMethod} />;
-  }
-
-  return <FyllUtRouter form={form} />;
-};
+  return <FyllUtRouter form={form} translations={translation} />;
+}
 
 export default FormPage;

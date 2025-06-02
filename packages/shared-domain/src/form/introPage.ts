@@ -24,4 +24,4 @@ interface IntroPageSection {
   bulletPoints?: string[];
 }
 
-export type { IntroPage, IntroPageSection };
+export type { IntroPage };

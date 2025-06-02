@@ -1,51 +1,64 @@
-import { LanguagesProvider } from '@navikt/skjemadigitalisering-shared-components';
-import { I18nTranslations } from '@navikt/skjemadigitalisering-shared-domain';
-import { useCallback, useEffect, useState } from 'react';
+import { LoadingComponent, useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
+import { NavFormType, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { loadAllTranslations } from '../../api/useTranslations';
+import httpFyllut from '../../util/httpFyllut';
+import SubmissionMethodNotAllowed from '../SubmissionMethodNotAllowed';
 import { NotFoundPage } from '../errors/NotFoundPage';
-import FormPageRouter from './FormPageRouter';
-import FormPageSkeleton from './FormPageSkeleton';
+import FormPage from './FormPage';
 
-const FormPageWrapper = () => {
+export const FormPageWrapper = () => {
   const { formPath } = useParams();
-  const [translations, setTranslations] = useState<I18nTranslations>();
-  const [loading, setLoading] = useState<boolean>(true);
+  const [status, setStatus] = useState('LOADING');
+  const [form, setForm] = useState<NavFormType>();
+  const { submissionMethod } = useAppConfig();
 
-  const loadTranslations = useCallback(async () => {
-    if (!formPath) {
-      return;
-    }
-
-    setLoading(true);
-    try {
-      setTranslations(await loadAllTranslations(formPath));
-    } catch (_e) {
-      setTranslations(undefined);
-    } finally {
-      setLoading(false);
-    }
+  useEffect(() => {
+    httpFyllut
+      .get(`/fyllut/api/forms/${formPath}`)
+      .then((form) => {
+        setForm(form as NavFormType);
+        setStatus('FINISHED LOADING');
+      })
+      .catch((err) => {
+        setStatus(err instanceof httpFyllut.UnauthenticatedError ? 'UNAUTHENTICATED' : 'FORM NOT FOUND');
+      });
   }, [formPath]);
 
   useEffect(() => {
-    (async () => {
-      await loadTranslations();
-    })();
-  }, [formPath, loadTranslations]);
+    const metaPropOgTitle = document.querySelector('meta[property="og:title"]');
+    const metaNameDescr = document.querySelector('meta[name="description"]');
+    const metaNameOgDescr = document.querySelector('meta[property="og:description"]');
+    const setHeaderProp = function (headerObj, metaPropValue) {
+      headerObj?.setAttribute('content', metaPropValue);
+    };
 
-  if (loading) {
-    return <FormPageSkeleton />;
+    if (form) {
+      if (form.title) {
+        document.title = `${form.title} | www.nav.no`;
+        setHeaderProp(metaPropOgTitle, `${form.title} | www.nav.no`);
+      }
+    }
+
+    return function cleanup() {
+      document.title = 'Fyll ut skjema - www.nav.no';
+      setHeaderProp(metaPropOgTitle, 'Fyll ut skjema - www.nav.no');
+      setHeaderProp(metaNameDescr, 'Nav søknadsskjema');
+      setHeaderProp(metaNameOgDescr, 'Nav søknadsskjema');
+    };
+  }, [form]);
+
+  if (status === 'LOADING' || status === 'UNAUTHENTICATED') {
+    return <LoadingComponent />;
   }
 
-  if (!translations) {
+  if (status === 'FORM NOT FOUND' || !form) {
     return <NotFoundPage />;
   }
 
-  return (
-    <LanguagesProvider translations={translations}>
-      <FormPageRouter />
-    </LanguagesProvider>
-  );
-};
+  if (submissionMethod && !navFormUtils.isSubmissionMethodAllowed(submissionMethod, form)) {
+    return <SubmissionMethodNotAllowed submissionMethod={submissionMethod} />;
+  }
 
-export default FormPageWrapper;
+  return <FormPage form={form} />;
+};

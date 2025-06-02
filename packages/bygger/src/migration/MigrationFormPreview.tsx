@@ -3,7 +3,6 @@ import { Button } from '@navikt/ds-react';
 import {
   ErrorPage,
   FyllUtRouter,
-  LanguagesProvider,
   LoadingComponent,
   makeStyles,
   Styles,
@@ -55,9 +54,7 @@ const MigrationFormPreview = () => {
           Tilbake
         </Button>
       </div>
-      <LanguagesProvider translations={{}}>
-        <FyllUtRouter form={form} />
-      </LanguagesProvider>
+      <FyllUtRouter form={form} translations={{}} />
     </div>
   );
 };
