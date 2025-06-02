@@ -1,5 +1,10 @@
 import { Skeleton } from '@navikt/ds-react';
-import { FyllUtRouter, i18nUtils, SkeletonList } from '@navikt/skjemadigitalisering-shared-components';
+import {
+  FyllUtRouter,
+  i18nUtils,
+  LanguagesProvider,
+  SkeletonList,
+} from '@navikt/skjemadigitalisering-shared-components';
 import { I18nTranslations } from '@navikt/skjemadigitalisering-shared-domain';
 import { useMemo } from 'react';
 import { AppLayout } from '../components/AppLayout';
@@ -20,7 +25,7 @@ export function TestFormPage({ form }) {
     );
   }, [formTranslationIsReady, formTranslations, globalTranslationIsReady, globalTranslations]);
 
-  if (!(form && formTranslationIsReady && globalTranslationIsReady)) {
+  if (!(form && formTranslationIsReady && globalTranslationIsReady && i18n)) {
     return (
       <>
         <RowLayout>
@@ -38,7 +43,9 @@ export function TestFormPage({ form }) {
         formPath: form.path,
       }}
     >
-      <FyllUtRouter form={form} translations={i18n} />
+      <LanguagesProvider translations={i18n}>
+        <FyllUtRouter form={form} />
+      </LanguagesProvider>
     </AppLayout>
   );
 }

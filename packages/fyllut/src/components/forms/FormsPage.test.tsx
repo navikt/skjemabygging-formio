@@ -24,7 +24,6 @@ describe('FormsPage', () => {
       </MemoryRouter>,
     );
 
-    expect(screen.getByRole('heading', { name: 'Laster...' })).toBeInTheDocument();
     expect(await screen.findByRole('heading', { name: 'Finner ingen skjemaer' })).toBeInTheDocument();
   });
 

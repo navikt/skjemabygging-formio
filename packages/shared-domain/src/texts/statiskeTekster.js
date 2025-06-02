@@ -1,5 +1,4 @@
 export const statiske = {
-  loading: 'Laster...',
   external: {
     minSide: {
       linkText: 'Min side',

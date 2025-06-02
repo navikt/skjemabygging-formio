@@ -158,11 +158,11 @@ describe('Activities', () => {
           cy.mocksUseRouteVariant('get-activities:success-multiple');
           cy.mocksUseRouteVariant('get-soknad:success-activities-prefilled-maalgruppe');
 
+          cy.defaultInterceptsMellomlagring();
           cy.visit(
             `/fyllut/testingactivities/aktiviteter?sub=digital&innsendingsId=fb47c474-66c1-46ba-8124-723447a79e83`,
           );
           cy.defaultWaits();
-          cy.defaultInterceptsMellomlagring();
           cy.wait('@getMellomlagring');
           cy.wait('@getActivities');
 
