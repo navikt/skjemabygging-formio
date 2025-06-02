@@ -29,7 +29,8 @@ export const getPdf = async (req: Request) => {
     submission: submission,
     language,
     unitNumber: '',
-    accessToken: req.headers.AzureAccessToken as string,
+    accessToken: req.headers.AzureAccessToken as string, // Assumes that token for accessing the PDF generator service is passed in the headers
+    pdfGeneratorAccessToken: req.headers.AzureAccessToken as string,
     submissionMethod,
     translations: translations,
   });
