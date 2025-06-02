@@ -13,14 +13,14 @@ const IntroPageButtonRow = () => {
   const { form, state } = useIntroPage();
   const innsendingsIdFromUrl = searchParams.get('innsendingsId');
   const firstPanelSlug = formUtils.getPanelSlug(form, 0);
-  const { baseUrl } = useAppConfig();
+  const { baseUrl, submissionMethod } = useAppConfig();
 
   const startUrl = `${formUrl}/${innsendingsIdFromUrl ? 'oppsummering' : firstPanelSlug}`;
 
   const navigateToFormPage = (event) => {
     event.preventDefault();
-    if (state === IntroPageState.DIGITAL) {
-      // important to reload page due to forced idporten login if sub=digital
+    if (state === IntroPageState.DIGITAL || !submissionMethod) {
+      // Important to reload page due to forced idporten login if sub=digital or if you are missing submissionMethod in appConfig.
       window.location.href = `${baseUrl}${startUrl}?${searchParams.toString()}`;
     } else {
       navigate(`${startUrl}?${searchParams.toString()}`);
