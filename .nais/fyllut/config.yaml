@@ -95,6 +95,8 @@ spec:
       value: {{skjemabygging-proxy-client-id}}
     - name: FAMILIE_PDF_GENERATOR_URL
       value: {{familie-pdf-generator-url}}
+    - name: FAMILIE_PDF_GENERATOR_SCOPE
+      value: {{familie-pdf-generator-scope}}
     - name: GOTENBERG_URL
       value: {{gotenberg-url}}
     - name: GOTENBERG_URL_EN
