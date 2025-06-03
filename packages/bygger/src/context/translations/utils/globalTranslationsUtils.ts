@@ -51,7 +51,11 @@ const populateTagFromTextObject = (
     .flattenToArray(textObject, ([entryKey, value]) => {
       const key = tagName === 'validering' ? entryKey : value;
       const stored = storedTranslationsMap?.[key];
-      return generateTranslation(tagName, stored, { key, nb: value });
+      if (!stored || stored.tag === tagName) {
+        // Do not populate if there already is a stored translation with a different tag
+        return generateTranslation(tagName, stored, { key, nb: value });
+      }
+      return [];
     })
     .filter(removeDuplicatesAfterFirstMatch);
 };
@@ -75,6 +79,10 @@ const getTagsWithIncompleteTranslations = (
   translationsPerTag: Record<GlobalTranslationTag, FormsApiTranslation[]>,
 ): GlobalTranslationTag[] => {
   return Object.keys(translationsPerTag).flatMap((tag) => {
+    // FIXME: Temporarily skip completeness check of introPage translations before publishing, since they are not yet in use (30.05.2025)
+    if (tag === 'introPage') {
+      return [];
+    }
     if (translationsPerTag[tag].some((translation) => !translation.nn || !translation.en)) {
       return tag as GlobalTranslationTag;
     }

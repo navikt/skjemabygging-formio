@@ -1,5 +1,4 @@
 export const statiske = {
-  loading: 'Laster...',
   external: {
     minSide: {
       linkText: 'Min side',
@@ -159,7 +158,7 @@ export const statiske = {
   drivingList: {
     activity: 'Aktivitet',
     period: 'Periode: {{period}}',
-    dailyRate: 'Dagsats for parkeringsavgift: {{rate}} kr',
+    dailyRate: 'Dagsats uten parkeringsavgift: {{rate}} kr',
     expensesTooHighHeader: 'Utgiftene er høyere enn beløpet du kan få refundert',
     expensesTooHigh:
       'I vedtaket ditt om stønad til daglig reise beregnet vi hvor mye du vil få utbetalt i hver periode. Du har nå lagt inn høyere utgifter til bruk av egen bil enn det vi har beregnet. Du vil sannsynligvis ikke få refundert alle utgiftene du har lagt inn for denne perioden.',

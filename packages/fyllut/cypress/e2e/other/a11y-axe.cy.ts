@@ -6,9 +6,9 @@ describe('Axe: Accessibility testing', () => {
   describe('Simple test for all tabs in one run', () => {
     before(() => {
       cy.defaultIntercepts();
+      cy.injectAxe();
       cy.visit('/fyllut/cypressaxe');
       cy.defaultWaits();
-      cy.injectAxe();
     });
 
     it('Start page', () => {

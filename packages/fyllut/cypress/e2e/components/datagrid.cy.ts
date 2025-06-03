@@ -30,6 +30,7 @@ describe('Datagrid', () => {
       cy.findByRole('radio', { name: 'Nei' }).check();
       cy.findByRole('textbox', { name: 'Tekstområde inni datagrid' }).type('Lorem Ipsum');
       cy.findByRole('textbox', { name: 'Tekstfelt inni datagrid' }).type('Hund');
+      cy.findByRole('textbox', { name: 'IBAN' }).type('NO9386011117947');
       cy.clickSaveAndContinue();
       cy.wait('@updateMellomlagring');
       cy.findByRoleWhenAttached('heading', { level: 2, name: 'Oppsummering' }).should('exist');
@@ -43,6 +44,7 @@ describe('Datagrid', () => {
       cy.findByRole('radio', { name: 'Nei' }).should('be.checked');
       cy.findByRole('textbox', { name: 'Tekstområde inni datagrid' }).should('have.value', 'Lorem Ipsum');
       cy.findByRole('textbox', { name: 'Tekstfelt inni datagrid' }).should('have.value', 'Hund');
+      cy.findByRole('textbox', { name: 'IBAN' }).should('have.value', 'NO93 8601 1117 947');
 
       // change values
       cy.findByRole('checkbox', { name: 'Avkryssingsboks inni datagrid (valgfritt)' }).click();
@@ -51,6 +53,7 @@ describe('Datagrid', () => {
       cy.findByRole('radio', { name: 'Ja' }).check();
       cy.findByRole('textbox', { name: 'Tekstområde inni datagrid' }).type('{selectall}En vegg av tekst');
       cy.findByRole('textbox', { name: 'Tekstfelt inni datagrid' }).type('{selectall}Katt');
+      cy.findByRole('textbox', { name: 'IBAN' }).type('{selectall}NO9384011117333');
 
       cy.findByRole('button', { name: 'Legg til' }).click();
       cy.findAllByRole('button', { name: 'Fjern' }).last().click();
@@ -63,6 +66,7 @@ describe('Datagrid', () => {
       cy.findByRole('radio', { name: 'Ja' }).should('be.checked');
       cy.findByRole('textbox', { name: 'Tekstområde inni datagrid' }).should('have.value', 'En vegg av tekst');
       cy.findByRole('textbox', { name: 'Tekstfelt inni datagrid' }).should('have.value', 'Katt');
+      cy.findByRole('textbox', { name: 'IBAN' }).should('have.value', 'NO93 8401 1117 333');
     });
 
     it('does not trigger validation error on optional fields in datagrid rows (if datagrid has required: false)', () => {

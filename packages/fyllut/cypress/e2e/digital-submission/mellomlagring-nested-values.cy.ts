@@ -31,7 +31,7 @@ describe('Mellomlagring nested values', () => {
     cy.contains('Hva mottar du?').closest('fieldset').find('input[value="stipend"]').should('be.checked');
 
     cy.findByRole('textbox', { name: 'Hvem utbetaler stipendet?' }).should('have.value', 'Lånekassa');
-    cy.findByRole('textbox', { name: 'Angi sum' }).should('have.value', '800');
+    cy.findByRole('textbox', { name: 'Angi sum' }).should('have.value', '800,00');
 
     cy.contains('Mottar du pensjon (offentlig eller privat)?')
       .closest('fieldset')
@@ -56,7 +56,7 @@ describe('Mellomlagring nested values', () => {
 
     cy.contains('Hva mottar du?').closest('fieldset').find('input[value="lonn"]').should('be.checked');
 
-    cy.findByRole('textbox', { name: 'Angi sum' }).should('have.value', '900');
+    cy.findByRole('textbox', { name: 'Angi sum' }).should('have.value', '900,00');
 
     cy.contains('Mottar du pensjon (offentlig eller privat)?')
       .closest('fieldset')
