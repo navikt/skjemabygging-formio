@@ -49,7 +49,7 @@ apiRouter.get('/send-inn/soknad/:innsendingsId', tokenxSendInn, sendInnSoknad.ge
 apiRouter.delete('/send-inn/soknad/:innsendingsId', tokenxSendInn, sendInnSoknad.delete);
 apiRouter.post('/send-inn/soknad', tokenxSendInn, sendInnSoknad.post);
 apiRouter.put('/send-inn/soknad', tokenxSendInn, sendInnSoknad.put);
-apiRouter.put('/send-inn/utfyltsoknad', azureSkjemabyggingProxy, tokenxSendInn, sendInnUtfyltSoknad.put);
+apiRouter.put('/send-inn/utfyltsoknad', azurePdfGeneratorToken, tokenxSendInn, sendInnUtfyltSoknad.put);
 apiRouter.get('/common-codes/archive-subjects', kodeverkToken, commonCodes.getArchiveSubjects);
 apiRouter.post('/pdf/convert', azurePdfGeneratorToken, exstream.post);
 apiRouter.get('/common-codes/currencies', kodeverkToken, commonCodes.getCurrencies);
