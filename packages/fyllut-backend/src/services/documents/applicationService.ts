@@ -176,7 +176,8 @@ const createPdfFromFieldMap = async (
     identityNumber = '—';
   }
 
-  const response = await fetchWithRetry(`${familiePdfGeneratorUrl}/api/v1/pdf/opprett-pdf`, {
+  logger.info(`Creating PDF from field map, calling ${familiePdfGeneratorUrl}/api/pdf/v1/opprett-pdf`);
+  const response = await fetchWithRetry(`${familiePdfGeneratorUrl}/api/pdf/v1/opprett-pdf`, {
     retry: 3,
     headers: {
       Authorization: `Bearer ${accessToken}`,

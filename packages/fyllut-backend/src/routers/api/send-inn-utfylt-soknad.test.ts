@@ -32,7 +32,7 @@ describe('[endpoint] send-inn/utfyltsoknad', () => {
 
   it('returns 201 and location header if success', async () => {
     const skjemabyggingproxyScope = nock(process.env.FAMILIE_PDF_GENERATOR_URL!)
-      .post('/api/v1/pdf/opprett-pdf')
+      .post('/api/pdf/v1/opprett-pdf')
       .reply(200, soknadPdf);
     const sendInnNockScope = nock(sendInnConfig.host)
       .put(`${sendInnConfig.paths.utfyltSoknad}/${innsendingsId}`)
@@ -54,7 +54,7 @@ describe('[endpoint] send-inn/utfyltsoknad', () => {
 
   it('calls next if SendInn returns error', async () => {
     const skjemabyggingproxyScope = nock(process.env.FAMILIE_PDF_GENERATOR_URL!)
-      .post('/api/v1/pdf/opprett-pdf')
+      .post('/api/pdf/v1/opprett-pdf')
       .reply(200, soknadPdf);
     const sendInnNockScope = nock(sendInnConfig.host)
       .put(`${sendInnConfig.paths.utfyltSoknad}/${innsendingsId}`)
@@ -76,7 +76,7 @@ describe('[endpoint] send-inn/utfyltsoknad', () => {
 
   it('calls next if exstream returns error', async () => {
     const skjemabyggingproxyScope = nock(process.env.FAMILIE_PDF_GENERATOR_URL!)
-      .post('/api/v1/pdf/opprett-pdf')
+      .post('/api/pdf/v1/opprett-pdf')
       .reply(500, 'error body');
     const req = mockRequestWithPidAndTokenX({ body: defaultBody });
     const res = mockResponse();

@@ -260,7 +260,7 @@ describe('app', () => {
       .post(extractPath(azureTokenEndpoint))
       .reply(200, { access_token: 'azure-access-token' });
     const skjemabyggingproxyScope = nock(process.env.FAMILIE_PDF_GENERATOR_URL as string)
-      .post('/api/v1/pdf/opprett-pdf')
+      .post('/api/pdf/v1/opprett-pdf')
       .reply(200, encodedSoknadPdf);
     const tokenxWellKnownScope = nock(extractHost(tokenxConfig?.wellKnownUrl))
       .get(extractPath(tokenxConfig?.wellKnownUrl))
