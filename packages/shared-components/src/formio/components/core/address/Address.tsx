@@ -4,6 +4,7 @@ import {
   PrefillAddress,
   SubmissionAddress,
   TEXTS,
+  validatorUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import NavAddress, { SubmissionAddressType } from '../../../../components/address/Address';
 import { ComponentUtilsProvider } from '../../../../context/component/componentUtilsContext';
@@ -152,13 +153,27 @@ class Address extends BaseComponent {
         this.validateRequiredField(address, 'adresse', TEXTS.statiske.address.streetAddress);
         this.validateRequiredField(address, 'postnummer', TEXTS.statiske.address.postalCode);
         this.validateRequiredField(address, 'bySted', TEXTS.statiske.address.postalName);
+        this.validateValidTextInput(address, 'co', TEXTS.statiske.address.co.label);
+        this.validateValidTextInput(address, 'adresse', TEXTS.statiske.address.streetAddress);
+        this.validateValidTextInput(address, 'postnummer', TEXTS.statiske.address.postalCode);
+        this.validateValidTextInput(address, 'bySted', TEXTS.statiske.address.postalName);
       } else if (this.getAddressType() === 'POST_OFFICE_BOX') {
         this.validateRequiredField(address, 'postboks', TEXTS.statiske.address.poBox);
         this.validateRequiredField(address, 'postnummer', TEXTS.statiske.address.postalCode);
         this.validateRequiredField(address, 'bySted', TEXTS.statiske.address.postalName);
+        this.validateValidTextInput(address, 'co', TEXTS.statiske.address.co.label);
+        this.validateValidTextInput(address, 'postboks', TEXTS.statiske.address.poBox);
+        this.validateValidTextInput(address, 'postnummer', TEXTS.statiske.address.postalCode);
+        this.validateValidTextInput(address, 'bySted', TEXTS.statiske.address.postalName);
       } else if (this.getAddressType() === 'FOREIGN_ADDRESS') {
-        this.validateRequiredField(address, 'adresse', TEXTS.statiske.address.streetAddress);
+        this.validateRequiredField(address, 'adresse', TEXTS.statiske.address.streetAddressLong);
         this.validateRequiredField(address, 'land', TEXTS.statiske.address.country);
+        this.validateValidTextInput(address, 'co', TEXTS.statiske.address.co.label);
+        this.validateValidTextInput(address, 'adresse', TEXTS.statiske.address.streetAddressLong);
+        this.validateValidTextInput(address, 'bygning', TEXTS.statiske.address.building);
+        this.validateValidTextInput(address, 'postnummer', TEXTS.statiske.address.postalCode);
+        this.validateValidTextInput(address, 'bySted', TEXTS.statiske.address.location);
+        this.validateValidTextInput(address, 'region', TEXTS.statiske.address.region);
       }
 
       if (this.showAddressTypeChoice()) {
@@ -179,9 +194,16 @@ class Address extends BaseComponent {
   }
 
   validateRequiredField(address: SubmissionAddress, addressType: SubmissionAddressType, label: string) {
+    const elementId = `address:${addressType}`;
     if (!address[addressType]) {
-      const elementId = `address:${addressType}`;
       super.addError(this.translate('required', { field: this.translate(label) }), elementId);
+    }
+  }
+
+  validateValidTextInput(address: SubmissionAddress, addressType: SubmissionAddressType, label: string) {
+    const elementId = `address:${addressType}`;
+    if (!validatorUtils.isValidFoerstesideValue((address[addressType] ?? '') as string)) {
+      super.addError(this.translate('containsInvalidCharacters', { field: this.translate(label) }), elementId);
     }
   }
 

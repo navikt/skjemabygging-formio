@@ -19,6 +19,17 @@ class Surname extends TextField {
   static get builderInfo() {
     return surnameBuilder();
   }
+
+  override checkComponentValidity(data, dirty, row, options = {}) {
+    const isValid = super.checkComponentValidity(data, dirty, row, options);
+    if (isValid && !this.getReadOnly()) {
+      const errorMessage = this.validateFoerstesideInputs();
+      if (errorMessage) {
+        return this.setComponentValidity([this.createError(errorMessage, undefined)], dirty, undefined);
+      }
+    }
+    return isValid;
+  }
 }
 
 export default Surname;

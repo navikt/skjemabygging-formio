@@ -12,6 +12,7 @@ export const validering = {
 
   // Tekstfelt
   digitsOnly: '{{field}} kan bare inneholde tall',
+  containsInvalidCharacters: '{{field}} inneholder ugyldige tegn',
 
   // Dato / tid
   invalid_date: '{{field}} er ikke en gyldig dato.',
