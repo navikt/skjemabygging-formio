@@ -9,6 +9,7 @@ export const validering = {
   pattern: '{{field}} stemmer ikke med {{pattern}}',
   required: 'Du må fylle ut: {{field}}',
   valueIsNotAvailable: 'Du har oppgitt en ugyldig verdi i {{field}}',
+  invalidPostalCode: '{{field}} må bestå av 4 siffer',
 
   // Tekstfelt
   digitsOnly: '{{field}} kan bare inneholde tall',

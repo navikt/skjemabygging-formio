@@ -1,6 +1,7 @@
 import {
   Address as AddressDomain,
   AddressType,
+  numberUtils,
   PrefillAddress,
   SubmissionAddress,
   TEXTS,
@@ -155,7 +156,7 @@ class Address extends BaseComponent {
         this.validateRequiredField(address, 'bySted', TEXTS.statiske.address.postalName);
         this.validateValidTextInput(address, 'co', TEXTS.statiske.address.co.label);
         this.validateValidTextInput(address, 'adresse', TEXTS.statiske.address.streetAddress);
-        this.validateValidTextInput(address, 'postnummer', TEXTS.statiske.address.postalCode);
+        this.validateNorwegianPostalCode(address['postnummer'], TEXTS.statiske.address.postalCode);
         this.validateValidTextInput(address, 'bySted', TEXTS.statiske.address.postalName);
       } else if (this.getAddressType() === 'POST_OFFICE_BOX') {
         this.validateRequiredField(address, 'postboks', TEXTS.statiske.address.poBox);
@@ -163,7 +164,7 @@ class Address extends BaseComponent {
         this.validateRequiredField(address, 'bySted', TEXTS.statiske.address.postalName);
         this.validateValidTextInput(address, 'co', TEXTS.statiske.address.co.label);
         this.validateValidTextInput(address, 'postboks', TEXTS.statiske.address.poBox);
-        this.validateValidTextInput(address, 'postnummer', TEXTS.statiske.address.postalCode);
+        this.validateNorwegianPostalCode(address['postnummer'], TEXTS.statiske.address.postalCode);
         this.validateValidTextInput(address, 'bySted', TEXTS.statiske.address.postalName);
       } else if (this.getAddressType() === 'FOREIGN_ADDRESS') {
         this.validateRequiredField(address, 'adresse', TEXTS.statiske.address.streetAddressLong);
@@ -204,6 +205,16 @@ class Address extends BaseComponent {
     const elementId = `address:${addressType}`;
     if (!validatorUtils.isValidFoerstesideValue((address[addressType] ?? '') as string)) {
       super.addError(this.translate('containsInvalidCharacters', { field: this.translate(label) }), elementId);
+    }
+  }
+
+  validateNorwegianPostalCode(value: string, label: string) {
+    const elementId = `address:postnummer`;
+    if (!value) {
+      return;
+    }
+    if (value.length !== 4 || !numberUtils.isValidInteger(value)) {
+      super.addError(this.translate('invalidPostalCode', { field: this.translate(label) }), elementId);
     }
   }
 
