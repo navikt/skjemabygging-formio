@@ -9,6 +9,10 @@ const application: RequestHandler = async (req, res, next) => {
     const submissionParsed = JSON.parse(submission);
     const translationsParsed = JSON.parse(translations);
 
+    if (!req.headers.AzurePdfGeneratorToken) {
+      throw new Error('Azure PDF generator token is missing. Unable to generate PDF');
+    }
+
     const fileBuffer = await documentsService.application({
       form: formParsed,
       submission: submissionParsed,
@@ -34,14 +38,26 @@ const coverPageAndApplication: RequestHandler = async (req, res, next) => {
     const formParsed = JSON.parse(form);
     const submissionParsed = JSON.parse(submission);
     const translationsParsed = JSON.parse(translations);
+    const frontPageGeneratorToken = req.headers.AzureAccessToken as string;
+    const pdfGeneratorToken = req.headers.PdfAccessToken as string;
+
+    console.log(req.headers);
+
+    if (!frontPageGeneratorToken) {
+      throw new Error('Azure access token is missing. Unable to generate PDF');
+    }
+
+    if (!pdfGeneratorToken) {
+      throw new Error('PDF generator token is missing. Unable to generate PDF');
+    }
 
     const fileBuffer = await documentsService.coverPageAndApplication({
       form: formParsed,
       submission: submissionParsed,
       language,
       unitNumber: enhetNummer,
-      accessToken: req.headers.AzureAccessToken as string,
-      pdfGeneratorAccessToken: req.headers.AzurePdfGeneratorToken as string,
+      accessToken: frontPageGeneratorToken,
+      pdfGeneratorAccessToken: pdfGeneratorToken,
       submissionMethod,
       translations: translationsParsed,
     });

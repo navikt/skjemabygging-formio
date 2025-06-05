@@ -56,7 +56,7 @@ const sendInnUtfyltSoknad = {
       }
 
       const applicationPdf = await applicationService.createPdfFromFieldMap(
-        req.headers.AzureAccessToken as string,
+        req.headers.PdfAccessToken as string,
         form,
         submission,
         submissionMethod,

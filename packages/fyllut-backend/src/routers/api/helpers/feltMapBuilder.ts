@@ -33,16 +33,6 @@ export const createFeltMapFromSubmission = (
   lang: string = 'nb',
   identityNumber: string = '-',
 ) => {
-  /*
-  const translate = (text: string, textReplacements?: I18nTranslationReplacements) =>
-    translationUtils.translateWithTextReplacements({
-      translations,
-      originalText: text,
-      params: textReplacements,
-      currentLanguage: lang,
-    });
-*/
-
   const symmaryPanels: SummaryPanel[] = formSummaryUtil.createFormSummaryPanels(
     form,
     submission,
@@ -78,7 +68,9 @@ export const createFeltMapFromSubmission = (
     bunntekst: ekstraBunntekst,
   };
 
+  /* for test formål
   logger.info(`FeltMapString: ${JSON.stringify(feltMap)}`);
+*/
   return JSON.stringify(feltMap);
 };
 

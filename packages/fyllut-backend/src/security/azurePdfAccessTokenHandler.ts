@@ -7,7 +7,7 @@ import { toJsonOrThrowError } from '../utils/errorHandling.js';
 
 const { clientId, clientSecret, azureOpenidTokenEndpoint, isDevelopment } = config;
 
-const azureAccessTokenHandler =
+const azurePdfAccessTokenHandler =
   (scope: string, skipDev = false) =>
   async (req: Request, _res: Response, next: NextFunction) => {
     if (isDevelopment && skipDev) {
@@ -27,7 +27,7 @@ const azureAccessTokenHandler =
         }),
       });
       const json: { access_token: string } = await toJsonOrThrowError('Feil ved autentisering')(response);
-      req.headers.AzureAccessToken = json.access_token;
+      req.headers.PdfAccessToken = json.access_token;
       next();
     } catch (error: any) {
       if (error.http_response_body) {
@@ -40,4 +40,4 @@ const azureAccessTokenHandler =
     }
   };
 
-export default azureAccessTokenHandler;
+export default azurePdfAccessTokenHandler;

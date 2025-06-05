@@ -1,5 +1,6 @@
 import { config as appConfig } from '../../config/config';
 import azureAccessTokenHandler from '../../security/azureAccessTokenHandler';
+import azurePdfAccessTokenHandler from '../../security/azurePdfAccessTokenHandler';
 import tokenxHandler from '../../security/tokenxHandler';
 
 const {
@@ -19,7 +20,7 @@ const initApiConfig = () => {
     tokenxSendInn: tokenxHandler(sendInnConfig?.tokenxClientId),
     tokenxPdl: tokenxHandler(`${pdlTokenScopeCluster}:pdl:pdl-api`),
     tokenxTilleggsstonader: tokenxHandler(tilleggsstonaderConfig.tokenxClientId),
-    azurePdfGeneratorToken: azureAccessTokenHandler(familiePdfGeneratorScope),
+    azurePdfGeneratorToken: azurePdfAccessTokenHandler(familiePdfGeneratorScope),
   };
 };
 
