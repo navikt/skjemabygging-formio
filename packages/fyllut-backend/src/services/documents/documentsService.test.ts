@@ -123,6 +123,9 @@ describe('[endpoint] documents', () => {
     const mergedPdf = readFileSync(filePathMerged);
     const encodedForstesidedPdf = forstesidePdf.toString('base64');
     const encodedSoknadPdf = soknadPdf.toString('base64');
+    const mockAzureAccessTokenHandler = vi.fn((scope: string) => {
+      return `mock-token-for:${scope}`;
+    });
 
     const recipientsMock = nock(formsApiUrl).get('/v1/recipients').reply(200, []);
     const generateFileMock = nock(skjemabyggingProxyUrl!)
@@ -140,7 +143,8 @@ describe('[endpoint] documents', () => {
 
     const req = mockRequest({
       headers: {
-        AzureAccessToken: '',
+        AzureAccessToken: mockAzureAccessTokenHandler('AzureAccessTokenToken'),
+        PdfAccessToken: mockAzureAccessTokenHandler('azurePdfGeneratorToken'),
       },
       body: {
         form: JSON.stringify({
