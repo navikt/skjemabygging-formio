@@ -8,8 +8,9 @@ const application: RequestHandler = async (req, res, next) => {
     const formParsed = JSON.parse(form);
     const submissionParsed = JSON.parse(submission);
     const translationsParsed = JSON.parse(translations);
+    const pdfGeneratorToken = req.headers.PdfAccessToken as string;
 
-    if (!req.headers.AzurePdfGeneratorToken) {
+    if (!pdfGeneratorToken) {
       throw new Error('Azure PDF generator token is missing. Unable to generate PDF');
     }
 
