@@ -1,3 +1,14 @@
+const isValidFoerstesideValue = (value: string) => {
+  // Regex is from "foerstesidegenerator" and checks that a string only contains characters that are defined as valid.
+  // https://github.com/navikt/foerstesidegenerator/blob/20170afdb8e8efbfa7ced1940290ff40cdc7bb95/app/src/main/java/no/nav/foerstesidegenerator/service/support/PostFoerstesideRequestValidator.java#L42C70-L42C124
+  // The flag /u enables full Unicode support. Allows us to match based on Unicode properties such as:
+  // p{L} matches any kind of letter from any language
+  // p{N} matches any kind of numeric character in any script
+  // p{Zs} matches a whitespace character that is invisible, but does take up space
+  const validCharactersRegex = /^[\p{L}\p{N}\p{Zs}\n\t\-./;()":,–_'?&+’%#•@»«§]*$/gu;
+  return validCharactersRegex.test(value);
+};
+
 const isOrganizationNumber = (organizationNumber: string) => {
   organizationNumber = removeSpaces(organizationNumber);
   if (/^\d{9}$/.test(organizationNumber)) {
@@ -31,6 +42,7 @@ const removeSpaces = (input: string) => {
 const validatorUtils = {
   isOrganizationNumber,
   isAccountNumber,
+  isValidFoerstesideValue,
 };
 
 export default validatorUtils;
