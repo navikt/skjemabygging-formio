@@ -61,7 +61,7 @@ jobs:
           start: yarn preview:fyllut
           wait-on: 'http://localhost:3001/fyllut/internal/isready'
           wait-on-timeout: 120
-          command: yarn cypress:fyllut --spec cypress/e2e/${{ matrix.folder }}/**/*
+          command: yarn cypress:fyllut --spec cypress/e2e/${{ matrix.folder }}/**/* --env INCLUDE_DIST_TESTS=true
         env:
           FYLLUT_BACKEND_LOGLEVEL: ${{ runner.debug == '1' && 'debug' || 'error' }}
       - name: Upload screenshots

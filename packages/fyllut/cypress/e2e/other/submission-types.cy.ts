@@ -37,15 +37,12 @@ describe('Submission Type', () => {
       cy.findByRole('heading', { name: 'Ugyldig innsendingsvalg' }).should('exist');
     });
 
-    it('Add sub if missing (ignored on localhost)', () => {
+    it('Add sub if missing (INCLUDE_DIST_TESTS)', () => {
+      cy.skipIfNoIncludeDistTests();
+
       cy.visit('/fyllut/stpaper');
       cy.defaultWaits();
-
-      // On localhost we sometimes run on build code and sometimes not. So skip this test for localhost,
-      // since the redirect only works on build code.
-      if (!Cypress.env('BASE_URL').includes('localhost')) {
-        cy.url().should('include', 'sub=paper');
-      }
+      cy.url().should('include', 'sub=paper');
     });
   });
 
@@ -79,15 +76,11 @@ describe('Submission Type', () => {
       cy.findByRole('heading', { name: 'Ugyldig innsendingsvalg' }).should('exist');
     });
 
-    it('Add sub if missing (ignored on localhost)', () => {
+    it('Add sub if missing (INCLUDE_DIST_TESTS)', () => {
+      cy.skipIfNoIncludeDistTests();
       cy.visit('/fyllut/stdigital');
       cy.defaultWaits();
-
-      // On localhost we sometimes run on build code and sometimes not. So skip this test for localhost,
-      // since the redirect only works on build code.
-      if (!Cypress.env('BASE_URL').includes('localhost')) {
-        cy.url().should('include', 'sub=digital');
-      }
+      cy.url().should('include', 'sub=digital');
     });
   });
 
@@ -138,17 +131,15 @@ describe('Submission Type', () => {
       });
     });
 
-    it('Missing sub paper or digital (ignored on localhost)', () => {
+    it('Missing sub paper or digital (INCLUDE_DIST_TESTS)', () => {
+      cy.skipIfNoIncludeDistTests();
+
       cy.visit('/fyllut/stpaperdigital/personopplysninger');
       cy.defaultWaits();
 
-      // On localhost we sometimes run on build code and sometimes not. So skip this test for localhost,
-      // since the redirect only works on build code.
-      if (!Cypress.env('BASE_URL').includes('localhost')) {
-        cy.findByRole('heading', { name: 'Dine opplysninger' }).should('not.exist');
-        cy.findByRole('link', { name: TEXTS.grensesnitt.introPage.sendDigital }).should('exist');
-        cy.findByRole('link', { name: TEXTS.grensesnitt.introPage.sendOnPaper }).should('exist');
-      }
+      cy.findByRole('heading', { name: 'Dine opplysninger' }).should('not.exist');
+      cy.findByRole('link', { name: TEXTS.grensesnitt.introPage.sendDigital }).should('exist');
+      cy.findByRole('link', { name: TEXTS.grensesnitt.introPage.sendOnPaper }).should('exist');
     });
   });
 
