@@ -1,0 +1,431 @@
+{
+  "id": 1,
+  "revision": 7,
+  "skjemanummer": "Kort skjema",
+  "path": "kortskjema",
+  "title": "sdfsdf",
+  "components": [
+    {
+      "key": "veiledning",
+      "type": "panel",
+      "input": false,
+      "theme": "default",
+      "title": "Veiledning",
+      "components": [
+        {
+          "key": "veiledningstekst",
+          "type": "htmlelement",
+          "input": false,
+          "label": "Veiledningstekst",
+          "content": "Her skal det stå en veiledningstekst for søknaden"
+        }
+      ]
+    },
+    {
+      "key": "personopplysninger",
+      "type": "panel",
+      "input": false,
+      "theme": "default",
+      "title": "Dine opplysninger",
+      "components": [
+        {
+          "key": "dineOpplysninger",
+          "type": "container",
+          "label": "Dine opplysninger",
+          "components": [
+            {
+              "key": "fornavn",
+              "type": "firstName",
+              "input": true,
+              "label": "Fornavn",
+              "addons": [],
+              "hidden": false,
+              "prefix": "",
+              "suffix": "",
+              "unique": false,
+              "dbIndex": false,
+              "overlay": {
+                "top": "",
+                "left": "",
+                "style": "",
+                "width": "",
+                "height": ""
+              },
+              "prefill": true,
+              "tooltip": "",
+              "disabled": false,
+              "multiple": false,
+              "redrawOn": "",
+              "tabindex": "",
+              "validate": {
+                "required": true
+              },
+              "autofocus": false,
+              "encrypted": false,
+              "fieldSize": "input--xxl",
+              "hideLabel": false,
+              "modalEdit": false,
+              "protected": false,
+              "refreshOn": "",
+              "tableView": false,
+              "attributes": {},
+              "errorLabel": "",
+              "persistent": true,
+              "prefillKey": "sokerFornavn",
+              "properties": {},
+              "validateOn": "blur",
+              "clearOnHide": true,
+              "conditional": {
+                "eq": ""
+              },
+              "customClass": "",
+              "description": "",
+              "placeholder": "",
+              "autocomplete": "given-name",
+              "dataGridLabel": false,
+              "labelPosition": "top",
+              "showCharCount": false,
+              "showWordCount": false,
+              "calculateValue": "",
+              "calculateServer": false,
+              "protectedApiKey": true,
+              "allowMultipleMasks": false,
+              "customDefaultValue": "",
+              "allowCalculateOverride": false
+            },
+            {
+              "key": "etternavn",
+              "type": "surname",
+              "input": true,
+              "label": "Etternavn",
+              "addons": [],
+              "hidden": false,
+              "prefix": "",
+              "suffix": "",
+              "unique": false,
+              "dbIndex": false,
+              "overlay": {
+                "top": "",
+                "left": "",
+                "style": "",
+                "width": "",
+                "height": ""
+              },
+              "prefill": true,
+              "tooltip": "",
+              "disabled": false,
+              "multiple": false,
+              "redrawOn": "",
+              "tabindex": "",
+              "validate": {
+                "required": true
+              },
+              "autofocus": false,
+              "encrypted": false,
+              "fieldSize": "input--xxl",
+              "hideLabel": false,
+              "modalEdit": false,
+              "protected": false,
+              "refreshOn": "",
+              "tableView": false,
+              "attributes": {},
+              "errorLabel": "",
+              "persistent": true,
+              "prefillKey": "sokerEtternavn",
+              "properties": {},
+              "validateOn": "blur",
+              "clearOnHide": true,
+              "conditional": {
+                "eq": ""
+              },
+              "customClass": "",
+              "description": "",
+              "placeholder": "",
+              "autocomplete": "family-name",
+              "dataGridLabel": false,
+              "labelPosition": "top",
+              "showCharCount": false,
+              "showWordCount": false,
+              "calculateValue": "",
+              "calculateServer": false,
+              "protectedApiKey": true,
+              "allowMultipleMasks": false,
+              "customDefaultValue": "",
+              "allowCalculateOverride": false
+            },
+            {
+              "key": "identitet",
+              "type": "identity",
+              "input": true,
+              "label": "Identitet",
+              "addons": [],
+              "hidden": false,
+              "prefix": "",
+              "suffix": "",
+              "unique": false,
+              "dbIndex": false,
+              "overlay": {
+                "top": "",
+                "left": "",
+                "style": "",
+                "width": "",
+                "height": ""
+              },
+              "prefill": true,
+              "tooltip": "",
+              "disabled": false,
+              "multiple": false,
+              "redrawOn": "",
+              "tabindex": "",
+              "validate": {
+                "required": true
+              },
+              "autofocus": false,
+              "encrypted": false,
+              "fieldSize": "input--s",
+              "hideLabel": true,
+              "modalEdit": false,
+              "protected": false,
+              "refreshOn": "",
+              "tableView": false,
+              "attributes": {},
+              "errorLabel": "",
+              "persistent": true,
+              "prefillKey": "sokerIdentifikasjonsnummer",
+              "properties": {},
+              "spellcheck": false,
+              "validateOn": "blur",
+              "clearOnHide": true,
+              "conditional": {
+                "eq": ""
+              },
+              "customClass": "",
+              "description": "",
+              "placeholder": "",
+              "customLabels": {
+                "doYouHaveIdentityNumber": "Har du norsk fødselsnummer eller d-nummer?"
+              },
+              "dataGridLabel": false,
+              "labelPosition": "top",
+              "showCharCount": false,
+              "showWordCount": false,
+              "calculateValue": "",
+              "calculateServer": false,
+              "protectedApiKey": true,
+              "allowMultipleMasks": false,
+              "customDefaultValue": "",
+              "allowCalculateOverride": false
+            },
+            {
+              "key": "adresse",
+              "type": "navAddress",
+              "input": true,
+              "label": "Adresse",
+              "addons": [],
+              "hidden": false,
+              "prefix": "",
+              "suffix": "",
+              "unique": false,
+              "dbIndex": false,
+              "overlay": {
+                "top": "",
+                "left": "",
+                "style": "",
+                "width": "",
+                "height": ""
+              },
+              "prefill": true,
+              "tooltip": "",
+              "disabled": false,
+              "multiple": false,
+              "redrawOn": "",
+              "tabindex": "",
+              "validate": {
+                "required": true
+              },
+              "autofocus": false,
+              "encrypted": false,
+              "fieldSize": "input--xxl",
+              "hideLabel": true,
+              "modalEdit": false,
+              "protected": false,
+              "refreshOn": "",
+              "tableView": false,
+              "attributes": {},
+              "errorLabel": "",
+              "persistent": true,
+              "prefillKey": "sokerAdresser",
+              "properties": {},
+              "validateOn": "blur",
+              "clearOnHide": true,
+              "conditional": {
+                "eq": ""
+              },
+              "customClass": "",
+              "description": "",
+              "placeholder": "",
+              "customLabels": {
+                "livesInNorway": "Bor du i Norge?"
+              },
+              "dataGridLabel": false,
+              "labelPosition": "top",
+              "showCharCount": false,
+              "showWordCount": false,
+              "calculateValue": "",
+              "calculateServer": false,
+              "protectedApiKey": true,
+              "customConditional": "show = row.identitet.harDuFodselsnummer === \"nei\" || (row.identitet.identitetsnummer && !row.identitet.harDuFodselsnummer)",
+              "allowMultipleMasks": false,
+              "customDefaultValue": "",
+              "allowCalculateOverride": false
+            },
+            {
+              "key": "adresseVarighet",
+              "type": "addressValidity",
+              "input": true,
+              "label": "Adresse varighet",
+              "addons": [],
+              "hidden": false,
+              "prefix": "",
+              "suffix": "",
+              "unique": false,
+              "dbIndex": false,
+              "overlay": {
+                "top": "",
+                "left": "",
+                "style": "",
+                "width": "",
+                "height": ""
+              },
+              "tooltip": "",
+              "disabled": false,
+              "multiple": false,
+              "redrawOn": "",
+              "tabindex": "",
+              "validate": {
+                "required": true
+              },
+              "autofocus": false,
+              "encrypted": false,
+              "fieldSize": "input--s",
+              "hideLabel": true,
+              "modalEdit": false,
+              "protected": false,
+              "refreshOn": "",
+              "tableView": false,
+              "attributes": {},
+              "errorLabel": "",
+              "persistent": true,
+              "properties": {},
+              "validateOn": "blur",
+              "clearOnHide": true,
+              "conditional": {
+                "eq": ""
+              },
+              "customClass": "",
+              "description": "",
+              "placeholder": "",
+              "dataGridLabel": false,
+              "labelPosition": "top",
+              "showCharCount": false,
+              "showWordCount": false,
+              "calculateValue": "",
+              "calculateServer": false,
+              "protectedApiKey": true,
+              "customConditional": "show = row.adresse.borDuINorge === \"nei\" || (row.adresse.borDuINorge === \"ja\" && row.adresse.vegadresseEllerPostboksadresse)",
+              "allowMultipleMasks": false,
+              "customDefaultValue": "",
+              "allowCalculateOverride": false
+            },
+            {
+              "key": "alertstripe",
+              "type": "alertstripe",
+              "label": "Alertstripe",
+              "content": "<p>Nav sender svar på søknad og annen kommunikasjon til din folkeregistrerte adresse. Du kan <a href=\"https://www.skatteetaten.no/person/folkeregister/flytte/endre-postadresse/\" target=\"_blank\" rel=\"noopener noreferrer\">sjekke og endre din folkeregistrerte adresse på Skatteetatens nettsider (åpnes i ny fane)</a>.</p>",
+              "alerttype": "info",
+              "customConditional": "show = row.identitet.harDuFodselsnummer === \"ja\""
+            },
+            {
+              "key": "alertstripePrefill",
+              "type": "alertstripe",
+              "label": "Alertstripe",
+              "content": "<p>Adressen er hentet fra Folkeregisteret. Du kan <a href=\"https://www.skatteetaten.no/person/folkeregister/flytte/endre-postadresse/\" target=\"_blank\" rel=\"noopener noreferrer\"> endre adressen på Skatteetatens nettsider (åpnes i ny fane)</a>.</p>",
+              "alerttype": "info",
+              "customConditional": "show = row.identitet.identitetsnummer && !row.identitet.harDuFodselsnummer"
+            }
+          ],
+          "yourInformation": true
+        }
+      ]
+    },
+    {
+      "key": "vedlegg",
+      "type": "panel",
+      "input": false,
+      "theme": "default",
+      "title": "Vedlegg",
+      "components": [
+        {
+          "key": "annenDokumentasjon",
+          "type": "attachment",
+          "label": "Annen dokumentasjon",
+          "dataSrc": "values",
+          "validate": {
+            "required": true
+          },
+          "properties": {
+            "vedleggskode": "N6",
+            "vedleggstittel": "Annet"
+          },
+          "description": "Har du noen annen dokumentasjon du ønsker å legge ved?",
+          "attachmentType": "other",
+          "attachmentValues": {
+            "nei": {
+              "enabled": true
+            },
+            "leggerVedNaa": {
+              "enabled": true
+            }
+          }
+        }
+      ],
+      "isAttachmentPanel": true
+    }
+  ],
+  "properties": {
+    "tema": "AAP",
+    "isTestForm": true,
+    "signatures": [
+      {
+        "key": "89bbafbb-ffce-40e5-bbb1-b9dd53223bd3",
+        "label": "",
+        "description": ""
+      }
+    ],
+    "skjemanummer": "Kort skjema",
+    "submissionTypes": [
+      "PAPER",
+      "DIGITAL"
+    ],
+    "ettersendelsesfrist": "14",
+    "mellomlagringDurationDays": "28",
+    "subsequentSubmissionTypes": [
+      "PAPER",
+      "DIGITAL"
+    ]
+  },
+  "introPage": {
+    "enabled": true,
+    "sections": {
+      "prerequisites": {
+        "title": "scope2"
+      }
+    },
+    "introduction": "sdfsdf"
+  },
+  "createdAt": "2025-06-03T10:56:07.905+02",
+  "createdBy": "Testesen, Test",
+  "changedAt": "2025-06-03T11:12:54.660+02",
+  "changedBy": "Testesen, Test",
+  "status": "draft"
+}
