@@ -1,0 +1,39 @@
+{
+  "skjemanummer": "st-paper",
+  "path": "stpaper",
+  "title": "Submission Type Paper",
+  "components": [
+    {
+      "id": "e1nek8d",
+      "key": "personopplysninger",
+      "type": "panel",
+      "label": "Panel",
+      "title": "Dine opplysninger",
+      "breadcrumb": "default",
+      "components": [
+        {
+          "id": "ey0bewk",
+          "key": "tekstfelt",
+          "type": "textfield",
+          "validate": {
+            "required": true
+          }
+        }
+      ]
+    }
+  ],
+  "properties": {
+    "submissionTypes": [
+      "PAPER"
+    ],
+    "publishedLanguages": [
+      "nb",
+      "en"
+    ]
+  },
+  "publishedLanguages": [
+    "nb",
+    "en"
+  ],
+  "status": "published"
+}
