@@ -24,12 +24,10 @@ export const mergeFiles = async (
     }
   });
 
-  //formData.append('merge', 'true'); Set if using libreoffice to merge
+  formData.append('merge', 'true');
   // Add Gotenberg-specific options
-  if (options.pdfa) {
-    formData.append('pdfa', 'PDF/A-2b');
-  }
-  formData.append('pdfua', options.pdfua ? 'true' : 'false');
+  formData.append('pdfa', options.pdfa ? 'PDF/A-2b' : '');
+  formData.append('pdfua', options.pdfua ? 'true' : '');
   formData.append('skipNetworkIdleEvent', 'false');
 
   const date = new Date();
@@ -44,7 +42,7 @@ export const mergeFiles = async (
   };
   formData.append('metadata', `${JSON.stringify(metadata)}`);
 
-  return await callGotenberg(language, '/forms/pdfengines/merge', formData);
+  return await callGotenberg(language, '/forms/libreoffice/convert', formData);
 };
 
 const formatPDFDate = (date: Date) => {

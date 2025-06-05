@@ -13,7 +13,7 @@ import { logFormNotFound } from './utils/formError';
 import { getDefaultPageMeta, getFormMeta } from './utils/page';
 
 const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
-  logger.info('Render index.html', { queryParams: { ...req.query }, baseUrl: req.baseUrl });
+  logger.debug('Render index.html', { queryParams: { ...req.query }, baseUrl: req.baseUrl });
   try {
     const qpForm = req.query.form;
     const qpInnsendingsId = req.query.innsendingsId;
