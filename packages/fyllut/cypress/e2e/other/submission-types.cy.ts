@@ -19,7 +19,7 @@ describe('Submission Type', () => {
         cy.findByRole('link', { name: TEXTS.statiske.summaryPage.title }).click();
 
         cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
-        cy.findByRole('link', { name: TEXTS.grensesnitt.moveForward }).should('exist'); // TODO: not.exist when we fix the bug
+        cy.findByRole('link', { name: TEXTS.grensesnitt.moveForward }).should('not.exist');
         cy.findAllByRole('link', { name: TEXTS.grensesnitt.summaryPage.editAnswers }).first().click();
 
         cy.findByRole('textbox', { name: 'Tekstfelt' }).type('asdf');
