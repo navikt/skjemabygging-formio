@@ -20,7 +20,7 @@ const azureMergePdfAccessTokenHandler =
         method: 'POST',
         body: qs.stringify({
           grant_type: 'client_credentials',
-          scope: `openid api://${scope}/.default`,
+          scope: `api://${scope}/.default`,
           client_id: clientId,
           client_secret: clientSecret,
           client_auth_method: 'client_secret_basic',
