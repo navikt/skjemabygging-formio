@@ -19,8 +19,8 @@ const application: RequestHandler = async (req, res, next) => {
       submission: submissionParsed,
       language,
       unitNumber: enhetNummer,
-      accessToken: req.headers.AzurePdfGeneratorToken as string,
-      pdfGeneratorAccessToken: req.headers.AzurePdfGeneratorToken as string,
+      accessToken: pdfGeneratorToken,
+      pdfGeneratorAccessToken: pdfGeneratorToken,
       submissionMethod,
       translations: translationsParsed,
     });
