@@ -31,6 +31,7 @@ export const getPdf = async (req: Request) => {
     unitNumber: '',
     accessToken: req.headers.AzureAccessToken as string, // Assumes that token for accessing the PDF generator service is passed in the headers
     pdfGeneratorAccessToken: req.headers.AzureAccessToken as string,
+    mergePdfAccessToken: req.headers.MergePdfToken as string, // Assumes that token for merging PDFs is passed in the headers
     submissionMethod,
     translations: translations,
   });
