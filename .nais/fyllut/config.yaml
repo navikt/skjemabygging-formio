@@ -97,6 +97,8 @@ spec:
       value: {{familie-pdf-generator-url}}
     - name: FAMILIE_PDF_GENERATOR_SCOPE
       value: {{familie-pdf-generator-scope}}
+    - name: MERGE_PDF_SCOPE
+      value: {{merge-pdf-scope}}
     - name: GOTENBERG_URL
       value: {{gotenberg-url}}
     - name: GOTENBERG_URL_EN

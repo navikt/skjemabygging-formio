@@ -3,7 +3,7 @@ import { initApiConfig } from '../api-helper';
 import documents from './documents';
 
 const documentsRouter = express.Router();
-const { azureSkjemabyggingProxy, azurePdfGeneratorToken } = initApiConfig();
+const { azureSkjemabyggingProxy, azurePdfGeneratorToken, azureMergePdfToken } = initApiConfig();
 
 documentsRouter.post('/application', azurePdfGeneratorToken, azurePdfGeneratorToken, documents.application);
 console.log(`azurePdfGeneratorToken: ${azurePdfGeneratorToken}`);
@@ -11,6 +11,7 @@ documentsRouter.post(
   '/cover-page-and-application',
   azureSkjemabyggingProxy,
   azurePdfGeneratorToken,
+  azureMergePdfToken,
   documents.coverPageAndApplication,
 );
 

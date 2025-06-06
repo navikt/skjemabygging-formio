@@ -83,6 +83,7 @@ describe('[endpoint] documents', () => {
       headers: {
         AzureAccessToken: mockAzureAccessTokenHandler('AzureAccessToken'),
         PdfAccessToken: mockAzureAccessTokenHandler('azurePdfGeneratorToken'),
+        MergePdfToken: mockAzureAccessTokenHandler('azureMergePdfToken'),
       },
       body: {
         form: JSON.stringify({
@@ -145,6 +146,7 @@ describe('[endpoint] documents', () => {
       headers: {
         AzureAccessToken: mockAzureAccessTokenHandler('AzureAccessTokenToken'),
         PdfAccessToken: mockAzureAccessTokenHandler('azurePdfGeneratorToken'),
+        MergePdfToken: mockAzureAccessTokenHandler('azureMergePdfToken'),
       },
       body: {
         form: JSON.stringify({

@@ -21,6 +21,7 @@ const application: RequestHandler = async (req, res, next) => {
       unitNumber: enhetNummer,
       accessToken: pdfGeneratorToken,
       pdfGeneratorAccessToken: pdfGeneratorToken,
+      mergePdfAccessToken: req.headers.MergePdfToken as string,
       submissionMethod,
       translations: translationsParsed,
     });
@@ -41,6 +42,7 @@ const coverPageAndApplication: RequestHandler = async (req, res, next) => {
     const translationsParsed = JSON.parse(translations);
     const frontPageGeneratorToken = req.headers.AzureAccessToken as string;
     const pdfGeneratorToken = req.headers.PdfAccessToken as string;
+    const mergePdfToken = req.headers.MergePdfToken as string;
 
     console.log(req.headers);
 
@@ -52,6 +54,10 @@ const coverPageAndApplication: RequestHandler = async (req, res, next) => {
       throw new Error('PDF generator token is missing. Unable to generate PDF');
     }
 
+    if (!mergePdfToken) {
+      throw new Error('MergePDF generator token is missing. Unable to merge front page and application PDFs');
+    }
+
     const fileBuffer = await documentsService.coverPageAndApplication({
       form: formParsed,
       submission: submissionParsed,
@@ -59,6 +65,7 @@ const coverPageAndApplication: RequestHandler = async (req, res, next) => {
       unitNumber: enhetNummer,
       accessToken: frontPageGeneratorToken,
       pdfGeneratorAccessToken: pdfGeneratorToken,
+      mergePdfAccessToken: mergePdfToken,
       submissionMethod,
       translations: translationsParsed,
     });
@@ -85,6 +92,7 @@ const pdfFromFieldMap: RequestHandler = async (req, res, next) => {
       unitNumber: enhetNummer,
       accessToken: req.headers.AzureAccessToken as string,
       pdfGeneratorAccessToken: req.headers.AzurePdfGeneratorToken as string,
+      mergePdfAccessToken: req.headers.MergePdfToken as string,
       submissionMethod,
       translations: translationsParsed,
     });

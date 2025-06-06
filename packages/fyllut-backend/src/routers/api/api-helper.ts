@@ -1,5 +1,6 @@
 import { config as appConfig } from '../../config/config';
 import azureAccessTokenHandler from '../../security/azureAccessTokenHandler';
+import azureMergePdfAccessTokenHandler from '../../security/azureMergePdfAccessTokenHandler';
 import azurePdfAccessTokenHandler from '../../security/azurePdfAccessTokenHandler';
 import tokenxHandler from '../../security/tokenxHandler';
 
@@ -10,6 +11,7 @@ const {
   pdlTokenScopeCluster,
   tilleggsstonaderConfig,
   familiePdfGeneratorScope,
+  mergePdfScope,
 } = appConfig;
 
 const initApiConfig = () => {
@@ -21,6 +23,7 @@ const initApiConfig = () => {
     tokenxPdl: tokenxHandler(`${pdlTokenScopeCluster}:pdl:pdl-api`),
     tokenxTilleggsstonader: tokenxHandler(tilleggsstonaderConfig.tokenxClientId),
     azurePdfGeneratorToken: azurePdfAccessTokenHandler(familiePdfGeneratorScope),
+    azureMergePdfToken: azureMergePdfAccessTokenHandler(mergePdfScope),
   };
 };
 

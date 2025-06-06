@@ -43,6 +43,7 @@ const application = async (props: CoverPageAndApplicationProps) => {
 
 interface CoverPageAndApplicationProps extends ApplicationProps {
   pdfGeneratorAccessToken;
+  mergePdfAccessToken: string;
   unitNumber: string;
 }
 
@@ -56,6 +57,7 @@ const coverPageAndApplication = async (props: CoverPageAndApplicationProps) => {
     unitNumber,
     translations,
     submissionMethod,
+    mergePdfAccessToken,
   } = props;
 
   const [coverPageResponse, applicationResponse] = await Promise.all([
@@ -97,7 +99,7 @@ const coverPageAndApplication = async (props: CoverPageAndApplicationProps) => {
 */
 
   const mergedFile = await mergeFrontPageAndApplication(
-    accessToken,
+    mergePdfAccessToken,
     coverPageResponse.overskriftstittel,
     language,
     coverPagePdf,
