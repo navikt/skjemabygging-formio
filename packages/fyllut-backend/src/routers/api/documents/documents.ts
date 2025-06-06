@@ -8,13 +8,20 @@ const application: RequestHandler = async (req, res, next) => {
     const formParsed = JSON.parse(form);
     const submissionParsed = JSON.parse(submission);
     const translationsParsed = JSON.parse(translations);
+    const pdfGeneratorToken = req.headers.PdfAccessToken as string;
+
+    if (!pdfGeneratorToken) {
+      throw new Error('Azure PDF generator token is missing. Unable to generate PDF');
+    }
 
     const fileBuffer = await documentsService.application({
       form: formParsed,
       submission: submissionParsed,
       language,
       unitNumber: enhetNummer,
-      accessToken: req.headers.AzureAccessToken as string,
+      accessToken: pdfGeneratorToken,
+      pdfGeneratorAccessToken: pdfGeneratorToken,
+      mergePdfAccessToken: req.headers.MergePdfToken as string,
       submissionMethod,
       translations: translationsParsed,
     });
@@ -33,6 +40,50 @@ const coverPageAndApplication: RequestHandler = async (req, res, next) => {
     const formParsed = JSON.parse(form);
     const submissionParsed = JSON.parse(submission);
     const translationsParsed = JSON.parse(translations);
+    const frontPageGeneratorToken = req.headers.AzureAccessToken as string;
+    const pdfGeneratorToken = req.headers.PdfAccessToken as string;
+    const mergePdfToken = req.headers.MergePdfToken as string;
+
+    console.log(req.headers);
+
+    if (!frontPageGeneratorToken) {
+      throw new Error('Azure access token is missing. Unable to generate PDF');
+    }
+
+    if (!pdfGeneratorToken) {
+      throw new Error('PDF generator token is missing. Unable to generate PDF');
+    }
+
+    if (!mergePdfToken) {
+      throw new Error('MergePDF generator token is missing. Unable to merge front page and application PDFs');
+    }
+
+    const fileBuffer = await documentsService.coverPageAndApplication({
+      form: formParsed,
+      submission: submissionParsed,
+      language,
+      unitNumber: enhetNummer,
+      accessToken: frontPageGeneratorToken,
+      pdfGeneratorAccessToken: pdfGeneratorToken,
+      mergePdfAccessToken: mergePdfToken,
+      submissionMethod,
+      translations: translationsParsed,
+    });
+    res.contentType('application/pdf');
+    res.setHeader('Content-Disposition', `inline; filename=${encodeURIComponent(`${formParsed.path}.pdf`)}`);
+    res.send(fileBuffer);
+  } catch (e) {
+    logErrorWithStacktrace(e as Error);
+    next(e);
+  }
+};
+
+const pdfFromFieldMap: RequestHandler = async (req, res, next) => {
+  try {
+    const { form, submission, language, enhetNummer, submissionMethod, translations } = req.body;
+    const formParsed = JSON.parse(form);
+    const submissionParsed = JSON.parse(submission);
+    const translationsParsed = JSON.parse(translations);
 
     const fileBuffer = await documentsService.coverPageAndApplication({
       form: formParsed,
@@ -40,6 +91,8 @@ const coverPageAndApplication: RequestHandler = async (req, res, next) => {
       language,
       unitNumber: enhetNummer,
       accessToken: req.headers.AzureAccessToken as string,
+      pdfGeneratorAccessToken: req.headers.AzurePdfGeneratorToken as string,
+      mergePdfAccessToken: req.headers.MergePdfToken as string,
       submissionMethod,
       translations: translationsParsed,
     });
@@ -55,6 +108,7 @@ const coverPageAndApplication: RequestHandler = async (req, res, next) => {
 const documents = {
   application,
   coverPageAndApplication,
+  pdfFromFieldMap,
 };
 
 export default documents;
