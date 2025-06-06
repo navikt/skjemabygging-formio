@@ -12,7 +12,7 @@ gotenberg-url: http://upload-convert-to-pdf.fyllut-sendinn
 gotenberg-url-en: http://upload-convert-to-pdf-en.fyllut-sendinn
 familie-pdf-generator-url: http://familie-pdf.teamfamilie
 familie-pdf-generator-scope: dev-gcp.teamfamilie.familie-pdf
-merge-pdf-scope: dev-gcp:team-soknad:innsending-api
+merge-pdf-scope: dev-gcp.team-soknad.innsending-api
 send-inn-token-x-client-id: dev-gcp:team-soknad:innsending-api
 send-inn-host: http://innsending-api.team-soknad
 tilleggsstonader-token-x-client-id: dev-gcp:tilleggsstonader:tilleggsstonader-integrasjoner
