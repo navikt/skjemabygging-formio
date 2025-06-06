@@ -29,7 +29,7 @@ function formatPostnummerOgBySted(address) {
   return address?.bySted;
 }
 
-function formatValue(component, value, translate, form, language) {
+function formatValue(component, value, translate, form, language, opts = {}) {
   switch (component.type) {
     case 'radiopanel':
     case 'radio': {
@@ -100,7 +100,7 @@ function formatValue(component, value, translate, form, language) {
       return value;
     }
     case 'fnrfield': {
-      return formatNationalIdentityNumber(value);
+      return opts.skipFnrFormatting ? value : formatNationalIdentityNumber(value);
     }
     case 'number': {
       const prefix = component.prefix ? `${component.prefix} ` : '';
@@ -165,6 +165,7 @@ function handlePanel(
   excludeEmptyPanels,
   form,
   language,
+  opts = {},
 ) {
   const { title, key, type, components = [] } = component;
   const subComponents = components.reduce(
@@ -179,6 +180,7 @@ function handlePanel(
         excludeEmptyPanels,
         form,
         language,
+        opts,
       ),
     [],
   );
@@ -206,6 +208,7 @@ function handleContainer(
   excludeEmptyPanels,
   form,
   language,
+  opts = {},
 ) {
   const { components, key } = component;
   const containerKey = createComponentKey(parentContainerKey, key);
@@ -224,6 +227,7 @@ function handleContainer(
           excludeEmptyPanels,
           form,
           language,
+          opts,
         ),
       [],
     );
@@ -231,7 +235,16 @@ function handleContainer(
   }
 }
 
-function handleField(component, submission, formSummaryObject, parentContainerKey, translate, form, language) {
+function handleField(
+  component,
+  submission,
+  formSummaryObject,
+  parentContainerKey,
+  translate,
+  form,
+  language,
+  opts = {},
+) {
   const { key, label, type } = component;
   const componentKey = createComponentKey(parentContainerKey, key);
   const submissionValue = FormioUtils.getValue(submission, componentKey);
@@ -252,12 +265,12 @@ function handleField(component, submission, formSummaryObject, parentContainerKe
       key: componentKey,
       type,
       ...(hiddenInSummary && { hiddenInSummary }),
-      value: formatValue(component, submissionValue, translate, form, language),
+      value: formatValue(component, submissionValue, translate, form, language, opts),
     },
   ];
 }
 
-function handleDataGridRows(component, submission, translate, form, language) {
+function handleDataGridRows(component, submission, translate, form, language, opts) {
   const { key, rowTitle, components } = component;
   const dataGridSubmission = FormioUtils.getValue(submission, key) || [];
   return dataGridSubmission
@@ -274,6 +287,7 @@ function handleDataGridRows(component, submission, translate, form, language) {
             true,
             form,
             language,
+            opts,
           ),
         [],
       );
@@ -289,11 +303,11 @@ function handleDataGridRows(component, submission, translate, form, language) {
     .filter((row) => !!row);
 }
 
-function handleDataGrid(component, submission, formSummaryObject, parentContainerKey, translate, form, language) {
+function handleDataGrid(component, submission, formSummaryObject, parentContainerKey, translate, form, language, opts) {
   const { label, key, type } = component;
   const componentKey = createComponentKey(parentContainerKey, key);
 
-  const dataGridRows = handleDataGridRows(component, submission, translate, form, language);
+  const dataGridRows = handleDataGridRows(component, submission, translate, form, language, opts);
   if (dataGridRows.length === 0) {
     return [...formSummaryObject];
   }
@@ -319,6 +333,7 @@ function handleFieldSet(
   excludeEmptyPanels,
   form,
   language,
+  opts,
 ) {
   const { legend, key, components, type } = component;
   if (!components || components.length === 0) {
@@ -336,6 +351,7 @@ function handleFieldSet(
         excludeEmptyPanels,
         form,
         language,
+        opts,
       ),
     [],
   );
@@ -446,7 +462,16 @@ function handleHtmlElement(component, formSummaryObject, parentContainerKey, tra
   return formSummaryObject;
 }
 
-function handleIdentity(component, submission, formSummaryObject, parentContainerKey, translate, form, language) {
+function handleIdentity(
+  component,
+  submission,
+  formSummaryObject,
+  parentContainerKey,
+  translate,
+  form,
+  language,
+  opts = {},
+) {
   const { key, type } = component;
   const componentKey = createComponentKey(parentContainerKey, key);
   const submissionValue = FormioUtils.getValue(submission, componentKey);
@@ -463,7 +488,7 @@ function handleIdentity(component, submission, formSummaryObject, parentContaine
         : translate(TEXTS.statiske.identity.yourBirthdate),
       key: componentKey,
       type,
-      value: formatValue(component, submissionValue, translate, form, language),
+      value: formatValue(component, submissionValue, translate, form, language, opts),
     },
   ];
 }
@@ -564,6 +589,7 @@ function handleComponent(
   excludeEmptyPanels = true,
   form = {},
   language = 'nb-NO',
+  opts = {},
 ) {
   if (!shouldShowInSummary(createComponentKeyWithNavId(component), evaluatedConditionals)) {
     return formSummaryObject;
@@ -580,6 +606,7 @@ function handleComponent(
         excludeEmptyPanels,
         form,
         language,
+        opts,
       );
     case 'button':
     case 'content':
@@ -605,9 +632,19 @@ function handleComponent(
         excludeEmptyPanels,
         form,
         language,
+        opts,
       );
     case 'datagrid':
-      return handleDataGrid(component, submission, formSummaryObject, parentContainerKey, translate, form, language);
+      return handleDataGrid(
+        component,
+        submission,
+        formSummaryObject,
+        parentContainerKey,
+        translate,
+        form,
+        language,
+        opts,
+      );
     case 'dataFetcher':
       return handleDataFetcher(component, submission, formSummaryObject, parentContainerKey, translate);
     case 'selectboxes':
@@ -626,6 +663,7 @@ function handleComponent(
         excludeEmptyPanels,
         form,
         language,
+        opts,
       );
     case 'image':
       return formSummaryObject;
@@ -649,10 +687,20 @@ function handleComponent(
           excludeEmptyPanels,
           form,
           language,
+          opts,
         );
       }
     case 'identity':
-      return handleIdentity(component, submission, formSummaryObject, parentContainerKey, translate, form, language);
+      return handleIdentity(
+        component,
+        submission,
+        formSummaryObject,
+        parentContainerKey,
+        translate,
+        form,
+        language,
+        opts,
+      );
     case 'addressValidity':
       return handleAddressValidity(
         component,
@@ -664,7 +712,7 @@ function handleComponent(
         language,
       );
     default:
-      return handleField(component, submission, formSummaryObject, parentContainerKey, translate, form, language);
+      return handleField(component, submission, formSummaryObject, parentContainerKey, translate, form, language, opts);
   }
 }
 
@@ -714,6 +762,7 @@ function createFormSummaryObject(
   translate = (txt) => txt,
   excludeEmptyPanels,
   language,
+  opts = {},
 ) {
   const evaluatedConditionalsMap = mapAndEvaluateConditionals(form, submission.data);
   return form.components.reduce(
@@ -728,13 +777,14 @@ function createFormSummaryObject(
         excludeEmptyPanels,
         form,
         language,
+        opts,
       ),
     [],
   );
 }
 
-function createFormSummaryPanels(form, submission, translate, excludeEmptyPanels, language) {
-  return createFormSummaryObject(form, submission, translate, excludeEmptyPanels, language).filter(
+function createFormSummaryPanels(form, submission, translate, excludeEmptyPanels, language, opts = {}) {
+  return createFormSummaryObject(form, submission, translate, excludeEmptyPanels, language, opts).filter(
     (component) => component.type === 'panel',
   );
 }

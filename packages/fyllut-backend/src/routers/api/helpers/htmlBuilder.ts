@@ -35,6 +35,7 @@ const createHtmlFromSubmission = (
     translate,
     true,
     lang,
+    { skipFnrFormatting: true },
   );
   const confirmation = createConfirmationSection(form, translate);
   const signatures = signatureSection(form.properties, submissionMethod, translate);
