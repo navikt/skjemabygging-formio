@@ -2,7 +2,6 @@ import {
   I18nTranslationMap,
   I18nTranslationReplacements,
   NavFormType,
-  removeAllSpaces,
   Submission,
   translationUtils,
   yourInformationUtils,
@@ -55,10 +54,10 @@ export const createPdf = async (
 
   let identityNumber: string;
   if (yourInformation?.identitet?.identitetsnummer) {
-    identityNumber = removeAllSpaces(yourInformation.identitet.identitetsnummer);
+    identityNumber = yourInformation.identitet.identitetsnummer;
   } else if (submission.data.fodselsnummerDNummerSoker) {
     // This is the old format of the object, which is still used in some forms.
-    identityNumber = removeAllSpaces(submission.data.fodselsnummerDNummerSoker as string);
+    identityNumber = submission.data.fodselsnummerDNummerSoker as string;
   } else {
     identityNumber = '—';
   }
