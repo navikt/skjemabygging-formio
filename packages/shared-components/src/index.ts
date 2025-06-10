@@ -22,7 +22,6 @@ import useCurrentLanguage from './context/languages/hooks/useCurrentLanguage';
 import useLanguageCodeFromURL from './context/languages/hooks/useLanguageCodeFromURL';
 import { mapTranslationsToFormioI18nObject } from './context/languages/mapper/translationsMapper';
 import FormBuilderOptions from './formio/form-builder-options';
-import FormBuilderSchemas from './formio/form-builder-options/schemas';
 import './formio/overrides';
 import FyllUtRouter from './pages/FyllUtRouter';
 import Styles from './styles';
@@ -44,7 +43,6 @@ export {
   ConfirmationModal,
   ErrorPage,
   FormBuilderOptions,
-  FormBuilderSchemas,
   FormContainer,
   FormTitle,
   formUtils,
