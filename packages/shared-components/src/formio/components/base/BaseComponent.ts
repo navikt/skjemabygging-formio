@@ -1,12 +1,4 @@
-import {
-  Component,
-  ComponentError,
-  CustomLabels,
-  FieldSize,
-  TEXTS,
-  Tkey,
-  validatorUtils,
-} from '@navikt/skjemadigitalisering-shared-domain';
+import { Component, ComponentError, CustomLabels, FieldSize, Tkey } from '@navikt/skjemadigitalisering-shared-domain';
 import Field from 'formiojs/components/_classes/field/Field';
 import { TFunction, TOptions } from 'i18next';
 import FormioReactComponent from './FormioReactComponent';
@@ -228,13 +220,6 @@ class BaseComponent extends FormioReactComponent {
       }
     }
     this.rerender();
-  }
-
-  protected validateFoerstesideInputs() {
-    const value = this.getValue();
-    if (!validatorUtils.isValidFoerstesideValue(value ?? '')) {
-      return this.translateWithLabel(TEXTS.validering.containsInvalidCharacters);
-    }
   }
 
   setComponentValidity(messages, dirty, silentCheck) {
