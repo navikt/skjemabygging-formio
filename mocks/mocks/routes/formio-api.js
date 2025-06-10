@@ -46,6 +46,10 @@ const errorSummaryFocusForm = require('../data/formio-api/errorSummaryFocus.json
 const datafetcherForm = require('../data/formio-api/data-fetcher.json');
 const datafetcherAnnetForm = require('../data/formio-api/data-fetcher-annet.json');
 const datafetcherContainer = require('../data/formio-api/data-fetcher-container.json');
+const submissionTypePaper = require('../data/formio-api/submission-type-paper.json');
+const submissionTypeDigital = require('../data/formio-api/submission-type-digital.json');
+const submissionTypePaperDigital = require('../data/formio-api/submission-type-paper-digital.json');
+const submissionTypeNone = require('../data/formio-api/submission-type-none.json');
 
 const allForms = [
   { form: formCypress101, translations: translationsCypress101 },
@@ -87,6 +91,10 @@ const allForms = [
   { form: datafetcherForm, translations: undefined },
   { form: datafetcherAnnetForm, translations: undefined },
   { form: datafetcherContainer, translations: undefined },
+  { form: submissionTypePaper, translations: undefined },
+  { form: submissionTypeDigital, translations: undefined },
+  { form: submissionTypePaperDigital, translations: undefined },
+  { form: submissionTypeNone, translations: undefined },
 ];
 
 const findTestdata = (formPath) => allForms.find((testdata) => testdata.form.path === formPath);
