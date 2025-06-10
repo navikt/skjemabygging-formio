@@ -37,13 +37,14 @@ const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList,
   const submissionTypes = form.properties.submissionTypes;
   const hasAttachments = hasRelevantAttachments(form, submission?.data ?? {});
   const canSubmit =
-    !panelValidationList ||
-    (!!panelValidationList && panelValidationList.every((panelValidation) => !panelValidation.hasValidationErrors));
+    !!panelValidationList && panelValidationList.every((panelValidation) => !panelValidation.hasValidationErrors);
   const sendIPosten =
     (submissionTypesUtils.isPaperSubmission(submissionTypes) && (submissionMethod === 'paper' || app === 'bygger')) ||
     submissionTypesUtils.isPaperSubmissionOnly(submissionTypes);
 
   const exitUrl = urlUtils.getExitUrl(window.location.href);
+
+  console.log('canSubmit', canSubmit, panelValidationList);
 
   return (
     <>
