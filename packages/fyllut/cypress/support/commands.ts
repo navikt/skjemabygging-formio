@@ -110,3 +110,10 @@ Cypress.Commands.add('configMocksServer', () => {
   });
   return cy;
 });
+
+Cypress.Commands.add('skipIfNoIncludeDistTests', function () {
+  if (!Cypress.env('INCLUDE_DIST_TESTS')) {
+    cy.log('Set INCLUDE_DIST_TESTS to true to run this test');
+    this.skip();
+  }
+});

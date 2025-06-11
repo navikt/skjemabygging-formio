@@ -58,7 +58,7 @@ const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList,
 
       <nav>
         <div className="button-row">
-          {sendIPosten && (
+          {canSubmit && sendIPosten && (
             <LinkButton
               buttonVariant="primary"
               onClick={(e) => !isValid(e)}

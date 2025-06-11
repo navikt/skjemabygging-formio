@@ -115,7 +115,7 @@ describe('Translations', () => {
 
   describe('Invalid url', () => {
     beforeEach(() => {
-      cy.visit('/fyllut/&#cypress101/skjema?sub=paper');
+      cy.visit('/fyllut/&#cypress101/skjema?sub=paper', { failOnStatusCode: false });
     });
 
     it('should show error page when URL is invalid', () => {
