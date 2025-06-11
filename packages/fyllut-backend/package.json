@@ -54,7 +54,7 @@
     "@types/supertest": "^6.0.2",
     "nock": "^14.0.4",
     "supertest": "^7.1.0",
-    "vite-plugin-node": "^4.0.0",
+    "vite-plugin-node": "^5.0.1",
     "vite-plugin-static-copy": "^2.3.1"
   }
 }
