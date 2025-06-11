@@ -44,8 +44,6 @@ const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList,
 
   const exitUrl = urlUtils.getExitUrl(window.location.href);
 
-  console.log('canSubmit', canSubmit, panelValidationList);
-
   return (
     <>
       <FormError error={mellomlagringError} />
