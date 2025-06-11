@@ -25,14 +25,14 @@
   },
   "dependencies": {
     "@formio/react": "5.3.0",
-    "@navikt/ds-css": "^7.19.0",
+    "@navikt/ds-css": "^7.22.0",
     "@navikt/ds-icons": "^3.4.3",
-    "@navikt/ds-react": "^7.19.0",
+    "@navikt/ds-react": "^7.22.0",
     "@navikt/fnrvalidator": "^2.1.5",
     "@navikt/skjemadigitalisering-shared-domain": "1.0.0",
     "@types/dompurify": "^3.2.0",
     "classnames": "2.5.1",
-    "dompurify": "^3.2.5",
+    "dompurify": "^3.2.6",
     "eventemitter2": "^6.4.9",
     "file-saver": "2.0.5",
     "formiojs": "4.20.0",
@@ -51,7 +51,7 @@
     "i18next": "^24.2.3",
     "lodash.merge": "^4.6.2",
     "lodash.template": "^4.5.0",
-    "nock": "^14.0.4",
+    "nock": "^14.0.5",
     "power-assert": "^1.6.1"
   }
 }
