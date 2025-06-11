@@ -7,14 +7,15 @@ import { isValidPath } from '../utils/url';
 const { useFormioMockApi, useFormsApiStaging, skjemaDir, formioApiServiceUrl, formsApiUrl } = config;
 
 class FormService {
-  async loadForm(formPath: string): Promise<NavFormType | undefined> {
+  async loadForm(formPath: string, select): Promise<NavFormType | undefined> {
     if (!isValidPath(formPath)) {
       return;
     }
     let form: NavFormType | Form | undefined;
     try {
       if (useFormsApiStaging) {
-        form = (await fetchFromApi(`${formsApiUrl}/v1/forms/${formPath}`)) as Form;
+        const url = `${formsApiUrl}/v1/forms/${formPath}${select ? `?select=${select}` : ''}`;
+        form = (await fetchFromApi(url)) as Form;
         return formioFormsApiUtils.mapFormToNavForm(form);
       } else if (useFormioMockApi) {
         const forms: any = await fetchFromApi(`${formioApiServiceUrl}/form?type=form&tags=nav-skjema&path=${formPath}`);
