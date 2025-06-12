@@ -7,7 +7,7 @@ import { isValidPath } from '../utils/url';
 const { useFormioMockApi, useFormsApiStaging, skjemaDir, formioApiServiceUrl, formsApiUrl } = config;
 
 class FormService {
-  async loadForm(formPath: string, select): Promise<NavFormType | undefined> {
+  async loadForm(formPath: string, select?: string): Promise<NavFormType | undefined> {
     if (!isValidPath(formPath)) {
       return;
     }
