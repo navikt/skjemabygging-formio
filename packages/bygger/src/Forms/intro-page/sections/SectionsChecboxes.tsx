@@ -49,8 +49,6 @@ export function SectionsChecboxes({ form, onChange }: SectionsCheckboxesProps) {
     ...Object.keys(form?.introPage?.sections || {}).filter((key) => form?.introPage?.sections?.[key] !== undefined),
   ];
 
-  console.log(form);
-
   const handleCheckboxChange = (key: Key, checked: boolean) => {
     const isImportantInfo = key === 'importantInformation';
     const isLocked = sectionsOptions.find((section) => section.key === key)?.isLocked;

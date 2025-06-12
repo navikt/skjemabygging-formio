@@ -1,10 +1,10 @@
-import { ExclamationmarkTriangleFillIcon } from '@navikt/aksel-icons';
-import { BodyShort, Box, Heading } from '@navikt/ds-react';
+import { Box, Heading } from '@navikt/ds-react';
 import { Form } from '@navikt/skjemadigitalisering-shared-domain';
 import { UpdateFormFunction } from '../../../components/FormMetaDataEditor/utils/utils';
 import { AddButton } from '../components/AddButton';
+import { SectionErrorMessage } from '../components/SectionErrorMessage';
 import { TextareaField } from '../components/TextareaField';
-import { addBulletPoint, handleBulletPointChange, removeBulletPoint, updateSection } from '../intro-page-utils';
+import { addBulletPoint, handleBulletPointChange, removeBulletPoint, updateSection } from '../utils';
 import { IntroPageRefs } from '../validation/useIntroPageRefs';
 import { IntroPageError } from '../validation/validation';
 import { SectionWrapper } from './SectionWrapper';
@@ -77,16 +77,7 @@ export function AutomaticProcessing({ form, handleChange, errors, refMap }: Prop
               />
             </>
           )}
-          {errors?.sections?.automaticProcessing?.message && (
-            <BodyShort weight="semibold" style={{ color: 'var(--a-red-500)' }}>
-              <ExclamationmarkTriangleFillIcon
-                title="a11y-title"
-                fontSize="1.2rem"
-                style={{ verticalAlign: 'middle', height: '1rem' }}
-              />
-              {errors?.sections?.automaticProcessing?.message}
-            </BodyShort>
-          )}
+          <SectionErrorMessage errorMessage={errors?.sections?.automaticProcessing?.message} />
         </Box>
       }
       right={<p>Preview kommer</p>}

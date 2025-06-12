@@ -3,8 +3,9 @@ import { Form } from '@navikt/skjemadigitalisering-shared-domain';
 import { Fragment } from 'react';
 import { UpdateFormFunction } from '../../../components/FormMetaDataEditor/utils/utils';
 import { AddButton } from '../components/AddButton';
+import { SectionErrorMessage } from '../components/SectionErrorMessage';
 import { TextareaField } from '../components/TextareaField';
-import { addBulletPoint, handleBulletPointChange, removeBulletPoint, updateSection } from '../intro-page-utils';
+import { addBulletPoint, handleBulletPointChange, removeBulletPoint, updateSection } from '../utils';
 import { IntroPageRefs } from '../validation/useIntroPageRefs';
 import { IntroPageError } from '../validation/validation';
 import { SectionWrapper } from './SectionWrapper';
@@ -91,6 +92,7 @@ export function OutOfScope({ form, handleChange, errors, refMap }: Props) {
               />
             </>
           )}
+          <SectionErrorMessage errorMessage={errors?.sections?.outOfScope?.message} />
         </Box>
       }
       right={<p>Preview kommer</p>}

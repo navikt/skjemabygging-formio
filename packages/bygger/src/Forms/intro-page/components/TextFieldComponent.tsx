@@ -39,13 +39,12 @@ const useStyles = makeStyles({
 });
 
 export const TextFieldComponent = forwardRef<HTMLInputElement, TextFieldComponentProps>(
-  ({ label, description, placeholder, value, hidden, onChange, onDelete, showDeleteButton, error, ...rest }, ref) => {
+  ({ label, description, value, hidden, onChange, onDelete, showDeleteButton, error }, ref) => {
     const styles = useStyles();
     return (
       <Box className={styles.container}>
         <TextField
           value={value}
-          {...rest}
           ref={ref}
           className={clsx({
             [styles.textField]: !showDeleteButton,

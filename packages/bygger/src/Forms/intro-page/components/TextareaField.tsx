@@ -39,13 +39,12 @@ const useStyles = makeStyles({
 });
 
 export const TextareaField = forwardRef<HTMLTextAreaElement, TexareaFieldProps>(
-  ({ label, description, placeholder, value, hidden, onChange, onDelete, showDeleteButton, error, ...rest }, ref) => {
+  ({ label, description, value, hidden, onChange, onDelete, showDeleteButton, error }, ref) => {
     const styles = useStyles();
     return (
       <Box className={styles.container}>
         <Textarea
           ref={ref}
-          {...rest}
           error={error}
           className={clsx({
             [styles.textField]: !showDeleteButton,

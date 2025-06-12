@@ -30,17 +30,21 @@ export function useScrollToFirstError(refMap: IntroPageRefs) {
 
       if (errors.selfDeclaration) flatPaths.push('selfDeclaration');
 
+      console.log('flatty', flatPaths);
+
       for (const path of flatPaths) {
         const ref = refMap[path];
 
         if (Array.isArray(ref?.current)) {
           const firstValid = ref.current.find((el) => el !== null);
+
           if (firstValid) {
             firstValid.scrollIntoView({ behavior: 'smooth', block: 'center' });
             firstValid.focus?.();
             break;
           }
         } else if (ref?.current) {
+          console.log('first valid', ref);
           ref.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
           ref.current.focus?.();
           break;

@@ -3,7 +3,7 @@ import { Form } from '@navikt/skjemadigitalisering-shared-domain';
 import { UpdateFormFunction } from '../../../components/FormMetaDataEditor/utils/utils';
 import { AddButton } from '../components/AddButton';
 import { TextareaField } from '../components/TextareaField';
-import { addBulletPoint, handleBulletPointChange, removeBulletPoint, updateSection } from '../intro-page-utils';
+import { addBulletPoint, handleBulletPointChange, removeBulletPoint, updateSection } from '../utils';
 import { IntroPageRefs } from '../validation/useIntroPageRefs';
 import { IntroPageError } from '../validation/validation';
 import { SectionWrapper } from './SectionWrapper';
@@ -32,10 +32,10 @@ export function DataDisclosure({ form, handleChange, refMap, errors }: Props) {
             onChange={(value) => handleChange(updateSection(form, 'dataDisclosure', 'title', value))}
             error={errors?.sections?.dataDisclosure?.title}
           >
-            <Radio value="scope1" ref={refMap['sections.dataDisclosure.title']}>
+            <Radio value="introPage.dataDisclosure.title.alt1" ref={refMap['sections.dataDisclosure.title']}>
               Informasjon vi henter om deg
             </Radio>
-            <Radio value="scope2">Informasjon vi henter</Radio>
+            <Radio value="introPage.dataDisclosure.title.alt2">Informasjon vi henter</Radio>
           </RadioGroup>
           {bulletPoints?.map((bullet, index) => (
             <TextareaField

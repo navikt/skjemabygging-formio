@@ -4,11 +4,7 @@ import { UpdateFormFunction } from '../../../components/FormMetaDataEditor/utils
 import { AddButton } from '../components/AddButton';
 import { TextareaField } from '../components/TextareaField';
 import { TextFieldComponent } from '../components/TextFieldComponent';
-import {
-  deleteImportantInformationKey,
-  initializeImportantInformation,
-  updateImportantInformation,
-} from '../intro-page-utils';
+import { deleteImportantInformationKey, initializeImportantInformation, updateImportantInformation } from '../utils';
 import { IntroPageError } from '../validation/validation';
 import { SectionWrapper } from './SectionWrapper';
 

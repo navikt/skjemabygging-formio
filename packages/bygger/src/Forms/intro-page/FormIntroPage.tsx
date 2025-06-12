@@ -24,7 +24,7 @@ import { SectionsChecboxes } from './sections/SectionsChecboxes';
 import { SelfDeclaration } from './sections/SelfDeclaration';
 import { useIntroPageRefs } from './validation/useIntroPageRefs';
 import { useScrollToFirstError } from './validation/useScrollToFirstError';
-import { IntroPageError } from './validation/validation';
+import { IntroPageError, validateIntroPage } from './validation/validation';
 
 export default function FormIntroPage({ form }: { form: Form }) {
   const { changeForm, saveForm } = useForm();
@@ -51,13 +51,14 @@ export default function FormIntroPage({ form }: { form: Form }) {
   const [openPublishSettingModal, setOpenPublishSettingModal] = useModal();
 
   const handleSubmit = async () => {
-    // const errors = validateIntroPage(form.introPage);
-    const errors = undefined;
-    if (errors) {
+    const errors = validateIntroPage(form.introPage);
+    const isError = Object.keys(errors).length > 0;
+    if (isError) {
       setErrors(errors);
       scrollToFirstError(errors);
     } else {
       await saveForm(form);
+      setErrors(undefined);
     }
   };
 
