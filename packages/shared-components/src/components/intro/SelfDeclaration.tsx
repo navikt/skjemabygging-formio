@@ -1,6 +1,7 @@
 import { Checkbox } from '@navikt/ds-react';
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useLanguages } from '../../context/languages';
+import InnerHtmlLong from '../inner-html/InnerHtmlLong';
 
 interface Props {
   description: string;
@@ -16,7 +17,7 @@ const SelfDeclaration = ({ description, className }: Props) => {
 
   return (
     <div className={className}>
-      {description}
+      <InnerHtmlLong content={translate(description)} />
 
       <Checkbox>{translate(TEXTS.grensesnitt.introPage.selfDeclaration)}</Checkbox>
     </div>

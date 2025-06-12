@@ -9,8 +9,8 @@ const useFormsApiForms = () => {
   const baseUrl = '/fyllut/api/forms';
 
   const get = useCallback(
-    async (path: string): Promise<Form | undefined> => {
-      const url = `${baseUrl}/${path}`;
+    async (path: string, select?: string): Promise<Form | undefined> => {
+      const url = `${baseUrl}/${path}${select ? `?select=${select}` : ''}`;
       try {
         logger?.debug(`Fetching form from ${url}`);
         return await http.get<Form>(url);

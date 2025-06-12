@@ -56,6 +56,10 @@ export const grensesnitt = {
     payAttentionTo: 'Vær oppmerksom på',
   },
   introPage: {
+    guidePanel: {
+      hi: 'Hei!',
+      hiPersonalized: 'Hei, {{name}}!',
+    },
     sendDigital: 'Logg inn og send digitalt',
     sendDigitalDescription: 'Det er enklest og raskest å søke digitalt.',
     sendOnPaper: 'Fyll ut digitalt og send i posten',
