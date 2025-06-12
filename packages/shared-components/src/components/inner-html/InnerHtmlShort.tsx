@@ -8,8 +8,8 @@ interface Props {
 }
 
 const InnerHtmlShort = ({ content, className, spacing }: Props) => {
-  // @ts-expect-error BodyShort expect to contain a string, but we are passing sanitized HTML.
   return (
+    /* @ts-expect-error BodyShort expect to contain a string, but we are passing sanitized HTML. */
     <BodyShort
       dangerouslySetInnerHTML={{ __html: htmlUtils.sanitizeHtmlString(content) }}
       className={className}
