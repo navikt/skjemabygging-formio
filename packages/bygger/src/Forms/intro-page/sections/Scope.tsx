@@ -3,7 +3,7 @@ import { Form } from '@navikt/skjemadigitalisering-shared-domain';
 import { Fragment } from 'react';
 import { UpdateFormFunction } from '../../../components/FormMetaDataEditor/utils/utils';
 import { AddButton } from '../components/AddButton';
-import { SectionErrorMessage } from '../components/SectionErrorMessage';
+import { FieldsetErrorMessage } from '../components/FieldsetErrorMessage';
 import { TextareaField } from '../components/TextareaField';
 import { addBulletPoint, handleBulletPointChange, removeBulletPoint, updateSection } from '../utils';
 import { IntroPageRefs } from '../validation/useIntroPageRefs';
@@ -92,7 +92,10 @@ export function Scope({ form, handleChange, errors, refMap }: Props) {
               />
             </>
           )}
-          <SectionErrorMessage errorMessage={errors?.sections?.scope?.message} />
+          <FieldsetErrorMessage
+            errorMessage={errors?.sections?.scope?.message}
+            ref={refMap['sections.scope.message']}
+          />
         </Box>
       }
       right={<p>Preview kommer</p>}

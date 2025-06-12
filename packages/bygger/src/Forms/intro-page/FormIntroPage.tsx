@@ -52,7 +52,7 @@ export default function FormIntroPage({ form }: { form: Form }) {
 
   const handleSubmit = async () => {
     const errors = validateIntroPage(form.introPage);
-    const isError = Object.keys(errors).length > 0;
+    const isError = Object.keys(errors).length > 0 && form.introPage?.enabled;
     if (isError) {
       setErrors(errors);
       scrollToFirstError(errors);

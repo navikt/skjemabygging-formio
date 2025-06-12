@@ -64,12 +64,18 @@ const submitData = {
 };
 
 function checkAllOptionalFields() {
-  cy.findByRole('checkbox', { name: 'Viktig informasjon' }).click();
-  cy.findByRole('checkbox', { name: 'Beskrivelse av hva skjemaet kan brukes til' }).click();
-  cy.findByRole('checkbox', { name: 'Avklar hva skjemaet IKKE skal brukes til' }).click();
-  cy.findByRole('checkbox', { name: 'Informasjon vi henter (om deg)' }).click();
-  cy.findByRole('checkbox', { name: 'Automatisk saksbehandling' }).click();
-  cy.findByRole('checkbox', { name: 'Valgfri seksjon' }).click();
+  const checkboxes = [
+    'Viktig informasjon',
+    'Beskrivelse av hva skjemaet kan brukes til',
+    'Avklar hva skjemaet IKKE skal brukes til',
+    'Informasjon vi henter (om deg)',
+    'Automatisk saksbehandling',
+    'Valgfri seksjon',
+  ];
+
+  checkboxes.forEach((name) => {
+    cy.findByRole('checkbox', { name }).click();
+  });
 }
 
 describe('FormSettingsPage', () => {
@@ -81,7 +87,7 @@ describe('FormSettingsPage', () => {
     cy.intercept('GET', '/api/temakoder', { fixture: 'temakoder.json' }).as('getTemaKoder');
   });
 
-  describe('Unpublished form', () => {
+  describe('Render components', () => {
     beforeEach(() => {
       cy.intercept('GET', '/api/forms/cypresssettings', { fixture: 'getForm.json' }).as('getForm');
       cy.intercept('GET', '/api/forms/cypresssettings/translations', { body: [] }).as('getFormTranslations');
@@ -296,6 +302,14 @@ describe('FormSettingsPage', () => {
 
       cy.contains('Lagre').click();
       cy.get('[aria-live="polite"]').should('contain.text', `Lagret skjema ${submitData.title}`);
+    });
+  });
+
+  describe('Validation', () => {
+    beforeEach(() => {
+      cy.intercept('GET', '/api/forms/cypresssettings', { fixture: 'getForm.json' }).as('getForm');
+      cy.intercept('GET', '/api/forms/cypresssettings/translations', { body: [] }).as('getFormTranslations');
+      cy.visit('forms/cypresssettings/intropage');
     });
 
     it('all required fields display error message when not filled out', () => {

@@ -2,7 +2,7 @@ import { Box, Heading } from '@navikt/ds-react';
 import { Form } from '@navikt/skjemadigitalisering-shared-domain';
 import { UpdateFormFunction } from '../../../components/FormMetaDataEditor/utils/utils';
 import { AddButton } from '../components/AddButton';
-import { SectionErrorMessage } from '../components/SectionErrorMessage';
+import { FieldsetErrorMessage } from '../components/FieldsetErrorMessage';
 import { TextareaField } from '../components/TextareaField';
 import { addBulletPoint, handleBulletPointChange, removeBulletPoint, updateSection } from '../utils';
 import { IntroPageRefs } from '../validation/useIntroPageRefs';
@@ -20,7 +20,6 @@ export function DataTreatment({ form, handleChange, errors, refMap }: Props) {
   const showIngress = form.introPage?.sections?.dataTreatment?.description !== undefined;
   const bulletPoints = form.introPage?.sections?.dataTreatment?.bulletPoints || [];
   const showAddBulletList = bulletPoints.length === 0;
-
   const { introPage } = form;
 
   return (
@@ -59,18 +58,20 @@ export function DataTreatment({ form, handleChange, errors, refMap }: Props) {
 
           {!!form.introPage?.sections?.dataTreatment?.bulletPoints?.length && (
             <>
-              {bulletPoints.map((value, index) => (
-                <TextareaField
-                  key={index}
-                  label="Kulepunkt"
-                  value={value}
-                  onChange={(value) => handleChange(handleBulletPointChange(form, 'dataTreatment', index, value))}
-                  showDeleteButton
-                  onDelete={() => handleChange(removeBulletPoint(form, 'dataTreatment', index))}
-                  error={errors?.sections?.dataTreatment?.bulletPoints?.[index]}
-                  ref={refMap['sections.dataTreatment.bulletPoints'][index]}
-                />
-              ))}
+              {bulletPoints.map((value, index) => {
+                return (
+                  <TextareaField
+                    key={index}
+                    label="Kulepunkt"
+                    value={value}
+                    onChange={(value) => handleChange(handleBulletPointChange(form, 'dataTreatment', index, value))}
+                    showDeleteButton
+                    onDelete={() => handleChange(removeBulletPoint(form, 'dataTreatment', index))}
+                    error={errors?.sections?.dataTreatment?.bulletPoints?.[index]}
+                    ref={refMap['sections.dataTreatment.bulletPoints'][index]}
+                  />
+                );
+              })}
               <AddButton
                 label="Legg til kulepunkt"
                 variant="tertiary"
@@ -78,7 +79,10 @@ export function DataTreatment({ form, handleChange, errors, refMap }: Props) {
               />
             </>
           )}
-          <SectionErrorMessage errorMessage={errors?.sections?.dataTreatment?.message} />
+          <FieldsetErrorMessage
+            errorMessage={errors?.sections?.dataTreatment?.message}
+            ref={refMap['sections.dataTreatment.message']}
+          />
         </Box>
       }
       right={<p>Preview kommer</p>}

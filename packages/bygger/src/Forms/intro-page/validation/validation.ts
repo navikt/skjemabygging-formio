@@ -63,7 +63,11 @@ export function validateIntroPage(introPage?: Partial<IntroPage>): IntroPageErro
       }
     }
 
-    if (!fieldsWithPrefilledBulletPoints.includes(sectionKey) && section?.bulletPoints?.length < 2) {
+    if (
+      !fieldsWithPrefilledBulletPoints.includes(sectionKey) &&
+      !section?.description &&
+      section?.bulletPoints?.length < 2
+    ) {
       sectionErrors.message = 'Vennligst legg til minst to kulepunkter';
     }
 

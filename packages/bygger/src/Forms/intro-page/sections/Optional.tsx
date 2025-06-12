@@ -2,7 +2,7 @@ import { Box, Heading } from '@navikt/ds-react';
 import { Form } from '@navikt/skjemadigitalisering-shared-domain';
 import { UpdateFormFunction } from '../../../components/FormMetaDataEditor/utils/utils';
 import { AddButton } from '../components/AddButton';
-import { SectionErrorMessage } from '../components/SectionErrorMessage';
+import { FieldsetErrorMessage } from '../components/FieldsetErrorMessage';
 import { TextareaField } from '../components/TextareaField';
 import { TextFieldComponent } from '../components/TextFieldComponent';
 import { addBulletPoint, handleBulletPointChange, removeBulletPoint, updateSection } from '../utils';
@@ -82,7 +82,10 @@ export function Optional({ handleChange, form, errors, refMap }: Props) {
               />
             </>
           )}
-          <SectionErrorMessage errorMessage={errors?.sections?.optional?.message} />
+          <FieldsetErrorMessage
+            errorMessage={errors?.sections?.optional?.message}
+            ref={refMap['sections.optional.message']}
+          />
         </Box>
       }
       right={<p>Preview kommer</p>}

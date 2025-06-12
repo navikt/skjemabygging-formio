@@ -18,8 +18,9 @@ export function useScrollToFirstError(refMap: IntroPageRefs) {
         for (const [sectionKey, sectionErrors] of Object.entries(errors.sections)) {
           if (sectionErrors?.title) flatPaths.push(`sections.${sectionKey}.title`);
           if (sectionErrors?.description) flatPaths.push(`sections.${sectionKey}.description`);
-          if (Array.isArray(sectionErrors?.bulletPoints)) {
-            sectionErrors.bulletPoints.forEach((error, index) => {
+          if (sectionErrors?.message) flatPaths.push(`sections.${sectionKey}.message`);
+          if (sectionErrors?.bulletPoints && typeof sectionErrors.bulletPoints === 'object') {
+            Object.entries(sectionErrors.bulletPoints).forEach(([index, error]) => {
               if (error) {
                 flatPaths.push(`sections.${sectionKey}.bulletPoints.${index}`);
               }
@@ -30,21 +31,9 @@ export function useScrollToFirstError(refMap: IntroPageRefs) {
 
       if (errors.selfDeclaration) flatPaths.push('selfDeclaration');
 
-      console.log('flatty', flatPaths);
-
       for (const path of flatPaths) {
         const ref = refMap[path];
-
-        if (Array.isArray(ref?.current)) {
-          const firstValid = ref.current.find((el) => el !== null);
-
-          if (firstValid) {
-            firstValid.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            firstValid.focus?.();
-            break;
-          }
-        } else if (ref?.current) {
-          console.log('first valid', ref);
+        if (ref?.current) {
           ref.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
           ref.current.focus?.();
           break;
