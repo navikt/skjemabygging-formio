@@ -10,7 +10,7 @@ const IntroPageDynamic = () => {
 
   return (
     <>
-      <Intro.GuidPanel title="TODO" description={form.introPage?.introduction} className="mb" />
+      <Intro.GuidPanel description={form.introPage?.introduction} className="mb" />
       <Intro.ImportantInformation
         title={form.introPage?.importantInformation?.title}
         description={form.introPage?.importantInformation?.description}
