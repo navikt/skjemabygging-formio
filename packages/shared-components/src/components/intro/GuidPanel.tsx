@@ -1,6 +1,6 @@
 import { GuidePanel, Heading } from '@navikt/ds-react';
 import { useLanguages } from '../../context/languages';
-import { InnerHtml } from '../../index';
+import InnerHtmlLong from '../inner-html/InnerHtmlLong';
 
 interface Props {
   title?: string;
@@ -19,7 +19,7 @@ const GuidPanel = ({ title, description, className }: Props) => {
       <Heading level="2" size="small" spacing>
         {translate(title)}
       </Heading>
-      <InnerHtml content={translate(description)} />
+      <InnerHtmlLong content={translate(description)} />
     </GuidePanel>
   );
 };
