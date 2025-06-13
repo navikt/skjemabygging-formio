@@ -1,4 +1,5 @@
 import {
+  dateUtils,
   DeclarationType,
   FormPropertiesType,
   formSummaryUtil,
@@ -18,7 +19,6 @@ import {
   TEXTS,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { config } from '../../../config/config';
-import { logger } from '../../../logger';
 import { EkstraBunntekst, FeltMap, PdfConfig, VerdilisteElement } from '../../../types/familiepdf/feltMapTypes';
 
 type TranslateFunction = (text: string) => string;
@@ -56,10 +56,14 @@ export const createFeltMapFromSubmission = (
     upperleft: translate(TEXTS.statiske.footer.userIdLabel) + `: ${identityNumber}`,
     lowerleft: translate(TEXTS.statiske.footer.schemaNumberLabel) + `: ${form.properties.skjemanummer}`,
     upperRight: null,
-    upperMiddle: translate(TEXTS.statiske.footer.createdDatelabel) + `: ${formatCurrentDateTime(lang)}`,
+    upperMiddle:
+      translate(TEXTS.statiske.footer.createdDatelabel) + `: ${dateUtils.toCurrentDayMonthYearHourMinute(lang)}`,
     lowerMiddle: translate(TEXTS.statiske.footer.versionLabel) + `: ${gitVersion}`,
   };
-  const pdfConfig: PdfConfig = { harInnholdsfortegnelse: false, språk: lang };
+
+  const sprak: string = lang === 'nn-NO' || lang == 'nn' ? 'nn' : lang === 'en' ? 'en' : 'nb';
+
+  const pdfConfig: PdfConfig = { harInnholdsfortegnelse: false, språk: sprak };
   const feltMap: FeltMap = {
     label: title,
     pdfConfig: pdfConfig,
@@ -68,9 +72,6 @@ export const createFeltMapFromSubmission = (
     bunntekst: ekstraBunntekst,
   };
 
-  /* for test formål
-  logger.info(`FeltMapString: ${JSON.stringify(feltMap)}`);
-*/
   return JSON.stringify(feltMap);
 };
 
@@ -160,16 +161,14 @@ const tableMap = (component): VerdilisteElement => {
   return {
     label: component.label ? component.label : '',
     verdiliste: component.components.map((comp: SummaryDataGridRow, index: number): VerdilisteElement | null => {
-      logger.info(`TableMap ìndex= ${index + 1}`);
       return datagridRowMap(comp, index + 1);
     }),
-    //visningsVariant: 'TABELL',
+    //visningsVariant: 'TABELL', Fjernet da vi ikke ønsker pysjamas striper i PDF
     visningsVariant: null,
   };
 };
 
 const datagridRowMap = (component, index): VerdilisteElement => {
-  logger.info('RowMap ìndex=' + index);
   if (component.components) {
     return {
       label: component.label ? component.label : '' + index,
@@ -278,6 +277,7 @@ const signatureSection = (
     });
 
     if (verdilisteMap.length === 1 && (verdilisteMap[0].label === undefined || verdilisteMap[0].label === '')) {
+      // Default signature der en person skal signere med sted og dato, signature og med blokkbokstaver.
       return {
         label: translatedSignature,
         verdiliste: verdilisteMap[0].verdiliste,
@@ -308,16 +308,3 @@ const lagSubVerdilisteElement = (
 
   return { label: translatedLabel, verdiliste: verdiListe };
 };
-
-function formatCurrentDateTime(language: string): string {
-  const now = new Date();
-
-  const day = now.getDate();
-  const month = now.toLocaleString(language, { month: 'long' }); // e.g. "May"
-  const year = now.getFullYear();
-
-  const hours = now.getHours().toString().padStart(2, '0');
-  const minutes = now.getMinutes().toString().padStart(2, '0');
-
-  return `${day} ${month} ${year}, kl ${hours}.${minutes}`;
-}

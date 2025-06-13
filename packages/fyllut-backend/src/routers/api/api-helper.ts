@@ -1,7 +1,5 @@
 import { config as appConfig } from '../../config/config';
-import azureAccessTokenHandler from '../../security/azureAccessTokenHandler';
-import azureMergePdfAccessTokenHandler from '../../security/azureMergePdfAccessTokenHandler';
-import azurePdfAccessTokenHandler from '../../security/azurePdfAccessTokenHandler';
+import azureTokenHandler from '../../security/azureTokenHandler';
 import tokenxHandler from '../../security/tokenxHandler';
 
 const {
@@ -16,14 +14,14 @@ const {
 
 const initApiConfig = () => {
   return {
-    azureSkjemabyggingProxy: azureAccessTokenHandler(skjemabyggingProxyClientId!),
-    azurePdl: azureAccessTokenHandler(`${pdlTokenScopeCluster}.pdl.pdl-api`),
-    kodeverkToken: azureAccessTokenHandler(kodeverk.scope!, true),
+    azureSkjemabyggingProxy: azureTokenHandler(skjemabyggingProxyClientId!, 'AzureAccessToken'),
+    azurePdl: azureTokenHandler(`${pdlTokenScopeCluster}.pdl.pdl-api`, 'AzureAccessToken'),
+    kodeverkToken: azureTokenHandler(kodeverk.scope!, 'AzureAccessToken', true),
     tokenxSendInn: tokenxHandler(sendInnConfig?.tokenxClientId),
     tokenxPdl: tokenxHandler(`${pdlTokenScopeCluster}:pdl:pdl-api`),
     tokenxTilleggsstonader: tokenxHandler(tilleggsstonaderConfig.tokenxClientId),
-    azurePdfGeneratorToken: azurePdfAccessTokenHandler(familiePdfGeneratorScope),
-    azureMergePdfToken: azureMergePdfAccessTokenHandler(mergePdfScope),
+    azurePdfGeneratorToken: azureTokenHandler(familiePdfGeneratorScope, 'PdfAccessToken'),
+    azureMergePdfToken: azureTokenHandler(mergePdfScope, 'MergePdfToken'),
   };
 };
 

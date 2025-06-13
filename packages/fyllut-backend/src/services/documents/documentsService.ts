@@ -91,13 +91,6 @@ const coverPageAndApplication = async (props: CoverPageAndApplicationProps) => {
     throw htmlResponseError('Generering av søknads PDF feilet');
   }
 
-  /* For test
-  const filePath = path.join(process.cwd(), `/src/${form.properties.skjemanummer}.pdf`);
-  writeFileSync(filePath, pdfFromFieldMap, {
-    flag: 'w',
-  });
-*/
-
   const mergedFile = await mergeFrontPageAndApplication(
     mergePdfAccessToken,
     coverPageResponse.overskriftstittel,

@@ -43,7 +43,7 @@ export const mergeFrontPageAndApplication = async (
       return await responseToError(mergedFileResponse, `Feil ved kall til SendInn. ${mergedFileResponse}`, true);
     }
   } catch (err) {
-    logger.error(`Request to gotenberg pdf service failed with  ${err}`);
+    logger.error(`Request to merge pdfs service failed with  ${err}`);
     throw err;
   }
 };

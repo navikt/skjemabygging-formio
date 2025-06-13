@@ -26,7 +26,7 @@ module.exports = [
         options: {
           middleware: async (req, res) => {
             res.status(200);
-            res.contentType('json; charset=UTF-8');
+            res.contentType('application/json; charset=UTF-8');
             res.send({ content: 'pdf' });
           },
         },
@@ -38,7 +38,7 @@ module.exports = [
           middleware: async (req, res) => {
             res.status(200);
             res.contentType('application/json; charset=UTF-8');
-            res.send(['pdf']);
+            res.send({ content: 'pdf' });
           },
         },
       },

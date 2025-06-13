@@ -86,7 +86,7 @@ const localDevelopmentConfig: DefaultConfig = {
   gotenbergUrl: process.env.GOTENBERG_URL || 'https://convert-to-pdf.intern.dev.nav.no',
   gotenbergUrlEn: process.env.GOTENBERG_URL_EN || 'https://convert-to-pdf-en.intern.dev.nav.no',
   skjemabyggingProxyClientId: '95170319-b4d7-4190-8271-118ed19bafbf',
-  familiePdfGeneratorUrl: process.env.FAMILIE_PDF_GENERATOR_URL || 'http://127.0.0.1:9060',
+  familiePdfGeneratorUrl: process.env.FAMILIE_PDF_GENERATOR_URL || 'https://familie-pdf.intern.dev.nav.no',
   familiePdfGeneratorScope: process.env.FAMILIE_PDF_GENERATOR_SCOPE || 'dev-gcp.teamfamilie.familie-pdf',
   mergePdfScope: process.env.MERGE_PDF_SCOPE || 'dev-gcp.team-soknad.innsending-api',
   azureOpenidTokenEndpoint:

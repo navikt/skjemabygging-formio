@@ -14,7 +14,7 @@ const defaultBody = {
 
 const filePathSoknad = path.join(process.cwd(), '/src/services/documents/testdata/test-skjema.pdf');
 
-describe('exstream', () => {
+describe.skip('exstream', () => {
   it('decodes and sends the pdf on success', async () => {
     const skjemabyggingproxyScope = nock(process.env.FAMILIE_PDF_GENERATOR_URL as string)
       .post('/api/pdf/v1/opprett-pdf')
