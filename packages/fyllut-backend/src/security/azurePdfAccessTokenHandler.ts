@@ -7,7 +7,7 @@ import { toJsonOrThrowError } from '../utils/errorHandling.js';
 
 const { clientId, clientSecret, azureOpenidTokenEndpoint, isDevelopment } = config;
 
-const azureAccessTokenHandler =
+const azurePdfAccessTokenHandler =
   (scope: string, skipDev = false) =>
   async (req: Request, _res: Response, next: NextFunction) => {
     if (isDevelopment && skipDev) {
@@ -20,23 +20,24 @@ const azureAccessTokenHandler =
         method: 'POST',
         body: qs.stringify({
           grant_type: 'client_credentials',
-          scope: `openid api://${scope}/.default`,
+          scope: `api://${scope}/.default`,
           client_id: clientId,
           client_secret: clientSecret,
           client_auth_method: 'client_secret_basic',
         }),
       });
       const json: { access_token: string } = await toJsonOrThrowError('Feil ved autentisering')(response);
-      req.headers.AzureAccessToken = json.access_token;
+      req.headers.PdfAccessToken = json.access_token;
       next();
     } catch (error: any) {
-      const errorMessage = error.http_response_body
-        ? `Access token for ${scope} failed with: ${JSON.stringify(error.http_response_body)}`
-        : `Access token for ${scope} failed with: ${JSON.stringify(error)}`;
-      logger.error(errorMessage);
+      if (error.http_response_body) {
+        logger.error(`Access token for ${scope} failed with: ${JSON.stringify(error.http_response_body)}`);
+      } else {
+        logger.error(`Access token for ${scope} failed with: ${JSON.stringify(error)}`);
+      }
 
       next(error);
     }
   };
 
-export default azureAccessTokenHandler;
+export default azurePdfAccessTokenHandler;

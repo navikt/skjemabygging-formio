@@ -7,13 +7,14 @@ import { toJsonOrThrowError } from '../utils/errorHandling.js';
 
 const { clientId, clientSecret, azureOpenidTokenEndpoint, isDevelopment } = config;
 
-const azureAccessTokenHandler =
-  (scope: string, skipDev = false) =>
+const azureTokenHandler =
+  (scope: string, headerName = 'AzureAccessToken', skipDev = false) =>
   async (req: Request, _res: Response, next: NextFunction) => {
     if (isDevelopment && skipDev) {
-      logger.info(`Skipping Azure access token fetch (scope='${scope}')`);
+      logger.info(`Skipping Azure access token fetch (scope='${scope}', header='${headerName}')`);
       return next();
     }
+
     try {
       const response = await fetch(azureOpenidTokenEndpoint!, {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -26,17 +27,17 @@ const azureAccessTokenHandler =
           client_auth_method: 'client_secret_basic',
         }),
       });
+
       const json: { access_token: string } = await toJsonOrThrowError('Feil ved autentisering')(response);
-      req.headers.AzureAccessToken = json.access_token;
+      req.headers[headerName] = json.access_token;
       next();
     } catch (error: any) {
       const errorMessage = error.http_response_body
         ? `Access token for ${scope} failed with: ${JSON.stringify(error.http_response_body)}`
         : `Access token for ${scope} failed with: ${JSON.stringify(error)}`;
       logger.error(errorMessage);
-
       next(error);
     }
   };
 
-export default azureAccessTokenHandler;
+export default azureTokenHandler;

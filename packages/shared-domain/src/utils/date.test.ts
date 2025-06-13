@@ -11,6 +11,18 @@ describe('date.ts', () => {
     });
   });
 
+  describe('toCurrentDayMonthYearHourMinute', () => {
+    it('should format date time string as DD Month YYYY, HH:MM', () => {
+      const date = new Date();
+      const year = date.getFullYear();
+      const minutes = String(date.getMinutes()).padStart(2, '0');
+
+      const formattedDate = dateUtils.toCurrentDayMonthYearHourMinute('nb');
+      expect(formattedDate).contains(year);
+      expect(formattedDate).contains(`:${minutes}`);
+    });
+  });
+
   describe('toLocaleDateAndTime', () => {
     describe('date with five fractional second digits', () => {
       it('should format date and time correctly for locale nb', () => {
