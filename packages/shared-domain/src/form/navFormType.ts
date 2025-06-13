@@ -1,5 +1,6 @@
 import { Component } from './component';
 import { FormPropertiesType } from './formProperties';
+import { IntroPage } from './introPage';
 import { DisplayType } from './types';
 
 /**
@@ -29,6 +30,7 @@ export interface NavFormType {
   publishedBy?: string;
   publishedLanguages?: string[];
   status?: string;
+  intropPage?: IntroPage;
 }
 
 export interface ResourceAccess {
