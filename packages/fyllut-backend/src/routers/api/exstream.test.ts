@@ -1,8 +1,9 @@
 import nock from 'nock';
 import path from 'path';
-import { mockRequest, mockResponse } from '../../test/testHelpers';
+import { mockResponse } from '../../test/testHelpers';
 import exstream from './exstream';
 
+/*
 const formTitle = 'testskjema';
 const defaultBody = {
   form: JSON.stringify({ title: formTitle, components: [], properties: { skjemanummer: 'NAV 12.34-56' } }),
@@ -11,18 +12,19 @@ const defaultBody = {
   translations: JSON.stringify({}),
   language: 'nb-NO',
 };
+*/
 
-const filePathSoknad = path.join(process.cwd(), '/src/services/documents/testdata/test-skjema.pdf');
+const filePathSoknad = path.join(process.cwd(), '/src/services/documents/testdata/test-skjema.pdf'); //
 
 describe.skip('exstream', () => {
   it('decodes and sends the pdf on success', async () => {
     const skjemabyggingproxyScope = nock(process.env.FAMILIE_PDF_GENERATOR_URL as string)
       .post('/api/pdf/v1/opprett-pdf')
       .reply(200, filePathSoknad, { 'content-type': 'application/pdf' });
-    const req = mockRequest({ headers: { AzureAccessToken: 'azure-access-token' }, body: defaultBody });
+    //const req = mockRequest({ headers: { AzureAccessToken: 'azure-access-token' }, body: defaultBody });
     const res = mockResponse();
     const next = vi.fn();
-    await exstream.post(req, res, next);
+    await exstream.post();
     expect(next).not.toHaveBeenCalled();
     expect(res.send).toHaveBeenCalled();
     skjemabyggingproxyScope.done();
@@ -32,10 +34,10 @@ describe.skip('exstream', () => {
     const skjemabyggingproxyScope = nock(process.env.FAMILIE_PDF_GENERATOR_URL as string)
       .post('/api/pdf/v1/opprett-pdf')
       .reply(500, 'error body');
-    const req = mockRequest({ headers: { AzureAccessToken: 'azure-access-token' }, body: defaultBody });
+    //const req = mockRequest({ headers: { AzureAccessToken: 'azure-access-token' }, body: defaultBody });
     const res = mockResponse();
     const next = vi.fn();
-    await exstream.post(req, res, next);
+    await exstream.post();
 
     expect(next).toHaveBeenCalledTimes(1);
     const error = next.mock.calls[0][0];
