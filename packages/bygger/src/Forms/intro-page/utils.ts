@@ -1,5 +1,4 @@
 import { Form, IntroPage } from '@navikt/skjemadigitalisering-shared-domain';
-import { UpdateFormFunction } from '../../components/FormMetaDataEditor/utils/utils';
 
 export function initializeImportantInformation(form: Form, key: string, value: string): Form {
   const { introPage } = form;
@@ -146,13 +145,4 @@ export function handleBulletPointChange(
       },
     } as IntroPage,
   };
-}
-
-export function resetIntroPage(form: Form, updateForm: UpdateFormFunction) {
-  updateForm({
-    ...form,
-    introPage: {
-      enabled: false,
-    } as IntroPage,
-  });
 }

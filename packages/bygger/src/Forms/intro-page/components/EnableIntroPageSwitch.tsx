@@ -2,7 +2,6 @@ import { Switch } from '@navikt/ds-react';
 import { makeStyles } from '@navikt/skjemadigitalisering-shared-components';
 import { Form, IntroPage } from '@navikt/skjemadigitalisering-shared-domain';
 import { UpdateFormFunction } from '../../../components/FormMetaDataEditor/utils/utils';
-import { resetIntroPage } from '../utils';
 
 const useStyles = makeStyles({
   enableSwitch: {
@@ -22,17 +21,13 @@ export function EnableIntroPageSwitch({ form, onChange }: Props) {
     <Switch
       checked={form.introPage?.enabled || false}
       onChange={(e) => {
-        if (!e.target.checked) {
-          resetIntroPage(form, onChange);
-        } else {
-          onChange({
-            ...form,
-            introPage: {
-              ...introPage,
-              enabled: e.target.checked,
-            } as IntroPage,
-          });
-        }
+        onChange({
+          ...form,
+          introPage: {
+            ...introPage,
+            enabled: e.target.checked,
+          } as IntroPage,
+        });
       }}
       size="small"
       className={styles.enableSwitch}

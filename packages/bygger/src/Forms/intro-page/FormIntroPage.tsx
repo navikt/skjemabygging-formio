@@ -29,7 +29,7 @@ import { IntroPageError, validateIntroPage } from './validation/validation';
 export default function FormIntroPage({ form }: { form: Form }) {
   const { changeForm, saveForm } = useForm();
 
-  const { sections, enabled, importantInformation } = form.introPage ?? {
+  const { sections, importantInformation } = form.introPage ?? {
     enabled: false,
     introduction: '',
     sections: {},
@@ -53,7 +53,7 @@ export default function FormIntroPage({ form }: { form: Form }) {
   const handleSubmit = async () => {
     const errors = validateIntroPage(form.introPage);
     const isError = Object.keys(errors).length > 0 && form.introPage?.enabled;
-    if (isError) {
+    if (form.introPage?.enabled && isError) {
       setErrors(errors);
       scrollToFirstError(errors);
     } else {
@@ -90,26 +90,23 @@ export default function FormIntroPage({ form }: { form: Form }) {
 
         <EnableIntroPageSwitch form={form} onChange={changeForm} />
 
-        {enabled && (
-          <>
-            <SectionsChecboxes form={form} onChange={changeForm} />
-            <Introduction form={form} handleChange={changeForm} errors={errors} ref={refMap['introduction']} />
-            {importantInformation && (
-              <ImportantInformation form={form} handleChange={changeForm} errors={errors} refMap={refMap} />
-            )}
-            {scope && <Scope form={form} handleChange={changeForm} errors={errors} refMap={refMap} />}
-            {outOfScope && <OutOfScope form={form} handleChange={changeForm} errors={errors} refMap={refMap} />}
-            <Prerequisites form={form} handleChange={changeForm} errors={errors} refMap={refMap} />
-            {dataDisclosure && <DataDisclosure form={form} handleChange={changeForm} refMap={refMap} errors={errors} />}
-            <DataTreatment form={form} handleChange={changeForm} errors={errors} refMap={refMap} />
-            <DataStorage />
-            {automaticProcessing && (
-              <AutomaticProcessing form={form} handleChange={changeForm} errors={errors} refMap={refMap} />
-            )}
-            {optional && <Optional form={form} handleChange={changeForm} refMap={refMap} errors={errors} />}
-            <SelfDeclaration ref={refMap['selfDeclaration']} form={form} handleChange={changeForm} errors={errors} />
-          </>
+        <SectionsChecboxes form={form} onChange={changeForm} />
+        <Introduction form={form} handleChange={changeForm} errors={errors} ref={refMap['introduction']} />
+        {importantInformation && (
+          <ImportantInformation form={form} handleChange={changeForm} errors={errors} refMap={refMap} />
         )}
+        {scope && <Scope form={form} handleChange={changeForm} errors={errors} refMap={refMap} />}
+        {outOfScope && <OutOfScope form={form} handleChange={changeForm} errors={errors} refMap={refMap} />}
+        <Prerequisites form={form} handleChange={changeForm} errors={errors} refMap={refMap} />
+        {dataDisclosure && <DataDisclosure form={form} handleChange={changeForm} refMap={refMap} errors={errors} />}
+        <DataTreatment form={form} handleChange={changeForm} errors={errors} refMap={refMap} />
+        <DataStorage />
+        {automaticProcessing && (
+          <AutomaticProcessing form={form} handleChange={changeForm} errors={errors} refMap={refMap} />
+        )}
+        {optional && <Optional form={form} handleChange={changeForm} refMap={refMap} errors={errors} />}
+        <SelfDeclaration ref={refMap['selfDeclaration']} form={form} handleChange={changeForm} errors={errors} />
+
         <PublishModalComponents
           form={form}
           openPublishSettingModal={openPublishSettingModal}
