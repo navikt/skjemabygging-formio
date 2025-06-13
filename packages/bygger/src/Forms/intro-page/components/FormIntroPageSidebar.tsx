@@ -2,11 +2,11 @@ import { PadlockLockedIcon } from '@navikt/aksel-icons';
 import { Button, VStack } from '@navikt/ds-react';
 import { ButtonWithSpinner, useModal } from '@navikt/skjemadigitalisering-shared-components';
 import { Form } from '@navikt/skjemadigitalisering-shared-domain';
-import SidebarLayout from '../../components/layout/SidebarLayout';
-import UserFeedback from '../../components/UserFeedback';
-import LockedFormModal from '../lockedFormModal/LockedFormModal';
-import FormStatusPanel from '../status/FormStatusPanel';
-import UnpublishButton from '../unpublish/UnpublishButton';
+import SidebarLayout from '../../../components/layout/SidebarLayout';
+import UserFeedback from '../../../components/UserFeedback';
+import LockedFormModal from '../../lockedFormModal/LockedFormModal';
+import FormStatusPanel from '../../status/FormStatusPanel';
+import UnpublishButton from '../../unpublish/UnpublishButton';
 
 interface FormSettingsPageProps {
   form: Form;

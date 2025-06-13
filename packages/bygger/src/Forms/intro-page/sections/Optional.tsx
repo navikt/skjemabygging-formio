@@ -5,7 +5,7 @@ import { AddButton } from '../components/AddButton';
 import { FieldsetErrorMessage } from '../components/FieldsetErrorMessage';
 import { TextareaField } from '../components/TextareaField';
 import { TextFieldComponent } from '../components/TextFieldComponent';
-import { addBulletPoint, handleBulletPointChange, removeBulletPoint, updateSection } from '../utils';
+import { addBulletPoint, handleBulletPointChange, removeBulletPoint, updateSection } from '../utils/utils';
 import { IntroPageRefs } from '../validation/useIntroPageRefs';
 import { IntroPageError } from '../validation/validation';
 import { SectionWrapper } from './SectionWrapper';

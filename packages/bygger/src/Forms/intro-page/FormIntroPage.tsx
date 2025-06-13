@@ -9,7 +9,7 @@ import TitleRowLayout from '../../components/layout/TitleRowLayout';
 import { useForm } from '../../context/old_form/FormContext';
 import PublishModalComponents from '../publish/PublishModalComponents';
 import { EnableIntroPageSwitch } from './components/EnableIntroPageSwitch';
-import { FormIntroPageSidebar } from './FormIntroPageSidebar';
+import { FormIntroPageSidebar } from './components/FormIntroPageSidebar';
 import { AutomaticProcessing } from './sections/AutomaticProcessing';
 import { DataDisclosure } from './sections/DataDisclosure';
 import { DataStorage } from './sections/DataStorage';

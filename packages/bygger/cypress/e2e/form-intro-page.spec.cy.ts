@@ -344,6 +344,22 @@ describe('FormSettingsPage', () => {
         });
     });
 
+    it('optional fields display does not display error message on save when enabled is false', () => {
+      cy.intercept('PUT', '/api/forms/cypresssettings', (req) => {
+        req.reply(req.body);
+      });
+
+      checkAllOptionalFields();
+
+      cy.contains('Lagre').click();
+      cy.get('[aria-live="polite"]').should('contain.text', `Lagret skjema ${submitData.title}`);
+
+      cy.contains('Velkomstmelding må fylles ut').should('not.exist');
+      cy.contains('Overskrift må fylles ut').should('not.exist');
+      cy.contains('Seksjonen må ha en ingress eller kulepunkter').should('not.exist');
+      cy.contains('Egenerklæring må fylles ut').should('not.exist');
+    });
+
     it('optional fields display error message when not filled out', () => {
       cy.findByRole('checkbox', { name: 'Bruk standard introside' }).should('exist');
       cy.findByRole('checkbox', { name: 'Bruk standard introside' }).click();

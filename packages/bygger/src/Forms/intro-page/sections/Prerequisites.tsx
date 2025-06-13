@@ -4,7 +4,7 @@ import { UpdateFormFunction } from '../../../components/FormMetaDataEditor/utils
 import { AddButton } from '../components/AddButton';
 import { FieldsetErrorMessage } from '../components/FieldsetErrorMessage';
 import { TextareaField } from '../components/TextareaField';
-import { addBulletPoint, handleBulletPointChange, removeBulletPoint, updateSection } from '../utils';
+import { addBulletPoint, handleBulletPointChange, removeBulletPoint, updateSection } from '../utils/utils';
 import { IntroPageRefs } from '../validation/useIntroPageRefs';
 import { IntroPageError } from '../validation/validation';
 import { SectionWrapper } from './SectionWrapper';

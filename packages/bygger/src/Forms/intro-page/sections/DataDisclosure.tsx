@@ -3,7 +3,7 @@ import { Form } from '@navikt/skjemadigitalisering-shared-domain';
 import { UpdateFormFunction } from '../../../components/FormMetaDataEditor/utils/utils';
 import { AddButton } from '../components/AddButton';
 import { TextareaField } from '../components/TextareaField';
-import { addBulletPoint, handleBulletPointChange, removeBulletPoint, updateSection } from '../utils';
+import { addBulletPoint, handleBulletPointChange, removeBulletPoint, updateSection } from '../utils/utils';
 import { IntroPageRefs } from '../validation/useIntroPageRefs';
 import { IntroPageError } from '../validation/validation';
 import { SectionWrapper } from './SectionWrapper';
