@@ -12,9 +12,14 @@ interface FormSettingsPageProps {
   form: Form;
   validateAndSave: (form: Form) => Promise<void>;
   setOpenPublishSettingModal: (open: boolean) => void;
+  validateAndOpenPublishSettingModal: (form: Form) => void;
 }
 
-export function FormIntroPageSidebar({ form, validateAndSave, setOpenPublishSettingModal }: FormSettingsPageProps) {
+export function FormIntroPageSidebar({
+  form,
+  validateAndSave,
+  validateAndOpenPublishSettingModal,
+}: FormSettingsPageProps) {
   const [lockedFormModal, setLockedFormModal] = useModal();
   const isLockedForm = !!form.lock;
 
@@ -38,7 +43,7 @@ export function FormIntroPageSidebar({ form, validateAndSave, setOpenPublishSett
         </ButtonWithSpinner>
         <Button
           variant="secondary"
-          onClick={() => doIfUnlocked(() => setOpenPublishSettingModal(true))}
+          onClick={() => doIfUnlocked(() => validateAndOpenPublishSettingModal(form))}
           type="button"
           size="small"
           icon={isLockedForm && <PadlockLockedIcon title="Skjemaet er låst" />}
