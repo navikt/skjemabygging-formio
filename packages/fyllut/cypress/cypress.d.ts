@@ -43,7 +43,10 @@ declare global {
        * Configures the Mocks Server administration API client
        */
       configMocksServer(): Chainable<JQuery<HTMLElement>>;
-
+      
+      /**
+      * Run test only on build code. This is allways true on GitHub, but if you want to run locally you can chanage INCLUDE_DIST_TESTS to true.
+      */
       skipIfNoIncludeDistTests(): Chainable<void>;
     }
   }
