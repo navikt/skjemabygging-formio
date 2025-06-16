@@ -214,7 +214,7 @@
     },
     {
       "id": "eoo6p8",
-      "key": "personopplysninger",
+      "key": "dineOpplysninger",
       "tree": false,
       "type": "panel",
       "input": false,
