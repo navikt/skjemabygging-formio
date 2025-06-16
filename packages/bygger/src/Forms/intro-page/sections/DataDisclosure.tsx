@@ -29,7 +29,7 @@ export function DataDisclosure({ form, handleChange, refMap, errors }: Props) {
           <RadioGroup
             legend="Velg overskrift"
             defaultValue={form?.introPage?.sections.dataDisclosure?.title}
-            onChange={(value) => handleChange(updateSection(form, 'dataDisclosure', 'title', value))}
+            onChange={(value) => updateSection(form, 'dataDisclosure', 'title', value, handleChange)}
             error={errors?.sections?.dataDisclosure?.title}
           >
             <Radio value="introPage.dataDisclosure.title.alt1" ref={refMap['sections.dataDisclosure.title']}>
@@ -42,9 +42,9 @@ export function DataDisclosure({ form, handleChange, refMap, errors }: Props) {
               key={index}
               label="Kulepunkt"
               value={bullet}
-              onChange={(value) => handleChange(handleBulletPointChange(form, 'dataDisclosure', index, value))}
+              onChange={(value) => handleBulletPointChange(form, 'dataDisclosure', index, value, handleChange)}
               showDeleteButton
-              onDelete={() => handleChange(removeBulletPoint(form, 'dataDisclosure', index))}
+              onDelete={() => removeBulletPoint(form, 'dataDisclosure', index, handleChange)}
               error={errors?.sections?.dataDisclosure?.bulletPoints?.[index]}
               ref={refMap['sections.dataDisclosure.bulletPoints'][index]}
             />
@@ -52,7 +52,7 @@ export function DataDisclosure({ form, handleChange, refMap, errors }: Props) {
           <AddButton
             label={'Legg til kulepunkt'}
             variant="tertiary"
-            onClick={() => handleChange(addBulletPoint(form, 'dataDisclosure', ''))}
+            onClick={() => addBulletPoint(form, 'dataDisclosure', '', handleChange)}
           />
         </Box>
       }

@@ -12,7 +12,7 @@ interface FormSettingsPageProps {
   form: Form;
   validateAndSave: (form: Form) => Promise<void>;
   setOpenPublishSettingModal: (open: boolean) => void;
-  validateAndOpenPublishSettingModal: (form: Form) => void;
+  validateAndOpenPublishSettingModal: () => void;
 }
 
 export function FormIntroPageSidebar({
@@ -43,7 +43,7 @@ export function FormIntroPageSidebar({
         </ButtonWithSpinner>
         <Button
           variant="secondary"
-          onClick={() => doIfUnlocked(() => validateAndOpenPublishSettingModal(form))}
+          onClick={() => doIfUnlocked(() => validateAndOpenPublishSettingModal())}
           type="button"
           size="small"
           icon={isLockedForm && <PadlockLockedIcon title="Skjemaet er låst" />}

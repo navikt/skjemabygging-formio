@@ -1,6 +1,6 @@
 import { PlusIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
-import { makeStyles } from '@navikt/skjemadigitalisering-shared-components';
+import { addButtonStyles } from './styles';
 
 type AddButtonProps = {
   label: string;
@@ -9,15 +9,8 @@ type AddButtonProps = {
   size?: 'small' | 'medium' | 'xsmall' | undefined;
 };
 
-const useStyles = makeStyles({
-  addButton: {
-    borderRadius: 'var(--a-border-radius-large)',
-    margin: 'var(--a-space-12) var(--a-space-16) var(--a-space-12) 0',
-  },
-});
-
 export function AddButton({ label, onClick, variant = 'secondary', size = 'small' }: AddButtonProps) {
-  const styles = useStyles();
+  const styles = addButtonStyles();
 
   return (
     <Button

@@ -1,18 +1,9 @@
 import { PadlockLockedFillIcon } from '@navikt/aksel-icons';
 import { Checkbox, CheckboxGroup } from '@navikt/ds-react';
-import { makeStyles } from '@navikt/skjemadigitalisering-shared-components';
 import { Form, IntroPage } from '@navikt/skjemadigitalisering-shared-domain';
 import { UpdateFormFunction } from '../../../components/FormMetaDataEditor/utils/utils';
 import { SectionWrapper } from './SectionWrapper';
-
-const useStyles = makeStyles({
-  padlockIcon: {
-    verticalAlign: 'sub',
-  },
-  checkboxGroup: {
-    margin: '0 var(--a-space-16) 0 0',
-  },
-});
+import { useSectionsCheckboxesStyles } from './styles';
 
 type Key = keyof IntroPage['sections'] | 'selfDeclaration' | 'introduction' | 'importantInformation';
 type Section = {
@@ -27,7 +18,7 @@ type SectionsCheckboxesProps = {
 };
 
 export function SectionsChecboxes({ form, onChange }: SectionsCheckboxesProps) {
-  const styles = useStyles();
+  const styles = useSectionsCheckboxesStyles();
 
   const sectionsOptions: Section[] = [
     { title: 'Velkomstbeskjed / introduksjon', key: 'introduction', isLocked: true },

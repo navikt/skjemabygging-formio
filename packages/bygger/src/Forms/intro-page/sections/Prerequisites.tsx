@@ -1,10 +1,9 @@
 import { Box, Heading, Radio, RadioGroup } from '@navikt/ds-react';
 import { Form } from '@navikt/skjemadigitalisering-shared-domain';
 import { UpdateFormFunction } from '../../../components/FormMetaDataEditor/utils/utils';
-import { AddButton } from '../components/AddButton';
 import { FieldsetErrorMessage } from '../components/FieldsetErrorMessage';
-import { TextareaField } from '../components/TextareaField';
-import { addBulletPoint, handleBulletPointChange, removeBulletPoint, updateSection } from '../utils/utils';
+import { IngressBulletPointRow } from '../components/IngressBulletPointRow';
+import { updateSection } from '../utils/utils';
 import { IntroPageRefs } from '../validation/useIntroPageRefs';
 import { IntroPageError } from '../validation/validation';
 import { SectionWrapper } from './SectionWrapper';
@@ -18,6 +17,7 @@ type Props = {
 
 export function Prerequisites({ form, handleChange, errors, refMap }: Props) {
   const showIngress = form.introPage?.sections?.prerequisites?.description !== undefined;
+  const bulletPoints = form.introPage?.sections?.prerequisites?.bulletPoints || [];
 
   return (
     <SectionWrapper
@@ -30,7 +30,7 @@ export function Prerequisites({ form, handleChange, errors, refMap }: Props) {
           <RadioGroup
             legend="Velg overskrift"
             defaultValue={form.introPage?.sections?.prerequisites?.title}
-            onChange={(value) => handleChange(updateSection(form, 'prerequisites', 'title', value))}
+            onChange={(value) => updateSection(form, 'prerequisites', 'title', value, handleChange)}
             error={errors?.sections?.prerequisites?.title}
           >
             <Radio value="introPage.prerequisites.title.alt1" ref={refMap['sections.prerequisites.title']}>
@@ -40,48 +40,21 @@ export function Prerequisites({ form, handleChange, errors, refMap }: Props) {
             <Radio value="introPage.prerequisites.title.alt3">Før du fyller ut</Radio>
           </RadioGroup>
           <Box>
-            {!showIngress && (
-              <AddButton
-                label={'Legg til ingress'}
-                onClick={() => handleChange(updateSection(form, 'prerequisites', 'description', ''))}
-              />
-            )}
-
-            {showIngress && (
-              <TextareaField
-                value={form.introPage?.sections?.prerequisites?.description}
-                label="Ingress"
-                onChange={(value) => handleChange(updateSection(form, 'prerequisites', 'description', value))}
-                showDeleteButton
-                onDelete={() => {
-                  handleChange(updateSection(form, 'prerequisites', 'description', undefined));
-                }}
-                error={errors?.sections?.prerequisites?.description}
-                ref={refMap['sections.prerequisites.description']}
-              />
-            )}
-          </Box>
-          {form.introPage?.sections?.prerequisites?.bulletPoints?.map((bullet, index) => (
-            <TextareaField
-              key={index}
-              label="Kulepunkt"
-              value={bullet}
-              onChange={(value) => handleChange(handleBulletPointChange(form, 'prerequisites', index, value))}
-              showDeleteButton
-              onDelete={() => handleChange(removeBulletPoint(form, 'prerequisites', index))}
-              error={errors?.sections?.prerequisites?.bulletPoints?.[index]}
-              ref={refMap['sections.prerequisites.bulletPoints'][index]}
+            <IngressBulletPointRow
+              field="prerequisites"
+              form={form}
+              handleChange={handleChange}
+              errors={errors}
+              refMap={refMap}
+              bulletPoints={bulletPoints}
+              showAddBulletList
+              showField={showIngress}
             />
-          ))}
-          <AddButton
-            label={'Legg til kulepunkt'}
-            variant="tertiary"
-            onClick={() => handleChange(addBulletPoint(form, 'prerequisites', ''))}
-          />
-          <FieldsetErrorMessage
-            errorMessage={errors?.sections?.prerequisites?.message}
-            ref={refMap['sections.prerequisites.message']}
-          />
+            <FieldsetErrorMessage
+              errorMessage={errors?.sections?.prerequisites?.message}
+              ref={refMap['sections.prerequisites.message']}
+            />
+          </Box>
         </Box>
       }
       right={<p>Preview kommer</p>}

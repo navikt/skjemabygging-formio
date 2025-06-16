@@ -21,6 +21,7 @@ type Props = {
 
 export function ImportantInformation({ form, handleChange, errors, refMap }: Props) {
   const { introPage } = form;
+  const hasTitle = introPage?.importantInformation?.title !== undefined;
   return (
     <SectionWrapper
       left={
@@ -28,19 +29,19 @@ export function ImportantInformation({ form, handleChange, errors, refMap }: Pro
           <Heading level="3" size="small" spacing>
             Viktig informasjon
           </Heading>
-          {introPage?.importantInformation?.title === undefined && (
+          {!hasTitle && (
             <AddButton
               label="Legg til overskrift"
-              onClick={() => handleChange(initializeImportantInformation(form, 'title', ''))}
+              onClick={() => initializeImportantInformation(form, 'title', '', handleChange)}
             />
           )}
-          {introPage?.importantInformation?.title !== undefined && (
+          {hasTitle && (
             <TextFieldComponent
               label="Overskrift"
               value={form.introPage?.importantInformation?.title}
-              onChange={(value) => handleChange(initializeImportantInformation(form, 'title', value))}
-              showDeleteButton={true}
-              onDelete={() => handleChange(deleteImportantInformationKey(form, 'title'))}
+              onChange={(value) => initializeImportantInformation(form, 'title', value, handleChange)}
+              showDeleteButton
+              onDelete={() => deleteImportantInformationKey(form, 'title', handleChange)}
               error={errors?.importantInformation?.title}
               ref={refMap['importantInformation.title']}
             />
@@ -48,7 +49,7 @@ export function ImportantInformation({ form, handleChange, errors, refMap }: Pro
           <TextareaField
             label="Brødtekst"
             value={form.introPage?.importantInformation?.description}
-            onChange={(value) => handleChange(updateImportantInformation(form, 'description', value))}
+            onChange={(value) => updateImportantInformation(form, 'description', value, handleChange)}
             error={errors?.importantInformation?.description}
             ref={refMap['importantInformation.description']}
           />

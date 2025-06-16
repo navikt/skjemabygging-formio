@@ -1,11 +1,18 @@
 import { Form, IntroPage } from '@navikt/skjemadigitalisering-shared-domain';
 
-export function initializeImportantInformation(form: Form, key: string, value: string): Form {
+type UpdateFormFunction = (updatedForm: Form) => void;
+
+export function initializeImportantInformation(
+  form: Form,
+  key: string,
+  value: string,
+  handleChange: UpdateFormFunction,
+): void {
   const { introPage } = form;
   if (!introPage) {
-    return form;
+    return;
   }
-  return {
+  handleChange({
     ...form,
     introPage: {
       ...introPage,
@@ -14,7 +21,7 @@ export function initializeImportantInformation(form: Form, key: string, value: s
         [key]: value,
       },
     },
-  };
+  });
 }
 
 export function updateSection(
@@ -22,10 +29,11 @@ export function updateSection(
   sectionKey: keyof IntroPage['sections'],
   property: 'title' | 'description',
   value: string | undefined,
-): Form {
+  handleChange: UpdateFormFunction,
+): void {
   const { introPage } = form;
 
-  return {
+  handleChange({
     ...form,
     introPage: {
       ...introPage,
@@ -37,37 +45,39 @@ export function updateSection(
         },
       },
     } as IntroPage,
-  };
+  });
 }
 
 export function deleteImportantInformationKey(
   form: Form,
   key: keyof NonNullable<IntroPage['importantInformation']>,
-): Form {
+  handleChange: UpdateFormFunction,
+): void {
   const { introPage } = form;
   if (!introPage) {
-    return form;
+    return;
   }
 
   const { [key]: _, ...remainingImportantInformation } = introPage.importantInformation || {};
 
-  return {
+  handleChange({
     ...form,
     introPage: {
       ...introPage,
       importantInformation: remainingImportantInformation,
     },
-  };
+  });
 }
 
 export function updateImportantInformation(
   form: Form,
   key: keyof NonNullable<IntroPage['importantInformation']>,
   value: string,
-): Form {
+  handleChange: UpdateFormFunction,
+): void {
   const { introPage } = form;
 
-  return {
+  handleChange({
     ...form,
     introPage: {
       ...introPage,
@@ -76,15 +86,20 @@ export function updateImportantInformation(
         [key]: value,
       },
     } as IntroPage,
-  };
+  });
 }
 
-export function addBulletPoint(form: Form, sectionKey: keyof IntroPage['sections'], bullet: string): Form {
+export function addBulletPoint(
+  form: Form,
+  sectionKey: keyof IntroPage['sections'],
+  bullet: string,
+  handleChange: UpdateFormFunction,
+): void {
   const { introPage } = form;
   const section = introPage?.sections?.[sectionKey] ?? {};
   const bulletPoints = section?.bulletPoints ?? [];
 
-  return {
+  handleChange({
     ...form,
     introPage: {
       ...introPage,
@@ -96,17 +111,22 @@ export function addBulletPoint(form: Form, sectionKey: keyof IntroPage['sections
         },
       },
     } as IntroPage,
-  };
+  });
 }
 
-export function removeBulletPoint(form: Form, sectionKey: keyof IntroPage['sections'], index: number): Form {
+export function removeBulletPoint(
+  form: Form,
+  sectionKey: keyof IntroPage['sections'],
+  index: number,
+  handleChange: UpdateFormFunction,
+): void {
   const { introPage } = form;
   const section = introPage?.sections?.[sectionKey];
-  if (!section?.bulletPoints) return form;
+  if (!section?.bulletPoints) return;
 
   const updatedBulletPoints = section.bulletPoints.filter((_, i) => i !== index);
 
-  return {
+  handleChange({
     ...form,
     introPage: {
       ...introPage,
@@ -118,7 +138,7 @@ export function removeBulletPoint(form: Form, sectionKey: keyof IntroPage['secti
         },
       },
     } as IntroPage,
-  };
+  });
 }
 
 export function handleBulletPointChange(
@@ -126,13 +146,14 @@ export function handleBulletPointChange(
   sectionKey: keyof IntroPage['sections'],
   index: number,
   value: string,
-): Form {
+  handleChange: UpdateFormFunction,
+): void {
   const { introPage } = form;
   const section = introPage?.sections?.[sectionKey] ?? {};
   const bulletPoints = [...(section?.bulletPoints || [])];
   bulletPoints[index] = value;
 
-  return {
+  handleChange({
     ...form,
     introPage: {
       ...introPage,
@@ -144,5 +165,5 @@ export function handleBulletPointChange(
         },
       },
     } as IntroPage,
-  };
+  });
 }

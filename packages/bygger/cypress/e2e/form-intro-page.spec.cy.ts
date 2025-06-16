@@ -312,7 +312,7 @@ describe('FormSettingsPage', () => {
       cy.visit('forms/cypresssettings/intropage');
     });
 
-    it('all required fields display error message when not filled out', () => {
+    it('all required fields display error message when not filled out and enabled is true', () => {
       cy.findByRole('checkbox', { name: 'Bruk standard introside' }).should('exist');
       cy.findByRole('checkbox', { name: 'Bruk standard introside' }).click();
 

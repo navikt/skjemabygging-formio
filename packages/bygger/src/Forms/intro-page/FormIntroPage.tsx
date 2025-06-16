@@ -50,12 +50,11 @@ export default function FormIntroPage({ form }: { form: Form }) {
   const [errors, setErrors] = useState<IntroPageError>();
   const [openPublishSettingModal, setOpenPublishSettingModal] = useModal();
 
-  function handleValidation(form: Form, onSuccess: () => void) {
-    const isEnabled = form.introPage?.enabled;
-    const errors = isEnabled ? validateIntroPage(form.introPage) : undefined;
+  function handleValidation(onSuccess: () => void) {
+    const errors = validateIntroPage(form.introPage);
     const isError = errors && Object.keys(errors).length > 0;
 
-    if (isEnabled && isError) {
+    if (isError) {
       setErrors(errors);
       scrollToFirstError(errors);
     } else {
@@ -64,12 +63,17 @@ export default function FormIntroPage({ form }: { form: Form }) {
     }
   }
 
-  function validateAndOpenPublishSettingModal(form: Form) {
-    handleValidation(form, () => setOpenPublishSettingModal(true));
+  async function handleSubmit() {
+    if (!form.introPage?.enabled) {
+      await saveForm(form);
+      return;
+    }
+
+    handleValidation(async () => await saveForm(form));
   }
 
-  async function handleSubmit() {
-    handleValidation(form, async () => await saveForm(form));
+  function validateAndOpenPublishSettingModal() {
+    handleValidation(() => setOpenPublishSettingModal(true));
   }
 
   return (

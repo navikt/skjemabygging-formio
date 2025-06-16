@@ -1,29 +1,14 @@
 import { ExclamationmarkTriangleFillIcon } from '@navikt/aksel-icons';
 import { BodyShort } from '@navikt/ds-react';
-import { makeStyles } from '@navikt/skjemadigitalisering-shared-components';
 import { forwardRef } from 'react';
+import { useFieldsetErrorMessageStyles } from './styles';
 
 type Props = {
   errorMessage?: string;
 };
 
-const useStyles = makeStyles({
-  message: {
-    display: 'flex',
-    gap: 'var(--a-space-4)',
-    color: 'var(--a-red-500)',
-    marginTop: '.25rem',
-    height: '1rem',
-  },
-  icon: {
-    marginTop: '0.15em',
-    flex: '0 0 auto',
-    height: '100%',
-  },
-});
-
 export const FieldsetErrorMessage = forwardRef<HTMLDivElement, Props>(({ errorMessage }, ref) => {
-  const styles = useStyles();
+  const styles = useFieldsetErrorMessageStyles();
   return (
     errorMessage && (
       <div ref={ref} tabIndex={-1}>
