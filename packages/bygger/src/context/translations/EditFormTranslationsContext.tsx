@@ -1,6 +1,7 @@
 import { htmlUtils } from '@navikt/skjemadigitalisering-shared-components';
 import { FormsApiTranslation, stringUtils, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, ReactNode, useContext, useEffect, useReducer } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 import { useFeedbackEmit } from '../notifications/FeedbackContext';
 import { editFormTranslationsReducer } from './editTranslationsReducer';
 import { getTranslationsForSaving } from './editTranslationsReducer/selectors';
@@ -16,6 +17,7 @@ interface Props {
 
 type EditFormTranslationsContextValue = {
   updateTranslation: (original: FormsApiTranslation, lang: TranslationLang, value: string) => void;
+  addNBText: (value: string, key?: string) => string;
   errors: TranslationError[];
   editState: string;
   saveChanges: () => Promise<void>;
@@ -26,6 +28,7 @@ const defaultValue: EditFormTranslationsContextValue = {
   errors: [],
   editState: 'INIT',
   saveChanges: () => Promise.resolve(),
+  addNBText: () => '',
 };
 
 const EditFormTranslationsContext = createContext<EditFormTranslationsContextValue>(defaultValue);
@@ -60,6 +63,16 @@ const EditFormTranslationsProvider = ({ initialChanges, children }: Props) => {
       const { globalTranslationId, ...originalWithoutGlobal } = original;
       dispatch({ type: 'UPDATE', payload: { original: originalWithoutGlobal, lang, value } });
     }
+  };
+
+  const addNBText = (value: string, key?: string) => {
+    if (key) {
+      updateTranslation(state.changes[key], 'nb', value);
+      return key;
+    }
+    const translationKey = uuidv4();
+    dispatch({ type: 'ADD', payload: { key: translationKey, nb: value, tag: 'introPage' } });
+    return translationKey;
   };
 
   const saveChanges = async () => {
@@ -105,6 +118,7 @@ const EditFormTranslationsProvider = ({ initialChanges, children }: Props) => {
     errors: state.errors,
     editState: state.status,
     saveChanges,
+    addNBText,
   };
 
   return <EditFormTranslationsContext.Provider value={value}>{children}</EditFormTranslationsContext.Provider>;

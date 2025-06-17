@@ -9,12 +9,27 @@ import {
   CustomLabels,
   Form,
   FormPropertiesType,
+  IntroPage,
   navFormUtils,
   signatureUtils,
   TEXTS,
 } from '@navikt/skjemadigitalisering-shared-domain';
 
 const getTextFromComponentProperty = (property: string | undefined) => (property !== '' ? property : undefined);
+
+const extractTextsFromIntroPage = (introPage?: IntroPage): string[] => {
+  if (!introPage) return [];
+  const { introduction, importantInformation, sections } = introPage;
+  return [
+    ...[introduction],
+    ...Object.values(importantInformation ?? {}),
+    ...Object.values(sections).flatMap(({ title, description, bulletPoints }) => [
+      title,
+      description,
+      ...(bulletPoints ?? []),
+    ]),
+  ].filter((value): value is string => value !== undefined);
+};
 
 const extractTextsFromProperties = (props: FormPropertiesType): string[] => {
   const array: string[] = [];
@@ -168,8 +183,11 @@ const getFormTexts = (form?: Form): string[] => {
     ...getTranslatablePropertiesFromForm(form),
   ];
 
-  return simplifiedComponentObject
-    .flatMap((component) =>
+  const fromIntroPage = extractTextsFromIntroPage(form.introPage);
+
+  return [
+    ...fromIntroPage,
+    ...simplifiedComponentObject.flatMap((component) =>
       Object.keys(component)
         .filter((key) => component[key] !== undefined)
         .flatMap((key) => {
@@ -184,9 +202,9 @@ const getFormTexts = (form?: Form): string[] => {
           }
           return component[key];
         }),
-    )
-    .concat(extractTextsFromProperties(form.properties))
-    .filter((component, index, currentComponents) => withoutDuplicatedComponents(component, index, currentComponents));
+    ),
+    ...extractTextsFromProperties(form.properties),
+  ].filter((component, index, currentComponents) => withoutDuplicatedComponents(component, index, currentComponents));
 };
 
 const getFormTextsWithoutCountryNames = (form: Form) => {
