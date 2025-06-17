@@ -29,7 +29,7 @@ const SelectSubmissionType = () => {
 
   const redirectToDigitalSub = () => {
     // Important to force redirect to force idporten redirect if sub=digital.
-    window.location.href = `${baseUrl}${location.pathname}${location.search ? `${location.search}&sub=paper` : '?sub=paper'}`;
+    window.location.href = `${baseUrl}${location.pathname}${location.search ? `${location.search}&sub=digital` : '?sub=paper'}`;
   };
 
   if (state) return;
