@@ -486,7 +486,7 @@
     },
     {
       "id": "ey60pcn",
-      "key": "personopplysninger",
+      "key": "dineOpplysninger",
       "tree": false,
       "type": "panel",
       "input": false,

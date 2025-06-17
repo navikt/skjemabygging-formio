@@ -12,7 +12,7 @@ export const requestBody = {
         title: 'Dine opplysninger',
         type: 'panel',
         input: false,
-        key: 'personopplysninger',
+        key: 'dineOpplysninger',
         components: [
           {
             label: 'Fornavn',

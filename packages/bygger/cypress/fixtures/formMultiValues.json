@@ -7,7 +7,7 @@
       "title": "Test",
       "type": "panel",
       "input": false,
-      "key": "personopplysninger",
+      "key": "dineOpplysninger",
       "theme": "default",
       "components": [
         {
@@ -336,7 +336,10 @@
   "properties": {
     "skjemanummer": "multi",
     "tema": "HJE",
-    "submissionTypes": ["PAPER", "DIGITAL"],
+    "submissionTypes": [
+      "PAPER",
+      "DIGITAL"
+    ],
     "hasLabeledSignatures": false,
     "signatures": [],
     "enhetMaVelgesVedPapirInnsending": true,

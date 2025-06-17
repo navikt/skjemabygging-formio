@@ -216,7 +216,7 @@
       "allowCalculateOverride": false
     },
     {
-      "key": "personopplysninger",
+      "key": "dineOpplysninger",
       "type": "panel",
       "input": false,
       "theme": "default",
@@ -588,7 +588,10 @@
   ],
   "properties": {
     "tema": "FUL",
-    "submissionTypes": ["PAPER", "DIGITAL"],
+    "submissionTypes": [
+      "PAPER",
+      "DIGITAL"
+    ],
     "signatures": [
       {
         "key": "170eed85-26a8-4b6f-a7cf-bfb5c8848754",
@@ -596,7 +599,10 @@
         "description": ""
       }
     ],
-    "subsequentSubmissionTypes": ["PAPER", "DIGITAL"],
+    "subsequentSubmissionTypes": [
+      "PAPER",
+      "DIGITAL"
+    ],
     "skjemanummer": "NAV 11-22.33",
     "ettersendelsesfrist": "14",
     "mellomlagringDurationDays": "28"

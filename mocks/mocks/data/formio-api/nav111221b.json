@@ -526,7 +526,7 @@
     {
       "title": "Dine opplysninger",
       "type": "panel",
-      "key": "personopplysninger",
+      "key": "dineOpplysninger",
       "input": false,
       "theme": "default",
       "components": [
@@ -7058,8 +7058,14 @@
   "properties": {
     "skjemanummer": "NAV 11-12.21B",
     "tema": "TSO",
-    "submissionTypes": ["PAPER", "DIGITAL"],
-    "subsequentSubmissionTypes": ["PAPER", "DIGITAL"],
+    "submissionTypes": [
+      "PAPER",
+      "DIGITAL"
+    ],
+    "subsequentSubmissionTypes": [
+      "PAPER",
+      "DIGITAL"
+    ],
     "signatures": [
       {
         "label": "",

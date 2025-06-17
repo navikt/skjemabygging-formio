@@ -37,7 +37,7 @@
           "referrer": "http://localhost:3001/fyllut/inception123",
           "browserName": "Netscape",
           "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
-          "pathName": "/fyllut/inception123/personopplysninger",
+          "pathName": "/fyllut/inception123/dineOpplysninger",
           "onLine": true
         },
         "state": "submitted",

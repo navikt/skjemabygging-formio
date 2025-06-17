@@ -5,7 +5,10 @@
   "path": "cypress101",
   "type": "form",
   "display": "wizard",
-  "tags": ["nav-skjema", ""],
+  "tags": [
+    "nav-skjema",
+    ""
+  ],
   "owner": "607051c797f5430003e4f041",
   "components": [
     {
@@ -152,7 +155,7 @@
       "title": "Dine opplysninger",
       "type": "panel",
       "input": false,
-      "key": "personopplysninger",
+      "key": "dineOpplysninger",
       "theme": "default",
       "components": [
         {
@@ -3248,7 +3251,10 @@
   "properties": {
     "skjemanummer": "cypress-101",
     "tema": "xxx",
-    "submissionTypes": ["PAPER", "DIGITAL"],
+    "submissionTypes": [
+      "PAPER",
+      "DIGITAL"
+    ],
     "hasLabeledSignatures": false,
     "signatures": {
       "signature1": "",
@@ -3262,7 +3268,11 @@
   "access": [
     {
       "type": "read_all",
-      "roles": ["5ee0eab07665226ea32fd37d", "5ee0eaaf7665226ea32fd37c", "5ee0eaaf7665226ea32fd37b"]
+      "roles": [
+        "5ee0eab07665226ea32fd37d",
+        "5ee0eaaf7665226ea32fd37c",
+        "5ee0eaaf7665226ea32fd37b"
+      ]
     }
   ],
   "submissionAccess": [],
