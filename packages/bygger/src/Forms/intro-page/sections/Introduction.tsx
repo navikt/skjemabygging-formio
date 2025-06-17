@@ -1,9 +1,9 @@
 import { Box, Heading } from '@navikt/ds-react';
-import { Form } from '@navikt/skjemadigitalisering-shared-domain';
-import { forwardRef, useState } from 'react';
+import { Form, IntroPage } from '@navikt/skjemadigitalisering-shared-domain';
+import { forwardRef } from 'react';
 import { UpdateFormFunction } from '../../../components/FormMetaDataEditor/utils/utils';
-import { useEditFormTranslations } from '../../../context/translations/EditFormTranslationsContext';
 import { useFormTranslations } from '../../../context/translations/FormTranslationsContext';
+import useKeyBasedText from '../../../hooks/useKeyBasedText';
 import { TextareaField } from '../components/TextareaField';
 import { IntroPageError } from '../validation/validation';
 import { SectionWrapper } from './SectionWrapper';
@@ -16,19 +16,16 @@ type Props = {
 
 export const Introduction = forwardRef<HTMLTextAreaElement, Props>(({ handleChange, form, errors }, ref) => {
   const { getNBTextForKey } = useFormTranslations();
-  const { addNBText } = useEditFormTranslations();
-  const [translationKey, setTranslationKey] = useState<string>();
+  const updateKeyBasedText = useKeyBasedText();
 
-  const onChange = (value) => {
-    if (!form?.introPage) return;
-    const key = addNBText(value, translationKey);
-    setTranslationKey(key);
+  const onChange = (value: string) => {
+    const key = updateKeyBasedText(value);
     handleChange({
       ...form,
       introPage: {
         ...form.introPage,
         introduction: key,
-      },
+      } as IntroPage,
     });
   };
 

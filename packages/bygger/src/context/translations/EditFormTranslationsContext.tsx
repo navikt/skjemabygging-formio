@@ -67,7 +67,8 @@ const EditFormTranslationsProvider = ({ initialChanges, children }: Props) => {
 
   const addNBText = (value: string, key?: string) => {
     if (key) {
-      updateTranslation(state.changes[key], 'nb', value);
+      const original = state.changes[key] ?? storedTranslations[key];
+      updateTranslation(original, 'nb', value);
       return key;
     }
     const translationKey = uuidv4();

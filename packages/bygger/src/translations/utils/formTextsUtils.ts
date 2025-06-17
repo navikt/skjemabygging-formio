@@ -23,7 +23,7 @@ const extractTextsFromIntroPage = (introPage?: IntroPage): string[] => {
   return [
     ...[introduction],
     ...Object.values(importantInformation ?? {}),
-    ...Object.values(sections).flatMap(({ title, description, bulletPoints }) => [
+    ...Object.values(sections ?? {}).flatMap(({ title, description, bulletPoints }) => [
       title,
       description,
       ...(bulletPoints ?? []),
