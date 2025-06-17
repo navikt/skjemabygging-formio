@@ -12,19 +12,24 @@ const SelectSubmissionType = () => {
   const { translate } = useLanguages();
 
   const selectLinkPanel = (state: IntroPageState) => {
-    setState(state);
     if (state) {
       if (state === IntroPageState.PAPER) {
-        updateSubParam('paper');
+        setState(state);
+        updatePaperSub();
       } else if (state === IntroPageState.DIGITAL) {
-        updateSubParam('digital');
+        redirectToDigitalSub();
       }
     }
   };
 
-  const updateSubParam = (value: string) => {
-    searchParams.set('sub', value);
+  const updatePaperSub = () => {
+    searchParams.set('sub', 'paper');
     setSearchParams(searchParams);
+  };
+
+  const redirectToDigitalSub = () => {
+    // Important to force redirect to force idporten redirect if sub=digital.
+    window.location.href = `${baseUrl}${location.pathname}${location.search ? `${location.search}&sub=paper` : '?sub=paper'}`;
   };
 
   if (state) return;
