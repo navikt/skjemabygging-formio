@@ -6,7 +6,6 @@ import { checkConfigConsistency, config } from './config/config';
 import { NaisCluster } from './config/nais-cluster';
 import { buildDirectory } from './context.js';
 import { setupDeprecatedEndpoints } from './deprecatedEndpoints.js';
-import loginRedirect from './loginRedirect';
 import expressJsonMetricHandler from './middleware/expressJsonMetricHandler';
 import globalErrorHandler from './middleware/globalErrorHandler.js';
 import httpRequestLogger from './middleware/httpRequestLogger.js';
@@ -14,6 +13,7 @@ import { stripTrailingSlash } from './middleware/stripTrailingSlash';
 import renderIndex from './renderIndex';
 import apiRouter from './routers/api/index';
 import internalRouter from './routers/internal/index.js';
+import loginRedirect from './security/loginRedirect';
 import { setupDevServer } from './setup-dev-server';
 
 export const createApp = (setupDev: boolean = false) => {

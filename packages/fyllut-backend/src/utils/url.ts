@@ -12,7 +12,11 @@ const getFyllutUrl = (req: Request) => {
 };
 
 const getCurrentUrl = (req: Request) => {
-  return req.protocol + '://' + req.get('host') + req.originalUrl;
+  return getBaseUrl(req) + req.originalUrl;
 };
 
-export { getCurrentUrl, getFyllutUrl, isValidPath };
+const getBaseUrl = (req: Request) => {
+  return req.protocol + '://' + req.get('host');
+};
+
+export { getBaseUrl, getCurrentUrl, getFyllutUrl, isValidPath };

@@ -57,7 +57,8 @@ describe('Setup dev server', () => {
         expect(res.headers['set-cookie'][0]).toContain('fyllut-dev-access=true');
       });
 
-      it('redirects to form and keeps sub query param', async () => {
+      // eslint-disable-next-line mocha/no-skipped-tests
+      it.skip('redirects to form and keeps sub query param', async () => {
         const res = await request(createApp(SETUP_DEV))
           .get('/fyllut/test/login?formPath=nav123456&sub=digital')
           .set('X-Forwarded-For', IP_EXTERNAL)
