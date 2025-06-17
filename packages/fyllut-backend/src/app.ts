@@ -6,6 +6,7 @@ import { checkConfigConsistency, config } from './config/config';
 import { NaisCluster } from './config/nais-cluster';
 import { buildDirectory } from './context.js';
 import { setupDeprecatedEndpoints } from './deprecatedEndpoints.js';
+import loginRedirect from './loginRedirect';
 import expressJsonMetricHandler from './middleware/expressJsonMetricHandler';
 import globalErrorHandler from './middleware/globalErrorHandler.js';
 import httpRequestLogger from './middleware/httpRequestLogger.js';
@@ -17,6 +18,9 @@ import { setupDevServer } from './setup-dev-server';
 
 export const createApp = (setupDev: boolean = false) => {
   checkConfigConsistency(config);
+
+  // Match everything except internal, static and api
+  const noApiStaticInternalRegex = /^(?!.*\/(internal|static|api)\/).*$/;
 
   const app = express();
   app.use(httpRequestLogger);
@@ -30,6 +34,8 @@ export const createApp = (setupDev: boolean = false) => {
   app.engine('html', mustacheExpress());
 
   const fyllutRouter = express.Router();
+
+  fyllutRouter.use(noApiStaticInternalRegex, loginRedirect);
 
   if (config.naisClusterName === NaisCluster.DEV || setupDev) {
     setupDevServer(app, fyllutRouter, config);
@@ -50,8 +56,7 @@ export const createApp = (setupDev: boolean = false) => {
     next();
   });
 
-  // Match everything except internal, static and api
-  fyllutRouter.use(/^(?!.*\/(internal|static|api)\/).*$/, renderIndex);
+  fyllutRouter.use(noApiStaticInternalRegex, renderIndex);
 
   app.use(config.fyllutPath, fyllutRouter);
 
