@@ -41,9 +41,8 @@ const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
 
     const formPath = res.locals.formId;
     let pageMeta = getDefaultPageMeta();
-
     let httpStatusCode = 200;
-    if (formPath && !config.noFormValidation) {
+    if (formPath) {
       logger.debug('Loading form...', { formPath });
       const form = await formService.loadForm(formPath);
       if (form && form.properties) {

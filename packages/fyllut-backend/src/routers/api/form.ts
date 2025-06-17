@@ -15,8 +15,8 @@ type TranslateFunction = (text: string, textReplacements?: I18nTranslationReplac
 
 const form = {
   get: async (req: Request, res: Response) => {
-    const { type, lang } = req.query;
-    const form = await formService.loadForm(req.params.formPath);
+    const { type, lang, select } = req.query;
+    const form = await formService.loadForm(req.params.formPath, select as string);
 
     if (!form || !form.properties) {
       return res.sendStatus(404);

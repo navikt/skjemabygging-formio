@@ -62,7 +62,6 @@ export type DefaultConfig = {
   idporten: IdportenConfig;
   mockIdportenPid?: string;
   mockIdportenJwt?: string;
-  noFormValidation?: boolean;
   noDecorator?: boolean;
   frontendLoggerConfig: FrontendLoggerConfigType;
   formsApiUrl: string;
