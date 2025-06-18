@@ -5,7 +5,7 @@ import IntroLinkPanel from './IntroLinkPanel';
 import { IntroPageState, useIntroPage } from './IntroPageContext';
 
 const SelectSubmissionType = () => {
-  const { setState, state } = useIntroPage();
+  const { state } = useIntroPage();
   const location = useLocation();
   const { baseUrl } = useAppConfig();
   const { translate } = useLanguages();
@@ -13,7 +13,6 @@ const SelectSubmissionType = () => {
   const selectLinkPanel = (state: IntroPageState) => {
     if (state) {
       if (state === IntroPageState.PAPER) {
-        setState(state);
         redirectToForm('paper');
       } else if (state === IntroPageState.DIGITAL) {
         redirectToForm('digital');
