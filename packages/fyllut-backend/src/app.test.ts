@@ -1,7 +1,5 @@
 import { Component, forstesideUtils, NavFormType, SubmissionType } from '@navikt/skjemadigitalisering-shared-domain';
-import { readFileSync } from 'fs';
 import nock from 'nock';
-import path from 'path';
 import request from 'supertest';
 import { createApp } from './app';
 import { config } from './config/config';
@@ -13,9 +11,6 @@ vi.mock('./dekorator.js', () => ({
 }));
 
 const { sendInnConfig, tokenx: tokenxConfig, formioApiServiceUrl } = config;
-const filePathSoknad = path.join(process.cwd(), '/src/services/documents/testdata/test-skjema.pdf');
-const soknadPdf = readFileSync(filePathSoknad);
-const encodedSoknadPdf = soknadPdf.toString('base64');
 
 describe('app', () => {
   describe('index.html', () => {
@@ -231,7 +226,7 @@ describe('app', () => {
     skjemabyggingproxyScope.done();
   });
 
-  it('Performs TokenX exchange and retrieves pdf from pdf generator before calling SendInn', async () => {
+  it('Performs TokenX exchange and retrieves pdf from exstream before calling SendInn', async () => {
     const key = await generateJwk();
     nock('https://testoidc.unittest.no')
       .get('/idporten-oidc-provider/jwk')
@@ -251,7 +246,7 @@ describe('app', () => {
       submission: { data: { fodselsnummerDNummerSoker: '12345678911' } },
       attachments: [],
       language: 'nb-NO',
-      translation: (text: string) => text,
+      translation: {},
       submissionMethod: 'digital',
       innsendingsId,
     };
@@ -259,9 +254,9 @@ describe('app', () => {
     const azureOpenidScope = nock(extractHost(azureTokenEndpoint))
       .post(extractPath(azureTokenEndpoint))
       .reply(200, { access_token: 'azure-access-token' });
-    const skjemabyggingproxyScope = nock(process.env.FAMILIE_PDF_GENERATOR_URL as string)
-      .post('/api/pdf/v1/opprett-pdf')
-      .reply(200, encodedSoknadPdf);
+    const skjemabyggingproxyScope = nock(process.env.SKJEMABYGGING_PROXY_URL as string)
+      .post('/exstream')
+      .reply(200, { data: { result: [{ content: { data: '' } }] } });
     const tokenxWellKnownScope = nock(extractHost(tokenxConfig?.wellKnownUrl))
       .get(extractPath(tokenxConfig?.wellKnownUrl))
       .reply(200, { token_endpoint: tokenxEndpoint });

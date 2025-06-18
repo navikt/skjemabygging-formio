@@ -15,7 +15,6 @@ export type SendInnConfig = {
     utfyltSoknad: string;
     prefillData: string;
     activities: string;
-    mergeFiles: string;
   };
 };
 
@@ -48,9 +47,6 @@ export type DefaultConfig = {
   decoratorUrl: string;
   skjemabyggingProxyUrl: string;
   skjemabyggingProxyClientId: string;
-  familiePdfGeneratorUrl: string;
-  familiePdfGeneratorScope: string;
-  mergePdfScope: string;
   gotenbergUrl: string;
   gotenbergUrlEn: string;
   azureOpenidTokenEndpoint: string;

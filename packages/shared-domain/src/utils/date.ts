@@ -120,31 +120,6 @@ const toSubmissionDateMonth = (date?: string, locale: string = 'nb-NO') => {
   }
 };
 
-const toCurrentDayMonthYearHourMinute = (language: string): string => {
-  const now = new Date();
-  const timeZone = 'Europe/Oslo';
-
-  const formatter = new Intl.DateTimeFormat(language, {
-    timeZone,
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: false,
-  });
-
-  const parts = formatter.formatToParts(now);
-
-  const day = parts.find((p) => p.type === 'day')?.value;
-  const month = parts.find((p) => p.type === 'month')?.value;
-  const year = parts.find((p) => p.type === 'year')?.value;
-  const hour = parts.find((p) => p.type === 'hour')?.value;
-  const minute = parts.find((p) => p.type === 'minute')?.value;
-
-  return `${day} ${month} ${year}, ${hour}:${minute}`;
-};
-
 const toJSDate = (date: string) => {
   return DateTime.fromISO(date).toJSDate();
 };
@@ -263,7 +238,6 @@ const dateUtils = {
   getDatesInRange,
   getDefaultDateFromRange,
   toLocaleDateLongMonth,
-  toCurrentDayMonthYearHourMinute,
   generateWeeklyPeriods,
   addDays,
   min,
