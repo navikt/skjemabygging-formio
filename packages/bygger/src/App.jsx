@@ -1,5 +1,5 @@
 import '@navikt/ds-css';
-import { Styles, makeStyles } from '@navikt/skjemadigitalisering-shared-components';
+import { makeStyles, Styles } from '@navikt/skjemadigitalisering-shared-components';
 import AuthenticatedApp from './AuthenticatedApp';
 import UnauthenticatedApp from './UnauthenticatedApp';
 import { useAuth } from './context/auth-context';

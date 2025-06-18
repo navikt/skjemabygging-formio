@@ -10,7 +10,7 @@
     "start": "cross-env-shell NODE_ENV=development vite",
     "start:env:test": "cross-env-shell NODE_ENV=development DOTENV_FILE=test vite",
     "build": "tsc && vite build",
-    "preview": "cross-env-shell NODE_ENV=development NO_DECORATOR=true NO_FORM_VALIDATION=true FYLLUT_BUILD_DIR=\"../../fyllut/dist\" PORT=3001 \"node bin/copyDotEnvTestToDist.js && cd dist && node server.mjs\"",
+    "preview": "cross-env-shell NODE_ENV=development NO_DECORATOR=true FYLLUT_BUILD_DIR=\"../../fyllut/dist\" PORT=3001 \"node bin/copyDotEnvTestToDist.js && cd dist && node server.mjs\"",
     "check-types": "tsc",
     "clean": "rimraf dist coverage node_modules",
     "test": "vitest --run",
@@ -54,7 +54,7 @@
     "@types/supertest": "^6.0.2",
     "nock": "^14.0.4",
     "supertest": "^7.1.0",
-    "vite-plugin-node": "^4.0.0",
+    "vite-plugin-node": "^5.0.1",
     "vite-plugin-static-copy": "^2.3.1"
   }
 }

@@ -1,0 +1,41 @@
+{
+  "id": "st-paper-digital",
+  "skjemanummer": "st-paper-digital",
+  "path": "stpaperdigital",
+  "title": "Submission Type Paper & Digital",
+  "components": [
+    {
+      "id": "e1nek8d",
+      "key": "dineOpplysninger",
+      "type": "panel",
+      "label": "Panel",
+      "title": "Dine opplysninger",
+      "breadcrumb": "default",
+      "components": [
+        {
+          "id": "ey0bewk",
+          "key": "tekstfelt",
+          "type": "textfield",
+          "validate": {
+            "required": true
+          }
+        }
+      ]
+    }
+  ],
+  "properties": {
+    "submissionTypes": [
+      "PAPER",
+      "DIGITAL"
+    ],
+    "publishedLanguages": [
+      "nb",
+      "en"
+    ]
+  },
+  "publishedLanguages": [
+    "nb",
+    "en"
+  ],
+  "status": "published"
+}

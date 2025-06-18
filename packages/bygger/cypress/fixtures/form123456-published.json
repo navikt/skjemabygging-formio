@@ -8,7 +8,7 @@
       "title": "Dine opplysninger",
       "type": "panel",
       "input": false,
-      "key": "personopplysninger",
+      "key": "dineOpplysninger",
       "theme": "default",
       "components": [
         {
@@ -3507,8 +3507,14 @@
   "properties": {
     "skjemanummer": "TST-123456",
     "tema": "DAG",
-    "submissionTypes": ["PAPER", "DIGITAL"],
-    "subsequentSubmissionTypes": ["PAPER", "DIGITAL"],
+    "submissionTypes": [
+      "PAPER",
+      "DIGITAL"
+    ],
+    "subsequentSubmissionTypes": [
+      "PAPER",
+      "DIGITAL"
+    ],
     "signatures": [
       {
         "label": "Lege",
@@ -3530,6 +3536,8 @@
   "publishedAt": "2023-01-19T13:39:47.380Z",
   "publishedBy": "testbruker@nav.no",
   "revision": 1,
-  "publishedLanguages": ["nb"],
+  "publishedLanguages": [
+    "nb"
+  ],
   "status": "published"
 }

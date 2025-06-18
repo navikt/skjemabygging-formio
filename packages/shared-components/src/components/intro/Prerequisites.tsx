@@ -1,5 +1,6 @@
 import { Heading } from '@navikt/ds-react';
 import { IntroPageSection } from '@navikt/skjemadigitalisering-shared-domain';
+import { useLanguages } from '../../context/languages';
 import IntroBulletPoints from './shared/IntroBulletPoints';
 import IntroDescription from './shared/IntroDescription';
 
@@ -9,6 +10,8 @@ interface Props {
 }
 
 const Prerequisites = ({ properties, className }: Props) => {
+  const { translate } = useLanguages();
+
   if (!properties?.title) {
     return null;
   }
@@ -16,7 +19,7 @@ const Prerequisites = ({ properties, className }: Props) => {
   return (
     <div className={className}>
       <Heading level="2" size="large" spacing>
-        {properties.title}
+        {translate(properties.title)}
       </Heading>
       <IntroDescription properties={properties} />
       <IntroBulletPoints properties={properties} />

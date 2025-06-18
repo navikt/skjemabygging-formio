@@ -7,11 +7,8 @@ import nationalIdentityNumberBuilder from '../components/extensions/national-ide
 import phoneNumberBuilder from '../components/extensions/phone-number/PhoneNumber.builder';
 import surnameBuilder from '../components/extensions/surname/Surname.builder';
 import yourInformationBuilder from '../components/groups/your-information/YourInformation.builder';
-import norskPostboksadresseSchema from '../form-builder-options/schemas/norskPostboksadresseSchema';
-import norskVegadresseSchema from '../form-builder-options/schemas/norskVegadresseSchema';
 import postnummerSchema from '../form-builder-options/schemas/postnummerSchema';
 import poststedSchema from '../form-builder-options/schemas/poststedSchema';
-import utenlandskAdresseSchema from '../form-builder-options/schemas/utenlandskAdresseSchema';
 import vegadresseSchema from '../form-builder-options/schemas/vegadresseSchema';
 
 const personGroup = {
@@ -22,18 +19,6 @@ const personGroup = {
     firstName: firstNameBuilder(),
     surname: surnameBuilder(),
     address: addressBuilder(),
-    norskVegadresse: {
-      title: 'Norsk vegadresse',
-      schema: norskVegadresseSchema(),
-    },
-    norskPostboksadresse: {
-      title: 'Norsk postboksadresse',
-      schema: norskPostboksadresseSchema(),
-    },
-    utenlandskAdresse: {
-      title: 'Utenlandsk adresse',
-      schema: utenlandskAdresseSchema(),
-    },
     streetAddress: {
       title: 'Vegadresse',
       schema: vegadresseSchema(),

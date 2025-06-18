@@ -1,9 +1,11 @@
 import {
   Address as AddressDomain,
   AddressType,
+  numberUtils,
   PrefillAddress,
   SubmissionAddress,
   TEXTS,
+  validatorUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import NavAddress, { SubmissionAddressType } from '../../../../components/address/Address';
 import { ComponentUtilsProvider } from '../../../../context/component/componentUtilsContext';
@@ -147,41 +149,86 @@ class Address extends BaseComponent {
     }
 
     const address = this.getValue() ?? ({} as AddressDomain);
-    if (this.isRequired()) {
-      if (this.getAddressType() === 'NORWEGIAN_ADDRESS') {
-        this.validateRequiredField(address, 'adresse', TEXTS.statiske.address.streetAddress);
-        this.validateRequiredField(address, 'postnummer', TEXTS.statiske.address.postalCode);
-        this.validateRequiredField(address, 'bySted', TEXTS.statiske.address.postalName);
-      } else if (this.getAddressType() === 'POST_OFFICE_BOX') {
-        this.validateRequiredField(address, 'postboks', TEXTS.statiske.address.poBox);
-        this.validateRequiredField(address, 'postnummer', TEXTS.statiske.address.postalCode);
-        this.validateRequiredField(address, 'bySted', TEXTS.statiske.address.postalName);
-      } else if (this.getAddressType() === 'FOREIGN_ADDRESS') {
-        this.validateRequiredField(address, 'adresse', TEXTS.statiske.address.streetAddress);
-        this.validateRequiredField(address, 'land', TEXTS.statiske.address.country);
-      }
+    this.validateRequiredFields(address);
+    this.validateTextInputs(address);
 
-      if (this.showAddressTypeChoice()) {
-        this.validateRequiredField(address, 'borDuINorge', TEXTS.statiske.address.livesInNorway);
-        if (address.borDuINorge === 'ja') {
-          this.validateRequiredField(
-            address,
-            'vegadresseEllerPostboksadresse',
-            TEXTS.statiske.address.yourContactAddress,
-          );
-        }
-      }
-
-      this.rerender();
-    }
+    this.rerender();
 
     return this.componentErrors.length === 0;
   }
 
+  validateRequiredFields(address: SubmissionAddress) {
+    if (!this.isRequired()) {
+      return;
+    }
+
+    if (this.getAddressType() === 'NORWEGIAN_ADDRESS') {
+      this.validateRequiredField(address, 'adresse', TEXTS.statiske.address.streetAddress);
+      this.validateRequiredField(address, 'postnummer', TEXTS.statiske.address.postalCode);
+      this.validateRequiredField(address, 'bySted', TEXTS.statiske.address.postalName);
+    } else if (this.getAddressType() === 'POST_OFFICE_BOX') {
+      this.validateRequiredField(address, 'postboks', TEXTS.statiske.address.poBox);
+      this.validateRequiredField(address, 'postnummer', TEXTS.statiske.address.postalCode);
+      this.validateRequiredField(address, 'bySted', TEXTS.statiske.address.postalName);
+    } else if (this.getAddressType() === 'FOREIGN_ADDRESS') {
+      this.validateRequiredField(address, 'adresse', TEXTS.statiske.address.streetAddressLong);
+      this.validateRequiredField(address, 'land', TEXTS.statiske.address.country);
+    }
+
+    if (this.showAddressTypeChoice()) {
+      this.validateRequiredField(address, 'borDuINorge', TEXTS.statiske.address.livesInNorway);
+      if (address.borDuINorge === 'ja') {
+        this.validateRequiredField(
+          address,
+          'vegadresseEllerPostboksadresse',
+          TEXTS.statiske.address.yourContactAddress,
+        );
+      }
+    }
+  }
+
+  validateTextInputs(address: SubmissionAddress) {
+    if (this.getAddressType() === 'NORWEGIAN_ADDRESS') {
+      this.validateTextInput(address, 'co', TEXTS.statiske.address.co.label);
+      this.validateTextInput(address, 'adresse', TEXTS.statiske.address.streetAddress);
+      this.validateNorwegianPostalCode(address['postnummer'], TEXTS.statiske.address.postalCode);
+      this.validateTextInput(address, 'bySted', TEXTS.statiske.address.postalName);
+    } else if (this.getAddressType() === 'POST_OFFICE_BOX') {
+      this.validateTextInput(address, 'co', TEXTS.statiske.address.co.label);
+      this.validateTextInput(address, 'postboks', TEXTS.statiske.address.poBox);
+      this.validateNorwegianPostalCode(address['postnummer'], TEXTS.statiske.address.postalCode);
+      this.validateTextInput(address, 'bySted', TEXTS.statiske.address.postalName);
+    } else if (this.getAddressType() === 'FOREIGN_ADDRESS') {
+      this.validateTextInput(address, 'co', TEXTS.statiske.address.co.label);
+      this.validateTextInput(address, 'adresse', TEXTS.statiske.address.streetAddressLong);
+      this.validateTextInput(address, 'bygning', TEXTS.statiske.address.building);
+      this.validateTextInput(address, 'postnummer', TEXTS.statiske.address.postalCode);
+      this.validateTextInput(address, 'bySted', TEXTS.statiske.address.location);
+      this.validateTextInput(address, 'region', TEXTS.statiske.address.region);
+    }
+  }
+
   validateRequiredField(address: SubmissionAddress, addressType: SubmissionAddressType, label: string) {
+    const elementId = `address:${addressType}`;
     if (!address[addressType]) {
-      const elementId = `address:${addressType}`;
       super.addError(this.translate('required', { field: this.translate(label) }), elementId);
+    }
+  }
+
+  validateTextInput(address: SubmissionAddress, addressType: SubmissionAddressType, label: string) {
+    const elementId = `address:${addressType}`;
+    if (!validatorUtils.isValidFoerstesideValue((address[addressType] ?? '') as string)) {
+      super.addError(this.translate('containsInvalidCharacters', { field: this.translate(label) }), elementId);
+    }
+  }
+
+  validateNorwegianPostalCode(value: string | undefined, label: string) {
+    const elementId = `address:postnummer`;
+    if (!value) {
+      return;
+    }
+    if (value.length !== 4 || !numberUtils.isValidInteger(value)) {
+      super.addError(this.translate('invalidPostalCode', { field: this.translate(label) }), elementId);
     }
   }
 

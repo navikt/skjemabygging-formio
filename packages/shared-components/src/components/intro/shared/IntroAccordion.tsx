@@ -1,5 +1,6 @@
 import { Accordion } from '@navikt/ds-react';
 import { IntroPageSection } from '@navikt/skjemadigitalisering-shared-domain';
+import { useLanguages } from '../../../context/languages';
 import IntroBulletPoints from './IntroBulletPoints';
 import IntroDescription from './IntroDescription';
 
@@ -9,13 +10,14 @@ interface Props {
 }
 
 const IntroAccordion = ({ properties, className }: Props) => {
+  const { translate } = useLanguages();
   if (!properties?.title) {
     return null;
   }
 
   return (
     <Accordion.Item className={className}>
-      <Accordion.Header>{properties.title}</Accordion.Header>
+      <Accordion.Header>{translate(properties.title)}</Accordion.Header>
       <Accordion.Content>
         <IntroDescription properties={properties} />
         <IntroBulletPoints properties={properties} />

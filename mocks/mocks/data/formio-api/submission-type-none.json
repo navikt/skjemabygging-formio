@@ -1,0 +1,38 @@
+{
+  "id": "st-none",
+  "skjemanummer": "st-none",
+  "path": "stnone",
+  "title": "Submission Type None",
+  "components": [
+    {
+      "id": "e1nek8d",
+      "key": "dineOpplysninger",
+      "type": "panel",
+      "label": "Panel",
+      "title": "Dine opplysninger",
+      "breadcrumb": "default",
+      "components": [
+        {
+          "id": "ey0bewk",
+          "key": "tekstfelt",
+          "type": "textfield",
+          "validate": {
+            "required": true
+          }
+        }
+      ]
+    }
+  ],
+  "properties": {
+    "submissionTypes": [],
+    "publishedLanguages": [
+      "nb",
+      "en"
+    ]
+  },
+  "publishedLanguages": [
+    "nb",
+    "en"
+  ],
+  "status": "published"
+}

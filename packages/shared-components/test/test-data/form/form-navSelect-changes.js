@@ -140,7 +140,7 @@ const form = {
       title: 'Dine opplysninger',
       type: 'panel',
       input: false,
-      key: 'personopplysninger',
+      key: 'dineOpplysninger',
       theme: 'default',
       components: [
         {

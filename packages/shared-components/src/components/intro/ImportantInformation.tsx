@@ -1,4 +1,6 @@
 import { Alert, Heading } from '@navikt/ds-react';
+import { useLanguages } from '../../context/languages';
+import InnerHtmlLong from '../inner-html/InnerHtmlLong';
 
 interface Props {
   title?: string;
@@ -7,6 +9,7 @@ interface Props {
 }
 
 const ImportantInformation = ({ title, description, className }: Props) => {
+  const { translate } = useLanguages();
   if (!description) {
     return null;
   }
@@ -15,10 +18,10 @@ const ImportantInformation = ({ title, description, className }: Props) => {
     <Alert variant="info" className={className}>
       {title && (
         <Heading level="2" size="small" spacing>
-          {title}
+          {translate(title)}
         </Heading>
       )}
-      {description}
+      <InnerHtmlLong content={translate(description)} />
     </Alert>
   );
 };
