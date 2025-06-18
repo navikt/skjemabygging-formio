@@ -1,4 +1,5 @@
 import {
+  DeclarationType,
   FormPropertiesType,
   NavFormType,
   Submission,
@@ -263,6 +264,34 @@ describe('htmlBuilder', () => {
         expect(bodyElement).toContain(`<div class="spm">Multiple choice</div>
 <div class="svar">: Abc</div><div class="svar">: Def</div><div class="svar">: Ghi</div>`);
       });
+    });
+  });
+
+  const createForm = (introPage?: Partial<NavFormType['introPage']>, properties?: Partial<FormPropertiesType>) =>
+    ({
+      title: 'Abc def',
+      components: [],
+      properties: { signatures: [], ...properties },
+      introPage,
+    }) as unknown as NavFormType;
+
+  describe('Declaration', () => {
+    it('self declaration text from dynamic intro page is displayed when introPage is enabled', () => {
+      const form = createForm({ enabled: true, selfDeclaration: 'introPage.selfDeclaration.description.alt1' });
+      const html = createHtmlFromSubmission(form, { data: {} } as Submission, 'digital', mockTranslate);
+
+      expect(html).toContain('<h2>Erklæring</h2>');
+      expect(html).toContain('Jeg bekrefter at jeg vil svare så riktig som jeg kan');
+      expect(html).not.toContain('Jeg bekrefter at opplysningene er riktige.');
+    });
+
+    it('self declaration text from static page is displayed when introPage is disabled', () => {
+      const form = createForm(undefined, { declarationType: DeclarationType.default });
+      const html = createHtmlFromSubmission(form, { data: {} } as Submission, 'digital', mockTranslate);
+
+      expect(html).toContain('<h2>Erklæring</h2>');
+      expect(html).not.toContain('Jeg bekrefter at jeg vil svare så riktig som jeg kan');
+      expect(html).toContain('Jeg bekrefter at opplysningene er riktige.');
     });
   });
 
