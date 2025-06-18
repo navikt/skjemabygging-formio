@@ -8,7 +8,7 @@ import { mockNext, mockRequest, mockResponse } from '../../test/requestTestHelpe
 import documents from '../../routers/api/documents/documents';
 import * as mottaksadresser from '../../routers/api/mottaksadresser';
 
-const { skjemabyggingProxyUrl, formsApiUrl, familiePdfGeneratorUrl, sendInnConfig } = config;
+const { skjemabyggingProxyUrl, formsApiUrl } = config;
 
 const addresses = [
   {
@@ -62,28 +62,23 @@ describe('[endpoint] documents', () => {
     const encodedForstesidedPdf = forstesidePdf.toString('base64');
     const encodedSoknadPdf = soknadPdf.toString('base64');
 
-    const mockAzureAccessTokenHandler = vi.fn((scope: string) => {
-      return `mock-token-for:${scope}`;
-    });
     const recipientsMock = nock(formsApiUrl).get('/v1/recipients').reply(200, []);
     const generateFileMock = nock(skjemabyggingProxyUrl!)
       .post('/foersteside')
       .reply(200, { foersteside: encodedForstesidedPdf });
-    const skjemabyggingproxyScope = nock(familiePdfGeneratorUrl!)
-      .post('/api/pdf/v1/opprett-pdf')
-      .reply(200, encodedSoknadPdf);
+    const skjemabyggingproxyScope = nock(process.env.SKJEMABYGGING_PROXY_URL as string)
+      .post('/exstream')
+      .reply(200, { data: { result: [{ content: { data: encodedSoknadPdf } }] } });
 
-    const mergePdfScope = nock(sendInnConfig.host!)
-      .intercept('/fyllUt/v1/merge-filer', 'POST', (body) => {
+    const mergePdfScope = nock(process.env.GOTENBERG_URL as string)
+      .intercept('/forms/libreoffice/convert', 'POST', (body) => {
         return body != null;
       })
       .reply(200, mergedPdf, { 'content-type': 'application/pdf' });
 
     const req = mockRequest({
       headers: {
-        AzureAccessToken: mockAzureAccessTokenHandler('AzureAccessToken'),
-        PdfAccessToken: mockAzureAccessTokenHandler('azurePdfGeneratorToken'),
-        MergePdfToken: mockAzureAccessTokenHandler('azureMergePdfToken'),
+        AzureAccessToken: '',
       },
       body: {
         form: JSON.stringify({
@@ -124,29 +119,24 @@ describe('[endpoint] documents', () => {
     const mergedPdf = readFileSync(filePathMerged);
     const encodedForstesidedPdf = forstesidePdf.toString('base64');
     const encodedSoknadPdf = soknadPdf.toString('base64');
-    const mockAzureAccessTokenHandler = vi.fn((scope: string) => {
-      return `mock-token-for:${scope}`;
-    });
 
     const recipientsMock = nock(formsApiUrl).get('/v1/recipients').reply(200, []);
     const generateFileMock = nock(skjemabyggingProxyUrl!)
       .post('/foersteside')
       .reply(200, { foersteside: encodedForstesidedPdf });
-    const skjemabyggingproxyScope = nock(familiePdfGeneratorUrl!)
-      .post('/api/pdf/v1/opprett-pdf')
-      .reply(200, encodedSoknadPdf);
+    const skjemabyggingproxyScope = nock(process.env.SKJEMABYGGING_PROXY_URL as string)
+      .post('/exstream')
+      .reply(200, { data: { result: [{ content: { data: encodedSoknadPdf } }] } });
 
-    const mergePdfScope = nock(sendInnConfig.host!)
-      .intercept('/fyllUt/v1/merge-filer', 'POST', (body) => {
+    const mergePdfScope = nock(process.env.GOTENBERG_URL_EN as string)
+      .intercept('/forms/libreoffice/convert', 'POST', (body) => {
         return body != null;
       })
       .reply(200, mergedPdf, { 'content-type': 'application/pdf' });
 
     const req = mockRequest({
       headers: {
-        AzureAccessToken: mockAzureAccessTokenHandler('AzureAccessTokenToken'),
-        PdfAccessToken: mockAzureAccessTokenHandler('azurePdfGeneratorToken'),
-        MergePdfToken: mockAzureAccessTokenHandler('azureMergePdfToken'),
+        AzureAccessToken: '',
       },
       body: {
         form: JSON.stringify({

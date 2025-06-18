@@ -17,7 +17,7 @@ describe('Pdf when digital submission', () => {
 
   describe('Html content is as expected', () => {
     it('bokmaal', () => {
-      cy.mocksUseRouteVariant('post-familie-pdf:verify-nav111221b-nb');
+      cy.mocksUseRouteVariant('post-exstream-pdf:verify-nav111221b-nb');
       cy.mocksUseRouteVariant('get-activities:success');
       cy.submitMellomlagring((req) => {
         expect(req.body.attachments).to.have.length(0);
@@ -112,7 +112,7 @@ describe('Pdf when digital submission', () => {
     });
 
     it('nynorsk', () => {
-      cy.mocksUseRouteVariant('post-familie-pdf:verify-nav111221b-nn');
+      cy.mocksUseRouteVariant('post-exstream-pdf:verify-nav111221b-nn');
       cy.mocksUseRouteVariant('get-activities:success');
       cy.submitMellomlagring((req) => {
         expect(req.body.attachments).to.have.length(0);

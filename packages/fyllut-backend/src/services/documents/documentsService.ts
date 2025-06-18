@@ -6,12 +6,11 @@ import {
   Submission,
   translationUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
-import { logger } from '../../logger';
 import { base64Decode } from '../../utils/base64';
 import { htmlResponseError } from '../../utils/errorHandling';
 import applicationService from './applicationService';
 import coverPageService from './coverPageService';
-import { mergeFrontPageAndApplication } from './mergeFilesService';
+import { mergeFiles } from './gotenbergService';
 
 interface ApplicationProps {
   accessToken: string;
@@ -25,7 +24,7 @@ interface ApplicationProps {
 const application = async (props: CoverPageAndApplicationProps) => {
   const { accessToken, form, submission, language, translations, submissionMethod } = props;
 
-  const applicationPdf = await applicationService.createPdfFromFieldMap(
+  const applicationResponse: any = await applicationService.createPdf(
     accessToken,
     form,
     submission,
@@ -33,6 +32,8 @@ const application = async (props: CoverPageAndApplicationProps) => {
     createTranslate(translations, language),
     language,
   );
+
+  const applicationPdf = base64Decode(applicationResponse.data);
 
   if (applicationPdf === undefined) {
     throw htmlResponseError('Generering av søknads PDF feilet');
@@ -42,23 +43,11 @@ const application = async (props: CoverPageAndApplicationProps) => {
 };
 
 interface CoverPageAndApplicationProps extends ApplicationProps {
-  pdfGeneratorAccessToken;
-  mergePdfAccessToken: string;
   unitNumber: string;
 }
 
 const coverPageAndApplication = async (props: CoverPageAndApplicationProps) => {
-  const {
-    accessToken,
-    pdfGeneratorAccessToken,
-    form,
-    submission,
-    language,
-    unitNumber,
-    translations,
-    submissionMethod,
-    mergePdfAccessToken,
-  } = props;
+  const { accessToken, form, submission, language, unitNumber, translations, submissionMethod } = props;
 
   const [coverPageResponse, applicationResponse] = await Promise.all([
     coverPageService.createPdf({
@@ -69,8 +58,8 @@ const coverPageAndApplication = async (props: CoverPageAndApplicationProps) => {
       language,
       unitNumber,
     }),
-    applicationService.createPdfFromFieldMap(
-      pdfGeneratorAccessToken,
+    applicationService.createPdf(
+      accessToken,
       form,
       submission,
       submissionMethod,
@@ -85,24 +74,21 @@ const coverPageAndApplication = async (props: CoverPageAndApplicationProps) => {
     throw htmlResponseError('Generering av førstesideark PDF feilet');
   }
 
-  const applicationPdf = applicationResponse;
+  const applicationPdf = base64Decode(applicationResponse.data);
 
   if (applicationPdf === undefined) {
     throw htmlResponseError('Generering av søknads PDF feilet');
   }
 
-  const mergedFile = await mergeFrontPageAndApplication(
-    mergePdfAccessToken,
+  const documents = [coverPagePdf, applicationPdf];
+
+  const mergedFile = await mergeFiles(
+    coverPageResponse.navSkjemaId,
     coverPageResponse.overskriftstittel,
     language,
-    coverPagePdf,
-    applicationPdf,
+    documents,
+    { pdfa: true, pdfua: true },
   );
-  logger.info(`Request to merge front page and application completed`, {});
-
-  if (mergedFile === undefined) {
-    throw htmlResponseError('Sammenslåing av forside og søknad feilet');
-  }
 
   return Buffer.from(new Uint8Array(mergedFile));
 };
