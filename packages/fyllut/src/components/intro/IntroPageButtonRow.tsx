@@ -1,6 +1,6 @@
 import { ArrowLeftIcon, ArrowRightIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
-import { formUtils, useAppConfig, useLanguages } from '@navikt/skjemadigitalisering-shared-components';
+import { useAppConfig, useLanguages } from '@navikt/skjemadigitalisering-shared-components';
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useNavigate, useResolvedPath, useSearchParams } from 'react-router-dom';
 import { IntroPageState, useIntroPage } from './IntroPageContext';
@@ -12,10 +12,9 @@ const IntroPageButtonRow = () => {
   const formUrl = useResolvedPath('').pathname;
   const { form, state } = useIntroPage();
   const innsendingsIdFromUrl = searchParams.get('innsendingsId');
-  const firstPanelSlug = formUtils.getPanelSlug(form, 0);
   const { baseUrl, submissionMethod } = useAppConfig();
 
-  const startUrl = `${formUrl}/${innsendingsIdFromUrl ? 'oppsummering' : firstPanelSlug}`;
+  const startUrl = `${formUrl}/${innsendingsIdFromUrl ? 'oppsummering' : form.firstPanelSlug}`;
 
   const navigateToFormPage = (event) => {
     event.preventDefault();
