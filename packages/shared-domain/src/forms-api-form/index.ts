@@ -26,6 +26,7 @@ type Form = {
   publishedLanguages?: string[];
   status?: FormStatus;
   lock?: FormLock;
+  firstPanelSlug?: string;
 };
 
 export type { Form, FormStatus };
