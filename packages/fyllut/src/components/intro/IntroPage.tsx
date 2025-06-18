@@ -29,7 +29,7 @@ const IntroPage = () => {
     }
     setLoading(true);
     try {
-      const formData = await get(formPath, 'title,skjemanummer,introPage,properties');
+      const formData = await get(formPath, 'title,skjemanummer,introPage,properties,firstPanelSlug');
       if (formData) {
         setForm(formData);
       }
