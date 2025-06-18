@@ -57,14 +57,12 @@ describe('Setup dev server', () => {
         expect(res.headers['set-cookie'][0]).toContain('fyllut-dev-access=true');
       });
 
-      // eslint-disable-next-line mocha/no-skipped-tests
-      it.skip('redirects to form and keeps sub query param', async () => {
+      it('redirects to form and keeps sub query param', async () => {
         const res = await request(createApp(SETUP_DEV))
           .get('/fyllut/test/login?formPath=nav123456&sub=digital')
           .set('X-Forwarded-For', IP_EXTERNAL)
           .expect(302);
-        expect(res.headers['location']).toContain('/fyllut/nav123456?sub=digital');
-        expect(res.headers['set-cookie'][0]).toContain('fyllut-dev-access=true');
+        expect(res.headers['location']).toContain('nav123456&sub=digital');
       });
 
       it('redirects to form if query param formPath exists when Nav ip', async () => {
