@@ -65,6 +65,7 @@ export const grensesnitt = {
     sendOnPaper: 'Fyll ut digitalt og send i posten',
     sendOnPaperDescription: 'Du fyller ut søknaden før du skriver den ut.',
     selfDeclaration: 'Jeg bekrefter at jeg vil svare så riktig som jeg kan',
+    selfDeclarationValidationError: 'Du må bekrefte at du vil svare så riktig som du kan.',
     start: 'Start',
   },
   summaryPage: {
