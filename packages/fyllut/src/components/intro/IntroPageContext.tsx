@@ -6,6 +6,7 @@ export enum IntroPageState {
   NONE = 'none',
   PAPER = 'paper',
   DIGITAL = 'digital',
+  UADIGITAL = 'uadigital',
 }
 
 interface IntroPageContextType {
