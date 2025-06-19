@@ -177,7 +177,7 @@ const introPage: KeyBasedFormsApiTranslation[] = [
   },
   {
     key: 'introPage.selfDeclaration.inputLabel',
-    nb: 'Jeg bekrefter at jeg vil svare så riktig som jeg kan',
+    nb: 'Jeg bekrefter at jeg vil svare så riktig som jeg kan.',
     nn: '',
     en: '',
   },
