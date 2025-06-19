@@ -2,6 +2,18 @@ import { KeyBasedFormsApiTranslation } from './index';
 
 const introPage: KeyBasedFormsApiTranslation[] = [
   {
+    key: 'introPage.guidePanel.hi',
+    nb: 'Hei!',
+    nn: 'Hei!',
+    en: 'Hi!',
+  },
+  {
+    key: 'introPage.guidePanel.hiPersonalized',
+    nb: 'Hei, {{name}}!',
+    nn: 'Hei, {{name}}!',
+    en: 'Hi, {{name}}!',
+  },
+  {
     key: 'introPage.scope.title.alt1',
     nb: 'Her kan du søke om',
     nn: 'Her kan du søke om',
