@@ -54,6 +54,8 @@ const bunntekst: EkstraBunntekst = {
   lowerMiddle: 'git version',
 };
 
+const filePathDrivingList = path.join(process.cwd(), '/src/services/documents/testdata/drivinglist.json');
+
 describe('feltMapBuilder', () => {
   describe('createfeltMapFromSubmission', () => {
     const formWithTitle = {
@@ -247,10 +249,7 @@ describe('feltMapBuilder', () => {
     let feltMapString: string;
 
     beforeEach(() => {
-      const symmaryList = readFileSync(
-        path.join(process.cwd(), '/src/services/documents/testdata/drivingList.json'),
-        'utf-8',
-      );
+      const symmaryList = readFileSync(filePathDrivingList, 'utf-8');
       const verdiliste = createVerdilister(JSON.parse(symmaryList) as SummaryPanel[]);
       const feltMap: FeltMap = {
         label: 'title',
