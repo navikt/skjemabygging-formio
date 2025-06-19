@@ -9,7 +9,7 @@ const form = {
       type: 'panel',
       input: false,
       title: 'Dine opplysninger',
-      key: 'personopplysninger',
+      key: 'dineOpplysninger',
       theme: 'default',
       components: [
         {

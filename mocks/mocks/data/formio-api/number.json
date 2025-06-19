@@ -5,15 +5,23 @@
   "path": "testingnumber",
   "type": "form",
   "display": "wizard",
-  "tags": ["nav-skjema", ""],
+  "tags": [
+    "nav-skjema",
+    ""
+  ],
   "access": [
     {
       "type": "read_all",
-      "roles": ["000000000000000000000000"]
+      "roles": [
+        "000000000000000000000000"
+      ]
     },
     {
       "type": "update_all",
-      "roles": ["628ca77305690db58c974d04", "628ca77305690db58c974d09"]
+      "roles": [
+        "628ca77305690db58c974d04",
+        "628ca77305690db58c974d09"
+      ]
     }
   ],
   "owner": "S167682",
@@ -27,7 +35,7 @@
       },
       "customConditional": "",
       "title": "Heltall",
-      "key": "personopplysninger",
+      "key": "dineOpplysninger",
       "type": "panel",
       "input": false,
       "components": [
@@ -932,8 +940,14 @@
   "properties": {
     "skjemanummer": "testing-number",
     "tema": "AGR",
-    "submissionTypes": ["PAPER", "DIGITAL"],
-    "subsequentSubmissionTypes": ["PAPER", "DIGITAL"],
+    "submissionTypes": [
+      "PAPER",
+      "DIGITAL"
+    ],
+    "subsequentSubmissionTypes": [
+      "PAPER",
+      "DIGITAL"
+    ],
     "signatures": [
       {
         "label": "",

@@ -134,7 +134,7 @@ describe('Submission Type', () => {
     it('Missing sub paper or digital (INCLUDE_DIST_TESTS)', () => {
       cy.skipIfNoIncludeDistTests();
 
-      cy.visit('/fyllut/stpaperdigital/personopplysninger');
+      cy.visit('/fyllut/stpaperdigital/dineOpplysninger');
       cy.defaultWaits();
 
       cy.findByRole('heading', { name: 'Dine opplysninger' }).should('not.exist');

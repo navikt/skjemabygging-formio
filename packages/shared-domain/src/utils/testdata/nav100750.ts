@@ -261,7 +261,7 @@ const form: any = {
       hideLabel: false,
       disabled: false,
       modalEdit: false,
-      key: 'personopplysninger',
+      key: 'dineOpplysninger',
       tags: [],
       properties: {},
       customConditional: '',

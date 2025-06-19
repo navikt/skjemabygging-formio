@@ -6,7 +6,7 @@
   "components": [
     {
       "id": "e1nek8d",
-      "key": "personopplysninger",
+      "key": "dineOpplysninger",
       "type": "panel",
       "label": "Panel",
       "title": "Dine opplysninger",

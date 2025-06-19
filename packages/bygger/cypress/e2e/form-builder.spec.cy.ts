@@ -223,7 +223,7 @@ describe('Form Builder', () => {
           editFornavnComponent.click({ force: true }),
         );
         cy.findByRole('tab', { name: 'API' }).click();
-        cy.findByDisplayValue('fornavnSoker').type('{selectall}personopplysninger');
+        cy.findByDisplayValue('fornavnSoker').type('{selectall}dineOpplysninger');
         cy.get('[data-testid="editorSaveButton"]').click();
       });
 
@@ -231,7 +231,7 @@ describe('Form Builder', () => {
       it('should show error message stating duplicate API key', () => {
         // We get one error message on TextField and one from formio in Panel.
         // The Panel component uses old templates, that is the reason the error is not correct format.
-        cy.findAllByText('API Key is not unique: personopplysninger').should('have.length', 2);
+        cy.findAllByText('API Key is not unique: dineOpplysninger').should('have.length', 2);
       });
 
       it('should not remove panel when changing components key to something else', () => {
@@ -239,7 +239,7 @@ describe('Form Builder', () => {
           editFornavnComponent.click({ force: true }),
         );
         cy.findByRole('tab', { name: 'API' }).click();
-        cy.findByDisplayValue('personopplysninger').type('Component');
+        cy.findByDisplayValue('dineOpplysninger').type('Component');
         cy.get('[data-testid="editorSaveButton"]').click();
 
         cy.findByRole('link', { name: 'Dine opplysninger' }).should('exist');
