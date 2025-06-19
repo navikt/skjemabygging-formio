@@ -13,10 +13,14 @@ import { stripTrailingSlash } from './middleware/stripTrailingSlash';
 import renderIndex from './renderIndex';
 import apiRouter from './routers/api/index';
 import internalRouter from './routers/internal/index.js';
+import loginRedirect from './security/loginRedirect';
 import { setupDevServer } from './setup-dev-server';
 
 export const createApp = (setupDev: boolean = false) => {
   checkConfigConsistency(config);
+
+  // Match everything except internal, static and api
+  const noApiStaticInternalRegex = /^(?!.*\/(internal|static|api)\/).*$/;
 
   const app = express();
   app.use(httpRequestLogger);
@@ -50,8 +54,8 @@ export const createApp = (setupDev: boolean = false) => {
     next();
   });
 
-  // Match everything except internal, static and api
-  fyllutRouter.use(/^(?!.*\/(internal|static|api)\/).*$/, renderIndex);
+  fyllutRouter.use(noApiStaticInternalRegex, loginRedirect);
+  fyllutRouter.use(noApiStaticInternalRegex, renderIndex);
 
   app.use(config.fyllutPath, fyllutRouter);
 

@@ -1,30 +1,29 @@
 import { useAppConfig, useLanguages } from '@navikt/skjemadigitalisering-shared-components';
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { useLocation, useSearchParams } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import IntroLinkPanel from './IntroLinkPanel';
 import { IntroPageState, useIntroPage } from './IntroPageContext';
 
 const SelectSubmissionType = () => {
-  const { setState, state } = useIntroPage();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const { state } = useIntroPage();
   const location = useLocation();
   const { baseUrl } = useAppConfig();
   const { translate } = useLanguages();
 
   const selectLinkPanel = (state: IntroPageState) => {
-    setState(state);
     if (state) {
       if (state === IntroPageState.PAPER) {
-        updateSubParam('paper');
+        redirectToForm('paper');
       } else if (state === IntroPageState.DIGITAL) {
-        updateSubParam('digital');
+        redirectToForm('digital');
       }
     }
   };
 
-  const updateSubParam = (value: string) => {
-    searchParams.set('sub', value);
-    setSearchParams(searchParams);
+  const redirectToForm = (sub: string) => {
+    // Important to force redirect to force idporten redirect if sub=digital
+    // and to make sure appCondig have the correct submissionMethod
+    window.location.href = `${baseUrl}${location.pathname}${location.search ? `${location.search}&sub=${sub}` : `?sub=${sub}`}`;
   };
 
   if (state) return;
