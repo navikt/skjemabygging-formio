@@ -160,10 +160,6 @@ const createPdfFromFieldMap = async (
   translate: (text: string, textReplacements?: I18nTranslationReplacements) => string,
   language: string,
 ) => {
-  if (!['nb-NO', 'nn-NO', 'en'].includes(language)) {
-    logger.warn(`Language code "${language}" is not supported. Language code will be defaulted to "nb".`);
-  }
-
   const yourInformation = yourInformationUtils.getYourInformation(form, submission.data);
 
   let identityNumber: string;

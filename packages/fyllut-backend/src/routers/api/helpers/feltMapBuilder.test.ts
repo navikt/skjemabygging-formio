@@ -9,6 +9,8 @@ import {
   SummaryPanel,
   SummarySubmissionValue,
 } from '@navikt/skjemadigitalisering-shared-domain';
+import { readFileSync } from 'fs';
+import path from 'path';
 import { EkstraBunntekst, FeltMap } from '../../../types/familiepdf/feltMapTypes';
 import { conditionalsForm, conditionalsSubmission } from '../testdata/conditionals';
 import { createFeltMapFromSubmission, createVerdilister } from './feltMapBuilder';
@@ -51,6 +53,8 @@ const bunntekst: EkstraBunntekst = {
   lowerleft: 'skjemanr',
   lowerMiddle: 'git version',
 };
+
+const filePathDrivingList = path.join(process.cwd(), '/src/services/documents/testdata/drivinglist.json');
 
 describe('feltMapBuilder', () => {
   describe('createfeltMapFromSubmission', () => {
@@ -238,6 +242,30 @@ describe('feltMapBuilder', () => {
           expect(feltMapString).toContain('value');
         });
       });
+    });
+  });
+
+  describe('For drivingList', () => {
+    let feltMapString: string;
+
+    beforeEach(() => {
+      const symmaryList = readFileSync(filePathDrivingList, 'utf-8');
+      const verdiliste = createVerdilister(JSON.parse(symmaryList) as SummaryPanel[]);
+      const feltMap: FeltMap = {
+        label: 'title',
+        pdfConfig: { harInnholdsfortegnelse: false, språk: 'nb' },
+        skjemanummer: 'NAV 11-12.15B',
+        verdiliste: verdiliste,
+        bunntekst,
+      };
+      feltMapString = JSON.stringify(feltMap);
+    });
+
+    it('feltMap contains expected data', () => {
+      expect(feltMapString).toContain('2025-06-03');
+      expect(feltMapString).toContain('tirsdag 03. juni 2025, parkeringsutgift: 100 kr');
+      expect(feltMapString).toContain('2025-06-04');
+      expect(feltMapString).toContain('onsdag 04. juni 2025, parkeringsutgift: 100 kr');
     });
   });
 });

@@ -214,14 +214,22 @@ const activityMap = (component: SummaryActivity): VerdilisteElement => {
 const drivingListMap = (component): VerdilisteElement => {
   return {
     label: component.label,
-    verdi: `${component.value.description}`,
-    verdiliste: component.dates.map((date) => {
-      return { label: date.key, value: date.text };
+    verdi: component.value.description,
+    verdiliste: component.value.dates.map((date) => {
+      return drivingListDay(date.key, date.text);
     }),
     visningsVariant: null,
   };
 };
 
+const drivingListDay = (label: string, value: string): VerdilisteElement => {
+  return {
+    label: label,
+    verdi: value,
+    verdiliste: null,
+    visningsVariant: null,
+  };
+};
 const addressMap = (component: SummaryAddress): VerdilisteElement => {
   return {
     label: component.label,
