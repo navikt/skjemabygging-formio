@@ -1,9 +1,10 @@
 import { Accordion } from '@navikt/ds-react';
-import { Intro, useLanguages } from '@navikt/skjemadigitalisering-shared-components';
+import { Intro, useAppConfig, useLanguages } from '@navikt/skjemadigitalisering-shared-components';
 import IntroPageButtonRow from './IntroPageButtonRow';
 import { useIntroPage } from './IntroPageContext';
 
 const IntroPageDynamic = () => {
+  const { submissionMethod } = useAppConfig();
   const { translate } = useLanguages();
   const { form, state } = useIntroPage();
 
@@ -24,7 +25,7 @@ const IntroPageDynamic = () => {
       <Accordion className="mb">
         <Intro.DataDisclosure properties={form.introPage?.sections?.dataDisclosure} translate={translate} />
         <Intro.DataTreatment properties={form.introPage?.sections?.dataTreatment} translate={translate} />
-        <Intro.DataStorage properties={form.introPage?.sections?.dataStorage} translate={translate} />
+        <Intro.DataStorage translate={translate} submissionMethod={submissionMethod} />
         <Intro.AutomaticProcessing properties={form.introPage?.sections?.automaticProcessing} translate={translate} />
         <Intro.Optional properties={form.introPage?.sections?.optional} translate={translate} />
       </Accordion>

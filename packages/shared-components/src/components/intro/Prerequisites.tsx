@@ -1,22 +1,21 @@
 import { Heading } from '@navikt/ds-react';
 import { IntroPageSection, Tkey } from '@navikt/skjemadigitalisering-shared-domain';
-import { useAppConfig } from '../../context/config/configContext';
 import IntroBulletPoints from './shared/IntroBulletPoints';
 import IntroDescription from './shared/IntroDescription';
 
 interface Props {
   properties?: IntroPageSection;
   translate: (key?: string) => string;
+  submissionMethod?: 'paper' | 'digital';
   className?: string;
 }
 
-const Prerequisites = ({ properties, translate, className }: Props) => {
-  const { app, submissionMethod } = useAppConfig();
+const Prerequisites = ({ properties, translate, submissionMethod, className }: Props) => {
   if (!properties?.title) {
     return null;
   }
 
-  const isPaperSubmission = submissionMethod === 'paper' || app === 'bygger';
+  const isPaperSubmission = submissionMethod === 'paper';
 
   const paperBulletPoints: Tkey[] = isPaperSubmission ? ['introPage.prerequisites.sendByMail'] : [];
   const staticBulletPoints: Tkey[] = [

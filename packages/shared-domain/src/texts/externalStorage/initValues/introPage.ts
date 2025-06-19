@@ -104,6 +104,12 @@ const introPage: KeyBasedFormsApiTranslation[] = [
     en: 'In addition to the information you provide, we collect:',
   },
   {
+    key: 'introPage.dataDisclosure.nationalPopulationRegister',
+    nb: 'Person- og adresseinformasjon fra Folkeregisteret',
+    nn: '',
+    en: '',
+  },
+  {
     key: 'introPage.dataTreatment.title',
     nb: 'Hvordan vi behandler personopplysninger',
     nn: 'Hvordan vi behandler personopplysninger',
@@ -132,6 +138,12 @@ const introPage: KeyBasedFormsApiTranslation[] = [
     nb: 'Vi lagrer et utkast av skjemaet automatisk hver gang du går til neste steg. Du finner utkastet på Min side. Nav kan ikke se informasjonen i utkastet. Du må trykke på “Send til Nav” for at Nav skal motta skjemaet/søknaden.',
     nn: '',
     en: '',
+  },
+  {
+    key: 'introPage.automaticProcessing.title',
+    nb: 'Automatisk saksbehandling',
+    nn: 'Automatisk saksbehandling',
+    en: 'Automatic processing',
   },
   {
     key: 'introPage.dataTreatment.readMore',
