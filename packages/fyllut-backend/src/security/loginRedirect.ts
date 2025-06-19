@@ -12,12 +12,10 @@ const loginRedirect = (req, res, next) => {
 
       if (sub === 'digital' && !authHeader) {
         return res.redirect(`${getBaseUrl(req)}/fyllut/oauth2/login?redirect=${getCurrentUrl(req)}`);
-      } else {
-        next();
       }
-    } else {
-      next();
     }
+
+    next();
   } catch (err: any) {
     next(err);
   }

@@ -35,8 +35,6 @@ export const createApp = (setupDev: boolean = false) => {
 
   const fyllutRouter = express.Router();
 
-  fyllutRouter.use(noApiStaticInternalRegex, loginRedirect);
-
   if (config.naisClusterName === NaisCluster.DEV || setupDev) {
     setupDevServer(app, fyllutRouter, config);
   }
@@ -56,6 +54,7 @@ export const createApp = (setupDev: boolean = false) => {
     next();
   });
 
+  fyllutRouter.use(noApiStaticInternalRegex, loginRedirect);
   fyllutRouter.use(noApiStaticInternalRegex, renderIndex);
 
   app.use(config.fyllutPath, fyllutRouter);
