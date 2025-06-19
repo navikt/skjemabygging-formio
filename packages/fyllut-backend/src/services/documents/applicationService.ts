@@ -8,13 +8,14 @@ import {
 import correlator from 'express-correlation-id';
 import { config } from '../../config/config';
 import { logger } from '../../logger';
+import { createFeltMapFromSubmission } from '../../routers/api/helpers/feltMapBuilder';
 import { createHtmlFromSubmission } from '../../routers/api/helpers/htmlBuilder';
 import { base64Decode, base64Encode } from '../../utils/base64';
 import { responseToError, synchronousResponseToError } from '../../utils/errorHandling';
 import fetchWithRetry, { HeadersInit } from '../../utils/fetchWithRetry';
 import { appMetrics } from '../index';
 
-const { skjemabyggingProxyUrl, gitVersion } = config;
+const { skjemabyggingProxyUrl, gitVersion, familiePdfGeneratorUrl } = config;
 
 const createPdfAsByteArray = async (
   accessToken: string,
@@ -151,9 +152,58 @@ const createPdfFromHtml = async (
   throw await responseToError(response, 'Feil ved generering av PDF hos Exstream', true);
 };
 
+const createPdfFromFieldMap = async (
+  accessToken: string,
+  form: NavFormType,
+  submission: Submission,
+  submissionMethod: string,
+  translate: (text: string, textReplacements?: I18nTranslationReplacements) => string,
+  language: string,
+) => {
+  if (!['nb-NO', 'nn-NO', 'en'].includes(language)) {
+    logger.warn(`Language code "${language}" is not supported. Language code will be defaulted to "nb".`);
+  }
+
+  const yourInformation = yourInformationUtils.getYourInformation(form, submission.data);
+
+  let identityNumber: string;
+  if (yourInformation?.identitet?.identitetsnummer) {
+    identityNumber = yourInformation.identitet.identitetsnummer;
+  } else if (submission.data.fodselsnummerDNummerSoker) {
+    // This is the old format of the object, which is still used in some forms.
+    identityNumber = submission.data.fodselsnummerDNummerSoker as string;
+  } else {
+    identityNumber = '—';
+  }
+
+  logger.info(`Creating PDF from field map, calling ${familiePdfGeneratorUrl}/api/pdf/v1/opprett-pdf`);
+  const response = await fetchWithRetry(`${familiePdfGeneratorUrl}/api/pdf/v1/opprett-pdf`, {
+    retry: 3,
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      'x-correlation-id': correlator.getId(),
+      'Content-Type': 'application/json',
+      accept: '*/*',
+    } as HeadersInit,
+    method: 'POST',
+    body: createFeltMapFromSubmission(form, submission, submissionMethod, translate, language, identityNumber),
+  });
+
+  if (response.ok) {
+    logger.info(`Request to familie pdf service completed`, {});
+
+    return Buffer.from(await response.arrayBuffer());
+  }
+
+  logger.error(`Request to familie pdf service failed`, {});
+
+  throw synchronousResponseToError('Feil ved generering av PDF via feltMap', {}, response.status, response.url, true);
+};
+
 const applicationService = {
   createPdf,
   createPdfAsByteArray,
+  createPdfFromFieldMap,
 };
 
 export default applicationService;

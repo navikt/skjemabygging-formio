@@ -1,12 +1,17 @@
-import { localizationUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  I18nTranslationMap,
+  I18nTranslationReplacements,
+  localizationUtils,
+  translationUtils,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import { NextFunction, Request, Response } from 'express';
 import fetch from 'node-fetch';
 import { config } from '../../config/config';
 import { logger } from '../../logger';
 import { getIdportenPid, getTokenxAccessToken } from '../../security/tokenHelper';
+import applicationService from '../../services/documents/applicationService';
 import { responseToError } from '../../utils/errorHandling';
 import { getFyllutUrl } from '../../utils/url';
-import { createPdfAsByteArray } from './helpers/pdfService';
 import { assembleSendInnSoknadBody, isNotFound, sanitizeInnsendingsId, validateInnsendingsId } from './helpers/sendInn';
 
 const { sendInnConfig } = config;
@@ -24,6 +29,18 @@ const sendInnUtfyltSoknad = {
         logger.error('Azure access token is missing. Unable to generate pdf');
       }
 
+      const createTranslate = (translations: I18nTranslationMap, language: string) => {
+        const languageCode = localizationUtils.getLanguageCodeAsIso639_1(language.toLowerCase());
+
+        return (text: string, textReplacements?: I18nTranslationReplacements) =>
+          translationUtils.translateWithTextReplacements({
+            translations,
+            textOrKey: text,
+            params: textReplacements,
+            currentLanguage: languageCode,
+          });
+      };
+
       const sanitizedInnsendingsId = sanitizeInnsendingsId(innsendingsId);
       const errorMessage = validateInnsendingsId(
         sanitizedInnsendingsId,
@@ -38,14 +55,16 @@ const sendInnUtfyltSoknad = {
         logger.warn(`Language code "${language}" is not supported. Language code will be defaulted to "nb".`);
       }
 
-      const pdfByteArray = await createPdfAsByteArray(
-        req.headers.AzureAccessToken as string,
+      const applicationPdf = await applicationService.createPdfFromFieldMap(
+        req.headers.PdfAccessToken as string,
         form,
         submission,
         submissionMethod,
-        translation,
+        createTranslate(translation, language),
         localizationUtils.getLanguageCodeAsIso639_1(language),
       );
+
+      const pdfByteArray = Array.from(applicationPdf) ?? [];
 
       const body = assembleSendInnSoknadBody(req.body, idportenPid, fyllutUrl, pdfByteArray);
 
