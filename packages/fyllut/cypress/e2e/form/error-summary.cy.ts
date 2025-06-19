@@ -14,7 +14,7 @@ describe('Error summary', () => {
 
   describe('Panel "Dine opplysninger"', () => {
     beforeEach(() => {
-      cy.visit('/fyllut/errorsummaryfocus/personopplysninger?sub=paper');
+      cy.visit('/fyllut/errorsummaryfocus/dineOpplysninger?sub=paper');
       cy.defaultWaits();
     });
 
