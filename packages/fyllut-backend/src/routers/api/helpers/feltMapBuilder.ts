@@ -19,7 +19,6 @@ import {
   TEXTS,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { config } from '../../../config/config';
-import { logger } from '../../../logger';
 import { EkstraBunntekst, FeltMap, PdfConfig, VerdilisteElement } from '../../../types/familiepdf/feltMapTypes';
 
 type TranslateFunction = (text: string) => string;
@@ -45,7 +44,6 @@ export const createFeltMapFromSubmission = (
   const signatures = signatureSection(form.properties, submissionMethod, translate);
   const title = translate(form.title);
 
-  logger.info('Skal lage verdiListe fra symmaryPanels' + JSON.stringify(symmaryPanels));
   const verdiliste: VerdilisteElement[] = createVerdilister(symmaryPanels);
   if (confirmation) {
     verdiliste.push(confirmation);
@@ -216,14 +214,22 @@ const activityMap = (component: SummaryActivity): VerdilisteElement => {
 const drivingListMap = (component): VerdilisteElement => {
   return {
     label: component.label,
-    verdi: `${component.value.description}`,
-    verdiliste: component.dates.map((date) => {
-      return { label: date.key, value: date.text };
+    verdi: component.value.description,
+    verdiliste: component.value.dates.map((date) => {
+      return drivingListDay(date.key, date.text);
     }),
     visningsVariant: null,
   };
 };
 
+const drivingListDay = (label: string, value: string): VerdilisteElement => {
+  return {
+    label: label,
+    verdi: value,
+    verdiliste: null,
+    visningsVariant: null,
+  };
+};
 const addressMap = (component: SummaryAddress): VerdilisteElement => {
   return {
     label: component.label,
