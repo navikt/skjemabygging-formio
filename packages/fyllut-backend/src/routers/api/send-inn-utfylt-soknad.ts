@@ -26,7 +26,7 @@ const sendInnUtfyltSoknad = {
 
       const { form, submission, submissionMethod, translation, language, innsendingsId } = req.body;
       if (!req.headers.PdfAccessToken) {
-        logger.warning('Azure access token is missing. Will be unable to generate pdf');
+        logger.warn('Azure access token is missing. Will be unable to generate pdf');
       }
 
       const createTranslate = (translations: I18nTranslationMap, language: string) => {
