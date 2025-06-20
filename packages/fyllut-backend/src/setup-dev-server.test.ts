@@ -62,7 +62,8 @@ describe('Setup dev server', () => {
           .get('/fyllut/test/login?formPath=nav123456&sub=digital')
           .set('X-Forwarded-For', IP_EXTERNAL)
           .expect(302);
-        expect(res.headers['location']).toContain('nav123456&sub=digital');
+        expect(res.headers['location']).toContain('/fyllut/nav123456');
+        expect(res.headers['set-cookie'][0]).toContain('fyllut-dev-access=true');
       });
 
       it('redirects to form if query param formPath exists when Nav ip', async () => {
