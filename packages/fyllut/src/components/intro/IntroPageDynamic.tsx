@@ -1,10 +1,11 @@
 import { Accordion } from '@navikt/ds-react';
-import { Intro } from '@navikt/skjemadigitalisering-shared-components';
+import { Intro, useLanguages } from '@navikt/skjemadigitalisering-shared-components';
 import IntroPageButtonRow from './IntroPageButtonRow';
 import { useIntroPage } from './IntroPageContext';
 
 const IntroPageDynamic = () => {
-  const { form, state } = useIntroPage();
+  const { translate } = useLanguages();
+  const { setSelfDeclaration, error, form, state } = useIntroPage();
 
   if (!state) return;
 
@@ -26,7 +27,13 @@ const IntroPageDynamic = () => {
         <Intro.AutomaticProcessing properties={form.introPage?.sections?.automaticProcessing} />
         <Intro.Optional properties={form.introPage?.sections?.optional} />
       </Accordion>
-      <Intro.SelfDeclaration description={form.introPage?.selfDeclaration ?? ''} className="mb" />
+      <Intro.SelfDeclaration
+        description={form.introPage?.selfDeclaration ?? ''}
+        className="mb"
+        error={error}
+        setSelfDeclaration={setSelfDeclaration}
+        translate={translate}
+      />
 
       <IntroPageButtonRow />
     </>

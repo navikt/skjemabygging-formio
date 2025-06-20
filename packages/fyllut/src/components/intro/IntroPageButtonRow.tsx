@@ -1,24 +1,34 @@
 import { ArrowLeftIcon, ArrowRightIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
-import { useLanguages } from '@navikt/skjemadigitalisering-shared-components';
+import { useAppConfig, useLanguages } from '@navikt/skjemadigitalisering-shared-components';
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useNavigate, useResolvedPath, useSearchParams } from 'react-router-dom';
-import { useIntroPage } from './IntroPageContext';
+import { IntroPageState, useIntroPage } from './IntroPageContext';
 
 const IntroPageButtonRow = () => {
   const navigate = useNavigate();
   const { translate } = useLanguages();
   const [searchParams] = useSearchParams();
   const formUrl = useResolvedPath('').pathname;
-  const { form } = useIntroPage();
+  const { form, state, selfDeclaration, setError } = useIntroPage();
   const innsendingsIdFromUrl = searchParams.get('innsendingsId');
+  const { baseUrl, submissionMethod } = useAppConfig();
 
   const startUrl = `${formUrl}/${innsendingsIdFromUrl ? 'oppsummering' : form.firstPanelSlug}`;
 
   const navigateToFormPage = (event) => {
+    if (form.introPage?.enabled && !selfDeclaration) {
+      setError(translate(TEXTS.grensesnitt.introPage.selfDeclarationValidationError));
+      return;
+    }
     event.preventDefault();
-
-    navigate(`${startUrl}?${searchParams.toString()}`);
+    if (state === IntroPageState.DIGITAL || !submissionMethod) {
+      const searchParamsString = searchParams.toString();
+      // Important to reload page due to forced idporten login if sub=digital or if you are missing submissionMethod in appConfig.
+      window.location.href = `${baseUrl}${startUrl}${searchParamsString ? `?${searchParamsString}` : ''}`;
+    } else {
+      navigate(`${startUrl}?${searchParams.toString()}`);
+    }
   };
 
   return (
@@ -30,7 +40,6 @@ const IntroPageButtonRow = () => {
         as="a"
         onClick={navigateToFormPage}
         role="link"
-        {...{ href: `${formUrl}?${searchParams.toString()}` }}
       >
         {translate(TEXTS.grensesnitt.introPage.start)}
       </Button>
