@@ -34,7 +34,6 @@ export const SubmissionTypeCheckbox = ({
       <Checkbox value="PAPER">Papir</Checkbox>
       <Checkbox value="DIGITAL">Digital</Checkbox>
       {!excludeDigitalNoLogin && <Checkbox value="DIGITAL_NO_LOGIN">Uinnlogget digital</Checkbox>}
-      {!excludeDigitalNoLogin && <Checkbox value="DIGITAL_NO_LOGIN">Uinnlogget digital</Checkbox>}
     </CheckboxGroup>
   );
 };
