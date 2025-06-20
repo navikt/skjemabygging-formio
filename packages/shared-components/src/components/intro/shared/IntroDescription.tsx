@@ -1,18 +1,15 @@
-import { IntroPageSection } from '@navikt/skjemadigitalisering-shared-domain';
-import { useLanguages } from '../../../context/languages';
 import InnerHtmlLong from '../../inner-html/InnerHtmlLong';
 
 interface Props {
-  properties?: IntroPageSection;
+  description?: string;
 }
 
-const IntroDescription = ({ properties }: Props) => {
-  const { translate } = useLanguages();
-  if (!properties?.description) {
+const IntroDescription = ({ description }: Props) => {
+  if (!description) {
     return null;
   }
 
-  return <InnerHtmlLong content={translate(properties.description)} spacing />;
+  return <InnerHtmlLong content={description} spacing />;
 };
 
 export default IntroDescription;

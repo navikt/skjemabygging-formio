@@ -1,15 +1,14 @@
 import { Alert, Heading } from '@navikt/ds-react';
-import { useLanguages } from '../../context/languages';
 import InnerHtmlLong from '../inner-html/InnerHtmlLong';
 
 interface Props {
   title?: string;
   description?: string;
+  translate: (key?: string) => string;
   className?: string;
 }
 
-const ImportantInformation = ({ title, description, className }: Props) => {
-  const { translate } = useLanguages();
+const ImportantInformation = ({ title, description, translate, className }: Props) => {
   if (!description) {
     return null;
   }

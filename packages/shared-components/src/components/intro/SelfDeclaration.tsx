@@ -1,25 +1,25 @@
 import { Checkbox } from '@navikt/ds-react';
-import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { useLanguages } from '../../context/languages';
+import { Tkey } from '@navikt/skjemadigitalisering-shared-domain';
 import InnerHtmlLong from '../inner-html/InnerHtmlLong';
 
 interface Props {
   description: string;
+  translate: (key?: string) => string;
   className?: string;
 }
 
-const SelfDeclaration = ({ description, className }: Props) => {
-  const { translate } = useLanguages();
-
+const SelfDeclaration = ({ description, translate, className }: Props) => {
   if (!description) {
     return null;
   }
+
+  const inputLabel: Tkey = 'introPage.selfDeclaration.inputLabel';
 
   return (
     <div className={className}>
       <InnerHtmlLong content={translate(description)} />
 
-      <Checkbox>{translate(TEXTS.grensesnitt.introPage.selfDeclaration)}</Checkbox>
+      <Checkbox>{translate(inputLabel)}</Checkbox>
     </div>
   );
 };

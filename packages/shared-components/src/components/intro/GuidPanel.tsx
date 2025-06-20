@@ -1,24 +1,25 @@
 import { GuidePanel, Heading } from '@navikt/ds-react';
-import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { useLanguages } from '../../context/languages';
+import { Tkey } from '@navikt/skjemadigitalisering-shared-domain';
 import InnerHtmlLong from '../inner-html/InnerHtmlLong';
 
 interface Props {
   description?: string;
+  translate: (key?: string) => string;
   className?: string;
 }
 
-const GuidPanel = ({ description, className }: Props) => {
-  const { translate } = useLanguages();
+const GuidPanel = ({ description, translate, className }: Props) => {
   if (!description) {
     return null;
   }
 
-  // TODO: Add support for TEXTS.grensesnitt.introPage.guidePanel.hiPersonalized when we have user data available
+  // TODO: Add support for introPage.guidePanel.hiPersonalized when we have user data available
+  const heading: Tkey = 'introPage.guidePanel.hi';
+
   return (
     <GuidePanel poster className={className}>
       <Heading level="2" size="small" spacing>
-        {translate(TEXTS.grensesnitt.introPage.guidePanel.hi)}
+        {translate(heading)}
       </Heading>
       <InnerHtmlLong content={translate(description)} />
     </GuidePanel>
