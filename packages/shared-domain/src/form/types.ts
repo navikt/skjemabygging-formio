@@ -1,6 +1,6 @@
 export type DisplayType = 'wizard' | 'form';
-export type SubmissionType = 'PAPER' | 'DIGITAL' | 'UADIGITAL';
-export type SubmissionMethod = 'paper' | 'digital' | 'uadigital';
+export type SubmissionType = 'PAPER' | 'DIGITAL' | 'DIGITAL_NO_LOGIN';
+export type SubmissionMethod = 'paper' | 'digital' | 'digitalnologin';
 
 export enum DeclarationType {
   none = 'none',
