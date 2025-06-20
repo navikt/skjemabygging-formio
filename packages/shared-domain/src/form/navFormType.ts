@@ -30,7 +30,7 @@ export interface NavFormType {
   publishedBy?: string;
   publishedLanguages?: string[];
   status?: string;
-  intropPage?: IntroPage;
+  introPage?: IntroPage;
 }
 
 export interface ResourceAccess {

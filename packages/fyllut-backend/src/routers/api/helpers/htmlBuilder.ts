@@ -37,6 +37,7 @@ const createHtmlFromSubmission = (
     lang,
     { skipFnrFormatting: true },
   );
+
   const confirmation = createConfirmationSection(form, translate);
   const signatures = signatureSection(form.properties, submissionMethod, translate);
 
@@ -206,19 +207,24 @@ ${descriptionOfSignaturesPositionUnder ? `<p class="underskrift">${translate(des
 };
 
 const createConfirmationSection = (form: NavFormType, translate: (text: string) => string) => {
-  if (
-    form.properties.declarationType === DeclarationType.custom ||
-    form.properties.declarationType === DeclarationType.default
-  ) {
-    return `<h2>${translate(TEXTS.statiske.declaration.header)}</h2> ${field({
-      label:
-        form.properties.declarationType === DeclarationType.custom && form.properties.declarationText
-          ? translate(form.properties.declarationText)
-          : translate(TEXTS.statiske.declaration.defaultText),
+  const generateConfirmationField = (label: string) =>
+    `<h2>${translate(TEXTS.statiske.declaration.header)}</h2> ${field({
+      label: translate(label),
       type: 'textfield',
       key: '',
       value: translate(TEXTS.common.yes),
     })}`;
+
+  if (form?.introPage?.enabled && form?.introPage?.selfDeclaration) {
+    return generateConfirmationField(TEXTS.grensesnitt.introPage.selfDeclaration);
+  }
+
+  if (form.properties.declarationType === DeclarationType.custom && form.properties.declarationText) {
+    return generateConfirmationField(form.properties.declarationText);
+  }
+
+  if (form.properties.declarationType === DeclarationType.default) {
+    return generateConfirmationField(TEXTS.statiske.declaration.defaultText);
   }
 };
 
