@@ -7,11 +7,11 @@ interface Props {
   title?: string;
   description?: string;
   bulletPoints?: string[];
-  contentBelow?: ReactNode;
+  contentBottom?: ReactNode;
   className?: string;
 }
 
-const IntroAccordion = ({ title, description, bulletPoints, contentBelow, className }: Props) => {
+const IntroAccordion = ({ title, description, bulletPoints, contentBottom, className }: Props) => {
   if (!title) {
     return null;
   }
@@ -22,7 +22,7 @@ const IntroAccordion = ({ title, description, bulletPoints, contentBelow, classN
       <Accordion.Content>
         <IntroDescription description={description} />
         <IntroBulletPoints values={bulletPoints} />
-        {contentBelow}
+        {contentBottom}
       </Accordion.Content>
     </Accordion.Item>
   );

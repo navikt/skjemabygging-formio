@@ -22,7 +22,7 @@ const DataTreatment = ({ properties, translate, className }: Props) => {
       title={translate(title)}
       description={translate(properties?.description)}
       bulletPoints={bulletPoints}
-      contentBelow={<InnerHtmlLong content={translate(readMore)} />}
+      contentBottom={<InnerHtmlLong content={translate(readMore)} />}
       className={className}
     />
   );
