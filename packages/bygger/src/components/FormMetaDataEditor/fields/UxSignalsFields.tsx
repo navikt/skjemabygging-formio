@@ -70,6 +70,7 @@ const UxSignalsFields = ({ onChange, diff, form, errors }: Props) => {
           label={<LabelWithDiff label="UX signals skal vises for:" diff={!!diff.uxSignalsSubmissionTypes} />}
           value={uxSignalsSubmissionTypes || ['PAPER', 'DIGITAL']}
           onChange={(values) => submissionTypesChangeHandler(values, form)}
+          excludeDigitalNoLogin={true}
           readonly={isLockedForm}
         />
       )}
