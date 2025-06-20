@@ -17,7 +17,8 @@ interface Props {
 
 type EditFormTranslationsContextValue = {
   updateTranslation: (original: FormsApiTranslation, lang: TranslationLang, value: string) => void;
-  addNBText: (value: string, key?: string) => string;
+  addKeyBasedText: (value: string) => string;
+  updateKeyBasedText: (value: string, key: string) => string;
   errors: TranslationError[];
   editState: string;
   saveChanges: () => Promise<void>;
@@ -28,7 +29,8 @@ const defaultValue: EditFormTranslationsContextValue = {
   errors: [],
   editState: 'INIT',
   saveChanges: () => Promise.resolve(),
-  addNBText: () => '',
+  addKeyBasedText: () => '',
+  updateKeyBasedText: () => '',
 };
 
 const EditFormTranslationsContext = createContext<EditFormTranslationsContextValue>(defaultValue);
@@ -65,15 +67,16 @@ const EditFormTranslationsProvider = ({ initialChanges, children }: Props) => {
     }
   };
 
-  const addNBText = (value: string, key?: string) => {
-    if (key) {
-      const original = state.changes[key] ?? storedTranslations[key];
-      updateTranslation(original, 'nb', value);
-      return key;
-    }
+  const addKeyBasedText = (value: string) => {
     const translationKey = uuidv4();
     dispatch({ type: 'ADD', payload: { key: translationKey, nb: value, tag: 'introPage' } });
     return translationKey;
+  };
+
+  const updateKeyBasedText = (value: string, key: string) => {
+    const original = state.changes[key] ?? storedTranslations[key];
+    updateTranslation(original, 'nb', value);
+    return key;
   };
 
   const saveChanges = async () => {
@@ -119,7 +122,8 @@ const EditFormTranslationsProvider = ({ initialChanges, children }: Props) => {
     errors: state.errors,
     editState: state.status,
     saveChanges,
-    addNBText,
+    addKeyBasedText,
+    updateKeyBasedText,
   };
 
   return <EditFormTranslationsContext.Provider value={value}>{children}</EditFormTranslationsContext.Provider>;
