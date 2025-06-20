@@ -8,9 +8,13 @@ type InitializeAction = {
   type: 'INITIALIZE';
   payload: { initialChanges: FormsApiTranslation[] };
 };
-type UpdateAction<Translation> = {
+type UpdateAction = {
   type: 'UPDATE';
-  payload: { original: Translation; lang: TranslationLang; value: string };
+  payload: { original: FormsApiTranslation; lang: TranslationLang; value: string };
+};
+type AddAction = {
+  type: 'ADD';
+  payload: { key: string; nb: string; tag: TranslationTag };
 };
 type ValidationErrorAction = { type: 'VALIDATION_ERROR'; payload: { errors: TranslationError[] } };
 type SaveStartedAction = { type: 'SAVE_STARTED' };
@@ -43,4 +47,12 @@ const generateMap = <Translation extends FormsApiTranslation>(values: Translatio
   values.reduce((acc, value) => ({ ...acc, [value.key]: value }), {});
 
 export { createDefaultGlobalTranslation, generateMap, getErrors, getResetChanges };
-export type { InitializeAction, SaveFinishedAction, SaveStartedAction, Status, UpdateAction, ValidationErrorAction };
+export type {
+  AddAction,
+  InitializeAction,
+  SaveFinishedAction,
+  SaveStartedAction,
+  Status,
+  UpdateAction,
+  ValidationErrorAction,
+};

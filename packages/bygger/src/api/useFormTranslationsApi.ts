@@ -20,13 +20,14 @@ const useFormTranslationsApi = () => {
 
   const post = async (formPath: string, translation: FormsApiTranslation): Promise<FormsApiTranslation> => {
     try {
-      const { key, nb = null, nn = null, en = null, globalTranslationId } = translation;
+      const { key, nb = null, nn = null, en = null, globalTranslationId, tag } = translation;
       return await http.post<FormsApiTranslation>(getPath(formPath), {
         key,
         nb,
         nn,
         en,
         globalTranslationId,
+        tag,
       });
     } catch (error: any) {
       if (error?.status !== 409) {
@@ -41,13 +42,14 @@ const useFormTranslationsApi = () => {
 
   const put = async (formPath: string, translation: FormsApiTranslation): Promise<FormsApiTranslation> => {
     try {
-      const { id, revision, nb = null, nn = null, en = null, globalTranslationId } = translation;
+      const { id, revision, nb = null, nn = null, en = null, globalTranslationId, tag } = translation;
       return await http.put<FormsApiTranslation>(`${getPath(formPath)}/${id}`, {
         revision,
         nb,
         nn,
         en,
         globalTranslationId,
+        tag,
       });
     } catch (error: any) {
       if (error?.status !== 409) {

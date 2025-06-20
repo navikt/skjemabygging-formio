@@ -1,4 +1,5 @@
 import { Button, VStack } from '@navikt/ds-react';
+import { useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
 import { Form } from '@navikt/skjemadigitalisering-shared-domain';
 import { useState } from 'react';
 import UserFeedback from '../../components/UserFeedback';
@@ -13,6 +14,7 @@ interface Props {
 }
 
 const FormTranslationButtonsColumn = ({ form, lastSave }: Props) => {
+  const { logger } = useAppConfig();
   const [isSaving, setIsSaving] = useState(false);
   const { saveChanges } = useEditFormTranslations();
 
@@ -20,6 +22,8 @@ const FormTranslationButtonsColumn = ({ form, lastSave }: Props) => {
     try {
       setIsSaving(true);
       await saveChanges();
+    } catch (error: any) {
+      logger?.debug(`Failed to save introPage: ${error.message}`, error);
     } finally {
       setIsSaving(false);
     }

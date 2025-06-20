@@ -1,6 +1,7 @@
 import { htmlUtils } from '@navikt/skjemadigitalisering-shared-components';
 import { FormsApiTranslation, stringUtils, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, ReactNode, useContext, useEffect, useReducer } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 import { useFeedbackEmit } from '../notifications/FeedbackContext';
 import { editFormTranslationsReducer } from './editTranslationsReducer';
 import { getTranslationsForSaving } from './editTranslationsReducer/selectors';
@@ -16,6 +17,8 @@ interface Props {
 
 type EditFormTranslationsContextValue = {
   updateTranslation: (original: FormsApiTranslation, lang: TranslationLang, value: string) => void;
+  addKeyBasedText: (value: string) => string;
+  updateKeyBasedText: (value: string, key: string) => string;
   errors: TranslationError[];
   editState: string;
   saveChanges: () => Promise<void>;
@@ -26,6 +29,8 @@ const defaultValue: EditFormTranslationsContextValue = {
   errors: [],
   editState: 'INIT',
   saveChanges: () => Promise.resolve(),
+  addKeyBasedText: () => '',
+  updateKeyBasedText: () => '',
 };
 
 const EditFormTranslationsContext = createContext<EditFormTranslationsContextValue>(defaultValue);
@@ -60,6 +65,18 @@ const EditFormTranslationsProvider = ({ initialChanges, children }: Props) => {
       const { globalTranslationId, ...originalWithoutGlobal } = original;
       dispatch({ type: 'UPDATE', payload: { original: originalWithoutGlobal, lang, value } });
     }
+  };
+
+  const addKeyBasedText = (value: string) => {
+    const translationKey = uuidv4();
+    dispatch({ type: 'ADD', payload: { key: translationKey, nb: value, tag: 'introPage' } });
+    return translationKey;
+  };
+
+  const updateKeyBasedText = (value: string, key: string) => {
+    const original = state.changes[key] ?? storedTranslations[key];
+    updateTranslation(original, 'nb', value);
+    return key;
   };
 
   const saveChanges = async () => {
@@ -97,6 +114,12 @@ const EditFormTranslationsProvider = ({ initialChanges, children }: Props) => {
     if (generalAlertMessage) {
       feedbackEmit.error(generalAlertMessage);
     }
+
+    if (errors.length > 0) {
+      throw new Error(
+        `Feil under lagring av oversettelser: "${conflictAlertMessage ?? `${conflictAlertMessage}, `}${generalAlertMessage ?? ''}"`,
+      );
+    }
   };
 
   const value = {
@@ -105,6 +128,8 @@ const EditFormTranslationsProvider = ({ initialChanges, children }: Props) => {
     errors: state.errors,
     editState: state.status,
     saveChanges,
+    addKeyBasedText,
+    updateKeyBasedText,
   };
 
   return <EditFormTranslationsContext.Provider value={value}>{children}</EditFormTranslationsContext.Provider>;

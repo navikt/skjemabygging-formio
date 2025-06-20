@@ -17,8 +17,8 @@ const get: RequestHandler = async (req, res, next) => {
 const post: RequestHandler = async (req, res, next) => {
   const { formPath } = req.params;
   const accessToken = req.headers.AzureAccessToken as string;
-  const { key, nb, nn, en, globalTranslationId } = req.body as FormsApiTranslation;
-  const body = globalTranslationId ? { key, globalTranslationId } : { key, nb, nn, en };
+  const { key, tag, nb, nn, en, globalTranslationId } = req.body as FormsApiTranslation;
+  const body = globalTranslationId ? { key, tag, globalTranslationId } : { key, nb, nn, en, tag };
   try {
     const translation = await formTranslationsService.post(formPath, body, accessToken);
     res.status(201).json(translation);

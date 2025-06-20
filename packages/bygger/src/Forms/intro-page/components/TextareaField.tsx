@@ -8,6 +8,7 @@ type TexareaFieldProps = {
   description?: string;
   placeholder?: string;
   value?: string;
+  defaultValue?: string;
   onChange: (value: string) => void;
   showDeleteButton?: boolean;
   onDelete?: () => void;
@@ -16,7 +17,7 @@ type TexareaFieldProps = {
 };
 
 export const TextareaField = forwardRef<HTMLTextAreaElement, TexareaFieldProps>(
-  ({ label, description, value, hidden, onChange, onDelete, showDeleteButton, error }, ref) => {
+  ({ label, description, value, defaultValue, hidden, onChange, onDelete, showDeleteButton, error }, ref) => {
     const styles = useTextFieldStyles();
     return (
       <Box className={styles.container}>
@@ -29,6 +30,7 @@ export const TextareaField = forwardRef<HTMLTextAreaElement, TexareaFieldProps>(
             [styles.hidden]: hidden,
           })}
           label={label}
+          defaultValue={defaultValue}
           value={value}
           description={description}
           resize="vertical"

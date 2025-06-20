@@ -1,6 +1,8 @@
 import { Box, Heading, Radio, RadioGroup } from '@navikt/ds-react';
 import { Form } from '@navikt/skjemadigitalisering-shared-domain';
 import { UpdateFormFunction } from '../../../components/FormMetaDataEditor/utils/utils';
+import { useFormTranslations } from '../../../context/translations/FormTranslationsContext';
+import useKeyBasedText from '../../../hooks/useKeyBasedText';
 import { AddButton } from '../components/AddButton';
 import { TextareaField } from '../components/TextareaField';
 import { addBulletPoint, handleBulletPointChange, removeBulletPoint, updateSection } from '../utils/utils';
@@ -16,7 +18,14 @@ type Props = {
 };
 
 export function DataDisclosure({ form, handleChange, refMap, errors }: Props) {
+  const { getNBTextForKey } = useFormTranslations();
+  const updateKeyBasedText = useKeyBasedText();
   const bulletPoints = form.introPage?.sections?.dataDisclosure?.bulletPoints || [];
+
+  const onBulletPointChange = (value: string, index: number) => {
+    const key = updateKeyBasedText(value, `bulletpoint-${index}`);
+    handleBulletPointChange(form, 'dataDisclosure', index, key, handleChange);
+  };
 
   return (
     <SectionWrapper
@@ -41,8 +50,8 @@ export function DataDisclosure({ form, handleChange, refMap, errors }: Props) {
             <TextareaField
               key={index}
               label="Kulepunkt"
-              value={bullet}
-              onChange={(value) => handleBulletPointChange(form, 'dataDisclosure', index, value, handleChange)}
+              defaultValue={getNBTextForKey(bullet)}
+              onChange={(value) => onBulletPointChange(value, index)}
               showDeleteButton
               onDelete={() => removeBulletPoint(form, 'dataDisclosure', index, handleChange)}
               error={errors?.sections?.dataDisclosure?.bulletPoints?.[index]}

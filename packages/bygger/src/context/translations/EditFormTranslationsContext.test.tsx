@@ -34,6 +34,14 @@ const TestComponent = ({
 }) => {
   const { updateTranslation, saveChanges, errors, editState } = useEditFormTranslations();
 
+  const onSave = async () => {
+    try {
+      await saveChanges();
+    } catch (_e) {
+      /* empty */
+    }
+  };
+
   return (
     <div>
       <button
@@ -45,7 +53,7 @@ const TestComponent = ({
       >
         Update Translations
       </button>
-      <button onClick={saveChanges}>Save Changes</button>
+      <button onClick={onSave}>Save Changes</button>
       <div data-testid="errors">{errors.map((error) => error.message).toString()}</div>
       <div data-testid="editState">{editState}</div>
     </div>

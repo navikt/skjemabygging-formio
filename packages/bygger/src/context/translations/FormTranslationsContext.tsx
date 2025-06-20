@@ -12,6 +12,7 @@ interface ContextValue {
   loadTranslations: () => Promise<void>;
   saveTranslation: (translation: FormsApiTranslation) => Promise<FormsApiTranslation>;
   deleteTranslation: (id: number) => Promise<void>;
+  getNBTextForKey: (key?: string) => string;
 }
 
 interface Props {
@@ -27,6 +28,7 @@ const defaultValue: ContextValue = {
   loadTranslations: () => Promise.resolve(),
   saveTranslation: () => Promise.reject(),
   deleteTranslation: () => Promise.reject(),
+  getNBTextForKey: () => '',
 };
 
 const FormTranslationsContext = createContext<ContextValue>(defaultValue);
@@ -71,6 +73,10 @@ const FormTranslationsProvider = ({ children, formPath }: Props) => {
     [state.data],
   );
 
+  const getNBTextForKey = (key?: string) => {
+    return key ? (storedTranslations[key]?.nb ?? key) : '';
+  };
+
   const value = {
     translations: state.data ?? [],
     storedTranslations,
@@ -79,6 +85,7 @@ const FormTranslationsProvider = ({ children, formPath }: Props) => {
     loadTranslations,
     saveTranslation,
     deleteTranslation,
+    getNBTextForKey,
   };
 
   return <FormTranslationsContext.Provider value={value}>{children}</FormTranslationsContext.Provider>;

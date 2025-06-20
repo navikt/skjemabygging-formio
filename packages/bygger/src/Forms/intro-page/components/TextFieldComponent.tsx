@@ -7,7 +7,7 @@ type TextFieldComponentProps = {
   label: string;
   description?: string;
   placeholder?: string;
-  value?: string;
+  defaultValue?: string;
   onChange: (value: string) => void;
   showDeleteButton?: boolean;
   onDelete?: () => void;
@@ -16,12 +16,12 @@ type TextFieldComponentProps = {
 };
 
 export const TextFieldComponent = forwardRef<HTMLInputElement, TextFieldComponentProps>(
-  ({ label, description, value, hidden, onChange, onDelete, showDeleteButton, error }, ref) => {
+  ({ label, description, defaultValue, hidden, onChange, onDelete, showDeleteButton, error }, ref) => {
     const styles = useTextFieldStyles();
     return (
       <Box className={styles.container}>
         <TextField
-          value={value}
+          defaultValue={defaultValue}
           ref={ref}
           className={clsx({
             [styles.textField]: !showDeleteButton,

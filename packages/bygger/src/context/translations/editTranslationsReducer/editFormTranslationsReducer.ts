@@ -1,6 +1,7 @@
 import { FormsApiTranslation, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
 import { TranslationError } from '../utils/errorUtils';
 import {
+  AddAction,
   generateMap,
   getErrors,
   getResetChanges,
@@ -20,7 +21,8 @@ type FormTranslationState = {
 
 type FormTranslationAction =
   | InitializeAction
-  | UpdateAction<FormsApiTranslation>
+  | UpdateAction
+  | AddAction
   | ValidationErrorAction
   | SaveStartedAction
   | SaveFinishedAction;
@@ -45,6 +47,8 @@ const editFormTranslationsReducer = (
         : state;
     case 'UPDATE':
       return { ...state, changes: getUpdatedFormTranslationChanges(state, action.payload), status: 'EDITING' };
+    case 'ADD':
+      return { ...state, changes: { ...state.changes, [action.payload.key]: action.payload } };
     case 'VALIDATION_ERROR':
       return { ...state, errors: action.payload.errors };
     case 'SAVE_STARTED':

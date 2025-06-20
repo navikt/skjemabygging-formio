@@ -1,5 +1,7 @@
 import { Form, IntroPage } from '@navikt/skjemadigitalisering-shared-domain';
 import { UpdateFormFunction } from '../../../components/FormMetaDataEditor/utils/utils';
+import { useFormTranslations } from '../../../context/translations/FormTranslationsContext';
+import useKeyBasedText from '../../../hooks/useKeyBasedText';
 import { addBulletPoint, handleBulletPointChange, removeBulletPoint, updateSection } from '../utils/utils';
 import { IntroPageRefs } from '../validation/useIntroPageRefs';
 import { IntroPageError } from '../validation/validation';
@@ -27,8 +29,21 @@ export function IngressBulletPointRow({
   showAddBulletList,
   showField,
 }: IngressBulletPointRowProps) {
+  const { getNBTextForKey } = useFormTranslations();
+  const updateKeyBasedText = useKeyBasedText();
   const sectionField = form.introPage?.sections?.[field];
   const isAnExceptionField = ['prerequisites', 'dataDisclosure'].includes(field);
+
+  const onDescriptionChange = (value: string) => {
+    const key = updateKeyBasedText(value, 'description');
+    updateSection(form, field, 'description', key, handleChange);
+  };
+
+  const onBulletPointChange = (value: string, index: number) => {
+    const key = updateKeyBasedText(value, `bulletpoint-${index}`);
+    handleBulletPointChange(form, field, index, key, handleChange);
+  };
+
   return (
     <>
       {sectionField?.description === undefined && (
@@ -45,8 +60,8 @@ export function IngressBulletPointRow({
       {showField && (
         <TextareaField
           label="Ingress"
-          value={sectionField?.description}
-          onChange={(value) => updateSection(form, field, 'description', value, handleChange)}
+          defaultValue={getNBTextForKey(sectionField?.description)}
+          onChange={onDescriptionChange}
           showDeleteButton
           onDelete={() => updateSection(form, field, 'description', undefined, handleChange)}
           error={errors?.sections?.[field]?.description}
@@ -60,8 +75,8 @@ export function IngressBulletPointRow({
             <TextareaField
               key={index}
               label="Kulepunkt"
-              value={value}
-              onChange={(value) => handleBulletPointChange(form, field, index, value, handleChange)}
+              defaultValue={getNBTextForKey(value)}
+              onChange={(value) => onBulletPointChange(value, index)}
               showDeleteButton
               onDelete={() => removeBulletPoint(form, field, index, handleChange)}
               error={errors?.sections?.[field]?.bulletPoints?.[index]}
