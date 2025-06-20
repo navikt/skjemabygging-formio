@@ -114,6 +114,12 @@ const EditFormTranslationsProvider = ({ initialChanges, children }: Props) => {
     if (generalAlertMessage) {
       feedbackEmit.error(generalAlertMessage);
     }
+
+    if (errors.length > 0) {
+      throw new Error(
+        `Feil under lagring av oversettelser: "${conflictAlertMessage ?? `${conflictAlertMessage}, `}${generalAlertMessage ?? ''}"`,
+      );
+    }
   };
 
   const value = {
