@@ -1,5 +1,5 @@
 import { Heading } from '@navikt/ds-react';
-import { useModal } from '@navikt/skjemadigitalisering-shared-components';
+import { useAppConfig, useModal } from '@navikt/skjemadigitalisering-shared-components';
 import { Form } from '@navikt/skjemadigitalisering-shared-domain';
 import { useState } from 'react';
 import { AppLayout } from '../../components/AppLayout';
@@ -30,6 +30,7 @@ import { useScrollToFirstError } from './validation/useScrollToFirstError';
 import { IntroPageError, validateIntroPage } from './validation/validation';
 
 export default function FormIntroPage({ form }: { form: Form }) {
+  const { logger } = useAppConfig();
   const { changeForm, saveForm } = useForm();
   const { isReady } = useFormTranslations();
   const { saveChanges } = useEditFormTranslations();
@@ -69,8 +70,12 @@ export default function FormIntroPage({ form }: { form: Form }) {
   }
 
   const handleSave = async () => {
-    await saveChanges();
-    await saveForm(form);
+    try {
+      await saveChanges();
+      await saveForm(form);
+    } catch (error: any) {
+      logger?.debug(`Failed to save introPage: ${error.message}`, error);
+    }
   };
 
   async function handleSubmit() {
