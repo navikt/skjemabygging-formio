@@ -30,7 +30,8 @@ import translations from './translations.js';
 const apiRouter = express.Router();
 
 const { featureToggles } = appConfig;
-const { azureSkjemabyggingProxy, azurePdl, kodeverkToken, tokenxPdl, tokenxSendInn } = initApiConfig();
+const { azureSkjemabyggingProxy, azurePdl, kodeverkToken, tokenxPdl, tokenxSendInn, azurePdfGeneratorToken } =
+  initApiConfig();
 
 apiRouter.all('*', idportenAuthHandler, envQualifier);
 apiRouter.get('/config', config.get);
@@ -48,9 +49,9 @@ apiRouter.get('/send-inn/soknad/:innsendingsId', tokenxSendInn, sendInnSoknad.ge
 apiRouter.delete('/send-inn/soknad/:innsendingsId', tokenxSendInn, sendInnSoknad.delete);
 apiRouter.post('/send-inn/soknad', tokenxSendInn, sendInnSoknad.post);
 apiRouter.put('/send-inn/soknad', tokenxSendInn, sendInnSoknad.put);
-apiRouter.put('/send-inn/utfyltsoknad', azureSkjemabyggingProxy, tokenxSendInn, sendInnUtfyltSoknad.put);
+apiRouter.put('/send-inn/utfyltsoknad', azurePdfGeneratorToken, tokenxSendInn, sendInnUtfyltSoknad.put);
 apiRouter.get('/common-codes/archive-subjects', kodeverkToken, commonCodes.getArchiveSubjects);
-apiRouter.post('/pdf/convert', azureSkjemabyggingProxy, exstream.post);
+apiRouter.post('/pdf/convert', azurePdfGeneratorToken, exstream.post);
 apiRouter.get('/common-codes/currencies', kodeverkToken, commonCodes.getCurrencies);
 apiRouter.post('/log/:level', rateLimiter(60000, 60), log.post);
 apiRouter.get('/health/status', status.get);

@@ -10,6 +10,9 @@ skjemabygging-proxy-client-id: 031863f2-9881-44af-ace5-6b5ab52afeb1
 skjemabygging-proxy-url: https://skjemabygging-proxy.prod-fss-pub.nais.io
 gotenberg-url: http://upload-convert-to-pdf.fyllut-sendinn
 gotenberg-url-en: http://upload-convert-to-pdf-en.fyllut-sendinn
+familie-pdf-generator-url: http://familie-pdf.teamfamilie
+familie-pdf-generator-scope: prod-gcp.teamfamilie.familie-pdf
+merge-pdf-scope: prod-gcp.team-soknad.innsending-api
 send-inn-token-x-client-id: prod-gcp:team-soknad:innsending-api
 send-inn-host: http://innsending-api.team-soknad
 tilleggsstonader-token-x-client-id: prod-gcp:tilleggsstonader:tilleggsstonader-integrasjoner
@@ -56,6 +59,9 @@ accessPolicy:
         cluster: prod-gcp
       - application: forms-api
         namespace: fyllut-sendinn
+        cluster: prod-gcp
+      - application: familie-pdf
+        namespace: teamfamilie
         cluster: prod-gcp
     external:
       - host: skjemabygging-proxy.prod-fss-pub.nais.io
