@@ -27,7 +27,7 @@ type UpdateNewAction = {
 
 type GlobalTranslationAction =
   | InitializeAction
-  | UpdateAction<FormsApiTranslation>
+  | UpdateAction
   | UpdateNewAction
   | ValidationErrorAction
   | SaveStartedAction

@@ -1,5 +1,5 @@
 import { Heading } from '@navikt/ds-react';
-import { useModal } from '@navikt/skjemadigitalisering-shared-components';
+import { useAppConfig, useModal } from '@navikt/skjemadigitalisering-shared-components';
 import { Form } from '@navikt/skjemadigitalisering-shared-domain';
 import { useState } from 'react';
 import { AppLayout } from '../../components/AppLayout';
@@ -7,7 +7,10 @@ import RowLayout from '../../components/layout/RowLayout';
 import Title from '../../components/layout/Title';
 import TitleRowLayout from '../../components/layout/TitleRowLayout';
 import { useForm } from '../../context/old_form/FormContext';
+import { useEditFormTranslations } from '../../context/translations/EditFormTranslationsContext';
+import { useFormTranslations } from '../../context/translations/FormTranslationsContext';
 import PublishModalComponents from '../publish/PublishModalComponents';
+import FormSkeleton from '../skeleton/FormSkeleton';
 import { EnableIntroPageSwitch } from './components/EnableIntroPageSwitch';
 import { FormIntroPageSidebar } from './components/FormIntroPageSidebar';
 import { AutomaticProcessing } from './sections/AutomaticProcessing';
@@ -27,7 +30,10 @@ import { useScrollToFirstError } from './validation/useScrollToFirstError';
 import { IntroPageError, validateIntroPage } from './validation/validation';
 
 export default function FormIntroPage({ form }: { form: Form }) {
+  const { logger } = useAppConfig();
   const { changeForm, saveForm } = useForm();
+  const { isReady } = useFormTranslations();
+  const { saveChanges } = useEditFormTranslations();
 
   const { sections, importantInformation } = form.introPage ?? {
     enabled: false,
@@ -63,17 +69,30 @@ export default function FormIntroPage({ form }: { form: Form }) {
     }
   }
 
+  const handleSave = async () => {
+    try {
+      await saveChanges();
+      await saveForm(form);
+    } catch (error: any) {
+      logger?.debug(`Failed to save introPage: ${error.message}`, error);
+    }
+  };
+
   async function handleSubmit() {
     if (!form.introPage?.enabled) {
-      await saveForm(form);
+      await handleSave();
       return;
     }
 
-    handleValidation(async () => await saveForm(form));
+    handleValidation(async () => await handleSave());
   }
 
   function validateAndOpenPublishSettingModal() {
     handleValidation(() => setOpenPublishSettingModal(true));
+  }
+
+  if (!isReady) {
+    return <FormSkeleton leftSidebar={true} rightSidebar={true} />;
   }
 
   return (
