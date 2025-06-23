@@ -1,4 +1,6 @@
 const introPage = [
+  'introPage.guidePanel.hi',
+  'introPage.guidePanel.hiPersonalized',
   'introPage.scope.title.alt1',
   'introPage.scope.title.alt2',
   'introPage.scope.title.alt3',
