@@ -19,7 +19,6 @@ import {
   TEXTS,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { config } from '../../../config/config';
-import { logger } from '../../../logger';
 import { EkstraBunntekst, FeltMap, PdfConfig, VerdilisteElement } from '../../../types/familiepdf/feltMapTypes';
 
 type TranslateFunction = (text: string) => string;
@@ -73,9 +72,7 @@ export const createFeltMapFromSubmission = (
     bunntekst: ekstraBunntekst,
   };
 
-  const jsonString = JSON.stringify(feltMap).replaceAll('\\t', '  ');
-  logger.info('FeltMap: ' + jsonString);
-  return jsonString;
+  return JSON.stringify(feltMap).replaceAll('\\t', '  ');
 };
 
 const createConfirmationElement = (
