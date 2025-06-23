@@ -16,7 +16,7 @@ type FormsApiTranslation = {
 type PublishedTranslations = {
   publishedAt: string;
   publishedBy: string;
-  translations: { nn?: Record<string, string>; en?: Record<string, string> };
+  translations: { nb?: Record<string, string>; nn?: Record<string, string>; en?: Record<string, string> };
 };
 
 const findMostRecentlyChanged = (data: FormsApiTranslation[] | undefined): FormsApiTranslation | undefined => {
