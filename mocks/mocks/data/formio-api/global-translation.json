@@ -99,5 +99,30 @@
         "Oppsummering": "Oppsummering"
       }
     }
+  },
+  {
+    "_id": "global-nb-introPage",
+    "data": {
+      "name": "global",
+      "scope": "global",
+      "tag": "dummy-tag",
+      "language": "nb-NO",
+      "i18n": {
+        "introPage.scope.title.alt3": "Her kan du",
+        "introPage.scope.title.alt1": "Her kan du søke om",
+        "introPage.scope.title.alt2": "Her kan du melde om",
+        "introPage.prerequisites.title.alt1": "Før du søker",
+        "introPage.prerequisites.title.alt2": "Før du svarer",
+        "introPage.prerequisites.title.alt3": "Før du fyller ut",
+        "introPage.selfDeclaration.description.alt1": "Det er viktig at du gir oss riktige opplysninger slik at vi kan behandle henvendelsen din. <a href=\"https://www.nav.no/endringer\" target=\"_blank\" rel=\"noopener noreferrer\">Les mer om viktigheten av å gi riktige opplysninger (åpnes i ny fane)</a>",
+        "introPage.selfDeclaration.description.alt2": "Det er viktig at du gir oss riktige opplysninger slik at vi kan behandle søknaden din. <a href=\"https://www.nav.no/endringer\" target=\"_blank\" rel=\"noopener noreferrer\">Les mer om viktigheten av å gi riktige opplysninger (åpnes i ny fane)</a>",
+        "introPage.selfDeclaration.description.alt3": "Det er viktig at du gir oss riktige opplysninger slik at vi kan behandle saken din. <a href=\"https://www.nav.no/endringer\" target=\"_blank\" rel=\"noopener noreferrer\">Les mer om viktigheten av å gi riktige opplysninger (åpnes i ny fane)</a>",
+        "introPage.selfDeclaration.description.alt4": "Det er viktig at du gir oss riktige opplysninger slik at vi kan behandle meldingen din. <a href=\"https://www.nav.no/endringer\" target=\"_blank\" rel=\"noopener noreferrer\">Les mer om viktigheten av å gi riktige opplysninger (åpnes i ny fane)</a>",
+        "introPage.selfDeclaration.inputLabel": "Jeg bekrefter at jeg vil svare så riktig som jeg kan",
+        "introPage.selfDeclaration.validationError": "Du må bekrefte at du vil svare så riktig som du kan.",
+        "introPage.guidePanel.hi": "Hei!",
+        "introPage.guidePanel.hiPersonalized": "Hei, {{name}}!"
+      }
+    }
   }
 ]
