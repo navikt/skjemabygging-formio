@@ -72,7 +72,7 @@ export const createFeltMapFromSubmission = (
     bunntekst: ekstraBunntekst,
   };
 
-  return JSON.stringify(feltMap).replace('\\t', '  ');
+  return JSON.stringify(feltMap).replaceAll('\\t', '  ');
 };
 
 const createConfirmationElement = (

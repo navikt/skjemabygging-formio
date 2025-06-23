@@ -155,7 +155,13 @@ describe('feltMapBuilder', () => {
       it('adds fields with value with tab', () => {
         const verdiliste = createVerdilister([
           createPanel('Panel', [
-            createContainer('Fieldset', 'fieldset', [createComponent('Field', 'value\n\twith tab')]),
+            createContainer('Fieldset', 'fieldset', [
+              createComponent(
+                'Field',
+                'bruke etableringsperioden til å utvikle og konkretisere forretningsideen.\n\nPlanen for etableringsperioden er:\n1.\tStarte et FoU-prosjekt i samarbeid med et godkjent forsknings- og utviklingsmiljø.',
+              ),
+              createComponent('Field', 'etter etableringsperioden forfine produket.\n\tI samarbeid med FoU-miljø.'),
+            ]),
           ]),
         ]);
         const feltMap: FeltMap = {
@@ -166,10 +172,11 @@ describe('feltMapBuilder', () => {
           bunntekst,
         };
 
-        const feltMapString = JSON.stringify(feltMap).replace('\\t', '  ');
+        const feltMapString = JSON.stringify(feltMap).replaceAll('\\t', '  ');
         expect(feltMapString).toContain('Panel');
         expect(feltMapString).toContain('Field');
-        expect(feltMapString).toContain('  with tab');
+        expect(feltMapString).toContain('  Starte et FoU-prosjekt');
+        expect(feltMapString).toContain('  I samarbeid med');
       });
     });
 
