@@ -57,12 +57,12 @@ const loadAllTranslations = async (formPath): Promise<I18nTranslations | undefin
   const initValuesForKeyBasedGlobalTranslations = i18nUtils.mapFormsApiTranslationsToI18n(
     externalStorageTexts.initValues.introPage,
   );
-  const globalTranslations = await loadGlobalTranslationsForLanguages(availableLanguages);
+  const globalTranslations = await loadGlobalTranslationsForLanguages(['nb-NO', ...availableLanguages]);
 
   const initValues = {
     'nb-NO': {
-      ...initValuesForKeyBasedGlobalTranslations['nb-NO'],
       ...i18nUtils.initialData['nb-NO'],
+      ...initValuesForKeyBasedGlobalTranslations['nb-NO'],
     },
   };
   const allTranslations = availableLanguages.reduce(
