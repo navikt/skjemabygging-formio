@@ -151,6 +151,26 @@ describe('feltMapBuilder', () => {
         expect(feltMapString).toContain('Field');
         expect(feltMapString).toContain('value');
       });
+
+      it('adds fields with value with tab', () => {
+        const verdiliste = createVerdilister([
+          createPanel('Panel', [
+            createContainer('Fieldset', 'fieldset', [createComponent('Field', 'value\n\twith tab')]),
+          ]),
+        ]);
+        const feltMap: FeltMap = {
+          label: 'title',
+          pdfConfig: { harInnholdsfortegnelse: false, språk: 'nb' },
+          skjemanummer: 'NAV 11-12.15B',
+          verdiliste: verdiliste,
+          bunntekst,
+        };
+
+        const feltMapString = JSON.stringify(feltMap).replace('\\t', '  ');
+        expect(feltMapString).toContain('Panel');
+        expect(feltMapString).toContain('Field');
+        expect(feltMapString).toContain('  with tab');
+      });
     });
 
     /* *** */
