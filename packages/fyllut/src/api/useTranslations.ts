@@ -59,6 +59,12 @@ const loadAllTranslations = async (formPath): Promise<I18nTranslations | undefin
   );
   const globalTranslations = await loadGlobalTranslationsForLanguages(availableLanguages);
 
+  const initValues = {
+    'nb-NO': {
+      ...initValuesForKeyBasedGlobalTranslations['nb-NO'],
+      ...i18nUtils.initialData['nb-NO'],
+    },
+  };
   const allTranslations = availableLanguages.reduce(
     (accumulated, lang) => ({
       ...accumulated,
@@ -70,9 +76,8 @@ const loadAllTranslations = async (formPath): Promise<I18nTranslations | undefin
         ...localTranslationsForForm[lang],
       },
     }),
-    { 'nb-NO': i18nUtils.initialData['nb-NO'] },
+    initValues,
   );
-
   if (Object.keys(allTranslations).length > 0) {
     return allTranslations;
   }
