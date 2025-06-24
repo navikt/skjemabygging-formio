@@ -1,4 +1,4 @@
-import GuidPanel from './GuidPanel';
+import GuidePanel from './GuidePanel';
 import ImportantInformation from './ImportantInformation';
 import OutOfScope from './OutOfScope';
 import Prerequisites from './Prerequisites';
@@ -11,7 +11,7 @@ import DataTreatment from './accordion/DataTreatment';
 import Optional from './accordion/Optional';
 
 const Intro = {
-  GuidPanel,
+  GuidePanel,
   ImportantInformation,
   Scope,
   OutOfScope,
