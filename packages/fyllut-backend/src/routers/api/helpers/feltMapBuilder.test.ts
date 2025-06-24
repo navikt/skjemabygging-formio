@@ -1,4 +1,5 @@
 import {
+  DeclarationType,
   NavFormType,
   Submission,
   SummaryComponent,
@@ -293,6 +294,67 @@ describe('feltMapBuilder', () => {
       expect(feltMapString).toContain('tirsdag 03. juni 2025, parkeringsutgift: 100 kr');
       expect(feltMapString).toContain('2025-06-04');
       expect(feltMapString).toContain('onsdag 04. juni 2025, parkeringsutgift: 100 kr');
+    });
+
+    it('skips formatting for identity number', () => {
+      const verdiliste = createVerdilister([createPanel('Panel', [createComponent('fnrfield', '12345678901')])]);
+      const feltMap: FeltMap = {
+        label: 'title',
+        pdfConfig: { harInnholdsfortegnelse: false, språk: 'nb' },
+        skjemanummer: 'NAV 11-12.15B',
+        verdiliste: verdiliste,
+        bunntekst,
+      };
+
+      const feltMapString = JSON.stringify(feltMap);
+      expect(feltMapString).toContain('fnrfield');
+      expect(feltMapString).toContain('12345678901');
+    });
+  });
+
+  describe('Declaration', () => {
+    const mockTranslate = (text: string) =>
+      text === 'introPage.selfDeclaration.inputLabel' ? 'Jeg bekrefter at jeg vil svare så riktig som jeg kan' : text;
+
+    it('self declaration text from dynamic intro page is displayed when introPage is enabled', () => {
+      const formWithIntroPage = {
+        title: 'Abc def',
+        components: [],
+        properties: { signatures: [] },
+        introPage: {
+          enabled: true,
+          selfDeclaration: 'introPage.selfDeclaration.description.alt1',
+        },
+      } as unknown as NavFormType;
+
+      const feltMap = createFeltMapFromSubmission(
+        formWithIntroPage,
+        { data: {} } as Submission,
+        'digital',
+        mockTranslate,
+      );
+      expect(feltMap).toContain('"label":"Erklæring"');
+      expect(feltMap).toContain('Jeg bekrefter at jeg vil svare så riktig som jeg kan');
+      expect(feltMap).not.toContain('Jeg bekrefter at opplysningene er riktige.');
+    });
+
+    it('self declaration text from static page is displayed when introPage is disabled', () => {
+      const formWithoutIntroPage = {
+        title: 'Abc def',
+        components: [],
+        properties: { signatures: [], declarationType: DeclarationType.default },
+      } as unknown as NavFormType;
+
+      const feltMap = createFeltMapFromSubmission(
+        formWithoutIntroPage,
+        { data: {} } as Submission,
+        'digital',
+        mockTranslate,
+      );
+
+      expect(feltMap).toContain('"label":"Erklæring"');
+      expect(feltMap).not.toContain('Jeg bekrefter at jeg vil svare så riktig som jeg kan');
+      expect(feltMap).toContain('Jeg bekrefter at opplysningene er riktige.');
     });
   });
 });

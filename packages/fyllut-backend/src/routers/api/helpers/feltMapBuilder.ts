@@ -17,6 +17,7 @@ import {
   SummaryPanel,
   SummarySelectboxes,
   TEXTS,
+  Tkey,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { config } from '../../../config/config';
 import { EkstraBunntekst, FeltMap, PdfConfig, VerdilisteElement } from '../../../types/familiepdf/feltMapTypes';
@@ -39,6 +40,7 @@ export const createFeltMapFromSubmission = (
     translate,
     true,
     lang,
+    { skipFnrFormatting: true },
   );
   const confirmation = createConfirmationElement(form, translate);
   const signatures = signatureSection(form.properties, submissionMethod, translate);
@@ -79,22 +81,28 @@ const createConfirmationElement = (
   form: NavFormType,
   translate: (text: string) => string,
 ): VerdilisteElement | undefined => {
-  if (
-    form.properties.declarationType === DeclarationType.custom ||
-    form.properties.declarationType === DeclarationType.default
-  ) {
+  const generateConfirmationField = (text: string): VerdilisteElement => {
     return {
       label: translate(TEXTS.statiske.declaration.header),
       verdiliste: [
         {
-          label:
-            form.properties.declarationType === DeclarationType.custom && form.properties.declarationText
-              ? translate(form.properties.declarationText)
-              : translate(TEXTS.statiske.declaration.defaultText),
+          label: translate(text),
           verdi: translate(TEXTS.common.yes),
         },
       ],
     };
+  };
+  if (form?.introPage?.enabled && form?.introPage?.selfDeclaration) {
+    const inputLabel: Tkey = 'introPage.selfDeclaration.inputLabel';
+    return generateConfirmationField(inputLabel);
+  }
+
+  if (form.properties.declarationType === DeclarationType.custom && form.properties.declarationText) {
+    return generateConfirmationField(form.properties.declarationText);
+  }
+
+  if (form.properties.declarationType === DeclarationType.default) {
+    return generateConfirmationField(TEXTS.statiske.declaration.defaultText);
   }
 };
 

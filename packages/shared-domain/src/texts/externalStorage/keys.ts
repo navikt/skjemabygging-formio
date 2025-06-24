@@ -29,6 +29,7 @@ const introPage = [
   'introPage.selfDeclaration.description.alt3',
   'introPage.selfDeclaration.description.alt4',
   'introPage.selfDeclaration.inputLabel',
+  'introPage.selfDeclaration.validationError',
 ] as const;
 
 const keys = { introPage } as const;
