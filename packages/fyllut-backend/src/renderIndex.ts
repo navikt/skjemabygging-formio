@@ -79,7 +79,7 @@ const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
             redirectToSubmissionType(req, res, 'digital');
           } else if (submissionTypesUtils.isPaperSubmissionOnly(submissionTypes)) {
             redirectToSubmissionType(req, res, 'paper');
-          } else if (submissionTypesUtils.isDigitalNoLoginSubmission(submissionTypes)) {
+          } else if (submissionTypesUtils.isDigitalNoLoginSubmissionOnly(submissionTypes)) {
             redirectToSubmissionType(req, res, 'digitalnologin');
           }
         } else if (qpSub && !navFormUtils.isSubmissionMethodAllowed(qpSub, form)) {
