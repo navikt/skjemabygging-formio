@@ -1,7 +1,7 @@
 describe('NationalIdentityNumber', () => {
   beforeEach(() => {
     cy.defaultIntercepts();
-    cy.visit('/fyllut/cypress101/personopplysninger');
+    cy.visit('/fyllut/cypress101/dineOpplysninger?sub=paper');
     cy.defaultWaits();
   });
 
@@ -45,7 +45,7 @@ describe('NationalIdentityNumber', () => {
     beforeEach(() => {
       cy.defaultIntercepts();
       cy.intercept('GET', 'fyllut/api/config*', { NAIS_CLUSTER_NAME: 'prod-gcp' }).as('getConfig');
-      cy.visit('/fyllut/cypress101/personopplysninger');
+      cy.visit('/fyllut/cypress101/dineOpplysninger?sub=paper');
       cy.defaultWaits();
     });
 

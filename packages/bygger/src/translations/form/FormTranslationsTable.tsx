@@ -56,6 +56,7 @@ const FormTranslationsTable = ({ translations, loading = false }: Props) => {
             updateTranslation={updateTranslation}
             errors={errors}
             editState={editState}
+            isKeyBased={row.tag === 'introPage'}
           />
         ))}
       </TranslationTable>

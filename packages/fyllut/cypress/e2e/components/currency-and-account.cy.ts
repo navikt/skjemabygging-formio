@@ -6,7 +6,7 @@ describe('Components', () => {
   describe('Penger og konto', () => {
     beforeEach(() => {
       cy.defaultIntercepts();
-      cy.visit('/fyllut/pengerogkonto/skjema');
+      cy.visit('/fyllut/pengerogkonto/skjema?sub=paper');
       cy.defaultWaits();
       cy.wait('@getCurrencies');
     });

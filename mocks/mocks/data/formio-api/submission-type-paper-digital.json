@@ -1,11 +1,12 @@
 {
+  "id": "st-paper-digital",
   "skjemanummer": "st-paper-digital",
   "path": "stpaperdigital",
   "title": "Submission Type Paper & Digital",
   "components": [
     {
       "id": "e1nek8d",
-      "key": "personopplysninger",
+      "key": "dineOpplysninger",
       "type": "panel",
       "label": "Panel",
       "title": "Dine opplysninger",

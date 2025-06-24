@@ -5,21 +5,24 @@ import IntroDescription from './shared/IntroDescription';
 
 interface Props {
   properties?: IntroPageSection;
+  translate: (key?: string) => string;
   className?: string;
 }
 
-const Scope = ({ properties, className }: Props) => {
+const Scope = ({ properties, translate, className }: Props) => {
   if (!properties?.title) {
     return null;
   }
 
+  const bulletPoints = (properties?.bulletPoints ?? []).map(translate);
+
   return (
     <div className={className}>
       <Heading level="2" size="large" spacing>
-        {properties.title}
+        {translate(properties.title)}
       </Heading>
-      <IntroDescription properties={properties} />
-      <IntroBulletPoints properties={properties} />
+      <IntroDescription description={translate(properties?.description)} />
+      <IntroBulletPoints values={bulletPoints} />
     </div>
   );
 };

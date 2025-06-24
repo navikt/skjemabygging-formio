@@ -1,24 +1,24 @@
-import { BodyShort, List } from '@navikt/ds-react';
-import { IntroPageSection } from '@navikt/skjemadigitalisering-shared-domain';
+import { List } from '@navikt/ds-react';
+import InnerHtmlShort from '../../inner-html/InnerHtmlShort';
 
 interface Props {
-  properties?: IntroPageSection;
+  values?: string[];
 }
 
-const Section = ({ properties }: Props) => {
-  if (!properties?.bulletPoints) {
+const IntroBulletPoints = ({ values }: Props) => {
+  if (!values?.length) {
     return null;
   }
 
   return (
     <List>
-      {properties.bulletPoints.map((item, index) => (
+      {values.map((item, index) => (
         <List.Item key={index}>
-          <BodyShort>{item}</BodyShort>
+          <InnerHtmlShort content={item} />
         </List.Item>
       ))}
     </List>
   );
 };
 
-export default Section;
+export default IntroBulletPoints;

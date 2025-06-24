@@ -148,7 +148,7 @@
       "title": "Dine opplysninger",
       "type": "panel",
       "input": false,
-      "key": "personopplysninger",
+      "key": "dineOpplysninger",
       "theme": "default",
       "components": [
         {
@@ -338,8 +338,14 @@
   "properties": {
     "skjemanummer": "cypress-settings",
     "tema": "CYPRESSTEST",
-    "submissionTypes": ["PAPER", "DIGITAL"],
-    "subsequentSubmissionTypes": ["PAPER", "DIGITAL"],
+    "submissionTypes": [
+      "PAPER",
+      "DIGITAL"
+    ],
+    "subsequentSubmissionTypes": [
+      "PAPER",
+      "DIGITAL"
+    ],
     "signatures": [
       {
         "label": "Lege",

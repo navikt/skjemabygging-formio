@@ -2,6 +2,18 @@ import { KeyBasedFormsApiTranslation } from './index';
 
 const introPage: KeyBasedFormsApiTranslation[] = [
   {
+    key: 'introPage.guidePanel.hi',
+    nb: 'Hei!',
+    nn: 'Hei!',
+    en: 'Hi!',
+  },
+  {
+    key: 'introPage.guidePanel.hiPersonalized',
+    nb: 'Hei, {{name}}!',
+    nn: 'Hei, {{name}}!',
+    en: 'Hi, {{name}}!',
+  },
+  {
     key: 'introPage.scope.title.alt1',
     nb: 'Her kan du søke om',
     nn: 'Her kan du søke om',
@@ -18,6 +30,126 @@ const introPage: KeyBasedFormsApiTranslation[] = [
     nb: 'Her kan du',
     nn: 'Her kan du',
     en: 'You may',
+  },
+  {
+    key: 'introPage.outOfScope.title.alt1',
+    nb: 'Dette kan du ikke søke om her',
+    nn: 'Dette kan du ikkje søke om her',
+    en: 'You may not apply for',
+  },
+  {
+    key: 'introPage.outOfScope.title.alt2',
+    nb: 'Dette kan du ikke gjøre her',
+    nn: 'Dette kan du ikkje gjøre her',
+    en: 'You may not',
+  },
+  {
+    key: 'introPage.outOfScope.title.alt3',
+    nb: 'Her kan du ikke',
+    nn: 'Her kan du ikkje',
+    en: 'You may not',
+  },
+  {
+    key: 'introPage.prerequisites.title.alt1',
+    nb: 'Før du søker',
+    nn: 'Før du søker',
+    en: 'Before you apply',
+  },
+  {
+    key: 'introPage.prerequisites.title.alt2',
+    nb: 'Før du svarer',
+    nn: 'Før du svarer',
+    en: 'Before you reply',
+  },
+  {
+    key: 'introPage.prerequisites.title.alt3',
+    nb: 'Før du fyller ut',
+    nn: 'Før du fyller ut',
+    en: 'Before you fill in the form',
+  },
+  {
+    key: 'introPage.prerequisites.sendByMail',
+    nb: 'Du må fylle ut skjemaet digitalt, og så sende det i posten. Etter utfylling må du laste ned det ferdig utfylte skjemaet som en PDF-fil, skrive det ut, signere og sende det i posten.',
+    nn: '',
+    en: '',
+  },
+  {
+    key: 'introPage.prerequisites.mandatoryFields',
+    nb: 'De fleste feltene i skjemaet er obligatoriske å fylle ut. Felt som ikke er obligatoriske er merket med: (valgfritt).',
+    nn: '',
+    en: '',
+  },
+  {
+    key: 'introPage.prerequisites.useOfPublicComputers',
+    nb: 'Bruk av offentlig PC: Hvis du fyller ut skjemaet på en offentlig PC, for eksempel på et bibliotek, er det viktig at du lukker nettleseren når du er ferdig. Dette vil forhindre at uvedkommende får tak i opplysningene du har fylt ut i skjemaet.',
+    nn: '',
+    en: '',
+  },
+  {
+    key: 'introPage.dataDisclosure.title.alt1',
+    nb: 'Informasjon vi henter om deg',
+    nn: 'Informasjon vi henter om deg',
+    en: 'Information about you that we collect',
+  },
+  {
+    key: 'introPage.dataDisclosure.title.alt2',
+    nb: 'Informasjon vi henter',
+    nn: 'Informasjon vi henter',
+    en: 'Information we collect',
+  },
+  {
+    key: 'introPage.dataDisclosure.ingress',
+    nb: 'I tillegg til den informasjonen du oppgir i skjemaet, henter vi:',
+    nn: 'I tillegg til den informasjonen du oppgir i skjemaet, henter vi:',
+    en: 'In addition to the information you provide, we collect:',
+  },
+  {
+    key: 'introPage.dataDisclosure.nationalPopulationRegister',
+    nb: 'Person- og adresseinformasjon fra Folkeregisteret',
+    nn: '',
+    en: '',
+  },
+  {
+    key: 'introPage.dataTreatment.title',
+    nb: 'Hvordan vi behandler personopplysninger',
+    nn: 'Hvordan vi behandler personopplysninger',
+    en: 'How we manage personal information',
+  },
+  {
+    key: 'introPage.dataStorage.title.paper',
+    nb: 'Ta den tiden du trenger',
+    nn: 'Ta den tiden du trenger',
+    en: 'Take your time',
+  },
+  {
+    key: 'introPage.dataStorage.title.digital',
+    nb: 'Vi lagrer svar underveis',
+    nn: 'Vi lagrer svar underveis',
+    en: 'We store your answer',
+  },
+  {
+    key: 'introPage.dataStorage.ingress.paper',
+    nb: 'Du kan ikke lagre skjemaet underveis. Informasjonen du fyller ut i skjemaet sendes ikke til Nav før du har fullført hele skjemaet og sendt det inn. Hvis du lukker vinduet eller nettleseren vil all informasjon du har fylt ut forsvinne.',
+    nn: '',
+    en: '',
+  },
+  {
+    key: 'introPage.dataStorage.ingress.digital',
+    nb: 'Vi lagrer et utkast av skjemaet automatisk hver gang du går til neste steg. Du finner utkastet på Min side. Nav kan ikke se informasjonen i utkastet. Du må trykke på “Send til Nav” for at Nav skal motta skjemaet/søknaden.',
+    nn: '',
+    en: '',
+  },
+  {
+    key: 'introPage.automaticProcessing.title',
+    nb: 'Automatisk saksbehandling',
+    nn: 'Automatisk saksbehandling',
+    en: 'Automatic processing',
+  },
+  {
+    key: 'introPage.dataTreatment.readMore',
+    nb: 'Du kan lese mer om <a href="https://www.nav.no/personvernerklaering" target="_blank" rel="noopener noreferrer">hvordan NAV behandler personopplysninger på nav.no (åpnes i ny fane).</a>',
+    nn: 'Du kan lese mer om <a href="https://www.nav.no/personvernerklaering" target="_blank" rel="noopener noreferrer">hvordan NAV behandler personopplysninger på nav.no (åpnes i ny fane).</a>',
+    en: 'Read more about <a href="https://www.nav.no/personvernerklaering" target="_blank" rel="noopener noreferrer">how NAV treats personal data on nav.no (opens in a new tab).</a>',
   },
   {
     key: 'introPage.selfDeclaration.description.alt1',
@@ -45,9 +177,15 @@ const introPage: KeyBasedFormsApiTranslation[] = [
   },
   {
     key: 'introPage.selfDeclaration.inputLabel',
-    nb: 'Jeg bekrefter at jeg vil svare så riktig som jeg kan',
-    nn: 'Jeg bekrefter at jeg vil svare så riktig som jeg kan',
-    en: 'I confirm that I will answer as accurately as I can',
+    nb: 'Jeg bekrefter at jeg vil svare så riktig som jeg kan.',
+    nn: '',
+    en: '',
+  },
+  {
+    key: 'introPage.selfDeclaration.validationError',
+    nb: 'Du må bekrefte at du vil svare så riktig som du kan.',
+    nn: '',
+    en: '',
   },
 ];
 

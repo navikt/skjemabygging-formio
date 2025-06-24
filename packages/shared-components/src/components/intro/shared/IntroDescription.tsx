@@ -1,16 +1,15 @@
-import { BodyLong } from '@navikt/ds-react';
-import { IntroPageSection } from '@navikt/skjemadigitalisering-shared-domain';
+import InnerHtmlLong from '../../inner-html/InnerHtmlLong';
 
 interface Props {
-  properties?: IntroPageSection;
+  description?: string;
 }
 
-const IntroDescription = ({ properties }: Props) => {
-  if (!properties?.description) {
+const IntroDescription = ({ description }: Props) => {
+  if (!description) {
     return null;
   }
 
-  return <BodyLong spacing>{properties.description}</BodyLong>;
+  return <InnerHtmlLong content={description} spacing />;
 };
 
 export default IntroDescription;

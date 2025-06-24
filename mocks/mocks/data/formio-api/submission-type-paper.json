@@ -1,11 +1,12 @@
 {
+  "id": "st-paper",
   "skjemanummer": "st-paper",
   "path": "stpaper",
   "title": "Submission Type Paper",
   "components": [
     {
       "id": "e1nek8d",
-      "key": "personopplysninger",
+      "key": "dineOpplysninger",
       "type": "panel",
       "label": "Panel",
       "title": "Dine opplysninger",

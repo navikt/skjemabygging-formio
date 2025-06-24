@@ -1,11 +1,12 @@
 {
+  "id": "st-none",
   "skjemanummer": "st-none",
   "path": "stnone",
   "title": "Submission Type None",
   "components": [
     {
       "id": "e1nek8d",
-      "key": "personopplysninger",
+      "key": "dineOpplysninger",
       "type": "panel",
       "label": "Panel",
       "title": "Dine opplysninger",
