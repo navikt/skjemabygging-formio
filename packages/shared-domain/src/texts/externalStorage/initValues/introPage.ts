@@ -184,8 +184,8 @@ const introPage: KeyBasedFormsApiTranslation[] = [
   {
     key: 'introPage.selfDeclaration.validationError',
     nb: 'Du må bekrefte at du vil svare så riktig som du kan.',
-    nn: '',
-    en: '',
+    nn: 'Du må stadfesta at du vil svara så rett som du kan.',
+    en: 'You must confirm that you will answer as accurately as you can.',
   },
 ];
 
