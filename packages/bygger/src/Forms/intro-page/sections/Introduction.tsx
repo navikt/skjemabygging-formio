@@ -2,7 +2,6 @@ import { Box, Heading } from '@navikt/ds-react';
 import { Form, IntroPage } from '@navikt/skjemadigitalisering-shared-domain';
 import { forwardRef } from 'react';
 import { UpdateFormFunction } from '../../../components/FormMetaDataEditor/utils/utils';
-import { useFormTranslations } from '../../../context/translations/FormTranslationsContext';
 import useKeyBasedText from '../../../hooks/useKeyBasedText';
 import { TextareaField } from '../components/TextareaField';
 import { IntroPageError } from '../validation/validation';
@@ -15,11 +14,10 @@ type Props = {
 };
 
 export const Introduction = forwardRef<HTMLTextAreaElement, Props>(({ handleChange, form, errors }, ref) => {
-  const { getNBTextForKey } = useFormTranslations();
-  const updateKeyBasedText = useKeyBasedText();
+  const { setKeyBasedText, getKeyBasedText } = useKeyBasedText();
 
   const onChange = (value: string) => {
-    const key = updateKeyBasedText(value);
+    const key = setKeyBasedText(value);
     handleChange({
       ...form,
       introPage: {
@@ -37,7 +35,7 @@ export const Introduction = forwardRef<HTMLTextAreaElement, Props>(({ handleChan
             Velkomstmelding
           </Heading>
           <TextareaField
-            defaultValue={getNBTextForKey(form?.introPage?.introduction)}
+            defaultValue={getKeyBasedText(form?.introPage?.introduction)}
             ref={ref}
             label="Velkomstmelding som hjelper bruker forstå at de bruker riktig skjema"
             description="Teksten skal være en kort, overordnet veiledning til søkeren som gir en komprimert forklaring av

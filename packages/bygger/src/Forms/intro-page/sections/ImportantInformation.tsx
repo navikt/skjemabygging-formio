@@ -1,7 +1,6 @@
 import { Box, Heading } from '@navikt/ds-react';
 import { Form } from '@navikt/skjemadigitalisering-shared-domain';
 import { UpdateFormFunction } from '../../../components/FormMetaDataEditor/utils/utils';
-import { useFormTranslations } from '../../../context/translations/FormTranslationsContext';
 import useKeyBasedText from '../../../hooks/useKeyBasedText';
 import { AddButton } from '../components/AddButton';
 import { TextareaField } from '../components/TextareaField';
@@ -22,13 +21,12 @@ type Props = {
 };
 
 export function ImportantInformation({ form, handleChange, errors, refMap }: Props) {
-  const { getNBTextForKey } = useFormTranslations();
-  const updateKeyBasedText = useKeyBasedText();
+  const { setKeyBasedText, getKeyBasedText } = useKeyBasedText();
   const { introPage } = form;
   const hasTitle = introPage?.importantInformation?.title !== undefined;
 
   const onChange = (value: string, property: 'title' | 'description') => {
-    const key = updateKeyBasedText(value, property);
+    const key = setKeyBasedText(value, property);
     updateImportantInformation(form, property, key, handleChange);
   };
 
@@ -48,7 +46,7 @@ export function ImportantInformation({ form, handleChange, errors, refMap }: Pro
           {hasTitle && (
             <TextFieldComponent
               label="Overskrift"
-              defaultValue={getNBTextForKey(form.introPage?.importantInformation?.title)}
+              defaultValue={getKeyBasedText(form.introPage?.importantInformation?.title)}
               onChange={(value) => onChange(value, 'title')}
               showDeleteButton
               onDelete={() => deleteImportantInformationKey(form, 'title', handleChange)}
@@ -58,7 +56,7 @@ export function ImportantInformation({ form, handleChange, errors, refMap }: Pro
           )}
           <TextareaField
             label="Brødtekst"
-            defaultValue={getNBTextForKey(form.introPage?.importantInformation?.description)}
+            defaultValue={getKeyBasedText(form.introPage?.importantInformation?.description)}
             onChange={(value) => onChange(value, 'description')}
             error={errors?.importantInformation?.description}
             ref={refMap['importantInformation.description']}

@@ -1,7 +1,6 @@
 import { Box, Heading } from '@navikt/ds-react';
 import { Form } from '@navikt/skjemadigitalisering-shared-domain';
 import { UpdateFormFunction } from '../../../components/FormMetaDataEditor/utils/utils';
-import { useFormTranslations } from '../../../context/translations/FormTranslationsContext';
 import useKeyBasedText from '../../../hooks/useKeyBasedText';
 import { FieldsetErrorMessage } from '../components/FieldsetErrorMessage';
 import { IngressBulletPointRow } from '../components/IngressBulletPointRow';
@@ -19,15 +18,14 @@ type Props = {
 };
 
 export function Optional({ handleChange, form, errors, refMap }: Props) {
-  const { getNBTextForKey } = useFormTranslations();
-  const updateKeyBasedText = useKeyBasedText();
+  const { setKeyBasedText, getKeyBasedText } = useKeyBasedText();
 
   const bulletPoints = form?.introPage?.sections?.optional?.bulletPoints || [];
   const showIngress = form?.introPage?.sections.optional?.description !== undefined;
   const showAddBulletList = bulletPoints.length === 0;
 
   const onTitleChange = (value: string) => {
-    const key = updateKeyBasedText(value);
+    const key = setKeyBasedText(value);
     updateSection(form, 'optional', 'title', key, handleChange);
   };
 
@@ -41,7 +39,7 @@ export function Optional({ handleChange, form, errors, refMap }: Props) {
           </Heading>
           <TextFieldComponent
             label="Overskrift"
-            defaultValue={getNBTextForKey(form?.introPage?.sections.optional?.title) || ''}
+            defaultValue={getKeyBasedText(form?.introPage?.sections.optional?.title) || ''}
             ref={refMap['sections.optional.title']}
             onChange={onTitleChange}
             error={errors?.sections?.optional?.title}
