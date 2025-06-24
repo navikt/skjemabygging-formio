@@ -1,7 +1,7 @@
 import { ArrowLeftIcon, ArrowRightIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
 import { useLanguages } from '@navikt/skjemadigitalisering-shared-components';
-import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { TEXTS, Tkey } from '@navikt/skjemadigitalisering-shared-domain';
 import { useNavigate, useResolvedPath, useSearchParams } from 'react-router-dom';
 import { useIntroPage } from './IntroPageContext';
 
@@ -10,14 +10,19 @@ const IntroPageButtonRow = () => {
   const { translate } = useLanguages();
   const [searchParams] = useSearchParams();
   const formUrl = useResolvedPath('').pathname;
-  const { form } = useIntroPage();
+  const { form, selfDeclaration, setError } = useIntroPage();
   const innsendingsIdFromUrl = searchParams.get('innsendingsId');
 
   const startUrl = `${formUrl}/${innsendingsIdFromUrl ? 'oppsummering' : form.firstPanelSlug}`;
 
+  const validationError: Tkey = 'introPage.selfDeclaration.validationError';
+
   const navigateToFormPage = (event) => {
     event.preventDefault();
-
+    if (form.introPage?.enabled && !selfDeclaration) {
+      setError(translate(validationError));
+      return;
+    }
     navigate(`${startUrl}?${searchParams.toString()}`);
   };
 

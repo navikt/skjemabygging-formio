@@ -6,7 +6,7 @@ import { useIntroPage } from './IntroPageContext';
 const IntroPageDynamic = () => {
   const { submissionMethod } = useAppConfig();
   const { translate } = useLanguages();
-  const { form, state } = useIntroPage();
+  const { setSelfDeclaration, error, form, state } = useIntroPage();
 
   if (!state) return;
 
@@ -34,7 +34,13 @@ const IntroPageDynamic = () => {
         <Intro.AutomaticProcessing properties={form.introPage?.sections?.automaticProcessing} translate={translate} />
         <Intro.Optional properties={form.introPage?.sections?.optional} translate={translate} />
       </Accordion>
-      <Intro.SelfDeclaration description={form.introPage?.selfDeclaration ?? ''} translate={translate} className="mb" />
+      <Intro.SelfDeclaration
+        description={form.introPage?.selfDeclaration ?? ''}
+        translate={translate}
+        className="mb"
+        error={error}
+        setSelfDeclaration={setSelfDeclaration}
+      />
 
       <IntroPageButtonRow />
     </>
