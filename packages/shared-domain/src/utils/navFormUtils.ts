@@ -219,19 +219,17 @@ export const removeVedleggspanel = (form: NavFormType) => {
 
 export const isSubmissionMethodAllowed = (submissionMethod: string, form: NavFormType | FormsResponseForm): boolean => {
   const { submissionTypes } = form.properties;
-  const isDigitalAndPaperSubmission =
-    submissionTypesUtils.isPaperSubmission(submissionTypes) &&
-    submissionTypesUtils.isDigitalSubmission(submissionTypes);
+  if (!submissionMethod || !submissionTypes) {
+    return true;
+  }
 
   switch (submissionMethod) {
     case 'digital':
-      return (
-        !submissionTypes || isDigitalAndPaperSubmission || submissionTypesUtils.isDigitalSubmissionOnly(submissionTypes)
-      );
+      return submissionTypesUtils.isDigitalSubmission(submissionTypes);
     case 'paper':
-      return (
-        !submissionTypes || isDigitalAndPaperSubmission || submissionTypesUtils.isPaperSubmissionOnly(submissionTypes)
-      );
+      return submissionTypesUtils.isPaperSubmission(submissionTypes);
+    case 'digitalnologin':
+      return submissionTypesUtils.isDigitalNoLoginSubmission(submissionTypes);
   }
   return false;
 };

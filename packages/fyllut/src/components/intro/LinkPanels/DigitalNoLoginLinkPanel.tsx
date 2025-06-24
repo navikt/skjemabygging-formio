@@ -15,7 +15,9 @@ const DigitalNoLoginLinkPanel = () => {
       showSelectSubmissionType() &&
       submissionTypesUtils.isDigitalNoLoginSubmission(form.properties.submissionTypes) &&
       (state === IntroPageState.NO_LOGIN ||
-        (state === IntroPageState.DEFAULT && !submissionTypesUtils.isPaperSubmission(form.properties.submissionTypes)))
+        (state === IntroPageState.DEFAULT &&
+          (!submissionTypesUtils.isDigitalSubmission(form.properties.submissionTypes) ||
+            !submissionTypesUtils.isPaperSubmission(form.properties.submissionTypes))))
     );
   };
 
@@ -25,8 +27,8 @@ const DigitalNoLoginLinkPanel = () => {
         <IntroLinkPanel
           onClick={() => forceRedirectToSub('digitalnologin')}
           href={`${baseUrl}${location.pathname}?sub=digitalnologin`}
-          title={translate(TEXTS.grensesnitt.introPage.sendUnauthorizedDigital)}
-          description={translate(TEXTS.grensesnitt.introPage.sendUnauthorizedDigitalDescription)}
+          title={translate(TEXTS.grensesnitt.introPage.sendDigitalNoLogin)}
+          description={translate(TEXTS.grensesnitt.introPage.sendDigitalNoLoginDescription)}
           className="mb-4"
         />
       )}

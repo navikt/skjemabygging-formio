@@ -62,8 +62,8 @@ export const grensesnitt = {
     },
     sendDigital: 'Logg inn og send digitalt',
     sendDigitalDescription: 'Det er enklest og raskest å søke digitalt.',
-    sendUnauthorizedDigital: 'Send digitalt uten å logge inn',
-    sendUnauthorizedDigitalDescription:
+    sendDigitalNoLogin: 'Send digitalt uten å logge inn',
+    sendDigitalNoLoginDescription:
       'Vi kontakter deg etter innsending for å bekrefte at det er du som har sendt søknaden.',
     sendOnPaper: 'Fyll ut digitalt og send i posten',
     sendOnPaperDescription: 'Du fyller ut søknaden før du skriver den ut.',

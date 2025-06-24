@@ -15,7 +15,8 @@ const NoLoginLinkPanel = () => {
       showSelectSubmissionType() &&
       state === IntroPageState.DEFAULT &&
       submissionTypesUtils.isPaperSubmission(form.properties.submissionTypes) &&
-      submissionTypesUtils.isDigitalNoLoginSubmission(form.properties.submissionTypes)
+      submissionTypesUtils.isDigitalNoLoginSubmission(form.properties.submissionTypes) &&
+      submissionTypesUtils.isDigitalSubmission(form.properties.submissionTypes)
     );
   };
 

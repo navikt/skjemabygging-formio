@@ -1,4 +1,3 @@
-import { useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
 import { Form, SubmissionMethod, submissionTypesUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
@@ -29,7 +28,6 @@ const IntroPageContext = createContext<IntroPageContextType>({} as IntroPageCont
 
 export const IntroPageProvider = ({ children, form }: IntroPageProviderProps) => {
   const [searchParams] = useSearchParams();
-  const { baseUrl } = useAppConfig();
   const submissionMethod = (searchParams.get('sub') as SubmissionMethod) ?? undefined;
 
   const toState = useCallback(
@@ -74,7 +72,7 @@ export const IntroPageProvider = ({ children, form }: IntroPageProviderProps) =>
   const forceRedirectToSub = (sub: SubmissionMethod) => {
     // Important to force redirect to force idporten redirect if sub=digital
     // and to make sure appCondig have the correct submissionMethod
-    window.location.href = `${baseUrl}${location.pathname}${location.search ? `${location.search}&sub=${sub}` : `?sub=${sub}`}`;
+    window.location.href = `${location.href}${location.search ? `${location.search}&sub=${sub}` : `?sub=${sub}`}`;
   };
 
   const showSelectSubmissionType = () => {

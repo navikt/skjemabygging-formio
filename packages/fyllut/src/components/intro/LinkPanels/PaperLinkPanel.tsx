@@ -16,7 +16,8 @@ const PaperLinkPanel = () => {
       submissionTypesUtils.isPaperSubmission(form.properties.submissionTypes) &&
       (state === IntroPageState.NO_LOGIN ||
         (state === IntroPageState.DEFAULT &&
-          !submissionTypesUtils.isDigitalNoLoginSubmission(form.properties.submissionTypes)))
+          (!submissionTypesUtils.isDigitalSubmission(form.properties.submissionTypes) ||
+            !submissionTypesUtils.isDigitalNoLoginSubmission(form.properties.submissionTypes))))
     );
   };
 
