@@ -1,4 +1,5 @@
-import { Box, Heading, Radio, RadioGroup } from '@navikt/ds-react';
+import { Accordion, Box, Heading, Radio, RadioGroup } from '@navikt/ds-react';
+import { Intro } from '@navikt/skjemadigitalisering-shared-components';
 import { Form } from '@navikt/skjemadigitalisering-shared-domain';
 import { UpdateFormFunction } from '../../../components/FormMetaDataEditor/utils/utils';
 import useKeyBasedText from '../../../hooks/useKeyBasedText';
@@ -63,7 +64,11 @@ export function DataDisclosure({ form, handleChange, refMap, errors }: Props) {
           />
         </Box>
       }
-      right={<p>Preview kommer</p>}
+      right={
+        <Accordion>
+          <Intro.DataDisclosure properties={form.introPage?.sections?.dataDisclosure} translate={getKeyBasedText} />
+        </Accordion>
+      }
     />
   );
 }

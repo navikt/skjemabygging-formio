@@ -1,7 +1,9 @@
 import { Box, Heading, Radio, RadioGroup } from '@navikt/ds-react';
+import { Intro } from '@navikt/skjemadigitalisering-shared-components';
 import { Form } from '@navikt/skjemadigitalisering-shared-domain';
 import { forwardRef } from 'react';
 import { UpdateFormFunction } from '../../../components/FormMetaDataEditor/utils/utils';
+import useKeyBasedText from '../../../hooks/useKeyBasedText';
 import { IntroPageError } from '../validation/validation';
 import { SectionWrapper } from './SectionWrapper';
 
@@ -12,6 +14,8 @@ type Props = {
 };
 
 export const SelfDeclaration = forwardRef<HTMLInputElement, Props>(({ handleChange, form, errors }, ref) => {
+  const { getKeyBasedText } = useKeyBasedText();
+
   return (
     <SectionWrapper
       noBorderBottom={true}
@@ -44,7 +48,7 @@ export const SelfDeclaration = forwardRef<HTMLInputElement, Props>(({ handleChan
           </RadioGroup>
         </Box>
       }
-      right={<p>Preview kommer</p>}
+      right={<Intro.SelfDeclaration description={form.introPage?.selfDeclaration ?? ''} translate={getKeyBasedText} />}
     />
   );
 });

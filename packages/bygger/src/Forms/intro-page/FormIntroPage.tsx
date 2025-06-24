@@ -131,10 +131,16 @@ export default function FormIntroPage({ form }: { form: Form }) {
         )}
         {scope && <Scope form={form} handleChange={changeForm} errors={errors} refMap={refMap} />}
         {outOfScope && <OutOfScope form={form} handleChange={changeForm} errors={errors} refMap={refMap} />}
-        <Prerequisites form={form} handleChange={changeForm} errors={errors} refMap={refMap} />
+        <Prerequisites
+          form={form}
+          submissionMethod={'paper'}
+          handleChange={changeForm}
+          errors={errors}
+          refMap={refMap}
+        />
         {dataDisclosure && <DataDisclosure form={form} handleChange={changeForm} refMap={refMap} errors={errors} />}
         <DataTreatment form={form} handleChange={changeForm} errors={errors} refMap={refMap} />
-        <DataStorage />
+        <DataStorage submissionMethod={'paper'} />
         {automaticProcessing && (
           <AutomaticProcessing form={form} handleChange={changeForm} errors={errors} refMap={refMap} />
         )}

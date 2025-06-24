@@ -1,4 +1,5 @@
-import { Box, Heading } from '@navikt/ds-react';
+import { Accordion, Box, Heading } from '@navikt/ds-react';
+import { Intro } from '@navikt/skjemadigitalisering-shared-components';
 import { Form } from '@navikt/skjemadigitalisering-shared-domain';
 import { UpdateFormFunction } from '../../../components/FormMetaDataEditor/utils/utils';
 import useKeyBasedText from '../../../hooks/useKeyBasedText';
@@ -60,7 +61,11 @@ export function Optional({ handleChange, form, errors, refMap }: Props) {
           />
         </Box>
       }
-      right={<p>Preview kommer</p>}
+      right={
+        <Accordion>
+          <Intro.Optional properties={form.introPage?.sections?.optional} translate={getKeyBasedText} />
+        </Accordion>
+      }
     />
   );
 }

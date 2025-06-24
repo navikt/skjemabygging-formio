@@ -1,4 +1,5 @@
 import { Box, Heading } from '@navikt/ds-react';
+import { Intro } from '@navikt/skjemadigitalisering-shared-components';
 import { Form, IntroPage } from '@navikt/skjemadigitalisering-shared-domain';
 import { forwardRef } from 'react';
 import { UpdateFormFunction } from '../../../components/FormMetaDataEditor/utils/utils';
@@ -46,7 +47,7 @@ export const Introduction = forwardRef<HTMLTextAreaElement, Props>(({ handleChan
           />
         </Box>
       }
-      right={<p>Preview kommer</p>}
+      right={<Intro.GuidePanel description={form.introPage?.introduction} translate={getKeyBasedText} />}
     />
   );
 });

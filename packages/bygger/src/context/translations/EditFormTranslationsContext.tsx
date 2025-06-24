@@ -125,7 +125,7 @@ const EditFormTranslationsProvider = ({ initialChanges, children }: Props) => {
   };
 
   const getTextFromCurrentChanges = (key?: string, lang: TranslationLang = 'nb') => {
-    return key ? (storedTranslations[key]?.[lang] ?? '') : '';
+    return key ? (state.changes[key]?.[lang] ?? '') : '';
   };
 
   const value = {
