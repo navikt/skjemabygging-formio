@@ -1,30 +1,6 @@
 import { formsApiTranslations } from './FormsApiTranslation';
 
 describe('FormsApiTranslation', () => {
-  describe('isGlobalTranslation', () => {
-    it('should return true for global translation', () => {
-      const translation = { key: 'test', tag: 'global' } as any;
-      expect(formsApiTranslations.isGlobalTranslation(translation)).toBe(true);
-    });
-
-    it('should return false for form translation', () => {
-      const translation = { key: 'test' } as any;
-      expect(formsApiTranslations.isGlobalTranslation(translation)).toBe(false);
-    });
-  });
-
-  describe('isFormTranslation', () => {
-    it('should return true for form translation', () => {
-      const translation = { key: 'test' } as any;
-      expect(formsApiTranslations.isFormTranslation(translation)).toBe(true);
-    });
-
-    it('should return false for global translation', () => {
-      const translation = { key: 'test', tag: 'global' } as any;
-      expect(formsApiTranslations.isFormTranslation(translation)).toBe(false);
-    });
-  });
-
   describe('findMostRecentlyChanged', () => {
     it('should return the most recently changed translation', () => {
       const translations = [

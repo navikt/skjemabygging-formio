@@ -1,4 +1,4 @@
-import { Component, FormPropertiesType } from '../form';
+import { Component, FormPropertiesType, IntroPage } from '../form';
 
 type FormStatus = 'draft' | 'published' | 'pending' | 'unpublished' | 'unknown';
 
@@ -16,6 +16,7 @@ type Form = {
   title: string;
   components: Component[];
   properties: FormPropertiesType;
+  introPage?: IntroPage;
   createdAt?: string;
   createdBy?: string;
   changedAt?: string;
@@ -25,6 +26,7 @@ type Form = {
   publishedLanguages?: string[];
   status?: FormStatus;
   lock?: FormLock;
+  firstPanelSlug?: string;
 };
 
 export type { Form, FormStatus };

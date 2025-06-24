@@ -36,10 +36,13 @@ export const truncate = (text, boundary) => {
   return text.length > boundary ? `${text.slice(0, boundary - 1)}...` : text;
 };
 
+const capitalize = (str) => str[0].toUpperCase() + str.slice(1);
+
 const stringUtils = {
   camelCase,
   toPascalCase,
   addPrefixOrPostfix,
   truncate,
+  capitalize,
 };
 export default stringUtils;

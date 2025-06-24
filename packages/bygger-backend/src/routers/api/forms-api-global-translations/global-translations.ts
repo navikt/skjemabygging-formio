@@ -1,6 +1,6 @@
 import {
   formioFormsApiUtils,
-  FormsApiGlobalTranslation,
+  FormsApiTranslation,
   GlobalTranslationsResourceContent,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { RequestHandler } from 'express';
@@ -19,7 +19,7 @@ const get: RequestHandler = async (req, res, next) => {
 
 const post: RequestHandler = async (req, res, next) => {
   const accessToken = req.headers.AzureAccessToken as string;
-  const { key, tag, nb, nn, en } = req.body as FormsApiGlobalTranslation;
+  const { key, tag, nb, nn, en } = req.body as FormsApiTranslation;
   const body = { key, tag, nb, nn, en };
   try {
     const translation = await globalTranslationsService.post(body, accessToken);
@@ -35,7 +35,7 @@ const post: RequestHandler = async (req, res, next) => {
 
 const put: RequestHandler = async (req, res, next) => {
   const { id } = req.params;
-  const { revision, nb, nn, en } = req.body as FormsApiGlobalTranslation;
+  const { revision, nb, nn, en } = req.body as FormsApiTranslation;
   const accessToken = req.headers.AzureAccessToken as string;
   const body = { nb, nn, en };
   try {
@@ -70,12 +70,18 @@ const publish: RequestHandler = async (req, res, next) => {
     const accessToken = req.headers.AzureAccessToken as string;
     await globalTranslationsService.publish(accessToken);
 
-    const publishedTranslations = await globalTranslationsService.getPublished(['nn', 'en'], accessToken);
-    const { en, 'nn-NO': nn }: GlobalTranslationsResourceContent =
-      formioFormsApiUtils.mapPublishedGlobalTranslationsToFormioFormat(publishedTranslations);
+    const publishedTranslations = await globalTranslationsService.getPublished(['nb', 'nn', 'en'], accessToken);
+    const {
+      'nb-NO': nb,
+      'nn-NO': nn,
+      en,
+    }: GlobalTranslationsResourceContent = formioFormsApiUtils.mapPublishedGlobalTranslationsToFormioFormat(
+      publishedTranslations,
+    );
 
-    await backendInstance.publishResource('global-translations-en', { en });
+    await backendInstance.publishResource('global-translations-nb-NO', { 'nb-NO': nb });
     await backendInstance.publishResource('global-translations-nn-NO', { 'nn-NO': nn });
+    await backendInstance.publishResource('global-translations-en', { en });
 
     res.sendStatus(201);
   } catch (error) {

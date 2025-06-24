@@ -1,8 +1,15 @@
 import { Form, formioFormsApiUtils, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import cloneDeep from 'lodash.clonedeep';
 
-type FormReducerAction = 'form-loaded' | 'form-not-found' | 'form-changed' | 'form-saved' | 'form-error' | 'form-reset';
-type Status = 'INITIAL LOADING' | 'FINISHED LOADING' | 'FORM NOT FOUND' | 'ERROR';
+type FormReducerAction =
+  | 'form-loaded'
+  | 'form-not-found'
+  | 'form-changed'
+  | 'form-saved'
+  | 'form-error'
+  | 'form-reset'
+  | 'form-deleted';
+type Status = 'INITIAL LOADING' | 'FINISHED LOADING' | 'FORM NOT FOUND' | 'FORM DELETED' | 'ERROR';
 export type FormReducerActionType = { type: FormReducerAction; form?: Form; publishedForm?: Form };
 
 export interface FormReducerState {
@@ -45,6 +52,10 @@ const formPageReducer = (state: FormReducerState, action: FormReducerActionType)
     case 'form-error':
       return {
         status: 'ERROR',
+      };
+    case 'form-deleted':
+      return {
+        status: 'FORM DELETED',
       };
     default: {
       return state;

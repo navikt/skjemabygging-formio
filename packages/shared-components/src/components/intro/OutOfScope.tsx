@@ -1,0 +1,30 @@
+import { Heading } from '@navikt/ds-react';
+import { IntroPageSection } from '@navikt/skjemadigitalisering-shared-domain';
+import IntroBulletPoints from './shared/IntroBulletPoints';
+import IntroDescription from './shared/IntroDescription';
+
+interface Props {
+  properties?: IntroPageSection;
+  translate: (key?: string) => string;
+  className?: string;
+}
+
+const OutOfScope = ({ properties, translate, className }: Props) => {
+  if (!properties?.title) {
+    return null;
+  }
+
+  const bulletPoints = (properties?.bulletPoints ?? []).map(translate);
+
+  return (
+    <div className={className}>
+      <Heading level="3" size="medium" spacing>
+        {translate(properties.title)}
+      </Heading>
+      <IntroDescription description={translate(properties?.description)} />
+      <IntroBulletPoints values={bulletPoints} />
+    </div>
+  );
+};
+
+export default OutOfScope;

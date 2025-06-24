@@ -15,9 +15,15 @@ interface FormSettingsPageProps {
   form: Form;
   validateAndSave: (form: Form) => Promise<void>;
   setOpenPublishSettingModal: (open: boolean) => void;
+  setOpenDeleteFormModal: (open: boolean) => void;
 }
 
-const FormSettingsSidebar = ({ form, validateAndSave, setOpenPublishSettingModal }: FormSettingsPageProps) => {
+const FormSettingsSidebar = ({
+  form,
+  validateAndSave,
+  setOpenPublishSettingModal,
+  setOpenDeleteFormModal,
+}: FormSettingsPageProps) => {
   const { config } = useAppConfig();
   const { copyFormFromProduction } = useForm();
   const [lockedFormModal, setLockedFormModal] = useModal();
@@ -58,6 +64,15 @@ const FormSettingsSidebar = ({ form, validateAndSave, setOpenPublishSettingModal
           </ButtonWithSpinner>
         )}
         <ToggleFormLockButton isLockedForm={isLockedForm} lockedFormReason={lockedFormReason} />
+        <Button
+          variant="tertiary"
+          onClick={() => doIfUnlocked(() => setOpenDeleteFormModal(true))}
+          type="button"
+          size="small"
+          icon={isLockedForm && <PadlockLockedIcon title="Skjemaet er låst" />}
+        >
+          Slett skjema
+        </Button>
         <UserFeedback />
         <FormStatusPanel formStatusProperties={form} />
       </VStack>

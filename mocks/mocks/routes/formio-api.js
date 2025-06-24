@@ -1,4 +1,6 @@
 const formCypress101 = require('../data/formio-api/cypress101.json');
+const introPage = require('../data/formio-api/intro-page.json');
+const introPageTranslations = require('../data/formio-api/intro-page-translations.json');
 const formCypressaxe = require('../data/formio-api/cypressaxe.json');
 const formPengerOgKonto = require('../data/formio-api/pengerOgKonto.json');
 const formConditionalXmas = require('../data/formio-api/conditionalxmas.json');
@@ -30,6 +32,7 @@ const formDrivingList = require('../data/formio-api/driving-list.json');
 const formAttachment = require('../data/formio-api/attachments.json');
 const formYear = require('../data/formio-api/year.json');
 const formTextfield = require('../data/formio-api/textfield.json');
+const formatTextfield = require('../data/formio-api/textfield-formating.json');
 const numberForm = require('../data/formio-api/number.json');
 const formAccordion = require('../data/formio-api/accordion.json');
 const checkboxForm = require('../data/formio-api/custom-components-checkbox.json');
@@ -44,9 +47,15 @@ const formSkjemagruppeTest = require('../data/formio-api/skjemagruppetest.json')
 const errorSummaryFocusForm = require('../data/formio-api/errorSummaryFocus.json');
 const datafetcherForm = require('../data/formio-api/data-fetcher.json');
 const datafetcherAnnetForm = require('../data/formio-api/data-fetcher-annet.json');
+const datafetcherContainer = require('../data/formio-api/data-fetcher-container.json');
+const submissionTypePaper = require('../data/formio-api/submission-type-paper.json');
+const submissionTypeDigital = require('../data/formio-api/submission-type-digital.json');
+const submissionTypePaperDigital = require('../data/formio-api/submission-type-paper-digital.json');
+const submissionTypeNone = require('../data/formio-api/submission-type-none.json');
 
 const allForms = [
   { form: formCypress101, translations: translationsCypress101 },
+  { form: introPage, translations: introPageTranslations },
   { form: formCypressaxe, translations: undefined },
   { form: formPengerOgKonto, translations: undefined },
   { form: formConditionalXmas, translations: translationsConditionalXmas },
@@ -70,6 +79,7 @@ const allForms = [
   { form: formAttachment, translations: undefined },
   { form: formYear, translations: undefined },
   { form: formTextfield, translations: undefined },
+  { form: formatTextfield, translations: undefined },
   { form: numberForm, translations: undefined },
   { form: formAccordion, translations: undefined },
   { form: checkboxForm, translations: undefined },
@@ -83,6 +93,11 @@ const allForms = [
   { form: errorSummaryFocusForm, translations: undefined },
   { form: datafetcherForm, translations: undefined },
   { form: datafetcherAnnetForm, translations: undefined },
+  { form: datafetcherContainer, translations: undefined },
+  { form: submissionTypePaper, translations: undefined },
+  { form: submissionTypeDigital, translations: undefined },
+  { form: submissionTypePaperDigital, translations: undefined },
+  { form: submissionTypeNone, translations: undefined },
 ];
 
 const findTestdata = (formPath) => allForms.find((testdata) => testdata.form.path === formPath);

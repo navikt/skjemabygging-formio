@@ -21,6 +21,7 @@ const globalErrorHandler = (err, req, res, _next) => {
   }
 
   res.status(500);
+
   if (err.render_html) {
     res.redirect(`${config.fyllutPath}/500?correlationId=${err.correlation_id}`);
   } else {

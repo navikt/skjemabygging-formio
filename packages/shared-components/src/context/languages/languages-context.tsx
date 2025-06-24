@@ -1,6 +1,7 @@
 import {
   I18nTranslationReplacements,
   I18nTranslations,
+  Tkey,
   translationUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
@@ -11,7 +12,7 @@ interface LanguageContextType {
   availableLanguages: string[];
   currentLanguage: string;
   initialLanguage: string;
-  translate: (originalText: string | undefined, params?: Record<string | number, any>) => string;
+  translate: (textOrKey?: string | Tkey, params?: Record<string | number, any>) => string;
   translationsForNavForm: object;
 }
 
@@ -45,9 +46,9 @@ export const LanguagesProvider = ({ children, translations }: Props) => {
     setTranslationsForNavForm(translations);
   }, [translations]);
 
-  const translate = (originalText: string = '', params?: I18nTranslationReplacements): string => {
+  const translate = (textOrKey: string | Tkey = '', params?: I18nTranslationReplacements): string => {
     return translationUtils.translateWithTextReplacements({
-      originalText,
+      textOrKey,
       params,
       translations,
       currentLanguage,

@@ -2,7 +2,7 @@ import { Back, Close } from '@navikt/ds-icons';
 import { Button, Stepper } from '@navikt/ds-react';
 import { NavFormType, Submission, TEXTS, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { useMemo, useRef, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useParams } from 'react-router-dom';
 import { useAppConfig } from '../../../context/config/configContext';
 import { useLanguages } from '../../../context/languages';
 
@@ -10,19 +10,33 @@ type FormStepperProps = {
   form: NavFormType;
   formUrl: string;
   submission?: Submission;
+  activeStep?: string;
+  completed?: boolean;
 };
 
-const FormStepper = ({ form, submission, formUrl }: FormStepperProps) => {
+const FormStepper = ({ form, submission, formUrl, activeStep, completed }: FormStepperProps) => {
   const { submissionMethod } = useAppConfig();
+  const { panelSlug } = useParams();
   const openButton = useRef<HTMLButtonElement>(null);
-  const { search, pathname } = useLocation();
+  const { search } = useLocation();
   const { translate } = useLanguages();
   const [isOpen, setIsOpen] = useState(false);
   const formSteps = useMemo(() => {
-    return navFormUtils
+    const formioSteps = navFormUtils
       .getActivePanelsFromForm(form, submission, submissionMethod)
-      .map((panel) => ({ label: panel.title, url: `${formUrl}/${panel.key}` }));
-  }, [form, formUrl, submissionMethod, submission]);
+      .map((panel) => ({ label: panel.title, key: panel.key }));
+    return [
+      ...formioSteps,
+      {
+        key: 'oppsummering',
+        label: TEXTS.statiske.summaryPage.title,
+      },
+    ];
+  }, [form, submissionMethod, submission]);
+
+  const getActiveStepper = () => {
+    return formSteps.findIndex((step) => step.key === (activeStep ?? panelSlug));
+  };
 
   const onOpen = () => {
     setIsOpen(!isOpen);
@@ -66,15 +80,17 @@ const FormStepper = ({ form, submission, formUrl }: FormStepperProps) => {
               {translate(TEXTS.grensesnitt.close)}
             </Button>
           )}
-          <Stepper activeStep={formSteps.length + 1}>
-            {formSteps.map((step) => (
-              <Stepper.Step to={`${step.url}${search}`} as={Link} key={step.url} completed>
+          <Stepper activeStep={getActiveStepper() + 1}>
+            {formSteps.map((step, index) => (
+              <Stepper.Step
+                to={`${formUrl}/${step.key}${search}`}
+                as={Link}
+                key={step.key}
+                completed={completed ? getActiveStepper() > index : false}
+              >
                 {translate(step.label)}
               </Stepper.Step>
             ))}
-            <Stepper.Step to={pathname} as={Link}>
-              {translate(TEXTS.statiske.summaryPage.title)}
-            </Stepper.Step>
           </Stepper>
         </div>
       </nav>

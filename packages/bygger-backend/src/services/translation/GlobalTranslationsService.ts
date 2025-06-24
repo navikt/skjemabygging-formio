@@ -1,5 +1,5 @@
 import {
-  FormsApiGlobalTranslation,
+  FormsApiTranslation,
   PublishedTranslations,
   TranslationLang,
 } from '@navikt/skjemadigitalisering-shared-domain';
@@ -12,32 +12,32 @@ const createGlobalTranslationService = (formsApiUrl: string): GlobalTranslationS
   const publishedGlobalTranslationsPath = '/v1/published-global-translations';
 
   return {
-    get: async (): Promise<FormsApiGlobalTranslation[]> => {
+    get: async (): Promise<FormsApiTranslation[]> => {
       const response = await fetchWithErrorHandling(`${formsApiUrl}${globalTranslationsPath}`, {
         headers: createHeaders(),
       });
-      return response.data as FormsApiGlobalTranslation[];
+      return response.data as FormsApiTranslation[];
     },
-    post: async (body: GlobalTranslationPostBody, accessToken?: string): Promise<FormsApiGlobalTranslation> => {
+    post: async (body: GlobalTranslationPostBody, accessToken?: string): Promise<FormsApiTranslation> => {
       const response = await fetchWithErrorHandling(`${formsApiUrl}${globalTranslationsPath}`, {
         method: 'POST',
         headers: createHeaders(accessToken),
         body: JSON.stringify(body),
       });
-      return response.data as FormsApiGlobalTranslation;
+      return response.data as FormsApiTranslation;
     },
     put: async (
       id: string,
       body: GlobalTranslationPutBody,
       revision: number,
       accessToken: string,
-    ): Promise<FormsApiGlobalTranslation> => {
+    ): Promise<FormsApiTranslation> => {
       const response = await fetchWithErrorHandling(`${formsApiUrl}${globalTranslationsPath}/${id}`, {
         method: 'PUT',
         headers: createHeaders(accessToken, revision),
         body: JSON.stringify(body),
       });
-      return response.data as FormsApiGlobalTranslation;
+      return response.data as FormsApiTranslation;
     },
     publish: async (accessToken: string) => {
       await fetch(`${formsApiUrl}${globalTranslationsPath}/publish`, {

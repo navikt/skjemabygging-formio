@@ -7,11 +7,11 @@ import { base64Decode } from '../../utils/base64';
 import { responseToError } from '../../utils/errorHandling';
 import { getFyllutUrl } from '../../utils/url';
 import {
-  SendInnSoknadBody,
   assembleSendInnSoknadBody,
   byteArrayToObject,
   isNotFound,
   sanitizeInnsendingsId,
+  SendInnSoknadBody,
   validateInnsendingsId,
 } from './helpers/sendInn';
 

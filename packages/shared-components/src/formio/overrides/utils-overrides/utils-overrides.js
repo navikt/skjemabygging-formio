@@ -1,5 +1,5 @@
 import { fnr as fnrvalidator } from '@navikt/fnrvalidator';
-import { formDiffingTool, navFormioUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { dataFetcherUtils, formDiffingTool, navFormioUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { Formio, Utils } from 'formiojs';
 import moment from 'moment/moment';
 
@@ -161,50 +161,7 @@ const getBirthDateFromFnr = (fnr) => {
   return moment(birthDateStr, 'DDMMYYYY');
 };
 
-const getSelectedItems = (items, userData) => items.filter((item) => userData[item.value]);
-
-const getMatchingItems = (items, matcher) => {
-  return items.filter((item) =>
-    Object.keys(matcher).some((matcherProp) => {
-      return item[matcherProp] === matcher[matcherProp];
-    }),
-  );
-};
-
-const dataFetcher = (key, submission) => {
-  const userData = submission?.data?.[key];
-  const apiResult = submission?.metadata?.dataFetcher?.[key];
-  const fetchSuccess = Array.isArray(apiResult?.data);
-  const fetchFailure = !!apiResult?.fetchError;
-  const fetchDisabled = !!apiResult?.fetchDisabled;
-  const fetchDone = fetchDisabled ? undefined : fetchSuccess || fetchFailure;
-  return {
-    fetchDone,
-    fetchDisabled,
-    ready: fetchDone || fetchDisabled,
-    empty: fetchSuccess ? apiResult?.data?.length === 0 : undefined,
-    success: fetchDone ? fetchSuccess : undefined,
-    failure: fetchDone ? fetchFailure : undefined,
-    selected: (matcher) => {
-      if (fetchSuccess) {
-        const allSelectedItems = getSelectedItems(apiResult.data, userData);
-        if (typeof matcher === 'string') {
-          switch (matcher) {
-            case 'COUNT':
-              return allSelectedItems.filter((item) => item.value !== 'annet').length;
-            case 'OTHER':
-              return allSelectedItems.some((item) => item.value === 'annet');
-            default:
-              return undefined;
-          }
-        }
-        return getMatchingItems(allSelectedItems, matcher).length > 0;
-      }
-      return undefined;
-    },
-    apiResult,
-  };
-};
+const { dataFetcher } = dataFetcherUtils;
 
 /**
  * This is a helper function for developers to easily access submission data from browser console

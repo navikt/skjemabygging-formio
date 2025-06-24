@@ -112,4 +112,14 @@ describe('Translations', () => {
       cy.get('.formio-component-alertstripe').contains('Example correct translation').should('exist');
     });
   });
+
+  describe('Invalid url', () => {
+    beforeEach(() => {
+      cy.visit('/fyllut/&#cypress101/skjema?sub=paper', { failOnStatusCode: false });
+    });
+
+    it('should show error page when URL is invalid', () => {
+      cy.findByRole('heading', { name: 'Beklager, fant ikke siden' }).should('exist');
+    });
+  });
 });

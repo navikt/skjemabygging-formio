@@ -41,6 +41,12 @@ const useTranslationTableStyles = makeStyles({
   displayCellIcon: {
     verticalAlign: 'text-top',
   },
+  inputAdditionalInfo: {
+    marginTop: '0.5rem',
+    lineHeight: '0.8rem',
+    fontSize: '0.8rem',
+    color: 'var(--a-text-subtle)',
+  },
 });
 
 export { useStickyStyles, useTranslationTableStyles };

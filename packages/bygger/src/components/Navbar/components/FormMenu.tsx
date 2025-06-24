@@ -1,5 +1,4 @@
-import { LanguageIcon } from '@navikt/aksel-icons';
-import { EditFilled, EyeFilled, SettingsFilled } from '@navikt/ds-icons';
+import { ChatExclamationmarkIcon, CogIcon, EyeIcon, GlobeIcon, PencilIcon } from '@navikt/aksel-icons';
 import useUnsavedChangesModal from '../../../hooks/useUnsavedChangesModal';
 import { MenuLink } from './MenuLink';
 
@@ -9,17 +8,22 @@ export const FormMenu = ({ formPath }) => {
   return (
     <>
       <MenuLink to={`/forms/${formPath}/settings`} noIconStyling={false}>
-        <SettingsFilled fontSize={'1.5rem'} role="presentation" />
+        <CogIcon fontSize="1.5rem" role="presentation" />
         <span>Innstillinger</span>
       </MenuLink>
 
+      <MenuLink to={`/forms/${formPath}/intropage`} noIconStyling={false}>
+        <ChatExclamationmarkIcon fontSize="1.5rem" role="presentation" />
+        <span>Introside</span>
+      </MenuLink>
+
       <MenuLink to={`/forms/${formPath}/edit`} noIconStyling={false}>
-        <EditFilled fontSize={'1.5rem'} role="presentation" />
+        <PencilIcon fontSize="1.5rem" role="presentation" />
         <span>Rediger skjema</span>
       </MenuLink>
 
       <MenuLink to={`/forms/${formPath}/view/veiledning`} noIconStyling={false}>
-        <EyeFilled fontSize={'1.5rem'} role="presentation" />
+        <EyeIcon fontSize="1.5rem" role="presentation" />
         <span>Forhåndsvis</span>
       </MenuLink>
 
@@ -32,7 +36,7 @@ export const FormMenu = ({ formPath }) => {
           })
         }
       >
-        <LanguageIcon fontSize={'1.5rem'} role="presentation" />
+        <GlobeIcon fontSize="1.5rem" role="presentation" />
         <span>Oversettelser</span>
       </MenuLink>
 

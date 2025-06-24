@@ -1,5 +1,5 @@
 import { http as baseHttp, useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
-import { FormsApiFormTranslation } from '@navikt/skjemadigitalisering-shared-domain';
+import { FormsApiTranslation } from '@navikt/skjemadigitalisering-shared-domain';
 import { useFeedbackEmit } from '../context/notifications/FeedbackContext';
 import ApiError from './ApiError';
 
@@ -9,24 +9,25 @@ const useFormTranslationsApi = () => {
   const http = appConfig.http ?? baseHttp;
   const getPath = (formPath: string) => `/api/forms/${formPath}/translations`;
 
-  const get = async (formPath: string): Promise<FormsApiFormTranslation[] | undefined> => {
+  const get = async (formPath: string): Promise<FormsApiTranslation[] | undefined> => {
     try {
-      return await http.get<FormsApiFormTranslation[]>(getPath(formPath));
+      return await http.get<FormsApiTranslation[]>(getPath(formPath));
     } catch (error) {
       const message = (error as Error)?.message;
       feedbackEmit.error(`Feil ved henting av oversettelser ${message}`);
     }
   };
 
-  const post = async (formPath: string, translation: FormsApiFormTranslation): Promise<FormsApiFormTranslation> => {
+  const post = async (formPath: string, translation: FormsApiTranslation): Promise<FormsApiTranslation> => {
     try {
-      const { key, nb = null, nn = null, en = null, globalTranslationId } = translation;
-      return await http.post<FormsApiFormTranslation>(getPath(formPath), {
+      const { key, nb = null, nn = null, en = null, globalTranslationId, tag } = translation;
+      return await http.post<FormsApiTranslation>(getPath(formPath), {
         key,
         nb,
         nn,
         en,
         globalTranslationId,
+        tag,
       });
     } catch (error: any) {
       if (error?.status !== 409) {
@@ -39,15 +40,16 @@ const useFormTranslationsApi = () => {
     }
   };
 
-  const put = async (formPath: string, translation: FormsApiFormTranslation): Promise<FormsApiFormTranslation> => {
+  const put = async (formPath: string, translation: FormsApiTranslation): Promise<FormsApiTranslation> => {
     try {
-      const { id, revision, nb = null, nn = null, en = null, globalTranslationId } = translation;
-      return await http.put<FormsApiFormTranslation>(`${getPath(formPath)}/${id}`, {
+      const { id, revision, nb = null, nn = null, en = null, globalTranslationId, tag } = translation;
+      return await http.put<FormsApiTranslation>(`${getPath(formPath)}/${id}`, {
         revision,
         nb,
         nn,
         en,
         globalTranslationId,
+        tag,
       });
     } catch (error: any) {
       if (error?.status !== 409) {

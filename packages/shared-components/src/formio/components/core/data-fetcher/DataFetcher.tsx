@@ -1,6 +1,10 @@
-import { SubmissionData } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  DataFetcherComponent,
+  DataFetcherData,
+  DataFetcherSourceId,
+  SubmissionData,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import NavDataFetcher from '../../../../components/data-fetcher/DataFetcher';
-import { DataFetcherData } from '../../../../components/data-fetcher/types';
 import { ComponentUtilsProvider } from '../../../../context/component/componentUtilsContext';
 import utils from '../../../overrides/utils-overrides/utils-overrides';
 import BaseComponent from '../../base/BaseComponent';
@@ -9,13 +13,15 @@ import Description from '../../base/components/Description';
 import Label from '../../base/components/Label';
 import dataFetcherBuilder from './DataFetcher.builder';
 import dataFetcherForm from './DataFetcher.form';
+import { createMetadataObject } from './utils/submissionMetadataUtils';
 
 class DataFetcher extends BaseComponent {
-  static schema() {
+  static schema(dataFetcherSourceId: DataFetcherSourceId, label: string = 'Datahenter') {
     return BaseComponent.schema({
-      label: 'Aktivitetsvelger',
+      label,
       type: 'dataFetcher',
-      key: 'dataFetcher',
+      key: label.toLowerCase(),
+      dataFetcherSourceId,
     });
   }
 
@@ -24,7 +30,15 @@ class DataFetcher extends BaseComponent {
   }
 
   static get builderInfo() {
-    return dataFetcherBuilder();
+    return dataFetcherBuilder('Datahenter');
+  }
+
+  get component(): DataFetcherComponent {
+    return super.component as DataFetcherComponent;
+  }
+
+  set component(component: DataFetcherComponent) {
+    super.component = component;
   }
 
   changeHandler(value: Record<string, boolean>) {
@@ -43,12 +57,11 @@ class DataFetcher extends BaseComponent {
   }
 
   getDataFromMetadata(): DataFetcherData | undefined {
-    const metadata = utils.dataFetcher(this.component?.key, this.root.submission);
+    const metadata = utils.dataFetcher(this.path, this.root.submission);
     return metadata.ready ? metadata.apiResult : undefined;
   }
 
   setMetadata(data: DataFetcherData) {
-    const componentKey = this.component?.key;
     const submission = this.root.submission;
     if (!submission.metadata) {
       submission.metadata = {};
@@ -56,15 +69,17 @@ class DataFetcher extends BaseComponent {
     if (!submission.metadata.dataFetcher) {
       submission.metadata.dataFetcher = {};
     }
-    if (componentKey && !submission.metadata.dataFetcher[componentKey]) {
-      submission.metadata.dataFetcher[componentKey] = data;
+    if (this.path && !utils.dataFetcher(this.path, submission).apiResult) {
+      const metadataObject = createMetadataObject(this.path, data);
+      Object.assign(submission.metadata.dataFetcher, metadataObject);
+      this.emit('submissionMetadataChanged', { ...submission.metadata });
     }
     this.triggerChange();
     this.redraw();
   }
 
   shouldSkipValidation(data?: SubmissionData, dirty?: boolean, row?: SubmissionData): boolean {
-    const metadata = utils.dataFetcher(this.component?.key, this.root.submission);
+    const metadata = utils.dataFetcher(this.path, this.root.submission);
     return metadata.fetchDisabled || metadata.empty || super.shouldSkipValidation(data, dirty, row);
   }
 
@@ -73,6 +88,8 @@ class DataFetcher extends BaseComponent {
   }
 
   renderReact(element) {
+    // TODO: Remove 'activities' as default value when all components has dataFetcherSourceId
+    const dataFetcherSourceId = this.component?.dataFetcherSourceId || 'activities';
     return element.render(
       <ComponentUtilsProvider component={this}>
         <NavDataFetcher
@@ -94,6 +111,7 @@ class DataFetcher extends BaseComponent {
           setMetadata={(metaData) => this.setMetadata(metaData)}
           ref={(ref) => this.setReactInstance(ref)}
           showOther={this.getShowOther()}
+          dataFetcherSourceId={dataFetcherSourceId}
         />
       </ComponentUtilsProvider>,
     );

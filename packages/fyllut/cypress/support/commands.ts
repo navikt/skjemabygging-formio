@@ -29,15 +29,14 @@ import { CyHttpMessages } from 'cypress/types/net-stubbing';
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
 // Based on https://github.com/cypress-io/cypress/issues/7306#issuecomment-636009167
-Cypress.Commands.add('findByRoleWhenAttached', (role, options) => {
+Cypress.Commands.add('findByRoleWhenAttached', (role, options, wait: number = 100) => {
   return cy
     .waitUntil(
       () =>
-        // eslint-disable-next-line cypress/no-unnecessary-waiting
         cy
           .findByRole(role, options)
           .as('elementWhenAttached')
-          .wait(100) // for some reason this is needed, otherwise isAttached returns `true` regardless
+          .wait(wait) // for some reason this is needed, otherwise isAttached returns `true` regardless
           .then(($el) => Cypress.dom.isAttached($el)),
       { timeout: 2000, interval: 10 },
     )
@@ -49,15 +48,15 @@ Cypress.Commands.add('shouldBeVisible', { prevSubject: true }, (subject) => {
 });
 
 Cypress.Commands.add('clickNextStep', () => {
-  return cy.findByRoleWhenAttached('button', { name: TEXTS.grensesnitt.navigation.next }).click();
+  return cy.findByRoleWhenAttached('button', { name: TEXTS.grensesnitt.navigation.next }, 500).click();
 });
 
 Cypress.Commands.add('clickSaveAndContinue', () => {
-  return cy.findByRoleWhenAttached('button', { name: TEXTS.grensesnitt.navigation.saveAndContinue }).click();
+  return cy.findByRoleWhenAttached('button', { name: TEXTS.grensesnitt.navigation.saveAndContinue }, 500).click();
 });
 
 Cypress.Commands.add('clickStart', () => {
-  return cy.findByRoleWhenAttached('link', { name: TEXTS.grensesnitt.introPage.start }).click();
+  return cy.findByRoleWhenAttached('link', { name: TEXTS.grensesnitt.introPage.start }, 500).click();
 });
 
 Cypress.Commands.add('verifySendInnRedirect', () => {
@@ -110,4 +109,11 @@ Cypress.Commands.add('configMocksServer', () => {
     port: 3310,
   });
   return cy;
+});
+
+Cypress.Commands.add('skipIfNoIncludeDistTests', function () {
+  if (!Cypress.env('INCLUDE_DIST_TESTS')) {
+    cy.log('Set INCLUDE_DIST_TESTS to true to run this test');
+    this.skip();
+  }
 });

@@ -9,6 +9,7 @@ import Title from '../../components/layout/Title';
 import TitleRowLayout from '../../components/layout/TitleRowLayout';
 import { useForm } from '../../context/old_form/FormContext';
 import RecipientsProvider from '../../context/recipients/RecipientsContext';
+import DeleteFormModal from '../delete/DeleteFormModal';
 import PublishModalComponents from '../publish/PublishModalComponents';
 import FormSettingsSidebar from './FormSettingsSidebar';
 
@@ -24,14 +25,19 @@ export function FormSettingsPage({ form }: FormSettingsPageProps) {
   } = form;
   const isLockedForm = !!form.lock;
   const [openPublishSettingModal, setOpenPublishSettingModal] = useModal();
+  const [openDeleteFormModal, setOpenDeleteFormModal] = useModal();
 
   const [errors, setErrors] = useState({});
   const { config } = useAppConfig();
 
   // Set default properties if they are not set
   const setDefaultProperties = (form: Form) => {
-    if (!form.properties.mellomlagringDurationDays) {
+    const { mellomlagringDurationDays, uxSignalsId, submissionTypes } = form.properties;
+    if (!mellomlagringDurationDays) {
       form.properties.mellomlagringDurationDays = (config?.mellomlagringDurationDays as string) ?? '28';
+    }
+    if (uxSignalsId && submissionTypes.length < 2) {
+      form.properties.uxSignalsSubmissionTypes = submissionTypes;
     }
     return form;
   };
@@ -65,6 +71,7 @@ export function FormSettingsPage({ form }: FormSettingsPageProps) {
             form={form}
             validateAndSave={validateAndSave}
             setOpenPublishSettingModal={setOpenPublishSettingModal}
+            setOpenDeleteFormModal={setOpenDeleteFormModal}
           />
         }
       >
@@ -76,6 +83,11 @@ export function FormSettingsPage({ form }: FormSettingsPageProps) {
         form={form}
         openPublishSettingModal={openPublishSettingModal}
         setOpenPublishSettingModal={setOpenPublishSettingModal}
+      />
+      <DeleteFormModal
+        form={form}
+        openDeleteFormModal={openDeleteFormModal}
+        setOpenDeleteFormModal={setOpenDeleteFormModal}
       />
     </AppLayout>
   );

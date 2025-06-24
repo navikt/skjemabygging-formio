@@ -17,8 +17,9 @@ const mapPublishedGlobalTranslationsToFormioFormat = ({
     tag: 'dummy-tag',
   };
   return {
-    en: [{ ...resourceDefaults, translations: populateWithScope(translations.en ?? {}) }],
+    'nb-NO': [{ ...resourceDefaults, translations: populateWithScope(translations.nb ?? {}) }],
     'nn-NO': [{ ...resourceDefaults, translations: populateWithScope(translations.nn ?? {}) }],
+    en: [{ ...resourceDefaults, translations: populateWithScope(translations.en ?? {}) }],
   };
 };
 

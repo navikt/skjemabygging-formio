@@ -1,5 +1,6 @@
 import { Component } from './component';
 import { FormPropertiesType } from './formProperties';
+import { IntroPage } from './introPage';
 import { DisplayType } from './types';
 
 /**
@@ -29,6 +30,7 @@ export interface NavFormType {
   publishedBy?: string;
   publishedLanguages?: string[];
   status?: string;
+  introPage?: IntroPage;
 }
 
 export interface ResourceAccess {
@@ -37,8 +39,5 @@ export interface ResourceAccess {
 }
 
 export interface FormsResponseForm extends Pick<NavFormType, '_id' | 'title' | 'path' | 'modified'> {
-  properties: Pick<
-    FormPropertiesType,
-    'skjemanummer' | 'ettersending' | 'subsequentSubmissionTypes' | 'submissionTypes'
-  >;
+  properties: Pick<FormPropertiesType, 'skjemanummer' | 'subsequentSubmissionTypes' | 'submissionTypes'>;
 }

@@ -1,4 +1,11 @@
-import { ComponentError, NavFormType, Submission, Webform } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  ComponentError,
+  NavFormType,
+  Submission,
+  SubmissionData,
+  SubmissionMetadata,
+  Webform,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useAppConfig } from '../../context/config/configContext';
@@ -14,7 +21,6 @@ const useStyles = makeStyles({
 
 interface EventProps {
   onCustomEvent?: () => void;
-  onComponentChange?: () => void;
   onSubmit?: (submission: any) => void;
   onSubmitDone?: () => void;
   onNextPage?: ({
@@ -30,6 +36,8 @@ interface EventProps {
   onCancel?: ({ submission }: { submission: Submission }) => void;
   onSave?: ({ submission }: { submission: Submission }) => void;
   onChange?: (changedSubmission: Submission) => void;
+  onSubmissionChanged?: (submissionData: SubmissionData) => void;
+  onSubmissionMetadataChanged?: (submissionMetadata: SubmissionMetadata) => void;
   onWizardPageSelected?: (panel: { path: string }) => void;
   onShowErrors?: (errorsFromForm: ComponentError[]) => void;
   onErrorSummaryFocus?: () => void;
@@ -171,23 +179,16 @@ const NavForm = ({
         prefillData,
       });
       webform.form = NavFormHelper.prefillForm(webform.form, prefillData);
-    }
-  }, [appConfig.logger, webform, prefillData]);
 
-  /**
-   * Update submission
-   */
-  useEffect(() => {
-    (async () => {
-      if (webform && submission) {
-        appConfig.logger?.debug('Set submission', {
-          webformId: webform?.id,
-          submission,
-        });
-        await webform.setSubmission(JSON.parse(JSON.stringify(submission)));
+      // Need to trigger a handle change event after prefilling form or else
+      // submission will not have correct initial state.
+      if (events?.onSubmissionChanged) {
+        events.onSubmissionChanged(webform._data);
       }
-    })();
-  }, [appConfig.logger, webform, submission]);
+    }
+    // Do not want to include events in the dependency array
+    // eslint-disable-next-line
+  }, [appConfig.logger, webform, prefillData]);
 
   /**
    * Initialize the form

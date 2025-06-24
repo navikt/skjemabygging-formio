@@ -1,10 +1,12 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { useForm } from '../context/old_form/FormContext';
+import EditFormTranslationsProvider from '../context/translations/EditFormTranslationsContext';
 import FormTranslationsProvider from '../context/translations/FormTranslationsContext';
 import GlobalTranslationsProvider from '../context/translations/GlobalTranslationsContext';
 import FormTranslationsPage from '../translations/form/FormTranslationsPage';
 import EditFormPage from './edit/EditFormPage';
 import FormError from './error/FormError';
+import FormIntroPage from './intro-page/FormIntroPage';
 import { FormSettingsPage } from './settings/FormSettingsPage';
 import FormSkeleton from './skeleton/FormSkeleton';
 import { TestFormPage } from './TestFormPage';
@@ -31,6 +33,14 @@ export const FormPage = () => {
           <Route path={'/edit'} element={<EditFormPage form={formState.form} />} />
           <Route path={'/view/*'} element={<TestFormPage form={formState.formioForm} />} />
           <Route path={'/settings'} element={<FormSettingsPage form={formState.form} />} />
+          <Route
+            path={'/intropage'}
+            element={
+              <EditFormTranslationsProvider>
+                <FormIntroPage form={formState.form} />
+              </EditFormTranslationsProvider>
+            }
+          />
           <Route path={'/oversettelser'} element={<FormTranslationsPage form={formState.form} />} />
           <Route path="/" element={<Navigate to={'edit'} replace />} />
         </Routes>

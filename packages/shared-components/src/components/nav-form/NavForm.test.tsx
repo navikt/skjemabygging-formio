@@ -155,7 +155,7 @@ describe('NavForm', () => {
 
       const ibanField = await screen.findByLabelText('IBAN');
       expect(ibanField).toBeInTheDocument();
-      expect(ibanField).toHaveValue('GB33BUKB20201555555555');
+      expect(ibanField).toHaveValue('GB33 BUKB 2020 1555 5555 55');
 
       const nextLink = await screen.findByRole('button', { name: 'Neste steg' });
       await userEvent.click(nextLink);

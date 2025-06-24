@@ -1,5 +1,12 @@
 import { Heading } from '@navikt/ds-react';
-import { Enhet, NavFormType, Submission, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  Enhet,
+  NavFormType,
+  Submission,
+  SubmissionType,
+  submissionTypesUtils,
+  TEXTS,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
 import { getAttachments } from '../../../../shared-domain/src/forsteside/forstesideUtils';
@@ -37,6 +44,10 @@ const useStyles = makeStyles({
   },
 });
 
+const submissionTypeIncludesPaperOrIsNoSubmission = (submissionTypes?: SubmissionType[]) =>
+  submissionTypes &&
+  (submissionTypesUtils.isNoneSubmission(submissionTypes) || submissionTypesUtils.isPaperSubmission(submissionTypes));
+
 export function PrepareLetterPage({ form, submission, translations, formUrl }: Props) {
   useEffect(() => scrollToAndSetFocus('main', 'start'), []);
   const { baseUrl, logger, config } = useAppConfig();
@@ -47,9 +58,9 @@ export function PrepareLetterPage({ form, submission, translations, formUrl }: P
 
   const styles = useStyles();
 
-  const { enhetMaVelgesVedPapirInnsending, enhetstyper, skjemanummer, uxSignalsId, uxSignalsInnsending } =
+  const { enhetMaVelgesVedPapirInnsending, enhetstyper, skjemanummer, uxSignalsId, uxSignalsSubmissionTypes } =
     form.properties;
-  const includeUxSignals = uxSignalsId && uxSignalsInnsending !== 'KUN_DIGITAL';
+  const includeUxSignals = !!uxSignalsId && submissionTypeIncludesPaperOrIsNoSubmission(uxSignalsSubmissionTypes);
 
   useEffect(() => {
     if (enhetMaVelgesVedPapirInnsending) {

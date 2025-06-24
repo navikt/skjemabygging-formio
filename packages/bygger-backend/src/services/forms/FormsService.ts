@@ -1,7 +1,7 @@
 import { Form } from '@navikt/skjemadigitalisering-shared-domain';
 import { fetchWithErrorHandling } from '../../fetchUtils';
 import { logger } from '../../logging/logger';
-import { createHeaders, removeInnsendingTypeFromForm } from '../utils/formsApiUtils';
+import { createHeaders } from '../utils/formsApiUtils';
 import { FormPostBody, FormPutBody, FormsService } from './types';
 
 const createFormsService = (formsApiUrl: string): FormsService => {
@@ -11,12 +11,12 @@ const createFormsService = (formsApiUrl: string): FormsService => {
     const search = select ? new URLSearchParams({ select }) : '';
     const url = `${formsUrl}?${search}`;
     const response = await fetchWithErrorHandling(url, { headers: createHeaders() });
-    return (response.data as T[]).map(removeInnsendingTypeFromForm);
+    return response.data as T[];
   };
 
   const get = async (formPath: string): Promise<Form> => {
     const response = await fetchWithErrorHandling(`${formsUrl}/${formPath}`, { headers: createHeaders() });
-    return removeInnsendingTypeFromForm(response.data as Form) as Form;
+    return response.data as Form;
   };
 
   const post = async (body: FormPostBody, accessToken: string): Promise<Form> => {
@@ -37,6 +37,14 @@ const createFormsService = (formsApiUrl: string): FormsService => {
       body: JSON.stringify(body),
     });
     return response.data as Form;
+  };
+
+  const deleteForm = async (formPath: string, revision: number, accessToken: string): Promise<void> => {
+    logger.info(`Delete form ${formPath} (revision ${revision})`);
+    await fetchWithErrorHandling(`${formsUrl}/${formPath}`, {
+      method: 'DELETE',
+      headers: createHeaders(accessToken, revision),
+    });
   };
 
   const postLockForm = async (formPath: string, reason: string, accessToken: string): Promise<Form> => {
@@ -63,6 +71,7 @@ const createFormsService = (formsApiUrl: string): FormsService => {
     get,
     post,
     put,
+    deleteForm,
     postLockForm,
     deleteLockForm,
     formsUrl,

@@ -1,6 +1,7 @@
 import { htmlUtils } from '@navikt/skjemadigitalisering-shared-components';
-import { FormsApiFormTranslation, stringUtils, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
+import { FormsApiTranslation, stringUtils, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, ReactNode, useContext, useEffect, useReducer } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 import { useFeedbackEmit } from '../notifications/FeedbackContext';
 import { editFormTranslationsReducer } from './editTranslationsReducer';
 import { getTranslationsForSaving } from './editTranslationsReducer/selectors';
@@ -10,12 +11,14 @@ import { validateFormTranslations } from './utils/inputValidation';
 import { saveEachTranslation } from './utils/utils';
 
 interface Props {
-  initialChanges?: FormsApiFormTranslation[];
+  initialChanges?: FormsApiTranslation[];
   children: ReactNode;
 }
 
 type EditFormTranslationsContextValue = {
-  updateTranslation: (original: FormsApiFormTranslation, lang: TranslationLang, value: string) => void;
+  updateTranslation: (original: FormsApiTranslation, lang: TranslationLang, value: string) => void;
+  addKeyBasedText: (value: string) => string;
+  updateKeyBasedText: (value: string, key: string) => string;
   errors: TranslationError[];
   editState: string;
   saveChanges: () => Promise<void>;
@@ -26,6 +29,8 @@ const defaultValue: EditFormTranslationsContextValue = {
   errors: [],
   editState: 'INIT',
   saveChanges: () => Promise.resolve(),
+  addKeyBasedText: () => '',
+  updateKeyBasedText: () => '',
 };
 
 const EditFormTranslationsContext = createContext<EditFormTranslationsContextValue>(defaultValue);
@@ -45,7 +50,7 @@ const EditFormTranslationsProvider = ({ initialChanges, children }: Props) => {
     }
   }, [initialChanges, state.status]);
 
-  const updateTranslation = (original: FormsApiFormTranslation, lang: TranslationLang, value: string) => {
+  const updateTranslation = (original: FormsApiTranslation, lang: TranslationLang, value: string) => {
     const { key } = original;
     const storedValue = storedTranslations[key]?.[lang];
     const currentChange = state.changes[key]?.[lang];
@@ -62,8 +67,20 @@ const EditFormTranslationsProvider = ({ initialChanges, children }: Props) => {
     }
   };
 
+  const addKeyBasedText = (value: string) => {
+    const translationKey = uuidv4();
+    dispatch({ type: 'ADD', payload: { key: translationKey, nb: value, tag: 'introPage' } });
+    return translationKey;
+  };
+
+  const updateKeyBasedText = (value: string, key: string) => {
+    const original = state.changes[key] ?? storedTranslations[key];
+    updateTranslation(original, 'nb', value);
+    return key;
+  };
+
   const saveChanges = async () => {
-    const translations = getTranslationsForSaving<FormsApiFormTranslation>(state);
+    const translations = getTranslationsForSaving(state);
     const validationErrors = validateFormTranslations(translations);
 
     if (translations.length === 0) {
@@ -97,6 +114,12 @@ const EditFormTranslationsProvider = ({ initialChanges, children }: Props) => {
     if (generalAlertMessage) {
       feedbackEmit.error(generalAlertMessage);
     }
+
+    if (errors.length > 0) {
+      throw new Error(
+        `Feil under lagring av oversettelser: "${conflictAlertMessage ?? `${conflictAlertMessage}, `}${generalAlertMessage ?? ''}"`,
+      );
+    }
   };
 
   const value = {
@@ -105,6 +128,8 @@ const EditFormTranslationsProvider = ({ initialChanges, children }: Props) => {
     errors: state.errors,
     editState: state.status,
     saveChanges,
+    addKeyBasedText,
+    updateKeyBasedText,
   };
 
   return <EditFormTranslationsContext.Provider value={value}>{children}</EditFormTranslationsContext.Provider>;

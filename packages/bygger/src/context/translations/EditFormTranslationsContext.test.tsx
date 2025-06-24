@@ -1,4 +1,4 @@
-import { FormsApiFormTranslation, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
+import { FormsApiTranslation, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import ApiError from '../../api/ApiError';
 import EditFormTranslationsProvider, { useEditFormTranslations } from './EditFormTranslationsContext';
@@ -30,9 +30,17 @@ vi.mock('../../notifications/FeedbackContext', () => {
 const TestComponent = ({
   updates = [],
 }: {
-  updates?: Array<[original: FormsApiFormTranslation, lang: TranslationLang, value: string]>;
+  updates?: Array<[original: FormsApiTranslation, lang: TranslationLang, value: string]>;
 }) => {
   const { updateTranslation, saveChanges, errors, editState } = useEditFormTranslations();
+
+  const onSave = async () => {
+    try {
+      await saveChanges();
+    } catch (_e) {
+      /* empty */
+    }
+  };
 
   return (
     <div>
@@ -45,7 +53,7 @@ const TestComponent = ({
       >
         Update Translations
       </button>
-      <button onClick={saveChanges}>Save Changes</button>
+      <button onClick={onSave}>Save Changes</button>
       <div data-testid="errors">{errors.map((error) => error.message).toString()}</div>
       <div data-testid="editState">{editState}</div>
     </div>

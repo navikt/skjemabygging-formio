@@ -25,7 +25,7 @@ describe('Your information', () => {
     describe('New application', () => {
       describe('Lives in Norway', () => {
         beforeEach(() => {
-          cy.visit('/fyllut/your-information?sub=digital');
+          cy.visit('/fyllut/yourinformation?sub=digital');
           cy.defaultWaits();
           cy.clickStart();
           cy.wait('@getPrefillData');
@@ -85,7 +85,7 @@ describe('Your information', () => {
       describe('Lives in USA', () => {
         beforeEach(() => {
           cy.mocksUseRouteVariant('get-prefill-data:success-usa');
-          cy.visit('/fyllut/your-information?sub=digital');
+          cy.visit('/fyllut/yourinformation?sub=digital');
           cy.defaultWaits();
           cy.clickStart();
           cy.wait('@getPrefillData');
@@ -123,7 +123,7 @@ describe('Your information', () => {
       beforeEach(() => {
         cy.mocksUseRouteVariant('get-soknad:success-prefill-data');
 
-        cy.visit('/fyllut/your-information/side1?sub=digital&innsendingsId=d2f41ebc-ba98-4fc5-a195-29b098bf50a7');
+        cy.visit('/fyllut/yourinformation/side1?sub=digital&innsendingsId=d2f41ebc-ba98-4fc5-a195-29b098bf50a7');
         cy.defaultWaits();
         cy.wait('@getPrefillData');
       });
@@ -159,7 +159,7 @@ describe('Your information', () => {
 
   describe('Paper', () => {
     beforeEach(() => {
-      cy.visit('/fyllut/your-information?sub=paper');
+      cy.visit('/fyllut/yourinformation?sub=paper');
       cy.defaultWaits();
       cy.clickStart();
       cy.findByRole('heading', { name: 'Dine opplysninger' }).should('exist');
@@ -350,9 +350,145 @@ describe('Your information', () => {
   });
 
   describe('Validation', () => {
+    describe('New application', () => {
+      beforeEach(() => {
+        cy.visit('/fyllut/yourinformation?sub=paper');
+        cy.defaultWaits();
+        cy.clickStart();
+        cy.findByRole('heading', { name: 'Dine opplysninger' }).should('exist');
+        cy.findByRole('group', { name: 'Har du norsk fødselsnummer eller d-nummer?' }).within(($radio) =>
+          cy.findByLabelText('Nei').check(),
+        );
+      });
+
+      it('validates invalid characters for Norwegian street address fields', () => {
+        cy.findByRole('group', { name: 'Bor du i Norge?' }).within(($radio) => cy.findByLabelText('Ja').check());
+
+        cy.findByRole('group', { name: 'Er kontaktadressen en vegadresse eller postboksadresse?' }).within(($radio) =>
+          cy.findByLabelText('Vegadresse').check(),
+        );
+
+        cy.findByRole('textbox', { name: 'Fornavn' }).type('Ola #<}');
+        cy.findByRole('textbox', { name: 'Etternavn' }).type('Nordmann #<}');
+
+        cy.findByRole('textbox', { name: /^C\/O/ }).type('CO #<}');
+        cy.findByRole('textbox', { name: 'Vegadresse' }).type('Testveien 1C #<}');
+        cy.findByRole('textbox', { name: 'Postnummer' }).type('abc');
+        cy.findByRole('textbox', { name: 'Poststed' }).type('Plassen #<}');
+        cy.clickNextStep();
+
+        cy.get('[data-cy=error-summary]')
+          .should('exist')
+          .within(() => {
+            cy.findByRole('link', {
+              name: 'Fornavn inneholder ugyldige tegn',
+            }).should('exist');
+            cy.findByRole('link', {
+              name: 'Etternavn inneholder ugyldige tegn',
+            }).should('exist');
+            cy.findByRole('link', {
+              name: 'C/O inneholder ugyldige tegn',
+            }).should('exist');
+            cy.findByRole('link', {
+              name: 'Vegadresse inneholder ugyldige tegn',
+            }).should('exist');
+            cy.findByRole('link', {
+              name: 'Postnummer må bestå av 4 siffer',
+            }).should('exist');
+            cy.findByRole('link', {
+              name: 'Poststed inneholder ugyldige tegn',
+            }).should('exist');
+          });
+      });
+
+      it('validates invalid characters for Norwegian PO box address fields', () => {
+        cy.findByRole('group', { name: 'Bor du i Norge?' }).within(($radio) => cy.findByLabelText('Ja').check());
+
+        cy.findByRole('group', { name: 'Er kontaktadressen en vegadresse eller postboksadresse?' }).within(($radio) =>
+          cy.findByLabelText('Postboksadresse').check(),
+        );
+
+        cy.findByRole('textbox', { name: 'Fornavn' }).type('Ola #<}');
+        cy.findByRole('textbox', { name: 'Etternavn' }).type('Nordmann #<}');
+
+        cy.findByRole('textbox', { name: /^C\/O/ }).type('CO #<}');
+        cy.findByRole('textbox', { name: 'Postboks' }).type('Testveien 1C #<}');
+        cy.findByRole('textbox', { name: 'Postnummer' }).type('abcd');
+        cy.findByRole('textbox', { name: 'Poststed' }).type('Plassen #<}');
+        cy.clickNextStep();
+
+        cy.get('[data-cy=error-summary]')
+          .should('exist')
+          .within(() => {
+            cy.findByRole('link', {
+              name: 'Fornavn inneholder ugyldige tegn',
+            }).should('exist');
+            cy.findByRole('link', {
+              name: 'Etternavn inneholder ugyldige tegn',
+            }).should('exist');
+            cy.findByRole('link', {
+              name: 'C/O inneholder ugyldige tegn',
+            }).should('exist');
+            cy.findByRole('link', {
+              name: 'Postboks inneholder ugyldige tegn',
+            }).should('exist');
+            cy.findByRole('link', {
+              name: 'Postnummer må bestå av 4 siffer',
+            }).should('exist');
+            cy.findByRole('link', {
+              name: 'Poststed inneholder ugyldige tegn',
+            }).should('exist');
+          });
+      });
+
+      it('validates invalid characters for Foreign address fields', () => {
+        cy.findByRole('group', { name: 'Bor du i Norge?' }).within(($radio) => cy.findByLabelText('Nei').check());
+
+        cy.findByRole('textbox', { name: 'Fornavn' }).type('Ola #<}');
+        cy.findByRole('textbox', { name: 'Etternavn' }).type('Nordmann #<}');
+
+        cy.findByRole('textbox', { name: /^C\/O/ }).type('CO #<}');
+        cy.findByRole('textbox', { name: 'Vegnavn og husnummer, eller postboks' }).type('Testveien 1C #<}');
+        cy.findByRole('textbox', { name: 'Bygning (valgfritt)' }).type('bygning 2 #<}');
+        cy.findByRole('textbox', { name: 'Postnummer (valgfritt)' }).type('abcd #<}');
+        cy.findByRole('textbox', { name: 'By / stedsnavn (valgfritt)' }).type('By #<}');
+        cy.findByRole('textbox', { name: 'Region (valgfritt)' }).type('Region #<}');
+        cy.clickNextStep();
+
+        cy.get('[data-cy=error-summary]')
+          .should('exist')
+          .within(() => {
+            cy.findByRole('link', {
+              name: 'Fornavn inneholder ugyldige tegn',
+            }).should('exist');
+            cy.findByRole('link', {
+              name: 'Etternavn inneholder ugyldige tegn',
+            }).should('exist');
+            cy.findByRole('link', {
+              name: 'C/O inneholder ugyldige tegn',
+            }).should('exist');
+            cy.findByRole('link', {
+              name: 'Vegnavn og husnummer, eller postboks inneholder ugyldige tegn',
+            }).should('exist');
+            cy.findByRole('link', {
+              name: 'Bygning inneholder ugyldige tegn',
+            }).should('exist');
+            cy.findByRole('link', {
+              name: 'Postnummer inneholder ugyldige tegn',
+            }).should('exist');
+            cy.findByRole('link', {
+              name: 'By / stedsnavn inneholder ugyldige tegn',
+            }).should('exist');
+            cy.findByRole('link', {
+              name: 'Region inneholder ugyldige tegn',
+            }).should('exist');
+          });
+      });
+    });
+
     describe('when english is chosen', () => {
       beforeEach(() => {
-        cy.visit('/fyllut/your-information?sub=paper&lang=en');
+        cy.visit('/fyllut/yourinformation?sub=paper&lang=en');
         cy.defaultWaits();
         cy.clickStart();
         cy.findByRole('heading', { name: 'Your personal information' }).should('exist');

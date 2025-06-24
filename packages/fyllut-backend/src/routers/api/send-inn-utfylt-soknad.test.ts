@@ -1,4 +1,6 @@
+import { readFileSync } from 'fs';
 import nock from 'nock';
+import path from 'path';
 import { config } from '../../config/config';
 import { mockRequest, MockRequestParams, mockResponse } from '../../test/testHelpers';
 import sendInnUtfyltSoknad from './send-inn-utfylt-soknad';
@@ -14,6 +16,8 @@ const mockRequestWithPidAndTokenX = ({ headers = {}, body }: MockRequestParams) 
   req.getEnvQualifier = () => undefined;
   return req;
 };
+const filePathSoknad = path.join(process.cwd(), '/src/services/documents/testdata/test-skjema.pdf');
+const soknadPdf = readFileSync(filePathSoknad);
 
 describe('[endpoint] send-inn/utfyltsoknad', () => {
   const innsendingsId = '12345678-1234-1234-1234-12345678abcd';
@@ -22,14 +26,14 @@ describe('[endpoint] send-inn/utfyltsoknad', () => {
     submission: { data: {} },
     attachments: [],
     language: 'nb-NO',
-    translation: {},
+    translation: (text: string) => text,
     innsendingsId,
   };
 
   it('returns 201 and location header if success', async () => {
-    const skjemabyggingproxyScope = nock(process.env.SKJEMABYGGING_PROXY_URL!)
-      .post('/exstream')
-      .reply(200, { data: { result: [{ content: { data: '' } }] } });
+    const skjemabyggingproxyScope = nock(process.env.FAMILIE_PDF_GENERATOR_URL!)
+      .post('/api/pdf/v1/opprett-pdf')
+      .reply(200, soknadPdf);
     const sendInnNockScope = nock(sendInnConfig.host)
       .put(`${sendInnConfig.paths.utfyltSoknad}/${innsendingsId}`)
       .reply(302, 'FOUND', { Location: SEND_LOCATION });
@@ -49,9 +53,9 @@ describe('[endpoint] send-inn/utfyltsoknad', () => {
   });
 
   it('calls next if SendInn returns error', async () => {
-    const skjemabyggingproxyScope = nock(process.env.SKJEMABYGGING_PROXY_URL!)
-      .post('/exstream')
-      .reply(200, { data: { result: [{ content: { data: '' } }] } });
+    const skjemabyggingproxyScope = nock(process.env.FAMILIE_PDF_GENERATOR_URL!)
+      .post('/api/pdf/v1/opprett-pdf')
+      .reply(200, soknadPdf);
     const sendInnNockScope = nock(sendInnConfig.host)
       .put(`${sendInnConfig.paths.utfyltSoknad}/${innsendingsId}`)
       .reply(500, 'error body');
@@ -71,8 +75,8 @@ describe('[endpoint] send-inn/utfyltsoknad', () => {
   });
 
   it('calls next if exstream returns error', async () => {
-    const skjemabyggingproxyScope = nock(process.env.SKJEMABYGGING_PROXY_URL!)
-      .post('/exstream')
+    const skjemabyggingproxyScope = nock(process.env.FAMILIE_PDF_GENERATOR_URL!)
+      .post('/api/pdf/v1/opprett-pdf')
       .reply(500, 'error body');
     const req = mockRequestWithPidAndTokenX({ body: defaultBody });
     const res = mockResponse();
@@ -82,7 +86,7 @@ describe('[endpoint] send-inn/utfyltsoknad', () => {
     expect(next).toHaveBeenCalledTimes(1);
     const error: any = next.mock.calls[0][0];
     expect(error.functional).toBe(true);
-    expect(error.message).toBe('Feil ved generering av PDF hos Exstream');
+    expect(error.message).toBe('Feil ved generering av PDF via feltMap');
     expect(res.sendStatus).not.toHaveBeenCalled();
     expect(res.header).not.toHaveBeenCalled();
     expect(skjemabyggingproxyScope.isDone()).toBe(true);

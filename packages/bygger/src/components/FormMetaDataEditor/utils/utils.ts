@@ -1,4 +1,4 @@
-import { DeclarationType, Form, UsageContext, numberUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { DeclarationType, Form, numberUtils, UsageContext } from '@navikt/skjemadigitalisering-shared-domain';
 
 export type UpdateFormFunction = (form: Form) => void;
 export type FormMetadataErrorKeys =
@@ -10,7 +10,6 @@ export type FormMetadataErrorKeys =
   | 'lockedFormReason'
   | 'declarationText'
   | 'uxSignalsId'
-  | 'uxSignalsInnsending'
   | 'mellomlagringDurationDays';
 export type FormMetadataError = Partial<{ [key in FormMetadataErrorKeys]: string }>;
 

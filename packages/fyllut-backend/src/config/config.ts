@@ -45,6 +45,7 @@ const sendInnConfig: SendInnConfig = {
     utfyltSoknad: '/fyllUt/v1/utfyltSoknad',
     prefillData: '/fyllUt/v1/prefill-data',
     activities: '/fyllUt/v1/aktiviteter',
+    mergeFiles: '/fyllUt/v1/merge-filer',
   },
 };
 
@@ -85,13 +86,15 @@ const localDevelopmentConfig: DefaultConfig = {
   gotenbergUrl: process.env.GOTENBERG_URL || 'https://convert-to-pdf.intern.dev.nav.no',
   gotenbergUrlEn: process.env.GOTENBERG_URL_EN || 'https://convert-to-pdf-en.intern.dev.nav.no',
   skjemabyggingProxyClientId: '95170319-b4d7-4190-8271-118ed19bafbf',
+  familiePdfGeneratorUrl: process.env.FAMILIE_PDF_GENERATOR_URL || 'https://familie-pdf.intern.dev.nav.no',
+  familiePdfGeneratorScope: process.env.FAMILIE_PDF_GENERATOR_SCOPE || 'dev-gcp.teamfamilie.familie-pdf',
+  mergePdfScope: process.env.MERGE_PDF_SCOPE || 'dev-gcp.team-soknad.innsending-api',
   azureOpenidTokenEndpoint:
     process.env.AZURE_OPENID_CONFIG_TOKEN_ENDPOINT ||
     'https://login.microsoftonline.com/966ac572-f5b7-4bbe-aa88-c76419c0f851/oauth2/v2.0/token',
   clientId: process.env.AZURE_APP_CLIENT_ID || 'a1eddc14-0e91-40bc-b910-a0cf39ac3223', // <-- fyllut i dev-gcp
   mockIdportenPid: process.env.MOCK_IDPORTEN_PID || '12345678911',
   mockIdportenJwt: process.env.MOCK_IDPORTEN_JWT || 'IDPORTEN_JWT',
-  noFormValidation: process.env.NO_FORM_VALIDATION === 'true',
   noDecorator: process.env.NO_DECORATOR === 'true',
   tokenx: {
     ...tokenx,
@@ -137,6 +140,9 @@ const defaultConfig: DefaultConfig = {
   decoratorUrl: process.env.DECORATOR_URL!,
   skjemabyggingProxyUrl: process.env.SKJEMABYGGING_PROXY_URL!,
   skjemabyggingProxyClientId: process.env.SKJEMABYGGING_PROXY_CLIENT_ID!,
+  familiePdfGeneratorUrl: process.env.FAMILIE_PDF_GENERATOR_URL!,
+  familiePdfGeneratorScope: process.env.FAMILIE_PDF_GENERATOR_SCOPE!,
+  mergePdfScope: process.env.MERGE_PDF_SCOPE!,
   gotenbergUrl: process.env.GOTENBERG_URL!,
   gotenbergUrlEn: process.env.GOTENBERG_URL_EN!,
   azureOpenidTokenEndpoint: process.env.AZURE_OPENID_CONFIG_TOKEN_ENDPOINT!,
@@ -144,7 +150,6 @@ const defaultConfig: DefaultConfig = {
   skjemaDir: process.env.SKJEMA_DIR!,
   resourcesDir: process.env.RESOURCES_DIR!,
   translationDir: process.env.TRANSLATION_DIR!,
-  noFormValidation: false,
   noDecorator: false,
   tokenx,
   sendInnConfig,

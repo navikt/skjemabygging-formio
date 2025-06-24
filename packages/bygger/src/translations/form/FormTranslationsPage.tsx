@@ -1,4 +1,4 @@
-import { Form, FormsApiFormTranslation } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, FormsApiTranslation } from '@navikt/skjemadigitalisering-shared-domain';
 import { useMemo } from 'react';
 import { AppLayout } from '../../components/AppLayout';
 import RowLayout from '../../components/layout/RowLayout';
@@ -24,7 +24,7 @@ const FormTranslationsPage = ({ form }: Props) => {
   const { storedTranslations, isReady: isTranslationsReady, lastSave, deleteTranslation } = useFormTranslations();
   const { storedTranslations: globalTranslations, isReady: isGlobalTranslationsReady } = useGlobalTranslations();
 
-  const generatedTranslations: FormsApiFormTranslation[] = useMemo(
+  const generatedTranslations: FormsApiTranslation[] = useMemo(
     () => generateAndPopulateTranslationsForForm(form, storedTranslations, globalTranslations),
     [form, globalTranslations, storedTranslations],
   );
