@@ -15,6 +15,7 @@ const mapFormToNavForm = (form: Form): NavFormType => {
       skjemanummer: form.skjemanummer ?? form.properties.skjemanummer,
       publishedLanguages: form.publishedLanguages,
     },
+    introPage: form?.introPage,
   };
 };
 
@@ -51,6 +52,7 @@ const mapNavFormToForm = (form: NavFormType): Form => {
     publishedBy,
     publishedLanguages,
     status: status as FormStatus,
+    introPage: form?.introPage,
   };
 };
 
