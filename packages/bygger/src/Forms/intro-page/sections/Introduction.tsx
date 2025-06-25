@@ -19,6 +19,10 @@ export const Introduction = forwardRef<HTMLTextAreaElement, Props>(({ handleChan
 
   const onChange = (value: string) => {
     const key = setKeyBasedText(value);
+    if (form.introPage?.introduction === key) {
+      return; // No change needed
+    }
+
     handleChange({
       ...form,
       introPage: {
