@@ -13,13 +13,14 @@ const DataDisclosure = ({ properties, translate, className, defaultOpen }: Props
     return null;
   }
 
+  const description: Tkey = 'introPage.dataDisclosure.ingress';
   const staticBulletPoints: Tkey[] = ['introPage.dataDisclosure.nationalPopulationRegister'];
   const bulletPoints = [...staticBulletPoints, ...(properties?.bulletPoints ?? [])].map(translate);
 
   return (
     <IntroAccordion
       title={translate(properties?.title)}
-      description={translate(properties?.description)}
+      description={translate(description)}
       bulletPoints={bulletPoints}
       className={className}
       defaultOpen={defaultOpen}
