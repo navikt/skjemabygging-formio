@@ -6,9 +6,10 @@ interface Props {
   properties?: IntroPageSection;
   translate: (key?: string) => string;
   className?: string;
+  defaultOpen?: boolean;
 }
 
-const DataTreatment = ({ properties, translate, className }: Props) => {
+const DataTreatment = ({ properties, translate, className, defaultOpen }: Props) => {
   if (!properties) {
     return null;
   }
@@ -24,6 +25,7 @@ const DataTreatment = ({ properties, translate, className }: Props) => {
       bulletPoints={bulletPoints}
       contentBottom={<InnerHtmlLong content={translate(readMore)} />}
       className={className}
+      defaultOpen={defaultOpen}
     />
   );
 };

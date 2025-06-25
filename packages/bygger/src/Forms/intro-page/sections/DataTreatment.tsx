@@ -48,7 +48,11 @@ export function DataTreatment({ form, handleChange, errors, refMap }: Props) {
       }
       right={
         <Accordion>
-          <Intro.DataTreatment properties={form.introPage?.sections?.dataTreatment} translate={getKeyBasedText} />
+          <Intro.DataTreatment
+            properties={form.introPage?.sections?.dataTreatment}
+            translate={getKeyBasedText}
+            defaultOpen
+          />
         </Accordion>
       }
     />

@@ -63,7 +63,7 @@ export function Optional({ handleChange, form, errors, refMap }: Props) {
       }
       right={
         <Accordion>
-          <Intro.Optional properties={form.introPage?.sections?.optional} translate={getKeyBasedText} />
+          <Intro.Optional properties={form.introPage?.sections?.optional} translate={getKeyBasedText} defaultOpen />
         </Accordion>
       }
     />

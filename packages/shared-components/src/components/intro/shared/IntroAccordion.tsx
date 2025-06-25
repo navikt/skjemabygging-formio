@@ -9,15 +9,16 @@ interface Props {
   bulletPoints?: string[];
   contentBottom?: ReactNode;
   className?: string;
+  defaultOpen?: boolean;
 }
 
-const IntroAccordion = ({ title, description, bulletPoints, contentBottom, className }: Props) => {
+const IntroAccordion = ({ title, description, bulletPoints, contentBottom, className, defaultOpen }: Props) => {
   if (!title) {
     return null;
   }
 
   return (
-    <Accordion.Item className={className}>
+    <Accordion.Item className={className} defaultOpen={defaultOpen}>
       <Accordion.Header>{title}</Accordion.Header>
       <Accordion.Content>
         <IntroDescription description={description} />

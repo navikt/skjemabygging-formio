@@ -15,7 +15,7 @@ export function DataStorage({ submissionMethod }: Props) {
     <SectionWrapper
       right={
         <Accordion>
-          <Intro.DataStorage translate={getKeyBasedText} submissionMethod={submissionMethod} />
+          <Intro.DataStorage translate={getKeyBasedText} submissionMethod={submissionMethod} defaultOpen />
         </Accordion>
       }
     />

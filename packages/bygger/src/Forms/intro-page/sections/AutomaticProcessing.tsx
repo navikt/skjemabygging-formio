@@ -50,7 +50,7 @@ export function AutomaticProcessing({ form, handleChange, errors, refMap }: Prop
       }
       right={
         <Accordion>
-          <Intro.AutomaticProcessing properties={automaticProcessing} translate={getKeyBasedText} />
+          <Intro.AutomaticProcessing properties={automaticProcessing} translate={getKeyBasedText} defaultOpen />
         </Accordion>
       }
     />

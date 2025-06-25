@@ -5,9 +5,10 @@ interface Props {
   properties?: IntroPageSection;
   translate: (key?: string) => string;
   className?: string;
+  defaultOpen?: boolean;
 }
 
-const DataDisclosure = ({ properties, translate, className }: Props) => {
+const DataDisclosure = ({ properties, translate, className, defaultOpen }: Props) => {
   if (!properties?.title) {
     return null;
   }
@@ -21,6 +22,7 @@ const DataDisclosure = ({ properties, translate, className }: Props) => {
       description={translate(properties?.description)}
       bulletPoints={bulletPoints}
       className={className}
+      defaultOpen={defaultOpen}
     />
   );
 };

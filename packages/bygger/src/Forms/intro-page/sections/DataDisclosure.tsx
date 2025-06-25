@@ -66,7 +66,11 @@ export function DataDisclosure({ form, handleChange, refMap, errors }: Props) {
       }
       right={
         <Accordion>
-          <Intro.DataDisclosure properties={form.introPage?.sections?.dataDisclosure} translate={getKeyBasedText} />
+          <Intro.DataDisclosure
+            properties={form.introPage?.sections?.dataDisclosure}
+            translate={getKeyBasedText}
+            defaultOpen
+          />
         </Accordion>
       }
     />
