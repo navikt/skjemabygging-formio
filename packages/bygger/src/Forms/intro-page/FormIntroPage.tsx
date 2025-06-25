@@ -9,6 +9,7 @@ import TitleRowLayout from '../../components/layout/TitleRowLayout';
 import { useForm } from '../../context/old_form/FormContext';
 import { useEditFormTranslations } from '../../context/translations/EditFormTranslationsContext';
 import { useFormTranslations } from '../../context/translations/FormTranslationsContext';
+import { useGlobalTranslations } from '../../context/translations/GlobalTranslationsContext';
 import PublishModalComponents from '../publish/PublishModalComponents';
 import FormSkeleton from '../skeleton/FormSkeleton';
 import { EnableIntroPageSwitch } from './components/EnableIntroPageSwitch';
@@ -32,7 +33,8 @@ import { IntroPageError, validateIntroPage } from './validation/validation';
 export default function FormIntroPage({ form }: { form: Form }) {
   const { logger } = useAppConfig();
   const { changeForm, saveForm } = useForm();
-  const { isReady } = useFormTranslations();
+  const { isReady: formTranslationsReady } = useFormTranslations();
+  const { isReady: globalTranslationsReady } = useGlobalTranslations();
   const { saveChanges } = useEditFormTranslations();
 
   const { sections, importantInformation } = form.introPage ?? {
@@ -92,7 +94,7 @@ export default function FormIntroPage({ form }: { form: Form }) {
     handleValidation(() => setOpenPublishSettingModal(true));
   }
 
-  if (!isReady) {
+  if (!(formTranslationsReady && globalTranslationsReady)) {
     return <FormSkeleton leftSidebar={true} rightSidebar={true} />;
   }
 
