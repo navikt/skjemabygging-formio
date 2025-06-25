@@ -1,12 +1,12 @@
 import { Heading } from '@navikt/ds-react';
-import { IntroPageSection, Tkey } from '@navikt/skjemadigitalisering-shared-domain';
+import { IntroPageSection, SubmissionMethod, Tkey } from '@navikt/skjemadigitalisering-shared-domain';
 import IntroBulletPoints from './shared/IntroBulletPoints';
 import IntroDescription from './shared/IntroDescription';
 
 interface Props {
   properties?: IntroPageSection;
   translate: (key?: string) => string;
-  submissionMethod?: 'paper' | 'digital';
+  submissionMethod?: SubmissionMethod;
   className?: string;
 }
 

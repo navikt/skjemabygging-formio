@@ -1,10 +1,11 @@
 import { Accordion } from '@navikt/ds-react';
 import { Intro } from '@navikt/skjemadigitalisering-shared-components';
+import { SubmissionMethod } from '@navikt/skjemadigitalisering-shared-domain';
 import useKeyBasedText from '../../../hooks/useKeyBasedText';
 import { SectionWrapper } from './SectionWrapper';
 
 interface Props {
-  submissionMethod: 'digital' | 'paper';
+  submissionMethod: SubmissionMethod;
 }
 
 export function DataStorage({ submissionMethod }: Props) {

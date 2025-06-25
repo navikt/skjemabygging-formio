@@ -1,6 +1,6 @@
 import { Box, Heading, Radio, RadioGroup } from '@navikt/ds-react';
 import { Intro } from '@navikt/skjemadigitalisering-shared-components';
-import { Form } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, SubmissionMethod } from '@navikt/skjemadigitalisering-shared-domain';
 import { UpdateFormFunction } from '../../../components/FormMetaDataEditor/utils/utils';
 import useKeyBasedText from '../../../hooks/useKeyBasedText';
 import { FieldsetErrorMessage } from '../components/FieldsetErrorMessage';
@@ -12,7 +12,7 @@ import { SectionWrapper } from './SectionWrapper';
 
 type Props = {
   form: Form;
-  submissionMethod: 'paper' | 'digital';
+  submissionMethod: SubmissionMethod;
   handleChange: UpdateFormFunction;
   errors?: IntroPageError;
   refMap: IntroPageRefs;
