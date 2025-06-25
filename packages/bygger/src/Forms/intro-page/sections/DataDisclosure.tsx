@@ -9,6 +9,7 @@ import { addBulletPoint, handleBulletPointChange, removeBulletPoint, updateSecti
 import { IntroPageRefs } from '../validation/useIntroPageRefs';
 import { IntroPageError } from '../validation/validation';
 import { SectionWrapper } from './SectionWrapper';
+import { usePreviewStyles } from './styles';
 
 type Props = {
   form: Form;
@@ -19,6 +20,7 @@ type Props = {
 
 export function DataDisclosure({ form, handleChange, refMap, errors }: Props) {
   const { setKeyBasedText, getKeyBasedText } = useKeyBasedText();
+  const previewStyles = usePreviewStyles();
   const bulletPoints = form.introPage?.sections?.dataDisclosure?.bulletPoints || [];
 
   const onBulletPointChange = (value: string, index: number) => {
@@ -65,7 +67,7 @@ export function DataDisclosure({ form, handleChange, refMap, errors }: Props) {
         </Box>
       }
       right={
-        <Accordion>
+        <Accordion className={previewStyles.accordion}>
           <Intro.DataDisclosure
             properties={form.introPage?.sections?.dataDisclosure}
             translate={getKeyBasedText}

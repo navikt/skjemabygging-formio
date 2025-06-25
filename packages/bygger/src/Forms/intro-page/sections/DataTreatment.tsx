@@ -8,6 +8,7 @@ import { IngressBulletPointRow } from '../components/IngressBulletPointRow';
 import { IntroPageRefs } from '../validation/useIntroPageRefs';
 import { IntroPageError } from '../validation/validation';
 import { SectionWrapper } from './SectionWrapper';
+import { usePreviewStyles } from './styles';
 
 type Props = {
   form: Form;
@@ -18,6 +19,7 @@ type Props = {
 
 export function DataTreatment({ form, handleChange, errors, refMap }: Props) {
   const { getKeyBasedText } = useKeyBasedText();
+  const previewStyles = usePreviewStyles();
   const showIngress = form.introPage?.sections?.dataTreatment?.description !== undefined;
   const bulletPoints = form.introPage?.sections?.dataTreatment?.bulletPoints || [];
   const showAddBulletList = bulletPoints.length === 0;
@@ -47,7 +49,7 @@ export function DataTreatment({ form, handleChange, errors, refMap }: Props) {
         </Box>
       }
       right={
-        <Accordion>
+        <Accordion className={previewStyles.accordion}>
           <Intro.DataTreatment
             properties={form.introPage?.sections?.dataTreatment}
             translate={getKeyBasedText}

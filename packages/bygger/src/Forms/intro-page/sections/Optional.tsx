@@ -10,6 +10,7 @@ import { updateSection } from '../utils/utils';
 import { IntroPageRefs } from '../validation/useIntroPageRefs';
 import { IntroPageError } from '../validation/validation';
 import { SectionWrapper } from './SectionWrapper';
+import { usePreviewStyles } from './styles';
 
 type Props = {
   form: Form;
@@ -20,6 +21,7 @@ type Props = {
 
 export function Optional({ handleChange, form, errors, refMap }: Props) {
   const { setKeyBasedText, getKeyBasedText } = useKeyBasedText();
+  const previewStyles = usePreviewStyles();
 
   const bulletPoints = form?.introPage?.sections?.optional?.bulletPoints || [];
   const showIngress = form?.introPage?.sections.optional?.description !== undefined;
@@ -62,7 +64,7 @@ export function Optional({ handleChange, form, errors, refMap }: Props) {
         </Box>
       }
       right={
-        <Accordion>
+        <Accordion className={previewStyles.accordion}>
           <Intro.Optional properties={form.introPage?.sections?.optional} translate={getKeyBasedText} defaultOpen />
         </Accordion>
       }

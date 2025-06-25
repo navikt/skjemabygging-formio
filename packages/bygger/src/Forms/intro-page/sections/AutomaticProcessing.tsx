@@ -8,6 +8,7 @@ import { IngressBulletPointRow } from '../components/IngressBulletPointRow';
 import { IntroPageRefs } from '../validation/useIntroPageRefs';
 import { IntroPageError } from '../validation/validation';
 import { SectionWrapper } from './SectionWrapper';
+import { usePreviewStyles } from './styles';
 
 type Props = {
   form: Form;
@@ -18,6 +19,7 @@ type Props = {
 
 export function AutomaticProcessing({ form, handleChange, errors, refMap }: Props) {
   const { getKeyBasedText } = useKeyBasedText();
+  const previewStyles = usePreviewStyles();
   const { introPage } = form;
   const { automaticProcessing } = introPage?.sections || {};
   const showIngress = form.introPage?.sections?.automaticProcessing?.description !== undefined;
@@ -49,7 +51,7 @@ export function AutomaticProcessing({ form, handleChange, errors, refMap }: Prop
         </Box>
       }
       right={
-        <Accordion>
+        <Accordion className={previewStyles.accordion}>
           <Intro.AutomaticProcessing properties={automaticProcessing} translate={getKeyBasedText} defaultOpen />
         </Accordion>
       }

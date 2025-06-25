@@ -21,3 +21,9 @@ export const useSectionsWrapperStyles = (noBorderBottom: boolean) =>
       paddingLeft: '2rem',
     },
   });
+
+export const usePreviewStyles = makeStyles({
+  accordion: {
+    '--__ac-accordion-header-shadow-color': 'var(--a-transparent)',
+  },
+});
