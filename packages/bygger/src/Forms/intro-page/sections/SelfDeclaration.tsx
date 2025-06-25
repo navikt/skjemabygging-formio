@@ -20,12 +20,13 @@ export const SelfDeclaration = forwardRef<HTMLInputElement, Props>(({ handleChan
     <SectionWrapper
       noBorderBottom={true}
       left={
-        <Box>
+        <Box paddingInline="0 12">
           <Heading level="3" size="small" spacing>
             Erklæring
           </Heading>
           <RadioGroup
-            legend="Velg overskrift"
+            legend="Velg formulering"
+            description="Velg formulering som skal fullføre setningen: “Det er viktig at du gir oss riktige opplysninger slik at vi kan ...”"
             value={form.introPage?.selfDeclaration || ''}
             onChange={(value) => {
               if (!form?.introPage) return;
