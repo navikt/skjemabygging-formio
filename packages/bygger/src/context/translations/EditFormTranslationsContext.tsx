@@ -22,6 +22,7 @@ type EditFormTranslationsContextValue = {
   errors: TranslationError[];
   editState: string;
   saveChanges: () => Promise<void>;
+  getTextFromCurrentChanges: (key?: string, lang?: TranslationLang) => string;
 };
 
 const defaultValue: EditFormTranslationsContextValue = {
@@ -31,6 +32,7 @@ const defaultValue: EditFormTranslationsContextValue = {
   saveChanges: () => Promise.resolve(),
   addKeyBasedText: () => '',
   updateKeyBasedText: () => '',
+  getTextFromCurrentChanges: () => '',
 };
 
 const EditFormTranslationsContext = createContext<EditFormTranslationsContextValue>(defaultValue);
@@ -122,6 +124,10 @@ const EditFormTranslationsProvider = ({ initialChanges, children }: Props) => {
     }
   };
 
+  const getTextFromCurrentChanges = (key?: string, lang: TranslationLang = 'nb') => {
+    return key ? (state.changes[key]?.[lang] ?? '') : '';
+  };
+
   const value = {
     storedTranslations,
     updateTranslation,
@@ -130,6 +136,7 @@ const EditFormTranslationsProvider = ({ initialChanges, children }: Props) => {
     saveChanges,
     addKeyBasedText,
     updateKeyBasedText,
+    getTextFromCurrentChanges,
   };
 
   return <EditFormTranslationsContext.Provider value={value}>{children}</EditFormTranslationsContext.Provider>;

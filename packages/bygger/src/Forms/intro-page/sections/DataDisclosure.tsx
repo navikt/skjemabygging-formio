@@ -1,7 +1,7 @@
-import { Box, Heading, Radio, RadioGroup } from '@navikt/ds-react';
+import { Accordion, Box, Heading, Radio, RadioGroup } from '@navikt/ds-react';
+import { Intro } from '@navikt/skjemadigitalisering-shared-components';
 import { Form } from '@navikt/skjemadigitalisering-shared-domain';
 import { UpdateFormFunction } from '../../../components/FormMetaDataEditor/utils/utils';
-import { useFormTranslations } from '../../../context/translations/FormTranslationsContext';
 import useKeyBasedText from '../../../hooks/useKeyBasedText';
 import { AddButton } from '../components/AddButton';
 import { TextareaField } from '../components/TextareaField';
@@ -9,6 +9,7 @@ import { addBulletPoint, handleBulletPointChange, removeBulletPoint, updateSecti
 import { IntroPageRefs } from '../validation/useIntroPageRefs';
 import { IntroPageError } from '../validation/validation';
 import { SectionWrapper } from './SectionWrapper';
+import { usePreviewStyles } from './styles';
 
 type Props = {
   form: Form;
@@ -18,12 +19,12 @@ type Props = {
 };
 
 export function DataDisclosure({ form, handleChange, refMap, errors }: Props) {
-  const { getNBTextForKey } = useFormTranslations();
-  const updateKeyBasedText = useKeyBasedText();
+  const { setKeyBasedText, getKeyBasedText } = useKeyBasedText();
+  const previewStyles = usePreviewStyles();
   const bulletPoints = form.introPage?.sections?.dataDisclosure?.bulletPoints || [];
 
   const onBulletPointChange = (value: string, index: number) => {
-    const key = updateKeyBasedText(value, `bulletpoint-${index}`);
+    const key = setKeyBasedText(value, `bulletpoint-${index}`);
     handleBulletPointChange(form, 'dataDisclosure', index, key, handleChange);
   };
 
@@ -50,7 +51,7 @@ export function DataDisclosure({ form, handleChange, refMap, errors }: Props) {
             <TextareaField
               key={index}
               label="Kulepunkt"
-              defaultValue={getNBTextForKey(bullet)}
+              defaultValue={getKeyBasedText(bullet)}
               onChange={(value) => onBulletPointChange(value, index)}
               showDeleteButton
               onDelete={() => removeBulletPoint(form, 'dataDisclosure', index, handleChange)}
@@ -65,7 +66,15 @@ export function DataDisclosure({ form, handleChange, refMap, errors }: Props) {
           />
         </Box>
       }
-      right={<p>Preview kommer</p>}
+      right={
+        <Accordion className={previewStyles.accordion}>
+          <Intro.DataDisclosure
+            properties={form.introPage?.sections?.dataDisclosure}
+            translate={getKeyBasedText}
+            defaultOpen
+          />
+        </Accordion>
+      }
     />
   );
 }

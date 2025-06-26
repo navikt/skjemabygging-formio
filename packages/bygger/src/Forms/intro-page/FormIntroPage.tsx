@@ -1,6 +1,6 @@
 import { Heading } from '@navikt/ds-react';
 import { useAppConfig, useModal } from '@navikt/skjemadigitalisering-shared-components';
-import { Form } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, SubmissionMethod } from '@navikt/skjemadigitalisering-shared-domain';
 import { useState } from 'react';
 import { AppLayout } from '../../components/AppLayout';
 import RowLayout from '../../components/layout/RowLayout';
@@ -9,6 +9,7 @@ import TitleRowLayout from '../../components/layout/TitleRowLayout';
 import { useForm } from '../../context/old_form/FormContext';
 import { useEditFormTranslations } from '../../context/translations/EditFormTranslationsContext';
 import { useFormTranslations } from '../../context/translations/FormTranslationsContext';
+import { useGlobalTranslations } from '../../context/translations/GlobalTranslationsContext';
 import PublishModalComponents from '../publish/PublishModalComponents';
 import FormSkeleton from '../skeleton/FormSkeleton';
 import { EnableIntroPageSwitch } from './components/EnableIntroPageSwitch';
@@ -32,7 +33,8 @@ import { IntroPageError, validateIntroPage } from './validation/validation';
 export default function FormIntroPage({ form }: { form: Form }) {
   const { logger } = useAppConfig();
   const { changeForm, saveForm } = useForm();
-  const { isReady } = useFormTranslations();
+  const { isReady: formTranslationsReady } = useFormTranslations();
+  const { isReady: globalTranslationsReady } = useGlobalTranslations();
   const { saveChanges } = useEditFormTranslations();
 
   const { sections, importantInformation } = form.introPage ?? {
@@ -54,6 +56,7 @@ export default function FormIntroPage({ form }: { form: Form }) {
   const refMap = useIntroPageRefs();
   const scrollToFirstError = useScrollToFirstError(refMap);
   const [errors, setErrors] = useState<IntroPageError>();
+  const [submissionMethod, setSubmissionMethod] = useState<SubmissionMethod>('digital');
   const [openPublishSettingModal, setOpenPublishSettingModal] = useModal();
 
   function handleValidation(onSuccess: () => void) {
@@ -91,7 +94,7 @@ export default function FormIntroPage({ form }: { form: Form }) {
     handleValidation(() => setOpenPublishSettingModal(true));
   }
 
-  if (!isReady) {
+  if (!(formTranslationsReady && globalTranslationsReady)) {
     return <FormSkeleton leftSidebar={true} rightSidebar={true} />;
   }
 
@@ -124,17 +127,27 @@ export default function FormIntroPage({ form }: { form: Form }) {
 
         <EnableIntroPageSwitch form={form} onChange={changeForm} />
 
-        <SectionsChecboxes form={form} onChange={changeForm} />
+        <SectionsChecboxes
+          form={form}
+          onChange={changeForm}
+          onToggleSubmissionMethod={(value) => setSubmissionMethod(value)}
+        />
         <Introduction form={form} handleChange={changeForm} errors={errors} ref={refMap['introduction']} />
         {importantInformation && (
           <ImportantInformation form={form} handleChange={changeForm} errors={errors} refMap={refMap} />
         )}
         {scope && <Scope form={form} handleChange={changeForm} errors={errors} refMap={refMap} />}
         {outOfScope && <OutOfScope form={form} handleChange={changeForm} errors={errors} refMap={refMap} />}
-        <Prerequisites form={form} handleChange={changeForm} errors={errors} refMap={refMap} />
+        <Prerequisites
+          form={form}
+          submissionMethod={submissionMethod}
+          handleChange={changeForm}
+          errors={errors}
+          refMap={refMap}
+        />
         {dataDisclosure && <DataDisclosure form={form} handleChange={changeForm} refMap={refMap} errors={errors} />}
         <DataTreatment form={form} handleChange={changeForm} errors={errors} refMap={refMap} />
-        <DataStorage />
+        <DataStorage submissionMethod={submissionMethod} />
         {automaticProcessing && (
           <AutomaticProcessing form={form} handleChange={changeForm} errors={errors} refMap={refMap} />
         )}

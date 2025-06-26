@@ -1,6 +1,5 @@
 import { Form, IntroPage } from '@navikt/skjemadigitalisering-shared-domain';
 import { UpdateFormFunction } from '../../../components/FormMetaDataEditor/utils/utils';
-import { useFormTranslations } from '../../../context/translations/FormTranslationsContext';
 import useKeyBasedText from '../../../hooks/useKeyBasedText';
 import { addBulletPoint, handleBulletPointChange, removeBulletPoint, updateSection } from '../utils/utils';
 import { IntroPageRefs } from '../validation/useIntroPageRefs';
@@ -29,18 +28,17 @@ export function IngressBulletPointRow({
   showAddBulletList,
   showField,
 }: IngressBulletPointRowProps) {
-  const { getNBTextForKey } = useFormTranslations();
-  const updateKeyBasedText = useKeyBasedText();
+  const { setKeyBasedText, getKeyBasedText } = useKeyBasedText();
   const sectionField = form.introPage?.sections?.[field];
   const isAnExceptionField = ['prerequisites', 'dataDisclosure'].includes(field);
 
   const onDescriptionChange = (value: string) => {
-    const key = updateKeyBasedText(value, 'description');
+    const key = setKeyBasedText(value, 'description');
     updateSection(form, field, 'description', key, handleChange);
   };
 
   const onBulletPointChange = (value: string, index: number) => {
-    const key = updateKeyBasedText(value, `bulletpoint-${index}`);
+    const key = setKeyBasedText(value, `bulletpoint-${index}`);
     handleBulletPointChange(form, field, index, key, handleChange);
   };
 
@@ -60,7 +58,7 @@ export function IngressBulletPointRow({
       {showField && (
         <TextareaField
           label="Ingress"
-          defaultValue={getNBTextForKey(sectionField?.description)}
+          defaultValue={getKeyBasedText(sectionField?.description)}
           onChange={onDescriptionChange}
           showDeleteButton
           onDelete={() => updateSection(form, field, 'description', undefined, handleChange)}
@@ -75,7 +73,7 @@ export function IngressBulletPointRow({
             <TextareaField
               key={index}
               label="Kulepunkt"
-              defaultValue={getNBTextForKey(value)}
+              defaultValue={getKeyBasedText(value)}
               onChange={(value) => onBulletPointChange(value, index)}
               showDeleteButton
               onDelete={() => removeBulletPoint(form, field, index, handleChange)}

@@ -25,6 +25,7 @@ export function validateIntroPage(introPage?: Partial<IntroPage>): IntroPageErro
 
   const errors: IntroPageError = {};
   const fieldsWithPrefilledBulletPoints = ['prerequisites', 'dataDisclosure'];
+  const fieldsWithPrefilledIngressAndBulletPoints = ['dataDisclosure'];
   const fieldsWithoutTitle = ['automaticProcessing', 'dataTreatment'];
   const fieldWithoutDescription = ['dataDisclosure'];
 
@@ -47,7 +48,7 @@ export function validateIntroPage(introPage?: Partial<IntroPage>): IntroPageErro
       sectionErrors.title = 'Overskrift må fylles ut';
     }
 
-    if (!fieldWithoutDescription.includes(sectionKey) && !section?.description?.trim()) {
+    if (!fieldWithoutDescription.includes(sectionKey) && section?.description?.trim().length === 0) {
       sectionErrors.description = 'Ingress må fylles ut';
     }
 
@@ -71,7 +72,11 @@ export function validateIntroPage(introPage?: Partial<IntroPage>): IntroPageErro
       sectionErrors.message = 'Vennligst legg til minst to kulepunkter';
     }
 
-    if (!section?.description?.trim() && !section?.bulletPoints?.length) {
+    if (
+      !fieldsWithPrefilledIngressAndBulletPoints.includes(sectionKey) &&
+      !section?.description?.trim() &&
+      !section?.bulletPoints?.length
+    ) {
       sectionErrors.message = 'Seksjonen må ha en ingress eller kulepunkter';
     }
 

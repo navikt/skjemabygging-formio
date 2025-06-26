@@ -5,9 +5,10 @@ interface Props {
   properties?: IntroPageSection;
   translate: (key?: string) => string;
   className?: string;
+  defaultOpen?: boolean;
 }
 
-const AutomaticProcessing = ({ properties, translate, className }: Props) => {
+const AutomaticProcessing = ({ properties, translate, className, defaultOpen }: Props) => {
   if (!properties) {
     return null;
   }
@@ -21,6 +22,7 @@ const AutomaticProcessing = ({ properties, translate, className }: Props) => {
       description={translate(properties?.description)}
       bulletPoints={bulletPoints}
       className={className}
+      defaultOpen={defaultOpen}
     />
   );
 };

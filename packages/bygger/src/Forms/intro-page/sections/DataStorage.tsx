@@ -1,5 +1,25 @@
+import { Accordion } from '@navikt/ds-react';
+import { Intro } from '@navikt/skjemadigitalisering-shared-components';
+import { SubmissionMethod } from '@navikt/skjemadigitalisering-shared-domain';
+import useKeyBasedText from '../../../hooks/useKeyBasedText';
 import { SectionWrapper } from './SectionWrapper';
+import { usePreviewStyles } from './styles';
 
-export function DataStorage() {
-  return <SectionWrapper right={<p>Preview kommer</p>} />;
+interface Props {
+  submissionMethod: SubmissionMethod;
+}
+
+export function DataStorage({ submissionMethod }: Props) {
+  const { getKeyBasedText } = useKeyBasedText();
+  const previewStyles = usePreviewStyles();
+
+  return (
+    <SectionWrapper
+      right={
+        <Accordion className={previewStyles.accordion}>
+          <Intro.DataStorage translate={getKeyBasedText} submissionMethod={submissionMethod} defaultOpen />
+        </Accordion>
+      }
+    />
+  );
 }

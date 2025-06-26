@@ -1,6 +1,8 @@
 import { Box, Heading, Radio, RadioGroup } from '@navikt/ds-react';
+import { Intro } from '@navikt/skjemadigitalisering-shared-components';
 import { Form } from '@navikt/skjemadigitalisering-shared-domain';
 import { UpdateFormFunction } from '../../../components/FormMetaDataEditor/utils/utils';
+import useKeyBasedText from '../../../hooks/useKeyBasedText';
 import { FieldsetErrorMessage } from '../components/FieldsetErrorMessage';
 import { IngressBulletPointRow } from '../components/IngressBulletPointRow';
 import { updateSection } from '../utils/utils';
@@ -16,6 +18,7 @@ type Props = {
 };
 
 export function Scope({ form, handleChange, errors, refMap }: Props) {
+  const { getKeyBasedText } = useKeyBasedText();
   const showIngress = form.introPage?.sections?.scope?.description !== undefined;
   const bulletPoints = form.introPage?.sections?.scope?.bulletPoints || [];
   const showAddBulletList = bulletPoints.length === 0;
@@ -56,7 +59,7 @@ export function Scope({ form, handleChange, errors, refMap }: Props) {
           />
         </Box>
       }
-      right={<p>Preview kommer</p>}
+      right={<Intro.Scope properties={form.introPage?.sections?.scope} translate={getKeyBasedText} />}
     />
   );
 }
