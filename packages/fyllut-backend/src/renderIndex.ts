@@ -76,11 +76,11 @@ const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
               );
             }
           } else if (submissionTypesUtils.isDigitalSubmissionOnly(submissionTypes)) {
-            redirectToSubmissionType(req, res, 'digital');
+            return redirectToSubmissionType(req, res, 'digital');
           } else if (submissionTypesUtils.isPaperSubmissionOnly(submissionTypes)) {
-            redirectToSubmissionType(req, res, 'paper');
+            return redirectToSubmissionType(req, res, 'paper');
           } else if (submissionTypesUtils.isDigitalNoLoginSubmissionOnly(submissionTypes)) {
-            redirectToSubmissionType(req, res, 'digitalnologin');
+            return redirectToSubmissionType(req, res, 'digitalnologin');
           }
         } else if (qpSub && !navFormUtils.isSubmissionMethodAllowed(qpSub, form)) {
           logger.info('Submission method is not allowed', { qpSub, formPath, submissionTypes });
