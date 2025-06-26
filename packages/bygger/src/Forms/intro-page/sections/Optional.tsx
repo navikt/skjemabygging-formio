@@ -1,6 +1,8 @@
-import { Box, Heading } from '@navikt/ds-react';
+import { Accordion, Box, Heading } from '@navikt/ds-react';
+import { Intro } from '@navikt/skjemadigitalisering-shared-components';
 import { Form } from '@navikt/skjemadigitalisering-shared-domain';
 import { UpdateFormFunction } from '../../../components/FormMetaDataEditor/utils/utils';
+import useKeyBasedText from '../../../hooks/useKeyBasedText';
 import { FieldsetErrorMessage } from '../components/FieldsetErrorMessage';
 import { IngressBulletPointRow } from '../components/IngressBulletPointRow';
 import { TextFieldComponent } from '../components/TextFieldComponent';
@@ -8,6 +10,7 @@ import { updateSection } from '../utils/utils';
 import { IntroPageRefs } from '../validation/useIntroPageRefs';
 import { IntroPageError } from '../validation/validation';
 import { SectionWrapper } from './SectionWrapper';
+import { usePreviewStyles } from './styles';
 
 type Props = {
   form: Form;
@@ -17,9 +20,17 @@ type Props = {
 };
 
 export function Optional({ handleChange, form, errors, refMap }: Props) {
+  const { setKeyBasedText, getKeyBasedText } = useKeyBasedText();
+  const previewStyles = usePreviewStyles();
+
   const bulletPoints = form?.introPage?.sections?.optional?.bulletPoints || [];
   const showIngress = form?.introPage?.sections.optional?.description !== undefined;
   const showAddBulletList = bulletPoints.length === 0;
+
+  const onTitleChange = (value: string) => {
+    const key = setKeyBasedText(value);
+    updateSection(form, 'optional', 'title', key, handleChange);
+  };
 
   return (
     <SectionWrapper
@@ -31,9 +42,9 @@ export function Optional({ handleChange, form, errors, refMap }: Props) {
           </Heading>
           <TextFieldComponent
             label="Overskrift"
-            value={form?.introPage?.sections.optional?.title || ''}
+            defaultValue={getKeyBasedText(form?.introPage?.sections.optional?.title) || ''}
             ref={refMap['sections.optional.title']}
-            onChange={(value) => updateSection(form, 'optional', 'title', value, handleChange)}
+            onChange={onTitleChange}
             error={errors?.sections?.optional?.title}
           />
           <IngressBulletPointRow
@@ -52,7 +63,11 @@ export function Optional({ handleChange, form, errors, refMap }: Props) {
           />
         </Box>
       }
-      right={<p>Preview kommer</p>}
+      right={
+        <Accordion className={previewStyles.accordion}>
+          <Intro.Optional properties={form.introPage?.sections?.optional} translate={getKeyBasedText} defaultOpen />
+        </Accordion>
+      }
     />
   );
 }

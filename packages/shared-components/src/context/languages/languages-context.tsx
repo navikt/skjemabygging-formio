@@ -48,7 +48,7 @@ export const LanguagesProvider = ({ children, translations }: Props) => {
 
   const translate = (textOrKey: string | Tkey = '', params?: I18nTranslationReplacements): string => {
     return translationUtils.translateWithTextReplacements({
-      textOrKey: textOrKey,
+      textOrKey,
       params,
       translations,
       currentLanguage,

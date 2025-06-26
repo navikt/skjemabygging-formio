@@ -1,11 +1,14 @@
-import { Box, Heading } from '@navikt/ds-react';
+import { Accordion, Box, Heading } from '@navikt/ds-react';
+import { Intro } from '@navikt/skjemadigitalisering-shared-components';
 import { Form } from '@navikt/skjemadigitalisering-shared-domain';
 import { UpdateFormFunction } from '../../../components/FormMetaDataEditor/utils/utils';
+import useKeyBasedText from '../../../hooks/useKeyBasedText';
 import { FieldsetErrorMessage } from '../components/FieldsetErrorMessage';
 import { IngressBulletPointRow } from '../components/IngressBulletPointRow';
 import { IntroPageRefs } from '../validation/useIntroPageRefs';
 import { IntroPageError } from '../validation/validation';
 import { SectionWrapper } from './SectionWrapper';
+import { usePreviewStyles } from './styles';
 
 type Props = {
   form: Form;
@@ -15,6 +18,8 @@ type Props = {
 };
 
 export function DataTreatment({ form, handleChange, errors, refMap }: Props) {
+  const { getKeyBasedText } = useKeyBasedText();
+  const previewStyles = usePreviewStyles();
   const showIngress = form.introPage?.sections?.dataTreatment?.description !== undefined;
   const bulletPoints = form.introPage?.sections?.dataTreatment?.bulletPoints || [];
   const showAddBulletList = bulletPoints.length === 0;
@@ -43,7 +48,15 @@ export function DataTreatment({ form, handleChange, errors, refMap }: Props) {
           />
         </Box>
       }
-      right={<p>Preview kommer</p>}
+      right={
+        <Accordion className={previewStyles.accordion}>
+          <Intro.DataTreatment
+            properties={form.introPage?.sections?.dataTreatment}
+            translate={getKeyBasedText}
+            defaultOpen
+          />
+        </Accordion>
+      }
     />
   );
 }

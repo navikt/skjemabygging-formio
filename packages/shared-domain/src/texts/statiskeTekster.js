@@ -98,7 +98,7 @@ export const statiske = {
     confirmationError: 'Du må samtykke før du kan fortsette',
     validationIcon: 'Opplysninger mangler',
     validationMessage:
-      'Nedenfor finner du all informasjonen du allerede har fylt inn i skjemaet, fordelt på de forskjellige stegene i skjemaet. Alle steg som mangler informasjon er markert med',
+      'Nedenfor finner du all informasjonen du allerede har fylt inn i skjemaet, fordelt på de forskjellige stegene i skjemaet. Alle steg som mangler informasjon, er markert med',
   },
   warningAboutDifficultSubmission: {
     modal: {

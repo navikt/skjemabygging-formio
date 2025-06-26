@@ -32,6 +32,9 @@ export function updateSection(
   handleChange: UpdateFormFunction,
 ): void {
   const { introPage } = form;
+  if (introPage?.sections?.[sectionKey]?.[property] === value) {
+    return; // No change needed
+  }
 
   handleChange({
     ...form,
@@ -76,6 +79,9 @@ export function updateImportantInformation(
   handleChange: UpdateFormFunction,
 ): void {
   const { introPage } = form;
+  if (introPage?.importantInformation?.[key] === value) {
+    return; // No change needed
+  }
 
   handleChange({
     ...form,
@@ -151,8 +157,11 @@ export function handleBulletPointChange(
   const { introPage } = form;
   const section = introPage?.sections?.[sectionKey] ?? {};
   const bulletPoints = [...(section?.bulletPoints || [])];
-  bulletPoints[index] = value;
+  if (bulletPoints[index] === value) {
+    return; // No change needed
+  }
 
+  bulletPoints[index] = value;
   handleChange({
     ...form,
     introPage: {

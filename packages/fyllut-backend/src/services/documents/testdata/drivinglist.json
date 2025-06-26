@@ -1,0 +1,95 @@
+[
+  {
+    "label": "Veiledning",
+    "key": "veiledning1",
+    "type": "panel",
+    "components": [
+      {
+        "label": "Jeg er kjent med at jeg kan miste retten til stønad hvis jeg oppgir feilaktige opplysninger, og jeg er klar over at jeg må betale tilbake hvis jeg får utbetalt mer enn jeg har krav på. Jeg aksepterer også at NAV kan innhente opplysninger som er nødvendige for å behandle søknaden.",
+        "key": "jegErKjentMedAtJegKanMisteRettenTilStonadHvisJegOppgirFeilaktigeOpplysninger",
+        "type": "navCheckbox",
+        "value": "Ja"
+      }
+    ]
+  },
+  {
+    "label": "Kjøreliste",
+    "key": "page4",
+    "type": "panel",
+    "components": [
+      {
+        "label": "Kjøreliste",
+        "key": "drivinglist",
+        "type": "drivinglist",
+        "value": {
+          "description": "Du har oppgitt at du har reist med egen bil på disse dagene:",
+          "dates": [
+            {
+              "key": "2025-06-02",
+              "text": "mandag 02. juni 2025, parkeringsutgift: 100 kr"
+            },
+            {
+              "key": "2025-06-03",
+              "text": "tirsdag 03. juni 2025, parkeringsutgift: 100 kr"
+            },
+            {
+              "key": "2025-06-04",
+              "text": "onsdag 04. juni 2025, parkeringsutgift: 100 kr"
+            }
+          ]
+        }
+      },
+      {
+        "label": "Målgruppe",
+        "key": "aktiviteterOgMaalgruppe.maalgruppe",
+        "type": "maalgruppe",
+        "hiddenInSummary": true,
+        "value": {
+          "calculated": {
+            "maalgruppetype": "ANNET"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "label": "Dine opplysninger",
+    "key": "personopplysninger",
+    "type": "panel",
+    "components": [
+      {
+        "label": "Fornavn",
+        "key": "dineOpplysninger.fornavn",
+        "type": "firstName",
+        "value": "Mitt"
+      },
+      {
+        "label": "Etternavn",
+        "key": "dineOpplysninger.etternavn",
+        "type": "surname",
+        "value": "Navn"
+      },
+      {
+        "label": "Fødselsnummer eller d-nummer",
+        "key": "dineOpplysninger.identitet",
+        "type": "identity",
+        "value": "23867399240"
+      }
+    ]
+  },
+  {
+    "label": "Vedlegg",
+    "key": "vedlegg",
+    "type": "panel",
+    "components": [
+      {
+        "label": "Annen dokumentasjon",
+        "key": "annenDokumentasjon",
+        "type": "attachment",
+        "value": {
+          "description": "Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved"
+        }
+      }
+    ]
+  }
+]

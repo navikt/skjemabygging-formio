@@ -1,26 +1,29 @@
 import { Accordion } from '@navikt/ds-react';
-import { IntroPageSection } from '@navikt/skjemadigitalisering-shared-domain';
-import { useLanguages } from '../../../context/languages';
+import { ReactNode } from 'react';
 import IntroBulletPoints from './IntroBulletPoints';
 import IntroDescription from './IntroDescription';
 
 interface Props {
-  properties?: IntroPageSection;
+  title?: string;
+  description?: string;
+  bulletPoints?: string[];
+  contentBottom?: ReactNode;
   className?: string;
+  defaultOpen?: boolean;
 }
 
-const IntroAccordion = ({ properties, className }: Props) => {
-  const { translate } = useLanguages();
-  if (!properties?.title) {
+const IntroAccordion = ({ title, description, bulletPoints, contentBottom, className, defaultOpen }: Props) => {
+  if (!title) {
     return null;
   }
 
   return (
-    <Accordion.Item className={className}>
-      <Accordion.Header>{translate(properties.title)}</Accordion.Header>
+    <Accordion.Item className={className} defaultOpen={defaultOpen}>
+      <Accordion.Header>{title}</Accordion.Header>
       <Accordion.Content>
-        <IntroDescription properties={properties} />
-        <IntroBulletPoints properties={properties} />
+        <IntroDescription description={description} />
+        <IntroBulletPoints values={bulletPoints} />
+        {contentBottom}
       </Accordion.Content>
     </Accordion.Item>
   );

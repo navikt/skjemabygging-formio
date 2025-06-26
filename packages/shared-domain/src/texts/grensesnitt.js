@@ -56,10 +56,6 @@ export const grensesnitt = {
     payAttentionTo: 'Vær oppmerksom på',
   },
   introPage: {
-    guidePanel: {
-      hi: 'Hei!',
-      hiPersonalized: 'Hei, {{name}}!',
-    },
     sendDigital: 'Logg inn og send digitalt',
     sendDigitalDescription: 'Det er enklest og raskest å søke digitalt.',
     sendDigitalNoLogin: 'Send digitalt uten å logge inn',
@@ -69,7 +65,6 @@ export const grensesnitt = {
     sendOnPaperDescription: 'Du fyller ut søknaden før du skriver den ut.',
     noLogin: 'Kan ikke logge inn',
     noLoginDescription: 'Velg mellom å sende i posten eller å sende digitalt uten å logge inn.',
-    selfDeclaration: 'Jeg bekrefter at jeg vil svare så riktig som jeg kan',
     start: 'Start',
   },
   summaryPage: {

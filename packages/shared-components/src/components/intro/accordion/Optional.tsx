@@ -3,15 +3,27 @@ import IntroAccordion from '../shared/IntroAccordion';
 
 interface Props {
   properties?: IntroPageSection;
+  translate: (key?: string) => string;
   className?: string;
+  defaultOpen?: boolean;
 }
 
-const Optional = ({ properties, className }: Props) => {
+const Optional = ({ properties, translate, className, defaultOpen }: Props) => {
   if (!properties?.title) {
     return null;
   }
 
-  return <IntroAccordion properties={properties} className={className} />;
+  const bulletPoints = (properties?.bulletPoints ?? []).map(translate);
+
+  return (
+    <IntroAccordion
+      title={translate(properties.title)}
+      description={translate(properties?.description)}
+      bulletPoints={bulletPoints}
+      className={className}
+      defaultOpen={defaultOpen}
+    />
+  );
 };
 
 export default Optional;
