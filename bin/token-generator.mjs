@@ -4,6 +4,32 @@ import { createInterface } from 'node:readline';
 import jsonConfig from './token-generator.config.json' with { type: 'json' };
 
 const root = process.cwd();
+const filterTag = process.argv[2] || 'bygger';
+
+const allPossibleTags = jsonConfig
+  .reduce(
+    (acc, env) => {
+      env.tags.forEach((tag) => {
+        if (!acc.includes(tag)) {
+          acc.push(tag);
+        }
+      });
+      return acc;
+    },
+    ['all'],
+  )
+  .sort();
+
+const wrapItalics = (text) => `\x1b[3m${text}\x1b[0m`;
+
+// print usage and exit
+if (process.argv.includes('--help') || process.argv.includes('-h')) {
+  console.log('Usage: node token-generator.mjs [filterTag]');
+  console.log('Generates or updates access tokens in environment files based on the provided filter tag.');
+  console.log('Use "all" to process all environments. If no filter tag is provided, it defaults to "bygger".');
+  console.log(`\u2022 tags: ${allPossibleTags.map(wrapItalics).join(', ')}`);
+  process.exit(0);
+}
 
 const COLOR_GREEN = '\x1b[32m';
 const COLOR_ORANGE = '\x1b[33m';
@@ -34,12 +60,15 @@ function getExp(accessToken) {
 }
 
 for (const env of jsonConfig) {
+  if (filterTag !== 'all' && !env.tags.includes(filterTag)) {
+    continue;
+  }
   process.stdout.write(`Visit ${env.url}\n`);
   process.stdout.write(`${COLOR_ORANGE}Paste access_token:${COLOR_RESET} `);
   const accessToken = await readLineFromStdin();
   const expiresAt = getExp(accessToken);
   if (!expiresAt) {
-    process.stdout.write(`${env.name} ${ICON_ERROR} invalid token\n`);
+    process.stdout.write(`${env.name} ${ICON_ERROR} invalid token\n\n`);
     continue;
   }
 
@@ -71,6 +100,7 @@ for (const env of jsonConfig) {
 
   const newEnvContent = lines.join('\n');
   fs.writeFileSync(path.join(root, env.filePath), newEnvContent);
+  process.stdout.write('\n');
 }
 
 process.stdout.write(`${COLOR_GREEN}Token ready, remember to restart dev server${COLOR_RESET} \n`);
