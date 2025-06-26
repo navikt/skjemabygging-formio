@@ -1,4 +1,4 @@
-import { navFormUtils, submissionTypesUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { navFormUtils, SubmissionMethod, submissionTypesUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { NextFunction, Request, Response } from 'express';
 import { ParsedUrlQueryInput } from 'querystring';
 import url from 'url';
@@ -11,6 +11,20 @@ import { ErrorWithCause } from './utils/errors';
 import { excludeQueryParam } from './utils/express';
 import { logFormNotFound } from './utils/formError';
 import { getDefaultPageMeta, getFormMeta } from './utils/page';
+
+const redirectToSubmissionType = (req: Request, res: Response, sub: SubmissionMethod) => {
+  const formPath = res.locals.formId;
+  const targetUrl = `${config.fyllutPath}/${formPath}`;
+  return res.redirect(
+    url.format({
+      pathname: targetUrl,
+      query: {
+        ...(req.query as ParsedUrlQueryInput),
+        sub: sub,
+      },
+    }),
+  );
+};
 
 const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
   logger.debug('Render index.html', { queryParams: { ...req.query }, baseUrl: req.baseUrl });
@@ -47,11 +61,8 @@ const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
       const form = await formService.loadForm(formPath);
       if (form && form.properties) {
         const { submissionTypes } = form.properties;
-        const isPaperAndDigitalSubmission =
-          submissionTypesUtils.isPaperSubmission(submissionTypes) &&
-          submissionTypesUtils.isDigitalSubmission(submissionTypes);
         if (!qpSub) {
-          if (isPaperAndDigitalSubmission) {
+          if (submissionTypes.length > 1) {
             logger.info('Submission query param is missing', { formPath });
             const targetUrl = `${config.fyllutPath}/${formPath}`;
             if (req.baseUrl !== targetUrl) {
@@ -65,32 +76,16 @@ const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
               );
             }
           } else if (submissionTypesUtils.isDigitalSubmissionOnly(submissionTypes)) {
-            const targetUrl = `${config.fyllutPath}/${formPath}`;
-            return res.redirect(
-              url.format({
-                pathname: targetUrl,
-                query: {
-                  ...(req.query as ParsedUrlQueryInput),
-                  sub: 'digital',
-                },
-              }),
-            );
+            return redirectToSubmissionType(req, res, 'digital');
           } else if (submissionTypesUtils.isPaperSubmissionOnly(submissionTypes)) {
-            const targetUrl = `${config.fyllutPath}/${formPath}`;
-            return res.redirect(
-              url.format({
-                pathname: targetUrl,
-                query: {
-                  ...(req.query as ParsedUrlQueryInput),
-                  sub: 'paper',
-                },
-              }),
-            );
+            return redirectToSubmissionType(req, res, 'paper');
+          } else if (submissionTypesUtils.isDigitalNoLoginSubmissionOnly(submissionTypes)) {
+            return redirectToSubmissionType(req, res, 'digitalnologin');
           }
         } else if (qpSub && !navFormUtils.isSubmissionMethodAllowed(qpSub, form)) {
           logger.info('Submission method is not allowed', { qpSub, formPath, submissionTypes });
 
-          const validSubmissionMethod = qpSub === 'digital' || qpSub === 'paper';
+          const validSubmissionMethod = qpSub === 'digital' || qpSub === 'paper' || qpSub === 'digitalnologin';
           if (!validSubmissionMethod || submissionTypesUtils.isNoneSubmission(submissionTypes)) {
             const targetUrl = `${config.fyllutPath}/${formPath}`;
             return res.redirect(

@@ -1,8 +1,8 @@
 {
-  "id": "st-paper",
-  "skjemanummer": "st-paper",
-  "path": "stpaper",
-  "title": "Submission Type: Paper",
+  "id": "st-paper-no-login",
+  "skjemanummer": "st-paper-no-login",
+  "path": "stpapernologin",
+  "title": "Submission Type: Paper & Digital No Login",
   "components": [
     {
       "id": "e1nek8d",
@@ -25,7 +25,8 @@
   ],
   "properties": {
     "submissionTypes": [
-      "PAPER"
+      "PAPER",
+      "DIGITAL_NO_LOGIN"
     ],
     "publishedLanguages": [
       "nb",
