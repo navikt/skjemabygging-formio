@@ -85,7 +85,7 @@ const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
         } else if (qpSub && !navFormUtils.isSubmissionMethodAllowed(qpSub, form)) {
           logger.info('Submission method is not allowed', { qpSub, formPath, submissionTypes });
 
-          const validSubmissionMethod = qpSub === 'digital' || qpSub === 'paper';
+          const validSubmissionMethod = qpSub === 'digital' || qpSub === 'paper' || qpSub === 'digitalnologin';
           if (!validSubmissionMethod || submissionTypesUtils.isNoneSubmission(submissionTypes)) {
             const targetUrl = `${config.fyllutPath}/${formPath}`;
             return res.redirect(
