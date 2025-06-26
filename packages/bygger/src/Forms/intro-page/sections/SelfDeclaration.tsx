@@ -1,7 +1,9 @@
 import { Box, Heading, Radio, RadioGroup } from '@navikt/ds-react';
+import { Intro } from '@navikt/skjemadigitalisering-shared-components';
 import { Form } from '@navikt/skjemadigitalisering-shared-domain';
 import { forwardRef } from 'react';
 import { UpdateFormFunction } from '../../../components/FormMetaDataEditor/utils/utils';
+import useKeyBasedText from '../../../hooks/useKeyBasedText';
 import { IntroPageError } from '../validation/validation';
 import { SectionWrapper } from './SectionWrapper';
 
@@ -12,16 +14,19 @@ type Props = {
 };
 
 export const SelfDeclaration = forwardRef<HTMLInputElement, Props>(({ handleChange, form, errors }, ref) => {
+  const { getKeyBasedText } = useKeyBasedText();
+
   return (
     <SectionWrapper
       noBorderBottom={true}
       left={
-        <Box>
+        <Box paddingInline="0 12">
           <Heading level="3" size="small" spacing>
             Erklæring
           </Heading>
           <RadioGroup
-            legend="Velg overskrift"
+            legend="Velg formulering"
+            description="Velg formulering som skal fullføre setningen: “Det er viktig at du gir oss riktige opplysninger slik at vi kan ...”"
             value={form.introPage?.selfDeclaration || ''}
             onChange={(value) => {
               if (!form?.introPage) return;
@@ -44,7 +49,7 @@ export const SelfDeclaration = forwardRef<HTMLInputElement, Props>(({ handleChan
           </RadioGroup>
         </Box>
       }
-      right={<p>Preview kommer</p>}
+      right={<Intro.SelfDeclaration description={form.introPage?.selfDeclaration ?? ''} translate={getKeyBasedText} />}
     />
   );
 });

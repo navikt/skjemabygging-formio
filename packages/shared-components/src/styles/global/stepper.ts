@@ -25,10 +25,11 @@ const stepper = {
     maxWidth: '20rem',
     height: '100%',
     backgroundColor: 'white',
+    paddingTop: '4rem',
 
     '& .stepper-container': {
       position: 'relative',
-      padding: '6rem 1.5rem 1.5rem',
+      padding: '4rem 1.5rem 1.5rem',
       height: '100%',
       overflowY: 'auto',
     },
@@ -52,6 +53,7 @@ const stepper = {
     top: '9rem',
     width: 'initial',
     minWidth: 'initial',
+    backgroundColor: 'var(--a-bg-default)',
 
     '@media screen and (min-width: 40rem)': {
       display: 'none',

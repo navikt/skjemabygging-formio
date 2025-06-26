@@ -13,6 +13,10 @@ interface IntroPageContextType {
   form: Form;
   state?: IntroPageState;
   setState: (state: IntroPageState) => void;
+  setSelfDeclaration: (selfDeclaration: boolean) => void;
+  selfDeclaration?: boolean;
+  setError: (error: string | undefined) => void;
+  error?: string | undefined;
 }
 
 interface IntroPageProviderProps {
@@ -25,6 +29,8 @@ const IntroPageContext = createContext<IntroPageContextType>({} as IntroPageCont
 export const IntroPageProvider = ({ children, form }: IntroPageProviderProps) => {
   const [searchParams] = useSearchParams();
   const submissionMethod = searchParams.get('sub') ?? undefined;
+  const [selfDeclaration, setSelfDeclaration] = useState<boolean>();
+  const [error, setError] = useState<string | undefined>();
 
   const toState = useCallback(
     (sub?: string) => {
@@ -59,6 +65,10 @@ export const IntroPageProvider = ({ children, form }: IntroPageProviderProps) =>
         form,
         state,
         setState,
+        selfDeclaration,
+        setSelfDeclaration,
+        setError,
+        error,
       }}
     >
       {children}

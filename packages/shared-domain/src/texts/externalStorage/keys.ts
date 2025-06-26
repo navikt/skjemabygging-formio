@@ -1,4 +1,6 @@
 const introPage = [
+  'introPage.guidePanel.hi',
+  'introPage.guidePanel.hiPersonalized',
   'introPage.scope.title.alt1',
   'introPage.scope.title.alt2',
   'introPage.scope.title.alt3',
@@ -27,6 +29,7 @@ const introPage = [
   'introPage.selfDeclaration.description.alt3',
   'introPage.selfDeclaration.description.alt4',
   'introPage.selfDeclaration.inputLabel',
+  'introPage.selfDeclaration.validationError',
 ] as const;
 
 const keys = { introPage } as const;

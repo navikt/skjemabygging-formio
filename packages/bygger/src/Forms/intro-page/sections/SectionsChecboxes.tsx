@@ -1,7 +1,8 @@
 import { PadlockLockedFillIcon } from '@navikt/aksel-icons';
 import { Checkbox, CheckboxGroup } from '@navikt/ds-react';
-import { Form, IntroPage } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, IntroPage, SubmissionMethod } from '@navikt/skjemadigitalisering-shared-domain';
 import { UpdateFormFunction } from '../../../components/FormMetaDataEditor/utils/utils';
+import SubmissionMethodToggle from '../components/SubmissionMethodToggle';
 import { SectionWrapper } from './SectionWrapper';
 import { useSectionsCheckboxesStyles } from './styles';
 
@@ -15,9 +16,10 @@ type Section = {
 type SectionsCheckboxesProps = {
   form: Form;
   onChange: UpdateFormFunction;
+  onToggleSubmissionMethod: (submissionMethod: SubmissionMethod) => void;
 };
 
-export function SectionsChecboxes({ form, onChange }: SectionsCheckboxesProps) {
+export function SectionsChecboxes({ form, onChange, onToggleSubmissionMethod }: SectionsCheckboxesProps) {
   const styles = useSectionsCheckboxesStyles();
 
   const sectionsOptions: Section[] = [
@@ -98,7 +100,7 @@ export function SectionsChecboxes({ form, onChange }: SectionsCheckboxesProps) {
           ))}
         </CheckboxGroup>
       }
-      right={<div>Preview kommer</div>}
+      right={<SubmissionMethodToggle onToggle={onToggleSubmissionMethod} />}
     />
   );
 }

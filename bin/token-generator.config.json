@@ -2,6 +2,13 @@
   {
     "filePath": "packages/bygger-backend/.env",
     "name": "FORMS_API_ACCESS_TOKEN",
-    "url": "https://azure-token-generator.intern.dev.nav.no/api/obo?aud=dev-gcp:fyllut-sendinn:forms-api"
+    "url": "https://azure-token-generator.intern.dev.nav.no/api/obo?aud=dev-gcp:fyllut-sendinn:forms-api",
+    "tags": ["forms-api", "bygger"]
+  },
+  {
+    "filePath": "packages/fyllut-backend/.env",
+    "name": "INNSENDING_API_M2M_ACCESS_TOKEN",
+    "url": "https://azure-token-generator.intern.dev.nav.no/api/m2m?aud=dev-gcp:team-soknad:innsending-api",
+    "tags": ["innsending-api", "fyllut"]
   }
 ]

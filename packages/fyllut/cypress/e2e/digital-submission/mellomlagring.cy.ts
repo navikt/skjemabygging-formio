@@ -368,7 +368,7 @@ describe('Mellomlagring', () => {
           );
           cy.defaultWaits();
           cy.wait('@getMellomlagringValid');
-          cy.findByText(/Alle steg som mangler informasjon er markert med/).should('exist');
+          cy.findByText(/Alle steg som mangler informasjon, er markert med/).should('exist');
           cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.saveAndContinue }).should('not.exist');
           cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
         });
@@ -397,7 +397,7 @@ describe('Mellomlagring', () => {
                 cy.get('dt').eq(0).should('contain.text', 'Velg instrument');
                 cy.get('dd').eq(0).should('contain.text', 'Piano');
               });
-            cy.findByText(/Alle steg som mangler informasjon er markert med/).should('exist');
+            cy.findByText(/Alle steg som mangler informasjon, er markert med/).should('exist');
             cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.saveAndContinue }).should('not.exist');
             cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
           });
@@ -422,7 +422,7 @@ describe('Mellomlagring', () => {
                 cy.get('dt').eq(2).should('contain.text', 'Velg valuta du vil betale med');
                 cy.get('dd').eq(2).should('contain.text', 'Euro (EUR)');
               });
-            cy.findByText(/Alle steg som mangler informasjon er markert med/).should('exist');
+            cy.findByText(/Alle steg som mangler informasjon, er markert med/).should('exist');
             cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.saveAndContinue }).should('not.exist');
             cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
           });
@@ -459,7 +459,7 @@ describe('Mellomlagring', () => {
                 cy.get('dd').eq(2).should('contain.text', 'Euro (EUR)');
               });
             cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.saveAndContinue }).should('exist');
-            cy.findByText(/Alle steg som mangler informasjon er markert med/).should('not.exist');
+            cy.findByText(/Alle steg som mangler informasjon, er markert med/).should('not.exist');
             cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
 
             cy.clickSaveAndContinue();
@@ -495,7 +495,7 @@ describe('Mellomlagring', () => {
                 cy.get('dd').eq(2).should('contain.text', 'Euro (EUR)');
               });
             cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.saveAndContinue }).should('exist');
-            cy.findByText(/Alle steg som mangler informasjon er markert med/).should('not.exist');
+            cy.findByText(/Alle steg som mangler informasjon, er markert med/).should('not.exist');
             cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
 
             cy.clickSaveAndContinue();
@@ -521,7 +521,7 @@ describe('Mellomlagring', () => {
         cy.defaultWaits();
         cy.wait('@getMellomlagring');
         cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.saveAndContinue }).should('exist');
-        cy.findByText(/Alle steg som mangler informasjon er markert med/).should('not.exist');
+        cy.findByText(/Alle steg som mangler informasjon, er markert med/).should('not.exist');
         cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
         cy.clickSaveAndContinue();
         cy.wait('@submitMellomlagring');
