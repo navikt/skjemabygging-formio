@@ -2,7 +2,9 @@ import { dateUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { RequestHandler } from 'express';
 import jwt from 'jsonwebtoken';
 import { config } from '../../../config/config';
+import { appMetrics } from '../../../services';
 import { CaptchaError } from './types';
+
 const { nologin } = config;
 
 const MINIMUM_CAPTCHA_COMPLETION_TIME_SECONDS = 3;
@@ -12,6 +14,7 @@ const MAXIMUM_SUBMIT_FUTURE_SECONDS = 5;
 // Denne er ikke produksjonsklar! Vi må legge til noe randomiserte greier.
 const handler: RequestHandler = (req, res, next) => {
   try {
+    appMetrics.nologinCaptchaRequestsCounter.inc();
     const { body } = req;
     const { timestampRender, timestampSubmit, data_33, firstName } = body;
     const now = dateUtils.getIso8601String();
