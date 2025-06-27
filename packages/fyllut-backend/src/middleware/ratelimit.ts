@@ -1,9 +1,9 @@
 import rateLimit from 'express-rate-limit';
 
-export const rateLimiter = (windowMs: number, max: number) =>
+export const rateLimiter = (windowMs: number, limit: number) =>
   rateLimit({
     windowMs,
-    max,
+    limit,
     message: 'Too many requests from IP',
     standardHeaders: true,
     legacyHeaders: false,
