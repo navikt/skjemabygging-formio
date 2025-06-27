@@ -32,6 +32,7 @@ class HttpError extends Error {
 }
 
 class UnauthenticatedError extends Error {}
+class TooManyRequestsError extends Error {}
 
 const defaultHeaders = (headers?: FetchHeader) => {
   return {
@@ -85,6 +86,8 @@ const handleResponse = async (response: Response, opts?: FetchOptions) => {
     // Formio API server returns status 440 when token is expired
     if (response.status === 401 || response.status === 440) {
       throw new UnauthenticatedError(response.statusText);
+    } else if (response.status === 429) {
+      throw new TooManyRequestsError(response.statusText);
     }
 
     let errorMessage: string = '';
@@ -136,6 +139,7 @@ const http = {
   MimeType,
   HttpError,
   UnauthenticatedError,
+  TooManyRequestsError,
   SubmissionMethodType,
 };
 
