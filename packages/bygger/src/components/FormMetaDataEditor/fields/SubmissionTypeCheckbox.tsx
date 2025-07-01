@@ -8,9 +8,18 @@ interface Props {
   error?: any;
   onChange: (value: any[]) => void;
   readonly?: boolean;
+  excludeDigitalNoLogin?: boolean;
 }
 
-export const SubmissionTypeCheckbox = ({ name, label, value, onChange, error, readonly }: Props) => {
+export const SubmissionTypeCheckbox = ({
+  name,
+  label,
+  value,
+  onChange,
+  error,
+  readonly,
+  excludeDigitalNoLogin,
+}: Props) => {
   return (
     <CheckboxGroup
       className="mb"
@@ -24,6 +33,7 @@ export const SubmissionTypeCheckbox = ({ name, label, value, onChange, error, re
     >
       <Checkbox value="PAPER">Papir</Checkbox>
       <Checkbox value="DIGITAL">Digital</Checkbox>
+      {!excludeDigitalNoLogin && <Checkbox value="DIGITAL_NO_LOGIN">Uinnlogget digital</Checkbox>}
     </CheckboxGroup>
   );
 };

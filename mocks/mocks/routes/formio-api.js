@@ -52,6 +52,10 @@ const submissionTypePaper = require('../data/formio-api/submission-type-paper.js
 const submissionTypeDigital = require('../data/formio-api/submission-type-digital.json');
 const submissionTypePaperDigital = require('../data/formio-api/submission-type-paper-digital.json');
 const submissionTypeNone = require('../data/formio-api/submission-type-none.json');
+const submissionTypeNoLogin = require('../data/formio-api/submission-type-no-login.json');
+const submissionTypeDigitalNoLogin = require('../data/formio-api/submission-type-digital-no-login.json');
+const submissionTypePaperDigitalNoLogin = require('../data/formio-api/submission-type-paper-digital-no-login.json');
+const submissionTypePaperNoLogin = require('../data/formio-api/submission-type-paper-no-login.json');
 
 const allForms = [
   { form: formCypress101, translations: translationsCypress101 },
@@ -98,6 +102,10 @@ const allForms = [
   { form: submissionTypeDigital, translations: undefined },
   { form: submissionTypePaperDigital, translations: undefined },
   { form: submissionTypeNone, translations: undefined },
+  { form: submissionTypeNoLogin, translations: undefined },
+  { form: submissionTypeDigitalNoLogin, translations: undefined },
+  { form: submissionTypePaperDigitalNoLogin, translations: undefined },
+  { form: submissionTypePaperNoLogin, translations: undefined },
 ];
 
 const findTestdata = (formPath) => allForms.find((testdata) => testdata.form.path === formPath);
