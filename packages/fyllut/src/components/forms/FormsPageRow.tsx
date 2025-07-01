@@ -23,10 +23,6 @@ const FormsPageRow = ({ form }: FormRowProps) => {
   const isDevelopment = config?.isDevelopment;
   const skjemaPath = `${baseUrl}/${form.path}`;
 
-  if (noDigitalLogin) {
-    console.log(form.properties.submissionTypes);
-  }
-
   return (
     <tr>
       <td className={styles.skjemanummer}>
