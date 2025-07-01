@@ -1,5 +1,6 @@
 import { Checkbox, CheckboxGroup } from '@navikt/ds-react';
 import { SubmissionType } from '@navikt/skjemadigitalisering-shared-domain';
+import { useAuth } from '../../../context/auth-context';
 
 interface Props {
   name: string;
@@ -20,6 +21,9 @@ export const SubmissionTypeCheckbox = ({
   readonly,
   excludeDigitalNoLogin,
 }: Props) => {
+  const { userData } = useAuth();
+
+  // TODO: Remove userData.isAdmin when digital no login is released
   return (
     <CheckboxGroup
       className="mb"
@@ -33,7 +37,7 @@ export const SubmissionTypeCheckbox = ({
     >
       <Checkbox value="PAPER">Papir</Checkbox>
       <Checkbox value="DIGITAL">Digital</Checkbox>
-      {!excludeDigitalNoLogin && <Checkbox value="DIGITAL_NO_LOGIN">Uinnlogget digital</Checkbox>}
+      {!excludeDigitalNoLogin && userData?.isAdmin && <Checkbox value="DIGITAL_NO_LOGIN">Uinnlogget digital</Checkbox>}
     </CheckboxGroup>
   );
 };
