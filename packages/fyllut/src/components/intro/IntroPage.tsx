@@ -12,9 +12,7 @@ import { NotFoundPage } from '../errors/NotFoundPage';
 import FormPageSkeleton from '../form/FormPageSkeleton';
 import SubmissionMethodNotAllowed from '../SubmissionMethodNotAllowed';
 import { IntroPageProvider } from './IntroPageContext';
-import IntroPageDynamic from './IntroPageDynamic';
-import IntroPageStatic from './IntroPageStatic';
-import SelectSubmissionType from './SelectSubmissionType';
+import IntroPageDisplay from './IntroPageDisplay';
 
 const IntroPage = () => {
   const { formPath } = useParams();
@@ -65,8 +63,7 @@ const IntroPage = () => {
       </FormContainer>
       <FormContainer small={true}>
         <FormTitle form={formioFormsApiUtils.mapFormToNavForm(form)} />
-        <SelectSubmissionType />
-        {form.introPage?.enabled ? <IntroPageDynamic /> : <IntroPageStatic />}
+        <IntroPageDisplay />
       </FormContainer>
     </IntroPageProvider>
   );
