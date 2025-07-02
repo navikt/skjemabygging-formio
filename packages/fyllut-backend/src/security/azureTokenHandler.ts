@@ -8,11 +8,17 @@ import { toJsonOrThrowError } from '../utils/errorHandling.js';
 const { clientId, clientSecret, azureOpenidTokenEndpoint, isDevelopment } = config;
 
 const azureTokenHandler =
-  (scope: string, headerName = 'AzureAccessToken', skipDev = false) =>
+  (scope: string, headerName = 'AzureAccessToken', dev: { token?: string; skip?: boolean } = {}) =>
   async (req: Request, _res: Response, next: NextFunction) => {
-    if (isDevelopment && skipDev) {
-      logger.info(`Skipping Azure access token fetch (scope='${scope}', header='${headerName}')`);
-      return next();
+    if (isDevelopment) {
+      if (dev.token) {
+        req.headers.AzureAccessToken = dev.token;
+        logger.info('Using pre-generated access token to fetch');
+        return next();
+      } else if (dev.skip) {
+        logger.info(`Skipping Azure access token fetch (scope='${scope}', header='${headerName}')`);
+        return next();
+      }
     }
 
     try {
