@@ -46,7 +46,6 @@ const sendInnConfig: SendInnConfig = {
     prefillData: '/fyllUt/v1/prefill-data',
     activities: '/fyllUt/v1/aktiviteter',
     mergeFiles: '/fyllUt/v1/merge-filer',
-    nologinFile: '/v1/nologin-fillager',
   },
 };
 
@@ -105,8 +104,7 @@ const localDevelopmentConfig: DefaultConfig = {
   },
   sendInnConfig: {
     ...sendInnConfig,
-    devToken: process.env.INNSENDING_API_M2M_ACCESS_TOKEN,
-    host: sendInnConfig.host || 'https://innsending-api-gcp.intern.dev.nav.no',
+    host: sendInnConfig.host || 'https://innsending-api.intern.dev.nav.no',
     tokenxClientId: sendInnConfig.tokenxClientId || 'dev-gcp:soknad:send-inn',
   },
   tilleggsstonaderConfig: {

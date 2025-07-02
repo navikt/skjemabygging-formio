@@ -10,17 +10,13 @@ const {
   tilleggsstonaderConfig,
   familiePdfGeneratorScope,
   mergePdfScope,
-  naisClusterName,
 } = appConfig;
 
 const initApiConfig = () => {
   return {
     azureSkjemabyggingProxy: azureTokenHandler(skjemabyggingProxyClientId!, 'AzureAccessToken'),
     azurePdl: azureTokenHandler(`${pdlTokenScopeCluster}.pdl.pdl-api`, 'AzureAccessToken'),
-    azureSendInn: azureTokenHandler(`${naisClusterName}.team-soknad.innsending-api`, 'AzureAccessToken', {
-      token: sendInnConfig.devToken,
-    }),
-    kodeverkToken: azureTokenHandler(kodeverk.scope!, 'AzureAccessToken', { skip: true }),
+    kodeverkToken: azureTokenHandler(kodeverk.scope!, 'AzureAccessToken', true),
     tokenxSendInn: tokenxHandler(sendInnConfig?.tokenxClientId),
     tokenxPdl: tokenxHandler(`${pdlTokenScopeCluster}:pdl:pdl-api`),
     tokenxTilleggsstonader: tokenxHandler(tilleggsstonaderConfig.tokenxClientId),
