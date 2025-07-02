@@ -9,7 +9,6 @@ export type TokenxConfig = {
 export type SendInnConfig = {
   host: string;
   tokenxClientId: string;
-  devToken?: string;
   paths: {
     opprettedeSoknaderForSkjema: (skjemanummer: string, soknadsTyper?: Array<'soknad' | 'ettersendelse'>) => string;
     soknad: string;
@@ -17,7 +16,6 @@ export type SendInnConfig = {
     prefillData: string;
     activities: string;
     mergeFiles: string;
-    nologinFile: string;
   };
 };
 
