@@ -60,10 +60,8 @@ const IntroPage = () => {
 
   return (
     <IntroPageProvider form={form}>
-      <FormContainer small={false}>
+      <FormContainer>
         <LanguageSelector />
-      </FormContainer>
-      <FormContainer small={true}>
         <FormTitle form={formioFormsApiUtils.mapFormToNavForm(form)} />
         <SelectSubmissionType />
         {form.introPage?.enabled ? <IntroPageDynamic /> : <IntroPageStatic />}

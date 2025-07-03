@@ -1,13 +1,5 @@
 import { Heading } from '@navikt/ds-react';
-import {
-  Enhet,
-  NavFormType,
-  Submission,
-  SubmissionType,
-  submissionTypesUtils,
-  TEXTS,
-} from '@navikt/skjemadigitalisering-shared-domain';
-import PropTypes from 'prop-types';
+import { Enhet, SubmissionType, submissionTypesUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useState } from 'react';
 import { getAttachments } from '../../../../shared-domain/src/forsteside/forstesideUtils';
 import { fetchEnhetsliste, isEnhetSupported } from '../../api/enhetsliste/fetchEnhetsliste';
@@ -20,18 +12,12 @@ import LetterPrint from '../../components/letter/LetterPrint';
 import LetterUXSignals from '../../components/letter/ux-signals/LetterUXSignals';
 import LoadingComponent from '../../components/loading/LoadingComponent';
 import { useAppConfig } from '../../context/config/configContext';
+import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
 import { scrollToAndSetFocus } from '../../util/focus-management/focus-management';
 import makeStyles from '../../util/styles/jss/jss';
 
 const compareEnheter = (enhetA, enhetB) => enhetA.navn.localeCompare(enhetB.navn, 'nb');
-
-interface Props {
-  form: NavFormType;
-  submission: Submission;
-  translations: any;
-  formUrl: string;
-}
 
 const useStyles = makeStyles({
   content: {
@@ -48,13 +34,14 @@ const submissionTypeIncludesPaperOrIsNoSubmission = (submissionTypes?: Submissio
   submissionTypes &&
   (submissionTypesUtils.isNoneSubmission(submissionTypes) || submissionTypesUtils.isPaperSubmission(submissionTypes));
 
-export function PrepareLetterPage({ form, submission, translations, formUrl }: Props) {
+export function PrepareLetterPage() {
   useEffect(() => scrollToAndSetFocus('main', 'start'), []);
   const { baseUrl, logger, config } = useAppConfig();
   const { translate } = useLanguages();
   const [enhetsListe, setEnhetsListe] = useState<Enhet[]>([]);
   const [enhetsListeError, setEnhetsListeError] = useState(false);
   const [enhetslisteFilteringError, setEnhetslisteFilteringError] = useState(false);
+  const { form, submission, formUrl } = useForm();
 
   const styles = useStyles();
 
@@ -100,15 +87,9 @@ export function PrepareLetterPage({ form, submission, translations, formUrl }: P
       <Heading level="2" size="large" spacing>
         {translate(TEXTS.statiske.prepareLetterPage.subTitle)}
       </Heading>
-      <section className="fyllut-layout" id="maincontent" tabIndex={-1}>
+      <section id="maincontent" tabIndex={-1}>
         <section className="main-col">
-          <LetterDownload
-            index={1}
-            form={form}
-            submission={submission}
-            enhetsListe={enhetsListe}
-            translations={translations}
-          />
+          <LetterDownload index={1} form={form} submission={submission} enhetsListe={enhetsListe} />
           <LetterPrint index={2} />
           {hasAttachments && <LetterAddAttachment index={3} attachments={attachments} />}
           <LetterInTheMail index={hasAttachments ? 4 : 3} attachments={attachments} />
@@ -119,8 +100,3 @@ export function PrepareLetterPage({ form, submission, translations, formUrl }: P
     </div>
   );
 }
-
-PrepareLetterPage.propTypes = {
-  form: PropTypes.object.isRequired,
-  submission: PropTypes.object.isRequired,
-};
