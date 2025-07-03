@@ -1,4 +1,4 @@
-import { Submission, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import nock from 'nock';
@@ -37,12 +37,7 @@ describe('PrepareIngenInnsendingPage', () => {
     render(
       <AppConfigProvider {...config}>
         <MemoryRouter initialEntries={[`/forms/${testForm.path}/ingen-innsending`]}>
-          <PrepareIngenInnsendingPage
-            form={testForm}
-            submission={{} as Submission}
-            formUrl="/testskjema"
-            translations={{}}
-          />
+          <PrepareIngenInnsendingPage />
         </MemoryRouter>
         ,
       </AppConfigProvider>,

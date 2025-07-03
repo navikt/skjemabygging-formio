@@ -1,4 +1,3 @@
-import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import nock from 'nock';
@@ -50,13 +49,7 @@ describe('DigitalSubmissionButton', () => {
     render(
       <AppConfigProvider {...defaultAppConfigProps} {...appConfigProps}>
         <MemoryRouter>
-          <SendInnProvider
-            form={{ components: [] } as unknown as NavFormType}
-            formUrl="/fyllut/testform"
-            translations={{}}
-            updateSubmission={vi.fn()}
-            onFyllutStateChange={vi.fn()}
-          >
+          <SendInnProvider>
             <LanguagesProvider translations={defaultTranslations}>
               <DigitalSubmissionButton {...defaultProps}>{BUTTON_TEXT}</DigitalSubmissionButton>
             </LanguagesProvider>
