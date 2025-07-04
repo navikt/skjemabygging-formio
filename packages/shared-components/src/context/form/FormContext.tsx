@@ -5,7 +5,7 @@ import { useAppConfig } from '../config/configContext';
 
 interface FormContextType {
   submission: Submission;
-  setSubmission: Dispatch<SetStateAction<Submission | undefined>>;
+  setSubmission: Dispatch<SetStateAction<Submission>>;
   prefillData?: PrefillData;
   form: NavFormType;
   formUrl: string;
@@ -21,7 +21,7 @@ interface FormProviderProps {
 const FormContext = createContext<FormContextType>({} as FormContextType);
 
 export const FormProvider = ({ children, form }: FormProviderProps) => {
-  const [submission, setSubmission] = useState<Submission>();
+  const [submission, setSubmission] = useState<Submission>({ data: {} } as Submission);
   const [formProgress, setFormProgress] = useState<boolean>(false);
   const [prefillData, setPrefillData] = useState<PrefillData>({});
   const { http, baseUrl, submissionMethod } = useAppConfig();
@@ -55,11 +55,7 @@ export const FormProvider = ({ children, form }: FormProviderProps) => {
     <FormContext.Provider
       value={{
         prefillData,
-        submission:
-          submission ??
-          ({
-            data: {},
-          } as Submission),
+        submission,
         setSubmission,
         form,
         formUrl,
