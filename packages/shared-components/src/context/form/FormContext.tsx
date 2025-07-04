@@ -55,7 +55,11 @@ export const FormProvider = ({ children, form }: FormProviderProps) => {
     <FormContext.Provider
       value={{
         prefillData,
-        submission: submission ?? ({} as Submission),
+        submission:
+          submission ??
+          ({
+            data: {},
+          } as Submission),
         setSubmission,
         form,
         formUrl,

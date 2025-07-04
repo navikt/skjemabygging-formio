@@ -77,6 +77,8 @@ describe('Submission Type', () => {
 
         cy.findByRole('textbox', { name: 'Tekstfelt' }).type('asdf');
         cy.clickSaveAndContinue();
+
+        cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.saveAndContinue }).should('exist');
       });
 
       it('Do not show attachments', () => {
@@ -130,6 +132,9 @@ describe('Submission Type', () => {
         cy.findByRole('textbox', { name: 'Tekstfelt' }).type('asdf');
         cy.clickNextStep();
 
+        cy.findByLabelText(TEXTS.statiske.attachment.nei).click();
+        cy.clickNextStep();
+
         cy.findByRole('link', { name: TEXTS.grensesnitt.moveForward }).click();
 
         cy.findByRole('button', { name: TEXTS.grensesnitt.downloadApplication }).should('exist');
@@ -144,7 +149,7 @@ describe('Submission Type', () => {
         cy.findByRole('textbox', { name: 'Tekstfelt' }).type('asdf');
         cy.clickSaveAndContinue();
 
-        cy.findByRole('button', { name: TEXTS.grensesnitt.submitToNavPrompt.open }).should('exist');
+        cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.saveAndContinue }).should('exist');
       });
     });
 
