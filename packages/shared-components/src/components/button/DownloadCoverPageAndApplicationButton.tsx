@@ -56,7 +56,11 @@ const DownloadCoverPageAndApplicationButton = ({
           language: currentLanguage,
           form: JSON.stringify(form),
           submission: JSON.stringify(submission),
-          translations: JSON.stringify(currentLanguage !== 'nb-NO' ? translationsForNavForm[currentLanguage] : {}),
+          translations: JSON.stringify(
+            currentLanguage !== 'nb-NO' && translationsForNavForm?.[currentLanguage]
+              ? translationsForNavForm[currentLanguage]
+              : {},
+          ),
           enhetNummer,
           submissionMethod: submissionMethod ?? 'paper',
         }}
