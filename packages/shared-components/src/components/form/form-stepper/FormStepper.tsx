@@ -51,7 +51,7 @@ const FormStepper = () => {
   }, [screenSmall]);
 
   return (
-    <nav className="mb">
+    <div className="mb">
       <FormProgress
         totalSteps={formSteps.length}
         activeStep={getActiveStepper() + 1}
@@ -79,7 +79,7 @@ const FormStepper = () => {
           );
         })}
       </FormProgress>
-    </nav>
+    </div>
   );
 };
 
