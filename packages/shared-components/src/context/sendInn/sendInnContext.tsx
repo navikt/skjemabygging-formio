@@ -78,7 +78,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
   );
 
   useEffect(() => {
-    if (fyllutMellomlagringState) {
+    if (fyllutMellomlagringState && setSubmission) {
       setSubmission((prevSubmission) => {
         return {
           ...prevSubmission,
