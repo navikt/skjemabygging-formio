@@ -120,7 +120,7 @@ class TextField extends BaseComponent {
           hideLabel={this.getHideLabel()}
           description={<Description component={this.component} />}
           className={this.getClassName()}
-          autoComplete={this.getAutoComplete()}
+          autoComplete={this.getAutoComplete() ? this.getAutoComplete() : 'off'}
           readOnly={this.getReadOnly()}
           spellCheck={this.getSpellCheck()}
           error={this.getError()}
