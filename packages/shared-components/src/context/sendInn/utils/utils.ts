@@ -87,20 +87,15 @@ export const getFyllutMellomlagringState = (
   }
 };
 
-export const getSubmissionWithFyllutState = (
-  response?: SendInnSoknadResponse,
-  form?: NavFormType,
-): Submission | undefined => {
-  if (response) {
-    const submission = getSubmissionFromResponse(response, form);
-    return {
-      ...submission,
-      fyllutState: {
-        ...submission?.fyllutState,
-        mellomlagring: getFyllutMellomlagringState(response) ?? submission?.fyllutState?.mellomlagring,
-      },
-    };
-  }
+export const getSubmissionWithFyllutState = (response?: SendInnSoknadResponse, form?: NavFormType): Submission => {
+  const submission = getSubmissionFromResponse(response, form);
+  return {
+    ...submission,
+    fyllutState: {
+      ...submission?.fyllutState,
+      mellomlagring: getFyllutMellomlagringState(response) ?? submission?.fyllutState?.mellomlagring,
+    },
+  };
 };
 
 export const transformSubmissionBeforeSubmitting = (submission: Submission): Submission => {
