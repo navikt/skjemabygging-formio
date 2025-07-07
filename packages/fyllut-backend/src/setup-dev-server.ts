@@ -31,11 +31,12 @@ export const setupDevServer = (expressApp: Express, fyllutRouter: Router, config
       if (isFormPath(formPath)) {
         res.cookie(DEV_ACCESS_COOKIE, true, { maxAge: 1000 * 3600 * 24 });
         const queryString = sub ? `?sub=${sub}` : '';
-        return res.redirect(302, `${config.fyllutPath}/${formPath}${queryString}`);
+        res.redirect(302, `${config.fyllutPath}/${formPath}${queryString}`);
       } else {
         logger.warn(`Invalid formPath when requesting dev access: ${formPath}`);
-        return res.sendStatus(400);
+        res.sendStatus(400);
       }
+      return;
     }
     res.cookie(DEV_ACCESS_COOKIE, true, { maxAge: 1000 * 3600 * 24 });
     return res.render('dev-access.html');
@@ -47,7 +48,7 @@ export const setupDevServer = (expressApp: Express, fyllutRouter: Router, config
       return next();
     } else {
       logger.info(`Non-authorized client ips: ${req.ip} ${JSON.stringify(req.ips)}`);
-      return res.status(401).send('Ingen tilgang');
+      res.status(401).send('Ingen tilgang');
     }
   });
 };
