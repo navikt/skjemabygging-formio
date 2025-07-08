@@ -62,7 +62,8 @@ export function SummaryPage() {
     const initializePanelValidation = async () => {
       const submissionCopy = JSON.parse(JSON.stringify(submission || {}));
 
-      const webform = await NavFormHelper.create(document.getElementById('formio-summary-hidden')!, form, {
+      const formioSummary = document.getElementById('formio-summary-hidden')!;
+      const webform = await NavFormHelper.create(formioSummary, form, {
         appConfig,
         submission: submissionCopy,
       });
@@ -74,7 +75,7 @@ export function SummaryPage() {
       const panelValidations = validateWizardPanels(webform, form, submission!);
       setPanelValidationList(panelValidations);
       webform.destroy(true);
-      const formioSummary = document.getElementById('formio-summary-hidden');
+
       if (formioSummary) {
         formioSummary.innerHTML = '';
       }

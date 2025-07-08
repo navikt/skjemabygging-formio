@@ -1,5 +1,6 @@
 import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import { Route, Routes } from 'react-router-dom';
+import { SubmissionWrapper } from '../components/summary/submission-wrapper/SubmissionWrapper';
 import { FormProvider } from '../context/form/FormContext';
 import { SendInnProvider } from '../context/sendInn/sendInnContext';
 import ActiveTasksPage from './active-tasks/ActiveTasksPage';
@@ -19,12 +20,33 @@ const FyllUtRouter = ({ form }: Props) => {
       <SendInnProvider>
         <Routes>
           <Route element={<FormLayout stepper={true} />}>
-            <Route path={'/oppsummering'} element={<SummaryPage />} />
+            <Route
+              path={'/oppsummering'}
+              element={
+                <SubmissionWrapper>
+                  <SummaryPage />
+                </SubmissionWrapper>
+              }
+            />
             <Route path={'/:panelSlug'} element={<FillInFormPage />} />
           </Route>
           <Route element={<FormLayout />}>
-            <Route path={'/send-i-posten'} element={<PrepareLetterPage />} />
-            <Route path={'/ingen-innsending'} element={<PrepareIngenInnsendingPage />} />
+            <Route
+              path={'/send-i-posten'}
+              element={
+                <SubmissionWrapper>
+                  <PrepareLetterPage />
+                </SubmissionWrapper>
+              }
+            />
+            <Route
+              path={'/ingen-innsending'}
+              element={
+                <SubmissionWrapper>
+                  <PrepareIngenInnsendingPage />
+                </SubmissionWrapper>
+              }
+            />
             <Route path={'/paabegynt'} element={<ActiveTasksPage />} />
           </Route>
         </Routes>
