@@ -8,7 +8,7 @@ import DownloadPdfButton from './DownloadPdfButton';
 interface Props {
   type?: 'application' | 'coverPageAndApplication';
   form: NavFormType;
-  submission: Submission;
+  submission?: Submission;
   enhetNummer?: string;
   isValid?: () => boolean;
   submissionMethod?: string;

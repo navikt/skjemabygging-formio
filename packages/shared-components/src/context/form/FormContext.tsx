@@ -4,8 +4,8 @@ import { useResolvedPath } from 'react-router-dom';
 import { useAppConfig } from '../config/configContext';
 
 interface FormContextType {
-  submission: Submission;
-  setSubmission: Dispatch<SetStateAction<Submission>>;
+  submission?: Submission;
+  setSubmission: Dispatch<SetStateAction<Submission | undefined>>;
   prefillData?: PrefillData;
   form: NavFormType;
   formUrl: string;
@@ -21,7 +21,7 @@ interface FormProviderProps {
 const FormContext = createContext<FormContextType>({} as FormContextType);
 
 export const FormProvider = ({ children, form }: FormProviderProps) => {
-  const [submission, setSubmission] = useState<Submission>({ data: {} } as Submission);
+  const [submission, setSubmission] = useState<Submission>();
   const [formProgress, setFormProgress] = useState<boolean>(false);
   const [prefillData, setPrefillData] = useState<PrefillData>({});
   const { http, baseUrl, submissionMethod } = useAppConfig();
