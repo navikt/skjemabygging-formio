@@ -40,7 +40,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const { setSubmission, submission, form, formUrl } = useForm();
+  const { setSubmission, form, formUrl } = useForm();
   const soknadNotFoundUrl = `${baseUrl}/soknad-ikke-funnet`;
   const { translationsForNavForm: translations } = useLanguages();
 
@@ -281,14 +281,6 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
       }
     }
   };
-
-  useEffect(() => {
-    if (!submission && isMellomlagringAvailable && !innsendingsId) {
-      searchParams.delete('innsendingsId');
-
-      navigate(`${formUrl}?${searchParams.toString()}`);
-    }
-  }, [formUrl, innsendingsId, isMellomlagringAvailable, navigate, searchParams, submission]);
 
   const value: SendInnContextType = {
     startMellomlagring,

@@ -1,6 +1,6 @@
 import { NavFormType, navFormUtils, PrefillData, Submission } from '@navikt/skjemadigitalisering-shared-domain';
-import { createContext, Dispatch, SetStateAction, useContext, useEffect, useState } from 'react';
-import { useResolvedPath } from 'react-router-dom';
+import { createContext, Dispatch, SetStateAction, useCallback, useContext, useEffect, useState } from 'react';
+import { useNavigate, useResolvedPath, useSearchParams } from 'react-router-dom';
 import { useAppConfig } from '../config/configContext';
 
 interface FormContextType {
@@ -11,6 +11,7 @@ interface FormContextType {
   formUrl: string;
   formProgress: boolean;
   setFormProgress: Dispatch<SetStateAction<boolean>>;
+  redirectIfMissingInnsendingsId: () => void;
 }
 
 interface FormProviderProps {
@@ -26,6 +27,8 @@ export const FormProvider = ({ children, form }: FormProviderProps) => {
   const [prefillData, setPrefillData] = useState<PrefillData>({});
   const { http, baseUrl, submissionMethod } = useAppConfig();
   const formUrl = useResolvedPath('').pathname;
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
   useEffect(() => {
     const loadPrefillData = async (navForm: NavFormType) => {
@@ -51,6 +54,14 @@ export const FormProvider = ({ children, form }: FormProviderProps) => {
     }
   }, [baseUrl, form, http, submissionMethod]);
 
+  const redirectIfMissingInnsendingsId = useCallback(() => {
+    if (!submission && submissionMethod === 'digital' && !searchParams.get('innsendingsId')) {
+      searchParams.delete('innsendingsId');
+
+      navigate(`${formUrl}?${searchParams.toString()}`);
+    }
+  }, [formUrl, navigate, searchParams, submission, submissionMethod]);
+
   return (
     <FormContext.Provider
       value={{
@@ -61,6 +72,7 @@ export const FormProvider = ({ children, form }: FormProviderProps) => {
         formUrl,
         formProgress,
         setFormProgress,
+        redirectIfMissingInnsendingsId,
       }}
     >
       {children}

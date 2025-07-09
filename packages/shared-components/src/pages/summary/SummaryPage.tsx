@@ -52,9 +52,11 @@ export function SummaryPage() {
   const appConfig = useAppConfig();
   const { translate } = useLanguages();
   const styles = useStyles();
-  const { prefillData, submission, formUrl, form } = useForm();
+  const { prefillData, submission, formUrl, form, redirectIfMissingInnsendingsId } = useForm();
   const { declarationType, declarationText } = form.properties;
   const [declaration, setDeclaration] = useState<boolean | undefined>(undefined);
+
+  redirectIfMissingInnsendingsId();
 
   const [panelValidationList, setPanelValidationList] = useState<PanelValidation[] | undefined>();
 
