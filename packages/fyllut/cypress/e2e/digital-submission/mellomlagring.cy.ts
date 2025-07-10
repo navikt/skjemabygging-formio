@@ -196,6 +196,7 @@ describe('Mellomlagring', () => {
 
     describe('When starting on the summary page', () => {
       it('redirects to start page if url does not contain "innsendingsId"', () => {
+        cy.skipIfNoIncludeDistTests();
         cy.visit('/fyllut/testmellomlagring/oppsummering?sub=digital&lang=nb-NO');
         cy.defaultWaits();
         cy.findByRole('heading', { name: TEXTS.statiske.introPage.title }).should('exist');
