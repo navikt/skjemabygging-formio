@@ -34,7 +34,7 @@ const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
       !qpInnsendingsId &&
       qpSub === 'digital' &&
       formPath &&
-      req.originalUrl.match(new RegExp(`${formPath}/(oppsummering|ingen-innsending|send-i-posten)`))
+      req.originalUrl.match(new RegExp(`/(oppsummering|ingen-innsending|send-i-posten)`))
     ) {
       redirectUrl = `${config.fyllutPath}/${formPath}`;
       redirectParams = { ...excludeQueryParam('innsendingsId', redirectParams) };
