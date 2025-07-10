@@ -20,9 +20,7 @@ export function PrepareIngenInnsendingPage() {
   useEffect(() => scrollToAndSetFocus('main', 'start'), []);
   const { translate } = useLanguages();
   const styles = useStyles();
-  const { form, submission, formUrl, redirectIfMissingInnsendingsId } = useForm();
-
-  redirectIfMissingInnsendingsId();
+  const { form, submission, formUrl } = useForm();
 
   return (
     <div className={styles.content}>

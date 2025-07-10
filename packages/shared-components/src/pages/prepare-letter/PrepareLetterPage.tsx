@@ -41,15 +41,13 @@ export function PrepareLetterPage() {
   const [enhetsListe, setEnhetsListe] = useState<Enhet[]>([]);
   const [enhetsListeError, setEnhetsListeError] = useState(false);
   const [enhetslisteFilteringError, setEnhetslisteFilteringError] = useState(false);
-  const { form, submission, formUrl, redirectIfMissingInnsendingsId } = useForm();
+  const { form, submission, formUrl } = useForm();
 
   const styles = useStyles();
 
   const { enhetMaVelgesVedPapirInnsending, enhetstyper, skjemanummer, uxSignalsId, uxSignalsSubmissionTypes } =
     form.properties;
   const includeUxSignals = !!uxSignalsId && submissionTypeIncludesPaperOrIsNoSubmission(uxSignalsSubmissionTypes);
-
-  redirectIfMissingInnsendingsId();
 
   useEffect(() => {
     if (enhetMaVelgesVedPapirInnsending) {
