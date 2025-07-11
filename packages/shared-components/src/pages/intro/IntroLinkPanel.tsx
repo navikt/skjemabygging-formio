@@ -1,8 +1,8 @@
 import { ArrowRightIcon } from '@navikt/aksel-icons';
 import { Link } from '@navikt/ds-react';
-import { makeStyles, useLanguages } from '@navikt/skjemadigitalisering-shared-components';
 import classNames from 'classnames';
 import React from 'react';
+import { makeStyles, useLanguages } from '../../index';
 
 interface Props {
   onClick: () => void;

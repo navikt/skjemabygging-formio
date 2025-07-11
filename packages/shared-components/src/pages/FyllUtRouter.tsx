@@ -5,6 +5,7 @@ import { SendInnProvider } from '../context/sendInn/sendInnContext';
 import ActiveTasksPage from './active-tasks/ActiveTasksPage';
 import { FillInFormPage } from './fill-in-form/FillInFormPage';
 import FormLayout from './FormLayout';
+import IntroPage from './intro/IntroPage';
 import { PrepareIngenInnsendingPage } from './prepare-innsending/PrepareIngenInnsendingPage';
 import { PrepareLetterPage } from './prepare-letter/PrepareLetterPage';
 import { SummaryPage } from './summary/SummaryPage';
@@ -23,6 +24,7 @@ const FyllUtRouter = ({ form }: Props) => {
             <Route path={'/:panelSlug'} element={<FillInFormPage />} />
           </Route>
           <Route element={<FormLayout />}>
+            <Route path={''} element={<IntroPage />} />
             <Route path={'/send-i-posten'} element={<PrepareLetterPage />} />
             <Route path={'/ingen-innsending'} element={<PrepareIngenInnsendingPage />} />
             <Route path={'/paabegynt'} element={<ActiveTasksPage />} />
