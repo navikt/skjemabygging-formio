@@ -26,13 +26,9 @@ const FormPageWrapper = () => {
       return;
     }
 
-    setLoading(true);
-    try {
-      setTranslations(await loadAllTranslations(formPath));
-    } catch (_e) {
-      setTranslations(undefined);
-    } finally {
-      setLoading(false);
+    const translationsData = await loadAllTranslations(formPath);
+    if (translationsData) {
+      setTranslations(translationsData);
     }
   }, [formPath]);
 
@@ -40,30 +36,26 @@ const FormPageWrapper = () => {
     if (!formPath) {
       return;
     }
-    setLoading(true);
-    try {
-      const formData = await get(formPath, 'title,skjemanummer,introPage,components,properties,firstPanelSlug');
-      if (formData) {
-        setForm(formioFormsApiUtils.mapFormToNavForm(formData));
-      }
-    } catch (_e) {
-      return;
-    } finally {
-      setLoading(false);
+
+    const formData = await get(formPath, 'title,skjemanummer,introPage,components,properties,firstPanelSlug');
+    if (formData) {
+      setForm(formioFormsApiUtils.mapFormToNavForm(formData));
     }
   }, [formPath, get]);
 
   useEffect(() => {
     (async () => {
-      await loadForm();
+      try {
+        setLoading(true);
+        await Promise.all([loadForm(), loadTranslations()]);
+      } catch (_e) {
+        setTranslations(undefined);
+        setForm(undefined);
+      } finally {
+        setLoading(false);
+      }
     })();
-  }, [formPath, loadForm]);
-
-  useEffect(() => {
-    (async () => {
-      await loadTranslations();
-    })();
-  }, [formPath, loadTranslations]);
+  }, [loadForm, loadTranslations]);
 
   useEffect(() => {
     const metaPropOgTitle = document.querySelector('meta[property="og:title"]');
