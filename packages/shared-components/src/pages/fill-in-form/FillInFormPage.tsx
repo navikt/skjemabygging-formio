@@ -33,7 +33,6 @@ export const FillInFormPage = () => {
   const { submissionMethod } = useAppConfig();
   const [formForRendering, setFormForRendering] = useState<NavFormType>();
   const {
-    startMellomlagring,
     updateMellomlagring,
     deleteMellomlagring,
     mellomlagringError,
@@ -193,12 +192,6 @@ export const FillInFormPage = () => {
   useEffect(() => {
     setFormForRendering(submissionMethod === 'digital' ? navFormUtils.removeVedleggspanel(form) : form);
   }, [form, submissionMethod]);
-
-  useEffect(() => {
-    if (isMellomlagringAvailable) {
-      startMellomlagring(submission as Submission);
-    }
-  }, [submission, startMellomlagring, isMellomlagringAvailable]);
 
   // Clean up mutationObserver
   const removeMutationObserver = () => {
