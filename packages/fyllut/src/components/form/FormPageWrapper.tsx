@@ -46,6 +46,8 @@ const FormPageWrapper = () => {
       if (formData) {
         setForm(formioFormsApiUtils.mapFormToNavForm(formData));
       }
+    } catch (_e) {
+      return;
     } finally {
       setLoading(false);
     }
