@@ -17,7 +17,6 @@ import { mellomlagringReducer } from './reducer/mellomlagringReducer';
 import { getSubmissionWithFyllutState, transformSubmissionBeforeSubmitting } from './utils/utils';
 
 interface SendInnContextType {
-  startMellomlagring: (submission: Submission) => Promise<SendInnSoknadResponse | undefined>;
   updateMellomlagring: (submission: Submission) => Promise<SendInnSoknadResponse | undefined>;
   submitSoknad: (submission: Submission) => Promise<SendInnSoknadResponse | undefined>;
   deleteMellomlagring: () => Promise<{ status: string; info: string } | undefined>;
@@ -286,7 +285,6 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
   };
 
   const value: SendInnContextType = {
-    startMellomlagring,
     updateMellomlagring,
     deleteMellomlagring,
     submitSoknad,
