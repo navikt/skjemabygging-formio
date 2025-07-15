@@ -58,9 +58,9 @@ const FormStepper = () => {
         open={formProgress}
         onOpenChange={(state) => setFormProgress(state)}
         translations={{
-          step: TEXTS.grensesnitt.stepper.step,
-          showAllSteps: TEXTS.grensesnitt.stepper.showAllSteps,
-          hideAllSteps: TEXTS.grensesnitt.stepper.hideAllSteps,
+          step: translate(TEXTS.grensesnitt.stepper.step),
+          showAllSteps: translate(TEXTS.grensesnitt.stepper.showAllSteps),
+          hideAllSteps: translate(TEXTS.grensesnitt.stepper.hideAllSteps),
         }}
       >
         {formSteps.map((step, index) => {
