@@ -60,7 +60,7 @@ Cypress.Commands.add('clickStart', () => {
 });
 
 Cypress.Commands.add('clickShowAllSteps', () => {
-  return cy.findByRoleWhenAttached('button', { name: 'Vis alle steg' }, 500).click();
+  return cy.findByRoleWhenAttached('button', { name: TEXTS.grensesnitt.stepper.showAllSteps }, 500).click();
 });
 
 Cypress.Commands.add('verifySendInnRedirect', () => {
