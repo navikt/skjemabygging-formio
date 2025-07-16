@@ -40,6 +40,7 @@ const SubmissionFields = ({ onChange, diff, form, errors }: SubmissionFieldsProp
         value={subsequentSubmissionTypes}
         error={errors?.subsequentSubmissionTypes}
         readonly={isLockedForm}
+        excludeDigitalNoLogin={true}
         onChange={(data) =>
           onChange({
             ...form,
