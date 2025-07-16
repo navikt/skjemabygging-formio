@@ -1,6 +1,7 @@
-import { useAppConfig, useLanguages } from '@navikt/skjemadigitalisering-shared-components';
 import { submissionTypesUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useLocation } from 'react-router-dom';
+import { useAppConfig } from '../../../context/config/configContext';
+import { useLanguages } from '../../../context/languages';
 import IntroLinkPanel from '../IntroLinkPanel';
 import { IntroPageState, useIntroPage } from '../IntroPageContext';
 

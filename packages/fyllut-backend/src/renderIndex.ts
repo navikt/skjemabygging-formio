@@ -32,6 +32,8 @@ const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
     const qpForm = req.query.form;
     const qpInnsendingsId = req.query.innsendingsId;
     const qpSub = req.query.sub as QueryParamSub;
+    const formPath = res.locals.formId;
+
     let redirectUrl: string | undefined;
     let redirectParams: { [key: string]: any } = { ...req.query };
     if (qpForm) {
@@ -42,6 +44,14 @@ const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
     if (qpInnsendingsId && qpSub !== 'digital') {
       redirectUrl = redirectUrl ?? req.baseUrl;
       redirectParams = { ...redirectParams, sub: 'digital' };
+    } else if (
+      !qpInnsendingsId &&
+      qpSub === 'digital' &&
+      formPath &&
+      req.originalUrl.match(new RegExp(`/(oppsummering|ingen-innsending|send-i-posten)`))
+    ) {
+      redirectUrl = `${config.fyllutPath}/${formPath}`;
+      redirectParams = { ...excludeQueryParam('innsendingsId', redirectParams) };
     }
 
     if (redirectUrl) {
@@ -53,7 +63,6 @@ const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
       );
     }
 
-    const formPath = res.locals.formId;
     let pageMeta = getDefaultPageMeta();
     let httpStatusCode = 200;
     if (formPath) {

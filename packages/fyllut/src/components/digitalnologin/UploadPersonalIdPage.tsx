@@ -19,8 +19,6 @@ const UploadPersonalIdPage = () => {
     <>
       <FormContainer>
         <LanguageSelector />
-      </FormContainer>
-      <FormContainer small={true}>
         {/* Replace whole Box with <FormTitle /> when we have form */}
         <Box paddingBlock="6">
           <BodyShort textColor="subtle" spacing>

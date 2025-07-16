@@ -16,6 +16,7 @@ describe('Submission Type', () => {
       it('Only allow user to continue from summary page if form is valid', () => {
         cy.clickStart();
 
+        cy.clickShowAllSteps();
         cy.findByRole('link', { name: TEXTS.statiske.summaryPage.title }).click();
 
         cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
@@ -25,9 +26,19 @@ describe('Submission Type', () => {
         cy.findByRole('textbox', { name: 'Tekstfelt' }).type('asdf');
         cy.clickNextStep();
 
+        cy.findByLabelText(TEXTS.statiske.attachment.nei).click();
+        cy.clickNextStep();
+
         cy.findByRole('link', { name: TEXTS.grensesnitt.moveForward }).click();
 
         cy.findByRole('button', { name: TEXTS.grensesnitt.downloadApplication }).should('exist');
+      });
+
+      it('Show attachments', () => {
+        cy.clickStart();
+
+        cy.clickShowAllSteps();
+        cy.findByRole('link', { name: 'Vedlegg' }).should('exist');
       });
     });
 
@@ -57,6 +68,7 @@ describe('Submission Type', () => {
       it('Only allow user to continue from summary page if form is valid', () => {
         cy.clickStart();
 
+        cy.clickShowAllSteps();
         cy.findByRole('link', { name: TEXTS.statiske.summaryPage.title }).click();
 
         cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
@@ -66,7 +78,14 @@ describe('Submission Type', () => {
         cy.findByRole('textbox', { name: 'Tekstfelt' }).type('asdf');
         cy.clickSaveAndContinue();
 
-        cy.findByRole('button', { name: TEXTS.grensesnitt.submitToNavPrompt.open }).should('exist');
+        cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.saveAndContinue }).should('exist');
+      });
+
+      it('Do not show attachments', () => {
+        cy.clickStart();
+
+        cy.clickShowAllSteps();
+        cy.findByRole('link', { name: 'Vedlegg' }).should('not.exist');
       });
     });
 
@@ -95,6 +114,7 @@ describe('Submission Type', () => {
       it('Only allow user to continue from summary page if form is valid', () => {
         cy.clickStart();
 
+        cy.clickShowAllSteps();
         cy.findByRole('link', { name: TEXTS.statiske.summaryPage.title }).click();
 
         cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
@@ -152,6 +172,9 @@ describe('Submission Type', () => {
         cy.findByRole('textbox', { name: 'Tekstfelt' }).type('asdf');
         cy.clickNextStep();
 
+        cy.findByLabelText(TEXTS.statiske.attachment.nei).click();
+        cy.clickNextStep();
+
         cy.findByRole('link', { name: TEXTS.grensesnitt.moveForward }).click();
 
         cy.findByRole('button', { name: TEXTS.grensesnitt.downloadApplication }).should('exist');
@@ -166,7 +189,7 @@ describe('Submission Type', () => {
         cy.findByRole('textbox', { name: 'Tekstfelt' }).type('asdf');
         cy.clickSaveAndContinue();
 
-        cy.findByRole('button', { name: TEXTS.grensesnitt.submitToNavPrompt.open }).should('exist');
+        cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.saveAndContinue }).should('exist');
       });
     });
 
@@ -275,6 +298,7 @@ describe('Submission Type', () => {
       cy.clickStart();
       cy.url().should('not.include', '?');
 
+      cy.clickShowAllSteps();
       cy.findByRole('link', { name: TEXTS.statiske.summaryPage.title }).click();
 
       cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
