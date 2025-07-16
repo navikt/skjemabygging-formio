@@ -1,6 +1,6 @@
-import { BodyShort, Box, Button, Heading, Tag } from '@navikt/ds-react';
+import { Button } from '@navikt/ds-react';
 import AttachmentUpload from '../../components/attachment/AttachmentUpload';
-import { FormContainer, LanguageSelector } from '../../index';
+import { FormContainer } from '../../index';
 
 const radioOptions = [
   { value: 'norwegian-passport', label: 'Norsk pass', upload: true },
@@ -18,19 +18,6 @@ const UploadPersonalIdPage = () => {
   return (
     <>
       <FormContainer>
-        <LanguageSelector />
-        {/* Replace whole Box with <FormTitle /> when we have form */}
-        <Box paddingBlock="6">
-          <BodyShort textColor="subtle" spacing>
-            Søknad om alderspensjon og AFP i privat sektor
-          </BodyShort>
-          <Heading level="1" size="xlarge">
-            Legitimasjon
-          </Heading>
-          <Tag variant="neutral-moderate" size="small">
-            NAV 19-01.05
-          </Tag>
-        </Box>
         <AttachmentUpload
           label={'Hvilken legitimasjon ønsker du å bruke?'}
           options={radioOptions}

@@ -40,6 +40,9 @@ export const statiske = {
       digital: 'Send digitalt (krever innlogging)',
     },
   },
+  uploadId: {
+    title: 'Legitimasjon',
+  },
   paabegynt: {
     activeTasksHeading: 'Du har {{amount}} påbegynte utkast til denne søknaden',
     oneActiveTaskHeading: 'Du har ett påbegynt utkast til denne søknaden',
