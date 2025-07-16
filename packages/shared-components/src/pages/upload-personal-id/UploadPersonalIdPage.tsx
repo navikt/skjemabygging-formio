@@ -1,6 +1,6 @@
 import { BodyShort, Box, Button, Heading, Tag } from '@navikt/ds-react';
-import { FormContainer, LanguageSelector } from '@navikt/skjemadigitalisering-shared-components';
-import AttachmentUpload from './AttachmentUpload';
+import AttachmentUpload from '../../components/attachment/AttachmentUpload';
+import { FormContainer, LanguageSelector } from '../../index';
 
 const radioOptions = [
   { value: 'norwegian-passport', label: 'Norsk pass', upload: true },

@@ -1,6 +1,6 @@
 import { Button, FileObject, FileUpload, Label, Radio, RadioGroup, VStack } from '@navikt/ds-react';
-import { makeStyles } from '@navikt/skjemadigitalisering-shared-components';
 import { useState } from 'react';
+import { makeStyles } from '../../index';
 
 type AttachmentOption = {
   label: string;
