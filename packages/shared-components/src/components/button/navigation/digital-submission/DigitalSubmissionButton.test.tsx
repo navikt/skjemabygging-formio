@@ -4,6 +4,7 @@ import userEvent from '@testing-library/user-event';
 import nock from 'nock';
 import { MemoryRouter } from 'react-router-dom';
 import { AppConfigContextType, AppConfigProvider } from '../../../../context/config/configContext';
+import { FormProvider } from '../../../../context/form/FormContext';
 import { LanguagesProvider } from '../../../../context/languages';
 import { SendInnProvider } from '../../../../context/sendInn/sendInnContext';
 import DigitalSubmissionButton, { Props } from './DigitalSubmissionButton';
@@ -50,17 +51,13 @@ describe('DigitalSubmissionButton', () => {
     render(
       <AppConfigProvider {...defaultAppConfigProps} {...appConfigProps}>
         <MemoryRouter>
-          <SendInnProvider
-            form={{ components: [] } as unknown as NavFormType}
-            formUrl="/fyllut/testform"
-            translations={{}}
-            updateSubmission={vi.fn()}
-            onFyllutStateChange={vi.fn()}
-          >
-            <LanguagesProvider translations={defaultTranslations}>
-              <DigitalSubmissionButton {...defaultProps}>{BUTTON_TEXT}</DigitalSubmissionButton>
-            </LanguagesProvider>
-          </SendInnProvider>
+          <FormProvider form={{ components: [] } as unknown as NavFormType}>
+            <SendInnProvider>
+              <LanguagesProvider translations={defaultTranslations}>
+                <DigitalSubmissionButton {...defaultProps}>{BUTTON_TEXT}</DigitalSubmissionButton>
+              </LanguagesProvider>
+            </SendInnProvider>
+          </FormProvider>
         </MemoryRouter>
       </AppConfigProvider>,
     );

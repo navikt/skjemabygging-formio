@@ -30,6 +30,7 @@ describe('Axe: Accessibility testing', () => {
     });
 
     it('Penger og konto', () => {
+      cy.clickShowAllSteps();
       cy.contains('Penger og konto').click();
       cy.findByRole('heading', { name: 'Penger og konto' }).should('exist');
       cy.checkA11y();

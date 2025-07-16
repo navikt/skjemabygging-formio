@@ -19,6 +19,7 @@ describe('Mellomlagring nested values', () => {
     cy.visit('/fyllut/nav020805/dineOpplysninger?sub=digital&innsendingsId=e212cb83-e1da-4134-a228-2809eede2b92');
     cy.defaultWaits();
 
+    cy.clickShowAllSteps();
     cy.findByRole('link', { name: 'Skatteforhold og inntekt' }).click();
 
     cy.contains('Betaler du skatt til Norge?').closest('fieldset').find('input[value="ja"]').should('be.checked');
@@ -45,6 +46,7 @@ describe('Mellomlagring nested values', () => {
     cy.mocksUseRouteVariant('get-soknad:success-mellomlagring-nested-foreign-business');
     cy.visit('/fyllut/nav020805/dineOpplysninger?sub=digital&innsendingsId=a212cb83-e1da-4134-a228-2809eede2b92');
     cy.defaultWaits();
+    cy.clickShowAllSteps();
     cy.findByRole('link', { name: 'Skatteforhold og inntekt' }).click();
 
     cy.contains('Betaler du skatt til Norge?').closest('fieldset').find('input[value="ja"]').should('be.checked');

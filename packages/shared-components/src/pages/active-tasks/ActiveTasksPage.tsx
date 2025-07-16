@@ -1,6 +1,6 @@
 import { DocPencilIcon, FileExportIcon, PencilIcon } from '@navikt/aksel-icons';
 import { BodyShort, Heading } from '@navikt/ds-react';
-import { dateUtils, NavFormType, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { dateUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
@@ -9,14 +9,10 @@ import CancelButton from '../../components/button/navigation/cancel/CancelButton
 import LinkPanel from '../../components/linkPanel/LinkPanel';
 import LoadingComponent from '../../components/loading/LoadingComponent';
 import { useAppConfig } from '../../context/config/configContext';
+import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
 import { formUtils } from '../../index';
 import makeStyles from '../../util/styles/jss/jss';
-
-interface Props {
-  form: NavFormType;
-  formUrl: string;
-}
 
 const useStyles = makeStyles({
   section: {
@@ -41,7 +37,7 @@ const useStyles = makeStyles({
   },
 });
 
-const ActiveTasksPage = ({ form, formUrl }: Props) => {
+const ActiveTasksPage = () => {
   const appConfig = useAppConfig();
   const { baseUrl } = appConfig;
   const [searchParams] = useSearchParams();
@@ -49,6 +45,7 @@ const ActiveTasksPage = ({ form, formUrl }: Props) => {
   const [mellomlagringer, setMellomlagringer] = useState<Soknad[]>([]);
   const [hasEttersendelse, setHasEttersendelse] = useState(false);
   const hasMellomlagring = mellomlagringer.length > 0;
+  const { form, formUrl } = useForm();
 
   const styles = useStyles();
 

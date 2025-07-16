@@ -59,6 +59,10 @@ Cypress.Commands.add('clickStart', () => {
   return cy.findByRoleWhenAttached('link', { name: TEXTS.grensesnitt.introPage.start }, 500).click();
 });
 
+Cypress.Commands.add('clickShowAllSteps', () => {
+  return cy.findByRoleWhenAttached('button', { name: TEXTS.grensesnitt.stepper.showAllSteps }, 500).click();
+});
+
 Cypress.Commands.add('verifySendInnRedirect', () => {
   return cy.origin(Cypress.env('SEND_INN_FRONTEND'), () => {
     cy.contains('Send Inn Frontend');

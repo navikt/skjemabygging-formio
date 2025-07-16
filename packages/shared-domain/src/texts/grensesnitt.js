@@ -72,8 +72,9 @@ export const grensesnitt = {
     editAnswers: 'Fortsett utfylling',
   },
   stepper: {
-    toggleText: 'Steg {{currentStep}} av {{totalSteps}}',
-    close: 'Lukk',
+    step: 'Steg {activeStep} av {totalSteps}',
+    showAllSteps: 'Vis alle steg',
+    hideAllSteps: 'Skjul alle steg',
   },
   navSelect: {
     defaultLabel: 'Nedtrekksmeny',

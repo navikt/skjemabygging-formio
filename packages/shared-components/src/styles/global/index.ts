@@ -53,17 +53,6 @@ const global = {
   'main:focus': {
     outline: 'none',
   },
-  '.fyllut-layout': {
-    '@media screen and (min-width: 40rem)': {
-      display: 'grid',
-      gap: '3rem',
-      gridTemplateColumns: 'minmax(20rem, 2fr) minmax(15rem, 1fr)',
-      margin: '0 auto',
-    },
-    '&:focus-visible': {
-      outline: 'none',
-    },
-  },
   // Override Aksel css for page, since it causes problems with our sticky elements.
   '#root .navds-page__content--padding': {
     paddingBlockEnd: 0,
