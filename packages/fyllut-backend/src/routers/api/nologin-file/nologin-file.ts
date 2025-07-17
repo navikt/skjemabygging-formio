@@ -10,10 +10,6 @@ const nologinFile = {
     try {
       const vedleggId = req.query.vedleggId as string;
       const innsendingId = req.query.innsendingId as string | undefined;
-      console.log(
-        ' _ _ - - _ _ - - _ - -',
-        `${sendInnConfig.host}${sendInnConfig.paths.nologinFile}?vedleggId=${vedleggId}${innsendingId ? `&innsendingId=${innsendingId}` : ''}`,
-      );
       if (!req.file?.buffer) {
         return next(responseToError('Error: Ingen fil sendt med forespørselen', 'Ingen fil funnet', true));
       }

@@ -1,4 +1,5 @@
 import { Button, FileObject, FileUpload, Label, Radio, RadioGroup, VStack } from '@navikt/ds-react';
+import { UploadedFile } from '@navikt/skjemadigitalisering-shared-domain';
 import { useState } from 'react';
 import { makeStyles } from '../../index';
 
@@ -13,17 +14,9 @@ interface Props {
   options: AttachmentOption[];
   innsendingsId?: string;
   vedleggId: string;
-  onUpload: (innsendingsId: string) => void;
+  onUpload: (response: UploadedFile[]) => void;
   multiple?: boolean;
 }
-
-type Response = {
-  filId: string;
-  filnavn: string;
-  storrelse: number;
-  innsendingId: string;
-  vedleggId: string;
-};
 
 const useStyles = makeStyles({
   button: {
@@ -34,7 +27,7 @@ const useStyles = makeStyles({
 const AttachmentUpload = ({ label, options, innsendingsId, vedleggId, onUpload, multiple = false }: Props) => {
   const [selectedOption, setSelectedOption] = useState<string>();
   const [loading, setLoading] = useState<boolean>(false);
-  const [filesUploaded, setFilesUploaded] = useState<Response[]>([]);
+  const [filesUploaded, setFilesUploaded] = useState<UploadedFile[]>([]);
 
   const styles = useStyles();
 
@@ -47,7 +40,7 @@ const AttachmentUpload = ({ label, options, innsendingsId, vedleggId, onUpload, 
     }
     setLoading(true);
     try {
-      const responses: Response[] = await Promise.all(
+      const responses: UploadedFile[] = await Promise.all(
         files.map(async ({ file }) => {
           const formData = new FormData();
           formData.append('filinnhold', file);
@@ -62,7 +55,7 @@ const AttachmentUpload = ({ label, options, innsendingsId, vedleggId, onUpload, 
           throw new Error(`Failed to upload file: ${response.statusText}`);
         }),
       );
-      onUpload(responses[0].innsendingId);
+      onUpload(responses);
     } catch (e) {
       console.error(e);
     } finally {
