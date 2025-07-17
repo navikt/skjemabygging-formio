@@ -1,6 +1,6 @@
-import { Button } from '@navikt/ds-react';
 import AttachmentUpload from '../../components/attachment/AttachmentUpload';
 import { FormContainer } from '../../index';
+import UploadPersonalIdButtonRow from './UploadPersonalIdButtonRow';
 
 const radioOptions = [
   { value: 'norwegian-passport', label: 'Norsk pass', upload: true },
@@ -24,17 +24,7 @@ const UploadPersonalIdPage = () => {
           vedleggId={'personal-id'}
           onUpload={handleUpload}
         />
-        <nav>
-          <div className="button-row button-row--center">
-            <Button variant="primary" icon={<span aria-hidden className="navds-icon navds-icon--arrow-right" />}>
-              Fortsett
-            </Button>
-            <Button variant="secondary" icon={<span aria-hidden className="navds-icon navds-icon--arrow-left" />}>
-              Gå tilbake
-            </Button>
-            <Button variant="tertiary">Avbryt og slett</Button>
-          </div>
-        </nav>
+        <UploadPersonalIdButtonRow />
       </FormContainer>
     </>
   );

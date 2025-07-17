@@ -2,18 +2,20 @@ import { ArrowLeftIcon, ArrowRightIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
 import { TEXTS, Tkey } from '@navikt/skjemadigitalisering-shared-domain';
 import { useNavigate, useResolvedPath, useSearchParams } from 'react-router-dom';
+import { useAppConfig } from '../../context/config/configContext';
 import { useLanguages } from '../../context/languages';
 import { useIntroPage } from './IntroPageContext';
+import { getStartUrl } from './utils';
 
 const IntroPageButtonRow = () => {
   const navigate = useNavigate();
   const { translate } = useLanguages();
+  const { baseUrl } = useAppConfig();
   const [searchParams] = useSearchParams();
   const formUrl = useResolvedPath('').pathname;
   const { form, selfDeclaration, setError } = useIntroPage();
-  const innsendingsIdFromUrl = searchParams.get('innsendingsId');
 
-  const startUrl = `${formUrl}/${innsendingsIdFromUrl ? 'oppsummering' : form.firstPanelSlug}`;
+  const startUrl = getStartUrl(formUrl, searchParams, form.firstPanelSlug);
 
   const validationError: Tkey = 'introPage.selfDeclaration.validationError';
 
@@ -35,7 +37,7 @@ const IntroPageButtonRow = () => {
         as="a"
         onClick={navigateToFormPage}
         role="link"
-        {...{ href: `${formUrl}?${searchParams.toString()}` }}
+        {...{ href: `${baseUrl}${startUrl}?${searchParams.toString()}` }}
       >
         {translate(TEXTS.grensesnitt.introPage.start)}
       </Button>
