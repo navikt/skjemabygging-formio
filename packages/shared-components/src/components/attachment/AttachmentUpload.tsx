@@ -1,4 +1,4 @@
-import { Button, FileObject, FileUpload, Label, Radio, RadioGroup, VStack } from '@navikt/ds-react';
+import { Alert, BodyLong, Button, FileObject, FileUpload, Label, Radio, RadioGroup, VStack } from '@navikt/ds-react';
 import { UploadedFile } from '@navikt/skjemadigitalisering-shared-domain';
 import { useState } from 'react';
 import { makeStyles } from '../../index';
@@ -28,7 +28,7 @@ const AttachmentUpload = ({ label, options, innsendingsId, vedleggId, onUpload, 
   const [selectedOption, setSelectedOption] = useState<string>();
   const [loading, setLoading] = useState<boolean>(false);
   const [filesUploaded, setFilesUploaded] = useState<UploadedFile[]>([]);
-
+  const [error, setError] = useState<string>();
   const styles = useStyles();
 
   const url = '/fyllut/api/nologin-file';
@@ -44,7 +44,7 @@ const AttachmentUpload = ({ label, options, innsendingsId, vedleggId, onUpload, 
         files.map(async ({ file }) => {
           const formData = new FormData();
           formData.append('filinnhold', file);
-          const response: any = await fetch(`${url}${searchParams}`, { method: 'POST', body: formData });
+          const response = await fetch(`${url}${searchParams}`, { method: 'POST', body: formData });
 
           if (response.ok) {
             const responseData = await response.json();
@@ -52,6 +52,7 @@ const AttachmentUpload = ({ label, options, innsendingsId, vedleggId, onUpload, 
             setFilesUploaded((current) => [...current, responseData]);
             return responseData;
           }
+          setError('Det oppstod en feil under opplasting av fil(er). Prøv igjen senere.');
           throw new Error(`Failed to upload file: ${response.statusText}`);
         }),
       );
@@ -64,8 +65,11 @@ const AttachmentUpload = ({ label, options, innsendingsId, vedleggId, onUpload, 
   };
 
   const handleDelete = async (filId: string) => {
-    console.log('Deleting file with ID:', filId);
-    setFilesUploaded((files) => files.filter((file) => file.filId !== filId));
+    const response = await fetch(`${url}/${filId}?innsendingId=${innsendingsId}`, { method: 'DELETE' });
+    if (response.ok) {
+      return setFilesUploaded((files) => files.filter((file) => file.filId !== filId));
+    }
+    return setError('Det oppstod en feil under sletting av filen. Prøv igjen senere.');
   };
 
   const uploadSelected = !!options.find((option) => option.value === selectedOption)?.upload;
@@ -100,6 +104,11 @@ const AttachmentUpload = ({ label, options, innsendingsId, vedleggId, onUpload, 
             ></FileUpload.Item>
           ))}
         </VStack>
+      )}
+      {error && (
+        <Alert variant="error">
+          <BodyLong>{error}</BodyLong>
+        </Alert>
       )}
     </VStack>
   );

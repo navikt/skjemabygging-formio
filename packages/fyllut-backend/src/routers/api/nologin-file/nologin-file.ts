@@ -35,7 +35,36 @@ const nologinFile = {
         res.status(response.status);
         res.json(await response.json());
       } else {
-        logger.debug('Failed to get activities from SendInn');
+        logger.debug('Failed to upload file for user with no login');
+        next(await responseToError(response, 'Feil ved opplasting av fil for uinnlogget søknad', true));
+      }
+    } catch (error) {
+      next(error);
+    }
+  },
+  delete: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const filId = req.params.filId as string | undefined;
+      const innsendingId = req.query.innsendingId as string;
+      const vedleggId = req.query.vedleggId as string | undefined;
+      if (!filId && !vedleggId) {
+        logger.debug('Frontend must provide either filId or vedleggId to delete a file');
+        return next(
+          responseToError('Error: Ingen filId eller vedleggId angitt', 'Ingen filId eller vedleggId funnet', true),
+        );
+      }
+      const targetUrl = `${sendInnConfig.host}${sendInnConfig.paths.nologinFile}/${filId}?innsendingId=${innsendingId}`;
+      const response = await fetch(targetUrl, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${req.headers.AzureAccessToken as string}`,
+        },
+      });
+      console.log(`Deleting file with ID: ${filId} from URL: ${targetUrl}. Got response:`, response.status);
+      if (response.ok) {
+        res.sendStatus(response.status);
+      } else {
+        logger.debug('Failed to delete file for user with no login');
         next(await responseToError(response, 'Feil ved opplasting av fil for uinnlogget søknad', true));
       }
     } catch (error) {
