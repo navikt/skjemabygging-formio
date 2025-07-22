@@ -1,9 +1,10 @@
-import { Checkbox, Label, Panel } from '@navikt/ds-react';
-import { makeStyles } from '@navikt/skjemadigitalisering-shared-components';
-import { Enhetstype, supportedEnhetstyper } from '@navikt/skjemadigitalisering-shared-domain';
-import { useEffect } from 'react';
+import { Box, Checkbox, Skeleton, UNSAFE_Combobox } from '@navikt/ds-react';
+import { ComboboxOption } from '@navikt/ds-react/esm/form/combobox/types';
+import { Enhetstype, EnhetstypeNorg, supportedEnhetstyper } from '@navikt/skjemadigitalisering-shared-domain';
+import { useCallback, useEffect, useState } from 'react';
 
 interface EnhetSettingsProps {
+  enhetstyperNorg: EnhetstypeNorg[] | undefined;
   enhetMaVelges: boolean;
   selectedEnhetstyper?: Enhetstype[];
   onChangeEnhetMaVelges: (value: boolean) => void;
@@ -11,33 +12,48 @@ interface EnhetSettingsProps {
   readOnly?: boolean;
 }
 
-const useStyles = makeStyles({
-  list: {
-    maxWidth: '100%',
-    maxHeight: '200px',
-    display: 'flex',
-    gap: '0 1rem',
-    flexDirection: 'column',
-    flexWrap: 'wrap',
-    listStyle: 'none',
-
-    '@media screen and (max-width: 1080px)': {
-      maxHeight: '400px',
-    },
-    '@media screen and (max-width: 600px)': {
-      maxHeight: '1000px',
-    },
-  },
-});
-
 const EnhetSettings = ({
+  enhetstyperNorg,
   enhetMaVelges,
   selectedEnhetstyper,
   onChangeEnhetMaVelges,
   onChangeEnhetstyper,
   readOnly,
 }: EnhetSettingsProps) => {
-  const styles = useStyles();
+  const [options, setOptions] = useState<ComboboxOption[] | undefined>(undefined);
+
+  useEffect(() => {
+    if (enhetstyperNorg && !options) {
+      const opts = enhetstyperNorg.map((type) => ({
+        value: type.kodenavn,
+        label: `${type.term} (${type.kodenavn})`,
+      }));
+      setOptions(opts);
+    }
+  }, [enhetstyperNorg, options]);
+
+  const renderCombobox = useCallback(() => {
+    if (!options || !selectedEnhetstyper) {
+      return <Skeleton />;
+    }
+    return (
+      <Box>
+        <UNSAFE_Combobox
+          label="Velg hvilke enhetstyper det skal være mulig å sende inn til"
+          options={options}
+          selectedOptions={selectedEnhetstyper}
+          isMultiSelect
+          onToggleSelected={(value: string, isSelected: boolean) => {
+            const updatedSelectedEnhetstyper = isSelected
+              ? [...selectedEnhetstyper, value as Enhetstype]
+              : selectedEnhetstyper.filter((selected) => selected !== value);
+            onChangeEnhetstyper(updatedSelectedEnhetstyper);
+          }}
+          readOnly={readOnly}
+        />
+      </Box>
+    );
+  }, [options, selectedEnhetstyper, onChangeEnhetstyper, readOnly]);
 
   useEffect(() => {
     if (enhetMaVelges && selectedEnhetstyper === undefined) {
@@ -54,29 +70,7 @@ const EnhetSettings = ({
       >
         {'Bruker må velge enhet ved innsending på papir'}
       </Checkbox>
-      {enhetMaVelges && selectedEnhetstyper && (
-        <Panel className="mb-4">
-          <Label>Enhetstyper</Label>
-          <ul className={styles.list}>
-            {supportedEnhetstyper.map((enhetsType: Enhetstype) => (
-              <li key={enhetsType}>
-                <Checkbox
-                  checked={selectedEnhetstyper.includes(enhetsType)}
-                  readOnly={readOnly}
-                  onChange={(event) => {
-                    const updatedSelectedEnhetstyper = event.target.checked
-                      ? [...selectedEnhetstyper, enhetsType]
-                      : selectedEnhetstyper.filter((selected) => selected !== enhetsType);
-                    onChangeEnhetstyper(updatedSelectedEnhetstyper);
-                  }}
-                >
-                  {enhetsType}
-                </Checkbox>
-              </li>
-            ))}
-          </ul>
-        </Panel>
-      )}
+      {enhetMaVelges && renderCombobox()}
     </>
   );
 };

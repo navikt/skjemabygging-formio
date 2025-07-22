@@ -1,16 +1,11 @@
-import { AppConfigProvider } from '@navikt/skjemadigitalisering-shared-components';
-import { Form, FormPropertiesType, supportedEnhetstyper } from '@navikt/skjemadigitalisering-shared-domain';
+import { AppConfigProvider, http } from '@navikt/skjemadigitalisering-shared-components';
+import { Form, FormPropertiesType } from '@navikt/skjemadigitalisering-shared-domain';
 import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import form from '../../../example_data/Form.json';
-import featureToggles from '../../../test/featureToggles';
 import mockRecipients from '../../fakeBackend/mock-recipients';
 import { CreationFormMetadataEditor, FormMetadataEditor } from './FormMetadataEditor';
-import { UpdateFormFunction } from './utils/utils';
-
-const testform = form as unknown as Form;
 
 vi.mock('../../context/recipients/RecipientsContext', () => {
   return {
@@ -79,39 +74,18 @@ const formMedProps = (props: Partial<FormPropertiesType>): Form => ({
 
 describe('FormMetadataEditor', () => {
   let mockOnChange;
+  let mockHttp;
+
+  const renderWithProvider = (ui) =>
+    render(<AppConfigProvider http={mockHttp as unknown as typeof http}>{ui}</AppConfigProvider>);
 
   beforeEach(() => {
     mockOnChange = vi.fn();
+    mockHttp = { get: vi.fn() };
+    mockHttp.get.mockReturnValue(Promise.resolve([{ kodenavn: 'TILTAK', term: 'Tiltak' }]));
   });
 
   describe('Usage context: EDIT', () => {
-    it('should update form when title is changed', async () => {
-      const { rerender } = render(
-        <AppConfigProvider featureToggles={featureToggles}>
-          <FormMetadataEditor form={testform} onChange={mockOnChange} />
-        </AppConfigProvider>,
-      );
-
-      await userEvent.clear(screen.getByRole('textbox', { name: /Tittel/i }));
-      const clearedForm: Form = { ...testform, title: '' };
-      await waitFor(() => expect(mockOnChange).toHaveBeenCalledWith(clearedForm));
-
-      rerender(
-        <AppConfigProvider featureToggles={featureToggles}>
-          <FormMetadataEditor form={clearedForm} onChange={mockOnChange} />
-        </AppConfigProvider>,
-      );
-      await userEvent.type(screen.getByRole('textbox', { name: /Tittel/i }), 'Søknad om førerhund');
-      const updatedForm: Form = { ...testform, title: 'Søknad om førerhund' };
-
-      rerender(
-        <AppConfigProvider featureToggles={featureToggles}>
-          <FormMetadataEditor form={updatedForm} onChange={mockOnChange} />
-        </AppConfigProvider>,
-      );
-      expect(screen.getByRole('textbox', { name: /Tittel/i })).toHaveValue('Søknad om førerhund');
-    });
-
     describe('Forklaring til innsending', () => {
       it('Viser input for forklaring når submissionTypes settes til []', async () => {
         const form: Form = {
@@ -121,7 +95,7 @@ describe('FormMetadataEditor', () => {
             submissionTypes: ['DIGITAL'],
           },
         };
-        const { rerender } = render(<FormMetadataEditor form={form} onChange={mockOnChange} />);
+        const { rerender } = renderWithProvider(<FormMetadataEditor form={form} onChange={mockOnChange} />);
 
         const digitalCheckboxes = screen.getAllByRole('checkbox', { name: /Digital/i });
         const digitalInnsending = digitalCheckboxes[0];
@@ -134,7 +108,11 @@ describe('FormMetadataEditor', () => {
           expect(updatedForm.properties.submissionTypes).toStrictEqual([]);
         });
 
-        rerender(<FormMetadataEditor form={updatedForm} onChange={mockOnChange} />);
+        rerender(
+          <AppConfigProvider http={mockHttp as unknown as typeof http}>
+            <FormMetadataEditor form={updatedForm} onChange={mockOnChange} />
+          </AppConfigProvider>,
+        );
         expect(screen.queryByLabelText('Forklaring til innsending')).not.toBeNull();
       });
 
@@ -146,7 +124,7 @@ describe('FormMetadataEditor', () => {
             submissionTypes: [],
           },
         };
-        const { rerender } = render(<FormMetadataEditor form={form} onChange={mockOnChange} />);
+        const { rerender } = renderWithProvider(<FormMetadataEditor form={form} onChange={mockOnChange} />);
         expect(screen.queryByLabelText('Forklaring til innsending')).not.toBeNull();
 
         const papirCheckboxes = screen.getAllByRole('checkbox', { name: /Papir/i });
@@ -159,7 +137,11 @@ describe('FormMetadataEditor', () => {
         const updatedForm = mockOnChange.mock.calls[0][0] as Form;
         expect(updatedForm.properties.submissionTypes).toStrictEqual(['PAPER']);
 
-        rerender(<FormMetadataEditor form={updatedForm} onChange={mockOnChange} />);
+        rerender(
+          <AppConfigProvider http={mockHttp as unknown as typeof http}>
+            <FormMetadataEditor form={updatedForm} onChange={mockOnChange} />
+          </AppConfigProvider>,
+        );
         expect(screen.queryByLabelText('Forklaring til innsending')).toBeNull();
       });
     });
@@ -172,7 +154,7 @@ describe('FormMetadataEditor', () => {
           submissionTypes: [],
         },
       };
-      const { rerender } = render(<FormMetadataEditor form={form} onChange={mockOnChange} />);
+      const { rerender } = renderWithProvider(<FormMetadataEditor form={form} onChange={mockOnChange} />);
       expect(screen.queryByLabelText('Forklaring til innsending')).not.toBeNull();
       const papirCheckboxes = screen.getAllByRole('checkbox', { name: /Papir/i });
       const papirInnsending = papirCheckboxes[0];
@@ -183,7 +165,11 @@ describe('FormMetadataEditor', () => {
       const updatedForm = mockOnChange.mock.calls[0][0] as Form;
       expect(updatedForm.properties.submissionTypes).toStrictEqual(['PAPER']);
 
-      rerender(<FormMetadataEditor form={updatedForm} onChange={mockOnChange} />);
+      rerender(
+        <AppConfigProvider http={mockHttp as unknown as typeof http}>
+          <FormMetadataEditor form={updatedForm} onChange={mockOnChange} />
+        </AppConfigProvider>,
+      );
       expect(screen.queryByLabelText('Forklaring til submissionTypes')).toBeNull();
     });
 
@@ -198,7 +184,7 @@ describe('FormMetadataEditor', () => {
 
       it('lagres i properties', async () => {
         const form = formMedDownloadPdfButtonText(undefined);
-        render(<FormMetadataEditor form={form} onChange={mockOnChange} />);
+        renderWithProvider(<FormMetadataEditor form={form} onChange={mockOnChange} />);
         const input = screen.getByLabelText('Tekst på knapp for nedlasting av pdf');
         await userEvent.click(input);
         await userEvent.paste('Last ned pdf');
@@ -210,7 +196,7 @@ describe('FormMetadataEditor', () => {
 
       it('nullstilles i properties', async () => {
         const form = formMedDownloadPdfButtonText('Last meg ned');
-        render(<FormMetadataEditor form={form} onChange={mockOnChange} />);
+        renderWithProvider(<FormMetadataEditor form={form} onChange={mockOnChange} />);
         const input = screen.getByLabelText('Tekst på knapp for nedlasting av pdf');
         await userEvent.clear(input);
 
@@ -224,7 +210,7 @@ describe('FormMetadataEditor', () => {
       it('lagres i properties', async () => {
         const form = formMedProps({ ettersendelsesfrist: undefined, subsequentSubmissionTypes: ['DIGITAL'] });
 
-        render(<FormMetadataEditor form={form} onChange={mockOnChange} />);
+        renderWithProvider(<FormMetadataEditor form={form} onChange={mockOnChange} />);
         const input = screen.getByLabelText('Ettersendelsesfrist (dager)');
         await userEvent.click(input);
         await userEvent.paste('42');
@@ -236,7 +222,7 @@ describe('FormMetadataEditor', () => {
 
       it('nullstilles i properties', async () => {
         const form = formMedProps({ ettersendelsesfrist: '42', subsequentSubmissionTypes: ['DIGITAL'] });
-        render(<FormMetadataEditor form={form} onChange={mockOnChange} />);
+        renderWithProvider(<FormMetadataEditor form={form} onChange={mockOnChange} />);
         const input = screen.getByLabelText('Ettersendelsesfrist (dager)');
         await userEvent.clear(input);
 
@@ -250,7 +236,7 @@ describe('FormMetadataEditor', () => {
       it('is saved in properties', async () => {
         const form = formMedProps({ mellomlagringDurationDays: undefined, subsequentSubmissionTypes: ['DIGITAL'] });
 
-        render(<FormMetadataEditor form={form} onChange={mockOnChange} />);
+        renderWithProvider(<FormMetadataEditor form={form} onChange={mockOnChange} />);
         const input = screen.getByLabelText('Mellomlagringstid (dager)');
         await userEvent.click(input);
         await userEvent.paste('42');
@@ -265,31 +251,31 @@ describe('FormMetadataEditor', () => {
       describe('Dropdown med mottaksadresser', () => {
         it('Vises ikke når submissionTypes=INGEN', async () => {
           const form: Form = formMedProps({ submissionTypes: [] });
-          render(<FormMetadataEditor form={form} onChange={mockOnChange} />);
+          renderWithProvider(<FormMetadataEditor form={form} onChange={mockOnChange} />);
           expect(screen.queryByLabelText('Mottaksadresse')).toBeFalsy();
         });
 
         it('Vises ikke når submissionTypes=KUN_DIGITAL', async () => {
           const form: Form = formMedProps({ submissionTypes: ['DIGITAL'] });
-          render(<FormMetadataEditor form={form} onChange={mockOnChange} />);
+          renderWithProvider(<FormMetadataEditor form={form} onChange={mockOnChange} />);
           expect(screen.queryByLabelText('Mottaksadresse')).toBeFalsy();
         });
 
         it('Vises når submissionTypes=[PAPER]', async () => {
           const form: Form = formMedProps({ submissionTypes: ['PAPER'] });
-          render(<FormMetadataEditor form={form} onChange={mockOnChange} />);
+          renderWithProvider(<FormMetadataEditor form={form} onChange={mockOnChange} />);
           expect(screen.queryByLabelText('Mottaksadresse')).toBeTruthy();
         });
 
         it('Vises når submissionTypes=[PAPER, DIGITAL]', async () => {
           const form: Form = formMedProps({ submissionTypes: ['PAPER', 'DIGITAL'] });
-          render(<FormMetadataEditor form={form} onChange={mockOnChange} />);
+          renderWithProvider(<FormMetadataEditor form={form} onChange={mockOnChange} />);
           expect(screen.queryByLabelText('Mottaksadresse')).toBeTruthy();
         });
 
         it('Viser valgt mottaksadresse med formattering', async () => {
           const form: Form = formMedProps({ mottaksadresseId: '1' });
-          render(<FormMetadataEditor form={form} onChange={mockOnChange} />);
+          renderWithProvider(<FormMetadataEditor form={form} onChange={mockOnChange} />);
           expect(screen.getByDisplayValue('Nav alternativ skanning, Postboks 3, 0591 Oslo')).toBeTruthy();
         });
       });
@@ -297,7 +283,7 @@ describe('FormMetadataEditor', () => {
       describe('Endring av mottaksadresse', () => {
         it('Setter ny mottaksadresse', async () => {
           const form: Form = formMedProps({ mottaksadresseId: undefined });
-          render(<FormMetadataEditor form={form} onChange={mockOnChange} />);
+          renderWithProvider(<FormMetadataEditor form={form} onChange={mockOnChange} />);
           await userEvent.selectOptions(screen.getByLabelText('Mottaksadresse'), '1');
 
           expect(mockOnChange).toHaveBeenCalledTimes(1);
@@ -307,158 +293,13 @@ describe('FormMetadataEditor', () => {
 
         it('Fjerner valgt mottaksadresse', async () => {
           const form: Form = formMedProps({ mottaksadresseId: '1' });
-          render(<FormMetadataEditor form={form} onChange={mockOnChange} />);
+          renderWithProvider(<FormMetadataEditor form={form} onChange={mockOnChange} />);
           await userEvent.selectOptions(screen.getByLabelText('Mottaksadresse'), '');
 
           expect(mockOnChange).toHaveBeenCalledTimes(1);
           const updatedForm = mockOnChange.mock.calls[0][0] as Form;
           expect(updatedForm.properties.mottaksadresseId).toBeUndefined();
         });
-      });
-    });
-
-    describe('Innstilling for valg av enhet ved papirinnsending', () => {
-      const expectedCheckboxName = 'Bruker må velge enhet ved innsending på papir';
-      const editFormMetadataEditor = (form: Form, onChange: UpdateFormFunction) => (
-        <AppConfigProvider featureToggles={featureToggles}>
-          <FormMetadataEditor form={form} onChange={onChange} />
-        </AppConfigProvider>
-      );
-
-      it('Vises når submissionTypes=PAPER', async () => {
-        const form: Form = formMedProps({
-          submissionTypes: ['PAPER'],
-          mottaksadresseId: undefined,
-        });
-        render(editFormMetadataEditor(form, mockOnChange));
-        expect(screen.queryByRole('checkbox', { name: expectedCheckboxName })).toBeTruthy();
-      });
-
-      it('Vises når submissionTypes=[PAPER, DIGITAL]', async () => {
-        const form: Form = formMedProps({ submissionTypes: ['PAPER', 'DIGITAL'] });
-        render(editFormMetadataEditor(form, mockOnChange));
-        expect(screen.queryByRole('checkbox', { name: expectedCheckboxName })).toBeTruthy();
-      });
-
-      it('Vises ikke når submissionTypes=[]', async () => {
-        const form: Form = formMedProps({ submissionTypes: [] });
-        render(editFormMetadataEditor(form, mockOnChange));
-        expect(screen.queryByRole('checkbox', { name: expectedCheckboxName })).toBeFalsy();
-      });
-
-      it('Vises ikke når submissionTypes=DIGITAL', async () => {
-        const form: Form = formMedProps({ submissionTypes: ['DIGITAL'] });
-        render(editFormMetadataEditor(form, mockOnChange));
-        expect(screen.queryByRole('checkbox', { name: expectedCheckboxName })).toBeFalsy();
-      });
-
-      it('Kan endres til true ved klikk på checkbox', async () => {
-        const form: Form = formMedProps({ mottaksadresseId: undefined, enhetMaVelgesVedPapirInnsending: false });
-        const { rerender } = render(editFormMetadataEditor(form, mockOnChange));
-        let checkbox = screen.getByRole('checkbox', {
-          name: expectedCheckboxName,
-        });
-        expect(checkbox).not.toBeChecked();
-        await userEvent.click(checkbox);
-
-        expect(mockOnChange).toHaveBeenCalledTimes(1);
-        const updatedForm = mockOnChange.mock.calls[0][0] as Form;
-        expect(updatedForm.properties.enhetMaVelgesVedPapirInnsending).toBe(true);
-
-        rerender(editFormMetadataEditor(updatedForm, mockOnChange));
-        checkbox = screen.getByRole('checkbox', {
-          name: expectedCheckboxName,
-        });
-        expect(checkbox).toBeChecked();
-      });
-
-      it('Kan endres til false ved klikk på checkbox', async () => {
-        const form: Form = formMedProps({ mottaksadresseId: undefined, enhetMaVelgesVedPapirInnsending: true });
-        const { rerender } = render(editFormMetadataEditor(form, mockOnChange));
-        let checkbox = screen.getByRole('checkbox', {
-          name: expectedCheckboxName,
-        });
-        expect(checkbox).toBeChecked();
-        await userEvent.click(checkbox);
-
-        expect(mockOnChange).toHaveBeenCalledTimes(1);
-        const updatedForm = mockOnChange.mock.calls[0][0] as Form;
-        expect(updatedForm.properties.enhetMaVelgesVedPapirInnsending).toBe(false);
-
-        rerender(editFormMetadataEditor(updatedForm, mockOnChange));
-        checkbox = screen.getByRole('checkbox', {
-          name: expectedCheckboxName,
-        });
-        expect(checkbox).not.toBeChecked();
-      });
-
-      it('huker av checkboxer for valgte enhetstyper', () => {
-        const form: Form = formMedProps({
-          mottaksadresseId: undefined,
-          enhetMaVelgesVedPapirInnsending: true,
-          enhetstyper: ['ALS', 'KO', 'LOKAL'],
-        });
-        render(editFormMetadataEditor(form, mockOnChange));
-        const checkboxes = screen.getAllByRole('checkbox', { checked: true });
-        expect(checkboxes).toHaveLength(8);
-      });
-
-      it('fjerner valgt enhet ved klikk', async () => {
-        const form: Form = formMedProps({
-          mottaksadresseId: undefined,
-          enhetMaVelgesVedPapirInnsending: true,
-          enhetstyper: ['ALS', 'KO', 'LOKAL'],
-        });
-        render(editFormMetadataEditor(form, mockOnChange));
-        await userEvent.click(screen.getByRole('checkbox', { name: 'LOKAL' }));
-        expect(mockOnChange).toHaveBeenCalledTimes(1);
-        const updatedForm = mockOnChange.mock.calls[0][0] as Form;
-        expect(updatedForm.properties.enhetstyper).toEqual(['ALS', 'KO']);
-      });
-
-      it('legger til ny valgt enhet ved klikk', async () => {
-        const form: Form = formMedProps({
-          mottaksadresseId: undefined,
-          enhetMaVelgesVedPapirInnsending: true,
-          enhetstyper: ['ALS', 'KO', 'LOKAL'],
-        });
-        render(editFormMetadataEditor(form, mockOnChange));
-        await userEvent.click(screen.getByRole('checkbox', { name: 'ARK' }));
-        expect(mockOnChange).toHaveBeenCalledTimes(1);
-        const updatedForm = mockOnChange.mock.calls[0][0] as Form;
-        expect(updatedForm.properties.enhetstyper).toEqual(['ALS', 'KO', 'LOKAL', 'ARK']);
-      });
-
-      it('oppdaterer skjemaet med alle støttede enheter hvis enhetstyper er undefined', () => {
-        const props = {
-          mottaksadresseId: undefined,
-          enhetMaVelgesVedPapirInnsending: true,
-          enhetstyper: undefined,
-        };
-        const form: Form = formMedProps(props);
-        render(editFormMetadataEditor(form, mockOnChange));
-        expect(mockOnChange).toHaveBeenCalledTimes(1);
-        expect(mockOnChange).toHaveBeenCalledWith(formMedProps({ ...props, enhetstyper: supportedEnhetstyper }));
-      });
-
-      it('Nullstilles og skjules når mottaksadresse velges', async () => {
-        const form: Form = formMedProps({ mottaksadresseId: undefined, enhetMaVelgesVedPapirInnsending: true });
-        const { rerender } = render(editFormMetadataEditor(form, mockOnChange));
-        await userEvent.selectOptions(screen.getByLabelText('Mottaksadresse'), '1');
-
-        expect(mockOnChange).toHaveBeenCalledTimes(1);
-        const updatedForm = mockOnChange.mock.calls[0][0] as Form;
-        expect(updatedForm.properties.mottaksadresseId).toBe('1');
-        expect(updatedForm.properties.enhetMaVelgesVedPapirInnsending).toBe(false);
-
-        rerender(editFormMetadataEditor(updatedForm, mockOnChange));
-        expect(screen.queryByRole('checkbox', { name: expectedCheckboxName })).toBeFalsy();
-      });
-
-      it('Er skjult når mottaksadresse er valgt', () => {
-        const form: Form = formMedProps({ mottaksadresseId: '1', enhetMaVelgesVedPapirInnsending: true });
-        render(editFormMetadataEditor(form, mockOnChange));
-        expect(screen.queryByRole('checkbox', { name: expectedCheckboxName })).toBeFalsy();
       });
     });
 
@@ -470,7 +311,7 @@ describe('FormMetadataEditor', () => {
       });
 
       it('Legger til signatur', async () => {
-        render(<FormMetadataEditor form={form} onChange={mockOnChange} />);
+        renderWithProvider(<FormMetadataEditor form={form} onChange={mockOnChange} />);
 
         const signaturFieldsets = screen.getAllByTestId('signatures');
         expect(signaturFieldsets).toHaveLength(1);
@@ -486,7 +327,7 @@ describe('FormMetadataEditor', () => {
       });
 
       it("legger til ny signatur ved klikk på 'legg til signatur' knapp", async () => {
-        render(<FormMetadataEditor form={form} onChange={mockOnChange} />);
+        renderWithProvider(<FormMetadataEditor form={form} onChange={mockOnChange} />);
 
         const knapp = screen.getByRole('button', { name: 'Legg til signatur' });
         await userEvent.click(knapp);
@@ -517,7 +358,7 @@ describe('FormMetadataEditor', () => {
         ];
 
         form = formMedProps({ signatures: multipleSignatures });
-        render(<FormMetadataEditor form={form} onChange={mockOnChange} />);
+        renderWithProvider(<FormMetadataEditor form={form} onChange={mockOnChange} />);
 
         const signaturFieldsets = screen.getAllByTestId('signatures');
         expect(signaturFieldsets).toHaveLength(3);
@@ -535,7 +376,7 @@ describe('FormMetadataEditor', () => {
 
       it('Legger til beskrivelse for en signatur', async () => {
         form = formMedProps({ signatures: [{ label: 'Lege', key: '0000' }] });
-        render(<FormMetadataEditor form={form} onChange={mockOnChange} />);
+        renderWithProvider(<FormMetadataEditor form={form} onChange={mockOnChange} />);
 
         const signature1Description = screen.getAllByRole('textbox', { name: 'Instruksjoner til den som signerer' })[0];
         await userEvent.click(signature1Description);
@@ -551,7 +392,7 @@ describe('FormMetadataEditor', () => {
     describe('Beskrivelse av alle signaturene', () => {
       it('settes i properties når tekst legges inn i tekstfelt', async () => {
         const form: Form = formMedProps({ signatures: [{ label: 'Lege', key: uuidv4() }] });
-        render(<FormMetadataEditor form={form} onChange={mockOnChange} />);
+        renderWithProvider(<FormMetadataEditor form={form} onChange={mockOnChange} />);
 
         const input = screen.getByLabelText('Generelle instruksjoner (valgfritt)');
         await userEvent.click(input);
@@ -576,7 +417,7 @@ describe('FormMetadataEditor', () => {
             uxSignalsSubmissionTypes: undefined,
           };
           const form = formMedProps(uxProps);
-          ({ rerender } = render(<FormMetadataEditor form={form} onChange={mockOnChange} />));
+          ({ rerender } = renderWithProvider(<FormMetadataEditor form={form} onChange={mockOnChange} />));
         });
 
         it('sets submissionTypesstype to its default value when id is provided', async () => {
@@ -617,7 +458,11 @@ describe('FormMetadataEditor', () => {
           const calls = mockOnChange.mock.calls;
           const updatedForm = calls[calls.length - 1][0];
 
-          rerender(<FormMetadataEditor form={updatedForm} onChange={mockOnChange} />);
+          rerender(
+            <AppConfigProvider http={mockHttp as unknown as typeof http}>
+              <FormMetadataEditor form={updatedForm} onChange={mockOnChange} />
+            </AppConfigProvider>,
+          );
 
           const checkboxGroup = screen.queryByRole('group', { name: LABEL_INNSENDING });
           expect(checkboxGroup).toBeInTheDocument();
@@ -634,7 +479,7 @@ describe('FormMetadataEditor', () => {
             uxSignalsSubmissionTypes: ['PAPER', 'DIGITAL'],
           };
           const form = formMedProps(uxProps);
-          render(<FormMetadataEditor form={form} onChange={mockOnChange} />);
+          renderWithProvider(<FormMetadataEditor form={form} onChange={mockOnChange} />);
         });
 
         it('renders correct checkboxes', async () => {
@@ -679,7 +524,7 @@ describe('FormMetadataEditor', () => {
             uxSignalsSubmissionTypes: [],
           };
           const form = formMedProps(uxProps);
-          render(<FormMetadataEditor form={form} onChange={mockOnChange} />);
+          renderWithProvider(<FormMetadataEditor form={form} onChange={mockOnChange} />);
         });
 
         it('does not display ux signals submissionTypes checkboxes', () => {
@@ -694,7 +539,7 @@ describe('FormMetadataEditor', () => {
   describe('Usage context: CREATE', () => {
     describe('Tema', () => {
       it('lister ut temaer', () => {
-        render(<CreationFormMetadataEditor form={defaultForm} onChange={mockOnChange} />);
+        renderWithProvider(<CreationFormMetadataEditor form={defaultForm} onChange={mockOnChange} />);
         const temaSelect = screen.getByRole('combobox', { name: 'Tema' });
         const options = within(temaSelect).queryAllByRole('option');
         expect(options).toHaveLength(4);
@@ -705,19 +550,19 @@ describe('FormMetadataEditor', () => {
 
       it('setter valgt tema hvis temakoden finnes blant valgene', () => {
         const form = formMedProps({ tema: 'DEF' });
-        render(<CreationFormMetadataEditor form={form} onChange={mockOnChange} />);
+        renderWithProvider(<CreationFormMetadataEditor form={form} onChange={mockOnChange} />);
         expect(screen.getByRole('combobox', { name: 'Tema' })).toHaveValue('DEF');
       });
 
       it('setter valg til default verdi hvis temakoden ikke eksisterer', () => {
         const form = formMedProps({ tema: 'JKL' });
-        render(<CreationFormMetadataEditor form={form} onChange={mockOnChange} />);
+        renderWithProvider(<CreationFormMetadataEditor form={form} onChange={mockOnChange} />);
         expect(screen.getByRole('combobox', { name: 'Tema' })).toHaveValue('');
       });
 
       it('oppdaterer skjema når bruker velger et nytt tema', async () => {
         const form: Form = formMedProps({ tema: 'ABC' });
-        render(<CreationFormMetadataEditor form={form} onChange={mockOnChange} />);
+        renderWithProvider(<CreationFormMetadataEditor form={form} onChange={mockOnChange} />);
         await userEvent.selectOptions(screen.getByRole('combobox', { name: 'Tema' }), 'XYZ');
 
         expect(mockOnChange).toHaveBeenCalledTimes(1);

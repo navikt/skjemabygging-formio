@@ -1,3 +1,8 @@
+export interface EnhetstypeNorg {
+  kodenavn: Enhetstype;
+  term: string;
+}
+
 export type Enhetstype =
   | 'AAREG'
   | 'ALS'
