@@ -1,7 +1,8 @@
 import { Alert, BodyLong, Button, FileObject, FileUpload, Label, Radio, RadioGroup, VStack } from '@navikt/ds-react';
-import { UploadedFile } from '@navikt/skjemadigitalisering-shared-domain';
 import { useState } from 'react';
+import { useSendInn } from '../../context/sendInn/sendInnContext';
 import { makeStyles } from '../../index';
+import { useAttachmentUpload } from './AttachmentUploadContext';
 
 type AttachmentOption = {
   label: string;
@@ -12,9 +13,7 @@ type AttachmentOption = {
 interface Props {
   label: string;
   options: AttachmentOption[];
-  innsendingsId?: string;
   vedleggId: string;
-  onUpload: (response: UploadedFile[]) => void;
   multiple?: boolean;
 }
 
@@ -24,52 +23,27 @@ const useStyles = makeStyles({
   },
 });
 
-const AttachmentUpload = ({ label, options, innsendingsId, vedleggId, onUpload, multiple = false }: Props) => {
+const AttachmentUpload = ({ label, options, vedleggId, multiple = false }: Props) => {
   const [selectedOption, setSelectedOption] = useState<string>();
   const [loading, setLoading] = useState<boolean>(false);
-  const [filesUploaded, setFilesUploaded] = useState<UploadedFile[]>([]);
-  const [error, setError] = useState<string>();
   const styles = useStyles();
+  const { innsendingsId } = useSendInn();
+  const { handleUploadFiles, handleDeleteFile, uploadedFiles, errors } = useAttachmentUpload();
 
-  const url = '/fyllut/api/nologin-file';
-  const searchParams = `?vedleggId=${vedleggId}${innsendingsId ? `&innsendingsId=${innsendingsId}` : ''}`;
+  const uploadedAttachmentFiles = uploadedFiles[vedleggId] || [];
+  const error = errors[vedleggId];
 
   const handleUpload = async (files: FileObject[] | null) => {
     if (!files || files.length === 0) {
       return;
     }
     setLoading(true);
-    try {
-      const responses: UploadedFile[] = await Promise.all(
-        files.map(async ({ file }) => {
-          const formData = new FormData();
-          formData.append('filinnhold', file);
-          const response = await fetch(`${url}${searchParams}`, { method: 'POST', body: formData });
-
-          if (response.ok) {
-            const responseData = await response.json();
-            console.log('responseData', responseData);
-            setFilesUploaded((current) => [...current, responseData]);
-            return responseData;
-          }
-          setError('Det oppstod en feil under opplasting av fil(er). Prøv igjen senere.');
-          throw new Error(`Failed to upload file: ${response.statusText}`);
-        }),
-      );
-      onUpload(responses);
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setLoading(false);
-    }
+    await handleUploadFiles(vedleggId, files);
+    setLoading(false);
   };
 
   const handleDelete = async (filId: string) => {
-    const response = await fetch(`${url}/${filId}?innsendingId=${innsendingsId}`, { method: 'DELETE' });
-    if (response.ok) {
-      return setFilesUploaded((files) => files.filter((file) => file.filId !== filId));
-    }
-    return setError('Det oppstod en feil under sletting av filen. Prøv igjen senere.');
+    await handleDeleteFile(vedleggId, filId);
   };
 
   const uploadSelected = !!options.find((option) => option.value === selectedOption)?.upload;
@@ -86,14 +60,14 @@ const AttachmentUpload = ({ label, options, innsendingsId, vedleggId, onUpload, 
       {uploadSelected && (
         <VStack gap="4">
           <Label>Last opp bilde eller skannet kopi av ID-en din</Label>
-          {filesUploaded.length === 0 && (
+          {uploadedAttachmentFiles.length === 0 && (
             <FileUpload.Trigger multiple={!!innsendingsId && multiple} onSelect={handleUpload}>
               <Button className={styles.button} loading={loading}>
                 Velg fil
               </Button>
             </FileUpload.Trigger>
           )}
-          {filesUploaded.map(({ filId, filnavn, storrelse }) => (
+          {uploadedAttachmentFiles.map(({ filId, filnavn, storrelse }) => (
             <FileUpload.Item
               key={filId}
               file={{ name: filnavn, size: storrelse }}

@@ -3,6 +3,7 @@ import { Button } from '@navikt/ds-react';
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { MouseEvent } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useAttachmentUpload } from '../../components/attachment/AttachmentUploadContext';
 import { useAppConfig } from '../../context/config/configContext';
 import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
@@ -13,13 +14,17 @@ const UploadPersonalIdButtonRow = () => {
   const { translate } = useLanguages();
   const { form, formUrl } = useForm();
   const [searchParams] = useSearchParams();
+  const { uploadedFiles, addError } = useAttachmentUpload();
 
   const startUrl = `${baseUrl}${formUrl}/${form.firstPanelSlug}`;
 
   const navigateToFormPage = (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    // TODO: stop if file has not been uploaded
-    navigate(`../${form.firstPanelSlug}?${searchParams.toString()}`);
+    if (uploadedFiles['personal-id']?.length > 0) {
+      navigate(`../${form.firstPanelSlug}?${searchParams.toString()}`);
+    } else {
+      addError('personal-id', 'Du må laste opp et gyldig identifikasjonsdokument før du kan fortsette.');
+    }
   };
 
   return (

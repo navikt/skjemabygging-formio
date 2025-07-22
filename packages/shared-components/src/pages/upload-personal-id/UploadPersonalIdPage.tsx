@@ -1,6 +1,5 @@
-import { UploadedFile } from '@navikt/skjemadigitalisering-shared-domain';
 import AttachmentUpload from '../../components/attachment/AttachmentUpload';
-import { useSendInn } from '../../context/sendInn/sendInnContext';
+import AttachmentUploadProvider from '../../components/attachment/AttachmentUploadContext';
 import { FormContainer } from '../../index';
 import UploadPersonalIdButtonRow from './UploadPersonalIdButtonRow';
 
@@ -13,28 +12,17 @@ const radioOptions = [
 ];
 
 const UploadPersonalIdPage = () => {
-  const { innsendingsId, setInnsendingsId } = useSendInn();
-  const handleUpload = (value: UploadedFile[]) => {
-    console.log('Uploading', value);
-    const newInnsendingId = value[0]?.innsendingId;
-    if (!innsendingsId && newInnsendingId) {
-      setInnsendingsId(newInnsendingId);
-    }
-  };
-
   return (
-    <>
-      <FormContainer>
+    <FormContainer>
+      <AttachmentUploadProvider>
         <AttachmentUpload
           label={'Hvilken legitimasjon ønsker du å bruke?'}
           options={radioOptions}
-          innsendingsId={innsendingsId}
           vedleggId={'personal-id'}
-          onUpload={handleUpload}
         />
         <UploadPersonalIdButtonRow />
-      </FormContainer>
-    </>
+      </AttachmentUploadProvider>
+    </FormContainer>
   );
 };
 
