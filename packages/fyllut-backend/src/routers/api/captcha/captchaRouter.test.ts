@@ -28,12 +28,11 @@ describe('Captcha Handler Tests', () => {
     now = dateUtils.getIso8601String();
     vi.spyOn(dateUtils, 'getIso8601String').mockReturnValue(now);
     validCaptchaData = {
-      data_33: 'ja',
       firstName: '',
       timestampRender: dateUtils.add('seconds', -4, now),
       timestampSubmit: dateUtils.add('seconds', -1, now),
       challengeId,
-      challengeAnswer: '2',
+      data_33: '2',
     };
   });
 
@@ -53,7 +52,7 @@ describe('Captcha Handler Tests', () => {
       .post('/fyllut/api/captcha')
       .send({
         ...validCaptchaData,
-        challengeAnswer: '3', // Incorrect answer
+        data_33: '3', // Incorrect answer
       })
       .expect('Content-Type', /json/)
       .expect(400);
@@ -82,7 +81,7 @@ describe('Captcha Handler Tests', () => {
 
   it('fails if submitted too close to render timestamp', async () => {
     const timestampRender = dateUtils.add('minutes', -1, now)!;
-    const timestampSubmit = dateUtils.add('seconds', 2.9, timestampRender)!;
+    const timestampSubmit = dateUtils.add('seconds', 0.9, timestampRender)!;
     await request(app)
       .post('/fyllut/api/captcha')
       .send({
