@@ -3,6 +3,7 @@ import { FormsResponseForm } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import httpFyllut from '../../util/httpFyllut';
+import Captcha from '../captcha/Captcha';
 import FormsPageRow from './FormsPageRow';
 
 const useStyles = makeStyles({
@@ -52,6 +53,10 @@ export const FormsPage = () => {
   return (
     <section className={styles.maxContentWidth}>
       <h1>Velg et skjema</h1>
+      <div>
+        {/* TODO Fjern. Dette er kun for testing av captcha. */}
+        <Captcha onToken={(token) => console.log('token', token)} onFailure={() => console.log('captcha failed')} />
+      </div>
       <nav>
         <table className={styles.skjemaliste}>
           {isDevelopment && (
