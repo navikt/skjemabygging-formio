@@ -24,9 +24,9 @@ const get: RequestHandler = async (_req, res, next) => {
 const post: RequestHandler = async (req, res, next) => {
   try {
     appMetrics.nologinCaptchaRequestsCounter.inc();
-    const { timestampRender, timestampSubmit, data_33, firstName, challengeId, challengeAnswer } = req.body;
+    const { timestampRender, timestampSubmit, firstName, challengeId, data_33 } = req.body;
 
-    if (data_33 !== 'ja' || firstName || !timestampRender || !timestampSubmit || !challengeId || !challengeAnswer) {
+    if (firstName || !timestampRender || !timestampSubmit || !challengeId || !data_33) {
       return next(new CaptchaError('Captcha validation failed due to unexpected body', req.body));
     }
 
@@ -42,7 +42,7 @@ const post: RequestHandler = async (req, res, next) => {
       return next(new CaptchaError('Captcha timestamps are suspicious', req.body));
     }
 
-    const isValid = await captchaService.validate(challengeId, challengeAnswer);
+    const isValid = await captchaService.validate(challengeId, data_33);
     if (!isValid) {
       return next(new CaptchaError('Captcha challenge failed', req.body));
     }

@@ -5,7 +5,7 @@ import verifyNavOrigin from '../../../middleware/verifyNavOrigin';
 import captchaErrorHandler from './errorHandler';
 import captchaHandler from './handler';
 
-const RATE_LIMIT = config.isTest ? 1000 : 5; // Allow more requests in test environment
+const RATE_LIMIT = config.isTest ? 1000 : 20; // Allow more requests in test environment
 
 const captchaRouter = express.Router();
 
