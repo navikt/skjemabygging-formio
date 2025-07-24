@@ -7,7 +7,7 @@ import { CaptchaError } from './types';
 
 const { nologin } = config;
 
-const CAPTCHA_MIN_COMPLETION_TIME_SECONDS = 3;
+const CAPTCHA_MIN_COMPLETION_TIME_SECONDS = 1;
 const CAPTCHA_MAX_REQUEST_AGE_MINUTES = 2;
 const CAPTCHA_MAX_SUBMIT_FUTURE_SECONDS = 5;
 
