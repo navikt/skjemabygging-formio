@@ -2,7 +2,7 @@ import { dateUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { RequestHandler } from 'express';
 import jwt from 'jsonwebtoken';
 import { config } from '../../../config/config';
-import { appMetrics } from '../../../services';
+import { appMetrics, captchaService } from '../../../services';
 import { CaptchaError } from './types';
 
 const { nologin } = config;
@@ -11,13 +11,22 @@ const CAPTCHA_MIN_COMPLETION_TIME_SECONDS = 3;
 const CAPTCHA_MAX_REQUEST_AGE_MINUTES = 2;
 const CAPTCHA_MAX_SUBMIT_FUTURE_SECONDS = 5;
 
-// Denne er ikke produksjonsklar! Vi må legge til noe randomiserte greier.
-const handler: RequestHandler = (req, res, next) => {
+const get: RequestHandler = async (_req, res, next) => {
+  try {
+    const challenge = await captchaService.create();
+    appMetrics.nologinCaptchaCreationsCounter.inc();
+    res.json(challenge);
+  } catch (err) {
+    return next(err);
+  }
+};
+
+const post: RequestHandler = async (req, res, next) => {
   try {
     appMetrics.nologinCaptchaRequestsCounter.inc();
-    const { timestampRender, timestampSubmit, data_33, firstName } = req.body;
+    const { timestampRender, timestampSubmit, data_33, firstName, challengeId, challengeAnswer } = req.body;
 
-    if (data_33 !== 'ja' || firstName || !timestampRender || !timestampSubmit) {
+    if (data_33 !== 'ja' || firstName || !timestampRender || !timestampSubmit || !challengeId || !challengeAnswer) {
       return next(new CaptchaError('Captcha validation failed due to unexpected body', req.body));
     }
 
@@ -33,6 +42,11 @@ const handler: RequestHandler = (req, res, next) => {
       return next(new CaptchaError('Captcha timestamps are suspicious', req.body));
     }
 
+    const isValid = await captchaService.validate(challengeId, challengeAnswer);
+    if (!isValid) {
+      return next(new CaptchaError('Captcha challenge failed', req.body));
+    }
+
     const token = jwt.sign({ purpose: 'nologin' }, nologin.jwtSecret, { expiresIn: '2h' });
     res.json({ success: true, access_token: token });
   } catch (err) {
@@ -40,4 +54,7 @@ const handler: RequestHandler = (req, res, next) => {
   }
 };
 
-export default handler;
+export default {
+  get,
+  post,
+};

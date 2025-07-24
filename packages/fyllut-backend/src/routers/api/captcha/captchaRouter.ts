@@ -10,7 +10,8 @@ const RATE_LIMIT = config.isTest ? 1000 : 5; // Allow more requests in test envi
 const captchaRouter = express.Router();
 
 captchaRouter.all('*', verifyNavOrigin, rateLimiter(60000, RATE_LIMIT));
-captchaRouter.post('/', captchaHandler);
+captchaRouter.get('/', captchaHandler.get);
+captchaRouter.post('/', captchaHandler.post);
 captchaRouter.use(captchaErrorHandler);
 
 export default captchaRouter;

@@ -131,6 +131,9 @@ const localDevelopmentConfig: DefaultConfig = {
   nologin: {
     jwtSecret: 'verysecret',
   },
+  valkey: {
+    enabled: false,
+  },
 };
 
 const defaultConfig: DefaultConfig = {
@@ -165,10 +168,20 @@ const defaultConfig: DefaultConfig = {
   nologin: {
     jwtSecret: process.env.NOLOGIN_JWT_SECRET!,
   },
+  valkey: {
+    enabled: true,
+    url: process.env.VALKEY_URI_FYLLUT!,
+    host: process.env.VALKEY_HOST_FYLLUT!,
+    port: parseInt(process.env.VALKEY_PORT_FYLLUT!),
+    username: process.env.VALKEY_USERNAME_FYLLUT!,
+    password: process.env.VALKEY_PASSWORD_FYLLUT!,
+  },
 };
 
 const config: ConfigType = {
-  ...(process.env.NODE_ENV === 'development' ? localDevelopmentConfig : defaultConfig),
+  ...(process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test'
+    ? localDevelopmentConfig
+    : defaultConfig),
   fyllutPath: '/fyllut',
   clientSecret: process.env.AZURE_APP_CLIENT_SECRET!,
   naisClusterName: process.env.NAIS_CLUSTER_NAME!,

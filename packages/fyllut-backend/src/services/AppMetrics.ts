@@ -8,6 +8,7 @@ class AppMetrics {
   private readonly _outgoingRequestDuration: Histogram;
   private readonly _expressJsonBodyParserDuration: Histogram;
   private readonly _idportenVerifyTokenDuration: Histogram;
+  private readonly _nologinCaptchaCreationsCounter: Counter;
   private readonly _nologinCaptchaRequestsCounter: Counter;
   private readonly _nologinCaptchaFailuresCounter: Counter;
 
@@ -26,6 +27,13 @@ class AppMetrics {
     this._exstreamPdfFailuresCounter = new Counter({
       name: 'fyllut_exstream_pdf_failures_total',
       help: 'Number of exstream pdf requests which failed',
+      labelNames: [],
+      registers: [this._register],
+    });
+
+    this._nologinCaptchaCreationsCounter = new Counter({
+      name: 'fyllut_nologin_captcha_creations_total',
+      help: 'Number of nologin captcha creations',
       labelNames: [],
       registers: [this._register],
     });
@@ -85,6 +93,10 @@ class AppMetrics {
 
   public get exstreamPdfFailuresCounter() {
     return this._exstreamPdfFailuresCounter;
+  }
+
+  public get nologinCaptchaCreationsCounter() {
+    return this._nologinCaptchaCreationsCounter;
   }
 
   public get nologinCaptchaRequestsCounter() {
