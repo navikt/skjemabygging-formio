@@ -26,7 +26,7 @@ const DigitalNoLoginLinkPanel = () => {
     <>
       {show() && (
         <IntroLinkPanel
-          onClick={() => forceRedirectToSub('digitalnologin')}
+          onClick={() => forceRedirectToSub('digitalnologin', 'legitimasjon')}
           href={`${baseUrl}${location.pathname}?sub=digitalnologin`}
           title={translate(TEXTS.grensesnitt.introPage.sendDigitalNoLogin)}
           description={translate(TEXTS.grensesnitt.introPage.sendDigitalNoLoginDescription)}
