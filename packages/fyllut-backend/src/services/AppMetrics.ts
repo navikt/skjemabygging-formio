@@ -3,8 +3,8 @@ import { logger } from '../logger';
 
 class AppMetrics {
   private readonly _register: Registry;
-  private readonly _exstreamPdfRequestsCounter: Counter;
-  private readonly _exstreamPdfFailuresCounter: Counter;
+  private readonly _familiePdfRequestsCounter: Counter;
+  private readonly _familiePdfFailuresCounter: Counter;
   private readonly _outgoingRequestDuration: Histogram;
   private readonly _expressJsonBodyParserDuration: Histogram;
   private readonly _idportenVerifyTokenDuration: Histogram;
@@ -14,16 +14,16 @@ class AppMetrics {
 
     this._register = new Registry();
 
-    this._exstreamPdfRequestsCounter = new Counter({
-      name: 'fyllut_exstream_pdf_requests_total',
-      help: 'Number of exstream pdf requests',
+    this._familiePdfRequestsCounter = new Counter({
+      name: 'fyllut_familie_pdf_requests_total',
+      help: 'Number of familie pdf requests',
       labelNames: [],
       registers: [this._register],
     });
 
-    this._exstreamPdfFailuresCounter = new Counter({
-      name: 'fyllut_exstream_pdf_failures_total',
-      help: 'Number of exstream pdf requests which failed',
+    this._familiePdfFailuresCounter = new Counter({
+      name: 'fyllut_familie_pdf_failures_total',
+      help: 'Number of familie pdf requests which failed',
       labelNames: [],
       registers: [this._register],
     });
@@ -35,8 +35,8 @@ class AppMetrics {
       buckets: [0.7, 0.8, 0.9, 1.0, 1.2, 1.5, 2.0, 5.0, 15.0],
       registers: [this._register],
     });
-    this._outgoingRequestDuration.zero({ service: 'exstream', method: 'createPdf', error: 'false' });
-    this._outgoingRequestDuration.zero({ service: 'exstream', method: 'createPdf', error: 'true' });
+    this._outgoingRequestDuration.zero({ service: 'familiepdf', method: 'createPdf', error: 'false' });
+    this._outgoingRequestDuration.zero({ service: 'familiepdf', method: 'createPdf', error: 'true' });
 
     this._expressJsonBodyParserDuration = new Histogram({
       name: 'fyllut_express_json_body_parser_seconds',
@@ -63,12 +63,12 @@ class AppMetrics {
     return this._register;
   }
 
-  public get exstreamPdfRequestsCounter() {
-    return this._exstreamPdfRequestsCounter;
+  public get familiePdfRequestsCounter() {
+    return this._familiePdfRequestsCounter;
   }
 
-  public get exstreamPdfFailuresCounter() {
-    return this._exstreamPdfFailuresCounter;
+  public get familiePdfFailuresCounter() {
+    return this._familiePdfFailuresCounter;
   }
 
   public get outgoingRequestDuration() {
