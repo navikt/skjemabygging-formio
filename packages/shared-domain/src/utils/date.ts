@@ -1,4 +1,4 @@
-import { DateTime } from 'luxon';
+import { DateTime, DurationObjectUnits } from 'luxon';
 import { v4 as uuidv4 } from 'uuid';
 
 interface WeeklyPeriod {
@@ -228,6 +228,17 @@ const addDays = (days: number, isoDate?: string): string => {
   return date.plus({ days }).toFormat(submissionFormat);
 };
 
+const add = (unit: keyof DurationObjectUnits, duration: number, isoDate?: string): string | null => {
+  let date: DateTime;
+  if (!isoDate) {
+    date = DateTime.now();
+  } else {
+    date = DateTime.fromISO(isoDate);
+  }
+
+  return date.plus({ [unit]: duration }).toISO();
+};
+
 const min = (dates: string[]) => {
   return DateTime.min(...dates.map((date: string) => DateTime.fromISO(date)))?.toFormat(submissionFormat);
 };
@@ -253,6 +264,15 @@ const isAfter = (date1: string, date2: string) => {
   return d1.isValid;
 };
 
+const isBefore = (date1: string, date2: string) => {
+  const d1 = DateTime.fromISO(date1);
+  const d2 = DateTime.fromISO(date2);
+  if (d1.isValid && d2.isValid) {
+    return d1 < d2;
+  }
+  return d1.isValid;
+};
+
 const dateUtils = {
   getIso8601String,
   toLocaleDateAndTime,
@@ -265,6 +285,7 @@ const dateUtils = {
   toLocaleDateLongMonth,
   toCurrentDayMonthYearHourMinute,
   generateWeeklyPeriods,
+  add,
   addDays,
   min,
   isValid,
@@ -275,6 +296,7 @@ const dateUtils = {
   startOfYear,
   endOfYear,
   isAfter,
+  isBefore,
   isAfterDate,
   isValidMonthSubmission,
   toJSDateFromMonthSubmission,

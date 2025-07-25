@@ -27,6 +27,25 @@ export type TilleggsstonaderConfig = {
   };
 };
 
+export type NologinConfig = {
+  jwtSecret: string;
+};
+
+type ValkeyConfigDisabled = {
+  enabled: false;
+};
+
+type ValkeyConfigEnabled = {
+  enabled: true;
+  port: number;
+  url: string;
+  host: string;
+  username: string;
+  password: string;
+};
+
+export type ValkeyConfig = ValkeyConfigDisabled | ValkeyConfigEnabled;
+
 export type ServiceConfig = {
   url: string;
   scope?: string;
@@ -69,6 +88,8 @@ export type DefaultConfig = {
   noDecorator?: boolean;
   frontendLoggerConfig: FrontendLoggerConfigType;
   formsApiUrl: string;
+  nologin: NologinConfig;
+  valkey: ValkeyConfig;
 };
 
 export type ConfigType = DefaultConfig & {

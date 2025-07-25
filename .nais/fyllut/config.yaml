@@ -32,6 +32,9 @@ spec:
       enabled: true
       locale: nb
       autoLogin: false
+  valkey:
+    - instance: fyllut
+      access: readwrite
   tokenx:
     enabled: true
   ingresses:
@@ -80,6 +83,8 @@ spec:
       {{#each accessPolicy.outbound.external}}
         - host: {{this.host}}
       {{/each}}
+  envFrom:
+    - secret: nologin
   env:
     - name: ENABLED_FEATURES
       value: {{enabled-features}}
