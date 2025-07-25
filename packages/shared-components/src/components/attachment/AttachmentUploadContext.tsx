@@ -1,13 +1,15 @@
 import { FileObject } from '@navikt/ds-react';
-import { UploadedFile } from '@navikt/skjemadigitalisering-shared-domain';
+import { Submission, UploadedFile } from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, useContext, useState } from 'react';
 import { deleteFile, uploadFile } from '../../api/nologin-file-upload/nologinFileUpload';
+import { useForm } from '../../context/form/FormContext';
+import { useSendInn } from '../../context/sendInn/sendInnContext';
 
 interface AttachmentUploadContextType {
   handleUploadFiles: (vedleggId: string, files: FileObject[]) => Promise<void>;
   handleDeleteFile: (vedleggId: string, fileId: string) => Promise<void>;
   addError: (vedleggId: string, error: string) => void;
-  uploadedFiles: Record<string, UploadedFile[]>;
+  uploadedFiles: UploadedFile[];
   errors: Record<string, string | undefined>;
 }
 
@@ -15,17 +17,34 @@ const initialContext: AttachmentUploadContextType = {
   handleUploadFiles: async () => {},
   handleDeleteFile: async () => {},
   addError: () => {},
-  uploadedFiles: {},
+  uploadedFiles: [],
   errors: {},
 };
 
 const AttachmentUploadContext = createContext<AttachmentUploadContextType>(initialContext);
 
 const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) => {
-  const [innsendingsId, setInnsendingsId] = useState<string | undefined>(undefined);
-  const [uploadedFiles, setUploadedFiles] = useState<Record<string, UploadedFile[]>>({});
+  const { innsendingsId, setInnsendingsId } = useSendInn();
+  const { submission, setSubmission } = useForm();
   const [errors, setErrors] = useState<Record<string, string | undefined>>({});
 
+  const uploadedFiles = submission?.uploadedFiles ?? [];
+  const addToSubmission = (files: UploadedFile[]) => {
+    setSubmission(
+      (current) => ({ ...current, uploadedFiles: [...(current?.uploadedFiles ?? []), ...files] }) as Submission,
+    );
+  };
+  const deleteFromSubmission = (fileId: string) => {
+    setSubmission(
+      (current) =>
+        ({
+          ...current,
+          uploadedFiles: (current?.uploadedFiles ?? []).filter((file) => file.filId !== fileId),
+        }) as Submission,
+    );
+  };
+
+  console.log(uploadedFiles);
   const addError = (vedleggId: string, error: string) => {
     setErrors((prev) => ({
       ...prev,
@@ -54,7 +73,7 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
     if (successfulUploads.length === result.length) {
       removeError(vedleggId);
     }
-    setUploadedFiles((current) => ({ ...current, [vedleggId]: [...(current[vedleggId] ?? []), ...successfulUploads] }));
+    addToSubmission(successfulUploads);
     setInnsendingsId(successfulUploads[0]?.innsendingId);
   };
 
@@ -62,13 +81,7 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
     try {
       await deleteFile(fileId, innsendingsId);
       removeError(vedleggId);
-      return setUploadedFiles((files) => {
-        const updatedattachmentFiles = files[vedleggId].filter((file) => file.filId !== fileId);
-        return {
-          ...files,
-          [vedleggId]: updatedattachmentFiles,
-        };
-      });
+      deleteFromSubmission(fileId);
     } catch (_e) {
       addError(vedleggId, 'Det oppstod en feil under sletting av filen. Prøv igjen senere.');
     }

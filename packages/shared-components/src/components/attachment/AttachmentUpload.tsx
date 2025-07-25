@@ -30,7 +30,7 @@ const AttachmentUpload = ({ label, options, vedleggId, multiple = false }: Props
   const { innsendingsId } = useSendInn();
   const { handleUploadFiles, handleDeleteFile, uploadedFiles, errors } = useAttachmentUpload();
 
-  const uploadedAttachmentFiles = uploadedFiles[vedleggId] || [];
+  const uploadedAttachmentFiles = uploadedFiles.filter((file) => file.vedleggId === vedleggId);
   const error = errors[vedleggId];
 
   const handleUpload = async (files: FileObject[] | null) => {
@@ -46,6 +46,7 @@ const AttachmentUpload = ({ label, options, vedleggId, multiple = false }: Props
     await handleDeleteFile(vedleggId, filId);
   };
 
+  //TODO: store this in context
   const uploadSelected = !!options.find((option) => option.value === selectedOption)?.upload;
 
   return (

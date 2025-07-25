@@ -20,7 +20,7 @@ const UploadPersonalIdButtonRow = () => {
 
   const navigateToFormPage = (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    if (uploadedFiles['personal-id']?.length > 0) {
+    if (uploadedFiles.find((file) => file.vedleggId === 'personal-id')) {
       navigate(`../${form.firstPanelSlug}?${searchParams.toString()}`);
     } else {
       addError('personal-id', 'Du må laste opp et gyldig identifikasjonsdokument før du kan fortsette.');
