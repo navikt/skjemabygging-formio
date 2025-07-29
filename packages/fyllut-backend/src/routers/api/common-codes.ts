@@ -71,6 +71,23 @@ const commonCodes = {
       next(e);
     }
   },
+
+  getAreaCodes: async (req: Request, res: Response, next: NextFunction) => {
+    const languageCode = 'nb';
+
+    try {
+      const response = await fetchCommonCodeDescriptions(req, 'Retningsnumre', languageCode);
+      const areaCodes: { label: string; value: string }[] = [];
+      for (const [key, values] of Object.entries(response.betydninger)) {
+        const areaName = (values as any)[0]?.beskrivelser?.[languageCode]?.term;
+        areaCodes.push({ label: `(${key}) ${areaName}`, value: key });
+      }
+      sortAsc(areaCodes, languageCode);
+      res.send(areaCodes);
+    } catch (e) {
+      next(e);
+    }
+  },
 };
 
 const sortAsc = (list: { label: string; value: string }[], languageCode: string) => {

@@ -534,6 +534,47 @@ function handleAddressValidity(
   return returnValues;
 }
 
+function handlePhoneNumberWithAreCodeSelector(component, submission, formSummaryObject, parentContainerKey, translate) {
+  if (!submission.data) {
+    return formSummaryObject;
+  }
+
+  const { key, label, components } = component;
+  const componentKey = createComponentKey(parentContainerKey, key);
+
+  var componentWithType = (type) =>
+    components.find((obj) => {
+      return obj.type === type;
+    });
+
+  const phoneNumberComponent = componentWithType('phoneNumber');
+  const areaCodeComponent = componentWithType('areaCodeSelector');
+
+  if (!phoneNumberComponent || !areaCodeComponent) {
+    return formSummaryObject;
+  }
+
+  const submissionValue = FormioUtils.getValue(submission, componentKey);
+
+  const phoneNumber = submissionValue?.[phoneNumberComponent.key];
+
+  if (!phoneNumber) {
+    return formSummaryObject;
+  }
+
+  const areaCode = submissionValue[areaCodeComponent.key].value;
+
+  return [
+    ...formSummaryObject,
+    {
+      label: translate(label),
+      key,
+      type: 'phone',
+      value: `${areaCode} ${phoneNumber}`,
+    },
+  ];
+}
+
 function handleAmountWithCurrencySelector(component, submission, formSummaryObject, parentContainerKey, translate) {
   if (!submission.data) {
     return formSummaryObject;
@@ -668,6 +709,15 @@ function handleComponent(
     case 'image':
       return formSummaryObject;
     case 'row':
+      if (component.isPhoneNumberWithAreaCodeSelector) {
+        return handlePhoneNumberWithAreCodeSelector(
+          component,
+          submission,
+          formSummaryObject,
+          parentContainerKey,
+          translate,
+        );
+      }
       if (component.isAmountWithCurrencySelector) {
         return handleAmountWithCurrencySelector(
           component,

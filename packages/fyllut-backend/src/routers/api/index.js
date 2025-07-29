@@ -56,6 +56,7 @@ apiRouter.put('/send-inn/utfyltsoknad', azurePdfGeneratorToken, tokenxSendInn, s
 apiRouter.get('/common-codes/archive-subjects', kodeverkToken, commonCodes.getArchiveSubjects);
 apiRouter.get('/common-codes/currencies', kodeverkToken, commonCodes.getCurrencies);
 apiRouter.get('/common-codes/enhetstyper', kodeverkToken, commonCodes.getEnhetstyper);
+apiRouter.get('/common-codes/area-codes', kodeverkToken, commonCodes.getAreaCodes);
 apiRouter.post('/log/:level', rateLimiter(60000, 60), log.post);
 apiRouter.get('/health/status', status.get);
 apiRouter.get('/send-inn/prefill-data', tokenxSendInn, prefillData.get);
