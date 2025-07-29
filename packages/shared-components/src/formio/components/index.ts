@@ -36,6 +36,7 @@ import NationalIdentityNumber from './extensions/national-identity-number/Nation
 import Number from './extensions/number/Number';
 import OrganizationNumber from './extensions/organization-number/OrganizationNumber';
 import Password from './extensions/password/Password';
+import AreaCodeSelect from './extensions/phone-number/AreaCodeSelect';
 import PhoneNumber from './extensions/phone-number/PhoneNumber';
 import Surname from './extensions/surname/Surname';
 import Year from './extensions/year/Year';
@@ -71,6 +72,7 @@ const customComponents = {
   panel: Panel,
   email: Email,
   phoneNumber: PhoneNumber,
+  areaCode: AreaCodeSelect,
   currency: Currency,
   attachment: DefaultAttachment,
   accordion: Accordion,
