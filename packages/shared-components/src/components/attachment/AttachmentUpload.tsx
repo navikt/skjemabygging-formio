@@ -1,7 +1,7 @@
 import { Alert, BodyLong, Button, FileObject, FileUpload, Label, Radio, RadioGroup, VStack } from '@navikt/ds-react';
 import { useState } from 'react';
 import { useSendInn } from '../../context/sendInn/sendInnContext';
-import { makeStyles } from '../../index';
+import makeStyles from '../../util/styles/jss/jss';
 import { useAttachmentUpload } from './AttachmentUploadContext';
 
 type AttachmentOption = {
