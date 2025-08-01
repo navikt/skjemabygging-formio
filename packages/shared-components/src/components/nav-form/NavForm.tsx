@@ -19,6 +19,12 @@ const useStyles = makeStyles({
   '@global': Styles.form,
 });
 
+export interface FormNavigationPaths {
+  prev?: string;
+  curr?: string;
+  next?: string;
+}
+
 interface EventProps {
   onCustomEvent?: () => void;
   onSubmit?: (submission: any) => void;
@@ -41,6 +47,8 @@ interface EventProps {
   onWizardPageSelected?: (panel: { path: string }) => void;
   onShowErrors?: (errorsFromForm: ComponentError[]) => void;
   onErrorSummaryFocus?: () => void;
+  onNavigationPathsChanged?: (paths: FormNavigationPaths) => void;
+  onFocusOnComponentPageChanged?: (page: { key: string }) => void;
 }
 
 interface Props {
@@ -145,16 +153,26 @@ const NavForm = ({
     }
   }, [appConfig.logger, webform, panelSlug]);
 
+  useEffect(() => {
+    webform?.emitNavigationPathsChanged?.();
+    webform?.emit('submissionChanged', webform._data);
+  }, [webform]);
+
   /**
-   * Handle focusOnComponent
+   * Handle fyllut events (focusOnComponent, nextPage, prevPage)
    */
   useEffect(() => {
     if (webform) {
-      appConfig.logger?.trace('Setup focusOnComponent');
+      appConfig.logger?.trace('Setup fyllut events');
       fyllutEvents?.on('focusOnComponent', (args) => webform.focusOnComponent(args));
+      fyllutEvents?.on('validateOnNextPage', ({ currentPageOnly, validationResultCallback }) => {
+        appConfig.logger?.trace(`Fyllut event 'validateOnNextPage'`, { currentPageOnly });
+        webform.validateOnNextPage(currentPageOnly, validationResultCallback);
+      });
       return () => {
-        appConfig.logger?.debug('Remove focusOnComponent');
+        appConfig.logger?.debug('Remove fyllut events');
         fyllutEvents?.removeListener('focusOnComponent');
+        fyllutEvents?.removeListener('validateOnNextPage');
       };
     }
   }, [appConfig.logger, webform, fyllutEvents]);
@@ -185,6 +203,7 @@ const NavForm = ({
       if (events?.onSubmissionChanged) {
         events.onSubmissionChanged(webform._data);
       }
+      webform.emitNavigationPathsChanged();
     }
     // Do not want to include events in the dependency array
     // eslint-disable-next-line

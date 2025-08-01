@@ -48,11 +48,21 @@ Cypress.Commands.add('shouldBeVisible', { prevSubject: true }, (subject) => {
 });
 
 Cypress.Commands.add('clickNextStep', () => {
-  return cy.findByRoleWhenAttached('button', { name: TEXTS.grensesnitt.navigation.next }, 500).click();
+  return cy.findByRoleWhenAttached('link', { name: TEXTS.grensesnitt.navigation.next }, 500).click();
 });
 
 Cypress.Commands.add('clickSaveAndContinue', () => {
-  return cy.findByRoleWhenAttached('button', { name: TEXTS.grensesnitt.navigation.saveAndContinue }, 500).click();
+  return cy
+    .url()
+    .then((url) =>
+      cy
+        .findByRoleWhenAttached(
+          url.includes('/oppsummering') ? 'button' : 'link',
+          { name: TEXTS.grensesnitt.navigation.saveAndContinue },
+          500,
+        )
+        .click(),
+    );
 });
 
 Cypress.Commands.add('clickStart', () => {

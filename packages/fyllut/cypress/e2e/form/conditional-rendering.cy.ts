@@ -17,7 +17,7 @@ describe('Conditional rendering', () => {
   describe('When form has panels that are hidden unless a condition is true', () => {
     beforeEach(() => {
       cy.defaultIntercepts();
-      cy.visit('/fyllut/conditionalxmas');
+      cy.visit('/fyllut/conditionalxmas?sub=digital');
       cy.defaultWaits();
       cy.clickStart(); // <-- navigate from information page to the form
     });
