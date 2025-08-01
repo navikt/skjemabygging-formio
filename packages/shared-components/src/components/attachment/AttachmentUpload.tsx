@@ -1,4 +1,17 @@
-import { Alert, BodyLong, Button, FileObject, FileUpload, Label, Radio, RadioGroup, VStack } from '@navikt/ds-react';
+import { UploadIcon } from '@navikt/aksel-icons';
+import {
+  Alert,
+  BodyLong,
+  BodyShort,
+  Button,
+  FileObject,
+  FileUpload,
+  HStack,
+  Radio,
+  RadioGroup,
+  ReadMore,
+  VStack,
+} from '@navikt/ds-react';
 import { useState } from 'react';
 import { useSendInn } from '../../context/sendInn/sendInnContext';
 import { makeStyles } from '../../index';
@@ -20,6 +33,7 @@ interface Props {
 const useStyles = makeStyles({
   button: {
     maxWidth: '18.75rem',
+    borderRadius: 'var(--a-border-radius-large)',
   },
 });
 
@@ -60,11 +74,16 @@ const AttachmentUpload = ({ label, options, vedleggId, multiple = false }: Props
       </RadioGroup>
       {uploadSelected && (
         <VStack gap="4">
-          <Label>Last opp bilde eller skannet kopi av ID-en din</Label>
+          {/* TODO skal ikke vises for vedlegg, men kun for opplasting av ID */}
+          {/*<Label>Last opp bilde eller skannet kopi av ID-en din</Label>*/}
           {uploadedAttachmentFiles.length === 0 && (
             <FileUpload.Trigger multiple={!!innsendingsId && multiple} onSelect={handleUpload}>
-              <Button className={styles.button} loading={loading}>
-                Velg fil
+              <Button
+                className={styles.button}
+                loading={loading}
+                icon={<UploadIcon title="a11y-title" fontSize="1.5rem" />}
+              >
+                Last opp filer
               </Button>
             </FileUpload.Trigger>
           )}
@@ -78,6 +97,15 @@ const AttachmentUpload = ({ label, options, vedleggId, multiple = false }: Props
               }}
             ></FileUpload.Item>
           ))}
+          <ReadMore header="Gyldige filformater og størrelser" defaultOpen>
+            <HStack gap="2" align="start">
+              <BodyShort weight="semibold">Gyldige filformater:</BodyShort>
+              <BodyLong>pdf, jpeg/jpg, docx, doc, odt, rtf, txt, png, tiff/tif, bmp og gif.</BodyLong>
+
+              <BodyShort weight="semibold">Maks filstørrelse:</BodyShort>
+              <BodyLong> Du kan laste opp flere filer, men totalt kan ikke opplastingen være mer enn 50 MB.</BodyLong>
+            </HStack>
+          </ReadMore>
         </VStack>
       )}
       {error && (

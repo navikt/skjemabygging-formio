@@ -2,6 +2,7 @@ import { TFunction } from 'i18next';
 import { Component, NavFormType } from '../form';
 import TEXTS from '../texts';
 
+// TODO bruk til vedlegg options
 const attachmentSettingKeys = [
   'leggerVedNaa',
   'ettersender',

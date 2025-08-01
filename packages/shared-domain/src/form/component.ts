@@ -10,13 +10,16 @@ export type AddressType = 'NORWEGIAN_ADDRESS' | 'POST_OFFICE_BOX' | 'FOREIGN_ADD
 export type InputMode = 'none' | 'text' | 'tel' | 'url' | 'email' | 'numeric' | 'decimal' | 'search';
 
 type ComponentDataSrc = 'values' | 'url' | 'json' | 'custom' | 'resource';
+
 export interface ComponentData {
   values?: ComponentValue[];
   url?: string;
   custom?: any;
 }
 
+// TODO bruk til Annet vedlegg
 export type AttachmentType = 'default' | 'other';
+
 export interface ComponentValue {
   value: string;
   label: string;
