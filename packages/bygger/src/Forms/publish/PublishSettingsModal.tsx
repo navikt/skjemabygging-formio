@@ -4,7 +4,7 @@ import { Form, FormsApiTranslation, I18nTranslations } from '@navikt/skjemadigit
 import { useEffect, useState } from 'react';
 import { useFormTranslations } from '../../context/translations/FormTranslationsContext';
 import { useGlobalTranslations } from '../../context/translations/GlobalTranslationsContext';
-import { getFormTextsWithoutCountryNames } from '../../translations/utils/formTextsUtils';
+import { getFormTextsWithoutGloballyMaintained } from '../../translations/utils/formTextsUtils';
 import FormStatus from '../status/FormStatus';
 import { allLanguagesInNorwegian } from '../status/PublishedLanguages';
 import Timestamp from '../status/Timestamp';
@@ -63,7 +63,7 @@ const PublishSettingsModal = ({ open, onClose, onConfirm, form, unsavedGlobalTra
 
   useEffect(() => {
     setAllFormOriginalTexts(
-      getFormTextsWithoutCountryNames(form).reduce<string[]>((allTexts, text) => {
+      getFormTextsWithoutGloballyMaintained(form).reduce<string[]>((allTexts, text) => {
         return [...allTexts, text];
       }, []),
     );
@@ -74,22 +74,25 @@ const PublishSettingsModal = ({ open, onClose, onConfirm, form, unsavedGlobalTra
       [...formTranslations],
       i18nUtils.initialData as I18nTranslations,
     );
+
     const unsavedGlobalTranslationKeys = unsavedGlobalTranslations.map((translation) => translation.key);
-    const originalTextsExcludingUnsavedGlobalTranslations = allFormOriginalTexts.filter(
-      (text) => !unsavedGlobalTranslationKeys.includes(text),
+    const introPageTextsToExclude = form.introPage?.enabled
+      ? []
+      : formTranslations.filter((translation) => translation.tag === 'introPage').map((translation) => translation.key);
+    const originalTextsFiltered = allFormOriginalTexts.filter(
+      // Exclude texts with unsaved translation if there is a global translation for it
+      // Exclude texts from intro page if intro page is not enabled
+      (text) => !(unsavedGlobalTranslationKeys.includes(text) || introPageTextsToExclude.includes(text)),
     );
 
-    const completeTranslations = getCompleteTranslationLanguageCodeList(
-      originalTextsExcludingUnsavedGlobalTranslations,
-      i18n,
-    );
+    const completeTranslations = getCompleteTranslationLanguageCodeList(originalTextsFiltered, i18n);
 
     const sanitizedCompleteTranslations = completeTranslations
       .map((langCode) => (langCode.length > 2 ? langCode.substring(0, 2) : langCode))
       .filter(skipBokmal);
     setCompleteTranslationLanguageCodeList([...sanitizedCompleteTranslations, 'nb']);
     setCheckedLanguages([...sanitizedCompleteTranslations, 'nb']);
-  }, [allFormOriginalTexts, formTranslations, globalTranslations, unsavedGlobalTranslations]);
+  }, [allFormOriginalTexts, form.introPage?.enabled, formTranslations, globalTranslations, unsavedGlobalTranslations]);
 
   const PublishStatusPanel = ({ form }: { form: Form }) => {
     const statusPanelStyles = useStatusPanelStyles();

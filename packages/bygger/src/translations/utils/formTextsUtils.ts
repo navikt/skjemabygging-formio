@@ -7,12 +7,14 @@ import {
   AttachmentSettingValues,
   Component,
   CustomLabels,
+  externalStorageTexts,
   Form,
   FormPropertiesType,
   IntroPage,
   navFormUtils,
   signatureUtils,
   TEXTS,
+  Tkey,
 } from '@navikt/skjemadigitalisering-shared-domain';
 
 const getTextFromComponentProperty = (property: string | undefined) => (property !== '' ? property : undefined);
@@ -207,11 +209,14 @@ const getFormTexts = (form?: Form): string[] => {
   ].filter((component, index, currentComponents) => withoutDuplicatedComponents(component, index, currentComponents));
 };
 
-const getFormTextsWithoutCountryNames = (form: Form) => {
-  // We filter out any country names to avoid having to maintain their translations
-  // All country names on 'nn' and 'en' are added from a third party package when we build the i18n object in FyllUt)
+const getFormTextsWithoutGloballyMaintained = (form: Form) => {
+  // The following form texts should not be maintained as form translations:
+  // - Country names (handled by a third party package and added to the i18n object in FyllUt)
+  // - Global intro page texts (should not be overwritten in form translations)
   const countries = getCountries('nb');
-  return getFormTexts(form).filter((text) => !countries.some((country) => country.label === text));
+  return getFormTexts(form)
+    .filter((text) => !countries.some((country) => country.label === text))
+    .filter((text) => !externalStorageTexts.keys.introPage.includes(text as Tkey));
 };
 
-export { getFormTextsWithoutCountryNames };
+export { getFormTextsWithoutGloballyMaintained };
