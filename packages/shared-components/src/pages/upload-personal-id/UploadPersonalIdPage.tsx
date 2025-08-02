@@ -1,17 +1,20 @@
+import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import AttachmentUpload from '../../components/attachment/AttachmentUpload';
 import AttachmentUploadProvider from '../../components/attachment/AttachmentUploadContext';
-import { FormContainer } from '../../index';
+import { FormContainer, useLanguages } from '../../index';
 import UploadPersonalIdButtonRow from './UploadPersonalIdButtonRow';
 
-const radioOptions = [
-  { value: 'norwegian-passport', label: 'Norsk pass', upload: true },
-  { value: 'foreign-passport', label: 'Utenlandsk pass (ikke nødpass)', upload: true },
-  { value: 'national-id-eu', label: 'Nasjonalt ID-kort fra EU/EØS-land og Sveits', upload: true },
-  { value: 'drivers-license', label: 'Norsk førerkort utstedt fra og med 01.01.1998', upload: true },
-  { value: 'drivers-license-eu', label: 'Førerkort utstedt i EU/EØS og som følger EU/EØS reglene', upload: true },
-];
-
 const UploadPersonalIdPage = () => {
+  const { translate } = useLanguages();
+
+  const radioOptions = [
+    { value: 'norwegian-passport', label: translate(TEXTS.statiske.uploadId.norwegianPassport), upload: true },
+    { value: 'foreign-passport', label: translate(TEXTS.statiske.uploadId.foreignPassport), upload: true },
+    { value: 'national-id-eu', label: translate(TEXTS.statiske.uploadId.nationalIdEU), upload: true },
+    { value: 'drivers-license', label: translate(TEXTS.statiske.uploadId.driversLicense), upload: true },
+    { value: 'drivers-license-eu', label: translate(TEXTS.statiske.uploadId.driversLicenseEU), upload: true },
+  ];
+
   return (
     <FormContainer>
       <AttachmentUploadProvider>

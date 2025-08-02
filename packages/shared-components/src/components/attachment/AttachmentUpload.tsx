@@ -1,5 +1,7 @@
 import { Alert, BodyLong, Button, FileObject, FileUpload, Label, Radio, RadioGroup, VStack } from '@navikt/ds-react';
+import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useState } from 'react';
+import { useLanguages } from '../../context/languages';
 import { useSendInn } from '../../context/sendInn/sendInnContext';
 import makeStyles from '../../util/styles/jss/jss';
 import { useAttachmentUpload } from './AttachmentUploadContext';
@@ -27,6 +29,7 @@ const AttachmentUpload = ({ label, options, vedleggId, multiple = false }: Props
   const [selectedOption, setSelectedOption] = useState<string>();
   const [loading, setLoading] = useState<boolean>(false);
   const styles = useStyles();
+  const { translate } = useLanguages();
   const { innsendingsId } = useSendInn();
   const { handleUploadFiles, handleDeleteFile, uploadedFiles, errors } = useAttachmentUpload();
 
@@ -64,7 +67,7 @@ const AttachmentUpload = ({ label, options, vedleggId, multiple = false }: Props
           {uploadedAttachmentFiles.length === 0 && (
             <FileUpload.Trigger multiple={!!innsendingsId && multiple} onSelect={handleUpload}>
               <Button className={styles.button} loading={loading}>
-                Velg fil
+                {translate(TEXTS.statiske.uploadId.selectFile)}
               </Button>
             </FileUpload.Trigger>
           )}

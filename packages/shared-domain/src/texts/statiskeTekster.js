@@ -42,6 +42,13 @@ export const statiske = {
   },
   uploadId: {
     title: 'Legitimasjon',
+    selectFile: 'Velg fil',
+    missingUploadError: 'Du må laste opp et gyldig identifikasjonsdokument før du kan fortsette.',
+    norwegianPassport: 'Norsk pass',
+    foreignPassport: 'Utenlandsk pass (ikke nødpass)',
+    nationalIdEU: 'Nasjonalt ID-kort fra EU/EØS-land og Sveits',
+    driversLicense: 'Norsk førerkort utstedt fra og med 01.01.1998',
+    driversLicenseEU: 'Førerkort utstedt i EU/EØS og som følger EU/EØS reglene',
   },
   paabegynt: {
     activeTasksHeading: 'Du har {{amount}} påbegynte utkast til denne søknaden',
