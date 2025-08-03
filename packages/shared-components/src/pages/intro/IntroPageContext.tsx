@@ -19,7 +19,7 @@ interface IntroPageContextType {
   selfDeclaration?: boolean;
   setError: (error: string | undefined) => void;
   error?: string | undefined;
-  forceRedirectToSub: (sub: SubmissionMethod, path?: string) => void;
+  forceRedirectToSub: (sub: SubmissionMethod) => void;
   showSelectSubmissionType: () => boolean;
 }
 
@@ -75,15 +75,16 @@ export const IntroPageProvider = ({ children, form }: IntroPageProviderProps) =>
     setState(toState(submissionMethod));
   }, [submissionMethod, toState]);
 
-  const forceRedirectToSub = (sub: SubmissionMethod, path?: string) => {
+  const forceRedirectToSub = (sub: SubmissionMethod) => {
     // Important to force redirect to force idporten redirect if sub=digital
     // and to make sure appCondig have the correct submissionMethod
-    const { origin, pathname, search } = window.location;
-    let href = `${origin}${pathname}`;
-    if (path) {
-      href = `${href}/${path}`;
-    }
-    window.location.href = `${href}${search ? `${search}&sub=${sub}` : `?sub=${sub}`}`;
+    window.location.href = `${location.href}${location.search ? `${location.search}&sub=${sub}` : `?sub=${sub}`}`;
+    // const { origin, pathname, search } = window.location;
+    // let href = `${origin}${pathname}`;
+    // if (path) {
+    //   href = `${href}/${path}`;
+    // }
+    // window.location.href = `${href}${search ? `${search}&sub=${sub}` : `?sub=${sub}`}`;
   };
 
   const showSelectSubmissionType = () => {

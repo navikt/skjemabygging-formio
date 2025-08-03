@@ -222,6 +222,7 @@ describe('Submission Type', () => {
 
       it('Select digtal no login', () => {
         cy.findByRole('link', { name: TEXTS.grensesnitt.introPage.sendDigitalNoLogin }).click();
+        cy.clickStart();
         cy.findByRole('heading', { name: TEXTS.statiske.uploadId.title }).should('exist');
 
         cy.url().should('include', 'sub=digitalnologin');
@@ -259,6 +260,7 @@ describe('Submission Type', () => {
 
       it('Select digtal no login', () => {
         cy.findByRole('link', { name: TEXTS.grensesnitt.introPage.sendDigitalNoLogin }).click();
+        cy.clickStart();
         cy.findByRole('heading', { name: TEXTS.statiske.uploadId.title }).should('exist');
 
         cy.url().should('include', 'sub=digitalnologin');
