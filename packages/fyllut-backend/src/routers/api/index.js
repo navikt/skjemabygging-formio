@@ -17,6 +17,7 @@ import forsteside from './forsteside';
 import globalTranslations from './global-translations.js';
 import log from './log';
 import mottaksadresser from './mottaksadresser.js';
+import nologinFileRouter from './nologin-file';
 import pdl from './pdl';
 import recipients from './recipients';
 import registerDataRouter from './register-data/register-data';
@@ -33,7 +34,7 @@ const { featureToggles } = appConfig;
 const { azureSkjemabyggingProxy, azurePdl, kodeverkToken, tokenxPdl, tokenxSendInn, azurePdfGeneratorToken } =
   initApiConfig();
 
-apiRouter.all('*', idportenAuthHandler, envQualifier);
+apiRouter.all('*path', idportenAuthHandler, envQualifier);
 apiRouter.get('/config', config.get);
 apiRouter.get('/enhetsliste', enhetsliste.get);
 apiRouter.get('/forms', tryCatch(forms.get));
@@ -58,6 +59,7 @@ apiRouter.get('/health/status', status.get);
 apiRouter.get('/send-inn/prefill-data', tokenxSendInn, prefillData.get);
 apiRouter.get('/send-inn/activities', tokenxSendInn, activities.get);
 apiRouter.use('/register-data', registerDataRouter);
+apiRouter.use('/nologin-file', nologinFileRouter);
 
 if (featureToggles.enablePdl) {
   apiRouter.get('/pdl/person/:id', tokenxPdl, pdl.person);

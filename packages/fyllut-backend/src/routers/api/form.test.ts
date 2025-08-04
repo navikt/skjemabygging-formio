@@ -67,9 +67,11 @@ describe('form', () => {
             ({
               path: formPath,
               title: 'Norsk skjematittel',
+
               properties: {
                 ettersendelsesfrist: '10',
               },
+
               components: [
                 {
                   label: 'Norsk vedleggsnavn',

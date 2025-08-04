@@ -25,6 +25,7 @@ interface SendInnContextType {
   isMellomlagringAvailable: boolean;
   isMellomlagringReady: boolean;
   innsendingsId?: string;
+  setInnsendingsId: (innsendingsId: string | undefined) => void;
   mellomlagringError: MellomlagringError | undefined;
 }
 
@@ -288,6 +289,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
     deleteMellomlagring,
     submitSoknad,
     innsendingsId,
+    setInnsendingsId,
     isMellomlagringAvailable,
     isMellomlagringActive: !!fyllutMellomlagringState?.isActive,
     isMellomlagringReady,

@@ -17,7 +17,7 @@ export const setupDevServer = (expressApp: Express, fyllutRouter: Router, config
   // Trust proxy IP headers, to ensure we get the actaual req.ip for the client
   expressApp.set('trust proxy', true);
 
-  expressApp.all('*', (req: Request, res: Response, next: NextFunction) => {
+  expressApp.all('*path', (req: Request, res: Response, next: NextFunction) => {
     res.setHeader('X-Robots-Tag', 'noindex');
     next();
   });
@@ -31,11 +31,12 @@ export const setupDevServer = (expressApp: Express, fyllutRouter: Router, config
       if (isFormPath(formPath)) {
         res.cookie(DEV_ACCESS_COOKIE, true, { maxAge: 1000 * 3600 * 24 });
         const queryString = sub ? `?sub=${sub}` : '';
-        return res.redirect(302, `${config.fyllutPath}/${formPath}${queryString}`);
+        res.redirect(302, `${config.fyllutPath}/${formPath}${queryString}`);
       } else {
         logger.warn(`Invalid formPath when requesting dev access: ${formPath}`);
-        return res.sendStatus(400);
+        res.sendStatus(400);
       }
+      return;
     }
     res.cookie(DEV_ACCESS_COOKIE, true, { maxAge: 1000 * 3600 * 24 });
     return res.render('dev-access.html');
@@ -47,7 +48,7 @@ export const setupDevServer = (expressApp: Express, fyllutRouter: Router, config
       return next();
     } else {
       logger.info(`Non-authorized client ips: ${req.ip} ${JSON.stringify(req.ips)}`);
-      return res.status(401).send('Ingen tilgang');
+      res.status(401).send('Ingen tilgang');
     }
   });
 };

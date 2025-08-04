@@ -381,6 +381,32 @@ module.exports = [
     ],
   },
   {
+    id: 'upload-file',
+    url: '/send-inn/v1/nologin-fillager',
+    method: 'POST',
+    variants: [
+      {
+        id: 'success',
+        type: 'middleware',
+        options: {
+          middleware(req, res) {
+            const vedleggId = req.query['vedleggId'] || 'vedlegg-id';
+            const innsendingId = req.query['innsendingId'] || 'innsending-id';
+            res.status(201);
+            res.contentType('application/json; charset=UTF-8');
+            res.send({
+              filId: '92ee15dd-dc49-4c95-b9b6-6224bae088bb',
+              vedleggId,
+              innsendingId,
+              filnavn: 'test.txt',
+              storrelse: 40000,
+            });
+          },
+        },
+      },
+    ],
+  },
+  {
     id: 'get-prefill-data',
     url: '/send-inn/fyllUt/v1/prefill-data',
     method: 'GET',
