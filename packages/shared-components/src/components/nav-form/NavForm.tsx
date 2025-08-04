@@ -159,7 +159,7 @@ const NavForm = ({
   }, [webform]);
 
   /**
-   * Handle fyllut events (focusOnComponent, nextPage, prevPage)
+   * Handle fyllut events (focusOnComponent, validateOnNextPage)
    */
   useEffect(() => {
     if (webform) {
