@@ -53,19 +53,20 @@ const nologinFile = {
           responseToError('Error: Ingen filId eller vedleggId angitt', 'Ingen filId eller vedleggId funnet', true),
         );
       }
-      const targetUrl = `${sendInnConfig.host}${sendInnConfig.paths.nologinFile}/${filId}?innsendingId=${innsendingId}`;
+      const targetUrl = filId
+        ? `${sendInnConfig.host}${sendInnConfig.paths.nologinFile}/${filId}?innsendingId=${innsendingId}`
+        : `${sendInnConfig.host}${sendInnConfig.paths.nologinFile}?vedleggId=${vedleggId}&innsendingId=${innsendingId}`;
       const response = await fetch(targetUrl, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${req.headers.AzureAccessToken as string}`,
         },
       });
-      console.log(`Deleting file with ID: ${filId} from URL: ${targetUrl}. Got response:`, response.status);
       if (response.ok) {
         res.sendStatus(response.status);
       } else {
-        logger.debug('Failed to delete file for user with no login');
-        next(await responseToError(response, 'Feil ved opplasting av fil for uinnlogget søknad', true));
+        logger.debug('Failed to delete file(s) for user with no login');
+        next(await responseToError(response, 'Feil ved sletting av fil(er) for uinnlogget søknad', true));
       }
     } catch (error) {
       next(error);

@@ -15,7 +15,7 @@ const uploadFile = async (file: File, vedleggId: string, innsendingsId?: string)
   throw new Error(`Failed to upload file: ${response.statusText}`);
 };
 
-const deleteFile = async (filId: string, innsendingsId?: string): Promise<void> => {
+const deleteFile = async (filId: string, innsendingsId: string): Promise<void> => {
   const response = await fetch(`${url}/${filId}?innsendingId=${innsendingsId}`, { method: 'DELETE' });
   if (response.ok) {
     return;
@@ -23,4 +23,12 @@ const deleteFile = async (filId: string, innsendingsId?: string): Promise<void> 
   throw new Error(`Failed to delete file: ${response.statusText}`);
 };
 
-export { deleteFile, uploadFile };
+const deleteAttachment = async (vedleggId: string, innsendingsId: string): Promise<void> => {
+  const response = await fetch(`${url}?vedleggId=${vedleggId}&innsendingId=${innsendingsId}`, { method: 'DELETE' });
+  if (response.ok) {
+    return;
+  }
+  throw new Error(`Failed to delete attachment: ${response.statusText}`);
+};
+
+export { deleteAttachment, deleteFile, uploadFile };

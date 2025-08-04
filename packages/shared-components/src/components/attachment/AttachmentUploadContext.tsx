@@ -1,13 +1,14 @@
 import { FileObject } from '@navikt/ds-react';
 import { Submission, UploadedFile } from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, useContext, useState } from 'react';
-import { deleteFile, uploadFile } from '../../api/nologin-file-upload/nologinFileUpload';
+import { deleteAttachment, deleteFile, uploadFile } from '../../api/nologin-file-upload/nologinFileUpload';
 import { useForm } from '../../context/form/FormContext';
 import { useSendInn } from '../../context/sendInn/sendInnContext';
 
 interface AttachmentUploadContextType {
   handleUploadFiles: (vedleggId: string, files: FileObject[]) => Promise<void>;
   handleDeleteFile: (vedleggId: string, fileId: string) => Promise<void>;
+  handleDeleteAttachment: (vedleggId: string) => Promise<void>;
   addError: (vedleggId: string, error: string) => void;
   uploadedFiles: UploadedFile[];
   errors: Record<string, string | undefined>;
@@ -16,6 +17,7 @@ interface AttachmentUploadContextType {
 const initialContext: AttachmentUploadContextType = {
   handleUploadFiles: async () => {},
   handleDeleteFile: async () => {},
+  handleDeleteAttachment: async () => {},
   addError: () => {},
   uploadedFiles: [],
   errors: {},
@@ -34,12 +36,22 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
       (current) => ({ ...current, uploadedFiles: [...(current?.uploadedFiles ?? []), ...files] }) as Submission,
     );
   };
-  const deleteFromSubmission = (fileId: string) => {
+  const removeFileFromSubmission = (fileId: string) => {
     setSubmission(
       (current) =>
         ({
           ...current,
           uploadedFiles: (current?.uploadedFiles ?? []).filter((file) => file.filId !== fileId),
+        }) as Submission,
+    );
+  };
+
+  const removeFilesFromSubmission = (vedleggId: string) => {
+    setSubmission(
+      (current) =>
+        ({
+          ...current,
+          uploadedFiles: (current?.uploadedFiles ?? []).filter((file) => file.vedleggId !== vedleggId),
         }) as Submission,
     );
   };
@@ -79,15 +91,32 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
 
   const handleDeleteFile = async (vedleggId: string, fileId: string) => {
     try {
+      if (!innsendingsId) {
+        throw new Error('InnsendingsId is not set');
+      }
       await deleteFile(fileId, innsendingsId);
       removeError(vedleggId);
-      deleteFromSubmission(fileId);
+      removeFileFromSubmission(fileId);
     } catch (_e) {
       addError(vedleggId, 'Det oppstod en feil under sletting av filen. Prøv igjen senere.');
     }
   };
 
-  const value = { handleUploadFiles, handleDeleteFile, addError, uploadedFiles, errors };
+  const handleDeleteAttachment = async (vedleggId: string) => {
+    try {
+      if (!innsendingsId) {
+        throw new Error('InnsendingsId is not set');
+      }
+      await deleteAttachment(vedleggId, innsendingsId);
+      removeError(vedleggId);
+      removeFilesFromSubmission(vedleggId);
+    } catch (e) {
+      addError(vedleggId, 'Det oppstod en feil under sletting av vedlegget. Prøv igjen senere.');
+      throw e;
+    }
+  };
+
+  const value = { handleUploadFiles, handleDeleteFile, handleDeleteAttachment, addError, uploadedFiles, errors };
   return <AttachmentUploadContext.Provider value={value}>{children}</AttachmentUploadContext.Provider>;
 };
 
