@@ -1,5 +1,6 @@
 import express from 'express';
 import { rateLimiter } from '../../middleware/ratelimit';
+import areaCodes from './area-codes';
 import config from './config';
 import enhetsliste from './enhetsliste';
 import formPublicationsRouter from './form-publications';
@@ -24,6 +25,7 @@ const { formsApiAuthHandler } = authHandlers;
 apiRouter.get('/config', config);
 apiRouter.get('/published-forms/:formPath', publishedForms.get);
 apiRouter.get('/enhetsliste', enhetsliste);
+apiRouter.get('/area-codes', areaCodes);
 apiRouter.get('/temakoder', temakoder);
 apiRouter.use('/reports', reportsRouter);
 apiRouter.get('/migrate', migrate);

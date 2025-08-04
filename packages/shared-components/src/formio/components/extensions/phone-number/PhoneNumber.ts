@@ -11,7 +11,6 @@ export default class PhoneNumber extends TextField {
       label: 'Telefonnummer',
       type: 'phoneNumber',
       key: 'telefonNummer',
-      areaCode: undefined,
     });
   }
 

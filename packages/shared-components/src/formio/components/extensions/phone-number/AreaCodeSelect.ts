@@ -10,7 +10,7 @@ class AreaCodeSelect extends NavSelect {
       key: 'areaCode',
       fieldSize: 'input--m',
       data: {
-        url: 'https://www.nav.no/fyllut/api/common-codes/area-codes?lang=nb',
+        url: 'https://www.nav.no/fyllut/api/area-codes?lang=nb',
       },
       dataSrc: 'url',
       disableLimit: true,
