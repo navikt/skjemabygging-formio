@@ -33,7 +33,7 @@ const { featureToggles } = appConfig;
 const { azureSkjemabyggingProxy, azurePdl, kodeverkToken, tokenxPdl, tokenxSendInn, azurePdfGeneratorToken } =
   initApiConfig();
 
-apiRouter.all('*', idportenAuthHandler, envQualifier);
+apiRouter.all('*path', rateLimiter(60000, 1000), idportenAuthHandler, envQualifier);
 apiRouter.get('/config', config.get);
 apiRouter.get('/enhetsliste', enhetsliste.get);
 apiRouter.get('/forms', tryCatch(forms.get));
