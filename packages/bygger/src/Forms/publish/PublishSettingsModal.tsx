@@ -4,7 +4,7 @@ import { Form, FormsApiTranslation, I18nTranslations } from '@navikt/skjemadigit
 import { useEffect, useState } from 'react';
 import { useFormTranslations } from '../../context/translations/FormTranslationsContext';
 import { useGlobalTranslations } from '../../context/translations/GlobalTranslationsContext';
-import { getFormTextsWithoutGloballyMaintained } from '../../translations/utils/formTextsUtils';
+import { getFormTextsForTranslations } from '../../translations/utils/formTextsUtils';
 import FormStatus from '../status/FormStatus';
 import { allLanguagesInNorwegian } from '../status/PublishedLanguages';
 import Timestamp from '../status/Timestamp';
@@ -63,7 +63,7 @@ const PublishSettingsModal = ({ open, onClose, onConfirm, form, unsavedGlobalTra
 
   useEffect(() => {
     setAllFormOriginalTexts(
-      getFormTextsWithoutGloballyMaintained(form).reduce<string[]>((allTexts, text) => {
+      getFormTextsForTranslations(form).reduce<string[]>((allTexts, text) => {
         return [...allTexts, text];
       }, []),
     );

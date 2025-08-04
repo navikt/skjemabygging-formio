@@ -173,7 +173,7 @@ const getAttachmentTexts = (attachmentValues?: AttachmentSettingValues): undefin
   });
 };
 
-const getFormTexts = (form?: Form): string[] => {
+const extractAllFormTexts = (form?: Form): string[] => {
   if (!form) {
     return [];
   }
@@ -209,14 +209,14 @@ const getFormTexts = (form?: Form): string[] => {
   ].filter((component, index, currentComponents) => withoutDuplicatedComponents(component, index, currentComponents));
 };
 
-const getFormTextsWithoutGloballyMaintained = (form: Form) => {
+const getFormTextsForTranslations = (form: Form) => {
   // The following form texts should not be maintained as form translations:
   // - Country names (handled by a third party package and added to the i18n object in FyllUt)
   // - Global intro page texts (should not be overwritten in form translations)
   const countries = getCountries('nb');
-  return getFormTexts(form)
+  return extractAllFormTexts(form)
     .filter((text) => !countries.some((country) => country.label === text))
     .filter((text) => !externalStorageTexts.keys.introPage.includes(text as Tkey));
 };
 
-export { getFormTextsWithoutGloballyMaintained };
+export { getFormTextsForTranslations };

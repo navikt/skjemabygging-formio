@@ -6,7 +6,7 @@ import {
   TEXTS,
   TranslationLang,
 } from '@navikt/skjemadigitalisering-shared-domain';
-import { getFormTextsWithoutGloballyMaintained } from './formTextsUtils';
+import { getFormTextsForTranslations } from './formTextsUtils';
 
 type CsvRow = {
   type: 'tekst' | 'html';
@@ -47,7 +47,7 @@ const getRowsForExport = (texts: string[], translations: FormsApiTranslation[]):
 };
 
 const getRowsForExportFromForm = (form: Form, translations: FormsApiTranslation[]) => {
-  const formTexts = getFormTextsWithoutGloballyMaintained(form);
+  const formTexts = getFormTextsForTranslations(form);
   return getRowsForExport(formTexts, translations);
 };
 
