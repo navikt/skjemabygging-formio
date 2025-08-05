@@ -9,7 +9,7 @@ import {
 } from '@navikt/skjemadigitalisering-shared-domain';
 import EventEmitter from 'eventemitter3';
 import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { To, useLocation, useNavigate } from 'react-router-dom';
 import FormStepper from '../../components/form/form-stepper/FormStepper';
 import FormError from '../../components/form/FormError';
 import FormSavedStatus from '../../components/form/FormSavedStatus';
@@ -38,7 +38,7 @@ interface FillInFormPageProps {
 export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: FillInFormPageProps) => {
   const navigate = useNavigate();
   const { search } = useLocation();
-  const { submissionMethod } = useAppConfig();
+  const { submissionMethod, logger } = useAppConfig();
   const [formForRendering, setFormForRendering] = useState<NavFormType>();
   const { startMellomlagring, mellomlagringError, isMellomlagringAvailable, isMellomlagringReady } = useSendInn();
   const { currentLanguage, translationsForNavForm, translate } = useLanguages();
@@ -46,6 +46,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: Fil
   const mutationObserverRef = useRef<MutationObserver | undefined>(undefined);
   const [showModal, setShowModal] = useState<ModalType>();
   const [formNavigationPaths, setFormNavigationPaths] = useState<FormNavigationPaths>({});
+  const focusMainContentRef = useRef<boolean>(false);
   const [errors, setErrors] = useState<ComponentError[]>([]);
   const fyllutEvents = useMemo(() => new EventEmitter<FyllutEvent>(), []);
   const errorSummaryRef = useRef<HTMLElement | null>(null);
@@ -64,6 +65,23 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: Fil
       fyllutEvents.emit('validateOnNextPage', { currentPageOnly, validationResultCallback }),
     [fyllutEvents],
   );
+
+  const navigateTo = useCallback<(to: To) => void>(
+    (to: To) => {
+      logger?.debug(`FillInFormPage: navigateTo`, { to });
+      focusMainContentRef.current = true;
+      navigate(to);
+    },
+    [logger, navigate],
+  );
+
+  useEffect(() => {
+    if (focusMainContentRef.current) {
+      logger?.debug(`FillInFormPage: current panel has changed, scrolling to and focus main content`);
+      scrollToAndSetFocus('#maincontent', 'start');
+      focusMainContentRef.current = false;
+    }
+  }, [formNavigationPaths.curr, logger]);
 
   const onCancel = useCallback(() => {
     setShowModal('discard');
@@ -208,6 +226,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: Fil
           isValid={isValid}
           paths={formNavigationPaths}
           onCancel={onCancel}
+          navigateTo={navigateTo}
         />
       </div>
       <div>

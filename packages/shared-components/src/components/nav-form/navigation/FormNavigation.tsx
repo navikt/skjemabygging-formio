@@ -2,7 +2,7 @@ import { ArrowLeftIcon, ArrowRightIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
 import { Submission, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useCallback, useEffect, useState } from 'react';
-import { To, useLocation, useNavigate } from 'react-router-dom';
+import { To, useLocation } from 'react-router-dom';
 import { useLanguages } from '../../../context/languages';
 import { useSendInn } from '../../../context/sendInn/sendInnContext';
 import SaveAndDeleteButtons from '../../button/navigation/save-and-delete/SaveAndDeleteButtons';
@@ -13,17 +13,17 @@ export interface Props {
   isValid: (currentPageOnly: boolean) => Promise<boolean>;
   submission?: Submission;
   onCancel: () => void;
+  navigateTo: (to: To) => void;
   paths: {
     prev?: string;
     next?: string;
   };
 }
 
-const FormNavigation = ({ formUrl, paths, isValid, submission, onCancel }: Props) => {
+const FormNavigation = ({ formUrl, paths, isValid, submission, onCancel, navigateTo }: Props) => {
   const { isMellomlagringActive, updateMellomlagring } = useSendInn();
   const { search } = useLocation();
   const { translate } = useLanguages();
-  const navigate = useNavigate();
 
   const [nextLocation, setNextLocation] = useState<To | undefined>({
     pathname: `${formUrl}/${paths.next ?? 'oppsummering'}`,
@@ -55,10 +55,22 @@ const FormNavigation = ({ formUrl, paths, isValid, submission, onCancel }: Props
       if (isMellomlagringActive && submission) {
         updateMellomlagring(submission).catch((_e) => {});
       }
-      navigate(nextLocation);
+      navigateTo(nextLocation);
       return true;
     },
-    [isMellomlagringActive, isValid, navigate, nextLocation, paths.next, submission, updateMellomlagring],
+    [isMellomlagringActive, isValid, navigateTo, nextLocation, paths.next, submission, updateMellomlagring],
+  );
+
+  const prevClickHandler = useCallback(
+    async (e: React.MouseEvent<HTMLElement>) => {
+      e.preventDefault();
+      if (!prevLocation) {
+        return false;
+      }
+      navigateTo(prevLocation);
+      return true;
+    },
+    [navigateTo, prevLocation],
   );
 
   return (
@@ -80,7 +92,7 @@ const FormNavigation = ({ formUrl, paths, isValid, submission, onCancel }: Props
             </LinkButton>
           )}
           {prevLocation && (
-            <LinkButton buttonVariant="secondary" to={prevLocation}>
+            <LinkButton buttonVariant="secondary" onClick={prevClickHandler} to={prevLocation}>
               <span className="navds-button__icon">
                 <ArrowLeftIcon aria-hidden />
               </span>

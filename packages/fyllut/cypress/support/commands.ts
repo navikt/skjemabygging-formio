@@ -51,6 +51,10 @@ Cypress.Commands.add('clickNextStep', () => {
   return cy.findByRoleWhenAttached('link', { name: TEXTS.grensesnitt.navigation.next }, 500).click();
 });
 
+Cypress.Commands.add('clickPreviousStep', () => {
+  return cy.findByRoleWhenAttached('link', { name: TEXTS.grensesnitt.navigation.previous }, 500).click();
+});
+
 Cypress.Commands.add('clickSaveAndContinue', () => {
   return cy
     .url()
