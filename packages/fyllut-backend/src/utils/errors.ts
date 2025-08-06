@@ -8,7 +8,7 @@ export class ErrorWithCause extends Error {
   }
 }
 
-export const logErrorWithStacktrace = (error: Error) => {
-  const { message, stack, ...errDetails } = error;
-  logger.error(message, { stack, ...errDetails });
+export const logErrorWithStacktrace = (error: any) => {
+  const { message, cause, stack, ...errDetails } = error;
+  logger.error(message, { stack, cause, ...errDetails });
 };
