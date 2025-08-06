@@ -21,6 +21,11 @@ declare global {
        */
       clickNextStep(): Chainable<JQuery<HTMLElement>>;
 
+      /**
+       * Provided you are in the form wizard. Use this to click on the "Forrige steg"-button.
+       */
+      clickPreviousStep(): Chainable<JQuery<HTMLElement>>;
+
       clickSaveAndContinue(): Chainable<JQuery<HTMLElement>>;
 
       clickStart(): Chainable<JQuery<HTMLElement>>;

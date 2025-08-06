@@ -2,7 +2,7 @@ import { Back, Close } from '@navikt/ds-icons';
 import { Button, Stepper } from '@navikt/ds-react';
 import { NavFormType, Submission, TEXTS, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { useMemo, useRef, useState } from 'react';
-import { Link, useLocation, useParams } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useAppConfig } from '../../../context/config/configContext';
 import { useLanguages } from '../../../context/languages';
 
@@ -16,7 +16,6 @@ type FormStepperProps = {
 
 const FormStepper = ({ form, submission, formUrl, activeStep, completed }: FormStepperProps) => {
   const { submissionMethod } = useAppConfig();
-  const { panelSlug } = useParams();
   const openButton = useRef<HTMLButtonElement>(null);
   const { search } = useLocation();
   const { translate } = useLanguages();
@@ -35,7 +34,7 @@ const FormStepper = ({ form, submission, formUrl, activeStep, completed }: FormS
   }, [form, submissionMethod, submission]);
 
   const getActiveStepper = () => {
-    return formSteps.findIndex((step) => step.key === (activeStep ?? panelSlug));
+    return formSteps.findIndex((step) => step.key === activeStep);
   };
 
   const onOpen = () => {

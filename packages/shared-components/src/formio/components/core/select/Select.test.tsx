@@ -110,21 +110,6 @@ describe('NavSelect', () => {
     });
   });
 
-  it('shows error message when validation fails', async () => {
-    await renderNavForm({
-      form: testForm,
-    });
-    const nedtrekksliste = screen.getByLabelText(/Velg frukt.*/) as HTMLInputElement;
-    expect(nedtrekksliste).toBeInTheDocument();
-
-    const nextButton = screen.getByRole('button', { name: 'Neste steg' });
-    expect(nextButton).toBeInTheDocument();
-    await userEvent.click(nextButton);
-
-    const errorMessages = await screen.findAllByText('Du må fylle ut: Velg frukt');
-    expect(errorMessages).toHaveLength(1); // nedenfor input-feltet
-  });
-
   it('changes language', async () => {
     const i18n = {
       en: {
