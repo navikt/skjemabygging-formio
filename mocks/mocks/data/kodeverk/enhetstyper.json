@@ -1,0 +1,265 @@
+{
+  "betydninger": {
+    "AAREG": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "AA-reg"
+          }
+        }
+      }
+    ],
+    "ALS": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "Arbeidslivssenter"
+          }
+        }
+      }
+    ],
+    "ARK": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "Arbeidsrådgivning"
+          }
+        }
+      }
+    ],
+    "DIR": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "Direktorat"
+          }
+        }
+      }
+    ],
+    "DOKSENTER": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "Dokumentsenter"
+          }
+        }
+      }
+    ],
+    "EKSTERN": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "EKSTERN"
+          }
+        }
+      }
+    ],
+    "FORVALTNING": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "Forvaltning"
+          }
+        }
+      }
+    ],
+    "FPY": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "Familie- og pensjonsytelser"
+          }
+        }
+      }
+    ],
+    "FYLKE": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "Fylkeskontor"
+          }
+        }
+      }
+    ],
+    "HELFO": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "HELFO"
+          }
+        }
+      }
+    ],
+    "HMS": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "Hjelpemiddel og tilrettelegging"
+          }
+        }
+      }
+    ],
+    "INNKREV": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "Innkreving"
+          }
+        }
+      }
+    ],
+    "INTRO": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "Intro"
+          }
+        }
+      }
+    ],
+    "IT": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "IT"
+          }
+        }
+      }
+    ],
+    "KLAGE": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "Klageinstans"
+          }
+        }
+      }
+    ],
+    "KO": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "Kø"
+          }
+        }
+      }
+    ],
+    "KONTAKT": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "Kontaktsenter"
+          }
+        }
+      }
+    ],
+    "KONTROLL": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "Kontroll"
+          }
+        }
+      }
+    ],
+    "LOKAL": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "NAV-kontor"
+          }
+        }
+      }
+    ],
+    "OKONOMI": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "Økonomi stønad"
+          }
+        }
+      }
+    ],
+    "OPPFUTLAND": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "Oppfølging utland"
+          }
+        }
+      }
+    ],
+    "OTENESTE": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "Økonomitjenester"
+          }
+        }
+      }
+    ],
+    "RIKSREV": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "RIKSREVISJON"
+          }
+        }
+      }
+    ],
+    "ROBOT": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "Automatisert saksbehandling"
+          }
+        }
+      }
+    ],
+    "ROL": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "Rådgivende overlege"
+          }
+        }
+      }
+    ],
+    "TILLIT": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "Tillitsvalgte"
+          }
+        }
+      }
+    ],
+    "TILTAK": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "Tiltaksenhet"
+          }
+        }
+      }
+    ],
+    "UTLAND": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "Internasjonalt"
+          }
+        }
+      }
+    ],
+    "YTA": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "Arbeid og ytelse"
+          }
+        }
+      }
+    ]
+  }
+}

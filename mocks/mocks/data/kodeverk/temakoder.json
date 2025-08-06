@@ -1,0 +1,472 @@
+{
+  "betydninger": {
+    "RVE": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "Rettferdsvederlag"
+          }
+        }
+      }
+    ],
+    "HJE": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "Hjelpemidler"
+          }
+        }
+      }
+    ],
+    "KTR": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "Kontroll"
+          }
+        }
+      }
+    ],
+    "TRK": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "Trekkhåndtering"
+          }
+        }
+      }
+    ],
+    "OPP": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "Oppfølging"
+          }
+        }
+      }
+    ],
+    "STO": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "Regnskap/utbetaling"
+          }
+        }
+      }
+    ],
+    "TRY": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "Trygdeavgift"
+          }
+        }
+      }
+    ],
+    "SYK": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "Sykepenger"
+          }
+        }
+      }
+    ],
+    "SYM": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "Sykmelding"
+          }
+        }
+      }
+    ],
+    "FOR": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "Foreldre- og svangerskapspenger"
+          }
+        }
+      }
+    ],
+    "FOS": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "Forsikring"
+          }
+        }
+      }
+    ],
+    "MED": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "Medlemskap"
+          }
+        }
+      }
+    ],
+    "SUP": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "Supplerende stønad"
+          }
+        }
+      }
+    ],
+    "AAP": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "Arbeidsavklaringspenger"
+          }
+        }
+      }
+    ],
+    "GEN": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "Generell"
+          }
+        }
+      }
+    ],
+    "TSO": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "Tilleggsstønad"
+          }
+        }
+      }
+    ],
+    "AAR": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "Aa-registeret"
+          }
+        }
+      }
+    ],
+    "TSR": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "Tilleggsstønad arbeidssøkere"
+          }
+        }
+      }
+    ],
+    "OMS": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "Omsorgspenger, Pleiepenger og opplæringspenger"
+          }
+        }
+      }
+    ],
+    "SIK": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "Sikkerhetstiltak"
+          }
+        }
+      }
+    ],
+    "GRA": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "Gravferdsstønad"
+          }
+        }
+      }
+    ],
+    "ENF": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "Enslig forsørger"
+          }
+        }
+      }
+    ],
+    "SAK": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "Saksomkostninger"
+          }
+        }
+      }
+    ],
+    "IND": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "Tiltakspenger"
+          }
+        }
+      }
+    ],
+    "KNA": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "Kontakt Nav"
+          }
+        }
+      }
+    ],
+    "SER": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "Serviceklager"
+          }
+        }
+      }
+    ],
+    "SAP": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "Sanksjon - Person"
+          }
+        }
+      }
+    ],
+    "ERS": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "Erstatning"
+          }
+        }
+      }
+    ],
+    "YRA": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "Yrkesrettet attføring"
+          }
+        }
+      }
+    ],
+    "GRU": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "Grunn- og hjelpestønad"
+          }
+        }
+      }
+    ],
+    "RPO": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "Retting av personopplysninger"
+          }
+        }
+      }
+    ],
+    "YRK": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "Yrkesskade / Menerstatning"
+          }
+        }
+      }
+    ],
+    "FUL": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "Fullmakt"
+          }
+        }
+      }
+    ],
+    "BID": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "Bidrag"
+          }
+        }
+      }
+    ],
+    "UFM": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "Unntak fra medlemskap"
+          }
+        }
+      }
+    ],
+    "UFO": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "Uføretrygd"
+          }
+        }
+      }
+    ],
+    "MOB": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "Mobilitetsfremmende stønad"
+          }
+        }
+      }
+    ],
+    "BIL": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "Bil"
+          }
+        }
+      }
+    ],
+    "KON": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "Kontantstøtte"
+          }
+        }
+      }
+    ],
+    "DAG": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "Dagpenger"
+          }
+        }
+      }
+    ],
+    "FEI": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "Feilutbetaling"
+          }
+        }
+      }
+    ],
+    "AGR": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "Ajourhold - Grunnopplysninger"
+          }
+        }
+      }
+    ],
+    "HEL": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "Helsetjenester og ortopediske hjelpemidler"
+          }
+        }
+      }
+    ],
+    "OKO": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "Økonomi"
+          }
+        }
+      }
+    ],
+    "BAR": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "Barnetrygd"
+          }
+        }
+      }
+    ],
+    "HIS": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "Historisk arkiv"
+          }
+        }
+      }
+    ],
+    "REH": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "Rehabilitering"
+          }
+        }
+      }
+    ],
+    "FAR": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "Farskap"
+          }
+        }
+      }
+    ],
+    "PEN": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "Pensjon"
+          }
+        }
+      }
+    ],
+    "FRI": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "Kompensasjon for selvstendig næringsdrivende/frilansere"
+          }
+        }
+      }
+    ],
+    "PER": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "Permittering og masseoppsigelser"
+          }
+        }
+      }
+    ],
+    "VEN": [
+      {
+        "beskrivelser": {
+          "nb": {
+            "term": "Ventelønn"
+          }
+        }
+      }
+    ]
+  }
+}

@@ -6,6 +6,8 @@
       "get-translations:success",
       "post-azure-openid-token:success",
       "get-kodeverk-currencies:success",
+      "get-kodeverk-temakoder:success",
+      "get-kodeverk-enhetstyper:success",
       "get-tokenx-endpoint:success",
       "post-tokenx:success",
       "post-soknad:success",
