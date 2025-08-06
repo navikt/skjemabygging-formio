@@ -1,9 +1,11 @@
+import { describe } from 'vitest';
 import {
   formatAccountNumber,
   formatIBAN,
   formatNationalIdentityNumber,
   formatNumber,
   formatOrganizationNumber,
+  formatPhoneNumber,
   removeAllSpaces,
 } from './format-utils';
 
@@ -62,6 +64,14 @@ describe('format-utils', () => {
       expect(formatOrganizationNumber('123456789')).toBe('123 456 789');
       expect(formatOrganizationNumber('123')).toBe('123');
       expect(formatOrganizationNumber('')).toBe('');
+    });
+  });
+
+  describe('format phone number', () => {
+    it('should format phone number with +47 area code', () => {
+      expect(formatPhoneNumber('12345678', '+47')).toBe('123 45 678');
+      expect(formatPhoneNumber('12345678', '+49')).toBe('12345678');
+      expect(formatPhoneNumber('', '')).toBe('');
     });
   });
 });

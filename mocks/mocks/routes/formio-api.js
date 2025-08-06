@@ -3,6 +3,7 @@ const introPage = require('../data/formio-api/intro-page.json');
 const introPageTranslations = require('../data/formio-api/intro-page-translations.json');
 const formCypressaxe = require('../data/formio-api/cypressaxe.json');
 const formPengerOgKonto = require('../data/formio-api/pengerOgKonto.json');
+const formPhoneNumberAreaCode = require('../data/formio-api/phone-number-area-code.json');
 const formConditionalXmas = require('../data/formio-api/conditionalxmas.json');
 const formCustomComps = require('../data/formio-api/custom-components.json');
 const formCustomCompsDatagrid = require('../data/formio-api/custom-components-datagrid.json');
@@ -58,6 +59,7 @@ const allForms = [
   { form: introPage, translations: introPageTranslations },
   { form: formCypressaxe, translations: undefined },
   { form: formPengerOgKonto, translations: undefined },
+  { form: formPhoneNumberAreaCode, translations: undefined },
   { form: formConditionalXmas, translations: translationsConditionalXmas },
   { form: formContainer, translations: undefined },
   { form: formContainerDatagrid, translations: undefined },
