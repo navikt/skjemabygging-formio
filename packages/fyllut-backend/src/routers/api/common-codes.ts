@@ -1,3 +1,4 @@
+import { Enhetstype, EnhetstypeNorg } from '@navikt/skjemadigitalisering-shared-domain';
 import { NextFunction, Request, Response } from 'express';
 import correlator from 'express-correlation-id';
 import fetch, { HeadersInit } from 'node-fetch';
@@ -49,6 +50,23 @@ const commonCodes = {
 
       const options = mostUsedCurr.concat(currencyList);
       res.send(options);
+    } catch (e) {
+      next(e);
+    }
+  },
+
+  getEnhetstyper: async (req: Request, res: Response, next: NextFunction) => {
+    const acceptLanguage = req.header('accept-language');
+    const languageCode: string = acceptLanguage || 'nb';
+
+    try {
+      const response = await fetchCommonCodeDescriptions(req, 'EnhetstyperNorg', languageCode);
+      const enhetstyper: EnhetstypeNorg[] = [];
+      for (const [key, values] of Object.entries(response.betydninger)) {
+        const term = (values as any)[0]?.beskrivelser?.[languageCode]?.term;
+        enhetstyper.push({ kodenavn: key as Enhetstype, term: term ?? key });
+      }
+      res.send(enhetstyper);
     } catch (e) {
       next(e);
     }

@@ -9,7 +9,10 @@ const focusOnComponent = (wizard) => (keyOrFocusComponentId: KeyOrFocusComponent
   if (!keyOrFocusComponentId) {
     return;
   }
-  let pageIndex = 0;
+  const pageMeta = {
+    index: 0,
+    key: undefined,
+  };
   const paramIsString = typeof keyOrFocusComponentId === 'string';
   const key = paramIsString ? keyOrFocusComponentId : keyOrFocusComponentId.path;
   const elementId = !paramIsString ? keyOrFocusComponentId.elementId : undefined;
@@ -18,7 +21,8 @@ const focusOnComponent = (wizard) => (keyOrFocusComponentId: KeyOrFocusComponent
     let hasComponent = false;
     page.getComponent(key, (comp) => {
       if (comp.path === key) {
-        pageIndex = index;
+        pageMeta.index = index;
+        pageMeta.key = page.key;
         hasComponent = true;
       }
     });
@@ -26,10 +30,11 @@ const focusOnComponent = (wizard) => (keyOrFocusComponentId: KeyOrFocusComponent
   });
 
   if (page && page !== wizard.currentPage) {
-    return wizard.setPage(pageIndex).then(() => {
+    return wizard.setPage(pageMeta.index).then(() => {
       const component = wizard.getComponent(key);
       if (component) {
         component.focus({ elementId });
+        wizard.emit('focusOnComponentPageChanged', pageMeta);
       }
     });
   }

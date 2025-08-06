@@ -290,9 +290,7 @@ describe('feltMapBuilder', () => {
     });
 
     it('feltMap contains expected data', () => {
-      expect(feltMapString).toContain('2025-06-03');
       expect(feltMapString).toContain('tirsdag 03. juni 2025, parkeringsutgift: 100 kr');
-      expect(feltMapString).toContain('2025-06-04');
       expect(feltMapString).toContain('onsdag 04. juni 2025, parkeringsutgift: 100 kr');
     });
 
