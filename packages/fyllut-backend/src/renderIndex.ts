@@ -122,6 +122,7 @@ const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
       ...(config.umamiWebsiteId && { umamiWebsiteId: config.umamiWebsiteId }),
     });
   } catch (cause: any) {
+    logger.info(`Could not render index because: ${cause.message}`);
     next(new ErrorWithCause('Failed to return index file', cause));
   }
 };
