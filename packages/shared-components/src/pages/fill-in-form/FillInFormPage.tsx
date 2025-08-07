@@ -191,7 +191,11 @@ export const FillInFormPage = () => {
   }, [deleteMellomlagring, showModal, submission, updateMellomlagring]);
 
   useEffect(() => {
-    setFormForRendering(submissionMethod === 'digital' ? navFormUtils.removeVedleggspanel(form) : form);
+    setFormForRendering(
+      submissionMethod === 'digital' || submissionMethod === 'digitalnologin'
+        ? navFormUtils.removeVedleggspanel(form)
+        : form,
+    );
   }, [form, submissionMethod]);
 
   useEffect(() => {

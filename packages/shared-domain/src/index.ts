@@ -1,6 +1,7 @@
 import { AccordionSettingValue, AccordionSettingValues } from './accordion';
 import Address from './address/address';
 import attachmentUtils, {
+  AttachmentOption,
   AttachmentSettingValue,
   AttachmentSettingValues,
   AttachmentValue,
@@ -146,6 +147,7 @@ import submissionTypesUtils from './utils/submissionTypesUtils';
 import translationUtils from './utils/translation';
 import validatorUtils from './utils/validatorUtils';
 import yourInformationUtils from './utils/yourInformationUtils';
+
 export * from './utils/format-utils';
 
 export {
@@ -193,6 +195,7 @@ export type {
   AktivitetPeriode,
   AktivitetVedtaksinformasjon,
   Attachment,
+  AttachmentOption,
   AttachmentSettingValue,
   AttachmentSettingValues,
   AttachmentType,

@@ -149,6 +149,17 @@ export const statiske = {
     nav: 'Jeg ønsker at Nav innhenter denne dokumentasjonen',
     deadline:
       'Hvis vi ikke har mottatt dette vedlegget innen {{deadline}} dager blir saken behandlet med de opplysningene som foreligger.',
+    uploadNow: 'Jeg laster opp dette nå',
+    uploadLater: 'Jeg ettersender dette senere',
+    alreadySent: 'Jeg har levert denne dokumentasjonen tidligere',
+    dontHave: 'Jeg har ikke denne dokumentasjonen',
+    other: 'Sendes inn av andre (for eksempel lege, arbeidsgiver)',
+    navWillFetch: 'Jeg ønsker at Nav innhenter denne dokumentasjonen',
+    noAdditionalAttachments: 'Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved',
+    validFormats: 'Gyldige filformater: pdf, jpeg/jpg, docx, doc, odt, rtf, txt, png, tiff/tif, bmp og gif.',
+    maxFileSize:
+      'Maks filstørrelse: Du kan laste opp flere filer, men totalt kan ikke opplastingen være mer enn 50 MB.',
+    filesUploaded: 'Fil(er) du har lastet opp, men ikke sendt inn:',
   },
   activities: {
     label: 'Hvilken aktivitet søker du om støtte i forbindelse med?',

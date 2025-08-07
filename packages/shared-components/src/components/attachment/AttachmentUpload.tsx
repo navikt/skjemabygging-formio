@@ -12,16 +12,11 @@ import {
   ReadMore,
   VStack,
 } from '@navikt/ds-react';
+import { AttachmentOption } from '@navikt/skjemadigitalisering-shared-domain';
 import { useState } from 'react';
 import { useSendInn } from '../../context/sendInn/sendInnContext';
 import { makeStyles } from '../../index';
 import { useAttachmentUpload } from './AttachmentUploadContext';
-
-type AttachmentOption = {
-  label: string;
-  value: string;
-  upload?: boolean;
-};
 
 interface Props {
   label: string;

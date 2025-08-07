@@ -28,6 +28,10 @@ const FormStepper = () => {
       ...(uploadPersonalIdStep ? [uploadPersonalIdStep] : []),
       ...formioSteps,
       {
+        key: 'attachments',
+        label: 'Vedlegg',
+      },
+      {
         key: 'oppsummering',
         label: TEXTS.statiske.summaryPage.title,
       },

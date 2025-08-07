@@ -2,6 +2,12 @@ import { TFunction } from 'i18next';
 import { Component, NavFormType } from '../form';
 import TEXTS from '../texts';
 
+type AttachmentOption = {
+  label: string;
+  value: string;
+  upload?: boolean;
+};
+
 // TODO bruk til vedlegg options
 const attachmentSettingKeys = [
   'leggerVedNaa',
@@ -12,6 +18,9 @@ const attachmentSettingKeys = [
   'andre',
   'nav',
 ] as const;
+
+const attachmentKeys = ['uploadNow', 'uploadLater', 'alreadySent', 'dontHave', 'other', 'navWillFetch'] as const;
+const otherAttachmentKeys = ['uploadNow', 'noAdditionalAttachments'] as const;
 
 // Saved in form
 type AttachmentSettingValues = Partial<Record<(typeof attachmentSettingKeys)[number], AttachmentSettingValue>>;
@@ -79,10 +88,13 @@ const mapToAttachmentSummary = ({
 const attachmentUtils = {
   attachmentSettingKeys,
   mapToAttachmentSummary,
+  attachmentKeys,
+  otherAttachmentKeys,
 };
 
 export default attachmentUtils;
 export type {
+  AttachmentOption,
   AttachmentSettingValue,
   AttachmentSettingValues,
   AttachmentValue,
