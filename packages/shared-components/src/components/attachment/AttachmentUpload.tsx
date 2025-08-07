@@ -23,6 +23,7 @@ interface Props {
   options: AttachmentOption[];
   vedleggId: string;
   multiple?: boolean;
+  description?: string;
 }
 
 const useStyles = makeStyles({
@@ -32,7 +33,7 @@ const useStyles = makeStyles({
   },
 });
 
-const AttachmentUpload = ({ label, options, vedleggId, multiple = false }: Props) => {
+const AttachmentUpload = ({ label, options, vedleggId, multiple = false, description }: Props) => {
   const [selectedOption, setSelectedOption] = useState<string>();
   const [loading, setLoading] = useState<boolean>(false);
   const styles = useStyles();
@@ -60,7 +61,7 @@ const AttachmentUpload = ({ label, options, vedleggId, multiple = false }: Props
 
   return (
     <VStack gap="8" className="mb">
-      <RadioGroup legend={label} onChange={(value) => setSelectedOption(value)}>
+      <RadioGroup legend={label} onChange={(value) => setSelectedOption(value)} description={description}>
         {options.map((option) => (
           <Radio key={option.value} value={option.value}>
             {option.label}

@@ -3,6 +3,7 @@ import FormioUtils from 'formiojs/utils';
 import UtilsOverrides from '../../formio/overrides/utils-overrides/utils-overrides';
 
 interface Attachment {
+  navId?: string;
   vedleggsnr: string;
   tittel: string;
   label: string;
@@ -11,15 +12,15 @@ interface Attachment {
   propertyNavn: string;
   formioId: string;
   vedleggskjema?: string;
+  description?: string;
+  attachmentValues?: object;
 }
 
-// TODO denne returnerer bare en tom liste. Hvorfor?
 const getAttachmentsFromSchemaDefinition = (form: NavFormType, submissionData: SubmissionData): Attachment[] => {
-  console.log('submissionData', submissionData);
   return navFormUtils
     .flattenComponents(form.components)
     .filter(
-      (component) => (component.properties && !!component.properties.vedleggskode) || !isOtherDocumentation(component),
+      (component) => (component.properties && !!component.properties.vedleggskode) || isOtherDocumentation(component),
     )
     .map(sanitize)
     .filter((comp) => FormioUtils.checkCondition(comp, undefined, submissionData, form));
@@ -34,7 +35,6 @@ const getRelevantAttachments = (form: NavFormType, submissionData: SubmissionDat
     .map(sanitize)
     .filter((comp) => FormioUtils.checkCondition(comp, undefined, submissionData, form))
     .map((comp) => ({
-      // TODO skriv ny metode som sløyfer siste map og bruk til å vise alle vedlegg
       vedleggsnr: comp.properties.vedleggskode,
       tittel: comp.properties.vedleggstittel,
       label: comp.label,
@@ -74,5 +74,11 @@ const hasRelevantAttachments = (form, submissionData) => {
   return !!getRelevantAttachments(form, submissionData).length || hasOtherDocumentation(form, submissionData);
 };
 
-export { getAttachmentsFromSchemaDefinition, getRelevantAttachments, hasOtherDocumentation, hasRelevantAttachments };
+export {
+  getAttachmentsFromSchemaDefinition,
+  getRelevantAttachments,
+  hasOtherDocumentation,
+  hasRelevantAttachments,
+  isOtherDocumentation,
+};
 export type { Attachment };
