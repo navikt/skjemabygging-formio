@@ -148,6 +148,7 @@ export const statiske = {
       '<p>Det er viktig at du gir oss riktige opplysninger slik at vi kan behandle saken din. <a target="_blank" rel="noopener noreferrer" href="https://www.nav.no/endringer">Les mer om viktigheten av å gi riktige opplysninger (åpnes i ny fane)</a>.</p>',
   },
   attachment: {
+    title: 'Vedlegg',
     leggerVedNaa: 'Jeg legger det ved dette skjemaet',
     ettersender: 'Jeg ettersender dokumentasjonen senere',
     nei: 'Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved',

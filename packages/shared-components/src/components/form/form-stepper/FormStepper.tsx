@@ -23,8 +23,8 @@ const FormStepper = () => {
     return [
       ...formioSteps,
       {
-        key: 'attachments',
-        label: 'Vedlegg',
+        key: 'attachments', // TODO rename denne til samme som i FyllUtRouter.tsx
+        label: TEXTS.statiske.attachment.title,
       },
       {
         key: 'oppsummering',

@@ -24,7 +24,7 @@ const FyllUtRouter = ({ form }: Props) => {
           <Route element={<FormLayout stepper={true} />}>
             <Route path={'/oppsummering'} element={<SummaryPage />} />
             <Route path={'/legitimasjon'} element={<UploadPersonalIdPage />} />
-            <Route path={'/attachments'} element={<UploadAttachments />} />
+            <Route path={'/attachments'} element={<UploadAttachments />} /> {/* TODO rename denne pathen*/}
             <Route path={'/:panelSlug'} element={<FillInFormPage />} />
           </Route>
           <Route element={<FormLayout />}>
