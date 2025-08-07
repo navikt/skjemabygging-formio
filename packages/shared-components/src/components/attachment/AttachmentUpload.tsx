@@ -7,15 +7,17 @@ import {
   FileObject,
   FileUpload,
   HStack,
+  Label,
   Radio,
   RadioGroup,
   ReadMore,
   VStack,
 } from '@navikt/ds-react';
-import { AttachmentOption } from '@navikt/skjemadigitalisering-shared-domain';
+import { AttachmentOption, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useState } from 'react';
+import { useLanguages } from '../../context/languages';
 import { useSendInn } from '../../context/sendInn/sendInnContext';
-import { makeStyles } from '../../index';
+import makeStyles from '../../util/styles/jss/jss';
 import { useAttachmentUpload } from './AttachmentUploadContext';
 
 interface Props {
@@ -24,6 +26,7 @@ interface Props {
   vedleggId: string;
   multiple?: boolean;
   description?: string;
+  isIdUpload?: boolean;
 }
 
 const useStyles = makeStyles({
@@ -33,10 +36,11 @@ const useStyles = makeStyles({
   },
 });
 
-const AttachmentUpload = ({ label, options, vedleggId, multiple = false, description }: Props) => {
+const AttachmentUpload = ({ label, options, vedleggId, multiple = false, description, isIdUpload }: Props) => {
   const [selectedOption, setSelectedOption] = useState<string>();
   const [loading, setLoading] = useState<boolean>(false);
   const styles = useStyles();
+  const { translate } = useLanguages();
   const { innsendingsId } = useSendInn();
   const { handleUploadFiles, handleDeleteFile, uploadedFiles, errors } = useAttachmentUpload();
 
@@ -70,17 +74,19 @@ const AttachmentUpload = ({ label, options, vedleggId, multiple = false, descrip
       </RadioGroup>
       {uploadSelected && (
         <VStack gap="4">
-          {/* TODO skal ikke vises for vedlegg, men kun for opplasting av ID */}
-          {/*<Label>Last opp bilde eller skannet kopi av ID-en din</Label>*/}
+          {isIdUpload && <Label>Last opp bilde eller skannet kopi av ID-en din</Label>}
+
           {uploadedAttachmentFiles.length === 0 && (
             <FileUpload.Trigger multiple={!!innsendingsId && multiple} onSelect={handleUpload}>
-              <Button
-                className={styles.button}
-                loading={loading}
-                icon={<UploadIcon title="a11y-title" fontSize="1.5rem" />}
-              >
-                Last opp filer
-              </Button>
+              {
+                <Button
+                  className={styles.button}
+                  loading={loading}
+                  icon={<UploadIcon title="a11y-title" fontSize="1.5rem" />}
+                >
+                  {translate(isIdUpload ? TEXTS.statiske.uploadId.selectFile : TEXTS.statiske.uploadId.uploadFiles)}
+                </Button>
+              }
             </FileUpload.Trigger>
           )}
           {uploadedAttachmentFiles.map(({ filId, filnavn, storrelse }) => (
@@ -95,11 +101,11 @@ const AttachmentUpload = ({ label, options, vedleggId, multiple = false, descrip
           ))}
           <ReadMore header="Gyldige filformater og størrelser" defaultOpen>
             <HStack gap="2" align="start">
-              <BodyShort weight="semibold">Gyldige filformater:</BodyShort>
-              <BodyLong>pdf, jpeg/jpg, docx, doc, odt, rtf, txt, png, tiff/tif, bmp og gif.</BodyLong>
+              <BodyShort weight="semibold">{translate(TEXTS.statiske.attachment.validFormatsLabel)}</BodyShort>
+              <BodyLong>{translate(TEXTS.statiske.attachment.validFormatsDescrption)}</BodyLong>
 
-              <BodyShort weight="semibold">Maks filstørrelse:</BodyShort>
-              <BodyLong> Du kan laste opp flere filer, men totalt kan ikke opplastingen være mer enn 50 MB.</BodyLong>
+              <BodyShort weight="semibold">{translate(TEXTS.statiske.attachment.maxFileSizeLabel)}</BodyShort>
+              <BodyLong>{translate(TEXTS.statiske.attachment.maxFileSizeDescription)}</BodyLong>
             </HStack>
           </ReadMore>
         </VStack>

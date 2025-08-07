@@ -23,7 +23,7 @@ const UploadPersonalIdButtonRow = () => {
     if (uploadedFiles.find((file) => file.vedleggId === 'personal-id')) {
       navigate(`../${form.firstPanelSlug}?${searchParams.toString()}`);
     } else {
-      addError('personal-id', 'Du må laste opp et gyldig identifikasjonsdokument før du kan fortsette.');
+      addError('personal-id', translate(TEXTS.statiske.uploadId.missingUploadError));
     }
   };
 
@@ -36,7 +36,6 @@ const UploadPersonalIdButtonRow = () => {
           iconPosition="right"
           as="a"
           onClick={navigateToFormPage}
-          role="link"
           {...{ href: `${startUrl}?${searchParams.toString()}` }}
         >
           {translate(TEXTS.grensesnitt.navigation.next)}

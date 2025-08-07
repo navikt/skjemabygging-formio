@@ -42,6 +42,14 @@ export const statiske = {
   },
   uploadId: {
     title: 'Legitimasjon',
+    selectFile: 'Velg fil',
+    uploadFiles: 'Last opp fil(er)',
+    missingUploadError: 'Du må laste opp et gyldig identifikasjonsdokument før du kan fortsette.',
+    norwegianPassport: 'Norsk pass',
+    foreignPassport: 'Utenlandsk pass (ikke nødpass)',
+    nationalIdEU: 'Nasjonalt ID-kort fra EU/EØS-land og Sveits',
+    driversLicense: 'Norsk førerkort utstedt fra og med 01.01.1998',
+    driversLicenseEU: 'Førerkort utstedt i EU/EØS og som følger EU/EØS reglene',
   },
   paabegynt: {
     activeTasksHeading: 'Du har {{amount}} påbegynte utkast til denne søknaden',
@@ -156,8 +164,10 @@ export const statiske = {
     other: 'Sendes inn av andre (for eksempel lege, arbeidsgiver)',
     navWillFetch: 'Jeg ønsker at Nav innhenter denne dokumentasjonen',
     noAdditionalAttachments: 'Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved',
-    validFormats: 'Gyldige filformater: pdf, jpeg/jpg, docx, doc, odt, rtf, txt, png, tiff/tif, bmp og gif.',
-    maxFileSize:
+    validFormatsLabel: 'Gyldige filformater:',
+    validFormatsDescrption: 'Gyldige filformater: pdf, jpeg/jpg, docx, doc, odt, rtf, txt, png, tiff/tif, bmp og gif.',
+    maxFileSizeLabel: 'Maks filstørrelse:',
+    maxFileSizeDescription:
       'Maks filstørrelse: Du kan laste opp flere filer, men totalt kan ikke opplastingen være mer enn 50 MB.',
     filesUploaded: 'Fil(er) du har lastet opp, men ikke sendt inn:',
   },
