@@ -1,5 +1,7 @@
 import { Accordion } from '@navikt/ds-react';
-import { Intro, useAppConfig, useLanguages } from '@navikt/skjemadigitalisering-shared-components';
+import Intro from '../../components/intro';
+import { useAppConfig } from '../../context/config/configContext';
+import { useLanguages } from '../../context/languages';
 import IntroPageButtonRow from './IntroPageButtonRow';
 import { useIntroPage } from './IntroPageContext';
 

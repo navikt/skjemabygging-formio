@@ -1,103 +1,37 @@
-import { FyllutState, I18nTranslations, Submission } from '@navikt/skjemadigitalisering-shared-domain';
-import { useState } from 'react';
-import { Route, Routes, useResolvedPath } from 'react-router-dom';
-import { FormContainer } from '../components/form/container/FormContainer';
-import { FormTitle } from '../components/form/form-title/FormTitle';
-import { SubmissionWrapper } from '../components/summary/submission-wrapper/SubmissionWrapper';
-import { LanguageSelector, useLanguages } from '../context/languages';
-import { PrefillDataProvider } from '../context/prefill-data/PrefillDataContext';
+import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
+import { Route, Routes } from 'react-router-dom';
+import { FormProvider } from '../context/form/FormContext';
 import { SendInnProvider } from '../context/sendInn/sendInnContext';
 import ActiveTasksPage from './active-tasks/ActiveTasksPage';
 import { FillInFormPage } from './fill-in-form/FillInFormPage';
+import FormLayout from './FormLayout';
+import IntroPage from './intro/IntroPage';
 import { PrepareIngenInnsendingPage } from './prepare-innsending/PrepareIngenInnsendingPage';
 import { PrepareLetterPage } from './prepare-letter/PrepareLetterPage';
 import { SummaryPage } from './summary/SummaryPage';
 
-const FyllUtRouter = ({ form }) => {
-  const { translationsForNavForm: translations } = useLanguages();
-  const [submission, setSubmission] = useState<Submission>();
-  const formBaseUrl = useResolvedPath('').pathname;
+interface Props {
+  form: NavFormType;
+}
 
-  const onFyllutStateChange = (fyllutState: FyllutState) => {
-    setSubmission((prevSubmission) => {
-      return {
-        ...prevSubmission,
-        fyllutState,
-      } as Submission;
-    });
-  };
-
+const FyllUtRouter = ({ form }: Props) => {
   return (
-    <PrefillDataProvider form={form}>
-      <SendInnProvider
-        form={form}
-        formUrl={formBaseUrl}
-        translations={translations as I18nTranslations}
-        updateSubmission={(submission) => {
-          setSubmission(submission);
-        }}
-        onFyllutStateChange={onFyllutStateChange}
-      >
-        <FormContainer>
-          <LanguageSelector />
-          <FormTitle form={form} hideIconOnMobile={true} />
-          <Routes>
-            <Route
-              path={'/oppsummering'}
-              element={
-                <SubmissionWrapper submission={submission} url={formBaseUrl}>
-                  {(submissionObject) => (
-                    <SummaryPage form={form} submission={submissionObject} formUrl={formBaseUrl} />
-                  )}
-                </SubmissionWrapper>
-              }
-            />
-            <Route
-              path={'/send-i-posten'}
-              element={
-                <SubmissionWrapper submission={submission} url={formBaseUrl}>
-                  {(submissionObject) => (
-                    <PrepareLetterPage
-                      form={form}
-                      submission={submissionObject}
-                      translations={translations}
-                      formUrl={formBaseUrl}
-                    />
-                  )}
-                </SubmissionWrapper>
-              }
-            />
-            <Route
-              path={'/ingen-innsending'}
-              element={
-                <SubmissionWrapper submission={submission} url={formBaseUrl}>
-                  {(submissionObject) => (
-                    <PrepareIngenInnsendingPage
-                      form={form}
-                      submission={submissionObject}
-                      translations={translations}
-                      formUrl={formBaseUrl}
-                    />
-                  )}
-                </SubmissionWrapper>
-              }
-            />
-            <Route path={'/paabegynt'} element={<ActiveTasksPage form={form} formUrl={formBaseUrl} />} />
-            <Route
-              path={'/:panelSlug'}
-              element={
-                <FillInFormPage
-                  form={form}
-                  submission={submission}
-                  setSubmission={setSubmission}
-                  formUrl={formBaseUrl}
-                />
-              }
-            />
-          </Routes>
-        </FormContainer>
+    <FormProvider form={form}>
+      <SendInnProvider>
+        <Routes>
+          <Route element={<FormLayout stepper={true} />}>
+            <Route path={'/oppsummering'} element={<SummaryPage />} />
+            <Route path={'/:panelSlug'} element={<FillInFormPage />} />
+          </Route>
+          <Route element={<FormLayout />}>
+            <Route path={''} element={<IntroPage />} />
+            <Route path={'/send-i-posten'} element={<PrepareLetterPage />} />
+            <Route path={'/ingen-innsending'} element={<PrepareIngenInnsendingPage />} />
+            <Route path={'/paabegynt'} element={<ActiveTasksPage />} />
+          </Route>
+        </Routes>
       </SendInnProvider>
-    </PrefillDataProvider>
+    </FormProvider>
   );
 };
 

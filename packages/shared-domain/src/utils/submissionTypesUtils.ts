@@ -5,7 +5,15 @@ function isDigitalSubmission(submissionTypes?: SubmissionType[]): boolean {
 }
 
 function isDigitalSubmissionOnly(submissionTypes?: SubmissionType[]): boolean {
-  return !submissionTypes?.includes('PAPER') && !!submissionTypes?.includes('DIGITAL');
+  return !!submissionTypes?.includes('DIGITAL') && submissionTypes?.length === 1;
+}
+
+function isDigitalNoLoginSubmission(submissionTypes?: SubmissionType[]): boolean {
+  return !!submissionTypes?.includes('DIGITAL_NO_LOGIN');
+}
+
+function isDigitalNoLoginSubmissionOnly(submissionTypes?: SubmissionType[]): boolean {
+  return !!submissionTypes?.includes('DIGITAL_NO_LOGIN') && submissionTypes?.length === 1;
 }
 
 function isPaperSubmission(submissionTypes?: SubmissionType[]): boolean {
@@ -13,7 +21,7 @@ function isPaperSubmission(submissionTypes?: SubmissionType[]): boolean {
 }
 
 function isPaperSubmissionOnly(submissionTypes?: SubmissionType[]): boolean {
-  return !!submissionTypes?.includes('PAPER') && !submissionTypes?.includes('DIGITAL');
+  return !!submissionTypes?.includes('PAPER') && submissionTypes?.length === 1;
 }
 
 function isNoneSubmission(submissionTypes?: SubmissionType[]): boolean {
@@ -23,6 +31,8 @@ function isNoneSubmission(submissionTypes?: SubmissionType[]): boolean {
 const submissionTypesUtils = {
   isDigitalSubmissionOnly,
   isDigitalSubmission,
+  isDigitalNoLoginSubmission,
+  isDigitalNoLoginSubmissionOnly,
   isNoneSubmission,
   isPaperSubmission,
   isPaperSubmissionOnly,

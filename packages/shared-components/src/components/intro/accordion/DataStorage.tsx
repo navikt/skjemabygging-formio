@@ -1,9 +1,9 @@
-import { Tkey } from '@navikt/skjemadigitalisering-shared-domain';
+import { SubmissionMethod, Tkey } from '@navikt/skjemadigitalisering-shared-domain';
 import IntroAccordion from '../shared/IntroAccordion';
 
 interface Props {
   translate: (key?: Tkey) => string;
-  submissionMethod?: 'paper' | 'digital';
+  submissionMethod?: SubmissionMethod;
   className?: string;
   defaultOpen?: boolean;
 }

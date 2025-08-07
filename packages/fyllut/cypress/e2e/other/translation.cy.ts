@@ -83,6 +83,8 @@ describe('Translations', () => {
     });
 
     it('stays on current panel when changing language', () => {
+      cy.clickShowAllSteps();
+
       cy.findByRole('link', { name: 'Dine opplysninger' }).click();
       cy.findByRole('button', { name: 'Norsk bokmål' }).click();
       cy.findByRole('link', { name: 'English' }).click();

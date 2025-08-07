@@ -4,6 +4,7 @@ import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import { http } from '../../index';
 import { AppConfigProvider } from '../config/configContext';
+import { FormProvider } from '../form/FormContext';
 import { SendInnProvider, useSendInn } from './sendInnContext';
 
 const mockHttp = {
@@ -29,7 +30,6 @@ describe('sendInnContext', () => {
 
   const innsendingsId = 'abc-123-456';
   const form = { title: 'TestSkjema', components: [] } as unknown as NavFormType;
-  const translations = {};
   const submission = { data: { question: 'answer' } } as unknown as Submission;
   const submissionMethod = 'digital';
   const headers = {};
@@ -51,15 +51,11 @@ describe('sendInnContext', () => {
           config={{ isTest: true, loggerConfig: { enabled: false } }}
         >
           <MemoryRouter>
-            <SendInnProvider
-              form={form}
-              formUrl={`/fyllut/${form.path}`}
-              translations={translations}
-              updateSubmission={vi.fn()}
-              onFyllutStateChange={vi.fn()}
-            >
-              <TestComponent submission={submission} />
-            </SendInnProvider>
+            <FormProvider form={form}>
+              <SendInnProvider>
+                <TestComponent submission={submission} />
+              </SendInnProvider>
+            </FormProvider>
           </MemoryRouter>
         </AppConfigProvider>,
       );

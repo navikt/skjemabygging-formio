@@ -88,11 +88,8 @@ describe('React components', () => {
           .should('contain.value', '01.01.2023')
           .focus();
         cy.findByRole('textbox', { name: 'Gyldig fra dato' }).type('{selectall}02.01.2023');
-        cy.findByRole('navigation', { name: 'Søknadssteg' })
-          .should('exist')
-          .within(() => {
-            cy.findByRole('link', { name: 'Oppsummering' }).click();
-          });
+        cy.clickShowAllSteps();
+        cy.findByRole('link', { name: 'Oppsummering' }).click();
 
         cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
         cy.get('dl')

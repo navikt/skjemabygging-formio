@@ -6,6 +6,7 @@ import { RouterProvider, createMemoryRouter } from 'react-router-dom';
 import { defaultFormWithAttachment } from '../../../../test/test-data/form/data';
 import { Buttons, formWithProperties, getButtons } from '../../../../test/util/helpers';
 import { AppConfigContextType, AppConfigProvider } from '../../../context/config/configContext';
+import { FormProvider } from '../../../context/form/FormContext';
 import { SendInnProvider } from '../../../context/sendInn/sendInnContext';
 import { PanelValidation } from '../../../util/form/panel-validation/panelValidation';
 import SummaryPageNavigation, { Props } from './SummaryPageNavigation';
@@ -50,16 +51,12 @@ const renderSummaryPageNavigation = async (
       {
         path: '/testform/*',
         element: (
-          <SendInnProvider
-            form={(props.form ?? {}) as NavFormType}
-            formUrl="/fyllut/testform"
-            translations={{}}
-            updateSubmission={vi.fn()}
-            onFyllutStateChange={vi.fn()}
-          >
-            <SummaryPageNavigation {...summaryPageProps} />
-            <div id="formio-summary-hidden" hidden />
-          </SendInnProvider>
+          <FormProvider form={(props.form ?? {}) as NavFormType}>
+            <SendInnProvider>
+              <SummaryPageNavigation {...summaryPageProps} />
+              <div id="formio-summary-hidden" hidden />
+            </SendInnProvider>
+          </FormProvider>
         ),
       },
     ],

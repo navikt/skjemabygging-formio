@@ -56,7 +56,7 @@ const MigrationFormPreview = () => {
         </Button>
       </div>
       <LanguagesProvider translations={{}}>
-        <FyllUtRouter form={form} />
+        <FyllUtRouter form={form!} />
       </LanguagesProvider>
     </div>
   );

@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import { Attachment, Component, FormsResponseForm, NavFormType, Panel, Submission } from '../form';
+import { Attachment, Component, FormsResponseForm, NavFormType, Panel, Submission, SubmissionMethod } from '../form';
 import { Form, formSummaryUtil, submissionTypesUtils } from '../index';
 import FormioUtils from '../utils/formio/FormioUtils';
 import { camelCase } from './stringUtils';
@@ -217,21 +217,22 @@ export const removeVedleggspanel = (form: NavFormType) => {
   return removeComponents(form, isVedleggspanel);
 };
 
-export const isSubmissionMethodAllowed = (submissionMethod: string, form: NavFormType | FormsResponseForm): boolean => {
+export const isSubmissionMethodAllowed = (
+  submissionMethod: SubmissionMethod,
+  form: NavFormType | FormsResponseForm,
+): boolean => {
   const { submissionTypes } = form.properties;
-  const isDigitalAndPaperSubmission =
-    submissionTypesUtils.isPaperSubmission(submissionTypes) &&
-    submissionTypesUtils.isDigitalSubmission(submissionTypes);
+  if (!submissionMethod && submissionTypes.length === 0) {
+    return true;
+  }
 
   switch (submissionMethod) {
     case 'digital':
-      return (
-        !submissionTypes || isDigitalAndPaperSubmission || submissionTypesUtils.isDigitalSubmissionOnly(submissionTypes)
-      );
+      return submissionTypesUtils.isDigitalSubmission(submissionTypes);
     case 'paper':
-      return (
-        !submissionTypes || isDigitalAndPaperSubmission || submissionTypesUtils.isPaperSubmissionOnly(submissionTypes)
-      );
+      return submissionTypesUtils.isPaperSubmission(submissionTypes);
+    case 'digitalnologin':
+      return submissionTypesUtils.isDigitalNoLoginSubmission(submissionTypes);
   }
   return false;
 };

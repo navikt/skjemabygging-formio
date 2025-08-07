@@ -16,6 +16,7 @@ const mapFormToNavForm = (form: Form): NavFormType => {
       publishedLanguages: form.publishedLanguages,
     },
     introPage: form?.introPage,
+    firstPanelSlug: form?.firstPanelSlug ?? '',
   };
 };
 
@@ -35,6 +36,8 @@ const mapNavFormToForm = (form: NavFormType): Form => {
     publishedBy,
     publishedLanguages,
     status,
+    introPage,
+    firstPanelSlug,
   } = form;
   return {
     id,
@@ -52,7 +55,8 @@ const mapNavFormToForm = (form: NavFormType): Form => {
     publishedBy,
     publishedLanguages,
     status: status as FormStatus,
-    introPage: form?.introPage,
+    introPage,
+    firstPanelSlug,
   };
 };
 
