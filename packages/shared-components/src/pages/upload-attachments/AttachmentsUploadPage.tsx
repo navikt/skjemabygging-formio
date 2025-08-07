@@ -7,7 +7,7 @@ import { useLanguages } from '../../context/languages';
 import { Attachment, getAttachmentsFromSchemaDefinition } from '../../util/attachment/attachmentsUtil';
 import UploadPersonalIdButtonRow from '../upload-personal-id/UploadPersonalIdButtonRow';
 
-export function UploadAttachments() {
+export function AttachmentsUploadPage() {
   const { translate } = useLanguages();
   const { form, submission } = useForm();
 
@@ -46,4 +46,4 @@ export function UploadAttachments() {
   );
 }
 
-export default UploadAttachments;
+export default AttachmentsUploadPage;

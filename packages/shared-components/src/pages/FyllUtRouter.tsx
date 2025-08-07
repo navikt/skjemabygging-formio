@@ -9,7 +9,7 @@ import IntroPage from './intro/IntroPage';
 import { PrepareIngenInnsendingPage } from './prepare-innsending/PrepareIngenInnsendingPage';
 import { PrepareLetterPage } from './prepare-letter/PrepareLetterPage';
 import { SummaryPage } from './summary/SummaryPage';
-import UploadAttachments from './upload-attachments/UploadAttachments';
+import AttachmentsUploadPage from './upload-attachments/AttachmentsUploadPage';
 import UploadPersonalIdPage from './upload-personal-id/UploadPersonalIdPage';
 
 interface Props {
@@ -24,7 +24,7 @@ const FyllUtRouter = ({ form }: Props) => {
           <Route element={<FormLayout stepper={true} />}>
             <Route path={'/oppsummering'} element={<SummaryPage />} />
             <Route path={'/legitimasjon'} element={<UploadPersonalIdPage />} />
-            <Route path={'/attachments'} element={<UploadAttachments />} /> {/* TODO rename denne pathen*/}
+            <Route path={'/attachments'} element={<AttachmentsUploadPage />} /> {/* TODO rename denne pathen*/}
             <Route path={'/:panelSlug'} element={<FillInFormPage />} />
           </Route>
           <Route element={<FormLayout />}>
