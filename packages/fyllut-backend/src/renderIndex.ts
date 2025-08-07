@@ -71,7 +71,7 @@ const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
       if (form && form.properties) {
         const { submissionTypes } = form.properties;
         if (!qpSub) {
-          if (submissionTypes?.length > 1) {
+          if (submissionTypes && submissionTypes.length > 1) {
             logger.info('Submission query param is missing', { formPath });
             const targetUrl = `${config.fyllutPath}/${formPath}`;
             if (req.baseUrl !== targetUrl) {
@@ -122,7 +122,6 @@ const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
       ...(config.umamiWebsiteId && { umamiWebsiteId: config.umamiWebsiteId }),
     });
   } catch (cause: any) {
-    logger.info(`Could not render index because: ${cause.message}`);
     next(new ErrorWithCause('Failed to return index file', cause));
   }
 };
