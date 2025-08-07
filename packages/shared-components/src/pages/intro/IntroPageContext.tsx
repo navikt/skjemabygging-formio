@@ -49,7 +49,7 @@ export const IntroPageProvider = ({ children, form }: IntroPageProviderProps) =>
         }
       }
 
-      if (form.properties?.submissionTypes && form.properties?.submissionTypes?.length > 0) {
+      if (form.properties?.submissionTypes) {
         if (submissionTypesUtils.isPaperSubmissionOnly(form.properties.submissionTypes)) {
           return IntroPageState.PAPER;
         }
@@ -82,7 +82,7 @@ export const IntroPageProvider = ({ children, form }: IntroPageProviderProps) =>
   };
 
   const showSelectSubmissionType = () => {
-    return state === IntroPageState.NO_LOGIN || state === IntroPageState.DEFAULT;
+    return form.properties?.submissionTypes && (state === IntroPageState.NO_LOGIN || state === IntroPageState.DEFAULT);
   };
 
   return (
