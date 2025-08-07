@@ -49,7 +49,7 @@ export const IntroPageProvider = ({ children, form }: IntroPageProviderProps) =>
         }
       }
 
-      if (form.properties?.submissionTypes) {
+      if (form.properties?.submissionTypes && form.properties?.submissionTypes?.length > 0) {
         if (submissionTypesUtils.isPaperSubmissionOnly(form.properties.submissionTypes)) {
           return IntroPageState.PAPER;
         }
