@@ -187,6 +187,7 @@ export interface Webform {
   onAny?: any;
   destroy: (deleteFromGlobal: boolean) => void;
   focusOnComponent: (args: any) => void;
+  validateOnNextPage: (currentPageOnly: boolean, resultCallback: (valid: boolean) => void) => void;
   redrawNavigation: () => void;
   checkData: (data: SubmissionData, flags: any[], row: any) => void;
   currentPanel: Component;
@@ -195,4 +196,8 @@ export interface Webform {
   redraw: () => Promise<void>;
   submissionReady: Promise<void>;
   _data: SubmissionData;
+  emitNavigationPathsChanged: () => void;
+  emit: (event: string, args: any) => void;
+  page: number;
+  currentNextPage: number;
 }

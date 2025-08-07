@@ -13,7 +13,7 @@ import configUtils from './config';
 import type { ConfigType } from './config/types';
 import type { DataFetcherSourceId } from './data-fetcher';
 import { dataFetcherSources } from './data-fetcher';
-import { Enhet, Enhetstype, supportedEnhetstyper } from './enhet';
+import { Enhet, Enhetstype, EnhetstypeNorg, supportedEnhetstyper } from './enhet';
 import type { FieldSize } from './field-size';
 import { UploadedFile } from './file';
 import {
@@ -217,6 +217,7 @@ export type {
   DrivingListValues,
   Enhet,
   Enhetstype,
+  EnhetstypeNorg,
   FeatureTogglesMap,
   FieldSize,
   Form,

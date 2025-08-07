@@ -1,36 +1,31 @@
-import { FormProgress } from '@navikt/ds-react';
-import { navFormUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { useEffect, useMemo, useState } from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { Back, Close } from '@navikt/ds-icons';
+import { Button, Stepper } from '@navikt/ds-react';
+import { NavFormType, Submission, TEXTS, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { useMemo, useRef, useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { useAppConfig } from '../../../context/config/configContext';
-import { useForm } from '../../../context/form/FormContext';
 import { useLanguages } from '../../../context/languages';
 
-const FormStepper = () => {
-  const { form, submission, formUrl, formProgress, setFormProgress } = useForm();
-  const { submissionMethod, baseUrl } = useAppConfig();
-  const [screenSmall, setScreenSmall] = useState<boolean>(false);
-  const params = useParams();
-  const panelSlug = params.panelSlug ?? params['*'];
-  const { search } = useLocation();
-  const navigate = useNavigate();
-  const { translate } = useLanguages();
+type FormStepperProps = {
+  form: NavFormType;
+  formUrl: string;
+  submission?: Submission;
+  activeStep?: string;
+  completed?: boolean;
+};
 
+const FormStepper = ({ form, submission, formUrl, activeStep, completed }: FormStepperProps) => {
+  const { submissionMethod } = useAppConfig();
+  const openButton = useRef<HTMLButtonElement>(null);
+  const { search } = useLocation();
+  const { translate } = useLanguages();
+  const [isOpen, setIsOpen] = useState(false);
   const formSteps = useMemo(() => {
-    const uploadPersonalIdStep = submissionMethod === 'digitalnologin' && {
-      key: 'legitimasjon',
-      label: 'Legitimasjon',
-    };
     const formioSteps = navFormUtils
       .getActivePanelsFromForm(form, submission, submissionMethod)
       .map((panel) => ({ label: panel.title, key: panel.key }));
     return [
-      ...(uploadPersonalIdStep ? [uploadPersonalIdStep] : []),
       ...formioSteps,
-      {
-        key: 'attachments',
-        label: 'Vedlegg',
-      },
       {
         key: 'oppsummering',
         label: TEXTS.statiske.summaryPage.title,
@@ -39,61 +34,66 @@ const FormStepper = () => {
   }, [form, submissionMethod, submission]);
 
   const getActiveStepper = () => {
-    return formSteps.findIndex((step) => step.key === panelSlug);
+    return formSteps.findIndex((step) => step.key === activeStep);
   };
 
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth < 768) {
-        if (!screenSmall) {
-          setScreenSmall(true);
-        }
-      } else if (screenSmall) {
-        setScreenSmall(false);
-      }
-    };
+  const onOpen = () => {
+    setIsOpen(!isOpen);
+  };
 
-    window.addEventListener('resize', handleResize);
-    handleResize();
-
-    return () => window.removeEventListener('resize', handleResize);
-  }, [screenSmall]);
+  const onClose = () => {
+    setIsOpen(false);
+    openButton.current?.focus();
+  };
 
   return (
-    <div className="mb">
-      <FormProgress
-        totalSteps={formSteps.length}
-        activeStep={getActiveStepper() + 1}
-        open={formProgress}
-        onOpenChange={(state) => setFormProgress(state)}
-        translations={{
-          step: translate(TEXTS.grensesnitt.stepper.step),
-          showAllSteps: translate(TEXTS.grensesnitt.stepper.showAllSteps),
-          hideAllSteps: translate(TEXTS.grensesnitt.stepper.hideAllSteps),
-        }}
+    <>
+      <Button
+        className="stepper-toggle"
+        icon={<Back aria-hidden />}
+        onClick={onOpen}
+        size="small"
+        variant="secondary"
+        ref={openButton}
       >
-        {formSteps.map((step, index) => {
-          const stepUrl = `${formUrl}/${step.key}${search}`;
-          return (
-            <FormProgress.Step
-              onClick={(event) => {
-                event.preventDefault();
-                if (getActiveStepper() !== index) {
-                  navigate(stepUrl);
-                  if (screenSmall) {
-                    setFormProgress(false);
-                  }
-                }
-              }}
-              href={`${baseUrl}${stepUrl}`}
-              key={step.key}
-            >
-              {translate(step.label)}
-            </FormProgress.Step>
-          );
+        {translate(TEXTS.grensesnitt.stepper.toggleText, {
+          currentStep: getActiveStepper() + 1,
+          totalSteps: formSteps.length,
         })}
-      </FormProgress>
-    </div>
+      </Button>
+      {isOpen && <div className="stepper-backdrop"></div>}
+      <nav
+        aria-label="Søknadssteg"
+        id="{{ ctx.wizardKey }}-header"
+        className={`stegindikator stepper${isOpen ? ' stepper--open' : ''}`}
+      >
+        <div className="stepper-container">
+          {isOpen && (
+            <Button
+              className="stepper-close"
+              icon={<Close aria-hidden />}
+              onClick={onClose}
+              variant="tertiary"
+              autoFocus
+            >
+              {translate(TEXTS.grensesnitt.close)}
+            </Button>
+          )}
+          <Stepper activeStep={getActiveStepper() + 1}>
+            {formSteps.map((step, index) => (
+              <Stepper.Step
+                to={`${formUrl}/${step.key}${search}`}
+                as={Link}
+                key={step.key}
+                completed={completed ? getActiveStepper() > index : false}
+              >
+                {translate(step.label)}
+              </Stepper.Step>
+            ))}
+          </Stepper>
+        </div>
+      </nav>
+    </>
   );
 };
 
