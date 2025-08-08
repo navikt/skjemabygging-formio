@@ -57,6 +57,11 @@ const FormStepper = () => {
         activeStep={getActiveStepper() + 1}
         open={formProgress}
         onOpenChange={(state) => setFormProgress(state)}
+        translations={{
+          step: translate(TEXTS.grensesnitt.stepper.step),
+          showAllSteps: translate(TEXTS.grensesnitt.stepper.showAllSteps),
+          hideAllSteps: translate(TEXTS.grensesnitt.stepper.hideAllSteps),
+        }}
       >
         {formSteps.map((step, index) => {
           const stepUrl = `${formUrl}/${step.key}${search}`;

@@ -201,6 +201,12 @@ export class Backend {
     }).then((response) => response.data);
   }
 
+  async fetchEnhetstyper() {
+    return fetchWithErrorHandling(`${this.config.fyllut.baseUrl}/api/common-codes/enhetstyper`, {
+      method: 'GET',
+    }).then((response) => response.data);
+  }
+
   async fetchTemakoder() {
     return fetchWithErrorHandling(`${this.config.fyllut.baseUrl}/api/common-codes/archive-subjects`, {
       method: 'GET',

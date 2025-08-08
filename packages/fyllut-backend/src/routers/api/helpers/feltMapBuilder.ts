@@ -226,14 +226,14 @@ const drivingListMap = (component): VerdilisteElement => {
     verdiliste: component.value.dates.map((date) => {
       return drivingListDay(date.key, date.text);
     }),
-    visningsVariant: null,
+    visningsVariant: 'PUNKTLISTE',
   };
 };
 
 const drivingListDay = (label: string, value: string): VerdilisteElement => {
   return {
-    label: label,
-    verdi: value,
+    label: value,
+    verdi: null,
     verdiliste: null,
     visningsVariant: null,
   };

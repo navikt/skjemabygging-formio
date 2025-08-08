@@ -33,7 +33,7 @@ const { featureToggles } = appConfig;
 const { azureSkjemabyggingProxy, azurePdl, kodeverkToken, tokenxPdl, tokenxSendInn, azurePdfGeneratorToken } =
   initApiConfig();
 
-apiRouter.all('*', idportenAuthHandler, envQualifier);
+apiRouter.all('*path', rateLimiter(60000, 1000), idportenAuthHandler, envQualifier);
 apiRouter.get('/config', config.get);
 apiRouter.get('/enhetsliste', enhetsliste.get);
 apiRouter.get('/forms', tryCatch(forms.get));
@@ -53,6 +53,7 @@ apiRouter.put('/send-inn/utfyltsoknad', azurePdfGeneratorToken, tokenxSendInn, s
 apiRouter.get('/common-codes/archive-subjects', kodeverkToken, commonCodes.getArchiveSubjects);
 apiRouter.post('/pdf/convert', azurePdfGeneratorToken, exstream.post);
 apiRouter.get('/common-codes/currencies', kodeverkToken, commonCodes.getCurrencies);
+apiRouter.get('/common-codes/enhetstyper', kodeverkToken, commonCodes.getEnhetstyper);
 apiRouter.post('/log/:level', rateLimiter(60000, 60), log.post);
 apiRouter.get('/health/status', status.get);
 apiRouter.get('/send-inn/prefill-data', tokenxSendInn, prefillData.get);

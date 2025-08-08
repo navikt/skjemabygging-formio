@@ -58,8 +58,13 @@ export const grensesnitt = {
   introPage: {
     sendDigital: 'Logg inn og send digitalt',
     sendDigitalDescription: 'Det er enklest og raskest å søke digitalt.',
+    sendDigitalNoLogin: 'Send digitalt uten å logge inn',
+    sendDigitalNoLoginDescription:
+      'Vi kontakter deg etter innsending for å bekrefte at det er du som har sendt søknaden.',
     sendOnPaper: 'Fyll ut digitalt og send i posten',
     sendOnPaperDescription: 'Du fyller ut søknaden før du skriver den ut.',
+    noLogin: 'Kan ikke logge inn',
+    noLoginDescription: 'Velg mellom å sende i posten eller å sende digitalt uten å logge inn.',
     start: 'Start',
   },
   summaryPage: {
@@ -67,8 +72,9 @@ export const grensesnitt = {
     editAnswers: 'Fortsett utfylling',
   },
   stepper: {
-    toggleText: 'Steg {{currentStep}} av {{totalSteps}}',
-    close: 'Lukk',
+    step: 'Steg {activeStep} av {totalSteps}',
+    showAllSteps: 'Vis alle steg',
+    hideAllSteps: 'Skjul alle steg',
   },
   navSelect: {
     defaultLabel: 'Nedtrekksmeny',

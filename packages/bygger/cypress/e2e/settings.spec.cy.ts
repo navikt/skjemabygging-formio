@@ -1,8 +1,8 @@
 import { expect } from 'chai';
-import * as form from '../fixtures/getForm.json';
+import * as originalForm from '../fixtures/getForm.json';
 
 const submitData = {
-  title: 'Cypress test for settings page',
+  title: 'Ny tittel',
   skjemanummer: 'cypress-settings',
   tema: 'BIL',
   downloadPdfButtonText: 'DownloadPDFBtnTest',
@@ -22,6 +22,7 @@ describe('FormSettingsPage', () => {
     cy.intercept('GET', '/api/recipients', { fixture: 'recipients.json' }).as('getRecipients');
     cy.intercept('GET', '/api/translations', { fixture: 'globalTranslations.json' }).as('getTranslations');
     cy.intercept('GET', '/api/temakoder', { fixture: 'temakoder.json' }).as('getTemaKoder');
+    cy.intercept('GET', '/api/enhetstyper', { fixture: 'enhetstyper.json' }).as('getEnhetstyper');
   });
 
   describe('Unpublished form', () => {
@@ -37,8 +38,8 @@ describe('FormSettingsPage', () => {
         expect(req.body.reason).to.equal(lockedFormReason);
 
         req.reply({
-          ...form,
-          properties: { ...form.properties, ...req.body },
+          ...originalForm,
+          properties: { ...originalForm.properties, ...req.body },
           lock: { reason: lockedFormReason, createdAt: '2025-01-19T13:39:47.380Z', createdBy: 'testuser' },
         });
       }).as('configUpdate');
@@ -73,10 +74,12 @@ describe('FormSettingsPage', () => {
         req.reply(req.body);
       });
 
+      cy.findByRole('textbox', { name: 'Tittel' }).should('have.value', originalForm.title);
       cy.findByRole('textbox', { name: 'Tittel' }).focus();
       cy.findByRole('textbox', { name: 'Tittel' }).clear();
       cy.findByRole('textbox', { name: 'Tittel' }).type(submitData.title);
 
+      cy.findByRole('combobox', { name: 'Tema' }).should('have.value', originalForm.properties.tema);
       cy.findByRole('combobox', { name: 'Tema' }).select(submitData.tema);
 
       cy.findByRole('textbox', { name: 'Tekst på knapp for nedlasting av pdf' }).focus();
@@ -150,6 +153,111 @@ describe('FormSettingsPage', () => {
 
       cy.get('@deleteForm').should('not.have.been.called');
       cy.url().should('match', /.*\/forms\/nav112233\/settings/);
+    });
+  });
+
+  describe('Enhetstyper', () => {
+    const CHECKBOX_LABEL_USER_MUST_CHOOSE_ENHET = 'Bruker må velge enhet ved innsending på papir';
+    const COMBOBOX_LABEL_ENHETER = 'Velg hvilke enhetstyper det skal være mulig å sende inn til';
+
+    beforeEach(() => {
+      cy.intercept('GET', '/api/forms/cypresssettings', { fixture: 'getForm.json' }).as('getForm');
+      cy.intercept('GET', '/api/forms/cypresssettings/translations', { body: [] }).as('getFormTranslations');
+      cy.visit('forms/cypresssettings/settings');
+
+      cy.wait('@getRecipients');
+      cy.wait('@getEnhetstyper');
+    });
+
+    describe('visibility', () => {
+      beforeEach(() => {
+        cy.findByRole('group', { name: 'Innsending' }).within(() => {
+          cy.findByRole('checkbox', { name: 'Papir' }).should('be.checked');
+        });
+      });
+
+      it('should be visible when paper submission is allowed', () => {
+        cy.findByRole('checkbox', { name: CHECKBOX_LABEL_USER_MUST_CHOOSE_ENHET })
+          .should('exist')
+          .should('not.be.checked');
+      });
+
+      it('should show all enheter when checked', () => {
+        cy.findByRole('checkbox', { name: CHECKBOX_LABEL_USER_MUST_CHOOSE_ENHET }).check({ force: true });
+        cy.findByRole('checkbox', { name: CHECKBOX_LABEL_USER_MUST_CHOOSE_ENHET }).should('be.checked');
+        cy.findByRole('combobox', { name: COMBOBOX_LABEL_ENHETER }).should('exist').click();
+        cy.findByRole('listbox').within(() => {
+          cy.get('li').should('have.length', 17);
+        });
+      });
+
+      it('should not be visible when paper submission is not allowed', () => {
+        cy.findByRole('group', { name: 'Innsending' }).within(() => {
+          cy.findByRole('checkbox', { name: 'Papir' }).should('be.checked').uncheck({ force: true });
+        });
+
+        cy.findByRole('checkbox', { name: CHECKBOX_LABEL_USER_MUST_CHOOSE_ENHET }).should('not.exist');
+      });
+    });
+
+    describe('when user changes enhetstyper', () => {
+      it('removes all enhetstyper user unchecks', () => {
+        const chosenEnhetstypeKodenavn = ['KO', 'KLAGE'];
+
+        cy.intercept('PUT', '/api/forms/cypresssettings', (req) => {
+          expect(req.body.properties.submissionTypes).to.deep.include.members(submitData.submissionTypes);
+          expect(req.body.properties.enhetMaVelgesVedPapirInnsending).to.equal(true);
+          expect(req.body.properties.enhetstyper).to.have.length(chosenEnhetstypeKodenavn.length);
+          chosenEnhetstypeKodenavn.forEach((kodenavn) => {
+            expect(req.body.properties.enhetstyper).to.include(kodenavn);
+          });
+          req.reply(req.body);
+        });
+
+        cy.findByRole('checkbox', { name: CHECKBOX_LABEL_USER_MUST_CHOOSE_ENHET }).check({ force: true });
+        cy.findByRole('combobox', { name: COMBOBOX_LABEL_ENHETER }).should('exist').click();
+        cy.findByRole('listbox').within(() => {
+          cy.get('li').each(($li) => {
+            const listElementText = $li.text();
+            if (!chosenEnhetstypeKodenavn.some((kodenavn) => listElementText.includes(`(${kodenavn})`))) {
+              cy.wrap($li).click({ force: true });
+            }
+          });
+        });
+
+        cy.contains('Lagre').click();
+        cy.get('[aria-live="polite"]').should('contain.text', `Lagret skjema ${originalForm.title}`);
+      });
+    });
+
+    it('should have all enhetstyper checked by default', () => {
+      cy.intercept('PUT', '/api/forms/cypresssettings', (req) => {
+        expect(req.body.properties.submissionTypes).to.deep.include.members(submitData.submissionTypes);
+        expect(req.body.properties.enhetMaVelgesVedPapirInnsending).to.equal(true);
+        expect(req.body.properties.enhetstyper, 'Forventer at alle enhetstyper ligger i listen').to.have.length(17);
+        req.reply(req.body);
+      });
+
+      cy.findByRole('checkbox', { name: CHECKBOX_LABEL_USER_MUST_CHOOSE_ENHET }).check({ force: true });
+
+      cy.contains('Lagre').click();
+      cy.get('[aria-live="polite"]').should('contain.text', `Lagret skjema ${originalForm.title}`);
+    });
+
+    it('should be disabled when mottaksadresse is selected', () => {
+      cy.intercept('PUT', '/api/forms/cypresssettings', (req) => {
+        expect(req.body.properties.submissionTypes).to.deep.include.members(submitData.submissionTypes);
+        expect(req.body.properties.enhetMaVelgesVedPapirInnsending).to.equal(false);
+        req.reply(req.body);
+      });
+
+      cy.findByRole('checkbox', { name: CHECKBOX_LABEL_USER_MUST_CHOOSE_ENHET }).check({ force: true });
+
+      cy.findByRole('combobox', { name: 'Mottaksadresse' }).select('Nav Pensjon, Postboks 6600 Etterstad, 0607 Oslo');
+      cy.findByRole('checkbox', { name: CHECKBOX_LABEL_USER_MUST_CHOOSE_ENHET }).should('not.exist');
+
+      cy.contains('Lagre').click();
+      cy.get('[aria-live="polite"]').should('contain.text', `Lagret skjema ${originalForm.title}`);
     });
   });
 });

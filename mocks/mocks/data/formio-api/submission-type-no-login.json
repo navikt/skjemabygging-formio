@@ -1,0 +1,40 @@
+{
+  "id": "st-no-login",
+  "skjemanummer": "st-no-login",
+  "path": "stnologin",
+  "title": "Submission Type: Digital No Login",
+  "components": [
+    {
+      "id": "e1nek8d",
+      "key": "dineOpplysninger",
+      "type": "panel",
+      "label": "Panel",
+      "title": "Dine opplysninger",
+      "breadcrumb": "default",
+      "components": [
+        {
+          "id": "ey0bewk",
+          "key": "tekstfelt",
+          "type": "textfield",
+          "validate": {
+            "required": true
+          }
+        }
+      ]
+    }
+  ],
+  "properties": {
+    "submissionTypes": [
+      "DIGITAL_NO_LOGIN"
+    ],
+    "publishedLanguages": [
+      "nb",
+      "en"
+    ]
+  },
+  "publishedLanguages": [
+    "nb",
+    "en"
+  ],
+  "status": "published"
+}
