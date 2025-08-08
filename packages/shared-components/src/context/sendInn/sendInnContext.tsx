@@ -112,9 +112,11 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
             setIsMellomlagringReady(true);
             logger?.info(`${innsendingsIdFromParams}: Mellomlagring was retrieved`);
           } else if (isMellomlagringAvailable) {
-            await startMellomlagring(submission!);
-            setIsMellomlagringReady(true);
-            logger?.info(`${innsendingsIdFromParams}: Mellomlagring was created`);
+            const response = await startMellomlagring(submission!);
+            if (response) {
+              setIsMellomlagringReady(true);
+              logger?.info(`${innsendingsIdFromParams}: Mellomlagring was created`);
+            }
           }
         }
       } catch (error: any) {
