@@ -6,7 +6,6 @@ describe('Digital no login', () => {
     cy.visit('/fyllut/stdigitalnologin');
     cy.defaultWaits();
     cy.findByRole('link', { name: TEXTS.grensesnitt.introPage.sendDigitalNoLogin }).click();
-    cy.clickStart();
   });
 
   it('shows an error message if no personal ID has been uploaded', () => {
@@ -33,6 +32,7 @@ describe('Digital no login', () => {
     cy.findByText('0,04 MB').should('exist');
 
     cy.clickNextStep();
+    cy.clickStart();
     cy.findByRole('heading', { name: 'Dine opplysninger' }).should('exist');
   });
 });

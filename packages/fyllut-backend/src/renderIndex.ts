@@ -52,6 +52,8 @@ const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
     ) {
       redirectUrl = `${config.fyllutPath}/${formPath}`;
       redirectParams = { ...excludeQueryParam('innsendingsId', redirectParams) };
+    } else if (qpSub === 'digitalnologin' && formPath && !req.originalUrl.match(new RegExp(`/legitimasjon`))) {
+      redirectUrl = `${config.fyllutPath}/${formPath}/legitimasjon`;
     }
 
     if (redirectUrl) {
