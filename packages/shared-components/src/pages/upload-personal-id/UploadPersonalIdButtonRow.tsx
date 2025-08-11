@@ -13,17 +13,17 @@ const UploadPersonalIdButtonRow = () => {
   const navigate = useNavigate();
   const { baseUrl } = useAppConfig();
   const { translate } = useLanguages();
-  const { form, formUrl } = useForm();
+  const { formUrl } = useForm();
   const [searchParams] = useSearchParams();
   const { uploadedFiles, addError, handleDeleteAttachment } = useAttachmentUpload();
 
-  const startUrl = `${baseUrl}${formUrl}/${form.firstPanelSlug}`;
+  const startUrl = `${baseUrl}${formUrl}`;
   const exitUrl = urlUtils.getExitUrl(window.location.href);
 
   const navigateToFormPage = (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     if (uploadedFiles.find((file) => file.vedleggId === 'personal-id')) {
-      navigate(`../${form.firstPanelSlug}?${searchParams.toString()}`);
+      navigate(`..?${searchParams.toString()}`);
     } else {
       addError('personal-id', translate(TEXTS.statiske.uploadId.missingUploadError));
     }

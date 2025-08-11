@@ -22,11 +22,11 @@ const FyllUtRouter = ({ form }: Props) => {
         <Routes>
           <Route element={<FormLayout stepper={true} />}>
             <Route path={'/oppsummering'} element={<SummaryPage />} />
-            <Route path={'/legitimasjon'} element={<UploadPersonalIdPage />} />
             <Route path={'/:panelSlug'} element={<FillInFormPage />} />
           </Route>
           <Route element={<FormLayout />}>
             <Route path={''} element={<IntroPage />} />
+            <Route path={'/legitimasjon'} element={<UploadPersonalIdPage />} />
             <Route path={'/send-i-posten'} element={<PrepareLetterPage />} />
             <Route path={'/ingen-innsending'} element={<PrepareIngenInnsendingPage />} />
             <Route path={'/paabegynt'} element={<ActiveTasksPage />} />
