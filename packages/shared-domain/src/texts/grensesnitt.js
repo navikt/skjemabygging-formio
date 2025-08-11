@@ -66,6 +66,7 @@ export const grensesnitt = {
     noLogin: 'Kan ikke logge inn',
     noLoginDescription: 'Velg mellom å sende i posten eller å sende digitalt uten å logge inn.',
     start: 'Start',
+    changeSubmissionMethod: 'Send inn på en annen måte',
   },
   summaryPage: {
     edit: 'Rediger',

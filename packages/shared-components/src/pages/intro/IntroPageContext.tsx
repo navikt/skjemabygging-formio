@@ -85,7 +85,7 @@ export const IntroPageProvider = ({ children, form }: IntroPageProviderProps) =>
   };
 
   const showSelectSubmissionType = () => {
-    return state === IntroPageState.NO_LOGIN || state === IntroPageState.DEFAULT;
+    return form.properties?.submissionTypes && (state === IntroPageState.NO_LOGIN || state === IntroPageState.DEFAULT);
   };
 
   return (

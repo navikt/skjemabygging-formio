@@ -125,6 +125,7 @@ describe('Error summary', () => {
       cy.visit('/fyllut/errorsummaryfocus/vedlegg?sub=paper');
       cy.defaultWaits();
       cy.clickNextStep(); // <- submit formio form
+      cy.url().should('include', '/fyllut/errorsummaryfocus/vedlegg');
     });
 
     it('with all validation errors', () => {
@@ -159,6 +160,7 @@ describe('Error summary', () => {
           });
         cy.findByRole('heading', { name: 'Veiledning' });
         cy.findByRole('textbox', { name: 'Fornavn' }).should('have.focus');
+        cy.url().should('include', '/fyllut/errorsummaryfocus/veiledning');
       });
 
       it('the second component with label Fornavn', () => {
@@ -169,6 +171,7 @@ describe('Error summary', () => {
           });
         cy.findByRole('heading', { name: 'Dine opplysninger' });
         cy.findByRole('textbox', { name: 'Fornavn' }).should('have.focus');
+        cy.url().should('include', '/fyllut/errorsummaryfocus/dineOpplysninger');
       });
 
       it('the component with label Serietittel', () => {
@@ -179,6 +182,7 @@ describe('Error summary', () => {
           });
         cy.findByRole('heading', { name: 'TV' });
         cy.findByRole('textbox', { name: 'Serietittel' }).should('have.focus');
+        cy.url().should('include', '/fyllut/errorsummaryfocus/tv');
       });
 
       it('the component with label Antall stjerner', () => {
@@ -189,6 +193,7 @@ describe('Error summary', () => {
           });
         cy.findByRole('heading', { name: 'TV' });
         cy.findByRole('group', { name: 'Antall stjerner' }).should('have.focus');
+        cy.url().should('include', '/fyllut/errorsummaryfocus/tv');
       });
 
       it('the component with label Hvor mange timer per døgn bruker du på skjerm?', () => {
@@ -199,6 +204,7 @@ describe('Error summary', () => {
           });
         cy.findByRole('heading', { name: 'Brukerundersøkelse' });
         cy.findByRole('textbox', { name: 'Hvor mange timer per døgn bruker du på skjerm?' }).should('have.focus');
+        cy.url().should('include', '/fyllut/errorsummaryfocus/brukerundersokelse');
       });
 
       it('the component with label Førerkort', () => {
@@ -209,6 +215,7 @@ describe('Error summary', () => {
           });
         cy.findByRole('heading', { name: 'Vedlegg' });
         cy.findByRole('group', { name: 'Førerkort' }).should('have.focus');
+        cy.url().should('include', '/fyllut/errorsummaryfocus/vedlegg');
       });
     });
   });

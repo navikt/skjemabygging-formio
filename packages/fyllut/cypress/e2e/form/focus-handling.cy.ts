@@ -15,6 +15,29 @@ describe('Focus handling', () => {
     cy.mocksRestoreRouteVariants();
   });
 
+  describe('Panel main content', () => {
+    beforeEach(() => {
+      cy.visit('/fyllut/datagridconditional/barnSomSoknadenGjelderFor?sub=paper');
+      cy.defaultWaits();
+    });
+
+    it('has focus after navigating to next panel', () => {
+      cy.findByLabelText('Fornavn').should('exist').type('Gaute');
+      cy.findByRole('group', { name: 'Trenger barnet briller?' })
+        .should('exist')
+        .within(() => {
+          cy.findByLabelText('Ja').click();
+        });
+      cy.clickNextStep();
+      cy.focused().should('have.attr', 'id', 'maincontent');
+    });
+
+    it('has focus after navigating to previous panel', () => {
+      cy.clickPreviousStep();
+      cy.focused().should('have.attr', 'id', 'maincontent');
+    });
+  });
+
   describe('Datagrid', () => {
     it('restores radiopanel focus after rerender due to conditional', () => {
       cy.visit('/fyllut/datagridconditional/barnSomSoknadenGjelderFor?sub=paper');
