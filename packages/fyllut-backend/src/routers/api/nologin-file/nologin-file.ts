@@ -1,3 +1,4 @@
+import { validatorUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { NextFunction, Request, Response } from 'express';
 import { config } from '../../../config/config';
 import { logger } from '../../../logger';
@@ -53,9 +54,10 @@ const nologinFile = {
           responseToError('Error: Ingen filId eller vedleggId angitt', 'Ingen filId eller vedleggId funnet', true),
         );
       }
-      const targetUrl = filId
-        ? `${sendInnConfig.host}${sendInnConfig.paths.nologinFile}/${filId}?innsendingId=${innsendingId}`
-        : `${sendInnConfig.host}${sendInnConfig.paths.nologinFile}?vedleggId=${vedleggId}&innsendingId=${innsendingId}`;
+      const targetUrl =
+        filId && validatorUtils.isValidUuid(filId)
+          ? `${sendInnConfig.host}${sendInnConfig.paths.nologinFile}/${filId}?innsendingId=${innsendingId}`
+          : `${sendInnConfig.host}${sendInnConfig.paths.nologinFile}?vedleggId=${vedleggId}&innsendingId=${innsendingId}`;
       const response = await fetch(targetUrl, {
         method: 'DELETE',
         headers: {

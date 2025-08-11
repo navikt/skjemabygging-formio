@@ -46,6 +46,7 @@ const UploadPersonalIdButtonRow = () => {
           icon={<ArrowRightIcon aria-hidden />}
           iconPosition="right"
           as="a"
+          role="link"
           onClick={navigateToFormPage}
           {...{ href: `${startUrl}?${searchParams.toString()}` }}
         >

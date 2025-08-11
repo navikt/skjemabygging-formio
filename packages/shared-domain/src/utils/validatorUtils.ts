@@ -39,10 +39,16 @@ const removeSpaces = (input: string) => {
   return input.replace(/\s+/g, '');
 };
 
+const isValidUuid = (value: string): boolean => {
+  const validUuidExpr = /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/;
+  return validUuidExpr.test(value);
+};
+
 const validatorUtils = {
   isOrganizationNumber,
   isAccountNumber,
   isValidFoerstesideValue,
+  isValidUuid,
 };
 
 export default validatorUtils;
