@@ -8,15 +8,15 @@ import {
   TEXTS,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import EventEmitter from 'eventemitter3';
-import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { To, useLocation, useNavigate } from 'react-router-dom';
-import FormStepper from '../../components/form/form-stepper/FormStepper';
 import FormError from '../../components/form/FormError';
 import FormSavedStatus from '../../components/form/FormSavedStatus';
 import ConfirmationModal from '../../components/modal/confirmation/ConfirmationModal';
 import NavForm, { FormNavigationPaths } from '../../components/nav-form/NavForm';
 import FormNavigation from '../../components/nav-form/navigation/FormNavigation';
 import { useAppConfig } from '../../context/config/configContext';
+import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
 import { useSendInn } from '../../context/sendInn/sendInnContext';
 import { KeyOrFocusComponentId } from '../../formio/overrides/wizard-overrides.js/focusOnComponent';
@@ -28,14 +28,8 @@ import FormErrorSummary from './FormErrorSummary';
 type ModalType = 'save' | 'delete' | 'discard';
 type FyllutEvent = 'focusOnComponent' | 'validateOnNextPage';
 
-interface FillInFormPageProps {
-  form: NavFormType;
-  submission?: Submission;
-  setSubmission: Dispatch<SetStateAction<Submission | undefined>>;
-  formUrl: string;
-}
-
-export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: FillInFormPageProps) => {
+export const FillInFormPage = () => {
+  const { form, submission, setSubmission, formUrl } = useForm();
   const navigate = useNavigate();
   const { search } = useLocation();
   const { submissionMethod, logger } = useAppConfig();
@@ -194,7 +188,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: Fil
   }
 
   return (
-    <div className="fyllut-layout">
+    <div>
       <div>
         <FormErrorSummary
           heading={translate(TEXTS.validering.error)}
@@ -227,14 +221,6 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }: Fil
           paths={formNavigationPaths}
           onCancel={onCancel}
           navigateTo={navigateTo}
-        />
-      </div>
-      <div>
-        <FormStepper
-          form={formForRendering}
-          formUrl={formUrl}
-          submission={submission}
-          activeStep={formNavigationPaths.curr}
         />
       </div>
       <ConfirmationModal

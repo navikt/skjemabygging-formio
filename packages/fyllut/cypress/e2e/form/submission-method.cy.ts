@@ -18,15 +18,11 @@ describe('Submission method', () => {
     });
 
     it("Renders stepper without 'Vedlegg'", () => {
-      cy.findByRole('navigation', { name: 'Søknadssteg' })
-        .should('exist')
-        .within(() => {
-          cy.findAllByRole('link').should('have.length', 3);
-          cy.findByRole('link', { name: 'Veiledning' }).should('exist');
-          cy.findByRole('link', { name: 'Dine opplysninger' }).should('exist');
-          cy.findByRole('link', { name: 'Vedlegg' }).should('not.exist');
-          cy.findByRole('link', { name: 'Oppsummering' }).should('exist');
-        });
+      cy.clickShowAllSteps();
+      cy.findByRole('link', { name: 'Veiledning' }).should('exist');
+      cy.findByRole('link', { name: 'Dine opplysninger' }).should('exist');
+      cy.findByRole('link', { name: 'Vedlegg' }).should('not.exist');
+      cy.findByRole('link', { name: 'Oppsummering' }).should('exist');
     });
 
     describe('Summary page', () => {
@@ -49,15 +45,11 @@ describe('Submission method', () => {
       });
 
       it('renders stepper without "Vedlegg" on summary page', () => {
-        cy.findByRole('navigation', { name: 'Søknadssteg' })
-          .should('exist')
-          .within(() => {
-            cy.findAllByRole('link').should('have.length', 3);
-            cy.findByRole('link', { name: 'Veiledning' }).should('exist');
-            cy.findByRole('link', { name: 'Dine opplysninger' }).should('exist');
-            cy.findByRole('link', { name: 'Vedlegg' }).should('not.exist');
-            cy.findByRole('link', { name: 'Oppsummering' }).should('exist');
-          });
+        cy.clickShowAllSteps();
+        cy.findByRole('link', { name: 'Veiledning' }).should('exist');
+        cy.findByRole('link', { name: 'Dine opplysninger' }).should('exist');
+        cy.findByRole('link', { name: 'Vedlegg' }).should('not.exist');
+        cy.findByRole('link', { name: 'Oppsummering' }).should('exist');
       });
 
       it('includes zero attachments, but has flag otherDocumentation', () => {
@@ -72,6 +64,7 @@ describe('Submission method', () => {
       });
 
       it('includes one attachment, and has flag otherDocumentation', () => {
+        cy.clickShowAllSteps();
         cy.submitMellomlagring((req) => {
           expect(req.body.attachments).to.have.length(1);
           expect(req.body.otherDocumentation).to.eq(true);
@@ -98,15 +91,11 @@ describe('Submission method', () => {
     });
 
     it("Renders stepper with 'Vedlegg'", () => {
-      cy.findByRole('navigation', { name: 'Søknadssteg' })
-        .should('exist')
-        .within(() => {
-          cy.findAllByRole('link').should('have.length', 4);
-          cy.findByRole('link', { name: 'Veiledning' }).should('exist');
-          cy.findByRole('link', { name: 'Dine opplysninger' }).should('exist');
-          cy.findByRole('link', { name: 'Vedlegg' }).should('exist');
-          cy.findByRole('link', { name: 'Oppsummering' }).should('exist');
-        });
+      cy.clickShowAllSteps();
+      cy.findByRole('link', { name: 'Veiledning' }).should('exist');
+      cy.findByRole('link', { name: 'Dine opplysninger' }).should('exist');
+      cy.findByRole('link', { name: 'Vedlegg' }).should('exist');
+      cy.findByRole('link', { name: 'Oppsummering' }).should('exist');
     });
   });
 });

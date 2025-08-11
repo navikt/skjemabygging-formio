@@ -8,8 +8,7 @@ import DownloadPdfButton from './DownloadPdfButton';
 interface Props {
   type?: 'application' | 'coverPageAndApplication';
   form: NavFormType;
-  submission: Submission;
-  translations: any;
+  submission?: Submission;
   enhetNummer?: string;
   isValid?: () => boolean;
   submissionMethod?: string;
@@ -22,7 +21,6 @@ const DownloadCoverPageAndApplicationButton = ({
   type = 'coverPageAndApplication',
   form,
   submission,
-  translations,
   enhetNummer,
   isValid,
   submissionMethod,
@@ -30,7 +28,7 @@ const DownloadCoverPageAndApplicationButton = ({
 }: Props) => {
   const { translate } = useLanguages();
   const { fyllutBaseURL } = useAppConfig();
-  const { currentLanguage } = useLanguages();
+  const { currentLanguage, translationsForNavForm } = useLanguages();
   const [downloadState, setDownloadState] = useState<DownloadState>();
 
   const onClick = () => {
@@ -58,7 +56,11 @@ const DownloadCoverPageAndApplicationButton = ({
           language: currentLanguage,
           form: JSON.stringify(form),
           submission: JSON.stringify(submission),
-          translations: JSON.stringify(currentLanguage !== 'nb-NO' ? translations[currentLanguage] : {}),
+          translations: JSON.stringify(
+            currentLanguage !== 'nb-NO' && translationsForNavForm?.[currentLanguage]
+              ? translationsForNavForm[currentLanguage]
+              : {},
+          ),
           enhetNummer,
           submissionMethod: submissionMethod ?? 'paper',
         }}
