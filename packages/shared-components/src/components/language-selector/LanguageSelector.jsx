@@ -9,6 +9,7 @@ const useLanguageSelectorStyling = makeStyles({
     position: 'relative',
     display: 'flex',
     justifyContent: 'flex-end',
+    marginBottom: '1rem',
   },
   languageSelect: {
     position: 'relative',
