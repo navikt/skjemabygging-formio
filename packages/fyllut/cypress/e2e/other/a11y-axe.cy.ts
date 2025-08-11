@@ -9,7 +9,7 @@ describe('Axe: Accessibility testing', () => {
       cy.visit('/fyllut/cypressaxe');
       cy.defaultWaits();
       // Sometimes checkA11y fails if you do it to early, so this is instead of doing cy.wait(1000) or similar.
-      cy.findByRole('main').should('exist');
+      cy.findByRole('heading', { name: 'Axe testing i Cypress' }).should('exist');
       cy.injectAxe();
       cy.checkA11y();
     });
@@ -30,6 +30,7 @@ describe('Axe: Accessibility testing', () => {
     });
 
     it('Penger og konto', () => {
+      cy.clickShowAllSteps();
       cy.contains('Penger og konto').click();
       cy.findByRole('heading', { name: 'Penger og konto' }).should('exist');
       cy.checkA11y();

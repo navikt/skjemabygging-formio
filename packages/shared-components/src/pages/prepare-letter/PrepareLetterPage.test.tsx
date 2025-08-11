@@ -1,16 +1,10 @@
-import {
-  Enhetstype,
-  FormPropertiesType,
-  NavFormType,
-  Submission,
-  SubmissionData,
-  TEXTS,
-} from '@navikt/skjemadigitalisering-shared-domain';
+import { Enhetstype, FormPropertiesType, NavFormType, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import forstesideMock from '../../../test/test-data/forsteside/forsteside-mock';
 import { AppConfigProvider } from '../../context/config/configContext';
+import { FormProvider } from '../../context/form/FormContext';
 import { PrepareLetterPage } from './PrepareLetterPage';
 
 vi.mock('../../context/languages', () => ({
@@ -28,7 +22,6 @@ vi.mock('../../components/letter/ux-signals/LetterUXSignals', () => {
   };
 });
 
-const DEFAULT_TRANSLATIONS = {};
 const RESPONSE_HEADERS = {
   headers: {
     'content-type': 'application/json',
@@ -82,11 +75,6 @@ const defaultForm = {
   properties: {} as FormPropertiesType,
 } as NavFormType;
 
-const defaultSubmission = {
-  data: {
-    fornavn: 'Mie',
-  } as SubmissionData,
-} as Submission;
 const formWithProperties = (props: Partial<FormPropertiesType>) => {
   return {
     ...defaultForm,
@@ -105,7 +93,9 @@ function renderPrepareLetterPage(form = defaultForm, config = defaultConfig, fyl
   render(
     <MemoryRouter>
       <AppConfigProvider config={config} fyllutBaseURL={fyllutBaseURL}>
-        <PrepareLetterPage form={form} submission={defaultSubmission} translations={DEFAULT_TRANSLATIONS} formUrl="/" />
+        <FormProvider form={form}>
+          <PrepareLetterPage />
+        </FormProvider>
       </AppConfigProvider>
     </MemoryRouter>,
   );

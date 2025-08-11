@@ -1,15 +1,14 @@
 import { ExclamationmarkTriangleFillIcon } from '@navikt/aksel-icons';
 import { Alert, BodyShort, ConfirmationPanel, Heading } from '@navikt/ds-react';
-import { DeclarationType, NavFormType, Submission, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { DeclarationType, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useRef, useState } from 'react';
 import EditAnswersButton from '../../components/button/navigation/edit-answers/EditAnswersButton';
-import FormStepper from '../../components/form/form-stepper/FormStepper';
 import NavFormHelper from '../../components/nav-form/NavFormHelper';
 import FormSummary from '../../components/summary/form/FormSummary';
 import SummaryPageNavigation from '../../components/summary/navigation/SummaryPageNavigation';
 import { useAppConfig } from '../../context/config/configContext';
+import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
-import { usePrefillData } from '../../context/prefill-data/PrefillDataContext';
 import Styles from '../../styles';
 import { scrollToAndSetFocus } from '../../util/focus-management/focus-management';
 import { PanelValidation, validateWizardPanels } from '../../util/form/panel-validation/panelValidation';
@@ -49,19 +48,13 @@ const useStyles = makeStyles({
   },
 });
 
-export interface Props {
-  form: NavFormType;
-  submission: Submission;
-  formUrl: string;
-}
-
-export function SummaryPage({ form, submission, formUrl }: Props) {
+export function SummaryPage() {
   const appConfig = useAppConfig();
   const { translate } = useLanguages();
   const styles = useStyles();
+  const { prefillData, submission, formUrl, form } = useForm();
   const { declarationType, declarationText } = form.properties;
   const [declaration, setDeclaration] = useState<boolean | undefined>(undefined);
-  const { prefillData } = usePrefillData();
 
   const [panelValidationList, setPanelValidationList] = useState<PanelValidation[] | undefined>();
 
@@ -69,7 +62,8 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
     const initializePanelValidation = async () => {
       const submissionCopy = JSON.parse(JSON.stringify(submission || {}));
 
-      const webform = await NavFormHelper.create(document.getElementById('formio-summary-hidden')!, form, {
+      const formioSummary = document.getElementById('formio-summary-hidden')!;
+      const webform = await NavFormHelper.create(formioSummary, form, {
         appConfig,
         submission: submissionCopy,
       });
@@ -78,16 +72,18 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
 
       webform.checkData(submissionCopy?.data, [], undefined);
 
-      const panelValidations = validateWizardPanels(webform, form, submission);
+      const panelValidations = validateWizardPanels(webform, form, submission!);
       setPanelValidationList(panelValidations);
       webform.destroy(true);
-      const formioSummary = document.getElementById('formio-summary-hidden');
+
       if (formioSummary) {
         formioSummary.innerHTML = '';
       }
     };
 
-    initializePanelValidation();
+    if (submission) {
+      initializePanelValidation();
+    }
   }, [form, submission, appConfig, prefillData]);
 
   useEffect(() => scrollToAndSetFocus('main', 'start'), []);
@@ -113,7 +109,7 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
 
   return (
     <div className={styles.content}>
-      <section id="maincontent" className="fyllut-layout formio-form" tabIndex={-1}>
+      <section id="maincontent" className="formio-form" tabIndex={-1}>
         <div className="main-col">
           <Heading level="2" size="large" spacing>
             {translate(TEXTS.statiske.summaryPage.title)}
@@ -171,10 +167,8 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
             isValid={isValid}
           />
         </div>
-        <div className="right-col">
-          <FormStepper form={form} formUrl={formUrl} submission={submission} activeStep={'oppsummering'} />
-        </div>
       </section>
+      <div id="formio-summary-hidden" hidden />
     </div>
   );
 }

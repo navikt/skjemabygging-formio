@@ -1,9 +1,10 @@
-import { Submission, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { NavFormType, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import nock from 'nock';
 import { MemoryRouter } from 'react-router-dom';
 import { AppConfigProvider } from '../../context/config/configContext';
+import { FormProvider } from '../../context/form/FormContext';
 import { PrepareIngenInnsendingPage } from './PrepareIngenInnsendingPage';
 
 vi.mock('../../context/languages', () => ({
@@ -22,12 +23,14 @@ describe('PrepareIngenInnsendingPage', () => {
     display: 'wizard',
     properties: {
       skjemanummer: '',
-      innsending: 'INGEN',
+      tema: '',
+      submissionTypes: [],
+      subsequentSubmissionTypes: [],
       innsendingOverskrift: 'Skriv ut skjemaet',
       innsendingForklaring: 'Gi det til pasienten',
     },
     components: [],
-  };
+  } as NavFormType;
 
   beforeEach(() => {
     const config = {
@@ -37,12 +40,9 @@ describe('PrepareIngenInnsendingPage', () => {
     render(
       <AppConfigProvider {...config}>
         <MemoryRouter initialEntries={[`/forms/${testForm.path}/ingen-innsending`]}>
-          <PrepareIngenInnsendingPage
-            form={testForm}
-            submission={{} as Submission}
-            formUrl="/testskjema"
-            translations={{}}
-          />
+          <FormProvider form={testForm}>
+            <PrepareIngenInnsendingPage />
+          </FormProvider>
         </MemoryRouter>
         ,
       </AppConfigProvider>,
@@ -51,7 +51,7 @@ describe('PrepareIngenInnsendingPage', () => {
 
   test('Rendring av oppgitt overskrift og forklaring ved ingen innsending', () => {
     expect(screen.queryByRole('heading', { name: testForm.properties.innsendingOverskrift })).toBeTruthy();
-    expect(screen.queryByText(testForm.properties.innsendingForklaring)).toBeTruthy();
+    expect(screen.queryByText(testForm.properties.innsendingForklaring!)).toBeTruthy();
   });
 
   test('Nedlasting av pdf', async () => {

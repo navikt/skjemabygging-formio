@@ -4,7 +4,7 @@ import { act } from 'react-dom/test-utils';
 import { MemoryRouter } from 'react-router-dom';
 import { http } from '../../index';
 import { AppConfigProvider } from '../config/configContext';
-import { PrefillDataProvider, usePrefillData } from './PrefillDataContext';
+import { FormProvider, useForm } from './FormContext';
 
 const mockHttp = {
   get: vi.fn(),
@@ -12,7 +12,7 @@ const mockHttp = {
 
 describe('prefillDataContext', () => {
   const TestComponent = () => {
-    const { prefillData } = usePrefillData();
+    const { prefillData } = useForm();
 
     return (
       <>
@@ -59,9 +59,9 @@ describe('prefillDataContext', () => {
             config={{ isTest: true }}
           >
             <MemoryRouter>
-              <PrefillDataProvider form={formWithPrefillKeys}>
+              <FormProvider form={formWithPrefillKeys}>
                 <TestComponent />
-              </PrefillDataProvider>
+              </FormProvider>
             </MemoryRouter>
           </AppConfigProvider>,
         );
@@ -96,9 +96,9 @@ describe('prefillDataContext', () => {
             config={{ isTest: true }}
           >
             <MemoryRouter>
-              <PrefillDataProvider form={formWithoutPrefillKeys}>
+              <FormProvider form={formWithoutPrefillKeys}>
                 <TestComponent />
-              </PrefillDataProvider>
+              </FormProvider>
             </MemoryRouter>
           </AppConfigProvider>,
         );

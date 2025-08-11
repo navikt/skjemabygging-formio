@@ -31,6 +31,7 @@ export interface NavFormType {
   publishedLanguages?: string[];
   status?: string;
   introPage?: IntroPage;
+  firstPanelSlug?: string;
 }
 
 export interface ResourceAccess {
