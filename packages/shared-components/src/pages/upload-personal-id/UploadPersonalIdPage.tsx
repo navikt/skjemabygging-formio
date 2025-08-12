@@ -19,7 +19,7 @@ const UploadPersonalIdPage = () => {
     <FormContainer>
       <AttachmentUploadProvider>
         <AttachmentUpload
-          label={'Hvilken legitimasjon ønsker du å bruke?'}
+          label={translate(TEXTS.statiske.uploadId.label)}
           options={radioOptions}
           attachmentId={'personal-id'}
         />

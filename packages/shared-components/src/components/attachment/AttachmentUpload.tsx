@@ -63,11 +63,11 @@ const AttachmentUpload = ({ label, options, attachmentId }: Props) => {
       <VStack gap="4">
         {uploadSelected && (
           <>
-            <Label>Last opp bilde eller skannet kopi av ID-en din</Label>
+            <Label>{translate(TEXTS.statiske.uploadId.selectFileLabel)}</Label>
             {uploadedAttachmentFiles.length === 0 && (
               <FileUpload.Trigger onSelect={handleUpload}>
                 <Button className={styles.button} loading={loading}>
-                  {translate(TEXTS.statiske.uploadId.selectFile)}
+                  {translate(TEXTS.statiske.uploadId.selectFileButton)}
                 </Button>
               </FileUpload.Trigger>
             )}

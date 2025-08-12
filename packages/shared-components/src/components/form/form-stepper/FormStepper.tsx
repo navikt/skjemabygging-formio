@@ -17,15 +17,10 @@ const FormStepper = () => {
   const { translate } = useLanguages();
 
   const formSteps = useMemo(() => {
-    const uploadPersonalIdStep = submissionMethod === 'digitalnologin' && {
-      key: 'legitimasjon',
-      label: 'Legitimasjon',
-    };
     const formioSteps = navFormUtils
       .getActivePanelsFromForm(form, submission, submissionMethod)
       .map((panel) => ({ label: panel.title, key: panel.key }));
     return [
-      ...(uploadPersonalIdStep ? [uploadPersonalIdStep] : []),
       ...formioSteps,
       {
         key: 'oppsummering',
@@ -62,7 +57,6 @@ const FormStepper = () => {
         activeStep={getActiveStepper() + 1}
         open={formProgress}
         onOpenChange={(state) => setFormProgress(state)}
-        interactiveSteps={panelSlug !== 'legitimasjon'}
         translations={{
           step: translate(TEXTS.grensesnitt.stepper.step),
           showAllSteps: translate(TEXTS.grensesnitt.stepper.showAllSteps),
