@@ -101,7 +101,7 @@ const AttachmentUpload = ({
           {isIdUpload && <Label>Last opp bilde eller skannet kopi av ID-en din</Label>}
 
           {otherAttachment && selectedOption === 'leggerVedNaa' && (
-            <TextField label={TEXTS.statiske.attachment.descriptionLabel} size="small" required maxLength={50} />
+            <TextField label={TEXTS.statiske.attachment.descriptionLabel} size="small" maxLength={50} />
           )}
           {uploadedAttachmentFiles.length === 0 && (
             <FileUpload.Trigger multiple={!!innsendingsId && multiple} onSelect={handleUpload}>
@@ -173,7 +173,6 @@ const AttachmentUpload = ({
           label={TEXTS.statiske.attachment.alreadySentLabel}
           description={TEXTS.statiske.attachment.alreadySentDescription}
           maxLength={200}
-          required
         />
       )}
     </VStack>
