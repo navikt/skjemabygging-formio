@@ -252,7 +252,6 @@ describe('Data fetcher', () => {
       cy.intercept('PUT', '/fyllut/api/send-inn/utfyltsoknad', (req) => {
         const { submission, attachments } = req.body;
         expect(submission.data.hvorMangeAktiviteterErAktuelle).to.eq(2);
-        console.log(`Attachments: ${JSON.stringify(attachments, null, 2)}`);
         expect(attachments).to.have.length(1);
         expect(attachments[0].vedleggsnr).to.eq('U1');
       }).as('submitMellomlagring');
@@ -286,7 +285,6 @@ describe('Data fetcher', () => {
       cy.intercept('PUT', '/fyllut/api/send-inn/utfyltsoknad', (req) => {
         const { submission, attachments } = req.body;
         expect(submission.data.hvorMangeAktiviteterErAktuelle).to.eq(2);
-        console.log(`Attachments: ${JSON.stringify(attachments, null, 2)}`);
         expect(attachments).to.have.length(0);
       }).as('submitMellomlagring');
 
