@@ -6,6 +6,7 @@ describe('Data fetcher', () => {
 
   before(() => {
     cy.configMocksServer();
+    cy.defaultIntercepts();
   });
 
   after(() => {
@@ -241,6 +242,75 @@ describe('Data fetcher', () => {
               });
           });
       });
+    });
+  });
+
+  describe('Attachments with conditional using dataFetcher util', () => {
+    it('should be included', () => {
+      cy.mocksUseRouteVariant('get-register-data-activities:success-two-activities');
+
+      cy.intercept('PUT', '/fyllut/api/send-inn/utfyltsoknad', (req) => {
+        const { submission, attachments } = req.body;
+        expect(submission.data.hvorMangeAktiviteterErAktuelle).to.eq(2);
+        console.log(`Attachments: ${JSON.stringify(attachments, null, 2)}`);
+        expect(attachments).to.have.length(1);
+        expect(attachments[0].vedleggsnr).to.eq('U1');
+      }).as('submitMellomlagring');
+
+      cy.visit('/fyllut/checkcondition?sub=digital');
+      cy.clickStart();
+
+      cy.findByRole('link', { name: 'Diverse data' }).should('exist').click();
+      cy.findByRole('textbox', { name: 'Startdato (dd.mm.åååå)' }).type('31.12.2000');
+      cy.findByRole('group', { name: /Aktivitetsvelger.*/ })
+        .should('exist')
+        .within(() => {
+          cy.findAllByRole('checkbox').should('have.length', 2);
+          cy.findByRole('checkbox', { name: /Helse.*/ })
+            .should('exist')
+            .check();
+        });
+      cy.clickSaveAndContinue();
+
+      cy.findByRole('textbox', { name: 'Hvor mange aktiviteter er aktuelle?' }).should('exist').type('2');
+      cy.clickSaveAndContinue();
+
+      cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
+      cy.clickSaveAndContinue();
+      cy.wait('@submitMellomlagring');
+    });
+
+    it('should not be included', () => {
+      cy.mocksUseRouteVariant('get-register-data-activities:success-two-activities');
+
+      cy.intercept('PUT', '/fyllut/api/send-inn/utfyltsoknad', (req) => {
+        const { submission, attachments } = req.body;
+        expect(submission.data.hvorMangeAktiviteterErAktuelle).to.eq(2);
+        console.log(`Attachments: ${JSON.stringify(attachments, null, 2)}`);
+        expect(attachments).to.have.length(0);
+      }).as('submitMellomlagring');
+
+      cy.visit('/fyllut/checkcondition?sub=digital');
+      cy.clickStart();
+
+      cy.findByRole('link', { name: 'Diverse data' }).should('exist').click();
+      cy.findByRole('textbox', { name: 'Startdato (dd.mm.åååå)' }).type('31.12.2000');
+      cy.findByRole('group', { name: /Aktivitetsvelger.*/ })
+        .should('exist')
+        .within(() => {
+          cy.findAllByRole('checkbox').should('have.length', 2);
+          cy.findByRole('checkbox', { name: /Utdanning.*/ })
+            .should('exist')
+            .check();
+        });
+      cy.clickSaveAndContinue();
+
+      cy.findByRole('textbox', { name: 'Hvor mange aktiviteter er aktuelle?' }).should('exist').type('2');
+      cy.clickSaveAndContinue();
+
+      cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
+      cy.clickSaveAndContinue();
+      cy.wait('@submitMellomlagring');
     });
   });
 });
