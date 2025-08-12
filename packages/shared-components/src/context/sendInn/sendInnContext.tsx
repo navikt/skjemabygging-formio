@@ -105,18 +105,16 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
     const initializeMellomlagring = async () => {
       const innsendingsIdFromParams = searchParams.get('innsendingsId');
       try {
-        if (submissionMethod) {
-          if (innsendingsIdFromParams) {
-            setInnsendingsId(innsendingsIdFromParams);
-            await retrieveMellomlagring(innsendingsIdFromParams);
+        if (innsendingsIdFromParams) {
+          setInnsendingsId(innsendingsIdFromParams);
+          await retrieveMellomlagring(innsendingsIdFromParams);
+          setIsMellomlagringReady(true);
+          logger?.info(`${innsendingsIdFromParams}: Mellomlagring was retrieved`);
+        } else if (isMellomlagringAvailable) {
+          const response = await startMellomlagring(submission!);
+          if (response) {
             setIsMellomlagringReady(true);
-            logger?.info(`${innsendingsIdFromParams}: Mellomlagring was retrieved`);
-          } else if (isMellomlagringAvailable) {
-            const response = await startMellomlagring(submission!);
-            if (response) {
-              setIsMellomlagringReady(true);
-              logger?.info(`${innsendingsIdFromParams}: Mellomlagring was created`);
-            }
+            logger?.info(`${innsendingsIdFromParams}: Mellomlagring was created`);
           }
         }
       } catch (error: any) {
