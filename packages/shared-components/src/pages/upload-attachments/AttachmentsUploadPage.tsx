@@ -48,7 +48,7 @@ export function AttachmentsUploadPage() {
             label={label}
             description={htmlUtils.extractTextContent(description as string)}
             options={mapKeysToOptions(attachmentValues)}
-            vedleggId={navId || ''}
+            attachmentId={navId || ''}
             multiple
             otherAttachment
           />

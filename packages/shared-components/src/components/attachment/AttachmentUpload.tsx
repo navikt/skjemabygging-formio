@@ -24,12 +24,6 @@ import { useSendInn } from '../../context/sendInn/sendInnContext';
 import makeStyles from '../../util/styles/jss/jss';
 import { useAttachmentUpload } from './AttachmentUploadContext';
 
-type AttachmentOption = {
-  label: string;
-  value: string;
-  upload?: boolean;
-};
-
 interface Props {
   label: string;
   options: AttachmentOption[];
@@ -53,6 +47,7 @@ const AttachmentUpload = ({
   options,
   attachmentId,
   multiple = false,
+  className,
   description,
   isIdUpload,
   otherAttachment,
@@ -88,7 +83,7 @@ const AttachmentUpload = ({
   const deadline = form.properties?.ettersendelsesfrist;
 
   function handleDeleteAll() {
-    uploadedAttachmentFiles.map(({ filId }) => handleDelete(filId));
+    uploadedAttachmentFiles.map(({ fileId }) => handleDelete(fileId));
   }
 
   return (
