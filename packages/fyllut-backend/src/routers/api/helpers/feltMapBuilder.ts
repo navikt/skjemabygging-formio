@@ -25,7 +25,7 @@ import { EkstraBunntekst, FeltMap, PdfConfig, VerdilisteElement } from '../../..
 
 type TranslateFunction = (text: string) => string;
 
-const { gitVersion, isDevelopment } = config;
+const { gitVersion, isDevelopment, isProduction } = config;
 
 export const createFeltMapFromSubmission = (
   form: NavFormType,
@@ -73,10 +73,11 @@ export const createFeltMapFromSubmission = (
     skjemanummer: form.properties.skjemanummer,
     verdiliste,
     bunntekst: ekstraBunntekst,
-    vannmerke: isDevelopment ? 'Testskjema - Ikke send til Nav' : null,
+    vannmerke: isDevelopment || !isProduction ? 'Testskjema - Ikke send til Nav' : null,
   };
 
   logger.info('FeltMap created for form: ' + feltMap.label + ', vannmerke =' + feltMap.vannmerke);
+  logger.info('isDevelopment=' + isDevelopment + ', isProduction=' + isProduction);
 
   return JSON.stringify(feltMap).replaceAll('\\t', '  ');
 };
