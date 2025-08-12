@@ -259,6 +259,7 @@ describe('Data fetcher', () => {
       cy.visit('/fyllut/checkcondition?sub=digital');
       cy.clickStart();
 
+      cy.clickShowAllSteps();
       cy.findByRole('link', { name: 'Diverse data' }).should('exist').click();
       cy.findByRole('textbox', { name: 'Startdato (dd.mm.åååå)' }).type('31.12.2000');
       cy.findByRole('group', { name: /Aktivitetsvelger.*/ })
@@ -291,6 +292,7 @@ describe('Data fetcher', () => {
       cy.visit('/fyllut/checkcondition?sub=digital');
       cy.clickStart();
 
+      cy.clickShowAllSteps();
       cy.findByRole('link', { name: 'Diverse data' }).should('exist').click();
       cy.findByRole('textbox', { name: 'Startdato (dd.mm.åååå)' }).type('31.12.2000');
       cy.findByRole('group', { name: /Aktivitetsvelger.*/ })
