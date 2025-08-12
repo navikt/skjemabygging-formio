@@ -62,7 +62,6 @@ describe('sendInnContext', () => {
 
     describe('updateMellomlagring', () => {
       it('sends a PUT request to /api/send-inn/soknad', async () => {
-        await userEvent.click(screen.getByRole('button', { name: 'Start mellomlagring' }));
         await screen.findByTestId('innsendings-id');
         await userEvent.click(screen.getByRole('button', { name: 'Oppdater mellomlagring' }));
         expect(mockHttp.put).toHaveBeenCalledTimes(1);
@@ -80,7 +79,6 @@ describe('sendInnContext', () => {
 
     describe('deleteMellomlagring', () => {
       it('sends a DELETE request to /api/send-inn/soknad', async () => {
-        await userEvent.click(screen.getByRole('button', { name: 'Start mellomlagring' }));
         await screen.findByTestId('innsendings-id');
         await userEvent.click(screen.getByRole('button', { name: 'Slett mellomlagring' }));
         expect(mockHttp.delete).toHaveBeenCalledTimes(1);
@@ -90,7 +88,6 @@ describe('sendInnContext', () => {
 
     describe('submitSoknad', () => {
       it('sends a PUT request to /api/send-inn/utfyltsoknad', async () => {
-        await userEvent.click(screen.getByRole('button', { name: 'Start mellomlagring' }));
         await screen.findByTestId('innsendings-id');
         await userEvent.click(screen.getByRole('button', { name: 'Send inn søknad' }));
         expect(mockHttp.put).toHaveBeenCalledTimes(1);
