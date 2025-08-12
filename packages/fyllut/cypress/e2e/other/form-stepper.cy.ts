@@ -15,15 +15,13 @@ describe('Form stepper', () => {
 
   describe('Conditional rendering of steps', () => {
     it('should support use of utils in panel conditional', () => {
-      cy.visit('/fyllut/checkcondition?sub=paper');
+      cy.visit('/fyllut/checkcondition/diversedata?sub=paper');
       cy.defaultWaits();
-      cy.clickStart();
 
       cy.findByRole('navigation', { name: 'Søknadssteg' })
         .should('exist')
         .within(() => {
           cy.findByRole('link', { name: 'Viktige data' }).should('not.exist');
-          cy.findByRole('link', { name: 'Diverse data' }).should('exist').click();
         });
 
       cy.findByRole('textbox', { name: 'Startdato (dd.mm.åååå)' }).type('31.12.1989');
@@ -42,6 +40,12 @@ describe('Form stepper', () => {
       cy.defaultWaits();
       cy.clickStart();
 
+      cy.findByRole('navigation', { name: 'Søknadssteg' })
+        .should('exist')
+        .within(() => {
+          cy.findByRole('link', { name: 'Mer om aktiviteter' }).should('not.exist');
+        });
+
       cy.findByRole('link', { name: 'Diverse data' }).should('exist').click();
       cy.findByRole('group', { name: /Aktivitetsvelger.*/ })
         .should('exist')
@@ -52,6 +56,7 @@ describe('Form stepper', () => {
       cy.findByRole('navigation', { name: 'Søknadssteg' })
         .should('exist')
         .within(() => {
+          // This step will be visible when dataFetcher has fetched data successfully
           cy.findByRole('link', { name: 'Mer om aktiviteter' }).should('exist');
         });
     });
