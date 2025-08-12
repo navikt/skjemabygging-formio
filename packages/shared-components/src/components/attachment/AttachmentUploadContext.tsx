@@ -6,7 +6,7 @@ import { useForm } from '../../context/form/FormContext';
 import { useSendInn } from '../../context/sendInn/sendInnContext';
 
 interface AttachmentUploadContextType {
-  handleUploadFiles: (attachmentId: string, files: FileObject[]) => Promise<void>;
+  handleUploadFile: (attachmentId: string, file: FileObject) => Promise<void>;
   handleDeleteFile: (attachmentId: string, fileId: string) => Promise<void>;
   handleDeleteAttachment: (attachmentId: string) => Promise<void>;
   addError: (attachmentId: string, error: string) => void;
@@ -15,7 +15,7 @@ interface AttachmentUploadContextType {
 }
 
 const initialContext: AttachmentUploadContextType = {
-  handleUploadFiles: async () => {},
+  handleUploadFile: async () => {},
   handleDeleteFile: async () => {},
   handleDeleteAttachment: async () => {},
   addError: () => {},
@@ -31,9 +31,10 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
   const [errors, setErrors] = useState<Record<string, string | undefined>>({});
 
   const uploadedFiles = submission?.uploadedFiles ?? [];
-  const addToSubmission = (files: UploadedFile[]) => {
+
+  const addToSubmission = (file: UploadedFile) => {
     setSubmission(
-      (current) => ({ ...current, uploadedFiles: [...(current?.uploadedFiles ?? []), ...files] }) as Submission,
+      (current) => ({ ...current, uploadedFiles: [...(current?.uploadedFiles ?? []), file] }) as Submission,
     );
   };
   const removeFileFromSubmission = (fileId: string) => {
@@ -71,22 +72,17 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
     });
   };
 
-  const handleUploadFiles = async (attachmentId: string, files: FileObject[]) => {
-    const result = await Promise.all(
-      files.map(async ({ file }) => {
-        try {
-          return await uploadFile(file, attachmentId);
-        } catch (_e) {
-          addError(attachmentId, 'Det oppstod en feil under opplasting av filen. Prøv igjen senere.');
-        }
-      }),
-    );
-    const successfulUploads = result.filter((file): file is UploadedFile => file !== undefined);
-    if (successfulUploads.length === result.length) {
+  const handleUploadFile = async (attachmentId: string, file: FileObject) => {
+    try {
       removeError(attachmentId);
+      const result = await uploadFile(file.file, attachmentId);
+      if (result) {
+        addToSubmission(result);
+        setInnsendingsId(result.innsendingId);
+      }
+    } catch (_e) {
+      addError(attachmentId, 'Det oppstod en feil under opplasting av filen. Prøv igjen senere.');
     }
-    addToSubmission(successfulUploads);
-    setInnsendingsId(successfulUploads[0]?.innsendingId);
   };
 
   const handleDeleteFile = async (attachmentId: string, fileId: string) => {
@@ -116,7 +112,14 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
     }
   };
 
-  const value = { handleUploadFiles, handleDeleteFile, handleDeleteAttachment, addError, uploadedFiles, errors };
+  const value = {
+    handleUploadFile,
+    handleDeleteFile,
+    handleDeleteAttachment,
+    addError,
+    uploadedFiles,
+    errors,
+  };
   return <AttachmentUploadContext.Provider value={value}>{children}</AttachmentUploadContext.Provider>;
 };
 
