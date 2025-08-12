@@ -18,19 +18,11 @@ describe('Form stepper', () => {
       cy.visit('/fyllut/checkcondition/diversedata?sub=paper');
       cy.defaultWaits();
 
-      cy.findByRole('navigation', { name: 'Søknadssteg' })
-        .should('exist')
-        .within(() => {
-          cy.findByRole('link', { name: 'Viktige data' }).should('not.exist');
-        });
+      cy.clickShowAllSteps();
+      cy.findByRole('link', { name: 'Viktige data' }).should('not.exist');
 
       cy.findByRole('textbox', { name: 'Startdato (dd.mm.åååå)' }).type('31.12.1989');
-
-      cy.findByRole('navigation', { name: 'Søknadssteg' })
-        .should('exist')
-        .within(() => {
-          cy.findByRole('link', { name: 'Viktige data' }).should('exist');
-        });
+      cy.findByRole('link', { name: 'Viktige data' }).should('exist');
     });
 
     it('should support use of dataFetcher in panel conditional', () => {
@@ -40,11 +32,8 @@ describe('Form stepper', () => {
       cy.defaultWaits();
       cy.clickStart();
 
-      cy.findByRole('navigation', { name: 'Søknadssteg' })
-        .should('exist')
-        .within(() => {
-          cy.findByRole('link', { name: 'Mer om aktiviteter' }).should('not.exist');
-        });
+      cy.clickShowAllSteps();
+      cy.findByRole('link', { name: 'Mer om aktiviteter' }).should('not.exist');
 
       cy.findByRole('link', { name: 'Diverse data' }).should('exist').click();
       cy.findByRole('group', { name: /Aktivitetsvelger.*/ })
@@ -53,24 +42,17 @@ describe('Form stepper', () => {
           cy.findAllByRole('checkbox').should('have.length', 2);
         });
 
-      cy.findByRole('navigation', { name: 'Søknadssteg' })
-        .should('exist')
-        .within(() => {
-          // This step will be visible when dataFetcher has fetched data successfully
-          cy.findByRole('link', { name: 'Mer om aktiviteter' }).should('exist');
-        });
+      // This step will be visible when dataFetcher has fetched data successfully
+      cy.findByRole('link', { name: 'Mer om aktiviteter' }).should('exist');
     });
 
     it('should support use of lodash in panel conditional', () => {
       cy.visit('/fyllut/checkcondition/diversedata?sub=paper');
       cy.defaultWaits();
 
-      cy.findByRole('navigation', { name: 'Søknadssteg' })
-        .should('exist')
-        .within(() => {
-          cy.findByRole('link', { name: 'Viktige data' }).should('not.exist');
-          cy.findByRole('link', { name: 'World' }).should('not.exist');
-        });
+      cy.clickShowAllSteps();
+      cy.findByRole('link', { name: 'Viktige data' }).should('not.exist');
+      cy.findByRole('link', { name: 'World' }).should('not.exist');
 
       cy.findByRole('textbox', { name: 'Startdato (dd.mm.åååå)' }).type('31.12.1989');
       cy.clickNextStep();
@@ -81,12 +63,8 @@ describe('Form stepper', () => {
       cy.findByRole('heading', { name: 'World' }).should('exist');
       cy.url().should('include', '/fyllut/checkcondition/world');
 
-      cy.findByRole('navigation', { name: 'Søknadssteg' })
-        .should('exist')
-        .within(() => {
-          cy.findByRole('link', { name: 'Viktige data' }).should('exist');
-          cy.findByRole('link', { name: 'World' }).should('exist');
-        });
+      cy.findByRole('link', { name: 'Viktige data' }).should('exist');
+      cy.findByRole('link', { name: 'World' }).should('exist');
     });
   });
 });
