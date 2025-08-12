@@ -1,7 +1,7 @@
 module.exports = [
   {
     id: 'post-familie-pdf',
-    url: '/api/pdf/v1/opprett-pdf',
+    url: '/api/pdf/v3/opprett-pdf',
     method: 'POST',
     variants: [
       {

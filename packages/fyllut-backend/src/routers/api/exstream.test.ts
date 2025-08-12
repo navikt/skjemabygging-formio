@@ -19,7 +19,7 @@ const filePathSoknad = path.join(process.cwd(), '/src/services/documents/testdat
 describe.skip('exstream', () => {
   it('decodes and sends the pdf on success', async () => {
     const skjemabyggingproxyScope = nock(process.env.FAMILIE_PDF_GENERATOR_URL as string)
-      .post('/api/pdf/v1/opprett-pdf')
+      .post('/api/pdf/v3/opprett-pdf')
       .reply(200, filePathSoknad, { 'content-type': 'application/pdf' });
     //const req = mockRequest({ headers: { AzureAccessToken: 'azure-access-token' }, body: defaultBody });
     const res = mockResponse();
@@ -32,7 +32,7 @@ describe.skip('exstream', () => {
 
   it('calls next if skjemabygging-proxy returns error', async () => {
     const skjemabyggingproxyScope = nock(process.env.FAMILIE_PDF_GENERATOR_URL as string)
-      .post('/api/pdf/v1/opprett-pdf')
+      .post('/api/pdf/v3/opprett-pdf')
       .reply(500, 'error body');
     //const req = mockRequest({ headers: { AzureAccessToken: 'azure-access-token' }, body: defaultBody });
     const res = mockResponse();
