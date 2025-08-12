@@ -9,7 +9,7 @@ import {
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useAppConfig } from '../../context/config/configContext';
-import { usePrefillData } from '../../context/prefill-data/PrefillDataContext';
+import { useForm } from '../../context/form/FormContext';
 import { i18nUtils } from '../../index';
 import Styles from '../../styles';
 import makeStyles from '../../util/styles/jss/jss';
@@ -77,7 +77,7 @@ const NavForm = ({
 }: Props) => {
   useStyles();
   const [webform, setWebform] = useState<Webform>();
-  const { prefillData } = usePrefillData();
+  const { prefillData } = useForm();
   const appConfig = useAppConfig();
   const ref = useRef(null);
   const { panelSlug } = useParams();

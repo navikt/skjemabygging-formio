@@ -75,11 +75,8 @@ describe('NavDatepicker', () => {
     });
 
     it('is cleared when user removes textbox content', () => {
-      cy.findByRole('navigation', { name: 'Søknadssteg' })
-        .should('exist')
-        .within(() => {
-          cy.findByRole('link', { name: 'Veiledning' }).click();
-        });
+      cy.clickShowAllSteps();
+      cy.findByRole('link', { name: 'Veiledning' }).click();
       cy.findByRole('heading', { name: 'Veiledning' }).should('exist');
 
       cy.findByRole('textbox', { name: 'Tilfeldig dato' }).should('be.visible').and('be.enabled');

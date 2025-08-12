@@ -19,6 +19,7 @@ const FormsPageRow = ({ form }: FormRowProps) => {
   const paper = navFormUtils.isSubmissionMethodAllowed('paper', form);
   const digital = navFormUtils.isSubmissionMethodAllowed('digital', form);
   const ingen = submissionTypesUtils.isNoneSubmission(form.properties.submissionTypes);
+  const noDigitalLogin = submissionTypesUtils.isDigitalNoLoginSubmission(form.properties.submissionTypes);
   const isDevelopment = config?.isDevelopment;
   const skjemaPath = `${baseUrl}/${form.path}`;
 
@@ -43,6 +44,13 @@ const FormsPageRow = ({ form }: FormRowProps) => {
             {digital && (
               <span>
                 [<a href={`/fyllut/${form.path}?sub=digital`}>digital</a>]
+              </span>
+            )}
+          </td>
+          <td>
+            {noDigitalLogin && (
+              <span>
+                [<a href={`/fyllut/${form.path}?sub=digitalnologin`}>uinnlogget</a>]
               </span>
             )}
           </td>

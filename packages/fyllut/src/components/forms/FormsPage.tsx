@@ -39,7 +39,7 @@ export const FormsPage = () => {
           setStatus('FORMS NOT FOUND');
         });
     }
-  }, [history]);
+  }, [history, baseUrl]);
 
   if (status === 'LOADING') {
     return <LoadingComponent />;
@@ -59,7 +59,7 @@ export const FormsPage = () => {
               <tr>
                 <th>Skjemanummer</th>
                 <th>Skjematittel</th>
-                <th colSpan={3}>Innsending</th>
+                <th colSpan={4}>Innsending</th>
               </tr>
             </thead>
           )}

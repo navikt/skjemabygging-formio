@@ -10,10 +10,9 @@ interface Props {
   form: NavFormType;
   submission: any;
   enhetsListe: Enhet[];
-  translations: any;
 }
 
-const LetterDownload = ({ form, index, submission, enhetsListe, translations }: Props) => {
+const LetterDownload = ({ form, index, submission, enhetsListe }: Props) => {
   const { translate } = useLanguages();
   const [selectedEnhetNummer, setSelectedEnhetNummer] = useState<string | null>(null);
   const [isRequiredEnhetMissing, setIsRequiredEnhetMissing] = useState(false);
@@ -37,7 +36,6 @@ const LetterDownload = ({ form, index, submission, enhetsListe, translations }: 
         form={form}
         submission={submission}
         enhetNummer={selectedEnhetNummer ?? undefined}
-        translations={translations}
         isValid={() => {
           if (enhetsListe.length > 0 && !selectedEnhetNummer) {
             setIsRequiredEnhetMissing(true);
