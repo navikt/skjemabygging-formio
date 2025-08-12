@@ -6,10 +6,10 @@ import { useForm } from '../../context/form/FormContext';
 import { useSendInn } from '../../context/sendInn/sendInnContext';
 
 interface AttachmentUploadContextType {
-  handleUploadFiles: (vedleggId: string, files: FileObject[]) => Promise<void>;
-  handleDeleteFile: (vedleggId: string, fileId: string) => Promise<void>;
-  handleDeleteAttachment: (vedleggId: string) => Promise<void>;
-  addError: (vedleggId: string, error: string) => void;
+  handleUploadFiles: (attachmentId: string, files: FileObject[]) => Promise<void>;
+  handleDeleteFile: (attachmentId: string, fileId: string) => Promise<void>;
+  handleDeleteAttachment: (attachmentId: string) => Promise<void>;
+  addError: (attachmentId: string, error: string) => void;
   uploadedFiles: UploadedFile[];
   errors: Record<string, string | undefined>;
 }
@@ -41,77 +41,77 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
       (current) =>
         ({
           ...current,
-          uploadedFiles: (current?.uploadedFiles ?? []).filter((file) => file.filId !== fileId),
+          uploadedFiles: (current?.uploadedFiles ?? []).filter((file) => file.fileId !== fileId),
         }) as Submission,
     );
   };
 
-  const removeFilesFromSubmission = (vedleggId: string) => {
+  const removeFilesFromSubmission = (attachmentId: string) => {
     setSubmission(
       (current) =>
         ({
           ...current,
-          uploadedFiles: (current?.uploadedFiles ?? []).filter((file) => file.vedleggId !== vedleggId),
+          uploadedFiles: (current?.uploadedFiles ?? []).filter((file) => file.attachmentId !== attachmentId),
         }) as Submission,
     );
   };
 
   console.log(uploadedFiles);
-  const addError = (vedleggId: string, error: string) => {
+  const addError = (attachmentId: string, error: string) => {
     setErrors((prev) => ({
       ...prev,
-      [vedleggId]: error,
+      [attachmentId]: error,
     }));
   };
 
-  const removeError = (vedleggId: string) => {
+  const removeError = (attachmentId: string) => {
     setErrors((prev) => {
-      const { [vedleggId]: _, ...rest } = prev; // Remove the error for the specific vedleggId
+      const { [attachmentId]: _, ...rest } = prev; // Remove the error for the specific attachmentId
       return rest;
     });
   };
 
-  const handleUploadFiles = async (vedleggId: string, files: FileObject[]) => {
+  const handleUploadFiles = async (attachmentId: string, files: FileObject[]) => {
     const result = await Promise.all(
       files.map(async ({ file }) => {
         try {
-          return await uploadFile(file, vedleggId);
+          return await uploadFile(file, attachmentId);
         } catch (_e) {
-          addError(vedleggId, 'Det oppstod en feil under opplasting av filen. Prøv igjen senere.');
+          addError(attachmentId, 'Det oppstod en feil under opplasting av filen. Prøv igjen senere.');
         }
       }),
     );
     const successfulUploads = result.filter((file): file is UploadedFile => file !== undefined);
     if (successfulUploads.length === result.length) {
-      removeError(vedleggId);
+      removeError(attachmentId);
     }
     addToSubmission(successfulUploads);
     setInnsendingsId(successfulUploads[0]?.innsendingId);
   };
 
-  const handleDeleteFile = async (vedleggId: string, fileId: string) => {
+  const handleDeleteFile = async (attachmentId: string, fileId: string) => {
     try {
       if (!innsendingsId) {
         throw new Error('InnsendingsId is not set');
       }
       await deleteFile(fileId, innsendingsId);
-      removeError(vedleggId);
+      removeError(attachmentId);
       removeFileFromSubmission(fileId);
     } catch (_e) {
-      addError(vedleggId, 'Det oppstod en feil under sletting av filen. Prøv igjen senere.');
+      addError(attachmentId, 'Det oppstod en feil under sletting av filen. Prøv igjen senere.');
     }
   };
 
-  const handleDeleteAttachment = async (vedleggId: string) => {
+  const handleDeleteAttachment = async (attachmentId: string) => {
     try {
       if (!innsendingsId) {
         throw new Error('InnsendingsId is not set');
       }
-      await deleteAttachment(vedleggId, innsendingsId);
-      removeError(vedleggId);
-      removeFilesFromSubmission(vedleggId);
+      await deleteAttachment(attachmentId, innsendingsId);
+      removeError(attachmentId);
+      removeFilesFromSubmission(attachmentId);
     } catch (e) {
-      addError(vedleggId, 'Det oppstod en feil under sletting av vedlegget. Prøv igjen senere.');
+      addError(attachmentId, 'Det oppstod en feil under sletting av vedlegget. Prøv igjen senere.');
       throw e;
     }
   };

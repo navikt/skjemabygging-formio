@@ -22,7 +22,7 @@ const UploadPersonalIdButtonRow = () => {
 
   const navigateToFormPage = (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    if (uploadedFiles.find((file) => file.vedleggId === 'personal-id')) {
+    if (uploadedFiles.find((file) => file.attachmentId === 'personal-id')) {
       navigate(`..?${searchParams.toString()}`);
     } else {
       addError('personal-id', translate(TEXTS.statiske.uploadId.missingUploadError));
