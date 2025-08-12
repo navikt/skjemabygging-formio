@@ -1,9 +1,9 @@
 interface UploadedFile {
-  filId: string;
-  vedleggId: string; // TODO kommer fra vedlegg komponenten (navId)
+  fileId: string;
+  attachmentId: string;
   innsendingId: string;
-  filnavn: string;
-  storrelse: number;
+  fileName: string;
+  size: number;
 }
 
 export type { UploadedFile };

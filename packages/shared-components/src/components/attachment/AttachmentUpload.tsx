@@ -24,10 +24,16 @@ import { useSendInn } from '../../context/sendInn/sendInnContext';
 import makeStyles from '../../util/styles/jss/jss';
 import { useAttachmentUpload } from './AttachmentUploadContext';
 
+type AttachmentOption = {
+  label: string;
+  value: string;
+  upload?: boolean;
+};
+
 interface Props {
   label: string;
   options: AttachmentOption[];
-  vedleggId: string;
+  attachmentId: string;
   multiple?: boolean;
   description?: string;
   isIdUpload?: boolean;
@@ -45,8 +51,7 @@ const useStyles = makeStyles({
 const AttachmentUpload = ({
   label,
   options,
-  className,
-  vedleggId,
+  attachmentId,
   multiple = false,
   description,
   isIdUpload,
@@ -60,20 +65,20 @@ const AttachmentUpload = ({
   const { handleUploadFiles, handleDeleteFile, uploadedFiles, errors } = useAttachmentUpload();
   const { form } = useForm();
 
-  const uploadedAttachmentFiles = uploadedFiles.filter((file) => file.vedleggId === vedleggId);
-  const error = errors[vedleggId];
+  const uploadedAttachmentFiles = uploadedFiles.filter((file) => file.attachmentId === attachmentId);
+  const error = errors[attachmentId];
 
   const handleUpload = async (files: FileObject[] | null) => {
     if (!files || files.length === 0) {
       return;
     }
     setLoading(true);
-    await handleUploadFiles(vedleggId, files);
+    await handleUploadFiles(attachmentId, files);
     setLoading(false);
   };
 
-  const handleDelete = async (filId: string) => {
-    await handleDeleteFile(vedleggId, filId);
+  const handleDelete = async (fileId: string) => {
+    await handleDeleteFile(attachmentId, fileId);
   };
 
   //TODO: store this in context
@@ -121,13 +126,13 @@ const AttachmentUpload = ({
               {translate(TEXTS.statiske.attachment.deleteAllFiles)}
             </Button>
           )}
-          {uploadedAttachmentFiles.map(({ filId, filnavn, storrelse }) => (
+          {uploadedAttachmentFiles.map(({ fileId, fileName, size }) => (
             <FileUpload.Item
-              key={filId}
-              file={{ name: filnavn, size: storrelse }}
+              key={fileId}
+              file={{ name: fileName, size: size }}
               button={{
                 action: 'delete',
-                onClick: () => handleDelete(filId),
+                onClick: () => handleDelete(fileId),
               }}
             ></FileUpload.Item>
           ))}

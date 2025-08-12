@@ -9,6 +9,7 @@ const nologinFileRouter = express.Router();
 const { azureSendInn } = initApiConfig();
 
 nologinFileRouter.post('/', azureSendInn, upload.single('filinnhold'), nologinFile.post);
-nologinFileRouter.delete('/*filId', azureSendInn, nologinFile.delete);
+nologinFileRouter.delete('/', azureSendInn, nologinFile.delete);
+nologinFileRouter.delete('/*fileId', azureSendInn, nologinFile.delete);
 
 export default nologinFileRouter;

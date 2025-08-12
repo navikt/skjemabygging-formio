@@ -61,6 +61,7 @@ const FormStepper = () => {
         activeStep={getActiveStepper() + 1}
         open={formProgress}
         onOpenChange={(state) => setFormProgress(state)}
+        interactiveSteps={panelSlug !== 'legitimasjon'}
         translations={{
           step: translate(TEXTS.grensesnitt.stepper.step),
           showAllSteps: translate(TEXTS.grensesnitt.stepper.showAllSteps),

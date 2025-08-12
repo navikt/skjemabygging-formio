@@ -21,7 +21,7 @@ const UploadPersonalIdPage = () => {
         <AttachmentUpload
           label={'Hvilken legitimasjon ønsker du å bruke?'}
           options={radioOptions}
-          vedleggId={'personal-id'}
+          attachmentId={'personal-id'}
           isIdUpload
         />
         <UploadPersonalIdButtonRow />

@@ -32,6 +32,7 @@ describe('Digital no login', () => {
     cy.findByText('0,04 MB').should('exist');
 
     cy.clickNextStep();
+    cy.clickStart();
     cy.findByRole('heading', { name: 'Dine opplysninger' }).should('exist');
   });
 });

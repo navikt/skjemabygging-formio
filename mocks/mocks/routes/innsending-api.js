@@ -390,7 +390,7 @@ module.exports = [
         type: 'middleware',
         options: {
           middleware(req, res) {
-            const vedleggId = req.query['vedleggId'] || 'vedlegg-id';
+            const vedleggId = req.query['attachmentId'] || 'vedlegg-id';
             const innsendingId = req.query['innsendingId'] || 'innsending-id';
             res.status(201);
             res.contentType('application/json; charset=UTF-8');

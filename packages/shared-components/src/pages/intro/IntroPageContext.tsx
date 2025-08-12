@@ -76,8 +76,6 @@ export const IntroPageProvider = ({ children, form }: IntroPageProviderProps) =>
   }, [submissionMethod, toState]);
 
   const forceRedirectToSub = (sub: SubmissionMethod, path?: string) => {
-    // Important to force redirect to force idporten redirect if sub=digital
-    // and to make sure appCondig have the correct submissionMethod
     const { origin, pathname, search } = window.location;
     let href = `${origin}${pathname}`;
     if (path) {
@@ -87,7 +85,7 @@ export const IntroPageProvider = ({ children, form }: IntroPageProviderProps) =>
   };
 
   const showSelectSubmissionType = () => {
-    return state === IntroPageState.NO_LOGIN || state === IntroPageState.DEFAULT;
+    return form.properties?.submissionTypes && (state === IntroPageState.NO_LOGIN || state === IntroPageState.DEFAULT);
   };
 
   return (
