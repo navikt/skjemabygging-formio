@@ -1,7 +1,12 @@
 import { FileObject } from '@navikt/ds-react';
 import { Submission, TEXTS, UploadedFile } from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, useContext, useState } from 'react';
-import { deleteAttachment, deleteFile, uploadFile } from '../../api/nologin-file-upload/nologinFileUpload';
+import {
+  deleteAllFiles,
+  deleteAttachment,
+  deleteFile,
+  uploadFile,
+} from '../../api/nologin-file-upload/nologinFileUpload';
 import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
 import { useSendInn } from '../../context/sendInn/sendInnContext';
@@ -10,6 +15,7 @@ interface AttachmentUploadContextType {
   handleUploadFile: (attachmentId: string, file: FileObject) => Promise<void>;
   handleDeleteFile: (attachmentId: string, fileId: string) => Promise<void>;
   handleDeleteAttachment: (attachmentId: string) => Promise<void>;
+  handleDeleteAllFiles: () => Promise<void>;
   addError: (attachmentId: string, error: string) => void;
   uploadedFiles: UploadedFile[];
   errors: Record<string, string | undefined>;
@@ -19,6 +25,7 @@ const initialContext: AttachmentUploadContextType = {
   handleUploadFile: async () => {},
   handleDeleteFile: async () => {},
   handleDeleteAttachment: async () => {},
+  handleDeleteAllFiles: async () => {},
   addError: () => {},
   uploadedFiles: [],
   errors: {},
@@ -113,10 +120,25 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
     }
   };
 
+  const handleDeleteAllFiles = async () => {
+    try {
+      setErrors({});
+      if (!innsendingsId) {
+        throw new Error('InnsendingId is not set');
+      }
+      await deleteAllFiles(innsendingsId);
+      setSubmission((current) => ({ ...current, uploadedFiles: [] }) as Submission);
+    } catch (e) {
+      addError('allFiles', translate(TEXTS.statiske.uploadId.deleteAllFilesError));
+      throw e;
+    }
+  };
+
   const value = {
     handleUploadFile,
     handleDeleteFile,
     handleDeleteAttachment,
+    handleDeleteAllFiles,
     addError,
     uploadedFiles,
     errors,

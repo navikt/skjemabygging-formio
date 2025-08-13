@@ -33,4 +33,12 @@ const deleteAttachment = async (attachmentId: string, innsendingsId: string): Pr
   throw new Error(`Failed to delete attachment: ${response.statusText}`);
 };
 
-export { deleteAttachment, deleteFile, uploadFile };
+const deleteAllFiles = async (innsendingsId: string): Promise<void> => {
+  const response = await fetch(`${url}?innsendingId=${innsendingsId}`, { method: 'DELETE' });
+  if (response.ok) {
+    return;
+  }
+  throw new Error(`Failed to delete all files: ${response.statusText}`);
+};
+
+export { deleteAllFiles, deleteAttachment, deleteFile, uploadFile };

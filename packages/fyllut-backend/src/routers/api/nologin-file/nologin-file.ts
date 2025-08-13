@@ -55,20 +55,18 @@ const nologinFile = {
       const fileId = req.params.fileId as string | undefined;
       const innsendingId = req.query.innsendingId as string;
       const attachmentId = req.query.attachmentId as string | undefined;
-      if (!fileId && !attachmentId) {
-        logger.debug('Frontend must provide either fileId or attachmentId to delete a file');
-        return next(
-          responseToError(
-            'Error: Ingen fileId eller attachmentId angitt',
-            'Ingen fileId eller attachmentId funnet',
-            true,
-          ),
-        );
+      if (!fileId && !attachmentId && !innsendingId) {
+        logger.debug('Frontend must provide either fileId, attachmentId or innsendingId to delete files');
+        return next(new Error('Ingen fileId, attachmentId, eller innsendingId angitt'));
       }
+
+      const queryParams = attachmentId
+        ? `?vedleggId=${attachmentId}&innsendingId=${innsendingId}`
+        : `?innsendingId=${innsendingId}`;
       const targetUrl =
         fileId && validatorUtils.isValidUuid(fileId)
-          ? `${sendInnConfig.host}${sendInnConfig.paths.nologinFile}/${fileId}?innsendingId=${innsendingId}`
-          : `${sendInnConfig.host}${sendInnConfig.paths.nologinFile}?vedleggId=${attachmentId}&innsendingId=${innsendingId}`;
+          ? `${sendInnConfig.host}${sendInnConfig.paths.nologinFile}/${fileId}${queryParams}`
+          : `${sendInnConfig.host}${sendInnConfig.paths.nologinFile}${queryParams}`;
       const response = await fetch(targetUrl, {
         method: 'DELETE',
         headers: {

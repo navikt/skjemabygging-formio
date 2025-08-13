@@ -54,6 +54,7 @@ export const statiske = {
     uploadFileError: 'Det oppstod en feil under opplasting av filen. Prøv igjen senere.',
     deleteFileError: 'Det oppstod en feil under sletting av filen. Prøv igjen senere.',
     deleteAttachmentError: 'Det oppstod en feil under sletting av vedlegget. Prøv igjen senere.',
+    deleteAllFilesError: 'Det oppstod en feil under sletting av filene. Prøv igjen senere.',
   },
   paabegynt: {
     activeTasksHeading: 'Du har {{amount}} påbegynte utkast til denne søknaden',

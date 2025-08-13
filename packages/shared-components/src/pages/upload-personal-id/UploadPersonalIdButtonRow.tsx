@@ -1,5 +1,5 @@
 import { ArrowLeftIcon, ArrowRightIcon } from '@navikt/aksel-icons';
-import { Button } from '@navikt/ds-react';
+import { Alert, Button } from '@navikt/ds-react';
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { MouseEvent } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
@@ -15,7 +15,7 @@ const UploadPersonalIdButtonRow = () => {
   const { translate } = useLanguages();
   const { formUrl } = useForm();
   const [searchParams] = useSearchParams();
-  const { uploadedFiles, addError, handleDeleteAttachment } = useAttachmentUpload();
+  const { uploadedFiles, errors, addError, handleDeleteAllFiles } = useAttachmentUpload();
 
   const startUrl = `${baseUrl}${formUrl}`;
   const exitUrl = urlUtils.getExitUrl(window.location.href);
@@ -31,7 +31,7 @@ const UploadPersonalIdButtonRow = () => {
 
   const onCancelAndDelete = async () => {
     try {
-      await handleDeleteAttachment('personal-id');
+      await handleDeleteAllFiles();
       window.location.href = exitUrl;
     } catch (_e) {
       /* empty */
@@ -40,6 +40,11 @@ const UploadPersonalIdButtonRow = () => {
 
   return (
     <nav>
+      {errors['allFiles'] && (
+        <Alert className="mb" variant="error">
+          {errors['allFiles']}
+        </Alert>
+      )}
       <div className="button-row button-row--center">
         <Button
           variant="primary"
