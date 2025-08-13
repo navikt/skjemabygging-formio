@@ -49,7 +49,7 @@ const UploadPersonalIdButtonRow = () => {
       <div className="button-row button-row--center">
         <LinkButton buttonVariant="primary" onClick={navigateToFormPage} to={`${startUrl}?${searchParams.toString()}`}>
           <span aria-live="polite" className="navds-body-short font-bold">
-            {translate(TEXTS.grensesnitt.navigation.previous)}
+            {translate(TEXTS.grensesnitt.navigation.next)}
           </span>
           <span className="navds-button__icon">
             <ArrowRightIcon aria-hidden />
