@@ -1,4 +1,6 @@
 import FormioUtilsOriginal from 'formiojs/utils';
+import getCustomUtils from './utils-custom';
+import getOverrides from './utils-overrides';
 
 /**
  * Etter oppgradering til Vite 5 fikk vi problemer i backend (node) med bruk av kode fra shared-domain som importerer
@@ -17,5 +19,13 @@ const FormioUtils =
   Object.keys(FormioUtilsOriginal).length === 1 && FormioUtilsOriginal.default
     ? FormioUtilsOriginal.default
     : FormioUtilsOriginal;
+
+const overrides = getOverrides(FormioUtils);
+Object.assign(FormioUtils, overrides);
+
+const customUtils = getCustomUtils(FormioUtils);
+Object.assign(FormioUtils, customUtils);
+
+FormioUtils.overrideFunctionNames = [...Object.keys(overrides), ...Object.keys(customUtils)];
 
 export default FormioUtils;

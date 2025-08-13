@@ -53,8 +53,6 @@ export type DefaultConfig = {
   familiePdfGeneratorUrl: string;
   familiePdfGeneratorScope: string;
   mergePdfScope: string;
-  gotenbergUrl: string;
-  gotenbergUrlEn: string;
   azureOpenidTokenEndpoint: string;
   clientId: string;
   skjemaDir?: string;
