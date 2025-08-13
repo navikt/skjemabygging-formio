@@ -9,13 +9,13 @@ import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
 import urlUtils from '../../util/url/url';
 
-const UploadAttachmentsButtonRow = () => {
+const AttachmentsUploadButtonRow = () => {
   const navigate = useNavigate();
   const { baseUrl } = useAppConfig();
   const { translate } = useLanguages();
   const { formUrl } = useForm();
   const [searchParams] = useSearchParams();
-  const { uploadedFiles, addError, handleDeleteAttachment } = useAttachmentUpload();
+  const { uploadedFiles, addError, handleDeleteAllFiles } = useAttachmentUpload();
 
   const startUrl = `${baseUrl}${formUrl}`;
   const exitUrl = urlUtils.getExitUrl(window.location.href);
@@ -31,7 +31,7 @@ const UploadAttachmentsButtonRow = () => {
 
   const onCancelAndDelete = async () => {
     try {
-      await handleDeleteAttachment('personal-id');
+      await handleDeleteAllFiles();
       window.location.href = exitUrl;
     } catch (_e) {
       /* empty */
@@ -70,4 +70,4 @@ const UploadAttachmentsButtonRow = () => {
   );
 };
 
-export default UploadAttachmentsButtonRow;
+export default AttachmentsUploadButtonRow;

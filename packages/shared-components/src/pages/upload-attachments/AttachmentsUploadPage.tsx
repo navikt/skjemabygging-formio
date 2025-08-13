@@ -7,7 +7,7 @@ import { useLanguages } from '../../context/languages';
 import { Attachment, getAllAttachmentsPanels } from '../../util/attachment/attachmentsUtil';
 import htmlUtils from '../../util/html/htmlUtils';
 import makeStyles from '../../util/styles/jss/jss';
-import UploadAttachmentsButtonRow from './UploadAttachmentsButtonRow';
+import AttachmentsUploadButtonRow from './AttachmentsUploadButtonRow';
 
 const useStyles = makeStyles({
   attachmentUpload: {
@@ -56,7 +56,7 @@ export function AttachmentsUploadPage() {
           />
         ))}
       </AttachmentUploadProvider>
-      <UploadAttachmentsButtonRow />
+      <AttachmentsUploadButtonRow />
     </>
   );
 }
