@@ -42,6 +42,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
   const { setSubmission, form, formUrl, submission } = useForm();
   const soknadNotFoundUrl = `${baseUrl}/soknad-ikke-funnet`;
   const { translationsForNavForm: translations } = useLanguages();
+  const innsendingsIdFromParams = searchParams.get('innsendingsId');
 
   const isMellomlagringAvailable = app === 'fyllut' && submissionMethod === 'digital';
   // isMellomlagringReady is true if we either have successfully fetched or created mellomlagring, or if mellomlagring is not enabled
@@ -60,7 +61,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
         });
       }
     },
-    [pathname],
+    [setSearchParams],
   );
 
   const removeSearchParamFromUrl = useCallback(
@@ -72,7 +73,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
         });
       }
     },
-    [pathname],
+    [searchParams, setSearchParams],
   );
 
   useEffect(() => {
@@ -87,7 +88,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
         } as Submission;
       });
     }
-  }, [fyllutMellomlagringState]);
+  }, [fyllutMellomlagringState, setSubmission]);
 
   const retrieveMellomlagring = useCallback(
     async (innsendingsId: string) => {
@@ -98,99 +99,83 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
         dispatchFyllutMellomlagring({ type: 'init', response });
       }
     },
-    [appConfig, form, setSubmission],
+    [addSearchParamToUrl, appConfig, form, setSubmission],
   );
-
-  useEffect(() => {
-    const initializeMellomlagring = async () => {
-      const innsendingsIdFromParams = searchParams.get('innsendingsId');
-      try {
-        if (innsendingsIdFromParams) {
-          setInnsendingsId(innsendingsIdFromParams);
-          await retrieveMellomlagring(innsendingsIdFromParams);
-          setIsMellomlagringReady(true);
-          logger?.info(`${innsendingsIdFromParams}: Mellomlagring was retrieved`);
-        } else if (isMellomlagringAvailable) {
-          const response = await startMellomlagring(submission!);
-          if (response) {
-            setIsMellomlagringReady(true);
-            logger?.info(`${innsendingsIdFromParams}: Mellomlagring was created`);
-          }
-        }
-      } catch (error: any) {
-        if (error.status === 404) {
-          logger?.info(
-            `${innsendingsIdFromParams}: Mellomlagring does not exist. Redirects to ${soknadNotFoundUrl}`,
-            error as Error,
-          );
-          const formPath = pathname.split('/')[1];
-          const url = formPath ? `${baseUrl}/${formPath}` : `${baseUrl}`;
-          navigate('/soknad-ikke-funnet', { state: { url } });
-          return;
-        }
-        logger?.error(`${innsendingsIdFromParams}: Failed to retrieve mellomlagring`, error as Error);
-        dispatchFyllutMellomlagring({ type: 'error', error: 'GET_FAILED' });
-      }
-    };
-
-    initializeMellomlagring();
-  }, [retrieveMellomlagring]);
 
   const nbNO: Language = 'nb-NO';
 
-  const translationForLanguage = (language: Language = nbNO) => {
-    if (language !== nbNO && Object.keys(translations).length > 0) {
-      return translations[language] ?? {};
-    }
-    return {};
-  };
+  const translationForLanguage = useCallback(
+    (language: Language = nbNO) => {
+      if (language !== nbNO && Object.keys(translations).length > 0) {
+        return translations[language] ?? {};
+      }
+      return {};
+    },
+    [translations],
+  );
 
   const getLanguageFromSearchParams = (): Language => {
     return (new URL(window.location.href).searchParams.get('lang') as Language) || nbNO;
   };
 
-  const startMellomlagring = async (submission: Submission) => {
-    if (isMellomlagringReady || isCreateStarted) {
-      return;
-    }
-
-    try {
-      setIsCreateStarted(true);
-      const currentLanguage = getLanguageFromSearchParams();
-      const translation = translationForLanguage(currentLanguage);
-      const forceMellomlagring = !!searchParams.get('forceMellomlagring');
-      const response = await createSoknad(
-        appConfig,
-        form,
-        transformSubmissionBeforeSubmitting(submission),
-        currentLanguage,
-        translation,
-        forceMellomlagring,
-      );
-
-      if (soknadAlreadyExists(response)) {
-        const url = `${formUrl}/paabegynt?sub=digital`;
-        logger?.info(`User already has active tasks for the application. Redirects to ${url}`);
-        navigate(url);
+  const startMellomlagring = useCallback(
+    async (submission: Submission) => {
+      if (isMellomlagringReady || isCreateStarted) {
         return;
       }
 
-      logger?.info(`${response?.innsendingsId}: Successfully created new mellomlagring`);
+      try {
+        setIsCreateStarted(true);
+        const currentLanguage = getLanguageFromSearchParams();
+        const translation = translationForLanguage(currentLanguage);
+        const forceMellomlagring = !!searchParams.get('forceMellomlagring');
+        const response = await createSoknad(
+          appConfig,
+          form,
+          transformSubmissionBeforeSubmitting(submission),
+          currentLanguage,
+          translation,
+          forceMellomlagring,
+        );
 
-      setSubmission(getSubmissionWithFyllutState(response));
-      dispatchFyllutMellomlagring({ type: 'init', response });
-      setInnsendingsId(response?.innsendingsId);
-      removeSearchParamFromUrl('forceMellomlagring');
-      addSearchParamToUrl('innsendingsId', response?.innsendingsId);
-      if (response) {
-        setIsMellomlagringReady(true);
+        if (soknadAlreadyExists(response)) {
+          const url = `${formUrl}/paabegynt?sub=digital`;
+          logger?.info(`User already has active tasks for the application. Redirects to ${url}`);
+          navigate(url);
+          return;
+        }
+
+        logger?.info(`${response?.innsendingsId}: Successfully created new mellomlagring`);
+
+        setSubmission(getSubmissionWithFyllutState(response));
+        dispatchFyllutMellomlagring({ type: 'init', response });
+        setInnsendingsId(response?.innsendingsId);
+        removeSearchParamFromUrl('forceMellomlagring');
+        addSearchParamToUrl('innsendingsId', response?.innsendingsId);
+        if (response) {
+          setIsMellomlagringReady(true);
+        }
+        return response;
+      } catch (error: any) {
+        dispatchFyllutMellomlagring({ type: 'error', error: 'CREATE_FAILED' });
+        logger?.error('Failed to create mellomlagring', error);
       }
-      return response;
-    } catch (error: any) {
-      dispatchFyllutMellomlagring({ type: 'error', error: 'CREATE_FAILED' });
-      logger?.error('Failed to create mellomlagring', error);
-    }
-  };
+    },
+    [
+      isMellomlagringReady,
+      isCreateStarted,
+      translationForLanguage,
+      searchParams,
+      appConfig,
+      form,
+      logger,
+      setSubmission,
+      removeSearchParamFromUrl,
+      addSearchParamToUrl,
+      formUrl,
+      navigate,
+    ],
+  );
 
   const updateMellomlagring = async (submission: Submission): Promise<SendInnSoknadResponse | undefined> => {
     if (!isMellomlagringAvailable || !isMellomlagringReady) {
@@ -284,6 +269,55 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
       }
     }
   };
+
+  useEffect(() => {
+    const initializeMellomlagring = async () => {
+      if (!innsendingsId || innsendingsIdFromParams !== innsendingsId) {
+        try {
+          console.log(innsendingsIdFromParams);
+          if (innsendingsIdFromParams) {
+            setInnsendingsId(innsendingsIdFromParams);
+            await retrieveMellomlagring(innsendingsIdFromParams);
+            setIsMellomlagringReady(true);
+            logger?.info(`${innsendingsIdFromParams}: Mellomlagring was retrieved`);
+          } else if (isMellomlagringAvailable) {
+            const response = await startMellomlagring(submission!);
+            if (response) {
+              setIsMellomlagringReady(true);
+              logger?.info(`${innsendingsIdFromParams}: Mellomlagring was created`);
+            }
+          }
+        } catch (error: any) {
+          if (error.status === 404) {
+            logger?.info(
+              `${innsendingsIdFromParams}: Mellomlagring does not exist. Redirects to ${soknadNotFoundUrl}`,
+              error as Error,
+            );
+            const formPath = pathname.split('/')[1];
+            const url = formPath ? `${baseUrl}/${formPath}` : `${baseUrl}`;
+            navigate('/soknad-ikke-funnet', { state: { url } });
+            return;
+          }
+          logger?.error(`${innsendingsIdFromParams}: Failed to retrieve mellomlagring`, error as Error);
+          dispatchFyllutMellomlagring({ type: 'error', error: 'GET_FAILED' });
+        }
+      }
+    };
+
+    initializeMellomlagring();
+  }, [
+    baseUrl,
+    innsendingsId,
+    innsendingsIdFromParams,
+    isMellomlagringAvailable,
+    logger,
+    navigate,
+    pathname,
+    retrieveMellomlagring,
+    soknadNotFoundUrl,
+    startMellomlagring,
+    submission,
+  ]);
 
   const value: SendInnContextType = {
     updateMellomlagring,
