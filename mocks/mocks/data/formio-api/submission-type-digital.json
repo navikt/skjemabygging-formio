@@ -2,7 +2,7 @@
   "id": "st-digital",
   "skjemanummer": "st-digital",
   "path": "stdigital",
-  "title": "Submission Type Digital",
+  "title": "Submission Type: Digital",
   "components": [
     {
       "id": "e1nek8d",
@@ -18,6 +18,40 @@
           "type": "textfield",
           "validate": {
             "required": true
+          }
+        }
+      ]
+    }, {
+      "id": "er8l2dg",
+      "key": "vedlegg",
+      "type": "panel",
+      "title": "Vedlegg",
+      "isAttachmentPanel": true,
+      "components": [
+        {
+          "id": "ewftv5w",
+          "label": "Annen dokumentasjon",
+          "description": "Har du noen annen dokumentasjon du ønsker å legge ved?",
+          "type": "attachment",
+          "key": "annenDokumentasjon",
+          "attachmentType": "other",
+          "properties": {
+            "vedleggstittel": "Annet",
+            "vedleggskode": "N6"
+          },
+          "validate": {
+            "required": true
+          },
+          "attachmentValues": {
+            "leggerVedNaa": {
+              "enabled": true
+            },
+            "ettersender": {
+              "enabled": true
+            },
+            "nei": {
+              "enabled": true
+            }
           }
         }
       ]

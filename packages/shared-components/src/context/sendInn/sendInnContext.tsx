@@ -1,11 +1,4 @@
-import {
-  FyllutState,
-  I18nTranslations,
-  Language,
-  MellomlagringError,
-  NavFormType,
-  Submission,
-} from '@navikt/skjemadigitalisering-shared-domain';
+import { Language, MellomlagringError, Submission } from '@navikt/skjemadigitalisering-shared-domain';
 import React, { createContext, useCallback, useContext, useEffect, useReducer, useState } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import {
@@ -18,6 +11,8 @@ import {
   updateUtfyltSoknad,
 } from '../../api/sendinn/sendInnSoknad';
 import { useAppConfig } from '../config/configContext';
+import { useForm } from '../form/FormContext';
+import { useLanguages } from '../languages';
 import { mellomlagringReducer } from './reducer/mellomlagringReducer';
 import { getSubmissionWithFyllutState, transformSubmissionBeforeSubmitting } from './utils/utils';
 
@@ -35,29 +30,19 @@ interface SendInnContextType {
 
 interface SendInnProviderProps {
   children: React.ReactNode;
-  form: NavFormType;
-  formUrl: string;
-  translations: I18nTranslations;
-  updateSubmission: (submission?: Submission) => void;
-  onFyllutStateChange: (fyllutState: Partial<FyllutState>) => void;
 }
 
 const SendInnContext = createContext<SendInnContextType>({} as SendInnContextType);
 
-const SendInnProvider = ({
-  children,
-  form,
-  formUrl,
-  translations,
-  updateSubmission,
-  onFyllutStateChange,
-}: SendInnProviderProps) => {
+const SendInnProvider = ({ children }: SendInnProviderProps) => {
   const appConfig = useAppConfig();
   const { app, submissionMethod, logger, baseUrl } = appConfig;
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
+  const { setSubmission, form, formUrl } = useForm();
   const soknadNotFoundUrl = `${baseUrl}/soknad-ikke-funnet`;
+  const { translationsForNavForm: translations } = useLanguages();
 
   const isMellomlagringAvailable = app === 'fyllut' && submissionMethod === 'digital';
   // isMellomlagringReady is true if we either have successfully fetched or created mellomlagring, or if mellomlagring is not enabled
@@ -93,8 +78,16 @@ const SendInnProvider = ({
   );
 
   useEffect(() => {
-    if (fyllutMellomlagringState) {
-      onFyllutStateChange({ mellomlagring: fyllutMellomlagringState });
+    if (fyllutMellomlagringState && setSubmission) {
+      setSubmission((prevSubmission) => {
+        return {
+          ...prevSubmission,
+          fyllutState: {
+            ...prevSubmission?.fyllutState,
+            mellomlagring: fyllutMellomlagringState,
+          },
+        } as Submission;
+      });
     }
   }, [fyllutMellomlagringState]);
 
@@ -102,7 +95,7 @@ const SendInnProvider = ({
     const response = await getSoknad(innsendingsId, appConfig);
     if (response?.hoveddokumentVariant.document) {
       addSearchParamToUrl('lang', response.hoveddokumentVariant.document.language);
-      updateSubmission(getSubmissionWithFyllutState(response, form));
+      setSubmission(getSubmissionWithFyllutState(response, form));
       dispatchFyllutMellomlagring({ type: 'init', response });
     }
   };
@@ -181,7 +174,7 @@ const SendInnProvider = ({
 
       logger?.info(`${response?.innsendingsId}: Successfully created new mellomlagring`);
 
-      updateSubmission(getSubmissionWithFyllutState(response));
+      setSubmission(getSubmissionWithFyllutState(response));
       dispatchFyllutMellomlagring({ type: 'init', response });
       setInnsendingsId(response?.innsendingsId);
       removeSearchParamFromUrl('forceMellomlagring');

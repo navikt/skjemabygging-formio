@@ -17,7 +17,7 @@ describe('Conditional rendering', () => {
   describe('When form has panels that are hidden unless a condition is true', () => {
     beforeEach(() => {
       cy.defaultIntercepts();
-      cy.visit('/fyllut/conditionalxmas');
+      cy.visit('/fyllut/conditionalxmas?sub=paper');
       cy.defaultWaits();
       cy.clickStart(); // <-- navigate from information page to the form
     });
@@ -29,39 +29,42 @@ describe('Conditional rendering', () => {
 
     describe('Filling out the form', () => {
       it("adds the panel 'Pinnekjøtt' when radio option pinnekjøtt is selected", () => {
+        cy.clickShowAllSteps();
         cy.findByRole('link', { name: 'Pinnekjøtt' }).should('not.exist');
         cy.findByRole('group', { name: 'Julemiddag' }).within(() => {
           cy.findByLabelText('Pinnekjøtt').check({ force: true });
         });
         cy.findByRole('link', { name: 'Pinnekjøtt' }).should('exist');
         cy.findByRole('link', { name: 'Lutefisk' }).should('not.exist');
-        cy.clickSaveAndContinue();
+        cy.clickNextStep();
         cy.url().should('include', '/pinnekjott');
       });
 
       it("adds the panel 'Lutefisk' when radio option lutefisk is selected", () => {
+        cy.clickShowAllSteps();
         cy.findByRole('link', { name: 'Lutefisk' }).should('not.exist');
         cy.findByRole('group', { name: 'Julemiddag' }).within(() => {
           cy.findByLabelText('Lutefisk').check({ force: true });
         });
         cy.findByRole('link', { name: 'Lutefisk' }).should('exist');
         cy.findByRole('link', { name: 'Pinnekjøtt' }).should('not.exist');
-        cy.clickSaveAndContinue();
+        cy.clickNextStep();
         cy.url().should('include', '/lutefisk');
       });
     });
 
     describe('Summary page', () => {
       beforeEach(() => {
+        cy.clickShowAllSteps();
         cy.findByRole('group', { name: 'Julemiddag' }).within(() => {
           cy.findByLabelText('Pinnekjøtt').check({ force: true });
         });
         cy.findByRole('link', { name: 'Pinnekjøtt' }).should('exist');
-        cy.clickSaveAndContinue();
+        cy.clickNextStep();
         cy.findByRole('checkbox', { name: 'Rotmos (valgfritt)' }).check({ force: true });
-        cy.clickSaveAndContinue();
+        cy.clickNextStep();
         cy.findByRole('checkbox', { name: 'Sjokoladetrekk (valgfritt)' }).check({ force: true });
-        cy.clickSaveAndContinue();
+        cy.clickNextStep();
       });
 
       it('lists the submission for the added panel', () => {
@@ -85,12 +88,12 @@ describe('Conditional rendering', () => {
           cy.findByLabelText('Lutefisk').check({ force: true });
         });
         cy.findByRole('link', { name: 'Lutefisk' }).should('exist');
-        cy.clickSaveAndContinue();
+        cy.clickNextStep();
         cy.url().should('include', '/lutefisk');
         cy.findByRole('checkbox', { name: 'Erterstuing (valgfritt)' }).click({ force: true });
-        cy.clickSaveAndContinue();
+        cy.clickNextStep();
         cy.url().should('include', '/marsipangris');
-        cy.clickSaveAndContinue();
+        cy.clickNextStep();
         cy.url().should('include', '/oppsummering');
         cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
         cy.findByRole('button', { name: 'Lutefisk' });

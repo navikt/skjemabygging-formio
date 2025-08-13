@@ -104,10 +104,6 @@ spec:
       value: {{familie-pdf-generator-scope}}
     - name: MERGE_PDF_SCOPE
       value: {{merge-pdf-scope}}
-    - name: GOTENBERG_URL
-      value: {{gotenberg-url}}
-    - name: GOTENBERG_URL_EN
-      value: {{gotenberg-url-en}}
     - name: SEND_INN_TOKEN_X_CLIENT_ID
       value: {{send-inn-token-x-client-id}}
     - name: SEND_INN_HOST

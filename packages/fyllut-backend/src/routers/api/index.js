@@ -11,7 +11,6 @@ import commonCodes from './common-codes';
 import config from './config';
 import documentsRouter from './documents';
 import enhetsliste from './enhetsliste.js';
-import exstream from './exstream';
 import form from './form';
 import forms from './forms';
 import forsteside from './forsteside';
@@ -34,7 +33,7 @@ const { featureToggles } = appConfig;
 const { azureSkjemabyggingProxy, azurePdl, kodeverkToken, tokenxPdl, tokenxSendInn, azurePdfGeneratorToken } =
   initApiConfig();
 
-apiRouter.all('*', idportenAuthHandler, envQualifier);
+apiRouter.all('*path', rateLimiter(60000, 1000), idportenAuthHandler, envQualifier);
 apiRouter.use('/captcha', captchaRouter);
 apiRouter.get('/config', config.get);
 apiRouter.get('/enhetsliste', enhetsliste.get);
@@ -53,8 +52,8 @@ apiRouter.post('/send-inn/soknad', tokenxSendInn, sendInnSoknad.post);
 apiRouter.put('/send-inn/soknad', tokenxSendInn, sendInnSoknad.put);
 apiRouter.put('/send-inn/utfyltsoknad', azurePdfGeneratorToken, tokenxSendInn, sendInnUtfyltSoknad.put);
 apiRouter.get('/common-codes/archive-subjects', kodeverkToken, commonCodes.getArchiveSubjects);
-apiRouter.post('/pdf/convert', azurePdfGeneratorToken, exstream.post);
 apiRouter.get('/common-codes/currencies', kodeverkToken, commonCodes.getCurrencies);
+apiRouter.get('/common-codes/enhetstyper', kodeverkToken, commonCodes.getEnhetstyper);
 apiRouter.post('/log/:level', rateLimiter(60000, 60), log.post);
 apiRouter.get('/health/status', status.get);
 apiRouter.get('/send-inn/prefill-data', tokenxSendInn, prefillData.get);

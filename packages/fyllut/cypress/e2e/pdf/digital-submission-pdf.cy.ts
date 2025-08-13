@@ -28,9 +28,9 @@ describe('Pdf when digital submission', () => {
       cy.defaultWaits();
       cy.clickStart();
       cy.findByRole('heading', { name: 'Veiledning' }).shouldBeVisible();
-      cy.findByRole('button', { name: 'Lagre og fortsett' }).click();
+      cy.clickSaveAndContinue();
       cy.findByRole('heading', { name: 'Dine opplysninger' }).shouldBeVisible();
-      cy.findByRole('button', { name: 'Lagre og fortsett' }).click();
+      cy.clickSaveAndContinue();
 
       cy.findByRole('group', { name: 'Hvilken aktivitet søker du om støtte i forbindelse med?' })
         .should('exist')
@@ -40,7 +40,7 @@ describe('Pdf when digital submission', () => {
             .should('exist')
             .click();
         });
-      cy.findByRole('button', { name: 'Lagre og fortsett' }).click();
+      cy.clickSaveAndContinue();
 
       cy.findByRole('heading', { name: 'Reiseperiode' }).shouldBeVisible();
       cy.findByRole('textbox', { name: /Startdato.*/ })
@@ -50,7 +50,7 @@ describe('Pdf when digital submission', () => {
         .should('exist')
         .type('31.01.2024');
       cy.findByRole('textbox', { name: 'Hvor mange reisedager har du per uke?' }).should('exist').type('3');
-      cy.findByRole('button', { name: 'Lagre og fortsett' }).click();
+      cy.clickSaveAndContinue();
 
       cy.findByRole('heading', { name: 'Reiseavstand' }).shouldBeVisible();
       cy.findByRole('group', { name: 'Har du en reisevei på seks kilometer eller mer?' })
@@ -63,7 +63,7 @@ describe('Pdf when digital submission', () => {
       cy.findByRole('textbox', { name: 'Postnummer' }).should('exist').type('1234');
       cy.findByRole('textbox', { name: 'Poststed' }).should('exist').type('Plassen');
 
-      cy.findByRole('button', { name: 'Lagre og fortsett' }).click();
+      cy.clickSaveAndContinue();
 
       cy.findByRole('heading', { name: 'Transportbehov' }).shouldBeVisible();
       cy.findByRole('group', { name: 'Kan du reise kollektivt?' })
@@ -99,10 +99,10 @@ describe('Pdf when digital submission', () => {
             .click();
         });
 
-      cy.findByRole('button', { name: 'Lagre og fortsett' }).click();
+      cy.clickSaveAndContinue();
 
       cy.findByRole('heading', { name: 'Tilleggsopplysninger' }).shouldBeVisible();
-      cy.findByRole('button', { name: 'Lagre og fortsett' }).click();
+      cy.clickSaveAndContinue();
 
       // Submit
       cy.clickSaveAndContinue();
@@ -123,9 +123,9 @@ describe('Pdf when digital submission', () => {
       cy.defaultWaits();
       cy.clickStart();
       cy.findByRole('heading', { name: 'Veiledning' }).shouldBeVisible();
-      cy.findByRole('button', { name: 'Lagre og fortsett' }).click();
+      cy.clickSaveAndContinue();
       cy.findByRole('heading', { name: 'Dine opplysningar' }).shouldBeVisible();
-      cy.findByRole('button', { name: 'Lagre og fortsett' }).click();
+      cy.clickSaveAndContinue();
 
       cy.findByRole('group', { name: 'Hvilken aktivitet søker du om støtte i forbindelse med?' })
         .should('exist')
@@ -135,7 +135,7 @@ describe('Pdf when digital submission', () => {
             .should('exist')
             .click();
         });
-      cy.findByRole('button', { name: 'Lagre og fortsett' }).click();
+      cy.clickSaveAndContinue();
 
       cy.findByRole('heading', { name: 'Reiseperiode' }).shouldBeVisible();
       cy.findByRole('textbox', { name: /Startdato.*/ })
@@ -145,7 +145,7 @@ describe('Pdf when digital submission', () => {
         .should('exist')
         .type('31.01.2024');
       cy.findByRole('textbox', { name: 'Kor mange reisedagar har du per veke?' }).should('exist').type('3');
-      cy.findByRole('button', { name: 'Lagre og fortsett' }).click();
+      cy.clickSaveAndContinue();
 
       cy.findByRole('heading', { name: 'Reiseavstand' }).shouldBeVisible();
       cy.findByRole('group', { name: 'Har du ein reiseveg på seks kilometer eller meir?' })
@@ -158,7 +158,7 @@ describe('Pdf when digital submission', () => {
       cy.findByRole('textbox', { name: 'Postnummer' }).should('exist').type('1234');
       cy.findByRole('textbox', { name: 'Poststed' }).should('exist').type('Plassen');
 
-      cy.findByRole('button', { name: 'Lagre og fortsett' }).click();
+      cy.clickSaveAndContinue();
 
       cy.findByRole('heading', { name: 'Transportbehov' }).shouldBeVisible();
       cy.findByRole('group', { name: 'Kan du reisa kollektivt?' })
@@ -194,10 +194,10 @@ describe('Pdf when digital submission', () => {
             .click();
         });
 
-      cy.findByRole('button', { name: 'Lagre og fortsett' }).click();
+      cy.clickSaveAndContinue();
 
       cy.findByRole('heading', { name: 'Tilleggsopplysninger' }).shouldBeVisible();
-      cy.findByRole('button', { name: 'Lagre og fortsett' }).click();
+      cy.clickSaveAndContinue();
 
       // Submit
       cy.clickSaveAndContinue();

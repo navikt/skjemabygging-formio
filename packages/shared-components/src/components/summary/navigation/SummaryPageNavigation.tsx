@@ -35,7 +35,7 @@ const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList,
   const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
 
   const submissionTypes = form.properties.submissionTypes;
-  const hasAttachments = hasRelevantAttachments(form, submission?.data ?? {});
+  const hasAttachments = hasRelevantAttachments(form, submission ?? { data: {} });
   const canSubmit =
     !!panelValidationList && panelValidationList.every((panelValidation) => !panelValidation.hasValidationErrors);
   const sendIPosten =

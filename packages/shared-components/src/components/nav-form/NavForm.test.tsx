@@ -1,6 +1,5 @@
 import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import { act, render, screen, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import { setupNavFormio } from '../../../test/navform-render';
 import { AppConfigProvider } from '../../context/config/configContext';
 import NavForm from './NavForm';
@@ -156,10 +155,6 @@ describe('NavForm', () => {
       const ibanField = await screen.findByLabelText('IBAN');
       expect(ibanField).toBeInTheDocument();
       expect(ibanField).toHaveValue('GB33 BUKB 2020 1555 5555 55');
-
-      const nextLink = await screen.findByRole('button', { name: 'Neste steg' });
-      await userEvent.click(nextLink);
-      await waitFor(() => expect(mockedOnSubmit).toHaveBeenCalled());
     });
   });
 });

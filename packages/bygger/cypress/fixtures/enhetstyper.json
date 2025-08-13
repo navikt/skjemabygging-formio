@@ -1,0 +1,118 @@
+[
+  {
+    "kodenavn": "AAREG",
+    "term": "AA-reg"
+  },
+  {
+    "kodenavn": "ALS",
+    "term": "Arbeidslivssenter"
+  },
+  {
+    "kodenavn": "ARK",
+    "term": "Arbeidsrådgivning"
+  },
+  {
+    "kodenavn": "DIR",
+    "term": "Direktorat"
+  },
+  {
+    "kodenavn": "DOKSENTER",
+    "term": "Dokumentsenter"
+  },
+  {
+    "kodenavn": "EKSTERN",
+    "term": "EKSTERN"
+  },
+  {
+    "kodenavn": "FORVALTNING",
+    "term": "Forvaltning"
+  },
+  {
+    "kodenavn": "FPY",
+    "term": "Familie- og pensjonsytelser"
+  },
+  {
+    "kodenavn": "FYLKE",
+    "term": "Fylkeskontor"
+  },
+  {
+    "kodenavn": "HELFO",
+    "term": "HELFO"
+  },
+  {
+    "kodenavn": "HMS",
+    "term": "Hjelpemiddel og tilrettelegging"
+  },
+  {
+    "kodenavn": "INNKREV",
+    "term": "Innkreving"
+  },
+  {
+    "kodenavn": "INTRO",
+    "term": "Intro"
+  },
+  {
+    "kodenavn": "IT",
+    "term": "IT"
+  },
+  {
+    "kodenavn": "KLAGE",
+    "term": "Klageinstans"
+  },
+  {
+    "kodenavn": "KO",
+    "term": "Kø"
+  },
+  {
+    "kodenavn": "KONTAKT",
+    "term": "Kontaktsenter"
+  },
+  {
+    "kodenavn": "KONTROLL",
+    "term": "Kontroll"
+  },
+  {
+    "kodenavn": "LOKAL",
+    "term": "NAV-kontor"
+  },
+  {
+    "kodenavn": "OKONOMI",
+    "term": "Økonomi stønad"
+  },
+  {
+    "kodenavn": "OPPFUTLAND",
+    "term": "Oppfølging utland"
+  },
+  {
+    "kodenavn": "OTENESTE",
+    "term": "Økonomitjenester"
+  },
+  {
+    "kodenavn": "RIKSREV",
+    "term": "RIKSREVISJON"
+  },
+  {
+    "kodenavn": "ROBOT",
+    "term": "Automatisert saksbehandling"
+  },
+  {
+    "kodenavn": "ROL",
+    "term": "Rådgivende overlege"
+  },
+  {
+    "kodenavn": "TILLIT",
+    "term": "Tillitsvalgte"
+  },
+  {
+    "kodenavn": "TILTAK",
+    "term": "Tiltaksenhet"
+  },
+  {
+    "kodenavn": "UTLAND",
+    "term": "Internasjonalt"
+  },
+  {
+    "kodenavn": "YTA",
+    "term": "Arbeid og ytelse"
+  }
+]

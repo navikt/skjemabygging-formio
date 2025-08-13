@@ -41,6 +41,7 @@ const radioForm = require('../data/formio-api/radio.json');
 const selectBoxesForm = require('../data/formio-api/select-boxes.json');
 const monthPickerForm = require('../data/formio-api/month-picker.json');
 const emailForm = require('../data/formio-api/form-email.json');
+const formUtilsCheckCondition = require('../data/formio-api/form-utils-check-condition.json');
 const nav111221b = require('../data/formio-api/nav111221b.json');
 const nav111221bTranslations = require('../data/formio-api/nav111221b-translations.json');
 const formSkjemagruppeTest = require('../data/formio-api/skjemagruppetest.json');
@@ -52,6 +53,10 @@ const submissionTypePaper = require('../data/formio-api/submission-type-paper.js
 const submissionTypeDigital = require('../data/formio-api/submission-type-digital.json');
 const submissionTypePaperDigital = require('../data/formio-api/submission-type-paper-digital.json');
 const submissionTypeNone = require('../data/formio-api/submission-type-none.json');
+const submissionTypeNoLogin = require('../data/formio-api/submission-type-no-login.json');
+const submissionTypeDigitalNoLogin = require('../data/formio-api/submission-type-digital-no-login.json');
+const submissionTypePaperDigitalNoLogin = require('../data/formio-api/submission-type-paper-digital-no-login.json');
+const submissionTypePaperNoLogin = require('../data/formio-api/submission-type-paper-no-login.json');
 
 const allForms = [
   { form: formCypress101, translations: translationsCypress101 },
@@ -89,6 +94,7 @@ const allForms = [
   { form: monthPickerForm, translations: undefined },
   { form: emailForm, translations: undefined },
   { form: nav111221b, translations: nav111221bTranslations },
+  { form: formUtilsCheckCondition, translations: undefined },
   { form: formSkjemagruppeTest, translations: undefined },
   { form: errorSummaryFocusForm, translations: undefined },
   { form: datafetcherForm, translations: undefined },
@@ -98,6 +104,10 @@ const allForms = [
   { form: submissionTypeDigital, translations: undefined },
   { form: submissionTypePaperDigital, translations: undefined },
   { form: submissionTypeNone, translations: undefined },
+  { form: submissionTypeNoLogin, translations: undefined },
+  { form: submissionTypeDigitalNoLogin, translations: undefined },
+  { form: submissionTypePaperDigitalNoLogin, translations: undefined },
+  { form: submissionTypePaperNoLogin, translations: undefined },
 ];
 
 const findTestdata = (formPath) => allForms.find((testdata) => testdata.form.path === formPath);

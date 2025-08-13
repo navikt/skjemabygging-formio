@@ -1,7 +1,7 @@
 import { GuidePanel, Heading } from '@navikt/ds-react';
-import { useLanguages } from '@navikt/skjemadigitalisering-shared-components';
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useState } from 'react';
+import { useLanguages } from '../../context/languages';
 import IntroPageButtonRow from './IntroPageButtonRow';
 import { IntroPageState, useIntroPage } from './IntroPageContext';
 
