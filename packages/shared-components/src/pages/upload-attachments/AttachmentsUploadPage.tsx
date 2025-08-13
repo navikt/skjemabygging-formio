@@ -1,7 +1,8 @@
-import { Submission, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { AttachmentOption, Submission } from '@navikt/skjemadigitalisering-shared-domain';
 import clsx from 'clsx';
 import AttachmentUpload from '../../components/attachment/AttachmentUpload';
 import AttachmentUploadProvider from '../../components/attachment/AttachmentUploadContext';
+import { mapKeysToOptions } from '../../components/attachment/utils';
 import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
 import { Attachment, getAllAttachmentsPanels } from '../../util/attachment/attachmentsUtil';
@@ -20,24 +21,6 @@ export function AttachmentsUploadPage() {
   const { translate } = useLanguages();
   const { form, submission } = useForm();
   const styles = useStyles();
-  const isOtherAttachment = (attachmentType: string) => attachmentType !== 'default';
-
-  const shouldEnableUpload = (value: string) => value === 'leggerVedNaa';
-
-  function mapKeysToOptions(object) {
-    return Object.keys(object)
-      .filter((key) => object[key].enabled === true)
-      .map((key) => ({
-        value: key,
-        label: translate(TEXTS.statiske.attachment[key]),
-        upload: shouldEnableUpload(key),
-        additionalDocumentation: object[key]?.additionalDocumentation?.enabled && {
-          label: translate(object[key]?.additionalDocumentation?.label),
-          description: translate(object[key]?.additionalDocumentation?.description),
-        },
-      }));
-  }
-
   const attachmentPanels: Attachment[] = getAllAttachmentsPanels(form, submission ?? ({} as Submission));
 
   return (
@@ -49,10 +32,9 @@ export function AttachmentsUploadPage() {
             className={clsx(index !== attachmentPanels.length - 1 && styles.attachmentUpload)}
             label={label}
             description={htmlUtils.extractTextContent(description as string)}
-            options={mapKeysToOptions(attachmentValues)}
+            options={mapKeysToOptions(attachmentValues as AttachmentOption[], translate)}
             attachmentId={navId as string}
-            multiple
-            otherAttachment={isOtherAttachment(attachmentType as string)}
+            otherAttachment={attachmentType === 'other'}
           />
         ))}
       </AttachmentUploadProvider>

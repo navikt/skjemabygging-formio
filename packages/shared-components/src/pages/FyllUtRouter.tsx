@@ -1,7 +1,8 @@
-import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
+import { NavFormType, Submission } from '@navikt/skjemadigitalisering-shared-domain';
 import { Route, Routes } from 'react-router-dom';
 import { FormProvider } from '../context/form/FormContext';
 import { SendInnProvider } from '../context/sendInn/sendInnContext';
+import { Attachment, getAllAttachmentsPanels } from '../util/attachment/attachmentsUtil';
 import ActiveTasksPage from './active-tasks/ActiveTasksPage';
 import { FillInFormPage } from './fill-in-form/FillInFormPage';
 import FormLayout from './FormLayout';
@@ -14,16 +15,19 @@ import UploadPersonalIdPage from './upload-personal-id/UploadPersonalIdPage';
 
 interface Props {
   form: NavFormType;
+  submission: Submission;
 }
 
-const FyllUtRouter = ({ form }: Props) => {
+const FyllUtRouter = ({ form, submission }: Props) => {
+  const attachmentPanels: Attachment[] = getAllAttachmentsPanels(form, submission ?? ({} as Submission));
+
   return (
     <FormProvider form={form}>
       <SendInnProvider>
         <Routes>
           <Route element={<FormLayout stepper={true} />}>
             <Route path={'/oppsummering'} element={<SummaryPage />} />
-            <Route path={'/filer'} element={<AttachmentsUploadPage />} />
+            {attachmentPanels.length > 0 && <Route path={'/vedlegg'} element={<AttachmentsUploadPage />} />}
             <Route path={'/:panelSlug'} element={<FillInFormPage />} />
           </Route>
           <Route element={<FormLayout />}>

@@ -21,7 +21,6 @@ const UploadPersonalIdPage = () => {
         label={translate(TEXTS.statiske.uploadId.label)}
         options={radioOptions}
         attachmentId={'personal-id'}
-        isIdUpload
       />
       <UploadPersonalIdButtonRow />
     </AttachmentUploadProvider>

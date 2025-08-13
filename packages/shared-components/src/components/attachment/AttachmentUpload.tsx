@@ -27,9 +27,7 @@ interface Props {
   label: string;
   options: AttachmentOption[];
   attachmentId: string;
-  multiple?: boolean;
   description?: string;
-  isIdUpload?: boolean;
   className?: string;
   otherAttachment?: boolean;
 }
@@ -46,21 +44,17 @@ const useStyles = makeStyles({
   addAnotherAttachmentButton: {},
 });
 
-const AttachmentUpload = ({
-  label,
-  options,
-  attachmentId,
-  className,
-  description,
-  isIdUpload,
-  otherAttachment,
-}: Props) => {
+const AttachmentUpload = ({ label, options, attachmentId, className, description, otherAttachment }: Props) => {
   const [selectedOption, setSelectedOption] = useState<string>();
   const [loading, setLoading] = useState<boolean>(false);
   const styles = useStyles();
   const { translate } = useLanguages();
   const { handleUploadFile, handleDeleteFile, handleDeleteAttachment, uploadedFiles, errors } = useAttachmentUpload();
   const { form } = useForm();
+  const isIdUpload = attachmentId === 'personal-id';
+  const uploadButtonText = isIdUpload ? TEXTS.statiske.uploadId.selectFile : TEXTS.statiske.uploadId.uploadFiles;
+  const deadline = form.properties?.ettersendelsesfrist;
+  const showDeadline = selectedOption === 'ettersender' || selectedOption === 'andre';
 
   const uploadedAttachmentFiles = uploadedFiles.filter((file) => file.attachmentId === attachmentId);
   const error = errors[attachmentId];
@@ -84,10 +78,6 @@ const AttachmentUpload = ({
   };
 
   const uploadSelected = !!options.find((option) => option.value === selectedOption)?.upload;
-
-  const uploadButtonText = isIdUpload ? TEXTS.statiske.uploadId.selectFile : TEXTS.statiske.uploadId.uploadFiles;
-  const deadline = form.properties?.ettersendelsesfrist;
-  const showDeadline = selectedOption === 'ettersender' || selectedOption === 'andre';
 
   const handleDeleteAllAttachments = async (attachmentId: string) => {
     await handleDeleteAttachment(attachmentId);

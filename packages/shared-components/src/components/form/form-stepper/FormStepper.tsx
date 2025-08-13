@@ -23,7 +23,7 @@ const FormStepper = () => {
     return [
       ...formioSteps,
       {
-        key: 'filer',
+        key: 'vedlegg',
         label: TEXTS.statiske.attachment.title,
       },
       {

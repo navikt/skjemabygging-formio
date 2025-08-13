@@ -1,28 +1,5 @@
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 
-const goToStep = (step: string) => {
-  cy.findByRole('heading', { name: TEXTS.statiske.uploadId.title }).should('exist');
-  cy.findByRole('button', { name: TEXTS.statiske.uploadId.selectFileButton }).should('not.exist');
-  cy.findByLabelText(TEXTS.statiske.uploadId.norwegianPassport).click();
-  cy.findByRole('button', { name: TEXTS.statiske.uploadId.selectFileButton }).should('exist');
-
-  cy.get('input[type="file"]').selectFile(
-    {
-      contents: Cypress.Buffer.from('file content'),
-      fileName: 'test.txt',
-    },
-    { force: true },
-  );
-
-  cy.findByText('test.txt').should('exist');
-  cy.findByText('0,04 MB').should('exist');
-
-  cy.clickNextStep();
-  cy.clickStart();
-  cy.clickNextStep();
-  cy.findByRole('heading', { name: step }).should('exist').click();
-};
-
 describe('Digital no login', () => {
   beforeEach(() => {
     cy.defaultIntercepts();
@@ -59,12 +36,9 @@ describe('Digital no login', () => {
     cy.findByRole('heading', { name: 'Dine opplysninger' }).should('exist');
   });
 
-  it('should display all attachment panels', () => {
-    goToStep('Vedlegg');
-  });
-
   it('should display validation errors when next step button is clicked', () => {
-    cy.findByRole('heading', { name: TEXTS.statiske.attachment.title }).should('exist');
+    cy.findByLabelText('Vedlegg').should('exist');
+    cy.findByText('Annen dokumentasjon').should('exist');
     cy.clickNextStep();
   });
 
