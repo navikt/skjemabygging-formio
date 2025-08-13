@@ -8,8 +8,6 @@ foersteside-url: https://www.nav.no/soknader/api/forsteside
 dekorator-url: https://www.nav.no/dekoratoren?simple=true
 skjemabygging-proxy-client-id: 031863f2-9881-44af-ace5-6b5ab52afeb1
 skjemabygging-proxy-url: https://skjemabygging-proxy.prod-fss-pub.nais.io
-gotenberg-url: http://upload-convert-to-pdf.fyllut-sendinn
-gotenberg-url-en: http://upload-convert-to-pdf-en.fyllut-sendinn
 familie-pdf-generator-url: http://familie-pdf.teamfamilie
 familie-pdf-generator-scope: prod-gcp.teamfamilie.familie-pdf
 merge-pdf-scope: prod-gcp.team-soknad.innsending-api

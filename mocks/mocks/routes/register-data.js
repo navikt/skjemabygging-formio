@@ -32,6 +32,28 @@ module.exports = [
         },
       },
       {
+        id: 'success-two-activities',
+        type: 'middleware',
+        options: {
+          middleware: (req, res) => {
+            res.status(200);
+            res.contentType('application/json; charset=UTF-8');
+            res.send([
+              {
+                tekst: 'Utdanning',
+                id: 'a1',
+                type: 'UTDANNING',
+              },
+              {
+                tekst: 'Helsefremmende tiltak',
+                id: 'a2',
+                type: 'HELSE',
+              },
+            ]);
+          },
+        },
+      },
+      {
         id: 'success-empty',
         type: 'json',
         options: {
