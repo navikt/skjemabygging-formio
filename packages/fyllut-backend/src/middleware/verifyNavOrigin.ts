@@ -8,7 +8,8 @@ const verifyNavOrigin: RequestHandler = (req, res, next) => {
   const { origin } = req.headers;
   if (isProduction && (!origin || !origin?.endsWith('nav.no'))) {
     logger.warn(`Unauthorized request from origin: ${origin}`);
-    return res.sendStatus(403); // Forbidden
+    res.sendStatus(403); // Forbidden
+    return;
   }
   next();
 };
