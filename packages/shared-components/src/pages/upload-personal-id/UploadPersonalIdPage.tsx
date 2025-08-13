@@ -1,7 +1,7 @@
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import AttachmentUpload from '../../components/attachment/AttachmentUpload';
 import AttachmentUploadProvider from '../../components/attachment/AttachmentUploadContext';
-import { FormContainer, useLanguages } from '../../index';
+import { useLanguages } from '../../index';
 import UploadPersonalIdButtonRow from './UploadPersonalIdButtonRow';
 
 const UploadPersonalIdPage = () => {
@@ -16,17 +16,15 @@ const UploadPersonalIdPage = () => {
   ];
 
   return (
-    <FormContainer>
-      <AttachmentUploadProvider>
-        <AttachmentUpload
-          label={'Hvilken legitimasjon ønsker du å bruke?'}
-          options={radioOptions}
-          attachmentId={'personal-id'}
-          isIdUpload
-        />
-        <UploadPersonalIdButtonRow />
-      </AttachmentUploadProvider>
-    </FormContainer>
+    <AttachmentUploadProvider>
+      <AttachmentUpload
+        label={translate(TEXTS.statiske.uploadId.label)}
+        options={radioOptions}
+        attachmentId={'personal-id'}
+        isIdUpload
+      />
+      <UploadPersonalIdButtonRow />
+    </AttachmentUploadProvider>
   );
 };
 

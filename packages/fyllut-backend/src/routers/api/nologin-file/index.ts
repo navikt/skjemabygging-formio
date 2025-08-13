@@ -6,10 +6,10 @@ import nologinFile from './nologin-file';
 const upload = multer();
 const nologinFileRouter = express.Router();
 
-const { azureSendInn } = initApiConfig();
+const { azureM2MSendInn } = initApiConfig();
 
-nologinFileRouter.post('/', azureSendInn, upload.single('filinnhold'), nologinFile.post);
-nologinFileRouter.delete('/', azureSendInn, nologinFile.delete);
-nologinFileRouter.delete('/*fileId', azureSendInn, nologinFile.delete);
+nologinFileRouter.post('/', azureM2MSendInn, upload.single('filinnhold'), nologinFile.post);
+nologinFileRouter.delete('/', azureM2MSendInn, nologinFile.delete);
+nologinFileRouter.delete('/*fileId', azureM2MSendInn, nologinFile.delete);
 
 export default nologinFileRouter;

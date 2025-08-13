@@ -20,7 +20,6 @@ import clsx from 'clsx';
 import { useState } from 'react';
 import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
-import { useSendInn } from '../../context/sendInn/sendInnContext';
 import makeStyles from '../../util/styles/jss/jss';
 import { useAttachmentUpload } from './AttachmentUploadContext';
 
@@ -51,7 +50,6 @@ const AttachmentUpload = ({
   label,
   options,
   attachmentId,
-  multiple = false,
   className,
   description,
   isIdUpload,
@@ -61,8 +59,7 @@ const AttachmentUpload = ({
   const [loading, setLoading] = useState<boolean>(false);
   const styles = useStyles();
   const { translate } = useLanguages();
-  const { innsendingsId } = useSendInn();
-  const { handleUploadFiles, handleDeleteFile, handleDeleteAttachment, uploadedFiles, errors } = useAttachmentUpload();
+  const { handleUploadFile, handleDeleteFile, handleDeleteAttachment, uploadedFiles, errors } = useAttachmentUpload();
   const { form } = useForm();
 
   const uploadedAttachmentFiles = uploadedFiles.filter((file) => file.attachmentId === attachmentId);
@@ -72,12 +69,13 @@ const AttachmentUpload = ({
     (option) => option.value === selectedOption,
   )?.additionalDocumentation;
 
-  const handleUpload = async (files: FileObject[] | null) => {
-    if (!files || files.length === 0) {
+  const handleUpload = async (fileList: FileObject[] | null) => {
+    const file = fileList?.[0];
+    if (!file) {
       return;
     }
     setLoading(true);
-    await handleUploadFiles(attachmentId, files);
+    await handleUploadFile(attachmentId, file);
     setLoading(false);
   };
 
@@ -85,7 +83,6 @@ const AttachmentUpload = ({
     await handleDeleteFile(attachmentId, fileId);
   };
 
-  //TODO: store this in context
   const uploadSelected = !!options.find((option) => option.value === selectedOption)?.upload;
 
   const uploadButtonText = isIdUpload ? TEXTS.statiske.uploadId.selectFile : TEXTS.statiske.uploadId.uploadFiles;
@@ -121,7 +118,7 @@ const AttachmentUpload = ({
             <TextField label={TEXTS.statiske.attachment.descriptionLabel} size="small" maxLength={50} />
           )}
           {uploadedAttachmentFiles.length === 0 && (
-            <FileUpload.Trigger multiple={!!innsendingsId && multiple} onSelect={handleUpload}>
+            <FileUpload.Trigger onSelect={handleUpload}>
               {
                 <Button
                   className={styles.button}
@@ -153,7 +150,7 @@ const AttachmentUpload = ({
             ></FileUpload.Item>
           ))}
           {uploadedAttachmentFiles.length > 0 && (
-            <FileUpload.Trigger multiple={!!innsendingsId && multiple} onSelect={handleUpload}>
+            <FileUpload.Trigger onSelect={handleUpload}>
               {
                 <Button
                   variant="secondary"

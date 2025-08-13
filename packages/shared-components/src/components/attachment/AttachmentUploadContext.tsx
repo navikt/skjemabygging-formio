@@ -1,23 +1,31 @@
 import { FileObject } from '@navikt/ds-react';
-import { Submission, UploadedFile } from '@navikt/skjemadigitalisering-shared-domain';
+import { Submission, TEXTS, UploadedFile } from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, useContext, useState } from 'react';
-import { deleteAttachment, deleteFile, uploadFile } from '../../api/nologin-file-upload/nologinFileUpload';
+import {
+  deleteAllFiles,
+  deleteAttachment,
+  deleteFile,
+  uploadFile,
+} from '../../api/nologin-file-upload/nologinFileUpload';
 import { useForm } from '../../context/form/FormContext';
+import { useLanguages } from '../../context/languages';
 import { useSendInn } from '../../context/sendInn/sendInnContext';
 
 interface AttachmentUploadContextType {
-  handleUploadFiles: (attachmentId: string, files: FileObject[]) => Promise<void>;
+  handleUploadFile: (attachmentId: string, file: FileObject) => Promise<void>;
   handleDeleteFile: (attachmentId: string, fileId: string) => Promise<void>;
   handleDeleteAttachment: (attachmentId: string) => Promise<void>;
+  handleDeleteAllFiles: () => Promise<void>;
   addError: (attachmentId: string, error: string) => void;
   uploadedFiles: UploadedFile[];
   errors: Record<string, string | undefined>;
 }
 
 const initialContext: AttachmentUploadContextType = {
-  handleUploadFiles: async () => {},
+  handleUploadFile: async () => {},
   handleDeleteFile: async () => {},
   handleDeleteAttachment: async () => {},
+  handleDeleteAllFiles: async () => {},
   addError: () => {},
   uploadedFiles: [],
   errors: {},
@@ -28,12 +36,14 @@ const AttachmentUploadContext = createContext<AttachmentUploadContextType>(initi
 const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) => {
   const { innsendingsId, setInnsendingsId } = useSendInn();
   const { submission, setSubmission } = useForm();
+  const { translate } = useLanguages();
   const [errors, setErrors] = useState<Record<string, string | undefined>>({});
 
   const uploadedFiles = submission?.uploadedFiles ?? [];
-  const addToSubmission = (files: UploadedFile[]) => {
+
+  const addToSubmission = (file: UploadedFile) => {
     setSubmission(
-      (current) => ({ ...current, uploadedFiles: [...(current?.uploadedFiles ?? []), ...files] }) as Submission,
+      (current) => ({ ...current, uploadedFiles: [...(current?.uploadedFiles ?? []), file] }) as Submission,
     );
   };
   const removeFileFromSubmission = (fileId: string) => {
@@ -70,52 +80,68 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
     });
   };
 
-  const handleUploadFiles = async (attachmentId: string, files: FileObject[]) => {
-    const result = await Promise.all(
-      files.map(async ({ file }) => {
-        try {
-          return await uploadFile(file, attachmentId);
-        } catch (_e) {
-          addError(attachmentId, 'Det oppstod en feil under opplasting av filen. Prøv igjen senere.');
-        }
-      }),
-    );
-    const successfulUploads = result.filter((file): file is UploadedFile => file !== undefined);
-    if (successfulUploads.length === result.length) {
+  const handleUploadFile = async (attachmentId: string, file: FileObject) => {
+    try {
       removeError(attachmentId);
+      const result = await uploadFile(file.file, attachmentId);
+      if (result) {
+        addToSubmission(result);
+        setInnsendingsId(result.innsendingId);
+      }
+    } catch (_e) {
+      addError(attachmentId, translate(TEXTS.statiske.uploadId.uploadFileError));
     }
-    addToSubmission(successfulUploads);
-    setInnsendingsId(successfulUploads[0]?.innsendingId);
   };
 
   const handleDeleteFile = async (attachmentId: string, fileId: string) => {
     try {
+      removeError(attachmentId);
       if (!innsendingsId) {
         throw new Error('InnsendingsId is not set');
       }
       await deleteFile(fileId, innsendingsId);
-      removeError(attachmentId);
       removeFileFromSubmission(fileId);
     } catch (_e) {
-      addError(attachmentId, 'Det oppstod en feil under sletting av filen. Prøv igjen senere.');
+      addError(attachmentId, translate(TEXTS.statiske.uploadId.deleteFileError));
     }
   };
 
   const handleDeleteAttachment = async (attachmentId: string) => {
     try {
+      removeError(attachmentId);
       if (!innsendingsId) {
         throw new Error('InnsendingsId is not set');
       }
       await deleteAttachment(attachmentId, innsendingsId);
-      removeError(attachmentId);
       removeFilesFromSubmission(attachmentId);
+    } catch (_e) {
+      addError(attachmentId, translate(TEXTS.statiske.uploadId.deleteAttachmentError));
+    }
+  };
+
+  const handleDeleteAllFiles = async () => {
+    try {
+      setErrors({});
+      if (!innsendingsId) {
+        throw new Error('InnsendingId is not set');
+      }
+      await deleteAllFiles(innsendingsId);
+      setSubmission((current) => ({ ...current, uploadedFiles: [] }) as Submission);
     } catch (e) {
-      addError(attachmentId, 'Det oppstod en feil under sletting av vedlegget. Prøv igjen senere.');
+      addError('allFiles', translate(TEXTS.statiske.uploadId.deleteAllFilesError));
       throw e;
     }
   };
 
-  const value = { handleUploadFiles, handleDeleteFile, handleDeleteAttachment, addError, uploadedFiles, errors };
+  const value = {
+    handleUploadFile,
+    handleDeleteFile,
+    handleDeleteAttachment,
+    handleDeleteAllFiles,
+    addError,
+    uploadedFiles,
+    errors,
+  };
   return <AttachmentUploadContext.Provider value={value}>{children}</AttachmentUploadContext.Provider>;
 };
 

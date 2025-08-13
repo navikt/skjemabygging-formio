@@ -16,9 +16,9 @@ describe('Digital no login', () => {
 
   it('lets you upload a file when selecting a type of personal ID', () => {
     cy.findByRole('heading', { name: TEXTS.statiske.uploadId.title }).should('exist');
-    cy.findByRole('button', { name: TEXTS.statiske.uploadId.selectFile }).should('not.exist');
+    cy.findByRole('button', { name: TEXTS.statiske.uploadId.selectFileButton }).should('not.exist');
     cy.findByLabelText(TEXTS.statiske.uploadId.norwegianPassport).click();
-    cy.findByRole('button', { name: TEXTS.statiske.uploadId.selectFile }).should('exist');
+    cy.findByRole('button', { name: TEXTS.statiske.uploadId.selectFileButton }).should('exist');
 
     cy.get('input[type="file"]').selectFile(
       {

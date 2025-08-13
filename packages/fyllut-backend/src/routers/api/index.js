@@ -1,5 +1,6 @@
 import express from 'express';
 import { config as appConfig } from '../../config/config';
+import { NaisCluster } from '../../config/nais-cluster.js';
 import envQualifier from '../../middleware/envQualifier';
 import { rateLimiter } from '../../middleware/ratelimit';
 import tryCatch from '../../middleware/tryCatch';
@@ -29,8 +30,8 @@ import translations from './translations.js';
 
 const apiRouter = express.Router();
 
-const { featureToggles } = appConfig;
-const { azureSkjemabyggingProxy, azurePdl, kodeverkToken, tokenxPdl, tokenxSendInn, azurePdfGeneratorToken } =
+const { featureToggles, naisClusterName } = appConfig;
+const { azureM2MSkjemabyggingProxy, azureM2MPdl, kodeverkToken, tokenxPdl, tokenxSendInn, azurePdfGeneratorToken } =
   initApiConfig();
 
 apiRouter.all('*path', rateLimiter(60000, 1000), idportenAuthHandler, envQualifier);
@@ -38,7 +39,7 @@ apiRouter.get('/config', config.get);
 apiRouter.get('/enhetsliste', enhetsliste.get);
 apiRouter.get('/forms', tryCatch(forms.get));
 apiRouter.get('/forms/:formPath', tryCatch(form.get));
-apiRouter.post('/foersteside', azureSkjemabyggingProxy, forsteside.post);
+apiRouter.post('/foersteside', azureM2MSkjemabyggingProxy, forsteside.post);
 apiRouter.use('/documents', documentsRouter);
 apiRouter.get('/global-translations/:languageCode', tryCatch(globalTranslations.get));
 apiRouter.get('/translations/:form', tryCatch(translations.get));
@@ -58,11 +59,15 @@ apiRouter.get('/health/status', status.get);
 apiRouter.get('/send-inn/prefill-data', tokenxSendInn, prefillData.get);
 apiRouter.get('/send-inn/activities', tokenxSendInn, activities.get);
 apiRouter.use('/register-data', registerDataRouter);
-apiRouter.use('/nologin-file', nologinFileRouter);
+
+// Not available in production yet
+if (naisClusterName !== NaisCluster.PROD) {
+  apiRouter.use('/nologin-file', nologinFileRouter);
+}
 
 if (featureToggles.enablePdl) {
   apiRouter.get('/pdl/person/:id', tokenxPdl, pdl.person);
-  apiRouter.get('/pdl/children/:id', azurePdl, pdl.children);
+  apiRouter.get('/pdl/children/:id', azureM2MPdl, pdl.children);
 }
 
 export default apiRouter;

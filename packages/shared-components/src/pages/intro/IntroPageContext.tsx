@@ -81,6 +81,8 @@ export const IntroPageProvider = ({ children, form }: IntroPageProviderProps) =>
     if (path) {
       href = `${href}/${path}`;
     }
+    // Important to force redirect to force idporten redirect if sub=digital
+    // and to make sure appCondig have the correct submissionMethod
     window.location.href = `${href}${search ? `${search}&sub=${sub}` : `?sub=${sub}`}`;
   };
 
