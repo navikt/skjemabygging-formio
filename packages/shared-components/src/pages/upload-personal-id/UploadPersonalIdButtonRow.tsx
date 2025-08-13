@@ -35,7 +35,7 @@ const UploadPersonalIdButtonRow = () => {
       await handleDeleteAllFiles();
       window.location.href = exitUrl;
     } catch (_e) {
-      /* error handling is done by handleDeleteallFiles, but we need to stop the navigation */
+      /* error handling is done by handleDeleteAllFiles, but we need to stop the navigation */
     }
   };
 

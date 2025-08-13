@@ -407,6 +407,34 @@ module.exports = [
     ],
   },
   {
+    id: 'delete-files',
+    url: '/send-inn/v1/nologin-fillager',
+    method: 'DELETE',
+    variants: [
+      {
+        id: 'success',
+        type: 'status',
+        options: {
+          status: 204,
+        },
+      },
+    ],
+  },
+  {
+    id: 'delete-file',
+    url: '/send-inn/v1/nologin-fillager/:filId',
+    method: 'DELETE',
+    variants: [
+      {
+        id: 'success',
+        type: 'status',
+        options: {
+          status: 204,
+        },
+      },
+    ],
+  },
+  {
     id: 'get-prefill-data',
     url: '/send-inn/fyllUt/v1/prefill-data',
     method: 'GET',
