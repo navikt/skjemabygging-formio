@@ -2,7 +2,6 @@ import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import clsx from 'clsx';
 import AttachmentUpload from '../../components/attachment/AttachmentUpload';
 import AttachmentUploadProvider from '../../components/attachment/AttachmentUploadContext';
-import { FormContainer } from '../../components/form/container/FormContainer';
 import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
 import { Attachment, getAttachmentsFromSchemaDefinition } from '../../util/attachment/attachmentsUtil';
@@ -21,10 +20,9 @@ export function AttachmentsUploadPage() {
   const { translate } = useLanguages();
   const { form, submission } = useForm();
   const styles = useStyles();
+  const isOtherAttachment = (attachmentType: string) => attachmentType !== 'default';
 
-  function shouldEnableUpload(value: string) {
-    return !(value === 'ettersender' || value === 'levertTidligere' || value === 'nei');
-  }
+  const shouldEnableUpload = (value: string) => value === 'leggerVedNaa';
 
   function mapKeysToOptions(object) {
     return Object.keys(object)
@@ -33,29 +31,33 @@ export function AttachmentsUploadPage() {
         value: key,
         label: translate(TEXTS.statiske.attachment[key]),
         upload: shouldEnableUpload(key),
+        additionalDocumentation: object[key]?.additionalDocumentation?.enabled && {
+          label: translate(object[key]?.additionalDocumentation?.label),
+          description: translate(object[key]?.additionalDocumentation?.description),
+        },
       }));
   }
 
   const attachmentPanels: Attachment[] = getAttachmentsFromSchemaDefinition(form, submission?.data ?? {});
 
   return (
-    <FormContainer>
+    <>
       <AttachmentUploadProvider>
-        {attachmentPanels.map(({ label, description, attachmentValues, navId }, index) => (
+        {attachmentPanels.map(({ label, description, attachmentValues, navId, attachmentType }, index) => (
           <AttachmentUpload
+            key={navId}
             className={clsx(index !== attachmentPanels.length - 1 && styles.attachmentUpload)}
-            key={index}
             label={label}
             description={htmlUtils.extractTextContent(description as string)}
             options={mapKeysToOptions(attachmentValues)}
-            attachmentId={navId || ''}
+            attachmentId={navId as string}
             multiple
-            otherAttachment
+            otherAttachment={isOtherAttachment(attachmentType as string)}
           />
         ))}
-        <UploadPersonalIdButtonRow />
       </AttachmentUploadProvider>
-    </FormContainer>
+      <UploadPersonalIdButtonRow />
+    </>
   );
 }
 

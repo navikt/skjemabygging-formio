@@ -138,7 +138,12 @@ export const FillInFormPage = () => {
   );
 
   useEffect(() => {
-    setFormForRendering(submissionMethod === 'digital' ? navFormUtils.removeVedleggspanel(form) : form);
+    console.log(submissionMethod);
+    setFormForRendering(
+      submissionMethod === 'digital' || submissionMethod === 'digitalnologin'
+        ? navFormUtils.removeVedleggspanel(form)
+        : form,
+    );
   }, [form, submissionMethod]);
 
   useEffect(() => {

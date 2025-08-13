@@ -14,6 +14,7 @@ interface Attachment {
   vedleggskjema?: string;
   description?: string;
   attachmentValues?: object;
+  attachmentType?: string;
 }
 
 const getAttachmentsFromSchemaDefinition = (form: NavFormType, submissionData: SubmissionData): Attachment[] => {
@@ -23,7 +24,13 @@ const getAttachmentsFromSchemaDefinition = (form: NavFormType, submissionData: S
       (component) => (component.properties && !!component.properties.vedleggskode) || isOtherDocumentation(component),
     )
     .map(sanitize)
-    .filter((comp) => FormioUtils.checkCondition(comp, undefined, submissionData, form));
+    .filter((comp) => FormioUtils.checkCondition(comp, undefined, submissionData, form))
+    .map((comp) => {
+      return {
+        ...comp,
+        navId: comp.navId || comp.id,
+      };
+    });
 };
 
 const getRelevantAttachments = (form: NavFormType, submissionData: SubmissionData): Attachment[] => {

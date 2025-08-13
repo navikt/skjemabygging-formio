@@ -56,7 +56,6 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
     );
   };
 
-  console.log(uploadedFiles);
   const addError = (attachmentId: string, error: string) => {
     setErrors((prev) => ({
       ...prev,

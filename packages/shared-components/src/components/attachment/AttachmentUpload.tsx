@@ -1,4 +1,4 @@
-import { UploadIcon } from '@navikt/aksel-icons';
+import { PlusIcon, UploadIcon } from '@navikt/aksel-icons';
 import {
   Alert,
   BodyLong,
@@ -40,6 +40,11 @@ const useStyles = makeStyles({
     maxWidth: '18.75rem',
     borderRadius: 'var(--a-border-radius-large)',
   },
+  deleteAllButton: {
+    display: 'flex',
+    alignSelf: 'flex-end',
+  },
+  addAnotherAttachmentButton: {},
 });
 
 const AttachmentUpload = ({
@@ -57,11 +62,15 @@ const AttachmentUpload = ({
   const styles = useStyles();
   const { translate } = useLanguages();
   const { innsendingsId } = useSendInn();
-  const { handleUploadFiles, handleDeleteFile, uploadedFiles, errors } = useAttachmentUpload();
+  const { handleUploadFiles, handleDeleteFile, handleDeleteAttachment, uploadedFiles, errors } = useAttachmentUpload();
   const { form } = useForm();
 
   const uploadedAttachmentFiles = uploadedFiles.filter((file) => file.attachmentId === attachmentId);
   const error = errors[attachmentId];
+
+  const selectedAdditionalDocumentation = options.find(
+    (option) => option.value === selectedOption,
+  )?.additionalDocumentation;
 
   const handleUpload = async (files: FileObject[] | null) => {
     if (!files || files.length === 0) {
@@ -81,14 +90,22 @@ const AttachmentUpload = ({
 
   const uploadButtonText = isIdUpload ? TEXTS.statiske.uploadId.selectFile : TEXTS.statiske.uploadId.uploadFiles;
   const deadline = form.properties?.ettersendelsesfrist;
+  const showDeadline = selectedOption === 'ettersender' || selectedOption === 'andre';
 
-  function handleDeleteAll() {
-    uploadedAttachmentFiles.map(({ fileId }) => handleDelete(fileId));
-  }
+  const handleDeleteAllAttachments = async (attachmentId: string) => {
+    await handleDeleteAttachment(attachmentId);
+  };
+
+  const handleUploadAnotherAttachment = () => null;
 
   return (
     <VStack gap="8" className={clsx('mb', className)}>
-      <RadioGroup legend={label} onChange={(value) => setSelectedOption(value)} description={description}>
+      <RadioGroup
+        legend={label}
+        onChange={(value) => setSelectedOption(value)}
+        description={description}
+        value={selectedOption}
+      >
         {!uploadedAttachmentFiles.length &&
           options.map((option) => (
             <Radio key={option.value} value={option.value}>
@@ -117,7 +134,11 @@ const AttachmentUpload = ({
             </FileUpload.Trigger>
           )}
           {uploadedAttachmentFiles.length > 1 && (
-            <Button variant="tertiary" onClick={handleDeleteAll}>
+            <Button
+              variant="tertiary"
+              onClick={() => handleDeleteAllAttachments(attachmentId)}
+              className={styles.deleteAllButton}
+            >
               {translate(TEXTS.statiske.attachment.deleteAllFiles)}
             </Button>
           )}
@@ -153,6 +174,17 @@ const AttachmentUpload = ({
               <BodyLong>{translate(TEXTS.statiske.attachment.maxFileSizeDescription)}</BodyLong>
             </HStack>
           </ReadMore>
+
+          {otherAttachment && (
+            <Button
+              variant="tertiary"
+              onClick={() => handleUploadAnotherAttachment()}
+              className={styles.addAnotherAttachmentButton}
+              icon={<PlusIcon title="a11y-title" fontSize="1.5rem" />}
+            >
+              {translate(TEXTS.statiske.attachment.addNewAttachment)}
+            </Button>
+          )}
         </VStack>
       )}
 
@@ -162,16 +194,16 @@ const AttachmentUpload = ({
         </Alert>
       )}
 
-      {selectedOption === 'ettersender' && deadline && (
+      {showDeadline && deadline && (
         <Alert variant="warning" inline>
           {translate(TEXTS.statiske.attachment.deadline, { deadline })}
         </Alert>
       )}
 
-      {selectedOption === 'levertTidligere' && (
+      {selectedAdditionalDocumentation && (
         <Textarea
-          label={TEXTS.statiske.attachment.alreadySentLabel}
-          description={TEXTS.statiske.attachment.alreadySentDescription}
+          label={translate(selectedAdditionalDocumentation.label)}
+          description={translate(selectedAdditionalDocumentation.description)}
           maxLength={200}
         />
       )}
