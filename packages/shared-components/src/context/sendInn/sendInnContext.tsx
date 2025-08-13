@@ -55,10 +55,13 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
   const addSearchParamToUrl = useCallback(
     (key, value) => {
       if (key && value) {
-        setSearchParams((prev) => {
-          prev.set(key, value);
-          return prev;
-        });
+        setSearchParams(
+          (prev) => {
+            prev.set(key, value);
+            return prev;
+          },
+          { replace: true },
+        );
       }
     },
     [setSearchParams],
@@ -67,10 +70,13 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
   const removeSearchParamFromUrl = useCallback(
     (key) => {
       if (key) {
-        setSearchParams((prev) => {
-          prev.delete(key);
-          return searchParams;
-        });
+        setSearchParams(
+          (prev) => {
+            prev.delete(key);
+            return searchParams;
+          },
+          { replace: true },
+        );
       }
     },
     [searchParams, setSearchParams],
