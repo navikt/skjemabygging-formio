@@ -1,4 +1,4 @@
-import { UploadedFile } from '@navikt/skjemadigitalisering-shared-domain';
+import { UploadedFile, validatorUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { ConfigType } from '../config/types';
 import { logger } from '../logger';
 import { responseToError } from '../utils/errorHandling';
@@ -62,9 +62,10 @@ class NoLoginFileService {
     const queryParams = attachmentId
       ? `?vedleggId=${attachmentId}&innsendingId=${innsendingId}`
       : `?innsendingId=${innsendingId}`;
-    const targetUrl = fileId
-      ? `${sendInnConfig.host}${sendInnConfig.paths.nologinFile}/${fileId}${queryParams}`
-      : `${sendInnConfig.host}${sendInnConfig.paths.nologinFile}${queryParams}`;
+    const targetUrl =
+      fileId && validatorUtils.isValidUuid(fileId)
+        ? `${sendInnConfig.host}${sendInnConfig.paths.nologinFile}/${fileId}${queryParams}`
+        : `${sendInnConfig.host}${sendInnConfig.paths.nologinFile}${queryParams}`;
 
     const response = await fetch(targetUrl, {
       method: 'DELETE',
