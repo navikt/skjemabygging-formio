@@ -2,6 +2,7 @@ import { Accordion } from '@navikt/ds-react';
 import Intro from '../../components/intro';
 import { useAppConfig } from '../../context/config/configContext';
 import { useLanguages } from '../../context/languages';
+import { useSendInn } from '../../context/sendInn/sendInnContext';
 import IntroPageButtonRow from './IntroPageButtonRow';
 import { useIntroPage } from './IntroPageContext';
 
@@ -9,8 +10,9 @@ const IntroPageDynamic = () => {
   const { submissionMethod } = useAppConfig();
   const { translate } = useLanguages();
   const { setSelfDeclaration, error, form, state } = useIntroPage();
+  const { isMellomlagringReady } = useSendInn();
 
-  if (!state) return;
+  if (!state || (submissionMethod === 'digital' && !isMellomlagringReady)) return;
 
   return (
     <>

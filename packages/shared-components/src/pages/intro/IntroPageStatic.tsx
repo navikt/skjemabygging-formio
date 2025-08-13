@@ -1,17 +1,21 @@
 import { GuidePanel, Heading } from '@navikt/ds-react';
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useState } from 'react';
+import { useAppConfig } from '../../context/config/configContext';
 import { useLanguages } from '../../context/languages';
+import { useSendInn } from '../../context/sendInn/sendInnContext';
 import IntroPageButtonRow from './IntroPageButtonRow';
 import { IntroPageState, useIntroPage } from './IntroPageContext';
 
 const IntroPageStatic = () => {
   const { translate } = useLanguages();
+  const { submissionMethod } = useAppConfig();
   const [description, setDescription] = useState<string>();
   const [descriptionBold, setDescriptionBold] = useState<string>();
   const [saveDataBullet, setSaveDataBullet] = useState<string>();
   const [saveDataBulletBold, setSaveDataBulletBold] = useState<string>();
   const { state } = useIntroPage();
+  const { isMellomlagringReady } = useSendInn();
 
   useEffect(() => {
     if (state === IntroPageState.PAPER) {
@@ -33,7 +37,7 @@ const IntroPageStatic = () => {
     }
   }, [state]);
 
-  if (!state) return;
+  if (!state || (submissionMethod === 'digital' && !isMellomlagringReady)) return;
 
   return (
     <>

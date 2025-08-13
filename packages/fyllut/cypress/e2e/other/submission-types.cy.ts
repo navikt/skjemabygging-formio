@@ -312,4 +312,14 @@ describe('Submission Type', () => {
       cy.findByRole('button', { name: TEXTS.grensesnitt.downloadApplication }).should('exist');
     });
   });
+
+  describe('Other', () => {
+    it('Make sure the url is correct when you already have search params.', () => {
+      cy.visit('/fyllut/stpaperdigital?lang=en');
+      cy.defaultWaits();
+      cy.findByRole('link', { name: TEXTS.grensesnitt.introPage.sendOnPaper }).click();
+
+      cy.url().should('include', 'fyllut/stpaperdigital?lang=en&sub=paper');
+    });
+  });
 });

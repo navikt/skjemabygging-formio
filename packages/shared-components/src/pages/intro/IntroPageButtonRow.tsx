@@ -11,9 +11,6 @@ const IntroPageButtonRow = () => {
   const [searchParams] = useSearchParams();
   const formUrl = useResolvedPath('').pathname;
   const { form, selfDeclaration, setError } = useIntroPage();
-  const innsendingsIdFromUrl = searchParams.get('innsendingsId');
-
-  const startUrl = `${formUrl}/${innsendingsIdFromUrl ? 'oppsummering' : form.firstPanelSlug}`;
 
   const validationError: Tkey = 'introPage.selfDeclaration.validationError';
 
@@ -23,7 +20,7 @@ const IntroPageButtonRow = () => {
       setError(translate(validationError));
       return;
     }
-    navigate(`${startUrl}?${searchParams.toString()}`);
+    navigate(`${form.firstPanelSlug}?${searchParams.toString()}`);
   };
 
   return (

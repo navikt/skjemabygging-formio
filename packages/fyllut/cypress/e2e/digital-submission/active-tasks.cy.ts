@@ -5,10 +5,8 @@
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 
 const itLetsYouStartANewMellomlagring = () => {
-  cy.findByRole('link', { name: TEXTS.statiske.paabegynt.startNewTask }).should('be.visible');
-  cy.findByRole('link', { name: TEXTS.statiske.paabegynt.startNewTask }).click();
   cy.wait('@createMellomlagring');
-  cy.findByRole('heading', { name: 'Valgfrie opplysninger' });
+  cy.url().should('include', 'innsendingsId');
 };
 
 describe('Active tasks', () => {
@@ -34,8 +32,6 @@ describe('Active tasks', () => {
 
     it('redirects to /fyllut/:skjemapath:/paabegynt', () => {
       cy.visit('/fyllut/testmellomlagring?sub=digital');
-      cy.defaultWaits();
-      cy.clickStart();
       cy.wait('@getActiveTasks');
       cy.findByRole('heading', { name: TEXTS.statiske.paabegynt.oneActiveTaskHeading });
     });
