@@ -114,9 +114,8 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
       }
       await deleteAttachment(attachmentId, innsendingsId);
       removeFilesFromSubmission(attachmentId);
-    } catch (e) {
+    } catch (_e) {
       addError(attachmentId, translate(TEXTS.statiske.uploadId.deleteAttachmentError));
-      throw e;
     }
   };
 
