@@ -1,4 +1,4 @@
-import { Component, NavFormType, Submission, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { Component, NavFormType, navFormUtils, Submission } from '@navikt/skjemadigitalisering-shared-domain';
 import UtilsOverrides from '../../formio/overrides/utils-overrides/utils-overrides';
 
 interface Attachment {
@@ -16,7 +16,7 @@ interface Attachment {
   attachmentType?: string;
 }
 
-const getAttachmentsFromSchemaDefinition = (form: NavFormType, submission: Submission): Attachment[] => {
+const getAllAttachmentsPanels = (form: NavFormType, submission: Submission): Attachment[] => {
   return navFormUtils
     .flattenComponents(form.components)
     .filter(
@@ -81,7 +81,7 @@ const hasRelevantAttachments = (form: NavFormType, submission: Submission) => {
 };
 
 export {
-  getAttachmentsFromSchemaDefinition,
+  getAllAttachmentsPanels,
   getRelevantAttachments,
   hasOtherDocumentation,
   hasRelevantAttachments,

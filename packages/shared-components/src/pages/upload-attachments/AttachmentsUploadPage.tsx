@@ -1,13 +1,13 @@
-import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { Submission, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import clsx from 'clsx';
 import AttachmentUpload from '../../components/attachment/AttachmentUpload';
 import AttachmentUploadProvider from '../../components/attachment/AttachmentUploadContext';
 import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
-import { Attachment, getAttachmentsFromSchemaDefinition } from '../../util/attachment/attachmentsUtil';
+import { Attachment, getAllAttachmentsPanels } from '../../util/attachment/attachmentsUtil';
 import htmlUtils from '../../util/html/htmlUtils';
 import makeStyles from '../../util/styles/jss/jss';
-import UploadPersonalIdButtonRow from '../upload-personal-id/UploadPersonalIdButtonRow';
+import UploadAttachmentsButtonRow from './UploadAttachmentsButtonRow';
 
 const useStyles = makeStyles({
   attachmentUpload: {
@@ -38,7 +38,7 @@ export function AttachmentsUploadPage() {
       }));
   }
 
-  const attachmentPanels: Attachment[] = getAttachmentsFromSchemaDefinition(form, submission?.data ?? {});
+  const attachmentPanels: Attachment[] = getAllAttachmentsPanels(form, submission ?? ({} as Submission));
 
   return (
     <>
@@ -56,7 +56,7 @@ export function AttachmentsUploadPage() {
           />
         ))}
       </AttachmentUploadProvider>
-      <UploadPersonalIdButtonRow />
+      <UploadAttachmentsButtonRow />
     </>
   );
 }

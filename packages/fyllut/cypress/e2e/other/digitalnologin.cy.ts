@@ -35,4 +35,19 @@ describe('Digital no login', () => {
     cy.clickStart();
     cy.findByRole('heading', { name: 'Dine opplysninger' }).should('exist');
   });
+
+  it('should display all attachment panels', () => {
+    cy.findByRole('heading', { name: TEXTS.statiske.attachment.title }).should('exist');
+  });
+
+  it('should display validation errors when next step button is clicked', () => {
+    cy.findByRole('heading', { name: TEXTS.statiske.attachment.title }).should('exist');
+    cy.clickNextStep();
+  });
+
+  it('should remove all attachments when delete all button is clicked', () => {});
+
+  it('should remove all attachments on cancel', () => {});
+
+  it('should render additional description and deadline when existing', () => {});
 });
