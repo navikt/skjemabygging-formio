@@ -720,7 +720,7 @@ const shouldShowInSummary = (componentKey, evaluatedConditionals) => {
   return evaluatedConditionals[componentKey] === undefined || evaluatedConditionals[componentKey];
 };
 
-function evaluateConditionals(components = [], form, data, row = []) {
+function evaluateConditionals(components = [], form, submission, row = []) {
   return components
     .map((component) => {
       const clone = JSON.parse(JSON.stringify(component));
@@ -728,22 +728,23 @@ function evaluateConditionals(components = [], form, data, row = []) {
       return clone;
     })
     .flatMap((component) => {
-      if (!FormioUtils.checkCondition(component, row, data, form)) {
+      const data = submission?.data || {};
+      if (!FormioUtils.checkCondition(component, row, data, form, undefined, submission)) {
         return [{ key: createComponentKeyWithNavId(component), value: false }];
       }
       switch (component.type) {
         case 'container':
-          return evaluateConditionals(component.components, form, data, data[component.key]);
+          return evaluateConditionals(component.components, form, submission, data[component.key]);
         case 'panel':
         case 'fieldset':
         case 'navSkjemagruppe':
-          return evaluateConditionals(component.components, form, data);
+          return evaluateConditionals(component.components, form, submission);
         case 'htmlelement':
         case 'image':
         case 'alertstripe':
           return {
             key: createComponentKeyWithNavId(component),
-            value: FormioUtils.checkCondition(component, row, data, form),
+            value: FormioUtils.checkCondition(component, row, data, form, undefined, submission),
           };
         default:
           return [];
@@ -752,8 +753,8 @@ function evaluateConditionals(components = [], form, data, row = []) {
 }
 
 // A map of components (key-navId) with their conditional evaluation (used to determine if a component should be shown in the summary/PDF or not in shouldShowInSummary())
-function mapAndEvaluateConditionals(form, data = {}) {
-  return evaluateConditionals(form.components, form, data).reduce(addToMap, {});
+function mapAndEvaluateConditionals(form, submission = { data: {} }) {
+  return evaluateConditionals(form.components, form, submission).reduce(addToMap, {});
 }
 
 function createFormSummaryObject(
@@ -764,7 +765,7 @@ function createFormSummaryObject(
   language,
   opts = {},
 ) {
-  const evaluatedConditionalsMap = mapAndEvaluateConditionals(form, submission.data);
+  const evaluatedConditionalsMap = mapAndEvaluateConditionals(form, submission);
   return form.components.reduce(
     (formSummaryObject, component) =>
       handleComponent(
