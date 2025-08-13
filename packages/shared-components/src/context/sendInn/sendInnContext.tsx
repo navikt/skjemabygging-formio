@@ -274,7 +274,6 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
     const initializeMellomlagring = async () => {
       if (!innsendingsId || innsendingsIdFromParams !== innsendingsId) {
         try {
-          console.log(innsendingsIdFromParams);
           if (innsendingsIdFromParams) {
             setInnsendingsId(innsendingsIdFromParams);
             await retrieveMellomlagring(innsendingsIdFromParams);
