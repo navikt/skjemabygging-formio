@@ -98,7 +98,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
         dispatchFyllutMellomlagring({ type: 'init', response });
       }
     },
-    [appConfig, addSearchParamToUrl, form, setSubmission],
+    [appConfig, form, setSubmission],
   );
 
   useEffect(() => {
@@ -132,6 +132,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
         dispatchFyllutMellomlagring({ type: 'error', error: 'GET_FAILED' });
       }
     };
+
     initializeMellomlagring();
   }, [searchParams, retrieveMellomlagring]);
 
