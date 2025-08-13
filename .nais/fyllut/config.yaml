@@ -32,9 +32,6 @@ spec:
       enabled: true
       locale: nb
       autoLogin: false
-  valkey:
-    - instance: fyllut
-      access: readwrite
   tokenx:
     enabled: true
   ingresses:
