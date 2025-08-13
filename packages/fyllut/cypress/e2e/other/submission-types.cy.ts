@@ -105,6 +105,7 @@ describe('Submission Type', () => {
 
   describe('Type: Digital No Login', () => {
     it('goes to upload page', () => {
+      cy.skipIfNoIncludeDistTests();
       cy.visit('/fyllut/stnologin?sub=digitalnologin');
       cy.defaultWaits();
       cy.findByRole('heading', { name: TEXTS.statiske.uploadId.title }).should('exist');
