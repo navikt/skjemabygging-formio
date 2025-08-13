@@ -134,7 +134,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
     };
 
     initializeMellomlagring();
-  }, [searchParams, retrieveMellomlagring]);
+  }, [retrieveMellomlagring]);
 
   const nbNO: Language = 'nb-NO';
 
