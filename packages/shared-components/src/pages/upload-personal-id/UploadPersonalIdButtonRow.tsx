@@ -4,6 +4,7 @@ import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { MouseEvent } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAttachmentUpload } from '../../components/attachment/AttachmentUploadContext';
+import LinkButton from '../../components/link-button/LinkButton';
 import { useAppConfig } from '../../context/config/configContext';
 import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
@@ -20,7 +21,7 @@ const UploadPersonalIdButtonRow = () => {
   const startUrl = `${baseUrl}${formUrl}`;
   const exitUrl = urlUtils.getExitUrl(window.location.href);
 
-  const navigateToFormPage = (event: MouseEvent<HTMLButtonElement>) => {
+  const navigateToFormPage = (event: MouseEvent<HTMLElement>) => {
     event.preventDefault();
     if (uploadedFiles.find((file) => file.attachmentId === 'personal-id')) {
       navigate(`..?${searchParams.toString()}`);
@@ -46,17 +47,14 @@ const UploadPersonalIdButtonRow = () => {
         </Alert>
       )}
       <div className="button-row button-row--center">
-        <Button
-          variant="primary"
-          icon={<ArrowRightIcon aria-hidden />}
-          iconPosition="right"
-          as="a"
-          role="link"
-          onClick={navigateToFormPage}
-          {...{ href: `${startUrl}?${searchParams.toString()}` }}
-        >
-          {translate(TEXTS.grensesnitt.navigation.next)}
-        </Button>
+        <LinkButton buttonVariant="primary" onClick={navigateToFormPage} to={`${startUrl}?${searchParams.toString()}`}>
+          <span aria-live="polite" className="navds-body-short font-bold">
+            {translate(TEXTS.grensesnitt.navigation.previous)}
+          </span>
+          <span className="navds-button__icon">
+            <ArrowRightIcon aria-hidden />
+          </span>
+        </LinkButton>
         <Button
           variant="secondary"
           icon={<ArrowLeftIcon aria-hidden />}
