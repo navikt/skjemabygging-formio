@@ -36,6 +36,38 @@ describe('Digital no login', () => {
     cy.findByRole('heading', { name: 'Dine opplysninger' }).should('exist');
   });
 
+  describe('Deleting files', () => {
+    beforeEach(() => {
+      cy.findByLabelText(TEXTS.statiske.uploadId.norwegianPassport).click();
+      cy.get('input[type="file"]').selectFile(
+        {
+          contents: Cypress.Buffer.from('file content'),
+          fileName: 'test.txt',
+        },
+        { force: true },
+      );
+    });
+
+    it('deletes a file when clicking the delete button', () => {
+      cy.findByText(TEXTS.statiske.uploadId.label).should('not.exist');
+      cy.findByRole('button', { name: TEXTS.statiske.uploadId.selectFileButton }).should('not.exist');
+      cy.findByText('test.txt').should('exist');
+      cy.findByRole('button', { name: 'Slett filen' }).click();
+      cy.findByText('test.txt').should('not.exist');
+      cy.findByText(TEXTS.statiske.uploadId.label).should('exist');
+      cy.findByRole('button', { name: TEXTS.statiske.uploadId.selectFileButton }).should('exist');
+    });
+
+    it('deletes files when clicking the cancel button', () => {
+      cy.intercept('/fyllut/api/nologin-file?innsendingId=innsending-id').as('deleteAllFiles');
+      cy.findByText(TEXTS.statiske.uploadId.label).should('not.exist');
+      cy.findByRole('button', { name: TEXTS.statiske.uploadId.selectFileButton }).should('not.exist');
+      cy.findByText('test.txt').should('exist');
+      cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.cancelAndDelete }).click();
+      cy.wait('@deleteAllFiles');
+    });
+  });
+
   it('should display validation errors when next step button is clicked', () => {
     cy.findByLabelText('Vedlegg').should('exist');
     cy.findByText('Annen dokumentasjon').should('exist');
