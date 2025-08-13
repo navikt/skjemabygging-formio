@@ -141,7 +141,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
         if (soknadAlreadyExists(response)) {
           const url = `${formUrl}/paabegynt?sub=digital`;
           logger?.info(`User already has active tasks for the application. Redirects to ${url}`);
-          navigate(url);
+          navigate(url, { replace: true });
           return;
         }
 
