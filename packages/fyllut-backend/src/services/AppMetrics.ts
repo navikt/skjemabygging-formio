@@ -8,6 +8,9 @@ class AppMetrics {
   private readonly _outgoingRequestDuration: Histogram;
   private readonly _expressJsonBodyParserDuration: Histogram;
   private readonly _idportenVerifyTokenDuration: Histogram;
+  private readonly _nologinCaptchaCreationsCounter: Counter;
+  private readonly _nologinCaptchaRequestsCounter: Counter;
+  private readonly _nologinCaptchaFailuresCounter: Counter;
 
   constructor() {
     logger.info('Initializing metrics client');
@@ -24,6 +27,27 @@ class AppMetrics {
     this._familiePdfFailuresCounter = new Counter({
       name: 'fyllut_familie_pdf_failures_total',
       help: 'Number of familie pdf requests which failed',
+      labelNames: [],
+      registers: [this._register],
+    });
+
+    this._nologinCaptchaCreationsCounter = new Counter({
+      name: 'fyllut_nologin_captcha_creations_total',
+      help: 'Number of nologin captcha creations',
+      labelNames: [],
+      registers: [this._register],
+    });
+
+    this._nologinCaptchaRequestsCounter = new Counter({
+      name: 'fyllut_nologin_captcha_requests_total',
+      help: 'Number of nologin captcha requests',
+      labelNames: [],
+      registers: [this._register],
+    });
+
+    this._nologinCaptchaFailuresCounter = new Counter({
+      name: 'fyllut_nologin_captcha_failures_total',
+      help: 'Number of nologin captcha requests which failed',
       labelNames: [],
       registers: [this._register],
     });
@@ -69,6 +93,18 @@ class AppMetrics {
 
   public get familiePdfFailuresCounter() {
     return this._familiePdfFailuresCounter;
+  }
+
+  public get nologinCaptchaCreationsCounter() {
+    return this._nologinCaptchaCreationsCounter;
+  }
+
+  public get nologinCaptchaRequestsCounter() {
+    return this._nologinCaptchaRequestsCounter;
+  }
+
+  public get nologinCaptchaFailuresCounter() {
+    return this._nologinCaptchaFailuresCounter;
   }
 
   public get outgoingRequestDuration() {

@@ -7,6 +7,7 @@ import tryCatch from '../../middleware/tryCatch';
 import idportenAuthHandler from '../../security/idportenAuthHandler';
 import activeTasks from './active-tasks';
 import { initApiConfig } from './api-helper';
+import captchaRouter from './captcha';
 import commonCodes from './common-codes';
 import config from './config';
 import documentsRouter from './documents';
@@ -35,6 +36,7 @@ const { azureM2MSkjemabyggingProxy, azureM2MPdl, kodeverkToken, tokenxPdl, token
   initApiConfig();
 
 apiRouter.all('*path', rateLimiter(60000, 1000), idportenAuthHandler, envQualifier);
+apiRouter.use('/captcha', captchaRouter);
 apiRouter.get('/config', config.get);
 apiRouter.get('/enhetsliste', enhetsliste.get);
 apiRouter.get('/forms', tryCatch(forms.get));

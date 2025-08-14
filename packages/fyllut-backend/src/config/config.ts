@@ -128,6 +128,9 @@ const localDevelopmentConfig: DefaultConfig = {
   },
   frontendLoggerConfig,
   formsApiUrl: process.env.FORMS_API_URL || 'https://forms-api.intern.dev.nav.no',
+  nologin: {
+    jwtSecret: 'verysecret',
+  },
 };
 
 const defaultConfig: DefaultConfig = {
@@ -157,10 +160,15 @@ const defaultConfig: DefaultConfig = {
   idporten,
   frontendLoggerConfig,
   formsApiUrl: process.env.FORMS_API_URL!,
+  nologin: {
+    jwtSecret: process.env.NOLOGIN_JWT_SECRET!,
+  },
 };
 
 const config: ConfigType = {
-  ...(process.env.NODE_ENV === 'development' ? localDevelopmentConfig : defaultConfig),
+  ...(process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test'
+    ? localDevelopmentConfig
+    : defaultConfig),
   fyllutPath: '/fyllut',
   clientSecret: process.env.AZURE_APP_CLIENT_SECRET!,
   naisClusterName: process.env.NAIS_CLUSTER_NAME!,

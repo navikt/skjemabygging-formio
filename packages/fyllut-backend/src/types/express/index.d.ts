@@ -1,5 +1,6 @@
 import { User } from '../custom';
 import { EnvQualifierType } from '../env';
+import { NologinContext } from '../nologin';
 
 declare global {
   namespace Express {
@@ -8,6 +9,7 @@ declare global {
       getIdportenPid: () => string;
       getTokenxAccessToken: () => string;
       getEnvQualifier: () => EnvQualifierType | undefined;
+      getNologinContext: () => NologinContext | undefined;
     }
   }
 }
