@@ -1,8 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import jwt from 'jsonwebtoken';
-import { config } from '../config/config';
-
-const { nologin } = config;
+import { nologinService } from '../services';
 
 const verifyNologinToken = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -11,9 +8,8 @@ const verifyNologinToken = (req: Request, res: Response, next: NextFunction) => 
       return res.sendStatus(403);
     }
 
-    const payload = jwt.verify(token as string, nologin.jwtSecret) as jwt.JwtPayload | string;
-
-    if (typeof payload !== 'object' || payload === null || (payload as jwt.JwtPayload).purpose !== 'nologin') {
+    const payload = nologinService.verifyToken(token);
+    if (!payload) {
       return res.sendStatus(401);
     }
 
@@ -22,12 +18,6 @@ const verifyNologinToken = (req: Request, res: Response, next: NextFunction) => 
     });
     return next();
   } catch (err) {
-    if (err instanceof jwt.TokenExpiredError) {
-      return res.sendStatus(401);
-    }
-    if (err instanceof jwt.JsonWebTokenError) {
-      return next(new Error(`Nologin token verification failed: ${err.message}`));
-    }
     return next(err);
   }
 };
