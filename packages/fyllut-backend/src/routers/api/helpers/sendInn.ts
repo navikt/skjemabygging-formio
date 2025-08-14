@@ -1,4 +1,9 @@
-import { I18nTranslationMap, NavFormType, Submission } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  I18nTranslationMap,
+  NavFormType,
+  Submission,
+  validatorUtils,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import { logger } from '../../../logger';
 import { base64EncodeByteArray } from '../../../utils/base64';
 
@@ -38,11 +43,6 @@ interface SendInnSoknadBody {
   mellomlagringDager?: number;
 }
 
-const isValidUuid = (innsendingsId: string): boolean => {
-  const validUuidExpr = /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/;
-  return validUuidExpr.test(innsendingsId);
-};
-
 const DEFAULT_LANGUAGE = 'nb-NO';
 const objectToByteArray = (obj: object) => Array.from(new TextEncoder().encode(JSON.stringify(obj)));
 
@@ -58,7 +58,7 @@ const validateInnsendingsId = (innsendingsId: string | undefined, supplementaryM
   let errorMessage;
   if (!innsendingsId) {
     errorMessage = 'InnsendingsId mangler.';
-  } else if (!isValidUuid(innsendingsId)) {
+  } else if (!validatorUtils.isValidUuid(innsendingsId)) {
     errorMessage = `${innsendingsId} er ikke en gyldig innsendingsId.`;
   }
   if (errorMessage && supplementaryMessage) {

@@ -9,6 +9,7 @@ import IntroPage from './intro/IntroPage';
 import { PrepareIngenInnsendingPage } from './prepare-innsending/PrepareIngenInnsendingPage';
 import { PrepareLetterPage } from './prepare-letter/PrepareLetterPage';
 import { SummaryPage } from './summary/SummaryPage';
+import UploadPersonalIdPage from './upload-personal-id/UploadPersonalIdPage';
 
 interface Props {
   form: NavFormType;
@@ -25,6 +26,7 @@ const FyllUtRouter = ({ form }: Props) => {
           </Route>
           <Route element={<FormLayout />}>
             <Route path={''} element={<IntroPage />} />
+            <Route path={'/legitimasjon'} element={<UploadPersonalIdPage />} />
             <Route path={'/send-i-posten'} element={<PrepareLetterPage />} />
             <Route path={'/ingen-innsending'} element={<PrepareIngenInnsendingPage />} />
             <Route path={'/paabegynt'} element={<ActiveTasksPage />} />
