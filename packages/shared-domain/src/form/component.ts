@@ -17,7 +17,6 @@ export interface ComponentData {
   custom?: any;
 }
 
-// TODO bruk til Annet vedlegg
 export type AttachmentType = 'default' | 'other';
 
 export interface ComponentValue {

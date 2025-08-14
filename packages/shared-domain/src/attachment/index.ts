@@ -12,7 +12,6 @@ type AttachmentOption = {
   };
 };
 
-// TODO bruk til vedlegg options
 const attachmentSettingKeys = [
   'leggerVedNaa',
   'ettersender',
