@@ -5,6 +5,6 @@ export const rateLimiter = (windowMs: number, limit: number) =>
     windowMs,
     limit,
     message: 'Too many requests from IP',
-    standardHeaders: true,
+    standardHeaders: false,
     legacyHeaders: false,
   });
