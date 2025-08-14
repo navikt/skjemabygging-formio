@@ -1,27 +1,24 @@
-import { PlusIcon, UploadIcon } from '@navikt/aksel-icons';
+import { UploadIcon } from '@navikt/aksel-icons';
 import {
   Alert,
   BodyLong,
-  BodyShort,
   Button,
   FileObject,
   FileUpload,
-  HStack,
   Label,
   Radio,
   RadioGroup,
-  ReadMore,
-  Textarea,
   TextField,
   VStack,
 } from '@navikt/ds-react';
 import { AttachmentOption, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import clsx from 'clsx';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
-import makeStyles from '../../util/styles/jss/jss';
+import AttachmentPanel from './AttachmentPanel';
 import { useAttachmentUpload } from './AttachmentUploadContext';
+import { useAttachmentStyles } from './styles';
 
 interface Props {
   label: string;
@@ -32,36 +29,23 @@ interface Props {
   otherAttachment?: boolean;
 }
 
-const useStyles = makeStyles({
-  button: {
-    maxWidth: '18.75rem',
-    borderRadius: 'var(--a-border-radius-large)',
-  },
-  deleteAllButton: {
-    display: 'flex',
-    alignSelf: 'flex-end',
-  },
-  addAnotherAttachmentButton: {},
-});
-
 const AttachmentUpload = ({ label, options, attachmentId, className, description, otherAttachment }: Props) => {
   const [selectedOption, setSelectedOption] = useState<string>();
   const [loading, setLoading] = useState<boolean>(false);
-  const styles = useStyles();
+  const styles = useAttachmentStyles();
   const { translate } = useLanguages();
   const { handleUploadFile, handleDeleteFile, handleDeleteAttachment, uploadedFiles, errors } = useAttachmentUpload();
   const { form } = useForm();
   const isIdUpload = attachmentId === 'personal-id';
   const uploadButtonText = isIdUpload ? TEXTS.statiske.uploadId.selectFile : TEXTS.statiske.uploadId.uploadFiles;
-  const deadline = form.properties?.ettersendelsesfrist;
+  const { ettersendelsesfrist: deadline } = form.properties;
+  const selectedAdditionalDocumentation = useMemo(
+    () => options.find((option) => option.value === selectedOption)?.additionalDocumentation,
+    [options, selectedOption],
+  );
   const showDeadline = selectedOption === 'ettersender' || selectedOption === 'andre';
-
   const uploadedAttachmentFiles = uploadedFiles.filter((file) => file.attachmentId === attachmentId);
   const error = errors[attachmentId];
-
-  const selectedAdditionalDocumentation = options.find(
-    (option) => option.value === selectedOption,
-  )?.additionalDocumentation;
 
   const handleUpload = async (fileList: FileObject[] | null) => {
     const file = fileList?.[0];
@@ -139,38 +123,21 @@ const AttachmentUpload = ({ label, options, attachmentId, className, description
               }}
             ></FileUpload.Item>
           ))}
-          {uploadedAttachmentFiles.length > 0 && (
-            <FileUpload.Trigger onSelect={handleUpload}>
-              {
-                <Button
-                  variant="secondary"
-                  className={styles.button}
-                  loading={loading}
-                  icon={<UploadIcon title="a11y-title" fontSize="1.5rem" />}
-                >
-                  {translate(TEXTS.statiske.attachment.uploadMoreFiles)}
-                </Button>
-              }
-            </FileUpload.Trigger>
-          )}
-          <ReadMore header={translate(TEXTS.statiske.attachment.sizeAndFormatHeader)}>
-            <HStack gap="2" align="start">
-              <BodyShort weight="semibold">{translate(TEXTS.statiske.attachment.validFormatsLabel)}</BodyShort>
-              <BodyLong>{translate(TEXTS.statiske.attachment.validFormatsDescrption)}</BodyLong>
-              <BodyShort weight="semibold">{translate(TEXTS.statiske.attachment.maxFileSizeLabel)}</BodyShort>
-              <BodyLong>{translate(TEXTS.statiske.attachment.maxFileSizeDescription)}</BodyLong>
-            </HStack>
-          </ReadMore>
 
-          {otherAttachment && (
-            <Button
-              variant="tertiary"
-              onClick={() => handleUploadAnotherAttachment()}
-              className={styles.addAnotherAttachmentButton}
-              icon={<PlusIcon title="a11y-title" fontSize="1.5rem" />}
-            >
-              {translate(TEXTS.statiske.attachment.addNewAttachment)}
-            </Button>
+          {!isIdUpload && (
+            <AttachmentPanel
+              translate={translate}
+              uploadedAttachmentFiles={uploadedAttachmentFiles}
+              otherAttachment={otherAttachment}
+              selectedOption={'nav'}
+              handleUpload={handleUpload}
+              handleUploadFile={handleUploadFile}
+              handleUploadAnotherAttachment={handleUploadAnotherAttachment}
+              deadline={deadline}
+              loading={loading}
+              showDeadline={showDeadline}
+              selectedAdditionalDocumentation={selectedAdditionalDocumentation}
+            />
           )}
         </VStack>
       )}
@@ -179,20 +146,6 @@ const AttachmentUpload = ({ label, options, attachmentId, className, description
         <Alert variant="error">
           <BodyLong>{error}</BodyLong>
         </Alert>
-      )}
-
-      {showDeadline && deadline && (
-        <Alert variant="warning" inline>
-          {translate(TEXTS.statiske.attachment.deadline, { deadline })}
-        </Alert>
-      )}
-
-      {selectedAdditionalDocumentation && (
-        <Textarea
-          label={translate(selectedAdditionalDocumentation.label)}
-          description={translate(selectedAdditionalDocumentation.description)}
-          maxLength={200}
-        />
       )}
     </VStack>
   );

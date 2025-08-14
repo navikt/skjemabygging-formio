@@ -1,5 +1,29 @@
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 
+function goToVedleggPage() {
+  cy.findByRole('heading', { name: TEXTS.statiske.uploadId.title }).should('exist');
+  cy.findByRole('button', { name: TEXTS.statiske.uploadId.selectFileButton }).should('not.exist');
+  cy.findByLabelText(TEXTS.statiske.uploadId.norwegianPassport).click();
+  cy.findByText(TEXTS.statiske.uploadId.selectFileButton).should('exist');
+
+  cy.get('input[type="file"]').selectFile(
+    {
+      contents: Cypress.Buffer.from('file content'),
+      fileName: 'test.txt',
+    },
+    { force: true },
+  );
+
+  cy.findByText('test.txt').should('exist');
+  cy.findByText('0,04 MB').should('exist');
+
+  cy.clickNextStep();
+  cy.clickStart();
+  cy.clickShowAllSteps();
+
+  cy.findByRole('link', { name: 'Vedlegg' }).click();
+}
+
 describe('Digital no login', () => {
   beforeEach(() => {
     cy.defaultIntercepts();
@@ -18,7 +42,7 @@ describe('Digital no login', () => {
     cy.findByRole('heading', { name: TEXTS.statiske.uploadId.title }).should('exist');
     cy.findByRole('button', { name: TEXTS.statiske.uploadId.selectFileButton }).should('not.exist');
     cy.findByLabelText(TEXTS.statiske.uploadId.norwegianPassport).click();
-    cy.findByRole('button', { name: TEXTS.statiske.uploadId.selectFileButton }).should('exist');
+    cy.findByText(TEXTS.statiske.uploadId.selectFileButton).should('exist');
 
     cy.get('input[type="file"]').selectFile(
       {
@@ -69,14 +93,21 @@ describe('Digital no login', () => {
   });
 
   it('should display validation errors when next step button is clicked', () => {
-    cy.findByLabelText('Vedlegg').should('exist');
+    goToVedleggPage();
+    cy.findByText('Vedlegg').should('exist');
     cy.findByText('Annen dokumentasjon').should('exist');
     cy.clickNextStep();
   });
 
-  it('should remove all attachments when delete all button is clicked', () => {});
+  it('should remove all attachments when delete all button is clicked', () => {
+    goToVedleggPage();
+  });
 
-  it('should remove all attachments on cancel', () => {});
+  it('should remove all attachments on cancel', () => {
+    goToVedleggPage();
+  });
 
-  it('should render additional description and deadline when existing', () => {});
+  it('should render additional description and deadline when existing', () => {
+    goToVedleggPage();
+  });
 });
