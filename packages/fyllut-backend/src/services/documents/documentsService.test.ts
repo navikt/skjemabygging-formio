@@ -70,7 +70,7 @@ describe('[endpoint] documents', () => {
       .post('/foersteside')
       .reply(200, { foersteside: encodedForstesidedPdf });
     const skjemabyggingproxyScope = nock(familiePdfGeneratorUrl!)
-      .post('/api/pdf/v1/opprett-pdf')
+      .post('/api/pdf/v3/opprett-pdf')
       .reply(200, encodedSoknadPdf);
 
     const mergePdfScope = nock(sendInnConfig.host!)
@@ -133,7 +133,7 @@ describe('[endpoint] documents', () => {
       .post('/foersteside')
       .reply(200, { foersteside: encodedForstesidedPdf });
     const skjemabyggingproxyScope = nock(familiePdfGeneratorUrl!)
-      .post('/api/pdf/v1/opprett-pdf')
+      .post('/api/pdf/v3/opprett-pdf')
       .reply(200, encodedSoknadPdf);
 
     const mergePdfScope = nock(sendInnConfig.host!)
