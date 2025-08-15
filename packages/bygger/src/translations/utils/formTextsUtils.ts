@@ -206,7 +206,7 @@ const extractAllFormTexts = (form?: Form): string[] => {
         }),
     ),
     ...extractTextsFromProperties(form.properties),
-  ].filter((component, index, currentComponents) => withoutDuplicatedComponents(component, index, currentComponents));
+  ].filter((text, index, currentTexts) => withoutDuplicatedComponents(text, index, currentTexts));
 };
 
 const getFormTextsForTranslations = (form: Form) => {
@@ -216,7 +216,7 @@ const getFormTextsForTranslations = (form: Form) => {
   const countries = getCountries('nb');
   return extractAllFormTexts(form)
     .filter((text) => !countries.some((country) => country.label === text))
-    .filter((text) => !externalStorageTexts.keys.introPage.includes(text as Tkey));
+    .filter((text) => !!text && !externalStorageTexts.keys.introPage.includes(text as Tkey));
 };
 
 export { getFormTextsForTranslations };

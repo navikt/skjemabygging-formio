@@ -69,6 +69,9 @@ const GlobalTranslationsProvider = ({ children }) => {
   const translationsPerTag = useMemo(() => generateAndPopulateTags(storedTranslationsMap), [storedTranslationsMap]);
 
   const saveTranslation = async (translation: FormsApiTranslation): Promise<FormsApiTranslation> => {
+    if (!translation.key) {
+      throw new Error('Translation key is required');
+    }
     if (translation.id) {
       return translationsApi.put(translation);
     } else {
