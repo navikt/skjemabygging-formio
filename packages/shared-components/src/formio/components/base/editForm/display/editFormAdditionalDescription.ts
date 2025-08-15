@@ -1,7 +1,11 @@
 import { Component } from '@navikt/skjemadigitalisering-shared-domain';
 import editFormWysiwygEditor from '../shared/editFormWysiwygEditor';
 
-const editFormAdditionalDescription = (): Component => {
+interface PropertyOptions {
+  customConditional?: string;
+}
+
+const editFormAdditionalDescription = (options?: PropertyOptions): Component => {
   return {
     type: 'panel',
     title: 'Utvidet beskrivelse (valgfri)',
@@ -30,6 +34,7 @@ const editFormAdditionalDescription = (): Component => {
         },
       },
     ],
+    customConditional: options?.customConditional,
   };
 };
 
