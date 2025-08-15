@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { nologinService } from '../services';
 
-const verifyNologinToken = (req: Request, res: Response, next: NextFunction) => {
+const nologinTokenHandler = (req: Request, res: Response, next: NextFunction) => {
   try {
     const token = req.header('NologinToken');
     if (!token) {
@@ -22,4 +22,4 @@ const verifyNologinToken = (req: Request, res: Response, next: NextFunction) => 
   }
 };
 
-export default verifyNologinToken;
+export default nologinTokenHandler;
