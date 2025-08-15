@@ -65,8 +65,12 @@ describe('form summary', () => {
         ]),
       ]);
       const data = { radiopanel: 'ja' };
+      const submission = { data };
 
-      expect(mapAndEvaluateConditionals(formObject, data)).toEqual({ 'alert1-navId1': true, 'alert2-navId2': false });
+      expect(mapAndEvaluateConditionals(formObject, submission)).toEqual({
+        'alert1-navId1': true,
+        'alert2-navId2': false,
+      });
     });
   });
 
@@ -914,7 +918,7 @@ describe('form summary', () => {
       });
     });
 
-    describe('Alertstripe with custom conditional', () => {
+    describe('Alertstripe with custom conditional using lodash', () => {
       it('should not be visible when vegghengt is not present in submission data', () => {
         const actual = createFormSummaryObject(
           testformCustomConditional.form,
@@ -944,6 +948,65 @@ describe('form summary', () => {
         const alertstripes = flattenComponents(actual).filter(onlyAlertstripes);
         expect(alertstripes).toHaveLength(1);
         expect(alertstripes[0].value).toBe('Må signeres av både eier og bruker');
+      });
+    });
+
+    describe('custom conditional using utils', () => {
+      let form;
+
+      beforeEach(() => {
+        form = {
+          ...createPanelObject('Panel 1', [
+            createDummyNavDatepicker('Birth date'),
+            {
+              ...createDummyTextfield('First name'),
+              customConditional: "show = utils.isBornBeforeYear(2000, 'birthdate', submission)",
+            },
+          ]),
+        };
+      });
+
+      it('should be visible when condition is evaluated to true', () => {
+        const submission = { data: { birthdate: '1999-08-21', firstname: 'Mille' } };
+        const actual = createFormSummaryObject(form, submission, mockedTranslate);
+        expect(actual).toHaveLength(2);
+        expect(actual[0].key).toEqual('birthdate');
+        expect(actual[1].key).toEqual('firstname');
+      });
+
+      it('should not be visible when condition is evaluated to false', () => {
+        const submission = { data: { birthdate: '2000-08-21', firstname: 'Mille' } };
+        const actual = createFormSummaryObject(form, submission, mockedTranslate);
+        expect(actual).toHaveLength(1);
+        expect(actual[0].key).toEqual('birthdate');
+      });
+    });
+
+    describe('custom conditional using lodash', () => {
+      let form;
+
+      beforeEach(() => {
+        form = {
+          ...createPanelObject('Panel 1', [
+            createDummyTextfield('prompt'),
+            { ...createDummyTextfield('First name'), customConditional: "show = _.get(data, 'prompt') === 'hello'" },
+          ]),
+        };
+      });
+
+      it('should be visible when condition is evaluated to true', () => {
+        const submission = { data: { prompt: 'hello', firstname: 'Mille' } };
+        const actual = createFormSummaryObject(form, submission, mockedTranslate);
+        expect(actual).toHaveLength(2);
+        expect(actual[0].key).toEqual('prompt');
+        expect(actual[1].key).toEqual('firstname');
+      });
+
+      it('should not be visible when condition is evaluated to false', () => {
+        const submission = { data: { prompt: 'goodbye', firstname: 'Mille' } };
+        const actual = createFormSummaryObject(form, submission, mockedTranslate);
+        expect(actual).toHaveLength(1);
+        expect(actual[0].key).toEqual('prompt');
       });
     });
 

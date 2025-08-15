@@ -1,7 +1,3 @@
-import sanitizeJavaScriptCode from './sanitize-javascript-code';
+import FormioUtils from './FormioUtils';
 
-const navFormioUtils = {
-  sanitizeJavaScriptCode,
-};
-
-export default navFormioUtils;
+export default FormioUtils;

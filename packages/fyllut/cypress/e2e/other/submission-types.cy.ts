@@ -104,29 +104,11 @@ describe('Submission Type', () => {
   });
 
   describe('Type: Digital No Login', () => {
-    describe('Go to intro page', () => {
-      beforeEach(() => {
-        // sub=digital gets automatically added when running on build code
-        cy.visit('/fyllut/stnologin?sub=digitalnologin');
-        cy.defaultWaits();
-      });
-
-      it('Only allow user to continue from summary page if form is valid', () => {
-        cy.clickStart();
-
-        cy.clickShowAllSteps();
-        cy.findByRole('link', { name: TEXTS.statiske.summaryPage.title }).click();
-
-        cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
-        cy.findByRole('link', { name: TEXTS.grensesnitt.submitToNavPrompt.open }).should('not.exist');
-        cy.findAllByRole('link', { name: TEXTS.grensesnitt.summaryPage.editAnswers }).first().click();
-
-        cy.findByRole('textbox', { name: 'Tekstfelt' }).type('asdf');
-        cy.clickNextStep();
-
-        // TODO: Add this test when we add real support for digital no login.
-        //cy.findByRole('button', { name: TEXTS.grensesnitt.submitToNavPrompt.open }).should('exist');
-      });
+    it('goes to upload page', () => {
+      cy.skipIfNoIncludeDistTests();
+      cy.visit('/fyllut/stnologin?sub=digitalnologin');
+      cy.defaultWaits();
+      cy.findByRole('heading', { name: TEXTS.statiske.uploadId.title }).should('exist');
     });
 
     it('Use paper submission type on digital no login only', () => {
@@ -221,7 +203,7 @@ describe('Submission Type', () => {
 
       it('Select digtal no login', () => {
         cy.findByRole('link', { name: TEXTS.grensesnitt.introPage.sendDigitalNoLogin }).click();
-        cy.clickStart();
+        cy.findByRole('heading', { name: TEXTS.statiske.uploadId.title }).should('exist');
 
         cy.url().should('include', 'sub=digitalnologin');
       });
@@ -258,7 +240,7 @@ describe('Submission Type', () => {
 
       it('Select digtal no login', () => {
         cy.findByRole('link', { name: TEXTS.grensesnitt.introPage.sendDigitalNoLogin }).click();
-        cy.clickStart();
+        cy.findByRole('heading', { name: TEXTS.statiske.uploadId.title }).should('exist');
 
         cy.url().should('include', 'sub=digitalnologin');
       });

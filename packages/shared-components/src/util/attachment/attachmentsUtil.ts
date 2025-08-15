@@ -1,5 +1,4 @@
-import { Component, NavFormType, SubmissionData, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
-import FormioUtils from 'formiojs/utils';
+import { Component, NavFormType, Submission, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import UtilsOverrides from '../../formio/overrides/utils-overrides/utils-overrides';
 
 interface Attachment {
@@ -13,14 +12,14 @@ interface Attachment {
   vedleggskjema?: string;
 }
 
-const getRelevantAttachments = (form: NavFormType, submissionData: SubmissionData): Attachment[] => {
+const getRelevantAttachments = (form: NavFormType, submission: Submission): Attachment[] => {
   return navFormUtils
     .flattenComponents(form.components)
     .filter(
       (component) => component.properties && !!component.properties.vedleggskode && !isOtherDocumentation(component),
     )
     .map(sanitize)
-    .filter((comp) => FormioUtils.checkCondition(comp, undefined, submissionData, form))
+    .filter((comp) => UtilsOverrides.checkCondition(comp, undefined, submission?.data, form, undefined, submission))
     .map((comp) => ({
       vedleggsnr: comp.properties.vedleggskode,
       tittel: comp.properties.vedleggstittel,
@@ -38,11 +37,11 @@ const getRelevantAttachments = (form: NavFormType, submissionData: SubmissionDat
     }));
 };
 
-const hasOtherDocumentation = (form, submissionData) => {
+const hasOtherDocumentation = (form, submission: Submission) => {
   return navFormUtils
     .flattenComponents(form.components)
     .map(sanitize)
-    .filter((comp) => FormioUtils.checkCondition(comp, undefined, submissionData, form))
+    .filter((comp) => UtilsOverrides.checkCondition(comp, undefined, submission?.data, form, undefined, submission))
     .some((component) => isOtherDocumentation(component));
   // TODO: Remove otherDocumentation from component when all attachments have attachmentType set
 };
@@ -57,8 +56,8 @@ const sanitize = (component) => {
   return clone;
 };
 
-const hasRelevantAttachments = (form, submissionData) => {
-  return !!getRelevantAttachments(form, submissionData).length || hasOtherDocumentation(form, submissionData);
+const hasRelevantAttachments = (form: NavFormType, submission: Submission) => {
+  return !!getRelevantAttachments(form, submission).length || hasOtherDocumentation(form, submission);
 };
 
 export { getRelevantAttachments, hasOtherDocumentation, hasRelevantAttachments };

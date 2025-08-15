@@ -1,5 +1,6 @@
 import express from 'express';
 import { config as appConfig } from '../../config/config';
+import { NaisCluster } from '../../config/nais-cluster.js';
 import envQualifier from '../../middleware/envQualifier';
 import { rateLimiter } from '../../middleware/ratelimit';
 import tryCatch from '../../middleware/tryCatch';
@@ -10,13 +11,13 @@ import commonCodes from './common-codes';
 import config from './config';
 import documentsRouter from './documents';
 import enhetsliste from './enhetsliste.js';
-import exstream from './exstream';
 import form from './form';
 import forms from './forms';
 import forsteside from './forsteside';
 import globalTranslations from './global-translations.js';
 import log from './log';
 import mottaksadresser from './mottaksadresser.js';
+import nologinFileRouter from './nologin-file';
 import pdl from './pdl';
 import recipients from './recipients';
 import registerDataRouter from './register-data/register-data';
@@ -29,8 +30,8 @@ import translations from './translations.js';
 
 const apiRouter = express.Router();
 
-const { featureToggles } = appConfig;
-const { azureSkjemabyggingProxy, azurePdl, kodeverkToken, tokenxPdl, tokenxSendInn, azurePdfGeneratorToken } =
+const { featureToggles, naisClusterName } = appConfig;
+const { azureM2MSkjemabyggingProxy, azureM2MPdl, kodeverkToken, tokenxPdl, tokenxSendInn, azurePdfGeneratorToken } =
   initApiConfig();
 
 apiRouter.all('*path', rateLimiter(60000, 1000), idportenAuthHandler, envQualifier);
@@ -38,7 +39,7 @@ apiRouter.get('/config', config.get);
 apiRouter.get('/enhetsliste', enhetsliste.get);
 apiRouter.get('/forms', tryCatch(forms.get));
 apiRouter.get('/forms/:formPath', tryCatch(form.get));
-apiRouter.post('/foersteside', azureSkjemabyggingProxy, forsteside.post);
+apiRouter.post('/foersteside', azureM2MSkjemabyggingProxy, forsteside.post);
 apiRouter.use('/documents', documentsRouter);
 apiRouter.get('/global-translations/:languageCode', tryCatch(globalTranslations.get));
 apiRouter.get('/translations/:form', tryCatch(translations.get));
@@ -51,7 +52,6 @@ apiRouter.post('/send-inn/soknad', tokenxSendInn, sendInnSoknad.post);
 apiRouter.put('/send-inn/soknad', tokenxSendInn, sendInnSoknad.put);
 apiRouter.put('/send-inn/utfyltsoknad', azurePdfGeneratorToken, tokenxSendInn, sendInnUtfyltSoknad.put);
 apiRouter.get('/common-codes/archive-subjects', kodeverkToken, commonCodes.getArchiveSubjects);
-apiRouter.post('/pdf/convert', azurePdfGeneratorToken, exstream.post);
 apiRouter.get('/common-codes/currencies', kodeverkToken, commonCodes.getCurrencies);
 apiRouter.get('/common-codes/enhetstyper', kodeverkToken, commonCodes.getEnhetstyper);
 apiRouter.post('/log/:level', rateLimiter(60000, 60), log.post);
@@ -60,9 +60,14 @@ apiRouter.get('/send-inn/prefill-data', tokenxSendInn, prefillData.get);
 apiRouter.get('/send-inn/activities', tokenxSendInn, activities.get);
 apiRouter.use('/register-data', registerDataRouter);
 
+// Not available in production yet
+if (naisClusterName !== NaisCluster.PROD) {
+  apiRouter.use('/nologin-file', nologinFileRouter);
+}
+
 if (featureToggles.enablePdl) {
   apiRouter.get('/pdl/person/:id', tokenxPdl, pdl.person);
-  apiRouter.get('/pdl/children/:id', azurePdl, pdl.children);
+  apiRouter.get('/pdl/children/:id', azureM2MPdl, pdl.children);
 }
 
 export default apiRouter;
