@@ -23,6 +23,7 @@ describe('Captcha Handler Tests', () => {
       .expect(200)
       .expect((res) => {
         expect(res.body.access_token).toBeDefined();
+        expect(res.body.innsendingsId).toBeDefined();
       });
   });
 

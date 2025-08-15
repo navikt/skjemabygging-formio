@@ -12,7 +12,9 @@ const post: RequestHandler = async (req, res, next) => {
     }
 
     const token = nologinService.generateToken();
-    res.json({ success: true, access_token: token });
+    // TODO Vurder om innsendingsId hentes fra innsending-api
+    const innsendingsId = crypto.randomUUID();
+    res.json({ success: true, innsendingsId, access_token: token });
   } catch (err) {
     next(err);
   }
