@@ -1,6 +1,7 @@
 import correlator from 'express-correlation-id';
 import { config } from '../config/config';
 import { logErrorWithStacktrace } from '../utils/errors';
+import { CorsError } from './types';
 
 const { isTest } = config;
 
@@ -18,6 +19,11 @@ const globalErrorHandler = (err, req, res, _next) => {
 
   if (!isTest) {
     logErrorWithStacktrace(err);
+  }
+
+  if (err instanceof CorsError) {
+    res.sendStatus(403);
+    return;
   }
 
   res.status(500);

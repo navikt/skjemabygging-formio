@@ -29,6 +29,10 @@ export type TilleggsstonaderConfig = {
   };
 };
 
+export type NologinConfig = {
+  jwtSecret: string;
+};
+
 export type ServiceConfig = {
   url: string;
   scope?: string;
@@ -69,6 +73,7 @@ export type DefaultConfig = {
   noDecorator?: boolean;
   frontendLoggerConfig: FrontendLoggerConfigType;
   formsApiUrl: string;
+  nologin: NologinConfig;
 };
 
 export type ConfigType = DefaultConfig & {
