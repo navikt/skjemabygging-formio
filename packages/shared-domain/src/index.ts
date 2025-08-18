@@ -14,6 +14,7 @@ import type { DataFetcherSourceId } from './data-fetcher';
 import { dataFetcherSources } from './data-fetcher';
 import { Enhet, Enhetstype, EnhetstypeNorg, supportedEnhetstyper } from './enhet';
 import type { FieldSize } from './field-size';
+import { UploadedFile } from './file';
 import {
   AddressType,
   Attachment,
@@ -297,6 +298,7 @@ export type {
   TranslationScope,
   TranslationTag,
   UkjentBruker,
+  UploadedFile,
   UsageContext,
   VedtakBetalingsplan,
   Webform,

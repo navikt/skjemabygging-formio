@@ -49,6 +49,9 @@ const FormTranslationsProvider = ({ children, formPath }: Props) => {
   }, [loadTranslations, state.isReady]);
 
   const saveTranslation = async (translation: FormsApiTranslation): Promise<FormsApiTranslation> => {
+    if (!translation.key) {
+      throw new Error('Translation key is required');
+    }
     if (translation.id) {
       return translationsApi.put(formPath, translation);
     } else {

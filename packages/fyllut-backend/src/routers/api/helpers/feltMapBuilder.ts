@@ -20,11 +20,12 @@ import {
   Tkey,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { config } from '../../../config/config';
+import { logger } from '../../../logger';
 import { EkstraBunntekst, FeltMap, PdfConfig, VerdilisteElement } from '../../../types/familiepdf/feltMapTypes';
 
 type TranslateFunction = (text: string) => string;
 
-const { gitVersion } = config;
+const { gitVersion, isDelingslenke } = config;
 
 export const createFeltMapFromSubmission = (
   form: NavFormType,
@@ -72,7 +73,10 @@ export const createFeltMapFromSubmission = (
     skjemanummer: form.properties.skjemanummer,
     verdiliste,
     bunntekst: ekstraBunntekst,
+    vannmerke: isDelingslenke ? 'Testskjema - Ikke send til Nav' : null,
   };
+
+  logger.info('FeltMap created for form: ' + feltMap.label + ', vannmerke =' + feltMap.vannmerke);
 
   return JSON.stringify(feltMap).replaceAll('\\t', '  ');
 };
