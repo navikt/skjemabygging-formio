@@ -11,6 +11,9 @@ const htmlElementForm = () => {
     display([
       editFormDisplay.content(),
       editFormDisplay.textDisplay(),
+      editFormDisplay.additionalDescription({
+        customConditional: 'show = data.textDisplay !== "pdf"'
+      }),
       editFormDisplay.hidden('value = data.textDisplay === "pdf"'),
       editFormDisplay.contentForPdf(),
     ]),
