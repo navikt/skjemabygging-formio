@@ -7,7 +7,7 @@ import {
   Webform,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import { useAppConfig } from '../../context/config/configContext';
 import { useForm } from '../../context/form/FormContext';
 import { i18nUtils } from '../../index';
@@ -77,6 +77,7 @@ const NavForm = ({
 }: Props) => {
   useStyles();
   const [webform, setWebform] = useState<Webform>();
+  const { hash } = useLocation();
   const { prefillData } = useForm();
   const appConfig = useAppConfig();
   const ref = useRef(null);
@@ -220,6 +221,13 @@ const NavForm = ({
       }
     })();
   }, [appConfig.logger, i18n, createForm, webform, src, form]);
+
+  useEffect(() => {
+    if (webform && hash) {
+      const fragmentPath = hash.substring(1);
+      webform.focusOnComponent({ path: decodeURIComponent(fragmentPath) });
+    }
+  }, [webform, hash]);
 
   return <div className={className} data-testid="formMountElement" ref={ref} />;
 };

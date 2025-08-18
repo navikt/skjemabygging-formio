@@ -18,11 +18,15 @@ const EditAnswersButton = ({ form, formUrl, panelValidationList }: Props) => {
   const formStartingPoint = findFormStartingPoint(form, panelValidationList);
   const pathname = `${formUrl}/${formStartingPoint.panel}`;
   const hasValidationErrors = panelValidationList?.some((panelValidation) => panelValidation.hasValidationErrors);
-
+  console.log(formStartingPoint);
   return (
     <LinkButton
       buttonVariant={hasValidationErrors ? 'primary' : 'secondary'}
-      to={formStartingPoint.component ? { pathname, hash: formStartingPoint.component, search } : { pathname, search }}
+      to={
+        formStartingPoint.component
+          ? { pathname, hash: encodeURIComponent(formStartingPoint.component), search }
+          : { pathname, search }
+      }
     >
       <span className="navds-button__icon">
         <ArrowLeftIcon aria-hidden />

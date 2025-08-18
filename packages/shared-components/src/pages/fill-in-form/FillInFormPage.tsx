@@ -35,8 +35,6 @@ export const FillInFormPage = () => {
   const [formForRendering, setFormForRendering] = useState<NavFormType>();
   const { mellomlagringError, isMellomlagringAvailable, isMellomlagringReady } = useSendInn();
   const { currentLanguage, translationsForNavForm, translate } = useLanguages();
-  const { hash } = useLocation();
-  const mutationObserverRef = useRef<MutationObserver | undefined>(undefined);
   const [showModal, setShowModal] = useState<ModalType>();
   const [formNavigationPaths, setFormNavigationPaths] = useState<FormNavigationPaths>({});
   const focusMainContentRef = useRef<boolean>(false);
@@ -46,7 +44,7 @@ export const FillInFormPage = () => {
 
   const exitUrl = urlUtils.getExitUrl(window.location.href);
 
-  const focusOnComponent = useCallback<(id: KeyOrFocusComponentId) => void>(
+  const emitFocusOnComponent = useCallback<(id: KeyOrFocusComponentId) => void>(
     (id: KeyOrFocusComponentId) => fyllutEvents.emit('focusOnComponent', id),
     [fyllutEvents],
   );
@@ -140,34 +138,6 @@ export const FillInFormPage = () => {
     setFormForRendering(submissionMethod === 'digital' ? navFormUtils.removeVedleggspanel(form) : form);
   }, [form, submissionMethod]);
 
-  // Clean up mutationObserver
-  const removeMutationObserver = () => {
-    if (mutationObserverRef.current) {
-      mutationObserverRef.current.disconnect();
-      mutationObserverRef.current = undefined;
-    }
-  };
-
-  useEffect(() => {
-    // Try to find the input corresponding to the anchor/fragment in the url (e.g. #nameInput)
-    // Since the input fields are rendered by Formio, we need to monitor the DOM to know when the element is ready
-    if (hash && !mutationObserverRef.current) {
-      // Create a MutationObserver to monitor the DOM. The callback is executed whenever the DOM changes.
-      mutationObserverRef.current = new MutationObserver(() => {
-        const fragment = hash.substring(1);
-        // Look for elements that may match the provided hash and pick the first that is an input element
-        const hashElementList = document.querySelectorAll(`[id$=${fragment}],[name*=${fragment}]`);
-        const hashInputElement = Array.from(hashElementList).find((element) => element.tagName === 'INPUT');
-        if (hashInputElement) {
-          removeMutationObserver();
-          scrollToAndSetFocus(`[id=${hashInputElement.id}]`);
-        }
-      });
-      // Start monitoring the DOM
-      mutationObserverRef.current.observe(document, { subtree: true, childList: true });
-    }
-  }, [hash]);
-
   if (!translationsForNavForm) {
     return null;
   }
@@ -186,7 +156,7 @@ export const FillInFormPage = () => {
         <FormErrorSummary
           heading={translate(TEXTS.validering.error)}
           errors={errors}
-          focusOnComponent={focusOnComponent}
+          focusOnComponent={emitFocusOnComponent}
           ref={(ref) => (errorSummaryRef.current = ref)}
         />
         <NavForm

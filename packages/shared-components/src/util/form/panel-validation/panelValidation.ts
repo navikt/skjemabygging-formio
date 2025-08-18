@@ -3,17 +3,22 @@ import { Component, formSummaryUtil, NavFormType, Submission } from '@navikt/skj
 export type PanelValidation = {
   key: string;
   summaryComponents?: string[];
-  firstInputComponent?: Component;
+  firstInputComponent?: string;
   hasValidationErrors: boolean;
   firstInputWithValidationError?: string;
 };
 
-const findFirstInputWithValidationError = (wizardComponent, data): Component | undefined => {
+const findFirstInputWithValidationError = (wizardComponent, data): string | undefined => {
   // Need to tell the Formio root component that the form has been submitted, to trigger validation.
   wizardComponent.root.submitted = true;
   const valid = wizardComponent.checkValidity(data);
-  if (!valid && wizardComponent.component.input) {
-    return wizardComponent.component;
+  if (
+    !valid &&
+    wizardComponent.component.input &&
+    wizardComponent.type !== 'datagrid' &&
+    wizardComponent.type !== 'container'
+  ) {
+    return wizardComponent.path;
   }
 
   for (const subComponent of wizardComponent?.components ?? []) {
@@ -39,8 +44,7 @@ export const validateWizardPanels = (formioInstance, form: NavFormType, submissi
         key: panel.key as string,
         hasValidationErrors: firstInputWithValidationError !== undefined,
         firstInputComponent: firstInput,
-        firstInputWithValidationError:
-          firstInputWithValidationError && `${firstInputWithValidationError.id}-${firstInputWithValidationError.key}`,
+        firstInputWithValidationError: firstInputWithValidationError,
         summaryComponents: formSummaryPanels.find((formSummaryPanel) => formSummaryPanel.key === panel.key).components,
       };
     });
