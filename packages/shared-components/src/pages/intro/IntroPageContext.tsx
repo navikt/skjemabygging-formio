@@ -76,14 +76,14 @@ export const IntroPageProvider = ({ children, form }: IntroPageProviderProps) =>
   }, [submissionMethod, toState]);
 
   const forceRedirectToSub = (sub: SubmissionMethod, path?: string) => {
-    const { origin, pathname, search } = window.location;
+    const { origin, pathname } = window.location;
     let href = `${origin}${pathname}`;
     if (path) {
       href = `${href}/${path}`;
     }
     // Important to force redirect to force idporten redirect if sub=digital
     // and to make sure appCondig have the correct submissionMethod
-    window.location.href = `${href}${search ? `${search}&sub=${sub}` : `?sub=${sub}`}`;
+    window.location.href = `${href}${searchParams.size > 0 ? '&' : '?'}sub=${sub}`;
   };
 
   const showSelectSubmissionType = () => {

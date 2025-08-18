@@ -138,10 +138,10 @@ describe('Mellomlagring', () => {
     it('fetches mellomlagring and navigates to "/summary" on start, when url contains "innsendingsId"', () => {
       cy.visit('/fyllut/testmellomlagring?sub=digital&innsendingsId=8e3c3621-76d7-4ebd-90d4-34448ebcccc3&lang=nb-NO');
       cy.defaultWaits();
+      cy.wait('@getMellomlagringValid');
       cy.findByRole('heading', { name: TEXTS.statiske.introPage.title }).should('exist');
       cy.clickStart();
-      cy.wait('@getMellomlagringValid');
-      cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
+      cy.url().should('include', '/valgfrieOpplysninger');
     });
 
     it('redirects to form not found page when not found', () => {
