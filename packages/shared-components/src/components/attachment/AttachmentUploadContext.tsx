@@ -1,12 +1,14 @@
 import { FileObject } from '@navikt/ds-react';
 import { Submission, TEXTS, UploadedFile } from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, useContext, useState } from 'react';
+import { submitCaptchaValue } from '../../api/captcha/captcha';
 import {
   deleteAllFiles,
   deleteAttachment,
   deleteFile,
   uploadFile,
 } from '../../api/nologin-file-upload/nologinFileUpload';
+import { useAppConfig } from '../../context/config/configContext';
 import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
 import { useSendInn } from '../../context/sendInn/sendInnContext';
@@ -17,6 +19,7 @@ interface AttachmentUploadContextType {
   handleDeleteAttachment: (attachmentId: string) => Promise<void>;
   handleDeleteAllFiles: () => Promise<void>;
   addError: (attachmentId: string, error: string) => void;
+  setCaptchaValue: (value: Record<string, string>) => void;
   uploadedFiles: UploadedFile[];
   errors: Record<string, string | undefined>;
 }
@@ -27,6 +30,7 @@ const initialContext: AttachmentUploadContextType = {
   handleDeleteAttachment: async () => {},
   handleDeleteAllFiles: async () => {},
   addError: () => {},
+  setCaptchaValue: () => {},
   uploadedFiles: [],
   errors: {},
 };
@@ -34,9 +38,11 @@ const initialContext: AttachmentUploadContextType = {
 const AttachmentUploadContext = createContext<AttachmentUploadContextType>(initialContext);
 
 const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) => {
+  const config = useAppConfig();
   const { innsendingsId, setInnsendingsId } = useSendInn();
   const { submission, setSubmission } = useForm();
   const { translate } = useLanguages();
+  const [captchaValue, setCaptchaValue] = useState<Record<string, string>>({});
   const [errors, setErrors] = useState<Record<string, string | undefined>>({});
 
   const uploadedFiles = submission?.uploadedFiles ?? [];
@@ -83,6 +89,7 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
   const handleUploadFile = async (attachmentId: string, file: FileObject) => {
     try {
       removeError(attachmentId);
+      await submitCaptchaValue(captchaValue, config);
       const result = await uploadFile(file.file, attachmentId);
       if (result) {
         addToSubmission(result);
@@ -139,6 +146,7 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
     handleDeleteAttachment,
     handleDeleteAllFiles,
     addError,
+    setCaptchaValue,
     uploadedFiles,
     errors,
   };
