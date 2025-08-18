@@ -32,6 +32,7 @@ export interface NavFormType {
   status?: string;
   introPage?: IntroPage;
   firstPanelSlug?: string;
+  lock?: any;
 }
 
 export interface ResourceAccess {

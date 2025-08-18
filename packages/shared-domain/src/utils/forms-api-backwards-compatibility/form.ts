@@ -57,6 +57,7 @@ const mapNavFormToForm = (form: NavFormType): Form => {
     status: status as FormStatus,
     introPage,
     firstPanelSlug,
+    ...(form.lock && { lock: form.lock }),
   };
 };
 
