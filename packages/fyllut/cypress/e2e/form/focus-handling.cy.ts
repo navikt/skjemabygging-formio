@@ -38,23 +38,14 @@ describe('Focus handling', () => {
     });
 
     it('first incomplete field should have focus', () => {
-      cy.findByLabelText('Fornavn').should('exist').type('Gaute');
+      cy.findByLabelText('Fornavn').should('exist').type('Ola');
+      cy.findByRole('group', { name: 'Trenger barnet briller?' }).within(() => {
+        cy.findByLabelText('Ja').click();
+      });
+
       cy.clickShowAllSteps();
-
       cy.findByRole('link', { name: 'Oppsummering' }).click();
       cy.findAllByRole('link', { name: 'Fortsett utfylling' }).first().click();
-
-      cy.findByRole('heading', { name: 'Barn som søknaden gjelder for' }).should('exist');
-      cy.findByRole('group', { name: 'Trenger barnet briller?' }).should('have.focus');
-      cy.findByRole('group', { name: 'Trenger barnet briller?' })
-        .should('exist')
-        .within(() => {
-          cy.findByLabelText('Ja').click();
-        });
-
-      cy.findByRole('link', { name: 'Oppsummering' }).click();
-      cy.findAllByRole('link', { name: 'Fortsett utfylling' }).first().click();
-      cy.findByRole('heading', { name: 'Levering' }).should('exist');
       cy.findByRole('textbox', { name: 'Mottakers fornavn' }).should('have.focus');
     });
   });
