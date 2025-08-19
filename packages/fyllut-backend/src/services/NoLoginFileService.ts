@@ -53,8 +53,6 @@ class NoLoginFileService {
     fileId?: string,
   ): Promise<void> {
     const { sendInnConfig } = this._config;
-
-    console.log({ fileId, attachmentId, innsendingsId });
     if (!fileId && !attachmentId && !innsendingsId) {
       logger.debug('Frontend must provide either fileId, attachmentId or innsendingId to delete files');
       throw new Error('Ingen fileId, attachmentId, eller innsendingId angitt');

@@ -22,7 +22,6 @@ const nologinFile = {
   delete: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const nologinContext = req.getNologinContext();
-      console.log(nologinContext);
       const attachmentId = req.query.attachmentId as string | undefined;
       const fileId = req.params.fileId as string | undefined;
       const accessToken = req.headers.AzureAccessToken as string;
