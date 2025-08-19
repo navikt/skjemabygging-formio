@@ -3,7 +3,7 @@ import { Component, formSummaryUtil, NavFormType, Submission } from '@navikt/skj
 export type PanelValidation = {
   key: string;
   summaryComponents?: string[];
-  firstInputComponent?: string;
+  firstInputComponent?: Component;
   hasValidationErrors: boolean;
   firstInputWithValidationError?: string;
 };
