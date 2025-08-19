@@ -45,7 +45,7 @@ export const FillInFormPage = () => {
 
   const exitUrl = urlUtils.getExitUrl(window.location.href);
 
-  const emitFocusOnComponent = useCallback<(id: KeyOrFocusComponentId) => void>(
+  const focusOnComponent = useCallback<(id: KeyOrFocusComponentId) => void>(
     (id: KeyOrFocusComponentId) => fyllutEvents.emit('focusOnComponent', id),
     [fyllutEvents],
   );
@@ -157,7 +157,7 @@ export const FillInFormPage = () => {
         <FormErrorSummary
           heading={translate(TEXTS.validering.error)}
           errors={errors}
-          focusOnComponent={emitFocusOnComponent}
+          focusOnComponent={focusOnComponent}
           ref={(ref) => (errorSummaryRef.current = ref)}
         />
         <NavForm
