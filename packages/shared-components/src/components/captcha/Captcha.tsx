@@ -2,7 +2,13 @@ import { makeStyles } from '../../index';
 import { useAttachmentUpload } from '../attachment/AttachmentUploadContext';
 
 const useStyles = makeStyles({
-  firstNameInput: {},
+  firstNameInput: {
+    position: 'absolute',
+    top: '-2000px',
+    left: '-2000px',
+    width: '1px',
+    height: '1px',
+  },
 });
 
 const Captcha = () => {
