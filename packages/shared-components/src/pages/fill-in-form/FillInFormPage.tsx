@@ -41,6 +41,7 @@ export const FillInFormPage = () => {
   const [errors, setErrors] = useState<ComponentError[]>([]);
   const fyllutEvents = useMemo(() => new EventEmitter<FyllutEvent>(), []);
   const errorSummaryRef = useRef<HTMLElement | null>(null);
+  const { hash } = useLocation();
 
   const exitUrl = urlUtils.getExitUrl(window.location.href);
 
@@ -174,6 +175,7 @@ export const FillInFormPage = () => {
             onNavigationPathsChanged,
             onFocusOnComponentPageChanged,
           }}
+          hash={hash}
         />
         <FormSavedStatus submission={submission} />
         <FormError error={submission?.fyllutState?.mellomlagring?.error} />

@@ -7,7 +7,7 @@ import {
   Webform,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { useLocation, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useAppConfig } from '../../context/config/configContext';
 import { useForm } from '../../context/form/FormContext';
 import { i18nUtils } from '../../index';
@@ -60,6 +60,7 @@ interface Props {
   language?: string;
   fyllutEvents?: any;
   events?: EventProps;
+  hash: string;
 }
 
 /**
@@ -74,10 +75,10 @@ const NavForm = ({
   submission,
   className,
   events,
+  hash,
 }: Props) => {
   useStyles();
   const [webform, setWebform] = useState<Webform>();
-  const { hash } = useLocation();
   const { prefillData } = useForm();
   const appConfig = useAppConfig();
   const ref = useRef(null);
