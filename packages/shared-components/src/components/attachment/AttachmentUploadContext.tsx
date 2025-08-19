@@ -43,7 +43,6 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
   const { submission, setSubmission } = useForm();
   const { translate } = useLanguages();
   const [captchaValue, setCaptchaValue] = useState<Record<string, string>>({});
-  const [nologinToken, setNologinToken] = useState<string | undefined>(undefined);
   const [errors, setErrors] = useState<Record<string, string | undefined>>({});
 
   const uploadedFiles = submission?.uploadedFiles ?? [];
@@ -87,11 +86,18 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
     });
   };
 
-  const getNologinToken = async () => {
+  const getNologinToken = () => {
+    return sessionStorage.getItem('nologinToken') ?? undefined;
+  };
+
+  const resolveCaptcha = async () => {
+    const nologinToken = getNologinToken();
     if (!nologinToken) {
-      const { access_token: token } = await submitCaptchaValue(captchaValue, config);
-      setNologinToken(token);
-      return token;
+      const response = await submitCaptchaValue(captchaValue, config);
+      if (response?.access_token) {
+        sessionStorage.setItem('nologinToken', response.access_token);
+      }
+      return response?.access_token;
     }
     return nologinToken;
   };
@@ -99,7 +105,7 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
   const handleUploadFile = async (attachmentId: string, file: FileObject) => {
     try {
       removeError(attachmentId);
-      const token = await getNologinToken();
+      const token = await resolveCaptcha();
       const result = await uploadFile(file.file, attachmentId, token);
       if (result) {
         addToSubmission(result);
@@ -112,9 +118,8 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
 
   const handleDeleteFile = async (attachmentId: string, fileId: string) => {
     try {
-      console.log('token', nologinToken);
       removeError(attachmentId);
-      await deleteFile(fileId, nologinToken);
+      await deleteFile(fileId, getNologinToken());
       removeFileFromSubmission(fileId);
     } catch (_e) {
       addError(attachmentId, translate(TEXTS.statiske.uploadId.deleteFileError));
@@ -123,9 +128,8 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
 
   const handleDeleteAttachment = async (attachmentId: string) => {
     try {
-      console.log('token', nologinToken);
       removeError(attachmentId);
-      await deleteAttachment(attachmentId, nologinToken);
+      await deleteAttachment(attachmentId, getNologinToken());
       removeFilesFromSubmission(attachmentId);
     } catch (_e) {
       addError(attachmentId, translate(TEXTS.statiske.uploadId.deleteAttachmentError));
@@ -134,9 +138,8 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
 
   const handleDeleteAllFiles = async () => {
     try {
-      console.log('token', nologinToken);
       setErrors({});
-      await deleteAllFiles(nologinToken);
+      await deleteAllFiles(getNologinToken());
       setSubmission((current) => ({ ...current, uploadedFiles: [] }) as Submission);
     } catch (e) {
       addError('allFiles', translate(TEXTS.statiske.uploadId.deleteAllFilesError));
