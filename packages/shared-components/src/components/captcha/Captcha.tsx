@@ -13,6 +13,7 @@ const Captcha = () => {
       type="text"
       id="firstName"
       title="firstName"
+      data-cy="firstName"
       className={styles.firstNameInput}
       onChange={(value) => setCaptchaValue({ firstName: value.target.value })}
       aria-hidden

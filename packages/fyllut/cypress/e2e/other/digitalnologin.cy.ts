@@ -2,6 +2,7 @@ import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 
 describe('Digital no login', () => {
   beforeEach(() => {
+    cy.clearAllSessionStorage();
     cy.defaultIntercepts();
     cy.visit('/fyllut/stdigitalnologin');
     cy.defaultWaits();
@@ -34,6 +35,21 @@ describe('Digital no login', () => {
     cy.clickNextStep();
     cy.clickStart();
     cy.findByRole('heading', { name: 'Dine opplysninger' }).should('exist');
+  });
+
+  describe('Captcha', () => {
+    it('prevents uploading files when the captcha is incorrect', () => {
+      cy.get('[data-cy=firstName]').type('Wrong answer', { force: true });
+      cy.findByLabelText(TEXTS.statiske.uploadId.norwegianPassport).click();
+      cy.get('input[type="file"]').selectFile(
+        {
+          contents: Cypress.Buffer.from('file content'),
+          fileName: 'test.txt',
+        },
+        { force: true },
+      );
+      cy.findByText(TEXTS.statiske.uploadId.uploadFileError).should('exist');
+    });
   });
 
   describe('Deleting files', () => {
