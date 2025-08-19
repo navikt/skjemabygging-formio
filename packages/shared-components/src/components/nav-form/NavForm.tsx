@@ -60,7 +60,7 @@ interface Props {
   language?: string;
   fyllutEvents?: any;
   events?: EventProps;
-  hash: string;
+  hash?: string;
 }
 
 /**
