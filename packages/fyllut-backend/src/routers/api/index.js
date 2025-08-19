@@ -32,8 +32,15 @@ import translations from './translations.js';
 const apiRouter = express.Router();
 
 const { featureToggles, naisClusterName } = appConfig;
-const { azureM2MSkjemabyggingProxy, azureM2MPdl, kodeverkToken, tokenxPdl, tokenxSendInn, azurePdfGeneratorToken } =
-  initApiConfig();
+const {
+  azureM2MSkjemabyggingProxy,
+  azureM2MPdl,
+  kodeverkToken,
+  tokenxPdl,
+  tokenxSendInn,
+  azurePdfGeneratorToken,
+  nologinTokenHandler,
+} = initApiConfig();
 
 apiRouter.all('*path', rateLimiter(60000, 1000), idportenAuthHandler, envQualifier);
 apiRouter.use('/captcha', captchaRouter);
@@ -64,7 +71,7 @@ apiRouter.use('/register-data', registerDataRouter);
 
 // Not available in production yet
 if (naisClusterName !== NaisCluster.PROD) {
-  apiRouter.use('/nologin-file', nologinFileRouter);
+  apiRouter.use('/nologin-file', nologinTokenHandler, nologinFileRouter);
 }
 
 if (featureToggles.enablePdl) {
