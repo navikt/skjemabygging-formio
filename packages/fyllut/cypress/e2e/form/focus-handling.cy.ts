@@ -36,6 +36,24 @@ describe('Focus handling', () => {
       cy.clickPreviousStep();
       cy.focused().should('have.attr', 'id', 'maincontent');
     });
+
+    it('first incomplete field should have focus', () => {
+      cy.findByLabelText('Fornavn').should('exist').type('Gaute');
+      cy.clickShowAllSteps();
+
+      cy.findByRole('link', { name: 'Oppsummering' }).click();
+      cy.findAllByRole('link', { name: 'Fortsett utfylling' }).first().click();
+      cy.findByRole('group', { name: 'Trenger barnet briller?' }).should('have.focus');
+
+      cy.findByRole('group', { name: 'Trenger barnet briller?' })
+        .should('exist')
+        .within(() => {
+          cy.findByLabelText('Ja').click();
+        });
+      cy.findByRole('link', { name: 'Oppsummering' }).click();
+      cy.findAllByRole('link', { name: 'Fortsett utfylling' }).first().click();
+      cy.findByRole('textbox', { name: 'Mottakers fornavn' }).should('have.focus');
+    });
   });
 
   describe('Datagrid', () => {
