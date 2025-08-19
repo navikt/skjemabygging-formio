@@ -71,7 +71,8 @@ apiRouter.use('/register-data', registerDataRouter);
 
 // Not available in production yet
 if (naisClusterName !== NaisCluster.PROD) {
-  apiRouter.use('/nologin-file', nologinTokenHandler, nologinFileRouter);
+  const rateLimitHandler = rateLimiter(60000, config.isTest ? 1000 : 40);
+  apiRouter.use('/nologin-file', rateLimitHandler, nologinTokenHandler, nologinFileRouter);
 }
 
 if (featureToggles.enablePdl) {
