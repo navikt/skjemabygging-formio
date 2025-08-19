@@ -1,4 +1,4 @@
-import { makeStyles } from '../../index';
+import makeStyles from '../../util/styles/jss/jss';
 import { useAttachmentUpload } from '../attachment/AttachmentUploadContext';
 
 const useStyles = makeStyles({
