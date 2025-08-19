@@ -45,10 +45,8 @@ describe('Focus handling', () => {
 
       cy.clickShowAllSteps();
       cy.findByRole('link', { name: 'Oppsummering' }).click();
-      cy.findAllByRole('link', { name: 'Fortsett utfylling' }).first().click();
-      // Had issues running have.focus on github, but work localy. So this is a temporary workaround for have.focus
-      // cy.findByRole('textbox', { name: 'Mottakers fornavn' }).should('have.focus');
-      cy.focused().should('have.attr', 'id').and('include', 'mottakersFornavn');
+      cy.findAllByRole('link', { name: TEXTS.grensesnitt.summaryPage.editAnswers }).eq(0).should('exist').click();
+      cy.findByRole('textbox', { name: 'Mottakers fornavn' }).should('exist').should('have.focus');
     });
   });
 
