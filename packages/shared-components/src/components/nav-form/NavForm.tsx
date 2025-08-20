@@ -60,6 +60,7 @@ interface Props {
   language?: string;
   fyllutEvents?: any;
   events?: EventProps;
+  hash?: string;
 }
 
 /**
@@ -74,6 +75,7 @@ const NavForm = ({
   submission,
   className,
   events,
+  hash,
 }: Props) => {
   useStyles();
   const [webform, setWebform] = useState<Webform>();
@@ -220,6 +222,13 @@ const NavForm = ({
       }
     })();
   }, [appConfig.logger, i18n, createForm, webform, src, form]);
+
+  useEffect(() => {
+    if (webform && hash) {
+      const fragmentPath = hash.substring(1);
+      webform.focusOnComponent({ path: decodeURIComponent(fragmentPath) });
+    }
+  }, [webform, hash]);
 
   return <div className={className} data-testid="formMountElement" ref={ref} />;
 };
