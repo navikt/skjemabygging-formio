@@ -20,17 +20,22 @@ const FormStepper = () => {
     const formioSteps = navFormUtils
       .getActivePanelsFromForm(form, submission, submissionMethod)
       .map((panel) => ({ label: panel.title, key: panel.key }));
-    return [
-      ...formioSteps,
-      {
+
+    const steps = [...formioSteps];
+
+    if (submissionMethod === 'digitalnologin') {
+      steps.push({
         key: 'vedlegg',
         label: TEXTS.statiske.attachment.title,
-      },
-      {
-        key: 'oppsummering',
-        label: TEXTS.statiske.summaryPage.title,
-      },
-    ];
+      });
+    }
+
+    steps.push({
+      key: 'oppsummering',
+      label: TEXTS.statiske.summaryPage.title,
+    });
+
+    return steps;
   }, [form, submissionMethod, submission]);
 
   const getActiveStepper = () => {
