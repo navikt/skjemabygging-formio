@@ -35,7 +35,7 @@ const createPdfFromFieldMap = async (
     identityNumber = '—';
   }
 
-  logger.info(`Creating PDF from field map, calling ${familiePdfGeneratorUrl}/api/pdf/v1/opprett-pdf`);
+  logger.info(`Creating PDF from field map, calling ${familiePdfGeneratorUrl}/api/pdf/v3/opprett-pdf`);
 
   appMetrics.familiePdfRequestsCounter.inc();
   let errorOccurred = false;
@@ -45,7 +45,7 @@ const createPdfFromFieldMap = async (
   });
   let response: Response | undefined;
   try {
-    response = await fetchWithRetry(`${familiePdfGeneratorUrl}/api/pdf/v1/opprett-pdf`, {
+    response = await fetchWithRetry(`${familiePdfGeneratorUrl}/api/pdf/v3/opprett-pdf`, {
       retry: 3,
       headers: {
         Authorization: `Bearer ${accessToken}`,

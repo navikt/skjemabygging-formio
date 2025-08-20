@@ -11,7 +11,6 @@ import LoadingComponent from '../../components/loading/LoadingComponent';
 import { useAppConfig } from '../../context/config/configContext';
 import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
-import { formUtils } from '../../index';
 import makeStyles from '../../util/styles/jss/jss';
 
 const useStyles = makeStyles({
@@ -72,8 +71,6 @@ const ActiveTasksPage = () => {
     return `${baseUrl}${formUrl}${path}${searchParamsAsString}`;
   };
 
-  const urlToFirstPanel = getUrl(`/${formUtils.getPanelSlug(form, 0)}`, { forceMellomlagring: 'true', sub: 'digital' });
-
   if (!(hasMellomlagring || hasEttersendelse)) {
     return <LoadingComponent />;
   }
@@ -101,7 +98,7 @@ const ActiveTasksPage = () => {
           <LinkPanel
             className={styles.linkPanel}
             variant="secondary"
-            href={urlToFirstPanel}
+            href={getUrl('', { forceMellomlagring: 'true', sub: 'digital' })}
             title={translate(TEXTS.statiske.paabegynt.startNewTask)}
             icon={<PencilIcon className={styles.icon} fontSize="1.5rem" aria-hidden />}
           />
@@ -125,7 +122,7 @@ const ActiveTasksPage = () => {
             <LinkPanel
               className={styles.linkPanel}
               variant="secondary"
-              href={urlToFirstPanel}
+              href={getUrl('', { forceMellomlagring: 'true', sub: 'digital' })}
               title={translate(TEXTS.statiske.paabegynt.startNewTask)}
               icon={<PencilIcon className={styles.icon} fontSize="1.5rem" aria-hidden />}
             />

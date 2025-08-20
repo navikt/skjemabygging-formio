@@ -2,7 +2,6 @@ import {
   ComponentError,
   NavFormType,
   navFormUtils,
-  Submission,
   SubmissionData,
   SubmissionMetadata,
   TEXTS,
@@ -34,7 +33,7 @@ export const FillInFormPage = () => {
   const { search } = useLocation();
   const { submissionMethod, logger } = useAppConfig();
   const [formForRendering, setFormForRendering] = useState<NavFormType>();
-  const { startMellomlagring, mellomlagringError, isMellomlagringAvailable, isMellomlagringReady } = useSendInn();
+  const { mellomlagringError, isMellomlagringAvailable, isMellomlagringReady } = useSendInn();
   const { currentLanguage, translationsForNavForm, translate } = useLanguages();
   const { hash } = useLocation();
   const mutationObserverRef = useRef<MutationObserver | undefined>(undefined);
@@ -145,12 +144,6 @@ export const FillInFormPage = () => {
         : form,
     );
   }, [form, submissionMethod]);
-
-  useEffect(() => {
-    if (isMellomlagringAvailable) {
-      startMellomlagring(submission as Submission);
-    }
-  }, [submission, startMellomlagring, isMellomlagringAvailable]);
 
   // Clean up mutationObserver
   const removeMutationObserver = () => {

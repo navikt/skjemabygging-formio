@@ -2441,14 +2441,14 @@
   },
   {
     "id": 843,
-    "key": "C/O brukes hvis ditt navn ikke står på den postkassen som posten er adressert til. Du oppgir da navnet på \"eieren\" av postkassen, som kan være navnet på en person eller et firma.",
+    "key": "C/O brukes hvis mottakers navn ikke står på den postkassen som posten er adressert til. Du oppgir da navnet på \"eieren\" av postkassen, som kan være navnet på en person eller et firma.",
     "tag": "statiske-tekster",
     "changedAt": "2025-02-10T22:33:43.114+01",
     "changedBy": "IMPORT",
     "revision": 1,
-    "nb": "C/O brukes hvis ditt navn ikke står på den postkassen som posten er adressert til. Du oppgir da navnet på \"eieren\" av postkassen, som kan være navnet på en person eller et firma.",
-    "nn": "C/O blir brukt viss ditt namn ikkje står på den postkassa som posten er adressert til. Du oppgir då namnet på \"eigaren\" av postkassa, som kan vere namnet på ein person eller eit firma.",
-    "en": "Use C/O if your name is not on the postbox the post has been addressed to. You then state the name of the “owner” of the postbox, which could be the name of a person or an enterprise.",
+    "nb": "C/O brukes hvis mottakers navn ikke står på den postkassen som posten er adressert til. Du oppgir da navnet på \"eieren\" av postkassen, som kan være navnet på en person eller et firma.",
+    "nn": "C/O blir brukt viss mottakers namn ikkje står på den postkassa som posten er adressert til. Du oppgir då namnet på \"eigaren\" av postkassa, som kan vere namnet på ein person eller eit firma.",
+    "en": "Use C/O if name of recipient is not on the postbox the post has been addressed to. You then state the name of the “owner” of the postbox, which could be the name of a person or an enterprise.",
     "publishedAt": "2025-02-17T10:23:39.061+01",
     "publishedBy": "Test Testesen"
   },

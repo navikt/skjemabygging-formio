@@ -243,7 +243,7 @@ export const statiske = {
       readMore: {
         header: 'Hva er C/O?',
         content:
-          'C/O brukes hvis ditt navn ikke står på den postkassen som posten er adressert til. Du oppgir da navnet på "eieren" av postkassen, som kan være navnet på en person eller et firma.',
+          'C/O brukes hvis mottakers navn ikke står på den postkassen som posten er adressert til. Du oppgir da navnet på "eieren" av postkassen, som kan være navnet på en person eller et firma.',
       },
     },
     poBox: 'Postboks',

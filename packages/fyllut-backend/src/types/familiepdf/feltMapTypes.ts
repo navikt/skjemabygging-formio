@@ -4,6 +4,7 @@ export interface FeltMap {
   pdfConfig: PdfConfig;
   skjemanummer?: string | null; // Optional and can be null
   bunntekst: EkstraBunntekst | null;
+  vannmerke?: string | null;
 }
 
 export interface VerdilisteElement {

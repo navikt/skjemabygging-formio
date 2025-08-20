@@ -4,6 +4,7 @@ const introPageTranslations = require('../data/formio-api/intro-page-translation
 const formCypressaxe = require('../data/formio-api/cypressaxe.json');
 const formPengerOgKonto = require('../data/formio-api/pengerOgKonto.json');
 const formConditionalXmas = require('../data/formio-api/conditionalxmas.json');
+const formConditionalDatagrid = require('../data/formio-api/conditional-datagrid.json');
 const formCustomComps = require('../data/formio-api/custom-components.json');
 const formCustomCompsDatagrid = require('../data/formio-api/custom-components-datagrid.json');
 const formDatagrid = require('../data/formio-api/datagrid.json');
@@ -64,6 +65,7 @@ const allForms = [
   { form: formCypressaxe, translations: undefined },
   { form: formPengerOgKonto, translations: undefined },
   { form: formConditionalXmas, translations: translationsConditionalXmas },
+  { form: formConditionalDatagrid, translations: undefined },
   { form: formContainer, translations: undefined },
   { form: formContainerDatagrid, translations: undefined },
   { form: formCustomComps, translations: translationsCustomComps },

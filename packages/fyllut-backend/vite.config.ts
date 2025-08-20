@@ -37,12 +37,16 @@ export default defineConfig(({ mode }) => {
       strictPort: true,
     },
     build: {
+      target: 'es2022',
       rollupOptions: {
         input: './src/server.js',
         output: {
           entryFileNames: '[name].mjs',
         },
       },
+    },
+    esbuild: {
+      target: 'es2022',
     },
     plugins,
     test: {
