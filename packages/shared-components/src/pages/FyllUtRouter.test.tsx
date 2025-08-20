@@ -1,4 +1,3 @@
-import { Submission } from '@navikt/skjemadigitalisering-shared-domain';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { createMemoryRouter, RouterProvider } from 'react-router-dom';
@@ -39,7 +38,7 @@ describe('FyllUtRouter', () => {
           path: `${mockFormPath}/*`,
           element: (
             <LanguagesProvider translations={translationsForNavForm}>
-              <FyllUtRouter form={form} submission={{} as Submission} />
+              <FyllUtRouter form={form} />
             </LanguagesProvider>
           ),
         },
