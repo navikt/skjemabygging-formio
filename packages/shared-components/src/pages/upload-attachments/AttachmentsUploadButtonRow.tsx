@@ -7,6 +7,7 @@ import { useAttachmentUpload } from '../../components/attachment/AttachmentUploa
 import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
 import urlUtils from '../../util/url/url';
+import { validateAttachments } from './validate';
 
 const AttachmentsUploadButtonRow = ({ attachmentIds }: { attachmentIds: string[] }) => {
   const navigate = useNavigate();
@@ -15,29 +16,16 @@ const AttachmentsUploadButtonRow = ({ attachmentIds }: { attachmentIds: string[]
   const { formUrl } = useForm();
   const { radioState, addError, uploadedFiles, handleDeleteAllFiles, errors } = useAttachmentUpload();
 
-  const summaryPageUrl = `${formUrl}/oppsummering?${searchParams.toString()}`;
+  // TODO ta i bruk etter feilsøking
+  const _summaryPageUrl = `${formUrl}/oppsummering?${searchParams.toString()}`;
   const exitUrl = urlUtils.getExitUrl(window.location.href);
-
-  const validateAttachments = () => {
-    attachmentIds.forEach((attachmentId: string) => {
-      if (!radioState[attachmentId]) {
-        addError(attachmentId, TEXTS.statiske.attachment.attachmentError);
-      }
-      if (
-        radioState[attachmentId] &&
-        radioState[attachmentId] === 'leggerVedNaa' &&
-        !uploadedFiles.some((file) => file.attachmentId === attachmentId)
-      ) {
-        addError(attachmentId, TEXTS.statiske.attachment.attachmentError);
-      }
-    });
-  };
 
   const nextPage = (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    validateAttachments();
+    validateAttachments(radioState, attachmentIds, addError, uploadedFiles);
+    console.log(errors);
     if (!attachmentIds.some((id) => errors && errors[id])) {
-      navigate(summaryPageUrl);
+      // navigate(summaryPageUrl);
     }
   };
 
