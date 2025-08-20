@@ -17,8 +17,11 @@ interface AttachmentUploadContextType {
   handleDeleteAttachment: (attachmentId: string) => Promise<void>;
   handleDeleteAllFiles: () => Promise<void>;
   addError: (attachmentId: string, error: string) => void;
+  removeError: (attachmentId: string) => void;
   uploadedFiles: UploadedFile[];
   errors: Record<string, string | undefined>;
+  radioState: Record<string, string>;
+  setRadioState: React.Dispatch<React.SetStateAction<Record<string, string>>>;
 }
 
 const initialContext: AttachmentUploadContextType = {
@@ -27,8 +30,11 @@ const initialContext: AttachmentUploadContextType = {
   handleDeleteAttachment: async () => {},
   handleDeleteAllFiles: async () => {},
   addError: () => {},
+  removeError: () => {},
   uploadedFiles: [],
   errors: {},
+  radioState: {},
+  setRadioState: () => {},
 };
 
 const AttachmentUploadContext = createContext<AttachmentUploadContextType>(initialContext);
@@ -38,6 +44,7 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
   const { submission, setSubmission } = useForm();
   const { translate } = useLanguages();
   const [errors, setErrors] = useState<Record<string, string | undefined>>({});
+  const [radioState, setRadioState] = useState<Record<string, string>>({});
 
   const uploadedFiles = submission?.uploadedFiles ?? [];
 
@@ -139,8 +146,11 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
     handleDeleteAttachment,
     handleDeleteAllFiles,
     addError,
+    removeError,
     uploadedFiles,
     errors,
+    radioState,
+    setRadioState,
   };
   return <AttachmentUploadContext.Provider value={value}>{children}</AttachmentUploadContext.Provider>;
 };

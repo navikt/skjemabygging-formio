@@ -1,27 +1,13 @@
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 
-function goToVedleggPage() {
-  cy.findByRole('heading', { name: TEXTS.statiske.uploadId.title }).should('exist');
-  cy.findByRole('button', { name: TEXTS.statiske.uploadId.selectFileButton }).should('not.exist');
-  cy.findByLabelText(TEXTS.statiske.uploadId.norwegianPassport).click();
-  cy.findByText(TEXTS.statiske.uploadId.selectFileButton).should('exist');
-
+function uploadFile(fileName: string) {
   cy.get('input[type="file"]').selectFile(
     {
       contents: Cypress.Buffer.from('file content'),
-      fileName: 'test.txt',
+      fileName,
     },
     { force: true },
   );
-
-  cy.findByText('test.txt').should('exist');
-  cy.findByText('0,04 MB').should('exist');
-
-  cy.clickNextStep();
-  cy.clickStart();
-  cy.clickShowAllSteps();
-
-  cy.findByRole('link', { name: 'Vedlegg' }).click();
 }
 
 describe('Digital no login', () => {
@@ -63,13 +49,7 @@ describe('Digital no login', () => {
   describe('Deleting files', () => {
     beforeEach(() => {
       cy.findByLabelText(TEXTS.statiske.uploadId.norwegianPassport).click();
-      cy.get('input[type="file"]').selectFile(
-        {
-          contents: Cypress.Buffer.from('file content'),
-          fileName: 'test.txt',
-        },
-        { force: true },
-      );
+      uploadFile('test.txt');
     });
 
     it('deletes a file when clicking the delete button', () => {
@@ -92,22 +72,48 @@ describe('Digital no login', () => {
     });
   });
 
-  it('should display validation errors when next step button is clicked', () => {
-    goToVedleggPage();
-    cy.findByText('Vedlegg').should('exist');
-    cy.findByText('Annen dokumentasjon').should('exist');
-    cy.clickNextStep();
-  });
+  describe('Attachments page', () => {
+    beforeEach(() => {
+      cy.visit('/fyllut/stdigitalnologin/vedlegg');
+    });
 
-  it('should remove all attachments when delete all button is clicked', () => {
-    goToVedleggPage();
-  });
+    it('should display validation errors when next step button is clicked', () => {
+      cy.findByText('Informasjon om din næringsinntekt fra Norge eller utlandet').should('exist');
+      cy.findByText('Annen dokumentasjon').should('exist');
+      cy.clickNextStep();
+      cy.findAllByText(TEXTS.statiske.attachment.attachmentError).should('have.length', 2);
+    });
 
-  it('should remove all attachments on cancel', () => {
-    goToVedleggPage();
-  });
+    it('should remove all attachments when delete all button is clicked', () => {
+      cy.intercept('/fyllut/api/nologin-file?attachmentId=eiajfi8&innsendingId=innsending-id').as(
+        'deleteAllFilesByAttachmentId',
+      );
+      cy.findAllByLabelText(TEXTS.statiske.attachment.leggerVedNaa).first().click();
+      uploadFile('attachment1.txt');
+      cy.findByText('test.txt').should('exist');
+      uploadFile('attachment2.txt');
+      cy.findByText('test.txt').should('exist');
+      cy.findByRole('button', { name: TEXTS.statiske.attachment.deleteAllFiles }).click();
+      cy.wait('@deleteAllFilesByAttachmentId');
+    });
 
-  it('should render additional description and deadline when existing', () => {
-    goToVedleggPage();
+    it('should remove all attachments on cancel', () => {
+      cy.intercept('/fyllut/api/nologin-file?innsendingId=innsending-id').as('deleteAllFiles');
+      cy.findAllByLabelText(TEXTS.statiske.attachment.leggerVedNaa).first().click();
+      uploadFile('attachment1.txt');
+      cy.findByText('test.txt').should('exist');
+      cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.cancelAndDelete }).click();
+      cy.wait('@deleteAllFiles');
+    });
+
+    it('should render additional description and deadline when existing', () => {
+      cy.findByLabelText(TEXTS.statiske.attachment.ettersender).click();
+      cy.findByText(
+        'Hvis vi ikke har mottatt dette vedlegget innen 14 dager blir saken behandlet med de opplysningene som foreligger.',
+      ).should('exist');
+      cy.findByLabelText(TEXTS.statiske.attachment.levertTidligere).click();
+      cy.findByLabelText('Tittel tilleggsinformasjon').should('exist');
+      cy.findByText('Beskrivelse tilleggsinformasjon').should('exist');
+    });
   });
 });

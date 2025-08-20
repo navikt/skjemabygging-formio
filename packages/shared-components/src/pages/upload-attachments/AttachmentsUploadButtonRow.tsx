@@ -4,28 +4,40 @@ import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { MouseEvent } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAttachmentUpload } from '../../components/attachment/AttachmentUploadContext';
-import { useAppConfig } from '../../context/config/configContext';
 import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
 import urlUtils from '../../util/url/url';
 
-const AttachmentsUploadButtonRow = () => {
+const AttachmentsUploadButtonRow = ({ attachmentIds }: { attachmentIds: string[] }) => {
   const navigate = useNavigate();
-  const { baseUrl } = useAppConfig();
   const { translate } = useLanguages();
-  const { formUrl } = useForm();
   const [searchParams] = useSearchParams();
-  const { uploadedFiles, addError, handleDeleteAllFiles } = useAttachmentUpload();
+  const { formUrl } = useForm();
+  const { radioState, addError, uploadedFiles, handleDeleteAllFiles, errors } = useAttachmentUpload();
 
-  const startUrl = `${baseUrl}${formUrl}`;
+  const summaryPageUrl = `${formUrl}/oppsummering?${searchParams.toString()}`;
   const exitUrl = urlUtils.getExitUrl(window.location.href);
 
-  const navigateToFormPage = (event: MouseEvent<HTMLButtonElement>) => {
+  const validateAttachments = () => {
+    attachmentIds.forEach((attachmentId: string) => {
+      if (!radioState[attachmentId]) {
+        addError(attachmentId, TEXTS.statiske.attachment.attachmentError);
+      }
+      if (
+        radioState[attachmentId] &&
+        radioState[attachmentId] === 'leggerVedNaa' &&
+        !uploadedFiles.some((file) => file.attachmentId === attachmentId)
+      ) {
+        addError(attachmentId, TEXTS.statiske.attachment.attachmentError);
+      }
+    });
+  };
+
+  const nextPage = (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    if (uploadedFiles.find((file) => file.attachmentId === 'personal-id')) {
-      navigate(`..?${searchParams.toString()}`);
-    } else {
-      addError('personal-id', translate(TEXTS.statiske.uploadId.missingUploadError));
+    validateAttachments();
+    if (!attachmentIds.some((id) => errors && errors[id])) {
+      navigate(summaryPageUrl);
     }
   };
 
@@ -34,7 +46,7 @@ const AttachmentsUploadButtonRow = () => {
       await handleDeleteAllFiles();
       window.location.href = exitUrl;
     } catch (_e) {
-      /* empty */
+      /* error handling is done by handleDeleteAllFiles, but we need to stop the navigation */
     }
   };
 
@@ -47,8 +59,7 @@ const AttachmentsUploadButtonRow = () => {
           iconPosition="right"
           as="a"
           role="link"
-          onClick={navigateToFormPage}
-          {...{ href: `${startUrl}?${searchParams.toString()}` }}
+          onClick={nextPage}
         >
           {translate(TEXTS.grensesnitt.navigation.next)}
         </Button>

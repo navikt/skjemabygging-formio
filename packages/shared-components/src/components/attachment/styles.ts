@@ -9,5 +9,7 @@ export const useAttachmentStyles = makeStyles({
     display: 'flex',
     alignSelf: 'flex-end',
   },
-  addAnotherAttachmentButton: {},
+  addAnotherAttachmentButton: {
+    maxWidth: '18.75rem',
+  },
 });

@@ -30,7 +30,7 @@ type Props = {
   };
 };
 
-function AttachmentPanel({
+const AttachmentPanel = ({
   translate,
   uploadedAttachmentFiles,
   otherAttachment,
@@ -40,10 +40,12 @@ function AttachmentPanel({
   loading,
   showDeadline,
   selectedAdditionalDocumentation,
-}: Props) {
+}: Props) => {
   const styles = useAttachmentStyles();
+  console.log(deadline);
+  console.log(selectedAdditionalDocumentation);
   return (
-    <div>
+    <>
       <ReadMore header={translate(TEXTS.statiske.attachment.sizeAndFormatHeader)}>
         <HStack gap="2" align="start">
           <BodyShort weight="semibold">{translate(TEXTS.statiske.attachment.validFormatsLabel)}</BodyShort>
@@ -92,8 +94,8 @@ function AttachmentPanel({
           maxLength={200}
         />
       )}
-    </div>
+    </>
   );
-}
+};
 
 export default AttachmentPanel;

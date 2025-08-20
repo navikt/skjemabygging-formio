@@ -179,11 +179,11 @@ export const statiske = {
     filesUploadedNotSent: 'Fil(er) du har lastet opp, men ikke sendt inn:',
     sizeAndFormatHeader: 'Gyldige filformater og størrelser',
     uploadMoreFiles: 'Last opp flere filer',
-    alreadySentLabel: 'Begrunnelse for valg',
-    alreadySentDescription: 'Beksrivelse av hva begrunnelsen må inneholde.',
     deleteAllFiles: 'Slett alle',
     descriptionLabel: 'Gi vedlegget et beskrivende navn',
     addNewAttachment: 'Legg til nytt vedlegg',
+    attachmentMissing: 'Du må svare på {{label}} før du kan fortsette',
+    attachmentError: 'Du må fylle ut vedlegg',
   },
   activities: {
     label: 'Hvilken aktivitet søker du om støtte i forbindelse med?',

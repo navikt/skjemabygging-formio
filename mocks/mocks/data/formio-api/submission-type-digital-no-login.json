@@ -71,7 +71,7 @@
               "key": "vedlegg1",
               "type": "attachment",
               "input": true,
-              "label": "Vedlegg",
+              "label": "Informasjon om din næringsinntekt fra Norge eller utlandet",
               "addons": [],
               "hidden": false,
               "prefix": "",
@@ -287,7 +287,8 @@
     "publishedLanguages": [
       "nb",
       "en"
-    ]
+    ],
+    "ettersendelsesfrist": 14
   },
   "publishedLanguages": [
     "nb",

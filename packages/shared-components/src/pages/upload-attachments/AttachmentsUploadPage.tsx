@@ -22,6 +22,7 @@ export function AttachmentsUploadPage() {
   const { form, submission } = useForm();
   const styles = useStyles();
   const attachmentPanels: Attachment[] = getAllAttachmentsPanels(form, submission ?? ({} as Submission));
+  const attachmentIds = attachmentPanels.map((panel) => panel.navId);
 
   return (
     <>
@@ -37,8 +38,8 @@ export function AttachmentsUploadPage() {
             otherAttachment={attachmentType === 'other'}
           />
         ))}
+        <AttachmentsUploadButtonRow attachmentIds={attachmentIds as string[]} />
       </AttachmentUploadProvider>
-      <AttachmentsUploadButtonRow />
     </>
   );
 }
