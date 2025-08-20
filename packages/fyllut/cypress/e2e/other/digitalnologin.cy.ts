@@ -2,7 +2,6 @@ import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 
 describe('Digital no login', () => {
   beforeEach(() => {
-    cy.clearAllSessionStorage();
     cy.defaultIntercepts();
     cy.visit('/fyllut/stdigitalnologin');
     cy.defaultWaits();
@@ -75,7 +74,7 @@ describe('Digital no login', () => {
     });
 
     it('deletes files when clicking the cancel button', () => {
-      cy.intercept('/fyllut/api/nologin-file?innsendingId=innsending-id').as('deleteAllFiles');
+      cy.intercept('/fyllut/api/nologin-file').as('deleteAllFiles');
       cy.findByText(TEXTS.statiske.uploadId.label).should('not.exist');
       cy.findByRole('button', { name: TEXTS.statiske.uploadId.selectFileButton }).should('not.exist');
       cy.findByText('test.txt').should('exist');
