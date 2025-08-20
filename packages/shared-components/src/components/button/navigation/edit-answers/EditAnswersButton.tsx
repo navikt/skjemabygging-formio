@@ -22,7 +22,11 @@ const EditAnswersButton = ({ form, formUrl, panelValidationList }: Props) => {
   return (
     <LinkButton
       buttonVariant={hasValidationErrors ? 'primary' : 'secondary'}
-      to={formStartingPoint.component ? { pathname, hash: formStartingPoint.component, search } : { pathname, search }}
+      to={
+        formStartingPoint.component
+          ? { pathname, hash: encodeURIComponent(formStartingPoint.component), search }
+          : { pathname, search }
+      }
     >
       <span className="navds-button__icon">
         <ArrowLeftIcon aria-hidden />
