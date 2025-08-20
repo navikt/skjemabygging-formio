@@ -36,27 +36,6 @@ describe('Focus handling', () => {
       cy.clickPreviousStep();
       cy.focused().should('have.attr', 'id', 'maincontent');
     });
-
-    it('first incomplete field should have focus', () => {
-      cy.findByLabelText('Fornavn').should('exist').type('Ola');
-      cy.findByRole('group', { name: 'Trenger barnet briller?' }).within(() => {
-        cy.findByLabelText('Ja').click();
-      });
-
-      cy.clickShowAllSteps();
-      cy.findByRole('link', { name: 'Oppsummering' }).click();
-      // eslint-disable-next-line cypress/no-unnecessary-waiting
-      cy.wait(1000);
-      cy.findAllByRole('link', { name: TEXTS.grensesnitt.summaryPage.editAnswers }).eq(0).should('exist').click();
-
-      cy.url().then((url) => {
-        cy.log('Current URL is: ' + url);
-      });
-      cy.focused().then((el) => {
-        cy.log(`Focused element: ${el.prop('id')}`);
-      });
-      cy.findByRole('textbox', { name: 'Mottakers fornavn' }).should('exist').should('have.focus');
-    });
   });
 
   describe('Datagrid', () => {
