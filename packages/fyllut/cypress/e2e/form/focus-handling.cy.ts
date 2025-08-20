@@ -46,6 +46,11 @@ describe('Focus handling', () => {
       cy.clickShowAllSteps();
       cy.findByRole('link', { name: 'Oppsummering' }).click();
       cy.findAllByRole('link', { name: TEXTS.grensesnitt.summaryPage.editAnswers }).eq(0).should('exist').click();
+      // eslint-disable-next-line cypress/no-unnecessary-waiting
+      cy.wait(1000);
+      cy.focused().then((el) => {
+        cy.log(`Focused element: ${el.prop('id')}`);
+      });
       cy.findByRole('textbox', { name: 'Mottakers fornavn' }).should('exist').should('have.focus');
     });
   });
