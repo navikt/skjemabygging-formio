@@ -1,4 +1,4 @@
-import { makeStyles } from '../../index';
+import makeStyles from '../../util/styles/jss/jss';
 
 export const useAttachmentStyles = makeStyles({
   button: {
