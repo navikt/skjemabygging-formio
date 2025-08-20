@@ -28,21 +28,11 @@ interface Props {
   options: AttachmentOption[];
   attachmentId: string;
   description?: string;
-  isIdUpload?: boolean;
   className?: string;
   otherAttachment?: boolean;
-  showError?: boolean;
 }
 
-const AttachmentUpload = ({
-  label,
-  options,
-  attachmentId,
-  description,
-  isIdUpload,
-  otherAttachment,
-  className,
-}: Props) => {
+const AttachmentUpload = ({ label, options, attachmentId, description, otherAttachment, className }: Props) => {
   const [loading, setLoading] = useState<boolean>(false);
   const styles = useAttachmentStyles();
   const { translate } = useLanguages();
@@ -56,6 +46,7 @@ const AttachmentUpload = ({
     errors,
   } = useAttachmentUpload();
   const { form } = useForm();
+  const isIdUpload = attachmentId === 'personal-id';
 
   const selectedAdditionalDocumentation = options.find(
     (option) => option.value === radioState[attachmentId],
@@ -104,7 +95,7 @@ const AttachmentUpload = ({
           legend={label}
           onChange={(value) => setRadioState((prev) => ({ ...prev, [attachmentId]: value }))}
           description={description}
-          defaultValue={radioState[attachmentId]}
+          // defaultValue={radioState[attachmentId]}
         >
           {!uploadedAttachmentFiles.length &&
             options.map((option) => (

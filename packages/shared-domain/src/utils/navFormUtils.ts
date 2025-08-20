@@ -269,7 +269,7 @@ const getActivePanelsFromForm = (form: NavFormType, submission?: Submission, sub
       return conditionals[key] !== false;
     })
     .filter(
-      (panel) => !(submissionMethod === 'digital' || (submissionMethod === 'digitalnologin' && isVedleggspanel(panel))),
+      (panel) => !((submissionMethod === 'digital' || submissionMethod === 'digitalnologin') && isVedleggspanel(panel)),
     );
 };
 

@@ -137,7 +137,6 @@ export const FillInFormPage = () => {
   );
 
   useEffect(() => {
-    console.log(submissionMethod);
     setFormForRendering(
       submissionMethod === 'digital' || submissionMethod === 'digitalnologin'
         ? navFormUtils.removeVedleggspanel(form)

@@ -16,7 +16,7 @@ interface Attachment {
   attachmentType?: string;
 }
 
-const getAllAttachmentsPanels = (form: NavFormType, submission: Submission): Attachment[] => {
+const getAllAttachments = (form: NavFormType, submission: Submission): Attachment[] => {
   return navFormUtils
     .flattenComponents(form.components)
     .filter(
@@ -81,7 +81,7 @@ const hasRelevantAttachments = (form: NavFormType, submission: Submission) => {
 };
 
 export {
-  getAllAttachmentsPanels,
+  getAllAttachments,
   getRelevantAttachments,
   hasOtherDocumentation,
   hasRelevantAttachments,

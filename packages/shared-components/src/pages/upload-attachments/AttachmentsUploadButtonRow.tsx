@@ -14,18 +14,19 @@ const AttachmentsUploadButtonRow = ({ attachmentIds }: { attachmentIds: string[]
   const { translate } = useLanguages();
   const [searchParams] = useSearchParams();
   const { formUrl } = useForm();
-  const { radioState, addError, uploadedFiles, handleDeleteAllFiles, errors } = useAttachmentUpload();
+  const { radioState, addError, uploadedFiles, handleDeleteAllFiles } = useAttachmentUpload();
 
-  // TODO ta i bruk etter feilsøking
-  const _summaryPageUrl = `${formUrl}/oppsummering?${searchParams.toString()}`;
+  const summaryPageUrl = `${formUrl}/oppsummering?${searchParams.toString()}`;
   const exitUrl = urlUtils.getExitUrl(window.location.href);
 
   const nextPage = (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    validateAttachments(radioState, attachmentIds, addError, uploadedFiles);
-    console.log(errors);
+    const errors = validateAttachments(radioState, attachmentIds, uploadedFiles);
+    Object.entries(errors).forEach(([attachmentId, errorMessage]) => {
+      addError(attachmentId, errorMessage);
+    });
     if (!attachmentIds.some((id) => errors && errors[id])) {
-      // navigate(summaryPageUrl);
+      navigate(summaryPageUrl);
     }
   };
 

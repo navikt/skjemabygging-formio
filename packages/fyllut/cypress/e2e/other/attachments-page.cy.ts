@@ -12,7 +12,7 @@ function uploadFile(fileName: string) {
 
 describe('Attachments page', () => {
   beforeEach(() => {
-    cy.visit('/fyllut/stdigitalnologin/vedlegg');
+    cy.visit('/fyllut/stdigitalnologin/vedlegg?sub=digitalnologin');
   });
 
   it('should display validation errors when next step button is clicked', () => {
@@ -36,7 +36,6 @@ describe('Attachments page', () => {
   });
 
   it('should render additional description and deadline when existing', () => {
-    cy.visit('/fyllut/stdigitalnologin/vedlegg');
     cy.findByLabelText(TEXTS.statiske.attachment.ettersender).click();
     cy.findByText(
       'Hvis vi ikke har mottatt dette vedlegget innen 14 dager blir saken behandlet med de opplysningene som foreligger.',
