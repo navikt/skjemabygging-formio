@@ -95,7 +95,7 @@ const AttachmentUpload = ({ label, options, attachmentId, description, otherAtta
           legend={label}
           onChange={(value) => setRadioState((prev) => ({ ...prev, [attachmentId]: value }))}
           description={description}
-          // defaultValue={radioState[attachmentId]}
+          defaultValue={radioState[attachmentId]}
         >
           {!uploadedAttachmentFiles.length &&
             options.map((option) => (
@@ -109,7 +109,7 @@ const AttachmentUpload = ({ label, options, attachmentId, description, otherAtta
         <VStack gap="4">
           {isIdUpload && <Label>{translate(TEXTS.statiske.uploadId.selectFileLabel)}</Label>}
 
-          {!otherAttachment && !uploadedFiles.length && (
+          {!otherAttachment && uploadedFiles.filter((file) => file.attachmentId === attachmentId).length < 1 && (
             <FileUpload.Trigger onSelect={handleUpload}>
               <Button
                 className={styles.button}

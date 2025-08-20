@@ -10,9 +10,33 @@ function uploadFile(fileName: string) {
   );
 }
 
+function goToAttachmentPage(fileName: string) {
+  cy.findByRole('heading', { name: TEXTS.statiske.uploadId.title }).should('exist');
+  cy.findByRole('button', { name: TEXTS.statiske.uploadId.selectFileButton }).should('not.exist');
+  cy.findByLabelText(TEXTS.statiske.uploadId.norwegianPassport).click();
+  cy.findByText(TEXTS.statiske.uploadId.selectFileButton).should('exist').should('be.visible');
+
+  cy.get('input[type="file"]').selectFile(
+    {
+      contents: Cypress.Buffer.from('file content'),
+      fileName,
+    },
+    { force: true },
+  );
+
+  cy.clickNextStep();
+  cy.clickStart();
+  cy.clickShowAllSteps();
+  cy.findByText('Vedlegg').click();
+}
+
 describe('Attachments page', () => {
   beforeEach(() => {
-    cy.visit('/fyllut/stdigitalnologin/vedlegg?sub=digitalnologin');
+    cy.defaultIntercepts();
+    cy.visit('/fyllut/stdigitalnologin');
+    cy.defaultWaits();
+    cy.findByRole('link', { name: TEXTS.grensesnitt.introPage.sendDigitalNoLogin }).click();
+    goToAttachmentPage('attachment.txt');
   });
 
   it('should display validation errors when next step button is clicked', () => {
@@ -27,9 +51,9 @@ describe('Attachments page', () => {
       'deleteAllFilesByAttachmentId',
     );
     cy.findAllByLabelText(TEXTS.statiske.attachment.leggerVedNaa).first().click();
-    uploadFile('attachment1.txt');
+    uploadFile('test.txt');
     cy.findByText('test.txt').should('exist');
-    uploadFile('attachment2.txt');
+    uploadFile('test.txt');
     cy.findByText('test.txt').should('exist');
     cy.findByRole('button', { name: TEXTS.statiske.attachment.deleteAllFiles }).click();
     cy.wait('@deleteAllFilesByAttachmentId');
