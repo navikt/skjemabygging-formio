@@ -202,4 +202,79 @@ describe('Conditional rendering', () => {
       cy.findByText('This alert should only be visible in PDF').should('not.exist');
     });
   });
+
+  describe('Container inside datagrid', () => {
+    beforeEach(() => {
+      cy.defaultIntercepts();
+      cy.visit('/fyllut/conditionaldatagrid/informasjon?sub=paper');
+      cy.defaultWaits();
+      cy.findByRole('heading', { name: 'Informasjon' }).should('exist');
+    });
+
+    describe('component with simple conditional inside container', () => {
+      beforeEach(() => {
+        cy.findByRole('textbox', { name: 'Oppgi forsikringsselskap når alder er 5 år' }).should('not.exist');
+      });
+
+      it('is rendered when condition is true', () => {
+        cy.findByRole('textbox', { name: 'Alder' }).should('exist').type('5');
+        cy.findByRole('textbox', { name: 'Oppgi forsikringsselskap når alder er 5 år' }).should('exist');
+      });
+
+      it('is not rendered when condition is false', () => {
+        cy.findByRole('textbox', { name: 'Alder' }).should('exist').type('4');
+        cy.findByRole('textbox', { name: 'Oppgi forsikringsselskap når alder er 5 år' }).should('not.exist');
+      });
+    });
+
+    describe('component with custom conditional inside container', () => {
+      beforeEach(() => {
+        cy.findByRole('group', { name: 'Bruker dyret medisiner?' }).should('not.exist');
+      });
+
+      it('is rendered when condition is true', () => {
+        cy.findByRole('textbox', { name: 'Alder' }).should('exist').type('10');
+        cy.findByRole('group', { name: 'Bruker dyret medisiner?' }).should('exist');
+      });
+
+      it('is not rendered when condition is false', () => {
+        cy.findByRole('textbox', { name: 'Alder' }).should('exist').type('9');
+        cy.findByRole('group', { name: 'Bruker dyret medisiner?' }).should('not.exist');
+      });
+    });
+
+    describe('component with simple conditional outside container', () => {
+      beforeEach(() => {
+        cy.findByRole('group', { name: 'Har det blitt gjennomført øyelysing?' }).should('not.exist');
+      });
+
+      it('is rendered when condition is true', () => {
+        cy.findByRole('textbox', { name: 'Alder' }).should('exist').type('0');
+        cy.findByRole('group', { name: 'Har det blitt gjennomført øyelysing?' }).should('exist');
+      });
+
+      it('is not rendered when condition is false', () => {
+        cy.findByRole('textbox', { name: 'Alder' }).should('exist').type('1');
+        cy.findByRole('group', { name: 'Har det blitt gjennomført øyelysing?' }).should('not.exist');
+      });
+    });
+
+    describe('component with custom conditional outside container', () => {
+      beforeEach(() => {
+        cy.get('.formio-component-alertstripe').should('not.exist');
+      });
+
+      it('is rendered when condition is true', () => {
+        cy.findByRole('textbox', { name: 'Alder' }).should('exist').type('20');
+        cy.get('.formio-component-alertstripe')
+          .should('exist')
+          .should('contain.text', 'Et dyr som er eldre enn 20 år kan ikke forsikres');
+      });
+
+      it('is not rendered when condition is false', () => {
+        cy.findByRole('textbox', { name: 'Alder' }).should('exist').type('19');
+        cy.get('.formio-component-alertstripe').should('not.exist');
+      });
+    });
+  });
 });

@@ -247,4 +247,76 @@ describe('Form Builder', () => {
       });
     });
   });
+
+  describe('Locked form', () => {
+    beforeEach(() => {
+      cy.intercept('GET', '/api/forms/tst123456', { fixture: 'form123456.json' }).as('getForm');
+      cy.fixture('form123456.json').then((form) => {
+        form.lock = {
+          lockedBy: 'testuser',
+          lockedAt: '2025-08-18T12:05:47.123Z',
+          reason: 'Testing locked form',
+        };
+        form.status = 'draft';
+        form.title = 'Tester lagring av låst skjema';
+        cy.intercept('GET', '/api/forms/tst123456', { body: form }).as('getForm');
+      });
+      cy.intercept('GET', '/api/forms/tst123456/translations', { fixture: 'form123456-translations.json' }).as(
+        'getFormTranslations',
+      );
+      cy.intercept('PUT', '/api/forms/tst123456', (req) => req.reply(200, req.body)).as('putForm');
+
+      cy.visit('forms/tst123456');
+      cy.wait('@getConfig');
+      cy.wait('@getForm');
+      cy.wait('@getFormTranslations');
+      cy.wait('@getTranslations');
+    });
+
+    it('should show lock icon on buttons', () => {
+      cy.findByRole('button', { name: /Lagre/ }).should('exist').should('contain.text', 'Skjemaet er låst');
+      cy.findByRole('button', { name: /Publiser/ })
+        .should('exist')
+        .should('contain.text', 'Skjemaet er låst');
+    });
+
+    it('should reject save action', () => {
+      cy.findByRole('button', { name: /Lagre/ }).click();
+      cy.get('@putForm.all').should('have.length', 0);
+      cy.findByRole('heading', { name: 'Skjemaet er låst for redigering' }).should('exist');
+    });
+
+    it('should reject publish action', () => {
+      cy.findByRole('button', { name: /Publiser/ }).click();
+      cy.findByRole('heading', { name: 'Skjemaet er låst for redigering' }).should('exist');
+    });
+
+    describe('can be edited, but...', () => {
+      beforeEach(() => {
+        cy.openEditComponentModal(cy.findByRole('textbox', { name: 'Fornavn2' }));
+        cy.findByDisplayValue('Fornavn2').type('{selectall}Fornavn');
+        cy.get('[data-testid="editorSaveButton"]').click();
+      });
+
+      it('should still show lock icon on buttons', () => {
+        cy.findByRole('button', { name: /Lagre/ }).should('exist').should('contain.text', 'Skjemaet er låst');
+        cy.findByRole('button', { name: /Publiser/ })
+          .should('exist')
+          .should('contain.text', 'Skjemaet er låst');
+      });
+
+      it('should still reject save action', () => {
+        cy.findByRole('button', { name: /Lagre/ }).should('exist').click();
+        cy.get('@putForm.all').should('have.length', 0);
+        cy.findByRole('heading', { name: 'Skjemaet er låst for redigering' }).should('exist');
+      });
+
+      it('should still reject publish action', () => {
+        cy.findByRole('button', { name: /Publiser/ })
+          .should('exist')
+          .click();
+        cy.findByRole('heading', { name: 'Skjemaet er låst for redigering' }).should('exist');
+      });
+    });
+  });
 });
