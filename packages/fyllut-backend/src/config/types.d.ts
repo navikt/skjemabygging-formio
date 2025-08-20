@@ -56,6 +56,7 @@ export type DefaultConfig = {
   skjemabyggingProxyClientId: string;
   familiePdfGeneratorUrl: string;
   familiePdfGeneratorScope: string;
+  familiePdfDevToken?: string;
   mergePdfScope: string;
   azureOpenidTokenEndpoint: string;
   clientId: string;
