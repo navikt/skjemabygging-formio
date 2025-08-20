@@ -9,7 +9,8 @@ const nologinTokenHandler = (req: Request, res: Response, next: NextFunction) =>
     }
 
     const payload = nologinService.verifyToken(token);
-    if (!payload) {
+    const now = Math.floor(Date.now() / 1000);
+    if (!payload || !payload.exp || payload.exp < now) {
       return res.sendStatus(401);
     }
 
