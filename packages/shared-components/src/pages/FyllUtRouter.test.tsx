@@ -1,6 +1,7 @@
+import { Submission } from '@navikt/skjemadigitalisering-shared-domain';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { RouterProvider, createMemoryRouter } from 'react-router-dom';
+import { createMemoryRouter, RouterProvider } from 'react-router-dom';
 import { setupNavFormio } from '../../test/navform-render';
 import { form, translationsForNavForm } from '../../test/test-data/form/skjema-med-oversettelser';
 import { languagesInOriginalLanguage } from '../components/language-selector/fyllut/FyllUtLanguageSelector';
@@ -38,7 +39,7 @@ describe('FyllUtRouter', () => {
           path: `${mockFormPath}/*`,
           element: (
             <LanguagesProvider translations={translationsForNavForm}>
-              <FyllUtRouter form={form} />
+              <FyllUtRouter form={form} submission={{} as Submission} />
             </LanguagesProvider>
           ),
         },
