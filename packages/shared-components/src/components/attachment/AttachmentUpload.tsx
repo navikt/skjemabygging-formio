@@ -82,7 +82,6 @@ const AttachmentUpload = ({
   const uploadSelected = !!options.find((option) => option.value === radioState[attachmentId])?.upload;
 
   const deadline = form.properties?.ettersendelsesfrist;
-  console.log(form.properties);
 
   const handleDeleteAllAttachments = async (attachmentId: string) => {
     await handleDeleteAttachment(attachmentId);
@@ -100,19 +99,21 @@ const AttachmentUpload = ({
   };
   return (
     <VStack gap="8" className={clsx('mb', className)}>
-      <RadioGroup
-        legend={label}
-        onChange={(value) => setRadioState((prev) => ({ ...prev, [attachmentId]: value }))}
-        description={description}
-        defaultValue={radioState[attachmentId]}
-      >
-        {!uploadedAttachmentFiles.length &&
-          options.map((option) => (
-            <Radio key={option.value} value={option.value}>
-              {option.label}
-            </Radio>
-          ))}
-      </RadioGroup>
+      {!(isIdUpload && uploadedAttachmentFiles.length > 0) && (
+        <RadioGroup
+          legend={label}
+          onChange={(value) => setRadioState((prev) => ({ ...prev, [attachmentId]: value }))}
+          description={description}
+          defaultValue={radioState[attachmentId]}
+        >
+          {!uploadedAttachmentFiles.length &&
+            options.map((option) => (
+              <Radio key={option.value} value={option.value}>
+                {option.label}
+              </Radio>
+            ))}
+        </RadioGroup>
+      )}
       {uploadSelected && (
         <VStack gap="4">
           {isIdUpload && <Label>{translate(TEXTS.statiske.uploadId.selectFileLabel)}</Label>}
