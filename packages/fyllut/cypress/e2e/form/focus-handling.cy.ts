@@ -45,9 +45,13 @@ describe('Focus handling', () => {
 
       cy.clickShowAllSteps();
       cy.findByRole('link', { name: 'Oppsummering' }).click();
-      cy.findAllByRole('link', { name: TEXTS.grensesnitt.summaryPage.editAnswers }).eq(0).should('exist').click();
       // eslint-disable-next-line cypress/no-unnecessary-waiting
       cy.wait(1000);
+      cy.findAllByRole('link', { name: TEXTS.grensesnitt.summaryPage.editAnswers }).eq(0).should('exist').click();
+
+      cy.url().then((url) => {
+        cy.log('Current URL is: ' + url);
+      });
       cy.focused().then((el) => {
         cy.log(`Focused element: ${el.prop('id')}`);
       });
