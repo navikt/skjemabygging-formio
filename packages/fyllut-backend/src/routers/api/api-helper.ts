@@ -23,7 +23,7 @@ const initApiConfig = () => {
     }),
     kodeverkToken: azureTokenHandler(kodeverk.scope!, 'AzureAccessToken', { skip: true }),
     tokenxSendInn: tokenxHandler(sendInnConfig?.tokenxClientId, {
-      token: sendInnConfig.devOboToken,
+      token: sendInnConfig.devOBOToken,
     }),
     tokenxPdl: tokenxHandler(`${pdlTokenScopeCluster}:pdl:pdl-api`),
     tokenxTilleggsstonader: tokenxHandler(tilleggsstonaderConfig.tokenxClientId),

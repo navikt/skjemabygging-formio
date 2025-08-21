@@ -105,7 +105,7 @@ const localDevelopmentConfig: DefaultConfig = {
   sendInnConfig: {
     ...sendInnConfig,
     devM2MToken: process.env.INNSENDING_API_M2M_ACCESS_TOKEN,
-    devOboToken: process.env.INNSENDING_API_OBO_ACCESS_TOKEN,
+    devOBOToken: process.env.INNSENDING_API_OBO_ACCESS_TOKEN,
     host: sendInnConfig.host || 'https://innsending-api-gcp.intern.dev.nav.no',
     tokenxClientId: sendInnConfig.tokenxClientId || 'dev-gcp:soknad:send-inn',
   },

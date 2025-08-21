@@ -10,7 +10,7 @@ export type SendInnConfig = {
   host: string;
   tokenxClientId: string;
   devM2MToken?: string;
-  devOboToken?: string;
+  devOBOToken?: string;
   paths: {
     opprettedeSoknaderForSkjema: (skjemanummer: string, soknadsTyper?: Array<'soknad' | 'ettersendelse'>) => string;
     soknad: string;
