@@ -1,4 +1,3 @@
-import { Heading } from '@navikt/ds-react';
 import { Enhet, SubmissionType, submissionTypesUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useState } from 'react';
 import { getAttachments } from '../../../../shared-domain/src/forsteside/forstesideUtils';
@@ -41,7 +40,7 @@ export function PrepareLetterPage() {
   const [enhetsListe, setEnhetsListe] = useState<Enhet[]>([]);
   const [enhetsListeError, setEnhetsListeError] = useState(false);
   const [enhetslisteFilteringError, setEnhetslisteFilteringError] = useState(false);
-  const { form, submission, formUrl } = useForm();
+  const { form, submission, formUrl, setFormProgressVisible, setTitle } = useForm();
 
   const styles = useStyles();
 
@@ -71,6 +70,11 @@ export function PrepareLetterPage() {
     }
   }, [enhetslisteFilteringError, enhetstyper, logger, skjemanummer]);
 
+  useEffect(() => {
+    setFormProgressVisible(false);
+    setTitle(TEXTS.statiske.prepareLetterPage.subTitle);
+  }, [setFormProgressVisible, setTitle]);
+
   if (enhetMaVelgesVedPapirInnsending && enhetsListeError) {
     return <ErrorPage errorMessage={translate(TEXTS.statiske.prepareLetterPage.entityFetchError)} />;
   }
@@ -84,9 +88,6 @@ export function PrepareLetterPage() {
 
   return (
     <div className={styles.content}>
-      <Heading level="2" size="large" spacing>
-        {translate(TEXTS.statiske.prepareLetterPage.subTitle)}
-      </Heading>
       <section id="maincontent" tabIndex={-1}>
         <section className="main-col">
           <LetterDownload index={1} form={form} submission={submission} enhetsListe={enhetsListe} />

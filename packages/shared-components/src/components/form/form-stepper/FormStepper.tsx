@@ -7,7 +7,7 @@ import { useForm } from '../../../context/form/FormContext';
 import { useLanguages } from '../../../context/languages';
 
 const FormStepper = () => {
-  const { form, submission, formUrl, formProgress, setFormProgress } = useForm();
+  const { form, submission, formUrl, formProgressOpen, setFormProgressOpen } = useForm();
   const { submissionMethod, baseUrl } = useAppConfig();
   const [screenSmall, setScreenSmall] = useState<boolean>(false);
   const params = useParams();
@@ -21,7 +21,13 @@ const FormStepper = () => {
       .getActivePanelsFromForm(form, submission, submissionMethod)
       .map((panel) => ({ label: panel.title, key: panel.key }));
 
-    const steps = [...formioSteps];
+    const steps = [
+      {
+        key: '',
+        label: TEXTS.grensesnitt.introPage.title,
+      },
+      ...formioSteps,
+    ];
 
     if (submissionMethod === 'digitalnologin') {
       steps.push({
@@ -64,8 +70,8 @@ const FormStepper = () => {
       <FormProgress
         totalSteps={formSteps.length}
         activeStep={getActiveStepper() + 1}
-        open={formProgress}
-        onOpenChange={(state) => setFormProgress(state)}
+        open={formProgressOpen}
+        onOpenChange={(state) => setFormProgressOpen(state)}
         translations={{
           step: translate(TEXTS.grensesnitt.stepper.step),
           showAllSteps: translate(TEXTS.grensesnitt.stepper.showAllSteps),
@@ -81,7 +87,7 @@ const FormStepper = () => {
                 if (getActiveStepper() !== index) {
                   navigate(stepUrl);
                   if (screenSmall) {
-                    setFormProgress(false);
+                    setFormProgressOpen(false);
                   }
                 }
               }}

@@ -5,18 +5,14 @@ import { FormTitle } from '../components/form/form-title/FormTitle';
 import { useForm } from '../context/form/FormContext';
 import { LanguageSelector } from '../context/languages';
 
-interface Props {
-  stepper?: boolean;
-}
-
-const FormLayout = ({ stepper }: Props) => {
-  const { form } = useForm();
+const FormLayout = () => {
+  const { form, formProgressVisible, title } = useForm();
 
   return (
     <FormContainer>
       <LanguageSelector />
-      <FormTitle form={form} hideIconOnMobile={true} />
-      {stepper && <FormStepper />}
+      <FormTitle form={form} hideIconOnMobile={true} title={title} />
+      {formProgressVisible && <FormStepper />}
 
       <Outlet />
     </FormContainer>

@@ -1,5 +1,5 @@
 import { ExclamationmarkTriangleFillIcon } from '@navikt/aksel-icons';
-import { Alert, BodyShort, ConfirmationPanel, Heading } from '@navikt/ds-react';
+import { Alert, BodyShort, ConfirmationPanel } from '@navikt/ds-react';
 import { DeclarationType, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useRef, useState } from 'react';
 import EditAnswersButton from '../../components/button/navigation/edit-answers/EditAnswersButton';
@@ -52,7 +52,7 @@ export function SummaryPage() {
   const appConfig = useAppConfig();
   const { translate } = useLanguages();
   const styles = useStyles();
-  const { prefillData, submission, formUrl, form } = useForm();
+  const { prefillData, submission, formUrl, form, setTitle, setFormProgressVisible } = useForm();
   const { declarationType, declarationText } = form.properties;
   const [declaration, setDeclaration] = useState<boolean | undefined>(undefined);
 
@@ -73,6 +73,7 @@ export function SummaryPage() {
       webform.checkData(submissionCopy?.data, [], undefined);
 
       const panelValidations = validateWizardPanels(webform, form, submission!);
+
       setPanelValidationList(panelValidations);
       webform.destroy(true);
 
@@ -85,6 +86,11 @@ export function SummaryPage() {
       initializePanelValidation();
     }
   }, [form, submission, appConfig, prefillData]);
+
+  useEffect(() => {
+    setTitle(TEXTS.statiske.summaryPage.title);
+    setFormProgressVisible(true);
+  }, [setTitle, setFormProgressVisible]);
 
   useEffect(() => scrollToAndSetFocus('main', 'start'), []);
   const declarationRef = useRef<HTMLInputElement>(null);
@@ -111,9 +117,6 @@ export function SummaryPage() {
     <div className={styles.content}>
       <section id="maincontent" className="formio-form" tabIndex={-1}>
         <div className="main-col">
-          <Heading level="2" size="large" spacing>
-            {translate(TEXTS.statiske.summaryPage.title)}
-          </Heading>
           {!hasValidationErrors && (
             <BodyShort className="mb-4">{translate(TEXTS.statiske.summaryPage.description)}</BodyShort>
           )}

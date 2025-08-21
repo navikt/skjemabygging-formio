@@ -1,4 +1,4 @@
-import { BodyShort, Heading } from '@navikt/ds-react';
+import { BodyShort } from '@navikt/ds-react';
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect } from 'react';
 import DownloadCoverPageAndApplicationButton from '../../components/button/DownloadCoverPageAndApplicationButton';
@@ -20,14 +20,16 @@ export function PrepareIngenInnsendingPage() {
   useEffect(() => scrollToAndSetFocus('main', 'start'), []);
   const { translate } = useLanguages();
   const styles = useStyles();
-  const { form, submission, formUrl } = useForm();
+  const { form, submission, formUrl, setFormProgressVisible, setTitle } = useForm();
+
+  useEffect(() => {
+    setFormProgressVisible(false);
+    setTitle(form.properties.innsendingOverskrift);
+  }, [form, setFormProgressVisible, setTitle]);
 
   return (
     <div className={styles.content}>
       <section aria-label={translate(form.properties.innsendingOverskrift)}>
-        <Heading level="3" size="medium" spacing>
-          {translate(form.properties.innsendingOverskrift)}
-        </Heading>
         <BodyShort className="mb">{translate(form.properties.innsendingForklaring)}</BodyShort>
         <div className="mb-4">
           <DownloadCoverPageAndApplicationButton

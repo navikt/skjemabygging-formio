@@ -28,7 +28,7 @@ type ModalType = 'save' | 'delete' | 'discard';
 type FyllutEvent = 'focusOnComponent' | 'validateOnNextPage';
 
 export const FillInFormPage = () => {
-  const { form, submission, setSubmission, formUrl } = useForm();
+  const { form, submission, setSubmission, formUrl, setTitle, setFormProgressVisible } = useForm();
   const navigate = useNavigate();
   const { search } = useLocation();
   const { submissionMethod, logger } = useAppConfig();
@@ -74,6 +74,10 @@ export const FillInFormPage = () => {
       focusMainContentRef.current = false;
     }
   }, [formNavigationPaths.curr, logger]);
+
+  useEffect(() => {
+    setFormProgressVisible(true);
+  }, [setFormProgressVisible]);
 
   const onCancel = useCallback(() => {
     setShowModal('discard');
@@ -180,6 +184,7 @@ export const FillInFormPage = () => {
             onFocusOnComponentPageChanged,
           }}
           hash={hash}
+          setTitle={setTitle}
         />
         <FormSavedStatus submission={submission} />
         <FormError error={submission?.fyllutState?.mellomlagring?.error} />

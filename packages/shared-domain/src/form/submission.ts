@@ -6,6 +6,7 @@ export interface Submission {
   uploadedFiles?: UploadedFile[];
   metadata?: SubmissionMetadata;
   state?: string;
+  selfDeclaration?: boolean;
   fyllutState?: FyllutState;
 }
 

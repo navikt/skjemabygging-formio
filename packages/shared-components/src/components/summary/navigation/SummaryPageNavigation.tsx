@@ -1,7 +1,7 @@
 import { ArrowRightIcon } from '@navikt/aksel-icons';
 import { Alert, Button } from '@navikt/ds-react';
 import { NavFormType, Submission, submissionTypesUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useAppConfig } from '../../../context/config/configContext';
 import { useLanguages } from '../../../context/languages';
@@ -37,12 +37,20 @@ const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList,
   const submissionTypes = form.properties.submissionTypes;
   const hasAttachments = hasRelevantAttachments(form, submission ?? { data: {} });
   const canSubmit =
-    !!panelValidationList && panelValidationList.every((panelValidation) => !panelValidation.hasValidationErrors);
+    !error &&
+    !!panelValidationList &&
+    panelValidationList.every((panelValidation) => !panelValidation.hasValidationErrors);
   const sendIPosten =
     (submissionTypesUtils.isPaperSubmission(submissionTypes) && (submissionMethod === 'paper' || app === 'bygger')) ||
     submissionTypesUtils.isPaperSubmissionOnly(submissionTypes);
 
   const exitUrl = urlUtils.getExitUrl(window.location.href);
+
+  useEffect(() => {
+    if (!submission?.selfDeclaration) {
+      setError(new Error(translate(TEXTS.statiske.summaryPage.confirmationError)));
+    }
+  }, [translate, submission?.selfDeclaration, setError]);
 
   return (
     <>
