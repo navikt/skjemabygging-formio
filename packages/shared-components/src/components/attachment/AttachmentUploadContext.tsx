@@ -1,12 +1,10 @@
 import { FileObject } from '@navikt/ds-react';
 import { Submission, TEXTS, UploadedFile } from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, useContext, useState } from 'react';
-import {
-  deleteAllFiles,
-  deleteAttachment,
-  deleteFile,
-  uploadFile,
-} from '../../api/nologin-file-upload/nologinFileUpload';
+import { submitCaptchaValue } from '../../api/captcha/captcha';
+import useNologinFileUpload from '../../api/nologin-file-upload/nologinFileUpload';
+import http from '../../api/util/http/http';
+import { useAppConfig } from '../../context/config/configContext';
 import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
 import { useSendInn } from '../../context/sendInn/sendInnContext';
@@ -17,6 +15,7 @@ interface AttachmentUploadContextType {
   handleDeleteAttachment: (attachmentId: string) => Promise<void>;
   handleDeleteAllFiles: () => Promise<void>;
   addError: (attachmentId: string, error: string) => void;
+  setCaptchaValue: (value: Record<string, string>) => void;
   removeError: (attachmentId: string) => void;
   uploadedFiles: UploadedFile[];
   errors: Record<string, string | undefined>;
@@ -30,6 +29,7 @@ const initialContext: AttachmentUploadContextType = {
   handleDeleteAttachment: async () => {},
   handleDeleteAllFiles: async () => {},
   addError: () => {},
+  setCaptchaValue: () => {},
   removeError: () => {},
   uploadedFiles: [],
   errors: {},
@@ -40,9 +40,12 @@ const initialContext: AttachmentUploadContextType = {
 const AttachmentUploadContext = createContext<AttachmentUploadContextType>(initialContext);
 
 const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) => {
-  const { innsendingsId, setInnsendingsId } = useSendInn();
+  const config = useAppConfig();
   const { submission, setSubmission } = useForm();
+  const { nologinToken, setNologinToken } = useSendInn();
+  const { deleteAllFiles, deleteAttachment, deleteFile, uploadFile } = useNologinFileUpload();
   const { translate } = useLanguages();
+  const [captchaValue, setCaptchaValue] = useState<Record<string, string>>({});
   const [errors, setErrors] = useState<Record<string, string | undefined>>({});
   const [radioState, setRadioState] = useState<Record<string, string>>({});
 
@@ -87,56 +90,67 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
     });
   };
 
+  const resolveCaptcha = async () => {
+    if (!nologinToken) {
+      const response = await submitCaptchaValue(captchaValue, config);
+      if (response?.access_token) {
+        setNologinToken(response.access_token);
+      }
+      return response?.access_token;
+    }
+    return nologinToken;
+  };
+
+  const handleApiError = (attachmentId: string, error: any, message: string) => {
+    if (error instanceof http.HttpError && error.status === 401) {
+      addError(attachmentId, translate(TEXTS.statiske.uploadId.tokenExpiredError));
+    } else {
+      addError(attachmentId, message);
+    }
+  };
+
   const handleUploadFile = async (attachmentId: string, file: FileObject) => {
     try {
       removeError(attachmentId);
-      const result = await uploadFile(file.file, attachmentId);
+      const token = await resolveCaptcha();
+      const result = await uploadFile(file.file, attachmentId, token);
       if (result) {
         addToSubmission(result);
-        setInnsendingsId(result.innsendingId);
       }
-    } catch (_e) {
-      addError(attachmentId, translate(TEXTS.statiske.uploadId.uploadFileError));
+    } catch (error: any) {
+      setNologinToken(undefined);
+      handleApiError(attachmentId, error, translate(TEXTS.statiske.uploadId.uploadFileError));
     }
   };
 
   const handleDeleteFile = async (attachmentId: string, fileId: string) => {
     try {
       removeError(attachmentId);
-      if (!innsendingsId) {
-        throw new Error('InnsendingsId is not set');
-      }
-      await deleteFile(fileId, innsendingsId);
+      await deleteFile(fileId, nologinToken);
       removeFileFromSubmission(fileId);
-    } catch (_e) {
-      addError(attachmentId, translate(TEXTS.statiske.uploadId.deleteFileError));
+    } catch (error: any) {
+      handleApiError(attachmentId, error, translate(TEXTS.statiske.uploadId.deleteFileError));
     }
   };
 
   const handleDeleteAttachment = async (attachmentId: string) => {
     try {
       removeError(attachmentId);
-      if (!innsendingsId) {
-        throw new Error('InnsendingsId is not set');
-      }
-      await deleteAttachment(attachmentId, innsendingsId);
+      await deleteAttachment(attachmentId, nologinToken);
       removeFilesFromSubmission(attachmentId);
-    } catch (_e) {
-      addError(attachmentId, translate(TEXTS.statiske.uploadId.deleteAttachmentError));
+    } catch (error: any) {
+      handleApiError(attachmentId, error, translate(TEXTS.statiske.uploadId.deleteAttachmentError));
     }
   };
 
   const handleDeleteAllFiles = async () => {
     try {
       setErrors({});
-      if (!innsendingsId) {
-        throw new Error('InnsendingId is not set');
-      }
-      await deleteAllFiles(innsendingsId);
+      await deleteAllFiles(nologinToken);
       setSubmission((current) => ({ ...current, uploadedFiles: [] }) as Submission);
-    } catch (e) {
-      addError('allFiles', translate(TEXTS.statiske.uploadId.deleteAllFilesError));
-      throw e;
+    } catch (error: any) {
+      handleApiError('allFiles', error, translate(TEXTS.statiske.uploadId.deleteAllFilesError));
+      throw error;
     }
   };
 
@@ -146,6 +160,7 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
     handleDeleteAttachment,
     handleDeleteAllFiles,
     addError,
+    setCaptchaValue,
     removeError,
     uploadedFiles,
     errors,

@@ -1,6 +1,7 @@
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import AttachmentUpload from '../../components/attachment/AttachmentUpload';
 import AttachmentUploadProvider from '../../components/attachment/AttachmentUploadContext';
+import Captcha from '../../components/captcha/Captcha';
 import { useLanguages } from '../../index';
 import UploadPersonalIdButtonRow from './UploadPersonalIdButtonRow';
 
@@ -17,6 +18,7 @@ const UploadPersonalIdPage = () => {
 
   return (
     <AttachmentUploadProvider>
+      <Captcha />
       <AttachmentUpload
         label={translate(TEXTS.statiske.uploadId.label)}
         options={radioOptions}

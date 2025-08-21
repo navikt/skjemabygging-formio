@@ -48,20 +48,19 @@ class NoLoginFileService {
 
   public async delete(
     accessToken: string,
-    innsendingId: string,
+    innsendingsId?: string,
     attachmentId?: string,
     fileId?: string,
   ): Promise<void> {
     const { sendInnConfig } = this._config;
-
-    if (!fileId && !attachmentId && !innsendingId) {
+    if (!fileId && !attachmentId && !innsendingsId) {
       logger.debug('Frontend must provide either fileId, attachmentId or innsendingId to delete files');
       throw new Error('Ingen fileId, attachmentId, eller innsendingId angitt');
     }
 
     const queryParams = attachmentId
-      ? `?vedleggId=${attachmentId}&innsendingId=${innsendingId}`
-      : `?innsendingId=${innsendingId}`;
+      ? `?vedleggId=${attachmentId}&innsendingId=${innsendingsId}`
+      : `?innsendingId=${innsendingsId}`;
     const targetUrl =
       fileId && validatorUtils.isValidUuid(fileId)
         ? `${sendInnConfig.host}${sendInnConfig.paths.nologinFile}/${fileId}${queryParams}`

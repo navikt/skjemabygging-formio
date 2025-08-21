@@ -36,6 +36,21 @@ describe('Digital no login', () => {
     cy.findByRole('heading', { name: 'Dine opplysninger' }).should('exist');
   });
 
+  describe('Captcha', () => {
+    it('prevents uploading files when the captcha is incorrect', () => {
+      cy.get('[data-cy=firstName]').type('Wrong answer', { force: true });
+      cy.findByLabelText(TEXTS.statiske.uploadId.norwegianPassport).click();
+      cy.get('input[type="file"]').selectFile(
+        {
+          contents: Cypress.Buffer.from('file content'),
+          fileName: 'test.txt',
+        },
+        { force: true },
+      );
+      cy.findByText(TEXTS.statiske.uploadId.uploadFileError).should('exist');
+    });
+  });
+
   describe('Deleting files', () => {
     beforeEach(() => {
       cy.findByLabelText(TEXTS.statiske.uploadId.norwegianPassport).click();
@@ -59,7 +74,7 @@ describe('Digital no login', () => {
     });
 
     it('deletes files when clicking the cancel button', () => {
-      cy.intercept('/fyllut/api/nologin-file?innsendingId=innsending-id').as('deleteAllFiles');
+      cy.intercept('/fyllut/api/nologin-file').as('deleteAllFiles');
       cy.findByText(TEXTS.statiske.uploadId.label).should('not.exist');
       cy.findByRole('button', { name: TEXTS.statiske.uploadId.selectFileButton }).should('not.exist');
       cy.findByText('test.txt').should('exist');

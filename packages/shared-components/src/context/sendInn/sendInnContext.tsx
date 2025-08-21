@@ -24,6 +24,8 @@ interface SendInnContextType {
   isMellomlagringAvailable: boolean;
   isMellomlagringReady: boolean;
   innsendingsId?: string;
+  nologinToken?: string;
+  setNologinToken: (token: string | undefined) => void;
   setInnsendingsId: (innsendingsId: string | undefined) => void;
   mellomlagringError: MellomlagringError | undefined;
 }
@@ -51,6 +53,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
   // Make sure that we only create once
   const [isCreateStarted, setIsCreateStarted] = useState(false);
   const [innsendingsId, setInnsendingsId] = useState<string>();
+  const [nologinToken, setNologinToken] = useState<string | undefined>();
   const [fyllutMellomlagringState, dispatchFyllutMellomlagring] = useReducer(mellomlagringReducer, undefined);
 
   const addSearchParamToUrl = useCallback(
@@ -331,6 +334,8 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
     submitSoknad,
     innsendingsId,
     setInnsendingsId,
+    nologinToken,
+    setNologinToken,
     isMellomlagringAvailable,
     isMellomlagringActive: !!fyllutMellomlagringState?.isActive,
     isMellomlagringReady,

@@ -20,6 +20,8 @@ import clsx from 'clsx';
 import { useState } from 'react';
 import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
+import { htmlUtils } from '../../index';
+import InnerHtml from '../inner-html/InnerHtml';
 import { useAttachmentUpload } from './AttachmentUploadContext';
 import { useAttachmentStyles } from './styles';
 
@@ -229,7 +231,11 @@ const AttachmentUpload = ({ label, options, attachmentId, description, otherAtta
 
       {error && (
         <Alert variant="error">
-          <BodyLong>{error}</BodyLong>
+          {htmlUtils.isHtmlString(error) ? (
+            <InnerHtml content={translate(error, { url: window.location.href })}></InnerHtml>
+          ) : (
+            <BodyLong>{translate(error)}</BodyLong>
+          )}
         </Alert>
       )}
     </VStack>
