@@ -89,7 +89,7 @@ nyttig under debugging lokalt. Dette gjøres ved sette `{"browserOnly":true}` i 
     FYLLUT_FRONTEND_LOGCONFIG={"enabled":true,"logLevel":"trace","browserOnly":true}
     BYGGER_FRONTEND_LOGCONFIG={"enabled":true,"logLevel":"debug","browserOnly":true}
 
-## Kjøre Fyllut lokalt med mellomlagring
+## Kjøre Fyllut lokalt med mellomlagring for å teste digital innsending
 
 For å kjøre lokalt med mellomlagring skrudd på må du ha en lokal instans av `innsending-api` kjørende.
 Se [innsending-api](https://github.com/navikt/innsending-api) for instrukser om hvordan du kan kjøre api-et lokalt. Legg
