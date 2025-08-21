@@ -9,7 +9,8 @@ export type TokenxConfig = {
 export type SendInnConfig = {
   host: string;
   tokenxClientId: string;
-  devToken?: string;
+  devM2MToken?: string;
+  devOboToken?: string;
   paths: {
     opprettedeSoknaderForSkjema: (skjemanummer: string, soknadsTyper?: Array<'soknad' | 'ettersendelse'>) => string;
     soknad: string;
