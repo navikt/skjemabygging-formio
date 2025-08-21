@@ -52,9 +52,8 @@ lokalt, og det er to steder det kan være interessant å opprette .env-filer:
 
 ### 1) `packages/bygger-backend/.env`
 
-For å kjøre opp byggeren lokalt er det én miljøvariabel som _må_ settes, og det er `PUSHER_KEY`. Denne finner man ved
-å logge på pusher.com (se [avsnitt nedenfor](#pushercom) for instruksjoner), gå til Channel `skjemabyggeren-dev`, og
-App Keys i venstremenyen. Eventuelt kan man opprette sin egen Pusher-applikasjon.
+Byggeren kan startes lokalt uten å sette noen miljøvariabler, men i .env-filen kan man overstyre ulike miljøvariabler
+f.eks. hvis man ønsker å kjøre mot lokal Fyllut (`FYLLUT_BASE_URL`), egen Pusher-instans eller man vil endre loglevel.
 
 ### 2) `packages/fyllut-backend/.env`
 
@@ -63,9 +62,9 @@ inn konfigurasjon i denne filen.
 
 ## Feature toggles
 
-I fyllut og bygger styres feature toggles ved hjelp av en miljøvariabel (`ENABLED_FEATURES`) som inneholder en
-kommaseparert
-liste med navn på features, eventuelt etterfulgt av likhetstegn og `true` (default) eller `false`.
+I fyllut og bygger er det mulighet for å legge inn feature toggles ved hjelp av en miljøvariabel (`ENABLED_FEATURES`).
+Den må inneholde en kommaseparert liste med navn på features, eventuelt etterfulgt av likhetstegn og `true` (default)
+eller `false`.
 
 Dette gjør det mulig å enable features i et enkelt miljø ved å sette denne miljøvariabelen
 i miljøets nais-config. Lokalt kan man overstyre default feature toggles ved å legge inn miljøvariabelen i en `.env`-fil
@@ -96,8 +95,7 @@ nyttig under debugging lokalt. Dette gjøres ved sette `{"browserOnly":true}` i 
 
 ## Kjøre Fyllut lokalt med mellomlagring
 
-Legg til feature toggle `mellomlagring` i `.env`-filen til fyllut for å skru på mellomlagring. For å kjøre lokalt med
-mellomlagring skrudd på må du ha en lokal instans av `innsending-api` kjørende.
+For å kjøre lokalt med mellomlagring skrudd på må du ha en lokal instans av `innsending-api` kjørende.
 Se [innsending-api](https://github.com/navikt/innsending-api) for instrukser om hvordan du kan kjøre api-et lokalt. Legg
 til url til den lokale instansen av innsending-api i miljøvariabelen `SEND_INN_HOST` i fyllut. For eksempel slik:
 
@@ -105,25 +103,25 @@ til url til den lokale instansen av innsending-api i miljøvariabelen `SEND_INN_
 
 ## Kjøre Bygger lokalt med integrasjon mot forms-api
 
-For kontinuerlig utvikling mot forms-api er det best å hente ned og kjøre https://github.com/navikt/forms-api lokalt.
+[Forms API](https://github.com/navikt/forms-api) er vårt API som tilbyr vedlikehold av skjemadefinisjoner og oversettelser.
+
+Ved kjøring av Byggeren lokalt er det best å bruke `yarn get-tokens` for å hente access token ved hjelp av
+[azure-token-generator](https://azure-token-generator.intern.dev.nav.no/api/obo?aud=dev-gcp:fyllut-sendinn:forms-api) (krever trygdeetaten-bruker). Dette skriptet putter et token med begrenset
+gyldighetsperiode (ca. 1 time) i .env-filen til byggeren.
+
+    FORMS_API_ACCESS_TOKEN=<access-token> // Access token settes ved kjøring av yarn get-tokens
+
+Alternativt kan man kjøre [Forms API](https://github.com/navikt/forms-api) lokalt.
 Sett miljøvariabelen `FORMS_API_URL` i byggeren sin `.env`-fil til riktig port på localhost. F.eks:
 
     FORMS_API_URL=http://localhost:8082
-
-Alternativt kan du kjøre `yarn get-tokens` for å hente access token ved hjelp av
-[azure-token-generator](https://azure-token-generator.intern.dev.nav.no/api/obo?aud=dev-gcp:fyllut-sendinn:forms-api)
-(krever trygdeetaten-bruker). Merk at tokenet kun er gyldig en begrenset periode. Bruk følgende Forms API url:
-
-    FORMS_API_URL=https://forms-api.intern.dev.nav.no
-    FORMS_API_ACCESS_TOKEN=<access-token> // Access token settes ved kjøring av yarn get-tokens
 
 ## Teste publisering av skjema på lokal maskin
 
 Byggeren er konfigurert med default-verdier lokalt som sørger for at eventuelle publiseringer blir gjort mot en
 test-branch i repo'et [skjemaufylling-formio](https://github.com/navikt/skjemautfylling-formio). Hvilken branch som
-benyttes defineres av `PUBLISH_REPO_BASE`, og
-default-verdi kan overstyres i `packages/bygger-backend/.env`, men ikke test mot `master` siden det starter
-en deploy til produksjon :nerd_face:
+benyttes defineres av `PUBLISH_REPO_BASE`, og default-verdi kan overstyres i `packages/bygger-backend/.env`,
+men ikke test mot `master` siden det starter en deploy til produksjon :nerd_face:
 
 For å autentisere deg er det anbefalt å bruke en personlig access token. Det vil gjøre det enklere å spore endringene i
 skjemautfylling-formio, siden committene vil ha eieren av tokenet som author. I prod og dev autentiserer byggeren seg
@@ -164,11 +162,12 @@ for fyllut må man da bruke verdiene fra `fyllut-backend/.env.test` i `fyllut-ba
 
 Ved kjøring mot lokalt utviklingsmiljø får man ikke testet eventuell logikk som skjer ved lasting av index.html siden
 det ikke er den faktiske backenden som håndterer det under lokal utvikling, så hvis noen av testene har sjekker på
-koden som kjøres da vil de feile ved kjøring på denne måten.
+koden som kjøres da vil de feile ved kjøring på denne måten, med mindre de kaller `cy.skipIfNoIncludeDistTests()` i
+starten av testen (da skippes de).
 
 ## Fagsystemsonen
 
-Vi kommuniserer med fagsystemsonen blant annet for å hente enheter og generere førsteside, og det skjer ved kall
+Vi kommuniserer med fagsystemsonen (fss) for å generere førsteside, og det skjer ved kall
 via [skjemabygging-proxy](https://github.com/navikt/skjemabygging-proxy) som kjører i fss.
 
 For å få til dette lokalt trenger du å kjøre naisdevice. I tillegg trenger fyllut-backend og bygger-backend tilgang
@@ -177,30 +176,25 @@ bygger-backend, med innhold `AZURE_APP_CLIENT_SECRET=<den-respektive-appen-sin-c
 fyllut og bygger i dev-gcp finner du ved å gå inn i dev-gcp clusteret med kubectl (krever naisdevice og tilgang
 til google cloud) og hente ut miljøvariabler fra podden, f.eks slik:
 
-`kubectl exec <pod-name> -c [skjemabygging-formio|skjemautfylling] -- env`
+`kubectl exec <pod-name> -- env`
 
 ## Brukeradministrasjon
 
 ### Bygger
 
-I byggeren logger vi inn med [Azure AD](https://doc.nais.io/security/auth/azure-ad/sidecar/), bortsett fra under
-utvikling på lokal maskin, hvor utviklerene logger inn
-med [Formio-brukere](https://help.form.io/userguide/user-authentication).
-Se [oppretting av bruker](#opprette-formio-bruker-for-lokal-utvikling).
+I byggeren logger vi inn med [Azure AD](https://doc.nais.io/security/auth/azure-ad/sidecar/). Lokalt må man
+kjøre `yarn get-tokens` for å hente et token (trygdeetaten-bruker) som skriptet legger inn i `.env`-filen til
+byggeren. Dette tokenet brukes for å autentisere mot Forms API som kjører i dev-gcp.
 
 I Azure AD er det opprettet grupper for tilgangsstyring til ulike funksjoner i applikasjonen. Gruppene har prefiks
 "Skjemabygging", og kan søkes fram på Microsofts
 [Access Panel Groups](https://account.activedirectory.windowsazure.com/r#/groups).
 _Eierene_ av gruppene kan legge til nye medlemmer.
 
-En oversikt over gruppenes id'er vil dessuten ligge i koden for bygger backend såfremt de faktisk er i bruk:
+En oversikt over gruppenes id'er vil dessuten ligge i nais-config for bygger såfremt de faktisk er i bruk (se `ad_groups`):
 
-- [azureAd.ts](https://github.com/navikt/skjemabygging-formio/tree/master/packages/bygger-backend/src/middleware/azureAd.ts)
-
-### Opprette Formio-bruker for lokal utvikling
-
-- Logg inn på https://formio-api.intern.dev.nav.no med brukernavn og passord fra Google Secrets
-- Velg `Nav Skjemabase` -> `User` -> `Use` og skriv inn ønsket brukernavn/passord
+- [prod.yaml](https://github.com/navikt/skjemabygging-formio/blob/master/.nais/bygger/prod.yaml)
+- [preprod.yaml](https://github.com/navikt/skjemabygging-formio/blob/master/.nais/bygger/preprod.yaml)
 
 ### Fyllut
 
@@ -234,7 +228,10 @@ Pusher brukes til å varsle innloggede brukere i byggeren når det har blitt dep
 f.eks. når en skjemadefinisjon har blitt publisert.
 
 Kontoen på [pusher.com](https://pusher.com/) er opprettet med skjemadigitalisering@nav.no (gruppe), og passordet for å
-logge på ligger i Google Secret Manager.
+logge på ligger i Google Secret Manager (secret `team-pwd` -> `pusher_password`).
+
+Inne på kontoen kan man finne verdiene til de ulike pusher-miljøvariablene. Hvis man ønsker å teste pusher lokalt
+kan man enten opprette sin egen Pusher-applikasjon, eller man kan bruke verdiene for `skjemabyggeren-dev`-kanalen.
 
 # Henvendelser
 
