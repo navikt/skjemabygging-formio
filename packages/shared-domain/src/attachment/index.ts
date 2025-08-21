@@ -2,6 +2,16 @@ import { TFunction } from 'i18next';
 import { Component, NavFormType } from '../form';
 import TEXTS from '../texts';
 
+type AttachmentOption = {
+  label: string;
+  value: string;
+  upload?: boolean;
+  additionalDocumentation?: {
+    description?: string;
+    label?: string;
+  };
+};
+
 const attachmentSettingKeys = [
   'leggerVedNaa',
   'ettersender',
@@ -82,6 +92,7 @@ const attachmentUtils = {
 
 export default attachmentUtils;
 export type {
+  AttachmentOption,
   AttachmentSettingValue,
   AttachmentSettingValues,
   AttachmentValue,

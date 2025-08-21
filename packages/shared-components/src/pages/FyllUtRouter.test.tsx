@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { RouterProvider, createMemoryRouter } from 'react-router-dom';
+import { createMemoryRouter, RouterProvider } from 'react-router-dom';
 import { setupNavFormio } from '../../test/navform-render';
 import { form, translationsForNavForm } from '../../test/test-data/form/skjema-med-oversettelser';
 import { languagesInOriginalLanguage } from '../components/language-selector/fyllut/FyllUtLanguageSelector';

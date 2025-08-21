@@ -268,7 +268,9 @@ const getActivePanelsFromForm = (form: NavFormType, submission?: Submission, sub
       const key = formSummaryUtil.createComponentKeyWithNavId(panel);
       return conditionals[key] !== false;
     })
-    .filter((panel) => !(submissionMethod === 'digital' && isVedleggspanel(panel)));
+    .filter(
+      (panel) => !((submissionMethod === 'digital' || submissionMethod === 'digitalnologin') && isVedleggspanel(panel)),
+    );
 };
 
 const getAttachmentPanel = (form: NavFormType) => {
