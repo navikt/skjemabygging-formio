@@ -1,7 +1,8 @@
-import { Component, NavFormType, Submission, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { Component, NavFormType, navFormUtils, Submission } from '@navikt/skjemadigitalisering-shared-domain';
 import UtilsOverrides from '../../formio/overrides/utils-overrides/utils-overrides';
 
 interface Attachment {
+  navId?: string;
   vedleggsnr: string;
   tittel: string;
   label: string;
@@ -10,7 +11,26 @@ interface Attachment {
   propertyNavn: string;
   formioId: string;
   vedleggskjema?: string;
+  description?: string;
+  attachmentValues?: object;
+  attachmentType?: string;
 }
+
+const getAllAttachments = (form: NavFormType, submission: Submission): Attachment[] => {
+  return navFormUtils
+    .flattenComponents(form.components)
+    .filter(
+      (component) => (component.properties && !!component.properties.vedleggskode) || isOtherDocumentation(component),
+    )
+    .map(sanitize)
+    .filter((comp) => UtilsOverrides.checkCondition(comp, undefined, submission?.data, form, undefined, submission))
+    .map((comp) => {
+      return {
+        ...comp,
+        navId: comp.navId || comp.id,
+      };
+    });
+};
 
 const getRelevantAttachments = (form: NavFormType, submission: Submission): Attachment[] => {
   return navFormUtils
@@ -60,5 +80,11 @@ const hasRelevantAttachments = (form: NavFormType, submission: Submission) => {
   return !!getRelevantAttachments(form, submission).length || hasOtherDocumentation(form, submission);
 };
 
-export { getRelevantAttachments, hasOtherDocumentation, hasRelevantAttachments };
+export {
+  getAllAttachments,
+  getRelevantAttachments,
+  hasOtherDocumentation,
+  hasRelevantAttachments,
+  isOtherDocumentation,
+};
 export type { Attachment };

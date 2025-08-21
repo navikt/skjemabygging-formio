@@ -18,7 +18,7 @@ describe('Digital no login', () => {
     cy.findByRole('heading', { name: TEXTS.statiske.uploadId.title }).should('exist');
     cy.findByRole('button', { name: TEXTS.statiske.uploadId.selectFileButton }).should('not.exist');
     cy.findByLabelText(TEXTS.statiske.uploadId.norwegianPassport).click();
-    cy.findByRole('button', { name: TEXTS.statiske.uploadId.selectFileButton }).should('exist');
+    cy.findByText(TEXTS.statiske.uploadId.selectFileButton).should('exist').should('be.visible');
 
     cy.get('input[type="file"]').selectFile(
       {
@@ -70,7 +70,7 @@ describe('Digital no login', () => {
       cy.findByRole('button', { name: 'Slett filen' }).click();
       cy.findByText('test.txt').should('not.exist');
       cy.findByText(TEXTS.statiske.uploadId.label).should('exist');
-      cy.findByRole('button', { name: TEXTS.statiske.uploadId.selectFileButton }).should('exist');
+      cy.findByText(TEXTS.statiske.uploadId.selectFileButton).should('exist').should('be.visible');
     });
 
     it('deletes files when clicking the cancel button', () => {

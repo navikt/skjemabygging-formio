@@ -16,8 +16,11 @@ interface AttachmentUploadContextType {
   handleDeleteAllFiles: () => Promise<void>;
   addError: (attachmentId: string, error: string) => void;
   setCaptchaValue: (value: Record<string, string>) => void;
+  removeError: (attachmentId: string) => void;
   uploadedFiles: UploadedFile[];
   errors: Record<string, string | undefined>;
+  radioState: Record<string, string>;
+  setRadioState: React.Dispatch<React.SetStateAction<Record<string, string>>>;
 }
 
 const initialContext: AttachmentUploadContextType = {
@@ -27,8 +30,11 @@ const initialContext: AttachmentUploadContextType = {
   handleDeleteAllFiles: async () => {},
   addError: () => {},
   setCaptchaValue: () => {},
+  removeError: () => {},
   uploadedFiles: [],
   errors: {},
+  radioState: {},
+  setRadioState: () => {},
 };
 
 const AttachmentUploadContext = createContext<AttachmentUploadContextType>(initialContext);
@@ -41,6 +47,7 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
   const { translate } = useLanguages();
   const [captchaValue, setCaptchaValue] = useState<Record<string, string>>({});
   const [errors, setErrors] = useState<Record<string, string | undefined>>({});
+  const [radioState, setRadioState] = useState<Record<string, string>>({});
 
   const uploadedFiles = submission?.uploadedFiles ?? [];
 
@@ -154,8 +161,11 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
     handleDeleteAllFiles,
     addError,
     setCaptchaValue,
+    removeError,
     uploadedFiles,
     errors,
+    radioState,
+    setRadioState,
   };
   return <AttachmentUploadContext.Provider value={value}>{children}</AttachmentUploadContext.Provider>;
 };
