@@ -2,7 +2,9 @@ import { Alert, BodyLong, Button, FileObject, FileUpload, Label, Radio, RadioGro
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useState } from 'react';
 import { useLanguages } from '../../context/languages';
+import { htmlUtils } from '../../index';
 import makeStyles from '../../util/styles/jss/jss';
+import InnerHtml from '../inner-html/InnerHtml';
 import { useAttachmentUpload } from './AttachmentUploadContext';
 
 type AttachmentOption = {
@@ -86,7 +88,11 @@ const AttachmentUpload = ({ label, options, attachmentId }: Props) => {
       </VStack>
       {error && (
         <Alert variant="error">
-          <BodyLong>{error}</BodyLong>
+          {htmlUtils.isHtmlString(error) ? (
+            <InnerHtml content={translate(error, { url: window.location.href })}></InnerHtml>
+          ) : (
+            <BodyLong>{translate(error)}</BodyLong>
+          )}
         </Alert>
       )}
     </VStack>

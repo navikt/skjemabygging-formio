@@ -51,6 +51,8 @@ export const statiske = {
     selectFileLabel: 'Last opp gyldig legitimasjon',
     selectFileButton: 'Velg fil',
     missingUploadError: 'Du må laste opp et gyldig identifikasjonsdokument før du kan fortsette.',
+    tokenExpiredError:
+      'Sesjonen din har utløpt. For å sende inn må du laste opp legitimasjon og fylle ut skjemaet på nytt. <a href="{{url}}">Klikk her</a> for å starte på nytt.',
     uploadFileError: 'Det oppstod en feil under opplasting av filen. Prøv igjen senere.',
     deleteFileError: 'Det oppstod en feil under sletting av filen. Prøv igjen senere.',
     deleteAttachmentError: 'Det oppstod en feil under sletting av vedlegget. Prøv igjen senere.',

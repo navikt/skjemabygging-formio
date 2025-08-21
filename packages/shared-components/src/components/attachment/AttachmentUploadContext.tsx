@@ -2,12 +2,8 @@ import { FileObject } from '@navikt/ds-react';
 import { Submission, TEXTS, UploadedFile } from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, useContext, useState } from 'react';
 import { submitCaptchaValue } from '../../api/captcha/captcha';
-import {
-  deleteAllFiles,
-  deleteAttachment,
-  deleteFile,
-  uploadFile,
-} from '../../api/nologin-file-upload/nologinFileUpload';
+import useNologinFileUpload from '../../api/nologin-file-upload/nologinFileUpload';
+import http from '../../api/util/http/http';
 import { useAppConfig } from '../../context/config/configContext';
 import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
@@ -41,6 +37,7 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
   const config = useAppConfig();
   const { submission, setSubmission } = useForm();
   const { nologinToken, setNologinToken } = useSendInn();
+  const { deleteAllFiles, deleteAttachment, deleteFile, uploadFile } = useNologinFileUpload();
   const { translate } = useLanguages();
   const [captchaValue, setCaptchaValue] = useState<Record<string, string>>({});
   const [errors, setErrors] = useState<Record<string, string | undefined>>({});
@@ -97,6 +94,14 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
     return nologinToken;
   };
 
+  const handleApiError = (attachmentId: string, error: any, message: string) => {
+    if (error instanceof http.HttpError && error.status === 401) {
+      addError(attachmentId, translate(TEXTS.statiske.uploadId.tokenExpiredError));
+    } else {
+      addError(attachmentId, message);
+    }
+  };
+
   const handleUploadFile = async (attachmentId: string, file: FileObject) => {
     try {
       removeError(attachmentId);
@@ -105,9 +110,9 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
       if (result) {
         addToSubmission(result);
       }
-    } catch (_e) {
+    } catch (error: any) {
       setNologinToken(undefined);
-      addError(attachmentId, translate(TEXTS.statiske.uploadId.uploadFileError));
+      handleApiError(attachmentId, error, translate(TEXTS.statiske.uploadId.uploadFileError));
     }
   };
 
@@ -116,8 +121,8 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
       removeError(attachmentId);
       await deleteFile(fileId, nologinToken);
       removeFileFromSubmission(fileId);
-    } catch (_e) {
-      addError(attachmentId, translate(TEXTS.statiske.uploadId.deleteFileError));
+    } catch (error: any) {
+      handleApiError(attachmentId, error, translate(TEXTS.statiske.uploadId.deleteFileError));
     }
   };
 
@@ -126,8 +131,8 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
       removeError(attachmentId);
       await deleteAttachment(attachmentId, nologinToken);
       removeFilesFromSubmission(attachmentId);
-    } catch (_e) {
-      addError(attachmentId, translate(TEXTS.statiske.uploadId.deleteAttachmentError));
+    } catch (error: any) {
+      handleApiError(attachmentId, error, translate(TEXTS.statiske.uploadId.deleteAttachmentError));
     }
   };
 
@@ -136,9 +141,9 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
       setErrors({});
       await deleteAllFiles(nologinToken);
       setSubmission((current) => ({ ...current, uploadedFiles: [] }) as Submission);
-    } catch (e) {
-      addError('allFiles', translate(TEXTS.statiske.uploadId.deleteAllFilesError));
-      throw e;
+    } catch (error: any) {
+      handleApiError('allFiles', error, translate(TEXTS.statiske.uploadId.deleteAllFilesError));
+      throw error;
     }
   };
 
