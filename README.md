@@ -91,9 +91,12 @@ nyttig under debugging lokalt. Dette gjøres ved sette `{"browserOnly":true}` i 
 
 ## Kjøre Fyllut lokalt med mellomlagring for å teste digital innsending
 
-For å kjøre lokalt med mellomlagring skrudd på må du ha en lokal instans av `innsending-api` kjørende.
-Se [innsending-api](https://github.com/navikt/innsending-api) for instrukser om hvordan du kan kjøre api-et lokalt. Legg
-til url til den lokale instansen av innsending-api i miljøvariabelen `SEND_INN_HOST` i fyllut. For eksempel slik:
+For å teste digital innsending lokalt er det enklest å bruke `yarn get-tokens fyllut` for å hente nødvendige access tokens
+for kommunikasjon med eksterne tjenester i dev-gcp.
+
+Man kan kjøre opp en lokal instans av `innsending-api`, men token er fremdeles nødvendig for generering av pdf. Se
+[innsending-api](https://github.com/navikt/innsending-api) for instrukser om hvordan innsending-api kjøres opp lokalt.
+Legg til url til den lokale instansen av innsending-api i miljøvariabelen `SEND_INN_HOST` i fyllut sin .env-fil slik:
 
     SEND_INN_HOST=http://127.0.0.1:9064
 
