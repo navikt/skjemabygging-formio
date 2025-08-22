@@ -33,7 +33,7 @@ describe('Datagrid', () => {
       cy.findByRole('textbox', { name: 'IBAN' }).type('NO9386011117947');
       cy.clickSaveAndContinue();
       cy.wait('@updateMellomlagring');
-      cy.findByRoleWhenAttached('heading', { level: 2, name: 'Oppsummering' }).should('exist');
+      cy.findByRoleWhenAttached('heading', { level: 1, name: 'Oppsummering' }).should('exist');
       cy.findByRoleWhenAttached('link', { name: TEXTS.grensesnitt.summaryPage.editAnswers }).should('exist').click();
 
       // check original values
