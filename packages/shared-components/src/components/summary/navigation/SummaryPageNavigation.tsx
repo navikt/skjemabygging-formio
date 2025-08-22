@@ -47,7 +47,7 @@ const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList,
   const exitUrl = urlUtils.getExitUrl(window.location.href);
 
   useEffect(() => {
-    if (form.introPage?.enabled && submission?.selfDeclaration) {
+    if (form.introPage?.enabled && !submission?.selfDeclaration) {
       setError(new Error(translate(TEXTS.statiske.summaryPage.confirmationError)));
     }
   }, [translate, submission?.selfDeclaration, setError, form.introPage?.enabled]);

@@ -1,4 +1,4 @@
-import { FormProgress } from '@navikt/ds-react';
+import { FormProgress as AkselFormProgress } from '@navikt/ds-react';
 import { navFormUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
@@ -6,7 +6,7 @@ import { useAppConfig } from '../../../context/config/configContext';
 import { useForm } from '../../../context/form/FormContext';
 import { useLanguages } from '../../../context/languages';
 
-const FormStepper = () => {
+const FormProgress = () => {
   const { form, submission, formUrl, formProgressOpen, setFormProgressOpen } = useForm();
   const { submissionMethod, baseUrl } = useAppConfig();
   const [screenSmall, setScreenSmall] = useState<boolean>(false);
@@ -67,7 +67,7 @@ const FormStepper = () => {
 
   return (
     <div className="mb">
-      <FormProgress
+      <AkselFormProgress
         totalSteps={formSteps.length}
         activeStep={getActiveStepper() + 1}
         open={formProgressOpen}
@@ -81,7 +81,7 @@ const FormStepper = () => {
         {formSteps.map((step, index) => {
           const stepUrl = `${formUrl}/${step.key}${search}`;
           return (
-            <FormProgress.Step
+            <AkselFormProgress.Step
               onClick={(event) => {
                 event.preventDefault();
                 if (getActiveStepper() !== index) {
@@ -95,12 +95,12 @@ const FormStepper = () => {
               key={step.key}
             >
               {translate(step.label)}
-            </FormProgress.Step>
+            </AkselFormProgress.Step>
           );
         })}
-      </FormProgress>
+      </AkselFormProgress>
     </div>
   );
 };
 
-export default FormStepper;
+export default FormProgress;

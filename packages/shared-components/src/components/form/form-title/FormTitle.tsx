@@ -47,7 +47,7 @@ export function FormTitle({ form, title, hideIconOnMobile }: Props) {
         <FormIcon className={styles.titleIconSvg} />
       </div>
       {title && <BodyLong textColor="subtle">{translate(form.title)}</BodyLong>}
-      <Heading level="1" size="xlarge" className={styles.title}>
+      <Heading level="1" size="xlarge">
         {translate(header)}
       </Heading>
       {form.properties && form.properties.skjemanummer && (
