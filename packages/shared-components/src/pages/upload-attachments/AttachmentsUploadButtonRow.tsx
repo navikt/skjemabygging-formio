@@ -14,14 +14,14 @@ const AttachmentsUploadButtonRow = ({ attachmentIds }: { attachmentIds: string[]
   const { translate } = useLanguages();
   const [searchParams] = useSearchParams();
   const { formUrl } = useForm();
-  const { radioState, addError, uploadedFiles, handleDeleteAllFiles } = useAttachmentUpload();
+  const { addError, submissionAttachments, handleDeleteAllFiles } = useAttachmentUpload();
 
   const summaryPageUrl = `${formUrl}/oppsummering?${searchParams.toString()}`;
   const exitUrl = urlUtils.getExitUrl(window.location.href);
 
   const nextPage = (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    const errors = validateAttachments(radioState, attachmentIds, uploadedFiles);
+    const errors = validateAttachments(submissionAttachments, attachmentIds);
     Object.entries(errors).forEach(([attachmentId, errorMessage]) => {
       addError(attachmentId, errorMessage);
     });

@@ -39,23 +39,24 @@ const AttachmentUpload = ({ label, options, attachmentId, description, otherAtta
   const styles = useAttachmentStyles();
   const { translate } = useLanguages();
   const {
-    radioState,
-    setRadioState,
+    changeAttachmentValue,
     handleUploadFile,
     handleDeleteAttachment,
     handleDeleteFile,
-    uploadedFiles,
+    submissionAttachments,
     errors,
   } = useAttachmentUpload();
   const { form } = useForm();
   const isIdUpload = attachmentId === 'personal-id';
 
-  const selectedAdditionalDocumentation = options.find(
-    (option) => option.value === radioState[attachmentId],
-  )?.additionalDocumentation;
+  const attachment = submissionAttachments.find((attachment) => attachment.attachmentId === attachmentId);
+  const uploadedAttachmentFiles = attachment?.files ?? [];
+  // const uploadedAttachmentFiles = uploadedFiles.filter((file) => file.attachmentId === attachmentId);
 
-  const showDeadline = radioState[attachmentId] === 'ettersender' || radioState[attachmentId] === 'andre';
-  const uploadedAttachmentFiles = uploadedFiles.filter((file) => file.attachmentId === attachmentId);
+  const showDeadline = attachment?.value && (attachment.value === 'ettersender' || attachment.value === 'andre');
+  const selectedAdditionalDocumentation = options.find(
+    (option) => option.value === attachment?.value,
+  )?.additionalDocumentation;
   const error = errors[attachmentId];
 
   const handleUpload = async (fileList: FileObject[] | null) => {
@@ -72,7 +73,7 @@ const AttachmentUpload = ({ label, options, attachmentId, description, otherAtta
     await handleDeleteFile(attachmentId, fileId);
   };
 
-  const uploadSelected = !!options.find((option) => option.value === radioState[attachmentId])?.upload;
+  const uploadSelected = !!options.find((option) => option.value === attachment?.value)?.upload;
 
   const deadline = form.properties?.ettersendelsesfrist;
 
@@ -95,9 +96,21 @@ const AttachmentUpload = ({ label, options, attachmentId, description, otherAtta
       {!(isIdUpload && uploadedAttachmentFiles.length > 0) && (
         <RadioGroup
           legend={label}
-          onChange={(value) => setRadioState((prev) => ({ ...prev, [attachmentId]: value }))}
+          onChange={(value) => {
+            console.log(
+              'Radio value changed:',
+              value,
+              options.find((option) => option.value === value),
+            );
+            // FIXME: personal-id should set description instead of value, but that doesn't work with file upload display
+            return changeAttachmentValue(attachmentId, value);
+            // return isIdUpload
+            //   ? changeAttachmentValue(attachmentId, undefined, options.find((option) => option.value === value)?.label)
+            //   : changeAttachmentValue(attachmentId, value);
+          }}
+          // onChange={(value) => setRadioState((prev) => ({ ...prev, [attachmentId]: value }))}
           description={description}
-          defaultValue={radioState[attachmentId]}
+          defaultValue={attachment?.value}
         >
           {!uploadedAttachmentFiles.length &&
             options.map((option) => (
@@ -111,7 +124,8 @@ const AttachmentUpload = ({ label, options, attachmentId, description, otherAtta
         <VStack gap="4">
           {isIdUpload && <Label>{translate(TEXTS.statiske.uploadId.selectFileLabel)}</Label>}
 
-          {!otherAttachment && uploadedFiles.filter((file) => file.attachmentId === attachmentId).length < 1 && (
+          {!otherAttachment && uploadedAttachmentFiles.length < 1 && (
+            // {!otherAttachment && uploadedFiles.filter((file) => file.attachmentId === attachmentId).length < 1 && (
             <FileUpload.Trigger onSelect={handleUpload}>
               <Button
                 className={styles.button}
@@ -124,7 +138,7 @@ const AttachmentUpload = ({ label, options, attachmentId, description, otherAtta
           )}
 
           {otherAttachment &&
-            radioState[attachmentId] === 'leggerVedNaa' &&
+            attachment?.value === 'leggerVedNaa' &&
             otherAttachmentInputs.map(
               (input, idx) =>
                 !input.uploaded && (

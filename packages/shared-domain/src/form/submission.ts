@@ -1,9 +1,11 @@
+import { SubmissionAttachment } from '../attachment';
 import { UploadedFile } from '../file';
 import { FyllutState } from './state';
 
 export interface Submission {
   data: SubmissionData;
   uploadedFiles?: UploadedFile[];
+  attachments?: SubmissionAttachment[];
   metadata?: SubmissionMetadata;
   state?: string;
   fyllutState?: FyllutState;

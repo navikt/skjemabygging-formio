@@ -1,4 +1,5 @@
 import { TFunction } from 'i18next';
+import { UploadedFile } from '../file';
 import { Component, NavFormType } from '../form';
 import TEXTS from '../texts';
 
@@ -39,6 +40,15 @@ interface AttachmentSettingValue {
 interface SubmissionAttachmentValue {
   key: keyof AttachmentSettingValues;
   additionalDocumentation?: string;
+}
+
+// new interface for storing attachments in submission outside of data
+// TODO: possibly combine with or replace SubmissionAttachmentValue
+interface SubmissionAttachment {
+  attachmentId: string;
+  value?: keyof AttachmentSettingValues;
+  description?: string;
+  files?: UploadedFile[];
 }
 
 // Used in summary/PDF
@@ -97,5 +107,6 @@ export type {
   AttachmentSettingValues,
   AttachmentValue,
   LimitedFormAttachment,
+  SubmissionAttachment,
   SubmissionAttachmentValue,
 };
