@@ -26,8 +26,8 @@ export function AttachmentsUploadPage() {
   const attachmentIds = attachmentPanels.map((panel) => panel.navId);
 
   useEffect(() => {
-    setTitle(TEXTS.statiske.uploadId.title);
-    setFormProgressVisible(false);
+    setTitle(TEXTS.statiske.attachment.title);
+    setFormProgressVisible(true);
   }, [setTitle, setFormProgressVisible]);
 
   return (
