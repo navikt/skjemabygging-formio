@@ -80,7 +80,7 @@ const commonCodes = {
       const areaCodes: { label: string; value: string }[] = [];
       for (const [key, values] of Object.entries(response.betydninger)) {
         const areaName = (values as any)[0]?.beskrivelser?.[languageCode]?.term;
-        areaCodes.push({ label: `(${key}) ${areaName}`, value: key });
+        areaCodes.push({ label: `${key} ${areaName}`, value: key });
       }
       sortAsc(areaCodes, languageCode);
       res.send(areaCodes);
@@ -91,8 +91,7 @@ const commonCodes = {
 };
 
 const sortAsc = (list: { label: string; value: string }[], languageCode: string) => {
-  const sortedarr = list.sort((a, b) => a.label.toUpperCase().localeCompare(b.label.toUpperCase(), languageCode));
-  return sortedarr;
+  return list.sort((a, b) => a.label.toUpperCase().localeCompare(b.label.toUpperCase(), languageCode));
 };
 /**
  * Doc: https://navikt.github.io/felleskodeverk/

@@ -7,7 +7,7 @@ import phoneNumberBuilder from './PhoneNumber.builder';
 import phoneNumberForm from './PhoneNumber.form';
 
 export type PhoneNumberObject = {
-  areaCode?: string;
+  areaCode: string;
   number: string;
 };
 
@@ -59,6 +59,7 @@ export default class PhoneNumber extends BaseComponent {
           showAreaCode={this.getShowAreaCode()}
           value={this.getValue() as PhoneNumberObject | string}
           onBlur={this.onBlur.bind(this)}
+          error={this.getError()}
         />
       </ComponentUtilsProvider>,
     );
