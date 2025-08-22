@@ -46,39 +46,12 @@ _(Les mer om bruk av Github npm registry i Nav her: https://github.com/navikt/fr
 Vi bruker hovedsaklig [dotenv](https://www.npmjs.com/package/dotenv) for å konfigurere applikasjonene ved kjøring
 lokalt, og det er to steder det kan være interessant å opprette .env-filer:
 
-### 1) `packages/bygger-backend/.env`
+| Filnavn                                     | Beskrivelse                                                                                                                                                                                                                                 |
+| ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| <nobr>`packages/bygger-backend/.env`</nobr> | Byggeren kan startes lokalt uten å sette noen miljøvariabler, men i .env-filen kan man overstyre ulike miljøvariablerf.eks. hvis man ønsker å kjøre mot lokal Fyllut (`FYLLUT_BASE_URL`), egen Pusher-instans eller man vil endre loglevel. |
+| <nobr>`packages/fyllut-backend/.env`</nobr> | FyllUt kan startes lokalt uten å sette noen miljøvariabler, men for at alle funksjoner skal fungere så må man leggeinn konfigurasjon i denne filen.                                                                                         |
 
-Byggeren kan startes lokalt uten å sette noen miljøvariabler, men i .env-filen kan man overstyre ulike miljøvariabler
-f.eks. hvis man ønsker å kjøre mot lokal Fyllut (`FYLLUT_BASE_URL`), egen Pusher-instans eller man vil endre loglevel.
-
-### 2) `packages/fyllut-backend/.env`
-
-FyllUt kan startes lokalt uten å sette noen miljøvariabler, men for at alle funksjoner skal fungere så må man legge
-inn konfigurasjon i denne filen.
-
-## Feature toggles
-
-I fyllut og bygger er det mulighet for å legge inn feature toggles ved hjelp av en miljøvariabel (`ENABLED_FEATURES`).
-Den må inneholde en kommaseparert liste med navn på features, eventuelt etterfulgt av likhetstegn og `true` (default)
-eller `false`.
-
-Dette gjør det mulig å enable features i et enkelt miljø ved å sette denne miljøvariabelen
-i miljøets nais-config. Lokalt kan man overstyre default feature toggles ved å legge inn miljøvariabelen i en `.env`-fil
-under `fyllut-backend` eller `bygger-backend`.
-
-    // Eksempel på hvordan miljøvariabelen kan se ut
-    ENABLED_FEATURES="translations,digitalInnsending,autoComplete=true,diff=false"
-
-Eksempelet over ville ført til et featureToggles-objekt som ser slik ut:
-
-    {
-      enableTranslations: true,
-      enableDigitalInnsending: true,
-      enableAutoComplete: true,
-      enableDiff: false
-    }
-
-## Frontend logger
+### Frontend logger
 
 Både bygger og fyllut har støtte for å logge feil som skjer i frontend. Begge backends har et endepunkt
 `/api/log/(info|error)` som tar feilmeldinger fra frontend og logger de.
@@ -89,10 +62,10 @@ nyttig under debugging lokalt. Dette gjøres ved sette `{"browserOnly":true}` i 
     FYLLUT_FRONTEND_LOGCONFIG={"enabled":true,"logLevel":"trace","browserOnly":true}
     BYGGER_FRONTEND_LOGCONFIG={"enabled":true,"logLevel":"debug","browserOnly":true}
 
-## Kjøre Fyllut lokalt med mellomlagring for å teste digital innsending
+### Kjøre Fyllut lokalt med integrasjon mot innsending-api
 
-For å teste digital innsending lokalt er det enklest å bruke `yarn get-tokens fyllut` for å hente nødvendige access tokens
-for kommunikasjon med eksterne tjenester i dev-gcp.
+For å teste digital innsending lokalt er det enklest å bruke `yarn get-tokens fyllut` for å hente nødvendige access
+tokens for kommunikasjon med eksterne tjenester i dev-gcp.
 
 Man kan kjøre opp en lokal instans av `innsending-api`, men token er fremdeles nødvendig for generering av pdf. Se
 [innsending-api](https://github.com/navikt/innsending-api) for instrukser om hvordan innsending-api kjøres opp lokalt.
@@ -100,13 +73,15 @@ Legg til url til den lokale instansen av innsending-api i miljøvariabelen `SEND
 
     SEND_INN_HOST=http://127.0.0.1:9064
 
-## Kjøre Bygger lokalt med integrasjon mot forms-api
+### Kjøre Bygger lokalt med integrasjon mot forms-api
 
-[Forms API](https://github.com/navikt/forms-api) er vårt API som tilbyr vedlikehold av skjemadefinisjoner og oversettelser.
+[Forms API](https://github.com/navikt/forms-api) er vårt API som tilbyr vedlikehold av skjemadefinisjoner og
+oversettelser.
 
 Ved kjøring av Byggeren lokalt er det best å bruke `yarn get-tokens` for å hente access token ved hjelp av
-[azure-token-generator](https://azure-token-generator.intern.dev.nav.no/api/obo?aud=dev-gcp:fyllut-sendinn:forms-api) (krever trygdeetaten-bruker). Dette skriptet putter et token med begrenset
-gyldighetsperiode (ca. 1 time) i .env-filen til byggeren.
+[azure-token-generator](https://azure-token-generator.intern.dev.nav.no/api/obo?aud=dev-gcp:fyllut-sendinn:forms-api)
+(krever trygdeetaten-bruker). Dette skriptet putter et token med begrenset gyldighetsperiode (ca. 1 time) i .env-filen
+til byggeren.
 
     FORMS_API_ACCESS_TOKEN=<access-token> // Access token settes ved kjøring av yarn get-tokens
 
@@ -115,7 +90,7 @@ Sett miljøvariabelen `FORMS_API_URL` i byggeren sin `.env`-fil til riktig port 
 
     FORMS_API_URL=http://localhost:8082
 
-## Teste publisering av skjema på lokal maskin
+### Teste publisering av skjema på lokal maskin
 
 Byggeren er konfigurert med default-verdier lokalt som sørger for at eventuelle publiseringer blir gjort mot en
 test-branch i repo'et [skjemaufylling-formio](https://github.com/navikt/skjemautfylling-formio). Hvilken branch som
@@ -137,12 +112,34 @@ I `packages/bygger-backend/.env` kan man legge inn følgende miljøvariabler:
 | GIT_SHA                              | Gyldig monorepo commit id (skjemabygging-formio), f.eks. `git rev-parse origin/master`                                                                             |
 | PUBLISH_REPO_BASE                    | Denne blir satt til test-publishing hvis ikke satt for lokalt utviklingsmiljø                                                                                      |
 
-### Hvordan opprette et personal access token på GitHub
+#### Hvordan opprette et personal access token på GitHub
 
 Se [GitHub docs](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token)
 .
 
 Velg `repo` under `scopes`, og _authorize_ dette token for organisasjon `navikt` etter opprettelsen (_Configure SSO_).
+
+### Feature toggles
+
+Vi forsøker å unngå bruk av feature toggles, men det er mulighet for i både fyllut og bygger å legge inn feature toggles
+ved hjelp av en miljøvariabel (`ENABLED_FEATURES`). Den må inneholde en kommaseparert liste med navn på features,
+eventuelt etterfulgt av likhetstegn og `true` (default) eller `false`.
+
+Dette gjør det mulig å enable features i et enkelt miljø ved å sette denne miljøvariabelen i miljøets nais-config.
+Lokalt kan man overstyre default feature toggles ved å legge inn miljøvariabelen i en `.env`-fil under `fyllut-backend`
+eller `bygger-backend`.
+
+    // Eksempel på hvordan miljøvariabelen kan se ut
+    ENABLED_FEATURES="translations,digitalInnsending,autoComplete=true,diff=false"
+
+Eksempelet over ville ført til et featureToggles-objekt som ser slik ut:
+
+    {
+      enableTranslations: true,
+      enableDigitalInnsending: true,
+      enableAutoComplete: true,
+      enableDiff: false
+    }
 
 ## Cypress-tester
 
@@ -190,7 +187,8 @@ I Azure AD er det opprettet grupper for tilgangsstyring til ulike funksjoner i a
 [Access Panel Groups](https://account.activedirectory.windowsazure.com/r#/groups).
 _Eierene_ av gruppene kan legge til nye medlemmer.
 
-En oversikt over gruppenes id'er vil dessuten ligge i nais-config for bygger såfremt de faktisk er i bruk (se `ad_groups`):
+En oversikt over gruppenes id'er vil dessuten ligge i nais-config for bygger såfremt de faktisk er i bruk (se
+`ad_groups`):
 
 - [prod.yaml](https://github.com/navikt/skjemabygging-formio/blob/master/.nais/bygger/prod.yaml)
 - [preprod.yaml](https://github.com/navikt/skjemabygging-formio/blob/master/.nais/bygger/preprod.yaml)
@@ -200,7 +198,7 @@ En oversikt over gruppenes id'er vil dessuten ligge i nais-config for bygger så
 Fyllut støtter uinnlogget utfylling av skjemaer, men har også mulighet for innlogging med
 [ID-porten](https://doc.nais.io/security/auth/idporten/sidecar/) for å kunne benytte digital innsending.
 
-## Bygge docker-image for testing av produksjonsbygg lokalt
+## Docker
 
 Dersom man trenger å teste produksjonsbygg av applikasjonene lokalt kan man bygge docker image lokalt, men først må man
 bygge applikasjonen.
@@ -221,7 +219,7 @@ Docker-image bygges og startes lokalt på følgende måte:
        -e NAIS_CLUSTER_NAME=dev-gcp \
        -p 8080:8080 fyllut-base
 
-# Pusher.com
+## Pusher.com
 
 Pusher brukes til å varsle innloggede brukere i byggeren når det har blitt deployet en ny versjon av FyllUt,
 f.eks. når en skjemadefinisjon har blitt publisert.
