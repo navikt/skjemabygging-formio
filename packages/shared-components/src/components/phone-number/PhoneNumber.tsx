@@ -4,6 +4,7 @@ import {
   FieldSize,
   formatPhoneNumber,
   removeAllSpaces,
+  TEXTS,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import clsx from 'clsx';
 import { useCallback, useEffect, useState } from 'react';
@@ -12,20 +13,20 @@ import { useComponentUtils } from '../../context/component/componentUtilsContext
 import { PhoneNumberObject } from '../../formio/components/core/phone-number/PhoneNumber';
 import { FieldsetErrorMessage } from '../error/FieldsetErrorMessage';
 import { usePhoneNumberStyles } from './styles';
+import { getInitialPhoneNumber } from './utils';
 
 interface Props {
   label: React.ReactNode;
   description?: React.ReactNode;
   className?: string;
-  value?: string | PhoneNumberObject;
+  value: string | PhoneNumberObject;
   onChange: (value: any) => void;
   error?: React.ReactNode;
   readOnly?: boolean;
   fieldSize?: FieldSize;
   required?: boolean;
   customLabels?: CustomLabels;
-  showAreaCode?: boolean;
-  onBlur: (value: any) => void;
+  showAreaCode: boolean;
 }
 
 type AreaCode = { value: string; label: string };
@@ -35,25 +36,26 @@ type PhoneNumber = {
   number: string;
 };
 
-const PhoneNumber = ({ value, onChange, showAreaCode, onBlur, error }: Props) => {
+const PhoneNumber = ({ value, onChange, showAreaCode, error }: Props) => {
   const { appConfig } = useComponentUtils();
   const [areaCodes, setAreaCodes] = useState<AreaCode[]>([]);
   const [fetchError, setFetchError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
-  const [phoneNumber, setPhoneNumber] = useState<PhoneNumber | string>();
+  const [phoneNumber, setPhoneNumber] = useState<PhoneNumber | string>(getInitialPhoneNumber(value, showAreaCode));
   const styles = usePhoneNumberStyles();
+  const defaultAreaCode = '+47';
 
   const fetchAreaCodes = useCallback(async () => {
+    setFetchError(null);
+    setLoading(true);
     try {
-      setFetchError(null);
-      setLoading(true);
       const data = await getAreaCodes(appConfig.fyllutBaseURL);
       setAreaCodes(data);
-      setLoading(false);
     } catch (error) {
-      setLoading(false);
-      setFetchError(error as string);
+      setFetchError(error instanceof Error ? error.message : String(error));
       setAreaCodes([]);
+    } finally {
+      setLoading(false);
     }
   }, [appConfig.fyllutBaseURL]);
 
@@ -85,23 +87,14 @@ const PhoneNumber = ({ value, onChange, showAreaCode, onBlur, error }: Props) =>
       const { areaCode, number } = phoneNumber;
       const updated = { ...phoneNumber, number: formatPhoneNumber(number, areaCode) };
       setPhoneNumber(updated);
-      onChange(updated);
-      onBlur(updated);
-    } else if (!showAreaCode && typeof phoneNumber === 'string') {
-      const updated = formatPhoneNumber(phoneNumber, '+47');
-      setPhoneNumber(updated);
-      onChange(updated);
-      onBlur(updated);
     }
   }
 
   function handleFocus() {
     if (showAreaCode && typeof phoneNumber === 'object' && phoneNumber) {
       setPhoneNumber({ ...phoneNumber, number: removeAllSpaces(phoneNumber.number) });
-      onChange(removeAllSpaces(phoneNumber.number));
     } else if (!showAreaCode && typeof phoneNumber === 'string') {
       setPhoneNumber(removeAllSpaces(phoneNumber));
-      onChange(removeAllSpaces(phoneNumber));
     }
   }
 
@@ -112,11 +105,15 @@ const PhoneNumber = ({ value, onChange, showAreaCode, onBlur, error }: Props) =>
       <div className={clsx('input--xxl', styles.wrapper)}>
         {showAreaCode && (
           <Select
-            label={'Landskode'}
+            label={TEXTS.statiske.phoneNumber.areaCodeLabel}
             hideLabel
-            className={styles.areaCodesSelect}
+            className={clsx(
+              typeof phoneNumber === 'object' && phoneNumber.areaCode.length === 3
+                ? styles.areaCodesSelect65
+                : styles.areaCodesSelect75,
+            )}
             onChange={(event) => handleChange(event.target.value, 'areaCode')}
-            defaultValue={typeof phoneNumber === 'object' && phoneNumber ? phoneNumber.areaCode || '+47' : '+47'}
+            defaultValue={typeof value === 'object' && value ? value.areaCode : defaultAreaCode}
           >
             {areaCodes?.map((areaCode) => (
               <option key={areaCode.value} value={areaCode.value}>
@@ -127,12 +124,12 @@ const PhoneNumber = ({ value, onChange, showAreaCode, onBlur, error }: Props) =>
         )}
         <TextField
           hideLabel
-          label="Telefonnummer"
+          label={TEXTS.statiske.phoneNumber.phoneNumberLabel}
           type="tel"
           className={styles.phoneNumber}
           onChange={(event) => handleChange(event.target.value, 'number')}
           onBlur={handleBlur}
-          defaultValue={typeof value === 'object' && value ? formatPhoneNumber(value.number, value.areaCode) : value}
+          value={typeof phoneNumber === 'object' && phoneNumber ? phoneNumber.number : phoneNumber}
           onFocus={handleFocus}
         />
       </div>

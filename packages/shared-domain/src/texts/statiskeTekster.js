@@ -288,4 +288,8 @@ export const statiske = {
       message: 'Dette kan skyldes at søknaden allerede er sendt inn eller avsluttet.',
     },
   },
+  phoneNumber: {
+    areaCodeLabel: 'Landskode',
+    phoneNumberLabel: 'Telefonnummer',
+  },
 };

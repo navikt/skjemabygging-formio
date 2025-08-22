@@ -1,4 +1,4 @@
-import { formatPhoneNumber } from '@navikt/skjemadigitalisering-shared-domain';
+import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import NavPhoneNumber from '../../../../components/phone-number/PhoneNumber';
 import { ComponentUtilsProvider } from '../../../../context/component/componentUtilsContext';
 import BaseComponent from '../../base/BaseComponent';
@@ -33,11 +33,42 @@ export default class PhoneNumber extends BaseComponent {
   }
 
   getShowAreaCode() {
-    return this.component?.showAreaCode;
+    return this.component?.showAreaCode || false;
   }
 
-  onBlur(value: string) {
-    super.setValueOnReactInstance(formatPhoneNumber(value, '+47'));
+  checkComponentValidity(data, dirty, row, options = {}) {
+    if (this.getReadOnly()) {
+      return true;
+    }
+
+    const validity = super.checkComponentValidity(data, dirty, row, options);
+
+    if (validity) {
+      const errorMessage = this.validateTextfield();
+      if (errorMessage) {
+        return this.setComponentValidity([this.createError(errorMessage, undefined)], dirty, undefined);
+      }
+    }
+    return validity;
+  }
+
+  private validateTextfield(): string | undefined {
+    const value = this.getValue();
+
+    if (value === '' || value === undefined) {
+      return;
+    }
+
+    const isPhoneNumberObject = typeof value === 'object' && value !== null && 'areaCode' in value && 'number' in value;
+    const phoneNumber = isPhoneNumberObject ? value.number : value;
+    const areCode = isPhoneNumberObject && value.areaCode;
+    const containsDigitsOnly = RegExp(/^\d+$/).test(phoneNumber);
+    if (!containsDigitsOnly) {
+      return this.translateWithLabel(TEXTS.validering.digitsOnly);
+    }
+    if (this.getShowAreaCode() && areCode === '+47' && phoneNumber.length !== 8) {
+      return this.translateWithLabel(TEXTS.validering.phoneNumberLength);
+    }
   }
 
   renderReact(element) {
@@ -58,7 +89,6 @@ export default class PhoneNumber extends BaseComponent {
           customLabels={this.getCustomLabels()}
           showAreaCode={this.getShowAreaCode()}
           value={this.getValue() as PhoneNumberObject | string}
-          onBlur={this.onBlur.bind(this)}
           error={this.getError()}
         />
       </ComponentUtilsProvider>,

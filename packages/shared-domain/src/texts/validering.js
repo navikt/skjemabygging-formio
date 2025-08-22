@@ -15,6 +15,9 @@ export const validering = {
   digitsOnly: '{{field}} kan bare inneholde tall',
   containsInvalidCharacters: '{{field}} inneholder ugyldige tegn',
 
+  // PhoneNumber
+  phoneNumberLength: '{{field}} må ha 8 siffer',
+
   // Dato / tid
   invalid_date: '{{field}} er ikke en gyldig dato.',
   invalid_day: '{{field}} er ikke en gyldig dag.',

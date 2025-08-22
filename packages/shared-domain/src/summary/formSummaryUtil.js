@@ -534,46 +534,48 @@ function handleAddressValidity(
   return returnValues;
 }
 
-function handlePhoneNumberWithAreCodeSelector(component, submission, formSummaryObject, parentContainerKey, translate) {
-  if (!submission.data) {
-    return formSummaryObject;
-  }
+// function handlePhoneNumberWithAreCodeSelector(component, submission, formSummaryObject, parentContainerKey, translate) {
+//   if (!submission.data) {
+//     return formSummaryObject;
+//   }
+//
+//   const { key, label, components } = component;
+//   const componentKey = createComponentKey(parentContainerKey, key);
+//
+//   var componentWithType = (type) =>
+//     components.find((obj) => {
+//       console.log('objiii', JSON.stringify(obj));
+//
+//       return obj.type === type;
+//     });
 
-  const { key, label, components } = component;
-  const componentKey = createComponentKey(parentContainerKey, key);
+// const phoneNumberComponent = componentWithType('phoneNumber');
+// const areaCodeComponent = componentWithType('areaCodeSelector');
+//
+// if (!phoneNumberComponent || !areaCodeComponent) {
+//   return formSummaryObject;
+// }
+//
+// const submissionValue = FormioUtils.getValue(submission, componentKey);
+//
+// const phoneNumber = submissionValue?.[phoneNumberComponent.key];
+//
+// if (!phoneNumber) {
+//   return formSummaryObject;
+// }
+//
+// const areaCode = submissionValue[areaCodeComponent.key].value;
 
-  var componentWithType = (type) =>
-    components.find((obj) => {
-      return obj.type === type;
-    });
-
-  const phoneNumberComponent = componentWithType('phoneNumber');
-  const areaCodeComponent = componentWithType('areaCodeSelector');
-
-  if (!phoneNumberComponent || !areaCodeComponent) {
-    return formSummaryObject;
-  }
-
-  const submissionValue = FormioUtils.getValue(submission, componentKey);
-
-  const phoneNumber = submissionValue?.[phoneNumberComponent.key];
-
-  if (!phoneNumber) {
-    return formSummaryObject;
-  }
-
-  const areaCode = submissionValue[areaCodeComponent.key].value;
-
-  return [
-    ...formSummaryObject,
-    {
-      label: translate(label),
-      key,
-      type: 'phone',
-      value: `${areaCode} ${phoneNumber}`,
-    },
-  ];
-}
+// return [
+//   ...formSummaryObject,
+// {
+//   label: translate(label),
+//   key,
+//   type: 'phone',
+//   value: `${areaCode} ${phoneNumber}`,
+// },
+//   ];
+// }
 
 function handleAmountWithCurrencySelector(component, submission, formSummaryObject, parentContainerKey, translate) {
   if (!submission.data) {
@@ -636,6 +638,8 @@ function handleComponent(
     return formSummaryObject;
   }
   switch (component.type) {
+    case 'phoneNumber':
+      return submission;
     case 'panel':
       return handlePanel(
         component,
@@ -709,15 +713,6 @@ function handleComponent(
     case 'image':
       return formSummaryObject;
     case 'row':
-      if (component.isPhoneNumberWithAreaCodeSelector) {
-        return handlePhoneNumberWithAreCodeSelector(
-          component,
-          submission,
-          formSummaryObject,
-          parentContainerKey,
-          translate,
-        );
-      }
       if (component.isAmountWithCurrencySelector) {
         return handleAmountWithCurrencySelector(
           component,

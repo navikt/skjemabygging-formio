@@ -4,12 +4,12 @@ describe('Phone number with area code', () => {
       cy.defaultIntercepts();
       cy.visit('/fyllut/phonenumberareacode/skjema?sub=digital');
       cy.defaultWaits();
-      // cy.wait('@getAreaCodes');
+      cy.wait('@getAreaCodes');
     });
 
     const fillForm = (areaCode: string, phoneNumber: string) => {
-      cy.findByRole('combobox', { name: 'Velg landskode' }).should('exist').select(areaCode);
-      cy.findByRole('textbox', { name: 'Telefonnummer' }).should('exist').type(phoneNumber);
+      cy.findByRole('combobox').should('exist').select(areaCode);
+      cy.findByRole('textbox').should('exist').type(phoneNumber);
     };
 
     it('triggers errors', () => {
@@ -18,8 +18,21 @@ describe('Phone number with area code', () => {
       cy.get('[data-cy=error-summary]')
         .should('exist')
         .within(() => {
-          cy.findByRole('link', { name: 'Du må fylle ut: Velg landskode' }).should('exist');
           cy.findByRole('link', { name: 'Du må fylle ut: Telefonnummer' }).should('exist');
+        });
+      fillForm('+47', 'sdfd');
+      cy.get('[data-cy=error-summary]')
+        .should('exist')
+        .within(() => {
+          cy.findByRole('link', { name: 'Telefonnummer kan bare inneholde tall' }).should('exist');
+        });
+
+      cy.findByRole('textbox').should('exist').clear();
+      fillForm('+47', '888');
+      cy.get('[data-cy=error-summary]')
+        .should('exist')
+        .within(() => {
+          cy.findByRole('link', { name: 'Telefonnummer må ha 8 siffer' }).should('exist');
         });
     });
 
