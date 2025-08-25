@@ -12,7 +12,7 @@ const azureTokenHandler =
   async (req: Request, _res: Response, next: NextFunction) => {
     if (isDevelopment) {
       if (dev.token) {
-        req.headers.AzureAccessToken = dev.token;
+        req.headers[headerName] = dev.token;
         logger.info('Using pre-generated access token to fetch');
         return next();
       } else if (dev.skip) {

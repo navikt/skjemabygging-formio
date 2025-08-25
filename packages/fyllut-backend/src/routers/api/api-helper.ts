@@ -10,6 +10,7 @@ const {
   pdlTokenScopeCluster,
   tilleggsstonaderConfig,
   familiePdfGeneratorScope,
+  familiePdfDevToken,
   mergePdfScope,
   naisClusterName,
 } = appConfig;
@@ -25,7 +26,9 @@ const initApiConfig = () => {
     tokenxSendInn: tokenxHandler(sendInnConfig?.tokenxClientId),
     tokenxPdl: tokenxHandler(`${pdlTokenScopeCluster}:pdl:pdl-api`),
     tokenxTilleggsstonader: tokenxHandler(tilleggsstonaderConfig.tokenxClientId),
-    azurePdfGeneratorToken: azureTokenHandler(familiePdfGeneratorScope, 'PdfAccessToken'),
+    azurePdfGeneratorToken: azureTokenHandler(familiePdfGeneratorScope, 'PdfAccessToken', {
+      token: familiePdfDevToken,
+    }),
     azureMergePdfToken: azureTokenHandler(mergePdfScope, 'MergePdfToken'),
     nologinTokenHandler,
   };
