@@ -1,7 +1,7 @@
 import moment from 'moment';
 import 'moment/locale/nb';
 import attachmentUtils from '../attachment';
-import { numberUtils } from '../index';
+import { formatPhoneNumber, numberUtils } from '../index';
 import TEXTS from '../texts';
 import currencyUtils from '../utils/currencyUtils';
 import { dataFetcher } from '../utils/data-fetcher/DataFetcherUtils';
@@ -392,6 +392,40 @@ const handleDataFetcher = (component, submission, formSummaryObject, parentConta
   ];
 };
 
+const handlePhoneNumber = (component, submission, formSummaryObject, parentContainerKey, translate) => {
+  const { key, label, type, showAreaCode } = component;
+  const componentKey = createComponentKey(parentContainerKey, key);
+  const submissionValue = FormioUtils.getValue(submission, componentKey) || {};
+  if (
+    !submissionValue ||
+    (typeof submissionValue === 'object' && Object.keys(submissionValue).length === 0) ||
+    submissionValue === ''
+  ) {
+    return [...formSummaryObject];
+  }
+  if (showAreaCode && submissionValue.areaCode && submissionValue.number) {
+    return [
+      ...formSummaryObject,
+      {
+        label: translate(label),
+        key: componentKey,
+        type,
+        value: `${submissionValue.areaCode} ${formatPhoneNumber(submissionValue.number, submissionValue.areaCode)}`,
+      },
+    ];
+  }
+
+  return [
+    ...formSummaryObject,
+    {
+      label: translate(label),
+      key: componentKey,
+      type,
+      value: submissionValue,
+    },
+  ];
+};
+
 function handleSelectboxes(component, submission, formSummaryObject, parentContainerKey, translate) {
   const { key, label, type, values } = component;
   const componentKey = createComponentKey(parentContainerKey, key);
@@ -534,49 +568,6 @@ function handleAddressValidity(
   return returnValues;
 }
 
-// function handlePhoneNumberWithAreCodeSelector(component, submission, formSummaryObject, parentContainerKey, translate) {
-//   if (!submission.data) {
-//     return formSummaryObject;
-//   }
-//
-//   const { key, label, components } = component;
-//   const componentKey = createComponentKey(parentContainerKey, key);
-//
-//   var componentWithType = (type) =>
-//     components.find((obj) => {
-//       console.log('objiii', JSON.stringify(obj));
-//
-//       return obj.type === type;
-//     });
-
-// const phoneNumberComponent = componentWithType('phoneNumber');
-// const areaCodeComponent = componentWithType('areaCodeSelector');
-//
-// if (!phoneNumberComponent || !areaCodeComponent) {
-//   return formSummaryObject;
-// }
-//
-// const submissionValue = FormioUtils.getValue(submission, componentKey);
-//
-// const phoneNumber = submissionValue?.[phoneNumberComponent.key];
-//
-// if (!phoneNumber) {
-//   return formSummaryObject;
-// }
-//
-// const areaCode = submissionValue[areaCodeComponent.key].value;
-
-// return [
-//   ...formSummaryObject,
-// {
-//   label: translate(label),
-//   key,
-//   type: 'phone',
-//   value: `${areaCode} ${phoneNumber}`,
-// },
-//   ];
-// }
-
 function handleAmountWithCurrencySelector(component, submission, formSummaryObject, parentContainerKey, translate) {
   if (!submission.data) {
     return formSummaryObject;
@@ -638,8 +629,6 @@ function handleComponent(
     return formSummaryObject;
   }
   switch (component.type) {
-    case 'phoneNumber':
-      return submission;
     case 'panel':
       return handlePanel(
         component,
@@ -692,6 +681,8 @@ function handleComponent(
       );
     case 'dataFetcher':
       return handleDataFetcher(component, submission, formSummaryObject, parentContainerKey, translate);
+    case 'phoneNumber':
+      return handlePhoneNumber(component, submission, formSummaryObject, parentContainerKey, translate);
     case 'selectboxes':
       return handleSelectboxes(component, submission, formSummaryObject, parentContainerKey, translate);
     case 'navCheckbox':

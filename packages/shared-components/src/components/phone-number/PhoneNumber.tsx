@@ -1,4 +1,4 @@
-import { Select, TextField } from '@navikt/ds-react';
+import { BodyShort, Select, TextField } from '@navikt/ds-react';
 import {
   CustomLabels,
   FieldSize,
@@ -98,7 +98,7 @@ const PhoneNumber = ({ value, onChange, showAreaCode, error }: Props) => {
     }
   }
 
-  if (fetchError) return <p>En feil oppsto under uthenting av landskoder</p>;
+  if (fetchError) return <BodyShort>{TEXTS.statiske.phoneNumber.fetchError}</BodyShort>;
 
   return (
     <div>

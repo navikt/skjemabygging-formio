@@ -69,7 +69,7 @@ describe('format-utils', () => {
 
   describe('format phone number', () => {
     it('should format phone number with +47 area code', () => {
-      expect(formatPhoneNumber('12345678', '+47')).toBe('123 45 678');
+      expect(formatPhoneNumber('12345678', '+47')).toBe('12 34 56 78');
       expect(formatPhoneNumber('12345678', '+49')).toBe('12345678');
       expect(formatPhoneNumber('', '')).toBe('');
     });

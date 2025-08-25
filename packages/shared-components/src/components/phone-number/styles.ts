@@ -3,7 +3,7 @@ import makeStyles from '../../util/styles/jss/jss';
 export const usePhoneNumberStyles = makeStyles({
   wrapper: {
     display: 'flex',
-    gap: '.5rem',
+    gap: '0.5rem',
   },
   areaCodesSelect75: {
     flex: 0.75,
