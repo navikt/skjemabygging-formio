@@ -17,7 +17,6 @@ interface AttachmentUploadContextType {
   addError: (attachmentId: string, error: string) => void;
   setCaptchaValue: (value: Record<string, string>) => void;
   removeError: (attachmentId: string) => void;
-  uploadedFiles: UploadedFile[];
   submissionAttachments: SubmissionAttachment[];
   changeAttachmentValue: (attachmentId: string, value?: string, description?: string) => void;
   errors: Record<string, string | undefined>;
@@ -31,7 +30,6 @@ const initialContext: AttachmentUploadContextType = {
   addError: () => {},
   setCaptchaValue: () => {},
   removeError: () => {},
-  uploadedFiles: [],
   submissionAttachments: [],
   changeAttachmentValue: () => {},
   errors: {},
@@ -47,8 +45,6 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
   const { translate } = useLanguages();
   const [captchaValue, setCaptchaValue] = useState<Record<string, string>>({});
   const [errors, setErrors] = useState<Record<string, string | undefined>>({});
-
-  const uploadedFiles = submission?.uploadedFiles ?? [];
 
   const addFileToSubmission = (file: UploadedFile) => {
     setSubmission((current) => {
@@ -68,12 +64,17 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
     });
   };
 
-  const removeFileFromSubmission = (fileId: string) => {
+  const removeFileFromSubmission = (attachmentId: string, fileId: string) => {
     setSubmission(
       (current) =>
         ({
           ...current,
-          uploadedFiles: (current?.uploadedFiles ?? []).filter((file) => file.fileId !== fileId),
+          attachments: (current?.attachments ?? []).map((att) => {
+            if (att.attachmentId === attachmentId) {
+              return { ...att, files: (att.files ?? []).filter((file) => file.fileId !== fileId) };
+            }
+            return att;
+          }),
         }) as Submission,
     );
   };
@@ -83,7 +84,12 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
       (current) =>
         ({
           ...current,
-          uploadedFiles: (current?.uploadedFiles ?? []).filter((file) => file.attachmentId !== attachmentId),
+          attachments: (current?.attachments ?? []).map((att) => {
+            if (att.attachmentId === attachmentId) {
+              return { ...att, files: [] };
+            }
+            return att;
+          }),
         }) as Submission,
     );
   };
@@ -139,7 +145,7 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
     try {
       removeError(attachmentId);
       await deleteFile(fileId, nologinToken);
-      removeFileFromSubmission(fileId);
+      removeFileFromSubmission(attachmentId, fileId);
     } catch (error: any) {
       handleApiError(attachmentId, error, translate(TEXTS.statiske.uploadId.deleteFileError));
     }
@@ -159,7 +165,7 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
     try {
       setErrors({});
       await deleteAllFiles(nologinToken);
-      setSubmission((current) => ({ ...current, uploadedFiles: [] }) as Submission);
+      setSubmission((current) => ({ ...current, attachments: [] }) as Submission);
     } catch (error: any) {
       handleApiError('allFiles', error, translate(TEXTS.statiske.uploadId.deleteAllFilesError));
       throw error;
@@ -194,7 +200,6 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
     addError,
     setCaptchaValue,
     removeError,
-    uploadedFiles,
     changeAttachmentValue,
     submissionAttachments: submission?.attachments ?? [],
     errors,
