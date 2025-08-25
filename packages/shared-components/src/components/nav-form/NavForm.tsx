@@ -61,6 +61,7 @@ interface Props {
   fyllutEvents?: any;
   events?: EventProps;
   hash?: string;
+  setTitle?: (title: string) => void;
 }
 
 /**
@@ -76,6 +77,7 @@ const NavForm = ({
   className,
   events,
   hash,
+  setTitle,
 }: Props) => {
   useStyles();
   const [webform, setWebform] = useState<Webform>();
@@ -229,6 +231,12 @@ const NavForm = ({
       webform.focusOnComponent({ path: decodeURIComponent(fragmentPath) });
     }
   }, [webform, hash]);
+
+  useEffect(() => {
+    if (webform?.currentPanel?.title && setTitle) {
+      setTitle(webform.currentPanel.title);
+    }
+  }, [webform?.currentPanel?.title, setTitle]);
 
   return <div className={className} data-testid="formMountElement" ref={ref} />;
 };
