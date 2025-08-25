@@ -20,10 +20,12 @@ const initApiConfig = () => {
     azureM2MSkjemabyggingProxy: azureTokenHandler(skjemabyggingProxyClientId!, 'AzureAccessToken'),
     azureM2MPdl: azureTokenHandler(`${pdlTokenScopeCluster}.pdl.pdl-api`, 'AzureAccessToken'),
     azureM2MSendInn: azureTokenHandler(`${naisClusterName}.team-soknad.innsending-api`, 'AzureAccessToken', {
-      token: sendInnConfig.devToken,
+      token: sendInnConfig.devM2MToken,
     }),
     kodeverkToken: azureTokenHandler(kodeverk.scope!, 'AzureAccessToken', { skip: true }),
-    tokenxSendInn: tokenxHandler(sendInnConfig?.tokenxClientId),
+    tokenxSendInn: tokenxHandler(sendInnConfig?.tokenxClientId, {
+      token: sendInnConfig.devOBOToken,
+    }),
     tokenxPdl: tokenxHandler(`${pdlTokenScopeCluster}:pdl:pdl-api`),
     tokenxTilleggsstonader: tokenxHandler(tilleggsstonaderConfig.tokenxClientId),
     azurePdfGeneratorToken: azureTokenHandler(familiePdfGeneratorScope, 'PdfAccessToken', {
