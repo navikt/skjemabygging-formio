@@ -13,6 +13,7 @@ import Styles from '../../styles';
 import { scrollToAndSetFocus } from '../../util/focus-management/focus-management';
 import { PanelValidation, validateWizardPanels } from '../../util/form/panel-validation/panelValidation';
 import makeStyles from '../../util/styles/jss/jss';
+import FormMainContent from '../FormMainContent';
 
 const useStyles = makeStyles({
   '@global': {
@@ -115,7 +116,7 @@ export function SummaryPage() {
 
   return (
     <div className={styles.content}>
-      <section id="maincontent" className="formio-form" tabIndex={-1}>
+      <FormMainContent>
         <div className="main-col">
           {!hasValidationErrors && (
             <BodyShort className="mb-4">{translate(TEXTS.statiske.summaryPage.description)}</BodyShort>
@@ -162,15 +163,15 @@ export function SummaryPage() {
               }}
             />
           )}
-          <SummaryPageNavigation
-            form={form}
-            submission={submission}
-            formUrl={formUrl}
-            panelValidationList={panelValidationList}
-            isValid={isValid}
-          />
         </div>
-      </section>
+      </FormMainContent>
+      <SummaryPageNavigation
+        form={form}
+        submission={submission}
+        formUrl={formUrl}
+        panelValidationList={panelValidationList}
+        isValid={isValid}
+      />
       <div id="formio-summary-hidden" hidden />
     </div>
   );

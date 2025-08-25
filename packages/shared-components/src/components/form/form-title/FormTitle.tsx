@@ -1,4 +1,4 @@
-import { BodyLong, Heading, Tag } from '@navikt/ds-react';
+import { Heading, Tag } from '@navikt/ds-react';
 import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import classNames from 'classnames';
 import { useLanguages } from '../../../context/languages';
@@ -14,6 +14,9 @@ export interface Props {
 const useStyles = makeStyles({
   titleHeader: {
     marginBottom: 'var(--a-spacing-10)',
+  },
+  normalFontWeight: {
+    fontWeight: 'normal',
   },
   titleIcon: {
     position: 'relative',
@@ -46,8 +49,12 @@ export function FormTitle({ form, title, hideIconOnMobile }: Props) {
       <div className={classNames(styles.titleIcon, { [styles.titleIconHidden]: hideIconOnMobile })}>
         <FormIcon className={styles.titleIconSvg} />
       </div>
-      {title && <BodyLong textColor="subtle">{translate(form.title)}</BodyLong>}
-      <Heading level="1" size="xlarge">
+      {title && (
+        <Heading level="1" size="xsmall" textColor="subtle" className={styles.normalFontWeight}>
+          {translate(form.title)}
+        </Heading>
+      )}
+      <Heading level={title ? '2' : '1'} size="xlarge" id="page-title">
         {translate(header)}
       </Heading>
       {form.properties && form.properties.skjemanummer && (

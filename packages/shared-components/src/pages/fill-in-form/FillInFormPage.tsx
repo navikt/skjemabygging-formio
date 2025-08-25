@@ -22,6 +22,7 @@ import { KeyOrFocusComponentId } from '../../formio/overrides/wizard-overrides.j
 import { LoadingComponent } from '../../index';
 import { scrollToAndSetFocus } from '../../util/focus-management/focus-management';
 import urlUtils from '../../util/url/url';
+import FormMainContent from '../FormMainContent';
 import FormErrorSummary from './FormErrorSummary';
 
 type ModalType = 'save' | 'delete' | 'discard';
@@ -168,24 +169,26 @@ export const FillInFormPage = () => {
           focusOnComponent={focusOnComponent}
           ref={(ref) => (errorSummaryRef.current = ref)}
         />
-        <NavForm
-          form={formForRendering}
-          language={currentLanguage}
-          i18n={translationsForNavForm}
-          submission={submission}
-          fyllutEvents={fyllutEvents}
-          className="nav-form"
-          events={{
-            onShowErrors,
-            onErrorSummaryFocus,
-            onSubmissionChanged,
-            onSubmissionMetadataChanged,
-            onNavigationPathsChanged,
-            onFocusOnComponentPageChanged,
-          }}
-          hash={hash}
-          setTitle={setTitle}
-        />
+        <FormMainContent>
+          <NavForm
+            form={formForRendering}
+            language={currentLanguage}
+            i18n={translationsForNavForm}
+            submission={submission}
+            fyllutEvents={fyllutEvents}
+            className="nav-form"
+            events={{
+              onShowErrors,
+              onErrorSummaryFocus,
+              onSubmissionChanged,
+              onSubmissionMetadataChanged,
+              onNavigationPathsChanged,
+              onFocusOnComponentPageChanged,
+            }}
+            hash={hash}
+            setTitle={setTitle}
+          />
+        </FormMainContent>
         <FormSavedStatus submission={submission} />
         <FormError error={submission?.fyllutState?.mellomlagring?.error} />
         <FormNavigation

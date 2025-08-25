@@ -6,20 +6,11 @@ import NavigateButtonComponent from '../../components/button/navigation/pages/Na
 import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
 import { scrollToAndSetFocus } from '../../util/focus-management/focus-management';
-import makeStyles from '../../util/styles/jss/jss';
-
-const useStyles = makeStyles({
-  content: {
-    width: '100%',
-    display: 'flex',
-    flexDirection: 'column',
-  },
-});
+import FormMainContent from '../FormMainContent';
 
 export function PrepareIngenInnsendingPage() {
   useEffect(() => scrollToAndSetFocus('main', 'start'), []);
   const { translate } = useLanguages();
-  const styles = useStyles();
   const { form, submission, formUrl, setFormProgressVisible, setTitle } = useForm();
 
   useEffect(() => {
@@ -28,8 +19,8 @@ export function PrepareIngenInnsendingPage() {
   }, [form, setFormProgressVisible, setTitle]);
 
   return (
-    <div className={styles.content}>
-      <section aria-label={translate(form.properties.innsendingOverskrift)}>
+    <>
+      <FormMainContent>
         <BodyShort className="mb">{translate(form.properties.innsendingForklaring)}</BodyShort>
         <div className="mb-4">
           <DownloadCoverPageAndApplicationButton
@@ -41,8 +32,8 @@ export function PrepareIngenInnsendingPage() {
             {translate(form.properties.downloadPdfButtonText || TEXTS.grensesnitt.downloadApplication)}
           </DownloadCoverPageAndApplicationButton>
         </div>
-        <NavigateButtonComponent goBackUrl={`${formUrl}/oppsummering`} />
-      </section>
-    </div>
+      </FormMainContent>
+      <NavigateButtonComponent goBackUrl={`${formUrl}/oppsummering`} />
+    </>
   );
 }
