@@ -164,7 +164,7 @@ describe('Mellomlagring', () => {
       );
       cy.defaultWaits();
       cy.wait('@getMellomlagringValid');
-      cy.findByRole('heading', { name: 'Gave', level: 1 }).should('be.visible');
+      cy.findByRole('heading', { name: 'Gave', level: 2 }).should('be.visible');
       testMellomlagringConfirmationModal(
         TEXTS.grensesnitt.navigation.cancelAndDelete,
         TEXTS.grensesnitt.confirmDeletePrompt,
@@ -181,7 +181,7 @@ describe('Mellomlagring', () => {
       );
       cy.defaultWaits();
       cy.wait('@getMellomlagringForInnsendingWithUpdateError');
-      cy.findByRole('heading', { name: 'Gave', level: 1 }).should('be.visible');
+      cy.findByRole('heading', { name: 'Gave', level: 2 }).should('be.visible');
 
       cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.saveDraft }).click();
       const body = TEXTS.grensesnitt.confirmSavePrompt.body.replace('{{date}}', '10.01.2024').trim();

@@ -58,7 +58,7 @@ describe('Basic form', () => {
     if (expectVedleggspanel) {
       // Steg 2 -> Steg 3
       cy.clickNextStep();
-      cy.findByRole('heading', { level: 1, name: 'Vedlegg' }).should('exist');
+      cy.findByRole('heading', { level: 2, name: 'Vedlegg' }).should('exist');
       cy.findByLabelText('Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved.')
         .should('exist')
         .check({ force: true });
@@ -66,7 +66,7 @@ describe('Basic form', () => {
 
     // Step 3 -> Oppsummering
     clickNext(submissionMethod);
-    cy.findByRoleWhenAttached('heading', { level: 1, name: 'Oppsummering' }).should('exist');
+    cy.findByRoleWhenAttached('heading', { level: 2, name: 'Oppsummering' }).should('exist');
 
     // Gå tilbake til skjema fra oppsummering, og naviger til oppsummering på nytt
     // for å verifisere at ingen valideringsfeil oppstår grunnet manglende verdier.
@@ -74,17 +74,17 @@ describe('Basic form', () => {
 
     clickNext(submissionMethod);
 
-    cy.findByRoleWhenAttached('heading', { level: 1, name: 'Dine opplysninger' }).should('exist');
+    cy.findByRoleWhenAttached('heading', { level: 2, name: 'Dine opplysninger' }).should('exist');
     cy.findByRoleWhenAttached('textbox', { name: 'Din fødselsdato (dd.mm.åååå)' }).should('exist');
     if (expectVedleggspanel) {
       cy.clickNextStep();
-      cy.findByRoleWhenAttached('heading', { level: 1, name: 'Vedlegg' }).should('exist');
+      cy.findByRoleWhenAttached('heading', { level: 2, name: 'Vedlegg' }).should('exist');
     }
 
     clickNext(submissionMethod);
 
     // Oppsummering
-    cy.findByRoleWhenAttached('heading', { level: 1, name: 'Oppsummering' }).should('exist');
+    cy.findByRoleWhenAttached('heading', { level: 2, name: 'Oppsummering' }).should('exist');
     cy.get('dl')
       .eq(1)
       .within(() => {
@@ -122,16 +122,16 @@ describe('Basic form', () => {
 
     describe('Step navigation', () => {
       it("navigates to step 2 when 'neste steg' is clicked", { defaultCommandTimeout: 10000 }, () => {
-        cy.findByRole('heading', { level: 1, name: 'Veiledning' }).should('exist');
+        cy.findByRole('heading', { level: 2, name: 'Veiledning' }).should('exist');
 
         cy.clickNextStep();
-        cy.findByRole('heading', { level: 1, name: 'Dine opplysninger' }).should('exist');
+        cy.findByRole('heading', { level: 2, name: 'Dine opplysninger' }).should('exist');
       });
 
       it('validation errors stops navigation to step 3', () => {
         cy.clickNextStep();
         cy.clickNextStep();
-        cy.findByRole('heading', { level: 1, name: 'Dine opplysninger' });
+        cy.findByRole('heading', { level: 2, name: 'Dine opplysninger' });
         cy.get('[data-cy=error-summary]')
           .should('exist')
           .within(() => {

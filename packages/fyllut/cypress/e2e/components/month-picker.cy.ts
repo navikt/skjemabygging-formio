@@ -32,7 +32,7 @@ describe('Month picker', () => {
       cy.clickNextStep();
 
       // Summary
-      cy.findByRole('heading', { level: 1, name: 'Oppsummering' }).should('exist');
+      cy.findByRole('heading', { level: 2, name: 'Oppsummering' }).should('exist');
       cy.get('dl')
         .eq(0)
         .within(() => {
