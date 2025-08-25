@@ -17,6 +17,7 @@ import Image from './core/image/Image';
 import Maalgruppe from './core/maalgruppe/Maalgruppe';
 import MonthPicker from './core/monthpicker/MonthPicker';
 import Panel from './core/panel/Panel';
+import PhoneNumber from './core/phone-number/PhoneNumber';
 import Radio from './core/radio/Radio';
 import Row from './core/row/Row';
 import SelectBoxes from './core/select-boxes/SelectBoxes';
@@ -36,7 +37,6 @@ import NationalIdentityNumber from './extensions/national-identity-number/Nation
 import Number from './extensions/number/Number';
 import OrganizationNumber from './extensions/organization-number/OrganizationNumber';
 import Password from './extensions/password/Password';
-import PhoneNumber from './extensions/phone-number/PhoneNumber';
 import Surname from './extensions/surname/Surname';
 import Year from './extensions/year/Year';
 

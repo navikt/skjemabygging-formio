@@ -8,6 +8,7 @@
       "get-kodeverk-currencies:success",
       "get-kodeverk-temakoder:success",
       "get-kodeverk-enhetstyper:success",
+      "get-kodeverk-area-codes:success",
       "get-tokenx-endpoint:success",
       "post-tokenx:success",
       "post-soknad:success",

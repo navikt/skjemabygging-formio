@@ -213,6 +213,12 @@ export class Backend {
     }).then((response) => response.data);
   }
 
+  async fetchAreaCodes() {
+    return fetchWithErrorHandling(`${this.config.fyllut.baseUrl}/api/common-codes/area-codes`, {
+      method: 'GET',
+    }).then((response) => response.data);
+  }
+
   async fetchPublishedForm(formPath: string) {
     const skjemautfyllingRepo = await this.createGitHubRepo();
     const filePath = getFormFilePath(formPath);
