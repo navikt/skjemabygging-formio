@@ -8,20 +8,24 @@ import {
   FileUpload,
   HStack,
   Label,
-  Radio,
-  RadioGroup,
   ReadMore,
   Textarea,
   TextField,
   VStack,
 } from '@navikt/ds-react';
-import { AttachmentOption, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  AttachmentOption,
+  AttachmentSettingValues,
+  SubmissionAttachmentValue,
+  TEXTS,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import clsx from 'clsx';
 import { useState } from 'react';
 import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
 import { htmlUtils } from '../../index';
 import InnerHtml from '../inner-html/InnerHtml';
+import Attachment from './Attachment';
 import { useAttachmentUpload } from './AttachmentUploadContext';
 import { useAttachmentStyles } from './styles';
 
@@ -47,17 +51,24 @@ const AttachmentUpload = ({ label, options, attachmentId, description, otherAtta
     errors,
   } = useAttachmentUpload();
   const { form } = useForm();
-  const isIdUpload = attachmentId === 'personal-id';
-
   const attachment = submissionAttachments.find((attachment) => attachment.attachmentId === attachmentId);
+  const [value, setValue] = useState<keyof AttachmentSettingValues | undefined>(attachment?.value);
+  const isIdUpload = attachmentId === 'personal-id';
   const uploadedAttachmentFiles = attachment?.files ?? [];
-  // const uploadedAttachmentFiles = uploadedFiles.filter((file) => file.attachmentId === attachmentId);
-
   const showDeadline = attachment?.value && (attachment.value === 'ettersender' || attachment.value === 'andre');
   const selectedAdditionalDocumentation = options.find(
     (option) => option.value === attachment?.value,
   )?.additionalDocumentation;
   const error = errors[attachmentId];
+
+  const handleValueChange = (value: SubmissionAttachmentValue) => {
+    setValue(value.key);
+    if (isIdUpload) {
+      changeAttachmentValue(attachmentId, undefined, options.find((option) => option.value === value.key)?.label);
+    } else {
+      changeAttachmentValue(attachmentId, value.key, value.additionalDocumentation);
+    }
+  };
 
   const handleUpload = async (fileList: FileObject[] | null) => {
     const file = fileList?.[0];
@@ -73,7 +84,7 @@ const AttachmentUpload = ({ label, options, attachmentId, description, otherAtta
     await handleDeleteFile(attachmentId, fileId);
   };
 
-  const uploadSelected = !!options.find((option) => option.value === attachment?.value)?.upload;
+  const uploadSelected = !!options.find((option) => option.value === value)?.upload;
 
   const deadline = form.properties?.ettersendelsesfrist;
 
@@ -94,38 +105,22 @@ const AttachmentUpload = ({ label, options, attachmentId, description, otherAtta
   return (
     <VStack gap="8" className={clsx('mb', className)}>
       {!(isIdUpload && uploadedAttachmentFiles.length > 0) && (
-        <RadioGroup
-          legend={label}
-          onChange={(value) => {
-            console.log(
-              'Radio value changed:',
-              value,
-              options.find((option) => option.value === value),
-            );
-            // FIXME: personal-id should set description instead of value, but that doesn't work with file upload display
-            return changeAttachmentValue(attachmentId, value);
-            // return isIdUpload
-            //   ? changeAttachmentValue(attachmentId, undefined, options.find((option) => option.value === value)?.label)
-            //   : changeAttachmentValue(attachmentId, value);
-          }}
-          // onChange={(value) => setRadioState((prev) => ({ ...prev, [attachmentId]: value }))}
+        <Attachment
+          title={label}
           description={description}
-          defaultValue={attachment?.value}
-        >
-          {!uploadedAttachmentFiles.length &&
-            options.map((option) => (
-              <Radio key={option.value} value={option.value}>
-                {option.label}
-              </Radio>
-            ))}
-        </RadioGroup>
+          error={error}
+          value={value ? { key: value } : undefined}
+          attachmentValues={options}
+          onChange={handleValueChange}
+          translate={translate}
+          deadline={deadline}
+        />
       )}
       {uploadSelected && (
         <VStack gap="4">
           {isIdUpload && <Label>{translate(TEXTS.statiske.uploadId.selectFileLabel)}</Label>}
 
           {!otherAttachment && uploadedAttachmentFiles.length < 1 && (
-            // {!otherAttachment && uploadedFiles.filter((file) => file.attachmentId === attachmentId).length < 1 && (
             <FileUpload.Trigger onSelect={handleUpload}>
               <Button
                 className={styles.button}

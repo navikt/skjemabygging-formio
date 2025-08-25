@@ -22,8 +22,8 @@ interface Props {
 
 const Attachment = forwardRef<HTMLFieldSetElement, Props>(
   ({ attachmentValues, value, title, description, error, onChange, translate, deadline }: Props, ref) => {
-    const additionalDocumentation = attachmentValues?.[value?.key]?.additionalDocumentation;
-    const showDeadline = !!attachmentValues?.[value?.key]?.showDeadline;
+    const additionalDocumentation = attachmentValues?.[value?.key ?? '']?.additionalDocumentation;
+    const showDeadline = !!attachmentValues?.[value?.key ?? '']?.showDeadline;
 
     const additionalDocumentationMaxLength = 200;
 
