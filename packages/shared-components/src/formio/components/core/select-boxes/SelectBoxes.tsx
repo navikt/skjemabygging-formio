@@ -1,5 +1,5 @@
+import { Formio } from '@formio/js';
 import { Checkbox, CheckboxGroup } from '@navikt/ds-react';
-import FormioSelectBoxes from 'formiojs/components/selectboxes/SelectBoxes';
 import { ComponentUtilsProvider } from '../../../../context/component/componentUtilsContext';
 import BaseComponent from '../../base/BaseComponent';
 import AdditionalDescription from '../../base/components/AdditionalDescription';
@@ -8,6 +8,8 @@ import Label from '../../base/components/Label';
 import { getSelectedValuesAsList, getSelectedValuesMap } from '../../utils';
 import selectBoxesBuilder from './SelectBoxes.builder';
 import selectBoxesForm from './SelectBoxes.form';
+
+const FormioSelectBoxes = Formio.Components.components.selectboxes;
 
 class SelectBoxes extends BaseComponent {
   static schema() {

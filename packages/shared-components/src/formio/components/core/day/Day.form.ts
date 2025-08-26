@@ -1,4 +1,7 @@
-import FormioDayEditForm from 'formiojs/components/day/Day.form';
+import { Formio } from '@formio/js';
+
+const Day = Formio.Components.components.day;
+const FormioDayEditForm = Day.editForm;
 
 const alertForm = () => {
   return FormioDayEditForm([

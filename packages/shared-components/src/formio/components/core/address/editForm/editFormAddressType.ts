@@ -4,18 +4,19 @@ interface PropertyOptions {
   customConditional?: string;
 }
 
-interface AddressComponent extends Component {
+type AddressComponent = Component & {
   values: {
     value: AddressType;
     label: string;
   }[];
-}
+};
 
 const editFormAddressType = (options: PropertyOptions): AddressComponent => {
   return {
     type: 'radiopanel',
     label: 'Adressetype',
     key: 'addressType',
+    input: true,
     values: [
       {
         value: 'NORWEGIAN_ADDRESS',

@@ -7,10 +7,12 @@ const editFormQueryParams = (): Component => {
     keyLabel: 'Parameter',
     key: 'queryParams',
     addAnother: 'Legg til',
+    input: true,
     valueComponent: {
       type: 'textfield',
       key: 'value',
       label: 'Verdi',
+      input: true,
     },
   };
 };

@@ -13,6 +13,7 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
   _reactRendered = Ready();
   _reactRefs: Record<string, HTMLElement> = {};
   _logger?: ComponentLogger;
+  _focusData: any = null; // holds focus data if we need to set focus when react refs/instance is ready
 
   constructor(component, options, data) {
     super(component, options, data);
@@ -156,9 +157,12 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
   }
 
   addRef(name: string, ref: HTMLElement | null) {
-    this.logger.debug('addRef', { name, action: ref ? 'add' : 'remove', path: this.path });
+    this.logger.debug('addRef', { name, action: ref ? 'add' : 'remove', path: this.path, focusData: this._focusData });
     if (ref) {
       this._reactRefs[name] = ref;
+      if (this._focusData) {
+        this.focus(this._focusData);
+      }
     } else {
       delete this._reactRefs[name];
     }
@@ -240,9 +244,18 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
       this.logger.debug('focus reactReady', { focusData, path: this.path, reactInstanceExists: !!this.reactInstance });
       const { elementId } = focusData;
       if (elementId) {
-        this.getRef(elementId)?.focus();
+        const ref = this.getRef(elementId);
+        if (ref) {
+          ref.focus();
+          this._focusData = null;
+        } else {
+          this._focusData = focusData;
+        }
       } else if (this.reactInstance) {
         this.reactInstance.focus(focusData);
+        this._focusData = null;
+      } else {
+        this._focusData = focusData;
       }
     });
   }

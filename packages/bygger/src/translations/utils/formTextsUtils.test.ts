@@ -538,11 +538,13 @@ describe('utils', () => {
           label: 'Panel',
           type: 'panel',
           key: 'panel',
+          input: false,
           components: [
             {
               label: 'Alertstripe',
               type: 'alertstripe',
               key: 'alertstripe',
+              input: false,
               content:
                 '<p>Nav sender svar.\n<br>\nSe <a href="https://www.nav.no/person/" target="_blank">link</a>.</p>',
             },

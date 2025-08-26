@@ -1,4 +1,4 @@
-import FormioUtilsOriginal from 'formiojs/utils';
+import FormioUtils from '@formio/js/utils';
 import getCustomUtils from './utils-custom';
 import getOverrides from './utils-overrides';
 
@@ -15,10 +15,10 @@ import getOverrides from './utils-overrides';
  *
  * Her kommer dirty hack for at ting også skal fungere under utvikling lokalt:
  */
-const FormioUtils =
-  Object.keys(FormioUtilsOriginal).length === 1 && FormioUtilsOriginal.default
-    ? FormioUtilsOriginal.default
-    : FormioUtilsOriginal;
+// const FormioUtils =
+//   Object.keys(FormioUtilsOriginal).length === 1 && FormioUtilsOriginal.default
+//     ? FormioUtilsOriginal.default
+//     : FormioUtilsOriginal;
 
 const overrides = getOverrides(FormioUtils);
 Object.assign(FormioUtils, overrides);
@@ -26,6 +26,9 @@ Object.assign(FormioUtils, overrides);
 const customUtils = getCustomUtils(FormioUtils);
 Object.assign(FormioUtils, customUtils);
 
-FormioUtils.overrideFunctionNames = [...Object.keys(overrides), ...Object.keys(customUtils)];
+const overrideFunctionNames = {
+  overrideFunctionNames: [...Object.keys(overrides), ...Object.keys(customUtils)],
+};
+Object.assign(FormioUtils, overrideFunctionNames);
 
 export default FormioUtils;

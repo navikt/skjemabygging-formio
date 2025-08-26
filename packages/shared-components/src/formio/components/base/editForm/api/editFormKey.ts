@@ -4,6 +4,7 @@ const editFormKey = (): Component => {
   return {
     type: 'textfield',
     key: 'key',
+    input: true,
     label: 'Nøkkel',
     validate: {
       pattern: '(\\w|\\w[\\w-.]*\\w)',

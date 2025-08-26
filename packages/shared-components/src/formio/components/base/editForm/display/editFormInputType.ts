@@ -5,6 +5,7 @@ const editFormInputType = (): Component => {
     type: 'select',
     label: 'Input type',
     key: 'inputType',
+    input: true,
     dataSrc: 'values',
     data: {
       values: [

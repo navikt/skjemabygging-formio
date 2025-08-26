@@ -18,6 +18,7 @@ const editFormTitleSizeField = (options: TitleSizeOptions): Component => {
     type: 'select',
     label: 'Tittelstørrelse',
     key: 'titleSize',
+    input: true,
     dataSrc: 'values',
     defaultValue: 'small',
     data: {

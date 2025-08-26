@@ -5,6 +5,7 @@ const editFormLegend = (): Component => {
     type: 'textfield',
     key: 'legend',
     label: 'Ledetekst',
+    input: true,
     validate: {
       required: true,
     },

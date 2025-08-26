@@ -10,11 +10,13 @@ const editFormCustomValidation = (): Component => {
     label: '',
     collapsible: true,
     collapsed: true,
+    input: false,
     components: [
       {
         ...editFormAceEditor('javascript'),
         key: 'validate.custom',
         hideLabel: true,
+        input: true,
         validate: {
           required: false,
         },
@@ -22,6 +24,7 @@ const editFormCustomValidation = (): Component => {
       {
         type: 'htmlelement',
         key: 'description',
+        input: false,
         label: '',
         tag: 'div',
         content: `
@@ -37,6 +40,7 @@ const editFormCustomValidation = (): Component => {
         title: 'Hjelp',
         collapsible: true,
         collapsed: true,
+        input: false,
         components: [
           {
             ...editFormVariablesTable('<tr><th>form</th><td>Skjemaet sitt objekt.</td></tr>'),

@@ -9,11 +9,13 @@ const editFormCustomError = (): Component => {
     collapsible: true,
     collapsed: true,
     key: 'errors',
+    input: false,
     components: [
       {
         ...editFormAceEditor('json'),
         key: 'errors',
         hideLabel: true,
+        input: true,
         validate: {
           required: false,
         },
@@ -23,6 +25,7 @@ const editFormCustomError = (): Component => {
         key: 'errorDescription',
         label: '',
         tag: 'div',
+        input: false,
         content: `
           <p>Du kan sette forskjellige feilmeldinger på forskjellige feil</p>
 

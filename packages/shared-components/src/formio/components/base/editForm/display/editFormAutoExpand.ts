@@ -5,6 +5,7 @@ const editFormAutoExpand = (): Component => {
     type: 'checkbox',
     key: 'autoExpand',
     label: 'Utvid automatisk',
+    input: true,
     conditional: {
       json: {
         '==': [{ var: 'data.editor' }, ''],

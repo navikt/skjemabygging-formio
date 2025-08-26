@@ -1,5 +1,7 @@
-import FormioContainer from 'formiojs/components/container/Container';
+import { Formio } from '@formio/js';
 import containerForm from './Container.form';
+
+const FormioContainer = Formio.Components.components.container;
 
 class Container extends FormioContainer {
   static schema(...extend) {

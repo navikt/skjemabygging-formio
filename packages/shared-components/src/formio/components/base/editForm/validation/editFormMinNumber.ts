@@ -11,6 +11,7 @@ const editFormMinNumber = (options?: Options): Component => {
     type: 'number',
     label,
     key: 'validate.min',
+    input: true,
   };
 };
 

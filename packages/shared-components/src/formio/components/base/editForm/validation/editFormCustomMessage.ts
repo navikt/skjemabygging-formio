@@ -5,6 +5,7 @@ const editFormCustomMessage = (): Component => {
     key: 'validate.customMessage',
     label: 'Egen feilmelding',
     type: 'textfield',
+    input: true,
   };
 };
 

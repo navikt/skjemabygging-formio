@@ -1,3 +1,4 @@
+import type { Component as FormioComponent } from '@formio/core/types';
 import { AccordionSettingValues } from '../accordion';
 import { AttachmentSettingValues } from '../attachment';
 import { DataFetcherSourceId } from '../data-fetcher';
@@ -29,7 +30,7 @@ export interface CustomLabels {
   [key: string]: string;
 }
 
-export interface Component {
+export type Component = FormioComponent & {
   id?: string;
   navId?: string;
   key: string;
@@ -130,13 +131,13 @@ export interface Component {
   protectedApiKey?: boolean;
   yourInformation?: boolean;
   widthPercent?: number;
-}
+};
 
-export interface DataFetcherComponent extends Component {
+export type DataFetcherComponent = Component & {
   queryParams?: Record<string, string>;
   showOther: boolean;
   dataFetcherSourceId: DataFetcherSourceId;
-}
+};
 
 export interface ComponentProperties {
   vedleggstittel?: string;
@@ -150,9 +151,9 @@ export interface Attachment {
   label?: string;
 }
 
-export interface Panel extends Component {
+export type Panel = Component & {
   title: string;
-}
+};
 
 export interface ComponentValidate {
   custom?: string;

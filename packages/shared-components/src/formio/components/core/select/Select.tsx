@@ -1,5 +1,5 @@
+import { Utils } from '@formio/js';
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { Utils } from 'formiojs';
 import { useEffect, useState } from 'react';
 import ReactSelect, { components, OnChangeValue } from 'react-select';
 import Select from 'react-select/base';

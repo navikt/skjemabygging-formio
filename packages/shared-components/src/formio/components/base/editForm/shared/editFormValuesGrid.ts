@@ -13,6 +13,7 @@ const editFormValuesGrid = (options: Options = { withDescription: false, minLeng
     key: 'description',
     type: 'textfield',
     hideLabel: true,
+    input: true,
     validate: {
       required: false,
     },
@@ -22,6 +23,7 @@ const editFormValuesGrid = (options: Options = { withDescription: false, minLeng
     key: '',
     type: 'datagrid',
     label: 'Dataverdier',
+    input: true,
     reorder: true,
     validate: {
       minLength: options.minLength,
@@ -31,6 +33,7 @@ const editFormValuesGrid = (options: Options = { withDescription: false, minLeng
         label: 'Ledetekst',
         key: 'label',
         type: 'textfield',
+        input: true,
         hideLabel: true,
         validate: {
           required: true,
@@ -40,6 +43,7 @@ const editFormValuesGrid = (options: Options = { withDescription: false, minLeng
         label: 'Dataverdi',
         key: 'value',
         type: 'textfield',
+        input: true,
         hideLabel: true,
         allowCalculateOverride: true,
         calculateValue: 'value = _.camelCase(row.label);',

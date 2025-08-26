@@ -5,6 +5,7 @@ const editFormClearOnHide = (): Component => {
     type: 'checkbox',
     label: 'Nullstill verdi når feltet skjules',
     key: 'clearOnHide',
+    input: true,
     defaultValue: true,
   };
 };

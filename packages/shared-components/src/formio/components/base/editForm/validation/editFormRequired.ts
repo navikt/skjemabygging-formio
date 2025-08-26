@@ -5,6 +5,7 @@ const editFormRequired = (): Component => {
     type: 'checkbox',
     label: 'Påkrevd',
     key: 'validate.required',
+    input: true,
   };
 };
 

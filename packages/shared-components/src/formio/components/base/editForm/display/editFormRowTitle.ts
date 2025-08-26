@@ -5,6 +5,7 @@ const editFormRowTitle = (): Component => {
     type: 'textfield',
     label: 'Ledetekst per rad',
     key: 'rowTitle',
+    input: true,
   };
 };
 

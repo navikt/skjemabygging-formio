@@ -1,4 +1,4 @@
-import FormioUtils from 'formiojs/utils';
+import FormioUtils from '@formio/js/utils';
 import FormioReactComponent from './FormioReactComponent';
 
 /**
@@ -33,6 +33,7 @@ export const focusHandler =
 export const blurHandler =
   (thisComponent: FormioReactComponent, opts: Opts = {}) =>
   () => {
+    // @ts-expect-error delay exists but not in type
     thisComponent.root.pendingBlur = FormioUtils.delay(() => {
       if (!opts.skipEmit) {
         thisComponent.emit('blur', thisComponent);

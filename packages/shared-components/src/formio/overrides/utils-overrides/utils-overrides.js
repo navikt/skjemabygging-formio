@@ -1,5 +1,5 @@
+import { Formio, Utils } from '@formio/js';
 import { formDiffingTool, navFormioUtils } from '@navikt/skjemadigitalisering-shared-domain';
-import { Formio, Utils } from 'formiojs';
 
 const navFormDiffToHtml = (diffSummary) => {
   try {

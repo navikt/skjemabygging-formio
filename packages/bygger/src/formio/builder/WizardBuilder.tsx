@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { NavFormioJs } from '@navikt/skjemadigitalisering-shared-components';
 import { formDiffingTool, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
 

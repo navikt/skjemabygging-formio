@@ -5,6 +5,7 @@ const editFormRemoveAnother = (): Component => {
     type: 'textfield',
     label: 'Ledetekst på fjern knapp',
     key: 'removeAnother',
+    input: true,
   };
 };
 

@@ -9,6 +9,7 @@ interface ReadOnlyOptions {
 const editFormReadOnly = (options?: ReadOnlyOptions): Component => {
   return {
     type: 'checkbox',
+    input: true,
     label: 'Skrivebeskyttet',
     key: 'readOnly',
     defaultValue: false,

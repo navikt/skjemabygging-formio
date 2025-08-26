@@ -5,6 +5,7 @@ const editFormButtonText = (): Component => {
     type: 'textfield',
     key: 'buttonText',
     label: 'Tekst',
+    input: true,
     validate: {
       required: true,
     },

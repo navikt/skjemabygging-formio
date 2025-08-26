@@ -6,6 +6,7 @@ const editFormFieldSizeField = (): Component => {
     label: 'Feltstørrelse',
     key: 'fieldSize',
     dataSrc: 'values',
+    input: true,
     data: {
       values: [
         { label: 'XXL (standard)', value: 'input--xxl' },

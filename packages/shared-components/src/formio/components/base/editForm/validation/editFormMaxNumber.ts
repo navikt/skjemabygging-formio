@@ -11,6 +11,7 @@ const editFormMaxNumber = (options?: Options): Component => {
     type: 'number',
     label,
     key: 'validate.max',
+    input: true,
   };
 };
 

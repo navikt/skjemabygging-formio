@@ -68,7 +68,7 @@ const getLabelsAndDescriptions = (values?: Array<{ label: string; value: string;
 
 const getContent = (content: string | undefined): string | undefined => {
   if (content) {
-    // @ts-expect-error Formio.js runs code that changes the original text before translating, and to avoid mismatch in translation object keys we need to do the same.
+    // Formio.js runs code that changes the original text before translating, and to avoid mismatch in translation object keys we need to do the same.
     return NavFormioJs.Utils.translateHTMLTemplate(content, (text) => text);
   }
   return content;

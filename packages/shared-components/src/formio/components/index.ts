@@ -1,4 +1,4 @@
-import FormioTextArea from 'formiojs/components/textarea/TextArea';
+import { Formio } from '@formio/js';
 import Accordion from './core/accordion/Accordion';
 import Activities from './core/activities/Activities';
 import Address from './core/address/Address';
@@ -39,6 +39,8 @@ import Password from './extensions/password/Password';
 import PhoneNumber from './extensions/phone-number/PhoneNumber';
 import Surname from './extensions/surname/Surname';
 import Year from './extensions/year/Year';
+
+const FormioTextArea = Formio.Components.components.textarea;
 
 const customComponents = {
   container: Container,

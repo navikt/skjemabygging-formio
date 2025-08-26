@@ -7,6 +7,7 @@ const editFormAceEditor = (type: 'html' | 'javascript' | 'json'): Component => {
     label: '',
     rows: 5,
     editor: 'ace',
+    input: true,
     wysiwyg: {
       minLines: 5,
       mode: `ace/mode/${type}`,

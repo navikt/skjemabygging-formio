@@ -6,6 +6,7 @@ const editFormBackgroundColor = (): Component => {
     label: 'Bakgrunnsfarge',
     key: 'backgroundColor',
     defaultValue: true,
+    input: true,
   };
 };
 

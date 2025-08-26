@@ -4,6 +4,7 @@ import editFormContent from '../display/editFormContent';
 const editFormAccordionGrid = (): Component => ({
   key: 'accordionValues',
   type: 'datagrid',
+  input: true,
   label: 'Trekkspill dataverdier',
   reorder: false,
   isNavDataGrid: true,
@@ -20,6 +21,7 @@ const editFormAccordionGrid = (): Component => ({
       label: 'Tittel',
       key: 'title',
       type: 'textfield',
+      input: true,
       validate: {
         required: true,
       },

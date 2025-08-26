@@ -6,6 +6,7 @@ const editFormImage = (): Component => {
     fileMaxSize: '1MB',
     label: 'Last opp fil',
     key: 'image',
+    input: true,
     storage: 'base64',
     image: true,
     filePattern: '.png, .jpg, .jpeg',

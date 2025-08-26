@@ -5,6 +5,7 @@ const editFormMaxYear = (): Component => {
     type: 'year',
     label: 'Maksimum år',
     key: 'validate.maxYear',
+    input: true,
   };
 };
 

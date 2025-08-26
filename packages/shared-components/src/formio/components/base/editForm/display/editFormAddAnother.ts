@@ -5,6 +5,7 @@ const editFormAddAnother = (): Component => {
     type: 'textfield',
     label: 'Ledetekst på legg til knapp',
     key: 'addAnother',
+    input: true,
   };
 };
 

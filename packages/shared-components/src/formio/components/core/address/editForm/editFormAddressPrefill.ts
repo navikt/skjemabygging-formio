@@ -8,6 +8,7 @@ const editFormAddressPrefill = (options: PropertyOptions): Component => {
   return {
     type: 'radiopanel',
     label: 'Adresse prioritet',
+    input: true,
     description:
       'Velg hvilken adresse man skal prioritere ved henting fra PDL. ' +
       'Hvis man ikke finner valgt adresse, prøver vi hente adressene i følgene rekkefølge: bosted, opphold og kontakt.',

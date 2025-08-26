@@ -1,8 +1,10 @@
+import { Formio } from '@formio/js';
 import { Component, ComponentError, CustomLabels, FieldSize, Tkey } from '@navikt/skjemadigitalisering-shared-domain';
-import Field from 'formiojs/components/_classes/field/Field';
 import { TFunction, TOptions } from 'i18next';
 import FormioReactComponent from './FormioReactComponent';
 import baseComponentUtils from './baseComponentUtils';
+
+const Field = Formio.Components.components.field;
 
 /**
  * When creating a custom component that extends BaseComponent,
@@ -118,7 +120,7 @@ class BaseComponent extends FormioReactComponent {
    * Get language code for custom component renderReact()
    */
   getLocale() {
-    return this.root.i18next.language;
+    return this.root.i18next?.language;
   }
 
   /**
@@ -194,7 +196,7 @@ class BaseComponent extends FormioReactComponent {
    * @param elementId is only needed if the error concerns a specific input field inside a custom component
    */
   addError(message: string, elementId?: string) {
-    if (message && this.showErrorMessages()) {
+    if (message) {
       this.logger.debug('addError', { errorMessage: message, elementId });
       this.componentErrors.push(this.createError(message, elementId));
     }
@@ -223,7 +225,8 @@ class BaseComponent extends FormioReactComponent {
   }
 
   setComponentValidity(messages, dirty, silentCheck) {
-    if (messages.length && (!silentCheck || this.error) && this.showErrorMessages()) {
+    this.logger.debug(`setComponentValidity`, { messages, dirty, silentCheck, path: this.path });
+    if (messages.length && (!silentCheck || this.errors[0].message) && this.showErrorMessages()) {
       this.setCustomValidity(messages, dirty);
     } else {
       this.setCustomValidity('');
@@ -259,7 +262,7 @@ class BaseComponent extends FormioReactComponent {
   }
 
   getComponentError(elementId?: string) {
-    return this.componentErrors.find((error) => error.elementId === elementId)?.message;
+    return !this.builderMode ? this.componentErrors.find((error) => error.elementId === elementId)?.message : undefined;
   }
 
   /**
@@ -269,8 +272,17 @@ class BaseComponent extends FormioReactComponent {
    * editFormDialog: When user have open a form dialog in the form builder
    */
   showErrorMessages() {
+    const isOnCurrentPage = baseComponentUtils.isOnCurrentPage(this);
+    this.logger.debug('showErrorMessages', {
+      nextPageClicked: this.root.currentPage?.nextPageClicked,
+      submitted: this.root.submitted,
+      builderMode: this.builderMode,
+      editFormDialogSaveClicked: this.root.editFormDialogSaveClicked,
+      path: this.path,
+      isOnCurrentPage,
+    });
     return (
-      (this.root.currentPage?.nextPageClicked && baseComponentUtils.isOnCurrentPage(this)) ||
+      (this.root.currentPage?.nextPageClicked && isOnCurrentPage) ||
       this.root.submitted ||
       this.builderMode ||
       this.root.editFormDialogSaveClicked

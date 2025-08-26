@@ -11,10 +11,12 @@ const editFormAdditionalDescription = (options?: PropertyOptions): Component => 
     title: 'Utvidet beskrivelse (valgfri)',
     key: 'additionalDescription',
     label: '',
+    input: false,
     components: [
       {
         ...editFormWysiwygEditor(false),
         key: 'additionalDescriptionText',
+        input: true,
         hideLabel: true,
         validate: {
           required: false,
@@ -26,6 +28,7 @@ const editFormAdditionalDescription = (options?: PropertyOptions): Component => 
       {
         type: 'textfield',
         key: 'additionalDescriptionLabel',
+        input: true,
         label: 'Lenketekst for utvidet beskrivelse',
         validate: {
           required: false,

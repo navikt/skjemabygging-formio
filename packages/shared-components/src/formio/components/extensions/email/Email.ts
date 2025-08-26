@@ -33,7 +33,6 @@ class Email extends TextField {
 
   init() {
     super.init();
-    this.validators.push('email');
   }
 }
 

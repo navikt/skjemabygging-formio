@@ -1,5 +1,5 @@
+import { Formio } from '@formio/js';
 import { act, render } from '@testing-library/react';
-import { Formio } from 'formiojs';
 import { AppConfigProvider, NavForm } from '../src';
 
 const setupNavFormio = () => {

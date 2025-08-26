@@ -13,6 +13,7 @@ const yourInformationBuilder = () => {
       key: 'dineOpplysninger',
       label: 'Dine opplysninger',
       yourInformation: true,
+      input: true,
       components: [
         {
           ...firstNameBuilder().schema,

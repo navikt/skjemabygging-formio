@@ -1,5 +1,7 @@
-import FormioPanel from 'formiojs/components/panel/Panel';
+import { Formio } from '@formio/js';
 import panelForm from './Panel.form';
+
+const FormioPanel = Formio.Components.components.panel;
 
 class Panel extends FormioPanel {
   static schema() {

@@ -11,6 +11,7 @@ const editFormWysiwygEditor = (heading: boolean = true): Component => {
   return {
     type: 'formioTextArea',
     key: 'wysiwygEditor',
+    input: true,
     label: '',
     rows: 5,
     editor: 'ckeditor',

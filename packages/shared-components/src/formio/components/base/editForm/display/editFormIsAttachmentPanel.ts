@@ -5,6 +5,7 @@ const editFormIsAttachmentPanel = (): Component => {
     type: 'navCheckbox',
     label: 'Vedleggspanel',
     key: 'isAttachmentPanel',
+    input: true,
     defaultValue: false,
     additionalDescriptionLabel: 'Hva innebærer dette?',
     additionalDescriptionText:

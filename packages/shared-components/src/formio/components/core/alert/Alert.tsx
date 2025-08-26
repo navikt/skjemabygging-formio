@@ -1,5 +1,5 @@
+import { Formio } from '@formio/js';
 import { AlertProps, Alert as NavAlert } from '@navikt/ds-react';
-import Field from 'formiojs/components/_classes/field/Field';
 import InnerHtml from '../../../../components/inner-html/InnerHtml';
 import { ComponentUtilsProvider } from '../../../../context/component/componentUtilsContext';
 import BaseComponent from '../../base/BaseComponent';
@@ -7,6 +7,8 @@ import DiffTag from '../../base/components/DiffTag';
 import TextDisplayTag from '../../base/components/TextDisplayTag';
 import alertBuilder from './Alert.builder';
 import alertForm from './Alert.form';
+
+const Field = Formio.Components.components.field;
 
 class Alert extends BaseComponent {
   static schema() {

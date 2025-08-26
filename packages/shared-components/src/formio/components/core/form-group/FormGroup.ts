@@ -1,5 +1,7 @@
-import Fieldset from 'formiojs/components/fieldset/Fieldset';
+import { Formio } from '@formio/js';
 import formGroupForm from './FormGroup.form';
+
+const Fieldset = Formio.Components.components.fieldset;
 
 class FormGroup extends Fieldset {
   static schema() {

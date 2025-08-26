@@ -5,6 +5,7 @@ const editShowYearPicker = (): Component => ({
   key: 'visArvelger',
   defaultValue: true,
   label: 'Vis årvelger i kalender',
+  input: true,
 });
 
 export default editShowYearPicker;

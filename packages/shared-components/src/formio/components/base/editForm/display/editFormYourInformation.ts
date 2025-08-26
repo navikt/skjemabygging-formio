@@ -6,6 +6,7 @@ const editFormYourInformation = (): Component => {
     alerttype: 'info',
     key: 'yourInformation',
     label: '',
+    input: false,
     customConditional: 'show = row.yourInformation',
     content:
       'Innholdet i denne beholderen brukes som avsender på førstesiden. ' +

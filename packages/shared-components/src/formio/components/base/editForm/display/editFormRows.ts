@@ -5,6 +5,7 @@ const editFormRows = (): Component => {
     type: 'number',
     key: 'rows',
     label: 'Antall rader',
+    input: true,
   };
 };
 

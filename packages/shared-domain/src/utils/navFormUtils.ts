@@ -120,6 +120,7 @@ export type DependencyType = 'conditional' | 'validation' | 'calculateValue';
 type Dependee = { component: Component; types: DependencyType[] };
 export const findDependeeComponents = (componentWithDependencies: Component, form: NavFormType) => {
   const dependees: Dependee[] = [];
+  // @ts-ignore
   FormioUtils.eachComponent(form.components, (potentialDependee: Component, path: string) => {
     if (potentialDependee.id !== componentWithDependencies.id) {
       const types: DependencyType[] = [];
@@ -169,6 +170,7 @@ function findClosest(type: string, id: string, form: NavFormType) {
 
 export const findDependentComponents = (id: string, form: NavFormType, evaluateClosestDatagrid: boolean = true) => {
   const idToPathMapping: { [s: string]: string } = {};
+  // @ts-ignore
   FormioUtils.eachComponent(form.components, (component: Component, path: string) => {
     idToPathMapping[component.id!] = path;
   });
@@ -239,7 +241,7 @@ export const isSubmissionMethodAllowed = (
 
 export const enrichComponentsWithNavIds = (
   components: Component[] | undefined,
-  navIdGenerator: () => string = FormioUtils.getRandomComponentId,
+  navIdGenerator: () => string = () => `e${Math.random().toString(36).substring(7)}`, //FormioUtils.getRandomComponentId,
 ): Component[] | undefined => {
   if (components) {
     return components.map((component) => {
@@ -318,13 +320,14 @@ const createDefaultForm = (config): Form => ({
 const replaceDuplicateNavIds = (form: NavFormType) => {
   const navIds: string[] = [];
 
-  FormioUtils.eachComponent(form.components, (comp) => {
+  // @ts-ignore
+  FormioUtils.eachComponent(form.components, (comp: Component) => {
     if (!comp.navId) {
       return;
     }
 
     if (navIds.includes(comp.navId)) {
-      comp.navId = FormioUtils.getRandomComponentId();
+      comp.navId = `e${Math.random().toString(36).substring(7)}`;
     } else {
       navIds.push(comp.navId);
     }

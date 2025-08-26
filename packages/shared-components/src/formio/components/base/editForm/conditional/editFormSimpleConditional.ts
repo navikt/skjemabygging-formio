@@ -1,5 +1,5 @@
+import { Utils } from '@formio/js';
 import { Component } from '@navikt/skjemadigitalisering-shared-domain';
-import { Utils } from 'formiojs';
 import getContextComponents = Utils.getContextComponents;
 
 const editFormSimpleConditional = (): Component => {
@@ -9,11 +9,13 @@ const editFormSimpleConditional = (): Component => {
     key: 'simple-conditional',
     label: '',
     theme: 'default',
+    input: false,
     components: [
       {
         type: 'select',
         label: 'Denne komponenten skal vises:',
         key: 'conditional.show',
+        input: true,
         dataSrc: 'values',
         data: {
           values: [
@@ -26,11 +28,12 @@ const editFormSimpleConditional = (): Component => {
         type: 'select',
         label: 'Når følgende komponent:',
         key: 'conditional.when',
+        input: true,
         dataSrc: 'custom',
         valueProperty: 'value',
         data: {
           custom(context) {
-            return getContextComponents(context);
+            return getContextComponents(context, false);
           },
         },
       },
@@ -38,6 +41,7 @@ const editFormSimpleConditional = (): Component => {
         type: 'textfield',
         label: 'Har verdien:',
         key: 'conditional.eq',
+        input: true,
       },
     ],
   };

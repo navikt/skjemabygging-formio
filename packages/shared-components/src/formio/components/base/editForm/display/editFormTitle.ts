@@ -5,6 +5,7 @@ const editFormTitle = (): Component => {
     type: 'textfield',
     key: 'title',
     label: 'Tittel',
+    input: true,
     validate: {
       required: true,
     },

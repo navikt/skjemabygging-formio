@@ -7,10 +7,12 @@ const editFormProperties = (): Component => {
     keyLabel: 'Nøkkel',
     key: 'properties',
     addAnother: 'Legg til',
+    input: true,
     valueComponent: {
       type: 'textfield',
       key: 'value',
       label: 'Verdi',
+      input: true,
     },
   };
 };

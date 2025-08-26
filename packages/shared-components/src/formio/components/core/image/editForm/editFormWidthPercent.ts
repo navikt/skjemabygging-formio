@@ -4,6 +4,7 @@ const editFormWidthPercent = (): Component => {
   return {
     label: 'Størrelse i prosent',
     fieldSize: 'input--xs',
+    input: true,
     validate: {
       required: true,
       min: 20,

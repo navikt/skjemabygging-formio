@@ -3,6 +3,7 @@ import { AttachmentSettingValues, AttachmentType, Component, TEXTS } from '@navi
 interface EditFormAttachmentComponent {
   key: keyof AttachmentSettingValues;
   label: string;
+  input: true;
   additionalDocumentation: boolean;
   showDeadline: boolean;
   customConditional?: string;
@@ -24,15 +25,20 @@ const additionalDocumentationComponents = () => {
     type: 'container',
     key: 'additionalDocumentation',
     label: '',
+    input: true,
+    tree: true,
+    lazyLoad: false,
     components: [
       {
         type: 'navCheckbox',
         key: 'enabled',
         label: 'Bruker må oppgi tilleggsinformasjon',
+        input: true,
       },
       {
         type: 'textfield',
         key: 'label',
+        input: true,
         customClass: 'ml',
         label: 'Ledetekst for tilleggsinformasjon',
         customConditional: showForRowEnabled(true),
@@ -43,6 +49,7 @@ const additionalDocumentationComponents = () => {
       {
         type: 'textfield',
         key: 'description',
+        input: true,
         customClass: 'ml',
         label: 'Beskrivelse av krav til tilleggsinformasjon',
         customConditional: showForRowEnabled(true),
@@ -68,6 +75,7 @@ const editFormAttachment = (): Component[] => {
       components.push({
         type: 'navCheckbox',
         key: 'showDeadline',
+        input: true,
         label: 'Informér bruker om ettersendelsesfrist (settes i skjemainnstillinger)',
       });
     }
@@ -81,10 +89,12 @@ const editFormAttachment = (): Component[] => {
       key: key,
       label: '',
       customConditional,
+      input: true,
       components: [
         {
           type: 'navCheckbox',
           key: 'enabled',
+          input: true,
           defaultValue: forceEnabled,
           readOnly: readOnly,
           label,
@@ -104,6 +114,7 @@ const editFormAttachment = (): Component[] => {
         {
           type: 'fieldset',
           key: '',
+          input: false,
           label: '',
           customClass: 'ml',
           customConditional: customConditionalOptions ? customConditionalOptions : showForRowEnabled(true),
@@ -119,6 +130,7 @@ const editFormAttachment = (): Component[] => {
       key: 'attachmentValues',
       label: '',
       hideLabel: true,
+      input: true,
       components: [
         {
           type: 'panel',
@@ -126,12 +138,14 @@ const editFormAttachment = (): Component[] => {
           label: '',
           title: 'Velg innsendingsalternativer for dette vedlegget',
           customClass: 'group-margin-small',
+          input: false,
           components: [
             component({
               key: 'leggerVedNaa',
               label: TEXTS.statiske.attachment.leggerVedNaa,
               additionalDocumentation: true,
               showDeadline: false,
+              input: true,
               customConditional: showForAttachmentType('default'),
             }),
             component({
@@ -139,6 +153,7 @@ const editFormAttachment = (): Component[] => {
               label: TEXTS.statiske.attachment.leggerVedNaa,
               additionalDocumentation: false,
               showDeadline: false,
+              input: true,
               customConditional: showForAttachmentType('other'),
               readOnly: true,
             }),
@@ -147,6 +162,7 @@ const editFormAttachment = (): Component[] => {
               label: TEXTS.statiske.attachment.ettersender,
               additionalDocumentation: true,
               showDeadline: true,
+              input: true,
               customConditional: showForAttachmentType('default'),
             }),
             component({
@@ -154,6 +170,7 @@ const editFormAttachment = (): Component[] => {
               label: TEXTS.statiske.attachment.nei,
               additionalDocumentation: false,
               showDeadline: false,
+              input: true,
               customConditional: showForAttachmentType('other'),
               forceEnabled: true,
               readOnly: true,
@@ -163,6 +180,7 @@ const editFormAttachment = (): Component[] => {
               label: TEXTS.statiske.attachment.levertTidligere,
               additionalDocumentation: true,
               showDeadline: false,
+              input: true,
               customConditional: showForAttachmentType('default'),
             }),
             component({
@@ -170,6 +188,7 @@ const editFormAttachment = (): Component[] => {
               label: TEXTS.statiske.attachment.harIkke,
               additionalDocumentation: true,
               showDeadline: false,
+              input: true,
               customConditional: showForAttachmentType('default'),
             }),
             component({
@@ -177,6 +196,7 @@ const editFormAttachment = (): Component[] => {
               label: TEXTS.statiske.attachment.andre,
               additionalDocumentation: true,
               showDeadline: true,
+              input: true,
               customConditional: showForAttachmentType('default'),
             }),
             component({
@@ -184,6 +204,7 @@ const editFormAttachment = (): Component[] => {
               label: TEXTS.statiske.attachment.nav,
               additionalDocumentation: true,
               showDeadline: false,
+              input: true,
               customConditional: showForAttachmentType('default'),
             }),
           ],

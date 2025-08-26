@@ -13,6 +13,7 @@ const editFormCustomLabels = (options: Options): Component => {
     key: `customLabels.${options.key}`,
     label: options.label,
     defaultValue: options.value,
+    input: true,
     validate: {
       required: true,
     },

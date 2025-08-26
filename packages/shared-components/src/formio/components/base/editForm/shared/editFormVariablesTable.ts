@@ -6,6 +6,7 @@ const editFormVariablesTable = (additional?: string): Component => {
     key: 'variablesTable',
     tag: 'div',
     label: '',
+    input: false,
     content:
       '<p>Følgende variabler er tilgjengelig.</p>' +
       '<table class="table table-bordered table-condensed table-striped">' +

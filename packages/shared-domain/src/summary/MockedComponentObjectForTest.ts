@@ -5,12 +5,14 @@ import { formioFormsApiUtils } from '../index';
 import FormioUtils from '../utils/formio/FormioUtils';
 
 const keyFromLabel = (label = '') => label.toLowerCase().replace(/\s/gi, '');
+// @ts-expect-error fix ts
 const createNavId = () => FormioUtils.getRandomComponentId();
 
 const createDummyCheckbox = (label = 'NavCheckbox', navId: string = createNavId()): Component => ({
   label,
   key: keyFromLabel(label),
   type: 'navCheckbox',
+  input: true,
   navId,
 });
 
@@ -18,6 +20,7 @@ const createDummyTextfield = (label = 'Tekstfelt', navId: string = createNavId()
   label,
   key: keyFromLabel(label),
   type: 'textfield',
+  input: true,
   navId,
 });
 
@@ -32,6 +35,7 @@ const createDummyImage = (label = 'Bilde', navId: string = createNavId()): Compo
     key: keyFromLabel(label),
     altText: 'Bilde beskrivelse',
     type: 'image',
+    input: false,
     widthPercent: 100,
     navId,
   }) as Component;
@@ -41,6 +45,7 @@ const createDummyEmail = (label = 'Email', navId: string = createNavId()): Compo
     label,
     key: keyFromLabel(label),
     type: 'email',
+    input: true,
     navId,
   }) as Component;
 
@@ -49,6 +54,7 @@ const createDummyLandvelger = (label = 'Land', navId: string = createNavId()): C
     label,
     key: keyFromLabel(label),
     type: 'landvelger',
+    input: true,
     navId,
   }) as Component;
 
@@ -69,6 +75,7 @@ const createDummyFlervalg = (
   label,
   key: keyFromLabel(label),
   type: 'flervalg',
+  input: true,
   values,
   navId,
 });
@@ -85,6 +92,7 @@ const createDummyRadioPanel = (
     label,
     key: keyFromLabel(label),
     type: 'radiopanel',
+    input: true,
     values,
     navId,
   }) as Component;
@@ -125,6 +133,7 @@ const createDummyAttachment = (
     label,
     key: keyFromLabel(label),
     type: 'attachment',
+    input: true,
     attachmentValues,
     properties,
     navId,
@@ -142,6 +151,7 @@ const createDummyRadioPanelWithNumberValues = (
     label,
     key: keyFromLabel(label),
     type: 'radiopanel',
+    input: true,
     values,
     navId,
   }) as Component;
@@ -159,6 +169,7 @@ const createDummySelectboxes = (
     label,
     key: keyFromLabel(label),
     type: 'selectboxes',
+    input: true,
     values,
     navId,
   }) as Component;
@@ -168,6 +179,7 @@ const createDummyContentElement = (label = 'Content', html?: string, navId: stri
     label,
     key: keyFromLabel(label),
     type: 'content',
+    input: false,
     html,
     navId,
   }) as Component;
@@ -182,6 +194,7 @@ const createDummyHTMLElement = (
     label,
     key: keyFromLabel(label),
     type: 'htmlelement',
+    input: false,
     contentForPdf,
     content,
     navId,
@@ -198,6 +211,7 @@ const createDummyAlertstripe = (
     label,
     key: keyFromLabel(label),
     type: 'alertstripe',
+    input: false,
     contentForPdf,
     conditional,
     content,
@@ -214,6 +228,7 @@ const createDummyContainerElement = (
     label,
     key: keyFromLabel(label),
     type: 'container',
+    input: true,
     components,
     hideLabel,
     navId,
@@ -229,6 +244,7 @@ const createDummyNavSkjemagruppe = (
     legend: `${label}-legend`,
     key: keyFromLabel(label),
     type: 'navSkjemagruppe',
+    input: false,
     components,
     navId,
   }) as Component;
@@ -239,6 +255,7 @@ const createDummyNavDatepicker = (label = 'NavSkjemagruppe', navId: string = cre
     legend: `${label}-legend`,
     key: keyFromLabel(label),
     type: 'navDatepicker',
+    input: true,
     navId,
   }) as Component;
 
@@ -255,6 +272,7 @@ const createDummyDataGrid = (
     rowTitle: 'datagrid-row-title',
     components,
     hideLabel,
+    input: true,
     navId,
   }) as Component;
 
@@ -262,6 +280,7 @@ const createDummyDayComponent = (label = 'Mnd/år', navId: string = createNavId(
   label,
   key: keyFromLabel(label),
   type: 'day',
+  input: true,
   navId,
 });
 
@@ -278,6 +297,7 @@ const createDummySelectComponent = (
   key: keyFromLabel(label),
   type: 'select',
   data: { values },
+  input: true,
   navId,
 });
 
@@ -286,6 +306,7 @@ const createDummyButtonComponent = (buttonText = 'Submit', label = 'Knapp', navI
   buttonText,
   key: keyFromLabel(label),
   type: 'button',
+  input: true,
   navId,
 });
 
@@ -343,6 +364,7 @@ const createDummyCurrencyField = (currency = 'NOK', label = 'Penger', navId: str
     label,
     key: keyFromLabel(label),
     type: 'currency',
+    input: true,
     currency,
     navId,
   }) as Component;
@@ -352,6 +374,7 @@ const createDummyNumberField = (prefix = '', suffix = '', label = 'Number', navI
     label,
     key: keyFromLabel(label),
     type: 'number',
+    input: true,
     prefix,
     suffix,
     navId,
@@ -362,16 +385,19 @@ const createDummyAmountWithCurrency = (label = 'AmountWithCurrency', navId: stri
     label,
     key: keyFromLabel(label),
     type: 'row',
+    input: false,
     components: [
       {
         label: 'Velg valuta',
         key: 'valutavelger',
         type: 'valutavelger',
+        input: true,
       },
       {
         label: 'Beløp',
         key: 'belop',
         type: 'number',
+        input: true,
       },
     ],
     isAmountWithCurrencySelector: true,
@@ -383,6 +409,7 @@ const createDummyBankAccountField = (label = 'bankAccount', navId: string = crea
     label,
     key: keyFromLabel(label),
     type: 'bankAccount',
+    input: true,
     navId,
   }) as Component;
 
@@ -391,6 +418,7 @@ const createDummyOrgNrField = (label = 'orgNr', navId: string = createNavId()): 
     label,
     key: keyFromLabel(label),
     type: 'orgNr',
+    input: true,
     navId,
   }) as Component;
 

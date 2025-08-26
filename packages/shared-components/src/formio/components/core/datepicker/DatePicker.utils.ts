@@ -1,5 +1,5 @@
+import { Utils } from '@formio/js';
 import { Component, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
-import FormioUtils from 'formiojs/utils';
 import BaseComponent from '../../base/BaseComponent';
 
 /**
@@ -18,7 +18,7 @@ const getBeforeDateInputPath = (components: Component[], beforeDateInputKey: str
     .flattenComponents(components)
     .filter(
       (component) =>
-        FormioUtils.getComponentPath(component) === beforeDateInputKey &&
+        Utils.getComponentPath(component) === beforeDateInputKey &&
         (!parentPath || component.path?.startsWith(parentPath)),
     )
     .map((component) => component.path);
@@ -32,14 +32,14 @@ const getBeforeDateInputPath = (components: Component[], beforeDateInputKey: str
  * @param instance
  */
 const getBeforeDateInputValue = (instance: BaseComponent) => {
-  let beforeDateInputPath = instance.component?.beforeDateInputKey;
+  let beforeDateInputPath = instance.component?.beforeDateInputKey ?? ''; // TODO blir det riktig å bruke '' her?
 
   if (beforeDateInputPath && /\./.test(beforeDateInputPath) && instance.component?.key) {
     const parentPath = instance.path?.slice(0, (instance.component?.key.length + 1) * -1);
-    beforeDateInputPath = getBeforeDateInputPath(instance.root.getComponents(), beforeDateInputPath, parentPath);
+    beforeDateInputPath = getBeforeDateInputPath(instance.root.getComponents(), beforeDateInputPath, parentPath) ?? '';
   }
 
-  return FormioUtils.getValue(instance.root.submission, beforeDateInputPath);
+  return Utils.getValue(instance.root.submission, beforeDateInputPath);
 };
 
 /**
@@ -48,7 +48,8 @@ const getBeforeDateInputValue = (instance: BaseComponent) => {
  * @param instance
  */
 const getComponentsWithDateInputKey = (instance: BaseComponent): Component[] => {
-  const beforeDateInputKey = FormioUtils.getComponentPath(instance);
+  // @ts-expect-error input is missing in type definition
+  const beforeDateInputKey = Utils.getComponentPath(instance);
   return navFormUtils
     .flattenComponents(instance.root.getComponents() as Component[])
     .filter((component) => component.component?.beforeDateInputKey === beforeDateInputKey);

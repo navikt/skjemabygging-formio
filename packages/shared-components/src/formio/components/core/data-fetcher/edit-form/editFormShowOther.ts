@@ -5,6 +5,7 @@ const editFormShowOther = (): Component => {
     type: 'checkbox',
     label: 'Legg til annet',
     key: 'showOther',
+    input: true,
     defaultValue: false,
   };
 };

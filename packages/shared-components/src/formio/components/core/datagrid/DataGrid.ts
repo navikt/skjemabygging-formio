@@ -1,8 +1,10 @@
-import Field from 'formiojs/components/_classes/field/Field';
-import FormioDataGrid from 'formiojs/components/datagrid/DataGrid';
+import { Formio } from '@formio/js';
 import { scrollToAndSetFocus } from '../../../../util/focus-management/focus-management';
 import dataGridBuilder from './DataGrid.builder';
 import dataGridForm from './DataGrid.form';
+
+const Field = Formio.Components.components.field;
+const FormioDataGrid = Formio.Components.components.datagrid;
 
 const originalRemoveRow = FormioDataGrid.prototype.removeRow;
 

@@ -1,6 +1,12 @@
-import { Component, NavFormType, Submission, Webform } from '@navikt/skjemadigitalisering-shared-domain';
+import { Formio } from '@formio/js';
+import {
+  Component,
+  NavFormType,
+  Submission,
+  navFormioUtils as Utils,
+  Webform,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import EventEmitter from 'eventemitter2';
-import { Formio, Utils } from 'formiojs';
 import { SANITIZE_CONFIG } from '../../formio/form-builder-options/sanitizeConfig';
 
 interface CreateOptions {
@@ -37,6 +43,7 @@ const prefillForm = (form?: NavFormType, prefillData?: any) => {
   if (form && prefillData && Object.keys(prefillData).length > 0) {
     const formCopy = JSON.parse(JSON.stringify(form));
 
+    // @ts-expect-error
     Utils.eachComponent(formCopy.components, (component: Component) => {
       if (component.prefillKey && prefillData[component.prefillKey]) {
         component.prefillValue = prefillData[component.prefillKey];

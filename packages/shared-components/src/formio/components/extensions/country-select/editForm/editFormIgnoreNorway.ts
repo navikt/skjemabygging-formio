@@ -6,6 +6,7 @@ const editFormIgnoreNorway = (): Component => {
     label: 'Skjul Norge',
     key: 'ignoreNorway',
     defaultValue: false,
+    input: true,
   };
 };
 

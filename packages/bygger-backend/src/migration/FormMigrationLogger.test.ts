@@ -58,13 +58,13 @@ describe('FormMigrationLogger', () => {
 
       beforeEach(() => {
         logger.add(
-          { ...componentA, customProperty: 'old value' } as Component,
-          { ...componentA, customProperty: 'new value' } as Component,
+          { ...componentA, customProperty: 'old value' } as unknown as Component,
+          { ...componentA, customProperty: 'new value' } as unknown as Component,
         );
         logger.add(idKeyAndLabel('no-changes'), idKeyAndLabel('no-changes'));
         logger.add(
-          { ...componentB, customProperty: 'old value' } as Component,
-          { ...componentB, customProperty: 'new value' } as Component,
+          { ...componentB, customProperty: 'old value' } as unknown as Component,
+          { ...componentB, customProperty: 'new value' } as unknown as Component,
         );
         log = logger.getLog();
       });

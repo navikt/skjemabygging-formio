@@ -11,15 +11,18 @@ const editFormCalculateValue = (): Component => {
     label: '',
     collapsible: true,
     collapsed: true,
+    input: false,
     components: [
       {
         ...editFormAceEditor('javascript'),
         key: 'calculateValue',
         hideLabel: true,
+        input: true,
       },
       {
         type: 'htmlelement',
         key: 'description',
+        input: false,
         label: '',
         tag: 'div',
         content: `
@@ -39,6 +42,7 @@ const editFormCalculateValue = (): Component => {
         type: 'panel',
         title: 'Hjelp',
         key: 'help',
+        input: false,
         label: '',
         collapsible: true,
         collapsed: true,

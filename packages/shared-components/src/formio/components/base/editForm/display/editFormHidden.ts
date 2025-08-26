@@ -14,6 +14,7 @@ const editFormHidden = (calculateValue: string): Component => {
     label: '',
     key: 'hidden',
     defaultValue: true,
+    input: true,
     calculateValue,
   };
 };

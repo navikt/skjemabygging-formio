@@ -1,5 +1,5 @@
+import { Formio } from '@formio/js';
 import { numberUtils, SubmissionData } from '@navikt/skjemadigitalisering-shared-domain';
-import FormioDay from 'formiojs/components/day/Day';
 import { TFunction } from 'i18next';
 import ReactMonthPicker from '../../../../components/monthpicker/MonthPicker';
 import { validateDate } from '../../../../components/monthpicker/monthPickerValidation';
@@ -10,6 +10,8 @@ import Description from '../../base/components/Description';
 import Label from '../../base/components/Label';
 import monthPickerBuilder from './MonthPicker.builder';
 import monthPickerForm from './MonthPicker.form';
+
+const FormioDay = Formio.Components.components.day;
 
 class MonthPicker extends BaseComponent {
   static schema() {

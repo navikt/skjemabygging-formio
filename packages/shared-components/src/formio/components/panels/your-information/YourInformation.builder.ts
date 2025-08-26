@@ -3,6 +3,7 @@ import yourInformationBuilder from '../../groups/your-information/YourInformatio
 const yourInformationPanelBuilder = () => {
   return {
     title: 'Dine opplysninger',
+    input: false,
     schema: {
       title: 'Dine opplysninger',
       type: 'panel',

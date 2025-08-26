@@ -1,4 +1,4 @@
-import { Formio, Utils } from 'formiojs';
+import { Formio, Utils } from '@formio/js';
 import focusOnComponent from './focusOnComponent';
 import { emitNavigationPathsChanged } from './navigationPaths';
 
@@ -99,15 +99,21 @@ Wizard.prototype.prevPage = () => {
 };
 
 Wizard.prototype.validateOnNextPage = function (currentPageOnly, validationResultCallback) {
+  console.log(`wiz: validateOnNextPage, currentPageOnly: ${currentPageOnly}, page: ${this.page}`);
   this.currentPage.nextPageClicked = true;
   if (!currentPageOnly) {
     this.root.submitted = true;
     this.root.submitting = true;
   }
+
+  // const currentPageErrors = this.validateCurrentPage({ dirty: true });
+  // console.log(`wiz: validateOnNextPage, currentPageErrors: ${currentPageErrors.length}, ${JSON.stringify(currentPageErrors)}`);
   const valid = this.checkValidity(this.localData, true, this.localData, currentPageOnly);
   if (validationResultCallback) {
+    // validationResultCallback(currentPageErrors.length === 0);
     validationResultCallback(valid);
   }
+  // if (currentPageErrors.length > 0) {
   if (!valid) {
     // this.currentPage.components.forEach((comp) => comp.setPristine(false)); // <- nødvendig?
 
@@ -119,7 +125,9 @@ Wizard.prototype.validateOnNextPage = function (currentPageOnly, validationResul
 const originalRebuild = Wizard.prototype.rebuild;
 Wizard.prototype.rebuild = function () {
   const currentPage = this.page;
+  console.log(`wiz: rebuild, currentPage: ${currentPage}`);
   const setCurrentPage = function () {
+    console.log(`wiz: rebuild, setCurrentPage after rebuild: ${currentPage}`);
     this.setPage(currentPage);
     this.emitNavigationPathsChanged();
   };
@@ -204,3 +212,5 @@ Wizard.prototype.init = function () {
   }
   return originalInit.call(this);
 };
+
+Wizard.prototype.isWizard = true;

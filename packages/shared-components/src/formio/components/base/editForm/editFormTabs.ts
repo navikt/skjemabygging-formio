@@ -6,6 +6,7 @@ const createTabs = (...components: Component[]): Partial<Component> => {
       {
         type: 'tabs',
         key: 'tabs',
+        input: false,
         label: '',
         components,
       },
@@ -17,6 +18,7 @@ const display = (components: Component[]): Component => {
     label: 'Visning',
     key: 'display',
     type: 'editFormTab',
+    input: false,
     weight: 0,
     components,
   };
@@ -27,6 +29,7 @@ const data = (components: Component[]): Component => {
     label: 'Data',
     key: 'data',
     type: 'editFormTab',
+    input: false,
     weight: 20,
     components,
   };
@@ -37,6 +40,7 @@ const validation = (components: Component[]): Component => {
     label: 'Validering',
     key: 'validation',
     type: 'editFormTab',
+    input: false,
     weight: 30,
     components,
   };
@@ -47,6 +51,7 @@ const api = (components: Component[]): Component => {
     label: 'API',
     key: 'api',
     type: 'editFormTab',
+    input: false,
     weight: 40,
     components,
   };
@@ -57,6 +62,7 @@ const conditional = (components: Component[]): Component => {
     label: 'Betinget visning',
     key: 'conditional',
     type: 'editFormTab',
+    input: false,
     weight: 50,
     components,
   };

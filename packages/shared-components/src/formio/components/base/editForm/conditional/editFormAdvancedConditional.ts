@@ -10,6 +10,7 @@ const editFormAdvancedConditional = (): Component => {
     label: '',
     collapsible: true,
     collapsed: true,
+    input: false,
     components: [
       {
         ...editFormAceEditor('javascript'),
@@ -21,6 +22,7 @@ const editFormAdvancedConditional = (): Component => {
         tag: 'div',
         key: 'description',
         label: '',
+        input: false,
         content: `
           <p>Du må tildele <strong>show</strong> variablen en boolean verdi.</p>
           <p><strong>NB:</strong> Avansert betinget visning vil overstyre enkel betinget visning.</p>
@@ -36,6 +38,7 @@ const editFormAdvancedConditional = (): Component => {
         label: '',
         collapsible: true,
         collapsed: true,
+        input: false,
         components: [
           {
             ...editFormVariablesTable(),

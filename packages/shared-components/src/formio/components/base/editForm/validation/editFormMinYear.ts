@@ -5,6 +5,7 @@ const editFormMinYear = (): Component => {
     type: 'year',
     label: 'Minimum år',
     key: 'validate.minYear',
+    input: true,
   };
 };
 
