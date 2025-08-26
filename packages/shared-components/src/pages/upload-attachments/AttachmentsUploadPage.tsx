@@ -21,15 +21,15 @@ export function AttachmentsUploadPage() {
   const { translate } = useLanguages();
   const { form, submission } = useForm();
   const styles = useStyles();
-  const attachmentPanels: Attachment[] = getAllAttachments(form, submission ?? ({} as Submission));
-  const attachmentIds = attachmentPanels.map((panel) => panel.navId);
+  const attachments: Attachment[] = getAllAttachments(form, submission ?? ({} as Submission));
+  const attachmentIds = attachments.map((panel) => panel.navId);
 
   return (
     <AttachmentUploadProvider>
-      {attachmentPanels.map(({ label, description, attachmentValues, navId, attachmentType }, index) => (
+      {attachments.map(({ label, description, attachmentValues, navId, attachmentType }, index) => (
         <AttachmentUpload
           key={navId}
-          className={clsx(index !== attachmentPanels.length - 1 && styles.attachmentUpload)}
+          className={clsx(index !== attachments.length - 1 && styles.attachmentUpload)}
           label={label}
           description={htmlUtils.extractTextContent(description as string)}
           options={mapKeysToOptions(attachmentValues as AttachmentOption[], translate)}
