@@ -9,7 +9,8 @@ export type TokenxConfig = {
 export type SendInnConfig = {
   host: string;
   tokenxClientId: string;
-  devToken?: string;
+  devM2MToken?: string;
+  devOBOToken?: string;
   paths: {
     opprettedeSoknaderForSkjema: (skjemanummer: string, soknadsTyper?: Array<'soknad' | 'ettersendelse'>) => string;
     soknad: string;
@@ -56,6 +57,7 @@ export type DefaultConfig = {
   skjemabyggingProxyClientId: string;
   familiePdfGeneratorUrl: string;
   familiePdfGeneratorScope: string;
+  familiePdfDevToken?: string;
   mergePdfScope: string;
   azureOpenidTokenEndpoint: string;
   clientId: string;

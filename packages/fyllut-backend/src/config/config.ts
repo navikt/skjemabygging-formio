@@ -87,6 +87,7 @@ const localDevelopmentConfig: DefaultConfig = {
   skjemabyggingProxyClientId: '95170319-b4d7-4190-8271-118ed19bafbf',
   familiePdfGeneratorUrl: process.env.FAMILIE_PDF_GENERATOR_URL || 'https://familie-pdf.intern.dev.nav.no',
   familiePdfGeneratorScope: process.env.FAMILIE_PDF_GENERATOR_SCOPE || 'dev-gcp.teamfamilie.familie-pdf',
+  familiePdfDevToken: process.env.FAMILIE_PDF_M2M_ACCESS_TOKEN,
   mergePdfScope: process.env.MERGE_PDF_SCOPE || 'dev-gcp.team-soknad.innsending-api',
   azureOpenidTokenEndpoint:
     process.env.AZURE_OPENID_CONFIG_TOKEN_ENDPOINT ||
@@ -103,7 +104,8 @@ const localDevelopmentConfig: DefaultConfig = {
   },
   sendInnConfig: {
     ...sendInnConfig,
-    devToken: process.env.INNSENDING_API_M2M_ACCESS_TOKEN,
+    devM2MToken: process.env.INNSENDING_API_M2M_ACCESS_TOKEN,
+    devOBOToken: process.env.INNSENDING_API_OBO_ACCESS_TOKEN,
     host: sendInnConfig.host || 'https://innsending-api-gcp.intern.dev.nav.no',
     tokenxClientId: sendInnConfig.tokenxClientId || 'dev-gcp:soknad:send-inn',
   },
