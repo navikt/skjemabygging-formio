@@ -18,7 +18,7 @@ type Props = {
   refMap: IntroPageRefs;
 };
 
-export function Prerequisites({ form, submissionMethod, handleChange, errors, refMap }: Props) {
+export function Prerequisites({ form, handleChange, errors, refMap }: Props) {
   const { getKeyBasedText } = useKeyBasedText();
   const showIngress = form.introPage?.sections?.prerequisites?.description !== undefined;
   const bulletPoints = form.introPage?.sections?.prerequisites?.bulletPoints || [];
@@ -61,13 +61,7 @@ export function Prerequisites({ form, submissionMethod, handleChange, errors, re
           </Box>
         </Box>
       }
-      right={
-        <Intro.Prerequisites
-          properties={form.introPage?.sections?.prerequisites}
-          translate={getKeyBasedText}
-          submissionMethod={submissionMethod}
-        />
-      }
+      right={<Intro.Prerequisites properties={form.introPage?.sections?.prerequisites} translate={getKeyBasedText} />}
     />
   );
 }
