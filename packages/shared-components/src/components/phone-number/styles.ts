@@ -5,6 +5,10 @@ export const usePhoneNumberStyles = makeStyles({
     display: 'flex',
     gap: '0.5rem',
   },
+  fetchError: {
+    marginTop: '0.75rem',
+    maxWidth: '608px',
+  },
   areaCodesSelect75: {
     flex: 0.75,
     maxWidth: '4.8rem',

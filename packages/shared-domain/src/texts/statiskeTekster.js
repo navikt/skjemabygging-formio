@@ -291,6 +291,6 @@ export const statiske = {
   phoneNumber: {
     areaCodeLabel: 'Landskode',
     phoneNumberLabel: 'Telefonnummer',
-    fetchError: 'En feil oppsto under uthenting av landskoder',
+    fetchError: 'En feil oppsto under uthenting av landskoder. Vennligst forsøk igjen senere.',
   },
 };

@@ -36,37 +36,37 @@ export default class PhoneNumber extends BaseComponent {
     return this.component?.showAreaCode || false;
   }
 
-  checkComponentValidity(data, dirty, row, options = {}) {
-    if (this.getReadOnly()) {
+  checkComponentValidity(data, dirty, row) {
+    const errors: any = [];
+    if (this.shouldSkipValidation(data, dirty, row) || this.getReadOnly()) {
       return true;
     }
 
-    const validity = super.checkComponentValidity(data, dirty, row, options);
-
-    if (validity) {
-      const errorMessage = this.validateTextfield();
-      if (errorMessage) {
-        return this.setComponentValidity([this.createError(errorMessage, undefined)], dirty, undefined);
-      }
+    const errorMessage = this.validateTextfield();
+    if (errorMessage) {
+      errors.push(this.createError(errorMessage, 'phoneNumber'));
     }
-    return validity;
+    return this.setComponentValidity(errors, dirty, undefined);
   }
 
   private validateTextfield(): string | undefined {
     const value = this.getValue();
+    const isPhoneNumberObject = typeof value === 'object';
+    const phoneNumber = isPhoneNumberObject ? value?.number : value;
 
-    if (value === '' || value === undefined) {
-      return;
+    if (!value || !phoneNumber) {
+      return this.translateWithLabel(TEXTS.validering.required);
     }
 
-    const isPhoneNumberObject = typeof value === 'object' && value !== null && 'areaCode' in value && 'number' in value;
-    const phoneNumber = isPhoneNumberObject ? value.number : value;
-    const areCode = isPhoneNumberObject && value.areaCode;
+    const areaCode = isPhoneNumberObject && value.areaCode;
+    const isNorwegianNumber = areaCode === '+47';
     const containsDigitsOnly = RegExp(/^\d+$/).test(phoneNumber);
-    if (!containsDigitsOnly) {
+    const validNumber = /^[\d\-()+\s]+$/.test(phoneNumber) && !/[a-zA-Z]/.test(phoneNumber);
+    if ((isNorwegianNumber && !containsDigitsOnly) || (!this.getShowAreaCode() && !validNumber)) {
       return this.translateWithLabel(TEXTS.validering.digitsOnly);
     }
-    if (this.getShowAreaCode() && areCode === '+47' && phoneNumber.length !== 8) {
+
+    if (this.getShowAreaCode() && areaCode === '+47' && phoneNumber.length !== 8) {
       return this.translateWithLabel(TEXTS.validering.phoneNumberLength);
     }
   }

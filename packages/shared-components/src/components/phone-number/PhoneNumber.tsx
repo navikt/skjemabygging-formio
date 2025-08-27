@@ -1,4 +1,4 @@
-import { BodyShort, Select, TextField } from '@navikt/ds-react';
+import { Alert, BodyShort, Select, TextField } from '@navikt/ds-react';
 import {
   CustomLabels,
   FieldSize,
@@ -37,7 +37,7 @@ type PhoneNumber = {
 };
 
 const PhoneNumber = ({ value, onChange, showAreaCode, error }: Props) => {
-  const { appConfig } = useComponentUtils();
+  const { translate, appConfig, addRef, getComponentError } = useComponentUtils();
   const [areaCodes, setAreaCodes] = useState<AreaCode[]>([]);
   const [fetchError, setFetchError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -52,8 +52,8 @@ const PhoneNumber = ({ value, onChange, showAreaCode, error }: Props) => {
       const data = await getAreaCodes(appConfig.fyllutBaseURL);
       setAreaCodes(data);
     } catch (error) {
+      setAreaCodes([{ value: defaultAreaCode, label: defaultAreaCode }]);
       setFetchError(error instanceof Error ? error.message : String(error));
-      setAreaCodes([]);
     } finally {
       setLoading(false);
     }
@@ -65,8 +65,6 @@ const PhoneNumber = ({ value, onChange, showAreaCode, error }: Props) => {
     }
   }, [fetchAreaCodes, showAreaCode, appConfig.fyllutBaseURL]);
 
-  if (showAreaCode && (loading || !areaCodes.length)) return null;
-
   function handleChange(value: string, key: string) {
     if (showAreaCode) {
       const updated: PhoneNumber = {
@@ -76,9 +74,8 @@ const PhoneNumber = ({ value, onChange, showAreaCode, error }: Props) => {
       setPhoneNumber(updated);
       onChange(updated);
     } else {
-      const updated = removeAllSpaces(value);
-      setPhoneNumber(updated);
-      onChange(updated);
+      setPhoneNumber(value);
+      onChange(value);
     }
   }
 
@@ -87,6 +84,8 @@ const PhoneNumber = ({ value, onChange, showAreaCode, error }: Props) => {
       const { areaCode, number } = phoneNumber;
       const updated = { ...phoneNumber, number: formatPhoneNumber(number, areaCode) };
       setPhoneNumber(updated);
+      const updatedNoSpace = { ...phoneNumber, number: removeAllSpaces(number) };
+      onChange(updatedNoSpace);
     }
   }
 
@@ -98,14 +97,12 @@ const PhoneNumber = ({ value, onChange, showAreaCode, error }: Props) => {
     }
   }
 
-  if (fetchError) return <BodyShort>{TEXTS.statiske.phoneNumber.fetchError}</BodyShort>;
-
   return (
-    <div>
-      <div className={clsx('input--xxl', styles.wrapper)}>
-        {showAreaCode && (
+    <>
+      <div className={clsx('input--xxl', styles.wrapper)} tabIndex={-1}>
+        {showAreaCode && !loading && areaCodes.length > 0 && (
           <Select
-            label={TEXTS.statiske.phoneNumber.areaCodeLabel}
+            label={translate(TEXTS.statiske.phoneNumber.areaCodeLabel)}
             hideLabel
             className={clsx(
               typeof phoneNumber === 'object' && phoneNumber.areaCode.length === 3
@@ -124,17 +121,30 @@ const PhoneNumber = ({ value, onChange, showAreaCode, error }: Props) => {
         )}
         <TextField
           hideLabel
-          label={TEXTS.statiske.phoneNumber.phoneNumberLabel}
+          label={translate(TEXTS.statiske.phoneNumber.phoneNumberLabel)}
           type="tel"
           className={styles.phoneNumber}
           onChange={(event) => handleChange(event.target.value, 'number')}
           onBlur={handleBlur}
           value={typeof phoneNumber === 'object' && phoneNumber ? phoneNumber.number : phoneNumber}
           onFocus={handleFocus}
+          ref={(ref) => addRef('phoneNumber', ref)}
         />
       </div>
-      {error && <FieldsetErrorMessage errorMessage={error as string} className={styles.error} />}
-    </div>
+
+      {fetchError && (
+        <Alert variant="warning" className={styles.fetchError}>
+          <BodyShort>{translate(TEXTS.statiske.phoneNumber.fetchError)}</BodyShort>
+        </Alert>
+      )}
+      {error ||
+        (getComponentError('phoneNumber') && (
+          <FieldsetErrorMessage
+            errorMessage={(error as string) || getComponentError('phoneNumber')}
+            className={styles.error}
+          />
+        ))}
+    </>
   );
 };
 export default PhoneNumber;

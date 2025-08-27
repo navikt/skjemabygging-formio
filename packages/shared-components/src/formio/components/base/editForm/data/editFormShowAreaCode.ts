@@ -5,7 +5,7 @@ const editFormShowAreaCode = (): Component => {
     type: 'checkbox',
     label: 'Vis landskode',
     key: 'showAreaCode',
-    defaultValue: false,
+    defaultValue: true,
   };
 };
 
