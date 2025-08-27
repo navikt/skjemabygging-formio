@@ -9,17 +9,18 @@ import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
 import { useSendInn } from '../../context/sendInn/sendInnContext';
 
+type ErrorType = 'FILE' | 'INPUT';
 interface AttachmentUploadContextType {
   handleUploadFile: (attachmentId: string, file: FileObject) => Promise<void>;
   handleDeleteFile: (attachmentId: string, fileId: string) => Promise<void>;
   handleDeleteAttachment: (attachmentId: string) => Promise<void>;
   handleDeleteAllFiles: () => Promise<void>;
-  addError: (attachmentId: string, error: string) => void;
+  addError: (attachmentId: string, error: string, type: ErrorType) => void;
   setCaptchaValue: (value: Record<string, string>) => void;
   removeError: (attachmentId: string) => void;
   submissionAttachments: SubmissionAttachment[];
   changeAttachmentValue: (attachmentId: string, value?: string, description?: string) => void;
-  errors: Record<string, string | undefined>;
+  errors: Record<string, { message: string; type: ErrorType } | undefined>;
 }
 
 const initialContext: AttachmentUploadContextType = {
@@ -44,7 +45,7 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
   const { deleteAllFiles, deleteAttachment, deleteFile, uploadFile } = useNologinFileUpload();
   const { translate } = useLanguages();
   const [captchaValue, setCaptchaValue] = useState<Record<string, string>>({});
-  const [errors, setErrors] = useState<Record<string, string | undefined>>({});
+  const [errors, setErrors] = useState<Record<string, { message: string; type: ErrorType } | undefined>>({});
 
   const addFileToSubmission = (file: UploadedFile) => {
     setSubmission((current) => {
@@ -94,10 +95,10 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
     );
   };
 
-  const addError = (attachmentId: string, error: string) => {
+  const addError = (attachmentId: string, message: string, type: ErrorType) => {
     setErrors((prev) => ({
       ...prev,
-      [attachmentId]: error,
+      [attachmentId]: { message, type },
     }));
   };
 
@@ -121,9 +122,9 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
 
   const handleApiError = (attachmentId: string, error: any, message: string) => {
     if (error instanceof http.HttpError && error.status === 401) {
-      addError(attachmentId, translate(TEXTS.statiske.uploadId.tokenExpiredError));
+      addError(attachmentId, translate(TEXTS.statiske.uploadId.tokenExpiredError), 'FILE');
     } else {
-      addError(attachmentId, message);
+      addError(attachmentId, message, 'FILE');
     }
   };
 

@@ -23,7 +23,7 @@ const AttachmentsUploadButtonRow = ({ attachmentIds }: { attachmentIds: string[]
     event.preventDefault();
     const errors = validateAttachments(submissionAttachments, attachmentIds);
     Object.entries(errors).forEach(([attachmentId, errorMessage]) => {
-      addError(attachmentId, errorMessage);
+      addError(attachmentId, errorMessage, 'INPUT');
     });
     if (!attachmentIds.some((id) => errors && errors[id])) {
       navigate(summaryPageUrl);

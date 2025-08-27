@@ -109,7 +109,7 @@ const AttachmentUpload = ({
       <Attachment
         title={label}
         description={description}
-        // error={error}
+        error={error?.type === 'INPUT' && error.message}
         value={value ? { key: value } : undefined}
         hideOptions={uploadedAttachmentFiles.length > 0}
         attachmentValues={attachmentValues}
@@ -167,12 +167,12 @@ const AttachmentUpload = ({
                         {translate(TEXTS.statiske.uploadId.selectFile)}
                       </Button>
                     </FileUpload.Trigger>
-                    {error && (
+                    {error?.type === 'FILE' && (
                       <Alert variant="error">
-                        {htmlUtils.isHtmlString(error) ? (
-                          <InnerHtml content={translate(error, { url: window.location.href })}></InnerHtml>
+                        {htmlUtils.isHtmlString(error.message) ? (
+                          <InnerHtml content={translate(error.message, { url: window.location.href })}></InnerHtml>
                         ) : (
-                          <BodyLong>{translate(error)}</BodyLong>
+                          <BodyLong>{translate(error.message)}</BodyLong>
                         )}
                       </Alert>
                     )}
@@ -217,12 +217,12 @@ const AttachmentUpload = ({
               }
             </FileUpload.Trigger>
           )}
-          {error && (
+          {error?.type === 'FILE' && (
             <Alert variant="error">
-              {htmlUtils.isHtmlString(error) ? (
-                <InnerHtml content={translate(error, { url: window.location.href })}></InnerHtml>
+              {htmlUtils.isHtmlString(error.message) ? (
+                <InnerHtml content={translate(error.message, { url: window.location.href })}></InnerHtml>
               ) : (
-                <BodyLong>{translate(error)}</BodyLong>
+                <BodyLong>{translate(error.message)}</BodyLong>
               )}
             </Alert>
           )}

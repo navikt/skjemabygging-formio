@@ -27,7 +27,7 @@ const UploadPersonalIdButtonRow = () => {
     if (personalIdAttachment?.files?.length) {
       navigate(`..?${searchParams.toString()}`);
     } else {
-      addError('personal-id', translate(TEXTS.statiske.uploadId.missingUploadError));
+      addError('personal-id', translate(TEXTS.statiske.uploadId.missingUploadError), 'INPUT');
     }
   };
 
@@ -42,9 +42,9 @@ const UploadPersonalIdButtonRow = () => {
 
   return (
     <nav>
-      {errors['allFiles'] && (
+      {errors['allFiles']?.type === 'FILE' && (
         <Alert className="mb" variant="error">
-          {errors['allFiles']}
+          {errors['allFiles']?.message}
         </Alert>
       )}
       <div className="button-row button-row--center">
