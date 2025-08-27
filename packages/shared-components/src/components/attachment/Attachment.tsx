@@ -12,8 +12,9 @@ import SingleSelect from '../single-select/SingleSelect';
 interface Props {
   title: ReactNode;
   description: ReactNode;
-  error: ReactNode;
+  error?: ReactNode;
   value?: any;
+  hideOptions?: boolean;
   attachmentValues?: AttachmentSettingValues | ComponentValue[];
   onChange: (value: SubmissionAttachmentValue) => void;
   translate: (text: string, params?: any) => string;
@@ -21,7 +22,7 @@ interface Props {
 }
 
 const Attachment = forwardRef<HTMLFieldSetElement, Props>(
-  ({ attachmentValues, value, title, description, error, onChange, translate, deadline }: Props, ref) => {
+  ({ attachmentValues, value, hideOptions, title, description, error, onChange, translate, deadline }: Props, ref) => {
     const additionalDocumentation = attachmentValues?.[value?.key ?? '']?.additionalDocumentation;
     const showDeadline = !!attachmentValues?.[value?.key ?? '']?.showDeadline;
 
@@ -77,6 +78,7 @@ const Attachment = forwardRef<HTMLFieldSetElement, Props>(
         <SingleSelect
           values={getValues()}
           value={value?.key ?? ''}
+          hideOptions={hideOptions}
           title={title}
           description={description}
           error={error}

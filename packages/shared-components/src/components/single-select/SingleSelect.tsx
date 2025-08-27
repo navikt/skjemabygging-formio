@@ -5,15 +5,16 @@ import { ReactNode, forwardRef } from 'react';
 interface Props {
   title: ReactNode;
   description: ReactNode;
-  error: ReactNode;
+  error?: ReactNode;
   values?: ComponentValue[];
   value?: any;
   className?: string;
   onChange: (value: any) => void;
+  hideOptions?: boolean;
 }
 
 const SingleSelect = forwardRef<HTMLFieldSetElement, Props>(
-  ({ values = [], value, title, description, error, className, onChange }: Props, ref) => {
+  ({ values = [], value, title, description, error, className, onChange, hideOptions }: Props, ref) => {
     const handleChange = (values) => {
       onChange(Array.isArray(values) ? values[0] : values);
     };
@@ -30,7 +31,7 @@ const SingleSelect = forwardRef<HTMLFieldSetElement, Props>(
           value={value ? [value] : []}
           ref={ref}
         >
-          <Checkbox value={keyValueCheckbox.value}>{keyValueCheckbox.label}</Checkbox>
+          {!hideOptions && <Checkbox value={keyValueCheckbox.value}>{keyValueCheckbox.label}</Checkbox>}
         </CheckboxGroup>
       );
     } else if (values.length > 1) {
@@ -45,11 +46,12 @@ const SingleSelect = forwardRef<HTMLFieldSetElement, Props>(
           ref={ref}
           tabIndex={-1}
         >
-          {values.map((keyValue) => (
-            <Radio key={keyValue.value} value={keyValue.value}>
-              {keyValue.label}
-            </Radio>
-          ))}
+          {!hideOptions &&
+            values.map((keyValue) => (
+              <Radio key={keyValue.value} value={keyValue.value}>
+                {keyValue.label}
+              </Radio>
+            ))}
         </RadioGroup>
       );
     } else {

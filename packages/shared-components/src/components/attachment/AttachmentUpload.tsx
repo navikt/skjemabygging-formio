@@ -104,18 +104,17 @@ const AttachmentUpload = ({ label, options, attachmentId, description, otherAtta
   };
   return (
     <VStack gap="8" className={clsx('mb', className)}>
-      {!(isIdUpload && uploadedAttachmentFiles.length > 0) && (
-        <Attachment
-          title={label}
-          description={description}
-          error={error}
-          value={value ? { key: value } : undefined}
-          attachmentValues={options}
-          onChange={handleValueChange}
-          translate={translate}
-          deadline={deadline}
-        />
-      )}
+      <Attachment
+        title={label}
+        description={description}
+        // error={error}
+        value={value ? { key: value } : undefined}
+        hideOptions={uploadedAttachmentFiles.length > 0}
+        attachmentValues={options}
+        onChange={handleValueChange}
+        translate={translate}
+        deadline={deadline}
+      />
       {uploadSelected && (
         <VStack gap="4">
           {isIdUpload && <Label>{translate(TEXTS.statiske.uploadId.selectFileLabel)}</Label>}
@@ -166,18 +165,32 @@ const AttachmentUpload = ({ label, options, attachmentId, description, otherAtta
                         {translate(TEXTS.statiske.uploadId.selectFile)}
                       </Button>
                     </FileUpload.Trigger>
+                    {error && (
+                      <Alert variant="error">
+                        {htmlUtils.isHtmlString(error) ? (
+                          <InnerHtml content={translate(error, { url: window.location.href })}></InnerHtml>
+                        ) : (
+                          <BodyLong>{translate(error)}</BodyLong>
+                        )}
+                      </Alert>
+                    )}
                   </VStack>
                 ),
             )}
-          {uploadedAttachmentFiles.length > 1 && (
-            <Button
-              variant="tertiary"
-              onClick={() => handleDeleteAllAttachments(attachmentId)}
-              className={styles.deleteAllButton}
-            >
-              {translate(TEXTS.statiske.attachment.deleteAllFiles)}
-            </Button>
-          )}
+          <div className={styles.uploadedFilesHeader}>
+            {uploadedAttachmentFiles.length > 0 && (
+              <Label>{translate(TEXTS.statiske.attachment.filesUploadedNotSent)}</Label>
+            )}
+            {uploadedAttachmentFiles.length > 1 && (
+              <Button
+                variant="tertiary"
+                onClick={() => handleDeleteAllAttachments(attachmentId)}
+                className={styles.deleteAllButton}
+              >
+                {translate(TEXTS.statiske.attachment.deleteAllFiles)}
+              </Button>
+            )}
+          </div>
           {uploadedAttachmentFiles.map(({ fileId, fileName, size }) => (
             <FileUpload.Item
               key={fileId}
@@ -201,6 +214,15 @@ const AttachmentUpload = ({ label, options, attachmentId, description, otherAtta
                 </Button>
               }
             </FileUpload.Trigger>
+          )}
+          {error && (
+            <Alert variant="error">
+              {htmlUtils.isHtmlString(error) ? (
+                <InnerHtml content={translate(error, { url: window.location.href })}></InnerHtml>
+              ) : (
+                <BodyLong>{translate(error)}</BodyLong>
+              )}
+            </Alert>
           )}
           <ReadMore header={translate(TEXTS.statiske.attachment.sizeAndFormatHeader)}>
             <HStack gap="2" align="start">
@@ -236,16 +258,6 @@ const AttachmentUpload = ({ label, options, attachmentId, description, otherAtta
           description={selectedAdditionalDocumentation.description as string}
           maxLength={200}
         />
-      )}
-
-      {error && (
-        <Alert variant="error">
-          {htmlUtils.isHtmlString(error) ? (
-            <InnerHtml content={translate(error, { url: window.location.href })}></InnerHtml>
-          ) : (
-            <BodyLong>{translate(error)}</BodyLong>
-          )}
-        </Alert>
       )}
     </VStack>
   );
