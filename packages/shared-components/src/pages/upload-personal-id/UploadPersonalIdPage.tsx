@@ -8,7 +8,7 @@ import UploadPersonalIdButtonRow from './UploadPersonalIdButtonRow';
 const UploadPersonalIdPage = () => {
   const { translate } = useLanguages();
 
-  const radioOptions = [
+  const attachmentOptions = [
     { value: 'norwegian-passport', label: translate(TEXTS.statiske.uploadId.norwegianPassport), upload: true },
     { value: 'foreign-passport', label: translate(TEXTS.statiske.uploadId.foreignPassport), upload: true },
     { value: 'national-id-eu', label: translate(TEXTS.statiske.uploadId.nationalIdEU), upload: true },
@@ -21,7 +21,7 @@ const UploadPersonalIdPage = () => {
       <Captcha />
       <AttachmentUpload
         label={translate(TEXTS.statiske.uploadId.label)}
-        options={radioOptions}
+        attachmentValues={attachmentOptions}
         attachmentId={'personal-id'}
       />
       <UploadPersonalIdButtonRow />

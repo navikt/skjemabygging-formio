@@ -9,13 +9,13 @@ import {
   HStack,
   Label,
   ReadMore,
-  Textarea,
   TextField,
   VStack,
 } from '@navikt/ds-react';
 import {
-  AttachmentOption,
   AttachmentSettingValues,
+  attachmentUtils,
+  ComponentValue,
   SubmissionAttachmentValue,
   TEXTS,
 } from '@navikt/skjemadigitalisering-shared-domain';
@@ -31,14 +31,21 @@ import { useAttachmentStyles } from './styles';
 
 interface Props {
   label: string;
-  options: AttachmentOption[];
+  attachmentValues?: AttachmentSettingValues | ComponentValue[];
   attachmentId: string;
   description?: string;
   className?: string;
   otherAttachment?: boolean;
 }
 
-const AttachmentUpload = ({ label, options, attachmentId, description, otherAttachment, className }: Props) => {
+const AttachmentUpload = ({
+  label,
+  attachmentValues,
+  attachmentId,
+  description,
+  otherAttachment,
+  className,
+}: Props) => {
   const [loading, setLoading] = useState<boolean>(false);
   const styles = useAttachmentStyles();
   const { translate } = useLanguages();
@@ -53,12 +60,11 @@ const AttachmentUpload = ({ label, options, attachmentId, description, otherAtta
   const { form } = useForm();
   const attachment = submissionAttachments.find((attachment) => attachment.attachmentId === attachmentId);
   const [value, setValue] = useState<keyof AttachmentSettingValues | undefined>(attachment?.value);
+
   const isIdUpload = attachmentId === 'personal-id';
   const uploadedAttachmentFiles = attachment?.files ?? [];
-  const showDeadline = attachment?.value && (attachment.value === 'ettersender' || attachment.value === 'andre');
-  const selectedAdditionalDocumentation = options.find(
-    (option) => option.value === attachment?.value,
-  )?.additionalDocumentation;
+  const options = attachmentUtils.mapKeysToOptions(attachmentValues, translate);
+  const uploadSelected = !!options.find((option) => option.value === value)?.upload;
   const error = errors[attachmentId];
 
   const handleValueChange = (value: SubmissionAttachmentValue) => {
@@ -84,10 +90,6 @@ const AttachmentUpload = ({ label, options, attachmentId, description, otherAtta
     await handleDeleteFile(attachmentId, fileId);
   };
 
-  const uploadSelected = !!options.find((option) => option.value === value)?.upload;
-
-  const deadline = form.properties?.ettersendelsesfrist;
-
   const handleDeleteAllAttachments = async (attachmentId: string) => {
     await handleDeleteAttachment(attachmentId);
   };
@@ -110,10 +112,10 @@ const AttachmentUpload = ({ label, options, attachmentId, description, otherAtta
         // error={error}
         value={value ? { key: value } : undefined}
         hideOptions={uploadedAttachmentFiles.length > 0}
-        attachmentValues={options}
+        attachmentValues={attachmentValues}
         onChange={handleValueChange}
         translate={translate}
-        deadline={deadline}
+        deadline={form.properties?.ettersendelsesfrist}
       />
       {uploadSelected && (
         <VStack gap="4">
@@ -244,20 +246,6 @@ const AttachmentUpload = ({ label, options, attachmentId, description, otherAtta
             </Button>
           )}
         </VStack>
-      )}
-
-      {showDeadline && deadline && (
-        <Alert variant="warning" inline>
-          {translate(TEXTS.statiske.attachment.deadline, { deadline })}
-        </Alert>
-      )}
-
-      {selectedAdditionalDocumentation && (
-        <Textarea
-          label={selectedAdditionalDocumentation.label as string}
-          description={selectedAdditionalDocumentation.description as string}
-          maxLength={200}
-        />
       )}
     </VStack>
   );
