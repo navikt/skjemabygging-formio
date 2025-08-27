@@ -13,7 +13,7 @@ const introPage = [
   'introPage.beAwareOf.title',
   'introPage.beAwareOf.mandatoryFields',
   'introPage.beAwareOf.useOfPublicComputers',
-  'introPage.beAwareOf.paperSubmission',
+  'introPage.beAwareOf.sendByMail',
   'introPage.beAwareOf.timeLimit',
   'introPage.dataDisclosure.title.alt1',
   'introPage.dataDisclosure.title.alt2',

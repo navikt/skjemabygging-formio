@@ -13,7 +13,7 @@ const BeAwareOf = ({ translate, submissionMethod, className }: Props) => {
   const isPaperSubmission = submissionMethod === 'paper';
   const isDigitalNoLoginSubmission = submissionMethod === 'digitalnologin';
 
-  const paperSubmissionBulletPoints: Tkey[] = isPaperSubmission ? ['introPage.beAwareOf.paperSubmission'] : [];
+  const paperSubmissionBulletPoints: Tkey[] = isPaperSubmission ? ['introPage.beAwareOf.sendByMail'] : [];
   const timeLimitBulletPoints: Tkey[] =
     isPaperSubmission || isDigitalNoLoginSubmission ? ['introPage.beAwareOf.timeLimit'] : [];
   const staticBulletPoints: Tkey[] = [

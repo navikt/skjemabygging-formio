@@ -86,7 +86,7 @@ const introPage: KeyBasedFormsApiTranslation[] = [
     en: 'Use of public computers: If you fill out the form on a public computer, for example at a library, it is important that you close the browser when you are finished. This will prevent unauthorized persons from accessing the information you have entered in the form.',
   },
   {
-    key: 'introPage.beAwareOf.paperSubmission',
+    key: 'introPage.beAwareOf.sendByMail',
     nb: 'Du må fylle ut skjemaet digitalt, og så sende det i posten. Etter utfylling må du laste ned det ferdig utfylte skjemaet som en PDF-fil, skrive det ut, signere og sende det i posten.',
     nn: 'Du må fylle ut skjemaet digitalt, og så sende det i posten. Etter utfylling må du laste ned det ferdig utfylte skjemaet som ein PDF-fil, skriva det ut, signera og senda det i posten.',
     en: 'You must complete the form digitally and then send it by mail. After filling it out, you must download the completed form as a PDF file, print it, sign it, and send it by mail.',
