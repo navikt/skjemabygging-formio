@@ -60,6 +60,7 @@ const AttachmentUpload = ({
   const { form } = useForm();
   const attachment = submissionAttachments.find((attachment) => attachment.attachmentId === attachmentId);
   const [value, setValue] = useState<keyof AttachmentSettingValues | undefined>(attachment?.value);
+  const [descriptionText, setDescriptionText] = useState(attachment?.description);
 
   const isIdUpload = attachmentId === 'personal-id';
   const uploadedAttachmentFiles = attachment?.files ?? [];
@@ -69,6 +70,7 @@ const AttachmentUpload = ({
 
   const handleValueChange = (value: SubmissionAttachmentValue) => {
     setValue(value.key);
+    setDescriptionText(value?.additionalDocumentation);
     if (isIdUpload) {
       changeAttachmentValue(attachmentId, undefined, options.find((option) => option.value === value.key)?.label);
     } else {
@@ -110,7 +112,7 @@ const AttachmentUpload = ({
         title={label}
         description={description}
         error={error?.type === 'INPUT' && error.message}
-        value={value ? { key: value } : undefined}
+        value={value ? { key: value, additionalDocumentation: descriptionText } : undefined}
         hideOptions={uploadedAttachmentFiles.length > 0}
         attachmentValues={attachmentValues}
         onChange={handleValueChange}
