@@ -22,24 +22,24 @@ _(Les mer om bruk av Github npm registry i Nav her: https://github.com/navikt/fr
 
 ## 📦 Kommandoer
 
-| Kommando            | Beskrivelse                                                                  |
-| ------------------- | ---------------------------------------------------------------------------- |
-| yarn install        | laster ned avhengigheter                                                     |
-| yarn start          | starter både bygger og fyllut, inkludert backend                             |
-| yarn start:bygger   | starter bygger, inkludert backend                                            |
-| yarn start:fyllut   | starter fyllut, inkludert backend                                            |
-| yarn build          | bygger react-applikasjonene, ikke nødvendig for lokal utvikling (bruk start) |
-| yarn preview:bygger | starter bygger fra dist-mappen                                               |
-| yarn preview:fyllut | starter fyllut fra dist-mappen                                               |
-| yarn test           | kjører alle tester                                                           |
-| yarn test:coverage  | kjører alle tester med rapportering av dekningsgrad                          |
-| yarn cypress:bygger | kjører Cypress-tester for bygger                                             |
-| yarn cypress:fyllut | kjører Cypress-tester for fyllut                                             |
-| yarn mocks:fyllut   | starter Mocks Server for fyllut, brukes ved kjøring av Cypress-tester        |
-| yarn check-types    | sjekker at typene er korrekte                                                |
-| yarn clean          | sletter node_modules / dist / build / coverage for alle pakker i monorepoet  |
-| yarn lint           | se etter problemer i koden                                                   |
-| yarn get-tokens     | henter tokens som brukes mot eksterne api'er ved kjøring lokalt              |
+| **Kommando**          | **Beskrivelse**                                                     |
+| --------------------- | ------------------------------------------------------------------- |
+| `yarn install`        | Installerer alle avhengigheter                                      |
+| `yarn start`          | Starter både Bygger og Fyllut, inkludert backend                    |
+| `yarn start:bygger`   | Starter kun Bygger med backend                                      |
+| `yarn start:fyllut`   | Starter kun Fyllut med backend                                      |
+| `yarn build`          | Bygger React-appene (ikke nødvendig for lokal utvikling)            |
+| `yarn preview:bygger` | Starter Bygger fra bygd kode (`dist`-mappen)                        |
+| `yarn preview:fyllut` | Starter Fyllut fra bygd kode (`dist`-mappen)                        |
+| `yarn test`           | Kjører alle tester                                                  |
+| `yarn test:coverage`  | Tester med rapportering av dekningsgrad                             |
+| `yarn cypress:bygger` | Kjører Cypress-tester for Bygger                                    |
+| `yarn cypress:fyllut` | Kjører Cypress-tester for Fyllut                                    |
+| `yarn mocks:fyllut`   | Starter Mocks Server for Fyllut (brukes ved Cypress-testing)        |
+| `yarn check-types`    | Sjekker TypeScript-typer                                            |
+| `yarn clean`          | Sletter `node_modules`, `dist`, `build`, `coverage` for alle pakker |
+| `yarn lint`           | Sjekker kodekvalitet                                                |
+| `yarn get-tokens`     | Henter tokens for eksterne API-er ved lokal kjøring                 |
 
 ## ⚙️ Lokal konfigurasjon med dotenv
 
