@@ -48,6 +48,7 @@ const ComponentSummary = ({ components, formUrl = '', panelValidationList = [] }
               return <SelectBoxesSummary key={key} component={comp} />;
             case 'htmlelement':
             case 'alertstripe':
+            case 'phoneNumber':
               return <SummaryField key={key} component={comp as SummaryFieldType} html={true} />;
             case 'attachment':
               return <AttachmentSummary key={key} component={comp as SummaryAttachment} />;
