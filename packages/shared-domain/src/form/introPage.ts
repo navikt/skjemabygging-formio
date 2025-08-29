@@ -9,6 +9,7 @@ interface IntroPage {
     scope?: IntroPageSection;
     outOfScope?: IntroPageSection;
     prerequisites: IntroPageSection;
+    beAwareOf?: IntroPageSection;
     dataDisclosure?: IntroPageSection;
     dataTreatment: IntroPageSection;
     dataStorage?: IntroPageSection;

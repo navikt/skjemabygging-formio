@@ -24,7 +24,7 @@ export function validateIntroPage(introPage?: Partial<IntroPage>): IntroPageErro
   if (!introPage) return {};
 
   const errors: IntroPageError = {};
-  const fieldsWithPrefilledBulletPoints = ['prerequisites', 'dataDisclosure'];
+  const fieldsWithPrefilledBulletPoints = ['dataDisclosure'];
   const fieldsWithPrefilledIngressAndBulletPoints = ['dataDisclosure'];
   const fieldsWithoutTitle = ['automaticProcessing', 'dataTreatment'];
   const fieldWithoutDescription = ['dataDisclosure'];
@@ -83,8 +83,9 @@ export function validateIntroPage(introPage?: Partial<IntroPage>): IntroPageErro
     return Object.keys(sectionErrors).length > 0 ? sectionErrors : undefined;
   };
 
-  const requiredSections: (keyof IntroPage['sections'])[] = ['prerequisites', 'dataTreatment'];
+  const requiredSections: (keyof IntroPage['sections'])[] = ['dataTreatment'];
   const optionalSections: (keyof IntroPage['sections'])[] = [
+    'prerequisites',
     'scope',
     'outOfScope',
     'dataDisclosure',

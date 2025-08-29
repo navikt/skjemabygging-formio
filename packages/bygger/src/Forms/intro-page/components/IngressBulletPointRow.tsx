@@ -30,7 +30,7 @@ export function IngressBulletPointRow({
 }: IngressBulletPointRowProps) {
   const { setKeyBasedText, getKeyBasedText } = useKeyBasedText();
   const sectionField = form.introPage?.sections?.[field];
-  const isAnExceptionField = ['prerequisites', 'dataDisclosure'].includes(field);
+  const isAnExceptionField = ['dataDisclosure'].includes(field);
 
   const onDescriptionChange = (value: string) => {
     const key = setKeyBasedText(value, 'description');
