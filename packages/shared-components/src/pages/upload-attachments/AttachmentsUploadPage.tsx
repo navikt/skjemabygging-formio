@@ -30,7 +30,7 @@ export function AttachmentsUploadPage() {
           label={label}
           description={htmlUtils.extractTextContent(description as string)}
           attachmentValues={attachmentValues}
-          attachmentId={navId as string}
+          componentId={navId as string}
           otherAttachment={attachmentType === 'other'}
         />
       ))}
