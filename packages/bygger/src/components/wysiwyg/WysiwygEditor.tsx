@@ -1,15 +1,8 @@
 import { htmlUtils, makeStyles } from '@navikt/skjemadigitalisering-shared-components';
+import { PortableText, PortableTextReactComponents } from '@portabletext/react';
 import classNames from 'classnames';
 import { useState } from 'react';
-import {
-  BtnBold,
-  BtnBulletList,
-  BtnClearFormatting,
-  BtnNumberedList,
-  Editor,
-  EditorProvider,
-  Toolbar,
-} from 'react-simple-wysiwyg';
+import { EditorProvider } from 'react-simple-wysiwyg';
 import LinkButton from './LinkButton';
 import TextTypeDropdown from './TextTypeDropdown';
 
@@ -38,50 +31,49 @@ interface Props {
 }
 
 const WysiwygEditor = ({ defaultValue, onBlur, error, autoFocus }: Props) => {
-  const [htmlValue, setHtmlValue] = useState(defaultValue ?? '');
-
+  const [value, setValue] = useState(defaultValue ? JSON.parse(defaultValue) : []);
   const styles = useStyles();
 
-  const { sanitizeHtmlString, removeEmptyTags, removeTags, extractTextContent } = htmlUtils;
-
-  const handleChange = (event) => {
-    const value = event.target.value;
-    // make sure that non-html strings are wrapped in a <p>-tag.
-    if (htmlUtils.isHtmlString(value)) {
-      setHtmlValue(value);
-    } else {
-      setHtmlValue(`<p>${value}</p>`);
-    }
+  const handleChange = (newValue: any) => {
+    setValue(newValue);
   };
 
   const handleBlur = () => {
-    const removeUnwantedTags = (html: string) => removeTags(html, ['font', 'div']);
-    const sanitizedHtmlString = removeUnwantedTags(
-      removeEmptyTags(sanitizeHtmlString(htmlValue, { FORBID_ATTR: ['style'] })),
-    );
-
-    const trimmed = extractTextContent(sanitizedHtmlString).trim() === '' ? '' : sanitizedHtmlString;
+    const serialized = JSON.stringify(value);
+    const sanitized = htmlUtils.sanitizeHtmlString(serialized, { FORBID_ATTR: ['style'] });
+    const trimmed = htmlUtils.extractTextContent(sanitized).trim() === '' ? '' : sanitized;
     onBlur(trimmed);
+  };
+
+  const components: Partial<PortableTextReactComponents> = {
+    marks: {
+      strong: ({ children }) => <strong>{children}</strong>,
+      link: ({ value, children }) => <a href={value?.href}>{children}</a>,
+    },
+    list: {
+      bullet: ({ children }) => <ul>{children}</ul>,
+      number: ({ children }) => <ol>{children}</ol>,
+    },
+    // types: {
+    //   block: ({ children }) => <p>{children}</p>,
+    // },
   };
 
   return (
     <EditorProvider>
-      <Editor
-        autoFocus={autoFocus}
-        value={htmlValue}
-        onChange={handleChange}
-        onBlur={handleBlur}
-        containerProps={{ className: error ? classNames(styles.editor, styles.error) : styles.editor }}
-      >
-        <Toolbar>
-          <TextTypeDropdown />
-          <BtnBold />
-          <LinkButton />
-          <BtnBulletList />
-          <BtnNumberedList />
-          <BtnClearFormatting />
-        </Toolbar>
-      </Editor>
+      <div className={error ? classNames(styles.editor, styles.error) : styles.editor}>
+        <TextTypeDropdown />
+        <LinkButton />
+        {/* Add your custom toolbar/buttons here */}
+        <PortableText value={value} components={components} />
+        <textarea
+          style={{ display: 'none' }}
+          value={JSON.stringify(value)}
+          onChange={(e) => handleChange(JSON.parse(e.target.value))}
+          onBlur={handleBlur}
+          autoFocus={autoFocus}
+        />
+      </div>
     </EditorProvider>
   );
 };

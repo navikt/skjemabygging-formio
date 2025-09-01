@@ -27,6 +27,7 @@
     "@navikt/ds-react": "^7.22.0",
     "@navikt/skjemadigitalisering-shared-components": "1.0.0",
     "@navikt/skjemadigitalisering-shared-domain": "1.0.0",
+    "@portabletext/react": "^4.0.2",
     "classnames": "^2.5.1",
     "lodash.clonedeep": "^4.5.0",
     "lodash.isequal": "^4.5.0",

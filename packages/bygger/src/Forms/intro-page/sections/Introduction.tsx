@@ -3,6 +3,7 @@ import { Intro } from '@navikt/skjemadigitalisering-shared-components';
 import { Form, IntroPage } from '@navikt/skjemadigitalisering-shared-domain';
 import { forwardRef } from 'react';
 import { UpdateFormFunction } from '../../../components/FormMetaDataEditor/utils/utils';
+import WysiwygEditor from '../../../components/wysiwyg/WysiwygEditor';
 import useKeyBasedText from '../../../hooks/useKeyBasedText';
 import { TextareaField } from '../components/TextareaField';
 import { IntroPageError } from '../validation/validation';
@@ -49,6 +50,7 @@ export const Introduction = forwardRef<HTMLTextAreaElement, Props>(({ handleChan
             error={errors?.introduction}
             onChange={onChange}
           />
+          <WysiwygEditor onBlur={onChange} defaultValue={getKeyBasedText(form?.introPage?.introduction)} />
         </Box>
       }
       right={<Intro.GuidePanel description={form.introPage?.introduction} translate={getKeyBasedText} />}
