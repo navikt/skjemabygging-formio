@@ -51,23 +51,28 @@ export default class PhoneNumber extends BaseComponent {
 
   private validateTextfield(): string | undefined {
     const value = this.getValue();
-    const isPhoneNumberObject = typeof value === 'object';
-    const phoneNumber = isPhoneNumberObject ? value?.number : value;
+    if (!this.isRequired() && !value) return undefined;
 
-    if (!value || !phoneNumber) {
+    const isObject = typeof value === 'object' && value !== null;
+    const phoneNumber = isObject ? value.number : value;
+    const areaCode = isObject ? value.areaCode : undefined;
+
+    if (!phoneNumber) {
       return this.translateWithLabel(TEXTS.validering.required);
     }
 
-    const areaCode = isPhoneNumberObject && value.areaCode;
-    const isNorwegianNumber = areaCode === '+47';
-    const containsDigitsOnly = RegExp(/^\d+$/).test(phoneNumber);
-    const validNumber = /^[\d\-()+\s]+$/.test(phoneNumber) && !/[a-zA-Z]/.test(phoneNumber);
-    if ((isNorwegianNumber && !containsDigitsOnly) || (!this.getShowAreaCode() && !validNumber)) {
-      return this.translateWithLabel(TEXTS.validering.digitsOnly);
-    }
+    const DIGITS_ONLY = /^\d+$/;
+    const VALID_NUMBER = /^[\d\-()+\s]+$/;
 
-    if (this.getShowAreaCode() && areaCode === '+47' && phoneNumber.length !== 8) {
-      return this.translateWithLabel(TEXTS.validering.phoneNumberLength);
+    if (areaCode === '+47') {
+      if (!DIGITS_ONLY.test(phoneNumber)) {
+        return this.translateWithLabel(TEXTS.validering.digitsOnly);
+      }
+      if (this.getShowAreaCode() && phoneNumber.length !== 8) {
+        return this.translateWithLabel(TEXTS.validering.phoneNumberLength);
+      }
+    } else if (!this.getShowAreaCode() && (!VALID_NUMBER.test(phoneNumber) || /[a-zA-Z]/.test(phoneNumber))) {
+      return this.translateWithLabel(TEXTS.validering.digitsOnly);
     }
   }
 

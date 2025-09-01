@@ -100,7 +100,7 @@ function formatValue(component, value, translate, form, language, opts = {}) {
       return value;
     }
     case 'fnrfield': {
-      return opts.skipFnrFormatting ? value : formatNationalIdentityNumber(value);
+      return opts.skipPdfFormatting ? value : formatNationalIdentityNumber(value);
     }
     case 'number': {
       const prefix = component.prefix ? `${component.prefix} ` : '';
@@ -392,7 +392,7 @@ const handleDataFetcher = (component, submission, formSummaryObject, parentConta
   ];
 };
 
-const handlePhoneNumber = (component, submission, formSummaryObject, parentContainerKey, translate) => {
+const handlePhoneNumber = (component, submission, formSummaryObject, parentContainerKey, translate, opts) => {
   const { key, label, type, showAreaCode } = component;
   const componentKey = createComponentKey(parentContainerKey, key);
   const submissionValue = FormioUtils.getValue(submission, componentKey) || {};
@@ -410,7 +410,9 @@ const handlePhoneNumber = (component, submission, formSummaryObject, parentConta
         label: translate(label),
         key: componentKey,
         type,
-        value: `${submissionValue.areaCode} ${formatPhoneNumber(submissionValue.number, submissionValue.areaCode)}`,
+        value: opts.skipPdfFormatting
+          ? `${submissionValue.areaCode} ${submissionValue.number}`
+          : `${submissionValue.areaCode} ${formatPhoneNumber(submissionValue.number, submissionValue.areaCode)}`,
       },
     ];
   }
@@ -682,7 +684,7 @@ function handleComponent(
     case 'dataFetcher':
       return handleDataFetcher(component, submission, formSummaryObject, parentContainerKey, translate);
     case 'phoneNumber':
-      return handlePhoneNumber(component, submission, formSummaryObject, parentContainerKey, translate);
+      return handlePhoneNumber(component, submission, formSummaryObject, parentContainerKey, translate, opts);
     case 'selectboxes':
       return handleSelectboxes(component, submission, formSummaryObject, parentContainerKey, translate);
     case 'navCheckbox':
