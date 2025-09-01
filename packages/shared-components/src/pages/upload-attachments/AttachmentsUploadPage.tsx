@@ -1,5 +1,6 @@
-import { AttachmentOption, Submission } from '@navikt/skjemadigitalisering-shared-domain';
+import { AttachmentOption, Submission, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import clsx from 'clsx';
+import { useEffect } from 'react';
 import AttachmentUpload from '../../components/attachment/AttachmentUpload';
 import AttachmentUploadProvider from '../../components/attachment/AttachmentUploadContext';
 import { mapKeysToOptions } from '../../components/attachment/utils';
@@ -19,10 +20,15 @@ const useStyles = makeStyles({
 
 export function AttachmentsUploadPage() {
   const { translate } = useLanguages();
-  const { form, submission } = useForm();
+  const { form, submission, setTitle, setFormProgressVisible } = useForm();
   const styles = useStyles();
   const attachmentPanels: Attachment[] = getAllAttachments(form, submission ?? ({} as Submission));
   const attachmentIds = attachmentPanels.map((panel) => panel.navId);
+
+  useEffect(() => {
+    setTitle(TEXTS.statiske.attachment.title);
+    setFormProgressVisible(true);
+  }, [setTitle, setFormProgressVisible]);
 
   return (
     <AttachmentUploadProvider>

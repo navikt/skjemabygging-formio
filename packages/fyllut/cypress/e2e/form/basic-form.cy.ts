@@ -116,8 +116,8 @@ describe('Basic form', () => {
     });
 
     it('visits the correct form', () => {
-      cy.findByRole('heading', { name: 'Skjema for Cucumber-testing' }).should('not.exist');
-      cy.findByRole('heading', { name: 'Skjema for Cypress-testing' }).should('exist');
+      cy.contains('Skjema for Cucumber-testing').should('not.exist');
+      cy.contains('Skjema for Cypress-testing').should('exist');
     });
 
     describe('Step navigation', () => {
