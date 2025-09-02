@@ -62,6 +62,7 @@ export const statiske = {
     deleteAttachmentError: 'Det oppstod en feil under sletting av vedlegget. Prøv igjen senere.',
     deleteAllFilesError: 'Det oppstod en feil under sletting av filene. Prøv igjen senere.',
     fileTooLargeError: 'Filen er for stor. Maks filstørrelse er 50 MB.',
+    totalFileSizeTooLarge: 'Summen av alle filene kan ikke være mer enn 50 MB.',
     fileNotSupportedError: 'Filen kan ikke lastes opp. Prøv igjen med en annen fil i et gyldig format.',
   },
   paabegynt: {

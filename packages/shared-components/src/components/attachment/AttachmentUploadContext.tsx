@@ -131,6 +131,12 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
   const handleUploadFile = async (attachmentId: string, file: FileObject) => {
     try {
       removeError(attachmentId);
+      const attachment = submission?.attachments?.find((attachment) => attachment.attachmentId === attachmentId);
+      const currentAttachmentSize = attachment?.files?.reduce((acc, curr) => acc + curr.size, 0) ?? 0;
+      if (currentAttachmentSize + file.file.size > 50 * 1024 * 1024) {
+        addError(attachmentId, translate(TEXTS.statiske.uploadFile.totalFileSizeTooLarge), 'FILE');
+        return;
+      }
       const token = await resolveCaptcha();
       const result = await uploadFile(file.file, attachmentId, token);
       if (result) {
