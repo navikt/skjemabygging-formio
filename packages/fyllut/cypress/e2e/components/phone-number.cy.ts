@@ -41,6 +41,11 @@ describe('Phone number with area code', () => {
         .within(() => {
           cy.findByRole('link', { name: 'Telefonnummer med landskode må ha 8 siffer' }).should('exist');
         });
+      cy.get('[data-cy=error-summary]')
+        .should('exist')
+        .within(() => {
+          cy.findByRole('link', { name: 'Du må fylle ut: Telefonnummer ikke påkrevd' }).should('not.exist');
+        });
     });
 
     it('should format phone number when area code is +47 and phone numer length is 8', () => {
