@@ -23,7 +23,7 @@ jobs:
       id-token: 'write'
       packages: 'read'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: actions/setup-node@v4
         with:
           node-version: '22.12.0'
@@ -60,7 +60,7 @@ jobs:
       id-token: 'write'
       packages: 'read'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: actions/setup-node@v4
         with:
           node-version: '22.12.0'
@@ -99,7 +99,7 @@ jobs:
     permissions:
       id-token: 'write'
     steps:
-      - uses: 'actions/checkout@v4'
+      - uses: 'actions/checkout@v5'
       - name: 'Deploy to preprod'
         uses: 'nais/deploy/actions/deploy@v2'
         env:
@@ -116,7 +116,7 @@ jobs:
     permissions:
       id-token: 'write'
     steps:
-      - uses: 'actions/checkout@v4'
+      - uses: 'actions/checkout@v5'
       - name: 'Deploy to preprod'
         uses: 'nais/deploy/actions/deploy@v2'
         env:
