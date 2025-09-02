@@ -7,6 +7,7 @@ import {
   FileObject,
   FileUpload,
   HStack,
+  Label,
   ReadMore,
   TextField,
 } from '@navikt/ds-react';
@@ -31,10 +32,13 @@ interface Props {
   multiple?: boolean;
 }
 
+const FILE_ACCEPT = '.pdf,.jpeg,.jpg,.docx,.doc,.odt,.rtf,.txt,.png,.tiff,.tif,.bmp,.gif';
+const MAX_FILE_SIZE_BYTES = 50 * 1024 * 1024; // 50 MB
+
 const FileUploader = ({ attachmentId, attachmentValue, requireDescription, multiple }: Props) => {
   const { translate } = useLanguages();
   const styles = useStyles();
-  const { handleUploadFile, changeAttachmentValue, handleDeleteFile, submissionAttachments, errors } =
+  const { handleUploadFile, changeAttachmentValue, handleDeleteFile, submissionAttachments, errors, addError } =
     useAttachmentUpload();
   const attachment = submissionAttachments.find((attachment) => attachment.attachmentId === attachmentId);
   const [description, setDescription] = useState(attachment?.description ?? '');
@@ -49,6 +53,16 @@ const FileUploader = ({ attachmentId, attachmentValue, requireDescription, multi
     setLoading(true);
     const file = files?.[0];
     if (!file) {
+      setLoading(false);
+      return;
+    }
+    if (file.error) {
+      const uploadError =
+        file.reasons[0] === 'fileSize'
+          ? TEXTS.statiske.uploadFile.fileTooLargeError
+          : TEXTS.statiske.uploadFile.fileNotSupportedError;
+      addError(attachmentId, uploadError, 'FILE');
+      setLoading(false);
       return;
     }
     await handleUploadFile(attachmentId, file);
@@ -57,6 +71,7 @@ const FileUploader = ({ attachmentId, attachmentValue, requireDescription, multi
 
   return (
     <>
+      {!showButton && <Label>{description}</Label>}
       {uploadedFiles.map(({ fileId, fileName, size }) => (
         <FileUpload.Item
           key={fileId}
@@ -80,18 +95,20 @@ const FileUploader = ({ attachmentId, attachmentValue, requireDescription, multi
               }}
             />
           )}
-          <FileUpload.Trigger onSelect={onSelect}>
-            <Button
-              variant={initialUpload ? 'primary' : 'secondary'}
-              className={styles.button}
-              loading={loading}
-              icon={<UploadIcon title="a11y-title" fontSize="1.5rem" />}
-            >
-              {translate(
-                initialUpload ? TEXTS.statiske.uploadId.selectFile : TEXTS.statiske.attachment.uploadMoreFiles,
-              )}
-            </Button>
-          </FileUpload.Trigger>
+          {(!requireDescription || !!description.trim()) && (
+            <FileUpload.Trigger onSelect={onSelect} accept={FILE_ACCEPT} maxSizeInBytes={MAX_FILE_SIZE_BYTES}>
+              <Button
+                variant={initialUpload ? 'primary' : 'secondary'}
+                className={styles.button}
+                loading={loading}
+                icon={<UploadIcon aria-hidden fontSize="1.5rem" />}
+              >
+                {translate(
+                  initialUpload ? TEXTS.statiske.uploadId.selectFile : TEXTS.statiske.attachment.uploadMoreFiles,
+                )}
+              </Button>
+            </FileUpload.Trigger>
+          )}
           {error && (
             <Alert inline variant="error">
               {htmlUtils.isHtmlString(error) ? (

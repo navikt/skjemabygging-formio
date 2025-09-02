@@ -138,7 +138,7 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
       }
     } catch (error: any) {
       setNologinToken(undefined);
-      handleApiError(attachmentId, error, translate(TEXTS.statiske.uploadId.uploadFileError));
+      handleApiError(attachmentId, error, translate(TEXTS.statiske.uploadFile.uploadFileError));
     }
   };
 
@@ -148,7 +148,7 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
       await deleteFile(fileId, nologinToken);
       removeFileFromSubmission(attachmentId, fileId);
     } catch (error: any) {
-      handleApiError(attachmentId, error, translate(TEXTS.statiske.uploadId.deleteFileError));
+      handleApiError(attachmentId, error, translate(TEXTS.statiske.uploadFile.deleteFileError));
     }
   };
 
@@ -158,7 +158,7 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
       await deleteAttachment(attachmentId, nologinToken);
       removeFilesFromSubmission(attachmentId);
     } catch (error: any) {
-      handleApiError(attachmentId, error, translate(TEXTS.statiske.uploadId.deleteAttachmentError));
+      handleApiError(attachmentId, error, translate(TEXTS.statiske.uploadFile.deleteAttachmentError));
     }
   };
 
@@ -168,7 +168,7 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
       await deleteAllFiles(nologinToken);
       setSubmission((current) => ({ ...current, attachments: [] }) as Submission);
     } catch (error: any) {
-      handleApiError('allFiles', error, translate(TEXTS.statiske.uploadId.deleteAllFilesError));
+      handleApiError('allFiles', error, translate(TEXTS.statiske.uploadFile.deleteAllFilesError));
       throw error;
     }
   };

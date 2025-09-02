@@ -55,10 +55,14 @@ export const statiske = {
     missingUploadError: 'Du må laste opp et gyldig identifikasjonsdokument før du kan fortsette.',
     tokenExpiredError:
       'Sesjonen din har utløpt. For å sende inn må du laste opp legitimasjon og fylle ut skjemaet på nytt. <a href="{{url}}">Klikk her</a> for å starte på nytt.',
+  },
+  uploadFile: {
     uploadFileError: 'Det oppstod en feil under opplasting av filen. Prøv igjen senere.',
     deleteFileError: 'Det oppstod en feil under sletting av filen. Prøv igjen senere.',
     deleteAttachmentError: 'Det oppstod en feil under sletting av vedlegget. Prøv igjen senere.',
     deleteAllFilesError: 'Det oppstod en feil under sletting av filene. Prøv igjen senere.',
+    fileTooLargeError: 'Filen er for stor. Maks filstørrelse er 50 MB.',
+    fileNotSupportedError: 'Filen kan ikke lastes opp. Prøv igjen med en annen fil i et gyldig format.',
   },
   paabegynt: {
     activeTasksHeading: 'Du har {{amount}} påbegynte utkast til denne søknaden',
