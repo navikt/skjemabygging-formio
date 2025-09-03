@@ -206,7 +206,7 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
       if (!currentAttachment) {
         return {
           ...current,
-          attachments: [...(current?.attachments ?? []), { attachmentId, value, files: [] }],
+          attachments: [...(current?.attachments ?? []), { attachmentId, value, description, files: [] }],
         } as Submission;
       }
       const updatedAttachments = current?.attachments?.map((att) => {
