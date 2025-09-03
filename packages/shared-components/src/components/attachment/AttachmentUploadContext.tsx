@@ -47,7 +47,7 @@ const initialContext: AttachmentUploadContextType = {
 
 const AttachmentUploadContext = createContext<AttachmentUploadContextType>(initialContext);
 
-const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) => {
+const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boolean; children: React.ReactNode }) => {
   const config = useAppConfig();
   const { submission, setSubmission } = useForm();
   const { nologinToken, setNologinToken } = useSendInn();
@@ -119,7 +119,7 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
   };
 
   const resolveCaptcha = async () => {
-    if (!nologinToken) {
+    if (!nologinToken && useCaptcha) {
       const response = await submitCaptchaValue(captchaValue, config);
       if (response?.access_token) {
         setNologinToken(response.access_token);

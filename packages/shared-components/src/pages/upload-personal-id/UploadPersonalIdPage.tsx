@@ -17,7 +17,7 @@ const UploadPersonalIdPage = () => {
   ];
 
   return (
-    <AttachmentUploadProvider>
+    <AttachmentUploadProvider useCaptcha>
       <Captcha />
       <AttachmentUpload
         label={translate(TEXTS.statiske.uploadId.label)}
