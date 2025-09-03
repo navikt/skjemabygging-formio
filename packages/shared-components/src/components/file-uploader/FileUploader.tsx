@@ -15,7 +15,8 @@ import { AttachmentSettingValues, TEXTS } from '@navikt/skjemadigitalisering-sha
 import { useState } from 'react';
 import { FILE_ACCEPT, MAX_SIZE_ATTACHMENT_FILE_BYTES, MAX_SIZE_ATTACHMENT_FILE_TEXT } from '../../constants/fileUpload';
 import { useLanguages } from '../../context/languages';
-import { htmlUtils, makeStyles } from '../../index';
+import htmlUtils from '../../util/html/htmlUtils';
+import makeStyles from '../../util/styles/jss/jss';
 import { useAttachmentUpload } from '../attachment/AttachmentUploadContext';
 import InnerHtml from '../inner-html/InnerHtml';
 
