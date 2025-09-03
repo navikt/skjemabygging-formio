@@ -4,10 +4,19 @@ import { createContext, useContext, useState } from 'react';
 import { submitCaptchaValue } from '../../api/captcha/captcha';
 import useNologinFileUpload from '../../api/nologin-file-upload/nologinFileUpload';
 import http from '../../api/util/http/http';
+import {
+  MAX_SIZE_ATTACHMENT_FILE_TEXT,
+  MAX_TOTAL_SIZE_ATTACHMENT_FILES_BYTES,
+  MAX_TOTAL_SIZE_ATTACHMENT_FILES_TEXT,
+} from '../../constants/fileUpload';
 import { useAppConfig } from '../../context/config/configContext';
 import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
 import { useSendInn } from '../../context/sendInn/sendInnContext';
+import {
+  validateAttachmentFiles,
+  validateFileUpload,
+} from '../../util/form/attachment-validation/attachmentValidation';
 
 type ErrorType = 'FILE' | 'INPUT';
 interface AttachmentUploadContextType {
@@ -128,13 +137,24 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
     }
   };
 
+  const validate = (attachmentId: string, file: FileObject): string | undefined => {
+    const attachment = submission?.attachments?.find((attachment) => attachment.attachmentId === attachmentId);
+    const exceedsTotalMaxSize = validateAttachmentFiles(MAX_TOTAL_SIZE_ATTACHMENT_FILES_BYTES, attachment, [file.file]);
+    if (exceedsTotalMaxSize) {
+      return translate(exceedsTotalMaxSize, { size: MAX_TOTAL_SIZE_ATTACHMENT_FILES_TEXT });
+    }
+    const fileInvalid = validateFileUpload(file);
+    if (fileInvalid) {
+      return translate(fileInvalid, { size: MAX_SIZE_ATTACHMENT_FILE_TEXT });
+    }
+  };
+
   const handleUploadFile = async (attachmentId: string, file: FileObject) => {
     try {
       removeError(attachmentId);
-      const attachment = submission?.attachments?.find((attachment) => attachment.attachmentId === attachmentId);
-      const currentAttachmentSize = attachment?.files?.reduce((acc, curr) => acc + curr.size, 0) ?? 0;
-      if (currentAttachmentSize + file.file.size > 50 * 1024 * 1024) {
-        addError(attachmentId, translate(TEXTS.statiske.uploadFile.totalFileSizeTooLarge), 'FILE');
+      const invalidUpload = validate(attachmentId, file);
+      if (invalidUpload) {
+        addError(attachmentId, invalidUpload, 'FILE');
         return;
       }
       const token = await resolveCaptcha();

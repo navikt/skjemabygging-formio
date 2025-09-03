@@ -13,6 +13,7 @@ import {
 } from '@navikt/ds-react';
 import { AttachmentSettingValues, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useState } from 'react';
+import { FILE_ACCEPT, MAX_SIZE_ATTACHMENT_FILE_BYTES, MAX_SIZE_ATTACHMENT_FILE_TEXT } from '../../constants/fileUpload';
 import { useLanguages } from '../../context/languages';
 import { htmlUtils, makeStyles } from '../../index';
 import { useAttachmentUpload } from '../attachment/AttachmentUploadContext';
@@ -30,15 +31,23 @@ interface Props {
   attachmentValue?: keyof AttachmentSettingValues;
   requireDescription?: boolean;
   multiple?: boolean;
+  accept?: string;
+  maxFileSizeInBytes?: number;
+  maxFileSizeText?: string;
 }
 
-const FILE_ACCEPT = '.pdf,.jpeg,.jpg,.docx,.doc,.odt,.rtf,.txt,.png,.tiff,.tif,.bmp,.gif';
-const MAX_FILE_SIZE_BYTES = 50 * 1024 * 1024; // 50 MB
-
-const FileUploader = ({ attachmentId, attachmentValue, requireDescription, multiple }: Props) => {
+const FileUploader = ({
+  attachmentId,
+  attachmentValue,
+  requireDescription,
+  multiple,
+  accept = FILE_ACCEPT,
+  maxFileSizeInBytes = MAX_SIZE_ATTACHMENT_FILE_BYTES,
+  maxFileSizeText = MAX_SIZE_ATTACHMENT_FILE_TEXT,
+}: Props) => {
   const { translate } = useLanguages();
   const styles = useStyles();
-  const { handleUploadFile, changeAttachmentValue, handleDeleteFile, submissionAttachments, errors, addError } =
+  const { handleUploadFile, changeAttachmentValue, handleDeleteFile, submissionAttachments, errors } =
     useAttachmentUpload();
   const attachment = submissionAttachments.find((attachment) => attachment.attachmentId === attachmentId);
   const [description, setDescription] = useState(attachment?.description ?? '');
@@ -53,15 +62,6 @@ const FileUploader = ({ attachmentId, attachmentValue, requireDescription, multi
     setLoading(true);
     const file = files?.[0];
     if (!file) {
-      setLoading(false);
-      return;
-    }
-    if (file.error) {
-      const uploadError =
-        file.reasons[0] === 'fileSize'
-          ? TEXTS.statiske.uploadFile.fileTooLargeError
-          : TEXTS.statiske.uploadFile.fileNotSupportedError;
-      addError(attachmentId, uploadError, 'FILE');
       setLoading(false);
       return;
     }
@@ -96,7 +96,7 @@ const FileUploader = ({ attachmentId, attachmentValue, requireDescription, multi
             />
           )}
           {(!requireDescription || !!description.trim()) && (
-            <FileUpload.Trigger onSelect={onSelect} accept={FILE_ACCEPT} maxSizeInBytes={MAX_FILE_SIZE_BYTES}>
+            <FileUpload.Trigger onSelect={onSelect} accept={accept} maxSizeInBytes={maxFileSizeInBytes}>
               <Button
                 variant={initialUpload ? 'primary' : 'secondary'}
                 className={styles.button}
@@ -123,7 +123,9 @@ const FileUploader = ({ attachmentId, attachmentValue, requireDescription, multi
               <BodyShort weight="semibold">{translate(TEXTS.statiske.attachment.validFormatsLabel)}</BodyShort>
               <BodyLong>{translate(TEXTS.statiske.attachment.validFormatsDescrption)}</BodyLong>
               <BodyShort weight="semibold">{translate(TEXTS.statiske.attachment.maxFileSizeLabel)}</BodyShort>
-              <BodyLong>{translate(TEXTS.statiske.attachment.maxFileSizeDescription)}</BodyLong>
+              <BodyLong>
+                {translate(TEXTS.statiske.attachment.maxFileSizeDescription, { size: maxFileSizeText })}
+              </BodyLong>
             </HStack>
           </ReadMore>
         </>
