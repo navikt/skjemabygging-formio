@@ -138,14 +138,19 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
   };
 
   const validate = (attachmentId: string, file: FileObject): string | undefined => {
-    const attachment = submission?.attachments?.find((attachment) => attachment.attachmentId === attachmentId);
-    const exceedsTotalMaxSize = validateAttachmentFiles(MAX_TOTAL_SIZE_ATTACHMENT_FILES_BYTES, attachment, [file.file]);
-    if (exceedsTotalMaxSize) {
-      return translate(exceedsTotalMaxSize, { size: MAX_TOTAL_SIZE_ATTACHMENT_FILES_TEXT });
-    }
-    const fileInvalid = validateFileUpload(file);
+    const fileInvalid = validateFileUpload(file, config.logger);
     if (fileInvalid) {
       return translate(fileInvalid, { size: MAX_SIZE_ATTACHMENT_FILE_TEXT });
+    }
+    const attachment = submission?.attachments?.find((attachment) => attachment.attachmentId === attachmentId);
+    const exceedsTotalMaxSize = validateAttachmentFiles(
+      MAX_TOTAL_SIZE_ATTACHMENT_FILES_BYTES,
+      attachment,
+      [file.file],
+      config.logger,
+    );
+    if (exceedsTotalMaxSize) {
+      return translate(exceedsTotalMaxSize, { size: MAX_TOTAL_SIZE_ATTACHMENT_FILES_TEXT });
     }
   };
 
