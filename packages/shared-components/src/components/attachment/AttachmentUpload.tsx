@@ -37,6 +37,7 @@ const AttachmentUpload = ({ label, attachmentValues, componentId, description, c
 
   const isIdUpload = componentId === 'personal-id';
   const uploadedAttachmentFiles = attachment?.files ?? [];
+  const idUploaded = isIdUpload && uploadedAttachmentFiles.length > 0;
   const options = attachmentUtils.mapKeysToOptions(attachmentValues, translate);
   const uploadSelected = !!options.find((option) => option.value === value)?.upload;
   const error = errors[componentId];
@@ -64,17 +65,19 @@ const AttachmentUpload = ({ label, attachmentValues, componentId, description, c
 
   return (
     <VStack gap="8" className={clsx('mb', className)}>
-      <Attachment
-        title={label}
-        description={description}
-        error={error?.type === 'INPUT' && error.message}
-        value={value ? { key: value, additionalDocumentation: descriptionText } : undefined}
-        hideOptions={uploadedAttachmentFiles.length > 0}
-        attachmentValues={attachmentValues}
-        onChange={handleValueChange}
-        translate={translate}
-        deadline={form.properties?.ettersendelsesfrist}
-      />
+      {!idUploaded && (
+        <Attachment
+          title={label}
+          description={description}
+          error={error?.type === 'INPUT' && error.message}
+          value={value ? { key: value, additionalDocumentation: descriptionText } : undefined}
+          hideOptions={uploadedAttachmentFiles.length > 0}
+          attachmentValues={attachmentValues}
+          onChange={handleValueChange}
+          translate={translate}
+          deadline={form.properties?.ettersendelsesfrist}
+        />
+      )}
       {uploadSelected && (
         <VStack gap="4">
           <div className={styles.uploadedFilesHeader}>
