@@ -6,6 +6,7 @@ import attachmentUtils, {
   AttachmentSettingValues,
   AttachmentValue,
   LimitedFormAttachment,
+  SubmissionAttachment,
   SubmissionAttachmentValue,
 } from './attachment';
 import { ComponentError } from './component';
@@ -271,6 +272,7 @@ export type {
   Submission,
   SubmissionActivity,
   SubmissionAddress,
+  SubmissionAttachment,
   SubmissionAttachmentValue,
   SubmissionData,
   SubmissionIdentity,

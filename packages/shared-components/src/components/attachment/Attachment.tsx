@@ -12,8 +12,9 @@ import SingleSelect from '../single-select/SingleSelect';
 interface Props {
   title: ReactNode;
   description: ReactNode;
-  error: ReactNode;
+  error?: ReactNode;
   value?: any;
+  hideOptions?: boolean;
   attachmentValues?: AttachmentSettingValues | ComponentValue[];
   onChange: (value: SubmissionAttachmentValue) => void;
   translate: (text: string, params?: any) => string;
@@ -21,36 +22,12 @@ interface Props {
 }
 
 const Attachment = forwardRef<HTMLFieldSetElement, Props>(
-  ({ attachmentValues, value, title, description, error, onChange, translate, deadline }: Props, ref) => {
-    const additionalDocumentation = attachmentValues?.[value?.key]?.additionalDocumentation;
-    const showDeadline = !!attachmentValues?.[value?.key]?.showDeadline;
+  ({ attachmentValues, value, hideOptions, title, description, error, onChange, translate, deadline }: Props, ref) => {
+    const additionalDocumentation = attachmentValues?.[value?.key ?? '']?.additionalDocumentation;
+    const showDeadline = !!attachmentValues?.[value?.key ?? '']?.showDeadline;
 
     const additionalDocumentationMaxLength = 200;
-
-    const getValues = (): ComponentValue[] => {
-      if (attachmentValues) {
-        if (Array.isArray(attachmentValues)) {
-          return attachmentValues;
-        } else if (typeof attachmentValues === 'object') {
-          // map over attachmentSettingKeys to ensure a fixed order
-          return attachmentUtils.attachmentSettingKeys
-            .map((key) => {
-              const values = attachmentValues[key];
-              if (!values?.enabled) {
-                return undefined;
-              } else {
-                return {
-                  value: key,
-                  label: translate(TEXTS.statiske.attachment[key]),
-                };
-              }
-            })
-            .filter((values) => !!values) as ComponentValue[];
-        }
-      }
-
-      return [];
-    };
+    const values = attachmentUtils.mapKeysToOptions(attachmentValues, translate);
 
     const handleAttachmentChange = (key: string) => {
       onChange({
@@ -75,8 +52,9 @@ const Attachment = forwardRef<HTMLFieldSetElement, Props>(
     return (
       <div>
         <SingleSelect
-          values={getValues()}
+          values={values}
           value={value?.key ?? ''}
+          hideOptions={hideOptions}
           title={title}
           description={description}
           error={error}
