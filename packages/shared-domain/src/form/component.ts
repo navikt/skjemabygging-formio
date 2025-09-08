@@ -131,6 +131,8 @@ export interface Component {
   protectedApiKey?: boolean;
   yourInformation?: boolean;
   widthPercent?: number;
+  currency?: string;
+  isAmountWithCurrencySelector?: boolean;
 }
 
 export interface DataFetcherComponent extends Component {

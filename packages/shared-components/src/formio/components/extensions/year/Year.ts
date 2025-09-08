@@ -53,7 +53,7 @@ class Year extends Number {
   }
 
   private validateYear() {
-    // Get data value instead of formatted number from this.getValue()
+    // Get data value instead of formatted number from this.getSubmissionValue()
     const value = this.getDataValue();
 
     if (value === '' || value === undefined) {

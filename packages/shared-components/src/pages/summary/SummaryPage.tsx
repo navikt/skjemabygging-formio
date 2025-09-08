@@ -4,11 +4,12 @@ import { DeclarationType, TEXTS } from '@navikt/skjemadigitalisering-shared-doma
 import { useEffect, useRef, useState } from 'react';
 import EditAnswersButton from '../../components/button/navigation/edit-answers/EditAnswersButton';
 import NavFormHelper from '../../components/nav-form/NavFormHelper';
-import FormSummary from '../../components/summary/form/FormSummary';
+import OldFormSummary from '../../components/summary/form/FormSummary';
 import SummaryPageNavigation from '../../components/summary/navigation/SummaryPageNavigation';
 import { useAppConfig } from '../../context/config/configContext';
 import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
+import FormSummary from '../../form-components/FormSummary';
 import Styles from '../../styles';
 import { scrollToAndSetFocus } from '../../util/focus-management/focus-management';
 import { PanelValidation, validateWizardPanels } from '../../util/form/panel-validation/panelValidation';
@@ -136,12 +137,13 @@ export function SummaryPage() {
             </>
           )}
           <div className="form-summary">
-            <FormSummary
+            <OldFormSummary
               submission={submission}
               form={form}
               formUrl={formUrl}
               panelValidationList={panelValidationList}
             />
+            <FormSummary />
           </div>
           {hasDeclaration && (
             <ConfirmationPanel
