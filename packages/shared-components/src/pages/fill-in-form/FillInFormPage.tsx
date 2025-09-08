@@ -136,7 +136,11 @@ export const FillInFormPage = () => {
   );
 
   useEffect(() => {
-    setFormForRendering(submissionMethod === 'digital' ? navFormUtils.removeVedleggspanel(form) : form);
+    setFormForRendering(
+      submissionMethod === 'digital' || submissionMethod === 'digitalnologin'
+        ? navFormUtils.removeVedleggspanel(form)
+        : form,
+    );
   }, [form, submissionMethod]);
 
   if (!translationsForNavForm) {
@@ -186,6 +190,7 @@ export const FillInFormPage = () => {
           paths={formNavigationPaths}
           onCancel={onCancel}
           navigateTo={navigateTo}
+          finalStep={submissionMethod === 'digitalnologin' ? 'vedlegg' : 'oppsummering'}
         />
       </div>
       <ConfirmationModal
