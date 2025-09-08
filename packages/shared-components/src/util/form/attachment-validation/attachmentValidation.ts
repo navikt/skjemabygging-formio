@@ -24,7 +24,7 @@ const validateAttachmentFiles = (
   const attachmentFilesSize = attachment?.files?.reduce((acc, file) => acc + file.size, 0) ?? 0;
   const additionalFilesSize = additionalFiles?.reduce((acc, file) => acc + file.size, 0) ?? 0;
   if (attachmentFilesSize + additionalFilesSize > totalMaxAttachmentSizeInBytes) {
-    logger?.debug(
+    logger?.info(
       `Total size for attachment exceeded when uploading file: ${attachmentFilesSize + additionalFilesSize} bytes`,
     );
     return TEXTS.statiske.uploadFile.totalFileSizeTooLarge;
@@ -34,12 +34,12 @@ const validateAttachmentFiles = (
 const validateFileUpload = (file: FileObject, logger?: FrontendLogger) => {
   if (file.error) {
     if (file.reasons.some((reason) => reason === 'fileSize')) {
-      logger?.debug(
+      logger?.info(
         `Uploading file failed because of file size. Size: ${file.file.size}, name: ${file.file.name}, type: ${file.file.type}`,
       );
       return TEXTS.statiske.uploadFile.fileTooLargeError;
     } else {
-      logger?.debug(
+      logger?.info(
         `Uploading file failed with reasons: ${file.reasons}. Size: ${file.file.size}, name: ${file.file.name}, type: ${file.file.type}`,
       );
       return TEXTS.statiske.uploadFile.fileNotSupportedError;
