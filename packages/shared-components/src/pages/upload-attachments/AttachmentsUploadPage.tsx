@@ -2,6 +2,7 @@ import { Submission } from '@navikt/skjemadigitalisering-shared-domain';
 import clsx from 'clsx';
 import AttachmentUpload from '../../components/attachment/AttachmentUpload';
 import AttachmentUploadProvider from '../../components/attachment/AttachmentUploadContext';
+import OtherAttachmentUpload from '../../components/attachment/OtherAttachmentUpload';
 import { useForm } from '../../context/form/FormContext';
 import { Attachment, getAllAttachments } from '../../util/attachment/attachmentsUtil';
 import htmlUtils from '../../util/html/htmlUtils';
@@ -22,18 +23,29 @@ export function AttachmentsUploadPage() {
 
   return (
     <AttachmentUploadProvider>
-      {attachments.map(({ label, description, attachmentValues, navId, attachmentType }, index) => (
-        <AttachmentUpload
-          key={navId}
-          className={clsx(index !== attachments.length - 1 && styles.attachmentUpload)}
-          label={label}
-          description={htmlUtils.extractTextContent(description as string)}
-          attachmentValues={attachmentValues}
-          componentId={navId as string}
-          otherAttachment={attachmentType === 'other'}
-        />
-      ))}
-      <AttachmentsUploadButtonRow />
+      {attachments.map(({ label, description, attachmentValues, navId, attachmentType }, index) => {
+        return attachmentType === 'other' ? (
+          <OtherAttachmentUpload
+            key={navId}
+            className={clsx(index !== attachments.length - 1 && styles.attachmentUpload)}
+            label={label}
+            description={htmlUtils.extractTextContent(description as string)}
+            attachmentValues={attachmentValues}
+            componentId={navId as string}
+          />
+        ) : (
+          <AttachmentUpload
+            key={navId}
+            className={clsx(index !== attachments.length - 1 && styles.attachmentUpload)}
+            label={label}
+            description={htmlUtils.extractTextContent(description as string)}
+            attachmentValues={attachmentValues}
+            componentId={navId as string}
+            otherAttachment={attachmentType === 'other'}
+          />
+        );
+      })}
+      <AttachmentsUploadButtonRow attachments={attachments} />
     </AttachmentUploadProvider>
   );
 }

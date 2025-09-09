@@ -1,3 +1,4 @@
+import { PlusIcon } from '@navikt/aksel-icons';
 import { Button, Label, VStack } from '@navikt/ds-react';
 import {
   AttachmentSettingValues,
@@ -23,51 +24,49 @@ interface Props {
   className?: string;
 }
 
-const AttachmentUpload = ({ label, attachmentValues, componentId, description, className }: Props) => {
+const OtherAttachmentUpload = ({ label, attachmentValues, componentId, description, className }: Props) => {
   const styles = useAttachmentStyles();
   const { translate } = useLanguages();
   const { changeAttachmentValue, handleDeleteAttachment, submissionAttachments, errors } = useAttachmentUpload();
   const { form } = useForm();
-  const attachment = submissionAttachments.find((attachment) => attachment.attachmentId.startsWith(componentId));
-  const [value, setValue] = useState<keyof AttachmentSettingValues | undefined>(attachment?.value);
-  const [descriptionText, setDescriptionText] = useState(attachment?.description);
 
-  const idUpload = componentId === 'personal-id';
-  const uploadedAttachmentFiles = attachment?.files ?? [];
-  const idUploaded = idUpload && uploadedAttachmentFiles.length > 0;
+  const otherAttachment = submissionAttachments.find((attachment) => attachment.attachmentId.startsWith(componentId));
+  const [attachments, setAttachments] = useState(
+    otherAttachment
+      ? submissionAttachments.filter((att) => att.attachmentId.startsWith(componentId))
+      : [{ attachmentId: componentId }],
+  );
+
+  const uploadedAttachmentFiles = otherAttachment?.files ?? [];
   const options = attachmentUtils.mapKeysToOptions(attachmentValues, translate);
-  const uploadSelected = !!options.find((option) => option.value === value)?.upload;
+  const uploadSelected = !!options.find((option) => option.value === otherAttachment?.value)?.upload;
   const error = errors[componentId];
 
   const handleValueChange = (value: Partial<SubmissionAttachmentValue>, attachmentId: string = componentId) => {
-    setValue(value.key);
-    setDescriptionText(value?.additionalDocumentation);
-    if (idUpload) {
-      changeAttachmentValue(attachmentId, undefined, options.find((option) => option.value === value.key)?.label);
-    } else {
-      changeAttachmentValue(attachmentId, value.key, value.additionalDocumentation);
-    }
+    changeAttachmentValue(attachmentId, value.key);
   };
 
   const handleDeleteAllAttachments = async (attachmentId: string) => {
     await handleDeleteAttachment(attachmentId);
   };
 
+  const handleUploadAnotherAttachment = () => {
+    setAttachments((current) => [...current, { attachmentId: `${componentId}-${current.length}` }]);
+  };
+
   return (
     <VStack gap="8" className={clsx('mb', className)}>
-      {!idUploaded && (
-        <Attachment
-          title={label}
-          description={description}
-          error={error?.type === 'INPUT' && error.message}
-          value={value ? { key: value, additionalDocumentation: descriptionText } : undefined}
-          hideOptions={uploadedAttachmentFiles.length > 0}
-          attachmentValues={attachmentValues}
-          onChange={handleValueChange}
-          translate={translate}
-          deadline={form.properties?.ettersendelsesfrist}
-        />
-      )}
+      <Attachment
+        title={label}
+        description={description}
+        error={error?.type === 'INPUT' && error.message}
+        value={otherAttachment?.value ? { key: otherAttachment.value } : undefined}
+        hideOptions={uploadedAttachmentFiles.length > 0}
+        attachmentValues={attachmentValues}
+        onChange={handleValueChange}
+        translate={translate}
+        deadline={form.properties?.ettersendelsesfrist}
+      />
       {uploadSelected && (
         <VStack gap="4">
           <div className={styles.uploadedFilesHeader}>
@@ -84,12 +83,27 @@ const AttachmentUpload = ({ label, attachmentValues, componentId, description, c
               </Button>
             )}
           </div>
-          {idUpload && <Label>{translate(TEXTS.statiske.uploadId.selectFileLabel)}</Label>}
-          <FileUploader attachmentId={componentId} multiple={!idUpload} />
+
+          {attachments.map((attachment) => (
+            <FileUploader
+              key={attachment.attachmentId}
+              attachmentId={attachment.attachmentId}
+              requireDescription
+              attachmentValue={otherAttachment?.value}
+            />
+          ))}
+          <Button
+            variant="tertiary"
+            onClick={handleUploadAnotherAttachment}
+            className={styles.addAnotherAttachmentButton}
+            icon={<PlusIcon aria-hidden fontSize="1.5rem" />}
+          >
+            {translate(TEXTS.statiske.attachment.addNewAttachment)}
+          </Button>
         </VStack>
       )}
     </VStack>
   );
 };
 
-export default AttachmentUpload;
+export default OtherAttachmentUpload;
