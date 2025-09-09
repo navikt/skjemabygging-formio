@@ -7,7 +7,6 @@ import {
   TEXTS,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import clsx from 'clsx';
-import { useState } from 'react';
 import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
 import FileUploader from '../file-uploader/FileUploader';
@@ -29,21 +28,17 @@ const AttachmentUpload = ({ label, attachmentValues, componentId, description, c
   const { changeAttachmentValue, handleDeleteAttachment, submissionAttachments, errors } = useAttachmentUpload();
   const { form } = useForm();
   const attachment = submissionAttachments.find((attachment) => attachment.attachmentId.startsWith(componentId));
-  const [value, setValue] = useState<keyof AttachmentSettingValues | undefined>(attachment?.value);
-  const [descriptionText, setDescriptionText] = useState(attachment?.description);
 
   const idUpload = componentId === 'personal-id';
   const uploadedAttachmentFiles = attachment?.files ?? [];
   const idUploaded = idUpload && uploadedAttachmentFiles.length > 0;
   const options = attachmentUtils.mapKeysToOptions(attachmentValues, translate);
-  const uploadSelected = !!options.find((option) => option.value === value)?.upload;
+  const uploadSelected = !!options.find((option) => option.value === attachment?.value)?.upload;
   const error = errors[componentId];
 
   const handleValueChange = (value: Partial<SubmissionAttachmentValue>, attachmentId: string = componentId) => {
-    setValue(value.key);
-    setDescriptionText(value?.additionalDocumentation);
     if (idUpload) {
-      changeAttachmentValue(attachmentId, undefined, options.find((option) => option.value === value.key)?.label);
+      changeAttachmentValue(attachmentId, value.key, options.find((option) => option.value === value.key)?.label);
     } else {
       changeAttachmentValue(attachmentId, value.key, value.additionalDocumentation);
     }
@@ -60,7 +55,9 @@ const AttachmentUpload = ({ label, attachmentValues, componentId, description, c
           title={label}
           description={description}
           error={error?.type === 'INPUT' && error.message}
-          value={value ? { key: value, additionalDocumentation: descriptionText } : undefined}
+          value={
+            attachment?.value ? { key: attachment.value, additionalDocumentation: attachment?.description } : undefined
+          }
           hideOptions={uploadedAttachmentFiles.length > 0}
           attachmentValues={attachmentValues}
           onChange={handleValueChange}

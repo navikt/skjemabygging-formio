@@ -41,7 +41,6 @@ export function AttachmentsUploadPage() {
             description={htmlUtils.extractTextContent(description as string)}
             attachmentValues={attachmentValues}
             componentId={navId as string}
-            otherAttachment={attachmentType === 'other'}
           />
         );
       })}
