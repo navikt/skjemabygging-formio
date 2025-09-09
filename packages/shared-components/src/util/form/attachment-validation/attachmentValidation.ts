@@ -2,11 +2,16 @@ import { FileObject } from '@navikt/ds-react';
 import { SubmissionAttachment, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import FrontendLogger from '../../../api/frontend-logger/FrontendLogger';
 
-const validateAttachmentValues = (attachments: SubmissionAttachment[]): Record<string, string> => {
+const validateAttachmentValues = (
+  attachmentIds: string[],
+  attachments: SubmissionAttachment[],
+): Record<string, string> => {
   const errors: Record<string, string> = {};
-  attachments.forEach((attachment: SubmissionAttachment) => {
+  attachmentIds.forEach((attachmentId: string) => {
+    const attachment = attachments.find((att) => att.attachmentId.startsWith(attachmentId));
     if (!attachment?.value) {
-      errors[attachment.attachmentId] = TEXTS.statiske.attachment.attachmentError;
+      console.log(attachmentId, attachment, TEXTS.statiske.attachment.attachmentError);
+      errors[attachmentId] = TEXTS.statiske.attachment.attachmentError;
     }
     if (attachment?.value && attachment.value === 'leggerVedNaa' && (attachment.files ?? [])?.length === 0) {
       errors[attachment.attachmentId] = TEXTS.statiske.attachment.attachmentError;
