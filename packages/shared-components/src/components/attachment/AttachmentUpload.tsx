@@ -1,4 +1,4 @@
-import { Button, Label, VStack } from '@navikt/ds-react';
+import { BodyShort, Button, Label, VStack } from '@navikt/ds-react';
 import {
   AttachmentSettingValues,
   attachmentUtils,
@@ -50,21 +50,28 @@ const AttachmentUpload = ({ label, attachmentValues, componentId, description, c
 
   return (
     <VStack gap="8" className={clsx('mb', className)}>
-      {!idUploaded && (
-        <Attachment
-          title={label}
-          description={description}
-          error={error?.type === 'INPUT' && error.message}
-          value={
-            attachment?.value ? { key: attachment.value, additionalDocumentation: attachment?.description } : undefined
-          }
-          hideOptions={uploadedAttachmentFiles.length > 0}
-          attachmentValues={attachmentValues}
-          onChange={handleValueChange}
-          translate={translate}
-          deadline={form.properties?.ettersendelsesfrist}
-        />
-      )}
+      {!idUploaded &&
+        (uploadedAttachmentFiles.length > 0 ? (
+          <div>
+            <Label>{label}</Label>
+            <BodyShort>{description}</BodyShort>
+          </div>
+        ) : (
+          <Attachment
+            title={label}
+            description={description}
+            error={error?.type === 'INPUT' && error.message}
+            value={
+              attachment?.value
+                ? { key: attachment.value, additionalDocumentation: attachment?.description }
+                : undefined
+            }
+            attachmentValues={attachmentValues}
+            onChange={handleValueChange}
+            translate={translate}
+            deadline={form.properties?.ettersendelsesfrist}
+          />
+        ))}
       {uploadSelected && (
         <VStack gap="4">
           <div className={styles.uploadedFilesHeader}>

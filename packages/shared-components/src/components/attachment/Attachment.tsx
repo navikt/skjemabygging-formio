@@ -14,7 +14,6 @@ interface Props {
   description: ReactNode;
   error?: ReactNode;
   value?: any;
-  hideOptions?: boolean;
   attachmentValues?: AttachmentSettingValues | ComponentValue[];
   onChange: (value: SubmissionAttachmentValue) => void;
   translate: (text: string, params?: any) => string;
@@ -22,9 +21,9 @@ interface Props {
 }
 
 const Attachment = forwardRef<HTMLFieldSetElement, Props>(
-  ({ attachmentValues, value, hideOptions, title, description, error, onChange, translate, deadline }: Props, ref) => {
-    const additionalDocumentation = attachmentValues?.[value?.key ?? '']?.additionalDocumentation;
-    const showDeadline = !!attachmentValues?.[value?.key ?? '']?.showDeadline;
+  ({ attachmentValues, value, title, description, error, onChange, translate, deadline }: Props, ref) => {
+    const additionalDocumentation = attachmentValues?.[value?.key]?.additionalDocumentation;
+    const showDeadline = !!attachmentValues?.[value?.key]?.showDeadline;
 
     const additionalDocumentationMaxLength = 200;
     const values = attachmentUtils.mapKeysToOptions(attachmentValues, translate);
@@ -54,7 +53,6 @@ const Attachment = forwardRef<HTMLFieldSetElement, Props>(
         <SingleSelect
           values={values}
           value={value?.key ?? ''}
-          hideOptions={hideOptions}
           title={title}
           description={description}
           error={error}

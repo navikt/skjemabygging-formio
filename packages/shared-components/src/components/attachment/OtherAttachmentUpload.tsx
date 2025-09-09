@@ -1,5 +1,5 @@
 import { PlusIcon } from '@navikt/aksel-icons';
-import { Button, Label, VStack } from '@navikt/ds-react';
+import { BodyShort, Button, Label, VStack } from '@navikt/ds-react';
 import {
   AttachmentSettingValues,
   attachmentUtils,
@@ -56,17 +56,23 @@ const OtherAttachmentUpload = ({ label, attachmentValues, componentId, descripti
 
   return (
     <VStack gap="8" className={clsx('mb', className)}>
-      <Attachment
-        title={label}
-        description={description}
-        error={error?.type === 'INPUT' && error.message}
-        value={otherAttachment?.value ? { key: otherAttachment.value } : undefined}
-        hideOptions={uploadedAttachmentFiles.length > 0}
-        attachmentValues={attachmentValues}
-        onChange={handleValueChange}
-        translate={translate}
-        deadline={form.properties?.ettersendelsesfrist}
-      />
+      {uploadedAttachmentFiles.length > 0 ? (
+        <div>
+          <Label className={'mb-0'}>{label}</Label>
+          <BodyShort>{description}</BodyShort>
+        </div>
+      ) : (
+        <Attachment
+          title={label}
+          description={description}
+          error={error?.type === 'INPUT' && error.message}
+          value={otherAttachment?.value ? { key: otherAttachment.value } : undefined}
+          attachmentValues={attachmentValues}
+          onChange={handleValueChange}
+          translate={translate}
+          deadline={form.properties?.ettersendelsesfrist}
+        />
+      )}
       {uploadSelected && (
         <VStack gap="4">
           <div className={styles.uploadedFilesHeader}>
