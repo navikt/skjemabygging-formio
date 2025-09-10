@@ -37,7 +37,7 @@ const FormPageWrapper = () => {
       return;
     }
 
-    const formData = await get(formPath, 'title,skjemanummer,introPage,components,properties,firstPanelSlug');
+    const formData = await get(formPath, 'title,skjemanummer,path,introPage,components,properties,firstPanelSlug');
     if (formData) {
       setForm(formioFormsApiUtils.mapFormToNavForm(formData));
     }

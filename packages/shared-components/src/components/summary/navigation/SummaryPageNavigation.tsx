@@ -97,6 +97,19 @@ const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList,
               />
             ))}
 
+          {canSubmit && submissionMethod === 'digitalnologin' && (
+            <DigitalSubmissionButton
+              withIcon
+              submission={submission}
+              isValid={isValid}
+              onError={(err) => {
+                setError(err);
+              }}
+            >
+              {translate(TEXTS.grensesnitt.submitToNavPrompt.open)}
+            </DigitalSubmissionButton>
+          )}
+
           {submissionTypesUtils.isNoneSubmission(submissionTypes) && (
             <LinkButton
               buttonVariant="primary"
