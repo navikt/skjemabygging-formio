@@ -28,7 +28,7 @@ interface AttachmentUploadContextType {
   setCaptchaValue: (value: Record<string, string>) => void;
   removeError: (attachmentId: string) => void;
   submissionAttachments: SubmissionAttachment[];
-  changeAttachmentValue: (attachmentId: string, value?: string, description?: string) => void;
+  changeAttachmentValue: (attachment: SubmissionAttachment, value?: string, description?: string) => void;
   errors: Record<string, { message: string; type: ErrorType } | undefined>;
 }
 
@@ -204,18 +204,18 @@ const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boole
     }
   };
 
-  const changeAttachmentValue = (attachmentId: string, value?: string, description?: string) => {
+  const changeAttachmentValue = (attachment: SubmissionAttachment, value?: string, description?: string) => {
     // TODO: consider reducer or help functions
     setSubmission((current) => {
-      const currentAttachment = current?.attachments?.find((att) => att.attachmentId === attachmentId);
+      const currentAttachment = current?.attachments?.find((att) => att.attachmentId === attachment.attachmentId);
       if (!currentAttachment) {
         return {
           ...current,
-          attachments: [...(current?.attachments ?? []), { attachmentId, value, description, files: [] }],
+          attachments: [...(current?.attachments ?? []), { ...attachment, value, description, files: [] }],
         } as Submission;
       }
       const updatedAttachments = current?.attachments?.map((att) => {
-        if (att.attachmentId !== attachmentId) {
+        if (att.attachmentId !== attachment.attachmentId) {
           return att;
         }
         return { ...att, value: value ?? att.value, description: description ?? att.description };

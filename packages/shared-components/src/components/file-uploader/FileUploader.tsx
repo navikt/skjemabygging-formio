@@ -11,7 +11,7 @@ import {
   ReadMore,
   TextField,
 } from '@navikt/ds-react';
-import { AttachmentSettingValues, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { AttachmentSettingValues, SubmissionAttachment, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useState } from 'react';
 import { FILE_ACCEPT, MAX_SIZE_ATTACHMENT_FILE_BYTES, MAX_SIZE_ATTACHMENT_FILE_TEXT } from '../../constants/fileUpload';
 import { useLanguages } from '../../context/languages';
@@ -28,7 +28,7 @@ const useStyles = makeStyles({
 });
 
 interface Props {
-  attachmentId: string;
+  initialAttachment: SubmissionAttachment;
   attachmentValue?: keyof AttachmentSettingValues;
   requireDescription?: boolean;
   multiple?: boolean;
@@ -38,7 +38,7 @@ interface Props {
 }
 
 const FileUploader = ({
-  attachmentId,
+  initialAttachment,
   attachmentValue,
   requireDescription,
   multiple,
@@ -50,6 +50,7 @@ const FileUploader = ({
   const styles = useStyles();
   const { handleUploadFile, changeAttachmentValue, handleDeleteFile, submissionAttachments, errors } =
     useAttachmentUpload();
+  const { attachmentId } = initialAttachment;
   const attachment = submissionAttachments.find((attachment) => attachment.attachmentId === attachmentId);
   const [description, setDescription] = useState(attachment?.description ?? '');
   const [loading, setLoading] = useState(false);
@@ -92,7 +93,7 @@ const FileUploader = ({
               value={description}
               onChange={(e) => {
                 setDescription(e.target.value);
-                changeAttachmentValue(attachmentId, attachmentValue, e.target.value);
+                changeAttachmentValue(initialAttachment, attachmentValue, e.target.value);
               }}
             />
           )}

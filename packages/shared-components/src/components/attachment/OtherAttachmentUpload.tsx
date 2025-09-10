@@ -4,6 +4,7 @@ import {
   AttachmentSettingValues,
   attachmentUtils,
   ComponentValue,
+  SubmissionAttachment,
   SubmissionAttachmentValue,
   TEXTS,
 } from '@navikt/skjemadigitalisering-shared-domain';
@@ -30,11 +31,12 @@ const OtherAttachmentUpload = ({ label, attachmentValues, componentId, descripti
   const { changeAttachmentValue, handleDeleteAttachment, submissionAttachments, errors } = useAttachmentUpload();
   const { form } = useForm();
 
+  const defaultAttachmentValues: Pick<SubmissionAttachment, 'navId' | 'type'> = { navId: componentId, type: 'other' };
   const otherAttachment = submissionAttachments.find((attachment) => attachment.attachmentId.startsWith(componentId));
   const [attachments, setAttachments] = useState(
     otherAttachment
       ? submissionAttachments.filter((att) => att.attachmentId.startsWith(componentId))
-      : [{ attachmentId: componentId }],
+      : [{ attachmentId: componentId, ...defaultAttachmentValues }],
   );
 
   const uploadedAttachmentFiles = otherAttachment?.files ?? [];
@@ -43,7 +45,7 @@ const OtherAttachmentUpload = ({ label, attachmentValues, componentId, descripti
   const error = errors[componentId];
 
   const handleValueChange = (value: Partial<SubmissionAttachmentValue>, attachmentId: string = componentId) => {
-    changeAttachmentValue(attachmentId, value.key);
+    changeAttachmentValue({ attachmentId, ...defaultAttachmentValues }, value.key);
   };
 
   const handleDeleteAllAttachments = async (attachmentId: string) => {
@@ -51,7 +53,10 @@ const OtherAttachmentUpload = ({ label, attachmentValues, componentId, descripti
   };
 
   const handleUploadAnotherAttachment = () => {
-    setAttachments((current) => [...current, { attachmentId: `${componentId}-${current.length}` }]);
+    setAttachments((current) => [
+      ...current,
+      { attachmentId: `${componentId}-${current.length}`, ...defaultAttachmentValues },
+    ]);
   };
 
   return (
@@ -93,7 +98,7 @@ const OtherAttachmentUpload = ({ label, attachmentValues, componentId, descripti
           {attachments.map((attachment) => (
             <FileUploader
               key={attachment.attachmentId}
-              attachmentId={attachment.attachmentId}
+              initialAttachment={attachment}
               requireDescription
               attachmentValue={otherAttachment?.value}
             />
