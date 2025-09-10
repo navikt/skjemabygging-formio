@@ -1,7 +1,7 @@
 import { RefObject, useRef } from 'react';
 
 export interface IntroPageRefs {
-  introduction: RefObject<HTMLTextAreaElement>;
+  introduction: RefObject<HTMLDivElement>;
   'sections.prerequisites.title': RefObject<HTMLInputElement>;
   'sections.prerequisites.description': RefObject<HTMLTextAreaElement>;
   'sections.prerequisites.bulletPoints': RefObject<Array<HTMLTextAreaElement | null>>;
@@ -34,7 +34,7 @@ export interface IntroPageRefs {
 
 export function useIntroPageRefs() {
   return {
-    introduction: useRef<HTMLTextAreaElement>(null),
+    introduction: useRef<HTMLDivElement>(null),
     'importantInformation.title': useRef<HTMLInputElement>(null),
     'importantInformation.description': useRef<HTMLTextAreaElement>(null),
     'sections.scope.title': useRef<HTMLInputElement>(null),

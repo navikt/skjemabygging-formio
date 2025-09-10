@@ -2,13 +2,24 @@
   "extends": "../../tsconfig-base.json",
   "compilerOptions": {
     "jsx": "react-jsx",
-    "lib": ["dom", "dom.iterable", "ES2021"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "ES2021"
+    ],
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
     "paths": {
-      "@navikt/skjemadigitalisering-shared-components": ["../shared-components/src"],
-      "@navikt/skjemadigitalisering-shared-domain": ["../shared-domain/src"]
-    }
+      "@navikt/skjemadigitalisering-shared-components": [
+        "../shared-components/src"
+      ],
+      "@navikt/skjemadigitalisering-shared-domain": [
+        "../shared-domain/src"
+      ]
+    },
+    "moduleResolution": "bundler"
   },
-  "include": ["src"]
+  "include": [
+    "src"
+  ]
 }
