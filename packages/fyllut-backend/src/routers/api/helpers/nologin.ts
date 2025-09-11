@@ -51,7 +51,7 @@ const assembleNologinSoknadBody = (
       label: translate(form.title),
       pakrevd: true,
       opplastingsStatus: 'LastetOpp',
-      mimetype: 'application/pdf',
+      mimetype: 'application/json',
       document: base64EncodeByteArray(
         objectToByteArray({
           language,
@@ -70,7 +70,7 @@ const assembleNologinSoknadBody = (
         tittel: translate(attachment.description ?? 'Ukjent tittel'),
         opplastingsStatus: mapToStatus(attachment.value),
         mimetype: 'application/pdf',
-        pakrevd: attachment.type === 'default',
+        pakrevd: attachment.type !== 'other',
         filIdListe: attachment.files?.map((f) => f.fileId),
         fyllutId: attachment.navId,
         beskrivelse: attachment.description ? translate(attachment.description) : null,
