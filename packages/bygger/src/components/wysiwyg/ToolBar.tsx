@@ -1,29 +1,36 @@
 import { SchemaDefinition, useEditor, useEditorSelector } from '@portabletext/editor';
 
-// @ts-ignore
 import { BulletListIcon, LinkIcon, NumberListIcon } from '@navikt/aksel-icons';
+import { Box, Button, HStack, Select } from '@navikt/ds-react';
 import * as selectors from '@portabletext/editor/selectors';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
+import { LinkModal } from './LinkModal';
 
 type Props = {
   schemaDefinition: SchemaDefinition;
 };
 
+export type LinkData = {
+  title: string;
+  url: string;
+  openInNewTab: boolean;
+};
+
 export function ToolBar({ schemaDefinition }: Props) {
-  const editor = useEditor();
   const toolbarSchema = schemaDefinition;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [linkHref, setLinkHref] = useState('');
 
   function DecoratorButton(props: { decorator: string; title: string }) {
     const editor = useEditor();
     const active = useEditorSelector(editor, selectors.isActiveDecorator(props.decorator));
 
     return (
-      <button
+      <Button
         style={{
-          textDecoration: active ? 'underline' : 'unset',
+          backgroundColor: active ? 'var(--a-blue-600)' : 'unset',
+          color: active ? 'white' : 'black',
+          height: '2rem',
         }}
+        variant="secondary-neutral"
         onClick={() => {
           editor.send({
             type: 'decorator.toggle',
@@ -33,77 +40,78 @@ export function ToolBar({ schemaDefinition }: Props) {
         }}
       >
         {props.title}
-      </button>
+      </Button>
     );
   }
 
-  function StyleDropDown(props: { styles: { name: string; title?: string }[] }) {
-    // @ts-ignore
-    const activeStyle = useEditorSelector(editor, (state) => state.selection?.style);
+  function StyleDropdown(props: { styles: { name: string; title?: string }[] }) {
+    const editor = useEditor();
+    const activeStyle = useEditorSelector(editor, (state: any) => state?.style);
 
     return (
-      <label style={{ marginRight: '8px' }}>
-        <select
-          value={activeStyle}
-          onChange={(e) => {
-            editor.send({ type: 'style.toggle', style: e.target.value });
-            editor.send({ type: 'focus' });
-          }}
-        >
-          {props.styles.map((style) => (
-            <option key={style.name} value={style.name}>
-              {style.title ?? style.name}
-            </option>
-          ))}
-        </select>
-      </label>
+      <Select
+        label="Skrifttype"
+        hideLabel
+        style={{
+          marginRight: '8px',
+          width: 'fit-content',
+        }}
+        value={activeStyle}
+        onChange={(e) => {
+          editor.send({ type: 'style.toggle', style: e.target.value });
+          editor.send({ type: 'focus' });
+        }}
+      >
+        <option value="">Skrifttype</option>
+        {props.styles.map((style) => (
+          <option key={style.name} value={style.name}>
+            {style.title ?? style.name}
+          </option>
+        ))}
+      </Select>
     );
   }
 
   function AnnotationButton(props: { annotation: { name: string } }) {
+    const editor = useEditor();
     const active = useEditorSelector(editor, selectors.isActiveAnnotation(props.annotation.name));
+    const ref = useRef<HTMLDialogElement>(null);
+    const [linkData, setLinkData] = useState<LinkData>({ title: '', url: '', openInNewTab: true });
+
+    function onSubmit() {
+      console.log('submitting', linkData);
+      if (!linkData) {
+        return;
+      }
+      editor.send({ type: 'focus' });
+      editor.send({
+        type: 'insert.inline object',
+        inlineObject: {
+          name: 'link',
+          value: linkData,
+        },
+      });
+    }
+
     return (
-      // <span>
-      //   {props.annotation.name === 'link' && (
-      //     <input
-      //       type="text"
-      //       placeholder="Enter link"
-      //       value={linkHref}
-      //       onChange={(e) => setLinkHref(e.target.value)}
-      //       style={{ marginRight: '4px' }}
-      //     />
-      //   )}
-      <button
-        style={{
-          textDecoration: active ? 'underline' : 'unset',
-        }}
-        onClick={() => {
-          if (active) {
-            editor.send({
-              type: 'annotation.remove',
-              annotation: {
-                name: props.annotation.name,
-              },
-            });
-          } else {
-            editor.send({
-              type: 'annotation.add',
-              annotation: {
-                name: props.annotation.name,
-                value: props.annotation.name === 'link' ? { href: linkHref } : {},
-              },
-            });
-          }
-          editor.send({ type: 'focus' });
-        }}
-      >
-        {props.annotation.name === 'link' ? <LinkIcon title="Link" fontSize="1.2rem" /> : props.annotation.name}
-      </button>
-      // </span>
+      <Box>
+        <Button
+          style={{
+            backgroundColor: active ? 'var(--a-blue-600)' : 'unset',
+            color: active ? 'white' : 'black',
+            height: '2rem',
+          }}
+          icon={props.annotation.name === 'link' && <LinkIcon title="Link" fontSize="1.2rem" />}
+          variant="secondary-neutral"
+          onClick={() => ref.current?.showModal()}
+        ></Button>
+        <LinkModal dialogRef={ref} onSubmit={onSubmit} setLinkData={setLinkData} linkData={linkData} />
+      </Box>
     );
   }
 
   function ListButton(props: { list: string }) {
+    const editor = useEditor();
     const active = useEditorSelector(editor, selectors.isActiveListItem(props.list));
 
     const icons: Record<string, React.ReactNode> = {
@@ -112,10 +120,13 @@ export function ToolBar({ schemaDefinition }: Props) {
     };
 
     return (
-      <button
+      <Button
         style={{
-          textDecoration: active ? 'underline' : 'unset',
+          backgroundColor: active ? 'var(--a-blue-600)' : 'unset',
+          color: active ? 'white' : 'black',
+          height: '2rem',
         }}
+        variant="secondary-neutral"
         onClick={() => {
           editor.send({
             type: 'list item.toggle',
@@ -123,24 +134,37 @@ export function ToolBar({ schemaDefinition }: Props) {
           });
           editor.send({ type: 'focus' });
         }}
-      >
-        {icons[props.list] ?? props.list}
-      </button>
+        icon={icons[props.list] ?? props.list}
+      />
     );
   }
 
+  function DecoratorButtons() {
+    return toolbarSchema.decorators?.map((decorator) => (
+      <DecoratorButton key={decorator.name} decorator={decorator.name} title={decorator.title ?? decorator.name} />
+    ));
+  }
+
+  function LinkButton() {
+    return toolbarSchema.annotations?.map((annotation) => (
+      <AnnotationButton key={annotation.name} annotation={annotation} />
+    ));
+  }
+
+  function StylesDropdown() {
+    return <StyleDropdown styles={[...(toolbarSchema.styles ?? [])]} />;
+  }
+
+  function ListButtons() {
+    return toolbarSchema.lists?.map((list) => <ListButton key={list.name} list={list.name} />);
+  }
+
   return (
-    <div style={{ marginBottom: '.5rem' }}>
-      <StyleDropDown styles={[...(toolbarSchema.styles ?? [])]} />
-      {toolbarSchema.decorators?.map((decorator) => (
-        <DecoratorButton key={decorator.name} decorator={decorator.name} title={decorator.title ?? decorator.name} />
-      ))}
-      {toolbarSchema.annotations?.map((annotation) => (
-        <AnnotationButton key={annotation.name} annotation={annotation} />
-      ))}
-      {toolbarSchema.lists?.map((list) => (
-        <ListButton key={list.name} list={list.name} />
-      ))}
-    </div>
+    <HStack gap="space-4" style={{ marginBottom: '.5rem' }} align="center">
+      <StylesDropdown />
+      <DecoratorButtons />
+      <LinkButton />
+      <ListButtons />
+    </HStack>
   );
 }

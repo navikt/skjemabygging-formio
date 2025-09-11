@@ -1,11 +1,12 @@
-import { Box, Heading } from '@navikt/ds-react';
+import { Heading } from '@navikt/ds-react';
 import { FieldsetErrorMessage, makeStyles } from '@navikt/skjemadigitalisering-shared-components';
 import {
   defineSchema,
   EditorProvider,
   PortableTextBlock,
+  PortableTextChild,
   PortableTextEditable,
-  RenderAnnotationFunction,
+  RenderChildFunction,
   RenderDecoratorFunction,
   RenderStyleFunction,
 } from '@portabletext/editor';
@@ -13,6 +14,7 @@ import { EventListenerPlugin } from '@portabletext/editor/plugins';
 import { toHTML } from '@portabletext/to-html';
 import { forwardRef, useState } from 'react';
 import { ToolBar } from './ToolBar';
+import './editor.css';
 
 const useStyles = makeStyles({
   editor: {
@@ -32,9 +34,9 @@ const useStyles = makeStyles({
 });
 
 interface Props {
-  defaultValue?: PortableTextBlock[];
+  defaultValue?: PortableTextBlock[] | string;
   onChange: (value: string | PortableTextBlock[]) => void;
-  error?: string;
+  error?: string | boolean;
   autoFocus?: boolean;
   className?: string;
 }
@@ -44,13 +46,10 @@ const WysiwygEditor = forwardRef<HTMLDivElement, Props>(
   ({ className, defaultValue, onChange, error, autoFocus }, ref) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const styles = useStyles();
-    const [value, setValue] = useState<Array<PortableTextBlock> | undefined>(defaultValue || undefined);
+    const [value, setValue] = useState<Array<PortableTextBlock> | undefined | string>(defaultValue);
 
     const schemaDefinition = defineSchema({
-      decorators: [
-        { name: 'strong', title: 'B' },
-        { name: 'underline', title: 'Understrek' },
-      ],
+      decorators: [{ name: 'strong', title: 'B' }],
       annotations: [{ name: 'link', title: 'Lenke', fields: [{ name: 'href', type: 'string' }] }],
       styles: [
         { name: 'p', title: 'Avsnitt' },
@@ -60,6 +59,15 @@ const WysiwygEditor = forwardRef<HTMLDivElement, Props>(
       lists: [
         { name: 'bullet', title: 'Bulleted List' },
         { name: 'number', title: 'Numbered List' },
+      ],
+      inlineObjects: [
+        {
+          name: 'link',
+          fields: [
+            { name: 'title', type: 'string' },
+            { name: 'url', type: 'string' },
+          ],
+        },
       ],
     });
 
@@ -91,11 +99,19 @@ const WysiwygEditor = forwardRef<HTMLDivElement, Props>(
       return <>{props.children}</>;
     };
 
-    const renderAnnotation: RenderAnnotationFunction = (props) => {
-      if (props.schemaType.name === 'link') {
-        return <span style={{ textDecoration: 'underline' }}>{props.children}</span>;
-      }
+    function isLink(props: PortableTextChild): props is PortableTextChild & { url: string; title: string } {
+      return 'url' in props;
+    }
 
+    const renderChild: RenderChildFunction = (props) => {
+      console.log(JSON.stringify(props.value));
+      if (props.schemaType.name === 'link' && isLink(props.value)) {
+        return (
+          <a href={props.value.url} target="_blank" rel="noreferrer">
+            {props.value.title}
+          </a>
+        );
+      }
       return <>{props.children}</>;
     };
 
@@ -110,26 +126,24 @@ const WysiwygEditor = forwardRef<HTMLDivElement, Props>(
           on={(event) => {
             if (event.type === 'mutation') {
               setValue(event.value);
-              onChange(toHTML(event.value));
+              onChange(toHTML(event.value ?? []));
             }
           }}
         />
-        <Box padding="4">
+        <div style={{ marginRight: '2rem' }}>
           <ToolBar schemaDefinition={schemaDefinition} />
           <PortableTextEditable
             ref={ref}
             renderBlock={(props) => <div>{props.children}</div>}
             renderDecorator={renderDecorator}
             renderStyle={renderStyle}
-            renderAnnotation={renderAnnotation}
+            renderChild={renderChild}
             renderListItem={(props) => <>{props.children}</>}
-            style={{ border: '1px solid black', padding: '0.5em' }}
+            style={{ border: '1px solid black', minHeight: '150px', padding: '0.5rem' }}
             className={className}
           />
-        </Box>
-
-        {error && <FieldsetErrorMessage errorMessage={error} ref={ref} />}
-        <div>{JSON.stringify(value)}</div>
+        </div>
+        {error && typeof error === 'string' && <FieldsetErrorMessage errorMessage={error} ref={ref} />}
       </EditorProvider>
     );
   },
