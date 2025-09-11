@@ -7,10 +7,10 @@ import {
   PortableTextEditable,
   RenderAnnotationFunction,
   RenderDecoratorFunction,
-  RenderListItemFunction,
   RenderStyleFunction,
 } from '@portabletext/editor';
 import { EventListenerPlugin } from '@portabletext/editor/plugins';
+import { toHTML } from '@portabletext/to-html';
 import { forwardRef, useState } from 'react';
 import { ToolBar } from './ToolBar';
 
@@ -99,16 +99,6 @@ const WysiwygEditor = forwardRef<HTMLDivElement, Props>(
       return <>{props.children}</>;
     };
 
-    const renderListItem: RenderListItemFunction = (props) => {
-      if (props.schemaType.value === 'bullet') {
-        return <li style={{ listStyleType: 'disc', marginLeft: '1.5em' }}>{props.children}</li>;
-      }
-      if (props.schemaType.value === 'number') {
-        return <li style={{ listStyleType: 'decimal', marginLeft: '1.5em' }}>{props.children}</li>;
-      }
-      return <>{props.children}</>;
-    };
-
     return (
       <EditorProvider
         initialConfig={{
@@ -120,7 +110,7 @@ const WysiwygEditor = forwardRef<HTMLDivElement, Props>(
           on={(event) => {
             if (event.type === 'mutation') {
               setValue(event.value);
-              onChange(event.value || '');
+              onChange(toHTML(event.value));
             }
           }}
         />
@@ -132,7 +122,7 @@ const WysiwygEditor = forwardRef<HTMLDivElement, Props>(
             renderDecorator={renderDecorator}
             renderStyle={renderStyle}
             renderAnnotation={renderAnnotation}
-            renderListItem={renderListItem}
+            renderListItem={(props) => <>{props.children}</>}
             style={{ border: '1px solid black', padding: '0.5em' }}
             className={className}
           />
