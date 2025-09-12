@@ -1,5 +1,11 @@
 import { FileObject } from '@navikt/ds-react';
-import { Submission, SubmissionAttachment, TEXTS, UploadedFile } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  AttachmentSettingValues,
+  Submission,
+  SubmissionAttachment,
+  TEXTS,
+  UploadedFile,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, useContext, useState } from 'react';
 import { submitCaptchaValue } from '../../api/captcha/captcha';
 import useNologinFileUpload from '../../api/nologin-file-upload/nologinFileUpload';
@@ -28,7 +34,12 @@ interface AttachmentUploadContextType {
   setCaptchaValue: (value: Record<string, string>) => void;
   removeError: (attachmentId: string) => void;
   submissionAttachments: SubmissionAttachment[];
-  changeAttachmentValue: (attachment: SubmissionAttachment, value?: string, description?: string) => void;
+  changeAttachmentValue: (
+    attachment: SubmissionAttachment,
+    value?: keyof AttachmentSettingValues,
+    description?: string,
+    validator?: { validate: (label: string, attachment: SubmissionAttachment) => string | undefined },
+  ) => void;
   errors: Record<string, { message: string; type: ErrorType } | undefined>;
 }
 
@@ -204,7 +215,20 @@ const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boole
     }
   };
 
-  const changeAttachmentValue = (attachment: SubmissionAttachment, value?: string, description?: string) => {
+  const changeAttachmentValue = (
+    attachment: SubmissionAttachment,
+    value?: keyof AttachmentSettingValues,
+    description?: string,
+    validator?: { validate: (label: string, attachment: SubmissionAttachment) => string | undefined },
+  ) => {
+    console.log('changeAttachmentValue', { ...attachment, value, description });
+    if (validator) {
+      const error = validator.validate('', { ...attachment, value, description });
+      console.log('error', error);
+      if (!error) {
+        removeError(attachment.attachmentId);
+      }
+    }
     // TODO: consider reducer or help functions
     setSubmission((current) => {
       const currentAttachment = current?.attachments?.find((att) => att.attachmentId === attachment.attachmentId);

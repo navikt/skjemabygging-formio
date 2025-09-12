@@ -48,4 +48,7 @@ export const validering = {
   min: '{{field}} kan ikke være mindre enn {{min}}.',
   integer: 'Oppgi et tall uten desimaler.',
   decimal: 'Oppgi et tall med maksimalt to desimaler.',
+
+  // File upload
+  fileMissing: 'Du må laste opp fil: {{field}}',
 };

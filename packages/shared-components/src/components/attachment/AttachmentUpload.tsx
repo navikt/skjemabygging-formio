@@ -16,6 +16,8 @@ import Attachment from './Attachment';
 import { useAttachmentUpload } from './AttachmentUploadContext';
 import { useAttachmentStyles } from './styles';
 
+import { attachmentValidator } from './attachmentValidator';
+
 interface Props {
   label: string;
   attachmentValues?: AttachmentSettingValues | ComponentValue[];
@@ -45,6 +47,7 @@ const AttachmentUpload = forwardRef<HTMLFieldSetElement, Props>(
           { attachmentId, navId: componentId, type },
           value.key,
           options.find((option) => option.value === value.key)?.label,
+          attachmentValidator(translate),
         );
       } else {
         changeAttachmentValue({ attachmentId, navId: componentId, type }, value.key, value.additionalDocumentation);

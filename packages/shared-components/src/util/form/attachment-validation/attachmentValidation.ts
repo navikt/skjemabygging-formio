@@ -1,20 +1,20 @@
 import { FileObject } from '@navikt/ds-react';
 import { SubmissionAttachment, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import FrontendLogger from '../../../api/frontend-logger/FrontendLogger';
+import { AttachmentValidator } from '../../../components/attachment/attachmentValidator';
+import { Attachment } from '../../attachment/attachmentsUtil';
 
-const validateAttachmentValues = (
-  attachmentIds: string[],
-  attachments: SubmissionAttachment[],
+const validateAttachment = (
+  formAttachments: Attachment[],
+  submissionAttachments: SubmissionAttachment[],
+  validator: AttachmentValidator,
 ): Record<string, string> => {
   const errors: Record<string, string> = {};
-  attachmentIds.forEach((attachmentId: string) => {
-    const attachment = attachments.find((att) => att.attachmentId.startsWith(attachmentId));
-    if (!attachment?.value) {
-      console.log(attachmentId, attachment, TEXTS.statiske.attachment.attachmentError);
-      errors[attachmentId] = TEXTS.statiske.attachment.attachmentError;
-    }
-    if (attachment?.value && attachment.value === 'leggerVedNaa' && (attachment.files ?? [])?.length === 0) {
-      errors[attachment.attachmentId] = TEXTS.statiske.attachment.attachmentError;
+  formAttachments.forEach(({ label, navId }) => {
+    const submissionAttachment = submissionAttachments.find((att) => att.attachmentId.startsWith(navId!));
+    const error = validator.validate(label, submissionAttachment);
+    if (error) {
+      errors[navId!] = error;
     }
   });
   return errors;
@@ -52,4 +52,4 @@ const validateFileUpload = (file: FileObject, logger?: FrontendLogger) => {
   }
 };
 
-export { validateAttachmentFiles, validateAttachmentValues, validateFileUpload };
+export { validateAttachment, validateAttachmentFiles, validateFileUpload };
