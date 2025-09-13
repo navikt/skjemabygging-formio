@@ -11,7 +11,7 @@ import { Attachment } from '../../util/attachment/attachmentsUtil';
 import { validateAttachment } from '../../util/form/attachment-validation/attachmentValidation';
 import urlUtils from '../../util/url/url';
 
-const AttachmentsUploadButtonRow = ({ attachments }: { attachments: Attachment[] }) => {
+const AttachmentsUploadButtonRow = ({ attachments, onError }: { attachments: Attachment[]; onError: () => void }) => {
   const navigate = useNavigate();
   const { translate } = useLanguages();
   const [searchParams] = useSearchParams();
@@ -30,6 +30,8 @@ const AttachmentsUploadButtonRow = ({ attachments }: { attachments: Attachment[]
     });
     if (Object.values(errors).length === 0) {
       navigate(summaryPageUrl);
+    } else {
+      onError();
     }
   };
 

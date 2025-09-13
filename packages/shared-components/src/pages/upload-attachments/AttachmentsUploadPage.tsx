@@ -1,6 +1,6 @@
 import { ComponentError, Submission, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import clsx from 'clsx';
-import { useState } from 'react';
+import { useRef } from 'react';
 import AttachmentUpload from '../../components/attachment/AttachmentUpload';
 import { useAttachmentUpload } from '../../components/attachment/AttachmentUploadContext';
 import OtherAttachmentUpload from '../../components/attachment/OtherAttachmentUpload';
@@ -25,7 +25,8 @@ export function AttachmentsUploadPage() {
   const { translate } = useLanguages();
   const styles = useStyles();
   const attachments: Attachment[] = getAllAttachments(form, submission ?? ({} as Submission));
-  const [refs, setRefs] = useState<{ [key: string]: HTMLElement | null }>({});
+  const otherAttachmentRefs = useRef<Record<string, HTMLElement>>({});
+  const errorSummaryRef = useRef<HTMLElement | null>(null);
 
   const errors: ComponentError[] = (Object.entries(uploadErrors) ?? [])
     .filter(([_, error]) => error?.type === 'INPUT')
@@ -40,16 +41,24 @@ export function AttachmentsUploadPage() {
     if (!navId || !element) {
       return;
     }
-    setRefs((current) => {
-      if (current[navId]) {
-        return current;
-      }
-      return { ...current, [navId]: element };
-    });
+    if (!otherAttachmentRefs.current[navId]) {
+      otherAttachmentRefs.current[navId] = element;
+    }
+  };
+
+  const focusOnErrorSummary = (maxAttempts = 5) => {
+    if (errorSummaryRef.current) {
+      errorSummaryRef.current.focus();
+    } else if (maxAttempts > 1) {
+      requestAnimationFrame(() => focusOnErrorSummary(--maxAttempts));
+    }
   };
 
   const focusOnComponent = (comp: string | { elementId?: string; path?: string }) => {
-    const ref = typeof comp === 'string' ? refs[comp] : refs[comp.elementId ?? comp.path ?? ''];
+    const ref =
+      typeof comp === 'string'
+        ? otherAttachmentRefs.current[comp]
+        : otherAttachmentRefs.current[comp.elementId ?? comp.path ?? ''];
     ref?.focus();
   };
 
@@ -59,6 +68,7 @@ export function AttachmentsUploadPage() {
         heading={translate(TEXTS.validering.error)}
         errors={errors}
         focusOnComponent={focusOnComponent}
+        ref={(ref) => (errorSummaryRef.current = ref)}
       />
       {attachments.map(({ label, description, attachmentValues, navId, attachmentType }, index) => {
         return attachmentType === 'other' ? (
@@ -83,7 +93,7 @@ export function AttachmentsUploadPage() {
           />
         );
       })}
-      <AttachmentsUploadButtonRow attachments={attachments} />
+      <AttachmentsUploadButtonRow attachments={attachments} onError={focusOnErrorSummary} />
     </>
   );
 }
