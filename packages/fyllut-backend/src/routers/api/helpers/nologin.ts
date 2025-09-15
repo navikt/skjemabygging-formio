@@ -68,7 +68,7 @@ const assembleNologinSoknadBody = (
         vedleggsnr: attachment.type === 'id' ? 'K2' : (component?.properties?.vedleggskode ?? 'Ukjent'),
         label: translate(component?.label ?? attachment.description ?? 'Ukjent label'),
         tittel: translate(attachment.description ?? 'Ukjent tittel'),
-        opplastingsStatus: mapToStatus(attachment.value),
+        opplastingsStatus: attachment.type === 'id' ? 'LastetOpp' : mapToStatus(attachment.value),
         mimetype: 'application/pdf',
         pakrevd: attachment.type !== 'other',
         filIdListe: attachment.files?.map((f) => f.fileId),

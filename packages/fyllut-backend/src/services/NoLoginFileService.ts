@@ -140,8 +140,9 @@ class NoLoginFileService {
     });
 
     if (response.ok) {
+      const kvittering = await response.json();
       logger.info(`${innsendingId}: Successfully submitted nologin application`, logMeta);
-      return { innsendingId, pdf: applicationPdf };
+      return { innsendingId, pdf: applicationPdf, kvittering };
     }
 
     logger.error(`${innsendingId}: Failed to submit nologin application`, {
