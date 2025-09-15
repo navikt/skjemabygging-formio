@@ -536,7 +536,7 @@ module.exports = [
         options: {
           middleware(req, res) {
             const { body } = req;
-            res.status(201);
+            res.status(200);
             res.contentType('application/json; charset=UTF-8');
             res.send({
               innsendingsId: body.innsendingsId,
