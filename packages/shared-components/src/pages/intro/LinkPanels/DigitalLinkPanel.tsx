@@ -29,8 +29,8 @@ const DigitalLinkPanel = () => {
           href={`${baseUrl}${location.pathname}?sub=digital`}
           title={
             isLoggedIn
-              ? translate(TEXTS.grensesnitt.introPage.sendDigitalLoggedIn + ' (innlogget)')
-              : translate(TEXTS.grensesnitt.introPage.sendDigital + ' (uinnlogget)')
+              ? translate(TEXTS.grensesnitt.introPage.sendDigitalLoggedIn)
+              : translate(TEXTS.grensesnitt.introPage.sendDigital)
           }
           description={translate(TEXTS.grensesnitt.introPage.sendDigitalDescription)}
           className="mb-4"
