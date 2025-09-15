@@ -23,7 +23,8 @@
       "get-prefill-data:success",
       "get-activities:success",
       "get-register-data-activities:success",
-      "post-familie-pdf:success"
+      "post-familie-pdf:success",
+      "post-nologin-soknad:success"
     ]
   }
 ]

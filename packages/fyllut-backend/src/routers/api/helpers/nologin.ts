@@ -67,7 +67,7 @@ const assembleNologinSoknadBody = (
       return {
         vedleggsnr: attachment.type === 'id' ? 'K2' : (component?.properties?.vedleggskode ?? 'Ukjent'),
         label: translate(component?.label ?? attachment.description ?? 'Ukjent label'),
-        tittel: translate(attachment.description ?? 'Ukjent tittel'),
+        tittel: translate(attachment.description ?? component?.properties?.vedleggstittel ?? 'Ukjent tittel'),
         opplastingsStatus: attachment.type === 'id' ? 'LastetOpp' : mapToStatus(attachment.value),
         mimetype: 'application/pdf',
         pakrevd: attachment.type !== 'other',
