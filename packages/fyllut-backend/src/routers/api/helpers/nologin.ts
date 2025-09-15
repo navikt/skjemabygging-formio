@@ -74,7 +74,7 @@ const assembleNologinSoknadBody = (
         filIdListe: attachment.files?.map((f) => f.fileId),
         fyllutId: attachment.navId,
         beskrivelse: attachment.description ? translate(attachment.description) : null,
-        propertyNavn: component?.key || null,
+        propertyNavn: null,
       } as DokumentV2;
     }),
     visningsType: 'nologin',
