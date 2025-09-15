@@ -99,7 +99,9 @@ const WysiwygEditor = forwardRef<HTMLDivElement, Props>(
       return <>{props.children}</>;
     };
 
-    function isLink(props: PortableTextChild): props is PortableTextChild & { url: string; title: string } {
+    function isLink(
+      props: PortableTextChild,
+    ): props is PortableTextChild & { url: string; title: string; openInNewTab: boolean } {
       return 'url' in props;
     }
 
@@ -107,8 +109,8 @@ const WysiwygEditor = forwardRef<HTMLDivElement, Props>(
       console.log(JSON.stringify(props.value));
       if (props.schemaType.name === 'link' && isLink(props.value)) {
         return (
-          <a href={props.value.url} target="_blank" rel="noreferrer">
-            {props.value.title}
+          <a href={props.value.url} target={props.value.openInNewTab ? '_blank' : '_self'} rel="noreferrer">
+            {`${props.value.title}${props.value.openInNewTab ? ' (åpnes i ny fane)' : ''}`}
           </a>
         );
       }
@@ -142,6 +144,7 @@ const WysiwygEditor = forwardRef<HTMLDivElement, Props>(
             style={{ border: '1px solid black', minHeight: '150px', padding: '0.5rem' }}
             className={className}
           />
+          <p>{JSON.stringify(value)}</p>
         </div>
         {error && typeof error === 'string' && <FieldsetErrorMessage errorMessage={error} ref={ref} />}
       </EditorProvider>
