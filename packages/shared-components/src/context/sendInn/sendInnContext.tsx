@@ -1,6 +1,7 @@
 import { Language, MellomlagringError, Submission } from '@navikt/skjemadigitalisering-shared-domain';
 import React, { createContext, useCallback, useContext, useEffect, useReducer, useState } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { postNologinSoknad } from '../../api/sendinn/nologin';
 import {
   createSoknad,
   deleteSoknad,
@@ -18,7 +19,7 @@ import { getSubmissionWithFyllutState, transformSubmissionBeforeSubmitting } fro
 
 interface SendInnContextType {
   updateMellomlagring: (submission: Submission) => Promise<SendInnSoknadResponse | undefined>;
-  submitSoknad: (submission: Submission) => Promise<SendInnSoknadResponse | undefined>;
+  submitSoknad: (submission: Submission) => Promise<void>;
   deleteMellomlagring: () => Promise<{ status: string; info: string } | undefined>;
   isMellomlagringActive: boolean;
   isMellomlagringAvailable: boolean;
@@ -39,7 +40,7 @@ const SendInnContext = createContext<SendInnContextType>({} as SendInnContextTyp
 
 const SendInnProvider = ({ children }: SendInnProviderProps) => {
   const appConfig = useAppConfig();
-  const { app, submissionMethod, logger, baseUrl, http } = appConfig;
+  const { app, submissionMethod, logger, baseUrl } = appConfig;
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -241,25 +242,16 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
     }
   };
 
-  const submitSoknad = async (appSubmission: Submission) => {
-    const currentLanguage = getLanguageFromSearchParams();
-    const translation = translationForLanguage(currentLanguage);
-    const submission = transformSubmissionBeforeSubmitting(appSubmission);
-
-    if (submissionMethod === 'digitalnologin') {
+  const submitDigitalNologin = useCallback(
+    async (language: Language, translation: any, submission: Submission) => {
       try {
-        const response: Blob = await http!.post<Blob>(
-          `${baseUrl}/api/send-inn/nologin-soknad`,
-          {
-            form,
-            submission,
-            language: currentLanguage,
-            translation,
-          },
-          {
-            NologinToken: nologinToken,
-            Accept: http!.MimeType.PDF,
-          },
+        const response: Blob = await postNologinSoknad(
+          appConfig,
+          nologinToken!,
+          form!,
+          submission,
+          language,
+          translation,
         );
         setSoknadPdfBlob(response);
         navigate(`${formUrl}/kvittering?${searchParams.toString()}`);
@@ -267,12 +259,17 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
         logger?.error(`${innsendingsId}: Failed to submit nologin application`, {
           errorMessage: error.message,
           innsendingsId,
-          language: currentLanguage,
+          language,
           skjemanummer: form.properties.skjemanummer,
         });
         throw error;
       }
-    } else {
+    },
+    [appConfig, nologinToken, form, navigate, formUrl, searchParams, logger, innsendingsId],
+  );
+
+  const submitDigital = useCallback(
+    async (language: Language, translation: any, submission: Submission) => {
       if (!isMellomlagringReady) {
         return;
       }
@@ -280,11 +277,11 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
       let redirectLocation: string | undefined = undefined;
       const setRedirectLocation = (loc: string) => (redirectLocation = loc);
       try {
-        const response = await updateUtfyltSoknad(
+        await updateUtfyltSoknad(
           appConfig,
           form,
           submission,
-          currentLanguage,
+          language,
           translation,
           innsendingsId,
           setRedirectLocation,
@@ -293,14 +290,13 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
         if (redirectLocation) {
           window.location.href = redirectLocation;
         }
-        return response;
       } catch (submitError: any) {
         if (submitError.status === 404) {
           dispatchFyllutMellomlagring({ type: 'error', error: 'SUBMIT_FAILED_NOT_FOUND' });
         } else {
           logger?.error(`${innsendingsId}: Failed to submit, will try to store changes`, submitError as Error);
           try {
-            await updateSoknad(appConfig, form, submission, currentLanguage, translation, innsendingsId);
+            await updateSoknad(appConfig, form, submission, language, translation, innsendingsId);
             dispatchFyllutMellomlagring({ type: 'error', error: 'SUBMIT_FAILED' });
           } catch (updateError) {
             logger?.error(
@@ -311,6 +307,19 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
           }
         }
       }
+    },
+    [appConfig, form, innsendingsId, isMellomlagringReady, logger],
+  );
+
+  const submitSoknad = async (appSubmission: Submission): Promise<void> => {
+    const currentLanguage = getLanguageFromSearchParams();
+    const translation = translationForLanguage(currentLanguage);
+    const submission = transformSubmissionBeforeSubmitting(appSubmission);
+
+    if (submissionMethod === 'digitalnologin') {
+      await submitDigitalNologin(currentLanguage, translation, submission);
+    } else {
+      await submitDigital(currentLanguage, translation, submission);
     }
   };
 
