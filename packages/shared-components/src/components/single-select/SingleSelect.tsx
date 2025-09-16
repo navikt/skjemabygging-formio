@@ -5,7 +5,7 @@ import { ReactNode, forwardRef } from 'react';
 interface Props {
   title: ReactNode;
   description: ReactNode;
-  error: ReactNode;
+  error?: ReactNode;
   values?: ComponentValue[];
   value?: any;
   className?: string;

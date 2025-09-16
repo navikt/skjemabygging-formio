@@ -5,6 +5,11 @@ export const useAttachmentStyles = makeStyles({
     maxWidth: '18.75rem',
     borderRadius: 'var(--a-border-radius-large)',
   },
+  uploadedFilesHeader: {
+    display: 'flex',
+    flexDirection: 'column',
+    width: '100%',
+  },
   deleteAllButton: {
     display: 'flex',
     alignSelf: 'flex-end',

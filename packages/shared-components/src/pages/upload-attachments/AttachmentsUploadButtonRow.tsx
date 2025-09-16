@@ -6,26 +6,28 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAttachmentUpload } from '../../components/attachment/AttachmentUploadContext';
 import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
+import { Attachment } from '../../util/attachment/attachmentsUtil';
+import { validateAttachmentValues } from '../../util/form/attachment-validation/attachmentValidation';
 import urlUtils from '../../util/url/url';
-import { validateAttachments } from './validate';
 
-const AttachmentsUploadButtonRow = ({ attachmentIds }: { attachmentIds: string[] }) => {
+const AttachmentsUploadButtonRow = ({ attachments }: { attachments: Attachment[] }) => {
   const navigate = useNavigate();
   const { translate } = useLanguages();
   const [searchParams] = useSearchParams();
   const { formUrl } = useForm();
-  const { radioState, addError, uploadedFiles, handleDeleteAllFiles } = useAttachmentUpload();
+  const { addError, submissionAttachments, handleDeleteAllFiles } = useAttachmentUpload();
+  const attachmentIds = attachments.map((attachment) => attachment.navId!);
 
   const summaryPageUrl = `${formUrl}/oppsummering?${searchParams.toString()}`;
   const exitUrl = urlUtils.getExitUrl(window.location.href);
 
   const nextPage = (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    const errors = validateAttachments(radioState, attachmentIds, uploadedFiles);
+    const errors = validateAttachmentValues(attachmentIds, submissionAttachments);
     Object.entries(errors).forEach(([attachmentId, errorMessage]) => {
-      addError(attachmentId, errorMessage);
+      addError(attachmentId, errorMessage, 'INPUT');
     });
-    if (!attachmentIds.some((id) => errors && errors[id])) {
+    if (Object.values(errors).length === 0) {
       navigate(summaryPageUrl);
     }
   };

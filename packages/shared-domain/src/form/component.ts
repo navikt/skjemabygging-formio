@@ -22,6 +22,7 @@ export type AttachmentType = 'default' | 'other';
 export interface ComponentValue {
   value: string;
   label: string;
+  upload?: boolean;
   description?: string;
 }
 
