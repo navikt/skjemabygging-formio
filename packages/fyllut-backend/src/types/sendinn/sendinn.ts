@@ -1,6 +1,6 @@
 export interface SendInnSoknadBodyV2 {
   brukerDto: { id: string; idType: 'FNR' };
-  innsendingsId?: string;
+  innsendingsId?: string | null;
   skjemanr: string;
   tittel: string;
   tema: string;
@@ -11,7 +11,7 @@ export interface SendInnSoknadBodyV2 {
   vedleggsListe?: DokumentV2[] | null;
   kanLasteOppAnnet?: boolean | null;
   mellomlagringDager?: number;
-  visningsType: VisningsType;
+  visningsType?: VisningsType | null;
 }
 
 export interface DokumentV2 {

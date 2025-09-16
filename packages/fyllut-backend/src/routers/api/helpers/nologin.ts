@@ -77,7 +77,6 @@ const assembleNologinSoknadBody = (
         propertyNavn: null,
       } as DokumentV2;
     }),
-    visningsType: 'nologin',
   };
 };
 
