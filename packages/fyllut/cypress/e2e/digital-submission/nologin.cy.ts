@@ -26,14 +26,7 @@ describe('Digital submission without user login', () => {
     cy.clickNextStep();
 
     cy.clickStart();
-
-    // TODO: Fjern hack når det fungerer som det skal
-    // HACK START - Midlertidig løsning for at data i submission ikke skal forsvinne underveis i utfyllingen
-    cy.findByRole('button', { name: 'Vis alle steg' }).click();
-    cy.findByRole('link', { name: 'Oppsummering' }).click();
-    cy.findByRole('link', { name: 'Rediger veiledning' }).click();
-    cy.findByRole('button', { name: 'Skjul alle steg' }).click();
-    // HACK END
+    cy.findByRole('heading', { name: 'Veiledning' }).should('exist');
 
     cy.clickNextStep();
     cy.findByRole('textbox', { name: 'Fornavn' }).type('Ola');
