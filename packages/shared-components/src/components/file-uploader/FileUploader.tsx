@@ -13,8 +13,14 @@ import {
 } from '@navikt/ds-react';
 import { AttachmentSettingValues, SubmissionAttachment, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useState } from 'react';
-import { FILE_ACCEPT, MAX_SIZE_ATTACHMENT_FILE_BYTES, MAX_SIZE_ATTACHMENT_FILE_TEXT } from '../../constants/fileUpload';
+import {
+  FILE_ACCEPT,
+  MAX_SIZE_ATTACHMENT_FILE_BYTES,
+  MAX_SIZE_ATTACHMENT_FILE_TEXT,
+  MAX_TOTAL_SIZE_ATTACHMENT_FILES_TEXT,
+} from '../../constants/fileUpload';
 import { useLanguages } from '../../context/languages';
+import { getFileValidationError } from '../../util/form/attachment-validation/attachmentValidation';
 import htmlUtils from '../../util/html/htmlUtils';
 import makeStyles from '../../util/styles/jss/jss';
 import { useAttachmentUpload } from '../attachment/AttachmentUploadContext';
@@ -60,12 +66,20 @@ const FileUploader = ({
   const attachment = submissionAttachments.find((attachment) => attachment.attachmentId === attachmentId);
   const [description, setDescription] = useState(attachment?.description ?? '');
   const [loading, setLoading] = useState(false);
-  const uploadedFiles = attachment?.files ?? [];
-  const inProgress = uploadsInProgress[attachmentId] ?? [];
-  const error = errors[attachmentId]?.type === 'FILE' ? errors[attachmentId]?.message : undefined;
 
+  const uploadedFiles = attachment?.files ?? [];
   const initialUpload = uploadedFiles.length === 0;
   const showButton = multiple || initialUpload;
+  const inProgress = Object.values(uploadsInProgress[attachmentId] ?? {});
+
+  const error = errors[attachmentId]?.type === 'FILE' ? errors[attachmentId]?.message : undefined;
+  const restartHref =
+    window.location.pathname.replace(/\/[^/]+$/, '/legitimasjon') + window.location.search + window.location.hash;
+  const translationErrorParams = {
+    href: restartHref,
+    maxFileSize: MAX_SIZE_ATTACHMENT_FILE_TEXT,
+    maxAttachmentSize: MAX_TOTAL_SIZE_ATTACHMENT_FILES_TEXT,
+  };
 
   const onSelect = async (files: FileObject[]) => {
     setLoading(true);
@@ -84,19 +98,20 @@ const FileUploader = ({
       {uploadedFiles.map(({ fileId, fileName, size }) => (
         <FileUpload.Item
           key={fileId}
-          file={{ name: fileName, size: size }}
+          file={{ name: fileName, size }}
           button={{
             action: 'delete',
-            onClick: () => handleDeleteFile(attachmentId, fileId),
+            onClick: () => handleDeleteFile(attachmentId, fileId, { name: fileName, size }),
           }}
+          error={errors[fileId]?.message ? translate(errors[fileId].message) : undefined}
         ></FileUpload.Item>
       ))}
-      {Object.values(inProgress ?? {}).map(({ file, error }) => (
+      {inProgress.map((file) => (
         <FileUpload.Item
-          key={`${file.name}-${file.lastModified}`}
-          file={file}
-          status={error ? 'idle' : 'uploading'}
-          error={error ? 'ERROR' : undefined}
+          key={`${file.file.name}-${file.file.lastModified}`}
+          file={file.file}
+          status={file.error ? 'idle' : 'uploading'}
+          error={translate(getFileValidationError(file), translationErrorParams)}
         ></FileUpload.Item>
       ))}
       {showButton && (
@@ -129,9 +144,9 @@ const FileUploader = ({
           {error && (
             <Alert inline variant="error">
               {htmlUtils.isHtmlString(error) ? (
-                <InnerHtml content={translate(error, { url: window.location.href })}></InnerHtml>
+                <InnerHtml content={translate(error, translationErrorParams)}></InnerHtml>
               ) : (
-                <BodyLong>{translate(error)}</BodyLong>
+                <BodyLong>{translate(error, translationErrorParams)}</BodyLong>
               )}
             </Alert>
           )}

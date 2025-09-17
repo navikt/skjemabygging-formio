@@ -1,4 +1,4 @@
-import { FileObject } from '@navikt/ds-react';
+import { FileItem, FileObject } from '@navikt/ds-react';
 import {
   AttachmentSettingValues,
   Submission,
@@ -10,24 +10,17 @@ import { createContext, useContext, useState } from 'react';
 import { submitCaptchaValue } from '../../api/captcha/captcha';
 import useNologinFileUpload from '../../api/nologin-file-upload/nologinFileUpload';
 import http from '../../api/util/http/http';
-import {
-  MAX_SIZE_ATTACHMENT_FILE_TEXT,
-  MAX_TOTAL_SIZE_ATTACHMENT_FILES_BYTES,
-  MAX_TOTAL_SIZE_ATTACHMENT_FILES_TEXT,
-} from '../../constants/fileUpload';
+import { MAX_TOTAL_SIZE_ATTACHMENT_FILES_BYTES } from '../../constants/fileUpload';
 import { useAppConfig } from '../../context/config/configContext';
 import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
 import { useSendInn } from '../../context/sendInn/sendInnContext';
-import {
-  validateAttachmentFiles,
-  validateFileUpload,
-} from '../../util/form/attachment-validation/attachmentValidation';
+import { validateFileUpload, validateTotalFilesSize } from '../../util/form/attachment-validation/attachmentValidation';
 
 type ErrorType = 'FILE' | 'INPUT';
 interface AttachmentUploadContextType {
   handleUploadFile: (attachmentId: string, file: FileObject) => Promise<void>;
-  handleDeleteFile: (attachmentId: string, fileId: string) => Promise<void>;
+  handleDeleteFile: (attachmentId: string, fileId: string, file: FileItem) => Promise<void>;
   handleDeleteAttachment: (attachmentId: string) => Promise<void>;
   handleDeleteAllFiles: () => Promise<void>;
   addError: (attachmentId: string, error: string, type: ErrorType) => void;
@@ -144,35 +137,27 @@ const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boole
     return nologinToken;
   };
 
-  const handleApiError = (attachmentId: string, error: any, message: string) => {
-    if (error instanceof http.HttpError && error.status === 401) {
-      addError(attachmentId, translate(TEXTS.statiske.uploadId.tokenExpiredError), 'FILE');
-    } else {
-      addError(attachmentId, message, 'FILE');
-    }
+  const isAuthenticationError = (error: any) =>
+    error instanceof http.HttpError && (error.status === 401 || error.status === 403);
+
+  const addAuthError = (attachmentId: string) => {
+    setNologinToken(undefined);
+    addError(attachmentId, TEXTS.statiske.uploadId.tokenExpiredError, 'FILE');
   };
 
-  const validate = (attachmentId: string, file: FileObject): string | undefined => {
-    const fileInvalid = validateFileUpload(file, config.logger);
-    if (fileInvalid) {
-      return translate(fileInvalid, { size: MAX_SIZE_ATTACHMENT_FILE_TEXT });
-    }
+  const validateTotalAttachmentSize = (attachmentId: string, file: FileObject): string | undefined => {
     const attachment = submission?.attachments?.find((attachment) => attachment.attachmentId === attachmentId);
-    const exceedsTotalMaxSize = validateAttachmentFiles(
+    return validateTotalFilesSize(
       MAX_TOTAL_SIZE_ATTACHMENT_FILES_BYTES,
-      attachment,
-      [file.file],
+      [...(attachment?.files ?? []), file.file],
       config.logger,
     );
-    if (exceedsTotalMaxSize) {
-      return translate(exceedsTotalMaxSize, { size: MAX_TOTAL_SIZE_ATTACHMENT_FILES_TEXT });
-    }
   };
 
   const addFileInProgress = (attachmentId: string, file: FileObject) => {
     setUploadsInProgress((current): Record<string, Record<string, FileObject>> => {
       const currentFiles = current?.[attachmentId] ?? {};
-      const identifier = `${file.file.name}-${file.file.lastModified}`;
+      const identifier = `${file.file.name}-${file.file.size}`;
       return { ...current, [attachmentId]: { ...currentFiles, [identifier]: file } };
     });
   };
@@ -192,20 +177,30 @@ const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boole
     try {
       addFileInProgress(attachmentId, file);
       removeError(attachmentId);
-      const invalidUpload = validate(attachmentId, file);
-      if (invalidUpload) {
-        addError(attachmentId, invalidUpload, 'FILE');
+      if (validateFileUpload(file, config.logger)) {
+        addFileInProgress(attachmentId, file);
         return;
       }
+
+      const invalidAttachmentSize = validateTotalAttachmentSize(attachmentId, file);
+      if (invalidAttachmentSize) {
+        removeFileInProgress(attachmentId, `${file.file.name}-${file.file.size}`);
+        addError(attachmentId, invalidAttachmentSize, 'FILE');
+        return;
+      }
+
       const token = await resolveCaptcha();
       const result = await uploadFile(file.file, attachmentId, token);
       if (result) {
-        removeFileInProgress(attachmentId, `${file.file.name}-${file.file.lastModified}`);
+        removeFileInProgress(attachmentId, `${file.file.name}-${file.file.size}`);
         addFileToSubmission(result);
       }
     } catch (error: any) {
       setNologinToken(undefined);
-      handleApiError(attachmentId, error, translate(TEXTS.statiske.uploadFile.uploadFileError));
+      addFileInProgress(attachmentId, { ...file, error: true, reasons: ['uploadHttpError'] });
+      if (isAuthenticationError(error)) {
+        addAuthError(attachmentId);
+      }
     }
   };
 
@@ -215,7 +210,11 @@ const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boole
       await deleteFile(fileId, nologinToken);
       removeFileFromSubmission(attachmentId, fileId);
     } catch (error: any) {
-      handleApiError(attachmentId, error, translate(TEXTS.statiske.uploadFile.deleteFileError));
+      if (isAuthenticationError(error)) {
+        addAuthError(attachmentId);
+      } else {
+        addError(fileId, translate(TEXTS.statiske.uploadFile.deleteFileError), 'FILE');
+      }
     }
   };
 
@@ -225,7 +224,11 @@ const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boole
       await deleteAttachment(attachmentId, nologinToken);
       removeFilesFromSubmission(attachmentId);
     } catch (error: any) {
-      handleApiError(attachmentId, error, translate(TEXTS.statiske.uploadFile.deleteAttachmentError));
+      if (isAuthenticationError(error)) {
+        addAuthError(attachmentId);
+      } else {
+        addError(attachmentId, translate(TEXTS.statiske.uploadFile.deleteAttachmentError), 'FILE');
+      }
     }
   };
 
@@ -235,7 +238,11 @@ const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boole
       await deleteAllFiles(nologinToken);
       setSubmission((current) => ({ ...current, attachments: [] }) as Submission);
     } catch (error: any) {
-      handleApiError('allFiles', error, translate(TEXTS.statiske.uploadFile.deleteAllFilesError));
+      if (isAuthenticationError(error)) {
+        addAuthError('allFiles');
+      } else {
+        addError('allFiles', translate(TEXTS.statiske.uploadFile.deleteAllFilesError), 'FILE');
+      }
       throw error;
     }
   };
