@@ -15,7 +15,12 @@ const SummaryAddress = ({ component, submissionPath }: FormComponentProps) => {
 
   return (
     <FormSummary.Answer>
-      <DefaultLabel component={component} />
+      <DefaultLabel
+        component={{
+          ...component,
+          hideLabel: false,
+        }}
+      />
       <FormSummary.Value>{addressToString(value)}</FormSummary.Value>
     </FormSummary.Answer>
   );

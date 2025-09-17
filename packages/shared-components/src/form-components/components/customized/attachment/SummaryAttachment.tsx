@@ -15,8 +15,6 @@ const SummaryAttachment = ({ component, submissionPath }: FormComponentProps) =>
     return null;
   }
 
-  // TODO: Should we have a seperate answer for additionDocumentation and deadlineWarning?
-
   return (
     <FormSummary.Answer>
       <FormSummary.Label>{translate(label)}</FormSummary.Label>

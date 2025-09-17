@@ -16,6 +16,7 @@ const SummaryCurrency = ({ component, submissionPath }: FormComponentProps) => {
   }
 
   const currencyValue = currencyUtils.toLocaleString(value, {
+    iso: true,
     currency,
     integer: inputType === 'numeric',
   });
