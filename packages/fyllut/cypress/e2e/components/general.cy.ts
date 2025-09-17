@@ -52,7 +52,6 @@ describe('React components', () => {
         cy.clickNextStep();
 
         cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
-        cy.findByRole('button', { name: 'Dine opplysninger' });
         cy.get('dl')
           .first()
           .within(() => {
@@ -74,8 +73,8 @@ describe('React components', () => {
 
         cy.findByRole('link', { name: TEXTS.grensesnitt.goBack }).click();
 
-        // Need to force this since it fails on GitHub
-        cy.findByRole('link', { name: 'Rediger dine opplysninger' }).click({ force: true });
+        cy.clickEditAnswer('Dine opplysninger');
+
         cy.findByRole('heading', { name: 'Dine opplysninger' }).should('exist');
 
         cy.findByRole('textbox', { name: 'Fornavn' }).should('have.value', 'Storm');
@@ -132,7 +131,6 @@ describe('React components', () => {
         cy.wait('@updateMellomlagring');
 
         cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
-        cy.findByRole('button', { name: 'Dine opplysninger' });
         cy.get('dl')
           .first()
           .within(() => {
@@ -150,7 +148,8 @@ describe('React components', () => {
             cy.get('dd').eq(5).should('contain.text', 'Fersken');
           });
 
-        cy.findByRole('link', { name: 'Rediger dine opplysninger' }).click();
+        cy.clickEditAnswer('Dine opplysninger');
+
         // Expect requests since we navigate back from summary page
         cy.wait('@getCurrencies');
         cy.findByRole('heading', { name: 'Dine opplysninger' }).should('exist');

@@ -61,14 +61,28 @@ const keyToArray = (key: string): { key: string; index: number } | undefined => 
  * @param components
  * @param submission
  */
-const noChildValues = (parentSubmissionPath: string, components: Component[], submission?: Submission) => {
+const noChildValues = (parentSubmissionPath: string, components?: Component[], submission?: Submission) => {
+  if (!submission || !components) {
+    return true;
+  }
+
   return (
-    !submission ||
-    (Array.isArray(components) &&
-      components.every((component) => {
-        const submissionPath = formComponentUtils.getComponentSubmissionPath(component, parentSubmissionPath);
-        return getSubmissionValue(submissionPath, submission) === undefined;
-      }))
+    Array.isArray(components) &&
+    components.every((component) => {
+      const submissionPath = formComponentUtils.getComponentSubmissionPath(component, parentSubmissionPath);
+      return getSubmissionValue(submissionPath, submission) === undefined;
+    })
+  );
+};
+
+const noChildValuesForDataGrid = (parentSubmissionPath: string, components: Component[], submission?: Submission) => {
+  const dataGridValues = formComponentUtils.getSubmissionValue(parentSubmissionPath, submission);
+  if (!submission || !components || !dataGridValues) {
+    return true;
+  }
+
+  return dataGridValues.every((_, index: number) =>
+    noChildValues(`${parentSubmissionPath}[${index}]`, components, submission),
   );
 };
 
@@ -80,6 +94,7 @@ const getComponentSubmissionPath = (component: Component, parentSubmissionPath: 
 const formComponentUtils = {
   getSubmissionValue,
   noChildValues,
+  noChildValuesForDataGrid,
   getComponentSubmissionPath,
 };
 

@@ -11,6 +11,10 @@ const SummaryCheckbox = ({ component, submissionPath }: FormComponentProps) => {
   const { submission } = useForm();
   const value = formComponentUtils.getSubmissionValue(submissionPath, submission);
 
+  if (!value) {
+    return null;
+  }
+
   return (
     <FormSummary.Answer>
       <DefaultLabel component={component} />

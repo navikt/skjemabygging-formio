@@ -13,7 +13,7 @@ const SummaryDataGrid = ({ component, submissionPath, componentRegistry }: FormC
   if (
     !components ||
     dataGridValues === undefined ||
-    formComponentUtils.noChildValues(submissionPath, components, submission)
+    formComponentUtils.noChildValuesForDataGrid(submissionPath, components, submission)
   ) {
     return null;
   }
@@ -22,25 +22,27 @@ const SummaryDataGrid = ({ component, submissionPath, componentRegistry }: FormC
     <FormSummary.Answer>
       <DefaultLabel component={component} />
       <FormSummary.Value>
-        <FormSummary.Answers>
-          {dataGridValues?.map((_, index: number) => {
-            return components?.map((component) => {
-              const componentSubmissionPath = formComponentUtils.getComponentSubmissionPath(
-                component,
-                `${submissionPath}[${index}]`,
-              );
+        {dataGridValues?.map((_, index: number) => {
+          return (
+            <FormSummary.Answers key={index}>
+              {components?.map((component) => {
+                const componentSubmissionPath = formComponentUtils.getComponentSubmissionPath(
+                  component,
+                  `${submissionPath}[${index}]`,
+                );
 
-              return (
-                <RenderComponent
-                  key={`${component.key}-${navId}-${index}`}
-                  component={component}
-                  submissionPath={componentSubmissionPath}
-                  componentRegistry={componentRegistry}
-                />
-              );
-            });
-          })}
-        </FormSummary.Answers>
+                return (
+                  <RenderComponent
+                    key={`${component.key}-${navId}-${index}`}
+                    component={component}
+                    submissionPath={componentSubmissionPath}
+                    componentRegistry={componentRegistry}
+                  />
+                );
+              })}
+            </FormSummary.Answers>
+          );
+        })}
       </FormSummary.Value>
     </FormSummary.Answer>
   );
