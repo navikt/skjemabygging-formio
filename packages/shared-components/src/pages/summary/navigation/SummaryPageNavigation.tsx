@@ -3,20 +3,20 @@ import { Alert, Button } from '@navikt/ds-react';
 import { NavFormType, Submission, submissionTypesUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useState } from 'react';
 import { useLocation } from 'react-router-dom';
+import DigitalSubmissionButton from '../../../components/button/navigation/digital-submission/DigitalSubmissionButton';
+import EditAnswersButton from '../../../components/button/navigation/edit-answers/EditAnswersButton';
+import SaveAndDeleteButtons from '../../../components/button/navigation/save-and-delete/SaveAndDeleteButtons';
+import FormError from '../../../components/form/FormError';
+import FormSavedStatus from '../../../components/form/FormSavedStatus';
+import LinkButton from '../../../components/link-button/LinkButton';
+import ConfirmationModal from '../../../components/modal/confirmation/ConfirmationModal';
+import DigitalSubmissionWithPrompt from '../../../components/submission/DigitalSubmissionWithPrompt';
 import { useAppConfig } from '../../../context/config/configContext';
 import { useLanguages } from '../../../context/languages';
 import { useSendInn } from '../../../context/sendInn/sendInnContext';
 import { hasRelevantAttachments } from '../../../util/attachment/attachmentsUtil';
 import { PanelValidation } from '../../../util/form/panel-validation/panelValidation';
 import urlUtils from '../../../util/url/url';
-import DigitalSubmissionButton from '../../button/navigation/digital-submission/DigitalSubmissionButton';
-import EditAnswersButton from '../../button/navigation/edit-answers/EditAnswersButton';
-import SaveAndDeleteButtons from '../../button/navigation/save-and-delete/SaveAndDeleteButtons';
-import FormError from '../../form/FormError';
-import FormSavedStatus from '../../form/FormSavedStatus';
-import LinkButton from '../../link-button/LinkButton';
-import ConfirmationModal from '../../modal/confirmation/ConfirmationModal';
-import DigitalSubmissionWithPrompt from '../../submission/DigitalSubmissionWithPrompt';
 
 export interface Props {
   form: NavFormType;

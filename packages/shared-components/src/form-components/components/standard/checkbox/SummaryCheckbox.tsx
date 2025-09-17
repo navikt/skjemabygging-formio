@@ -10,7 +10,6 @@ const SummaryCheckbox = ({ component, submissionPath }: FormComponentProps) => {
   const { translate } = useLanguages();
   const { submission } = useForm();
   const value = formComponentUtils.getSubmissionValue(submissionPath, submission);
-  console.log(value, submissionPath, submission);
 
   return (
     <FormSummary.Answer>
