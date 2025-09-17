@@ -8,11 +8,9 @@ import SummaryRadio from './radio/SummaryRadio';
 import SummarySelectBoxes from './select-boxes/SummarySelectBoxes';
 import SummarySelect from './select/SummarySelect';
 import SummaryTextArea from './text-area/SummaryTextArea';
-import PdfTextField from './text-field/PdfTextField';
 import SummaryTextField from './text-field/SummaryTextField';
 
 export {
-  PdfTextField,
   SummaryAccordion,
   SummaryAlert,
   SummaryCheckbox,
