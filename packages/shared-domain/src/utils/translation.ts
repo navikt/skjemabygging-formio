@@ -1,3 +1,4 @@
+import { localizationUtils } from '../index';
 import { I18nTranslationMap, I18nTranslationReplacements, I18nTranslations } from '../languages/types';
 import { Tkey } from '../texts/externalStorage';
 
@@ -35,7 +36,20 @@ const injectParams = (
   return template;
 };
 
+const createTranslate = (translations: I18nTranslationMap, language: string) => {
+  const languageCode = localizationUtils.getLanguageCodeAsIso639_1(language.toLowerCase());
+
+  return (text: string, textReplacements?: I18nTranslationReplacements) =>
+    translationUtils.translateWithTextReplacements({
+      translations,
+      textOrKey: text,
+      params: textReplacements,
+      currentLanguage: languageCode,
+    });
+};
+
 const translationUtils = {
   translateWithTextReplacements,
+  createTranslate,
 };
 export default translationUtils;
