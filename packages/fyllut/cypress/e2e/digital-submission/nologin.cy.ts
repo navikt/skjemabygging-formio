@@ -72,7 +72,6 @@ describe('Digital submission without user login', () => {
     cy.get('input[type=file]').selectFile('cypress/fixtures/files/id-billy-bruker.jpg', { force: true });
     cy.findByRole('button', { name: 'Slett filen' }).should('exist');
     cy.go('back');
-    0;
 
     // have to choose the submission type again since the state is reset when going back
     cy.findByRole('link', { name: 'Kan ikke logge inn' }).click();
