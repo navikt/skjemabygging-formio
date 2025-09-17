@@ -57,24 +57,24 @@ const keyToArray = (key: string): { key: string; index: number } | undefined => 
 /**
  * Check if components have any values in submission
  *
- * @param parentsubmissionPath
+ * @param parentSubmissionPath
  * @param components
  * @param submission
  */
-const noChildValues = (parentsubmissionPath: string, components: Component[], submission?: Submission) => {
+const noChildValues = (parentSubmissionPath: string, components: Component[], submission?: Submission) => {
   return (
     !submission ||
     (Array.isArray(components) &&
       components.every((component) => {
-        const submissionPath = formComponentUtils.getComponentSubmissionPath(component, parentsubmissionPath);
+        const submissionPath = formComponentUtils.getComponentSubmissionPath(component, parentSubmissionPath);
         return getSubmissionValue(submissionPath, submission) === undefined;
       }))
   );
 };
 
-const getComponentSubmissionPath = (component: Component, parentsubmissionPath: string) => {
-  const { key, input } = component;
-  return input ? (parentsubmissionPath ? `${parentsubmissionPath}.${key}` : key) : (parentsubmissionPath ?? '');
+const getComponentSubmissionPath = (component: Component, parentSubmissionPath: string) => {
+  const { key, input, tree } = component;
+  return tree || input ? (parentSubmissionPath ? `${parentSubmissionPath}.${key}` : key) : (parentSubmissionPath ?? '');
 };
 
 const formComponentUtils = {

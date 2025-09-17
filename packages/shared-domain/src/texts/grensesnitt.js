@@ -70,7 +70,7 @@ export const grensesnitt = {
     changeSubmissionMethod: 'Send inn på en annen måte',
   },
   summaryPage: {
-    edit: 'Rediger',
+    edit: 'Endre svar',
     editAnswers: 'Fortsett utfylling',
   },
   stepper: {
