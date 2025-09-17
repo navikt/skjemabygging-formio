@@ -1,3 +1,4 @@
+/*
 import renderPdf from '../../../render/RenderPdf';
 import { PdfComponentProps } from '../../../types';
 
@@ -13,3 +14,4 @@ const PdfPanel = ({ component, submissionPath, componentRegistry }: PdfComponent
 };
 
 export default PdfPanel;
+*/

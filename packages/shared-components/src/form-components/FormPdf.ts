@@ -1,3 +1,4 @@
+/*
 import { Component } from '@navikt/skjemadigitalisering-shared-domain';
 import { PdfPanel } from './components/group';
 import { PdfTextField } from './components/standard';
@@ -7,9 +8,6 @@ interface Props {
   components: Component[];
 }
 
-/**
- * TODO: Finish this POC for rendering a PDF version of the form.
- */
 const formPdf = ({ components }: Props) => {
   const componentRegistry = {
     textfield: PdfTextField,
@@ -26,3 +24,4 @@ const formPdf = ({ components }: Props) => {
 };
 
 export default formPdf;
+*/

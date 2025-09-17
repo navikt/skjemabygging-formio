@@ -1,3 +1,4 @@
+/*
 import { useForm } from '../../../../context/form/FormContext';
 import { PdfComponentProps } from '../../../types';
 import formComponentUtils from '../../../utils/formComponent';
@@ -14,3 +15,4 @@ const TextFieldSummary = ({ component, submissionPath }: PdfComponentProps) => {
 };
 
 export default TextFieldSummary;
+*/
