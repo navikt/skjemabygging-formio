@@ -1,3 +1,5 @@
+import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+
 describe('Error summary', () => {
   before(() => {
     cy.configMocksServer();
@@ -128,18 +130,8 @@ describe('Error summary', () => {
       cy.url().should('include', '/fyllut/errorsummaryfocus/vedlegg');
     });
 
-    it('with all validation errors', () => {
-      const validationErrors = [
-        'Du må fylle ut: Fornavn',
-        'Du må fylle ut: Fornavn',
-        'Du må fylle ut: Etternavn',
-        'Du må fylle ut: Har du norsk fødselsnummer eller d-nummer?',
-        'Du må fylle ut: Serietittel',
-        'Du må fylle ut: Antall stjerner',
-        'Du må fylle ut: Hvor mange timer per døgn bruker du på skjerm?',
-        'Du må fylle ut: Førerkort',
-        'Du må fylle ut: Annen dokumentasjon',
-      ];
+    it('with validation errors for current page', () => {
+      const validationErrors = ['Du må fylle ut: Førerkort', 'Du må fylle ut: Annen dokumentasjon'];
       cy.get('[data-cy=error-summary]')
         .should('exist')
         .within(() => {
@@ -151,72 +143,33 @@ describe('Error summary', () => {
         });
     });
 
-    describe('and click on validation error jumps to panel containing', () => {
-      it('the first component with label Fornavn', () => {
-        cy.get('[data-cy=error-summary]')
-          .should('exist')
-          .within(() => {
-            cy.findAllByRole('link', { name: 'Du må fylle ut: Fornavn' }).eq(0).click();
-          });
-        cy.findByRole('heading', { name: 'Veiledning' });
-        cy.findByRole('textbox', { name: 'Fornavn' }).should('have.focus');
-        cy.url().should('include', '/fyllut/errorsummaryfocus/veiledning');
-      });
+    it('focus is set to the component with label Førerkort on click in error summary', () => {
+      cy.get('[data-cy=error-summary]')
+        .should('exist')
+        .within(() => {
+          cy.findByRole('link', { name: 'Du må fylle ut: Førerkort' }).click();
+        });
+      cy.findByRole('heading', { name: 'Vedlegg' });
+      cy.findByRole('group', { name: 'Førerkort' }).should('have.focus');
+      cy.url().should('include', '/fyllut/errorsummaryfocus/vedlegg');
+    });
 
-      it('the second component with label Fornavn', () => {
-        cy.get('[data-cy=error-summary]')
-          .should('exist')
-          .within(() => {
-            cy.findAllByRole('link', { name: 'Du må fylle ut: Fornavn' }).eq(1).click();
-          });
-        cy.findByRole('heading', { name: 'Dine opplysninger' });
-        cy.findByRole('textbox', { name: 'Fornavn' }).should('have.focus');
-        cy.url().should('include', '/fyllut/errorsummaryfocus/dineOpplysninger');
-      });
-
-      it('the component with label Serietittel', () => {
-        cy.get('[data-cy=error-summary]')
-          .should('exist')
-          .within(() => {
-            cy.findByRole('link', { name: 'Du må fylle ut: Serietittel' }).click();
-          });
-        cy.findByRole('heading', { name: 'TV' });
-        cy.findByRole('textbox', { name: 'Serietittel' }).should('have.focus');
-        cy.url().should('include', '/fyllut/errorsummaryfocus/tv');
-      });
-
-      it('the component with label Antall stjerner', () => {
-        cy.get('[data-cy=error-summary]')
-          .should('exist')
-          .within(() => {
-            cy.findByRole('link', { name: 'Du må fylle ut: Antall stjerner' }).click();
-          });
-        cy.findByRole('heading', { name: 'TV' });
-        cy.findByRole('group', { name: 'Antall stjerner' }).should('have.focus');
-        cy.url().should('include', '/fyllut/errorsummaryfocus/tv');
-      });
-
-      it('the component with label Hvor mange timer per døgn bruker du på skjerm?', () => {
-        cy.get('[data-cy=error-summary]')
-          .should('exist')
-          .within(() => {
-            cy.findByRole('link', { name: 'Du må fylle ut: Hvor mange timer per døgn bruker du på skjerm?' }).click();
-          });
-        cy.findByRole('heading', { name: 'Brukerundersøkelse' });
-        cy.findByRole('textbox', { name: 'Hvor mange timer per døgn bruker du på skjerm?' }).should('have.focus');
-        cy.url().should('include', '/fyllut/errorsummaryfocus/brukerundersokelse');
-      });
-
-      it('the component with label Førerkort', () => {
-        cy.get('[data-cy=error-summary]')
-          .should('exist')
-          .within(() => {
-            cy.findByRole('link', { name: 'Du må fylle ut: Førerkort' }).click();
-          });
-        cy.findByRole('heading', { name: 'Vedlegg' });
-        cy.findByRole('group', { name: 'Førerkort' }).should('have.focus');
-        cy.url().should('include', '/fyllut/errorsummaryfocus/vedlegg');
-      });
+    it('and it allows user to proceed to summary after correcting errors on current page', () => {
+      cy.findByRole('group', { name: 'Førerkort' })
+        .should('exist')
+        .within(() => {
+          cy.findByLabelText('Jeg legger det ved dette skjemaet').check();
+        });
+      cy.findByRole('group', { name: 'Annen dokumentasjon' })
+        .should('exist')
+        .within(() => {
+          cy.findByLabelText('Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved').check();
+        });
+      cy.clickNextStep(); // <- submit formio form
+      cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
+      cy.url().should('include', '/fyllut/errorsummaryfocus/oppsummering');
+      cy.findByText(new RegExp(TEXTS.statiske.summaryPage.validationMessage)).should('exist');
+      cy.findByRole('button', { name: 'Gå videre' }).should('not.exist');
     });
   });
 });
