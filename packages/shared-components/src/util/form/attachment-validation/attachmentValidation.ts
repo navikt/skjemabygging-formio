@@ -61,7 +61,7 @@ const getFileValidationError = (file: FileObject): string | undefined => {
     case 'uploadHttpError':
       return TEXTS.statiske.uploadFile.uploadFileError;
     default:
-      return 'Det skjedde en feil';
+      return TEXTS.statiske.uploadFile.defaultFileError;
   }
 };
 

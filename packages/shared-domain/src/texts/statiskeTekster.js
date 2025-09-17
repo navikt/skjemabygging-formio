@@ -57,6 +57,8 @@ export const statiske = {
       'Sesjonen din har utløpt. For å sende inn må du laste opp legitimasjon og fylle ut skjemaet på nytt. <a href="{{href}}">Klikk her</a> for å starte på nytt.',
   },
   uploadFile: {
+    uploading: 'Laster opp fil...',
+    defaultFileError: 'Det oppstod en feil. Prøv igjen senere.',
     uploadFileError: 'Det oppstod en feil under opplasting av filen. Prøv igjen senere.',
     deleteFileError: 'Det oppstod en feil under sletting av filen. Prøv igjen senere.',
     deleteAttachmentError: 'Det oppstod en feil under sletting av vedlegget. Prøv igjen senere.',

@@ -95,25 +95,27 @@ const FileUploader = ({
   return (
     <>
       {!showButton && <Label>{description}</Label>}
-      {uploadedFiles.map(({ fileId, fileName, size }) => (
-        <FileUpload.Item
-          key={fileId}
-          file={{ name: fileName, size }}
-          button={{
-            action: 'delete',
-            onClick: () => handleDeleteFile(attachmentId, fileId, { name: fileName, size }),
-          }}
-          error={errors[fileId]?.message ? translate(errors[fileId].message) : undefined}
-        ></FileUpload.Item>
-      ))}
-      {inProgress.map((file) => (
-        <FileUpload.Item
-          key={`${file.file.name}-${file.file.lastModified}`}
-          file={file.file}
-          status={file.error ? 'idle' : 'uploading'}
-          error={translate(getFileValidationError(file), translationErrorParams)}
-        ></FileUpload.Item>
-      ))}
+      <FileUpload translations={{ item: { uploading: translate(TEXTS.statiske.uploadFile.uploading) } }}>
+        {uploadedFiles.map(({ fileId, fileName, size }) => (
+          <FileUpload.Item
+            key={fileId}
+            file={{ name: fileName, size }}
+            button={{
+              action: 'delete',
+              onClick: () => handleDeleteFile(attachmentId, fileId, { name: fileName, size }),
+            }}
+            error={errors[fileId]?.message ? translate(errors[fileId].message) : undefined}
+          ></FileUpload.Item>
+        ))}
+        {inProgress.map((file) => (
+          <FileUpload.Item
+            key={`${file.file.name}-${file.file.lastModified}`}
+            file={file.file}
+            status={file.error ? 'idle' : 'uploading'}
+            error={translate(getFileValidationError(file), translationErrorParams)}
+          ></FileUpload.Item>
+        ))}
+      </FileUpload>
       {showButton && (
         <>
           {requireDescription && (
