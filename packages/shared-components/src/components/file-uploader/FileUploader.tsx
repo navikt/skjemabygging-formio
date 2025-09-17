@@ -48,13 +48,20 @@ const FileUploader = ({
 }: Props) => {
   const { translate } = useLanguages();
   const styles = useStyles();
-  const { handleUploadFile, changeAttachmentValue, handleDeleteFile, submissionAttachments, errors } =
-    useAttachmentUpload();
+  const {
+    handleUploadFile,
+    changeAttachmentValue,
+    handleDeleteFile,
+    submissionAttachments,
+    errors,
+    uploadsInProgress,
+  } = useAttachmentUpload();
   const { attachmentId } = initialAttachment;
   const attachment = submissionAttachments.find((attachment) => attachment.attachmentId === attachmentId);
   const [description, setDescription] = useState(attachment?.description ?? '');
   const [loading, setLoading] = useState(false);
   const uploadedFiles = attachment?.files ?? [];
+  const inProgress = uploadsInProgress[attachmentId] ?? [];
   const error = errors[attachmentId]?.type === 'FILE' ? errors[attachmentId]?.message : undefined;
 
   const initialUpload = uploadedFiles.length === 0;
@@ -82,6 +89,14 @@ const FileUploader = ({
             action: 'delete',
             onClick: () => handleDeleteFile(attachmentId, fileId),
           }}
+        ></FileUpload.Item>
+      ))}
+      {Object.values(inProgress ?? {}).map(({ file, error }) => (
+        <FileUpload.Item
+          key={`${file.name}-${file.lastModified}`}
+          file={file}
+          status={error ? 'idle' : 'uploading'}
+          error={error ? 'ERROR' : undefined}
         ></FileUpload.Item>
       ))}
       {showButton && (

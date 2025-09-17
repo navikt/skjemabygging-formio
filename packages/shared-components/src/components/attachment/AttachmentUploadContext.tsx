@@ -41,6 +41,7 @@ interface AttachmentUploadContextType {
     validator?: { validate: (label: string, attachment: SubmissionAttachment) => string | undefined },
   ) => void;
   errors: Record<string, { message: string; type: ErrorType } | undefined>;
+  uploadsInProgress: Record<string, Record<string, FileObject>>;
 }
 
 const initialContext: AttachmentUploadContextType = {
@@ -54,6 +55,7 @@ const initialContext: AttachmentUploadContextType = {
   submissionAttachments: [],
   changeAttachmentValue: () => {},
   errors: {},
+  uploadsInProgress: {},
 };
 
 const AttachmentUploadContext = createContext<AttachmentUploadContextType>(initialContext);
@@ -65,6 +67,7 @@ const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boole
   const { deleteAllFiles, deleteAttachment, deleteFile, uploadFile } = useNologinFileUpload();
   const { translate } = useLanguages();
   const [captchaValue, setCaptchaValue] = useState<Record<string, string>>({});
+  const [uploadsInProgress, setUploadsInProgress] = useState<Record<string, Record<string, FileObject>>>({});
   const [errors, setErrors] = useState<Record<string, { message: string; type: ErrorType } | undefined>>({});
 
   const addFileToSubmission = (file: UploadedFile) => {
@@ -165,8 +168,28 @@ const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boole
     }
   };
 
+  const addFileInProgress = (attachmentId: string, file: FileObject) => {
+    setUploadsInProgress((current): Record<string, Record<string, FileObject>> => {
+      const currentFiles = current?.[attachmentId] ?? {};
+      const identifier = `${file.file.name}-${file.file.lastModified}`;
+      return { ...current, [attachmentId]: { ...currentFiles, [identifier]: file } };
+    });
+  };
+
+  const removeFileInProgress = (attachmentId: string, identifier: string) => {
+    setUploadsInProgress((current) => {
+      const currentFiles = current?.[attachmentId] ?? {};
+      if (currentFiles[identifier]) {
+        const { [identifier]: _, ...rest } = currentFiles;
+        return { ...current, [attachmentId]: rest };
+      }
+      return current;
+    });
+  };
+
   const handleUploadFile = async (attachmentId: string, file: FileObject) => {
     try {
+      addFileInProgress(attachmentId, file);
       removeError(attachmentId);
       const invalidUpload = validate(attachmentId, file);
       if (invalidUpload) {
@@ -176,6 +199,7 @@ const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boole
       const token = await resolveCaptcha();
       const result = await uploadFile(file.file, attachmentId, token);
       if (result) {
+        removeFileInProgress(attachmentId, `${file.file.name}-${file.file.lastModified}`);
         addFileToSubmission(result);
       }
     } catch (error: any) {
@@ -259,6 +283,7 @@ const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boole
     changeAttachmentValue,
     submissionAttachments: submission?.attachments ?? [],
     errors,
+    uploadsInProgress,
   };
   return <AttachmentUploadContext.Provider value={value}>{children}</AttachmentUploadContext.Provider>;
 };
