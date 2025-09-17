@@ -2,6 +2,7 @@ import { GuidePanel, Heading } from '@navikt/ds-react';
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useState } from 'react';
 import { useAppConfig } from '../../context/config/configContext';
+import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
 import { useSendInn } from '../../context/sendInn/sendInnContext';
 import IntroPageButtonRow from './IntroPageButtonRow';
@@ -16,6 +17,7 @@ const IntroPageStatic = () => {
   const [saveDataBulletBold, setSaveDataBulletBold] = useState<string>();
   const { state } = useIntroPage();
   const { isMellomlagringReady } = useSendInn();
+  const { setTitle, setFormProgressVisible } = useForm();
 
   useEffect(() => {
     if (state === IntroPageState.PAPER) {
@@ -36,6 +38,11 @@ const IntroPageStatic = () => {
       setSaveDataBullet(TEXTS.statiske.introPage.notSave);
     }
   }, [state]);
+
+  useEffect(() => {
+    setTitle(TEXTS.grensesnitt.introPage.title);
+    setFormProgressVisible(true);
+  }, [setTitle, setFormProgressVisible]);
 
   if (!state || (submissionMethod === 'digital' && !isMellomlagringReady)) return;
 

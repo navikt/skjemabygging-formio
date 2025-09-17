@@ -24,7 +24,7 @@ export function SummaryPage() {
   const appConfig = useAppConfig();
   const { translate } = useLanguages();
   const styles = useStyles();
-  const { prefillData, submission, formUrl, form } = useForm();
+  const { prefillData, submission, formUrl, form, setTitle, setFormProgressVisible } = useForm();
   const { declarationType, declarationText } = form.properties;
   const [declaration, setDeclaration] = useState<boolean | undefined>(undefined);
 
@@ -45,6 +45,7 @@ export function SummaryPage() {
       webform.checkData(submissionCopy?.data, [], undefined);
 
       const panelValidations = validateWizardPanels(webform, form, submission!);
+
       setPanelValidationList(panelValidations);
       webform.destroy(true);
 
@@ -57,6 +58,11 @@ export function SummaryPage() {
       initializePanelValidation();
     }
   }, [form, submission, appConfig, prefillData]);
+
+  useEffect(() => {
+    setTitle(TEXTS.statiske.summaryPage.title);
+    setFormProgressVisible(true);
+  }, [setTitle, setFormProgressVisible]);
 
   useEffect(() => scrollToAndSetFocus('main', 'start'), []);
   const declarationRef = useRef<HTMLInputElement>(null);

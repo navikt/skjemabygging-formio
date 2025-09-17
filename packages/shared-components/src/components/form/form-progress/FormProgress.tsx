@@ -1,4 +1,4 @@
-import { FormProgress } from '@navikt/ds-react';
+import { FormProgress as AkselFormProgress } from '@navikt/ds-react';
 import { navFormUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
@@ -6,8 +6,8 @@ import { useAppConfig } from '../../../context/config/configContext';
 import { useForm } from '../../../context/form/FormContext';
 import { useLanguages } from '../../../context/languages';
 
-const FormStepper = () => {
-  const { form, submission, formUrl, formProgress, setFormProgress } = useForm();
+const FormProgress = () => {
+  const { form, submission, formUrl, formProgressOpen, setFormProgressOpen } = useForm();
   const { submissionMethod, baseUrl } = useAppConfig();
   const [screenSmall, setScreenSmall] = useState<boolean>(false);
   const params = useParams();
@@ -21,7 +21,13 @@ const FormStepper = () => {
       .getActivePanelsFromForm(form, submission, submissionMethod)
       .map((panel) => ({ label: panel.title, key: panel.key }));
 
-    const steps = [...formioSteps];
+    const steps = [
+      {
+        key: '',
+        label: TEXTS.grensesnitt.introPage.title,
+      },
+      ...formioSteps,
+    ];
 
     if (submissionMethod === 'digitalnologin') {
       steps.push({
@@ -61,11 +67,11 @@ const FormStepper = () => {
 
   return (
     <div className="mb">
-      <FormProgress
+      <AkselFormProgress
         totalSteps={formSteps.length}
         activeStep={getActiveStepper() + 1}
-        open={formProgress}
-        onOpenChange={(state) => setFormProgress(state)}
+        open={formProgressOpen}
+        onOpenChange={(state) => setFormProgressOpen(state)}
         translations={{
           step: translate(TEXTS.grensesnitt.stepper.step),
           showAllSteps: translate(TEXTS.grensesnitt.stepper.showAllSteps),
@@ -75,13 +81,13 @@ const FormStepper = () => {
         {formSteps.map((step, index) => {
           const stepUrl = `${formUrl}/${step.key}${search}`;
           return (
-            <FormProgress.Step
+            <AkselFormProgress.Step
               onClick={(event) => {
                 event.preventDefault();
                 if (getActiveStepper() !== index) {
                   navigate(stepUrl);
                   if (screenSmall) {
-                    setFormProgress(false);
+                    setFormProgressOpen(false);
                   }
                 }
               }}
@@ -89,12 +95,12 @@ const FormStepper = () => {
               key={step.key}
             >
               {translate(step.label)}
-            </FormProgress.Step>
+            </AkselFormProgress.Step>
           );
         })}
-      </FormProgress>
+      </AkselFormProgress>
     </div>
   );
 };
 
-export default FormStepper;
+export default FormProgress;

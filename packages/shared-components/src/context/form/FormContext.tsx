@@ -17,8 +17,12 @@ interface FormContextType {
   activeComponents: Component[];
   form: NavFormType;
   formUrl: string;
-  formProgress: boolean;
-  setFormProgress: Dispatch<SetStateAction<boolean>>;
+  formProgressOpen: boolean;
+  setFormProgressOpen: Dispatch<SetStateAction<boolean>>;
+  formProgressVisible: boolean;
+  setFormProgressVisible: Dispatch<SetStateAction<boolean>>;
+  title?: string;
+  setTitle: Dispatch<SetStateAction<string | undefined>>;
 }
 
 interface FormProviderProps {
@@ -31,8 +35,10 @@ const FormContext = createContext<FormContextType>({} as FormContextType);
 export const FormProvider = ({ children, form }: FormProviderProps) => {
   const [submission, setSubmission] = useState<Submission>();
   const [activeComponents, setActiveComponents] = useState<Component[]>(form.components);
-  const [formProgress, setFormProgress] = useState<boolean>(false);
+  const [formProgressOpen, setFormProgressOpen] = useState<boolean>(false);
+  const [formProgressVisible, setFormProgressVisible] = useState<boolean>(false);
   const [prefillData, setPrefillData] = useState<PrefillData>({});
+  const [title, setTitle] = useState<string | undefined>();
   const { http, baseUrl, submissionMethod } = useAppConfig();
   const formUrl = useResolvedPath('').pathname;
 
@@ -94,8 +100,12 @@ export const FormProvider = ({ children, form }: FormProviderProps) => {
         activeComponents,
         form,
         formUrl,
-        formProgress,
-        setFormProgress,
+        formProgressOpen,
+        setFormProgressOpen,
+        formProgressVisible,
+        setFormProgressVisible,
+        title,
+        setTitle,
       }}
     >
       {children}
