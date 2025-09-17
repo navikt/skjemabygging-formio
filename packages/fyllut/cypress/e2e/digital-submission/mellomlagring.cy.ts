@@ -234,7 +234,7 @@ describe('Mellomlagring', () => {
           cy.defaultWaits();
           cy.wait('@getMellomlagringValid');
           cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
-          cy.findByRole('link', { name: TEXTS.grensesnitt.summaryPage.editAnswers }).should('exist').click();
+          cy.clickEditAnswers();
           cy.url().should('include', '/valgfrieOpplysninger');
           cy.findByRole('textbox', { name: 'Hva drakk du til frokost (valgfritt)' }).should('have.focus');
         });

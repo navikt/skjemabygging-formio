@@ -72,7 +72,7 @@ describe('Attachment', () => {
         cy.get('dd').eq(2).should('contain.text', TEXTS.statiske.attachment.levertTidligere);
       });
 
-    cy.findByRoleWhenAttached('link', { name: TEXTS.grensesnitt.summaryPage.editAnswers }).should('exist').click();
+    cy.clickEditAnswers();
 
     cy.findByRole('textbox', { name: TITLE.textarea }).should('exist');
 

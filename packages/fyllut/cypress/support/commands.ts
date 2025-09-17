@@ -77,6 +77,18 @@ Cypress.Commands.add('clickShowAllSteps', () => {
   return cy.findByRoleWhenAttached('button', { name: TEXTS.grensesnitt.stepper.showAllSteps }, 500).click();
 });
 
+Cypress.Commands.add('clickEditAnswer', (title) => {
+  cy.findByRole('heading', { level: 2, name: title })
+    .parent()
+    .parent()
+    .findByRole('link', { name: TEXTS.grensesnitt.summaryPage.edit })
+    .click();
+});
+
+Cypress.Commands.add('clickEditAnswers', () => {
+  cy.findAllByRole('link', { name: TEXTS.grensesnitt.summaryPage.editAnswers }).first().click();
+});
+
 Cypress.Commands.add('verifySendInnRedirect', () => {
   return cy.origin(Cypress.env('SEND_INN_FRONTEND'), () => {
     cy.contains('Send Inn Frontend');
