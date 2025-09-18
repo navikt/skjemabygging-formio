@@ -1,7 +1,7 @@
 import { ArrowRightIcon } from '@navikt/aksel-icons';
 import { Alert, Button } from '@navikt/ds-react';
 import { NavFormType, Submission, submissionTypesUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import DigitalSubmissionButton from '../../../components/button/navigation/digital-submission/DigitalSubmissionButton';
 import EditAnswersButton from '../../../components/button/navigation/edit-answers/EditAnswersButton';
@@ -45,12 +45,6 @@ const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList,
     submissionTypesUtils.isPaperSubmissionOnly(submissionTypes);
 
   const exitUrl = urlUtils.getExitUrl(window.location.href);
-
-  useEffect(() => {
-    if (form.introPage?.enabled && !submission?.selfDeclaration) {
-      setError(new Error(translate(TEXTS.statiske.summaryPage.confirmationError)));
-    }
-  }, [translate, submission?.selfDeclaration, setError, form.introPage?.enabled]);
 
   return (
     <>

@@ -12,6 +12,7 @@ import {
   SummaryFirstName,
   SummaryIban,
   SummaryIdentity,
+  SummaryIntroPanel,
   SummaryNationalIdentityNumber,
   SummaryOrganizationNumber,
   SummaryPassword,
@@ -40,7 +41,7 @@ interface Props {
   panelValidationList?: PanelValidation[];
 }
 
-const FormSummary = ({ panelValidationList }: Props) => {
+const RenderFormSummary = ({ panelValidationList }: Props) => {
   const { activeComponents } = useForm();
 
   const componentRegistry = {
@@ -96,15 +97,20 @@ const FormSummary = ({ panelValidationList }: Props) => {
     maalgruppe: SummaryMaalgruppe,
   };
 
-  return activeComponents.map((component) => (
-    <RenderComponent
-      key={component.key}
-      component={component}
-      submissionPath=""
-      componentRegistry={componentRegistry}
-      panelValidationList={panelValidationList}
-    />
-  ));
+  return (
+    <>
+      <SummaryIntroPanel />
+      {activeComponents.map((component) => (
+        <RenderComponent
+          key={component.key}
+          component={component}
+          submissionPath=""
+          componentRegistry={componentRegistry}
+          panelValidationList={panelValidationList}
+        />
+      ))}
+    </>
+  );
 };
 
-export default FormSummary;
+export default RenderFormSummary;

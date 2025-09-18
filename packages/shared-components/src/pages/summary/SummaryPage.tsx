@@ -7,7 +7,7 @@ import NavFormHelper from '../../components/nav-form/NavFormHelper';
 import { useAppConfig } from '../../context/config/configContext';
 import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
-import FormSummary from '../../form-components/FormSummary';
+import RenderFormSummary from '../../form-components/RenderFormSummary';
 import { scrollToAndSetFocus } from '../../util/focus-management/focus-management';
 import { PanelValidation, validateWizardPanels } from '../../util/form/panel-validation/panelValidation';
 import SummaryPageNavigation from './navigation/SummaryPageNavigation';
@@ -36,6 +36,13 @@ export function SummaryPage() {
       webform.checkData(submissionCopy?.data, [], undefined);
 
       const panelValidations = validateWizardPanels(webform, form, submission!);
+
+      if (form.introPage?.enabled && !submission?.selfDeclaration) {
+        panelValidations.push({
+          key: 'introPage',
+          hasValidationErrors: true,
+        });
+      }
 
       setPanelValidationList(panelValidations);
       webform.destroy(true);
@@ -76,10 +83,7 @@ export function SummaryPage() {
 
   return (
     <VStack gap="8">
-      {!hasValidationErrors && (
-        <BodyShort className="mb-4">{translate(TEXTS.statiske.summaryPage.description)}</BodyShort>
-      )}
-      {hasValidationErrors && (
+      {hasValidationErrors ? (
         <>
           <Alert variant="warning">
             <Heading spacing size="small" level="3">
@@ -92,8 +96,10 @@ export function SummaryPage() {
             <EditAnswersButton form={form} formUrl={formUrl} panelValidationList={panelValidationList} />
           </div>
         </>
+      ) : (
+        <BodyShort className="mb-4">{translate(TEXTS.statiske.summaryPage.description)}</BodyShort>
       )}
-      <FormSummary panelValidationList={panelValidationList} />
+      <RenderFormSummary panelValidationList={panelValidationList} />
       {hasDeclaration && (
         <ConfirmationPanel
           className="mb"

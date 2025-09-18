@@ -9,6 +9,7 @@ import SummaryEmail from './email/SummaryEmail';
 import SummaryFirstName from './first-name/SummaryFirstName';
 import SummaryIban from './iban/SummaryIban';
 import SummaryIdentity from './identity/SummaryIdentity';
+import SummaryIntroPanel from './intro-panel/SummaryIntroPanel';
 import SummaryNationalIdentityNumber from './national-identity-number/SummaryNationalIdentityNumber';
 import SummaryOrganizationNumber from './organization-number/SummaryOrganizationNumber';
 import SummaryPassword from './password/SummaryPassword';
@@ -27,6 +28,7 @@ export {
   SummaryFirstName,
   SummaryIban,
   SummaryIdentity,
+  SummaryIntroPanel,
   SummaryNationalIdentityNumber,
   SummaryOrganizationNumber,
   SummaryPassword,

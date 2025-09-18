@@ -40,9 +40,11 @@ const SummaryPanel = ({ component, submissionPath, componentRegistry, panelValid
         })}
       </FormSummary.Answers>
 
-      <FormSummary.EditLink as={Link} to={{ pathname: `${formUrl}/${key}`, search }}>
-        {translate(TEXTS.grensesnitt.summaryPage.edit)}
-      </FormSummary.EditLink>
+      <FormSummary.Footer>
+        <FormSummary.EditLink as={Link} to={{ pathname: `${formUrl}/${key}`, search }}>
+          {translate(TEXTS.grensesnitt.summaryPage.edit)}
+        </FormSummary.EditLink>
+      </FormSummary.Footer>
     </FormSummary>
   );
 };
