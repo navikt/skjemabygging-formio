@@ -25,26 +25,19 @@ export function AttachmentsUploadPage() {
   const { translate } = useLanguages();
   const styles = useStyles();
   const attachments: Attachment[] = getAllAttachments(form, submission ?? ({} as Submission));
-  const otherAttachmentRefs = useRef<Record<string, HTMLElement>>({});
+  const attachmentRefs = useRef<Record<string, HTMLFieldSetElement | HTMLInputElement | null>>({});
   const errorSummaryRef = useRef<HTMLElement | null>(null);
 
-  const errors: ComponentError[] = (Object.entries(uploadErrors) ?? [])
-    .filter(([_, error]) => error?.type === 'INPUT')
-    .map(([attachmentId, error]) => ({
-      elementId: attachmentId,
-      message: error!.message,
-      path: attachmentId,
-      level: 'error',
-    }));
-
-  const addRef = (navId: string | undefined, element: HTMLElement | null) => {
-    if (!navId || !element) {
-      return;
-    }
-    if (!otherAttachmentRefs.current[navId]) {
-      otherAttachmentRefs.current[navId] = element;
-    }
-  };
+  const errors: ComponentError[] = (Object.entries(uploadErrors) ?? []).flatMap(([attachmentId, attachmentErrors]) =>
+    attachmentErrors
+      .filter((error) => error.type === 'INPUT' || error.type === 'DESCRIPTION')
+      .map((error) => ({
+        elementId: error.type,
+        message: error.message,
+        path: attachmentId,
+        level: 'error',
+      })),
+  );
 
   const focusOnErrorSummary = (maxAttempts = 5) => {
     if (errorSummaryRef.current) {
@@ -57,8 +50,8 @@ export function AttachmentsUploadPage() {
   const focusOnComponent = (comp: string | { elementId?: string; path?: string }) => {
     const ref =
       typeof comp === 'string'
-        ? otherAttachmentRefs.current[comp]
-        : otherAttachmentRefs.current[comp.elementId ?? comp.path ?? ''];
+        ? attachmentRefs.current[comp]
+        : attachmentRefs.current[`${comp.path}-${comp.elementId}`];
     ref?.focus();
   };
 
@@ -79,7 +72,7 @@ export function AttachmentsUploadPage() {
             description={htmlUtils.extractTextContent(description as string)}
             attachmentValues={attachmentValues}
             componentId={navId as string}
-            ref={(element) => addRef(navId, element)}
+            refs={attachmentRefs}
           />
         ) : (
           <AttachmentUpload
@@ -89,7 +82,7 @@ export function AttachmentsUploadPage() {
             description={htmlUtils.extractTextContent(description as string)}
             attachmentValues={attachmentValues}
             componentId={navId as string}
-            ref={(element) => addRef(navId, element)}
+            refs={attachmentRefs}
           />
         );
       })}

@@ -1,4 +1,4 @@
-import { SubmissionAttachment } from '@navikt/skjemadigitalisering-shared-domain';
+import { SubmissionAttachment, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 
 interface Validator<Target> {
   validate: (label: string, target?: Target) => string | undefined;
@@ -13,6 +13,9 @@ const validateValue = (attachment?: SubmissionAttachment) => {
   }
 };
 
+const validateOtherDocumentationTitle = (attachment?: SubmissionAttachment) =>
+  attachment?.type === 'other' && attachment.value === 'leggerVedNaa' && !attachment?.additionalDocumentationTitle;
+
 const attachmentValidator = (
   translate: (text: string, params?: Record<string, string>) => string,
 ): Validator<SubmissionAttachment> => ({
@@ -20,6 +23,10 @@ const attachmentValidator = (
     const valueError = validateValue(attachment);
     if (valueError) {
       return translate(valueError, { field: translate(label) });
+    }
+    console.log('Validate att', attachment);
+    if (validateOtherDocumentationTitle(attachment)) {
+      return translate('required', { label: translate(TEXTS.statiske.attachment.descriptionLabel) });
     }
 
     return undefined;

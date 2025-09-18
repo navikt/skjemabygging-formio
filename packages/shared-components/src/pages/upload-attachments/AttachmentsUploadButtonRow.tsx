@@ -25,6 +25,9 @@ const AttachmentsUploadButtonRow = ({ attachments, onError }: { attachments: Att
   const nextPage = (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     const errors = validateAttachment(attachments, submissionAttachments, validator);
+    console.log('Attachments:', attachments);
+    console.log('SubmissionAtt:', submissionAttachments);
+    console.log('Validation errors:', errors);
     Object.entries(errors).forEach(([attachmentId, errorMessage]) => {
       addError(attachmentId, errorMessage, 'INPUT');
     });

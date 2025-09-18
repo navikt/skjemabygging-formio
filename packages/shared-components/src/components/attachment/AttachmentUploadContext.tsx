@@ -17,7 +17,8 @@ import { useLanguages } from '../../context/languages';
 import { useSendInn } from '../../context/sendInn/sendInnContext';
 import { validateFileUpload, validateTotalFilesSize } from '../../util/form/attachment-validation/attachmentValidation';
 
-type ErrorType = 'FILE' | 'INPUT';
+//TODO: rename types
+type ErrorType = 'FILE' | 'INPUT' | 'DESCRIPTION';
 interface AttachmentUploadContextType {
   handleUploadFile: (attachmentId: string, file: FileObject) => Promise<void>;
   handleDeleteFile: (attachmentId: string, fileId: string, file: FileItem) => Promise<void>;
@@ -33,7 +34,7 @@ interface AttachmentUploadContextType {
     description?: string,
     validator?: { validate: (label: string, attachment: SubmissionAttachment) => string | undefined },
   ) => void;
-  errors: Record<string, { message: string; type: ErrorType } | undefined>;
+  errors: Record<string, Array<{ message: string; type: ErrorType }>>;
   uploadsInProgress: Record<string, Record<string, FileObject>>;
 }
 
@@ -61,7 +62,7 @@ const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boole
   const { translate } = useLanguages();
   const [captchaValue, setCaptchaValue] = useState<Record<string, string>>({});
   const [uploadsInProgress, setUploadsInProgress] = useState<Record<string, Record<string, FileObject>>>({});
-  const [errors, setErrors] = useState<Record<string, { message: string; type: ErrorType } | undefined>>({});
+  const [errors, setErrors] = useState<Record<string, Array<{ message: string; type: ErrorType }>>>({});
 
   const addFileToSubmission = (file: UploadedFile) => {
     setSubmission((current) => {
@@ -113,10 +114,21 @@ const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boole
   };
 
   const addError = (attachmentId: string, message: string, type: ErrorType) => {
-    setErrors((prev) => ({
-      ...prev,
-      [attachmentId]: { message, type },
-    }));
+    setErrors((prev) => {
+      const existingErrorIndex = prev[attachmentId]?.findIndex((error) => error.type === type);
+      if (existingErrorIndex !== undefined && existingErrorIndex >= 0) {
+        const updatedErrors = [...(prev[attachmentId] ?? [])];
+        updatedErrors[existingErrorIndex] = { message, type };
+        return {
+          ...prev,
+          [attachmentId]: updatedErrors,
+        };
+      }
+      return {
+        ...prev,
+        [attachmentId]: [...(prev[attachmentId] ?? []), { message, type }],
+      };
+    });
   };
 
   const removeError = (attachmentId: string) => {
@@ -253,10 +265,8 @@ const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boole
     description?: string,
     validator?: { validate: (label: string, attachment: SubmissionAttachment) => string | undefined },
   ) => {
-    console.log('changeAttachmentValue', { ...attachment, value, description });
     if (validator) {
       const error = validator.validate('', { ...attachment, value, description });
-      console.log('error', error);
       if (!error) {
         removeError(attachment.attachmentId);
       }

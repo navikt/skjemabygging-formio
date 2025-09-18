@@ -49,6 +49,7 @@ interface SubmissionAttachment {
   type: AttachmentType | 'id';
   value?: keyof AttachmentSettingValues;
   description?: string;
+  additionalDocumentationTitle?: string;
   files?: UploadedFile[];
 }
 

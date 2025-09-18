@@ -13,7 +13,7 @@ import {
   VStack,
 } from '@navikt/ds-react';
 import { AttachmentSettingValues, SubmissionAttachment, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { useState } from 'react';
+import { MutableRefObject, useState } from 'react';
 import {
   FILE_ACCEPT,
   MAX_SIZE_ATTACHMENT_FILE_BYTES,
@@ -39,6 +39,7 @@ interface Props {
   attachmentValue?: keyof AttachmentSettingValues;
   requireDescription?: boolean;
   multiple?: boolean;
+  refs?: MutableRefObject<Record<string, HTMLInputElement | HTMLFieldSetElement | null>>;
   accept?: string;
   maxFileSizeInBytes?: number;
   maxFileSizeText?: string;
@@ -49,6 +50,7 @@ const FileUploader = ({
   attachmentValue,
   requireDescription,
   multiple,
+  refs,
   accept = FILE_ACCEPT,
   maxFileSizeInBytes = MAX_SIZE_ATTACHMENT_FILE_BYTES,
   maxFileSizeText = MAX_SIZE_ATTACHMENT_FILE_TEXT,
@@ -61,6 +63,7 @@ const FileUploader = ({
     handleDeleteFile,
     submissionAttachments,
     errors,
+    addError,
     uploadsInProgress,
   } = useAttachmentUpload();
   const { attachmentId } = initialAttachment;
@@ -73,7 +76,8 @@ const FileUploader = ({
   const showButton = multiple || initialUpload;
   const inProgress = Object.values(uploadsInProgress[attachmentId] ?? {});
 
-  const error = errors[attachmentId]?.type === 'FILE' ? errors[attachmentId]?.message : undefined;
+  const uploadErrorMessage = errors[attachmentId]?.find((error) => error.type === 'FILE')?.message;
+  const descriptionErrorMessage = errors[attachmentId]?.find((error) => error.type === 'DESCRIPTION')?.message;
   const restartHref =
     window.location.pathname.replace(/\/[^/]+$/, '/legitimasjon') + window.location.search + window.location.hash;
   const translationErrorParams = {
@@ -107,7 +111,7 @@ const FileUploader = ({
                 action: 'delete',
                 onClick: () => handleDeleteFile(attachmentId, fileId, { name: fileName, size }),
               }}
-              error={errors[fileId]?.message ? translate(errors[fileId].message) : undefined}
+              error={errors[fileId]?.[0].message ? translate(errors[fileId][0].message) : undefined}
             ></FileUpload.Item>
           ))}
           {inProgress.map((file) => (
@@ -128,13 +132,19 @@ const FileUploader = ({
               label={translate(TEXTS.statiske.attachment.descriptionLabel)}
               maxLength={50}
               value={description}
+              error={descriptionErrorMessage}
+              ref={(ref) => {
+                if (refs?.current) {
+                  refs.current[`${attachmentId}-DESCRIPTION`] = ref;
+                }
+              }}
               onChange={(e) => {
                 setDescription(e.target.value);
                 changeAttachmentValue(initialAttachment, attachmentValue, e.target.value);
               }}
             />
           )}
-          {(!requireDescription || !!description.trim()) && (
+          {!requireDescription || !!description.trim() ? (
             <FileUpload.Trigger onSelect={onSelect} accept={accept} maxSizeInBytes={maxFileSizeInBytes}>
               <Button
                 variant={initialUpload ? 'primary' : 'secondary'}
@@ -147,13 +157,30 @@ const FileUploader = ({
                 )}
               </Button>
             </FileUpload.Trigger>
+          ) : (
+            <Button
+              variant={initialUpload ? 'primary' : 'secondary'}
+              className={styles.button}
+              icon={<UploadIcon aria-hidden fontSize="1.5rem" />}
+              onClick={() =>
+                addError(
+                  attachmentId,
+                  translate('required', { field: translate(TEXTS.statiske.attachment.descriptionLabel) }),
+                  'DESCRIPTION',
+                )
+              }
+            >
+              {translate(
+                initialUpload ? TEXTS.statiske.uploadId.selectFile : TEXTS.statiske.attachment.uploadMoreFiles,
+              )}
+            </Button>
           )}
-          {error && (
+          {uploadErrorMessage && (
             <Alert inline variant="error">
-              {htmlUtils.isHtmlString(error) ? (
-                <InnerHtml content={translate(error, translationErrorParams)}></InnerHtml>
+              {htmlUtils.isHtmlString(uploadErrorMessage) ? (
+                <InnerHtml content={translate(uploadErrorMessage, translationErrorParams)}></InnerHtml>
               ) : (
-                <BodyLong>{translate(error, translationErrorParams)}</BodyLong>
+                <BodyLong>{translate(uploadErrorMessage, translationErrorParams)}</BodyLong>
               )}
             </Alert>
           )}
