@@ -1,7 +1,7 @@
 import { useAppConfig } from '../../context/config/configContext';
 import { FormComponentProps } from '../types';
 
-const RenderComponent = ({ component, submissionPath, componentRegistry }: FormComponentProps) => {
+const RenderComponent = ({ component, submissionPath, componentRegistry, panelValidationList }: FormComponentProps) => {
   const { logger } = useAppConfig();
   const { type } = component;
   const RegistryComponent = componentRegistry[type];
@@ -12,7 +12,12 @@ const RenderComponent = ({ component, submissionPath, componentRegistry }: FormC
   }
 
   return (
-    <RegistryComponent component={component} submissionPath={submissionPath} componentRegistry={componentRegistry} />
+    <RegistryComponent
+      component={component}
+      submissionPath={submissionPath}
+      componentRegistry={componentRegistry}
+      panelValidationList={panelValidationList}
+    />
   );
 };
 

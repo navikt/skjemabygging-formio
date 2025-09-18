@@ -1,22 +1,30 @@
 import { FormSummary } from '@navikt/ds-react';
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { Link, useLocation } from 'react-router-dom';
+import ValidationExclamationIcon from '../../../../components/icons/ValidationExclamationIcon';
 import { useForm } from '../../../../context/form/FormContext';
 import { useLanguages } from '../../../../context/languages';
 import RenderComponent from '../../../render/RenderComponent';
 import { FormComponentProps } from '../../../types';
 import formComponentUtils from '../../../utils/formComponent';
 
-const SummaryPanel = ({ component, submissionPath, componentRegistry }: FormComponentProps) => {
+const SummaryPanel = ({ component, submissionPath, componentRegistry, panelValidationList }: FormComponentProps) => {
   const { title, components, navId, key } = component;
   const { translate } = useLanguages();
   const { search } = useLocation();
   const { formUrl } = useForm();
 
+  const panelValidation = panelValidationList?.find((panel) => panel.key === key);
+
   return (
     <FormSummary>
       <FormSummary.Header>
-        <FormSummary.Heading level="2">{title}</FormSummary.Heading>
+        <FormSummary.Heading level="2">
+          {translate(title)}
+          {panelValidation?.hasValidationErrors && (
+            <ValidationExclamationIcon title={translate(TEXTS.statiske.summaryPage.validationIcon)} />
+          )}
+        </FormSummary.Heading>
       </FormSummary.Header>
       <FormSummary.Answers>
         {components?.map((component) => {
@@ -40,46 +48,3 @@ const SummaryPanel = ({ component, submissionPath, componentRegistry }: FormComp
 };
 
 export default SummaryPanel;
-
-/*
-
-const PanelSummary = ({ component, formUrl, hasValidationErrors }: Props) => {
-  const { translate } = useLanguages();
-  const { search } = useLocation();
-  const { link, headerIcon, accordionHeader } = panelStyles();
-  const { key, label, components } = component;
-  const panelLinkText = `${translate(TEXTS.grensesnitt.summaryPage.edit)} ${label.toLowerCase()}`;
-
-  return (
-    <section>
-      <Accordion headingSize="medium">
-        <Accordion.Item defaultOpen={true}>
-          <Accordion.Header>
-            <div className={accordionHeader}>
-              {label}
-              {hasValidationErrors && (
-                <ExclamationmarkTriangleFillIcon
-                  className={headerIcon}
-                  title={translate(TEXTS.statiske.summaryPage.validationIcon)}
-                  fontSize="1.5rem"
-                />
-              )}
-            </div>
-          </Accordion.Header>
-          <Accordion.Content>
-            <Link as={ReactRouterLink} to={{ pathname: `${formUrl}/${key}`, search }} className={link}>
-              <span>{panelLinkText}</span>
-            </Link>
-            <dl>
-              <ComponentSummary components={components} formUrl={formUrl} />
-            </dl>
-          </Accordion.Content>
-        </Accordion.Item>
-      </Accordion>
-    </section>
-  );
-};
-
-export default PanelSummary;
-
- */

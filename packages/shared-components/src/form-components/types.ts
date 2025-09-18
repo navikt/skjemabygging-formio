@@ -1,4 +1,5 @@
 import { Component } from '@navikt/skjemadigitalisering-shared-domain';
+import { PanelValidation } from '../util/form/panel-validation/panelValidation';
 
 interface PdfData {
   label: string;
@@ -27,6 +28,7 @@ interface FormComponentProps {
   component: Component;
   submissionPath: string;
   componentRegistry: FormComponentRegistry;
+  panelValidationList?: PanelValidation[];
 }
 
 interface FormComponentRegistry {

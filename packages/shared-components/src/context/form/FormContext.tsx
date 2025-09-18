@@ -87,8 +87,10 @@ export const FormProvider = ({ children, form }: FormProviderProps) => {
   }, [baseUrl, form, http, submissionMethod]);
 
   useEffect(() => {
-    setActiveComponents(checkConditions(JSON.parse(JSON.stringify(form.components))));
-  }, [form, checkConditions]);
+    setActiveComponents(
+      JSON.parse(JSON.stringify(navFormUtils.getActivePanelsFromForm(form, submission, submissionMethod))),
+    );
+  }, [form, submission, submissionMethod]);
 
   return (
     <FormContext.Provider

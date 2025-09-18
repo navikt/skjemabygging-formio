@@ -211,7 +211,7 @@ describe('Data fetcher', () => {
       });
 
       it('shows selected activity label', () => {
-        cy.findByRole('button', { name: 'Velg aktivitet' })
+        cy.findByRole('heading', { name: 'Velg aktivitet' })
           .should('exist')
           .closest('div')
           .within(() => {
@@ -220,7 +220,7 @@ describe('Data fetcher', () => {
       });
 
       it('allows user to edit selected activities', () => {
-        cy.findByRole('link', { name: 'Rediger velg aktivitet' }).should('exist').click();
+        cy.clickEditAnswer('Velg aktivitet');
         cy.findByRole('group', { name: LABEL_AKTIVITETSVELGER })
           .should('exist')
           .within(() => {
@@ -231,7 +231,7 @@ describe('Data fetcher', () => {
         cy.clickSaveAndContinue();
         cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
 
-        cy.findByRole('button', { name: 'Velg aktivitet' })
+        cy.findByRole('heading', { name: 'Velg aktivitet' })
           .should('exist')
           .closest('div')
           .within(() => {

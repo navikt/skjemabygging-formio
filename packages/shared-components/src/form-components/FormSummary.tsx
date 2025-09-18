@@ -1,4 +1,5 @@
 import { useForm } from '../context/form/FormContext';
+import { PanelValidation } from '../util/form/panel-validation/panelValidation';
 import {
   SummaryAccountNumber,
   SummaryAddress,
@@ -35,7 +36,11 @@ import {
 import { SummaryActivities, SummaryDataFetcher, SummaryDrivingList, SummaryMaalgruppe } from './components/system';
 import RenderComponent from './render/RenderComponent';
 
-const FormSummary = () => {
+interface Props {
+  panelValidationList?: PanelValidation[];
+}
+
+const FormSummary = ({ panelValidationList }: Props) => {
   const { activeComponents } = useForm();
 
   const componentRegistry = {
@@ -97,6 +102,7 @@ const FormSummary = () => {
       component={component}
       submissionPath=""
       componentRegistry={componentRegistry}
+      panelValidationList={panelValidationList}
     />
   ));
 };

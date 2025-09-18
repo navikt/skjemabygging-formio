@@ -1,8 +1,8 @@
-import { ExclamationmarkTriangleFillIcon } from '@navikt/aksel-icons';
 import { Alert, BodyShort, ConfirmationPanel, Heading, VStack } from '@navikt/ds-react';
 import { DeclarationType, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useRef, useState } from 'react';
 import EditAnswersButton from '../../components/button/navigation/edit-answers/EditAnswersButton';
+import ValidationExclamationIcon from '../../components/icons/ValidationExclamationIcon';
 import NavFormHelper from '../../components/nav-form/NavFormHelper';
 import { useAppConfig } from '../../context/config/configContext';
 import { useForm } from '../../context/form/FormContext';
@@ -10,20 +10,11 @@ import { useLanguages } from '../../context/languages';
 import FormSummary from '../../form-components/FormSummary';
 import { scrollToAndSetFocus } from '../../util/focus-management/focus-management';
 import { PanelValidation, validateWizardPanels } from '../../util/form/panel-validation/panelValidation';
-import makeStyles from '../../util/styles/jss/jss';
 import SummaryPageNavigation from './navigation/SummaryPageNavigation';
-
-const useStyles = makeStyles({
-  exclamationmarkIcon: {
-    verticalAlign: 'sub',
-    color: 'var(--a-orange-600)',
-  },
-});
 
 export function SummaryPage() {
   const appConfig = useAppConfig();
   const { translate } = useLanguages();
-  const styles = useStyles();
   const { prefillData, submission, formUrl, form, setTitle, setFormProgressVisible } = useForm();
   const { declarationType, declarationText } = form.properties;
   const [declaration, setDeclaration] = useState<boolean | undefined>(undefined);
@@ -54,9 +45,7 @@ export function SummaryPage() {
       }
     };
 
-    if (submission) {
-      initializePanelValidation();
-    }
+    initializePanelValidation();
   }, [form, submission, appConfig, prefillData]);
 
   useEffect(() => {
@@ -90,26 +79,21 @@ export function SummaryPage() {
       {!hasValidationErrors && (
         <BodyShort className="mb-4">{translate(TEXTS.statiske.summaryPage.description)}</BodyShort>
       )}
-      {!hasValidationErrors && (
+      {hasValidationErrors && (
         <>
           <Alert variant="warning">
             <Heading spacing size="small" level="3">
               {translate(TEXTS.statiske.summaryPage.validationTitle)}
             </Heading>
             {translate(TEXTS.statiske.summaryPage.validationMessage)}
-            <ExclamationmarkTriangleFillIcon
-              className={styles.exclamationmarkIcon}
-              title={translate(TEXTS.statiske.summaryPage.validationIcon)}
-              fontSize="1.5rem"
-            />
-            .
+            <ValidationExclamationIcon title={translate(TEXTS.statiske.summaryPage.validationIcon)} />.
           </Alert>
           <div className="button-row">
             <EditAnswersButton form={form} formUrl={formUrl} panelValidationList={panelValidationList} />
           </div>
         </>
       )}
-      <FormSummary />
+      <FormSummary panelValidationList={panelValidationList} />
       {hasDeclaration && (
         <ConfirmationPanel
           className="mb"

@@ -32,9 +32,9 @@ declare global {
 
       clickShowAllSteps(): Chainable<JQuery<HTMLElement>>;
 
-      clickEditAnswer(title: string): Chainable<JQuery<HTMLElement>>;
+      clickEditAnswer(title: string, linkText?: string): Chainable<JQuery<HTMLElement>>;
 
-      clickEditAnswers(): Chainable<JQuery<HTMLElement>>;
+      clickEditAnswers(linkText?: string): Chainable<JQuery<HTMLElement>>;
 
       verifySendInnRedirect(): Chainable<JQuery<HTMLElement>>;
 

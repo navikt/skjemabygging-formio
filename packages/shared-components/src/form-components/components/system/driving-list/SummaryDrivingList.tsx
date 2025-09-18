@@ -18,7 +18,12 @@ const SummaryDrivingList = ({ component, submissionPath }: FormComponentProps) =
 
   return (
     <FormSummary.Answer>
-      <DefaultLabel component={component} />
+      <DefaultLabel
+        component={{
+          ...component,
+          hideLabel: false,
+        }}
+      />
       <FormSummary.Value>
         {translate(TEXTS.statiske.drivingList.summaryDescription)}
 
