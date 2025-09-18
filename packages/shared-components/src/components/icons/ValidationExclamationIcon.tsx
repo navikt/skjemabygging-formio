@@ -1,5 +1,5 @@
 import { ExclamationmarkTriangleFillIcon } from '@navikt/aksel-icons';
-import { makeStyles } from '../../index';
+import makeStyles from '../../util/styles/jss/jss';
 
 interface Props {
   title?: string;
