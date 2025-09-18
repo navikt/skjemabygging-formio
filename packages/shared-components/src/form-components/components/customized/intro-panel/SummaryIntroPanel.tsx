@@ -33,9 +33,7 @@ const SummaryIntroPanel = () => {
       <FormSummary.Answers>
         <FormSummary.Answer>
           <FormSummary.Label>{translate(inputLabel)}</FormSummary.Label>
-          <FormSummary.Value>
-            {submission?.selfDeclaration ? translate(TEXTS.common.yes) : translate(TEXTS.common.no)}
-          </FormSummary.Value>
+          <FormSummary.Value>{submission?.selfDeclaration ? translate(TEXTS.common.yes) : '-'}</FormSummary.Value>
         </FormSummary.Answer>
       </FormSummary.Answers>
 
