@@ -91,7 +91,7 @@ describe('Pdf when digital submission', () => {
         .within(() => {
           cy.findByRole('radio', { name: 'Nei' }).should('exist').click();
         });
-      cy.findByRole('group', { name: 'Hvor ofte ønsker du å sende inn kjøreliste?' })
+      cy.findByLabelText('Hvor ofte ønsker du å sende inn kjøreliste?')
         .should('exist')
         .within(() => {
           cy.findByRole('radio', { name: /.*gang i uken.*/ })
@@ -186,7 +186,7 @@ describe('Pdf when digital submission', () => {
         .within(() => {
           cy.findByRole('radio', { name: 'Nei' }).should('exist').click();
         });
-      cy.findByRole('group', { name: 'Kor ofte ønskjer du å senda inn køyreliste?' })
+      cy.findByLabelText('Kor ofte ønskjer du å senda inn køyreliste?')
         .should('exist')
         .within(() => {
           cy.findByRole('radio', { name: /.*gong i veka.*/ })

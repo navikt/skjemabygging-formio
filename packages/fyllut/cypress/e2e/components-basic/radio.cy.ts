@@ -19,7 +19,7 @@ describe('Radio', () => {
     });
 
     it('should render simple radio correctly', () => {
-      cy.findAllByRole('group', { name: 'Simple' }).within(() => {
+      cy.findByRole('group', { name: 'Simple' }).within(() => {
         cy.findAllByRole('radio', { name: 'Ja' }).should('exist');
         cy.findAllByRole('radio', { name: 'Nei' }).should('exist');
       });
@@ -27,7 +27,7 @@ describe('Radio', () => {
 
     it('should render radio with decriptions correctly', () => {
       // Description for each radio option
-      cy.findAllByRole('group', { name: 'With description' }).within(() => {
+      cy.findByLabelText('With description').within(() => {
         cy.findAllByRole('radio', { name: 'First This is the first option' }).should('exist');
         cy.findAllByRole('radio', { name: 'Second This is the second option' }).should('exist');
         cy.findAllByRole('radio', { name: 'Third' }).should('exist');
@@ -51,11 +51,11 @@ describe('Radio', () => {
     });
 
     it('should populate values from "mellomlagring"', () => {
-      cy.findAllByRole('group', { name: 'Simple' }).within(() => {
+      cy.findByRole('group', { name: 'Simple' }).within(() => {
         cy.findAllByRole('radio', { name: 'Nei' }).should('be.checked');
       });
 
-      cy.findAllByRole('group', { name: 'With description' }).within(() => {
+      cy.findByLabelText('With description').within(() => {
         cy.findAllByRole('radio', { name: /^First/ }).should('be.checked');
       });
     });
