@@ -19,7 +19,7 @@ describe('Radio', () => {
     });
 
     it('should render simple radio correctly', () => {
-      cy.findByRole('group', { name: 'Simple' }).within(() => {
+      cy.findAllByRole('group', { name: 'Simple' }).within(() => {
         cy.findAllByRole('radio', { name: 'Ja' }).should('exist');
         cy.findAllByRole('radio', { name: 'Nei' }).should('exist');
       });
@@ -51,7 +51,7 @@ describe('Radio', () => {
     });
 
     it('should populate values from "mellomlagring"', () => {
-      cy.findByRole('group', { name: 'Simple' }).within(() => {
+      cy.findAllByRole('group', { name: 'Simple' }).within(() => {
         cy.findAllByRole('radio', { name: 'Nei' }).should('be.checked');
       });
 
