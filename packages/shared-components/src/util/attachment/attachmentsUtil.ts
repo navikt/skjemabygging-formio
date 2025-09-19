@@ -1,4 +1,10 @@
-import { Component, NavFormType, navFormUtils, Submission } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  AttachmentSettingValues,
+  Component,
+  NavFormType,
+  navFormUtils,
+  Submission,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import UtilsOverrides from '../../formio/overrides/utils-overrides/utils-overrides';
 
 interface Attachment {
@@ -12,7 +18,7 @@ interface Attachment {
   formioId: string;
   vedleggskjema?: string;
   description?: string;
-  attachmentValues?: object;
+  attachmentValues?: AttachmentSettingValues;
   attachmentType?: string;
 }
 

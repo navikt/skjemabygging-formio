@@ -14,19 +14,20 @@ export interface Props {
   submission?: Submission;
   onCancel: () => void;
   navigateTo: (to: To) => void;
+  finalStep?: string;
   paths: {
     prev?: string;
     next?: string;
   };
 }
 
-const FormNavigation = ({ formUrl, paths, isValid, submission, onCancel, navigateTo }: Props) => {
+const FormNavigation = ({ formUrl, paths, isValid, submission, onCancel, navigateTo, finalStep }: Props) => {
   const { isMellomlagringActive, updateMellomlagring } = useSendInn();
   const { search } = useLocation();
   const { translate } = useLanguages();
 
   const [nextLocation, setNextLocation] = useState<To | undefined>({
-    pathname: `${formUrl}/${paths.next ?? 'oppsummering'}`,
+    pathname: `${formUrl}/${paths.next ?? finalStep}`,
     search,
   });
   const [prevLocation, setPrevLocation] = useState<To | undefined>(
@@ -34,8 +35,8 @@ const FormNavigation = ({ formUrl, paths, isValid, submission, onCancel, navigat
   );
 
   useEffect(() => {
-    setNextLocation({ pathname: `${formUrl}/${paths.next ?? 'oppsummering'}`, search });
-  }, [search, paths.next, formUrl]);
+    setNextLocation({ pathname: `${formUrl}/${paths.next ?? finalStep}`, search });
+  }, [search, paths.next, formUrl, finalStep]);
 
   useEffect(() => {
     setPrevLocation({ pathname: `${formUrl}${paths.prev ? `/${paths.prev}` : ''}`, search });
