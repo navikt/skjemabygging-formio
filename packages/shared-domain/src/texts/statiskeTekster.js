@@ -55,10 +55,15 @@ export const statiske = {
     missingUploadError: 'Du må laste opp et gyldig identifikasjonsdokument før du kan fortsette.',
     tokenExpiredError:
       'Sesjonen din har utløpt. For å sende inn må du laste opp legitimasjon og fylle ut skjemaet på nytt. <a href="{{url}}">Klikk her</a> for å starte på nytt.',
+  },
+  uploadFile: {
     uploadFileError: 'Det oppstod en feil under opplasting av filen. Prøv igjen senere.',
     deleteFileError: 'Det oppstod en feil under sletting av filen. Prøv igjen senere.',
     deleteAttachmentError: 'Det oppstod en feil under sletting av vedlegget. Prøv igjen senere.',
     deleteAllFilesError: 'Det oppstod en feil under sletting av filene. Prøv igjen senere.',
+    fileTooLargeError: 'Filen er for stor. Maks filstørrelse er {{size}}.',
+    totalFileSizeTooLarge: 'Summen av alle filene kan ikke være mer enn {{size}}.',
+    fileNotSupportedError: 'Filen kan ikke lastes opp. Prøv igjen med en annen fil i et gyldig format.',
   },
   paabegynt: {
     activeTasksHeading: 'Du har {{amount}} påbegynte utkast til denne søknaden',
@@ -289,5 +294,10 @@ export const statiske = {
       title: 'Søknaden du leter etter finnes ikke',
       message: 'Dette kan skyldes at søknaden allerede er sendt inn eller avsluttet.',
     },
+  },
+  phoneNumber: {
+    areaCodeLabel: 'Landskode',
+    phoneNumberLabel: 'Telefonnummer',
+    fetchError: 'En feil oppsto under uthenting av landskoder. Vennligst forsøk igjen senere.',
   },
 };

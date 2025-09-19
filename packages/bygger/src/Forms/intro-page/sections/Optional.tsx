@@ -1,9 +1,8 @@
 import { Accordion, Box, Heading } from '@navikt/ds-react';
-import { Intro } from '@navikt/skjemadigitalisering-shared-components';
+import { FieldsetErrorMessage, Intro } from '@navikt/skjemadigitalisering-shared-components';
 import { Form } from '@navikt/skjemadigitalisering-shared-domain';
 import { UpdateFormFunction } from '../../../components/FormMetaDataEditor/utils/utils';
 import useKeyBasedText from '../../../hooks/useKeyBasedText';
-import { FieldsetErrorMessage } from '../components/FieldsetErrorMessage';
 import { IngressBulletPointRow } from '../components/IngressBulletPointRow';
 import { TextFieldComponent } from '../components/TextFieldComponent';
 import { updateSection } from '../utils/utils';

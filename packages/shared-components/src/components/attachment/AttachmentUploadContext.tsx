@@ -1,26 +1,35 @@
 import { FileObject } from '@navikt/ds-react';
-import { Submission, TEXTS, UploadedFile } from '@navikt/skjemadigitalisering-shared-domain';
+import { Submission, SubmissionAttachment, TEXTS, UploadedFile } from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, useContext, useState } from 'react';
 import { submitCaptchaValue } from '../../api/captcha/captcha';
 import useNologinFileUpload from '../../api/nologin-file-upload/nologinFileUpload';
 import http from '../../api/util/http/http';
+import {
+  MAX_SIZE_ATTACHMENT_FILE_TEXT,
+  MAX_TOTAL_SIZE_ATTACHMENT_FILES_BYTES,
+  MAX_TOTAL_SIZE_ATTACHMENT_FILES_TEXT,
+} from '../../constants/fileUpload';
 import { useAppConfig } from '../../context/config/configContext';
 import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
 import { useSendInn } from '../../context/sendInn/sendInnContext';
+import {
+  validateAttachmentFiles,
+  validateFileUpload,
+} from '../../util/form/attachment-validation/attachmentValidation';
 
+type ErrorType = 'FILE' | 'INPUT';
 interface AttachmentUploadContextType {
   handleUploadFile: (attachmentId: string, file: FileObject) => Promise<void>;
   handleDeleteFile: (attachmentId: string, fileId: string) => Promise<void>;
   handleDeleteAttachment: (attachmentId: string) => Promise<void>;
   handleDeleteAllFiles: () => Promise<void>;
-  addError: (attachmentId: string, error: string) => void;
+  addError: (attachmentId: string, error: string, type: ErrorType) => void;
   setCaptchaValue: (value: Record<string, string>) => void;
   removeError: (attachmentId: string) => void;
-  uploadedFiles: UploadedFile[];
-  errors: Record<string, string | undefined>;
-  radioState: Record<string, string>;
-  setRadioState: React.Dispatch<React.SetStateAction<Record<string, string>>>;
+  submissionAttachments: SubmissionAttachment[];
+  changeAttachmentValue: (attachment: SubmissionAttachment, value?: string, description?: string) => void;
+  errors: Record<string, { message: string; type: ErrorType } | undefined>;
 }
 
 const initialContext: AttachmentUploadContextType = {
@@ -31,37 +40,51 @@ const initialContext: AttachmentUploadContextType = {
   addError: () => {},
   setCaptchaValue: () => {},
   removeError: () => {},
-  uploadedFiles: [],
+  submissionAttachments: [],
+  changeAttachmentValue: () => {},
   errors: {},
-  radioState: {},
-  setRadioState: () => {},
 };
 
 const AttachmentUploadContext = createContext<AttachmentUploadContextType>(initialContext);
 
-const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) => {
+const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boolean; children: React.ReactNode }) => {
   const config = useAppConfig();
   const { submission, setSubmission } = useForm();
   const { nologinToken, setNologinToken } = useSendInn();
   const { deleteAllFiles, deleteAttachment, deleteFile, uploadFile } = useNologinFileUpload();
   const { translate } = useLanguages();
   const [captchaValue, setCaptchaValue] = useState<Record<string, string>>({});
-  const [errors, setErrors] = useState<Record<string, string | undefined>>({});
-  const [radioState, setRadioState] = useState<Record<string, string>>({});
+  const [errors, setErrors] = useState<Record<string, { message: string; type: ErrorType } | undefined>>({});
 
-  const uploadedFiles = submission?.uploadedFiles ?? [];
-
-  const addToSubmission = (file: UploadedFile) => {
-    setSubmission(
-      (current) => ({ ...current, uploadedFiles: [...(current?.uploadedFiles ?? []), file] }) as Submission,
-    );
+  const addFileToSubmission = (file: UploadedFile) => {
+    setSubmission((current) => {
+      const attachment = current?.attachments?.find((att) => att.attachmentId === file.attachmentId);
+      if (!attachment) {
+        throw new Error(`${file.attachmentId} not found`);
+      }
+      return {
+        ...current,
+        attachments: (current?.attachments ?? []).map((att) => {
+          if (att.attachmentId === file.attachmentId) {
+            return { ...att, files: [...(att.files ?? []), file] };
+          }
+          return att;
+        }),
+      } as Submission;
+    });
   };
-  const removeFileFromSubmission = (fileId: string) => {
+
+  const removeFileFromSubmission = (attachmentId: string, fileId: string) => {
     setSubmission(
       (current) =>
         ({
           ...current,
-          uploadedFiles: (current?.uploadedFiles ?? []).filter((file) => file.fileId !== fileId),
+          attachments: (current?.attachments ?? []).map((att) => {
+            if (att.attachmentId === attachmentId) {
+              return { ...att, files: (att.files ?? []).filter((file) => file.fileId !== fileId) };
+            }
+            return att;
+          }),
         }) as Submission,
     );
   };
@@ -71,15 +94,20 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
       (current) =>
         ({
           ...current,
-          uploadedFiles: (current?.uploadedFiles ?? []).filter((file) => file.attachmentId !== attachmentId),
+          attachments: (current?.attachments ?? []).map((att) => {
+            if (att.attachmentId === attachmentId) {
+              return { ...att, files: [] };
+            }
+            return att;
+          }),
         }) as Submission,
     );
   };
 
-  const addError = (attachmentId: string, error: string) => {
+  const addError = (attachmentId: string, message: string, type: ErrorType) => {
     setErrors((prev) => ({
       ...prev,
-      [attachmentId]: error,
+      [attachmentId]: { message, type },
     }));
   };
 
@@ -91,7 +119,7 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
   };
 
   const resolveCaptcha = async () => {
-    if (!nologinToken) {
+    if (!nologinToken && useCaptcha) {
       const response = await submitCaptchaValue(captchaValue, config);
       if (response?.access_token) {
         setNologinToken(response.access_token);
@@ -103,23 +131,45 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
 
   const handleApiError = (attachmentId: string, error: any, message: string) => {
     if (error instanceof http.HttpError && error.status === 401) {
-      addError(attachmentId, translate(TEXTS.statiske.uploadId.tokenExpiredError));
+      addError(attachmentId, translate(TEXTS.statiske.uploadId.tokenExpiredError), 'FILE');
     } else {
-      addError(attachmentId, message);
+      addError(attachmentId, message, 'FILE');
+    }
+  };
+
+  const validate = (attachmentId: string, file: FileObject): string | undefined => {
+    const fileInvalid = validateFileUpload(file, config.logger);
+    if (fileInvalid) {
+      return translate(fileInvalid, { size: MAX_SIZE_ATTACHMENT_FILE_TEXT });
+    }
+    const attachment = submission?.attachments?.find((attachment) => attachment.attachmentId === attachmentId);
+    const exceedsTotalMaxSize = validateAttachmentFiles(
+      MAX_TOTAL_SIZE_ATTACHMENT_FILES_BYTES,
+      attachment,
+      [file.file],
+      config.logger,
+    );
+    if (exceedsTotalMaxSize) {
+      return translate(exceedsTotalMaxSize, { size: MAX_TOTAL_SIZE_ATTACHMENT_FILES_TEXT });
     }
   };
 
   const handleUploadFile = async (attachmentId: string, file: FileObject) => {
     try {
       removeError(attachmentId);
+      const invalidUpload = validate(attachmentId, file);
+      if (invalidUpload) {
+        addError(attachmentId, invalidUpload, 'FILE');
+        return;
+      }
       const token = await resolveCaptcha();
       const result = await uploadFile(file.file, attachmentId, token);
       if (result) {
-        addToSubmission(result);
+        addFileToSubmission(result);
       }
     } catch (error: any) {
       setNologinToken(undefined);
-      handleApiError(attachmentId, error, translate(TEXTS.statiske.uploadId.uploadFileError));
+      handleApiError(attachmentId, error, translate(TEXTS.statiske.uploadFile.uploadFileError));
     }
   };
 
@@ -127,9 +177,9 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
     try {
       removeError(attachmentId);
       await deleteFile(fileId, nologinToken);
-      removeFileFromSubmission(fileId);
+      removeFileFromSubmission(attachmentId, fileId);
     } catch (error: any) {
-      handleApiError(attachmentId, error, translate(TEXTS.statiske.uploadId.deleteFileError));
+      handleApiError(attachmentId, error, translate(TEXTS.statiske.uploadFile.deleteFileError));
     }
   };
 
@@ -139,7 +189,7 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
       await deleteAttachment(attachmentId, nologinToken);
       removeFilesFromSubmission(attachmentId);
     } catch (error: any) {
-      handleApiError(attachmentId, error, translate(TEXTS.statiske.uploadId.deleteAttachmentError));
+      handleApiError(attachmentId, error, translate(TEXTS.statiske.uploadFile.deleteAttachmentError));
     }
   };
 
@@ -147,11 +197,31 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
     try {
       setErrors({});
       await deleteAllFiles(nologinToken);
-      setSubmission((current) => ({ ...current, uploadedFiles: [] }) as Submission);
+      setSubmission((current) => ({ ...current, attachments: [] }) as Submission);
     } catch (error: any) {
-      handleApiError('allFiles', error, translate(TEXTS.statiske.uploadId.deleteAllFilesError));
+      handleApiError('allFiles', error, translate(TEXTS.statiske.uploadFile.deleteAllFilesError));
       throw error;
     }
+  };
+
+  const changeAttachmentValue = (attachment: SubmissionAttachment, value?: string, description?: string) => {
+    // TODO: consider reducer or help functions
+    setSubmission((current) => {
+      const currentAttachment = current?.attachments?.find((att) => att.attachmentId === attachment.attachmentId);
+      if (!currentAttachment) {
+        return {
+          ...current,
+          attachments: [...(current?.attachments ?? []), { ...attachment, value, description, files: [] }],
+        } as Submission;
+      }
+      const updatedAttachments = current?.attachments?.map((att) => {
+        if (att.attachmentId !== attachment.attachmentId) {
+          return att;
+        }
+        return { ...att, value: value ?? att.value, description: description ?? att.description };
+      });
+      return { ...current, attachments: updatedAttachments } as Submission;
+    });
   };
 
   const value = {
@@ -162,10 +232,9 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
     addError,
     setCaptchaValue,
     removeError,
-    uploadedFiles,
+    changeAttachmentValue,
+    submissionAttachments: submission?.attachments ?? [],
     errors,
-    radioState,
-    setRadioState,
   };
   return <AttachmentUploadContext.Provider value={value}>{children}</AttachmentUploadContext.Provider>;
 };

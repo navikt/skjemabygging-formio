@@ -16,17 +16,18 @@ const UploadPersonalIdButtonRow = () => {
   const { translate } = useLanguages();
   const { formUrl } = useForm();
   const [searchParams] = useSearchParams();
-  const { uploadedFiles, errors, addError, handleDeleteAllFiles } = useAttachmentUpload();
+  const { submissionAttachments, errors, addError, handleDeleteAllFiles } = useAttachmentUpload();
 
   const startUrl = `${baseUrl}${formUrl}`;
   const exitUrl = urlUtils.getExitUrl(window.location.href);
 
   const navigateToFormPage = (event: MouseEvent<HTMLElement>) => {
     event.preventDefault();
-    if (uploadedFiles.find((file) => file.attachmentId === 'personal-id')) {
+    const personalIdAttachment = submissionAttachments.find((attachment) => attachment.attachmentId === 'personal-id');
+    if (personalIdAttachment?.files?.length) {
       navigate(`..?${searchParams.toString()}`);
     } else {
-      addError('personal-id', translate(TEXTS.statiske.uploadId.missingUploadError));
+      addError('personal-id', translate(TEXTS.statiske.uploadId.missingUploadError), 'INPUT');
     }
   };
 
@@ -41,9 +42,9 @@ const UploadPersonalIdButtonRow = () => {
 
   return (
     <nav>
-      {errors['allFiles'] && (
+      {errors['allFiles']?.type === 'FILE' && (
         <Alert className="mb" variant="error">
-          {errors['allFiles']}
+          {errors['allFiles']?.message}
         </Alert>
       )}
       <div className="button-row button-row--center">

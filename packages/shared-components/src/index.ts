@@ -4,6 +4,7 @@ import preset from 'jss-preset-default';
 import type { FetchHeader, FetchOptions } from './api/util/http/http';
 import http from './api/util/http/http';
 import ButtonWithSpinner from './components/button/ButtonWithSpinner';
+import { FieldsetErrorMessage } from './components/error/FieldsetErrorMessage';
 import ErrorPage from './components/error/page/ErrorPage';
 import { FormContainer } from './components/form/container/FormContainer';
 import { FormTitle } from './components/form/form-title/FormTitle';
@@ -42,6 +43,7 @@ export {
   ButtonWithSpinner,
   ConfirmationModal,
   ErrorPage,
+  FieldsetErrorMessage,
   FormBuilderOptions,
   FormContainer,
   FormTitle,

@@ -1,0 +1,148 @@
+{
+  "betydninger": {
+    "+218": [
+      {
+        "gyldigFra": "1900-01-01",
+        "gyldigTil": "9999-12-31",
+        "beskrivelser": {
+          "nb": {
+            "term": "Libya",
+            "tekst": "Libya"
+          }
+        }
+      }
+    ],
+    "+212": [
+      {
+        "gyldigFra": "1900-01-01",
+        "gyldigTil": "9999-12-31",
+        "beskrivelser": {
+          "nb": {
+            "term": "Marokko",
+            "tekst": "Marokko"
+          }
+        }
+      }
+    ],
+    "+213": [
+      {
+        "gyldigFra": "1900-01-01",
+        "gyldigTil": "9999-12-31",
+        "beskrivelser": {
+          "nb": {
+            "term": "Algerie",
+            "tekst": "Algerie"
+          }
+        }
+      }
+    ],
+    "+40": [
+      {
+        "gyldigFra": "1900-01-01",
+        "gyldigTil": "9999-12-31",
+        "beskrivelser": {
+          "nb": {
+            "term": "Romania",
+            "tekst": "Romania"
+          }
+        }
+      }
+    ],
+    "+41": [
+      {
+        "gyldigFra": "1900-01-01",
+        "gyldigTil": "9999-12-31",
+        "beskrivelser": {
+          "nb": {
+            "term": "Sveits",
+            "tekst": "Sveits"
+          }
+        }
+      }
+    ],
+    "+43": [
+      {
+        "gyldigFra": "1900-01-01",
+        "gyldigTil": "9999-12-31",
+        "beskrivelser": {
+          "nb": {
+            "term": "Østerrike",
+            "tekst": "Østerrike"
+          }
+        }
+      }
+    ],
+    "+44": [
+      {
+        "gyldigFra": "1900-01-01",
+        "gyldigTil": "9999-12-31",
+        "beskrivelser": {
+          "nb": {
+            "term": "Storbritannia (UK)",
+            "tekst": "Storbritannia (UK)"
+          }
+        }
+      }
+    ],
+    "+45": [
+      {
+        "gyldigFra": "1900-01-01",
+        "gyldigTil": "9999-12-31",
+        "beskrivelser": {
+          "nb": {
+            "term": "Danmark",
+            "tekst": "Danmark"
+          }
+        }
+      }
+    ],
+    "+46": [
+      {
+        "gyldigFra": "1900-01-01",
+        "gyldigTil": "9999-12-31",
+        "beskrivelser": {
+          "nb": {
+            "term": "Sverige",
+            "tekst": "Sverige"
+          }
+        }
+      }
+    ],
+    "+47": [
+      {
+        "gyldigFra": "1900-01-01",
+        "gyldigTil": "9999-12-31",
+        "beskrivelser": {
+          "nb": {
+            "term": "Norge",
+            "tekst": "Norge"
+          }
+        }
+      }
+    ],
+    "+48": [
+      {
+        "gyldigFra": "1900-01-01",
+        "gyldigTil": "9999-12-31",
+        "beskrivelser": {
+          "nb": {
+            "term": "Polen",
+            "tekst": "Polen"
+          }
+        }
+      }
+    ],
+    "+49": [
+      {
+        "gyldigFra": "1900-01-01",
+        "gyldigTil": "9999-12-31",
+        "beskrivelser": {
+          "nb": {
+            "term": "Tyskland",
+            "tekst": "Tyskland"
+          }
+        }
+      }
+    ]
+  }
+}

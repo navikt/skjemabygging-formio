@@ -72,7 +72,7 @@ describe('FormSettingsPage', () => {
       cy.findByRole('checkbox', { name: 'Bruk standard introside' }).should('exist');
       cy.findByRole('checkbox', { name: 'Bruk standard introside' }).click();
 
-      ['introduction', 'prerequisites', 'dataTreatment', 'dataStorage', 'selfDeclaration'].forEach((value) => {
+      ['introduction', 'beAwareOf', 'dataTreatment', 'dataStorage', 'selfDeclaration'].forEach((value) => {
         cy.get(`input[type="checkbox"][value="${value}"]`).should('be.checked');
       });
 
@@ -130,7 +130,7 @@ describe('FormSettingsPage', () => {
         cy.findByRole('radio', { name: 'Før du søker' }).check();
         cy.contains('button', 'Legg til ingress').click();
         cy.findByRole('textbox', { name: 'Ingress' }).type(submitData.introPage.sections.prerequisites.description);
-        cy.contains('Legg til kulepunkt').click();
+        cy.contains('Legg til punktliste').click();
         cy.findByRole('textbox', { name: 'Kulepunkt' }).type(
           submitData.introPage.sections.prerequisites.bulletPoints[0],
         );
@@ -244,7 +244,7 @@ describe('FormSettingsPage', () => {
       cy.findByRole('checkbox', { name: 'Bruk standard introside' }).should('exist');
       cy.findByRole('checkbox', { name: 'Bruk standard introside' }).click();
 
-      ['introduction', 'prerequisites', 'dataTreatment', 'dataStorage', 'selfDeclaration'].forEach((value) => {
+      ['introduction', 'beAwareOf', 'dataTreatment', 'dataStorage', 'selfDeclaration'].forEach((value) => {
         cy.get(`input[type="checkbox"][value="${value}"]`).should('be.checked');
       });
 
@@ -260,7 +260,7 @@ describe('FormSettingsPage', () => {
         cy.findByRole('radio', { name: 'Før du søker' }).check();
         cy.contains('button', 'Legg til ingress').click();
         cy.findByRole('textbox', { name: 'Ingress' }).type(submitData.introPage.sections.prerequisites.description);
-        cy.contains('Legg til kulepunkt').click();
+        cy.contains('Legg til punktliste').click();
         cy.findByRole('textbox', { name: 'Kulepunkt' }).type(
           submitData.introPage.sections.prerequisites.bulletPoints[0],
         );
@@ -436,8 +436,10 @@ describe('FormSettingsPage', () => {
       checkAllOptionalFields();
 
       cy.get('[data-testid="prerequisites"]').within(() => {
-        cy.contains('Legg til kulepunkt').click();
-        cy.findByRole('textbox', { name: 'Kulepunkt' }).type(submitData.introPage.sections.outOfScope.bulletPoints[0]);
+        cy.contains('Legg til punktliste').click();
+        cy.findByRole('textbox', { name: 'Kulepunkt' }).type(
+          submitData.introPage.sections.prerequisites.bulletPoints[0],
+        );
       });
 
       cy.get('[data-testid="scope"]').within(() => {
@@ -493,7 +495,7 @@ describe('FormSettingsPage', () => {
         });
 
       cy.get('[data-testid="prerequisites"]').within(() => {
-        cy.contains('Vennligst legg til minst to kulepunkter').should('not.exist');
+        cy.contains('Vennligst legg til minst to kulepunkter').should('exist');
       });
 
       cy.get('[data-testid="dataDisclosure"]').within(() => {

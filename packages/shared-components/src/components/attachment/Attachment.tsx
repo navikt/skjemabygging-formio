@@ -12,7 +12,7 @@ import SingleSelect from '../single-select/SingleSelect';
 interface Props {
   title: ReactNode;
   description: ReactNode;
-  error: ReactNode;
+  error?: ReactNode;
   value?: any;
   attachmentValues?: AttachmentSettingValues | ComponentValue[];
   onChange: (value: SubmissionAttachmentValue) => void;
@@ -26,31 +26,7 @@ const Attachment = forwardRef<HTMLFieldSetElement, Props>(
     const showDeadline = !!attachmentValues?.[value?.key]?.showDeadline;
 
     const additionalDocumentationMaxLength = 200;
-
-    const getValues = (): ComponentValue[] => {
-      if (attachmentValues) {
-        if (Array.isArray(attachmentValues)) {
-          return attachmentValues;
-        } else if (typeof attachmentValues === 'object') {
-          // map over attachmentSettingKeys to ensure a fixed order
-          return attachmentUtils.attachmentSettingKeys
-            .map((key) => {
-              const values = attachmentValues[key];
-              if (!values?.enabled) {
-                return undefined;
-              } else {
-                return {
-                  value: key,
-                  label: translate(TEXTS.statiske.attachment[key]),
-                };
-              }
-            })
-            .filter((values) => !!values) as ComponentValue[];
-        }
-      }
-
-      return [];
-    };
+    const values = attachmentUtils.mapKeysToOptions(attachmentValues, translate);
 
     const handleAttachmentChange = (key: string) => {
       onChange({
@@ -75,7 +51,7 @@ const Attachment = forwardRef<HTMLFieldSetElement, Props>(
     return (
       <div>
         <SingleSelect
-          values={getValues()}
+          values={values}
           value={value?.key ?? ''}
           title={title}
           description={description}
