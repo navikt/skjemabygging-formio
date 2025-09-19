@@ -1,5 +1,6 @@
 import { TFunction } from 'i18next';
-import { Component, NavFormType } from '../form';
+import { UploadedFile } from '../file';
+import { AttachmentType, Component, ComponentValue, NavFormType } from '../form';
 import TEXTS from '../texts';
 
 type AttachmentOption = {
@@ -41,6 +42,16 @@ interface SubmissionAttachmentValue {
   additionalDocumentation?: string;
 }
 
+// new interface for storing attachments in submission outside of data
+interface SubmissionAttachment {
+  attachmentId: string;
+  navId: string;
+  type: AttachmentType | 'id';
+  value?: keyof AttachmentSettingValues;
+  description?: string;
+  files?: UploadedFile[];
+}
+
 // Used in summary/PDF
 interface AttachmentValue {
   description: string;
@@ -57,6 +68,36 @@ interface LimitedFormAttachment {
   additionalDocumentationDescription?: string | null;
   deadlineWarning?: string | null;
 }
+
+const shouldEnableUpload = (value: string) => value === 'leggerVedNaa';
+
+const mapKeysToOptions = (
+  attachmentValues: AttachmentSettingValues | ComponentValue[] | undefined,
+  translate: (text: string, params?: any) => string,
+): ComponentValue[] => {
+  if (attachmentValues) {
+    if (Array.isArray(attachmentValues)) {
+      return attachmentValues;
+    } else if (typeof attachmentValues === 'object') {
+      // map over attachmentSettingKeys to ensure a fixed order
+      return attachmentSettingKeys
+        .map((key) => {
+          const values = attachmentValues[key];
+          if (!values?.enabled) {
+            return undefined;
+          } else {
+            return {
+              value: key,
+              label: translate(TEXTS.statiske.attachment[key]),
+              upload: shouldEnableUpload(key),
+            };
+          }
+        })
+        .filter((values) => !!values) as ComponentValue[];
+    }
+  }
+  return [];
+};
 
 const mapToAttachmentSummary = ({
   translate,
@@ -88,6 +129,7 @@ const mapToAttachmentSummary = ({
 const attachmentUtils = {
   attachmentSettingKeys,
   mapToAttachmentSummary,
+  mapKeysToOptions,
 };
 
 export default attachmentUtils;
@@ -97,5 +139,6 @@ export type {
   AttachmentSettingValues,
   AttachmentValue,
   LimitedFormAttachment,
+  SubmissionAttachment,
   SubmissionAttachmentValue,
 };

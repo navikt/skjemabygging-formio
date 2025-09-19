@@ -191,6 +191,7 @@ export const FillInFormPage = () => {
           paths={formNavigationPaths}
           onCancel={onCancel}
           navigateTo={navigateTo}
+          finalStep={submissionMethod === 'digitalnologin' ? 'vedlegg' : 'oppsummering'}
         />
       </div>
       <ConfirmationModal
