@@ -62,22 +62,19 @@ const keyToArray = (key: string): { key: string; index: number } | undefined => 
  * @param submission
  */
 const noChildValues = (parentSubmissionPath: string, components?: Component[], submission?: Submission) => {
-  if (!submission || !components) {
+  if (!submission || !components || !Array.isArray(components) || components.length === 0) {
     return true;
   }
 
-  return (
-    Array.isArray(components) &&
-    components.every((component) => {
-      const submissionPath = formComponentUtils.getComponentSubmissionPath(component, parentSubmissionPath);
-      return getSubmissionValue(submissionPath, submission) === undefined;
-    })
-  );
+  return components.every((component) => {
+    const submissionPath = formComponentUtils.getComponentSubmissionPath(component, parentSubmissionPath);
+    return getSubmissionValue(submissionPath, submission) === undefined;
+  });
 };
 
 const noChildValuesForDataGrid = (parentSubmissionPath: string, components: Component[], submission?: Submission) => {
   const dataGridValues = formComponentUtils.getSubmissionValue(parentSubmissionPath, submission);
-  if (!submission || !components || !dataGridValues) {
+  if (!submission || !components || !dataGridValues || !Array.isArray(dataGridValues) || dataGridValues.length === 0) {
     return true;
   }
 
