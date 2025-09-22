@@ -25,12 +25,10 @@ const FyllUtRouter = ({ form }: Props) => {
     <FormProvider form={form}>
       <SendInnProvider>
         <Routes>
-          <Route element={<FormLayout stepper={true} />}>
+          <Route element={<FormLayout />}>
             <Route path={'/oppsummering'} element={<SummaryPage />} />
             {submissionMethod === 'digitalnologin' && <Route path={'/vedlegg'} element={<AttachmentsUploadPage />} />}
             <Route path={'/:panelSlug'} element={<FillInFormPage />} />
-          </Route>
-          <Route element={<FormLayout />}>
             <Route path={''} element={<IntroPage />} />
             <Route path={'/legitimasjon'} element={<UploadPersonalIdPage />} />
             <Route path={'/paabegynt'} element={<ActiveTasksPage />} />
