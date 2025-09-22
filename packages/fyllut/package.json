@@ -31,7 +31,7 @@
   "devDependencies": {
     "@mocks-server/cypress-commands": "^6.1.1",
     "@testing-library/react": "^16.3.0",
-    "cypress-axe": "^1.6.0",
+    "cypress-axe": "^1.7.0",
     "cypress-wait-until": "^3.0.2",
     "lodash.template": "^4.5.0",
     "moment": "^2.30.1",
