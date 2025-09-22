@@ -37,13 +37,13 @@ describe('React components', () => {
         cy.clickNextStep();
 
         cy.findByRole('heading', { name: 'Vedlegg' }).should('exist');
-        cy.findByRole('group', { name: 'Annen dokumentasjon' })
+        cy.findByLabelText('Annen dokumentasjon')
           .should('exist')
           .within(() => {
             cy.findByLabelText('Ja, jeg legger det ved denne søknaden.').should('exist').check({ force: true });
             cy.findByLabelText('Ja, jeg legger det ved denne søknaden.').should('be.checked');
           });
-        cy.findByRole('group', { name: 'Bekreftelse på skoleplass' })
+        cy.findByLabelText('Bekreftelse på skoleplass')
           .should('exist')
           .within(() => {
             cy.findByLabelText('Jeg har levert denne dokumentasjonen tidligere').should('exist').check({ force: true });
@@ -162,7 +162,7 @@ describe('React components', () => {
         cy.get('.formio-component-valutavelger').contains('Australske dollar (AUD)');
         cy.get('.formio-component-velgInstrument').contains('Gitar');
         cy.findByRole('textbox', { name: 'Gyldig fra dato' }).should('have.value', '01.01.2023');
-        cy.findByRole('group', { name: 'Velg frukt' })
+        cy.findByLabelText('Velg frukt')
           .should('exist')
           .within(() => {
             cy.findByRole('radio', { name: 'Fersken' }).should('be.checked');
