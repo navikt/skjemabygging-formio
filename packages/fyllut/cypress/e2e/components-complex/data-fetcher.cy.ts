@@ -180,12 +180,12 @@ describe('Data fetcher', () => {
       cy.get('[data-cy=error-summary]').should('not.exist');
 
       cy.findByRole('heading', { name: 'Vedlegg' }).should('exist');
-      cy.findByRole('group', { name: 'Faktura fra SFO' })
+      cy.findByLabelText('Faktura fra SFO')
         .should('exist')
         .within(() => {
           cy.findByRole('radio', { name: TEXTS.statiske.attachment.leggerVedNaa }).should('exist').check();
         });
-      cy.findByRole('group', { name: 'Annen dokumentasjon' })
+      cy.findByLabelText('Annen dokumentasjon')
         .should('exist')
         .within(() => {
           cy.findByRole('radio', { name: TEXTS.statiske.attachment.nei }).should('exist').check();

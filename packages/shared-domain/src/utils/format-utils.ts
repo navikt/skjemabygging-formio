@@ -51,3 +51,10 @@ export function formatNationalIdentityNumber(value: string): string {
 export function formatOrganizationNumber(value: string): string {
   return value.replace(orgNrRegex, '$1 $2 $3');
 }
+
+export function formatPhoneNumber(value: string, areaCode: string): string {
+  if (areaCode && areaCode === '+47' && value.length === 8) {
+    return value.replace(/(\d{2})(\d{2})(\d{2})(\d{2})/, '$1 $2 $3 $4');
+  }
+  return value;
+}

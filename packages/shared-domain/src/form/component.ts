@@ -58,6 +58,7 @@ export interface Component {
   attachmentValues?: AttachmentSettingValues;
   accordionValues?: AccordionSettingValues;
   attachmentType?: AttachmentType;
+  showAreaCode?: boolean;
   hideLabel?: boolean;
   description?: string;
   suffix?: string;

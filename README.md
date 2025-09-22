@@ -1,10 +1,10 @@
-# Monorepo for bygger og fyllut
+# 🛠️ Monorepo for bygger og fyllut
 
 Byggeren lar deg bygge form.io-skjemaer. Publisering av skjema vil bli en ny commit i
 [skjemautfylling-formio repoet](https://github.com/navikt/skjemautfylling-formio),
 og disse dataene vil så deployes sammen med fyllut.
 
-# Utvikling
+## 🚀 Utvikling
 
 ## Installere pakker lokalt
 
@@ -20,28 +20,28 @@ Token trenger kun `read:packages`. Husk å enable SSO for navikt-orgen!
 
 _(Les mer om bruk av Github npm registry i Nav her: https://github.com/navikt/frontend#github-npm-registry)_
 
-## Kommandoer
+## 📦 Kommandoer
 
-| Kommando            | Beskrivelse                                                                  |
-| ------------------- | ---------------------------------------------------------------------------- |
-| yarn install        | laster ned avhengigheter                                                     |
-| yarn start          | starter både bygger og fyllut, inkludert backend                             |
-| yarn start:bygger   | starter bygger, inkludert backend                                            |
-| yarn start:fyllut   | starter fyllut, inkludert backend                                            |
-| yarn build          | bygger react-applikasjonene, ikke nødvendig for lokal utvikling (bruk start) |
-| yarn preview:bygger | starter bygger fra dist-mappen                                               |
-| yarn preview:fyllut | starter fyllut fra dist-mappen                                               |
-| yarn test           | kjører alle tester                                                           |
-| yarn test:coverage  | kjører alle tester med rapportering av dekningsgrad                          |
-| yarn cypress:bygger | kjører Cypress-tester for bygger                                             |
-| yarn cypress:fyllut | kjører Cypress-tester for fyllut                                             |
-| yarn mocks:fyllut   | starter Mocks Server for fyllut, brukes ved kjøring av Cypress-tester        |
-| yarn check-types    | sjekker at typene er korrekte                                                |
-| yarn clean          | sletter node_modules / dist / build / coverage for alle pakker i monorepoet  |
-| yarn lint           | se etter problemer i koden                                                   |
-| yarn get-tokens     | henter tokens som brukes mot eksterne api'er ved kjøring lokalt              |
+| **Kommando**          | **Beskrivelse**                                                     |
+| --------------------- | ------------------------------------------------------------------- |
+| `yarn install`        | Installerer alle avhengigheter                                      |
+| `yarn start`          | Starter både Bygger og Fyllut, inkludert backend                    |
+| `yarn start:bygger`   | Starter kun Bygger med backend                                      |
+| `yarn start:fyllut`   | Starter kun Fyllut med backend                                      |
+| `yarn build`          | Bygger React-appene (ikke nødvendig for lokal utvikling)            |
+| `yarn preview:bygger` | Starter Bygger fra bygd kode (`dist`-mappen)                        |
+| `yarn preview:fyllut` | Starter Fyllut fra bygd kode (`dist`-mappen)                        |
+| `yarn test`           | Kjører alle tester                                                  |
+| `yarn test:coverage`  | Tester med rapportering av dekningsgrad                             |
+| `yarn cypress:bygger` | Kjører Cypress-tester for Bygger                                    |
+| `yarn cypress:fyllut` | Kjører Cypress-tester for Fyllut                                    |
+| `yarn mocks:fyllut`   | Starter Mocks Server for Fyllut (brukes ved Cypress-testing)        |
+| `yarn check-types`    | Sjekker TypeScript-typer                                            |
+| `yarn clean`          | Sletter `node_modules`, `dist`, `build`, `coverage` for alle pakker |
+| `yarn lint`           | Sjekker kodekvalitet                                                |
+| `yarn get-tokens`     | Henter tokens for eksterne API-er ved lokal kjøring                 |
 
-## Lokal konfigurasjon med dotenv
+## ⚙️ Lokal konfigurasjon med dotenv
 
 Vi bruker hovedsaklig [dotenv](https://www.npmjs.com/package/dotenv) for å konfigurere applikasjonene ved kjøring
 lokalt, og det er to steder det kan være interessant å opprette .env-filer:
@@ -51,7 +51,7 @@ lokalt, og det er to steder det kan være interessant å opprette .env-filer:
 | <nobr>`packages/bygger-backend/.env`</nobr> | Byggeren kan startes lokalt uten å sette noen miljøvariabler, men i .env-filen kan man overstyre ulike miljøvariablerf.eks. hvis man ønsker å kjøre mot lokal Fyllut (`FYLLUT_BASE_URL`), egen Pusher-instans eller man vil endre loglevel. |
 | <nobr>`packages/fyllut-backend/.env`</nobr> | FyllUt kan startes lokalt uten å sette noen miljøvariabler, men for at alle funksjoner skal fungere så må man leggeinn konfigurasjon i denne filen.                                                                                         |
 
-### Frontend logger
+### 📝 Frontend logger
 
 Både bygger og fyllut har støtte for å logge feil som skjer i frontend. Begge backends har et endepunkt
 `/api/log/(info|error)` som tar feilmeldinger fra frontend og logger de.
@@ -62,7 +62,7 @@ nyttig under debugging lokalt. Dette gjøres ved sette `{"browserOnly":true}` i 
     FYLLUT_FRONTEND_LOGCONFIG={"enabled":true,"logLevel":"trace","browserOnly":true}
     BYGGER_FRONTEND_LOGCONFIG={"enabled":true,"logLevel":"debug","browserOnly":true}
 
-### Kjøre Fyllut lokalt med integrasjon mot innsending-api
+### 🧪 Kjøre Fyllut lokalt med integrasjon mot innsending-api
 
 For å teste digital innsending lokalt er det enklest å bruke `yarn get-tokens fyllut` for å hente nødvendige access
 tokens for kommunikasjon med eksterne tjenester i dev-gcp.
@@ -73,7 +73,7 @@ Legg til url til den lokale instansen av innsending-api i miljøvariabelen `SEND
 
     SEND_INN_HOST=http://127.0.0.1:9064
 
-### Kjøre Bygger lokalt med integrasjon mot forms-api
+### 🧩 Kjøre Bygger lokalt med integrasjon mot forms-api
 
 [Forms API](https://github.com/navikt/forms-api) er vårt API som tilbyr vedlikehold av skjemadefinisjoner og
 oversettelser.
@@ -90,7 +90,7 @@ Sett miljøvariabelen `FORMS_API_URL` i byggeren sin `.env`-fil til riktig port 
 
     FORMS_API_URL=http://localhost:8082
 
-### Teste publisering av skjema på lokal maskin
+### 🧪 Teste publisering av skjema på lokal maskin
 
 Byggeren er konfigurert med default-verdier lokalt som sørger for at eventuelle publiseringer blir gjort mot en
 test-branch i repo'et [skjemaufylling-formio](https://github.com/navikt/skjemautfylling-formio). Hvilken branch som
@@ -119,7 +119,7 @@ Se [GitHub docs](https://docs.github.com/en/authentication/keeping-your-account-
 
 Velg `repo` under `scopes`, og _authorize_ dette token for organisasjon `navikt` etter opprettelsen (_Configure SSO_).
 
-### Feature toggles
+### 🚩 Feature toggles
 
 Vi forsøker å unngå bruk av feature toggles, men det er mulighet for i både fyllut og bygger å legge inn feature toggles
 ved hjelp av en miljøvariabel (`ENABLED_FEATURES`). Den må inneholde en kommaseparert liste med navn på features,
@@ -141,7 +141,7 @@ Eksempelet over ville ført til et featureToggles-objekt som ser slik ut:
       enableDiff: false
     }
 
-## Cypress-tester
+## 🧪 Cypress-tester
 
 ### Kjøre mot bygd kode
 
@@ -161,7 +161,7 @@ det ikke er den faktiske backenden som håndterer det under lokal utvikling, så
 koden som kjøres da vil de feile ved kjøring på denne måten, med mindre de kaller `cy.skipIfNoIncludeDistTests()` i
 starten av testen (da skippes de).
 
-## Fagsystemsonen
+## 🏢 Fagsystemsonen
 
 Vi kommuniserer med fagsystemsonen (fss) for å generere førsteside, og det skjer ved kall
 via [skjemabygging-proxy](https://github.com/navikt/skjemabygging-proxy) som kjører i fss.
@@ -174,9 +174,9 @@ til google cloud) og hente ut miljøvariabler fra podden, f.eks slik:
 
 `kubectl exec <pod-name> -- env`
 
-## Brukeradministrasjon
+## 👤 Brukeradministrasjon
 
-### Bygger
+### 🛠️ Bygger
 
 I byggeren logger vi inn med [Azure AD](https://doc.nais.io/security/auth/azure-ad/sidecar/). Lokalt må man
 kjøre `yarn get-tokens` for å hente et token (trygdeetaten-bruker) som skriptet legger inn i `.env`-filen til
@@ -193,12 +193,12 @@ En oversikt over gruppenes id'er vil dessuten ligge i nais-config for bygger så
 - [prod.yaml](https://github.com/navikt/skjemabygging-formio/blob/master/.nais/bygger/prod.yaml)
 - [preprod.yaml](https://github.com/navikt/skjemabygging-formio/blob/master/.nais/bygger/preprod.yaml)
 
-### Fyllut
+### 📝 Fyllut
 
 Fyllut støtter uinnlogget utfylling av skjemaer, men har også mulighet for innlogging med
 [ID-porten](https://doc.nais.io/security/auth/idporten/sidecar/) for å kunne benytte digital innsending.
 
-## Docker
+## 🐳 Docker
 
 Dersom man trenger å teste produksjonsbygg av applikasjonene lokalt kan man bygge docker image lokalt, men først må man
 bygge applikasjonen.
@@ -219,7 +219,7 @@ Docker-image bygges og startes lokalt på følgende måte:
        -e NAIS_CLUSTER_NAME=dev-gcp \
        -p 8080:8080 fyllut-base
 
-## Pusher.com
+## 📢 Pusher.com
 
 Pusher brukes til å varsle innloggede brukere i byggeren når det har blitt deployet en ny versjon av FyllUt,
 f.eks. når en skjemadefinisjon har blitt publisert.
@@ -230,14 +230,14 @@ logge på ligger i Google Secret Manager (secret `team-pwd` -> `pusher_password`
 Inne på kontoen kan man finne verdiene til de ulike pusher-miljøvariablene. Hvis man ønsker å teste pusher lokalt
 kan man enten opprette sin egen Pusher-applikasjon, eller man kan bruke verdiene for `skjemabyggeren-dev`-kanalen.
 
-# Henvendelser
+# ❓ Henvendelser
 
 Spørsmål knyttet til koden eller prosjektet kan stilles som issues her på GitHub.
 
-## For Nav-ansatte
+## 👥 For Nav-ansatte
 
 Interne henvendelser kan sendes via Slack i kanalen #team-fyllut-sendinn
 
-## Kode generert av GitHub Copilot
+## 🤖 Kode generert av GitHub Copilot
 
 Dette repoet bruker GitHub Copilot til å generere kode.

@@ -15,6 +15,7 @@ import FormSkeleton from '../skeleton/FormSkeleton';
 import { EnableIntroPageSwitch } from './components/EnableIntroPageSwitch';
 import { FormIntroPageSidebar } from './components/FormIntroPageSidebar';
 import { AutomaticProcessing } from './sections/AutomaticProcessing';
+import { BeAwareOf } from './sections/BeAwareOf';
 import { DataDisclosure } from './sections/DataDisclosure';
 import { DataStorage } from './sections/DataStorage';
 import { DataTreatment } from './sections/DataTreatment';
@@ -145,6 +146,7 @@ export default function FormIntroPage({ form }: { form: Form }) {
           errors={errors}
           refMap={refMap}
         />
+        <BeAwareOf submissionMethod={submissionMethod} />
         {dataDisclosure && <DataDisclosure form={form} handleChange={changeForm} refMap={refMap} errors={errors} />}
         <DataTreatment form={form} handleChange={changeForm} errors={errors} refMap={refMap} />
         <DataStorage submissionMethod={submissionMethod} />
