@@ -213,7 +213,8 @@ describe('Data fetcher', () => {
       it('shows selected activity label', () => {
         cy.findByRole('heading', { name: 'Velg aktivitet' })
           .should('exist')
-          .closest('div')
+          .parent()
+          .parent()
           .within(() => {
             cy.findAllByRole('listitem').should('have.length', 1).first().should('contain.text', 'Aktivitet 1');
           });
@@ -233,7 +234,8 @@ describe('Data fetcher', () => {
 
         cy.findByRole('heading', { name: 'Velg aktivitet' })
           .should('exist')
-          .closest('div')
+          .parent()
+          .parent()
           .within(() => {
             cy.findAllByRole('listitem')
               .should('have.length', 2)

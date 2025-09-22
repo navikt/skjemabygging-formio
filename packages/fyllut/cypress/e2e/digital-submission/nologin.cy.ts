@@ -43,7 +43,7 @@ describe('Digital submission without user login', () => {
     cy.findByRole('group', { name: 'Høyeste fullførte utdanning' }).within(() => cy.findByLabelText('Annet').check());
     cy.clickNextStep();
 
-    cy.findByRole('group', { name: 'Annen dokumentasjon' }).within(() =>
+    cy.findByLabelText('Annen dokumentasjon').within(() =>
       cy.findByLabelText('Jeg legger det ved dette skjemaet').check(),
     );
     cy.findByLabelText('Gi vedlegget et beskrivende navn').type('Vitnemål');
