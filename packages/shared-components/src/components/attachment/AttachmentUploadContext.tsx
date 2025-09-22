@@ -64,6 +64,7 @@ const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boole
       }
       return {
         ...current,
+        data: { ...current?.data },
         attachments: (current?.attachments ?? []).map((att) => {
           if (att.attachmentId === file.attachmentId) {
             return { ...att, files: [...(att.files ?? []), file] };
