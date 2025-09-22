@@ -46,7 +46,6 @@ export const FormProvider = ({ children, form }: FormProviderProps) => {
     (components: Component[]): Component[] => {
       return components
         .map((component) => {
-          // TODO: include row and instance?
           if (!UtilsOverrides.checkCondition(component, undefined, submission?.data, form, undefined, submission)) {
             return;
           }
