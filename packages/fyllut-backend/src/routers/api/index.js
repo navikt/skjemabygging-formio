@@ -25,6 +25,7 @@ import registerDataRouter from './register-data/register-data';
 import sendInnSoknad from './send-inn-soknad';
 import sendInnUtfyltSoknad from './send-inn-utfylt-soknad';
 import activities from './send-inn/activities/send-inn-activities';
+import nologin from './send-inn/nologin';
 import prefillData from './send-inn/prefill-data/send-inn-prefill-data';
 import status from './status';
 import translations from './translations.js';
@@ -35,6 +36,7 @@ const { featureToggles, naisClusterName } = appConfig;
 const {
   azureM2MSkjemabyggingProxy,
   azureM2MPdl,
+  azureM2MSendInn,
   kodeverkToken,
   tokenxPdl,
   tokenxSendInn,
@@ -72,8 +74,16 @@ apiRouter.use('/register-data', registerDataRouter);
 
 // Not available in production yet
 if (naisClusterName !== NaisCluster.PROD) {
-  const rateLimitHandler = rateLimiter(60000, config.isTest ? 1000 : 40);
+  const rateLimitHandler = rateLimiter(60000, appConfig.isTest ? 1000 : 40);
   apiRouter.use('/nologin-file', rateLimitHandler, nologinTokenHandler, nologinFileRouter);
+  apiRouter.post(
+    '/send-inn/nologin-soknad',
+    rateLimitHandler,
+    nologinTokenHandler,
+    azureM2MSendInn,
+    azurePdfGeneratorToken,
+    nologin.post,
+  );
 }
 
 if (featureToggles.enablePdl) {

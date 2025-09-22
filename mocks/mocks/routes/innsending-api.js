@@ -525,4 +525,40 @@ module.exports = [
       },
     ],
   },
+  {
+    id: 'post-nologin-soknad',
+    url: '/send-inn/v1/nologin-soknad',
+    method: 'POST',
+    variants: [
+      {
+        id: 'success',
+        type: 'middleware',
+        options: {
+          middleware(req, res) {
+            const { body } = req;
+            res.status(200);
+            res.contentType('application/json; charset=UTF-8');
+            res.send({
+              innsendingsId: body.innsendingsId,
+              label: body.tittel,
+              status: 'Innsendt',
+              mottattdato: '2023-10-10T10:02:00.328667+02:00',
+              hoveddokumentRef: null,
+              innsendteVedlegg: body.vedleggsListe
+                .filter((v) => v.opplastingsStatus === 'LastetOpp')
+                .map((v) => ({ vedleggsnr: v.vedleggsnr, tittel: v.tittel })),
+              skalEttersendes: body.vedleggsListe
+                .filter((v) => v.opplastingsStatus === 'SendSenere')
+                .map((v) => ({ vedleggsnr: v.vedleggsnr, tittel: v.tittel })),
+              skalSendesAvAndre: [],
+              levertTidligere: [],
+              sendesIkkeInn: [],
+              navKanInnhente: [],
+              ettersendingsfrist: null,
+            });
+          },
+        },
+      },
+    ],
+  },
 ];

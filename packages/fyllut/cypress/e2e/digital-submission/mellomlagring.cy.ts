@@ -69,7 +69,7 @@ describe('Mellomlagring', () => {
       cy.clickNextStep();
       cy.get('@createMellomlagringSpy').should('not.have.been.called');
       cy.clickNextStep();
-      cy.findByRole('group', { name: 'Annen dokumentasjon' }).within(() => {
+      cy.findByLabelText('Annen dokumentasjon').within(() => {
         cy.findByLabelText('Ja, jeg legger det ved denne søknaden.').check({ force: true });
       });
       cy.findByRole('group', { name: 'Oppmøtebekreftelse' }).within(() => {
