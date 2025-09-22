@@ -16,7 +16,7 @@ const AttachmentsUploadButtonRow = ({ attachments, onError }: { attachments: Att
   const { translate } = useLanguages();
   const [searchParams] = useSearchParams();
   const { formUrl } = useForm();
-  const { addError, submissionAttachments, handleDeleteAllFiles } = useAttachmentUpload();
+  const { addError, removeAllErrors, submissionAttachments, handleDeleteAllFiles } = useAttachmentUpload();
 
   const summaryPageUrl = `${formUrl}/oppsummering?${searchParams.toString()}`;
   const exitUrl = urlUtils.getExitUrl(window.location.href);
@@ -24,6 +24,7 @@ const AttachmentsUploadButtonRow = ({ attachments, onError }: { attachments: Att
 
   const nextPage = (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
+    removeAllErrors();
     const errors = validateAttachment(attachments, submissionAttachments, validator);
     console.log('Attachments:', attachments);
     console.log('SubmissionAtt:', submissionAttachments);

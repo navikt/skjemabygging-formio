@@ -24,9 +24,8 @@ const attachmentValidator = (
     if (valueError) {
       return translate(valueError, { field: translate(label) });
     }
-    console.log('Validate att', attachment);
     if (validateOtherDocumentationTitle(attachment)) {
-      return translate('required', { label: translate(TEXTS.statiske.attachment.descriptionLabel) });
+      return translate('required', { field: translate(TEXTS.statiske.attachment.descriptionLabel) });
     }
 
     return undefined;

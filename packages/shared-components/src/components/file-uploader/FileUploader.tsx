@@ -37,7 +37,7 @@ const useStyles = makeStyles({
 interface Props {
   initialAttachment: SubmissionAttachment;
   attachmentValue?: keyof AttachmentSettingValues;
-  requireDescription?: boolean;
+  requireAttachmentTitle?: boolean;
   multiple?: boolean;
   refs?: MutableRefObject<Record<string, HTMLInputElement | HTMLFieldSetElement | null>>;
   accept?: string;
@@ -48,7 +48,7 @@ interface Props {
 const FileUploader = ({
   initialAttachment,
   attachmentValue,
-  requireDescription,
+  requireAttachmentTitle,
   multiple,
   refs,
   accept = FILE_ACCEPT,
@@ -68,7 +68,7 @@ const FileUploader = ({
   } = useAttachmentUpload();
   const { attachmentId } = initialAttachment;
   const attachment = submissionAttachments.find((attachment) => attachment.attachmentId === attachmentId);
-  const [description, setDescription] = useState(attachment?.description ?? '');
+  const attachmentTitle = attachment?.additionalDocumentationTitle;
   const [loading, setLoading] = useState(false);
 
   const uploadedFiles = attachment?.files ?? [];
@@ -99,7 +99,7 @@ const FileUploader = ({
 
   return (
     <>
-      {!showButton && <Label>{description}</Label>}
+      {!showButton && <Label>{attachmentTitle}</Label>}
       <FileUpload translations={{ item: { uploading: translate(TEXTS.statiske.uploadFile.uploading) } }}>
         <VStack gap="4" as="ul">
           {uploadedFiles.map(({ fileId, fileName, size }) => (
@@ -127,11 +127,11 @@ const FileUploader = ({
       </FileUpload>
       {showButton && (
         <>
-          {requireDescription && (
+          {requireAttachmentTitle && (
             <TextField
               label={translate(TEXTS.statiske.attachment.descriptionLabel)}
               maxLength={50}
-              value={description}
+              value={attachmentTitle}
               error={descriptionErrorMessage}
               ref={(ref) => {
                 if (refs?.current) {
@@ -139,12 +139,13 @@ const FileUploader = ({
                 }
               }}
               onChange={(e) => {
-                setDescription(e.target.value);
-                changeAttachmentValue(initialAttachment, attachmentValue, e.target.value);
+                changeAttachmentValue(initialAttachment, attachmentValue, {
+                  additionalDocumentationTitle: e.target.value,
+                });
               }}
             />
           )}
-          {!requireDescription || !!description.trim() ? (
+          {!requireAttachmentTitle || !!attachmentTitle?.trim() ? (
             <FileUpload.Trigger onSelect={onSelect} accept={accept} maxSizeInBytes={maxFileSizeInBytes}>
               <Button
                 variant={initialUpload ? 'primary' : 'secondary'}

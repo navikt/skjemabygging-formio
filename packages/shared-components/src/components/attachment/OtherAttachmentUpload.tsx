@@ -105,7 +105,7 @@ const OtherAttachmentUpload = ({ label, attachmentValues, componentId, descripti
             <FileUploader
               key={attachment.attachmentId}
               initialAttachment={attachment}
-              requireDescription
+              requireAttachmentTitle
               attachmentValue={otherAttachment?.value}
               refs={refs}
             />

@@ -27,11 +27,12 @@ interface AttachmentUploadContextType {
   addError: (attachmentId: string, error: string, type: ErrorType) => void;
   setCaptchaValue: (value: Record<string, string>) => void;
   removeError: (attachmentId: string) => void;
+  removeAllErrors: () => void;
   submissionAttachments: SubmissionAttachment[];
   changeAttachmentValue: (
     attachment: SubmissionAttachment,
     value?: keyof AttachmentSettingValues,
-    description?: string,
+    additionalValues?: Pick<SubmissionAttachment, 'description' | 'additionalDocumentationTitle'>,
     validator?: { validate: (label: string, attachment: SubmissionAttachment) => string | undefined },
   ) => void;
   errors: Record<string, Array<{ message: string; type: ErrorType }>>;
@@ -46,6 +47,7 @@ const initialContext: AttachmentUploadContextType = {
   addError: () => {},
   setCaptchaValue: () => {},
   removeError: () => {},
+  removeAllErrors: () => {},
   submissionAttachments: [],
   changeAttachmentValue: () => {},
   errors: {},
@@ -136,6 +138,10 @@ const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boole
       const { [attachmentId]: _, ...rest } = prev; // Remove the error for the specific attachmentId
       return rest;
     });
+  };
+
+  const removeAllErrors = () => {
+    setErrors({});
   };
 
   const resolveCaptcha = async () => {
@@ -262,11 +268,11 @@ const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boole
   const changeAttachmentValue = (
     attachment: SubmissionAttachment,
     value?: keyof AttachmentSettingValues,
-    description?: string,
+    additionalValues?: Pick<SubmissionAttachment, 'description' | 'additionalDocumentationTitle'>,
     validator?: { validate: (label: string, attachment: SubmissionAttachment) => string | undefined },
   ) => {
     if (validator) {
-      const error = validator.validate('', { ...attachment, value, description });
+      const error = validator.validate('', { ...attachment, value, ...additionalValues });
       if (!error) {
         removeError(attachment.attachmentId);
       }
@@ -277,14 +283,20 @@ const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boole
       if (!currentAttachment) {
         return {
           ...current,
-          attachments: [...(current?.attachments ?? []), { ...attachment, value, description, files: [] }],
+          attachments: [...(current?.attachments ?? []), { ...attachment, value, ...additionalValues, files: [] }],
         } as Submission;
       }
       const updatedAttachments = current?.attachments?.map((att) => {
         if (att.attachmentId !== attachment.attachmentId) {
           return att;
         }
-        return { ...att, value: value ?? att.value, description: description ?? att.description };
+        return {
+          ...att,
+          value: value ?? att.value,
+          description: additionalValues?.description ?? att.description,
+          additionalDocumentationTitle:
+            additionalValues?.additionalDocumentationTitle ?? att.additionalDocumentationTitle,
+        };
       });
       return { ...current, attachments: updatedAttachments } as Submission;
     });
@@ -298,6 +310,7 @@ const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boole
     addError,
     setCaptchaValue,
     removeError,
+    removeAllErrors,
     changeAttachmentValue,
     submissionAttachments: submission?.attachments ?? [],
     errors,

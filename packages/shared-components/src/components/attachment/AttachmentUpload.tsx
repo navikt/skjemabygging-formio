@@ -51,14 +51,19 @@ const AttachmentUpload = ({
 
   const handleValueChange = (value: Partial<SubmissionAttachmentValue>, attachmentId: string = componentId) => {
     if (type === 'id') {
+      const description = options.find((option) => option.value === value.key)?.label;
       changeAttachmentValue(
         { attachmentId, navId: componentId, type },
         value.key,
-        options.find((option) => option.value === value.key)?.label,
+        description ? { description } : undefined,
         attachmentValidator(translate),
       );
     } else {
-      changeAttachmentValue({ attachmentId, navId: componentId, type }, value.key, value.additionalDocumentation);
+      changeAttachmentValue(
+        { attachmentId, navId: componentId, type },
+        value.key,
+        value.additionalDocumentation ? { additionalDocumentationTitle: value.additionalDocumentation } : undefined,
+      );
     }
   };
 
