@@ -51,18 +51,16 @@ const AttachmentUpload = ({
 
   const handleValueChange = (value: Partial<SubmissionAttachmentValue>, attachmentId: string = componentId) => {
     if (type === 'id') {
-      const description = options.find((option) => option.value === value.key)?.label;
+      const title = options.find((option) => option.value === value.key)?.label;
       changeAttachmentValue(
         { attachmentId, navId: componentId, type },
-        value.key,
-        description ? { description } : undefined,
+        { value: value.key, title },
         attachmentValidator(translate),
       );
     } else {
       changeAttachmentValue(
         { attachmentId, navId: componentId, type },
-        value.key,
-        value.additionalDocumentation ? { additionalDocumentationTitle: value.additionalDocumentation } : undefined,
+        { value: value.key, additionalDocumentation: value.additionalDocumentation },
       );
     }
   };
@@ -86,7 +84,7 @@ const AttachmentUpload = ({
             error={attachmentError?.message}
             value={
               attachment?.value
-                ? { key: attachment.value, additionalDocumentation: attachment?.description }
+                ? { key: attachment.value, additionalDocumentation: attachment?.additionalDocumentation }
                 : undefined
             }
             attachmentValues={attachmentValues}

@@ -14,7 +14,7 @@ const validateValue = (attachment?: SubmissionAttachment) => {
 };
 
 const validateOtherDocumentationTitle = (attachment?: SubmissionAttachment) =>
-  attachment?.type === 'other' && attachment.value === 'leggerVedNaa' && !attachment?.additionalDocumentationTitle;
+  attachment?.type === 'other' && attachment.value === 'leggerVedNaa' && !attachment?.title;
 
 const attachmentValidator = (
   translate: (text: string, params?: Record<string, string>) => string,

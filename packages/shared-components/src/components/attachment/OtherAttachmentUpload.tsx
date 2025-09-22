@@ -46,7 +46,7 @@ const OtherAttachmentUpload = ({ label, attachmentValues, componentId, descripti
   const attachmentError = errors[componentId]?.find((error) => error.type === 'INPUT');
 
   const handleValueChange = (value: Partial<SubmissionAttachmentValue>, attachmentId: string = componentId) => {
-    changeAttachmentValue({ attachmentId, ...defaultAttachmentValues }, value.key);
+    changeAttachmentValue({ attachmentId, ...defaultAttachmentValues }, { value: value.key });
   };
 
   const handleDeleteAllAttachments = async (attachmentId: string) => {

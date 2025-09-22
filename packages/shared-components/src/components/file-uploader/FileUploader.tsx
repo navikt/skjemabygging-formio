@@ -68,7 +68,7 @@ const FileUploader = ({
   } = useAttachmentUpload();
   const { attachmentId } = initialAttachment;
   const attachment = submissionAttachments.find((attachment) => attachment.attachmentId === attachmentId);
-  const attachmentTitle = attachment?.additionalDocumentationTitle;
+  const attachmentTitle = attachment?.title;
   const [loading, setLoading] = useState(false);
 
   const uploadedFiles = attachment?.files ?? [];
@@ -139,8 +139,9 @@ const FileUploader = ({
                 }
               }}
               onChange={(e) => {
-                changeAttachmentValue(initialAttachment, attachmentValue, {
-                  additionalDocumentationTitle: e.target.value,
+                changeAttachmentValue(initialAttachment, {
+                  value: attachmentValue,
+                  title: e.target.value,
                 });
               }}
             />

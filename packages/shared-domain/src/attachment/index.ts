@@ -48,8 +48,8 @@ interface SubmissionAttachment {
   navId: string;
   type: AttachmentType | 'id';
   value?: keyof AttachmentSettingValues;
-  description?: string;
-  additionalDocumentationTitle?: string;
+  title?: string;
+  additionalDocumentation?: string;
   files?: UploadedFile[];
 }
 

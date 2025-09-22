@@ -1,11 +1,5 @@
 import { FileItem, FileObject } from '@navikt/ds-react';
-import {
-  AttachmentSettingValues,
-  Submission,
-  SubmissionAttachment,
-  TEXTS,
-  UploadedFile,
-} from '@navikt/skjemadigitalisering-shared-domain';
+import { Submission, SubmissionAttachment, TEXTS, UploadedFile } from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, useContext, useState } from 'react';
 import { submitCaptchaValue } from '../../api/captcha/captcha';
 import useNologinFileUpload from '../../api/nologin-file-upload/nologinFileUpload';
@@ -31,8 +25,7 @@ interface AttachmentUploadContextType {
   submissionAttachments: SubmissionAttachment[];
   changeAttachmentValue: (
     attachment: SubmissionAttachment,
-    value?: keyof AttachmentSettingValues,
-    additionalValues?: Pick<SubmissionAttachment, 'description' | 'additionalDocumentationTitle'>,
+    values?: Pick<SubmissionAttachment, 'value' | 'title' | 'additionalDocumentation'>,
     validator?: { validate: (label: string, attachment: SubmissionAttachment) => string | undefined },
   ) => void;
   errors: Record<string, Array<{ message: string; type: ErrorType }>>;
@@ -267,12 +260,11 @@ const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boole
 
   const changeAttachmentValue = (
     attachment: SubmissionAttachment,
-    value?: keyof AttachmentSettingValues,
-    additionalValues?: Pick<SubmissionAttachment, 'description' | 'additionalDocumentationTitle'>,
+    values?: Pick<SubmissionAttachment, 'value' | 'title' | 'additionalDocumentation'>,
     validator?: { validate: (label: string, attachment: SubmissionAttachment) => string | undefined },
   ) => {
     if (validator) {
-      const error = validator.validate('', { ...attachment, value, ...additionalValues });
+      const error = validator.validate('', { ...attachment, ...values });
       if (!error) {
         removeError(attachment.attachmentId);
       }
@@ -283,7 +275,7 @@ const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boole
       if (!currentAttachment) {
         return {
           ...current,
-          attachments: [...(current?.attachments ?? []), { ...attachment, value, ...additionalValues, files: [] }],
+          attachments: [...(current?.attachments ?? []), { ...attachment, ...values, files: [] }],
         } as Submission;
       }
       const updatedAttachments = current?.attachments?.map((att) => {
@@ -292,10 +284,9 @@ const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boole
         }
         return {
           ...att,
-          value: value ?? att.value,
-          description: additionalValues?.description ?? att.description,
-          additionalDocumentationTitle:
-            additionalValues?.additionalDocumentationTitle ?? att.additionalDocumentationTitle,
+          value: values?.value ?? att.value,
+          title: values?.title ?? att.title,
+          additionalDocumentation: values?.additionalDocumentation ?? att.additionalDocumentation,
         };
       });
       return { ...current, attachments: updatedAttachments } as Submission;

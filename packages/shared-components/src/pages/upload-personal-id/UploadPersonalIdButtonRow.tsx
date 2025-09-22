@@ -20,6 +20,7 @@ const UploadPersonalIdButtonRow = () => {
 
   const startUrl = `${baseUrl}${formUrl}`;
   const exitUrl = urlUtils.getExitUrl(window.location.href);
+  const error = errors['allFiles']?.find((err) => err.type === 'FILE');
 
   const navigateToFormPage = (event: MouseEvent<HTMLElement>) => {
     event.preventDefault();
@@ -42,9 +43,9 @@ const UploadPersonalIdButtonRow = () => {
 
   return (
     <nav>
-      {errors['allFiles']?.type === 'FILE' && (
+      {error && (
         <Alert className="mb" variant="error">
-          {errors['allFiles']?.message}
+          {error.message}
         </Alert>
       )}
       <div className="button-row button-row--center">
