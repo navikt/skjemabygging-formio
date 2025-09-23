@@ -43,8 +43,6 @@ export const statiske = {
   uploadId: {
     title: 'Legitimasjon',
     label: 'Hvilken legitimasjon ønsker du å bruke?',
-    selectFile: 'Velg fil',
-    uploadFiles: 'Last opp fil(er)',
     norwegianPassport: 'Norsk pass',
     foreignPassport: 'Utenlandsk pass (ikke nødpass)',
     nationalIdEU: 'Nasjonalt ID-kort fra EU/EØS-land og Sveits',
@@ -57,6 +55,8 @@ export const statiske = {
       'Sesjonen din har utløpt. For å sende inn må du laste opp legitimasjon og fylle ut skjemaet på nytt. <a href="{{href}}">Klikk her</a> for å starte på nytt.',
   },
   uploadFile: {
+    selectFile: 'Velg fil',
+    uploadMoreFiles: 'Last opp flere filer',
     uploading: 'Laster opp fil...',
     defaultFileError: 'Det oppstod en feil. Prøv igjen senere.',
     uploadFileError: 'Det oppstod en feil under opplasting av filen. Prøv igjen senere.',
@@ -187,7 +187,6 @@ export const statiske = {
     maxFileSizeDescription: 'Du kan laste opp flere filer, men totalt kan ikke opplastingen være mer enn 50 MB.',
     filesUploadedNotSent: 'Fil(er) du har lastet opp, men ikke sendt inn:',
     sizeAndFormatHeader: 'Gyldige filformater og størrelser',
-    uploadMoreFiles: 'Last opp flere filer',
     deleteAllFiles: 'Slett alle',
     descriptionLabel: 'Gi vedlegget et beskrivende navn',
     addNewAttachment: 'Legg til nytt vedlegg',

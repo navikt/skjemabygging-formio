@@ -155,7 +155,7 @@ const FileUploader = ({
                 icon={<UploadIcon aria-hidden fontSize="1.5rem" />}
               >
                 {translate(
-                  initialUpload ? TEXTS.statiske.uploadId.selectFile : TEXTS.statiske.attachment.uploadMoreFiles,
+                  initialUpload ? TEXTS.statiske.uploadFile.selectFile : TEXTS.statiske.uploadFile.uploadMoreFiles,
                 )}
               </Button>
             </FileUpload.Trigger>
@@ -173,7 +173,7 @@ const FileUploader = ({
               }
             >
               {translate(
-                initialUpload ? TEXTS.statiske.uploadId.selectFile : TEXTS.statiske.attachment.uploadMoreFiles,
+                initialUpload ? TEXTS.statiske.uploadFile.selectFile : TEXTS.statiske.uploadFile.uploadMoreFiles,
               )}
             </Button>
           )}
