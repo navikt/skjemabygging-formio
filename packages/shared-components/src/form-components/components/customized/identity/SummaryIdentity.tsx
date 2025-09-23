@@ -1,5 +1,5 @@
 import { FormSummary } from '@navikt/ds-react';
-import { dateUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { dateUtils, formatNationalIdentityNumber, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useForm } from '../../../../context/form/FormContext';
 import { useLanguages } from '../../../../context/languages';
 import { FormComponentProps } from '../../../types';
@@ -22,7 +22,9 @@ const SummaryIdentity = ({ submissionPath }: FormComponentProps) => {
           : translate(TEXTS.statiske.identity.yourBirthdate)}
       </FormSummary.Label>
       <FormSummary.Value>
-        {value?.identitetsnummer ? value?.identitetsnummer : dateUtils.toLocaleDate(value?.fodselsdato)}
+        {value?.identitetsnummer
+          ? formatNationalIdentityNumber(value?.identitetsnummer)
+          : dateUtils.toLocaleDate(value?.fodselsdato)}
       </FormSummary.Value>
     </FormSummary.Answer>
   );

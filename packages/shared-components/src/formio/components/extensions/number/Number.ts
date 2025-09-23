@@ -65,7 +65,7 @@ class Number extends TextField {
   }
 
   validateNumber() {
-    // Get data value instead of formatted number from this.getSubmissionValue()
+    // Get data value instead of formatted number from this.getValue()
     const value = this.getDataValue();
 
     if (value === '' || value === undefined) {
@@ -107,7 +107,7 @@ class Number extends TextField {
   }
 
   getDataValue() {
-    // Get data value from parent instead of formatted number from this.getSubmissionValue()
+    // Get data value from parent instead of formatted number from this.getValue()
     return super.getValue();
   }
 
