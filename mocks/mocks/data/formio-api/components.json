@@ -557,6 +557,27 @@
                   "input": true,
                   "label": "Tekstfelt skjemagruppe",
                   "navId": "eh0gd2q"
+                },
+                {
+                  "id": "eaiy32w6",
+                  "key": "skjemagruppeDatagrid",
+                  "tree": true,
+                  "type": "datagrid",
+                  "input": false,
+                  "label": "Skjemagruppe",
+                  "navId": "ef0zuad5",
+                  "legend": "Skjemagruppe",
+                  "isNavDataGrid": true,
+                  "components": [
+                    {
+                      "id": "e9pyfsc2",
+                      "key": "tekstfelt-gruppe",
+                      "type": "textfield",
+                      "input": true,
+                      "label": "Tekstfelt skjemagruppe",
+                      "navId": "eh0gd2q"
+                    }
+                  ]
                 }
               ]
             },
@@ -568,6 +589,7 @@
               "input": true,
               "label": "Repeterende data",
               "navId": "e4ufeta",
+              "isNavDataGrid": true,
               "components": [
                 {
                   "id": "echqkeb",

@@ -4,6 +4,7 @@ import RenderComponent from '../../../render/RenderComponent';
 import { FormComponentProps } from '../../../types';
 import formComponentUtils from '../../../utils/formComponent';
 import DefaultLabel from '../../shared/form-summary/DefaultLabel';
+import FormSummaryAnswersNested from '../../shared/form-summary/FormSummaryAnswersNested';
 
 const SummaryFormGroup = ({ component, submissionPath, componentRegistry }: FormComponentProps) => {
   const { components, navId } = component;
@@ -17,9 +18,10 @@ const SummaryFormGroup = ({ component, submissionPath, componentRegistry }: Form
     <FormSummary.Answer>
       <DefaultLabel component={component} />
       <FormSummary.Value>
-        <FormSummary.Answers>
+        <FormSummaryAnswersNested>
           {components?.map((component) => {
             const componentSubmissionPath = formComponentUtils.getComponentSubmissionPath(component, submissionPath);
+
             return (
               <RenderComponent
                 key={`${component.key}-${navId}`}
@@ -29,7 +31,7 @@ const SummaryFormGroup = ({ component, submissionPath, componentRegistry }: Form
               />
             );
           })}
-        </FormSummary.Answers>
+        </FormSummaryAnswersNested>
       </FormSummary.Value>
     </FormSummary.Answer>
   );

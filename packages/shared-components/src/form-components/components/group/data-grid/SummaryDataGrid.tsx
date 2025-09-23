@@ -4,6 +4,7 @@ import RenderComponent from '../../../render/RenderComponent';
 import { FormComponentProps } from '../../../types';
 import formComponentUtils from '../../../utils/formComponent';
 import DefaultLabel from '../../shared/form-summary/DefaultLabel';
+import FormSummaryAnswersNested from '../../shared/form-summary/FormSummaryAnswersNested';
 
 const SummaryDataGrid = ({ component, submissionPath, componentRegistry }: FormComponentProps) => {
   const { components, navId } = component;
@@ -24,7 +25,7 @@ const SummaryDataGrid = ({ component, submissionPath, componentRegistry }: FormC
       <FormSummary.Value>
         {dataGridValues?.map((_, index: number) => {
           return (
-            <FormSummary.Answers key={index}>
+            <FormSummaryAnswersNested key={index}>
               {components?.map((component) => {
                 const componentSubmissionPath = formComponentUtils.getComponentSubmissionPath(
                   component,
@@ -40,7 +41,7 @@ const SummaryDataGrid = ({ component, submissionPath, componentRegistry }: FormC
                   />
                 );
               })}
-            </FormSummary.Answers>
+            </FormSummaryAnswersNested>
           );
         })}
       </FormSummary.Value>
