@@ -58,6 +58,8 @@ const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boole
   const [uploadsInProgress, setUploadsInProgress] = useState<Record<string, Record<string, FileObject>>>({});
   const [errors, setErrors] = useState<Record<string, Array<{ message: string; type: ErrorType }>>>({});
 
+  const fileIdentifier = (file: FileObject) => `${file.file.name}-${file.file.size}`;
+
   const addFileToSubmission = (file: UploadedFile) => {
     setSubmission((current) => {
       const attachment = current?.attachments?.find((att) => att.attachmentId === file.attachmentId);
@@ -167,7 +169,7 @@ const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boole
   const addFileInProgress = (attachmentId: string, file: FileObject) => {
     setUploadsInProgress((current): Record<string, Record<string, FileObject>> => {
       const currentFiles = current?.[attachmentId] ?? {};
-      const identifier = `${file.file.name}-${file.file.size}`;
+      const identifier = fileIdentifier(file);
       return { ...current, [attachmentId]: { ...currentFiles, [identifier]: file } };
     });
   };
@@ -194,7 +196,7 @@ const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boole
 
       const invalidAttachmentSize = validateTotalAttachmentSize(attachmentId, file);
       if (invalidAttachmentSize) {
-        removeFileInProgress(attachmentId, `${file.file.name}-${file.file.size}`);
+        removeFileInProgress(attachmentId, fileIdentifier(file));
         addError(attachmentId, invalidAttachmentSize, 'FILE');
         return;
       }
@@ -202,7 +204,7 @@ const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boole
       const token = await resolveCaptcha();
       const result = await uploadFile(file.file, attachmentId, token);
       if (result) {
-        removeFileInProgress(attachmentId, `${file.file.name}-${file.file.size}`);
+        removeFileInProgress(attachmentId, fileIdentifier(file));
         addFileToSubmission(result);
       }
     } catch (error: any) {

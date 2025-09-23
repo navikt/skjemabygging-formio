@@ -14,12 +14,15 @@ import {
 } from '@navikt/ds-react';
 import { AttachmentSettingValues, SubmissionAttachment, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { MutableRefObject, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import {
   FILE_ACCEPT,
   MAX_SIZE_ATTACHMENT_FILE_BYTES,
   MAX_SIZE_ATTACHMENT_FILE_TEXT,
   MAX_TOTAL_SIZE_ATTACHMENT_FILES_TEXT,
 } from '../../constants/fileUpload';
+import { useAppConfig } from '../../context/config/configContext';
+import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
 import { getFileValidationError } from '../../util/form/attachment-validation/attachmentValidation';
 import htmlUtils from '../../util/html/htmlUtils';
@@ -57,6 +60,9 @@ const FileUploader = ({
 }: Props) => {
   const { translate } = useLanguages();
   const styles = useStyles();
+  const config = useAppConfig();
+  const form = useForm();
+  const { search } = useLocation();
   const {
     handleUploadFile,
     changeAttachmentValue,
@@ -78,10 +84,9 @@ const FileUploader = ({
 
   const uploadErrorMessage = errors[attachmentId]?.find((error) => error.type === 'FILE')?.message;
   const attachmentTitleErrorMessage = errors[attachmentId]?.find((error) => error.type === 'TITLE')?.message;
-  const restartHref =
-    window.location.pathname.replace(/\/[^/]+$/, '/legitimasjon') + window.location.search + window.location.hash;
+
   const translationErrorParams = {
-    href: restartHref,
+    href: `${config.baseUrl}/${form.form.path}/legitimasjon${search}`,
     maxFileSize: MAX_SIZE_ATTACHMENT_FILE_TEXT,
     maxAttachmentSize: MAX_TOTAL_SIZE_ATTACHMENT_FILES_TEXT,
   };
