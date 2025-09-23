@@ -255,6 +255,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
           translation,
         );
         setSoknadPdfBlob(response);
+        setNologinToken(undefined);
         setSubmission(undefined);
         navigate(`${formUrl}/kvittering?${searchParams.toString()}`);
       } catch (error: any) {
