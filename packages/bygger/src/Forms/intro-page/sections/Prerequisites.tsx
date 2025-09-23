@@ -1,9 +1,8 @@
 import { Box, Heading, Radio, RadioGroup } from '@navikt/ds-react';
-import { Intro } from '@navikt/skjemadigitalisering-shared-components';
+import { FieldsetErrorMessage, Intro } from '@navikt/skjemadigitalisering-shared-components';
 import { Form, SubmissionMethod } from '@navikt/skjemadigitalisering-shared-domain';
 import { UpdateFormFunction } from '../../../components/FormMetaDataEditor/utils/utils';
 import useKeyBasedText from '../../../hooks/useKeyBasedText';
-import { FieldsetErrorMessage } from '../components/FieldsetErrorMessage';
 import { IngressBulletPointRow } from '../components/IngressBulletPointRow';
 import { updateSection } from '../utils/utils';
 import { IntroPageRefs } from '../validation/useIntroPageRefs';
@@ -18,7 +17,7 @@ type Props = {
   refMap: IntroPageRefs;
 };
 
-export function Prerequisites({ form, submissionMethod, handleChange, errors, refMap }: Props) {
+export function Prerequisites({ form, handleChange, errors, refMap }: Props) {
   const { getKeyBasedText } = useKeyBasedText();
   const showIngress = form.introPage?.sections?.prerequisites?.description !== undefined;
   const bulletPoints = form.introPage?.sections?.prerequisites?.bulletPoints || [];
@@ -61,13 +60,7 @@ export function Prerequisites({ form, submissionMethod, handleChange, errors, re
           </Box>
         </Box>
       }
-      right={
-        <Intro.Prerequisites
-          properties={form.introPage?.sections?.prerequisites}
-          translate={getKeyBasedText}
-          submissionMethod={submissionMethod}
-        />
-      }
+      right={<Intro.Prerequisites properties={form.introPage?.sections?.prerequisites} translate={getKeyBasedText} />}
     />
   );
 }

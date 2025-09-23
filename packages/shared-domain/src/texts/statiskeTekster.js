@@ -297,4 +297,9 @@ export const statiske = {
       message: 'Dette kan skyldes at søknaden allerede er sendt inn eller avsluttet.',
     },
   },
+  phoneNumber: {
+    areaCodeLabel: 'Landskode',
+    phoneNumberLabel: 'Telefonnummer',
+    fetchError: 'En feil oppsto under uthenting av landskoder. Vennligst forsøk igjen senere.',
+  },
 };

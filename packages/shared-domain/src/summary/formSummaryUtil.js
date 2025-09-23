@@ -1,7 +1,7 @@
 import moment from 'moment';
 import 'moment/locale/nb';
 import attachmentUtils from '../attachment';
-import { numberUtils } from '../index';
+import { formatPhoneNumber, numberUtils } from '../index';
 import TEXTS from '../texts';
 import currencyUtils from '../utils/currencyUtils';
 import { dataFetcher } from '../utils/data-fetcher/DataFetcherUtils';
@@ -100,7 +100,7 @@ function formatValue(component, value, translate, form, language, opts = {}) {
       return value;
     }
     case 'fnrfield': {
-      return opts.skipFnrFormatting ? value : formatNationalIdentityNumber(value);
+      return opts.skipPdfFormatting ? value : formatNationalIdentityNumber(value);
     }
     case 'number': {
       const prefix = component.prefix ? `${component.prefix} ` : '';
@@ -392,6 +392,42 @@ const handleDataFetcher = (component, submission, formSummaryObject, parentConta
   ];
 };
 
+const handlePhoneNumber = (component, submission, formSummaryObject, parentContainerKey, translate, opts) => {
+  const { key, label, type, showAreaCode } = component;
+  const componentKey = createComponentKey(parentContainerKey, key);
+  const submissionValue = FormioUtils.getValue(submission, componentKey) || {};
+  if (
+    !submissionValue ||
+    (typeof submissionValue === 'object' && Object.keys(submissionValue).length === 0) ||
+    submissionValue === ''
+  ) {
+    return [...formSummaryObject];
+  }
+  if (showAreaCode && submissionValue.areaCode && submissionValue.number) {
+    return [
+      ...formSummaryObject,
+      {
+        label: translate(label),
+        key: componentKey,
+        type,
+        value: opts.skipPdfFormatting
+          ? `${submissionValue.areaCode} ${submissionValue.number}`
+          : `${submissionValue.areaCode} ${formatPhoneNumber(submissionValue.number, submissionValue.areaCode)}`,
+      },
+    ];
+  }
+
+  return [
+    ...formSummaryObject,
+    {
+      label: translate(label),
+      key: componentKey,
+      type,
+      value: submissionValue,
+    },
+  ];
+};
+
 function handleSelectboxes(component, submission, formSummaryObject, parentContainerKey, translate) {
   const { key, label, type, values } = component;
   const componentKey = createComponentKey(parentContainerKey, key);
@@ -647,6 +683,8 @@ function handleComponent(
       );
     case 'dataFetcher':
       return handleDataFetcher(component, submission, formSummaryObject, parentContainerKey, translate);
+    case 'phoneNumber':
+      return handlePhoneNumber(component, submission, formSummaryObject, parentContainerKey, translate, opts);
     case 'selectboxes':
       return handleSelectboxes(component, submission, formSummaryObject, parentContainerKey, translate);
     case 'navCheckbox':

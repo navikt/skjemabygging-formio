@@ -159,7 +159,8 @@ export const FillInFormPage = () => {
     <div>
       <div>
         <FormErrorSummary
-          heading={translate(TEXTS.validering.error)}
+          // error refers to TEXTS.validering.error
+          heading={translate('error')}
           errors={errors}
           focusOnComponent={focusOnComponent}
           ref={(ref) => (errorSummaryRef.current = ref)}

@@ -30,21 +30,6 @@ export const useTextFieldStyles = makeStyles({
   },
 });
 
-export const useFieldsetErrorMessageStyles = makeStyles({
-  message: {
-    display: 'flex',
-    gap: 'var(--a-space-4)',
-    color: 'var(--a-red-500)',
-    marginTop: '.25rem',
-    height: '1rem',
-  },
-  icon: {
-    marginTop: '0.15em',
-    flex: '0 0 auto',
-    height: '100%',
-  },
-});
-
 export const enableIntroPageSwitchStyles = makeStyles({
   enableSwitch: {
     margin: '0 0 2rem 0',

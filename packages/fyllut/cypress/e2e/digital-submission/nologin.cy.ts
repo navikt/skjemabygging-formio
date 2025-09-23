@@ -1,3 +1,5 @@
+import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+
 describe('Digital submission without user login', () => {
   before(() => {
     cy.configMocksServer();
@@ -55,5 +57,40 @@ describe('Digital submission without user login', () => {
 
     cy.findByRole('button', { name: 'Send til Nav' }).click();
     cy.findByText('Takk for at du sendte inn skjemaet.').should('exist');
+  });
+
+  it('should clear id when navigating back from id upload page', () => {
+    cy.visit('/fyllut/nologinform');
+    cy.defaultWaits();
+    cy.findByRole('link', { name: 'Kan ikke logge inn' }).click();
+    cy.findByRole('link', { name: 'Send digitalt uten å logge inn' }).click();
+    cy.findByRole('heading', { name: 'Legitimasjon' }).should('exist');
+
+    cy.findByRole('group', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() =>
+      cy.findByLabelText('Norsk pass').check(),
+    );
+    cy.get('input[type=file]').selectFile('cypress/fixtures/files/id-billy-bruker.jpg', { force: true });
+    cy.findByRole('button', { name: 'Slett filen' }).should('exist');
+    cy.go('back');
+
+    // have to choose the submission type again since the state is reset when going back
+    cy.findByRole('link', { name: 'Kan ikke logge inn' }).click();
+    cy.findByRole('link', { name: 'Send digitalt uten å logge inn' }).click();
+    cy.findByRole('heading', { name: 'Legitimasjon' }).should('exist');
+    cy.findByRole('button', { name: 'Slett filen' }).should('not.exist');
+
+    cy.clickNextStep();
+    cy.findByRole('group', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() => {
+      cy.findByText(TEXTS.statiske.uploadId.missingUploadError).should('exist');
+    });
+  });
+
+  it('should redirect to id upload page on initial render of page', () => {
+    cy.skipIfNoIncludeDistTests();
+
+    cy.visit('/fyllut/nologinform/utdanning?sub=digitalnologin'); // <-- Directly visiting a later step in the form
+    cy.defaultWaits();
+    cy.url().should('include', '/fyllut/nologinform/legitimasjon?sub=digitalnologin');
+    cy.findByRole('group', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).should('exist');
   });
 });

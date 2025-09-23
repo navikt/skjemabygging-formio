@@ -79,7 +79,7 @@ describe('Container/Beholder og skjemagruppe', () => {
       cy.findByRole('textbox', { name: 'Tekstfelt inni skjemagruppe inni container' }).type('Cherry');
       cy.findByRole('textbox', { name: 'Tekstfelt inni container inni skjemagruppe' }).type('Strawberry');
       cy.clickNextStep();
-      cy.findByRole('group', { name: 'Annen dokumentasjon' }).within(() => {
+      cy.findByLabelText('Annen dokumentasjon').within(() => {
         cy.findByLabelText('Jeg legger det ved dette skjemaet').check();
       });
       cy.clickNextStep();
