@@ -43,7 +43,11 @@ describe('Attachments page', () => {
     cy.findByText('Informasjon om din næringsinntekt fra Norge eller utlandet').should('exist');
     cy.findByText('Annen dokumentasjon').should('exist');
     cy.clickNextStep();
-    cy.findAllByText(TEXTS.statiske.attachment.attachmentError).should('have.length', 2);
+    cy.findAllByText('Du må fylle ut: Informasjon om din næringsinntekt fra Norge eller utlandet').should(
+      'have.length',
+      2,
+    );
+    cy.findAllByText('Du må fylle ut: Annen dokumentasjon').should('be.visible').should('have.length', 2);
   });
 
   it('should remove all attachments when delete all button is clicked', () => {
