@@ -79,4 +79,35 @@ describe('Attachments page', () => {
     cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.cancelAndDelete }).click();
     cy.wait('@deleteAllFiles');
   });
+
+  describe('Other attachments', () => {
+    it('requires a title to upload file', () => {
+      cy.findByRole('group', {
+        name: 'Annen dokumentasjon Har du noen annen dokumentasjon du ønsker å legge ved?',
+      }).within(() => {
+        cy.findByRole('radio', { name: TEXTS.statiske.attachment.leggerVedNaa }).click();
+      });
+      cy.findByRole('button', { name: TEXTS.statiske.uploadFile.selectFile }).click();
+      cy.findAllByText(`Du må fylle ut: ${TEXTS.statiske.attachment.descriptionLabel}`).should('have.length', 2);
+      cy.findByLabelText(TEXTS.statiske.attachment.descriptionLabel).type('Vedleggstittel');
+      uploadFile('other-attachment.txt');
+      cy.findAllByText(`Du må fylle ut: ${TEXTS.statiske.attachment.descriptionLabel}`).should('not.exist');
+    });
+
+    it('lets you add several attachments', () => {
+      cy.findByRole('group', {
+        name: 'Annen dokumentasjon Har du noen annen dokumentasjon du ønsker å legge ved?',
+      }).within(() => {
+        cy.findByRole('radio', { name: TEXTS.statiske.attachment.leggerVedNaa }).click();
+      });
+      cy.findByLabelText(TEXTS.statiske.attachment.descriptionLabel).type('Vedleggstittel 1');
+      uploadFile('test.txt');
+      cy.findByRole('button', { name: TEXTS.statiske.attachment.addNewAttachment }).click();
+      cy.findAllByLabelText(TEXTS.statiske.attachment.descriptionLabel).last().type('Vedleggstittel 2');
+      uploadFile('test.txt');
+      cy.findByText('Vedleggstittel 1').should('exist');
+      cy.findByText('Vedleggstittel 2').should('exist');
+      cy.findAllByText('test.txt').should('have.length', 2);
+    });
+  });
 });
