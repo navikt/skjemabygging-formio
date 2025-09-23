@@ -30,7 +30,7 @@ export function AttachmentsUploadPage() {
 
   const errors: ComponentError[] = (Object.entries(uploadErrors) ?? []).flatMap(([attachmentId, attachmentErrors]) =>
     attachmentErrors
-      .filter((error) => error.type === 'INPUT' || error.type === 'DESCRIPTION')
+      .filter((error) => error.type === 'VALUE' || error.type === 'TITLE')
       .map((error) => ({
         elementId: error.type,
         message: error.message,

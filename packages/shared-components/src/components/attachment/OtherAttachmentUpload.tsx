@@ -43,7 +43,7 @@ const OtherAttachmentUpload = ({ label, attachmentValues, componentId, descripti
   const uploadedAttachmentFiles = otherAttachment?.files ?? [];
   const options = attachmentUtils.mapKeysToOptions(attachmentValues, translate);
   const uploadSelected = !!options.find((option) => option.value === otherAttachment?.value)?.upload;
-  const attachmentError = errors[componentId]?.find((error) => error.type === 'INPUT');
+  const attachmentError = errors[componentId]?.find((error) => error.type === 'VALUE');
 
   const handleValueChange = (value: Partial<SubmissionAttachmentValue>, attachmentId: string = componentId) => {
     changeAttachmentValue({ attachmentId, ...defaultAttachmentValues }, { value: value.key });

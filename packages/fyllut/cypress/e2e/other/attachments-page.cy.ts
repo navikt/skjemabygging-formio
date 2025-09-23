@@ -88,10 +88,10 @@ describe('Attachments page', () => {
         cy.findByRole('radio', { name: TEXTS.statiske.attachment.leggerVedNaa }).click();
       });
       cy.findByRole('button', { name: TEXTS.statiske.uploadFile.selectFile }).click();
-      cy.findAllByText(`Du må fylle ut: ${TEXTS.statiske.attachment.descriptionLabel}`).should('have.length', 2);
-      cy.findByLabelText(TEXTS.statiske.attachment.descriptionLabel).type('Vedleggstittel');
+      cy.findAllByText(`Du må fylle ut: ${TEXTS.statiske.attachment.attachmentTitle}`).should('have.length', 2);
+      cy.findByLabelText(TEXTS.statiske.attachment.attachmentTitle).type('Vedleggstittel');
       uploadFile('other-attachment.txt');
-      cy.findAllByText(`Du må fylle ut: ${TEXTS.statiske.attachment.descriptionLabel}`).should('not.exist');
+      cy.findAllByText(`Du må fylle ut: ${TEXTS.statiske.attachment.attachmentTitle}`).should('not.exist');
     });
 
     it('lets you add several attachments', () => {
@@ -100,10 +100,10 @@ describe('Attachments page', () => {
       }).within(() => {
         cy.findByRole('radio', { name: TEXTS.statiske.attachment.leggerVedNaa }).click();
       });
-      cy.findByLabelText(TEXTS.statiske.attachment.descriptionLabel).type('Vedleggstittel 1');
+      cy.findByLabelText(TEXTS.statiske.attachment.attachmentTitle).type('Vedleggstittel 1');
       uploadFile('test.txt');
       cy.findByRole('button', { name: TEXTS.statiske.attachment.addNewAttachment }).click();
-      cy.findAllByLabelText(TEXTS.statiske.attachment.descriptionLabel).last().type('Vedleggstittel 2');
+      cy.findAllByLabelText(TEXTS.statiske.attachment.attachmentTitle).last().type('Vedleggstittel 2');
       uploadFile('test.txt');
       cy.findByText('Vedleggstittel 1').should('exist');
       cy.findByText('Vedleggstittel 2').should('exist');

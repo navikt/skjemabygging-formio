@@ -25,7 +25,7 @@ const attachmentValidator = (
       return translate(valueError, { field: translate(label) });
     }
     if (validateOtherDocumentationTitle(attachment)) {
-      return translate('required', { field: translate(TEXTS.statiske.attachment.descriptionLabel) });
+      return translate('required', { field: translate(TEXTS.statiske.attachment.attachmentTitle) });
     }
 
     return undefined;

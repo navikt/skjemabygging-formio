@@ -77,7 +77,7 @@ const FileUploader = ({
   const inProgress = Object.values(uploadsInProgress[attachmentId] ?? {});
 
   const uploadErrorMessage = errors[attachmentId]?.find((error) => error.type === 'FILE')?.message;
-  const descriptionErrorMessage = errors[attachmentId]?.find((error) => error.type === 'DESCRIPTION')?.message;
+  const attachmentTitleErrorMessage = errors[attachmentId]?.find((error) => error.type === 'TITLE')?.message;
   const restartHref =
     window.location.pathname.replace(/\/[^/]+$/, '/legitimasjon') + window.location.search + window.location.hash;
   const translationErrorParams = {
@@ -129,13 +129,13 @@ const FileUploader = ({
         <>
           {requireAttachmentTitle && (
             <TextField
-              label={translate(TEXTS.statiske.attachment.descriptionLabel)}
+              label={translate(TEXTS.statiske.attachment.attachmentTitle)}
               maxLength={50}
               value={attachmentTitle}
-              error={descriptionErrorMessage}
+              error={attachmentTitleErrorMessage}
               ref={(ref) => {
                 if (refs?.current) {
-                  refs.current[`${attachmentId}-DESCRIPTION`] = ref;
+                  refs.current[`${attachmentId}-TITLE`] = ref;
                 }
               }}
               onChange={(e) => {
@@ -167,8 +167,8 @@ const FileUploader = ({
               onClick={() =>
                 addError(
                   attachmentId,
-                  translate('required', { field: translate(TEXTS.statiske.attachment.descriptionLabel) }),
-                  'DESCRIPTION',
+                  translate('required', { field: translate(TEXTS.statiske.attachment.attachmentTitle) }),
+                  'TITLE',
                 )
               }
             >

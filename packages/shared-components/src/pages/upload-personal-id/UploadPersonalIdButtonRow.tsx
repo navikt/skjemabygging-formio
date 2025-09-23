@@ -28,7 +28,7 @@ const UploadPersonalIdButtonRow = () => {
     if (personalIdAttachment?.files?.length) {
       navigate(`..?${searchParams.toString()}`);
     } else {
-      addError('personal-id', translate(TEXTS.statiske.uploadId.missingUploadError), 'INPUT');
+      addError('personal-id', translate(TEXTS.statiske.uploadId.missingUploadError), 'VALUE');
     }
   };
 

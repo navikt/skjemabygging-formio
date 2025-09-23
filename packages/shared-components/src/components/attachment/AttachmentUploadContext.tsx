@@ -11,8 +11,7 @@ import { useLanguages } from '../../context/languages';
 import { useSendInn } from '../../context/sendInn/sendInnContext';
 import { validateFileUpload, validateTotalFilesSize } from '../../util/form/attachment-validation/attachmentValidation';
 
-//TODO: rename types
-type ErrorType = 'FILE' | 'INPUT' | 'DESCRIPTION';
+type ErrorType = 'FILE' | 'VALUE' | 'TITLE';
 interface AttachmentUploadContextType {
   handleUploadFile: (attachmentId: string, file: FileObject) => Promise<void>;
   handleDeleteFile: (attachmentId: string, fileId: string, file: FileItem) => Promise<void>;
@@ -269,7 +268,7 @@ const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boole
         removeError(attachment.attachmentId);
       }
     }
-    // TODO: consider reducer or help functions
+
     setSubmission((current) => {
       const currentAttachment = current?.attachments?.find((att) => att.attachmentId === attachment.attachmentId);
       if (!currentAttachment) {

@@ -26,11 +26,8 @@ const AttachmentsUploadButtonRow = ({ attachments, onError }: { attachments: Att
     event.preventDefault();
     removeAllErrors();
     const errors = validateAttachment(attachments, submissionAttachments, validator);
-    console.log('Attachments:', attachments);
-    console.log('SubmissionAtt:', submissionAttachments);
-    console.log('Validation errors:', errors);
     Object.entries(errors).forEach(([attachmentId, errorMessage]) => {
-      addError(attachmentId, errorMessage, 'INPUT');
+      addError(attachmentId, errorMessage, 'VALUE');
     });
     if (Object.values(errors).length === 0) {
       navigate(summaryPageUrl);

@@ -47,7 +47,7 @@ const AttachmentUpload = ({
   const idUploaded = type === 'id' && uploadedAttachmentFiles.length > 0;
   const options = attachmentUtils.mapKeysToOptions(attachmentValues, translate);
   const uploadSelected = !!options.find((option) => option.value === attachment?.value)?.upload;
-  const attachmentError = errors[componentId]?.find((error) => error.type === 'INPUT');
+  const attachmentError = errors[componentId]?.find((error) => error.type === 'VALUE');
 
   const handleValueChange = (value: Partial<SubmissionAttachmentValue>, attachmentId: string = componentId) => {
     if (type === 'id') {
