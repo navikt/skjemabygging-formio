@@ -64,20 +64,6 @@ describe('Digital submission without user login', () => {
       cy.findByRole('button', { name: 'Skjul alle steg' }).should('not.exist');
     });
 
-    it.skip('is not allowed when one attachment have not been uploaded', () => {
-      cy.findByLabelText('Annen dokumentasjon').within(() =>
-        cy.findByLabelText('Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved').check(),
-      );
-
-      cy.findByLabelText('Bekreftelse på utdanning').within(() =>
-        cy.findByLabelText('Jeg legger det ved dette skjemaet').check(),
-      );
-
-      cy.findByRole('button', { name: 'Vis alle steg' }).click();
-      cy.findByRole('link', { name: 'Oppsummering' }).click();
-      cy.findByRole('button', { name: 'Send til Nav' }).should('not.exist');
-    });
-
     it('prevents further editing when navigating back after submission', () => {
       cy.findByLabelText('Annen dokumentasjon').within(() =>
         cy.findByLabelText('Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved').check(),
