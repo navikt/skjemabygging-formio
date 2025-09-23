@@ -1,5 +1,5 @@
 import { FormSummary } from '@navikt/ds-react';
-import { makeStyles } from '../../../../index';
+import makeStyles from '../../../../util/styles/jss/jss';
 
 const useStyles = makeStyles({
   grey: {
