@@ -105,7 +105,7 @@ const FileUploader = ({
   return (
     <>
       {!showButton && <Label>{attachmentTitle}</Label>}
-      {uploadedFiles.length > 0 && (
+      {[...uploadedFiles, ...inProgress].length > 0 && (
         <FileUpload translations={{ item: { uploading: translate(TEXTS.statiske.uploadFile.uploading) } }}>
           <VStack gap="4" as="ul">
             {uploadedFiles.map(({ fileId, fileName, size }) => (
@@ -138,7 +138,7 @@ const FileUploader = ({
             <TextField
               label={translate(TEXTS.statiske.attachment.attachmentTitle)}
               maxLength={50}
-              value={attachmentTitle}
+              defaultValue={attachmentTitle}
               error={attachmentTitleErrorMessage}
               ref={(ref) => {
                 if (refs?.current) {
